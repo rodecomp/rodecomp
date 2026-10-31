@@ -518,6 +518,7 @@ public:
   bool IsNavigationAllowed() const;
   void LoadRobeAlpha();
   void LoadDamageSkinSettings();
+  bool LoadExceptionMinimapNameTable();
   bool LoadMapNameTable();
   bool LoadFogParameters();
   void ClearHomunStatus();

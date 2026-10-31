@@ -138,6 +138,7 @@ public:
   void AddLinkedLink(const NaviLink& link);
   void ClearLinkedLinks();
   int LinkedLinkCount() const;
+  CNavi_Link();
   CNavi_Link(int type, int index, const char* name, const char* title, int cellX, int cellY, CNaviInfo* info, CNaviInfo* linkedInfo, int unknown80, int unknown84);
 
   ~CNavi_Link() override;

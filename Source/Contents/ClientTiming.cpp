@@ -3,7 +3,9 @@
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/MapInfoMgr.h"
 #include "Contents/NavigationManager.h"
+#include "File/CommonObject.h"
 #include "File/File.h"
+#include "Resource/Bitmap/BitmapResource.h"
 #include "Script/LuaScript.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
@@ -52,6 +54,31 @@ private:
   bool m_encrypted;
 };
 
+class TableBytes : public ResourceBytes {
+public:
+  CFile file;
+
+  // INLINED
+  bool Open(const char* name) override {
+    return this->file.Open(name, 0, true, false);
+  }
+
+  // INLINED
+  const void* Data() const override {
+    return this->file.GetData();
+  }
+
+  // INLINED
+  int Size() const override {
+    return static_cast<int>(this->file.GetSize());
+  }
+
+  // INLINED
+  void Close() override {
+    this->file.Close();
+  }
+};
+
 }
 
 struct NaviUnknownBlock {
@@ -97,6 +124,8 @@ CNavi_Object::CNavi_Object(int type, int index, const char* name, const char* ti
   this->cellY = cellY;
   this->info = info;
 }
+
+// OFFSET: 0x00B8C520
 
 // OFFSET: 0x00B8C2B0
 // FUNCTION: fn_19422
@@ -775,6 +804,25 @@ void CSession::LoadDamageSkinSettings() {
     this->unknown_8104 = name8104;
   }
   g_luaScript->Call("GetDamageMillionUnit", "d>d", this->m_damageSkinIndex, &this->m_damageMillionUnit);
+}
+
+// OFFSET: 0x00DE53C0
+// FUNCTION: fn_23491
+bool CSession::LoadExceptionMinimapNameTable() {
+  std::vector<char*> tokens;
+  this->m_navigationForbiddenMaps.clear();
+  this->m_navigationForbiddenMaps.reserve(512);
+
+  CCommonObject& storage = reinterpret_cast<CCommonObject&>(this->unknown_5400[0x30]);
+  TableBytes file;
+  const bool loaded = storage.LoadTokens(tokens, "ExceptionMinimapNameTable.txt", 0, file);
+
+  for (char* token : tokens) {
+    this->m_navigationForbiddenMaps.push_back(std::string(token));
+  }
+
+  std::sort(this->m_navigationForbiddenMaps.begin(), this->m_navigationForbiddenMaps.end(), std::less<std::string>());
+  return loaded;
 }
 
 // OFFSET: 0x00DE5620
