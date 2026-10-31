@@ -266,7 +266,7 @@ public:
   CNavi_Link* FindLink(unsigned int key, bool byId);
   int FindRoute(std::vector<CNavi_Link*>* route, bool direct, bool allowGates, bool includeObjects, bool allowWarps, int side);
   void ResetLinkDepths();
-  bool CollectLinksTo(CNaviInfo* target, std::vector<CNavi_Link*>* out);
+  __declspec(noinline) bool CollectLinksTo(CNaviInfo* target, std::vector<CNavi_Link*>* out);
   bool Search(std::string query, int type, std::vector<NavigationTarget>& out);
   int ParseSearchKind(std::vector<std::string>& tokens);
   CNavi_Object* FindMobByTitle(std::string title);
@@ -358,6 +358,9 @@ public:
   bool SetDestinationMap(std::string mapName, int x, int y);
   bool LoadTargetPreview();
   bool BuildTargetRouteLines();
+  bool RouteToSavedTarget(int cellX, int cellY);
+  void SelectTarget(int nodeIndex);
+  void CancelRoute();
 
   /* 0000 */ CNaviData data;
   /* 004C */ CPathFinder pathFinder;

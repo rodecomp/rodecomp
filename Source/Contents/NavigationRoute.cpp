@@ -1284,3 +1284,102 @@ bool CNavigationManager::BuildTargetRouteLines() {
   }
   return true;
 }
+
+// OFFSET: 0x00BA0C90
+// FUNCTION: fn_19636
+bool CNavigationManager::RouteToSavedTarget(int cellX, int cellY) {
+  if (this->savedTarget.object == nullptr) {
+    return false;
+  }
+
+  this->data.endLinks.clear();
+  const int type = this->savedTarget.type;
+  int x = -1;
+  int y = -1;
+  CNaviInfo* info;
+  if (type == 2) {
+    CNavi_Object* object = static_cast<CNavi_Object*>(this->savedTarget.object);
+    if (object->LinkCount() == 0) {
+      return false;
+    }
+    info = object->GetInfo();
+    NaviCell cell;
+    const NaviCell* position = object->GetCell(&cell);
+    x = position->x;
+    y = position->y;
+    this->data.endLinks = object->CopyLinks();
+  } else {
+    if (type == 3) {
+      info = static_cast<CNavi_Object*>(this->savedTarget.object)->GetInfo();
+    } else if (type == 1) {
+      info = static_cast<CNaviInfo*>(this->savedTarget.object);
+    } else if (type == 0) {
+      info = static_cast<CNaviInfo*>(this->savedTarget.object);
+      x = cellX;
+      y = cellY;
+      std::string name(info->GetName());
+      name = ResourceMgr::Instance().aliases.ResolveMapName(name.c_str());
+      if (!this->pathFinder.LoadAttr(name) || !this->pathFinder.Walkable(cellX, cellY)) {
+        return false;
+      }
+    } else {
+      return false;
+    }
+
+    std::vector<CNavi_Link*> links;
+    if (!this->data.CollectLinksTo(info, &links)) {
+      return false;
+    }
+
+    MovementRouteInterpolation route;
+    int cost = 0;
+    for (CNavi_Link* link : links) {
+      if (this->savedTarget.type == 0) {
+        this->pathFinder.Reset();
+        cost = 0;
+        if (link->GetLinkedCell().x == x && link->GetLinkedCell().y == y) {
+          cost = 1;
+        } else if (this->pathFinder.FindPath(1, link->GetLinkedCell().x, link->GetLinkedCell().y, 8, 8, x, y, 10, route, 15)) {
+          cost = static_cast<int>(route.points.size());
+        } else {
+          continue;
+        }
+      }
+      NaviLink entry;
+      entry.link = link;
+      entry.cost = cost;
+      this->data.endLinks.push_back(entry);
+    }
+  }
+
+  if (this->data.endLinks.empty()) {
+    return false;
+  }
+  return this->data.SetDestination(info, x, y);
+}
+
+// OFFSET: 0x00BA10C0
+// FUNCTION: fn_19637
+void CNavigationManager::SelectTarget(int nodeIndex) {
+  this->currentTarget = this->savedTarget;
+  if (nodeIndex >= 0 && static_cast<unsigned int>(nodeIndex) < this->nodes.size()) {
+    this->currentTarget.type = 6;
+    this->currentTarget.object = this->nodes[nodeIndex];
+  }
+  this->currentTarget = NavigationTarget(this->currentTarget);
+  this->LoadTargetPreview();
+}
+
+// OFFSET: 0x00BA12D0
+// FUNCTION: fn_19641
+void CNavigationManager::CancelRoute() {
+  this->Reset(false);
+  this->unknown_125C = 0;
+  if (!this->unknown_1248) {
+    this->unknown_1258 = 1;
+    if (g_navigationWindow != nullptr) {
+      static_cast<UINavigationV4Wnd*>(g_navigationWindow)->RefreshLayout();
+    }
+  }
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2309)), 0x62B0FF, 0, 0, 0);
+}
