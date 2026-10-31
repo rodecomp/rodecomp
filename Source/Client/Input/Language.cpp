@@ -380,6 +380,10 @@ int SubACFCE0() {
 }
 
 // OFFSET: 0x007ECEC0
+// FUNCTION: fn_09804
+UICaptchaPreviewWnd::UICaptchaPreviewWnd(UIWindowContext& windows, UIFrameContext& frames)
+    : UIFrameWnd(windows, frames, 0), m_image(nullptr), m_captchaKey(), m_imageData(nullptr), m_imageSize(0), m_imageReceived(0) {
+}
 
 // OFFSET: 0x0086C7B0
 // FUNCTION: fn_11030
@@ -402,4 +406,7 @@ UIMacroDetectorWnd::UIMacroDetectorWnd(UIWindowContext& windows, UIFrameContext&
   std::memset(this->m_captchaKey, 0, sizeof(this->m_captchaKey));
   g_windowMgr.CloseWindow(155);
   g_windowMgr.CloseWindow(39);
+}
+// FUNCTION: fn_13537
+UIRoundBoxTooltipWnd::UIRoundBoxTooltipWnd(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0), viewer(nullptr) {
 }

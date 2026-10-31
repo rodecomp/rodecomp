@@ -85,7 +85,7 @@ struct UIFriendOptionContext {
 
 class UIFriendOptionWnd : public UIFrameWnd {
 public:
-  UIFriendOptionWnd(UIWindowContext& windows, UIFrameContext& frames, UIFriendOptionContext& options);
+  UIFriendOptionWnd(UIWindowContext& windows, UIFrameContext& frames);
   ~UIFriendOptionWnd() override;
   void Slot11() override;
   void Slot15(int width, int height) override;
@@ -486,6 +486,10 @@ void UIPcGage::SetLimits(int first, int second) {
 }
 
 // OFFSET: 0x00738E10
+// FUNCTION: fn_07679
+UIFriendOptionWnd::UIFriendOptionWnd(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0) {
+  this->saved = nullptr;
+}
 
 // OFFSET: 0x00738EC0
 // FUNCTION: fn_07680

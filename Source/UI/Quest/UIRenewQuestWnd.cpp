@@ -357,6 +357,11 @@ void UIRecommededQuestScrollWnd::SetQuest(unsigned int questId) {
 }
 
 // OFFSET: 0x007FB4D0
+// FUNCTION: fn_09957
+UIRenewDetailQuestInfoWnd::UIRenewDetailQuestInfoWnd(UIWindowContext& windows, UIFrameContext& frames)
+    : UIFrameWnd(windows, frames, 0), m_ongoingWnd(nullptr), m_recommendedWnd(nullptr), m_questId(0), m_timeText(""), m_imageName(""),
+      m_recommended(false) {
+}
 
 // OFFSET: 0x007FB6C0
 // FUNCTION: fn_09959

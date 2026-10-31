@@ -1034,6 +1034,10 @@ void UIAchTab::SetLabel(const char* text, int group, int sub) {
 }
 
 // OFFSET: 0x007BA260
+// FUNCTION: fn_09264
+UIAchTracingWnd::UIAchTracingWnd(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0) {
+  this->info = nullptr;
+}
 
 // OFFSET: 0x007BA460
 // FUNCTION: fn_09267
