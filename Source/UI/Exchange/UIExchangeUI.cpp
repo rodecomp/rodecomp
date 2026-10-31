@@ -206,6 +206,19 @@ int CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::AddData(const Exch
   return this->data.size() - 1;
 }
 
+// OFFSET: 0x00A172E0
+// FUNCTION: fn_45474
+void CUIExchangeUI::Cancel() {
+  CMode* mode = g_modeMgr.GetGameMode();
+  if (!mode) {
+    return;
+  }
+
+  mode->SendMsg(0x35, 0, 0, 0, 0);
+  this->unknown_0118->disabled = 1;
+  this->unknown_0118->Invalidate();
+}
+
 // OFFSET: 0x00A17320
 // FUNCTION: fn_15287
 void CUIExchangeUI::Conclude() {

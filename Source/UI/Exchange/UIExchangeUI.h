@@ -61,7 +61,7 @@ public:
   /* 010C */ CUIStaticText* unknown_010C;
   /* 0110 */ CUIImageButton* lockButton;
   /* 0114 */ CUIImageButton* tradeButton;
-  /* 0118 */ UIWindow* unknown_0118;
+  /* 0118 */ CUIImageButton* unknown_0118;
   /* 011C */ std::string partnerName;
   /* 0134 */ std::string zenyText;
 
@@ -72,6 +72,7 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   virtual void Slot53();
 
+  void Cancel();
   void Conclude();
   void SubmitZeny();
   void FreezeItems(bool mine);
