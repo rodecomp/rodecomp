@@ -16,6 +16,7 @@ class UIBitmapButton;
 class UICheckBox;
 class UIStaticBitmap;
 class UIStaticText;
+class UITab;
 struct UIButtonContext;
 
 class UINpcSprWnd : public UIWindow {
@@ -53,6 +54,7 @@ public:
               std::intptr_t argument4) override;
 
   void RefreshHuntTexts();
+  void SetQuest(unsigned int questId);
 
   /* 00B0 */ std::vector<UIStaticText*> m_huntTexts;
   /* 00BC */ unsigned int m_questId;
@@ -69,6 +71,8 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3,
               std::intptr_t argument4) override;
 
+  void SetQuest(unsigned int questId);
+
   /* 00B0 */ int unknown_00B0;
   /* 00B4 */ int unknown_00B4;
 };
@@ -81,6 +85,8 @@ public:
 
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3,
               std::intptr_t argument4) override;
+
+  void SetQuest(unsigned int questId, bool recommended);
 
   /* 00B4 */ UIOngoingQuestScrollWnd* m_ongoingWnd;
   /* 00B8 */ UIRecommededQuestScrollWnd* m_recommendedWnd;
@@ -96,6 +102,10 @@ protected:
 
 class UIRenewQuestScrollBar : public UIScrollBar {
 public:
+  explicit UIRenewQuestScrollBar(UIWindowContext& windows) : UIScrollBar(windows) {
+    this->arrowLength = 3;
+    this->thickness = 7;
+  }
   void Paint() override;
 };
 
@@ -108,13 +118,15 @@ struct RenewQuestRowControls {
 class UIRenewQuestWnd : public UIFrameWnd {
 public:
   UIRenewQuestWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
+  void Slot15(int width, int height) override;
   void Paint() override;
+  void Slot25(int x, int y) override;
   void Slot31(int x, int y) override;
   void Slot35(int delta) override;
   void RefreshRows();
   void UpdateScroll();
 
-  /* 00B4 */ UIWindow* m_tabs;
+  /* 00B4 */ UITab* m_tabs;
   /* 00B8 */ UIRenewQuestScrollBar* m_scrollBar;
   /* 00BC */ UICheckBox* m_optionCheckBox;
   /* 00C0 */ UIBitmapButton* m_closeButton;

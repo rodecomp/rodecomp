@@ -1,7 +1,9 @@
 #include "UI/Quest/UIRenewQuestWnd.h"
 
+#include "Client/Application/ApplicationWindow.h"
 #include "Client/Mode/ModeCursor.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Items/ItemDescription.h"
 #include "Contents/MessageTable.h"
 #include "Contents/RenewQuestMgr.h"
 #include "Render/DeviceContext/DeviceContext.h"
@@ -20,7 +22,9 @@
 #include "UI/Buttons/UIButton.h"
 #include "UI/Buttons/UICheckBox.h"
 #include "UI/Text/UIStaticText.h"
+#include "UI/Text/UITagTextViewer.h"
 #include "UI/UIStaticBitmap.h"
+#include "UI/Window/UITab.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
 
@@ -225,6 +229,8 @@ int UIOngoingQuestScrollWnd::SendMsg(UIWindow* sender, int message, std::intptr_
   return UIScrollWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
 }
 
+// OFFSET: 0x007FA150
+
 // OFFSET: 0x007FAF70
 // FUNCTION: fn_09949
 UIRecommededQuestScrollWnd::UIRecommededQuestScrollWnd(UIWindowContext& windows, int width, int height)
@@ -273,6 +279,8 @@ int UIRecommededQuestScrollWnd::SendMsg(UIWindow* sender, int message, std::intp
 
   return UIScrollWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
 }
+
+// OFFSET: 0x007FB190
 
 // OFFSET: 0x007FB6C0
 // FUNCTION: fn_09959
@@ -364,7 +372,56 @@ int UIRenewDetailQuestInfoWnd::SendMsg(UIWindow* sender, int message, std::intpt
   return 0;
 }
 
+// OFFSET: 0x007FBB70
+// FUNCTION: fn_09963
+void UIRenewDetailQuestInfoWnd::SetQuest(unsigned int questId, bool recommended) {
+  if (questId == 0) {
+    return;
+  }
+
+  this->m_recommended = recommended;
+  this->m_questId = questId;
+  this->m_timeText = "";
+  if (recommended) {
+    this->m_ongoingWnd->Show(0);
+    this->m_recommendedWnd->Show(1);
+    this->m_recommendedWnd->SetQuest(this->m_questId);
+    this->m_imageName = g_renewQuestMgr->GetRecommendedQuest(questId).unknown_00B4;
+    if (!this->m_imageName.empty()) {
+      this->m_imageName = "유저인터페이스\\renew_questui\\" + this->m_imageName;
+    }
+  } else {
+    const RenewQuestOngoingInfo& quest = g_renewQuestMgr->GetOngoingQuest(questId);
+    if (quest.m_title.empty()) {
+      MessageBoxA(hWnd, FormatOwnedString("Not found Quest Info = %lu", questId).c_str(), "Error", 0);
+      return;
+    }
+
+    this->m_recommendedWnd->Show(0);
+    this->m_ongoingWnd->Show(1);
+    this->m_ongoingWnd->SetQuest(this->m_questId);
+    if (quest.m_year > 1970) {
+      const std::string timeText =
+        FormatOwnedString("%s [%02d/%02d/%02d %02d:%02d]", LookupMessage(2195), quest.m_year, quest.m_month, quest.m_day, quest.m_hour, quest.m_minute);
+      this->m_timeText = timeText;
+    }
+  }
+
+  this->Invalidate();
+}
+
 // OFFSET: 0x007FBFD0
+// FUNCTION: fn_09967
+UIRenewQuestWnd::UIRenewQuestWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
+    : UIFrameWnd(windows, frames, 0), m_tabs(nullptr), m_scrollBar(nullptr), m_optionCheckBox(nullptr), m_closeButton(nullptr), m_tab(0), m_scroll(0),
+      m_selected(0), m_scrollable(false), m_pressed(0), m_controls(&controls) {
+  std::memset(&this->m_rows, 0, sizeof(this->m_rows));
+  this->m_questIds[0].clear();
+  this->m_questIds[1].clear();
+  this->m_questIds[2].clear();
+}
+
+// OFFSET: 0x007FC4A0
 
 // OFFSET: 0x007FC870
 // FUNCTION: fn_09973
@@ -391,8 +448,35 @@ void UIRenewQuestScrollBar::Paint() {
   this->DrawBitmap(0, bottom, thumbBottom ? &thumbBottom->image : nullptr, true);
 }
 
-
 // OFFSET: 0x007FC9B0
+
+// OFFSET: 0x007FCC90
+// FUNCTION: fn_09975
+void UIRenewQuestWnd::Slot25(int x, int y) {
+  if (y < 17) {
+    UIFrameWnd::Slot25(x, y);
+    return;
+  }
+
+  if (x >= 38 && x <= 368 && y >= 24 && y <= 438) {
+    const unsigned int row = (y - 24) / 46 + this->m_scroll;
+    if (row < this->m_questIds[this->m_tab].size()) {
+      this->m_pressed = 1;
+      this->m_selected = row;
+      this->Invalidate();
+      UIRenewDetailQuestInfoWnd* detail = static_cast<UIRenewDetailQuestInfoWnd*>(g_windowMgr.EnsureWindow(0x142));
+      if (detail) {
+        const std::vector<unsigned int>& ids = this->m_questIds[this->m_tab];
+        const bool recommended = this->m_tab == 1;
+        if (ids.empty()) {
+          detail->SetQuest(0, recommended);
+        } else {
+          detail->SetQuest(ids[this->m_selected], recommended);
+        }
+      }
+    }
+  }
+}
 
 // OFFSET: 0x007FCD80
 // FUNCTION: fn_09976
