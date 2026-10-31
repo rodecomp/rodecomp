@@ -952,6 +952,42 @@ void CUIAdventureGuide::Slot16() {
   g_renewQuestMgr->SendQuestStatusRequest();
 }
 
+// OFFSET: 0x009DE7D0
+// FUNCTION: fn_14356
+void AdventureGuide::CUIQuestInfo::SetTip(int id) {
+  CUITextViewer* viewer = reinterpret_cast<CUITextViewer*>(this->unknown_00EC);
+  viewer->Clear();
+
+  const TipBoxEntry& tip = g_itemTagOwner->GetTip(id);
+  if (tip.title.empty() || tip.paragraphs.empty()) {
+    viewer->AddLine(std::to_string(id));
+    return;
+  }
+
+  std::string title = tip.title;
+  std::match_results<const char*> match;
+  std::regex_search(title.c_str(), title.c_str() + title.size(), match, std::regex("\\#"));
+  if (!match.empty()) {
+    title = match.prefix().str();
+  }
+
+  const std::string whitespace(" \r\n\t\v\f");
+  title.erase(0, title.find_first_not_of(whitespace));
+  title.erase(title.find_last_not_of(whitespace) + 1);
+  viewer->SetBold(true);
+  viewer->AddLine(title);
+
+  title = tip.paragraphs.front();
+  std::regex_search(title.c_str(), title.c_str() + title.size(), match, std::regex("\n"));
+  if (!match.empty()) {
+    title = match.prefix().str();
+  }
+  title.erase(0, title.find_first_not_of(whitespace));
+  title.erase(title.find_last_not_of(whitespace) + 1);
+  viewer->SetBold(false);
+  viewer->AddLine(title);
+}
+
 // OFFSET: 0x009DEBF0
 // FUNCTION: fn_14357
 void CUIAdventureGuide::MarkQuest(int questId) {

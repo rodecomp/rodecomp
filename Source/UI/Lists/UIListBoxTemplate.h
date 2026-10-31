@@ -115,6 +115,7 @@ public:
   explicit CUIQuestInfo(UIWindowContext& context);
   void Slot16() override;
   void SetTitle(int id);
+  void SetTip(int id);
   void SetStatusLines(bool first, bool second, bool third);
   void SetViewerLines(const std::vector<std::string>& lines);
 
