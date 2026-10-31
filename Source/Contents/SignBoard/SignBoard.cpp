@@ -1,5 +1,9 @@
 #include "Contents/SignBoard/SignBoard.h"
+#include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
+#include "Contents/Ground/TerrainHeight.h"
+#include "Contents/World/World.h"
+#include "Network/TextEncoding.h"
 #include "Render/Renderer.h"
 #include "Render/SpriteGeometry.h"
 #include "Resource/Bitmap/BitmapResource.h"
@@ -12,6 +16,7 @@
 #include "UI/Window/UIWindowMgr.h"
 
 #include <cstdlib>
+#include <mbstring.h>
 #include <new>
 #include <windows.h>
 #include <timeapi.h>
@@ -52,6 +57,77 @@ void DestroySignBoardMgr() {
 void __fastcall sub_81FE50(CSignBoardMgr* manager) {
   manager->LoadList();
   manager->Initialize();
+}
+
+// OFFSET: 0x0081FE60
+void CSignBoardMgr::Initialize() {
+  std::string mapName;
+  if (g_modeMgr.GetGameMode() != nullptr) {
+    mapName = std::string(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->mapName);
+  }
+  mapName = mapName.substr(0, mapName.find(".rsw"));
+
+  for (std::vector<SignBoardInfo>::iterator it = this->m_entries.begin(); it != this->m_entries.end(); ++it) {
+    std::string entryMap(it->map);
+    LowercaseText(entryMap);
+    LowercaseText(mapName);
+    if (entryMap != mapName) {
+      continue;
+    }
+
+    switch (it->type) {
+    case 1: {
+      C3DCooRendering* object = new C3DCooRendering();
+      object->type = it->type;
+      object->Create(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIButtonContext*>(nullptr));
+      std::string image;
+      if (_mbsstr(reinterpret_cast<const unsigned char*>(it->image), reinterpret_cast<const unsigned char*>("유저인터페이스")) == nullptr) {
+        image = "유저인터페이스\\";
+      }
+      image += it->image;
+      object->SetWindowImage(image);
+
+      vector3d position = {0.0f, 0.0f, 0.0f};
+      reinterpret_cast<const TerrainHeight*>(g_modeMgr.GetGameMode())->CellCenter(it->column, it->row, position.x, position.z);
+      position.y = reinterpret_cast<const TerrainHeight*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain)->Height(position.x, position.z) -
+        static_cast<float>(it->offset);
+      object->render.position = position;
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->objects.push_back(object);
+      break;
+    }
+    case 2: {
+      CIcon* icon = new CIcon();
+      vector3d position = {0.0f, 0.0f, 0.0f};
+      reinterpret_cast<const TerrainHeight*>(g_modeMgr.GetGameMode())->CellCenter(it->column, it->row, position.x, position.z);
+      position.y = reinterpret_cast<const TerrainHeight*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain)->Height(position.x, position.z) -
+        static_cast<float>(it->offset);
+      icon->render.position = position;
+      icon->Load(std::string(it->image));
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->objects.push_back(icon);
+      break;
+    }
+    case 3: {
+      C3DCooRendering* object = new C3DCooRendering();
+      object->type = it->type;
+      object->Create(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIButtonContext*>(nullptr));
+      std::string image;
+      if (_mbsstr(reinterpret_cast<const unsigned char*>(it->image), reinterpret_cast<const unsigned char*>("유저인터페이스")) == nullptr) {
+        image = "유저인터페이스\\";
+      }
+      image += it->image;
+      object->SetWindowImage(image);
+      object->SetBoard(std::string(it->unknown_0014), std::string(it->unknown_001C));
+
+      vector3d position = {0.0f, 0.0f, 0.0f};
+      reinterpret_cast<const TerrainHeight*>(g_modeMgr.GetGameMode())->CellCenter(it->column, it->row, position.x, position.z);
+      position.y = reinterpret_cast<const TerrainHeight*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain)->Height(position.x, position.z) -
+        static_cast<float>(it->offset);
+      object->render.position = position;
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->objects.push_back(object);
+      break;
+    }
+    }
+  }
 }
 
 // OFFSET: 0x00820BD0
@@ -114,7 +190,8 @@ CIcon::CIcon() {
 }
 
 // OFFSET: 0x00821180
-CSignBoardWnd::CSignBoardWnd(UIWindowContext& windows, UIButtonContext& controls) : UIWindow(windows, 0), text(nullptr), m_controls(&controls) {
+// FUNCTION: fn_10257
+CSignBoardWnd::CSignBoardWnd(UIWindowContext& windows, UIButtonContext& controls) : UIWindow(windows, 0), m_controls(&controls) {
 }
 
 // OFFSET: 0x008213D0
@@ -207,18 +284,21 @@ void CSignBoardWnd::Paint() {
 // OFFSET: 0x00821D10
 // FUNCTION: fn_10267
 void C3DCooRendering::Create(UIWindowContext& windows, UIButtonContext& controls) {
-  UIWindow* window = nullptr;
-  int width = 0;
-  int height = 0;
-  if (this->type == 1) {
+  UIWindow* window;
+  int width;
+  int height;
+  switch (this->type) {
+  case 1:
     window = new (std::nothrow) CBmpObjWnd(windows);
     width = 0xaa;
     height = 0xaa;
-  } else if (this->type == 3) {
+    break;
+  case 3:
     window = new (std::nothrow) CSignBoardWnd(windows, controls);
     width = 0xa2;
     height = 0x24;
-  } else {
+    break;
+  default:
     return;
   }
   this->window = window;
