@@ -3151,8 +3151,58 @@ void UIMonsterGage::Paint() {
 }
 
 // OFFSET: 0x0088C750
+// FUNCTION: fn_11374
+void UIPcGage::Paint() {
+  this->ClearSurface(this->colors[0]);
+  if (this->unknown_009C == 0) {
+    this->FillRegion(1, 1, this->geometry.width - 2, this->geometry.height - 2, this->colors[1]);
+    if (this->maximum != 0) {
+      const float percent = static_cast<float>(this->current * 100 / this->maximum);
+      if (0.0f != percent) {
+        const int width = static_cast<int>(static_cast<float>(this->geometry.width) * percent / 100.0f - 2.0f);
+        if (25.0f > percent) {
+          this->FillRegion(1, 1, width, this->geometry.height - 2, this->colors[4]);
+        } else {
+          this->FillRegion(1, 1, width, this->geometry.height - 2, this->colors[2]);
+        }
+      }
+    }
+  } else {
+    this->FillRegion(1, 1, this->geometry.width - 2, (this->geometry.height - 3) / 2, this->colors[1]);
+    this->FillRegion(1, this->geometry.height / 2 + 1, this->geometry.width - 2, (this->geometry.height - 3) / 2, this->colors[1]);
+    if (this->maximum != 0 && this->unknown_00AC != 0) {
+      const float percent = static_cast<float>(this->current * 100 / this->maximum);
+      const float second = static_cast<float>(this->unknown_00A8 * 100 / this->unknown_00AC);
+      if (percent != 0.0f) {
+        this->FillRegion(
+          1, 1, static_cast<int>(static_cast<float>(this->geometry.width) * percent / 100.0f - 2.0f), (this->geometry.height - 3) / 2,
+          25.0f > percent ? this->colors[4] : this->colors[2]
+        );
+      }
+      if (second != 0.0f) {
+        this->FillRegion(
+          1, this->geometry.height / 2 + 1, static_cast<int>(static_cast<float>(this->geometry.width) * second / 100.0f - 2.0f),
+          (this->geometry.height - 3) / 2, this->colors[3]
+        );
+      }
+    }
+  }
+}
 
 // OFFSET: 0x0088D6C0
+// FUNCTION: fn_11377
+void UIRechargeGage::Paint() {
+  this->ClearSurface(this->colors[0]);
+  this->FillRegion(1, 1, this->geometry.width - 2, this->geometry.height - 2, this->colors[1]);
+  if (this->maximum != 0) {
+    const float percent = static_cast<float>(this->current * 100 / this->maximum);
+    if (0.0f != percent) {
+      this->FillRegion(
+        1, 1, static_cast<int>(static_cast<float>(this->geometry.width) * percent / 100.0f - 2.0f), this->geometry.height - 2, this->colors[2]
+      );
+    }
+  }
+}
 
 // OFFSET: 0x00890DC0
 // FUNCTION: fn_11438
@@ -3187,3 +3237,29 @@ void UIString::Slot31(int, int) {
 }
 
 // OFFSET: 0x0088F6C0
+// FUNCTION: fn_11390
+void UITabControl::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+  if (this->parent) {
+    this->parent->SendMsg(this, 116, 0, 0, 0, 0);
+  }
+
+  for (int index = 0; index < static_cast<int>(this->labels.size()); ++index) {
+    const int layout = this->layout;
+    if (layout == 1 || layout == 3) {
+      this->DrawHorizontalTab(index);
+    } else if (layout == 0 || layout == 2) {
+      this->DrawVerticalTab(index);
+    }
+
+    if (this->flags.size() >= static_cast<unsigned>(static_cast<int>(this->labels.size())) && this->flags[index]) {
+      int offset = 0;
+      for (int previous = 0; previous < index; ++previous) {
+        offset += this->widths[previous] - 1;
+      }
+
+      const auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\icon_new.bmp")));
+      this->DrawBitmap(1, static_cast<unsigned short>(offset) + 2, bitmap ? &bitmap->image : nullptr, false);
+    }
+  }
+}
