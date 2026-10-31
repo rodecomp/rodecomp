@@ -500,6 +500,105 @@ bool UINewSkillListWnd::IsSkillArea(int x, int y) {
 }
 
 // OFFSET: 0x009B1050
+// FUNCTION: fn_13814
+void UINewSkillListWnd::Slot15(int width, int height) {
+  this->m_tabs = new UITabControl(*this->m_context, *this->m_controls);
+  reinterpret_cast<void(__thiscall*)(UITabControl*, int, int, int, int, int, int, int, int, int, int, int, int)>(0x0087C3F0)(
+    this->m_tabs, 0, 17, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->m_tabs->Move(0, 6);
+  this->AddChild(this->m_tabs);
+
+  this->m_btnHelp = this->AddBaseButton(*this->m_controls);
+  this->m_btnMinimize = this->AddMinimizeButton(*this->m_controls, "", 0);
+  this->m_btnClose = this->AddCloseButton(*this->m_controls, "Alt+S", 0);
+
+  this->m_btnHelp->Move(22, 5);
+  this->m_btnMinimize->Move(this->geometry.width - 30, 5);
+  this->m_btnClose->Move(this->geometry.width - 16, 5);
+
+  this->m_scrollBar = new UIScrollBar(*this->m_context);
+  this->m_scrollBar->Configure(this->geometry.width - 15, 20, 1, this->geometry.height - this->m_topMargin - this->m_bottomMargin);
+  this->m_scrollBar->Move(this->geometry.width - 15, 20);
+  this->m_scrollBar->SetSize(this->m_scrollBar->geometry.width, this->geometry.height - this->m_topMargin - this->m_bottomMargin);
+  this->AddChild(this->m_scrollBar);
+
+  for (int i = 0; i < 10; ++i) {
+    UIBitmapButton* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    button->SetBitmap("유저인터페이스\\basic_interface\\skill_up_a.bmp", 0, 0);
+    button->SetBitmap("유저인터페이스\\basic_interface\\skill_up_b.bmp", 1, 0);
+    button->SetBitmap("유저인터페이스\\basic_interface\\skill_up_c.bmp", 2, 0);
+    button->SetSize(button->geometry.width, button->geometry.height);
+    button->Move(78, 21 + i * 32);
+    button->SetId(i + 239);
+    this->AddChild(button);
+    this->m_btnLevelUp[i] = button;
+  }
+
+  for (int i = 0; i < 42; ++i) {
+    UIBitmapButton* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    button->SetBitmap("유저인터페이스\\basic_interface\\arw_left.bmp", 0, 0);
+    button->SetBitmap("유저인터페이스\\basic_interface\\arw_left.bmp", 1, 0);
+    button->SetBitmap("유저인터페이스\\basic_interface\\arw_left.bmp", 2, 0);
+    button->SetSize(button->geometry.width, button->geometry.height);
+    button->Move(106, 34 + i * 32);
+    button->SetId(i);
+    this->AddChild(button);
+    this->m_btnSkills[i] = button;
+  }
+
+  for (int i = 0; i < 42; ++i) {
+    UIBitmapButton* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    button->SetBitmap("유저인터페이스\\basic_interface\\arw_right.bmp", 0, 0);
+    button->SetBitmap("유저인터페이스\\basic_interface\\arw_right.bmp", 1, 0);
+    button->SetBitmap("유저인터페이스\\basic_interface\\arw_right.bmp", 2, 0);
+    button->SetSize(button->geometry.width, button->geometry.height);
+    button->Move(198, 34 + i * 32);
+    button->SetId(i + 42);
+    this->AddChild(button);
+    this->m_btnSkillUps[i] = button;
+  }
+
+  const char* baseDir = "유저인터페이스\\";
+  const char* applyNames[3] = {"btn_apply", "btn_apply_a", "btn_apply_b"};
+  this->m_btnApply = new UIBitmapButton(*this->m_context, *this->m_controls);
+  for (int state = 0; state < 3; ++state) {
+    std::string path = std::string(baseDir) + applyNames[state] + ".bmp";
+    this->m_btnApply->SetBitmap(Resolve(path.c_str()), state, 0);
+  }
+  this->m_btnApply->SetSize(this->m_btnApply->geometry.width, this->m_btnApply->geometry.height);
+  this->m_btnApply->Move(this->geometry.width - 100, this->geometry.height - 27);
+  this->m_btnApply->SetId(271);
+  this->m_btnApply->SetDisabled(1);
+  this->m_btnApply->Invalidate();
+  this->AddChild(this->m_btnApply);
+
+  const char* resetNames[3] = {"btn_reset", "btn_reset_a", "btn_reset_b"};
+  this->m_btnCancel = new UIBitmapButton(*this->m_context, *this->m_controls);
+  for (int state = 0; state < 3; ++state) {
+    std::string path = std::string(baseDir) + resetNames[state] + ".bmp";
+    this->m_btnCancel->SetBitmap(Resolve(path.c_str()), state, 0);
+  }
+  this->m_btnCancel->SetSize(this->m_btnCancel->geometry.width, this->m_btnCancel->geometry.height);
+  this->m_btnCancel->Move(this->geometry.width - 50, this->geometry.height - 27);
+  this->m_btnCancel->SetId(363);
+  this->m_btnCancel->SetDisabled(1);
+  this->m_btnCancel->Invalidate();
+  this->AddChild(this->m_btnCancel);
+
+  this->m_btnDetail = new UIResizer(*this->m_context);
+  this->m_btnDetail->SetSize(16, 16);
+  this->m_btnDetail->SetDirection(3);
+  this->m_btnDetail->SetBitmapName("유저인터페이스\\btn_resize.bmp");
+  this->m_btnDetail->Move(this->geometry.width - 15, this->geometry.height - 15);
+  this->m_btnDetail->SetColors(0xFFFF00FF, 0xFFFF00FF);
+  this->AddChild(this->m_btnDetail);
+
+  this->InitTabs();
+  if (!g_session.m_skillBundle.extraIds.empty()) {
+    this->m_tabs->SetFlag(static_cast<int>(this->m_tabs->labels.size()) - 1, true);
+  }
+  this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+}
 
 // OFFSET: 0x009B2160
 // FUNCTION: fn_13815
