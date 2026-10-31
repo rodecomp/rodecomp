@@ -6,6 +6,7 @@
 #include <cstddef>
 #include <string>
 
+extern int g_damageMillionUnit;
 extern std::string g_damageResourceName;
 extern bool g_msgEffectShowSpecial;
 

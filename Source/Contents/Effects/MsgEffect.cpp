@@ -22,6 +22,9 @@
 #include <windows.h>
 #include <timeapi.h>
 
+// GLOBAL: gl_25145
+int g_damageMillionUnit;
+
 // GLOBAL: gl_24976
 std::string g_damageResourceName;
 

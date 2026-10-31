@@ -1,6 +1,6 @@
 #include "Contents/Actors/Npc.h"
 #include "Contents/Actors/RenderObject.h"
-
+#include "Contents/Effects/MsgEffect.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Session.h"
@@ -52,7 +52,7 @@
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Math/ScalarConversion.h"
-
+#include "Contents/World/WorldObjects.h"
 #include <algorithm>
 #include <cstdint>
 #include <cstdlib>
@@ -3840,4 +3840,72 @@ bool C3dGrannyGameActor::OnProcess() {
   }
 
   return result;
+}
+
+// OFFSET: 0x00CC9F20
+// FUNCTION: fn_21195
+void CGameActor::SpawnDamageDigits(int, int damage, std::uint32_t color, int type) {
+  std::vector<int> digits;
+  const int value = damage >= 0 ? damage : 0;
+  int remaining = value;
+  int digit;
+  if (g_serviceOptions.Get(0x10B)) {
+    if (value >= 100000000) {
+      digit = 11;
+      remaining = value / 1000000;
+      digits.push_back(digit);
+    } else if (value >= 1000000) {
+      digit = 10;
+      remaining = value / 1000;
+      digits.push_back(digit);
+    }
+  } else if (value > 999999) {
+    remaining = 999999;
+  }
+
+  do {
+    digit = remaining % 10;
+    digits.push_back(digit);
+    remaining /= 10;
+  } while (remaining != 0);
+
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  if (type == 22 && this->unknown_03B0.size() != 0) {
+    for (auto it = this->unknown_03B0.begin(); it != this->unknown_03B0.end();) {
+      CMsgEffect* effect = static_cast<CMsgEffect*>(*it);
+      if (effect->m_type == 22) {
+        this->ClearUnknown037C(reinterpret_cast<int>(effect));
+        effect->SendMsg(this, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        it = this->unknown_03B0.erase(it);
+        reinterpret_cast<WorldObjects*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene)->Remove(effect);
+      } else {
+        ++it;
+      }
+    }
+  }
+
+  int index = 0;
+  for (auto it = digits.begin(); it != digits.end(); ++it, ++index) {
+    CMsgEffect* effect = new CMsgEffect;
+    effect->render.color = color;
+    effect->SendMsg(nullptr, 22, 0, this->render.accountId, 0, type, type >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+    const std::intptr_t position = reinterpret_cast<std::intptr_t>(&this->render.position);
+    const int count = static_cast<int>(digits.size());
+    if (value >= 100000000 && g_damageMillionUnit == 2) {
+      if (index == 0) {
+        effect->SendMsg(nullptr, 64, 0, position, position >> 31, *it, *it >> 31, (count - 1) * 3 + 4, 0, 0, 0, 0, 0, 0, 0);
+      } else {
+        effect->SendMsg(nullptr, 64, 0, position, position >> 31, *it, *it >> 31, (count - 1) * 3 - index * 8, 0, 0, 0, 0, 0, 0, 0);
+      }
+    } else {
+      effect->SendMsg(nullptr, 64, 0, position, position >> 31, *it, *it >> 31, (count - index * 2) * 4 - 4, 0, 0, 0, 0, 0, 0, 0);
+    }
+    effect->SendMsg(this, 50, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    effect->render.unknown_00B4 = 0;
+    if (type == 22) {
+      effect->render.scale = 0.5f;
+    }
+    mode->AddSceneObject(effect);
+    this->unknown_03B0.push_back(effect);
+  }
 }

@@ -256,6 +256,7 @@ public:
   void SetEffectInstance(int effectId, int instance, bool on);
   void ResetJobEffects();
   void ClearUnknown037C(int value);
+  void SpawnDamageDigits(int unused, int damage, std::uint32_t color, int type);
   int WeaponActionBase(int weaponType);
   int GetUnknown0404();
   int MountHeightOffset();
