@@ -290,6 +290,7 @@ public:
   /* 00B8 */ UITextButton* toggleButtons[3];
   /* 00C4 */ UITextButton* openButtons[3];
 
+  UIAchTracingWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
   bool Slot08() override;
   void Slot11() override;
   void Slot15(int width, int height) override;

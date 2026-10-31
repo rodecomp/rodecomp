@@ -344,6 +344,8 @@ UIGuildPositionManageWnd::UIGuildPositionManageWnd(UIWindowContext& windows, UIF
   }
 }
 
+// OFFSET: 0x00953E80
+
 // OFFSET: 0x00956050
 // FUNCTION: fn_13035
 bool CompareWideText(const char* left, const char* right) {

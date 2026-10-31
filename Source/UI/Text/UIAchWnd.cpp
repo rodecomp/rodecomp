@@ -1033,6 +1033,8 @@ void UIAchTab::SetLabel(const char* text, int group, int sub) {
   this->Refresh();
 }
 
+// OFFSET: 0x007BA260
+
 // OFFSET: 0x007BA460
 // FUNCTION: fn_09267
 bool UIAchTracingWnd::Slot08() {

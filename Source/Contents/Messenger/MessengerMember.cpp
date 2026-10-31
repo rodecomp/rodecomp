@@ -43,13 +43,6 @@ namespace {
     /* 0008 */ int size;
   };
 
-  struct UIFriendOptionContext {
-    UIButtonContext& buttons;
-    int& option0;
-    int& option1;
-    int& option2;
-  };
-
   struct SessionHelper {
     const char* sub_DDE770(const char* mapName);
   };
@@ -83,9 +76,16 @@ public:
   /* 0118 */ std::vector<MiniPartyIconPosition> iconPositions;
 };
 
+struct UIFriendOptionContext {
+  UIButtonContext& buttons;
+  int& option0;
+  int& option1;
+  int& option2;
+};
+
 class UIFriendOptionWnd : public UIFrameWnd {
 public:
-  UIFriendOptionWnd();
+  UIFriendOptionWnd(UIWindowContext& windows, UIFrameContext& frames, UIFriendOptionContext& options);
   ~UIFriendOptionWnd() override;
   void Slot11() override;
   void Slot15(int width, int height) override;
@@ -104,7 +104,7 @@ private:
 
 class UIJobIconButton : public UIBitmapButton {
 public:
-  UIJobIconButton();
+  UIJobIconButton(UIWindowContext& windows, UIButtonContext& buttons);
   ~UIJobIconButton() override;
   void Paint() override;
   void Slot25(int x, int y) override;
@@ -586,6 +586,10 @@ void UIFriendOptionWnd::Slot11() {
 }
 
 // OFFSET: 0x00739330
+// FUNCTION: fn_07685
+UIJobIconButton::UIJobIconButton(UIWindowContext& windows, UIButtonContext& buttons) : UIBitmapButton(windows, buttons) {
+  this->unknown_0120 = 0;
+}
 
 // OFFSET: 0x007393E0
 // FUNCTION: fn_07686

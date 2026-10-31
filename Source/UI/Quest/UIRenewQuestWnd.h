@@ -76,6 +76,7 @@ public:
 
 class UIRenewDetailQuestInfoWnd : public UIFrameWnd {
 public:
+  UIRenewDetailQuestInfoWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
   void Slot15(int width, int height) override;
   void Paint() override;
   void Slot25(int x, int y) override;

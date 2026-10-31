@@ -356,6 +356,8 @@ void UIRecommededQuestScrollWnd::SetQuest(unsigned int questId) {
   this->Invalidate();
 }
 
+// OFFSET: 0x007FB4D0
+
 // OFFSET: 0x007FB6C0
 // FUNCTION: fn_09959
 void UIRenewDetailQuestInfoWnd::Slot15(int, int) {
