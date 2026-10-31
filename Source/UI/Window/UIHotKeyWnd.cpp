@@ -1,6 +1,7 @@
 #include "UI/Window/UIHotKeyWnd.h"
 
 #include "Client/Session.h"
+#include "Client/Mode/ModeCursor.h"
 #include "Client/Mode/ModeTooltip.h"
 #include "Contents/Hotkeys/UserHotkeyMgr.h"
 #include "Contents/Skills/AutomaticSkills.h"
@@ -17,6 +18,7 @@
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UINewSelectCharWnd.h"
+#include "UI/Window/UISerachStoreInfoWnd.h"
 #include "UI/Window/WindowBorder.h"
 #include "UI/Window/WindowDialogs.h"
 #include "UI/Window/WindowManagerWindows.h"
@@ -372,6 +374,43 @@ void UIHotKeyWnd::ShowHotkeyTooltip(int x, int y) {
   if (!entry.info.text.empty()) {
     reinterpret_cast<ModeTooltip*>(g_charViewMode)->Show(entry.info.text.c_str(), screenX, screenY, 0xFFFFFFFF, 0, 1);
   }
+}
+
+// OFFSET: 0x00931C80
+// FUNCTION: fn_12710
+void UISerachStoreInfoWnd::Slot28(int x, int y) {
+  ITEM_INFO item = this->ItemAt(x, y);
+  if (item.itemId.size() == 0) {
+    return;
+  }
+
+  if ((x > 160 && x < 330) || (x > 5 && x < 50) || static_cast<unsigned int>(x - 51) <= 108) {
+    int screenX = (x - 40) / 32 * 32 + 40;
+    int screenY = (y - 17) / 32 * 32 + 1;
+    this->ToScreen(screenX, screenY);
+
+    std::string text;
+    if (static_cast<unsigned int>(x - 51) <= 108) {
+      const auto entry = g_session.unknown_5BD4.begin() + ((this->unknown_00DC - 1) * 10 + this->unknown_00E0);
+      if (entry != g_session.unknown_5BD4.end()) {
+        text.assign(reinterpret_cast<const char*>(&entry->unknown_0000[8]));
+        const std::size_t end = text.find('\r');
+        if (end != std::string::npos) {
+          text = text.substr(0, end);
+        }
+
+        this->m_context->cursor.Set(2, this->m_context->cursorTick);
+      }
+    } else {
+      text = item.DisplayName(0);
+    }
+
+    if (text.size() != 0) {
+      reinterpret_cast<ModeTooltip*>(g_charViewMode)->Show(text.c_str(), screenX, screenY, g_session.GetItemNameColor(item), 0, 1);
+    }
+  }
+
+  this->Invalidate();
 }
 
 // OFFSET: 0x0091CA10
