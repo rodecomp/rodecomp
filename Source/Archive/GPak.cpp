@@ -2305,6 +2305,7 @@ __forceinline bool DecryptWithAes(PakBlockTransform transform, std::uint32_t key
 }
 
 // OFFSET: 0x0064BCE0
+// FUNCTION: fn_04946
 bool PakDecryptor::sub_64BCE0(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> keyData, std::span<const std::uint8_t, 16> block,
                                 std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const {
   return DecryptWithAes(sub_6442D0, 0, 0x10, AES::CBC, 0, 0x400, data, keyData, block, input, output);
