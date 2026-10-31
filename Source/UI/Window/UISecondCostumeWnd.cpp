@@ -1,4 +1,8 @@
 #include "UI/Window/UISecondCostumeWnd.h"
+#include "Contents/MessageTable.h"
+#include "UI/Buttons/UIBitmapButton.h"
+#include "UI/Lists/UIComboBoxDefWnd.h"
+#include "UI/Lists/UIListBoxNavi.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
 #include "UI/Lists/UIListBox.h"
@@ -101,6 +105,58 @@ void UISecondCostumeWnd::SelectSavedEntries() {
     }
   }
   this->m_selected[3] = index < this->m_entries[3].size() ? index : 0;
+}
+
+// OFFSET: 0x0094C5B0
+// FUNCTION: fn_12898
+void UISecondCostumeWnd::Slot15(int width, int height) {
+  this->LoadLists();
+  this->AddCloseButton(*this->m_controls, "Close", 0);
+
+  this->m_list = new UIListBoxNavi(*this->m_context, *this->m_listContext);
+  this->m_list->SetSize(width - 212, 160);
+  this->m_list->backgroundRed = 210;
+  this->m_list->backgroundGreen = 210;
+  this->m_list->backgroundBlue = 210;
+  this->m_list->SetId(336);
+  this->m_list->Move(4, 40);
+  this->AddChild(this->m_list);
+  this->RefreshList(this->m_tab);
+
+  this->m_typeCombo = new UIComboBoxDefWnd(*this->m_context, *this->m_comboContext);
+  this->m_typeCombo->dropdownHeight = 67;
+  this->m_typeCombo->SetSize(width - 212, 18);
+  this->m_typeCombo->Move(4, 20);
+  this->m_typeCombo->borderRed = 100;
+  this->m_typeCombo->borderGreen = 100;
+  this->m_typeCombo->borderBlue = 100;
+  this->m_typeCombo->red = 232;
+  this->m_typeCombo->green = 232;
+  this->m_typeCombo->blue = 232;
+  this->AddChild(this->m_typeCombo);
+  this->m_typeCombo->AddOption(LookupMessage(2763), 0);
+  this->m_typeCombo->AddOption(LookupMessage(2764), 0);
+  this->m_typeCombo->AddOption(LookupMessage(2765), 0);
+  this->m_typeCombo->AddOption(LookupMessage(2766), 0);
+  this->m_typeCombo->Select(this->m_tab);
+
+  auto* previous = new UIBitmapButton(*this->m_context, *this->m_controls);
+  previous->SetBitmap("유저인터페이스\\scroll1left.bmp", 0, 0);
+  previous->SetBitmap("유저인터페이스\\scroll1left.bmp", 1, 0);
+  previous->SetBitmap("유저인터페이스\\scroll1left.bmp", 2, 0);
+  previous->SetSize(previous->BitmapWidth(), previous->BitmapHeight());
+  previous->Move(width - 202, 110);
+  previous->SetId(227);
+  this->AddChild(previous);
+
+  auto* next = new UIBitmapButton(*this->m_context, *this->m_controls);
+  next->SetBitmap("유저인터페이스\\scroll1right.bmp", 0, 0);
+  next->SetBitmap("유저인터페이스\\scroll1right.bmp", 1, 0);
+  next->SetBitmap("유저인터페이스\\scroll1right.bmp", 2, 0);
+  next->SetSize(next->BitmapWidth(), next->BitmapHeight());
+  next->Move(width - 19, 110);
+  next->SetId(226);
+  this->AddChild(next);
 }
 
 // OFFSET: 0x0094EC60
