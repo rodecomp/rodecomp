@@ -1,11 +1,18 @@
 #include "UI/Window/UISelCharForUServerWnd.h"
+#include "Client/Mode/CLoginMode.h"
 #include "Client/Mode/CMode.h"
+#include "Client/Session.h"
+#include "Contents/Actors/Pc.h"
+#include "Contents/SpriteRidingOffset.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
+#include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UICheckBox.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowDialogs.h"
 
+#include <cstdint>
+#include <string>
 #include <timeapi.h>
 
 extern const char* LookupMessage(int id);
@@ -39,6 +46,86 @@ UISelCharForUServerWnd::UISelCharForUServerWnd()
   }
 
   this->m_startTime = timeGetTime();
+}
+
+// OFFSET: 0x00928A60
+// FUNCTION: fn_12652
+void UISelCharForUServerWnd::Slot15(int, int) {
+  {
+    std::string path = "유저인터페이스\\";
+    this->unknown_19E4 = new UIBitmapButton();
+    this->unknown_19E4->SetBitmap((path + "btn_ok" + ".bmp").c_str(), 0, 0);
+    this->unknown_19E4->SetBitmap((path + "btn_ok_a" + ".bmp").c_str(), 1, 0);
+    this->unknown_19E4->SetBitmap((path + "btn_ok_b" + ".bmp").c_str(), 2, 0);
+    this->unknown_19E4->SetSize(this->unknown_19E4->BitmapWidth(), this->unknown_19E4->BitmapHeight());
+    this->unknown_19E4->Move(this->geometry.width - 46, this->geometry.height - 24);
+    this->unknown_19E4->SetId(184);
+    this->AddChild(this->unknown_19E4);
+  }
+
+  this->m_message0 = 184;
+
+  for (int index = 0; index < g_charViewCount; ++index) {
+    UICheckBox* checkBox = new UICheckBox();
+    this->m_checkBoxes[index] = checkBox;
+    checkBox->SetSize(10, 10);
+    checkBox->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", "");
+    this->m_checkBoxes[index]->Move(-100, -100);
+    this->AddChild(this->m_checkBoxes[index]);
+  }
+
+  for (int index = 0; index < g_charViewCount; ++index) {
+    CharacterInfo* info = reinterpret_cast<CharacterInfo*>(static_cast<CMode*>(g_charViewMode)->SendMsg(8, index, 0, 0, 0));
+    if (!info) {
+      continue;
+    }
+
+    this->m_checkBoxes[index]->Move(index % this->m_columns * 81 + 63, index / this->m_columns * 149 + 77);
+
+    const int slotIndex = info->slot;
+    CharSlotInfo& slot = this->m_slots[slotIndex];
+    slot.job = info->job;
+    slot.robe = info->robe;
+    this->m_slotEnabled[slotIndex] = 0;
+    slot.x = slotIndex % this->m_columns * 81 + 68;
+    slot.y = slotIndex / this->m_columns * 149 + 191;
+    slot.unknown_0148 = 0;
+    slot.action = 0;
+    slot.frame = 0;
+
+    slot.actionNames[0] = static_cast<const std::string&>(GetBodyActionResourceName(info->job, g_session.SyncUnknown0E98(), info->unknown_0058, 0));
+    slot.spriteNames[0] = static_cast<const std::string&>(g_session.GetBodySprName(info->job, g_session.SyncUnknown0E98(), info->unknown_0058, 0));
+
+    int head = info->head;
+    slot.actionNames[1] = static_cast<const std::string&>(g_session.GetHeadActName(info->job, g_session.SyncUnknown0E98(), &head));
+    slot.spriteNames[1] = static_cast<const std::string&>(g_session.GetHeadSprName(info->job, g_session.SyncUnknown0E98(), &head));
+    slot.actionNames[2] = static_cast<const std::string&>(g_session.GetAccessoryActName(info->job, g_session.SyncUnknown0E98(), head, info->accessory3));
+    slot.spriteNames[2] = static_cast<const std::string&>(g_session.GetAccessorySprName(info->job, g_session.SyncUnknown0E98(), head, info->accessory3));
+    info->head = static_cast<std::int16_t>(head);
+    slot.actionNames[3] = static_cast<const std::string&>(g_session.GetAccessoryActName(info->job, g_session.SyncUnknown0E98(), head, info->accessory2));
+    slot.spriteNames[3] = static_cast<const std::string&>(g_session.GetAccessorySprName(info->job, g_session.SyncUnknown0E98(), head, info->accessory2));
+    this->unknown_1974[slotIndex] = info->accessory2;
+    slot.actionNames[4] = static_cast<const std::string&>(g_session.GetAccessoryActName(info->job, g_session.SyncUnknown0E98(), head, info->accessory));
+    slot.spriteNames[4] = static_cast<const std::string&>(g_session.GetAccessorySprName(info->job, g_session.SyncUnknown0E98(), head, info->accessory));
+
+    int bodyPalette = info->bodyStyle;
+    if (info->unknown_0058 < 1) {
+      bodyPalette = g_session.GetBodyStyle(info->job, bodyPalette, info->unknown_0058);
+    }
+
+    slot.bodyPalette = bodyPalette;
+    if (bodyPalette != 0) {
+      slot.bodyPaletteName = static_cast<const std::string&>(
+        g_session.GetBodyPalName(info->job, g_session.SyncUnknown0E98(), bodyPalette, info->unknown_0058, 0, 0));
+    }
+
+    slot.headPalette = info->headPalette;
+    if (slot.headPalette != 0) {
+      slot.headPaletteName = static_cast<const std::string&>(g_session.GetHeadPalName(head, info->job, g_session.SyncUnknown0E98(), slot.headPalette));
+    }
+
+    slot.imfName = GetBodyImfName(info->job, g_session.SyncUnknown0E98(), info->head, info->unknown_0058);
+  }
 }
 
 // OFFSET: 0x0093A7F0
