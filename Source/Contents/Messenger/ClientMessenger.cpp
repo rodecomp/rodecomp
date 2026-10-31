@@ -4076,3 +4076,41 @@ int GetEquipRefine(lua_State* state) {
   lua_pushnumber(state, refine);
   return 1;
 }
+
+#pragma pack(push, 1)
+struct ShopItemPacketEntry {
+  /* 0000 */ std::uint8_t index;
+  /* 0001 */ int itemId;
+  /* 0005 */ int first;
+  /* 0009 */ int second;
+};
+
+struct ShopItemListPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int16_t length;
+  /* 0004 */ std::uint8_t flag;
+  /* 0005 */ ShopItemPacketEntry entries[1];
+};
+#pragma pack(pop)
+
+static_assert(sizeof(ShopItemPacketEntry) == 13);
+static_assert(offsetof(ShopItemListPacket, entries) == 5);
+
+// OFFSET: 0x00D75840
+// FUNCTION: fn_22148
+void CGameMode::ReceiveShopItemList(const unsigned char* data) {
+  const ShopItemListPacket* packet = reinterpret_cast<const ShopItemListPacket*>(data);
+  const std::size_t count = (packet->length - 5) / sizeof(ShopItemPacketEntry);
+  const int shopId = FindShopId(g_session, std::string());
+  if (shopId != -1) {
+    g_session.SetShopFlag(shopId, packet->flag != 0);
+    for (std::size_t i = 0; i < count; ++i) {
+      const ShopItemPacketEntry& entry = packet->entries[i];
+      g_session.SetShopItem(shopId, entry.index, entry.itemId, entry.first, entry.second);
+    }
+    if (g_equipmentPropertiesMgr == nullptr) {
+      g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+    }
+    g_equipmentPropertiesMgr->RefreshShop();
+  }
+}

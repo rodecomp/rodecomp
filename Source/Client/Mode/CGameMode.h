@@ -325,6 +325,7 @@ public:
   void ReceiveHpSpRecovery(const unsigned char* packet, int variant);
   void ReceiveUnknown173A5BC(const unsigned char* packet);
   void ReceiveUnknown16FC588(const unsigned char* packet);
+  void ReceiveShopItemList(const unsigned char* data);
   void ReceiveUnknownD26800(const unsigned char* packet);
   void ReceiveUnknownD79660(const unsigned char* packet);
   void ReceiveUnknownD79E90(std::int16_t result, std::intptr_t value);
