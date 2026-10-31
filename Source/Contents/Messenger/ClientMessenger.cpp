@@ -69,10 +69,6 @@ struct EquipmentValueA {
   /* 0000 */ int value;
 };
 
-struct EquipmentValueB {
-  /* 0000 */ int value;
-};
-
 struct EquipmentValueC {
   /* 0000 */ int value;
 };
@@ -125,12 +121,6 @@ struct EquipmentPropertyStore {
   void RemoveDuplicateNames();
 };
 
-struct EquipmentPropertyMaps {
-  /* 0000 */ int unknown_0000;
-  /* 0004 */ std::unordered_map<int, int> first;
-  /* 0024 */ std::unordered_map<int, int> second;
-};
-
 namespace EquipmentProperties {
   class CEquipmentProperties {
   public:
@@ -150,6 +140,7 @@ namespace EquipmentProperties {
     explicit CEquipmentProperties1Dim(EquipmentPropertyDefinition* definition);
     CEquipmentProperties* Accumulate(CEquipmentProperties* other) override;
     CEquipmentProperties* Clone() override;
+    std::string Describe(bool detailed, bool negative) override;
     void SetValue(const int& value, const unsigned int& key);
 
     /* 0010 */ int m_value;
@@ -308,6 +299,12 @@ namespace EquipmentProperties {
     }
   };
 
+  struct CEquipmentInfo {
+    /* 0000 */ int unknown_0000;
+    /* 0004 */ std::unordered_map<int, int, CEquipmentValueHash> values;
+    /* 0024 */ std::unordered_map<int, int, CEquipmentValueHash> unknown_0024;
+  };
+
   class CEquipmentPropertiesMgr {
   public:
     /* 0004 */ CLuaInstance script;
@@ -323,14 +320,14 @@ namespace EquipmentProperties {
     /* 0064 */ std::unordered_map<unsigned int, CEquipmentCombiitem*> properties3;
     /* 0084 */ std::multiset<unsigned long> unknown_0084;
     /* 008C */ std::map<int, EquipmentPropertyGroup> unknown_008C;
-    /* 0094 */ std::unordered_map<int, EquipmentPropertyMaps> unknown_0094;
+    /* 0094 */ std::unordered_map<int, CEquipmentInfo> unknown_0094;
     /* 00B4 */ std::unordered_map<int, EquipmentValueA> unknown_00B4;
     /* 00D4 */ std::unordered_map<unsigned int, std::list<unsigned int>> m_itemCombinations;
     /* 00F4 */ std::unordered_map<unsigned int, std::list<unsigned int>> m_combinationItems;
     /* 0114 */ std::unordered_map<unsigned int, std::list<unsigned int>> unknown_0114;
     /* 0134 */ std::unordered_map<int, EquipmentValueA> unknown_0134;
     /* 0154 */ std::unordered_map<std::uint64_t, EquipmentPropertyDefinition*> m_definitionsByName;
-    /* 0174 */ std::unordered_map<int, EquipmentValueB> unknown_0174;
+    /* 0174 */ std::unordered_map<int, EquipmentPropertyDefinition*> unknown_0174;
     /* 0194 */ std::set<std::uint64_t> unknown_0194;
     /* 019C */ std::unordered_map<int, EquipmentValueC> unknown_019C;
     /* 01BC */ std::unordered_map<int, std::unordered_map<int, std::unordered_map<unsigned int, float>>, CEquipmentValueHash> unknown_01BC;
@@ -345,9 +342,9 @@ namespace EquipmentProperties {
     const int& GetUnknown0134(const int& key);
     int GetUnknown001C();
     CEquipmentWearable* FindProperty1(const int& key);
-    EquipmentPropertyMaps* FindUnknown0094(const int& key);
+    CEquipmentInfo* FindUnknown0094(const int& key);
     CLuaInstance& GetScript();
-    int GetUnknown0174(const int& key);
+    EquipmentPropertyDefinition* GetUnknown0174(const int& key);
     std::list<unsigned int>* FindUnknown0114(const int& key);
     std::unordered_map<int, EquipmentValueC>& GetUnknown019C();
     bool HasUnknown0194(const std::uint64_t& key);
@@ -367,16 +364,12 @@ namespace EquipmentProperties {
     int GetUnknown01DC(const int& first, const int& second, const int& third);
     void LoadADSkill();
     void LoadCombiitem();
+    void LoadEnumVar();
+    void LoadRefiningBonus();
     void LoadSkillGroup();
   };
 }
 namespace EquipmentProperties {
-  struct CEquipmentInfo {
-    /* 0000 */ int unknown_0000;
-    /* 0004 */ std::unordered_map<int, int, CEquipmentValueHash> values;
-    /* 0024 */ std::unordered_map<int, int, CEquipmentValueHash> unknown_0024;
-  };
-
   class CEquipment {
   public:
     /* 0004 */ int m_id;
@@ -1059,6 +1052,8 @@ EquipmentPropertyStore& EquipmentPropertyStore::operator+=(EquipmentProperty* pr
   return *this;
 }
 
+// OFFSET: 0x006990E0
+
 // OFFSET: 0x0069A2A0
 // FUNCTION: fn_05782
 std::string EquipmentProperties::CEquipmentProperties::Describe(bool detailed, bool negative) {
@@ -1128,7 +1123,7 @@ EquipmentProperties::CEquipmentWearable* EquipmentProperties::CEquipmentProperti
 
 // OFFSET: 0x006AC440
 // FUNCTION: fn_06176
-EquipmentPropertyMaps* EquipmentProperties::CEquipmentPropertiesMgr::FindUnknown0094(const int& key) {
+EquipmentProperties::CEquipmentInfo* EquipmentProperties::CEquipmentPropertiesMgr::FindUnknown0094(const int& key) {
   auto found = this->unknown_0094.find(key);
   if (found == this->unknown_0094.end()) {
     return nullptr;
@@ -1749,12 +1744,12 @@ int GetNormalThirdJob(int job) {
 
 // OFFSET: 0x006AD500
 // FUNCTION: fn_06184
-int EquipmentProperties::CEquipmentPropertiesMgr::GetUnknown0174(const int& key) {
+EquipmentPropertyDefinition* EquipmentProperties::CEquipmentPropertiesMgr::GetUnknown0174(const int& key) {
   auto found = this->unknown_0174.find(key);
   if (found == this->unknown_0174.end()) {
-    return 0;
+    return nullptr;
   }
-  return found->second.value;
+  return found->second;
 }
 
 // OFFSET: 0x006AD690
@@ -1944,6 +1939,117 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadCombiitem() {
     ShowErrorDialog(std::format("Check error in '{0}' table and restart game ", name), 0);
   }
 }
+
+// OFFSET: 0x006B09F0
+// FUNCTION: fn_06193
+void EquipmentProperties::CEquipmentPropertiesMgr::LoadEnumVar() {
+  lua_State* state = this->script.GetState();
+  if (state == nullptr) {
+    return;
+  }
+  const char* name = "EnumVar";
+  lua_getfield(state, LUA_GLOBALSINDEX, name);
+  if (lua_type(state, -1) == LUA_TTABLE) {
+    lua_pushnil(state);
+    while (lua_next(state, -2) != 0) {
+      std::string key;
+      int result = 0;
+      int type = lua_type(this->script.GetState(), -2);
+      if (type == LUA_TSTRING) {
+        key = lua_tolstring(this->script.GetState(), -2, nullptr);
+      } else {
+        result = (type != LUA_TNIL) + 1;
+      }
+      this->unknown_000C &= result == 0;
+      if (result != 0) {
+        ShowErrorDialog(std::format("{0} table has invalid entry key({1})", name, result), 0);
+      }
+      if (this->unknown_000C) {
+        std::vector<int> values;
+        if (lua_type(state, -1) == LUA_TTABLE) {
+          lua_pushnil(state);
+          while (lua_next(state, -2) != 0) {
+            values.push_back(static_cast<int>(lua_tonumber(state, -1)));
+            lua_settop(state, -2);
+          }
+        }
+        if (values.size() > 1) {
+          unsigned int hash = 5381;
+          for (const char* character = key.c_str(); *character != '\0'; ++character) {
+            hash = hash * 33 + *character;
+          }
+          int variable;
+          switch (hash) {
+          case 0x617FECDF:
+            variable = 6;
+            break;
+          case 0x8854128A:
+            variable = 8;
+            break;
+          case 0x4BA88EBA:
+            variable = 13;
+            break;
+          case 0x66C4AA72:
+            variable = 14;
+            break;
+          case 0x1C3E3594:
+            variable = 15;
+            break;
+          case 0xCF35A0EC:
+            variable = 16;
+            break;
+          case 0x6E5FE302:
+            variable = 17;
+            break;
+          case 0xEDABA34D:
+            variable = 18;
+            break;
+          case 0x35175B63:
+            variable = 41;
+            break;
+          case 0xBDC4C598:
+            variable = 45;
+            break;
+          case 0xEFCBA0D6:
+            variable = 47;
+            break;
+          case 0xD1114E90:
+            variable = 200;
+            break;
+          case 0xD1CD4317:
+            variable = 219;
+            break;
+          case 0x2F0A85E9:
+            variable = 220;
+            break;
+          case 0x43C069D4:
+            variable = 221;
+            break;
+          case 0xCCC3CEB0:
+            variable = 222;
+            break;
+          case 0x32AF6341:
+            variable = 223;
+            break;
+          case 0xC5524E6A:
+            variable = 224;
+            break;
+          default:
+            variable = 0;
+            break;
+          }
+          if (variable != 0) {
+            this->unknown_00B4.emplace(variable, values[1]);
+          }
+        }
+      }
+      lua_settop(state, -2);
+    }
+  }
+  lua_settop(state, -2);
+}
+
+// OFFSET: 0x006B5DA0
 
 // OFFSET: 0x006B6720
 // FUNCTION: fn_06199
