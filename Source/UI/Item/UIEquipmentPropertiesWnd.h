@@ -25,6 +25,7 @@ public:
 
 class CUIEquipmentPropertiesWnd : public CUIFrameWnd {
 public:
+  CUIEquipmentPropertiesWnd();
   /* 00D8 */ CUITitleBar* titleBar;
   /* 00DC */ CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>* list;
   /* 00E0 */ CUIControl* tabs;

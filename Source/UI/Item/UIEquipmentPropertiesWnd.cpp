@@ -371,3 +371,15 @@ void CUIEquipmentPropertiesWnd::OnChangeTab(CUITabButton* button) {
 // FUNCTION: fn_15174
 void CUIEquipmentPropertiesWnd::OnClickButton2() {
 }
+
+// OFFSET: 0x00A0EAF0
+// FUNCTION: fn_15151
+CUIEquipmentPropertiesWnd::CUIEquipmentPropertiesWnd()
+    : titleBar(nullptr), list(nullptr), tabs(nullptr), resizer(nullptr), currentTab(-1) {
+}
+
+// OFFSET: 0x00A08D60
+// FUNCTION: fn_15031
+CUIEquipmentPropertiesWnd* CreateEquipmentPropertiesWnd() {
+  return new CUIEquipmentPropertiesWnd();
+}
