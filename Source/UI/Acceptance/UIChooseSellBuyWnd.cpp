@@ -3662,18 +3662,49 @@ UINotifyItemObtainWnd::UINotifyItemObtainWnd()
 // OFFSET: 0x008C6FA0
 
 // OFFSET: 0x008C7070
+// FUNCTION: fn_11927
+UICardItemIllustWnd::UICardItemIllustWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
+    : UIFrameWnd(windows, frames, 0), m_controls(&controls) {
+}
 
 // OFFSET: 0x008C8390
+// FUNCTION: fn_11953
+UIMenuWnd::UIMenuWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
+    : UIFrameWnd(windows, frames, 0), m_menuId(10041), m_selected(-1), m_itemHeight(14), unknown_00CC(0), unknown_00DC(0), m_controls(&controls) {
+}
 
 // OFFSET: 0x008C85A0
+// FUNCTION: fn_11956
+UIMonsterDisplayWnd::UIMonsterDisplayWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
+    : UIFrameWnd(windows, frames, 0), m_controls(&controls) {
+}
 
 // OFFSET: 0x008C8900
+// FUNCTION: fn_11963
+UIPartyInvitationToWnd::UIPartyInvitationToWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
+    : UIPartySettingWnd(windows, frames, controls) {
+}
 
 // OFFSET: 0x008C8980
+// FUNCTION: fn_11964
+UIPartySettingWnd::UIPartySettingWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
+    : UIFrameWnd(windows, frames, 0), m_controls(&controls) {
+  this->m_mode = 0;
+  this->m_placement = nullptr;
+}
 
 // OFFSET: 0x008C8AB0
+// FUNCTION: fn_11967
+UIPetTamingDeceiveWnd::UIPetTamingDeceiveWnd(UIWindowContext& windows, UIFrameContext& frames)
+    : UIFrameWnd(windows, frames, 0), m_delay(1), m_state(0), m_tick(0), m_frame(-1), m_maxDelay(10000), m_started(0) {
+  this->m_finishTime = 0xFFFFFFFF;
+}
 
 // OFFSET: 0x008C9060
+// FUNCTION: fn_11975
+UISkillNameChangeWnd::UISkillNameChangeWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
+    : UIFrameWnd(windows, frames, 0), m_controls(&controls) {
+}
 
 // OFFSET: 0x008C91F0
 
@@ -4335,4 +4366,13 @@ void UIPasswordWnd::Slot15(int, int) {
   this->m_message0 = 184;
   this->geometry.unknown_0030 = 0;
   this->unknown_00BC = 0;
+}
+// FUNCTION: fn_11978
+UIStatusWnd::UIStatusWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
+    : UIFrameWnd(windows, frames, 0), m_controls(&controls) {
+  this->geometry.unknown_0030 = 0;
+  this->m_info = nullptr;
+  this->m_titleHeight = 17;
+  this->m_offsetY = 11;
+  this->m_offsetX = 16;
 }
