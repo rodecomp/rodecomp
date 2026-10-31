@@ -1804,6 +1804,7 @@ void CGameMode::ReceiveDynamicNpcNotice(const unsigned char* packet) {
 }
 
 // OFFSET: 0x00D079A0
+// FUNCTION: fn_21584
 void CGameMode::sub_D079A0(unsigned char kind, int argument) {
   std::string& speaker = *reinterpret_cast<std::string*>(this->unknown_01F8 + 0x1C);
   std::string& target = *reinterpret_cast<std::string*>(this->unknown_01F8 + 0x34);
@@ -1861,17 +1862,6 @@ void CGameMode::sub_D079A0(unsigned char kind, int argument) {
 }
 
 // OFFSET: 0x00D08390
-void CGameMode::sub_D08390(const unsigned char* packet) {
-  std::string title;
-  title.assign(reinterpret_cast<const char*>(packet + 0x1C), 0x80);
-  std::string name;
-  name.assign(reinterpret_cast<const char*>(packet + 2), 0x10);
-  const int first = *reinterpret_cast<const short*>(packet + 0x12);
-  const int second = *reinterpret_cast<const short*>(packet + 0x14);
-  const int third = *reinterpret_cast<const int*>(packet + 0x16);
-  const int fourth = *reinterpret_cast<const short*>(packet + 0x1A);
-  this->ChangeZoneServer(std::string(name.c_str()), first, second, third, fourth, std::string(title.c_str()));
-}
 
 // OFFSET: 0x00D08110
 // FUNCTION: fn_21585

@@ -14,7 +14,7 @@ struct UICashEmotionPieceContext {
 
 class UICashEmotionPiece : public UIWindow {
 public:
-  UICashEmotionPiece(UIWindowContext& windows, UICashEmotionPieceContext& controls);
+  __declspec(noinline) UICashEmotionPiece(UIWindowContext& windows, UICashEmotionPieceContext& controls);
   void Slot15(int width, int height) override;
   void Slot19() override;
   void Paint() override;

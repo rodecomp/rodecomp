@@ -203,6 +203,7 @@ public:
   void Slot19() override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
+  void Refresh(const char* filter) override;
   const char* Filter() override;
 
 protected:
@@ -1664,6 +1665,8 @@ UICashEmotionListChildWnd_Basic::UICashEmotionListChildWnd_Basic(UIWindowContext
 const char* UICashEmotionListChildWnd_Basic::Filter() {
   return nullptr;
 }
+
+// OFFSET: 0x007C4110
 
 // OFFSET: 0x007C4440
 // FUNCTION: fn_09353
