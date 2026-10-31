@@ -141,6 +141,8 @@ public:
 
 class CUIMainPage : public CUIControl {
 public:
+  explicit CUIMainPage(UIWindowContext& context);
+
   /* 0080 */ CUIEnchantPage* firstPage;
   /* 0084 */ CUIEnchantPage* secondPage;
   /* 0088 */ CUITab* tab;

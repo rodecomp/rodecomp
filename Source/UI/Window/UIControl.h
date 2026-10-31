@@ -86,6 +86,8 @@ class CUITabButton;
 
 class CUITab : public CUIControl {
 public:
+  explicit CUITab(UIWindowContext& context);
+
   void Paint() override;
 
   CUITabButton* FindButton(UIWindow* page);

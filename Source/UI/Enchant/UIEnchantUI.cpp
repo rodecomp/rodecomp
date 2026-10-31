@@ -67,6 +67,18 @@ CUIEnchantPage::CUIEnchantPage(UIWindowContext& context)
       group(0), unknown_00B0(-1) {
 }
 
+// OFFSET: 0x009F72F0
+// FUNCTION: fn_14770
+CUIMainPage::CUIMainPage(UIWindowContext& context) : CUIControl(context), firstPage(nullptr), secondPage(nullptr), tab(nullptr) {
+}
+}
+
+// OFFSET: 0x009F7380
+
+// OFFSET: 0x009F74E0
+
+namespace EnchantUI {
+
 // OFFSET: 0x009F9880
 // FUNCTION: fn_14809
 void CUIEnchantPage::Slot58(int) {
