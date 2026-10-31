@@ -526,3 +526,25 @@ int UIShowAndEditTimeCtrl::SendMsg(UIWindow* sender, int message, std::intptr_t 
 }
 
 // OFFSET: 0x00853F20
+// FUNCTION: fn_10745
+void UIEditCtrl3::ClearLineState() {
+  while (!this->unknown_0168.empty()) {
+    this->unknown_0168.erase(this->unknown_0168.begin());
+  }
+  this->unknown_0168.clear();
+
+  for (std::vector<bool>::iterator it = this->unknown_0174.begin(); it != this->unknown_0174.end();) {
+    it = this->unknown_0174.erase(it);
+  }
+  this->unknown_0174.clear();
+
+  if (this->unknown_0160) {
+    delete[] this->unknown_0160;
+    this->unknown_0160 = nullptr;
+  }
+
+  if (this->unknown_0164) {
+    delete[] this->unknown_0164;
+    this->unknown_0164 = nullptr;
+  }
+}
