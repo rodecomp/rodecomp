@@ -434,6 +434,18 @@ const char* CSession::GetMapDisplayName(const char* mapName) {
   return g_mapInfoMgr->GetDisplayName(mapName);
 }
 
+// OFFSET: 0x00DDE800
+// FUNCTION: fn_23400
+std::uint32_t CSession::GetPartyMemberAid(const char* name) {
+  for (const MessengerMember& member : this->m_partyMembers) {
+    if (member.name == name) {
+      return member.accountId;
+    }
+  }
+
+  return 0;
+}
+
 // OFFSET: 0x00DE0A50
 // FUNCTION: fn_23466
 std::uint32_t CSession::GetServerTime() {

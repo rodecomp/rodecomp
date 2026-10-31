@@ -618,6 +618,7 @@ public:
   const char* GetBgmFileName(const char* rswName);
   const char* GetMapDisplayName(const char* mapName);
   const char* GetPlayerMapDisplayName();
+  std::uint32_t GetPartyMemberAid(const char* name);
   bool HasItem17D4(int itemId) const;
   bool IsFriendName(const char* name) const;
   bool RemoveFriendByCharacterId(std::uint32_t characterId);
