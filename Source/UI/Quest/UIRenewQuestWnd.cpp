@@ -281,6 +281,58 @@ int UIRecommededQuestScrollWnd::SendMsg(UIWindow* sender, int message, std::intp
 }
 
 // OFFSET: 0x007FB190
+// FUNCTION: fn_09956
+void UIRecommededQuestScrollWnd::SetQuest(unsigned int questId) {
+  const RenewQuestRecommendedInfo& quest = g_renewQuestMgr->GetRecommendedQuest(questId);
+  this->Clear();
+  this->horizontalBar = nullptr;
+  this->scrollBar = nullptr;
+  this->unknown_00B0 = questId;
+
+  UITagTextViewer* viewers[3];
+  viewers[0] = new UITagTextViewer(*this->m_context);
+  viewers[0]->SetSize(306, 121);
+  viewers[0]->Move(18, 12);
+  viewers[0]->m_backgroundColor = 0xFFFF00FF;
+  viewers[0]->Invalidate();
+  this->AddScrollChild(viewers[0]);
+
+  viewers[1] = new UITagTextViewer(*this->m_context);
+  viewers[1]->SetSize(213, 60);
+  viewers[1]->Move(16, 157);
+  viewers[1]->m_backgroundColor = 0xFFFF00FF;
+  viewers[1]->Invalidate();
+  viewers[1]->m_font = TagTextViewer::TextFont{0x2A2A2A, 12, 1, 0};
+  viewers[1]->m_outlined = 1;
+  viewers[1]->m_outlineColor = 0xFFFFFF;
+  viewers[1]->m_lineSpacing = 4;
+  this->AddScrollChild(viewers[1]);
+
+  viewers[2] = new UITagTextViewer(*this->m_context);
+  viewers[2]->SetSize(199, 83);
+  viewers[2]->Move(18, 225);
+  viewers[2]->m_backgroundColor = 0xFFFF00FF;
+  viewers[2]->Invalidate();
+  this->AddScrollChild(viewers[2]);
+
+  for (int index = 0; index < 3; ++index) {
+    for (const std::string& description : quest.m_descriptions[index]) {
+      viewers[index]->SendMsg(nullptr, 0x1D, reinterpret_cast<std::intptr_t>(description.c_str()), 0, 0, 0);
+    }
+  }
+
+  if (!quest.unknown_007C.empty()) {
+    UINpcSprWnd* npc = new UINpcSprWnd(*this->m_context);
+    npc->SetSprite(75, 145, quest.unknown_007C);
+    npc->Move(this->geometry.width - npc->geometry.width - 40, this->geometry.height - npc->geometry.height - 10);
+    if (!quest.unknown_0094.empty()) {
+      npc->SetDestination(quest.unknown_0094, quest.unknown_00AC, quest.unknown_00B0);
+    }
+    this->AddScrollChild(npc);
+  }
+
+  this->Invalidate();
+}
 
 // OFFSET: 0x007FB6C0
 // FUNCTION: fn_09959
@@ -422,6 +474,68 @@ UIRenewQuestWnd::UIRenewQuestWnd(UIWindowContext& windows, UIFrameContext& frame
 }
 
 // OFFSET: 0x007FC4A0
+// FUNCTION: fn_09972
+void UIRenewQuestWnd::Slot15(int, int) {
+  this->m_tabs = new UITab(*this->m_context);
+  this->m_tabs->SetSize(29, 404);
+  this->m_tabs->tabCount = 4;
+  this->m_tabs->Move(0, 17);
+  this->m_tabs->style = -1;
+  this->AddChild(this->m_tabs);
+  this->m_tabs->SendMsg(this, 13, this->m_tab, 0, 0, 0);
+
+  if (!g_windowMgr.window_0428) {
+    g_windowMgr.EnsureWindow(204);
+  }
+  const bool checked = g_windowMgr.window_0428->geometry.visible != 0;
+  this->m_optionCheckBox = this->AddStyledCheckBox(
+    *this->m_controls, 213, 10, 12, LookupMessage(2019), 38, 447, checked, nullptr, 12, 0x212121, "유저인터페이스\\renew_questui\\checkbox_on.bmp",
+    "유저인터페이스\\renew_questui\\checkbox_off.bmp"
+  );
+
+  this->m_closeButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->m_closeButton->SetBitmap("유저인터페이스\\basic_interface\\btn_close.bmp", 0, 0);
+  this->m_closeButton->SetBitmap("유저인터페이스\\basic_interface\\btn_close_a.bmp", 1, 0);
+  this->m_closeButton->SetBitmap("유저인터페이스\\basic_interface\\btn_close_b.bmp", 2, 0);
+  this->m_closeButton->SetSize(this->m_closeButton->BitmapWidth(), this->m_closeButton->BitmapHeight());
+  this->m_closeButton->Move(327, 442);
+  this->m_closeButton->SetId(201);
+  this->AddChild(this->m_closeButton);
+
+  this->m_scrollBar = new UIRenewQuestScrollBar(*this->m_context);
+  this->m_scrollBar->Configure(374, 17, 1, 422);
+  this->m_scroll = 0;
+  this->AddChild(this->m_scrollBar);
+
+  for (int index = 0; index < 9; ++index) {
+    const int y = 46 + index * 46;
+    UICheckBox* check = this->AddStyledCheckBox(
+      *this->m_controls, 389 + index, 14, 14, nullptr, 350, y - 19, true, nullptr, 0, 0, "유저인터페이스\\renew_questui\\bt_check_on.bmp",
+      "유저인터페이스\\renew_questui\\bt_check_off.bmp"
+    );
+    this->m_rows.checkBoxes[index] = check;
+    check->m_message = 0;
+    this->m_rows.checkBoxes[index]->SetTooltip(LookupMessage(3409));
+    this->m_rows.checkBoxes[index]->SetHidden(true);
+
+    UICheckBox* lock = this->AddStyledCheckBox(
+      *this->m_controls, 389 + index, 20, 17, nullptr, 344, y, true, nullptr, 0, 0, "유저인터페이스\\renew_questui\\bt_lock_open.bmp",
+      "유저인터페이스\\renew_questui\\bt_lock.bmp"
+    );
+    this->m_rows.lockBoxes[index] = lock;
+    lock->m_message = 1;
+    this->m_rows.lockBoxes[index]->SetHidden(true);
+
+    this->m_rows.icons[index] = new UIStaticBitmap(*this->m_context, *this->m_controls);
+    this->m_rows.icons[index]->SetBitmap("유저인터페이스\\renew_questui\\ico_nq.bmp");
+    this->m_rows.icons[index]->SetSize(this->m_rows.icons[index]->geometry.width, this->m_rows.icons[index]->geometry.height);
+    this->m_rows.icons[index]->Move(46, y - 15);
+    this->m_rows.icons[index]->Show(0);
+    this->AddChild(this->m_rows.icons[index]);
+  }
+
+  this->SendMsg(this, 0x17, 0, 0, 0, 0);
+}
 
 // OFFSET: 0x007FC870
 // FUNCTION: fn_09973
@@ -449,6 +563,57 @@ void UIRenewQuestScrollBar::Paint() {
 }
 
 // OFFSET: 0x007FC9B0
+// FUNCTION: fn_09974
+void UIRenewQuestWnd::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+  this->DrawPanelBackground(0, 0, FormatOwnedString("유저인터페이스\\renew_questui\\bg_quest%d.bmp", this->m_tab + 1).c_str());
+  this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 45, 2, LookupMessage(3400), 0, 0, 13, 0, 0, 0);
+
+  for (int index = 0; index < 9; ++index) {
+    const int y = index * 46;
+    const unsigned int row = this->m_scroll + index;
+    const std::vector<unsigned int>& ids = this->m_questIds[this->m_tab];
+    if (row >= ids.size()) {
+      break;
+    }
+
+    const RenewQuestInfo* quest;
+    if (this->m_tab == 1) {
+      quest = g_renewQuestMgr->FindRecommendedQuest(ids[row]);
+    } else {
+      quest = g_renewQuestMgr->FindOngoingQuest(ids[row]);
+    }
+    if (!quest) {
+      break;
+    }
+
+    const char* summary;
+    int summaryY;
+    if (row == static_cast<unsigned int>(this->m_selected)) {
+      const char* background = this->m_pressed ? "유저인터페이스\\renew_questui\\bg_questList_press.bmp" : "유저인터페이스\\renew_questui\\bg_questList_check.bmp";
+      CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background)));
+      this->DrawBitmap(38, this->m_pressed + 24 + y, bitmap ? &bitmap->image : nullptr, true);
+      this->m_rows.icons[index]->Move(46, this->m_pressed + 31 + y);
+      this->DrawTextAt(
+        this->m_controls->fonts, this->m_controls->locale, 80, this->m_pressed + 30 + y, quest->m_title.empty() ? "" : quest->m_title.c_str(), 0, 0, 12,
+        0xE47B2E, 1, 0
+      );
+      summary = quest->unknown_004C.empty() ? "" : quest->unknown_004C.c_str();
+      summaryY = this->m_pressed + y;
+    } else {
+      CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\renew_questui\\bg_questList.bmp")));
+      this->DrawBitmap(38, y + 24, bitmap ? &bitmap->image : nullptr, true);
+      this->m_rows.icons[index]->Move(46, y + 31);
+      this->DrawTextAt(
+        this->m_controls->fonts, this->m_controls->locale, 80, y + 30, quest->m_title.empty() ? "" : quest->m_title.c_str(), 0, 0, 12, 0x955322, 1, 0
+      );
+      summary = quest->unknown_004C.empty() ? "" : quest->unknown_004C.c_str();
+      summaryY = y;
+    }
+
+    this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 80, summaryY + 48, summary, 0, 0, 12, 0x38302E, 0, 0);
+  }
+}
 
 // OFFSET: 0x007FCC90
 // FUNCTION: fn_09975
