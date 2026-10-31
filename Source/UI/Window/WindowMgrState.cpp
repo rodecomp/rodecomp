@@ -659,3 +659,40 @@ void UIWindowMgr::SetSurface0478(CBitmapRes* bitmap) {
 }
 
 // OFFSET: 0x00AAA050
+// FUNCTION: fn_17266
+void UIWindowMgr::SendFlagEffect(int message) {
+  CMode* mode = g_modeMgr.gameMode;
+  if (!mode) {
+    return;
+  }
+
+  switch (message) {
+  case 210:
+    mode->SendMsg(329, reinterpret_cast<int>("ET_FLAG"), 0, 0, 0);
+    break;
+  case 211:
+    mode->SendMsg(329, reinterpret_cast<int>("ET_INDONESIA_FLAG"), 0, 0, 0);
+    break;
+  case 212:
+    mode->SendMsg(329, reinterpret_cast<int>("ET_PH_FLAG"), 0, 0, 0);
+    break;
+  case 213:
+    mode->SendMsg(329, reinterpret_cast<int>("ET_MY_FLAG"), 0, 0, 0);
+    break;
+  case 214:
+    mode->SendMsg(329, reinterpret_cast<int>("ET_SI_FLAG"), 0, 0, 0);
+    break;
+  case 215:
+    mode->SendMsg(329, reinterpret_cast<int>("ET_BR_FLAG"), 0, 0, 0);
+    break;
+  case 216:
+    mode->SendMsg(329, reinterpret_cast<int>("ET_INDIA_FLAG"), 0, 0, 0);
+    break;
+  case 217:
+    mode->SendMsg(329, reinterpret_cast<int>("ET_FLAG8"), 0, 0, 0);
+    break;
+  case 218:
+    mode->SendMsg(329, reinterpret_cast<int>("ET_FLAG9"), 0, 0, 0);
+    break;
+  }
+}
