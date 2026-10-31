@@ -2624,6 +2624,56 @@ std::string UICashEmotionPack::GetPriceText(int packId) {
 }
 
 // OFFSET: 0x007CA2C0
+// FUNCTION: fn_09444
+int UICashEmotionPack::Slot53(int packId, bool showTooltip, bool hoverable) {
+  this->unknown_00A8 = packId;
+  if (this->unknown_0088) {
+    this->unknown_0088->SetTextFitted(g_cashEmotionMgr->GetPackTitle(packId));
+  }
+
+  for (UICashEmotionPiece* piece : this->m_pieces) {
+    this->RemoveChild(piece, 1);
+  }
+  this->m_pieces.clear();
+
+  std::vector<int> emotions = g_cashEmotionMgr->GetPackEmotions(packId);
+  if (!emotions.empty()) {
+    CashEmotionTable* table = g_cashEmotionMgr->GetPackEmotionTable(packId);
+    if (table) {
+      this->m_pieces.reserve(table->size());
+      int x = 8;
+      int y = 63;
+      int index = 0;
+      for (int emotionId : emotions) {
+        auto it = table->find(emotionId);
+        if (it == table->end()) {
+          continue;
+        }
+
+        UICashEmotionPiece* piece = new (std::nothrow) UICashEmotionPiece(*this->m_context, *reinterpret_cast<UICashEmotionPieceContext*>(nullptr));
+        if (!piece) {
+          continue;
+        }
+
+        piece->SetSize(40, 40);
+        piece->Set(it->second.id, it->second.subId, showTooltip, hoverable, false);
+        piece->Move(x, y);
+        this->AddChild(piece);
+        this->m_pieces.push_back(piece);
+        if (index % 5 == 4) {
+          x = 8;
+          y += 47;
+        } else {
+          x += 47;
+        }
+        ++index;
+      }
+    }
+  }
+
+  this->Invalidate();
+  return 159;
+}
 
 // OFFSET: 0x007CA550
 // FUNCTION: fn_09445
@@ -2830,6 +2880,49 @@ int UICashEmotionPack_Purchase::SendMsg(
 }
 
 // OFFSET: 0x007CAF60
+// FUNCTION: fn_09464
+int UICashEmotionPack_Search::SetResults(const char* title, const std::vector<std::pair<int, int>>& results) {
+  if (this->unknown_0088) {
+    if (title) {
+      this->unknown_0088->SetTextFitted(title);
+    } else {
+      this->unknown_0088->SetText("", 0);
+    }
+  }
+
+  for (UICashEmotionPiece* piece : this->m_pieces) {
+    this->RemoveChild(piece, 1);
+  }
+  this->m_pieces.clear();
+
+  const int count = static_cast<int>(results.size());
+  this->m_pieces.reserve(results.size());
+  int y = 39;
+  int x = 8;
+  int index = 0;
+  for (const std::pair<int, int>& result : results) {
+    UICashEmotionPiece* piece = new (std::nothrow) UICashEmotionPiece(*this->m_context, *reinterpret_cast<UICashEmotionPieceContext*>(nullptr));
+    if (!piece) {
+      continue;
+    }
+
+    piece->SetSize(40, 40);
+    piece->Set(result.first, result.second, false, true, false);
+    piece->Move(x, y);
+    this->AddChild(piece);
+    this->m_pieces.push_back(piece);
+    if (index % 5 == 4 && index + 1 < count) {
+      y += 47;
+      x = 8;
+    } else {
+      x += 47;
+    }
+    ++index;
+  }
+
+  this->Invalidate();
+  return y + (count > 0 ? 50 : 10);
+}
 
 // OFFSET: 0x007CB160
 // FUNCTION: fn_09465
