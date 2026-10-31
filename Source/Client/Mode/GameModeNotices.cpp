@@ -4741,3 +4741,225 @@ void CGameMode::ReceiveStovePurchaseResult(const unsigned char* data) {
     reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
   }
 }
+
+#pragma pack(push, 1)
+struct OngoingQuestListPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int16_t length;
+  /* 0004 */ int count;
+};
+
+struct OngoingQuestEntry {
+  /* 0000 */ unsigned int questId;
+  /* 0004 */ unsigned char state;
+  /* 0005 */ int startTime;
+  /* 0009 */ int endTime;
+  /* 000D */ std::int16_t huntCount;
+};
+
+struct OngoingQuestHunt {
+  /* 0000 */ int huntId;
+  /* 0004 */ int unknown_0004;
+  /* 0008 */ int mobId;
+  /* 000C */ std::int16_t unknown_000C;
+  /* 000E */ std::int16_t unknown_000E;
+  /* 0010 */ std::int16_t unknown_0010;
+  /* 0012 */ std::int16_t unknown_0012;
+  /* 0014 */ char name[24];
+};
+
+struct OngoingQuestHunt2 {
+  /* 0000 */ std::int64_t huntId;
+  /* 0008 */ int unknown_0008;
+  /* 000C */ int mobId;
+  /* 0010 */ std::int16_t unknown_0010;
+  /* 0012 */ std::int16_t unknown_0012;
+  /* 0014 */ std::int16_t unknown_0014;
+  /* 0016 */ std::int16_t unknown_0016;
+  /* 0018 */ char name[24];
+};
+#pragma pack(pop)
+
+// OFFSET: 0x00D6C510
+// FUNCTION: fn_22082
+void CGameMode::ReceiveOngoingQuestList(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const OngoingQuestListPacket*>(data);
+  const unsigned char* cursor = data + sizeof(OngoingQuestListPacket);
+  for (int index = 0; index < packet->count; ++index) {
+    const auto* entry = reinterpret_cast<const OngoingQuestEntry*>(cursor);
+    const auto* hunts = reinterpret_cast<const OngoingQuestHunt*>(cursor + sizeof(OngoingQuestEntry));
+    if (g_renewQuestMgr->SetOngoingQuestState(entry->questId, entry->state)) {
+      cursor = reinterpret_cast<const unsigned char*>(hunts + entry->huntCount);
+      continue;
+    }
+
+    RenewQuestOngoingInfo info;
+    info.m_state = entry->state;
+    __time32_t endTime = 0;
+    if (entry->endTime > 0) {
+      endTime = entry->endTime;
+    }
+    const tm* time = _localtime32(&endTime);
+    info.m_day = time->tm_mday;
+    info.m_year = time->tm_year + 1900;
+    info.m_month = time->tm_mon + 1;
+    info.m_hour = entry->endTime != 0 ? time->tm_hour : 0;
+    info.m_minute = entry->endTime != 0 ? time->tm_min : 0;
+    info.m_huntCount = static_cast<char>(entry->huntCount);
+
+    const OngoingQuestHunt* hunt = hunts;
+    for (int i = 0; i < entry->huntCount; ++i, ++hunt) {
+      info.m_huntId[i] = hunt->huntId;
+      info.m_huntUnknown01A0[i] = hunt->unknown_0004;
+      info.m_huntUnknown00D4[i] = hunt->mobId;
+      info.m_huntUnknown00E0[i] = hunt->unknown_0010;
+      info.m_huntUnknown0180[i] = hunt->unknown_0012;
+      info.m_huntUnknown01AC[i] = hunt->unknown_000C;
+      info.m_huntUnknown01B2[i] = hunt->unknown_000E;
+      const int mobId = hunt->mobId;
+      if ((mobId < 1001 || mobId > 3998) && static_cast<unsigned int>(mobId - 20021) > 11978) {
+        if (mobId == 0x1099) {
+          StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", LookupMessage(3558));
+        } else if (mobId == 0x109A) {
+          StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", LookupMessage(3559));
+        } else if (mobId == 0x287B) {
+          const std::string mapName = FormatOwnedString("%s.rsw", hunt->name);
+          StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", g_session.GetMapDisplayName(mapName.c_str()));
+        } else {
+          StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", g_session.GetJobName(mobId, 99));
+        }
+      } else {
+        StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", hunt->name);
+      }
+    }
+    cursor = reinterpret_cast<const unsigned char*>(hunt);
+
+    g_renewQuestMgr->AddOngoingQuest(entry->questId, info);
+  }
+
+  g_renewQuestMgr->sub_67B6B0();
+}
+
+// OFFSET: 0x00D6CAD0
+// FUNCTION: fn_22083
+void CGameMode::ReceiveOngoingQuestList2(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const OngoingQuestListPacket*>(data);
+  const unsigned char* cursor = data + sizeof(OngoingQuestListPacket);
+  for (int index = 0; index < packet->count; ++index) {
+    const auto* entry = reinterpret_cast<const OngoingQuestEntry*>(cursor);
+    const auto* hunts = reinterpret_cast<const OngoingQuestHunt2*>(cursor + sizeof(OngoingQuestEntry));
+    if (g_renewQuestMgr->SetOngoingQuestState(entry->questId, entry->state)) {
+      cursor = reinterpret_cast<const unsigned char*>(hunts + entry->huntCount);
+      continue;
+    }
+
+    RenewQuestOngoingInfo info;
+    info.m_state = entry->state;
+    __time32_t endTime = 0;
+    if (entry->endTime > 0) {
+      endTime = entry->endTime;
+    }
+    const tm* time = _localtime32(&endTime);
+    info.m_day = time->tm_mday;
+    info.m_year = time->tm_year + 1900;
+    info.m_month = time->tm_mon + 1;
+    info.m_hour = entry->endTime != 0 ? time->tm_hour : 0;
+    info.m_minute = entry->endTime != 0 ? time->tm_min : 0;
+    info.m_huntCount = static_cast<char>(entry->huntCount);
+
+    const OngoingQuestHunt2* hunt = hunts;
+    for (int i = 0; i < entry->huntCount; ++i, ++hunt) {
+      info.m_huntId[i] = hunt->huntId;
+      info.m_huntUnknown01A0[i] = hunt->unknown_0008;
+      info.m_huntUnknown00D4[i] = hunt->mobId;
+      info.m_huntUnknown00E0[i] = hunt->unknown_0014;
+      info.m_huntUnknown0180[i] = hunt->unknown_0016;
+      info.m_huntUnknown01AC[i] = hunt->unknown_0010;
+      info.m_huntUnknown01B2[i] = hunt->unknown_0012;
+      const int mobId = hunt->mobId;
+      if ((mobId < 1001 || mobId > 3998) && static_cast<unsigned int>(mobId - 20021) > 11978) {
+        if (mobId == 0x1099) {
+          StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", LookupMessage(3558));
+        } else if (mobId == 0x109A) {
+          StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", LookupMessage(3559));
+        } else if (mobId == 0x287B) {
+          const std::string mapName = FormatOwnedString("%s.rsw", hunt->name);
+          StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", g_session.GetMapDisplayName(mapName.c_str()));
+        } else {
+          StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", g_session.GetJobName(mobId, 99));
+        }
+      } else {
+        StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", hunt->name);
+      }
+    }
+    cursor = reinterpret_cast<const unsigned char*>(hunt);
+
+    g_renewQuestMgr->AddOngoingQuest(entry->questId, info);
+  }
+
+  g_renewQuestMgr->sub_67B6B0();
+}
+
+#pragma pack(push, 1)
+struct ShopItemListEntry {
+  /* 0000 */ int price;
+  /* 0004 */ std::int16_t amount;
+  /* 0006 */ std::int16_t index;
+  /* 0008 */ unsigned char type;
+  /* 0009 */ int itemId;
+  /* 000D */ unsigned char identified;
+  /* 000E */ unsigned char damaged;
+  /* 000F */ std::uint32_t cards[4];
+  /* 001F */ ItemSlotOption options[5];
+  /* 0038 */ std::uint32_t location;
+  /* 003C */ std::uint16_t sprite;
+  /* 003E */ unsigned char refine;
+  /* 003F */ unsigned char grade;
+};
+
+struct ShopItemListHeader {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int16_t length;
+  /* 0004 */ int value;
+  /* 0008 */ int argument;
+  /* 000C */ unsigned char myShop;
+  /* 000D */ std::uint32_t duration;
+};
+#pragma pack(pop)
+
+// OFFSET: 0x00D703A0
+// FUNCTION: fn_22130
+void CGameMode::ReceiveShopItemListPacket(const unsigned char* data) {
+  const auto* header = reinterpret_cast<const ShopItemListHeader*>(data);
+  const auto* entries = reinterpret_cast<const ShopItemListEntry*>(data + sizeof(ShopItemListHeader));
+  const unsigned int count = (header->length - sizeof(ShopItemListHeader)) / sizeof(ShopItemListEntry);
+  std::vector<ITEM_INFO> items;
+  if (count != 0) {
+    items.reserve(count);
+  }
+
+  for (long long i = 0; i < count; ++i) {
+    const ShopItemListEntry& entry = entries[i];
+    ITEM_INFO item;
+    item.unknown_0000[1] = entry.index;
+    item.unknown_0014[0] = entry.price;
+    item.unknown_0000[0] = entry.type;
+    item.quantity = entry.amount;
+    item.identified = entry.identified;
+    item.unknown_005D = entry.damaged;
+    item.unknown_0060 = entry.refine;
+    item.unknown_0014[1] = entry.price;
+    item.SetItemId(entry.itemId);
+    std::memcpy(item.unknown_001C, entry.cards, sizeof(entry.cards));
+    item.unknown_0098 = CountItemSlotOptions(entry.options);
+    for (long long option = 0; option < static_cast<unsigned int>(item.unknown_0098); ++option) {
+      reinterpret_cast<ItemSlotOption*>(item.unknown_009C)[option] = entry.options[option];
+    }
+    item.unknown_0000[2] = entry.location;
+    item.unknown_0070 = entry.sprite;
+    item.unknown_0088 = entry.grade;
+    items.push_back(item);
+  }
+
+  this->ReceiveShopItemList(items, header->value, 0, header->argument, 0, header->duration, header->myShop);
+}

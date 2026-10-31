@@ -513,6 +513,9 @@ public:
   void ReceiveSpriteChange2(const unsigned char* data);
   void ReceiveMapProperty(const unsigned char* data);
   void ReceiveStovePurchaseResult(const unsigned char* data);
+  void ReceiveOngoingQuestList(const unsigned char* data);
+  void ReceiveOngoingQuestList2(const unsigned char* data);
+  void ReceiveShopItemListPacket(const unsigned char* data);
   void SetActorUnknown02E4(std::uint32_t aid, int value);
   void IgnoreRemovedPacket13(const unsigned char* packet);
   void IgnoreRemovedPacket14(const unsigned char* packet);
