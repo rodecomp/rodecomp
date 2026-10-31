@@ -414,7 +414,7 @@ void UIChatHisBox::CopyHistory(const UIChatHisBox& other) {
     this->unknown_0118.assign(other.unknown_0118.begin(), other.unknown_0118.end());
   }
 
-  reinterpret_cast<void(__thiscall*)(UIChatHisBox*)>(0x0089C080)(this);
+  this->sub_89C080();
 }
 
 // OFFSET: 0x00875860
