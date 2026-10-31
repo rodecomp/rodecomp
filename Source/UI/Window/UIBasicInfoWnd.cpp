@@ -2,6 +2,7 @@
 
 #include "Client/Session.h"
 #include "UI/Buttons/UIButton.h"
+#include "UI/Text/UIStaticText.h"
 #include "UI/Window/UIWindowMgr.h"
 
 #include <cstdio>
@@ -10,6 +11,85 @@
 // FUNCTION: fn_13489
 bool UIBasicInfoWnd::Slot03() {
   return true;
+}
+
+// OFFSET: 0x009981A0
+// FUNCTION: fn_13490
+void UIBasicInfoWnd::SetHeight(int height) {
+  if (height == this->collapsedHeight) {
+    this->Resize(this->geometry.width, this->collapsedHeight);
+    this->nameText->Resize(this->geometry.width - 30, 15);
+    this->nameText->SetTextFitted(g_session.DecodePlayerName());
+    this->nameText->Move(17, 3);
+    this->hpBar->Move(-100, -100);
+    this->spBar->Move(-100, -100);
+    this->apBar->Move(-100, -100);
+    this->baseExpBar->Move(-100, -100);
+    this->jobExpBar->Move(-100, -100);
+  } else if (height == this->expandedHeight) {
+    this->Resize(this->geometry.width, this->expandedHeight);
+    this->hpBar->Move(35, 53);
+    this->spBar->Move(35, 68);
+    if (g_session.IsTreeGroupThree(g_session.GetDisplayJob()) == true) {
+      this->apBar->Move(35, 83);
+    }
+    this->nameText->Resize(this->geometry.width - 20, 15);
+    this->nameText->SetTextFitted(g_session.DecodePlayerName());
+    this->nameText->Move(9, 22);
+
+    if (g_session.GetMaxBaseLevel(g_session.GetDisplayJob()) == g_session.m_level) {
+      this->baseExpBar->Move(-200, 78);
+    } else {
+      this->baseExpBar->Move(85, this->layoutOffset + 76);
+    }
+
+    if (g_session.m_jobLevel < g_session.GetMaxJobLevel(g_session.GetDisplayJob())) {
+      this->jobExpBar->Move(85, this->layoutOffset + 88);
+    } else {
+      this->jobExpBar->Move(-200, 88);
+    }
+  }
+
+  if (UIWindow* window = g_windowMgr.LookupWindow(307)) {
+    int screenX = 0;
+    int screenY = 0;
+    this->ToScreen(screenX, screenY);
+    window->Move(screenX, this->geometry.height + screenY);
+  }
+}
+
+// OFFSET: 0x00999490
+// FUNCTION: fn_13497
+void UIBasicInfoWnd::RefreshLayout() {
+  const int height = this->geometry.height;
+  if (g_session.IsTreeGroupThree(g_session.GetDisplayJob())) {
+    if (height == this->collapsedHeight) {
+      this->layoutOffset = this->extendedOffset;
+      this->collapsedHeight = this->extendedCollapsedHeight;
+      this->expandedHeight = this->extendedExpandedHeight;
+      this->SetHeight(this->extendedCollapsedHeight);
+    } else if (height == this->expandedHeight) {
+      this->layoutOffset = this->extendedOffset;
+      this->collapsedHeight = this->extendedCollapsedHeight;
+      this->expandedHeight = this->extendedExpandedHeight;
+      this->SetHeight(this->extendedExpandedHeight);
+    }
+  } else {
+    if (height == this->collapsedHeight) {
+      this->layoutOffset = this->normalOffset;
+      this->collapsedHeight = this->normalCollapsedHeight;
+      this->expandedHeight = this->normalExpandedHeight;
+      this->SetHeight(this->normalCollapsedHeight);
+    } else if (height == this->expandedHeight) {
+      this->layoutOffset = this->normalOffset;
+      this->collapsedHeight = this->normalCollapsedHeight;
+      this->expandedHeight = this->normalExpandedHeight;
+      this->SetHeight(this->normalExpandedHeight);
+    }
+    this->apBar->Move(-100, -100);
+  }
+
+  this->Invalidate();
 }
 
 // OFFSET: 0x00999BC0
