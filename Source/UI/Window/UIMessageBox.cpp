@@ -11,6 +11,7 @@
 #include "Client/Session.h"
 #include "Utility/Text/GroupedInteger.h"
 #include "UI/Buttons/UIBitmapButton.h"
+#include "UI/Buttons/UIBmpTextButton.h"
 #include "UI/Window/UILoginWnd.h"
 #include "UI/Window/UIMessageBox.h"
 #include "UI/Window/UINoticeWnd.h"
@@ -135,10 +136,33 @@ namespace {
   }
 }
 
+// OFFSET: 0x008A3F60
+// FUNCTION: fn_11662
+UIMerInfoWnd::UIMerInfoWnd(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0) {
+}
+
 // OFFSET: 0x008A3FC0
 // FUNCTION: fn_11663
 UIMessageBox::UIMessageBox(UIWindowContext& windows, UIFrameContext& frames, UIMessageBoxContext& dialog)
     : UIFrameWnd(windows, frames, 0), counting(0), protectedMessage(0), m_dialog(&dialog) {
+}
+
+// OFFSET: 0x008A40B0
+// FUNCTION: fn_11664
+UIMessageBoxAutoreturn::UIMessageBoxAutoreturn(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0) {
+  this->counting = 0;
+}
+
+// OFFSET: 0x008A4170
+// FUNCTION: fn_11665
+UIMonsterInfoWnd::UIMonsterInfoWnd(UIWindowContext& windows, UIFrameContext& frames)
+    : UIFrameWnd(windows, frames, 0), info(), unknown_00D4(0) {
+}
+
+// INLINED
+UIReplayRECControlWnd::~UIReplayRECControlWnd() {
+  this->recordStart = 0;
+  this->mode = 0;
 }
 
 // OFFSET: 0x008A5220
@@ -705,6 +729,8 @@ void UIHomunInfoWnd::Slot11() {
   }
 }
 
+// OFFSET: 0x008B0CA0
+
 // OFFSET: 0x008C3630
 // FUNCTION: fn_11827
 void UIMerInfoWnd::Slot11() {
@@ -800,6 +826,90 @@ void UIBank_NewWnd::AnimateLoading() {
   }
 
   this->m_loading[static_cast<int>(timeGetTime() % 1000) / 250]->Move(6, 5);
+}
+
+// OFFSET: 0x008AE8A0
+// FUNCTION: fn_11741
+void UILoginOTPWnd::Slot15(int, int) {
+  auto& controls = *this->m_controls;
+  const std::uint8_t prefixSource[] = {0x8F, 0xC8, 0x2D, 0x7F, 0xC9, 0xF9, 0xFA, 0xB4, 0x89, 0x83, 0x2D, 0x49, 0xB4, 0x8D, 0x63, 0x79};
+  thread_local EncryptedName<sizeof(prefixSource), 0x793F370985ED674FULL> prefixName(prefixSource);
+  const std::string prefix(prefixName.Text());
+
+  this->unknown_00B4 = new UIEditCtrl(*this->m_context, *this->m_editContext);
+  this->unknown_00B4->SetSize(80, 16);
+  this->unknown_00B4->maximum = 8;
+  this->unknown_00B4->Move(99, 95);
+  this->unknown_00B4->mask = '*';
+  this->unknown_00B4->Background(243, 243, 243);
+  this->AddChild(this->unknown_00B4);
+  this->unknown_00B4->SetText("");
+  InputFocus focus{g_windowMgr.hoverWindow};
+  focus.Set(this->unknown_00B4);
+
+  UIStaticText* label = new UIStaticText(*this->m_context, controls);
+  label->SetSize(80, 20);
+  label->Move(141 - this->TextWidth(controls.fonts, controls.locale, LookupMessage(3410), 0, 0, 12, 0, 0), 67);
+  label->SetText(LookupMessage(3410), 0);
+  this->AddChild(label);
+
+  this->timerText = new UIStaticText(*this->m_context, controls);
+  this->timerText->SetSize(80, 20);
+  this->timerText->Move(150, 66);
+  this->timerText->SetText(LookupMessage(3410), 0);
+  this->timerText->SetFont(0, 14, 1, 0);
+  this->timerText->SetColor(205, 19, 41);
+  this->AddChild(this->timerText);
+
+  label = new UIStaticText(*this->m_context, controls);
+  label->SetSize(200, 40);
+  label->SetText(LookupMessage(3385), 0);
+  label->Move(static_cast<int>(141.0f - this->TextWidth(controls.fonts, controls.locale, LookupMessage(3385), 0, 0, 12, 0, 0) * 0.5f), 28);
+  this->AddChild(label);
+
+  label = new UIStaticText(*this->m_context, controls);
+  label->SetSize(200, 40);
+  label->SetText(LookupMessage(3386), 0);
+  label->Move(static_cast<int>(141.0f - this->TextWidth(controls.fonts, controls.locale, LookupMessage(3386), 0, 0, 12, 0, 0) * 0.5f), 42);
+  this->AddChild(label);
+
+  label = new UIStaticText(*this->m_context, controls);
+  label->SetSize(80, 20);
+  label->Move(74 - this->TextWidth(controls.fonts, controls.locale, LookupMessage(3255), 0, 0, 12, 0, 0), 98);
+  label->SetText(LookupMessage(3255), 0);
+  label->SetFont(0, 12, 1, 0);
+  label->SetColor(64, 64, 64);
+  this->AddChild(label);
+
+  UIBmpTextButton* button = new UIBmpTextButton(*this->m_context, controls);
+  const std::uint8_t normalSource[] = {0xDD, 0xAA, 0x53, 0xD3, 0xB1, 0xED, 0x92, 0x28, 0xDB, 0xE1, 0x53, 0xE5, 0xCC, 0x99, 0x0B, 0x89, 0x72,
+                                       0x62, 0xFA, 0x47, 0x2E, 0x4A, 0x39, 0x91, 0x78, 0x77, 0xF5, 0x48, 0x12, 0x46, 0x0B, 0x87, 0x69, 0x5A,
+                                       0xFC, 0x5D, 0x01, 0x7C, 0x39, 0x8A, 0x6F, 0x68, 0xF2, 0x45, 0x5F, 0x41, 0x3A, 0x95, 0x1D};
+  thread_local EncryptedName<sizeof(normalSource), 0xE55723712993051DULL> normalName(normalSource);
+  button->SetBitmap(normalName.Text(), 0, 0);
+  const std::uint8_t hoverSource[] = {0xE3, 0x5E, 0x17, 0xED, 0x17, 0x87, 0x26, 0xB0, 0xE5, 0x15, 0x17, 0xDB, 0x6A, 0xF3, 0xBF, 0x11,
+                                      0x4C, 0x96, 0xBE, 0x79, 0x88, 0x20, 0x8D, 0x09, 0x46, 0x83, 0xB1, 0x76, 0xB4, 0x2C, 0xBF, 0x1F,
+                                      0x57, 0xAE, 0xB8, 0x63, 0xA7, 0x16, 0x8C, 0x0B, 0x46, 0x83, 0xF9, 0x75, 0xBA, 0x39, 0xE3};
+  thread_local EncryptedName<sizeof(hoverSource), 0x7DE349D717D7F123ULL> hoverName(hoverSource);
+  button->SetBitmap(hoverName.Text(), 1, 0);
+  const std::uint8_t pressedSource[] = {0xBF, 0x7A, 0x6F, 0xA1, 0xAB, 0x7F, 0xD0, 0xC2, 0xB9, 0x31, 0x6F, 0x97, 0xD6, 0x0B, 0x49, 0x63,
+                                        0x10, 0xB2, 0xC6, 0x35, 0x34, 0xD8, 0x7B, 0x7B, 0x1A, 0xA7, 0xC9, 0x3A, 0x08, 0xD4, 0x49, 0x6D,
+                                        0x0B, 0x8A, 0xC0, 0x2F, 0x1B, 0xEE, 0x65, 0x7D, 0x1A, 0xA6, 0xDC, 0x75, 0x09, 0xDC, 0x65, 0x0F};
+  thread_local EncryptedName<sizeof(pressedSource), 0x0F15B16B5BAFD57FULL> pressedName(pressedSource);
+  button->SetBitmap(pressedName.Text(), 2, 0);
+  button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+  button->Move(186, 92);
+  button->SetId(382);
+  {
+    const std::string text(LookupMessage(3384));
+    button->text = text;
+    button->Invalidate();
+  }
+  button->AddTextStyle(0, 12, 0x313131, 1, 1, -1000, -1000);
+  button->AddTextStyle(1, 12, 0x313131, 1, 1, -1000, -1000);
+  button->AddTextStyle(2, 12, 0x313131, 1, 1, -1000, -1000);
+  this->AddChild(button);
+  this->m_message0 = 382;
 }
 
 // OFFSET: 0x008B84B0

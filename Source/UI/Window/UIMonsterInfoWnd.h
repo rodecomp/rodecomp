@@ -23,6 +23,8 @@ struct MonsterInfo {
 
 class UIMonsterInfoWnd : public UIFrameWnd {
 public:
+  UIMonsterInfoWnd(UIWindowContext& windows, UIFrameContext& frames);
+
   void Slot15(int width, int height) override;
   void Slot28(int x, int y) override;
   void Paint() override;
