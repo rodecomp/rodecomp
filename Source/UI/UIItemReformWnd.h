@@ -14,10 +14,7 @@ class UIBasicButton;
 
 class UIItemReformWnd_List : public UIFrameWnd {
 public:
-  // INLINED
-  UIItemReformWnd_List(UIWindowContext& windowContext, UIFrameContext& frameContext)
-      : UIFrameWnd(windowContext, frameContext, 0), itemHeight(32), selectedIndex(0xFFFFFFFF), hoverIndex(0), scrollPosition(0), scrollBar(nullptr), items() {
-  }
+  UIItemReformWnd_List(UIWindowContext& windowContext, UIFrameContext& frameContext);
   void Move(int x, int y) override;
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -71,6 +68,8 @@ public:
 
 class UIItemReformWnd : public UIFrameWnd {
 public:
+  UIItemReformWnd(UIWindowContext& windowContext, UIFrameContext& frameContext);
+
   void Slot15(int width, int height) override;
   void Slot19() override;
   void Paint() override;

@@ -44,6 +44,21 @@ struct PACKET_CZ_ITEM_REFORM {
 };
 #pragma pack(pop)
 
+// OFFSET: 0x005FC010
+// FUNCTION: fn_04095
+UIItemReformWnd::UIItemReformWnd(UIWindowContext& windowContext, UIFrameContext& frameContext)
+    : UIFrameWnd(windowContext, frameContext, 0), reformButton(nullptr), list(nullptr), baseIcon(nullptr), resultIcon(nullptr),
+      materialIcons(), detailButton(nullptr), detailMsg(nullptr), reformItem(), selectedItem(nullptr), resultItem(), materials(),
+      information(), warning() {
+}
+
+// OFFSET: 0x005FC160
+// FUNCTION: fn_04096
+UIItemReformWnd_List::UIItemReformWnd_List(UIWindowContext& windowContext, UIFrameContext& frameContext)
+    : UIFrameWnd(windowContext, frameContext, 0), itemHeight(32), selectedIndex(0xFFFFFFFF), hoverIndex(0), scrollPosition(0),
+      scrollBar(nullptr), items() {
+}
+
 // OFFSET: 0x005FC7C0
 // FUNCTION: fn_04105
 void UIItemReformWnd_DetailMsg::SetText(const std::string& text) {
