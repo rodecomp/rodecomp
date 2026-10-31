@@ -1861,6 +1861,20 @@ EfstActionMessage CEfstAction_SERVANTWEAPON::Slot04() {
 }
 
 // OFFSET: 0x0077E820
+// FUNCTION: fn_08461
+void CSkillAction_DK_SERVANT_W_PHANTOM::Slot16(int actor, CGameActor* targetActor, CGameActor*) {
+  CGameActor* source = reinterpret_cast<CGameActor*>(actor);
+  if (source) {
+    if (CEffect* effect = g_effectMgr->Find(source->render.accountId, 0x99C)) {
+      effect->Slot14(0x1453);
+    }
+  }
+
+  if (targetActor) {
+    g_effectMgr->Spawn(targetActor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_sign_down_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(targetActor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_sign_down"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
 
 // OFFSET: 0x0077EAD0
 // FUNCTION: fn_08462
