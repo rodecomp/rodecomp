@@ -143,7 +143,7 @@ public:
   /* 03D4 */ int unknown_03D4;
   /* 03D8 */ int unknown_03D8;
   /* 03DC */ int unknown_03DC;
-  /* 03E0 */ std::uint16_t unknown_03E0;
+  union { /* 03E0 */ std::uint16_t unknown_03E0; struct { unsigned char unknown_03E0Low; /* 03E1 */ bool unknown_03E1; }; };
   /* 03E2 */ unsigned char unknown_03E2[0x06];
   /* 03E8 */ int unknown_03E8;
   /* 03EC */ int unknown_03EC;

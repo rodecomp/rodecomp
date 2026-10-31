@@ -138,11 +138,12 @@ public:
   /* 04F8 */ float unknown_04F8;
   /* 04FC */ int unknown_04FC;
   /* 0500 */ unsigned char unknown_0500[0x0C];
-  /* 050C */ int unknown_050C;
+  union { /* 050C */ int unknown_050C; CPc* blurSource; };
 };
 
 class CBlurPC : public CPc {
 public:
+  CBlurPC(CPc* source);
   ~CBlurPC() override;
   bool OnProcess() override;
   void SendMsg(
@@ -153,6 +154,7 @@ public:
 
 class CHalluPC : public CPc {
 public:
+  CHalluPC(CPc* source);
   ~CHalluPC() override;
   bool OnProcess() override;
   void SendMsg(
@@ -160,7 +162,7 @@ public:
   ) override;
   void Render(int argument) override;
 
-  /* 0510 */ int unknown_0510;
+  /* 0510 */ CPc* unknown_0510;
   /* 0514 */ int unknown_0514;
 };
 
