@@ -35,12 +35,14 @@ public:
 
 }
 class CUIEditBoxEx;
+class CUIImageButton;
 class CUITitleBar;
 class CUIStaticText;
 class CUIProbabilityTable : public CUIFrameWnd {
 public:
   __declspec(noinline) CUIProbabilityTable();
 
+  void Slot15(int width, int height) override;
   void Slot16() override;
   void Paint() override;
   virtual void Slot53();
@@ -54,7 +56,10 @@ public:
   /* 00D8 */ CUITitleBar* m_titleBar;
   /* 00DC */ CUIStaticText* m_nameHeader;
   /* 00E0 */ CUIEditBoxEx* m_searchEdit;
-  /* 00E4 */ unsigned char unknown_00E4[0x04];
+  union {
+    /* 00E4 */ unsigned char unknown_00E4[0x04];
+    /* 00E4 */ CUIImageButton* m_searchButton;
+  };
   /* 00E8 */ CUIStaticText* m_itemName;
   /* 00EC */ CUIStaticText* m_probabilityHeader;
   /* 00F0 */ CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>* m_list;
