@@ -70,7 +70,7 @@ struct alignas(8) ITEM_INFO {
   ITEM_INFO& AssignBasic(const RawItemBasic& item);
   bool operator<(const ITEM_INFO& other) const;
   bool SetName(const char* name);
-  std::string DisplayName(unsigned char detailed);
+  std::string DisplayName(unsigned char detailed) const;
   void SetItemId(int value);
   void SetOption(ItemOption option, const int& index);
   void SetCard(const int& card, const int& index);

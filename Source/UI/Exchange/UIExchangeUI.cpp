@@ -1,10 +1,14 @@
 #include "UI/Exchange/UIExchangeUI.h"
 
 #include "Client/Session.h"
+#include "Client/Mode/CGameMode.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeDragState.h"
 #include "Client/Mode/ModeMgr.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/MessageTable.h"
+#include "File/ShortcutFilename.h"
+#include "Render/Renderer.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/SkinPalette.h"
 #include "UI/Buttons/UIRadioButton.h"
@@ -22,6 +26,8 @@
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
+#include <format>
 #include <functional>
 #include <string>
 #include <windows.h>
@@ -38,6 +44,12 @@ template <>
 void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::Slot35(int value);
 template <>
 void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::OnScroll(int position);
+
+// GLOBAL: gl_25004
+int g_exchangeMyZeny;
+
+// GLOBAL: gl_25005
+int g_exchangeOtherZeny;
 
 // OFFSET: 0x00A0F840
 
@@ -281,6 +293,34 @@ void ExchangeUI::CUIItem::Paint() {
   }
 }
 
+// OFFSET: 0x00A17730
+// FUNCTION: fn_15298
+void CUIExchangeUI::Slot16() {
+  this->Move((g_renderer->viewport.width - 640) / 2 + 100, g_renderer->viewport.height * 100 / 480);
+
+  const std::string title = std::format("{} : ", LookupMessage(0xCE));
+  this->titleBar->SetTitle(title.c_str(), title.size());
+
+  const char* logText = LookupMessage(0x727);
+  this->unknown_010C->SetText(logText, std::strlen(logText));
+
+  for (int count = 10; count != 0; --count) {
+    this->firstList->AddData(ExchangeUI::CItemData(ITEM_INFO(), 0), false);
+  }
+  this->firstList->UpdateScrollBar();
+
+  this->zenyEdit->SetText(std::to_string(0));
+  this->SetZeny(0);
+
+  for (int count = 10; count != 0; --count) {
+    this->secondList->AddData(ExchangeUI::CItemData(ITEM_INFO(), 0), false);
+  }
+  this->secondList->UpdateScrollBar();
+
+  this->tradeButton->disabled = 1;
+  this->tradeButton->Invalidate();
+}
+
 // OFFSET: 0x00A17BD0
 // FUNCTION: fn_15299
 void ExchangeUI::CUIItem::Slot16() {
@@ -344,6 +384,92 @@ void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::UpdateScrollBar()
   this->rebind = 1;
 }
 
+// OFFSET: 0x00A17FB0
+// FUNCTION: fn_15304
+int CUIExchangeUI::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  switch (message) {
+  case 0x17:
+    this->firstList->ClearData();
+    for (int index = 0; index < 10; ++index) {
+      ITEM_INFO item = g_session.GetExchangeItem(index);
+      ExchangeUI::CItemListBox* list = this->firstList;
+      const int quantity = item.quantity;
+      if (quantity > 0) {
+        list->AddData(ExchangeUI::CItemData(item, quantity), false);
+      } else {
+        list->AddData(ExchangeUI::CItemData(ITEM_INFO(), 0), false);
+      }
+    }
+    this->firstList->UpdateScrollBar();
+
+    this->secondList->ClearData();
+    for (int index = 0; index < 10; ++index) {
+      ITEM_INFO item = g_session.GetItemSlot(index);
+      ExchangeUI::CItemListBox* list = this->secondList;
+      const int quantity = item.quantity;
+      if (quantity > 0) {
+        list->AddData(ExchangeUI::CItemData(item, quantity), false);
+      } else {
+        list->AddData(ExchangeUI::CItemData(ITEM_INFO(), 0), false);
+      }
+    }
+    this->secondList->UpdateScrollBar();
+    break;
+  case 0x26: {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    if (mode != nullptr) {
+      mode->SendMsg(0x33, mode->drag.id, mode->drag.quantity, 0, 0);
+      mode->SendMsg(0x12, 0, 0, 0, 0);
+    }
+    break;
+  }
+  case 0x32:
+    if (argument1 == 0) {
+      break;
+    }
+
+    this->partnerName = reinterpret_cast<const char*>(argument1);
+    if (argument2 > 0) {
+      if (g_serviceType == 6) {
+        const std::string text = std::format("{} Lv{}", this->partnerName, static_cast<int>(argument3));
+        this->unknown_00DC->SetText(text.c_str(), text.size());
+      } else {
+        const std::string job = ShortcutFilename(argument2);
+        const std::string text = std::format("{} Lv{} ({})", this->partnerName, static_cast<int>(argument3), job);
+        this->unknown_00DC->SetText(text.c_str(), text.size());
+      }
+    } else {
+      this->unknown_00DC->SetText(this->partnerName.c_str(), this->partnerName.size());
+    }
+    break;
+  case 0x33:
+    this->zenyEdit->Show(0);
+    this->FreezeItems(true);
+    this->UpdateZeny(true);
+    if (this->firstList->unknown_00C4 && this->secondList->unknown_00C4) {
+      this->tradeButton->disabled = 0;
+    } else {
+      this->tradeButton->disabled = 1;
+    }
+    this->tradeButton->Invalidate();
+    break;
+  case 0x34:
+    this->FreezeItems(false);
+    this->UpdateZeny(false);
+    if (this->firstList->unknown_00C4 && this->secondList->unknown_00C4) {
+      this->tradeButton->disabled = 0;
+    } else {
+      this->tradeButton->disabled = 1;
+    }
+    this->tradeButton->Invalidate();
+    break;
+  }
+
+  return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+}
+
+// OFFSET: 0x00A18660
+
 // OFFSET: 0x00A18940
 // FUNCTION: fn_15306
 void CUIExchangeUI::SetZeny(int amount) {
@@ -354,6 +480,36 @@ void CUIExchangeUI::SetZeny(int amount) {
   } else {
     this->zenyEdit->SetHighlight(colors.secondary);
   }
+}
+
+// OFFSET: 0x00A18990
+// FUNCTION: fn_15307
+void CUIExchangeUI::UpdateZeny(bool mine) {
+  CUIStaticText* first;
+  CUIStaticText* second;
+  CUIStaticText* third;
+  int zeny;
+  if (mine) {
+    first = this->unknown_00E8;
+    second = this->unknown_00EC;
+    third = this->unknown_00F0;
+    zeny = g_exchangeMyZeny;
+  } else {
+    first = this->unknown_00FC;
+    second = this->unknown_0100;
+    third = this->unknown_0104;
+    zeny = g_exchangeOtherZeny;
+  }
+
+  char text[24];
+  FormatGroupedInteger(zeny, text, sizeof(text));
+  first->SetText(text, std::strlen(text));
+  second->SetText(text, std::strlen(text));
+  third->SetText(text, std::strlen(text));
+
+  const std::uint32_t color = PriceColor(zeny).primary;
+  first->SetColor(color);
+  second->SetColor(color);
 }
 
 // OFFSET: 0x00A18AA0

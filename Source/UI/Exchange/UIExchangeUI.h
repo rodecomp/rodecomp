@@ -31,8 +31,11 @@ public:
 
 class CItemData {
 public:
+  CItemData(const ITEM_INFO& item, int quantity) : item(item), quantity(quantity), frozen(false) {
+  }
+
   /* 0000 */ ITEM_INFO item;
-  /* 00F8 */ int unknown_00F8;
+  /* 00F8 */ int quantity;
   /* 00FC */ bool frozen;
 };
 
@@ -45,16 +48,16 @@ public:
   /* 00DC */ CUIStaticText* unknown_00DC;
   /* 00E0 */ CUIStaticImage* unknown_00E0;
   /* 00E4 */ ExchangeUI::CItemListBox* firstList;
-  /* 00E8 */ UIWindow* unknown_00E8;
-  /* 00EC */ UIWindow* unknown_00EC;
-  /* 00F0 */ UIWindow* unknown_00F0;
+  /* 00E8 */ CUIStaticText* unknown_00E8;
+  /* 00EC */ CUIStaticText* unknown_00EC;
+  /* 00F0 */ CUIStaticText* unknown_00F0;
   /* 00F4 */ CUIEditBoxEx* zenyEdit;
   /* 00F8 */ ExchangeUI::CItemListBox* secondList;
-  /* 00FC */ UIWindow* unknown_00FC;
-  /* 0100 */ UIWindow* unknown_0100;
-  /* 0104 */ UIWindow* unknown_0104;
+  /* 00FC */ CUIStaticText* unknown_00FC;
+  /* 0100 */ CUIStaticText* unknown_0100;
+  /* 0104 */ CUIStaticText* unknown_0104;
   /* 0108 */ CUICheckBox* logCheckBox;
-  /* 010C */ UIWindow* unknown_010C;
+  /* 010C */ CUIStaticText* unknown_010C;
   /* 0110 */ CUIImageButton* lockButton;
   /* 0114 */ CUIImageButton* tradeButton;
   /* 0118 */ UIWindow* unknown_0118;
@@ -62,19 +65,26 @@ public:
   /* 0134 */ std::string zenyText;
 
   void Slot10(int x, int y, std::intptr_t value) override;
+  void Slot16() override;
   void Slot19() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   virtual void Slot53();
 
   void Conclude();
   void SubmitZeny();
   void FreezeItems(bool mine);
   void SetZeny(int amount);
+  void UpdateZeny(bool mine);
+  void BindItem(ExchangeUI::CUIItem* item, const ExchangeUI::CItemData& data);
 
   void OnCheckChanged(bool checked);
   void OnEditSubmit();
   void OnSelectFirstListItem(ExchangeUI::CUIItem* item, const ExchangeUI::CItemData& data);
   void OnSelectSecondListItem(ExchangeUI::CUIItem* item, const ExchangeUI::CItemData& data);
 };
+
+extern int g_exchangeMyZeny;
+extern int g_exchangeOtherZeny;
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(ExchangeUI::CItemData) == 0x100);
