@@ -17,6 +17,12 @@ public:
 
   __declspec(noinline) ITEM_INFO GetItemAt(int x, int y);
   void SetTabIndex(int index);
+  bool Sort1();
+  bool Sort2();
+  bool Sort3();
+  bool sub_996950();
+  bool sub_996AF0();
+  bool sub_996C90();
 
   /* 00F0 */ unsigned char unknown_00F0[0x60];
   /* 0150 */ WindowPlacement* saved;

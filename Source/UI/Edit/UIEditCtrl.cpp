@@ -397,6 +397,14 @@ void UIEditCtrl::Slot24(int) {
   this->Invalidate();
 }
 
+// OFFSET: 0x0085E400
+// FUNCTION: fn_10828
+void UIWhisperEditCtrl::Slot24(int retained) {
+  this->sub_86A060();
+  this->Synchronize();
+  this->Invalidate();
+}
+
 // OFFSET: 0x0085EC20
 // FUNCTION: fn_10842
 void UIEditCtrl::Slot25(int, int) {
@@ -2161,6 +2169,14 @@ int ItemTypeSortRank(int type) {
     return 10;
   }
 }
+
+extern "C" void sub_96E320(void* head, size_t size, ...);
+
+// OFFSET: 0x00996870
+
+// OFFSET: 0x009968B0
+
+// OFFSET: 0x009968F0
 
 // OFFSET: 0x00996940
 // FUNCTION: fn_13473
