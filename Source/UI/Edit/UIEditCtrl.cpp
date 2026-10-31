@@ -645,6 +645,18 @@ void UIEditCtrl::Border(int red, int green, int blue) {
   this->borderBlue = blue;
 }
 
+// OFFSET: 0x00865E30
+// FUNCTION: fn_10939
+void UIEditCtrl3::SetTagColor(std::uint32_t color) {
+  for (auto it = this->entries.begin(); it != this->entries.end(); ++it) {
+    for (unsigned index = 0; index < it->size(); ++index) {
+      (*it)[index]->m_normalColor = color;
+      (*it)[index]->m_color = color;
+      (*it)[index]->m_hoverColor = color;
+    }
+  }
+}
+
 // OFFSET: 0x00868570
 // FUNCTION: fn_10960
 void UIEditCtrl::TextColor(std::uint32_t primary, std::uint32_t secondary) {

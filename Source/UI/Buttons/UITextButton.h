@@ -12,6 +12,7 @@ extern int g_screenHeight;
 class UITextButton : public UIButton {
   friend class UITextViewer;
   friend class UIMessageBox;
+  friend class UIEditCtrl3;
   friend class UIAchTracingWnd;
 
 public:

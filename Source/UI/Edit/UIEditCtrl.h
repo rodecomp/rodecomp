@@ -147,6 +147,7 @@ public:
   void PlaceTags(const int& x, const int& y, const int& firstLine, const int& endLine, const int& line, const int& unused);
   void PlaceLinks(const std::string& value, int y, int line, int firstLine, int endLine);
   std::string TakePendingText();
+  void SetTagColor(std::uint32_t color);
 
   /* 011C */ std::list<std::vector<UIItemTagButton*>> entries;
   /* 0124 */ std::vector<std::string> pendingText;
