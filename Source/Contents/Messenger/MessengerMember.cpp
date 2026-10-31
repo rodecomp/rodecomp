@@ -30,6 +30,10 @@
 #include "File/ShortcutFilename.h"
 #include "UI/Layout/WindowSnapping.h"
 #include "UI/Buttons/UITextButton.h"
+#include "UI/Window/WindowBorder.h"
+#include "Contents/PlayerNameDictionary.h"
+#include "Utility/Text/FormatString.h"
+#include "Resource/SkinPalette.h"
 
 #include <algorithm>
 #include <cstdio>
