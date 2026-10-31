@@ -676,6 +676,7 @@ public:
   void InitJobNameTable(JobNameInitialization& context);
   int SyncUnknown0E98();
   void LoadXmlTables();
+  void LoadExternalSettings();
   float GetOptionFloat(const char* key, float fallback);
   std::string GetAccessoryName(int id);
   std::string GetWeaponName(int weapon);
@@ -825,6 +826,8 @@ public:
   void UpdateUnknown1708(int enabled);
   void RefreshItem1738Window();
   void RefreshHpSpWindows();
+  void ResetCharacterState();
+  void ClearItemContainers();
   void RefreshHomunculusInfo();
   void RefreshMercenaryInfo();
   bool IsBlankString(const char* text) const;

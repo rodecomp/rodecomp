@@ -18,10 +18,15 @@
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/WindowOrdering.h"
 #include "Contents/Configuration/ServiceOptions.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
+#include "Client/Application/ErrorDialog.h"
 #include "Contents/MessageTable.h"
 #include "Contents/PlayerNameDictionary.h"
 #include "Utility/Text/FormatString.h"
+#include "Utility/Cipher/XorBytes.h"
+#include "Script/LuaScript.h"
 #include <algorithm>
+#include <cmath>
 #include <cstdio>
 #include <cstdint>
 #include <cstdlib>
@@ -1985,4 +1990,309 @@ void CSession::LoadMiniPartyInfo() {
   }
 
   std::free(data);
+}
+
+namespace {
+
+template <std::size_t Length, std::uint64_t Key>
+class EncryptedName {
+public:
+  explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+    for (std::uint64_t index = 0; index < Length; ++index) {
+      this->m_text[index] = source[index];
+    }
+  }
+
+  ~EncryptedName() {
+    for (std::uint64_t index = 0; index < Length; ++index) {
+      this->m_text[index] = 0;
+    }
+  }
+
+  const char* Text() {
+    if (this->m_encrypted) {
+      utility::XorBytes(this->m_text, Length, Key);
+      this->m_encrypted = false;
+    }
+
+    return reinterpret_cast<const char*>(this->m_text);
+  }
+
+private:
+  /* 0000 */ std::uint8_t m_text[Length];
+  bool m_encrypted;
+};
+
+}
+
+// OFFSET: 0x00DFD060
+// FUNCTION: fn_23603
+void CSession::LoadExternalSettings() {
+  if (g_serviceMode == 1) {
+    this->m_hotkeyScript->Load(std::strstr(g_launchServerName, "QmSakray") != nullptr ? "Lua Files\\service_korea\\ExternalSettings_kr_sak_qm" : "Lua Files\\service_korea\\ExternalSettings_kr_sak", true, false);
+  } else if (g_serviceMode == 2) {
+    this->m_hotkeyScript->Load("Lua Files\\service_korea\\ExternalSettings_kr_indoor", true, false);
+  } else if (g_serviceMode == 0 && std::strstr(g_launchServerName, "Dev") != nullptr) {
+    this->m_hotkeyScript->Load("Lua Files\\service_korea\\ExternalSettings_kr_qm", true, false);
+  } else {
+    this->m_hotkeyScript->Load("Lua Files\\service_korea\\ExternalSettings_kr", true, false);
+  }
+
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "BaseLevel", &*reinterpret_cast<int*>(this->unknown_7EE8));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "BaseLevel3rd", &this->m_maxLevel);
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "BaseLevelExtend2", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x00]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "BaseLevelUpperJob", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x04]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "BaseLevelHomun", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x08]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevelNovice", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x0C]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevelSuperNovice", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x10]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevelBase", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x14]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevel2nd", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x18]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevel3rd", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x1C]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevelExtend2", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x20]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevelUpperJob", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x24]));
+
+  if (*reinterpret_cast<int*>(this->unknown_7EE8) == -1 ||
+      this->m_maxLevel == -1 ||
+      *reinterpret_cast<int*>(&this->unknown_7EF0[0x00]) == -1 ||
+      *reinterpret_cast<int*>(&this->unknown_7EF0[0x04]) == -1 ||
+      *reinterpret_cast<int*>(&this->unknown_7EF0[0x08]) == -1 ||
+      *reinterpret_cast<int*>(&this->unknown_7EF0[0x0C]) == -1 ||
+      *reinterpret_cast<int*>(&this->unknown_7EF0[0x10]) == -1 ||
+      *reinterpret_cast<int*>(&this->unknown_7EF0[0x14]) == -1 ||
+      *reinterpret_cast<int*>(&this->unknown_7EF0[0x18]) == -1 ||
+      *reinterpret_cast<int*>(&this->unknown_7EF0[0x1C]) == -1 ||
+      *reinterpret_cast<int*>(&this->unknown_7EF0[0x20]) == -1 ||
+      *reinterpret_cast<int*>(&this->unknown_7EF0[0x24]) == -1) {
+    const std::uint8_t source[] = {
+      0x1E, 0x9B, 0xE7, 0x02, 0xF7, 0x9D, 0x18,
+      0x1D, 0x2F, 0x8C, 0xE7, 0x03, 0xD6, 0xD8,
+      0x29, 0x11, 0x32, 0x87, 0xF2, 0x1E, 0xA5,
+      0xEB, 0x3C, 0x09, 0x2E, 0x8C, 0x95
+    };
+    thread_local EncryptedName<sizeof(source), 0x655DBD856D95E95BULL> name(source);
+    ShowErrorDialog(nullptr, name.Text(), 0);
+  }
+
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "BaseLevel4th", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x74]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevel4th", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x78]));
+
+  if (*reinterpret_cast<int*>(&this->unknown_7EF0[0x74]) == -1 || *reinterpret_cast<int*>(&this->unknown_7EF0[0x78]) == -1) {
+    const std::uint8_t source[] = {
+      0xC2, 0x6B, 0x53, 0x54, 0x97, 0x4F, 0xEC,
+      0xE5, 0xF3, 0x7C, 0x53, 0x55, 0xB6, 0x0A,
+      0xDD, 0xE9, 0xEE, 0x77, 0x46, 0x48, 0xC5,
+      0x39, 0xC8, 0xF1, 0xF2, 0x7C, 0x21
+    };
+    thread_local EncryptedName<sizeof(source), 0x9DA96FE53B211987ULL> name(source);
+    ShowErrorDialog(nullptr, name.Text(), 0);
+  }
+
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "BaseLevelDoram", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x28]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevelDoram", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x2C]));
+
+  if (*reinterpret_cast<int*>(&this->unknown_7EF0[0x2C]) == -1) {
+    const std::uint8_t source[] = {
+      0x84, 0x29, 0xA1, 0x34, 0x8D, 0xA7, 0xC6,
+      0xDF, 0xB5, 0x3E, 0xA1, 0x35, 0xAC, 0xE2,
+      0xF7, 0xD3, 0xA8, 0x35, 0xB4, 0x28, 0xDF,
+      0xD1, 0xE2, 0xCB, 0xB4, 0x3E, 0xD3
+    };
+    thread_local EncryptedName<sizeof(source), 0xA78387FF5BD35BC1ULL> name(source);
+    ShowErrorDialog(nullptr, name.Text(), 0);
+  }
+
+  this->m_hotkeyScript->Call(std::string("GetTableBoolValueForC", 21), "ss>b", "MakeableRace", "Doram", &*reinterpret_cast<int*>(this->unknown_7F74));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "Default99LvAura", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x30]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "Default99LvAura_sub", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x34]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "Baby99LvAura", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x38]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "Baby99LvAura_sub", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x3C]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "SecondHigh99LvAura", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x40]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "SecondHigh99LvAura_sub", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x44]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "Homun99LvAura", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x48]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "Homun99LvAura_sub", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x4C]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "Boss99LvAura_sub", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x50]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "Default150LvAura", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x54]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "Default150LvAura_sub", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x58]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "Default160LvAura", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x5C]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "Default160LvAura_sub", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x60]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "HomunMaxLvAura", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x64]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "HomunMaxLvAura_sub", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x68]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "Default185LvAura", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x6C]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "Default185LvAura_sub", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x70]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "MaxLevelEffect4th", &this->m_maxLevelEffect4th);
+
+  if (this->m_maxLevelEffect4th == -1 || this->m_maxLevelEffect4thSub == -1) {
+    const std::uint8_t source[] = {
+      0x66, 0x23, 0xB5, 0x54, 0xA1, 0x55, 0x94,
+      0xF9, 0x57, 0x34, 0xB5, 0x55, 0x80, 0x10,
+      0xA5, 0xF5, 0x4A, 0x3F, 0xA0, 0x48, 0xF3,
+      0x23, 0xB0, 0xED, 0x56, 0x34, 0xC7
+    };
+    thread_local EncryptedName<sizeof(source), 0x81D175D33BC75123ULL> name(source);
+    ShowErrorDialog(nullptr, name.Text(), 0);
+  }
+}
+
+// OFFSET: 0x00DF7C40
+// FUNCTION: fn_23508
+void CSession::ResetCharacterState() {
+  *reinterpret_cast<float*>(&this->m_navigationPlayerMap[0x18]) = sqrtf(50.0f);
+
+  const int randomValue = std::rand() % 1024 + 1;
+
+  this->m_zeny = 0;
+  *reinterpret_cast<int*>(&this->unknown_162C[0x04]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_162C[0x08]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_162C[0x1C]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_162C[0x20]) = 0;
+  this->m_maxWeight = 0;
+  this->m_weight = 0;
+
+  if (this->unknown_556C != randomValue) {
+    this->unknown_556C = randomValue;
+    this->RefreshHpSpWindows();
+  }
+
+  if (this->unknown_5568 != randomValue) {
+    this->unknown_5568 = randomValue;
+    this->RefreshHpSpWindows();
+  }
+
+  this->m_zeny = randomValue;
+  this->m_level = randomValue;
+  this->m_jobLevel = randomValue;
+
+  std::memcpy(this->m_playerNameKey, "잠이들었던거야", sizeof("잠이들었던거야"));
+
+  this->unknown_1678 = 0;
+  this->unknown_167C = 0;
+  this->unknown_1680 = 0;
+  this->unknown_166C = 0;
+  this->unknown_1670 = 0;
+  this->unknown_1674 = 0;
+
+  *reinterpret_cast<int*>(&this->unknown_169C[0x00]) = 2;
+  *reinterpret_cast<int*>(&this->unknown_169C[0x04]) = 2;
+  *reinterpret_cast<int*>(&this->unknown_169C[0x14]) = 2;
+  *reinterpret_cast<int*>(&this->unknown_169C[0x08]) = 2;
+  *reinterpret_cast<int*>(&this->unknown_169C[0x0C]) = 2;
+  *reinterpret_cast<int*>(&this->unknown_169C[0x10]) = 2;
+
+  *reinterpret_cast<int*>(&this->unknown_162C[0x28]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_169C[0x1C]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_169C[0x30]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_169C[0x34]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_169C[0x38]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_169C[0x28]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_169C[0x2C]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_169C[0x20]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_169C[0x3C]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_169C[0x40]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_169C[0x44]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_169C[0x4C]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_169C[0x48]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_169C[0x18]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_169C[0x24]) = 0;
+
+  *reinterpret_cast<int*>(&this->unknown_162C[0x04]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_162C[0x08]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_162C[0x1C]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_162C[0x20]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_162C[0x0C]) = 999999;
+  *reinterpret_cast<int*>(&this->unknown_162C[0x10]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_162C[0x14]) = 999999;
+  *reinterpret_cast<int*>(&this->unknown_162C[0x18]) = 0;
+
+  this->cartCount = 0;
+  this->cartMaxCount = 0;
+  this->cartWeight = 0;
+  this->cartMaxWeight = 0;
+  *reinterpret_cast<int*>(&this->unknown_0F44[0x00]) = 13;
+  *reinterpret_cast<int*>(&this->unknown_0F44[0x04]) = 5;
+  this->unknown_0F24[0] = 0;
+  this->m_score1 = -1;
+  this->m_score2 = -1;
+  this->unknown_0F30[0] = 0;
+  this->unknown_0F4C = 20;
+  this->unknown_0F50 = 0;
+
+  this->unknown_16EC = 0;
+  this->unknown_54A0 = 0;
+  this->unknown_54A4 = 0;
+  this->unknown_54A8 = 0;
+  this->unknown_1708 = 1;
+  this->unknown_5480 = 0;
+  this->unknown_5484 = 0;
+  this->unknown_5488 = 0;
+  this->unknown_548C = 0;
+  *reinterpret_cast<int*>(&g_session.unknown_544C[0x00]) = 0;
+  *reinterpret_cast<std::uint16_t*>(&this->unknown_555C[0x08]) = 0;
+  this->unknown_5468 = 0;
+  this->unknown_5478[0] = 1;
+  this->unknown_5450 = 0;
+  this->unknown_5448 = 0;
+  this->unknown_59DC[0] = 1;
+
+  MEMORYSTATUS memoryStatus = {};
+  memoryStatus.dwLength = sizeof(memoryStatus);
+  GlobalMemoryStatus(&memoryStatus);
+  this->unknown_5470 = memoryStatus.dwTotalPhys < 0x9B72EC0 ? 1 : 0;
+
+  std::memset(&this->unknown_07F4[0x40], 0, 0x660);
+  this->unknown_5C1C = 0;
+
+  std::map<int, int>& traitStats = reinterpret_cast<std::map<int, int>&>(this->unknown_7FC0);
+  traitStats[0xE7] = 0;
+  traitStats[0xDB] = 0;
+  traitStats[0xDC] = 0;
+  traitStats[0xDD] = 0;
+  traitStats[0xDE] = 0;
+  traitStats[0xDF] = 0;
+  traitStats[0xE0] = 0;
+  traitStats[0xE1] = 0;
+  traitStats[0xE2] = 0;
+  traitStats[0xE3] = 0;
+  traitStats[0xE4] = 0;
+  traitStats[0xE5] = 0;
+  traitStats[0xE6] = 0;
+}
+
+// OFFSET: 0x00DF8940
+// FUNCTION: fn_23512
+void CSession::ClearItemContainers() {
+  this->unknown_1720.erase(this->unknown_1720.begin(), this->unknown_1720.end());
+  this->unknown_1730.erase(this->unknown_1730.begin(), this->unknown_1730.end());
+  this->unknown_1718.erase(this->unknown_1718.begin(), this->unknown_1718.end());
+
+  this->unknown_5210 = 0;
+
+  for (int index = 0; index < 10; ++index) {
+    this->m_exchangeItems[index].quantity = 0;
+  }
+
+  this->unknown_5214 = 0;
+
+  for (int index = 0; index < 10; ++index) {
+    this->m_itemSlots[index].quantity = 0;
+  }
+
+  this->unknown_1738.erase(this->unknown_1738.begin(), this->unknown_1738.end());
+
+  g_session.m_skillBundle.skills.clear();
+  this->m_friends.clear();
+
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  if (mode != nullptr) {
+    for (std::list<MessengerMember>::iterator it = this->m_partyMembers.begin(); it != this->m_partyMembers.end(); ++it) {
+      CRenderObject* actor = mode->scene->GetGameActorByAidIncludeMe(it->accountId);
+      if (actor != nullptr && static_cast<EffectActor*>(actor)->state.Attachments().HasId(160)) {
+        actor->SendMsg(nullptr, 109, 0, 160, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+    }
+  }
+
+  this->m_partyMembers.clear();
+  this->unknown_54C4 = "";
+  this->unknown_5464 = 0;
+  this->ClearItemQuantities();
 }
