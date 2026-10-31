@@ -18,6 +18,8 @@
 #include "Contents/Effects/EffectActor.h"
 #include "Contents/Effects/EffectLists.h"
 #include "Contents/Effects/RagEffect.h"
+#include "Contents/Effects/MonsterSkillEffects.h"
+#include "Contents/Skills/ClientSkills.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
@@ -1988,6 +1990,212 @@ void CGameMode::Zc_Start_Couple(const unsigned char*) {
   this->unknown_0408 = reinterpret_cast<void*>(2);
 }
 
+// OFFSET: 0x00D591A0
+// FUNCTION: fn_21959
+void CGameMode::sub_D591A0(std::uint32_t aid, int state, int flag, int options) {
+  CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(aid));
+  if (!actor) {
+    return;
+  }
+
+  actor->unknown_0210 = static_cast<std::uint16_t>(flag);
+  if (!StateFlag06(state)) {
+    actor->sub_CAA4D0();
+  }
+
+  if (actor->IsPlayerClass(actor->GetEffectiveJob(-1))) {
+    if (StateFlag01(actor->Slot13()) || StateFlag02(actor->Slot13())) {
+      actor->SendMsg(nullptr, 109, 0, 203, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, 109, 0, 254, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, 109, 0, 1132, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, 109, 0, 418, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, 109, 0, 586, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      return;
+    }
+
+    if (options & 0x1) {
+      if (!actor->state.Attachments().HasId(166)) {
+        CRagEffect* effect = actor->LaunchEffect(166, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+        if (effect) {
+          effect->SendMsg(nullptr, 44, 0, 0xFFFF, 130, 0, 0, 0);
+        }
+      }
+    } else if (options & 0x2) {
+      if (!actor->state.Attachments().HasId(166)) {
+        CRagEffect* effect = actor->LaunchEffect(166, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+        if (effect) {
+          effect->SendMsg(nullptr, 44, 0, 0xFFFF, 128, 0, 0, 0);
+        }
+      }
+    } else if (options & 0x4) {
+      if (!actor->state.Attachments().HasId(166)) {
+        CRagEffect* effect = actor->LaunchEffect(166, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+        if (effect) {
+          effect->SendMsg(nullptr, 44, 0, 0xFFFF, 169, 0, 0, 0);
+        }
+      }
+    } else if (options & 0x4000) {
+      if (!actor->state.Attachments().HasId(617)) {
+        actor->LaunchEffect(617, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      }
+    }
+
+    if ((options & 0x8) && !actor->state.Attachments().HasId(203)) {
+      actor->LaunchEffect(203, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    if ((options & 0x10) && !actor->state.Attachments().HasId(254)) {
+      actor->LaunchEffect(254, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      actor->LaunchEffect(1132, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    if ((options & 0x1000) && !actor->state.Attachments().HasId(418)) {
+      actor->LaunchEffect(418, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      actor->LaunchEffect(544, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    if ((options & 0x2000) && !actor->state.Attachments().HasId(419)) {
+      actor->LaunchEffect(419, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    if ((options & 0x8000) && !actor->state.Attachments().HasId(424)) {
+      actor->LaunchEffect(424, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    if ((options & 0x20000) && !actor->state.Attachments().HasId(586)) {
+      actor->LaunchEffect(586, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    if ((options & 0x10000) && !actor->state.Attachments().HasId(655)) {
+      actor->LaunchEffect(655, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    if ((options & 0x40) && !actor->state.Attachments().HasId(474)) {
+      actor->LaunchEffect(474, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    if ((options & 0x100) && !actor->state.Attachments().HasId(382)) {
+      actor->LaunchEffect(382, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    if ((options & 0x80) && !actor->state.Attachments().HasId(368)) {
+      actor->LaunchEffect(368, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    if ((options & 0x200) && !actor->state.Attachments().HasId(394)) {
+      actor->LaunchEffect(394, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    if ((options & 0x400) && !actor->state.Attachments().HasId(396)) {
+      actor->LaunchEffect(396, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+
+    if (options & 0x20) {
+      switch (actor->GetEffectiveJob(-1)) {
+      case 15:
+      case 4016:
+      case 4038:
+      case 4070:
+      case 4077:
+      case 4106:
+      case 4262:
+        actor->SetFrameSequence(96, 4, 4, 96, 4, 1, 99999999, 0);
+        break;
+      default:
+        actor->render.isMotionFreezed = true;
+        break;
+      }
+      actor->render.unknown_00A3 = 1;
+      actor->SetColor(-1, 64, 64, 64);
+    }
+
+    if ((options & 0x800) && !actor->state.Attachments().HasId(375)) {
+      actor->LaunchEffect(375, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    if ((options & 0x40000) && !actor->state.Attachments().HasId(744)) {
+      actor->LaunchEffect(744, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    return;
+  }
+
+  if (StateFlag01(actor->Slot13()) || StateFlag02(actor->Slot13())) {
+    actor->SendMsg(nullptr, 109, 0, 203, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, 109, 0, 254, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, 109, 0, 1132, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, 109, 0, 418, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    return;
+  }
+
+  if (options & 0x20) {
+    actor->render.isMotionFreezed = true;
+    actor->render.unknown_00A3 = 1;
+    actor->SetColor(-1, 64, 64, 64);
+  }
+
+  if (options & 0x2) {
+    if (!actor->state.Attachments().HasId(420)) {
+      actor->LaunchEffect(420, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+  } else {
+    while (actor->state.Attachments().HasId(420)) {
+      actor->SendMsg(nullptr, 109, 0, 420, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->LaunchEffect(540, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+  }
+
+  if (options & 0x4) {
+    if (!actor->state.Attachments().HasId(427)) {
+      actor->LaunchEffect(427, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+  } else {
+    while (actor->state.Attachments().HasId(427)) {
+      actor->SendMsg(nullptr, 109, 0, 427, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+  }
+
+  if (options & 0x10) {
+    if (!actor->state.Attachments().HasId(254)) {
+      actor->LaunchEffect(254, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      actor->LaunchEffect(1132, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+  } else {
+    while (actor->state.Attachments().HasId(254)) {
+      actor->SendMsg(nullptr, 109, 0, 254, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, 109, 0, 1132, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+  }
+
+  if (options & 0x10000) {
+    if (!actor->state.Attachments().HasId(655)) {
+      actor->LaunchEffect(655, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+  } else {
+    while (actor->state.Attachments().HasId(655)) {
+      actor->SendMsg(nullptr, 109, 0, 655, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->LaunchEffect(656, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+  }
+
+  if (options & 0x8000) {
+    if (!actor->state.Attachments().HasId(667)) {
+      actor->LaunchEffect(667, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+  } else {
+    while (actor->state.Attachments().HasId(667)) {
+      actor->SendMsg(nullptr, 109, 0, 667, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+  }
+
+  if (options & 0x800) {
+    if (!actor->state.Attachments().HasId(375)) {
+      actor->LaunchEffect(375, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+  } else {
+    while (actor->state.Attachments().HasId(375)) {
+      actor->SendMsg(nullptr, 109, 0, 375, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+  }
+
+  if (options & 0x40000) {
+    if (!actor->state.Attachments().HasId(744)) {
+      actor->LaunchEffect(744, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+  } else {
+    while (actor->state.Attachments().HasId(744)) {
+      actor->SendMsg(nullptr, 109, 0, 744, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+  }
+}
+
 // OFFSET: 0x00D7B350
 // FUNCTION: fn_22201
 void CGameMode::ReceivePacket0AB8(const unsigned char*) {
@@ -2409,6 +2617,505 @@ void CGameMode::ReceiveUnknownD4E2A0(const unsigned char* packet) {
   }
 
   window->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
+}
+
+// OFFSET: 0x00D75960
+// FUNCTION: fn_22149
+void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
+  ActorSkillMessage message;
+  message.unknown_0000 = *reinterpret_cast<const std::uint16_t*>(packet + 2);
+  message.unknown_0004 = *reinterpret_cast<const std::int32_t*>(packet + 0x18);
+  message.unknown_0008 = packet[0x20];
+  message.unknown_000C = *reinterpret_cast<const std::uint32_t*>(packet + 8);
+  message.unknown_0010 = *reinterpret_cast<const std::uint32_t*>(packet + 0xC);
+  message.unknown_0014 = *reinterpret_cast<const std::int16_t*>(packet + 0x1C);
+  message.unknown_0018 = *reinterpret_cast<const std::int16_t*>(packet + 0x1E);
+  message.unknown_001C = -1;
+  message.unknown_0020 = -1;
+  message.unknown_0024 = *reinterpret_cast<const std::uint32_t*>(packet + 0x10);
+  message.unknown_0028 = *reinterpret_cast<const std::uint32_t*>(packet + 0x14);
+
+  const std::uint16_t skillId = *reinterpret_cast<const std::uint16_t*>(packet + 2);
+  const std::uint32_t sourceAid = *reinterpret_cast<const std::uint32_t*>(packet + 4);
+  const std::uint32_t targetAid = *reinterpret_cast<const std::uint32_t*>(packet + 8);
+
+  CGameActor* gameActor = nullptr;
+  CGameActor* source = nullptr;
+  int job = -1;
+
+  if (skillId == 0x8C2 && targetAid == g_session.m_aid) {
+    return;
+  }
+
+  CGameActor* target;
+  if (targetAid == g_session.m_aid) {
+    target = this->scene->player;
+  } else {
+    target = static_cast<CGameActor*>(this->scene->GetGameActorByAID(targetAid));
+  }
+
+  if (sourceAid == g_session.m_aid) {
+    const std::int64_t value = reinterpret_cast<std::intptr_t>(&message);
+    this->scene->player->SendMsg(nullptr, 0x25, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    source = this->scene->player;
+    job = source->GetEffectiveJob(-1);
+  } else {
+    gameActor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(sourceAid));
+    if (gameActor != nullptr) {
+      const std::int64_t value = reinterpret_cast<std::intptr_t>(&message);
+      gameActor->SendMsg(nullptr, 0x25, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      source = gameActor;
+      job = source->GetEffectiveJob(-1);
+    } else if (CRenderObject* skill = this->scene->GetSkillByAID(sourceAid)) {
+      const std::int64_t value = reinterpret_cast<std::intptr_t>(&message);
+      skill->SendMsg(nullptr, 0x25, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+  }
+
+  CRenderObject* targetSkill;
+  if (target == nullptr) {
+    targetSkill = this->scene->GetSkillByAID(targetAid);
+  } else {
+    targetSkill = nullptr;
+  }
+
+  CSkillActionMgr::GetInstance()->ActionSlot15(
+    skillId, reinterpret_cast<int>(source), target, static_cast<CGameActor*>(targetSkill)
+  );
+
+  const vector3d origin{0.0f, 0.0f, 0.0f};
+  int effectId;
+
+  if (target != nullptr && source != nullptr) {
+    switch (skillId) {
+    case 0x2E1:
+    case 0x911:
+    case 0x96D: {
+      effectId = skillId == 0x96D ? 0x62F : 0x593;
+      const int duration = static_cast<int>(source->render.speed * 100.0f + 100.0f);
+      CEffect* effect = g_effectMgr->Spawn(target->render.accountId, effectId, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      if (effect) {
+        effect->Slot16(duration);
+      }
+      break;
+    }
+    case 0x2C4:
+      target->LaunchEffect(0x5C, origin, 0.0f);
+      source->Slot15(7, 1);
+      break;
+    case 0x2ED:
+      if (source == this->scene->player) {
+        source->LaunchEffect(0x461, origin, 0.0f);
+      }
+      if (target == this->scene->player) {
+        target->LaunchEffect(0x461, origin, 0.0f);
+      }
+      break;
+    case 0x296:
+    case 0x300:
+      if (source != target) {
+        target->LaunchEffect(0x174, origin, 0.0f);
+      }
+      break;
+    case 0x7D3:
+      source->Slot15(2, 1);
+      target->LaunchEffect(0xB7, origin, 0.0f);
+      break;
+    case 0x8A5:
+      if (g_serviceOptions.Get(0xE5)) {
+        g_effectMgr->Spawn(target->render.accountId, 0x5FE, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+        effectId = 0x5FF;
+      } else {
+        g_effectMgr->Spawn(target->render.accountId, 0x585, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+        effectId = 0x586;
+      }
+      g_effectMgr->Spawn(target->render.accountId, effectId, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      source->Slot15(7, 1);
+      break;
+    case 0x996:
+      g_effectMgr->Spawn(target->render.accountId, 0x619, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, 0x61A, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      break;
+    case 0x9AD: {
+      CEffect* effect;
+      if (g_serviceOptions.Get(0xE5)) {
+        effect = g_effectMgr->Spawn(source->render.accountId, 0x5DA, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+        if (effect) {
+          effect->Slot16(200);
+        }
+        effect = g_effectMgr->Spawn(target->render.accountId, 0x5D8, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+        if (effect) {
+          effect->Slot16(400);
+        }
+        effectId = 0x5D9;
+      } else {
+        effect = g_effectMgr->Spawn(source->render.accountId, 0x550, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+        if (effect) {
+          effect->Slot16(200);
+        }
+        effect = g_effectMgr->Spawn(source->render.accountId, 0x551, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+        if (effect) {
+          effect->Slot16(200);
+        }
+        effect = g_effectMgr->Spawn(target->render.accountId, 0x54E, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+        if (effect) {
+          effect->Slot16(400);
+        }
+        effectId = 0x54F;
+      }
+      effect = g_effectMgr->Spawn(target->render.accountId, effectId, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      if (effect) {
+        effect->Slot16(400);
+      }
+      break;
+    }
+    case 0x14C3:
+      g_effectMgr->Spawn(
+        source->render.accountId, 0x86A, source->render.position.x, source->render.position.y, source->render.position.z,
+        target->render.accountId, -1, 0, 0
+      );
+      break;
+    case 0x1F78: {
+      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      const vector3d from = source->render.position;
+      const vector3d to = target->render.position;
+      const float yaw = mode->CameraDesiredYaw();
+      const float heading = static_cast<float>(std::atan2(static_cast<double>(to.z - from.z), static_cast<double>(to.x - from.x)));
+      const float angle = 360.0f - (heading / 3.141592f * 180.0f + yaw);
+      CEffect* effect = g_effectMgr->Spawn(source->render.accountId, 0x91F, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      if (effect) {
+        effect->Slot17(angle);
+      }
+      break;
+    }
+    }
+  }
+
+  if (source != nullptr && skillId == 0x89B) {
+    source->Slot15(7, 1);
+  }
+
+  if (target != nullptr) {
+    switch (skillId) {
+    case 0x8D:
+      if (*reinterpret_cast<const std::int16_t*>(packet + 0x1C) == -1) {
+        target->LaunchEffect(0x81, origin, 0.0f);
+      }
+      break;
+    case 0x2DB:
+    case 0x7D8: {
+      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      if (mode == nullptr || source == nullptr) {
+        break;
+      }
+      float angle = mode->CameraDesiredYaw() + source->render.angle;
+      if (angle >= 360.0f) {
+        angle -= 360.0f;
+      }
+      int directionId;
+      if (angle > 0.0f && angle < 90.0f) {
+        directionId = 0x565;
+      } else if (angle >= 90.0f && angle < 180.0f) {
+        directionId = 0x564;
+      } else if (angle >= 180.0f && angle < 270.0f) {
+        directionId = 0x567;
+      } else {
+        directionId = 0x566;
+      }
+
+      CEffect* effect;
+      if (g_serviceOptions.Get(0xE5)) {
+        directionId += 0x8D;
+        if (g_effectMgr->Find(source->render.accountId, directionId) == nullptr) {
+          effect = g_effectMgr->Spawn(source->render.accountId, directionId, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+          if (effect) {
+            effect->Slot16(200);
+          }
+        }
+        effectId = 0x5F0;
+      } else {
+        if (g_effectMgr->Find(source->render.accountId, directionId) == nullptr) {
+          effect = g_effectMgr->Spawn(source->render.accountId, directionId, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+          if (effect) {
+            effect->Slot16(200);
+          }
+        }
+        effect = g_effectMgr->Spawn(target->render.accountId, 0x562, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+        if (effect) {
+          effect->Slot16(350);
+        }
+        effectId = 0x563;
+      }
+      effect = g_effectMgr->Spawn(target->render.accountId, effectId, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      if (effect) {
+        effect->Slot16(350);
+      }
+      g_soundMgr->PlayWave("effect\\폭염룡.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      break;
+    }
+    case 0x138C: {
+      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      if (mode == nullptr || source == nullptr) {
+        break;
+      }
+      float angle = mode->CameraDesiredYaw() + source->render.angle;
+      if (angle >= 360.0f) {
+        angle -= 360.0f;
+      }
+      int directionId;
+      if (angle > 0.0f && angle < 90.0f) {
+        directionId = 0x56D;
+      } else if (angle >= 90.0f && angle < 180.0f) {
+        directionId = 0x56C;
+      } else if (angle >= 180.0f && angle < 270.0f) {
+        directionId = 0x56F;
+      } else {
+        directionId = 0x56E;
+      }
+
+      CEffect* effect;
+      if (g_serviceOptions.Get(0xE5)) {
+        directionId += 0x8B;
+        if (g_effectMgr->Find(source->render.accountId, directionId) == nullptr) {
+          effect = g_effectMgr->Spawn(source->render.accountId, directionId, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+          if (effect) {
+            effect->Slot16(200);
+          }
+        }
+        effectId = 0x5F6;
+      } else {
+        if (g_effectMgr->Find(source->render.accountId, directionId) == nullptr) {
+          effect = g_effectMgr->Spawn(source->render.accountId, directionId, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+          if (effect) {
+            effect->Slot16(200);
+          }
+        }
+        effect = g_effectMgr->Spawn(target->render.accountId, 0x56A, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+        if (effect) {
+          effect->Slot16(350);
+        }
+        effectId = 0x56B;
+      }
+      effect = g_effectMgr->Spawn(target->render.accountId, effectId, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      if (effect) {
+        effect->Slot16(350);
+      }
+      g_soundMgr->PlayWave("effect\\폭염룡.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      break;
+    }
+    case 0x7D5:
+      if (target != source) {
+        g_effectMgr->Spawn(target->render.accountId, 0x69D, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      }
+      break;
+    case 0x89C: {
+      const float step = static_cast<float>(std::max(std::rand() % 5, 0) + 8) * 10.0f;
+      for (int index = 0; index < 3; ++index) {
+        const float radius = static_cast<float>(std::max(std::rand() % 10, 0)) + 5.0f;
+        matrix rotation;
+        rotation.MakeYRotation(static_cast<float>(index) * step / 180.0f * 3.141592f);
+        vector3d position;
+        position.x = radius * rotation.values[0] + rotation.values[3] * origin.x + rotation.values[6] * origin.x
+                   + rotation.values[9] + target->render.position.x;
+        position.y = radius * rotation.values[1] + rotation.values[4] * origin.x + rotation.values[7] * origin.x
+                   + rotation.values[10] + target->render.position.y;
+        position.z = radius * rotation.values[2] + rotation.values[5] * origin.x + rotation.values[8] * origin.x
+                   + rotation.values[11] + target->render.position.z;
+        const int kind = std::max(std::rand() % 3, 0);
+        int id;
+        if (kind == 0) {
+          id = 0x5A3;
+        } else {
+          id = (kind != 1) + 0x5A4;
+        }
+        if (g_serviceOptions.Get(0xE5)) {
+          id += 0x61;
+        }
+        g_effectMgr->Spawn(0, id, position.x, position.y, position.z, 0, -1, 0, 0);
+      }
+      break;
+    }
+    case 0x8BE:
+      g_soundMgr->PlayWave("effect\\hunter_shockwavetrap.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      target->LaunchEffect(0x92, origin, 0.0f);
+      break;
+    case 0x8BF:
+      target->LaunchEffect(0x249, origin, 0.0f);
+      g_soundMgr->PlayWave("effect\\hunter_landmine.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      break;
+    case 0x8CD:
+      target->LaunchEffect(0x247, origin, 0.0f);
+      g_soundMgr->PlayWave("effect\\폭염룡.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      break;
+    case 0x8CE:
+      target->LaunchEffect(0x87, origin, 0.0f);
+      g_soundMgr->PlayWave("effect\\ef_frostdiver.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      break;
+    case 0x8D3:
+      target->LaunchEffect(0x247, origin, 0.0f);
+      target->LaunchEffect(0x31, origin, 0.0f);
+      g_soundMgr->PlayWave("effect\\폭염룡.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      break;
+    case 0x8D5: {
+      for (int duration = 90; duration < 450; duration += 90) {
+        const float x = target->render.position.x;
+        const float y = target->render.position.y;
+        const float z = target->render.position.z;
+        int dx = std::max(std::rand() % 3, 0) * 5;
+        int dz = std::max(std::rand() % 3, 0) * 5;
+        const int direction = std::max(std::rand() % 4, 0);
+        if (dx == 10 && dz == 10) {
+          if (std::max(std::rand() % 2, 0) == 0) {
+            dx = 5;
+          } else {
+            dz = 5;
+          }
+        }
+        if (direction == 0) {
+          dx = -dx;
+        } else if (direction == 1) {
+          dz = -dz;
+        } else if (direction == 2) {
+          dx = -dx;
+          dz = -dz;
+        }
+        const vector3d position{static_cast<float>(dx) + x, y, static_cast<float>(dz) + z};
+
+        CEffect* effect;
+        if (g_serviceOptions.Get(0xE5)) {
+          effect = g_effectMgr->Spawn(0, 0x5D2, position.x, position.y, position.z, 0, -1, 0, 0);
+          if (effect) {
+            effect->Slot16(duration);
+          }
+          effectId = 0x5D3;
+        } else {
+          effect = g_effectMgr->Spawn(0, 0x54B, position.x, position.y, position.z, 0, -1, 0, 0);
+          if (effect) {
+            effect->Slot16(duration);
+          }
+          effectId = 0x54C;
+        }
+        effect = g_effectMgr->Spawn(0, effectId, position.x, position.y, position.z, 0, -1, 0, 0);
+        if (effect) {
+          effect->Slot16(duration);
+        }
+      }
+
+      if (g_serviceOptions.Get(0xE5)) {
+        g_effectMgr->Spawn(target->render.accountId, 0x5D2, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+        effectId = 0x5D3;
+      } else {
+        g_effectMgr->Spawn(target->render.accountId, 0x54B, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+        effectId = 0x54C;
+      }
+      g_effectMgr->Spawn(target->render.accountId, effectId, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_soundMgr->PlayWave("effect\\폭염룡.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      break;
+    }
+    case 0x900:
+      if (g_serviceOptions.Get(0xE5)) {
+        g_effectMgr->Spawn(target->render.accountId, 0x5B7, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+        effectId = 0x5B8;
+      } else {
+        g_effectMgr->Spawn(target->render.accountId, 0x520, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+        effectId = 0x521;
+      }
+      g_effectMgr->Spawn(target->render.accountId, effectId, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      break;
+    case 0x919: {
+      CEffect* effect = g_effectMgr->Spawn(target->render.accountId, 0x624, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      if (effect) {
+        effect->Slot16(100);
+      }
+      break;
+    }
+    case 0x9B1:
+      g_soundMgr->PlayWave("effect\\폭염룡.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      target->LaunchEffect(0x385, origin, 0.0f);
+      break;
+    case 0x9BA:
+      g_effectMgr->Spawn(target->render.accountId, 0x551, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_soundMgr->PlayWave("spore_attack.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      break;
+    case 0x9D5:
+      g_effectMgr->Spawn(target->render.accountId, 0x62C, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      break;
+    case 0x1499:
+      g_effectMgr->Spawn(target->render.accountId, 0x720, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, 0x721, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      break;
+    case 0x14AE:
+      g_effectMgr->Spawn(target->render.accountId, 0x748, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, 0x749, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      break;
+    case 0x1F6F:
+      g_effectMgr->Spawn(target->render.accountId, 0x919, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      break;
+    case 0x1F70:
+      g_effectMgr->Spawn(target->render.accountId, 0x916, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, 0x917, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      break;
+    case 0x1F72:
+      g_effectMgr->Spawn(target->render.accountId, 0x921, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      break;
+    case 0x1F75:
+      g_effectMgr->Spawn(target->render.accountId, 0x912, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      break;
+    case 0x1F76:
+      g_effectMgr->Spawn(target->render.accountId, 0x913, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, 0x914, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      break;
+    case 0x20FD:
+      g_effectMgr->Spawn(target->render.accountId, 0x7F3, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, 0x7F4, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      break;
+    case 0x2100:
+      g_effectMgr->Spawn(target->render.accountId, 0x7E3, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, 0x7E4, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      break;
+    case 0x2103:
+      g_effectMgr->Spawn(target->render.accountId, 0x832, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, 0x833, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      break;
+    case 0x2106:
+      g_effectMgr->Spawn(target->render.accountId, 0x838, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      break;
+    case 0x2109:
+      g_effectMgr->Spawn(target->render.accountId, 0x7D9, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      break;
+    case 0x2199:
+      g_effectMgr->Spawn(target->render.accountId, 0x78E, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, 0x791, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      break;
+    case 0x219A:
+      g_effectMgr->Spawn(target->render.accountId, 0x77B, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, 0x77D, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      break;
+    case 0x219D:
+      g_effectMgr->Spawn(target->render.accountId, 0x772, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, 0x773, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, 0x775, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      break;
+    }
+  }
+
+  if (source != nullptr) {
+    if (g_session.IsMonsterActor(source) == 0) {
+      this->SendMsg(0x56, skillId, reinterpret_cast<std::intptr_t>(source), *reinterpret_cast<const std::int16_t*>(packet + 0x1C), 0);
+      return;
+    }
+    const unsigned char kind = source->unknown_0314;
+    if (kind == 10 || kind == 13 || kind == 14) {
+      this->SendMsg(0x56, skillId, reinterpret_cast<std::intptr_t>(source), *reinterpret_cast<const std::int16_t*>(packet + 0x1C), 0);
+    }
+  }
+
+  int action;
+  int loopType;
+  g_session.GetMonsterSkillInfo(g_session.GetJobName(job, -1), message.unknown_0000, &action, &loopType, *reinterpret_cast<WindowDialogs*>(&g_windowMgr));
+  if (action != -1 && gameActor != nullptr) {
+    gameActor->SetAction(action * 8 - 8, 1, loopType == 0);
+  }
 }
 
 // OFFSET: 0x00D77850
@@ -2882,6 +3589,140 @@ void CGameMode::Zc_Spirits2(const unsigned char* data) {
   vector3d count{static_cast<float>(packet->value), 0.0f, 0.0f};
   if (effect) {
     effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&count), 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00D7A920
+// FUNCTION: fn_22192
+void CGameMode::UpdateActorSpiritCount(std::uint32_t aid, std::int16_t count) {
+  if (!aid) {
+    return;
+  }
+
+  CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAidIncludeMe(aid));
+  if (!actor) {
+    return;
+  }
+
+  const int job = actor->GetEffectiveJob(-1);
+  switch (job) {
+  case 4252:
+  case 4265:
+  case 4280:
+    break;
+  case 4260:
+    if (count == 0) {
+      g_effectMgr->Retire(actor->render.accountId, 2109);
+      return;
+    }
+    break;
+  case 24:
+  case 4228:
+    actor->SendMsg(nullptr, 109, 0, 629, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    if (count == 0) {
+      return;
+    }
+    break;
+  case 4038:
+    actor->SendMsg(nullptr, 109, 0, 504, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    if (count == 0) {
+      return;
+    }
+    break;
+  case 4215:
+  case 4229:
+  case 4306:
+    g_effectMgr->Retire(actor->render.accountId, 1135);
+    if (count == 0) {
+      return;
+    }
+    break;
+  default:
+    actor->SendMsg(nullptr, 109, 0, 228, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    if (count == 0) {
+      return;
+    }
+    break;
+  }
+
+  if (StateFlag01(actor->Slot13()) || StateFlag02(actor->Slot13())) {
+    switch (job) {
+    case 4252:
+    case 4265:
+    case 4280:
+      g_effectMgr->Retire(g_effectMgr->Find(actor->render.accountId, 2460), 1);
+      return;
+    case 4260:
+      g_effectMgr->Retire(actor->render.accountId, 2109);
+      break;
+    }
+  }
+
+  CRagEffect* effect;
+  switch (job) {
+  case 24:
+  case 4228:
+    effect = actor->LaunchEffect(629, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    break;
+  case 4038:
+    effect = actor->LaunchEffect(504, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    break;
+  case 4215:
+  case 4229:
+  case 4306: {
+    CEffect* coins = g_effectMgr->Spawn(actor->render.accountId, 1135, actor->render.position.x, actor->render.position.y,
+                                        actor->render.position.z, 0, -1, 0, 0);
+    if (!coins) {
+      return;
+    }
+    static_cast<CRichsCoinEffect*>(coins)->unknown_00E4 = count;
+    coins->Slot01();
+    return;
+  }
+  case 4252:
+  case 4265:
+  case 4280: {
+    CServantWeaponNewEffect* weapons =
+      static_cast<CServantWeaponNewEffect*>(g_effectMgr->Spawn(actor->render.accountId, 2460, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0));
+    if (!weapons) {
+      return;
+    }
+    const int current = static_cast<int>(weapons->emitters.size());
+    if (current < count) {
+      for (int remaining = count - current; remaining != 0; --remaining) {
+        weapons->AddWeapon();
+      }
+    } else if (current > count) {
+      for (int remaining = current - count; remaining != 0; --remaining) {
+        weapons->Shoot(5202);
+      }
+    }
+    return;
+  }
+  case 4260: {
+    CEffect* abyss = g_effectMgr->Find(actor->render.accountId, 2109);
+    if (!abyss) {
+      abyss = g_effectMgr->Spawn(actor->render.accountId, 2109, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    }
+    if (abyss) {
+      static_cast<CFromTheAbyssEffect*>(abyss)->SetLevel(count);
+    }
+    for (auto it = g_activeSkillEffects.begin(); it != g_activeSkillEffects.end(); ++it) {
+      if (it->id == 1244) {
+        it->unknown_0008 = count;
+        break;
+      }
+    }
+    return;
+  }
+  default:
+    effect = actor->LaunchEffect(228, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    break;
+  }
+
+  if (effect && (effect->state.type == 228 || effect->state.type == 504 || effect->state.type == 629)) {
+    vector3d value{static_cast<float>(count), 0.0f, 0.0f};
+    effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&value), 0, 0, 0, 0);
   }
 }
 

@@ -531,6 +531,7 @@ public:
   void ReceiveInventoryItemUpdate(const unsigned char* packet);
   void ReceiveUnknownD25850(const unsigned char* packet);
   void ReceiveUnknownD31A40(const unsigned char* packet);
+  void ReceiveNotifySkill(const unsigned char* packet);
   void ReceiveActorSkillAction(const unsigned char* packet);
   void ReceiveActorSkillMessage(const unsigned char* packet);
   void OpenWindow154();
@@ -545,6 +546,7 @@ public:
   void ReceiveActorStatusValue(std::uint32_t aid, int status, int amount, int option);
   void ReceiveItem1718List(const unsigned char* packet);
   void Zc_Spirits2(const unsigned char* data);
+  void UpdateActorSpiritCount(std::uint32_t aid, std::int16_t count);
   void Zc_Mer_Init(const unsigned char* data);
   void Zc_Mer_Par_Change(const unsigned char* data);
   void ReceiveTypedNotice(const unsigned char* packet);
