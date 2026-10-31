@@ -1015,3 +1015,40 @@ void UIToolTipBitmapWnd::Slot28(int x, int y) {
 }
 
 // OFFSET: 0x007B50C0
+// FUNCTION: fn_09213
+void UIAchSummaryWnd::Slot15(int, int) {
+  for (int index = 0; index < this->unknown_007C; ++index) {
+    UICustomGageBar* gauge = new (std::nothrow) UICustomGageBar(*this->m_context);
+    if (index == 0) {
+      gauge->Slot15(558, 10);
+      gauge->Resize(558, 10);
+      gauge->value = 0;
+      gauge->maximum = 100;
+      gauge->Move(43, 49);
+    } else {
+      gauge->Slot15(254, 10);
+      gauge->Resize(254, 10);
+      gauge->value = 0;
+      gauge->maximum = 100;
+      gauge->Move((index - 1) % 2 * 304 + 43, (index - 1) / 2 * 50 + 123);
+    }
+    gauge->barColor = 0xC78A71;
+    gauge->backgroundColor = 0xFFFFFF;
+    gauge->outerBorderColor = 0xFFFFFF;
+    gauge->innerBorderColor = 0xDAA896;
+    this->AddChild(gauge);
+    this->gauges.push_back(gauge);
+  }
+
+  UIWindow** slot = this->buttons;
+  for (int x = 62; x < 694; x += 316) {
+    UITextButton* button = new UITextButton(*this->m_context, *this->m_controls);
+    *slot = button;
+    button->Configure("", 0x997836, 0, 12, 1, 0);
+    static_cast<UITextButton*>(*slot)->m_hoverColor = 0x635AA5;
+    (*slot)->Move(x, 325);
+    (*slot)->SetId(-1);
+    this->AddChild(*slot);
+    ++slot;
+  }
+}
