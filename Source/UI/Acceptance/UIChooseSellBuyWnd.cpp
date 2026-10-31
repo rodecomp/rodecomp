@@ -3544,3 +3544,9 @@ UIYourItemWnd::UIYourItemWnd(UIWindowContext& windows, UIFrameContext& frames, U
 }
 
 // OFFSET: 0x008C8C70
+// FUNCTION: fn_11971
+UISayDialogWnd::UISayDialogWnd(UIWindowContext& windows, UIFrameContext& frames)
+    : UIFrameWnd(windows, frames, 0) {
+  this->m_viewer = nullptr;
+  this->m_placement = nullptr;
+}
