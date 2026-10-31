@@ -14,6 +14,7 @@
 #include "UI/Shop/ItemDrawing.h"
 #include "Utility/Text/FormatString.h"
 
+#include <algorithm>
 #include <cstdlib>
 #include <cstring>
 #include <windows.h>
@@ -212,6 +213,28 @@ void UILapineBox_IngredientListWnd::Slot15(int width, int height) {
 }
 
 // OFFSET: 0x005FFDC0
+// FUNCTION: fn_04155
+void UIIngredientInfoWnd::Paint() {
+  this->ClearSurface(0xFFF7F7);
+  if (this->selected == 1) {
+    CBitmapRes* selected = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\lapine\\list_selected_item.bmp")));
+    this->DrawBitmap(32, 0, &selected->image, false);
+  }
+
+  std::string name;
+  name = this->FitDisplayText(100, this->item.unknown_0044.c_str(), 0, 12, 0);
+
+  ItemDescriptions descriptions{g_itemDescriptions};
+  std::uint32_t color = 0;
+  if (this->insufficient == 0) {
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, this->m_context->fonts, this->m_context->locale, 4, 3, this->item, 0, 0);
+  } else {
+    DrawItemWithQuantityAuxiliary(*this, descriptions, this->m_context->fonts, this->m_context->locale, 2, 4, 3, this->item, this->item.identified, 0);
+    color = 0x969696;
+  }
+
+  this->DrawShadowedText(36, 9, name.c_str(), 0, color, 0xE0E0E0, 0, 12, 0);
+}
 
 // OFFSET: 0x005FFF90
 // FUNCTION: fn_04156
@@ -299,3 +322,59 @@ int UILapineBoxWnd::AddIngredient(std::uint32_t id, int quantity) {
 }
 
 // OFFSET: 0x00602030
+// FUNCTION: fn_04178
+unsigned char UILapineBox_IngredientListWnd::AddIngredient(std::uint32_t id) {
+  ITEM_INFO owned = LookupClientItemByIdentity(g_session.m_inventoryItems, id);
+  if (owned.unknown_0000[1] == 0) {
+    return 0;
+  }
+
+  const int itemId = std::atoi(owned.itemId.c_str());
+  if (g_session.IsPetEgg(itemId) == 1 && owned.unknown_005D == 1) {
+    return 0;
+  }
+
+  if (g_session.HasItem61B8(owned.unknown_0000[1]) == 1) {
+    return 0;
+  }
+
+  auto it = std::find_if(this->materials.begin(), this->materials.end(), [owned](ITEM_INFO mat) {
+    return std::atoi(owned.itemId.c_str()) == std::atoi(mat.itemId.c_str());
+  });
+
+  if (it == this->materials.end()) {
+    return 0;
+  }
+
+  for (UIIngredientInfoWnd* itemWnd : this->items) {
+    if (itemWnd->item.unknown_0000[1] == id) {
+      itemWnd->item.quantity += it->quantity;
+      itemWnd->insufficient = 0;
+      itemWnd->Show(1);
+      itemWnd->Invalidate();
+      this->Invalidate();
+      return 1;
+    }
+  }
+
+  UILapineBoxWnd* owner = static_cast<UILapineBoxWnd*>(this->parent);
+  UIIngredientInfoWnd* info = new UIIngredientInfoWnd(*this->m_context, owner->FrameContext());
+  info->SetSize(136, 30);
+  info->sub_6028C0(id);
+  info->quantity = it->quantity;
+  this->AddScrollChild(info);
+
+  if (owned.quantity < it->quantity) {
+    info->insufficient = 1;
+  }
+
+  if (this->minRefine > owned.unknown_0060 || this->maxRefine < owned.unknown_0060) {
+    info->insufficient = 1;
+  }
+
+  info->Invalidate();
+  this->items.push_back(info);
+  this->SendMsg(this, 87, 0, 0, 0, 0);
+  return 1;
+}
+

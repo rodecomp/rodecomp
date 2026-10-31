@@ -15,7 +15,7 @@ class UIIngredientInfoWnd : public UIFrameWnd {
 public:
   // INLINED
   UIIngredientInfoWnd(UIWindowContext& windows, UIFrameContext& frames)
-      : UIFrameWnd(windows, frames, 0), selected(0), insufficient(0), quantity(0), m_controls(nullptr) {}
+      : UIFrameWnd(windows, frames, 0), selected(0), insufficient(0), quantity(0) {}
   void Move(int x, int y) override;
   void Slot10(int argument1, int argument2, std::intptr_t argument3) override;
   void Slot25(int x, int y) override;
@@ -25,15 +25,13 @@ public:
   void Slot35(int argument) override;
   void Paint() override;
   void Click(int button, int unused);
+  void sub_6028C0(std::uint32_t id);
 
   /* 00B8 */ ITEM_INFO item;
   /* 01B0 */ unsigned char selected;
   /* 01B1 */ unsigned char insufficient;
   /* 01B4 */ std::string tooltip;
   /* 01CC */ int quantity;
-
-protected:
-  UIButtonContext* m_controls;
 };
 
 #endif
