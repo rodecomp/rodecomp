@@ -2750,6 +2750,15 @@ UIReplayRECControlWnd::UIReplayRECControlWnd(UIWindowContext& windows, UIFrameCo
 }
 
 // OFFSET: 0x008A45A0
+// FUNCTION: fn_11671
+UISelectReplayDataWnd::UISelectReplayDataWnd(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0) {
+  this->m_list = nullptr;
+  this->m_serverButton = nullptr;
+  this->m_texts[0] = nullptr;
+  this->m_texts[1] = nullptr;
+  this->m_texts[2] = nullptr;
+  this->m_texts[3] = nullptr;
+}
 
 // OFFSET: 0x008A4640
 // FUNCTION: fn_11672
