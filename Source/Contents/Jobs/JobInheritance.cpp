@@ -1648,3 +1648,52 @@ bool CSession::PlaySkillGroundEffect(int skillId, vector3d position) {
   }
   return true;
 }
+
+// OFFSET: 0x00E2F9F0
+// FUNCTION: fn_24162
+int CSession::GetMaxBaseLevel(int job) const {
+  if (IsTreeGroupThree(job) == true) {
+    return *reinterpret_cast<const int*>(&g_session.unknown_7EF0[0x74]);
+  }
+  if (IsTreeGroupTwo(job)) {
+    return g_session.m_maxLevel;
+  }
+  if (g_session.IsSuperNovice2Job(job)) {
+    return *reinterpret_cast<const int*>(&g_session.unknown_7EF0[0]);
+  }
+  if (g_session.IsExpandedJob(job)) {
+    return *reinterpret_cast<const int*>(&g_session.unknown_7EF0[4]);
+  }
+  return g_session.IsDoramJob(job) == true ? *reinterpret_cast<const int*>(&g_session.unknown_7EF0[0x28])
+                                           : *reinterpret_cast<const int*>(g_session.unknown_7EE8);
+}
+
+// OFFSET: 0x00E2FA80
+// FUNCTION: fn_24163
+int CSession::GetMaxJobLevel(int job) const {
+  if (g_session.IsSuperNoviceJob(job)) {
+    return *reinterpret_cast<const int*>(&g_session.unknown_7EF0[0x10]);
+  }
+  if ((job >= JT_KNIGHT_H && job < JT_NOVICE_B) || job == JT_GUNSLINGER || job == JT_NINJA || job == JT_GUNSLINGER_B || job == JT_NINJA_B ||
+      job == JT_DRUID || job == JT_DRUID_B) {
+    return *reinterpret_cast<const int*>(&g_session.unknown_7EF0[0x18]);
+  }
+  if (job == JT_NOVICE || job == JT_NOVICE_B || job == JT_NOVICE_H) {
+    return *reinterpret_cast<const int*>(&g_session.unknown_7EF0[0x0C]);
+  }
+  if (IsTreeGroupThree(job) == true) {
+    return *reinterpret_cast<const int*>(&g_session.unknown_7EF0[0x78]);
+  }
+  if (IsTreeGroupTwo(job)) {
+    return *reinterpret_cast<const int*>(&g_session.unknown_7EF0[0x1C]);
+  }
+  if (!g_session.IsExpandedJob(job)) {
+    if (g_session.IsDoramJob(job) == true) {
+      return *reinterpret_cast<const int*>(&g_session.unknown_7EF0[0x2C]);
+    }
+    if (!g_session.IsSuperNovice2Job(job)) {
+      return *reinterpret_cast<const int*>(&g_session.unknown_7EF0[0x14]);
+    }
+  }
+  return *reinterpret_cast<const int*>(&g_session.unknown_7EF0[0x24]);
+}

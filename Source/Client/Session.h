@@ -507,6 +507,8 @@ public:
   int IsNewMercenaryJob(int job) const;
   bool IsSuperNovice2Job(int job) const;
   bool IsExpandedJob(int job) const;
+  int GetMaxBaseLevel(int job) const;
+  int GetMaxJobLevel(int job) const;
   bool IsCostumeJob(int job) const;
   int GetSceneUnknown004C() const;
   int IsPlayerJobId(int job) const;
