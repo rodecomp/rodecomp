@@ -51,6 +51,11 @@
 #include "Render/Textures/Surface.h"
 #include "UI/FrameSkin.h"
 #include "UI/Window/UIRegisterMgr.h"
+#include "Contents/ClanInfo.h"
+#include "Contents/GuildMgr.h"
+#include "Contents/Hotkeys/EmotionHotkeys.h"
+#include "Contents/Messenger/ClientMessenger.h"
+#include "UI/Text/TextMarkup.h"
 namespace {
 #pragma pack(push, 1)
 struct AddFriendPacket {
@@ -62,6 +67,10 @@ struct AddFriendPacket {
 static_assert(sizeof(AddFriendPacket) == 26);
 static_assert(offsetof(AddFriendPacket, name) == 2);
 }
+
+struct SessionCommandTarget {
+  int sub_DE1010(const char* name, int* optionId, std::string* strings);
+};
 
 // GLOBAL: gl_24525
 CMiniPartyWndAreaMgr* g_miniPartyWndAreaMgr = nullptr;
@@ -1159,6 +1168,55 @@ int UIWindowMgr::LoadReplayReserved(const std::vector<unsigned char>& data) {
     }
   }
   return static_cast<int>(offset);
+}
+
+// OFFSET: 0x00AA57E0
+// FUNCTION: fn_17224
+void UIWindowMgr::SendEmotionHotkey(int index) {
+  char text[256];
+  const EmotionHotkeys* emotions = reinterpret_cast<const EmotionHotkeys*>(&g_session.unknown_0FF8);
+  std::strcpy(text, emotions->current[index].c_str());
+
+  if (g_windowMgr.unknown_01DC != nullptr) {
+    const bool linked = HasTextLinks(std::string(text));
+    if (linked) {
+      reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0xE53), 0, true, false, 0, "Message", 280, 120, 0);
+      return;
+    }
+  }
+
+  CMode* mode = static_cast<CMode*>(g_charViewMode);
+  if (text[0] == '/') {
+    if (g_session.ProcessEmotionShortcut(text) == 0) {
+      std::string parts[3];
+      int talkType;
+      const int offset = reinterpret_cast<SessionCommandTarget*>(&g_session)->sub_DE1010(text, &talkType, parts);
+      if (offset != -1) {
+        g_windowMgr.unknown_04DC = text + offset;
+      }
+      static_cast<CMode*>(g_charViewMode)->SendMsg(0x2A, talkType, reinterpret_cast<int>(parts), 0, 0);
+    }
+    return;
+  }
+
+  g_windowMgr.unknown_04DC = text;
+  const int& chatTarget = *reinterpret_cast<const int*>(&g_session.unknown_5490[0x8]);
+  if (chatTarget == 2) {
+    if (g_guildId != 0) {
+      mode->SendMsg(0x81, 0, 0, 0, 0);
+      return;
+    }
+  } else {
+    if (chatTarget == 1 && ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyCount() != 0) {
+      mode->SendMsg(0x42, 0, 0, 0, 0);
+      return;
+    }
+    if (chatTarget == 3 && g_clanInfo->m_hasClan) {
+      mode->SendMsg(0x121, 0, 0, 0, 0);
+      return;
+    }
+  }
+  mode->SendMsg(6, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x00AA5B00

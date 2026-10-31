@@ -556,6 +556,7 @@ public:
   int TranslateHotkey(int key, int keyData);
   std::vector<unsigned char> SaveReplayWindows();
   bool ProcessHotkeyAction(int action, int pressed);
+  void SendEmotionHotkey(int index);
 };
 
 extern UIWindowMgr g_windowMgr;
