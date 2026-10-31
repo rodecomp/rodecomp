@@ -262,6 +262,12 @@ struct CRagEffect : CRenderObject {
   void sub_C66F60();
   void sub_C54420();
   void sub_C51740(const char* name, char flag);
+  void SandScatter();
+  void Sight();
+  void AlphaCenterRise();
+  bool Potion_Awakening();
+  void StatusIconColumn();
+  bool StormGust();
 
   virtual void Slot08();
   virtual void Slot09(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh, int twelfth, int thirteenth, int fourteenth, int fifteenth, int sixteenth, int seventeenth);
