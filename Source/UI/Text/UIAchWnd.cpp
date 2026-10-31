@@ -1526,6 +1526,7 @@ UICustomGageBar::UICustomGageBar(UIWindowContext& windows)
 }
 
 // OFFSET: 0x007B25B0
+// FUNCTION: fn_09188
 UIToolTipBitmapWnd::UIToolTipBitmapWnd(UIWindowContext& windows, WindowManagerWindows& managed)
     : UIWindow(windows, 0), bitmap(nullptr), itemId(0), unknown_00B4(0), unknown_00B8(0), m_windows(&managed) {
 }
