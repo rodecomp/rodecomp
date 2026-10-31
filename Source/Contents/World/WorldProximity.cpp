@@ -259,3 +259,38 @@ bool WorldProximityRangeCallback::Invoke() {
   return std::fabs(this->cellX - this->playerX) <= static_cast<float>(this->range) &&
     std::fabs(this->cellZ - this->playerZ) <= static_cast<float>(this->range);
 }
+
+
+// OFFSET: 0x00AC9D50
+
+// OFFSET: 0x00AC9E70
+
+// OFFSET: 0x00ACA9F0
+
+// OFFSET: 0x00ACAB90
+// FUNCTION: fn_17700
+void CWorld::AddPcPosFromCell(std::uint32_t aid, const int* cell) {
+  CellFloatPos pos;
+  pos.x = 0.0f;
+  pos.z = 0.0f;
+  static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Grid().CellCenter(cell[0], cell[1], pos.x, pos.z);
+  this->AddPcPos(aid, pos);
+}
+
+// OFFSET: 0x00ACABE0
+// FUNCTION: fn_17701
+void CWorld::AddPcPosUnindexed(std::uint32_t aid, const CellFloatPos& cell) {
+  this->RemovePcPos(aid, false);
+
+  for (auto entry = this->unindexedActorIds.begin(); entry != this->unindexedActorIds.end(); ++entry) {
+    if (*entry != aid) {
+      continue;
+    }
+
+    this->unindexedActorIds.erase(entry);
+    break;
+  }
+
+  this->unindexedActorIds.push_back(aid);
+  this->PcApproachToPlayer(aid, cell);
+}
