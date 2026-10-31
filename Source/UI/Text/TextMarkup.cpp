@@ -37,6 +37,30 @@ void ExtractNavigationTextLinks(std::string&& text, std::vector<TextLink>& links
   ExtractTextLinks(std::move(text), g_naviTagBegin, g_naviTagEnd, links);
 }
 
+// GLOBAL: gl_24597
+static const std::string g_tipBoxTagBegin = "<TIPBOX>";
+
+// GLOBAL: gl_24598
+static const std::string g_tipBoxTagEnd = "</TIPBOX>";
+
+// OFFSET: 0x00A7D690
+// FUNCTION: fn_16951
+void ExtractTipBoxTextLinks(std::string&& text, std::vector<TextLink>& links) {
+  ExtractTextLinks(std::move(text), g_tipBoxTagBegin, g_tipBoxTagEnd, links);
+}
+
+// GLOBAL: gl_24591
+static const std::string g_urlTagBegin = "<URL>";
+
+// GLOBAL: gl_24592
+static const std::string g_urlTagEnd = "</URL>";
+
+// OFFSET: 0x00A7D6B0
+// FUNCTION: fn_16952
+void ExtractUrlTextLinks(std::string&& text, std::vector<TextLink>& links) {
+  ExtractTextLinks(std::move(text), g_urlTagBegin, g_urlTagEnd, links);
+}
+
 // OFFSET: 0x00A81A70
 // FUNCTION: fn_16980
 bool HasTextLinks(const std::string& text) {
