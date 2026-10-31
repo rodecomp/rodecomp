@@ -7,15 +7,20 @@
 #include <cstddef>
 #include <cstdint>
 
+class UIStaticText;
+
 class UIMerchantItemPurchaseWnd : public UIItemBaseWnd {
 public:
   void Slot11() override;
+  void Slot15(int width, int height) override;
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot25(int x, int y) override;
   void Slot28(int x, int y) override;
   void Slot32(int x, int y) override;
 
-  /* 00F0 */ unsigned char unknown_00F0[0xC];
+  /* 00F0 */ int unknown_00F0;
+  /* 00F4 */ UIStaticText* total;
+  /* 00F8 */ unsigned char unknown_00F8[0x4];
   /* 00FC */ MerchantItemPurchaseWndInfo* saved;
   /* 0100 */ int hovered;
   /* 0104 */ unsigned char unknown_0104[0x4];

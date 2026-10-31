@@ -3906,6 +3906,70 @@ int UIMerchantItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
   return 0;
 }
 
+// OFFSET: 0x0097AA00
+
+// OFFSET: 0x00979920
+// FUNCTION: fn_13318
+void UIMerchantItemMyShopWnd::Slot15(int width, int height) {
+  if (this->unknown_0100) {
+    this->notice = new UIStaticText(*this->m_context, *this->m_controls);
+    this->notice->SetSize(160, 15);
+    char text[80];
+    std::sprintf(text, LookupMessage(1735), 0);
+    this->notice->SetTextAutoWidth(text);
+    this->notice->Move(12, this->geometry.height - 26);
+    this->AddChild(this->notice);
+  }
+
+  this->title = new UIStaticText(*this->m_context, *this->m_controls);
+  this->title->SetSize(240, 15);
+  this->title->SetText(LookupMessage(this->unknown_0100 ? 1734 : 3237), 0);
+  this->title->Move(16, 2);
+  this->title->shadow = 1;
+  this->AddChild(this->title);
+
+  this->resizer = new UIResizer(*this->m_context);
+  this->resizer->SetSize(16, 16);
+  static_cast<UIResizer*>(this->resizer)->SetDirection(7);
+  static_cast<UIResizer*>(this->resizer)->SetBitmapName("유저인터페이스\\btn_resize.bmp");
+  this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
+  static_cast<UIResizer*>(this->resizer)->SetColors(0xFFFF00FF, 0xFFFF00FF);
+  this->AddChild(this->resizer);
+
+  UIScrollBar* scrollBar = new UIScrollBar(*this->m_context);
+  this->scrollBar = scrollBar;
+  scrollBar->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - this->unknown_011C - 17);
+  this->AddChild(this->scrollBar);
+
+  this->saleAlarm = new UICheckBox(*this->m_context, *this->m_controls);
+  this->saleAlarm->SetSize(240, 12);
+  this->saleAlarm->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(this->unknown_0100 ? 2698 : 2642));
+  this->saleAlarm->FitToText();
+  this->saleAlarm->Move(12, this->unknown_0100 ? this->geometry.height - 12 : this->geometry.height - 18);
+  this->saleAlarm->SetChecked(g_vendingSaleAlarm);
+  this->AddChild(this->saleAlarm);
+
+  const std::string prefix("유저인터페이스\\");
+  const char* names[1][3] = {{"btn_close", "btn_close_a", "btn_close_b"}};
+  int positions[1][2] = {{this->geometry.width - 61, this->geometry.height - 24}};
+  int ids[1] = {201};
+  for (int index = 0; index < 1; ++index) {
+    this->buttons[index] = new UIBitmapButton(*this->m_context, *this->m_controls);
+    UIBitmapButton* button = static_cast<UIBitmapButton*>(this->buttons[index]);
+    button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
+    button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
+    button->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
+    this->buttons[index]->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    this->buttons[index]->Move(positions[index][0], positions[index][1]);
+    this->buttons[index]->SetId(ids[index]);
+    this->AddChild(this->buttons[index]);
+  }
+
+  this->columns = (width - 40) / 32;
+  this->visibleRows = static_cast<unsigned>(height - this->unknown_011C - 17) / 32;
+  this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+}
+
 // OFFSET: 0x00993A20
 // FUNCTION: fn_13434
 int UINoticeMessageBox_LockSellItem::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {

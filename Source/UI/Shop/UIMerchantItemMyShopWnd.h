@@ -9,12 +9,14 @@
 
 class UIBasicButton;
 class UICheckBox;
+class UIStaticText;
 
 extern bool g_vendingSaleAlarm;
 
 class UIMerchantItemMyShopWnd : public UIItemBaseWnd {
 public:
   void Slot11() override;
+  void Slot15(int width, int height) override;
   void Slot19() override;
   void Paint() override;
   void Slot25(int x, int y) override;
@@ -24,9 +26,10 @@ public:
   void OpenShop();
   void SetDuration(std::uint32_t value);
 
-  /* 00F0 */ unsigned char unknown_00F0[0x8];
+  /* 00F0 */ int unknown_00F0;
+  /* 00F4 */ UIStaticText* title;
   /* 00F8 */ MerchantItemMyShopWndInfo* saved;
-  /* 00FC */ unsigned char unknown_00FC[0x4];
+  /* 00FC */ UIStaticText* notice;
   /* 0100 */ int unknown_0100;
   /* 0104 */ UICheckBox* saleAlarm;
   /* 0108 */ unsigned char shopOpen;
