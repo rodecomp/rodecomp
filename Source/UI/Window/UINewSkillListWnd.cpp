@@ -30,11 +30,23 @@
 #include "UI/Window/WindowManagerWindows.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"
+#include "Contents/Actors/Pc.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/SpriteRidingOffset.h"
+#include "Render/DeviceContext/DeviceContext.h"
+#include "Render/Textures/SpriteAtlas.h"
+#include "Render/Textures/SpritePixels.h"
+#include "Render/Textures/Texture.h"
+#include "Resource/PaletteResource.h"
+#include "Resource/Sprites/ActionResource.h"
+#include "Resource/Sprites/SpriteResource.h"
 
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <string>
+#include <windows.h>
+#include <timeapi.h>
 
 namespace {
   template <std::size_t Length, std::uint64_t Key>
@@ -152,6 +164,119 @@ void UINewSkillListWnd::sub_9AE730() {
 
   this->m_locked = 0;
   this->LayoutButtons();
+}
+
+// GLOBAL: gl_25138
+int g_skillListHeadOffsetX;
+// GLOBAL: gl_25139
+int g_skillListHeadOffsetY;
+
+// OFFSET: 0x009AE930
+// FUNCTION: fn_13801
+void UINewSkillListWnd::sub_9AE930() {
+  std::string bodyImf;
+  std::string actions[2];
+  std::string sprites[2];
+  std::string bodyPal;
+  std::string headPal;
+  SpriteAtlasRecord record{};
+
+  const int job = g_session.m_job;
+  const int sex = g_session.SyncUnknown0E98();
+  int head = g_session.m_head;
+  const int bodyPalette = g_session.m_bodyStyle;
+  const int headPalette = g_session.m_headPalette;
+
+  actions[0].assign(GetBodyActionResourceName(job, sex, g_session.m_bodyCostume, 0));
+  sprites[0].assign(g_session.GetBodySprName(job, sex, g_session.m_bodyCostume, 0));
+  actions[1].assign(g_session.GetHeadActName(job, sex, &head));
+  sprites[1].assign(g_session.GetHeadSprName(job, sex, &head));
+  if (bodyPalette != 0) {
+    bodyPal.assign(g_session.GetBodyPalName(job, sex, bodyPalette, g_session.m_bodyCostume, 0, 0));
+  }
+  if (headPalette != 0) {
+    headPal.assign(g_session.GetHeadPalName(head, job, sex, headPalette));
+  }
+  bodyImf = GetBodyImfName(job, sex, head, g_session.m_bodyCostume);
+
+  for (int layer = 0; layer < 2; ++layer) {
+    ResourceMgr::Instance().Load(bodyImf.c_str());
+    if (actions[layer].size() == 0 || sprites[layer].size() == 0) {
+      continue;
+    }
+
+    CActRes* action = static_cast<CActRes*>(ResourceMgr::Instance().Load(actions[layer].c_str()));
+    CSprRes* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(sprites[layer].c_str()));
+    const int frameCount = static_cast<int>(action->FrameCount(23));
+    int frame = static_cast<int>(static_cast<float>(timeGetTime() - this->m_lastTick) / 300.0f) / frameCount;
+    if (frame >= 3) {
+      frame = 0;
+      this->m_lastTick = timeGetTime();
+    }
+
+    const ActionFrame& actionFrame = action->Frame(23, frame);
+    int offsetX = 0;
+    int offsetY = 0;
+    if (g_session.IsDoramJob(job) == true) {
+      int view = 0;
+      if (layer == 4) {
+        view = *reinterpret_cast<const int*>(&g_session.unknown_0EF4[0]);
+      } else if (layer == 3) {
+        view = *reinterpret_cast<const int*>(&g_session.unknown_0EF4[4]);
+      } else if (layer == 2) {
+        view = *reinterpret_cast<const int*>(&g_session.unknown_0EF4[8]);
+      }
+      int x = 0;
+      int y = 0;
+      g_luaScript->Call("OffsetItemPos_GetOffsetForDoram", "ddd>dd", view, 23, g_session.SyncUnknown0E98(), &x, &y);
+      offsetX = x;
+      offsetY = y;
+    }
+
+    const std::uint32_t* palette = sprite->palette;
+    if (layer == 1) {
+      CActRes* bodyAction = static_cast<CActRes*>(ResourceMgr::Instance().Load(actions[0].c_str()));
+      const ActionFrame& bodyFrame = bodyAction->Frame(23, frame);
+      if (actionFrame.anchorCount != 0 && bodyFrame.anchorCount != 0 && actionFrame.anchors[0].unknown_0008 == bodyFrame.anchors[0].unknown_0008) {
+        offsetX += bodyFrame.anchors[0].x - actionFrame.anchors[0].x;
+        offsetY += bodyFrame.anchors[0].y - actionFrame.anchors[0].y;
+        g_skillListHeadOffsetX = offsetX;
+        g_skillListHeadOffsetY = offsetY;
+      }
+    }
+    if (layer == 0) {
+      if (bodyPalette != 0) {
+        palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(bodyPal.c_str()))->palette;
+      }
+    } else if (layer == 1) {
+      if (headPalette != 0) {
+        palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(headPal.c_str()))->palette;
+      }
+    }
+
+    const SpriteFrameCell& cell = actionFrame.Cell(layer > 1 ? 0 : layer);
+    if (cell.image == -1) {
+      continue;
+    }
+
+    const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
+    CTexture* texture;
+    if (cell.imageType == 0) {
+      texture = g_renderer->atlas.Find(image, palette, record);
+      if (!texture) {
+        texture = g_renderer->atlas.Insert(this->m_context->renderSystem, image, palette, record, g_serviceType, g_resourceReuseDelay);
+      }
+    } else {
+      texture = static_cast<CTexture*>(const_cast<void*>(image->unknown_0008));
+    }
+
+    const int y = offsetY - 25 + cell.y + this->geometry.height;
+    const int clipY = y < 0 ? y : 0;
+    this->geometry.surface->DrawSurface(
+      cell.x + offsetX + 48, y < 0 ? 0 : y, texture, static_cast<int>(record.u0 * 256.0f), static_cast<int>(record.v0 * 256.0f - clipY), image->width,
+      image->height + clipY, cell.mirrored != 0, image->unknown_0004 + 1, image->unknown_0006 + 1, 0, 0
+    );
+  }
 }
 
 // OFFSET: 0x009B0370
