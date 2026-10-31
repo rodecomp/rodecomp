@@ -32,13 +32,17 @@ protected:
 
 class UIBarGraph4 : public UIBarGraph3 {
 public:
+  explicit UIBarGraph4(UIWindowContext& context) : UIBarGraph3(context) {
+  }
+
   void Paint() override;
   void Slot28(int x, int y) override;
 
   void SetValues(const int* current, const int* maximum);
 
-protected:
   /* 0084 */ bool m_plainColor;
+
+protected:
   UIButtonContext* m_controls;
 };
 
@@ -52,8 +56,9 @@ public:
   void SetValues(std::int64_t current, std::int64_t maximum);
   void FillBackground(std::uint32_t color);
 
-protected:
   /* 007C */ unsigned char m_plainColor;
+
+protected:
   /* 0080 */ std::int64_t m_current;
   /* 0088 */ std::int64_t m_maximum;
   UIButtonContext* m_controls;

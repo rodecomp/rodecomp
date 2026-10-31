@@ -74,6 +74,12 @@
 #include "UI/Item/UIItemWnd.h"
 #include "Contents/Sound/SoundMaker.h"
 #include "UI/Buttons/UICheckBox.h"
+#include "Contents/ClientState.h"
+#include "Contents/ForbiddenWords.h"
+#include "UI/Window/UINormalMB.h"
+#include "UI/Buttons/UINoneVisibleButton.h"
+#include "Contents/PetEvolutionMgr.h"
+#include "Contents/Items/ItemInfo.h"
 #include <mbstring.h>
 #include "Contents/Actors/Pc.h"
 #include "Contents/SpriteRidingOffset.h"
@@ -3093,3 +3099,275 @@ int UILoginOTPWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 
   return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
 }
+
+// OFFSET: 0x008ADC80
+// FUNCTION: fn_11740
+void UIHomunInfoWnd::Slot15(int, int) {
+  this->AddCloseButton(*this->m_controls, "", 0);
+  this->nameEdit = new UIEditCtrl2(*this->m_context, *this->m_editContext);
+  this->nameEdit->SetSize(80, 16);
+  char* const name = reinterpret_cast<char*>(&g_session.unknown_5570[0x0C]);
+  if (std::strcmp(name, "") == 0) {
+    std::sprintf(name, g_session.GetJobName(g_session.m_homunJob, -1));
+  }
+  this->nameEdit->Move(135, 22);
+  this->nameEdit->SetText(name);
+  this->nameEdit->maximum = 50;
+  this->nameEdit->Background(232, 232, 232);
+  this->AddChild(this->nameEdit);
+  {
+    const std::string bitmap("유저인터페이스\\btn_del");
+    this->button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    this->button->SetBitmap((bitmap + ".bmp").c_str(), 0, 0);
+    this->button->SetBitmap((bitmap + "_a.bmp").c_str(), 1, 0);
+    this->button->SetBitmap((bitmap + "_b.bmp").c_str(), 2, 0);
+    this->button->SetSize(this->button->BitmapWidth(), this->button->BitmapHeight());
+    this->button->Move(187, 44);
+    this->button->SetId(291);
+    this->AddChild(this->button);
+  }
+  {
+    const std::string bitmap("유저인터페이스\\btn_skill");
+    this->button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    this->button->SetBitmap((bitmap + ".bmp").c_str(), 0, 0);
+    this->button->SetBitmap((bitmap + "_a.bmp").c_str(), 1, 0);
+    this->button->SetBitmap((bitmap + "_b.bmp").c_str(), 2, 0);
+    this->button->SetSize(this->button->BitmapWidth(), this->button->BitmapHeight());
+    this->button->Move(232, 44);
+    this->button->SetId(289);
+    this->AddChild(this->button);
+  }
+  {
+    const std::string bitmap("유저인터페이스\\btn_feed");
+    this->button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    this->button->SetBitmap((bitmap + ".bmp").c_str(), 0, 0);
+    this->button->SetBitmap((bitmap + "_a.bmp").c_str(), 1, 0);
+    this->button->SetBitmap((bitmap + "_b.bmp").c_str(), 2, 0);
+    this->button->SetSize(this->button->BitmapWidth(), this->button->BitmapHeight());
+    this->button->Move(210, 155);
+    this->button->SetId(290);
+    this->AddChild(this->button);
+    this->button->Move(210, 105);
+  }
+  {
+    const std::string bitmap("유저인터페이스\\btn_rewrite");
+    this->button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    this->button->SetBitmap((bitmap + ".bmp").c_str(), 0, 0);
+    this->button->SetBitmap((bitmap + "_a.bmp").c_str(), 1, 0);
+    this->button->SetBitmap((bitmap + "_b.bmp").c_str(), 2, 0);
+    this->button->SetSize(this->button->BitmapWidth(), this->button->BitmapHeight());
+    this->button->Move(232, 21);
+    this->button->SetId(184);
+    this->AddChild(this->button);
+  }
+
+  this->hpBar = new UIBarGraphHomun(*this->m_context);
+  this->hpBar->SetValues([]() -> std::int64_t { return g_session.m_homunHp; },
+                         []() -> std::int64_t { return *reinterpret_cast<const int*>(g_session.unknown_55C8); });
+  this->hpBar->SetSize(157, 9);
+  this->hpBar->Move(117, 73);
+  this->AddChild(this->hpBar);
+
+  this->spBar = new UIBarGraphHomun(*this->m_context);
+  this->spBar->SetValues([]() -> std::int64_t { return g_session.m_homunSp; }, []() -> std::int64_t { return g_session.unknown_55D0; });
+  this->spBar->SetSize(157, 9);
+  this->spBar->Move(117, 88);
+  this->AddChild(this->spBar);
+
+  this->expBar = new UIINT64BarGraph(*this->m_context);
+  this->expBar->SetValues(g_session.m_homunExp, g_session.m_homunMaxExp);
+  this->expBar->m_plainColor = 1;
+  this->expBar->SetSize(102, 6);
+  this->expBar->Move(101, 119);
+  this->AddChild(this->expBar);
+
+  this->intimacyBar = new UIBarGraph4(*this->m_context);
+  this->intimacyBar->m_plainColor = false;
+  this->intimacyBar->SetSize(102, 6);
+  this->intimacyBar->Move(101, 145);
+  this->intimacyBar->SetValues(&g_session.unknown_55F0, &g_session.unknown_55F4);
+  this->AddChild(this->intimacyBar);
+  this->m_message0 = 201;
+
+  this->unknown_00D4 = new UICheckBox(*this->m_context, *this->m_controls);
+  this->unknown_00D4->SetSize(12, 12);
+  this->unknown_00D4->Move(210, 142);
+  this->unknown_00D4->SetBitmaps("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp");
+  this->unknown_00D4->SetChecked(g_homunculusAutoFeed);
+  this->AddChild(this->unknown_00D4);
+}
+
+// OFFSET: 0x008B7DB0
+// FUNCTION: fn_11763
+void UIHomunInfoWnd::Paint() {
+  auto& controls = *this->m_controls;
+  const auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\homuninfo_bg.bmp")));
+  this->DrawBitmap(0, 0, &background->image, false);
+  DrawFilledRoundedBorder(*this, 0, this->geometry.height - 40, this->geometry.width, 40, 0xFFFFFF);
+  char title[32];
+  std::sprintf(title, LookupMessage(936));
+  this->DrawTextAt(controls.fonts, controls.locale, 5, 2, title, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(controls.fonts, controls.locale, 100, 24, LookupMessage(407), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(controls.fonts, controls.locale, 100, 47, LookupMessage(408), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(controls.fonts, controls.locale, 100, 105, LookupMessage(1019), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(controls.fonts, controls.locale, 100, 131, LookupMessage(585), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(controls.fonts, controls.locale, 100, 159, LookupMessage(586), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(controls.fonts, controls.locale, 140, 159, ":", 0, 0, 12, 0, 0, 0);
+  const int* const stats = reinterpret_cast<const int*>(&g_session.unknown_5570[0x2C]);
+  char number[12];
+  int bytes = std::sprintf(number, "%d", stats[0]);
+  this->DrawRightAlignedText(79, 24, number, bytes, 1, 14, 0, 0);
+  bytes = std::sprintf(number, "%d", stats[1]);
+  this->DrawRightAlignedText(79, 42, number, bytes, 1, 14, 0, 0);
+  bytes = std::sprintf(number, "%d", stats[2]);
+  this->DrawRightAlignedText(79, 60, number, bytes, 1, 14, 0, 0);
+  bytes = std::sprintf(number, "%d", stats[3]);
+  this->DrawRightAlignedText(79, 78, number, bytes, 1, 14, 0, 0);
+  bytes = std::sprintf(number, "%d", stats[4]);
+  this->DrawRightAlignedText(79, 96, number, bytes, 1, 14, 0, 0);
+  bytes = std::sprintf(number, "%d", stats[5]);
+  this->DrawRightAlignedText(79, 114, number, bytes, 1, 14, 0, 0);
+  bytes = std::sprintf(number, "%d", stats[6]);
+  this->DrawRightAlignedText(79, 132, number, bytes, 1, 14, 0, 0);
+  bytes = std::sprintf(number, "%d", (2000 - stats[7]) / 10);
+  this->DrawRightAlignedText(79, 150, number, bytes, 1, 14, 0, 0);
+  char level[12];
+  _itoa(*reinterpret_cast<const int*>(g_session.unknown_55C0), level, 10);
+  this->DrawTextAt(controls.fonts, controls.locale, 135, 47, level, 0, 0, 12, 0, 0, 0);
+  if (g_session.m_homunJob == -1) {
+    return;
+  }
+
+  char text[24];
+  bytes = std::sprintf(text, "%lld", g_session.m_homunMaxExp);
+  this->DrawRightAlignedText(205, 104, text, bytes, 1, 14, 0, 0);
+  bytes = std::sprintf(text, "%d / %d", g_session.unknown_55F0, 100);
+  this->DrawRightAlignedText(200, 130, text, bytes, 1, 14, 0, 0);
+  const int intimacy = g_session.unknown_55D4;
+  if (intimacy >= 0 && intimacy <= 3) {
+    std::strcpy(text, LookupMessage(1022));
+  } else if (intimacy > 3 && intimacy <= 10) {
+    std::strcpy(text, LookupMessage(1021));
+  } else if (intimacy > 10 && intimacy <= 100) {
+    std::strcpy(text, LookupMessage(672));
+  } else if (intimacy > 100 && intimacy <= 250) {
+    std::strcpy(text, LookupMessage(673));
+  } else if (intimacy > 250 && intimacy <= 750) {
+    std::strcpy(text, LookupMessage(669));
+  } else if (intimacy > 750 && intimacy <= 910) {
+    std::strcpy(text, LookupMessage(674));
+  } else if (intimacy > 910 && intimacy <= 1000) {
+    std::strcpy(text, LookupMessage(675));
+  } else {
+    std::strcpy(text, LookupMessage(676));
+  }
+  this->DrawTextAt(controls.fonts, controls.locale, 150, 159, text, 0, 0, 12, 0, 0, 0);
+  this->sub_A84400(225, 136, std::string(LookupMessage(3279)), 0, 0, 0, 0, 12, 0, 0);
+  this->sub_A84400(8, 180, std::string(LookupMessage(3284)), 0, 0, 0, 0, 12, 0xFF, 0);
+}
+
+// OFFSET: 0x008BDD10
+// FUNCTION: fn_11803
+int UIHomunInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  if (this->unknown_00D0 && sender != this->unknown_00D0) {
+    return 0;
+  }
+
+  switch (message) {
+  case 0:
+    return 0;
+  case 6:
+    this->m_recorder->Record(this->geometry.id, static_cast<int>(a), b, c, d);
+
+    switch (a) {
+    case 184: {
+      char* const name = reinterpret_cast<char*>(&g_session.unknown_5570[0x0C]);
+      if (std::strlen(this->nameEdit->Text()) >= 24) {
+        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(938), 0, true, false, 0, "Message", 280, 120, 0);
+      } else if (_mbsstr(reinterpret_cast<const unsigned char*>(this->nameEdit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkOpening.c_str())) ||
+                 _mbsstr(reinterpret_cast<const unsigned char*>(this->nameEdit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkClosing.c_str()))) {
+        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2812), 0, true, false, 0, "Message", 280, 120, 0);
+      } else {
+        char text[512];
+        std::sprintf(text, LookupMessage(2977), this->nameEdit->Text());
+        if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) != 188) {
+          if (this->m_forbiddenWords->Contains(this->nameEdit->Text()) != true) {
+            g_modeMgr.GetGameMode()->SendMsg(185, reinterpret_cast<int>(this->nameEdit->Text()), 0, 0, 0);
+            std::sprintf(name, this->nameEdit->Text());
+            this->Invalidate();
+            return 0;
+          }
+
+          reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2948), 0, true, false, 0, "Message", 280, 120, 0);
+        }
+
+        this->nameEdit->SetText(name);
+        this->nameEdit->Invalidate();
+      }
+      return 0;
+    }
+    case 201:
+      g_windowMgr.CloseWindow(113);
+      return 0;
+    case 213:
+      if (sender == this->unknown_00D4) {
+        if (b > 0) {
+          g_session.SendHomunculusAutoFeedOption(1);
+        } else {
+          g_session.SendHomunculusAutoFeedOption(0);
+        }
+      }
+      return 0;
+    case 289:
+      if (!g_windowMgr.CloseWindow(114)) {
+        g_windowMgr.EnsureWindow(114);
+      }
+      return 0;
+    case 290:
+      this->unknown_00D0 = new UINormalMB(*this->m_context, *this->m_frameContext);
+      this->unknown_00D0->Create(this, LookupMessage(601), 2, true, nullptr, 280, 120, nullptr);
+      g_windowMgr.AddRendered(this->unknown_00D0);
+      return 0;
+    case 291: {
+      CMode* mode = g_modeMgr.GetGameMode();
+      if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(955), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
+        mode->SendMsg(184, 2, 0, 0, 0);
+        g_windowMgr.CloseWindow(113);
+        g_windowMgr.CloseWindow(114);
+        g_session.ClearHomunStatus();
+        g_groundMarkEnabled = 0;
+      }
+      return 0;
+    }
+    case 488: {
+      CMode* mode = g_modeMgr.GetGameMode();
+      if (sender == this->unknown_00D0 && b == 187) {
+        if (g_windowMgr.LookupWindow(10011)) {
+          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3551)), 255, 0, 0, 0);
+        } else {
+          mode->SendMsg(184, 1, 0, 0, 0);
+        }
+      }
+      g_windowMgr.Schedule(this->unknown_00D0);
+      this->unknown_00D0 = nullptr;
+      return 0;
+    }
+    default:
+      return 0;
+    }
+  case 34:
+    this->saved = reinterpret_cast<HomunInfoWndInfo*>(a);
+    if (!this->saved->IsValid()) {
+      this->saved->Reset();
+    }
+
+    this->Move(this->saved->x, this->saved->y);
+    return 0;
+  default:
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
+}
+
+// OFFSET: 0x008B2820
+
+// OFFSET: 0x008BFE80
