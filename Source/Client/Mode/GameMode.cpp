@@ -41,7 +41,7 @@
 #include <cstring>
 #include <string>
 #include <vector>
-
+#include "Contents/MapInfoMgr.h"
 #include <timeapi.h>
 
 #pragma pack(push, 1)
@@ -722,6 +722,15 @@ void CGameMode::SendMousePointerPosition(float x, float y, int value) {
   position[1] = y;
   const std::intptr_t address = reinterpret_cast<std::intptr_t>(position);
   this->mousePointer->SendMsg(nullptr, 1, 0, address, address >> 31, value, value >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+}
+
+// OFFSET: 0x00CED330
+// FUNCTION: fn_21366
+void ShowCurrentMapName() {
+  if (g_serviceOptions.Get(0x10C)) {
+    const std::string mapName = g_session.m_navigationPlayerMap + std::string(".rsw");
+    g_mapInfoMgr->ShowMapName(mapName);
+  }
 }
 
 // OFFSET: 0x00CF08D0
