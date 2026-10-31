@@ -2206,6 +2206,75 @@ void UIBookWnd::Slot15(int width, int height) {
 }
 
 // OFFSET: 0x008E1890
+// FUNCTION: fn_12175
+void UIItemCollectionWnd::Slot15(int width, int height) {
+  this->m_kind = 12;
+  this->m_viewer = new UITextViewer(*this->m_context, *reinterpret_cast<UITextViewerContext*>(nullptr));
+  this->m_viewer->Configure(91, 31, width - 98, height - 40, 0);
+  unsigned red, green, blue;
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  this->m_viewer->backgroundColor = 0xFF000000u | RGB(red, green, blue);
+  this->m_viewer->Invalidate();
+  this->AddChild(this->m_viewer);
+
+  this->m_closeButton = this->AddCloseButton(*reinterpret_cast<UIButtonContext*>(nullptr), "ESC", 0);
+
+  std::string path = "유저인터페이스\\";
+  this->m_viewButton = new UIBitmapButton(*this->m_context, *reinterpret_cast<UIButtonContext*>(nullptr));
+  this->m_viewButton->SetBitmap((path + "btn_view" + ".bmp").c_str(), 0, 0);
+  this->m_viewButton->SetBitmap((path + "btn_view_a" + ".bmp").c_str(), 1, 0);
+  this->m_viewButton->SetBitmap((path + "btn_view_b" + ".bmp").c_str(), 2, 0);
+  this->m_viewButton->SetSize(this->m_viewButton->BitmapWidth(), this->m_viewButton->BitmapHeight());
+  this->m_viewButton->Move(6, 6);
+  this->m_viewButton->SetId(250);
+  this->AddChild(this->m_viewButton);
+
+  const std::string prefix = "book\\";
+  const char* tooltips[2] = {LookupMessage(1294), LookupMessage(1295)};
+  const int ids[2] = {287, 288};
+  const char* names[2] = {"책읽기", "책읽기"};
+  for (int index = 0; index < 2; ++index) {
+    this->m_readButtons[index] = new UISpriteButton(*this->m_context, *reinterpret_cast<UIButtonContext*>(nullptr));
+    this->m_readButtons[index]->SetSprite((prefix + names[index] + ".spr").c_str());
+    this->m_readButtons[index]->SetActName((prefix + names[index] + ".act").c_str());
+    this->m_readButtons[index]->SetSize(this->m_readButtons[index]->FrameWidth(0, 0), this->m_readButtons[index]->FrameHeight(0, 0));
+    this->m_readButtons[index]->Move(-100, -100);
+    this->m_readButtons[index]->SetId(ids[index]);
+    this->m_readButtons[index]->SetTooltip(tooltips[index]);
+    this->AddChild(this->m_readButtons[index]);
+  }
+
+  this->m_resizer = new UIResizer(*this->m_context);
+  this->m_resizer->SetSize(16, 16);
+  this->m_resizer->SetDirection(7);
+  this->m_resizer->SetBitmapName(this->m_kind == 234 ? "유저인터페이스\\basic_interface\\btn_comparison_resize.bmp" : "유저인터페이스\\btn_resize.bmp");
+  this->m_resizer->SetColors(0xFFFF00FF, 0xFFFF00FF);
+  this->m_resizer->Move(width - 17, height - 17);
+  this->AddChild(this->m_resizer);
+
+  this->m_previewTick = 0;
+  if (!this->m_moveInfo) {
+    this->m_moveInfo = new UIItemMoveInfo(*this->m_context, *reinterpret_cast<UIButtonContext*>(nullptr), this->m_frameContext->windows,
+                                          *reinterpret_cast<WindowVisibility*>(nullptr));
+    this->m_moveInfo->Configure(LookupMessage(2796), 0, 0, 12, 0, 1);
+    this->m_moveInfo->SetId(487);
+    UIItemMoveInfo* moveInfo = this->m_moveInfo;
+    int textHeight = this->TextHeight(this->m_context->fonts, this->m_context->locale, LookupMessage(2796), 0, 0, 12, 0, 0);
+    moveInfo->ResizeToTextClipped(this->TextWidth(this->m_context->fonts, this->m_context->locale, LookupMessage(2796), 0, 0, 12, 0, 0) + 1, textHeight);
+    this->AddChild(this->m_moveInfo);
+  }
+
+  this->m_helpButton = new UIBitmapButton(*this->m_context, *reinterpret_cast<UIButtonContext*>(nullptr));
+  this->m_helpButton->SetBitmap("유저인터페이스\\basic_interface\\btn_help_normal.bmp", 0, 0);
+  this->m_helpButton->SetBitmap("유저인터페이스\\basic_interface\\btn_help_over.bmp", 1, 0);
+  this->m_helpButton->SetBitmap("유저인터페이스\\basic_interface\\btn_help_pressed.bmp", 2, 0);
+  this->m_helpButton->SetBitmap("유저인터페이스\\basic_interface\\btn_help_disabled.bmp", 3, 0);
+  this->m_helpButton->SetSize(this->m_helpButton->BitmapWidth(), this->m_helpButton->BitmapHeight());
+  this->m_helpButton->Move(10, 10);
+  this->m_helpButton->SetId(343);
+  this->m_helpButton->SetTooltip(LookupMessage(4115));
+  this->AddChild(this->m_helpButton);
+}
 
 // OFFSET: 0x008DE360
 // FUNCTION: fn_12165
