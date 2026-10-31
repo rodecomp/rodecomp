@@ -58,6 +58,7 @@ public:
 
 class CUIGroupEmblem : public CUIGroup {
 public:
+  void Slot16() override;
   void Apply() override;
   void Refresh() override;
   __declspec(noinline) void SetEnabled(bool enabled);
@@ -71,6 +72,7 @@ public:
 
 class CUIGroupFullscreen : public CUIGroup {
 public:
+  void Slot16() override;
   void Refresh() override;
 
   /* 0084 */ CUIRadioButton* m_onButton;
@@ -111,6 +113,7 @@ public:
 
 class CUIGroupLogInOut : public CUIGroup {
 public:
+  void Slot16() override;
   void Apply() override;
   void Refresh() override;
   __declspec(noinline) void SetEnabled(bool enabled);
@@ -124,6 +127,7 @@ public:
 
 class CUIGroupProcessPriority : public CUIGroup {
 public:
+  void Slot16() override;
   void Refresh() override;
   void OnSelect(CUIRadioButton* button);
 
@@ -137,6 +141,7 @@ public:
 
 class CUIGroupRodexSpam : public CUIGroup {
 public:
+  void Slot16() override;
   void Apply() override;
   void Refresh() override;
   void OnSelect(CUIRadioButton* button);
@@ -197,6 +202,7 @@ public:
 
 class CUIGroupTrilinear : public CUIGroup {
 public:
+  void Slot16() override;
   void Refresh() override;
 
   /* 0084 */ CUIRadioButton* m_onButton;

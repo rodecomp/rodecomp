@@ -1596,3 +1596,78 @@ __declspec(noinline) void CUIGameSettingsUI::sub_A43590(int id) {
   }
   this->m_currentPage->Refresh();
 }
+
+// OFFSET: 0x00A41120
+// FUNCTION: fn_15987
+void GameSettingsUI::CUIGroupEmblem::Slot16() {
+  const char* title = LookupMessage(0x1032);
+  this->m_title->SetText(title, std::strlen(title));
+  const char* onText = LookupMessage(0x1035);
+  this->m_onText->SetText(onText, std::strlen(onText));
+  const char* offText = LookupMessage(0x1036);
+  this->m_offText->SetText(offText, std::strlen(offText));
+}
+
+// OFFSET: 0x00A411C0
+// FUNCTION: fn_15988
+void GameSettingsUI::CUIGroupFullscreen::Slot16() {
+  const char* title = LookupMessage(0x1057);
+  this->m_title->SetText(title, std::strlen(title));
+  const char* onText = LookupMessage(0x1058);
+  this->m_onText->SetText(onText, std::strlen(onText));
+  const char* offText = LookupMessage(0x1059);
+  this->m_offText->SetText(offText, std::strlen(offText));
+}
+
+// OFFSET: 0x00A41510
+// FUNCTION: fn_15990
+void GameSettingsUI::CUIGroupGraphicsAPI::Slot16() {
+  const char* text = LookupMessage(0x1001);
+  this->m_title->SetText(text, std::strlen(text));
+  const int backend = GetRenderSystemHolder()->Backend();
+  this->m_pendingBackend = backend;
+  this->m_backend = backend;
+}
+
+// OFFSET: 0x00A41560
+
+// OFFSET: 0x00A41710
+// FUNCTION: fn_15992
+void GameSettingsUI::CUIGroupProcessPriority::Slot16() {
+  const char* title = LookupMessage(0x1039);
+  this->m_title->SetText(title, std::strlen(title));
+  const char* highText = LookupMessage(0x103A);
+  this->m_highText->SetText(highText, std::strlen(highText));
+  const char* highTooltip = LookupMessage(0x103B);
+  this->m_highText->SetTooltip(highTooltip, std::strlen(highTooltip));
+  const char* normalText = LookupMessage(0x103C);
+  this->m_normalText->SetText(normalText, std::strlen(normalText));
+  const char* normalTooltip = LookupMessage(0x103D);
+  this->m_normalText->SetTooltip(normalTooltip, std::strlen(normalTooltip));
+  const char* idleText = LookupMessage(0x103E);
+  this->m_idleText->SetText(idleText, std::strlen(idleText));
+  const char* idleTooltip = LookupMessage(0x103F);
+  this->m_idleText->SetTooltip(idleTooltip, std::strlen(idleTooltip));
+}
+
+// OFFSET: 0x00A41870
+// FUNCTION: fn_15993
+void GameSettingsUI::CUIGroupRodexSpam::Slot16() {
+  const char* title = LookupMessage(0xC40);
+  this->m_title->SetText(title, std::strlen(title));
+  const char* onText = LookupMessage(0x1038);
+  this->m_onText->SetText(onText, std::strlen(onText));
+  const char* offText = LookupMessage(0x1037);
+  this->m_offText->SetText(offText, std::strlen(offText));
+}
+
+// OFFSET: 0x00A41CE0
+// FUNCTION: fn_15998
+void GameSettingsUI::CUIGroupTrilinear::Slot16() {
+  const char* title = LookupMessage(0x105A);
+  this->m_title->SetText(title, std::strlen(title));
+  const char* onText = LookupMessage(0x1033);
+  this->m_onText->SetText(onText, std::strlen(onText));
+  const char* offText = LookupMessage(0x1034);
+  this->m_offText->SetText(offText, std::strlen(offText));
+}
