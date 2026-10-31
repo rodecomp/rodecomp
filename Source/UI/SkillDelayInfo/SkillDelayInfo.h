@@ -4,6 +4,7 @@
 #include "UI/FrameSkin.h"
 #include "UI/Lists/UIListBoxTemplate.h"
 #include "UI/Window/UIControl.h"
+#include "Utility/Cipher/XorBytes.h"
 
 #include <cstddef>
 #include <cstdint>
@@ -23,6 +24,7 @@ public:
 
 class CUIDelayItem : public CUIListItem {
 public:
+  void Slot15(int width, int height) override;
   void Slot16() override;
   void Paint() override;
 
@@ -34,7 +36,9 @@ public:
 
 class CUITime : public CUIControl {
 public:
+  explicit CUITime(UIWindowContext& context);
   ~CUITime() override;
+  void Slot15(int width, int height) override;
   void Slot16() override;
   void Paint() override;
 
@@ -49,6 +53,7 @@ class CUITextViewer;
 
 class CUISkillDelayInfo : public CUIFrameWnd {
 public:
+  __declspec(noinline) CUISkillDelayInfo();
   void Slot16() override;
   void Paint() override;
   virtual void Slot53();

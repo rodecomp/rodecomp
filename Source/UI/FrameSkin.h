@@ -8,6 +8,12 @@
 
 class CUIFrameWnd : public UIFrameWnd {
 public:
+  // INLINED
+  CUIFrameWnd()
+      : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIFrameContext*>(nullptr), 0), unknown_00B4(0), m_hasSkinColors(false),
+        m_backgroundColor(0xFFFFFF), m_borderColor(0xCECECE), m_backgroundCell{0, 0}, m_borderCell{3, 1}, m_buttonBarStyle(0), m_resolveSkin(true) {
+  }
+
   ~CUIFrameWnd() override;
   void Paint() override;
   void RefreshSkinColors();

@@ -19,6 +19,55 @@ void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>:
 template <>
 void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::OnScroll(int position);
 
+namespace {
+
+template <std::size_t Length, std::uint64_t Key>
+class EncryptedName {
+public:
+  explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+    for (std::uint64_t index = 0; index < Length; ++index) {
+      this->m_text[index] = source[index];
+    }
+  }
+
+  ~EncryptedName() {
+    for (std::uint64_t index = 0; index < Length; ++index) {
+      this->m_text[index] = 0;
+    }
+  }
+
+  const char* Text() {
+    if (this->m_encrypted) {
+      utility::XorBytes(this->m_text, Length, Key);
+      this->m_encrypted = false;
+    }
+
+    return reinterpret_cast<const char*>(this->m_text);
+  }
+
+private:
+  std::uint8_t m_text[Length];
+  bool m_encrypted;
+};
+
+}
+
+struct SkillDelayInfoFreezeCallback {
+  virtual ~SkillDelayInfoFreezeCallback() = default;
+
+  /* 0004 */ CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>* list;
+
+  void operator()(CUIListItem* const& item);
+};
+
+struct SkillDelayInfoSelectCallback {
+  virtual ~SkillDelayInfoSelectCallback() = default;
+
+  /* 0004 */ CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>* list;
+
+  void operator()(CUIListItem* const& item);
+};
+
 // OFFSET: 0x00A71140
 // FUNCTION: fn_16799
 template <>
@@ -31,6 +80,12 @@ CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::CUIL
 // FUNCTION: fn_16800
 template <>
 CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::~CUIListBoxEx() {
+}
+
+// OFFSET: 0x00A718D0
+// FUNCTION: fn_16805
+CUISkillDelayInfo* CreateSkillDelayInfo() {
+  return new CUISkillDelayInfo();
 }
 
 // OFFSET: 0x00A71950
@@ -65,6 +120,64 @@ void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>:
   this->scrollBar->Show(0);
   this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
   this->AddChild(this->scrollBar);
+}
+
+namespace SkillDelayInfo {
+
+// OFFSET: 0x00A71D60
+// FUNCTION: fn_16809
+void CUIDelayItem::Slot15(int width, int height) {
+  this->level = new CUIStaticText(*this->m_context);
+  this->level->SetSize(44, 21);
+  this->level->Move(0, 0);
+  this->level->SetText("", 0);
+  this->level->SetFitText(0);
+  this->level->SetAlign(6, 6);
+  const std::uint8_t levelFontSource[] = {0x1E, 0xF0, 0xEB, 0x10, 0x9A, 0x2F};
+  // GLOBAL: gl_25165
+  thread_local EncryptedName<sizeof(levelFontSource), 0xE33F2FF779878559ULL> levelFont(levelFontSource);
+  this->level->SetFont(std::string(levelFont.Text()));
+  this->level->SetFontHeight(12);
+  this->level->SetBold(0);
+  this->level->SetColor(0);
+  this->level->SetShadow(0, 0xFFFFFF);
+  this->level->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->level);
+
+  for (int index = 4; index != 0; --index) {
+    CUITime* time = new CUITime(*this->m_context);
+    time->SetSize(70, 21);
+    this->AddChild(time);
+    this->times.push_back(time);
+  }
+
+  this->times[0]->Move(44, 0);
+  this->times[1]->Move(114, 0);
+  this->times[2]->Move(184, 0);
+  this->times[3]->Move(254, 0);
+}
+
+// OFFSET: 0x00A75A00
+// FUNCTION: fn_16811
+void CUITime::Slot15(int width, int height) {
+  this->text = new CUIStaticText(*this->m_context);
+  this->text->SetSize(60, 21);
+  this->text->Move(5, 0);
+  this->text->SetText("", 0);
+  this->text->SetFitText(0);
+  this->text->SetAlign(6, 6);
+  const std::uint8_t textFontSource[] = {0xEC, 0xDA, 0xE1, 0xE4, 0xDE, 0x8D};
+  // GLOBAL: gl_25166
+  thread_local EncryptedName<sizeof(textFontSource), 0xD5A78DB38D8DAFABULL> textFont(textFontSource);
+  this->text->SetFont(std::string(textFont.Text()));
+  this->text->SetFontHeight(12);
+  this->text->SetBold(0);
+  this->text->SetColor(0);
+  this->text->SetShadow(0, 0xFFFFFF);
+  this->text->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->text);
+}
+
 }
 
 // OFFSET: 0x00A75C80
@@ -140,6 +253,60 @@ void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>:
     (*it)->index = -1;
     (*it)->Show(0);
   }
+}
+
+// OFFSET: 0x00A768F0
+// FUNCTION: fn_16833
+void SkillDelayInfoFreezeCallback::operator()(CUIListItem* const& item) {
+  CUIListItem* selectedItem = item;
+  for (SkillDelayInfo::CUIDelayItem* row : this->list->items) {
+    row->SetHighlighted(selectedItem == row);
+  }
+}
+
+// OFFSET: 0x00A76960
+// FUNCTION: fn_16835
+void SkillDelayInfoSelectCallback::operator()(CUIListItem* const& item) {
+  CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>* list = this->list;
+  CUIListItem* selectedItem = item;
+  if (list->unknown_00C4) {
+    return;
+  }
+  for (SkillDelayInfo::CUIDelayItem* row : list->items) {
+    if (selectedItem != row) {
+      row->SetSelected(false);
+    }
+  }
+
+  selectedItem->SetSelected(true);
+  if (selectedItem->index == static_cast<int>(list->selected) && list->unknown_00E0) {
+    return;
+  }
+  SkillDelayInfo::CUIDelayItem* delayItem = dynamic_cast<SkillDelayInfo::CUIDelayItem*>(selectedItem);
+  if (!delayItem) {
+    return;
+  }
+  list->selected = delayItem->index;
+  if (list->onSelect && delayItem->index >= 0 && static_cast<unsigned int>(delayItem->index) < list->data.size()) {
+    auto node = list->data.begin();
+    for (int index = delayItem->index; index > 0; --index) {
+      ++node;
+    }
+    list->onSelect(delayItem, *node);
+  }
+}
+
+// OFFSET: 0x00A77200
+// FUNCTION: fn_16872
+CUISkillDelayInfo::CUISkillDelayInfo()
+    : titleBar(nullptr), unknown_00DC(nullptr), labels{}, columns{}, delayList(nullptr), description(nullptr), backgroundColor(0), borderColor(0), skillId(7999) {
+}
+
+namespace SkillDelayInfo {
+// OFFSET: 0x00A77350
+// FUNCTION: fn_16873
+CUITime::CUITime(UIWindowContext& context) : CUIControl(context), text(nullptr) {
+}
 }
 
 namespace SkillDelayInfo {
