@@ -152,6 +152,7 @@ public:
   // INLINED
   explicit UIAccessoryCusWnd(UIWindowContext& context) : UIStylingshopTabParentWnd(context) {
   }
+  void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 };
@@ -160,6 +161,12 @@ class UIStaticBitmap;
 
 class UIAccessoryShowCase : public UIScrollWnd {
 public:
+  // INLINED
+  UIAccessoryShowCase(UIWindowContext& windows, int width, int height) : UIScrollWnd(windows, width, height, 0), m_itemFrames() {
+    this->Slot15(width, height);
+  }
+  void Slot15(int width, int height) override;
+  void AddAccessories(int& loaded, int& skipped, const char* table, const int& count, const int& slot);
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
@@ -232,6 +239,13 @@ public:
 
 class UIAccBitmapButton : public UIBitmapButton {
 public:
+  // INLINED
+  UIAccBitmapButton() : UIBitmapButton() {
+  }
+  // INLINED
+  void SetArgument(int argument) {
+    this->m_argument = argument;
+  }
   // INLINED
   int Argument() const {
     return this->m_argument;

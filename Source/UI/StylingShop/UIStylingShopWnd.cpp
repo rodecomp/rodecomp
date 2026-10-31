@@ -1915,3 +1915,27 @@ bool UIShowInfoWnd::SendStyleChange() {
 
   return false;
 }
+
+// OFFSET: 0x00825CA0
+// FUNCTION: fn_10321
+void UIAccessoryShowCase::Slot15(int, int) {
+  int loaded = 0;
+  int skipped = 0;
+  int count = 0;
+
+  g_luaScript->Call("StylingShop_GetSizeInTable", "s>d", "TopAccessory", &count);
+  int slot = 0;
+  this->AddAccessories(loaded, skipped, "TopAccessory", count, slot);
+
+  g_luaScript->Call("StylingShop_GetSizeInTable", "s>d", "MidAccessory", &count);
+  slot = 1;
+  this->AddAccessories(loaded, skipped, "MidAccessory", count, slot);
+
+  g_luaScript->Call("StylingShop_GetSizeInTable", "s>d", "BottomAccessory", &count);
+  slot = 2;
+  this->AddAccessories(loaded, skipped, "BottomAccessory", count, slot);
+}
+
+// OFFSET: 0x008267E0
+
+// OFFSET: 0x008280F0
