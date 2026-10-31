@@ -716,6 +716,15 @@ std::pair<std::string, std::string> CCreateLineInfo::GetLinkTags(int type) {
 }
 
 // OFFSET: 0x00839FA0
+// FUNCTION: fn_10461
+tagSIZE CCreateLineInfo::MeasureText(UIWindow* window, std::string text, const LineTextStyle& style) {
+  if (!window) {
+    return tagSIZE{0, 0};
+  }
+
+  const TextLocale locale = {};
+  return window->TextSize(g_fontCache, locale, text.c_str(), text.size(), 0, style.fontHeight, style.bold, style.italic);
+}
 
 // OFFSET: 0x0083A180
 // FUNCTION: fn_10462
