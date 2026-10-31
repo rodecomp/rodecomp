@@ -33,6 +33,7 @@
 #include "Resource/Sprites/SpriteResource.h"
 #include "UI/Acceptance/UIJoinPartyAcceptWnd.h"
 #include "UI/Buttons/UIBitmapButton.h"
+#include "UI/Buttons/UIBmpTextButton.h"
 #include "UI/Buttons/UICheckBox.h"
 #include "UI/Buttons/UISpriteButton.h"
 #include "UI/Chat/UIChatRoomMakeWnd.h"
@@ -1381,6 +1382,8 @@ void UIExchangeWnd::Slot10(int x, int y, std::intptr_t value) {
   g_windowMgr.window_01EC->SendMsg(nullptr, 13, 5, 0, 0, 0);
 }
 
+// OFFSET: 0x008D0010
+
 // OFFSET: 0x008D02D0
 // FUNCTION: fn_12084
 void UInCashWnd::Slot10(int x, int y, std::intptr_t value) {
@@ -2314,6 +2317,137 @@ void UICardItemIllustWnd::Slot15(int, int) {
   this->AddCloseButton(*this->m_controls, "", 0);
 }
 
+// OFFSET: 0x008E2590
+
+// OFFSET: 0x008E2540
+// FUNCTION: fn_12177
+void UIItemCompositionWnd::Slot15(int width, int height) {
+  this->UIItemIdentifyWnd::Slot15(width, height);
+  this->m_title = LookupMessage(522);
+  this->m_compositionState = 0;
+}
+
+// OFFSET: 0x008DE490
+
+// OFFSET: 0x008E85C0
+// FUNCTION: fn_12199
+void UISkillDescribeWnd::Slot15(int width, int height) {
+  this->unknown_00D4 = LookupMessage(526);
+  this->m_skillId = -1;
+  this->m_viewer = new UITextViewer(*this->m_context, *reinterpret_cast<UITextViewerContext*>(nullptr));
+  this->m_viewer->Configure(3, 3, width - 6, height - 6, 0);
+  unsigned red, green, blue;
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  const std::uint32_t color = 0xFF000000u | RGB(red, green, blue);
+  this->m_viewer->backgroundColor = color;
+  this->m_viewer->Invalidate();
+  this->AddChild(this->m_viewer);
+  this->m_closeButton = this->AddCloseButton(*reinterpret_cast<UIButtonContext*>(nullptr), "ESC", 0);
+
+  this->m_text = new UITextViewer(*this->m_context, *reinterpret_cast<UITextViewerContext*>(nullptr));
+  this->m_text->backgroundColor = color;
+  this->m_text->Invalidate();
+  this->m_text->Configure(3, 3, width - 31, height - 6, 0);
+  this->AddChild(this->m_text);
+
+  this->m_delayButton = new UIBitmapButton(*this->m_context, *reinterpret_cast<UIButtonContext*>(nullptr));
+  this->m_delayButton->SetBitmap("유저인터페이스\\skilldelayinfo\\btn_sd_normal.bmp", 0, 0);
+  this->m_delayButton->SetBitmap("유저인터페이스\\skilldelayinfo\\btn_sd_over.bmp", 1, 0);
+  this->m_delayButton->SetBitmap("유저인터페이스\\skilldelayinfo\\btn_sd_pressed.bmp", 2, 0);
+  this->m_delayButton->SetSize(this->m_delayButton->BitmapWidth(), this->m_delayButton->BitmapHeight());
+  this->m_delayButton->Move(this->geometry.width - this->m_delayButton->BitmapWidth() - 4, 18);
+  this->m_delayButton->SetId(343);
+  this->m_delayButton->SetTooltip(LookupMessage(4254));
+  this->m_delayButton->Enable(0);
+  this->AddChild(this->m_delayButton);
+  this->AddCloseButton(*reinterpret_cast<UIButtonContext*>(nullptr), "", 0);
+}
+
+// OFFSET: 0x008E8DC0
+// FUNCTION: fn_12201
+void UIStatusWnd::Slot15(int, int) {
+  this->AddBaseButton(*this->m_controls);
+  this->AddCloseButton(*this->m_controls, "Alt+A", 0);
+  this->AddMinimizeButton(*this->m_controls, "Ctrl+A", 0);
+
+  {
+    const int ids[6] = {205, 206, 207, 208, 209, 210};
+    const std::string arrow = "유저인터페이스\\basic_interface\\arw_right.bmp";
+    for (int i = 0; i < 6; ++i) {
+      this->m_statButtons[i] = new UIBitmapButton(*this->m_context, *this->m_controls);
+      this->m_statButtons[i]->SetBitmap(arrow.c_str(), 0, 0);
+      this->m_statButtons[i]->SetBitmap(arrow.c_str(), 1, 0);
+      this->m_statButtons[i]->SetBitmap(arrow.c_str(), 2, 0);
+      this->m_statButtons[i]->SetSize(this->m_statButtons[0]->BitmapWidth(), this->m_statButtons[0]->BitmapHeight());
+      this->m_statButtons[i]->Move(78, 24 + i * 16);
+      this->m_statButtons[i]->SetId(ids[i]);
+      this->AddChild(this->m_statButtons[i]);
+    }
+  }
+
+  {
+    const int ids[6] = {551, 552, 553, 554, 555, 556};
+    const std::string arrow = "유저인터페이스\\basic_interface\\arw_right.bmp";
+    for (int i = 0; i < 6; ++i) {
+      this->m_extendedButtons[i] = new UIBitmapButton(*this->m_context, *this->m_controls);
+      this->m_extendedButtons[i]->SetBitmap(arrow.c_str(), 0, 0);
+      this->m_extendedButtons[i]->SetBitmap(arrow.c_str(), 1, 0);
+      this->m_extendedButtons[i]->SetBitmap(arrow.c_str(), 2, 0);
+      this->m_extendedButtons[i]->SetSize(this->m_extendedButtons[0]->BitmapWidth(), this->m_extendedButtons[0]->BitmapHeight());
+      this->m_extendedButtons[i]->Move(78, 145 + i * 16);
+      this->m_extendedButtons[i]->SetId(ids[i]);
+      this->AddChild(this->m_extendedButtons[i]);
+    }
+  }
+
+  this->m_expandButton = new UIBmpTextButton(*this->m_context, *this->m_controls);
+  this->m_expandButton->SetBitmap("유저인터페이스\\statuswnd\\expand_on_normal.bmp", 0, 0);
+  this->m_expandButton->SetBitmap("유저인터페이스\\statuswnd\\expand_on_normal.bmp", 1, 0);
+  this->m_expandButton->SetBitmap("유저인터페이스\\statuswnd\\expand_on_press.bmp", 2, 0);
+  this->m_expandButton->AddTextStyle(0, 12, 0, 0, 1, 16, 3);
+  this->m_expandButton->AddTextStyle(1, 12, 0, 0, 1, 16, 3);
+  this->m_expandButton->AddTextStyle(2, 12, 0, 0, 1, 16, 3);
+  this->m_expandButton->SetSize(this->m_expandButton->BitmapWidth(), this->m_expandButton->BitmapHeight());
+  {
+    const std::string label = LookupMessage(3613);
+    this->m_expandButton->text = label;
+    this->m_expandButton->Invalidate();
+  }
+  this->m_expandButton->Move(2, 121);
+  this->m_expandButton->SetId(550);
+  this->AddChild(this->m_expandButton);
+  this->m_expandedHeight = this->geometry.height;
+}
+
+// OFFSET: 0x008E8860
+// FUNCTION: fn_12200
+void UISkillNameChangeWnd::Slot15(int, int) {
+  this->m_edit = new UIEditCtrl(*this->m_context, *reinterpret_cast<UIEditContext*>(nullptr));
+  this->m_edit->SetSize(this->geometry.width - 77, 16);
+  this->m_edit->Move(15, 22);
+  this->m_edit->maximum = 29;
+  this->m_edit->Background(232, 232, 232);
+  this->m_edit->SetText("");
+  this->AddChild(this->m_edit);
+  InputFocus focus{g_windowMgr.hoverWindow};
+  focus.Set(this->m_edit);
+  this->m_edit->SelectAll();
+
+  const std::string prefix("유저인터페이스\\");
+  const int x = this->geometry.width - 55;
+  const int y = this->geometry.height - 32;
+  auto* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+  button->SetBitmap((prefix + "btn_ok" + ".bmp").c_str(), 0, 0);
+  button->SetBitmap((prefix + "btn_ok_a" + ".bmp").c_str(), 1, 0);
+  button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
+  button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+  button->Move(x, y);
+  button->SetId(184);
+  this->AddChild(button);
+  this->m_skillId = -1;
+  this->m_message0 = 184;
+}
+
 // OFFSET: 0x008E3C80
 // FUNCTION: fn_12183
 void UIMonsterDisplayWnd::Slot15(int, int) {
@@ -2737,6 +2871,17 @@ void UIItemCollectionWnd::Slot11() {
     this->m_placement->y = this->geometry.y;
     this->m_placement->width = this->geometry.width;
     this->m_placement->height = this->geometry.height;
+  }
+}
+
+// OFFSET: 0x00909F40
+// FUNCTION: fn_12407
+void UIItemCompositionWnd::Slot11() {
+  if (this->m_compositionPlacement) {
+    this->m_compositionPlacement->width = this->geometry.width;
+    this->m_compositionPlacement->height = this->geometry.height;
+    this->m_compositionPlacement->x = this->geometry.x;
+    this->m_compositionPlacement->y = this->geometry.y;
   }
 }
 

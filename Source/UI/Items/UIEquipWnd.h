@@ -11,6 +11,7 @@ class UIEquipWnd : public UIFrameWnd {
 public:
   bool Slot03() override;
   void Move(int x, int y) override;
+  void Slot10(int x, int y, std::intptr_t value) override;
   void Slot11() override;
   /* 00B4 */ int m_viewOther;
   /* 00B8 */ int m_highlight[3];

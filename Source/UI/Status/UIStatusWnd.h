@@ -6,20 +6,25 @@
 struct UIButtonContext;
 struct StatusWndInfo;
 
+class UIBitmapButton;
+class UIBmpTextButton;
+
 class UIStatusWnd : public UIFrameWnd {
 public:
   UIStatusWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
-  /* 00B4 */ unsigned char unknown_00B4[0x18];
+  /* 00B4 */ UIBitmapButton* m_statButtons[6];
   /* 00CC */ int m_expandedHeight;
   /* 00D0 */ StatusWndInfo* m_info;
   /* 00D4 */ int m_titleHeight;
   /* 00D8 */ int m_offsetY;
   /* 00DC */ int m_offsetX;
-  /* 00E0 */ unsigned char unknown_00E0[0x1C];
+  /* 00E0 */ UIBitmapButton* m_extendedButtons[6];
+  /* 00F8 */ UIBmpTextButton* m_expandButton;
   /* 00FC */ unsigned char m_extended;
 
   bool Slot03() override;
   void Slot11() override;
+  void Slot15(int width, int height) override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
   void Slot28(int x, int y) override;

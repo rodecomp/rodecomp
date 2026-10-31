@@ -4,6 +4,9 @@
 #include "Contents/Items/ItemInfo.h"
 #include "UI/Window/UIFrameWnd.h"
 
+#include <list>
+#include <string>
+
 struct WindowPlacement;
 
 class UIItemIdentifyWnd : public UIFrameWnd {
@@ -15,10 +18,11 @@ public:
   /* 00C4 */ int m_rows;
   /* 00C8 */ int m_scrollable;
   /* 00CC */ std::list<ITEM_INFO> m_items;
-  /* 00D4 */ unsigned char unknown_00D4[0x18];
+  /* 00D4 */ std::string m_title;
   /* 00EC */ WindowPlacement* m_placement;
 
   void Slot11() override;
+  void Slot15(int width, int height) override;
   void UpdateScroll();
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
@@ -26,6 +30,15 @@ public:
   void Slot35(int delta) override;
   ITEM_INFO GetItem(int index, int* found);
   ITEM_INFO GetSelectedItem(int* found);
+};
+
+class UIItemCompositionWnd : public UIItemIdentifyWnd {
+public:
+  void Slot11() override;
+  void Slot15(int width, int height) override;
+
+  /* 00F0 */ WindowPlacement* m_compositionPlacement;
+  /* 00F4 */ int m_compositionState;
 };
 
 #endif
