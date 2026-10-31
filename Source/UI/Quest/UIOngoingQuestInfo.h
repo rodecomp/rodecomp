@@ -16,6 +16,7 @@ class CUIScrollWindow;
 
 class CUIOngoingQuestInfo : public CUIFrameWnd {
 public:
+  __declspec(noinline) CUIOngoingQuestInfo();
   void Slot16() override;
   void OnFirstAction();
   virtual void Slot53();
@@ -41,8 +42,7 @@ public:
 
 class CUIContents : public CUIControl {
 public:
-  __declspec(noinline) explicit CUIContents(UIWindowContext& context) : CUIControl(context), title(nullptr), textViewer(nullptr), icon(nullptr) {
-  }
+  __declspec(noinline) explicit CUIContents(UIWindowContext& context);
 
   void Slot15(int width, int height) override;
   void Slot16() override;
@@ -74,10 +74,7 @@ public:
 
 class CUIRewards : public CUIControl {
 public:
-  __declspec(noinline) explicit CUIRewards(UIWindowContext& context)
-      : CUIControl(context), title(nullptr), firstLabel(nullptr), firstText(nullptr), secondLabel(nullptr), secondText(nullptr), thirdLabel(nullptr),
-        rewardList(nullptr), npcSprite(nullptr) {
-  }
+  __declspec(noinline) explicit CUIRewards(UIWindowContext& context);
 
   void Slot16() override;
   void Paint() override;
@@ -103,9 +100,7 @@ public:
 
 class CUIScrollWindow : public CUIControl {
 public:
-  __declspec(noinline) explicit CUIScrollWindow(UIWindowContext& context)
-      : CUIControl(context), firstLine(nullptr), secondContents(nullptr), secondLine(nullptr), rewards(nullptr), scrollBar(nullptr), firstContents(nullptr) {
-  }
+  __declspec(noinline) explicit CUIScrollWindow(UIWindowContext& context);
 
   void Slot15(int width, int height) override;
   void Slot16() override;

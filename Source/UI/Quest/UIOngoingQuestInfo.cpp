@@ -52,6 +52,18 @@ CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>
       unknown_00E0(1), rebind(0) {
 }
 
+// OFFSET: 0x00A4F7F0
+// FUNCTION: fn_16218
+template <>
+CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::~CUIListBoxEx() {
+}
+
+// OFFSET: 0x00A4FD60
+// FUNCTION: fn_16222
+CUIOngoingQuestInfo* CreateOngoingQuestInfo() {
+  return new CUIOngoingQuestInfo();
+}
+
 // OFFSET: 0x00A4FDE0
 // FUNCTION: fn_16223
 template <>
@@ -566,4 +578,28 @@ void CUIScrollWindow::Slot15(int width, int height) {
   this->AddChild(this->scrollBar);
 }
 
+}
+
+namespace OngoingQuestInfo {
+// OFFSET: 0x00A54D00
+CUIContents::CUIContents(UIWindowContext& context) : CUIControl(context), title(nullptr), textViewer(nullptr), icon(nullptr) {
+}
+}
+
+// OFFSET: 0x00A54D90
+CUIOngoingQuestInfo::CUIOngoingQuestInfo()
+    : titleBar(nullptr), unknown_00DC{}, titleText(nullptr), scrollWindow(nullptr), dateText(nullptr), unknown_00EC{}, questId(0) {
+}
+
+namespace OngoingQuestInfo {
+// OFFSET: 0x00A54F20
+CUIRewards::CUIRewards(UIWindowContext& context)
+    : CUIControl(context), title(nullptr), firstLabel(nullptr), firstText(nullptr), secondLabel(nullptr), secondText(nullptr), thirdLabel(nullptr),
+      rewardList(nullptr), npcSprite(nullptr) {
+}
+
+// OFFSET: 0x00A54FF0
+CUIScrollWindow::CUIScrollWindow(UIWindowContext& context)
+    : CUIControl(context), firstLine(nullptr), secondContents(nullptr), secondLine(nullptr), rewards(nullptr), scrollBar(nullptr), firstContents(nullptr) {
+}
 }
