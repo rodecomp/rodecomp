@@ -298,6 +298,11 @@ struct CRagEffect : CRenderObject {
   bool TexturedRisingRingStages(const char* name, char level);
   void TexturedGroundRing(const char* name, char flag, int unused1, int unused2);
   void TexturedQuadRingSized(std::int16_t baseAlpha, const char* name, char kind);
+  void WhiteYellowRings();
+  void BlueSpellRings();
+  void WhiteSpellRings();
+  void TexturedSpellRings(const char* name);
+  void BlackSpellRings(char silent);
   void TexturedFireWall(const char* name, int unused);
   void TeleportSpiral(const char* name);
   void TexturedAura(const char* name, char kind);

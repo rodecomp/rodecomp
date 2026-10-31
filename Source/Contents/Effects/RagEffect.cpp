@@ -15453,3 +15453,92 @@ void CRagEffect::TorchDust(char kind) {
   this->state.unknown_11C84->slots[0].flag1[0] = 0;
   this->state.unknown_11C84->slots[0].flag1[4] = kind;
 }
+
+// OFFSET: 0x00C41420
+// FUNCTION: fn_20135
+void CRagEffect::WhiteYellowRings() {
+  const RenderObjectState& parent = this->state.parent->render;
+  this->render.position.x = parent.position.x;
+  this->render.position.y = parent.position.y;
+  this->render.position.z = parent.position.z;
+
+  if (this->state.stateCnt == 0) {
+    this->TexturedQuadRingSized(45, "effect\\ring_white.tga", 22);
+    this->TexturedQuadRingSized(25, "effect\\ring_yellow.tga", 22);
+  }
+}
+
+// OFFSET: 0x00C44B70
+// FUNCTION: fn_20145
+void CRagEffect::BlueSpellRings() {
+  const RenderObjectState& parent = this->state.parent->render;
+  this->render.position.x = parent.position.x;
+  this->render.position.y = parent.position.y;
+  this->render.position.z = parent.position.z;
+
+  if (this->state.stateCnt == 0) {
+    const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+    g_soundMgr->PlayWave(
+      "effect\\EF_BeginSpell.wav", this->render.position.x - player->render.position.x, -100.0f, this->render.position.z - player->render.position.z, 250, 40,
+      1.0f, 0
+    );
+    this->TexturedQuadRingSized(45, "effect\\ring_blue.tga", 5);
+    this->TexturedQuadRingSized(25, "effect\\ring_blue.tga", 5);
+  }
+}
+
+// OFFSET: 0x00C73B40
+// FUNCTION: fn_20329
+void CRagEffect::WhiteSpellRings() {
+  const RenderObjectState& parent = this->state.parent->render;
+  this->render.position.x = parent.position.x;
+  this->render.position.y = parent.position.y;
+  this->render.position.z = parent.position.z;
+
+  if (this->state.stateCnt == 0) {
+    const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+    g_soundMgr->PlayWave(
+      "effect\\EF_BeginSpell.wav", this->render.position.x - player->render.position.x, -100.0f, this->render.position.z - player->render.position.z, 250, 40,
+      1.0f, 0
+    );
+    this->TexturedQuadRingSized(45, "effect\\ring_white.tga", 15);
+    this->TexturedQuadRingSized(25, "effect\\ring_white.tga", 15);
+  }
+}
+
+// OFFSET: 0x00C4A5A0
+// FUNCTION: fn_20169
+void CRagEffect::TexturedSpellRings(const char* name) {
+  const RenderObjectState& parent = this->state.parent->render;
+  this->render.position.x = parent.position.x;
+  this->render.position.y = parent.position.y;
+  this->render.position.z = parent.position.z;
+
+  if (this->state.stateCnt == 0) {
+    PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+    this->TexturedQuadRingSized(45, name, 3);
+    this->TexturedQuadRingSized(25, name, 3);
+  }
+}
+
+// OFFSET: 0x00C4ACC0
+// FUNCTION: fn_20171
+void CRagEffect::BlackSpellRings(char silent) {
+  const RenderObjectState& parent = this->state.parent->render;
+  this->render.position.x = parent.position.x;
+  this->render.position.y = parent.position.y;
+  this->render.position.z = parent.position.z;
+
+  if (this->state.stateCnt == 0) {
+    if (silent == 0) {
+      const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+      g_soundMgr->PlayWave(
+        "effect\\EF_BeginSpell.wav", this->render.position.x - player->render.position.x, 0.0f, this->render.position.z - player->render.position.z, 250, 40,
+        1.0f, 0
+      );
+    }
+
+    this->TexturedQuadRingSized(45, "effect\\ring_black.tga", 6);
+    this->TexturedQuadRingSized(25, "effect\\ring_black.tga", 6);
+  }
+}
