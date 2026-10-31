@@ -185,6 +185,51 @@ void UIRoulletteWnd::Slot15(int, int) {
 }
 
 // OFFSET: 0x0080C220
+// FUNCTION: fn_10087
+void UIRoulletteWnd::Paint() {
+  const TextLocale locale = {};
+  this->DrawTitleBar(g_fontCache, locale, true, LookupMessage(2641), 0);
+  this->DrawPanelBackground(17, 0, "유저인터페이스\\basic_interface\\roullette\\roulletteBG.bmp");
+
+  char buffer[40] = {};
+  std::sprintf(buffer, "%d", g_rouletteMgr->m_goldPoint);
+  this->m_goldText->SetTextFitted(buffer);
+  std::sprintf(buffer, "%d", g_rouletteMgr->m_silverPoint);
+  this->m_silverText->SetTextFitted(buffer);
+  std::sprintf(buffer, "%d", g_rouletteMgr->m_bronzePoint);
+  this->m_bronzeText->SetTextFitted(buffer);
+
+  if (g_rouletteMgr->m_spinning != 0 || (g_rouletteMgr->m_resultShown == 1 && g_rouletteMgr->m_bonus == 0)) {
+    CBitmapRes* arrow =
+      static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\roullette\\stageArrow.bmp")));
+    if (arrow != nullptr) {
+      this->DrawBitmap(482, 344 - g_rouletteMgr->m_stage * 40, &arrow->image, true);
+    }
+  }
+
+  this->UpdateButtons();
+
+  ItemDescriptions descriptions{g_itemDescriptions};
+  for (auto it = g_rouletteMgr->m_items.begin(); it != g_rouletteMgr->m_items.end(); ++it) {
+    const int row = it->first.row;
+    const int column = it->first.column;
+    const int x = (row + column) * 36 + 159;
+    const int y = 344 - row * 40;
+    if (g_rouletteMgr->m_stage == row && (g_rouletteMgr->m_resultShown != 0 || g_rouletteMgr->m_spinning != 0)) {
+      DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, locale, x, y, it->second, 0, 0);
+    } else {
+      DrawItemWithQuantityAuxiliary(*this, descriptions, g_fontCache, locale, 1, x, y, it->second, 0, 0);
+    }
+  }
+
+  if (g_rouletteMgr->m_resultShown == 1 && g_rouletteMgr->m_resultItem.quantity != 0) {
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, locale, 189, 145, g_rouletteMgr->m_resultItem, 0, 0);
+  }
+
+  if (g_rouletteMgr->m_additionItem.quantity != 0) {
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, locale, 60, 135, g_rouletteMgr->m_additionItem, 0, 0);
+  }
+}
 
 // OFFSET: 0x0080C490
 // FUNCTION: fn_10088
