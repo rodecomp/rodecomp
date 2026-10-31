@@ -6,6 +6,7 @@
 #include "UI/Lists/UIScrollBar.h"
 #include "UI/Window/UIFrameWnd.h"
 
+#include <cstdint>
 #include <string>
 #include <vector>
 
@@ -13,6 +14,10 @@ class UIBasicButton;
 
 class UIItemReformWnd_List : public UIFrameWnd {
 public:
+  // INLINED
+  UIItemReformWnd_List(UIWindowContext& windowContext, UIFrameContext& frameContext)
+      : UIFrameWnd(windowContext, frameContext, 0), itemHeight(32), selectedIndex(0xFFFFFFFF), hoverIndex(0), scrollPosition(0), scrollBar(nullptr), items() {
+  }
   void Move(int x, int y) override;
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -20,6 +25,7 @@ public:
   void Slot31(int x, int y) override;
   void Slot33(int x, int y) override;
   void Slot35(int delta) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
   /* 00B4 */ unsigned int itemHeight;
   /* 00B8 */ unsigned int visibleCount;
@@ -34,6 +40,9 @@ public:
 
 class UIItemReformWnd_Item : public UIWindow {
 public:
+  // INLINED
+  explicit UIItemReformWnd_Item(UIWindowContext& context) : UIWindow(context, 0), item(nullptr) {
+  }
   void Paint() override;
   void Slot28(int x, int y) override;
   void Slot32(int x, int y) override;
@@ -43,6 +52,9 @@ public:
 
 class UIItemReformWnd_DetailBtn : public UIButton {
 public:
+  // INLINED
+  UIItemReformWnd_DetailBtn(UIWindowContext& windowContext, UIButtonContext& buttonContext) : UIButton(windowContext, buttonContext) {
+  }
   void Paint() override;
   void Slot47() override;
   void Slot48() override;
@@ -50,13 +62,19 @@ public:
 
 class UIItemReformWnd_DetailMsg : public UIWindow {
 public:
+  // INLINED
+  explicit UIItemReformWnd_DetailMsg(UIWindowContext& context) : UIWindow(context, 0) {
+  }
   void Paint() override;
+  void SetText(const std::string& text);
 };
 
 class UIItemReformWnd : public UIFrameWnd {
 public:
+  void Slot15(int width, int height) override;
   void Slot19() override;
   void Paint() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void SelectItem(ITEM_INFO* item);
 
   /* 00B4 */ UIBasicButton* reformButton;
@@ -72,6 +90,7 @@ public:
   /* 02D0 */ std::vector<ITEM_INFO> materials;
   /* 02DC */ std::string information;
   /* 02F4 */ std::string warning;
+  UIButtonContext* m_controls;
 };
 
 #endif

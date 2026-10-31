@@ -12,11 +12,15 @@
 #include "Contents/Items/SelectPackageItemMgr.h"
 #include "Contents/MessageTable.h"
 #include "Contents/PlayerNameDictionary.h"
+#include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketId.h"
+#include "Network/Packets/PacketLengths.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
 #include "UI/Buttons/UIBasicButton.h"
 #include "UI/Shop/ItemDrawing.h"
+#include "UI/Text/CreateLineInfo.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowBorder.h"
 #include "UI/Window/WindowManagerWindows.h"
@@ -30,11 +34,91 @@
 #include <map>
 #include <new>
 #include <string>
+#include <vector>
+
+#pragma pack(push, 1)
+struct PACKET_CZ_ITEM_REFORM {
+  /* 0000 */ std::int16_t packetType;
+  /* 0002 */ int itemId;
+  /* 0006 */ std::int16_t index;
+};
+#pragma pack(pop)
+
+// OFFSET: 0x005FC7C0
+// FUNCTION: fn_04105
+void UIItemReformWnd_DetailMsg::SetText(const std::string& text) {
+  this->Resize(257, 127);
+  unsigned int height = this->geometry.height;
+  CCreateLineInfo info(this, text.c_str(), this->geometry.width - 20, 4, 0, 12, LineFontFlags{}, false, 0, false, 0xFFFFFF, 0);
+  std::vector<std::vector<UIWindow*>> lines = info.m_lines;
+  for (std::vector<UIWindow*> line : lines) {
+    for (UIWindow* window : line) {
+      if (window) {
+        window->Move(window->geometry.x + 12, window->geometry.y + 12);
+        this->AddChild(window);
+        height = std::max<unsigned int>(height, window->geometry.y + 12);
+      }
+    }
+  }
+  if (height > static_cast<unsigned int>(this->geometry.height)) {
+    this->Resize(this->geometry.width, height);
+  }
+}
 
 // OFFSET: 0x005FCD10
 // FUNCTION: fn_04107
 void UIItemReformWnd_List::Move(int x, int y) {
   UIWindow::Move(x, y);
+}
+
+// OFFSET: 0x005FCD20
+// FUNCTION: fn_04108
+void UIItemReformWnd::Slot15(int width, int height) {
+  this->AddBaseButton(*this->m_controls);
+  this->AddCloseButton(*this->m_controls, "", 0);
+
+  UIBasicButton* cancel = new UIBasicButton(*this->m_context, *this->m_controls);
+  cancel->Configure(60, LookupMessage(218));
+  cancel->Move(300, 236);
+  cancel->SetId(201);
+  this->AddChild(cancel);
+
+  this->reformButton = new UIBasicButton(*this->m_context, *this->m_controls);
+  this->reformButton->Configure(60, LookupMessage(3847));
+  this->reformButton->Move(365, 236);
+  this->reformButton->SetId(184);
+  this->reformButton->SetDisabled(1);
+  this->reformButton->Invalidate();
+  this->AddChild(this->reformButton);
+
+  this->list = new UIItemReformWnd_List(*this->m_context, *this->m_frameContext);
+  this->list->SetSize(222, 192);
+  this->list->Move(215, 21);
+  this->AddChild(this->list);
+
+  this->baseIcon = new UIItemReformWnd_Item(*this->m_context);
+  this->baseIcon->SetSize(24, 24);
+  this->baseIcon->Move(144, 50);
+  this->AddChild(this->baseIcon);
+
+  this->resultIcon = new UIItemReformWnd_Item(*this->m_context);
+  this->resultIcon->SetSize(24, 24);
+  this->resultIcon->Move(54, 50);
+  this->AddChild(this->resultIcon);
+
+  for (unsigned int index = 0; index < CItemReformMgr::Instance()->m_maxMaterials; ++index) {
+    UIItemReformWnd_Item* icon = new UIItemReformWnd_Item(*this->m_context);
+    icon->SetSize(24, 24);
+    icon->Move(index % 3 * 69 + 30, index / 3 * 50 + 140);
+    this->AddChild(icon);
+    this->materialIcons.push_back(icon);
+  }
+
+  this->detailButton = new UIItemReformWnd_DetailBtn(*this->m_context, *this->m_controls);
+  this->detailButton->SetSize(149, 14);
+  this->detailButton->Move(36, 124);
+  this->detailButton->Enable(0);
+  this->AddChild(this->detailButton);
 }
 
 // OFFSET: 0x005FD1B0
@@ -353,6 +437,119 @@ void UIItemReformWnd::SelectItem(ITEM_INFO* item) {
     this->materialIcons[index]->Invalidate();
   }
   this->Invalidate();
+}
+
+// OFFSET: 0x005FE480
+// FUNCTION: fn_04130
+int UIItemReformWnd::SendMsg(
+  UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
+) {
+  switch (message) {
+  case 6:
+    if (argument1 == 184) {
+      if (this->selectedItem && this->reformItem.GetItemId() != 0) {
+        PACKET_CZ_ITEM_REFORM packet;
+        packet.packetType = ID_CZ_ITEM_REFORM;
+        packet.itemId = this->reformItem.GetItemId();
+        packet.index = static_cast<std::int16_t>(this->selectedItem->unknown_0000[1]);
+        GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
+      }
+    } else if (argument1 == 201) {
+      g_windowMgr.CloseWindow(348);
+    } else if (argument1 == 336) {
+      this->SelectItem(reinterpret_cast<ITEM_INFO*>(argument2));
+    }
+    break;
+  case 23:
+    this->reformItem.SetItemId(argument1);
+    if (this->list->SendMsg(this, 23, argument1, 0, 0, 0) == -1) {
+      this->warning = LookupMessage(3856);
+    }
+    this->Invalidate();
+    break;
+  case 167:
+    if (sender == this->detailButton && !this->detailMsg) {
+      this->detailMsg = new UIItemReformWnd_DetailMsg(*this->m_context);
+      this->detailMsg->SetText(this->information);
+      g_windowMgr.AddRendered(this->detailMsg);
+    }
+    break;
+  case 168:
+    if (sender == this->detailButton && this->detailMsg) {
+      g_windowMgr.Schedule(this->detailMsg);
+      this->detailMsg = nullptr;
+    }
+    break;
+  }
+  return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+}
+
+// OFFSET: 0x005FE770
+// FUNCTION: fn_04131
+int UIItemReformWnd_List::SendMsg(
+  UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
+) {
+  switch (message) {
+  case 7:
+  case 9:
+  case 10: {
+    const unsigned int previous = this->scrollPosition;
+    if (message == 9) {
+      argument1 = -1;
+    } else if (message == 10) {
+      argument1 = 1;
+    }
+    this->scrollPosition = previous + argument1;
+    if (previous != this->scrollPosition) {
+      this->UpdateScrollBar();
+    }
+    return this->scrollPosition - previous;
+  }
+  case 23: {
+    this->items.clear();
+    std::vector<int> baseItems = CItemReformMgr::Instance()->GetReformBaseItems(argument1);
+    for (std::vector<int>::iterator base = baseItems.begin(); base != baseItems.end(); ++base) {
+      ItemReformInfo* info = CItemReformMgr::Instance()->FindReform(argument1, *base);
+      if (!info) {
+        continue;
+      }
+      std::vector<int> indices = g_session.FindInventoryIndicesByItemId(*base, 1);
+      for (std::vector<int>::iterator index = indices.begin(); index != indices.end(); ++index) {
+        if (g_session.HasItem61B8(*index) != 0) {
+          continue;
+        }
+        ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *index);
+        const std::uint64_t refine = item.unknown_0060;
+        if (refine < static_cast<std::uint64_t>(info->needRefineMin) || refine > static_cast<std::uint64_t>(info->needRefineMax)) {
+          continue;
+        }
+        const std::uint64_t options = item.unknown_0098;
+        if (options < static_cast<std::uint64_t>(info->needOptionNumMin)) {
+          continue;
+        }
+        bool emptySocket = true;
+        if (info->isEmptySocket == 1) {
+          for (unsigned int slot = std::min(ItemSlotsCount(item), 4); slot < 4; ++slot) {
+            if (static_cast<int>(slot) < 4 && reinterpret_cast<const int*>(item.unknown_001C)[slot] > 0) {
+              emptySocket = false;
+              break;
+            }
+          }
+        }
+        if (emptySocket) {
+          this->items.push_back(item);
+        }
+      }
+    }
+    this->UpdateScrollBar();
+    this->Invalidate();
+    if (this->items.empty()) {
+      return -1;
+    }
+    break;
+  }
+  }
+  return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
 }
 
 // OFFSET: 0x005FECD0
