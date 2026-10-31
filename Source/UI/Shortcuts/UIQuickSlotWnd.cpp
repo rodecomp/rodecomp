@@ -10,6 +10,18 @@
 #include "Render/DX7/RenderSystemDX7.h"
 #include "Resource/ResourceMgr.h"
 #include "UI/Window/WindowManagerWindows.h"
+#include "Client/Input/InputCharset.h"
+#include "Client/Mode/ModeTooltip.h"
+#include "Client/Session.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Hotkeys/HotkeyInfo.h"
+#include "Contents/Items/ItemDescription.h"
+#include "Contents/Items/ItemNaming.h"
+#include "Contents/MessageTable.h"
+#include "Contents/PlayerNameDictionary.h"
+#include "UI/UIBasicCtrl.h"
+#include "UI/Window/UINewSelectCharWnd.h"
+#include "Utility/Text/FormatString.h"
 
 // OFFSET: 0x00930EB0
 // FUNCTION: fn_12696
@@ -47,6 +59,60 @@ void UIQuickSlotWnd::Slot25(int x, int y) {
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
       mode->drag.BeginItem(this->m_frameContext->windows, painting.descriptions, 16, item, item.quantity, -1);
     }
+  }
+}
+
+// OFFSET: 0x00931920
+// FUNCTION: fn_12709
+void UIQuickSlotWnd::Slot28(int x, int y) {
+  int index;
+  if (static_cast<unsigned int>(y) <= 23 && (x <= 58 || x >= this->geometry.width)) {
+    index = (x - 4) / 29;
+    if (x > index * 29 + 30) {
+      index = -1;
+    }
+  } else {
+    index = -1;
+  }
+
+  if (index != this->m_selected) {
+    this->m_selected = index;
+    this->Invalidate();
+  }
+
+  if (this->m_selected == -1) {
+    return;
+  }
+
+  int screenY = -17;
+  int screenX = (x - 4) / 29 * 29 + 4;
+  this->ToScreen(screenX, screenY);
+  std::string text;
+  QuickSlotPainting& painting = *this->m_painting;
+  const std::uint32_t id = this->m_entries[this->m_selected].id;
+  if (id == 0) {
+    text.clear();
+  } else if (this->m_entries[this->m_selected].skill) {
+    LuaScript& script = *g_session.m_hotkeyScript;
+    CSkillInfo skill = painting.skills.Lookup(id);
+    const int level = this->m_entries[this->m_selected].count;
+    const int sp = skill.UseSpAmount(script, level);
+    const int ap = skill.UseApAmount(script, level);
+    if (SkillUsesPercentSp(static_cast<int>(skill.id))) {
+      text = SkillUseTextPercent(skill.DisplayName(script), level, sp, ap);
+    } else {
+      text = SkillUseTextFlat(skill.DisplayName(script), level, sp, ap);
+    }
+  } else {
+    ITEM_INFO item = LookupClientItem(painting.inventory, static_cast<int>(id), 1);
+    bool languagePrefix = false;
+    WORD language = g_serverLanguage->language;
+    ItemNaming naming{painting.descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+    text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(183), naming.DisplayName(item, 0).c_str(), item.quantity));
+  }
+
+  if (!text.empty()) {
+    reinterpret_cast<ModeTooltip*>(g_charViewMode)->Show(text.c_str(), screenX, screenY, -1, 0, 1);
   }
 }
 
