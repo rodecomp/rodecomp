@@ -1,6 +1,8 @@
 #include "Contents/WorldView/WorldViewData.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMgr.h"
+#include "Client/Session.h"
+#include "Contents/MessageTable.h"
 #include "Render/Renderer.h"
 #include "Render/Textures/Texture.h"
 #include "Render/Textures/TextureCache.h"
@@ -569,4 +571,12 @@ int CWorldViewMgr::LevelCount() {
 // FUNCTION: fn_04390
 CWorldViewWorld* CWorldViewMgr::CurrentWorld() {
   return this->worlds[this->currentWorld];
+}
+
+// OFFSET: 0x00617950
+// FUNCTION: fn_04391
+bool IsMapDisplayNameTranslated(const char* mapName) {
+  const std::string placeholder = LookupMessage(0xBB);
+  const std::string displayName = g_session.GetMapDisplayName(mapName);
+  return placeholder != displayName;
 }
