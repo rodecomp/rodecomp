@@ -28,6 +28,7 @@
 #include "Render/Textures/TextureCache.h"
 #include "Contents/Movies/BinkMovies.h"
 #include "Contents/Sound/SoundMgr.h"
+#include "Contents/Sound/SoundMgr.h"
 #include "Contents/Actors/Pc.h"
 #include "ActorPickNode.h"
 #include "Client/Input/Mouse.h"
@@ -118,6 +119,88 @@ void CWorld::OnExitFrame() {
 }
 
 // OFFSET: 0x00AC9F10
+// FUNCTION: fn_17688
+void CWorld::OnProcess() {
+  if (this->movies != nullptr) {
+    CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CPlayer* player = gameMode->scene->player;
+    const float* playerPosition = player != nullptr ? &player->render.position.x : nullptr;
+    this->movies->Update(playerPosition, g_soundMgr->sampleVolume);
+  }
+
+  std::atomic_ref<int> pending(this->pending);
+  const int ready = pending.load(std::memory_order_acquire);
+  if (ready != 0) {
+    const int end = this->published + ready;
+    while (this->published < end) {
+      C3dActor& model = *this->models[this->published];
+      for (WorldSpatialTree* child : this->spatial.children) {
+        if (model.oriented.Intersects(child->minimum)) {
+          child->InsertModel(model, 1);
+        }
+      }
+
+      pending.fetch_sub(1, std::memory_order_seq_cst);
+      ++this->published;
+    }
+  }
+
+  auto objectEntry = this->objects.begin();
+  while (objectEntry != this->objects.end()) {
+    CRenderObject* object = *objectEntry;
+    if (object->OnProcess()) {
+      ++objectEntry;
+      continue;
+    }
+
+    for (auto itemEntry = this->unknown_0018.begin(); itemEntry != this->unknown_0018.end(); ++itemEntry) {
+      if (*itemEntry == object) {
+        CItem* item = static_cast<CItem*>(object);
+        this->RemovePcPos(item->itemAid, true);
+        this->RemovePcPosForMove(item->itemAid, true);
+        this->unknown_0018.erase(itemEntry);
+        break;
+      }
+    }
+
+    delete object;
+    objectEntry = this->objects.erase(objectEntry);
+  }
+
+  for (const std::uint32_t aid : this->pendingActorIds) {
+    auto skillEntry = this->unknown_0020.begin();
+    for (; skillEntry != this->unknown_0020.end(); ++skillEntry) {
+      CSkill* skill = static_cast<CSkill*>(*skillEntry);
+      if (skill->skillAid != aid) {
+        continue;
+      }
+
+      skill->SendMsg(nullptr, 53, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      if (skill->HasPendingDamage()) {
+        bool found = false;
+        for (const std::uint32_t pendingAid : this->pendingActorIds) {
+          if (pendingAid == aid) {
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          this->pendingActorIds.push_back(aid);
+        }
+      } else {
+        for (auto entry = this->objects.begin(); entry != this->objects.end(); ++entry) {
+          if (*entry == skill) {
+            delete skill;
+            this->objects.erase(entry);
+            break;
+          }
+        }
+        this->unknown_0020.erase(skillEntry);
+      }
+      break;
+    }
+  }
+}
 
 // OFFSET: 0x00ACA200
 // FUNCTION: fn_17690
