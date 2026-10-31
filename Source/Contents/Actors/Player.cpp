@@ -2064,8 +2064,79 @@ bool CPc::OnProcess() {
 }
 
 // OFFSET: 0x00DAC580
+// FUNCTION: fn_22595
+void CPc::Render(int argument) {
+  bool hasEffect = false;
+  if (StateFlag14(this->stateFlags)) {
+    static_cast<CPlayer*>(this)->UpdateFootprints(1);
+  }
+  if ((this->render.flags & 0x8000) != 0) {
+    static_cast<CPlayer*>(this)->UpdateFootprints(2);
+  }
+
+  for (const ActiveSkillEffect& effect : g_activeSkillEffects) {
+    if (effect.id == 0xB8) {
+      hasEffect = true;
+      break;
+    }
+  }
+
+  this->render.unknown_0130[0] = 0;
+  if (g_serviceOptions.Get(0x109) && this->render.accountId != g_session.m_aid) {
+    this->render.unknown_0130[0] = 1;
+  }
+
+  const float* matrix = reinterpret_cast<const float*>(argument);
+  if (hasEffect == true && (!this->render.visible || !this->render.enabled) && !StateFlag06(this->stateFlags)) {
+    this->SetColor(-1, 0, 0, 0);
+    this->DrawLayers(matrix, 0, 0);
+    return;
+  }
+
+  if (!this->render.visible) {
+    this->UpdateTlvertex(matrix);
+    return;
+  }
+
+  if (this->render.unknown_0070 != 6 && this->render.unknown_0070 != 3) {
+    this->DrawShadow(argument, this->render.scale);
+  }
+  if (this->render.unknown_0070 == 6) {
+    switch (this->GetEffectiveJob(-1)) {
+    case 0xFD0:
+    case 0x108E:
+    case 0x1093:
+    case 0x1094:
+    case 0x10DC:
+      this->DrawShadow(argument, this->render.scale);
+      break;
+    }
+  }
+
+  if (!this->render.enabled) {
+    this->UpdateTlvertex(matrix);
+    return;
+  }
+
+  if (IsObfuscatedMessage(this->render.accountId)) {
+    this->RenderOverlaySprite(matrix, 0);
+    return;
+  }
+
+  if (this->unknown_0474 != 0) {
+    this->DrawSprite(argument, false, 0.0f);
+    return;
+  }
+
+  this->DrawLayers(matrix, 0, 0);
+}
 
 // OFFSET: 0x00DAD8C0
+// FUNCTION: fn_22599
+void CPc::DrawLayers(const float* matrix, int unknown0030, char unknown0034) {
+  SpriteLayerRenderer renderer(this);
+  renderer.Render(matrix, unknown0030, unknown0034);
+}
 
 // OFFSET: 0x00DABF50
 // FUNCTION: fn_22589
