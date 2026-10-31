@@ -11,6 +11,8 @@
 #include "Contents/EntryQueueMgr.h"
 #include "UI/EntryQueue/UIEntryQueueWnd.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "Client/Session.h"
+#include "Contents/RenewQuestMgr.h"
 
 // GLOBAL: gl_24549
 int g_replayAnimationScaling = 0;
@@ -972,4 +974,70 @@ std::vector<unsigned char> BuildSkillInfoListPacket(std::uint16_t id, const std:
     record += 37;
   }
   return packet;
+}
+
+// OFFSET: 0x00E44640
+// FUNCTION: fn_24205
+std::vector<unsigned char> BuildRenewQuestReplayRecords() {
+  std::vector<unsigned char> records;
+  {
+    const auto record = BuildReplayTaggedRecord(3500, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const int version = 51;
+    const auto record = BuildReplayTaggedRecord(3502, &version, sizeof(version));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  const int size = g_renewQuestMgr->GetOngoingQuestsSize();
+  char* buffer = new char[size];
+  g_renewQuestMgr->WriteOngoingQuests(buffer);
+  {
+    const auto record = BuildReplayTaggedRecord(3510, buffer, size);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  delete buffer;
+  {
+    const auto record = BuildReplayTaggedRecord(3501, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  return records;
+}
+
+// OFFSET: 0x00E449C0
+// FUNCTION: fn_24206
+std::vector<unsigned char> CSession::BuildShortcutReplayRecords() {
+  std::vector<unsigned char> records;
+  {
+    const auto record = BuildReplayTaggedRecord(7000, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(7100, this->m_shortcutSlots, sizeof(this->m_shortcutSlots));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(7101, &this->unknown_06EB, sizeof(this->unknown_06EB) + sizeof(this->unknown_06F2));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(7001, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  return records;
+}
+
+// OFFSET: 0x00E44DF0
+// FUNCTION: fn_24207
+std::vector<unsigned char> CSession::BuildSkillListReplayPacket(short id) {
+  switch (id) {
+  case 0x10F:
+    return BuildSkillInfoListPacket(0x10F, this->m_skillBundle.skills);
+  case 0x235:
+    return BuildSkillInfoListPacket(0x235, this->m_homunSkills);
+  case 0x29D:
+    return BuildSkillInfoListPacket(0x29D, this->m_mercSkills);
+  default:
+    return {};
+  }
 }
