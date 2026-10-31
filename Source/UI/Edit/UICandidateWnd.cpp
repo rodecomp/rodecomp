@@ -12,6 +12,14 @@
 #include <cstring>
 #include <windows.h>
 
+// OFFSET: 0x0096D300
+
+// OFFSET: 0x0096D370
+
+// OFFSET: 0x0096D3F0
+// FUNCTION: fn_13196
+UIKeyStrokeWnd::UIKeyStrokeWnd(UIWindowContext& windowContext, UIFrameContext& frameContext) : UIFrameWnd(windowContext, frameContext, 0) {}
+
 // OFFSET: 0x0096D6F0
 // FUNCTION: fn_13200
 void UICandidateWnd::Slot15(int, int) {}

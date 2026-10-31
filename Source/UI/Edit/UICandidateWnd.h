@@ -9,6 +9,7 @@ struct UIButtonContext;
 
 class UICandidateWnd : public UIFrameWnd {
 public:
+  UICandidateWnd(UIWindowContext& windowContext, UIFrameContext& frameContext, UIButtonContext& controls);
   void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
@@ -24,6 +25,7 @@ protected:
 
 class UICompositionWnd : public UIFrameWnd {
 public:
+  UICompositionWnd(UIWindowContext& windowContext, UIFrameContext& frameContext, UIButtonContext& controls);
   void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
@@ -35,6 +37,7 @@ protected:
 
 class UIKeyStrokeWnd : public UIFrameWnd {
 public:
+  UIKeyStrokeWnd(UIWindowContext& windowContext, UIFrameContext& frameContext);
   void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;

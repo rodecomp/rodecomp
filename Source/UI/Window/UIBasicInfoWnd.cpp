@@ -7,6 +7,8 @@
 
 #include <cstdio>
 
+// OFFSET: 0x00997250
+
 // OFFSET: 0x00998190
 // FUNCTION: fn_13489
 bool UIBasicInfoWnd::Slot03() {
