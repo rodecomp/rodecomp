@@ -8,6 +8,7 @@
 #include <vector>
 
 class CTexture;
+class LuaScript;
 
 struct WorldViewArea {
   /* 0000 */ int left;
@@ -88,6 +89,7 @@ class CWorldViewMgr {
 public:
   CWorldViewMgr();
 
+  void Load(LuaScript& script);
   bool ScaleToScreen();
   void sub_6168F0();
   unsigned int FindWorld(int mapId);
