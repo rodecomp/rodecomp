@@ -8,6 +8,7 @@
 class UIRPImageWnd : public UIWindow {
 public:
   UIRPImageWnd(UIWindowContext& context, std::string imageName, int imageCount);
+  void Paint() override;
 
 protected:
   /* 007C */ std::string m_imageName;

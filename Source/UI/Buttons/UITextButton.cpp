@@ -3263,3 +3263,18 @@ void UITabControl::Paint() {
     }
   }
 }
+
+#include "UI/Text/UITextViewer.h"
+
+// OFFSET: 0x0088F8D0
+
+#include "UI/Window/UIRPImageWnd.h"
+
+// OFFSET: 0x0088D560
+// FUNCTION: fn_11376
+void UIRPImageWnd::Paint() {
+  this->SetSolid(this->m_context->primitives, this->geometry.width, this->geometry.height, 0);
+  for (int i = 0; i < this->m_imageCount; ++i) {
+    this->DrawNamed(this->m_context->primitives, 0, 0, this->m_imageName.c_str(), 0xFFFFFFFF, 0, 0);
+  }
+}
