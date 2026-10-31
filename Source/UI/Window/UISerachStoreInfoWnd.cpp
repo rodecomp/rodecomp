@@ -41,7 +41,9 @@ struct SearchStoreQueryPacket {
 static_assert(offsetof(SearchStoreQueryPacket, ids) == 0xF);
 
 struct SearchStoreResult {
-  /* 0000 */ unsigned char unknown_0000[0x60];
+  /* 0000 */ int unknown_0000;
+  /* 0004 */ int unknown_0004;
+  /* 0008 */ unsigned char unknown_0008[0x58];
   /* 0060 */ ITEM_INFO item;
 };
 
@@ -393,4 +395,47 @@ int UISerachStoreInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     return 0;
   }
   return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+}
+
+#pragma pack(push, 1)
+struct SearchStoreClickPacket {
+  /* 0000 */ std::int16_t packetType;
+  /* 0002 */ int unknown_0002;
+  /* 0006 */ int unknown_0006;
+  /* 000A */ int itemId;
+};
+#pragma pack(pop)
+
+// OFFSET: 0x00930780
+// FUNCTION: fn_12688
+void UISerachStoreInfoWnd::Slot26(int x, int y) {
+  ITEM_INFO item = this->ItemAt(x, y);
+  if (item.itemId.size() == 0 || static_cast<unsigned int>(x - 0x33) > 0x6C) {
+    return;
+  }
+
+  const unsigned int index = this->unknown_00E0 + (this->unknown_00DC - 1) * 10;
+  std::vector<SessionEntry5BD4>::iterator it = g_session.unknown_5BD4.begin() + index;
+  if (it == g_session.unknown_5BD4.end()) {
+    return;
+  }
+
+  if (reinterpret_cast<std::int16_t*>(&g_session.unknown_5BE4)[1] != 0 &&
+      reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x6F9), 2, true, false, 0, "Message", 0x118, 0x78, 0) != 0xBB) {
+    return;
+  }
+
+  const SearchStoreResult* entry = reinterpret_cast<const SearchStoreResult*>(&*it);
+
+  g_session.unknown_5BE8 = -1;
+  g_session.unknown_5BEC = -1;
+  g_session.unknown_5BF0 = 0xFFFFFFFF;
+
+  SearchStoreClickPacket packet;
+  packet.packetType = 0x83C;
+  packet.unknown_0002 = entry->unknown_0004;
+  packet.unknown_0006 = entry->unknown_0000;
+  packet.itemId = entry->item.GetItemId();
+  GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
+  g_session.unknown_5BF0 = entry->unknown_0004;
 }
