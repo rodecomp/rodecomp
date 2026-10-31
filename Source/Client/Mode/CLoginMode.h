@@ -23,6 +23,7 @@ struct CharacterPagePacket;
 struct RefuseLoginPacket;
 struct NotifyZoneServerPacket;
 struct NotifyZoneServer2Packet;
+struct PasswordModePacket;
 
 #pragma pack(push, 1)
 struct CharacterInfo {
@@ -78,7 +79,8 @@ public:
   /* 6EFC */ CharacterSlotExtension slotExtension;
   /* 6F10 */ unsigned char unknown_6F10[0x4];
   /* 6F14 */ UIWindow* window_6F14;
-  /* 6F18 */ unsigned char unknown_6F18[0x38];
+  /* 6F18 */ int passwordRetryCount;
+  /* 6F1C */ unsigned char unknown_6F1C[0x34];
   /* 6F50 */ std::string unknown_6F50;
   /* 6F68 */ std::vector<MapStateEntry> mapStates;
   /* 6F74 */ bool unknown_6F74;
@@ -91,6 +93,8 @@ public:
 
   void SubD8D4F0(int);
   void SubD8D500(const char* packet);
+  void SubD90C90(const PasswordModePacket* packet);
+  void SubD911C0(const PasswordModePacket* packet);
   int GetMaxCharacterSlot();
   void ReceiveCharacterSlots(const CharacterSlotsPacket* packet);
   void ReceiveAcceptEnter(const AcceptEnterPacket* packet, WindowDialogs& dialogs);

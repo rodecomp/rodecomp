@@ -16,6 +16,7 @@
 #include "Security/NProtectGameGuardMgr.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Dialogs/UIPasswordWnd.h"
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Window/WindowDialogs.h"
 #include "Utility/Cipher/XorBytes.h"
@@ -1310,4 +1311,189 @@ void CLoginMode::ReceiveNotifyZoneServer(const NotifyZoneServerPacket* packet) {
 void CLoginMode::ReceiveNotifyZoneServer2(const NotifyZoneServer2Packet* packet) {
   std::string host(std::begin(packet->host), std::end(packet->host));
   this->ConnectZoneServer(packet->gid, std::string(std::begin(packet->mapName), std::end(packet->mapName)).c_str(), packet->ip, packet->port, host.c_str());
+}
+
+#pragma pack(push, 1)
+struct PasswordModePacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint32_t accountId;
+  /* 0006 */ std::int32_t value;
+  /* 000A */ std::uint16_t mode;
+  /* 000C */ unsigned char count;
+};
+#pragma pack(pop)
+
+// GLOBAL: gl_25133
+std::uint32_t g_loginAccountId;
+
+// GLOBAL: gl_25134
+std::int32_t g_passwordWndAccountId;
+
+// OFFSET: 0x00D90C90
+// FUNCTION: fn_22286
+void CLoginMode::SubD90C90(const PasswordModePacket* packet) {
+  g_loginAccountId = packet->accountId;
+  switch (packet->mode) {
+  case 0:
+    g_windowMgr.CloseWindow(199);
+    g_passwordWndMode = 0;
+    this->pendingCursorType = 7;
+    break;
+  case 1:
+    g_passwordWndAccountId = packet->value;
+    g_passwordWndMode = 2;
+    this->passwordRetryCount = 0;
+    this->pendingCursorType = 7;
+    break;
+  case 2:
+    g_passwordWndAccountId = packet->value;
+    g_passwordWndMode = 4;
+    this->pendingCursorType = 7;
+    break;
+  case 3:
+    g_passwordWndAccountId = packet->value;
+    g_passwordWndMode = 3;
+    this->pendingCursorType = 7;
+    break;
+  case 4:
+    g_passwordWndAccountId = packet->value;
+    g_passwordWndMode = 5;
+    this->pendingCursorType = 7;
+    break;
+  case 5:
+    g_windowMgr.CloseWindow(199);
+    this->pendingCursorType = 7;
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x768), 0, true, false, 0, "Message", 280, 120, 0);
+    break;
+  case 6:
+    g_windowMgr.CloseWindow(199);
+    this->pendingCursorType = 7;
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x769), 0, true, false, 0, "Message", 280, 120, 0);
+    break;
+  case 7:
+    g_passwordWndMode = 1;
+    this->pendingCursorType = 7;
+    break;
+  case 8:
+    g_windowMgr.CloseWindow(199);
+    if (packet->count != 0) {
+      this->pendingCursorType = 7;
+      std::string message = FormatOwnedString(LookupMessage(0x764), packet->count);
+      reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+    } else {
+      reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0xD7E), 0, true, false, 0, "Message", 280, 120, 0);
+      this->SendMsg(2, 0, 0, 0, 0);
+    }
+    break;
+  case 9: {
+    const char* text = LookupMessage(0xC81);
+    const std::uint8_t source[] = {0xF2, 0xE6, 0x37, 0xBE, 0x35, 0x6C, 0x87};
+    thread_local EncryptedName<sizeof(source), 0x0B8745519B1F95D7ULL> format(source);
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(FormatString(format.Text(), text, 9), 0, true, false, 0, "Message",
+                                                          280, 120, 0);
+    break;
+  }
+  case 10: {
+    const char* text = LookupMessage(0xC81);
+    const std::uint8_t source[] = {0xF0, 0x4A, 0x03, 0x6C, 0x83, 0x8E, 0x97};
+    thread_local EncryptedName<sizeof(source), 0xA597A7E7492B39D5ULL> format(source);
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(FormatString(format.Text(), text, 10), 0, true, false, 0, "Message",
+                                                          280, 120, 0);
+    break;
+  }
+  case 11: {
+    const char* text = LookupMessage(0xC81);
+    const std::uint8_t source[] = {0x56, 0x9C, 0x93, 0xF4, 0xB1, 0xCA, 0xAB};
+    thread_local EncryptedName<sizeof(source), 0xFFABE3D5D1BBEF73ULL> format(source);
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(FormatString(format.Text(), text, 11), 0, true, false, 0, "Message",
+                                                          280, 120, 0);
+    break;
+  }
+  }
+}
+
+// OFFSET: 0x00D911C0
+// FUNCTION: fn_22287
+void CLoginMode::SubD911C0(const PasswordModePacket* packet) {
+  g_loginAccountId = packet->accountId;
+  switch (packet->mode) {
+  case 0:
+    g_windowMgr.CloseWindow(199);
+    g_passwordWndMode = 0;
+    this->pendingCursorType = 7;
+    break;
+  case 1:
+    g_passwordWndAccountId = packet->value;
+    g_passwordWndMode = 2;
+    this->passwordRetryCount = 0;
+    this->pendingCursorType = 7;
+    break;
+  case 2:
+    g_passwordWndAccountId = packet->value;
+    g_passwordWndMode = 4;
+    this->pendingCursorType = 7;
+    break;
+  case 3:
+    g_passwordWndAccountId = packet->value;
+    g_passwordWndMode = 3;
+    this->pendingCursorType = 7;
+    break;
+  case 4:
+    g_passwordWndAccountId = packet->value;
+    g_passwordWndMode = 5;
+    this->pendingCursorType = 7;
+    break;
+  case 5:
+    g_windowMgr.CloseWindow(199);
+    this->pendingCursorType = 7;
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x768), 0, true, false, 0, "Message", 280, 120, 0);
+    break;
+  case 6:
+    g_windowMgr.CloseWindow(199);
+    this->pendingCursorType = 7;
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x769), 0, true, false, 0, "Message", 280, 120, 0);
+    break;
+  case 7:
+    g_passwordWndMode = 1;
+    this->pendingCursorType = 7;
+    break;
+  case 8: {
+    g_windowMgr.CloseWindow(199);
+    ++this->passwordRetryCount;
+    const int remaining = 3 - this->passwordRetryCount;
+    this->pendingCursorType = 7;
+    if (remaining > 0) {
+      std::string message = FormatOwnedString(LookupMessage(0x764), remaining);
+      reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+    } else {
+      reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x773), 0, true, false, 0, "Message", 280, 120, 0);
+      this->SendMsg(2, 0, 0, 0, 0);
+    }
+    break;
+  }
+  case 9: {
+    const char* text = LookupMessage(0xC81);
+    const std::uint8_t source[] = {0x16, 0x10, 0x7D, 0xD4, 0x4D, 0x1C, 0xD3};
+    thread_local EncryptedName<sizeof(source), 0x49D33529F1556333ULL> format(source);
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(FormatString(format.Text(), text, 9), 0, true, false, 0, "Message",
+                                                          280, 120, 0);
+    break;
+  }
+  case 10: {
+    const char* text = LookupMessage(0xC81);
+    const std::uint8_t source[] = {0x14, 0x8A, 0xFB, 0xDC, 0x79, 0x66, 0xCB};
+    thread_local EncryptedName<sizeof(source), 0x01CB4F1DF9D3F931ULL> format(source);
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(FormatString(format.Text(), text, 10), 0, true, false, 0, "Message",
+                                                          280, 120, 0);
+    break;
+  }
+  case 11: {
+    const char* text = LookupMessage(0xC81);
+    const std::uint8_t source[] = {0xB2, 0xBA, 0xE1, 0xBE, 0xA9, 0x92, 0xB1};
+    thread_local EncryptedName<sizeof(source), 0xC5B1BBCD9BC9C997ULL> format(source);
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(FormatString(format.Text(), text, 11), 0, true, false, 0, "Message",
+                                                          280, 120, 0);
+    break;
+  }
+  }
 }
