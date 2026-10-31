@@ -262,4 +262,8 @@ static_assert(sizeof(UIEditCtrl4) == 324);
 static_assert(sizeof(UIEditCtrl5) == 324);
 #endif
 
+extern bool g_inputSuggestionsEnabled;
+
+bool IsInputSuggestionAllowed();
+
 #endif

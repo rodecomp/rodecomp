@@ -95,6 +95,9 @@
 // GLOBAL: gl_24862
 bool g_vendingSaleAlarm;
 
+// GLOBAL: gl_24635
+bool g_inputSuggestionsEnabled;
+
 // GLOBAL: gl_24651
 static const std::string g_itemLinkOpen = "<ITEML>";
 // GLOBAL: gl_24652
@@ -3638,4 +3641,14 @@ void UIMerchantMirrorItemWnd::Slot28(int x, int y) {
                  g_session.GetItemNameColor(item), 0, 1);
     }
   }
+}
+
+// OFFSET: 0x00859200
+// FUNCTION: fn_10774
+bool IsInputSuggestionAllowed() {
+  if (g_windowMgr.IsHoverOnWindow01C8Button() && !g_inputSuggestionsEnabled) {
+    return false;
+  }
+
+  return true;
 }
