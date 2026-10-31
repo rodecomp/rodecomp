@@ -2684,3 +2684,11 @@ void UIShowAndEditTimeCtrl::Paint() {
   this->DrawTextAt(context.fonts, context.locale, 22, 3, "m", 0, 0, 12, 0, 0, 0);
   this->DrawTextAt(context.fonts, context.locale, 60, 3, "s", 0, 0, 12, 0, 0, 0);
 }
+
+#include "UI/Buttons/UINaviLinkButton.h"
+
+// OFFSET: 0x008906C0
+// FUNCTION: fn_11423
+void __fastcall sub_8906C0(UINaviLinkButton* button, void*, int x, int y) {
+  button->UINaviLinkButton::Slot25(x, y);
+}
