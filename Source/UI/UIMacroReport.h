@@ -5,20 +5,29 @@
 
 #include <string>
 
+class CUIControl;
 class CUIEditBox;
 class CUIRadioButton;
+class CUIStaticImage;
+class CUITitleBar;
 
 class CUIMacroReport : public CUIFrameWnd {
 public:
-  /* 00D8 */ unsigned char unknown_00D8[0x08];
+  /* 00D8 */ CUIStaticImage* m_background;
+  /* 00DC */ CUITitleBar* m_titleBar;
   /* 00E0 */ CUIEditBox* m_messageEdit;
-  /* 00E4 */ unsigned char unknown_00E4[0x10];
+  /* 00E4 */ CUIControl* unknown_00E4;
+  /* 00E8 */ CUIControl* unknown_00E8;
+  /* 00EC */ CUIControl* unknown_00EC;
+  /* 00F0 */ CUIControl* unknown_00F0;
   /* 00F4 */ CUIRadioButton* m_firstTypeButton;
   /* 00F8 */ CUIRadioButton* m_secondTypeButton;
-  /* 00FC */ unsigned char unknown_00FC[0x04];
+  /* 00FC */ CUIControl* unknown_00FC;
   /* 0100 */ int unknown_0100;
   /* 0104 */ int m_reportType;
   /* 0108 */ std::string unknown_0108;
+
+  CUIMacroReport();
 
   void Slot16() override;
   virtual void Reset();

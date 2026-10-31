@@ -29,6 +29,13 @@ static_assert(sizeof(ReportUserPacket) == 0x89);
 static_assert(offsetof(ReportUserPacket, type) == 0x22);
 static_assert(offsetof(ReportUserPacket, message) == 0x24);
 
+// OFFSET: 0x00A477F0
+// FUNCTION: fn_16096
+CUIMacroReport::CUIMacroReport()
+    : m_background(nullptr), m_titleBar(nullptr), m_messageEdit(nullptr), unknown_00E4(nullptr), unknown_00E8(nullptr), unknown_00EC(nullptr),
+      unknown_00F0(nullptr), m_firstTypeButton(nullptr), m_secondTypeButton(nullptr), unknown_00FC(nullptr), unknown_0100(0), m_reportType(0) {
+}
+
 // OFFSET: 0x00A47A30
 // FUNCTION: fn_16098
 void CUIMacroReport::OnButtonClick() {
