@@ -1522,6 +1522,17 @@ void CDropItemEffect::Slot01() {
 }
 
 // OFFSET: 0x00719520
+// FUNCTION: fn_07308
+void CDropItemEffect::Slot12() {
+  for (std::size_t i = 0; i < this->emitters.size(); ++i) {
+    if (this->emitters[i]) {
+      this->emitters[i]->looping = 1;
+      AsParticle(this->emitters[i])->flags = 13;
+    }
+  }
+
+  this->AddEvent(0, (this->soundPath + this->soundName).c_str(), 0, 0);
+}
 
 // OFFSET: 0x00719660
 // FUNCTION: fn_07309
@@ -1538,6 +1549,41 @@ bool CDropItemEffect::Slot06() {
 }
 
 // OFFSET: 0x00719690
+// FUNCTION: fn_07310
+void CDropItemEffect::OpenEmitters() {
+  switch (this->id) {
+  case 1190:
+    AsParticle(this->emitters[0])->Open("new_dropitem\\dropitem_purple\\dropitem_purple\\dropitem_purple.str");
+    AsParticle(this->emitters[1])->Open("new_dropitem\\dropitem_purple\\dropitem_purple_bottom\\dropitem_purple_bottom.str");
+    this->soundName = "drop_purple.wav";
+    break;
+  case 1189:
+    AsParticle(this->emitters[0])->Open("new_dropitem\\dropitem_yellow\\dropitem_yellow\\dropitem_yellow.str");
+    AsParticle(this->emitters[1])->Open("new_dropitem\\dropitem_yellow\\dropitem_yellow_bottom\\dropitem_yellow_bottom.str");
+    this->soundName = "drop_yellow.wav";
+    break;
+  case 1869:
+    AsParticle(this->emitters[0])->Open("new_dropitem\\dropitem_blue\\dropitem_blue\\dropitem_blue.str");
+    AsParticle(this->emitters[1])->Open("new_dropitem\\dropitem_blue\\dropitem_blue_bottom\\dropitem_blue_bottom.str");
+    this->soundName = "drop_blue.wav";
+    break;
+  case 1870:
+    AsParticle(this->emitters[0])->Open("new_dropitem\\dropitem_green\\dropitem_green\\dropitem_green.str");
+    AsParticle(this->emitters[1])->Open("new_dropitem\\dropitem_green\\dropitem_green_bottom\\dropitem_green_bottom.str");
+    this->soundName = "drop_green.wav";
+    break;
+  case 1871:
+    AsParticle(this->emitters[0])->Open("new_dropitem\\dropitem_red\\dropitem_red\\dropitem_red.str");
+    AsParticle(this->emitters[1])->Open("new_dropitem\\dropitem_red\\dropitem_red_bottom\\dropitem_red_bottom.str");
+    this->soundName = "drop_red.wav";
+    break;
+  default:
+    AsParticle(this->emitters[0])->Open("new_dropitem\\dropitem_pink\\dropitem_pink\\dropitem_pink.str");
+    AsParticle(this->emitters[1])->Open("new_dropitem\\dropitem_pink\\dropitem_pink_bottom\\dropitem_pink_bottom.str");
+    this->soundName = "drop_pink.wav";
+    break;
+  }
+}
 
 // OFFSET: 0x00719C30
 // FUNCTION: fn_07311
@@ -1567,8 +1613,49 @@ CJupitelThunderHit::CJupitelThunderHit() : CEffect(-1) {
 }
 
 // OFFSET: 0x0071BAB0
+// FUNCTION: fn_07320
+void CJupitelThunderHit::SpawnHit() {
+  switch (this->id) {
+  case 94:
+  case 1200:
+    this->textures.push_back("effect\\thunder_plazma_blast_a.bmp");
+    this->textures.push_back("effect\\thunder_plazma_blast_b.bmp");
+    this->textures.push_back("effect\\thunder_ball_d.bmp");
+    this->textures.push_back("effect\\thunder_ball_e.bmp");
+    this->textures.push_back("effect\\thunder_ball_f.bmp");
+    break;
+  case 452:
+    this->textures.push_back("effect\\twirl_soft.bmp");
+    this->textures.push_back("effect\\thunder_ball_b.bmp");
+    this->textures.push_back("effect\\twirl_soft.bmp");
+    this->textures.push_back("effect\\thunder_ball_c.bmp");
+    this->textures.push_back("effect\\twirl_soft.bmp");
+    break;
+  }
+
+  CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 0x203);
+  particle->unknown_00E8 = -10;
+  particle->scale = 7.5f;
+  particle->unknown_00A8 = 0;
+  particle->SetTexture("effect\\thunder_plazma_blast_a.bmp");
+  this->unknown_00D8.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
+}
 
 // OFFSET: 0x0071C270
+// FUNCTION: fn_07321
+void CJupitelThunderHit::SpawnSpark() {
+  std::string texture = "effect\\thunder_pang.bmp";
+  if (this->id == 94) {
+    texture = "effect\\thunder_pang.bmp";
+  } else if (this->id == 452) {
+    texture = "effect\\pokjuk_d.bmp";
+  }
+
+  CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 0x203);
+  particle->SetTexture(texture);
+  particle->unknown_00C0 = 2.5f;
+  this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
+}
 
 // OFFSET: 0x0071C520
 // FUNCTION: fn_07323
@@ -1595,6 +1682,55 @@ bool CJupitelThunderHit::Slot06() {
 }
 
 // OFFSET: 0x0071C570
+// FUNCTION: fn_07325
+void CJupitelThunderHit::Slot03() {
+  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+    ++(*it)->elapsed;
+    CEZ2STRParticle* particle = AsParticle(*it);
+    if (particle && particle->unknown_00E8 >= 0) {
+      if (particle->unknown_00E8 == 10) {
+        particle->unknown_00E8 = -10;
+      } else {
+        const float scale = static_cast<float>(particle->unknown_00E8) * particle->unknown_00C0;
+        matrix rotation;
+        rotation.MakeXRotation(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.pitch / 180.0f * 3.141592f);
+        matrix scaling;
+        scaling.SetScale(scale, scale, 1.0f);
+        matrix transform;
+        transform.Compose(scaling, rotation);
+        particle->transform = transform;
+        particle->scale = scale;
+        particle->position.x = this->position[0] + 0.0f;
+        particle->position.y = this->position[1] - 5.0f;
+        particle->position.z = this->position[2] + 0.0f;
+      }
+    }
+  }
+
+  for (auto it = this->unknown_00D8.begin(); it != this->unknown_00D8.end(); ++it) {
+    ++(*it)->elapsed;
+    CEZ2STRParticle* particle = AsParticle(*it);
+    if (particle && particle->unknown_00E8 >= 0) {
+      std::size_t index = static_cast<signed char>(particle->unknown_00A8) + 1;
+      if (index >= this->textures.size()) {
+        index = 0;
+      }
+
+      particle->SetTexture(this->textures[index]);
+      particle->unknown_00A8 = static_cast<unsigned char>(index);
+      matrix rotation;
+      rotation.MakeXRotation(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.pitch / 180.0f * 3.141592f);
+      matrix scaling;
+      scaling.SetScale(particle->scale, particle->scale, 1.0f);
+      matrix transform;
+      transform.Compose(scaling, rotation);
+      particle->transform = transform;
+      particle->position.x = this->position[0] + 0.0f;
+      particle->position.y = this->position[1] - 5.0f;
+      particle->position.z = this->position[2] + 0.0f;
+    }
+  }
+}
 
 // OFFSET: 0x0071CB70
 // FUNCTION: fn_07326
