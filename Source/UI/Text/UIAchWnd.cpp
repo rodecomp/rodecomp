@@ -46,6 +46,11 @@ UIAchievementWnd::UIAchievementWnd(UIWindowContext& windows, UIFrameContext& fra
     : UIFrameWnd(windows, frame, 0), upper(nullptr), tab(nullptr), list(nullptr), group(0), sub(-1), m_controls(&controls) {
 }
 
+// OFFSET: 0x007B2E80
+// FUNCTION: fn_09192
+UIAchievementWnd::~UIAchievementWnd() {
+}
+
 // OFFSET: 0x007B32B0
 
 // OFFSET: 0x007B37F0

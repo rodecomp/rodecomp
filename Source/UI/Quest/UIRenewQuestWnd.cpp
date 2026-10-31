@@ -484,6 +484,13 @@ void UIRenewDetailQuestInfoWnd::SetQuest(unsigned int questId, bool recommended)
   this->Invalidate();
 }
 
+// OFFSET: 0x007FBF60
+// FUNCTION: fn_09966
+UIRenewQuestScrollBar::UIRenewQuestScrollBar(UIWindowContext& windows) : UIScrollBar(windows) {
+  this->arrowLength = 3;
+  this->thickness = 7;
+}
+
 // OFFSET: 0x007FBFD0
 // FUNCTION: fn_09967
 UIRenewQuestWnd::UIRenewQuestWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)

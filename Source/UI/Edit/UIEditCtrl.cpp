@@ -2448,6 +2448,18 @@ void UIMerchantItemShopWnd::StartTimer(std::uint32_t value) {
   this->SendMsg(nullptr, 14, 3, this->geometry.width, this->geometry.height, 0);
 }
 
+// OFFSET: 0x009970A0
+// FUNCTION: fn_13479
+void UIItemStoreFindWnd::SetTitle(std::string title) {
+  this->title->SetTextFitted(title.c_str());
+}
+
+// OFFSET: 0x00997100
+// FUNCTION: fn_13480
+void UIItemStoreSubWnd::SetTitle(std::string title) {
+  this->title->SetTextFitted(title.c_str());
+}
+
 // OFFSET: 0x009971E0
 // FUNCTION: fn_13483
 void UIItemStoreFindWnd::SetSearchText(std::string text) {

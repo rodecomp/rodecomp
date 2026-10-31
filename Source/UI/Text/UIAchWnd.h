@@ -245,6 +245,7 @@ private:
 class UIAchievementWnd : public UIFrameWnd {
 public:
   UIAchievementWnd(UIWindowContext& windows, UIFrameContext& frame, UIButtonContext& controls);
+  ~UIAchievementWnd() override;
 
   /* 00B4 */ UIAchUpperWnd* upper;
   /* 00B8 */ UIAchTab* tab;

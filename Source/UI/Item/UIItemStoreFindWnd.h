@@ -22,6 +22,7 @@ public:
   void Slot35(int value) override;
 
   __declspec(noinline) ITEM_INFO GetItemAt(int x, int y);
+  void SetTitle(std::string title);
   void SetSearchText(std::string text);
   void Slot15(int width, int height) override;
 

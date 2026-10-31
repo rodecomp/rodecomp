@@ -125,6 +125,7 @@ public:
   void Slot31(int x, int y) override;
   void Slot35(int delta) override;
   MessengerMember MemberAt(int x, int y);
+  void OpenMiniPartyWnd(int cell, const MessengerMember& member);
   MessengerMember MemberAtIndex(int index);
   void UpdateScroll();
   void LayoutButtons();
@@ -682,6 +683,17 @@ MessengerMember UIMessengerGroupWnd::MemberAt(int x, int y) {
   }
 
   return MessengerMember(0);
+}
+
+// OFFSET: 0x0073A330
+// FUNCTION: fn_07703
+void UIMessengerGroupWnd::OpenMiniPartyWnd(int cell, const MessengerMember& member) {
+  UIMiniPartyWnd* window = new UIMiniPartyWnd(*this->m_context, *this->m_frameContext);
+  window->SetSize(174, 52);
+  window->m_cell = cell;
+  g_windowMgr.AddMiniPartyWindow(window);
+  window->SendMsg(nullptr, 0x17, reinterpret_cast<std::intptr_t>(&member), 0, 0, 0);
+  g_session.AddRecord0734(member.accountId, cell);
 }
 
 // OFFSET: 0x0073A540

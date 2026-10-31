@@ -99,10 +99,7 @@ protected:
 
 class UIRenewQuestScrollBar : public UIScrollBar {
 public:
-  explicit UIRenewQuestScrollBar(UIWindowContext& windows) : UIScrollBar(windows) {
-    this->arrowLength = 3;
-    this->thickness = 7;
-  }
+  explicit UIRenewQuestScrollBar(UIWindowContext& windows);
   void Paint() override;
 };
 

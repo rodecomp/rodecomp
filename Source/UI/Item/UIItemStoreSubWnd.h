@@ -5,6 +5,7 @@
 #include "UI/Item/UIItemBaseWnd.h"
 
 #include <cstddef>
+#include <string>
 
 class UIResizer;
 class UIStaticText;
@@ -21,6 +22,7 @@ public:
 
   __declspec(noinline) ITEM_INFO GetItemAt(int x, int y);
   void SetTabIndex(int index);
+  void SetTitle(std::string title);
   bool Sort1();
   bool Sort2();
   bool Sort3();
