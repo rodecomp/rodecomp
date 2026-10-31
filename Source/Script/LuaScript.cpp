@@ -769,6 +769,10 @@ int AddItmeTokafraServiceMapList(lua_State* state) {
   return 0;
 }
 
+// OFFSET: 0x00941860
+// FUNCTION: fn_12791
+void LuaScriptNoop941860() {}
+
 // OFFSET: 0x00941870
 // FUNCTION: fn_12792
 int AddItmeToExceptionMiniMapPosList(lua_State* state) {
