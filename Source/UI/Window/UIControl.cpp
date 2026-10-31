@@ -1882,6 +1882,32 @@ void CUITextViewer::Clear() {
   this->Invalidate();
 }
 
+// OFFSET: 0x009EA2C0
+void CUITextViewer::Relayout() {
+  std::vector<std::string> lines;
+  lines = std::move(this->lines);
+  this->Clear();
+  for (const std::string& line : lines) {
+    this->AddLine(line);
+  }
+  this->scrollBar->SetPosition(this->scrollBar->position);
+}
+
+// OFFSET: 0x009EA400
+void CUITextViewer::Resize(int width, int height) {
+  const int position = this->scrollBar->position;
+  UIWindow::Resize(width, height);
+  this->scrollBar->Resize(this->scrollBar->geometry.width, height);
+  this->padding->Resize(width, height);
+  std::vector<std::string> lines;
+  lines = std::move(this->lines);
+  this->Clear();
+  for (const std::string& line : lines) {
+    this->AddLine(line);
+  }
+  this->scrollBar->SetPosition(position);
+}
+
 // OFFSET: 0x009E9400
 // FUNCTION: fn_14503
 void CUIResizer::Paint() {
@@ -2155,6 +2181,49 @@ CUIButton::~CUIButton() {
   using Handler = std::function<void()>;
   reinterpret_cast<Handler*>(this->unknown_00C8)->~Handler();
   reinterpret_cast<Handler*>(this->unknown_00A0)->~Handler();
+}
+
+// OFFSET: 0x009BFED0
+CUIImageButton::~CUIImageButton() = default;
+
+// OFFSET: 0x009E1840
+// FUNCTION: fn_14396
+CUITextButton::~CUITextButton() = default;
+
+// OFFSET: 0x009E1730
+CUIBasicButton::~CUIBasicButton() = default;
+
+namespace AdventureGuide {
+
+// OFFSET: 0x009D9150
+CUIItemInfo::CUIItemInfo(UIWindowContext& context)
+    : CUIListItem(context), unknown_00E8(), unknown_00F0(nullptr), unknown_00F4(nullptr), unknown_00F8(nullptr), itemId(-1), type(21), location(-1),
+      unknown_0108() {
+}
+
+// OFFSET: 0x009D92D0
+CUIMonsterInfo::CUIMonsterInfo(UIWindowContext& context)
+    : CUIListItem(context), unknown_00E8(nullptr), unknown_00EC(nullptr), unknown_00F0(nullptr), sprite(nullptr), action(nullptr) {
+}
+
+// OFFSET: 0x009D9420
+CUIQuestInfo::CUIQuestInfo(UIWindowContext& context)
+    : CUIListItem(context), unknown_00E8(nullptr), unknown_00EC(nullptr), unknown_00F0(nullptr), unknown_00F4(nullptr), unknown_00F8(), questId(0) {
+}
+
+// OFFSET: 0x009D94D0
+CUISubTab::CUISubTab(UIWindowContext& context) : CUIListItem(context), unknown_00E8(nullptr), unknown_00EC(nullptr), id(0), unknown_00F4(0) {
+}
+
+// OFFSET: 0x009D9550
+CUITab::CUITab(UIWindowContext& context)
+    : CUIListItem(context), unknown_00E8(nullptr), subTabs(nullptr), unknown_00F0(), type(7), page(nullptr), unknown_0110(0) {
+}
+
+// OFFSET: 0x009D9600
+CUITabInfo::CUITabInfo(UIWindowContext& context) : CUIListItem(context), unknown_00E8(nullptr), unknown_00EC(nullptr) {
+}
+
 }
 
 // OFFSET: 0x009F2EC0

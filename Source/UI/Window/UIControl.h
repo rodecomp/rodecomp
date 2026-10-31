@@ -130,6 +130,7 @@ public:
 class CUITextButton : public CUIButton {
 public:
   explicit CUITextButton(UIWindowContext& context);
+  ~CUITextButton() override;
   void Slot28(int x, int y) override;
   void Paint() override;
   virtual void Slot54(int value);
@@ -189,6 +190,7 @@ public:
 class CUIBasicButton : public CUITextButton {
 public:
   explicit CUIBasicButton(UIWindowContext& context);
+  ~CUIBasicButton() override;
   void Resize(int width, int height) override;
   void Paint() override;
   void Slot53(int resolveSkin) override;
@@ -234,6 +236,7 @@ public:
 class CUIImageButton : public CUIButton {
 public:
   explicit CUIImageButton(UIWindowContext& context);
+  ~CUIImageButton() override;
   void Paint() override;
   void Slot53(int resolveSkin) override;
 
@@ -248,6 +251,7 @@ public:
 
 class CUIStaticImage : public CUIControl {
 public:
+  // OFFSET: 0x009BE0C0
   explicit CUIStaticImage(UIWindowContext& context) : CUIControl(context), image(), tooltip(), transparent(0), scale(100), imageName() {
   }
 

@@ -49,6 +49,7 @@ class CUIPage;
 
 class CUISubTab : public CUIListItem {
 public:
+  explicit CUISubTab(UIWindowContext& context);
   void Slot15(int width, int height) override;
   void Slot16() override;
 
@@ -60,6 +61,7 @@ public:
 
 class CUITab : public CUIListItem {
 public:
+  explicit CUITab(UIWindowContext& context);
   void Slot15(int width, int height) override;
   void Slot16() override;
   void SetSelected(bool selected) override;
@@ -77,6 +79,7 @@ public:
 
 class CUIItemInfo : public CUIListItem {
 public:
+  explicit CUIItemInfo(UIWindowContext& context);
   void Slot16() override;
   void Slot32(int x, int y) override;
 
@@ -92,6 +95,7 @@ public:
 
 class CUIMonsterInfo : public CUIListItem {
 public:
+  explicit CUIMonsterInfo(UIWindowContext& context);
   void Slot16() override;
   void Paint() override;
   void SetMonster(const std::string& title);
@@ -105,6 +109,7 @@ public:
 
 class CUIQuestInfo : public CUIListItem {
 public:
+  explicit CUIQuestInfo(UIWindowContext& context);
   void Slot16() override;
   void SetStatusLines(bool first, bool second, bool third);
   void SetViewerLines(const std::vector<std::string>& lines);
@@ -119,6 +124,7 @@ public:
 
 class CUITabInfo : public CUIListItem {
 public:
+  explicit CUITabInfo(UIWindowContext& context);
   void Slot15(int width, int height) override;
   void Slot16() override;
 

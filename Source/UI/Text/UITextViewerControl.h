@@ -16,6 +16,7 @@ class CUITextViewer : public CUIControl {
 public:
   explicit CUITextViewer(UIWindowContext& context);
   void Slot15(int width, int height) override;
+  void Resize(int width, int height) override;
   void Slot19() override;
   void Paint() override;
   void Slot35(int value) override;
@@ -38,6 +39,7 @@ public:
   void SetText(const std::string& text);
   void Clear();
   void AddLine(const std::string& text);
+  void Relayout();
 
   /* 0080 */ int textX;
   /* 0084 */ int textY;
