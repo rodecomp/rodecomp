@@ -8,6 +8,21 @@
 #include <windows.h>
 #include <timeapi.h>
 
+// OFFSET: 0x00E4A1A0
+// FUNCTION: fn_24250
+CArrowEffect::CArrowEffect() {
+  this->startPos.x = 0.0f;
+  this->startPos.y = 0.0f;
+  this->startPos.z = 0.0f;
+  this->velocity.x = 0.0f;
+  this->velocity.y = 0.0f;
+  this->velocity.z = 0.0f;
+  this->targetPos.x = 0.0f;
+  this->targetPos.y = 0.0f;
+  this->targetPos.z = 0.0f;
+  this->Reset();
+}
+
 // OFFSET: 0x00E4BA20
 // FUNCTION: fn_24277
 void CArrowEffect::Reset() {

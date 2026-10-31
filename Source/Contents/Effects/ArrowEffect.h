@@ -9,6 +9,8 @@
 
 class CArrowEffect : public CRenderObject {
 public:
+  CArrowEffect();
+
   bool OnProcess() override;
   void SendMsg(CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m) override;
 
