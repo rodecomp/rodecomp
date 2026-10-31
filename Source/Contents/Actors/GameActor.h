@@ -154,6 +154,7 @@ public:
   /* 040C */ unsigned char unknown_040C[0x04];
 
   int Get8Dir(float angle) override;
+  void SetRenderInfo(const float* bounds, float x, float y) override;
   void SetAction(unsigned animation, int motion, int repeat) override;
 
   virtual bool Slot09(
@@ -235,6 +236,7 @@ public:
   int GetShield();
   int GetEffectiveJob(int job);
   void LaunchAttackProjectile(int target, float scale);
+  void PlayGroundSkillEffect(int sender, const int* skill, int argument3, int argument4);
   void ShowPartyMemberEffect(std::uint32_t accountId);
   int GetUnknown0404Job() const;
   void SetUnknown03B8(int value, int slot);

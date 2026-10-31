@@ -1,5 +1,6 @@
 #include "Contents/Actors/Npc.h"
 #include "Contents/Actors/RenderObject.h"
+#include "ActorPickNode.h"
 #include "Contents/Effects/MsgEffect.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CGameMode.h"
@@ -53,6 +54,7 @@
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Math/ScalarConversion.h"
 #include "Contents/World/WorldObjects.h"
+#include "Contents/Ground/TerrainHeight.h"
 #include <algorithm>
 #include <cstdint>
 #include <cstdlib>
@@ -66,6 +68,15 @@
 
 // GLOBAL: gl_25002
 std::uint32_t g_proximityCompareId;
+
+// GLOBAL: gl_25144
+CActorPickNode g_actorPickNode;
+
+// GLOBAL: gl_25186
+int g_pickModifierKey;
+
+// GLOBAL: gl_25187
+int g_pickInvert;
 
 struct CharacterRenderDrawItem {
   int flags;
@@ -898,6 +909,373 @@ void CGameActor::SetUnknown0318(const float* value, int index) {
     std::memcpy(this->unknown_0318, value, sizeof(this->unknown_0318));
   } else if (index == 1) {
     std::memcpy(this->unknown_0348, value, sizeof(this->unknown_0348));
+  }
+}
+
+// OFFSET: 0x00CC2820
+// FUNCTION: fn_21143
+void CGameActor::SetRenderInfo(const float* bounds, float x, float y) {
+  if (this->render.unknown_00A4Bytes[1] != 0) {
+    // GLOBAL: gl_25185
+    static int s_minPickSize = static_cast<int>(g_renderer->UiScaleX() * 40.0f);
+
+    float depth = 0.0f;
+    if ((g_pickModifierKey != 0) == (g_pickInvert != 0)) {
+      if (g_session.GetSceneUnknown004C() != 0) {
+        if (IsPlayerJob(this->GetEffectiveJob(-1))) {
+          depth = g_session.IsLocalPlayerAid(this->Slot50()) != 0 ? 100.0f : 400.0f;
+        } else if (g_session.IsNpcJob(this->GetEffectiveJob(-1))) {
+          depth = 200.0f;
+        } else if (reinterpret_cast<CGameActor*>(&g_session)->IsMonsterClass(this->GetEffectiveJob(-1))) {
+          depth = this->unknown_0314 == 7 ? 50.0f : 400.0f;
+        } else if (g_session.IsSkillIdInRange6001(this->GetEffectiveJob(-1)) != 0) {
+          depth = 200.0f;
+        }
+      } else {
+        if (IsPlayerJob(this->GetEffectiveJob(-1))) {
+          depth = 100.0f;
+        } else if (g_session.IsNpcJob(this->GetEffectiveJob(-1))) {
+          depth = 200.0f;
+        } else if (reinterpret_cast<CGameActor*>(&g_session)->IsMonsterClass(this->GetEffectiveJob(-1))) {
+          depth = this->unknown_0314 == 7 ? 50.0f : 400.0f;
+        } else if (g_session.IsSkillIdInRange6001(this->GetEffectiveJob(-1)) != 0) {
+          depth = 200.0f;
+        }
+      }
+    } else {
+      if (g_session.GetSceneUnknown004C() != 0) {
+        if (IsPlayerJob(this->GetEffectiveJob(-1))) {
+          depth = g_session.IsLocalPlayerAid(this->Slot50()) != 0 ? 400.0f : 100.0f;
+        } else if (g_session.IsNpcJob(this->GetEffectiveJob(-1))) {
+          depth = 100.0f;
+        } else if (reinterpret_cast<CGameActor*>(&g_session)->IsMonsterClass(this->GetEffectiveJob(-1))) {
+          depth = this->unknown_0314 == 7 ? 50.0f : 200.0f;
+        } else if (g_session.IsSkillIdInRange6001(this->GetEffectiveJob(-1)) != 0) {
+          depth = 200.0f;
+        }
+      } else {
+        if (IsPlayerJob(this->GetEffectiveJob(-1))) {
+          depth = 400.0f;
+        } else if (g_session.IsNpcJob(this->GetEffectiveJob(-1))) {
+          depth = 100.0f;
+        } else if (reinterpret_cast<CGameActor*>(&g_session)->IsMonsterClass(this->GetEffectiveJob(-1))) {
+          depth = this->unknown_0314 == 7 ? 50.0f : 200.0f;
+        } else if (g_session.IsSkillIdInRange6001(this->GetEffectiveJob(-1)) != 0) {
+          depth = 200.0f;
+        }
+      }
+    }
+
+    switch (this->unknown_0314) {
+    case 9:
+    case 10:
+    case 13:
+    case 14:
+      depth = 50.0f;
+      break;
+    }
+
+    if (!this->unknown_03E1) {
+      if (bounds[0] == static_cast<float>(g_renderer->viewport.width) && bounds[1] == static_cast<float>(g_renderer->viewport.height) &&
+          bounds[2] == 0.0f && bounds[3] == 0.0f) {
+        return;
+      }
+
+      ActorPickInfo* info = new ActorPickInfo;
+      info->left = std::min(bounds[0], bounds[2]);
+      info->top = bounds[1];
+      info->depth = depth + bounds[4];
+      info->right = std::max(bounds[0], bounds[2]);
+      info->bottom = bounds[3];
+      info->depthOffset = depth + bounds[4];
+      info->accountId = this->render.accountId;
+      info->job = this->GetEffectiveJob(-1);
+      info->unknown_0024 = this->unknown_02C8;
+      if (this->unknown_0314 == 7) {
+        info->kind = 3;
+      } else {
+        info->kind = g_session.IsSkillIdInRange6001(this->GetEffectiveJob(-1)) != 0 ? 4 : 0;
+      }
+      switch (this->unknown_0314) {
+      case 9:
+      case 10:
+      case 13:
+      case 14:
+        info->kind = 4;
+        break;
+      }
+
+      const int width = static_cast<int>(info->right - info->left);
+      if (width < s_minPickSize) {
+        const float grow = static_cast<float>((s_minPickSize - width) / 2);
+        info->right += grow;
+        info->left -= grow;
+      }
+      const int height = static_cast<int>(info->bottom - info->top);
+      if (height < s_minPickSize) {
+        const float grow = static_cast<float>((s_minPickSize - height) / 2);
+        info->bottom += grow;
+        info->top -= grow;
+      }
+      g_actorPickNode.AddPickInfo(info);
+    }
+  }
+  this->SetTlvert(x, y);
+}
+
+// OFFSET: 0x00CC8970
+// FUNCTION: fn_21194
+void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argument3, int argument4) {
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  const int level = skill[4];
+  const int skillId = skill[0];
+  int effectId;
+  int motion;
+  g_session.GetSkillActionInfo2(skillId, effectId, motion);
+  float x;
+  float z;
+  reinterpret_cast<const ::TerrainHeight*>(mode)->CellCenter(skill[2], skill[3], x, z);
+  const float height = mode->scene->terrain->Grid().Height(x, z);
+  this->hitTargetAid = 0;
+
+  switch (skillId) {
+  case 0x53:
+  case 0x301:
+  case 0x306:
+  case 0x13A4:
+  case 0x13B2:
+  case 0x1463:
+  case 0x1467:
+  case 0x1468:
+  case 0x146F:
+  case 0x1474: {
+    CActRes* action = this->GetActRes();
+    this->render.previousAnimation = 0x58;
+    this->render.curMotion = action->FrameCount(0x58) - 1;
+    break;
+  }
+  default:
+    if (CSkillActionMgr::GetInstance()->ActionSlot13(skillId) == true) {
+      this->render.previousAnimation = 0x58;
+      CActRes* action = this->GetActRes();
+      if (action != nullptr) {
+        this->render.curMotion = action->FrameCount(0x58) - 1;
+      }
+    } else {
+      this->Face(x, z);
+      this->Slot15(motion, 1);
+    }
+    break;
+  }
+
+  if (g_session.PlaySkillGroundEffect(skillId, vector3d{x, height, z}) == true) {
+    return;
+  }
+
+  vector3d position{x, height, z};
+  switch (skillId) {
+  case 0x15:
+    mode->LaunchDummyEffect(&position, 0x1E, EffectLifetime(0x1E) + 10, 0);
+    break;
+  case 0x45:
+  case 0x2B6:
+    mode->LaunchDummyEffect(&position, 0x5B, EffectLifetime(0x5B) + 10, 0);
+    break;
+  case 0x46:
+    mode->LaunchDummyEffect(&position, 0x53, EffectLifetime(0x53) + 10, 0);
+    break;
+  case 0x4F:
+    mode->LaunchDummyEffect(&position, 0x71, EffectLifetime(0x71) + 10, 0);
+    break;
+  case 0x53:
+    if (g_serviceOptions.Get(0xE5)) {
+      g_effectMgr->Spawn(0, 0x48B, position.x, position.y, position.z, 0, -1, 0, 0);
+    } else {
+      mode->LaunchDummyEffect(&position, 0x5C, EffectLifetime(0x5C) + 10, 0);
+    }
+    break;
+  case 0x55:
+    if (g_serviceOptions.Get(0xE5)) {
+      g_effectMgr->Spawn(0, 0x48A, position.x, position.y, position.z, 0, -1, 0, 0);
+    } else {
+      mode->LaunchDummyEffect(&position, 0x5A, EffectLifetime(0x5A) + 10, 0);
+    }
+    break;
+  case 0x57:
+    mode->LaunchDummyEffect(&position, 0x4A, EffectLifetime(0x4A) + 10, 0);
+    break;
+  case 0x59:
+  case 0x2D3: {
+    const int effect = g_serviceOptions.Get(0xE5) ? 0x2C4 : 0x59;
+    mode->LaunchDummyEffect(&position, effect, EffectLifetime(0x59) + 10, 0);
+    break;
+  }
+  case 0x5B:
+    mode->LaunchDummyEffect(&position, 0x8E, EffectLifetime(0x8E) + 10, 0);
+    break;
+  case 0x5C:
+    if (g_serviceOptions.Get(0xE5)) {
+      g_effectMgr->Spawn(0, 0x489, position.x, position.y, position.z, 0, -1, 0, 0);
+    } else {
+      mode->LaunchDummyEffect(&position, 0x5F, EffectLifetime(0x5F) + 10, 0);
+    }
+    break;
+  case 0x6E:
+    mode->LaunchDummyEffect(&position, 0x66, EffectLifetime(0x66) + 10, 0);
+    break;
+  case 0x6F:
+  case 0x1CB:
+    mode->LaunchDummyEffect(&position, 0x62, EffectLifetime(0x62) + 10, 0);
+    break;
+  case 0x73:
+    mode->LaunchDummyEffect(&position, 0x45, EffectLifetime(0x45) + 10, 0);
+    break;
+  case 0x82:
+    mode->LaunchDummyEffect(&position, 0x77, EffectLifetime(0x77) + 10, 0);
+    if (this->unknown_037C[0] != 0) {
+      const int address = reinterpret_cast<int>(&position);
+      reinterpret_cast<CGameObject*>(this->unknown_037C[0])->SendMsg(nullptr, 0x1D, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+    break;
+  case 0x8C:
+    mode->LaunchDummyEffect(&position, 0x7C, EffectLifetime(0x7C) + 10, 0);
+    break;
+  case 0x11D:
+    mode->LaunchDummyEffect(&position, 0xE1, EffectLifetime(0xE1) + 10, 0);
+    break;
+  case 0x11E:
+    mode->LaunchDummyEffect(&position, 0xEC, EffectLifetime(0xEC) + 10, 0);
+    break;
+  case 0x11F:
+    mode->LaunchDummyEffect(&position, 0xED, EffectLifetime(0xED) + 10, 0);
+    break;
+  case 0x120:
+    mode->LaunchDummyEffect(&position, 0xEE, EffectLifetime(0xEE) + 10, 0);
+    break;
+  case 0x1DE: {
+    g_soundMgr->PlayWave("assulter_attack.wav", 0.0f, -150.0f, 0.0f, 250, 40, 1.0f, 0);
+    int effect;
+    if (level < 6) {
+      effect = 0x1F1;
+    } else if (level < 10) {
+      effect = 0x1F2;
+    } else {
+      effect = 0x1F3;
+    }
+    mode->LaunchDummyEffect(&position, effect, EffectLifetime(effect) + 10, 0);
+    break;
+  }
+  case 0x1E3:
+    g_soundMgr->PlayWave("effect\\EF_FireWall.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    mode->LaunchDummyEffect(&position, 0xDF, EffectLifetime(0xDF) + 10, 0);
+    break;
+  case 0x1E4:
+    mode->LaunchDummyEffect(&position, 0x20A, 0x104, 0);
+    g_soundMgr->PlayWave("effect\\wizard_earthspike.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    break;
+  case 0x1EB:
+    this->LaunchEffect(0x3A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    break;
+  case 0x209:
+    g_soundMgr->PlayWave("effect\\그라운드.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    break;
+  case 0x21A:
+    g_soundMgr->PlayWave("effect\\수둔.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    break;
+  case 0x2C6:
+    this->LaunchEffect(0x87, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    g_soundMgr->PlayWave("effect\\ef_frostdiver.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    break;
+  case 0x2CD:
+    this->LaunchEffect(0x408, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    break;
+  case 0x2DD:
+  case 0x138E:
+    mode->LaunchDummyEffect(&position, 0x66, EffectLifetime(0x66) + 10, 0);
+    break;
+  case 0x2E1:
+  case 0x911:
+    g_effectMgr->Spawn(0, 0x590, position.x, position.y, position.z, 0, -1, 0, 0);
+    g_soundMgr->PlayWave("effect\\LG_RAYOFGENESIS.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    break;
+  case 0x301: {
+    const float raised = height + 25.0f;
+    g_effectMgr->Spawn(0, 0x4E7, x, raised, z, 0, -1, 0, 0);
+    g_effectMgr->Spawn(0, 0x4E6, x, raised, z, 0, -1, 0, 0);
+    g_soundMgr->PlayWave("effect\\wizard_meteor.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    break;
+  }
+  case 0x302:
+    mode->LaunchDummyEffect(&position, 0x577, EffectLifetime(0x577) + 10, 0);
+    break;
+  case 0x306: {
+    CEffect* effect = g_effectMgr->Spawn(0, 0x426, position.x, position.y, position.z, 0, -1, 0, 0);
+    if (effect != nullptr) {
+      using SetFloat = void (CEffect::*)(float);
+      const SetFloat set = reinterpret_cast<SetFloat>(&CEffect::Slot13);
+      (effect->*set)(0.4f);
+    }
+    break;
+  }
+  case 0x8D4: {
+    CRagEffect* effect = this->LaunchEffect(0x317, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    if (effect != nullptr) {
+      effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
+    }
+    break;
+  }
+  case 0x98F:
+    g_soundMgr->PlayWave("effect\\wl_jackfrost.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    if (g_serviceOptions.Get(0xE5)) {
+      g_effectMgr->Spawn(0, 0x5AA, position.x, position.y, position.z, 0, level, 0, 0);
+      g_effectMgr->Spawn(0, 0x5AB, position.x, position.y, position.z, 0, level, 0, 0);
+    } else {
+      g_effectMgr->Spawn(0, 0x502, position.x, position.y, position.z, 0, level, 0, 0);
+      g_effectMgr->Spawn(0, 0x503, position.x, position.y, position.z, 0, level, 0, 0);
+    }
+    break;
+  case 0xA0B:
+    g_effectMgr->Spawn(0, 0x426, position.x, position.y, position.z, 0, -1, 0, 0);
+    break;
+  case 0x13A4:
+    g_effectMgr->Spawn(0, 0x452, position.x, position.y, position.z, 0, -1, 0, 0);
+    break;
+  case 0x13B2:
+    g_effectMgr->Spawn(0, 0x458, position.x, position.y, position.z, 0, -1, 0, 0);
+    break;
+  case 0x1463:
+    g_effectMgr->Spawn(0, 0x6E0, position.x, position.y, position.z, 0, -1, 0, 0);
+    break;
+  case 0x1465:
+  case 0x146B:
+  case 0x146D:
+    this->SetFrameSequence(0x60, 1, 3, 0x60, 3, 1, 500, 0);
+    break;
+  case 0x1467:
+    g_effectMgr->Spawn(0, 0x706, position.x, position.y, position.z, 0, -1, 0, 0);
+    break;
+  case 0x14C7: {
+    g_effectMgr->Spawn(0, 0x827, position.x, position.y, position.z, 0, -1, 0, 0);
+    g_effectMgr->Spawn(0, 0x828, position.x, position.y, position.z, 0, -1, 0, 0);
+    CEffect* effect = g_effectMgr->Spawn(0, 0x82B, position.x, position.y, position.z, 0, -1, 0, 0);
+    if (effect != nullptr) {
+      effect->Slot16(0x370);
+    }
+    effect = g_effectMgr->Spawn(0, 0x82C, position.x, position.y, position.z, 0, -1, 0, 0);
+    if (effect != nullptr) {
+      effect->Slot16(0x370);
+    }
+    break;
+  }
+  case 0x14C9:
+    this->SetFrameSequence(0x60, 0, 0, 0x60, 0, 1, 500, 0);
+    break;
+  case 0x14D3:
+  case 0x14D4:
+  case 0x14D5:
+  case 0x14D7:
+    this->SetFrameSequence(0x18, 0, 2, 0x60, 2, 1, 500, 0);
+    break;
   }
 }
 

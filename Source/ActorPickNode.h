@@ -2,16 +2,24 @@
 #define RAGNAROK_SOURCE_ACTORPICKNODE_H
 
 #include <cstddef>
+#include <cstdint>
 #include <list>
 
 struct ActorPickInfo {
+  // INLINED
+  ActorPickInfo() : left(0.0f), top(0.0f), depth(0.0f), right(0.0f), bottom(0.0f), depthOffset(0.0f) {
+  }
+
   /* 0000 */ float left;
   /* 0004 */ float top;
   /* 0008 */ float depth;
   /* 000C */ float right;
   /* 0010 */ float bottom;
   /* 0014 */ float depthOffset;
-  /* 0018 */ unsigned char unknown_0018[0x10];
+  /* 0018 */ std::uint32_t accountId;
+  /* 001C */ int job;
+  /* 0020 */ int kind;
+  /* 0024 */ int unknown_0024;
 };
 
 struct ActorPickBounds {
@@ -40,6 +48,8 @@ public:
   /* 0014 */ CActorPickNode* children[4];
   /* 0024 */ std::list<ActorPickInfo*> pickInfos;
 };
+
+extern CActorPickNode g_actorPickNode;
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(ActorPickInfo) == 0x28);
