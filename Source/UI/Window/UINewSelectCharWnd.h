@@ -32,7 +32,8 @@ struct CharSlotInfo {
   /* 0148 */ int unknown_0148;
   /* 014C */ int action;
   /* 0150 */ int frame;
-  /* 0154 */ unsigned char unknown_0154[8];
+  /* 0154 */ int job;
+  /* 0158 */ int robe;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

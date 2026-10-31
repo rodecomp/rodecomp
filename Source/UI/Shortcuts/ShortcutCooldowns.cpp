@@ -26,6 +26,18 @@
 #include "Contents/Party/PartyBookingMgr.h"
 #include "Render/Text/FontCache.h"
 #include "Render/Text/TextContext.h"
+#include "Client/Mode/CLoginMode.h"
+#include "Client/Mode/CMode.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
+#include "Render/DeviceContext/DCSurface.h"
+#include "Render/Renderer.h"
+#include "Render/Textures/SpriteAtlas.h"
+#include "Render/Textures/Texture.h"
+#include "Resource/PaletteResource.h"
+#include "Resource/Sprites/ActionResource.h"
+#include "Resource/Sprites/SpriteResource.h"
+#include "Script/LuaScript.h"
+#include "UI/Window/UISelCharForUServerWnd.h"
 
 #include <algorithm>
 #include <cstdio>
@@ -609,5 +621,146 @@ void ShortcutCooldowns::LoadRecords(const void* packet) {
     value.id = id;
     value.end = timeGetTime() + remaining;
     this->records.push_back(value);
+  }
+}
+
+// GLOBAL: gl_24794
+int g_charViewOffsetX;
+
+// GLOBAL: gl_24795
+int g_charViewOffsetY;
+
+// OFFSET: 0x0092E570
+// FUNCTION: fn_12678
+void UISelCharForUServerWnd::Paint() {
+  const char* background =
+    g_charViewCount > 12 ? "유저인터페이스\\login_interface\\selCharForIntergration2.bmp" : "유저인터페이스\\login_interface\\selCharForIntergration.bmp";
+  this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background)))->image, false);
+
+  for (int index = 0; index < g_charViewCount; ++index) {
+    if (this->m_slotEnabled[index] != 0) {
+      continue;
+    }
+
+    CharSlotInfo& slot = this->m_slots[index];
+    this->DrawRobeSprite(slot.job, g_session.SyncUnknown0E98(), slot.robe, slot.x, slot.y, false, 0, 0);
+
+    SpriteAtlasRecord record{};
+    for (int layer = 0; layer < 5; ++layer) {
+      if (slot.actionNames[layer].size() == 0 || slot.spriteNames[layer].size() == 0) {
+        continue;
+      }
+
+      ResourceMgr::Instance().Load(slot.imfName.c_str());
+      auto* act = static_cast<CActRes*>(ResourceMgr::Instance().Load(slot.actionNames[layer].c_str()));
+      auto* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(slot.spriteNames[layer].c_str()));
+      const ActionFrame* frame = &act->Frame(slot.action, slot.frame);
+
+      int offsetX = 0;
+      int offsetY = 0;
+      if (g_session.IsDoramJob(slot.job) == true) {
+        const auto* info = reinterpret_cast<const CharacterInfo*>(static_cast<CMode*>(g_charViewMode)->SendMsg(8, index, 0, 0, 0));
+        int x = 0;
+        int y = 0;
+        int item = 0;
+        if (layer == 4) {
+          item = info->accessory;
+        } else if (layer == 3) {
+          item = info->accessory2;
+        } else if (layer == 2) {
+          item = info->accessory3;
+        }
+
+        int turn = 0;
+        if (slot.frame == 2) {
+          turn = -1;
+        } else if (slot.frame == 1) {
+          turn = 1;
+        }
+
+        int direction = turn - slot.unknown_0148 + slot.action;
+        if (direction < 0) {
+          direction = 7;
+        }
+        if (direction > 7) {
+          direction = 0;
+        }
+
+        g_luaScript->Call("OffsetItemPos_GetOffsetForDoram", "ddd>dd", item, direction, g_session.SyncUnknown0E98(), &x, &y);
+        offsetX = x;
+        offsetY = y;
+      }
+
+      if (layer == 1) {
+        const ActionFrame* body = &static_cast<CActRes*>(ResourceMgr::Instance().Load(slot.actionNames[0].c_str()))->Frame(slot.action, slot.frame);
+        if (frame->anchorCount != 0 && body->anchorCount != 0) {
+          const ActionAnchor* head = frame->anchors.data();
+          const ActionAnchor* base = body->anchors.data();
+          if (head->unknown_0008 == base->unknown_0008) {
+            offsetX += base->x - head->x;
+            g_charViewOffsetX = offsetX;
+            offsetY += base->y - head->y;
+            g_charViewOffsetY = offsetY;
+          }
+        }
+      } else if (layer == 2 || layer == 3 || layer == 4) {
+        const ActionFrame* head = &static_cast<CActRes*>(ResourceMgr::Instance().Load(slot.actionNames[1].c_str()))->Frame(slot.action, slot.frame);
+        int syncedFrame = 0;
+        const ActionFrame* synced = g_session.GetSyncedFrame(
+          static_cast<CActRes*>(ResourceMgr::Instance().Load(slot.actionNames[1].c_str())),
+          static_cast<CActRes*>(ResourceMgr::Instance().Load(slot.actionNames[layer].c_str())), slot.action, slot.frame, this->m_startTime, &syncedFrame
+        );
+        if (synced && syncedFrame != slot.frame) {
+          frame = synced;
+        }
+
+        if (frame->anchorCount != 0 && head->anchorCount != 0) {
+          const ActionAnchor* anchor = frame->anchors.data();
+          const ActionAnchor* base = head->anchors.data();
+          if (anchor->unknown_0008 == base->unknown_0008) {
+            offsetX += base->x - anchor->x;
+            offsetY += base->y - anchor->y;
+          }
+        }
+
+        offsetX += g_charViewOffsetX;
+        offsetY += g_charViewOffsetY;
+        if (layer == 3 && (this->unknown_1974[index] == 0xB5 || this->unknown_1974[index] == 0xC5)) {
+          offsetY -= 7;
+        }
+      }
+
+      const std::uint32_t* palette = sprite->palette;
+      if (layer == 0) {
+        if (slot.bodyPalette != 0) {
+          palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(slot.bodyPaletteName.c_str()))->palette;
+        }
+      } else if (layer == 1) {
+        if (slot.headPalette != 0) {
+          palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(slot.headPaletteName.c_str()))->palette;
+        }
+      }
+
+      const SpriteFrameCell& cell = frame->Cell(layer < 2 ? layer : 0);
+      if (cell.image == -1) {
+        continue;
+      }
+
+      const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
+      CTexture* texture;
+      if (cell.imageType == 0) {
+        texture = g_renderer->atlas.Find(image, palette, record);
+        if (!texture) {
+          texture = g_renderer->atlas.Insert(*GetRenderSystemHolder()->system, image, palette, record, g_serviceType, g_resourceReuseDelay);
+        }
+      } else {
+        texture = static_cast<CTexture*>(const_cast<void*>(image->unknown_0008));
+      }
+
+      this->geometry.surface->DrawSurface(
+        cell.x + offsetX + slot.x, cell.y + offsetY + slot.y, texture, static_cast<int>(record.u0 * 256.0f), static_cast<int>(record.v0 * 256.0f),
+        image->width, image->height, cell.mirrored, image->unknown_0004 + 1, image->unknown_0006 + 1, 0, 0
+      );
+    }
   }
 }
