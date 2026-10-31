@@ -64,6 +64,7 @@ public:
   /* 011C */ std::string partnerName;
   /* 0134 */ std::string zenyText;
 
+  __declspec(noinline) CUIExchangeUI();
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot16() override;
   void Slot19() override;

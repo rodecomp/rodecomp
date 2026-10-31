@@ -1528,6 +1528,11 @@ UIRuneSystemWnd::UIRuneSystemWnd(UIWindowContext& windows, UIFrameContext& frame
   GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
 }
 
+// OFFSET: 0x00814DE0
+// FUNCTION: fn_10138
+UIRuneSystem_ActiveWnd::UIRuneSystem_ActiveWnd(UIWindowContext& windows) : UIWindow(windows, 0), m_columns(4), m_rows(2), m_listId(-1) {
+}
+
 // OFFSET: 0x00814EE0
 // FUNCTION: fn_10139
 UIRuneSystem_DecomResultWnd::UIRuneSystem_DecomResultWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
@@ -1542,6 +1547,11 @@ UIRuneSystem_DecomResultWnd::UIRuneSystem_DecomResultWnd(UIWindowContext& window
   button->Move(static_cast<int>(static_cast<float>(240 - button->geometry.width) * 0.5f), 154);
   button->SetId(0xB8);
   std::memset(this->m_itemIds, 0, sizeof(this->m_itemIds) + sizeof(this->m_counts));
+}
+
+// OFFSET: 0x00815020
+// FUNCTION: fn_10140
+UIRuneSystem_Decom_RadioBtn::UIRuneSystem_Decom_RadioBtn(UIWindowContext& windows, UIButtonContext& controls) : UIRadioBtn(windows, controls) {
 }
 
 // OFFSET: 0x008150A0
@@ -1574,6 +1584,22 @@ UIRuneSystem_tagListWnd::UIRuneSystem_tagListWnd(UIWindowContext& windows, UIBut
     this->m_leftButton->SetDisabled(1);
     this->m_leftButton->Invalidate();
   }
+}
+
+// OFFSET: 0x008152B0
+// FUNCTION: fn_10142
+UIRune_Decom::UIRune_Decom(UIWindowContext& windows) : UIWindow(windows, 0) {
+  this->unknown_007C.clear();
+  this->unknown_0094.clear();
+  this->m_ownedCount = 0;
+  this->m_decomList = nullptr;
+  this->m_itemId = 0;
+  this->m_decomType = 0;
+}
+
+// OFFSET: 0x008153A0
+// FUNCTION: fn_10143
+UIRune_Info::UIRune_Info(UIWindowContext& windows) : UIWindow(windows, 0), m_rune(nullptr) {
 }
 
 // OFFSET: 0x0081D6B0

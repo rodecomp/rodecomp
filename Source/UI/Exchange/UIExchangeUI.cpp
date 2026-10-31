@@ -656,3 +656,17 @@ void ExchangeUI::CUIItem::Slot15(int width, int height) {
   this->unknown_00F4->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->unknown_00F4);
 }
+
+// OFFSET: 0x00A16C50
+// FUNCTION: fn_15282
+CUIExchangeUI::CUIExchangeUI()
+    : titleBar(nullptr), unknown_00DC(nullptr), unknown_00E0(nullptr), firstList(nullptr), unknown_00E8(nullptr), unknown_00EC(nullptr), unknown_00F0(nullptr),
+      zenyEdit(nullptr), secondList(nullptr), unknown_00FC(nullptr), unknown_0100(nullptr), unknown_0104(nullptr), logCheckBox(nullptr), unknown_010C(nullptr),
+      lockButton(nullptr), tradeButton(nullptr), unknown_0118(nullptr) {
+}
+
+// OFFSET: 0x00A10030
+// FUNCTION: fn_15187
+CUIExchangeUI* CreateExchangeUI() {
+  return new CUIExchangeUI();
+}

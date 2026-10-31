@@ -162,9 +162,7 @@ public:
 
 class UIRuneSystem_ActiveWnd : public UIWindow {
 public:
-  // INLINED
-  explicit UIRuneSystem_ActiveWnd(UIWindowContext& windows) : UIWindow(windows, 0), m_columns(4), m_rows(2), m_listId(-1) {
-  }
+  explicit UIRuneSystem_ActiveWnd(UIWindowContext& windows);
 
   void Paint() override;
   void Slot28(int x, int y) override;
@@ -184,9 +182,7 @@ public:
 
 class UIRuneSystem_Decom_RadioBtn : public UIRadioBtn {
 public:
-  // INLINED
-  UIRuneSystem_Decom_RadioBtn(UIWindowContext& windows, UIButtonContext& controls) : UIRadioBtn(windows, controls) {
-  }
+  UIRuneSystem_Decom_RadioBtn(UIWindowContext& windows, UIButtonContext& controls);
 
   void Paint() override;
 
@@ -237,9 +233,7 @@ public:
 
 class UIRune_Info : public UIWindow {
 public:
-  // INLINED
-  explicit UIRune_Info(UIWindowContext& windows) : UIWindow(windows, 0), m_rune(nullptr) {
-  }
+  explicit UIRune_Info(UIWindowContext& windows);
 
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -252,15 +246,7 @@ public:
 
 class UIRune_Decom : public UIWindow {
 public:
-  // INLINED
-  explicit UIRune_Decom(UIWindowContext& windows) : UIWindow(windows, 0) {
-    this->unknown_007C.clear();
-    this->unknown_0094.clear();
-    this->m_ownedCount = 0;
-    this->m_decomList = nullptr;
-    this->m_itemId = 0;
-    this->m_decomType = 0;
-  }
+  explicit UIRune_Decom(UIWindowContext& windows);
 
   void Slot15(int width, int height) override;
   void Paint() override;
