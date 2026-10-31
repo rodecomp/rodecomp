@@ -1446,6 +1446,15 @@ void CSession::UpdateUnknown1708(int enabled) {
   this->unknown_1708 = g_serviceOptions.Get(enabled ? 45 : 46);
 }
 
+// OFFSET: 0x00DFF150
+// FUNCTION: fn_23611
+void __fastcall sub_DFF150(CSession*) {
+  if (UIWindow* window = g_windowMgr.window_02C8) {
+    window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  }
+  reinterpret_cast<void(__thiscall*)(UIWindowMgr*)>(0x00A96090)(&g_windowMgr);
+}
+
 // OFFSET: 0x00DFF180
 // FUNCTION: fn_23612
 void CSession::RefreshItem1738Window() {
