@@ -27,3 +27,7 @@ CWebBrowser* BrowserFactory::Create(int width, int height) {
 
   return nullptr;
 }
+
+// OFFSET: 0x00A8C950
+// FUNCTION: fn_17137
+void __stdcall SubA8C950(int, int) {}
