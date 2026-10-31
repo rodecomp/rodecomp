@@ -7,6 +7,7 @@
 #include <vector>
 
 class UIBitmapButton;
+class UIHeadsprButton;
 struct MiniMapWndInfo;
 struct UIButtonContext;
 
@@ -18,10 +19,12 @@ struct MiniMapMark {
 class UIMiniMapWnd : public UIFrameWnd {
 public:
   void Slot11() override;
+  void Slot15(int width, int height) override;
   void Slot25(int x, int y) override;
   void ResetCursor(int x, int y) override;
   void AddTownMarks();
   int LoadMemos();
+  void UpdatePlayerHead();
 
   /* 00B4 */ MiniMapWndInfo* m_saved;
   /* 00B8 */ float scale;
@@ -34,7 +37,7 @@ public:
   /* 011C */ UIWindow* unknown_011C;
   /* 0120 */ UIWindow* unknown_0120;
   /* 0124 */ UIWindow* unknown_0124;
-  /* 0128 */ UIWindow* unknown_0128;
+  /* 0128 */ UIHeadsprButton* m_playerHead;
   /* 012C */ UIWindow* unknown_012C;
   /* 0130 */ std::map<int, UIBitmapButton*> townButtons;
   /* 0138 */ unsigned char unknown_0138[0x10];

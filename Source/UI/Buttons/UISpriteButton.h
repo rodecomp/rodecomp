@@ -21,7 +21,7 @@ public:
   void SetSprite(const char* name);
   void SetPalette(const char* name);
 
-protected:
+public:
   /* 00B4 */ int unknown_00B4;
   /* 00B8 */ int unknown_00B8;
   /* 00BC */ int unknown_00BC;
@@ -39,6 +39,7 @@ protected:
 
 class UIHeadsprButton : public UISpriteButton {
 public:
+  using UISpriteButton::UISpriteButton;
   void Paint() override;
 };
 

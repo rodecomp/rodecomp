@@ -5,17 +5,24 @@
 #include "Client/Mode/ModeCursor.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/Sprites/SpriteResource.h"
+#include "Render/Textures/SpritePixels.h"
 #include "Contents/MessageTable.h"
 #include "Contents/TownInfoMgr.h"
 #include "Contents/UserData/NormalItemSlots.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UIButton.h"
+#include "UI/Buttons/UICheckBox.h"
+#include "UI/Buttons/UISpriteButton.h"
 #include "UI/Dialogs/UIMiniMapWnd.h"
 #include "UI/Edit/UIEditCtrl.h"
 #include "UI/Window/InputFocus.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
 
+#include <algorithm>
+#include <cmath>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -143,6 +150,48 @@ void UIEditctrlWnd::Slot15(int, int) {
   focus.Set(this->edit);
 }
 
+// OFFSET: 0x0099C200
+// FUNCTION: fn_13557
+void UIMiniMapWnd::Slot15(int width, int height) {
+  const int bottom = this->geometry.height;
+  const float terrainWidth = static_cast<float>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->TerrainWidth());
+  const float terrainHeight = static_cast<float>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->TerrainHeight());
+  this->originX = 2.0f;
+  this->originY = 531.0f;
+  this->scale = 512.0f / std::max(terrainWidth, terrainHeight);
+  const float margin = std::fabs(terrainWidth - terrainHeight) * 0.5f * this->scale;
+  if (terrainHeight > terrainWidth) {
+    this->originX = margin + 2.0f;
+  } else if (terrainWidth > terrainHeight) {
+    this->originY = 531.0f - margin;
+  }
+
+  UIButtonContext& controls = *this->m_controls;
+  const int y = bottom - 19;
+  this->unknown_011C = this->AddCheckBox(controls, 361, 100, 12, LookupMessage(2742), 20, y, 1, LookupMessage(2743));
+  this->unknown_0120 = this->AddCheckBox(controls, 194, 100, 12, LookupMessage(2744), 120, y, 1, LookupMessage(2745));
+  this->unknown_0124 = this->AddCheckBox(controls, 373, 100, 12, LookupMessage(2746), 220, y, 1, LookupMessage(2747));
+  this->AddCloseButton(controls, LookupMessage(2741), 0);
+  this->AddNumberedButton(controls, 356, this->geometry.width - 120, bottom - 23, "minimap\\memo_ready", LookupMessage(2748), true);
+  this->AddTownMarks();
+  this->unknown_012C = this->AddNumberedButton(controls, 205, -100, -100, "minimap\\boss", LookupMessage(2749), true);
+  static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ResendMinimapMarkers();
+  for (int index = 0; index < 20; ++index) {
+    this->memoButtons[index] = this->AddNumberedButton(controls, index + 601, -100, -100, "minimap\\memopoint", nullptr, true);
+  }
+
+  this->LoadMemos();
+  this->m_playerHead = new UIHeadsprButton(*this->m_context, controls);
+  this->UpdatePlayerHead();
+  this->m_playerHead->Move(-100, -100);
+  this->m_playerHead->unknown_00BC = 0;
+  this->m_playerHead->unknown_00C0 = 0;
+  this->m_playerHead->unknown_00C4 = 0;
+  this->m_playerHead->SetTooltip(LookupMessage(2750));
+  this->m_playerHead->SetId(200);
+  this->AddChild(this->m_playerHead);
+}
+
 // OFFSET: 0x0099C530
 // FUNCTION: fn_13558
 void UIEditctrlWnd::Paint() {
@@ -209,6 +258,31 @@ int UIEditctrlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
   }
 
   return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+}
+
+// OFFSET: 0x0099DB10
+// FUNCTION: fn_13564
+void UIMiniMapWnd::UpdatePlayerHead() {
+  UIHeadsprButton* head = this->m_playerHead;
+  if (!head) {
+    return;
+  }
+
+  head->SetActName(g_session.GetPlayerHeadActName().c_str());
+  if (g_session.m_headPalette != 0) {
+    this->m_playerHead->SetPalette(g_session.GetPlayerHeadPalName().c_str());
+  }
+
+  const std::string sprite = g_session.GetPlayerHeadSprName();
+  this->m_playerHead->SetSprite(sprite.c_str());
+  CSprRes* resource = dynamic_cast<CSprRes*>(ResourceMgr::Instance().Load(sprite.c_str()));
+  if (resource) {
+    const SpriteRleImage* image = resource->images[0][0];
+    this->m_playerHead->SetSize(image->width, image->height);
+  } else {
+    this->m_playerHead->SetSize(2, 2);
+    this->m_playerHead->Move(-100, -100);
+  }
 }
 
 // OFFSET: 0x0099DC90
