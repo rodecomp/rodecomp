@@ -26,6 +26,7 @@ public:
   void PlaceNaviLinks(int line);
   void DropOldestLines();
   void ShiftNaviLinks();
+  void ClearNaviLinks();
 
   /* 00DC */ std::list<std::vector<UINaviLinkButton*>> naviLinks;
   /* 00E4 */ std::vector<int> unknown_00E4;
