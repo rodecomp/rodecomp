@@ -11,6 +11,7 @@
 #include "UI/Buttons/UICheckBox.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowDialogs.h"
+#include "Client/Mode/ModeMgr.h"
 
 #include <cstdint>
 #include <string>
@@ -144,10 +145,10 @@ int UISelCharForUServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
 
     int characterIds[9] = {};
     int count = 0;
-    const int viewCount = *reinterpret_cast<int*>(0x017334CC);
+    const int viewCount = g_charViewCount;
     for (int index = 0; index < viewCount; ++index) {
       if (this->m_checkBoxes[index]->geometry.unknown_0030 != 0) {
-        CMode* mode = *reinterpret_cast<CMode**>(0x013495BC);
+        CMode* mode = g_modeMgr.gameMode;
         const int* character = reinterpret_cast<const int*>(mode->SendMsg(8, index, 0, 0, 0));
         if (character) {
           characterIds[count++] = *character;
@@ -183,6 +184,6 @@ int UISelCharForUServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
 // OFFSET: 0x00932B40
 // FUNCTION: fn_12714
 void UISelCharForUServerWnd::Slot27(int x, int y) {
-  reinterpret_cast<void(__thiscall*)(UISelCharForUServerWnd*, int, int, int)>(0x0093F1F0)(this, x, y, -1);
+  this->sub_93F1F0(x, y, -1);
   UIFrameWnd::Slot27(x, y);
 }
