@@ -8433,6 +8433,49 @@ void CRagEffect::SageMagicRod() {
   }
 }
 
+// OFFSET: 0x00C59610
+// FUNCTION: fn_20213
+void CRagEffect::SakuraFireArrow() {
+  const RenderObjectState& parent = this->state.parent->render;
+  this->render.position.x = parent.position.x;
+  this->render.position.y = parent.position.y;
+  this->render.position.z = parent.position.z;
+
+  if (this->state.stateCnt >= 12 && this->state.stateCnt <= 15) {
+    char waveName[52];
+    std::sprintf(waveName, "effect\\EF_FireArrow%d.wav", std::max(rand() % 3, 0) + 1);
+    PlayEffectWave(*this, waveName);
+  }
+
+  if (this->state.stateCnt >= 20) {
+    return;
+  }
+
+  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 124, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  this->state.unknown_11C84->duration = this->state.duration;
+  this->state.unknown_11C84->slots[0].life = 1;
+  this->state.unknown_11C84->slots[0].maxHeight = static_cast<float>(std::max(rand() % 3, 0) + 2) * 0.15f;
+  this->state.unknown_11C84->size = static_cast<float>(std::max(rand() % 6, 0) + 22) / 70.0f;
+  this->state.unknown_11C84->slots[0].vecBPre.y = this->render.position.y;
+  const std::int16_t angle = static_cast<std::int16_t>(std::max(rand() % 360, 0));
+  this->state.unknown_11C84->slots[0].vecBPre.x = g_cosTable[angle] * 8.0f + this->render.position.x;
+  this->state.unknown_11C84->slots[0].vecBPre.z = g_sinTable[angle] * 8.0f + this->render.position.z;
+  this->state.unknown_11C84->slots[0].height[0] = static_cast<float>(std::max(rand() % 360, 0));
+  this->state.unknown_11C84->slots[0].height[1] = static_cast<float>(std::max(rand() % 360, 0));
+  this->state.unknown_11C84->slots[0].height[2] = static_cast<float>(std::max(rand() % 360, 0));
+  this->state.unknown_11C84->slots[0].height[3] = static_cast<float>(std::max(rand() % 360, 0));
+  this->state.unknown_11C84->slots[1].life = 0;
+  this->state.unknown_11C84->slots[2].life = 0;
+  this->state.unknown_11C84->slots[3].life = 0;
+  this->state.unknown_11C84->alpha = 250.0f;
+  Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\sakura01.spr");
+  Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\sakura01.act");
+  Owner(this->state.unknown_11C84).SetAction(std::max(rand() % 3, 0), 36, 0);
+  Owner(this->state.unknown_11C84).InitSegment();
+}
+
+// OFFSET: 0x00C6E370
+
 // OFFSET: 0x00C0E790
 // FUNCTION: fn_20026
 void CRagEffect::AssassinCloaking() {
@@ -10088,7 +10131,7 @@ void CRagEffect::TANJI2() {
   this->state.unknown_11C84->slots[0].life = 1;
   this->state.unknown_11C84->slots[0].process = -15;
   this->state.unknown_11C84->slots[0].maxHeight = SquareRoot(dx * dx + dz * dz);
-  this->state.unknown_11C84->slots[0].distance = static_cast<float>(this->state.count) * 0.4f + 2.0f;
+  this->state.unknown_11C84->slots[0].distance = static_cast<float>(static_cast<int>(this->state.count)) * 0.4f + 2.0f;
   this->state.unknown_11C84->slots[0].height[8] = 0.0f;
   this->state.unknown_11C84->slots[0].alphaB = 5;
   this->state.unknown_11C84->slots[0].vecBNow.x = this->render.position.x;
@@ -11288,7 +11331,7 @@ void CRagEffect::StoneSpike() {
 void CRagEffect::WhiteSparkRing(char kind) {
   this->render.position = this->state.parent->render.position;
 
-  if (this->state.stateCnt >= 3) {
+  if (static_cast<unsigned>(this->state.stateCnt) >= 3) {
     return;
   }
 
