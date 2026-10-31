@@ -52,6 +52,25 @@ void ChatItemTagRemoval::Remove(UIWindow* child) {
   }
 }
 
+// OFFSET: 0x0086D670
+UIItemTagCtrl::UIItemTagCtrl() : unknown_011C(0), tagWidth(0) {
+  this->taggedText.clear();
+  this->unknown_0140.clear();
+}
+
+// OFFSET: 0x0086D780
+UIItemTagOnChat::UIItemTagOnChat() {
+}
+
+// OFFSET: 0x0086D7E0
+UIItemTagOnMail::UIItemTagOnMail() {
+}
+
+// OFFSET: 0x0086D860
+// FUNCTION: fn_11053
+UIItemTagOnMegaPhone::UIItemTagOnMegaPhone() {
+}
+
 // OFFSET: 0x00870DF0
 // FUNCTION: fn_11104
 UIItemTagCtrl::~UIItemTagCtrl() {

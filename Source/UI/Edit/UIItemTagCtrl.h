@@ -12,6 +12,7 @@ struct ITEM_INFO;
 
 class UIItemTagCtrl : public UIEditCtrl {
 public:
+  UIItemTagCtrl();
   ~UIItemTagCtrl() override;
   virtual bool CanInsertTag(const std::string& name, int width);
   virtual void AddTagButton(UIWindow* button);
@@ -39,6 +40,7 @@ public:
 
 class UIItemTagOnMail : public UIItemTagCtrl {
 public:
+  UIItemTagOnMail();
   bool CanInsertTag(const std::string& name, int width) override;
   void AddTagButton(UIWindow* button) override;
   void SetLines(const std::vector<std::string>& lines);
@@ -49,6 +51,7 @@ public:
 
 class UIItemTagOnMegaPhone : public UIItemTagCtrl {
 public:
+  UIItemTagOnMegaPhone();
   bool CanInsertTag(const std::string& name, int width) override;
   void AddTagButton(UIWindow* button) override;
   void PlaceTagButton(UIWindow* button, const std::string& name, const int& x, int unused);

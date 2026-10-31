@@ -127,7 +127,7 @@ void UIRodexComposeWnd::sub_7FF940(int tagId) {
   }
 
   std::string tagText = tagCtrl->sub_874A40(tagId, 0xd630a9);
-  tagCtrl->taggedText = this->m_contents->Text();
+  tagCtrl->taggedText = std::string(this->m_contents->Text());
 
   std::string fullText = std::string(this->m_contents->Text()) + tagText;
   this->m_contents->SetText(fullText.c_str());
