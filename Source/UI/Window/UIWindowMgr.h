@@ -520,6 +520,7 @@ public:
   bool IsFriend(const char* name);
   bool IsSharedWindowId(int id);
   bool HasNavigationBlocker();
+  bool Window4F250Ready();
   bool HasPendingDialog();
   bool HasTitleAtActorCell(std::uint32_t aid);
   void CancelActiveDialog();

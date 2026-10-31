@@ -146,6 +146,22 @@ bool UIWindowMgr::HasNavigationBlocker() {
   return this->window_4F260 || this->window_4F264 || this->window_4F268 || this->window_4F26C;
 }
 
+// OFFSET: 0x00A97380
+// FUNCTION: fn_17202
+bool UIWindowMgr::Window4F250Ready() {
+  UIWindow* window = this->window_4F250;
+  if (window == nullptr) {
+    return false;
+  }
+  if (*reinterpret_cast<void**>(reinterpret_cast<char*>(window) + 0xB4) == nullptr) {
+    return false;
+  }
+  if (window->geometry.unknown_0030 != 0) {
+    return false;
+  }
+  return true;
+}
+
 // OFFSET: 0x00A97410
 // FUNCTION: fn_17203
 bool UIWindowMgr::HasPendingDialog() {
