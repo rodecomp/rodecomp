@@ -119,6 +119,7 @@ struct ClientItemLists {
   void RemoveItem1760(const ITEM_INFO& item);
   void AddItem1730(const ITEM_INFO& item);
   void ReduceItem1718(const ITEM_INFO& item);
+  void ClearItems1760();
 };
 
 struct SessionItemLists {
@@ -5082,6 +5083,141 @@ UIItemBaseWnd::UIItemBaseWnd(UIWindowContext& windowContext, UIFrameContext& fra
   this->scroll = 0;
 }
 
+// OFFSET: 0x0096E750
+// FUNCTION: fn_13215
+UIItemDropCntWnd::UIItemDropCntWnd(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0) {
+}
+
+// OFFSET: 0x0096E7B0
+// FUNCTION: fn_13216
+UIItemPurchaseWnd::UIItemPurchaseWnd(UIWindowContext& windows, UIFrameContext& frames) : UIItemBaseWnd(windows, frames) {
+  this->hovered = -1;
+  this->unknown_00B8 = 1;
+  this->unknown_00FC = 0;
+  this->saved = nullptr;
+}
+
+// OFFSET: 0x0096E830
+// FUNCTION: fn_13217
+UIItemSellWnd2::UIItemSellWnd2(UIWindowContext& windows, UIFrameContext& frames) : UIItemBaseWnd(windows, frames) {
+  this->hovered = -1;
+  this->unknown_00B8 = 1;
+  this->saved = nullptr;
+  this->unknown_00FC = 0;
+}
+
+// OFFSET: 0x0096E8B0
+// FUNCTION: fn_13218
+UIItemSellWnd::UIItemSellWnd(UIWindowContext& windows, UIFrameContext& frames) : UIItemBaseWnd(windows, frames) {
+  this->hovered = -1;
+  this->unknown_00B8 = 1;
+  this->saved = nullptr;
+}
+
+// OFFSET: 0x0096E930
+// FUNCTION: fn_13219
+UIItemShopWnd2::UIItemShopWnd2(UIWindowContext& windows, UIFrameContext& frames) : UIItemBaseWnd(windows, frames) {
+  this->hovered = -1;
+  this->showQuantity = 0;
+  this->unknown_00F8 = 0;
+  this->unknown_00B8 = 1;
+  this->saved = nullptr;
+  this->unknown_0104 = 29;
+  this->unknown_0108 = 0;
+}
+
+// OFFSET: 0x0096E9D0
+// FUNCTION: fn_13220
+UIItemShopWnd::UIItemShopWnd(UIWindowContext& windows, UIFrameContext& frames) : UIItemBaseWnd(windows, frames) {
+  this->hovered = -1;
+  this->showQuantity = 0;
+  this->unknown_00F8 = 0;
+  this->unknown_00B8 = 1;
+  this->saved = nullptr;
+  this->unknown_0104 = 29;
+  this->unknown_0108 = 0;
+  this->unknown_010C = 0;
+}
+
+// OFFSET: 0x0096EA80
+// FUNCTION: fn_13221
+UIItemStoreFindWnd::UIItemStoreFindWnd(UIWindowContext& windows, UIFrameContext& frames) : UIItemBaseWnd(windows, frames) {
+  this->saved = nullptr;
+  this->scrollBar = nullptr;
+  this->scroll = 0;
+  this->columns = 1;
+  this->visibleRows = 3;
+  this->unknown_00E4 = 0;
+  this->unknown_0120 = 18;
+}
+
+// OFFSET: 0x0096EB70
+// FUNCTION: fn_13222
+UIItemStoreSubWnd::UIItemStoreSubWnd(UIWindowContext& windows, UIFrameContext& frames) : UIItemBaseWnd(windows, frames) {
+  this->saved = nullptr;
+  this->scrollBar = nullptr;
+  this->scroll = 0;
+  this->columns = 1;
+  this->visibleRows = 3;
+  this->unknown_00E4 = 0;
+  this->unknown_011C = 18;
+}
+
+// OFFSET: 0x0096EC60
+// FUNCTION: fn_13223
+UIItemStoreWnd::UIItemStoreWnd(UIWindowContext& windows, UIFrameContext& frames) : UIItemBaseWnd(windows, frames) {
+  this->unknown_016C = 0;
+  this->unknown_0170 = 0;
+  this->unknown_0174 = 0;
+  this->unknown_0180 = 0;
+  this->showQuantity = 1;
+  this->unknown_00B8 = 1;
+  this->saved = nullptr;
+  this->unknown_0178 = 0;
+  this->unknown_017C = 0;
+  this->unknown_00F0 = 0;
+  for (int i = 0; i < 8; ++i) {
+    this->unknown_00F8[i] = 0;
+    this->tabs[i] = nullptr;
+    this->unknown_0120[i] = 0;
+  }
+  this->unknown_0140 = 0;
+  this->unknown_0188 = 0;
+  this->unknown_018C = 0;
+  this->unknown_0190 = 0;
+}
+
+// OFFSET: 0x0096ED90
+// FUNCTION: fn_13224
+UIItemWnd::UIItemWnd(UIWindowContext& windows, UIFrameContext& frames) : UIItemBaseWnd(windows, frames) {
+  this->unknown_0124 = 0;
+  this->unknown_0128 = nullptr;
+  this->unknown_012C = 0;
+  this->resizer = nullptr;
+  this->scrollBar = nullptr;
+  this->saved = nullptr;
+  this->unknown_0100 = 0;
+  this->unknown_0104 = 0;
+  this->unknown_0108 = 0;
+  this->unknown_010C = 0;
+  this->scroll = 0;
+  this->unknown_00E4 = 0;
+}
+
+// OFFSET: 0x0096EE60
+// FUNCTION: fn_13225
+UIMerchantItemMyShopWnd::UIMerchantItemMyShopWnd(UIWindowContext& windows, UIFrameContext& frames, int value) : UIItemBaseWnd(windows, frames) {
+  this->unknown_0100 = value;
+  this->startTick = 0;
+  this->duration = 0;
+  this->actionButton = nullptr;
+  this->unknown_011C = 21;
+  this->unknown_00B8 = 1;
+  this->saved = nullptr;
+  this->shopOpen = 0;
+  this->unknown_010C = 0;
+}
+
 // OFFSET: 0x0096EF10
 // FUNCTION: fn_13226
 UIMerchantItemPurchaseMSGWnd::UIMerchantItemPurchaseMSGWnd(UIWindowContext& windowContext, UIFrameContext& frameContext)
@@ -5095,3 +5231,61 @@ UIMerchantItemPurchaseMSGWnd::UIMerchantItemPurchaseMSGWnd(UIWindowContext& wind
   this->m_controls = nullptr;
   this->unknown_00D0 = 0;
 }
+
+// OFFSET: 0x0096EFC0
+// FUNCTION: fn_13227
+UIMerchantItemPurchaseWnd::UIMerchantItemPurchaseWnd(UIWindowContext& windows, UIFrameContext& frames, int value) : UIItemBaseWnd(windows, frames) {
+  this->unknown_0108 = value;
+  this->unknown_00B8 = 1;
+  this->unknown_00F8 = 0;
+  this->saved = nullptr;
+  this->hovered = -1;
+  reinterpret_cast<ClientItemLists*>(&g_session)->ClearItems1760();
+  this->unknown_00F0 = 0;
+}
+
+// OFFSET: 0x0096F060
+// FUNCTION: fn_13228
+UIMerchantItemShopWnd::UIMerchantItemShopWnd(UIWindowContext& windows, UIFrameContext& frames, int value) : UIItemBaseWnd(windows, frames) {
+  this->unknown_0108 = 0;
+  this->unknown_010C = value;
+  this->startTick = 0;
+  this->duration = 0;
+  this->unknown_00B8 = 1;
+  this->hovered = -1;
+  this->saved = nullptr;
+  this->unknown_00F0 = 0;
+  this->unknown_0118 = 21;
+}
+
+// OFFSET: 0x0096F110
+// FUNCTION: fn_13229
+UIMerchantItemWnd::UIMerchantItemWnd(UIWindowContext& windows, UIFrameContext& frames) : UIItemBaseWnd(windows, frames) {
+  this->unknown_00B8 = 1;
+  this->saved = nullptr;
+}
+
+// OFFSET: 0x0096F180
+// FUNCTION: fn_13230
+UIMerchantMirrorItemWnd::UIMerchantMirrorItemWnd(UIWindowContext& windows, UIFrameContext& frames, int value) : UIItemBaseWnd(windows, frames) {
+  this->unknown_00F4 = value;
+  this->unknown_00B8 = 1;
+  this->saved = nullptr;
+}
+
+// OFFSET: 0x0096F3A0
+// FUNCTION: fn_13232
+UINoticeMessageBox_LockSellItem::UINoticeMessageBox_LockSellItem(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0) {
+  this->startTick = timeGetTime();
+  this->duration = 2000;
+}
+
+// OFFSET: 0x0096FB70
+// FUNCTION: fn_13238
+UIItemStoreWnd::~UIItemStoreWnd() {
+  g_unknown_01738268 = 0;
+}
+
+// OFFSET: 0x0096FC10
+// FUNCTION: fn_13239
+UIItemWnd::~UIItemWnd() = default;

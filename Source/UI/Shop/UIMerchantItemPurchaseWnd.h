@@ -11,6 +11,7 @@ class UIStaticText;
 
 class UIMerchantItemPurchaseWnd : public UIItemBaseWnd {
 public:
+  UIMerchantItemPurchaseWnd(UIWindowContext& windows, UIFrameContext& frames, int value);
   void Slot11() override;
   void Slot15(int width, int height) override;
   void Slot10(int x, int y, std::intptr_t value) override;
@@ -20,7 +21,7 @@ public:
 
   /* 00F0 */ int unknown_00F0;
   /* 00F4 */ UIStaticText* total;
-  /* 00F8 */ unsigned char unknown_00F8[0x4];
+  /* 00F8 */ int unknown_00F8;
   /* 00FC */ MerchantItemPurchaseWndInfo* saved;
   /* 0100 */ int hovered;
   /* 0104 */ unsigned char unknown_0104[0x4];

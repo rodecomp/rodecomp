@@ -12,6 +12,8 @@ class UITabControl;
 class UIItemWnd : public UIItemBaseWnd {
 public:
   UIItemWnd();
+  UIItemWnd(UIWindowContext& windows, UIFrameContext& frames);
+  __declspec(noinline) ~UIItemWnd() override;
   void Slot11() override;
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot18() override;
@@ -33,8 +35,10 @@ public:
   /* 0114 */ unsigned char unknown_0114[0x4];
   /* 0118 */ UITabControl* tabs;
   /* 011C */ UIWindow* optionBox;
-  /* 0120 */ unsigned char unknown_0120[0x8];
+  /* 0120 */ unsigned char unknown_0120[0x4];
+  /* 0124 */ int unknown_0124;
   /* 0128 */ UIWindow* unknown_0128;
+  /* 012C */ int unknown_012C;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

@@ -10,6 +10,7 @@ struct WindowReplayRecorder;
 
 class UIItemSellWnd2 : public UIItemBaseWnd {
 public:
+  UIItemSellWnd2(UIWindowContext& windows, UIFrameContext& frames);
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot11() override;
   void Slot25(int x, int y) override;

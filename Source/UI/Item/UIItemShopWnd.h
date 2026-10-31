@@ -14,6 +14,7 @@ class UIStaticText;
 class UIItemShopWnd : public UIItemBaseWnd {
 public:
   UIItemShopWnd();
+  UIItemShopWnd(UIWindowContext& windows, UIFrameContext& frames);
   void Slot11() override;
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot25(int x, int y) override;
@@ -31,6 +32,9 @@ public:
   /* 00F8 */ int unknown_00F8;
   /* 00FC */ ItemShopWndInfo* saved;
   /* 0100 */ int hovered;
+  /* 0104 */ int unknown_0104;
+  /* 0108 */ int unknown_0108;
+  /* 010C */ int unknown_010C;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

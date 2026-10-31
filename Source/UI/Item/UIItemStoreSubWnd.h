@@ -12,6 +12,7 @@ class UIStaticText;
 
 class UIItemStoreSubWnd : public UIItemBaseWnd {
 public:
+  UIItemStoreSubWnd(UIWindowContext& windows, UIFrameContext& frames);
   void Slot28(int x, int y) override;
   void Slot32(int x, int y) override;
   void Slot10(int x, int y, std::intptr_t value) override;
@@ -37,7 +38,10 @@ public:
   /* 00F0 */ unsigned char unknown_00F0[0x20];
   /* 0110 */ UIResizer* resizeHandle;
   /* 0114 */ UIStaticText* title;
-  /* 0118 */ unsigned char unknown_0118[0x38];
+  /* 0118 */ unsigned char unknown_0118[0x04];
+  /* 011C */ int unknown_011C;
+  /* 0120 */ std::string unknown_0120;
+  /* 0138 */ std::string unknown_0138;
   /* 0150 */ WindowPlacement* saved;
   /* 0154 */ int tabIndex;
 };

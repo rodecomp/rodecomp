@@ -65,7 +65,6 @@ public:
   void InitializeMailActions();
   void RequestAllMailActions();
 
-  /* 012C */ unsigned char unknown_012C[0x4];
   /* 0130 */ UIBmpRadioBtn* unknown_0130;
   /* 0134 */ UIBmpRadioBtn* unknown_0134;
   /* 0138 */ UIBmpRadioBtn* unknown_0138;

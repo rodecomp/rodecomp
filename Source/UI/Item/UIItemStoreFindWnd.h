@@ -13,6 +13,7 @@ class UIStaticText;
 
 class UIItemStoreFindWnd : public UIItemBaseWnd {
 public:
+  UIItemStoreFindWnd(UIWindowContext& windows, UIFrameContext& frames);
   void Slot28(int x, int y) override;
   void Slot32(int x, int y) override;
   void Slot10(int x, int y, std::intptr_t value) override;
@@ -31,7 +32,8 @@ public:
   /* 0100 */ unsigned char unknown_0100[0x14];
   /* 0114 */ UIResizer* resizeHandle;
   /* 0118 */ UIStaticText* title;
-  /* 011C */ unsigned char unknown_011C[0x8];
+  /* 011C */ unsigned char unknown_011C[0x4];
+  /* 0120 */ int unknown_0120;
   /* 0124 */ std::string unknown_0124;
   /* 013C */ std::string searchText;
   /* 0154 */ ItemStoreFindWndInfo* saved;

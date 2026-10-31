@@ -11,6 +11,8 @@ struct UIEditContext;
 
 class UIItemDropCntWnd : public UIFrameWnd {
 public:
+  UIItemDropCntWnd(UIWindowContext& windows, UIFrameContext& frames);
+
   /* 00B4 */ UIEditCtrl* m_edit;
   /* 00B8 */ std::uint32_t unknown_00B8;
 

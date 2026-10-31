@@ -15,6 +15,7 @@ extern bool g_vendingSaleAlarm;
 
 class UIMerchantItemMyShopWnd : public UIItemBaseWnd {
 public:
+  UIMerchantItemMyShopWnd(UIWindowContext& windows, UIFrameContext& frames, int value);
   void Slot11() override;
   void Slot15(int width, int height) override;
   void Slot19() override;
@@ -33,7 +34,8 @@ public:
   /* 0100 */ int unknown_0100;
   /* 0104 */ UICheckBox* saleAlarm;
   /* 0108 */ unsigned char shopOpen;
-  /* 0109 */ unsigned char unknown_0109[0x07];
+  /* 0109 */ unsigned char unknown_0109[0x03];
+  /* 010C */ int unknown_010C;
   /* 0110 */ std::uint32_t startTick;
   /* 0114 */ std::uint32_t duration;
   /* 0118 */ UIBasicButton* actionButton;
