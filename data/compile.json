@@ -845,6 +845,7 @@
   "Source/UI/Dialogs/UIEmailAddressWnd.cpp": 2,
   "Source/UI/Dialogs/UIGraffiStrboxWnd.cpp": 2,
   "Source/UI/Dialogs/UIMinimapZoomWnd.cpp": 2,
+  "Source/UI/Dialogs/UIPasswordWnd.cpp": 2,
   "Source/UI/Dialogs/UIWaitDBSaveWnd.cpp": 2,
   "Source/UI/Edit/EditTextState.cpp": 2,
   "Source/UI/Edit/EditViewport.cpp": 2,
