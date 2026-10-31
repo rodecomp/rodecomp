@@ -9,6 +9,7 @@ struct UIButtonContext;
 
 class UIMerchantItemPurchaseMSGWnd : public UIFrameWnd {
 public:
+  UIMerchantItemPurchaseMSGWnd(UIWindowContext& windowContext, UIFrameContext& frameContext);
   void Slot15(int width, int height) override;
   void Paint() override;
 
@@ -21,6 +22,9 @@ public:
 
 protected:
   UIButtonContext* m_controls;
+
+public:
+  /* 00D0 */ int unknown_00D0;
 };
 
 #endif

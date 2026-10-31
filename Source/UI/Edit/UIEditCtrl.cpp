@@ -4955,3 +4955,29 @@ bool UIEditCtrl::DecodeItemLink(const std::vector<int>& values, ITEM_INFO& item)
   item.identified = 1;
   return true;
 }
+
+// OFFSET: 0x0096E650
+// FUNCTION: fn_13214
+UIItemBaseWnd::UIItemBaseWnd(UIWindowContext& windowContext, UIFrameContext& frameContext)
+    : UIFrameWnd(windowContext, frameContext, 0), resizer(nullptr), scrollBar(nullptr), scroll(0), unknown_00E4(0) {
+  this->showQuantity = 1;
+  this->unknown_00B8 = 0;
+  this->buttons[0] = nullptr;
+  this->buttons[1] = nullptr;
+  this->m_controls = nullptr;
+  this->scroll = 0;
+}
+
+// OFFSET: 0x0096EF10
+// FUNCTION: fn_13226
+UIMerchantItemPurchaseMSGWnd::UIMerchantItemPurchaseMSGWnd(UIWindowContext& windowContext, UIFrameContext& frameContext)
+    : UIFrameWnd(windowContext, frameContext, 0) {
+  this->title = nullptr;
+  this->firstLine = nullptr;
+  this->thirdLine = nullptr;
+  this->secondLine = nullptr;
+  this->buyButton = nullptr;
+  this->cancelButton = nullptr;
+  this->m_controls = nullptr;
+  this->unknown_00D0 = 0;
+}
