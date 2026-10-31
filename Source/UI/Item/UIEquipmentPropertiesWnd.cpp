@@ -8,7 +8,9 @@
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/StringUtil.h"
 
+#include <cstdint>
 #include <list>
+#include <map>
 #include <string>
 #include <windows.h>
 
@@ -24,6 +26,118 @@ public:
 template void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::Paint();
 template void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::Slot35(int);
 template void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::ClearItems();
+
+void CUIListItem::SetImageResources(CBitmapRes* normal, CBitmapRes* hover, CBitmapRes* pressed, CBitmapRes* disabled) {
+  auto& images = *reinterpret_cast<std::map<int, CBitmapRes*>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
+  images.clear();
+  images[0] = normal;
+  images[1] = hover;
+  images[2] = pressed;
+  this->disabledImage = disabled;
+  this->Invalidate();
+}
+
+EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine::CUIItemEquipmentPropertiesLine(UIWindowContext& context)
+    : CUIListItem(context), unknown_00E8(nullptr), unknown_00EC(nullptr), evenRowColor(0), oddRowColor(0) {
+}
+
+template <>
+void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::SelectItem(CUIListItem* item) {
+  if (this->unknown_00C4) {
+    return;
+  }
+  for (EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine* other : this->items) {
+    if (other != item) {
+      other->SetSelected(0);
+    }
+  }
+  item->SetSelected(1);
+  if (item->index == static_cast<int>(this->selected) && this->unknown_00E0) {
+    return;
+  }
+  EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine* selectedItem =
+      dynamic_cast<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine*>(item);
+  if (!selectedItem) {
+    return;
+  }
+  this->selected = selectedItem->index;
+  if (this->onSelect && static_cast<int>(this->selected) >= 0 && this->selected < this->data.size()) {
+    auto node = this->data.begin();
+    std::advance(node, static_cast<int>(this->selected));
+    this->onSelect(selectedItem, *node);
+  }
+}
+
+// OFFSET: 0x00A0CF00
+// FUNCTION: fn_15039
+template <>
+void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::AddNewItem() {
+  if (this->itemWidth <= 0 || this->rowHeight <= 0) {
+    return;
+  }
+
+  for (EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine* item : this->items) {
+    this->RemoveChild(item, 1);
+  }
+  this->items.clear();
+  this->selected = static_cast<unsigned int>(-1);
+
+  if (this->rowHeight <= this->geometry.height) {
+    unsigned count = static_cast<unsigned>(this->geometry.height / this->rowHeight) + 1;
+    if (this->geometry.height % this->rowHeight > 1) {
+      ++count;
+    }
+    this->items.resize(count, nullptr);
+    for (EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine*& slot : this->items) {
+      EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine* item =
+          new EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine(*this->m_context);
+      item->SetSize(this->itemWidth, this->rowHeight);
+      item->Show(0);
+      CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
+      item->SetImageResources(images[0], images[1], images[2], images[3]);
+      item->onHover = [this](CUIListItem* listItem) {
+        for (EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine* other : this->items) {
+          other->SetHighlighted(other == listItem);
+        }
+      };
+      item->onPress = [this](CUIListItem* listItem) {
+        this->SelectItem(listItem);
+      };
+      this->AddChild(item);
+      slot = item;
+    }
+  }
+
+  this->scrollBar->SetTotal(this->geometry.height);
+  this->scrollBar->SetVisible(this->geometry.height);
+}
+
+// OFFSET: 0x00A0D160
+// FUNCTION: fn_15040
+template <>
+void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::Slot53(int resolveSkin) {
+  CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
+  images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
+  images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
+  images[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
+  images[3] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->disabledName, resolveSkin));
+  for (EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine* item : this->items) {
+    item->SetImageResources(images[0], images[1], images[2], images[3]);
+  }
+}
+
+// OFFSET: 0x00A0D370
+// FUNCTION: fn_15041
+template <>
+void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::Resize(int width, int height) {
+  UIWindow::Resize(width, height);
+  this->AddNewItem();
+  this->scrollBar->Resize(this->scrollBar->geometry.width, height);
+  this->scrollBar->SetTotal(static_cast<int>(this->data.size()) * this->rowHeight + this->itemY);
+  this->scrollBar->SetVisible(this->geometry.height);
+  this->scrollBar->SetPosition(this->scrollBar->position);
+  this->rebind = 1;
+}
 
 // OFFSET: 0x00A0D3F0
 // FUNCTION: fn_15042

@@ -15,6 +15,10 @@
 
 class CUIListItem : public CUIControl {
 public:
+  // INLINED
+  explicit CUIListItem(UIWindowContext& context) : CUIControl(context), selected(0), disabledImage(nullptr), frozen(0), index(-1) {
+  }
+
   void Slot25(int x, int y) override;
   void Slot27(int x, int y) override;
   void Slot31(int x, int y) override;
@@ -23,10 +27,11 @@ public:
   virtual void SetSelected(bool selected);
   virtual void SetHighlighted(bool highlighted);
   virtual void SetFrozen(bool frozen);
+  void SetImageResources(CBitmapRes* normal, CBitmapRes* hover, CBitmapRes* pressed, CBitmapRes* disabled);
 
   /* 0084 */ unsigned char unknown_0084[0x04];
   /* 0088 */ int selected;
-  /* 008C */ unsigned char unknown_008C[0x04];
+  /* 008C */ CBitmapRes* disabledImage;
   /* 0090 */ unsigned char frozen;
   /* 0094 */ int index;
   /* 0098 */ std::function<void(CUIListItem*)> onHover;
@@ -303,6 +308,14 @@ public:
   bool RebindIndex(int index);
   void SelectItem(CUIListItem* item);
   bool SelectIndex(int index);
+  void AddNewItem() {
+  }
+  void Resize(int width, int height) override {
+    UIWindow::Resize(width, height);
+  }
+  void Slot53(int resolveSkin) override {
+    (void)resolveSkin;
+  }
 
   // OFFSET: 0x00A04B30
   // FUNCTION: fn_14963

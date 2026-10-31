@@ -11,6 +11,8 @@
 namespace EquipmentPropertiesWnd {
 class CUIItemEquipmentPropertiesLine : public CUIListItem {
 public:
+  explicit CUIItemEquipmentPropertiesLine(UIWindowContext& context);
+
   /* 00E8 */ CUIStaticText* unknown_00E8;
   /* 00EC */ CUIStaticText* unknown_00EC;
   /* 00F0 */ std::uint32_t evenRowColor;
@@ -61,6 +63,12 @@ template <>
 CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::~CUIListBoxEx();
 template <>
 void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::Slot15(int width, int height);
+template <>
+void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::AddNewItem();
+template <>
+void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::Resize(int width, int height);
+template <>
+void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::Slot53(int resolveSkin);
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine) == 0xF8);
