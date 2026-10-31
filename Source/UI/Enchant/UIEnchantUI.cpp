@@ -99,7 +99,7 @@ CUIIngredient* CUIEnchantPage::CreateIngredient() {
 
 // OFFSET: 0x009F9B30
 // FUNCTION: fn_14813
-void CUIEnchantPage::Slot54(int argument1, int argument2) {
+void CUIEnchantPage::Slot54(CUIEnchantItem* item, const CEnchantItemData& data) {
 }
 }
 
@@ -567,6 +567,191 @@ bool CUINormalPerfect::Slot56() {
   }
 
   this->enchantList->UpdateScrollBar();
+  return true;
+}
+}
+
+namespace EnchantUI {
+// OFFSET: 0x00A05470
+// FUNCTION: fn_14975
+void CUINormalPerfect::Slot54(CUIEnchantItem* item, const CEnchantItemData& data) {
+  for (CUIIngredient* ingredient : this->unknown_0090) {
+    ingredient->Show(0);
+  }
+
+  const std::string count = std::to_string(0);
+  this->unknown_009C->SetText(count.c_str(), count.size());
+
+  std::optional<EnchantOptionInfo*> option = this->FindOption(this->unknown_00B0);
+  if (option && (*option)->perfectEnchants.size() != 0) {
+    const int itemId = std::atoi(item->itemIcon->GetItemInfo()->itemId.c_str());
+    auto it = (*option)->perfectEnchants.find(itemId);
+    if (it != (*option)->perfectEnchants.end()) {
+      this->SetCost(it->second);
+    }
+  }
+}
+
+// OFFSET: 0x00A05640
+// FUNCTION: fn_14976
+void CUIUpgradePerfect::Slot54(CUIEnchantItem* item, const CEnchantItemData& data) {
+  for (CUIIngredient* ingredient : this->unknown_0090) {
+    ingredient->Show(0);
+  }
+
+  const std::string count = std::to_string(0);
+  this->unknown_009C->SetText(count.c_str(), count.size());
+
+  std::optional<EnchantOptionInfo*> option = this->FindOption(this->unknown_00B0);
+  if (option && (*option)->perfectUpgrades.size() != 0) {
+    const int baseItemId = std::atoi(this->unknown_0088[this->unknown_00B0]->itemIcon->GetItemInfo()->itemId.c_str());
+    auto base = (*option)->perfectUpgrades.find(baseItemId);
+    if (base != (*option)->perfectUpgrades.end()) {
+      const int itemId = std::atoi(item->itemIcon->GetItemInfo()->itemId.c_str());
+      auto it = base->second.find(itemId);
+      if (it != base->second.end()) {
+        this->SetCost(it->second);
+      }
+    }
+  }
+}
+
+// OFFSET: 0x00A072E0
+// FUNCTION: fn_15011
+bool CUIReset::Slot56() {
+  this->SetCost(*reinterpret_cast<const EnchantPerfectInfo*>(&this->enchantInfo->resetCost));
+  if (!this->enchantInfo->resetEnabled) {
+    this->unknown_00A0->disabled = 1;
+    this->unknown_00A0->Invalidate();
+    return false;
+  }
+
+  const std::vector<int>& slots = this->enchantInfo->slots;
+  const bool enchanted = std::any_of(slots.begin(), slots.end(), [item = *this->gameItem->GetItemInfo()](int slot) {
+    if (slot >= 4) {
+      return false;
+    }
+    int card;
+    std::memcpy(&card, item.unknown_001C + slot * 4, sizeof(card));
+    return card != 0;
+  });
+  this->unknown_00A0->disabled = !enchanted;
+  this->unknown_00A0->Invalidate();
+  return enchanted;
+}
+
+// OFFSET: 0x00A07BA0
+// FUNCTION: fn_15015
+void CUIIngredient::SetMaterial(int itemId, int required) {
+  ITEM_INFO info;
+  info.SetItemId(itemId);
+  info.identified = 1;
+  this->itemIcon->SetItem(info);
+
+  const int owned = g_session.GetInventoryItemCount(itemId);
+  const std::string ownedCount = std::to_string(owned);
+  this->ownedText->SetText(ownedCount.c_str(), ownedCount.size());
+  const std::string requiredCount = std::format("/{}", required);
+  this->requiredText->SetText(requiredCount.c_str(), requiredCount.size());
+
+  const bool enough = owned >= required;
+  this->unknown_0084->Show(enough);
+  const std::uint32_t color = enough ? 0xF0F0F0 : 0x5A3CE6;
+  this->ownedText->SetColor(color);
+  this->ownedText->SetOutline(enough, 0x965532);
+  this->requiredText->SetColor(color);
+  this->requiredText->SetOutline(enough, 0x965532);
+}
+
+// OFFSET: 0x00A07F00
+// FUNCTION: fn_15016
+void CUIEnchantPage::SetCost(const EnchantPerfectInfo& info) {
+  auto material = info.materials.begin();
+  for (CUIIngredient* ingredient : this->unknown_0090) {
+    if (material == info.materials.end()) {
+      ingredient->Show(0);
+    } else {
+      ingredient->Show(1);
+      ingredient->SetMaterial(material->first, material->second);
+      ++material;
+    }
+  }
+
+  const std::string cost = std::to_string(info.cost);
+  this->unknown_009C->SetText(cost.c_str(), cost.size());
+
+  const bool lackZeny = g_session.m_zeny < info.cost;
+  const bool lackMaterial = std::any_of(this->unknown_0090.begin(), this->unknown_0090.end(), [](CUIIngredient* ingredient) {
+    return ingredient->geometry.visible && !ingredient->unknown_0084->geometry.visible;
+  });
+  this->unknown_00A0->disabled = lackZeny || lackMaterial;
+  this->unknown_00A0->Invalidate();
+}
+
+// OFFSET: 0x00A07100
+// FUNCTION: fn_15010
+bool CUINormalRandom::Slot56() {
+  const int slot = this->FindEmptySlot();
+  if (slot == -1) {
+    return false;
+  }
+
+  std::optional<EnchantOptionInfo*> option = this->FindOption(slot);
+  if (!option) {
+    return false;
+  }
+
+  this->Slot59(slot);
+  if ((*option)->enchants.size() == 0) {
+    return false;
+  }
+
+  auto grade = (*option)->enchants.find(this->gameItem->GetItemInfo()->unknown_0088);
+  if (grade == (*option)->enchants.end()) {
+    return false;
+  }
+
+  std::list<int> itemIds;
+  for (const auto& entry : grade->second) {
+    itemIds.push_back(entry.first);
+  }
+  for (int itemId : itemIds) {
+    this->enchantList->AddData({itemId, false}, false);
+  }
+
+  this->enchantList->UpdateScrollBar();
+  this->SetCost(*reinterpret_cast<const EnchantPerfectInfo*>(*option));
+  return true;
+}
+
+// OFFSET: 0x00A075E0
+// FUNCTION: fn_15013
+bool CUIUpgradeRandom::Slot56() {
+  if (this->unknown_00B0 == -1) {
+    return false;
+  }
+
+  std::optional<EnchantOptionInfo*> option = this->FindOption(this->unknown_00B0);
+  if (!option || (*option)->randomUpgrades.size() == 0) {
+    return false;
+  }
+
+  const int baseItemId = std::atoi(this->unknown_0088[this->unknown_00B0]->itemIcon->GetItemInfo()->itemId.c_str());
+  auto base = (*option)->randomUpgrades.find(baseItemId);
+  if (base == (*option)->randomUpgrades.end()) {
+    return false;
+  }
+
+  std::list<int> itemIds;
+  for (const auto& entry : base->second.rates) {
+    itemIds.push_back(entry.first);
+  }
+  for (int itemId : itemIds) {
+    this->enchantList->AddData({itemId, false}, false);
+  }
+
+  this->enchantList->UpdateScrollBar();
+  this->SetCost(*reinterpret_cast<const EnchantPerfectInfo*>(&base->second));
   return true;
 }
 }

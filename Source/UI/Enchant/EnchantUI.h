@@ -16,6 +16,7 @@ class CUITextViewer;
 class CUITab;
 struct EnchantInfo;
 struct EnchantOptionInfo;
+struct EnchantPerfectInfo;
 
 namespace EnchantUI {
 class CUITargetItem;
@@ -80,14 +81,16 @@ public:
 class CUIIngredient : public CUIControl {
 public:
   explicit CUIIngredient(UIWindowContext& context)
-      : CUIControl(context), unknown_0080(nullptr), unknown_0084(nullptr), unknown_0088(nullptr), unknown_008C(nullptr), unknown_0090(nullptr) {
+      : CUIControl(context), unknown_0080(nullptr), unknown_0084(nullptr), itemIcon(nullptr), ownedText(nullptr), requiredText(nullptr) {
   }
 
   /* 0080 */ CUIControl* unknown_0080;
   /* 0084 */ CUIControl* unknown_0084;
-  /* 0088 */ CUIControl* unknown_0088;
-  /* 008C */ CUIControl* unknown_008C;
-  /* 0090 */ CUIControl* unknown_0090;
+  /* 0088 */ CUIGameItem* itemIcon;
+  /* 008C */ CUIStaticText* ownedText;
+  /* 0090 */ CUIStaticText* requiredText;
+
+  void SetMaterial(int itemId, int required);
 };
 
 #pragma pack(push, 4)
@@ -107,7 +110,7 @@ public:
   /* 00B0 */ int unknown_00B0;
 
   void Slot16() override;
-  virtual void Slot54(int argument1, int argument2);
+  virtual void Slot54(CUIEnchantItem* item, const CEnchantItemData& data);
   virtual void Slot55() = 0;
   virtual bool Slot56() = 0;
   virtual void Slot57();
@@ -118,6 +121,7 @@ public:
   void ResetSlots();
   __declspec(noinline) int FindEmptySlot();
   std::optional<EnchantOptionInfo*> FindOption(uint32_t key);
+  void SetCost(const EnchantPerfectInfo& info);
 };
 #pragma pack(pop)
 
@@ -125,11 +129,13 @@ class CUINormalRandom : public CUIEnchantPage {
 public:
   void Slot16() override;
   void Slot55() override;
+  bool Slot56() override;
 };
 
 class CUINormalPerfect : public CUIEnchantPage {
 public:
   void Slot16() override;
+  void Slot54(CUIEnchantItem* item, const CEnchantItemData& data) override;
   void Slot55() override;
   bool Slot56() override;
 };
@@ -138,6 +144,7 @@ class CUIReset : public CUIEnchantPage {
 public:
   void Slot16() override;
   void Slot55() override;
+  bool Slot56() override;
   void Slot57() override;
 };
 
@@ -150,12 +157,14 @@ class CUIUpgradeRandom : public CUIUpgradeEnchantPage {
 public:
   void Slot16() override;
   void Slot55() override;
+  bool Slot56() override;
 };
 
 class CUIUpgradePerfect : public CUIUpgradeEnchantPage {
 public:
   /* 00B8 */ bool unknown_00B8;
 
+  void Slot54(CUIEnchantItem* item, const CEnchantItemData& data) override;
   void Slot55() override;
 };
 
