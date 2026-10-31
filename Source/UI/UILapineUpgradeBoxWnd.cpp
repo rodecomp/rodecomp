@@ -316,23 +316,19 @@ int UILapineUpgradeBox_IngredientListWnd::SendMsg(UIWindow* sender, int message,
     break;
 
   case 0x57: {
-    std::size_t index = 0;
     int y = 7;
-    while (index < this->items.size()) {
-      UILapineUpgradeBox_IngredientInfoWnd* entry = this->items[index];
-      if (entry->geometry.visible == 0) {
-        entry->Invalidate();
-        this->items.erase(this->items.begin() + static_cast<std::ptrdiff_t>(index));
+    for (auto it = this->items.begin(); it != this->items.end();) {
+      if ((*it)->geometry.visible == 0) {
+        (*it)->Invalidate();
+        it = this->items.erase(it);
       } else {
-        entry->Move(0, y);
-        this->childOrigins[entry] = std::pair<int, int>(0, y);
-        entry->Invalidate();
-        ++index;
+        this->MoveScrollChild(*it, 0, y);
+        (*it)->Invalidate();
+        ++it;
         y += 0x1E;
       }
     }
-    using SortChildren = void(__thiscall*)(UILapineUpgradeBox_IngredientListWnd*);
-    reinterpret_cast<SortChildren>((*reinterpret_cast<void***>(this))[53])(this);
+    this->Slot53();
     this->Invalidate();
     break;
   }
