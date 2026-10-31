@@ -11,6 +11,7 @@ class CParticle;
 class CCloudKillEffect : public CEffect {
 public:
   CCloudKillEffect();
+  ~CCloudKillEffect() override;
   void Slot01() override;
   void Slot03() override;
   void Slot04() override;

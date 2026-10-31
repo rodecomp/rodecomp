@@ -18,6 +18,11 @@ CCloudKillEffect::CCloudKillEffect() : CEffect(1080) {
   this->unknown_00E0 = 40;
 }
 
+// OFFSET: 0x006FC600
+// FUNCTION: fn_06924
+CCloudKillEffect::~CCloudKillEffect() {
+}
+
 // OFFSET: 0x006FC8F0
 // FUNCTION: fn_06926
 void CCloudKillEffect::AddSprites() {

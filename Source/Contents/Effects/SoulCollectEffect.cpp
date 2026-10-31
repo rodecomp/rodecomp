@@ -17,6 +17,11 @@ CSoulCollectEffect::CSoulCollectEffect() : CEffect(-1) {
   this->unknown_0050 = 0;
 }
 
+// OFFSET: 0x0072A2A0
+// FUNCTION: fn_07456
+CSoulCollectEffect::~CSoulCollectEffect() {
+}
+
 // OFFSET: 0x0072A580
 // FUNCTION: fn_07459
 void CSoulCollectEffect::Close() {

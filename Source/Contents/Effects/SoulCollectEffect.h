@@ -11,6 +11,7 @@ class CParticle;
 class CSoulCollectEffect : public CEffect {
 public:
   CSoulCollectEffect();
+  ~CSoulCollectEffect() override;
   void Slot01() override;
   void Slot03() override;
   void Slot04() override;

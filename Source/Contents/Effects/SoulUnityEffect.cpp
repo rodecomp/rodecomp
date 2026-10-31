@@ -15,6 +15,11 @@
 CSoulUnityEffect::CSoulUnityEffect() : CEffect(1222) {
 }
 
+// OFFSET: 0x0072B0E0
+// FUNCTION: fn_07466
+CSoulUnityEffect::~CSoulUnityEffect() {
+}
+
 // OFFSET: 0x0072B230
 // FUNCTION: fn_07468
 void CSoulUnityEffect::Close() {

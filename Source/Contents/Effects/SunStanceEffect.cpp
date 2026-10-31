@@ -14,6 +14,11 @@
 CSunStanceEffect::CSunStanceEffect() : CEffect(-1) {
 }
 
+// OFFSET: 0x0072D640
+// FUNCTION: fn_07492
+CSunStanceEffect::~CSunStanceEffect() {
+}
+
 // OFFSET: 0x0072D910
 // FUNCTION: fn_07494
 void CSunStanceEffect::Close() {
