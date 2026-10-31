@@ -28,6 +28,7 @@
 #include "Utility/Text/FormatString.h"
 
 #include <algorithm>
+#include <atlconv.h>
 #include <cstdlib>
 #include <cstring>
 
@@ -115,6 +116,35 @@ void UIMacroReporterWnd::sub_7EF430(int aid, std::string name) {
 }
 
 // OFFSET: 0x007EF680
+// FUNCTION: fn_09842
+std::string UIMacroReporterWnd::sub_7EF680(int maxWidth, const char* text, int font, int height, unsigned char bold) {
+  std::string source(text);
+  const int width = this->TextWidth(this->m_controls->fonts, this->m_controls->locale, text, 0, font, height, bold, 0);
+  this->TextWidth(this->m_controls->fonts, this->m_controls->locale, "...", 0, font, height, bold, 0);
+  if (maxWidth >= width) {
+    return text;
+  }
+
+  std::string fitted(text);
+  std::wstring wide(ATL::CA2WEX<128>(text, CP_THREAD_ACP));
+  while (wide.size() > 1) {
+    if (wide.size() >= 2) {
+      const std::size_t size = wide.size();
+      const std::size_t cut = (wide[size - 2] & 0x80) != 0 && (wide[size - 1] & 0x80) != 0 ? 2 : 1;
+      wide.resize(size - cut);
+    }
+
+    fitted = ATL::CW2AEX<128>(wide.c_str(), CP_THREAD_ACP);
+    fitted += "...";
+    if (this->TextWidth(this->m_controls->fonts, this->m_controls->locale, fitted.c_str(), 0, font, height, bold, 0) <= maxWidth) {
+      return fitted;
+    }
+  }
+
+  fitted = ATL::CW2AEX<128>(wide.c_str(), CP_THREAD_ACP);
+  fitted += "...";
+  return fitted;
+}
 
 // OFFSET: 0x007F0480
 // FUNCTION: fn_09845
