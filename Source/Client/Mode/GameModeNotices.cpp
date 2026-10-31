@@ -2535,8 +2535,79 @@ void CGameMode::ReceiveExtraInventoryResult(const unsigned char* data) {
 }
 
 // OFFSET: 0x00D6FEA0
+// FUNCTION: fn_22128
+void CGameMode::ReceiveWindow348Result(unsigned char result, std::int16_t index) {
+  if (result == 0) {
+    g_windowMgr.CloseWindow(348);
+    g_effectMgr->Spawn(g_session.m_aid, 1608, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, index);
+    if (item.unknown_0000[1] != 0) {
+      UIWindow* window = g_windowMgr.EnsureWindow(12);
+      if (window) {
+        window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 1, 0, 0);
+      }
+    }
+  } else if (result == 3) {
+    UIWindow* window = g_windowMgr.LookupWindow(348);
+    if (window) {
+      window->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(3848)), 0, 0, 0);
+    }
+  }
+}
 
 // OFFSET: 0x00D69E60
+// FUNCTION: fn_22056
+void CGameMode::ReceiveRodexItemReturn(const unsigned char* data) {
+  if (g_windowMgr.unknown_045C) {
+    reinterpret_cast<UIRodexContentsWnd*>(g_windowMgr.unknown_045C)->SetItemButtonDisabled(0);
+  }
+
+  const auto* packet = reinterpret_cast<const RodexMailReturnPacket*>(data);
+  switch (packet->result) {
+  case 0: {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2588)), 0x64FFFF, 0, 0, 0);
+    g_session.ClearItemQuantities();
+
+    std::map<std::int64_t, RodexMail>::iterator mail;
+    switch (packet->type) {
+    case 0:
+      mail = g_rodexMailStore->m_mails0.find(packet->mailId);
+      if (mail != g_rodexMailStore->m_mails0.end()) {
+        mail->second.unknown_0001 -= 4;
+      }
+      break;
+    case 1:
+      mail = g_rodexMailStore->m_mails1.find(packet->mailId);
+      if (mail != g_rodexMailStore->m_mails1.end()) {
+        mail->second.unknown_0001 -= 4;
+      }
+      break;
+    case 2:
+      mail = g_rodexMailStore->m_mails2.find(packet->mailId);
+      if (mail != g_rodexMailStore->m_mails2.end()) {
+        mail->second.unknown_0001 -= 4;
+      }
+      break;
+    }
+
+    if (g_windowMgr.unknown_045C) {
+      auto* contents = reinterpret_cast<UIRodexContentsWnd*>(g_windowMgr.unknown_045C);
+      contents->SendMsg(nullptr, 23, 0, 0, 0, 0);
+      contents->DisableItemButton();
+    }
+    if (g_windowMgr.unknown_0454) {
+      reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0454)->SendMsg(nullptr, 60, 0, 0, 0, 0);
+    }
+    break;
+  }
+  case 1:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2589)), 0x64FFFF, 0, 0, 0);
+    break;
+  case 2:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2590)), 0x64FFFF, 0, 0, 0);
+    break;
+  }
+}
 
 #pragma pack(push, 1)
 struct ExpGainNoticePacket {
@@ -2549,3 +2620,32 @@ struct ExpGainNoticePacket {
 #pragma pack(pop)
 
 // OFFSET: 0x00D74080
+// FUNCTION: fn_22146
+void CGameMode::ReceiveExpGainNotice(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const ExpGainNoticePacket*>(data);
+  std::string text;
+  if (g_session.m_aid != packet->aid) {
+    return;
+  }
+
+  const std::uint32_t color = packet->quest == 1 ? 0xBE58BE : 0xFFFF;
+  if (packet->amount == 0) {
+    return;
+  }
+
+  char buffer[256];
+  if (packet->type == 1) {
+    std::sprintf(buffer, LookupMessage(3220), packet->amount);
+    text += buffer;
+  } else if (packet->type == 2) {
+    std::sprintf(buffer, LookupMessage(3227), packet->amount);
+    text += buffer;
+  }
+
+  if (packet->amount < 0) {
+    text += LookupMessage(1616);
+  } else {
+    text += LookupMessage(1615);
+  }
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), color, 18, 0, 0);
+}
