@@ -30,6 +30,7 @@ public:
 class CChargingPierceNewEffect : public CEffect {
 public:
   CChargingPierceNewEffect();
+  ~CChargingPierceNewEffect() override;
 
   void Slot01() override;
   void Slot03() override;

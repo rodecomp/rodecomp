@@ -28,6 +28,11 @@ CChargingPierceEffect::CChargingPierceEffect() : CEffect(-1), offsets{} {
 CChargingPierceNewEffect::CChargingPierceNewEffect() : CEffect(-1) {
 }
 
+// OFFSET: 0x007032D0
+// FUNCTION: fn_07019
+CChargingPierceNewEffect::~CChargingPierceNewEffect() {
+}
+
 // OFFSET: 0x00703490
 // FUNCTION: fn_07022
 void CChargingPierceNewEffect::SetCount(int count) {
