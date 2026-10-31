@@ -23,6 +23,7 @@ public:
     std::list<CharacterRenderDrawItem>& commands, bool drawOnTop, const void*, int& layer, const float* position, float x, float y, float scale,
     float shift, float
   );
+  std::list<CharacterRenderDrawItem> BuildDrawList(unsigned char trackBounds, char* boundsUpdated);
 
   /* 0004 */ int unknown_0004;
   /* 0008 */ int unknown_0008;
