@@ -33,9 +33,11 @@ class CPc : public CGameActor {
 public:
   CPc();
   ~CPc() override;
+  bool OnProcess() override;
   void SendMsg(
     CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m
   ) override;
+  void Render(int argument) override;
 
   void Slot15(int first, int second) override;
   void Slot19(
@@ -99,6 +101,7 @@ public:
   void DrawBody(int argument, int layer, const float* position, float x, float y, float distanceScale, float scale, float depth);
   void RenderOverlaySprite(const float* matrix, int);
   void UpdateGaugeWindow();
+  void DrawLayers(const float* matrix, int unknown0030, char unknown0034);
 
   float* GetExtent(float* extent) const override;
 
@@ -216,6 +219,7 @@ static_assert(offsetof(CPlayer, unknown_0544) == 0x544);
 
 class CGrannyPc : public CGameActor {
 public:
+  bool OnProcess() override;
   void SetAction(unsigned animation, int motion, int repeat) override;
   void Slot08() override;
   void Slot19(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh) override;
@@ -277,7 +281,8 @@ public:
   /* 0F44 */ char modelName[0x104];
   /* 1048 */ unsigned char unknown_1048[8];
   /* 1050 */ granny_control* controls[20];
-  /* 10A0 */ int unknown_10A0;
+  /* 10A0 */ unsigned char unknown_10A0;
+  /* 10A1 */ unsigned char unknown_10A1[3];
   /* 10A4 */ int renderFrame;
   /* 10A8 */ CTexture* meshTextures[10][30];
   /* 1558 */ std::uint16_t* meshIndices[10][30];

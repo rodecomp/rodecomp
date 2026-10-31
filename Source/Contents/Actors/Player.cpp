@@ -16,7 +16,11 @@
 #include "Contents/MapSkyMgr.h"
 #include "Contents/MessageTable.h"
 #include "Contents/Skills/ClientSkills.h"
+#include "Contents/Configuration/ServiceOptions.h"
+#include "Contents/Sound/SoundMgr.h"
+#include "Contents/SpriteLayerDrawing.h"
 #include "Contents/SpriteRidingOffset.h"
+#include "Contents/World/World.h"
 #include "Render/Primitives/LightmappedPrimitive.h"
 #include "Render/Primitives/RenderPrimitive.h"
 #include "Render/Renderer.h"
@@ -36,6 +40,8 @@
 #include "Utility/Text/FormatString.h"
 
 #include <cstring>
+#include <windows.h>
+#include <timeapi.h>
 
 // GLOBAL: gl_24753
 extern const int g_maxMoveSpeed = 432;
@@ -1923,6 +1929,88 @@ void CPc::RenderOverlaySprite(const float* matrix, int) {
     this->SetTlvert(x, y);
   }
 }
+
+// OFFSET: 0x00DAB980
+// FUNCTION: fn_22586
+bool CGrannyPc::OnProcess() {
+  this->UpdateStateEffects();
+  this->ProcessActorEffects();
+  this->UpdateGaugePositions();
+  this->UpdateGaugeWindow();
+
+  if (this->render.isSingleColor == true && timeGetTime() > this->render.started + 100) {
+    this->render.overrideColor = 0xFFFF0000;
+    this->render.isSingleColor = false;
+  }
+
+  if (this->render.color != 0xFFFFFFFF) {
+    this->ModifyArgb(8, 8, 8, 8);
+  }
+
+  union {
+    void (CGameActor::*asVoid)();
+    bool (CGameActor::*asBool)();
+  } slot14;
+  slot14.asVoid = &CGameActor::Slot14;
+  const bool result = (this->*slot14.asBool)();
+
+  this->PlayFrameSounds();
+
+  if (this->unknown_0180 != 0) {
+    const vector3d& player =
+      reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player)->render.position;
+    g_soundMgr->PlayWave(
+      reinterpret_cast<const char*>(this->unknown_0190), this->render.position.x - player.x, 0.0f,
+      this->render.position.z - player.z, 250, 40, 1.0f, 0
+    );
+    this->unknown_0180 = 0;
+  }
+
+  float facing = this->render.angle;
+  if (facing > 360.0f) {
+    facing = static_cast<float>(static_cast<int>(facing) % 360);
+    this->render.angle = facing;
+  }
+
+  float angle;
+  if (this->unknown_10A0 == 1) {
+    angle = 180.0f - facing;
+    this->unknown_10A0 = 0;
+    this->angle = angle;
+  } else {
+    angle = this->angle;
+    int delta = static_cast<int>(angle - static_cast<float>(static_cast<int>(180.0f - static_cast<float>(static_cast<int>(facing)))));
+    if (delta > 360 || delta < -360) {
+      delta %= 360;
+    }
+
+    const int distance = delta < 0 ? delta + 360 : delta;
+    if (distance > 16) {
+      if (distance < 180) {
+        angle -= 16.0f;
+      } else {
+        angle += 16.0f;
+      }
+      this->angle = angle;
+    }
+  }
+
+  if (angle > 360.0f) {
+    angle = static_cast<float>(static_cast<int>(angle) % 360);
+    this->angle = angle;
+  }
+  if (angle < 0.0f) {
+    this->angle = angle + 360.0f;
+  }
+
+  return result;
+}
+
+// OFFSET: 0x00DABBE0
+
+// OFFSET: 0x00DAC580
+
+// OFFSET: 0x00DAD8C0
 
 // OFFSET: 0x00DABF50
 // FUNCTION: fn_22589
