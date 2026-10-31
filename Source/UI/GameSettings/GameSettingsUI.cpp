@@ -505,6 +505,232 @@ void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::Resize(int width, in
   this->rebind = 1;
 }
 
+// OFFSET: 0x00A348B0
+// FUNCTION: fn_15421
+template <>
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::AddNewItem() {
+  if (this->itemWidth <= 0 || this->rowHeight <= 0) {
+    return;
+  }
+
+  for (GameSettingsUI::CUIComboItem* item : this->items) {
+    this->RemoveChild(item, 1);
+  }
+  this->items.clear();
+  this->selected = static_cast<unsigned int>(-1);
+
+  if (this->rowHeight <= this->geometry.height) {
+    unsigned int count = static_cast<unsigned int>(this->geometry.height / this->rowHeight) + 1;
+    if (this->geometry.height % this->rowHeight > 1) {
+      ++count;
+    }
+    this->items.resize(count, nullptr);
+    for (GameSettingsUI::CUIComboItem*& slot : this->items) {
+      GameSettingsUI::CUIComboItem* item = new GameSettingsUI::CUIComboItem();
+      item->SetSize(this->itemWidth, this->rowHeight);
+      item->Show(0);
+      CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
+      item->SetImageResources(images[0], images[1], images[2], images[3]);
+      item->onHover = [this](CUIListItem* listItem) {
+        for (GameSettingsUI::CUIComboItem* other : this->items) {
+          other->SetHighlighted(other == listItem);
+        }
+      };
+      item->onPress = [this](CUIListItem* listItem) {
+        this->SelectItem(listItem);
+      };
+      this->AddChild(item);
+      slot = item;
+    }
+  }
+
+  this->scrollBar->SetTotal(this->geometry.height);
+  this->scrollBar->SetVisible(this->geometry.height);
+}
+
+// OFFSET: 0x00A34AE0
+// FUNCTION: fn_15422
+template <>
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::AddNewItem() {
+  if (this->itemWidth <= 0 || this->rowHeight <= 0) {
+    return;
+  }
+
+  for (GameSettingsUI::CUIComboItem* item : this->items) {
+    this->RemoveChild(item, 1);
+  }
+  this->items.clear();
+  this->selected = static_cast<unsigned int>(-1);
+
+  if (this->rowHeight <= this->geometry.height) {
+    unsigned int count = static_cast<unsigned int>(this->geometry.height / this->rowHeight) + 1;
+    if (this->geometry.height % this->rowHeight > 1) {
+      ++count;
+    }
+    this->items.resize(count, nullptr);
+    for (GameSettingsUI::CUIComboItem*& slot : this->items) {
+      GameSettingsUI::CUIComboItem* item = new GameSettingsUI::CUIComboItem();
+      item->SetSize(this->itemWidth, this->rowHeight);
+      item->Show(0);
+      CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
+      item->SetImageResources(images[0], images[1], images[2], images[3]);
+      item->onHover = [this](CUIListItem* listItem) {
+        for (GameSettingsUI::CUIComboItem* other : this->items) {
+          other->SetHighlighted(other == listItem);
+        }
+      };
+      item->onPress = [this](CUIListItem* listItem) {
+        this->SelectItem(listItem);
+      };
+      this->AddChild(item);
+      slot = item;
+    }
+  }
+
+  this->scrollBar->SetTotal(this->geometry.height);
+  this->scrollBar->SetVisible(this->geometry.height);
+}
+
+// OFFSET: 0x00A34D10
+// FUNCTION: fn_15423
+template <>
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::AddNewItem() {
+  if (this->itemWidth <= 0 || this->rowHeight <= 0) {
+    return;
+  }
+
+  for (GameSettingsUI::CUIComboItem* item : this->items) {
+    this->RemoveChild(item, 1);
+  }
+  this->items.clear();
+  this->selected = static_cast<unsigned int>(-1);
+
+  if (this->rowHeight <= this->geometry.height) {
+    unsigned int count = static_cast<unsigned int>(this->geometry.height / this->rowHeight) + 1;
+    if (this->geometry.height % this->rowHeight > 1) {
+      ++count;
+    }
+    this->items.resize(count, nullptr);
+    for (GameSettingsUI::CUIComboItem*& slot : this->items) {
+      GameSettingsUI::CUIComboItem* item = new GameSettingsUI::CUIComboItem();
+      item->SetSize(this->itemWidth, this->rowHeight);
+      item->Show(0);
+      CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
+      item->SetImageResources(images[0], images[1], images[2], images[3]);
+      item->onHover = [this](CUIListItem* listItem) {
+        for (GameSettingsUI::CUIComboItem* other : this->items) {
+          other->SetHighlighted(other == listItem);
+        }
+      };
+      item->onPress = [this](CUIListItem* listItem) {
+        this->SelectItem(listItem);
+      };
+      this->AddChild(item);
+      slot = item;
+    }
+  }
+
+  this->scrollBar->SetTotal(this->geometry.height);
+  this->scrollBar->SetVisible(this->geometry.height);
+}
+
+// OFFSET: 0x00A34F40
+// FUNCTION: fn_15424
+template <>
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::AddNewItem() {
+  if (this->itemWidth <= 0 || this->rowHeight <= 0) {
+    return;
+  }
+
+  for (GameSettingsUI::CUIComboItem* item : this->items) {
+    this->RemoveChild(item, 1);
+  }
+  this->items.clear();
+  this->selected = static_cast<unsigned int>(-1);
+
+  if (this->rowHeight <= this->geometry.height) {
+    unsigned int count = static_cast<unsigned int>(this->geometry.height / this->rowHeight) + 1;
+    if (this->geometry.height % this->rowHeight > 1) {
+      ++count;
+    }
+    this->items.resize(count, nullptr);
+    for (GameSettingsUI::CUIComboItem*& slot : this->items) {
+      GameSettingsUI::CUIComboItem* item = new GameSettingsUI::CUIComboItem();
+      item->SetSize(this->itemWidth, this->rowHeight);
+      item->Show(0);
+      CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
+      item->SetImageResources(images[0], images[1], images[2], images[3]);
+      item->onHover = [this](CUIListItem* listItem) {
+        for (GameSettingsUI::CUIComboItem* other : this->items) {
+          other->SetHighlighted(other == listItem);
+        }
+      };
+      item->onPress = [this](CUIListItem* listItem) {
+        this->SelectItem(listItem);
+      };
+      this->AddChild(item);
+      slot = item;
+    }
+  }
+
+  this->scrollBar->SetTotal(this->geometry.height);
+  this->scrollBar->SetVisible(this->geometry.height);
+}
+
+// OFFSET: 0x00A35170
+// FUNCTION: fn_15425
+template <>
+void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::AddNewItem() {
+  if (this->itemWidth <= 0 || this->rowHeight <= 0) {
+    return;
+  }
+
+  for (GameSettingsUI::CUIOptionItem* item : this->items) {
+    this->RemoveChild(item, 1);
+  }
+  this->items.clear();
+  this->selected = static_cast<unsigned int>(-1);
+
+  if (this->rowHeight <= this->geometry.height) {
+    unsigned int count = static_cast<unsigned int>(this->geometry.height / this->rowHeight) + 1;
+    if (this->geometry.height % this->rowHeight > 1) {
+      ++count;
+    }
+    this->items.resize(count, nullptr);
+    for (GameSettingsUI::CUIOptionItem*& slot : this->items) {
+      GameSettingsUI::CUIOptionItem* item = new GameSettingsUI::CUIOptionItem();
+      item->SetSize(this->itemWidth, this->rowHeight);
+      item->Show(0);
+      CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
+      item->SetImageResources(images[0], images[1], images[2], images[3]);
+      item->onHover = [this](CUIListItem* listItem) {
+        for (GameSettingsUI::CUIOptionItem* other : this->items) {
+          other->SetHighlighted(other == listItem);
+        }
+      };
+      item->onPress = [this](CUIListItem* listItem) {
+        this->SelectItem(listItem);
+      };
+      this->AddChild(item);
+      slot = item;
+    }
+  }
+
+  this->scrollBar->SetTotal(this->geometry.height);
+  this->scrollBar->SetVisible(this->geometry.height);
+}
+
+// OFFSET: 0x00A3C440
+// FUNCTION: fn_15887
+GameSettingsUI::CUIComboItem::CUIComboItem() : CUIListItem(), m_text(nullptr) {
+}
+
+// OFFSET: 0x00A3CF80
+// FUNCTION: fn_15903
+GameSettingsUI::CUIOptionItem::CUIOptionItem()
+    : CUIListItem(), m_check(nullptr), unknown_00EC(nullptr), m_label(nullptr), m_description(nullptr), m_optionId(300) {
+}
+
 // OFFSET: 0x00A36170
 // FUNCTION: fn_15437
 template <>

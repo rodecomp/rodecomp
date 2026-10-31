@@ -306,6 +306,7 @@ public:
 
 class CUIComboItem : public CUIListItem {
 public:
+  CUIComboItem();
   void Slot15(int width, int height) override;
   void Slot16() override;
 
@@ -314,6 +315,7 @@ public:
 
 class CUIOptionItem : public CUIListItem {
 public:
+  CUIOptionItem();
   void Slot15(int width, int height) override;
   void Slot16() override;
   void Paint() override;
