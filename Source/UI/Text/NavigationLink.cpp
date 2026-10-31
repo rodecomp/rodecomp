@@ -1726,6 +1726,10 @@ UIEmotion::UIEmotion(UIWindowContext& windows) : UIWindow(windows, 0), m_animati
 }
 
 // OFFSET: 0x00836EA0
+// FUNCTION: fn_10437
+UIItemImage::UIItemImage(UIWindowContext& windows) : UIWindow(windows, 0), m_itemId("") {
+  this->m_clip = 1;
+}
 
 // OFFSET: 0x0083BAF0
 // FUNCTION: fn_10485
