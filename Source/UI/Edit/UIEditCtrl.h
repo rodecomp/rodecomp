@@ -125,11 +125,6 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 };
 
-struct UIEditCtrl3Table {
-  /* 0000 */ std::vector<int> items;
-  /* 000C */ int count = 0;
-};
-
 class UIEditCtrl3 : public UIEditCtrl2 {
 public:
   UIEditCtrl3(UIWindowContext& windows, UIEditContext& edit);
@@ -148,6 +143,7 @@ public:
   void PlaceLinks(const std::string& value, int y, int line, int firstLine, int endLine);
   std::string TakePendingText();
   void SetTagColor(std::uint32_t color);
+  void ClearLineState();
 
   /* 011C */ std::list<std::vector<UIItemTagButton*>> entries;
   /* 0124 */ std::vector<std::string> pendingText;
@@ -167,7 +163,7 @@ public:
   /* 0160 */ char* unknown_0160;
   /* 0164 */ char* unknown_0164;
   /* 0168 */ std::vector<std::string> unknown_0168;
-  /* 0174 */ UIEditCtrl3Table unknown_0174;
+  /* 0174 */ std::vector<bool> unknown_0174;
   /* 0184 */ short unknown_0184;
 };
 
