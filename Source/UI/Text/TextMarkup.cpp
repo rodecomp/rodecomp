@@ -31,6 +31,18 @@ static const std::string g_naviTagBegin = "<NAVI>";
 // GLOBAL: gl_24594
 static const std::string g_naviTagEnd = "</NAVI>";
 
+// GLOBAL: gl_24595
+static const std::string g_itemTagBegin = "<ITEM>";
+
+// GLOBAL: gl_24596
+static const std::string g_itemTagEnd = "</ITEM>";
+
+// GLOBAL: gl_24599
+static const std::string g_questTagBegin = "<QUEST>";
+
+// GLOBAL: gl_24600
+static const std::string g_questTagEnd = "</QUEST>";
+
 // OFFSET: 0x00A7CA90
 // FUNCTION: fn_16949
 void ExtractNavigationTextLinks(std::string&& text, std::vector<TextLink>& links) {
@@ -145,6 +157,24 @@ std::string DisplayTextTag(std::string text, const std::string& begin, const std
 
   result += text;
   return result;
+}
+
+// OFFSET: 0x00A7F510
+// FUNCTION: fn_16963
+std::string DisplayItemTextTag(const std::string& text) {
+  return DisplayTextTag(text, g_itemTagBegin, g_itemTagEnd);
+}
+
+// OFFSET: 0x00A7F580
+// FUNCTION: fn_16964
+std::string DisplayNavigationTextTag(const std::string& text) {
+  return DisplayTextTag(text, g_naviTagBegin, g_naviTagEnd);
+}
+
+// OFFSET: 0x00A7F5F0
+// FUNCTION: fn_16965
+std::string DisplayQuestTextTag(const std::string& text) {
+  return DisplayTextTag(text, g_questTagBegin, g_questTagEnd);
 }
 
 // OFFSET: 0x00A7EF40
