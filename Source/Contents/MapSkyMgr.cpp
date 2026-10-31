@@ -11,6 +11,7 @@
 #include "Resource/World/TerrainResource.h"
 #include "Utility/Math/AffineMatrix.h"
 
+#include <cctype>
 #include <cstdlib>
 #include <new>
 
@@ -40,6 +41,11 @@ CWeatherEffect g_weatherEffect;
 
 // GLOBAL: gl_24633
 float g_depthAverageHalf = 0.5f;
+
+// GLOBAL: gl_25254
+std::vector<std::string> g_registeredLowercaseNames;
+
+static_assert(sizeof(std::vector<std::string>) == 12);
 
 // OFFSET: 0x005B8D50
 // FUNCTION: fn_03431
@@ -468,4 +474,25 @@ CMapSkyMgr* GetMapSkyMgr() {
 // OFFSET: 0x00E5D100
 // FUNCTION: fn_24378
 void IgnoreNull() {
+}
+
+// OFFSET: 0x00E5D110
+// FUNCTION: fn_24379
+void RegisterLowercaseName(const char* name) {
+  if (!name) {
+    return;
+  }
+
+  std::string lowered(name);
+  for (char& character : lowered) {
+    character = static_cast<char>(std::tolower(static_cast<unsigned char>(character)));
+  }
+
+  for (const std::string& entry : g_registeredLowercaseNames) {
+    if (entry == lowered) {
+      return;
+    }
+  }
+
+  g_registeredLowercaseNames.push_back(lowered.c_str());
 }
