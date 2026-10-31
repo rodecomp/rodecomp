@@ -54,6 +54,18 @@ struct AchievementRecordPacket {
 };
 #pragma pack(pop)
 
+struct MapPosRect {
+  /* 0000 */ int left;
+  /* 0004 */ int top;
+  /* 0008 */ int right;
+  /* 000C */ int bottom;
+};
+
+struct MapPosEntry {
+  /* 0000 */ MapPosRect rect;
+  /* 0010 */ int valid;
+};
+
 struct SessionRecord6178Entry {
   /* 0000 */ std::string unknown_0000;
   /* 0018 */ int unknown_0018;
@@ -305,7 +317,12 @@ public:
   /* 52C4 */ std::vector<const char*> m_robeNames;
   /* 52D0 */ std::vector<std::string> m_navigationForbiddenMaps;
   /* 52DC */ std::vector<std::pair<const char*, int>> m_commandOptions;
-  /* 52E8 */ unsigned char unknown_52E8[0x44];
+  /* 52E8 */ unsigned char unknown_52E8[0x28];
+  /* 5310 */ std::map<std::string, MapPosEntry> m_mapPositions;
+  /* 5318 */ std::map<std::string, MapPosEntry>* m_mapPosLists;
+  /* 531C */ std::map<int, MapPosEntry> m_mapPosBounds;
+  /* 5324 */ int unknown_5324;
+  /* 5328 */ int m_mapPosListCount;
   /* 532C */ int unknown_532C;
   /* 5330 */ int unknown_5330;
   /* 5334 */ int unknown_5334;
@@ -567,6 +584,7 @@ public:
   void LoadDamageSkinSettings();
   bool LoadExceptionMinimapNameTable();
   bool LoadMapNameTable();
+  bool LoadMapPosTable();
   bool LoadFogParameters();
   void ClearHomunStatus();
   std::pair<int, int>* InsertPair(int key, int value);
@@ -995,6 +1013,8 @@ static_assert(offsetof(SubChatWndInfo, x) == 0x34);
 static_assert(offsetof(CSession, m_noSubChatWnds) == 0x73C);
 static_assert(offsetof(CSession, m_subChatWnds) == 0x744);
 static_assert(offsetof(CSession, m_prohibitionLog) == 0x754);
+static_assert(offsetof(CSession, m_mapPositions) == 0x5310);
+static_assert(offsetof(CSession, m_mapPosListCount) == 0x5328);
 static_assert(offsetof(SessionRecord6144, unknown_002C) == 0x2C);
 static_assert(offsetof(SessionRecord6144, unknown_0030) == 0x30);
 static_assert(offsetof(CSession, m_additionalSkills) == 0x4);
