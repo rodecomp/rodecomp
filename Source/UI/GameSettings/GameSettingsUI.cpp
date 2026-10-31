@@ -1689,8 +1689,20 @@ CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::CUIListBoxEx(UIWindow
 }
 
 // OFFSET: 0x00A198E0
+// FUNCTION: fn_15344
+template <>
+CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::CUIListBoxEx(UIWindowContext& context)
+    : CUIControl(context), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
+      unknown_00E0(1), rebind(0) {
+}
 
 // OFFSET: 0x00A19AA0
+// FUNCTION: fn_15345
+template <>
+CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::CUIListBoxEx(UIWindowContext& context)
+    : CUIControl(context), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
+      unknown_00E0(1), rebind(0) {
+}
 
 // OFFSET: 0x00A41B60
 // FUNCTION: fn_15995
@@ -1708,3 +1720,16 @@ void GameSettingsUI::CUIGroupSound::Slot16() {
 }
 
 // OFFSET: 0x00A41560
+// FUNCTION: fn_15991
+void GameSettingsUI::CUIGroupLogInOut::Slot16() {
+  const char* title = LookupMessage(0x107D);
+  this->m_title->SetText(title, std::strlen(title));
+  const char* onText = LookupMessage(0x1033);
+  this->m_onText->SetText(onText, std::strlen(onText));
+  const char* offText = LookupMessage(0x1034);
+  this->m_offText->SetText(offText, std::strlen(offText));
+  const std::uint8_t source[] = {0x8A, 0xF1, 0x02, 0x9E, 0x0A, 0x49, 0x18, 0x76, 0xD1, 0x97, 0x42, 0x95, 0x0A, 0x27};
+  thread_local EncryptedName<sizeof(source), 0x03772763F96D9DA5ULL> tooltip(source);
+  const char* tooltipText = tooltip.Text();
+  this->m_title->SetTooltip(tooltipText, std::strlen(tooltipText));
+}
