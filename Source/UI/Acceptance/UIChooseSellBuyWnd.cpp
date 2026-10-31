@@ -2197,6 +2197,64 @@ void UIMenuWnd::Slot15(int, int) {
 }
 
 // OFFSET: 0x0090AB10
+// FUNCTION: fn_12416
+int UIWindow::DrawItemNameSegments(
+  int x, int y, int width, const std::vector<char*>& breaks, const char* text, const char* highlight, std::uint32_t highlightColor,
+  std::uint32_t color, int, int lineHeight
+) {
+  auto it = breaks.begin();
+  int offset = 0;
+  if (this->TextWidth(this->m_context->fonts, this->m_context->locale, text, 0, 0, 12, 0, 0) < width) {
+    for (; it != breaks.end(); ++it) {
+      const char* end = *it;
+      int bytes = static_cast<int>(end - text);
+      if (bytes) {
+        this->DrawShadowedText(offset + x, y, text, bytes, text == highlight ? highlightColor : color, 0xE0E0E0, 0, 12, 0);
+        offset += this->TextWidth(this->m_context->fonts, this->m_context->locale, text, bytes, 0, 12, 0, 0);
+        text = end;
+      }
+    }
+    return x;
+  }
+
+  int line = 1;
+  y -= lineHeight / 2;
+  for (; it != breaks.end(); ++it) {
+    const char* segment = text;
+    const char* end = *it;
+    const char* cursor = text;
+    while (cursor < end) {
+      const char* next = CharNextExA(static_cast<WORD>(g_textCodePage), cursor, 0);
+      if (g_inlineCharset && !TextContext::Marker(cursor, static_cast<unsigned>(std::strlen(cursor)))) {
+        cursor += 3;
+        continue;
+      }
+
+      int bytes = static_cast<int>(next - cursor);
+      int nextWidth = this->TextWidth(this->m_context->fonts, this->m_context->locale, next, static_cast<unsigned>(std::strlen(next)), 0, 12, 0, 0);
+      int reach = this->TextWidth(this->m_context->fonts, this->m_context->locale, cursor, bytes, 0, 12, 0, 0) + offset;
+      if (line == 2 && reach >= width - 15 && reach + nextWidth > width) {
+        if (segment == highlight) {
+          this->DrawShadowedText(bytes + offset + x, y, "...", 3, highlightColor, 0xE0E0E0, 0, 12, 0);
+        } else {
+          this->DrawShadowedText(bytes + offset + x, y - 1, "...", 3, color, 0xE0E0E0, 0, 12, 0);
+        }
+        break;
+      }
+
+      this->DrawShadowedText(x + offset, y, cursor, bytes, segment == highlight ? highlightColor : color, 0xE0E0E0, 0, 12, 0);
+      offset += this->TextWidth(this->m_context->fonts, this->m_context->locale, cursor, bytes, 0, 12, 0, 0);
+      if (offset > width) {
+        offset = 0;
+        y += lineHeight + 1;
+        ++line;
+      }
+      cursor = next;
+    }
+    text = cursor;
+  }
+  return x;
+}
 
 // OFFSET: 0x0090AED0
 // FUNCTION: fn_12418
