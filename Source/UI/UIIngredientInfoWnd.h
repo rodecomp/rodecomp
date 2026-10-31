@@ -16,6 +16,7 @@ public:
   // INLINED
   UIIngredientInfoWnd(UIWindowContext& windows, UIFrameContext& frames)
       : UIFrameWnd(windows, frames, 0), selected(0), insufficient(0), quantity(0) {}
+  ~UIIngredientInfoWnd() override;
   void Move(int x, int y) override;
   void Slot10(int argument1, int argument2, std::intptr_t argument3) override;
   void Slot25(int x, int y) override;

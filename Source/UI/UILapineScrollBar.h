@@ -19,10 +19,7 @@ class UILapineBoxWnd;
 
 class UILapineScrollBar : public UIScrollBar {
 public:
-  // INLINED
-  explicit UILapineScrollBar(UIWindowContext& windows) : UIScrollBar(windows) {
-    this->arrowLength = 0;
-  }
+  explicit UILapineScrollBar(UIWindowContext& windows);
   void Paint() override;
 };
 
@@ -87,6 +84,7 @@ class UILapineBoxWnd : public UIFrameWnd {
   friend class UILapineBox_IngredientListWnd;
 
 public:
+  ~UILapineBoxWnd() override;
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot15(int width, int height) override;
   void Slot19() override;

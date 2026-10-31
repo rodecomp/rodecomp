@@ -7,6 +7,9 @@
 #include "Client/Session.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/MessageTable.h"
+#include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketId.h"
+#include "Network/Packets/PacketLengths.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
@@ -378,3 +381,20 @@ unsigned char UILapineBox_IngredientListWnd::AddIngredient(std::uint32_t id) {
   return 1;
 }
 
+
+// OFFSET: 0x005FF210
+// FUNCTION: fn_04141
+UILapineScrollBar::UILapineScrollBar(UIWindowContext& windows) : UIScrollBar(windows) {
+  this->arrowLength = 0;
+}
+
+// OFFSET: 0x005FF370
+// FUNCTION: fn_04143
+UIIngredientInfoWnd::~UIIngredientInfoWnd() = default;
+
+UILapineBoxWnd::~UILapineBoxWnd() {
+  this->items.clear();
+  short packetType = ID_CZ_RANDOM_COMBINE_ITEM_UI_CLOSE;
+  CRagConnection& connection = GetRagConnection();
+  connection.Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packetType), &packetType);
+}
