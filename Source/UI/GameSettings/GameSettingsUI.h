@@ -247,6 +247,7 @@ public:
   void sub_A421E0();
   void sub_A433D0(UIWindow* window);
   bool IsTab4Selected();
+  void SelectTab4();
   void sub_A43380();
   void sub_A43390();
   void sub_A433A0();

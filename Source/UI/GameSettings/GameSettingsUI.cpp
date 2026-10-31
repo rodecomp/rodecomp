@@ -1278,6 +1278,12 @@ void CUIGameSettingsUI::sub_A421E0() {
   this->m_applyButton->Show(visible);
 }
 
+// OFFSET: 0x00A41E10
+// FUNCTION: fn_45466
+void CUIGameSettingsUI::SelectTab4() {
+  this->m_tab->Select(static_cast<CUITabButton*>(this->m_tab->FindChildById(4)));
+}
+
 // OFFSET: 0x00A41E50
 // FUNCTION: fn_16004
 void sub_A41E50(int option) {
@@ -1357,4 +1363,21 @@ void GameSettingsUI::CUIGroupSpriteDetailLevel::Slot16() {
 void GameSettingsUI::CUIGroupTextureDetailLevel::Slot16() {
   const char* text = LookupMessage(0x145);
   this->m_title->SetText(text, std::strlen(text));
+}
+
+// OFFSET: 0x00AA2760
+// FUNCTION: fn_17216
+void ToggleGameSettingsTab4() {
+  UIWindow* window = g_windowMgr.LookupWindow(0x271E);
+  if (!window) {
+    window = g_windowMgr.EnsureWindow(0x271E);
+  }
+
+  CUIGameSettingsUI* settings = static_cast<CUIGameSettingsUI*>(window);
+  if (settings->IsTab4Selected()) {
+    g_windowMgr.CloseWindow(0x271E);
+    return;
+  }
+
+  settings->SelectTab4();
 }
