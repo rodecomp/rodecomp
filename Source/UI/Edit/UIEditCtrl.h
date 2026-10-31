@@ -43,6 +43,7 @@ class UIEditCtrl : public UIWindow {
 
 public:
   UIEditCtrl();
+  UIEditCtrl(const UIEditCtrl& other);
   UIEditCtrl(UIWindowContext& windows, UIEditContext& edit);
   ~UIEditCtrl() override;
   bool Slot05() override;

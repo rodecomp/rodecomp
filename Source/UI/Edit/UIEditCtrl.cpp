@@ -298,6 +298,44 @@ void EditPainting::Draw() {
   };
 }
 
+// OFFSET: 0x0084F860
+// FUNCTION: fn_10662
+UIEditCtrl::UIEditCtrl(const UIEditCtrl& other)
+    : UIWindow(*other.m_context, 0), anchor(0), cursor(0), mask(0), maximum(0), flat(0), red(0), green(0), blue(0), borderRed(0), borderGreen(0), borderBlue(0), textColor(0),
+      secondColor(0), firstVisible(0), textY(0), invalidatesParent(0), disabled(0), unknown_00F0(0), topPadding(0), preserveInput(0) {
+  this->tooltip = other.tooltip;
+  this->disabled = other.disabled;
+  this->Invalidate();
+
+  this->preserveInput = other.preserveInput;
+  this->maximum = other.maximum;
+  if (this->maximum > 0x169) {
+    this->maximum = 0x169;
+  }
+  this->text.reserve(this->maximum);
+  this->text = other.text;
+
+  this->anchor = other.anchor;
+  this->cursor = other.cursor;
+  this->mask = static_cast<signed char>(other.mask);
+  this->flat = other.flat != 0;
+  this->red = other.red;
+  this->green = other.green;
+  this->blue = other.blue;
+  this->Invalidate();
+
+  this->borderRed = other.borderRed;
+  this->borderGreen = other.borderGreen;
+  this->borderBlue = other.borderBlue;
+  this->textColor = other.textColor;
+  this->secondColor = other.secondColor;
+  this->firstVisible = other.firstVisible;
+  this->textY = other.textY;
+  this->invalidatesParent = other.invalidatesParent;
+  this->unknown_00F0 = other.unknown_00F0;
+  this->topPadding = other.topPadding;
+}
+
 // OFFSET: 0x0084FAE0
 // FUNCTION: fn_10663
 UIEditCtrl::UIEditCtrl(UIWindowContext& windows, UIEditContext& edit)
