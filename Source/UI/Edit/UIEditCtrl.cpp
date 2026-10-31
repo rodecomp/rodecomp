@@ -80,6 +80,7 @@
 #include "Utility/Text/GroupedInteger.h"
 #include "Client/Mode/ModeTooltip.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Items/ItemNaming.h"
 #include "Contents/PlayerNameDictionary.h"
 #include "Contents/UserData/CharacterConfigSave.h"
@@ -1684,6 +1685,15 @@ void UIItemWnd::Slot19() {
   if (this->unknown_0128) {
     this->unknown_0128->Slot19();
   }
+}
+
+// OFFSET: 0x00995780
+// FUNCTION: fn_45470
+void UIItemWnd::RefreshOptionBox() {
+  UIWindow* optionBox = this->optionBox;
+  optionBox->geometry.unknown_0030 = g_serviceOptions.Get(0x108);
+  optionBox->Invalidate();
+  this->Invalidate();
 }
 
 // OFFSET: 0x009886D0

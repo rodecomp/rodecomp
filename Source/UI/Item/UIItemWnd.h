@@ -21,6 +21,7 @@ public:
   ITEM_INFO GetItemAt(int x, int y);
   void ReleaseSelection(unsigned char keep);
   void DrawNewItemMark(int x, int y);
+  void RefreshOptionBox();
 
   /* 00F0 */ ItemWndInfo* saved;
   /* 00F4 */ unsigned char unknown_00F4[0xC];
@@ -31,7 +32,8 @@ public:
   /* 0110 */ int unknown_0110;
   /* 0114 */ unsigned char unknown_0114[0x4];
   /* 0118 */ UITabControl* tabs;
-  /* 011C */ unsigned char unknown_011C[0xC];
+  /* 011C */ UIWindow* optionBox;
+  /* 0120 */ unsigned char unknown_0120[0x8];
   /* 0128 */ UIWindow* unknown_0128;
 };
 
