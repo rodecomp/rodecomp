@@ -40,6 +40,12 @@ struct CheckAttendanceRequestPacket {
 };
 
 // OFFSET: 0x007DC6B0
+// FUNCTION: fn_09631
+UICheckAttendanceWnd::UICheckAttendanceWnd(UIWindowContext& windows, UIFrameContext& frames)
+    : UIFrameWnd(windows, frames, 0), m_blinking(0), m_checkedDays(0), m_daysLeft(0),
+      m_highlight(0), m_notice(nullptr) {
+  this->m_rewardCount = static_cast<int>(g_checkAttendanceMgr->m_rewards.size());
+}
 
 // OFFSET: 0x007DCAD0
 

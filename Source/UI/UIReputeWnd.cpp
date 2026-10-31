@@ -27,6 +27,10 @@ CReputeMgr* Singleton<CReputeMgr>::GetInstance() {
 }
 
 // OFFSET: 0x0060EF80
+// FUNCTION: fn_04309
+UIReputeWnd::UIReputeWnd(UIWindowContext& windows, UIFrameContext& frames)
+    : UIFrameWnd(windows, frames, 0), m_groupCombo(nullptr), m_searchEdit(nullptr),
+      m_perPage(8), m_page(1), m_pageCount(1), m_groupSelected(false), m_totalPoints(0), m_reputes() {}
 
 // OFFSET: 0x0060F170
 // FUNCTION: fn_04312

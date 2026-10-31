@@ -42,6 +42,12 @@ struct ClientItemLists {
 };
 
 // OFFSET: 0x007DEC20
+// FUNCTION: fn_09659
+CMergeItemWnd::CMergeItemWnd(UIWindowContext& windows, UIFrameContext& frames)
+    : UIFrameWnd(windows, frames, 0), m_cellSize(35), m_gridTop(20), m_gridLeft(10),
+      m_marginRight(10), m_marginBottom(30), m_slotOffsetX(5), m_slotOffsetY(2), m_checkOffsetX(0), m_checkOffsetY(20), m_slotRadius(10), m_minSelection(2),
+      m_mergeButton(nullptr), m_cancelButton(nullptr), m_closeButton(nullptr), m_items(), m_resizer(nullptr), m_scrollBar(nullptr), m_itemCount(0), m_columns(0),
+      m_rows(0), m_visibleCount(0), m_scrollRow(0), m_scrollable(0) {}
 
 // OFFSET: 0x007DEF00
 

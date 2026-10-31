@@ -52,6 +52,10 @@ static_assert(sizeof(CaptchaRegisterPacket) == 20);
 }
 
 // OFFSET: 0x007EA1C0
+// FUNCTION: fn_09786
+UICaptchaRegisterWnd::UICaptchaRegisterWnd(UIWindowContext& windows, UIFrameContext& frames)
+    : UIFrameWnd(windows, frames, 0), m_pathText(nullptr), m_fileComboBox(nullptr),
+      m_captchaBitmap(nullptr), m_editCtrl(nullptr), registerButton(nullptr), m_selectedFile(), m_decompressedData(nullptr), m_decompressedSize(0) {}
 
 // OFFSET: 0x007EA3B0
 // FUNCTION: fn_09788
