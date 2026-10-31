@@ -132,6 +132,40 @@ void UINewSelectCharWnd::EnableButtonById(int id) {
 }
 
 // OFFSET: 0x007D90E0
+// FUNCTION: fn_09596
+void UINewSelectCharWnd::sub_7D90E0() {
+  const int slot = this->m_slotsPerPage * this->m_page + this->m_pageSlot;
+  if (slot >= this->m_totalSlots) {
+    return;
+  }
+
+  if (this->m_slotStatus[slot] == 1) {
+    static_cast<UIButton*>(this->m_windowC0)->SetDisabled(1);
+    this->m_windowC0->Invalidate();
+    static_cast<UIButton*>(this->m_windowC4)->Enable(0);
+    static_cast<UIButton*>(this->m_window100)->Enable(0);
+    return;
+  }
+
+  const CharacterInfo* info = reinterpret_cast<const CharacterInfo*>(static_cast<CMode*>(g_charViewMode)->SendMsg(8, slot, 0, 0, 0));
+  if (!info) {
+    return;
+  }
+
+  if (info->deleteDate > 0) {
+    static_cast<UIButton*>(this->m_windowC0)->SetDisabled(1);
+    this->m_windowC0->Invalidate();
+    static_cast<UIButton*>(this->m_window100)->Enable(1);
+    static_cast<UIButton*>(this->m_windowC4)->Enable(1);
+    Timestamp deleteDate(info->deleteDate);
+    static_cast<UIButton*>(this->m_window100)->Enable(deleteDate.IsBeforeNow() == 1 ? 1 : 0);
+  } else {
+    static_cast<UIButton*>(this->m_windowC0)->SetDisabled(0);
+    this->m_windowC0->Invalidate();
+    static_cast<UIButton*>(this->m_window100)->Enable(0);
+    static_cast<UIButton*>(this->m_windowC4)->Enable(0);
+  }
+}
 
 // OFFSET: 0x007D9260
 
