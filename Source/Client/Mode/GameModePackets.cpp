@@ -490,7 +490,7 @@ void CGameMode::ReceiveNamedActionResult(const unsigned char* packet) {
     break;
   case 8: {
     char text[256];
-    std::sprintf(text, LookupMessage(0x56C));
+    std::sprintf(text, LookupMessage(0x56C), reinterpret_cast<const char*>(packet + 2));
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
     break;
   }
