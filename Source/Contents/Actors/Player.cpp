@@ -360,6 +360,122 @@ void CGrannyPc::Slot23(int first, int second) {
 }
 
 // OFFSET: 0x00DB3C30
+// FUNCTION: fn_22650
+void CGrannyPc::Slot15(int state, int resetPosition) {
+  const int current = this->render.unknown_0070;
+  if (current == 3 || this->unknown_017C != 0) {
+    return;
+  }
+
+  if (current == 4 && static_cast<char>(resetPosition) == 1) {
+    this->render.position.x = this->unknown_02D0;
+    this->render.position.z = this->unknown_02D4;
+  }
+
+  using SpawnArrow = void (CGameMode::*)(const vector3d*, std::uint32_t, float, int);
+  const SpawnArrow spawnArrow = reinterpret_cast<SpawnArrow>(&CGameMode::SpawnArrowEffect);
+
+  switch (state) {
+  case 0:
+    CGameActor::Slot15(0, resetPosition);
+    this->render.curMotion = this->unknown_0430;
+    if (current == 4 || current == 2 || this->unknown_02C8 != 0 || current == 8) {
+      this->SetAction(0x20, 4, 0);
+    }
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_02CC = 0;
+    break;
+  case 1:
+    this->unknown_0178 = 0;
+    if (this->bodyState != 1 && this->bodyState != 2) {
+      this->render.isMotionFreezed = false;
+    }
+    this->unknown_0430 = 0;
+    CGameActor::Slot15(1, resetPosition);
+    break;
+  case 2: {
+    this->unknown_0178 = 0;
+    if (this->bodyState != 1 && this->bodyState != 2) {
+      this->render.isMotionFreezed = false;
+    }
+    const bool weaponAllowed = IsJobWeaponAllowed(
+      this->GetEffectiveJob(-1), this->unknown_0260,
+      (static_cast<std::int64_t>(this->unknown_0444) << 32) | static_cast<std::uint32_t>(this->unknown_0440)
+    );
+    CGameActor::Slot15(weaponAllowed ? 9 : 2, resetPosition);
+    this->unknown_0378 = AttackMotionLength(this->GetEffectiveJob(-1), this->unknown_0260, this->unknown_0440, weaponAllowed);
+    bool usesArrow = false;
+    g_luaScript->Call("IsItemUsingArrow", "d>b", this->unknown_0440, &usesArrow);
+    if (usesArrow == true) {
+      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      (mode->*spawnArrow)(&this->render.position, this->hitTargetAid, this->unknown_0378 * this->render.speed, 0);
+      this->unknown_0378 = 8.0f / this->render.speed + this->unknown_0378;
+    }
+    break;
+  }
+  case 6:
+    this->Slot16();
+    this->SetAction(0x10, 4, 1);
+    this->render.isMotionFinished = true;
+    this->render.curMotion = this->unknown_0430;
+    break;
+  case 7:
+    if (current == 6) {
+      return;
+    }
+    if (this->GetEffectiveJob(-1) == 0x13 || this->GetEffectiveJob(-1) == 0x14 || this->GetEffectiveJob(-1) == 0xE ||
+        this->GetEffectiveJob(-1) == 0xFB4 || this->GetEffectiveJob(-1) == 0xFB5 || this->GetEffectiveJob(-1) == 0xFAF ||
+        this->GetEffectiveJob(-1) == 0xFCA || this->GetEffectiveJob(-1) == 0xFCB || this->GetEffectiveJob(-1) == 0xFC5 ||
+        this->GetEffectiveJob(-1) == 0xFE4 || this->GetEffectiveJob(-1) == 0xFEB || this->GetEffectiveJob(-1) == 0xFE5 ||
+        this->GetEffectiveJob(-1) == 0xFEC || this->GetEffectiveJob(-1) == 0xFE9 || this->GetEffectiveJob(-1) == 0xFE2) {
+      this->SetAction(0x20, 6, 1);
+    } else if (this->GetEffectiveJob(-1) == 0xF || this->GetEffectiveJob(-1) == 0xFB0 || this->GetEffectiveJob(-1) == 0xFC6 ||
+               this->GetEffectiveJob(-1) == 0xFE6 || this->GetEffectiveJob(-1) == 0xFED || this->GetEffectiveJob(-1) == 0x100A ||
+               this->GetEffectiveJob(-1) == 0x10A6) {
+      this->SetAction(0x60, 6, 1);
+      this->SetSequenceInterval(4);
+      this->SetFrameSequence(0x60, 0, 0, 0x60, 0, 1, 400, 0);
+    } else if (this->GetEffectiveJob(-1) == 0x10A7 || this->GetEffectiveJob(-1) == 0x10A8) {
+      this->SetAction(0x20, 6, 1);
+    } else {
+      this->SetAction(0x60, 6, 1);
+    }
+    this->unknown_0378 = 6.0f;
+    break;
+  case 8:
+    this->Slot16();
+    this->SetAction(0x60, 6, 1);
+    this->render.isMotionFinished = true;
+    break;
+  case 9: {
+    this->unknown_0178 = 0;
+    if (this->bodyState != 1 && this->bodyState != 2) {
+      this->render.isMotionFreezed = false;
+    }
+    const bool weaponAllowed = IsJobWeaponAllowed(
+      this->GetEffectiveJob(-1), this->unknown_0260,
+      (static_cast<std::int64_t>(this->unknown_0444) << 32) | static_cast<std::uint32_t>(this->unknown_0440)
+    );
+    CGameActor::Slot15(weaponAllowed ? 9 : 2, resetPosition);
+    this->unknown_0378 = AttackMotionLength(this->GetEffectiveJob(-1), this->unknown_0260, this->unknown_0440, weaponAllowed);
+    if ((this->unknown_0440 == 14 && this->unknown_0444 == 0) || (this->unknown_0440 == 13 && this->unknown_0444 == 0)) {
+      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      (mode->*spawnArrow)(&this->render.position, this->hitTargetAid, this->unknown_0378 * this->render.speed, 0);
+      this->unknown_0378 = 8.0f / this->render.speed + this->unknown_0378;
+    }
+    break;
+  }
+  default:
+    CGameActor::Slot15(state, resetPosition);
+    if (this->render.unknown_0070 == 3) {
+      this->PlayMotion(1);
+    }
+    return;
+  }
+
+  this->unknown_0F28 = this->Get8Dir(this->render.angle) + this->unknown_0F2C;
+  this->render.unknown_0070 = state;
+  this->render.unknown_008C = timeGetTime();
+}
 
 // OFFSET: 0x00DBA6C0
 // FUNCTION: fn_22674
