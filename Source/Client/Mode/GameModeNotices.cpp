@@ -3708,6 +3708,356 @@ void CGameMode::ReceiveVendingItemList2(int aid, int storeId, char own, int coun
 }
 
 // OFFSET: 0x00D742B0
+// FUNCTION: fn_22147
+void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
+  struct GroundSkillMessage {
+    /* 0000 */ int skillId;
+    /* 0004 */ int startTime;
+    /* 0008 */ int x;
+    /* 000C */ int y;
+    /* 0010 */ int level;
+  };
+
+  GroundSkillMessage message;
+  message.skillId = *reinterpret_cast<const std::uint16_t*>(packet + 2);
+  message.startTime = *reinterpret_cast<const std::uint32_t*>(packet + 0xE);
+  message.x = *reinterpret_cast<const std::int16_t*>(packet + 0xA);
+  message.y = *reinterpret_cast<const std::int16_t*>(packet + 0xC);
+  message.level = *reinterpret_cast<const std::int16_t*>(packet + 8);
+
+  CGameActor* actor = nullptr;
+  int job = -1;
+
+  if (*reinterpret_cast<const std::uint32_t*>(packet + 4) == g_session.m_aid) {
+    const std::int64_t value = reinterpret_cast<std::intptr_t>(&message);
+    this->scene->player->SendMsg(nullptr, 0x26, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor = this->scene->player;
+    if (actor != nullptr) {
+      job = actor->GetEffectiveJob(-1);
+    }
+  } else {
+    CGameActor* gameActor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t*>(packet + 4)));
+    if (gameActor != nullptr) {
+      const std::int64_t value = reinterpret_cast<std::intptr_t>(&message);
+      gameActor->SendMsg(nullptr, 0x26, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor = gameActor;
+      job = actor->GetEffectiveJob(-1);
+    }
+  }
+
+  if (g_session.IsMonsterActor(actor) != 0) {
+    int action;
+    int loopType;
+    g_session.GetMonsterSkillInfo(g_session.GetJobName(job, -1), *reinterpret_cast<const std::uint16_t*>(packet + 2), &action, &loopType,
+                                  *reinterpret_cast<WindowDialogs*>(&g_windowMgr));
+    if (*reinterpret_cast<const std::uint16_t*>(packet + 2) == 0x2C8) {
+      actor->LaunchEffect(0x199, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    if (*reinterpret_cast<const std::uint16_t*>(packet + 2) == 0x2E0) {
+      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      g_soundMgr->PlayWave("effect\\S사이킥웨이브.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      actor->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      float x;
+      float z;
+      reinterpret_cast<const ::TerrainHeight*>(mode)->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
+      vector3d position;
+      position.x = x;
+      position.y = mode->scene->terrain->Grid().Height(x, z);
+      position.z = z;
+      int count = message.level + 2;
+      if (count > 7) {
+        count = 7;
+      } else if (count <= 0) {
+        return;
+      }
+      for (int delay = 0; count != 0; --count, delay += 500) {
+        CEffect* effect;
+        if (g_serviceOptions.Get(0xE5)) {
+          effect = g_effectMgr->Spawn(0, 0x5AE, position.x, position.y, position.z, 0, -1, 0, 0);
+          if (effect) {
+            effect->Slot16(delay);
+          }
+          effect = g_effectMgr->Spawn(0, 0x5AF, position.x, position.y, position.z, 0, -1, 0, 0);
+        } else {
+          effect = g_effectMgr->Spawn(0, 0x508, position.x, position.y, position.z, 0, -1, 0, 0);
+          if (effect) {
+            effect->Slot16(delay);
+          }
+          effect = g_effectMgr->Spawn(0, 0x509, position.x, position.y, position.z, 0, -1, 0, 0);
+        }
+        if (effect) {
+          effect->Slot16(delay);
+        }
+      }
+    }
+    return;
+  }
+
+  this->SendMsg(0x56, *reinterpret_cast<const std::uint16_t*>(packet + 2), reinterpret_cast<std::intptr_t>(actor), *reinterpret_cast<const std::int16_t*>(packet + 8), 0);
+
+  switch (*reinterpret_cast<const std::uint16_t*>(packet + 2)) {
+  case 0x2F: {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    if (actor == nullptr) {
+      return;
+    }
+    vector3d* source = &actor->render.position;
+    mode->SpawnArrowEffect64(source, source, 18.0f);
+    const int offsets[8][2] = {{1, 0}, {1, 1}, {1, -1}, {-1, 0}, {-1, 1}, {-1, -1}, {0, 1}, {0, -1}};
+    const int cellX = *reinterpret_cast<const std::int16_t*>(packet + 0xA);
+    const int cellY = *reinterpret_cast<const std::int16_t*>(packet + 0xC);
+    for (int index = 0; index < 8; ++index) {
+      float x;
+      float z;
+      reinterpret_cast<const ::TerrainHeight*>(mode)->CellCenter(offsets[index][0] + cellX, offsets[index][1] + cellY, x, z);
+      vector3d target;
+      target.x = x;
+      target.y = mode->scene->terrain->Grid().Height(x, z);
+      target.z = z;
+      mode->SpawnArrowEffect64(source, &target, 18.0f);
+    }
+    break;
+  }
+  case 0x16A:
+    g_soundMgr->PlayWave("effect\\바실리카.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    break;
+  case 0x171:
+    g_soundMgr->PlayWave("effect\\가스펠.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    break;
+  case 0x21D: {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    float x;
+    float z;
+    reinterpret_cast<const ::TerrainHeight*>(mode)->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
+    vector3d position;
+    position.x = x;
+    position.y = mode->scene->terrain->Grid().Height(x, z);
+    position.z = z;
+    this->LaunchDummyEffect(&position, 0x26E, 200, 0);
+    break;
+  }
+  case 0x2E3:
+  case 0x992:
+    actor->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    g_soundMgr->PlayWave("effect\\S클라우드킬.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    break;
+  case 0x89B: {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    float x;
+    float z;
+    reinterpret_cast<const ::TerrainHeight*>(mode)->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
+    vector3d position;
+    position.x = x;
+    position.y = mode->scene->terrain->Grid().Height(x, z);
+    position.z = z;
+    this->LaunchDummyEffect(&position, 0x2D6, EffectLifetime(0x2D6) + 10, 0);
+    break;
+  }
+  case 0x2E0:
+  case 0x991: {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    g_soundMgr->PlayWave("effect\\S사이킥웨이브.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    actor->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    float x;
+    float z;
+    reinterpret_cast<const ::TerrainHeight*>(mode)->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
+    vector3d position;
+    position.x = x;
+    position.y = mode->scene->terrain->Grid().Height(x, z);
+    position.z = z;
+    int count = message.level + 2;
+    if (count > 7) {
+      count = 7;
+    } else if (count <= 0) {
+      return;
+    }
+    for (int delay = 0; count != 0; --count, delay += 500) {
+      CEffect* effect;
+      if (g_serviceOptions.Get(0xE5)) {
+        effect = g_effectMgr->Spawn(0, 0x5AE, position.x, position.y, position.z, 0, -1, 0, 0);
+        if (effect) {
+          effect->Slot16(delay);
+        }
+        effect = g_effectMgr->Spawn(0, 0x5AF, position.x, position.y, position.z, 0, -1, 0, 0);
+      } else {
+        effect = g_effectMgr->Spawn(0, 0x508, position.x, position.y, position.z, 0, -1, 0, 0);
+        if (effect) {
+          effect->Slot16(delay);
+        }
+        effect = g_effectMgr->Spawn(0, 0x509, position.x, position.y, position.z, 0, -1, 0, 0);
+      }
+      if (effect) {
+        effect->Slot16(delay);
+      }
+    }
+    break;
+  }
+  case 0x8FD:
+    g_soundMgr->PlayWave("effect\\chaospanic.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    break;
+  case 0x8FE:
+    g_soundMgr->PlayWave("effect\\maelstrom.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    break;
+  case 0x8FF:
+    g_soundMgr->PlayWave("effect\\bloodylust.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    break;
+  case 0x90D: {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    if (actor == nullptr) {
+      return;
+    }
+    float angle = mode->CameraDesiredYaw() + actor->render.angle;
+    if (angle >= 360.0f) {
+      angle -= 360.0f;
+    }
+    int effectId = 0;
+    if (angle >= 0.0f && angle < 23.0f) {
+      effectId = 0x692;
+    } else if (angle >= 23.0f && angle < 67.0f) {
+      effectId = 0x691;
+    } else if (angle >= 67.0f && angle < 112.0f) {
+      effectId = 0x690;
+    } else if (angle >= 112.0f && angle < 157.0f) {
+      effectId = 0x68F;
+    } else if (angle >= 157.0f && angle < 202.0f) {
+      effectId = 0x696;
+    } else if (angle >= 202.0f && angle < 247.0f) {
+      effectId = 0x695;
+    } else if (angle >= 247.0f && angle < 292.0f) {
+      effectId = 0x694;
+    } else if (angle >= 292.0f && angle < 337.0f) {
+      effectId = 0x693;
+    } else if (angle >= 337.0f && angle <= 360.0f) {
+      effectId = 0x692;
+    }
+    g_effectMgr->Spawn(actor->render.accountId, effectId, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_soundMgr->PlayWave("effect\\LG_OVERBRAND.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    break;
+  }
+  case 0x971: {
+    CRagEffect* effect = actor->LaunchEffect(0x35F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    if (effect == nullptr) {
+      return;
+    }
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    float x;
+    float z;
+    reinterpret_cast<const ::TerrainHeight*>(mode)->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
+    vector3d position;
+    position.x = x;
+    position.y = mode->scene->terrain->Grid().Height(x, z);
+    position.z = z;
+    effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(0x7A, 0, 0, 0, 0);
+    g_soundMgr->PlayWave("effect\\invisibility.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    break;
+  }
+  case 0x976: {
+    g_soundMgr->PlayWave("effect\\안식의자장가.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    CRagEffect* effect = actor->LaunchEffect(0x35A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    if (effect == nullptr) {
+      return;
+    }
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    float x;
+    float z;
+    reinterpret_cast<const ::TerrainHeight*>(mode)->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
+    vector3d position;
+    position.x = x;
+    position.y = mode->scene->terrain->Grid().Height(x, z);
+    position.z = z;
+    effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
+    break;
+  }
+  case 0x98E: {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    g_soundMgr->PlayWave("effect\\G가시나무덫.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    actor->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    float x;
+    float z;
+    reinterpret_cast<const ::TerrainHeight*>(mode)->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
+    const float y = mode->scene->terrain->Grid().Height(x, z);
+    int delay = 0;
+    for (int degrees = 0; degrees < 1080; degrees += 72) {
+      const float radius = static_cast<float>(std::max(std::rand() % 20, 0)) + 5.0f;
+      matrix rotation;
+      rotation.MakeYRotation(static_cast<float>(degrees) / 180.0f * 3.141592f);
+      vector3d position;
+      position.x = rotation.values[0] * radius + rotation.values[3] * 0.0f + rotation.values[6] * 0.0f + rotation.values[9] + x;
+      position.y = rotation.values[1] * radius + rotation.values[4] * 0.0f + rotation.values[7] * 0.0f + rotation.values[10] + y;
+      position.z = rotation.values[2] * radius + rotation.values[5] * 0.0f + rotation.values[8] * 0.0f + rotation.values[11] + z;
+      CEffect* effect = g_effectMgr->Spawn(0, 0x5B9, position.x, position.y, position.z, 0, -1, 0, 0);
+      if (effect) {
+        effect->Slot22(0.5f);
+        effect->Slot16(delay);
+      }
+      effect = g_effectMgr->Spawn(0, 0x656, position.x, position.y, position.z, 0, -1, 0, 0);
+      if (effect) {
+        effect->Slot22(0.5f);
+        effect->Slot16(delay);
+      }
+      delay += 70;
+    }
+    break;
+  }
+  case 0x9B3: {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    g_soundMgr->PlayWave("effect\\G가시나무덫.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    float x;
+    float z;
+    reinterpret_cast<const ::TerrainHeight*>(mode)->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
+    vector3d position;
+    position.x = x;
+    position.y = mode->scene->terrain->Grid().Height(x, z);
+    position.z = z;
+    this->LaunchDummyEffect(&position, 0x393, 150, 0);
+    break;
+  }
+  case 0x9D6: {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    actor->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    float x;
+    float z;
+    reinterpret_cast<const ::TerrainHeight*>(mode)->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
+    vector3d position;
+    position.x = x;
+    position.y = mode->scene->terrain->Grid().Height(x, z);
+    position.z = z;
+    this->LaunchDummyEffect(&position, 0x376, 300, 0);
+    this->LaunchDummyEffect(&position, 0x375, 200, 0);
+    this->LaunchDummyEffect(&position, 0x383, 999, 0);
+    g_soundMgr->PlayWave("effect\\SR_RIDEINLIGHTNING.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    break;
+  }
+  case 0xA1B:
+    if (actor == nullptr) {
+      return;
+    }
+    g_effectMgr->Spawn(actor->render.accountId, 0x4D0, actor->render.position.x, actor->render.position.y, actor->render.position.z, 0, -1, 0, 0);
+    break;
+  case 0x14F9: {
+    vector3d position = {0.0f, 0.0f, 0.0f};
+    reinterpret_cast<const ::TerrainHeight*>(this)->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), position.x, position.z);
+    position.y = this->scene->terrain->Grid().Height(position.x, position.z);
+    g_effectMgr->Spawn(0, 0x7EB, position.x, position.y, position.z, 0, -1, 0, 0);
+    g_effectMgr->Spawn(0, 0x7EA, position.x, position.y, position.z, 0, -1, 0, 0);
+    break;
+  }
+  case 0x14FD: {
+    vector3d position = {0.0f, 0.0f, 0.0f};
+    reinterpret_cast<const ::TerrainHeight*>(this)->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), position.x, position.z);
+    position.y = this->scene->terrain->Grid().Height(position.x, position.z);
+    g_effectMgr->Spawn(0, 0x856, position.x, position.y, position.z, 0, -1, 0, 0);
+    g_effectMgr->Spawn(0, 0x855, position.x, position.y, position.z, 0, -1, 0, 0);
+    break;
+  }
+  default:
+    CSkillActionMgr::GetInstance()->ActionSlot12(*reinterpret_cast<const std::uint16_t*>(packet + 2), *reinterpret_cast<const std::int16_t*>(packet + 0xA),
+                                                 *reinterpret_cast<const std::int16_t*>(packet + 0xC), *reinterpret_cast<const std::int16_t*>(packet + 8),
+                                                 reinterpret_cast<int>(actor));
+    break;
+  }
+}
 
 #pragma pack(push, 1)
 struct GameAcceptEnterPacket {
@@ -3721,3 +4071,41 @@ struct GameAcceptEnterPacket {
 #pragma pack(pop)
 
 // OFFSET: 0x00D1B890
+// FUNCTION: fn_21620
+void CGameMode::ReceiveAcceptEnter(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const GameAcceptEnterPacket*>(data);
+  if (Replay::Instance().state == 2) {
+    Replay::Instance().SetState(3);
+    g_windowMgr.window_4F164->SendMsg(nullptr, 0x57, 0, 0, 0, 0);
+    g_windowMgr.CloseWindow(0xC6);
+  } else if (Replay::Instance().state == 7) {
+    Replay::Instance().SetState(8);
+  }
+
+  g_session.SetServerTime(packet->startTime);
+  g_session.SetPlayerPosition((packet->posDir[0] << 2) | (packet->posDir[1] >> 6), ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4),
+    packet->posDir[2] & 0xF);
+  g_session.unknown_0F30[0] = packet->font;
+
+  char mapName[36];
+  sprintf(mapName, "%s.rsw", g_session.m_navigationPlayerMap);
+  g_modeMgr.Switch(1, mapName);
+  g_session.SetOption(17, 0, 0);
+  GetRagConnection().SetBlock(0);
+
+  if (g_pingLogEnabled) {
+    FILE* file = fopen("PingLog.txt", "at");
+    if (file) {
+      __time32_t now;
+      _time32(&now);
+      fprintf(file, "\n");
+      fprintf(file, "server:%s\n", g_session.m_accountName.c_str());
+      fprintf(file, "ip:%s\n", g_zoneServerIp);
+      fprintf(file, "map:%s.gat\n", g_session.m_navigationPlayerMap);
+      fprintf(file, "time:%s\n\n", _ctime32(&now));
+      fclose(file);
+    }
+    g_pingLogTicks.clear();
+    g_pingLogFirstTick = 0;
+  }
+}
