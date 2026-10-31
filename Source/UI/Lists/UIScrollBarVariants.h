@@ -3,6 +3,8 @@
 
 #include "UI/Lists/UIScrollBar.h"
 
+#include <string>
+
 class CBitmapRes;
 
 class UIScrollBar2 : public UIScrollBar {
@@ -40,6 +42,8 @@ public:
   /* 00D0 */ CBitmapRes* m_thumbBottom;
 
   void Paint() override;
+  void SetArrowBitmaps(std::string up, std::string down);
+  void SetThumbBitmaps(std::string top, std::string middle, std::string bottom);
 };
 
 class UIZeroQuestScrollBar : public UIScrollBar {

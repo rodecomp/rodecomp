@@ -2738,3 +2738,20 @@ void UIImgMenu::Paint() {
     }
   }
 }
+
+// OFFSET: 0x0089B760
+// FUNCTION: fn_11571
+void UIScrollBar_Custom::SetArrowBitmaps(std::string up, std::string down) {
+  this->m_arrowUp = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(up.c_str())));
+  this->m_arrowDown = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(down.c_str())));
+  this->Invalidate();
+}
+
+// OFFSET: 0x0089B910
+// FUNCTION: fn_11572
+void UIScrollBar_Custom::SetThumbBitmaps(std::string top, std::string middle, std::string bottom) {
+  this->m_thumbTop = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(top.c_str())));
+  this->m_thumbMiddle = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(middle.c_str())));
+  this->m_thumbBottom = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(bottom.c_str())));
+  this->Invalidate();
+}
