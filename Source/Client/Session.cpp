@@ -1482,7 +1482,7 @@ void __fastcall sub_DFF150(CSession*) {
   if (UIWindow* window = g_windowMgr.window_02C8) {
     window->SendMsg(nullptr, 23, 0, 0, 0, 0);
   }
-  reinterpret_cast<void(__thiscall*)(UIWindowMgr*)>(0x00A96090)(&g_windowMgr);
+  g_windowMgr.RebuildMiniPartyWindows();
 }
 
 // OFFSET: 0x00DFF180
