@@ -1207,6 +1207,202 @@ std::vector<unsigned char> CSession::BuildItemReplayRecords() {
 }
 
 // OFFSET: 0x00E42F20
+// FUNCTION: fn_24204
+std::vector<unsigned char> CSession::BuildCompanionReplayRecords() {
+  std::vector<unsigned char> records;
+  {
+    const auto record = BuildReplayTaggedRecord(5000, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(5101, &this->unknown_5570[0x08], 4);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(5102, &this->unknown_5570[0x0C], 32);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(5103, &this->unknown_5570[0x2C], 4);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(5104, &this->unknown_5570[0x30], 4);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(5105, &this->unknown_5570[0x34], 4);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(5106, &this->unknown_5570[0x38], 4);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(5107, &this->unknown_5570[0x3C], 4);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(5108, &this->unknown_5570[0x40], 4);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(5109, &this->unknown_5570[0x44], 4);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(5110, &this->unknown_5570[0x48], 4);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(5111, &this->m_homunJob, sizeof(this->m_homunJob));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(5112, this->unknown_55C0, 4);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(5113, &this->m_homunHp, sizeof(this->m_homunHp));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(5114, this->unknown_55C8, 4);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(5115, &this->m_homunSp, sizeof(this->m_homunSp));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(5116, &this->unknown_55D0, sizeof(this->unknown_55D0));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(5117, &this->unknown_55D4, sizeof(this->unknown_55D4));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(5118, &this->unknown_55D8, sizeof(this->unknown_55D8));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(5119, &this->m_homunExp, sizeof(this->m_homunExp));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(5120, &this->m_homunMaxExp, sizeof(this->m_homunMaxExp));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(5121, &this->unknown_55F0, sizeof(this->unknown_55F0));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(5122, &this->unknown_55F4, sizeof(this->unknown_55F4));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(5123, &this->unknown_55F8, sizeof(this->unknown_55F8));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(5124, &this->unknown_55FC, sizeof(this->unknown_55FC));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(5125, &this->unknown_5600, sizeof(this->unknown_5600));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(5126, &this->unknown_5604, sizeof(this->unknown_5604));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(5127, &this->unknown_5608, sizeof(this->unknown_5608));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(5128, &this->unknown_560C, sizeof(this->unknown_560C));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(5129, &this->unknown_5610, sizeof(this->unknown_5610));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(5130, &this->unknown_5614, sizeof(this->unknown_5614));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(5131, &this->m_traceAi, sizeof(this->m_traceAi));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(5132, &this->m_homunActionState, sizeof(this->m_homunActionState));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(5133, &this->unknown_5620[0x0], 4);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(5134, &this->unknown_5620[0x4], 4);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(5201, &this->unknown_5620[0x8], 4);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(5202, this->m_mercenaryName, sizeof(this->m_mercenaryName));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  AppendBytes(records, BuildReplayTaggedRecord(5203, &this->m_mercenaryStats[0], sizeof(this->m_mercenaryStats[0])));
+  AppendBytes(records, BuildReplayTaggedRecord(5204, &this->m_mercenaryStats[1], sizeof(this->m_mercenaryStats[1])));
+  AppendBytes(records, BuildReplayTaggedRecord(5205, &this->m_mercenaryStats[2], sizeof(this->m_mercenaryStats[2])));
+  AppendBytes(records, BuildReplayTaggedRecord(5206, &this->m_mercenaryStats[3], sizeof(this->m_mercenaryStats[3])));
+  AppendBytes(records, BuildReplayTaggedRecord(5207, &this->m_mercenaryStats[4], sizeof(this->m_mercenaryStats[4])));
+  AppendBytes(records, BuildReplayTaggedRecord(5208, &this->m_mercenaryStats[5], sizeof(this->m_mercenaryStats[5])));
+  AppendBytes(records, BuildReplayTaggedRecord(5209, &this->m_mercenaryStats[6], sizeof(this->m_mercenaryStats[6])));
+  AppendBytes(records, BuildReplayTaggedRecord(5210, &this->m_mercenaryStats[7], sizeof(this->m_mercenaryStats[7])));
+  AppendBytes(records, BuildReplayTaggedRecord(5211, &this->m_mercenaryHp, sizeof(this->m_mercenaryHp)));
+  AppendBytes(records, BuildReplayTaggedRecord(5212, &this->m_mercenaryMaxHp, sizeof(this->m_mercenaryMaxHp)));
+  AppendBytes(records, BuildReplayTaggedRecord(5213, &this->m_mercenaryClass, sizeof(this->m_mercenaryClass)));
+  AppendBytes(records, BuildReplayTaggedRecord(5214, &this->m_mercenaryLevel, sizeof(this->m_mercenaryLevel)));
+  AppendBytes(records, BuildReplayTaggedRecord(5215, &this->m_mercenarySp, sizeof(this->m_mercenarySp)));
+  AppendBytes(records, BuildReplayTaggedRecord(5216, &this->m_mercenaryMaxSp, sizeof(this->m_mercenaryMaxSp)));
+  AppendBytes(records, BuildReplayTaggedRecord(5217, &this->m_mercenaryLoyalty, sizeof(this->m_mercenaryLoyalty)));
+  AppendBytes(records, BuildReplayTaggedRecord(5218, &this->m_mercenarySummons, sizeof(this->m_mercenarySummons)));
+  AppendBytes(records, BuildReplayTaggedRecord(5219, &this->m_mercenaryKills, sizeof(this->m_mercenaryKills)));
+  AppendBytes(records, BuildReplayTaggedRecord(5220, this->unknown_5690, 4));
+  AppendBytes(records, BuildReplayTaggedRecord(5221, &this->m_mercenaryExpiration, sizeof(this->m_mercenaryExpiration)));
+  AppendBytes(records, BuildReplayTaggedRecord(5222, &this->unknown_5698, sizeof(this->unknown_5698)));
+  AppendBytes(records, BuildReplayTaggedRecord(5223, &this->unknown_569C, sizeof(this->unknown_569C)));
+  AppendBytes(records, BuildReplayTaggedRecord(5224, &this->unknown_56A0, sizeof(this->unknown_56A0)));
+  AppendBytes(records, BuildReplayTaggedRecord(5225, &this->unknown_56A4, sizeof(this->unknown_56A4)));
+  AppendBytes(records, BuildReplayTaggedRecord(5226, &this->unknown_56A8, sizeof(this->unknown_56A8)));
+  AppendBytes(records, BuildReplayTaggedRecord(5227, &this->unknown_56AC, sizeof(this->unknown_56AC)));
+  AppendBytes(records, BuildReplayTaggedRecord(5228, &this->unknown_56B0, sizeof(this->unknown_56B0)));
+  AppendBytes(records, BuildReplayTaggedRecord(5229, &this->m_mercenaryActionState, sizeof(this->m_mercenaryActionState)));
+  AppendBytes(records, BuildReplayTaggedRecord(5301, &this->unknown_1010, sizeof(this->unknown_1010)));
+  AppendBytes(records, BuildReplayTaggedRecord(5302, this->unknown_1014, 4));
+  AppendBytes(records, BuildReplayTaggedRecord(5303, this->unknown_1018, 32));
+  AppendBytes(records, BuildReplayTaggedRecord(5304, &this->unknown_1038, sizeof(this->unknown_1038)));
+  AppendBytes(records, BuildReplayTaggedRecord(5305, &this->unknown_103C, sizeof(this->unknown_103C)));
+  AppendBytes(records, BuildReplayTaggedRecord(5306, &this->unknown_1040, sizeof(this->unknown_1040)));
+  AppendBytes(records, BuildReplayTaggedRecord(5307, &this->unknown_1044, sizeof(this->unknown_1044)));
+  AppendBytes(records, BuildReplayTaggedRecord(5308, &this->m_petFriendly, sizeof(this->m_petFriendly)));
+  AppendBytes(records, BuildReplayTaggedRecord(5309, &this->unknown_1050, sizeof(this->unknown_1050)));
+  AppendBytes(records, BuildReplayTaggedRecord(5310, &this->unknown_1054, sizeof(this->unknown_1054)));
+  AppendBytes(records, BuildReplayTaggedRecord(5401, &this->unknown_5BC0, sizeof(this->unknown_5BC0)));
+  AppendBytes(records, BuildReplayTaggedRecord(5402, &this->unknown_5BC4, sizeof(this->unknown_5BC4)));
+  AppendBytes(records, BuildReplayTaggedRecord(5403, &this->unknown_5BC8, sizeof(this->unknown_5BC8)));
+  AppendBytes(records, BuildReplayTaggedRecord(5404, &this->unknown_5BCC, sizeof(this->unknown_5BCC)));
+  AppendBytes(records, BuildReplayTaggedRecord(5405, &this->unknown_5BD0, sizeof(this->unknown_5BD0)));
+  AppendBytes(records, BuildReplayTaggedRecord(5001, nullptr, 0));
+  return records;
+}
 
 namespace {
 #pragma pack(push, 1)
