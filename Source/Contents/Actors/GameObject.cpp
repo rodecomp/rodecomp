@@ -51,6 +51,12 @@ CGameObject::CGameObject() : identity(++nextIdentity) {
 // FUNCTION: fn_20995
 CGameObject::~CGameObject() = default;
 
+// OFFSET: 0x00CA8ED0
+// FUNCTION: fn_20996
+void __fastcall sub_CA8ED0(void* self) {
+  *reinterpret_cast<std::uintptr_t*>(self) = 0x0119FE74;
+}
+
 // OFFSET: 0x00CAFD20
 // FUNCTION: fn_21087
 bool CGameObject::OnProcess() {
