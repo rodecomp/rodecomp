@@ -241,6 +241,21 @@ struct CRagEffect : CRenderObject {
   void Hit6();
   void StoneWall();
   void ShadedFireballVolley();
+  void BlueRingWave();
+  bool GlassWallRising(const char* name);
+  void QuadRingStack(const char* name);
+  void QuadRingStackSized(const char* name, char kind);
+  void TripleRingStack(const char* name, char large);
+  void WideTripleRingStack(const char* name);
+  void SoulLink(int);
+  void WhiteSparkStreak(char kind);
+  void WhiteSparkRing(char kind);
+  void WhiteLightTrail(const char* name, char kind);
+  void ElementalOrbit(char kind);
+  void WhiteRingWave();
+  void Detoxication();
+  void PoisonAttack(char flag);
+  void StoneSpike();
 
   virtual void Slot08();
   virtual void Slot09(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh, int twelfth, int thirteenth, int fourteenth, int fifteenth, int sixteenth, int seventeenth);

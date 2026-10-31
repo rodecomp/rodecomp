@@ -1,4 +1,5 @@
 #include "Contents/Effects/RagEffect.h"
+#include "Contents/MapSkyMgr.h"
 #include "Contents/Effects/EffectActor.h"
 #include "Contents/Effects/EffectPrimitiveState.h"
 #include "Resource/Resource.h"
@@ -11034,5 +11035,1002 @@ void CRagEffect::ShadedFireballVolley() {
 
   if (this->state.stateCnt == 12 || this->state.stateCnt == 13 || this->state.stateCnt == 14 || this->state.stateCnt == 15) {
     LaunchTintedFireballVolley(*this, 5.0f, 255, 155, 155, 17);
+  }
+}
+
+// OFFSET: 0x00C10180
+// FUNCTION: fn_20033
+void CRagEffect::Detoxication() {
+  const unsigned char enabled = g_serviceOptions.Get(0xe5);
+
+  if (enabled == 0) {
+    if (this->state.stateCnt % 5 != 0) {
+      return;
+    }
+
+    if (this->state.stateCnt == 0) {
+      PlayEffectWave(*this, "effect\\EF_Detoxication.wav");
+    }
+
+    this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 5, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+    this->state.unknown_11C84->alpha = 0.0f;
+    this->state.unknown_11C84->duration = 40;
+    EffectPrimitiveState& poison = *this->state.unknown_11C84;
+    reinterpret_cast<matrix*>(poison.transform)->MakeYRotation(GetRadian(std::max(rand() % 360, 0)));
+    this->state.unknown_11C84->deltaPos2 =
+      RotatedForward(this->state.unknown_11C84->transform, static_cast<float>(std::max(rand() % 6, 0) + 2));
+    EffectPrimitiveState& trail = *this->state.unknown_11C84;
+    reinterpret_cast<matrix*>(trail.transform)->MakeXRotation(GetRadian(90));
+  } else {
+    if (this->state.stateCnt % 15 != 0) {
+      return;
+    }
+
+    if (this->state.stateCnt == 0) {
+      PlayEffectWave(*this, "effect\\EF_Detoxication.wav");
+    }
+
+    this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 5, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+    this->state.unknown_11C84->duration = 40;
+    this->state.unknown_11C84->alpha = 0.0f;
+    EffectPrimitiveState& poison = *this->state.unknown_11C84;
+    reinterpret_cast<matrix*>(poison.transform)->MakeYRotation(GetRadian(std::max(rand() % 360, 0)));
+    this->state.unknown_11C84->deltaPos2 =
+      RotatedForward(this->state.unknown_11C84->transform, static_cast<float>(std::max(rand() % 6, 0) + 2));
+    EffectPrimitiveState& trail = *this->state.unknown_11C84;
+    reinterpret_cast<matrix*>(trail.transform)->MakeXRotation(GetRadian(90));
+  }
+
+  this->state.unknown_11C84->speed = static_cast<float>(std::max(rand() % 30, 0) + 30) / 100.0f;
+  this->state.unknown_11C84->accel =
+    -(this->state.unknown_11C84->speed / static_cast<float>(this->state.unknown_11C84->duration)) * g_depthAverageHalf;
+  this->state.unknown_11C84->size = static_cast<float>(std::max(rand() % 50, 0) + 40) / 100.0f;
+  this->state.unknown_11C84->rollSpeed = 3.0f;
+  this->state.unknown_11C84->alphaSpeed = this->state.unknown_11C84->maxAlpha / 10.0f;
+  this->state.unknown_11C84->fadeOutCnt =
+    this->state.unknown_11C84->duration - this->state.unknown_11C84->duration / 5;
+  Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\particle2.spr");
+  Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\particle2.act");
+  Owner(this->state.unknown_11C84).InitSegment();
+}
+
+// OFFSET: 0x00C11610
+// FUNCTION: fn_20038
+void CRagEffect::PoisonAttack(char flag) {
+  if (this->state.stateCnt == 0 && flag == 0) {
+    PlayEffectWave(*this, "effect\\assasin_enchantpoison.wav");
+    PlayEffectWave(*this, "effect\\EF_PoisonAttack.wav");
+  } else if (flag == 1) {
+    if (this->state.stateCnt % 9 != 0) {
+      return;
+    }
+
+    this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 5, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+    this->state.unknown_11C84->duration = 40;
+    EffectPrimitiveState& poison = *this->state.unknown_11C84;
+    reinterpret_cast<matrix*>(poison.transform)->MakeYRotation(GetRadian(std::max(rand() % 360, 0)));
+    this->state.unknown_11C84->deltaPos2 =
+      RotatedForward(this->state.unknown_11C84->transform, static_cast<float>(std::max(rand() % 6, 0) + 2));
+    EffectPrimitiveState& trail = *this->state.unknown_11C84;
+    reinterpret_cast<matrix*>(trail.transform)->MakeXRotation(GetRadian(90));
+    this->state.unknown_11C84->speed = static_cast<float>(std::max(rand() % 30, 0) + 30) / 100.0f;
+    this->state.unknown_11C84->accel =
+      -(this->state.unknown_11C84->speed / static_cast<float>(this->state.unknown_11C84->duration)) * g_depthAverageHalf;
+    this->state.unknown_11C84->size = static_cast<float>(std::max(rand() % 50, 0) + 40) / 170.0f;
+    this->state.unknown_11C84->rollSpeed = 3.0f;
+    this->state.unknown_11C84->alpha = 0.0f;
+    this->state.unknown_11C84->alphaSpeed = this->state.unknown_11C84->maxAlpha / 10.0f;
+    this->state.unknown_11C84->fadeOutCnt =
+      this->state.unknown_11C84->duration - this->state.unknown_11C84->duration / 5;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\particle3.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\particle3.act");
+    if (this->state.type == 0x304) {
+      this->state.unknown_11C84->renderFlag = 0x201;
+    }
+    Owner(this->state.unknown_11C84).InitSegment();
+    return;
+  }
+
+  if (this->state.stateCnt % 5 != 0) {
+    return;
+  }
+
+  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 5, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  this->state.unknown_11C84->duration = 40;
+  EffectPrimitiveState& poison = *this->state.unknown_11C84;
+  reinterpret_cast<matrix*>(poison.transform)->MakeYRotation(GetRadian(std::max(rand() % 360, 0)));
+  this->state.unknown_11C84->deltaPos2 =
+    RotatedForward(this->state.unknown_11C84->transform, static_cast<float>(std::max(rand() % 6, 0) + 2));
+  EffectPrimitiveState& trail = *this->state.unknown_11C84;
+  reinterpret_cast<matrix*>(trail.transform)->MakeXRotation(GetRadian(90));
+  this->state.unknown_11C84->speed = static_cast<float>(std::max(rand() % 30, 0) + 30) / 100.0f;
+  this->state.unknown_11C84->accel =
+    -(this->state.unknown_11C84->speed / static_cast<float>(this->state.unknown_11C84->duration)) * g_depthAverageHalf;
+  this->state.unknown_11C84->size = static_cast<float>(std::max(rand() % 50, 0) + 40) / 100.0f;
+  this->state.unknown_11C84->rollSpeed = 3.0f;
+  this->state.unknown_11C84->alpha = 0.0f;
+  this->state.unknown_11C84->alphaSpeed = this->state.unknown_11C84->maxAlpha / 10.0f;
+  this->state.unknown_11C84->fadeOutCnt =
+    this->state.unknown_11C84->duration - this->state.unknown_11C84->duration / 5;
+  Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\particle3.spr");
+  Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\particle3.act");
+  Owner(this->state.unknown_11C84).InitSegment();
+}
+
+// OFFSET: 0x00C18090
+// FUNCTION: fn_20062
+void CRagEffect::StoneSpike() {
+  this->render.position = this->state.parent->render.position;
+
+  if (this->state.stateCnt != 0) {
+    return;
+  }
+
+  PlayEffectWave(*this, "effect\\wizard_earthspike.wav");
+  g_modeMgr.GetGameMode()->SendMsg(122, 0, 0, 0, 0);
+  this->state.duration += 50;
+
+  for (int z = -10; z < 15; z += 5) {
+    for (int x = -10; x < 15; x += 5) {
+      this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 9, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+      this->state.unknown_11C84->duration = std::max(rand() % 30, 0) + this->state.duration - 10;
+      this->state.unknown_11C84->pattern = 1;
+      this->state.unknown_11C84->pattern |= 2u;
+      const int heading = std::max(rand() % 360, 0);
+      rand();
+      ClientSine(heading);
+      ClientCosine(heading);
+      const int heightRand = std::max(rand() % 60, 0);
+      this->state.unknown_11C84->deltaPos2 = {static_cast<float>(x), 10.0f, static_cast<float>(z)};
+      this->state.unknown_11C84->size = static_cast<float>(std::max(rand() % 50, 0) + 300) / 100.0f;
+      this->state.unknown_11C84->heightSize = static_cast<float>(heightRand + 1) / 10.0f + 9.0f;
+      this->state.unknown_11C84->longitude = static_cast<float>(std::max(rand() % 360, 0));
+      this->state.unknown_11C84->latitude = static_cast<float>(std::max(rand() % 20, 0) + 80);
+      EffectPrimitiveState& tilt = *this->state.unknown_11C84;
+      reinterpret_cast<matrix*>(tilt.transform)->MakeXRotation(GetRadian(static_cast<int>(tilt.latitude)));
+      EffectPrimitiveState& turn = *this->state.unknown_11C84;
+      reinterpret_cast<matrix*>(turn.transform)->AppendYRotation(GetRadian(static_cast<int>(turn.longitude)));
+      EffectPrimitiveState& stone = *this->state.unknown_11C84;
+      std::memcpy(stone.rotTransform, stone.transform, sizeof(stone.rotTransform));
+      this->state.unknown_11C84->changeSpeed3d.y = -1.0f;
+      this->state.unknown_11C84->changeAccel3d.y = -0.01f;
+      this->state.unknown_11C84->speed = 1.0f;
+      this->state.unknown_11C84->accel = 0.01f;
+      this->state.unknown_11C84->changePoint = 11;
+      this->state.unknown_11C84->changeSpeed = -1.2f;
+      this->state.unknown_11C84->changeAccel = 0.0f;
+      this->state.unknown_11C84->chCnt = 14;
+      AllocateTextures(*this->state.unknown_11C84);
+      this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\stone.bmp", 0, false, true, false);
+    }
+  }
+}
+// OFFSET: 0x00C586B0
+// FUNCTION: fn_20208
+void CRagEffect::WhiteSparkRing(char kind) {
+  this->render.position = this->state.parent->render.position;
+
+  if (this->state.stateCnt >= 3) {
+    return;
+  }
+
+  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 100, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  this->state.unknown_11C84->renderFlag = 5;
+  this->state.unknown_11C84->duration = this->state.duration;
+  this->state.unknown_11C84->totalTexture = 1;
+  AllocateTextures(*this->state.unknown_11C84);
+  this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\white02.bmp", 0, false, true, false);
+  this->state.unknown_11C84->size = 0.0f;
+  this->state.unknown_11C84->deltaPos = {this->state.deltaPos[0], this->state.deltaPos[1], this->state.deltaPos[2]};
+  Owner(this->state.unknown_11C84).render.position = this->render.position;
+  this->state.unknown_11C84->slots[0].life = 0;
+  this->state.unknown_11C84->slots[1].life = 0;
+  this->state.unknown_11C84->slots[2].life = 0;
+  this->state.unknown_11C84->slots[3].life = 0;
+  const std::int16_t phase = kind;
+
+  for (int index = 0; index < 4; ++index) {
+    this->state.unknown_11C84->slots[index].life = 1;
+
+    if (kind == 3) {
+      this->state.unknown_11C84->slots[index].process = -(25 + std::max(rand() % 21, 0));
+      this->state.unknown_11C84->slots[index].maxHeight = 0.06f;
+    } else {
+      this->state.unknown_11C84->slots[index].process = -(15 + std::max(rand() % 26, 0));
+      this->state.unknown_11C84->slots[index].maxHeight = 0.07f;
+    }
+
+    this->state.unknown_11C84->slots[index].alphaB = static_cast<std::int16_t>(std::max(rand() % 121, 0) + 125);
+    Get_Angle(
+      this->render.position.x - this->state.deltaPos[0], this->render.position.z - this->state.deltaPos[2],
+      &this->state.unknown_11C84->slots[index].riseAngle
+    );
+    this->state.unknown_11C84->slots[index].riseAngle += static_cast<std::int16_t>(std::max(rand() % 121, 0) - 60);
+
+    if (this->state.unknown_11C84->slots[index].riseAngle >= 360) {
+      this->state.unknown_11C84->slots[index].riseAngle -= 360;
+    }
+
+    if (this->state.unknown_11C84->slots[index].riseAngle < 0) {
+      this->state.unknown_11C84->slots[index].riseAngle += 360;
+    }
+
+    this->state.unknown_11C84->slots[index].distance = static_cast<float>(std::max(rand() % 7, 0)) + 6.0f;
+    this->state.unknown_11C84->slots[index].height[0] = 0.0f;
+    this->state.unknown_11C84->slots[index].vecTNow.x = static_cast<float>(std::max(rand() % 7, 0)) * 0.1f + 0.8f;
+    this->state.unknown_11C84->slots[index].vecBNow.x = this->render.position.x;
+    this->state.unknown_11C84->slots[index].vecBNow.y = this->render.position.y;
+    this->state.unknown_11C84->slots[index].vecBNow.z = this->render.position.z;
+    this->state.unknown_11C84->slots[index].vecTNow.y = 3.0f;
+
+    for (int height = 20; height > 0; --height) {
+      this->state.unknown_11C84->slots[index].height[height] = 0.0f;
+      this->state.unknown_11C84->slots[index].flag1[height] = 0;
+    }
+
+    this->state.unknown_11C84->slots[index].alphaT = phase;
+  }
+}
+// OFFSET: 0x00C5E740
+// FUNCTION: fn_20239
+void CRagEffect::WhiteLightTrail(const char* name, char kind) {
+  const std::int16_t limit = static_cast<std::int16_t>(kind == 0 ? 35 : (kind == 1 ? 0 : kind));
+
+  if (this->state.stateCnt != limit) {
+    return;
+  }
+
+  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 96, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  this->state.unknown_11C84->renderFlag = 5;
+  this->state.unknown_11C84->duration = this->state.duration;
+  AllocateTextures(*this->state.unknown_11C84);
+  this->state.unknown_11C84->textures[0] = g_texMgr.Load(name, 0, false, true, false);
+  this->state.unknown_11C84->size = 0.0f;
+  this->state.unknown_11C84->slots[0].life = 0;
+  this->state.unknown_11C84->slots[1].life = 0;
+  this->state.unknown_11C84->slots[2].life = 0;
+  this->state.unknown_11C84->slots[3].life = 0;
+
+  if (kind == 0) {
+    this->state.unknown_11C84->slots[0].life = 1;
+    this->state.unknown_11C84->slots[0].maxHeight = static_cast<float>(std::max(rand() % 16, 0)) * 0.01f + 0.1f;
+    this->state.unknown_11C84->slots[0].distance = static_cast<float>(std::max(rand() % 11, 0)) * 0.1f + 3.0f;
+    this->state.unknown_11C84->slots[0].process = -std::max(rand() % 26, 0);
+    this->state.unknown_11C84->slots[0].alphaB = 0;
+    this->state.unknown_11C84->slots[0].vecBPre.y = static_cast<float>(-std::max(rand() % 8, 0));
+    const int heading = std::max(rand() % 360, 0);
+    this->state.unknown_11C84->slots[0].vecBPre.x = g_cosTable[heading] * 2.5f;
+    this->state.unknown_11C84->slots[0].vecBPre.z = g_sinTable[heading] * 2.5f;
+    this->state.unknown_11C84->slots[0].height[0] = static_cast<float>(std::max(rand() % 360, 0));
+    this->state.unknown_11C84->slots[0].height[1] = static_cast<float>(std::max(rand() % 360, 0));
+    this->state.unknown_11C84->slots[0].height[2] = static_cast<float>(std::max(rand() % 360, 0));
+    this->state.unknown_11C84->slots[0].height[3] = static_cast<float>(std::max(rand() % 360, 0));
+    this->state.unknown_11C84->slots[0].flag1[0] = 1;
+    return;
+  }
+
+  if (kind == 1) {
+    for (int index = 0; index < 4; ++index) {
+      this->state.unknown_11C84->slots[index].life = 1;
+      this->state.unknown_11C84->slots[index].maxHeight = static_cast<float>(std::max(rand() % 11, 0)) * 0.005f + 0.08f;
+      this->state.unknown_11C84->slots[index].distance = static_cast<float>(std::max(rand() % 11, 0)) * 0.05f + 2.0f;
+      this->state.unknown_11C84->slots[index].process = -std::max(rand() % 26, 0);
+      this->state.unknown_11C84->slots[index].alphaB = 0;
+      this->state.unknown_11C84->slots[index].vecBPre.y = static_cast<float>(-std::max(rand() % 8, 0));
+      const int heading = std::max(rand() % 360, 0);
+      this->state.unknown_11C84->slots[index].vecBPre.x = g_cosTable[heading] * 3.5f;
+      this->state.unknown_11C84->slots[index].vecBPre.z = g_sinTable[heading] * 3.5f;
+      this->state.unknown_11C84->slots[index].height[0] = static_cast<float>(std::max(rand() % 360, 0));
+      this->state.unknown_11C84->slots[index].height[1] = static_cast<float>(std::max(rand() % 360, 0));
+      this->state.unknown_11C84->slots[index].height[2] = static_cast<float>(std::max(rand() % 360, 0));
+      this->state.unknown_11C84->slots[index].height[3] = static_cast<float>(std::max(rand() % 360, 0));
+      this->state.unknown_11C84->slots[index].flag1[0] = 2;
+    }
+  }
+}
+// OFFSET: 0x00C482B0
+// FUNCTION: fn_20162
+void CRagEffect::ElementalOrbit(char kind) {
+  this->render.position = this->state.parent->render.position;
+
+  if (this->state.stateCnt != 0) {
+    return;
+  }
+
+  int count = static_cast<int>(this->state.deltaPos[0]);
+
+  if (count > 5) {
+    count = 5;
+  } else if (count <= 0) {
+    return;
+  }
+
+  int phase = 0;
+  int angle = 0;
+
+  for (int index = 0; index < count; ++index) {
+    this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 32, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+    this->state.unknown_11C84->renderFlag = 5;
+    this->state.unknown_11C84->duration = this->state.duration;
+    this->state.unknown_11C84->slots[0].life = 1;
+    this->state.unknown_11C84->slots[0].height[0] = static_cast<float>(std::max(rand() % 360, 0));
+    this->state.unknown_11C84->slots[0].height[1] = static_cast<float>(std::max(rand() % 360, 0));
+    this->state.unknown_11C84->slots[0].height[2] = static_cast<float>(std::max(rand() % 360, 0));
+    this->state.unknown_11C84->slots[0].height[3] = static_cast<float>(std::max(rand() % 360, 0));
+    this->state.unknown_11C84->slots[0].height[4] = static_cast<float>(std::max(rand() % 360, 0));
+    this->state.unknown_11C84->slots[0].height[5] = static_cast<float>(std::max(rand() % 360, 0));
+
+    if (kind == 1) {
+      this->state.unknown_11C84->slots[0].height[6] = static_cast<float>(angle);
+      this->state.unknown_11C84->slots[0].height[7] = -14.0f;
+      this->state.unknown_11C84->slots[0].distance = 1.3f;
+      this->state.unknown_11C84->slots[0].height[10] = 1.0f;
+      this->state.unknown_11C84->slots[0].flag1[0] = 0;
+    } else if (kind == 3 || kind == 4) {
+      this->state.unknown_11C84->slots[0].height[6] =
+        this->state.deltaPos[0] > 5.0f ? static_cast<float>(angle) : static_cast<float>(phase) / this->state.deltaPos[0];
+      this->state.unknown_11C84->slots[0].height[7] = -15.0f;
+      this->state.unknown_11C84->slots[0].distance = 1.0f;
+
+      if (this->state.deltaPos[0] > 5.0f) {
+        if (this->state.deltaPos[0] - static_cast<float>(index) >= 6.0f) {
+          this->state.unknown_11C84->slots[0].distance = 2.0f;
+        }
+      }
+
+      this->state.unknown_11C84->slots[0].height[10] = 0.0f;
+      this->state.unknown_11C84->slots[0].flag1[0] = 1;
+    } else {
+      this->state.unknown_11C84->slots[0].height[6] = static_cast<float>(angle);
+      this->state.unknown_11C84->slots[0].height[7] = -15.0f;
+      this->state.unknown_11C84->slots[0].distance = 2.0f;
+      this->state.unknown_11C84->slots[0].height[10] = 0.0f;
+      this->state.unknown_11C84->slots[0].flag1[0] = 0;
+
+      if (this->state.deltaPos[0] > 10.0f) {
+        this->state.unknown_11C84->slots[0].distance = 2.0f;
+
+        if (this->state.deltaPos[0] - static_cast<float>(index) >= 11.0f) {
+          this->state.unknown_11C84->slots[0].flag1[0] = static_cast<char>(21);
+        } else {
+          this->state.unknown_11C84->slots[0].flag1[0] = static_cast<char>(20);
+        }
+      } else if (this->state.deltaPos[0] > 5.0f) {
+        if (this->state.deltaPos[0] - static_cast<float>(index) >= 6.0f) {
+          this->state.unknown_11C84->slots[0].distance = 2.0f;
+          this->state.unknown_11C84->slots[0].flag1[0] = static_cast<char>(20);
+        }
+      }
+    }
+
+    this->state.unknown_11C84->slots[0].height[8] = static_cast<float>(std::max(rand() % 360, 0));
+    this->state.unknown_11C84->slots[0].alphaB = 0;
+    this->state.unknown_11C84->slots[0].process = 0;
+    AllocateTextures(*this->state.unknown_11C84);
+
+    const char* texture;
+
+    switch (kind) {
+    case 4:
+      texture = "effect\\RL_richs_coin_B\\rcoin1.bmp";
+      break;
+    case 10:
+      texture = "effect\\fire-1.bmp";
+      break;
+    case 11:
+      texture = "effect\\lightning-1.bmp";
+      break;
+    case 12:
+      texture = "effect\\water-1.bmp";
+      break;
+    case 13:
+      texture = "effect\\stone-1.bmp";
+      break;
+    default:
+      texture = "effect\\thunder_center.bmp";
+      break;
+    }
+
+    this->state.unknown_11C84->textures[0] = g_texMgr.Load(texture, 0, false, true, false);
+    phase += 360;
+    angle += 72;
+  }
+}
+// OFFSET: 0x00C62260
+// FUNCTION: fn_20250
+void CRagEffect::WhiteRingWave() {
+  if (this->state.stateCnt % 100 != 0) {
+    return;
+  }
+
+  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 63, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  this->state.unknown_11C84->renderFlag = 5;
+  this->state.unknown_11C84->duration = this->state.duration;
+  AllocateTextures(*this->state.unknown_11C84);
+  this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\ring_white.tga", 0, false, true, false);
+  this->state.unknown_11C84->size = 16.0f;
+  this->state.unknown_11C84->slots[0].life = 1;
+  this->state.unknown_11C84->slots[0].process = 0;
+  this->state.unknown_11C84->slots[0].fullDisplayAngle = 360;
+  this->state.unknown_11C84->slots[0].maxHeight = 6.001f;
+  this->state.unknown_11C84->slots[0].rotStart = 0;
+  this->state.unknown_11C84->slots[0].alphaB = 0;
+  this->state.unknown_11C84->slots[0].distance = 0.0f;
+  this->state.unknown_11C84->slots[0].riseAngle = 2;
+  this->state.unknown_11C84->slots[0].alphaT = 100;
+  this->state.unknown_11C84->slots[0].vecBNow.y = 0.0f;
+
+  for (int height = 0; height < 21; ++height) {
+    this->state.unknown_11C84->slots[0].height[height] = 0.0f;
+    this->state.unknown_11C84->slots[0].flag1[height] = 1;
+  }
+
+  this->state.unknown_11C84->slots[1].life = 1;
+  this->state.unknown_11C84->slots[1].process = -10;
+  this->state.unknown_11C84->slots[1].fullDisplayAngle = 360;
+  this->state.unknown_11C84->slots[1].maxHeight = 6.001f;
+  this->state.unknown_11C84->slots[1].rotStart = 25;
+  this->state.unknown_11C84->slots[1].alphaB = 0;
+  this->state.unknown_11C84->slots[1].distance = 0.0f;
+  this->state.unknown_11C84->slots[1].riseAngle = 3;
+  this->state.unknown_11C84->slots[1].alphaT = 100;
+  this->state.unknown_11C84->slots[1].vecBNow.y = 0.0f;
+
+  for (int height = 0; height < 21; ++height) {
+    this->state.unknown_11C84->slots[1].height[height] = 0.0f;
+    this->state.unknown_11C84->slots[1].flag1[height] = 1;
+  }
+
+  this->state.unknown_11C84->slots[2].life = 1;
+  this->state.unknown_11C84->slots[2].process = -20;
+  this->state.unknown_11C84->slots[2].fullDisplayAngle = 360;
+  this->state.unknown_11C84->slots[2].maxHeight = 6.001f;
+  this->state.unknown_11C84->slots[2].rotStart = 50;
+  this->state.unknown_11C84->slots[2].alphaB = 0;
+  this->state.unknown_11C84->slots[2].distance = 0.0f;
+  this->state.unknown_11C84->slots[2].riseAngle = 4;
+  this->state.unknown_11C84->slots[2].alphaT = 100;
+  this->state.unknown_11C84->slots[2].vecBNow.y = 0.0f;
+
+  for (int height = 0; height < 21; ++height) {
+    this->state.unknown_11C84->slots[2].height[height] = 0.0f;
+    this->state.unknown_11C84->slots[2].flag1[height] = 1;
+  }
+
+  this->state.unknown_11C84->slots[3].life = 0;
+  this->state.unknown_11C84->slots[3].process = 0;
+  this->state.unknown_11C84->slots[3].alphaT = 1;
+}
+// OFFSET: 0x00C59FD0
+// FUNCTION: fn_20217
+void CRagEffect::TripleRingStack(const char* name, char large) {
+  const RenderObjectState& parent = this->state.parent->render;
+  this->render.position.x = parent.position.x;
+  this->render.position.y = parent.position.y;
+  this->render.position.z = parent.position.z;
+
+  if (this->state.stateCnt == 99999998) {
+    this->state.stateCnt = 0;
+    this->state.duration = 99999999;
+  } else if (this->state.stateCnt != 0) {
+    return;
+  }
+
+  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 23, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  this->state.unknown_11C84->renderFlag = 0;
+  this->state.unknown_11C84->renderFlag |= 1;
+  this->state.unknown_11C84->renderFlag |= 5;
+  this->state.unknown_11C84->duration = this->state.duration;
+  AllocateTextures(*this->state.unknown_11C84);
+  this->state.unknown_11C84->textures[0] = g_texMgr.Load(name, 0, false, true, false);
+
+  if (large == 1) {
+    this->state.unknown_11C84->size = 7.0f;
+  } else {
+    this->state.unknown_11C84->size = 4.0f;
+  }
+
+  this->state.unknown_11C84->slots[0].life = 1;
+  this->state.unknown_11C84->slots[0].process = 0;
+  this->state.unknown_11C84->slots[0].fullDisplayAngle = 315;
+  this->state.unknown_11C84->slots[0].maxHeight = 15.0f;
+  this->state.unknown_11C84->slots[0].rotStart = 0;
+  this->state.unknown_11C84->slots[0].alphaB = 120;
+  this->state.unknown_11C84->slots[0].distance = 3.9f;
+  this->state.unknown_11C84->slots[0].riseAngle = 55;
+  this->state.unknown_11C84->slots[0].vecBNow.y = 0.0f;
+
+  for (int height = 0; height < 21; ++height) {
+    this->state.unknown_11C84->slots[0].height[height] = 0.0f;
+    this->state.unknown_11C84->slots[0].flag1[height] = 0;
+  }
+
+  this->state.unknown_11C84->slots[1].life = 1;
+  this->state.unknown_11C84->slots[1].process = 0;
+  this->state.unknown_11C84->slots[1].fullDisplayAngle = 315;
+  this->state.unknown_11C84->slots[1].maxHeight = 13.0f;
+  this->state.unknown_11C84->slots[1].rotStart = 90;
+  this->state.unknown_11C84->slots[1].alphaB = 120;
+  this->state.unknown_11C84->slots[1].distance = 4.1f;
+  this->state.unknown_11C84->slots[1].riseAngle = 50;
+  this->state.unknown_11C84->slots[1].vecBNow.y = 0.0f;
+
+  for (int height = 0; height < 21; ++height) {
+    this->state.unknown_11C84->slots[1].height[height] = 0.0f;
+    this->state.unknown_11C84->slots[1].flag1[height] = 0;
+  }
+
+  this->state.unknown_11C84->slots[2].life = 1;
+  this->state.unknown_11C84->slots[2].process = 0;
+  this->state.unknown_11C84->slots[2].fullDisplayAngle = 315;
+  this->state.unknown_11C84->slots[2].maxHeight = 11.0f;
+  this->state.unknown_11C84->slots[2].rotStart = 180;
+  this->state.unknown_11C84->slots[2].alphaB = 120;
+  this->state.unknown_11C84->slots[2].distance = 4.3f;
+  this->state.unknown_11C84->slots[2].riseAngle = 45;
+  this->state.unknown_11C84->slots[2].vecBNow.y = 0.0f;
+
+  for (int height = 0; height < 21; ++height) {
+    this->state.unknown_11C84->slots[2].height[height] = 0.0f;
+    this->state.unknown_11C84->slots[2].flag1[height] = 0;
+  }
+
+  this->state.unknown_11C84->slots[3].life = 0;
+}
+// OFFSET: 0x00C5BED0
+// FUNCTION: fn_20226
+void CRagEffect::WideTripleRingStack(const char* name) {
+  const RenderObjectState& parent = this->state.parent->render;
+  this->render.position.x = parent.position.x;
+  this->render.position.y = parent.position.y;
+  this->render.position.z = parent.position.z;
+
+  if (this->state.stateCnt != 0) {
+    return;
+  }
+
+  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 23, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  this->state.unknown_11C84->renderFlag = 0;
+  this->state.unknown_11C84->renderFlag |= 1;
+  this->state.unknown_11C84->renderFlag |= 5;
+  this->state.unknown_11C84->duration = this->state.duration;
+  AllocateTextures(*this->state.unknown_11C84);
+  this->state.unknown_11C84->textures[0] = g_texMgr.Load(name, 0, false, true, false);
+  this->state.unknown_11C84->size = 0.0f;
+
+  this->state.unknown_11C84->slots[0].life = 1;
+  this->state.unknown_11C84->slots[0].process = 0;
+  this->state.unknown_11C84->slots[0].fullDisplayAngle = 315;
+  this->state.unknown_11C84->slots[0].maxHeight = 15.0f;
+  this->state.unknown_11C84->slots[0].rotStart = 0;
+  this->state.unknown_11C84->slots[0].alphaB = 50;
+  this->state.unknown_11C84->slots[0].alphaT = 1;
+  this->state.unknown_11C84->slots[0].distance = 12.9f;
+  this->state.unknown_11C84->slots[0].riseAngle = 55;
+  this->state.unknown_11C84->slots[0].vecBNow.y = 0.0f;
+
+  for (int height = 0; height < 21; ++height) {
+    this->state.unknown_11C84->slots[0].height[height] = 0.0f;
+    this->state.unknown_11C84->slots[0].flag1[height] = 0;
+  }
+
+  this->state.unknown_11C84->slots[1].life = 1;
+  this->state.unknown_11C84->slots[1].process = 0;
+  this->state.unknown_11C84->slots[1].fullDisplayAngle = 315;
+  this->state.unknown_11C84->slots[1].maxHeight = 13.0f;
+  this->state.unknown_11C84->slots[1].rotStart = 90;
+  this->state.unknown_11C84->slots[1].alphaB = 50;
+  this->state.unknown_11C84->slots[1].alphaT = 1;
+  this->state.unknown_11C84->slots[1].distance = 13.1f;
+  this->state.unknown_11C84->slots[1].riseAngle = 50;
+  this->state.unknown_11C84->slots[1].vecBNow.y = 0.0f;
+
+  for (int height = 0; height < 21; ++height) {
+    this->state.unknown_11C84->slots[1].height[height] = 0.0f;
+    this->state.unknown_11C84->slots[1].flag1[height] = 0;
+  }
+
+  this->state.unknown_11C84->slots[2].life = 1;
+  this->state.unknown_11C84->slots[2].process = 0;
+  this->state.unknown_11C84->slots[2].fullDisplayAngle = 315;
+  this->state.unknown_11C84->slots[2].maxHeight = 11.0f;
+  this->state.unknown_11C84->slots[2].rotStart = 180;
+  this->state.unknown_11C84->slots[2].alphaB = 50;
+  this->state.unknown_11C84->slots[2].alphaT = 1;
+  this->state.unknown_11C84->slots[2].distance = 13.3f;
+  this->state.unknown_11C84->slots[2].riseAngle = 45;
+  this->state.unknown_11C84->slots[2].vecBNow.y = 0.0f;
+
+  for (int height = 0; height < 21; ++height) {
+    this->state.unknown_11C84->slots[2].height[height] = 0.0f;
+    this->state.unknown_11C84->slots[2].flag1[height] = 0;
+  }
+
+  this->state.unknown_11C84->slots[3].life = 0;
+}
+// OFFSET: 0x00C42E80
+// FUNCTION: fn_20140
+void CRagEffect::SoulLink(int) {
+  const RenderObjectState& parent = this->state.parent->render;
+  this->render.position.x = parent.position.x;
+  this->render.position.y = parent.position.y;
+  this->render.position.z = parent.position.z;
+
+  if (this->state.stateCnt == 1) {
+    this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 68, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+    this->state.unknown_11C84->renderFlag = 5;
+    this->state.unknown_11C84->duration = this->state.duration;
+    this->state.unknown_11C84->totalTexture = 4;
+    AllocateTextures(*this->state.unknown_11C84);
+    this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\soul_l.tga", 0, false, true, false);
+    this->state.unknown_11C84->textures[1] = g_texMgr.Load("effect\\soul_u.tga", 0, false, true, false);
+    this->state.unknown_11C84->textures[2] = g_texMgr.Load("effect\\soul_o.tga", 0, false, true, false);
+    this->state.unknown_11C84->textures[3] = g_texMgr.Load("effect\\soul_s.tga", 0, false, true, false);
+    this->state.unknown_11C84->size = 0.0f;
+
+    for (int index = 0; index < 4; ++index) {
+      this->state.unknown_11C84->slots[index].life = 0;
+    }
+
+    for (int index = 0; index < 4; ++index) {
+      this->state.unknown_11C84->slots[index].life = 1;
+      this->state.unknown_11C84->slots[index].process = index * 20 - 60;
+      this->state.unknown_11C84->slots[index].distance = 5.0f;
+      this->state.unknown_11C84->slots[index].alphaB = 0;
+      this->state.unknown_11C84->slots[index].height[0] = static_cast<float>(-4 - index * 6);
+      this->state.unknown_11C84->slots[index].flag1[0] = static_cast<char>(index);
+      this->state.unknown_11C84->slots[index].flag1[4] = 2;
+
+      for (int height = 1; height < 11; ++height) {
+        this->state.unknown_11C84->slots[index].height[height] = 0.0f;
+      }
+    }
+  } else if (this->state.stateCnt == 21) {
+    this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 68, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+    this->state.unknown_11C84->renderFlag = 5;
+    this->state.unknown_11C84->duration = this->state.duration;
+    this->state.unknown_11C84->totalTexture = 4;
+    AllocateTextures(*this->state.unknown_11C84);
+    this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\soul_k.tga", 0, false, true, false);
+    this->state.unknown_11C84->textures[1] = g_texMgr.Load("effect\\soul_n.tga", 0, false, true, false);
+    this->state.unknown_11C84->textures[2] = g_texMgr.Load("effect\\soul_i.tga", 0, false, true, false);
+    this->state.unknown_11C84->textures[3] = g_texMgr.Load("effect\\soul_l.tga", 0, false, true, false);
+    this->state.unknown_11C84->size = 0.0f;
+
+    for (int index = 0; index < 4; ++index) {
+      this->state.unknown_11C84->slots[index].life = 0;
+    }
+
+    for (int index = 0; index < 4; ++index) {
+      this->state.unknown_11C84->slots[index].life = 1;
+      this->state.unknown_11C84->slots[index].process = index * 20 - 120;
+      this->state.unknown_11C84->slots[index].distance = 5.0f;
+      this->state.unknown_11C84->slots[index].alphaB = 0;
+      this->state.unknown_11C84->slots[index].height[0] = static_cast<float>(22 - index * 6);
+      this->state.unknown_11C84->slots[index].flag1[0] = static_cast<char>(index);
+      this->state.unknown_11C84->slots[index].flag1[4] = 2;
+
+      for (int height = 1; height < 11; ++height) {
+        this->state.unknown_11C84->slots[index].height[height] = 0.0f;
+      }
+    }
+  }
+}
+// OFFSET: 0x00C57CA0
+// FUNCTION: fn_20206
+void CRagEffect::WhiteSparkStreak(char kind) {
+  const RenderObjectState& parent = this->state.parent->render;
+  this->render.position.x = parent.position.x;
+  this->render.position.y = parent.position.y;
+  this->render.position.z = parent.position.z;
+
+  int limit = 0;
+
+  if (kind == 1) {
+    limit = 2;
+  } else if (kind == 3) {
+    limit = 5;
+  }
+
+  if (this->state.stateCnt < 0 || this->state.stateCnt >= limit) {
+    return;
+  }
+
+  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 100, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  this->state.unknown_11C84->renderFlag = 5;
+  this->state.unknown_11C84->duration = this->state.duration;
+  this->state.unknown_11C84->totalTexture = 1;
+  AllocateTextures(*this->state.unknown_11C84);
+  this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\white02.bmp", 0, false, true, false);
+  this->state.unknown_11C84->size = 0.0f;
+
+  for (int index = 0; index < 4; ++index) {
+    this->state.unknown_11C84->slots[index].life = 1;
+
+    if (kind == 1) {
+      this->state.unknown_11C84->slots[index].process = -std::max(rand() % 11, 0);
+      this->state.unknown_11C84->slots[index].maxHeight = 0.1f;
+      this->state.unknown_11C84->slots[index].alphaB = static_cast<std::int16_t>(std::max(rand() % 51, 0) + 125);
+      this->state.unknown_11C84->slots[index].riseAngle = static_cast<std::int16_t>(std::max(rand() % 360, 0));
+      this->state.unknown_11C84->slots[index].distance = static_cast<float>(std::max(rand() % 5, 0)) + 5.0f;
+      this->state.unknown_11C84->slots[index].vecTNow.y = 3.0f;
+    } else if (kind == 3) {
+      this->state.unknown_11C84->slots[index].process = -30 - std::max(rand() % 41, 0);
+      this->state.unknown_11C84->slots[index].maxHeight = 0.07f;
+      this->state.unknown_11C84->slots[index].alphaB = static_cast<std::int16_t>(std::max(rand() % 121, 0) + 125);
+      this->state.unknown_11C84->slots[index].riseAngle = static_cast<std::int16_t>(std::max(rand() % 360, 0));
+      this->state.unknown_11C84->slots[index].distance = static_cast<float>(std::max(rand() % 6, 0)) + 6.0f;
+      this->state.unknown_11C84->slots[index].vecTNow.y = 4.0f;
+    } else {
+      this->state.unknown_11C84->slots[index].process = -std::max(rand() % 26, 0);
+      this->state.unknown_11C84->slots[index].maxHeight = 0.1f;
+
+      if (kind < 3) {
+        this->state.unknown_11C84->slots[index].alphaB = static_cast<std::int16_t>(std::max(rand() % 51, 0) + 125);
+      } else {
+        this->state.unknown_11C84->slots[index].alphaB = static_cast<std::int16_t>(std::max(rand() % 121, 0) + 125);
+      }
+
+      this->state.unknown_11C84->slots[index].riseAngle = static_cast<std::int16_t>(std::max(rand() % 360, 0));
+      this->state.unknown_11C84->slots[index].distance = static_cast<float>(std::max(rand() % 6, 0)) + 6.0f;
+      this->state.unknown_11C84->slots[index].vecTNow.y = 5.0f;
+    }
+
+    this->state.unknown_11C84->slots[index].height[0] = 0.0f;
+    this->state.unknown_11C84->slots[index].vecTNow.x = static_cast<float>(std::max(rand() % 7, 0)) * 0.1f + 0.6f;
+    this->state.unknown_11C84->slots[index].vecBNow.x = this->render.position.x;
+    this->state.unknown_11C84->slots[index].vecBNow.y = this->render.position.y;
+    this->state.unknown_11C84->slots[index].vecBNow.z = this->render.position.z;
+
+    for (int height = 1; height < 21; ++height) {
+      this->state.unknown_11C84->slots[index].height[height] = 0.0f;
+      this->state.unknown_11C84->slots[index].flag1[height] = 0;
+    }
+
+    this->state.unknown_11C84->slots[index].alphaT = kind;
+
+    if (kind == 1) {
+      for (int step = 0; step < 10; ++step) {
+        this->state.unknown_11C84->slots[index].height[0] += 6.0f;
+
+        if (this->state.unknown_11C84->slots[index].height[0] > 180.0f) {
+          this->state.unknown_11C84->slots[index].height[0] = 180.0f;
+        }
+
+        for (int layer = static_cast<int>(this->state.unknown_11C84->slots[index].vecTNow.y); layer > 0; --layer) {
+          this->state.unknown_11C84->slots[index].height[layer] = this->state.unknown_11C84->slots[index].height[layer - 1];
+        }
+      }
+    }
+  }
+}
+// OFFSET: 0x00C61C50
+// FUNCTION: fn_20249
+void CRagEffect::BlueRingWave() {
+  if (this->state.stateCnt % 14 == 0) {
+    this->render.position = this->state.parent->render.position;
+    PlayEffectWave(*this, "effect\\EF_ReadyPortal.wav");
+  }
+
+  if (this->state.stateCnt != 0) {
+    return;
+  }
+
+  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 63, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  this->state.unknown_11C84->renderFlag = 5;
+  this->state.unknown_11C84->duration = this->state.duration;
+  AllocateTextures(*this->state.unknown_11C84);
+  this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\ring_blue.tga", 0, false, true, false);
+  this->state.unknown_11C84->size = 5.0f;
+
+  this->state.unknown_11C84->slots[0].life = 1;
+  this->state.unknown_11C84->slots[0].process = 0;
+  this->state.unknown_11C84->slots[0].fullDisplayAngle = 360;
+  this->state.unknown_11C84->slots[0].maxHeight = 6.001f;
+  this->state.unknown_11C84->slots[0].rotStart = 0;
+  this->state.unknown_11C84->slots[0].alphaB = 0;
+  this->state.unknown_11C84->slots[0].distance = 0.0f;
+  this->state.unknown_11C84->slots[0].riseAngle = 2;
+  this->state.unknown_11C84->slots[0].alphaT = 100;
+  this->state.unknown_11C84->slots[0].vecBNow.y = 0.0f;
+
+  for (int height = 0; height < 21; ++height) {
+    this->state.unknown_11C84->slots[0].height[height] = 0.0f;
+    this->state.unknown_11C84->slots[0].flag1[height] = 1;
+  }
+
+  this->state.unknown_11C84->slots[1].life = 1;
+  this->state.unknown_11C84->slots[1].process = -10;
+  this->state.unknown_11C84->slots[1].fullDisplayAngle = 360;
+  this->state.unknown_11C84->slots[1].maxHeight = 6.001f;
+  this->state.unknown_11C84->slots[1].rotStart = 25;
+  this->state.unknown_11C84->slots[1].alphaB = 0;
+  this->state.unknown_11C84->slots[1].distance = 0.0f;
+  this->state.unknown_11C84->slots[1].riseAngle = 3;
+  this->state.unknown_11C84->slots[1].alphaT = 100;
+  this->state.unknown_11C84->slots[1].vecBNow.y = 0.0f;
+
+  for (int height = 0; height < 21; ++height) {
+    this->state.unknown_11C84->slots[1].height[height] = 0.0f;
+    this->state.unknown_11C84->slots[1].flag1[height] = 1;
+  }
+
+  this->state.unknown_11C84->slots[2].life = 1;
+  this->state.unknown_11C84->slots[2].process = -20;
+  this->state.unknown_11C84->slots[2].fullDisplayAngle = 360;
+  this->state.unknown_11C84->slots[2].maxHeight = 6.001f;
+  this->state.unknown_11C84->slots[2].rotStart = 50;
+  this->state.unknown_11C84->slots[2].alphaB = 0;
+  this->state.unknown_11C84->slots[2].distance = 0.0f;
+  this->state.unknown_11C84->slots[2].riseAngle = 4;
+  this->state.unknown_11C84->slots[2].alphaT = 100;
+  this->state.unknown_11C84->slots[2].vecBNow.y = 0.0f;
+
+  for (int height = 0; height < 21; ++height) {
+    this->state.unknown_11C84->slots[2].height[height] = 0.0f;
+    this->state.unknown_11C84->slots[2].flag1[height] = 1;
+  }
+
+  this->state.unknown_11C84->slots[3].life = 0;
+  this->state.unknown_11C84->slots[3].process = 0;
+  this->state.unknown_11C84->slots[3].alphaT = 1;
+}
+// OFFSET: 0x00C526D0
+// OFFSET: 0x00C4A650
+// FUNCTION: fn_20170
+void CRagEffect::QuadRingStack(const char* name) {
+  this->render.position = this->state.parent->render.position;
+
+  if (this->state.stateCnt != 0) {
+    return;
+  }
+
+  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 24, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  this->state.unknown_11C84->renderFlag = 5;
+  this->state.unknown_11C84->duration = this->state.duration;
+  AllocateTextures(*this->state.unknown_11C84);
+  this->state.unknown_11C84->textures[0] = g_texMgr.Load(name, 0, false, true, false);
+  this->state.unknown_11C84->size = 0.0f;
+
+  this->state.unknown_11C84->slots[0].life = 1;
+  this->state.unknown_11C84->slots[0].process = 0;
+  this->state.unknown_11C84->slots[0].fullDisplayAngle = 360;
+  this->state.unknown_11C84->slots[0].maxHeight = 40.0f;
+  this->state.unknown_11C84->slots[0].rotStart = 180;
+  this->state.unknown_11C84->slots[0].alphaB = 0;
+  this->state.unknown_11C84->slots[0].distance = 8.0f;
+  this->state.unknown_11C84->slots[0].riseAngle = 90;
+  this->state.unknown_11C84->slots[0].vecBNow.y = 0.0f;
+
+  for (int height = 0; height < 21; ++height) {
+    this->state.unknown_11C84->slots[0].height[height] = 0.0f;
+    this->state.unknown_11C84->slots[0].flag1[height] = 0;
+  }
+
+  this->state.unknown_11C84->slots[1].life = 1;
+  this->state.unknown_11C84->slots[1].process = 0;
+  this->state.unknown_11C84->slots[1].fullDisplayAngle = 360;
+  this->state.unknown_11C84->slots[1].maxHeight = 39.0f;
+  this->state.unknown_11C84->slots[1].rotStart = 270;
+  this->state.unknown_11C84->slots[1].alphaB = 0;
+  this->state.unknown_11C84->slots[1].distance = 7.9f;
+  this->state.unknown_11C84->slots[1].riseAngle = 90;
+  this->state.unknown_11C84->slots[1].vecBNow.y = 0.0f;
+
+  for (int height = 0; height < 21; ++height) {
+    this->state.unknown_11C84->slots[1].height[height] = 0.0f;
+    this->state.unknown_11C84->slots[1].flag1[height] = 0;
+  }
+
+  this->state.unknown_11C84->slots[2].life = 1;
+  this->state.unknown_11C84->slots[2].process = 0;
+  this->state.unknown_11C84->slots[2].fullDisplayAngle = 360;
+  this->state.unknown_11C84->slots[2].maxHeight = 38.0f;
+  this->state.unknown_11C84->slots[2].rotStart = 0;
+  this->state.unknown_11C84->slots[2].alphaB = 0;
+  this->state.unknown_11C84->slots[2].distance = 7.8f;
+  this->state.unknown_11C84->slots[2].riseAngle = 90;
+  this->state.unknown_11C84->slots[2].vecBNow.y = 0.0f;
+
+  for (int height = 0; height < 21; ++height) {
+    this->state.unknown_11C84->slots[2].height[height] = 0.0f;
+    this->state.unknown_11C84->slots[2].flag1[height] = 0;
+  }
+
+  this->state.unknown_11C84->slots[3].life = 1;
+  this->state.unknown_11C84->slots[3].process = 0;
+  this->state.unknown_11C84->slots[3].fullDisplayAngle = 360;
+  this->state.unknown_11C84->slots[3].maxHeight = 37.0f;
+  this->state.unknown_11C84->slots[3].rotStart = 90;
+  this->state.unknown_11C84->slots[3].alphaB = 0;
+  this->state.unknown_11C84->slots[3].distance = 7.7f;
+  this->state.unknown_11C84->slots[3].riseAngle = 90;
+  this->state.unknown_11C84->slots[3].vecBNow.y = 0.0f;
+
+  for (int height = 0; height < 21; ++height) {
+    this->state.unknown_11C84->slots[3].height[height] = 0.0f;
+    this->state.unknown_11C84->slots[3].flag1[height] = 0;
+  }
+}
+// OFFSET: 0x00C44290
+// FUNCTION: fn_20143
+void CRagEffect::QuadRingStackSized(const char* name, char kind) {
+  if (this->state.duration < 70) {
+    this->state.duration = 70;
+  }
+
+  this->render.position = this->state.parent->render.position;
+
+  if (kind == 33) {
+    kind = 0;
+    this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 25, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  } else {
+    this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 23, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  }
+
+  this->state.unknown_11C84->renderFlag = 5;
+  this->state.unknown_11C84->duration = this->state.duration;
+  AllocateTextures(*this->state.unknown_11C84);
+  this->state.unknown_11C84->textures[0] = g_texMgr.Load(name, 0, false, true, false);
+  this->state.unknown_11C84->size = static_cast<float>(kind);
+
+  this->state.unknown_11C84->slots[0].life = 1;
+  this->state.unknown_11C84->slots[0].process = 0;
+  this->state.unknown_11C84->slots[0].fullDisplayAngle = 315;
+  this->state.unknown_11C84->slots[0].maxHeight = 25.0f;
+  this->state.unknown_11C84->slots[0].rotStart = 0;
+  this->state.unknown_11C84->slots[0].alphaB = 180;
+  this->state.unknown_11C84->slots[0].distance = 4.5f;
+  this->state.unknown_11C84->slots[0].riseAngle = 70;
+  this->state.unknown_11C84->slots[0].vecBNow.y = 0.0f;
+
+  for (int height = 0; height < 21; ++height) {
+    this->state.unknown_11C84->slots[0].height[height] = 0.0f;
+    this->state.unknown_11C84->slots[0].flag1[height] = 0;
+  }
+
+  this->state.unknown_11C84->slots[1].life = 1;
+  this->state.unknown_11C84->slots[1].process = 0;
+  this->state.unknown_11C84->slots[1].fullDisplayAngle = 315;
+  this->state.unknown_11C84->slots[1].maxHeight = 22.0f;
+  this->state.unknown_11C84->slots[1].rotStart = 90;
+  this->state.unknown_11C84->slots[1].alphaB = 180;
+  this->state.unknown_11C84->slots[1].distance = 5.0f;
+  this->state.unknown_11C84->slots[1].riseAngle = 57;
+  this->state.unknown_11C84->slots[1].vecBNow.y = 0.0f;
+
+  for (int height = 0; height < 21; ++height) {
+    this->state.unknown_11C84->slots[1].height[height] = 0.0f;
+    this->state.unknown_11C84->slots[1].flag1[height] = 0;
+  }
+
+  this->state.unknown_11C84->slots[2].life = 1;
+  this->state.unknown_11C84->slots[2].process = 0;
+  this->state.unknown_11C84->slots[2].fullDisplayAngle = 315;
+  this->state.unknown_11C84->slots[2].maxHeight = 19.0f;
+  this->state.unknown_11C84->slots[2].rotStart = 180;
+  this->state.unknown_11C84->slots[2].alphaB = 180;
+  this->state.unknown_11C84->slots[2].distance = 5.5f;
+  this->state.unknown_11C84->slots[2].riseAngle = 45;
+  this->state.unknown_11C84->slots[2].vecBNow.y = 0.0f;
+
+  for (int height = 0; height < 21; ++height) {
+    this->state.unknown_11C84->slots[2].height[height] = 0.0f;
+    this->state.unknown_11C84->slots[2].flag1[height] = 0;
+  }
+
+  this->state.unknown_11C84->slots[3].life = 1;
+  this->state.unknown_11C84->slots[3].process = 0;
+  this->state.unknown_11C84->slots[3].fullDisplayAngle = 360;
+  this->state.unknown_11C84->slots[3].maxHeight = 250.0f;
+  this->state.unknown_11C84->slots[3].rotStart = 0;
+  this->state.unknown_11C84->slots[3].alphaB = 70;
+  this->state.unknown_11C84->slots[3].distance = 4.0f;
+  this->state.unknown_11C84->slots[3].riseAngle = 89;
+  this->state.unknown_11C84->slots[3].vecBNow.y = 0.0f;
+
+  for (int height = 0; height < 21; ++height) {
+    this->state.unknown_11C84->slots[3].height[height] = 0.0f;
+    this->state.unknown_11C84->slots[3].flag1[height] = 0;
   }
 }
