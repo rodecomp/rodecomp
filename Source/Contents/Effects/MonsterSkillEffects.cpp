@@ -1670,6 +1670,11 @@ CHawkVumerangEffect::CHawkVumerangEffect()
       unknown_0118{} {
 }
 
+// OFFSET: 0x00718620
+// FUNCTION: fn_07295
+CHawkVumerangEffect::~CHawkVumerangEffect() {
+}
+
 // OFFSET: 0x007187F0
 // FUNCTION: fn_07297
 void CHawkVumerangEffect::Close() {
@@ -2012,6 +2017,11 @@ void CJupitelThunderHit::Slot04() {
 // OFFSET: 0x0071CCB0
 // FUNCTION: fn_07327
 CNewCloudKillEffect::CNewCloudKillEffect() : CEffect(1196), unknown_00F4(0), unknown_00F8(0) {
+}
+
+// OFFSET: 0x0071CE00
+// FUNCTION: fn_07328
+CNewCloudKillEffect::~CNewCloudKillEffect() {
 }
 
 // OFFSET: 0x0071D460
@@ -2826,6 +2836,11 @@ CServantWeaponEffect::CServantWeaponEffect() : CEffect(-1), offsets{} {
 CServantWeaponNewEffect::CServantWeaponNewEffect() : CEffect(2460) {
 }
 
+// OFFSET: 0x00722830
+// FUNCTION: fn_07391
+CServantWeaponNewEffect::~CServantWeaponNewEffect() {
+}
+
 // OFFSET: 0x00722A70
 // FUNCTION: fn_07394
 void CServantWeaponNewEffect::AddWeapon() {
@@ -3146,6 +3161,11 @@ void CServantWeaponNewEffect::Shoot(int skill) {
 // FUNCTION: fn_07410
 CSevereRainStorm::CSevereRainStorm() : CEffect(-1) {
   this->unknown_0050 = 0;
+}
+
+// OFFSET: 0x007251C0
+// FUNCTION: fn_07411
+CSevereRainStorm::~CSevereRainStorm() {
 }
 
 // OFFSET: 0x0071D650

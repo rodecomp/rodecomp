@@ -394,6 +394,7 @@ public:
 class CServantWeaponNewEffect : public CEffect {
 public:
   CServantWeaponNewEffect();
+  ~CServantWeaponNewEffect() override;
   bool Slot06() override;
   void Slot01() override;
   void Slot03() override;
@@ -410,6 +411,7 @@ public:
 class CSevereRainStorm : public CEffect {
 public:
   CSevereRainStorm();
+  ~CSevereRainStorm() override;
   void Slot01() override;
   void Slot03() override;
   void Slot04() override;
@@ -462,6 +464,7 @@ public:
 class CNewCloudKillEffect : public CEffect {
 public:
   CNewCloudKillEffect();
+  ~CNewCloudKillEffect() override;
   void Slot01() override;
   void Slot03() override;
   void Slot04() override;
@@ -501,6 +504,7 @@ public:
 class CHawkVumerangEffect : public CEffect {
 public:
   CHawkVumerangEffect();
+  ~CHawkVumerangEffect() override;
   void Slot04() override;
   bool Slot06() override;
   void Close() override;
