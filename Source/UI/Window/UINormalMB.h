@@ -10,6 +10,8 @@ class UITextViewer;
 struct UITextViewerContext;
 
 class UINormalMB : public UIFrameWnd {
+  friend class UICashEmotionListWnd;
+
 public:
   UINormalMB(UIWindowContext& windows, UIFrameContext& frames);
   void Paint() override;

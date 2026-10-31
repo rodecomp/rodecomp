@@ -9,6 +9,10 @@
 #include "Resource/Sprites/SpriteResource.h"
 #include "UI/Buttons/UISpriteButton.h"
 #include "Client/Mode/ModeMgr.h"
+#include "Client/Session.h"
+#include "Contents/Skills/SkillInfo.h"
+#include "Contents/UserData/NormalItemSlots.h"
+#include "Network/Connection/Connection.h"
 #include "Contents/SimpleStringMgr.h"
 #include "Network/TextEncoding.h"
 #include "Resource/Bitmap/BitmapResource.h"
@@ -30,6 +34,8 @@
 #include "UI/Window/InputFocus.h"
 #include "UI/Window/UIFrameWnd.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/UINormalMB.h"
+#include "UI/Window/WindowDialogs.h"
 #include "UI/Window/WindowBorder.h"
 #include "Utility/Text/FormatString.h"
 #include "Contents/Schedule/CheckGDISchedule.h"
@@ -245,12 +251,16 @@ protected:
   /* 00BC */ std::string m_filter;
 };
 
-struct CashEmotionListPlacement {
-  /* 0000 */ int x;
-  /* 0004 */ int y;
-  /* 0008 */ int width;
-  /* 000C */ int height;
+#pragma pack(push, 1)
+struct CashEmotionPurchasePacket {
+  /* 0000 */ std::uint16_t id;
+  /* 0002 */ std::uint16_t packId;
+  /* 0004 */ std::uint16_t itemId;
+  /* 0006 */ std::uint8_t price;
 };
+#pragma pack(pop)
+
+static_assert(sizeof(CashEmotionPurchasePacket) == 7);
 
 class UICashEmotionListWnd : public UIFrameWnd {
 public:
@@ -258,6 +268,7 @@ public:
   void Slot11() override;
   void Slot19() override;
   void Paint() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
   UIBitmapButton* CreateButton(int x, int y, int width, int height, int id, const char* format, bool hasDisabled);
   void RefreshCurrentList();
@@ -272,7 +283,7 @@ public:
   void RestartExpirySchedule();
 
 protected:
-  /* 00B4 */ CashEmotionListPlacement* m_placement;
+  /* 00B4 */ CashEmotionListWndInfo* m_placement;
   /* 00B8 */ UICashEmotionListChildWnd_Basic* m_basicList;
   /* 00BC */ UICashEmotionListChildWnd_Purchase* m_purchaseList;
   /* 00C0 */ UICashEmotionListChildWnd_Search* m_searchList;
@@ -1821,6 +1832,150 @@ void UICashEmotionListWnd::RestartExpirySchedule() {
     const std::int64_t interval = 30000;
     scheduler->AddSchedule(new CEmotionPurchaseUseableTimeUISchedule(now, interval, 1));
   }
+}
+
+// OFFSET: 0x007C8170
+// FUNCTION: fn_09417
+int UICashEmotionListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  switch (message) {
+  case 0:
+    this->RefreshCurrentList();
+    return 0;
+
+  case 2:
+    if (this->unknown_00E4) {
+      this->unknown_00E4->Enable(1);
+    }
+    g_cashEmotionMgr->unknown_01C4 = argument1;
+    return this->SetPeriod(argument1);
+
+  case 6:
+    switch (argument1) {
+    case 189:
+      if (this->m_searchEdit) {
+        this->m_searchEdit->SetText("");
+      }
+      if (this->m_currentList) {
+        this->m_currentList->Refresh(nullptr);
+      }
+      return 0;
+
+    case 190:
+      this->RefreshCurrentList();
+      return 0;
+
+    case 191:
+      if (!g_windowMgr.LookupWindow(86)) {
+        g_windowMgr.EnsureWindow(86);
+      } else {
+        g_windowMgr.CloseWindow(86);
+      }
+      return 0;
+
+    case 201:
+      g_windowMgr.CloseWindow(87);
+      return 0;
+
+    case 215: {
+      if (this->m_tab != 0) {
+        auto current = std::as_const(this->m_tabs).find(this->m_tab);
+        if (current == this->m_tabs.end() || sender == current->second) {
+          return 0;
+        }
+      }
+
+      char selected = 0;
+      for (auto& tab : this->m_tabs) {
+        if (sender == tab.second) {
+          tab.second->SendMsg(nullptr, 13, 1, 0, 0, 0);
+          selected = tab.first;
+        } else {
+          tab.second->SendMsg(nullptr, 13, 0, 0, 0, 0);
+        }
+      }
+      this->SetTab(selected);
+      return 0;
+    }
+
+    case 526: {
+      const int packId = g_cashEmotionMgr->unknown_01C4;
+      if (packId <= 0) {
+        return 0;
+      }
+
+      CSkillInfo* skill;
+      if (g_session.IsDoramJob(g_session.GetDisplayJob())) {
+        skill = g_session.m_skillBundle.Find(5018);
+        if (!skill || skill->level <= 0) {
+          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_NOT_ENOUGH_BASICSKILL_LEVEL")), 255, 0, 0, 0);
+          return 0;
+        }
+      } else {
+        skill = g_session.m_skillBundle.Find(1);
+        if (!skill || skill->level <= 1) {
+          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_NOT_ENOUGH_BASICSKILL_LEVEL")), 255, 0, 0, 0);
+          return 0;
+        }
+      }
+
+      const int price = g_cashEmotionMgr->GetPackUnknown18(packId);
+      if (price < 0) {
+        return 0;
+      }
+
+      const bool free = price == 0;
+      if (!free && g_session.GetInventoryItemCount(g_cashEmotionMgr->unknown_01C8) < price) {
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_NOT_ENOUGH_NYANGVINE")), 255, 0, 0, 0);
+        return 0;
+      }
+
+      const char* title = g_cashEmotionMgr->GetPackTitle(packId);
+      if (!title) {
+        return 0;
+      }
+
+      const char* format = g_simpleStringMgr->GetString(free ? "EMSG_CASH_EMOTION_FREE_PURCHASE_QUESTION" : "EMSG_CASH_EMOTION_PURCHASE_QUESTION");
+      if (!format || std::strlen(format) == 0) {
+        return 0;
+      }
+
+      std::string text;
+      text = free ? std::vformat(format, std::make_format_args(title)) : std::vformat(format, std::make_format_args(title, price));
+
+      UINormalMB* box = new UINormalMB(*this->m_context, *this->m_frameContext);
+      box->Create(nullptr, text.c_str(), 2, true, nullptr, 280, 128, nullptr);
+      box->m_keepOpen = 1;
+      g_windowMgr.AddRendered(box);
+      WindowDialogs& dialogs = *reinterpret_cast<WindowDialogs*>(&g_windowMgr);
+      if (dialogs.RunModal(box) == 187) {
+        CashEmotionPurchasePacket packet;
+        packet.id = 0xBEC;
+        packet.packId = g_cashEmotionMgr->unknown_01C4;
+        packet.itemId = g_cashEmotionMgr->unknown_01C8;
+        packet.price = g_cashEmotionMgr->GetPackUnknown18(packet.packId);
+        GetRagConnection().Send(sizeof(packet), &packet);
+      }
+      return 0;
+    }
+    }
+    return 0;
+
+  case 34:
+    this->m_placement = reinterpret_cast<CashEmotionListWndInfo*>(argument1);
+    if (this->m_placement) {
+      if (!this->m_placement->IsValid()) {
+        this->m_placement->Reset();
+      }
+      this->Move(this->m_placement->x, this->m_placement->y);
+    }
+    return 0;
+
+  case 60:
+    this->Invalidate();
+    return 0;
+  }
+
+  return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
 }
 
 // OFFSET: 0x007C8800
