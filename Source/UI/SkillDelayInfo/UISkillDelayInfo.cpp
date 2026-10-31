@@ -9,6 +9,7 @@
 #include "UI/Text/UIStaticTextControl.h"
 #include "UI/Text/UITextViewerControl.h"
 #include "UI/Window/WindowBorder.h"
+#include "UI/Window/UIWindowMgr.h"
 #include <algorithm>
 #include <cstring>
 #include <iterator>
@@ -429,6 +430,12 @@ CUITime::~CUITime() = default;
 // OFFSET: 0x00A77A70
 // FUNCTION: fn_16879
 void CUISkillDelayInfo::OnButtonClick() {
+}
+
+// OFFSET: 0x00A77B00
+// FUNCTION: fn_45472
+void CUISkillDelayInfo::OnClose() {
+  g_windowMgr.CloseWindow(0x272E);
 }
 
 // OFFSET: 0x00A77B10

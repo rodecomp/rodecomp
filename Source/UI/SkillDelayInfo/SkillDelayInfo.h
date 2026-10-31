@@ -61,6 +61,7 @@ public:
   virtual void Slot53();
 
   void OnButtonClick();
+  void OnClose();
   void OnSelectItem(SkillDelayInfo::CUIDelayItem* item, const SkillDelayInfo::CDelayItemData& data);
   void OnUpdateItem(SkillDelayInfo::CUIDelayItem* item, const SkillDelayInfo::CDelayItemData& data);
   void SetSkill(int skillId);
