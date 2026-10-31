@@ -436,3 +436,15 @@ int CSession::GetRidingJob(int job) {
 
   return job;
 }
+
+// OFFSET: 0x00DF31C0
+// FUNCTION: fn_23504
+void CSession::InitNpcLocationRadius() {
+  this->m_npcLocationRadius.clear();
+  for (int job = 0; job < 32003; ++job) {
+    double factor = 0.0;
+    if (this->m_hotkeyScript->Call("ReqshadowFactor", "d>l", job, &factor) && factor >= 0.0) {
+      this->m_npcLocationRadius.try_emplace(job, static_cast<float>(factor));
+    }
+  }
+}

@@ -701,6 +701,7 @@ public:
   const ActionFrame* GetSyncedFrame(CActRes* baseAct, CActRes* act, unsigned action, int baseFrame, std::uint32_t startTime, int* frame);
   float GetNpcLocationRadius(int job, bool riding);
   int GetRidingJob(int job);
+  void InitNpcLocationRadius();
   int GetSpriteJob(int job, int costumeJob, bool spriteIndex);
   bool HasRequiredItems() const;
   bool IsSlotItemIdentity(std::uint32_t id) const;
