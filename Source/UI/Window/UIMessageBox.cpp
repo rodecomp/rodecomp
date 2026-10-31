@@ -1860,6 +1860,73 @@ bool UIReplayControlWnd::RefreshInfo() {
   return true;
 }
 
+// OFFSET: 0x008C14F0
+// FUNCTION: fn_11815
+int UISelectReplayDataWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  switch (message) {
+  case 6:
+    switch (a) {
+    case 184:
+      if (this->m_list->selected != -1) {
+        this->UpdateInfo();
+        this->Invalidate();
+        if (ReplayFileList::Instance().Open(32, 0, 0) == 1) {
+          if (Replay::Instance().MatchesService(g_serviceMode)) {
+            static_cast<CMode*>(g_charViewMode)->SendMsg(10027, 0, 0, 0, 0);
+            g_windowMgr.Schedule(this);
+            g_soundMgr->PlayWave("버튼소리.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+            return 0;
+          }
+          Replay::Instance().CloseFile();
+          reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(1970), 0, true, true, 0, "Message", 280, 120, 0);
+        } else {
+          reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(1969), 0, true, true, 0, "Message", 280, 120, 0);
+        }
+      }
+      break;
+    case 185:
+    case 400:
+      Replay::Instance().SetState(1);
+      g_windowMgr.Schedule(this);
+      static_cast<CMode*>(g_charViewMode)->SendMsg(10025, 0, 0, 0, 0);
+      return 0;
+    case 221:
+      if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(17), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+        static_cast<CMode*>(g_charViewMode)->SendMsg(2, 0, 0, 0, 0);
+        g_windowMgr.Schedule(this);
+        return 0;
+      }
+      break;
+    }
+    break;
+  case 18:
+    this->m_list->SendMsg(nullptr, 18, 0, 0, 0, 0);
+    this->UpdateInfo();
+    this->Invalidate();
+    return 0;
+  case 19:
+    this->m_list->SendMsg(nullptr, 19, 0, 0, 0, 0);
+    this->UpdateInfo();
+    this->Invalidate();
+    return 0;
+  case 40:
+    this->m_list->SendMsg(nullptr, 40, a, 0, 0, 0);
+    this->UpdateInfo();
+    this->Invalidate();
+    return 0;
+  case 80:
+    this->UpdateInfo();
+    this->Invalidate();
+    return 0;
+  case 89:
+    this->m_serverButton->Move(234, this->m_serverButton->geometry.y);
+    break;
+  default:
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
+  return 0;
+}
+
 // OFFSET: 0x008C2460
 // FUNCTION: fn_11820
 bool UISelectReplayDataWnd::UpdateInfo() {
