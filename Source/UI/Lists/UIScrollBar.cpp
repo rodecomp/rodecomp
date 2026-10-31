@@ -1119,6 +1119,140 @@ void UIChatHisBox::ShiftItemTags() {
   }
 }
 
+// OFFSET: 0x0087E9B0
+// FUNCTION: fn_11267
+int UITreeView::LayoutNodes(std::list<UITreeNode*>& nodes, int x, int y) {
+  int rowHeight = 0;
+  const int first = this->unknown_00A8;
+  const int last = this->geometry.height / this->itemHeight + first;
+  const int gap = this->itemPadding - 2;
+  if (static_cast<int>(nodes.size()) <= 0) {
+    return y;
+  }
+
+  for (std::list<UITreeNode*>::iterator it = nodes.begin(); it != nodes.end(); ++it, ++this->itemCount) {
+    UITreeNode* node = *it;
+    int labelX = x;
+    if (node->collapseButton) {
+      labelX = node->collapseButton->BitmapWidth() + gap + x;
+    }
+
+    int bottom = y;
+    if (this->itemCount >= first && this->itemCount < last) {
+      if (node->icon > -1) {
+        auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(node->icons[node->icon].c_str())));
+        bottom = bitmap->image.height + y;
+        if (bottom >= this->geometry.height) {
+          continue;
+        }
+        this->DrawBitmap(labelX, y, &bitmap->image, true);
+        labelX += bitmap->image.width + gap;
+      }
+
+      if (bottom >= this->geometry.height) {
+        continue;
+      }
+
+      UITVTextButton* label = node->labelButton;
+      label->unknown_00B4 = 0;
+      label->Invalidate();
+      if (this->unknown_0088 && this->unknown_0088 == node) {
+        node->labelButton->unknown_00B4 = 1;
+        node->labelButton->Invalidate();
+      }
+
+      label = node->labelButton;
+      label->unknown_00B5 = 0;
+      label->m_highlightColor = 0;
+      label->Invalidate();
+      if (this->unknown_00AC && this->unknown_008C && this->unknown_0090 && this->unknown_00B0) {
+        if (this->unknown_0090 == node) {
+          label = node->labelButton;
+          label->unknown_00B5 = 1;
+          label->m_highlightColor = this->unknown_00B0;
+          label->Invalidate();
+        }
+        if (node->unknown_0170 && node->unknown_0170->labelButton && node->unknown_0170->labelButton->unknown_00B5) {
+          label = node->labelButton;
+          label->m_highlightColor = this->unknown_00B0;
+          label->unknown_00B5 = 1;
+          label->Invalidate();
+        }
+      }
+
+      int maxWidth = this->geometry.width - labelX - 2;
+      if (this->verticalOverflow) {
+        maxWidth -= this->verticalBar->geometry.width;
+      }
+
+      node->labelButton->Move(labelX, y + 2);
+      label = node->labelButton;
+      const int height = label->geometry.height;
+      if (maxWidth != label->geometry.width && std::strcmp(label->label.c_str(), "") != 0) {
+        label->unknown_00DC = label->label;
+        int width;
+        if (label->geometry.width > maxWidth) {
+          const char* fitted = label->ClipTextToWidth(label->label.c_str(), maxWidth - 2, label->m_fontFamily, label->m_fontHeight, label->m_outlined);
+          label->unknown_00DC = fitted;
+          width = label->m_border ? maxWidth + 2 : maxWidth;
+        } else {
+          width = label->TextWidth(
+                    label->m_buttonContext->fonts, label->m_buttonContext->locale, label->label.c_str(), 0, label->m_fontFamily, label->m_fontHeight,
+                    label->m_outlined, 0
+                  ) +
+                  2;
+          width = label->m_border ? width + 2 : width;
+        }
+        label->UIWindow::Resize(width, height);
+      }
+
+      if (this->editNode == node) {
+        node->labelButton->Move(-100, -100);
+        this->edit->Resize(node->labelButton->geometry.width, node->labelButton->geometry.height);
+        this->edit->Move(labelX, y + 2);
+      }
+
+      rowHeight = node->labelButton->geometry.height + this->itemPadding;
+      this->itemHeight = std::max(this->itemHeight, rowHeight);
+    }
+
+    if (bottom >= this->geometry.height) {
+      continue;
+    }
+
+    if (node->expanded == 0) {
+      if (this->itemCount >= first && this->itemCount < last) {
+        if (node->expandButton) {
+          node->expandButton->Move(x, y + 4);
+        }
+        y += rowHeight;
+      }
+    } else if (node->expanded == 1) {
+      if (this->itemCount >= first && this->itemCount < last) {
+        if (node->collapseButton) {
+          node->collapseButton->Move(x, y + 4);
+        }
+        y += rowHeight;
+        bottom += rowHeight;
+      }
+
+      if (static_cast<int>(node->children.size()) > 0 && bottom < this->geometry.height) {
+        if (node->collapseButton) {
+          x += node->collapseButton->BitmapWidth() + gap;
+        }
+        const int next = this->LayoutNodes(node->children, x, y);
+        if (this->itemCount >= first && this->itemCount < last) {
+          y = next;
+        }
+        if (node->collapseButton) {
+          x -= node->collapseButton->BitmapWidth() + gap;
+        }
+      }
+    }
+  }
+  return y;
+}
+
 // OFFSET: 0x0087EF30
 // FUNCTION: fn_11268
 void UIChatHisBox::PlaceItemTags(int line) {

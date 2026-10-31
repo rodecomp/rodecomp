@@ -4,6 +4,8 @@
 #include "UI/Window/UIWindow.h"
 
 #include <list>
+#include <string>
+#include <vector>
 
 class UIScrollBar;
 class UIEditCtrl2;
@@ -15,7 +17,7 @@ struct UIButtonContext;
 struct UITreeNode {
   /* 0000 */ int id;
   /* 0004 */ int expanded;
-  /* 0008 */ unsigned char unknown_0008[0x4];
+  /* 0008 */ int icon;
   /* 000C */ char name[0x100];
   /* 010C */ unsigned char unknown_010C[0x5E];
   /* 016A */ unsigned char draggable;
@@ -26,6 +28,8 @@ struct UITreeNode {
   /* 0178 */ UITVBitmapButton* collapseButton;
   /* 017C */ UITVTextButton* labelButton;
   /* 0180 */ std::list<UITreeNode*> children;
+  /* 0188 */ std::string* icons;
+  /* 018C */ unsigned char unknown_018C[0x8];
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
@@ -49,6 +53,7 @@ public:
   int RemoveChildNode(UITreeNode* parent, int id, bool keepButtons);
   void AddNodeButtons(UITreeNode* node, int id);
   void AddNodeLabel(UITreeNode* node, int id);
+  int LayoutNodes(std::list<UITreeNode*>& nodes, int x, int y);
 
 protected:
   /* 007C */ UIScrollBar* verticalBar;
