@@ -24,6 +24,7 @@ public:
   void Slot25(int x, int y) override;
   void Slot27(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
+  void ClearItems();
 
 protected:
   /* 00B4 */ std::vector<TransMenuItem> m_items;

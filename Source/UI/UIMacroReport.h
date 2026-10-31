@@ -27,7 +27,7 @@ public:
   /* 0104 */ int m_reportType;
   /* 0108 */ std::string unknown_0108;
 
-  CUIMacroReport();
+  __declspec(noinline) CUIMacroReport();
 
   void Slot16() override;
   virtual void Reset();

@@ -1163,8 +1163,8 @@ void UIGuildSkillWnd::UpdateSkillButtons() {
     } else {
       this->m_levelUpButtons[row]->Move(-200, y - 17);
     }
-    this->unknown_00FC[row]->Move(-200, y);
-    this->unknown_00E0[row]->Move(-200, y);
+    this->m_previousButtons[row]->Move(-200, y);
+    this->m_nextButtons[row]->Move(-200, y);
   }
 }
 
@@ -2117,5 +2117,7 @@ UIGuildTotalInfoWnd::UIGuildTotalInfoWnd(UIWindowContext& windows, UIFrameContex
 // FUNCTION: fn_13006
 UIListBoxAgitMenu::UIListBoxAgitMenu(UIWindowContext& windows, UIListBoxContext& list) : UIListBox(windows, list) {
 }
+
+// OFFSET: 0x0095BF90
 
 // OFFSET: 0x00963E10

@@ -95,3 +95,5 @@ void CUIMacroReport::Reset() {
   this->Slot15(this->geometry.width, this->geometry.height);
   this->Slot16();
 }
+
+// OFFSET: 0x00A44170

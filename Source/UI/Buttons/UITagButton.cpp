@@ -7,6 +7,8 @@
 // GLOBAL: gl_24936
 std::string g_emptyString;
 
+// OFFSET: 0x009B52E0
+
 // OFFSET: 0x009B54A0
 // FUNCTION: fn_13844
 void UITagButton::Slot31(int x, int y) {

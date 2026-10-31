@@ -225,6 +225,7 @@ protected:
 class UIGuildSkillWnd : public UIGuildWnd {
 public:
   int Tab() override;
+  void Slot15(int width, int height) override;
   void Paint() override;
   void Slot25(int x, int y) override;
   void Slot32(int x, int y) override;
@@ -241,10 +242,10 @@ protected:
 
   /* 00D0 */ unsigned char unknown_00D0[0x04];
   /* 00D4 */ UIScrollBar* m_scrollBar;
-  /* 00D8 */ unsigned char unknown_00D8[0x08];
-  /* 00E0 */ UIWindow* unknown_00E0[7];
-  /* 00FC */ UIWindow* unknown_00FC[7];
-  /* 0118 */ UIWindow* m_levelUpButtons[7];
+  /* 00D8 */ UIBitmapButton* m_actionButtons[2];
+  /* 00E0 */ UIBitmapButton* m_nextButtons[7];
+  /* 00FC */ UIBitmapButton* m_previousButtons[7];
+  /* 0118 */ UIBitmapButton* m_levelUpButtons[7];
   /* 0134 */ int m_hoverIndex;
   /* 0138 */ int m_scrollTop;
   /* 013C */ int m_columns;

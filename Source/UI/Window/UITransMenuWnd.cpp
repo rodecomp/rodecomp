@@ -111,3 +111,5 @@ UITransMenuWnd::UITransMenuWnd(UIWindowContext& windows, UIFrameContext& frames,
   this->m_selected = -1;
   this->m_items.reserve(8);
 }
+
+// OFFSET: 0x009487A0

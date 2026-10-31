@@ -1370,6 +1370,12 @@ bool CUIRadioItem::IsChecked() {
 }
 
 // OFFSET: 0x009E7D60
+// FUNCTION: fn_14486
+CUIImageTextButton::CUIImageTextButton(UIWindowContext& context) : CUITextButton(context), images(), disabledImage(), imageNames(), disabledName() {
+  this->textColors[0] = 0;
+  this->textColors[1] = 0;
+  this->textColors[2] = 0;
+}
 
 // OFFSET: 0x009E7EB0
 // FUNCTION: fn_14487
