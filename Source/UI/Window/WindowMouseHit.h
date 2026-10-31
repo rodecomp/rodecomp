@@ -57,4 +57,7 @@ struct WindowMouseUncaptured {
   int Dispatch();
 };
 
+extern int g_alternateDoubleClickGate;
+extern int g_mouseRefreshGate;
+
 #endif

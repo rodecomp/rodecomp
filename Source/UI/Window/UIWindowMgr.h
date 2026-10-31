@@ -158,7 +158,7 @@ public:
   /* 01D8 */ std::uint32_t unknown_01D8;
   /* 01DC */ std::uint32_t unknown_01DC;
   /* 01E0 */ UIWindow* unknown_01E0;
-  /* 01E4 */ std::uint32_t unknown_01E4;
+  /* 01E4 */ UIWindow* unknown_01E4;
   /* 01E8 */ UIWindow* window_01E8;
   /* 01EC */ UIWindow* window_01EC;
   /* 01F0 */ UIWindow* unknown_01F0;
@@ -262,7 +262,7 @@ public:
   /* 0378 */ std::uint32_t unknown_0378;
   /* 037C */ std::uint32_t unknown_037C;
   /* 0380 */ std::uint32_t unknown_0380;
-  /* 0384 */ std::uint32_t unknown_0384;
+  /* 0384 */ UIWindow* unknown_0384;
   /* 0388 */ UIWindow* window_0388;
   /* 038C */ UIWindow* window_038C;
   /* 0390 */ std::uint32_t unknown_0390;
@@ -294,7 +294,7 @@ public:
   /* 03F6 */ unsigned char unknown_03F6;
   /* 03F7 */ unsigned char unknown_03F7;
   /* 03F8 */ std::uint32_t unknown_03F8;
-  /* 03FC */ std::uint32_t unknown_03FC;
+  /* 03FC */ UIWindow* unknown_03FC;
   /* 0400 */ int modal;
   /* 0404 */ std::uint32_t unknown_0404;
   /* 0408 */ std::uint32_t unknown_0408;
@@ -469,6 +469,7 @@ public:
   void MoveTransient(int x, int y);
   void RetireTransientWindow();
   void ClearWindow01B8();
+  int ProcessMouse();
   bool CloseWindow(int id);
   void CloseWindowExcept251(int id);
   void RecordWindowPacket(int argument);
