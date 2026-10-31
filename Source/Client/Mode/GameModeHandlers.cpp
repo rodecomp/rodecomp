@@ -301,6 +301,29 @@ void CGameMode::ReceivePartyBookingRegisterResult(const unsigned char* packet) {
 }
 
 // OFFSET: 0x00D3B730
+// FUNCTION: fn_21782
+void CGameMode::ReceivePartyBookingUpdateResult(const unsigned char* packet) {
+  const std::int16_t result = *reinterpret_cast<const std::int16_t*>(packet + 2);
+  if (result != 0) {
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(result == 2 ? 1941 : 1826), 0, true, false, 0, "Message", 280, 120, 0);
+    return;
+  }
+
+  g_session.m_partyBooking.unknown_0034 = GetTickCount();
+  g_windowMgr.EnsureWindow(164);
+  UISeekPartyWnd* seekWindow = static_cast<UISeekPartyWnd*>(g_windowMgr.LookupWindow(164));
+  if (!seekWindow) {
+    return;
+  }
+
+  UIWindow* jobWindow = g_windowMgr.LookupWindow(168);
+  if (!jobWindow) {
+    return;
+  }
+
+  seekWindow->SetJobs(reinterpret_cast<const std::int16_t*>(reinterpret_cast<const unsigned char*>(jobWindow) + 0x16D));
+  g_windowMgr.CloseWindow(168);
+}
 
 // OFFSET: 0x00D3B7F0
 // FUNCTION: fn_21783
@@ -692,6 +715,56 @@ void CGameMode::ReceiveHomunculusInfo(const unsigned char* data) {
 }
 
 // OFFSET: 0x00D3D710
+// FUNCTION: fn_21803
+void CGameMode::ReceiveHomunculusInfo3(const unsigned char* data) {
+  if (!data) {
+    return;
+  }
+
+  const HomunculusInfoPacket3* packet = reinterpret_cast<const HomunculusInfoPacket3*>(data);
+  int* stats = reinterpret_cast<int*>(&g_session.unknown_5570[0x2C]);
+  StringFormat(reinterpret_cast<char*>(&g_session.unknown_5570[0x0C]), 32, static_cast<std::size_t>(-1), "%s", packet->name);
+  g_session.unknown_55F8 = packet->unknown_001A;
+  *reinterpret_cast<int*>(g_session.unknown_55C0) = packet->unknown_001B;
+  g_session.unknown_55F0 = packet->unknown_001D;
+  g_session.RefreshHomunculusInfo();
+
+  int& notified = *reinterpret_cast<int*>(&g_session.unknown_5620[0]);
+  const int state = packet->unknown_001D;
+  if ((state == 1 || state == 5 || state == 10) && notified != state) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1018)), 0xFF, 0, 0, 0);
+    notified = packet->unknown_001D;
+  }
+
+  g_session.unknown_55D4 = packet->unknown_001F;
+  for (int i = 0; i < 8; ++i) {
+    stats[i] = packet->stats[i];
+  }
+  g_session.m_homunHp = packet->hp;
+  g_session.RefreshHomunculusInfo();
+  *reinterpret_cast<int*>(g_session.unknown_55C8) = packet->maxHp;
+  g_session.RefreshHomunculusInfo();
+  g_session.m_homunSp = packet->sp;
+  g_session.RefreshHomunculusInfo();
+  g_session.unknown_55D0 = packet->maxSp;
+  g_session.RefreshHomunculusInfo();
+  g_session.m_homunExp = packet->exp;
+  g_session.RefreshHomunculusInfo();
+  g_session.m_homunMaxExp = packet->maxExp;
+  g_session.RefreshHomunculusInfo();
+  *reinterpret_cast<int*>(g_session.unknown_1664) = packet->unknown_0051;
+  g_session.InvalidateWindowFrames();
+  if (g_windowMgr.window_03C4) {
+    g_windowMgr.window_03C4->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+  }
+
+  *reinterpret_cast<int*>(&g_session.unknown_5620[4]) = packet->unknown_0053;
+  if (UIHomunInfoWnd* window = static_cast<UIHomunInfoWnd*>(g_windowMgr.window_03C0)) {
+    window->expBar->FillBackground(0xFFFFFF);
+    window->expBar->SetValues(g_session.m_homunExp, g_session.m_homunMaxExp);
+    window->intimacyBar->SetValues(&g_session.unknown_55F0, &g_session.unknown_55F4);
+  }
+}
 
 // OFFSET: 0x00D3D910
 // FUNCTION: fn_21804
@@ -1363,6 +1436,35 @@ void CGameMode::ReceiveClanInfo(const unsigned char* data) {
 }
 
 // OFFSET: 0x00D65FF0
+// FUNCTION: fn_22008
+void CGameMode::SpawnSkillWarningPlanes(std::uint32_t aid, std::uint16_t skillId, int level, std::int16_t x, std::int16_t y, int duration) {
+  CRenderObject* actor = g_session.FindGameActor(aid);
+  if (!actor) {
+    return;
+  }
+
+  int width = 0;
+  int height = 0;
+  if (!g_luaScript->Call("GetSkillScale", "dd>dd", skillId, level, &width, &height)) {
+    return;
+  }
+
+  CWarningPlaneEffect* effect = static_cast<CWarningPlaneEffect*>(g_effectMgr->Spawn(actor->render.accountId, 1114, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0));
+  if (!effect) {
+    return;
+  }
+
+  for (int column = 0; column < width; ++column) {
+    for (int row = 0; row < height; ++row) {
+      vector3d position = {0.0f, 0.0f, 0.0f};
+      reinterpret_cast<const ::TerrainHeight*>(this)->CellCenter(x - width / 2 + column, y - height / 2 + row, position.x, position.z);
+      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      position.y = mode->scene->terrain->Grid().Height(position.x, position.z);
+      effect->AddPlane(position);
+      effect->expireTime = timeGetTime() + duration;
+    }
+  }
+}
 
 // OFFSET: 0x00D66200
 // FUNCTION: fn_22009
@@ -1383,6 +1485,66 @@ void CGameMode::ReceiveActorClanName(const unsigned char* data) {
 }
 
 // OFFSET: 0x00D66470
+// FUNCTION: fn_22013
+void CGameMode::ReceiveRuneRewardPacket(const unsigned char* packet) {
+  if (!packet) {
+    return;
+  }
+
+  switch (packet[0x32]) {
+  case 0: {
+    CEffect* effect = g_effectMgr->Spawn(g_session.m_aid, 2399, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    const vector3d offset = {598.0f, 219.0f, 0.0f};
+    const int* words = reinterpret_cast<const int*>(&offset);
+    effect->Slot24(words[0], words[1], words[2], 1, 361);
+    if (UIWindow* window = g_windowMgr.LookupWindow(361)) {
+      window->SendMsg(window, 0x3C, 0, 0, 0, 0);
+    }
+    if (UIWindow* window = g_windowMgr.EnsureWindow(362)) {
+      window->SendMsg(nullptr, 0x0D, reinterpret_cast<std::intptr_t>(packet), 0, 0, 0);
+      window->Invalidate();
+    }
+    break;
+  }
+  case 1:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4075)), 0xFF, 0, 0, 0);
+    break;
+  case 2:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4076)), 0xFF, 0, 0, 0);
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(4076), 0, true, false, 0, "Message", 280, 120, 0);
+    break;
+  case 3:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4077)), 0xFF, 0, 0, 0);
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(4077), 0, true, false, 0, "Message", 280, 120, 0);
+    break;
+  case 4:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4078)), 0xFF, 0, 0, 0);
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(4078), 0, true, false, 0, "Message", 280, 120, 0);
+    break;
+  case 5:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4079)), 0xFF, 0, 0, 0);
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(4079), 0, true, false, 0, "Message", 280, 120, 0);
+    break;
+  case 6:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4080)), 0xFF, 0, 0, 0);
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(4080), 0, true, false, 0, "Message", 280, 120, 0);
+    break;
+  case 7:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4081)), 0xFF, 0, 0, 0);
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(4081), 0, true, false, 0, "Message", 280, 120, 0);
+    break;
+  case 8:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4082)), 0xFF, 0, 0, 0);
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(4082), 0, true, false, 0, "Message", 280, 120, 0);
+    break;
+  }
+
+  g_runeSystemMgr->SetRequestPending(false);
+  if (UIWindow* window = g_windowMgr.LookupWindow(361)) {
+    window->SendMsg(window, 0x3C, 0, 0, 0, 0);
+    window->SendMsg(nullptr, 0x69, 1000, 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x00D66840
 // FUNCTION: fn_22015
@@ -1521,6 +1683,38 @@ void CGameMode::ReceiveRuneRewardSteps(const unsigned char* data) {
   }
 }
 // OFFSET: 0x00D66B10
+// FUNCTION: fn_22021
+void CGameMode::ReceiveRodexMailDeleteResult(int mailId, int result) {
+  int message;
+  if (result == 0) {
+    if (g_windowMgr.unknown_045C) {
+      reinterpret_cast<UIWindow*>(g_windowMgr.unknown_045C)->SendMsg(nullptr, 6, 201, 0, 0, 0);
+    }
+
+    std::map<std::int64_t, RodexMail>::iterator mail = g_rodexMailStore->m_mails0.find(mailId);
+    if (mail != g_rodexMailStore->m_mails0.end()) {
+      if (!mail->second.isRead) {
+        --g_rodexMailStore->unknown_0018;
+        if (g_rodexMailStore->unknown_0018 == 0) {
+          if (UIWindow* window = g_windowMgr.LookupWindow(307)) {
+            window->SendMsg(nullptr, 6, 286, 476, 0, 0);
+          }
+        }
+      }
+
+      g_rodexMailStore->m_mails0.erase(mail);
+      if (g_windowMgr.unknown_0454) {
+        reinterpret_cast<UIRodexInboxWnd*>(g_windowMgr.unknown_0454)->RemoveInboxMail(mailId);
+      }
+    }
+    message = 3865;
+  } else {
+    message = 3866;
+  }
+
+  reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(message), 0, true, false, 0, "Message", 280, 120, false);
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(message)), 0x64FFFF, 0, 0, 0);
+}
 
 // OFFSET: 0x00D67360
 // FUNCTION: fn_22027
