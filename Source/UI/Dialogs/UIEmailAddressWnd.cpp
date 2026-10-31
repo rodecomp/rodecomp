@@ -17,3 +17,9 @@ int UIEmailAddressWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
 
   return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
 }
+
+// OFFSET: 0x008C7800
+// FUNCTION: fn_11939
+UIEmailAddressWnd::UIEmailAddressWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, UIEditContext& edits)
+    : UIFrameWnd(windows, frames, 0), m_controls(&controls), m_editContext(&edits) {
+}

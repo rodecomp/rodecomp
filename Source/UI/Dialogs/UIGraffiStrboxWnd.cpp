@@ -36,3 +36,9 @@ void UIGraffiStrboxWnd::Slot15(int, int) {
 
   this->m_message0 = 184;
 }
+
+// OFFSET: 0x008C7C50
+// FUNCTION: fn_11942
+UIGraffiStrboxWnd::UIGraffiStrboxWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, UIEditContext& edits)
+    : UIFrameWnd(windows, frames, 0), m_controls(&controls), m_editContext(&edits) {
+}
