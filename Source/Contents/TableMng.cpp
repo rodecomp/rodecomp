@@ -70,13 +70,8 @@ public:
 
 class BasicExcel {
 public:
-  BasicExcel() {
-    reinterpret_cast<void*(__thiscall*)(BasicExcel*)>(0x00C83CD0)(this);
-  }
-
-  ~BasicExcel() {
-    reinterpret_cast<void(__thiscall*)(BasicExcel*)>(0x00C88ED0)(this);
-  }
+  BasicExcel();
+  ~BasicExcel();
 
   bool Load(const char* filename) {
     return reinterpret_cast<bool(__thiscall*)(BasicExcel*, const char*)>(0x00C915E0)(this, filename);
@@ -98,6 +93,14 @@ private:
   unsigned char m_data[0x5A8];
 };
 static_assert(sizeof(BasicExcel) == 0x5A8);
+
+__declspec(noinline) BasicExcel::BasicExcel() {
+  reinterpret_cast<void*(__thiscall*)(BasicExcel*)>(0x00C83CD0)(this);
+}
+
+__declspec(noinline) BasicExcel::~BasicExcel() {
+  reinterpret_cast<void(__thiscall*)(BasicExcel*)>(0x00C88ED0)(this);
+}
 }
 
 // OFFSET: 0x00CA3400
