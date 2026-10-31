@@ -1,6 +1,7 @@
 #include "Render/Renderer.h"
 #include "UI/Chat/UISubChatHisWnd.h"
 #include "Client/Browser/WebBrowser.h"
+#include "Client/Input/Mouse.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Replay.h"
 #include "Client/ReplayPacketRecorder.h"
@@ -10,6 +11,9 @@
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketId.h"
 #include "Network/Packets/PacketLengths.h"
+#include "Render/TextureQuad.h"
+#include "Render/Textures/Texture.h"
+#include "Render/Textures/TextureCache.h"
 #include "UI/Layout/SnapMgr.h"
 #include "UI/Lists/UIDropDownBox.h"
 #include "UI/Chat/ChatSuggestions.h"
@@ -21,6 +25,7 @@
 #include <algorithm>
 #include <cstddef>
 #include <cstdint>
+#include <cstdio>
 #include <cstring>
 #include <new>
 #include <timeapi.h>
@@ -539,10 +544,10 @@ UIWindowMgr::UIWindowMgr()
   this->unknown_0048 = 0;
   this->unknown_049C = 0;
   this->unknown_049E = g_serviceType != 0 ? 0 : -25;
-  this->unknown_04A0 = 0;
-  this->unknown_04A4 = 0;
-  this->unknown_04A8 = 0;
-  this->unknown_04AC = 0;
+  this->unknown_04A0 = {};
+  this->unknown_04A4 = {};
+  this->unknown_04A8 = {};
+  this->unknown_04AC = {};
   this->unknown_04B0 = 0;
   this->unknown_04B4 = 203;
   this->unknown_04B8 = 115;
@@ -1223,4 +1228,144 @@ UIWindow* UIWindowMgr::sub_A97580(int id, int x, int y, int width, int height) {
   }
   window->Show(1);
   return window;
+}
+
+// OFFSET: 0x00AA76F0
+// FUNCTION: fn_17239
+void UIWindowMgr::DrawLoginOverlay() {
+  const short quarter = static_cast<short>(g_renderer->viewport.width / 4);
+  const short third = static_cast<short>(g_renderer->viewport.height / 3);
+  char name[256];
+
+  if (CTexture* grade = g_texMgr.Load("유저인터페이스\\\0_GameGrade.tga", 0, false, true, false)) {
+    this->unknown_04B4 = grade->Width();
+    this->unknown_04B8 = grade->Height();
+  }
+
+  int gradeLeft = this->unknown_04BC;
+  if (gradeLeft == 0) {
+    gradeLeft = g_renderer->viewport.width - this->unknown_04B4 - 10;
+    this->unknown_04BC = gradeLeft;
+  }
+
+  int gradeTop = this->unknown_04C0;
+  if (gradeTop == 0) {
+    this->unknown_04C0 = 10;
+    gradeTop = 10;
+  }
+
+  if (g_mouse.buttons[0] == 1) {
+    if (!this->inputWindow) {
+      this->unknown_04B0 = 0;
+      if (g_mouse.x > gradeLeft && g_mouse.x < this->unknown_04B4 + gradeLeft && g_mouse.y > gradeTop && g_mouse.y < this->unknown_04B8 + gradeTop) {
+        this->unknown_04B0 = 3;
+      }
+
+      const float columns = static_cast<float>(quarter);
+      const float mouseX = static_cast<float>(g_mouse.x);
+      if (mouseX > columns * 3.3f + this->unknown_04A8.x && mouseX < columns * 3.9f + this->unknown_04A8.x &&
+          static_cast<float>(g_mouse.y) > static_cast<float>(third) * 2.4f + this->unknown_04A8.y &&
+          static_cast<float>(g_mouse.y) < static_cast<float>(third) * 2.8f + this->unknown_04A8.y) {
+        this->unknown_04B0 = 2;
+      }
+
+      if (static_cast<float>(g_mouse.x) > columns * 0.1f + this->unknown_049C && static_cast<float>(g_mouse.x) < columns * 1.8f + this->unknown_049C &&
+          static_cast<float>(g_mouse.y) > static_cast<float>(third) * 0.3f + this->unknown_049E &&
+          static_cast<float>(g_mouse.y) < static_cast<float>(third) * 1.2f + this->unknown_049E) {
+        this->unknown_04B0 = 1;
+      }
+
+      if (g_serviceType != 0 && static_cast<signed char>(g_startupSecondPhase) > 0 && static_cast<float>(g_mouse.x) > columns * 2.2f + this->unknown_04A0.x &&
+          static_cast<float>(g_mouse.x) < columns * 3.5f + this->unknown_04A0.x && g_mouse.y > this->unknown_04A0.y &&
+          g_mouse.y < this->unknown_04A0.y + third * 3) {
+        this->unknown_04B0 = 5;
+      }
+
+      if (static_cast<float>(g_mouse.y) > static_cast<float>(third) * 2.7f + this->unknown_04A4.x &&
+          static_cast<float>(g_mouse.y) < static_cast<float>(third) * 3.0f + this->unknown_04A4.x) {
+        this->unknown_04B0 = 4;
+      }
+    }
+  } else if (g_mouse.buttons[0] == 2 && !this->inputWindow) {
+    if (this->unknown_04B0 == 1) {
+      this->unknown_049C += static_cast<short>(g_mouse.deltaX);
+      this->unknown_049E += static_cast<short>(g_mouse.deltaY);
+    } else if (this->unknown_04B0 == 2) {
+      this->unknown_04A8.x += static_cast<short>(g_mouse.deltaX);
+      this->unknown_04A8.y += static_cast<short>(g_mouse.deltaY);
+    } else if (this->unknown_04B0 == 3) {
+      this->unknown_04BC += g_mouse.deltaX;
+      this->unknown_04C0 += g_mouse.deltaY;
+    } else if (this->unknown_04B0 == 6) {
+      this->unknown_04AC.x += static_cast<short>(g_mouse.deltaX);
+      this->unknown_04AC.y += static_cast<short>(g_mouse.deltaY);
+    } else if (this->unknown_04B0 == 4) {
+      if (this->unknown_04A4.x + g_mouse.deltaY >= 0) {
+        this->unknown_04A4.x += static_cast<short>(g_mouse.deltaY);
+      }
+    } else if (this->unknown_04B0 == 5) {
+      if (g_serviceType != 0 || this->unknown_04A0.x + g_mouse.deltaX >= 0) {
+        this->unknown_04A0.x += static_cast<short>(g_mouse.deltaX);
+      }
+    }
+  }
+
+  RECT rect = {0, 0, g_renderer->viewport.width, g_renderer->viewport.height};
+  const TextureRegion region = {0.0f, 0.0f, 1.0f, 1.0f};
+  if (CTexture* login = g_texMgr.Load("유저인터페이스\\t_login.jpg", 0, false, true, false)) {
+    g_modeMgr.GetGameMode()->DrawTexture(rect, 0, 0.0999f, 0xFFFFFFFF, login, region);
+  }
+
+  const int step = quarter;
+  const float rows = static_cast<float>(third);
+  char tape = 0;
+  for (int x = 0; x < step * 4;) {
+    ++tape;
+    rect.left = x;
+    x += step;
+    rect.right = x;
+    rect.bottom = static_cast<int>(this->unknown_04A4.x + rows * 3.0f);
+    rect.top = static_cast<int>(this->unknown_04A4.x + rows * 2.5f);
+    this->unknown_04A4.y = static_cast<short>(rect.top);
+    std::sprintf(name, "유저인터페이스\\\0_테입%d.tga", tape);
+    g_modeMgr.GetGameMode()->DrawTexture(rect, 0, 0.0999f, 0xFFFFFFFF, g_texMgr.Load(name, 0, false, true, false), region);
+  }
+
+  rect.left = this->unknown_04BC;
+  rect.top = this->unknown_04C0;
+  rect.right = this->unknown_04B4 + this->unknown_04BC;
+  rect.bottom = this->unknown_04B8 + this->unknown_04C0;
+  g_modeMgr.GetGameMode()->DrawTexture(rect, 0, 0.0999f, 0xFFFFFFFF, g_texMgr.Load("유저인터페이스\\\0_GameGrade.tga", 0, false, true, false), region);
+
+  rect.left = static_cast<int>(this->unknown_04A8.x + static_cast<float>(step) * 3.1f);
+  rect.right = step + rect.left;
+  rect.top = static_cast<int>(this->unknown_04A8.y + rows * 2.4f);
+  const float half = rows * 0.5f;
+  rect.bottom = static_cast<int>(static_cast<float>(rect.top) + half);
+  g_modeMgr.GetGameMode()->DrawTexture(rect, 0, 0.0999f, 0xFFFFFFFF, g_texMgr.Load("유저인터페이스\\\0_중력성인.tga", 0, false, true, false), region);
+
+  char row = -2;
+  for (int column = this->unknown_049C; column < this->unknown_049C + step * 2; column += step) {
+    ++row;
+    int y = static_cast<int>(this->unknown_049E + rows * 0.1f);
+    if (this->unknown_049E + (rows + rows) > static_cast<float>(y)) {
+      const int left = static_cast<int>(static_cast<float>(step) * 0.05f + column);
+      char index = row;
+      do {
+        index += 2;
+        rect.left = left;
+        rect.top = y;
+        rect.right = step + left;
+        if (index <= 2) {
+          y += third;
+          rect.bottom = y;
+        } else {
+          rect.bottom = static_cast<int>(static_cast<float>(y) + half);
+          y += third;
+        }
+        std::sprintf(name, "유저인터페이스\\\0_R%d.tga", index);
+        g_modeMgr.GetGameMode()->DrawTexture(rect, 0, 0.0999f, 0xFFFFFFFF, g_texMgr.Load(name, 0, false, true, false), region);
+      } while (this->unknown_049E + (rows + rows) > static_cast<float>(y));
+    }
+  }
 }

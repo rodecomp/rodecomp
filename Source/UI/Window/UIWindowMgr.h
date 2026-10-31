@@ -331,10 +331,10 @@ public:
   /* 0484 */ std::string unknown_0484;
   /* 049C */ short unknown_049C;
   /* 049E */ short unknown_049E;
-  /* 04A0 */ int unknown_04A0;
-  /* 04A4 */ int unknown_04A4;
-  /* 04A8 */ int unknown_04A8;
-  /* 04AC */ int unknown_04AC;
+  /* 04A0 */ POINTS unknown_04A0;
+  /* 04A4 */ POINTS unknown_04A4;
+  /* 04A8 */ POINTS unknown_04A8;
+  /* 04AC */ POINTS unknown_04AC;
   /* 04B0 */ unsigned char unknown_04B0;
   /* 04B1 */ unsigned char unknown_04B1[3];
   /* 04B4 */ int unknown_04B4;
@@ -530,6 +530,7 @@ public:
   bool HasTitleAtActorCell(std::uint32_t aid);
   void CancelActiveDialog();
   void CenterSurface0478();
+  void DrawLoginOverlay();
   void RefreshWindow01C8Edits();
   void SetSurface0478(CBitmapRes* bitmap);
   void SendFlagEffect(int message);
