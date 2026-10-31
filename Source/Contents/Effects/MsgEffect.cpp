@@ -2,9 +2,15 @@
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
+#include "Client/Session.h"
 #include "Contents/Actors/GameActor.h"
+#include "Contents/Actors/GroundScope.h"
+#include "Contents/Actors/Pc.h"
+#include "Contents/Camera/Camera.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Effects/Particle.h"
+#include "Contents/MapSkyMgr.h"
+#include "Contents/Sound/SoundMgr.h"
 #include "Contents/World/World.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/Sprites/ActionResource.h"
@@ -50,6 +56,417 @@ bool CMsgEffect::UsesMsgEffect(int type) {
       return true;
     default:
       return false;
+  }
+}
+
+// INLINED
+static float MsgEffectElapsedFrames(CMsgEffect* effect) {
+  return static_cast<CGameActor*>(static_cast<CRenderObject*>(effect))->GetElapsedFrames();
+}
+
+// INLINED
+__forceinline static void MsgEffectDrift(CMsgEffect* effect, float elapsed) {
+  float dirX = effect->m_drift.x;
+  if (effect->m_drift.x == 0.0f && effect->m_owner != nullptr) {
+    if (g_session.m_damageSkinMode == 0) {
+      const int angle = static_cast<int>(static_cast<CRenderObject*>(effect->m_owner)->render.angle);
+      if (angle < 0) {
+        dirX = 0.8f;
+        effect->m_drift.x = 0.8f;
+        effect->m_drift.z = 0.8f;
+      } else if (angle < 90) {
+        dirX = -0.8f;
+        effect->m_drift.x = -0.8f;
+        effect->m_drift.z = 0.8f;
+      } else if (angle < 180) {
+        dirX = -0.8f;
+        effect->m_drift.x = -0.8f;
+        effect->m_drift.z = -0.8f;
+      } else if (angle < 270) {
+        dirX = 0.8f;
+        effect->m_drift.x = 0.8f;
+        effect->m_drift.z = -0.8f;
+      } else {
+        dirX = 0.8f;
+        effect->m_drift.x = 0.8f;
+        effect->m_drift.z = 0.8f;
+      }
+    } else {
+      if (g_session.m_damageSkinMode == 1) {
+        effect->m_drift.x = 0.8f;
+        effect->m_drift.z = -0.8f;
+      } else if (g_session.m_damageSkinMode == 2) {
+        effect->m_drift.x = 0.01f;
+        effect->m_drift.z = 0.01f;
+      } else if (g_session.m_damageSkinMode == 3) {
+        effect->m_drift.x = -0.8f;
+        effect->m_drift.z = -0.8f;
+      }
+
+      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      float yaw = 0.0f;
+      if (mode != nullptr) {
+        yaw = mode->camera->camera.desiredYaw;
+      }
+
+      matrix rotation;
+      rotation.MakeYRotation(yaw / 180.0f * 3.141592f);
+      const float x = effect->m_drift.x;
+      const float y = effect->m_drift.y;
+      const float z = effect->m_drift.z;
+      dirX = rotation.values[0] * x + rotation.values[3] * y + rotation.values[6] * z + rotation.values[9];
+      effect->m_drift.x = dirX;
+      effect->m_drift.z = rotation.values[2] * x + rotation.values[5] * y + rotation.values[8] * z + rotation.values[11];
+    }
+  }
+
+  const float step = elapsed / 3.0f;
+  effect->render.position.x = dirX * step + effect->m_velocity.x + dirX * 3.0f;
+  effect->render.position.z = effect->m_drift.z * step + effect->m_velocity.z + effect->m_drift.z * 3.0f;
+  float height = effect->m_baseY + 8.0f - (2.0f - elapsed / 30.0f) * elapsed + effect->m_drift.y;
+  effect->render.position.y = height;
+  if (height > 0.0f) {
+    effect->m_drift.y = height / (height * 3.0f * 0.25f);
+  } else if (height < 0.0f) {
+    height = -height;
+    effect->m_drift.y = height / (height * 3.0f * 0.25f);
+  }
+}
+
+// OFFSET: 0x00E4C3E0
+// FUNCTION: fn_24286
+bool CMsgEffect::OnProcess() {
+  if (g_updateTick == 0) {
+    return true;
+  }
+
+  if (this->m_finished != 0) {
+    if (this->m_type != 0x12 || !this->m_visible) {
+      return false;
+    }
+    if (this->unknown_01A0 > 35) {
+      if (this->unknown_01B4 == 0) {
+        return false;
+      }
+      this->unknown_01B4 = 0;
+      this->m_finished = 0;
+      return true;
+    }
+    if (this->unknown_01B4 == 0) {
+      return false;
+    }
+  }
+
+  this->FollowOwner();
+  switch (this->m_type) {
+    case 0xD:
+    case 0xE:
+    case 0xF:
+    case 0x10:
+    case 0x11:
+    case 0x12:
+    case 0x15:
+    case 0x16:
+    case 0x19:
+    case 0x72:
+      break;
+    default:
+      this->PlayFrameSounds();
+      break;
+  }
+
+  float elapsed;
+  switch (this->m_type) {
+    case 0:
+    case 1:
+    case 2:
+    case 0x11: {
+      CActRes* action = this->GetActRes();
+      elapsed = MsgEffectElapsedFrames(this);
+      const int frames = static_cast<int>(action->FrameCount(this->render.previousAnimation));
+      if (frames == 0) {
+        return true;
+      }
+      const float motion = elapsed / this->render.speed;
+      this->render.curMotion = static_cast<int>(motion) % frames;
+      if (this->m_type == 1 && this->render.unknown_0070 == 10000) {
+        this->render.curMotion = 15;
+        const ActionFrame& frame = action->Frame(this->render.previousAnimation, 15);
+        const_cast<SpriteFrameCell&>(frame.cells[0]).mirrored = 0;
+        this->SetColor(255, 250, 80, 80);
+        return true;
+      }
+      if (motion / static_cast<float>(frames) < 1.0f) {
+        return true;
+      }
+      if (this->m_type != 1) {
+        return false;
+      }
+      if (this->m_value == static_cast<int>(g_session.m_aid)) {
+        g_modeMgr.GetGameMode()->SendMsg(0x21, 0, 0, 0, 0);
+      }
+      return false;
+    }
+
+    case 4:
+    case 5:
+    case 7:
+    case 8:
+    case 9:
+    case 10:
+    case 0x1A:
+    case 0x25:
+    case 0x26: {
+      elapsed = MsgEffectElapsedFrames(this);
+      CActRes* action = this->GetActRes();
+      const int frames = static_cast<int>(action->FrameCount(this->render.previousAnimation));
+      this->render.curMotion = static_cast<int>(elapsed / this->render.speed) % frames;
+      return true;
+    }
+
+    case 6: {
+      elapsed = MsgEffectElapsedFrames(this);
+      CActRes* action = this->GetActRes();
+      const int frames = static_cast<int>(action->FrameCount(this->render.previousAnimation));
+      const float motion = elapsed * 1.2f;
+      this->render.curMotion = static_cast<int>(motion) % frames;
+      if (motion / static_cast<float>(frames) < 1.0f) {
+        return true;
+      }
+      return false;
+    }
+
+    case 0xB:
+    case 0xC:
+      if (this->m_owner == nullptr) {
+        return true;
+      }
+      elapsed = MsgEffectElapsedFrames(this);
+      if (static_cast<int>(elapsed) % 34 == 0) {
+        this->m_owner->SendMsg(nullptr, 0x4D, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      return true;
+
+    case 0xD:
+      elapsed = MsgEffectElapsedFrames(this);
+      this->render.previousAnimation = this->render.animation;
+      this->render.position.y = this->m_baseY - elapsed * 0.54f;
+      this->SetColor(static_cast<int>(250.0f - elapsed * 3.0f), -1, -1, -1);
+      this->render.scale = 1.0f;
+      this->GetActRes();
+      return !(elapsed > 80.0f);
+
+    case 0xE:
+    case 0x15:
+      elapsed = MsgEffectElapsedFrames(this);
+      this->render.previousAnimation = this->render.animation;
+      MsgEffectDrift(this, elapsed);
+      if (this->render.scale > 1.2f) {
+        this->render.scale = this->m_scale - elapsed * 0.24f;
+      } else if (this->render.scale < 1.2f) {
+        this->render.scale = 1.2f;
+      }
+      this->SetColor(static_cast<int>(250.0f - elapsed * 3.4f), -1, -1, -1);
+      return !(elapsed > 70.0f);
+
+    case 0xF: {
+      elapsed = MsgEffectElapsedFrames(this);
+      this->render.previousAnimation = this->render.animation;
+      MsgEffectDrift(this, elapsed);
+      if (this->render.scale > 1.0f) {
+        this->render.scale = this->m_scale - elapsed * 0.24f * 0.6f;
+      } else if (this->render.scale < 1.0f) {
+        this->render.scale = 1.0f;
+      }
+      CActRes* action = this->GetActRes();
+      if (this->render.curMotion < static_cast<int>(action->FrameCount(this->render.previousAnimation)) - 1) {
+        const int frames = static_cast<int>(action->FrameCount(this->render.previousAnimation));
+        this->render.curMotion = static_cast<int>(elapsed * g_depthAverageHalf) % frames;
+      }
+      this->SetColor(static_cast<int>(255.0f - elapsed * 3.45f), -1, -1, -1);
+      return !(elapsed > 70.0f);
+    }
+
+    case 0x10:
+      elapsed = MsgEffectElapsedFrames(this);
+      this->render.previousAnimation = this->render.animation;
+      MsgEffectDrift(this, elapsed);
+      if (this->render.scale > 1.3f) {
+        this->render.scale = this->m_scale - elapsed * 0.24f;
+      } else if (this->render.scale < 1.3f) {
+        this->render.scale = 1.3f;
+      }
+      this->SetColor(static_cast<int>(250.0f - elapsed * 3.4f), -1, -1, -1);
+      return !(elapsed > 70.0f);
+
+    case 0x12:
+      if (this->unknown_01B4 != 0 && this->m_owner != nullptr) {
+        CRenderObject* owner = static_cast<CRenderObject*>(this->m_owner);
+        this->Face(owner->render.position.x, owner->render.position.z);
+        this->render.angle -= 180.0f;
+        if (this->render.angle < 0.0f) {
+          this->render.angle += 360.0f;
+        }
+        this->render.previousAnimation = this->Get8Dir2(this->render.angle, 1) + 8;
+        this->render.position.x = this->m_velocity.x + this->render.position.x;
+        const int tick = this->unknown_01A0;
+        if (tick > 10 && tick < 25) {
+          this->unknown_019C = this->m_velocity.x;
+          this->render.position.z = this->m_velocity.z + this->render.position.z;
+        } else {
+          this->unknown_019C = this->m_velocity.x;
+          this->render.position.y = this->m_velocity.y + this->render.position.y;
+          this->render.position.z = this->m_velocity.z + this->render.position.z;
+          if (tick >= 25) {
+            this->m_finished = 1;
+            this->m_velocity.y = this->m_velocity.y * -1.9f;
+          }
+        }
+        this->GetActRes();
+        ++this->unknown_01A0;
+        this->unknown_01A4 = this->render.previousAnimation;
+        this->render.curMotion = 0;
+        return true;
+      }
+      if (this->m_owner == nullptr) {
+        return false;
+      }
+      {
+        CActRes* action = this->GetActRes();
+        const int frames = static_cast<int>(action->FrameCount(this->render.previousAnimation));
+        int tick = this->unknown_01A0;
+        if (tick % static_cast<int>(this->render.speed) == 0) {
+          if (this->unknown_01B0 != 0) {
+            ++this->render.curMotion;
+          }
+          tick = 0;
+        }
+        if (this->render.curMotion >= frames) {
+          this->render.curMotion = 0;
+        }
+        this->unknown_01A4 = this->render.previousAnimation;
+        this->unknown_01A0 = tick + 1;
+      }
+      return true;
+
+    case 0x16: {
+      elapsed = MsgEffectElapsedFrames(this);
+      this->render.previousAnimation = this->render.animation;
+      this->render.position.y = this->m_baseY - elapsed * 0.1f;
+      int fade = 0;
+      if (elapsed > 90.0f) {
+        fade = static_cast<int>((elapsed - 90.0f) * 8.0f);
+      }
+      this->SetColor(250 - fade, -1, -1, -1);
+      if (this->render.scale < 3.0f) {
+        this->render.scale = elapsed * 0.18f + this->render.scale;
+      } else if (this->render.scale > 3.0f) {
+        this->render.scale = 3.0f;
+      }
+      return !(elapsed > 120.0f);
+    }
+
+    case 0x18: {
+      elapsed = MsgEffectElapsedFrames(this);
+      this->render.previousAnimation = this->render.animation;
+      if (this->render.curMotion == 0) {
+        CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
+        g_soundMgr->PlayWave("effect\\kyrie_guard.wav", this->render.position.x - player->render.position.x, 0.0f,
+                             this->render.position.z - player->render.position.z, 250, 40, 1.0f, 0);
+      }
+      ++this->render.curMotion;
+      if (this->render.curMotion >= static_cast<int>(this->GetActRes()->FrameCount(this->render.previousAnimation))) {
+        this->render.curMotion = static_cast<int>(this->GetActRes()->FrameCount(this->render.previousAnimation)) - 1;
+      }
+      this->SetColor(250, -1, -1, -1);
+      this->render.scale = 1.2f;
+      this->m_scale = 1.2f;
+      return !(elapsed > 10.0f);
+    }
+
+    case 0x19: {
+      elapsed = MsgEffectElapsedFrames(this);
+      this->render.previousAnimation = this->render.animation;
+      this->render.curMotion = 0;
+      this->render.position.y = this->m_baseY - elapsed * 0.1f - 15.0f;
+      int fade = 0;
+      if (elapsed > 90.0f) {
+        fade = static_cast<int>((elapsed - 90.0f) * 8.0f);
+      }
+      int blue = -1;
+      int tint = -1;
+      if (fade <= 210) {
+        tint = 150;
+        blue = 255;
+      }
+      int alpha = 0;
+      if (fade <= 210) {
+        alpha = 210 - fade;
+      }
+      this->SetColor(alpha, tint, tint, blue);
+      if (this->render.scale < 2.0f) {
+        this->render.scale = elapsed * 0.15f + this->render.scale;
+      } else if (this->render.scale > 2.0f) {
+        this->render.scale = 2.0f;
+      }
+      return !(elapsed > 120.0f);
+    }
+
+    case 0x1B:
+    case 0x1F: {
+      CActRes* action = this->GetActRes();
+      const int frames = static_cast<int>(action->FrameCount(this->render.previousAnimation));
+      if (frames == 0) {
+        return true;
+      }
+      const int tick = this->unknown_01A0;
+      this->render.curMotion = static_cast<int>(static_cast<float>(tick) / this->render.speed) % frames;
+      if (this->unknown_01B4 == 1) {
+        if (this->render.curMotion >= frames - 1) {
+          this->unknown_01B4 = 0;
+        }
+        if (tick < 8) {
+          this->render.position.x = this->m_velocity.x + this->render.position.x;
+          this->render.position.y = this->m_velocity.y + this->render.position.y;
+          this->render.position.z = this->m_velocity.z + this->render.position.z;
+        }
+      }
+      this->unknown_01A0 = tick + 1;
+      return true;
+    }
+
+    case 0x1C:
+    case 0x1D:
+    case 0x1E:
+    case 0x20:
+    case 0x21:
+    case 0x22:
+    case 0x23:
+    case 0x24: {
+      CActRes* action = this->GetActRes();
+      elapsed = MsgEffectElapsedFrames(this);
+      const int frames = static_cast<int>(action->FrameCount(this->render.previousAnimation));
+      if (frames == 0) {
+        return true;
+      }
+      this->render.curMotion = static_cast<int>(elapsed / this->render.speed) % frames;
+      return true;
+    }
+
+    case 0x72:
+      elapsed = MsgEffectElapsedFrames(this);
+      this->render.previousAnimation = this->render.animation;
+      this->render.position.y = this->m_baseY - elapsed * 0.18f;
+      this->SetColor(static_cast<int>(250.0f - elapsed * 2.0f), -1, -1, -1);
+      if (this->render.scale > 1.0f) {
+        this->render.scale = this->m_scale - elapsed * 0.24f;
+      } else if (this->render.scale < 1.0f) {
+        this->render.scale = 1.0f;
+      }
+      return !(elapsed > 120.0f);
+
+    default:
+      return true;
   }
 }
 

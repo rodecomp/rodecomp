@@ -23,7 +23,8 @@ public:
   /* 0158 */ bool m_visible;
   /* 0159 */ unsigned char unknown_0159[0x03];
   /* 015C */ CGameObject* m_owner;
-  /* 0160 */ unsigned char unknown_0160[0x18];
+  /* 0160 */ vector3d m_drift;
+  /* 016C */ unsigned char unknown_016C[0x0C];
   /* 0178 */ vector3d m_velocity;
   /* 0184 */ int m_value;
   /* 0188 */ int m_finished;
@@ -31,7 +32,7 @@ public:
   /* 0190 */ float m_baseY;
   /* 0194 */ float m_baseX;
   /* 0198 */ float m_scale;
-  /* 019C */ int unknown_019C;
+  /* 019C */ float unknown_019C;
   /* 01A0 */ int unknown_01A0;
   /* 01A4 */ int unknown_01A4;
   /* 01A8 */ int m_type;
