@@ -6,6 +6,7 @@
 #include <string>
 
 class UIButton;
+class UIListBoxNavi;
 
 struct NavigationWndInfo {
   /* 0000 */ int x;
@@ -30,6 +31,7 @@ public:
   void RefreshWorldMapMarks();
   void RefreshWorldMapSelection();
   void RefreshWorldMapLevels();
+  void RefreshRouteList();
 
 protected:
   /* 00B4 */ UIWindow* m_closeButton;
@@ -38,8 +40,8 @@ protected:
   /* 00D4 */ std::string m_subtitle;
   /* 00EC */ UIWindow* unknown_00EC;
   /* 00F0 */ UIWindow* m_titleBar;
-  /* 00F4 */ UIWindow* m_routePanel;
-  /* 00F8 */ UIWindow* m_searchPanel;
+  /* 00F4 */ UIListBoxNavi* m_routePanel;
+  /* 00F8 */ UIListBoxNavi* m_searchPanel;
   /* 00FC */ UIWindow* unknown_00FC;
   /* 0100 */ UIWindow* unknown_0100;
   /* 0104 */ UIWindow* m_routeFooter;

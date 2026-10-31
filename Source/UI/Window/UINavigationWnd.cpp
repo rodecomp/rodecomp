@@ -4,6 +4,7 @@
 #include "Contents/NavigationManager.h"
 #include "Render/Renderer.h"
 #include "UI/Buttons/UIButton.h"
+#include "UI/Lists/UIListBoxNavi.h"
 #include "UI/Navigation/UINavigationV4Wnd.h"
 #include "UI/Window/UIRoMapWnd.h"
 
@@ -134,6 +135,142 @@ void UINavigationWnd::RefreshWorldMapLevels() {
       }
     }
     this->Invalidate();
+  }
+}
+
+// OFFSET: 0x0093E150
+// FUNCTION: fn_12775
+void UINavigationWnd::RefreshRouteList() {
+  this->m_searchPanel->Clear();
+  this->m_searchPanel->ResetLineColors();
+  this->m_searchPanel->Invalidate();
+
+  const int nodeCount = g_navigationManager.NodeCount();
+  if (g_navigationMode != 2) {
+    return;
+  }
+
+  NavigationTarget target = g_navigationManager.GetSavedTarget();
+  if (!target.object) {
+    return;
+  }
+
+  this->SendMsg(nullptr, 31, 441, reinterpret_cast<std::intptr_t>(LookupMessage(0x8B2)), 0, 0);
+  char text[100];
+  std::memset(text, 0, sizeof(text));
+  std::sprintf(text, LookupMessage(0x8B3), g_navigationManager.GetRouteResult(), nodeCount);
+  this->SendMsg(nullptr, 31, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
+
+  int lineOffset;
+  if (target.type == 2) {
+    CNavi_Object* npc = static_cast<CNavi_Object*>(target.object);
+    std::memset(text, 0, sizeof(text));
+    std::sprintf(text, LookupMessage(0x8B4), npc->GetInfo()->GetTitle(), npc->GetInfo()->GetName());
+    this->SendMsg(nullptr, 31, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
+
+    std::memset(text, 0, sizeof(text));
+    NaviCell cellX;
+    NaviCell cellY;
+    std::sprintf(text, LookupMessage(0x8B5), npc->GetName(), npc->GetCell(&cellX)->x, npc->GetCell(&cellY)->y);
+    this->SendMsg(nullptr, 31, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
+    lineOffset = 5;
+  } else if (target.type == 3) {
+    CNavi_Object* mob = static_cast<CNavi_Object*>(target.object);
+    std::memset(text, 0, sizeof(text));
+    std::sprintf(text, LookupMessage(0x8B4), mob->GetInfo()->GetTitle(), mob->GetInfo()->GetName());
+    this->SendMsg(nullptr, 31, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
+
+    std::string kind;
+    kind = LookupMessage(mob->GetType() == 301 ? 0x8B6 : 0x8B7);
+    std::memset(text, 0, sizeof(text));
+    std::sprintf(text, LookupMessage(0x8B8), mob->GetName(), kind.c_str());
+    this->SendMsg(nullptr, 31, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
+    lineOffset = 5;
+  } else if (target.type == 1) {
+    CNaviInfo* map = static_cast<CNaviInfo*>(target.object);
+    std::memset(text, 0, sizeof(text));
+    std::sprintf(text, LookupMessage(0x8B4), map->GetTitle(), map->GetName());
+    this->SendMsg(nullptr, 31, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
+    lineOffset = 4;
+  } else if (target.type == 0) {
+    CNaviInfo* map = static_cast<CNaviInfo*>(target.object);
+    std::memset(text, 0, sizeof(text));
+    std::sprintf(text, LookupMessage(0x8B4), map->GetTitle(), map->GetName());
+    this->SendMsg(nullptr, 31, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
+
+    std::memset(text, 0, sizeof(text));
+    NaviCell cellX;
+    NaviCell cellY;
+    std::sprintf(text, LookupMessage(0x8B9), g_navigationManager.GetDestinationCell(&cellX)->x, g_navigationManager.GetDestinationCell(&cellY)->y);
+    this->SendMsg(nullptr, 31, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
+    lineOffset = 5;
+  } else {
+    return;
+  }
+
+  this->SendMsg(nullptr, 31, 441, reinterpret_cast<std::intptr_t>(LookupMessage(0x8BA)), 0, 0);
+  this->m_searchPanel->lineOffset = lineOffset;
+
+  CNavi_Link* previous = nullptr;
+  for (int index = 0; index < nodeCount; ++index) {
+    std::memset(text, 0, 64);
+    CNavi_Link* node = g_navigationManager.GetNode(index);
+    NaviCell cellX;
+    NaviCell cellY;
+    if (index == 0) {
+      if (node->GetType() == 400) {
+        std::sprintf(text, LookupMessage(0x8BB), index, node->GetName(), node->GetLinkedName());
+      } else {
+        int column = 0;
+        int row = 0;
+        g_navigationManager.PlayerCell(&column, &row);
+        std::sprintf(
+          text, LookupMessage(0x8BC), index, node->GetInfo()->GetName(), column, row, node->GetCell(&cellX)->x, node->GetCell(&cellY)->y
+        );
+      }
+    } else {
+      std::sprintf(
+        text,
+        LookupMessage(0x8BC),
+        index,
+        node->GetInfo()->GetName(),
+        previous->GetLinkedCell().x,
+        previous->GetLinkedCell().y,
+        node->GetCell(&cellX)->x,
+        node->GetCell(&cellY)->y
+      );
+    }
+    this->SendMsg(nullptr, 31, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
+    previous = node;
+  }
+
+  const int savedType = g_navigationManager.GetSavedTarget().type;
+  std::string destination = g_navigationManager.GetDestinationInfo()->GetName();
+  int startX;
+  int startY;
+  NaviCell cell;
+  if (nodeCount == 0) {
+    g_navigationManager.PlayerCell(&startX, &startY);
+  } else {
+    startX = previous->GetLinkedCell().x;
+    startY = previous->GetLinkedCell().y;
+  }
+  const int destinationX = g_navigationManager.GetDestinationCell(&cell)->x;
+  const int destinationY = g_navigationManager.GetDestinationCell(&cell)->y;
+
+  if (savedType == 2 || savedType == 0) {
+    std::sprintf(text, LookupMessage(0x8BD), nodeCount, destination.c_str(), startX, startY, destinationX, destinationY);
+  } else {
+    std::sprintf(text, LookupMessage(0x8BE), nodeCount, destination.c_str());
+  }
+  this->SendMsg(nullptr, 31, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
+
+  if (g_navigationManager.GetSelectedNode() != -1) {
+    this->m_searchPanel->SetLineColor(g_navigationManager.GetSelectedNode(), 1);
+    this->m_searchPanel->Invalidate();
+  } else if (g_navigationManager.GetRouteFlag()) {
+    this->m_searchPanel->SetLineColor(nodeCount, 1);
+    this->m_searchPanel->Invalidate();
   }
 }
 
