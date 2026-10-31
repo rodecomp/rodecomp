@@ -12034,3 +12034,295 @@ void CRagEffect::QuadRingStackSized(const char* name, char kind) {
     this->state.unknown_11C84->slots[3].flag1[height] = 0;
   }
 }
+
+// OFFSET: 0x00C5CC00
+
+// OFFSET: 0x00C649E0
+// FUNCTION: fn_20263
+void CRagEffect::sub_C649E0() {
+  this->render.position = this->state.parent->render.position;
+
+  if (this->state.stateCnt == 99999998) {
+    this->state.stateCnt = 0;
+    this->state.duration = 99999999;
+  } else if ((this->state.stateCnt & 1) != 0 || this->state.stateCnt >= 300) {
+    return;
+  }
+
+  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 40, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  this->state.unknown_11C84->duration = this->state.duration;
+  this->state.unknown_11C84->slots[0].life = 1;
+  this->state.unknown_11C84->slots[0].maxHeight = static_cast<float>(std::max(rand() % 2, 0) + 2) * 0.1f;
+  this->state.unknown_11C84->size = static_cast<float>(std::max(rand() % 6, 0) + 22) / 100.0f;
+  this->state.unknown_11C84->slots[0].height[0] = static_cast<float>(std::max(rand() % 360, 0));
+  this->state.unknown_11C84->slots[0].height[1] = static_cast<float>(std::max(rand() % 360, 0));
+  this->state.unknown_11C84->slots[0].height[2] = static_cast<float>(std::max(rand() % 360, 0));
+  this->state.unknown_11C84->slots[0].height[3] = static_cast<float>(std::max(rand() % 360, 0));
+  this->state.unknown_11C84->slots[0].vecBPre.x = static_cast<float>(std::max(rand() % 300, 0)) + this->render.position.x - 150.0f;
+  this->state.unknown_11C84->slots[0].vecBPre.y = this->render.position.y - 200.0f;
+  this->state.unknown_11C84->slots[0].vecBPre.z = static_cast<float>(std::max(rand() % 300, 0)) + this->render.position.z - 150.0f;
+  this->state.unknown_11C84->slots[0].flag1[0] = 0;
+  this->state.unknown_11C84->alpha = 200.0f;
+  Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "\uc774\ud329\ud2b8\\sakura01.spr");
+  Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "\uc774\ud329\ud2b8\\sakura01.act");
+  Owner(this->state.unknown_11C84).SetAction(rand() % 3, 36, 0);
+  Owner(this->state.unknown_11C84).InitSegment();
+  this->state.unknown_11C84->slots[1].life = 0;
+  this->state.unknown_11C84->slots[2].life = 0;
+  this->state.unknown_11C84->slots[3].life = 0;
+}
+
+// OFFSET: 0x00C47F70
+// FUNCTION: fn_20161
+void CRagEffect::sub_C47F70(char flag) {
+  this->render.position = this->state.parent->render.position;
+
+  if (this->state.stateCnt != 0) {
+    return;
+  }
+
+  if (flag == 0) {
+    PlayEffectWave(*this, "effect\\mon_\uce68\ud22c\uacbd.wav");
+  }
+
+  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 46, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  this->state.unknown_11C84->duration = this->state.duration;
+  this->state.unknown_11C84->slots[0].life = 1;
+  this->state.unknown_11C84->slots[0].maxHeight = 0.0f;
+  this->state.unknown_11C84->slots[0].vecBPre.x = this->state.deltaPos[0];
+  this->state.unknown_11C84->slots[0].vecBPre.y = this->state.deltaPos[1] - 0.0f;
+  this->state.unknown_11C84->slots[0].vecBPre.z = this->state.deltaPos[2];
+
+  if (flag == 0) {
+    this->state.unknown_11C84->alpha = 200.0f;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "\uc774\ud329\ud2b8\\\uce68\ud22c\uacbd_.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "\uc774\ud329\ud2b8\\\uce68\ud22c\uacbd_.act");
+    this->state.unknown_11C84->animSpeed = 2;
+    this->state.unknown_11C84->size = 2.5f;
+  } else if (flag == 1) {
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "\uc774\ud329\ud2b8\\wink.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "\uc774\ud329\ud2b8\\wink.act");
+    this->state.unknown_11C84->animSpeed = 6;
+    this->state.unknown_11C84->size = 1.0f;
+    this->state.unknown_11C84->repeatAnim = 0;
+    this->state.unknown_11C84->pattern |= 0x200u;
+  } else if (flag == 2) {
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "\uc774\ud329\ud2b8\\fvoice.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "\uc774\ud329\ud2b8\\fvoice.act");
+    this->state.unknown_11C84->animSpeed = 6;
+    this->state.unknown_11C84->size = 1.0f;
+    this->state.unknown_11C84->repeatAnim = 0;
+    this->state.unknown_11C84->pattern |= 0x200u;
+  } else if (flag == 12) {
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "\uc774\ud329\ud2b8\\\ud5cc\ub4dc\ub808\ub4dc\uc2a4\ud53c\uc5b4.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "\uc774\ud329\ud2b8\\\ud5cc\ub4dc\ub808\ub4dc\uc2a4\ud53c\uc5b4.act");
+    this->state.unknown_11C84->animSpeed = 6;
+    this->state.unknown_11C84->size = 1.0f;
+    this->state.unknown_11C84->repeatAnim = 0;
+    this->state.unknown_11C84->pattern |= 0x200u;
+  } else if (flag == 13) {
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "\uc774\ud329\ud2b8\\\uc708\ub4dc\ucee4\ud130.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "\uc774\ud329\ud2b8\\\uc708\ub4dc\ucee4\ud130.act");
+    this->state.unknown_11C84->animSpeed = 6;
+    this->state.unknown_11C84->size = 1.0f;
+    this->state.unknown_11C84->repeatAnim = 0;
+    this->state.unknown_11C84->pattern |= 0x200u;
+  }
+
+  std::int16_t angle;
+  Get_Angle(this->render.position.x - this->state.deltaPos[0], this->render.position.z - this->state.deltaPos[2], &angle);
+  const CView* camera = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera;
+  std::int16_t direction = static_cast<std::int16_t>(static_cast<int>(camera->camera.yaw) + angle) % 360;
+  if (direction < 0) {
+    direction += 360;
+  }
+
+  this->state.unknown_11C84->renderFlag |= 0x200u;
+
+  int animation;
+  if (direction >= 180 && direction < 270) {
+    animation = 0;
+  } else if (direction >= 90 && direction < 180) {
+    animation = 1;
+  } else if (direction >= 0 && direction < 90) {
+    animation = 2;
+  } else {
+    animation = 3;
+  }
+
+  Owner(this->state.unknown_11C84).SetAction(animation, 16, 1);
+  Owner(this->state.unknown_11C84).InitSegment();
+  this->state.unknown_11C84->slots[1].life = 0;
+  this->state.unknown_11C84->slots[2].life = 0;
+  this->state.unknown_11C84->slots[3].life = 0;
+}
+
+// OFFSET: 0x00C66F60
+// FUNCTION: fn_20277
+void CRagEffect::sub_C66F60() {
+  this->render.position = this->state.parent->render.position;
+
+  if (this->state.stateCnt != 0) {
+    return;
+  }
+
+  PlayEffectWave(*this, "effect\\mon_\ud0c4\uc9c0\uc2e0\ud1b5.wav");
+  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 42, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  this->state.unknown_11C84->renderFlag = 5;
+  this->state.unknown_11C84->duration = this->state.duration;
+  AllocateTextures(*this->state.unknown_11C84);
+  this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\blue_ivy.bmp", 0, false, true, false);
+  this->state.unknown_11C84->size = 0.0f;
+  this->state.unknown_11C84->deltaPos = {this->state.deltaPos[0], this->state.deltaPos[1], this->state.deltaPos[2]};
+  this->state.unknown_11C84->slots[0].life = 1;
+  this->state.unknown_11C84->slots[0].process = -15;
+  this->state.unknown_11C84->slots[0].maxHeight =
+    SquareRoot((this->state.deltaPos[0] - this->render.position.x) * (this->state.deltaPos[0] - this->render.position.x) +
+               (this->state.deltaPos[2] - this->render.position.z) * (this->state.deltaPos[2] - this->render.position.z));
+  this->state.unknown_11C84->slots[0].distance = static_cast<float>(this->state.count) * 0.4f + 2.0f;
+  this->state.unknown_11C84->slots[0].height[8] = 0.0f;
+  this->state.unknown_11C84->slots[0].alphaB = 5;
+  this->state.unknown_11C84->slots[0].vecBNow.x = this->render.position.x;
+  this->state.unknown_11C84->slots[0].vecBNow.y = this->render.position.y - 8.0f;
+  this->state.unknown_11C84->slots[0].vecBNow.z = this->render.position.z;
+  this->state.unknown_11C84->slots[0].rotStart = 0;
+  this->state.unknown_11C84->slots[0].height[1] = 2.0f;
+  this->state.unknown_11C84->slots[0].height[2] =
+    (2.0f / this->state.unknown_11C84->slots[0].maxHeight) * (this->state.deltaPos[1] - this->render.position.y);
+  this->state.unknown_11C84->slots[0].fullDisplayAngle = 0;
+  this->state.unknown_11C84->slots[0].flag1[0] = 0;
+  this->state.unknown_11C84->slots[0].flag1[1] = 0;
+  this->state.unknown_11C84->slots[0].flag1[2] = 1;
+  this->state.unknown_11C84->slots[0].height[7] = 0.0f;
+  this->state.unknown_11C84->slots[1].life = 1;
+  this->state.unknown_11C84->slots[1].alphaB = 0;
+  this->state.unknown_11C84->slots[2].life = 1;
+  this->state.unknown_11C84->slots[2].alphaB = 0;
+  this->state.unknown_11C84->slots[3].life = 1;
+  this->state.unknown_11C84->slots[3].alphaB = 0;
+}
+
+// OFFSET: 0x00C54420
+// FUNCTION: fn_20197
+void CRagEffect::sub_C54420() {
+  if (this->state.stateCnt != 0) {
+    return;
+  }
+
+  g_modeMgr.GetGameMode()->SendMsg(122, 0, 0, 0, 0);
+
+  for (int z = -10; z < 15; z += 5) {
+    for (int x = -10; x < 15; x += 5) {
+      for (int i = 0; i < 4; ++i) {
+        this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 117, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+        this->state.unknown_11C84->pattern = 1;
+        const int angle = std::max(rand() % 360, 0);
+        rand();
+        ClientSine(angle);
+        ClientCosine(angle);
+        this->state.unknown_11C84->deltaPos2.y = 10.0f;
+        this->state.unknown_11C84->deltaPos2.x = static_cast<float>(x);
+        this->state.unknown_11C84->deltaPos2.z = static_cast<float>(z);
+        this->state.unknown_11C84->duration = 250;
+        this->state.unknown_11C84->size = static_cast<float>(std::max(rand() % 50, 0) + 300) / 100.0f;
+        this->state.unknown_11C84->heightSize = 18.0f;
+        this->state.unknown_11C84->longitude = static_cast<float>(std::max(rand() % 360, 0));
+        this->state.unknown_11C84->latitude = static_cast<float>(std::max(rand() % 40, 0) + 60);
+        EffectPrimitiveState& tilt = *this->state.unknown_11C84;
+        reinterpret_cast<matrix*>(tilt.transform)->MakeXRotation(GetRadian(static_cast<int>(tilt.latitude)));
+        EffectPrimitiveState& turn = *this->state.unknown_11C84;
+        reinterpret_cast<matrix*>(turn.transform)->AppendYRotation(GetRadian(static_cast<int>(turn.longitude)));
+        EffectPrimitiveState& center = *this->state.unknown_11C84;
+        std::memcpy(center.rotTransform, center.transform, sizeof(center.rotTransform));
+        this->state.unknown_11C84->speed = 1.0f;
+        this->state.unknown_11C84->accel = 0.01f;
+        this->state.unknown_11C84->alpha = 20.0f;
+        this->state.unknown_11C84->chCnt = 15;
+        this->state.unknown_11C84->changePoint = 12;
+        this->state.unknown_11C84->changeSpeed = -1.2f;
+        this->state.unknown_11C84->changeAccel = 0.0f;
+        this->state.unknown_11C84->fadeOutCnt = this->state.unknown_11C84->duration - 10;
+        AllocateTextures(*this->state.unknown_11C84);
+        this->state.unknown_11C84->textures[0] = g_texMgr.Load(i < 2 ? "effect\\stone.bmp" : "effect\\ice.tga", 0, false, true, false);
+      }
+    }
+  }
+}
+
+// OFFSET: 0x00C51740
+// FUNCTION: fn_20189
+void CRagEffect::sub_C51740(const char* name, char flag) {
+  if (this->state.stateCnt != 0) {
+    return;
+  }
+
+  this->render.position = this->state.parent->render.position;
+  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 66, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  this->state.unknown_11C84->renderFlag = 5;
+  this->state.unknown_11C84->duration = this->state.duration;
+  AllocateTextures(*this->state.unknown_11C84);
+  this->state.unknown_11C84->textures[0] = g_texMgr.Load(name, 0, false, true, false);
+
+  for (int i = 0; i < 4; ++i) {
+    this->state.unknown_11C84->slots[i].life = 0;
+  }
+
+  for (int i = 0; i < 4; ++i) {
+    this->state.unknown_11C84->slots[i].life = 1;
+    this->state.unknown_11C84->slots[i].process = 0;
+
+    if (flag == 2 || flag == 12 || flag == 13) {
+      this->state.unknown_11C84->slots[i].alphaB = 30;
+    } else if (flag == 10) {
+      this->state.unknown_11C84->slots[i].alphaB = static_cast<std::int16_t>(i + 25);
+    } else if (flag == 11) {
+      this->state.unknown_11C84->slots[i].alphaB = 0;
+    } else {
+      this->state.unknown_11C84->slots[i].alphaB = 40;
+    }
+
+    this->state.unknown_11C84->slots[i].distance = 0.0f;
+
+    if (i == 3) {
+      this->state.unknown_11C84->slots[3].process = 180;
+
+      if (flag == 1 || flag == 11) {
+        this->state.unknown_11C84->slots[3].maxHeight = 4.0f;
+      } else if (flag == 2 || flag == 12 || flag == 13) {
+        this->state.unknown_11C84->slots[3].maxHeight = 1.0f;
+      } else {
+        this->state.unknown_11C84->slots[3].maxHeight = 2.0f;
+      }
+    } else if (flag == 1 || flag == 11) {
+      this->state.unknown_11C84->slots[i].maxHeight = static_cast<float>(i * 2) + 4.0f;
+    } else if (flag == 2 || flag == 12 || flag == 13) {
+      this->state.unknown_11C84->slots[i].maxHeight = static_cast<float>(i) * 0.5f + 1.0f;
+    } else {
+      this->state.unknown_11C84->slots[i].maxHeight = static_cast<float>(i) + 2.0f;
+    }
+
+    this->state.unknown_11C84->slots[i].height[0] = this->state.unknown_11C84->slots[i].maxHeight;
+    this->state.unknown_11C84->slots[i].rotStart = static_cast<std::int16_t>(i * 25);
+    this->state.unknown_11C84->slots[i].vecTNow.x = this->render.position.x;
+    this->state.unknown_11C84->slots[i].vecTNow.y = this->render.position.y;
+    this->state.unknown_11C84->slots[i].vecTNow.z = this->render.position.z;
+    this->state.deltaPos[0] = this->render.position.x;
+    this->state.deltaPos[1] = this->render.position.y;
+    this->state.deltaPos[2] = this->render.position.z;
+
+    if (flag == 10) {
+      this->state.deltaPos[0] -= 15.0f;
+      this->state.deltaPos[1] -= 60.0f;
+      this->state.deltaPos[2] -= 15.0f;
+    } else {
+      this->state.deltaPos[0] -= 70.0f;
+      this->state.deltaPos[1] -= 300.0f;
+      this->state.deltaPos[2] -= 70.0f;
+    }
+
+    this->state.unknown_11C84->slots[i].vecTPre.x = this->state.deltaPos[0];
+    this->state.unknown_11C84->slots[i].vecTPre.y = this->state.deltaPos[1];
+    this->state.unknown_11C84->slots[i].vecTPre.z = this->state.deltaPos[2];
+    this->state.unknown_11C84->slots[i].flag1[0] = flag;
+  }
+}

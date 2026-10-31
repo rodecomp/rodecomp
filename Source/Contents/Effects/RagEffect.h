@@ -256,6 +256,12 @@ struct CRagEffect : CRenderObject {
   void Detoxication();
   void PoisonAttack(char flag);
   void StoneSpike();
+  void sub_C5CC00();
+  void sub_C649E0();
+  void sub_C47F70(char flag);
+  void sub_C66F60();
+  void sub_C54420();
+  void sub_C51740(const char* name, char flag);
 
   virtual void Slot08();
   virtual void Slot09(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh, int twelfth, int thirteenth, int fourteenth, int fifteenth, int sixteenth, int seventeenth);
