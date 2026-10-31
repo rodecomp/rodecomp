@@ -67,14 +67,18 @@ struct MapPosEntry {
 };
 
 struct SessionRecord6178Entry {
-  /* 0000 */ std::string unknown_0000;
-  /* 0018 */ int unknown_0018;
+  // INLINED
+  SessionRecord6178Entry(const std::string& text, bool completed) : text(text), completed(completed) {
+  }
+
+  /* 0000 */ std::string text;
+  /* 0018 */ bool completed;
 };
 
 struct SessionRecord6178 {
-  /* 0000 */ unsigned char unknown_0000;
-  /* 0001 */ unsigned char unknown_0001;
-  /* 0004 */ int id;
+  /* 0000 */ unsigned char unknown_0000 = 0;
+  /* 0001 */ unsigned char unknown_0001 = 0;
+  /* 0004 */ int id = -1;
   /* 0008 */ std::string unknown_0008;
   /* 0020 */ std::vector<SessionRecord6178Entry> unknown_0020;
 };
@@ -655,6 +659,7 @@ public:
   int GetPetJobByEggItem(int eggItemId);
   const char* GetPetString(int id);
   int AddUnknown6160(int id);
+  bool ToggleTrackedAchievement(int id);
   const char* GetPetTalkName(int job);
   const char* GetPetTalkActionName(int action);
   void GetPetTalkText(int job, int hungerState, int action, char* text);
