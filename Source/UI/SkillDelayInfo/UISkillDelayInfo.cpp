@@ -18,6 +18,12 @@ template <>
 void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::Slot35(int value);
 template <>
 void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::OnScroll(int position);
+template <>
+void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::AddNewItem();
+template <>
+void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::Slot53(int resolveSkin);
+template <>
+void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::Resize(int width, int height);
 
 namespace {
 
@@ -198,6 +204,100 @@ void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>:
   }
 }
 
+// OFFSET: 0x00A75D20
+// FUNCTION: fn_16814
+template <>
+void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::AddNewItem() {
+  if (this->itemWidth <= 0 || this->rowHeight <= 0) {
+    return;
+  }
+
+  for (SkillDelayInfo::CUIDelayItem* item : this->items) {
+    this->RemoveChild(item, 1);
+  }
+  this->items.clear();
+  this->selected = static_cast<unsigned int>(-1);
+
+  if (this->rowHeight <= this->geometry.height) {
+    unsigned int count = static_cast<unsigned int>(this->geometry.height / this->rowHeight) + 1;
+    if (this->geometry.height % this->rowHeight > 1) {
+      ++count;
+    }
+    this->items.resize(count, nullptr);
+    for (SkillDelayInfo::CUIDelayItem*& slot : this->items) {
+      SkillDelayInfo::CUIDelayItem* item = new SkillDelayInfo::CUIDelayItem();
+      item->SetSize(this->itemWidth, this->rowHeight);
+      item->Show(0);
+      CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
+      item->SetImageResources(images[0], images[1], images[2], images[3]);
+      item->onHover = [this](CUIListItem* listItem) {
+        for (SkillDelayInfo::CUIDelayItem* row : this->items) {
+          row->SetHighlighted(listItem == row);
+        }
+      };
+      item->onPress = [this](CUIListItem* listItem) {
+        if (this->unknown_00C4) {
+          return;
+        }
+        for (SkillDelayInfo::CUIDelayItem* row : this->items) {
+          if (listItem != row) {
+            row->SetSelected(false);
+          }
+        }
+
+        listItem->SetSelected(true);
+        if (listItem->index == static_cast<int>(this->selected) && this->unknown_00E0) {
+          return;
+        }
+        SkillDelayInfo::CUIDelayItem* delayItem = dynamic_cast<SkillDelayInfo::CUIDelayItem*>(listItem);
+        if (!delayItem) {
+          return;
+        }
+        this->selected = delayItem->index;
+        if (this->onSelect && delayItem->index >= 0 && static_cast<unsigned int>(delayItem->index) < this->data.size()) {
+          auto node = this->data.begin();
+          for (int index = delayItem->index; index > 0; --index) {
+            ++node;
+          }
+          this->onSelect(delayItem, *node);
+        }
+      };
+      this->AddChild(item);
+      slot = item;
+    }
+  }
+
+  this->scrollBar->SetTotal(this->geometry.height);
+  this->scrollBar->SetVisible(this->geometry.height);
+}
+
+// OFFSET: 0x00A75F80
+// FUNCTION: fn_16815
+template <>
+void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::Slot53(int resolveSkin) {
+  CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
+  images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
+  images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
+  images[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
+  images[3] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->disabledName, resolveSkin));
+  for (SkillDelayInfo::CUIDelayItem* item : this->items) {
+    item->SetImageResources(images[0], images[1], images[2], images[3]);
+  }
+}
+
+// OFFSET: 0x00A76190
+// FUNCTION: fn_16816
+template <>
+void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::Resize(int width, int height) {
+  UIWindow::Resize(width, height);
+  this->AddNewItem();
+  this->scrollBar->Resize(this->scrollBar->geometry.width, height);
+  this->scrollBar->SetTotal(this->rowHeight * static_cast<int>(this->data.size()) + this->itemY);
+  this->scrollBar->SetVisible(this->geometry.height);
+  this->scrollBar->SetPosition(this->scrollBar->position);
+  this->rebind = 1;
+}
+
 // OFFSET: 0x00A76210
 // FUNCTION: fn_16817
 template <>
@@ -300,6 +400,13 @@ void SkillDelayInfoSelectCallback::operator()(CUIListItem* const& item) {
 // FUNCTION: fn_16872
 CUISkillDelayInfo::CUISkillDelayInfo()
     : titleBar(nullptr), unknown_00DC(nullptr), labels{}, columns{}, delayList(nullptr), description(nullptr), backgroundColor(0), borderColor(0), skillId(7999) {
+}
+
+namespace SkillDelayInfo {
+// OFFSET: 0x00A77160
+// FUNCTION: fn_16871
+CUIDelayItem::CUIDelayItem() : CUIListItem(), level(nullptr), times(), backgroundColor(0), borderColor(0) {
+}
 }
 
 namespace SkillDelayInfo {

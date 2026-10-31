@@ -24,6 +24,7 @@ public:
 
 class CUIDelayItem : public CUIListItem {
 public:
+  CUIDelayItem();
   void Slot15(int width, int height) override;
   void Slot16() override;
   void Paint() override;
