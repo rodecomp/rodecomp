@@ -808,6 +808,20 @@ void UITextButton::ResizeToText() {
   UIWindow::Resize(width + 2, this->m_height + 2);
 }
 
+// OFFSET: 0x00897230
+// FUNCTION: fn_11525
+void UITextButton::ResizeToTextClipped(int width, int height) {
+  if (std::strcmp(this->label.c_str(), "") == 0) {
+    return;
+  }
+
+  this->ResizeToText();
+  if (this->geometry.width > width) {
+    this->m_text = this->ClipTextToWidth(this->label.c_str(), width, this->m_family, this->m_height, this->m_outline);
+    UIWindow::Resize(width, height);
+  }
+}
+
 // OFFSET: 0x00897A50
 // FUNCTION: fn_11539
 void UITabControl::FitToTabs() {
