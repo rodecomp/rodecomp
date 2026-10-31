@@ -5,9 +5,13 @@
 
 #include <cstdint>
 
+class UIBitmapButton;
+struct UIButtonContext;
+
 class UIBalloonOpenBtn : public UIFrameWnd {
 public:
   void Paint() override;
+  void Slot15(int width, int height) override;
   void Slot19() override;
 
 protected:
@@ -16,6 +20,8 @@ protected:
   /* 00C0 */ std::int64_t m_openDelay;
   /* 00C8 */ int m_balloonId;
   /* 00CC */ UIWindow* m_balloon;
+  /* 00D0 */ UIBitmapButton* m_button;
+  UIButtonContext* m_controls;
 };
 
 #endif

@@ -1038,6 +1038,7 @@
   "Source/UI/Window/UIWindow.cpp": 2,
   "Source/UI/Window/UIWindowMgr.cpp": 2,
   "Source/UI/Window/UIWordDisplayWnd.cpp": 2,
+  "Source/UI/Window/UIZeroChatWnd.cpp": 2,
   "Source/UI/Window/WindowAncestry.cpp": 2,
   "Source/UI/Window/WindowBorder.cpp": 2,
   "Source/UI/Window/WindowDialogs.cpp": 2,

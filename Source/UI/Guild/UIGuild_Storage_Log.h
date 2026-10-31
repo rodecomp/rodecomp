@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 
+struct UIButtonContext;
 class UIStaticText;
 class UITabControl;
 
@@ -27,6 +28,7 @@ extern std::vector<GuildStorageLogEntry> g_guildStorageLogs[3];
 class UIGuild_Storage_Log : public UIFrameWnd {
 public:
   UIGuild_Storage_Log(UIWindowContext& windows, UIFrameContext& frames);
+  void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
@@ -46,6 +48,7 @@ protected:
   /* 0184 */ std::uint32_t* unknown_0184;
   /* 0188 */ std::uint32_t* unknown_0188;
   /* 018C */ std::uint32_t* unknown_018C;
+  UIButtonContext* m_controls;
 
   void FillRows();
 };
