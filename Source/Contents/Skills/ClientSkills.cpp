@@ -1117,6 +1117,20 @@ void CSession::LoadProhibitionLog() {
   }
 }
 
+// OFFSET: 0x00E19B50
+// FUNCTION: fn_23845
+void CSession::ClearPairValues(unsigned char clearThird, unsigned char clearSecond, unsigned char clearFirst) {
+  if (clearFirst == 1) {
+    this->m_pairValues[0] = -1;
+  }
+  if (clearSecond == 1) {
+    this->m_pairValues[1] = -1;
+  }
+  if (clearThird == 1) {
+    this->m_pairValues[2] = -1;
+  }
+}
+
 // OFFSET: 0x00E19B90
 // FUNCTION: fn_23846
 void CSession::ResetUnknown1050() {

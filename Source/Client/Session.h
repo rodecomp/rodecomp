@@ -524,6 +524,7 @@ public:
   void ClearHomunStatus();
   std::pair<int, int>* InsertPair(int key, int value);
   int SetPairValue(int value, int slot);
+  void ClearPairValues(unsigned char clearThird, unsigned char clearSecond, unsigned char clearFirst);
   int GetPairValue() const;
   bool IsNpcJob(int job) const;
   bool HasJobShieldSprite(int job, int shield) const;
