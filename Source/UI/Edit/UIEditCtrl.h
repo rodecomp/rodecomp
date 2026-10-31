@@ -148,6 +148,8 @@ public:
   void SetTagColor(std::uint32_t color);
   void ClearLineState();
   int DecodeLinkNumber(std::string text);
+  void DecodeLinkOptions(std::vector<int>& options, const char* text, int& position, const int& length, const char& separator, const char& alternate);
+  int DecodeLinkCards(std::vector<int>& fields, const char* text, int& position, const char& separator, const int& length, int index);
 
   /* 011C */ std::list<std::vector<UIItemTagButton*>> entries;
   /* 0124 */ std::vector<std::string> pendingText;

@@ -2790,6 +2790,27 @@ int UIEditCtrl3::DecodeLinkNumber(std::string text) {
   return value;
 }
 
+// OFFSET: 0x008603D0
+// FUNCTION: fn_10899
+void UIEditCtrl3::DecodeLinkOptions(std::vector<int>& options, const char* text, int& position, const int& length, const char& separator, const char& alternate) {
+  std::string value;
+  while (++position < length + 1) {
+    const char byte = text[position];
+    if (byte >= '0') {
+      value += byte;
+    } else if (separator != byte && alternate != byte) {
+      --position;
+      options.push_back(this->DecodeLinkNumber(std::move(value)));
+      break;
+    } else {
+      options.push_back(this->DecodeLinkNumber(std::move(value)));
+      value.clear();
+    }
+  }
+}
+
+// OFFSET: 0x00860790
+
 // OFFSET: 0x00977A50
 // FUNCTION: fn_13314
 void UIItemStoreFindWnd::Slot15(int width, int height) {
