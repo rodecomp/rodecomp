@@ -50,6 +50,52 @@ int CUIProbabilityTable::SendMsg(UIWindow* sender, int message, std::intptr_t ar
 }
 
 // OFFSET: 0x00A4E4D0
+// FUNCTION: fn_16208
+void CUIProbabilityTable::SetItem(int itemId) {
+  this->m_itemId = itemId;
+
+  {
+    ITEM_INFO item;
+    item.SetItemId(itemId);
+    CUIStaticText* label = this->m_itemName;
+    const std::string name = item.DisplayName(0);
+    label->SetText(name.c_str(), name.size());
+  }
+
+  this->m_list->ClearData();
+
+  if (!Singleton<NEO_PACKAGEITEM::CNeoPackageItemMgr>::s_instance) {
+    Singleton<NEO_PACKAGEITEM::CNeoPackageItemMgr>::s_instance = new (std::nothrow) NEO_PACKAGEITEM::CNeoPackageItemMgr;
+  }
+
+  std::optional<std::map<int, NEO_PACKAGEITEM::PackageGroup>*> package = Singleton<NEO_PACKAGEITEM::CNeoPackageItemMgr>::s_instance->FindPackage(itemId);
+  if (!package) {
+    return;
+  }
+
+  std::uint32_t color = 0xFFFFEFE7;
+  for (const auto& group : **package) {
+    color = color == 0xFFFFEFE7 ? 0xFFFFFFFF : 0xFFFFEFE7;
+
+    std::list<NEO_PACKAGEITEM::PackageEntry> entries = group.second.items;
+    entries.sort([](const NEO_PACKAGEITEM::PackageEntry& left, const NEO_PACKAGEITEM::PackageEntry& right) { return left.probability < right.probability; });
+
+    for (const NEO_PACKAGEITEM::PackageEntry& entry : entries) {
+      long long value = static_cast<long long>(std::pow(10.0, 6.0));
+      if (group.first != 0) {
+        value = (static_cast<long long>(std::pow(10.0, 7.0) * entry.probability / group.second.totalProbability) + 5) / 10;
+      }
+
+      ProbabilityTable::CItemData data;
+      data.color = color;
+      data.name = entry.name;
+      data.probability = static_cast<double>(value) / 10000.0;
+      this->m_list->data.push_back(std::move(data));
+    }
+  }
+
+  this->m_list->UpdateScrollBar();
+}
 
 // OFFSET: 0x00A4EBD0
 // FUNCTION: fn_16210
