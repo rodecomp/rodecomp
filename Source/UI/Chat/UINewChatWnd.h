@@ -22,6 +22,7 @@ public:
   void Slot27(int x, int y) override;
   void Slot31(int x, int y) override;
   bool Slot42(void* output) override;
+  void Slot43() override;
   void SaveChatLogs();
   void RefreshTabs(bool arrange);
 
@@ -32,7 +33,9 @@ private:
   /* 00C8 */ int m_inputY;
   /* 00CC */ int m_listWidth;
   /* 00D0 */ int m_listHeight;
-  /* 00D4 */ unsigned char unknown_00D4[0x20];
+  /* 00D4 */ unsigned char unknown_00D4[0x4];
+  /* 00D8 */ std::uint32_t m_listColor;
+  /* 00DC */ unsigned char unknown_00DC[0x18];
   /* 00F4 */ std::vector<UIWindow*> m_tabs;
   /* 0100 */ unsigned char unknown_0100[0x8];
   /* 0108 */ int m_lockButtonX;

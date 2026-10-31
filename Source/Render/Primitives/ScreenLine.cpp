@@ -14,7 +14,9 @@
 #include "Resource/ResourceMgr.h"
 #include "Resource/Sprites/ActionResource.h"
 #include "Resource/Sprites/SpriteResource.h"
+#include "UI/Chat/UINewChatWnd.h"
 #include "UI/Chat/UISubChatHisWnd.h"
+#include "UI/Lists/UITabControl.h"
 #include "Utility/Math/AffineMatrix.h"
 
 #include <cmath>
@@ -44,6 +46,29 @@ void UIRoMapWnd::DrawRecordAreas() {
     );
     ++color;
   }
+}
+
+// OFFSET: 0x009181F0
+// FUNCTION: fn_12592
+void UINewChatWnd::Slot43() {
+  int x = 3;
+  int y = 0;
+  this->ToScreen(x, y);
+  if (this->geometry.unknown_0030 == 0) {
+    return;
+  }
+
+  for (int i = 0; i < static_cast<int>(this->m_tabControl->labels.size()); ++i) {
+    const int inactive = i != this->m_currentTab;
+    DrawAlphaRectangle(
+      g_renderer->primitives, g_renderer->queues, x + 1 + this->m_tabWidth * i, y + 1 + inactive, this->m_tabWidth - 1, this->m_inputOffsetY - inactive,
+      inactive ? 0x99000000 : 0x66000000, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
+    );
+  }
+  DrawAlphaRectangle(
+    g_renderer->primitives, g_renderer->queues, this->m_inputX + 1, this->m_inputY + 1, this->m_listWidth - 2, this->m_listHeight - 1, this->m_listColor,
+    g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
+  );
 }
 
 // OFFSET: 0x00918300
