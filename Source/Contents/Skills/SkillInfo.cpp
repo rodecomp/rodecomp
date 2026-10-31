@@ -2395,6 +2395,7 @@ public:
 class CSkillObjectAction_HN_JACK_FROST_NOVA : public CSkillObjectAction {
 public:
   void Slot00(int argument, CRenderObject* object, CGameActor* source) override;
+  void Slot01(CRenderObject* object) override;
 };
 
 class CSkillAction_HN_HELLS_DRIVE : public CSkillAction {
@@ -2835,6 +2836,15 @@ void CSkillObjectAction_HN_JACK_FROST_NOVA::Slot00(int argument, CRenderObject* 
     g_effectMgr->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("jack_frost_nova_start"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     g_effectMgr->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("jack_frost_nova_loop_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     g_effectMgr->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("jack_frost_nova_loop"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x007847E0
+// FUNCTION: fn_08551
+void CSkillObjectAction_HN_JACK_FROST_NOVA::Slot01(CRenderObject* object) {
+  if (object) {
+    const vector3d position = object->render.position;
+    g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("jack_frost_nova_end"), position.x, position.y, position.z, 0, -1, 0, 0);
   }
 }
 
