@@ -2969,6 +2969,15 @@ bool IsEquipViewHidden() {
 }
 
 // OFFSET: 0x008ED080
+// FUNCTION: fn_12213
+void UIChatRoomMakeWnd::Paint() {
+  auto* titleBar = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\titlebar_fix.bmp")));
+  this->DrawBitmap(0, 0, titleBar ? &titleBar->image : nullptr, false);
+  auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\chatwin0_bg.bmp")));
+  this->DrawBitmap(0, 17, background ? &background->image : nullptr, false);
+  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 9, 4, this->m_title.c_str(), 0, 0, 12, 0xFFFFFF, 0, 0);
+  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 8, 3, this->m_title.c_str(), 0, 0, 12, 0, 0, 0);
+}
 
 // OFFSET: 0x008F64B0
 // FUNCTION: fn_12317
