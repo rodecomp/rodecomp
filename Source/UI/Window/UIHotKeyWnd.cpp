@@ -1,5 +1,5 @@
 #include "UI/Window/UIHotKeyWnd.h"
-
+#include "UI/Chat/ChatSuggestions.h"
 #include "Client/Session.h"
 #include "Client/Mode/ModeCursor.h"
 #include "Client/Mode/ModeTooltip.h"
@@ -413,11 +413,11 @@ void UISerachStoreInfoWnd::Slot28(int x, int y) {
   this->Invalidate();
 }
 
-// OFFSET: 0x0091CA10
 
-// OFFSET: 0x00916220
 
-// OFFSET: 0x00916930
+
+
+
 
 // OFFSET: 0x0092BEC0
 // FUNCTION: fn_12663
@@ -529,5 +529,321 @@ void UIHotKeyWnd::Paint() {
   );
 }
 
-// OFFSET: 0x00935270
+namespace {
+  __declspec(noinline) int CountAllHotkeys(LuaScript& script, int tab) {
+    int count = 0;
+    if (script.Call("GetOriginalHotKeyListSize", "d>d", tab + 1, &count)) {
+      if (tab == 1) {
+        int hidden = 0;
+        for (int index = 30; index < count; ++index) {
+          hidden += HiddenHotkeyIndex(index);
+        }
+        return count - hidden;
+      }
+    }
+    return count;
+  }
 
+  __declspec(noinline) int ResolveHotkeyIndex(LuaScript& script, int tab, int index) {
+    if (tab == 1 && index >= 30) {
+      for (int candidate = 30; candidate <= index; ++candidate) {
+        index += HiddenHotkeyIndex(candidate);
+      }
+    }
+    int count = 0;
+    script.Call("GetOriginalHotKeyListSize", "d>d", tab + 1, &count);
+    return index >= count ? -1 : index;
+  }
+}
+
+// OFFSET: 0x0091CA10
+// FUNCTION: fn_12620
+void UIHotKeyWnd::ReloadHotkeys() {
+  this->m_selectedRow = -1;
+  for (auto& map : this->hotkeys) {
+    map.clear();
+  }
+
+  for (int position = 0; position < 4; ++position) {
+    const int tab = g_userHotkeyMgr->TabAt(position);
+    const int count = CountAllHotkeys(reinterpret_cast<LuaScript&>(g_session), tab);
+    for (int row = 0; row < count; ++row) {
+      const int index = ResolveHotkeyIndex(reinterpret_cast<LuaScript&>(g_session), tab, row);
+      if (index == -1) {
+        continue;
+      }
+
+      std::string text;
+      std::string description;
+      int key1 = 0;
+      int key2 = 0;
+      const char* textValue = nullptr;
+      const char* descriptionValue = nullptr;
+      if (!g_luaScript->Call("GetUserHotKeyInfo", "dd>ddss", tab + 1, index, &key1, &key2, &textValue, &descriptionValue)) {
+        continue;
+      }
+
+      description = descriptionValue;
+      if (description.empty()) {
+        continue;
+      }
+
+      if (!g_luaScript->Call("GetOriginalHotKeyInfo", "dd>ddss", tab + 1, index, &key1, &key2, &textValue, &descriptionValue)) {
+        continue;
+      }
+
+      text = textValue;
+      description = descriptionValue;
+      if (description.empty()) {
+        continue;
+      }
+
+      HotkeyInfo& info = this->hotkeys[tab][index];
+      info.key1 = key1;
+      info.key2 = key2;
+      info.text = text;
+      info.description = description;
+    }
+  }
+
+  this->Invalidate();
+}
+
+// OFFSET: 0x00916220
+// FUNCTION: fn_12583
+bool UIHotKeyWnd::AssignSelectedHotkey(int mode) {
+  int screenX = 0;
+  int screenY = 0;
+  this->ToScreen(screenX, screenY);
+
+  const int balloonY =
+    (this->m_selectedRow % this->m_rowsPerPage - 1) * this->unknown_00D0 + this->unknown_00CC + this->unknown_00C4 + this->unknown_00BC;
+  this->m_balloon->SetText(LookupMessage(0x5CE), 0x3C);
+  this->m_balloon->m_textColor = 0xFFFFFF;
+  this->m_balloon->m_outlineColor = 0;
+  this->m_balloon->Move((this->geometry.width - this->m_balloon->geometry.width) / 2 + screenX, screenY + balloonY);
+  this->Invalidate();
+
+  if (this->m_selectedRow < 0) {
+    return false;
+  }
+
+  int rejection = 0;
+  bool checkConflict = false;
+  if (this->m_tab == 1 && ResolveHotkeyIndex(reinterpret_cast<LuaScript&>(g_session), 1, this->m_selectedRow) == 31) {
+    const int key = g_windowMgr.keyCode;
+    const int modifier = g_windowMgr.modifierKey;
+    if (key == 0x12 || modifier == 0x12 || key == 0x11 || modifier == 0x11 || key == 0x10 || modifier == 0x10) {
+      rejection = 0x5D0;
+    } else if (key == 0x20 || key == 0x90) {
+      if (modifier != 0) {
+        checkConflict = true;
+      } else {
+        rejection = 0x5CF;
+      }
+    } else if (mode == 4) {
+      if (key == 0x14) {
+        rejection = 0x5D0;
+      } else if (modifier != 0 || g_windowMgr.IsSharedWindowId(key)) {
+        checkConflict = true;
+      } else {
+        rejection = 0x5D0;
+      }
+    }
+  } else if (mode == 4) {
+    checkConflict = true;
+  }
+
+  if (rejection == 0) {
+    if (checkConflict) {
+      mode = this->CheckHotkeyConflict();
+    }
+
+    if (mode == 1) {
+      return false;
+    }
+
+    if (mode == 2) {
+      rejection = 0x5CF;
+    } else if (mode == 3) {
+      rejection = 0x5D0;
+    }
+  }
+
+  if (rejection == 0) {
+    const HotkeyEntry entry = this->GetHotkey(this->m_tab, this->m_selectedRow + (this->m_page * 9 - 9) * 4, true);
+    HotkeyInfo info = entry.info;
+    if (g_windowMgr.keyCode == 0x1B) {
+      info.key1 = 0;
+      info.key2 = 0;
+      info.text = "";
+    } else {
+      info.key1 = g_windowMgr.keyCode;
+      info.key2 = g_windowMgr.modifierKey;
+      const char* text = nullptr;
+      if (g_luaScript->Call("GetKeyDes", "dd>s", g_windowMgr.keyCode, g_windowMgr.modifierKey, &text) && text) {
+        info.text = text;
+      }
+    }
+
+    this->SetHotkey(this->m_tab, entry.index, info);
+    this->Invalidate();
+    return true;
+  }
+
+  this->m_balloon->SetText(LookupMessage(rejection), 0x3C);
+  this->m_balloon->m_textColor = 0xFFFF;
+  this->m_balloon->m_outlineColor = 0;
+  this->m_balloon->Move((this->geometry.width - this->m_balloon->geometry.width) / 2 + screenX, screenY + balloonY);
+  this->Invalidate();
+  return false;
+}
+
+// OFFSET: 0x00916930
+// FUNCTION: fn_12586
+int UIHotKeyWnd::CheckHotkeyConflict() {
+  char message[100];
+  std::memset(message, 0, sizeof(message));
+
+  for (int tab = 0; tab < 4; ++tab) {
+    if ((this->m_tab == 0 && tab == 3) || (this->m_tab == 3 && tab == 0)) {
+      continue;
+    }
+
+    const int count = CountAllHotkeys(reinterpret_cast<LuaScript&>(g_session), tab);
+    for (int index = 0; index < count; ++index) {
+      const HotkeyEntry entry = this->GetHotkey(tab, index, true);
+      HotkeyInfo info = entry.info;
+      if (info.key1 != g_windowMgr.keyCode || info.key2 != g_windowMgr.modifierKey) {
+        continue;
+      }
+
+      if (index == this->m_selectedRow && tab == this->m_tab) {
+        return 1;
+      }
+
+      StringFormat(message, sizeof(message), static_cast<std::size_t>(-1), LookupMessage(0x5D1), info.description.c_str());
+      if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(message, 2, true, false, 0, "Message", 280, 120, 0) != 187) {
+        return 1;
+      }
+
+      info.key1 = 0;
+      info.key2 = 0;
+      info.text = "";
+      this->SetHotkey(tab, entry.index, info);
+
+      if (tab == 0 && this->m_tab != 0) {
+        const int shortcutCount = CountAllHotkeys(reinterpret_cast<LuaScript&>(g_session), 3);
+        for (int shortcut = 0; shortcut < shortcutCount; ++shortcut) {
+          const HotkeyEntry other = this->GetHotkey(3, shortcut, true);
+          HotkeyInfo otherInfo = other.info;
+          if (otherInfo.key1 == g_windowMgr.keyCode && otherInfo.key2 == g_windowMgr.modifierKey) {
+            otherInfo.key1 = 0;
+            otherInfo.key2 = 0;
+            otherInfo.text = "";
+            this->SetHotkey(3, other.index, otherInfo);
+          }
+        }
+      }
+
+      return 0;
+    }
+  }
+
+  return 0;
+}
+
+// OFFSET: 0x00935270
+// FUNCTION: fn_12745
+int UIHotKeyWnd::SendMsg(
+  UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
+) {
+  if (message == 6) {
+    switch (argument1) {
+    case 184:
+      ++g_userHotkeyMgr->m_changes;
+      this->SaveHotkeys();
+      g_windowMgr.CloseWindow(156);
+      return 0;
+    case 185:
+      this->m_selectedRow = -1;
+      for (auto& map : this->hotkeys) {
+        map.clear();
+      }
+      this->Invalidate();
+      return 0;
+    case 201:
+      g_windowMgr.CloseWindow(156);
+      return 0;
+    case 213:
+      if (sender != this->unknown_0108) {
+        return 0;
+      }
+
+      g_windowCloseByte = argument2 != 0;
+      if (g_chatSuggestions) {
+        if (argument2 != 0) {
+          reinterpret_cast<UIWindow*>(g_chatSuggestions)->Invalidate();
+          return 0;
+        }
+
+        reinterpret_cast<ChatInputFocus*>(g_chatSuggestions)->Toggle();
+      }
+      return 0;
+    case 316:
+      if (this->m_page > 1) {
+        --this->m_page;
+      }
+      this->UpdatePageButtons();
+      return 0;
+    case 317:
+      if (this->m_page < this->m_pageCount) {
+        ++this->m_page;
+      }
+      this->UpdatePageButtons();
+      return 0;
+    case 363:
+      this->ReloadHotkeys();
+      return 0;
+    default:
+      return 0;
+    }
+  }
+
+  if (message == 22) {
+    if (sender == g_windowMgr.LookupWindow(303)) {
+      this->unknown_0100->SelectTab(static_cast<int>(argument1));
+      return 0;
+    }
+
+    const int tab = g_userHotkeyMgr->TabAt(static_cast<int>(argument1));
+    if (this->m_tab != tab || tab != 1) {
+      this->m_prevButton->Enable(0);
+      this->m_nextButton->Enable(0);
+    }
+
+    if (this->m_tab == tab) {
+      return 0;
+    }
+
+    this->m_selectedRow = -1;
+    this->m_tab = tab;
+    this->unknown_0114 = 0;
+    this->m_page = 1;
+
+    const int count = CountAllHotkeys(reinterpret_cast<LuaScript&>(g_session), tab);
+    if (count > 36) {
+      this->unknown_0114 = 1;
+      this->m_pageCount = count / 36;
+      if (count % 36 != 0) {
+        ++this->m_pageCount;
+      }
+      this->m_nextButton->Enable(1);
+    }
+
+    this->Invalidate();
+    return 0;
+  }
+
+  return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+}

@@ -32,7 +32,7 @@ public:
   HotkeyEntry GetHotkey(int tab, int index, bool resolve);
   void ShowHotkeyTooltip(int x, int y);
   void ReloadHotkeys();
-  int AssignSelectedHotkey(int mode);
+  bool AssignSelectedHotkey(int mode);
   int CheckHotkeyConflict();
 
   /* 00B4 */ int m_selectedRow;
