@@ -24,8 +24,7 @@ static_assert(sizeof(RefiningMaterial) == 9);
 
 class UIRefining_BtnAgain : public UIBitmapButton {
 public:
-  // INLINED
-  UIRefining_BtnAgain(UIWindowContext& windows, UIButtonContext& controls) : UIBitmapButton(windows, controls), cost(0) {}
+  UIRefining_BtnAgain(UIWindowContext& windows, UIButtonContext& controls);
   void Paint() override;
   void Enable(unsigned char value) override;
   void UpdateBitmaps();
@@ -37,8 +36,7 @@ public:
 
 class UIRefining_BtnRefining : public UIBitmapButton {
 public:
-  // INLINED
-  UIRefining_BtnRefining(UIWindowContext& windows, UIButtonContext& controls) : UIBitmapButton(windows, controls), cost(0) {}
+  UIRefining_BtnRefining(UIWindowContext& windows, UIButtonContext& controls);
   void Paint() override;
   void Enable(unsigned char value) override;
 
@@ -47,8 +45,7 @@ public:
 
 class UIRefining_BtnReturn : public UIBitmapButton {
 public:
-  // INLINED
-  UIRefining_BtnReturn(UIWindowContext& windows, UIButtonContext& controls) : UIBitmapButton(windows, controls), highlighted(1) {}
+  UIRefining_BtnReturn(UIWindowContext& windows, UIButtonContext& controls);
   void Paint() override;
   void UpdateBitmaps();
 
@@ -73,6 +70,7 @@ public:
 
 class UIRefiningWnd : public UIFrameWnd {
 public:
+  UIRefiningWnd();
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot15(int width, int height) override;
   void Slot19() override;

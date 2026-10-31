@@ -46,6 +46,30 @@ struct RefiningClosePacket {
 };
 #pragma pack(pop)
 
+// OFFSET: 0x007F4920
+// FUNCTION: fn_09890
+UIRefiningWnd::UIRefiningWnd()
+    : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIFrameContext*>(nullptr), 0), refiningButton(nullptr), returnButton(nullptr),
+      unknown_00C0(nullptr), state(0), result(7), frameInterval(100), stateTick(0), frame(0), selectedMaterial(-1), materials(), catalystEnabled(0),
+      catalystItemId(0), catalystCount(0), item(0), unknown_01F0(0), nextMaterials(), nextCatalystCount(0), nextItem(0) {
+  this->catalystItemId = 6635;
+}
+
+// OFFSET: 0x007F4A70
+// FUNCTION: fn_09891
+UIRefining_BtnAgain::UIRefining_BtnAgain(UIWindowContext& windows, UIButtonContext& controls) : UIBitmapButton(windows, controls), cost(0) {
+}
+
+// OFFSET: 0x007F4AD0
+// FUNCTION: fn_09892
+UIRefining_BtnRefining::UIRefining_BtnRefining(UIWindowContext& windows, UIButtonContext& controls) : UIBitmapButton(windows, controls), cost(0) {
+}
+
+// OFFSET: 0x007F4B30
+// FUNCTION: fn_09893
+UIRefining_BtnReturn::UIRefining_BtnReturn(UIWindowContext& windows, UIButtonContext& controls) : UIBitmapButton(windows, controls), highlighted(1) {
+}
+
 // OFFSET: 0x007F5E30
 // FUNCTION: fn_09907
 void UIRefiningWnd::Slot15(int width, int height) {
