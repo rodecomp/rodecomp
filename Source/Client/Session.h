@@ -478,6 +478,7 @@ public:
   bool IsNavigationAllowed() const;
   void LoadRobeAlpha();
   void LoadDamageSkinSettings();
+  bool LoadMapNameTable();
   void ClearHomunStatus();
   std::pair<int, int>* InsertPair(int key, int value);
   int SetPairValue(int value, int slot);
