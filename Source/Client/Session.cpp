@@ -1576,6 +1576,37 @@ void SetMemberFlags(std::uint32_t* flags) {
 }
 
 // OFFSET: 0x00DFF8B0
+// FUNCTION: fn_23624
+void CSession::SetUnknown16EC(std::uint32_t value) {
+  this->unknown_16EC = value;
+  this->InvalidateWindowFrames();
+
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  if (!mode) {
+    return;
+  }
+
+  auto it = g_activeSkillEffects.begin();
+  for (; it != g_activeSkillEffects.end(); ++it) {
+    if (it->id == 0x2B7) {
+      break;
+    }
+  }
+
+  if (it == g_activeSkillEffects.end()) {
+    if (value) {
+      ActiveSkillEffect effect;
+      effect.id = 0x2B7;
+      g_activeSkillEffects.push_back(effect);
+    }
+  } else if (!value) {
+    g_activeSkillEffects.erase(it);
+  }
+
+  if (mode->scene && mode->scene->player && mode->scene->player->unknown_0544) {
+    mode->scene->player->unknown_0544->SendMsg(nullptr, 44, 0, 1, 0, 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x00DFFA00
 // FUNCTION: fn_23626
@@ -2051,6 +2082,19 @@ bool CSession::HasControlCharacter(std::string text) {
 }
 
 // OFFSET: 0x00DE3D90
+// FUNCTION: fn_23488
+void CSession::sub_DE3D90(char* text) {
+  std::string greeting = "(Hi) ";
+  greeting += text ? text : "*^_^*";
+
+  for (const MessengerMember& member : this->m_friends) {
+    g_windowMgr.unknown_04DC = greeting.c_str();
+    static_cast<CMode*>(g_charViewMode)->SendMsg(0xB, reinterpret_cast<int>(member.name.c_str()), 0, 0, 0);
+    if (++g_pendingWhisperCount > 40) {
+      g_pendingWhisperCount = 40;
+    }
+  }
+}
 
 // OFFSET: 0x00DE9430
 // FUNCTION: fn_23501
@@ -2447,3 +2491,15 @@ void CSession::ClearEntryList5BD4() {
 }
 
 // OFFSET: 0x00D8D9E0
+// FUNCTION: fn_22269
+void CSession::ClearAchievements() {
+  this->unknown_6144.clear();
+  this->unknown_6150 = 0;
+  this->unknown_6154 = 0;
+  this->unknown_6158 = 0;
+  this->unknown_6160.clear();
+  this->unknown_614C = 0;
+  this->unknown_616C.clear();
+  this->unknown_615C = 0;
+  this->unknown_6178.clear();
+}
