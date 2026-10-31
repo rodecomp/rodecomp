@@ -16,6 +16,28 @@
 
 #include <cstdint>
 #include <cstring>
+#include <vector>
+
+// OFFSET: 0x009A07C0
+// FUNCTION: fn_13602
+std::vector<unsigned char> UIWeaponRefineWnd::BuildReplayRecords() {
+  std::vector<unsigned char> records;
+  {
+    const auto record = BuildReplayTaggedRecord(22200, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  const int count = static_cast<int>(this->itemIds.size());
+  for (int index = 0; index < count; ++index) {
+    int values[2] = {this->itemIds[index], this->indices[index]};
+    const auto record = BuildReplayTaggedRecord(22202, values, sizeof(values));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(22201, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  return records;
+}
 
 // OFFSET: 0x009A3CD0
 // FUNCTION: fn_13613
