@@ -191,6 +191,7 @@ public:
   /* 0084 */ CUIGameItem* itemIcon;
   /* 0088 */ CUITextViewer* description;
 
+  void Slot15(int width, int height) override;
   void Slot16() override;
   void Paint() override;
   void Slot32(int x, int y) override;
@@ -200,21 +201,25 @@ public:
 
 class CUISlot0 : public CUISlot {
 public:
+  void Slot15(int width, int height) override;
   void Slot16() override;
 };
 
 class CUISlot1 : public CUISlot {
 public:
+  void Slot15(int width, int height) override;
   void Slot16() override;
 };
 
 class CUISlot2 : public CUISlot {
 public:
+  void Slot15(int width, int height) override;
   void Slot16() override;
 };
 
 class CUISlot3 : public CUISlot {
 public:
+  void Slot15(int width, int height) override;
   void Slot16() override;
 };
 }

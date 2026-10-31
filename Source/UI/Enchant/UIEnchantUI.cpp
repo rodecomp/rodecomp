@@ -6,11 +6,47 @@
 #include "UI/Lists/UIVScrollBar.h"
 #include "UI/Text/UITextViewerControl.h"
 #include "UI/Text/UIStaticTextControl.h"
+#include "Utility/Cipher/XorBytes.h"
 #include <algorithm>
+#include <cstddef>
+#include <cstdint>
 #include <cstring>
 #include <format>
 #include <iterator>
 #include <new>
+
+namespace {
+
+template <std::size_t Length, std::uint64_t Key>
+class EncryptedName {
+public:
+  explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+    for (std::uint64_t index = 0; index < Length; ++index) {
+      this->m_text[index] = source[index];
+    }
+  }
+
+  ~EncryptedName() {
+    for (std::uint64_t index = 0; index < Length; ++index) {
+      this->m_text[index] = 0;
+    }
+  }
+
+  const char* Text() {
+    if (this->m_encrypted) {
+      utility::XorBytes(this->m_text, Length, Key);
+      this->m_encrypted = false;
+    }
+
+    return reinterpret_cast<const char*>(this->m_text);
+  }
+
+private:
+  std::uint8_t m_text[Length];
+  bool m_encrypted;
+};
+
+}
 
 // GLOBAL: gl_24882
 template <>
@@ -107,6 +143,89 @@ void CUIEnchantPage::Slot54(CUIEnchantItem* item, const CEnchantItemData& data) 
 // FUNCTION: fn_14808
 CUIEnchantUI* CreateEnchantUI() {
   return new CUIEnchantUI();
+}
+
+namespace EnchantUI {
+// OFFSET: 0x009FD340
+// FUNCTION: fn_14823
+void CUISlot0::Slot15(int width, int height) {
+  CUISlot::Slot15(width, height);
+  this->radioButton->Move(59, 1);
+  this->radioButton->SetOnSelect([this](CUIRadioButton* button) { this->SelectSlot(button); });
+  this->radioButton->disabled = 0;
+  this->radioButton->Invalidate();
+  this->radioButton->SetImages(
+    std::string("유저인터페이스\\EnchantUI\\btn_socket_out.bmp"), std::string("유저인터페이스\\EnchantUI\\btn_socket_select.bmp"),
+    std::string("유저인터페이스\\EnchantUI\\btn_socket_over.bmp"), std::string("유저인터페이스\\EnchantUI\\btn_socket_out.bmp")
+  );
+  this->radioButton->checked = false;
+  this->radioButton->Invalidate();
+  this->itemIcon->Move(69, 11);
+  this->itemIcon->unknown_0084 = 1;
+  this->itemIcon->unknown_0085 = 1;
+  this->description->Move(0, 44);
+  this->description->SetTextOffset(2, 0);
+  this->description->SetFont(std::string("Gulim"));
+  this->description->SetFontHeight(12);
+  this->description->SetBold(true);
+  this->description->SetTextColor(0x965532);
+  this->description->SetOutline(false, 0xFFFFFF);
+  this->description->SetLineSpacing(1);
+  this->description->SetBackgroundColor(0xFFFF00FF);
+  this->description->SetPadding(0, 0, 0, 0);
+  this->description->SetScrollBarSize(13, 39);
+  this->description->SetScrollStep(13);
+  this->description->SetScrollBarButtonImages(std::string("유저인터페이스\\scroll0up.bmp"), std::string("유저인터페이스\\scroll0down.bmp"));
+  this->description->SetScrollBarBackground(std::string("유저인터페이스\\scroll0mid.bmp"));
+  this->description->SetScrollBarThumbImages(
+    std::string("유저인터페이스\\scroll0bar_up.bmp"), std::string("유저인터페이스\\scroll0bar_mid.bmp"), std::string("유저인터페이스\\scroll0bar_down.bmp")
+  );
+}
+
+// OFFSET: 0x009FDC30
+// FUNCTION: fn_14824
+void CUISlot1::Slot15(int width, int height) {
+  CUISlot::Slot15(width, height);
+  this->radioButton->Move(59, 1);
+  this->radioButton->SetOnSelect([this](CUIRadioButton* button) { this->SelectSlot(button); });
+  this->radioButton->disabled = 0;
+  this->radioButton->Invalidate();
+  this->radioButton->SetImages(
+    std::string("유저인터페이스\\EnchantUI\\btn_socket_out.bmp"), std::string("유저인터페이스\\EnchantUI\\btn_socket_select.bmp"),
+    std::string("유저인터페이스\\EnchantUI\\btn_socket_over.bmp"), std::string("유저인터페이스\\EnchantUI\\btn_socket_out.bmp")
+  );
+  this->radioButton->checked = false;
+  this->radioButton->Invalidate();
+  this->itemIcon->Move(69, 11);
+  this->itemIcon->unknown_0084 = 1;
+  this->itemIcon->unknown_0085 = 1;
+  this->description->Move(0, 44);
+  this->description->SetTextOffset(2, 0);
+  this->description->SetFont(std::string("Gulim"));
+  this->description->SetFontHeight(12);
+  this->description->SetBold(true);
+  this->description->SetTextColor(0x965532);
+  this->description->SetOutline(false, 0xFFFFFF);
+  this->description->SetLineSpacing(1);
+  this->description->SetBackgroundColor(0xFFFF00FF);
+  this->description->SetPadding(0, 0, 0, 0);
+  this->description->SetScrollBarSize(13, 39);
+  this->description->SetScrollStep(13);
+  this->description->SetScrollBarButtonImages(std::string("유저인터페이스\\scroll0up.bmp"), std::string("유저인터페이스\\scroll0down.bmp"));
+  this->description->SetScrollBarBackground(std::string("유저인터페이스\\scroll0mid.bmp"));
+  this->description->SetScrollBarThumbImages(
+    std::string("유저인터페이스\\scroll0bar_up.bmp"), std::string("유저인터페이스\\scroll0bar_mid.bmp"), std::string("유저인터페이스\\scroll0bar_down.bmp")
+  );
+}
+
+// OFFSET: 0x009FE520
+
+// OFFSET: 0x009FEE10
+
+}
+
+namespace EnchantUI {
+// OFFSET: 0x009FF700
 }
 
 // OFFSET: 0x00A021D0
