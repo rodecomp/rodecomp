@@ -1,10 +1,13 @@
 #include "Contents/Items/ItemInfo.h"
 #include "Client/Session.h"
+#include "Client/Input/InputCharset.h"
+#include "File/File.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemNaming.h"
 
 #include <cstdlib>
 #include <cstring>
+#include <vector>
 
 namespace {
 #pragma pack(push, 1)
@@ -533,6 +536,58 @@ void ITEM_INFO::SetCard(const int& card, const int& index) {
   if (index < 4) {
     std::memcpy(this->unknown_001C + index * 4, &card, sizeof(card));
   }
+}
+
+// OFFSET: 0x006D9620
+// FUNCTION: fn_06614
+bool LoadItemIntegerTable(std::vector<int>& values, const char* name) {
+  values.clear();
+  CFile file;
+  if (g_serverLanguage != nullptr) {
+    name = g_serverLanguage->ServiceName(name);
+  }
+  if (!file.Open(name, 0, true, false)) {
+    MessageBoxA(nullptr, "Can't open file", "ErrorMessage", 0);
+    return false;
+  }
+
+  const unsigned int size = file.GetSize();
+  char* buffer = static_cast<char*>(std::malloc(size + 1));
+  if (values.capacity() < size) {
+    values.reserve(size);
+  }
+  file.Read(buffer, size);
+  buffer[size] = '\0';
+  file.Close();
+
+  char* token = buffer;
+  for (int index = 0; index < static_cast<int>(size); ++index) {
+    char value = buffer[index];
+    if (value == '/' && buffer[index + 1] == '/') {
+      do {
+        if (value == '\r' || index >= static_cast<int>(size)) {
+          break;
+        }
+        value = buffer[++index];
+      } while (value != '\n');
+      token = buffer + index + 1;
+    }
+    switch (value) {
+    case '\t':
+    case ' ':
+      buffer[index] = '\0';
+      values.push_back(std::atoi(token));
+      token = buffer + index + 1;
+      break;
+    case '\n':
+    case '\r':
+      token = buffer + index + 1;
+      break;
+    }
+  }
+  std::free(buffer);
+  std::vector<int>(values).swap(values);
+  return true;
 }
 
 // OFFSET: 0x00E48E90
