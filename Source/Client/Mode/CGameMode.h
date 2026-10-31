@@ -464,6 +464,7 @@ public:
   void ReceiveRodexReadMail(const unsigned char* packet);
   void ReceiveRodexMailListRefresh(const unsigned char* packet);
   void ReceiveRodexMailListAppend(const unsigned char* packet);
+  void ReceiveStatusChangeNotice(const unsigned char* packet);
   void ReceiveItemEffectResult(const unsigned char* packet);
   void NotifyResult3995(unsigned char result);
   void ReceiveActorEffect228(const unsigned char* packet);
