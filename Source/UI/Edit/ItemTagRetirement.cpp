@@ -1,4 +1,5 @@
 #include "UI/Chat/ChatSuggestions.h"
+#include "UI/Dialogs/UINpcEditDialogWnd.h"
 #include "UI/Window/InputFocus.h"
 #include "UI/Edit/ItemTagRetirement.h"
 #include "UI/Edit/UIItemTagCtrl.h"
@@ -182,4 +183,26 @@ void UIItemTagOnMail::SetLines(const std::vector<std::string>& lines) {
 void UIItemTagCtrl::SetTaggedText(const std::string& text, int width) {
   this->taggedText = text;
   this->tagWidth = width;
+}
+
+// OFFSET: 0x00879BC0
+// FUNCTION: fn_11220
+bool UIItemTagOnMegaPhone::CanInsertTag(const std::string& name, int width) {
+  if (this->tags.size() > 2) {
+    return false;
+  }
+
+  std::string tag = "<";
+  this->tagWidth = width;
+  tag += FitText(*this->geometry.surface, name, width / 2);
+  tag += ">";
+
+  unsigned bytes = 0;
+  this->textWidth = reinterpret_cast<UIItemTagCtrl*>(g_windowMgr.unknown_0318)->MeasureText(tag, bytes);
+
+  UIEditCtrl* edit = reinterpret_cast<UINpcEditDialogWnd*>(g_windowMgr.unknown_0318)->edit;
+  const unsigned int maximum = edit->maximum;
+  this->taggedText = edit->text;
+  std::string text = this->taggedText += tag;
+  return text.size() <= maximum;
 }

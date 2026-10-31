@@ -49,6 +49,7 @@ public:
 
 class UIItemTagOnMegaPhone : public UIItemTagCtrl {
 public:
+  bool CanInsertTag(const std::string& name, int width) override;
   void AddTagButton(UIWindow* button) override;
   void PlaceTagButton(UIWindow* button, const std::string& name, const int& x, int unused);
 
