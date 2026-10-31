@@ -1808,3 +1808,38 @@ void GameSettingsUI::CUIGroupSound::Apply() {
   this->m_effectSlider->Invalidate();
   g_serviceOptions.Set(0xB, effect != 0);
 }
+
+// OFFSET: 0x00A19D30
+// FUNCTION: fn_15347
+CUIRadioButton::CUIRadioButton(UIWindowContext& context) : CUICheckBox(context), onSelect() {
+}
+
+// OFFSET: 0x00A3C390
+
+// OFFSET: 0x00A3C5D0
+
+// OFFSET: 0x00A3C680
+
+// OFFSET: 0x00A3C730
+
+// OFFSET: 0x00A3C910
+
+// OFFSET: 0x00A3C9B0
+
+// OFFSET: 0x00A3CA60
+
+// OFFSET: 0x00A3CB20
+
+// OFFSET: 0x00A3CBD0
+
+// OFFSET: 0x00A3CC60
+
+// OFFSET: 0x00A3CD30
+
+// OFFSET: 0x00A3CDC0
+
+// OFFSET: 0x00A3CE50
+
+// OFFSET: 0x00A3CF00
+
+// OFFSET: 0x00A1F620

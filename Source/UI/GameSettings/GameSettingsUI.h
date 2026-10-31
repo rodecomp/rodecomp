@@ -50,6 +50,10 @@ class CUIOptionItem;
 
 class CUIGroup : public CUIControl {
 public:
+  // INLINED
+  explicit CUIGroup(UIWindowContext& context) : CUIControl(context), m_title(nullptr) {
+  }
+
   virtual void Apply();
   virtual void Refresh() = 0;
 
@@ -58,6 +62,7 @@ public:
 
 class CUIGroupEmblem : public CUIGroup {
 public:
+  __declspec(noinline) explicit CUIGroupEmblem(UIWindowContext& context);
   void Slot16() override;
   void Apply() override;
   void Refresh() override;
@@ -72,6 +77,7 @@ public:
 
 class CUIGroupFullscreen : public CUIGroup {
 public:
+  __declspec(noinline) explicit CUIGroupFullscreen(UIWindowContext& context);
   void Slot16() override;
   void Refresh() override;
 
@@ -101,6 +107,7 @@ public:
 
 class CUIGroupGraphicsAPI : public CUIGroup {
 public:
+  __declspec(noinline) explicit CUIGroupGraphicsAPI(UIWindowContext& context);
   void Slot16() override;
   void Apply() override;
   void Refresh() override;
@@ -114,6 +121,7 @@ public:
 
 class CUIGroupLogInOut : public CUIGroup {
 public:
+  __declspec(noinline) explicit CUIGroupLogInOut(UIWindowContext& context);
   void Slot16() override;
   void Apply() override;
   void Refresh() override;
@@ -128,6 +136,7 @@ public:
 
 class CUIGroupProcessPriority : public CUIGroup {
 public:
+  __declspec(noinline) explicit CUIGroupProcessPriority(UIWindowContext& context);
   void Slot16() override;
   void Refresh() override;
   void OnSelect(CUIRadioButton* button);
@@ -142,6 +151,7 @@ public:
 
 class CUIGroupRodexSpam : public CUIGroup {
 public:
+  __declspec(noinline) explicit CUIGroupRodexSpam(UIWindowContext& context);
   void Slot16() override;
   void Apply() override;
   void Refresh() override;
@@ -155,6 +165,7 @@ public:
 
 class CUIGroupSkin : public CUIGroup {
 public:
+  __declspec(noinline) explicit CUIGroupSkin(UIWindowContext& context);
   void Slot15(int width, int height) override;
   void Slot16() override;
   void Apply() override;
@@ -165,6 +176,7 @@ public:
 
 class CUIGroupSound : public CUIGroup {
 public:
+  __declspec(noinline) explicit CUIGroupSound(UIWindowContext& context);
   void Slot16() override;
   void Apply() override;
   void Paint() override;
@@ -189,6 +201,7 @@ public:
 
 class CUIGroupSpriteDetailLevel : public CUIGroup {
 public:
+  __declspec(noinline) explicit CUIGroupSpriteDetailLevel(UIWindowContext& context);
   void Slot16() override;
   void Paint() override;
   void Refresh() override;
@@ -198,6 +211,7 @@ public:
 
 class CUIGroupTextureDetailLevel : public CUIGroup {
 public:
+  __declspec(noinline) explicit CUIGroupTextureDetailLevel(UIWindowContext& context);
   void Slot16() override;
   void Paint() override;
   void Refresh() override;
@@ -207,6 +221,7 @@ public:
 
 class CUIGroupTrilinear : public CUIGroup {
 public:
+  __declspec(noinline) explicit CUIGroupTrilinear(UIWindowContext& context);
   void Slot16() override;
   void Refresh() override;
 
@@ -218,14 +233,32 @@ public:
 
 class CUIPage : public CUIControl {
 public:
+  // INLINED
+  explicit CUIPage(UIWindowContext& context) : CUIControl(context) {
+  }
+
   void Slot16() override;
   void Paint() override;
   virtual void Apply();
   virtual void Refresh();
 };
 
+class CUIBasicPage : public CUIPage {
+public:
+  __declspec(noinline) explicit CUIBasicPage(UIWindowContext& context);
+  void Slot15(int width, int height) override;
+
+  /* 0080 */ CUIGroupSkin* m_skin;
+  /* 0084 */ CUIGroupSound* m_sound;
+  /* 0088 */ CUIGroupEmblem* m_emblem;
+  /* 008C */ CUIGroupRodexSpam* m_rodexSpam;
+  /* 0090 */ CUIGroupProcessPriority* m_processPriority;
+  /* 0094 */ CUIGroupLogInOut* m_logInOut;
+};
+
 class CUIGraphicsPage : public CUIPage {
 public:
+  __declspec(noinline) explicit CUIGraphicsPage(UIWindowContext& context);
   __declspec(noinline) bool IsModified();
   int GetPendingBackend();
   void LoadAdapters();
@@ -240,6 +273,7 @@ public:
 
 class CUIListPage : public CUIControl {
 public:
+  __declspec(noinline) explicit CUIListPage(UIWindowContext& context);
   void Slot16() override;
   void Paint() override;
   virtual void Slot54(CUIOptionItem* item, const TALKTYPE& type);

@@ -23,6 +23,7 @@ class CUIRadioButton : public CUICheckBox {
 public:
   /* 0150 */ std::function<void(CUIRadioButton*)> onSelect;
 
+  explicit CUIRadioButton(UIWindowContext& context);
   void SetOnSelect(std::function<void(CUIRadioButton*)> callback);
   void Slot25(int x, int y) override;
 };
