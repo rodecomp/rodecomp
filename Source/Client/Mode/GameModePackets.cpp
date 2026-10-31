@@ -1792,3 +1792,44 @@ void CGameMode::ReceiveActorMessage7(const unsigned char* packet) {
     nullptr, 7, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   );
 }
+// OFFSET: 0x00D7AEB0
+// FUNCTION: fn_22194
+void CGameMode::Zc_Start_Baby(const unsigned char*) {
+  this->unknown_040C = 20001;
+  *reinterpret_cast<int*>(this->unknown_0410) = 5;
+  this->unknown_0414 = 0;
+  this->unknown_0408 = reinterpret_cast<void*>(2);
+}
+
+// OFFSET: 0x00D7AEE0
+// FUNCTION: fn_22195
+void CGameMode::Zc_Start_Capture(const unsigned char*) {
+  this->unknown_040C = 10000;
+  *reinterpret_cast<int*>(this->unknown_0410) = 5;
+  this->unknown_0414 = 0;
+  this->unknown_0408 = reinterpret_cast<void*>(2);
+}
+
+// OFFSET: 0x00D7AF10
+// FUNCTION: fn_22196
+void CGameMode::Zc_Start_Collection(const unsigned char*) {
+  this->unknown_040C = 40000;
+  *reinterpret_cast<int*>(this->unknown_0410) = 1;
+  this->unknown_0414 = 0;
+  this->unknown_0408 = reinterpret_cast<void*>(2);
+}
+
+// OFFSET: 0x00D7AF40
+// FUNCTION: fn_22197
+void CGameMode::Zc_Start_Couple(const unsigned char*) {
+  this->unknown_040C = 20000;
+  *reinterpret_cast<int*>(this->unknown_0410) = 5;
+  this->unknown_0414 = 0;
+  this->unknown_0408 = reinterpret_cast<void*>(2);
+}
+
+// OFFSET: 0x00D7B350
+// FUNCTION: fn_22201
+void CGameMode::ReceivePacket0AB8(const unsigned char*) {
+  this->scene->player->SendMsg(nullptr, 149, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+}

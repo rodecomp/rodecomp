@@ -423,6 +423,11 @@ public:
   void ReceivePacket0B2E(short result);
   void ReceiveUnknownD2A1F0(const unsigned char* packet);
   void ReceiveActorMessage7(const unsigned char* packet);
+  void Zc_Start_Baby(const unsigned char* packet);
+  void Zc_Start_Capture(const unsigned char* packet);
+  void Zc_Start_Collection(const unsigned char* packet);
+  void Zc_Start_Couple(const unsigned char* packet);
+  void ReceivePacket0AB8(const unsigned char* packet);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
