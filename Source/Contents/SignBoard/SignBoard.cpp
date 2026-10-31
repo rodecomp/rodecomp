@@ -99,10 +99,12 @@ void CSignBoardMgr::LoadList() {
 }
 
 // OFFSET: 0x00821040
+// FUNCTION: fn_10254
 C3DCooRendering::C3DCooRendering() : window(nullptr) {
 }
 
 // OFFSET: 0x008210A0
+// FUNCTION: fn_10255
 CBmpObjWnd::CBmpObjWnd(UIWindowContext& windows) : UIWindow(windows, 0) {
 }
 
