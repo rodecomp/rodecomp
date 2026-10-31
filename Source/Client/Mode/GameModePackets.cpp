@@ -5791,6 +5791,24 @@ void CGameMode::ReceiveObjectsDisappear(int count, const std::uint32_t* aids) {
 }
 
 // OFFSET: 0x00D795B0
+// FUNCTION: fn_22171
+void CGameMode::ReceiveWindow107List(const unsigned char* packet) {
+  const std::int64_t count = (*reinterpret_cast<const std::int16_t*>(packet + 2) - 4) / sizeof(Window107Entry);
+  if (count == 0) {
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(424), 0, true, false, 0, "Message", 280, 120, 0);
+    return;
+  }
+
+  g_windowMgr.CloseWindow(107);
+  UIWindow* window = g_windowMgr.EnsureWindow(107);
+  const Window107Entry* entry = reinterpret_cast<const Window107Entry*>(packet + 4);
+  if (count != 0 && window != nullptr) {
+    for (int i = 0; i < count; ++i) {
+      window->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(entry), 0, 0, 0);
+      ++entry;
+    }
+  }
+}
 
 
 // OFFSET: 0x00D39AE0
