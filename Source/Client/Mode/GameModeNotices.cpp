@@ -25,6 +25,9 @@
 #include "Contents/RenewQuestMgr.h"
 #include "Contents/RodexMailStore.h"
 #include "Contents/RouletteMgr.h"
+#include "Contents/Schedule/CaptchaUploadSchedule.h"
+#include "Contents/Schedule/CheckGDISchedule.h"
+#include "Contents/Schedule/TimeScheduler.h"
 #include "Contents/World/World.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
@@ -54,6 +57,7 @@
 #include <cstring>
 #include <map>
 #include <string>
+#include <xtimec.h>
 
 #pragma pack(push, 1)
 struct ActorPairFreezePacket {
@@ -2300,3 +2304,96 @@ int GetBaseJob(int job) {
   }
   return job;
 }
+
+#pragma pack(push, 1)
+struct TypedNoticePacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int16_t type;
+  /* 0004 */ int first;
+  /* 0008 */ int second;
+};
+
+struct RodexMailReturnPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int64_t mailId;
+  /* 000A */ unsigned char type;
+  /* 000B */ unsigned char result;
+};
+
+struct ActorStatusValuePacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint32_t aid;
+  /* 0006 */ int status;
+  /* 000A */ int value;
+};
+
+struct PartyMemberEffectPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint32_t aid;
+  /* 0006 */ int type;
+};
+
+struct ExtraInventoryResultPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ unsigned char result;
+  /* 0003 */ int itemId;
+};
+#pragma pack(pop)
+
+// GLOBAL: gl_25117
+int g_partyEffectNoticePending;
+
+// OFFSET: 0x00D1A1C0
+// FUNCTION: fn_21616
+void CGameMode::ReceiveTypedNotice(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const TypedNoticePacket*>(data);
+  switch (packet->type) {
+  case 0:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(901), packet->first, packet->second).c_str()), 0xCDCDCD, 0, 0, 0);
+    break;
+  case 1:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(902), packet->first, packet->second).c_str()), 0xCDFFCD, 0, 0, 0);
+    break;
+  case 2:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(926), packet->first, packet->second).c_str()), 0xFFCDCD, 0, 0, 0);
+    break;
+  case 3:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(953), packet->first, packet->second).c_str()), 0xCDCDCD, 0, 0, 0);
+    break;
+  }
+}
+
+// OFFSET: 0x00D6BE80
+
+// OFFSET: 0x00D73E00
+
+// OFFSET: 0x00D73E20
+
+// OFFSET: 0x00D73960
+// FUNCTION: fn_22141
+void CGameMode::ShowFormattedNotice(unsigned short messageId, std::uint32_t color, int argument) {
+  std::string text = FormatOwnedString(LookupMessage(messageId), argument);
+  if (!text.empty()) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), color, messageId == 2962 ? 22 : 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00D6BC40
+
+// OFFSET: 0x00D6A9F0
+
+// OFFSET: 0x00D6FEA0
+
+// OFFSET: 0x00D69E60
+
+#pragma pack(push, 1)
+struct ExpGainNoticePacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint32_t aid;
+  /* 0006 */ std::int64_t amount;
+  /* 000E */ std::int16_t type;
+  /* 0010 */ std::int16_t quest;
+};
+#pragma pack(pop)
+
+// OFFSET: 0x00D74080

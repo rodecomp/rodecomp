@@ -547,6 +547,16 @@ public:
   void Zc_Spirits2(const unsigned char* data);
   void Zc_Mer_Init(const unsigned char* data);
   void Zc_Mer_Par_Change(const unsigned char* data);
+  void ReceiveTypedNotice(const unsigned char* packet);
+  void ReceiveRodexMailReturn(const unsigned char* packet);
+  void ReceiveActorStatusValuePacket(const unsigned char* packet);
+  void ReceivePartyMemberEffect(const unsigned char* packet);
+  void ShowFormattedNotice(unsigned short messageId, std::uint32_t color, int argument);
+  void ReceiveCaptchaUploadRequest(const std::uint32_t* sessionId, int result);
+  void ReceiveExtraInventoryResult(const unsigned char* packet);
+  void ReceiveWindow348Result(unsigned char result, std::int16_t index);
+  void ReceiveRodexItemReturn(const unsigned char* packet);
+  void ReceiveExpGainNotice(const unsigned char* packet);
 };
 
 void LaunchRollingCutterEffect(CGameActor* actor);
