@@ -68,3 +68,5 @@ int UIRebirthWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
   }
   return 0;
 }
+
+// OFFSET: 0x00911950

@@ -1,6 +1,7 @@
 #ifndef RAGNAROK_SOURCE_UI_CHAT_UISUBCHATHISWND_H
 #define RAGNAROK_SOURCE_UI_CHAT_UISUBCHATHISWND_H
 
+#include "Contents/Configuration/ServiceConfiguration.h"
 #include "UI/Window/UIFrameWnd.h"
 
 #include <string>
@@ -29,6 +30,7 @@ class UISubChatHisWnd : public UIFrameWnd {
 
 public:
   UISubChatHisWnd();
+  UISubChatHisWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, UIEditContext& edit, UIListBoxContext& list);
   void Move(int x, int y) override;
   void Slot11() override;
   void Slot15(int width, int height) override;

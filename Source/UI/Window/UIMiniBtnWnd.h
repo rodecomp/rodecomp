@@ -7,6 +7,7 @@
 
 class UIMiniBtnWnd : public UIFrameWnd {
 public:
+  UIMiniBtnWnd(UIWindowContext& windows, UIFrameContext& frames);
   void Paint() override;
   void Slot25(int x, int y) override;
   void Toggle();

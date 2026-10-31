@@ -64,3 +64,5 @@ int UINavigationHelpWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::i
   }
   return 0;
 }
+
+// OFFSET: 0x009115B0

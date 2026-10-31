@@ -60,3 +60,8 @@ void UIMiniBtnWnd::Toggle() {
   }
   this->Invalidate();
 }
+
+// OFFSET: 0x009114F0
+// FUNCTION: fn_12516
+UIMiniBtnWnd::UIMiniBtnWnd(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0), m_windowId(-1) {
+}

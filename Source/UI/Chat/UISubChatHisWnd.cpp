@@ -205,3 +205,5 @@ void UISubChatHisWnd::Slot15(int width, int height) {
 
   ChatButtonLayout{g_chatInputFlag, this->geometry.width, {&this->m_miniButton, &this->m_stickButton, &this->m_optionButton}}.Apply();
 }
+
+// OFFSET: 0x00912340

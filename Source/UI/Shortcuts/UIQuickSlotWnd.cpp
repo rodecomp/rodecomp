@@ -171,3 +171,5 @@ void UIQuickSlotWnd::Slot32(int x, int y) {
     }
   }
 }
+
+// OFFSET: 0x009118C0

@@ -15,6 +15,7 @@ extern std::map<int, bool> g_partyBookingJobs;
 
 class UIJobListWnd : public UIFrameWnd {
 public:
+  UIJobListWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
   void Slot11() override;
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -25,7 +26,8 @@ protected:
   /* 00B4 */ UIStaticText* m_title;
   /* 00B8 */ UICheckBox* m_jobChecks[6];
   /* 00D0 */ UIBitmapButton* m_okButton;
-  /* 00D4 */ unsigned char unknown_00D4[0x18];
+  /* 00D4 */ unsigned char unknown_00D4[0x14];
+  /* 00E8 */ int unknown_00E8;
   /* 00EC */ JobListWndInfo* m_saved;
   UIButtonContext* m_controls;
 };

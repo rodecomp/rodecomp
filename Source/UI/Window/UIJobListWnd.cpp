@@ -172,3 +172,5 @@ void UIJobListWnd::RefreshJobs() {
     this->AddChild(this->m_jobChecks[index]);
   }
 }
+
+// OFFSET: 0x00911410

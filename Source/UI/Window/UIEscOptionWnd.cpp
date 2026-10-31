@@ -63,3 +63,5 @@ void UIEscOptionWnd::LayoutButtons() {
     this->m_buttons[4]->Move(29, this->m_titleHeight + 51);
   }
 }
+
+// OFFSET: 0x00911250

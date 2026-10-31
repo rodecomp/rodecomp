@@ -9,6 +9,7 @@ class UIBitmapEditCtrl;
 
 class UIChangeNameWnd : public UIFrameWnd {
 public:
+  UIChangeNameWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
   void Slot15(int width, int height) override;
   void Paint() override;
   int IsNameWithinLimit(std::string name, int limit);

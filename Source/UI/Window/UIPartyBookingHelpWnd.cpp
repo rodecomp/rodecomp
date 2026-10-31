@@ -51,3 +51,5 @@ int UIPartyBookingHelpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
   }
   return 0;
 }
+
+// OFFSET: 0x00911860

@@ -57,3 +57,5 @@ void UIChangeNameWnd::Slot15(int, int) {
   focus.Set(this->m_edit);
   this->m_message0 = 184;
 }
+
+// OFFSET: 0x00911190

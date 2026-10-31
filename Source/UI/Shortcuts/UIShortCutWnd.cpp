@@ -1030,3 +1030,7 @@ bool UINavigationWnd::LoadRoute(int index) {
   this->SendMsg(this, 6, 190, 0, 0, 0);
   return true;
 }
+
+// OFFSET: 0x00911490
+
+// OFFSET: 0x00912460
