@@ -3301,7 +3301,7 @@ void UIImgMenu::Slot31(int x, int y) {
     if (UIWindow* target = g_windowMgr.LookupWindow(this->unknown_00C8)) {
       target->SendMsg(nullptr, 48, this->hovered, this->geometry.id, 0, 0);
     }
-    reinterpret_cast<void(__thiscall*)(UIWindowMgr*, int)>(0x00A8CF20)(&g_windowMgr, 0x7A);
+    g_windowMgr.CloseWindow(0x7A);
   }
 }
 
