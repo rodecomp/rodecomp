@@ -1152,6 +1152,125 @@ bool UIWindowMgr::HasModalWindow() {
 }
 
 // OFFSET: 0x00A8BC00
+// FUNCTION: fn_17128
+int UIWindowMgr::TranslateHotkey(int key, int keyData) {
+  if (!this->modalWindows.empty() && this->modalWindows.back() && this->unknown_0404) {
+    return 1;
+  }
+
+  if (key == VK_PROCESSKEY && keyData == 0x100001) {
+    this->keyCode = 'Q';
+  } else if (key == VK_PROCESSKEY && keyData == 0x110001) {
+    this->keyCode = 'W';
+  } else if (key == VK_PROCESSKEY && keyData == 0x120001) {
+    this->keyCode = 'E';
+  } else if (key == VK_PROCESSKEY && keyData == 0x130001) {
+    this->keyCode = 'R';
+  } else if (key == VK_PROCESSKEY && keyData == 0x140001) {
+    this->keyCode = 'T';
+  } else if (key == VK_PROCESSKEY && keyData == 0x150001) {
+    this->keyCode = 'Y';
+  } else if (key == VK_PROCESSKEY && keyData == 0x160001) {
+    this->keyCode = 'U';
+  } else if (key == VK_PROCESSKEY && keyData == 0x170001) {
+    this->keyCode = 'I';
+  } else if (key == VK_PROCESSKEY && keyData == 0x180001) {
+    this->keyCode = 'O';
+  } else if (key == VK_PROCESSKEY && keyData == 0x190001) {
+    this->keyCode = 'P';
+  } else if (key == VK_PROCESSKEY && keyData == 0x1E0001) {
+    this->keyCode = 'A';
+  } else if (key == VK_PROCESSKEY && keyData == 0x1F0001) {
+    this->keyCode = 'S';
+  } else if (key == VK_PROCESSKEY && keyData == 0x200001) {
+    this->keyCode = 'D';
+  } else if (key == VK_PROCESSKEY && keyData == 0x210001) {
+    this->keyCode = 'F';
+  } else if (key == VK_PROCESSKEY && keyData == 0x220001) {
+    this->keyCode = 'G';
+  } else if (key == VK_PROCESSKEY && keyData == 0x230001) {
+    this->keyCode = 'H';
+  } else if (key == VK_PROCESSKEY && keyData == 0x240001) {
+    this->keyCode = 'J';
+  } else if (key == VK_PROCESSKEY && keyData == 0x250001) {
+    this->keyCode = 'K';
+  } else if (key == VK_PROCESSKEY && keyData == 0x260001) {
+    this->keyCode = 'L';
+  } else if (key == VK_PROCESSKEY && keyData == 0x2C0001) {
+    this->keyCode = 'Z';
+  } else if (key == VK_PROCESSKEY && keyData == 0x2D0001) {
+    this->keyCode = 'X';
+  } else if (key == VK_PROCESSKEY && keyData == 0x2E0001) {
+    this->keyCode = 'C';
+  } else if (key == VK_PROCESSKEY && keyData == 0x2F0001) {
+    this->keyCode = 'V';
+  } else if (key == VK_PROCESSKEY && keyData == 0x300001) {
+    this->keyCode = 'B';
+  } else if (key == VK_PROCESSKEY && keyData == 0x310001) {
+    this->keyCode = 'N';
+  } else if (key == VK_PROCESSKEY && keyData == 0x320001) {
+    this->keyCode = 'M';
+  } else if (key == VK_PROCESSKEY && keyData == 0x330001) {
+    this->keyCode = VK_OEM_COMMA;
+  } else if (key == VK_PROCESSKEY && keyData == 0x340001) {
+    this->keyCode = VK_OEM_PERIOD;
+  } else {
+    this->keyCode = key;
+    this->modifierKey = 0;
+    if (key == VK_ESCAPE) {
+      return 0;
+    }
+  }
+  this->modifierKey = 0;
+
+  int& primary = this->keyCode;
+  if (static_cast<char>(GetAsyncKeyState(VK_MENU) >> 8) && primary != VK_MENU) {
+    this->modifierKey = VK_MENU;
+  } else if (static_cast<char>(GetAsyncKeyState(VK_SHIFT) >> 8) && primary != VK_SHIFT) {
+    this->modifierKey = VK_SHIFT;
+  } else if (static_cast<char>(GetAsyncKeyState(VK_CONTROL) >> 8) && primary != VK_CONTROL) {
+    this->modifierKey = VK_CONTROL;
+  } else if (static_cast<char>(GetAsyncKeyState(VK_TAB) >> 8) && primary != VK_TAB) {
+    this->modifierKey = VK_TAB;
+  }
+
+  const int modifier = this->modifierKey;
+  const int pressed = primary;
+  if (modifier == 0) {
+    if (pressed == VK_TAB || pressed == VK_MENU || pressed == VK_CONTROL || pressed == VK_SHIFT) {
+      return 2;
+    }
+    return 4;
+  }
+
+  if (pressed == VK_TAB) {
+    if (modifier == VK_CONTROL) {
+      return 4;
+    }
+    return 3;
+  }
+  if (pressed == VK_MENU && modifier == VK_TAB) {
+    return 3;
+  }
+  if (pressed == VK_SHIFT) {
+    if (modifier == VK_TAB) {
+      return 3;
+    }
+    return 4;
+  }
+  if (pressed == VK_MENU) {
+    if (modifier == VK_CONTROL || modifier == VK_SHIFT) {
+      primary = modifier;
+      this->modifierKey = pressed;
+    }
+    return 4;
+  }
+  if (pressed == VK_CONTROL && (modifier == VK_TAB || modifier == VK_SHIFT)) {
+    primary = modifier;
+    this->modifierKey = pressed;
+  }
+  return 4;
+}
 
 // OFFSET: 0x00AA8660
 // FUNCTION: fn_17244
