@@ -32,15 +32,14 @@ static_assert(sizeof(GradeEnchantInfo) == 16);
 
 class UIGradeEnchant_BtnStart : public UIBitmapButton {
 public:
-  using UIBitmapButton::UIBitmapButton;
+  UIGradeEnchant_BtnStart(UIWindowContext& windows, UIButtonContext& controls);
   void Paint() override;
   void Enable(unsigned char value) override;
 };
 
 class UIGradeEnchant_BtnEnhancedUp : public UIBitmapButton {
 public:
-  UIGradeEnchant_BtnEnhancedUp(UIWindowContext& windows, UIButtonContext& controls)
-    : UIBitmapButton(windows, controls), tooltipValue(0), tooltipEnabled(0) {}
+  UIGradeEnchant_BtnEnhancedUp(UIWindowContext& windows, UIButtonContext& controls);
   void Paint() override;
   void Slot28(int x, int y) override;
   void Enable(unsigned char value) override;
@@ -51,13 +50,14 @@ public:
 
 class UIGradeEnchant_BtnEnhancedDown : public UIBitmapButton {
 public:
-  using UIBitmapButton::UIBitmapButton;
+  UIGradeEnchant_BtnEnhancedDown(UIWindowContext& windows, UIButtonContext& controls);
   void Paint() override;
   void Enable(unsigned char value) override;
 };
 
 class UIGradeEnchantWnd : public UIFrameWnd {
 public:
+  UIGradeEnchantWnd();
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot15(int width, int height) override;
   void Slot19() override;

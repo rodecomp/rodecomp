@@ -43,6 +43,31 @@ struct GradeEnchantClosePacket {
 };
 #pragma pack(pop)
 
+// OFFSET: 0x007E68F0
+// FUNCTION: fn_09738
+UIGradeEnchantWnd::UIGradeEnchantWnd()
+    : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIFrameContext*>(nullptr), 0), enhancedUpButton(nullptr), state(0),
+      result(-1), unknown_00C8(200), unknown_00CC(100), stateTick(0), unknown_00D4(0), unknown_00D8(1), unknown_00DC(1), unknown_00E0(0),
+      selectedMaterial(-1), hoverMaterial(-1), materials(), info{}, unknown_0108(0), unknown_010C(0), unknown_0110(0), unknown_0114(0), unknown_0118(0),
+      unknown_011C(), item(0), unknown_0220(0), startButton(nullptr), enhancedDownButton(nullptr) {
+}
+
+// OFFSET: 0x007E6A60
+// FUNCTION: fn_09739
+UIGradeEnchant_BtnEnhancedDown::UIGradeEnchant_BtnEnhancedDown(UIWindowContext& windows, UIButtonContext& controls) : UIBitmapButton(windows, controls) {
+}
+
+// OFFSET: 0x007E6AC0
+// FUNCTION: fn_09740
+UIGradeEnchant_BtnEnhancedUp::UIGradeEnchant_BtnEnhancedUp(UIWindowContext& windows, UIButtonContext& controls)
+    : UIBitmapButton(windows, controls), tooltipValue(0), tooltipEnabled(0) {
+}
+
+// OFFSET: 0x007E6B30
+// FUNCTION: fn_09741
+UIGradeEnchant_BtnStart::UIGradeEnchant_BtnStart(UIWindowContext& windows, UIButtonContext& controls) : UIBitmapButton(windows, controls) {
+}
+
 // OFFSET: 0x007E7500
 // FUNCTION: fn_09749
 void UIGradeEnchantWnd::Slot10(int x, int y, std::intptr_t value) {
