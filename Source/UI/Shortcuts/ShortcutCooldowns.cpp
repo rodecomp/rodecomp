@@ -38,6 +38,13 @@
 #include "Resource/Sprites/SpriteResource.h"
 #include "Script/LuaScript.h"
 #include "UI/Window/UISelCharForUServerWnd.h"
+#include "UI/Window/UISerachStoreInfoWnd.h"
+#include "UI/Window/WindowBorder.h"
+#include "UI/Edit/UIEditCtrl.h"
+#include "UI/Text/ColoredText.h"
+#include "Contents/Items/ItemDescription.h"
+#include "Contents/MessageTable.h"
+#include "Utility/Text/GroupedInteger.h"
 
 #include <algorithm>
 #include <cstdio>
@@ -57,6 +64,16 @@ namespace {
   bool IsOtherRange(unsigned id) {
     return id - 8200u <= 41 || id - 8400u <= 57;
   }
+
+  struct SearchStoreEntry {
+    /* 0000 */ unsigned char unknown_0000[8];
+    /* 0008 */ char storeName[80];
+    /* 0058 */ int price;
+    /* 005C */ std::uint16_t quantity;
+    /* 0060 */ ITEM_INFO item;
+  };
+
+  static_assert(sizeof(SearchStoreEntry) == sizeof(SessionEntry5BD4));
 }
 
 // OFFSET: 0x00E1DCE0
@@ -763,4 +780,120 @@ void UISelCharForUServerWnd::Paint() {
       );
     }
   }
+}
+
+// OFFSET: 0x0092EBE0
+// FUNCTION: fn_12679
+void UISerachStoreInfoWnd::Paint() {
+  UIButtonContext& controls = *this->m_controls;
+  const bool empty = std::string(this->m_edits[1]->Text()).size() == 0;
+  this->m_findButton->SetDisabled(empty);
+  this->m_findButton->Invalidate();
+  this->m_edits[0]->disabled = empty;
+  this->m_edits[0]->Invalidate();
+  this->m_edits[2]->disabled = empty;
+  this->m_edits[2]->Invalidate();
+  this->m_edits[3]->disabled = empty;
+  this->m_edits[3]->Invalidate();
+
+  this->DrawPanelBackground(0, 0, "");
+  this->DrawTitleBar(controls.fonts, controls.locale, true, LookupMessage(0x6F4), 0);
+  DrawOutlinedText(*this, 5, 20, "Type", 0, 0x7F3CFF, 0xFFFFFF, 0, 11, 1, 0);
+  DrawOutlinedText(*this, 98, 20, "Item", 0, 0x7F3CFF, 0xFFFFFF, 0, 11, 1, 0);
+  DrawOutlinedText(*this, 185, 20, "Card", 0, 0x7F3CFF, 0xFFFFFF, 0, 11, 1, 0);
+  DrawOutlinedText(*this, 273, 20, "Zeny", 0, 0x7F3CFF, 0xFFFFFF, 0, 11, 1, 0);
+  this->DrawTextAt(controls.fonts, controls.locale, 353, 38, "~", 0, 0, 12, 0, 0, 0);
+
+  const std::string count = FormatOwnedString(LookupMessage(0x70A), g_session.unknown_5BE0);
+  this->DrawRightAlignedText(this->geometry.width - 60, 60, count.c_str(), 0, 0, 12, 0, 0);
+
+  this->FillRegion(5, 80, this->geometry.width - 10, 20, 0xDFFFFE);
+  DrawRoundedBorder(*this, 5, 80, this->geometry.width - 10, this->unknown_00E8 * 10 + 21, 0xC0C0C0);
+  DrawRectangleBorder(*this, 50, 80, 110, 21, 0xC0C0C0);
+  DrawRectangleBorder(*this, 330, 80, 30, 21, 0xC0C0C0);
+  this->FillRegion(5, 100, this->geometry.width - 10, 1, 0xC0C0C0);
+
+  this->DrawTextAt(
+    controls.fonts, controls.locale, (110 - this->TextWidth(controls.fonts, controls.locale, LookupMessage(0x6F5), 0, 0, 12, 0, 0)) / 2 + 50, 85,
+    LookupMessage(0x6F5), 0, 0, 12, 0, 0, 0
+  );
+  this->DrawTextAt(
+    controls.fonts, controls.locale, (170 - this->TextWidth(controls.fonts, controls.locale, LookupMessage(0x424), 0, 0, 12, 0, 0)) / 2 + 160, 85,
+    LookupMessage(0x424), 0, 0, 12, 0, 0, 0
+  );
+  this->DrawTextAt(
+    controls.fonts, controls.locale, (30 - this->TextWidth(controls.fonts, controls.locale, LookupMessage(0x6F6), 0, 0, 12, 0, 0)) / 2 + 330, 85,
+    LookupMessage(0x6F6), 0, 0, 12, 0, 0, 0
+  );
+  this->DrawTextAt(
+    controls.fonts, controls.locale, (75 - this->TextWidth(controls.fonts, controls.locale, LookupMessage(0x6F7), 0, 0, 12, 0, 0)) / 2 + 360, 85,
+    LookupMessage(0x6F7), 0, 0, 12, 0, 0, 0
+  );
+
+  if (this->unknown_00F0.size() != 0) {
+    this->DrawTextAt(controls.fonts, controls.locale, 5, this->geometry.height - 20, this->unknown_00F0.c_str(), 0, 0, 12, 0xFF, 0, 0);
+  }
+
+  if (static_cast<unsigned int>(this->unknown_00DC * 10 - 10) >= g_session.unknown_5BD4.size()) {
+    return;
+  }
+
+  const SearchStoreEntry* end = reinterpret_cast<const SearchStoreEntry*>(g_session.unknown_5BD4.data() + g_session.unknown_5BD4.size());
+  const SearchStoreEntry* entry = reinterpret_cast<const SearchStoreEntry*>(g_session.unknown_5BD4.data()) + (this->unknown_00DC - 1) * 10;
+  ItemDescriptions descriptions{g_itemDescriptions};
+  for (int row = 0; entry != end; ++entry) {
+    if (row == 10) {
+      break;
+    }
+
+    if (this->unknown_00E0 == row) {
+      this->FillRegion(5, this->unknown_00E8 * row + 100, this->geometry.width - 10, this->unknown_00E8, 0xFBDFCA);
+    }
+    DrawRectangleBorder(*this, 50, this->unknown_00E8 * row + 100, 110, this->unknown_00E8 + 1, 0xC0C0C0);
+    DrawRectangleBorder(*this, 330, this->unknown_00E8 * row + 100, 30, this->unknown_00E8 + 1, 0xC0C0C0);
+
+    const int next = row + 1;
+    if (next < 10) {
+      this->FillRegion(5, this->unknown_00E8 * next + 100, this->geometry.width - 10, 1, 0xC0C0C0);
+    }
+
+    const int top = this->unknown_00E8 * row + 100;
+    const int y = top + 7;
+    DrawItemIcon(*this, controls.resources, descriptions, 13, top, entry->item, 0);
+    if (entry->item.unknown_0088 > 0) {
+      this->DrawBitmap(
+        13, y + 5,
+        &static_cast<CBitmapRes*>(
+          ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", entry->item.unknown_0088).c_str()))
+        )->image,
+        true
+      );
+    }
+
+    std::string storeName = entry->storeName;
+    const std::size_t lineEnd = storeName.find('\r');
+    if (lineEnd != std::string::npos) {
+      storeName = storeName.substr(0, lineEnd);
+    }
+    this->DrawTextAt(controls.fonts, controls.locale, 55, y, this->ClipTextToWidth(storeName.c_str(), 100, 0, 12, 0), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(controls.fonts, controls.locale, 165, y, this->ClipTextToWidth(entry->item.DisplayName(0).c_str(), 160, 0, 12, 0), 0, 0, 12, 0, 0, 0);
+
+    char text[100];
+    std::sprintf(text, "%d", entry->quantity);
+    this->DrawTextAt(
+      controls.fonts, controls.locale, (30 - this->TextWidth(controls.fonts, controls.locale, text, 0, 0, 12, 0, 0)) / 2 + 330, y, text, 0, 0, 12, 0, 0, 0
+    );
+
+    const std::string price = FormatGroupedInteger(entry->price, text, 100) + std::string(" Z");
+    this->DrawAmount(controls.fonts, controls.locale, entry->price, price, 435 - this->TextWidth(controls.fonts, controls.locale, price.c_str(), 0, 0, 12, 0, 0), y);
+
+    row = next;
+  }
+
+  char page[12];
+  std::sprintf(page, " %d ", this->unknown_00DC);
+  this->DrawTextAt(
+    controls.fonts, controls.locale, (this->geometry.width - this->TextWidth(controls.fonts, controls.locale, page, 0, 0, 12, 0, 0)) / 2,
+    this->geometry.height - 20, page, 0, 0, 12, 0, 0, 0
+  );
 }
