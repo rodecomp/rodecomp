@@ -27,6 +27,9 @@
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
 #include "UI/Text/NavigationLink.h"
+#include "UI/Shop/ItemDrawing.h"
+#include "UI/Window/WindowBorder.h"
+#include "Utility/Text/GroupedInteger.h"
 
 #include <cstdint>
 #include <cstdlib>
@@ -437,5 +440,108 @@ int UIRodexComposeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
   }
   default:
     return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+}
+
+// OFFSET: 0x00800530
+// FUNCTION: fn_10007
+void UIRodexComposeWnd::Paint() {
+  ItemDescriptions descriptions{g_itemDescriptions};
+  this->ClearSurface(0x00FF00FF);
+
+  const auto* bg = &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\bg_rodex_read.bmp")))->image;
+  this->DrawBitmap(0, 0, bg, false);
+
+  if (this->unknown_00B8->geometry.visible == 1) {
+    const auto* balloon = &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\bg_id_balloon.bmp")))->image;
+    this->DrawBitmap(161, 21, balloon, true);
+  }
+
+  std::string countStr = FormatOwnedString("/ %d", 1000);
+  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 261, 276, countStr.c_str(), 0, 0, 10, 0xD66E44, 0, 0);
+
+  int length = this->m_contents->Length() + this->m_contents->unknown_00F0;
+  std::string lengthStr = FormatOwnedString("%d", length);
+  this->DrawRightAlignedText(258, 276, lengthStr.c_str(), 0, 0, 10, 0xD66E44, 0);
+
+  const auto* weightBg = &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\bg_weight.bmp")))->image;
+  this->DrawBitmap(199, 305, weightBg, true);
+
+  const char* weightMsg = LookupMessage(3035);
+  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 245, 316, weightMsg, 0, 0, 11, 0x737373, 0, 0);
+
+  std::string weightStr = FormatOwnedString("%d", static_cast<int>(g_session.unknown_6140));
+  this->DrawRightAlignedText(244, 316, weightStr.c_str(), 0, 0, 11, 0x737373, 0);
+
+  this->FillRegion(35, 347, 95, 16, 0xFFFFFF);
+  DrawRectangleBorder(*this, 35, 347, 95, 16, 0xA6A6A6);
+
+  const auto* zenyIcon = &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\icon_zeny.bmp")))->image;
+  this->DrawBitmap(19, 342, zenyIcon, true);
+
+  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 135, 350, "Zeny", 0, 0, 11, 0x737373, 0, 0);
+
+  char zenyBuf[260] = {};
+  FormatGroupedInteger(static_cast<std::int64_t>(g_session.m_zeny), zenyBuf, sizeof(zenyBuf));
+  std::string zenyStr = FormatOwnedString("%s Zeny", zenyBuf);
+  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 144, 350, zenyStr.c_str(), 0, 0, 11, 0x737373, 1, 0);
+
+  const auto* taxBg = &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\bg_tax.bmp")))->image;
+  this->DrawBitmap(9, 377, taxBg, true);
+
+  char taxBuf[260] = {};
+  std::int64_t tax = static_cast<std::int64_t>(g_session.CountItems5C68()) * 2500;
+  char inputBuf[260] = {};
+  strcpy_s(inputBuf, sizeof(inputBuf), this->m_zeny->Text());
+  g_session.IsNumberWithCommas(inputBuf);
+  std::int64_t inputZeny = _atoi64(inputBuf);
+  if (this->m_zeny->Text() != nullptr) {
+    tax += (inputZeny * 2) / 100;
+    this->unknown_00F8 = tax;
+  }
+  FormatGroupedInteger(tax, taxBuf, sizeof(taxBuf));
+  std::uint32_t taxColor = (inputZeny + this->unknown_00F8 > g_session.m_zeny) ? 0x4E71CF : 0;
+  this->DrawRightAlignedText(104, 382, taxBuf, 0, 0, 11, taxColor, 0);
+
+  if (this->m_zeny->Length() != 0) {
+    std::uint32_t textColor = (inputZeny > g_session.m_zeny || inputZeny + this->unknown_00F8 > g_session.m_zeny) ? 0xFF : 0;
+    this->m_zeny->TextColor(textColor, 0xFFFFFFFF);
+  }
+
+  for (int x = 26; x < 196; x += 34) {
+    const auto* shadowOff = &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\shadow_item_off.bmp")))->image;
+    this->DrawBitmap(x, 319, shadowOff, true);
+  }
+
+  if (!this->m_items.empty()) {
+    int itemX = 30;
+    for (const auto& item : this->m_items) {
+      const auto* shadowOn = &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\shadow_item_on.bmp")))->image;
+      this->DrawBitmap(itemX - 4, 319, shadowOn, true);
+      if (this->unknown_00F8 <= g_session.m_zeny) {
+        DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, this->m_context->fonts, this->m_context->locale, itemX, 309, item, 0, 0);
+      } else {
+        DrawItemWithQuantityAuxiliary(*this, descriptions, this->m_context->fonts, this->m_context->locale, 2, itemX, 309, item, item.identified, 0);
+      }
+      if (item.unknown_0088 > 0) {
+        std::string gradeStr = FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", static_cast<int>(item.unknown_0088));
+        const auto* gradeBmp = &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(gradeStr.c_str())))->image;
+        this->DrawBitmap(itemX, 321, gradeBmp, true);
+      }
+      itemX += 34;
+    }
+  }
+
+  if (this->unknown_0100) {
+    auto* tagCtrl = static_cast<UIItemTagOnMail*>(this->unknown_0100);
+    tagCtrl->SetLines(this->m_contents->unknown_0168);
+    tagCtrl->SetTaggedText(this->m_contents->Text(), this->m_contents->geometry.width);
+    auto* editCtrl3 = static_cast<UIEditCtrl3*>(this->unknown_0100);
+    int diff = editCtrl3->unknown_0150 - editCtrl3->unknown_0138;
+    this->m_contents->unknown_00F0 = std::max(0, diff);
+    if (tagCtrl->unknown_011C == 0) {
+      delete this->unknown_0100;
+      this->unknown_0100 = nullptr;
+    }
   }
 }
