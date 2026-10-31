@@ -19,6 +19,7 @@ public:
   /* 00EC */ WindowPlacement* m_placement;
 
   void Slot11() override;
+  void UpdateScroll();
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
   void Slot33(int x, int y) override;

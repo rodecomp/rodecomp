@@ -10,6 +10,7 @@
 class UIChatRoomMakeWnd : public UIFrameWnd {
 public:
   UIChatRoomMakeWnd(UIWindowContext& windows, UIFrameContext& frames);
+  void Paint() override;
 
   /* 00B4 */ std::string m_title;
   /* 00CC */ unsigned char unknown_00CC[0x2C];

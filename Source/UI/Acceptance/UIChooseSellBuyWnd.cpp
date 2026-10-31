@@ -33,6 +33,7 @@
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UICheckBox.h"
 #include "UI/Buttons/UISpriteButton.h"
+#include "UI/Chat/UIChatRoomMakeWnd.h"
 #include "UI/Chat/UIWhisperWnd.h"
 #include "UI/Edit/UIEditCtrl.h"
 #include "UI/Edit/UIItemTagCtrl.h"
@@ -69,7 +70,10 @@
 #include "UI/Items/UIItemParamChangeDisplayWnd.h"
 #include "UI/Items/UINotifyItemObtainWnd.h"
 #include "UI/Lists/UIChatHisBox.h"
+#include "UI/Lists/UIComboBox.h"
 #include "UI/Lists/UIComboBoxWnd.h"
+#include "UI/Lists/UIListBoxID.h"
+#include "UI/Lists/UIScrollBar.h"
 #include "UI/Lists/UIListBox.h"
 #include "UI/Party/UIPartySettingWnd.h"
 #include "UI/Shortcuts/ShortcutVisibility.h"
@@ -2729,3 +2733,32 @@ void UIExchangeWnd::Slot15(int, int) {
 
   this->m_message0 = 600;
 }
+
+// OFFSET: 0x008DE400
+// FUNCTION: fn_12167
+void UIComboBoxIDWnd::Slot15(int width, int height) {
+  auto* list = new UIComboBoxID();
+  this->m_list = list;
+  list->Configure(0, 0, width, height, 1);
+  this->AddChild(list);
+}
+
+// OFFSET: 0x008D9F20
+// FUNCTION: fn_12139
+bool IsEquipViewHidden() {
+  if (g_session.unknown_5C1C > 0) {
+    return false;
+  }
+
+  const std::uint32_t flags = g_session.m_jobFlags;
+  if (StateFlag04(flags) || StateFlag05(flags) || StateFlag19(flags) || StateFlag23(flags) || StateFlag24(flags) || StateFlag25(flags) ||
+      StateFlag26(flags) || StateFlag22(flags)) {
+    return false;
+  }
+
+  return true;
+}
+
+// OFFSET: 0x008ED080
+
+// OFFSET: 0x008F64B0
