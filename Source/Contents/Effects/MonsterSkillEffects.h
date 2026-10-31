@@ -87,6 +87,7 @@ public:
 class CCurseOfCubeEffect : public CEffect {
 public:
   CCurseOfCubeEffect();
+  void Slot01() override;
   void Slot03() override;
   void Slot04() override;
   bool Slot06() override;
@@ -94,6 +95,7 @@ public:
   virtual void SpawnStart();
   virtual void SpawnLoop();
   virtual void SpawnShock();
+  void Restart();
 
   /* 00CC */ std::vector<EZ2STREmitter*> emitters;
   /* 00D8 */ int unknown_00D8;

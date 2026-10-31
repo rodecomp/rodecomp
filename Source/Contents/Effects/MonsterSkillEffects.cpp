@@ -543,6 +543,24 @@ CCurseOfCubeEffect::CCurseOfCubeEffect()
     : CEffect(-1), unknown_00D8(0), unknown_00DC(0), unknown_00E0(-10.0f), unknown_00E4(0) {
 }
 
+// OFFSET: 0x0070EB10
+// FUNCTION: fn_07176
+void CCurseOfCubeEffect::Restart() {
+  this->Close();
+  this->SpawnShock();
+  this->unknown_00D8 = 3;
+}
+
+// OFFSET: 0x0070EB30
+// FUNCTION: fn_07177
+void CCurseOfCubeEffect::Slot01() {
+  this->retained = 1;
+  this->SpawnStart();
+  if (!this->emitters.empty()) {
+    this->unknown_00D8 = 1;
+  }
+}
+
 // OFFSET: 0x0070EB60
 // FUNCTION: fn_07178
 bool CCurseOfCubeEffect::Slot06() {

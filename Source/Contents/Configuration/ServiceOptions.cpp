@@ -955,3 +955,36 @@ void ApplyServiceOptionJitterScale(int id, unsigned char value, bool notify, int
     g_serviceOptionJitterScale = g_jitterDistanceScale;
   }
 }
+
+// OFFSET: 0x006C45D0
+// FUNCTION: fn_45463
+void RequestModeAction48() {
+  if (CMode* mode = g_modeMgr.GetGameMode()) {
+    mode->SendMsg(0x30, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x006C5A60
+// FUNCTION: fn_45464
+void RequestModeAction61() {
+  if (CMode* mode = g_modeMgr.GetGameMode()) {
+    mode->SendMsg(0x3D, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x006C6020
+// FUNCTION: fn_45465
+void NotifyGameModeOptionFirst() {
+  if (CMode* mode = g_modeMgr.GetGameMode()) {
+    mode->SendMsg(0x11F, 1, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x006C62C0
+// FUNCTION: fn_45462
+void RequestPlayerAction31() {
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  if (CPlayer* player = mode->scene->player) {
+    player->SendMsg(nullptr, 0x1F, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  }
+}
