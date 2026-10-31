@@ -51,6 +51,12 @@ int CRollingCutterRagEffect::GetDuration() {
   return this->duration;
 }
 
+// OFFSET: 0x00612010
+// FUNCTION: fn_04339
+int sub_612010() {
+  return 0;
+}
+
 // OFFSET: 0x00612500
 // FUNCTION: fn_04341
 bool CRollingCutterRagEffect::OnProcess() {
