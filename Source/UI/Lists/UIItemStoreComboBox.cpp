@@ -7,6 +7,10 @@
 #include <string>
 
 // OFFSET: 0x0086D530
+// FUNCTION: fn_11047
+UIItemStoreComboBox::UIItemStoreComboBox()
+    : UIComboBoxEx(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIComboBoxContext*>(nullptr)), pink(false) {
+}
 
 // OFFSET: 0x00886200
 // FUNCTION: fn_11325
