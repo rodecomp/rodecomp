@@ -1553,6 +1553,66 @@ void CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::Slot35(int
   }
 }
 
+// OFFSET: 0x009D26D0
+
+// OFFSET: 0x009D40B0
+// FUNCTION: fn_14039
+template <>
+void CUIListBoxEx<AdventureGuide::CUIItemInfo, AdventureGuide::CItemData>::Resize(int width, int height) {
+  UIWindow::Resize(width, height);
+  this->AddNewItem();
+  this->scrollBar->Resize(this->scrollBar->geometry.width, height);
+  this->scrollBar->SetTotal(static_cast<int>(this->data.size()) * this->rowHeight + this->itemY);
+  this->scrollBar->SetVisible(this->geometry.height);
+  this->scrollBar->SetPosition(this->scrollBar->position);
+  this->rebind = 1;
+}
+
+// OFFSET: 0x009D2930
+
+// OFFSET: 0x009D4130
+// FUNCTION: fn_14040
+template <>
+void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>::Resize(int width, int height) {
+  UIWindow::Resize(width, height);
+  this->AddNewItem();
+  this->scrollBar->Resize(this->scrollBar->geometry.width, height);
+  this->scrollBar->SetTotal(static_cast<int>(this->data.size()) * this->rowHeight + this->itemY);
+  this->scrollBar->SetVisible(this->geometry.height);
+  this->scrollBar->SetPosition(this->scrollBar->position);
+  this->rebind = 1;
+}
+
+// OFFSET: 0x009D2B90
+
+// OFFSET: 0x009D41B0
+// FUNCTION: fn_14041
+template <>
+void CUIListBoxEx<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestInfo>::Resize(int width, int height) {
+  UIWindow::Resize(width, height);
+  this->AddNewItem();
+  this->scrollBar->Resize(this->scrollBar->geometry.width, height);
+  this->scrollBar->SetTotal(static_cast<int>(this->data.size()) * this->rowHeight + this->itemY);
+  this->scrollBar->SetVisible(this->geometry.height);
+  this->scrollBar->SetPosition(this->scrollBar->position);
+  this->rebind = 1;
+}
+
+// OFFSET: 0x009D2DF0
+
+// OFFSET: 0x009D4230
+// FUNCTION: fn_14042
+template <>
+void CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::Resize(int width, int height) {
+  UIWindow::Resize(width, height);
+  this->AddNewItem();
+  this->scrollBar->Resize(this->scrollBar->geometry.width, height);
+  this->scrollBar->SetTotal(static_cast<int>(this->data.size()) * this->rowHeight + this->itemY);
+  this->scrollBar->SetVisible(this->geometry.height);
+  this->scrollBar->SetPosition(this->scrollBar->position);
+  this->rebind = 1;
+}
+
 template void CUIListBox<AdventureGuide::CUITab>::Resize(int, int);
 template void CUIListBox<AdventureGuide::CUISubTab>::Resize(int, int);
 template void CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::OnScroll(int);
