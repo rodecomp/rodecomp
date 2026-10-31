@@ -1937,6 +1937,56 @@ void UIAccessoryShowCase::Slot15(int, int) {
 }
 
 // OFFSET: 0x008267E0
+// FUNCTION: fn_10324
+void UIAccessoryShowCase::AddAccessories(int& loaded, int& skipped, const char* table, const int& count, const int& slot) {
+  const int first = loaded;
+  int order = 1;
+  for (unsigned int index = first + 1; index < static_cast<unsigned int>(count + first + 1); ++index, ++order) {
+    int itemId = 0;
+    g_luaScript->Call("StylingShop_GetGoods", "sd>d", table, order, &itemId);
+    if (g_session.IsDoramJob(g_session.GetDisplayJob()) == true) {
+      bool available = false;
+      g_luaScript->Call("StylingShop_GetIsDoram_by_goods", "sd>b", table, itemId, &available);
+      if (!available) {
+        ++skipped;
+        continue;
+      }
+    }
+
+    char path[128] = {};
+    char id[32] = {};
+    std::sprintf(id, "%d", itemId);
+    ItemDescriptions descriptions{g_itemDescriptions};
+    descriptions.IconPath(path, id, 1);
+
+    UIAccBitmapButton* button = new (std::nothrow) UIAccBitmapButton();
+    button->SetBitmap(path, 0, 0);
+    button->SetBitmap(path, 1, 0);
+    button->SetBitmap(path, 2, 0);
+    const int columns = this->geometry.width / (button->BitmapWidth() + 7) - 1;
+
+    UIStaticBitmap* frame = new UIStaticBitmap();
+    frame->SetBitmap("유저인터페이스\\styleshop\\shadow_item_off.bmp");
+    frame->SetSize(frame->geometry.width, frame->geometry.height);
+    frame->Move(static_cast<int>((button->BitmapWidth() + 7) * ((index - skipped - 1) % columns) + this->geometry.width * 0.03),
+                static_cast<int>((button->BitmapHeight() + 7) * ((index - skipped - 1) / columns) + this->geometry.height * 0.03 + 10.0));
+    this->AddScrollChild(frame);
+    this->m_itemFrames.push_back(frame);
+
+    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    button->Move(static_cast<int>((button->BitmapWidth() + 7) * ((index - skipped - 1) % columns) + this->geometry.width * 0.03 + 2.5),
+                 static_cast<int>((button->BitmapHeight() + 7) * ((index - skipped - 1) / columns) + this->geometry.height * 0.03));
+    button->SetId(189);
+    button->SetArgument(index);
+
+    ITEM_DESC description = FindItemDescription(itemId);
+    button->SetTooltip(description.identifiedName);
+    button->m_itemId = itemId;
+    button->m_slot = slot;
+    this->AddScrollChild(button);
+    ++loaded;
+  }
+}
 
 // OFFSET: 0x008280F0
 
