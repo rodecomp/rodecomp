@@ -580,6 +580,159 @@ std::string CNavigationManager::DestinationTitle() {
   return this->destinationTitle;
 }
 
+#pragma pack(push, 1)
+struct NavigationRouteRecord {
+  /* 0000 */ std::uint32_t header;
+  /* 0004 */ std::int16_t length;
+  /* 0006 */ char mapName[30];
+  /* 0024 */ int type;
+  /* 0028 */ unsigned char mode;
+  /* 0029 */ bool flag;
+  /* 002A */ int x;
+  /* 002E */ int y;
+  /* 0032 */ int id;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(NavigationRouteRecord) == 0x36);
+
+// OFFSET: 0x00B99030
+// FUNCTION: fn_19611
+bool CNavigationManager::sub_B99030(std::string name, int type, unsigned char mode, bool flag, int x, int y, int id) {
+  if (static_cast<unsigned int>(type) > 4 || name.size() == 0) {
+    return false;
+  }
+
+  if (std::strchr(g_session.m_navigationPlayerMap, '@')) {
+    bool same;
+    {
+      std::string target = name;
+      std::string player = g_session.m_navigationPlayerMap;
+      std::size_t position = player.rfind("@");
+      if (position != std::string::npos && position >= 4) {
+        player.erase(position - 4, 3);
+      }
+      position = target.rfind("@");
+      if (position != std::string::npos && position >= 4) {
+        target.erase(position - 4, 3);
+      }
+      same = player == target;
+    }
+    if (!same) {
+      this->ShowRouteResult(-90, 1, *reinterpret_cast<WindowDialogs*>(&g_windowMgr));
+      return false;
+    }
+  }
+
+  CNaviInfo* info = this->FindObject(name.c_str());
+  if (!info) {
+    const std::string resolved = ResourceMgr::Instance().aliases.ResolveMapName(name.c_str());
+    info = this->FindObject(resolved.c_str());
+    if (!info) {
+      return false;
+    }
+  }
+
+  NavigationTarget target(type, nullptr);
+  std::string text = info->GetName();
+  void* object = info;
+  if (type != 1) {
+    if (type == 2) {
+      CNavi_Object* npc = info->FindNpcAt(x, y);
+      if (!npc) {
+        this->ShowRouteResult(-94, 1, *reinterpret_cast<WindowDialogs*>(&g_windowMgr));
+        return false;
+      }
+      text += ' ';
+      text += npc->GetName();
+      object = npc;
+    } else if (type == 3) {
+      CNavi_Object* mob = info->FindMobByIndex(id);
+      if (!mob) {
+        this->ShowRouteResult(-94, 1, *reinterpret_cast<WindowDialogs*>(&g_windowMgr));
+        return false;
+      }
+      text += ' ';
+      text += mob->GetName();
+      object = mob;
+    } else if (type != 0) {
+      return false;
+    }
+  }
+
+  target.object = object;
+  this->currentTarget = this->savedTarget = target;
+  this->unknown_1264 = text;
+  this->unknown_1248 = flag;
+  this->unknown_127E = (mode >> 2) & 1;
+  this->unknown_127C = mode & 1;
+  this->unknown_127D = (mode >> 1) & 1;
+  if (this->UpdateSearchResults()) {
+    this->unknown_12C4 = 0;
+    this->unknown_12C8 = 0;
+  }
+
+  const int result = this->Navigate(x, y);
+  this->ShowRouteResult(result, 1, *reinterpret_cast<WindowDialogs*>(&g_windowMgr));
+  if (result < 0) {
+    return false;
+  }
+
+  if (g_windowMgr.modal) {
+    reinterpret_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapSelection();
+    reinterpret_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapLevels();
+    reinterpret_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapMarks();
+  }
+
+  this->unknown_125C = 1;
+  if (g_windowMgr.window_4F174) {
+    this->unknown_1248 = false;
+  }
+  if (g_windowMgr.window_4F174) {
+    static_cast<UINavigationV4Wnd*>(g_windowMgr.window_4F174)->RefreshLayout();
+  } else if (!this->unknown_1248) {
+    g_windowMgr.EnsureWindow(203);
+  }
+
+  {
+    std::string recordName = name;
+    if (Replay::Instance().state == 2) {
+      char packet[400] = {};
+      NavigationRouteRecord record;
+      record.header = 0x038E08AE;
+      record.length = sizeof(record);
+      std::memset(record.mapName, 0, sizeof(record.mapName));
+      std::memcpy(record.mapName, recordName.c_str(), recordName.size());
+      record.type = type;
+      record.mode = mode;
+      record.flag = flag;
+      record.x = x;
+      record.y = y;
+      record.id = id;
+      std::memcpy(packet, &record, sizeof(record));
+
+      Replay& replay = Replay::Instance();
+      ReplayPacketRecorder recorder = {
+        g_packetLengths,
+        replay.baseFrame,
+        replay.started,
+        replay.frame,
+        replay.header.key0,
+        replay.header.key1,
+        replay.header.options.recordRestricted,
+        replay.file,
+        replay.fileOffset,
+        replay.records,
+        replay.cipherIndex,
+        replay.cipherBase,
+        replay.cipherKey,
+      };
+      recorder.Record(static_cast<std::uint16_t>(record.length), packet, 0x29, 0);
+    }
+  }
+  return true;
+}
+
 // OFFSET: 0x00B996D0
 // FUNCTION: fn_19613
 void CNavigationManager::LoadSettings() {

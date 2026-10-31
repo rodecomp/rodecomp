@@ -6,6 +6,7 @@
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/MessageTable.h"
+#include "Contents/NavigationManager.h"
 #include "Contents/RenewQuestMgr.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
@@ -121,6 +122,14 @@ void UINpcSprWnd::Paint() {
         0, 0, texture, static_cast<int>(record.u0 * 256.0f), static_cast<int>(record.v0 * 256.0f), image->width, image->height, cell.mirrored != 0, 1, 1, 0, 0
       );
     }
+  }
+}
+
+// OFFSET: 0x007F9770
+// FUNCTION: fn_09935
+void UINpcSprWnd::Slot31(int, int) {
+  if (this->m_mapName.size() != 0) {
+    g_navigationManager.sub_B99030(this->m_mapName, 0, 5, false, this->m_destinationX, this->m_destinationY, 1002);
   }
 }
 

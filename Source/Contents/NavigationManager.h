@@ -311,7 +311,7 @@ public:
   void SetViewIcon(int icon);
   bool SetViewMode(int mode);
   bool sub_B995D0(std::string name, int type, bool flag);
-  void sub_B99030(std::string name, int type, unsigned char mode, bool flag, int x, int y, int id);
+  bool sub_B99030(std::string name, int type, unsigned char mode, bool flag, int x, int y, int id);
   void BuildGridLabels();
   bool LoadScript(LuaScript* script);
   bool BuildRoute(int startX, int startY, int destX, int destY, bool collectCells);
@@ -320,7 +320,7 @@ public:
   int RequestRoute(int cellX, int cellY);
   NaviCell* MapCellToView(NaviCell* out, const char* mapName, int cellX, int cellY, float size);
   std::string RouteText();
-  void ShowRouteResult(int result, int mode, WindowDialogs& dialogs);
+  __declspec(noinline) void ShowRouteResult(int result, int mode, WindowDialogs& dialogs);
   void Reset(bool clearAll);
   void ClearRouteNodes();
   void ClearNodePaths();
