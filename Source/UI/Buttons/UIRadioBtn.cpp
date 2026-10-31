@@ -86,3 +86,15 @@ void UIRadioBtn::SetText(const char* value) {
   this->text = value;
   this->Invalidate();
 }
+
+// OFFSET: 0x0084FFE0
+// FUNCTION: fn_10670
+UIRadioBtn::UIRadioBtn(UIWindowContext& windows, UIButtonContext& controls) : UIWindow(windows, 0), m_controls(&controls) {
+  this->geometry.unknown_0030 = 0;
+  this->enabled = 1;
+  this->geometry.id = 215;
+  this->highlighted = 0;
+  this->value = 0;
+  this->fontHeight = 12;
+  this->textColor = 0;
+}

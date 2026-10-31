@@ -59,3 +59,11 @@ int UITab::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::
 
   return 0;
 }
+
+// OFFSET: 0x00850680
+// FUNCTION: fn_10679
+UITab::UITab(UIWindowContext& context) : UIWindow(context, 0) {
+  this->geometry.unknown_0030 = 0;
+  this->tabCount = 3;
+  this->style = 0;
+}

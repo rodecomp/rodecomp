@@ -7,6 +7,7 @@
 
 class UINameBalloonText : public UIBalloonText {
 public:
+  UINameBalloonText(UIWindowContext& windows, BalloonTextContext& text);
   ~UINameBalloonText() override;
   void Slot19() override;
   void Paint() override;

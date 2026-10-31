@@ -58,6 +58,7 @@ public:
 
 class UIStaticText3 : public UIStaticText {
 public:
+  UIStaticText3(UIWindowContext& windows, UIButtonContext& controls);
   void Paint() override;
 
   /* 00D8 */ int textX;

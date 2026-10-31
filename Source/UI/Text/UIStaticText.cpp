@@ -7,7 +7,7 @@
 
 // OFFSET: 0x00850550
 // FUNCTION: fn_10678
-UIStaticText::UIStaticText(UIWindowContext& windows, UIButtonContext& controls)
+__declspec(noinline) UIStaticText::UIStaticText(UIWindowContext& windows, UIButtonContext& controls)
     : UIWindow(windows, 0), red(0), green(0), blue(0), shadow(0), outline(0), background(0xFFFF00FFu), outlineColor(0x969696), fontHeight(12), fontFamily(0),
       bold(0), italic(0), tooltipEnabled(0), m_controls(&controls) {
 }
@@ -365,4 +365,9 @@ void UIStaticText::SetTextWithinWidth(const char* value, int outlineValue) {
     this->Resize(textWidth, height);
   }
   this->Invalidate();
+}
+
+// OFFSET: 0x008504F0
+// FUNCTION: fn_10677
+UIStaticText3::UIStaticText3(UIWindowContext& windows, UIButtonContext& controls) : UIStaticText(windows, controls), textX(0) {
 }

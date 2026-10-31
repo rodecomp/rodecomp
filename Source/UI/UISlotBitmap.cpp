@@ -61,3 +61,19 @@ int UISlotBitmap::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
     return UIStaticBitmap::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 }
+
+// OFFSET: 0x008501D0
+// FUNCTION: fn_10672
+UISlotBitmap::UISlotBitmap(UIWindowContext& windows, UIButtonContext& controls, int slot) : UIStaticBitmap(windows, controls) {
+  this->slot = slot;
+  this->unknown_00B8 = 0;
+  this->addButton = nullptr;
+}
+
+// OFFSET: 0x00850240
+// FUNCTION: fn_10673
+UISlotBitmap::UISlotBitmap(UIWindowContext& windows, UIButtonContext& controls, int slot, unsigned char flag) : UIStaticBitmap(windows, controls) {
+  this->slot = slot;
+  this->unknown_00B8 = flag;
+  this->addButton = nullptr;
+}

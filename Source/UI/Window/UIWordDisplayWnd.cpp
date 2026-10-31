@@ -56,3 +56,10 @@ int UIWordDisplayWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
 
   return 0;
 }
+
+// OFFSET: 0x00850910
+// FUNCTION: fn_10682
+UIWordDisplayWnd::UIWordDisplayWnd(UIWindowContext& windowContext, UIFrameContext& frameContext) : UIFrameWnd(windowContext, frameContext, 0), aid(0) {
+  this->text.clear();
+  this->SetSize(24, 24);
+}

@@ -82,3 +82,9 @@ int UIEmblemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1,
 
   return 0;
 }
+
+// OFFSET: 0x0084FD80
+// FUNCTION: fn_10665
+UIEmblemWnd::UIEmblemWnd(UIWindowContext& windows) : UIWindow(windows, 0), aid(0), guildId(0) {
+  this->SetSize(24, 24);
+}

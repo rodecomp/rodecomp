@@ -7,6 +7,8 @@ class UIBitmapButton;
 
 class UISlotBitmap : public UIStaticBitmap {
 public:
+  UISlotBitmap(UIWindowContext& windows, UIButtonContext& controls, int slot);
+  UISlotBitmap(UIWindowContext& windows, UIButtonContext& controls, int slot, unsigned char flag);
   void Slot15(int width, int height) override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;

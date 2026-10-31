@@ -85,3 +85,10 @@ void UIMerchantShopTitle::Slot32(int, int) {
     g_session.unknown_1748.clear();
   }
 }
+
+// OFFSET: 0x0084FE60
+// FUNCTION: fn_10667
+UIMerchantShopTitle::UIMerchantShopTitle(UIWindowContext& windows, UIButtonContext& controls, int buyingShop)
+    : UIWindow(windows, 0), buyingShop(buyingShop), m_controls(&controls) {
+  this->geometry.id = 189;
+}
