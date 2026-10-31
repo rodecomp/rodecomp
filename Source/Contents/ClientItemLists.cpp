@@ -1729,3 +1729,11 @@ bool ClientItemLists::AddExchangeItem(ITEM_INFO item) {
 
   return true;
 }
+
+// OFFSET: 0x00D1F550
+// FUNCTION: fn_21639
+void CGameMode::ReceiveShowRankingSchedule(const unsigned char* packet) {
+  if (packet) {
+    g_session.SetShowRankingSchedule(true, packet);
+  }
+}

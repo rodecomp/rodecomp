@@ -275,6 +275,7 @@ public:
   MinimapMarker* FindMinimapMarker(std::uint32_t key);
   float CameraDesiredYaw();
   void IgnoreRemovedPacket3(const unsigned char* packet);
+  void ReceiveShowRankingSchedule(const unsigned char* packet);
   void IgnoreRemovedPacket4(const unsigned char* packet);
   void IgnoreRemovedPacket5(const unsigned char* packet);
   void IgnoreRemovedPacket7(const unsigned char* packet);
