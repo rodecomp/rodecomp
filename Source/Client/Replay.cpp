@@ -14,6 +14,9 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "Client/Session.h"
 #include "Contents/RenewQuestMgr.h"
+#include "Contents/ClientState.h"
+#include "Contents/Configuration/ServiceOptions.h"
+#include "Contents/Messenger/MessengerMember.h"
 
 // GLOBAL: gl_24549
 int g_replayAnimationScaling = 0;
@@ -1101,6 +1104,55 @@ struct ReplayShopFlagRecord {
   /* 0004 */ char flag;
 };
 }
+
+// OFFSET: 0x00E30A90
+// FUNCTION: fn_24171
+std::vector<unsigned char> MessengerMember::Serialize() const {
+  std::vector<unsigned char> records;
+  {
+    const auto record = BuildReplayTaggedRecord(251, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(253, &this->valid, sizeof(this->valid));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(254, &this->accountId, sizeof(this->accountId));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(255, &this->characterId, sizeof(this->characterId));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(258, &this->leader, sizeof(this->leader));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(259, &this->offline, sizeof(this->offline));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(260, &this->color, sizeof(this->color));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(256, this->name.c_str(), this->name.size());
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(257, this->map.c_str(), this->map.size());
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(252, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  return records;
+}
+
+// OFFSET: 0x00E3E550
 
 // OFFSET: 0x00E41E60
 // FUNCTION: fn_24201

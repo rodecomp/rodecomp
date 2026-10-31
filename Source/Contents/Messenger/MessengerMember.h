@@ -13,6 +13,7 @@ struct MessengerMember {
   MessengerMember& operator=(const MessengerMember& other);
   ~MessengerMember();
   std::uint32_t Deserialize(const std::vector<unsigned char>& data);
+  std::vector<unsigned char> Serialize() const;
 
   /* 0000 */ std::int32_t valid;
   /* 0004 */ std::uint32_t accountId;
