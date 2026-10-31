@@ -32,6 +32,7 @@ public:
   int CommitPrice(int next);
   void PrintBuyList();
   void Slot32(int x, int y) override;
+  void Paint() override;
 
   /* 00BC */ unsigned char unknown_00BC[0x10];
   /* 00CC */ UIEditCtrl* unknown_00CC;

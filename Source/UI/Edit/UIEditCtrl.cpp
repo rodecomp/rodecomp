@@ -5809,3 +5809,194 @@ void UIItemPurchaseWnd::Paint() {
 // OFFSET: 0x009819C0
 
 // OFFSET: 0x00981EE0
+
+// OFFSET: 0x00982A80
+// FUNCTION: fn_13344
+void UIMerchantShopMakeWnd::Paint() {
+  UIButtonContext& controls = *this->m_controls;
+  this->ClearSurface(0xFF);
+  this->DrawTitleBar(controls.fonts, controls.locale, false, "", 0);
+
+  unsigned red, green, blue;
+  SkinPaletteChannels(controls.resources, 2, 2, red, green, blue);
+  this->FillRegion(0, 17, this->geometry.width, this->geometry.height - 38, RGB(red, green, blue));
+
+  int barHeight;
+  if (this->mode == 0) {
+    this->DrawButtonBar(2, 0, 1);
+  } else {
+    barHeight = this->DrawButtonBar(2, 0, 2);
+  }
+
+  for (int i = 0; i < this->unknown_012C; ++i) {
+    if (this->mode == 0) {
+      this->priceEdits[i]->Show(i < this->visibleRows);
+    } else if (i < this->visibleRows) {
+      this->priceEdits[i]->Show(1);
+      this->quantityEdits[i]->Show(1);
+    } else {
+      this->priceEdits[i]->Show(0);
+      this->quantityEdits[i]->Show(0);
+    }
+  }
+
+  for (int i = 0; i < this->unknown_012C; ++i) {
+    unsigned char hidden = 1;
+    if (this->scroll <= i && i < this->visibleRows + this->scroll) {
+      hidden = 0;
+      this->priceEdits[i]->Move(this->geometry.width - 119, (i - this->scroll) * 42 + 54);
+    }
+    this->priceEdits[i]->Show(hidden ^ 1);
+    if (this->mode != 0) {
+      this->quantityEdits[i]->Move(this->geometry.width + hidden * 340 - 221, (i - this->scroll) * 42 + 54);
+    }
+  }
+
+  const char* message;
+  int messageY;
+  if (this->mode != 0) {
+    int count = this->items.size();
+    if (static_cast<unsigned>(count) < static_cast<unsigned>(this->unknown_0140)) {
+      count = this->unknown_0140;
+    }
+
+    for (int i = 0, y = 72; i < count; ++i, y += 42) {
+      this->DrawTextAt(controls.fonts, controls.locale, this->geometry.width - 155, y - 15, LookupMessage(1721), 0, 0, 12, 0, 0, 0);
+      this->DrawTextAt(controls.fonts, controls.locale, this->geometry.width - 176, y - 15, LookupMessage(588), 0, 0, 12, 0, 0, 0);
+      DrawItemSlotBackground(*this, 3, y - 18);
+      if (i >= this->unknown_012C) {
+        continue;
+      }
+
+      char text[24] = {};
+      std::strcpy(text, this->priceEdits[i]->Text());
+      if (g_session.IsNumberWithCommas(text) != 1) {
+        continue;
+      }
+
+      std::int64_t price = _atoi64(text);
+      if (price <= 0) {
+        continue;
+      }
+
+      const int x = this->geometry.width - 155;
+      this->DrawTextAt(controls.fonts, controls.locale, x, y, LookupMessage(3222), 0, 0, 12, 0, 0, 0);
+      const int width = this->TextWidth(controls.fonts, controls.locale, LookupMessage(3222), 0, 0, 12, 0, 0);
+      const double rate = PriceCommission(price) * 0.01;
+      price += static_cast<std::int64_t>(price * rate);
+      FormatGroupedInteger(price, text, 24);
+      const PriceColors colors = PriceColor(price);
+      if (colors.secondary == 0xFFFFFFFF) {
+        this->DrawTextAt(controls.fonts, controls.locale, width + x, y, text, 0, 0, 12, colors.primary, 0, 0);
+      } else {
+        this->DrawEmboldenedText(width + x, y, text, colors.primary, colors.secondary, 0, 0, 12);
+      }
+    }
+
+    this->DrawTextAt(controls.fonts, controls.locale, 17, 4, LookupMessage(1720), 0, 0, 12, 0xFFFFFF, 0, 0);
+    this->DrawTextAt(controls.fonts, controls.locale, 16, 3, LookupMessage(1720), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(controls.fonts, controls.locale, 2, 25, LookupMessage(282), 0, 0, 12, 0, 0, 0);
+
+    const int labelWidth = this->TextWidth(controls.fonts, controls.locale, LookupMessage(1723), 0, 0, 12, 0, 0) + 10;
+    this->unknown_0128->Move(labelWidth, this->geometry.height - barHeight + 5);
+    this->DrawTextAt(controls.fonts, controls.locale, 5, this->geometry.height - barHeight + 5, LookupMessage(1723), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(
+      controls.fonts, controls.locale, this->unknown_0128->geometry.width + this->unknown_0128->geometry.x + 5, this->geometry.height - barHeight + 5,
+      "Zeny", 0, 0, 12, 0, 0, 0
+    );
+
+    char grouped[16] = {};
+    char text[32] = {};
+    FormatGroupedInteger(g_session.m_zeny, grouped, 16);
+    sprintf(text, "%s Zeny", grouped);
+    this->DrawTextAt(controls.fonts, controls.locale, 5, this->geometry.height - barHeight * 2 + 5, LookupMessage(1722), 0, 0, 12, 0, 0, 0);
+    this->DrawRightAlignedText(155, this->geometry.height - barHeight * 2 + 5, text, 0, 0, 12, 0, 0);
+
+    std::uint32_t color;
+    if (this->unknown_0188 == 1) {
+      sprintf(text, "Max Weight : %3d", g_session.m_maxWeight);
+      color = 0;
+    } else {
+      sprintf(text, "Weight : %3d / %3d", g_session.m_weight, g_session.m_maxWeight);
+      color = g_session.m_weight * 100 / (g_session.m_maxWeight < 1 ? 1 : g_session.m_maxWeight) < 50 ? 0 : 0xFF;
+    }
+    this->DrawRightAlignedText(this->geometry.width - 20, this->geometry.height - barHeight * 2 + 5, text, 0, 0, 12, color, 0);
+
+    message = LookupMessage(3224);
+    messageY = this->geometry.height - 72;
+  } else {
+    for (int i = 0, y = 72; i < this->visibleRows; ++i, y += 42) {
+      this->DrawTextAt(controls.fonts, controls.locale, this->geometry.width - 165, y - 15, LookupMessage(369), 0, 0, 12, 0, 0, 0);
+      DrawItemSlotBackground(*this, 3, y - 18);
+      if (i >= this->unknown_012C) {
+        continue;
+      }
+
+      char text[24] = {};
+      std::strcpy(text, this->priceEdits[this->scroll + i]->Text());
+      if (g_session.IsNumberWithCommas(text) != 1) {
+        continue;
+      }
+
+      std::int64_t price = _atoi64(text);
+      if (price <= 0) {
+        continue;
+      }
+
+      const int x = this->geometry.width - 165;
+      this->DrawTextAt(controls.fonts, controls.locale, x, y, LookupMessage(3222), 0, 0, 12, 0, 0, 0);
+      const int width = this->TextWidth(controls.fonts, controls.locale, LookupMessage(3222), 0, 0, 12, 0, 0);
+      const double rate = PriceCommission(price) * -0.01;
+      price += static_cast<std::int64_t>(price * rate);
+      FormatGroupedInteger(price, text, 24);
+      const PriceColors colors = PriceColor(price);
+      if (colors.secondary == 0xFFFFFFFF) {
+        this->DrawTextAt(controls.fonts, controls.locale, width + x, y, text, 0, 0, 12, colors.primary, 0, 0);
+      } else {
+        this->DrawEmboldenedText(width + x, y, text, colors.primary, colors.secondary, 0, 0, 12);
+      }
+    }
+
+    this->DrawTextAt(controls.fonts, controls.locale, 17, 4, LookupMessage(224), 0, 0, 12, 0xFFFFFF, 0, 0);
+    this->DrawTextAt(controls.fonts, controls.locale, 16, 3, LookupMessage(224), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(controls.fonts, controls.locale, 2, 25, LookupMessage(282), 0, 0, 12, 0, 0, 0);
+
+    message = LookupMessage(3223);
+    messageY = this->geometry.height - 43;
+  }
+  this->DrawTextAt(controls.fonts, controls.locale, 5, messageY, message, 0, 0, 12, 0xFF, 0, 0);
+
+  ItemDescriptions descriptions{g_itemDescriptions};
+  int visible = 0;
+  int index = 0;
+
+  for (auto it = this->items.begin(); it != this->items.end(); ++it, ++index) {
+    if (index < this->columns * this->scroll) {
+      continue;
+    }
+
+    if (g_session.IsPetEgg(std::atoi(it->itemId.c_str())) && it->unknown_005D) {
+      continue;
+    }
+
+    const int top = visible / this->columns * 42;
+    const int column = visible % this->columns * 42;
+    const int x = column + 7;
+    DrawItemWithQuantity(*this, controls.resources, descriptions, controls.fonts, controls.locale, x, top + 48, *it, 0, 0);
+    this->DrawWrappedItemName(column + 39, top + 57, 100, &*it, 0, 0, 12);
+
+    if (it->unknown_0088 > 0) {
+      this->DrawBitmap(
+        x, top + 60,
+        &static_cast<CBitmapRes*>(
+          ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", it->unknown_0088).c_str()))
+        )->image,
+        true
+      );
+    }
+
+    if (++visible == this->visibleRows * this->columns) {
+      break;
+    }
+  }
+}
