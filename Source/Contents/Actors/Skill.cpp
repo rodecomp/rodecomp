@@ -1,5 +1,7 @@
 #include "Contents/Actors/Skill.h"
 
+#include "Contents/Actors/GraffiSkill.h"
+
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Effects/Effect.h"
@@ -15,6 +17,28 @@
 #include "UI/Window/UIWindowMgr.h"
 
 #include <cstdlib>
+
+// OFFSET: 0x00E4A350
+// FUNCTION: fn_24252
+CGraffiSkill::CGraffiSkill() : CSkill(0) {
+}
+
+// OFFSET: 0x00E4A6D0
+// FUNCTION: fn_24256
+CSkill::CSkill(std::uint32_t aid) {
+  this->skillAid = aid;
+  this->SetActorJob(0x7E);
+  this->m_effectTimer = 0x8CA0;
+  this->render.unknown_00A4Bytes[1] = 0;
+  this->render.enabled = 0;
+  this->unknown_0264[0] = 0;
+  this->m_model = nullptr;
+  this->m_effect = nullptr;
+  this->unknown_0410 = 0;
+  this->range = 0;
+  this->m_hasEffect = false;
+  this->m_targets.clear();
+}
 
 // OFFSET: 0x00E4AA30
 // FUNCTION: fn_24259

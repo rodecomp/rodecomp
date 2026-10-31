@@ -31,6 +31,42 @@ std::string g_damageResourceName;
 // GLOBAL: gl_24975
 bool g_msgEffectShowSpecial = true;
 
+// OFFSET: 0x00E4A550
+// FUNCTION: fn_24255
+CMsgEffect::CMsgEffect() {
+  this->m_drift.x = 0.0f;
+  this->m_drift.y = 0.0f;
+  this->m_drift.z = 0.0f;
+  this->unknown_016C.x = 0.0f;
+  this->unknown_016C.y = 0.0f;
+  this->unknown_016C.z = 0.0f;
+  this->m_velocity.x = 0.0f;
+  this->m_owner = nullptr;
+  this->render.animation = 0;
+  this->render.curMotion = 0;
+  this->render.unknown_00A2 = 1;
+  this->m_value = 0;
+  this->m_type = 0;
+  this->m_finished = 0;
+  this->unknown_018C = 0.0f;
+  this->m_baseY = 1.0f;
+  this->m_baseX = 1.0f;
+  this->m_scale = 1.0f;
+  this->unknown_01A0 = 0;
+  this->unknown_01A4 = 0;
+  this->render.unknown_0080 = 0xFFFFFFFF;
+  this->m_digit = 0;
+  this->unknown_01B4 = 0;
+  this->unknown_01B0 = 1;
+  this->m_drift.x = 0.0f;
+  this->m_drift.y = 0.0f;
+  this->m_drift.z = 0.0f;
+  this->m_velocity.x = 0.0f;
+  this->m_velocity.y = 0.0f;
+  this->m_velocity.z = 0.0f;
+  this->m_visible = true;
+}
+
 // OFFSET: 0x00E4A9B0
 // FUNCTION: fn_24258
 CMsgEffect::~CMsgEffect() {

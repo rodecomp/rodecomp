@@ -21,6 +21,15 @@
 // GLOBAL: gl_24678
 int g_updateTick;
 
+// OFFSET: 0x00E4A450
+// FUNCTION: fn_24253
+CGroundScope::CGroundScope() {
+  this->m_lastingTime = 0;
+  this->m_size = 1;
+  this->m_angle = 0.0f;
+  this->m_skillId = -1;
+}
+
 // OFFSET: 0x00E4C2F0
 // FUNCTION: fn_24284
 bool CGroundScope::OnProcess() {

@@ -6,6 +6,14 @@
 #include <windows.h>
 #include <timeapi.h>
 
+// OFFSET: 0x00E4A4D0
+// FUNCTION: fn_24254
+CMandraAttackEffect::CMandraAttackEffect() {
+  this->SetSpriteName(ResourceMgr::Instance(), "몬스터\\mandragora_atk.spr");
+  this->SetActionName(ResourceMgr::Instance(), "몬스터\\mandragora_atk.act");
+  this->startFrame = 0.0f;
+}
+
 // OFFSET: 0x00E4C310
 // FUNCTION: fn_24285
 bool CMandraAttackEffect::OnProcess() {

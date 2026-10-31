@@ -12,6 +12,7 @@ struct CRagEffect;
 
 class CSkill : public CGameActor {
 public:
+  explicit CSkill(std::uint32_t aid);
   ~CSkill() override;
 
   const char* GetTrapModelName();
@@ -19,7 +20,7 @@ public:
   void LaunchGroundEffects(int effectId, int unused, int duration);
   void Render(int argument) override;
 
-  /* 0410 */ unsigned char unknown_0410[0x04];
+  /* 0410 */ int unknown_0410;
   /* 0414 */ unsigned m_effectTimer;
   /* 0418 */ std::uint32_t skillAid;
   /* 041C */ C3dActor* m_model;

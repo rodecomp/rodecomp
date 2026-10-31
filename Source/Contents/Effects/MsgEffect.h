@@ -25,7 +25,7 @@ public:
   /* 0159 */ unsigned char unknown_0159[0x03];
   /* 015C */ CGameObject* m_owner;
   /* 0160 */ vector3d m_drift;
-  /* 016C */ unsigned char unknown_016C[0x0C];
+  /* 016C */ vector3d unknown_016C;
   /* 0178 */ vector3d m_velocity;
   /* 0184 */ int m_value;
   /* 0188 */ int m_finished;
