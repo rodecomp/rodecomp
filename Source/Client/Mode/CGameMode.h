@@ -641,6 +641,10 @@ public:
   void RefreshEmotionPurchaseSchedule();
   void RefreshEmotionSaleSchedule();
   void ReceiveTypedNotice(const unsigned char* packet);
+  void ReceiveEquipCardChange(const unsigned char* packet);
+  void ReceiveEquipWindowMicroscope2(const unsigned char* packet);
+  void ReceiveEquipWindowMicroscope3(const unsigned char* packet);
+  void ReceiveGuildMemberAdd(const unsigned char* packet);
   void ReceiveRodexMailReturn(const unsigned char* packet);
   void ReceiveActorStatusValuePacket(const unsigned char* packet);
   void ReceivePartyMemberEffect(const unsigned char* packet);

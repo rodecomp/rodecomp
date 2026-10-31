@@ -2,6 +2,7 @@
 #include "File/ShortcutFilename.h"
 #include "Client/Input/InputCharset.h"
 #include "Client/Mode/CGameMode.h"
+#include "Client/Mode/EquipWindowLook.h"
 #include "UI/UIMacroDetectorWnd.h"
 #include "UI/UIMacroBlackListCheckWnd.h"
 #include "UI/UILapineScrollBar.h"
@@ -7067,4 +7068,113 @@ void CGameMode::ReceivePartyItemPickupNotice(const unsigned char* packet) {
       0xFFFF00, 9, 0, 0
     );
   }
+}
+
+
+// OFFSET: 0x00D64940
+// FUNCTION: fn_21995
+void CGameMode::ReceiveEquipCardChange(const unsigned char* packet) {
+  const EquipSlots slots = g_session.GetEquipSlots(*reinterpret_cast<const std::int16_t*>(packet + 2));
+  ITEM_INFO item = g_session.GetItem17F0(slots.values[2]);
+  if (item.unknown_0000[1] != 0) {
+    int* cards = reinterpret_cast<int*>(item.unknown_001C);
+    switch (packet[0xA]) {
+    case 1:
+      cards[*reinterpret_cast<const std::int16_t*>(packet + 4)] = *reinterpret_cast<const int*>(packet + 6);
+      break;
+    case 2:
+    case 3:
+      cards[*reinterpret_cast<const std::int16_t*>(packet + 4)] = 0;
+      break;
+    }
+    g_session.SetEquipItem17F0(slots.values[2], item);
+  }
+}
+
+// OFFSET: 0x00D284D0
+// FUNCTION: fn_21694
+void CGameMode::ReceiveEquipWindowMicroscope2(const unsigned char* packet) {
+  reinterpret_cast<ClientItemLists*>(&g_session)->ResetEquipped();
+  g_session.ResetItems3500();
+
+  const int length = *reinterpret_cast<const std::int16_t*>(packet + 2);
+  const int count = static_cast<unsigned>(length - 45) / 38u;
+  const unsigned char* entry = packet + 45;
+  for (int index = 0; index < count; ++index, entry += 38) {
+    ITEM_INFO item;
+    item.unknown_0000[0] = entry[6];
+    item.unknown_0000[2] = *reinterpret_cast<const std::uint16_t*>(entry + 8);
+    item.unknown_0000[1] = *reinterpret_cast<const std::int16_t*>(entry);
+    item.unknown_0000[3] = *reinterpret_cast<const std::uint16_t*>(entry + 10);
+    item.quantity = 1;
+    std::memcpy(item.unknown_001C, entry + 14, sizeof(item.unknown_001C));
+    item.SetItemId(*reinterpret_cast<const int*>(entry + 2));
+    item.identified = entry[7];
+    item.unknown_005D = entry[12];
+    item.unknown_0060 = entry[13];
+    item.unknown_0068 = *reinterpret_cast<const std::uint32_t*>(entry + 30);
+    item.unknown_0064 = *reinterpret_cast<const std::uint16_t*>(entry + 34);
+    item.unknown_0070 = *reinterpret_cast<const std::uint16_t*>(entry + 36);
+
+    if (item.unknown_0000[3] != 0) {
+      if (g_session.IsCostumeLocation(item.unknown_0000[3])) {
+        g_session.EquipItem3500(item);
+      } else {
+        reinterpret_cast<ClientItemLists*>(&g_session)->Equip(item);
+      }
+    }
+  }
+
+  g_equipWindowLook.job = *reinterpret_cast<const std::int16_t*>(packet + 0x1C);
+  g_equipWindowLook.sex = packet[0x2C];
+  g_equipWindowLook.head = *reinterpret_cast<const std::int16_t*>(packet + 0x1E);
+  g_equipWindowLook.accessory = *reinterpret_cast<const std::int16_t*>(packet + 0x20);
+  g_equipWindowLook.accessory2 = *reinterpret_cast<const std::int16_t*>(packet + 0x22);
+  g_equipWindowLook.accessory3 = *reinterpret_cast<const std::int16_t*>(packet + 0x24);
+  g_equipWindowLook.bodyPalette = *reinterpret_cast<const std::int16_t*>(packet + 0x2A);
+  g_equipWindowLook.headPalette = *reinterpret_cast<const std::int16_t*>(packet + 0x28);
+  std::memcpy(g_equipWindowLook.name, packet + 4, sizeof(g_equipWindowLook.name));
+  g_equipWindowLook.robe = *reinterpret_cast<const std::int16_t*>(packet + 0x26);
+
+  if (!g_windowMgr.CloseWindow(0x8B)) {
+    g_windowMgr.EnsureWindow(0x8B);
+  }
+}
+
+// OFFSET: 0x00D28700
+
+// OFFSET: 0x00D4E5A0
+// FUNCTION: fn_21877
+void CGameMode::ReceiveGuildMemberAdd(const unsigned char* packet) {
+  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  if (guildInfo->unknown_00C0 == 0) {
+    return;
+  }
+
+  char memo[51];
+  std::memcpy(memo, packet + 0x20, 50);
+  memo[50] = '\0';
+  char name[25];
+  std::memcpy(name, packet + 0x52, 24);
+  name[24] = '\0';
+
+  GuildInfo::Member member;
+  member.accountId = *reinterpret_cast<const int*>(packet + 2);
+  member.characterId = *reinterpret_cast<const int*>(packet + 6);
+  member.name = name;
+  member.unknown_0020 = *reinterpret_cast<const std::int16_t*>(packet + 0xA);
+  member.unknown_0024 = *reinterpret_cast<const std::int16_t*>(packet + 0xC);
+  member.job = *reinterpret_cast<const std::int16_t*>(packet + 0x10);
+  member.unknown_002C = *reinterpret_cast<const std::int16_t*>(packet + 0xE);
+  member.positionId = *reinterpret_cast<const int*>(packet + 0x1C);
+  member.level = *reinterpret_cast<const std::int16_t*>(packet + 0x12);
+  member.unknown_0050 = memo;
+  member.exp = *reinterpret_cast<const int*>(packet + 0x14);
+  member.online = *reinterpret_cast<const int*>(packet + 0x18);
+  guildInfo->AddMember(member);
+
+  const std::string playerName(name, 25);
+  g_playerNameDictionary->Set(*reinterpret_cast<const std::uint32_t*>(packet + 6), playerName.c_str());
+  guildInfo->UpdateMemberExpRatios();
+  g_windowMgr.RefreshGuildWindows();
 }
