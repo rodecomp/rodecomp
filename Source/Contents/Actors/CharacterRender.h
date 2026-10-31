@@ -3,12 +3,26 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <list>
 #include <map>
+
+class CActRes;
+struct CharacterRenderDrawItem;
+struct RenderPrimitive;
 
 class CCharacterRender {
 public:
   CCharacterRender(int unknown0068, int unknown006C);
   virtual ~CCharacterRender();
+
+  void RenderRobe(
+    std::list<RenderPrimitive*>& primitives, bool drawOnTop, const void*, int& layer, const float* position, float x, float y, float scale,
+    float shift, float, CActRes* baseAct
+  );
+  void RenderRobeCommands(
+    std::list<CharacterRenderDrawItem>& commands, bool drawOnTop, const void*, int& layer, const float* position, float x, float y, float scale,
+    float shift, float
+  );
 
   /* 0004 */ int unknown_0004;
   /* 0008 */ int unknown_0008;

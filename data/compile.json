@@ -629,6 +629,8 @@
   "Source/Contents/SpriteLayerOrder.cpp": 4,
   "Source/Contents/SpriteRidingOffset.cpp": 4,
   "Source/Contents/SpriteRidingPolicy.cpp": 4,
+  "Source/Contents/SpriteRobe.cpp": 4,
+  "Source/Contents/SpriteRobeCommands.cpp": 4,
   "Source/Contents/SpriteShadow.cpp": 4,
   "Source/Contents/StatusIconImages.cpp": 4,
   "Source/Contents/Store/MCStoreInfoBackup.cpp": 4,
