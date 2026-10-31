@@ -5,67 +5,27 @@
 #include <cstring>
 #include <utility>
 
-namespace {
+namespace YExcel {
 class BasicExcelCell {
 public:
-  int Type() {
-    return reinterpret_cast<int(__thiscall*)(BasicExcelCell*)>(0x00C998F0)(this);
-  }
-
-  int GetInteger() {
-    return reinterpret_cast<int(__thiscall*)(BasicExcelCell*)>(0x00C90B40)(this);
-  }
-
-  double GetDouble() {
-    return reinterpret_cast<double(__thiscall*)(BasicExcelCell*)>(0x00C909D0)(this);
-  }
-
-  const char* GetString() {
-    return reinterpret_cast<const char*(__thiscall*)(BasicExcelCell*)>(0x00C90CE0)(this);
-  }
-
-  const wchar_t* GetWString() {
-    return reinterpret_cast<const wchar_t*(__thiscall*)(BasicExcelCell*)>(0x00C90E40)(this);
-  }
-
-  void SetInteger(int val) {
-    reinterpret_cast<void(__thiscall*)(BasicExcelCell*, int)>(0x00C993F0)(this, val);
-  }
-
-  void SetIntegerAlt(int val) {
-    reinterpret_cast<void(__thiscall*)(BasicExcelCell*, int)>(0x00C990A0)(this, val);
-  }
-
-  void SetDouble(double val) {
-    reinterpret_cast<void(__thiscall*)(BasicExcelCell*, double)>(0x00C991E0)(this, val);
-  }
-
-  void SetString(const char* str) {
-    reinterpret_cast<void(__thiscall*)(BasicExcelCell*, const char*)>(0x00C99200)(this, str);
-  }
-
-  void SetWString(const wchar_t* str) {
-    reinterpret_cast<void(__thiscall*)(BasicExcelCell*, const wchar_t*)>(0x00C99610)(this, str);
-  }
-
-  void SetWStringAlt(const wchar_t* str) {
-    reinterpret_cast<void(__thiscall*)(BasicExcelCell*, const wchar_t*)>(0x00C992E0)(this, str);
-  }
+  int Type();
+  int GetInteger();
+  double GetDouble();
+  const char* GetString();
+  const wchar_t* GetWString();
+  void SetInteger(int val);
+  void SetIntegerAlt(int val);
+  void SetDouble(double val);
+  void SetString(const char* str);
+  void SetWString(const wchar_t* str);
+  void SetWStringAlt(const wchar_t* str);
 };
 
 class BasicExcelWorksheet {
 public:
-  int GetTotalRows() {
-    return reinterpret_cast<int(__thiscall*)(BasicExcelWorksheet*)>(0x00C90DB0)(this);
-  }
-
-  int GetTotalCols() {
-    return reinterpret_cast<int(__thiscall*)(BasicExcelWorksheet*)>(0x00C90DA0)(this);
-  }
-
-  BasicExcelCell* Cell(size_t row, size_t col) {
-    return reinterpret_cast<BasicExcelCell*(__thiscall*)(BasicExcelWorksheet*, size_t, size_t)>(0x00C8D120)(this, row, col);
-  }
+  int GetTotalRows();
+  int GetTotalCols();
+  BasicExcelCell* Cell(size_t row, size_t col);
 };
 
 class BasicExcel {
@@ -73,35 +33,20 @@ public:
   BasicExcel();
   ~BasicExcel();
 
-  bool Load(const char* filename) {
-    return reinterpret_cast<bool(__thiscall*)(BasicExcel*, const char*)>(0x00C915E0)(this, filename);
-  }
-
-  bool SaveAs(const char* filename) {
-    return reinterpret_cast<bool(__thiscall*)(BasicExcel*, const char*)>(0x00C98CE0)(this, filename);
-  }
-
-  void New(size_t sheets) {
-    reinterpret_cast<void(__thiscall*)(BasicExcel*, size_t)>(0x00C92530)(this, sheets);
-  }
-
-  BasicExcelWorksheet* GetWorksheet(size_t sheetIndex) {
-    return reinterpret_cast<BasicExcelWorksheet*(__thiscall*)(BasicExcel*, size_t)>(0x00C90EE0)(this, sheetIndex);
-  }
+  bool Load(const char* filename);
+  bool SaveAs(const char* filename);
+  void New(size_t sheets);
+  BasicExcelWorksheet* GetWorksheet(size_t sheetIndex);
 
 private:
   unsigned char m_data[0x5A8];
 };
 static_assert(sizeof(BasicExcel) == 0x5A8);
-
-__declspec(noinline) BasicExcel::BasicExcel() {
-  reinterpret_cast<void*(__thiscall*)(BasicExcel*)>(0x00C83CD0)(this);
 }
 
-__declspec(noinline) BasicExcel::~BasicExcel() {
-  reinterpret_cast<void(__thiscall*)(BasicExcel*)>(0x00C88ED0)(this);
-}
-}
+using YExcel::BasicExcel;
+using YExcel::BasicExcelCell;
+using YExcel::BasicExcelWorksheet;
 
 // OFFSET: 0x00CA3400
 // FUNCTION: fn_20925
