@@ -6,6 +6,7 @@
 
 class CEmblemRes : public CRes {
 public:
+  CEmblemRes();
   explicit CEmblemRes(BitmapResourceContext& context);
   ~CEmblemRes() override;
   void Slot02() override;

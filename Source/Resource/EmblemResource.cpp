@@ -77,3 +77,8 @@ bool CEmblemRes::IsTransient() {
 // FUNCTION: fn_07885
 void CEmblemRes::MissingFile(CRenderSystemBase*, const char*) {
 }
+
+// OFFSET: 0x0074CDC0
+// FUNCTION: fn_07887
+CEmblemRes::CEmblemRes() : CRes(), gif() {
+}
