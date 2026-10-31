@@ -18,6 +18,8 @@ struct BalloonTextContext {
 };
 
 class UIBalloonText : public UIWindow {
+  friend class UIBalloonOpenBtn;
+
 public:
   UIBalloonText(UIWindowContext& windows, BalloonTextContext& text);
   ~UIBalloonText() override;
