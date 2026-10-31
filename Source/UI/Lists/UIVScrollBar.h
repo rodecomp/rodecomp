@@ -64,6 +64,7 @@ public:
   void Slot54() override;
 
   void SetButtonImages(const std::string& left, const std::string& right);
+  void SetThumbImages(const std::string& top, const std::string& middle, const std::string& bottom);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

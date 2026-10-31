@@ -65,7 +65,7 @@ public:
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
   void Slot27(int x, int y) override;
-  void Slot28(int x, int y) override;
+  __declspec(noinline) void Slot28(int x, int y) override;
   void ResetCursor(int x, int y) override;
   void Slot31(int x, int y) override;
   void Slot32(int x, int y) override;
@@ -243,6 +243,7 @@ public:
   }
 
   void Paint() override;
+  void Slot28(int x, int y) override;
   void Slot53(int resolveSkin) override;
 
   void SetImage(const std::string& name);

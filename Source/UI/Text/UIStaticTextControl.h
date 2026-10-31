@@ -17,6 +17,7 @@ public:
         textY(0), text() {
   }
 
+  void Slot28(int x, int y) override;
   void UpdateText();
   void SetAlign(int horizontal, int vertical);
   void SetFitText(bool enabled);

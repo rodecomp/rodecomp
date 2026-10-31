@@ -374,8 +374,24 @@ void CUIVScrollBar::Slot35(int value) {
 }
 
 // OFFSET: 0x009F2A90
+// FUNCTION: fn_14724
+void CUIThumb::SetImages(const std::string& top, const std::string& middle, const std::string& bottom) {
+  this->resizable = 1;
+  this->topName = top;
+  this->middleName = middle;
+  this->bottomName = bottom;
+  this->Slot53(0);
+  this->Invalidate();
+}
 
 // OFFSET: 0x009F2B20
+// FUNCTION: fn_14725
+void CUIThumb::SetImage(const std::string& name) {
+  this->resizable = 0;
+  this->middleName = name;
+  this->Slot53(0);
+  this->Invalidate();
+}
 
 // OFFSET: 0x009F2BC0
 // FUNCTION: fn_14727
@@ -1053,6 +1069,15 @@ void CUIStaticImage::Paint() {
   }
 }
 
+// OFFSET: 0x009F0840
+// FUNCTION: fn_14666
+void CUIStaticImage::Slot28(int, int) {
+  int x = 0;
+  int y = -8;
+  this->ToScreen(x, y);
+  reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(this->tooltip.c_str(), x, y, 0xFFFFFFFFu, 0, 1);
+}
+
 // OFFSET: 0x009F08A0
 // FUNCTION: fn_14667
 void CUIStaticImage::Slot53(int resolveSkin) {
@@ -1644,6 +1669,18 @@ void CUIHScrollBar::SetButtonImages(const std::string& left, const std::string& 
   this->Invalidate();
 }
 
+// OFFSET: 0x009EE510
+// FUNCTION: fn_14607
+void CUIHScrollBar::SetThumbImages(const std::string& top, const std::string& middle, const std::string& bottom) {
+  this->trackLength = this->geometry.width - this->downButton->geometry.width - this->upButton->geometry.width;
+  const int length = static_cast<int>((static_cast<float>(this->visible) / static_cast<float>(this->total)) * static_cast<float>(this->trackLength));
+  this->thumb->Resize(length > 1 ? length : 1, this->geometry.height);
+  this->thumb->Move(this->upButton->geometry.width, 0);
+  this->thumb->Show(1);
+  this->thumb->SetImages(top, middle, bottom);
+  this->Invalidate();
+}
+
 // OFFSET: 0x009EA990
 // FUNCTION: fn_14536
 bool CUIPadding::CanHitTest() {
@@ -2108,6 +2145,20 @@ void CUIVScrollBar::Slot55(int value) {
   if (target != this->position) {
     this->SetPosition(target);
   }
+}
+
+// OFFSET: 0x009F0A70
+// FUNCTION: fn_14670
+void CUIStaticText::Slot28(int x, int y) {
+  if (this->Tooltip().empty()) {
+    CUIControl::Slot28(x, y);
+    return;
+  }
+
+  x = -6;
+  y = -4;
+  this->ToScreen(x, y);
+  reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(this->Tooltip().c_str(), x, y, 0xFFFFFFFFu, 0, 1);
 }
 
 // OFFSET: 0x009F0AE0

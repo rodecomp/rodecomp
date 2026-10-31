@@ -14,7 +14,7 @@ public:
   void Slot28(int x, int y) override;
   void Slot53(int resolveSkin) override;
 
-  void SetImages(const std::string& top, const std::string& middle, const std::string& bottom);
+  __declspec(noinline) void SetImages(const std::string& top, const std::string& middle, const std::string& bottom);
   void SetImage(const std::string& name);
 
   /* 0084 */ CResPtr<CBitmapRes> top;
