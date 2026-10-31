@@ -14,6 +14,7 @@ struct UIButtonContext;
 
 class CMergeItemWnd : public UIFrameWnd {
 public:
+  CMergeItemWnd(UIWindowContext& windows, UIFrameContext& frames);
   ~CMergeItemWnd() override;
   void Resize(int width, int height) override;
   void Slot15(int width, int height) override;

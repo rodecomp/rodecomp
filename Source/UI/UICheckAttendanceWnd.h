@@ -40,6 +40,7 @@ protected:
 
 class UICheckAttendanceWnd : public UIFrameWnd {
 public:
+  UICheckAttendanceWnd(UIWindowContext& windows, UIFrameContext& frames);
   ~UICheckAttendanceWnd() override;
   void Slot15(int width, int height) override;
   void Slot19() override;

@@ -14,6 +14,7 @@ struct UIButtonContext;
 
 class UICaptchaRegisterWnd : public UIFrameWnd {
 public:
+  UICaptchaRegisterWnd(UIWindowContext& windows, UIFrameContext& frames);
   void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a1, std::intptr_t a2, std::intptr_t a3, std::intptr_t a4) override;

@@ -41,6 +41,8 @@ struct ClientItemLists {
   void RemoveItem1710(std::uint32_t id, int quantity);
 };
 
+// OFFSET: 0x007DEC20
+
 // OFFSET: 0x007DEF00
 
 // OFFSET: 0x007DEF80

@@ -15,6 +15,8 @@
 #include <cstring>
 #include <windows.h>
 
+// OFFSET: 0x0084CBD0
+
 // OFFSET: 0x0084CEF0
 // FUNCTION: fn_10628
 int UIClanInfoManageWnd::Slot53() {

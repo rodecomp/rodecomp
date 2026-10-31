@@ -51,6 +51,8 @@ struct CaptchaRegisterPacket {
 static_assert(sizeof(CaptchaRegisterPacket) == 20);
 }
 
+// OFFSET: 0x007EA1C0
+
 // OFFSET: 0x007EA3B0
 // FUNCTION: fn_09788
 void UICaptchaRegisterWnd::Slot15(int width, int height) {

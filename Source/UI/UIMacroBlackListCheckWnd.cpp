@@ -24,6 +24,8 @@ namespace {
   static_assert(sizeof(MacroBlackListCheckPacket) == 18);
 }
 
+// OFFSET: 0x007EB0A0
+
 // OFFSET: 0x007EB230
 // FUNCTION: fn_09794
 void UIMacroBlackListCheckWnd::Slot15(int width, int height) {

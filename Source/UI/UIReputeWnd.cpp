@@ -26,6 +26,8 @@ CReputeMgr* Singleton<CReputeMgr>::GetInstance() {
   return s_instance;
 }
 
+// OFFSET: 0x0060EF80
+
 // OFFSET: 0x0060F170
 // FUNCTION: fn_04312
 bool UIReputeWnd::Slot02() {

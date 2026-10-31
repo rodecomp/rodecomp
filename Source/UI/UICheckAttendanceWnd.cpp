@@ -39,6 +39,8 @@ struct CheckAttendanceRequestPacket {
   /* 0000 */ std::int16_t id;
 };
 
+// OFFSET: 0x007DC6B0
+
 // OFFSET: 0x007DCAD0
 
 // OFFSET: 0x007DCB40
