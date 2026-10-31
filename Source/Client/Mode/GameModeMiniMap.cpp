@@ -1,4 +1,6 @@
 #include "Client/Mode/CGameMode.h"
+#include "Client/Session.h"
+#include "File/File.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Ground/TerrainHeight.h"
 #include "Contents/World/World.h"
@@ -18,6 +20,7 @@
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Text/FormatString.h"
 
+#include <cstdio>
 #include <timeapi.h>
 #include <windows.h>
 
@@ -26,9 +29,26 @@ int g_searchStoreX;
 // GLOBAL: gl_24935
 int g_searchStoreY;
 
+// GLOBAL: gl_25107
+CFile g_whisperFile;
+
 // OFFSET: 0x00CCFCE0
 // FUNCTION: fn_21246
 void MiniMapNoOp() {
+}
+
+// OFFSET: 0x00CCFF10
+// FUNCTION: fn_21249
+void sub_CCFF10() {
+  if (g_whisperRecord != 0) {
+    if (g_session.IsAdminSubMode(7) != 0) {
+      char path[256];
+      char backup[256];
+      std::sprintf(path, "%s", g_whisperFile.Path());
+      std::sprintf(backup, "%s.bak", path);
+      g_whisperFile.Close();
+    }
+  }
 }
 
 // OFFSET: 0x00CCFFA0

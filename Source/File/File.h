@@ -35,6 +35,10 @@ public:
   void* GetData() const {
     return this->m_data;
   }
+  // INLINED
+  const char* Path() const {
+    return this->m_path.c_str();
+  }
   bool Write(const void* data, std::uint32_t bytes);
   bool Read(void* data, std::uint32_t bytes);
   bool Peek(void* data, std::uint32_t bytes);
@@ -54,5 +58,7 @@ protected:
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CFile) == 44);
 #endif
+
+extern CFile g_whisperFile;
 
 #endif
