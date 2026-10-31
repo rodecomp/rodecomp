@@ -131,6 +131,69 @@ namespace {
 }
 
 // OFFSET: 0x009AB760
+// FUNCTION: fn_13765
+int UIPetEvolutionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  switch (message) {
+  case 6:
+    if (argument1 == 184) {
+      std::vector<std::uint16_t> materials;
+      for (auto it = this->m_materials.begin(); it != this->m_materials.end(); ++it) {
+        ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, it->first, 1);
+        if (item.quantity < it->second) {
+          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2574)), 255, 0, 0, 0);
+          return 0;
+        }
+        materials.push_back(static_cast<std::uint16_t>(item.unknown_0000[1]));
+        materials.push_back(static_cast<std::uint16_t>(it->second));
+      }
+
+      if (g_session.unknown_1038 != 0) {
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2607)), 255, 0, 0, 0);
+        return 0;
+      }
+
+      int count = static_cast<int>(materials.size());
+      std::uint16_t length = static_cast<std::uint16_t>(count * 2 + 8);
+      PACKET_CZ_PET_EVOLUTION packet;
+      std::memset(packet.materials, 0, sizeof(packet.materials));
+      packet.packetType = ID_CZ_PET_EVOLUTION;
+      packet.packetLength = length;
+      packet.evolvedEggId = this->m_evolvedEggId;
+      std::memcpy(packet.materials, materials.data(), count * 2);
+      GetRagConnection().Send(static_cast<short>(length), &packet);
+      g_windowMgr.CloseWindow(261);
+    } else if (argument1 == 185 || argument1 == 201) {
+      g_windowMgr.CloseWindow(261);
+    }
+    break;
+
+  case 98: {
+    ITEM_INFO item;
+    item.SetItemId(argument1);
+    item.identified = 1;
+    g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    break;
+  }
+
+  case 142: {
+    this->m_materials.clear();
+    this->m_petEggId = argument1;
+    this->m_evolvedEggId = argument2;
+    std::pair<bool, std::vector<std::pair<int, int>>> result = g_petEvolutionMgr->GetMaterials(argument1, argument2);
+    if (result.first) {
+      this->m_materials = result.second;
+    }
+    this->RebuildButtons();
+    break;
+  }
+
+  default:
+    return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+
+  this->Invalidate();
+  return 0;
+}
 
 // OFFSET: 0x009ABC20
 // FUNCTION: fn_13766
