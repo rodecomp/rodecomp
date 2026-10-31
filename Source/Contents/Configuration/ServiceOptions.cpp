@@ -14,6 +14,7 @@
 #include "Render/Textures/TextureCache.h"
 #include "Resource/ResourcePreload.h"
 #include "UI/GameSettings/GameSettingsUI.h"
+#include "UI/Item/UIItemWnd.h"
 #include "UI/Window/UIRoulletteWnd.h"
 #include "Contents/Skills/ClientSkills.h"
 #include "Contents/Messenger/WhisperBlockMgr.h"
@@ -585,6 +586,21 @@ void ApplyServiceOption(int id, unsigned char value, bool notify, int enabledMes
     if (notify) {
       NotifyServiceOption(value, enabledMessage, disabledMessage, 0x64FFFF);
     }
+  }
+}
+
+// OFFSET: 0x006C5A10
+// FUNCTION: fn_06362
+void ApplyServiceOptionItemWnd(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
+  if (g_serviceOptions.Get(id) != value) {
+    g_serviceOptions.Set(id, value);
+    if (notify) {
+      NotifyServiceOption(value, enabledMessage, disabledMessage, 0x64FFFF);
+    }
+  }
+
+  if (g_saleOpenWindow != nullptr) {
+    static_cast<UIItemWnd*>(g_saleOpenWindow)->RefreshOptionBox();
   }
 }
 

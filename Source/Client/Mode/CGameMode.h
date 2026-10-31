@@ -767,6 +767,7 @@ static_assert(sizeof(CGameMode) == 0x670);
 
 extern char g_pendingWhisperCount;
 extern int g_whisperRecord;
+extern UIWindow* g_saleOpenWindow;
 void sub_CCFF10();
 extern unsigned char g_gameModePacketBuffer[0x10000];
 extern int g_unknown_01738268;
