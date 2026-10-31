@@ -37,6 +37,7 @@ const char* g_uiInfoTempPath = "savedata\\UIInfo.temp";
 class CUIListBoxItemSelector {
 public:
   void SetHighlighted(CUIListItem* const& item);
+  void SetHighlightedEntry(CUIListItem* const& item);
 
 private:
   /* 0000 */ void* unknown_0000;
@@ -46,6 +47,14 @@ private:
 // OFFSET: 0x009E0A80
 // FUNCTION: fn_14371
 void CUIListBoxItemSelector::SetHighlighted(CUIListItem* const& item) {
+  for (CUIListItem* entry : this->listBox->items) {
+    entry->SetHighlighted(entry == item);
+  }
+}
+
+// OFFSET: 0x009E0AD0
+// FUNCTION: fn_14372
+void CUIListBoxItemSelector::SetHighlightedEntry(CUIListItem* const& item) {
   for (CUIListItem* entry : this->listBox->items) {
     entry->SetHighlighted(entry == item);
   }
