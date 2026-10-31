@@ -998,6 +998,31 @@ public:
 }
 
 // OFFSET: 0x00E07150
+// FUNCTION: fn_23739
+bool CSession::EquipItem2B50(const ITEM_INFO& item, const char* name) {
+  const EquipSlots slots = g_session.GetEquipSlots(item.unknown_0000[3]);
+  const int order[3] = {slots.values[2], slots.values[1], slots.values[0]};
+
+  for (int index = 0; index < 3; ++index) {
+    const int slot = order[index];
+    if (slot != -1) {
+      ITEM_INFO& equipped = this->unknown_2B50[slot];
+      equipped = item;
+      equipped.quantity = 1;
+      equipped.unknown_0068 = item.unknown_0068;
+      equipped.unknown_0064 = item.unknown_0064;
+      equipped.unknown_0070 = item.unknown_0070;
+    }
+  }
+
+  RequestBasicInfoRefresh();
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  g_equipmentPropertiesMgr->EquipWearable(&item, *name == '\0');
+  this->InvalidateWindowFrames();
+  return true;
+}
 
 // OFFSET: 0x00E09900
 // FUNCTION: fn_23785
@@ -1039,6 +1064,25 @@ ITEM_INFO CSession::GetItem3500(int index) const {
 }
 
 // OFFSET: 0x00E13000
+// FUNCTION: fn_23822
+void CSession::FindTopRecords6144(int* second, int* first) {
+  int bestValue = -1;
+  int secondValue;
+  for (const auto& entry : this->unknown_6144) {
+    if (reinterpret_cast<const unsigned char*>(&entry.second.unknown_0000)[1]) {
+      const int value = entry.second.unknown_002C;
+      if (bestValue < value) {
+        secondValue = bestValue;
+        bestValue = value;
+        *second = *first;
+        *first = entry.first;
+      } else if (secondValue < value) {
+        secondValue = value;
+        *second = entry.first;
+      }
+    }
+  }
+}
 
 // OFFSET: 0x00E19580
 // FUNCTION: fn_23842
