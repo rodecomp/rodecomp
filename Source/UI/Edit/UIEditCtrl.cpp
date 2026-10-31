@@ -120,6 +120,7 @@ struct ClientItemLists {
   void AddItem1730(const ITEM_INFO& item);
   void ReduceItem1718(const ITEM_INFO& item);
   void ClearItems1760();
+  void CopyItems1740To1750();
 };
 
 struct SessionItemLists {
@@ -2921,6 +2922,76 @@ int UIEditCtrl3::DecodeLinkCards(std::vector<int>& fields, const char* text, int
   return count;
 }
 
+// OFFSET: 0x00977510
+// FUNCTION: fn_13312
+void UIItemShopWnd2::Slot15(int width, int height) {
+  this->title = new UIStaticText(*this->m_context, *this->m_controls);
+  this->title->SetSize(70, 15);
+  this->title->SetText(LookupMessage(167), 0);
+  this->title->Move(16, 2);
+  this->title->shadow = 1;
+  this->AddChild(this->title);
+
+  this->resizer = new UIResizer(*this->m_context);
+  this->resizer->SetSize(16, 16);
+  static_cast<UIResizer*>(this->resizer)->SetDirection(7);
+  static_cast<UIResizer*>(this->resizer)->SetBitmapName("유저인터페이스\\btn_resize.bmp");
+  this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
+  static_cast<UIResizer*>(this->resizer)->SetColors(0xFFFF00FF, 0xFFFF00FF);
+  this->AddChild(this->resizer);
+
+  this->checkBox = new UICheckBox(*this->m_context, *this->m_controls);
+  this->checkBox->SetSize(200, 12);
+  this->checkBox->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(295));
+  this->checkBox->Move(12, this->geometry.height - 20);
+  this->checkBox->SetChecked(g_windowMgr.unknown_0064);
+  this->AddChild(this->checkBox);
+
+  UIScrollBar* scrollBar = new UIScrollBar(*this->m_context);
+  this->scrollBar = scrollBar;
+  scrollBar->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - this->unknown_0108 - this->unknown_0104 - 17);
+  this->AddChild(this->scrollBar);
+
+  this->columns = 1;
+  this->visibleRows = (height - this->unknown_0108 - this->unknown_0104 - 17) / 32;
+  this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+}
+
+// OFFSET: 0x009777B0
+// FUNCTION: fn_13313
+void UIItemShopWnd::Slot15(int width, int height) {
+  this->title = new UIStaticText(*this->m_context, *this->m_controls);
+  this->title->SetSize(70, 15);
+  this->title->SetText(LookupMessage(167), 0);
+  this->title->Move(16, 2);
+  this->title->shadow = 1;
+  this->AddChild(this->title);
+
+  this->resizer = new UIResizer(*this->m_context);
+  this->resizer->SetSize(16, 16);
+  static_cast<UIResizer*>(this->resizer)->SetDirection(7);
+  static_cast<UIResizer*>(this->resizer)->SetBitmapName("유저인터페이스\\btn_resize.bmp");
+  this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
+  static_cast<UIResizer*>(this->resizer)->SetColors(0xFFFF00FF, 0xFFFF00FF);
+  this->AddChild(this->resizer);
+
+  this->checkBox = new UICheckBox(*this->m_context, *this->m_controls);
+  this->checkBox->SetSize(200, 12);
+  this->checkBox->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(295));
+  this->checkBox->Move(12, this->geometry.height - 20);
+  this->checkBox->SetChecked(g_windowMgr.unknown_0064);
+  this->AddChild(this->checkBox);
+
+  UIScrollBar* scrollBar = new UIScrollBar(*this->m_context);
+  this->scrollBar = scrollBar;
+  scrollBar->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - this->unknown_0108 - this->unknown_0104 - 17);
+  this->AddChild(this->scrollBar);
+
+  this->columns = 1;
+  this->visibleRows = (height - this->unknown_0108 - this->unknown_0104 - 17) / 32;
+  this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+}
+
 // OFFSET: 0x00977A50
 // FUNCTION: fn_13314
 void UIItemStoreFindWnd::Slot15(int width, int height) {
@@ -3010,6 +3081,49 @@ void UIMerchantItemWnd::Slot15(int width, int height) {
   this->visibleRows = (height - 38) / 32;
   this->SendMsg(nullptr, 23, 0, 0, 0, 0);
   this->info->Show(0);
+}
+
+// OFFSET: 0x0097BFF0
+// FUNCTION: fn_13323
+void UIMerchantMirrorItemWnd::Slot15(int width, int height) {
+  UIStaticText* title = new UIStaticText(*this->m_context, *this->m_controls);
+  title->SetSize(150, 15);
+  int messageId;
+  if (this->unknown_00F4 == 1) {
+    messageId = 1733;
+  } else if (this->unknown_00F4 == 2) {
+    messageId = 1738;
+  } else {
+    messageId = 232;
+  }
+  title->SetText(LookupMessage(messageId), 0);
+  title->Move(16, 2);
+  title->shadow = 1;
+  this->AddChild(title);
+
+  this->resizer = new UIResizer(*this->m_context);
+  this->resizer->SetSize(16, 16);
+  static_cast<UIResizer*>(this->resizer)->SetDirection(7);
+  static_cast<UIResizer*>(this->resizer)->SetBitmapName("유저인터페이스\\btn_resize.bmp");
+  this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
+  static_cast<UIResizer*>(this->resizer)->SetColors(0xFFFF00FF, 0xFFFF00FF);
+  this->AddChild(this->resizer);
+
+  UIScrollBar* scrollBar = new UIScrollBar(*this->m_context);
+  this->scrollBar = scrollBar;
+  scrollBar->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - 38);
+  this->AddChild(this->scrollBar);
+
+  this->columns = (width - 40) / 32;
+  this->visibleRows = (height - 38) / 32;
+  if (this->unknown_00F4 == 1) {
+    g_session.CollectItems1750();
+  } else if (this->unknown_00F4 == 2) {
+    g_session.RefreshItems1750();
+  } else if (Replay::Instance().state != 6) {
+    reinterpret_cast<ClientItemLists*>(&g_session)->CopyItems1740To1750();
+  }
+  this->SendMsg(nullptr, 23, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x0098A7A0
