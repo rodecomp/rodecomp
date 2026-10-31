@@ -256,6 +256,7 @@ protected:
 
 class UIGuildTotalInfoWnd : public UIGuildWnd {
 public:
+  UIGuildTotalInfoWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
   int Tab() override;
   void Slot15(int width, int height) override;
   void Paint() override;

@@ -292,10 +292,9 @@ void UIGuildTotalInfoWnd::Slot35(int delta) {
   }
 }
 
+// OFFSET: 0x00954020
 UIGuildWnd::UIGuildWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
-    : UIFrameWnd(windows, frames, 0), m_saved(nullptr), m_tabs{}, m_controls(&controls) {
-}
-
+    : UIFrameWnd(windows, frames, 0), m_saved(nullptr), m_tabs{}, m_controls(&controls) {}
 // OFFSET: 0x00953900
 // FUNCTION: fn_12995
 UIGuildBanishedMemberWnd::UIGuildBanishedMemberWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
@@ -2101,6 +2100,22 @@ int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, st
   }
 
   return 0;
+}
+
+// OFFSET: 0x00953F60
+UIGuildTipWnd::UIGuildTipWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
+    : UIFrameWnd(windows, frames, 0), m_controls(&controls) {
+}
+
+// OFFSET: 0x00953FC0
+// FUNCTION: fn_13004
+UIGuildTotalInfoWnd::UIGuildTotalInfoWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
+    : UIGuildWnd(windows, frames, controls) {
+}
+
+// OFFSET: 0x00954120
+// FUNCTION: fn_13006
+UIListBoxAgitMenu::UIListBoxAgitMenu(UIWindowContext& windows, UIListBoxContext& list) : UIListBox(windows, list) {
 }
 
 // OFFSET: 0x00963E10
