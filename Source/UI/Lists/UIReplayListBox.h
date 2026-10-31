@@ -5,6 +5,10 @@
 
 class UIReplayListBox : public UIListBox {
 public:
+  // INLINED
+  UIReplayListBox(UIWindowContext& windows, UIListBoxContext& list) : UIListBox(windows, list) {
+  }
+
   void Slot25(int x, int y) override;
 };
 

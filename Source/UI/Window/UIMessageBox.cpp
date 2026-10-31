@@ -15,6 +15,7 @@
 #include "UI/Window/UIMessageBox.h"
 #include "UI/Window/UINoticeWnd.h"
 #include "UI/Lists/UIScrollBar.h"
+#include "UI/Lists/UIReplayListBox.h"
 #include "UI/Window/UISelectReplayDataWnd.h"
 #include "UI/Window/UISelectServerWnd.h"
 #include "UI/UIStaticBitmap.h"
@@ -1212,6 +1213,55 @@ void UINoticeWnd::Slot15(int, int) {
       this->m_scroll = 0;
     }
     this->LoadNotice();
+  }
+}
+
+// OFFSET: 0x008B5A50
+// FUNCTION: fn_11750
+void UISelectReplayDataWnd::Slot15(int width, int height) {
+  this->m_list = new UIReplayListBox(*this->m_context, *this->m_listContext);
+  this->m_list->Configure(6, 127, width - 12, height - 170, 0);
+  this->m_list->backgroundRed = 240;
+  this->m_list->backgroundGreen = 240;
+  this->m_list->backgroundBlue = 240;
+  this->m_list->SetId(184);
+  this->AddChild(this->m_list);
+
+  const std::string prefix("유저인터페이스\\");
+  const char* names[4][3] = {
+    {"btn_ok", "btn_ok_a", "btn_ok_b"},
+    {"btn_cancel", "btn_cancel_a", "btn_cancel_b"},
+    {"login_interface\\btn_exit", "login_interface\\btn_exit_a", "login_interface\\btn_exit_b"},
+    {"replay_interface\\btn_selectserver", "replay_interface\\btn_selectserver_a", "replay_interface\\btn_selectserver_b"},
+  };
+  int ids[4] = {184, 185, 221, 400};
+  int positions[4][2] = {{189, height - 25}, {-100, -100}, {234, height - 25}, {100, height - 25}};
+
+  for (int index = 0; index < 4; ++index) {
+    auto* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
+    button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
+    button->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
+    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    button->Move(positions[index][0], positions[index][1]);
+    button->SetId(ids[index]);
+    this->AddChild(button);
+    if (ids[index] == 221) {
+      this->m_serverButton = button;
+    }
+  }
+
+  this->m_message0 = 184;
+
+  UIStaticText** text = this->m_texts;
+  for (int y = 35; y < 110; y += 15) {
+    *text = new UIStaticText(*this->m_context, *this->m_controls);
+    (*text)->SetSize(width - 12, 15);
+    (*text)->SetText("", 0);
+    (*text)->Move(12, y);
+    (*text)->SetColor(100, 100, 200);
+    this->AddChild(*text);
+    ++text;
   }
 }
 
