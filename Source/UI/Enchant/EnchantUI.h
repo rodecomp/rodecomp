@@ -157,11 +157,16 @@ public:
 
 class CUIUpgradeEnchantPage : public CUIEnchantPage {
 public:
+  using CUIEnchantPage::CUIEnchantPage;
+
   void Slot58(int value) override;
+  void Slot59(int value) override;
 };
 
 class CUIUpgradeRandom : public CUIUpgradeEnchantPage {
 public:
+  using CUIUpgradeEnchantPage::CUIUpgradeEnchantPage;
+
   void Slot16() override;
   void Slot55() override;
   bool Slot56() override;
@@ -169,7 +174,9 @@ public:
 
 class CUIUpgradePerfect : public CUIUpgradeEnchantPage {
 public:
-  /* 00B8 */ bool unknown_00B8;
+  using CUIUpgradeEnchantPage::CUIUpgradeEnchantPage;
+
+  /* 00B8 */ bool unknown_00B8 = false;
 
   void Slot54(CUIEnchantItem* item, const CEnchantItemData& data) override;
   void Slot55() override;
@@ -188,6 +195,13 @@ public:
 };
 
 class CUINormal : public CUIMainPage {
+public:
+  using CUIMainPage::CUIMainPage;
+
+  void Slot15(int width, int height) override;
+};
+
+class CUIUpgrade : public CUIMainPage {
 public:
   using CUIMainPage::CUIMainPage;
 
