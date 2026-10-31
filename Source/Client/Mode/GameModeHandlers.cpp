@@ -113,6 +113,9 @@ int g_pendingGid;
 // GLOBAL: gl_24929
 unsigned char g_toggleNoticeState;
 
+// GLOBAL: gl_25094
+bool g_playerMessage82Pending;
+
 // OFFSET: 0x00D3B690
 // FUNCTION: fn_21781
 void CGameMode::ReceivePartyBookingRegisterResult(const unsigned char* packet) {
@@ -240,6 +243,8 @@ void CGameMode::ReceivePendingResult(const unsigned char* packet) {
   }
 }
 
+// OFFSET: 0x00D3C4F0
+
 // OFFSET: 0x00D3CC10
 // FUNCTION: fn_21796
 void CGameMode::ReceivePetAct(unsigned char* packet) {
@@ -319,8 +324,58 @@ void CGameMode::IgnoreRemovedPacket1(const unsigned char*) {
 }
 
 // OFFSET: 0x00D3D2F0
+// FUNCTION: fn_21801
+void CGameMode::ReceivePlayerMessage82(const unsigned char* packet) {
+  CPlayer* player = this->scene->player;
+  if (!player) {
+    return;
+  }
+
+  player->SendMsg(nullptr, 0x52, 0, *reinterpret_cast<const int*>(packet + 6) * 1000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  g_playerMessage82Pending = true;
+}
 
 // OFFSET: 0x00D3DF40
+// FUNCTION: fn_21807
+void CGameMode::ReceiveResultNotice00FC(const unsigned char* packet) {
+  this->unknown_00FC = 0;
+
+  int messageId;
+  switch (packet[2]) {
+  case 0:
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    messageId = 0x43;
+    break;
+  case 1:
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    messageId = 7;
+    break;
+  case 2:
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    messageId = 0x44;
+    break;
+  case 4:
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    messageId = 0x37;
+    break;
+  case 5:
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    messageId = 0x1B0;
+    break;
+  case 6:
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    messageId = 0x1B1;
+    break;
+  case 7:
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    messageId = 0x1B2;
+    break;
+  default:
+    return;
+  }
+
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(messageId)), 0xFF, 0, 0, 0);
+}
 
 // OFFSET: 0x00D3E0B0
 // FUNCTION: fn_21808

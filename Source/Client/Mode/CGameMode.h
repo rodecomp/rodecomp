@@ -176,10 +176,13 @@ public:
   void ReceiveToggleNotice(const unsigned char* packet);
   void ReceiveSound(const unsigned char* packet);
   void ReceivePendingResult(const unsigned char* packet);
+  void ReceiveNoticeResult14(const unsigned char* packet);
   void ReceivePetAct(unsigned char* packet);
   void PlayBgm(unsigned char type, std::string name);
   void ReceiveNpcBgm(const unsigned char* packet);
   void IgnoreRemovedPacket1(const unsigned char* packet);
+  void ReceivePlayerMessage82(const unsigned char* packet);
+  void ReceiveResultNotice00FC(const unsigned char* packet);
   void IgnoreRemovedPacket2(const unsigned char* packet);
   void ReceiveBillingInfo(const unsigned char* packet);
   void ReceiveActorMessage32(const unsigned char* packet);
