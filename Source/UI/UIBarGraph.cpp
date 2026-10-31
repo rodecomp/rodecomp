@@ -5,8 +5,28 @@
 #include "Resource/TextureNames.h"
 #include "Utility/Text/FormatString.h"
 
+#include <cstdio>
 #include <string>
 #include <windows.h>
+
+class UIBarGraph2 : public UIWindow {
+public:
+  void Paint() override;
+
+  /* 007C */ float m_value;
+  /* 0080 */ int m_vertical;
+  /* 0084 */ unsigned char m_backgroundRed;
+  /* 0085 */ unsigned char unknown_0085[3];
+  /* 0088 */ unsigned char m_backgroundGreen;
+  /* 0089 */ unsigned char unknown_0089[3];
+  /* 008C */ unsigned char m_backgroundBlue;
+  /* 008D */ unsigned char unknown_008D[3];
+  /* 0090 */ unsigned char m_fillRed;
+  /* 0091 */ unsigned char unknown_0091[3];
+  /* 0094 */ unsigned char m_fillGreen;
+  /* 0095 */ unsigned char unknown_0095[3];
+  /* 0098 */ unsigned char m_fillBlue;
+};
 
 // OFFSET: 0x0086C310
 // FUNCTION: fn_11024
@@ -25,6 +45,34 @@ UIBarGraph3::~UIBarGraph3() = default;
 // OFFSET: 0x008700F0
 // FUNCTION: fn_11098
 UIBarGraphPlayer::~UIBarGraphPlayer() = default;
+
+// OFFSET: 0x00887440
+// FUNCTION: fn_11337
+void UIBarGraph2::Paint() {
+  const std::uint32_t backgroundColor = RGB(this->m_backgroundRed, this->m_backgroundGreen, this->m_backgroundBlue);
+  const std::uint32_t fillColor = RGB(this->m_fillRed, this->m_fillGreen, this->m_fillBlue);
+
+  if (this->m_vertical == 0) {
+    this->FillRegion(0, 0, this->geometry.width, this->geometry.height, 0x00FFFF00);
+    this->FillRegion(1, 1, this->geometry.width - 2, this->geometry.height - 2, backgroundColor);
+    if (this->m_value != 0.0f) {
+      this->FillRegion(1, 1, static_cast<int>((this->geometry.width - 2) * this->m_value / 100.0f), this->geometry.height - 2, fillColor);
+    }
+    char text[16];
+    sprintf_s(text, sizeof(text), "%3ld", static_cast<long>(this->m_value));
+    this->DrawTextAt(
+      this->m_context->fonts, this->m_context->locale, (this->geometry.width >> 1) - 20, (this->geometry.height >> 1) - 7,
+      text, 0, 1, 16, 0xFFFF, 0, 0
+    );
+    return;
+  }
+
+  this->ClearSurface(backgroundColor);
+  if (this->m_value != 0.0f) {
+    const int fillHeight = static_cast<int>(this->geometry.height * this->m_value / 100.0f);
+    this->FillRegion(0, this->geometry.height - fillHeight, this->geometry.width, fillHeight, fillColor);
+  }
+}
 
 // OFFSET: 0x00887600
 // FUNCTION: fn_11338
