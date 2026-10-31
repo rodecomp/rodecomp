@@ -2,7 +2,7 @@
 #include "Client/Session.h"
 #include "Resource/ResourceMgr.h"
 #include "Utility/Text/FormatString.h"
-
+#include "UI/Window/UINavigationWnd.h"
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
@@ -804,4 +804,21 @@ void CNavigationManager::ResetCurrentTarget() {
   this->currentTarget = NavigationTarget();
   this->LoadTargetPreview();
   this->ClearRouteNodes();
+}
+
+// OFFSET: 0x00B94E90
+// FUNCTION: fn_19570
+void CNavigationManager::CheckArrival(int cellX, int cellY) {
+  if (this->unknown_1258 == 2) {
+    if (g_navigationWindow != nullptr) {
+      g_navigationWindow->Invalidate();
+    }
+    if (this->unknown_115C) {
+      NaviCell cell;
+      this->data.GetCell(&cell);
+      if (std::abs(cell.x - cellX) <= 5 && std::abs(cell.y - cellY) <= 5) {
+        this->CancelRoute();
+      }
+    }
+  }
 }

@@ -362,6 +362,7 @@ public:
   void SelectTarget(int nodeIndex);
   void CancelRoute();
   void DrawRoute(const float* matrix);
+  void CheckArrival(int cellX, int cellY);
 
   /* 0000 */ CNaviData data;
   /* 004C */ CPathFinder pathFinder;
