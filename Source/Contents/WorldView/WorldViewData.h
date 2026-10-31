@@ -89,6 +89,7 @@ public:
   CWorldViewMgr();
 
   bool ScaleToScreen();
+  void sub_6168F0();
   unsigned int FindWorld(int mapId);
   void ResetSelection();
   bool SelectField(const char* name);

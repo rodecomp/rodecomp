@@ -101,7 +101,7 @@ void CWorldViewWorld::AddField(int mapId, const char* name, CWorldViewField* fie
 
 // OFFSET: 0x006137B0
 // FUNCTION: fn_04351
-bool CWorldViewWorld::LoadTexture() {
+__declspec(noinline) bool CWorldViewWorld::LoadTexture() {
   std::string path = "유저인터페이스\\";
   path += this->imageName;
   this->texture = g_texMgr.Load(path.c_str(), 0, true, true, false);
@@ -314,6 +314,31 @@ bool CWorldViewMgr::ScaleToScreen() {
   }
 
   return true;
+}
+
+// GLOBAL: gl_25167
+static int gl_25167 = 0;
+
+// OFFSET: 0x006168F0
+// FUNCTION: fn_04375
+void CWorldViewMgr::sub_6168F0() {
+  const int width = g_renderer->viewport.width;
+  if (width > 640) {
+    if (width <= 800) {
+      this->screenScale = 1;
+    } else {
+      this->screenScale = (width > 1024) + 2;
+    }
+  }
+
+  for (std::vector<CWorldViewWorld*>::iterator it = this->worlds.begin(); it != this->worlds.end(); ++it) {
+    (*it)->LoadTexture();
+  }
+
+  if (gl_25167 == 0) {
+    gl_25167 = this->ScaleToScreen();
+    g_session.sub_DE4FF0();
+  }
 }
 
 // OFFSET: 0x00616970

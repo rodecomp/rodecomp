@@ -1,5 +1,6 @@
 #ifndef RAGNAROK_SOURCE_CLIENT_SESSION_H
 #define RAGNAROK_SOURCE_CLIENT_SESSION_H
+#include "Render/Renderer.h"
 
 #include "Contents/InstantVar.h"
 #include "Contents/Items/ItemInfo.h"
@@ -995,6 +996,7 @@ public:
   void SetUnknown7EC8(std::uint32_t value);
   void NotifyUnknown7F94Name(std::uint32_t id, const char* name);
   void sub_DE3D90(char* text);
+  void sub_DE4FF0();
   std::pair<int, int> GetShopEntry(unsigned int index, int key);
   bool HasUnknown809C(std::string name);
   void SetUnknown16EC(std::uint32_t value);
@@ -1169,5 +1171,28 @@ static_assert(offsetof(CSession, m_showRankingSchedule) == 0x7F90);
 static_assert(offsetof(CSession, unknown_7F94) == 0x7F94);
 static_assert(offsetof(CSession, unknown_8148) == 0x8148);
 #endif
+
+
+// INLINED
+inline __declspec(noinline) void CSession::sub_DE4FF0() {
+  const float scaleX = static_cast<float>(g_renderer->viewport.width) / 1280.0f;
+  const float scaleY = static_cast<float>(g_renderer->viewport.height - 17) / 1024.0f;
+
+  for (int i = 0; i < this->m_mapPosListCount; ++i) {
+    for (std::pair<const std::string, MapPosEntry>& entry : this->m_mapPosLists[i]) {
+      entry.second.rect.left = static_cast<int>(static_cast<float>(entry.second.rect.left) * scaleX + 0.5);
+      entry.second.rect.top = static_cast<int>(static_cast<float>(entry.second.rect.top) * scaleY + 0.5) + 17;
+      entry.second.rect.right = static_cast<int>(static_cast<float>(entry.second.rect.right) * scaleX + 0.5);
+      entry.second.rect.bottom = static_cast<int>(static_cast<float>(entry.second.rect.bottom) * scaleY + 0.5) + 17;
+    }
+  }
+
+  for (std::pair<const int, MapPosEntry>& entry : this->m_mapPosBounds) {
+    entry.second.rect.left = static_cast<int>(static_cast<float>(entry.second.rect.left) * scaleX + 0.5);
+    entry.second.rect.top = static_cast<int>(static_cast<float>(entry.second.rect.top) * scaleY + 0.5) + 17;
+    entry.second.rect.right = static_cast<int>(static_cast<float>(entry.second.rect.right) * scaleX + 0.5);
+    entry.second.rect.bottom = static_cast<int>(static_cast<float>(entry.second.rect.bottom) * scaleY + 0.5) + 17;
+  }
+}
 
 #endif
