@@ -813,9 +813,19 @@ void RenewQuestUI::CUIQuestItem::OnActiveStateChanged(bool active) {
     return;
   }
 
-  const std::uint16_t packetId = 0x02B6;
-  const unsigned char packet[3] = {0xB6, 0x02, static_cast<unsigned char>(active)};
-  GetRagConnection().Send(g_packetLengths.FixedLength(packetId), packet);
+#pragma pack(push, 1)
+  struct QuestActivePacket {
+    /* 0000 */ std::uint16_t id;
+    /* 0002 */ int questId;
+    /* 0006 */ bool active;
+  };
+#pragma pack(pop)
+
+  QuestActivePacket packet;
+  packet.questId = this->questId;
+  packet.id = 0x02B6;
+  packet.active = active;
+  GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
 }
 
 // OFFSET: 0x00A66280
