@@ -1714,3 +1714,24 @@ void UINewSkillListWnd::sub_9AF960() {
     }
   }
 }
+
+// OFFSET: 0x009AE260
+// FUNCTION: fn_13797
+UINewSkillListWnd::UINewSkillListWnd(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0) {
+  this->m_tab = 0;
+  this->m_needsRedraw = 1;
+  this->m_selectedSkill = -1;
+  this->m_lastTick = timeGetTime();
+  this->m_topMargin = 20;
+  this->m_bottomMargin = 32;
+  this->m_saved = nullptr;
+  this->m_columns = 1;
+  this->m_visibleRows = 1;
+  this->m_showDetail = false;
+  this->m_detailId = -1;
+}
+
+// OFFSET: 0x009AE530
+// FUNCTION: fn_13798
+UINewSkillListWnd::~UINewSkillListWnd() {
+}

@@ -25,6 +25,8 @@ struct NewSkillListValue {
 
 class UINewSkillListWnd : public UIFrameWnd {
 public:
+  UINewSkillListWnd(UIWindowContext& windows, UIFrameContext& frames);
+  __declspec(noinline) ~UINewSkillListWnd() override;
   void Slot11() override;
   void Slot15(int width, int height) override;
   void Paint() override;
