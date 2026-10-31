@@ -604,6 +604,98 @@ void UIDescriptRace::sub_8A0B10() {
 }
 
 // OFFSET: 0x0089F610
+// FUNCTION: fn_11624
+void UITextViewEX::SetText(std::string text) {
+  std::size_t position = 0;
+  for (;;) {
+    const std::size_t tag = text.find_first_of("<", position);
+    std::string segment = text.substr(position, tag - position);
+    int attached = segment.find_first_not_of(" \t") == 0;
+    TrimLeading(segment, " \t");
+    TrimTrailing(segment, " \t");
+
+    std::size_t offset = 0;
+    for (;;) {
+      const std::size_t caret = segment.find_first_of("^", offset);
+      if (offset == caret) {
+        const std::size_t next = segment.find_first_of("^", caret + 1);
+        std::string colored = segment.substr(caret, next - caret + 7);
+        if (colored[0] == '^') {
+          std::string color = colored.substr(1, 6);
+          std::string words = colored.substr(7, colored.size() - 14);
+          std::string red = color.substr(0, 2);
+          std::string green = color.substr(2, 2);
+          std::string blue = color.substr(4, 2);
+          char* stop;
+          const int redValue = std::strtol(red.c_str(), &stop, 16);
+          const int greenValue = std::strtol(green.c_str(), &stop, 16);
+          const int blueValue = std::strtol(blue.c_str(), &stop, 16);
+          attached = this->AddWords(words, attached, redValue, greenValue, blueValue);
+        }
+
+        offset = next + 7;
+        continue;
+      }
+
+      if (caret == std::string::npos) {
+        this->AddWords(segment.substr(offset, caret - offset), attached, 0, 0, 0);
+        break;
+      }
+
+      attached = this->AddWords(segment.substr(offset, caret - offset), attached, 0, 0, 0);
+      const std::size_t next = segment.find_first_of("^", caret + 1);
+      std::string colored = segment.substr(caret, next - caret + 7);
+      if (colored[0] == '^') {
+        std::string color = colored.substr(1, 6);
+        std::string words = colored.substr(7, colored.size() - 14);
+        std::string red = color.substr(0, 2);
+        std::string green = color.substr(2, 2);
+        std::string blue = color.substr(4, 2);
+        char* stop;
+        const int redValue = std::strtol(red.c_str(), &stop, 16);
+        const int greenValue = std::strtol(green.c_str(), &stop, 16);
+        const int blueValue = std::strtol(blue.c_str(), &stop, 16);
+        attached = this->AddWords(words, attached, redValue, greenValue, blueValue);
+      }
+
+      offset = next + 7;
+      if (offset >= segment.size()) {
+        break;
+      }
+    }
+
+    if (tag == std::string::npos) {
+      break;
+    }
+
+    const std::size_t close = text.find("<\\end>", tag);
+    segment = text.substr(tag, close - tag);
+    UIString* link = new UIString(*this->m_context);
+    link->SetText(100, 100, segment);
+    link->Show(0);
+    this->AddChild(link);
+    this->extraLinks.push_back(link);
+    position = close + 6;
+  }
+
+  int x = 0;
+  auto first = this->extraLinks.begin();
+  auto link = first;
+  const auto last = this->extraLinks.end();
+  for (; link != last; ++link) {
+    UIString* label = static_cast<UIString*>(*link);
+    const std::string caption = label->unknown_00DC;
+    x += label->geometry.width + 5;
+    if (x + 15 > this->geometry.width || caption == "\n") {
+      this->AddLineLinks(reinterpret_cast<UITextButton* const*>(std::to_address(first)), reinterpret_cast<UITextButton* const*>(std::to_address(link)));
+      first = link;
+      x = label->unknown_00DC == "\n" ? 0 : label->geometry.width + 5;
+    }
+  }
+
+  this->AddLineLinks(reinterpret_cast<UITextButton* const*>(std::to_address(first)), reinterpret_cast<UITextButton* const*>(std::to_address(link)));
+  this->Refresh();
+}
 
 // OFFSET: 0x008A0480
 // FUNCTION: fn_11625
