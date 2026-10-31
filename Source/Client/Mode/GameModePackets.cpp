@@ -6815,6 +6815,62 @@ struct RandomOptionSimulationRecord {
 static_assert(sizeof(RandomOptionSimulationRecord) == 0x25);
 
 // OFFSET: 0x00D606B0
+// FUNCTION: fn_21974
+void CGameMode::ReceiveRandomOptionSimulation(const unsigned char* packet) {
+  const SimulationPacketHeader* header = reinterpret_cast<const SimulationPacketHeader*>(packet);
+  std::string itemName;
+  const char* name = reinterpret_cast<const char*>(header->unknown_000C);
+  std::FILE* file = this->OpenRandomOptionSimulatorFile("\\PackageItemTest", std::string(name));
+  if (!file) {
+    return;
+  }
+
+  const char* typeNames[6] = {
+    "RANDOM_OPT_TYPE_MUST_1", "RANDOM_OPT_TYPE_MUST_2", "RANDOM_OPT_TYPE_MUST_3",
+    "RANDOM_OPT_TYPE_MUST_4", "RANDOM_OPT_TYPE_MUST_5", "RANDOM_OPT_TYPE_RANDOM",
+  };
+  const RandomOptionSimulationRecord* record = reinterpret_cast<const RandomOptionSimulationRecord*>(packet + sizeof(SimulationPacketHeader));
+  const int count = static_cast<int>((header->length - sizeof(SimulationPacketHeader)) / sizeof(RandomOptionSimulationRecord));
+  std::vector<const RandomOptionSimulationRecord*> options[6];
+  for (int i = 0; i < count; ++i) {
+    options[record->optionType].push_back(record);
+    ++record;
+  }
+
+  std::fprintf(file, "\t%s", ToUtf8(std::string(name), g_textCodePage).c_str());
+  std::fprintf(file, "============================\tSTART\t============================\n");
+  int total = 0;
+  for (int type = 0; type < 6; ++type) {
+    if (options[type].empty()) {
+      continue;
+    }
+
+    std::fprintf(file, "\n%s\n", typeNames[type]);
+    for (const RandomOptionSimulationRecord* option : options[type]) {
+      const char* optionName = nullptr;
+      if (g_luaScript->Call("GetVarOptionName", "d>s", option->optionId, &optionName)) {
+        std::fprintf(file, "\t%s", ToUtf8(std::string(optionName), g_textCodePage).c_str());
+        if (type == 5) {
+          std::fprintf(
+            file, "\t\t%d\t%d\t(%d/%d)\t%d\t(%d/%d)\t%.2f%%\n", option->unknown_0019, option->unknown_001D, option->unknown_0004,
+            option->unknown_0008, option->unknown_0021, option->unknown_0011, option->unknown_0015,
+            static_cast<float>(option->rate / 100.0)
+          );
+        } else {
+          std::fprintf(
+            file, "\t\t%d\t%d\t(%d/%d)\t%d\t(%d/%d)\n", option->unknown_0019, option->unknown_001D, option->unknown_0004,
+            option->unknown_0008, option->unknown_0021, option->unknown_0011, option->unknown_0015
+          );
+        }
+      }
+      ++total;
+    }
+  }
+
+  std::fprintf(file, "Try %d RandomOption\n", total);
+  std::fprintf(file, "============================\tEND\t============================\n");
+  std::fclose(file);
+}
 
 // OFFSET: 0x00D2A020
 // FUNCTION: fn_21701
