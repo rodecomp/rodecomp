@@ -25,7 +25,7 @@
 
 template <>
 void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::OnScroll(int position);
-
+template <> void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::AddNewItem(); template <> void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::Slot53(int resolveSkin); template <> void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::Resize(int width, int height);
 // OFFSET: 0x00A4F580
 // FUNCTION: fn_16213
 bool UnusedTrueA4F580() {
@@ -702,5 +702,82 @@ CUIRewards::CUIRewards(UIWindowContext& context)
 // FUNCTION: fn_16293
 CUIScrollWindow::CUIScrollWindow(UIWindowContext& context)
     : CUIControl(context), firstLine(nullptr), secondContents(nullptr), secondLine(nullptr), rewards(nullptr), scrollBar(nullptr), firstContents(nullptr) {
+}
+}
+
+// OFFSET: 0x00A53A90
+// FUNCTION: fn_16233
+template <>
+void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::AddNewItem() {
+  if (this->itemWidth <= 0 || this->rowHeight <= 0) {
+    return;
+  }
+
+  for (OngoingQuestInfo::CUIRewardItem* item : this->items) {
+    this->RemoveChild(item, 1);
+  }
+  this->items.clear();
+  this->selected = static_cast<unsigned int>(-1);
+
+  if (this->rowHeight <= this->geometry.height) {
+    unsigned count = static_cast<unsigned>(this->geometry.height / this->rowHeight) + 1;
+    if (this->geometry.height % this->rowHeight > 1) {
+      ++count;
+    }
+    this->items.resize(count, nullptr);
+    for (OngoingQuestInfo::CUIRewardItem*& slot : this->items) {
+      OngoingQuestInfo::CUIRewardItem* item = new OngoingQuestInfo::CUIRewardItem(*this->m_context);
+      item->SetSize(this->itemWidth, this->rowHeight);
+      item->Show(0);
+      CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
+      item->SetImageResources(images[0], images[1], images[2], images[3]);
+      item->onHover = [this](CUIListItem* listItem) {
+        for (OngoingQuestInfo::CUIRewardItem* other : this->items) {
+          other->SetHighlighted(other == listItem);
+        }
+      };
+      item->onPress = [this](CUIListItem* listItem) {
+        this->SelectItem(listItem);
+      };
+      this->AddChild(item);
+      slot = item;
+    }
+  }
+
+  this->scrollBar->SetTotal(this->geometry.height);
+  this->scrollBar->SetVisible(this->geometry.height);
+}
+
+// OFFSET: 0x00A53CF0
+// FUNCTION: fn_16234
+template <>
+void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::Slot53(int resolveSkin) {
+  CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
+  images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
+  images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
+  images[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
+  images[3] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->disabledName, resolveSkin));
+  for (OngoingQuestInfo::CUIRewardItem* item : this->items) {
+    item->SetImageResources(images[0], images[1], images[2], images[3]);
+  }
+}
+
+// OFFSET: 0x00A53F00
+// FUNCTION: fn_16235
+template <>
+void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::Resize(int width, int height) {
+  UIWindow::Resize(width, height);
+  this->AddNewItem();
+  this->scrollBar->Resize(this->scrollBar->geometry.width, height);
+  this->scrollBar->SetTotal(static_cast<int>(this->data.size()) * this->rowHeight + this->itemY);
+  this->scrollBar->SetVisible(this->geometry.height);
+  this->scrollBar->SetPosition(this->scrollBar->position);
+  this->rebind = 1;
+}
+
+namespace OngoingQuestInfo {
+// OFFSET: 0x00A54EA0
+// FUNCTION: fn_16291
+CUIRewardItem::CUIRewardItem(UIWindowContext& context) : CUIListItem(context), background(nullptr), gameItem(nullptr), nameText(nullptr), countText(nullptr) {
 }
 }

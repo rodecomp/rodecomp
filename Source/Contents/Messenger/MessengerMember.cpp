@@ -47,10 +47,6 @@ namespace {
     const char* sub_DDE770(const char* mapName);
   };
 
-  class UIMessengerGroupDropWnd : public UIWindow {
-  public:
-    void sub_73A1C0(int x, int y, int unknown);
-  };
 }
 
 class UIDragMiniPartyWnd : public UIFrameWnd {
@@ -126,6 +122,7 @@ public:
   void Slot35(int delta) override;
   MessengerMember MemberAt(int x, int y);
   void OpenMiniPartyWnd(int cell, const MessengerMember& member);
+  void DropMember(int x, int y, int index);
   MessengerMember MemberAtIndex(int index);
   void UpdateScroll();
   void LayoutButtons();
@@ -171,6 +168,10 @@ public:
 
 // GLOBAL: gl_24961
 bool g_messengerGroupCollapsed;
+// GLOBAL: gl_25219
+int g_messengerDropColumnWidth;
+// GLOBAL: gl_25220
+int g_messengerDropRowHeight;
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(MiniPartyIconPosition) == 12);
@@ -443,9 +444,9 @@ void UIDragMiniPartyWnd::MoveGauge(int x, int y) {
 // OFFSET: 0x00738CE0
 // FUNCTION: fn_07671
 void UIDragMiniPartyWnd::Slot31(int argument1, int argument2) {
-  auto* window = static_cast<UIMessengerGroupDropWnd*>(g_windowMgr.LookupWindow(34));
+  auto* window = static_cast<UIMessengerGroupWnd*>(g_windowMgr.LookupWindow(34));
   if (window) {
-    window->sub_73A1C0(argument1 + this->geometry.x, argument2 + this->geometry.y, this->unknown_0108);
+    window->DropMember(argument1 + this->geometry.x, argument2 + this->geometry.y, this->unknown_0108);
   }
 }
 
@@ -670,6 +671,8 @@ MiniPartyInfoEntry::MiniPartyInfoEntry(const char* text, int value) : text(text)
 // FUNCTION: fn_07700
 UIMessengerGroupWnd::~UIMessengerGroupWnd() = default;
 
+// OFFSET: 0x0073A1C0
+
 // OFFSET: 0x0073A3F0
 // FUNCTION: fn_07704
 MessengerMember UIMessengerGroupWnd::MemberAt(int x, int y) {
@@ -695,7 +698,7 @@ MessengerMember UIMessengerGroupWnd::MemberAt(int x, int y) {
 
 // OFFSET: 0x0073A330
 // FUNCTION: fn_07703
-void UIMessengerGroupWnd::OpenMiniPartyWnd(int cell, const MessengerMember& member) {
+__declspec(noinline) void UIMessengerGroupWnd::OpenMiniPartyWnd(int cell, const MessengerMember& member) {
   UIMiniPartyWnd* window = new UIMiniPartyWnd(*this->m_context, *this->m_frameContext);
   window->SetSize(174, 52);
   window->m_cell = cell;
@@ -706,7 +709,7 @@ void UIMessengerGroupWnd::OpenMiniPartyWnd(int cell, const MessengerMember& memb
 
 // OFFSET: 0x0073A540
 // FUNCTION: fn_07705
-MessengerMember UIMessengerGroupWnd::MemberAtIndex(int index) {
+__declspec(noinline) MessengerMember UIMessengerGroupWnd::MemberAtIndex(int index) {
   int position = 0;
   for (auto it = this->members.begin(); it != this->members.end(); ++it, ++position) {
     if (index == position) {
@@ -973,7 +976,7 @@ void UIWindowMgr::MoveTransient(int x, int y) {
 
 // OFFSET: 0x00AA9E90
 // FUNCTION: fn_17262
-void UIWindowMgr::RetireTransientWindow() {
+__declspec(noinline) void UIWindowMgr::RetireTransientWindow() {
   UIDragMiniPartyWnd* transient = static_cast<UIDragMiniPartyWnd*>(this->window_4F250);
   if (transient && transient->member.valid) {
     transient->geometry.unknown_0030 = 1;

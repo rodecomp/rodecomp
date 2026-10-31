@@ -41,6 +41,7 @@ public:
   UITreeView(UIWindowContext& windows, UIEditContext& edit, UIButtonContext& controls);
   void Resize(int width, int height) override;
   void Slot15(int width, int height) override;
+  void Paint() override;
   void Slot25(int x, int y) override;
   void Slot27(int x, int y) override;
   void Slot31(int x, int y) override;

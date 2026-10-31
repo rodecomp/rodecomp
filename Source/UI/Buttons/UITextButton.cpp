@@ -3378,3 +3378,14 @@ UITVBitmapButton::UITVBitmapButton()
 }
 
 // OFFSET: 0x0086EC10
+
+#include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/TipOfTheDay.h"
+
+// OFFSET: 0x0086DE10
+
+// OFFSET: 0x008894B0
+
+// OFFSET: 0x00889600
+
+// OFFSET: 0x0088FDC0
