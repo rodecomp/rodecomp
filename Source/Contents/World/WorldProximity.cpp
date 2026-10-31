@@ -262,8 +262,26 @@ bool WorldProximityRangeCallback::Invoke() {
 
 
 // OFFSET: 0x00AC9D50
+// FUNCTION: fn_17686
+__declspec(noinline) void CWorld::PcApproachToPlayer(std::uint32_t aid, const CellFloatPos& pos) {
+  if (this->player && this->player->Slot50() > 0 && this->IsGuildMaster(aid)) {
+    const float playerX = this->player->render.position.x;
+    const float playerZ = this->player->render.position.z;
+    const int range = this->nearbyRange;
+    CallWorldProximityUpdate(this, [playerX, playerZ, pos, range]() {
+      return std::fabs(pos.x - playerX) <= static_cast<float>(range) &&
+        std::fabs(pos.z - playerZ) <= static_cast<float>(range);
+    });
+  }
+}
 
 // OFFSET: 0x00AC9E70
+// FUNCTION: fn_17687
+void CWorld::PlayerMove(const float& x, const float& z) {
+  CallWorldProximityUpdate(this, [this, x, z]() {
+    return this->IsExistGuildMasterNearby(x, z);
+  });
+}
 
 // OFFSET: 0x00ACA9F0
 
