@@ -494,6 +494,26 @@ void UIDisplayCharacter::LoadSessionStyle() {
 }
 
 // OFFSET: 0x00822F20
+// FUNCTION: fn_10289
+UIDisplayCharacter::UIDisplayCharacter(UIWindowContext& context) : UIWindow(context, 0) {
+  this->unknown_0080 = 0;
+  this->unknown_0084 = 0;
+  this->unknown_0088 = 0;
+  this->unknown_008C = 0;
+  this->job = 0;
+  this->unknown_0094 = 0;
+  this->unknown_0098 = 0;
+  this->unknown_009C = 0;
+  this->unknown_00A0 = 0;
+  this->unknown_00A4 = 0;
+  *reinterpret_cast<unsigned char*>(&this->unknown_00B0) = 0;
+  this->unknown_00BC = 0;
+  this->unknown_00C0 = 0;
+  this->unknown_00C4 = 0;
+  this->unknown_00B4 = 0;
+  this->unknown_00B8 = 0;
+  this->unknown_007C = "유저인터페이스\\styleshop\\shadow_chr_off.bmp";
+}
 
 // OFFSET: 0x00823CE0
 // FUNCTION: fn_10298
@@ -678,6 +698,38 @@ void UIStylingShopWnd::Paint() {
 }
 
 // OFFSET: 0x00825910
+// FUNCTION: fn_10320
+void UIShowInfoWnd::CheckColoringGoods(bool* coloring) {
+  if (g_session.IsDoramJob(g_session.GetDisplayJob()) == true) {
+    g_luaScript->Call("StylingShop_GetIsColoring_by_goods", "d>b", this->m_display->unknown_008C, coloring);
+  }
+
+  const unsigned char* flags = this->unknown_00AD;
+  const unsigned char wingFlag = reinterpret_cast<const unsigned char*>(&this->unknown_00B1)[0];
+  const unsigned char accessoryFlag = reinterpret_cast<const unsigned char*>(&this->unknown_00B1)[1];
+  const UIDisplayCharacter* display = this->m_display;
+  if (*coloring) {
+    if (flags[0] == 1 && display->unknown_0094 == g_session.m_headPalette) {
+    } else if (flags[1] == 1 && display->unknown_008C == g_session.m_head) {
+    } else if (this->unknown_00BC == 1 && display->job == g_session.m_bodyCostume) {
+    } else if (flags[2] == 1 && display->unknown_0098 == g_session.m_bodyStyle) {
+    } else if (flags[3] == 1 && (display->unknown_009C == *reinterpret_cast<const int*>(&g_session.unknown_0EF4[4]) || display->unknown_009C == 0)) {
+    } else if (wingFlag == 1 && (display->unknown_00A0 == *reinterpret_cast<const int*>(&g_session.unknown_0EF4[8]) || display->unknown_00A0 == 0)) {
+    } else if (accessoryFlag == 1 && (display->unknown_00A4 == *reinterpret_cast<const int*>(&g_session.unknown_0EF4[0]) || display->unknown_00A0 == 0)) {
+    } else {
+      return;
+    }
+  }
+
+  for (unsigned int i = 0; i < this->m_list.size(); ++i) {
+    this->m_checks[i]->SetTooltip("");
+    this->m_checks[i]->SetChecked(0);
+  }
+  this->m_list.clear();
+  *reinterpret_cast<int*>(this->unknown_00AD) = 0;
+  this->unknown_00B1 = 0;
+  this->unknown_00BC = 0;
+}
 
 // OFFSET: 0x00826E50
 // FUNCTION: fn_10325
