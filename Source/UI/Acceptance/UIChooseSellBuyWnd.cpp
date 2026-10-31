@@ -1466,6 +1466,32 @@ bool UIStatusWnd::Slot03() {
 }
 
 // OFFSET: 0x008DA460
+// FUNCTION: fn_12147
+void UINpcTextEditDialogWnd::InsertItemTag(const ITEM_INFO& item) {
+  if (!this->m_tagCtrl) {
+    this->m_tagCtrl = new UIItemTagOnMegaPhone;
+    if (!this->m_tagCtrl) {
+      return;
+    }
+  }
+
+  ItemDescriptions descriptions{g_itemDescriptions};
+  bool languagePrefix = false;
+  WORD language = g_serverLanguage->language;
+  ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+
+  if (!this->m_tagCtrl->CanInsertTag(naming.DisplayName(item, 0), this->edit->geometry.width)) {
+    return;
+  }
+
+  {
+    std::string text = this->edit->Text();
+    this->m_tagCtrl->taggedText = text;
+  }
+  this->edit->SetText(this->m_tagCtrl->AppendTag(naming.DisplayName(item, 0)).c_str());
+  this->edit->MoveCursorToEnd();
+  this->m_tagCtrl->sub_89CFE0(item, 0x12B8A4);
+}
 
 // OFFSET: 0x008DACF0
 // FUNCTION: fn_12149
