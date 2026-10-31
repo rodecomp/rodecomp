@@ -12,6 +12,7 @@
 #include "Resource/Sprites/SpriteResource.h"
 #include "Render/Textures/SpritePixels.h"
 #include "Contents/MessageTable.h"
+#include "Contents/NavigationManager.h"
 #include "Contents/TownInfoMgr.h"
 #include "Contents/UserData/NormalItemSlots.h"
 #include "UI/Buttons/UIBitmapButton.h"
@@ -22,6 +23,7 @@
 #include "UI/Edit/UIEditCtrl.h"
 #include "UI/Window/InputFocus.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowDialogs.h"
 #include "Utility/Text/FormatString.h"
 
 #include <algorithm>
@@ -368,4 +370,166 @@ void UIMiniMapWnd::Paint() {
       }
     }
   }
+}
+
+// OFFSET: 0x0099CC20
+// FUNCTION: fn_13563
+int UIMiniMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  switch (message) {
+  case 6:
+    switch (argument1) {
+    case 194: {
+      const bool enabled = this->unknown_0120->geometry.unknown_0030 != 0;
+      for (auto& entry : this->townButtons) {
+        entry.second->Enable(enabled);
+      }
+      this->Invalidate();
+      return 0;
+    }
+    case 200:
+      return 0;
+    case 201:
+      g_windowMgr.CloseWindow(273);
+      return 0;
+    case 356:
+      this->dragging = 1;
+      return 0;
+    case 361: {
+      const bool enabled = this->unknown_011C->geometry.unknown_0030 != 0;
+      for (auto& entry : this->questButtons) {
+        entry.second->Enable(enabled);
+      }
+      this->Invalidate();
+      return 0;
+    }
+    case 373:
+      this->Invalidate();
+      return 0;
+    default:
+      if (argument1 >= 601 && argument1 < 621) {
+        if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2751), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+          this->memoButtons[argument1 - 601]->SetTooltip("");
+          this->memoButtons[argument1 - 601]->Move(-100, -100);
+
+          std::string text = FormatOwnedString(g_miniMapMemoPath, g_applicationDirectory, g_session.m_navigationPlayerMap);
+          FILE* file = std::fopen(text.c_str(), "wb");
+          if (file) {
+            for (int index = 0; index < 20; ++index) {
+              UIBitmapButton* memo = this->memoButtons[index];
+              if (memo->geometry.x > 0 && memo->geometry.y > 0) {
+                text = FormatOwnedString(g_miniMapMemoLineFormat, memo->geometry.x, memo->geometry.y, std::string(memo->m_tooltip).c_str());
+                std::fwrite(text.c_str(), text.size(), 1, file);
+              }
+            }
+            std::fclose(file);
+          }
+
+          this->unknown_0114 = this->LoadMemos();
+          this->Invalidate();
+        }
+      }
+
+      if (argument1 >= 1000 && argument1 < 2000) {
+        std::string mapName = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->MapName();
+        TownInfo town = g_townInfoMgr->GetTownInfo(mapName, argument1 - 1000);
+        if (!town.image.empty()) {
+          const std::size_t extension = mapName.find_first_of(".");
+          if (extension != std::string::npos) {
+            mapName = mapName.substr(0, extension);
+          }
+          g_navigationManager.sub_B99030(mapName.c_str(), 0, 5, true, town.x, town.y, 1002);
+        }
+        return 0;
+      }
+
+      if (argument1 > 2000) {
+        std::string mapName = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->MapName();
+        const auto mark = this->questMarks.find(argument1);
+        const std::size_t extension = mapName.find_first_of(".");
+        if (extension != std::string::npos) {
+          mapName = mapName.substr(0, extension);
+        }
+        g_navigationManager.sub_B99030(mapName.c_str(), 0, 5, true, mark->second.x, mark->second.y, 1002);
+        return 0;
+      }
+      return 0;
+    }
+
+  case 34:
+    this->m_saved = reinterpret_cast<MiniMapWndInfo*>(argument1);
+    if (!this->m_saved->IsValid()) {
+      this->m_saved->Reset();
+    }
+    this->Move(this->m_saved->width, this->m_saved->height);
+    this->unknown_011C->SetChecked(this->m_saved->unknown_0018);
+    this->unknown_0120->SetChecked(this->m_saved->unknown_001C);
+    this->unknown_0124->SetChecked(this->m_saved->unknown_0020);
+    return 0;
+
+  case 481:
+    this->m_playerHead->Move(static_cast<int>(static_cast<float>(argument1) * this->scale - 13.0f + this->originX),
+      static_cast<int>(this->originY - (static_cast<float>(argument2) * this->scale + 13.0f)));
+    this->Invalidate();
+    return 0;
+
+  case 482:
+    this->unknown_012C->Move(static_cast<int>(static_cast<float>(argument1) * this->scale - 12.0f + this->originX),
+      static_cast<int>(this->originY - (static_cast<float>(argument2) * this->scale + 12.0f)));
+    this->Invalidate();
+    return 0;
+
+  case 483:
+    if (static_cast<unsigned>(argument1) < 3 && argument2 >= 0) {
+      std::vector<MiniMapMark>& marks = (&this->partyMarks)[argument1];
+      if (static_cast<unsigned>(argument2) < marks.size()) {
+        const int half = argument1 == 2 ? 8 : 6;
+        marks[argument2].x = static_cast<int>(static_cast<float>(argument3) * this->scale - half + this->originX);
+        marks[argument2].y = static_cast<int>(this->originY - (static_cast<float>(argument4) * this->scale + half));
+        this->Invalidate();
+        return 0;
+      }
+    }
+    return 0;
+
+  case 484:
+    if (argument2 >= 0) {
+      std::vector<MiniMapMark>& marks = (&this->partyMarks)[argument1];
+      if (static_cast<unsigned>(argument2) != marks.size()) {
+        marks.resize(argument2, MiniMapMark{-100, -100});
+        this->Invalidate();
+        return 0;
+      }
+    }
+    return 0;
+
+  case 485: {
+    const int id = static_cast<int>(this->questButtons.size()) + 2001;
+    const std::string name = FormatOwnedString("유저인터페이스\\minimap\\Quest_%d_%d.bmp", argument1, argument2);
+    UIBitmapButton* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    button->SetBitmap(name.c_str(), 0, 0);
+    button->SetBitmap(name.c_str(), 1, 0);
+    button->SetBitmap(name.c_str(), 2, 0);
+    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    button->SetId(id);
+    button->SetTooltip(LookupMessage(2752));
+    button->Move(static_cast<int>(static_cast<float>(argument3) * this->scale - 6.0f + this->originX),
+      static_cast<int>(this->originY - (static_cast<float>(argument4) * this->scale + 6.0f)));
+    this->AddChild(button);
+    this->questButtons.insert(std::make_pair(id, button));
+    this->questMarks.insert(std::make_pair(id, MiniMapMark{argument3, argument4}));
+    this->Invalidate();
+    return 0;
+  }
+
+  case 486:
+    for (auto entry = this->townButtons.begin(); entry != this->townButtons.end(); ++entry) {
+      this->RemoveChild(entry->second, 1);
+    }
+    this->questButtons.clear();
+    this->questMarks.clear();
+    this->Invalidate();
+    return 0;
+  }
+
+  return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
 }

@@ -7,6 +7,8 @@
 #include <vector>
 
 class UIBitmapButton;
+class UIButton;
+class UICheckBox;
 class UIHeadsprButton;
 struct MiniMapWndInfo;
 struct UIButtonContext;
@@ -24,6 +26,7 @@ public:
   void Paint() override;
   void Slot25(int x, int y) override;
   void ResetCursor(int x, int y) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void AddTownMarks();
   int LoadMemos();
   void UpdatePlayerHead();
@@ -36,14 +39,14 @@ public:
   /* 0114 */ int unknown_0114;
   /* 0118 */ unsigned char dragging;
   /* 0119 */ unsigned char unknown_0119[0x3];
-  /* 011C */ UIWindow* unknown_011C;
-  /* 0120 */ UIWindow* unknown_0120;
-  /* 0124 */ UIWindow* unknown_0124;
+  /* 011C */ UICheckBox* unknown_011C;
+  /* 0120 */ UICheckBox* unknown_0120;
+  /* 0124 */ UICheckBox* unknown_0124;
   /* 0128 */ UIHeadsprButton* m_playerHead;
   /* 012C */ UIWindow* unknown_012C;
   /* 0130 */ std::map<int, UIBitmapButton*> townButtons;
-  /* 0138 */ std::map<int, UIWindow*> unknown_0138;
-  /* 0140 */ std::map<int, MiniMapMark> unknown_0140;
+  /* 0138 */ std::map<int, UIButton*> questButtons;
+  /* 0140 */ std::map<int, MiniMapMark> questMarks;
   /* 0148 */ std::vector<MiniMapMark> partyMarks;
   /* 0154 */ std::vector<MiniMapMark> guildMarks;
   /* 0160 */ std::vector<MiniMapMark> warpMarks;

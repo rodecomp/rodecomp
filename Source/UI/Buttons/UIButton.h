@@ -39,7 +39,7 @@ class UIButton : public UIWindow {
   friend class UIStylingshopTabParentWnd;
   friend class UIDisplayCharacter;
   friend class UIPrivateAirplaneWnd; friend class UINewMakeCharWnd;
-  friend class UIRodexInboxWnd;
+  friend class UIRodexInboxWnd; friend class UIMiniMapWnd;
 
 public:
   UIButton(UIWindowContext& windowContext, UIButtonContext& buttonContext);
