@@ -94,6 +94,7 @@ struct CRagEffect : CRenderObject {
   void TexturedSwirl(unsigned char clockwise, const char* name);
   void TexturedBeams(const char* name, char flag);
   void TexturedSlashWave(const char* name, char kind);
+  void HealRingSparkle(const char* name, char type);
   void TexturedSprayKind(const char* name, float spin, char kind);
   void TexturedSparkle(const char* name);
   void TexturedColumn(const char* name, char kind);
