@@ -3109,6 +3109,670 @@ void CPlayer::UpdatePendingAction() {
 }
 
 // OFFSET: 0x00DB68B0
+// FUNCTION: fn_22670
+void CPlayer::ReapplySkillEffects() {
+  if (this == nullptr) {
+    return;
+  }
+
+  g_weatherEffect.StopDarken();
+  this->unknown_0210 = static_cast<std::uint16_t>(g_session.m_level);
+  this->sub_CAA4D0();
+
+  CTetraBallEffect* tetraBall;
+  for (int id = 0x4EE; id <= 0x4F1; ++id) {
+    tetraBall = dynamic_cast<CTetraBallEffect*>(g_effectMgr->Find(this->render.accountId, id));
+    if (tetraBall) {
+      break;
+    }
+  }
+
+  for (std::vector<ActiveSkillEffect>::iterator it = g_activeSkillEffects.begin(); it != g_activeSkillEffects.end(); ++it) {
+    const int type = it->id;
+    const int value = it->unknown_0008;
+    const int argument3 = it->unknown_000C;
+    const int argument4 = it->unknown_0010;
+
+    switch (type) {
+    case 0x2: {
+      CRagEffect* effect = this->LaunchEffect(0xA6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      if (effect) {
+        effect->SendMsg(nullptr, 44, 0, 0xFFFF, 0x82, 0, 0, 0);
+      }
+      break;
+    }
+    case 0xA1: {
+      CRagEffect* effect = this->LaunchEffect(0xA6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      if (effect) {
+        effect->SendMsg(nullptr, 44, 0, 0xFFFF, 0x82, 0, 0, 0);
+      }
+      break;
+    }
+    case 0xCF: {
+      CRagEffect* effect = this->LaunchEffect(0x269, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      if (effect) {
+        effect->SendMsg(nullptr, 44, 0, 0xFFFF, 0x269, 0, 0, 0);
+      }
+      break;
+    }
+    case 0x19: {
+      CRagEffect* effect = this->LaunchEffect(0xA6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      if (effect) {
+        effect->SendMsg(nullptr, 44, 0, 0xFFFF, 0x80, 0, 0, 0);
+      }
+      break;
+    }
+    case 0xBC: {
+      CRagEffect* effect = this->LaunchEffect(0xA6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      if (effect) {
+        effect->SendMsg(nullptr, 44, 0, 0xFFFF, 0x80, 0, 0, 0);
+      }
+      break;
+    }
+    case 0x1F: {
+      CRagEffect* effect = this->LaunchEffect(0xA6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      if (effect) {
+        effect->SendMsg(nullptr, 44, 0, 0xFFFF, 0xA9, 0, 0, 0);
+      }
+      break;
+    }
+    case 0x44: {
+      CRagEffect* effect = this->LaunchEffect(0xA6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      if (effect) {
+        effect->SendMsg(nullptr, 44, 0, 0xFFFF, 0xFA, 0, 0, 0);
+      }
+      break;
+    }
+    case 0x56:
+      this->LaunchEffect(0xCB, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case 0x57:
+      this->LaunchEffect(0xFE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      this->LaunchEffect(0x46C, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case 0xA5:
+    case 0xA6:
+    case 0xA7:
+      this->LaunchEffect(0x1A2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      this->LaunchEffect(0x220, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case 0x99:
+      this->LaunchEffect(0x1A3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case 0x67:
+      this->LaunchEffect(0x1DA, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case 0x6B:
+      this->LaunchEffect(0x170, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case 0x69:
+      this->LaunchEffect(0x171, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case 0x71:
+      this->LaunchEffect(0x17E, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case 0x7B:
+      this->LaunchEffect(0x18A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case 0x98: {
+      ClientSkills skills{
+        g_session.m_skillBundle,
+        g_session.m_homunSkills,
+        g_session.m_mercSkills,
+        g_session.m_additionalSkills,
+        reinterpret_cast<const int&>(g_session.m_jobFlags),
+        g_activeSkillEffects
+      };
+      CSkillInfo skill = skills.bundle.Lookup(0x1B9, skills.classMode, skills.HasEffect(1717), skills.HasEffect(1716));
+      int effectId = skill.level;
+      if (effectId > 0) {
+        CSkillInfo upgrade = skills.bundle.Lookup(0xA1D, skills.classMode, skills.HasEffect(1717), skills.HasEffect(1716));
+        if (upgrade.level > 0) {
+          effectId = 5;
+        }
+        effectId += 0x1DA;
+        if (!this->state.Attachments().HasId(effectId)) {
+          this->LaunchEffect(0x1E7, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+          g_soundMgr->PlayWave("effect\\_blind.wav", 0.0f, -100.0f, 0.0f, 250, 40, 1.0f, 0);
+        }
+        for (int id = 0x1DB; id < 0x1E5; ++id) {
+          if (this->state.Attachments().HasId(id) == true) {
+            this->SendMsg(nullptr, 109, 0, id, id >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+          }
+        }
+        this->LaunchEffect(effectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      }
+      this->SendMsg(nullptr, 109, 0, 0xA4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->unknown_0544 = this->LaunchEffect(0xA4, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    }
+    case 0x95:
+      g_weatherEffect.StartDarken();
+      this->LaunchEffect(0x1A8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case 0x61:
+      this->LaunchEffect(0x28F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case 0xA0:
+      g_weatherEffect.StartDarken();
+      break;
+    case 0xE8:
+      this->LaunchEffect(0x1A2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      this->LaunchEffect(0x220, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case 0xEB:
+      this->LaunchEffect(0xFE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      this->LaunchEffect(0x46C, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case 0x107:
+      this->LaunchEffect(0x24A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case 0x15E: {
+      while (this->state.Attachments().HasId(0x341)) {
+        this->SendMsg(nullptr, 109, 0, 0x341, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      CRagEffect* effect = this->LaunchEffect(0x341, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      vector3d scale{2.0f, 0.0f, 0.0f};
+      if (effect) {
+        effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&scale), 0, 0, 0, 0);
+      }
+      break;
+    }
+    case 0x14A:
+      this->LaunchEffect(0x2F3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case 0x1D0:
+      this->LaunchEffect(0x170, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case 0x1BD: {
+      while (this->state.Attachments().HasId(0x39D)) {
+        this->SendMsg(nullptr, 109, 0, 0x39D, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      CRagEffect* effect = this->LaunchEffect(0x39D, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      if (effect) {
+        effect->SendMsg(nullptr, 44, 0, 0xFFFF, 0x39D, 0, 0, 0);
+      }
+      break;
+    }
+    case 0x148:
+      this->LaunchEffect(0x314, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case 0x15F:
+      this->LaunchEffect(0x315, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case 0x1B5:
+      this->LaunchEffect(0x3AC, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case 0x168:
+      this->LaunchEffect(0x2E8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case 0x18A:
+      this->LaunchEffect(0x329, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case 0x1A6:
+      g_soundMgr->PlayWave("effect\\manhole.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      this->LaunchEffect(0x337, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case 0x17B:
+      this->LaunchEffect(0x2E8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case 0x10A:
+      this->LaunchEffect(0x2A1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case 0x16B:
+    case 0x16C:
+    case 0x16D:
+    case 0x16E:
+    case 0x16F:
+      if (!tetraBall) {
+        CTetraBallEffect* ball;
+        for (int id = 0x4EE; id <= 0x4F1; ++id) {
+          ball = dynamic_cast<CTetraBallEffect*>(g_effectMgr->Find(this->render.accountId, id));
+          if (ball) {
+            break;
+          }
+        }
+        if (ball) {
+          switch (value) {
+          case 0:
+            ball->AddBall(0x4EE, type - 0x16B);
+            break;
+          case 1:
+            ball->AddBall(0x4F0, type - 0x16B);
+            break;
+          case 2:
+            ball->AddBall(0x4EF, type - 0x16B);
+            break;
+          case 3:
+            ball->AddBall(0x4F1, type - 0x16B);
+            break;
+          }
+        } else {
+          switch (value) {
+          case 0:
+            ball = dynamic_cast<CTetraBallEffect*>(g_effectMgr->Spawn(this->render.accountId, 0x4EE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0));
+            ball->MoveFirstTo(type - 0x16B);
+            break;
+          case 1:
+            ball = dynamic_cast<CTetraBallEffect*>(g_effectMgr->Spawn(this->render.accountId, 0x4F0, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0));
+            ball->MoveFirstTo(type - 0x16B);
+            break;
+          case 2:
+            ball = dynamic_cast<CTetraBallEffect*>(g_effectMgr->Spawn(this->render.accountId, 0x4EF, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0));
+            ball->MoveFirstTo(type - 0x16B);
+            break;
+          case 3:
+            ball = dynamic_cast<CTetraBallEffect*>(g_effectMgr->Spawn(this->render.accountId, 0x4F1, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0));
+            ball->MoveFirstTo(type - 0x16B);
+            break;
+          }
+        }
+      }
+      break;
+    case 0x153:
+      if (value < 10) {
+        if (g_serviceOptions.Get(0xE5)) {
+          g_effectMgr->Spawn(this->render.accountId, value + 0x5BA, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        } else {
+          g_effectMgr->Spawn(this->render.accountId, value + 0x513, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        }
+      }
+      break;
+    case 0x1C4:
+      if (this->state.Attachments().HasId(0x57) == true) {
+        this->SendMsg(nullptr, 109, 0, 0x57, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      this->LaunchEffect(0x57, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case 0x1C5:
+      if (this->state.Attachments().HasId(0x31F) == true) {
+        this->SendMsg(nullptr, 109, 0, 0x31F, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      this->LaunchEffect(0x31F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case 0x1C0:
+      if (this->state.Attachments().HasId(0x360) == true) {
+        this->SendMsg(nullptr, 109, 0, 0x360, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      this->LaunchEffect(0x360, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case 0x23B:
+      this->SendMsg(nullptr, 110, 0, 0x23B, 0, 1, 0, value, value >> 31, 0, 0, 0, 0, 0, 0);
+      break;
+    case 0x265:
+      this->Slot47(1);
+      this->Slot21(this->GetEffectiveJob(-1));
+      this->Slot33(this->render.unknown_0048);
+      break;
+    case 0x2A1:
+      this->SendMsg(nullptr, 110, 0, type, type >> 31, 1, 0, g_session.unknown_5C1C, g_session.unknown_5C1C >> 31, 0, 0, 0, 0, 0, 0);
+      break;
+    case 0x2CD:
+      while (this->state.Attachments().HasId(0x418)) {
+        this->SendMsg(this, 109, 0, 0x418, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      this->LaunchEffect(0x418, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case 0x2DF:
+      while (this->state.Attachments().HasId(0x194)) {
+        this->SendMsg(this, 109, 0, 0x194, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      this->LaunchEffect(0x194, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case 0x2E1:
+      while (this->state.Attachments().HasId(0x41E)) {
+        this->SendMsg(this, 109, 0, 0x41E, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      this->LaunchEffect(0x41E, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case 0x2E0:
+      while (this->state.Attachments().HasId(0x41F)) {
+        this->SendMsg(this, 109, 0, 0x41F, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      this->LaunchEffect(0x41F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case 0x2CC:
+      while (this->state.Attachments().HasId(0x421)) {
+        this->SendMsg(this, 109, 0, 0x421, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      this->LaunchEffect(0x421, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case 0x291:
+      while (this->state.Attachments().HasId(0x3EB)) {
+        this->SendMsg(this, 109, 0, 0x3EB, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      this->LaunchEffect(0x3EB, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case 0x293:
+      g_effectMgr->Retire(this->render.accountId, 0x3ED);
+      if (g_effectMgr->HasAllocator(0x3ED)) {
+        CEffect* orb = g_effectMgr->Spawn(this->render.accountId, 0x3ED, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        if (orb) {
+          static_cast<CEnergyOrbEffect*>(orb)->SetCount(10);
+        }
+      }
+      while (this->state.Attachments().HasId(0x3C3)) {
+        this->SendMsg(nullptr, 109, 0, 0x3C3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      this->LaunchEffect(0x3C3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case 0x290:
+      while (this->state.Attachments().HasId(0x3EC)) {
+        this->SendMsg(nullptr, 109, 0, 0x3EC, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      this->LaunchEffect(0x3EC, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case 0x2F8:
+      g_effectMgr->Retire(this->render.accountId, 0x470);
+      if (g_effectMgr->HasAllocator(0x470) == true) {
+        g_effectMgr->Spawn(this->render.accountId, 0x470, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
+      }
+      break;
+    case 0x2A3:
+      g_effectMgr->Retire(this->render.accountId, 0x3F5);
+      if (g_effectMgr->HasAllocator(0x3F5) == true) {
+        g_effectMgr->Spawn(this->render.accountId, 0x3F5, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
+      }
+      break;
+    case 0x2DA:
+      while (this->state.Attachments().HasId(0x410)) {
+        this->SendMsg(nullptr, 109, 0, 0x410, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      this->LaunchEffect(0x410, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      this->LaunchEffect(0x410, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      this->LaunchEffect(0x410, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case 0x14E:
+    case 0x365: {
+      while (this->state.Attachments().HasId(0x318)) {
+        this->SendMsg(nullptr, 109, 0, 0x318, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      CRagEffect* effect = this->LaunchEffect(0x318, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      if (effect) {
+        effect->SendMsg(nullptr, 44, 0, 0xFFFF, 0x318, 0, 0, 0);
+      }
+      break;
+    }
+    case 0x6E:
+    case 0x1D9:
+    case 0x461:
+      this->LaunchEffect(0x177, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case 0x3A9:
+      g_effectMgr->Retire(this->render.accountId, 0x448);
+      if (g_effectMgr->HasAllocator(0x448) == true) {
+        g_effectMgr->Spawn(this->render.accountId, 0x448, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
+      }
+      break;
+    case 0x3A5:
+      this->Slot15(0x30, 1);
+      this->render.isMotionFreezed = true;
+      break;
+    case 0x397:
+      g_effectMgr->Retire(this->render.accountId, 0x449);
+      if (g_effectMgr->HasAllocator(0x449) == true) {
+        g_effectMgr->Spawn(this->render.accountId, 0x449, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
+      }
+      break;
+    case 0x380:
+      g_effectMgr->Retire(this->render.accountId, 0x456);
+      if (g_effectMgr->HasAllocator(0x456) == true) {
+        g_effectMgr->Spawn(this->render.accountId, 0x456, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
+      }
+      break;
+    case 0x395:
+      g_effectMgr->Retire(this->render.accountId, 0x45F);
+      if (g_effectMgr->HasAllocator(0x45F) == true) {
+        g_effectMgr->Spawn(this->render.accountId, 0x45F, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
+      }
+      break;
+    case 0x3D6:
+      this->unknown_04D8[0] = 1;
+      break;
+    case 0x3F8:
+    case 0x3F9:
+    case 0x3FA:
+    case 0x3FB:
+    case 0x3FC:
+    case 0x3FD:
+    case 0x3FE:
+    case 0x3FF:
+    case 0x400:
+    case 0x401:
+      g_effectMgr->Spawn(this->render.accountId, type + 0x87, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      break;
+    case 0x41A:
+      if (g_effectMgr->Has(this->render.accountId, 0x4B1) == true) {
+        g_effectMgr->Retire(this->render.accountId, 0x4B1);
+      }
+      g_effectMgr->Spawn(this->render.accountId, 0x4B1, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_soundMgr->PlayWave("effect\\t_캐스팅.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      break;
+    case 0x410:
+      if (g_effectMgr->Has(this->render.accountId, 0x4BE) == true) {
+        g_effectMgr->Retire(this->render.accountId, 0x4BE);
+      }
+      g_effectMgr->Spawn(this->render.accountId, 0x4BE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      break;
+    case 0x40E:
+      if (g_effectMgr->Has(this->render.accountId, 0x4BF) == true) {
+        g_effectMgr->Retire(this->render.accountId, 0x4BF);
+      }
+      g_effectMgr->Spawn(this->render.accountId, 0x4BF, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      break;
+    case 0x413:
+      if (g_effectMgr->Has(this->render.accountId, 0x4C0) == true) {
+        g_effectMgr->Retire(this->render.accountId, 0x4C0);
+      }
+      g_effectMgr->Spawn(this->render.accountId, 0x4C0, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      break;
+    case 0x40F:
+      if (g_effectMgr->Has(this->render.accountId, 0x4C1) == true) {
+        g_effectMgr->Retire(this->render.accountId, 0x4C1);
+      }
+      g_effectMgr->Spawn(this->render.accountId, 0x4C1, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      break;
+    case 0x411:
+      if (g_effectMgr->Has(this->render.accountId, 0x4C5) == true) {
+        g_effectMgr->Retire(this->render.accountId, 0x4C5);
+      }
+      g_effectMgr->Spawn(this->render.accountId, 0x4C5, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      break;
+    case 0x41F:
+      if (g_effectMgr->Has(this->render.accountId, 0x4C6) == true) {
+        g_effectMgr->Retire(this->render.accountId, 0x4C6);
+      }
+      g_effectMgr->Spawn(this->render.accountId, 0x4C6, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_soundMgr->PlayWave("effect\\t_바람방출.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      break;
+    case 0x420:
+    case 0x421:
+    case 0x422:
+    case 0x423:
+      g_weatherEffect.StartDarken();
+      this->LaunchEffect(0x1A8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case 0x466:
+      g_effectMgr->Retire(this->render.accountId, 0x66C);
+      g_effectMgr->Spawn(this->render.accountId, 0x66C, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      break;
+    case 0x47E:
+      if (!g_effectMgr->Has(this->render.accountId, 0x6CD)) {
+        g_effectMgr->Spawn(this->render.accountId, 0x6CD, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      }
+      break;
+    case 0x4B5:
+      if (this->state.Attachments().HasId(0x14E) == true) {
+        this->SendMsg(nullptr, 109, 0, 0x14E, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      this->LaunchEffect(0x14E, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      g_overrideColor = 1;
+      this->SendMsg(nullptr, 109, 0, 0xA4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->unknown_0544 = this->LaunchEffect(0xA4, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case 0x4B6:
+    case 0x4B9:
+      this->SendMsg(nullptr, 156, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      break;
+    case 0x4B7:
+      this->SendMsg(nullptr, 152, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      break;
+    case 0x4B8:
+      g_effectMgr->Spawn(this->render.accountId, 0x8DE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(this->render.accountId, 0x8E0, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      break;
+    case 0x4BA:
+      g_effectMgr->Retire(this->render.accountId, 0x8DC);
+      g_effectMgr->Spawn(this->render.accountId, 0x8DC, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      break;
+    case 0x4BB:
+      g_effectMgr->Spawn(this->render.accountId, 0x8E1, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      break;
+    case 0x4BC:
+      this->SendMsg(nullptr, 127, 0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      g_effectMgr->Retire(this->render.accountId, 0x8DD);
+      g_effectMgr->Spawn(this->render.accountId, 0x8DD, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      break;
+    case 0x4BD:
+      this->SendMsg(nullptr, 154, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      break;
+    case 0x4BE:
+      this->SendMsg(nullptr, 127, 0, 170, 0, 0, 0, 170, 0, 0, 0, 0, 0, 0, 0);
+      break;
+    case 0x4BF:
+      this->SendMsg(nullptr, 127, 0, 0, 0, 0, 0, 255, 0, 0, 0, 0, 0, 0, 0);
+      break;
+    case 0x4C0:
+      this->SendMsg(nullptr, 127, 0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      break;
+    case 0x498:
+      g_effectMgr->Retire(this->render.accountId, 0x6BE);
+      g_effectMgr->Retire(this->render.accountId, 0x6BF);
+      g_effectMgr->Spawn(this->render.accountId, 0x6BE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(this->render.accountId, 0x6BF, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      break;
+    case 0x480:
+      if (!g_effectMgr->Has(this->render.accountId, 0x708)) {
+        g_effectMgr->Spawn(this->render.accountId, 0x708, this->render.position.x, this->render.position.y, this->render.position.z, 0, value, 0, 0);
+      }
+      break;
+    case 0x4AD:
+      if (!g_serviceOptions.Get(0xE5) && !g_effectMgr->Has(this->render.accountId, 0x712)) {
+        g_effectMgr->Spawn(this->render.accountId, 0x712, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      }
+      break;
+    case 0x4DD:
+      if (!g_effectMgr->Has(this->render.accountId, 0x84E)) {
+        g_effectMgr->Spawn(this->render.accountId, 0x84E, this->render.position.x, this->render.position.y, this->render.position.z, 0, value, 0, 0);
+      }
+      break;
+    case 0x4D2:
+      g_effectMgr->Spawn(this->render.accountId, 0x7B7, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      break;
+    case 0x4D0:
+      g_effectMgr->Spawn(this->render.accountId, 0x7BA, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(this->render.accountId, 0x7BD, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      break;
+    case 0x4D1:
+      g_effectMgr->Spawn(this->render.accountId, 0x7BE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(this->render.accountId, 0x7C1, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      break;
+    case 0x4D5:
+      if (!g_effectMgr->Has(this->render.accountId, 0x719)) {
+        g_effectMgr->Spawn(this->render.accountId, 0x719, this->render.position.x, this->render.position.y, this->render.position.z, 0, value, 0, 0);
+      }
+      break;
+    case 0x4D4:
+      g_effectMgr->Spawn(this->render.accountId, 0x72F, this->render.position.x, this->render.position.y, this->render.position.z, 0, value, 0, 0);
+      break;
+    case 0x4B1:
+      if (!g_serviceOptions.Get(0xE5) && !g_effectMgr->Has(this->render.accountId, 0x73C)) {
+        g_effectMgr->Spawn(this->render.accountId, 0x73C, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      }
+      if (!g_effectMgr->Has(this->render.accountId, 0x73D)) {
+        g_effectMgr->Spawn(this->render.accountId, 0x73D, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      }
+      break;
+    case 0x4E2:
+      if (!g_effectMgr->Has(this->render.accountId, 0x76C)) {
+        g_effectMgr->Spawn(this->render.accountId, 0x76C, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      }
+      break;
+    case 0x4AC:
+      if (!g_effectMgr->Has(this->render.accountId, 0x779)) {
+        g_effectMgr->Spawn(this->render.accountId, 0x779, this->render.position.x, this->render.position.y, this->render.position.z, 0, value, 0, 0);
+      }
+      break;
+    case 0x48D:
+      if (!this->state.Attachments().HasId(0x64A)) {
+        this->LaunchEffect(0x64A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      }
+      break;
+    case 0x4EA:
+      if (!g_effectMgr->Has(this->render.accountId, 0x80C)) {
+        g_effectMgr->Spawn(this->render.accountId, 0x80C, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      }
+      break;
+    case 0x4DC:
+      if (!g_effectMgr->Has(this->render.accountId, 0x83D)) {
+        CEffect* abyss = g_effectMgr->Spawn(this->render.accountId, 0x83D, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        if (abyss) {
+          static_cast<CFromTheAbyssEffect*>(abyss)->SetLevel(value);
+        }
+      }
+      break;
+    case 0x526:
+      if (!this->state.Attachments().HasId(0x8E5)) {
+        this->LaunchEffect(0x8E5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      }
+      break;
+    case 0x527:
+      if (!this->state.Attachments().HasId(0x8E6)) {
+        this->LaunchEffect(0x8E6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      }
+      break;
+    case 0x698:
+      g_windowMgr.EnsureWindow(0x2730);
+      break;
+    case 0x4A6:
+    case 0x4CE:
+    case 0x4CF:
+      break;
+    case 0x288:
+    case 0x289:
+      this->SendMsg(nullptr, 110, 0, type, type >> 31, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      break;
+    default:
+      switch (type) {
+      case 0x2A2:
+      case 0x2CE:
+      case 0x2CF:
+      case 0x2D8:
+      case 0x30B:
+      case 0x336:
+      case 0x337:
+      case 0x339:
+      case 0x33A:
+      case 0x351:
+      case 0x359:
+      case 0x35F:
+      case 0x360:
+      case 0x368:
+        this->SendMsg(nullptr, 110, 0, type, type >> 31, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        break;
+      case 0x37F:
+        this->ApplyEffectState(value + 0x9B5, true);
+        break;
+      default:
+        CSkillActionMgr::GetInstance()->EfstSlot02(type, value, argument3, argument4, this);
+        break;
+      }
+      break;
+    }
+  }
+
+  g_statusRefreshSuppressed = 1;
+}
 
 // GLOBAL: gl_25218
 bool g_unknown173AD3F;
