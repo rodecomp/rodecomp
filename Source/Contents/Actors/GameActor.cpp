@@ -31,6 +31,7 @@
 #include <timeapi.h>
 
 // OFFSET: 0x00CB1930
+// FUNCTION: fn_21099
 void CGameActor::ProcessDamageMessages() {
   for (auto it = this->unknown_02A8.begin(); it != this->unknown_02A8.end();) {
     if (timeGetTime() < it->time) {
