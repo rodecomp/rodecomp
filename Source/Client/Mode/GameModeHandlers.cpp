@@ -994,6 +994,20 @@ void CGameMode::ApplyRuneSetResultWithRequest(int result, int tagId, int runeSet
 }
 
 // OFFSET: 0x00D677C0
+// FUNCTION: fn_22033
+void CGameMode::ReceiveGameOptionResult(int command, int result, int enabled) {
+  if (result != 1) {
+    return;
+  }
+
+  if (command == 1) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xF15)), 0x64FFFF, 0, 0, 0);
+  }
+
+  g_gameOptionFlag = enabled != 0;
+  g_windowMgr.sub_AAB090();
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(g_gameOptionFlag ? 0xF17 : 0xF16)), 0x64FFFF, 0, 0, 0);
+}
 
 // OFFSET: 0x00D679E0
 
