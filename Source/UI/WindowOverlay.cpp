@@ -10,10 +10,13 @@
 #include "UI/Chat/UIWhisperWnd.h"
 #include "UI/Items/UIEquipWnd.h"
 #include "UI/Skill/UISkillDescribeWnd.h"
+#include "UI/Text/TextFitting.h"
 #include "Utility/Text/FormatString.h"
 
 #include <cstddef>
 #include <cstdint>
+#include <cstring>
+#include <string>
 #include <vector>
 
 // OFFSET: 0x008D0D80
@@ -109,6 +112,59 @@ namespace {
     int height;
     int family;
   };
+}
+
+// OFFSET: 0x008D13E0
+// FUNCTION: fn_12093
+int UIFrameWnd::DrawFittedItemName(int x, int y, const ITEM_INFO* item, std::uint32_t color, int, int, char option) {
+  std::vector<char*> breaks;
+  char buffer[256];
+  std::memset(buffer, 0, sizeof(buffer));
+  char* highlight = nullptr;
+  std::size_t remaining = sizeof(buffer);
+  char* cursor = buffer;
+  int highlightColor;
+  this->BuildItemName(item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 0, option);
+
+  char* text = buffer;
+  int offset = 0;
+  for (auto it = breaks.begin(); it != breaks.end(); ++it) {
+    std::string fitted = FitText(*this->geometry.surface, std::string(text), this->geometry.width - x - 10);
+    bool truncated;
+    char* end;
+    if (std::strcmp(fitted.c_str(), text) != 0) {
+      truncated = true;
+      strcpy_s(buffer, sizeof(buffer), fitted.c_str());
+      end = text + std::strlen(text) + 1;
+    } else {
+      end = *it;
+      truncated = false;
+    }
+
+    int bytes = static_cast<int>(end - text);
+    if (bytes == 0) {
+      continue;
+    }
+
+    if (text == highlight) {
+      this->DrawShadowedText(offset + x, y, text, bytes, static_cast<std::uint32_t>(highlightColor), 0xE0E0E0, 0, 12, 0);
+    } else if (item->unknown_005D) {
+      this->DrawShadowedText(offset + x, y, text, bytes, color, 0x5050FA, 0, 12, 0);
+    } else {
+      std::uint32_t card = ItemCardColor(item);
+      if (card == 0x00ADFF2F) {
+        card = 0x00669900;
+      }
+      color = (card >> 16 & 0xFF) | ((card & 0xFF) << 16) | (card & 0x0000FF00);
+      this->DrawShadowedText(offset + x, y, text, bytes, color, 0xFFFFFF, 0, 12, 0);
+    }
+    offset += this->TextWidth(this->m_context->fonts, this->m_context->locale, text, bytes, 0, 12, 0, 0);
+    text = end;
+    if (truncated) {
+      break;
+    }
+  }
+  return offset;
 }
 
 // OFFSET: 0x008D17C0

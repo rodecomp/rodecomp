@@ -58,6 +58,7 @@ public:
     const void* info, const char* text, const char* highlight, std::uint32_t color, std::uint32_t highlightColor, int width,
     const std::vector<char*>* breaks
   );
+  int DrawFittedItemName(int x, int y, const ITEM_INFO* item, std::uint32_t color, int unused, int unused2, char option);
   void SplitHighlightText(
     const char* text, const char* highlight, const int& highlightColor, const int& color, const std::vector<char*>& breaks,
     std::vector<std::pair<int, std::string>>& segments
