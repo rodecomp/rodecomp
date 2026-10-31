@@ -2646,6 +2646,26 @@ void UISayDialogWnd::Slot15(int width, int height) {
   this->unknown_00D4 = 0;
 }
 
+// OFFSET: 0x008FF810
+// FUNCTION: fn_12359
+int UIMonsterDisplayWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  if (message == 6) {
+    if (argument1 == 201) {
+      g_windowMgr.CloseWindow(201);
+    }
+    return 0;
+  }
+
+  if (message == 62) {
+    this->m_name = reinterpret_cast<const char*>(argument1);
+    this->Invalidate();
+    reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(this);
+    return 0;
+  }
+
+  return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+}
+
 // OFFSET: 0x008FFBA0
 // FUNCTION: fn_12362
 int UINotifyJobLevelUpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
