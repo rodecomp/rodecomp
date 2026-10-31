@@ -406,6 +406,7 @@ public:
   void StepTowardWalkableCell(const int& targetX, const int& targetY, int& x, int& y);
   void FindWalkableCellToward(float x, float z, float originX, float originZ, int& column, int& row, int distance);
   void RemoveMiniMapPing(std::uint32_t id);
+  void DrawMiniMap();
   void DrawMiniMapMembers(const TextureRegion& view);
   void DrawMiniMapTriangle(float x, float y, float size, std::uint32_t color);
   void DrawMiniMapMarker(

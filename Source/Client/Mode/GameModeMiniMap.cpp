@@ -1,5 +1,6 @@
 #include "Client/Mode/CGameMode.h"
 #include "Client/Session.h"
+#include "Contents/TownInfoMgr.h"
 #include "File/File.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Ground/TerrainHeight.h"
@@ -31,6 +32,15 @@ int g_searchStoreY;
 
 // GLOBAL: gl_25107
 CFile g_whisperFile;
+
+struct MiniMapEffectMarker {
+  /* 0000 */ int count;
+  /* 0004 */ int x;
+  /* 0008 */ int y;
+};
+
+// GLOBAL: gl_25132
+std::map<std::uint32_t, MiniMapEffectMarker> g_miniMapEffectMarkers;
 
 // OFFSET: 0x00CCFCE0
 // FUNCTION: fn_21246
@@ -155,6 +165,113 @@ void CGameMode::DrawMiniMapMembers(const TextureRegion& view) {
       this->DrawMiniMapMarker(view, g_searchStoreX, y, 4, "유저인터페이스\\basic_interface\\search_store.bmp", 0, 0, true);
     }
   }
+}
+
+// OFFSET: 0x00CD0DD0
+// FUNCTION: fn_21255
+void CGameMode::DrawMiniMap() {
+  if (!g_windowMgr.unknown_01C0) {
+    return;
+  }
+
+  const int width = this->scene->terrain->width;
+  const int height = this->scene->terrain->height;
+  const CPlayer* player = this->scene->player;
+  const float centerX = static_cast<float>(g_renderer->viewport.width - 144) + 64.0f;
+  int column;
+  int row;
+  this->WorldCell(player->render.position.x, player->render.position.z, column, row);
+
+  const float half = 1.0f / (g_windowMgr.unknown_0050 * 2.0f);
+  const float u = static_cast<float>(column) / static_cast<float>(width);
+  const float v = static_cast<float>(height - row) / static_cast<float>(height);
+  TextureRegion view;
+  view.left = u - half;
+  view.top = v - half;
+  view.right = u + half;
+  view.bottom = v + half;
+  if (view.left < 0.0f) {
+    view.left = 0.0f;
+    view.right = half + half;
+    if (view.right > 1.0f) {
+      view.right = 1.0f;
+    }
+  }
+  if (view.top < 0.0f) {
+    view.top = 0.0f;
+    view.bottom = half + half;
+    if (view.bottom > 1.0f) {
+      view.bottom = 1.0f;
+    }
+  }
+  if (view.right > 1.0f) {
+    view.right = 1.0f;
+    view.left = 1.0f - (half + half);
+    if (view.left < 0.0f) {
+      view.left = 0.0f;
+    }
+  }
+  if (view.bottom > 1.0f) {
+    view.bottom = 1.0f;
+    view.top = 1.0f - (half + half);
+    if (view.top < 0.0f) {
+      view.top = 0.0f;
+    }
+  }
+
+  const int reduction = g_textureReduction;
+  g_textureReduction = 1;
+  CTexture* texture = g_texMgr.Load(reinterpret_cast<const char*>(this->unknown_0090), 0, false, true, false);
+  RECT rect;
+  rect.left = static_cast<int>(centerX - 64.0f);
+  rect.top = 16;
+  rect.right = static_cast<int>(centerX + 64.0f);
+  rect.bottom = 144;
+  this->DrawTexture(rect, 0, 0.0998f, g_windowMgr.unknown_005C, texture, view);
+
+  this->DrawMiniMapMarker(view, column, row, 5, "유저인터페이스\\map\\map_arrow.bmp", 4, 0xFFFFFFFF, false);
+
+  for (auto it = g_miniMapEffectMarkers.begin(); it != g_miniMapEffectMarkers.end();) {
+    this->DrawMiniMapMarker(view, it->second.x, it->second.y, 2, std::string(), 2, 0xFFFF0000, false);
+    if (--it->second.count <= 0) {
+      it = g_miniMapEffectMarkers.erase(it);
+    } else {
+      ++it;
+    }
+  }
+
+  if (this->unknown_05CC[0]) {
+    this->DrawMiniMapMarker(view, this->unknown_05C4, this->unknown_05C8, 6, "유저인터페이스\\map\\bossmonster.bmp", 5, 0, true);
+  }
+
+  if (g_windowMgr.unknown_0054) {
+    for (int index = 0;; ++index) {
+      const TownInfo info = g_townInfoMgr->GetTownInfo(std::string(this->mapName), index);
+      if (info.image.size() == 0 || info.type == 8 || info.type == 9) {
+        break;
+      }
+      this->DrawMiniMapMarker(view, info.x, info.y, 6, std::string(), 6, index, true);
+    }
+  }
+
+  this->DrawMiniMapMembers(view);
+
+  if (this->unknown_01C4.size() != 0) {
+    for (auto it = this->unknown_01C4.begin(); it != this->unknown_01C4.end();) {
+      if (it->second.persistent == 0 && timeGetTime() > it->second.tick + 15000) {
+        it = this->unknown_01C4.erase(it);
+      } else {
+        ++it;
+      }
+    }
+    for (auto it = this->unknown_01C4.begin(); it != this->unknown_01C4.end(); ++it) {
+      if (static_cast<int>(timeGetTime() - it->second.tick) % 1000 < 500) {
+        this->DrawMiniMapMarker(view, it->second.x, it->second.y, 1, std::string(""), 3, it->second.color, false);
+      }
+    }
+  }
+
+  g_textureReduction = reduction;
 }
 
 // OFFSET: 0x00CD1450
