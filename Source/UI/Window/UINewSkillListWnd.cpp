@@ -946,6 +946,32 @@ void UINewSkillListWnd::Paint() {
 }
 
 // OFFSET: 0x009B2590
+// FUNCTION: fn_13816
+void UINewSkillListWnd::Slot26(int x, int y) {
+  if (g_session.GetOption(5) > 0) {
+    return;
+  }
+
+  if (y < this->m_topMargin) {
+    UIFrameWnd::Slot25(x, y);
+    return;
+  }
+
+  if (this->m_selectedSkill == -1) {
+    return;
+  }
+
+  CSkillInfo skill = this->SkillAt(this->m_selectedSkill, false);
+  if (skill.available != 0 && skill.level != 0) {
+    AutomaticSkills& automatic = *reinterpret_cast<AutomaticSkills*>(g_session.unknown_7FB4);
+    if (automatic.Contains(skill.id)) {
+      g_session.SetOption(AutomaticSkills::CancelOption(static_cast<std::int16_t>(skill.id)), 1, 0);
+    } else {
+      automatic.DisableAll();
+    }
+    this->SendMsg(nullptr, 58, reinterpret_cast<std::intptr_t>(&skill), 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x009B26D0
 // FUNCTION: fn_13817
