@@ -32,6 +32,7 @@
 #include "Utility/Text/FormatString.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Script/LuaScript.h"
+#include "Contents/MapPropertyMgr.h"
 #include <algorithm>
 #include <cmath>
 #include <cstdio>
@@ -2341,6 +2342,208 @@ void CSession::LoadExternalSettings() {
     thread_local EncryptedName<sizeof(source), 0x81D175D33BC75123ULL> name(source);
     ShowErrorDialog(nullptr, name.Text(), 0);
   }
+}
+
+// OFFSET: 0x00DE3F20
+// FUNCTION: fn_23489
+void CSession::Init() {
+  char modulePath[MAX_PATH];
+  char directory[MAX_PATH];
+  std::memset(modulePath, 0, sizeof(modulePath));
+  std::memset(directory, 0, sizeof(directory));
+  GetModuleFileNameA(nullptr, modulePath, MAX_PATH);
+  const char* fileName = std::strrchr(modulePath, '\\');
+  std::strncpy(directory, modulePath, std::strlen(modulePath) - std::strlen(fileName + 1));
+
+  const std::uint8_t keySource[] = {
+    0xC4, 0x9E, 0x87, 0xA9, 0xA6, 0xF2, 0x9B, 0x4A, 0xCB, 0xB6, 0x93, 0xBC, 0xA7, 0xFA, 0x9D, 0x56,
+    0xCB, 0xA3, 0x80, 0xBA, 0xBF, 0xF2, 0x9B, 0x40, 0xFC, 0xBE, 0x8F, 0xB1, 0xB8, 0xFD, 0x8C, 0x2F
+  };
+  thread_local EncryptedName<sizeof(keySource), 0x2FE993D1DDE1F197ULL> keyName(keySource);
+  HKEY key;
+  if (RegCreateKeyExA(HKEY_CURRENT_USER, keyName.Text(), 0, nullptr, 0, KEY_ALL_ACCESS, nullptr, &key, nullptr) == ERROR_SUCCESS) {
+    const std::uint8_t pathSource[] = {0xAF, 0xB6, 0x2A, 0xF9, 0xD4, 0xFB, 0xFF, 0xE7};
+    thread_local EncryptedName<sizeof(pathSource), 0xE7978FB5A94DD7FDULL> pathName(pathSource);
+    std::string valueName = pathName.Text();
+    if (g_serviceMode == 1) {
+      const std::uint8_t sakraySource[] = {0x38, 0xD8, 0xAC, 0x7D, 0x06, 0xF6, 0xAD, 0xD6, 0x1F, 0xD1, 0xC7};
+      thread_local EncryptedName<sizeof(sakraySource), 0xB7FD8F670FC7B96BULL> sakrayName(sakraySource);
+      std::string sakrayValueName = sakrayName.Text();
+    }
+
+    RegSetValueExA(key, valueName.c_str(), 0, REG_SZ, reinterpret_cast<const BYTE*>(directory), static_cast<DWORD>(std::strlen(directory)));
+  }
+
+  this->m_averagePing = 0;
+  *reinterpret_cast<int*>(&this->unknown_5490[0x08]) = 0;
+  *reinterpret_cast<int*>(this->unknown_546C) = 1;
+  this->m_aid = 0;
+
+  SYSTEMTIME systemTime;
+  GetSystemTime(&systemTime);
+  const int now =
+    (((((static_cast<unsigned char>(systemTime.wYear) * 12 +systemTime.wMonth) * 31 + systemTime.wDay) * 24 + systemTime.wHour + 9) * 60 + systemTime.wMinute) * 60 + systemTime.wSecond) * 1000 +
+    systemTime.wMilliseconds;
+  *reinterpret_cast<int*>(this->unknown_170C) = now - timeGetTime();
+  *reinterpret_cast<int*>(this->unknown_0F54) = 0;
+  *reinterpret_cast<int*>(&this->unknown_0F64[0x00]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_07A4[0x04]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_07A4[0x00]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_07A4[0x0C]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_07A4[0x08]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_5454[0x00]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_5454[0x04]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_5454[0x08]) = 0;
+  this->unknown_5460 = 0;
+  *reinterpret_cast<int*>(this->unknown_079C) = 0;
+  this->m_hotkeyPage = 0;
+  *reinterpret_cast<int*>(this->unknown_5554) = 0;
+  this->unknown_0000 = 0;
+  g_mapPropertyMgr->Clear();
+  g_activeSkillEffects.clear();
+
+  *reinterpret_cast<int*>(&this->unknown_0F64[0x04]) = 0;
+  *reinterpret_cast<int*>(this->unknown_1014) = 0;
+  this->unknown_103C = -1;
+  this->unknown_1040 = 1;
+  this->unknown_1044 = 100;
+  *reinterpret_cast<int*>(this->unknown_1048) = 100;
+  this->m_petFriendly = 100;
+  this->unknown_1050 = -1;
+  this->unknown_1054 = 100;
+  this->unknown_15FC[0] = 0;
+  *reinterpret_cast<int*>(&this->unknown_15FC[0x04]) = -1;
+  std::sprintf(this->unknown_1018, "");
+
+  std::sprintf(reinterpret_cast<char*>(&this->unknown_5570[0x0C]), "");
+  int* homunStats = reinterpret_cast<int*>(&this->unknown_5570[0x2C]);
+  for (int index = 0; index < 8; ++index) {
+    homunStats[index] = 0;
+  }
+  this->m_homunJob = -1;
+  *reinterpret_cast<int*>(this->unknown_55C0) = 1;
+  this->m_homunHp = 0;
+  *reinterpret_cast<int*>(this->unknown_55C8) = 999999;
+  this->m_homunSp = 0;
+  this->unknown_55D0 = 999999;
+  this->m_homunExp = 0;
+  this->m_homunMaxExp = 999999;
+  this->unknown_55F0 = 100;
+  this->unknown_55F4 = 100;
+  this->unknown_55D4 = 100;
+  this->unknown_55F8 = 0;
+  this->unknown_5614 = 0;
+  this->m_traceAi = 0;
+  this->m_homunActionState = 0;
+  *reinterpret_cast<int*>(&this->unknown_5620[0x00]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_5620[0x04]) = 0;
+  this->unknown_5608 = 0;
+  this->unknown_560C = 0;
+  this->unknown_5610 = 0;
+  this->unknown_55FC = 0;
+  this->unknown_5600 = 0;
+  this->unknown_5604 = 0;
+
+  this->m_mercenaryClass = -1;
+  std::sprintf(this->m_mercenaryName, "용병");
+  for (int index = 0; index < 8; ++index) {
+    this->m_mercenaryStats[index] = 0;
+  }
+  this->m_mercenaryLevel = 1;
+  this->m_mercenaryHp = 0;
+  this->m_mercenarySp = 0;
+  this->m_mercenaryMaxHp = 999999;
+  this->m_mercenaryMaxSp = 999999;
+  this->m_mercenaryLoyalty = 0;
+  this->m_mercenarySummons = 0;
+  this->m_mercenaryKills = 0;
+  *reinterpret_cast<int*>(this->unknown_5690) = 0;
+  this->m_mercenaryExpiration = 0;
+  this->m_mercenaryActionState = 0;
+  this->unknown_56B8[0] = 0;
+
+  *reinterpret_cast<DWORD*>(&this->unknown_5490[0x04]) = GetTickCount();
+  *reinterpret_cast<int*>(&this->unknown_5913[0x01]) = 0;
+  std::sprintf(reinterpret_cast<char*>(&this->unknown_5913[0x05]), "");
+  reinterpret_cast<bool&>(this->unknown_5938) = false;
+  this->unknown_593C = 0;
+  this->unknown_5940 = -1;
+  this->unknown_5944 = -1;
+  this->unknown_5950 = "";
+  this->unknown_5968 = 0;
+  this->unknown_596C = 0;
+  this->unknown_5970 = 0;
+  this->unknown_5948 = 0;
+  *reinterpret_cast<int*>(this->unknown_5974) = 0;
+  this->m_simplifiedSkillList = 0;
+  this->m_showSkillDescription = 1;
+  this->unknown_59BC = 0;
+  this->unknown_59C0 = 0;
+  this->unknown_59C4 = 0;
+  this->unknown_59C8 = 0;
+  this->unknown_59CC = 0;
+  this->unknown_59D0 = 0;
+  this->unknown_59D4 = 0;
+  this->m_noSubChatWnds.clear();
+  this->m_subChatWnds.clear();
+  this->m_hotkeyScript = nullptr;
+  this->unknown_5BC0 = -1;
+  this->LoadProhibitionLog();
+
+  this->unknown_5BD4.clear();
+  this->unknown_5BE0 = 0;
+  this->unknown_5BE4 = 0;
+  this->unknown_5BE8 = -1;
+  this->unknown_5BEC = -1;
+  this->unknown_5BF0 = 0xFFFFFFFF;
+  this->ClearPairValues(1, 1, 1);
+
+  this->m_lockItemDrop = false;
+  for (std::list<ITEM_INFO>& items : this->unknown_1784) {
+    items.clear();
+  }
+
+  this->unknown_5C1C = 0;
+  *reinterpret_cast<int*>(&this->unknown_5C15[0x03]) = 0;
+  this->m_skipPriceWarning = true;
+  *reinterpret_cast<int*>(&this->unknown_5C28[0x08]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_5C28[0x0C]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_5C28[0x10]) = 0;
+  this->unknown_06FC = 0;
+  this->unknown_06A8 = 0;
+  for (ITEM_INFO& item : this->unknown_5C68) {
+    item.Reset();
+  }
+
+  this->unknown_6140 = 0;
+  *reinterpret_cast<int*>(&this->unknown_5C02[0x02]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_5C02[0x06]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_5C02[0x0A]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_5C02[0x0E]) = 1;
+  this->m_muteSellSound = true;
+  this->ClearAchievements();
+  this->unknown_6184 = 0;
+  this->m_bodyCostume = 0;
+  this->m_lastIntervalTime = timeGetTime();
+
+  this->unknown_61A4 = 0;
+  *reinterpret_cast<int*>(this->unknown_61A8_0000) = 0;
+  this->unknown_1010 = 0xFFFFFFFF;
+  *reinterpret_cast<int*>(&this->unknown_5570[0x08]) = -1;
+  *reinterpret_cast<int*>(&this->unknown_5620[0x08]) = -1;
+  this->m_guildMemberListSort = true;
+  this->m_blockPrivateTab = false;
+  this->unknown_7ECC[0] = 0;
+  this->m_itemDefaultSort = false;
+  this->m_itemAscendingOrder = false;
+  this->m_itemDescendingOrder = false;
+  this->m_showMenuIcon = true;
+  this->m_homunculusAutoFeed = false;
+  *reinterpret_cast<int*>(&this->unknown_7F7D[0x03]) = -1;
+  *reinterpret_cast<int*>(&this->unknown_7F7D[0x07]) = 50;
+  this->unknown_7F7D[0x0B] = 0;
+  this->m_showRankingSchedule = -1;
+  *reinterpret_cast<int*>(this->unknown_8128) = 0;
 }
 
 // OFFSET: 0x00DF7C40

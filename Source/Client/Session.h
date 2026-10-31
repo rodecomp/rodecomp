@@ -982,6 +982,7 @@ public:
   void UpdateUnknown1708(int enabled);
   void RefreshItem1738Window();
   void RefreshHpSpWindows();
+  void Init();
   void ResetCharacterState();
   void ClearItemContainers();
   void RefreshHomunculusInfo();
