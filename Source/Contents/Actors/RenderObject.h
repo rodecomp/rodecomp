@@ -7,9 +7,12 @@
 
 #include <cstddef>
 
+struct SpriteCellQuad;
+struct SpriteColor;
 struct SpriteFrameCell;
 struct SpriteQuad;
 struct SpriteRleImage;
+struct tagRECT;
 
 struct RenderBounds {
   /* 0000 */ float left;
@@ -39,6 +42,10 @@ public:
   void Face(float x, float z);
   float CalcDist(float x, float z) const;
   float CalcDist(float x, float y, float z) const;
+  bool ProjectCell(
+    int unused, int layer, float scale, const SpriteFrameCell& cell, float x, float y, const float* position, float shift, float& bottomDepth,
+    float& topDepth, const SpriteRleImage& image, SpriteCellQuad& quad, tagRECT& bounds, SpriteColor& color, int offsetX, int offsetY, int flags
+  );
   bool GetTargetPos(std::uint32_t targetAid, vector3d& targetPos) const;
   void UpdateTlvertex(const float* matrix);
   void SetAnimationSpeed(float speed);
