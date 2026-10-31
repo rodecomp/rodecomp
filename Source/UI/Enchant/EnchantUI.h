@@ -47,8 +47,8 @@ public:
 class CUITargetItem : public CUIListItem {
 public:
   /* 00E8 */ CUIGameItem* itemIcon;
-  /* 00EC */ CUIControl* unknown_00EC;
-  /* 00F0 */ CUIControl* unknown_00F0;
+  /* 00EC */ CUIStaticImage* unknown_00EC;
+  /* 00F0 */ CUIStaticText* unknown_00F0;
 
   void Slot28(int x, int y) override;
   void Slot32(int x, int y) override;

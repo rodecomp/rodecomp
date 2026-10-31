@@ -8,6 +8,7 @@
 #include "UI/Text/UIStaticTextControl.h"
 #include <algorithm>
 #include <cstring>
+#include <format>
 #include <iterator>
 #include <new>
 
@@ -339,6 +340,12 @@ CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>::CUIListBoxEx(UIWindowContext&
       unknown_00E0(1), rebind(0) {
 }
 
+// OFFSET: 0x009F7670
+// FUNCTION: fn_14774
+template <>
+CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>::~CUIListBoxEx() {
+}
+
 namespace EnchantUI {
 // OFFSET: 0x00A06BE0
 // FUNCTION: fn_15007
@@ -358,6 +365,18 @@ void UpdateEnchantItem(CUIEnchantItem* item, const CEnchantItemData* data) {
   const std::string name = info.DisplayName(0);
   item->name->SetText(name.c_str(), static_cast<unsigned>(name.size()));
   item->SetFrozen(data->frozen);
+}
+
+// OFFSET: 0x00A05B90
+// FUNCTION: fn_14979
+void UpdateTargetItem(CUITargetItem* item, ITEM_INFO* info) {
+  item->itemIcon->SetItem(*info);
+  if (info->unknown_0088 > 0) {
+    item->unknown_00EC->SetImage(std::format("유저인터페이스\\grade_enchant\\grade_icon{}.bmp", info->unknown_0088));
+  }
+  item->unknown_00EC->Show(info->unknown_0088 > 0);
+  const std::string name = info->DisplayName(0);
+  item->unknown_00F0->SetText(name.c_str(), name.size());
 }
 // OFFSET: 0x00A05E20
 // FUNCTION: fn_14984
