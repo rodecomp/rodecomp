@@ -19,6 +19,7 @@ public:
 class UIPcGage : public UIGage {
 public:
   UIPcGage();
+  void Paint() override;
   __declspec(noinline) void SetValues(int current, int maximum);
   void SetLimits(int first, int second);
 
@@ -31,6 +32,7 @@ public:
 
 class UIRechargeGage : public UIGage {
 public:
+  void Paint() override;
   void SetValues(int current, int maximum);
 
   /* 009C */ int current;
@@ -58,7 +60,10 @@ public:
 
 class UIMonsterGage : public UIPcGage {
 public:
+  void Paint() override;
   void SetMode(int mode);
+
+  /* 00B0 */ int m_threshold;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

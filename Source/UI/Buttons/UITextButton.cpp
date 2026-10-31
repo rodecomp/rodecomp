@@ -3131,3 +3131,33 @@ void UIListBox2::Paint() {
     );
   }
 }
+
+#include "UI/Gauges/UIPcGage.h"
+
+// OFFSET: 0x0088C630
+// FUNCTION: fn_11372
+void UIMonsterGage::Paint() {
+  this->ClearSurface(this->colors[0]);
+  this->FillRegion(1, 1, this->geometry.width - 2, this->geometry.height - 2, this->colors[1]);
+  if (this->maximum > 0) {
+    const float percent = static_cast<float>(this->current) * 100.0f / static_cast<float>(this->maximum);
+    if (0.0f < percent) {
+      const std::uint32_t color = static_cast<float>(this->m_threshold) > percent ? this->colors[4] : this->colors[2];
+      this->FillRegion(
+        1, 1, static_cast<int>(static_cast<float>(this->geometry.width - 2) * percent / 100.0f), this->geometry.height - 2, color
+      );
+    }
+  }
+}
+
+// OFFSET: 0x0088C750
+
+// OFFSET: 0x0088D6C0
+
+// OFFSET: 0x00890DC0
+
+#include "Contents/Items/ItemInfo.h"
+
+// OFFSET: 0x00890EE0
+
+// OFFSET: 0x0088F6C0

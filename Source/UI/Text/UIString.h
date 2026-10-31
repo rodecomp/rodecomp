@@ -9,6 +9,7 @@ class UIString : public UIWindow {
 public:
   explicit UIString(UIWindowContext& windows);
   void ResetCursor(int x, int y) override;
+  void Slot31(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void ParseTags(std::string text);
   virtual void SetText(int width, int height, std::string text);
