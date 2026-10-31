@@ -939,6 +939,24 @@ void CUIRenewQuestUI::sub_A66FF0(unsigned int questId) {
   reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
 }
 
+// OFFSET: 0x00A59940
+// FUNCTION: fn_16362
+bool sub_A59940() {
+  return true;
+}
+
+// OFFSET: 0x00A59950
+// FUNCTION: fn_16363
+bool sub_A59950() {
+  return true;
+}
+
+// OFFSET: 0x00A59960
+// FUNCTION: fn_16364
+bool sub_A59960() {
+  return true;
+}
+
 // OFFSET: 0x00A599F0
 // FUNCTION: fn_16366
 template <>
