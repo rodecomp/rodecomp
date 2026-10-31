@@ -19,6 +19,7 @@
 #include "Render/TextureQuad.h"
 #include "UI/Window/UIEmblemWnd.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "Utility/Text/FormatString.h"
 #include "Utility/Text/HexString.h"
 
 #include <cstdlib>
@@ -363,3 +364,26 @@ bool CWorld::RemoveSkill(std::uint32_t aid) {
 
   return false;
 }
+
+// OFFSET: 0x00CDA2F0
+// FUNCTION: fn_21308
+CMsgEffect* CGameMode::SpawnDamageMsgEffect(const vector3d* position, std::uint32_t color, std::uint32_t accountId) {
+  std::string sprite;
+  std::string action;
+  sprite = FormatOwnedString("%s.spr", g_session.unknown_80EC.c_str());
+  action = FormatOwnedString("%s.act", g_session.unknown_80EC.c_str());
+
+  CMsgEffect* effect = new CMsgEffect;
+  if (effect) {
+    this->scene->objects.push_back(effect);
+    effect->SendMsg(nullptr, 22, 0, accountId, 0, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(position), reinterpret_cast<int>(position) >> 31, reinterpret_cast<int>(&sprite),
+                    reinterpret_cast<int>(&sprite) >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+    effect->render.color = color;
+    effect->render.unknown_00B4 = 0;
+  }
+
+  return effect;
+}
+
+// OFFSET: 0x00CDA580

@@ -214,6 +214,8 @@ public:
   void DrawTimeAttackTimer();
   void DrawTimeAttackCountdown(std::uint32_t value, int mode);
   CMsgEffect* SpawnCashEmotion(int aid, int packId, int emotionId, std::uint32_t duration);
+  CMsgEffect* SpawnDamageMsgEffect(const vector3d* position, std::uint32_t color, std::uint32_t accountId);
+  CMsgEffect* SpawnMsgEffect(int effectId, const vector3d* position, std::uint32_t accountId, bool visible);
   void ApplyMapFog(int enabled);
   void SpawnGrannyCorpse(float x, float y, float z, float angle, const char* name);
   void SpawnMandraAttack(std::uint32_t aid, int target, char flag);

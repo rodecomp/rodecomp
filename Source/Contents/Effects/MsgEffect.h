@@ -38,6 +38,11 @@ public:
   /* 01B4 */ int unknown_01B4;
 };
 
+class CSummonActorEffect : public CMsgEffect {
+public:
+  bool OnProcess() override;
+};
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CMsgEffect) == 0x1B8);
 static_assert(offsetof(CMsgEffect, m_owner) == 0x15C);
