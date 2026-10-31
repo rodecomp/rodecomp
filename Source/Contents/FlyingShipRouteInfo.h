@@ -29,6 +29,7 @@ public:
 
   bool IsRouteMap(std::string mapName);
   void Draw(UIRoMapWnd* wnd);
+  void BuildRoute(const std::vector<std::string>& mapNames);
 
   /* 0004 */ std::vector<FlyingShipRouteEntry> entries;
   /* 0010 */ int unknown_0010;

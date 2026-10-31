@@ -694,3 +694,20 @@ bool CFlyingShipRouteInfo::IsRouteMap(std::string mapName) {
   }
   return false;
 }
+
+// OFFSET: 0x0091E120
+// FUNCTION: fn_12626
+void CFlyingShipRouteInfo::BuildRoute(const std::vector<std::string>& mapNames) {
+  this->entries.clear();
+  for (std::vector<std::string>::const_iterator it = mapNames.begin(); it != mapNames.end(); ++it) {
+    CWorldViewField* field = g_worldViewMgr.worlds[0]->FindField(it->c_str());
+    if (field) {
+      std::string name = field->name;
+      WorldViewArea area = {field->left, field->top, field->right, field->bottom, field->unknown_0010};
+      RoMapMarker marker;
+      SetRoMapMarker(name, area, marker);
+      this->entries.push_back(reinterpret_cast<const FlyingShipRouteEntry&>(marker));
+    }
+  }
+  reinterpret_cast<unsigned char*>(&this->unknown_0034)[1] = 1;
+}
