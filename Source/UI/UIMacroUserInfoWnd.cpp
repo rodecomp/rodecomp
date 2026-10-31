@@ -37,6 +37,26 @@
 MacroReporterEntry::MacroReporterEntry(std::string name, int id, short unknown_001C)
     : name(name), id(id), unknown_001C(unknown_001C) {}
 
+// OFFSET: 0x007EEA00
+// FUNCTION: fn_09832
+UIMacroReporterWnd::UIMacroReporterWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
+    : UIFrameWnd(windows, frames, 0), m_scrollBar(nullptr), m_scrollable(false), unknown_00C8(13), m_firstRow(0), m_visibleRows(10), unknown_00D4(nullptr),
+      m_reportButton(nullptr), m_mode(0), m_edit(nullptr), unknown_00F4(1), unknown_00F8(5), m_state(nullptr), unknown_010C(false), m_controls(&controls) {
+  this->m_tabs[0] = nullptr;
+  this->m_tabs[1] = nullptr;
+  this->m_tabs[2] = nullptr;
+  this->m_tabs[3] = nullptr;
+  this->m_namesValid = false;
+  this->m_targetValid = false;
+  this->m_nameCount = 0;
+}
+
+// OFFSET: 0x007EEBC0
+// FUNCTION: fn_09833
+UIMacroUserInfoWnd::UIMacroUserInfoWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
+    : UIFrameWnd(windows, frames, 0), m_controls(&controls) {
+}
+
 // OFFSET: 0x007EF2C0
 // FUNCTION: fn_09839
 void UIMacroReporterWnd::sub_7EF2C0(MacroReporterEntry* entry) {

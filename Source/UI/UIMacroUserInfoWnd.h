@@ -13,6 +13,7 @@ struct UIButtonContext;
 
 class UIMacroUserInfoWnd : public UIFrameWnd {
 public:
+  UIMacroUserInfoWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
   bool Slot08() override;
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -46,6 +47,7 @@ struct MacroReporterState {
 
 class UIMacroReporterWnd : public UIFrameWnd {
 public:
+  UIMacroReporterWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
   void Slot11() override;
   void Slot19() override;
   void Paint() override;
