@@ -1158,6 +1158,40 @@ int UIWindowMgr::LoadReplayReserved(const std::vector<unsigned char>& data) {
   return static_cast<int>(offset);
 }
 
+// OFFSET: 0x00AA8D10
+// FUNCTION: fn_17249
+int UIWindowMgr::LoadReplayWindows(const std::vector<unsigned char>& data) {
+  if (data.empty()) {
+    return -1;
+  }
+
+  ReplaySettingHeader header;
+  std::vector<unsigned char> payload;
+  unsigned offset = 6;
+  header.Read(data.data());
+  if (header.tag != 20000) {
+    offset = static_cast<unsigned>(-1);
+  } else {
+    while (offset < data.size()) {
+      header.Read(data.data() + offset);
+      offset += 6;
+      if (header.tag == 20001) {
+        break;
+      }
+      if (static_cast<unsigned short>(header.tag - 20100) <= 399) {
+        UIWindow* window = this->EnsureWindow(header.tag - 20100);
+        if (window && header.size > 0) {
+          payload.resize(header.size);
+          std::memcpy(payload.data(), data.data() + offset, header.size);
+          offset += header.size;
+          window->SendMsg(nullptr, 123, reinterpret_cast<std::intptr_t>(payload.data()), payload.size(), 0, 0);
+        }
+      }
+    }
+  }
+  return static_cast<int>(offset);
+}
+
 // OFFSET: 0x00AA8F50
 // FUNCTION: fn_17252
 void UIWindowMgr::BroadcastMessage21() {
