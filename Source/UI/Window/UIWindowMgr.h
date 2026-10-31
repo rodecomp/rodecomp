@@ -525,6 +525,7 @@ public:
   bool IsHoverOnWindow01C8Button();
   void SelectWhisperName(const char* name);
   void AddWhisperName(const char* name);
+  int ShowWhisperFrom(const char* name, const char* text, int color, std::uint32_t accountId);
   void RefreshFrameSkins();
   bool HasUnknown030C();
   bool IsDropDownChild(const UIWindow* window);

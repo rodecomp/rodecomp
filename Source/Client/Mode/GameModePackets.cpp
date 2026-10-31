@@ -1812,8 +1812,7 @@ void CGameMode::sub_D079A0(unsigned char kind, int argument) {
     std::string line(g_session.DecodePlayerName());
     line.append(" : ", 3);
     line.append(speaker.data(), speaker.size());
-    if (reinterpret_cast<int(__thiscall*)(UIWindowMgr*, const char*, const char*, int, int)>(0x00A8B3D0)(
-            &g_windowMgr, target.c_str(), line.c_str(), 0x7800, argument) != 0) {
+    if (g_windowMgr.ShowWhisperFrom(target.c_str(), line.c_str(), 0x7800, static_cast<std::uint32_t>(argument)) != 0) {
       return;
     }
 
@@ -1833,7 +1832,7 @@ void CGameMode::sub_D079A0(unsigned char kind, int argument) {
       --g_pendingWhisperCount;
     }
     if (g_whisperRecord != 0) {
-      reinterpret_cast<void(__thiscall*)(CGameMode*, const char*)>(0x00CED760)(this, message.c_str());
+      this->WriteChatLog(message.c_str());
     }
     return;
   }
@@ -1853,7 +1852,7 @@ void CGameMode::sub_D079A0(unsigned char kind, int argument) {
     const std::string text = std::string("(") + target + ")" + LookupMessage(0x94);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 2, 0, 0);
     if (g_whisperRecord != 0) {
-      reinterpret_cast<void(__thiscall*)(CGameMode*, const char*)>(0x00CED760)(this, text.c_str());
+      this->WriteChatLog(text.c_str());
     }
     return;
   }
@@ -1870,8 +1869,7 @@ void CGameMode::sub_D08390(const unsigned char* packet) {
   const int second = *reinterpret_cast<const short*>(packet + 0x14);
   const int third = *reinterpret_cast<const int*>(packet + 0x16);
   const int fourth = *reinterpret_cast<const short*>(packet + 0x1A);
-  reinterpret_cast<void(__thiscall*)(CGameMode*, std::string, int, int, int, int, std::string)>(0x00D06CB0)(
-    this, std::string(name.c_str()), first, second, third, fourth, std::string(title.c_str()));
+  this->ChangeZoneServer(std::string(name.c_str()), first, second, third, fourth, std::string(title.c_str()));
 }
 
 // OFFSET: 0x00D08110
