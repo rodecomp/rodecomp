@@ -253,6 +253,8 @@ void UILapineUpgradeBox_IngredientInfoWnd::Slot32(int x, int y) {
   }
 }
 
+// OFFSET: 0x006059B0
+
 // OFFSET: 0x00605BB0
 // FUNCTION: fn_04225
 void UILapineUpgradeBoxWnd::SetWaiting(unsigned char value) {
@@ -263,6 +265,8 @@ void UILapineUpgradeBoxWnd::SetWaiting(unsigned char value) {
 }
 
 // OFFSET: 0x006049B0
+
+// OFFSET: 0x006041E0
 
 // OFFSET: 0x00603680
 // FUNCTION: fn_04196
@@ -451,6 +455,41 @@ void UILapineUpgradeBoxWnd::AddMaterial(int id) {
 }
 
 // OFFSET: 0x006052F0
+// FUNCTION: fn_04220
+bool UILapineUpgradeBox_IngredientListWnd::AddIngredient(std::uint32_t identity) {
+  ITEM_INFO owned = LookupClientItemByIdentity(g_session.m_inventoryItems, identity);
+  if (owned.unknown_0000[1] == 0) {
+    return false;
+  }
+  const int itemId = std::atoi(owned.itemId.c_str());
+  if (owned.unknown_0060 < this->minRefine || owned.unknown_0060 > this->maxRefine || owned.unknown_0098 < this->minOptionCount) {
+    return false;
+  }
+  if ((g_session.IsPetEgg(itemId) == 1 && owned.unknown_005D == 1) || g_session.HasItem61B8(owned.unknown_0000[1]) == 1) {
+    return false;
+  }
+  const auto material = std::find_if(this->materials.begin(), this->materials.end(), [itemId](ITEM_INFO value) {
+    return std::atoi(value.itemId.c_str()) == itemId;
+  });
+  if (material == this->materials.end()) {
+    return false;
+  }
+  for (UILapineUpgradeBox_IngredientInfoWnd* entry : this->items) {
+    if (entry->item.unknown_0000[1] == identity) {
+      return true;
+    }
+  }
+  auto* owner = static_cast<UILapineUpgradeBoxWnd*>(this->parent);
+  auto* entry = new UILapineUpgradeBox_IngredientInfoWnd(*this->m_context, owner->FrameContext());
+  entry->SetSize(136, 30);
+  entry->SetItem(identity);
+  entry->quantity = 1;
+  this->AddScrollChild(entry);
+  entry->Invalidate();
+  this->items.push_back(entry);
+  this->SendMsg(this, 0x57, 0, 0, 0, 0);
+  return true;
+}
 
 // OFFSET: 0x00605750
 // FUNCTION: fn_04222

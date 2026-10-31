@@ -4,6 +4,7 @@
 #include "Contents/Items/ItemInfo.h"
 #include "UI/Window/UIFrameWnd.h"
 
+#include <cstdint>
 #include <string>
 
 class UIBitmapButton;
@@ -25,6 +26,7 @@ public:
   void Slot31(int x, int y) override;
   void Slot32(int x, int y) override;
   void Slot35(int argument) override;
+  void SetItem(std::uint32_t identity);
 
   /* 00B8 */ ITEM_INFO item;
   /* 01B0 */ unsigned char selected;
@@ -48,6 +50,7 @@ public:
   void Slot26(int x, int y) override;
   void Slot28(int x, int y) override;
   void Slot32(int x, int y) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   void SetWaiting(unsigned char value);
   UILapineUpgradeBox_IngredientInfoWnd* FindSelected();
   void SetIngredient(int id);
