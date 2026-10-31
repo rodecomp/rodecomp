@@ -35,6 +35,7 @@
 #include "UI/UILapineUpgradeBoxWnd.h"
 #include "UI/UIMacroBlackListCheckWnd.h"
 #include "UI/UIMacroDetectorWnd.h"
+#include "UI/UIMacroUserInfoWnd.h"
 #include "UI/UIRefiningWnd.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UINewSelectCharWnd.h"
@@ -1401,3 +1402,15 @@ void CGameMode::ReceiveMacroBlackListCode(unsigned char state, const char* code)
     GetRagConnection().Send(g_packetLengths.FixedLength(request.id), &request);
   }
 }
+
+// OFFSET: 0x00D1BC20
+// FUNCTION: fn_21621
+void __stdcall nullsub_467(int) {
+}
+
+// OFFSET: 0x00D1BE00
+// FUNCTION: fn_21622
+void __stdcall nullsub_468(int) {
+}
+
+// OFFSET: 0x00D6AD60
