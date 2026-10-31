@@ -1,4 +1,5 @@
 #include "UI/Buttons/UIBmpRadioBtn.h"
+#include "UI/Lists/UIChatHisBox.h"
 
 // OFFSET: 0x0086C590
 // FUNCTION: fn_11028
@@ -19,4 +20,10 @@ UICaptchaImage::UICaptchaImage(UIWindowContext& windows, BitmapResourceContext& 
 // FUNCTION: fn_11100
 UICaptchaImage::~UICaptchaImage() {
   this->m_bitmap.Unload();
+}
+
+// OFFSET: 0x008704D0
+// FUNCTION: fn_11101
+UIChatHisBox::~UIChatHisBox() {
+  this->ItemTags().~list();
 }
