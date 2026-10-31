@@ -9934,6 +9934,8 @@ void CRagEffect::NapalmFragments() {
   this->state.unknown_11C84->slots[0].flag1[0] = 0;
 }
 
+// OFFSET: 0x00C20240
+
 // OFFSET: 0x00C35160
 // FUNCTION: fn_20089
 void CRagEffect::StoneCurseRing() {
@@ -14344,6 +14346,127 @@ void CRagEffect::SandScatter() {
   this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\sand1.bmp", 0, false, true, false);
   this->state.unknown_11C84->slots[0].life = 0;
 }
+
+// OFFSET: 0x00C38D80
+// FUNCTION: fn_20100
+void CRagEffect::SendMsg(
+  CGameObject* sender, int messageLow, int messageHigh, std::int64_t first, int secondLow, int secondHigh, int thirdLow, int thirdHigh
+) {
+  const std::int64_t message = static_cast<std::int64_t>(messageHigh) << 32 | static_cast<std::uint32_t>(messageLow);
+  const std::int64_t second = static_cast<std::int64_t>(secondHigh) << 32 | static_cast<std::uint32_t>(secondLow);
+  const std::int64_t third = static_cast<std::int64_t>(thirdHigh) << 32 | static_cast<std::uint32_t>(thirdLow);
+
+  switch (message) {
+  case 14:
+    if (first != 0) {
+      const float* position = reinterpret_cast<const float*>(static_cast<std::intptr_t>(first));
+      this->state.deltaPos[0] = position[0];
+      this->state.deltaPos[1] = position[1];
+      this->state.deltaPos[2] = position[2];
+    }
+    if (second != 0) {
+      const float* position = reinterpret_cast<const float*>(static_cast<std::intptr_t>(second));
+      this->state.deltaPos2[0] = position[0];
+      this->state.deltaPos2[1] = position[1];
+      this->state.deltaPos2[2] = position[2];
+    }
+    break;
+  case 24:
+    this->state.parent = nullptr;
+    break;
+  case 25:
+    if (first == 0) {
+      if (sender == nullptr) {
+        break;
+      }
+      for (auto it = this->state.primList.begin(); it != this->state.primList.end(); ++it) {
+        if (static_cast<CGameObject*>(&Owner(*it)) == sender) {
+          this->state.primList.erase(it);
+          break;
+        }
+      }
+    } else {
+      for (auto it = this->state.primList.begin(); it != this->state.primList.end(); ++it) {
+        Owner(*it).HandleMasterMessage(nullptr, 24, 0, 0, 0, 0, 0, 0, 0);
+      }
+      this->state.primList.erase(this->state.primList.begin(), this->state.primList.end());
+    }
+    break;
+  case 44:
+    if (first == 0xFFFF) {
+      if (second == 130) {
+        this->render.position.x = 200.0f;
+        this->render.position.y = 200.0f;
+        this->render.position.z = 0.0f;
+      } else if (second == 128) {
+        this->render.position.x = 250.0f;
+        this->render.position.y = 150.0f;
+        this->render.position.z = 150.0f;
+      } else if (second == 250) {
+        this->render.position.x = 200.0f;
+        this->render.position.y = 200.0f;
+        this->render.position.z = 0.0f;
+      } else if (second == 169) {
+        this->render.position.x = 180.0f;
+        this->render.position.y = 180.0f;
+        this->render.position.z = 250.0f;
+      } else if (second == 243) {
+        this->render.position.x = 250.0f;
+        this->render.position.y = 250.0f;
+        this->render.position.z = 250.0f;
+        this->state.duration = static_cast<int>(third);
+      } else if (second == 792 || second == 925 || second == 824) {
+        this->render.position.x = 250.0f;
+        this->render.position.y = 250.0f;
+        this->render.position.z = 250.0f;
+      } else if (second == 1058) {
+        const float* position = reinterpret_cast<const float*>(static_cast<std::intptr_t>(third));
+        this->state.deltaPos[0] = position[0];
+        this->state.deltaPos[1] = position[1];
+        this->state.deltaPos[2] = position[2];
+        this->state.duration = 20;
+      }
+    } else if (first == 0xFFFE) {
+      if (second == 128) {
+        this->render.position.x = -1.0f;
+        this->render.position.y = -1.0f;
+        this->render.position.z = -1.0f;
+      } else if (second == 130) {
+        this->render.position.x = -2.0f;
+        this->render.position.y = -2.0f;
+        this->render.position.z = -2.0f;
+      }
+    } else {
+      this->state.count = static_cast<std::uint32_t>(first);
+      if (static_cast<int>(this->state.count) > 50) {
+        this->state.count = 50;
+      }
+    }
+    break;
+  case 46: {
+    const float* param = reinterpret_cast<const float*>(static_cast<std::intptr_t>(first));
+    this->state.param[0] = param[0];
+    this->state.param[1] = param[1];
+    this->state.param[2] = param[2];
+    this->state.param[3] = param[3];
+    break;
+  }
+  case 80:
+    this->SetStateDuration(static_cast<int>(first));
+    break;
+  case 127:
+    this->state.unknown_11C88[0] = static_cast<std::int32_t>(first);
+    this->state.unknown_11C88[1] = static_cast<std::int32_t>(second);
+    this->state.unknown_11C88[2] = static_cast<std::int32_t>(third);
+    break;
+  case 143:
+    if (first == 735 || first == 736 || first == 737 || first == 738) {
+      this->state.unknown_11C84->isChangeProcessed = static_cast<std::uint32_t>(second);
+    }
+    break;
+  }
+}
+
 // OFFSET: 0x00C39460
 // FUNCTION: fn_20101
 void CRagEffect::Sight() {
