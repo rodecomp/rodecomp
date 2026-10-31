@@ -81,6 +81,7 @@
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Items/ItemNaming.h"
 #include "Contents/PlayerNameDictionary.h"
+#include "Contents/UserData/CharacterConfigSave.h"
 
 #include <algorithm>
 #include <cstdint>
@@ -690,6 +691,8 @@ void UIEditCtrl3::DrawBlinkingCaret(const std::uint32_t& color) {
 
   this->DrawTextAt(this->m_edit->buttons.fonts, this->m_edit->buttons.locale, 1, 0, "|", 0, 0, 12, color, 0, 0);
 }
+
+// OFFSET: 0x00854130
 
 // OFFSET: 0x00856F10
 // FUNCTION: fn_10757
@@ -2989,6 +2992,35 @@ void UIItemShopWnd::Slot26(int x, int y) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     this->m_recorder->RecordDrop(x, y, mode->drag, 24);
     target->Slot10(x, y, reinterpret_cast<std::intptr_t>(&mode->drag));
+  }
+}
+
+// OFFSET: 0x00985AA0
+// FUNCTION: fn_13370
+void UISkillListWnd::Slot25(int x, int y) {
+  if (y < 17) {
+    UIFrameWnd::Slot25(x, y);
+    return;
+  }
+
+  const int previous = this->hovered;
+  this->hovered = this->SkillAt(x, y);
+
+  if (previous != this->hovered) {
+    this->Invalidate();
+  }
+
+  CSkillInfo skill = this->GetSkillAt(x, y);
+
+  if (skill.available && skill.level && skill.unknown_000C) {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+
+    if (mode) {
+      mode->drag.BeginSkill(
+        reinterpret_cast<WindowManagerWindows&>(g_windowMgr), ResourceMgr::Instance(), 8, skill.id, skill.name,
+        reinterpret_cast<CharacterConfigSave*>(&g_session)->SkillLevel(skill.id), -1
+      );
+    }
   }
 }
 
