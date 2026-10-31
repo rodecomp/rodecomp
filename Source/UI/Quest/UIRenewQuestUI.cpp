@@ -18,6 +18,7 @@
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
+#include <cstring>
 #include <format>
 
 template <std::size_t Length, std::uint64_t Key>
@@ -48,6 +49,13 @@ private:
   /* 0000 */ std::uint8_t m_text[Length];
   bool m_encrypted;
 };
+
+// INLINED
+template <std::uint64_t Key, std::size_t Length>
+const char* DecryptName(const std::uint8_t (&source)[Length]) {
+  thread_local EncryptedName<Length, Key> name(source);
+  return name.Text();
+}
 
 // OFFSET: 0x00A59FE0
 // FUNCTION: fn_16371
@@ -1262,5 +1270,209 @@ void CUIRenewQuestUI::sub_A67290(unsigned int flags) {
       }
       break;
     }
+  }
+}
+
+// OFFSET: 0x00A5C0F0
+// FUNCTION: fn_16430
+CUIFrameWnd* CreateRenewQuestUI() {
+  return new CUIRenewQuestUI();
+}
+
+// OFFSET: 0x00A5C590
+// FUNCTION: fn_16434
+void RenewQuestUI::CUIQuestItem::Slot15(int width, int height) {
+  this->icon = new CUIStaticImage(*this->m_context);
+  this->icon->SetSize(26, 29);
+  this->icon->Move(8, 7);
+  this->icon->SetImage(std::string());
+  this->AddChild(this->icon);
+
+  this->unknown_00EC = new CUIStaticText(*this->m_context);
+  this->unknown_00EC->SetSize(260, 12);
+  this->unknown_00EC->Move(42, 6);
+  this->unknown_00EC->SetText("", 0);
+  this->unknown_00EC->SetFitText(1);
+  this->unknown_00EC->SetAlign(0, 0);
+  const std::uint8_t titleFont[] = {0x8A, 0x84, 0xF5, 0xDC, 0xE0, 0x5B};
+  this->unknown_00EC->SetFont(std::string(DecryptName<0xAD075B8DB599F1CDULL>(titleFont)));
+  this->unknown_00EC->SetFontHeight(12);
+  this->unknown_00EC->SetBold(1);
+  this->unknown_00EC->SetColor(0x955322);
+  this->unknown_00EC->SetShadow(0, 0xFFFFFF);
+  this->unknown_00EC->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->unknown_00EC);
+
+  this->unknown_00F0 = new CUIStaticText(*this->m_context);
+  this->unknown_00F0->SetSize(260, 12);
+  this->unknown_00F0->Move(42, 24);
+  this->unknown_00F0->SetText("", 0);
+  this->unknown_00F0->SetFitText(1);
+  this->unknown_00F0->SetAlign(0, 0);
+  const std::uint8_t summaryFont[] = {0xA6, 0x0E, 0x95, 0xBE, 0xB8, 0x13};
+  this->unknown_00F0->SetFont(std::string(DecryptName<0xDD3913D5D7F97BE1ULL>(summaryFont)));
+  this->unknown_00F0->SetFontHeight(12);
+  this->unknown_00F0->SetBold(0);
+  this->unknown_00F0->SetColor(0x38302E);
+  this->unknown_00F0->SetShadow(0, 0xFFFFFF);
+  this->unknown_00F0->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->unknown_00F0);
+
+  this->unknown_00F4 = new CUICheckBox(*this->m_context);
+  this->unknown_00F4->SetSize(14, 14);
+  this->unknown_00F4->Move(312, 3);
+  this->unknown_00F4->SetOnCheck([this](bool checked) { this->OnSimpleView(checked); });
+  this->unknown_00F4->disabled = 0;
+  this->unknown_00F4->Invalidate();
+  const std::uint8_t checkInactive[] = {0xC9, 0x88, 0xEF, 0x41, 0x7D, 0x93, 0xB8, 0x14, 0xCF, 0xC3, 0xEF, 0x77, 0x00, 0xE7, 0x21, 0x8B,
+                                        0x6C, 0x49, 0x4A, 0xCC, 0xE2, 0x0C, 0x08, 0xBC, 0x7A, 0x53, 0x7A, 0xF2, 0xE1, 0x3F, 0x09, 0x86,
+                                        0x6A, 0x4F, 0x4A, 0xD8, 0xD6, 0x02, 0x12, 0xBF, 0x6F, 0x09, 0x4D, 0xD6, 0xCD, 0x5D};
+  const std::uint8_t checkPressed[] = {0x67, 0x5A, 0xBF, 0xC3, 0xF1, 0x85, 0xEE, 0x72, 0x61, 0x11, 0xBF, 0xF5, 0x8C, 0xF1, 0x77, 0xED,
+                                       0xC2, 0x9B, 0x1A, 0x4E, 0x6E, 0x1A, 0x5E, 0xDA, 0xD4, 0x81, 0x2A, 0x70, 0x6D, 0x29, 0x5F, 0xE0,
+                                       0xC4, 0x9D, 0x1A, 0x5A, 0x5A, 0x14, 0x44, 0xD9, 0xC1, 0xDB, 0x1D, 0x54, 0x41, 0x4B};
+  const std::uint8_t checkHover[] = {0x7D, 0x12, 0x2D, 0xCD, 0x7B, 0x71, 0x2A, 0x4E, 0x7B, 0x59, 0x2D, 0xFB, 0x06, 0x05, 0xB3, 0xD1,
+                                     0xD8, 0xD3, 0x88, 0x40, 0xE4, 0xEE, 0x9A, 0xE6, 0xCE, 0xC9, 0xB8, 0x7E, 0xE7, 0xDD, 0x9B, 0xDC,
+                                     0xDE, 0xD5, 0x88, 0x54, 0xD0, 0xE0, 0x80, 0xED, 0x93, 0xDF, 0x80, 0x47, 0xBB};
+  const std::uint8_t checkNormal[] = {0x5B, 0xF8, 0xC3, 0x63, 0xA7, 0xCB, 0xC0, 0xC8, 0x5D, 0xB3, 0xC3, 0x55, 0xDA, 0xBF, 0x59, 0x57,
+                                      0xFE, 0x39, 0x66, 0xEE, 0x38, 0x54, 0x70, 0x60, 0xE8, 0x23, 0x56, 0xD0, 0x3B, 0x67, 0x71, 0x5A,
+                                      0xF8, 0x3F, 0x66, 0xFA, 0x0C, 0x5A, 0x6A, 0x63, 0xFD, 0x79, 0x61, 0xF4, 0x17, 0x05};
+  this->unknown_00F4->SetImages(
+    std::string(DecryptName<0x050505679903579BULL>(checkNormal)), std::string(DecryptName<0x83EFBFBB37EDBDBDULL>(checkHover)),
+    std::string(DecryptName<0xBF2B4B31397FF5A7ULL>(checkPressed)), std::string(DecryptName<0xD97D5DBDBB2F2709ULL>(checkInactive))
+  );
+  this->unknown_00F4->checked = false;
+  this->unknown_00F4->Invalidate();
+  this->AddChild(this->unknown_00F4);
+
+  this->unknown_00F8 = new CUICheckBox(*this->m_context);
+  this->unknown_00F8->SetSize(20, 17);
+  this->unknown_00F8->Move(306, 22);
+  this->unknown_00F8->SetOnCheck([this](bool checked) { this->OnActiveStateChanged(checked); });
+  this->unknown_00F8->disabled = 0;
+  this->unknown_00F8->Invalidate();
+  const std::uint8_t lockInactive[] = {0xA7, 0x04, 0x51, 0x5F, 0x61, 0xF1, 0x26, 0xDE, 0xA1, 0x4F, 0x51, 0x69, 0x1C, 0x85, 0xBF, 0x41,
+                                       0x02, 0xC5, 0xF4, 0xD2, 0xFE, 0x6E, 0x96, 0x76, 0x14, 0xDF, 0xC4, 0xEC, 0xFD, 0x5D, 0x97, 0x4C,
+                                       0x0B, 0xC4, 0xF2, 0xCE, 0x8F, 0x5D, 0x8E, 0x63, 0x67};
+  const std::uint8_t lockPressed[] = {0x5F, 0x6A, 0xAD, 0x51, 0x17, 0xE7, 0x38, 0x68, 0x59, 0x21, 0xAD, 0x67, 0x6A, 0x93, 0xA1, 0xF7,
+                                      0xFA, 0xAB, 0x08, 0xDC, 0x88, 0x78, 0x88, 0xC0, 0xEC, 0xB1, 0x38, 0xE2, 0x8B, 0x4B, 0x89, 0xFA,
+                                      0xF3, 0xAA, 0x0E, 0xC0, 0xF9, 0x4B, 0x90, 0xD5, 0x9F};
+  const std::uint8_t lockHover[] = {0x31, 0x68, 0xF9, 0xF3, 0xD7, 0xB7, 0x8A, 0x3C, 0x37, 0x23, 0xF9, 0xC5, 0xAA, 0xC3, 0x13, 0xA3,
+                                    0x94, 0xA9, 0x5C, 0x7E, 0x48, 0x28, 0x3A, 0x94, 0x82, 0xB3, 0x6C, 0x40, 0x4B, 0x1B, 0x3B, 0xAE,
+                                    0x9D, 0xA8, 0x5A, 0x62, 0x48, 0x16, 0x3F, 0x94, 0x9F, 0xE9, 0x5B, 0x64, 0x67, 0x79};
+  const std::uint8_t lockNormal[] = {0xBF, 0xBC, 0x1F, 0x2B, 0x45, 0xA9, 0xBC, 0x20, 0xB9, 0xF7, 0x1F, 0x1D, 0x38, 0xDD, 0x25, 0xBF,
+                                     0x1A, 0x7D, 0xBA, 0xA6, 0xDA, 0x36, 0x0C, 0x88, 0x0C, 0x67, 0x8A, 0x98, 0xD9, 0x05, 0x0D, 0xB2,
+                                     0x13, 0x7C, 0xBC, 0xBA, 0xAB, 0x05, 0x14, 0x9D, 0x7F};
+  this->unknown_00F8->SetImages(
+    std::string(DecryptName<0xED796785D1DF137FULL>(lockNormal)), std::string(DecryptName<0xF14F79170939C7F1ULL>(lockHover)),
+    std::string(DecryptName<0xA5FD29D7AB6DC59FULL>(lockPressed)), std::string(DecryptName<0x13E33FA1A591AB67ULL>(lockInactive))
+  );
+  this->unknown_00F8->checked = false;
+  this->unknown_00F8->Invalidate();
+  this->AddChild(this->unknown_00F8);
+}
+
+// OFFSET: 0x00A63930
+// FUNCTION: fn_16439
+template <>
+void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::AddNewItem() {
+  if (this->itemWidth <= 0 || this->rowHeight <= 0) {
+    return;
+  }
+
+  for (RenewQuestUI::CUIQuestItem* item : this->items) {
+    this->RemoveChild(item, 1);
+  }
+  this->items.clear();
+  this->selected = static_cast<unsigned int>(-1);
+
+  if (this->rowHeight <= this->geometry.height) {
+    unsigned count = static_cast<unsigned>(this->geometry.height / this->rowHeight) + 1;
+    if (this->geometry.height % this->rowHeight > 1) {
+      ++count;
+    }
+    this->items.resize(count, nullptr);
+    for (RenewQuestUI::CUIQuestItem*& slot : this->items) {
+      RenewQuestUI::CUIQuestItem* item = new RenewQuestUI::CUIQuestItem(*this->m_context);
+      item->SetSize(this->itemWidth, this->rowHeight);
+      item->Show(0);
+      CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
+      item->SetImageResources(images[0], images[1], images[2], images[3]);
+      item->onHover = [this](CUIListItem* listItem) {
+        for (RenewQuestUI::CUIQuestItem* other : this->items) {
+          other->SetHighlighted(other == listItem);
+        }
+      };
+      item->onPress = [this](CUIListItem* listItem) {
+        this->SelectItem(listItem);
+      };
+      this->AddChild(item);
+      slot = item;
+    }
+  }
+
+  this->scrollBar->SetTotal(this->geometry.height);
+  this->scrollBar->SetVisible(this->geometry.height);
+}
+
+// OFFSET: 0x00A63CD0
+
+// OFFSET: 0x00A63EE0
+// FUNCTION: fn_16443
+template <>
+void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::Resize(int width, int height) {
+  UIWindow::Resize(width, height);
+  this->AddNewItem();
+  this->scrollBar->Resize(this->scrollBar->geometry.width, height);
+  this->scrollBar->SetTotal(static_cast<int>(this->data.size()) * this->rowHeight + this->itemY);
+  this->scrollBar->SetVisible(this->geometry.height);
+  this->scrollBar->SetPosition(this->scrollBar->position);
+  this->rebind = 1;
+}
+
+// OFFSET: 0x00A659B0
+// FUNCTION: fn_16597
+RenewQuestUI::CUIQuestItem::CUIQuestItem(UIWindowContext& context)
+    : CUIListItem(context), icon(nullptr), unknown_00EC(nullptr), unknown_00F0(nullptr), unknown_00F4(nullptr), unknown_00F8(nullptr), questType(1),
+      questId(0), pressed(0), baseX(0), baseY(0) {
+}
+
+// OFFSET: 0x00A65A70
+// FUNCTION: fn_16598
+RenewQuestUI::CUIQuestList::CUIQuestList(UIWindowContext& context) : CUIControl(context), list(nullptr), type(1) {
+}
+
+// OFFSET: 0x00A65AF0
+// FUNCTION: fn_16599
+CUIRenewQuestUI::CUIRenewQuestUI()
+    : tab(nullptr), checkBox(nullptr), filterLabel(nullptr), unknown_00EC{}, questLists(), unknown_00FC{}, filterPanel(nullptr), unknown_0104{}, filter(0), searchText(),
+      titleBar(nullptr), unknown_00DC(nullptr) {
+}
+
+// OFFSET: 0x00A66DA0
+// FUNCTION: fn_16624
+void CUIRenewQuestUI::Slot16() {
+  g_windowMgr.RecordWindowPacket(0x2718);
+  g_windowMgr.CloseWindow(0x8F);
+
+  const char* title = LookupMessage(0xD48);
+  this->titleBar->SetTitle(title, std::strlen(title));
+  const char* label = LookupMessage(0x7E3);
+  this->filterLabel->SetText(label, std::strlen(label));
+
+  bool visible = false;
+  if (UIWindow* window = g_windowMgr.LookupWindow(0xCC)) {
+    visible = window->geometry.visible != 0;
+  }
+  this->checkBox->checked = visible;
+  this->checkBox->Invalidate();
+
+  for (unsigned int index = 0; index < this->questLists.size(); ++index) {
+    this->questLists[index]->type = 1 << index;
+  }
+  this->sub_A67290(0xF);
+
+  for (UIWindow* child : this->filterPanel->m_children) {
+    const std::string name = g_renewQuestMgr->GetFilterName(child->geometry.id);
+    static_cast<CUITabButton*>(child)->tooltipText = name;
   }
 }

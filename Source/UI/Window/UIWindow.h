@@ -58,6 +58,7 @@ class UIWindow : public UIRPData {
   friend struct InputFocus;
   friend class CUIDropDownBox;
   friend class CUIGameSettingsUI;
+  friend class CUIRenewQuestUI;
   friend class UIScrollWnd;
 
 public:

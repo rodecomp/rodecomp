@@ -17,6 +17,9 @@ class CUIStaticText;
 namespace RenewQuestUI {
 class CUIQuestItem : public CUIListItem {
 public:
+  __declspec(noinline) explicit CUIQuestItem(UIWindowContext& context);
+
+  void Slot15(int width, int height) override;
   void Move(int x, int y) override;
   void Slot25(int x, int y) override;
   void Slot31(int x, int y) override;
@@ -42,6 +45,8 @@ public:
 
 class CUIQuestList : public CUIControl {
 public:
+  __declspec(noinline) explicit CUIQuestList(UIWindowContext& context);
+
   void Paint() override;
   void Slot16() override;
   void BindItem(CUIQuestItem* item, const unsigned long& questId);
@@ -53,6 +58,9 @@ public:
 
 class CUIRenewQuestUI : public CUIFrameWnd {
 public:
+  __declspec(noinline) CUIRenewQuestUI();
+
+  void Slot16() override;
   void Paint() override;
   virtual void Slot53(int value);
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
@@ -73,16 +81,28 @@ public:
 
   /* 00E0 */ CUITab* tab;
   /* 00E4 */ CUICheckBox* checkBox;
-  /* 00E8 */ unsigned char unknown_00E8[0x08];
+  /* 00E8 */ CUIStaticText* filterLabel;
+  /* 00EC */ unsigned char unknown_00EC[0x04];
   /* 00F0 */ std::vector<RenewQuestUI::CUIQuestList*> questLists;
-  /* 00FC */ unsigned char unknown_00FC[0x10];
+  /* 00FC */ unsigned char unknown_00FC[0x04];
+  /* 0100 */ CUITab* filterPanel;
+  /* 0104 */ unsigned char unknown_0104[0x08];
   /* 010C */ int filter;
   /* 0110 */ std::string searchText;
+  /* 00D8 */ CUITitleBar* titleBar;
+  /* 00DC */ UIWindow* unknown_00DC;
 };
+
+template <>
+void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::AddNewItem();
+template <>
+void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::Resize(int width, int height);
+template <>
+void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::Slot53(int resolveSkin);
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(RenewQuestUI::CUIQuestItem) == 0x110);
-static_assert(sizeof(CUIRenewQuestUI) == 0x128);
+static_assert(sizeof(CUIRenewQuestUI) == 0x130);
 #endif
 
 #endif
