@@ -9,6 +9,7 @@ struct UIButtonContext;
 
 class UIIllustWnd : public UIFrameWnd {
 public:
+  UIIllustWnd(UIWindowContext& windows, UIFrameContext& frames);
   bool CanHitTest() override;
   void Slot15(int width, int height) override;
   void Slot18() override;
@@ -25,6 +26,7 @@ protected:
 
 class UIMultiIllustWnd : public UIFrameWnd {
 public:
+  UIMultiIllustWnd(UIWindowContext& windows, UIFrameContext& frames);
   bool CanHitTest() override;
   void Slot15(int width, int height) override;
   void Slot18() override;

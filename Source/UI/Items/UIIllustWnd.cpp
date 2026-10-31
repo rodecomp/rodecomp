@@ -9,6 +9,22 @@
 #include "UI/Buttons/UIButton.h"
 #include "UI/Window/UIWindowMgr.h"
 
+// OFFSET: 0x0096C8D0
+// FUNCTION: fn_13177
+UIIllustWnd::UIIllustWnd(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0) {
+  this->m_titled = 0;
+  this->m_closable = 0;
+  this->geometry.currentAlpha = 32;
+}
+
+// OFFSET: 0x0096C970
+// FUNCTION: fn_13178
+UIMultiIllustWnd::UIMultiIllustWnd(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0) {
+  this->m_titled = 0;
+  this->m_closable = 0;
+  this->geometry.currentAlpha = 32;
+}
+
 // OFFSET: 0x0096CBD0
 // FUNCTION: fn_13181
 void UIIllustWnd::Slot15(int, int) {}
