@@ -263,6 +263,23 @@ struct CRagEffect : CRenderObject {
   void TexturedStorm2(const char* name, char kind);
   void TorchRedRing(char kind);
   void TexturedSlashAir(const char* name, char size, char phase);
+  void Bash();
+  void Bottom2();
+  bool Coin();
+  void ColdHit();
+  void DecAgility();
+  void EnchantPoison2();
+  void Endure();
+  void FrostDiver2();
+  void HasteUp();
+  void Hit1();
+  void Hit2(int option);
+  void Hit3();
+  void HitDark();
+  bool Signum();
+  void Steal();
+  void TurnUndead();
+  void WaterBallBurst();
 
   void ErasePrimitiveRange(std::list<EffectPrimitiveState*>::iterator* out, std::list<EffectPrimitiveState*>::iterator first, std::list<EffectPrimitiveState*>::iterator last);
   void RedParticleSpray(int count);
