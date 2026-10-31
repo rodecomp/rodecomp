@@ -1,5 +1,5 @@
 #include "UI/Window/UIRoMapWnd.h"
-
+#include "Script/LuaScript.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
@@ -563,4 +563,44 @@ void UIRoMapWnd::Slot27(int x, int y) {
   this->unknown_00C0->unknown_0018 = map->bottom;
   this->unknown_00C0->unknown_001C = map->unknown_0044;
   this->Invalidate();
+}
+
+// OFFSET: 0x0091DBB0
+// FUNCTION: fn_12624
+void RoMapKafraMarkers::Build(std::string mapName) {
+  std::vector<std::string> names = g_kafraServiceMapList[mapName];
+  this->markers.clear();
+  for (std::vector<std::string>::iterator it = names.begin(); it != names.end(); ++it) {
+    CWorldViewField* field = g_worldViewMgr.worlds[0]->FindField(it->c_str());
+    if (field) {
+      std::string name = field->name;
+      WorldViewArea area = {field->left, field->top, field->right, field->bottom, field->unknown_0010};
+      RoMapMarker marker;
+      SetRoMapMarker(name, area, marker);
+      this->markers.push_back(marker);
+    }
+  }
+}
+
+// OFFSET: 0x00932C80
+// FUNCTION: fn_12716
+void RoMapKafraMarkers::Update(UIRoMapWnd* wnd, float elapsed) {
+  WorldViewRecord* record = wnd->unknown_00C0;
+  if (record && g_kafraServiceMapList.find(record->name) != g_kafraServiceMapList.end()) {
+    if (this->mapName != record->name) {
+      this->mapName = record->name;
+      this->Build(record->name);
+      SetRoMapMarker(record->name, reinterpret_cast<const WorldViewArea&>(record->left), this->current);
+      this->blend = 0.0f;
+    }
+
+    this->blend += elapsed;
+    if (this->blend > 1.0f) {
+      this->blend = 1.0f;
+    }
+    return;
+  }
+
+  this->mapName = "";
+  this->markers.clear();
 }

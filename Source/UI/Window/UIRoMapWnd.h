@@ -7,12 +7,13 @@
 #include <cstdint>
 #include <list>
 #include <string>
+#include <vector>
 
 class CTexture;
 
 struct RoMapMarker {
   /* 0000 */ std::string name;
-  /* 0018 */ WorldViewArea area;
+  /* 0018 */ WorldViewArea area = {};
   /* 002C */ float centerX;
   /* 0030 */ float centerY;
   /* 0034 */ float width;
@@ -31,7 +32,22 @@ void SetRoMapMarker(std::string name, const WorldViewArea& area, RoMapMarker& ma
 
 extern CWorldViewMgr g_worldViewMgr;
 
+class UIRoMapWnd;
+
+struct RoMapKafraMarkers {
+  void Build(std::string mapName);
+  void Update(UIRoMapWnd* wnd, float elapsed);
+
+  /* 0000 */ int unknown_0000;
+  /* 0004 */ std::vector<RoMapMarker> markers;
+  /* 0010 */ RoMapMarker current;
+  /* 004C */ std::string mapName;
+  /* 0064 */ float blend;
+};
+
 class UIRoMapWnd : public UIFrameWnd {
+  friend struct RoMapKafraMarkers;
+
 public:
   void Slot25(int x, int y) override;
   void Slot27(int x, int y) override;
@@ -64,7 +80,9 @@ private:
   /* 00CC */ unsigned char unknown_00CC;
   /* 00D0 */ int unknown_00D0;
   /* 00D4 */ unsigned char m_showLabels;
-  /* 00D5 */ unsigned char unknown_00D5[0x113];
+  /* 00D5 */ unsigned char unknown_00D5[0xB];
+  /* 00E0 */ RoMapKafraMarkers m_kafraMarkers;
+  /* 0148 */ unsigned char unknown_0148[0xA0];
   /* 01E8 */ int m_mouseX;
   /* 01EC */ int m_mouseY;
   /* 01F0 */ unsigned char unknown_01F0[0x18];
@@ -81,6 +99,7 @@ static_assert(sizeof(RoMapTooltipBox) == 0x14);
 static_assert(sizeof(RoMapMarker) == 0x3C);
 static_assert(offsetof(RoMapMarker, area) == 0x18);
 static_assert(offsetof(RoMapMarker, centerX) == 0x2C);
+static_assert(sizeof(RoMapKafraMarkers) == 0x68);
 #endif
 
 #endif

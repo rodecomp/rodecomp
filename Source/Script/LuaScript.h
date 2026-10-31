@@ -5,7 +5,9 @@
 #include <cstddef>
 #include <cstdint>
 #include <list>
+#include <map>
 #include <string>
+#include <vector>
 
 struct lua_State;
 
@@ -40,5 +42,6 @@ private:
 };
 
 extern LuaScript* g_luaScript;
+extern std::map<std::string, std::vector<std::string>> g_kafraServiceMapList;
 
 #endif
