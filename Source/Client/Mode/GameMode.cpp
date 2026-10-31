@@ -1342,6 +1342,38 @@ std::vector<unsigned char> CGameMode::SaveUnknown024C() {
 }
 
 // OFFSET: 0x00CF0E30
+// FUNCTION: fn_21424
+void CGameMode::SendNpcInputText(std::uint32_t npcId, const char* text, const char* replacement, int unused) {
+  if (npcId != 0 && this->scene->GetGameActorByAID(npcId) == nullptr) {
+    return;
+  }
+
+  char buffer[0x16A];
+  std::memset(buffer, 0, sizeof(buffer));
+  StringFormat(buffer, sizeof(buffer), static_cast<std::size_t>(-1), "%s", replacement != nullptr ? replacement : text);
+  if (g_navigationLinkParser->HasUnownedItemLink(buffer) == true) {
+    return;
+  }
+
+  const std::size_t length = std::strlen(buffer);
+  unsigned char* packet = static_cast<unsigned char*>(
+    _MallocaComputeSize(length + 8) != 0
+      ? (_MallocaComputeSize(length + 8) <= _ALLOCA_S_THRESHOLD
+          ? _MarkAllocaS(_alloca(_MallocaComputeSize(length + 8)), _ALLOCA_S_STACK_MARKER)
+          : _MarkAllocaS(std::malloc(_MallocaComputeSize(length + 8)), _ALLOCA_S_HEAP_MARKER))
+      : nullptr
+  );
+  if (packet == nullptr) {
+    return;
+  }
+
+  *reinterpret_cast<std::uint32_t*>(packet + 4) = npcId;
+  *reinterpret_cast<std::uint16_t*>(packet) = 0x1D5;
+  *reinterpret_cast<std::uint16_t*>(packet + 2) = static_cast<std::uint16_t>(length + 8);
+  memcpy_s(packet + 8, length, buffer, length);
+  GetRagConnection().Send(*reinterpret_cast<std::uint16_t*>(packet + 2), packet);
+  _freea(packet);
+}
 
 // GLOBAL: gl_25200
 float g_cameraMinDistance = 230.0f;
@@ -1365,6 +1397,75 @@ float g_outdoorCameraPitch = -45.0f;
 float g_outdoorCameraDistance = 300.0f;
 
 // OFFSET: 0x00CECB90
+// FUNCTION: fn_21359
+void CGameMode::InitializeCamera() {
+  this->camera->camera.target[0] = this->scene->player->render.position.x;
+  this->camera->camera.target[1] = this->scene->player->render.position.y;
+  this->camera->camera.target[2] = this->scene->player->render.position.z;
+  this->camera->camera.desiredTarget[0] = this->scene->player->render.position.x;
+  this->camera->camera.desiredTarget[1] = this->scene->player->render.position.y;
+  this->camera->camera.desiredTarget[2] = this->scene->player->render.position.z;
+  this->hasViewParameters = 0;
+
+  int found;
+  const std::vector<std::string>* parameters = g_session.GetMapViewParameters(this->mapName, &found);
+  if (found != 0) {
+    this->hasViewParameters = 1;
+    for (int index = 0; index < 9; ++index) {
+      this->viewParameters[index] = static_cast<std::int16_t>(std::atof((*parameters)[index].c_str()));
+    }
+  }
+
+  const bool indoor = g_session.IsUnknownName5248(this->mapName);
+  this->unknown_0254 = !indoor;
+  float pitchRange = 10.0f;
+  float maxDistance = g_cameraBaseDistance;
+  float pitch;
+  float distance;
+  if (!indoor) {
+    pitchRange = 20.0f;
+    maxDistance = g_serviceOptionJitterScale;
+    pitch = g_outdoorCameraPitch;
+    distance = g_outdoorCameraDistance;
+  } else {
+    this->unknown_0288 = 45.0f;
+    this->camera->camera.yaw = 45.0f;
+    this->camera->camera.desiredYaw = this->unknown_0288;
+    pitch = g_indoorCameraPitch;
+    distance = g_indoorCameraDistance;
+  }
+
+  g_cameraDistance = distance;
+  g_cameraPitch = pitch;
+  if (-45.0f - pitchRange > pitch) {
+    pitch = -45.0f - pitchRange;
+    g_cameraPitch = pitch;
+  }
+  if (pitch > pitchRange - 45.0f) {
+    pitch = pitchRange - 45.0f;
+    g_cameraPitch = pitch;
+  }
+  if (g_cameraMinDistance > distance) {
+    distance = g_cameraMinDistance;
+    g_cameraDistance = distance;
+  }
+  if (distance > maxDistance) {
+    g_cameraDistance = maxDistance;
+  }
+
+  if (this->hasViewParameters != 0) {
+    g_cameraDistance = static_cast<float>(this->viewParameters[2]);
+    this->camera->camera.yaw = static_cast<float>(this->viewParameters[5]);
+    this->camera->camera.desiredYaw = static_cast<float>(this->viewParameters[5]);
+    pitch = static_cast<float>(this->viewParameters[8]);
+    g_cameraPitch = pitch;
+  }
+
+  this->camera->camera.pitch = pitch;
+  this->camera->camera.desiredPitch = g_cameraPitch;
+  this->camera->camera.distance = g_cameraDistance;
+  this->camera->camera.desiredDistance = g_cameraDistance;
+}
 
 #include "Contents/Schedule/Schedule.h"
 
