@@ -1889,4 +1889,93 @@ void UIExpandedBartermarketWnd::Paint() {
 }
 
 // OFFSET: 0x00847AA0
+// FUNCTION: fn_10586
+void UIExpandedBarterItemPurchaseWnd::Paint() {
+  this->DrawTitleBar(this->m_context->fonts, this->m_context->locale, false, LookupMessage(0xBA), 0);
+
+  const int borderHeight = this->geometry.height - 46;
+  const int borderTiles = borderHeight / 8 + (borderHeight % 8 != 0);
+  for (int tile = 0, y = 17; tile < borderTiles; ++tile, y += 8) {
+    auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
+    this->DrawBitmap(0, y, &bitmap->image, false);
+  }
+  for (int tile = 0, y = 17; tile < borderTiles; ++tile, y += 8) {
+    auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
+    this->DrawBitmap(this->geometry.width - bitmap->image.width, y, &bitmap->image, false);
+  }
+
+  unsigned red;
+  unsigned green;
+  unsigned blue;
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  this->FillRegion(20, 17, this->geometry.width - 40, this->geometry.height - 46, RGB(red, green, blue));
+  this->DrawButtonBar(2, 0, 1);
+
+  ItemDescriptions descriptions{g_itemDescriptions};
+  int visible = 0;
+  int index = 0;
+  for (std::list<BarterMarketEntry>::iterator it = this->Entries().begin(); it != this->Entries().end(); ++it, ++index) {
+    if (index < this->unknown_00C4) {
+      continue;
+    }
+
+    const int y = visible * 64;
+    DrawItemSlotBackground(*this, 40, y + 17);
+    for (int slot = 0; slot < static_cast<int>(it->chunks.size()); ++slot) {
+      DrawItemSlotBackground(*this, 72 + slot * 42, y + 49);
+    }
+    if (this->unknown_00CC == index) {
+      SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
+      this->FillRegion(72, y + 19, this->geometry.width - 0x5A, 0x3C, RGB(red, green, blue));
+    }
+
+    const ITEM_INFO item = it->ToItemInfo();
+    if (it->flag_30) {
+      DrawItemIcon(*this, ResourceMgr::Instance(), descriptions, 44, y + 21, item, 0);
+    } else if (it->value == 0) {
+      DrawItemWithQuantityAuxiliary(*this, descriptions, this->m_context->fonts, this->m_context->locale, 1, 44, y + 21, item, 1, 0);
+    } else {
+      DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, this->m_context->fonts, this->m_context->locale, 44, y + 21, item, 1, 0);
+    }
+    this->DrawItemName(76, y + 29, 100, &item, 0, 0, 12);
+    if (it->field_28 > 0) {
+      const std::string quantity = FormatOwnedString("+%d", it->field_28);
+      DrawOutlinedText(*this, 50, y + 18, quantity.c_str(), 0, 0xFFFFFF, 200, 0, 12, 1, 0);
+    }
+
+    int chunkIndex = 0;
+    for (std::vector<BarterChunk16>::const_iterator chunk = it->chunks.begin(); chunk != it->chunks.end(); ++chunk) {
+      ITEM_INFO chunkItem;
+      chunkItem.SetItemId(chunk->field_0);
+      chunkItem.quantity = chunk->amount;
+      chunkItem.unknown_0060 = chunk->field_4;
+      const int chunkX = 76 + chunkIndex * 42;
+      if (it->value == 0) {
+        DrawItemWithQuantityAuxiliary(*this, descriptions, this->m_context->fonts, this->m_context->locale, 1, chunkX, y + 49, chunkItem, 1, 0);
+      } else {
+        DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, this->m_context->fonts, this->m_context->locale, chunkX, y + 49, chunkItem, 1, 0);
+      }
+      if (chunk->field_4 != 0) {
+        const std::string chunkAmount = FormatOwnedString("+%d", chunk->field_4);
+        DrawOutlinedText(*this, chunkX + 8, y + 49, chunkAmount.c_str(), 0, 0xFFFFFF, 200, 0, 12, 1, 0);
+      }
+      ++chunkIndex;
+    }
+
+    const std::string amount = FormatOwnedString("%d z", it->field_8);
+    this->DrawRightAlignedText(this->geometry.width - 20, y + 60, amount.c_str(), 0, 0, 12, 0, 0);
+
+    if (++visible == this->rowCount) {
+      ++index;
+      break;
+    }
+  }
+
+  for (int row = index; row < this->rowCount; ++row) {
+    DrawItemSlotBackground(*this, 40, row * 64 + 17);
+    for (int x = 72; x < 156; x += 42) {
+      DrawItemSlotBackground(*this, x, row * 64 + 49);
+    }
+  }
+}
 
