@@ -30,6 +30,7 @@ public:
   void FetchCategoryProducts();
   void FetchAllProducts();
   void OnInitializeCallback(Stove::PCSDK::CallbackResult callbackResult);
+  void OnOpenUrlCallback(Stove::PCSDK::CallbackResult callbackResult, int unused, const wchar_t* url);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

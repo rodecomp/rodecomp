@@ -1,4 +1,6 @@
 #include "Client/Application/ApplicationWindow.h"
+#include "Client/Mode/CMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
 #include "Client/Stove/StoveMgr.h"
 #include "Client/Stove/StovePCSDK.h"
@@ -12,6 +14,7 @@
 #include <cstring>
 #include <string>
 #include <windows.h>
+#include <shellapi.h>
 
 // GLOBAL: gl_24904
 bool g_stoveWaitingCallback;
@@ -223,4 +226,18 @@ void CStoveMgr::WaitForCallback() {
     Base_RunCallback();
     Sleep(200);
   } while (g_stoveWaitingCallback);
+}
+
+// OFFSET: 0x0063CD20
+// FUNCTION: fn_04785
+void CStoveMgr::OnOpenUrlCallback(Stove::PCSDK::CallbackResult callbackResult, int unused, const wchar_t* url) {
+  g_stoveWaitingCallback = false;
+  if (callbackResult.GetResult().IsSuccessful()) {
+    g_modeMgr.GetGameMode()->SendMsg(323, 0, 0, 0, 0);
+  } else {
+    std::string path = EncodeText(CP_ACP, std::wstring(url));
+    const std::uint8_t source[] = {0x68, 0x51, 0x42, 0x23, 0x03};
+    thread_local EncryptedName<sizeof(source), 0x2FF3C5036D070127ULL> verb(source);
+    ShellExecuteA(nullptr, verb.Text(), path.c_str(), path.c_str(), nullptr, SW_SHOWNORMAL);
+  }
 }
