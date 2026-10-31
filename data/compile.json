@@ -898,6 +898,7 @@
   "Source/UI/Layout/WindowCoordinates.cpp": 2,
   "Source/UI/Layout/WindowSnapping.cpp": 2,
   "Source/UI/Lists/TableBox.cpp": 2,
+  "Source/UI/Lists/UIChatHisBox.cpp": 2,
   "Source/UI/Lists/UIComboBox.cpp": 2,
   "Source/UI/Lists/UIComboBoxDefWnd.cpp": 2,
   "Source/UI/Lists/UIComboBoxEx.cpp": 2,

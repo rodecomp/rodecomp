@@ -40,6 +40,7 @@ public:
   void CopyHistory(const UIChatHisBox& other);
   void Resize(int width, int height, bool flag);
   void sub_89C080();
+  std::string ResolvePlayerTags(const char* name);
 
   // INLINED
   std::list<std::vector<UIItemTagButton*>>& ItemTags() {
