@@ -10,6 +10,7 @@
 #include <cstring>
 #include <windows.h>
 #include <timeapi.h>
+#include <memory>
 #include <string>
 
 // OFFSET: 0x00C7C110
@@ -308,4 +309,45 @@ CRagConnection& GetRagConnection() {
   // GLOBAL: gl_24490
   static CRagConnection connection;
   return connection;
+}
+
+struct ConnectionBlock {
+  /* 00000 */ ConnectionBlock* next;
+  /* 00004 */ unsigned char data[0x41004];
+};
+
+struct ConnectionBlockList {
+  /* 0000 */ ConnectionBlock* head;
+  /* 0004 */ int* count;
+};
+
+namespace {
+  // GLOBAL: gl_25135
+  constexpr unsigned char g_codeMarker[6] = {0x33, 0xC0, 0x33, 0xDB, 0x33, 0xC9};
+}
+
+// OFFSET: 0x00C7D930
+// FUNCTION: fn_20410
+void ReleaseConnectionBlocks(int, ConnectionBlockList& list) {
+  *list.count = 0;
+  ConnectionBlock* block = list.head;
+  while (block) {
+    ConnectionBlock* next = block->next;
+    std::allocator<ConnectionBlock>().deallocate(block, 1);
+    block = next;
+  }
+}
+
+// OFFSET: 0x00C7DF30
+
+// OFFSET: 0x00C7E030
+// FUNCTION: fn_20412
+const unsigned char* __stdcall FindCodeMarker(const unsigned char* code) {
+  if (std::memcmp(code, g_codeMarker, sizeof(g_codeMarker)) != 0) {
+    do {
+      ++code;
+    } while (*reinterpret_cast<const int*>(code) != *reinterpret_cast<const int*>(g_codeMarker) ||
+             *reinterpret_cast<const short*>(code + 4) != *reinterpret_cast<const short*>(g_codeMarker + 4));
+  }
+  return code;
 }
