@@ -34,8 +34,8 @@ class UINewMakeCharWnd : public UIFrameWnd {
 public:
   void Paint() override;
   void Slot19() override;
+  void sub_7DBFD0();
 
-protected:
   /* 00B4 */ int m_viewX;
   /* 00B8 */ int m_viewY;
   /* 00BC */ std::string m_raceActions[5];
@@ -46,9 +46,28 @@ protected:
   /* 01FC */ int unknown_01FC;
   /* 0200 */ int m_action;
   /* 0204 */ int m_frame;
-  /* 0208 */ unsigned char unknown_0208[0xBC];
+  /* 0208 */ unsigned char unknown_0208[0x54];
+  /* 0264 */ short m_job;
+  /* 0266 */ short m_head;
+  /* 0268 */ short m_costumeJob;
+  /* 026A */ unsigned char unknown_026A[0x0E];
+  /* 0278 */ short m_headPalette;
+  /* 027A */ short m_bodyPalette;
+  /* 027C */ unsigned char unknown_027C[0x42];
+  /* 02BE */ unsigned char m_sex;
+  /* 02BF */ unsigned char unknown_02BF[0x05];
   /* 02C4 */ int m_race;
   /* 02C8 */ UIWindow* m_raceViews[2];
 };
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(offsetof(UINewMakeCharWnd, m_job) == 0x264);
+static_assert(offsetof(UINewMakeCharWnd, m_head) == 0x266);
+static_assert(offsetof(UINewMakeCharWnd, m_costumeJob) == 0x268);
+static_assert(offsetof(UINewMakeCharWnd, m_headPalette) == 0x278);
+static_assert(offsetof(UINewMakeCharWnd, m_bodyPalette) == 0x27A);
+static_assert(offsetof(UINewMakeCharWnd, m_sex) == 0x2BE);
+static_assert(offsetof(UINewMakeCharWnd, m_race) == 0x2C4);
+#endif
 
 #endif

@@ -22,6 +22,7 @@ struct granny_model_instance;
 
 int GetSlotLayer(int slot);
 bool IsReadyOrAttackAction(int action);
+std::string GetBodyImfName(int job, int sex, int head, int costumeJob);
 
 class CPc : public CGameActor {
 public:

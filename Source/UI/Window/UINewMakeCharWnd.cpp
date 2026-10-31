@@ -1,7 +1,10 @@
 #include "UI/Window/UINewMakeCharWnd.h"
 
+#include "Client/Session.h"
+#include "Contents/Actors/Pc.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/MessageTable.h"
+#include "Contents/SpriteRidingOffset.h"
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Render/Renderer.h"
 #include "Render/Textures/SpriteAtlas.h"
@@ -210,4 +213,38 @@ void UIHairStyleButton::Slot15(int width, int height) {
   this->m_preview->SetSize(36, 37);
   this->AddChild(this->m_preview);
   this->SendMsg(nullptr, 40, 0, 0, 0, 0);
+}
+
+// OFFSET: 0x007DBFD0
+// FUNCTION: fn_09626
+void UINewMakeCharWnd::sub_7DBFD0() {
+  const std::string bodyAct = GetBodyActionResourceName(this->m_job, this->m_sex, this->m_job, 0);
+  this->m_raceActions[0].assign(bodyAct);
+
+  const std::string bodySpr = g_session.GetBodySprName(this->m_job, this->m_sex, this->m_job, 0);
+  this->m_raceSprites[0].assign(bodySpr);
+
+  int head = this->m_head;
+  const std::string headAct = g_session.GetHeadActName(this->m_job, this->m_sex, &head);
+  this->m_raceActions[1].assign(headAct);
+
+  const std::string headSpr = g_session.GetHeadSprName(this->m_job, this->m_sex, &head);
+  this->m_raceSprites[1].assign(headSpr);
+
+  const int bodyPalette = this->m_bodyPalette;
+  this->m_head = static_cast<short>(head);
+  this->m_racePaletteEnabled[1] = bodyPalette;
+  if (bodyPalette > 0) {
+    const std::string bodyPal = g_session.GetBodyPalName(this->m_job, this->m_sex, bodyPalette, this->m_job, 0, 0);
+    this->m_racePalettes[1].assign(bodyPal);
+  }
+
+  const int headPalette = this->m_headPalette;
+  this->m_racePaletteEnabled[0] = headPalette;
+  if (headPalette > 0) {
+    const std::string headPal = g_session.GetHeadPalName(head, this->m_job, this->m_sex, headPalette);
+    this->m_racePalettes[0].assign(headPal);
+  }
+
+  this->m_raceOffsets = GetBodyImfName(this->m_job, this->m_sex, this->m_head, this->m_costumeJob);
 }
