@@ -8,6 +8,7 @@
 class UISelCharForUServerWnd : public UIFrameWnd {
 public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
+  void Slot27(int x, int y) override;
 
 protected:
   /* 00B4 */ unsigned char unknown_00B4[0x18E8];

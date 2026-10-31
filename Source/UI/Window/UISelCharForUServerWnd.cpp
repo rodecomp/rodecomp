@@ -67,3 +67,10 @@ int UISelCharForUServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
 
   return 0;
 }
+
+// OFFSET: 0x00932B40
+// FUNCTION: fn_12714
+void UISelCharForUServerWnd::Slot27(int x, int y) {
+  reinterpret_cast<void(__thiscall*)(UISelCharForUServerWnd*, int, int, int)>(0x0093F1F0)(this, x, y, -1);
+  UIFrameWnd::Slot27(x, y);
+}
