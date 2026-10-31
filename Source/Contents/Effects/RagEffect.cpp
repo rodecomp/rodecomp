@@ -6120,27 +6120,27 @@ void CRagEffect::LineStreakTextured(std::int16_t kind, const char* name) {
 // OFFSET: 0x00C6FC10
 // FUNCTION: fn_20310
 void CRagEffect::ThunderFreeze(int) {
-  const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  const vector3d& origin = this->state.parent->render.position;
+  this->render.position.x = origin.x;
+  this->render.position.y = origin.y;
+  this->render.position.z = origin.z;
 
   if (this->state.stateCnt != 0) {
     return;
   }
 
-  int count = static_cast<int>(this->state.deltaPos[0]);
+  int total = static_cast<int>(this->state.deltaPos[0]);
 
-  if (count >= 6) {
-    count = 5;
-  } else if (count < 1) {
+  if (total > 5) {
+    total = 5;
+  } else if (total <= 0) {
     return;
   }
 
-  int phase = 0;
+  const vector3d offset = {0.0f, 0.0f, 0.0f};
 
-  do {
-    this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 145, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  for (int bolt = 0; bolt < total; ++bolt) {
+    this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 145, offset.x, offset.y, offset.z, WorldObjects())->state;
     this->state.unknown_11C84->renderFlag = 5;
     this->state.unknown_11C84->duration = this->state.duration;
     this->state.unknown_11C84->slots[0].life = 1;
@@ -6150,7 +6150,7 @@ void CRagEffect::ThunderFreeze(int) {
     this->state.unknown_11C84->slots[0].height[3] = static_cast<float>(std::max(rand() % 360, 0));
     this->state.unknown_11C84->slots[0].height[4] = static_cast<float>(std::max(rand() % 360, 0));
     this->state.unknown_11C84->slots[0].height[5] = static_cast<float>(std::max(rand() % 360, 0));
-    this->state.unknown_11C84->slots[0].height[6] = static_cast<float>(phase) / this->state.deltaPos[0];
+    this->state.unknown_11C84->slots[0].height[6] = static_cast<float>(bolt * 360) / this->state.deltaPos[0];
     this->state.unknown_11C84->slots[0].height[7] = -15.0f;
     this->state.unknown_11C84->slots[0].distance = 1.0f;
     this->state.unknown_11C84->slots[0].height[10] = 0.0f;
@@ -6162,16 +6162,14 @@ void CRagEffect::ThunderFreeze(int) {
     this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\thunder_center.bmp", 0, false, true, false);
     this->state.unknown_11C84->textures[1] = g_texMgr.Load("effect\\freeze_a.bmp", 0, false, true, false);
 
-    for (int index = 0; index < 4; ++index) {
-      this->state.unknown_11C84->slots[index].process = index * -20;
-      this->state.unknown_11C84->slots[index].fullDisplayAngle = static_cast<std::int16_t>(std::max(rand() % 360, 0));
-      this->state.unknown_11C84->slots[index].maxHeight = 3.0f;
-      this->state.unknown_11C84->slots[index].rotStart = static_cast<std::int16_t>(std::max(rand() % 360, 0));
-      this->state.unknown_11C84->slots[index].riseAngle = 200;
+    for (int slot = 0; slot < 4; ++slot) {
+      this->state.unknown_11C84->slots[slot].process = -20 * slot;
+      this->state.unknown_11C84->slots[slot].fullDisplayAngle = static_cast<std::int16_t>(std::max(rand() % 360, 0));
+      this->state.unknown_11C84->slots[slot].maxHeight = 3.0f;
+      this->state.unknown_11C84->slots[slot].rotStart = static_cast<std::int16_t>(std::max(rand() % 360, 0));
+      this->state.unknown_11C84->slots[slot].riseAngle = 200;
     }
-
-    phase += 360;
-  } while (--count != 0);
+  }
 }
 
 // OFFSET: 0x00C4A220
@@ -14067,6 +14065,61 @@ static __forceinline void SetAniClipCorners(RenderVertex* vertices, const EZeffe
 }
 
 // OFFSET: 0x00C37DC0
+// FUNCTION: fn_20098
+void CRagEffect::RenderAniClip(EZeffectClip* clip, const EZeffectTransform* transform, int, const matrix& view) {
+  float screenX;
+  float screenY;
+  float rhw;
+  g_renderer->ProjectViewport(&this->state.parent->render.position.x, view.values, &screenX, &screenY, &rhw);
+  const float scale = g_renderer->ScaleDistance(rhw);
+
+  RenderPrimitive* primitive = g_renderer->primitives.Acquire();
+  RenderVertex* vertices = primitive->vertices;
+  SetAniClipCorners(vertices, *transform);
+
+  const int frame = static_cast<int>(transform->aniframe);
+  CTexture* texture = clip->Texture(frame < 0 ? 0 : frame);
+  const float scaleU = static_cast<float>(texture->ImageWidth()) / static_cast<float>(texture->TextureWidth());
+  const float scaleV = static_cast<float>(texture->ImageHeight()) / static_cast<float>(texture->TextureHeight());
+
+  for (int i = 0; i < 4; ++i) {
+    vertices[i].u = scaleU * vertices[i].u;
+    vertices[i].v = scaleV * vertices[i].v;
+  }
+
+  const float sine = ClientSin(static_cast<float>(transform->rz / 2.8444444444444) / 180.0f * 3.141592f);
+  const float cosine = ClientCos(static_cast<float>(transform->rz / 2.8444444444444) / 180.0f * 3.141592f);
+
+  for (int i = 0; i < 4; ++i) {
+    const float rotated = vertices[i].x * sine + vertices[i].y * cosine;
+    vertices[i].x = ((vertices[i].x * cosine - vertices[i].y * sine) + (transform->x - 320.0f)) * scale + this->state.tlvertX;
+
+    if (IsScreenShakeActive()) {
+      const float shake = screenY - this->state.tlvertY;
+      vertices[i].y = (this->state.tlvertY - ((transform->y - 240.0f) + rotated) * scale) + (shake + shake);
+    } else {
+      vertices[i].y = ((transform->y - 240.0f) + rotated) * scale + this->state.tlvertY;
+    }
+  }
+
+  const int red = static_cast<unsigned char>(static_cast<int>(transform->crR));
+  const int green = static_cast<unsigned char>(static_cast<int>(transform->crG));
+  const int blue = static_cast<unsigned char>(static_cast<int>(transform->crB));
+  const std::uint32_t color = ((((((static_cast<int>(transform->crA) << 8) + red) << 8) + green) << 8) + blue);
+
+  for (int i = 0; i < 4; ++i) {
+    vertices[i].diffuse = color;
+    vertices[i].specular = 0xFFFFFFFF;
+    vertices[i].z = 3.102122e-05f;
+    vertices[i].rhw = rhw;
+  }
+
+  primitive->texture = texture;
+  primitive->unknown_0018 = transform->srcalpha;
+  primitive->unknown_001C = transform->destalpha;
+  primitive->unknown_0020 = transform->mtpreset;
+  g_renderer->queues.Submit(primitive, 5, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+}
 
 // OFFSET: 0x00C38AD0
 // FUNCTION: fn_20099
