@@ -668,6 +668,14 @@ public:
   void ReceiveItemConsumed(const unsigned char* packet);
   void ReceivePartyLeaderChange(const unsigned char* packet);
   void ReceiveItemSellResult(const unsigned char* packet);
+  std::FILE* OpenRandomOptionSimulatorFile(const std::string& folder, const std::string& itemName);
+  void ReceiveRandomOptionSimulation(const unsigned char* packet);
+  void ReceiveBuyingStoreOpenResult(const unsigned char* packet);
+  void ReceiveExpChange(const unsigned char* packet);
+  void ReceiveItemObtainNotice(const unsigned char* packet);
+  void ReceiveTakeOffEquipItemResult(const unsigned char* packet);
+  void ReceiveBuyingStoreSellResult(const unsigned char* packet);
+  void ReceivePartyItemPickupNotice(const unsigned char* packet);
 };
 
 void LaunchRollingCutterEffect(CGameActor* actor);

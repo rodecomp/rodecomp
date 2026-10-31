@@ -1834,45 +1834,15 @@ void CGameMode::sub_D08390(const unsigned char* packet) {
 }
 
 // OFFSET: 0x00D08110
-void __stdcall sub_D08110(int field8, int itemIdWord, int quantityWord, int field14, int field18) {
-  const int itemId = static_cast<short>(itemIdWord);
-  const int quantity = static_cast<short>(quantityWord);
-  ITEM_INFO item = g_session.FindItem1758(static_cast<unsigned int>(itemId));
-  item.unknown_0000[1] = static_cast<std::uint32_t>(itemId);
-  item.quantity = quantity;
-  item.unknown_0014[0] = static_cast<std::uint32_t>(field14);
-  UIWindow* window = reinterpret_cast<UIWindow*(__thiscall*)(UIWindowMgr*, int)>(0x00A978D0)(&g_windowMgr, 0x101);
-  window->SendMsg(nullptr, 0x17, reinterpret_cast<std::intptr_t>(&item), field18, field8, 0);
-  reinterpret_cast<ClientItemLists*>(&g_session)->RemoveItem1758(item);
-  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-  std::string name;
-  reinterpret_cast<void(__thiscall*)(ITEM_INFO*, std::string*)>(0x006D59A0)(&item, &name);
-  const std::string text = FormatOwnedString(LookupMessage(0xE7), name.c_str(), item.quantity);
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF64, 0, 0, 0);
-  if (g_vendingOpenWindow != nullptr) {
-    g_vendingOpenWindow->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
-  }
-  if (reinterpret_cast<const SessionMessengerContext*>(&g_session)->GetList9Size() == 0) {
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x137)), 0xFF00, 0, 0, 0);
-    if (g_vendingOpenResultWindow != nullptr) {
-      g_vendingOpenResultWindow->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
-      g_vendingOpenResultWindow->SendMsg(nullptr, 6, 0xC9, 0, 0, 0);
-    }
-  } else if (g_vendingOpenResultWindow != nullptr) {
-    g_vendingOpenResultWindow->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
-  }
-  if (g_vendingOpenResultWindow != nullptr && g_vendingSaleAlarm) {
-    g_soundMgr->PlayWave("effect\\ef_steal.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-  }
-}
 
 // OFFSET: 0x00D08670
+// FUNCTION: fn_21592
 void __declspec(noinline) __stdcall sub_D08670(int field14, int itemId, int quantity, int field8, int fieldC, int field10) {
   ITEM_INFO item = g_session.FindItem1758ByItemId(itemId);
   item.SetItemId(itemId);
   item.quantity = quantity;
   item.unknown_0014[0] = static_cast<std::uint32_t>(field8);
-  UIWindow* window = reinterpret_cast<UIWindow*(__thiscall*)(UIWindowMgr*, int)>(0x00A978D0)(&g_windowMgr, 0x102);
+  UIWindow* window = g_windowMgr.EnsureWindow(0x102);
   window->SendMsg(nullptr, 0x17, reinterpret_cast<std::intptr_t>(&item), field10, field14, 0);
   reinterpret_cast<ClientItemLists*>(&g_session)->RemoveItem1758ByItemId(item);
   if (g_saleOpenWindow != nullptr) {
@@ -6761,3 +6731,36 @@ void CGameMode::ReceiveItemSellResult(const unsigned char* packet) {
     *reinterpret_cast<const std::int16_t*>(packet + 2), *reinterpret_cast<const std::int16_t*>(packet + 4)
   );
 }
+
+// OFFSET: 0x00D58F60
+
+#pragma pack(push, 1)
+struct RandomOptionSimulationRecord {
+  /* 0000 */ int optionId;
+  /* 0004 */ int unknown_0004;
+  /* 0008 */ int unknown_0008;
+  /* 000C */ unsigned char optionType;
+  /* 000D */ int rate;
+  /* 0011 */ int unknown_0011;
+  /* 0015 */ int unknown_0015;
+  /* 0019 */ int unknown_0019;
+  /* 001D */ int unknown_001D;
+  /* 0021 */ int unknown_0021;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(RandomOptionSimulationRecord) == 0x25);
+
+// OFFSET: 0x00D606B0
+
+// OFFSET: 0x00D2A020
+
+// OFFSET: 0x00D316D0
+
+// OFFSET: 0x00D4B050
+
+// OFFSET: 0x00D8A460
+
+// OFFSET: 0x00D2A290
+
+// OFFSET: 0x00D31390
