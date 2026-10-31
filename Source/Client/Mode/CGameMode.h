@@ -16,6 +16,7 @@
 
 class CView;
 class UIBroadcastBalloon;
+class UINameBalloonText;
 class CMousePointer;
 class CCorpse;
 class CMsgEffect;
@@ -119,13 +120,15 @@ public:
   /* 026E */ unsigned char unknown_026E[0x1A];
   /* 0288 */ float unknown_0288;
   /* 028C */ unsigned char unknown_028C[0x08];
-  /* 0294 */ char unknown_0294[0x20];
+  /* 0294 */ char unknown_0294[0x18];
+  /* 02AC */ UINameBalloonText* nameBalloon;
+  /* 02B0 */ UINameBalloonText* itemNameBalloon;
   /* 02B4 */ UIWindow* itemWindow;
   /* 02B8 */ unsigned char unknown_02B8[0x14];
   /* 02CC */ int unknown_02CC;
   /* 02D0 */ unsigned char unknown_02D0[0x04];
   /* 02D4 */ int unknown_02D4;
-  /* 02D8 */ unsigned char unknown_02D8[0x04];
+  /* 02D8 */ std::uint32_t balloonActorId;
   /* 02DC */ int unknown_02DC;
   /* 02E0 */ int unknown_02E0;
   /* 02E4 */ unsigned char unknown_02E4[0x08];
@@ -161,12 +164,13 @@ public:
   /* 05E8 */ std::uint32_t replayPauseTick;
   /* 05EC */ unsigned char unknown_05EC[0x10];
   /* 05FC */ UIWindow* unknown_05FC;
-  /* 0600 */ unsigned char unknown_0600[0x4];
+  /* 0600 */ std::uint32_t unknown_0600;
   /* 0604 */ std::list<UIWindow*> unknown_0604;
   /* 060C */ unsigned char unknown_060C[0x4];
   /* 0610 */ std::vector<std::uint32_t> spriteMirrorActorIds;
   /* 061C */ UIBroadcastBalloon* broadcastBalloon;
-  /* 0620 */ unsigned char unknown_0620[0x8];
+  /* 0620 */ UIBroadcastBalloon* noticeBalloon;
+  /* 0624 */ unsigned char unknown_0624[0x4];
   /* 0628 */ std::unordered_set<int> unknown_0628;
   /* 0648 */ unsigned char unknown_0648[0x28];
 
@@ -384,6 +388,10 @@ public:
   void UpdateUnknown0628(int id, bool add);
   void ClearUnknown0458();
   void SetDragIds(int source, int id);
+  void EnsureNameBalloon(UINameBalloonText*& balloon);
+  void ShowNoticeBalloon(const std::vector<std::string>* lines);
+  void UpdateBalloons();
+  void ChangeZoneServer(std::string mapName, int x, int y, int ip, int port, std::string host);
   const char* Unknown04DCText();
   CPlayer* Player();
   MinimapMarker* FindMinimapMarker(std::uint32_t key);
@@ -500,6 +508,7 @@ public:
     int eleventh, int twelfth, int thirteenth, int fourteenth, std::string text, int fifteenth
   );
   int Run() override;
+  void End() override;
   void TargetActorByAid(int aid);
   void Slot7(int value) override;
   void PlaceWindowAtActor(UIWindow* window, CGameActor* actor);
@@ -752,9 +761,11 @@ static_assert(sizeof(CGameMode) == 0x670);
 
 extern char g_pendingWhisperCount;
 extern int g_whisperRecord;
+void sub_CCFF10();
 extern unsigned char g_gameModePacketBuffer[0x10000];
 extern int g_unknown_01738268;
 extern int g_unknown_0173826C;
 extern int g_unknown_01738270;
+void __stdcall OpenWordDisplay(CGameActor* actor);
 
 #endif

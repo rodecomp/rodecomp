@@ -20,6 +20,7 @@ struct BalloonTextContext {
 class UIBalloonText : public UIWindow {
   friend class UIBalloonOpenBtn;
   friend class UIHotKeyWnd;
+  friend class CGameMode;
 
 public:
   UIBalloonText(UIWindowContext& windows, BalloonTextContext& text);

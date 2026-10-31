@@ -1468,6 +1468,24 @@ void CGameMode::InitializeCamera() {
 }
 
 #include "Contents/Schedule/Schedule.h"
+#include "UI/Text/UINameBalloonText.h"
+#include "UI/Text/UITransBalloonText.h"
+#include "Contents/Actors/Pc.h"
+#include "ActorPickNode.h"
+#include "Client/Registry.h"
+#include "Contents/Schedule/CheckGDISchedule.h"
+#include "Contents/Schedule/TimeScheduler.h"
+#include "Render/DX9/RendererFrameDX9.h"
+#include "Render/Textures/TextureCache.h"
+#include "Contents/ClientItemLists.h"
+#include "Contents/Jobs/JobInheritance.h"
+#include "Network/Packets/PacketId.h"
+#include "Security/ReassemblyPacketMgr.h"
+#include "UI/Dialogs/UIWaitWnd.h"
+#include <chrono>
+#include <winsock2.h>
+#include "UI/Window/UIWordDisplayWnd.h"
+#include "Contents/Actors/ActorStateFlags.h"
 
 class CPingLiveSchedule : public CSchedule {
 public:
@@ -2083,4 +2101,350 @@ std::vector<unsigned char> CGameMode::SaveGroundItems() {
   }
 
   return data;
+}
+
+// OFFSET: 0x00CEFFC0
+// FUNCTION: fn_21409
+UIBroadcastBalloon* CGameMode::EnsureBroadcastBalloon() {
+  if (!this->broadcastBalloon) {
+    this->broadcastBalloon = new UIBroadcastBalloon(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIButtonContext*>(nullptr));
+    this->broadcastBalloon->SetSize(g_renderer->viewport.width, 50);
+    this->broadcastBalloon->Move(0, 51);
+    g_windowMgr.AddRenderedFront(this->broadcastBalloon);
+  }
+  return this->broadcastBalloon;
+}
+
+// OFFSET: 0x00CDBB10
+// FUNCTION: fn_21311
+void CGameMode::EnsureNameBalloon(UINameBalloonText*& balloon) {
+  if (balloon) {
+    return;
+  }
+
+  g_serviceOptions.Get(0x5C);
+  balloon = new UINameBalloonText(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<BalloonTextContext*>(nullptr));
+  balloon->SetSize(8, 8);
+  g_windowMgr.AddRenderedFront(balloon);
+}
+
+// OFFSET: 0x00CDD240
+// FUNCTION: fn_21315
+void __stdcall OpenWordDisplay(CGameActor* actor) {
+  if (actor->unknown_018C || IsAdminAccount(actor->render.accountId)) {
+    return;
+  }
+
+  if (!IsAdminAccount(g_session.m_aid)) {
+    if (StateFlag02(actor->Slot13()) || StateFlag01(actor->Slot13()) || StateFlag06(actor->Slot13())) {
+      return;
+    }
+  }
+
+  UIWordDisplayWnd* window = new UIWordDisplayWnd(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIFrameContext*>(nullptr));
+  window->SendMsg(nullptr, 34, actor->render.accountId, 0, 0, 0);
+  g_windowMgr.AddRendered(window);
+  actor->unknown_018C = reinterpret_cast<int>(window);
+}
+
+// OFFSET: 0x00CFF070
+// FUNCTION: fn_21435
+void CGameMode::ShowNoticeBalloon(const std::vector<std::string>* lines) {
+  if (!lines || lines->empty()) {
+    return;
+  }
+
+  UIBroadcastBalloon* balloon = this->noticeBalloon;
+  if (!balloon) {
+    this->noticeBalloon = new UIBroadcastBalloon(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIButtonContext*>(nullptr));
+    this->noticeBalloon->SetSize(g_renderer->viewport.width, 50);
+    this->noticeBalloon->Move(0, 130 * g_renderer->viewport.height / 480);
+    g_windowMgr.AddRenderedFront(this->noticeBalloon);
+    balloon = this->noticeBalloon;
+    if (!balloon) {
+      return;
+    }
+  }
+
+  BroadcastBalloonMessage message{{}, {}, std::chrono::seconds(20), 12, 0x40000000, 0, 0};
+  message.start = std::chrono::system_clock::now();
+  for (std::vector<std::string>::const_iterator it = lines->begin(); it != lines->end(); ++it) {
+    message.lines.push_back(BroadcastBalloonLine{*it, 0xFFFF, 0});
+  }
+  balloon->AddMessage(2, message);
+}
+
+#pragma pack(push, 1)
+struct ZoneEnterPacket {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::uint32_t aid;
+  /* 0006 */ std::uint32_t gid;
+  /* 000A */ int authCode;
+  /* 000E */ std::uint32_t clientTime;
+  /* 0012 */ unsigned char sex;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(ZoneEnterPacket) == 0x13);
+
+// OFFSET: 0x00D06CB0
+// FUNCTION: fn_21579
+void CGameMode::ChangeZoneServer(std::string mapName, int x, int y, int ip, int port, std::string host) {
+  g_session.m_startTimeTicks = std::chrono::system_clock::now().time_since_epoch().count();
+  g_session.m_loginTimeTicks = std::chrono::system_clock::now().time_since_epoch().count();
+  g_session.SetOption(20, 1, 0);
+  this->nameCard.Clear();
+  g_session.ClearEntryList5BD4();
+  g_session.ClearShortcutSlots();
+  g_session.ClearSecondaryShortcutSlots();
+  g_session.unknown_6184 = 0;
+  g_session.ResetInventoryItems();
+  reinterpret_cast<ClientItemLists&>(g_session).ClearPartyMembers();
+
+  std::string name = mapName;
+  name.resize(name.size() - 4);
+  g_session.SetNavigationPlayerMap(name.c_str());
+  g_session.m_playerX = x;
+  g_session.m_playerY = y;
+
+  in_addr address;
+  address.s_addr = static_cast<ULONG>(ip);
+  StringFormat(g_zoneServerIp, sizeof(g_zoneServerIp), static_cast<std::size_t>(-1), inet_ntoa(address));
+  g_zoneServerPort = port;
+  StringFormat(g_zoneServerHost, sizeof(g_zoneServerHost), static_cast<std::size_t>(-1), "%s", host.c_str());
+  GetRagConnection().Close();
+  g_activeSkillEffects.clear();
+
+  *reinterpret_cast<int*>(this->unknown_01F8 + 0x4C) = 1;
+  *reinterpret_cast<std::uint32_t*>(this->unknown_01F8 + 0x50) = timeGetTime();
+  this->scene->player->SendMsg(nullptr, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  if (g_screenShakeDuration > 0) {
+    g_screenShakeDuration = g_screenShakeMode == 2 ? 10001 : g_screenShakeDuration;
+  }
+
+  if (g_replayAnimationScaling == 0) {
+    this->unknown_0018 = GetRagConnection().Connect(*reinterpret_cast<const ConnectionEndpoint*>(g_zoneServerIp));
+    if (!this->unknown_0018) {
+      GetRagConnection().Close();
+      if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(1), 1, true, true, 0, "Message", 280, 120, 0) != 269) {
+        this->SendMsg(141, 0, 0, 0, 0);
+      }
+      return;
+    }
+
+    g_nProtectGameGuardMgr->IncrementCounter();
+    g_packetReassembler->Notify(1);
+    GetRagConnection().SendDeadline() = timeGetTime() + 1000;
+
+    ZoneEnterPacket packet;
+    packet.packetType = ID_CZ_ENTER2;
+    packet.clientTime = timeGetTime();
+    packet.aid = g_session.m_aid;
+    packet.gid = g_session.m_gid;
+    packet.authCode = reinterpret_cast<const int*>(g_session.unknown_0E9C)[2];
+    packet.sex = static_cast<unsigned char>(g_session.SyncUnknown0E98());
+    GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
+    g_session.SetOption(17, 1, 0);
+    GetRagConnection().SetBlock(1);
+  }
+
+  static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(6))->SetMessage(LookupMessage(122), 16, 1);
+  g_windowMgr.unknown_0474 = 185;
+}
+
+// OFFSET: 0x00CE1FA0
+// FUNCTION: fn_21333
+void CGameMode::UpdateBalloons() {
+  if (this->nameBalloon) {
+    if (*reinterpret_cast<int*>(&this->unknown_02B8[0x0C])) {
+      g_windowMgr.Schedule(this->nameBalloon);
+      this->nameBalloon = nullptr;
+    } else {
+      *reinterpret_cast<int*>(&this->unknown_02B8[0x0C]) = 1;
+      if (this->balloonActorId == g_session.m_aid) {
+        this->PlaceWindowAtActor(this->nameBalloon, reinterpret_cast<CGameActor*>(this->scene->player));
+      } else if (CRenderObject* actor = this->scene->GetGameActorByAID(this->balloonActorId)) {
+        this->PlaceWindowAtActor(this->nameBalloon, reinterpret_cast<CGameActor*>(actor));
+      } else if (CItem* item = this->scene->GetItemByAID(this->balloonActorId)) {
+        this->PlaceWindowAtActor(this->nameBalloon, reinterpret_cast<CGameActor*>(item));
+      }
+    }
+  }
+
+  if (this->itemNameBalloon) {
+    if (*reinterpret_cast<int*>(&this->unknown_02B8[0x10])) {
+      g_windowMgr.Schedule(this->itemNameBalloon);
+      this->itemNameBalloon = nullptr;
+    } else {
+      *reinterpret_cast<int*>(&this->unknown_02B8[0x10]) = 1;
+      if (this->balloonActorId == g_session.m_aid) {
+        this->PlaceWindowAtActor(this->itemNameBalloon, reinterpret_cast<CGameActor*>(this->scene->player));
+      } else if (CRenderObject* actor = this->scene->GetGameActorByAID(this->balloonActorId)) {
+        this->PlaceWindowAtActor(this->itemNameBalloon, reinterpret_cast<CGameActor*>(actor));
+      } else if (CItem* item = this->scene->GetItemByAID(this->balloonActorId)) {
+        this->PlaceWindowAtActor(this->itemNameBalloon, reinterpret_cast<CGameActor*>(item));
+      }
+    }
+  }
+
+  UIWindow*& skillBalloon = *reinterpret_cast<UIWindow**>(&this->unknown_02B8[0x00]);
+  UIWindow*& hintBalloon = *reinterpret_cast<UIWindow**>(&this->unknown_02B8[0x04]);
+  int& shownSkill = *reinterpret_cast<int*>(&this->unknown_045C[0x04]);
+  if (this->unknown_0408 == nullptr) {
+    if (skillBalloon) {
+      g_windowMgr.Schedule(skillBalloon);
+      skillBalloon = nullptr;
+    }
+    if (hintBalloon) {
+      g_windowMgr.Schedule(hintBalloon);
+      hintBalloon = nullptr;
+    }
+  } else {
+    bool created = false;
+    if (!skillBalloon) {
+      skillBalloon = new UITransBalloonText(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<BalloonTextContext*>(nullptr));
+      skillBalloon->SetSize(8, 8);
+      g_windowMgr.AddRendered(skillBalloon);
+      created = true;
+    }
+
+    if (shownSkill != this->unknown_040C || created == true) {
+      std::string text;
+      shownSkill = this->unknown_040C;
+      switch (shownSkill) {
+      case 10000: {
+        const std::uint8_t source[] = {0xBC, 0x82, 0x2D, 0x77, 0xD2, 0xDD, 0xC6, 0x1F, 0xB2, 0x8C, 0x33, 0x70, 0xD3, 0xCA, 0xD1, 0x3F};
+        thread_local GameModeEncryptedName<sizeof(source), 0x3FA3AFA7035DE3FFULL> name(source);
+        text.assign(name.Text());
+        break;
+      }
+      case 20000: {
+        const std::uint8_t source[] = {0x09, 0xEB, 0x66, 0x1C, 0x26, 0xAE, 0x07, 0x96, 0x38, 0xF5, 0x71, 0x04, 0x75, 0x86, 0x42, 0xDB};
+        thread_local GameModeEncryptedName<sizeof(source), 0xDB27CB557D038759ULL> name(source);
+        text = name.Text();
+        break;
+      }
+      case 20001: {
+        const std::uint8_t source[] = {0xCF, 0xD8, 0x9B, 0x0E, 0xCE, 0x19, 0xF9, 0x30, 0xEF, 0xC4, 0xBB};
+        thread_local GameModeEncryptedName<sizeof(source), 0x51BB39B763BBBD8DULL> name(source);
+        text = name.Text();
+        break;
+      }
+      case 40000: {
+        const std::uint8_t source[] = {0xAC, 0x4C, 0x27, 0x79, 0xB0, 0xA3, 0x86, 0xA7, 0xA2, 0x42, 0x39, 0x7E, 0xB1, 0xB4, 0x91, 0x87};
+        thread_local GameModeEncryptedName<sizeof(source), 0x87E3D1C50D572DEFULL> name(source);
+        text = name.Text();
+        break;
+      }
+      default:
+        if (g_session.IsState291To303(shownSkill)) {
+          const std::uint8_t source[] = {0x3E, 0x4A, 0xC2, 0xE6, 0x2F};
+          thread_local GameModeEncryptedName<sizeof(source), 0xB7AFBD2FD9FD7501ULL> name(source);
+          text = name.Text();
+        } else {
+          text = CSkillInfo::DisplayName(*g_luaScript, shownSkill);
+        }
+        break;
+      }
+
+      UITransBalloonText* balloon = static_cast<UITransBalloonText*>(skillBalloon);
+      balloon->SetText(text.c_str(), 35);
+      balloon->Move((g_renderer->viewport.width - 640) / 2 - balloon->geometry.width / 2 + 320, 46 * g_renderer->viewport.height / 480);
+      balloon->m_textColor = 0x32FF32;
+      balloon->m_outlineColor = 0;
+    }
+
+    if (!hintBalloon) {
+      UITransBalloonText* balloon = new UITransBalloonText(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<BalloonTextContext*>(nullptr));
+      hintBalloon = balloon;
+      balloon->SetSize(8, 8);
+      g_windowMgr.AddRendered(hintBalloon);
+      static_cast<UITransBalloonText*>(hintBalloon)->SetText(LookupMessage(234), 35);
+      hintBalloon->Move((g_renderer->viewport.width - 640) / 2 - hintBalloon->geometry.width / 2 + 320, 400 * g_renderer->viewport.height / 480);
+      static_cast<UITransBalloonText*>(hintBalloon)->m_textColor = 0x32FF32;
+      static_cast<UITransBalloonText*>(hintBalloon)->m_outlineColor = 0;
+    }
+  }
+
+  if (this->itemWindow) {
+    CPlayer* player = this->scene->player;
+    const int x = player->render.screenX - 30;
+    const int y = player->render.screenY;
+    const int offset = static_cast<int>(static_cast<float>(12 * g_renderer->viewport.height / 480) * player->render.unknown_005C);
+    if (IsScreenShakeActive()) {
+      this->itemWindow->Move(x, y - offset);
+    } else {
+      this->itemWindow->Move(x, offset + y);
+    }
+  }
+
+  if (this->unknown_05FC && timeGetTime() > this->unknown_0600 + 10000) {
+    g_windowMgr.Schedule(this->unknown_05FC);
+    this->unknown_05FC = nullptr;
+  }
+}
+
+// OFFSET: 0x00CDD7A0
+// FUNCTION: fn_21319
+void CGameMode::End() {
+  CSchedule* schedule = reinterpret_cast<CTimeScheduler*>(g_timeScheduler)->FindSchedule(g_session.m_pingLiveSchedule);
+  if (schedule) {
+    schedule->active = false;
+  }
+  reinterpret_cast<CTimeScheduler*>(g_timeScheduler)->sub_BA95F0(4);
+  this->StopReplayRecording();
+  g_soundMgr->EndSamples();
+
+  if (this->scene) {
+    this->scene->OnExitFrame();
+    delete this->scene;
+  }
+
+  if (this->camera) {
+    void** vtable = static_cast<void**>(this->camera->vtable);
+    reinterpret_cast<void(__thiscall*)(CView*)>(vtable[2])(this->camera);
+    reinterpret_cast<void(__thiscall*)(CView*, int)>(static_cast<void**>(this->camera->vtable)[0])(this->camera, 1);
+  }
+
+  g_actorPickNode.Clear();
+  ResourceMgr::Instance().ClearUnused("rsm");
+  ResourceMgr::Instance().ClearUnused("rsw");
+  ResourceMgr::Instance().ClearUnused("gat");
+  ResourceMgr::Instance().ClearExpired();
+  g_texMgr.ClearUnused();
+  RendererFrameDX9 frame{
+    *reinterpret_cast<DeviceOwnerDX9*>(nullptr), *reinterpret_cast<RendererDX9Operations*>(nullptr), g_renderer->commands,
+    g_renderer->primitives, g_renderer->lightmapped, g_renderer->vertices, g_renderer->queues, *reinterpret_cast<EffectRetirement*>(nullptr)
+  };
+  frame.Clear();
+  g_renderer->atlas.Clear();
+  g_windowMgr.SaveShortcutItems();
+
+  char subKey[512];
+  std::strcpy(subKey, g_subKey);
+  std::strcat(subKey, "\\NameBaloon");
+  std::strcat(subKey, "\\");
+  std::strcat(subKey, g_session.m_serverName.c_str());
+  HKEY key;
+  DWORD disposition = 0;
+  if (RegCreateKeyExA(HKEY_LOCAL_MACHINE, subKey, 0, nullptr, 0, KEY_ALL_ACCESS, nullptr, &key, &disposition) == ERROR_SUCCESS) {
+    DWORD value = g_serviceOptions.Get(92) != 0;
+    RegSetValueExA(key, "POS", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&value), sizeof(value));
+    RegCloseKey(key);
+  }
+
+  if (this->unknown_0254) {
+    g_outdoorCameraPitch = g_cameraPitch;
+    g_outdoorCameraDistance = g_cameraDistance;
+  } else {
+    g_indoorCameraPitch = g_cameraPitch;
+    g_indoorCameraDistance = g_cameraDistance;
+  }
+
+  if (g_whisperRecord != 0) {
+    sub_CCFF10();
+  }
+  g_effectMgr->Clear();
+  g_session.SaveMiniPartyInfo();
+  g_session.SetUnknown8134(0);
 }
