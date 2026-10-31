@@ -90,7 +90,9 @@ public:
   /* 0254 */ unsigned char unknown_0254[0x40];
   /* 0294 */ char unknown_0294[0x20];
   /* 02B4 */ UIWindow* itemWindow;
-  /* 02B8 */ unsigned char unknown_02B8[0x24];
+  /* 02B8 */ unsigned char unknown_02B8[0x1C];
+  /* 02D4 */ int unknown_02D4;
+  /* 02D8 */ unsigned char unknown_02D8[0x04];
   /* 02DC */ int unknown_02DC;
   /* 02E0 */ int unknown_02E0;
   /* 02E4 */ unsigned char unknown_02E4[0x08];
@@ -427,6 +429,9 @@ public:
   void ReceiveCaptchaPreview(int result, unsigned short size, const char* key);
   void ReceiveStackedItemReturn(const unsigned char* packet);
   void ReceiveRodexRecipient(int id, unsigned short job, unsigned short level, const char* name);
+  void ReceiveStatus(const unsigned char* data);
+  void ReceiveStatusChange(const unsigned char* data);
+  void ReceiveStatusChangeAck(const unsigned char* data);
   void ReceivePartyJobLevel(const unsigned char* packet);
   void ReceivePartyDead(const unsigned char* packet);
   void ReceiveShopItemList(const std::vector<ITEM_INFO>& items, int value, int unused1, int argument, int unused2, std::uint32_t duration, unsigned char myShop);

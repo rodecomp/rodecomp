@@ -112,6 +112,26 @@ struct ByteValuePacket {
   /* 0002 */ unsigned char value;
 };
 
+struct StatusPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int16_t statusPoint;
+  /* 0004 */ unsigned char stats[12];
+  /* 0010 */ std::int16_t values[14];
+};
+
+struct StatusChangePacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint16_t type;
+  /* 0004 */ unsigned char value;
+};
+
+struct StatusChangeAckPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint16_t type;
+  /* 0004 */ unsigned char result;
+  /* 0005 */ unsigned char value;
+};
+
 struct PacketIdOnly {
   /* 0000 */ std::int16_t id;
 };
@@ -169,6 +189,179 @@ struct RouletteInfoPacket {
   /* 0008 */ RouletteInfoSlot slots[42];
 };
 #pragma pack(pop)
+
+// OFFSET: 0x00D45740
+// FUNCTION: fn_21839
+void CGameMode::ReceiveStatus(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const StatusPacket*>(data);
+  int* bonusStats = reinterpret_cast<int*>(g_session.unknown_169C);
+  g_session.m_standardStats[0] = packet->stats[0];
+  g_session.InvalidateWindowFrames();
+  g_session.m_standardStats[1] = packet->stats[2];
+  g_session.InvalidateWindowFrames();
+  g_session.m_standardStats[2] = packet->stats[4];
+  g_session.InvalidateWindowFrames();
+  g_session.m_standardStats[3] = packet->stats[6];
+  g_session.InvalidateWindowFrames();
+  g_session.m_standardStats[4] = packet->stats[8];
+  g_session.InvalidateWindowFrames();
+  g_session.m_standardStats[5] = packet->stats[10];
+  g_session.InvalidateWindowFrames();
+  bonusStats[0] = packet->stats[1];
+  g_session.InvalidateWindowFrames();
+  bonusStats[1] = packet->stats[3];
+  g_session.InvalidateWindowFrames();
+  bonusStats[2] = packet->stats[5];
+  g_session.InvalidateWindowFrames();
+  bonusStats[3] = packet->stats[7];
+  g_session.InvalidateWindowFrames();
+  bonusStats[4] = packet->stats[9];
+  g_session.InvalidateWindowFrames();
+  bonusStats[5] = packet->stats[11];
+  g_session.InvalidateWindowFrames();
+
+  *reinterpret_cast<int*>(g_session.unknown_1654) = packet->statusPoint;
+  g_session.InvalidateWindowFrames();
+
+  bonusStats[7] = packet->values[0];
+  g_session.InvalidateWindowFrames();
+  bonusStats[12] = packet->values[1];
+  g_session.InvalidateWindowFrames();
+  bonusStats[13] = packet->values[2];
+  g_session.InvalidateWindowFrames();
+  bonusStats[14] = packet->values[3];
+  g_session.InvalidateWindowFrames();
+  bonusStats[10] = packet->values[4];
+  g_session.InvalidateWindowFrames();
+  bonusStats[11] = packet->values[5];
+  g_session.InvalidateWindowFrames();
+  bonusStats[8] = packet->values[6];
+  g_session.InvalidateWindowFrames();
+  bonusStats[15] = packet->values[7];
+  g_session.InvalidateWindowFrames();
+  bonusStats[16] = packet->values[8];
+  g_session.InvalidateWindowFrames();
+  bonusStats[17] = packet->values[9];
+  g_session.InvalidateWindowFrames();
+  bonusStats[19] = packet->values[10];
+  g_session.InvalidateWindowFrames();
+  bonusStats[18] = packet->values[11];
+  g_session.InvalidateWindowFrames();
+  bonusStats[6] = packet->values[12];
+  g_session.InvalidateWindowFrames();
+  bonusStats[9] = packet->values[13];
+  g_session.InvalidateWindowFrames();
+
+  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_01C4)) {
+    window->SendMsg(nullptr, 35, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00D45970
+// FUNCTION: fn_21840
+void CGameMode::ReceiveStatusChange(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const StatusChangePacket*>(data);
+  const unsigned int type = packet->type;
+  if (type >= 32 && type <= 37) {
+    reinterpret_cast<int*>(g_session.unknown_169C)[type - 32] = packet->value;
+    g_session.InvalidateWindowFrames();
+  } else if (type >= 247 && type <= 252) {
+    reinterpret_cast<std::int64_t*>(&g_session.unknown_7FC0[0x20])[type - 247] = packet->value;
+    g_session.InvalidateWindowFrames();
+  }
+
+  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_01C4)) {
+    window->SendMsg(nullptr, 35, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00D45B90
+// FUNCTION: fn_21841
+void CGameMode::ReceiveStatusChangeAck(const unsigned char* data) {
+  this->unknown_02D4 = 0;
+  UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_01C4);
+  const auto* packet = reinterpret_cast<const StatusChangeAckPacket*>(data);
+  if (!packet->result) {
+    return;
+  }
+
+  int* bonusStats = reinterpret_cast<int*>(g_session.unknown_169C);
+  switch (packet->type) {
+  case 13:
+  case 14:
+  case 15:
+  case 16:
+  case 17:
+  case 18:
+    g_session.m_standardStats[packet->type - 13] = packet->value;
+    g_session.InvalidateWindowFrames();
+    if (window) {
+      window->SendMsg(nullptr, 35, 0, 0, 0, 0);
+    }
+    break;
+  case 41:
+    bonusStats[7] = packet->value;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 42:
+    bonusStats[12] = packet->value;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 43:
+    bonusStats[13] = packet->value;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 44:
+    bonusStats[14] = packet->value;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 45:
+    bonusStats[10] = packet->value;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 46:
+    bonusStats[11] = packet->value;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 47:
+    bonusStats[8] = packet->value;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 48:
+    bonusStats[15] = packet->value;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 49:
+    bonusStats[16] = packet->value;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 50:
+    bonusStats[17] = packet->value;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 51:
+    bonusStats[19] = packet->value;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 52:
+    bonusStats[18] = packet->value;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 53:
+    bonusStats[6] = packet->value;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 54:
+    bonusStats[9] = packet->value;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 55:
+    g_session.m_jobLevel = packet->value;
+    g_session.InvalidateWindowFrames();
+    g_windowMgr.EnsureWindow(49);
+    break;
+  }
+}
 
 // OFFSET: 0x00D45E30
 // FUNCTION: fn_21842
