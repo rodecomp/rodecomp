@@ -18,6 +18,7 @@ struct MiniMapMark {
 
 class UIMiniMapWnd : public UIFrameWnd {
 public:
+  UIMiniMapWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
   void Slot11() override;
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -32,7 +33,7 @@ public:
   /* 00BC */ float originX;
   /* 00C0 */ float originY;
   /* 00C4 */ UIBitmapButton* memoButtons[20];
-  /* 0114 */ unsigned char unknown_0114[0x4];
+  /* 0114 */ int unknown_0114;
   /* 0118 */ unsigned char dragging;
   /* 0119 */ unsigned char unknown_0119[0x3];
   /* 011C */ UIWindow* unknown_011C;
@@ -41,7 +42,8 @@ public:
   /* 0128 */ UIHeadsprButton* m_playerHead;
   /* 012C */ UIWindow* unknown_012C;
   /* 0130 */ std::map<int, UIBitmapButton*> townButtons;
-  /* 0138 */ unsigned char unknown_0138[0x10];
+  /* 0138 */ std::map<int, UIWindow*> unknown_0138;
+  /* 0140 */ std::map<int, MiniMapMark> unknown_0140;
   /* 0148 */ std::vector<MiniMapMark> partyMarks;
   /* 0154 */ std::vector<MiniMapMark> guildMarks;
   /* 0160 */ std::vector<MiniMapMark> warpMarks;
