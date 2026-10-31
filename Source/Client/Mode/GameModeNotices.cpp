@@ -2497,6 +2497,42 @@ void CGameMode::ReceiveCaptchaUploadRequest(const std::uint32_t* sessionId, int 
 }
 
 // OFFSET: 0x00D6A9F0
+// FUNCTION: fn_22060
+void CGameMode::ReceiveExtraInventoryResult(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const ExtraInventoryResultPacket*>(data);
+  int message;
+  switch (packet->result) {
+  case 0: {
+    const int nextSlots = g_session.unknown_7FBC + 110;
+    const int slots = g_session.unknown_7FBC + 100;
+    const char* name = FindItemDescription(packet->itemId).identifiedName;
+    const int answer = reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(
+      FormatOwnedString(LookupMessage(3561), name, slots, nextSlots).c_str(), 2, false, false, 0, "Message", 280, 120, 0);
+    if (answer == 187) {
+      this->SendMsg(311, 0, 0, 0, 0);
+    } else {
+      this->SendMsg(312, 0, 0, 0, 0);
+    }
+    return;
+  }
+  case 1:
+    message = 3562;
+    break;
+  case 2:
+    message = 3563;
+    break;
+  case 3:
+    message = 3564;
+    break;
+  case 4:
+    message = 3565;
+    break;
+  default:
+    return;
+  }
+
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(message)), 0xFF, 0, 0, 0);
+}
 
 // OFFSET: 0x00D6FEA0
 
