@@ -10,6 +10,7 @@
 #include <string>
 #include <windows.h>
 #include <shellapi.h>
+#include <sys/stat.h>
 
 // STATIC: 0x0173ad64
 // GLOBAL: gl_24472
@@ -759,4 +760,45 @@ HANDLE StartClientProcess(char* program) {
 
   CreateProcessA(nullptr, commandLine, nullptr, nullptr, FALSE, 0, nullptr, nullptr, &startup, &process);
   return process.hProcess;
+}
+
+// OFFSET: 0x00E5C100
+// FUNCTION: fn_24371
+bool ReplaceClientExecutable(char* executable, const char* update) {
+  ApplyAiPatch();
+  if (_access(update, 0) != 0) {
+    return false;
+  }
+
+  const char* format;
+  if (g_serviceType == 12) {
+    const std::uint8_t messageSource[] = {0xBA, 0xB0, 0x67, 0xDB, 0x84, 0x2E, 0xC1, 0xFC, 0xF0, 0xA7, 0x2E, 0xDB, 0x82, 0x24, 0x80, 0xF5,
+                                          0xFE, 0xED, 0x67, 0xFE, 0x87, 0x2E, 0x90, 0xE4, 0xFA, 0xE3, 0x22, 0xD0, 0xCB, 0x08, 0x8A, 0xB1,
+                                          0xEF, 0xA2, 0x35, 0xDC, 0xCB, 0x24, 0x8E, 0xFF, 0xEB, 0xAA, 0x29, 0xC8, 0x8A, 0x35, 0xCF, 0x91};
+    thread_local EncryptedName<sizeof(messageSource), 0x91E147EBBD47C39FULL> message(messageSource);
+    format = message.Text();
+  } else {
+    const std::uint8_t messageSource[] = {0x24, 0x24, 0xB7, 0xB6, 0x60, 0xA5, 0x30, 0xB9, 0x60, 0x39, 0xF0, 0xBA, 0x77, 0xAB, 0x73, 0x81, 0x73, 0x32,
+                                          0xE4, 0xAC, 0x33, 0xEA, 0x38, 0xF1, 0x75, 0x38, 0xB7, 0xAD, 0x76, 0xF6, 0x27, 0xB0, 0x73, 0x23, 0x97};
+    thread_local EncryptedName<sizeof(messageSource), 0xD1538513DF975701ULL> message(messageSource);
+    format = message.Text();
+  }
+
+  char text[256];
+  std::sprintf(text, format, executable);
+
+  const std::uint8_t titleSource[] = {0x0C, 0x49, 0xFC, 0x3B, 0x27, 0x43};
+  thread_local EncryptedName<sizeof(titleSource), 0x078143534999254DULL> title(titleSource);
+  if (MessageBoxA(nullptr, text, title.Text(), MB_OKCANCEL | MB_ICONINFORMATION) != IDOK) {
+    return false;
+  }
+
+  _chmod(executable, _S_IWRITE);
+  _unlink(executable);
+  if (std::rename(update, executable) != 0) {
+    return false;
+  }
+
+  StartClientProcess(executable);
+  return true;
 }

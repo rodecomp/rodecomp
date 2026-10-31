@@ -19,6 +19,6 @@ extern char g_launchAccountPassword[24];
 extern char g_launchAccountSex;
 extern bool g_launchPassCommandLine;
 
-HANDLE StartClientProcess(char* program);
+__declspec(noinline) HANDLE StartClientProcess(char* program);
 
 #endif
