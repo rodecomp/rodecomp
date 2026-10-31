@@ -7,7 +7,16 @@
 #include "Client/Mode/ModeTooltip.h"
 #include "Client/Session.h"
 #include "Contents/Items/ItemDescription.h"
+#include "Contents/Items/ItemInfo.h"
 #include "Contents/MessageTable.h"
+#include "Render/Text/FontCache.h"
+#include "Render/Text/TextContext.h"
+#include "Resource/Bitmap/BitmapResource.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/SkinPalette.h"
+#include "Resource/TextureNames.h"
+#include "UI/Shop/ItemDrawing.h"
+#include "UI/Text/ColoredText.h"
 #include "UI/Layout/WindowSnapping.h"
 #include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/Window/UIResizer.h"
@@ -18,7 +27,34 @@
 #include <cstdlib>
 #include <cstring>
 #include <map>
+#include <new>
 #include <string>
+
+// OFFSET: 0x00844BE0
+// FUNCTION: fn_10567
+UIExpandedBarterItemPurchaseWnd::UIExpandedBarterItemPurchaseWnd(UIWindowContext& windowContext, UIFrameContext& frameContext)
+    : UIFrameWnd(windowContext, frameContext, 0) {
+  new (&this->unknown_00B4) std::list<BarterMarketEntry>();
+  this->resizer = nullptr;
+  this->scrollBar = nullptr;
+  this->unknown_00C4 = 0;
+  this->rowCount = 0;
+  this->unknown_00CC = 0;
+  this->scrollEnabled = 0;
+}
+
+// OFFSET: 0x00844D00
+// FUNCTION: fn_10569
+UIExpandedBartermarketWnd::UIExpandedBartermarketWnd(UIWindowContext& windowContext, UIFrameContext& frameContext)
+    : UIFrameWnd(windowContext, frameContext, 0) {
+  new (&this->unknown_00B4) std::list<BarterMarketEntry>();
+  this->unknown_00BC = nullptr;
+  this->scrollBar = nullptr;
+  this->unknown_00C4 = 0;
+  this->rowCount = 0;
+  this->unknown_00CC = 0;
+  this->scrollEnabled = 0;
+}
 
 // OFFSET: 0x00840B30
 // FUNCTION: fn_10545
@@ -1606,3 +1642,4 @@ void UIExpandedBartermarketWnd::Slot15(int width, int height) {
 
   this->SendMsg(nullptr, 23, 0, 0, 0, 0);
 }
+

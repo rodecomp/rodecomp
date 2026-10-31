@@ -17,6 +17,7 @@ class UIResizer;
 
 class UIExpandedBarterItemPurchaseWnd : public UIFrameWnd {
 public:
+  UIExpandedBarterItemPurchaseWnd(UIWindowContext& windowContext, UIFrameContext& frameContext);
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot15(int width, int height) override;
   void Slot25(int x, int y) override;
@@ -44,6 +45,7 @@ public:
 
 class UIExpandedBartermarketWnd : public UIFrameWnd {
 public:
+  UIExpandedBartermarketWnd(UIWindowContext& windowContext, UIFrameContext& frameContext);
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot15(int width, int height) override;
   void Slot25(int x, int y) override;
