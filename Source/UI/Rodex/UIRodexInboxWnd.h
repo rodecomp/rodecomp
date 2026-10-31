@@ -14,7 +14,10 @@
 
 class UIBasicButton;
 class UIBitmapButton;
+class UIBmpRadioBtn;
 class UICheckBox;
+class UIEditCtrl;
+class UIRadioBtn;
 class UITextButton;
 
 using RodexMailEntry = std::pair<int, std::int64_t>;
@@ -41,14 +44,17 @@ class UIRodexInboxWnd : public UIItemWnd {
 public:
   UIRodexInboxWnd();
   bool Slot03() override;
+  void Slot15(int width, int height) override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
   void Nullsub257();
 
   void Slot28(int x, int y) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
   void DrawMailIcons(int row, unsigned char attachments, unsigned char read, unsigned char returned);
   void SetButtonsDisabled(unsigned char disabled);
+  void SetMailRow(int row, std::int64_t mailId, std::string name, std::string subject, unsigned char read, unsigned char returned, int noAttachment);
   void DrawExpireTime(int row, __time32_t sendTime, __time32_t expireTime, unsigned char returned);
   void ClearChecks();
   void RefreshMailLists();
@@ -59,9 +65,9 @@ public:
   void RequestAllMailActions();
 
   /* 012C */ unsigned char unknown_012C[0x4];
-  /* 0130 */ int unknown_0130;
-  /* 0134 */ int unknown_0134;
-  /* 0138 */ int unknown_0138;
+  /* 0130 */ UIBmpRadioBtn* unknown_0130;
+  /* 0134 */ UIBmpRadioBtn* unknown_0134;
+  /* 0138 */ UIBmpRadioBtn* unknown_0138;
   /* 013C */ UIBitmapButton* unknown_013C;
   /* 0140 */ UIBitmapButton* unknown_0140;
   /* 0144 */ UITextButton* unknown_0144[6];
@@ -75,11 +81,10 @@ public:
   /* 01A0 */ int unknown_01A0;
   /* 01A4 */ unsigned char expired;
   /* 01A8 */ UIBitmapButton* unknown_01A8[6];
-  /* 01C0 */ UIWindow* unknown_01C0;
-  /* 01C4 */ UIWindow* unknown_01C4;
-  /* 01C8 */ UIWindow* unknown_01C8;
-  /* 01CC */ int unknown_01CC;
-  /* 01D0 */ int unknown_01D0;
+  /* 01C0 */ UIRadioBtn* unknown_01C0[2];
+  /* 01C8 */ UIEditCtrl* unknown_01C8;
+  /* 01CC */ UIBitmapButton* unknown_01CC;
+  /* 01D0 */ UIBmpRadioBtn* unknown_01D0;
   /* 01D4 */ unsigned char unknown_01D4;
   /* 01D8 */ std::vector<RodexMailEntry> searchResults;
   /* 01E4 */ std::vector<RodexMailEntry> mails0;
