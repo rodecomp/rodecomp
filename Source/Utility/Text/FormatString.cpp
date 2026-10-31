@@ -103,3 +103,35 @@ std::string IntToString(int value, unsigned int digits) {
 
   return text;
 }
+
+// OFFSET: 0x00A95790
+// FUNCTION: fn_17182
+std::string IntToSignedString(int value, bool grouped, bool showPlus) {
+  if (!grouped) {
+    return IntToString(value, 0);
+  }
+
+  const unsigned int bits = static_cast<unsigned int>(value);
+  const unsigned int magnitude = value < 0 ? 0u - bits : bits;
+  std::string digits = IntToString(static_cast<int>(magnitude), 0);
+  std::string text;
+  const bool negative = value < 0;
+  for (std::size_t i = 0; i < digits.size(); ++i) {
+    if ((digits.size() - i) % 3 == 0) {
+      text += std::string(",");
+    }
+    text += digits.at(i);
+  }
+
+  if (text.at(0) == ',') {
+    text.erase(0, 1);
+  }
+
+  if (negative) {
+    text.insert(text.begin(), '-');
+  } else if (showPlus && value != 0) {
+    text.insert(text.begin(), '+');
+  }
+
+  return text;
+}
