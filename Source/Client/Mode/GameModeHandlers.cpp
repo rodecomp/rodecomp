@@ -1,5 +1,7 @@
 #include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Client/Application/Launcher.h"
+#include "Client/Input/InputCharset.h"
 #include "Client/Session.h"
 #include "Contents/CashEmotionMgr.h"
 #include "Contents/ClanInfo.h"
@@ -7,21 +9,35 @@
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Configuration/ServiceOptions.h"
+#include "Contents/Effects/Effect.h"
 #include "Contents/Effects/EffectLists.h"
+#include "Contents/Effects/MonsterSkillEffects.h"
+#include "Contents/Ground/TerrainHeight.h"
 #include "Contents/GuildMgr.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Items/RuneSystem.h"
 #include "Contents/MessageTable.h"
+#include "Contents/RodexMailStore.h"
+#include "Contents/RenewQuestMgr.h"
 #include "Contents/Sound/SoundMgr.h"
 #include "Contents/World/World.h"
+#include "File/File.h"
+#include "Script/LuaScript.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
+#include "Resource/World/TerrainResource.h"
+#include "UI/Dialogs/UITipboxWnd.h"
 #include "UI/GameSettings/GameSettingsUI.h"
+#include "UI/Rodex/UIRodexInboxWnd.h"
+#include "UI/UIBarGraph.h"
 #include "UI/UIGradeEnchantWnd.h"
+#include "UI/Window/UIHomunInfoWnd.h"
+#include "UI/Window/UISeekPartyWnd.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowDialogs.h"
+#include "Utility/Math/Vector3d.h"
 #include "Utility/Text/FormatString.h"
 
 #include <cstdint>
@@ -33,6 +49,7 @@
 #include <direct.h>
 #include <io.h>
 #include <windows.h>
+#include <timeapi.h>
 
 #pragma pack(push, 1)
 struct ClanInfoPacket {
@@ -95,7 +112,156 @@ struct PackageItemTestEntry {
   /* 0004 */ std::uint16_t unknown_0004;
   /* 0006 */ int count;
 };
+
+struct Item1718BasicRecord {
+  /* 0000 */ std::int32_t itemId;
+  /* 0004 */ std::uint32_t unknown_0004;
+  /* 0008 */ std::uint32_t unknown_0008;
+  /* 000C */ unsigned char type;
+  /* 000D */ std::uint16_t unknown_000D;
+  /* 000F */ std::uint32_t unknown_000F;
+};
+
+struct Item1718IndexRecord {
+  /* 0000 */ std::int16_t index;
+  /* 0002 */ std::uint32_t unknown_0002;
+  /* 0006 */ std::uint32_t unknown_0006;
+};
+
+struct HomunculusInfoPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ char name[24];
+  /* 001A */ unsigned char unknown_001A;
+  /* 001B */ std::int16_t unknown_001B;
+  /* 001D */ std::int16_t unknown_001D;
+  /* 001F */ std::int16_t unknown_001F;
+  /* 0021 */ int unknown_0021;
+  /* 0025 */ std::int16_t stats[8];
+  /* 0035 */ std::int16_t hp;
+  /* 0037 */ std::int16_t maxHp;
+  /* 0039 */ std::int16_t sp;
+  /* 003B */ std::int16_t maxSp;
+  /* 003D */ int exp;
+  /* 0041 */ int maxExp;
+  /* 0045 */ std::int16_t unknown_0045;
+  /* 0047 */ std::int16_t unknown_0047;
+};
+
+struct HomunculusInfoPacket2 {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ char name[24];
+  /* 001A */ unsigned char unknown_001A;
+  /* 001B */ std::int16_t unknown_001B;
+  /* 001D */ std::int16_t unknown_001D;
+  /* 001F */ std::int16_t unknown_001F;
+  /* 0021 */ std::int16_t stats[8];
+  /* 0031 */ int hp;
+  /* 0035 */ int maxHp;
+  /* 0039 */ std::int16_t sp;
+  /* 003B */ std::int16_t maxSp;
+  /* 003D */ int exp;
+  /* 0041 */ int maxExp;
+  /* 0045 */ std::int16_t unknown_0045;
+  /* 0047 */ std::int16_t unknown_0047;
+};
+
+struct HomunculusInfoPacket3 {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ char name[24];
+  /* 001A */ unsigned char unknown_001A;
+  /* 001B */ std::int16_t unknown_001B;
+  /* 001D */ std::int16_t unknown_001D;
+  /* 001F */ std::int16_t unknown_001F;
+  /* 0021 */ std::int16_t stats[8];
+  /* 0031 */ int hp;
+  /* 0035 */ int maxHp;
+  /* 0039 */ int sp;
+  /* 003D */ int maxSp;
+  /* 0041 */ std::int64_t exp;
+  /* 0049 */ std::int64_t maxExp;
+  /* 0051 */ std::int16_t unknown_0051;
+  /* 0053 */ std::int16_t unknown_0053;
+};
+
+struct ItemRewardOption {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int16_t value;
+  /* 0004 */ unsigned char parameter;
+};
+
+struct ItemRewardPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ unsigned char result;
+  /* 0003 */ std::int16_t index;
+  /* 0005 */ std::int16_t quantity;
+  /* 0007 */ int itemId;
+  /* 000B */ unsigned char type;
+  /* 000C */ unsigned char identified;
+  /* 000D */ unsigned char damaged;
+  /* 000E */ unsigned char refine;
+  /* 000F */ std::uint32_t cards[4];
+  /* 001F */ ItemRewardOption options[5];
+  /* 0038 */ std::uint16_t value;
+  /* 003A */ unsigned char bound;
+  /* 003B */ int expireTime;
+};
+
+struct ItemRewardPacket2 {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ unsigned char result;
+  /* 0003 */ std::int16_t index;
+  /* 0005 */ std::int16_t quantity;
+  /* 0007 */ int itemId;
+  /* 000B */ unsigned char type;
+  /* 000C */ unsigned char identified;
+  /* 000D */ unsigned char damaged;
+  /* 000E */ std::uint32_t cards[4];
+  /* 001E */ ItemRewardOption options[5];
+  /* 0037 */ std::uint16_t value;
+  /* 0039 */ unsigned char bound;
+  /* 003A */ int expireTime;
+  /* 003E */ unsigned char refine;
+  /* 003F */ unsigned char grade;
+};
+
+struct MinimapMarkerPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint32_t key;
+  /* 0006 */ std::int16_t x;
+  /* 0008 */ std::int16_t y;
+  /* 000A */ std::int16_t type;
+  /* 000C */ std::int16_t color;
+};
 #pragma pack(pop)
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(Item1718BasicRecord) == 0x13);
+static_assert(sizeof(Item1718IndexRecord) == 0x0A);
+static_assert(sizeof(HomunculusInfoPacket) == 0x49);
+static_assert(sizeof(HomunculusInfoPacket2) == 0x49);
+static_assert(sizeof(HomunculusInfoPacket3) == 0x55);
+static_assert(sizeof(ItemRewardPacket) == 0x3F);
+static_assert(sizeof(ItemRewardPacket2) == 0x40);
+#endif
+
+namespace EquipmentProperties {
+class CEquipmentPropertiesMgr {
+public:
+  static CEquipmentPropertiesMgr* GetInstance();
+  void RefreshExpansion(const int& kind, const int& itemId);
+};
+}
+
+struct SessionItemLists {
+  void ClearTradeItems();
+};
+
+struct ClientItemLists {
+  void AddItem1718(const RawItemBasic& item, int mode);
+  void RemoveItem1710(std::uint32_t id, int quantity);
+};
+
+int sub_D64A40(const unsigned char* entries);
 
 struct GameOptionEntry {
   /* 0000 */ int id;
@@ -133,6 +299,8 @@ void CGameMode::ReceivePartyBookingRegisterResult(const unsigned char* packet) {
     break;
   }
 }
+
+// OFFSET: 0x00D3B730
 
 // OFFSET: 0x00D3B7F0
 // FUNCTION: fn_21783
@@ -244,7 +412,11 @@ void CGameMode::ReceivePendingResult(const unsigned char* packet) {
   }
 }
 
+// OFFSET: 0x00D3C1C0
+
 // OFFSET: 0x00D3C4F0
+
+// OFFSET: 0x00D3C710
 
 // OFFSET: 0x00D3CC10
 // FUNCTION: fn_21796
@@ -284,6 +456,8 @@ void CGameMode::ReceivePetAct(unsigned char* packet) {
     }
   }
 }
+
+// OFFSET: 0x00D3CDF0
 
 // OFFSET: 0x00D3CEC0
 // FUNCTION: fn_21798
@@ -335,6 +509,16 @@ void CGameMode::ReceivePlayerMessage82(const unsigned char* packet) {
   player->SendMsg(nullptr, 0x52, 0, *reinterpret_cast<const int*>(packet + 6) * 1000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   g_playerMessage82Pending = true;
 }
+
+// OFFSET: 0x00D3D390
+
+// OFFSET: 0x00D3D710
+
+// OFFSET: 0x00D3D910
+
+// OFFSET: 0x00D3DC00
+
+// OFFSET: 0x00D3DD20
 
 // OFFSET: 0x00D3DF40
 // FUNCTION: fn_21807
@@ -857,6 +1041,8 @@ void CGameMode::ReceiveClanLeave(const unsigned char* packet) {
   g_windowMgr.RefreshClanWnd();
 }
 
+// OFFSET: 0x00D657D0
+
 // OFFSET: 0x00D658C0
 // FUNCTION: fn_22005
 void CGameMode::ReceiveClanInfo(const unsigned char* data) {
@@ -899,6 +1085,8 @@ void CGameMode::ReceiveClanInfo(const unsigned char* data) {
   g_windowMgr.RefreshClanWnd();
 }
 
+// OFFSET: 0x00D65FF0
+
 // OFFSET: 0x00D66200
 // FUNCTION: fn_22009
 void CGameMode::ReceiveGameOptions(int count, const GameOptionEntry* entries) {
@@ -916,6 +1104,8 @@ void CGameMode::ReceiveActorClanName(const unsigned char* data) {
 
   this->nameCard.SetValue3(packet->aid, std::string(packet->name, packet->name + (packet->length - 8)));
 }
+
+// OFFSET: 0x00D66470
 
 // OFFSET: 0x00D66840
 // FUNCTION: fn_22015
@@ -1053,6 +1243,10 @@ void CGameMode::ReceiveRuneRewardSteps(const unsigned char* data) {
     window->SendMsg(window, 60, 0, 0, 0, 0);
   }
 }
+// OFFSET: 0x00D66B10
+
+// OFFSET: 0x00D67360
+
 // OFFSET: 0x00D66CE0
 // FUNCTION: fn_22022
 int CGameMode::HandleRuneResult(int result) {
@@ -1155,6 +1349,8 @@ void CGameMode::ReceiveGameOptionResult(int command, int result, int enabled) {
   g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(g_gameOptionFlag ? 0xF17 : 0xF16)), 0x64FFFF, 0, 0, 0);
 }
 
+// OFFSET: 0x00D678E0
+
 // OFFSET: 0x00D679E0
 // FUNCTION: fn_22037
 void CGameMode::ReceiveGradeEnchantResult(const unsigned char* packet) {
@@ -1190,6 +1386,27 @@ void CGameMode::ReceiveGradeEnchantResult(const unsigned char* packet) {
     }
   }
 }
+
+// OFFSET: 0x00D681A0
+// FUNCTION: fn_22039
+void CGameMode::ReceiveAchievementResult(unsigned char result, int id) {
+  if (result != 0) {
+    return;
+  }
+
+  if (UIWindow* window = g_windowMgr.LookupWindow(270)) {
+    window->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
+  }
+
+  const int index = g_session.AddUnknown6160(id);
+  if (index != -1) {
+    g_session.AddUnknownId(index);
+  }
+}
+
+// OFFSET: 0x00D68200
+
+// OFFSET: 0x00D684C0
 
 // OFFSET: 0x00D686F0
 // FUNCTION: fn_22042

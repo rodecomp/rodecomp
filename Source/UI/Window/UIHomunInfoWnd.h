@@ -4,6 +4,7 @@
 #include "UI/Window/UIFrameWnd.h"
 #include "Contents/UserData/NormalItemSlots.h"
 
+class UIBarGraph4;
 class UIINT64BarGraph;
 
 class UIHomunInfoWnd : public UIFrameWnd {
@@ -12,7 +13,7 @@ public:
 
   /* 00B4 */ unsigned char unknown_00B4[0x10];
   /* 00C4 */ UIINT64BarGraph* expBar;
-  /* 00C8 */ unsigned char unknown_00C8[0x04];
+  /* 00C8 */ UIBarGraph4* intimacyBar;
   /* 00CC */ HomunInfoWndInfo* saved;
 };
 
