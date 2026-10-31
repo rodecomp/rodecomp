@@ -107,6 +107,7 @@ struct CRagEffect : CRenderObject {
   void TrackTargetWide();
   void TrackTarget();
   void TexturedQuadSpin(const char* name, char phase, char kind);
+  void TexturedSkillIcon(const char* name, std::int16_t level, std::int16_t mode);
   void TexturedDoubleRing(const char* name, char level);
   void WaterOut();
   void BlackMaximize(const char* name);

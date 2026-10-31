@@ -2994,6 +2994,8 @@ void CRagEffect::TexturedQuadSpin(const char* name, char phase, char kind) {
   }
 }
 
+// OFFSET: 0x00C42B40
+
 // OFFSET: 0x00C59960
 // FUNCTION: fn_20214
 void CRagEffect::TrackTarget() {
