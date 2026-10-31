@@ -17,6 +17,26 @@
 
 #include <cstdint>
 #include <cstring>
+#include <vector>
+
+// OFFSET: 0x009A0490
+// FUNCTION: fn_13600
+std::vector<unsigned char> UIMakeTargetListWnd::BuildReplayRecords() {
+  std::vector<unsigned char> records;
+  {
+    const auto record = BuildReplayTaggedRecord(22050, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  for (int itemId : this->itemIds) {
+    const auto record = BuildReplayTaggedRecord(22052, &itemId, sizeof(itemId));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(22051, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  return records;
+}
 
 // OFFSET: 0x009A38A0
 // FUNCTION: fn_13610
