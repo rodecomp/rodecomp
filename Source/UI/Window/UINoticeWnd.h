@@ -7,6 +7,7 @@ class UINoticeWnd : public UIFrameWnd {
 public:
   UINoticeWnd(UIWindowContext& windows, UIFrameContext& frames);
 
+  void Slot15(int width, int height) override;
   void Slot18() override;
   void Paint() override;
   void Slot28(int x, int y) override;

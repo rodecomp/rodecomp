@@ -14,6 +14,7 @@
 #include "UI/Window/UILoginWnd.h"
 #include "UI/Window/UIMessageBox.h"
 #include "UI/Window/UINoticeWnd.h"
+#include "UI/Lists/UIScrollBar.h"
 #include "UI/Window/UISelectReplayDataWnd.h"
 #include "UI/Window/UISelectServerWnd.h"
 #include "UI/UIStaticBitmap.h"
@@ -1051,6 +1052,167 @@ void UIMakeCharWnd::Slot19() {
 void UIChatRoomWnd::Move(int x, int y) {
   this->geometry.Move(x, y);
   this->Slot36();
+}
+
+// OFFSET: 0x008B1760
+// FUNCTION: fn_11746
+void UINoticeWnd::Slot15(int, int) {
+  const std::string prefix("유저인터페이스\\");
+  const char* names[3][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_back", "btn_back_a", "btn_back_b"}, {"btn_next", "btn_next_a", "btn_next_b"}};
+  int ids[3] = {184, 246, 218};
+  int positions[3][2] = {{534, 376}, {244, 376}, {294, 376}};
+
+  for (int index = 0; index < 3; ++index) {
+    auto* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
+    button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
+    button->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
+    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    button->Move(positions[index][0], positions[index][1]);
+    button->SetId(ids[index]);
+    this->AddChild(button);
+  }
+
+  this->m_message0 = 184;
+
+  if (!std::fopen(this->m_patchFile, "r")) {
+    FILE* file = std::fopen(this->m_patchFile, "w");
+    std::fwrite("공지사항파일없음", 16, 1, file);
+    std::fclose(file);
+    g_windowMgr.Schedule(this);
+  }
+
+  if (!std::fopen("notice_check.txt", "r")) {
+    FILE* file = std::fopen("notice_check.txt", "w");
+    std::fwrite("없으니만들자", 12, 1, file);
+    std::fclose(file);
+  }
+
+  unsigned char flag;
+  if (!std::fopen("notice_read.txt", "r")) {
+    FILE* file = std::fopen("notice_read.txt", "wb");
+    flag = 0;
+    std::fwrite(&flag, 1, 1, file);
+    std::fclose(file);
+  }
+
+  FILE* patch = std::fopen(this->m_patchFile, "r");
+  FILE* check = std::fopen("notice_check.txt", "r");
+  std::fseek(patch, 0, SEEK_END);
+  const int patchSize = std::ftell(patch);
+  std::fseek(check, 0, SEEK_END);
+  const int checkSize = std::ftell(check);
+  int changed = checkSize == 0 ? 1000 : 0;
+  char* patchText = new char[patchSize + 1];
+  char* checkText = new char[checkSize + 1];
+  std::fseek(patch, 0, SEEK_SET);
+  std::fread(patchText, patchSize, 1, patch);
+  patchText[patchSize] = 0;
+  std::fclose(patch);
+  std::fseek(check, 0, SEEK_SET);
+  std::fread(checkText, checkSize, 1, check);
+  checkText[checkSize] = 0;
+  std::fclose(check);
+
+  int lines[20];
+  lines[0] = 0;
+  int lineCount = 1;
+  this->unknown_0108 = 0;
+  for (int i = 0; i < patchSize; ++i) {
+    const char c = patchText[i];
+    if (c == '\n') {
+      patchText[i] = 0;
+      lines[lineCount] = i + 1;
+      ++lineCount;
+      if (lineCount > 20) {
+        lineCount = 20;
+      }
+      ++this->unknown_0108;
+    } else if (c == '\r') {
+      patchText[i] = 0;
+    } else if (c == '^') {
+      const int previous = lineCount - 1;
+      this->m_bottomPositions[this->m_noticeCount] = this->unknown_0108 - 1;
+      ++this->m_noticeCount;
+      this->m_scrollPositions[this->m_noticeCount] = this->unknown_0108 + 1;
+      lineCount = previous < 0 ? 0 : previous;
+    } else if (i < checkSize && static_cast<unsigned int>(i) < 1000 && c != checkText[i]) {
+      ++changed;
+    }
+  }
+
+  if (lineCount > 19) {
+    lineCount = 19;
+  }
+
+  this->m_bottomPositions[this->m_noticeCount] = this->unknown_0108;
+
+  if (changed == 0) {
+    FILE* file = std::fopen("notice_read.txt", "rb");
+    std::fread(&flag, 1, 1, file);
+    std::fclose(file);
+    if (flag == 0xFF) {
+      g_windowMgr.Schedule(this);
+    }
+  } else {
+    FILE* file = std::fopen("notice_read.txt", "wb");
+    flag = 0;
+    std::fwrite(&flag, 1, 1, file);
+    std::fclose(file);
+  }
+
+  for (int i = 0, y = 22; y < 364; ++i, y += 18) {
+    this->m_texts[i]->SetSize(540, 16);
+    this->m_texts[i]->SetFont(0, 16, 0, 0);
+    if (i < lineCount) {
+      this->m_texts[i]->SetText(patchText + lines[i], 1);
+    } else {
+      this->m_texts[i]->SetText("", 1);
+    }
+    this->m_texts[i]->Move(30, y);
+    this->AddChild(this->m_texts[i]);
+  }
+
+  this->m_scrollBar = new UIScrollBar(*this->m_context);
+  static_cast<UIScrollBar*>(this->m_scrollBar)->Configure(583, 18, 1, this->geometry.height - 48);
+  const int total = this->m_bottomPositions[this->m_index] - this->m_scrollPositions[this->m_index];
+  static_cast<UIScrollBar*>(this->m_scrollBar)->SetRange(total - 19, 19, total);
+  if (this->m_bottomPositions[this->m_index] - this->m_scrollPositions[this->m_index] < 19) {
+    static_cast<UIScrollBar*>(this->m_scrollBar)->SetRange(0, 19, 19);
+  }
+  static_cast<UIScrollBar*>(this->m_scrollBar)->SetPosition(this->m_scroll);
+  this->AddChild(this->m_scrollBar);
+
+  FILE* source = std::fopen(this->m_patchFile, "r");
+  FILE* target = std::fopen("notice_check.txt", "w");
+  std::fseek(source, 0, SEEK_END);
+  std::fseek(target, 0, SEEK_END);
+  const int size = std::ftell(source);
+  char* copy = new char[size + 1];
+  std::fseek(source, 0, SEEK_SET);
+  std::fread(copy, size, 1, source);
+  copy[size] = 0;
+  std::fclose(source);
+  for (int i = 0; i < size; ++i) {
+    std::fwrite(&copy[i], 1, 1, target);
+  }
+  std::fclose(target);
+
+  if (changed == 0) {
+    FILE* file = std::fopen("notice_read.txt", "rb");
+    std::fread(&flag, 1, 1, file);
+    std::fclose(file);
+    if (flag != 0xFF) {
+      this->m_scroll = flag;
+    }
+    if (this->m_scroll > this->m_bottomPositions[this->m_index] - 19) {
+      this->m_scroll = this->m_bottomPositions[this->m_index] - 19;
+    }
+    if (this->m_scroll < 0) {
+      this->m_scroll = 0;
+    }
+    this->LoadNotice();
+  }
 }
 
 // OFFSET: 0x008B7040
