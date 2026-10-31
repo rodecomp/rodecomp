@@ -404,3 +404,100 @@ void CUIScrollWindow::SetQuest(unsigned int id) {
 }
 
 }
+
+namespace OngoingQuestInfo {
+
+// OFFSET: 0x00A4FFE0
+// FUNCTION: fn_16226
+void CUIContents::Slot15(int width, int height) {
+  this->icon = new CUIStaticImage(*this->m_context);
+  this->icon->SetSize(10, 9);
+  this->icon->Move(9, 9);
+  this->icon->SetImage("유저인터페이스\\Renew_QuestUI\\img_poring.bmp");
+  this->AddChild(this->icon);
+
+  this->title = new CUIStaticText(*this->m_context);
+  this->title->SetSize(50, 12);
+  this->title->Move(25, 9);
+  this->title->SetText("", 0);
+  this->title->SetFitText(0);
+  this->title->SetAlign(0, 0);
+  this->title->SetFont("Gulim");
+  this->title->SetFontHeight(12);
+  this->title->SetBold(0);
+  this->title->SetColor(0);
+  this->title->SetShadow(0, 0xFFFFFF);
+  this->title->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->title);
+
+  this->textViewer = new CUITextViewer(*this->m_context);
+  this->textViewer->SetSize(290, 20);
+  this->textViewer->Move(32, 30);
+  this->textViewer->SetTextOffset(0, 0);
+  this->textViewer->SetFont("Gulim");
+  this->textViewer->SetFontHeight(12);
+  this->textViewer->SetBold(0);
+  this->textViewer->SetTextColor(0x38302E);
+  this->textViewer->SetOutline(0, 0xFFFFFF);
+  this->textViewer->SetLineSpacing(6);
+  this->textViewer->SetBackgroundColor(0xFFFF00FF);
+  this->textViewer->SetPadding(4, 4, 4, 4);
+  this->textViewer->SetScrollBarSize(7, 20);
+  this->textViewer->SetScrollStep(18);
+  this->textViewer->SetScrollBarButtonImages(
+    "유저인터페이스\\Renew_QuestUI\\bt_scrollbar_arrow_upper.bmp", "유저인터페이스\\Renew_QuestUI\\bt_scrollbar_arrow_down.bmp"
+  );
+  this->textViewer->SetScrollBarBackground("");
+  this->textViewer->SetScrollBarThumbImages(
+    "유저인터페이스\\Renew_QuestUI\\bt_scrollBar_up.bmp", "유저인터페이스\\Renew_QuestUI\\bt_scrollBar_mid.bmp",
+    "유저인터페이스\\Renew_QuestUI\\bt_scrollBar_down.bmp"
+  );
+  this->AddChild(this->textViewer);
+}
+
+// OFFSET: 0x00A51900
+// FUNCTION: fn_16228
+void CUIRewardItem::Slot15(int width, int height) {
+  this->background = new CUIStaticImage(*this->m_context);
+  this->background->SetSize(38, 38);
+  this->background->Move(0, 0);
+  this->background->SetImage("유저인터페이스\\Renew_QuestUI\\img_questIocn.bmp");
+  this->AddChild(this->background);
+
+  this->gameItem = new CUIGameItem(*this->m_context);
+  this->gameItem->SetMode(0);
+  this->gameItem->Move(7, 7);
+  this->gameItem->unknown_0084 = 1;
+  this->gameItem->unknown_0085 = 1;
+  this->AddChild(this->gameItem);
+
+  this->nameText = new CUIStaticText(*this->m_context);
+  this->nameText->SetSize(170, 12);
+  this->nameText->Move(46, 5);
+  this->nameText->SetText("", 0);
+  this->nameText->SetFitText(0);
+  this->nameText->SetAlign(0, 0);
+  this->nameText->SetFont("Gulim");
+  this->nameText->SetFontHeight(12);
+  this->nameText->SetBold(0);
+  this->nameText->SetColor(0);
+  this->nameText->SetShadow(0, 0xFFFFFF);
+  this->nameText->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->nameText);
+
+  this->countText = new CUIStaticText(*this->m_context);
+  this->countText->SetSize(170, 12);
+  this->countText->Move(46, 20);
+  this->countText->SetText("", 0);
+  this->countText->SetFitText(0);
+  this->countText->SetAlign(0, 0);
+  this->countText->SetFont("Gulim");
+  this->countText->SetFontHeight(12);
+  this->countText->SetBold(0);
+  this->countText->SetColor(0xA0551D);
+  this->countText->SetShadow(0, 0xFFFFFF);
+  this->countText->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->countText);
+}
+
+}

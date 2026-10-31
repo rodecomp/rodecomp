@@ -41,6 +41,7 @@ public:
 
 class CUIContents : public CUIControl {
 public:
+  void Slot15(int width, int height) override;
   void Slot16() override;
   void Paint() override;
 
@@ -53,14 +54,16 @@ public:
 
   /* 0084 */ CUIStaticText* title;
   /* 0088 */ CUITextViewer* textViewer;
+  /* 0080 */ CUIStaticImage* icon;
 };
 
 class CUIRewardItem : public CUIListItem {
 public:
+  void Slot15(int width, int height) override;
   void Slot16() override;
   void Paint() override;
 
-  /* 00E8 */ unsigned char unknown_00E8[0x04];
+  /* 00E8 */ CUIStaticImage* background;
   /* 00EC */ CUIGameItem* gameItem;
   /* 00F0 */ CUIStaticText* nameText;
   /* 00F4 */ CUIStaticText* countText;
@@ -121,7 +124,7 @@ public:
 }
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(OngoingQuestInfo::CUIContents) == 0x8C);
+static_assert(sizeof(OngoingQuestInfo::CUIContents) == 0x90);
 static_assert(sizeof(OngoingQuestInfo::CUIRewards) == 0xA4);
 static_assert(sizeof(OngoingQuestInfo::CUIScrollWindow) == 0x9C);
 static_assert(offsetof(OngoingQuestInfo::CUIRewardItem, gameItem) == 0xEC);
