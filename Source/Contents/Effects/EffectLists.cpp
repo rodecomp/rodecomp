@@ -705,78 +705,263 @@ CEffect* CEffectAllocator<CChopChopClawMarks>::Create() {
 }
 
 // OFFSET: 0x00B1DAD0
+// FUNCTION: fn_18562
+template <>
+CEffect* CEffectAllocator<CAMachineEffect>::Create() {
+  return new (std::nothrow) CAMachineEffect();
+}
 
 // OFFSET: 0x00B1DB50
+// FUNCTION: fn_18563
+template <>
+CEffect* CEffectAllocator<CAcidifiedThrow>::Create() {
+  return new (std::nothrow) CAcidifiedThrow();
+}
 
 // OFFSET: 0x00B1DC50
+// FUNCTION: fn_18565
+template <>
+CEffect* CEffectAllocator<CAstralStrikeEffect>::Create() {
+  return new (std::nothrow) CAstralStrikeEffect();
+}
 
 // OFFSET: 0x00B1DCD0
+// FUNCTION: fn_18566
+template <>
+CEffect* CEffectAllocator<CAxeBoomerang>::Create() {
+  return new (std::nothrow) CAxeBoomerang();
+}
 
 // OFFSET: 0x00B1DD50
+// FUNCTION: fn_18567
+template <>
+CEffect* CEffectAllocator<CBindTrapEffect>::Create() {
+  return new (std::nothrow) CBindTrapEffect();
+}
 
 // OFFSET: 0x00B1DDD0
+// FUNCTION: fn_18568
+template <>
+CEffect* CEffectAllocator<CBlastForge>::Create() {
+  return new (std::nothrow) CBlastForge();
+}
 
 // OFFSET: 0x00B1DE50
+// FUNCTION: fn_18569
+template <>
+CEffect* CEffectAllocator<CCaneOfEvilEyeEffect>::Create() {
+  return new (std::nothrow) CCaneOfEvilEyeEffect();
+}
 
 // OFFSET: 0x00B1DED0
+// FUNCTION: fn_18570
+template <>
+CEffect* CEffectAllocator<CCartCannon>::Create() {
+  return new (std::nothrow) CCartCannon();
+}
 
 // OFFSET: 0x00B1DF50
+// FUNCTION: fn_18571
+template <>
+CEffect* CEffectAllocator<CCellRangeEffect>::Create() {
+  return new (std::nothrow) CCellRangeEffect();
+}
 
 // OFFSET: 0x00B1DFD0
+// FUNCTION: fn_18572
+template <>
+CEffect* CEffectAllocator<CChangeSizeEffect>::Create() {
+  return new (std::nothrow) CChangeSizeEffect();
+}
 
 // OFFSET: 0x00B1E050
+// FUNCTION: fn_18573
+template <>
+CEffect* CEffectAllocator<CChargingPierceEffect>::Create() {
+  return new (std::nothrow) CChargingPierceEffect();
+}
 
 // OFFSET: 0x00B1E0D0
+// FUNCTION: fn_18574
+template <>
+CEffect* CEffectAllocator<CChargingPierceNewEffect>::Create() {
+  return new (std::nothrow) CChargingPierceNewEffect();
+}
 
 // OFFSET: 0x00B1E150
+// FUNCTION: fn_18575
+template <>
+CEffect* CEffectAllocator<CCherryBlossomEffect>::Create() {
+  return new (std::nothrow) CCherryBlossomEffect();
+}
 
 // OFFSET: 0x00B1E290
+// FUNCTION: fn_18577
+template <>
+CEffect* CEffectAllocator<CClimaxEffect>::Create() {
+  return new (std::nothrow) CClimaxEffect();
+}
 
 // OFFSET: 0x00B1E310
+// FUNCTION: fn_18578
+template <>
+CEffect* CEffectAllocator<CCloud>::Create() {
+  return new (std::nothrow) CCloud();
+}
 
 // OFFSET: 0x00B1E390
+// FUNCTION: fn_18579
+template <>
+CEffect* CEffectAllocator<CCloudKillEffect>::Create() {
+  return new (std::nothrow) CCloudKillEffect();
+}
 
 // OFFSET: 0x00B1E410
+// FUNCTION: fn_18580
+template <>
+CEffect* CEffectAllocator<CCommonFloorEffect>::Create() {
+  return new (std::nothrow) CCommonFloorEffect();
+}
 
 // OFFSET: 0x00B1E490
+// FUNCTION: fn_18581
+template <>
+CEffect* CEffectAllocator<CCompetentia>::Create() {
+  return new (std::nothrow) CCompetentia();
+}
 
 // OFFSET: 0x00B1E510
+// FUNCTION: fn_18582
+template <>
+CEffect* CEffectAllocator<CCresciveBolt>::Create() {
+  return new (std::nothrow) CCresciveBolt();
+}
 
 // OFFSET: 0x00B1E590
+// FUNCTION: fn_18583
+template <>
+CEffect* CEffectAllocator<CCrimsonArrowEffect>::Create() {
+  return new (std::nothrow) CCrimsonArrowEffect();
+}
 
 // OFFSET: 0x00B1E610
+// FUNCTION: fn_18584
+template <>
+CEffect* CEffectAllocator<CCurseOfCubeEffect>::Create() {
+  return new (std::nothrow) CCurseOfCubeEffect();
+}
 
 // OFFSET: 0x00B1E690
+// FUNCTION: fn_18585
+template <>
+CEffect* CEffectAllocator<CCylinderEffect>::Create() {
+  return new (std::nothrow) CCylinderEffect();
+}
 
 // OFFSET: 0x00B1E710
+// FUNCTION: fn_18586
+template <>
+CEffect* CEffectAllocator<CDancingKnifeEffect>::Create() {
+  return new (std::nothrow) CDancingKnifeEffect();
+}
 
 // OFFSET: 0x00B1E790
+// FUNCTION: fn_18587
+template <>
+CEffect* CEffectAllocator<CEZ2STRScreenEffect>::Create() {
+  return new (std::nothrow) CEZ2STRScreenEffect();
+}
 
 // OFFSET: 0x00B1E810
+// FUNCTION: fn_18588
+template <>
+CEffect* CEffectAllocator<CEZ2STREffectEx>::Create() {
+  return new (std::nothrow) CEZ2STREffectEx();
+}
 
 // OFFSET: 0x00B1E890
+// FUNCTION: fn_18589
+template <>
+CEffect* CEffectAllocator<CEmitterEffect>::Create() {
+  return new (std::nothrow) CEmitterEffect();
+}
 
 // OFFSET: 0x00B1E910
+// FUNCTION: fn_18590
+template <>
+CEffect* CEffectAllocator<CEnergyOrbEffect>::Create() {
+  return new (std::nothrow) CEnergyOrbEffect();
+}
 
 // OFFSET: 0x00B1E990
+// FUNCTION: fn_18591
+template <>
+CEffect* CEffectAllocator<CEternalSlashAttackEffect>::Create() {
+  return new (std::nothrow) CEternalSlashAttackEffect();
+}
 
 // OFFSET: 0x00B1EA10
+// FUNCTION: fn_18592
+template <>
+CEffect* CEffectAllocator<CEternalSlashCountEffect>::Create() {
+  return new (std::nothrow) CEternalSlashCountEffect();
+}
 
 // OFFSET: 0x00B1EA90
+// FUNCTION: fn_18593
+template <>
+CEffect* CEffectAllocator<CEvilLandEffect>::Create() {
+  return new (std::nothrow) CEvilLandEffect();
+}
 
 // OFFSET: 0x00B1EB10
+// FUNCTION: fn_18594
+template <>
+CEffect* CEffectAllocator<CEvilsPawEffect>::Create() {
+  return new (std::nothrow) CEvilsPawEffect();
+}
 
 // OFFSET: 0x00B1EB90
+// FUNCTION: fn_18595
+template <>
+CEffect* CEffectAllocator<CFallenAngelEffect>::Create() {
+  return new (std::nothrow) CFallenAngelEffect();
+}
 
 // OFFSET: 0x00B1EC10
+// FUNCTION: fn_18596
+template <>
+CEffect* CEffectAllocator<CFloralFlareRoad>::Create() {
+  return new (std::nothrow) CFloralFlareRoad();
+}
 
 // OFFSET: 0x00B1EC90
+// FUNCTION: fn_18597
+template <>
+CEffect* CEffectAllocator<CFootprintEffect>::Create() {
+  return new (std::nothrow) CFootprintEffect();
+}
 
 // OFFSET: 0x00B1ED10
+// FUNCTION: fn_18598
+template <>
+CEffect* CEffectAllocator<CFootprintStrEffect>::Create() {
+  return new (std::nothrow) CFootprintStrEffect();
+}
 
 // OFFSET: 0x00B1ED90
+// FUNCTION: fn_18599
+template <>
+CEffect* CEffectAllocator<CFriggSongEffect>::Create() {
+  return new (std::nothrow) CFriggSongEffect();
+}
 
 // OFFSET: 0x00B1EE10
+// FUNCTION: fn_18600
+template <>
+CEffect* CEffectAllocator<CFromTheAbyssEffect>::Create() {
+  return new (std::nothrow) CFromTheAbyssEffect();
+}
 
 // OFFSET: 0x00B1EE90
 // FUNCTION: fn_18601
@@ -1280,6 +1465,9 @@ CMeteorEffect::~CMeteorEffect() {
 }
 
 // OFFSET: 0x00B1D6E0
+// FUNCTION: fn_18558
+CShadowExceedNew::~CShadowExceedNew() {
+}
 
 CSprArrowEffect::~CSprArrowEffect() {
 }
