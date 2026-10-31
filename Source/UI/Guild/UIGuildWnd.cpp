@@ -28,10 +28,8 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowManagerWindows.h"
 #include "Utility/Text/FormatString.h"
-
 #include <windows.h>
 #include <timeapi.h>
-
 #include <cstdio>
 #include <cstring>
 #include <cwchar>
@@ -70,6 +68,8 @@ struct GuildTotalInfoEntry {
 // GLOBAL: gl_24994
 std::string g_guildNamelessTag = "<NAMELESS>";
 
+// GLOBAL: gl_25131
+bool g_guildOnlineFirst;
 static GuildInfo& GuildData() {
   return *reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
 }
@@ -1671,4 +1671,93 @@ void UIGuildTotalInfoWnd::Paint() {
       return;
     }
   }
+}
+
+// OFFSET: 0x00959F10
+// FUNCTION: fn_13061
+void UIGuildMemberManageWnd::Slot15(int, int) {
+  this->CreateTabs();
+  if (std::strcmp(g_guildName.c_str(), "") == 0) {
+    g_modeMgr.gameMode->SendMsg(107, 0, 0, 0, 0);
+  }
+
+  GuildData().unknown_00C0 = 1;
+  g_modeMgr.gameMode->SendMsg(107, 1, 0, 0, 0);
+  this->m_members = g_guildMembers;
+  this->m_rowSpacing += 8;
+
+  for (int row = 0; row < 6; ++row) {
+    this->m_rowTexts[1][row] = new UIStaticText(*this->m_context, *this->m_controls);
+    this->m_rowTexts[1][row]->SetSize(g_guildMemberColumnWidths[0] / 2 + 2, 15);
+    this->m_rowTexts[1][row]->SetTextFitted("");
+    this->m_rowTexts[1][row]->Move(8, (this->m_rowSpacing + 36) * row + 63);
+    this->AddChild(this->m_rowTexts[1][row]);
+
+    this->m_rowTexts[2][row] = new UIStaticText(*this->m_context, *this->m_controls);
+    this->m_rowTexts[2][row]->SetSize(g_guildMemberColumnWidths[1] - 16, 15);
+    this->m_rowTexts[2][row]->SetTextFitted("");
+    this->m_rowTexts[2][row]->Move(g_guildMemberColumnWidths[0] + 8, (this->m_rowSpacing + 36) * row + 63);
+    this->AddChild(this->m_rowTexts[2][row]);
+
+    this->m_rowTexts[3][row] = new UIStaticText(*this->m_context, *this->m_controls);
+    this->m_rowTexts[3][row]->SetSize(39, 15);
+    this->m_rowTexts[3][row]->SetTextFitted("");
+    this->m_rowTexts[3][row]->Move(g_guildMemberColumnWidths[0] + 58, (this->m_rowSpacing + 36) * row + 63);
+    this->AddChild(this->m_rowTexts[3][row]);
+
+    this->m_rowTexts[0][row] = new UIStaticText(*this->m_context, *this->m_controls);
+    this->m_rowTexts[0][row]->SetSize(39, 15);
+    this->m_rowTexts[0][row]->SetTextFitted("");
+    this->m_rowTexts[0][row]->Move(g_guildMemberColumnWidths[0] + 101, (this->m_rowSpacing + 36) * row + 63);
+    this->AddChild(this->m_rowTexts[0][row]);
+  }
+
+  if (GuildData().unknown_00B4) {
+    const std::string prefix("유저인터페이스\\basic_interface\\");
+    UIBitmapButton** button = this->m_rowButtons;
+    for (int y = 82; y < 298; y += 36, ++button) {
+      *button = new UIBitmapButton(*this->m_context, *this->m_controls);
+      (*button)->SetBitmap((prefix + "txtbox_btn_a" + ".bmp").c_str(), 0, 0);
+      (*button)->SetBitmap((prefix + "txtbox_btn_b" + ".bmp").c_str(), 1, 0);
+      (*button)->SetBitmap((prefix + "txtbox_btn_c" + ".bmp").c_str(), 2, 0);
+      (*button)->SetSize((*button)->BitmapWidth(), (*button)->BitmapHeight());
+      (*button)->Move(142, y);
+      (*button)->SetId(273);
+      this->AddChild(*button);
+    }
+  }
+
+  this->m_scrollBar = new UIScrollBar(*this->m_context);
+  this->m_scrollBar->Configure(this->geometry.width - 16, 43, 1, this->m_rowSpacing + 241);
+  this->AddChild(this->m_scrollBar);
+
+  {
+    const std::string prefix("유저인터페이스\\");
+    int x = this->geometry.width - 61;
+    int y = this->geometry.height - 23;
+    UIBitmapButton* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    this->m_button = button;
+    button->SetBitmap((prefix + "btn_ok" + ".bmp").c_str(), 0, 0);
+    button->SetBitmap((prefix + "btn_ok_a" + ".bmp").c_str(), 1, 0);
+    button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
+    button->SetBitmap((prefix + "btn_ok_dis" + ".bmp").c_str(), 3, 0);
+    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    if (!GuildData().unknown_00B4 || !this->unknown_0184) {
+      x = -200;
+      y = -200;
+    }
+    this->m_button->Move(x, y);
+    this->m_button->SetId(184);
+    this->AddChild(this->m_button);
+    this->m_message0 = 184;
+  }
+
+  this->m_onlineCheck = new UICheckBox(*this->m_context, *this->m_controls);
+  this->m_onlineCheck->SetSize(240, 12);
+  this->m_onlineCheck->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(2864));
+  this->m_onlineCheck->FitToText();
+  this->m_onlineCheck->Move(12, this->geometry.height - 18);
+  this->m_onlineCheck->SetChecked(g_guildOnlineFirst);
+  this->AddChild(this->m_onlineCheck);
+  this->UpdateScroll();
 }

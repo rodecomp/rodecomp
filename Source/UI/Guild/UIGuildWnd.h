@@ -101,6 +101,7 @@ protected:
 class UIGuildMemberManageWnd : public UIGuildWnd {
 public:
   int Tab() override;
+  void Slot15(int width, int height) override;
   void Slot19() override;
   void Slot25(int x, int y) override;
   void Slot32(int x, int y) override;
@@ -112,7 +113,8 @@ protected:
   bool GetMember(int index, GuildInfo::Member& member);
   void SortMembers(int column);
 
-  /* 00D0 */ unsigned char unknown_00D0[0x78];
+  /* 00D0 */ UIStaticText* m_rowTexts[4][6];
+  /* 0130 */ UIBitmapButton* m_rowButtons[6];
   /* 0148 */ UIScrollBar* m_scrollBar;
   /* 014C */ UIButton* m_button;
   /* 0150 */ unsigned char unknown_0150[0xC];
@@ -128,7 +130,7 @@ protected:
   /* 0184 */ int unknown_0184;
   /* 0188 */ int m_sortColumn;
   /* 018C */ std::map<int, int> m_sortOrders;
-  /* 0194 */ int unknown_0194;
+  /* 0194 */ UICheckBox* m_onlineCheck;
   /* 0198 */ std::uint32_t m_buttonTime;
 };
 
