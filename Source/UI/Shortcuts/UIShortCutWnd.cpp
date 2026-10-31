@@ -16,6 +16,7 @@
 #include "UI/Shortcuts/ShortcutUse.h"
 #include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/Shortcuts/UIShortCutWnd.h"
+#include "UI/Chat/ChatSuggestions.h"
 #include "UI/Chat/UINewChatWnd.h"
 #include "UI/Chat/UISubChatHisWnd.h"
 #include "UI/Chat/UISubChatMiniWnd.h"
@@ -28,6 +29,7 @@
 #include "UI/Lists/UIChatHisBox.h"
 #include "UI/Lists/UITabControl.h"
 #include "UI/Window/UIWindow.h"
+#include "UI/Window/InputFocus.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UIWindowCallBtnWnd.h"
 #include "UI/Window/WindowManagerWindows.h"
@@ -35,6 +37,10 @@
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
 #include "Client/Application/Launcher.h"
+#include "Client/ReplayPacketRecorder.h"
+#include "Contents/NavigationManager.h"
+#include "UI/Window/UINavigationWnd.h"
+#include "Utility/Text/FormatString.h"
 #include "File/File.h"
 #include "Render/Renderer.h"
 #include "Resource/Bitmap/BitmapResource.h"
@@ -570,6 +576,45 @@ void UINewChatWnd::Slot27(int x, int y) {
   }
 }
 
+// OFFSET: 0x00930D40
+// FUNCTION: fn_12695
+void UINewChatWnd::Slot25(int x, int y) {
+  if (static_cast<unsigned int>(y - 1) > 19) {
+    InputFocus{g_windowMgr.hoverWindow}.Set(this->m_inputEdit);
+    this->UIFrameWnd::Slot25(x, y);
+    return;
+  }
+
+  if (static_cast<int>(this->geometry.unknown_0030) <= 0) {
+    return;
+  }
+
+  if (y < 14 && x > this->m_lockButtonX && x < this->m_lockButtonX + 9) {
+    g_chatInputFlag = g_chatInputFlag == 0;
+    reinterpret_cast<ChatHeaderLayout*>(this)->Apply();
+    for (unsigned int i = 0; i < g_windowMgr.retainedWindows.size(); ++i) {
+      reinterpret_cast<ChatButtonLayout*>(g_windowMgr.retainedWindows[i])->Apply();
+      g_windowMgr.retainedWindows[i]->Invalidate();
+    }
+
+    RECT rectangle;
+    rectangle.left = this->m_lockButtonX;
+    rectangle.top = 4;
+    rectangle.right = this->m_lockButtonX + 15;
+    rectangle.bottom = 13;
+    this->FillSurface(0xFFFF00FF, &rectangle);
+    this->Invalidate();
+  }
+
+  if (g_windowMgr.unknown_0026 && y < 14 && x > this->m_chatModeX && x < this->m_chatModeX + 14) {
+    g_windowMgr.unknown_0024 = g_windowMgr.unknown_0024 == 0;
+    if (g_chatSuggestions) {
+      reinterpret_cast<ChatInputLayout*>(g_chatSuggestions)->Apply();
+    }
+    this->Invalidate();
+  }
+}
+
 // OFFSET: 0x0092D420
 // FUNCTION: fn_12669
 void UINewChatWnd::Paint() {
@@ -877,4 +922,46 @@ int UIMemorialDunWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
   }
 
   return this->UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+}
+
+// OFFSET: 0x0093CB60
+// FUNCTION: fn_12764
+bool UINavigationWnd::LoadRoute(int index) {
+  if (this->m_history.empty() || static_cast<unsigned int>(index) > this->m_history.size() || index < 0) {
+    return false;
+  }
+
+  std::string name = this->m_history[index].c_str();
+  if (name.size() == 0) {
+    return false;
+  }
+
+  std::string path = FormatOwnedString("%s\\Navigationdata\\%s", g_applicationDirectory, name.c_str());
+  FILE* file = fopen(path.c_str(), "rb");
+  if (!file) {
+    return false;
+  }
+
+  g_navigationManager.ClearStates();
+  char delimiters[] = "\t ,\t\n";
+  char line[1024];
+  std::memset(line, 0, sizeof(line));
+  std::vector<std::string> tokens;
+  while (!feof(file)) {
+    fgets(line, 1024, file);
+    for (char* token = strtok(line, delimiters); token; token = strtok(nullptr, delimiters)) {
+      tokens.emplace_back(std::string(token));
+    }
+    g_navigationManager.AddState(tokens);
+    tokens.erase(tokens.begin(), tokens.end());
+  }
+  fclose(file);
+
+  if (g_navigationManager.StateCount() > 0) {
+    reinterpret_cast<WindowReplayRecorder*>(this)->RecordData(0x38F, g_navigationManager.WriteStates());
+  }
+
+  this->FillRouteList();
+  this->SendMsg(this, 6, 190, 0, 0, 0);
+  return true;
 }

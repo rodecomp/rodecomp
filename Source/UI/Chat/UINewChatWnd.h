@@ -19,6 +19,7 @@ public:
   void Slot11() override;
   void Show(int visible) override;
   void Paint() override;
+  void Slot25(int x, int y) override;
   void Slot27(int x, int y) override;
   void Slot31(int x, int y) override;
   bool Slot42(void* output) override;
@@ -50,6 +51,7 @@ private:
   /* 012C */ UIWindow* m_chatModeButton;
   /* 0130 */ unsigned char unknown_0130[0x8];
   /* 0138 */ UITabControl* m_tabControl;
+  UIWindow* m_inputEdit;
 };
 
 #endif

@@ -46,6 +46,7 @@ public:
   void RefreshWorldMapLevels();
   void RefreshRouteList();
   void FillRouteList();
+  bool LoadRoute(int index);
 
 protected:
   /* 00B4 */ UIWindow* m_closeButton;
