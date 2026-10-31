@@ -13,6 +13,7 @@ public:
   void Remove(SnapObject* object);
   bool Contains(SnapObject* target);
   bool Connected(SnapObject* target);
+  int GetHeight() const;
   void AccumulateHeight(int& height, int side) const;
 
   /* 0004 */ UIWindow* window;

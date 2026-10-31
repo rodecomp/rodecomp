@@ -107,6 +107,12 @@ bool SnapObject::Connected(SnapObject* target) {
   return false;
 }
 
+// OFFSET: 0x007E2B00
+// FUNCTION: fn_09707
+int SnapObject::GetHeight() const {
+  return this->window->geometry.height;
+}
+
 // OFFSET: 0x007E2B10
 // FUNCTION: fn_09708
 void SnapObject::AccumulateHeight(int& height, int side) const {
