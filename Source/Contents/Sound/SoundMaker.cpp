@@ -15,8 +15,10 @@
 #include "Client/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Configuration/ServiceOptions.h"
+#include "Contents/Jobs/JobInheritance.h"
 #include "Contents/Skills/ClientSkills.h"
 #include "Contents/World/World.h"
+#include "UI/Gauges/UIPcGage.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Resource/ResourceMgr.h"
@@ -736,6 +738,144 @@ void CHalluPlant::SendMsg(
       CNpc::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
       break;
   }
+}
+
+struct NpcAppearInfo {
+  /* 0000 */ int unknown_0000;
+  /* 0004 */ int job;
+  /* 0008 */ int unknown_0008[22];
+  /* 0060 */ int guildId;
+  /* 0064 */ int guildVersion;
+  /* 0068 */ int unknown_0068[3];
+  /* 0074 */ int unknown_0074;
+};
+
+// OFFSET: 0x00DA4EF0
+// FUNCTION: fn_22426
+void CNpc::SendMsg(
+  CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int
+) {
+  if (message == 4 && a == 0) {
+    CGameActor::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+    const NpcAppearInfo* info = reinterpret_cast<const NpcAppearInfo*>(b);
+    switch (this->unknown_0314) {
+      case 8:
+      case 9:
+      case 10:
+      case 13:
+      case 14:
+        this->unknown_02EC = info->unknown_0074;
+        break;
+    }
+    this->render.visible = IsVisibleJob(info->job);
+    this->Slot49(info->guildId, info->guildVersion);
+    return;
+  }
+
+  if (message == 0x22 && a == 0) {
+    if (g_session.IsCompanionAid(this->render.accountId)) {
+      if (this->unknown_042C == nullptr) {
+        this->unknown_042C = new UIPlayerGage();
+        switch (this->unknown_0314) {
+          case 8: {
+            static_cast<UIPlayerGage*>(this->unknown_042C)->SetFirstValues(
+              [] { return static_cast<std::int64_t>(g_session.m_homunHp); },
+              [] { return static_cast<std::int64_t>(*reinterpret_cast<int*>(g_session.unknown_55C8)); }
+            );
+            static_cast<UIPlayerGage*>(this->unknown_042C)->SetSecondValues(
+              [] { return static_cast<std::int64_t>(g_session.m_homunSp); },
+              [] { return static_cast<std::int64_t>(g_session.unknown_55D0); }
+            );
+            static_cast<UIPlayerGage*>(this->unknown_042C)->SetThirdValues(
+              [] { return static_cast<std::int64_t>(g_session.unknown_55F0); },
+              [] { return static_cast<std::int64_t>(g_session.unknown_55F4); }
+            );
+            this->unknown_042C->SetSize(60, 13);
+            static_cast<UIPlayerGage*>(this->unknown_042C)->unknown_009C = 8;
+            break;
+          }
+          case 7: {
+            static_cast<UIPlayerGage*>(this->unknown_042C)->SetThirdValues(
+              [] { return static_cast<std::int64_t>(g_session.unknown_1044); },
+              [] { return static_cast<std::int64_t>(*reinterpret_cast<int*>(g_session.unknown_1048)); }
+            );
+            this->unknown_042C->SetSize(60, 5);
+            static_cast<UIPlayerGage*>(this->unknown_042C)->unknown_009C = 7;
+            break;
+          }
+          case 9: {
+            static_cast<UIPlayerGage*>(this->unknown_042C)->SetFirstValues(
+              [] { return static_cast<std::int64_t>(g_session.m_mercenaryHp); },
+              [] { return static_cast<std::int64_t>(g_session.m_mercenaryMaxHp); }
+            );
+            static_cast<UIPlayerGage*>(this->unknown_042C)->SetSecondValues(
+              [] { return static_cast<std::int64_t>(g_session.m_mercenarySp); },
+              [] { return static_cast<std::int64_t>(g_session.m_mercenaryMaxSp); }
+            );
+            this->unknown_042C->SetSize(60, 9);
+            break;
+          }
+          case 10: {
+            static_cast<UIPlayerGage*>(this->unknown_042C)->SetFirstValues(
+              [] { return static_cast<std::int64_t>(g_session.unknown_5BC4); },
+              [] { return static_cast<std::int64_t>(g_session.unknown_5BCC); }
+            );
+            static_cast<UIPlayerGage*>(this->unknown_042C)->SetSecondValues(
+              [] { return static_cast<std::int64_t>(g_session.unknown_5BC8); },
+              [] { return static_cast<std::int64_t>(g_session.unknown_5BD0); }
+            );
+            this->unknown_042C->SetSize(60, 9);
+            break;
+          }
+          case 13: {
+            static_cast<UIPlayerGage*>(this->unknown_042C)->SetFirstValues(
+              [this] { return g_session.FindUnknown0784(this->render.accountId); },
+              [this] { return g_session.FindUnknown078C(this->render.accountId); }
+            );
+            this->unknown_042C->SetSize(60, 5);
+            static_cast<UIPlayerGage*>(this->unknown_042C)->unknown_009C = 13;
+            break;
+          }
+          case 14: {
+            static_cast<UIPlayerGage*>(this->unknown_042C)->SetFirstValues(
+              [this] { return g_session.FindUnknown0784(this->render.accountId); },
+              [this] { return g_session.FindUnknown078C(this->render.accountId); }
+            );
+            this->unknown_042C->SetSize(60, 5);
+            static_cast<UIPlayerGage*>(this->unknown_042C)->unknown_009C = 14;
+            break;
+          }
+        }
+        g_windowMgr.AddRenderedFront(this->unknown_042C);
+        if (this->unknown_042C == nullptr) {
+          return;
+        }
+      }
+      this->unknown_042C->Move(
+        this->render.screenX - 30, this->render.screenY + g_renderer->viewport.height * 12 / 480
+      );
+      return;
+    }
+
+    if (this->unknown_0314 == 13 || this->unknown_0314 == 14) {
+      return;
+    }
+
+    if (this->unknown_0430 == nullptr) {
+      this->unknown_0430 = new UIPcGage();
+      this->unknown_0430->SetSize(60, 5);
+      g_windowMgr.AddRenderedFront(this->unknown_0430);
+      if (this->unknown_0430 == nullptr) {
+        return;
+      }
+    }
+    static_cast<UIPcGage*>(this->unknown_0430)->SetValues(b, d);
+    static_cast<UIPcGage*>(this->unknown_0430)->SetLimits(0, 0);
+    this->unknown_0430->Move(this->render.screenX - 30, this->render.screenY + ScaleByScreenHeight(12));
+    return;
+  }
+
+  CGameActor::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x00DA5610
