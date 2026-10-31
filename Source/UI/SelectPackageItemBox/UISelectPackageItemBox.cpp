@@ -263,6 +263,38 @@ void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabIn
   }
 }
 
+template <class T, class D> struct ListHighlightCallback {
+  virtual ~ListHighlightCallback() = default;
+
+  /* 0004 */ CUIListBoxEx<T, D>* list;
+
+  void operator()(CUIListItem* const& item);
+};
+
+template <class T, class D> struct ListSelectCallback {
+  virtual ~ListSelectCallback() = default;
+
+  /* 0004 */ CUIListBoxEx<T, D>* list;
+
+  void operator()(CUIListItem* const& item);
+};
+
+// OFFSET: 0x00A6E970
+// FUNCTION: fn_16709
+template <>
+void ListHighlightCallback<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::operator()(CUIListItem* const& item) {
+  CUIListItem* highlighted = item;
+  for (SelectPackageItemBox::CUIItemInfo* entry : this->list->items) {
+    entry->SetHighlighted(highlighted == entry);
+  }
+}
+
+// OFFSET: 0x00A6E9C0
+
+// OFFSET: 0x00A6EA90
+
+// OFFSET: 0x00A6EB70
+
 // OFFSET: 0x00A6FBC0
 // FUNCTION: fn_16779
 void CUISelectPackageItemBox::OnCancel() {
