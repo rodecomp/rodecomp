@@ -6,7 +6,9 @@
 #include "Client/Registry.h"
 #include "Client/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "UI/Dialogs/UIEmailAddressWnd.h"
 #include "UI/Dialogs/UIMemorialDunWnd.h"
+#include "UI/Window/UIMessageBox.h"
 #include "UI/GameSettings/GameSettingsUI.h"
 #include "UI/Navigation/UINavigationV4Wnd.h"
 #include "UI/Window/UINavigationWnd.h"
@@ -1156,4 +1158,88 @@ void UIWindowMgr::RestoreHiddenWindows() {
 void UIWindowMgr::CycleWindowVisibilityTwice() {
   this->CycleWindowVisibility(4);
   this->CycleWindowVisibility(4);
+}
+
+// OFFSET: 0x00A8FDB0
+// FUNCTION: fn_17151
+int WindowDialogs::RunEmailAddress() {
+  if (this->Top()) {
+    return 185;
+  }
+
+  auto* window = new UIEmailAddressWnd(
+    this->windows, this->frames, *reinterpret_cast<UIButtonContext*>(nullptr), *reinterpret_cast<UIEditContext*>(nullptr)
+  );
+  window->SetSize(280, 48);
+  window->Move((g_renderer->viewport.width - 640) / 2 + 185, (g_renderer->viewport.height - 480) / 2 + 180);
+  this->dialog.retirement.rendered.push_front(window);
+
+  if (this->capture) {
+    this->suspendedRoots.insert(this->capture->Root());
+  }
+
+  this->capture = nullptr;
+  this->alternateResult = 0;
+  this->modal.push_back(window);
+  int response = 184;
+
+  if (this->immediate == 0) {
+    ModalFramePump* pump = this->mode;
+
+    for (;;) {
+      if (this->result != 0) {
+        if (UIWindow* active = this->Top()) {
+          active->Show(0);
+          this->dialog.retirement.Schedule(active);
+          this->modal.pop_back();
+        }
+
+        response = this->result;
+
+        if (this->modal.empty()) {
+          this->result = 0;
+        }
+
+        break;
+      }
+
+      if (this->alternateResult != 0) {
+        if (UIWindow* active = this->Top()) {
+          active->Show(0);
+          this->dialog.retirement.Schedule(active);
+          this->modal.pop_back();
+        }
+
+        response = this->alternateResult;
+        this->alternateResult = 0;
+        break;
+      }
+
+      if (pump) {
+        pump->Frame();
+        pump = this->mode;
+      }
+
+      const auto option = this->frameOptions.find(20);
+
+      if (option != this->frameOptions.end() && option->second > 0) {
+        this->result = 0;
+        this->alternateResult = 0;
+
+        while (!this->modal.empty()) {
+          this->dialog.retirement.Schedule(this->modal.back());
+          this->modal.pop_back();
+        }
+
+        break;
+      }
+
+      if (this->immediate != 0) {
+        break;
+      }
+    }
+  }
+
+  this->RestoreInput();
+  return response;
 }

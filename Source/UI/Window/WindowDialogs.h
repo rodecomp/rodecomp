@@ -42,6 +42,7 @@ struct WindowDialogs {
     const char* text, int type, bool defaultAccept, int unused, int timeout, const char* caption, int width, int height, const char* icon, bool track
   );
   int RunModal(UIWindow* window);
+  int RunEmailAddress();
 };
 
 extern int g_dialogKeyboardEnabled;
