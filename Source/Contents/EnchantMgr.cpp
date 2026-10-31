@@ -519,6 +519,11 @@ int L_SetSuccessRate(lua_State* L) {
   return 2;
 }
 
+// OFFSET: 0x00689250
+// FUNCTION: fn_05583
+void EnchantMgrUnknown689250() {
+}
+
 // OFFSET: 0x006821B0
 // FUNCTION: fn_05537
 void CEnchantMgr::AddPerfectEnchant(uint64_t group, uint32_t optionKey, const std::string& itemName, uint64_t cost,
