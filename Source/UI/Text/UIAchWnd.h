@@ -80,6 +80,7 @@ public:
   void SetAchievements(std::map<int, AchievementInfo>* achievements, int mode);
   void UpdateScroll();
 
+  void Paint() override;
   void Slot25(int x, int y) override;
   void Slot31(int x, int y) override;
   void Slot35(int delta) override;
@@ -144,6 +145,10 @@ private:
 
 class UIAchTV : public UITextViewer {
 public:
+  // INLINED
+  UIAchTV() : unknown_00EC(0), textColor(0), outlineColor(0), underline(0) {
+  }
+
   /* 00EC */ unsigned char unknown_00EC;
   /* 00F0 */ std::uint32_t textColor;
   /* 00F4 */ std::uint32_t outlineColor;
@@ -156,6 +161,11 @@ public:
 
 class UIToolTipBitmapWnd : public UIWindow {
 public:
+  // INLINED
+  UIToolTipBitmapWnd(UIWindowContext& windows, WindowManagerWindows& managed)
+      : UIWindow(windows, 0), bitmap(nullptr), itemId(0), unknown_00B4(0), unknown_00B8(0), m_windows(&managed) {
+  }
+
   /* 007C */ std::string tooltip;
   /* 0094 */ CBitmapRes* bitmap;
   /* 0098 */ std::string bitmapName;
@@ -196,6 +206,7 @@ public:
   /* 00E0 */ int achievementId;
   /* 00E4 */ AchievementInfo* info;
 
+  void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
@@ -221,6 +232,7 @@ public:
   /* 00AC */ UIWindow* buttons[2];
   /* 00B4 */ int selected;
 
+  void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 

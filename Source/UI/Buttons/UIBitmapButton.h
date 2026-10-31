@@ -5,6 +5,7 @@
 
 class UIBitmapButton : public UIButton {
   friend class UIAdvenPartyBoardWnd;
+  friend class UIAchViewWnd;
 
 public:
   UIBitmapButton();

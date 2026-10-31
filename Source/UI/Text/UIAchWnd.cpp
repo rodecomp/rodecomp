@@ -9,9 +9,12 @@
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
+#include "UI/Buttons/UIBitmapButton.h"
+#include "UI/Buttons/UIRadioBtn.h"
 #include "UI/Buttons/UITextButton.h"
 #include "UI/Text/ColoredText.h"
 #include "UI/Text/UIAchWnd.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowBorder.h"
 #include "Utility/Text/FormatString.h"
 #include "Client/Mode/ModeMgr.h"
@@ -231,6 +234,164 @@ void UIAchievementWnd::CreateTab() {
   this->tab->SetLabel(LookupMessage(2676), 5, 1);
   this->tab->SetLabel(LookupMessage(2677), 5, 2);
   this->tab->SetLabel(LookupMessage(2678), 6, -1);
+}
+
+// OFFSET: 0x007B52E0
+// FUNCTION: fn_09214
+void UIAchUpperWnd::Slot15(int, int) {
+  UICustomGageBar* gauge = new (std::nothrow) UICustomGageBar(*this->m_context);
+  this->unknown_00A4 = gauge;
+  gauge->Slot15(84, 10);
+  gauge->Resize(84, 10);
+  gauge->value = 0;
+  gauge->maximum = 100;
+  this->unknown_00A4->Move(47, 24);
+  this->unknown_00A4->text = LookupMessage(3105);
+  this->AddChild(this->unknown_00A4);
+
+  gauge = new (std::nothrow) UICustomGageBar(*this->m_context);
+  this->unknown_00A8 = gauge;
+  gauge->Slot15(124, 8);
+  gauge->Resize(124, 8);
+  gauge->value = 0;
+  gauge->maximum = 100;
+  this->unknown_00A8->Move(613, 29);
+  this->AddChild(this->unknown_00A8);
+
+  int index = 0;
+  UIWindow** slot = this->buttons;
+  for (int y = 10; y < 40; y += 15) {
+    *slot = new UIRadioBtn(*this->m_context, *this->m_controls);
+    (*slot)->SetSize(12, 12);
+    (*slot)->Move(150, y);
+    (*slot)->SendMsg(this, 13, index == this->selected, 0, 0, 0);
+    this->AddChild(*slot);
+    ++index;
+    ++slot;
+  }
+}
+
+// OFFSET: 0x007B54F0
+// FUNCTION: fn_09215
+void UIAchViewWnd::Slot15(int, int) {
+  const std::string name = "유저인터페이스\\achievement_re\\btn_receive";
+  this->receiveButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->receiveButton->SetBitmap((name + "_out.bmp").c_str(), 0, 0);
+  this->receiveButton->SetBitmap((name + "_over.bmp").c_str(), 1, 0);
+  this->receiveButton->SetBitmap((name + "_press.bmp").c_str(), 2, 0);
+  this->receiveButton->SetBitmap((name + "_disable.bmp").c_str(), 3, 0);
+  this->receiveButton->SetSize(this->receiveButton->BitmapWidth(), this->receiveButton->BitmapHeight());
+  this->receiveButton->Move(90, 372);
+  this->receiveButton->SetId(474);
+  this->receiveButton->Enable(0);
+  this->receiveButton->m_invalidateParent = 1;
+  this->AddChild(this->receiveButton);
+
+  this->description = new UIAchTV();
+  this->description->Configure(12, 34, 300, 60, 1);
+  this->description->textColor = 0xC9977D;
+  this->description->outlineColor = 0xFFFFFF;
+  this->AddChild(this->description);
+
+  UIAchTV** condition = this->conditions;
+  for (int y = 99; y < 289; y += 19) {
+    *condition = new (std::nothrow) UIAchTV();
+    (*condition)->Configure(28, y, 280, 40, 1);
+    (*condition)->Show(0);
+    this->AddChild(*condition);
+    ++condition;
+  }
+
+  for (UICustomGageBar*& slot : this->gauges) {
+    UICustomGageBar* gauge = new (std::nothrow) UICustomGageBar(*this->m_context);
+    slot = gauge;
+    gauge->Slot15(254, 10);
+    gauge->Resize(254, 10);
+    gauge->value = 0;
+    gauge->maximum = 100;
+    slot->barColor = 0xC78A71;
+    slot->backgroundColor = 0xFFFFFF;
+    slot->outerBorderColor = 0xFFFFFF;
+    slot->innerBorderColor = 0xDAA896;
+    slot->Show(0);
+    this->AddChild(slot);
+  }
+
+  for (UIToolTipBitmapWnd*& reward : this->rewards) {
+    reward = new (std::nothrow) UIToolTipBitmapWnd(*this->m_context, reinterpret_cast<WindowManagerWindows&>(g_windowMgr));
+    reward->Show(0);
+    this->AddChild(reward);
+  }
+}
+
+// OFFSET: 0x007B5FF0
+// FUNCTION: fn_09217
+void UIAchListWnd::Paint() {
+  UIButtonContext& controls = *this->m_controls;
+  this->DrawBitmap(0, 0, AchievementBitmap("유저인터페이스\\achievement_re\\bg_list.bmp"), false);
+
+  std::map<int, AchievementInfo>* achievements = reinterpret_cast<std::map<int, AchievementInfo>*>(this->unknown_00AC);
+  for (int row = 0; row < this->rowCount; ++row) {
+    const unsigned index = this->unknown_008C + row;
+    if (index >= this->ids.size()) {
+      continue;
+    }
+
+    const auto found = achievements->find(this->ids[index]);
+    if (found == achievements->end()) {
+      continue;
+    }
+
+    const AchievementInfo& info = found->second;
+    const SessionRecord6144 record = g_session.FindRecord6144(found->first);
+    const bool completed = static_cast<unsigned char>(record.unknown_0000 >> 8) == 1;
+    const int top = this->unknown_0084 * row;
+    if (this->selectedIndex == this->unknown_008C + row) {
+      this->DrawBitmap(
+        0, top,
+        AchievementBitmap(completed ? "유저인터페이스\\achievement_re\\list_complete_press.bmp" : "유저인터페이스\\achievement_re\\list_press.bmp"), false
+      );
+    } else {
+      this->DrawBitmap(
+        0, top, AchievementBitmap(completed ? "유저인터페이스\\achievement_re\\list_complete_out.bmp" : "유저인터페이스\\achievement_re\\list_out.bmp"),
+        false
+      );
+    }
+
+    const std::string iconName = "유저인터페이스\\achievement_re\\icon_" + info.unknown_0068 + ".bmp";
+    CBitmapRes* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(iconName.c_str())));
+    if (icon) {
+      this->DrawBitmap(8, top + 3, &icon->image, true);
+    }
+
+    if (g_session.HasUnknown6178Record(this->ids[this->unknown_008C + row])) {
+      this->DrawBitmap(8, top + 3, AchievementBitmap("유저인터페이스\\achievement_re\\list_pin.bmp"), true);
+    }
+
+    this->DrawTextAt(controls.fonts, controls.locale, 53, top + 14, info.title.c_str(), 0, 0, 12, 0xA55239, 1, 0);
+    this->DrawCenteredText(258, top + 14, FormatOwnedString("%3d", info.unknown_0048).c_str(), 40, 0, 12, 0xA55239, 1);
+    this->DrawTextAt(controls.fonts, controls.locale, 10, top + 54, info.unknown_0018.c_str(), 0, 0, 12, 0xA55239, 0, 0);
+    if (completed) {
+      this->DrawBitmap(250, top + 5, AchievementBitmap("유저인터페이스\\achievement_re\\badge_complete.bmp"), true);
+    }
+
+    const bool hasReward = info.unknown_0054 > 0 || info.unknown_0050 > 0 || info.unknown_004C > 0;
+    if (hasReward && record.unknown_0030 == 0) {
+      this->DrawBitmap(
+        263, top + 49,
+        AchievementBitmap(
+          completed ? "유저인터페이스\\achievement_re\\list_rewardbox_not_receive.bmp" : "유저인터페이스\\achievement_re\\list_rewardbox_default.bmp"
+        ),
+        true
+      );
+    }
+
+    if (completed) {
+      const std::string date = FormatOwnedString("%4d.%2d.%2d", record.year, record.month, record.day);
+      const int width = this->TextWidth(controls.fonts, controls.locale, date.c_str(), 0, 0, 10, 0, 0);
+      DrawOutlinedText(*this, static_cast<int>(276.0 - width * 0.5), top + 55, date.c_str(), 0, 0x635AA5, 0xFFFFFF, 0, 10, 0, 0);
+    }
+  }
 }
 
 // OFFSET: 0x007B5B60

@@ -10,6 +10,15 @@ struct UIButtonContext;
 
 class UIRadioBtn : public UIWindow {
 public:
+  __declspec(noinline) UIRadioBtn(UIWindowContext& windows, UIButtonContext& controls) : UIWindow(windows, 0), m_controls(&controls) {
+    this->geometry.unknown_0030 = 0;
+    this->enabled = 1;
+    this->geometry.id = 215;
+    this->highlighted = 0;
+    this->value = 0;
+    this->fontHeight = 12;
+    this->textColor = 0;
+  }
   ~UIRadioBtn() override;
   void Paint() override;
   void Slot25(int x, int y) override;
