@@ -83,16 +83,19 @@ public:
 class CCurseOfCubeEffect : public CEffect {
 public:
   CCurseOfCubeEffect();
+  void Slot03() override;
   void Slot04() override;
   bool Slot06() override;
   void Close() override;
-  void SpawnShock();
+  virtual void SpawnStart();
+  virtual void SpawnLoop();
+  virtual void SpawnShock();
 
   /* 00CC */ std::vector<EZ2STREmitter*> emitters;
   /* 00D8 */ int unknown_00D8;
-  /* 00DC */ int unknown_00DC;
+  /* 00DC */ float unknown_00DC;
   /* 00E0 */ float unknown_00E0;
-  /* 00E4 */ int unknown_00E4;
+  /* 00E4 */ float unknown_00E4;
 };
 
 class CWarningPlaneEffect : public CEffect {
@@ -124,13 +127,18 @@ public:
 class CDancingKnifeEffect : public CEffect {
 public:
   CDancingKnifeEffect();
+  void Slot01() override;
+  void Slot03() override;
   void Slot04() override;
   bool Slot06() override;
   void Close() override;
+  void SpawnFirstStrike();
+  void SpawnSecondStrike();
 
   /* 00CC */ std::vector<EZ2STREmitter*> emitters;
   /* 00D8 */ std::vector<EZ2STREmitter*> unknown_00D8;
-  /* 00E4 */ int unknown_00E4;
+  /* 00E4 */ unsigned char secondStrike;
+  /* 00E5 */ unsigned char unknown_00E5[3];
 };
 
 class CEternalSlashAttackEffect : public CEffect {

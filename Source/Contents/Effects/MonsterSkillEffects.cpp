@@ -2571,3 +2571,143 @@ void CNewCloudKillEffect::Slot04() {
     particle->Render(quad);
   }
 }
+
+// OFFSET: 0x00710270
+// FUNCTION: fn_07199
+void CDancingKnifeEffect::SpawnFirstStrike() {
+  CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+  bottom->Load(std::string("dancing_knife\\dancing_knife_bottom\\dancing_knife_skill_bottom_01.str"));
+  this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(bottom));
+
+  CEZ2STRParticle* knife = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+  knife->Load(std::string("dancing_knife\\dancing_knife\\dancing_knife_skill_01.str"));
+  this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(knife));
+}
+
+// OFFSET: 0x007104F0
+// FUNCTION: fn_07200
+void CDancingKnifeEffect::SpawnSecondStrike() {
+  this->secondStrike = 1;
+
+  CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+  bottom->Load(std::string("dancing_knife\\dancing_knife_bottom\\dancing_knife_skill_bottom_02.str"));
+  bottom->m_loop = true;
+  bottom->m_actorId = this->actor;
+  this->unknown_00D8.push_back(reinterpret_cast<EZ2STREmitter*>(bottom));
+
+  CEZ2STRParticle* knife = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+  knife->Load(std::string("dancing_knife\\dancing_knife\\dancing_knife_skill_02.str"));
+  knife->m_loop = true;
+  knife->m_actorId = this->actor;
+  this->unknown_00D8.push_back(reinterpret_cast<EZ2STREmitter*>(knife));
+}
+
+// OFFSET: 0x00710800
+// FUNCTION: fn_07202
+void CDancingKnifeEffect::Slot01() {
+  this->secondStrike = 0;
+  this->SpawnFirstStrike();
+  this->AddEvent(0, "effect\\SHC_DANCING_KNIFE.wav", 0, 0);
+}
+
+// OFFSET: 0x00710840
+// FUNCTION: fn_07204
+void CDancingKnifeEffect::Slot03() {
+  for (auto it = this->emitters.begin(); it != this->emitters.end();) {
+    EZ2STREmitter* emitter = *it;
+    if (emitter->lifetime == 0.0f || emitter->lifetime * 60.0f > static_cast<float>(emitter->elapsed)) {
+      if (emitter) {
+        emitter->position.x = this->position[0] + 0.0f;
+        emitter->position.y = this->position[1] - 12.0f;
+        emitter->position.z = this->position[2] + 0.0f;
+        AsParticle(emitter)->Process(0.0f, 0.0f, 0.0f);
+      }
+      ++it;
+    } else {
+      FreeParticle(AsParticle(emitter));
+      it = this->emitters.erase(it);
+    }
+  }
+
+  if (this->emitters.empty() && !this->secondStrike) {
+    this->SpawnSecondStrike();
+  }
+
+  for (auto it = this->unknown_00D8.begin(); it != this->unknown_00D8.end(); ++it) {
+    EZ2STREmitter* emitter = *it;
+    if (emitter) {
+      emitter->position.x = this->position[0] + 0.0f;
+      emitter->position.y = this->position[1] - 12.0f;
+      emitter->position.z = this->position[2] + 0.0f;
+      AsParticle(emitter)->Process(0.0f, 0.0f, 0.0f);
+    }
+  }
+}
+
+// OFFSET: 0x0070E400
+
+// OFFSET: 0x0070E770
+// FUNCTION: fn_07174
+void CCurseOfCubeEffect::SpawnStart() {
+  if (this->id == 0x901) {
+    CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+    if (bottom) {
+      bottom->Open("NPC_CURSE_OF_RED_CUBE\\npc_cur_r_cube\\npc_cur_r_cube_bottom_start.str");
+      this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(bottom));
+    }
+    CEZ2STRParticle* cube = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+    if (cube) {
+      cube->Open("NPC_CURSE_OF_RED_CUBE\\npc_cur_r_cube\\npc_cur_r_cube_start.str");
+      this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(cube));
+    }
+  } else if (this->id == 0x902) {
+    CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+    if (bottom) {
+      bottom->Open("NPC_CURSE_OF_BLUE_CUBE\\npc_cur_b_cube\\npc_cur_b_cube_bottom_start.str");
+      this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(bottom));
+    }
+    CEZ2STRParticle* cube = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+    if (cube) {
+      cube->Open("NPC_CURSE_OF_BLUE_CUBE\\npc_cur_b_cube\\npc_cur_b_cube_start.str");
+      this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(cube));
+    }
+  }
+}
+
+// OFFSET: 0x0070EB90
+// FUNCTION: fn_07179
+void CCurseOfCubeEffect::Slot03() {
+  for (auto it = this->emitters.begin(); it != this->emitters.end();) {
+    EZ2STREmitter* emitter = *it;
+    if (emitter->lifetime == 0.0f || emitter->lifetime * 60.0f > static_cast<float>(emitter->elapsed)) {
+      if (emitter) {
+        const vector3d position = {this->position[0], this->position[1], this->position[2]};
+        const matrix view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
+        const matrix inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse;
+
+        const float vx = position.x * view.values[0] + position.y * view.values[3] + position.z * view.values[6] + view.values[9] +
+                         this->unknown_00DC;
+        const float vy = position.x * view.values[1] + position.y * view.values[4] + position.z * view.values[7] + view.values[10] +
+                         this->unknown_00E0;
+        const float vz = position.y * view.values[5] + position.x * view.values[2] + position.z * view.values[8] + view.values[11] +
+                         this->unknown_00E4;
+
+        emitter->position.x = vy * inverse.values[3] + vx * inverse.values[0] + vz * inverse.values[6] + inverse.values[9];
+        emitter->position.y = vy * inverse.values[4] + vx * inverse.values[1] + vz * inverse.values[7] + inverse.values[10];
+        emitter->position.z = vy * inverse.values[5] + vx * inverse.values[2] + vz * inverse.values[8] + inverse.values[11];
+        AsParticle(emitter)->Process(0.0f, 0.0f, 0.0f);
+      }
+      ++it;
+    } else {
+      FreeParticle(AsParticle(emitter));
+      it = this->emitters.erase(it);
+    }
+  }
+
+  if (this->unknown_00D8 == 1 && this->emitters.empty()) {
+    this->SpawnLoop();
+    if (!this->emitters.empty()) {
+      this->unknown_00D8 = 2;
+    }
+  }
+}
