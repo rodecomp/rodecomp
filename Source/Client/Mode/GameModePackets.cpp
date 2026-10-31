@@ -254,6 +254,20 @@ namespace {
     /* 0002 */ std::uint32_t accountId;
     /* 0006 */ short value;
   };
+
+  struct ActorSkillMessage {
+    /* 0000 */ int unknown_0000;
+    /* 0004 */ int unknown_0004;
+    /* 0008 */ int unknown_0008;
+    /* 000C */ int unknown_000C;
+    /* 0010 */ int unknown_0010;
+    /* 0014 */ int unknown_0014;
+    /* 0018 */ int unknown_0018;
+    /* 001C */ int unknown_001C;
+    /* 0020 */ int unknown_0020;
+    /* 0024 */ int unknown_0024;
+    /* 0028 */ int unknown_0028;
+  };
 #pragma pack(pop)
 
   static_assert(sizeof(ItemStoreListHeader) == 0x1C);
@@ -2309,4 +2323,102 @@ void CGameMode::ReceiveUnknownD4E2A0(const unsigned char* packet) {
   }
 
   window->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
+}
+
+// OFFSET: 0x00D77850
+// FUNCTION: fn_22150
+void CGameMode::ReceiveActorSkillAction(const unsigned char* packet) {
+  ActorSkillMessage message;
+  message.unknown_0000 = *reinterpret_cast<const std::uint16_t*>(packet + 2);
+  message.unknown_0004 = *reinterpret_cast<const std::int16_t*>(packet + 0x18);
+  message.unknown_0008 = packet[0x1E];
+  message.unknown_000C = *reinterpret_cast<const std::uint32_t*>(packet + 8);
+  message.unknown_0010 = *reinterpret_cast<const std::uint32_t*>(packet + 0xC);
+  message.unknown_0014 = *reinterpret_cast<const std::int16_t*>(packet + 0x1A);
+  message.unknown_0018 = *reinterpret_cast<const std::int16_t*>(packet + 0x1C);
+  message.unknown_001C = -1;
+  message.unknown_0020 = -1;
+  message.unknown_0024 = *reinterpret_cast<const std::uint32_t*>(packet + 0x10);
+  message.unknown_0028 = *reinterpret_cast<const std::uint32_t*>(packet + 0x14);
+
+  CGameActor* actor = nullptr;
+  CGameActor* gameActor = nullptr;
+  int job = -1;
+
+  if (*reinterpret_cast<const std::uint32_t*>(packet + 4) == g_session.m_aid) {
+    actor = this->scene->player;
+    const std::int64_t value = reinterpret_cast<std::intptr_t>(&message);
+    actor->SendMsg(nullptr, 0x25, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    job = actor->GetEffectiveJob(-1);
+  } else {
+    gameActor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t*>(packet + 4)));
+    if (gameActor != nullptr) {
+      actor = gameActor;
+      const std::int64_t value = reinterpret_cast<std::intptr_t>(&message);
+      actor->SendMsg(nullptr, 0x25, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      job = actor->GetEffectiveJob(-1);
+    } else if (CRenderObject* skill = this->scene->GetSkillByAID(*reinterpret_cast<const std::uint32_t*>(packet + 4))) {
+      const std::int64_t value = reinterpret_cast<std::intptr_t>(&message);
+      skill->SendMsg(nullptr, 0x25, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+  }
+
+  if (g_session.IsMonsterActor(actor) == 0) {
+    this->SendMsg(0x56, *reinterpret_cast<const std::uint16_t*>(packet + 2), reinterpret_cast<std::intptr_t>(actor), *reinterpret_cast<const std::int16_t*>(packet + 0x1A), 0);
+    return;
+  }
+
+  int action;
+  int loopType;
+  g_session.GetMonsterSkillInfo(g_session.GetJobName(job, -1), message.unknown_0000, &action, &loopType, *reinterpret_cast<WindowDialogs*>(&g_windowMgr));
+  if (action != -1 && gameActor != nullptr) {
+    gameActor->SetAction(action * 8 - 8, 1, loopType == 0);
+  }
+}
+
+// OFFSET: 0x00D77A30
+// FUNCTION: fn_22151
+void CGameMode::ReceiveActorSkillMessage(const unsigned char* packet) {
+  ActorSkillMessage message;
+  message.unknown_0000 = *reinterpret_cast<const std::uint16_t*>(packet + 2);
+  message.unknown_0004 = *reinterpret_cast<const std::int16_t*>(packet + 0x1C);
+  message.unknown_0008 = packet[0x22];
+  message.unknown_000C = *reinterpret_cast<const std::uint32_t*>(packet + 8);
+  message.unknown_0010 = *reinterpret_cast<const std::uint32_t*>(packet + 0xC);
+  message.unknown_0014 = *reinterpret_cast<const std::int16_t*>(packet + 0x1E);
+  message.unknown_0018 = *reinterpret_cast<const std::int16_t*>(packet + 0x20);
+  message.unknown_001C = *reinterpret_cast<const std::int16_t*>(packet + 0x18);
+  message.unknown_0020 = *reinterpret_cast<const std::int16_t*>(packet + 0x1A);
+  message.unknown_0024 = *reinterpret_cast<const std::uint32_t*>(packet + 0x10);
+  message.unknown_0028 = *reinterpret_cast<const std::uint32_t*>(packet + 0x14);
+
+  CGameActor* actor = nullptr;
+  int job = -1;
+
+  if (*reinterpret_cast<const std::uint32_t*>(packet + 4) == g_session.m_aid) {
+    actor = this->scene->player;
+    const std::int64_t value = reinterpret_cast<std::intptr_t>(&message);
+    actor->SendMsg(nullptr, 0x25, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    job = actor->GetEffectiveJob(-1);
+  } else {
+    actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t*>(packet + 4)));
+    if (actor != nullptr) {
+      const std::int64_t value = reinterpret_cast<std::intptr_t>(&message);
+      actor->SendMsg(nullptr, 0x25, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      job = actor->GetEffectiveJob(-1);
+    } else if (CRenderObject* skill = this->scene->GetSkillByAID(*reinterpret_cast<const std::uint32_t*>(packet + 4))) {
+      const std::int64_t value = reinterpret_cast<std::intptr_t>(&message);
+      skill->SendMsg(nullptr, 0x25, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor = nullptr;
+    }
+  }
+
+  if (g_session.IsMonsterActor(actor) == 0) {
+    this->SendMsg(0x56, *reinterpret_cast<const std::uint16_t*>(packet + 2), reinterpret_cast<std::intptr_t>(actor), *reinterpret_cast<const std::int16_t*>(packet + 0x1E), 0);
+    return;
+  }
+
+  int action;
+  int loopType;
+  g_session.GetMonsterSkillInfo(g_session.GetJobName(job, -1), message.unknown_0000, &action, &loopType, *reinterpret_cast<WindowDialogs*>(&g_windowMgr));
 }
