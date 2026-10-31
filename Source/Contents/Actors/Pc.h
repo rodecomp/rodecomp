@@ -7,7 +7,9 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <map>
 #include <string>
+#include <utility>
 #include <vector>
 
 class C3dGrannyModelRes;
@@ -21,6 +23,7 @@ struct granny_control;
 struct granny_model_instance;
 struct CRagEffect;
 class CMsgEffect;
+class UIWindow;
 
 int GetSlotLayer(int slot);
 bool IsReadyOrAttackAction(int action);
@@ -28,6 +31,7 @@ std::string GetBodyImfName(int job, int sex, int head, int costumeJob);
 
 class CPc : public CGameActor {
 public:
+  CPc();
   ~CPc() override;
   void SendMsg(
     CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m
@@ -118,12 +122,14 @@ public:
   /* 0468 */ vector3d footprintPosition;
   /* 0474 */ int unknown_0474;
   /* 0478 */ std::string unknown_0478;
-  /* 0490 */ unsigned char unknown_0490[0x0C];
+  /* 0490 */ UIWindow* unknown_0490;
+  /* 0494 */ int unknown_0494;
+  /* 0498 */ int unknown_0498;
   /* 049C */ int unknown_049C;
   /* 04A0 */ int blend;
   /* 04A4 */ int unknown_04A4;
   /* 04A8 */ int unknown_04A8;
-  /* 04AC */ unsigned char unknown_04AC[0x08];
+  /* 04AC */ std::map<int, std::pair<int, int>> unknown_04AC;
   /* 04B4 */ std::vector<CRes*> equipSprites;
   /* 04C0 */ std::vector<CRes*> equipActions;
   /* 04CC */ int unknown_04CC;

@@ -31,6 +31,7 @@
 #include "Resource/Sprites/SpriteResource.h"
 #include "Script/LuaScript.h"
 #include "UI/Window/UIWindow.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Text/FormatString.h"
 
@@ -38,6 +39,47 @@
 
 // GLOBAL: gl_24753
 extern const int g_maxMoveSpeed = 432;
+
+// OFFSET: 0x00DA7700
+// FUNCTION: fn_22558
+CPc::CPc() : footprintPosition() {
+  this->unknown_04F4 = 0;
+  this->equipSprites.resize(9, nullptr);
+  this->equipActions.resize(9, nullptr);
+  this->unknown_0490 = nullptr;
+  this->unknown_0444 = 0;
+  this->unknown_045C = 0;
+  this->unknown_0430 = 0;
+  this->unknown_0434 = 0;
+  this->guildId = 0;
+  this->unknown_043C = 0;
+  this->unknown_0460[0] = 0;
+  this->unknown_0474 = 0;
+  this->unknown_0494 = 0;
+  this->unknown_0498 = 0;
+  this->render.unknown_00A8 = 1;
+  this->unknown_049C = -1;
+  this->blend = -1;
+  this->unknown_04A4 = -1;
+  this->unknown_04A8 = -1;
+  this->msgEffect = nullptr;
+  this->unknown_04CC = 0;
+  this->unknown_04D0 = 0;
+  this->unknown_04D4 = 0;
+  this->unknown_04D8[0] = 0;
+  this->unknown_04D9 = false;
+  this->unknown_0438 = 0;
+  this->unknown_04DC = 0;
+  this->unknown_04E0 = false;
+  this->unknown_04E4 = 0.0f;
+  this->unknown_04E8 = 0.0f;
+  this->unknown_04EC = 0.0f;
+  this->unknown_04F0 = 0.0f;
+  this->weapon = 0;
+  this->unknown_044C = 0;
+}
+
+// OFFSET: 0x00DA7BA0
 
 // OFFSET: 0x00DAFE50
 // FUNCTION: fn_22606
