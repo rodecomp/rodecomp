@@ -185,6 +185,70 @@ EncryptedName<103, 0xBF2B4B31397FF5A7ULL>& PasswordRetryExceededMessage::operato
 void CLoginMode::SubD8D4F0(int) {
 }
 
+// OFFSET: 0x00D8D500
+// FUNCTION: fn_22266
+void CLoginMode::SubD8D500(const char* packet) {
+  UIWindow* window = g_windowMgr.window_03D4;
+  WindowDialogs& dialogs = *reinterpret_cast<WindowDialogs*>(&g_windowMgr);
+  int message;
+  switch (*reinterpret_cast<const int*>(packet + 2)) {
+  case 0:
+    dialogs.Confirm(LookupMessage(0x4BE), 0, true, false, 0, "Message", 280, 120, 0);
+    if (window) {
+      window->SendMsg(nullptr, 6, 0x160, 0, 0, 0);
+    }
+    return;
+  case 1:
+    message = 0x4C2;
+    break;
+  case 2:
+    if (dialogs.Confirm(LookupMessage(0x4C3), 0, true, true, 0, "Message", 280, 120, 0) != 0xB8) {
+      return;
+    }
+    if (window) {
+      window->SendMsg(nullptr, 6, 0xB9, 0, 0, 0);
+    }
+    return;
+  case 3:
+    message = 0x4BF;
+    break;
+  case 4:
+    message = 0x4C4;
+    goto retry;
+  case 5:
+    message = 0x7E6;
+    break;
+  case 6:
+    message = 0x7E7;
+    break;
+  case 7:
+    message = 0x7EB;
+    goto retry;
+  case 8:
+    message = 0x7EC;
+    goto retry;
+  case 9:
+    message = 0x7ED;
+  retry:
+    if (dialogs.Confirm(LookupMessage(message), 0, true, true, 0, "Message", 280, 120, 0) != 0xB8) {
+      return;
+    }
+    if (window) {
+      window->SendMsg(nullptr, 6, 0x15F, 0, 0, 0);
+    }
+    return;
+  case 10:
+    message = 0x7E8;
+    break;
+  default:
+    return;
+  }
+
+  if (dialogs.Confirm(LookupMessage(message), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8 && g_windowMgr.window_03DC) {
+    g_windowMgr.CloseWindow(0x80);
+  }
+}
+
 // OFFSET: 0x00D8E1D0
 // FUNCTION: fn_22270
 int GetClientType() {

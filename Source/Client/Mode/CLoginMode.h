@@ -84,6 +84,7 @@ public:
   void End() override;
 
   void SubD8D4F0(int);
+  void SubD8D500(const char* packet);
   int GetMaxCharacterSlot();
   void ReceiveCharacterSlots(const CharacterSlotsPacket* packet);
   void ReceiveAcceptEnter(const AcceptEnterPacket* packet, WindowDialogs& dialogs);
