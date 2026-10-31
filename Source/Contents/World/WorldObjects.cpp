@@ -26,7 +26,11 @@
 #include "Contents/Ground/GroundGeometry.h"
 #include "Contents/Models/ModelActor.h"
 #include "Render/Textures/TextureCache.h"
+#include "Contents/Movies/BinkMovies.h"
+#include "Contents/Sound/SoundMgr.h"
+#include "Contents/Actors/Pc.h"
 
+#include <atomic>
 #include <cstdlib>
 #include <new>
 #include <string>
@@ -97,6 +101,40 @@ void CWorld::OnExitFrame() {
   g_texMgr.ClearUnused();
 }
 
+// OFFSET: 0x00AC9F10
+
+// OFFSET: 0x00ACA200
+// FUNCTION: fn_17690
+bool CWorld::RemoveItem(std::uint32_t aid) {
+  auto actorEntry = this->actors.begin();
+
+  for (; actorEntry != this->actors.end(); ++actorEntry) {
+    if ((*actorEntry)->render.accountId == aid) {
+      break;
+    }
+  }
+
+  if (actorEntry == this->actors.end()) {
+    return false;
+  }
+
+  this->RemovePcPos(aid, true);
+  this->RemovePcPosForMove((*actorEntry)->render.accountId, true);
+
+  CRenderObject* actor = *actorEntry;
+
+  for (auto objectEntry = this->objects.begin(); objectEntry != this->objects.end(); ++objectEntry) {
+    if (*objectEntry == actor) {
+      delete actor;
+      this->objects.erase(objectEntry);
+      break;
+    }
+  }
+
+  this->actors.erase(actorEntry);
+  return true;
+}
+
 // OFFSET: 0x00ACA320
 // FUNCTION: fn_17691
 void CWorld::Clear() {
@@ -162,6 +200,11 @@ void CGameMode::SpawnArrowEffect64(std::uint32_t aid, int target, char flag) {
     effect->SendMsg(nullptr, 64, 0, static_cast<int>(aid), static_cast<int>(aid) >> 31, target, target >> 31, reinterpret_cast<int>(&flag),
                     reinterpret_cast<int>(&flag) >> 31, 0, 0, 0, 0, 0, 0);
   }
+}
+
+// OFFSET: 0x00CD8730
+// FUNCTION: fn_21300
+void CGameMode::UnusedArrowStub(int, int, int, int, int, int, int, int, int, int) {
 }
 
 // OFFSET: 0x00CD8740
