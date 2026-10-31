@@ -20,6 +20,7 @@
 #include "Utility/Text/StringUtil.h"
 #include "Contents/World/World.h"
 #include "Contents/Items/RuneSystem.h"
+#include "Contents/Skills/SkillInfo.h"
 
 #include <algorithm>
 #include <array>
@@ -152,6 +153,7 @@ namespace EquipmentProperties {
     CEquipmentProperties* Accumulate(CEquipmentProperties* other) override;
     ~CEquipmentProperties2Dim() override;
     CEquipmentProperties* Clone() override;
+    std::string Describe(bool detailed, bool negative) override;
     void SetValue(const int& index, const int& value, const unsigned int& key);
 
     /* 0010 */ std::map<int, int> m_values;
@@ -366,6 +368,8 @@ namespace EquipmentProperties {
     void LoadCombiitem();
     void LoadEnumVar();
     void LoadRefiningBonus();
+    void LoadGradeBonus();
+    void LoadIgnoreEquipmentProperties();
     void LoadSkillGroup();
   };
 }
@@ -1053,6 +1057,182 @@ EquipmentPropertyStore& EquipmentPropertyStore::operator+=(EquipmentProperty* pr
 }
 
 // OFFSET: 0x006990E0
+// FUNCTION: fn_05780
+std::string EquipmentProperties::CEquipmentProperties1Dim::Describe(bool detailed, bool negative) {
+  std::string text;
+  if (this->m_definition == nullptr) {
+    return text;
+  }
+
+  int value = this->m_value;
+  if (value == 0) {
+    return text;
+  }
+
+  if (detailed == false) {
+    auto minimum = this->m_definition->unknown_005C.find(0);
+    if (minimum != this->m_definition->unknown_005C.end()) {
+      value = std::max(value, minimum->second);
+    }
+    auto maximum = this->m_definition->unknown_005C.find(1);
+    if (maximum != this->m_definition->unknown_005C.end()) {
+      value = std::min(value, maximum->second);
+    }
+  }
+
+  double result = value;
+  auto divisor = this->m_definition->unknown_005C.find(2);
+  if (divisor != this->m_definition->unknown_005C.end()) {
+    result /= divisor->second;
+  }
+  int precision = 0;
+  auto digits = this->m_definition->unknown_005C.find(3);
+  if (digits != this->m_definition->unknown_005C.end()) {
+    precision = digits->second;
+  }
+
+  const double sign = (result < 0.0 && this->m_definition->unknown_0034.size() == 2) ? -1.0 : 1.0;
+  const double scale = std::pow(10.0, precision);
+  const double rounded = std::floor(result * scale) / scale;
+  std::string number = std::vformat("{:.{}f}", std::make_format_args(sign * rounded, precision));
+  if (rounded != 0.0) {
+    const int nonPositive = rounded <= 0.0;
+    switch (this->m_definition->unknown_0034.size()) {
+    case 0:
+      text = EncodeText(g_textCodePage,
+                        std::vformat(DecodeText(g_textCodePage, this->m_definition->unknown_0008), std::make_wformat_args(DecodeText(g_textCodePage, number))));
+      break;
+    case 2: {
+      const int index = negative == true ? nonPositive ^ 1 : nonPositive;
+      if (index == 1) {
+        text += "{~}";
+      }
+      text += EncodeText(g_textCodePage, std::vformat(DecodeText(g_textCodePage, this->m_definition->unknown_0008),
+                                                      std::make_wformat_args(DecodeText(g_textCodePage, number),
+                                                                             DecodeText(g_textCodePage, this->m_definition->unknown_0034[index]))));
+      break;
+    }
+    }
+  }
+  return text;
+}
+
+// OFFSET: 0x006996F0
+// FUNCTION: fn_05781
+std::string EquipmentProperties::CEquipmentProperties2Dim::Describe(bool detailed, bool negative) {
+  std::string text;
+  if (this->m_definition == nullptr) {
+    return text;
+  }
+
+  bool failed = false;
+  for (auto entry = this->m_values.rbegin(); entry != this->m_values.rend(); ++entry) {
+    std::string argument;
+    unsigned int hash = 5381;
+    for (const char* character = this->m_definition->unknown_0044.c_str(); *character != '\0'; ++character) {
+      hash = hash * 33 + *character;
+    }
+    switch (hash) {
+    case 0xA2AF91ED: {
+      const int& skillId = CEquipmentPropertiesMgr::GetInstance()->GetUnknown0134(entry->first);
+      if (skillId == 0) {
+        continue;
+      }
+      argument = CSkillInfo::DisplayName(*g_session.m_hotkeyScript, skillId);
+      if (argument.size() == 0) {
+        continue;
+      }
+      break;
+    }
+    case 0x8F918611:
+      if (entry->first != 0) {
+        std::list<unsigned int>* skills = CEquipmentPropertiesMgr::GetInstance()->FindUnknown0114(entry->first);
+        if (skills == nullptr) {
+          failed = true;
+          continue;
+        }
+        for (const unsigned int& skillId : *skills) {
+          if (argument.size() != 0) {
+            argument += ", ";
+          }
+          argument += CSkillInfo::DisplayName(*g_session.m_hotkeyScript, skillId);
+        }
+        if (argument.size() != 0) {
+          argument += " ";
+        }
+      }
+      break;
+    case 0x78BA6385:
+      argument = CSkillInfo::DisplayName(*g_session.m_hotkeyScript, entry->first);
+      if (argument.size() == 0) {
+        continue;
+      }
+      break;
+    case 0x16716DCE:
+      argument = std::format("{0}", entry->first);
+      break;
+    default:
+      failed = true;
+      break;
+    }
+
+    int value = entry->second;
+    if (detailed == false) {
+      auto minimum = this->m_definition->unknown_005C.find(0);
+      if (minimum != this->m_definition->unknown_005C.end()) {
+        value = std::max(value, minimum->second);
+      }
+      auto maximum = this->m_definition->unknown_005C.find(1);
+      if (maximum != this->m_definition->unknown_005C.end()) {
+        value = std::min(value, maximum->second);
+      }
+    }
+
+    double result = value;
+    auto divisor = this->m_definition->unknown_005C.find(2);
+    if (divisor != this->m_definition->unknown_005C.end()) {
+      result /= divisor->second;
+    }
+    int precision = 0;
+    auto digits = this->m_definition->unknown_005C.find(3);
+    if (digits != this->m_definition->unknown_005C.end()) {
+      precision = digits->second;
+    }
+
+    const double sign = (result < 0.0 && this->m_definition->unknown_0034.size() == 2) ? -1.0 : 1.0;
+    const double scale = std::pow(10.0, precision);
+    const double rounded = std::floor(result * scale) / scale;
+    std::string number = std::vformat("{:.{}f}", std::make_format_args(sign * rounded, precision));
+    if (rounded != 0.0) {
+      if (text.size() != 0) {
+        text += "\n";
+      }
+      const int nonPositive = rounded <= 0.0;
+      switch (this->m_definition->unknown_0034.size()) {
+      case 0:
+        text += EncodeText(g_textCodePage, std::vformat(DecodeText(g_textCodePage, this->m_definition->unknown_0008),
+                                                        std::make_wformat_args(DecodeText(g_textCodePage, number), DecodeText(g_textCodePage, argument))));
+        break;
+      case 2: {
+        const int index = negative == true ? nonPositive ^ 1 : nonPositive;
+        if (index == 1) {
+          text += "{~}";
+        }
+        text += EncodeText(g_textCodePage,
+                           std::vformat(DecodeText(g_textCodePage, this->m_definition->unknown_0008),
+                                        std::make_wformat_args(DecodeText(g_textCodePage, number), DecodeText(g_textCodePage, argument),
+                                                               DecodeText(g_textCodePage, this->m_definition->unknown_0034[index]))));
+        break;
+      }
+      }
+    }
+  }
+
+  if (failed == true) {
+    return "";
+  }
+  return text;
+}
 
 // OFFSET: 0x0069A2A0
 // FUNCTION: fn_05782
@@ -2049,7 +2229,423 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEnumVar() {
   lua_settop(state, -2);
 }
 
+// OFFSET: 0x006B3C00
+// FUNCTION: fn_06196
+void EquipmentProperties::CEquipmentPropertiesMgr::LoadIgnoreEquipmentProperties() {
+  if (!this->unknown_000C) {
+    return;
+  }
+  lua_State* state = this->script.GetState();
+  if (state == nullptr) {
+    return;
+  }
+  const char* name = "IgnoreEquipmentProperties";
+  lua_getfield(state, LUA_GLOBALSINDEX, name);
+  if (lua_type(state, -1) == LUA_TTABLE) {
+    int index = 0;
+    lua_pushnil(state);
+    while (lua_next(state, -2) != 0) {
+      ++index;
+      std::vector<std::string> functions;
+      int result = this->script.GetFieldStringArray(functions, "func");
+      this->unknown_000C &= result == 0;
+      if (result != 0) {
+        ShowErrorDialog(std::format("{0}'s sub table[{1}] has invaild 'func' field({2})", name, index, result), 0);
+      }
+      if (!this->unknown_000C) {
+        break;
+      }
+
+      this->unknown_000C &= functions.size() != 0;
+      if (functions.size() == 0) {
+        ShowErrorDialog(std::format("{0}'s sub table[{1}]'s 'func' table has 0 value", name, index), 0);
+      }
+      if (!this->unknown_000C) {
+        break;
+      }
+
+      this->unknown_000C &= functions.size() <= 2;
+      if (functions.size() > 2) {
+        ShowErrorDialog(std::format("{0}'s sub table[{1}]'s 'func' table has more than 2 values", name, index), 0);
+      }
+      if (!this->unknown_000C) {
+        break;
+      }
+
+      std::map<unsigned int, unsigned int> conditions;
+      result = this->script.GetFieldUIntMap(conditions, "cond");
+      const bool valid = result == 0 || result == 1;
+      this->unknown_000C &= valid;
+      if (!valid) {
+        ShowErrorDialog(std::format("{0}'s sub table[{1}]'s has invalid 'cond' table({2})", name, index, result), 0);
+      }
+      if (!this->unknown_000C) {
+        break;
+      }
+
+      for (const std::string& function : functions) {
+        std::string text = std::format("{0}", function);
+        for (const auto& condition : conditions) {
+          text = std::format("{0} arg{1}:{2}", text, condition.first, condition.second);
+        }
+        unsigned int hash = 5381;
+        for (const char* character = text.c_str(); *character != '\0'; ++character) {
+          hash = hash * 33 + *character;
+        }
+        this->unknown_0194.insert(hash);
+      }
+
+      this->unknown_000C &= valid;
+      if (!valid) {
+        ShowErrorDialog(std::format("{0}'s sub table[{1}]'s 'cond' table has some error", name, index), 0);
+      }
+      if (!this->unknown_000C) {
+        break;
+      }
+      lua_settop(state, -2);
+    }
+  } else {
+    ShowErrorDialog(std::format("Can't find global table '{0}'", name), 0);
+  }
+  lua_settop(state, -2);
+  if (!this->unknown_000C) {
+    ShowErrorDialog(std::format("Check error in '{0}' table and restart game ", name), 0);
+  }
+}
+
+// OFFSET: 0x006B2EE0
+// FUNCTION: fn_06195
+void EquipmentProperties::CEquipmentPropertiesMgr::LoadGradeBonus() {
+  lua_State* state = this->script.GetState();
+  if (state == nullptr) {
+    return;
+  }
+  const char* name = "GradeBonus";
+  lua_getfield(state, LUA_GLOBALSINDEX, name);
+  if (lua_type(state, -1) == LUA_TTABLE) {
+    lua_pushnil(state);
+    while (lua_next(state, -2) != 0) {
+      if (this->unknown_000C) {
+        std::string key;
+        int result = 0;
+        int type = lua_type(this->script.GetState(), -2);
+        if (type == LUA_TSTRING) {
+          key = lua_tolstring(this->script.GetState(), -2, nullptr);
+        } else {
+          result = (type != LUA_TNIL) + 1;
+        }
+        this->unknown_000C &= result == 0;
+        if (result != 0) {
+          ShowErrorDialog(std::format("invalid key({0}): {1}", result, name), 0);
+        }
+        if (this->unknown_000C) {
+          bool valid = lua_type(state, -1) == LUA_TTABLE;
+          this->unknown_000C &= valid;
+          if (!valid) {
+            ShowErrorDialog(std::format("invalid data type: {0}.{1}", name, key), 0);
+          }
+          if (this->unknown_000C) {
+            int kind = 0;
+            unsigned int hash = 5381;
+            for (const char* character = key.c_str(); *character != '\0'; ++character) {
+              hash = hash * 33 + *character;
+            }
+            switch (hash) {
+            case 0xBDE09DB7:
+              kind = 1;
+              break;
+            case 0x78974D0E:
+              kind = 2;
+              break;
+            case 0x7A2F6FD4:
+              kind = 3;
+              break;
+            case 0xA515CF8B:
+              kind = 4;
+              break;
+            default:
+              valid = false;
+              break;
+            }
+            this->unknown_000C &= valid;
+            if (!valid) {
+              ShowErrorDialog(std::format("invalid value: {0}.{1}", name, key), 0);
+            }
+            if (this->unknown_000C) {
+              lua_pushnil(state);
+              while (lua_next(state, -2) != 0) {
+                if (this->unknown_000C) {
+                  std::string category;
+                  type = lua_type(this->script.GetState(), -2);
+                  if (type == LUA_TSTRING) {
+                    category = lua_tolstring(this->script.GetState(), -2, nullptr);
+                    result = 0;
+                  } else {
+                    result = (type != LUA_TNIL) + 1;
+                  }
+                  this->unknown_000C &= result == 0;
+                  if (result != 0) {
+                    ShowErrorDialog(std::format("invalid key({0}): {1}.{2}", result, name, key), 0);
+                  }
+                  if (this->unknown_000C) {
+                    valid = lua_type(state, -1) == LUA_TTABLE;
+                    this->unknown_000C &= valid;
+                    if (!valid) {
+                      ShowErrorDialog(std::format("invalid data type: {0}.{1}.{2}", name, key, category), 0);
+                    }
+                    if (this->unknown_000C) {
+                      int categoryIndex = 0;
+                      hash = 5381;
+                      for (const char* character = category.c_str(); *character != '\0'; ++character) {
+                        hash = hash * 33 + *character;
+                      }
+                      switch (hash) {
+                      case 0x95E1BB50:
+                        break;
+                      case 0x2B3A7568:
+                        categoryIndex = 1;
+                        break;
+                      case 0xBB80A3D1:
+                        categoryIndex = 2;
+                        break;
+                      case 0xBB79C188:
+                        categoryIndex = 3;
+                        break;
+                      case 0xA61EE35E:
+                        categoryIndex = 4;
+                        break;
+                      case 0x907C4C76:
+                        categoryIndex = 5;
+                        break;
+                      case 0x65FD5769:
+                        categoryIndex = 6;
+                        break;
+                      case 0x781614BE:
+                        categoryIndex = 7;
+                        break;
+                      default:
+                        valid = false;
+                        break;
+                      }
+                      this->unknown_000C &= valid;
+                      if (!valid) {
+                        ShowErrorDialog(std::format("invalid value: {0}.{1}.{2}", name, key, category), 0);
+                      }
+                      if (this->unknown_000C) {
+                        lua_pushnil(state);
+                        while (lua_next(state, -2) != 0) {
+                          if (this->unknown_000C) {
+                            std::string field;
+                            type = lua_type(this->script.GetState(), -2);
+                            if (type == LUA_TSTRING) {
+                              field = lua_tolstring(this->script.GetState(), -2, nullptr);
+                              result = 0;
+                            } else {
+                              result = (type != LUA_TNIL) + 1;
+                            }
+                            valid = result == 0;
+                            this->unknown_000C &= valid;
+                            if (result != 0) {
+                              ShowErrorDialog(std::format("invalid key({0}): {1}.{2}.{3}", result, name, key, category), 0);
+                            }
+                            if (this->unknown_000C) {
+                              int fieldIndex = 0;
+                              hash = 5381;
+                              for (const char* character = field.c_str(); *character != '\0'; ++character) {
+                                hash = hash * 33 + *character;
+                              }
+                              switch (hash) {
+                              case 0x09B447CA:
+                                fieldIndex = 1;
+                                break;
+                              case 0x27A83F77:
+                                fieldIndex = 2;
+                                break;
+                              default:
+                                valid = false;
+                                break;
+                              }
+                              this->unknown_000C &= valid;
+                              if (!valid) {
+                                ShowErrorDialog(std::format("invalid key: {0}.{1}.{2}", name, key, category), 0);
+                              }
+                              if (this->unknown_000C) {
+                                int value;
+                                type = lua_type(this->script.GetState(), -1);
+                                if (type == LUA_TNUMBER) {
+                                  value = static_cast<int>(lua_tonumber(this->script.GetState(), -1));
+                                  result = 0;
+                                } else {
+                                  result = (type != LUA_TNIL) + 1;
+                                }
+                                this->unknown_000C &= result == 0;
+                                if (result != 0) {
+                                  ShowErrorDialog(std::format("invalid value: {0}.{1}.{2}.{3}", name, key, category, field), 0);
+                                }
+                                if (this->unknown_000C) {
+                                  this->unknown_01DC[kind][categoryIndex][fieldIndex].value = value;
+                                }
+                              }
+                            }
+                          }
+                          lua_settop(state, -2);
+                        }
+                      }
+                    }
+                  }
+                }
+                lua_settop(state, -2);
+              }
+            }
+          }
+        }
+      }
+      lua_settop(state, -2);
+    }
+  } else {
+    ShowErrorDialog(std::format("Can't find global table '{0}'", name), 0);
+  }
+  lua_settop(state, -2);
+  if (!this->unknown_000C) {
+    ShowErrorDialog(std::format("Check error in '{0}' table and restart game ", name), 0);
+  }
+}
+
 // OFFSET: 0x006B5DA0
+// FUNCTION: fn_06198
+void EquipmentProperties::CEquipmentPropertiesMgr::LoadRefiningBonus() {
+  lua_State* state = this->script.GetState();
+  if (state == nullptr) {
+    return;
+  }
+  const char* name = "RefiningBonus";
+  lua_getfield(state, LUA_GLOBALSINDEX, name);
+  if (lua_type(state, -1) == LUA_TTABLE) {
+    lua_pushnil(state);
+    while (lua_next(state, -2) != 0) {
+      if (this->unknown_000C) {
+        std::string key;
+        int result = 0;
+        int type = lua_type(this->script.GetState(), -2);
+        if (type == LUA_TSTRING) {
+          key = lua_tolstring(this->script.GetState(), -2, nullptr);
+        } else {
+          result = (type != LUA_TNIL) + 1;
+        }
+        this->unknown_000C &= result == 0;
+        if (result != 0) {
+          ShowErrorDialog(std::format("invalid key({0}): {1}", result, name), 0);
+        }
+        if (this->unknown_000C) {
+          bool valid = lua_type(state, -1) == LUA_TTABLE;
+          this->unknown_000C &= valid;
+          if (!valid) {
+            ShowErrorDialog(std::format("invalid data type: {0}.{1}", name, key), 0);
+          }
+          if (this->unknown_000C) {
+            int kind = 0;
+            unsigned int hash = 5381;
+            for (const char* character = key.c_str(); *character != '\0'; ++character) {
+              hash = hash * 33 + *character;
+            }
+            switch (hash) {
+            case 0xC3B9E8CE:
+              kind = 1;
+              break;
+            case 0x48A75AE8:
+              kind = 2;
+              break;
+            case 0x18585774:
+              kind = 3;
+              break;
+            case 0x1858930F:
+              kind = 4;
+              break;
+            default:
+              valid = false;
+              break;
+            }
+            this->unknown_000C &= valid;
+            if (!valid) {
+              ShowErrorDialog(std::format("invalid value: {0}.{1}", name, key), 0);
+            }
+            if (this->unknown_000C) {
+              lua_pushnil(state);
+              while (lua_next(state, -2) != 0) {
+                if (this->unknown_000C) {
+                  unsigned int level;
+                  type = lua_type(this->script.GetState(), -2);
+                  if (type == LUA_TNUMBER) {
+                    level = static_cast<unsigned int>(lua_tonumber(this->script.GetState(), -2));
+                    result = 0;
+                  } else {
+                    result = (type != LUA_TNIL) + 1;
+                  }
+                  this->unknown_000C &= result == 0;
+                  if (result != 0) {
+                    ShowErrorDialog(std::format("invalid key({0}): {1}.{2}", result, name, key), 0);
+                  }
+                  if (this->unknown_000C) {
+                    valid = lua_type(state, -1) == LUA_TTABLE;
+                    this->unknown_000C &= valid;
+                    if (!valid) {
+                      ShowErrorDialog(std::format("invalid data type: {0}.{1}.{2}", name, key, level), 0);
+                    }
+                    if (this->unknown_000C) {
+                      lua_pushnil(state);
+                      while (lua_next(state, -2) != 0) {
+                        if (this->unknown_000C) {
+                          unsigned int index = -1;
+                          type = lua_type(this->script.GetState(), -2);
+                          if (type == LUA_TNUMBER) {
+                            index = static_cast<unsigned int>(lua_tonumber(this->script.GetState(), -2));
+                            result = 0;
+                          } else {
+                            result = (type != LUA_TNIL) + 1;
+                          }
+                          this->unknown_000C &= result == 0;
+                          if (result != 0) {
+                            ShowErrorDialog(std::format("invalid key({0}): {1}.{2}.{3}", result, name, key, level), 0);
+                          }
+                          if (this->unknown_000C) {
+                            int value = -1;
+                            type = lua_type(this->script.GetState(), -1);
+                            if (type == LUA_TNUMBER) {
+                              value = static_cast<int>(lua_tonumber(this->script.GetState(), -1));
+                              result = 0;
+                            } else {
+                              result = (type != LUA_TNIL) + 1;
+                            }
+                            this->unknown_000C &= result == 0;
+                            if (result != 0) {
+                              ShowErrorDialog(std::format("invalid value({0}): {1}.{2}.{3}.{4}", result, name, key, level, index), 0);
+                            }
+                            if (this->unknown_000C) {
+                              this->unknown_01BC[kind][level][index] = static_cast<float>(value);
+                            }
+                          }
+                        }
+                        lua_settop(state, -2);
+                      }
+                    }
+                  }
+                }
+                lua_settop(state, -2);
+              }
+            }
+          }
+        }
+      }
+      lua_settop(state, -2);
+    }
+  } else {
+    ShowErrorDialog(std::format("Can't find global table '{0}'", name), 0);
+  }
+  lua_settop(state, -2);
+  if (!this->unknown_000C) {
+    ShowErrorDialog(std::format("Check error in '{0}' table and restart game ", name), 0);
+  }
+}
 
 // OFFSET: 0x006B6720
 // FUNCTION: fn_06199
