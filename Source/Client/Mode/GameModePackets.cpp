@@ -1267,6 +1267,29 @@ void CGameMode::ReceiveUnknownD26800(const unsigned char* packet) {
 }
 
 // OFFSET: 0x00D79660
+// FUNCTION: fn_22172
+void CGameMode::ReceiveUnknownD79660(const unsigned char* packet) {
+  UIWindow* window = g_windowMgr.LookupWindow(10032);
+  if (!window) {
+    return;
+  }
+
+  switch (*reinterpret_cast<const std::int16_t*>(packet + 6) - 1) {
+  case 0:
+    window->Show(0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x10E8)), 0xFF, 0, 0, 0);
+    return;
+  case 1:
+    g_windowMgr.CloseWindow(10032);
+    return;
+  case 2:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x79B)), 0xFF, 0, 0, 0);
+    return;
+  case 3:
+    window->Show(1);
+    return;
+  }
+}
 
 // OFFSET: 0x00D79E90
 // FUNCTION: fn_22183
@@ -1284,6 +1307,28 @@ void CGameMode::ReceiveUnknownD79E90(std::int16_t result, std::intptr_t value) {
 }
 
 // OFFSET: 0x00D79440
+// FUNCTION: fn_22168
+void CGameMode::ReceiveRouletteSetResult(const unsigned char* packet) {
+  switch (packet[2]) {
+  case 0:
+    g_rouletteMgr->SetAdditionItem(*reinterpret_cast<const int*>(packet + 3));
+    g_rouletteMgr->SetResult(0, 0, 0);
+    g_rouletteMgr->Reset();
+    if (g_windowMgr.unknown_0464) {
+      g_windowMgr.RefreshRouletteWnd();
+    }
+    break;
+  case 1:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xA4C)), 0x6464FF, 0, 0, 0);
+    break;
+  case 2:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xA4D)), 0x6464FF, 0, 0, 0);
+    break;
+  case 3:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xA4E)), 0x6464FF, 0, 0, 0);
+    break;
+  }
+}
 
 // OFFSET: 0x00D611B0
 // FUNCTION: fn_21977
