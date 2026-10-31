@@ -582,11 +582,13 @@ void CUIScrollWindow::Slot15(int width, int height) {
 
 namespace OngoingQuestInfo {
 // OFFSET: 0x00A54D00
+// FUNCTION: fn_16289
 CUIContents::CUIContents(UIWindowContext& context) : CUIControl(context), title(nullptr), textViewer(nullptr), icon(nullptr) {
 }
 }
 
 // OFFSET: 0x00A54D90
+// FUNCTION: fn_16290
 CUIOngoingQuestInfo::CUIOngoingQuestInfo()
     : titleBar(nullptr), unknown_00DC{}, titleText(nullptr), scrollWindow(nullptr), dateText(nullptr), unknown_00EC{}, questId(0) {
 }
