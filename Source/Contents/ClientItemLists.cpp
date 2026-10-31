@@ -2,9 +2,12 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Replay.h"
 #include "Client/Session.h"
+#include "Contents/Actors/Pc.h"
 #include "Contents/ClientState.h"
 #include "Contents/Effects/EffectActor.h"
+#include "Contents/Effects/RagEffect.h"
 #include "Contents/GuildInfo.h"
+#include "Contents/Skills/ClientSkills.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/MessageTable.h"
 #include "Contents/Messenger/ClientMessenger.h"
@@ -24,6 +27,7 @@
 #include <list>
 #include <new>
 #include <string>
+#include <unordered_map>
 #include <utility>
 #include <vector>
 
@@ -279,6 +283,7 @@ class CEquipment {
 public:
   virtual ~CEquipment();
   virtual void Load(bool force);
+  virtual void Clear();
   int& GetId();
 };
 
@@ -298,13 +303,16 @@ public:
   bool m_dirty;
   unsigned char unknown_000E[0x12];
   UIWindow* unknown_0020;
-  unsigned char unknown_0024[0x1D8];
+  /* 0024 */ std::unordered_map<int, CEquipmentWearable*> properties1;
+  /* 0044 */ unsigned char unknown_0044[0x1B8];
 
   CEquipmentPropertiesMgr();
   CEquipmentWearable* FindProperty1(const int& key);
   void AddExpansion(const int& kind, const int& itemId, bool notify);
   void EquipItem(const int& itemId, bool notify);
   __declspec(noinline) void EquipWearable(const ITEM_INFO* item, bool notify);
+  void UnequipItem(const int& itemId, bool notify);
+  void UnequipWearable(const int& location);
 };
 }
 
@@ -1223,6 +1231,98 @@ bool CSession::OnItemEquipped(ITEM_INFO& item) {
     reinterpret_cast<ClientItemLists*>(this)->RemoveItem1710(item.unknown_0000[1], 1);
   }
   if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_022C)) {
+    window->SendMsg(nullptr, 60, 0, 0, 0, 0);
+  }
+  return true;
+}
+
+void EquipmentProperties::CEquipmentPropertiesMgr::UnequipWearable(const int& location) {
+  this->m_dirty = true;
+  auto found = this->properties1.find(GetEquipLocationIndex(location));
+  if (found != this->properties1.end()) {
+    CEquipmentWearable*& wearable = found->second;
+    for (CEquipmentAttachable& attachable : wearable->GetAttachables()) {
+      this->UnequipItem(attachable.GetId(), true);
+    }
+    this->UnequipItem(wearable->GetId(), true);
+    wearable->Clear();
+    delete wearable;
+    this->properties1.erase(found);
+  }
+
+  if (this->unknown_0020 != nullptr) {
+    this->unknown_0020->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00DFC620
+// FUNCTION: fn_23598
+bool CSession::UnequipItem(int location, std::uint32_t identity) {
+  if (location == 0x8000) {
+    const ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, identity);
+    if (item.unknown_0000[1] != 0) {
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s%s", item.DisplayName(0).c_str(), LookupMessage(0xAB)).c_str()), 0xFF, 7, 0, 0);
+    }
+    this->unknown_16EC = 0;
+    reinterpret_cast<WindowOrdering&>(g_windowMgr).InvalidateFrames(g_windowMgr.unknown_04FC);
+
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    if (mode != nullptr) {
+      auto it = g_activeSkillEffects.begin();
+      for (; it != g_activeSkillEffects.end(); ++it) {
+        if (it->id == 0x2B7) {
+          break;
+        }
+      }
+      if (it != g_activeSkillEffects.end()) {
+        g_activeSkillEffects.erase(it);
+      }
+
+      if (mode->scene && mode->scene->player && mode->scene->player->unknown_0544) {
+        mode->scene->player->unknown_0544->SendMsg(nullptr, 44, 0, 1, 0, 0, 0, 0);
+      }
+    }
+  } else {
+    const EquipSlots slots = g_session.GetEquipSlots(location);
+    if (slots.values[2] < 10) {
+      if (slots.values[2] != -1) {
+        ITEM_INFO& item = this->unknown_17F0[slots.values[2]];
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s%s", item.DisplayName(0).c_str(), LookupMessage(0xAB)).c_str()), 0xFF, 7, 0, 0);
+        item.unknown_0000[3] = 0;
+
+        bool merged = false;
+        for (ITEM_INFO& value : this->m_inventoryItems) {
+          if (value.unknown_0000[1] == item.unknown_0000[1]) {
+            value.quantity += item.quantity;
+            value.unknown_0074[1] = item.unknown_0074[1];
+            value.unknown_0074[0] = item.unknown_0074[0];
+            merged = true;
+            break;
+          }
+        }
+        if (!merged) {
+          this->m_inventoryItems.push_back(item);
+        }
+
+        RefreshItemWindows(&g_windowMgr);
+        item.Reset();
+      }
+      if (slots.values[1] != -1 && slots.values[1] < 10) {
+        this->unknown_17F0[slots.values[1]].Reset();
+      }
+      if (slots.values[0] != -1 && slots.values[0] < 10) {
+        this->unknown_17F0[slots.values[0]].Reset();
+      }
+    }
+    RequestBasicInfoRefresh();
+  }
+
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  g_equipmentPropertiesMgr->UnequipWearable(location);
+  reinterpret_cast<WindowOrdering&>(g_windowMgr).InvalidateFrames(g_windowMgr.unknown_04FC);
+  if (UIWindow* window = g_windowMgr.unknown_022C) {
     window->SendMsg(nullptr, 60, 0, 0, 0, 0);
   }
   return true;

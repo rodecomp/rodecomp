@@ -666,6 +666,7 @@ public:
   void AddUnknownId(int id);
   EquipSlots GetEquipSlots(int location);
   bool EquipUnknown17F0(const ITEM_INFO& item, const char* name);
+  bool UnequipItem(int location, std::uint32_t identity);
   bool OnItemEquipped(ITEM_INFO& item);
   bool EquipItem2B50(const ITEM_INFO& item, const char* name);
   bool UnequipItem2B50(int location);
