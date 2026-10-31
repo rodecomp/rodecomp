@@ -12,6 +12,7 @@
 struct RenewQuestInfo;
 
 class CUICheckBox;
+class CUIEditBoxEx;
 class CUIStaticText;
 
 namespace RenewQuestUI {
@@ -60,6 +61,7 @@ class CUIRenewQuestUI : public CUIFrameWnd {
 public:
   __declspec(noinline) CUIRenewQuestUI();
 
+  void Slot15(int width, int height) override;
   void Slot16() override;
   void Paint() override;
   virtual void Slot53(int value);
@@ -82,15 +84,16 @@ public:
   /* 00E0 */ CUITab* tab;
   /* 00E4 */ CUICheckBox* checkBox;
   /* 00E8 */ CUIStaticText* filterLabel;
-  /* 00EC */ unsigned char unknown_00EC[0x04];
+  /* 00EC */ CUIImageButton* closeButton;
   /* 00F0 */ std::vector<RenewQuestUI::CUIQuestList*> questLists;
-  /* 00FC */ unsigned char unknown_00FC[0x04];
+  /* 00FC */ CUIStaticImage* searchBackground;
   /* 0100 */ CUITab* filterPanel;
-  /* 0104 */ unsigned char unknown_0104[0x08];
+  /* 0104 */ CUIEditBoxEx* searchEdit;
+  /* 0108 */ CUIImageButton* searchButton;
   /* 010C */ int filter;
   /* 0110 */ std::string searchText;
   /* 00D8 */ CUITitleBar* titleBar;
-  /* 00DC */ UIWindow* unknown_00DC;
+  /* 00DC */ CUIStaticImage* background;
 };
 
 template <>
