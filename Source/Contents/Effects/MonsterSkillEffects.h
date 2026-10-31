@@ -38,6 +38,7 @@ public:
 class CSpriteMableEffect : public CEffect {
 public:
   CSpriteMableEffect();
+  void Slot01() override;
   void Slot04() override;
   bool Slot06() override;
   void Close() override;
@@ -48,6 +49,7 @@ public:
 class CStemSpearEffect : public CEffect {
 public:
   CStemSpearEffect();
+  void Slot01() override;
   void Slot03() override;
   void Slot04() override;
   bool Slot06() override;
@@ -106,6 +108,7 @@ public:
   void Slot04() override;
   bool Slot06() override;
   void Close() override;
+  void AddPlane(vector3d position);
 
   /* 00CC */ std::vector<EZ2STREmitter*> emitters;
   /* 00D8 */ unsigned char fadingIn;
@@ -116,6 +119,7 @@ public:
 class CCylinderEffect : public CEffect {
 public:
   CCylinderEffect();
+  void Slot01() override;
   void Slot04() override;
   bool Slot06() override;
   void Close() override;
@@ -259,6 +263,7 @@ class CParticle;
 class CFullScreenEffect : public CEffect {
 public:
   CFullScreenEffect();
+  void Slot01() override;
   void Slot04() override;
   bool Slot06() override;
   void Close() override;
@@ -281,6 +286,7 @@ public:
 class CPneumaticusProcellaEffect : public CEffect {
 public:
   CPneumaticusProcellaEffect();
+  void Slot01() override;
   void Slot03() override;
   void Slot04() override;
   void Close() override;
@@ -304,12 +310,14 @@ public:
 class CRandomOptEffect : public CEffect {
 public:
   CRandomOptEffect();
+  void Slot01() override;
   void Slot03() override;
   void Slot04() override;
   bool Slot06() override;
   void Slot08(int red, int green, int blue) override;
   void Slot11(std::string name) override;
   void Close() override;
+  void Init();
 
   /* 00CC */ vector3d offsets[2];
   /* 00E4 */ std::vector<CParticle*> particles;
@@ -318,6 +326,7 @@ public:
 class CRichsCoinEffect : public CEffect {
 public:
   CRichsCoinEffect();
+  void Slot01() override;
   void Slot04() override;
   bool Slot06() override;
   void Close() override;
@@ -426,6 +435,7 @@ public:
 class CNewCloudKillEffect : public CEffect {
 public:
   CNewCloudKillEffect();
+  void Slot01() override;
   void Slot03() override;
   void Slot04() override;
   bool Slot06() override;
