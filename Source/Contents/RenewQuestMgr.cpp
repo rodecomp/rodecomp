@@ -726,7 +726,7 @@ bool CRenewQuestMgr::SetOngoingSimpleView(unsigned int id, bool simpleView) {
 
 // OFFSET: 0x0067B8F0
 // FUNCTION: fn_05465
-void CRenewQuestMgr::ReadOngoingQuests(const char* buffer) {
+void CRenewQuestMgr::ReadOngoingQuests(const char* buffer, unsigned int) {
   int offset = 4;
   const unsigned int count = *reinterpret_cast<const unsigned int*>(buffer);
   for (unsigned int index = 0; index < count; ++index) {

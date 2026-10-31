@@ -673,6 +673,7 @@ public:
   std::uint32_t ReadReplayCharacter(const std::vector<unsigned char>& data);
   std::uint32_t ReadReplayStats(const std::vector<unsigned char>& data);
   std::uint32_t ReadReplayCompanions(const std::vector<unsigned char>& data);
+  std::uint32_t ReadReplayQuests(const std::vector<unsigned char>& data);
   std::uint32_t ReadReplayMessenger(const std::vector<unsigned char>& data);
   std::uint32_t ReadReplayItems(const std::vector<unsigned char>& data);
   std::uint32_t ReadReplayShops(const std::vector<unsigned char>& data);

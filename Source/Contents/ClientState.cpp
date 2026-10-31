@@ -6,6 +6,7 @@
 #include "Contents/Actors/Pc.h"
 #include "Contents/EntryQueueMgr.h"
 #include "Contents/MessageTable.h"
+#include "Contents/RenewQuestMgr.h"
 #include "Contents/World/World.h"
 #include "UI/EntryQueue/UIEntryQueueWnd.h"
 #include "UI/Window/UIWindow.h"
@@ -854,6 +855,54 @@ std::uint32_t CSession::ReadReplayCompanions(const std::vector<unsigned char>& d
       std::memcpy(&this->unknown_5BD0, source, header.bytes);
       offset += header.bytes;
       break;
+    default:
+      offset += header.bytes;
+      break;
+    }
+  }
+
+  return offset;
+}
+
+// OFFSET: 0x00E48100
+// FUNCTION: fn_24217
+std::uint32_t CSession::ReadReplayQuests(const std::vector<unsigned char>& data) {
+  if (data.begin() == data.end()) {
+    return 0xFFFFFFFF;
+  }
+
+  std::uint32_t offset = 6;
+  ReplayBlockHeader header{};
+  std::memcpy(&header, data.data(), sizeof(header));
+  if (header.id != 3500) {
+    return 0xFFFFFFFF;
+  }
+
+  g_renewQuestMgr->m_ongoingQuests.clear();
+  g_renewQuestMgr->SetParameter(3502, 0x18);
+  while (offset < data.size()) {
+    header = {};
+    std::memcpy(&header, data.data() + offset, sizeof(header));
+    offset += 6;
+    switch (header.id) {
+    case 3501:
+      return offset;
+    case 3502: {
+      int parameter;
+      std::memcpy(&parameter, data.data() + offset, header.bytes);
+      offset += header.bytes;
+      g_renewQuestMgr->SetParameter(3502, parameter);
+      break;
+    }
+    case 3510: {
+      const std::uint32_t bytes = header.bytes;
+      char* buffer = new char[bytes];
+      std::memcpy(buffer, data.data() + offset, bytes);
+      offset += bytes;
+      g_renewQuestMgr->ReadOngoingQuests(buffer, bytes);
+      delete buffer;
+      break;
+    }
     default:
       offset += header.bytes;
       break;
