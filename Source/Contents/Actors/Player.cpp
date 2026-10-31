@@ -4,6 +4,7 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
 #include "Contents/Actors/ActorStateFlags.h"
+#include "Contents/Actors/Item.h"
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/Camera/Camera.h"
 #include "Contents/Effects/MsgEffect.h"
@@ -21,6 +22,7 @@
 #include "Contents/SpriteLayerDrawing.h"
 #include "Contents/SpriteRidingOffset.h"
 #include "Contents/World/World.h"
+#include "Contents/Ground/TerrainHeight.h"
 #include "Render/Primitives/LightmappedPrimitive.h"
 #include "Render/Primitives/RenderPrimitive.h"
 #include "Render/Renderer.h"
@@ -2379,7 +2381,7 @@ void CPc::Slot21(int job) {
 
 // OFFSET: 0x00DB4E70
 // FUNCTION: fn_22653
-void CPlayer::UpdateMsgEffect(bool show) {
+__declspec(noinline) void CPlayer::UpdateMsgEffect(bool show) {
   if (!StateFlag02(this->stateFlags) && !StateFlag06(this->stateFlags) && !StateFlag01(this->stateFlags)) {
     if (show) {
       if (!this->msgEffect) {
@@ -2615,3 +2617,81 @@ float CPlayer::AdjustFollowDistance(CGameActor* target, float distance) {
 
   return std::max(0.0f, distance - static_cast<float>((target->*slot45.asInt)() + 1) * 4.0f);
 }
+
+// GLOBAL: gl_25248
+bool g_refreshWindow289;
+
+struct PlayerMoveRequest {
+  std::uint32_t serverTime;
+  int column;
+  int row;
+  int subColumn;
+  int subRow;
+  int destinationX;
+  int destinationY;
+};
+
+// OFFSET: 0x00DB5710
+// FUNCTION: fn_22666
+bool CPlayer::OnProcess() {
+  this->ProcessBodyState();
+  this->UpdateStateEffects();
+  this->ProcessActorEffects();
+  this->UpdateGaugePositions();
+
+  if (this->render.isSingleColor == true && timeGetTime() > this->render.started + 100) {
+    this->render.overrideColor = 0xFFFF0000;
+    this->render.isSingleColor = false;
+  }
+
+  if (this->render.color != 0xFFFFFFFF) {
+    this->ModifyArgb(8, 8, 8, 8);
+  }
+
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  if (this->unknown_050C != 0 && timeGetTime() > (g_session.m_averagePing >> 1) + this->unknown_0504) {
+    PlayerMoveRequest request;
+    reinterpret_cast<const ::TerrainHeight*>(mode)->WorldSubcell(
+      this->render.position.x, this->render.position.z, request.column, request.row, request.subColumn, request.subRow
+    );
+    request.serverTime = g_session.GetServerTime();
+    request.destinationX = reinterpret_cast<const int&>(this->unknown_04F8);
+    request.destinationY = this->unknown_04FC;
+    const int address = reinterpret_cast<int>(&request);
+    this->SendMsg(nullptr, 0, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  }
+
+  this->UpdatePendingAction();
+
+  union {
+    void (CGameActor::*asVoid)();
+    bool (CGameActor::*asBool)();
+  } slot14;
+  slot14.asVoid = &CGameActor::Slot14;
+  const bool result = (this->*slot14.asBool)();
+
+  this->PlayFrameSounds();
+
+  if (this->unknown_0180 != 0) {
+    const vector3d& player =
+      reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player)->render.position;
+    g_soundMgr->PlayWave(
+      reinterpret_cast<const char*>(this->unknown_0190), this->render.position.x - player.x, 0.0f,
+      this->render.position.z - player.z, 250, 40, 1.0f, 0
+    );
+    this->unknown_0180 = 0;
+  }
+
+  this->UpdateMsgEffect(this->Slot55() > 0);
+
+  if (g_refreshWindow289) {
+    UIWindow* window = g_windowMgr.LookupWindow(289);
+    if (window != nullptr) {
+      window->Invalidate();
+    }
+  }
+
+  return result;
+}
+
+// OFFSET: 0x00DB5980

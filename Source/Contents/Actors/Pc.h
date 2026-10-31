@@ -151,7 +151,9 @@ public:
   /* 04F4 */ int unknown_04F4;
   /* 04F8 */ float unknown_04F8;
   /* 04FC */ int unknown_04FC;
-  /* 0500 */ unsigned char unknown_0500[0x0C];
+  /* 0500 */ int unknown_0500;
+  /* 0504 */ std::uint32_t unknown_0504;
+  /* 0508 */ int unknown_0508;
   union { /* 050C */ int unknown_050C; CPc* blurSource; };
 };
 
@@ -197,6 +199,7 @@ public:
 class CPlayer : public CPc {
 public:
   CPlayer();
+  bool OnProcess() override;
   static int AngleToDirection(float angle);
 
   bool Slot09(
@@ -224,10 +227,21 @@ public:
   void UpdateMsgEffect(bool show);
   void ApplyFollowOffset(CGameActor* target, float x, float z, int* row, int* column);
   float AdjustFollowDistance(CGameActor* target, float distance);
+  void UpdatePendingAction();
 
-  /* 0510 */ unsigned char unknown_0510[0xC];
+  /* 0510 */ int unknown_0510;
+  /* 0514 */ int unknown_0514;
+  /* 0518 */ int unknown_0518;
   /* 051C */ int unknown_051C;
-  /* 0520 */ unsigned char unknown_0520[0x24];
+  /* 0520 */ int unknown_0520;
+  /* 0524 */ std::uint32_t unknown_0524;
+  /* 0528 */ std::uint32_t unknown_0528;
+  /* 052C */ int unknown_052C;
+  /* 0530 */ int unknown_0530;
+  /* 0534 */ int unknown_0534;
+  /* 0538 */ int unknown_0538;
+  /* 053C */ int unknown_053C;
+  /* 0540 */ int unknown_0540;
   /* 0544 */ CRagEffect* unknown_0544;
 };
 
@@ -236,6 +250,8 @@ static_assert(sizeof(CPlayer) == 0x548);
 static_assert(offsetof(CPlayer, unknown_051C) == 0x51C);
 static_assert(offsetof(CPlayer, unknown_0544) == 0x544);
 #endif
+
+extern bool g_refreshWindow289;
 
 class CGrannyPc : public CGameActor {
 public:
