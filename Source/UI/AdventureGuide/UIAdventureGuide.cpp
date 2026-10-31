@@ -17,7 +17,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"
-
+#include "Contents/Items/ItemDescription.h"
 #include <cstring>
 #include <format>
 #include <list>
@@ -488,6 +488,28 @@ void CUIQuest::OnSelectQuest(CUIQuestInfo* item, const CQuestInfo&) {
   const bool selected = !this->unknown_008C.empty();
   this->unknown_0084->Show(selected);
   this->unknown_0088->Show(selected);
+}
+
+// OFFSET: 0x009DC320
+// FUNCTION: fn_14321
+void CUIItem::BindItem(CUIItemInfo* item, const CItemData& data) {
+  ITEM_INFO info;
+  info.SetItemId(data.id);
+  item->location = this->location;
+  info.identified = 1;
+  item->itemId = data.id;
+  const ITEM_DESC& desc = FindItemDescription(std::atoi(info.itemId.c_str()));
+  const std::string image = "유저인터페이스\\collection\\" + std::string(desc.identifiedResource) + ".bmp";
+  const std::string name(desc.identifiedName);
+  item->nameText->SetText(name.c_str(), name.size());
+  item->image->SetImage(image);
+  reinterpret_cast<CUIQuestInfo*>(item)->SetStatusLines(data.first, data.second, data.third);
+  item->SetDescription(data.type, ItemDescriptions{g_itemDescriptions}.Description(info));
+  reinterpret_cast<CUITextViewer*>(item->unknown_00F8)->Clear();
+  for (const std::string& value : data.values) {
+    reinterpret_cast<CUITextViewer*>(item->unknown_00F8)->AddLine(value);
+  }
+  item->unknown_0108 = data.text;
 }
 
 // OFFSET: 0x009DC770

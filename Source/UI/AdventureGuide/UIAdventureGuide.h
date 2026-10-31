@@ -94,7 +94,7 @@ public:
   void Slot16() override;
   void Paint() override;
   void Slot54(int type, int id) override;
-
+  void BindItem(CUIItemInfo* item, const CItemData& data);
   void OnSelectItem(CUIItemInfo* item, const CItemData& data);
 
   /* 0084 */ UIWindow* unknown_0084;
