@@ -80,6 +80,21 @@ CPc::CPc() : footprintPosition() {
 }
 
 // OFFSET: 0x00DA7BA0
+// FUNCTION: fn_22560
+CPc::~CPc() {
+  for (int i = 0; i < 9; ++i) {
+    if (this->equipSprites[i] != nullptr) {
+      this->equipSprites[i]->Unlock();
+    }
+    if (this->equipActions[i] != nullptr) {
+      this->equipActions[i]->Unlock();
+    }
+  }
+  if (this->unknown_0490 != nullptr) {
+    g_windowMgr.Schedule(this->unknown_0490);
+    this->unknown_0490 = nullptr;
+  }
+}
 
 // OFFSET: 0x00DAFE50
 // FUNCTION: fn_22606
