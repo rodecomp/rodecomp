@@ -475,6 +475,11 @@ public:
   void ReceiveItem1740List(const unsigned char* packet);
   void ReceiveDispel(const unsigned char* packet);
   void ReceiveItem1758List(const unsigned char* packet);
+  void ReceiveUnknownD50810(const unsigned char* packet);
+  void ReceiveItem1748List(const unsigned char* packet);
+  void ReceiveActorStatusValue(std::uint32_t aid, int status, int amount, int option);
+  void ReceiveItem1718List(const unsigned char* packet);
+  void Zc_Spirits2(const unsigned char* data);
 };
 
 void LaunchRollingCutterEffect(CGameActor* actor);

@@ -17,6 +17,7 @@
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Effects/EffectActor.h"
 #include "Contents/Effects/EffectLists.h"
+#include "Contents/Effects/RagEffect.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
@@ -60,14 +61,38 @@ struct SessionMessengerContext {
   void KeepEquipment();
 };
 
+struct SessionItemLists {
+  void ClearTradeItems();
+};
+
+#pragma pack(push, 1)
+struct TradeItemRecord {
+  /* 0000 */ int itemId;
+  /* 0004 */ unsigned char unknown_0004;
+  /* 0005 */ int unknown_0005;
+  /* 0009 */ int quantity;
+  /* 000D */ std::uint16_t unknown_000D;
+  /* 000F */ unsigned char unknown_000F;
+  /* 0010 */ std::uint32_t cards[4];
+  /* 0020 */ std::uint16_t unknown_0020;
+};
+#pragma pack(pop)
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(TradeItemRecord) == 0x22);
+#endif
+
 struct ClientItemLists {
   bool AddItem1738(const ITEM_INFO& item, unsigned char refresh);
   bool AddItem1740(const ITEM_INFO& item);
   void AddItem1758(const ITEM_INFO& item);
+  void AddItem1718(const RawItemBasic& item, int quantity, std::uint16_t unknown_006C);
+  void AppendItem1718(const ITEM_INFO& item);
   void AddItem1748(const ITEM_INFO& item);
   void RemoveItem1758(ITEM_INFO& item);
   void RemoveItem1758ByItemId(ITEM_INFO& item);
   void ClearItems1768();
+  void ClearItems1760And1748();
   void ClearItems1758();
   void ClearItems1760();
   void ClearItems1748();
@@ -283,6 +308,43 @@ namespace {
     /* 0006 */ unsigned char type;
     /* 0007 */ std::int32_t itemId;
   };
+
+  struct Item1758StoreRecord {
+    /* 0000 */ std::uint32_t unknown_0000;
+    /* 0004 */ std::int16_t index;
+    /* 0006 */ std::int16_t amount;
+    /* 0008 */ unsigned char type;
+    /* 0009 */ int itemId;
+    /* 000D */ unsigned char identified;
+    /* 000E */ unsigned char damaged;
+    /* 000F */ unsigned char refine;
+    /* 0010 */ std::uint32_t cards[4];
+    /* 0020 */ StoreItemOption options[5];
+  };
+
+  struct Item1718Record {
+    /* 0000 */ std::int32_t itemId;
+    /* 0004 */ unsigned char type;
+    /* 0005 */ std::uint32_t unknown_0005;
+    /* 0009 */ std::int32_t quantity;
+    /* 000D */ std::uint16_t unknown_000D;
+    /* 000F */ std::uint32_t unknown_000F;
+  };
+
+  struct Item1748Record {
+    /* 0000 */ std::uint32_t unknown_0000;
+    /* 0004 */ std::int16_t amount;
+    /* 0006 */ std::int16_t index;
+    /* 0008 */ unsigned char type;
+    /* 0009 */ int itemId;
+    /* 000D */ unsigned char identified;
+    /* 000E */ unsigned char damaged;
+    /* 000F */ unsigned char refine;
+    /* 0010 */ std::uint32_t cards[4];
+    /* 0020 */ StoreItemOption options[5];
+    /* 0039 */ std::int32_t unknown_0039;
+    /* 003D */ std::uint16_t sprite;
+  };
 #pragma pack(pop)
 
   static_assert(sizeof(ItemStoreListHeader) == 0x1C);
@@ -310,6 +372,9 @@ namespace {
 
   static_assert(sizeof(DispelPacket) == 6);
   static_assert(sizeof(Item1758Record) == 0xB);
+  static_assert(sizeof(Item1758StoreRecord) == 0x39);
+  static_assert(sizeof(Item1718Record) == 0x13);
+  static_assert(sizeof(Item1748Record) == 0x3F);
   static_assert(sizeof(SimulationPacketHeader) == 0x24);
   static_assert(sizeof(EnchantSimulationRecord) == 0x1C);
   static_assert(sizeof(PackageSimulationRecord) == 0x32);
@@ -2527,4 +2592,259 @@ void CGameMode::ReceiveItem1758List(const unsigned char* packet) {
   window->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
   window->SendMsg(nullptr, 0x77, *reinterpret_cast<const int*>(packet + 8), 0, 0, 0);
   this->unknown_024C = 1;
+}
+
+// OFFSET: 0x00D50810
+// FUNCTION: fn_21886
+void CGameMode::ReceiveUnknownD50810(const unsigned char* packet) {
+  if (g_replayAnimationScaling != 0) {
+    g_modeMgr.GetGameMode()->SendMsg(82, 0, 0, 0, 0);
+  }
+
+  reinterpret_cast<ClientItemLists*>(&g_session)->ClearItems1758();
+
+  const int count = (*reinterpret_cast<const std::int16_t*>(packet + 2) - 8) / sizeof(Item1758StoreRecord);
+  if (count == 0) {
+    this->SendMsg(40, 0, 0, 0, 0);
+    g_windowMgr.CloseWindow(43);
+    g_windowMgr.CloseWindow(44);
+    reinterpret_cast<ClientItemLists*>(&g_session)->ClearItems1760And1748();
+    return;
+  }
+
+  const Item1758StoreRecord* record = reinterpret_cast<const Item1758StoreRecord*>(packet + 8);
+  for (int i = 0; i < count; ++i, ++record) {
+    ITEM_INFO item;
+    item.unknown_0000[0] = record->type;
+    item.unknown_0000[1] = record->index;
+    item.unknown_0014[0] = record->unknown_0000;
+    item.unknown_0014[1] = record->unknown_0000;
+    item.quantity = record->amount;
+    std::memcpy(item.unknown_001C, record->cards, sizeof(record->cards));
+    item.SetItemId(record->itemId);
+    item.identified = record->identified;
+    item.unknown_005D = record->damaged;
+    item.unknown_0060 = record->refine;
+    item.unknown_0098 = CountStoreItemOptions(record->options);
+    for (int index = 0; index < item.unknown_0098; ++index) {
+      reinterpret_cast<StoreItemOption*>(item.unknown_009C)[index] = record->options[index];
+    }
+    reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1758(item);
+  }
+}
+
+// OFFSET: 0x00D50590
+// FUNCTION: fn_21885
+void CGameMode::ReceiveItem1748List(const unsigned char* packet) {
+  reinterpret_cast<ClientItemLists*>(&g_session)->ClearItems1748();
+  reinterpret_cast<ClientItemLists*>(&g_session)->ClearItems1760();
+
+  const int count = (*reinterpret_cast<const std::int16_t*>(packet + 2) - 0x0C) / sizeof(Item1748Record);
+  for (int i = 0; i < count; ++i) {
+    const Item1748Record record = *reinterpret_cast<const Item1748Record*>(packet + 0x0C + i * sizeof(Item1748Record));
+    ITEM_INFO item;
+    item.unknown_0000[0] = record.type;
+    item.unknown_0000[1] = record.index;
+    item.unknown_0000[2] = record.unknown_0039;
+    item.unknown_0014[0] = record.unknown_0000;
+    item.unknown_0014[1] = record.unknown_0000;
+    item.quantity = record.amount;
+    std::memcpy(item.unknown_001C, record.cards, sizeof(record.cards));
+    item.SetItemId(record.itemId);
+    item.identified = record.identified;
+    item.unknown_005D = record.damaged;
+    item.unknown_0060 = record.refine;
+    item.unknown_0070 = record.sprite;
+    item.unknown_0098 = CountStoreItemOptions(record.options);
+    for (int index = 0; index < item.unknown_0098; ++index) {
+      reinterpret_cast<StoreItemOption*>(item.unknown_009C)[index] = record.options[index];
+    }
+    reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1748(item);
+  }
+
+  UIWindow* window = g_windowMgr.EnsureWindow(43);
+  window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  window->SendMsg(nullptr, 28, *reinterpret_cast<const std::int32_t*>(packet + 4), 0, 0, 0);
+  UIWindow* optionsWindow = g_windowMgr.EnsureWindow(44);
+  optionsWindow->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  optionsWindow->SendMsg(nullptr, 28, *reinterpret_cast<const std::int32_t*>(packet + 4), *reinterpret_cast<const std::int32_t*>(packet + 8), 0, 0);
+  this->unknown_024C = 1;
+}
+
+// OFFSET: 0x00D5F5C0
+// FUNCTION: fn_21970
+void CGameMode::ReceiveActorStatusValue(std::uint32_t aid, int status, int amount, int option) {
+  CGameActor* actor;
+  if (aid == g_session.m_aid) {
+    actor = this->scene->player;
+  } else {
+    actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(aid));
+  }
+  if (actor == nullptr) {
+    return;
+  }
+
+  switch (status) {
+  case 0x14b:
+    if (aid == g_session.m_aid) {
+      reinterpret_cast<SessionMessengerContext*>(&g_session)->UpdateRandomStats();
+      const int hp = g_session.unknown_5568 + amount;
+      if (g_session.unknown_5568 != hp) {
+        g_session.unknown_5568 = hp;
+        g_session.RefreshHpSpWindows();
+      }
+    }
+    actor->SendMsg(nullptr, 0x58, 0, amount, option, 0xFF00FF00, 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
+    break;
+  case 0x14c:
+    if (aid == g_session.m_aid) {
+      reinterpret_cast<SessionMessengerContext*>(&g_session)->UpdateRandomStats();
+      int& sp = *reinterpret_cast<int*>(&g_session.unknown_5570[0]);
+      const int value = sp + amount;
+      if (sp != value) {
+        sp = value;
+        g_session.RefreshHpSpWindows();
+      }
+    }
+    actor->SendMsg(nullptr, 0x58, 0, amount, option, 0xFF0000FF, 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
+    break;
+  case 0x291:
+    actor->SendMsg(nullptr, 0x58, 0, amount, option, 0xFF00FF00, 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
+    break;
+  case 0x292:
+    actor->SendMsg(nullptr, 0x58, 0, amount, option, 0xFF0000FF, 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
+    break;
+  case 0x293:
+    actor->SendMsg(nullptr, 0x58, 0, amount, option, 0xFFFF0000, 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
+    break;
+  case 0x294:
+    actor->SendMsg(nullptr, 0x58, 0, amount, option, 0xFFFF00FF, 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
+    break;
+  case 0x295:
+    actor->SendMsg(nullptr, 0x58, 0, amount, option, 0xFF000000, 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
+    break;
+  case 0x296:
+    actor->SendMsg(nullptr, 0x58, 0, amount, option, 0xFFFFFFFF, 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
+    break;
+  case 0x297:
+    actor->SendMsg(nullptr, 0x58, 0, amount, option, 0xFFFFFF00, 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
+    break;
+  case 0x298:
+    actor->SendMsg(nullptr, 0x58, 0, amount, option, 0xFFFF55B1, 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
+    break;
+  default:
+    break;
+  }
+
+  CEffect* effect = g_effectMgr->Spawn(actor->render.accountId, status, actor->render.position.x, actor->render.position.y,
+                                       actor->render.position.z, 0, 0xFFFFFFFF, 0, 0);
+  if (effect == nullptr) {
+    actor->LaunchEffect(status, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  }
+}
+
+// OFFSET: 0x00D39BB0
+// FUNCTION: fn_21773
+void CGameMode::ReceiveItem1718List(const unsigned char* packet) {
+  reinterpret_cast<SessionItemLists*>(&g_session)->ClearTradeItems();
+
+  const std::int64_t count = (static_cast<std::int64_t>(*reinterpret_cast<const std::int16_t*>(packet + 2)) - 4) / 19;
+  const Item1718Record* record = reinterpret_cast<const Item1718Record*>(packet + 4);
+
+  for (std::int64_t index = 0; index < count; ++index) {
+    Item1718Record entry;
+    memcpy_s(&entry, sizeof(entry), &record[index], sizeof(entry));
+
+    RawItemBasic item = {};
+    _itoa(entry.itemId, item.itemId, 10);
+    item.unknown_0004 = entry.unknown_0005;
+    item.unknown_0008 = entry.unknown_0005;
+    item.unknown_000C = entry.type;
+    item.unknown_0034 = entry.unknown_000F;
+    item.id = -1;
+    item.identified = 1;
+    item.unknown_0038 = FindItemDescription(std::atoi(item.itemId)).unknown_0040;
+    reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1718(item, entry.quantity, static_cast<std::uint16_t>(entry.unknown_000D / 10));
+  }
+
+  if (UIWindow* window = g_windowMgr.EnsureWindow(0xFE)) {
+    window->SendMsg(nullptr, 0x24, 0, 0, 0, 0);
+    window->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+  }
+
+  if (UIWindow* window = g_windowMgr.EnsureWindow(0xFF)) {
+    window->SendMsg(nullptr, 0x24, 0, 0, 0, 0);
+    window->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00D77C90
+
+// OFFSET: 0x00D7A690
+// FUNCTION: fn_22191
+void CGameMode::Zc_Spirits2(const unsigned char* data) {
+  if (!g_serviceOptions.Get(8)) {
+    return;
+  }
+
+  const auto* packet = reinterpret_cast<const ActorValuePacket*>(data);
+  CGameActor* actor;
+  if (packet->accountId == g_session.m_aid) {
+    actor = this->scene->player;
+  } else {
+    actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(packet->accountId));
+  }
+
+  if (!actor) {
+    return;
+  }
+
+  if (StateFlag01(actor->Slot13()) || StateFlag02(actor->Slot13())) {
+    int effectId;
+    switch (actor->GetEffectiveJob(-1)) {
+    case 24:
+    case 4215:
+    case 4228:
+    case 4229:
+    case 4306:
+      effectId = 629;
+      break;
+    case 4038:
+      effectId = 504;
+      break;
+    default:
+      effectId = 228;
+      break;
+    }
+
+    actor->SendMsg(nullptr, 109, 0, effectId, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    return;
+  }
+
+  CRagEffect* effect;
+  if (actor->GetEffectiveJob(-1) == 4038) {
+    if (actor->state.Attachments().HasId(504) || packet->accountId == 0) {
+      return;
+    }
+
+    effect = actor->LaunchEffect(504, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  } else if (actor->GetEffectiveJob(-1) == 24 || actor->GetEffectiveJob(-1) == 4215 || actor->GetEffectiveJob(-1) == 4228 ||
+             actor->GetEffectiveJob(-1) == 4229 || actor->GetEffectiveJob(-1) == 4306) {
+    if (actor->state.Attachments().HasId(629) || packet->accountId == 0) {
+      return;
+    }
+
+    effect = actor->LaunchEffect(629, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  } else {
+    if (actor->state.Attachments().HasId(228) || packet->accountId == 0) {
+      return;
+    }
+
+    effect = actor->LaunchEffect(228, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  }
+
+  vector3d count{static_cast<float>(packet->value), 0.0f, 0.0f};
+  if (effect) {
+    effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&count), 0, 0, 0, 0);
+  }
 }
