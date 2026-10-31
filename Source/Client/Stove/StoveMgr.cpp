@@ -54,7 +54,7 @@ void CStoveMgr::FetchAllProducts() {
   allParam.SetCategoryId(L"");
   allParam.SetPageNumber(1);
   allParam.SetPageSize(0x7FFFFFFF);
-  Stove::PCSDK::IAP::FetchProducts(&allParam, sub_63A860);
+  IAP_FetchProducts(&allParam, sub_63A860);
   g_stoveWaitingCallback = true;
   do {
     Base_RunCallback();
@@ -66,7 +66,7 @@ void CStoveMgr::FetchAllProducts() {
   categoryParam.SetCategoryId(this->m_environment == 2 ? g_stoveCategoryIdA : g_stoveCategoryIdB);
   categoryParam.SetPageNumber(1);
   categoryParam.SetPageSize(0x7FFFFFFF);
-  Stove::PCSDK::IAP::FetchProducts(&categoryParam, sub_63A8D0);
+  IAP_FetchProducts(&categoryParam, sub_63A8D0);
   g_stoveWaitingCallback = true;
   do {
     Base_RunCallback();
@@ -79,7 +79,7 @@ void CStoveMgr::FetchAllProducts() {
 void FetchStoveTermsAgreement() {
   Stove::PCSDK::IAP::StovePCTermsOption option;
   option.SetOperation(0);
-  Stove::PCSDK::IAP::FetchTermsAgreement(&option, sub_63A7F0);
+  IAP_FetchTermsAgreement(&option, sub_63A7F0);
   g_stoveWaitingCallback = true;
   do {
     Base_RunCallback();
@@ -95,7 +95,7 @@ void CStoveMgr::FetchCategoryProducts() {
   param.SetCategoryId(this->m_environment == 2 ? g_stoveCategoryIdA : g_stoveCategoryIdB);
   param.SetPageNumber(1);
   param.SetPageSize(0x7FFFFFFF);
-  Stove::PCSDK::IAP::FetchProducts(&param, sub_63A8D0);
+  IAP_FetchProducts(&param, sub_63A8D0);
   g_stoveWaitingCallback = true;
   do {
     Base_RunCallback();
@@ -178,7 +178,7 @@ CStoveMgr::CStoveMgr()
     : vtable(nullptr), m_initialized(false), unknown_0008(0), m_environment(1), unknown_0010(0), unknown_0014(0), unknown_0018(), m_accessToken{},
       m_memberNumber{}, m_gameUserId{}, unknown_02B8() {
   this->vtable = reinterpret_cast<void*>(0x0110C63C);
-  reinterpret_cast<unsigned char(__thiscall*)(CStoveMgr*)>(0x0063DC50)(this);
+  this->Initialize();
 }
 
 // GLOBAL: gl_24905
