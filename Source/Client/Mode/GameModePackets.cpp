@@ -6733,6 +6733,28 @@ void CGameMode::ReceiveItemSellResult(const unsigned char* packet) {
 }
 
 // OFFSET: 0x00D58F60
+// FUNCTION: fn_21958
+std::FILE* CGameMode::OpenRandomOptionSimulatorFile(const std::string& folder, const std::string& itemName) {
+  std::string directory = this->MakeSimulatorFolder(folder);
+  if (directory.size() == 0) {
+    return nullptr;
+  }
+
+  SYSTEMTIME time;
+  GetLocalTime(&time);
+  std::string name = FormatOwnedString("%s_RandomOption(%d_%d_%d)", itemName.c_str(), time.wYear, time.wMonth, time.wDay);
+  std::string path = FormatOwnedString("%s\\%s.txt", directory.c_str(), name.c_str());
+  int index = 0;
+  while (_access(path.c_str(), 0) == 0) {
+    ++index;
+    path = FormatOwnedString("%s\\%s_%d.txt", directory.c_str(), name.c_str(), index);
+  }
+
+  std::FILE* file = _wfopen(DecodeText(g_textCodePage, path).c_str(), L"w");
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString("Simulator Result File Create %s %s!!!!!!!!!!!!", file ? "success" : "Fail", itemName.c_str()).c_str()),
+                         file ? 0xFFFF : 0xFF, 0, 0, 0);
+  return file;
+}
 
 #pragma pack(push, 1)
 struct RandomOptionSimulationRecord {
