@@ -4116,6 +4116,20 @@ void CGameMode::ReceiveShopItemList(const unsigned char* data) {
 }
 
 // OFFSET: 0x006AC320
+// FUNCTION: fn_06173
+int EquipmentProperties::CEquipmentPropertiesMgr::GetUnknown01DC(const int& first, const int& second, const int& third) {
+  auto outer = this->unknown_01DC.find(first);
+  if (outer != this->unknown_01DC.end()) {
+    auto middle = outer->second.find(second);
+    if (middle != outer->second.end()) {
+      auto inner = middle->second.find(third);
+      if (inner != middle->second.end()) {
+        return inner->second.value;
+      }
+    }
+  }
+  return 0;
+}
 
 // OFFSET: 0x006BD9D0
 // FUNCTION: fn_06279
@@ -4139,6 +4153,23 @@ int GetEquipTempValue(lua_State* state) {
 }
 
 // OFFSET: 0x006BF3F0
+// FUNCTION: fn_06292
+int SetEquipTempValue(lua_State* state) {
+  std::vector<int> args;
+  int number = 0;
+  for (int index = -2; index < 0; ++index) {
+    if (!lua_isnumber(state, index)) {
+      lua_pushboolean(state, 0);
+      lua_pushstring(state, std::format("arg{0} is must number", number + 1).c_str());
+      return 2;
+    }
+    args.push_back(static_cast<int>(lua_tonumber(state, index)));
+    ++number;
+  }
+
+  EquipmentProperties::CEquipmentPropertiesMgr::GetInstance()->GetUnknown019C()[args[0]].value = args[1];
+  return 0;
+}
 
 #pragma pack(push, 1)
 struct MercenaryInitPacket {
@@ -4163,3 +4194,37 @@ static_assert(offsetof(MercenaryInitPacket, name) == 0x16);
 static_assert(offsetof(MercenaryInitPacket, attackRange) == 0x4E);
 
 // OFFSET: 0x00D322A0
+// FUNCTION: fn_21741
+void CGameMode::Zc_Mer_Init(const unsigned char* data) {
+  const MercenaryInitPacket* packet = reinterpret_cast<const MercenaryInitPacket*>(data);
+  g_session.m_mercSkills.clear();
+  CRenderObject* actor = this->scene->GetGameActorByAID(packet->aid);
+  *reinterpret_cast<std::uint32_t*>(&g_session.unknown_5620[8]) = packet->aid;
+  g_session.unknown_56B0 = 1;
+  if (actor != nullptr) {
+    g_session.m_mercenaryClass = static_cast<CGameActor*>(actor)->GetEffectiveJob(-1);
+  }
+  sprintf(g_session.m_mercenaryName, packet->name);
+  g_session.m_mercenaryStats[0] = packet->stats[0];
+  g_session.m_mercenaryStats[1] = packet->stats[1];
+  g_session.m_mercenaryStats[2] = packet->stats[2];
+  g_session.m_mercenaryStats[3] = packet->stats[3];
+  g_session.m_mercenaryStats[4] = packet->stats[4];
+  g_session.m_mercenaryStats[5] = packet->stats[5];
+  g_session.m_mercenaryStats[6] = packet->stats[6];
+  g_session.m_mercenaryStats[7] = packet->stats[7];
+  g_session.m_mercenaryLevel = packet->level;
+  g_session.m_mercenaryHp = packet->hp;
+  g_session.RefreshMercenaryInfo();
+  g_session.m_mercenarySp = packet->sp;
+  g_session.RefreshMercenaryInfo();
+  g_session.m_mercenaryMaxHp = packet->maxHp;
+  g_session.RefreshMercenaryInfo();
+  g_session.m_mercenaryMaxSp = packet->maxSp;
+  g_session.RefreshMercenaryInfo();
+  g_session.m_mercenaryLoyalty = packet->loyalty;
+  g_session.m_mercenarySummons = packet->summons;
+  g_session.m_mercenaryKills = packet->kills;
+  *reinterpret_cast<int*>(&g_session.unknown_5690[0]) = packet->attackRange;
+  g_session.m_mercenaryExpiration = packet->expiration;
+}
