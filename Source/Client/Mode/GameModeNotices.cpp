@@ -65,7 +65,7 @@
 #include "UI/Window/WindowDialogs.h"
 #include "Utility/Text/FormatString.h"
 #include "Utility/Math/AffineMatrix.h"
-
+#include "UI/UIBroadcastBalloon.h"
 #include <algorithm>
 #include <cstdint>
 #include <cstdio>
@@ -79,6 +79,7 @@
 // GLOBAL: gl_25253
 int g_localMapMove;
 
+#include "UI/Rodex/UIRodexInboxWnd.h"
 #pragma pack(push, 1)
 struct ActorPairFreezePacket {
   /* 0000 */ std::int16_t id;
@@ -4984,3 +4985,97 @@ void CGameMode::RequestLocalMapMove(const char* mapName, std::uint16_t x, std::u
   packet.y = y;
   this->ReceiveNpcAckMapmove(reinterpret_cast<const unsigned char*>(&packet));
 }
+
+#pragma pack(push, 1)
+struct GradeEnchantBroadcastPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ char name[24];
+  /* 001A */ int itemId;
+  /* 001E */ std::int16_t grade;
+  /* 0020 */ unsigned char success;
+};
+#pragma pack(pop)
+
+// OFFSET: 0x00D6D400
+// FUNCTION: fn_22089
+void CGameMode::ReceiveRefineStatus(const char* playerName, int itemId, unsigned char refine, bool success) {
+  std::string name(playerName, 24);
+  std::string itemName;
+  ITEM_INFO item;
+  item.SetItemId(itemId);
+  item.identified = 1;
+  {
+    ItemDescriptions descriptions{g_itemDescriptions};
+    bool languagePrefix = false;
+    WORD language = g_serverLanguage->language;
+    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+    itemName = naming.DisplayName(item, 0);
+  }
+
+  std::string text = FormatOwnedString(LookupMessage(!success + 3271), name.c_str(), refine, itemName.c_str());
+  if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
+    BroadcastBalloonMessage message{{}, {}, std::chrono::seconds(20), 12, 0x40000000, 0, 0};
+    message.start = std::chrono::system_clock::now();
+    message.lines.push_back(BroadcastBalloonLine{text, 0x62B0FF, 0});
+    balloon->AddMessage(0, message);
+  }
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0x62B0FF, 0, 0, 0);
+}
+
+// OFFSET: 0x00D6F000
+
+#pragma pack(push, 1)
+struct RodexMailItem {
+  /* 0000 */ std::uint16_t quantity;
+  /* 0002 */ int itemId;
+  /* 0006 */ unsigned char identified;
+  /* 0007 */ unsigned char damaged;
+  /* 0008 */ std::uint32_t cards[4];
+  /* 0018 */ std::uint32_t expireTime;
+  /* 001C */ unsigned char type;
+  /* 001D */ std::uint16_t bindType;
+  /* 001F */ std::uint16_t unknown_001F;
+  /* 0021 */ ItemSlotOption options[5];
+  /* 003A */ unsigned char refine;
+  /* 003B */ unsigned char grade;
+};
+
+struct RodexReadMailPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int16_t length;
+  /* 0004 */ unsigned char type;
+  /* 0005 */ std::int64_t mailId;
+  /* 000D */ std::int16_t textLength;
+  /* 000F */ std::int64_t zeny;
+  /* 0017 */ unsigned char itemCount;
+  /* 0018 */ char text[1];
+};
+#pragma pack(pop)
+
+// OFFSET: 0x00D6B120
+
+#pragma pack(push, 1)
+struct RodexMailPageEntry {
+  /* 0000 */ std::int64_t mailId;
+  /* 0008 */ unsigned char isRead;
+  /* 0009 */ unsigned char type;
+  /* 000A */ char sender[24];
+  /* 0022 */ int unknown_0022;
+  /* 0026 */ int expireTime;
+  /* 002A */ std::int16_t titleLength;
+  /* 002C */ char title[1];
+};
+
+struct RodexMailPagePacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int16_t length;
+  /* 0004 */ unsigned char type;
+  /* 0005 */ unsigned char count;
+  /* 0006 */ unsigned char isEnd;
+  /* 0007 */ RodexMailPageEntry entries[1];
+};
+#pragma pack(pop)
+
+// OFFSET: 0x00D70BF0
+
+// OFFSET: 0x00D6A0D0
