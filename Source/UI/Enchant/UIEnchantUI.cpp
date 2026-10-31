@@ -74,6 +74,9 @@ CUIMainPage::CUIMainPage(UIWindowContext& context) : CUIControl(context), firstP
 }
 
 // OFFSET: 0x009F7380
+// FUNCTION: fn_14771
+CUITab::CUITab(UIWindowContext& context) : CUIControl(context), current(nullptr) {
+}
 
 // OFFSET: 0x009F74E0
 
