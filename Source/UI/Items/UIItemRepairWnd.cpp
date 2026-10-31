@@ -287,3 +287,17 @@ int UIMakeTargetResultWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
   this->Invalidate();
   return 0;
 }
+
+// OFFSET: 0x0099F780
+
+// OFFSET: 0x0099F850
+
+// OFFSET: 0x0099F8D0
+
+// OFFSET: 0x0099F950
+
+// OFFSET: 0x0099F9C0
+
+// OFFSET: 0x0099FB70
+// FUNCTION: fn_13592
+UIItemRepairWnd::~UIItemRepairWnd() = default;

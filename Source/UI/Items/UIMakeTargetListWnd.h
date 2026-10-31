@@ -12,6 +12,7 @@ class UIListBox;
 
 class UIMakeTargetListWnd : public UIFrameWnd {
 public:
+  UIMakeTargetListWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, UIListBoxContext& listContext, WindowResponseRecorder& recorder);
   std::vector<unsigned char> BuildReplayRecords();
   void Slot15(int width, int height) override;
   void Paint() override;

@@ -9,6 +9,7 @@ struct WindowResponseRecorder;
 
 class UIMakeTargetProcessWnd : public UIFrameWnd {
 public:
+  UIMakeTargetProcessWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, WindowResponseRecorder& recorder);
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot15(int width, int height) override;
   void Slot25(int x, int y) override;
