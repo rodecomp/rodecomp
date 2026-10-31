@@ -4,6 +4,7 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Actors/GameActor.h"
 #include "Contents/Configuration/ServiceOptions.h"
+#include "Contents/Effects/Particle.h"
 #include "Contents/World/World.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/Sprites/ActionResource.h"
@@ -27,6 +28,15 @@ CMsgEffect::~CMsgEffect() {
   if (this->m_owner != nullptr) {
     this->m_owner->SendMsg(this, 48, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
+}
+
+// OFFSET: 0x00E4B8B0
+// FUNCTION: fn_24272
+vector2d& vector2d::Normalize() {
+  const float inverse = 1.0f / SquareRoot(this->x * this->x + this->y * this->y);
+  this->y = inverse * this->y;
+  this->x = inverse * this->x;
+  return *this;
 }
 
 // OFFSET: 0x00E4B630

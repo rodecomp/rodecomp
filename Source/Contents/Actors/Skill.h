@@ -16,9 +16,11 @@ public:
 
   const char* GetTrapModelName();
   void ReleaseModel();
+  void LaunchGroundEffects(int effectId, int unused, int duration);
   void Render(int argument) override;
 
-  /* 0410 */ unsigned char unknown_0410[0x08];
+  /* 0410 */ unsigned char unknown_0410[0x04];
+  /* 0414 */ unsigned m_effectTimer;
   /* 0418 */ std::uint32_t skillAid;
   /* 041C */ C3dActor* m_model;
   /* 0420 */ CRagEffect* m_effect;

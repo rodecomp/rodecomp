@@ -4,13 +4,17 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Effects/Effect.h"
 #include "Contents/Effects/EffectLists.h"
+#include "Contents/Effects/EffectTypes.h"
 #include "Contents/Effects/RagEffect.h"
 #include "Contents/Models/ModelActor.h"
 #include "Contents/World/World.h"
 #include "Contents/World/WorldObjects.h"
 #include "Render/Renderer.h"
 #include "Render/SpriteGeometry.h"
+#include "Resource/World/TerrainResource.h"
 #include "UI/Window/UIWindowMgr.h"
+
+#include <cstdlib>
 
 // OFFSET: 0x00E4AA30
 // FUNCTION: fn_24259
@@ -136,4 +140,40 @@ void CSkill::Render(int argument) {
   bounds[3] = y;
   bounds[4] = reciprocalDepth;
   this->SetRenderInfo(bounds, x, y);
+}
+
+// OFFSET: 0x00E4B690
+// FUNCTION: fn_24271
+void CSkill::LaunchGroundEffects(int effectId, int, int duration) {
+  if (g_effectMgr->HasAllocator(effectId)) {
+    g_effectMgr->Spawn(this->render.accountId, effectId, 0.0f, 0.0f, 0.0f, 0, -1, 1, 0);
+  }
+
+  if (duration <= 0) {
+    duration = EffectLifetime(effectId);
+  }
+  const unsigned interval = duration - 20;
+  if (this->m_effectTimer < interval) {
+    return;
+  }
+
+  this->m_effectTimer = 0;
+  const int range = this->range < 0 ? 0 : this->range;
+  for (int column = -range; column <= range; ++column) {
+    for (int row = -range; row <= range; ++row) {
+      const float x = static_cast<float>(column * 6) + this->render.position.x + static_cast<float>(rand() % 11) * 0.2f - 1.0f;
+      const float z = static_cast<float>(row * 6) + this->render.position.z + static_cast<float>(rand() % 11) * 0.2f - 1.0f;
+      float y = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Grid().Height(x, z);
+      if (effectId == 0x3BF || effectId == 0x3CF) {
+        y += 20.0f;
+      }
+      y -= static_cast<float>(rand() % 11) * 0.4f;
+
+      vector3d position;
+      position.x = x;
+      position.y = y;
+      position.z = z;
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->LaunchDummyEffect(&position, effectId, interval + 20, 0);
+    }
+  }
 }
