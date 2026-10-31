@@ -1,4 +1,9 @@
 #include "UI/Window/UISecondCostumeWnd.h"
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Contents/Actors/Pc.h"
+#include "Contents/World/World.h"
+#include "UI/Window/FuncDrawWNDChar.h"
 #include "Contents/MessageTable.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Lists/UIComboBoxDefWnd.h"
@@ -9,6 +14,47 @@
 #include "UI/Window/WindowManagerWindows.h"
 #include "Client/Session.h"
 #include "Script/LuaScript.h"
+// OFFSET: 0x00948D20
+// FUNCTION: fn_12882
+void UISecondCostumeWnd::sub_948D20(int x, int y) {
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  const unsigned char flags = mode->scene->player->unknown_02CC;
+  const std::uint32_t time = this->unknown_0100;
+  const int action = this->m_page;
+
+  int headPalette = 0;
+  if (!this->m_entries[0].empty() && static_cast<unsigned>(this->m_selected[0]) < this->m_entries[0].size()) {
+    headPalette = this->m_entries[0][this->m_selected[0]].unknown_0018;
+  }
+
+  int bodyStyle = 0;
+  if (!this->m_entries[2].empty() && static_cast<unsigned>(this->m_selected[2]) < this->m_entries[2].size()) {
+    bodyStyle = this->m_entries[2][this->m_selected[2]].unknown_0018;
+  }
+
+  const int robe = g_session.m_robe;
+  const short midAccessory = *reinterpret_cast<const short*>(&g_session.unknown_0EF4[8]);
+  const short topAccessory = *reinterpret_cast<const short*>(&g_session.unknown_0EF4[4]);
+  const short bottomAccessory = *reinterpret_cast<const short*>(&g_session.unknown_0EF4[0]);
+
+  int head = 0;
+  if (!this->m_entries[1].empty() && static_cast<unsigned>(this->m_selected[1]) < this->m_entries[1].size()) {
+    head = this->m_entries[1][this->m_selected[1]].unknown_0018;
+  }
+
+  int body = 0;
+  if (!this->m_entries[3].empty() && static_cast<unsigned>(this->m_selected[3]) < this->m_entries[3].size()) {
+    body = this->m_entries[3][this->m_selected[3]].unknown_0018;
+  }
+
+  FuncDrawWNDChar drawer(
+    this, x, y, static_cast<unsigned char>(g_session.SyncUnknown0E98()), static_cast<short>(g_session.GetDisplayJob()), g_session.GetDisplayJob(),
+    static_cast<short>(body), static_cast<short>(head), bottomAccessory, topAccessory, midAccessory, robe, flags, 0, bodyStyle, headPalette, action, 0,
+    static_cast<int>(time)
+  );
+  drawer.Draw(0);
+}
+
 // OFFSET: 0x00949BA0
 // FUNCTION: fn_12885
 void UISecondCostumeWnd::LoadLists() {
