@@ -14,6 +14,7 @@
 class CSkillAction_TR_ROSEBLOSSOM : public CSkillAction {
 public:
   void Slot08(int level, CGameActor* source) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
   void Slot15(int level, CGameActor* source, CGameActor* target) override;
   void Slot16(int level, CGameActor* source, CGameActor* target) override;
 };
@@ -550,6 +551,21 @@ void CSkillAction_TR_ROSEBLOSSOM::Slot08(int level, CGameActor* source) {
           source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("roseblossom_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
         )) {
       effect->Slot14(level);
+    }
+  }
+}
+
+// OFFSET: 0x007A5660
+// FUNCTION: fn_09021
+void CSkillAction_TR_ROSEBLOSSOM::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (source && target) {
+    if (CEffect* effect = g_effectMgr->Spawn(
+          source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("roseblossom_shot"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
+        )) {
+      const float angle = ScreenAngle(
+        &source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values
+      );
+      effect->Slot17(angle + 180.0f);
     }
   }
 }
