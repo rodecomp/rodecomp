@@ -9,6 +9,7 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/World/WorldObjects.h"
 #include "Contents/World/World.h"
+#include "Contents/Effects/ArrowEffect.h"
 #include "Contents/Effects/EffectLists.h"
 #include "Contents/Effects/RagEffect.h"
 #include "Contents/Actors/ActorStateFlags.h"
@@ -98,6 +99,34 @@ void WorldObjects::SendObjectMessage(CGameObject* sender, std::uint64_t identity
       object->SendMsg(sender, message, message >> 31, a, a >> 31, b, b >> 31, c, c >> 31, d, d >> 31, 0, 0, 0, 0);
       return;
     }
+  }
+}
+
+// OFFSET: 0x00CD8000
+// FUNCTION: fn_21298
+void CGameMode::SpawnArrowEffect(std::uint32_t aid, int target, char flag, int argument) {
+  if (target == 0) {
+    return;
+  }
+
+  CArrowEffect* effect = new CArrowEffect;
+
+  if (effect) {
+    this->scene->objects.push_back(effect);
+    effect->SendMsg(nullptr, 14, 0, static_cast<int>(aid), static_cast<int>(aid) >> 31, target, 0, reinterpret_cast<int>(&flag),
+                    reinterpret_cast<int>(&flag) >> 31, argument, argument >> 31, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00CD80C0
+// FUNCTION: fn_21299
+void CGameMode::SpawnArrowEffect64(std::uint32_t aid, int target, char flag) {
+  CArrowEffect* effect = new CArrowEffect;
+
+  if (effect) {
+    this->scene->objects.push_back(effect);
+    effect->SendMsg(nullptr, 64, 0, static_cast<int>(aid), static_cast<int>(aid) >> 31, target, target >> 31, reinterpret_cast<int>(&flag),
+                    reinterpret_cast<int>(&flag) >> 31, 0, 0, 0, 0, 0, 0);
   }
 }
 
