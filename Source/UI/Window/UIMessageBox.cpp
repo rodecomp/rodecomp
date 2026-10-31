@@ -80,6 +80,7 @@
 #include "UI/Buttons/UINoneVisibleButton.h"
 #include "Contents/PetEvolutionMgr.h"
 #include "Contents/Items/ItemInfo.h"
+#include "Contents/Hotkeys/HotkeyInfo.h"
 #include <mbstring.h>
 #include "Contents/Actors/Pc.h"
 #include "Contents/SpriteRidingOffset.h"
@@ -3699,4 +3700,117 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
   default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
+}
+
+// OFFSET: 0x008B6520
+// FUNCTION: fn_11751
+void UISelectServerWnd::Slot15(int width, int height) {
+  this->m_serverList = new UIServerListBox();
+  this->m_serverList->Configure(12, 22, width - 24, height - 55, 0);
+  this->m_serverList->backgroundRed = 240;
+  this->m_serverList->backgroundGreen = 240;
+  this->m_serverList->backgroundBlue = 240;
+  this->m_serverList->SetId(184);
+  this->AddChild(this->m_serverList);
+
+  const std::string prefix("유저인터페이스\\");
+  const int ids[4] = {184, 185, 221, 400};
+  const char* const names[4][3] = {
+      {"btn_ok", "btn_ok_a", "btn_ok_b"},
+      {"btn_cancel", "btn_cancel_a", "btn_cancel_b"},
+      {"login_interface\\btn_exit", "login_interface\\btn_exit_a", "login_interface\\btn_exit_b"},
+      {"replay_interface\\btn_replay", "replay_interface\\btn_replay_a", "replay_interface\\btn_replay_b"},
+  };
+  int positions[4][2] = {{189, height - 24}, {234, height - 24}, {-100, -100}, {130, height - 24}};
+  if (g_modeMgr.GetLoginMode()->cursorType == 30) {
+    positions[3][0] = -100;
+    positions[3][1] = -100;
+  }
+
+  for (int i = 0; i < 4; ++i) {
+    if (!g_launchPassCommandLine && ids[i] == 400) {
+      continue;
+    }
+
+    UIBitmapButton* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    button->SetBitmap((prefix + names[i][0] + ".bmp").c_str(), 0, 0);
+    button->SetBitmap((prefix + names[i][1] + ".bmp").c_str(), 1, 0);
+    button->SetBitmap((prefix + names[i][2] + ".bmp").c_str(), 2, 0);
+    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    button->Move(positions[i][0], positions[i][1]);
+    button->SetId(ids[i]);
+    this->AddChild(button);
+    if (ids[i] == 221) {
+      this->m_okButton = button;
+    }
+  }
+
+  this->m_message0 = 184;
+}
+
+// OFFSET: 0x008B31F0
+// FUNCTION: fn_11748
+void UIReplayControlWnd::Slot15(int, int) {
+  const std::string prefix("유저인터페이스\\replay_interface\\");
+  const int ids[6] = {403, 404, 405, 406, 401, 402};
+  const int positions[6][2] = {{101, 89}, {149, 89}, {53, 89}, {53, 111}, {5, 89}, {-100, -100}};
+  const char* const names[6] = {"replay_stop_", "replay_end_", "replay_speedadd_", "replay_speedmin_", "replay_start_", "replay_pause_"};
+
+  for (int i = 0; i < 4; ++i) {
+    this->m_buttons[i] = new UIBitmapButton(*this->m_context, *this->m_controls);
+    UIBitmapButton* button = static_cast<UIBitmapButton*>(this->m_buttons[i]);
+    button->SetBitmap((prefix + names[i] + "a.bmp").c_str(), 0, 0);
+    button->SetBitmap((prefix + names[i] + "a.bmp").c_str(), 1, 0);
+    button->SetBitmap((prefix + names[i] + "b.bmp").c_str(), 2, 0);
+    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    button->Move(positions[i][0], positions[i][1]);
+    button->SetId(ids[i]);
+    this->AddChild(button);
+  }
+
+  this->m_playButton = new UIReplayButton(*this->m_context, *this->m_controls);
+  this->m_playButton->SetBitmap((prefix + names[4] + "a.bmp").c_str(), 0, 0);
+  this->m_playButton->SetBitmap((prefix + names[4] + "a.bmp").c_str(), 1, 0);
+  this->m_playButton->SetBitmap((prefix + names[4] + "b.bmp").c_str(), 2, 0);
+  this->m_playButton->SetSize(this->m_playButton->BitmapWidth(), this->m_playButton->BitmapHeight());
+  this->m_playButton->Move(positions[4][0], positions[4][1]);
+  this->m_playButton->SetId(ids[4]);
+  this->AddChild(this->m_playButton);
+
+  this->m_pauseButton = new UIReplayButton(*this->m_context, *this->m_controls);
+  this->m_pauseButton->SetBitmap((prefix + names[5] + "a.bmp").c_str(), 0, 0);
+  this->m_pauseButton->SetBitmap((prefix + names[5] + "a.bmp").c_str(), 1, 0);
+  this->m_pauseButton->SetBitmap((prefix + names[5] + "b.bmp").c_str(), 2, 0);
+  this->m_pauseButton->SetSize(this->m_pauseButton->BitmapWidth(), this->m_pauseButton->BitmapHeight());
+  this->m_pauseButton->Move(positions[5][0], positions[5][1]);
+  this->m_pauseButton->SetId(ids[5]);
+  this->AddChild(this->m_pauseButton);
+
+  HotkeyInfo hotkey;
+  hotkey = GetHotkeyInfo(reinterpret_cast<LuaScript&>(g_session), 1, 39);
+  this->m_playButton->SetTooltip(hotkey.text.c_str());
+  this->m_pauseButton->SetTooltip(hotkey.text.c_str());
+  hotkey = GetHotkeyInfo(reinterpret_cast<LuaScript&>(g_session), 1, 40);
+  static_cast<UIButton*>(this->m_buttons[2])->SetTooltip(hotkey.text.c_str());
+  hotkey = GetHotkeyInfo(reinterpret_cast<LuaScript&>(g_session), 1, 41);
+  static_cast<UIButton*>(this->m_buttons[3])->SetTooltip(hotkey.text.c_str());
+
+  this->m_progress = new UIBarGraph4(*this->m_context);
+  this->m_progress->m_plainColor = true;
+  this->m_progress->SetSize(188, 11);
+  this->m_progress->Move(5, 72);
+  this->m_progress->SetValues(reinterpret_cast<const int*>(&Replay::Instance().elapsed), reinterpret_cast<const int*>(&Replay::Instance().header.duration));
+  this->AddChild(this->m_progress);
+
+  const int textPositions[4][2] = {{8, 26}, {8, 40}, {-100, -100}, {8, 54}};
+  for (int i = 0; i < 4; ++i) {
+    this->m_texts[i] = new UIStaticText(*this->m_context, *this->m_controls);
+    this->m_texts[i]->SetSize(188, 14);
+    this->m_texts[i]->SetText("", 0);
+    this->m_texts[i]->Move(textPositions[i][0], textPositions[i][1]);
+    this->m_texts[i]->SetColor(100, 100, 200);
+    this->AddChild(this->m_texts[i]);
+  }
+
+  this->RefreshInfo();
 }
