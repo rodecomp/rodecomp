@@ -598,6 +598,7 @@ public:
   bool LoadExceptionMinimapNameTable();
   bool LoadMapNameTable();
   bool LoadMapPosTable();
+  bool ScaleMapPositions();
   bool LoadFogParameters();
   void ClearHomunStatus();
   std::pair<int, int>* InsertPair(int key, int value);

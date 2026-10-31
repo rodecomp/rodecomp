@@ -2,6 +2,7 @@
 #include "Contents/MapInfoMgr.h"
 #include "File/CommonObject.h"
 #include "File/File.h"
+#include "Render/Renderer.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Utility/Cipher/XorBytes.h"
 
@@ -189,5 +190,31 @@ bool CSession::LoadMapPosTable() {
   }
 
   file.Close();
+  return true;
+}
+
+// OFFSET: 0x00DE4FF0
+// FUNCTION: fn_45471
+bool CSession::ScaleMapPositions() {
+  const float scaleX = static_cast<float>(g_renderer->viewport.width) / 1280.0f;
+  const float scaleY = static_cast<float>(g_renderer->viewport.height - 17) * 0.0009765625f;
+  for (int index = 0; index < this->m_mapPosListCount; ++index) {
+    for (std::map<std::string, MapPosEntry>::iterator it = this->m_mapPosLists[index].begin(); it != this->m_mapPosLists[index].end(); ++it) {
+      MapPosRect& rect = it->second.rect;
+      rect.left = static_cast<int>(static_cast<float>(rect.left) * scaleX + 0.5);
+      rect.top = static_cast<int>(static_cast<float>(rect.top) * scaleY + 0.5) + 17;
+      rect.right = static_cast<int>(static_cast<float>(rect.right) * scaleX + 0.5);
+      rect.bottom = static_cast<int>(static_cast<float>(rect.bottom) * scaleY + 0.5) + 17;
+    }
+  }
+
+  for (std::map<int, MapPosEntry>::iterator it = this->m_mapPosBounds.begin(); it != this->m_mapPosBounds.end(); ++it) {
+    MapPosRect& rect = it->second.rect;
+    rect.left = static_cast<int>(static_cast<float>(rect.left) * scaleX + 0.5);
+    rect.top = static_cast<int>(static_cast<float>(rect.top) * scaleY + 0.5) + 17;
+    rect.right = static_cast<int>(static_cast<float>(rect.right) * scaleX + 0.5);
+    rect.bottom = static_cast<int>(static_cast<float>(rect.bottom) * scaleY + 0.5) + 17;
+  }
+
   return true;
 }
