@@ -338,6 +338,66 @@ void UILoginWnd::Paint() {
 }
 
 // OFFSET: 0x008B8620
+// FUNCTION: fn_11766
+void UIMakeCharWnd::Paint() {
+  CBitmapRes* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\login_interface\\win_make2.bmp")));
+  this->DrawBitmap(0, 17, &background->image, false);
+  this->DrawTitleBar(this->m_context->fonts, this->m_context->locale, true, LookupMessage(0x940), 0);
+  this->DrawButtonBar(2, 0, 1);
+
+  SpriteAtlasRecord record{};
+  for (int i = 0; i < 2; ++i) {
+    CImfRes* offsets = static_cast<CImfRes*>(ResourceMgr::Instance().Load(this->m_view.imfName.c_str()));
+    CActRes* action = static_cast<CActRes*>(ResourceMgr::Instance().Load(this->m_view.actionNames[i].c_str()));
+    CSprRes* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(this->m_view.spriteNames[i].c_str()));
+    const ActionFrame& frame = action->Frame(this->m_view.action, this->m_view.frame);
+    POINT offset = offsets->GetLongPoint(i, this->m_view.action, this->m_view.frame);
+    const std::uint32_t* palette = sprite->palette;
+
+    if (i == 1) {
+      CActRes* body = static_cast<CActRes*>(ResourceMgr::Instance().Load(this->m_view.actionNames[0].c_str()));
+      const ActionFrame& bodyFrame = body->Frame(this->m_view.action, this->m_view.frame);
+      if (frame.anchorCount != 0 && bodyFrame.anchorCount != 0 && frame.anchors[0].unknown_0008 == bodyFrame.anchors[0].unknown_0008) {
+        offset.x += bodyFrame.anchors[0].x - frame.anchors[0].x;
+        offset.y += bodyFrame.anchors[0].y - frame.anchors[0].y;
+      }
+    }
+
+    switch (i) {
+    case 0:
+      if (this->m_view.bodyPalette) {
+        palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->m_view.bodyPaletteName.c_str()))->palette;
+      }
+      break;
+    case 1:
+      if (this->m_view.headPalette) {
+        palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->m_view.headPaletteName.c_str()))->palette;
+      }
+      break;
+    }
+
+    const SpriteFrameCell& cell = frame.Cell(i);
+    if (cell.image == -1) {
+      continue;
+    }
+
+    const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
+    CTexture* texture;
+    if (cell.imageType == 0) {
+      texture = g_renderer->atlas.Find(image, palette, record);
+      if (!texture) {
+        texture = g_renderer->atlas.Insert(this->m_context->renderSystem, image, palette, record, g_serviceType, g_resourceReuseDelay);
+      }
+    } else {
+      texture = static_cast<CTexture*>(const_cast<void*>(image->unknown_0008));
+    }
+
+    this->geometry.surface->DrawSurface(
+      this->m_view.x + cell.x + offset.x, this->m_view.y + cell.y + offset.y, texture, static_cast<int>(record.u0 * 256.0f),
+      static_cast<int>(record.v0 * 256.0f), image->width, image->height, cell.mirrored != 0, image->unknown_0004 + 1, image->unknown_0006 + 1, 0, 0
+    );
+  }
+}
 
 // OFFSET: 0x008B88F0
 // FUNCTION: fn_11767
