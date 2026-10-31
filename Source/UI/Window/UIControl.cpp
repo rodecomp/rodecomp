@@ -1895,6 +1895,7 @@ void CUITextViewer::Relayout() {
 }
 
 // OFFSET: 0x009EA400
+// FUNCTION: fn_14519
 void CUITextViewer::Resize(int width, int height) {
   const int position = this->scrollBar->position;
   UIWindow::Resize(width, height);
@@ -2199,31 +2200,37 @@ CUIBasicButton::~CUIBasicButton() = default;
 namespace AdventureGuide {
 
 // OFFSET: 0x009D9150
+// FUNCTION: fn_14276
 CUIItemInfo::CUIItemInfo(UIWindowContext& context)
     : CUIListItem(context), unknown_00E8(), unknown_00F0(nullptr), unknown_00F4(nullptr), unknown_00F8(nullptr), itemId(-1), type(21), location(-1),
       unknown_0108() {
 }
 
 // OFFSET: 0x009D92D0
+// FUNCTION: fn_14278
 CUIMonsterInfo::CUIMonsterInfo(UIWindowContext& context)
     : CUIListItem(context), unknown_00E8(nullptr), unknown_00EC(nullptr), unknown_00F0(nullptr), sprite(nullptr), action(nullptr) {
 }
 
 // OFFSET: 0x009D9420
+// FUNCTION: fn_14280
 CUIQuestInfo::CUIQuestInfo(UIWindowContext& context)
     : CUIListItem(context), unknown_00E8(nullptr), unknown_00EC(nullptr), unknown_00F0(nullptr), unknown_00F4(nullptr), unknown_00F8(), questId(0) {
 }
 
 // OFFSET: 0x009D94D0
+// FUNCTION: fn_14281
 CUISubTab::CUISubTab(UIWindowContext& context) : CUIListItem(context), unknown_00E8(nullptr), unknown_00EC(nullptr), id(0), unknown_00F4(0) {
 }
 
 // OFFSET: 0x009D9550
+// FUNCTION: fn_14282
 CUITab::CUITab(UIWindowContext& context)
     : CUIListItem(context), unknown_00E8(nullptr), subTabs(nullptr), unknown_00F0(), type(7), page(nullptr), unknown_0110(0) {
 }
 
 // OFFSET: 0x009D9600
+// FUNCTION: fn_14283
 CUITabInfo::CUITabInfo(UIWindowContext& context) : CUIListItem(context), unknown_00E8(nullptr), unknown_00EC(nullptr) {
 }
 
