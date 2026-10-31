@@ -3495,6 +3495,10 @@ void CRagEffect::TexturedSlam(const char* name, std::int16_t kind, char) {
   }
 }
 
+// OFFSET: 0x00C6CDE0
+
+// OFFSET: 0x00C6D2C0
+
 // OFFSET: 0x00C54BE0
 // FUNCTION: fn_20200
 void CRagEffect::KyrieGuard(const char* name, char kind) {
