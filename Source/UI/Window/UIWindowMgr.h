@@ -443,6 +443,7 @@ public:
   void ArrangeMiniPartyWindows();
   void AddMiniPartyWindow(UIWindow* window);
   void RearrangeMiniPartyWindows();
+  void RebuildMiniPartyWindows();
   static int ScaleToViewportWidth(int value);
   static int CenterOnViewportX(int x);
   static int CenterOnViewportY(int y);
@@ -459,6 +460,7 @@ public:
   void sub_AAB090();
   void sub_AAB0B0();
   UIWindow* EnsureWindow(int id);
+  UIWindow* CreateLayoutWindow(int id);
   void GetMiniPartyUsableArea(RECT* area);
   UIWindow* FindSnapExcludedWindow(int cell);
   void Schedule(UIWindow* window);
