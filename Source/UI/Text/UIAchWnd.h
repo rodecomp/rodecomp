@@ -28,11 +28,7 @@ struct UIAchListInfo {
 
 class UIAchScrollBar : public UIScrollBar {
 public:
-  // INLINED
-  explicit UIAchScrollBar(UIWindowContext& windows) : UIScrollBar(windows) {
-    this->arrowLength = 11;
-    this->thickness = 11;
-  }
+  explicit UIAchScrollBar(UIWindowContext& windows);
 
   void Paint() override;
 };
@@ -58,11 +54,7 @@ public:
 
 class UIAchListWnd : public UIWindow {
 public:
-  // INLINED
-  UIAchListWnd(UIWindowContext& windows, UIButtonContext& controls)
-      : UIWindow(windows, 0), buttons(nullptr), unknown_0084(0), rowCount(0), unknown_008C(0), selectedIndex(0), unknown_0094(11), scrollable(0),
-        unknown_009C(0), unknown_00AC(nullptr), scrollBar(nullptr), m_controls(&controls) {
-  }
+  UIAchListWnd(UIWindowContext& windows, UIButtonContext& controls);
   ~UIAchListWnd() override;
 
   /* 0080 */ UIButton** buttons;
@@ -188,18 +180,7 @@ private:
 
 class UIAchViewWnd : public UIWindow {
 public:
-  // INLINED
-  UIAchViewWnd(UIWindowContext& windows, UIButtonContext& controls) : UIWindow(windows, 0), achievementId(-1), info(nullptr), m_controls(&controls) {
-    this->receiveButton = nullptr;
-    this->description = nullptr;
-    for (int index = 0; index < 10; ++index) {
-      this->conditions[index] = nullptr;
-      this->gauges[index] = nullptr;
-    }
-    for (UIToolTipBitmapWnd*& reward : this->rewards) {
-      reward = nullptr;
-    }
-  }
+  UIAchViewWnd(UIWindowContext& windows, UIButtonContext& controls);
 
   /* 007C */ UIBitmapButton* receiveButton;
   /* 0080 */ UIAchTV* description;
@@ -221,11 +202,7 @@ private:
 
 class UIAchUpperWnd : public UIWindow {
 public:
-  // INLINED
-  UIAchUpperWnd(UIWindowContext& windows, UIButtonContext& controls)
-      : UIWindow(windows, 0), unknown_0094(0), unknown_0098(0), unknown_009C(0), unknown_00A0(0), unknown_00A4(nullptr), unknown_00A8(nullptr), buttons{},
-        selected(0), m_controls(&controls) {
-  }
+  UIAchUpperWnd(UIWindowContext& windows, UIButtonContext& controls);
 
   /* 007C */ std::string title;
   /* 0094 */ int unknown_0094;
@@ -247,9 +224,7 @@ private:
 
 class UIAchSummaryWnd : public UIWindow {
 public:
-  // INLINED
-  UIAchSummaryWnd(UIWindowContext& windows, UIButtonContext& controls) : UIWindow(windows, 0), unknown_007C(7), m_controls(&controls) {
-  }
+  UIAchSummaryWnd(UIWindowContext& windows, UIButtonContext& controls);
 
   /* 007C */ int unknown_007C;
   /* 0080 */ std::vector<UICustomGageBar*> gauges;

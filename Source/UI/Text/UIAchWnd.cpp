@@ -1365,3 +1365,43 @@ void UIAchViewWnd::UpdateInfo() {
 
   this->Invalidate();
 }
+
+// OFFSET: 0x007B1E60
+// FUNCTION: fn_09181
+UIAchListWnd::UIAchListWnd(UIWindowContext& windows, UIButtonContext& controls)
+    : UIWindow(windows, 0), buttons(nullptr), unknown_0084(0), rowCount(0), unknown_008C(0), selectedIndex(0), unknown_0094(11), scrollable(0),
+      unknown_009C(0), unknown_00AC(nullptr), scrollBar(nullptr), m_controls(&controls) {
+}
+
+// OFFSET: 0x007B1F40
+// FUNCTION: fn_09182
+UIAchScrollBar::UIAchScrollBar(UIWindowContext& windows) : UIScrollBar(windows) {
+  this->arrowLength = 11;
+  this->thickness = 11;
+}
+
+// OFFSET: 0x007B1FB0
+// FUNCTION: fn_09183
+UIAchSummaryWnd::UIAchSummaryWnd(UIWindowContext& windows, UIButtonContext& controls) : UIWindow(windows, 0), unknown_007C(7), m_controls(&controls) {
+}
+
+// OFFSET: 0x007B21D0
+// FUNCTION: fn_09184
+UIAchUpperWnd::UIAchUpperWnd(UIWindowContext& windows, UIButtonContext& controls)
+    : UIWindow(windows, 0), unknown_0094(0), unknown_0098(0), unknown_009C(0), unknown_00A0(0), unknown_00A4(nullptr), unknown_00A8(nullptr), buttons{},
+      selected(0), m_controls(&controls) {
+}
+
+// OFFSET: 0x007B22B0
+// FUNCTION: fn_09185
+UIAchViewWnd::UIAchViewWnd(UIWindowContext& windows, UIButtonContext& controls) : UIWindow(windows, 0), achievementId(-1), info(nullptr), m_controls(&controls) {
+  this->receiveButton = nullptr;
+  this->description = nullptr;
+  for (int index = 0; index < 10; ++index) {
+    this->conditions[index] = nullptr;
+    this->gauges[index] = nullptr;
+  }
+  for (UIToolTipBitmapWnd*& reward : this->rewards) {
+    reward = nullptr;
+  }
+}
