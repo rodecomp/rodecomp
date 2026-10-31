@@ -65,6 +65,10 @@
 #include <imm.h>
 #include <direct.h>
 #include <io.h>
+#include "UI/Lists/UIListBox.h"
+#include "Contents/Sound/SoundMgr.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
+#include "UI/Window/UINewSelectCharWnd.h"
 
 namespace {
   constexpr char prefix[] = "유저인터페이스\\";
@@ -1934,4 +1938,139 @@ bool UISelectReplayDataWnd::UpdateInfo() {
   std::sprintf(buffer, LookupMessage(1968), duration.hours, duration.minutes, duration.seconds);
   this->m_texts[4]->SetTextFitted(buffer);
   return true;
+}
+
+// OFFSET: 0x008C18C0
+// FUNCTION: fn_11816
+int UISelectServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  switch (message) {
+  case 6:
+    switch (a) {
+    case 184:
+      if (this->m_serverList->selected != -1) {
+        g_windowMgr.Schedule(this);
+        static_cast<CMode*>(g_charViewMode)->SendMsg(this->m_event, this->m_serverList->selected, 0, 0, 0);
+        g_soundMgr->PlayWave("버튼소리.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+        const char* name = this->m_valueName.c_str();
+        this->m_selectedServer = this->m_serverList->selected;
+        HKEY key;
+        DWORD disposition = 0;
+        if (RegCreateKeyExA(HKEY_LOCAL_MACHINE, g_subKey, 0, nullptr, 0, KEY_ALL_ACCESS, nullptr, &key, &disposition) == ERROR_SUCCESS) {
+          RegSetValueExA(key, name, 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->m_selectedServer), 4);
+          RegCloseKey(key);
+          return 0;
+        }
+      }
+      break;
+    case 185:
+      g_windowMgr.Schedule(this);
+      static_cast<CMode*>(g_charViewMode)->SendMsg(10006, 0, 0, 0, 0);
+      return 0;
+    case 221:
+      if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(17), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+        static_cast<CMode*>(g_charViewMode)->SendMsg(2, 0, 0, 0, 0);
+        g_windowMgr.Schedule(this);
+        return 0;
+      }
+      break;
+    case 400:
+      reinterpret_cast<Replay&>(ReplayFileList::Instance()).SetBaseFrame(reinterpret_cast<std::uint32_t>(&Replay::Instance()));
+      ReplayFileList::Instance().unknown_011C = g_session.m_aid;
+      ReplayFileList::Instance().unknown_0120 = g_session.SyncUnknown0E98();
+      static_cast<CMode*>(g_charViewMode)->SendMsg(10026, 0, 0, 0, 0);
+      g_windowMgr.Schedule(this);
+      return 0;
+    }
+    break;
+  case 18:
+    this->m_serverList->SendMsg(nullptr, 18, 0, 0, 0, 0);
+    return 0;
+  case 19:
+    this->m_serverList->SendMsg(nullptr, 19, 0, 0, 0, 0);
+    return 0;
+  case 40:
+    this->m_serverList->SendMsg(nullptr, 40, this->m_selectedServer, 0, 0, 0);
+    return 0;
+  case 80: {
+    this->m_event = a;
+    this->m_valueName = reinterpret_cast<const char*>(b);
+    const char* name = this->m_valueName.c_str();
+    this->m_selectedServer = g_serviceType;
+    HKEY probe;
+    if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, g_subKey, 0, KEY_QUERY_VALUE, &probe) == ERROR_SUCCESS) {
+      RegCloseKey(probe);
+      HKEY key;
+      if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, g_subKey, 0, KEY_QUERY_VALUE, &key) == ERROR_SUCCESS) {
+        DWORD type = REG_DWORD;
+        DWORD size = 4;
+        RegQueryValueExA(key, name, nullptr, &type, reinterpret_cast<BYTE*>(&this->m_selectedServer), &size);
+        RegCloseKey(key);
+        return 0;
+      }
+    }
+    break;
+  }
+  case 89:
+    this->m_okButton->Move(234, this->m_okButton->geometry.y);
+    break;
+  default:
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
+  return 0;
+}
+
+// OFFSET: 0x008C2E30
+// FUNCTION: fn_11821
+void UIPetInfoWnd::UpdateFriendlyGauge() {
+  const std::string previous = this->friendlyText;
+  int low;
+  int high;
+  if (g_session.m_petFriendly >= 0 && g_session.m_petFriendly <= 100) {
+    if (g_session.GetDisplayJob() >= 4050 && g_session.GetDisplayJob() <= 4052) {
+      int message;
+      if (g_session.m_petFriendly <= 20) {
+        low = 0;
+        message = 1022;
+        high = 100;
+      } else if (g_session.m_petFriendly <= 40) {
+        low = 20;
+        message = 1021;
+        high = 40;
+      } else {
+        low = 40;
+        message = 672;
+        high = 100;
+      }
+      this->friendlyText = LookupMessage(message);
+    } else {
+      this->friendlyText = LookupMessage(672);
+      low = 0;
+      high = 100;
+    }
+  } else if (g_session.m_petFriendly > 100 && g_session.m_petFriendly <= 250) {
+    this->friendlyText = LookupMessage(673);
+    low = 100;
+    high = 250;
+  } else if (g_session.m_petFriendly > 250 && g_session.m_petFriendly <= 750) {
+    this->friendlyText = LookupMessage(669);
+    low = 250;
+    high = 750;
+  } else if (g_session.m_petFriendly > 750 && g_session.m_petFriendly <= 900) {
+    this->friendlyText = LookupMessage(674);
+    low = 750;
+    high = 900;
+  } else if (g_session.m_petFriendly > 900 && g_session.m_petFriendly <= 1000) {
+    this->friendlyText = LookupMessage(675);
+    low = 900;
+    high = 1000;
+  } else {
+    this->friendlyText = LookupMessage(676);
+    low = 0;
+    high = 0;
+  }
+  const float ratio = static_cast<float>(static_cast<unsigned>(g_session.m_petFriendly - low)) / static_cast<float>(static_cast<unsigned>(high - low));
+  this->friendlyGauge->SetValue(static_cast<unsigned>(ratio * 100.0f));
+  if (!(previous == this->friendlyText)) {
+    this->Invalidate();
+  }
 }
