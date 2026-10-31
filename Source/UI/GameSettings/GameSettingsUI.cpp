@@ -1383,6 +1383,13 @@ void ToggleGameSettingsTab4() {
 }
 
 // OFFSET: 0x00AAB070
+// FUNCTION: fn_17277
+void UIWindowMgr::sub_AAB070(int option) {
+  CUIGameSettingsUI* settings = static_cast<CUIGameSettingsUI*>(this->LookupWindow(0x271E));
+  if (settings) {
+    settings->sub_A43590(option);
+  }
+}
 
 // OFFSET: 0x00AAB090
 // FUNCTION: fn_17278
