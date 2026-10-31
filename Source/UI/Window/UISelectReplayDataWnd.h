@@ -13,6 +13,7 @@ public:
   void Slot15(int width, int height) override;
   void Slot18() override;
   void Paint() override;
+  bool UpdateInfo();
 
   /* 00B4 */ UIReplayListBox* m_list;
   /* 00B8 */ UIBitmapButton* m_serverButton;
