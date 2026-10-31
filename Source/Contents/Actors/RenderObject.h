@@ -77,6 +77,10 @@ public:
     const SpriteFrameCell& cell, const int* box, float offset, float bottomRhw, float topRhw,
     const std::uint32_t* palette, const SpriteRleImage* image, std::uint32_t color
   );
+  void DrawSpriteEffects(
+    SpriteQuad* quad, const SpriteFrameCell* cell, const int* box, float offset, float bottomRhw, float topRhw,
+    const std::uint32_t* palette, const SpriteRleImage* image, int* blend, std::uint32_t color
+  );
   void ApplySwing(int mode, int& x, int& y, int& outX, int& outY) const;
   void SetInstantValue(int key, std::int64_t value);
   std::int64_t GetInstant(int key) const;

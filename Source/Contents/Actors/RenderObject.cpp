@@ -25,6 +25,7 @@
 #include "Contents/Jobs/JobId.h"
 #include "Contents/Jobs/JobInheritance.h"
 #include "Contents/Messenger/ClientMessenger.h"
+#include "Contents/Skills/ClientSkills.h"
 #include "Contents/Skills/SkillInfo.h"
 #include "Contents/Sound/SoundMgr.h"
 #include "Contents/World/World.h"
@@ -1111,6 +1112,122 @@ void CRenderObject::DrawPulseOutline(
   outline.color = color;
   outline.angle = static_cast<float>(cell.unknown_001C + static_cast<int>(this->render.unknown_007C));
   this->DrawQuad(outline, palette, 5, 0.0f, 0.0f, 0);
+}
+
+// OFFSET: 0x00CAB180
+// FUNCTION: fn_21025
+void CRenderObject::DrawSpriteEffects(
+  SpriteQuad* quad, const SpriteFrameCell* cell, const int* box, float offset, float bottomRhw, float topRhw,
+  const std::uint32_t* palette, const SpriteRleImage* image, int* blend, std::uint32_t color
+) {
+  for (const ActiveSkillEffect& effect : g_activeSkillEffects) {
+    if (effect.id == 0xB8) {
+      if (!this->render.visible || !this->render.enabled) {
+        return;
+      }
+      break;
+    }
+  }
+
+  if (static_cast<unsigned char>(color >> 24) < 0xFF) {
+    *blend = 1;
+  }
+  if ((this->render.flags & 1) != 0) {
+    *blend = 5;
+  }
+
+  this->DrawPulseOutline(*cell, box, offset, bottomRhw, topRhw, palette, image, color);
+
+  if ((this->render.flags & 0x800) != 0) {
+    short step = 1;
+    for (int distance = 3; distance <= 30; distance += 3, ++step) {
+      short alpha;
+      if (this->render.unknown_00F4 > 130) {
+        alpha = 245 - step * 10 - this->render.unknown_00F4;
+      } else {
+        alpha = this->render.unknown_00F4 - (step * 5 + 50);
+      }
+      if (alpha > 200) {
+        alpha = 200;
+      }
+      if (alpha < 0) {
+        alpha = 0;
+      }
+
+      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      const float spread = 400.0f / mode->camera->camera.desiredDistance * static_cast<float>(distance);
+
+      SpriteQuad shadow;
+      shadow.top = static_cast<float>(box[1]) - spread;
+      shadow.bottom = static_cast<float>(box[3]) + spread;
+      float left = static_cast<float>(box[0]) + offset;
+      float right = static_cast<float>(box[2]) + offset;
+      if (left > right) {
+        left += spread;
+        right -= spread;
+      } else {
+        left -= spread;
+        right += spread;
+      }
+      shadow.left = left;
+      shadow.right = right;
+      shadow.image = image;
+      shadow.color = (alpha << 24) + 0xFFFFFF;
+      shadow.bottomRhw = bottomRhw + spread * 0.000005f + 0.00001f;
+      shadow.topRhw = topRhw + spread * 0.000005f + 0.00001f;
+      shadow.angle = static_cast<float>(static_cast<int>(this->render.unknown_007C) + cell->unknown_001C);
+      this->DrawQuad(shadow, palette, 5, 0.0f, 0.0f, 0);
+    }
+  }
+
+  if ((this->render.flags & 0x80002) != 0) {
+    for (int distance = 1; distance <= 2; ++distance) {
+      const unsigned char alpha = this->render.unknown_00F2;
+      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      const float spread = 400.0f / mode->camera->camera.desiredDistance * static_cast<float>(distance);
+
+      SpriteQuad glow;
+      glow.top = static_cast<float>(box[1]) - spread;
+      glow.bottom = static_cast<float>(box[3]) + spread;
+      float left = static_cast<float>(box[0]) + offset;
+      float right = static_cast<float>(box[2]) + offset;
+      if (left > right) {
+        left += spread;
+        right -= spread;
+      } else {
+        left -= spread;
+        right += spread;
+      }
+      glow.left = left;
+      glow.right = right;
+      glow.image = image;
+      glow.bottomRhw = bottomRhw + spread * 0.000005f + 0.00001f;
+      glow.topRhw = topRhw + spread * 0.000005f + 0.00001f;
+      if ((this->render.flags & 2) != 0) {
+        glow.color = (alpha << 24) + 0x3737FF;
+      } else {
+        glow.color = (alpha << 24) + 0x059B05;
+      }
+      glow.angle = static_cast<float>(static_cast<int>(this->render.unknown_007C) + cell->unknown_001C);
+      this->DrawQuad(glow, palette, 5, 0.0f, 0.0f, 0);
+    }
+  }
+
+  CGameActor* actor = static_cast<CGameActor*>(this);
+  actor->Slot10(cell, box, offset, bottomRhw, topRhw, palette, image, static_cast<float>(box[3] - box[1]) * 0.05f, 0);
+  actor->Slot11(quad, cell, box, offset, bottomRhw, topRhw, palette, image, *blend, 0);
+  actor->Slot12(quad, box, offset, 21, 10);
+
+  if ((this->render.flags & 0x100000) != 0) {
+    short angle = static_cast<short>(cell->unknown_001C) + static_cast<short>(this->render.unknown_007C) + 60;
+    if (angle >= 360) {
+      angle -= 360;
+    }
+    quad->angle = static_cast<float>(angle);
+  }
+  if ((this->render.flags & 2) != 0) {
+    quad->color = 0x643737FF;
+  }
 }
 
 // OFFSET: 0x00CAFEE0
