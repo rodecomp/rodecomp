@@ -4,6 +4,7 @@
 #include "Contents/Effects/EffectActor.h"
 #include "Contents/EquipmentResourceMgr.h"
 #include "Contents/GuildInfo.h"
+#include "Contents/GuildMgr.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Jobs/JobId.h"
 #include "Contents/Skills/SkillId.h"
@@ -47,6 +48,9 @@ std::list<GuildInfo::Member> g_guildMembers;
 
 // GLOBAL: gl_24864
 std::string g_guildName;
+
+// GLOBAL: gl_25140
+static std::string s_messageEndTag = "</MSG>";
 
 // OFFSET: 0x00DDE860
 // FUNCTION: fn_23401
@@ -1785,6 +1789,27 @@ bool CSession::HasItem1740Number(int value) const {
   }
 
   return false;
+}
+
+// OFFSET: 0x00DFA4C0
+// FUNCTION: fn_23575
+bool CSession::IsKnownName(std::string name) const {
+  if (name == this->DecodePlayerName()) {
+    return true;
+  }
+
+  for (const MessengerMember& member : this->m_friends) {
+    if (member.name == name.c_str()) {
+      return true;
+    }
+  }
+
+  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  if (guildInfo->GetMemberAccountId(name.c_str()) != -1) {
+    return true;
+  }
+
+  return name.find(s_messageEndTag) != std::string::npos;
 }
 
 // OFFSET: 0x00DFC0B0

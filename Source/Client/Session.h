@@ -655,6 +655,7 @@ public:
   bool IsGuildMemberCharacter(int characterId, char* name) const;
   bool IsGuildMemberName(const char* name) const;
   bool IsUnknownName5248(const char* name) const;
+  bool IsKnownName(std::string name) const;
   long long GetItem1760Total() const;
   ITEM_INFO GetItem1748At(int index) const;
   bool HasItem1718(std::uint32_t id) const;
