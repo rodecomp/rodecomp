@@ -2346,6 +2346,12 @@ void UICashEmotionPack::SetTitle(const char* title) {
 }
 
 // OFFSET: 0x007CAAC0
+// FUNCTION: fn_09457
+UICashEmotionPack_Purchase::UICashEmotionPack_Purchase(UIWindowContext& windows) : UICashEmotionPack(windows) {
+  this->m_selectAction = new (std::nothrow) CCashEmotionAction_Play;
+  this->m_purchaseAction = new (std::nothrow) CCashEmotionAction_Register;
+  this->m_background = Resolve("유저인터페이스\\cashemotion\\bg_list_bought.bmp");
+}
 
 // OFFSET: 0x007CAC40
 // FUNCTION: fn_09458
