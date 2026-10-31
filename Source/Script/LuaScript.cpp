@@ -710,6 +710,18 @@ int AddIngredientLapineUpgradeBox(lua_State* state) {
   return 0;
 }
 
+// OFFSET: 0x00B00010
+// FUNCTION: fn_18361
+int LuaReturnZero() {
+  return 0;
+}
+
+// OFFSET: 0x00B00020
+// FUNCTION: fn_18362
+int LuaReturnOne() {
+  return 1;
+}
+
 // OFFSET: 0x00AFFB10
 // FUNCTION: fn_18356
 int AddCashshopBanner(lua_State* state) {
