@@ -18,6 +18,7 @@ struct IdListLine {
 class UIListBoxID : public UIWindow {
 public:
   UIListBoxID();
+  ~UIListBoxID() override;
   void Resize(int width, int height) override;
   void Slot15(int width, int height) override;
   void Paint() override;

@@ -99,6 +99,7 @@ public:
 
 class UICostumeChangeWnd : public UIStylingshopTabParentWnd {
 public:
+  explicit UICostumeChangeWnd(UIWindowContext& context);
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 };
@@ -125,6 +126,7 @@ class UI2ndCostumeCheckBox;
 
 class UI2ndCostumeWnd : public UIStylingshopTabParentWnd {
 public:
+  explicit UI2ndCostumeWnd(UIWindowContext& context);
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
@@ -146,6 +148,7 @@ public:
 
 class UIBasicStylingWnd : public UIStylingshopTabParentWnd {
 public:
+  explicit UIBasicStylingWnd(UIWindowContext& context);
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 

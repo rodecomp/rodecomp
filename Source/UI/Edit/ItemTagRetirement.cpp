@@ -36,6 +36,8 @@ void ChatItemTagRemoval::Remove(UIWindow* child) {
   }
 }
 
+// OFFSET: 0x00870DF0
+
 // OFFSET: 0x00879830
 // FUNCTION: fn_11218
 bool UIItemTagOnChat::CanInsertTag(const std::string& name, int width) {

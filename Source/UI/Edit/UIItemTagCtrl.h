@@ -12,6 +12,7 @@ struct ITEM_INFO;
 
 class UIItemTagCtrl : public UIEditCtrl {
 public:
+  ~UIItemTagCtrl() override;
   virtual bool CanInsertTag(const std::string& name, int width);
   virtual void AddTagButton(UIWindow* button);
 

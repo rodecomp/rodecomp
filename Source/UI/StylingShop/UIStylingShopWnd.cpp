@@ -493,6 +493,15 @@ void UIDisplayCharacter::LoadSessionStyle() {
   this->unknown_00A4 = *reinterpret_cast<const int*>(&g_session.unknown_0EF4[0]);
 }
 
+// OFFSET: 0x00822C60
+// FUNCTION: fn_10286
+UI2ndCostumeWnd::UI2ndCostumeWnd(UIWindowContext& context) : UIStylingshopTabParentWnd(context), m_hideCheckBox(nullptr), m_showCheckBox(nullptr) {
+}
+
+// OFFSET: 0x00822E00
+
+// OFFSET: 0x00822EA0
+
 // OFFSET: 0x00822F20
 // FUNCTION: fn_10289
 UIDisplayCharacter::UIDisplayCharacter(UIWindowContext& context) : UIWindow(context, 0) {
