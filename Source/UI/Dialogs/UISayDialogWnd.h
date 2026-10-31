@@ -23,6 +23,7 @@ public:
   void Slot11() override;
   void Slot19() override;
   void Paint() override;
+  int ButtonX(UIBitmapButton* button);
 };
 
 #endif

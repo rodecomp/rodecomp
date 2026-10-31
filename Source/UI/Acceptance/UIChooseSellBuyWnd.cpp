@@ -3199,6 +3199,16 @@ void UInCashWnd::Slot35(int delta) {
 }
 
 // OFFSET: 0x008D7660
+// FUNCTION: fn_12121
+int UISayDialogWnd::ButtonX(UIBitmapButton* button) {
+  int x = this->geometry.width - 4;
+  for (UIWindow* other : this->m_buttons) {
+    if (button != other) {
+      x += -4 - static_cast<UIBitmapButton*>(other)->BitmapWidth();
+    }
+  }
+  return x - button->BitmapWidth();
+}
 
 // OFFSET: 0x008FFBE0
 // FUNCTION: fn_12363
