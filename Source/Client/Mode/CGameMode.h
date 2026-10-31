@@ -24,6 +24,7 @@ class CPlayer;
 class CRenderObject;
 struct ActorNameAllPacket;
 struct ActorNameTitlePacket;
+struct PlayerNameUpdatePacket;
 struct GameOptionEntry;
 struct CWorld;
 struct TextureRegion;
@@ -162,6 +163,7 @@ public:
   bool GetClosestValidCell(int* x, int* y);
   void ReceiveActorNameAll(const ActorNameAllPacket* packet);
   void ReceiveActorNameTitle(const ActorNameTitlePacket* packet);
+  void ReceivePlayerNameUpdate(const PlayerNameUpdatePacket* packet);
   void ReceiveColoredNotice(const unsigned char* packet);
   void ReceiveNamedActionResult(const unsigned char* packet);
   void ReceiveStatDump(const unsigned char* packet);

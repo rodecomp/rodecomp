@@ -1,5 +1,6 @@
 #include "Client/Mode/CGameMode.h"
 #include "Client/Session.h"
+#include "Contents/MessageTable.h"
 #include "Network/ActorNamePacket.h"
 #include "UI/Edit/UIEditCtrl.h"
 #include "UI/Window/UIPetInfoWnd.h"
@@ -28,5 +29,15 @@ void CGameMode::ReceiveActorNameTitle(const ActorNameTitlePacket* packet) {
     if (UIPetInfoWnd* window = static_cast<UIPetInfoWnd*>(g_windowMgr.window_038C)) {
       window->nameEdit->SetText(packet->name);
     }
+  }
+}
+
+// OFFSET: 0x00D1DB50
+// FUNCTION: fn_21631
+void CGameMode::ReceivePlayerNameUpdate(const PlayerNameUpdatePacket* packet) {
+  if (packet->type == 4 || packet->type == 3) {
+    std::string name = packet->type == 4 ? std::string(LookupMessage(581))
+                                         : std::string(std::string(packet->name, packet->name + sizeof(packet->name)).c_str());
+    SetPlayerName(packet->characterId, name);
   }
 }
