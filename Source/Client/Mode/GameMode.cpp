@@ -1971,6 +1971,120 @@ static_assert(offsetof(GameModeUiDestinationMessage, y) == 0x28);
 static_assert(offsetof(GameModeUiDragMessage, options) == 0x178);
 
 // OFFSET: 0x00CCF680
+// FUNCTION: fn_21244
+void CGameMode::ProcessUiMessage(unsigned char* message) {
+  GameModeUiMessage* values = reinterpret_cast<GameModeUiMessage*>(message);
+
+  switch (values->type) {
+  case 900: {
+    if (values->values[1] == 0xB8) {
+      if (values->values[0] == 0x29) {
+        values->values[1] = 0xB9;
+      } else if (values->values[0] == 0xAE) {
+        break;
+      }
+    }
+    UIWindow* window = g_windowMgr.LookupWindow(values->values[0]);
+    if (window != nullptr) {
+      window->SendMsg(nullptr, 6, values->values[1], values->values[2], values->values[3], values->values[4]);
+    }
+    break;
+  }
+  case 901:
+    this->ReceiveUiDragMessage(message);
+    break;
+  case 902: {
+    UIWindow* window = g_windowMgr.LookupWindow(values->values[0]);
+    if (window != nullptr) {
+      window->RestoreEditTexts(reinterpret_cast<const unsigned char*>(&values->values[1]));
+    }
+    break;
+  }
+  case 903:
+    *reinterpret_cast<int*>(&this->unknown_0100[0x10]) = values->values[0];
+    break;
+  case 904: {
+    char buffer[200];
+    std::memset(buffer, 0, sizeof(buffer));
+    std::memcpy(buffer, values->text, values->values[0]);
+    this->unknown_03C8 = buffer;
+    std::memset(buffer, 0, sizeof(buffer));
+    std::memcpy(buffer, values->text + values->values[0], values->values[1]);
+    this->unknown_03E0 = buffer;
+    this->unknown_03F8 = values->values[2];
+    this->unknown_03FC = values->values[3];
+    this->unknown_0400 = values->values[4];
+    this->unknown_0404 = values->values[5];
+    break;
+  }
+  case 905:
+    this->SendMsg(values->values[0], values->values[1], values->values[2], values->values[3], 0);
+    this->SendMsg(0x47, 0, 0, 0, 0);
+    break;
+  case 906: {
+    const GameModeUiWhisperMessage* whisper = reinterpret_cast<const GameModeUiWhisperMessage*>(message);
+    *reinterpret_cast<std::string*>(this->unknown_01F8 + 0x34) = whisper->target;
+    *reinterpret_cast<std::string*>(this->unknown_01F8 + 0x1C) = whisper->text;
+    break;
+  }
+  case 907: {
+    const GameModeUiKindTextMessage* text = reinterpret_cast<const GameModeUiKindTextMessage*>(message);
+    if (text->kind == 0x29) {
+      g_session.unknown_550C = text->text;
+    } else if (text->kind == 0xAE) {
+      g_session.unknown_550C = text->text;
+    }
+    break;
+  }
+  case 908:
+    if (values->values[0] == 0xCB && g_navigationWindow != nullptr) {
+      g_navigationWindow->SendMsg(nullptr, values->values[1], values->values[2], reinterpret_cast<std::intptr_t>(&values->values[3]), 0, 0);
+    }
+    break;
+  case 909:
+    g_windowMgr.EnsureWindow(values->values[0]);
+    break;
+  case 910: {
+    const GameModeUiNavigationMessage* navigation = reinterpret_cast<const GameModeUiNavigationMessage*>(message);
+    g_navigationManager.sub_B99030(
+      std::string(navigation->name), navigation->kind, navigation->mode, navigation->flag != 0, navigation->x, navigation->y, navigation->id
+    );
+    break;
+  }
+  case 911: {
+    std::vector<char> states(values->length - 6, 0);
+    std::memcpy(&states[0], values->values, states.size());
+    g_windowMgr.CloseWindow(0x1A);
+    g_navigationManager.LoadStates(states);
+    if (g_navigationWindow != nullptr) {
+      static_cast<UINavigationV4Wnd*>(g_navigationWindow)->FillRouteGroups();
+    }
+    break;
+  }
+  case 912: {
+    const GameModeUiDestinationMessage* destination = reinterpret_cast<const GameModeUiDestinationMessage*>(message);
+    g_navigationManager.SetDestinationMap(std::string(destination->mapName), destination->x, destination->y);
+    break;
+  }
+  case 913: {
+    if (values->values[1] == 0xB8) {
+      if (values->values[0] == 0x29) {
+        values->values[1] = 0xB9;
+      } else if (values->values[0] == 0xAE) {
+        break;
+      }
+    }
+    UIWindow* window = g_windowMgr.LookupWindow(values->values[0]);
+    if (window != nullptr) {
+      window->SendMsg(nullptr, values->values[5], values->values[1], values->values[2], values->values[3], values->values[4]);
+    }
+    break;
+  }
+  case 914:
+    g_windowMgr.CloseWindowExcept251(values->values[0]);
+    break;
+  }
+}
 
 // OFFSET: 0x00CE8400
 // FUNCTION: fn_21341
