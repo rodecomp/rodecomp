@@ -551,6 +551,46 @@ void CUIItemInfo::Slot16() {
 }
 
 // OFFSET: 0x009DEF40
+// FUNCTION: fn_14358
+void CUIItemInfo::SetDescription(int type, const std::vector<const char*>& description) {
+  CUITextViewer* viewer = reinterpret_cast<CUITextViewer*>(this->unknown_00F0);
+  viewer->Clear();
+
+  if (type == 5) {
+    this->type = 5;
+  } else if (type == 6) {
+    this->type = 4;
+  }
+
+  int lines = 0;
+  for (const char* value : description) {
+    if (lines > 6) {
+      break;
+    }
+
+    std::string text(value);
+    bool highlighted = false;
+    for (std::size_t pos = text.find('^'); pos != std::string::npos; pos = text.find('^', pos + 1)) {
+      if (pos + 6 < text.size() && text[pos + 1] == '7' && text[pos + 2] == '7' && text[pos + 3] == '7' &&
+          text[pos + 4] == '7' && text[pos + 5] == '7' && text[pos + 6] == '7') {
+        highlighted = true;
+        break;
+      }
+    }
+    if (!highlighted) {
+      continue;
+    }
+
+    std::regex pattern("\\^000000");
+    std::cmatch match;
+    while (std::regex_search(text.c_str(), text.c_str() + text.size(), match, pattern)) {
+      viewer->AddLine(match.prefix().str() + match[0].str());
+      ++lines;
+      text = match.suffix().str();
+      text.erase(0, text.find_first_not_of(" \r\n\t\v\f"));
+    }
+  }
+}
 
 // OFFSET: 0x009DD210
 // FUNCTION: fn_14335
