@@ -2974,3 +2974,27 @@ void CUIGameSettingsUI::ResetToDefaults() {
     page->RefreshOptions();
   }
 }
+
+// OFFSET: 0x00A1A320
+// FUNCTION: fn_15349
+template <>
+CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::~CUIListBoxEx() {
+}
+
+// OFFSET: 0x00A1A480
+// FUNCTION: fn_15350
+template <>
+CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::~CUIListBoxEx() {
+}
+
+// OFFSET: 0x00A1A5E0
+// FUNCTION: fn_15351
+template <>
+CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::~CUIListBoxEx() {
+}
+
+// OFFSET: 0x00A1A740
+// FUNCTION: fn_15352
+template <>
+CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::~CUIListBoxEx() {
+}
