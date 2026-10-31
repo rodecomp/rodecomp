@@ -9,6 +9,7 @@
 #include <cstdint>
 
 class UIStaticText;
+struct WindowResponseRecorder;
 
 class UIParaItemPurchaseWnd : public UIItemPurchaseWnd {
 public:
@@ -27,6 +28,7 @@ public:
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot15(int width, int height) override;
   void Slot28(int x, int y) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
   void AddItem(const RawItemBasic& item, int quantity);
   void AddItem(const ITEM_INFO& item);
@@ -36,6 +38,9 @@ public:
   /* 00F8 */ int unknown_00F8;
   /* 00FC */ int unknown_00FC;
   /* 0100 */ int unknown_0100;
+
+protected:
+  WindowResponseRecorder* m_recorder;
 };
 
 #endif

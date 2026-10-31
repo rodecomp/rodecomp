@@ -5,14 +5,17 @@
 #include "Client/Mode/ModeDragState.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/ModeTooltip.h"
+#include "Client/ReplayPacketRecorder.h"
 #include "Client/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemNaming.h"
 #include "Contents/MessageTable.h"
 #include "Contents/PlayerNameDictionary.h"
+#include "Render/Renderer.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Dialogs/UIPasswordWnd.h"
+#include "UI/Layout/WindowSnapping.h"
 #include "UI/Lists/UIScrollBar.h"
 #include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/Text/UIStaticText.h"
@@ -21,9 +24,14 @@
 #include "Utility/Text/FormatString.h"
 #include "Utility/Text/GroupedInteger.h"
 
+#include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <string>
+
+struct SessionItemLists {
+  void ClearTradeItems();
+};
 
 // OFFSET: 0x009A80F0
 // FUNCTION: fn_13745
@@ -216,4 +224,80 @@ void UIParaResultWnd::Slot15(int width, int height) {
   this->visibleRows = (height - this->unknown_0100 - this->unknown_00FC - 17) / 32;
   this->columns = 1;
   this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+}
+
+// OFFSET: 0x009AA990
+// FUNCTION: fn_13759
+int UIParaResultWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  switch (message) {
+  case 6: {
+    this->m_recorder->Record(this->geometry.id, static_cast<int>(a), b, c, d);
+    CMode* mode = g_modeMgr.gameMode;
+    if (a == 184) {
+      mode->SendMsg(292, 0, 0, 0, 0);
+      mode->SendMsg(40, 0, 0, 0, 0);
+      reinterpret_cast<SessionItemLists*>(&g_session)->ClearTradeItems();
+      return 0;
+    }
+    break;
+  }
+  case 14:
+    if (a == 7) {
+      int width = b <= 320 ? b : 320;
+      int height = c <= 336 ? c : 336;
+      if (width < 232) {
+        width = 232;
+      }
+      if (height < 120) {
+        height = 120;
+      }
+
+      const int newWidth = (width - 280) / 32 * 32 + 280;
+      const int newHeight = (height - 120) / 32 * 32 + 120;
+      if (newWidth != this->geometry.width || newHeight != this->geometry.height) {
+        this->Resize(newWidth, newHeight);
+        this->columns = 1;
+        this->visibleRows = (newHeight - this->unknown_0100 - this->unknown_00FC - 17) / 32;
+        this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
+        this->scrollBar->Move(this->geometry.width - 15, 14);
+        this->scrollBar->Resize(this->scrollBar->geometry.width, this->geometry.height - this->unknown_0100 - this->unknown_00FC - 17);
+        this->UpdateScrollBar();
+      }
+
+      this->total->Move(12, this->geometry.height - 20);
+      this->buttons[0]->Move(this->geometry.width - 61, this->geometry.height - 24);
+      this->Move(g_renderer->viewport.width / 2 - this->geometry.width / 2, g_renderer->viewport.height / 2 - this->geometry.height / 2);
+      this->m_frameContext->snapping.Store(this);
+      return 0;
+    }
+    break;
+  case 23: {
+    int sum = 0;
+    for (const ITEM_INFO& item : this->items) {
+      sum += item.unknown_0014[1] * item.quantity;
+    }
+
+    char text[80];
+    char amount[64];
+    std::memset(text, 0, sizeof(text));
+    std::memset(amount, 0, sizeof(amount));
+    sprintf_s(text, sizeof(text), "Total : %s Zeny", FormatGroupedInteger(sum, amount, sizeof(amount)));
+    this->total->SetTextAutoWidth(text);
+    this->Invalidate();
+    this->UpdateScrollBar();
+    break;
+  }
+  case 34:
+    this->total->SetTextAutoWidth("Total : 0 Zeny");
+    return 0;
+  case 36:
+    this->showQuantity = 0;
+    this->title->SetTextAutoWidth(LookupMessage(2530));
+    this->SendMsg(nullptr, 14, 7, this->geometry.width, a, 0);
+    return 0;
+  default:
+    return UIItemBaseWnd::SendMsg(sender, message, a, b, c, d);
+  }
+
+  return 0;
 }
