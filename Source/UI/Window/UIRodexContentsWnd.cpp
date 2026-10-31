@@ -10,16 +10,20 @@
 #include "Contents/Items/ItemNaming.h"
 #include "Contents/PlayerNameDictionary.h"
 #include "Contents/RodexMailStore.h"
+#include "Contents/SkinMgr.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
 #include "Contents/MessageTable.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
+#include "Resource/SkinPalette.h"
 #include "Resource/TextureNames.h"
 #include "UI/Buttons/UIBasicButton.h"
 #include "UI/Buttons/UIBitmapButton.h"
+#include "UI/Edit/UIEditCtrl.h"
 #include "UI/Rodex/UIRodexComposeWnd.h"
 #include "UI/Shop/ItemDrawing.h"
+#include "UI/Text/NavigationLink.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowDialogs.h"
 #include "UI/Window/WindowManagerWindows.h"
@@ -93,6 +97,51 @@ void UIRodexContentsWnd::DisableZenyButton() {
   this->m_zenyButton->Enable(0);
   this->m_zeny = 0;
   this->Invalidate();
+}
+
+// OFFSET: 0x008020B0
+// FUNCTION: fn_10020
+void UIRodexContentsWnd::Slot15(int, int) {
+  this->AddBaseButton(*this->m_controls);
+  this->AddCloseButton(*this->m_controls, "", 0);
+
+  RodexMailStore* store = g_rodexMailStore;
+  std::map<std::int64_t, RodexMail>* mails = nullptr;
+  switch (store->unknown_0010) {
+  case 0:
+    mails = &store->m_mails0;
+    break;
+  case 1:
+    mails = &store->m_mails1;
+    break;
+  case 2:
+    mails = &store->m_mails2;
+    break;
+  }
+
+  if (mails != nullptr) {
+    std::map<std::int64_t, RodexMail>::iterator mail = mails->find(store->currentMailId);
+    if (mail != mails->end()) {
+      this->SetMailContents(mail->second.unknown_0004, mail->second.unknown_0024, mail->second.unknown_003C, mail->second.hasItem, mail->second.zeny,
+                            mail->second.unknown_0001);
+
+      if (store->unknown_0010 == 0 && (mail->second.unknown_0001 & 8) == 0 && mail->second.unknown_0194 == 0) {
+        UIBasicButton* report = new UIBasicButton(*this->m_context, *this->m_controls);
+        report->Configure(70, LookupMessage(3548));
+        report->Move(224, 29);
+        report->SetId(310);
+        report->SetDisabled(0);
+        report->Invalidate();
+        this->AddChild(report);
+      }
+    }
+  }
+
+  this->unknown_0104 = new UIBasicButton(*this->m_context, *this->m_controls);
+  this->unknown_0104->Configure(50, LookupMessage(3542));
+  this->unknown_0104->Move(6, 376);
+  this->unknown_0104->SetId(211);
+  this->AddChild(this->unknown_0104);
 }
 
 // OFFSET: 0x008023F0
@@ -292,6 +341,84 @@ int UIRodexContentsWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
   }
 
   return 0;
+}
+
+// OFFSET: 0x008030A0
+// FUNCTION: fn_10026
+void UIRodexContentsWnd::SetMailContents(std::string title, std::string sender, std::string body, unsigned char hasItem, std::int64_t zeny, unsigned char flags) {
+  this->m_title = title;
+  this->m_sender = sender;
+  std::string text = body;
+
+  std::pair<bool, std::string> lineBreak = RemoveLineBreakTag(this->m_sender);
+  this->unknown_010C = lineBreak.first;
+  this->m_sender = lineBreak.second;
+
+  this->m_title = g_navigationLinkParser->ExpandMessages(this->m_title);
+  this->m_sender = g_navigationLinkParser->ExpandMessages(this->m_sender);
+  text = g_navigationLinkParser->ExpandMessages(text);
+
+  this->m_contents = new UIRodexEditCtrl3(*this->m_context, *reinterpret_cast<UIEditContext*>(nullptr));
+  this->m_contents->SetSize(267, 192);
+  this->m_contents->invalidatesParent = 1;
+  this->m_contents->Move(15, 81);
+  this->m_contents->maximum = 1000;
+
+  const bool selected = g_skinInfo.Selected();
+  const SkinPaletteCell cell = {1, 2};
+  const std::uint32_t color = SkinPaletteColor(ResourceMgr::Instance(), cell, selected);
+  this->m_contents->Background(color & 0xFF, (color & 0xFFFF) >> 8, (color >> 16) & 0xFF);
+  this->m_contents->TextColor(0x313131, 0xFFFFFFFF);
+  this->m_contents->disabled = 1;
+  this->m_contents->Invalidate();
+  reinterpret_cast<unsigned char*>(&this->m_contents->unknown_0184)[1] = 1;
+  this->m_contents->SetId(504);
+
+  if (text.find("<NAVIL>") == std::string::npos && text.find("</NAVIL>") == std::string::npos) {
+    this->m_contents->SetText(text.c_str());
+  } else {
+    this->m_contents->SendMsg(nullptr, 0x99, reinterpret_cast<std::intptr_t>(text.c_str()), 0, 0, 0);
+  }
+
+  this->m_contents->SetTagColor(0xD630A9);
+  this->AddChild(this->m_contents);
+
+  if (hasItem) {
+    this->m_itemButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+    this->m_itemButton->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_receive_out.bmp", 0, 0);
+    this->m_itemButton->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_receive_over.bmp", 1, 0);
+    this->m_itemButton->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_receive_press.bmp", 2, 0);
+    this->m_itemButton->SetSize(this->m_itemButton->BitmapWidth(), this->m_itemButton->BitmapHeight());
+    this->m_itemButton->Move(252, 312);
+    this->m_itemButton->SetId(189);
+    this->AddChild(this->m_itemButton);
+  }
+
+  if (zeny > 0) {
+    this->m_zeny = zeny;
+    this->m_zenyButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+    this->m_zenyButton->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_receive_out.bmp", 0, 0);
+    this->m_zenyButton->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_receive_over.bmp", 1, 0);
+    this->m_zenyButton->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_receive_press.bmp", 2, 0);
+    this->m_zenyButton->SetSize(this->m_zenyButton->BitmapWidth(), this->m_zenyButton->BitmapHeight());
+    this->m_zenyButton->Move(252, 345);
+    this->m_zenyButton->SetId(190);
+    this->AddChild(this->m_zenyButton);
+  }
+
+  if (g_rodexMailStore->unknown_0010 == 0 && (flags & 8) == 0) {
+    this->unknown_0108 = new UIBasicButton(*this->m_context, *this->m_controls);
+    this->unknown_0108->Configure(70, LookupMessage(3543));
+    this->unknown_0108->Move(224, 376);
+    this->unknown_0108->SetId(305);
+    this->unknown_0108->SetDisabled(0);
+    this->unknown_0108->Invalidate();
+    this->AddChild(this->unknown_0108);
+  }
+
+  if (this->unknown_010C == 1) {
+    this->SendMsg(nullptr, 106, 0, 0, 0, 0);
+  }
 }
 
 // OFFSET: 0x00803760

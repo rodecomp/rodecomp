@@ -18,12 +18,14 @@ public:
   UIRodexContentsWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
 
   void Paint() override;
+  void Slot15(int width, int height) override;
   void Slot25(int x, int y) override;
   void Slot28(int x, int y) override;
   void Slot32(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
   void SetContentsText(const char* text);
+  void SetMailContents(std::string title, std::string sender, std::string body, unsigned char hasItem, std::int64_t zeny, unsigned char flags);
   ITEM_INFO GetItemAtPoint(int x, int y);
   void DisableItemButton();
   void DisableZenyButton();

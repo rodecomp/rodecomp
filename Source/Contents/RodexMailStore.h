@@ -16,9 +16,12 @@ struct RodexMail {
   /* 0020 */ int unknown_0020;
   /* 0024 */ std::string unknown_0024;
   /* 003C */ std::string unknown_003C;
-  /* 0054 */ std::array<std::byte, 316> unknown_0054;
+  /* 0054 */ unsigned char hasItem;
+  /* 0055 */ std::array<std::byte, 0x133> unknown_0055;
+  /* 0188 */ std::int64_t zeny;
   /* 0190 */ std::uint8_t unknown_0190;
-  /* 0191 */ std::array<std::byte, 7> unknown_0191;
+  /* 0191 */ std::array<std::byte, 3> unknown_0191;
+  /* 0194 */ int unknown_0194;
 };
 
 class RodexMailStore {
@@ -65,7 +68,9 @@ public:
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(RodexMail) == 0x198);
 static_assert(offsetof(RodexMail, unknown_0024) == 0x24);
+static_assert(offsetof(RodexMail, zeny) == 0x188);
 static_assert(offsetof(RodexMail, unknown_0190) == 0x190);
+static_assert(offsetof(RodexMail, unknown_0194) == 0x194);
 static_assert(sizeof(RodexMailStore) == 0x38);
 static_assert(offsetof(RodexMailStore, m_mails0) == 0x20);
 #endif

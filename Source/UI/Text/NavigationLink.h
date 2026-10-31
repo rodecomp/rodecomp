@@ -2,6 +2,7 @@
 #define RAGNAROK_SOURCE_UI_TEXT_NAVIGATIONLINK_H
 
 #include <string>
+#include <utility>
 
 struct NavigationLinkParser {
   NavigationLinkParser();
@@ -19,6 +20,7 @@ extern NavigationLinkParser* g_navigationLinkParser;
 bool CreateNavigationLinkParser();
 void DestroyNavigationLinkParser();
 std::string FormatMessageArguments(std::string value, int messageId);
+std::pair<bool, std::string> RemoveLineBreakTag(std::string value);
 int DecodeNavigationNumber(std::string value);
 std::string EncodeNavigationNumber(int value);
 bool ParseNavigationLink(std::string value, std::string& name, int& x, int& y);
