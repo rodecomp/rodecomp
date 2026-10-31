@@ -61,6 +61,143 @@ void CUIListBoxItemSelector::SetHighlightedEntry(CUIListItem* const& item) {
   }
 }
 
+template <class T, class D> class CUIListBoxExItemSelector {
+public:
+  void Select(CUIListItem* const& item);
+
+private:
+  /* 0000 */ void* unknown_0000;
+  /* 0004 */ CUIListBoxEx<T, D>* listBox;
+};
+
+// OFFSET: 0x009D6610
+// FUNCTION: fn_14131
+template <>
+__declspec(noinline) void CUIListBoxExItemSelector<AdventureGuide::CUIItemInfo, AdventureGuide::CItemData>::Select(CUIListItem* const& item) {
+  CUIListBoxEx<AdventureGuide::CUIItemInfo, AdventureGuide::CItemData>* listBox = this->listBox;
+  CUIListItem* selection = item;
+  if (listBox->unknown_00C4) {
+    return;
+  }
+  for (AdventureGuide::CUIItemInfo* other : listBox->items) {
+    if (selection != other) {
+      other->SetSelected(0);
+    }
+  }
+  selection->SetSelected(1);
+  if (selection->index == static_cast<int>(listBox->selected) && listBox->unknown_00E0) {
+    return;
+  }
+  AdventureGuide::CUIItemInfo* selectedItem = dynamic_cast<AdventureGuide::CUIItemInfo*>(selection);
+  if (!selectedItem) {
+    return;
+  }
+  listBox->selected = selectedItem->index;
+  if (listBox->onSelect && static_cast<int>(listBox->selected) >= 0 && listBox->selected < listBox->data.size()) {
+    auto node = listBox->data.begin();
+    for (int count = static_cast<int>(listBox->selected); count > 0; --count) {
+      ++node;
+    }
+    listBox->onSelect(selectedItem, *node);
+  }
+}
+
+// OFFSET: 0x009D66F0
+// FUNCTION: fn_14132
+template <>
+__declspec(noinline) void CUIListBoxExItemSelector<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>::Select(CUIListItem* const& item) {
+  CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>* listBox = this->listBox;
+  CUIListItem* selection = item;
+  if (listBox->unknown_00C4) {
+    return;
+  }
+  for (AdventureGuide::CUIMonsterInfo* other : listBox->items) {
+    if (selection != other) {
+      other->SetSelected(0);
+    }
+  }
+  selection->SetSelected(1);
+  if (selection->index == static_cast<int>(listBox->selected) && listBox->unknown_00E0) {
+    return;
+  }
+  AdventureGuide::CUIMonsterInfo* selectedItem = dynamic_cast<AdventureGuide::CUIMonsterInfo*>(selection);
+  if (!selectedItem) {
+    return;
+  }
+  listBox->selected = selectedItem->index;
+  if (listBox->onSelect && static_cast<int>(listBox->selected) >= 0 && listBox->selected < listBox->data.size()) {
+    auto node = listBox->data.begin();
+    for (int count = static_cast<int>(listBox->selected); count > 0; --count) {
+      ++node;
+    }
+    listBox->onSelect(selectedItem, *node);
+  }
+}
+
+// OFFSET: 0x009D67D0
+// FUNCTION: fn_14133
+template <>
+__declspec(noinline) void CUIListBoxExItemSelector<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestInfo>::Select(CUIListItem* const& item) {
+  CUIListBoxEx<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestInfo>* listBox = this->listBox;
+  CUIListItem* selection = item;
+  if (listBox->unknown_00C4) {
+    return;
+  }
+  for (AdventureGuide::CUIQuestInfo* other : listBox->items) {
+    if (selection != other) {
+      other->SetSelected(0);
+    }
+  }
+  selection->SetSelected(1);
+  if (selection->index == static_cast<int>(listBox->selected) && listBox->unknown_00E0) {
+    return;
+  }
+  AdventureGuide::CUIQuestInfo* selectedItem = dynamic_cast<AdventureGuide::CUIQuestInfo*>(selection);
+  if (!selectedItem) {
+    return;
+  }
+  listBox->selected = selectedItem->index;
+  if (listBox->onSelect && static_cast<int>(listBox->selected) >= 0 && listBox->selected < listBox->data.size()) {
+    auto node = listBox->data.begin();
+    for (int count = static_cast<int>(listBox->selected); count > 0; --count) {
+      ++node;
+    }
+    listBox->onSelect(selectedItem, *node);
+  }
+}
+
+// OFFSET: 0x009D68B0
+// FUNCTION: fn_14134
+template <>
+__declspec(noinline) void CUIListBoxExItemSelector<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::Select(CUIListItem* const& item) {
+  CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>* listBox = this->listBox;
+  CUIListItem* selection = item;
+  if (listBox->unknown_00C4) {
+    return;
+  }
+  for (AdventureGuide::CUITabInfo* other : listBox->items) {
+    if (selection != other) {
+      other->SetSelected(0);
+    }
+  }
+  selection->SetSelected(1);
+  if (selection->index == static_cast<int>(listBox->selected) && listBox->unknown_00E0) {
+    return;
+  }
+  AdventureGuide::CUITabInfo* selectedItem = dynamic_cast<AdventureGuide::CUITabInfo*>(selection);
+  if (!selectedItem) {
+    return;
+  }
+  listBox->selected = selectedItem->index;
+  if (listBox->onSelect && static_cast<int>(listBox->selected) >= 0 && listBox->selected < listBox->data.size()) {
+    auto node = listBox->data.begin();
+    for (int count = static_cast<int>(listBox->selected); count > 0; --count) {
+      ++node;
+    }
+    listBox->onSelect(selectedItem, *node);
+  }
+}
+
 // OFFSET: 0x009EF520
 // FUNCTION: fn_14635
 CBitmapRes* CUIControl::LoadBitmapResource(const std::string& name, bool resolveSkin) {
