@@ -10,8 +10,9 @@ struct InputFocus;
 
 struct ItemTagRecord {
   /* 0000 */ UIWindow* child;
-  /* 0004 */ std::array<std::byte, 64> unknown_0004;
-  /* 0044 */ char name[384];
+  /* 0004 */ char number[64];
+  /* 0044 */ char name[128];
+  /* 00C4 */ char link[256];
   /* 01C4 */ int index;
 };
 
@@ -61,8 +62,9 @@ struct ItemTagRetirement {
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(ItemTagRecord) == 456);
 static_assert(offsetof(ItemTagRecord, child) == 0x0000);
-static_assert(offsetof(ItemTagRecord, unknown_0004) == 0x0004);
+static_assert(offsetof(ItemTagRecord, number) == 0x0004);
 static_assert(offsetof(ItemTagRecord, name) == 0x0044);
+static_assert(offsetof(ItemTagRecord, link) == 0x00C4);
 static_assert(offsetof(ItemTagRecord, index) == 0x01C4);
 #endif
 

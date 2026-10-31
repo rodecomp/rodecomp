@@ -5,7 +5,11 @@
 #include "UI/Text/ColoredText.h"
 #include "UI/Text/ItemLinkDisplay.h"
 #include "UI/Text/TextMarkup.h"
+#include "Contents/TipBoxTitles.h"
+#include "Network/TextEncoding.h"
+#include "UI/Buttons/UIItemTagButton.h"
 #include "UI/Edit/UIItemTagCtrl.h"
+#include "Utility/Text/FormatString.h"
 #include "UI/Lists/UIScrollBar.h"
 #include "UI/Buttons/UITextButton.h"
 #include "UI/Text/UITextViewer.h"
@@ -13,6 +17,7 @@
 #include "UI/Window/UIWindowMgr.h"
 
 #include <algorithm>
+#include <new>
 
 namespace {
   // INLINED
@@ -353,4 +358,54 @@ int UITextViewEX::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
   default:
     return UIListBox::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
+}
+
+UIItemTagButton::UIItemTagButton(UIWindowContext& windows, UIButtonContext& buttons) : UITextButton(windows, buttons), unknown_01F8(0), textY(1) {
+}
+
+// OFFSET: 0x00874A40
+// FUNCTION: fn_11193
+std::string UIItemTagCtrl::sub_874A40(int tagId, unsigned int color) {
+  std::string label;
+  const unsigned short codePage = static_cast<unsigned short>(g_textCodePage);
+  const TipBoxTitles titles{g_itemTagOwner->m_entries, g_itemTagOwner->m_missing, g_itemTagOwner->m_maximumId, codePage};
+  const std::string title = titles.Title(tagId, &label, 17);
+
+  UIItemTagButton* button;
+  {
+    const std::string text = "<" + label + ">";
+    button = new (std::nothrow) UIItemTagButton(*this->m_context, this->m_edit->buttons);
+    if (button) {
+      button->Configure(text.c_str(), 0x7F00E4, 0, 12, 0, 0);
+      if (title != label) {
+        button->SetTooltip(title.c_str());
+      }
+
+      button->m_hoverColor = 0x7F00E4;
+      button->SetId(0x1D0);
+      button->m_value = 0x205;
+      button->Move(0, 0);
+      button->unknown_01F8 = tagId;
+    }
+  }
+
+  if (!button) {
+    return std::string();
+  }
+
+  this->AddTagButton(button);
+
+  std::string link = "00000T";
+  const std::string number = reinterpret_cast<UITextViewer*>(this)->ItemLinkNumberText(tagId);
+  link += number;
+  link += "%0&0'0(1)0";
+
+  ItemTagRecord record;
+  record.child = button;
+  StringFormat(record.number, sizeof(record.number), _TRUNCATE, "%s", number.c_str());
+  StringFormat(record.name, sizeof(record.name), _TRUNCATE, "%s", label.c_str());
+  StringFormat(record.link, sizeof(record.link), _TRUNCATE, "%s", link.c_str());
+  this->tags.push_back(record);
+
+  return "<" + label + ">";
 }

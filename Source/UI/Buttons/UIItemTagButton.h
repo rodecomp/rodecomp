@@ -6,7 +6,11 @@
 #include <cstddef>
 
 class UIItemTagButton : public UITextButton {
+  friend class UIItemTagCtrl;
+
 public:
+  UIItemTagButton(UIWindowContext& windows, UIButtonContext& buttons);
+
   void Paint() override;
   void Slot25(int x, int y) override;
   void Slot28(int x, int y) override;
