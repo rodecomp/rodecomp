@@ -5,10 +5,14 @@
 #include "Client/Session.h"
 #include "Contents/Actors/GameActor.h"
 #include "Contents/Actors/GroundScope.h"
+#include "Contents/Actors/Skill.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Camera/Camera.h"
 #include "Contents/Configuration/ServiceOptions.h"
+#include "Contents/Effects/EffectLists.h"
+#include "Contents/Effects/EffectTypes.h"
 #include "Contents/Effects/Particle.h"
+#include "Contents/Effects/RagEffect.h"
 #include "Contents/MapSkyMgr.h"
 #include "Contents/Sound/SoundMgr.h"
 #include "Contents/World/World.h"
@@ -19,6 +23,7 @@
 #include "Utility/Text/FormatString.h"
 
 #include <cstdint>
+#include <cstdlib>
 #include <windows.h>
 #include <timeapi.h>
 
@@ -507,6 +512,691 @@ bool CMsgEffect::OnProcess() {
     default:
       return true;
   }
+}
+
+// OFFSET: 0x00E4D6A0
+// FUNCTION: fn_24287
+bool CSkill::OnProcess() {
+  this->UpdateGaugePositions();
+  this->ProcessDamageMessages();
+
+  switch (this->GetEffectiveJob(-1)) {
+  case 0xCC:
+    if (!this->m_effect) {
+      this->m_effect = this->LaunchEffect(0x336, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    if (this->m_effect) {
+      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+    }
+    break;
+
+  case 0xCB:
+    if (!this->m_effect) {
+      this->m_effect = this->LaunchEffect(0x8E, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    if (this->m_effect) {
+      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+      g_modeMgr.GetGameMode()->SendMsg(0x7A, 0, 0, 0, 0);
+    }
+    break;
+
+  case 0xCA:
+    if (!this->m_hasEffect) {
+      this->m_hasEffect = true;
+      this->LaunchEffect(0x677, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      g_effectMgr->Spawn(this->render.accountId, 0x676, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    }
+    break;
+
+  case 0x82:
+    if (this->m_effectTimer >= EffectLifetime(0x5B) - 8u) {
+      this->m_effectTimer = 0;
+      this->LaunchEffect(0x5B, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    break;
+
+  case 0x83:
+    if (!this->m_effect) {
+      this->m_effect = this->LaunchEffect(0x13F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    if (this->m_effect) {
+      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+    }
+    break;
+
+  case 0xB1:
+    if (!this->m_effect) {
+      this->m_effect = this->LaunchEffect(0x12E, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    if (this->m_effect) {
+      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+    }
+    break;
+
+  case 0x9A:
+    if (!this->m_effect) {
+      this->m_effect = this->LaunchEffect(0xEF, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    if (this->m_effect) {
+      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+    }
+    break;
+
+  case 0xE1:
+    if (!this->m_effect) {
+      this->m_effect = this->LaunchEffect(0x304, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    if (this->m_effect) {
+      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+      int random = rand() % 100;
+      random = random < 0 ? 0 : random;
+      if (random == 1) {
+        g_effectMgr->Spawn(this->skillAid, 0x60A, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      } else if (random == 2) {
+        g_effectMgr->Spawn(this->skillAid, 0x60B, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      }
+    }
+    break;
+
+  case 0xB6:
+    if (!this->m_effect) {
+      this->m_effect = this->LaunchEffect(0x195, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    if (this->m_effect) {
+      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+    }
+    break;
+
+  case 0x9B:
+    if (!this->m_effect) {
+      this->m_effect = this->LaunchEffect(0xF0, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    if (this->m_effect) {
+      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+    }
+    break;
+
+  case 0xBB:
+    if (!this->m_effect) {
+      this->m_effect = this->LaunchEffect(0x26C, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    if (this->m_effect) {
+      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+    }
+    break;
+
+  case 0x9C:
+    if (!this->m_effect) {
+      this->m_effect = this->LaunchEffect(0xF1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    if (this->m_effect) {
+      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+    }
+    break;
+
+  case 0x9D:
+    if (!this->m_effect) {
+      this->m_effect = this->LaunchEffect(0xF2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    if (this->m_effect) {
+      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+    }
+    break;
+
+  case 0xC8:
+    if (!this->m_effect) {
+      this->m_effect = this->LaunchEffect(0x29F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    if (this->m_effect) {
+      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+    }
+    break;
+
+  case 0xC9:
+    if (!this->m_effect) {
+      this->m_effect = this->LaunchEffect(0x2A0, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    if (this->m_effect) {
+      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+    }
+    break;
+
+  case 0xB4:
+    if (!this->m_effect) {
+      this->m_effect = this->LaunchEffect(0x176, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    if (this->m_effect) {
+      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+    }
+    break;
+
+  case 0xB7:
+    if (!this->m_effect) {
+      this->m_effect = this->LaunchEffect(0x194, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    if (this->m_effect) {
+      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+    }
+    break;
+
+  case 0xB9:
+    if (!this->m_effect) {
+      this->m_effect = this->LaunchEffect(0x205, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    if (this->m_effect) {
+      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+    }
+    break;
+
+  case 0xB8:
+    if (!this->m_effect) {
+      this->m_effect = this->LaunchEffect(0x20A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    if (this->m_effect) {
+      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+    }
+    break;
+
+  case 0xE2:
+    if (!this->m_effect) {
+      this->m_effect = this->LaunchEffect(0x30F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    if (this->m_effect) {
+      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+    }
+    break;
+
+  case 0xC7:
+    if (!this->m_hasEffect && g_effectMgr->Spawn(this->skillAid, 0x613, this->render.position.x, this->render.position.y, this->render.position.z, 0, this->range * 2, 0, 0)) {
+      this->m_hasEffect = true;
+    }
+    break;
+
+  case 0xB3:
+    if (!this->m_effect) {
+      this->m_effect = this->LaunchEffect(0x172, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    if (this->m_effect) {
+      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+    }
+    break;
+
+  case 0xE3:
+    if (!this->m_effect) {
+      this->m_effect = this->LaunchEffect(0x310, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    if (this->m_effect) {
+      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+    }
+    break;
+
+  case 0x92:
+    if (!this->m_effect) {
+      this->m_effect = this->LaunchEffect(0xAB, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    if (this->m_effect) {
+      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+    }
+    break;
+
+  case 0xE0:
+    if (!this->m_hasEffect && g_effectMgr->Spawn(this->skillAid, 0x438, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0)) {
+      this->m_hasEffect = true;
+      this->m_effectId = 0x438;
+    }
+    break;
+
+  case 0x84:
+    if (!this->m_effect) {
+      this->m_effect = this->LaunchEffect(0x13E, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    if (this->m_effect) {
+      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+    }
+    break;
+
+  case 0x88:
+    if (this->m_effectTimer >= EffectLifetime(0x61) - 8u) {
+      this->m_effectTimer = 0;
+      this->LaunchEffect(0x61, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    break;
+
+  case 0x87:
+  case 0xC5:
+    if (!this->m_effect) {
+      this->m_effect = this->LaunchEffect(0x8A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    if (this->m_effect) {
+      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+    }
+    break;
+
+  case 0x8D:
+  case 0xC3:
+  case 0xC4:
+    if (!this->m_effect) {
+      this->m_effect = this->LaunchEffect(0x4A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    if (this->m_effect) {
+      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+    }
+    break;
+
+  case 0x8E:
+    if (this->m_effectTimer >= EffectLifetime(0x5F) - 20u) {
+      this->m_effectTimer = 0;
+      if (g_serviceOptions.Get(0xE5)) {
+        g_effectMgr->Spawn(0, 0x489, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
+      } else {
+        this->LaunchEffect(0x5F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      }
+    }
+    break;
+
+  case 0x81:
+    if (this->m_effectTimer >= EffectLifetime(0x13C) - 8u) {
+      this->m_effectTimer = 0;
+      this->LaunchEffect(0x13C, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    break;
+
+  case 0x80:
+    if (this->m_effectTimer >= EffectLifetime(0x13D) - 8u) {
+      this->m_effectTimer = 0;
+      this->LaunchEffect(0x13D, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    break;
+
+  case 0xCD:
+    if (this->m_effectTimer >= EffectLifetime(0x339) - 8u) {
+      this->m_effectTimer = 0;
+      this->LaunchEffect(0x339, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    break;
+
+  case 0xCE:
+    if (this->m_effectTimer >= EffectLifetime(0x33B) - 8u) {
+      this->m_effectTimer = 0;
+      this->LaunchEffect(0x33B, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    break;
+
+  case 0xCF:
+    if (this->m_effectTimer >= EffectLifetime(0x33C) - 8u) {
+      this->m_effectTimer = 0;
+      this->LaunchEffect(0x33C, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    break;
+
+  case 0xDA:
+    if (this->m_effectTimer >= EffectLifetime(0x358) - 8u) {
+      this->m_effectTimer = 0;
+      this->LaunchEffect(0x358, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      g_soundMgr->PlayWave("effect\\REVERBERATION.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    }
+    break;
+
+  case 0xDE:
+    if (this->m_effectTimer >= EffectLifetime(0x35C) - 8u) {
+      this->m_effectTimer = 0;
+      this->LaunchEffect(0x35C, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      g_soundMgr->PlayWave("effect\\POEMOFNETHERWORLD.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    }
+    break;
+
+  case 0xDB:
+    if (this->m_effectTimer >= EffectLifetime(0x359) - 8u) {
+      this->m_effectTimer = 0;
+      g_effectMgr->Spawn(0, 0x4FC, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
+      g_soundMgr->PlayWave("effect\\rainstorm.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    }
+    break;
+
+  case 0xD0:
+    if (this->m_effectTimer >= EffectLifetime(0x33D) - 8u) {
+      this->m_effectTimer = 0;
+      this->LaunchEffect(0x33D, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    break;
+
+  case 0xB2:
+    if (this->m_effectTimer >= EffectLifetime(0x155) - 8u) {
+      this->m_effectTimer = 0;
+      this->LaunchEffect(0x155, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    break;
+
+  case 0x7E:
+    if (this->m_effectTimer >= EffectLifetime(0x13B) - 7u) {
+      this->m_effectTimer = 0;
+      this->LaunchEffect(0x13B, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    break;
+
+  case 0x7F:
+  case 0xED:
+    if (this->m_effectTimer >= EffectLifetime(0x19) - 7u) {
+      this->m_effectTimer = 0;
+      this->LaunchEffect(0x19, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    break;
+
+  case 0xDC:
+    if (this->m_effectTimer >= EffectLifetime(0x398) - 7u) {
+      this->m_effectTimer = 0;
+      this->LaunchEffect(0x398, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    break;
+
+  case 0xDD:
+    if (this->m_effectTimer >= EffectLifetime(0x39E) - 7u) {
+      this->m_effectTimer = 0;
+      this->LaunchEffect(0x39E, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    break;
+
+  case 0xEB:
+    if (this->m_effectTimer >= EffectLifetime(0x399) - 1u) {
+      this->m_effectTimer = 0;
+      this->LaunchEffect(0x399, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      g_soundMgr->PlayWave("effect\\S스펠피스트.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    }
+    break;
+
+  case 0xEA:
+    if (this->m_effectTimer >= EffectLifetime(0x397) - 1u) {
+      this->m_effectTimer = 0;
+      this->LaunchEffect(0x397, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      g_soundMgr->PlayWave("effect\\G가시나무덫.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    }
+    break;
+
+  case 0xBC:
+    if (!this->m_effect) {
+      this->m_effect = this->LaunchEffect(0x277, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    if (this->m_effect) {
+      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+    }
+    break;
+
+  case 0xBD:
+    if (this->m_effectTimer >= EffectLifetime(0x27A) - 1u) {
+      this->m_effectTimer = 0;
+      this->LaunchEffect(0x27A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    break;
+
+  case 0xD2:
+    if (this->m_effectTimer >= EffectLifetime(0x2E3) - 1u) {
+      this->m_effectTimer = 0;
+    }
+    break;
+
+  case 0xD3:
+    if (this->m_effectTimer >= EffectLifetime(0x2E4) - 1u) {
+      this->m_effectTimer = 0;
+    }
+    break;
+
+  case 0xD4:
+    if (this->m_effectTimer >= EffectLifetime(0x2E5) - 1u) {
+      this->m_effectTimer = 0;
+    }
+    break;
+
+  case 0xD5:
+    if (this->m_effectTimer >= EffectLifetime(0x2E6) - 1u) {
+      this->m_effectTimer = 0;
+    }
+    break;
+
+  case 0xD6:
+  case 0xD7:
+  case 0xD8:
+  case 0xD9:
+    if (this->m_effectTimer >= EffectLifetime(0x2E7) - 1u) {
+      this->m_effectTimer = 0;
+    }
+    break;
+
+  case 0xBE:
+    if (this->m_effectTimer >= EffectLifetime(0x27E) - 1u) {
+      this->m_effectTimer = 0;
+      this->LaunchEffect(0x27E, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    break;
+
+  case 0xBF:
+    if (this->m_effectTimer >= EffectLifetime(0x27F) - 1u) {
+      this->m_effectTimer = 0;
+      this->LaunchEffect(0x27F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    break;
+
+  case 0xC0:
+    if (this->m_effectTimer >= EffectLifetime(0x280) - 1u) {
+      this->m_effectTimer = 0;
+      this->LaunchEffect(0x280, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    break;
+
+  case 0xC1:
+    if (this->m_effectTimer >= EffectLifetime(0x281) - 1u) {
+      this->m_effectTimer = 0;
+      this->LaunchEffect(0x281, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    break;
+
+  case 0xC2:
+    if (this->m_effectTimer >= EffectLifetime(0x282) - 1u) {
+      this->m_effectTimer = 0;
+      this->LaunchEffect(0x282, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    break;
+
+  case 0x108:
+    if (this->m_effectTimer >= EffectLifetime(0x460) - 1u) {
+      this->m_effectTimer = 0;
+      this->LaunchEffect(0x460, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    break;
+
+  case 0xE6:
+    if (this->m_effectTimer >= EffectLifetime(0x390) - 1u) {
+      this->m_effectTimer = 0;
+      this->LaunchEffect(0x390, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    break;
+
+  case 0xEE:
+    if (!this->m_effect) {
+      this->m_effect = this->LaunchEffect(0x3AB, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    if (this->m_effect) {
+      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+    }
+    break;
+
+  case 0xEF:
+    if (this->m_effectTimer >= EffectLifetime(0x1D1) - 1u) {
+      this->m_effectTimer = 0;
+      this->LaunchEffect(0x1D1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    break;
+
+  case 0xF0:
+    if (this->m_effectTimer >= EffectLifetime(0x440) - 1u) {
+      this->m_effectTimer = 0;
+      g_effectMgr->Spawn(this->render.accountId, 0x440, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    }
+    break;
+
+  case 0xF5:
+    this->LaunchGroundEffects(0x3BF, 3, 0);
+    break;
+
+  case 0xF6:
+    this->LaunchGroundEffects(0x3C4, 0, 0);
+    break;
+
+  case 0xF7:
+    this->LaunchGroundEffects(0x3CF, 0, 0);
+    break;
+
+  case 0xE7:
+  case 0xF1:
+    if (this->m_effectTimer >= EffectLifetime(0x394) - 1u) {
+      this->m_effectTimer = 0;
+      this->LaunchEffect(0x394, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      g_soundMgr->PlayWave("effect\\EF_FireWall.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    }
+    break;
+
+  case 0xF2:
+    if (this->m_effectTimer >= EffectLifetime(0x394) - 1u) {
+      this->m_effectTimer = 0;
+      CRagEffect* effect = this->LaunchEffect(0x394, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      g_soundMgr->PlayWave("effect\\EF_FireWall.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      if (effect) {
+        effect->state.unknown_11C88[0] = 20;
+        effect->state.unknown_11C88[1] = 20;
+        effect->state.unknown_11C88[2] = 180;
+      }
+    }
+    break;
+
+  case 0xF3:
+    if (this->m_effectTimer >= EffectLifetime(0x394) - 1u) {
+      this->m_effectTimer = 0;
+      CRagEffect* effect = this->LaunchEffect(0x394, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      g_soundMgr->PlayWave("effect\\EF_FireWall.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      if (effect) {
+        effect->state.unknown_11C88[0] = 20;
+        effect->state.unknown_11C88[1] = 180;
+        effect->state.unknown_11C88[2] = 20;
+      }
+    }
+    break;
+
+  case 0xF4:
+    if (this->m_effectTimer >= EffectLifetime(0x394) - 1u) {
+      this->m_effectTimer = 0;
+      CRagEffect* effect = this->LaunchEffect(0x394, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      g_soundMgr->PlayWave("effect\\EF_FireWall.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      if (effect) {
+        effect->state.unknown_11C88[0] = 40;
+        effect->state.unknown_11C88[1] = 40;
+        effect->state.unknown_11C88[2] = 40;
+      }
+    }
+    break;
+
+  case 0xE8:
+    if (this->m_effectTimer >= EffectLifetime(0x395) - 1u) {
+      this->m_effectTimer = 0;
+      this->LaunchEffect(0x395, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      g_soundMgr->PlayWave("effect\\EF_FireWall.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    }
+    break;
+
+  case 0xE9:
+    if (this->m_effectTimer >= EffectLifetime(0x396) - 1u) {
+      this->m_effectTimer = 0;
+      this->LaunchEffect(0x396, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      g_soundMgr->PlayWave("effect\\EF_FireWall.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    }
+    break;
+
+  case 0xE4:
+    if (this->m_effectTimer >= EffectLifetime(0x3A1) - 1u) {
+      this->m_effectTimer = 0;
+      this->LaunchEffect(0x3A1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      g_soundMgr->PlayWave("effect\\S워머.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    }
+    break;
+
+  case 0xF8:
+    this->LaunchGroundEffects(0x3E0, 0, 0);
+    break;
+
+  case 0xF9:
+    this->LaunchGroundEffects(0x3E1, 0, 0);
+    break;
+
+  case 0xFA:
+    this->LaunchGroundEffects(0x3E2, 0, 0);
+    break;
+
+  case 0xFB:
+    this->LaunchGroundEffects(0x3E3, 0, 0);
+    break;
+
+  case 0xFC:
+    this->LaunchGroundEffects(0x3EF, 0, 0);
+    break;
+
+  case 0xFD:
+    this->LaunchGroundEffects(0x3FC, 0, 0);
+    break;
+
+  case 0xFE:
+    if (this->m_effectTimer >= EffectLifetime(0x402) - 1u) {
+      this->m_effectTimer = 0;
+      this->LaunchEffect(0x402, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    break;
+
+  case 0xFF:
+  case 0x100:
+    if (this->m_effectTimer >= EffectLifetime(0x19) - 1u) {
+      this->m_effectTimer = 0;
+      this->LaunchEffect(0x19, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    break;
+
+  case 0x102:
+    if (this->m_effectTimer >= EffectLifetime(0x41B) - 1u) {
+      this->m_effectTimer = 0;
+      this->LaunchEffect(0x41B, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    break;
+
+  case 0x101:
+    if (this->m_effectTimer >= EffectLifetime(0x41A) - 1u) {
+      this->m_effectTimer = 0;
+      this->LaunchEffect(0x41A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    break;
+
+  case 0x105:
+    if (this->m_effectTimer >= EffectLifetime(0x428) - 1u) {
+      this->m_effectTimer = 0;
+      g_effectMgr->Spawn(0, 0x428, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
+    }
+    break;
+
+  case 0x103:
+    if (!this->m_hasEffect) {
+      this->m_hasEffect = true;
+      g_effectMgr->Spawn(0, 0x4FE, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
+    }
+    break;
+
+  case 0x10C:
+    if (!this->m_hasEffect) {
+      this->m_hasEffect = true;
+      this->LaunchEffect(this->m_effectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      this->m_effectId = 0x520;
+    }
+    break;
+  default:
+    break;
+  }
+
+  ++this->m_effectTimer;
+  return true;
 }
 
 // OFFSET: 0x00E4F370

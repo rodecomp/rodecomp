@@ -14,6 +14,7 @@ class CSkill : public CGameActor {
 public:
   explicit CSkill(std::uint32_t aid);
   ~CSkill() override;
+  bool OnProcess() override;
 
   const char* GetTrapModelName();
   void ReleaseModel();
