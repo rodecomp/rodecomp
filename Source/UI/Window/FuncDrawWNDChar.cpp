@@ -342,3 +342,56 @@ FuncDrawOffset FuncDrawWNDChar::LayerAnchorOffset(int layer, const ActionFrame**
 }
 
 // OFFSET: 0x007E5A30
+// FUNCTION: fn_09733
+void FuncDrawWNDChar::LoadResources(const std::list<int>& layers) {
+  for (int layer : layers) {
+    std::string sprName;
+    std::string actName;
+    switch (layer) {
+      case 0:
+      case 7:
+        if (this->m_shield == 0) {
+          sprName = g_session.GetRobeSprName(this->m_job, this->m_hairColor, this->m_sex, this->m_robe, this->m_flags, this->m_body);
+          actName = g_session.GetRobeActName(this->m_job, this->m_hairColor, this->m_sex, this->m_robe, this->m_flags, this->m_body);
+        }
+        break;
+      case 1: {
+        int job = this->m_flags == 1 ? g_session.GetRidingJob(this->m_job) : this->m_job;
+        sprName = g_session.GetBodySprName(job, this->m_sex, this->m_body, this->m_shield);
+        actName = GetBodyActionResourceName(job, this->m_sex, this->m_body, this->m_shield);
+        this->unknown_0050 = g_session.GetBodyPalName(job, this->m_sex, this->m_bodyStyle, this->m_body, this->m_shield, 0);
+        break;
+      }
+      case 2: {
+        int head = this->m_head;
+        sprName = g_session.GetHeadSprName(this->m_job, this->m_sex, &head);
+        actName = g_session.GetHeadActName(this->m_job, this->m_sex, &head);
+        this->m_head = static_cast<short>(head);
+        this->unknown_0068 = g_session.GetHeadPalName(this->m_head, this->m_job, this->m_sex, this->m_headPalette);
+        break;
+      }
+      case 3:
+      case 4:
+      case 5:
+      case 6:
+        sprName = g_session.GetAccessorySprName(this->m_job, this->m_sex, this->m_head, this->m_layers[layer]);
+        actName = g_session.GetAccessoryActName(this->m_job, this->m_sex, this->m_head, this->m_layers[layer]);
+        break;
+    }
+
+    CSprRes* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(sprName));
+    CActRes* act = static_cast<CActRes*>(ResourceMgr::Instance().Load(actName));
+    if (sprite && act) {
+      std::pair<CSprRes*, CActRes*>& entry = this->m_resources[layer];
+      entry.first = sprite;
+      entry.second = act;
+    }
+  }
+
+  for (int layer = 3; layer <= 5; ++layer) {
+    if (g_session.IsSpecialMonsterJob(this->m_layers[layer]) == true) {
+      this->unknown_0094 = 1;
+      return;
+    }
+  }
+}
