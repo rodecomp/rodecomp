@@ -96,7 +96,7 @@ struct CEffectPrim : CRenderObject {
   void Render2DCircle();
   void Render2DPrimitive();
   void RenderSegmentSprites2(matrix& wtm);
-  void RenderPolygonFrameRing(matrix& wtm);
+  void RenderSphere(matrix& wtm);
   void RenderTeiFacingSlots(matrix& wtm);
   void RenderGroundFog(matrix& wtm);
   void RenderCrossPlanes(matrix& wtm);

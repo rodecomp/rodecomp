@@ -5808,6 +5808,105 @@ void CEffectPrim::RenderSegmentSprites2(matrix& wtm) {
 }
 
 // OFFSET: 0x00BCCD50
+// FUNCTION: fn_19864
+void CEffectPrim::RenderSphere(matrix& wtm) {
+  vector3d vec1{};
+  vector3d vec2{};
+  vector3d vec3{};
+  vector3d vec4{};
+  int rpCnt = 0;
+
+  const float longitudeEnd = 360.0f - this->state.arcAngle;
+  const float uStep = 1.0f / (360.0f / this->state.arcAngle);
+  const float vStep = 1.0f / (180.0f / this->state.arcAngle);
+  const float latitudeEnd = 90.0f - this->state.arcAngle;
+  float v = 0.0f;
+
+  for (float latitude = -90.0f; latitude <= latitudeEnd; latitude += this->state.arcAngle) {
+    float u = 0.0f;
+    for (float longitude = 0.0f; longitude <= longitudeEnd; longitude += this->state.arcAngle) {
+      const float yaw1 = GetRadian(static_cast<int>(longitude + this->state.longitude));
+      const float pitch1 = GetRadian(static_cast<int>(latitude));
+      const float yaw2 = GetRadian(static_cast<int>(longitude + this->state.arcAngle + 0.25f + this->state.longitude));
+      const float pitch2 = GetRadian(static_cast<int>(latitude + this->state.arcAngle));
+
+      matrix rotation1;
+      rotation1.MakeXRotation(pitch1);
+      rotation1.AppendYRotation(yaw1);
+      const float* m1 = rotation1.values;
+      vec1.x = m1[3] * 0.0f + m1[0] * 0.0f + this->state.radius * m1[6] + m1[9];
+      vec1.y = m1[4] * 0.0f + m1[1] * 0.0f + this->state.radius * m1[7] + m1[10];
+      vec1.z = m1[5] * 0.0f + m1[2] * 0.0f + this->state.radius * m1[8] + m1[11];
+
+      matrix rotation2;
+      rotation2.MakeXRotation(pitch2);
+      rotation2.AppendYRotation(yaw1);
+      const float* m2 = rotation2.values;
+      vec2.x = m2[3] * 0.0f + m2[0] * 0.0f + this->state.radius * m2[6] + m2[9];
+      vec2.y = m2[4] * 0.0f + m2[1] * 0.0f + this->state.radius * m2[7] + m2[10];
+      vec2.z = m2[5] * 0.0f + m2[2] * 0.0f + this->state.radius * m2[8] + m2[11];
+
+      matrix rotation3;
+      rotation3.MakeXRotation(pitch1);
+      rotation3.AppendYRotation(yaw2);
+      const float* m3 = rotation3.values;
+      vec3.x = m3[3] * 0.0f + m3[0] * 0.0f + this->state.radius * m3[6] + m3[9];
+      vec3.y = m3[4] * 0.0f + m3[1] * 0.0f + this->state.radius * m3[7] + m3[10];
+      vec3.z = m3[5] * 0.0f + m3[2] * 0.0f + this->state.radius * m3[8] + m3[11];
+
+      matrix rotation4;
+      rotation4.MakeXRotation(pitch2);
+      rotation4.AppendYRotation(yaw2);
+      const float* m4 = rotation4.values;
+      vec4.x = m4[3] * 0.0f + m4[0] * 0.0f + this->state.radius * m4[6] + m4[9];
+      vec4.y = m4[4] * 0.0f + m4[1] * 0.0f + this->state.radius * m4[7] + m4[10];
+      vec4.z = m4[5] * 0.0f + m4[2] * 0.0f + this->state.radius * m4[8] + m4[11];
+
+      const vector3d& position = this->render.position;
+      vec1.x += position.x;
+      vec1.y += position.y;
+      vec1.z += position.z;
+      vec2.x += position.x;
+      vec2.y += position.y;
+      vec2.z += position.z;
+      vec3.x += position.x;
+      vec3.y += position.y;
+      vec3.z += position.z;
+      vec4.x += position.x;
+      vec4.y += position.y;
+      vec4.z += position.z;
+
+      const float nextU = u + uStep;
+      const float nextV = v + vStep;
+      const vector3d* const corners[2][3] = {{&vec1, &vec2, &vec3}, {&vec4, &vec3, &vec2}};
+      const float us[2][3] = {{u, u, nextU}, {nextU, nextU, u}};
+      const float vs[2][3] = {{v, nextV, v}, {nextV, v, nextV}};
+
+      for (int half = 0; half < 2; ++half) {
+        RenderTriangle& triangle = this->state.triangles[rpCnt];
+
+        for (int index = 0; index < 3; ++index) {
+          RenderVertex projected{0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
+          g_renderer->viewport.Projection().Project(&corners[half][index]->x, wtm.values, projected);
+          triangle.vertices[index] = projected;
+          triangle.vertices[index].diffuse = this->state.argb;
+          triangle.vertices[index].u = us[half][index];
+          triangle.vertices[index].v = vs[half][index];
+        }
+
+        triangle.texture = this->state.textures[0];
+        if (triangle.Visible()) {
+          ++rpCnt;
+          g_renderer->queues.SubmitTriangle(triangle, 1, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+        }
+      }
+
+      u = nextU;
+    }
+
+    v += vStep;
+  }
+}
 
 // OFFSET: 0x00BD6510
 
