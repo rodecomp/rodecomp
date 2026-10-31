@@ -92,6 +92,7 @@ public:
   __declspec(noinline) void Select(CUITabButton* button);
   void SelectPage(UIWindow* page);
   bool SelectIndex(unsigned int index);
+  void SetOnChange(std::function<void(CUITabButton*)> handler);
 
   /* 0080 */ CUITabButton* current;
   /* 0084 */ unsigned char unknown_0084[0x04];

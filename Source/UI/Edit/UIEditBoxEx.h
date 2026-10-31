@@ -82,6 +82,7 @@ public:
   void SetMask(char value);
   void SetText(const std::string& text);
   void SetFocus();
+  void SetOnSubmit(std::function<void()> handler);
 
   /* 0080 */ std::uint32_t backgroundColor;
   /* 0084 */ std::uint32_t borderColor;

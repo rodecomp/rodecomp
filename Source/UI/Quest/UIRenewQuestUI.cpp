@@ -1097,3 +1097,21 @@ int CUIRenewQuestUI::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
 
   return CUIFrameWnd::SendMsg(sender, message, a, b, c, d);
 }
+
+// OFFSET: 0x00A5C380
+
+// OFFSET: 0x00A63B90
+// FUNCTION: fn_16440
+void CUIEditBoxEx::SetOnSubmit(std::function<void()> handler) {
+  this->onSubmit = handler;
+}
+
+// OFFSET: 0x00A63C00
+// FUNCTION: fn_16441
+void CUITab::SetOnChange(std::function<void(CUITabButton*)> handler) {
+  this->onChange = handler;
+}
+
+// OFFSET: 0x00A665C0
+
+// OFFSET: 0x00A67290

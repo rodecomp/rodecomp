@@ -28,11 +28,11 @@ public:
 
   void OnSimpleView(bool simpleView);
 
-  /* 00E8 */ unsigned char unknown_00E8[0x04];
+  /* 00E8 */ CUIStaticImage* icon;
   /* 00EC */ CUIStaticText* unknown_00EC;
-  /* 00F0 */ unsigned char unknown_00F0[0x04];
-  /* 00F4 */ CUIButton* unknown_00F4;
-  /* 00F8 */ CUIButton* unknown_00F8;
+  /* 00F0 */ CUIStaticText* unknown_00F0;
+  /* 00F4 */ CUICheckBox* unknown_00F4;
+  /* 00F8 */ CUICheckBox* unknown_00F8;
   /* 00FC */ int questType;
   /* 0100 */ int questId;
   /* 0104 */ unsigned char pressed;
@@ -44,8 +44,10 @@ class CUIQuestList : public CUIControl {
 public:
   void Paint() override;
   void Slot16() override;
+  void BindItem(CUIQuestItem* item, const unsigned long& questId);
 
   /* 0080 */ CUIListBoxEx<CUIQuestItem, unsigned long>* list;
+  /* 0084 */ int type;
 };
 }
 
