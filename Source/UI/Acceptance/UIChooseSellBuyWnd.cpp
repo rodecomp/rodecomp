@@ -141,9 +141,6 @@ static const char bookmarkKeySuffixText[] = "\\BookMark";
 // GLOBAL: gl_24751
 const char* g_bookmarkKeySuffix = bookmarkKeySuffixText;
 
-// GLOBAL: gl_25188
-bool g_passwordInputAlternate;
-
 // OFFSET: 0x0087B500
 // FUNCTION: fn_11241
 void UIChatHisBox::Configure(int x, int y, int width, int height, unsigned char) {
@@ -3723,7 +3720,7 @@ UIStorePasswordInputWnd::UIStorePasswordInputWnd(UIWindowContext& windows, UIFra
   this->unknown_00FC = 40;
   this->unknown_0100 = 80;
   this->unknown_0104 = 119;
-  if (g_passwordInputAlternate) {
+  if (g_session.m_passwordInputAlternate) {
     this->unknown_00F4 = 2;
     this->unknown_00F8 = 80;
     this->unknown_00EC = 0;

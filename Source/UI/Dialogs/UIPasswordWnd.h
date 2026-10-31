@@ -86,7 +86,6 @@ public:
   /* 0164 */ int unknown_0164;
 };
 
-extern bool g_passwordInputAlternate;
 extern int g_passwordWndMode;
 
 #endif
