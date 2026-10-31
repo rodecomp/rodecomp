@@ -138,6 +138,7 @@ public:
   void Slot35(int value) override;
   void Trim() override;
   virtual void UpdateScrollBar();
+  virtual void DrawBlinkingCaret(const std::uint32_t& color);
   void HandleInputMessage(unsigned key, std::intptr_t data);
 
   void PlaceTags(const int& x, const int& y, const int& firstLine, const int& endLine, const int& line, const int& unused);

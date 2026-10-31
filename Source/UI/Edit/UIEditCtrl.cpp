@@ -107,6 +107,10 @@ static const std::string g_editNaviTagBegin = "<NAVIL>";
 // GLOBAL: gl_24648
 static const std::string g_editNaviTagEnd = "</NAVIL>";
 
+struct ClientItemLists {
+  void SetItems1750(int count, const short* ids);
+};
+
 namespace {
 #pragma pack(push, 1)
 struct PACKET_CZ_INVENTORY_TAB {
@@ -671,6 +675,20 @@ void UIEditCtrl::TextColor(std::uint32_t primary, std::uint32_t secondary) {
   this->secondColor = secondary;
   this->textColor = primary;
   this->Invalidate();
+}
+
+// OFFSET: 0x00856EB0
+// FUNCTION: fn_10756
+void UIEditCtrl3::DrawBlinkingCaret(const std::uint32_t& color) {
+  if (timeGetTime() / 500 & 1) {
+    return;
+  }
+
+  if (g_windowMgr.IsHoverOnWindow01C8Button() && !g_inputSuggestionsEnabled) {
+    return;
+  }
+
+  this->DrawTextAt(this->m_edit->buttons.fonts, this->m_edit->buttons.locale, 1, 0, "|", 0, 0, 12, color, 0, 0);
 }
 
 // OFFSET: 0x00856F10
@@ -2176,6 +2194,24 @@ void UIMerchantShopMakeWnd::SetSuspended(unsigned char suspend) {
   window->Show(1);
   this->unknown_018A = -1;
   this->unknown_018C = -1;
+}
+
+// OFFSET: 0x00994CC0
+// FUNCTION: fn_13440
+void UIMerchantShopMakeWnd::SetItems(int count, const short* ids) {
+  this->unknown_0188 = 1;
+
+  UIWindow* window;
+  if (this->mode == 1) {
+    window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0410);
+  } else {
+    reinterpret_cast<ClientItemLists*>(&g_session)->SetItems1750(count, ids);
+    window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_02F8);
+  }
+
+  if (window) {
+    window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  }
 }
 
 // OFFSET: 0x00994B90

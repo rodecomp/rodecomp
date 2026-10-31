@@ -27,6 +27,7 @@ public:
   void SendShopRequest();
   void AddActionButton();
   void SetSuspended(unsigned char suspend);
+  void SetItems(int count, const short* ids);
   int CommitPrice(int next);
   void PrintBuyList();
   void Slot32(int x, int y) override;
