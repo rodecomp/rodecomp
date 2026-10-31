@@ -81,12 +81,14 @@ void C3dActorV2::Assign(const C3dModelRes& resource) {
   const int milliseconds = 1000 * modern.animationLength;
   this->duration = static_cast<float>(milliseconds) * inverse;
 
-  for (const std::string& name : resource.rootNames) {
+  auto* roots = &this->roots;
+  resource.ForEachRootName([&resource, roots, this](const std::string& name) {
+    ModelNode* source = resource.FindNode(name.c_str());
     auto* root = new C3dNodeV2;
     root->model = this;
-    root->Initialize(*resource.FindNode(name.c_str()));
-    this->roots.push_back(root);
-  }
+    root->Initialize(*source);
+    roots->push_back(root);
+  });
 
   this->Animate(0);
   this->UpdateBounds();
