@@ -97,6 +97,7 @@ public:
 
 class UICashEmotionPack_Purchase : public UICashEmotionPack {
 public:
+  explicit UICashEmotionPack_Purchase(UIWindowContext& windows);
   ~UICashEmotionPack_Purchase() override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
@@ -140,6 +141,7 @@ class UICashEmotionPack_Unpurchase : public UICashEmotionPack {
   friend class UICashEmotionListChildWnd_UnPurchased;
 
 public:
+  explicit UICashEmotionPack_Unpurchase(UIWindowContext& windows);
   void Paint() override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
@@ -2300,6 +2302,8 @@ void UICashEmotionPack::SetTitle(const char* title) {
   }
 }
 
+// OFFSET: 0x007CAAC0
+
 // OFFSET: 0x007CAC40
 // FUNCTION: fn_09458
 UICashEmotionPack_Purchase::~UICashEmotionPack_Purchase() {
@@ -2435,6 +2439,14 @@ int UICashEmotionPack_Search_UnPurchased::SendMsg(
   default:
     return UICashEmotionPack::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
+}
+
+// OFFSET: 0x007CB5E0
+// FUNCTION: fn_09471
+UICashEmotionPack_Unpurchase::UICashEmotionPack_Unpurchase(UIWindowContext& windows) : UICashEmotionPack(windows), m_pressed(false) {
+  this->m_background = Resolve("유저인터페이스\\cashemotion\\bg_list_normal.bmp");
+  this->m_pressed = false;
+  this->Invalidate();
 }
 
 // OFFSET: 0x007CB850
