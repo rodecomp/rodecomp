@@ -60,6 +60,14 @@
 #include <string>
 #include <vector>
 
+// OFFSET: 0x00D7AF70
+// FUNCTION: fn_22198
+void CGameMode::ReceiveItemDisappear(std::uint32_t itemAid) {
+  if (this->scene->RemoveItem(itemAid)) {
+    this->SendMsg(13, static_cast<int>(itemAid), 0, 0, 0);
+  }
+}
+
 struct SessionMessengerContext {
   void UpdateRandomStats();
   int GetList9Size() const;

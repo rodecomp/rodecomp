@@ -403,6 +403,7 @@ public:
   void DrawMiniMapCoordinates();
   void ReceiveGradeEnchantInfo(const unsigned char* packet);
   void ReceivePartyItemPickup(const unsigned char* packet);
+  void ReceiveItemDisappear(std::uint32_t itemAid);
   void ReceiveShortcutPagePacket(const unsigned char* packet);
   void ReceiveCardCompositionResult(const unsigned char* packet);
   void ReceiveRefineResult(const unsigned char* packet);
