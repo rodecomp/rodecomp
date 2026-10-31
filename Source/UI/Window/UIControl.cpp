@@ -659,6 +659,41 @@ void CUIButton::ResetCursor(int, int) {
   this->m_context->cursor.Set(this->disabled ? 0 : 2, this->m_context->cursorTick);
 }
 
+// OFFSET: 0x009ECCD0
+// FUNCTION: fn_14563
+void CUITextButton::DrawVerticalLabel() {
+  if (this->disabled) {
+    this->DrawVerticalText(this->textX, this->textY, this->displayText.c_str(), 0, this->fontIndex, this->fontHeight, this->disabledTextColor, this->bold);
+    return;
+  }
+
+  if (this->state == 1) {
+    if (this->shadow) {
+      this->DrawVerticalText(this->textX + 1, this->textY + 1, this->displayText.c_str(), 0, this->fontIndex, this->fontHeight, this->shadowColor, this->bold);
+    }
+    if (!this->outline) {
+      this->DrawVerticalText(this->textX, this->textY, this->displayText.c_str(), 0, this->fontIndex, this->fontHeight, this->textColors[this->state], this->bold);
+      return;
+    }
+    this->DrawVerticalOutlinedText(
+      this->textX, this->textY, this->displayText.c_str(), 0, this->textColors[this->state], this->outlineColor, this->fontIndex, this->fontHeight, this->bold
+    );
+    return;
+  }
+
+  if (this->shadow) {
+    this->DrawVerticalText(this->textX, this->textY, this->displayText.c_str(), 0, this->fontIndex, this->fontHeight, this->shadowColor, this->bold);
+  }
+  if (!this->outline) {
+    this->DrawVerticalText(this->textX + 1, this->textY + 1, this->displayText.c_str(), 0, this->fontIndex, this->fontHeight, this->textColors[this->state], this->bold);
+    return;
+  }
+  this->DrawVerticalOutlinedText(
+    this->textX + 1, this->textY + 1, this->displayText.c_str(), 0, this->textColors[this->state], this->outlineColor, this->fontIndex, this->fontHeight,
+    this->bold
+  );
+}
+
 // OFFSET: 0x009ECF40
 // FUNCTION: fn_14564
 void CUITextButton::Paint() {

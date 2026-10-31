@@ -135,6 +135,7 @@ public:
   void SetShadow(bool enabled, std::uint32_t color);
   void SetOutline(bool enabled, std::uint32_t color);
   void UpdateText();
+  void DrawVerticalLabel();
   __declspec(noinline) void SetAlign(int horizontal, int vertical);
   void SetOrientation(int value);
   void SetFitText(bool enabled);
