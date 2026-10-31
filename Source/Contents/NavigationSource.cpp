@@ -256,7 +256,7 @@ void CNavigationManager::ClearNodePaths() {
   for (std::size_t i = 0; i < this->nodePaths.size(); ++i) {
     this->nodePaths[i].clear();
   }
-  this->nodePaths.clear();
+  this->nodePaths.erase(this->nodePaths.begin(), this->nodePaths.end());
 }
 
 // OFFSET: 0x00B961A0
@@ -972,5 +972,51 @@ void CNavigationManager::CheckArrival(int cellX, int cellY) {
         this->CancelRoute();
       }
     }
+  }
+}
+
+// OFFSET: 0x00B9DE60
+// FUNCTION: fn_19626
+void CNavigationManager::BuildNodePaths() {
+  this->ClearNodePaths();
+
+  if (this->unknown_1260 == 0 || this->unknown_1260 == 1) {
+    for (int index = 0; index < this->states.size(); ++index) {
+      if (this->states[index].type == 1) {
+        std::vector<int> path;
+        path.push_back(index);
+        this->nodePaths.push_back(path);
+      }
+    }
+  }
+
+  for (int index = 0; index < this->states.size(); ++index) {
+    if (this->unknown_1260 != 0 && this->states[index].type != this->unknown_1260) {
+      continue;
+    }
+    if (this->states[index].type == 1) {
+      continue;
+    }
+
+    const int path = this->FindNodePath(index);
+    if (path == -1) {
+      std::vector<int> single;
+      single.push_back(index);
+      this->nodePaths.push_back(single);
+    } else {
+      this->nodePaths[path].push_back(index);
+    }
+  }
+}
+
+// OFFSET: 0x00B9E140
+// FUNCTION: fn_19627
+void CNavigationManager::BuildSingleNodePaths() {
+  this->ClearNodePaths();
+
+  for (int index = 0; index < this->states.size(); ++index) {
+    std::vector<int> path;
+    path.push_back(index);
+    this->nodePaths.push_back(path);
   }
 }

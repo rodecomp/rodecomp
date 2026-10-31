@@ -324,6 +324,8 @@ public:
   void Reset(bool clearAll);
   void ClearRouteNodes();
   void ClearNodePaths();
+  void BuildNodePaths();
+  void BuildSingleNodePaths();
   CNaviInfo* GetLinkedPlayerInfo();
   bool CollectStartLinks();
   bool UpdateGround();
