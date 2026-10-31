@@ -15,6 +15,7 @@
 
 class CUIListItem : public CUIControl {
 public:
+  CUIListItem();
   // INLINED
   explicit CUIListItem(UIWindowContext& context) : CUIControl(context), selected(0), disabledImage(nullptr), frozen(0), index(-1) {
   }

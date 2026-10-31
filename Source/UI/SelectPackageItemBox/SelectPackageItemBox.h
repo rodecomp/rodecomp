@@ -23,6 +23,7 @@ public:
 
 class CUIItemInfo : public CUIListItem {
 public:
+  CUIItemInfo();
   void Slot15(int width, int height) override;
   void Slot16() override;
   void Paint() override;
@@ -34,6 +35,7 @@ public:
 
 class CUITabInfo : public CUIListItem {
 public:
+  CUITabInfo();
   void Slot15(int width, int height) override;
   void Slot16() override;
 
