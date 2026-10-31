@@ -1804,6 +1804,11 @@ bool UIWindow::FitSprite(const ActionFrame* frame, const CSprRes* sprite, int wi
   return true;
 }
 
+// OFFSET: 0x005C27E0
+// FUNCTION: fn_03535
+UIListBox_NaviSearch::UIListBox_NaviSearch(UIWindowContext& windows, UIListBoxContext& list) : UIListBox(windows, list) {
+}
+
 // OFFSET: 0x005C3340
 // FUNCTION: fn_03554
 void UIListBox_NaviSearch::Clear() {

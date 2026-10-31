@@ -7,9 +7,7 @@
 
 class UIListBox_NaviSearch : public UIListBox {
 public:
-  // INLINED
-  UIListBox_NaviSearch(UIWindowContext& windows, UIListBoxContext& list) : UIListBox(windows, list) {
-  }
+  UIListBox_NaviSearch(UIWindowContext& windows, UIListBoxContext& list);
 
   void Resize(int width, int height) override;
   void Slot15(int width, int height) override;
