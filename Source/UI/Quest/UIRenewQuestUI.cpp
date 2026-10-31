@@ -1113,5 +1113,146 @@ void CUITab::SetOnChange(std::function<void(CUITabButton*)> handler) {
 }
 
 // OFFSET: 0x00A665C0
+// FUNCTION: fn_16617
+void RenewQuestUI::CUIQuestList::BindItem(CUIQuestItem* item, const unsigned long& questId) {
+  item->questType = this->type;
+  item->questId = questId;
+  if (this->type == 2) {
+    auto found = g_renewQuestMgr->m_recommendedQuests.find(questId);
+    if (found == g_renewQuestMgr->m_recommendedQuests.end()) {
+      return;
+    }
+
+    const RenewQuestRecommendedInfo& info = found->second;
+    item->icon->SetImage(std::format("유저인터페이스\\renew_questui\\{}", info.m_icon.empty() ? std::string("ico_nq.bmp") : info.m_icon));
+    item->icon->tooltip = info.m_iconTooltip;
+    item->unknown_00EC->SetText(info.m_title.c_str(), info.m_title.size());
+    item->unknown_00F0->SetText(info.unknown_004C.c_str(), info.unknown_004C.size());
+    item->unknown_00F4->Show(0);
+    item->unknown_00F8->Show(1);
+    item->unknown_00F8->checked = info.m_active;
+    item->unknown_00F8->Invalidate();
+    std::string tooltip = LookupMessage(3408);
+    item->unknown_00F8->tooltip = tooltip;
+  } else {
+    auto found = g_renewQuestMgr->m_ongoingQuests.find(questId);
+    if (found == g_renewQuestMgr->m_ongoingQuests.end()) {
+      return;
+    }
+
+    const RenewQuestOngoingInfo& info = found->second;
+    item->icon->SetImage(std::format("유저인터페이스\\renew_questui\\{}", info.m_icon.empty() ? std::string("ico_nq.bmp") : info.m_icon));
+    item->icon->tooltip = info.m_iconTooltip;
+    item->unknown_00EC->SetText(info.m_title.c_str(), info.m_title.size());
+    item->unknown_00F0->SetText(info.unknown_004C.c_str(), info.unknown_004C.size());
+    item->unknown_00F4->Show(this->type != 8);
+    item->unknown_00F4->checked = info.m_simpleView;
+    item->unknown_00F4->Invalidate();
+    item->unknown_00F8->Show(this->type != 8);
+    item->unknown_00F8->checked = info.m_active;
+    item->unknown_00F8->Invalidate();
+    std::string tooltip = LookupMessage(3407);
+    item->unknown_00F8->tooltip = tooltip;
+  }
+}
 
 // OFFSET: 0x00A67290
+// FUNCTION: fn_16629
+void CUIRenewQuestUI::sub_A67290(unsigned int flags) {
+  if (flags & 1) {
+    for (RenewQuestUI::CUIQuestList* list : this->questLists) {
+      if (list->type != 1) {
+        continue;
+      }
+
+      if (CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>* listBox = list->list) {
+        const int position = listBox->data.size() == 0 ? -1 : listBox->scrollBar->position;
+        listBox->ClearData();
+        for (std::pair<const unsigned int, RenewQuestOngoingInfo> entry : g_renewQuestMgr->m_ongoingQuests) {
+          if (this->MatchesFilter(entry.second) && entry.second.unknown_01F8 != 1 && entry.second.m_state != 0) {
+            listBox->AddData(entry.first, false);
+          }
+        }
+        listBox->UpdateScrollBar();
+        if (position == -1) {
+          listBox->scrollBar->SetPosition(position);
+        }
+      }
+      break;
+    }
+  }
+
+  if (flags & 2) {
+    for (RenewQuestUI::CUIQuestList* list : this->questLists) {
+      if (list->type != 2) {
+        continue;
+      }
+
+      if (CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>* listBox = list->list) {
+        const int position = listBox->data.size() == 0 ? -1 : listBox->scrollBar->position;
+        listBox->ClearData();
+        for (std::pair<const unsigned int, RenewQuestRecommendedInfo> entry : g_renewQuestMgr->m_recommendedQuests) {
+          if (this->MatchesFilter(entry.second) && entry.second.m_active) {
+            listBox->AddData(entry.first, false);
+          }
+        }
+        for (std::pair<const unsigned int, RenewQuestRecommendedInfo> entry : g_renewQuestMgr->m_recommendedQuests) {
+          if (this->MatchesFilter(entry.second) && !entry.second.m_active) {
+            listBox->AddData(entry.first, false);
+          }
+        }
+        listBox->UpdateScrollBar();
+        if (position == -1) {
+          listBox->scrollBar->SetPosition(position);
+        }
+      }
+      break;
+    }
+  }
+
+  if (flags & 4) {
+    for (RenewQuestUI::CUIQuestList* list : this->questLists) {
+      if (list->type != 4) {
+        continue;
+      }
+
+      if (CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>* listBox = list->list) {
+        const int position = listBox->data.size() == 0 ? -1 : listBox->scrollBar->position;
+        listBox->ClearData();
+        for (std::pair<const unsigned int, RenewQuestOngoingInfo> entry : g_renewQuestMgr->m_ongoingQuests) {
+          if (this->MatchesFilter(entry.second) && entry.second.unknown_01F8 != 1 && entry.second.m_state == 0) {
+            listBox->AddData(entry.first, false);
+          }
+        }
+        listBox->UpdateScrollBar();
+        if (position == -1) {
+          listBox->scrollBar->SetPosition(position);
+        }
+      }
+      break;
+    }
+  }
+
+  if (flags & 8) {
+    for (RenewQuestUI::CUIQuestList* list : this->questLists) {
+      if (list->type != 8) {
+        continue;
+      }
+
+      if (CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>* listBox = list->list) {
+        const int position = listBox->data.size() == 0 ? -1 : listBox->scrollBar->position;
+        listBox->ClearData();
+        for (std::pair<const unsigned int, RenewQuestOngoingInfo> entry : g_renewQuestMgr->m_ongoingQuests) {
+          if (this->MatchesFilter(entry.second) && entry.second.unknown_01F8 == 1) {
+            listBox->AddData(entry.first, false);
+          }
+        }
+        listBox->UpdateScrollBar();
+        if (position == -1) {
+          listBox->scrollBar->SetPosition(position);
+        }
+      }
+      break;
+    }
+  }
+}
