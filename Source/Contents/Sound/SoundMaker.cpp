@@ -1616,3 +1616,232 @@ void CHalluPC::Render(int argument) {
 
   this->DrawLayers(matrix, 1, 0);
 }
+
+// GLOBAL: gl_24784
+int g_groundMarkA;
+
+// GLOBAL: gl_24785
+int g_groundMarkB;
+
+// GLOBAL: gl_25376
+int g_groundMarkSet;
+
+// GLOBAL: gl_25377
+int g_groundMarkAltA;
+
+// GLOBAL: gl_25378
+int g_groundMarkAltB;
+
+// GLOBAL: gl_25379
+int g_groundMarkAltSet;
+
+// OFFSET: 0x00DA59B0
+// FUNCTION: fn_22433
+void CNpc::Slot15(int state, int) {
+  if (state == -1) {
+    return;
+  }
+
+  switch (this->GetEffectiveJob(-1)) {
+    case 45: {
+      int height = this->unknown_0298;
+      if (height <= 10) {
+        this->unknown_0298 = 10;
+        height = 10;
+      }
+      int width = this->unknown_0294;
+      if (width <= 10) {
+        this->unknown_0294 = 10;
+        width = 10;
+      }
+      this->boundsLeft = this->render.position.x - static_cast<float>(width / 2);
+      this->boundsRight = static_cast<float>(width / 2) + this->render.position.x;
+      this->boundsTop = this->render.position.z - static_cast<float>(height / 2);
+      this->boundsBottom = static_cast<float>(height / 2) + this->render.position.z;
+      if (this->unknown_0428 == 0 && this->render.enabled) {
+        this->unknown_0428 = 1;
+        this->LaunchEffect(321, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      }
+      break;
+    }
+    case 104:
+      this->render.position.y -= static_cast<float>(this->unknown_0298 * 5);
+      break;
+    case 111:
+      this->unknown_0294 *= 2;
+      this->unknown_0298 *= 2;
+      break;
+    case 139:
+      break;
+    default: {
+      CGameActor* actor = static_cast<CGameActor*>(g_session.FindGameActor(this->render.accountId));
+      bool isDisguised = false;
+      if (actor && actor->unknown_0314 == 12) {
+        isDisguised = true;
+      }
+      if (g_session.IsAllyActor(this->render.accountId, this->GetEffectiveJob(-1)) == 1 && this->GetEffectiveJob(-1) != 565 &&
+          !isDisguised) {
+        this->SetAction(0, 4, 0);
+        this->Slot16();
+        break;
+      }
+
+      if (this->render.unknown_0070 == 4) {
+        this->render.position.x = this->unknown_02D0;
+        this->render.position.z = this->unknown_02D4;
+      }
+
+      switch (state) {
+        case 0:
+          this->render.isLieOnGround = false;
+          this->render.unknown_00A4Bytes[1] = 1;
+          this->SetAction(0, 4, 0);
+          if (this->unknown_02C8 != 0) {
+            int hungerLevel = g_session.GetPetHungryState(g_session.unknown_1044);
+            int emotion = state;
+            switch (this->unknown_02C8) {
+              case 1:
+                emotion = g_session.GetPetEmotionNumber(this->GetEffectiveJob(-1), 7, hungerLevel);
+                this->SetAction(40, 4, 1);
+                break;
+              case 2:
+                emotion = g_session.GetPetEmotionNumber(this->GetEffectiveJob(-1), 8, hungerLevel);
+                this->SetAction(48, 4, 1);
+                break;
+              case 3:
+                emotion = g_session.GetPetEmotionNumber(this->GetEffectiveJob(-1), 9, hungerLevel);
+                this->SetAction(56, 4, 1);
+                break;
+              case 4:
+                emotion = g_session.GetPetEmotionNumber(this->GetEffectiveJob(-1), 5, hungerLevel);
+                this->SetAction(64, 4, 1);
+                break;
+              default:
+                this->SetAction(40, 4, 1);
+                break;
+            }
+            if (this->render.accountId == g_session.unknown_1010) {
+              g_modeMgr.GetGameMode()->SendMsg(148, emotion, 0, 0, 0);
+            }
+            this->unknown_02C8 = 0;
+            this->render.isMotionFinished = false;
+            this->Slot16();
+          } else {
+            if (this->render.unknown_0070 != 0) {
+              this->unknown_027C = timeGetTime();
+            }
+            if (g_groundMarkSet) {
+              g_groundMarkA = 0;
+              g_groundMarkB = 0;
+              g_groundMarkSet = 0;
+            }
+            if (g_groundMarkAltSet) {
+              g_groundMarkAltA = 0;
+              g_groundMarkAltB = 0;
+              g_groundMarkAltSet = 0;
+            }
+            this->Slot16();
+          }
+          break;
+        case 1:
+          if (this->bodyState != 1 && this->bodyState != 2) {
+            this->render.isMotionFreezed = false;
+          }
+          if (this->GetEffectiveJob(-1) >= 6017 && this->GetEffectiveJob(-1) <= 6046) {
+            this->SetAction(8, 6, 0);
+          } else {
+            this->SetAction(8, 4, 0);
+          }
+          this->Slot17();
+          break;
+        case 2:
+          if (this->bodyState != 1 && this->bodyState != 2) {
+            this->render.isMotionFreezed = false;
+          }
+          if (this->unknown_0314 == 8) {
+            if (this->GetEffectiveJob(-1) == 6052) {
+              this->SetAction(16, 4, 1);
+            } else if (std::rand() % 2) {
+              this->SetAction(16, 4, 1);
+            } else {
+              this->SetAction(48, 4, 1);
+            }
+          } else if (this->GetEffectiveJob(-1) >= 6017 && this->GetEffectiveJob(-1) <= 6046) {
+            this->SetAction(80, 3, 1);
+          } else {
+            this->SetAction(16, 4, 1);
+          }
+          this->unknown_0378 = static_cast<float>(this->Slot37());
+          this->Slot16();
+          this->LaunchAttackProjectile(this->hitTargetAid, this->render.speed * this->unknown_0378);
+          break;
+        case 3:
+          this->render.unknown_00C8 = 0;
+          this->render.unknown_00D8 = 0;
+          this->render.unknown_00DC = 0;
+          this->render.isMotionFreezed = false;
+          if (this->bodyState == 2) {
+            this->SendMsg(nullptr, 59, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+            this->SendMsg(nullptr, 62, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+          }
+          this->render.isLieOnGround = true;
+          this->render.isMotionFreezed = false;
+          this->render.unknown_00A4Bytes[1] = 0;
+          if (this->GetEffectiveJob(-1) >= 6017 && this->GetEffectiveJob(-1) <= 6046) {
+            this->SetAction(64, 4, 1);
+            this->Slot17();
+          } else {
+            this->SetAction(32, 8, 1);
+            this->Slot17();
+          }
+          break;
+        case 4:
+          if (this->render.unknown_00C8 != 0 || this->render.unknown_00D8 != 0 || this->render.unknown_00DC != 0) {
+            return;
+          }
+          if (this->GetEffectiveJob(-1) >= 6017 && this->GetEffectiveJob(-1) <= 6046) {
+            this->SetAction(48, 5, 1);
+            break;
+          }
+          if (this->render.previousAnimation >= 40) {
+            this->Slot08();
+            return;
+          }
+          this->SetAction(24, 4, 1);
+          this->Slot16();
+          break;
+        case 7:
+          switch (this->unknown_0314) {
+            case 8:
+            case 10:
+            case 13:
+            case 14:
+              this->SetAction(40, 4, 1);
+              break;
+            case 9:
+              this->SetAction(16, 4, 1);
+              break;
+          }
+          if (this->GetEffectiveJob(-1) >= 6017 && this->GetEffectiveJob(-1) <= 6046) {
+            this->SetAction(96, 6, 1);
+          }
+          break;
+        case 10:
+          if (this->bodyState == 2) {
+            this->SendMsg(nullptr, 59, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+            this->SendMsg(nullptr, 62, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+          }
+          this->render.isLieOnGround = false;
+          this->render.isMotionFinished = true;
+          this->render.isMotionFreezed = true;
+          this->SetAction(0, 8, 1);
+          break;
+      }
+      break;
+    }
+  }
+
+  this->render.previousAnimation = this->render.animation + this->Get8Dir(this->render.angle);
+  this->render.unknown_0070 = state;
+  this->render.unknown_008C = timeGetTime();
+}

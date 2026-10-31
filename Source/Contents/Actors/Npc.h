@@ -17,6 +17,7 @@ public:
     CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m
   ) override;
   void Render(int argument) override;
+  void Slot15(int state, int unused) override;
   void Slot16() override;
   void Slot17() override;
   void Slot18(int job, int value, int unused) override;
@@ -29,7 +30,10 @@ public:
   void UpdateBubblePositions();
   void UpdateMinimapMarker();
 
-  /* 0410 */ unsigned char unknown_0410[0x10];
+  /* 0410 */ float boundsLeft;
+  /* 0414 */ float boundsTop;
+  /* 0418 */ float boundsRight;
+  /* 041C */ float boundsBottom;
   /* 0420 */ int unknown_0420;
   /* 0424 */ std::uint32_t unknown_0424;
   /* 0428 */ int unknown_0428;
