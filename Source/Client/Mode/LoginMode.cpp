@@ -12,6 +12,7 @@
 #include "Render/RenderSystemBase.h"
 #include "Render/Renderer.h"
 #include "Resource/ResourceMgr.h"
+#include "Resource/ResourcePreload.h"
 #include "Security/NProtectGameGuardMgr.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
@@ -945,6 +946,12 @@ void nullsub_487(int) {
 // FUNCTION: fn_22291
 bool sub_D92B60(int) {
   return false;
+}
+
+// OFFSET: 0x00D9A230
+// FUNCTION: fn_22310
+void sub_D9A230() {
+  PreloadCommonSprites();
 }
 
 // OFFSET: 0x00D9CFD0
