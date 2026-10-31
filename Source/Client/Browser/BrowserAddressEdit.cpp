@@ -1,6 +1,14 @@
 #include "Client/Browser/BrowserAddressEdit.h"
 #include "Client/Browser/BrowserMessages.h"
 
+#include <oleauto.h>
+
+// OFFSET: 0x00AB20F0
+// FUNCTION: fn_17411
+void __fastcall sub_AB20F0(BSTR* address) {
+  SysFreeString(*address);
+}
+
 // OFFSET: 0x00AB21F0
 // FUNCTION: fn_17412
 LRESULT BrowserAddressEdit::Message(HWND window, UINT message, WPARAM value, LPARAM flags) {
