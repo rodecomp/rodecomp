@@ -2861,6 +2861,27 @@ void UIStatusWnd::Slot11() {
 // OFFSET: 0x00907650
 
 // OFFSET: 0x008FF8A0
+// FUNCTION: fn_12360
+int UINoticeConfirmWnd::SendMsg(
+  UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
+) {
+  if (message == 6) {
+    if (argument1 == 184) {
+      static_cast<CMode*>(g_charViewMode)->SendMsg(this->m_event, 0, 0, 0, 0);
+    } else if (argument1 == 185) {
+      static_cast<CMode*>(g_charViewMode)->SendMsg(2, 0, 0, 0, 0);
+    }
+
+    return 0;
+  }
+
+  if (message == 80) {
+    this->m_event = static_cast<int>(argument1);
+    return 0;
+  }
+
+  return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+}
 
 // OFFSET: 0x0090BF40
 // FUNCTION: fn_12435
