@@ -101,5 +101,45 @@ void CUITab::Slot15(int width, int height) {
 }
 
 // OFFSET: 0x009D1F00
+// FUNCTION: fn_14010
+void CUITabInfo::Slot15(int width, int height) {
+  this->unknown_00E8 = new CUIStaticText(*this->m_context);
+  this->unknown_00E8->SetSize(90, 44);
+  this->unknown_00E8->Move(32, 0);
+  this->unknown_00E8->SetText("", 0);
+  this->unknown_00E8->SetFitText(0);
+  this->unknown_00E8->SetAlign(0, 6);
+  {
+    CUIStaticText* text = this->unknown_00E8;
+    const std::uint8_t fontSource[] = {0x28, 0x08, 0x97, 0x4A, 0x1C, 0x07};
+    thread_local EncryptedName<sizeof(fontSource), 0xCD8F077123FB7D6FULL> fontName(fontSource);
+    text->SetFont(fontName.Text());
+  }
+  this->unknown_00E8->SetFontHeight(12);
+  this->unknown_00E8->SetBold(1);
+  this->unknown_00E8->SetColor(0x815A48);
+  this->unknown_00E8->SetShadow(0, 0xFFFFFF);
+  this->unknown_00E8->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->unknown_00E8);
+
+  this->unknown_00EC = new CUIStaticText(*this->m_context);
+  this->unknown_00EC->SetSize(442, 44);
+  this->unknown_00EC->Move(140, 0);
+  this->unknown_00EC->SetText("", 0);
+  this->unknown_00EC->SetFitText(1);
+  this->unknown_00EC->SetAlign(0, 6);
+  {
+    CUIStaticText* text = this->unknown_00EC;
+    const std::uint8_t fontSource[] = {0x04, 0x5C, 0x3F, 0x4E, 0xB8, 0xBF};
+    thread_local EncryptedName<sizeof(fontSource), 0x9949BFD527532943ULL> fontName(fontSource);
+    text->SetFont(fontName.Text());
+  }
+  this->unknown_00EC->SetFontHeight(12);
+  this->unknown_00EC->SetBold(0);
+  this->unknown_00EC->SetColor(0x2A435D);
+  this->unknown_00EC->SetShadow(0, 0xFFFFFF);
+  this->unknown_00EC->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->unknown_00EC);
+}
 
 }
