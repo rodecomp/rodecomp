@@ -173,3 +173,37 @@ void CGameMode::ReceiveEquipListPart(unsigned char listType, int count, const un
 }
 
 // OFFSET: 0x00D44600
+// FUNCTION: fn_21835
+void CGameMode::ReceiveInventoryStart(const unsigned char* packet) {
+  const int length = *reinterpret_cast<const std::int16_t*>(g_gameModePacketBuffer + 2) - 5;
+  if (length > 24) {
+    return;
+  }
+
+  switch (g_gameModePacketBuffer[4]) {
+  case 0:
+    reinterpret_cast<ClientItemLists*>(&g_session)->ClearInventory();
+    reinterpret_cast<SessionMessengerContext*>(&g_session)->ResetEquipment();
+    g_session.ResetItems2B50();
+    break;
+  case 1:
+    reinterpret_cast<ClientItemLists*>(&g_session)->ClearItems1740();
+    break;
+  case 2:
+  case 3: {
+    char title[24] = {};
+    memcpy_s(title, sizeof(title), packet + 5, length);
+    UIItemStoreWnd* window = static_cast<UIItemStoreWnd*>(g_windowMgr.EnsureWindow(33));
+    if (window) {
+      const std::size_t titleLength = std::strlen(title);
+      if (titleLength != 0) {
+        window->SetTitle(std::string(title, titleLength));
+      }
+    }
+    break;
+  }
+  }
+}
+
+// GLOBAL: gl_25206
+unsigned char g_gameModePacketBuffer[0x10000];
