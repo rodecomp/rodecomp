@@ -1073,3 +1073,8 @@ void Replay::CachePacket(std::uint16_t id, std::uint16_t size, const unsigned ch
 }
 
 // OFFSET: 0x00E42EB0
+// FUNCTION: fn_24203
+std::vector<unsigned char> CSession::BuildReservedReplayRecords() {
+  std::vector<unsigned char> records;
+  return records;
+}

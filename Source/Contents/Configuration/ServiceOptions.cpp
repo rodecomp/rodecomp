@@ -990,3 +990,31 @@ void RequestPlayerAction31() {
 }
 
 // OFFSET: 0x006C5B40
+// FUNCTION: fn_06365
+void ShowPlayerLocation() {
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  if (!mode) {
+    return;
+  }
+
+  const auto* player = reinterpret_cast<const CRenderObject*>(mode->scene->player);
+  if (!player) {
+    return;
+  }
+
+  int column = 0;
+  int row = 0;
+  mode->WorldCell(player->render.position.x, player->render.position.z, column, row);
+
+  std::string name = mode->MapName();
+  if (name.size() > 4) {
+    name.resize(name.size() - 4);
+  }
+
+  const std::string text = std::format("{}({}) : {}, {}", g_session.GetMapDisplayName(mode->MapName().c_str()), name.c_str(), column, row);
+  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0x64FFFF, 0, 0, 0);
+  if (g_serviceType != 10) {
+    g_windowMgr.SendNotice(19, reinterpret_cast<std::intptr_t>(text.c_str()), 0x64FFFF, 0, 0, 0);
+  }
+}
