@@ -1212,6 +1212,33 @@ int CSession::GetPairValue() const {
   return third == -1 ? second : third;
 }
 
+// OFFSET: 0x00E0A220
+// FUNCTION: fn_23793
+int CSession::GetPetTargetAid() const {
+  int target = 0;
+  std::uint32_t aid = *reinterpret_cast<const std::uint32_t*>(&this->unknown_5570[8]);
+  CGameMode* mode;
+  CRenderObject* actor;
+  if (aid != 0 && (mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode())) != nullptr &&
+      (actor = mode->scene->GetGameActorByAID(aid)) != nullptr) {
+    target = static_cast<CGameActor*>(actor)->hitTargetAid;
+  }
+
+  aid = *reinterpret_cast<const std::uint32_t*>(&this->unknown_5620[8]);
+  if (aid != 0 && (mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode())) != nullptr &&
+      (actor = mode->scene->GetGameActorByAID(aid)) != nullptr) {
+    target = static_cast<CGameActor*>(actor)->hitTargetAid;
+  }
+
+  if (target > 0) {
+    mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    if (mode == nullptr || mode->scene->GetGameActorByAID(target) == nullptr) {
+      return 0;
+    }
+  }
+  return target;
+}
+
 // OFFSET: 0x00E1D950
 // FUNCTION: fn_23854
 int CSession::WorldUnknown0050() const {

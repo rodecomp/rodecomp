@@ -144,6 +144,7 @@ public:
   void ReceiveStatDump(const unsigned char* packet);
   void ReceiveActorText(const unsigned char* packet);
   void ReceiveRentalItemTime(const unsigned char* packet);
+  void ReceiveEquipWindowMicroscope(const unsigned char* packet);
   void ReceiveMemorialDungeonInfo(const unsigned char* packet);
   void ReceiveMemorialDungeonNotify(const unsigned char* packet);
   void ReceiveMemorialDungeonSubscriptionInfo(const unsigned char* packet);

@@ -5,6 +5,7 @@
 #include "UI/Item/UIItemBaseWnd.h"
 
 #include <cstddef>
+#include <string>
 
 class UICheckBox;
 class UIStaticText;
@@ -17,6 +18,7 @@ public:
   void Slot25(int x, int y) override;
   __declspec(noinline) ITEM_INFO GetItemAt(int x, int y);
   void SetTabChecked(int index, bool checked);
+  void SetTitle(std::string title);
 
   /* 00F0 */ int unknown_00F0;
   /* 00F4 */ unsigned char unknown_00F4[0x04];
