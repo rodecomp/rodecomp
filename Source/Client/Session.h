@@ -438,7 +438,7 @@ public:
   /* 6160 */ std::vector<int> unknown_6160;
   /* 616C */ std::vector<int> unknown_616C;
   /* 6178 */ std::vector<SessionRecord6178> unknown_6178;
-  /* 6184 */ unsigned char unknown_6184[0x04];
+  /* 6184 */ int unknown_6184;
   /* 6188 */ int m_lastIntervalTime;
   /* 618C */ const char* const* m_doramMaleHeadNames;
   /* 6190 */ unsigned char unknown_6190[0x08];

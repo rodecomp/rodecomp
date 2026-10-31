@@ -65,7 +65,15 @@ class CLoginMode : public CMode {
 public:
   CLoginMode();
   void SubD97780(int value);
-  /* 0058 */ unsigned char unknown_0058[0x174];
+  /* 0058 */ int charParams[6];
+  /* 0070 */ int unknown_0070;
+  /* 0074 */ int unknown_0074;
+  /* 0078 */ bool unknown_0078;
+  /* 0079 */ unsigned char unknown_0079[0x3F];
+  /* 00B8 */ unsigned char billingInfo[0x80];
+  /* 0138 */ unsigned char unknown_0138[0x8C];
+  /* 01C4 */ int unknown_01C4;
+  /* 01C8 */ unsigned char unknown_01C8[0x4];
   /* 01CC */ int characterCount;
   /* 01D0 */ unsigned char unknown_01D0[0x8];
   /* 01D8 */ int unknown_01D8;
@@ -75,7 +83,7 @@ public:
   /* 01E4 */ std::uint32_t otpStarted;
   /* 01E8 */ unsigned char unknown_01E8[0x3E80];
   /* 4068 */ CharacterInfo characters[68];
-  /* 6EE4 */ unsigned char unknown_6EE4[0x18];
+  /* 6EE4 */ std::string wallpaperName;
   /* 6EFC */ CharacterSlotExtension slotExtension;
   /* 6F10 */ unsigned char unknown_6F10[0x4];
   /* 6F14 */ UIWindow* window_6F14;
@@ -86,9 +94,11 @@ public:
   /* 6F74 */ bool unknown_6F74;
   /* 6F75 */ bool unknown_6F75;
   /* 6F76 */ bool unknown_6F76;
-  /* 6F77 */ unsigned char unknown_6F77[0x5];
+  /* 6F77 */ unsigned char unknown_6F77[0x1];
+  /* 6F78 */ int unknown_6F78;
 
   int Run() override;
+  void Initialize(const char* name) override;
   void End() override;
 
   void SubD8D4F0(int);
@@ -123,6 +133,8 @@ public:
 };
 
 extern bool g_loginModeFlag;
+extern int g_loginStartMode;
+extern int g_isStopByLogin;
 extern int g_modalImmediate;
 
 int GetClientType();

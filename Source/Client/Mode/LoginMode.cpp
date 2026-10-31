@@ -5,6 +5,10 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceOptions.h"
+#include "Contents/EntryQueueMgr.h"
+#include "Contents/GuildInfo.h"
+#include "Contents/GuildMgr.h"
 #include "Contents/MessageTable.h"
 #include "Contents/Sound/SoundMgr.h"
 #include "Network/Connection/Connection.h"
@@ -115,6 +119,12 @@ struct RefuseLoginPacket {
 
 // GLOBAL: gl_25054
 int g_charServerAccountIdPending;
+// GLOBAL: gl_25147
+int g_isStopByLogin;
+// GLOBAL: gl_25146
+int g_loginStartMode = 3;
+// GLOBAL: gl_25148
+const char* g_loginWallpaperName = "";
 
 static_assert(sizeof(CharacterSlotsPacket) == 0x1D);
 static_assert(offsetof(AcceptEnterPacket, characters) == 0x1B);
@@ -1496,4 +1506,55 @@ void CLoginMode::SubD911C0(const PasswordModePacket* packet) {
     break;
   }
   }
+}
+
+struct SessionItemLists {
+  void ClearItems1780();
+};
+
+// OFFSET: 0x00D97410
+// FUNCTION: fn_22300
+void CLoginMode::Initialize(const char* name) {
+  g_soundMgr->StopStreams();
+  this->charParams[0] = 5;
+  this->charParams[1] = 5;
+  this->charParams[2] = 5;
+  this->charParams[3] = 5;
+  this->charParams[4] = 5;
+  this->charParams[5] = 5;
+  this->unknown_0070 = 0;
+  this->unknown_0074 = 1;
+  this->unknown_0078 = false;
+  this->wallpaperName = g_loginWallpaperName;
+  this->running = 1;
+  this->pendingCursorType = -1;
+  std::memset(this->billingInfo, 0, sizeof(this->billingInfo));
+  this->cursorType = g_loginStartMode;
+  this->cursorFrame = 0;
+  this->pendingCursorType = -1;
+  this->Slot7(g_loginStartMode);
+  g_loginStartMode = 3;
+  g_isStopByLogin = 1;
+  g_session.ClearItemContainers();
+  reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId))->Init();
+  PreloadCommonSprites();
+  if (g_serviceOptions.Get(7)) {
+    g_soundMgr->PlayStream("bgm\\01.mp3", 0, false);
+  }
+  this->slotExtension = CharacterSlotExtension();
+  reinterpret_cast<SessionItemLists*>(&g_session)->ClearItems1780();
+  g_entryQueueMgr->ready = 0;
+  g_entryQueueMgr->current = nullptr;
+  g_session.ClearShortcutSlots();
+  g_session.ClearSecondaryShortcutSlots();
+  g_session.unknown_6184 = 0;
+  this->unknown_01C4 = 0;
+  this->characterCount = 0;
+  this->unknown_6F74 = false;
+  this->unknown_6F75 = false;
+  this->unknown_6F76 = false;
+  this->unknown_6F78 = 0;
+  g_session.unknown_8074 = 0;
+  g_session.unknown_0784.clear();
+  g_session.unknown_078C.clear();
 }
