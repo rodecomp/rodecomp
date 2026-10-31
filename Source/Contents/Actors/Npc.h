@@ -36,7 +36,10 @@ public:
   /* 042C */ UIWindow* unknown_042C;
   /* 0430 */ UIWindow* unknown_0430;
   /* 0434 */ CGameObject* unknown_0434;
-  /* 0438 */ int unknown_0438;
+  union {
+    /* 0438 */ int unknown_0438;
+    /* 0438 */ std::int16_t minimapMarkerCell[2];
+  };
   /* 043C */ int unknown_043C;
 };
 

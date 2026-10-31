@@ -7,11 +7,13 @@
 #include "Contents/Actors/Npc.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Effects/MsgEffect.h"
+#include "Contents/MessageTable.h"
 #include "Contents/MapSkyMgr.h"
 #include "Contents/Sound/SoundMgr.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Session.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Skills/ClientSkills.h"
 #include "Contents/World/World.h"
@@ -1200,5 +1202,277 @@ CHalluPC::CHalluPC(CPc* source) {
 }
 
 // OFFSET: 0x00DA28B0
+// FUNCTION: fn_22377
+void CNpc::UpdateMinimapMarker() {
+  if (g_session.IsAllyActor(this->render.accountId, this->GetEffectiveJob(-1)) != 1) {
+    return;
+  }
+
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  MinimapMarker* marker = mode->FindMinimapMarker(this->render.accountId);
+  if (marker && marker->unknown_0004 != 9999) {
+    if (this->unknown_0434) {
+      if (marker->unknown_0004 == this->minimapMarkerCell[0] && marker->unknown_0006 == this->minimapMarkerCell[1]) {
+        return;
+      }
+      if (this->unknown_0434) {
+        this->unknown_0434->SendMsg(nullptr, 0x35, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        this->unknown_0434 = nullptr;
+        this->unknown_0438 = 9999;
+      }
+    }
+
+    const int base = marker->unknown_0004 < 6 ? 0x24 : 0x36;
+    CMsgEffect* effect = mode->SpawnMsgEffect(base + marker->unknown_0004, &this->render.position, this->render.accountId, true);
+    this->unknown_03B0.push_back(effect);
+    effect->SendMsg(this, 0x32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->unknown_0434 = effect;
+    this->minimapMarkerCell[0] = marker->unknown_0004;
+    this->minimapMarkerCell[1] = marker->unknown_0006;
+    return;
+  }
+
+  if (this->unknown_0434) {
+    this->unknown_0434->SendMsg(nullptr, 0x35, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->unknown_0434 = nullptr;
+    this->unknown_0438 = 9999;
+  }
+}
 
 // OFFSET: 0x00DA3360
+// FUNCTION: fn_22404
+bool CNpc::OnProcess() {
+  if (!this->UpdateFadeOut()) {
+    return false;
+  }
+
+  if (this->render.isSingleColor == true && timeGetTime() > this->render.started + 100) {
+    this->render.overrideColor = 0xFFFF0000;
+    this->render.isSingleColor = false;
+  }
+
+  bool result = true;
+  switch (this->GetEffectiveJob(-1)) {
+    case 45:
+    case 139:
+      break;
+    case 104:
+      if (timeGetTime() > this->unknown_0424 + this->unknown_0294 * 1000) {
+        this->unknown_0424 = timeGetTime();
+        this->LaunchEffect(*reinterpret_cast<int*>(&this->unknown_0170[4]), vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      }
+      break;
+    case 111:
+      this->ProcessDamageMessages();
+      this->UpdateGaugePositions();
+      result = CallSlot14(this);
+      break;
+    default:
+      this->ProcessBodyState();
+      this->UpdateStateEffects();
+      this->ProcessDamageMessages();
+      if (this->render.color != 0xFFFFFFFF) {
+        this->ModifyArgb(8, 8, 8, 8);
+      }
+      this->UpdateGaugePositions();
+      result = CallSlot14(this);
+      break;
+  }
+
+  if (this->unknown_0314 != 7) {
+    this->PlayFrameSounds();
+  }
+
+  WIN32_FIND_DATAA findData;
+  if (g_session.IsHomunAid(this->render.accountId)) {
+    if (!this->unknown_030C) {
+      this->unknown_030C = reinterpret_cast<int>(new CMercenaryAI(0));
+    } else if (reinterpret_cast<CMercenaryAI*>(this->unknown_030C)->state) {
+      reinterpret_cast<CMercenaryAI*>(this->unknown_030C)->Process(this->render.accountId);
+    } else {
+      if (g_serviceOptions.Get(0xA4)) {
+        HANDLE find = FindFirstFileA(".\\AI\\USER_AI", &findData);
+        if (find == INVALID_HANDLE_VALUE) {
+          CreateDirectoryA(".\\AI\\USER_AI", nullptr);
+        }
+        FindClose(find);
+        CopyFileA(".\\AI\\AI.lua", ".\\AI\\USER_AI\\AI.lua", TRUE);
+        reinterpret_cast<CMercenaryAI*>(this->unknown_030C)->Load(".\\AI\\USER_AI\\AI.lua");
+      } else {
+        reinterpret_cast<CMercenaryAI*>(this->unknown_030C)->Load(".\\AI\\AI.lua");
+      }
+      this->SendMsg(nullptr, 0x22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+  }
+
+  if (g_session.IsMercenaryAid(this->render.accountId)) {
+    if (!this->unknown_0310) {
+      this->unknown_0310 = reinterpret_cast<int>(new CMercenaryAI(1));
+    } else if (reinterpret_cast<CMercenaryAI*>(this->unknown_0310)->state) {
+      reinterpret_cast<CMercenaryAI*>(this->unknown_0310)->Process(this->render.accountId);
+    } else {
+      const char* path;
+      if (g_serviceOptions.Get(0xAE)) {
+        HANDLE find = FindFirstFileA(".\\AI\\USER_AI", &findData);
+        if (find == INVALID_HANDLE_VALUE) {
+          CreateDirectoryA(".\\AI\\USER_AI", nullptr);
+        }
+        FindClose(find);
+        CopyFileA(".\\AI\\AI_M.lua", ".\\AI\\USER_AI\\AI_M.lua", TRUE);
+        path = ".\\AI\\USER_AI\\AI_M.lua";
+      } else {
+        path = ".\\AI\\AI_M.lua";
+      }
+      reinterpret_cast<CMercenaryAI*>(this->unknown_0310)->Load(path);
+      this->SendMsg(nullptr, 0x22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+  }
+
+  if (g_session.IsPetAid(this->render.accountId)) {
+    this->SendMsg(nullptr, 0x22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  }
+
+  this->UpdateBubblePositions();
+
+  if (g_groundMarkEnabled && g_groundMarkAid == this->render.accountId) {
+    this->SendMsg(nullptr, 0x86, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  } else if (g_groundMarkAltEnabled && g_groundMarkAltAid == this->render.accountId) {
+    this->SendMsg(nullptr, 0x86, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  } else {
+    this->SendMsg(nullptr, 0x87, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  }
+
+  this->UpdateMinimapMarker();
+
+  switch (this->unknown_0314) {
+    case 7:
+    case 8:
+    case 9:
+    case 10:
+    case 13:
+    case 14:
+      this->SetColor(
+        g_serviceOptions.Get(0x10A) ? 0x3A : static_cast<int>(this->render.color >> 24), static_cast<int>((this->render.color >> 16) & 0xFF),
+        static_cast<int>((this->render.color >> 8) & 0xFF), static_cast<int>(this->render.color & 0xFF)
+      );
+      break;
+  }
+
+  return result;
+}
+
+// OFFSET: 0x00DA3FD0
+// FUNCTION: fn_22409
+void CBlurPC::Render(int argument) {
+  const float* matrix = reinterpret_cast<const float*>(argument);
+  if (StateFlag02(this->stateFlags) || StateFlag06(this->stateFlags) || StateFlag01(this->stateFlags)) {
+    return;
+  }
+
+  rand();
+  rand();
+  rand();
+  rand();
+
+  if (!this->render.visible) {
+    this->UpdateTlvertex(matrix);
+    return;
+  }
+
+  if (g_serviceType == 4 && IsAdminAccount(this->render.accountId) && this->render.accountId != g_session.m_aid) {
+    return;
+  }
+
+  if (this->render.unknown_0070 != 6 && this->render.unknown_0070 != 3) {
+    this->DrawShadow(argument, this->render.scale);
+  }
+  if (!this->render.enabled) {
+    this->UpdateTlvertex(matrix);
+    return;
+  }
+
+  if (IsObfuscatedMessage(this->render.accountId)) {
+    this->RenderOverlaySprite(matrix, 1);
+    return;
+  }
+
+  if (this->unknown_0474 != 0) {
+    this->DrawSprite(argument, false, 0.0f);
+    return;
+  }
+
+  this->DrawLayers(matrix, 1, 2);
+}
+
+// OFFSET: 0x00DA42C0
+// FUNCTION: fn_22413
+void CHalluPC2::Render(int argument) {
+  const float* matrix = reinterpret_cast<const float*>(argument);
+  if (StateFlag02(this->stateFlags) || StateFlag06(this->stateFlags) || StateFlag01(this->stateFlags)) {
+    return;
+  }
+
+  rand();
+  rand();
+  rand();
+  rand();
+
+  if (this->render.visible && this->render.enabled) {
+    this->DrawLayers(matrix, 1, 1);
+    return;
+  }
+
+  this->UpdateTlvertex(matrix);
+}
+
+// OFFSET: 0x00DA4340
+// FUNCTION: fn_22414
+void CHalluPC::Render(int argument) {
+  const float* matrix = reinterpret_cast<const float*>(argument);
+  CWorld* scene = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
+  if (scene) {
+    CRenderObject* source = scene->GetGameActorByAidIncludeMe(this->render.accountId);
+    if (source && (source->render.flags & 0x10) != 0) {
+      this->render.flags = 0x10;
+      this->render.pulsePhases[0] = 45;
+    }
+  }
+
+  if (StateFlag02(this->stateFlags) || StateFlag06(this->stateFlags) || StateFlag01(this->stateFlags)) {
+    return;
+  }
+
+  rand();
+  rand();
+  rand();
+  rand();
+
+  if (!this->render.visible) {
+    this->UpdateTlvertex(matrix);
+    return;
+  }
+
+  if (g_serviceType == 4 && IsAdminAccount(this->render.accountId) && this->render.accountId != g_session.m_aid) {
+    return;
+  }
+
+  if (this->render.unknown_0070 != 6 && this->render.unknown_0070 != 3) {
+    this->DrawShadow(argument, this->render.scale);
+  }
+  if (!this->render.enabled) {
+    this->UpdateTlvertex(matrix);
+    return;
+  }
+
+  if (IsObfuscatedMessage(this->render.accountId)) {
+    this->RenderOverlaySprite(matrix, 1);
+    return;
+  }
+
+  if (this->unknown_0474 != 0) {
+    this->DrawSprite(argument, false, 0.0f);
+    return;
+  }
+
+  this->DrawLayers(matrix, 1, 0);
+}
