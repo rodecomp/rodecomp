@@ -1640,3 +1640,30 @@ void CGameMode::ReceiveItemInventoryList(const unsigned char* data) {
 
   RefreshItemWindows(&g_windowMgr);
 }
+
+// OFFSET: 0x00D64930
+// FUNCTION: fn_21994
+void __stdcall Nullsub479(int value) {
+}
+
+// OFFSET: 0x00D64A40
+// FUNCTION: fn_21996
+int sub_D64A40(const unsigned char* entries) {
+  int count = 0;
+  if (*reinterpret_cast<const std::uint16_t*>(entries) != 0) {
+    ++count;
+  }
+  if (*reinterpret_cast<const std::uint16_t*>(entries + 5) != 0) {
+    ++count;
+  }
+  if (*reinterpret_cast<const std::uint16_t*>(entries + 10) != 0) {
+    ++count;
+  }
+  if (*reinterpret_cast<const std::uint16_t*>(entries + 15) != 0) {
+    ++count;
+  }
+  if (*reinterpret_cast<const std::uint16_t*>(entries + 20) != 0) {
+    ++count;
+  }
+  return count;
+}
