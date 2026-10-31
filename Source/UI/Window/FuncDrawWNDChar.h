@@ -21,6 +21,7 @@ public:
   void Draw(int option);
   bool DrawOnTop();
   std::list<int> DrawOrder();
+  int IsSpecialLayer(int layer);
 
   /* 0004 */ UIWindow* m_window;
   /* 0008 */ int m_x;

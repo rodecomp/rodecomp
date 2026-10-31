@@ -89,3 +89,14 @@ bool FuncDrawWNDChar::DrawOnTop() {
 
   return true;
 }
+
+// OFFSET: 0x007E5120
+// FUNCTION: fn_09730
+int FuncDrawWNDChar::IsSpecialLayer(int layer) {
+  const auto found = this->m_layers.find(layer);
+  if (found != this->m_layers.end() && g_session.IsSpecialMonsterJob(found->second) == true) {
+    return 1;
+  }
+
+  return layer == 2;
+}
