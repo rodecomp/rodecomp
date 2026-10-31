@@ -18544,3 +18544,649 @@ void CRagEffect::BlackSpellRings(char silent) {
     this->TexturedQuadRingSized(25, "effect\\ring_black.tga", 6);
   }
 }
+
+// OFFSET: 0x00C4C730
+// FUNCTION: fn_20176
+void CRagEffect::TexturedClassChange(char kind) {
+  this->render.position = this->state.parent->render.position;
+
+  const int stage = kind == 30 ? 30 : 0;
+  if (this->state.stateCnt == 0x5F5E0FE) {
+    this->state.stateCnt = 0;
+  }
+  if (this->state.stateCnt != stage) {
+    return;
+  }
+
+  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 5, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  this->state.unknown_11C84->duration = this->state.duration;
+  this->state.unknown_11C84->deltaPos2.y = 0.0f;
+  this->state.unknown_11C84->renderFlag |= 0x200u;
+  this->state.unknown_11C84->pattern |= 0x200u;
+  this->state.unknown_11C84->animSpeed = 2;
+  this->state.unknown_11C84->repeatAnim = 0;
+  this->state.unknown_11C84->alphaSpeed = 0.0f;
+
+  switch (kind) {
+  case 0:
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\캐슬링.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\캐슬링.act");
+    break;
+  case 1:
+    PlayEffectWave(*this, "effect\\h_blood_lust.wav");
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\블러드러스트.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\블러드러스트.act");
+    break;
+  case 2:
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\item_thunder.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\item_thunder.act");
+    break;
+  case 3:
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\item_cloud.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\item_cloud.act");
+    break;
+  case 4:
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\item_curse.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\item_curse.act");
+    break;
+  case 5:
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\item_zzz.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\item_zzz.act");
+    break;
+  case 6:
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\item_rain.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\item_rain.act");
+    break;
+  case 7:
+    PlayEffectWave(*this, "effect\\ef_firehit.wav");
+    this->state.unknown_11C84->animSpeed = 3;
+    this->state.unknown_11C84->pattern = 0;
+    this->state.unknown_11C84->alpha = 220.0f;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\m_ef01.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\m_ef01.act");
+    break;
+  case 8: {
+    this->state.unknown_11C84->animSpeed = 4;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\m_ef02.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\m_ef02.act");
+    std::int16_t angle;
+    Get_Angle(this->render.position.x - this->state.deltaPos[0], this->render.position.z - this->state.deltaPos[2], &angle);
+    const CView* camera = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera;
+    std::int16_t direction = static_cast<std::int16_t>(static_cast<int>(camera->camera.yaw) + angle) % 360;
+    if (direction < 0) {
+      direction += 360;
+    }
+
+    if (direction >= 180 && direction < 270) {
+      Owner(this->state.unknown_11C84).SetAction(2, 16, 1);
+    } else if (direction >= 90 && direction < 180) {
+      Owner(this->state.unknown_11C84).SetAction(3, 16, 1);
+    } else if (direction >= 0 && direction < 90) {
+      Owner(this->state.unknown_11C84).SetAction(0, 16, 1);
+    } else {
+      Owner(this->state.unknown_11C84).SetAction(1, 16, 1);
+    }
+    break;
+  }
+  case 9:
+    this->state.unknown_11C84->animSpeed = 4;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\m_ef03.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\m_ef03.act");
+    break;
+  case 10:
+    this->state.unknown_11C84->animSpeed = 4;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\m_ef04.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\m_ef04.act");
+    this->state.unknown_11C84->repeatAnim = 1;
+    break;
+  case 11:
+    this->state.unknown_11C84->animSpeed = 4;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\m_ef05.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\m_ef05.act");
+    break;
+  case 12:
+    this->state.unknown_11C84->animSpeed = 4;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\m_ef06.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\m_ef06.act");
+    break;
+  case 13:
+    this->state.unknown_11C84->animSpeed = 4;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\m_ef07.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\m_ef07.act");
+    break;
+  case 14:
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\합격_.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\합격_.act");
+    break;
+  case 15:
+    this->state.unknown_11C84->animSpeed = 4;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\그림자베기.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\그림자베기.act");
+    if (std::max(rand() % 2, 0) == 0) {
+      Owner(this->state.unknown_11C84).SetAction(4, 16, 1);
+    } else {
+      Owner(this->state.unknown_11C84).SetAction(0, 16, 1);
+    }
+    break;
+  case 16:
+    this->state.unknown_11C84->deltaPos2.y = -6.0f;
+    this->state.unknown_11C84->renderFlag = 1;
+    this->state.unknown_11C84->animSpeed = 6;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\다다미.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\다다미.act");
+    Owner(this->state.unknown_11C84).SetAction(0, 16, 1);
+    break;
+  case 17:
+    this->state.unknown_11C84->animSpeed = 4;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\안개베기.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\안개베기.act");
+    if (std::max(rand() % 2, 0) == 0) {
+      Owner(this->state.unknown_11C84).SetAction(2, 16, 1);
+    } else {
+      Owner(this->state.unknown_11C84).SetAction(0, 16, 1);
+    }
+    break;
+  case 18:
+    this->state.unknown_11C84->deltaPos2.y = -6.0f;
+    this->state.unknown_11C84->animSpeed = 2;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\일섬.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\일섬.act");
+    Owner(this->state.unknown_11C84).SetAction(0, 16, 1);
+    break;
+  case 19:
+    this->state.unknown_11C84->deltaPos2.y = -1.0f;
+    this->state.unknown_11C84->renderFlag = 1;
+    this->state.unknown_11C84->animSpeed = std::max(rand() % 5, 0) + 3;
+    this->state.unknown_11C84->repeatAnim = 1;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\화염진.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\화염진.act");
+    Owner(this->state.unknown_11C84).SetAction(0, 16, 1);
+    break;
+  case 20:
+    this->state.unknown_11C84->animSpeed = 4;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\데스페라도.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\데스페라도.act");
+    Owner(this->state.unknown_11C84).SetAction(0, 16, 1);
+    break;
+  case 21:
+    this->state.unknown_11C84->deltaPos2.y = -1.0f;
+    this->state.unknown_11C84->renderFlag = 1;
+    this->state.unknown_11C84->repeatAnim = 1;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\라이트닝스피어.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\라이트닝스피어.act");
+    Owner(this->state.unknown_11C84).SetAction(0, 16, 1);
+    break;
+  case 22:
+    this->state.unknown_11C84->deltaPos2.y = -1.0f;
+    this->state.unknown_11C84->renderFlag = 1;
+    this->state.unknown_11C84->repeatAnim = 1;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\블라인드스피어.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\블라인드스피어.act");
+    Owner(this->state.unknown_11C84).SetAction(0, 16, 1);
+    break;
+  case 23:
+    this->state.unknown_11C84->deltaPos2.y = -1.0f;
+    this->state.unknown_11C84->renderFlag = 1;
+    this->state.unknown_11C84->repeatAnim = 1;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\포이즌스피어.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\포이즌스피어.act");
+    Owner(this->state.unknown_11C84).SetAction(0, 16, 1);
+    break;
+  case 24:
+    this->state.unknown_11C84->deltaPos2.y = -1.0f;
+    this->state.unknown_11C84->renderFlag = 1;
+    this->state.unknown_11C84->repeatAnim = 1;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\프리징스피어.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\프리징스피어.act");
+    Owner(this->state.unknown_11C84).SetAction(0, 16, 1);
+    break;
+  case 25:
+    this->state.unknown_11C84->deltaPos2.y = -1.0f;
+    this->state.unknown_11C84->renderFlag = 1;
+    this->state.unknown_11C84->repeatAnim = 1;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\플레어스피어.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\플레어스피어.act");
+    Owner(this->state.unknown_11C84).SetAction(0, 16, 1);
+    break;
+  case 26:
+    this->state.unknown_11C84->animSpeed = 4;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\래피드샤워.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\래피드샤워.act");
+    Owner(this->state.unknown_11C84).SetAction(0, 16, 1);
+    break;
+  case 27:
+    this->state.unknown_11C84->animSpeed = 2;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\매지컬불릿.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\매지컬불릿.act");
+    Owner(this->state.unknown_11C84).SetAction(0, 16, 1);
+    break;
+  case 28: {
+    this->state.unknown_11C84->animSpeed = 4;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\스프레드.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\스프레드.act");
+    std::int16_t angle;
+    Get_Angle(this->render.position.x - this->state.deltaPos[0], this->render.position.z - this->state.deltaPos[2], &angle);
+    const CView* camera = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera;
+    std::int16_t direction = static_cast<std::int16_t>(static_cast<int>(camera->camera.yaw) + angle) % 360;
+    if (direction < 0) {
+      direction += 360;
+    }
+
+    if (direction >= 180 && direction < 270) {
+      Owner(this->state.unknown_11C84).SetAction(4, 16, 1);
+    } else if (direction >= 90 && direction < 180) {
+      Owner(this->state.unknown_11C84).SetAction(6, 16, 1);
+    } else if (direction >= 0 && direction < 90) {
+      Owner(this->state.unknown_11C84).SetAction(0, 16, 1);
+    } else {
+      Owner(this->state.unknown_11C84).SetAction(2, 16, 1);
+    }
+    break;
+  }
+  case 29:
+    this->state.unknown_11C84->animSpeed = 2;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\트래킹.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\트래킹.act");
+    Owner(this->state.unknown_11C84).SetAction(0, 16, 1);
+    break;
+  case 30:
+    this->state.unknown_11C84->animSpeed = 2;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\트리플액션.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\트리플액션.act");
+    Owner(this->state.unknown_11C84).SetAction(0, 16, 1);
+    break;
+  case 31:
+    this->state.unknown_11C84->animSpeed = 4;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\어스퀘이크.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\어스퀘이크.act");
+    Owner(this->state.unknown_11C84).SetAction(0, 16, 1);
+    break;
+  case 32:
+    this->state.unknown_11C84->animSpeed = 4;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\폭죽_러브.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\폭죽_러브.act");
+    Owner(this->state.unknown_11C84).SetAction(0, 16, 1);
+    g_soundMgr->PlayWave("effect\\itempokjuk.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    break;
+  case 33:
+    this->state.unknown_11C84->animSpeed = 4;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\폭죽_화이트데이.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\폭죽_화이트데이.act");
+    Owner(this->state.unknown_11C84).SetAction(0, 16, 1);
+    g_soundMgr->PlayWave("effect\\itempokjuk.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    break;
+  case 34:
+    this->state.unknown_11C84->animSpeed = 4;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\폭죽_발렌타인.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\폭죽_발렌타인.act");
+    Owner(this->state.unknown_11C84).SetAction(0, 16, 1);
+    g_soundMgr->PlayWave("effect\\itempokjuk.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    break;
+  case 35:
+    this->state.unknown_11C84->animSpeed = 4;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\폭죽_생일.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\폭죽_생일.act");
+    Owner(this->state.unknown_11C84).SetAction(0, 16, 1);
+    g_soundMgr->PlayWave("effect\\itempokjuk.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    break;
+  case 36:
+    this->state.unknown_11C84->animSpeed = 4;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\폭죽_크리스마스.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\폭죽_크리스마스.act");
+    Owner(this->state.unknown_11C84).SetAction(0, 16, 1);
+    g_soundMgr->PlayWave("effect\\itempokjuk.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    break;
+  case 37:
+    this->state.unknown_11C84->animSpeed = 4;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\mobile_ef04.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\mobile_ef04.act");
+    Owner(this->state.unknown_11C84).SetAction(0, 16, 1);
+    break;
+  case 38:
+    this->state.unknown_11C84->animSpeed = 4;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\mashofa.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\mashofa.act");
+    Owner(this->state.unknown_11C84).SetAction(0, 16, 1);
+    g_soundMgr->PlayWave("effect\\t_에너지방출.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    break;
+  case 39:
+    this->state.unknown_11C84->animSpeed = 4;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\soule.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\soule.act");
+    Owner(this->state.unknown_11C84).SetAction(0, 16, 1);
+    g_soundMgr->PlayWave("effect\\매직 크래쉬.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    break;
+  case 50:
+    this->state.unknown_11C84->deltaPos2.y = -1.0f;
+    this->state.unknown_11C84->renderFlag = 1;
+    this->state.unknown_11C84->repeatAnim = 1;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\기본트랩.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\기본트랩.act");
+    Owner(this->state.unknown_11C84).SetAction(0, 16, 1);
+    break;
+  case 51:
+    this->state.unknown_11C84->deltaPos2.y = -1.0f;
+    this->state.unknown_11C84->renderFlag = 1;
+    this->state.unknown_11C84->repeatAnim = 1;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\담황색트랩.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\담황색트랩.act");
+    Owner(this->state.unknown_11C84).SetAction(0, 16, 1);
+    break;
+  case 52:
+    this->state.unknown_11C84->deltaPos2.y = -1.0f;
+    this->state.unknown_11C84->renderFlag = 1;
+    this->state.unknown_11C84->repeatAnim = 1;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\암청색트랩.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\암청색트랩.act");
+    Owner(this->state.unknown_11C84).SetAction(0, 16, 1);
+    break;
+  case 53:
+    this->state.unknown_11C84->deltaPos2.y = -1.0f;
+    this->state.unknown_11C84->renderFlag = 1;
+    this->state.unknown_11C84->repeatAnim = 1;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\자홍색트랩.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\자홍색트랩.act");
+    Owner(this->state.unknown_11C84).SetAction(0, 16, 1);
+    break;
+  case 54:
+    this->state.unknown_11C84->deltaPos2.y = -1.0f;
+    this->state.unknown_11C84->renderFlag = 1;
+    this->state.unknown_11C84->repeatAnim = 1;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\청록색트랩.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\청록색트랩.act");
+    Owner(this->state.unknown_11C84).SetAction(0, 16, 1);
+    break;
+  case 60:
+    this->state.unknown_11C84->animSpeed = 4;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "몬스터\\stapo.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "몬스터\\stapo.act");
+    this->state.unknown_11C84->deltaPos2.y = -8.0f;
+    if (rand() % 2 == 0) {
+      Owner(this->state.unknown_11C84).SetAction(0, 16, 1);
+    } else {
+      Owner(this->state.unknown_11C84).SetAction(7, 16, 1);
+    }
+    break;
+  case 61:
+    this->state.unknown_11C84->deltaPos2.y = -1.0f;
+    this->state.unknown_11C84->renderFlag = 5;
+    this->state.unknown_11C84->repeatAnim = 1;
+    this->state.unknown_11C84->animSpeed = std::max(rand() % 3, 0) + 8;
+    this->state.unknown_11C84->pattern = 0;
+    this->state.unknown_11C84->alpha = static_cast<float>(rand() % 71 + 70);
+    this->state.unknown_11C84->size = static_cast<float>(rand() % 11) * 0.04f + 0.4f;
+    this->state.unknown_11C84->red = 85;
+    this->state.unknown_11C84->green = 255;
+    this->state.unknown_11C84->blue = 85;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "몬스터\\Ancient_tree.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "몬스터\\Ancient_tree.act");
+    Owner(this->state.unknown_11C84).SetAction(rand() % 8, 16, 1);
+    break;
+  case 62:
+    this->state.unknown_11C84->deltaPos2.y = -1.0f;
+    this->state.unknown_11C84->renderFlag = 5;
+    this->state.unknown_11C84->repeatAnim = 1;
+    this->state.unknown_11C84->animSpeed = std::max(rand() % 3, 0) + 8;
+    this->state.unknown_11C84->pattern = 0;
+    this->state.unknown_11C84->alpha = static_cast<float>(rand() % 71 + 70);
+    this->state.unknown_11C84->size = static_cast<float>(rand() % 11) * 0.04f + 0.4f;
+    this->state.unknown_11C84->red = 85;
+    this->state.unknown_11C84->green = 255;
+    this->state.unknown_11C84->blue = 85;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "몬스터\\ifrit.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "몬스터\\ifrit.act");
+    Owner(this->state.unknown_11C84).SetAction(rand() % 8 + 0x20, 16, 1);
+    break;
+  case 63:
+    this->state.unknown_11C84->deltaPos2.y = -12.0f;
+    this->state.unknown_11C84->renderFlag = 5;
+    this->state.unknown_11C84->repeatAnim = 1;
+    this->state.unknown_11C84->animSpeed = 6;
+    this->state.unknown_11C84->pattern = 0;
+    this->state.unknown_11C84->alpha = 255.0f;
+    this->state.unknown_11C84->size = 0.7f;
+    this->state.unknown_11C84->red = 155;
+    this->state.unknown_11C84->green = 255;
+    this->state.unknown_11C84->blue = 155;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "몬스터\\mavka_bullet.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "몬스터\\mavka_bullet.act");
+    Owner(this->state.unknown_11C84).SetAction(rand() % 8, 16, 1);
+    break;
+  case 64:
+    this->state.unknown_11C84->deltaPos2.y = -1.0f;
+    this->state.unknown_11C84->renderFlag = 5;
+    this->state.unknown_11C84->repeatAnim = 1;
+    this->state.unknown_11C84->animSpeed = 3;
+    this->state.unknown_11C84->pattern = 0;
+    this->state.unknown_11C84->alpha = 205.0f;
+    this->state.unknown_11C84->size = 2.5f;
+    this->state.unknown_11C84->red = 155;
+    this->state.unknown_11C84->green = 155;
+    this->state.unknown_11C84->blue = 155;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "몬스터\\breeze.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "몬스터\\breeze.act");
+    Owner(this->state.unknown_11C84).SetAction(0, 16, 1);
+    break;
+  case 65:
+    this->state.unknown_11C84->deltaPos2.y = -1.0f;
+    this->state.unknown_11C84->renderFlag = 5;
+    this->state.unknown_11C84->repeatAnim = 1;
+    this->state.unknown_11C84->animSpeed = 2;
+    this->state.unknown_11C84->pattern = 0;
+    this->state.unknown_11C84->alpha = 205.0f;
+    this->state.unknown_11C84->size = 2.5f;
+    this->state.unknown_11C84->red = 155;
+    this->state.unknown_11C84->green = 155;
+    this->state.unknown_11C84->blue = 155;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "몬스터\\breeze.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "몬스터\\breeze.act");
+    Owner(this->state.unknown_11C84).SetAction(4, 16, 1);
+    break;
+  case 70:
+    this->state.unknown_11C84->repeatAnim = 1;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\거스트.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\거스트.act");
+    break;
+  case 71:
+    this->state.unknown_11C84->repeatAnim = 1;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\블래스트.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\블래스트.act");
+    break;
+  case 72:
+    this->state.unknown_11C84->repeatAnim = 1;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\아쿠아플레이.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\아쿠아플레이.act");
+    break;
+  case 73:
+    this->state.unknown_11C84->repeatAnim = 1;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\업히벌.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\업히벌.act");
+    break;
+  case 74:
+    this->state.unknown_11C84->repeatAnim = 1;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\와일드스톰.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\와일드스톰.act");
+    break;
+  case 75:
+    this->state.unknown_11C84->repeatAnim = 1;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\칠리에어.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\칠리에어.act");
+    break;
+  case 76:
+    this->state.unknown_11C84->repeatAnim = 1;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\커즈드소일.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\커즈드소일.act");
+    break;
+  case 77:
+    this->state.unknown_11C84->repeatAnim = 1;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\쿨러.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\쿨러.act");
+    break;
+  case 78:
+    this->state.unknown_11C84->repeatAnim = 1;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\트로픽.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\트로픽.act");
+    break;
+  case 79:
+    this->state.unknown_11C84->repeatAnim = 1;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\파이로테크닉.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\파이로테크닉.act");
+    break;
+  case 80:
+    this->state.unknown_11C84->repeatAnim = 1;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\페트롤로지.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\페트롤로지.act");
+    break;
+  case 81:
+    this->state.unknown_11C84->repeatAnim = 1;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\히터.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\히터.act");
+    break;
+  case 82:
+    this->state.unknown_11C84->animSpeed = 4;
+    this->state.unknown_11C84->repeatAnim = 1;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\silent_brz.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\silent_brz.act");
+    break;
+  case 83:
+    this->state.unknown_11C84->animSpeed = 4;
+    this->state.unknown_11C84->repeatAnim = 0;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\magma_flow.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\magma_flow.act");
+    break;
+  case 84:
+    this->state.unknown_11C84->deltaPos2.y = -1.0f;
+    this->state.unknown_11C84->renderFlag = 1;
+    this->state.unknown_11C84->animSpeed = 10;
+    this->state.unknown_11C84->repeatAnim = 1;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\icemine.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\icemine.act");
+    break;
+  case 85:
+    this->state.unknown_11C84->deltaPos2.y = -1.0f;
+    this->state.unknown_11C84->renderFlag = 1;
+    this->state.unknown_11C84->animSpeed = 10;
+    this->state.unknown_11C84->repeatAnim = 0;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\icemine_.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\icemine_.act");
+    Owner(this->state.unknown_11C84).SetAction(0, 10, 1);
+    break;
+  case 86:
+    this->state.unknown_11C84->animSpeed = 4;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\RK_DRAGONBREATH_WATER.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\RK_DRAGONBREATH_WATER.act");
+    break;
+  case 87:
+    this->state.unknown_11C84->animSpeed = 4;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\wideweb.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\wideweb.act");
+    break;
+  case 88:
+    this->state.unknown_11C84->animSpeed = 4;
+    this->state.unknown_11C84->repeatAnim = 1;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\burnt.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\burnt.act");
+    break;
+  case 90:
+    this->state.unknown_11C84->deltaPos2.y = -1.0f;
+    this->state.unknown_11C84->renderFlag = 1;
+    this->state.unknown_11C84->repeatAnim = 1;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\그라운드드리프트.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\그라운드드리프트.act");
+    Owner(this->state.unknown_11C84).SetAction(0, 16, 1);
+    break;
+  case 91:
+    this->state.unknown_11C84->repeatAnim = 1;
+    this->state.unknown_11C84->animSpeed = 4;
+    this->state.unknown_11C84->deltaPos2.y = -4.0f;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\나뭇잎_완성.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\나뭇잎_완성.act");
+    break;
+  case 94:
+    this->state.unknown_11C84->repeatAnim = 1;
+    this->state.unknown_11C84->animSpeed = 4;
+    this->state.unknown_11C84->deltaPos2.y = -4.0f;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\Black_Thunder\\Black_Thunder.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\Black_Thunder\\Black_Thunder.act");
+    break;
+  case 95:
+    this->state.unknown_11C84->repeatAnim = 1;
+    this->state.unknown_11C84->animSpeed = 4;
+    this->state.unknown_11C84->deltaPos2.y = -4.0f;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\Black_Thunder\\Black_Thunder_Dark.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\Black_Thunder\\Black_Thunder_Dark.act");
+    break;
+  case 96:
+    this->state.unknown_11C84->repeatAnim = 1;
+    this->state.unknown_11C84->renderFlag = 0xd;
+    this->state.unknown_11C84->animSpeed = 4;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Angel_Magic_Circle.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Angel_Magic_Circle.act");
+    break;
+  case 97:
+    this->state.unknown_11C84->repeatAnim = 1;
+    this->state.unknown_11C84->renderFlag = 0xd;
+    this->state.unknown_11C84->animSpeed = 4;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Animal_Magic_Circle.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Animal_Magic_Circle.act");
+    break;
+  case 98:
+    this->state.unknown_11C84->repeatAnim = 1;
+    this->state.unknown_11C84->renderFlag = 0xd;
+    this->state.unknown_11C84->animSpeed = 4;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Devil_Magic_Circle.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Devil_Magic_Circle.act");
+    break;
+  case 99:
+    this->state.unknown_11C84->repeatAnim = 1;
+    this->state.unknown_11C84->renderFlag = 0xd;
+    this->state.unknown_11C84->animSpeed = 4;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Dragon_Magic_Circle.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Dragon_Magic_Circle.act");
+    break;
+  case 100:
+    this->state.unknown_11C84->repeatAnim = 1;
+    this->state.unknown_11C84->renderFlag = 0xd;
+    this->state.unknown_11C84->animSpeed = 4;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Fish_Magic_Circle.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Fish_Magic_Circle.act");
+    break;
+  case 101:
+    this->state.unknown_11C84->repeatAnim = 1;
+    this->state.unknown_11C84->renderFlag = 0xd;
+    this->state.unknown_11C84->animSpeed = 4;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Human_Magic_Circle.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Human_Magic_Circle.act");
+    break;
+  case 102:
+    this->state.unknown_11C84->repeatAnim = 1;
+    this->state.unknown_11C84->renderFlag = 0xd;
+    this->state.unknown_11C84->animSpeed = 4;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Insect_Magic_Circle.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Insect_Magic_Circle.act");
+    break;
+  case 103:
+    this->state.unknown_11C84->repeatAnim = 1;
+    this->state.unknown_11C84->renderFlag = 0xd;
+    this->state.unknown_11C84->animSpeed = 4;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Nothing_Magic_Circle.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Nothing_Magic_Circle.act");
+    break;
+  case 104:
+    this->state.unknown_11C84->repeatAnim = 1;
+    this->state.unknown_11C84->renderFlag = 0xd;
+    this->state.unknown_11C84->animSpeed = 4;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Plant_Magic_Circle.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Plant_Magic_Circle.act");
+    break;
+  case 105:
+    this->state.unknown_11C84->repeatAnim = 1;
+    this->state.unknown_11C84->renderFlag = 0xd;
+    this->state.unknown_11C84->animSpeed = 4;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Undead_Magic_Circle.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Undead_Magic_Circle.act");
+    break;
+  }
+
+  Owner(this->state.unknown_11C84).InitSegment();
+}
