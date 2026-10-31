@@ -177,6 +177,7 @@ public:
   std::string MapName();
   UIBroadcastBalloon* EnsureBroadcastBalloon();
   void InitializeCamera();
+  void ReloadScene();
   std::string GetUnknown0084(unsigned int index);
   void RequestPlayerAction(int target, int argument);
   void UpdateLoopSounds();

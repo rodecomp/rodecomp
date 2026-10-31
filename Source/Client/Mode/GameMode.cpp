@@ -2448,3 +2448,19 @@ void CGameMode::End() {
   g_session.SaveMiniPartyInfo();
   g_session.SetUnknown8134(0);
 }
+
+#include "Contents/MapSkyMgr.h"
+
+// OFFSET: 0x00CE8DE0
+// FUNCTION: fn_21342
+void CGameMode::ReloadScene() {
+  this->scene->Clear();
+  this->scene->CreatePlayer();
+  this->scene->LoadMapEffects();
+  g_weatherEffect.ResetEffect();
+  this->mousePointer = new CMousePointer();
+  this->scene->objects.push_back(this->mousePointer);
+  this->camera->camera.target[0] = this->scene->player->render.position.x;
+  this->camera->camera.target[1] = this->scene->player->render.position.y;
+  this->camera->camera.target[2] = this->scene->player->render.position.z;
+}
