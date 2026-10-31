@@ -2396,7 +2396,7 @@ void CRagEffect::TexturedRise(const char* name, char large) {
 
 // OFFSET: 0x00C70F10
 // FUNCTION: fn_20317
-void CRagEffect::TexturedSpiral(const char* name) {
+void CRagEffect::TexturedSpiral(const char* name, int, int) {
   const RenderObjectState& parent = this->state.parent->render;
   this->render.position.x = parent.position.x;
   this->render.position.y = parent.position.y;
@@ -2527,7 +2527,7 @@ void CRagEffect::TexturedBeam(char flag, const char* name) {
 
 // OFFSET: 0x00C70980
 // FUNCTION: fn_20314
-void CRagEffect::TexturedSpiralSmall(const char* name) {
+void CRagEffect::TexturedSpiralSmall(const char* name, int, int) {
   const RenderObjectState& parent = this->state.parent->render;
   this->render.position.x = parent.position.x;
   this->render.position.y = parent.position.y;
@@ -2562,7 +2562,7 @@ void CRagEffect::TexturedSpiralSmall(const char* name) {
 
 // OFFSET: 0x00C70B50
 // FUNCTION: fn_20315
-void CRagEffect::TexturedSpiralTall(const char* name) {
+void CRagEffect::TexturedSpiralTall(const char* name, int, int) {
   const RenderObjectState& parent = this->state.parent->render;
   this->render.position.x = parent.position.x;
   this->render.position.y = parent.position.y;
@@ -2598,7 +2598,7 @@ void CRagEffect::TexturedSpiralTall(const char* name) {
 
 // OFFSET: 0x00C70D30
 // FUNCTION: fn_20316
-void CRagEffect::TexturedSpiralFade(const char* name) {
+void CRagEffect::TexturedSpiralFade(const char* name, int, int) {
   const RenderObjectState& parent = this->state.parent->render;
   this->render.position.x = parent.position.x;
   this->render.position.y = parent.position.y;
@@ -2700,7 +2700,7 @@ void CRagEffect::TexturedScatterLow(const char* name, char flag) {
 
 // OFFSET: 0x00C6E6F0
 // FUNCTION: fn_20303
-void CRagEffect::TexturedDualSpin(const char* first, const char* second) {
+void CRagEffect::TexturedDualSpin(const char* first, const char* second, int) {
   const RenderObjectState& parent = this->state.parent->render;
   this->render.position.x = parent.position.x;
   this->render.position.y = parent.position.y;
@@ -3373,7 +3373,7 @@ void CRagEffect::SlashFan(std::int16_t reverse) {
 
 // OFFSET: 0x00C65F80
 // FUNCTION: fn_20272
-void CRagEffect::FeatherBurst(const char* name, std::int16_t angle) {
+void CRagEffect::FeatherBurst(const char* name, std::int16_t angle, char) {
   const RenderObjectState& parent = this->state.parent->render;
   this->render.position.x = parent.position.x;
   this->render.position.y = parent.position.y;
@@ -3449,7 +3449,7 @@ void CRagEffect::FeatherRing(const char* name, std::int16_t angle, char large) {
 
 // OFFSET: 0x00C6CB70
 // FUNCTION: fn_20297
-void CRagEffect::TexturedSlam(const char* name, std::int16_t kind) {
+void CRagEffect::TexturedSlam(const char* name, std::int16_t kind, char) {
   const RenderObjectState& parent = this->state.parent->render;
   this->render.position.x = parent.position.x;
   this->render.position.y = parent.position.y;
@@ -4047,7 +4047,7 @@ void CRagEffect::TexturedCross(const char* name, char kind) {
     this->state.unknown_11C84->slots[index].distance = static_cast<float>(index) * 0.5f + 6.0f;
     this->state.unknown_11C84->slots[index].riseAngle = static_cast<std::int16_t>(83 - index);
     this->state.unknown_11C84->slots[index].alphaT = 1;
-    this->state.unknown_11C84->slots[index].vecBNow.z = 0.0f;
+    this->state.unknown_11C84->slots[index].vecBNow.y = 0.0f;
 
     for (int height = 0; height < 21; ++height) {
       this->state.unknown_11C84->slots[index].height[height] = 0.0f;
@@ -4292,7 +4292,7 @@ void CRagEffect::TexturedCrossLevel(const char* name, char level) {
     this->state.unknown_11C84->slots[index].distance = static_cast<float>(index) + 1.0f;
     this->state.unknown_11C84->slots[index].riseAngle = 80;
     this->state.unknown_11C84->slots[index].alphaT = level;
-    this->state.unknown_11C84->slots[index].vecBNow.z = 0.0f;
+    this->state.unknown_11C84->slots[index].vecBNow.y = 0.0f;
 
     for (int height = 0; height < 21; ++height) {
       this->state.unknown_11C84->slots[index].height[height] = 0.0f;
@@ -4372,15 +4372,15 @@ void CRagEffect::TexturedRain(const char* name, char kind) {
   }
 
   this->state.unknown_11C84->slots[0].alphaB = 0;
-  this->state.unknown_11C84->slots[0].vecTPre.x = 0.0f;
-  this->state.unknown_11C84->slots[0].vecTPre.z = 0.0f;
+  this->state.unknown_11C84->slots[0].vecBPre.x = 0.0f;
+  this->state.unknown_11C84->slots[0].vecBPre.z = 0.0f;
 
   if (kind == 0) {
-    this->state.unknown_11C84->slots[0].vecTPre.y = -115.0f;
+    this->state.unknown_11C84->slots[0].vecBPre.y = -115.0f;
   } else if (kind == 4) {
-    this->state.unknown_11C84->slots[0].vecTPre.y = -115.0f - static_cast<float>(rand() % 56);
+    this->state.unknown_11C84->slots[0].vecBPre.y = -115.0f - static_cast<float>(rand() % 56);
   } else {
-    this->state.unknown_11C84->slots[0].vecTPre.y = -80.0f;
+    this->state.unknown_11C84->slots[0].vecBPre.y = -80.0f;
   }
 
   this->state.unknown_11C84->slots[0].rotStart = 0;
@@ -4541,7 +4541,7 @@ void CRagEffect::TexturedCrossKind(const char* name, char level) {
     this->state.unknown_11C84->slots[index].alphaB = 0;
     this->state.unknown_11C84->slots[index].distance = static_cast<float>(index) + 1.0f;
     this->state.unknown_11C84->slots[index].alphaT = level;
-    this->state.unknown_11C84->slots[index].vecBNow.z = 0.0f;
+    this->state.unknown_11C84->slots[index].vecBNow.y = 0.0f;
 
     for (int height = 0; height < 21; ++height) {
       this->state.unknown_11C84->slots[index].height[height] = 0.0f;
@@ -4623,9 +4623,9 @@ void CRagEffect::TexturedScatterArc(const char* name, std::int16_t angle, std::i
     this->state.unknown_11C84->slots[index].process = -std::max(rand() % 11, 0);
     this->state.unknown_11C84->slots[index].riseAngle = direction;
     this->state.unknown_11C84->slots[index].maxHeight = 0.03f;
-    this->state.unknown_11C84->slots[index].vecTPre.x = cosine * 4.0f;
-    this->state.unknown_11C84->slots[index].vecTPre.z = sine * 4.0f;
-    this->state.unknown_11C84->slots[index].vecTPre.y = 0.0f;
+    this->state.unknown_11C84->slots[index].vecBPre.x = cosine * 4.0f;
+    this->state.unknown_11C84->slots[index].vecBPre.z = sine * 4.0f;
+    this->state.unknown_11C84->slots[index].vecBPre.y = 0.0f;
     this->state.unknown_11C84->slots[index].vecBNow.y = -4.0f;
     this->state.unknown_11C84->slots[index].height[0] = static_cast<float>(std::max(rand() % 360, 0));
     this->state.unknown_11C84->slots[index].height[1] = static_cast<float>(std::max(rand() % 360, 0));
@@ -4718,7 +4718,7 @@ void CRagEffect::LineStreakKind(std::int16_t kind) {
       this->state.unknown_11C84->slots[index].height[2] = static_cast<float>(std::max(rand() % 31, 0)) + 20.0f;
       this->state.unknown_11C84->slots[index].flag1[0] = static_cast<char>(std::max(rand() % 3, 0) + 30);
       this->state.unknown_11C84->slots[index].height[3] = static_cast<float>(std::max(rand() % 21, 0)) * 0.1f + 1.5f;
-}
+    }
     Get_Angle(
       this->state.deltaPos[0] - this->render.position.x, this->state.deltaPos[2] - this->render.position.z, &this->state.unknown_11C84->slots[index].riseAngle
     );
@@ -4805,7 +4805,7 @@ void CRagEffect::TexturedCrossStaged(const char* name, char level) {
     this->state.unknown_11C84->slots[index].maxHeight = 120.0f;
     this->state.unknown_11C84->slots[index].rotStart = static_cast<std::int16_t>(index * 90);
     this->state.unknown_11C84->slots[index].alphaB = 50;
-    this->state.unknown_11C84->slots[index].vecBNow.z = 0.0f;
+    this->state.unknown_11C84->slots[index].vecBNow.y = 0.0f;
 
     if (level == 0 || level > 1) {
       this->state.unknown_11C84->slots[index].alphaB = 50;
@@ -4905,7 +4905,7 @@ void CRagEffect::BlueRingStack() {
     this->state.unknown_11C84->slots[index].alphaB = 0;
     this->state.unknown_11C84->slots[index].distance = step * 0.2f + (this->state.deltaPos2[1] == 0.0f ? 3.4f : 2.4f);
     this->state.unknown_11C84->slots[index].riseAngle = static_cast<std::int16_t>((11 - index) * 5);
-    this->state.unknown_11C84->slots[index].vecBNow.z = 0.0f;
+    this->state.unknown_11C84->slots[index].vecBNow.y = 0.0f;
 
     for (int height = 0; height < 21; ++height) {
       this->state.unknown_11C84->slots[index].height[height] = 0.0f;
@@ -5073,7 +5073,7 @@ void CRagEffect::PokBurst() {
 
 // OFFSET: 0x00C5DB70
 // FUNCTION: fn_20236
-void CRagEffect::TexturedTumble(const char* name) {
+void CRagEffect::TexturedTumble(const char* name, char) {
   const RenderObjectState& parent = this->state.parent->render;
   this->render.position.x = parent.position.x;
   this->render.position.y = parent.position.y;
@@ -5166,7 +5166,7 @@ void CRagEffect::LineStreakTextured(std::int16_t kind, const char* name) {
 
 // OFFSET: 0x00C6FC10
 // FUNCTION: fn_20310
-void CRagEffect::ThunderFreeze() {
+void CRagEffect::ThunderFreeze(int) {
   const RenderObjectState& parent = this->state.parent->render;
   this->render.position.x = parent.position.x;
   this->render.position.y = parent.position.y;
