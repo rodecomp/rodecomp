@@ -1,5 +1,7 @@
 #include "UI/ProbabilityTable/UIProbabilityTable.h"
 
+#include "Network/TextEncoding.h"
+#include "UI/Edit/UIEditBoxEx.h"
 #include "UI/Lists/UIVScrollBar.h"
 #include "UI/Window/UIControl.h"
 #include "UI/Window/WindowBorder.h"
@@ -7,13 +9,23 @@
 #include "UI/Text/UIStaticTextControl.h"
 #include "Contents/MessageTable.h"
 #include "Render/Renderer.h"
+#include "UI/Window/WindowDialogs.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"
+#include "Utility/Text/StringUtil.h"
 
 #include <cstddef>
 #include <cstdint>
+#include <algorithm>
 #include <cstring>
+#include <iterator>
 #include <string>
+#include <string_view>
+
+// GLOBAL: gl_25157
+static const std::string g_probabilityHighlightBegin = "^FF0000<B>";
+// GLOBAL: gl_25158
+static const std::string g_probabilityHighlightEnd = "^000000</B>";
 
 namespace {
 
@@ -105,6 +117,9 @@ void ProbabilityTableSelectCallback::operator()(CUIListItem* const& item) {
 
 template <>
 void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::OnScroll(int position);
+
+template <>
+bool CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::RebindIndex(int index);
 
 // OFFSET: 0x00A47EF0
 // FUNCTION: fn_16104
@@ -326,6 +341,66 @@ void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::Selec
 // OFFSET: 0x00A4DC90
 // FUNCTION: fn_16195
 void CUIProbabilityTable::OnButtonClick() {
+}
+
+// OFFSET: 0x00A4DCA0
+// FUNCTION: fn_16196
+void CUIProbabilityTable::Search() {
+  CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>* list = this->m_list;
+  if (list->data.size() == 0) {
+    return;
+  }
+
+  if (static_cast<int>(list->selected) >= 0 && list->selected < list->data.size()) {
+    auto node = list->data.begin();
+    for (int index = static_cast<int>(list->selected); index > 0; --index) {
+      ++node;
+    }
+    RemoveAll(node->name, g_probabilityHighlightBegin);
+    RemoveAll(node->name, g_probabilityHighlightEnd);
+    this->m_list->RebindIndex(this->m_list->selected);
+  }
+
+  const std::string_view keyword(this->m_searchEdit->edit->Text());
+  if (keyword.size() == 0) {
+    this->m_lastSearch = keyword;
+    return;
+  }
+
+  list = this->m_list;
+  auto matches = [keyword](const ProbabilityTable::CItemData& data) {
+    return FindSubstring(data.name.c_str(), static_cast<int>(data.name.size()), keyword.data()) != -1;
+  };
+
+  auto start = list->data.begin();
+  if (keyword == this->m_lastSearch) {
+    const int next = list->data.size() - 1 != list->selected ? static_cast<int>(list->selected) + 1 : 0;
+    start = std::next(list->data.begin(), next);
+  }
+
+  auto found = std::find_if(start, list->data.end(), matches);
+  if (found == list->data.end() && keyword == this->m_lastSearch) {
+    found = std::find_if(list->data.begin(), list->data.end(), matches);
+  }
+
+  if (found == list->data.end()) {
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x1012), 0, true, false, 0, "Message", 280, 120, 0);
+  } else {
+    HighlightKeyword(found->name, keyword, g_probabilityHighlightBegin, g_probabilityHighlightEnd);
+
+    CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>* current = this->m_list;
+    const int index = static_cast<int>(std::distance(list->data.begin(), found));
+    current->scrollBar->SetPosition(current->rowHeight * index);
+    for (ProbabilityTable::CUIItem* item : current->items) {
+      if (index == item->index) {
+        current->SelectItem(item);
+        break;
+      }
+    }
+    this->m_list->RebindIndex(this->m_list->selected);
+  }
+
+  this->m_lastSearch = keyword;
 }
 
 // OFFSET: 0x00A4E280
