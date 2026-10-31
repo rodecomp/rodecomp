@@ -729,6 +729,7 @@ public:
   void NormalizeHead(int* head, int job);
   int GetDisplayJob();
   const char* GetHitWaveName(int job);
+  void InitJobHitWaveNames();
   const char* GetEFSTImgFileName(int efstId, int type);
   bool IsTreeGroupThree(int job) const;
   std::string GetSexName(int sex);
