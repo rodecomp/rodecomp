@@ -1096,3 +1096,57 @@ int UITreeView::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
 // OFFSET: 0x0089E570
 
 // OFFSET: 0x0089E6F0
+// FUNCTION: fn_11603
+int UITreeView::RemoveChildNode(UITreeNode* parent, int id, bool keepButtons) {
+  if (!parent) {
+    parent = this->root;
+  }
+
+  if (static_cast<int>(parent->children.size()) <= 0) {
+    return 0;
+  }
+
+  for (auto it = parent->children.begin(); it != parent->children.end(); ++it) {
+    if ((*it)->id != id) {
+      continue;
+    }
+
+    if (!keepButtons) {
+      if ((*it)->children.size() != 0) {
+        this->DeleteChildNodes(*it);
+      }
+
+      if ((*it)->collapseButton) {
+        (*it)->collapseButton->Move(-100, -100);
+        (*it)->collapseButton = nullptr;
+      }
+
+      if ((*it)->expandButton) {
+        (*it)->expandButton->Move(-100, -100);
+        (*it)->expandButton = nullptr;
+      }
+    }
+
+    (*it)->labelButton->Move(-100, -100);
+    (*it)->labelButton = nullptr;
+    UITreeNode* removed = *it;
+    parent->children.erase(it);
+    delete removed;
+
+    if (parent->children.size() == 0) {
+      if (parent->collapseButton) {
+        parent->collapseButton->Move(-100, -100);
+        parent->collapseButton = nullptr;
+      }
+
+      if (parent->expandButton) {
+        parent->expandButton->Move(-100, -100);
+        parent->expandButton = nullptr;
+      }
+    }
+
+    return 1;
+  }
+
+  return 0;
+}
