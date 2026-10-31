@@ -43,7 +43,7 @@
 #include <vector>
 #include "Contents/MapInfoMgr.h"
 #include <timeapi.h>
-
+#include "File/File.h"
 #pragma pack(push, 1)
 struct GameModeTextRecord {
   /* 0000 */ std::uint32_t header;
@@ -731,6 +731,31 @@ void ShowCurrentMapName() {
     const std::string mapName = g_session.m_navigationPlayerMap + std::string(".rsw");
     g_mapInfoMgr->ShowMapName(mapName);
   }
+}
+
+// GLOBAL: gl_25129
+char g_chatLogPath[260];
+
+// OFFSET: 0x00CED760
+// FUNCTION: fn_21369
+void CGameMode::WriteChatLog(const char* text) {
+  if (g_session.IsAdminSubMode(7) == 0) {
+    return;
+  }
+
+  ++this->chatLogLines;
+  CFile previous;
+  previous.Open(g_chatLogPath, 0, true, false);
+  const std::uint32_t size = previous.GetSize();
+  char* contents = new char[size];
+  previous.Read(contents, size);
+  previous.Close();
+  g_whisperFile.Open(g_chatLogPath, 0x1001, true, false);
+  g_whisperFile.Write(contents, size);
+  g_whisperFile.Write(text, static_cast<std::uint32_t>(std::strlen(text) + 1));
+  g_whisperFile.Write("\r\n", 2);
+  g_whisperFile.Close();
+  delete[] contents;
 }
 
 // OFFSET: 0x00CF08D0

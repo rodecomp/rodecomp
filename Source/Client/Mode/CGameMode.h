@@ -116,7 +116,9 @@ public:
   /* 0464 */ int unknown_0464;
   /* 0468 */ unsigned char unknown_0468[0x74];
   /* 04DC */ std::string unknown_04DC;
-  /* 04F4 */ unsigned char unknown_04F4[0xD0];
+  /* 04F4 */ unsigned char unknown_04F4[0xC8];
+  /* 05BC */ int chatLogLines;
+  /* 05C0 */ unsigned char unknown_05C0[0x04];
   /* 05C4 */ int unknown_05C4;
   /* 05C8 */ int unknown_05C8;
   /* 05CC */ unsigned char unknown_05CC[0x02];
@@ -140,6 +142,7 @@ public:
   void UpdateLoopSounds();
   void AddSceneObject(CRenderObject* object);
   void SendMousePointerPosition(float x, float y, int value);
+  void WriteChatLog(const char* text);
   bool IsEffectId990Group(int id);
   bool IsEffectId994Group(int id);
   bool ConfirmDraggedItemUse();
