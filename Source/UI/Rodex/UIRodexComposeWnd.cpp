@@ -50,6 +50,17 @@ struct RodexSendMailRequest {
 };
 }
 
+// OFFSET: 0x007FEF20
+// FUNCTION: fn_09993
+UIRodexEditCtrl3::UIRodexEditCtrl3(UIWindowContext& windows, UIEditContext& edit) : UIEditCtrl3(windows, edit) {
+}
+
+// OFFSET: 0x007FEF80
+// FUNCTION: fn_09994
+UIRodexScrollBar::UIRodexScrollBar(UIWindowContext& windows) : UIScrollBar(windows) {
+  this->arrowLength = 5;
+}
+
 // OFFSET: 0x007FF520
 // FUNCTION: fn_10002
 ITEM_INFO UIRodexComposeWnd::GetItemAtPoint(int x, int y) {

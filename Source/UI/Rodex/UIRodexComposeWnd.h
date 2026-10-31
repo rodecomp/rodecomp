@@ -18,16 +18,14 @@ class UIStaticText;
 
 class UIRodexScrollBar : public UIScrollBar {
 public:
-  // INLINED
-  explicit UIRodexScrollBar(UIWindowContext& windows) : UIScrollBar(windows) {
-    this->arrowLength = 5;
-  }
+  explicit UIRodexScrollBar(UIWindowContext& windows);
 
   void Paint() override;
 };
 
 class UIRodexEditCtrl3 : public UIEditCtrl3 {
 public:
+  UIRodexEditCtrl3(UIWindowContext& windows, UIEditContext& edit);
   void Slot15(int width, int height) override;
   void sub_855150();
 };
