@@ -296,6 +296,9 @@ struct CRagEffect : CRenderObject {
   void TeleportSpiral(const char* name);
   void TexturedAura(const char* name, char kind);
   void PortalRings();
+  void HealBurst(const char* name, char flag);
+  void FreezingCircle(char kind);
+  void TorchDust(char kind);
 
   virtual void Slot08();
   virtual void Slot09(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh, int twelfth, int thirteenth, int fourteenth, int fifteenth, int sixteenth, int seventeenth);

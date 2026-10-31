@@ -14932,3 +14932,305 @@ void CRagEffect::TexturedAura(const char* name, char kind) {
   this->state.unknown_11C84->slots[0].flag1[4] = static_cast<char>(kind == 4 ? 1 : kind);
   this->state.unknown_11C84->slots[0].height[15] = this->render.position.y - this->state.unknown_11C84->slots[0].vecBPre.y;
 }
+
+// OFFSET: 0x00C56940
+
+// OFFSET: 0x00C5A760
+// FUNCTION: fn_20219
+void CRagEffect::FreezingCircle(char kind) {
+  this->render.position.x = this->state.parent->render.position.x;
+  this->render.position.y = this->state.parent->render.position.y;
+  this->render.position.z = this->state.parent->render.position.z;
+
+  if (this->state.stateCnt == 99999998) {
+    this->state.stateCnt = 0;
+    this->state.duration = 99999999;
+  } else if (this->state.stateCnt != 0) {
+    return;
+  }
+
+  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 29, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  this->state.unknown_11C84->renderFlag = 0;
+  this->state.unknown_11C84->renderFlag |= 1;
+  this->state.unknown_11C84->renderFlag |= 5;
+  this->state.unknown_11C84->duration = this->state.duration;
+  AllocateTextures(*this->state.unknown_11C84);
+
+  if (kind == 3) {
+    this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\ghost.bmp", 0, false, true, false);
+    this->state.unknown_11C84->size = 0.0f;
+  } else if (kind < 1) {
+    this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\freezing_circle.bmp", 0, false, true, false);
+    this->state.unknown_11C84->size = 0.0f;
+  } else {
+    this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\whitelight.tga", 0, false, true, false);
+    this->state.unknown_11C84->size = 0.0f;
+
+    if (kind == 2) {
+      this->state.unknown_11C84->size = 7.0f;
+    }
+  }
+
+  for (int i = 0; i < 4; ++i) {
+    if (kind == 3) {
+      if (i < 1) {
+        this->state.unknown_11C84->slots[i].life = 1;
+      } else {
+        this->state.unknown_11C84->slots[i].life = 0;
+      }
+
+      this->state.unknown_11C84->slots[i].maxHeight = 0.15f;
+      this->state.unknown_11C84->slots[i].distance = 3.2f;
+      this->state.unknown_11C84->slots[i].maxHeight = 0.6f;
+      this->state.unknown_11C84->slots[i].vecBPre.x = static_cast<float>(std::max(rand() % 15, 0) - 8);
+      this->state.unknown_11C84->slots[i].vecBPre.z = static_cast<float>(std::max(rand() % 15, 0) - 8);
+    } else if (kind == 7 || kind == 8) {
+      if (i < 2) {
+        this->state.unknown_11C84->slots[i].life = 1;
+      } else {
+        this->state.unknown_11C84->slots[i].life = 0;
+      }
+
+      this->state.unknown_11C84->slots[i].maxHeight = 0.15f;
+
+      if (kind == 7) {
+        this->state.unknown_11C84->slots[i].distance = 0.8f;
+      } else {
+        this->state.unknown_11C84->slots[i].distance = 2.4f;
+      }
+
+      this->state.unknown_11C84->slots[i].vecBPre.x = 0.0f;
+      this->state.unknown_11C84->slots[i].vecBPre.z = 0.0f;
+    } else {
+      this->state.unknown_11C84->slots[i].life = 1;
+      this->state.unknown_11C84->slots[i].maxHeight = 0.15f;
+
+      if (kind == 6) {
+        this->state.unknown_11C84->slots[i].distance = 2.4f;
+        this->state.unknown_11C84->slots[i].vecBPre.x = static_cast<float>(std::max(rand() % 35, 0) - 17);
+        this->state.unknown_11C84->slots[i].vecBPre.z = 0.0f;
+      } else if (kind == 1 || kind == 4 || kind == 5 || kind >= 8) {
+        this->state.unknown_11C84->slots[i].distance = 2.4f;
+        this->state.unknown_11C84->slots[i].vecBPre.x = 0.0f;
+        this->state.unknown_11C84->slots[i].vecBPre.z = 0.0f;
+      } else {
+        this->state.unknown_11C84->slots[i].distance = 0.8f;
+        this->state.unknown_11C84->slots[i].vecBPre.x = 0.0f;
+        this->state.unknown_11C84->slots[i].vecBPre.z = 0.0f;
+      }
+    }
+
+    this->state.unknown_11C84->slots[i].vecBPre.y = static_cast<float>(std::max(rand() % 100, 0));
+    this->state.unknown_11C84->slots[i].height[0] = static_cast<float>(std::max(rand() % 360, 0));
+    this->state.unknown_11C84->slots[i].height[1] = static_cast<float>(std::max(rand() % 360, 0));
+    this->state.unknown_11C84->slots[i].height[2] = static_cast<float>(std::max(rand() % 360, 0));
+    this->state.unknown_11C84->slots[i].height[3] = static_cast<float>(std::max(rand() % 360, 0));
+
+    if (kind == 3) {
+      this->state.unknown_11C84->slots[i].vecBNow.x = static_cast<float>(std::max(rand() % 15, 0) - 8);
+      this->state.unknown_11C84->slots[i].vecBNow.z = static_cast<float>(std::max(rand() % 15, 0) - 8);
+    } else if (kind == 6) {
+      this->state.unknown_11C84->slots[i].vecBNow.x = static_cast<float>(std::max(rand() % 35, 0) - 17);
+      this->state.unknown_11C84->slots[i].vecBNow.z = 0.0f;
+    } else {
+      this->state.unknown_11C84->slots[i].vecBNow.x = 0.0f;
+      this->state.unknown_11C84->slots[i].vecBNow.z = 0.0f;
+    }
+
+    this->state.unknown_11C84->slots[i].vecBNow.y = static_cast<float>(std::max(rand() % 100, 0));
+    this->state.unknown_11C84->slots[i].height[4] = static_cast<float>(std::max(rand() % 360, 0));
+    this->state.unknown_11C84->slots[i].height[5] = static_cast<float>(std::max(rand() % 360, 0));
+    this->state.unknown_11C84->slots[i].height[6] = static_cast<float>(std::max(rand() % 360, 0));
+    this->state.unknown_11C84->slots[i].height[7] = static_cast<float>(std::max(rand() % 360, 0));
+
+    if (kind == 3) {
+      this->state.unknown_11C84->slots[i].vecTPre.x = static_cast<float>(std::max(rand() % 15, 0) - 8);
+      this->state.unknown_11C84->slots[i].vecTPre.z = static_cast<float>(std::max(rand() % 15, 0) - 8);
+    } else if (kind == 6) {
+      this->state.unknown_11C84->slots[i].vecTPre.x = static_cast<float>(std::max(rand() % 35, 0) - 17);
+      this->state.unknown_11C84->slots[i].vecTPre.z = 0.0f;
+    } else {
+      this->state.unknown_11C84->slots[i].vecTPre.x = 0.0f;
+      this->state.unknown_11C84->slots[i].vecTPre.z = 0.0f;
+    }
+
+    this->state.unknown_11C84->slots[i].vecTPre.y = static_cast<float>(std::max(rand() % 100, 0));
+    this->state.unknown_11C84->slots[i].height[8] = static_cast<float>(std::max(rand() % 360, 0));
+    this->state.unknown_11C84->slots[i].height[9] = static_cast<float>(std::max(rand() % 360, 0));
+    this->state.unknown_11C84->slots[i].height[10] = static_cast<float>(std::max(rand() % 360, 0));
+    this->state.unknown_11C84->slots[i].height[11] = static_cast<float>(std::max(rand() % 360, 0));
+
+    if (kind == 3) {
+      this->state.unknown_11C84->slots[i].vecTNow.x = static_cast<float>(std::max(rand() % 15, 0) - 8);
+      this->state.unknown_11C84->slots[i].vecTNow.z = static_cast<float>(std::max(rand() % 15, 0) - 8);
+    } else if (kind == 6) {
+      this->state.unknown_11C84->slots[i].vecTNow.x = static_cast<float>(std::max(rand() % 35, 0) - 17);
+      this->state.unknown_11C84->slots[i].vecTNow.z = 0.0f;
+    } else {
+      this->state.unknown_11C84->slots[i].vecTNow.x = 0.0f;
+      this->state.unknown_11C84->slots[i].vecTNow.z = 0.0f;
+    }
+
+    this->state.unknown_11C84->slots[i].vecTNow.y = static_cast<float>(std::max(rand() % 100, 0));
+    this->state.unknown_11C84->slots[i].height[12] = static_cast<float>(std::max(rand() % 360, 0));
+    this->state.unknown_11C84->slots[i].height[13] = static_cast<float>(std::max(rand() % 360, 0));
+    this->state.unknown_11C84->slots[i].height[14] = static_cast<float>(std::max(rand() % 360, 0));
+    this->state.unknown_11C84->slots[i].height[15] = static_cast<float>(std::max(rand() % 360, 0));
+
+    if (kind == 4) {
+      this->state.unknown_11C84->slots[i].vecBPre.y = -40.0f;
+      this->state.unknown_11C84->slots[i].vecBNow.y = -50.0f;
+      this->state.unknown_11C84->slots[i].vecTPre.y = -60.0f;
+      this->state.unknown_11C84->slots[i].vecTNow.y = -70.0f;
+      this->state.unknown_11C84->slots[i].flag1[0] = 14;
+    } else if (kind == 6) {
+      this->state.unknown_11C84->slots[i].vecBPre.y = static_cast<float>(-40 - std::max(rand() % 40, 0));
+      this->state.unknown_11C84->slots[i].vecBNow.y = static_cast<float>(-40 - std::max(rand() % 40, 0));
+      this->state.unknown_11C84->slots[i].vecTPre.y = static_cast<float>(-40 - std::max(rand() % 40, 0));
+      this->state.unknown_11C84->slots[i].vecTNow.y = static_cast<float>(-40 - std::max(rand() % 40, 0));
+      this->state.unknown_11C84->slots[i].flag1[0] = 16;
+    } else {
+      if (kind == 5 || kind == 7) {
+        this->state.unknown_11C84->slots[i].vecBPre.y = 0.0f;
+        this->state.unknown_11C84->slots[i].vecBNow.y = 0.0f;
+        this->state.unknown_11C84->slots[i].vecTPre.y = 0.0f;
+        this->state.unknown_11C84->slots[i].vecTNow.y = 0.0f;
+      }
+
+      if (kind == 1) {
+        this->state.unknown_11C84->slots[i].flag1[0] = kind;
+      } else if (kind == 3) {
+        this->state.unknown_11C84->slots[i].flag1[0] = 11;
+      } else if (kind == 5 || kind == 7 || kind == 8) {
+        this->state.unknown_11C84->slots[i].flag1[0] = 15;
+        this->state.unknown_11C84->slots[i].flag1[1] = 0;
+        this->state.unknown_11C84->slots[i].flag1[2] = 0;
+        this->state.unknown_11C84->slots[i].flag1[3] = 0;
+        this->state.unknown_11C84->slots[i].flag1[4] = 0;
+        this->state.unknown_11C84->slots[i].flag1[5] = kind;
+      } else {
+        this->state.unknown_11C84->slots[i].flag1[0] = 0;
+      }
+    }
+  }
+}
+
+// OFFSET: 0x00C4BB00
+// FUNCTION: fn_20175
+void CRagEffect::TorchDust(char kind) {
+  this->render.position = this->state.parent->render.position;
+
+  if (this->state.stateCnt != 0) {
+    return;
+  }
+
+  this->render.position = this->state.parent->render.position;
+  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 128, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  this->state.unknown_11C84->renderFlag = 5;
+  this->state.unknown_11C84->duration = this->state.duration;
+
+  if (kind == 0) {
+    this->state.unknown_11C84->totalTexture = 9;
+    AllocateTextures(*this->state.unknown_11C84);
+    this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\dust01.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[1] = g_texMgr.Load("effect\\dust02.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[2] = g_texMgr.Load("effect\\dust03.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[3] = g_texMgr.Load("effect\\dust04.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[4] = g_texMgr.Load("effect\\dust05.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[5] = g_texMgr.Load("effect\\dust06.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[6] = g_texMgr.Load("effect\\dust07.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[7] = g_texMgr.Load("effect\\dust08.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[8] = g_texMgr.Load("effect\\dust09.bmp", 0, false, true, false);
+  } else if (kind == 2) {
+    this->state.unknown_11C84->totalTexture = 13;
+    AllocateTextures(*this->state.unknown_11C84);
+    this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\torch_green01.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[1] = g_texMgr.Load("effect\\torch_green02.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[2] = g_texMgr.Load("effect\\torch_green03.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[3] = g_texMgr.Load("effect\\torch_green04.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[4] = g_texMgr.Load("effect\\torch_green05.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[5] = g_texMgr.Load("effect\\torch_green06.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[6] = g_texMgr.Load("effect\\torch_green07.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[7] = g_texMgr.Load("effect\\torch_green08.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[8] = g_texMgr.Load("effect\\torch_green09.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[9] = g_texMgr.Load("effect\\torch_green10.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[10] = g_texMgr.Load("effect\\torch_green11.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[11] = g_texMgr.Load("effect\\torch_green12.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[12] = g_texMgr.Load("effect\\torch_green13.bmp", 0, false, true, false);
+  } else if (kind == 1) {
+    this->state.unknown_11C84->totalTexture = 13;
+    AllocateTextures(*this->state.unknown_11C84);
+    this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\torch_red01.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[1] = g_texMgr.Load("effect\\torch_red02.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[2] = g_texMgr.Load("effect\\torch_red03.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[3] = g_texMgr.Load("effect\\torch_red04.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[4] = g_texMgr.Load("effect\\torch_red05.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[5] = g_texMgr.Load("effect\\torch_red06.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[6] = g_texMgr.Load("effect\\torch_red07.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[7] = g_texMgr.Load("effect\\torch_red08.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[8] = g_texMgr.Load("effect\\torch_red09.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[9] = g_texMgr.Load("effect\\torch_red10.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[10] = g_texMgr.Load("effect\\torch_red11.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[11] = g_texMgr.Load("effect\\torch_red12.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[12] = g_texMgr.Load("effect\\torch_red13.bmp", 0, false, true, false);
+  } else if (kind == 3) {
+    this->state.unknown_11C84->totalTexture = 13;
+    AllocateTextures(*this->state.unknown_11C84);
+    this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\torch_violet01.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[1] = g_texMgr.Load("effect\\torch_violet02.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[2] = g_texMgr.Load("effect\\torch_violet03.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[3] = g_texMgr.Load("effect\\torch_violet04.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[4] = g_texMgr.Load("effect\\torch_violet05.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[5] = g_texMgr.Load("effect\\torch_violet06.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[6] = g_texMgr.Load("effect\\torch_violet07.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[7] = g_texMgr.Load("effect\\torch_violet08.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[8] = g_texMgr.Load("effect\\torch_violet09.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[9] = g_texMgr.Load("effect\\torch_violet10.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[10] = g_texMgr.Load("effect\\torch_violet11.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[11] = g_texMgr.Load("effect\\torch_violet12.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[12] = g_texMgr.Load("effect\\torch_violet13.bmp", 0, false, true, false);
+  } else if (kind == 4) {
+    this->state.unknown_11C84->totalTexture = 11;
+    AllocateTextures(*this->state.unknown_11C84);
+    this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\lord_stick_a.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[1] = g_texMgr.Load("effect\\lord_stick_b.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[2] = g_texMgr.Load("effect\\lord_stick_c.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[3] = g_texMgr.Load("effect\\lord_stick_e.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[4] = g_texMgr.Load("effect\\lord_stick_f.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[5] = g_texMgr.Load("effect\\lord_stick_g.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[6] = g_texMgr.Load("effect\\lord_stick_h.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[7] = g_texMgr.Load("effect\\lord_stick_plazma_a.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[8] = g_texMgr.Load("effect\\lord_stick_plazma_b.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[9] = g_texMgr.Load("effect\\lord_stick_plazma_c.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[10] = g_texMgr.Load("effect\\lord_blast_stick_a.bmp", 0, false, true, false);
+  }
+
+  this->state.unknown_11C84->size = 0.0f;
+  this->state.unknown_11C84->slots[0].life = 0;
+  this->state.unknown_11C84->slots[1].life = 0;
+  this->state.unknown_11C84->slots[2].life = 0;
+  this->state.unknown_11C84->slots[3].life = 0;
+  this->state.unknown_11C84->slots[0].process = 0;
+  this->state.unknown_11C84->slots[0].life = 1;
+  this->state.unknown_11C84->slots[0].distance = this->state.param[0] > 0.0f ? this->state.param[0] : 20.0f;
+  this->state.unknown_11C84->slots[0].vecBPre.y = this->render.position.y - 10.0f;
+  this->state.unknown_11C84->slots[0].flag1[2] = 4;
+
+  if (kind == 4) {
+    this->state.unknown_11C84->slots[0].fullDisplayAngle = 120;
+    this->state.unknown_11C84->slots[0].height[10] = 1.0f;
+    this->state.unknown_11C84->slots[0].height[8] = 0.0f;
+    this->state.unknown_11C84->slots[0].alphaB = 130;
+  } else {
+    this->state.unknown_11C84->slots[0].fullDisplayAngle = 135;
+    this->state.unknown_11C84->slots[0].height[10] = 0.0f;
+    this->state.unknown_11C84->slots[0].height[8] = 0.0f;
+    this->state.unknown_11C84->slots[0].alphaB = kind == 0 ? 100 : 130;
+  }
+
+  this->state.unknown_11C84->slots[0].vecBNow.x = this->render.position.x;
+  this->state.unknown_11C84->slots[0].vecBNow.z = this->render.position.z;
+  this->state.unknown_11C84->slots[0].rotStart = static_cast<std::int16_t>(std::max(rand() % 360, 0));
+  this->state.unknown_11C84->slots[0].flag1[0] = 0;
+  this->state.unknown_11C84->slots[0].flag1[4] = kind;
+}
