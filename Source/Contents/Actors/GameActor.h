@@ -260,6 +260,8 @@ public:
   void ResetState();
   void UpdateGaugePositions();
   void UpdateHpGauge();
+  void UpdateStateEffects();
+  void ReleaseAttachments();
   void ClearUnknown0188();
   void RefreshGuildEmblemWindow();
   void NotifyCellMove(const float* x, const float* z);

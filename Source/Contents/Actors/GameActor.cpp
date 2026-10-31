@@ -1,10 +1,15 @@
 #include "Contents/Actors/GameActor.h"
 
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
 #include "Contents/Actors/ActorStateFlags.h"
+#include "Contents/Actors/GroundScope.h"
+#include "Contents/Actors/MercenaryAI.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Jobs/JobInheritance.h"
+#include "Contents/Effects/EffectTypes.h"
 #include "Contents/MapSkyMgr.h"
 #include "Utility/Math/AffineMatrix.h"
 #include "Render/Renderer.h"
@@ -207,6 +212,79 @@ void CGameActor::UpdateGaugePositions() {
       static_cast<int>(static_cast<float>(this->render.screenY) - s_gaugeOffsetY * this->render.unknown_005C - 17.0f - 17.0f)
     );
   }
+}
+
+// OFFSET: 0x00CAF260
+// FUNCTION: fn_21079
+void CGameActor::ReleaseAttachments() {
+  if (this->unknown_030C && reinterpret_cast<CMercenaryAI*>(this->unknown_030C)->state) {
+    reinterpret_cast<CMercenaryAI*>(this->unknown_030C)->Shutdown();
+    delete reinterpret_cast<CMercenaryAI*>(this->unknown_030C);
+    this->unknown_030C = 0;
+  }
+
+  if (this->unknown_0310 && reinterpret_cast<CMercenaryAI*>(this->unknown_0310)->state) {
+    reinterpret_cast<CMercenaryAI*>(this->unknown_0310)->Shutdown();
+    delete reinterpret_cast<CMercenaryAI*>(this->unknown_0310);
+    this->unknown_0310 = 0;
+  }
+
+  for (int index = 0; index < 5; ++index) {
+    if (this->unknown_0264[index]) {
+      g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->unknown_0264[index]));
+      this->unknown_0264[index] = 0;
+    }
+  }
+
+  if (this->unknown_0300) {
+    g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->unknown_0300));
+    this->unknown_0300 = 0;
+  }
+
+  for (CGameObject* object : this->unknown_03B0) {
+    object->SendMsg(nullptr, 0x31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  }
+  this->unknown_03B0.clear();
+
+  if (g_session.GetSceneUnknown004C() && this->unknown_0188) {
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->RemoveUnknown0604(this->unknown_0188);
+    g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->unknown_0188));
+    this->unknown_0188 = 0;
+  }
+
+  if (this->unknown_018C) {
+    g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->unknown_018C));
+    this->unknown_018C = 0;
+  }
+}
+
+// OFFSET: 0x00CB0220
+// FUNCTION: fn_21092
+void CGameActor::UpdateStateEffects() {
+  if (g_updateTick > 0 && this->render.unknown_00ECBytes[0] == 1) {
+    this->render.flags = 0;
+    this->render.unknown_00ECBytes[0] = 0;
+  }
+
+  if (StateFlagsClear(this->stateFlags)) {
+    this->unknown_02D8 = 36000;
+    return;
+  }
+
+  timeGetTime();
+  if (StateFlag00(this->stateFlags) && static_cast<unsigned>(this->unknown_02D8) >= static_cast<unsigned>(EffectLifetime(22))) {
+    this->unknown_02D8 = 0;
+    this->LaunchEffect(22, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    return;
+  }
+
+  if (StateFlag13(this->stateFlags) && static_cast<unsigned>(this->unknown_02D8) >= static_cast<unsigned>(EffectLifetime(33))) {
+    this->unknown_02D8 = 0;
+    this->LaunchEffect(33, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    return;
+  }
+
+  ++this->unknown_02D8;
 }
 
 // OFFSET: 0x00CB03E0
