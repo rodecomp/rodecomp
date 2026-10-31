@@ -800,6 +800,7 @@ public:
   int GetItem1720Quantity(std::uint32_t id) const;
   int GetItem1720Total() const;
   const char* GetMonsterRmaName(int job) const;
+  const char* GetMonsterW3dName(int job) const;
   ITEM_INFO FindItem1730(std::uint32_t id) const;
   ITEM_INFO GetItem1730At(int index) const;
   int GetItem1730Quantity(std::uint32_t id) const;

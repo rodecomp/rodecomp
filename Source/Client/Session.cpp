@@ -1935,6 +1935,12 @@ void CSession::InvalidateWindowFrames() {
   reinterpret_cast<WindowOrdering&>(g_windowMgr).InvalidateFrames(g_windowMgr.unknown_04FC);
 }
 
+// OFFSET: 0x00DE3670
+// FUNCTION: fn_23480
+const char* CSession::GetMonsterW3dName(int job) const {
+  return "캐릭터\\mdragon.w3d";
+}
+
 // OFFSET: 0x00DE9430
 // FUNCTION: fn_23501
 void CSession::LoadMiniPartyInfo() {
