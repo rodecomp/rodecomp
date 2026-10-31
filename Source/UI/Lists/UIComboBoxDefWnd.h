@@ -46,6 +46,7 @@ protected:
 
 class UINewComboBoxCtrl : public UIWindow {
 public:
+  UINewComboBoxCtrl();
   void Slot15(int width, int height) override;
   void Paint() override;
   void Slot26(int x, int y) override;
