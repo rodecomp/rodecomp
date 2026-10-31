@@ -1293,10 +1293,55 @@ CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>::CUIListBoxEx(UIWindowContext&
       unknown_00E0(1), rebind(0) {
 }
 
+// OFFSET: 0x009F74E0
+
 // OFFSET: 0x009F7670
 // FUNCTION: fn_14774
 template <>
 CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>::~CUIListBoxEx() {
+}
+
+// OFFSET: 0x00A05970
+// FUNCTION: fn_14978
+void CUIEnchantUI::OnSelectTarget(EnchantUI::CUITargetItem* item, const ITEM_INFO& info) {
+  this->normalPage->LoadTarget(this->enchantInfo, this->group, *item->itemIcon->GetItemInfo());
+  this->upgradePage->LoadTarget(this->enchantInfo, this->group, *item->itemIcon->GetItemInfo());
+  this->resetPage->LoadTarget(this->enchantInfo, this->group, *item->itemIcon->GetItemInfo());
+  this->Invalidate();
+}
+
+// OFFSET: 0x00A06C40
+// FUNCTION: fn_15008
+void CUIEnchantUI::sub_A06C40(uint64_t group) {
+  this->enchantInfo = CEnchantMgr::GetInstance()->GetEnchantInfo(group);
+  if (!this->enchantInfo) {
+    g_windowMgr.CloseWindow(0x2716);
+    return;
+  }
+
+  this->group = group;
+  this->textViewer->Clear();
+  this->textViewer->AddLine(this->enchantInfo->caution);
+  for (int itemId : this->enchantInfo->targetItems) {
+    const std::vector<int> indices = g_session.FindInventoryIndicesByItemId(itemId, 1);
+    for (int index : indices) {
+      if (g_session.HasItem61B8(index)) {
+        continue;
+      }
+      const ITEM_INFO target = LookupClientItemByIdentity(g_session.m_inventoryItems, index);
+      if (static_cast<std::uint32_t>(target.unknown_0060) < this->enchantInfo->condition1) {
+        continue;
+      }
+      if (static_cast<std::uint32_t>(target.unknown_0088) < this->enchantInfo->condition2) {
+        continue;
+      }
+      if (!this->enchantInfo->approveRandomOption && target.unknown_0098 > 0) {
+        continue;
+      }
+      this->targetList->data.push_back(target);
+    }
+    this->targetList->UpdateScrollBar();
+  }
 }
 
 namespace EnchantUI {
@@ -1571,6 +1616,8 @@ bool CUIReset::Slot56() {
   this->unknown_00A0->Invalidate();
   return enchanted;
 }
+
+// OFFSET: 0x00A079E0
 
 // OFFSET: 0x00A07BA0
 // FUNCTION: fn_15015

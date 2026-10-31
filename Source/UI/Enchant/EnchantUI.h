@@ -5,6 +5,7 @@
 #include "UI/FrameSkin.h"
 #include "UI/Items/UIGameItem.h"
 #include "UI/Lists/UIListBoxTemplate.h"
+#include "UI/Window/UIWindowMgr.h"
 
 #include <list>
 #include <map>
@@ -49,6 +50,7 @@ public:
   void Slot25(int x, int y) override;
   virtual void Slot53();
   void sub_A06C40(uint64_t group);
+  void OnSelectTarget(EnchantUI::CUITargetItem* item, const ITEM_INFO& info);
 };
 
 namespace EnchantUI {
@@ -134,6 +136,18 @@ public:
 
   __declspec(noinline) CUIIngredient* CreateIngredient();
   void ResetSlots();
+  bool SetItem(const ITEM_INFO& item);
+
+  // INLINED
+  void LoadTarget(EnchantInfo* info, uint64_t targetGroup, const ITEM_INFO& item) {
+    this->ResetSlots();
+    if (info && this->SetItem(item)) {
+      this->group = targetGroup;
+      this->enchantInfo = info;
+      this->Slot57();
+    }
+  }
+
   __declspec(noinline) int FindEmptySlot();
   std::optional<EnchantOptionInfo*> FindOption(uint32_t key);
   void SetCost(const EnchantPerfectInfo& info);
@@ -209,6 +223,12 @@ public:
   /* 0088 */ CUITab* tab;
 
   void Slot16() override;
+
+  // INLINED
+  void LoadTarget(EnchantInfo* info, uint64_t targetGroup, const ITEM_INFO& item) {
+    this->firstPage->LoadTarget(info, targetGroup, item);
+    this->secondPage->LoadTarget(info, targetGroup, item);
+  }
 };
 
 class CUINormal : public CUIMainPage {
