@@ -43,19 +43,27 @@ void CCharacterLinkedUserDataMgr::Save(CharacterConfigSave& context, const char*
   if (g_session.GetOption(7) != 0) {
     Json::Value values;
 
-    context.skills.ForEachGrouped([&](CSkillInfo* skill) {
-      const int id = static_cast<int>(skill->id);
-      const int level = context.UseLevel(id);
+    struct SaveUseSkillLevel {
+      const CharacterConfigSave* context;
+      Json::Value* values;
 
-      if (level != 0) {
-        Json::Value value;
-        value["SKID"] = id;
-        value["SKLv"] = level;
-        values.append(value);
+      // OFFSET: 0x005E7AE0
+      // FUNCTION: fn_03940
+      bool operator()(CSkillInfo* skill) const {
+        const int id = static_cast<int>(skill->id);
+        const int level = reinterpret_cast<const CharacterConfigSave*>(&g_session)->UseLevel(id);
+        if (level != 0) {
+          Json::Value value;
+          value["SKID"] = id;
+          value["SKLv"] = level;
+          this->values->append(value);
+        }
+
+        return true;
       }
+    };
 
-      return true;
-    });
+    context.skills.ForEachGrouped(SaveUseSkillLevel{&context, &values});
     data["UseSkillInfo"] = values;
   }
 
