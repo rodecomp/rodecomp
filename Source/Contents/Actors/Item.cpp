@@ -37,6 +37,12 @@ struct ItemFallEntry {
   /* 0042 */ std::uint16_t grade;
 };
 
+// OFFSET: 0x00D8B340
+// FUNCTION: fn_22246
+CItem::CItem() : name() {
+  this->SubD8B5B0();
+}
+
 // OFFSET: 0x00D8B5A0
 // FUNCTION: fn_22248
 void CItem::SubD8B5A0() {

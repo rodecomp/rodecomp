@@ -4,6 +4,8 @@
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Messenger/ClientMessenger.h"
 #include "Contents/PetEvolutionMgr.h"
+#include "UI/Item/UIItemStoreWnd.h"
+#include "UI/Window/UIWindowMgr.h"
 
 #include <cstdint>
 #include <cstdlib>
@@ -24,6 +26,12 @@ struct ClientItemLists {
   bool AddItem1710(const ITEM_INFO& item, unsigned char refresh);
   bool AddItem1738(const ITEM_INFO& item, unsigned char refresh);
   bool AddItem1740(const ITEM_INFO& item);
+  void ClearInventory();
+  void ClearItems1740();
+};
+
+struct SessionMessengerContext {
+  void ResetEquipment();
 };
 
 namespace {
@@ -163,3 +171,5 @@ void CGameMode::ReceiveEquipListPart(unsigned char listType, int count, const un
     break;
   }
 }
+
+// OFFSET: 0x00D44600

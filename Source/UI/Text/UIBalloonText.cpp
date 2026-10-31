@@ -315,3 +315,8 @@ UINameBalloonText::UINameBalloonText(UIWindowContext& windows, BalloonTextContex
   this->unknown_00B8 = 0;
   this->unknown_0098 = 0;
 }
+
+// OFFSET: 0x00CCDFF0
+// FUNCTION: fn_21219
+UIVerticalNameBalloonText::UIVerticalNameBalloonText(UIWindowContext& windows, BalloonTextContext& text) : UINameBalloonText(windows, text) {
+}

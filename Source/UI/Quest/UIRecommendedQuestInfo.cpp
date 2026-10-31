@@ -156,3 +156,9 @@ CUIScrollWindow::CUIScrollWindow(UIWindowContext& context)
 CUIRecommendedQuestInfo::CUIRecommendedQuestInfo()
     : titleBar(nullptr), background(nullptr), titleText(nullptr), scrollWindow(nullptr), closeButton(nullptr) {
 }
+
+// OFFSET: 0x00A56860
+// FUNCTION: fn_16320
+CUIFrameWnd* CreateRecommendedQuestInfo() {
+  return new CUIRecommendedQuestInfo();
+}

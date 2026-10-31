@@ -7,7 +7,7 @@
 
 class UINameBalloonText : public UIBalloonText {
 public:
-  UINameBalloonText(UIWindowContext& windows, BalloonTextContext& text);
+  __declspec(noinline) UINameBalloonText(UIWindowContext& windows, BalloonTextContext& text);
   ~UINameBalloonText() override;
   void Slot19() override;
   void Paint() override;
@@ -21,6 +21,7 @@ public:
 
 class UIVerticalNameBalloonText : public UINameBalloonText {
 public:
+  UIVerticalNameBalloonText(UIWindowContext& windows, BalloonTextContext& text);
   void Paint() override;
 };
 

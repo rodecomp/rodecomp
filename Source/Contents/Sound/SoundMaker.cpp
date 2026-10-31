@@ -60,6 +60,14 @@ CCorpse::CCorpse() {
   this->render.unknown_008C = timeGetTime();
 }
 
+// OFFSET: 0x00DA0DE0
+// FUNCTION: fn_22352
+CBlowEffect::CBlowEffect() {
+  this->SetSpriteName(ResourceMgr::Instance(), "이팩트\\이팩트.spr");
+  this->SetActionName(ResourceMgr::Instance(), "이팩트\\이팩트.act");
+  this->render.animation = 0;
+}
+
 // OFFSET: 0x00DA1210
 // FUNCTION: fn_22355
 CGndRiser::CGndRiser() {

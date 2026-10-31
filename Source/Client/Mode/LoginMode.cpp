@@ -29,6 +29,7 @@
 #include "UI/Window/WindowDialogs.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"
+#include "Utility/Text/TextTokens.h"
 
 #include <algorithm>
 #include <chrono>
@@ -1962,4 +1963,20 @@ void CLoginMode::ShowLoginError(int code, int argument) {
   } else {
     g_modeMgr.Quit();
   }
+}
+
+// OFFSET: 0x00D8C6A0
+// FUNCTION: fn_22258
+CLoginMode::CLoginMode() : wallpaperName(), unknown_6F1C(), unknown_6F2C(), unknown_6F38(), unknown_6F50(), mapStates() {
+  this->unknown_0010 = 1;
+  this->unknown_6F10 = timeGetTime() + 12000;
+  this->savedInlineCharset = g_inlineCharset;
+  g_inlineCharset = 0;
+  this->unknown_6F48 = -1;
+  this->window_6F14 = nullptr;
+  this->passwordRetryCount = 0;
+  std::memset(this->characters, 0, sizeof(this->characters));
+  this->unknown_01D8 = 0;
+  this->unknown_01DC = 0;
+  this->characterDeleted = false;
 }

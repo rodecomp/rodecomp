@@ -33,6 +33,11 @@ UIVideoWnd::~UIVideoWnd() {
   }
 }
 
+// OFFSET: 0x00AB4060
+// FUNCTION: fn_17436
+UIVideoSkipButton::UIVideoSkipButton(UIWindowContext& windowContext, UIButtonContext& buttonContext) : UIButton(windowContext, buttonContext) {
+}
+
 // OFFSET: 0x00AB4380
 // FUNCTION: fn_17440
 bool UIVideoWnd::Slot02() {

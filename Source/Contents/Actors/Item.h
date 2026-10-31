@@ -9,6 +9,7 @@
 
 class CItem : public EffectActor {
 public:
+  CItem();
   void SubD8B5A0();
   void SubD8B5B0();
   bool OnProcess() override;

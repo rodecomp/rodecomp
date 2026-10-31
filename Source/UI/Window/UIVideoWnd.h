@@ -19,9 +19,7 @@ struct UIVideoWndContext {
 
 class UIVideoSkipButton : public UIButton {
 public:
-  // INLINED
-  UIVideoSkipButton(UIWindowContext& windowContext, UIButtonContext& buttonContext) : UIButton(windowContext, buttonContext) {
-  }
+  UIVideoSkipButton(UIWindowContext& windowContext, UIButtonContext& buttonContext);
 
   void Paint() override;
 };

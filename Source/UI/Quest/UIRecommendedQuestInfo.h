@@ -16,7 +16,7 @@ class CUIScrollWindow;
 
 class CUIRecommendedQuestInfo : public CUIFrameWnd {
 public:
-  CUIRecommendedQuestInfo();
+  __declspec(noinline) CUIRecommendedQuestInfo();
   void Slot16() override;
   void OnFirstAction();
   virtual void Slot53();

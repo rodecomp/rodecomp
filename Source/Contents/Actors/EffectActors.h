@@ -8,6 +8,7 @@
 
 class CBlowEffect : public CRenderObject {
 public:
+  CBlowEffect();
   ~CBlowEffect() override;
   bool OnProcess() override;
   void SendMsg(
