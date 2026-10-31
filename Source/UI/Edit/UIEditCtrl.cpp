@@ -2849,6 +2849,17 @@ struct ThreadFormatBuffer {
 };
 
 // OFFSET: 0x00974630
+// FUNCTION: fn_13305
+const char* FormatThreadText(const char* format, ...) {
+  // GLOBAL: gl_25164
+  static std::map<int, ThreadFormatBuffer> buffers;
+  char* buffer = buffers[reinterpret_cast<int>(GetCurrentThread())].text;
+  va_list arguments;
+  va_start(arguments, format);
+  _vsnprintf(buffer, 0x800, format, arguments);
+  va_end(arguments);
+  return buffer;
+}
 
 // OFFSET: 0x00994D80
 // FUNCTION: fn_13442
