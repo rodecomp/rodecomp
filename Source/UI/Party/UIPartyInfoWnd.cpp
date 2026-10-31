@@ -16,6 +16,12 @@ UIPartyInfoWnd::UIPartyInfoWnd(UIWindowContext& windows, UIButtonContext& button
 // OFFSET: 0x007BB740
 UIPartyInfoWnd::~UIPartyInfoWnd() = default;
 
+// OFFSET: 0x007BBEF0
+// FUNCTION: fn_09293
+CAdvenPartyInfo* UIPartyInfoWnd::Info() {
+  return &this->info;
+}
+
 // OFFSET: 0x007BBF00
 // FUNCTION: fn_09294
 const char* UIPartyInfoWnd::TypeName(int value, ButtonServices& services) {

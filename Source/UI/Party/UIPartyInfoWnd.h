@@ -30,6 +30,7 @@ public:
   void Slot33(int x, int y) override;
   void SetInfo(const CAdvenPartyInfo& value);
   void Reset();
+  CAdvenPartyInfo* Info();
   static const char* TypeName(int type, ButtonServices& services);
 
   /* 0120 */ std::string memo;
