@@ -1954,6 +1954,70 @@ bool UnusedTrue9BD5C0() {
   return true;
 }
 
+// OFFSET: 0x009BD7D0
+// FUNCTION: fn_13939
+template <>
+CUIListBoxEx<AdventureGuide::CUIItemInfo, AdventureGuide::CItemData>::CUIListBoxEx(UIWindowContext& context)
+    : CUIControl(context), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
+      unknown_00E0(1), rebind(0) {
+}
+
+// OFFSET: 0x009BD990
+// FUNCTION: fn_13940
+template <>
+CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>::CUIListBoxEx(UIWindowContext& context)
+    : CUIControl(context), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
+      unknown_00E0(1), rebind(0) {
+}
+
+// OFFSET: 0x009BDB50
+// FUNCTION: fn_13941
+template <>
+CUIListBoxEx<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestInfo>::CUIListBoxEx(UIWindowContext& context)
+    : CUIControl(context), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
+      unknown_00E0(1), rebind(0) {
+}
+
+// OFFSET: 0x009BDD10
+// FUNCTION: fn_13942
+template <>
+CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::CUIListBoxEx(UIWindowContext& context)
+    : CUIControl(context), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
+      unknown_00E0(1), rebind(0) {
+}
+
+// OFFSET: 0x009BE8B0
+// FUNCTION: fn_13951
+template <>
+CUIListBoxEx<AdventureGuide::CUIItemInfo, AdventureGuide::CItemData>::~CUIListBoxEx() {
+}
+
+// OFFSET: 0x009BEA10
+// FUNCTION: fn_13952
+template <>
+CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>::~CUIListBoxEx() {
+}
+
+// OFFSET: 0x009BEB70
+// FUNCTION: fn_13953
+template <>
+CUIListBoxEx<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestInfo>::~CUIListBoxEx() {
+}
+
+// OFFSET: 0x009BECD0
+// FUNCTION: fn_13954
+template <>
+CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::~CUIListBoxEx() {
+}
+
+// OFFSET: 0x009BFDB0
+// FUNCTION: fn_13963
+CUIButton::~CUIButton() {
+  using Handler = std::function<void()>;
+  reinterpret_cast<Handler*>(this->unknown_00C8)->~Handler();
+  reinterpret_cast<Handler*>(this->unknown_00A0)->~Handler();
+}
+
 // OFFSET: 0x009F2EC0
 // FUNCTION: fn_14733
 void CUIVScrollBar::Slot55(int value) {

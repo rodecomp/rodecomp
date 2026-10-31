@@ -102,6 +102,7 @@ public:
 class CUIButton : public CUIControl {
 public:
   explicit CUIButton(UIWindowContext& context);
+  ~CUIButton() override;
   void Slot25(int x, int y) override;
   void Slot28(int x, int y) override;
   void Slot26(int x, int y) override;
