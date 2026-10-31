@@ -547,6 +547,7 @@ public:
   bool RecordReplayMessage(int message, int value, int first, int second);
   void UpdateReplayActionSpeeds();
   struct ReplayTime StopReplayRecording();
+  std::vector<unsigned char> WriteReplaySkillState();
   void ReceivePacket0AB8(const unsigned char* packet);
   void ReceivePacket0A29(int value);
   void ReceiveCashShopBanner(int value1, int value2, int value3);

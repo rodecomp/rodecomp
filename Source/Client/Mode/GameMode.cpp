@@ -1641,3 +1641,54 @@ void CGameMode::TargetActorByAid(int aid) {
     *reinterpret_cast<int*>(&this->unknown_04F4[0xBC]) = 0;
   }
 }
+
+#include "Contents/Actors/Skill.h"
+
+#pragma pack(push, 1)
+struct SkillEntryPacket {
+  /* 0000 */ std::int16_t packetType;
+  /* 0002 */ std::uint32_t aid;
+  /* 0006 */ std::uint32_t creatorAid;
+  /* 000A */ std::int16_t x;
+  /* 000C */ std::int16_t y;
+  /* 000E */ unsigned char job;
+  /* 000F */ unsigned char isVisible;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(SkillEntryPacket) == 16);
+
+// OFFSET: 0x00CEB4C0
+// FUNCTION: fn_21351
+std::vector<unsigned char> CGameMode::WriteReplaySkillState() {
+  std::vector<unsigned char> output;
+  {
+    const auto record = BuildReplayTaggedRecord(17000, nullptr, 0);
+    output.insert(output.end(), record.begin(), record.end());
+  }
+
+  for (CRenderObject* object : this->scene->unknown_0020) {
+    CSkill* skill = static_cast<CSkill*>(object);
+    SkillEntryPacket packet;
+    packet.packetType = 0x11F;
+    packet.aid = skill->skillAid;
+    packet.creatorAid = static_cast<std::uint32_t>(skill->unknown_0410);
+    packet.job = static_cast<unsigned char>(skill->GetEffectiveJob(-1));
+    packet.isVisible = 1;
+
+    const C3dAttr* terrain = this->scene->terrain;
+    const float column = static_cast<float>(std::floor(static_cast<float>(terrain->width / 2) + skill->render.position.x / static_cast<float>(terrain->cellSize)));
+    const float row = static_cast<float>(std::floor(static_cast<float>(terrain->height / 2) + skill->render.position.z / static_cast<float>(terrain->cellSize)));
+    packet.x = static_cast<std::int16_t>(static_cast<int>(column));
+    packet.y = static_cast<std::int16_t>(static_cast<int>(row));
+
+    const auto record = BuildReplayTaggedRecord(0xCD, &packet, sizeof(packet));
+    output.insert(output.end(), record.begin(), record.end());
+  }
+
+  {
+    const auto record = BuildReplayTaggedRecord(17001, nullptr, 0);
+    output.insert(output.end(), record.begin(), record.end());
+  }
+  return output;
+}
