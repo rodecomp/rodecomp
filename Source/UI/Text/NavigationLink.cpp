@@ -19,6 +19,7 @@
 #include "Client/Input/InputCharset.h"
 #include "Client/Mode/ModeTooltip.h"
 #include "Client/Session.h"
+#include "Contents/CashEmotionMgr.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
@@ -40,14 +41,23 @@
 #include "UI/Dialogs/UITipboxWnd.h"
 #include "UI/Text/ColoredText.h"
 #include "UI/Text/CreateLineInfo.h"
+#include "UI/Text/TextMarkup.h"
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "Utility/Text/StringUtil.h"
+#include "Utility/Text/TextEscapes.h"
 #include "Utility/Text/TextTokens.h"
 
 namespace LineCutter {
   class UIText : public UIWindow {
   public:
+    // INLINED
+    explicit UIText(UIWindowContext& windows)
+        : UIWindow(windows, 0), m_color(0), m_fontHeight(12), m_bold(0), m_italic(0), m_outlined(0), m_outlineColor(0xFFFFFF), m_shadowed(0),
+          m_shadowColor(0xFFFFFF) {
+    }
+
     void Paint() override;
     void Slot25(int x, int y) override;
     void Slot26(int x, int y) override;
@@ -72,6 +82,13 @@ namespace LineCutter {
 
 class UIEmotion : public UIWindow {
 public:
+  // INLINED
+  UIEmotion(UIWindowContext& windows, const char* sprite, const char* action, unsigned animation, unsigned maxLoops)
+      : UIWindow(windows, 0), m_animation(animation), m_frame(0), m_maxLoops(maxLoops),
+        m_sprite(static_cast<CSprRes*>(ResourceMgr::Instance().Load(sprite))), m_action(static_cast<CActRes*>(ResourceMgr::Instance().Load(action))),
+        m_startTime(timeGetTime()), m_loops(1) {
+  }
+
   void Slot19() override;
   void Paint() override;
 
@@ -87,6 +104,11 @@ protected:
 
 class UIItemImage : public UIWindow {
 public:
+  // INLINED
+  UIItemImage(UIWindowContext& windows, const std::string& itemId) : UIWindow(windows, 0), m_itemId(itemId) {
+    this->m_clip = 1;
+  }
+
   void Paint() override;
   void Slot28(int x, int y) override;
   void Slot32(int x, int y) override;
@@ -640,6 +662,36 @@ void UIItemImage::Paint() {
   }
 }
 
+// OFFSET: 0x00836970
+// FUNCTION: fn_10433
+CCreateLineInfo::CCreateLineInfo(
+  UIWindow* parent, const char* text, int width, int lineSpacing, std::uint32_t color, int fontHeight, LineFontFlags flags, bool unknown0028,
+  int unknown002C, bool unknown0030, int unknown0034, unsigned char align
+)
+    : m_align(align), m_newSegment(true), m_height(0) {
+  if (parent && (this->m_parent = parent, text)) {
+    this->m_text.assign(text, std::strlen(text));
+    this->m_width = width;
+    this->m_lineSpacing = lineSpacing;
+    this->m_defaultColor = color;
+    this->m_color = color;
+    this->m_defaultFontHeight = fontHeight;
+    this->m_fontHeight = fontHeight;
+    this->m_bold = flags.bold;
+    this->m_italic = flags.italic;
+    this->unknown_0030 = unknown0030;
+    this->unknown_0034 = unknown0034;
+    this->unknown_0028 = unknown0028;
+    this->unknown_002C = unknown002C;
+
+    if (!s_fontStackCache.empty()) {
+      this->m_fontStack.swap(s_fontStackCache);
+    }
+
+    this->Rebuild();
+  }
+}
+
 // OFFSET: 0x00837390
 // FUNCTION: fn_10441
 CCreateLineInfo::~CCreateLineInfo() {
@@ -684,6 +736,209 @@ void CCreateLineInfo::AddWindow(UIWindow* window) {
   }
   this->m_lines.back().push_back(window);
 }
+
+// OFFSET: 0x00837BC0
+// FUNCTION: fn_10451
+int CCreateLineInfo::LayoutEmotion(int x, const std::string& text) {
+  int group = 0;
+  int id = -1;
+  std::cmatch match;
+
+  if (!std::regex_search(text.c_str(), text.c_str() + text.size(), match, std::regex("^\\^e\\[(\\d{1,3})\\](\\[\\d\\])*"))) {
+    if (!std::regex_search(text.c_str(), text.c_str() + text.size(), match, std::regex("^\\^e\\[(\\d{1,3}\\s*,\\s*\\d{1,3})\\](\\[\\d\\])*"))) {
+      return x;
+    }
+
+    const std::vector<std::string> parts = Split(match[1].str(), ",");
+    if (parts.size() == 2) {
+      group = std::stoi(parts[0]);
+      id = std::stoi(parts[1]);
+    }
+  } else {
+    id = std::stoi(match[1].str());
+  }
+
+  if (id >= 0) {
+    int loops = 0;
+    if (match.size() > 2 && match[2].matched) {
+      const std::string tail = match[2].str();
+      std::cmatch loopMatch;
+      if (std::regex_search(tail.c_str(), tail.c_str() + tail.size(), loopMatch, std::regex("^\\[(\\d)\\]"))) {
+        loops = std::atoi(loopMatch[1].str().c_str());
+      }
+    }
+
+    CashEmotionData* data = g_cashEmotionMgr->GetEmotionData(group, id);
+    if (data) {
+      const char* sprite = g_cashEmotionMgr->GetSprFileName(data->actId);
+      if (sprite) {
+        const char* action = g_cashEmotionMgr->GetPackName(data->sprId);
+        if (action) {
+          UIEmotion* emotion = new UIEmotion(*reinterpret_cast<UIWindowContext*>(nullptr), sprite, action, data->unknown_0020, loops);
+          emotion->SetSize(50, 50);
+          emotion->Invalidate();
+          if (this->m_width < emotion->geometry.width + x) {
+            this->NewLine();
+            this->AddWindow(emotion);
+            x = emotion->geometry.width;
+          } else {
+            this->AddWindow(emotion);
+            x += emotion->geometry.width;
+          }
+        }
+      }
+    }
+  }
+
+  return x;
+}
+
+// OFFSET: 0x00838130
+// FUNCTION: fn_10452
+int CCreateLineInfo::LayoutLink(int x, std::string text, int type, LineTextStyle style) {
+  const std::tuple<bool, std::string, std::string> info = SplitLinkInfo(text, type);
+  if (std::get<0>(info)) {
+    std::string display = std::get<1>(info);
+    if (this->m_parent) {
+      display = RemoveTextColors(display.c_str(), 0);
+    }
+
+    const std::vector<std::string> parts = SplitString(std::get<2>(info), ",");
+    const int width = MeasureText(this->m_parent, display, style).cx;
+    if (width > this->m_width) {
+      const std::vector<std::string> lines = SplitLines(this->m_parent, display, style, this->m_width);
+      for (auto line = lines.begin(); line != lines.end(); ++line) {
+        this->NewLine();
+        x = 0;
+        UITextButton* button = this->CreateLinkWindow(*line, parts, type, style);
+        if (button) {
+          this->AddWindow(button);
+          x = button->geometry.width;
+        }
+      }
+    } else {
+      if (x + width > this->m_width) {
+        this->NewLine();
+        x = 0;
+      }
+
+      if (!display.empty() && !parts.empty()) {
+        UITextButton* button = this->CreateLinkWindow(display, parts, type, style);
+        this->AddWindow(button);
+        x += button->geometry.width;
+      }
+    }
+  }
+
+  return x;
+}
+
+// OFFSET: 0x00838780
+// FUNCTION: fn_10453
+int CCreateLineInfo::LayoutItemImage(int x, const std::string& text) {
+  std::cmatch match;
+
+  if (std::regex_search(text.c_str(), text.c_str() + text.size(), match, std::regex("^\\^i\\[(\\d{1,7})\\]*"))) {
+    const std::string itemId = match[1].str();
+    UIItemImage* image = new (std::nothrow) UIItemImage(*reinterpret_cast<UIWindowContext*>(nullptr), itemId);
+    if (image) {
+      image->SetSize(25, 25);
+      image->Invalidate();
+      if (this->m_width < image->geometry.width + x) {
+        this->NewLine();
+        this->AddWindow(image);
+        x = image->geometry.width;
+      } else {
+        this->AddWindow(image);
+        x += image->geometry.width;
+      }
+    }
+  }
+
+  return x;
+}
+
+// OFFSET: 0x008389A0
+// FUNCTION: fn_10454
+int CCreateLineInfo::LayoutText(int x, std::string text, LineTextStyle style) {
+  const int width = MeasureText(this->m_parent, text, style).cx;
+  if (this->m_width < width) {
+    const std::string first = FitText(this->m_parent, text, style, this->m_width - x);
+    UIWindow* last = this->CreateTextWindow(first, style);
+    if (last) {
+      this->AddWindow(last);
+    }
+
+    const std::string rest = text.substr(first.size(), text.size() - first.size());
+    const std::vector<std::string> lines = SplitLines(this->m_parent, rest, style, this->m_width);
+    if (!lines.empty()) {
+      x = 0;
+    }
+
+    for (auto line = lines.begin(); line != lines.end(); ++line) {
+      this->NewLine();
+      last = this->CreateTextWindow(*line, style);
+      if (last) {
+        this->AddWindow(last);
+      }
+    }
+
+    if (last) {
+      x += last->geometry.width;
+    }
+  } else {
+    if (this->m_width < x + width) {
+      this->NewLine();
+      x = 0;
+    }
+
+    UIWindow* window = this->CreateTextWindow(text, style);
+    if (window) {
+      this->AddWindow(window);
+      x += window->geometry.width;
+    }
+  }
+
+  return x;
+}
+
+// OFFSET: 0x00838D40
+// FUNCTION: fn_10455
+void CCreateLineInfo::BuildWindows() {
+  int x = 0;
+
+  for (auto segment = this->m_segments.begin(); segment != this->m_segments.end(); ++segment) {
+    const std::string text = segment->text;
+    switch (segment->type) {
+    case LINE_SEGMENT_URL:
+    case LINE_SEGMENT_NAVI:
+    case LINE_SEGMENT_ITEM:
+    case LINE_SEGMENT_TIPBOX:
+    case LINE_SEGMENT_QUEST:
+      x = this->LayoutLink(x, text, segment->type, segment->style);
+      break;
+    case LINE_SEGMENT_MESSAGE:
+      x = this->LayoutText(x, g_navigationLinkParser->ExpandMessages(text), segment->style);
+      break;
+    case LINE_SEGMENT_EMOTION:
+      x = this->LayoutEmotion(x, text);
+      break;
+    case LINE_SEGMENT_ITEM_IMAGE:
+      x = this->LayoutItemImage(x, text);
+      break;
+    case LINE_SEGMENT_TEXT:
+      if (text == "\n") {
+        this->NewLine();
+        x = 0;
+      } else {
+        x = this->LayoutText(x, text, segment->style);
+      }
+      break;
+    }
+  }
+}
+
+// OFFSET: 0x008392C0
 
 // OFFSET: 0x00839310
 // FUNCTION: fn_10457
@@ -828,6 +1083,37 @@ int CCreateLineInfo::AddLink(int index, int type) {
   }
 
   return index;
+}
+
+// OFFSET: 0x0083A5F0
+
+// OFFSET: 0x0083ACF0
+// FUNCTION: fn_10467
+UIWindow* CCreateLineInfo::CreateTextWindow(std::string text, const LineTextStyle& style) {
+  if (text.empty()) {
+    return nullptr;
+  }
+
+  const tagSIZE size = MeasureText(this->m_parent, text, style);
+  LineCutter::UIText* window = new LineCutter::UIText(*reinterpret_cast<UIWindowContext*>(nullptr));
+  window->SetSize(size.cx, size.cy);
+  window->m_text = text;
+  window->m_outlineColor = this->unknown_002C;
+  window->m_shadowed = this->unknown_0030;
+  window->m_color = style.color;
+  window->m_fontHeight = style.fontHeight;
+  window->m_bold = style.bold;
+  window->m_italic = style.italic;
+  window->m_outlined = this->unknown_0028;
+  window->m_shadowColor = this->unknown_0034;
+  if (window->m_outlined == 1) {
+    const TextLocale locale = {};
+    const int textWidth = window->TextWidth(g_fontCache, locale, window->m_text.c_str(), 0, 0, style.fontHeight, style.bold, style.italic);
+    window->Resize(textWidth + 2, style.fontHeight + 2);
+  }
+
+  window->Invalidate();
+  return window;
 }
 
 // OFFSET: 0x0083AA40

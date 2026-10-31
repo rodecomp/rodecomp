@@ -10,6 +10,7 @@
 
 class FontCache;
 class UIWindow;
+class UITextButton;
 struct TextLocale;
 struct tagSIZE;
 
@@ -45,6 +46,11 @@ struct LineTextSegment {
   /* 0024 */ int type;
   /* 0028 */ int unknown_0028;
   /* 002C */ int unknown_002C;
+};
+
+struct LineFontFlags {
+  /* 0000 */ bool bold;
+  /* 0001 */ bool italic;
 };
 
 struct LineFontState {
@@ -88,6 +94,10 @@ public:
   /* 0070 */ std::vector<std::vector<UIWindow*>> m_lines;
   /* 007C */ int m_height;
 
+  CCreateLineInfo(
+    UIWindow* parent, const char* text, int width, int lineSpacing, std::uint32_t color, int fontHeight, LineFontFlags flags, bool unknown0028,
+    int unknown002C, bool unknown0030, int unknown0034, unsigned char align
+  );
   virtual ~CCreateLineInfo();
 
   void AppendText(const std::string& text);
@@ -105,6 +115,14 @@ public:
   int ParseChar(int index);
   int ParseTag(int index);
   void ArrangeLines();
+  void BuildWindows();
+  void Rebuild();
+  int LayoutEmotion(int x, const std::string& text);
+  int LayoutLink(int x, std::string text, int type, LineTextStyle style);
+  int LayoutItemImage(int x, const std::string& text);
+  int LayoutText(int x, std::string text, LineTextStyle style);
+  UITextButton* CreateLinkWindow(const std::string& text, const std::vector<std::string>& parts, int type, LineTextStyle style);
+  UIWindow* CreateTextWindow(std::string text, const LineTextStyle& style);
 
 private:
   void CloseFont(std::string tag);
