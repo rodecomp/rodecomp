@@ -95,6 +95,24 @@ bool CSession::IsMercenaryAid(std::uint32_t aid) const {
   return aid != 0xFFFFFFFF && aid == *reinterpret_cast<const std::uint32_t*>(&this->unknown_5620[8]);
 }
 
+// OFFSET: 0x00E1DE30
+// FUNCTION: fn_23883
+int CSession::IsCompanionAid(std::uint32_t aid) const {
+  if (aid == 0xFFFFFFFF) {
+    return 0;
+  }
+  if (aid == *reinterpret_cast<const std::uint32_t*>(&this->unknown_5570[8]) ||
+      aid == *reinterpret_cast<const std::uint32_t*>(&this->unknown_5620[8]) || aid == this->unknown_1010 ||
+      aid == static_cast<std::uint32_t>(this->unknown_5BC0)) {
+    return 1;
+  }
+  auto it = this->unknown_0784.find(aid);
+  if (it == this->unknown_0784.end() || it->second == -1) {
+    return 0;
+  }
+  return 1;
+}
+
 // OFFSET: 0x00E1DF00
 // FUNCTION: fn_23885
 bool CSession::IsPetAid(std::uint32_t aid) const {
