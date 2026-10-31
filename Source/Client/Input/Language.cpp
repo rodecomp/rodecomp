@@ -4,6 +4,7 @@
 #include "UI/Lists/UIMemberListBox.h"
 #include "UI/UICaptchaPreviewWnd.h"
 #include "UI/UIRoundBoxTooltipWnd.h"
+#include "UI/UIMacroDetectorWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/WindowManagerWindows.h"
@@ -392,3 +393,13 @@ UIChatHisBox3::UIChatHisBox3(UIWindowContext& windows, UIListBoxContext& list) :
 }
 
 // OFFSET: 0x0099A060
+
+// OFFSET: 0x007ECF50
+// FUNCTION: fn_09805
+UIMacroDetectorWnd::UIMacroDetectorWnd(UIWindowContext& windows, UIFrameContext& frames)
+    : UIFrameWnd(windows, frames, 0), m_button(nullptr), m_imageData(nullptr), m_imageSize(0), m_imageReceived(0), unknown_00D0(0), totalDuration(0),
+      startTick(0), messageDuration(0), m_lastAnswer(), message(), unknown_0110(0), messageTick(3000), m_image(nullptr), m_editCtrl(nullptr) {
+  std::memset(this->m_captchaKey, 0, sizeof(this->m_captchaKey));
+  g_windowMgr.CloseWindow(155);
+  g_windowMgr.CloseWindow(39);
+}
