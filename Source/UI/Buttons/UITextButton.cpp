@@ -3065,6 +3065,43 @@ void UIListBoxID::Paint() {
   }
 }
 
+// OFFSET: 0x0088C110
+// FUNCTION: fn_11370
+void UIListBoxTitle::Paint() {
+  if (this->transparent == 1) {
+    this->ClearSurface(0xFFFF00FF);
+    if (this->parent) {
+      this->parent->Invalidate();
+    }
+  } else {
+    this->ClearSurface(RGB(this->unknown_007C[0], this->unknown_007C[4], this->unknown_007C[8]));
+  }
+
+  const int first = this->topLine;
+  unsigned end = static_cast<unsigned>(this->geometry.height / this->lineHeight - this->bottomMargin + first);
+  std::uint32_t color = 0;
+  if (this->lines.size() < end) {
+    end = static_cast<unsigned>(this->lines.size());
+  }
+
+  for (int index = first; index < static_cast<int>(end); ++index) {
+    if (index == this->selected) {
+      this->FillRegion(0, (index - first) * this->lineHeight, this->geometry.width, this->lineHeight - 1, this->selectionColor);
+    } else {
+      const int* const titles = reinterpret_cast<const int*>(g_windowCloseValue);
+      const int* const titlesEnd = reinterpret_cast<const int*>(g_savedWindowCloseValue);
+      if (std::find(titles, titlesEnd, this->lines[index].id) != titlesEnd) {
+        this->FillRegion(0, (index - first) * this->lineHeight, this->geometry.width, this->lineHeight - 1, this->titleColor);
+      }
+    }
+
+    DrawColoredText(
+      *this, static_cast<unsigned short>(g_textCodePage), 3 - this->horizontalOffset, (index - first) * this->lineHeight, this->lines[index].text.c_str(),
+      static_cast<unsigned>(this->lines[index].text.size()), color, 0, 12, false
+    );
+  }
+}
+
 // OFFSET: 0x0088A7D0
 // FUNCTION: fn_11355
 void UIComboBoxID::Paint() {

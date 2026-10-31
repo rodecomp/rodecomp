@@ -562,6 +562,8 @@ extern UIWindowMgr g_windowMgr;
 extern int g_dragWindowId;
 extern bool g_windowToggleFlag;
 extern unsigned char g_windowCloseByte;
+extern int g_windowCloseValue;
+extern int g_savedWindowCloseValue;
 
 void __fastcall RefreshItemWindows(UIWindowMgr* mgr);
 

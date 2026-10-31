@@ -44,12 +44,13 @@ public:
   /* 00AC */ UIScrollBar* horizontalBar;
   /* 00B0 */ int transparent;
   /* 00B4 */ int lineHeight;
-  /* 00B8 */ std::uint32_t selectionColor;
+  /* 00BC */ std::uint32_t selectionColor;
 };
 
 class UIListBoxTitle : public UIListBoxID {
 public:
   UIListBoxTitle();
+  void Paint() override;
 
   /* 00C0 */ int titleColor;
 };
@@ -77,6 +78,7 @@ public:
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(IdListLine) == 28);
 static_assert(sizeof(UIListBoxID) == 0xC0);
+static_assert(offsetof(UIListBoxID, selectionColor) == 0xBC);
 static_assert(offsetof(UIListBoxTitle, titleColor) == 0xC0);
 static_assert(offsetof(UIComboBoxID, targetId) == 0xC0);
 #endif
