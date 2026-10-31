@@ -103,6 +103,63 @@ int UIGradeEnchantWnd::SuccessRate() {
 }
 
 // OFFSET: 0x007E7780
+// FUNCTION: fn_09753
+void UIGradeEnchantWnd::Slot15(int, int) {
+  if (UIBitmapButton* close = this->AddCloseButton(*this->m_controls, "", 0)) {
+    close->Move(0x180, 0x14);
+  }
+
+  auto* title = new UIBasicButton(*this->m_context, *this->m_controls);
+  title->Configure(0x2A, LookupMessage(0x513));
+  title->Move(0x159, 299);
+  title->SetId(0xB9);
+  this->AddChild(title);
+
+  this->startButton = new UIGradeEnchant_BtnStart(*this->m_context, *this->m_controls);
+  this->startButton->SetBitmap("유저인터페이스\\grade_enchant\\btn_start.bmp", 0, 0);
+  this->startButton->SetBitmap("유저인터페이스\\grade_enchant\\btn_start_over.bmp", 1, 0);
+  this->startButton->SetBitmap("유저인터페이스\\grade_enchant\\btn_start_press.bmp", 2, 0);
+  this->startButton->SetBitmap("유저인터페이스\\grade_enchant\\btn_start_disable.bmp", 3, 0);
+  this->startButton->SetSize(this->startButton->BitmapWidth(), this->startButton->BitmapHeight());
+  this->startButton->Move(0x23, 0x123);
+  this->startButton->SetId(0xB8);
+  this->startButton->SetDisabled(0);
+  this->startButton->Invalidate();
+  this->AddChild(this->startButton);
+
+  this->enhancedUpButton = new UIGradeEnchant_BtnEnhancedUp(*this->m_context, *this->m_controls);
+  this->enhancedUpButton->SetBitmap("유저인터페이스\\grade_enchant\\btn_chance_up.bmp", 0, 0);
+  this->enhancedUpButton->SetBitmap("유저인터페이스\\grade_enchant\\btn_chance_up_over.bmp", 1, 0);
+  this->enhancedUpButton->SetBitmap("유저인터페이스\\grade_enchant\\btn_chance_up_pick.bmp", 2, 0);
+  this->enhancedUpButton->SetSize(this->enhancedUpButton->BitmapWidth(), this->enhancedUpButton->BitmapHeight());
+  this->enhancedUpButton->Move(0x9E, 0xE1);
+  this->enhancedUpButton->SetId(0x117);
+  this->enhancedUpButton->SetDisabled(0);
+  this->enhancedUpButton->Invalidate();
+  this->AddChild(this->enhancedUpButton);
+
+  this->enhancedDownButton = new UIGradeEnchant_BtnEnhancedDown(*this->m_context, *this->m_controls);
+  this->enhancedDownButton->SetBitmap("유저인터페이스\\grade_enchant\\btn_chance_down.bmp", 0, 0);
+  this->enhancedDownButton->SetBitmap("유저인터페이스\\grade_enchant\\btn_chance_down_over.bmp", 1, 0);
+  this->enhancedDownButton->SetBitmap("유저인터페이스\\grade_enchant\\btn_chance_down_pick.bmp", 2, 0);
+  this->enhancedDownButton->SetSize(this->enhancedDownButton->BitmapWidth(), this->enhancedDownButton->BitmapHeight());
+  this->enhancedDownButton->Move(0x9E, 0xF0);
+  this->enhancedDownButton->SetId(0x118);
+  this->enhancedDownButton->SetDisabled(0);
+  this->enhancedDownButton->Invalidate();
+  this->AddChild(this->enhancedDownButton);
+
+  auto* help = new UIBitmapButton(*this->m_context, *this->m_controls);
+  help->SetBitmap("유저인터페이스\\basic_interface\\btn_help_normal.bmp", 0, 0);
+  help->SetBitmap("유저인터페이스\\basic_interface\\btn_help_over.bmp", 1, 0);
+  help->SetBitmap("유저인터페이스\\basic_interface\\btn_help_pressed.bmp", 2, 0);
+  help->SetBitmap("유저인터페이스\\basic_interface\\btn_help_disabled.bmp", 3, 0);
+  help->SetSize(help->BitmapWidth(), help->BitmapHeight());
+  help->Move(0x8C, 100);
+  help->SetTooltip(LookupMessage(0x1013));
+  help->SetId(0x1FE);
+  this->AddChild(help);
+}
 
 // OFFSET: 0x007E7BA0
 // FUNCTION: fn_09754
