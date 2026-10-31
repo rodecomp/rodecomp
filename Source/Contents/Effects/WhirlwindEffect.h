@@ -15,6 +15,7 @@ struct CWhirlwindEffect : CRagEffect {
   /* 11CB0 */ std::chrono::steady_clock::time_point endTime;
 
   bool OnProcess() override;
+  void Init(EffectActor* parent, int id, vector3d deltaPos) override;
 
   void SetLifetime(int milliseconds);
   void SetDuration(int duration);
