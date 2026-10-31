@@ -51,6 +51,23 @@ UILapineUpgradeBoxWnd::~UILapineUpgradeBoxWnd() {
 // FUNCTION: fn_04193
 void UILapineUpgradeBoxWndNoop() {}
 
+// OFFSET: 0x00603A90
+// FUNCTION: fn_04199
+void UILapineUpgradeBox_IngredientListWnd::Slot15(int width, int height) {
+  this->scrollBarWidth = 9;
+  if (this->scrollBar) {
+    this->RemoveChild(this->scrollBar, 0);
+    delete this->scrollBar;
+    this->scrollBar = nullptr;
+  }
+
+  this->scrollBar = new UILapineScrollBar(*this->m_context);
+  this->scrollBar->Configure(width - this->scrollBarWidth, 0, 1, height - this->scrollBarHeight);
+  this->AddChild(this->scrollBar);
+}
+
+// OFFSET: 0x00603CA0
+
 // OFFSET: 0x00603B60
 // FUNCTION: fn_04200
 void UILapineUpgradeBoxWnd::Paint() {

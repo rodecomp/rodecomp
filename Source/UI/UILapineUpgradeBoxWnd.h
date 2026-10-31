@@ -18,6 +18,7 @@ public:
 
   void Move(int x, int y) override;
   void Slot10(int x, int y, std::intptr_t value) override;
+  void Paint() override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
   void Slot28(int x, int y) override;
