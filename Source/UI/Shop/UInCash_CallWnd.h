@@ -17,6 +17,7 @@ public:
   void Slot32(int x, int y) override;
   void Slot35(int delta) override;
   ITEM_INFO ItemAt(int x, int y);
+  void DrawItems();
 
   /* 00B4 */ unsigned char unknown_00B4[0x34];
   /* 00E8 */ std::list<ITEM_INFO> m_items;

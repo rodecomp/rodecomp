@@ -2579,6 +2579,94 @@ void UIProhibitListWnd::Slot15(int, int) {
   this->AddChild(button);
 }
 
+// OFFSET: 0x008EE7F0
+
+// OFFSET: 0x008EECE0
+// FUNCTION: fn_12229
+void UIMakingArrowListWnd::Paint() {
+  this->m_title = "LIST";
+  this->UIItemIdentifyWnd::Paint();
+}
+
+// OFFSET: 0x008EFB00
+// FUNCTION: fn_12242
+void UIPetEggListWnd::Paint() {
+  this->m_title = LookupMessage(599);
+  this->UIItemIdentifyWnd::Paint();
+}
+
+// OFFSET: 0x008D2370
+// FUNCTION: fn_12097
+void UInCashWnd::DrawItems() {
+  int row = 0;
+  int index = 0;
+  for (auto it = this->m_items.begin(); it != this->m_items.end(); ++it, ++index) {
+    if (index < this->m_page * 8 - 8) {
+      continue;
+    }
+
+    int x = 71;
+    int column = row;
+    if (column > 3) {
+      x = 257;
+      column -= 4;
+    }
+    const int y = column * this->m_rowHeight + this->m_listTop;
+    const std::string path = "유저인터페이스\\collection\\" + std::string(ItemResourcePath(*it)) + ".bmp";
+    if (!path.empty()) {
+      this->DrawBitmap(x, y, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str())))->image, true);
+    }
+
+    char text[64];
+    char number[64];
+    const int width = this->DrawFittedItemName(x, -30, &*it, 0, 0, 12, 0);
+    this->DrawWrappedItemName(x - width / 2 + 90, y + 4, width, &*it, 0, 0, 12);
+    int length = std::sprintf(text, LookupMessage(1854));
+    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, x + 112, y + 64, text, length, 0, 12, 0, 0, 0);
+    length = std::sprintf(text, " %s C", FormatGroupedInteger(static_cast<int>(it->unknown_0014[0]), number, 64));
+    this->DrawRightAlignedText(x + 152, y + 84, text, length, 0, 12, 0, 0);
+
+    ++row;
+    if (row > 7) {
+      break;
+    }
+  }
+
+  row = 0;
+  index = 0;
+  for (auto it = this->m_otherItems.begin(); it != this->m_otherItems.end(); ++it, ++index) {
+    const int y = this->m_rowHeight * row + this->m_listTop;
+    if (index < this->m_firstOther || index >= this->m_firstOther + 4) {
+      continue;
+    }
+
+    const std::string path = "유저인터페이스\\collection\\" + std::string(ItemResourcePath(*it)) + ".bmp";
+    if (!path.empty()) {
+      this->DrawBitmap(453, y, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str())))->image, true);
+    }
+
+    char text[64];
+    char number[64];
+    std::memset(text, 0, sizeof(text));
+    std::memset(number, 0, sizeof(number));
+    const int width = this->DrawFittedItemName(453, -30, &*it, 0, 0, 12, 0);
+    this->DrawWrappedItemName(535 - width / 2, y + 4, width, &*it, 0, 0, 12);
+    int length = std::sprintf(text, LookupMessage(1854));
+    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 565, y + 24, text, length, 0, 12, 0, 0, 0);
+    length = std::sprintf(text, " %s C", FormatGroupedInteger(static_cast<int>(it->unknown_0014[0]), number, 64));
+    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 550, y + 42, text, length, 0, 12, 0, 0, 0);
+    length = std::sprintf(text, LookupMessage(1855));
+    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 565, y + 66, text, length, 0, 12, 0, 0, 0);
+    length = std::sprintf(text, " %d %s", it->quantity, LookupMessage(1856));
+    this->DrawRightAlignedText(590, y + 84, text, length, 0, 12, 0, 0);
+
+    ++row;
+    if (row > 3) {
+      break;
+    }
+  }
+}
+
 // OFFSET: 0x008E3C80
 // FUNCTION: fn_12183
 void UIMonsterDisplayWnd::Slot15(int, int) {

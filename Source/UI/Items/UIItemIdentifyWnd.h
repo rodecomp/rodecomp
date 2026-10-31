@@ -22,6 +22,7 @@ public:
   /* 00EC */ WindowPlacement* m_placement;
 
   void Slot11() override;
+  void Paint() override;
   void Slot15(int width, int height) override;
   void UpdateScroll();
   void Slot25(int x, int y) override;
@@ -30,6 +31,16 @@ public:
   void Slot35(int delta) override;
   ITEM_INFO GetItem(int index, int* found);
   ITEM_INFO GetSelectedItem(int* found);
+};
+
+class UIMakingArrowListWnd : public UIItemIdentifyWnd {
+public:
+  void Paint() override;
+};
+
+class UIPetEggListWnd : public UIItemIdentifyWnd {
+public:
+  void Paint() override;
 };
 
 class UIItemCompositionWnd : public UIItemIdentifyWnd {
