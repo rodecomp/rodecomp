@@ -12,6 +12,10 @@ class UILapineUpgradeBox_IngredientListWnd;
 
 class UILapineUpgradeBox_IngredientInfoWnd : public UIFrameWnd {
 public:
+  // INLINED
+  UILapineUpgradeBox_IngredientInfoWnd(UIWindowContext& windows, UIFrameContext& frames)
+      : UIFrameWnd(windows, frames, 0), selected(0), quantity(0) {}
+
   void Move(int x, int y) override;
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot25(int x, int y) override;
@@ -31,6 +35,8 @@ protected:
 };
 
 class UILapineUpgradeBoxWnd : public UIFrameWnd {
+  friend class UILapineUpgradeBox_IngredientListWnd;
+
 public:
   ~UILapineUpgradeBoxWnd() override;
   void Slot10(int x, int y, std::intptr_t value) override;
@@ -42,7 +48,10 @@ public:
   void Slot32(int x, int y) override;
   void SetWaiting(unsigned char value);
   UILapineUpgradeBox_IngredientInfoWnd* FindSelected();
+  void SetIngredient(int id);
   void AddMaterial(int id);
+  // INLINED
+  UIFrameContext& FrameContext() { return *this->m_frameContext; }
 
   /* 00B4 */ UIBitmapButton* closeButton;
   /* 00B8 */ UIBitmapButton* upgradeButton;

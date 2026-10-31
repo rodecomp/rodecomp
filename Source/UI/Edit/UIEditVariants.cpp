@@ -61,6 +61,16 @@ UIEditCtrl3::UIEditCtrl3(UIWindowContext& windows, UIEditContext& edit) : UIEdit
   this->unknown_0164 = 0;
 }
 
+// OFFSET: 0x00863280
+// FUNCTION: fn_10906
+void UIEditCtrl3::Resize(int width, int height) {
+  this->UIWindow::Resize(width, height);
+  this->unknown_0130->Move(this->geometry.width - 10, 0);
+  this->unknown_0130->Resize(this->unknown_0130->geometry.width, height);
+  using ResizeHandler = void(__thiscall*)(UIEditCtrl3*);
+  reinterpret_cast<ResizeHandler>((*reinterpret_cast<void***>(this))[58])(this);
+}
+
 // OFFSET: 0x00853760
 // FUNCTION: fn_10741
 void UIEditCtrl_OldList::RecallHistory(int step) {

@@ -128,6 +128,7 @@ struct UIEditCtrl3Table {
 class UIEditCtrl3 : public UIEditCtrl2 {
 public:
   UIEditCtrl3(UIWindowContext& windows, UIEditContext& edit);
+  void Resize(int width, int height) override;
   void Paint() override;
   void Slot35(int value) override;
   void Trim() override;
