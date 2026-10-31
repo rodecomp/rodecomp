@@ -164,6 +164,7 @@ struct CRagEffect : CRenderObject {
   void RisingSparkles(char colorMode);
   void TexturedSpreadFlat(const char* name, char kind);
   void WhiteRingRippleSized(char size);
+  void VioletRingCloud(char type);
   void WhiteRingRipple(char size);
   void TexturedSpread(const char* name, char kind);
   void TexturedTumbleOrb(const char* name, char flag);
