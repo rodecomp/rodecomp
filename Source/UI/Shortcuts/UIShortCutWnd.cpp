@@ -1034,3 +1034,7 @@ bool UINavigationWnd::LoadRoute(int index) {
 // OFFSET: 0x00911490
 
 // OFFSET: 0x00912460
+// FUNCTION: fn_12530
+UISubChatMiniWnd::UISubChatMiniWnd(UIWindowContext& windows, UIFrameContext& frames)
+    : UIFrameWnd(windows, frames, 0), unknown_00B4(2), m_rowHeight(32), m_offsetY(32) {
+}
