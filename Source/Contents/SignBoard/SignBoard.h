@@ -13,8 +13,7 @@ struct UIButtonContext;
 
 class CBmpObjWnd : public UIWindow {
 public:
-  // INLINED
-  explicit CBmpObjWnd(UIWindowContext& windows) : UIWindow(windows, 0) {}
+  explicit CBmpObjWnd(UIWindowContext& windows);
   ~CBmpObjWnd() override;
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -24,8 +23,7 @@ public:
 
 class CSignBoardWnd : public UIWindow {
 public:
-  // INLINED
-  CSignBoardWnd(UIWindowContext& windows, UIButtonContext& controls) : UIWindow(windows, 0), text(nullptr), m_controls(&controls) {}
+  CSignBoardWnd(UIWindowContext& windows, UIButtonContext& controls);
   ~CSignBoardWnd() override;
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -42,6 +40,7 @@ protected:
 
 class CIcon : public CRenderObject {
 public:
+  CIcon();
   ~CIcon() override;
   bool OnProcess() override;
   void SendMsg(CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m) override;
@@ -52,6 +51,7 @@ public:
 
 class C3DCooRendering : public CRenderObject {
 public:
+  C3DCooRendering();
   ~C3DCooRendering() override;
   bool OnProcess() override;
   void Render(int argument) override;

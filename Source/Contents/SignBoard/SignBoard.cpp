@@ -98,6 +98,23 @@ void CSignBoardMgr::LoadList() {
   }
 }
 
+// OFFSET: 0x00821040
+C3DCooRendering::C3DCooRendering() : window(nullptr) {
+}
+
+// OFFSET: 0x008210A0
+CBmpObjWnd::CBmpObjWnd(UIWindowContext& windows) : UIWindow(windows, 0) {
+}
+
+// OFFSET: 0x00821120
+// FUNCTION: fn_10256
+CIcon::CIcon() {
+}
+
+// OFFSET: 0x00821180
+CSignBoardWnd::CSignBoardWnd(UIWindowContext& windows, UIButtonContext& controls) : UIWindow(windows, 0), text(nullptr), m_controls(&controls) {
+}
+
 // OFFSET: 0x008213D0
 // FUNCTION: fn_10258
 C3DCooRendering::~C3DCooRendering() = default;
