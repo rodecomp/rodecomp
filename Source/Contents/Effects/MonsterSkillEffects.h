@@ -41,6 +41,7 @@ class CSpriteMableEffect : public CEffect {
 public:
   CSpriteMableEffect();
   void Slot01() override;
+  void Slot03() override;
   void Slot04() override;
   bool Slot06() override;
   void Close() override;
@@ -124,6 +125,7 @@ class CCylinderEffect : public CEffect {
 public:
   CCylinderEffect();
   void Slot01() override;
+  void Slot03() override;
   void Slot04() override;
   bool Slot06() override;
   void Close() override;

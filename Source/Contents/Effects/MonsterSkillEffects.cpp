@@ -2,6 +2,7 @@
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
+#include "Contents/Actors/GameActor.h"
 #include "Contents/Camera/Camera.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Effects/EffectActor.h"
@@ -10,6 +11,9 @@
 #include "Contents/Effects/Particle.h"
 #include "Contents/Effects/SkillEffects.h"
 #include "Contents/Effects/SpriteParticle.h"
+#include "Contents/Ground/TerrainHeight.h"
+#include "Contents/MapSkyMgr.h"
+#include "Contents/Sound/SoundMgr.h"
 #include "Contents/World/World.h"
 #include "Render/Renderer.h"
 #include "Render/TextureQuad.h"
@@ -23,6 +27,7 @@
 #include "Script/LuaScript.h"
 #include "Utility/Text/StringUtil.h"
 #include <windows.h>
+#include <cmath>
 #include <cstdlib>
 #include <cstring>
 #include <timeapi.h>
@@ -4319,4 +4324,153 @@ void CSprArrowEffect::Slot01() {
   this->unknown_00D4 = this->position[0];
   this->unknown_00D8 = this->position[1];
   this->unknown_00DC = this->position[2];
+}
+
+// OFFSET: 0x0070F800
+__declspec(noinline) void __fastcall CylinderFrame(const double* values, float* output, double angle) {
+  const double radius = values[0];
+  const double pitch = values[1];
+  const double distance = values[2];
+  const float radians = static_cast<float>(angle);
+  const double sine = std::sin(static_cast<double>(radians));
+  const double cosine = std::cos(static_cast<double>(radians));
+  const float sineRadius = static_cast<float>(sine * radius);
+  const float cosineRadius = static_cast<float>(cosine * radius);
+  const double pitchSine = std::sin(static_cast<double>(static_cast<float>(pitch)));
+  const double pitchCosine = std::cos(static_cast<double>(static_cast<float>(pitch)));
+
+  output[0] = cosineRadius;
+  output[1] = 0.0f;
+  output[2] = sineRadius;
+  output[3] = static_cast<float>(cosine * pitchCosine * distance) + cosineRadius;
+  output[4] = static_cast<float>(-pitchSine * distance);
+  output[5] = static_cast<float>(sine * pitchCosine * distance) + sineRadius;
+}
+
+// OFFSET: 0x0070FC80
+// FUNCTION: fn_07195
+void CCylinderEffect::Slot03() {
+  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+    EZ2STREmitter* emitter = *it;
+    emitter->position.x = this->position[0];
+    emitter->position.y = this->position[1];
+    emitter->position.z = this->position[2];
+    if (!emitter) {
+      continue;
+    }
+
+    CEZ2STRParticle* particle = AsParticle(emitter);
+    float& angle = reinterpret_cast<float&>(particle->unknown_00C4);
+    const double baseAngle = angle;
+
+    double values[3];
+    values[0] = static_cast<double>(particle->scale);
+    values[1] = static_cast<double>(static_cast<float>(particle->unknown_004C) / 180.0f * 3.141592f);
+    values[2] = static_cast<double>(particle->unknown_0054);
+
+    float front[6];
+    float back[6];
+    const double offset = static_cast<double>(particle->unknown_000C) * 0.29919925332069397 + baseAngle;
+    CylinderFrame(values, front, offset);
+    CylinderFrame(values, back, offset + 0.29919925332069397);
+
+    particle->vertices[0].x = front[3];
+    particle->vertices[0].y = front[4];
+    particle->vertices[0].z = front[5];
+    particle->vertices[2].x = front[0];
+    particle->vertices[2].y = front[1];
+    particle->vertices[2].z = front[2];
+    particle->vertices[1].x = back[3];
+    particle->vertices[1].y = back[4];
+    particle->vertices[1].z = back[5];
+    particle->vertices[3].x = back[0];
+    particle->vertices[3].y = back[1];
+    particle->vertices[3].z = back[2];
+
+    angle = static_cast<float>(static_cast<double>(particle->unknown_00C0) + baseAngle);
+  }
+}
+
+// OFFSET: 0x0070D160
+// FUNCTION: fn_07146
+void CSpriteMableEffect::Slot03() {
+  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+    CSpriteParticle* particle = AsSprite(*it);
+    particle->unknown_0054 += 0.02f;
+    reinterpret_cast<float&>(particle->unknown_0058) += 0.05f;
+
+    particle->position.x = static_cast<float>(std::sin(static_cast<double>(particle->unknown_0054))) * 6.0f + this->position[0];
+    particle->position.y =
+        static_cast<float>(std::sin(static_cast<double>(reinterpret_cast<float&>(particle->unknown_0058)))) * 3.0f - 6.0f + this->position[1];
+    particle->position.z = static_cast<float>(std::cos(static_cast<double>(particle->unknown_0054))) * 6.0f + this->position[2];
+
+    int angle = static_cast<int>(static_cast<float>(static_cast<int>(particle->unknown_0054 / 3.141592f * 180.0f) % 360) -
+                                 static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw);
+    if (angle < 0) {
+      angle += 360;
+    }
+
+    const int frame = (angle - 75) / 30;
+    ++particle->unknown_00E8;
+    particle->frame = frame < 0 ? frame + 12 : frame;
+  }
+}
+
+// OFFSET: 0x007180C0
+// FUNCTION: fn_07289
+void CGravityControlEffect::Close() {
+  if (this->target) {
+    FreeParticle(reinterpret_cast<CParticle*>(this->target));
+    this->target = 0;
+  }
+
+  CGameActor* actor = static_cast<CGameActor*>(FindRenderObject(this->actor));
+  if (!actor) {
+    return;
+  }
+
+  actor->render.position.y = static_cast<CGameMode*>(g_modeMgr.GetGameMode())
+                               ->scene->terrain->Grid()
+                               .Height(actor->render.position.x, actor->render.position.z);
+  actor->unknown_03F0.x = 0.0f;
+  actor->unknown_03F0.y = 0.0f;
+  actor->unknown_03F0.z = 0.0f;
+
+  if (this->id == 0x4B1) {
+    CRenderObject* player = reinterpret_cast<CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+    const float soundX = this->position[0] - player->render.position.x;
+    const float soundZ = this->position[2] - player->render.position.z;
+    g_soundMgr->PlayWave("effect\\t_공격력.wav", soundX, 0.0f, soundZ, 250, 40, 1.0f, 0);
+  }
+}
+
+// OFFSET: 0x007182E0
+void CGravityControlEffect::Slot03() {
+  CGameActor* actor = static_cast<CGameActor*>(FindRenderObject(this->actor));
+  if (!actor) {
+    return;
+  }
+
+  float depth = this->unknown_00D0 - g_depthAverageHalf;
+  if (this->unknown_00D4 > depth) {
+    depth = this->unknown_00D4;
+  }
+  this->unknown_00D0 = depth;
+
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  const float height = mode->scene->terrain->Grid().Height(actor->render.position.x, actor->render.position.z);
+  const int offset = static_cast<int>(this->unknown_00D0);
+  actor->unknown_03F0.x = 0.0f;
+  actor->unknown_03F0.z = 0.0f;
+  actor->unknown_03F0.y = static_cast<float>(offset);
+  actor->render.position.y = height + this->unknown_00D0;
+
+  if (this->target) {
+    EZ2STREmitter* emitter = reinterpret_cast<EZ2STREmitter*>(this->target);
+    AsParticle(emitter)->Process(0.0f, 0.0f, 0.0f);
+    emitter->position.x = this->position[0];
+    emitter->position.y = this->position[1];
+    emitter->position.z = this->position[2];
+    ++emitter->elapsed;
+  }
 }

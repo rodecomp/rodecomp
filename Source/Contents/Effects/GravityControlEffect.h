@@ -17,7 +17,7 @@ public:
   ~CGravityControlEffect() override;
 
   /* 00CC */ int target;
-  /* 00D0 */ int unknown_00D0;
+  /* 00D0 */ float unknown_00D0;
   /* 00D4 */ float unknown_00D4;
 };
 
