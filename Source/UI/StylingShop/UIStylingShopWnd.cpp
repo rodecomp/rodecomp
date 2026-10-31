@@ -1831,3 +1831,87 @@ void UIShowInfoWnd::Paint() {
   this->UpdateChangedStyles();
   this->DrawPayments();
 }
+// FUNCTION: fn_10318
+bool UIShowInfoWnd::SendStyleChange() {
+  StyleChangeHeader header = {};
+  header.packetType = 0xBF7;
+  const short count = static_cast<short>(this->m_list.size());
+  const short length = count * 8 + 6;
+  header.packetLength = length;
+
+  StyleChangePacket packet;
+  memset(packet.items, 0, sizeof(packet.items));
+  packet.header = header;
+  packet.header.count = count;
+
+  bool changed = false;
+  int index = 0;
+  for (std::list<int>::iterator it = this->m_list.begin(); it != this->m_list.end(); ++it, ++index) {
+    StyleChangeItem item;
+    item.kind = 0;
+    item.value = 0;
+    UIDisplayCharacter* display = this->m_display;
+    const int type = *it;
+    if (type == 1) {
+      if (this->m_checks[index]->geometry.unknown_0030 != 0) {
+        changed = true;
+        int table = 1;
+        g_luaScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", display->GetStyleTable(table).c_str(), display->unknown_0094, &item.value);
+      }
+    } else if (type == 2) {
+      if (this->m_checks[index]->geometry.unknown_0030 != 0) {
+        changed = true;
+        int table = 2;
+        g_luaScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", display->GetStyleTable(table).c_str(), display->unknown_008C, &item.value);
+        item.kind = g_session.IsDoramJob(g_session.GetDisplayJob()) == true ? 6 : 1;
+      }
+    } else if (type == 3) {
+      if (this->m_checks[index]->geometry.unknown_0030 != 0) {
+        changed = true;
+        int table = 3;
+        g_luaScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", display->GetStyleTable(table).c_str(), display->unknown_0098, &item.value);
+        item.kind = g_session.IsDoramJob(g_session.GetDisplayJob()) == true ? 8 : 2;
+      }
+    } else if (type == 4) {
+      if (this->m_checks[index]->geometry.unknown_0030 != 0) {
+        changed = true;
+        int table = 4;
+        g_luaScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", display->GetStyleTable(table).c_str(), display->unknown_00BC, &item.value);
+        item.kind = 3;
+      }
+    } else if (type == 5) {
+      if (this->m_checks[index]->geometry.unknown_0030 != 0) {
+        changed = true;
+        int table = 5;
+        g_luaScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", display->GetStyleTable(table).c_str(), display->unknown_00C0, &item.value);
+        item.kind = 4;
+      }
+    } else if (type == 6) {
+      if (this->m_checks[index]->geometry.unknown_0030 != 0) {
+        changed = true;
+        int table = 6;
+        g_luaScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", display->GetStyleTable(table).c_str(), display->unknown_00C4, &item.value);
+        item.kind = 5;
+      }
+    } else if (type == 7) {
+      if (this->m_checks[index]->geometry.unknown_0030 != 0) {
+        changed = true;
+        std::map<int, int>::iterator job = display->m_jobs.find(display->job);
+        if (job != display->m_jobs.end()) {
+          item.value = job->second;
+          item.kind = 9;
+        }
+      }
+    }
+
+    const int offset = index * 8 + 6;
+    memcpy_s(reinterpret_cast<char*>(&packet) + offset, length - offset, &item, sizeof(item));
+  }
+
+  if (changed == true) {
+    GetRagConnection().Send(length, &packet);
+    return true;
+  }
+
+  return false;
+}
