@@ -164,6 +164,7 @@ public:
   void ReceiveActorSequenceDeadline(const unsigned char* packet);
   void ReceiveActorSignal(const unsigned char* packet);
   void IgnorePacket(const unsigned char* packet);
+  void SetWindow16Align(unsigned char align);
   void IgnorePacket473(const unsigned char* packet);
   void IgnorePacket474(const unsigned char* packet);
   void IgnorePacket478(const unsigned char* packet);

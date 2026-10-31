@@ -38,6 +38,8 @@
 #include "UI/UIRefiningWnd.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UINewSelectCharWnd.h"
+#include "UI/Dialogs/UISayDialogWnd.h"
+#include "UI/Text/UITagTextViewer.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowDialogs.h"
 #include "Utility/Text/FormatString.h"
@@ -575,6 +577,15 @@ void CGameMode::ReceiveWindow154Close(std::int16_t value) {
     if (window) {
       window->SendMsg(nullptr, 64, 2, 0, 0, 0);
     }
+  }
+}
+
+// OFFSET: 0x00D6EA30
+// FUNCTION: fn_22111
+void CGameMode::SetWindow16Align(unsigned char align) {
+  UISayDialogWnd* window = static_cast<UISayDialogWnd*>(g_windowMgr.LookupWindow(16));
+  if (window) {
+    static_cast<UITagTextViewer*>(window->m_viewer)->SetAlign(align);
   }
 }
 
