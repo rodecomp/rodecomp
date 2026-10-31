@@ -508,6 +508,7 @@ public:
   void ReceiveItem1718List(const unsigned char* packet);
   void Zc_Spirits2(const unsigned char* data);
   void Zc_Mer_Init(const unsigned char* data);
+  void Zc_Mer_Par_Change(const unsigned char* data);
 };
 
 void LaunchRollingCutterEffect(CGameActor* actor);

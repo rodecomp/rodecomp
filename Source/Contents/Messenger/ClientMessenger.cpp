@@ -4228,3 +4228,59 @@ void CGameMode::Zc_Mer_Init(const unsigned char* data) {
   *reinterpret_cast<int*>(&g_session.unknown_5690[0]) = packet->attackRange;
   g_session.m_mercenaryExpiration = packet->expiration;
 }
+
+#pragma pack(push, 1)
+struct MercenaryParChangePacket {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::uint16_t type;
+  /* 0004 */ int value;
+};
+#pragma pack(pop)
+
+// OFFSET: 0x00D323D0
+// FUNCTION: fn_21742
+void CGameMode::Zc_Mer_Par_Change(const unsigned char* data) {
+  if (g_session.unknown_56B0 == 0) {
+    return;
+  }
+
+  const MercenaryParChangePacket* packet = reinterpret_cast<const MercenaryParChangePacket*>(data);
+  switch (packet->type) {
+  case 5:
+    g_session.m_mercenaryHp = packet->value;
+    g_session.RefreshMercenaryInfo();
+    break;
+  case 6:
+    g_session.m_mercenaryMaxHp = packet->value;
+    g_session.RefreshMercenaryInfo();
+    break;
+  case 7:
+    g_session.m_mercenarySp = packet->value;
+    g_session.RefreshMercenaryInfo();
+    break;
+  case 8:
+    g_session.m_mercenaryMaxSp = packet->value;
+    g_session.RefreshMercenaryInfo();
+    break;
+  case 41:
+    g_session.m_mercenaryStats[0] = packet->value;
+    break;
+  case 49:
+    g_session.m_mercenaryStats[2] = packet->value;
+    break;
+  case 53:
+    g_session.m_mercenaryStats[7] = packet->value;
+    break;
+  case 165:
+    g_session.m_mercenaryStats[6] = packet->value;
+    break;
+  case 189:
+    g_session.m_mercenaryKills = packet->value;
+    break;
+  case 190:
+    g_session.m_mercenaryLoyalty = packet->value;
+    break;
+  }
+
+  g_session.RefreshMercenaryInfo();
+}
