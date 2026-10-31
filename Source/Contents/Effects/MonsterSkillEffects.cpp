@@ -908,6 +908,40 @@ CDropItemEffect::CDropItemEffect()
   this->emitters.resize(this->emitterCount);
 }
 
+// OFFSET: 0x00719400
+// FUNCTION: fn_07307
+void CDropItemEffect::Slot01() {
+  if (!static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene) {
+    return;
+  }
+
+  for (int i = 0; i < this->emitterCount; ++i) {
+    EZ2STREmitter* emitter =
+        reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->CEffect::position), 5));
+    if (!emitter) {
+      return;
+    }
+
+    InitParticleQuad(AsParticle(emitter)->vertices);
+    this->emitters.push_back(emitter);
+  }
+
+  this->OpenEmitters();
+  this->Slot12();
+  static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetItemByAID(this->actor);
+  this->position.x = this->CEffect::position[0];
+  this->position.y = this->CEffect::position[1];
+  this->position.z = this->CEffect::position[2];
+  for (std::size_t i = 0; i < this->emitters.size(); ++i) {
+    EZ2STREmitter* emitter = this->emitters[i];
+    if (emitter) {
+      emitter->position = this->position;
+    }
+  }
+}
+
+// OFFSET: 0x00719520
+
 // OFFSET: 0x00719660
 // FUNCTION: fn_07309
 bool CDropItemEffect::Slot06() {
@@ -921,6 +955,8 @@ bool CDropItemEffect::Slot06() {
 
   return true;
 }
+
+// OFFSET: 0x00719690
 
 // OFFSET: 0x00719C30
 // FUNCTION: fn_07311
@@ -949,6 +985,20 @@ CJupitelThunderHit::CJupitelThunderHit() : CEffect(-1) {
   this->unknown_002C = 250;
 }
 
+// OFFSET: 0x0071BAB0
+
+// OFFSET: 0x0071C270
+
+// OFFSET: 0x0071C520
+// FUNCTION: fn_07323
+void CJupitelThunderHit::Slot01() {
+  if (this->id != 1200) {
+    this->SpawnSpark();
+  }
+
+  this->SpawnHit();
+}
+
 // OFFSET: 0x0071C540
 // FUNCTION: fn_07324
 bool CJupitelThunderHit::Slot06() {
@@ -962,6 +1012,8 @@ bool CJupitelThunderHit::Slot06() {
 
   return this->frame < this->unknown_002C;
 }
+
+// OFFSET: 0x0071C570
 
 // OFFSET: 0x0071CB70
 // FUNCTION: fn_07326

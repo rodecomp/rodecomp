@@ -410,13 +410,17 @@ public:
 class CJupitelThunderHit : public CEffect {
 public:
   CJupitelThunderHit();
+  void Slot01() override;
+  void Slot03() override;
   void Slot04() override;
   bool Slot06() override;
   void Close() override;
+  void SpawnHit();
+  void SpawnSpark();
 
   /* 00CC */ std::vector<EZ2STREmitter*> emitters;
   /* 00D8 */ std::vector<EZ2STREmitter*> unknown_00D8;
-  /* 00E4 */ std::vector<EZ2STREmitter*> unknown_00E4;
+  /* 00E4 */ std::vector<std::string> textures;
 };
 
 class CNewCloudKillEffect : public CEffect {
@@ -440,10 +444,13 @@ public:
 class CDropItemEffect : public CEffect {
 public:
   CDropItemEffect();
+  void Slot01() override;
   void Slot03() override;
   void Slot04() override;
   bool Slot06() override;
   void Close() override;
+  void Slot12() override;
+  void OpenEmitters();
 
   /* 00CC */ int unknown_00CC;
   /* 00D0 */ int emitterCount;
@@ -515,7 +522,7 @@ static_assert(sizeof(CSevereRainStorm) == 0xD8);
 static_assert(sizeof(CGaleStorm) == 0xE0);
 static_assert(offsetof(CGaleStorm, unknown_00D8) == 0xD8);
 static_assert(sizeof(CJupitelThunderHit) == 0xF0);
-static_assert(offsetof(CJupitelThunderHit, unknown_00E4) == 0xE4);
+static_assert(offsetof(CJupitelThunderHit, textures) == 0xE4);
 static_assert(sizeof(CNewCloudKillEffect) == 0xFC);
 static_assert(offsetof(CNewCloudKillEffect, unknown_00F4) == 0xF4);
 static_assert(offsetof(CDropItemEffect, emitters) == 0xD4);
