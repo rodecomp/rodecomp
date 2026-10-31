@@ -5,6 +5,7 @@
 #include "UI/Text/UIStaticText.h"
 #include "UI/Window/UIControl.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowOrdering.h"
 #include "UI/Window/FuncDrawWNDChar.h"
 #include "Client/Registry.h"
 #include "Client/Mode/ModeMgr.h"
@@ -214,7 +215,7 @@ void __stdcall Nullsub244(int, int) {
 void UINewSelectCharWnd::Slot19() {
   if (g_sub_1319eb4 == 3) {
     if (g_windowMgr.unknown_0210 != 0) {
-      reinterpret_cast<void(__thiscall*)(UIWindowMgr*, int)>(0x00A8CF20)(&g_windowMgr, 0x12);
+      g_windowMgr.CloseWindow(0x12);
     }
   }
   if (g_sub_1319eb4 != 0) {
@@ -223,7 +224,7 @@ void UINewSelectCharWnd::Slot19() {
 
   UIWindow* wnd = g_windowMgr.LookupWindow(93);
   if (wnd) {
-    reinterpret_cast<void(__thiscall*)(UIWindowMgr*, UIWindow*)>(0x00A976C0)(&g_windowMgr, wnd);
+    reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(wnd);
   }
 
   if (this->m_pageSlot >= 0 && this->m_pageSlot < static_cast<int>(this->m_slotButtons2.size())) {
