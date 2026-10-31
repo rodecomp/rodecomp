@@ -3,6 +3,7 @@
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
+#include "Contents/ActorNameCard.h"
 #include "Contents/Actors/ActorStateFlags.h"
 #include "Contents/Actors/GroundScope.h"
 #include "Contents/Actors/MercenaryAI.h"
@@ -11,15 +12,29 @@
 #include "Contents/Jobs/JobInheritance.h"
 #include "Contents/Effects/EffectTypes.h"
 #include "Contents/MapSkyMgr.h"
+#include "Contents/MessageTable.h"
 #include "Utility/Math/AffineMatrix.h"
 #include "Render/Renderer.h"
 #include "Resource/Sprites/ActionResource.h"
 #include "UI/Gauges/UIPcGage.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "Utility/Text/FormatString.h"
 
 #include <cstring>
 #include <windows.h>
 #include <timeapi.h>
+
+// OFFSET: 0x00CB1930
+
+// OFFSET: 0x00CB2040
+// FUNCTION: fn_21100
+void CGameActor::UpdateWorldCell() {
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  int column;
+  int row;
+  mode->WorldCell(this->render.position.x, this->render.position.z, column, row);
+  mode->SendMsg(0xC, this->render.accountId, column, row, 0);
+}
 
 // OFFSET: 0x00CA83A0
 // FUNCTION: fn_20988

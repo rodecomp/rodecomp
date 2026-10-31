@@ -268,6 +268,8 @@ public:
   void ProcessViewCheck();
   void ProcessActorEffects();
   void UpdateMotionFrame();
+  void UpdateDamageMessages();
+  void UpdateWorldCell();
   void ProcessHitMessage(CGameObject* sender, const ActorHitInfo* info, int unused1, int unused2);
   int GetEffectCounter(int effectId);
   float GetNameOffset();
