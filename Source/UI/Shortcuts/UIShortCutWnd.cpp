@@ -1179,3 +1179,248 @@ void UISubChatHisWnd::Resize(int width, int height) {
   g_session.m_subChatWnds[this->m_index].width = this->geometry.width;
   g_session.m_subChatWnds[this->m_index].height = this->geometry.height;
 }
+
+#include "UI/Edit/UIEditCtrl.h"
+#include "UI/Window/WindowDialogs.h"
+
+#include <mbstring.h>
+
+namespace Concurrency {
+namespace details {
+class _ReentrantPPLLock {
+public:
+  _ReentrantPPLLock();
+};
+}
+}
+
+struct MsvcString {
+  void sub_4EE2E0(const char* value);
+  void sub_696770(const MsvcString* source);
+  void sub_914AD0(const void* source);
+};
+
+struct TreeCursor {
+  void* node;
+  void sub_915170();
+  void sub_915110();
+};
+
+struct ChatIndexMap {
+  void* head;
+  int count;
+  void sub_9435A0(void** out, int* key);
+  void sub_90FDD0(void** out, void* node);
+  void sub_9101F0(ChatIndexMap* source);
+  void sub_9432C0();
+  MsvcString* sub_914D30(int* key);
+  void sub_913720();
+};
+
+struct RetainedMap {
+  void* head;
+  int count;
+  void sub_910090(RetainedMap* source);
+  void sub_943240();
+  UIWindow** sub_914B30(int* key);
+  void sub_90F180(RetainedMap* self);
+};
+
+// OFFSET: 0x0093C210
+// FUNCTION: fn_12761
+int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  switch (message) {
+  case 0:
+    if (sender == this->m_edit && this->m_edit->geometry.x != -100) {
+      const char* text = this->m_edit->Text();
+      MsvcString local;
+      local.sub_4EE2E0(text);
+      const int previousWidth = this->m_inputWidth;
+      if (text != nullptr && text[0] != '\0') {
+        const int measured = this->TextWidth(this->m_controls->fonts, this->m_controls->locale, text, 0, 0, 12, 0, 0);
+        if (measured + 10 < this->geometry.width - 0x32) {
+          reinterpret_cast<MsvcString*>(&this->m_name)->sub_696770(&local);
+          reinterpret_cast<ChatIndexMap*>(&g_session.m_subChatWnds)->sub_914D30(&this->m_index)->sub_696770(reinterpret_cast<MsvcString*>(&this->m_name));
+          const int renamed = this->TextWidth(this->m_controls->fonts, this->m_controls->locale, text, 0, 0, 12, 0, 0);
+          this->m_inputWidth = renamed + 10;
+          if (this->m_inputWidth < 0x19) {
+            this->m_inputWidth = 0x19;
+          }
+        }
+      }
+      const int measured = this->TextWidth(this->m_controls->fonts, this->m_controls->locale, text, 0, 0, 12, 0, 0);
+      if (this->geometry.width - 0x32 <= measured + 10) {
+        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x629), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+      }
+      this->m_edit->Move(-100, -100);
+      this->m_edit->SetText("");
+      this->Invalidate();
+      reinterpret_cast<ChatButtonLayout*>(this)->Apply();
+      reinterpret_cast<InputFocus*>(&g_windowMgr)->Set(reinterpret_cast<UIWindow*>(g_chatSuggestions));
+      RECT rectangle;
+      rectangle.left = 0;
+      rectangle.top = 0;
+      int span = this->m_inputWidth;
+      if (span < previousWidth) {
+        span = previousWidth;
+      }
+      rectangle.right = span + 0x32;
+      rectangle.bottom = this->m_inputHeight + 10;
+      this->FillSurface(0xFFFF00FF, &rectangle);
+      if (UIWindow* window = g_windowMgr.LookupWindow(0x84)) {
+        window->SendMsg(this, 6, 0xC1, this->m_index, 0, 2);
+      }
+      new (static_cast<void*>(&local)) Concurrency::details::_ReentrantPPLLock();
+      return 0;
+    }
+    if (g_chatSuggestions != nullptr) {
+      reinterpret_cast<UIWindow*>(g_chatSuggestions)->SendMsg(this, 0, 0, 0, 0, 0);
+      return 0;
+    }
+    return 0;
+  case 3:
+    if (this->m_chatBox->verticalOverflow != 0) {
+      this->m_chatBox->SendMsg(nullptr, 9, 0, 0, 0, 0);
+      return 0;
+    }
+    return 0;
+  case 4:
+    if (this->m_chatBox->verticalOverflow != 0) {
+      this->m_chatBox->SendMsg(nullptr, 10, 0, 0, 0, 0);
+      return 0;
+    }
+    return 0;
+  case 6:
+    switch (argument1) {
+    case 0xC1:
+      if (UIWindow* window = g_windowMgr.sub_A978D0(0x84)) {
+        window->SendMsg(this, 6, 0xC1, this->m_index, 0, 0);
+        return 0;
+      }
+      return 0;
+    case 0xCA: {
+      ChatIndexMap* names = reinterpret_cast<ChatIndexMap*>(&g_session.m_subChatWnds);
+      void* node = nullptr;
+      names->sub_9435A0(&node, &this->m_index);
+      if (node == names->head) {
+        return 0;
+      }
+      const int key = *reinterpret_cast<int*>(reinterpret_cast<char*>(node) + 0x10);
+      void* erased = nullptr;
+      names->sub_90FDD0(&erased, node);
+      if (key != names->count) {
+        ChatIndexMap saved;
+        saved.sub_9101F0(names);
+        names->sub_9432C0();
+        TreeCursor cursor;
+        cursor.node = *reinterpret_cast<void**>(saved.head);
+        int index = 0;
+        while (cursor.node != saved.head) {
+          void* value = reinterpret_cast<char*>(cursor.node) + 0x14;
+          names->sub_914D30(&index)->sub_914AD0(value);
+          cursor.sub_915170();
+          ++index;
+        }
+        saved.sub_913720();
+      }
+      g_windowMgr.ReleaseRetainedWindow(this->m_index);
+      if (UIWindow* window = g_windowMgr.LookupWindow(0x84)) {
+        window->SendMsg(this, 6, 0xC1, this->m_index, 0, 1);
+      }
+      RetainedMap* retained = reinterpret_cast<RetainedMap*>(&g_windowMgr.retainedWindows);
+      if (this->m_index != retained->count) {
+        RetainedMap saved;
+        saved.sub_910090(retained);
+        retained->sub_943240();
+        TreeCursor cursor;
+        cursor.node = *reinterpret_cast<void**>(saved.head);
+        int index = 0;
+        while (cursor.node != saved.head) {
+          UIWindow* window = *reinterpret_cast<UIWindow**>(reinterpret_cast<char*>(cursor.node) + 0x14);
+          static_cast<UISubChatHisWnd*>(window)->m_index = index;
+          *retained->sub_914B30(&index) = window;
+          cursor.sub_915110();
+          ++index;
+        }
+        saved.sub_90F180(&saved);
+      }
+      return 0;
+    }
+    case 0x15B:
+      g_windowMgr.SelectWhisperName(reinterpret_cast<const char*>(argument2));
+      return 0;
+    case 0x165:
+      if (g_chatSuggestions != nullptr) {
+        reinterpret_cast<UIWindow*>(g_chatSuggestions)->SendMsg(this, 0x76, 0, 0, 0, 0);
+        return 0;
+      }
+      return 0;
+    default:
+      return 0;
+    }
+  case 0xE:
+    if (g_chatInputFlag != 0 && argument1 == 7) {
+      int width = static_cast<int>(argument2);
+      int height = static_cast<int>(argument3);
+      if (width > 0x200) {
+        width = 0x200;
+      }
+      if (height > 0x180) {
+        height = 0x180;
+      }
+      if (width < 0x118) {
+        width = 0x118;
+      }
+      if (height < 0x4A) {
+        height = 0x4A;
+      }
+      width = ((width - 0x118) & ~0x1F) + 0x118;
+      height = ((height - 0x4A) & ~0x1F) + 0x4A;
+      if (width != this->geometry.width || height != this->geometry.height) {
+        this->Resize(width, height);
+        this->m_resizer->Move(this->geometry.width - 0xF, this->geometry.height - 0xF);
+        reinterpret_cast<ChatButtonLayout*>(this)->Apply();
+        return 0;
+      }
+    }
+    return 0;
+  case 0x22: {
+    this->m_saved = reinterpret_cast<SubChatHisWndInfo*>(argument1);
+    if (this->m_saved->IsValid() == 0) {
+      this->m_saved->Reset(this->geometry.id);
+    }
+    this->Move(this->m_saved->x, this->m_saved->y);
+    this->Resize(this->m_saved->width, this->m_saved->height);
+    return 0;
+  }
+  case 0x25: {
+    char detail[25];
+    std::memset(detail, 0, sizeof(detail));
+    if (argument3 != 0) {
+      std::strcpy(detail, reinterpret_cast<const char*>(argument3));
+    }
+    const char* text = reinterpret_cast<const char*>(argument1);
+    this->m_chatBox->AddLinkRecord(text, static_cast<int>(argument2), detail);
+    if (_mbsstr(reinterpret_cast<const unsigned char*>(text), reinterpret_cast<const unsigned char*>("<ITEML>")) != nullptr) {
+      this->m_chatBox->AddText(text, static_cast<int>(argument2), detail);
+    } else {
+      this->m_chatBox->AddTextWrapped(text, static_cast<int>(argument2), detail);
+    }
+    return 0;
+  }
+  case 0x74:
+    if (sender == this->m_chatBox && this->m_inputHeight < this->geometry.height) {
+      RECT rectangle;
+      rectangle.left = this->m_chatBox->geometry.x;
+      rectangle.top = this->m_chatBox->geometry.y;
+      rectangle.right = this->geometry.width - 3;
+      rectangle.bottom = this->geometry.height - this->unknown_00F0;
+      this->FillSurface(0xFFFF00FF, &rectangle);
+      return 0;
+    }
+    return 0;
+  default:
+    break;
+  }
+  return this->UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+}

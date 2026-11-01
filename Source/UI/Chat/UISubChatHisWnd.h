@@ -42,6 +42,7 @@ public:
   void Slot31(int x, int y) override;
   bool Slot42(void* output) override;
   void Slot43() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   UIChatHisBox* ChatBox() const { return m_chatBox; }
   std::string Name() const { return m_name; }
 
