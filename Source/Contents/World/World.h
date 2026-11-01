@@ -52,6 +52,7 @@ public:
   void AddPcPos(std::uint32_t aid, const CellFloatPos& cell);
   void AddPcPosFromCell(std::uint32_t aid, const int* cell);
   void AddPcPosUnindexed(std::uint32_t aid, const CellFloatPos& cell);
+  void InitWorld();
 
   /* 0004 */ CGameMode* gameMode;
   /* 0008 */ std::list<CRenderObject*> objects;

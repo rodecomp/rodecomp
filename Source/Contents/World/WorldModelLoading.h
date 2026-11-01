@@ -25,6 +25,11 @@ static_assert(offsetof(DeferredWorldModel, placement) == 4);
 
 extern HANDLE hObject;
 extern std::vector<DeferredWorldModel> g_deferredWorldModels;
+extern float g_worldLightDirection[3];
+extern float g_worldDiffuse[3];
+extern float g_worldAmbient[3];
+extern float g_worldLoadCenter[3];
+extern int g_partyEffectNoticePending;
 
 struct WorldModelLoading {
   ResourceMgr& resources;
@@ -42,7 +47,6 @@ struct WorldModelLoading {
   void Publish(WorldSpatialTree& root);
   void Finish();
 
-private:
   static DWORD WINAPI ThreadEntry(void* context);
 };
 
