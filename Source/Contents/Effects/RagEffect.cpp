@@ -56,19 +56,6 @@ inline RagEffectState::RagEffectState()
 
 // INLINED
 inline RagEffectState::~RagEffectState() {
-  for (EffectPrimitiveState* particle : this->primList) {
-    particle->master = nullptr;
-  }
-
-  this->primList.clear();
-
-  if (this->parent) {
-    this->parent->state.Attachments().Unlink(this);
-  }
-
-  if (this->resource) {
-    this->resource->Unlock();
-  }
 }
 
 // OFFSET: 0x00BF84B0
@@ -76,11 +63,29 @@ inline RagEffectState::~RagEffectState() {
 CRagEffect::CRagEffect() {
 }
 
-CRagEffect::~CRagEffect() = default;
-
 // INLINED
 static CEffectPrim& Owner(EffectPrimitiveState* particle) {
   return *reinterpret_cast<CEffectPrim*>(reinterpret_cast<char*>(particle) - offsetof(CEffectPrim, state));
+}
+
+// OFFSET: 0x00BF8AC0
+// FUNCTION: fn_20011
+CRagEffect::~CRagEffect() {
+  if (!this->state.primList.empty()) {
+    for (auto it = this->state.primList.begin(); it != this->state.primList.end(); ++it) {
+      Owner(*it).HandleMasterMessage(nullptr, 24, 0, 0, 0, 0, 0, 0, 0);
+    }
+
+    this->state.primList.erase(this->state.primList.begin(), this->state.primList.end());
+  }
+
+  if (this->state.parent) {
+    this->state.parent->SendMsg(this, 23, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  }
+
+  if (this->state.resource) {
+    this->state.resource->Unlock();
+  }
 }
 
 // INLINED
