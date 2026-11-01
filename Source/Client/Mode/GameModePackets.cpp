@@ -1548,7 +1548,6 @@ struct ZoneServerChangePacket {
   /* 0014 */ std::int16_t y;
   /* 0016 */ std::uint32_t ip;
   /* 001A */ std::int16_t port;
-  /* 001C */ char host[1];
 };
 #pragma pack(pop)
 
@@ -1556,10 +1555,8 @@ struct ZoneServerChangePacket {
 // FUNCTION: fn_21777
 void CGameMode::ReceiveZoneServerChange(const unsigned char* packet) {
   const auto* change = reinterpret_cast<const ZoneServerChangePacket*>(packet);
-  char mapName[17];
-  std::memcpy(mapName, change->mapName, 16);
-  mapName[16] = '\0';
-  this->ChangeZoneServer(mapName, change->x, change->y, static_cast<int>(change->ip), change->port, change->host);
+  const std::string mapName(change->mapName, change->mapName + sizeof(change->mapName));
+  this->ChangeZoneServer(mapName.c_str(), change->x, change->y, static_cast<int>(change->ip), change->port, std::string());
 }
 
 // OFFSET: 0x00D3A1E0
