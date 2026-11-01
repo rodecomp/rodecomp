@@ -24,34 +24,6 @@ protected:
   ~ItemTagRemoval() = default;
 };
 
-struct FocusedItemTagRemoval final : ItemTagRemoval {
-  explicit FocusedItemTagRemoval(InputFocus& focus);
-  void Remove(UIWindow* child) override;
-
-private:
-  InputFocus& m_focus;
-};
-
-struct ChatItemTagRemoval final : ItemTagRemoval {
-  void Remove(UIWindow* child) override;
-};
-
-struct MailItemTagRemoval final : ItemTagRemoval {
-  explicit MailItemTagRemoval(UIWindow* const& owner);
-  void Remove(UIWindow* child) override;
-
-private:
-  UIWindow* const& m_owner;
-};
-
-struct MegaPhoneItemTagRemoval final : ItemTagRemoval {
-  explicit MegaPhoneItemTagRemoval(UIWindow* const& owner);
-  void Remove(UIWindow* child) override;
-
-private:
-  UIWindow* const& m_owner;
-};
-
 struct ItemTagRetirement {
   std::list<ItemTagRecord>& records;
   ItemTagRemoval& removal;

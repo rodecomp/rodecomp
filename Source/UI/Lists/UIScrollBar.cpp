@@ -44,6 +44,9 @@
 #include <cstdlib>
 #include <windows.h>
 #include <timeapi.h>
+#include "UI/Edit/UIItemTagCtrl.h"
+#include "UI/Rodex/UIRodexComposeWnd.h"
+#include "UI/Text/TextFitting.h"
 // OFFSET: 0x0086DDA0
 // FUNCTION: fn_11059
 UIListBoxTitle::UIListBoxTitle() : titleColor(0x92C0FA) {
@@ -1761,4 +1764,80 @@ void UITabControl::Configure(
   this->edit->SetSize(100, 19);
   this->edit->Move(-100, -100);
   this->AddChild(this->edit);
+}
+
+// OFFSET: 0x0087D240
+bool UIItemTagCtrl::RemoveInvalidTag(std::list<ItemTagRecord>::iterator& entry) {
+  const std::string fitted = FitText(*this->geometry.surface, entry->name, this->tagWidth / 2);
+  std::string remaining = this->taggedText;
+  const int bytes = static_cast<int>(std::strlen(fitted.c_str()));
+  int found = static_cast<int>(remaining.find(fitted));
+
+  if (found == -1) {
+    this->RemoveTagChild(entry->child);
+    entry = this->tags.erase(entry);
+    return true;
+  }
+
+  int absolute = found;
+  int count = 0;
+
+  do {
+    std::string before;
+    if (found > 0) {
+      before = remaining.substr(found - 1, 1);
+    }
+
+    std::string after;
+    if (found + bytes >= 0) {
+      after = remaining.substr(found + bytes, 1);
+    }
+
+    bool atCursor;
+    if (before.find("<") != std::string::npos && after.find(">") == std::string::npos) {
+      atCursor = (!g_windowMgr.unknown_0458 || static_cast<UIRodexComposeWnd*>(g_windowMgr.unknown_0458)->m_contents == g_windowMgr.GetHoverWindow()) &&
+                 absolute + bytes == this->m_edit->input.cursor;
+    } else if (before.find("<") == std::string::npos && after.find(">") != std::string::npos) {
+      atCursor = (!g_windowMgr.unknown_0458 || static_cast<UIRodexComposeWnd*>(g_windowMgr.unknown_0458)->m_contents == g_windowMgr.GetHoverWindow()) &&
+                 absolute == this->m_edit->input.cursor;
+    } else if (before.find("<") != std::string::npos && after.find(">") != std::string::npos) {
+      ++count;
+      if (count > entry->index) {
+        return false;
+      }
+      atCursor = false;
+    } else {
+      remaining = remaining.substr(found + bytes);
+      absolute = (absolute == found ? absolute : absolute + found) + bytes;
+      found = static_cast<int>(remaining.find(fitted));
+      continue;
+    }
+
+    if (atCursor) {
+      remaining = before.find("<") != std::string::npos ? this->taggedText.substr(0, absolute - 1) : this->taggedText.substr(0, absolute);
+      int end = absolute;
+      if (after.find(">") != std::string::npos) {
+        ++end;
+      }
+      remaining += this->taggedText.substr(end + bytes);
+      this->m_edit->input.ResetInput();
+      this->m_edit->input.Insert(remaining.c_str());
+      this->RemoveTagChild(entry->child);
+      entry = this->tags.erase(entry);
+      return true;
+    }
+
+    if (entry->index == 0) {
+      break;
+    }
+
+    remaining = remaining.substr(found + bytes);
+    found = static_cast<int>(remaining.find(fitted));
+    if (found == -1) {
+      return false;
+    }
+    absolute += found + bytes;
+  } while (found != -1);
+
+  return false;
 }

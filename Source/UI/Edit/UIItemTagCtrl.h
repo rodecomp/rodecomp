@@ -3,6 +3,7 @@
 
 #include "UI/Edit/ItemTagRetirement.h"
 #include "UI/Edit/UIEditCtrl.h"
+#include "UI/TextTags.h"
 
 #include <list>
 #include <string>
@@ -16,10 +17,13 @@ public:
   ~UIItemTagCtrl() override;
   virtual bool CanInsertTag(const std::string& name, int width);
   virtual void AddTagButton(UIWindow* button);
+  virtual void RemoveTagChild(UIWindow* child);
+  virtual void PlaceTagButton(UIWindow* button, const std::string& name, const int& x, int unused) = 0;
 
   std::string AppendTag(const std::string& name);
   int MeasureText(const std::string& text, const unsigned& bytes);
   bool SyncTagsWithText();
+  bool RemoveInvalidTag(std::list<ItemTagRecord>::iterator& entry);
   void SetTaggedText(const std::string& text, int width);
   void sub_8962C0();
   void sub_89CFE0(const ITEM_INFO& item, unsigned int color);
@@ -36,7 +40,8 @@ class UIItemTagOnChat : public UIItemTagCtrl {
 public:
   UIItemTagOnChat();
   bool CanInsertTag(const std::string& name, int width) override;
-  void PlaceTagButton(UIWindow* button, const std::string& name, const int& x, int unused);
+  void RemoveTagChild(UIWindow* child) override;
+  void PlaceTagButton(UIWindow* button, const std::string& name, const int& x, int unused) override;
 };
 
 class UIItemTagOnMail : public UIItemTagCtrl {
@@ -45,7 +50,8 @@ public:
   bool CanInsertTag(const std::string& name, int width) override;
   void AddTagButton(UIWindow* button) override;
   void SetLines(const std::vector<std::string>& lines);
-  void PlaceTagButton(UIWindow* button, const std::string& name, const int& x, int unused);
+  void RemoveTagChild(UIWindow* child) override;
+  void PlaceTagButton(UIWindow* button, const std::string& name, const int& x, int unused) override;
 
   /* 015C */ std::vector<std::string> m_lines;
 };
@@ -55,7 +61,8 @@ public:
   UIItemTagOnMegaPhone();
   bool CanInsertTag(const std::string& name, int width) override;
   void AddTagButton(UIWindow* button) override;
-  void PlaceTagButton(UIWindow* button, const std::string& name, const int& x, int unused);
+  void RemoveTagChild(UIWindow* child) override;
+  void PlaceTagButton(UIWindow* button, const std::string& name, const int& x, int unused) override;
 
   /* 015C */ int textWidth;
 };
