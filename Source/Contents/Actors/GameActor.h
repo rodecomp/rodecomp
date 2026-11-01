@@ -161,20 +161,20 @@ public:
     int layer, int index, float distanceScale, const SpriteFrameCell& cell, float x, float y, const float* position, float scale,
     float* bottomRhw, float* topRhw, const SpriteRleImage* image, SpriteQuad* quad, int* box, std::uint32_t* color, int offsetX, int offsetY,
     int flags
-  ) = 0;
+  );
   virtual void Slot10(
     const SpriteFrameCell* cell, const int* box, float shiftX, float bottomRhw, float topRhw, const std::uint32_t* palette,
     const SpriteRleImage* image, float scale, short hover
-  ) = 0;
+  );
   virtual void Slot11(
     SpriteQuad* quad, const SpriteFrameCell* cell, const int* box, float shiftX, float bottomRhw, float topRhw,
     const std::uint32_t* palette, const SpriteRleImage* image, int blend, short hover
-  ) = 0;
-  virtual void Slot12(SpriteQuad* quad, const int* box, float shiftX, int first, int second) = 0;
+  );
+  virtual void Slot12(SpriteQuad* quad, const int* box, float shiftX, int first, int second);
   virtual std::uint32_t Slot13();
   virtual bool Slot14() = 0;
   virtual void Slot15(int first, int second);
-  virtual void Slot16() = 0;
+  virtual void Slot16();
   virtual void Slot17();
   virtual void Slot18(int first, int second, int third);
   virtual void Slot19(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh);
@@ -194,7 +194,7 @@ public:
   virtual void Slot33(int value) = 0;
   virtual void Slot34(int value);
   virtual std::int64_t Slot35();
-  virtual void Slot36() = 0;
+  virtual void Slot36();
   virtual int Slot37();
   virtual void Slot38();
   virtual void Slot39(int value);

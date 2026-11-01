@@ -1130,6 +1130,38 @@ void CGameActor::SetStackedEffect(int effectId, bool on) {
   }
 }
 
+// OFFSET: 0x00CAE3B0
+// FUNCTION: fn_21073
+void __stdcall CreateHallucinationPc(
+  int job, int sex, int head, const vector3d* position, int alpha, int weapon, int shield, int bodyPalette
+) {
+  CPc* pc = new (std::nothrow) CPc;
+  if (pc == nullptr) {
+    return;
+  }
+
+  pc->unknown_0260 = sex & 1;
+  pc->SetActorJob(job);
+  pc->Slot22(head);
+  pc->Slot30();
+  pc->Slot33(weapon);
+  pc->Slot34(shield);
+  pc->Slot44(bodyPalette, 0);
+
+  CHalluPC* hallu = new CHalluPC(pc);
+  hallu->render.position = *position;
+  unsigned char* const argb = reinterpret_cast<unsigned char*>(&hallu->render.color);
+  if (alpha != -1) {
+    argb[3] = static_cast<unsigned char>(alpha);
+  }
+  *reinterpret_cast<std::uint16_t*>(argb + 1) = 0xFFFF;
+  argb[0] = 0xFF;
+
+  CRenderObject* object = hallu;
+  static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->objects.push_back(object);
+  delete pc;
+}
+
 // OFFSET: 0x00AA20D0
 // FUNCTION: fn_17210
 bool CGameActor::HasUnknown0310Entry() {
