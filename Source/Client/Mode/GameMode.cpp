@@ -2649,7 +2649,7 @@ void CGameMode::UpdateBalloons() {
   } else {
     bool created = false;
     if (!skillBalloon) {
-      skillBalloon = new UITransBalloonText(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<BalloonTextContext*>(nullptr));
+      skillBalloon = new UITransBalloonText();
       skillBalloon->SetSize(8, 8);
       g_windowMgr.AddRendered(skillBalloon);
       created = true;
@@ -2702,7 +2702,7 @@ void CGameMode::UpdateBalloons() {
     }
 
     if (!hintBalloon) {
-      UITransBalloonText* balloon = new UITransBalloonText(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<BalloonTextContext*>(nullptr));
+      UITransBalloonText* balloon = new UITransBalloonText();
       hintBalloon = balloon;
       balloon->SetSize(8, 8);
       g_windowMgr.AddRendered(hintBalloon);

@@ -17,6 +17,7 @@ struct BalloonRectangle {
 
 class UITransBalloonText : public UIBalloonText {
 public:
+  UITransBalloonText();
   UITransBalloonText(UIWindowContext& windows, BalloonTextContext& text);
   ~UITransBalloonText() override;
 
