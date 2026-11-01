@@ -6934,3 +6934,102 @@ void UInCashWnd::Slot26(int x, int y) {
     this->m_otherScroll->Invalidate();
   }
 }
+
+// OFFSET: 0x008E9370
+
+// OFFSET: 0x008E60A0
+
+// OFFSET: 0x008F1430
+// FUNCTION: fn_12254
+void UIStorePasswordInputWnd::Paint() {
+  const int titleHeight = this->DrawTitleBar(this->m_context->fonts, this->m_context->locale, true, LookupMessage(1017), 0);
+  this->DrawPanelBackground(titleHeight, 0, "");
+  this->DrawButtonBar(2, 0, 1);
+
+  std::string prefix("유저인터페이스\\");
+  {
+    int positions[3][2] = {{this->geometry.width - 91, 146}, {this->geometry.width - 46, 146}, {this->geometry.width - 210, 146}};
+    const char* names[3][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}, {"btn_change", "btn_change_a", "btn_change_b"}};
+    int ids[3] = {184, 185, 292};
+    const int count = g_session.m_passwordInputAlternate ? 2 : 3;
+
+    for (int i = 0; i < count; ++i) {
+      auto* button = new UIBitmapButton();
+      button->SetBitmap((prefix + names[i][0] + ".bmp").c_str(), 0, 0);
+      button->SetBitmap((prefix + names[i][1] + ".bmp").c_str(), 1, 0);
+      button->SetBitmap((prefix + names[i][2] + ".bmp").c_str(), 2, 0);
+      button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+      button->Move(positions[i][0], positions[i][1]);
+      button->SetId(ids[i]);
+      this->AddChild(button);
+    }
+  }
+
+  prefix = "유저인터페이스\\basic_interface\\";
+  {
+    const char* names[11][3] = {
+      {"btn_num1", "btn_num1_a", "btn_num1_b"}, {"btn_num2", "btn_num2_a", "btn_num2_b"}, {"btn_num3", "btn_num3_a", "btn_num3_b"},
+      {"btn_num4", "btn_num4_a", "btn_num4_b"}, {"btn_num5", "btn_num5_a", "btn_num5_b"}, {"btn_num6", "btn_num6_a", "btn_num6_b"},
+      {"btn_num7", "btn_num7_a", "btn_num7_b"}, {"btn_num8", "btn_num8_a", "btn_num8_b"}, {"btn_num9", "btn_num9_a", "btn_num9_b"},
+      {"btn_num0", "btn_num0_a", "btn_num0_b"}, {"btn_numR", "btn_numR_a", "btn_numR_b"}
+    };
+    int positions[11][2] = {{10, 25}, {40, 25}, {70, 25}, {10, 55}, {40, 55}, {70, 55}, {10, 85}, {40, 85}, {70, 85}, {10, 115}, {40, 115}};
+    int ids[11] = {294, 295, 296, 297, 298, 299, 300, 301, 302, 293, 303};
+    int used[10] = {};
+    int placed = 0;
+
+    for (int i = 0; i < 11; ++i) {
+      auto* button = new UIBitmapButton();
+      button->SetBitmap((prefix + names[i][0] + ".bmp").c_str(), 0, 0);
+      button->SetBitmap((prefix + names[i][1] + ".bmp").c_str(), 1, 0);
+      button->SetBitmap((prefix + names[i][2] + ".bmp").c_str(), 2, 0);
+      button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+      if (i == 10) {
+        button->Move(positions[10][0], positions[10][1]);
+      } else {
+        int slot = rand() % 10;
+        if (placed != 10) {
+          while (used[slot] != 0) {
+            slot = rand() % 10;
+          }
+          used[slot] = 1;
+          button->Move(positions[slot][0], positions[slot][1]);
+          ++placed;
+        }
+      }
+      button->SetId(ids[i]);
+      this->AddChild(button);
+    }
+  }
+
+  std::uint32_t boxColor;
+  std::uint32_t textColor;
+  std::uint32_t shadowColor;
+  if (!g_session.m_passwordInputAlternate) {
+    boxColor = 0xFAC8AA;
+    shadowColor = 0;
+    textColor = 0xE6E6E6;
+  } else {
+    boxColor = 0xE6E6E6;
+    textColor = 0xF0F0F0;
+    shadowColor = 0xE6E6E6;
+  }
+
+  this->DrawEmboldenedText(110, 27, LookupMessage(1012), textColor, shadowColor, 0, 0, 12);
+  this->FillRegion(110, 40, 100, 16, boxColor);
+  this->FillRegion(111, 41, 98, 14, 0xFFFFFF);
+  if (!g_session.m_passwordInputAlternate && this->unknown_0108 == 0) {
+    this->DrawEmboldenedText(110, 63, LookupMessage(1013), 0xF0F0F0, 0xE6E6E6, 0, 0, 12);
+    this->FillRegion(110, 78, 100, 16, 0xE6E6E6);
+    this->DrawEmboldenedText(110, 103, LookupMessage(1014), 0xF0F0F0, 0xE6E6E6, 0, 0, 12);
+    this->FillRegion(110, 117, 100, 16, 0xE6E6E6);
+  } else {
+    this->DrawEmboldenedText(110, 63, LookupMessage(1013), 0xE6E6E6, 0, 0, 0, 12);
+    this->FillRegion(110, 78, 100, 16, 0xFAE6C8);
+    this->DrawEmboldenedText(110, 103, LookupMessage(1014), 0xE6E6E6, 0, 0, 0, 12);
+    this->FillRegion(110, 117, 100, 16, 0xFAE6C8);
+    if (g_session.m_passwordInputAlternate) {
+      this->FillRegion(111, 79, 98, 14, 0xFFFFFF);
+    }
+  }
+}
