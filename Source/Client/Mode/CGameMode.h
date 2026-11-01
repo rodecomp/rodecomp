@@ -670,6 +670,29 @@ public:
   void ReceiveEquipCardChange(const unsigned char* packet);
   void ReceiveEquipWindowMicroscope2(const unsigned char* packet);
   void ReceiveEquipWindowMicroscope3(const unsigned char* packet);
+  void ReceiveBroadcastText(const unsigned char* data);
+  void ReceiveActorBroadcastText(const unsigned char* data);
+  void ReceiveEquipWindowMicroscope4(const unsigned char* packet);
+  void ReceiveEquipWindowMicroscope5(const unsigned char* packet);
+  void ReceiveEquipWindowMicroscope6(const unsigned char* packet);
+  void ReceiveInventoryEquipList(const unsigned char* packet);
+  void ReceiveInventoryEquipList2(const unsigned char* packet);
+  void ReceiveInventoryEquipList3(const unsigned char* packet);
+  void ReceiveItemPickupAck2(const unsigned char* data);
+  void ReceiveItemPickupAck3(const unsigned char* data);
+  void ReceiveItemPickupAck(const unsigned char* data);
+  void ReceiveItemPickupAck5(
+    std::uint16_t index, std::uint16_t amount, int itemId, unsigned char identified, unsigned char damaged, unsigned char refine, ItemCardSlots slots,
+    std::uint32_t location, unsigned char type, unsigned char result, std::uint32_t expireTime, std::uint16_t bindOnEquip
+  );
+  void ReceiveItemPickupAck7(const unsigned char* data);
+  void ReceiveEquipItemDamaged(const unsigned char* packet);
+  void ReceiveExpandedBarterMarketItemList2(const unsigned char* data);
+  void ReceiveExpandedBarterMarketItemList(const unsigned char* data);
+  void ReceiveFeedResult(const unsigned char* data);
+  void ReceivePetChangeState(const unsigned char* data);
+  void ReceiveGuildInfo(const unsigned char* data);
+  void ReceiveChatRoomMemberList(const unsigned char* data);
   void ReceiveGuildMemberAdd(const unsigned char* packet);
   void ReceiveGuildPositionInfo(const unsigned char* packet);
   void ReceiveRodexMailReturn(const unsigned char* packet);

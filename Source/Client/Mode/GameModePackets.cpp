@@ -4102,6 +4102,8 @@ public:
   static CEquipmentPropertiesMgr* GetInstance();
   void RefreshPretend();
   void RemoveExpansion(const int& kind, const int& itemId);
+  void AddExpansion(const int& kind, const int& itemId, bool notify);
+  void RefreshExpansion(const int& kind, const int& itemId);
   unsigned char unknown_0004[0x1F8];
 };
 }
@@ -7564,3 +7566,391 @@ struct SkillFailurePacket {
 static_assert(sizeof(SkillFailurePacket) == 0xE);
 
 // OFFSET: 0x00D1E840
+
+#include "Contents/ForbiddenWords.h"
+#include "Contents/PetEvolutionMgr.h"
+#include "UI/Window/UIPetInfoWnd.h"
+#include "UI/Items/UIItemIdentifyWnd.h"
+#include "UI/Chat/UIChatRoomTitle.h"
+
+// OFFSET: 0x00D21220
+// FUNCTION: fn_21654
+void CGameMode::ReceiveBroadcastText(const unsigned char* data) {
+  const int length = *reinterpret_cast<const std::uint16_t*>(data + 2) - 4;
+  if (length <= 0 || length > 361) {
+    return;
+  }
+
+  std::vector<char> text(length + 1, 0);
+  memcpy_s(text.data(), text.size(), data + 4, length);
+  if (g_forbiddenWords.Contains(text.data()) == true) {
+    std::string masked;
+    g_forbiddenWords.Mask(text.data(), &masked);
+  }
+  if (!g_serviceOptions.Get(0x94)) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.data()), 0xFF9DFF, 5, 0, 0);
+    if (g_whisperRecord != 0) {
+      this->WriteChatLog(text.data());
+    }
+  }
+}
+
+// OFFSET: 0x00D219D0
+
+namespace {
+#pragma pack(push, 1)
+  struct EquipWindowGradeRecord {
+    /* 0000 */ std::int16_t index;
+    /* 0002 */ int itemId;
+    /* 0006 */ unsigned char type;
+    /* 0007 */ std::uint32_t location;
+    /* 000B */ std::uint32_t wearState;
+    /* 000F */ std::uint32_t cards[4];
+    /* 001F */ std::uint32_t expireTime;
+    /* 0023 */ std::uint16_t bindOnEquip;
+    /* 0025 */ std::uint16_t sprite;
+    /* 0027 */ unsigned char optionCount;
+    /* 0028 */ StoreItemOption options[5];
+    /* 0041 */ unsigned char refine;
+    /* 0042 */ unsigned char grade;
+    /* 0043 */ unsigned char flags;
+  };
+#pragma pack(pop)
+
+  static_assert(sizeof(EquipWindowGradeRecord) == 0x44);
+
+  // INLINED
+  __forceinline void FillEquipWindowItem(ITEM_INFO& item, const StoreEquipOptionRecord& record, const StoreItemOption* options) {
+    item.unknown_0000[0] = record.type;
+    item.unknown_0000[1] = record.index;
+    item.unknown_0000[2] = record.location;
+    item.unknown_0000[3] = record.wearState;
+    item.quantity = 1;
+    std::memcpy(item.unknown_001C, record.cards, sizeof(record.cards));
+    item.SetItemId(record.itemId);
+    item.identified = record.flags & 1;
+    item.unknown_005D = (record.flags >> 1) & 1;
+    item.unknown_0060 = record.refine;
+    item.unknown_0068 = record.expireTime;
+    item.unknown_0064 = record.bindOnEquip;
+    item.unknown_0070 = record.sprite;
+    item.unknown_0074[0] = (record.flags >> 2) & 1;
+    item.unknown_0098 = CountStoreItemOptions(options);
+    item.unknown_0088 = 0;
+    for (int index = 0; index < item.unknown_0098; ++index) {
+      reinterpret_cast<StoreItemOption*>(item.unknown_009C)[index] = options[index];
+    }
+  }
+
+  // INLINED
+  __forceinline void FillEquipWindowGradeItem(ITEM_INFO& item, const EquipWindowGradeRecord& record, const StoreItemOption* options) {
+    item.unknown_0000[0] = record.type;
+    item.unknown_0000[1] = record.index;
+    item.unknown_0000[2] = record.location;
+    item.unknown_0000[3] = record.wearState;
+    item.quantity = 1;
+    std::memcpy(item.unknown_001C, record.cards, sizeof(record.cards));
+    item.SetItemId(record.itemId);
+    item.identified = record.flags & 1;
+    item.unknown_005D = (record.flags >> 1) & 1;
+    item.unknown_0060 = record.refine;
+    item.unknown_0068 = record.expireTime;
+    item.unknown_0064 = record.bindOnEquip;
+    item.unknown_0070 = record.sprite;
+    item.unknown_0074[0] = (record.flags >> 2) & 1;
+    item.unknown_0098 = CountStoreItemOptions(options);
+    item.unknown_0088 = record.grade;
+    for (int index = 0; index < item.unknown_0098; ++index) {
+      reinterpret_cast<StoreItemOption*>(item.unknown_009C)[index] = options[index];
+    }
+  }
+
+  // INLINED
+  __forceinline void EquipWindowItem(const ITEM_INFO& item) {
+    if (g_session.IsPetEgg(std::atoi(item.itemId.c_str())) && item.unknown_005D) {
+      g_activePetEggIndex = item.unknown_0000[1];
+    }
+
+    if (item.unknown_0000[3] != 0) {
+      if (g_session.IsCostumeLocation(item.unknown_0000[3])) {
+        g_session.EquipItem3500(item);
+      } else {
+        reinterpret_cast<ClientItemLists*>(&g_session)->Equip(item);
+      }
+    }
+
+    if (g_session.IsPetEgg(std::atoi(item.itemId.c_str())) && item.unknown_005D) {
+      const int petEgg = std::atoi(LookupClientItemByIdentity(g_session.m_inventoryItems, g_activePetEggIndex).itemId.c_str());
+      if (!g_petEvolutionMgr->IsAutoFeeding(petEgg) && g_petAutoFeed == true) {
+        g_session.SendPetAutoFeedOption(0);
+      }
+
+      if (g_equipmentPropertiesMgr == nullptr) {
+        g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+      }
+
+      const int kind = 0;
+      const int itemId = std::atoi(item.itemId.c_str());
+      g_equipmentPropertiesMgr->AddExpansion(kind, itemId, false);
+    }
+  }
+}
+
+// OFFSET: 0x00D28950
+
+// OFFSET: 0x00D28EA0
+
+// OFFSET: 0x00D29400
+
+namespace {
+  // INLINED
+  __forceinline void AddInventoryEquipItem(const ITEM_INFO& item) {
+    if (g_session.IsPetEgg(std::atoi(item.itemId.c_str())) && item.unknown_005D) {
+      g_activePetEggIndex = item.unknown_0000[1];
+    }
+
+    if (item.unknown_0000[3] == 0) {
+      reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1710(item, 0);
+      g_session.UpdateInventoryItem(item, 0);
+    } else {
+      char equipped = 1;
+      if (g_session.IsCostumeLocation(item.unknown_0000[3])) {
+        g_session.EquipItem2B50(item, &equipped);
+      } else {
+        g_session.EquipUnknown17F0(item, &equipped);
+      }
+    }
+
+    if (g_session.IsPetEgg(std::atoi(item.itemId.c_str())) && item.unknown_005D) {
+      const int petEgg = std::atoi(LookupClientItemByIdentity(g_session.m_inventoryItems, g_activePetEggIndex).itemId.c_str());
+      if (!g_petEvolutionMgr->IsAutoFeeding(petEgg) && g_petAutoFeed == true) {
+        g_session.SendPetAutoFeedOption(0);
+      }
+
+      if (g_equipmentPropertiesMgr == nullptr) {
+        g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+      }
+
+      const int kind = 0;
+      const int itemId = std::atoi(item.itemId.c_str());
+      g_equipmentPropertiesMgr->AddExpansion(kind, itemId, false);
+    }
+  }
+}
+
+// OFFSET: 0x00D2C7F0
+
+// OFFSET: 0x00D2CC80
+
+// OFFSET: 0x00D2D140
+
+struct ItemCardSlots {
+  /* 0000 */ std::uint32_t cards[4];
+};
+
+namespace {
+#pragma pack(push, 1)
+  struct ItemPickupAckPacket {
+    /* 0000 */ std::uint16_t packetType;
+    /* 0002 */ std::uint16_t index;
+    /* 0004 */ std::uint16_t amount;
+    /* 0006 */ int itemId;
+    /* 000A */ unsigned char identified;
+    /* 000B */ unsigned char damaged;
+    /* 000C */ unsigned char refine;
+    /* 000D */ std::uint32_t cards[4];
+    /* 001D */ std::uint16_t location;
+    /* 001F */ unsigned char type;
+    /* 0020 */ unsigned char result;
+  };
+
+  struct ItemPickupAck2Packet {
+    /* 0000 */ std::uint16_t packetType;
+    /* 0002 */ std::uint16_t index;
+    /* 0004 */ std::uint16_t amount;
+    /* 0006 */ int itemId;
+    /* 000A */ unsigned char identified;
+    /* 000B */ unsigned char damaged;
+    /* 000C */ unsigned char refine;
+    /* 000D */ std::uint32_t cards[4];
+    /* 001D */ std::uint16_t location;
+    /* 001F */ unsigned char type;
+    /* 0020 */ unsigned char result;
+    /* 0021 */ std::uint32_t expireTime;
+  };
+
+  struct ItemPickupAck3Packet {
+    /* 0000 */ std::uint16_t packetType;
+    /* 0002 */ std::uint16_t index;
+    /* 0004 */ std::uint16_t amount;
+    /* 0006 */ int itemId;
+    /* 000A */ unsigned char identified;
+    /* 000B */ unsigned char damaged;
+    /* 000C */ unsigned char refine;
+    /* 000D */ std::uint32_t cards[4];
+    /* 001D */ std::uint16_t location;
+    /* 001F */ unsigned char type;
+    /* 0020 */ unsigned char result;
+    /* 0021 */ std::uint32_t expireTime;
+    /* 0025 */ std::uint16_t bindOnEquip;
+  };
+
+  struct ItemPickupAck7Packet {
+    /* 0000 */ std::uint16_t packetType;
+    /* 0002 */ std::uint16_t index;
+    /* 0004 */ std::uint16_t amount;
+    /* 0006 */ int itemId;
+    /* 000A */ unsigned char identified;
+    /* 000B */ unsigned char damaged;
+    /* 000C */ unsigned char refine;
+    /* 000D */ std::uint32_t cards[4];
+    /* 001D */ std::uint32_t location;
+    /* 0021 */ unsigned char type;
+    /* 0022 */ unsigned char result;
+    /* 0023 */ std::uint32_t expireTime;
+    /* 0027 */ std::uint16_t bindOnEquip;
+    /* 0029 */ StoreItemOption options[5];
+  };
+#pragma pack(pop)
+
+  static_assert(sizeof(ItemPickupAckPacket) == 0x21);
+  static_assert(sizeof(ItemPickupAck2Packet) == 0x25);
+  static_assert(sizeof(ItemPickupAck3Packet) == 0x27);
+  static_assert(sizeof(ItemPickupAck7Packet) == 0x42);
+}
+
+// OFFSET: 0x00D2DF80
+
+// OFFSET: 0x00D2E4F0
+
+// OFFSET: 0x00D2EAE0
+
+// OFFSET: 0x00D2F200
+
+// OFFSET: 0x00D2F8F0
+
+// OFFSET: 0x00D27A60
+
+namespace {
+#pragma pack(push, 1)
+  struct ExpandedBarterChunkRecord {
+    /* 0000 */ int itemId;
+    /* 0004 */ std::uint16_t refine;
+    /* 0006 */ int amount;
+    /* 000A */ std::uint16_t type;
+  };
+
+  struct ExpandedBarterRecord {
+    /* 0000 */ int itemId;
+    /* 0004 */ std::uint16_t type;
+    /* 0006 */ int amount;
+    /* 000A */ int price;
+    /* 000E */ int index;
+    /* 0012 */ int weight;
+    /* 0016 */ int chunkCount;
+  };
+
+  struct ExpandedBarterRecord2 {
+    /* 0000 */ int itemId;
+    /* 0004 */ std::uint16_t type;
+    /* 0006 */ int amount;
+    /* 000A */ int price;
+    /* 000E */ int index;
+    /* 0012 */ int weight;
+    /* 0016 */ std::uint16_t viewSprite;
+    /* 0018 */ int location;
+    /* 001C */ int chunkCount;
+    /* 0020 */ int currency;
+  };
+
+  struct ExpandedBarterListPacket {
+    /* 0000 */ std::uint16_t packetType;
+    /* 0002 */ std::uint16_t length;
+    /* 0004 */ int count;
+  };
+#pragma pack(pop)
+
+  static_assert(sizeof(ExpandedBarterChunkRecord) == 0xC);
+  static_assert(sizeof(ExpandedBarterRecord) == 0x1A);
+  static_assert(sizeof(ExpandedBarterRecord2) == 0x24);
+  static_assert(sizeof(ExpandedBarterListPacket) == 0x8);
+}
+
+// OFFSET: 0x00D29A30
+
+// OFFSET: 0x00D29D60
+
+namespace {
+#pragma pack(push, 1)
+  struct FeedResultPacket {
+    /* 0000 */ std::uint16_t packetType;
+    /* 0002 */ unsigned char result;
+    /* 0003 */ int itemId;
+  };
+#pragma pack(pop)
+
+  static_assert(sizeof(FeedResultPacket) == 7);
+}
+
+// OFFSET: 0x00D2A450
+
+namespace {
+#pragma pack(push, 1)
+  struct PetChangeStatePacket {
+    /* 0000 */ std::uint16_t packetType;
+    /* 0002 */ char type;
+    /* 0003 */ std::uint32_t aid;
+    /* 0007 */ int value;
+  };
+#pragma pack(pop)
+
+  static_assert(sizeof(PetChangeStatePacket) == 0xB);
+}
+
+// OFFSET: 0x00D26080
+
+namespace {
+#pragma pack(push, 1)
+  struct GuildInfoPacket {
+    /* 0000 */ std::uint16_t packetType;
+    /* 0002 */ std::uint32_t guildId;
+    /* 0006 */ int level;
+    /* 000A */ int userCount;
+    /* 000E */ int maxUserCount;
+    /* 0012 */ int averageLevel;
+    /* 0016 */ int exp;
+    /* 001A */ int maxExp;
+    /* 001E */ int point;
+    /* 0022 */ int honor;
+    /* 0026 */ int virtue;
+    /* 002A */ int emblemVersion;
+    /* 002E */ char guildName[24];
+    /* 0046 */ char masterName[24];
+    /* 005E */ char manageLand[24];
+  };
+#pragma pack(pop)
+
+  static_assert(sizeof(GuildInfoPacket) == 0x76);
+}
+
+// OFFSET: 0x00D2B360
+
+namespace {
+#pragma pack(push, 1)
+  struct ChatRoomMemberRecord {
+    /* 0000 */ int role;
+    /* 0004 */ char name[24];
+  };
+
+  struct ChatRoomMemberListPacket {
+    /* 0000 */ std::uint16_t packetType;
+    /* 0002 */ std::int16_t length;
+    /* 0004 */ std::uint32_t roomId;
+  };
+#pragma pack(pop)
+
+  static_assert(sizeof(ChatRoomMemberRecord) == 0x1C);
+  static_assert(sizeof(ChatRoomMemberListPacket) == 0x8);
+}
+
+// OFFSET: 0x00D27420
