@@ -85,18 +85,18 @@ struct EquipmentEntryB {
 };
 
 struct EquipmentPropertyDefinition {
-  /* 0000 */ unsigned int group;
-  /* 0004 */ unsigned int id;
+  /* 0000 */ unsigned int group = 0;
+  /* 0004 */ unsigned int id = 0;
   /* 0008 */ std::string unknown_0008;
   /* 0020 */ std::vector<std::string> unknown_0020;
-  /* 002C */ int unknown_002C;
+  /* 002C */ int unknown_002C = 0;
   /* 0030 */ int mode;
   /* 0034 */ std::vector<std::string> unknown_0034;
-  /* 0040 */ int unknown_0040;
+  /* 0040 */ int unknown_0040 = 0;
   /* 0044 */ std::string unknown_0044;
   /* 005C */ std::map<int, int> unknown_005C;
   /* 0064 */ std::string unknown_0064;
-  /* 007C */ int unknown_007C;
+  /* 007C */ int unknown_007C = 0;
 
   bool IsTwoDimensional() const;
 };
@@ -104,6 +104,8 @@ struct EquipmentPropertyDefinition {
 struct EquipmentPropertyGroup {
   /* 0000 */ std::string unknown_0000;
   /* 0018 */ std::map<std::int64_t, EquipmentPropertyDefinition*> definitions;
+  explicit EquipmentPropertyGroup(const char* name) : unknown_0000(name) {
+  }
   ~EquipmentPropertyGroup();
   std::string& GetName();
   std::map<std::int64_t, EquipmentPropertyDefinition*>& GetDefinitions();
@@ -323,7 +325,7 @@ namespace EquipmentProperties {
     /* 0044 */ std::unordered_map<int, CEquipmentExpansion*> properties2;
     /* 0064 */ std::unordered_map<unsigned int, CEquipmentCombiitem*> properties3;
     /* 0084 */ std::multiset<unsigned long> unknown_0084;
-    /* 008C */ std::map<int, EquipmentPropertyGroup> unknown_008C;
+    /* 008C */ std::map<unsigned int, EquipmentPropertyGroup> unknown_008C;
     /* 0094 */ std::unordered_map<int, CEquipmentInfo> unknown_0094;
     /* 00B4 */ std::unordered_map<int, EquipmentValueA> unknown_00B4;
     /* 00D4 */ std::unordered_map<unsigned int, std::list<unsigned int>> m_itemCombinations;
@@ -375,6 +377,7 @@ namespace EquipmentProperties {
     void LoadGradeBonus();
     void LoadIgnoreEquipmentProperties();
     void LoadSkillGroup();
+    void LoadEquipmentPropertiesOrder();
   };
 }
 namespace EquipmentProperties {
@@ -6749,5 +6752,327 @@ void EquipmentProperties::CEquipmentPropertiesMgr::RefreshWearable(const int& ke
   }
   if (this->unknown_0020 != nullptr) {
     this->unknown_0020->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x006B1000
+// FUNCTION: fn_06194
+void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder() {
+  if (!this->unknown_000C) {
+    return;
+  }
+  lua_State* state = this->script.GetState();
+  if (state == nullptr) {
+    return;
+  }
+  const char* name = "EquipmentPropertiesOrder";
+  lua_getfield(state, LUA_GLOBALSINDEX, name);
+  if (lua_type(state, -1) == LUA_TTABLE) {
+    lua_pushnil(state);
+    while (lua_next(state, -2) != 0) {
+      unsigned int category;
+      int result;
+      int type = lua_type(this->script.GetState(), -2);
+      if (type == LUA_TNUMBER) {
+        category = static_cast<unsigned int>(lua_tonumber(this->script.GetState(), -2));
+        result = 0;
+      } else {
+        result = (type != LUA_TNIL) + 1;
+      }
+      this->unknown_000C &= result == 0;
+      if (result != 0) {
+        ShowErrorDialog(std::format("{0} table has invalid entry key({1})", name, result), 0);
+      }
+      if (this->unknown_000C) {
+        std::string categoryName;
+        result = this->script.GetFieldString(categoryName, "name");
+        this->unknown_000C &= result == 0;
+        if (result != 0) {
+          ShowErrorDialog(std::format("Category[{0}] has invalid 'name' field({1})", category, result), 0);
+        }
+        if (this->unknown_000C) {
+          categoryName = FromUtf8(categoryName, g_textCodePage);
+          std::map<std::int64_t, EquipmentPropertyDefinition*>& definitions =
+              this->unknown_008C.try_emplace(category, EquipmentPropertyGroup(categoryName.c_str())).first->second.GetDefinitions();
+          lua_pushstring(state, "order");
+          lua_gettable(state, -2);
+          if (lua_type(state, -1) == LUA_TTABLE) {
+            lua_pushnil(state);
+            while (lua_next(state, -2) != 0) {
+              unsigned int order;
+              type = lua_type(this->script.GetState(), -2);
+              if (type == LUA_TNUMBER) {
+                order = static_cast<unsigned int>(lua_tonumber(this->script.GetState(), -2));
+                result = 0;
+              } else {
+                result = (type != LUA_TNIL) + 1;
+              }
+              this->unknown_000C &= result == 0;
+              if (result != 0) {
+                ShowErrorDialog(std::format("Category table has invalid entry key({0})", result), 0);
+              }
+              if (!this->unknown_000C) {
+                break;
+              }
+
+              EquipmentPropertyDefinition* definition = new EquipmentPropertyDefinition;
+              definition->group = category;
+              definition->id = order;
+              definitions.emplace(order, definition);
+
+              std::string orderName;
+              result = this->script.GetFieldString(orderName, "name");
+              this->unknown_000C &= result == 0;
+              if (result != 0) {
+                ShowErrorDialog(std::format("Category({0})'s order[{1}] has invaild 'name' field({2})", categoryName, order, result), 0);
+              }
+              if (!this->unknown_000C) {
+                break;
+              }
+
+              orderName = FromUtf8(orderName, g_textCodePage);
+              definition->unknown_0008 = orderName;
+              const bool hasSeparator = ContainsText(definition->unknown_0008, "{sep}");
+              const bool hasValue = ContainsText(definition->unknown_0008, "{val}");
+              std::string_view symbol;
+              if (hasValue == true) {
+                ReplaceAll(definition->unknown_0008, "{val}", "{0}");
+                ReplaceAll(definition->unknown_0008, "{sep}", "{1}");
+                symbol = hasSeparator ? "{2}" : "{1}";
+              } else {
+                symbol = "{0}";
+              }
+              ReplaceAll(definition->unknown_0008, "{sym}", symbol);
+
+              result = this->script.GetFieldStringArray(definition->unknown_0020, "func");
+              this->unknown_000C &= result == 0;
+              if (result != 0) {
+                ShowErrorDialog(std::format("Category({0})'s order[{1}] has invaild 'func' field({2})", categoryName, order, result), 0);
+              }
+              if (!this->unknown_000C) {
+                break;
+              }
+
+              this->unknown_000C &= definition->unknown_0020.size() != 0;
+              if (definition->unknown_0020.size() == 0) {
+                ShowErrorDialog(std::format("Category({0})'s order[{1}]'s 'func' table has 0 value", categoryName, order), 0);
+              }
+              if (!this->unknown_000C) {
+                break;
+              }
+
+              this->unknown_000C &= definition->unknown_0020.size() <= 2;
+              if (definition->unknown_0020.size() > 2) {
+                ShowErrorDialog(std::format("Category({0})'s order[{1}]'s 'func' table has more than 2 values", categoryName, order), 0);
+              }
+              if (!this->unknown_000C) {
+                break;
+              }
+
+              std::map<unsigned int, unsigned int> values;
+              result = this->script.GetFieldUIntMap(values, "val");
+              this->unknown_000C &= result == 0;
+              if (result != 0) {
+                ShowErrorDialog(std::format("Category({0})'s order[{1}]'s has invalid 'val' table({2})", categoryName, order, result), 0);
+              }
+              if (!this->unknown_000C) {
+                break;
+              }
+
+              this->unknown_000C &= values.size() == 1;
+              if (values.size() != 1) {
+                ShowErrorDialog(std::format("Category({0})'s order[{1}]'s 'val' table has too many key-value pair", categoryName, order), 0);
+              }
+              if (!this->unknown_000C) {
+                break;
+              }
+
+              for (const auto& value : values) {
+                definition->unknown_002C = value.first;
+                definition->mode = value.second;
+                if (!hasValue) {
+                  this->unknown_000C &= value.second == 1;
+                  if (definition->mode != 1) {
+                    ShowErrorDialog(std::format("Category({0})'s order[{1}]'s 'val' table must have 'ONE' type", categoryName, order), 0);
+                  }
+                  if (!this->unknown_000C) {
+                    break;
+                  }
+                }
+              }
+
+              std::map<unsigned int, unsigned int> conditions;
+              result = this->script.GetFieldUIntMap(conditions, "cond");
+              bool valid = result == 0 || result == 1;
+              this->unknown_000C &= valid;
+              if (!valid) {
+                ShowErrorDialog(std::format("Category({0})'s order[{1}]'s has invalid 'cond' table({2})", categoryName, order, result), 0);
+              }
+              if (!this->unknown_000C) {
+                break;
+              }
+
+              for (const std::string& function : definition->unknown_0020) {
+                std::string text = std::format("{0}", function);
+                for (const auto& condition : conditions) {
+                  text = std::format("{0} arg{1}:{2}", text, condition.first, condition.second);
+                }
+                unsigned int hash = 5381;
+                for (const char* character = text.c_str(); *character != '\0'; ++character) {
+                  hash = hash * 33 + *character;
+                }
+                const std::uint64_t nameKey = hash;
+                valid = this->m_definitionsByName.find(nameKey) == this->m_definitionsByName.end();
+                this->unknown_000C &= valid;
+                if (!valid) {
+                  ShowErrorDialog(std::format("string:{0} cause hash collision", text), 0);
+                }
+                if (!this->unknown_000C) {
+                  break;
+                }
+                this->m_definitionsByName.insert({nameKey, definition});
+              }
+
+              this->unknown_000C &= valid;
+              if (!valid) {
+                ShowErrorDialog(std::format("Category({0})'s order[{1}]'s 'cond' table has some error", categoryName, order), 0);
+              }
+              if (!this->unknown_000C) {
+                break;
+              }
+
+              result = this->script.GetFieldStringArray(definition->unknown_0034, "sym");
+              valid = result == 0 || result == 1;
+              this->unknown_000C &= valid;
+              if (!valid) {
+                ShowErrorDialog(std::format("Category({0})'s order[{1}]'s value table has invaild 'sym' field", categoryName, order), 0);
+              }
+              valid = definition->unknown_0034.size() == 0 || definition->unknown_0034.size() == 2;
+              this->unknown_000C &= valid;
+              if (!valid) {
+                ShowErrorDialog(std::format("Category({0})'s order[{1}]'s value table has invaild 'sym' field", categoryName, order), 0);
+              }
+              for (std::string& symbolText : definition->unknown_0034) {
+                symbolText = FromUtf8(symbolText, g_textCodePage);
+              }
+
+              std::map<unsigned int, std::string> separators;
+              result = this->script.GetFieldStringMap(separators, "sep");
+              valid = result == 0 || result == 1;
+              this->unknown_000C &= valid;
+              if (!valid) {
+                ShowErrorDialog(std::format("Category({0})'s order[{1}]'s has invalid 'sep' table({2})", categoryName, order, result), 0);
+              }
+              if (!this->unknown_000C) {
+                break;
+              }
+
+              if (result == 0) {
+                this->unknown_000C &= separators.size() == 1;
+                if (separators.size() != 1) {
+                  ShowErrorDialog(std::format("Category({0})'s order[{1}]'s 'sep' table has too many key-value pair", categoryName, order), 0);
+                }
+                if (!this->unknown_000C) {
+                  break;
+                }
+                for (const auto& separator : separators) {
+                  definition->unknown_0040 = separator.first;
+                  definition->unknown_0044 = separator.second;
+                }
+              }
+
+              int randomOption;
+              result = this->script.GetFieldInt(randomOption, "rndOpt");
+              valid = result == 0 || result == 1;
+              this->unknown_000C &= valid;
+              if (!valid) {
+                ShowErrorDialog(std::format("Category({0})'s order[{1}] has invaild 'rndOpt' field({2})", categoryName, order, result), 0);
+              }
+              if (!this->unknown_000C) {
+                break;
+              }
+
+              if (result == 0) {
+                valid = this->unknown_0174.find(randomOption) == this->unknown_0174.end();
+                this->unknown_000C &= valid;
+                if (!valid) {
+                  ShowErrorDialog(std::format("Category({0})'s order[{1}]'s rndOpt value is already defined: {2}", category, order,
+                                              static_cast<unsigned int>(randomOption)),
+                                  0);
+                }
+                if (!this->unknown_000C) {
+                  break;
+                }
+                this->unknown_0174[randomOption] = definition;
+              }
+
+              result = this->script.GetFieldString(definition->unknown_0064, "uniq1");
+              valid = result == 0 || result == 1;
+              this->unknown_000C &= valid;
+              if (!valid) {
+                ShowErrorDialog(std::format("Category({0})'s order[{1}] has invaild 'uniq1' field({2})", categoryName, order, result), 0);
+              }
+              if (!this->unknown_000C) {
+                break;
+              }
+
+              result = this->script.GetFieldInt(definition->unknown_007C, "uniq2");
+              valid = result == 0 || result == 1;
+              this->unknown_000C &= valid;
+              if (!valid) {
+                ShowErrorDialog(std::format("Category({0})'s order[{1}] has invaild 'uniq2' field({2})", categoryName, order, result), 0);
+              }
+              if (!this->unknown_000C) {
+                break;
+              }
+
+              lua_pushstring(this->script.GetState(), "valOpt");
+              lua_gettable(this->script.GetState(), -2);
+              type = lua_type(this->script.GetState(), -1);
+              result = 0;
+              if (type == LUA_TTABLE) {
+                lua_pushnil(this->script.GetState());
+                while (lua_next(this->script.GetState(), -2) != 0) {
+                  int optionKey;
+                  int optionValue;
+                  result = this->script.GetInt(optionKey, -2);
+                  if (result != 0) {
+                    break;
+                  }
+                  result = this->script.GetInt(optionValue, -1);
+                  if (result != 0) {
+                    break;
+                  }
+                  definition->unknown_005C[optionKey] = optionValue;
+                  lua_settop(this->script.GetState(), -2);
+                }
+              } else {
+                result = (type != LUA_TNIL) + 1;
+              }
+              lua_settop(this->script.GetState(), -2);
+              valid = result == 0 || result == 1;
+              this->unknown_000C &= valid;
+              if (!valid) {
+                ShowErrorDialog(std::format("Category({0})'s order[{1}] has invaild 'rndOpt' field({2})", categoryName, order, result), 0);
+              }
+              if (!this->unknown_000C) {
+                break;
+              }
+              lua_settop(state, -2);
+            }
+          } else {
+            ShowErrorDialog(std::format("Category({0})'s has invaild 'order' table", categoryName), 0);
+          }
+          lua_settop(state, -2);
+        }
+      }
+      lua_settop(state, -2);
+    }
+  } else {
+    ShowErrorDialog(std::format("Can't find global table '{0}'", name), 0);
+  }
+  lua_settop(state, -2);
+  if (!this->unknown_000C) {
+    ShowErrorDialog(std::format("Check error in '{0}' table and restart game ", name), 0);
   }
 }
