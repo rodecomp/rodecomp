@@ -21,6 +21,8 @@ struct UIButtonContext;
 struct UIComboBoxHeaderContext;
 struct UIEditContext;
 struct UIListBoxContext;
+struct WindowDialogs;
+struct WindowResponseRecorder;
 
 struct NavigationWndInfo {
   /* 0000 */ int x;
@@ -95,6 +97,8 @@ protected:
   UIListBoxContext* m_listContext;
   UIComboBoxHeaderContext* m_comboContext;
   UIEditContext* m_editContext;
+  WindowResponseRecorder* m_recorder;
+  WindowDialogs* m_dialogs;
 };
 
 #endif

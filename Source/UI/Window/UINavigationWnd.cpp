@@ -2,6 +2,7 @@
 
 #include "Client/Application/Launcher.h"
 #include "Client/Replay.h"
+#include "Client/ReplayPacketRecorder.h"
 #include "Client/Session.h"
 #include "Contents/MessageTable.h"
 #include "Contents/NavigationManager.h"
@@ -666,90 +667,207 @@ void UINavigationWnd::Paint() {
 // FUNCTION: fn_12749
 int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3,
                              std::intptr_t argument4) {
-  const auto recordResponse = [this](int response, std::intptr_t first, std::intptr_t second, std::intptr_t third) {
-    Replay& replay = Replay::Instance();
-    if (replay.state == 2) {
-      std::vector<unsigned char> packet(26, 0);
-      const std::uint32_t marker = 0x038408AE;
-      const std::uint16_t bytes = 26;
-      const int windowId = this->geometry.id;
-      const std::uint32_t values[3] = {
-        static_cast<std::uint32_t>(first), static_cast<std::uint32_t>(second), static_cast<std::uint32_t>(third)
-      };
-      std::memcpy(packet.data(), &marker, sizeof(marker));
-      std::memcpy(packet.data() + 4, &bytes, sizeof(bytes));
-      std::memcpy(packet.data() + 6, &windowId, sizeof(windowId));
-      std::memcpy(packet.data() + 10, &response, sizeof(response));
-      std::memcpy(packet.data() + 14, values, sizeof(values));
-      replay.RecordPacket(packet, 42, 0);
-    }
-  };
-
   switch (message) {
-  case 0:
-    if (sender == this->m_titleBar && this->m_titleBar->Length() > 0) {
-      this->SendMsg(this->m_titleBar, 6, 0x141, 0, 0, 0);
-      return 0;
-    }
-    if (argument1 == 7) {
-      this->m_saved->height = 0x152;
-      this->ApplyMinimized();
-    }
-    break;
-  case 6:
-    if (argument1 != 0x150) {
-      if (argument1 == 0x1B9) {
-        if (g_replayAnimationScaling == 0) {
-          argument2 = this->m_searchPanel->selected;
-        }
-        if (argument2 != -1) {
-          recordResponse(static_cast<int>(argument1), argument2, argument3, argument4);
-          g_navigationManager.SelectTarget(static_cast<int>(argument2) - this->m_searchPanel->LineOffset());
-          if (g_navigationManager.GetCurrentTargetType() == 6) {
-            if (g_windowMgr.window_0428) {
-              static_cast<UIRoMapWnd*>(g_windowMgr.window_0428)->UpdateNavigationButtons();
-            }
-            this->Invalidate();
-            return 0;
-          }
-        }
-      } else {
-        recordResponse(static_cast<int>(argument1), argument2, argument3, argument4);
-        if (argument1 >= 0x1BA) {
-          return 0;
-        }
-        break;
-      }
-    }
-    break;
-  case 0xE:
-    if (argument1 == 7) {
-      this->m_saved->height = 0x152;
-      this->ApplyMinimized();
-    }
-    break;
-  case 0x1F:
-    if (argument1 == 0x150) {
-      this->m_routePanel->AddLine(reinterpret_cast<const char*>(argument2));
-    } else if (argument1 == 0x1B9) {
-      this->m_searchPanel->AddLine(reinterpret_cast<const char*>(argument2));
-    }
-    if (sender == this->m_titleBar && this->m_titleBar->Length() > 0) {
-      this->SendMsg(this->m_titleBar, 6, 0x141, 0, 0, 0);
-      return 0;
-    }
-    if (argument1 == 7) {
-      const int height = (std::max)(0x152, (std::min)(static_cast<int>(argument3), 0x152));
-      this->m_saved->height = height;
-      this->ApplyMinimized();
-    }
-    break;
   case 0x22:
     this->m_saved = reinterpret_cast<NavigationWndInfo*>(argument1);
     reinterpret_cast<NavigationWindowInfo*>(this->m_saved)->Clamp();
-    this->Resize(this->m_saved->width, this->m_saved->height);
+    this->Move(this->m_saved->x, this->m_saved->y);
     this->Invalidate();
     return 0;
+  case 6:
+    if (argument1 != 0x150 && argument1 != 0x1B9) {
+      this->m_recorder->Record(this->geometry.id, static_cast<int>(argument1), argument2, argument3, argument4);
+    }
+
+    switch (argument1) {
+    case 0xB8: {
+      this->Invalidate();
+      int result = g_navigationManager.SaveCurrentTarget();
+      if (result == 0) {
+        {
+          NavigationTarget target = g_navigationManager.GetSavedTarget();
+          result = g_navigationManager.Navigate(target.x, target.y);
+        }
+        if (result >= 0) {
+          this->SendMsg(this, 6, 0xBD, 0, 0, 0);
+          this->RefreshRouteList();
+          if (g_windowMgr.window_0428) {
+            static_cast<UINavigationWnd*>(g_windowMgr.window_0428)->RefreshWorldMapMarks();
+          }
+        }
+      }
+      g_navigationManager.ShowRouteResult(result, 1, *this->m_dialogs);
+      return 0;
+    }
+    case 0xBD:
+      g_navigationTab = 1;
+      this->LayoutTabs();
+      return 0;
+    case 0xBE:
+      g_navigationTab = 0;
+      this->LayoutTabs();
+      return 0;
+    case 0xBF: {
+      if (g_closeChatAfterGroups != 0) {
+        g_windowMgr.CloseWindow(0x1A);
+      }
+
+      struct VectorStorage {
+        std::string* first;
+        std::string* last;
+        std::string* end;
+      };
+      VectorStorage& history = *reinterpret_cast<VectorStorage*>(&this->m_history);
+      for (std::string* item = history.first; item != history.last; ++item) {
+        item->clear();
+      }
+      for (std::string* item = history.first; item != history.last; ++item) {
+        item->~basic_string();
+      }
+      history.last = history.first;
+
+      const std::string directory = FormatOwnedString("%s\\Navigationdata\\", g_applicationDirectory);
+      EnumerateFileNames(this->m_history, directory.c_str(), "txt");
+      const int count = static_cast<int>(this->m_history.size());
+      if (count != 0) {
+        UIWindow* historyWindow = g_windowMgr.EnsureWindow(0x1A);
+        for (const std::string& name : this->m_history) {
+          historyWindow->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(name.c_str()), 0, 0, 0);
+        }
+
+        const int height = (std::min)(count * 0x10, 0xA0);
+        historyWindow->SendMsg(nullptr, 0x28, 0, 0, 0, 0);
+        historyWindow->Resize(0xA0, height);
+        historyWindow->SendMsg(nullptr, 0x53, 0xCB, 0, 0, 0);
+
+        int x = this->geometry.width - 0xA5;
+        int y = 0x24;
+        this->ToScreen(x, y);
+        historyWindow->Move(x, y);
+      }
+      return 0;
+    }
+    case 0xC9:
+      if (g_navigationMode == 2) {
+        const int response = this->m_dialogs->Confirm(LookupMessage(0x8BF), 2, true, false, 0, "Message", 280, 120, 0);
+        if (response != 0xBB) {
+          break;
+        }
+        g_navigationManager.SetViewMode(0);
+      }
+      g_worldViewMgr.ClearMarks();
+      g_worldViewMgr.ClearLevels();
+      g_worldViewMgr.ResetSelection();
+      g_navigationManager.Reset(true);
+      g_navigationMinimized = false;
+      g_navigationHidden = false;
+      if (g_windowMgr.window_0428) {
+        g_navigationMinimized = true;
+        static_cast<UIRoMapWnd*>(g_windowMgr.window_0428)->UpdateNavigationButtons();
+        return 0;
+      }
+      g_windowMgr.Schedule(this);
+      g_navigationWindow = nullptr;
+      return 0;
+    case 0xCA:
+      g_navigationMinimized = !g_navigationMinimized;
+      this->ApplyMinimized();
+      this->RefreshHeaderTexts(g_navigationMode);
+      if (g_navigationMinimized && g_windowMgr.window_0428) {
+        static_cast<UIRoMapWnd*>(g_windowMgr.window_0428)->UpdateNavigationButtons();
+        return 0;
+      }
+      break;
+    case 0xD5:
+      if (sender == this->unknown_0114) {
+        g_navigationFilter = argument2 != 0;
+        return 0;
+      }
+      if (sender == this->unknown_0118) {
+        g_unknown16FC585 = argument2 != 0;
+        return 0;
+      }
+      if (sender == this->unknown_011C) {
+        g_unknown16FC586 = argument2 != 0;
+        return 0;
+      }
+      break;
+    case 0x11C:
+      this->m_saved->minimized = !this->m_saved->minimized;
+      this->ApplyMinimized();
+      this->Invalidate();
+      return 0;
+    case 0x141:
+      if (this->m_titleBar->Length() != 0) {
+        g_navigationSearchText = this->m_titleBar->Text();
+        g_navigationManager.RefreshSearch();
+        this->SendMsg(this, 6, 0xBE, 0, 0, 0);
+        if (g_windowMgr.window_0428) {
+          static_cast<UINavigationWnd*>(g_windowMgr.window_0428)->RefreshWorldMapLevels();
+          return 0;
+        }
+      }
+      break;
+    case 0x150:
+      if (g_replayAnimationScaling == 0) {
+        argument2 = this->m_routePanel->selected;
+      }
+      if (argument2 != -1) {
+        this->m_recorder->Record(this->geometry.id, static_cast<int>(argument1), argument2, argument3, argument4);
+        const int index = static_cast<int>(argument2) - this->m_routePanel->LineOffset();
+        if (index >= 0 && g_navigationManager.SelectState(index)) {
+          if (g_windowMgr.window_0428) {
+            static_cast<UINavigationWnd*>(g_windowMgr.window_0428)->RefreshWorldMapSelection();
+          }
+          this->Invalidate();
+          return 0;
+        }
+      }
+      break;
+    case 0x157:
+      if (!g_windowMgr.CloseWindow(0xE5)) {
+        g_windowMgr.EnsureWindow(0xE5);
+        return 0;
+      }
+      break;
+    case 0x1AD:
+      if (!g_navigationMinimized && this->m_saved->minimized) {
+        const int targetType = g_navigationManager.GetCurrentTarget().type;
+        if (targetType != 1 && targetType != 6 && targetType != 0) {
+          if (g_navigationActiveLabel == 1) {
+            g_navigationActiveLabel = 2;
+            this->Invalidate();
+            return 0;
+          }
+          if (g_navigationActiveLabel == 2) {
+            g_navigationActiveLabel = 1;
+          }
+          this->Invalidate();
+          return 0;
+        }
+      }
+      break;
+    case 0x1B9:
+      if (g_replayAnimationScaling == 0) {
+        argument2 = this->m_searchPanel->selected;
+      }
+      if (argument2 != -1) {
+        this->m_recorder->Record(this->geometry.id, 0x1B9, argument2, argument3, argument4);
+        using SelectTargetFn = bool (CNavigationManager::*)(int);
+        if ((g_navigationManager.*reinterpret_cast<SelectTargetFn>(&CNavigationManager::SelectTarget))(
+                static_cast<int>(argument2) - this->m_searchPanel->LineOffset())) {
+          if (g_windowMgr.window_0428) {
+            static_cast<UINavigationWnd*>(g_windowMgr.window_0428)->RefreshWorldMapSelection();
+          }
+          this->Invalidate();
+          return 0;
+        }
+      }
+      break;
+    default:
+      break;
+    }
+    break;
   case 0x27:
     if (sender == this->unknown_00EC) {
       g_navigationSearchType = static_cast<int>(argument1);
@@ -758,175 +876,33 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         this->unknown_00EC->SendMsg(nullptr, 0x39, argument1, 0, 0, 0);
         return 0;
       }
-    } else if (g_replayAnimationScaling == 0) {
+      break;
+    }
+    if (g_replayAnimationScaling == 0) {
       this->LoadRoute(static_cast<int>(argument1));
       return 0;
     }
     break;
+  case 0x1F:
+    if (argument1 == 0x150) {
+      this->m_routePanel->AddLine(reinterpret_cast<const char*>(argument2));
+    } else if (argument1 == 0x1B9) {
+      this->m_searchPanel->AddLine(reinterpret_cast<const char*>(argument2));
+    }
+  case 0:
+    if (sender == this->m_titleBar && this->m_titleBar->Length() > 0) {
+      this->SendMsg(this->m_titleBar, 6, 0x141, 0, 0, 0);
+      return 0;
+    }
+  case 0xE:
+    if (argument1 == 7) {
+      const int height = (std::max)(0x152, (std::min)(static_cast<int>(argument3), 0x152));
+      this->m_saved->height = height;
+      this->ApplyMinimized();
+    }
+    break;
   default:
     return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
-  }
-
-dispatch:
-  switch (argument1) {
-  case 0xB8: {
-    this->Invalidate();
-    int result = g_navigationManager.SaveCurrentTarget();
-    if (result == 0) {
-      NavigationTarget target = g_navigationManager.GetSavedTarget();
-      result = g_navigationManager.Navigate(target.x, target.y);
-      if (result >= 0) {
-        this->SendMsg(this, 6, 0xBD, 0, 0, 0);
-        this->RefreshRouteList();
-        if (g_windowMgr.window_0428) {
-          this->RefreshWorldMapMarks();
-        }
-      }
-    }
-    g_navigationManager.ShowRouteResult(result, 1, *reinterpret_cast<WindowDialogs*>(&g_windowMgr));
-    return 0;
-  }
-  case 0xBD:
-    g_navigationTab = 1;
-    this->LayoutTabs();
-    return 0;
-  case 0xBE:
-    g_navigationTab = 0;
-    this->LayoutTabs();
-    return 0;
-  case 0xBF: {
-    if (g_closeChatAfterGroups != 0) {
-      g_windowMgr.CloseWindow(0x1A);
-    }
-    struct VectorStorage {
-      std::string* first;
-      std::string* last;
-      std::string* end;
-    };
-    VectorStorage& history = *reinterpret_cast<VectorStorage*>(&this->m_history);
-    for (std::string* item = history.first; item != history.last; ++item) {
-      item->clear();
-    }
-    history.last = history.first;
-    const std::string directory = FormatOwnedString("%s\\Navigationdata\\", g_applicationDirectory);
-    EnumerateFileNames(this->m_history, directory.c_str(), "txt");
-    const int count = static_cast<int>(this->m_history.size());
-    if (count != 0) {
-      UIWindow* historyWindow = g_windowMgr.EnsureWindow(0x1A);
-      for (const std::string& name : this->m_history) {
-        historyWindow->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(name.c_str()), 0, 0, 0);
-      }
-      const int height = (std::min)(count * 0x10, 0xA0);
-      historyWindow->SendMsg(nullptr, 0x28, 0, 0, 0, 0);
-      historyWindow->Resize(0xA0, height);
-      historyWindow->SendMsg(nullptr, 0x53, 0xCB, 0, 0, 0);
-      int x = this->geometry.x - 0xA5;
-      int y = 0x24;
-      for (UIWindow* ancestor = this; ancestor; ancestor = ancestor->parent) {
-        x += ancestor->geometry.width;
-        y += ancestor->geometry.height;
-      }
-      historyWindow->Move(x, y);
-    }
-    return 0;
-  }
-  case 0xC9:
-    if (g_navigationMode == 2) {
-      const int response = reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x8BF), 2, true, false, 0, "Message", 280, 120, 0);
-      if (response != 0xBB) {
-        return 0;
-      }
-      g_navigationManager.SetViewMode(0);
-    }
-    g_worldViewMgr.ClearMarks();
-    g_worldViewMgr.ClearLevels();
-    g_worldViewMgr.ResetSelection();
-    g_navigationManager.Reset(true);
-    g_navigationMinimized = false;
-    g_navigationHidden = false;
-    if (!g_windowMgr.window_0428) {
-      g_windowMgr.Schedule(this);
-      g_navigationWindow = nullptr;
-    } else {
-      g_navigationMinimized = true;
-      static_cast<UIRoMapWnd*>(g_windowMgr.window_0428)->UpdateNavigationButtons();
-    }
-    return 0;
-  case 0xCA:
-    g_navigationMinimized = !g_navigationMinimized;
-    this->ApplyMinimized();
-    this->RefreshHeaderTexts(g_navigationMode);
-    if (g_navigationMinimized && g_windowMgr.window_0428) {
-      static_cast<UIRoMapWnd*>(g_windowMgr.window_0428)->UpdateNavigationButtons();
-      return 0;
-    }
-    break;
-  case 0xD5:
-    if (sender == this->unknown_0114) {
-      g_navigationFilter = argument2 != 0;
-      return 0;
-    }
-    if (sender == this->unknown_0118) {
-      g_unknown16FC585 = argument2 != 0;
-      return 0;
-    }
-    if (sender == this->unknown_011C) {
-      g_unknown16FC586 = argument2 != 0;
-      return 0;
-    }
-    break;
-  case 0x11C:
-    this->m_saved->minimized = !this->m_saved->minimized;
-    this->ApplyMinimized();
-    this->Invalidate();
-    return 0;
-  case 0x141:
-    if (this->m_titleBar->Length() != 0) {
-      g_navigationSearchText = this->m_titleBar->Text();
-      g_navigationManager.RefreshSearch();
-      this->SendMsg(this, 6, 0xBE, 0, 0, 0);
-      if (g_windowMgr.window_0428) {
-        this->RefreshWorldMapLevels();
-        return 0;
-      }
-    }
-    break;
-  case 0x150:
-    if (g_replayAnimationScaling == 0) {
-      argument2 = this->m_routePanel->selected;
-    }
-    if (argument2 != -1) {
-      recordResponse(static_cast<int>(argument1), argument2, argument3, argument4);
-      const int index = static_cast<int>(argument2) - this->m_routePanel->LineOffset();
-      if (index >= 0 && g_navigationManager.SelectState(index)) {
-        if (g_windowMgr.window_0428) {
-          static_cast<UIRoMapWnd*>(g_windowMgr.window_0428)->UpdateNavigationButtons();
-        }
-        this->Invalidate();
-        return 0;
-      }
-    }
-    break;
-  case 0x157:
-    if (!g_windowMgr.CloseWindow(0xE5)) {
-      g_windowMgr.EnsureWindow(0xE5);
-    }
-    return 0;
-  case 0x1AD: {
-    if (!g_navigationMinimized && this->m_saved->minimized) {
-      const NavigationTarget current = g_navigationManager.GetCurrentTarget();
-      if (current.type != 1 && current.type != 6 && current.type != 0) {
-        if (g_navigationActiveLabel == 1) {
-          g_navigationActiveLabel = 2;
-        } else if (g_navigationActiveLabel == 2) {
-          g_navigationActiveLabel = 1;
-        }
-        this->Invalidate();
-        return 0;
-      }
-    }
-    break;
-  }
   }
 
   return 0;
