@@ -13,6 +13,7 @@ public:
   bool Slot03() override;
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot11() override;
+  void Paint() override;
   void Slot25(int x, int y) override;
   void Slot32(int x, int y) override;
   void Slot35(int delta) override;
@@ -27,12 +28,13 @@ public:
   /* 0104 */ unsigned char unknown_0104[0x54];
   /* 0158 */ int m_firstOther;
   /* 015C */ int m_selected;
-  /* 0160 */ unsigned char unknown_0160[0x04];
+  /* 0160 */ int m_pageCount;
   /* 0164 */ int m_page;
   /* 0168 */ int m_tab;
-  /* 016C */ unsigned char unknown_016C[0x08];
+  /* 016C */ int m_pointBalance;
+  /* 0170 */ int m_totalPrice;
   /* 0174 */ int m_selectedIndex;
-  /* 0178 */ unsigned char unknown_0178[0x04];
+  /* 0178 */ int m_cashBalance;
   /* 017C */ int m_rowHeight;
   /* 0180 */ int m_listTop;
   /* 0184 */ int m_listHeight;

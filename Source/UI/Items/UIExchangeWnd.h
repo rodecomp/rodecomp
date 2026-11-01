@@ -32,6 +32,8 @@ public:
   /* 0116 */ unsigned char unknown_0116[0x02];
   /* 0118 */ UICheckBox* unknown_0118;
   /* 011C */ unsigned char unknown_011C;
+  /* 0120 */ int m_moneyLength;
+  /* 0124 */ std::string m_moneyText;
 
   void Slot15(int width, int height) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
@@ -39,6 +41,7 @@ public:
   void Slot28(int x, int y) override;
   void Slot32(int x, int y) override;
   void Slot35(int delta) override;
+  void Slot19() override;
 
   void LayoutButtons();
   void CancelInput();

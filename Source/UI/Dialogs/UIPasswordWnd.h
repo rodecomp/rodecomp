@@ -78,6 +78,7 @@ public:
 class UISecondPasswordInputWnd : public UIStorePasswordInputWnd {
 public:
   UISecondPasswordInputWnd(UIWindowContext& windows, UIFrameContext& frames);
+  void Paint() override;
 
   /* 010C */ int unknown_010C;
   /* 0110 */ unsigned char unknown_0110[0xC];

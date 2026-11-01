@@ -85,6 +85,7 @@
 #include "UI/Party/UIPartySettingWnd.h"
 #include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/Shop/ItemDrawing.h"
+#include "UI/Shop/PriceColor.h"
 #include "UI/Shop/UInCash_CallWnd.h"
 #include "UI/Skill/UISkillDescribeWnd.h"
 #include "UI/Skill/UISkillNameChangeWnd.h"
@@ -3715,6 +3716,7 @@ public:
   UIAutoMessageWnd(UIWindowContext& windows, UIFrameContext& frames);
   void Slot15(int width, int height) override;
   void Paint() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
   /* 00B4 */ UIEditCtrl* m_edit;
 };
@@ -5826,6 +5828,186 @@ void UIWhisperWnd::Slot15(int, int) {
   this->AddChild(this->m_chatHistory);
 
   this->m_closeButton = this->AddCloseButton(*this->m_controls, "/q", 0);
+}
+
+// OFFSET: 0x008F6A30
+// FUNCTION: fn_12324
+int UIAutoMessageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  if (message != 6) {
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
+
+  if (a == 184) {
+    reinterpret_cast<std::string&>(g_session.unknown_56B8[4]) = this->m_edit->Text();
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(942)), 0x64FFFF, 0, 0, 0);
+    reinterpret_cast<WindowDialogs&>(g_windowMgr).RestoreInput();
+    g_windowMgr.CloseWindow(116);
+  }
+  return 0;
+}
+
+// OFFSET: 0x008F79C0
+// FUNCTION: fn_12328
+int UICardItemIllustWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  if (message == 6) {
+    if (a != 201) {
+      return 0;
+    }
+  } else {
+    if (message != 62) {
+      return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+    }
+
+    const char* id = reinterpret_cast<const char*>(a);
+    this->unknown_00E4 = b != 0;
+    const char* name = FindItemCardName(std::atoi(id)).name;
+    if (IsItemCard(std::atoi(id)) && this->m_name != id) {
+      this->m_name = id;
+      this->m_bitmapPath = "유저인터페이스\\cardBmp\\";
+      this->m_bitmapPath += name;
+      this->m_bitmapPath += ".bmp";
+      this->Invalidate();
+      reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(this);
+      return 0;
+    }
+  }
+
+  g_windowMgr.CloseWindow(47);
+  return 0;
+}
+
+// OFFSET: 0x008EFFF0
+// FUNCTION: fn_12248
+void UISecondPasswordInputWnd::Paint() {
+  const int titleHeight = this->DrawTitleBar(this->m_context->fonts, this->m_context->locale, true, LookupMessage(1899), 0);
+  this->DrawPanelBackground(titleHeight, 540, "유저인터페이스\\basic_interface\\2ndpassword_bg.bmp");
+  this->DrawButtonBar(2, 0, 1);
+
+  std::uint32_t boxColor;
+  std::uint32_t textColor;
+  std::uint32_t shadowColor;
+  if (!g_session.m_passwordInputAlternate) {
+    boxColor = 0xFAC8AA;
+    shadowColor = 0;
+    textColor = 0xE6E6E6;
+  } else {
+    boxColor = 0xE6E6E6;
+    textColor = 0xF0F0F0;
+    shadowColor = 0xE6E6E6;
+  }
+  this->DrawEmboldenedText(414, 76, LookupMessage(1012), textColor, shadowColor, 0, 0, 12);
+  this->FillRegion(414, 89, 100, 16, boxColor);
+  this->FillRegion(415, 90, 98, 14, 0xFFFFFF);
+
+  if (!g_session.m_passwordInputAlternate && this->unknown_0108 == 0) {
+    this->DrawEmboldenedText(414, 112, LookupMessage(1013), 0xF0F0F0, 0xE6E6E6, 0, 0, 12);
+    this->FillRegion(414, 127, 100, 16, 0xE6E6E6);
+    this->DrawEmboldenedText(414, 152, LookupMessage(1014), 0xF0F0F0, 0xE6E6E6, 0, 0, 12);
+    this->FillRegion(414, 166, 100, 16, 0xE6E6E6);
+  } else {
+    this->DrawEmboldenedText(414, 112, LookupMessage(1013), 0xE6E6E6, 0, 0, 0, 12);
+    this->FillRegion(414, 127, 100, 16, 0xFAE6C8);
+    this->DrawEmboldenedText(414, 152, LookupMessage(1014), 0xE6E6E6, 0, 0, 0, 12);
+    this->FillRegion(414, 166, 100, 16, 0xFAE6C8);
+    if (g_session.m_passwordInputAlternate) {
+      this->FillRegion(415, 128, 98, 14, 0xFFFFFF);
+    }
+  }
+
+  if (this->unknown_00F4 == 2 || this->unknown_00F4 == 3) {
+    if (this->unknown_00F4 == 3) {
+      this->FillRegion(415, 167, 98, 14, 0xFFFFFF);
+    }
+    this->FillRegion(415, 128, 98, 14, 0xFFFFFF);
+  }
+
+  for (std::size_t index = 0, x = 416; index < std::strlen(this->unknown_00D0); ++index, x += 5) {
+    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, static_cast<int>(x), this->unknown_00FC, "*", 0, 0, 12, 0, 0, 0);
+  }
+  for (std::size_t index = 0, x = 416; index < std::strlen(this->unknown_00D9); ++index, x += 5) {
+    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, static_cast<int>(x), this->unknown_0100, "*", 0, 0, 12, 0, 0, 0);
+  }
+  for (std::size_t index = 0, x = 416; index < std::strlen(this->unknown_00E2); ++index, x += 5) {
+    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, static_cast<int>(x), this->unknown_0104, "*", 0, 0, 12, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x008F2BC0
+// FUNCTION: fn_12260
+void UInCashWnd::Paint() {
+  if (const auto* background =
+        reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\NC_BackGround3.bmp")))) {
+    this->DrawBitmap(0, 0, background, false);
+  }
+
+  char text[64];
+  std::memset(text, 0, sizeof(text));
+  char number[64];
+  std::memset(number, 0, sizeof(number));
+  const int height = this->geometry.height;
+
+  int length = std::sprintf(text, "%d / %d", this->m_page, this->m_pageCount);
+  this->DrawRightAlignedText(270, height - 55, text, length, 0, 12, 0, 0);
+
+  length = std::sprintf(text, LookupMessage(1857), FormatGroupedInteger(this->m_cashBalance, number, sizeof(number)));
+  this->DrawShadowedText(74, this->geometry.height - 36, text, length, 0, 0xFFFFFF, 0, 12, 0);
+  length = std::sprintf(text, LookupMessage(1858), FormatGroupedInteger(this->m_pointBalance, number, sizeof(number)));
+  this->DrawShadowedText(74, this->geometry.height - 17, text, length, 0, 0xFFFFFF, 0, 12, 0);
+
+  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 260, this->geometry.height - 36, LookupMessage(1306), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 427, this->geometry.height - 36, "C", 0, 0, 12, 0, 0, 0);
+  length = std::sprintf(text, "Total              :      %s", FormatGroupedInteger(this->m_totalPrice, number, sizeof(number)));
+  this->DrawShadowedText(260, this->geometry.height - 17, text, length, 0, 0xFFFFFF, 0, 12, 0);
+  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 427, this->geometry.height - 17, "C", 0, 0, 12, 0, 0, 0);
+
+  this->DrawItems();
+}
+
+// OFFSET: 0x008F4D50
+// FUNCTION: fn_12295
+void UIExchangeWnd::Slot19() {
+  UIEditCtrl* edit = this->unknown_00C0;
+  if (edit == nullptr) {
+    return;
+  }
+
+  const int length = edit->Length();
+  if (length == this->m_moneyLength) {
+    return;
+  }
+  this->m_moneyLength = length;
+  if (length == 0) {
+    return;
+  }
+
+  char text[24];
+  std::sprintf(text, "%s", edit->Text());
+  if (!g_session.IsNumberWithCommas(text)) {
+    reinterpret_cast<WindowDialogs&>(g_windowMgr).Confirm(LookupMessage(602), 0, true, false, 0, "Message", 280, 120, 0);
+    edit->SetText(this->m_moneyText.c_str());
+    InputFocus{g_windowMgr.hoverWindow}.Set(edit);
+    return;
+  }
+
+  std::int64_t money = _atoi64(text);
+  if (money > 1000000000) {
+    reinterpret_cast<WindowDialogs&>(g_windowMgr).Confirm(LookupMessage(2467), 2, true, false, 0, "Message", 280, 120, 0);
+    FormatGroupedInteger(1000000000, text, sizeof(text));
+    edit->SetText(text);
+    money = 1000000000;
+  } else {
+    if (money < 0) {
+      money = 0;
+    }
+    FormatGroupedInteger(money, text, sizeof(text));
+    edit->SetText(text);
+    this->m_moneyText = edit->Text();
+  }
+
+  const PriceColors colors = PriceColor(money);
+  edit->TextColor(RGB(GetRValue(colors.primary), GetGValue(colors.primary), GetBValue(colors.primary)), colors.secondary);
+  this->m_moneyLength = edit->Length();
+  edit->SetCursor(edit->Length());
 }
 
 // OFFSET: 0x008EE2B0
