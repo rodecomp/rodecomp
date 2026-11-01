@@ -9665,6 +9665,134 @@ void CGameMode::ReceiveItemPickupAck8(const unsigned char* data) {
 }
 
 // OFFSET: 0x00D309D0
+// FUNCTION: fn_21732
+void CGameMode::ReceiveItemPickupAck9(const unsigned char* data) {
+  const ItemPickupAckV9Packet* packet = reinterpret_cast<const ItemPickupAckV9Packet*>(data);
+  this->unknown_01A4.clear();
+
+  if (packet->result == 0) {
+    {
+      StoreItemOption options[5];
+      std::memcpy(options, packet->options, sizeof(options));
+      ITEM_INFO item;
+      item.unknown_0000[0] = packet->type;
+      item.unknown_0000[2] = packet->location;
+      item.unknown_0000[1] = packet->index;
+      item.unknown_0000[3] = 0;
+      item.quantity = packet->amount;
+      item.SetItemId(packet->itemId);
+      std::memcpy(item.unknown_001C, packet->cards, sizeof(packet->cards));
+      item.identified = packet->identified;
+      item.unknown_005D = packet->damaged;
+      item.unknown_0060 = packet->refine;
+      item.unknown_0068 = packet->expireTime;
+      item.unknown_0064 = packet->bindOnEquip;
+      item.unknown_0074[1] = 1;
+      item.unknown_0098 = CountStoreItemOptions(options);
+      for (int option = 0; option < item.unknown_0098; ++option) {
+        reinterpret_cast<StoreItemOption*>(item.unknown_009C)[option] = options[option];
+      }
+      item.unknown_0074[0] = packet->favorite;
+      if (std::atoi(item.itemId.c_str()) == 607) {
+        *reinterpret_cast<int*>(&static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_04F4[0xC4]) = 0;
+      }
+      if (packet->type == 10 || packet->type == 16 || packet->type == 17 || packet->type == 19) {
+        item.unknown_0000[3] = 0x8000;
+      }
+      item.unknown_0070 = packet->look;
+      item.unknown_0088 = packet->grade;
+
+      reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1710(item, 1);
+      g_windowMgr.SendNotice(
+        1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0x99), item.DisplayName(0).c_str(), packet->amount).c_str()), 0xFFFF00, 6, 0, 0
+      );
+
+      UIWindow* window = g_windowMgr.EnsureWindow(0x3A);
+      window->SendMsg(nullptr, 0x4C, item.identified, 0, 0, 0);
+      window->SendMsg(nullptr, 0x24, 0, packet->amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+      if (UIWindow* quest = g_windowMgr.LookupWindow(0x133)) {
+        quest->SendMsg(nullptr, 6, 0x11E, 0xC2, 1, 0);
+      }
+    }
+
+    if (this->unknown_0648 == 1) {
+      auto found = this->unknown_064C.find(packet->itemId);
+      if (found == this->unknown_064C.end()) {
+        this->unknown_064C.insert(std::make_pair(packet->itemId, packet->amount));
+      } else {
+        found->second += packet->amount;
+      }
+    }
+  } else if (packet->result == 3) {
+    StoreItemOption options[5];
+    std::memcpy(options, packet->options, sizeof(options));
+    ITEM_INFO item;
+    item.unknown_0000[0] = packet->type;
+    item.unknown_0000[2] = packet->location;
+    item.unknown_0000[1] = packet->index;
+    item.unknown_0000[3] = 0;
+    item.quantity = packet->amount;
+    item.SetItemId(packet->itemId);
+    std::memcpy(item.unknown_001C, packet->cards, sizeof(packet->cards));
+    item.identified = packet->identified;
+    item.unknown_005D = packet->damaged;
+    item.unknown_0060 = packet->refine;
+    item.unknown_0068 = packet->expireTime;
+    item.unknown_0064 = packet->bindOnEquip;
+    item.unknown_0074[1] = 1;
+    item.unknown_0098 = CountStoreItemOptions(options);
+    for (int option = 0; option < item.unknown_0098; ++option) {
+      reinterpret_cast<StoreItemOption*>(item.unknown_009C)[option] = options[option];
+    }
+    item.unknown_0074[0] = packet->favorite;
+    if (std::atoi(item.itemId.c_str()) == 607) {
+      *reinterpret_cast<int*>(&static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_04F4[0xC4]) = 0;
+    }
+    if (packet->type == 10 || packet->type == 16 || packet->type == 17 || packet->type == 19) {
+      item.unknown_0000[3] = 0x8000;
+    }
+    switch (packet->type) {
+    case 4:
+    case 5:
+    case 8:
+    case 9:
+    case 11:
+    case 12:
+    case 13:
+    case 14:
+    case 15:
+      break;
+    default:
+      item.unknown_0000[2] = 0;
+      break;
+    }
+    item.unknown_0070 = packet->look;
+    item.unknown_0088 = packet->grade;
+
+    const ITEM_INFO current = LookupClientItemByIdentity(g_session.m_inventoryItems, packet->index);
+    int amount = packet->amount;
+    if (current.unknown_0000[1] != 0) {
+      amount -= current.quantity;
+    }
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0x99), item.DisplayName(0).c_str(), amount).c_str()), 0xFFFF00, 6, 0, 0);
+
+    UIWindow* window = g_windowMgr.EnsureWindow(0x3A);
+    window->SendMsg(nullptr, 0x4C, item.identified, 0, 0, 0);
+    window->SendMsg(nullptr, 0x24, 0, amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
+    window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    if (*reinterpret_cast<int*>(&static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_0100[0x14]) != 0) {
+      *reinterpret_cast<int*>(&static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_0100[0x14]) = 0;
+      reinterpret_cast<SessionMessengerContext*>(&g_session)->ResetSlots();
+    }
+    g_session.UpdateInventoryItem(item, 1);
+    if (UIWindow* quest = g_windowMgr.LookupWindow(0x133)) {
+      quest->SendMsg(nullptr, 6, 0x11E, 0xC2, 1, 0);
+    }
+  } else {
+    this->NotifyItemResult(packet->result);
+  }
+}
 
 // OFFSET: 0x00D339F0
 
@@ -9706,10 +9834,93 @@ static_assert(sizeof(GuildBanCharacterRecord) == 0x2C);
 static_assert(sizeof(GuildBanNamedRecord) == 0x44);
 
 // OFFSET: 0x00D4B860
+// FUNCTION: fn_21866
+void CGameMode::ReceiveGuildBanList(const unsigned char* data) {
+  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  const PacketLengthHeader* packet = reinterpret_cast<const PacketLengthHeader*>(data);
+  const int count = (packet->length - sizeof(PacketLengthHeader)) / sizeof(GuildBanRecord);
+  guildInfo->unknown_00EC.clear();
+
+  const GuildBanRecord* record = reinterpret_cast<const GuildBanRecord*>(data + sizeof(PacketLengthHeader));
+  for (int i = 0; i < count; ++i, ++record) {
+    char name[25];
+    std::memcpy(name, record->name, sizeof(record->name));
+    name[24] = '\0';
+    char reason[41];
+    std::memcpy(reason, record->reason, sizeof(record->reason));
+    reason[40] = '\0';
+
+    GuildInfo::Unknown00ECEntry entry;
+    entry.name = name;
+    entry.unknown_0034 = reason;
+    guildInfo->unknown_00EC.push_back(entry);
+  }
+
+  g_windowMgr.RefreshGuildWindows();
+}
 
 // OFFSET: 0x00D4BDD0
+// FUNCTION: fn_21867
+void CGameMode::ReceiveGuildBanList2(const unsigned char* data) {
+  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  const PacketLengthHeader* packet = reinterpret_cast<const PacketLengthHeader*>(data);
+  const int count = (packet->length - sizeof(PacketLengthHeader)) / sizeof(GuildBanCharacterRecord);
+  guildInfo->unknown_00EC.clear();
+
+  const GuildBanCharacterRecord* record = reinterpret_cast<const GuildBanCharacterRecord*>(data + sizeof(PacketLengthHeader));
+  for (int i = 0; i < count; ++i, ++record) {
+    char reason[41];
+    std::memcpy(reason, record->reason, sizeof(record->reason));
+    reason[40] = '\0';
+
+    GuildInfo::Unknown00ECEntry entry;
+    entry.characterId = record->characterId;
+    entry.name = LookupPlayerName(entry.characterId);
+    entry.unknown_0034 = reason;
+    if (entry.name.size() == 0) {
+      entry.name = LookupMessage(0x245) + g_gameModeNamelessTag;
+    }
+    if (entry.characterId != 0) {
+      guildInfo->unknown_00EC.push_back(entry);
+    }
+  }
+
+  g_windowMgr.RefreshGuildWindows();
+}
 
 // OFFSET: 0x00D4C3D0
+// FUNCTION: fn_21868
+void CGameMode::ReceiveGuildBanList3(const unsigned char* data) {
+  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  const PacketLengthHeader* packet = reinterpret_cast<const PacketLengthHeader*>(data);
+  const std::int64_t count = (packet->length - static_cast<std::int64_t>(sizeof(PacketLengthHeader))) / static_cast<std::int64_t>(sizeof(GuildBanNamedRecord));
+  guildInfo->unknown_00EC.clear();
+
+  const GuildBanNamedRecord* record = reinterpret_cast<const GuildBanNamedRecord*>(data + sizeof(PacketLengthHeader));
+  for (int i = 0; i < count; ++i, ++record) {
+    char reason[41];
+    std::memcpy(reason, record->reason, sizeof(record->reason));
+    reason[40] = '\0';
+
+    GuildInfo::Unknown00ECEntry entry;
+    entry.characterId = record->characterId;
+    entry.unknown_0034 = reason;
+    if (!g_playerNameDictionary->Contains(record->characterId)) {
+      const int characterId = record->characterId;
+      std::string name(record->name, record->name + sizeof(record->name));
+      SetPlayerName(characterId, name.c_str());
+    }
+    entry.name = LookupPlayerName(entry.characterId);
+    if (entry.name.size() == 0) {
+      entry.name = LookupMessage(0x245) + g_gameModeNamelessTag;
+    }
+    if (entry.characterId != 0) {
+      guildInfo->unknown_00EC.push_back(entry);
+    }
+  }
+
+  g_windowMgr.RefreshGuildWindows();
+}
 
 // OFFSET: 0x00D4D150
 
@@ -9790,6 +10001,128 @@ struct ActorDisappearPacket {
 static_assert(sizeof(ActorDisappearPacket) == 7);
 
 // OFFSET: 0x00D39530
+// FUNCTION: fn_21771
+void CGameMode::ReceiveActorDisappear(const unsigned char* data) {
+  const ActorDisappearPacket* packet = reinterpret_cast<const ActorDisappearPacket*>(data);
+  this->nameCard.Erase(packet->aid);
+  g_session.EraseUnknownKey(packet->aid);
+  if (g_session.unknown_5BC0 == packet->aid) {
+    g_session.SetUnknown5BC0(-1);
+  }
+
+  switch (packet->type) {
+  case 0:
+    if (CRenderObject* actor = this->scene->GetGameActorByAID(packet->aid)) {
+      actor->SendMsg(nullptr, 99, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->SendMsg(13, packet->aid, 0, 0, 0);
+    }
+    if (this->scene->RemoveItem(packet->aid) == true) {
+      this->SendMsg(13, packet->aid, 0, 0, 0);
+    }
+    if (g_windowMgr.window_02C8) {
+      g_windowMgr.window_02C8->SendMsg(nullptr, 6, 34, packet->aid, 0, 0);
+    }
+    break;
+  case 1: {
+    if (CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(packet->aid))) {
+      CPlayer* player = this->scene->player;
+      if (packet->aid == static_cast<std::uint32_t>(player->unknown_051C)) {
+        player->unknown_051C = 0;
+      }
+      actor->SendMsg(nullptr, 28, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      const int job = actor->GetEffectiveJob(-1);
+      if (reinterpret_cast<CGameActor*>(&g_session)->IsMonsterClass(job) || actor->unknown_0314 == 9 || g_session.IsSkillIdInRange6001(job) ||
+          actor->GetEffectiveJob(-1) == 0x235) {
+        this->SendMsg(13, packet->aid, 0, 0, 0);
+      }
+      if (g_windowMgr.unknown_041C) {
+        g_windowMgr.unknown_041C->SendMsg(nullptr, 6, 185, 0, 0, 0);
+      }
+      if (g_windowMgr.unknown_0308) {
+        g_windowMgr.unknown_0308->SendMsg(nullptr, 6, 185, 0, 0, 0);
+      }
+    }
+    if (packet->aid != g_session.m_aid) {
+      break;
+    }
+
+    this->scene->player->SendMsg(nullptr, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->scene->player->SendMsg(nullptr, 28, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->unknown_024C = 1;
+    this->unknown_0250 = 1;
+    g_windowMgr.CloseWindow(0x30);
+    g_windowMgr.CloseWindow(0x10);
+    g_windowMgr.CloseWindow(0x11);
+    g_windowMgr.CloseWindow(0x19);
+    g_windowMgr.CloseWindow(0x16);
+    g_windowMgr.CloseWindow(0x17);
+    g_windowMgr.CloseWindow(0x18);
+    g_windowMgr.CloseWindow(0x169);
+    if (g_windowMgr.unknown_02FC) {
+      g_windowMgr.unknown_02FC->SendMsg(nullptr, 6, 185, 0, 0, 0);
+    }
+    if (g_windowMgr.unknown_040C) {
+      g_windowMgr.unknown_040C->SendMsg(nullptr, 6, 185, 0, 0, 0);
+    }
+    if (g_vendingOpenResultWindow) {
+      g_vendingOpenResultWindow->SendMsg(nullptr, 6, 201, 0, 0, 0);
+    }
+    if (g_saleResultWindow) {
+      g_saleResultWindow->SendMsg(nullptr, 6, 201, 0, 0, 0);
+    }
+    if (g_windowMgr.unknown_0308) {
+      g_windowMgr.unknown_0308->SendMsg(nullptr, 6, 185, 0, 0, 0);
+    }
+    if (g_windowMgr.unknown_041C) {
+      g_windowMgr.unknown_041C->SendMsg(nullptr, 6, 185, 0, 0, 0);
+    }
+    if (this->scene->GetGameActorByAID(g_session.unknown_1010)) {
+      const int hungerLevel = g_session.GetPetHungryState(g_session.unknown_1044);
+      const int action = g_session.GetPetActionNumber(hungerLevel, g_session.GetPetFriendlyState(g_session.m_petFriendly), 3);
+      this->SendMsg(148, g_session.GetPetEmotionNumber(g_session.unknown_103C, 3, hungerLevel), 0, 0, 0);
+      this->SendMsg(148, action, 0, 0, 0);
+    }
+    if (g_serviceType == 4) {
+      reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x2B7), 0, true, false, 0, "Message", 280, 120, 0);
+    } else if (!g_windowMgr.CloseWindow(0x9B)) {
+      g_windowMgr.EnsureWindow(0x9B);
+    }
+    sub_DFF150(&g_session);
+    break;
+  }
+  case 2:
+    if (CRenderObject* actor = this->scene->GetGameActorByAID(packet->aid)) {
+      this->LaunchDummyEffect(&actor->render.position, 0x13A, 600, 0);
+    }
+    if (g_windowMgr.unknown_0300 && static_cast<UIMerchantItemShopWnd*>(g_windowMgr.unknown_0300)->unknown_0100 == static_cast<int>(packet->aid)) {
+      this->SendMsg(245, 0, 0, 0, 0);
+      reinterpret_cast<ClientItemLists*>(&g_session)->ClearItems1760And1748();
+    }
+    if (this->scene->RemoveItem(packet->aid) == true) {
+      this->SendMsg(13, packet->aid, 0, 0, 0);
+    }
+    break;
+  case 3:
+    if (CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(packet->aid))) {
+      if (!StateFlag06(actor->Slot13())) {
+        this->LaunchDummyEffect(&actor->render.position, 0x130, 300, 0);
+      }
+    }
+    if (this->scene->RemoveItem(packet->aid) == true) {
+      this->SendMsg(13, packet->aid, 0, 0, 0);
+    }
+    if (g_windowMgr.window_02C8) {
+      g_windowMgr.window_02C8->SendMsg(nullptr, 6, 34, packet->aid, 0, 0);
+    }
+    break;
+  default:
+    this->scene->GetGameActorByAID(packet->aid);
+    if (this->scene->RemoveItem(packet->aid) == true) {
+      this->SendMsg(13, packet->aid, 0, 0, 0);
+    }
+    break;
+  }
+}
 
 #pragma pack(push, 1)
 struct GuildInfoV2Packet {
@@ -9855,8 +10188,94 @@ static_assert(sizeof(GuildInfoV4Packet) == 0x76);
 // OFFSET: 0x00D4D3B0
 
 // OFFSET: 0x00D4D600
+// FUNCTION: fn_21872
+void CGameMode::ReceiveGuildInfo3(const unsigned char* data) {
+  const GuildInfoV3Packet* packet = reinterpret_cast<const GuildInfoV3Packet*>(data);
+  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+
+  std::string masterName = LookupPlayerName(packet->masterCharacterId);
+  if (masterName.size() == 0) {
+    masterName = LookupMessage(0x245) + g_gameModeNamelessTag;
+  }
+
+  char guildName[25];
+  guildName[24] = '\0';
+  char manageLand[25];
+  manageLand[24] = '\0';
+  std::memcpy(guildName, packet->guildName, sizeof(packet->guildName));
+  std::memcpy(manageLand, packet->manageLand, sizeof(manageLand) - 1);
+  if (g_forbiddenWords.Contains(guildName)) {
+    std::string masked;
+    g_forbiddenWords.Mask(guildName, &masked);
+  }
+
+  if (masterName == g_session.DecodePlayerName()) {
+    g_guildIsMaster = 1;
+  }
+  guildInfo->unknown_0000 = guildName;
+  g_guildName = masterName;
+  g_proximityCompareId = packet->masterCharacterId;
+  guildInfo->unknown_0074 = manageLand;
+  g_guildId = packet->guildId;
+  guildInfo->unknown_0060 = packet->level;
+  guildInfo->unknown_0068 = packet->userCount;
+  guildInfo->unknown_006C = packet->maxUserCount;
+  guildInfo->unknown_0070 = packet->averageLevel;
+  guildInfo->unknown_008C = packet->exp;
+  guildInfo->unknown_0090 = packet->maxExp;
+  guildInfo->unknown_0098 = packet->point;
+  guildInfo->unknown_009C = packet->honor;
+  guildInfo->unknown_00A0 = packet->virtue;
+  g_guildMgr->SetEmblemVersion(packet->guildId, packet->emblemVersion);
+  g_windowMgr.RefreshGuildWindows();
+}
 
 // OFFSET: 0x00D4D900
+// FUNCTION: fn_21873
+void CGameMode::ReceiveGuildInfo4(const unsigned char* data) {
+  const GuildInfoV4Packet* packet = reinterpret_cast<const GuildInfoV4Packet*>(data);
+  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+
+  if (!g_playerNameDictionary->Contains(packet->masterCharacterId)) {
+    const std::uint32_t characterId = packet->masterCharacterId;
+    std::string name(packet->masterName, packet->masterName + sizeof(packet->masterName));
+    SetPlayerName(characterId, name.c_str());
+  }
+  g_guildName = LookupPlayerName(packet->masterCharacterId);
+  if (g_guildName.size() == 0) {
+    g_guildName = LookupMessage(0x245) + g_gameModeNamelessTag;
+  }
+
+  char guildName[25];
+  guildName[24] = '\0';
+  char manageLand[25];
+  manageLand[24] = '\0';
+  if (g_guildName == g_session.DecodePlayerName()) {
+    g_guildIsMaster = 1;
+  }
+  std::memcpy(guildName, packet->guildName, sizeof(packet->guildName));
+  std::memcpy(manageLand, packet->manageLand, sizeof(manageLand) - 1);
+  if (g_forbiddenWords.Contains(guildName)) {
+    std::string masked;
+    g_forbiddenWords.Mask(guildName, &masked);
+  }
+
+  guildInfo->unknown_0000 = guildName;
+  g_proximityCompareId = packet->masterCharacterId;
+  guildInfo->unknown_0074 = manageLand;
+  g_guildId = packet->guildId;
+  guildInfo->unknown_0060 = packet->level;
+  guildInfo->unknown_0068 = packet->userCount;
+  guildInfo->unknown_006C = packet->maxUserCount;
+  guildInfo->unknown_0070 = packet->averageLevel;
+  guildInfo->unknown_008C = packet->exp;
+  guildInfo->unknown_0090 = packet->maxExp;
+  guildInfo->unknown_0098 = packet->point;
+  guildInfo->unknown_009C = packet->honor;
+  guildInfo->unknown_00A0 = packet->virtue;
+  g_guildMgr->SetEmblemVersion(packet->guildId, packet->emblemVersion);
+  g_windowMgr.RefreshGuildWindows();
+}
 
 #pragma pack(push, 1)
 struct GuildNoticePacket {
@@ -9869,6 +10288,49 @@ struct GuildNoticePacket {
 static_assert(sizeof(GuildNoticePacket) == 0xB6);
 
 // OFFSET: 0x00D4DD70
+// FUNCTION: fn_21874
+void CGameMode::ReceiveGuildNotice(unsigned char* data) {
+  GuildNoticePacket* packet = reinterpret_cast<GuildNoticePacket*>(data);
+  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  packet->notice[119] = '\0';
+  packet->subject[59] = '\0';
+  guildInfo->unknown_0030 = packet->subject;
+  guildInfo->unknown_0048 = packet->notice;
+  if (!g_serviceOptions.Get(0xA5)) {
+    return;
+  }
+
+  char subject[60];
+  std::memset(subject, 0, sizeof(subject));
+  strcpy_s(subject, sizeof(subject), packet->subject);
+  if (g_forbiddenWords.Contains(subject) == true) {
+    std::string masked;
+    g_forbiddenWords.Mask(subject, &masked);
+  }
+  std::string subjectLine = "[ ";
+  subjectLine += subject;
+  subjectLine += " ]";
+  if (std::strlen(subject) != 0) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(subjectLine.c_str()), 0x80FFFF, 0, 0, 0);
+  }
+
+  char notice[120];
+  std::memset(notice, 0, sizeof(notice));
+  strcpy_s(notice, sizeof(notice), packet->notice);
+  if (g_forbiddenWords.Contains(notice) == true) {
+    std::string masked;
+    g_forbiddenWords.Mask(notice, &masked);
+  }
+  std::string noticeLine = "[ ";
+  noticeLine += notice;
+  noticeLine += " ]";
+  if (std::strlen(notice) != 0) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(noticeLine.c_str()), 0x80FFFF, 0, 0, 0);
+  }
+
+  guildInfo->unknown_0030 = subject;
+  guildInfo->unknown_0048 = notice;
+}
 
 #pragma pack(push, 1)
 struct GuildMemberAddV2Packet {
@@ -9907,6 +10369,40 @@ static_assert(sizeof(GuildMemberAddV2Packet) == 0x3C);
 static_assert(sizeof(GuildMemberAddV3Packet) == 0x52);
 
 // OFFSET: 0x00D4E800
+// FUNCTION: fn_21878
+void CGameMode::ReceiveGuildMemberAdd2(const unsigned char* data) {
+  const GuildMemberAddV2Packet* packet = reinterpret_cast<const GuildMemberAddV2Packet*>(data);
+  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  if (guildInfo->unknown_00C0 == 0) {
+    return;
+  }
+
+  GuildInfo::Member member;
+  member.accountId = packet->accountId;
+  member.characterId = packet->characterId;
+  member.unknown_0020 = packet->unknown_000A;
+  member.unknown_0024 = packet->unknown_000C;
+  member.job = packet->job;
+  member.unknown_002C = packet->unknown_000E;
+  member.positionId = packet->positionId;
+  member.level = packet->level;
+  member.exp = packet->exp;
+  member.online = packet->online;
+  *reinterpret_cast<int*>(member.unknown_0074) = packet->unknown_0020;
+  if (!g_playerNameDictionary->Contains(packet->characterId)) {
+    const std::uint32_t characterId = packet->characterId;
+    std::string name(packet->name, packet->name + sizeof(packet->name));
+    SetPlayerName(characterId, name.c_str());
+  }
+  member.name = LookupPlayerName(packet->characterId);
+  if (member.name.size() == 0) {
+    member.name = LookupMessage(0x245) + g_gameModeNamelessTag;
+  }
+
+  guildInfo->AddMember(member);
+  guildInfo->UpdateMemberExpRatios();
+  g_windowMgr.RefreshGuildWindows();
+}
 
 // OFFSET: 0x00D4EBA0
 
@@ -9954,8 +10450,95 @@ namespace {
 }
 
 // OFFSET: 0x00D4F180
+// FUNCTION: fn_21881
+void CGameMode::ReceiveGuildMemberList2(const unsigned char* data) {
+  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  const PacketLengthHeader* packet = reinterpret_cast<const PacketLengthHeader*>(data);
+  const std::int64_t count =
+    (packet->length - static_cast<std::int64_t>(sizeof(PacketLengthHeader))) / static_cast<std::int64_t>(sizeof(GuildMemberNamedRecord));
+  guildInfo->unknown_0064 = static_cast<int>(count);
+  guildInfo->ClearMembers();
+
+  const GuildMemberNamedRecord* record = reinterpret_cast<const GuildMemberNamedRecord*>(data + sizeof(PacketLengthHeader));
+  for (int i = 0; i < count; ++i, ++record) {
+    GuildInfo::Member member;
+    member.accountId = record->accountId;
+    member.characterId = record->characterId;
+    member.unknown_0020 = record->unknown_0008;
+    member.unknown_0024 = record->unknown_000A;
+    member.job = record->job;
+    member.unknown_002C = record->unknown_000C;
+    member.positionId = record->positionId;
+    member.level = record->level;
+    member.exp = record->exp;
+    member.online = record->online;
+    *reinterpret_cast<int*>(member.unknown_0074) = record->unknown_001E;
+    member.expRatio = 0.0f;
+    if (member.characterId == g_session.m_gid) {
+      member.name = g_session.DecodePlayerName();
+    } else {
+      if (!g_playerNameDictionary->Contains(member.characterId)) {
+        const std::uint32_t characterId = record->characterId;
+        std::string name(record->name, record->name + sizeof(record->name));
+        SetPlayerName(characterId, name.c_str());
+      }
+      member.name = LookupPlayerName(record->characterId);
+      if (member.name.size() == 0) {
+        member.name = LookupMessage(0x245) + g_gameModeNamelessTag;
+      }
+    }
+
+    member.positionName.clear();
+    guildInfo->AddMember(member);
+  }
+
+  guildInfo->UpdateMemberExpRatios();
+  g_windowMgr.RefreshGuildWindows();
+}
 
 // OFFSET: 0x00D4F7A0
+// FUNCTION: fn_21882
+void CGameMode::ReceiveGuildMemberList3(const unsigned char* data) {
+  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  const PacketLengthHeader* packet = reinterpret_cast<const PacketLengthHeader*>(data);
+  const int count = (packet->length - sizeof(PacketLengthHeader)) / sizeof(GuildMemberMemoOnlyRecord);
+  guildInfo->unknown_0064 = count;
+  guildInfo->ClearMembers();
+
+  const GuildMemberMemoOnlyRecord* record = reinterpret_cast<const GuildMemberMemoOnlyRecord*>(data + sizeof(PacketLengthHeader));
+  for (int i = 0; i < count; ++i, ++record) {
+    GuildInfo::Member member;
+    member.accountId = record->accountId;
+    member.characterId = record->characterId;
+    member.unknown_0020 = record->unknown_0008;
+    member.unknown_0024 = record->unknown_000A;
+    member.job = record->job;
+    member.unknown_002C = record->unknown_000C;
+    member.positionId = record->positionId;
+    member.level = record->level;
+    member.exp = record->exp;
+    member.online = record->online;
+    member.expRatio = 0.0f;
+    if (member.characterId == g_session.m_gid) {
+      member.name = g_session.DecodePlayerName();
+    } else {
+      member.name = LookupPlayerName(member.characterId);
+      if (member.name.size() == 0) {
+        member.name = LookupMessage(0x245) + g_gameModeNamelessTag;
+      }
+    }
+
+    char memo[51];
+    std::memcpy(memo, record->memo, sizeof(record->memo));
+    memo[50] = '\0';
+    member.unknown_0050 = memo;
+    member.positionName.clear();
+    guildInfo->AddMember(member);
+  }
+
+  guildInfo->UpdateMemberExpRatios();
+  g_windowMgr.RefreshGuildWindows();
+}
 
 // OFFSET: 0x00D4FD50
 
@@ -10133,3 +10716,50 @@ void LaunchSkillCastEffect(CGameMode* mode, CGameActor* source, CGameActor* targ
 }
 
 // OFFSET: 0x00D5B940
+// FUNCTION: fn_21887
+void CGameMode::ReceiveEquipItemNotice(const unsigned char* data) {
+  const EquipItemNoticePacket* packet = reinterpret_cast<const EquipItemNoticePacket*>(data);
+  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+  switch (packet->result) {
+  case 6:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x69F)), 0x6464FF, 0, 0, 0);
+    return;
+  case 7:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x705)), 0xFF, 0, 0, 0);
+    return;
+  case 15:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xE75)), 0xFF, 0, 0, 0);
+    return;
+  }
+
+  ITEM_INFO item = g_session.FindItem1770(packet->index);
+  if (item.unknown_0000[1] > 0) {
+    switch (packet->result) {
+    case 1:
+      g_windowMgr.SendNotice(
+        1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0xE5), item.DisplayName(0).c_str(), LookupMessage(0x37)).c_str()), 0x6464FF, 0, 0, 0
+      );
+      break;
+    case 2:
+      g_windowMgr.SendNotice(
+        1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0xE5), item.DisplayName(0).c_str(), LookupMessage(0x38)).c_str()), 0x6464FF, 0, 0, 0
+      );
+      break;
+    case 4:
+      g_windowMgr.SendNotice(
+        1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0xF0), item.DisplayName(0).c_str(), packet->value).c_str()), 0x6464FF, 0, 0, 0
+      );
+      break;
+    case 5:
+      g_windowMgr.SendNotice(
+        1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0x119), item.DisplayName(0).c_str(), packet->value).c_str()), 0x6464FF, 0, 0, 0
+      );
+      break;
+    case 8:
+      g_windowMgr.SendNotice(
+        1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0xE5), item.DisplayName(0).c_str(), LookupMessage(0x756)).c_str()), 0x6464FF, 0, 0, 0
+      );
+      break;
+    }
+  }
+}
