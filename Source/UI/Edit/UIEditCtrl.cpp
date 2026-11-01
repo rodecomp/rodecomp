@@ -7648,14 +7648,265 @@ void UIMerchantShopMakeWnd::PrintSellList() {
 }
 
 // OFFSET: 0x00985160
+// FUNCTION: fn_13363
+void UIItemWnd::Slot25(int x, int y) {
+  if (y < 17) {
+    UIFrameWnd::Slot25(x, y);
+  }
+
+  if (g_replayAnimationScaling != 0) {
+    return;
+  }
+
+  ITEM_INFO item = this->GetItemAt(x, y);
+
+  if (item.unknown_0000[1] > 0) {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    if (item.unknown_0074[2] == 0) {
+      item = LookupClientItemByIdentity(g_session.m_inventoryItems, item.unknown_0000[1]);
+      ItemDescriptions descriptions{g_itemDescriptions};
+      mode->drag.BeginItem(this->m_frameContext->windows, descriptions, 1, item, item.quantity, -1);
+
+      if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
+        if (g_windowMgr.GetHoverWindow() && item.identified != 0) {
+          if (g_windowMgr.GetHoverWindow()->geometry.id == 492) {
+            reinterpret_cast<UINpcTextEditDialogWnd*>(g_windowMgr.unknown_0318)->InsertItemTag(item);
+          } else if (g_windowMgr.GetHoverWindow()->geometry.id == 490) {
+            static_cast<UIChatEditCtrl*>(g_windowMgr.GetHoverWindow())->InsertItemLink(item);
+          } else if (g_windowMgr.GetHoverWindow()->geometry.id == 493) {
+            reinterpret_cast<UIChatEditCtrl*>(g_chatSuggestions->unknown_00BC)->InsertItemLink(item);
+          } else if (g_windowMgr.GetHoverWindow()->geometry.id == 491) {
+            reinterpret_cast<UIRodexComposeWnd*>(g_windowMgr.unknown_0458)->sub_7FF710(item);
+          } else if (g_windowMgr.GetHoverWindow()->geometry.id == 494) {
+            static_cast<UIChatEditCtrl*>(g_windowMgr.GetHoverWindow())->InsertItemLink(item);
+          }
+        }
+      }
+    }
+  }
+}
 
 // OFFSET: 0x00985610
+// FUNCTION: fn_13367
+void UIMerchantItemWnd::Slot25(int x, int y) {
+  if (y < 17) {
+    UIFrameWnd::Slot25(x, y);
+  }
+
+  if (g_replayAnimationScaling != 0) {
+    return;
+  }
+
+  ITEM_INFO item = this->GetItemAt(x, y);
+
+  if (item.unknown_0000[1] > 0 && !g_windowMgr.unknown_02FC && item.unknown_0074[2] == 0) {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    item = g_session.FindItem1740(item.unknown_0000[1]);
+    ItemDescriptions descriptions{g_itemDescriptions};
+    mode->drag.BeginItem(this->m_frameContext->windows, descriptions, 9, item, item.quantity, -1);
+
+    if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
+      if (g_windowMgr.GetHoverWindow() && item.identified != 0) {
+        if (g_windowMgr.GetHoverWindow()->geometry.id == 492) {
+          reinterpret_cast<UINpcTextEditDialogWnd*>(g_windowMgr.unknown_0318)->InsertItemTag(item);
+        } else if (g_windowMgr.GetHoverWindow()->geometry.id == 490) {
+          static_cast<UIChatEditCtrl*>(g_windowMgr.GetHoverWindow())->InsertItemLink(item);
+        } else if (g_windowMgr.GetHoverWindow()->geometry.id == 493) {
+          reinterpret_cast<UIChatEditCtrl*>(g_chatSuggestions->unknown_00BC)->InsertItemLink(item);
+        } else if (g_windowMgr.GetHoverWindow()->geometry.id == 491) {
+          reinterpret_cast<UIRodexComposeWnd*>(g_windowMgr.unknown_0458)->sub_7FF710(item);
+        } else if (g_windowMgr.GetHoverWindow()->geometry.id == 494) {
+          static_cast<UIChatEditCtrl*>(g_windowMgr.GetHoverWindow())->InsertItemLink(item);
+        }
+      }
+    }
+  }
+}
 
 // OFFSET: 0x00988590
+// FUNCTION: fn_13385
+void UISkillListWnd::Slot28(int x, int y) {
+  if (g_skillTooltipActive == 1) {
+    const int elapsed = timeGetTime() - g_skillTooltipTick;
+    if (elapsed > 1000 || elapsed < 0) {
+      g_skillTooltipActive = 0;
+      this->Invalidate();
+    }
+  }
+
+  const int index = this->SkillAt(x, y);
+  CSkillInfo skill = this->GetSkillByIndex(index);
+  const char* name = skill.DisplayName(*g_session.m_hotkeyScript);
+
+  if (std::strlen(name) != 0) {
+    int tooltipY = (index - this->scroll) * 32 + 17;
+    int tooltipX = 112;
+    if (this->TextWidth(this->m_context->fonts, this->m_context->locale, name, 0, 0, 12, 0, 0) > this->geometry.width - 132 && x > tooltipX) {
+      this->ToScreen(tooltipX, tooltipY);
+      reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(name, tooltipX - 8, tooltipY, 0xFFFFFFFF, 0, 1);
+    }
+  }
+}
 
 // OFFSET: 0x0097EDE0
+// FUNCTION: fn_13331
+void UIItemSellWnd2::Paint() {
+  UIButtonContext& controls = *this->m_controls;
+  this->DrawTitleBar(controls.fonts, controls.locale, false, "", 0);
+
+  if (this->geometry.height == 17) {
+    return;
+  }
+
+  int rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
+  for (int y = 17; rows > 0; --rows, y += 8) {
+    const auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
+    this->DrawBitmap(0, y, &left->image, false);
+  }
+
+  rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
+  for (int y = 17; rows > 0; --rows, y += 8) {
+    const auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
+    this->DrawBitmap(this->geometry.width - right->image.width, y, &right->image, false);
+  }
+
+  unsigned red, green, blue;
+  SkinPaletteChannels(controls.resources, 2, 2, red, green, blue);
+  this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - 38, RGB(red, green, blue));
+  this->FillRegion(20, (this->geometry.height - 38) / 32 * 32 + 17, this->geometry.width - 24, (this->geometry.height - 38) % 32, RGB(red, green, blue));
+  this->DrawButtonBar(this->unknown_00B8 != 0 ? 2 : 0, 0, 1);
+
+  const int columns = (this->geometry.width - 40) / 32;
+  const int slotRows = (this->geometry.height - 38) / 32;
+  int slots = slotRows;
+  for (int y = 17; slots > 0; --slots, y += 32) {
+    DrawItemSlotBackground(*this, 40, y);
+  }
+
+  unsigned fillRed, fillGreen, fillBlue;
+  SkinPaletteChannels(controls.resources, 2, 2, fillRed, fillGreen, fillBlue);
+  this->FillRegion(72, 17, columns * 32 - 32, slotRows * 32, RGB(fillRed, fillGreen, fillBlue));
+
+  ItemDescriptions descriptions{g_itemDescriptions};
+  int visible = 0;
+  int index = 0;
+
+  for (auto it = this->items.begin(); it != this->items.end(); ++it, ++index) {
+    if (index < this->scroll * this->columns) {
+      continue;
+    }
+
+    if (g_session.IsPetEgg(std::atoi(it->itemId.c_str())) && it->unknown_005D) {
+      continue;
+    }
+
+    const int column = visible % this->columns * 32;
+    const int top = visible / this->columns * 32;
+    if (this->hovered == index) {
+      unsigned hoverRed, hoverGreen, hoverBlue;
+      SkinPaletteChannels(controls.resources, 6, 2, hoverRed, hoverGreen, hoverBlue);
+      this->FillRegion(column + 72, top + 19, 191, 28, RGB(hoverRed, hoverGreen, hoverBlue));
+    }
+
+    const int x = column + 44;
+    DrawItemWithQuantity(*this, controls.resources, descriptions, controls.fonts, controls.locale, x, top + 21, *it, 0, 0);
+    this->DrawFittedItemName(column + 76, top + 29, &*it, 0, 0, 12, 0);
+
+    if (it->unknown_0088 > 0) {
+      this->DrawBitmap(
+        x, top + 33,
+        &static_cast<CBitmapRes*>(
+          ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", it->unknown_0088).c_str()))
+        )->image,
+        true
+      );
+    }
+
+    if (++visible == this->visibleRows * this->columns) {
+      break;
+    }
+  }
+}
 
 // OFFSET: 0x0097F790
+// FUNCTION: fn_13333
+void UIItemShopWnd2::Paint() {
+  UIButtonContext& controls = *this->m_controls;
+  this->DrawTitleBar(controls.fonts, controls.locale, false, "", 0);
+
+  if (this->geometry.height == 17) {
+    return;
+  }
+
+  int rows = (this->geometry.height - this->unknown_0104 - 17) / 8 + ((this->geometry.height - this->unknown_0104 - 17) % 8 != 0);
+  for (int y = 17; rows > 0; --rows, y += 8) {
+    const auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
+    this->DrawBitmap(0, y, &left->image, false);
+  }
+
+  rows = (this->geometry.height - this->unknown_0104 - 17) / 8 + ((this->geometry.height - this->unknown_0104 - 17) % 8 != 0);
+  for (int y = 17; rows > 0; --rows, y += 8) {
+    const auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
+    this->DrawBitmap(this->geometry.width - right->image.width, y, &right->image, false);
+  }
+
+  unsigned red, green, blue;
+  SkinPaletteChannels(controls.resources, 2, 2, red, green, blue);
+  this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - this->unknown_0104 - 17, RGB(red, green, blue));
+  this->FillRegion(20, (this->geometry.height - this->unknown_0104 - 17) / 32 * 32 + 17, this->geometry.width - 24, (this->geometry.height - this->unknown_0104 - 17) % 32, RGB(red, green, blue));
+  this->DrawButtonBar(this->unknown_00B8 != 0 ? 2 : 0, 0, 1);
+
+  const int columns = (this->geometry.width - 40) / 32;
+  const int slotRows = (this->geometry.height - this->unknown_0108 - this->unknown_0104 - 17) / 32;
+  int slots = slotRows;
+  for (int y = 17; slots > 0; --slots, y += 32) {
+    DrawItemSlotBackground(*this, 40, y);
+  }
+
+  unsigned fillRed, fillGreen, fillBlue;
+  SkinPaletteChannels(controls.resources, 2, 2, fillRed, fillGreen, fillBlue);
+  this->FillRegion(72, 17, columns * 32 - 32, slotRows * 32, RGB(fillRed, fillGreen, fillBlue));
+
+  ItemDescriptions descriptions{g_itemDescriptions};
+  int visible = 0;
+  int index = 0;
+
+  for (auto it = this->items.begin(); it != this->items.end(); ++it, ++index) {
+    if (index < this->scroll * this->columns) {
+      continue;
+    }
+
+    if (g_session.IsPetEgg(std::atoi(it->itemId.c_str())) && it->unknown_005D) {
+      continue;
+    }
+
+    const int column = visible % this->columns * 32;
+    const int top = visible / this->columns * 32;
+    if (this->hovered == index) {
+      unsigned hoverRed, hoverGreen, hoverBlue;
+      SkinPaletteChannels(controls.resources, 6, 2, hoverRed, hoverGreen, hoverBlue);
+      this->FillRegion(column + 72, top + 19, 191, 28, RGB(hoverRed, hoverGreen, hoverBlue));
+    }
+
+    const int x = column + 44;
+    DrawItemWithQuantity(*this, controls.resources, descriptions, controls.fonts, controls.locale, x, top + 21, *it, 0, 0);
+    this->DrawFittedItemName(column + 76, top + 29, &*it, 0, 0, 12, 0);
+
+    if (it->unknown_0088 > 0) {
+      this->DrawBitmap(
+        x, top + 33,
+        &static_cast<CBitmapRes*>(
+          ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", it->unknown_0088).c_str()))
+        )->image,
+        true
+      );
+    }
+
+    if (++visible == this->visibleRows * this->columns) {
+      break;
+    }
+  }
+}
 
 // OFFSET: 0x0098CBF0
 // FUNCTION: fn_13422
