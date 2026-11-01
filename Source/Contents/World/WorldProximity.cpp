@@ -83,7 +83,7 @@ static bool ProximityCompareAidMatches(CWorld* world, std::uint32_t aid) {
 
 // OFFSET: 0x00AC8A40
 // FUNCTION: fn_17678
-bool CWorld::FindActorInCell(const float* position, std::function<bool(std::uint32_t)> predicate) const {
+__declspec(noinline) bool CWorld::FindActorInCell(const float* position, std::function<bool(std::uint32_t)> predicate) const {
   const float key = static_cast<float>(this->terrain->width) * position[1] + position[0];
   const auto found = this->actorCells.find(key);
 
@@ -284,6 +284,23 @@ void CWorld::PlayerMove(const float& x, const float& z) {
 }
 
 // OFFSET: 0x00ACA9F0
+// FUNCTION: fn_17699
+__declspec(noinline) void CWorld::AddPcPos(std::uint32_t aid, const CellFloatPos& cell) {
+  this->RemovePcPos(aid, false);
+
+  for (auto entry = this->unindexedActorIds.begin(); entry != this->unindexedActorIds.end(); ++entry) {
+    if (*entry != aid) {
+      continue;
+    }
+
+    this->unindexedActorIds.erase(entry);
+    break;
+  }
+
+  const float key = static_cast<float>(this->terrain->width) * cell.z + cell.x;
+  this->actorCells[key].emplace_back(aid);
+  this->PcApproachToPlayer(aid, cell);
+}
 
 // OFFSET: 0x00ACAB90
 // FUNCTION: fn_17700
