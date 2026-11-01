@@ -3738,11 +3738,7 @@ int __stdcall sub_6AA8D0(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
-  int count = 3;
-  int valuePosition = 3;
-  int indexPosition = -1;
-  int keyPosition = -1;
-  g_equipmentPropertiesMgr->ApplyProperty("SubMDamage_Size", state, count, valuePosition, indexPosition, keyPosition);
+  g_equipmentPropertiesMgr->ApplyProperty("SubMDamage_Size", state, 3, 3, -1, -1);
   return 0;
 }
 
@@ -3752,11 +3748,7 @@ int __stdcall sub_6AA990(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
-  int count = 2;
-  int valuePosition = 2;
-  int indexPosition = -1;
-  int keyPosition = -1;
-  g_equipmentPropertiesMgr->ApplyProperty("SubMdamage_Class", state, count, valuePosition, indexPosition, keyPosition);
+  g_equipmentPropertiesMgr->ApplyProperty("SubMdamage_Class", state, 2, 2, -1, -1);
   return 0;
 }
 
@@ -3766,11 +3758,7 @@ int __stdcall sub_6AAA50(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
-  int count = 2;
-  int valuePosition = 2;
-  int indexPosition = -1;
-  int keyPosition = -1;
-  g_equipmentPropertiesMgr->ApplyProperty("SubMdamage_Race", state, count, valuePosition, indexPosition, keyPosition);
+  g_equipmentPropertiesMgr->ApplyProperty("SubMdamage_Race", state, 2, 2, -1, -1);
   return 0;
 }
 
@@ -3780,11 +3768,7 @@ int __stdcall sub_6AAB10(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
-  int count = 2;
-  int valuePosition = 2;
-  int indexPosition = -1;
-  int keyPosition = -1;
-  g_equipmentPropertiesMgr->ApplyProperty("SubMeleeAttackDamage", state, count, valuePosition, indexPosition, keyPosition);
+  g_equipmentPropertiesMgr->ApplyProperty("SubMeleeAttackDamage", state, 2, 2, -1, -1);
   return 0;
 }
 
@@ -3794,11 +3778,7 @@ int __stdcall sub_6AABD0(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
-  int count = 3;
-  int valuePosition = 3;
-  int indexPosition = 2;
-  int keyPosition = -1;
-  g_equipmentPropertiesMgr->ApplyProperty("AddDamage_SKID", state, count, valuePosition, indexPosition, keyPosition);
+  g_equipmentPropertiesMgr->ApplyProperty("AddDamage_SKID", state, 3, 3, 2, -1);
   return 0;
 }
 
