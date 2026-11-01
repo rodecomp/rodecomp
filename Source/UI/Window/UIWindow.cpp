@@ -3766,3 +3766,63 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
 
 
 // OFFSET: 0x00A84400
+
+// OFFSET: 0x00A7DA40
+// FUNCTION: fn_16958
+std::list<int> UIWindow::WrapText(std::string text, std::list<std::string>* lines, int maxWidth, int family, int height, unsigned char bold) {
+  lines->erase(lines->begin(), lines->end());
+  std::list<int> widths;
+  int width = 0;
+  std::string line;
+  const char* current = text.c_str();
+  const char* end = current + std::strlen(current);
+
+  while (current != end) {
+    if (*current == '\n') {
+      lines->push_back(line);
+      line.clear();
+      widths.push_back(width);
+      width = 0;
+      ++current;
+      continue;
+    }
+
+    if (current[1] == '\\' && current[2] == 'n') {
+      lines->push_back(line);
+      line.clear();
+      widths.push_back(width);
+      width = 0;
+      current += 2;
+      continue;
+    }
+
+    const char* next = CharNextExA(static_cast<WORD>(g_textCodePage), current, 0);
+    const std::string character(current, next);
+    const char* const measured = character.c_str();
+    int characterWidth = 0;
+    if (measured) {
+      const unsigned bytes = static_cast<unsigned>(std::strlen(measured));
+      if (bytes) {
+        TextContext context(*this->geometry.surface);
+        context.SetFont(family, height, bold, 0);
+        characterWidth = context.Measure(measured, bytes).cx;
+      }
+    }
+
+    if (width + characterWidth > maxWidth) {
+      lines->push_back(line);
+      line.clear();
+      widths.push_back(width);
+      width = 0;
+    }
+
+    width += characterWidth;
+    line.append(current, next - current);
+    current = next;
+    if (current == end) {
+      lines->push_back(line);
+    }
+  }
+
+  return widths;
+}
