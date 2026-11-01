@@ -123,6 +123,10 @@
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketId.h"
 #include "Network/Packets/PacketLengths.h"
+#include "Contents/TownInfoMgr.h"
+#include "Contents/Configuration/ServiceOptions.h"
+#include "Contents/NavigationManager.h"
+#include "UI/Text/NavigationLink.h"
 #include "Utility/Text/GroupedInteger.h"
 #include "Client/Mode/ModeTooltip.h"
 #include <algorithm>
@@ -573,6 +577,39 @@ void UIMinimapZoomWnd::Paint() {
   this->DrawTextAt(controls.fonts, controls.locale, 20, 128, text.c_str(), 0, 0, 12, 0xFFFFFF, 0, 0);
 }
 
+// OFFSET: 0x008E3340
+// FUNCTION: fn_12182
+void UIMinimapZoomWnd::Slot15(int, int) {
+  const int ys[5] = {128, 128, 128, 128, 128};
+  const int xs[5] = {1, this->geometry.width - 55, this->geometry.width - 41, this->geometry.width - 27, this->geometry.width - 13};
+  const int ids[5] = {452, 216, 217, 189, 454};
+  const char* tooltips[5] = {LookupMessage(2855), LookupMessage(2856), LookupMessage(2857), LookupMessage(2858), LookupMessage(2859)};
+  const char* names[5] = {"object", "plus", "minus", "mini", "viewon"};
+  const std::string prefix("minimap\\i_");
+
+  auto& buttons = *reinterpret_cast<std::vector<UIWindow*>*>(&this->unknown_00BC);
+  buttons.clear();
+  for (int i = 0; i < 5; ++i) {
+    const std::string name = prefix + names[i];
+    UIWindow* button = this->AddNumberedButton(*this->m_controls, ids[i], xs[i], ys[i], name.c_str(), tooltips[i], true);
+    buttons.push_back(button);
+  }
+
+  this->SendMsg(this, 6, 502, 0, 0, 0);
+
+  for (int index = 0;; ++index) {
+    TownInfo town = g_townInfoMgr->GetTownInfo(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->MapName(), index);
+    if (town.image.empty()) {
+      break;
+    }
+    this->AddTownButton(index, std::move(town));
+  }
+}
+
+// OFFSET: 0x008FF130
+
+// OFFSET: 0x0090C020
+
 // OFFSET: 0x008EF1A0
 // FUNCTION: fn_12232
 void UIMonsterDisplayWnd::Paint() {
@@ -697,6 +734,48 @@ void UINpcTextEditDialogWnd::Paint() {
 }
 
 // OFFSET: 0x008FFC90
+// FUNCTION: fn_12365
+int UINpcEditDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  if (g_linkInputOwner) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2730)), 0x64FFFF, 0, 0, 0);
+    return 0;
+  }
+
+  if (message == 6) {
+    Replay& replay = Replay::Instance();
+    ReplayPacketRecorder packets = {
+      g_packetLengths,
+      replay.baseFrame,
+      replay.started,
+      replay.frame,
+      replay.header.key0,
+      replay.header.key1,
+      replay.header.options.recordRestricted,
+      replay.file,
+      replay.fileOffset,
+      replay.records,
+      replay.cipherIndex,
+      replay.cipherBase,
+      replay.cipherKey,
+    };
+    WindowResponseRecorder recorder{replay.state, packets};
+    recorder.Record(this->geometry.id, static_cast<int>(argument1), argument2, argument3, argument4);
+    if (argument1 == 184 && this->edit->Length()) {
+      static_cast<CMode*>(g_charViewMode)->SendMsg(99, this->unknown_00B8, std::atoi(this->edit->Text()), 0, 0);
+      g_windowMgr.CloseWindow(56);
+    }
+    return 0;
+  }
+
+  if (message == 28) {
+    this->unknown_00B8 = static_cast<int>(argument1);
+    return 0;
+  }
+
+  return this->UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+}
+
+// OFFSET: 0x008FFD70
 
 // OFFSET: 0x008EF9A0
 // FUNCTION: fn_12239
