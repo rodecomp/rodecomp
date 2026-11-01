@@ -879,6 +879,38 @@ public:
   void SpawnMirrorActor(std::uint32_t aid, std::uint32_t owner, short x, short y);
   void ReceiveItem1748List2(const unsigned char* packet);
   void ReceiveItem1758StoreList(const unsigned char* packet);
+  void ReceiveActorStandEntry(const unsigned char* data);
+  void ReceiveActorStandEntryFont(const unsigned char* data);
+  void ReceiveActorTypedEntry(const unsigned char* data);
+  void ReceiveNpcStandEntry(const unsigned char* data);
+  void ReceiveActorMoveEntry(const unsigned char* data);
+  void ReceiveActorMoveEntryBody(const unsigned char* data);
+  void ReceiveActorMoveEntryLegacy(const unsigned char* data);
+  void SpawnMovingActor(
+    unsigned char objectType, std::uint32_t aid, std::uint32_t gid, short speed, short bodyState, short healthState, int effectState, short job, short head,
+    int weapon, int shield, short accessory, std::uint32_t moveStartTime, short accessory2, short accessory3, short headPalette, short bodyPalette,
+    short headDir, short robe, int guildId, short guildVersion, short honor, int virtue, unsigned char pkMode, unsigned char sex,
+    const unsigned char* moveData, unsigned char xSize, unsigned char ySize, short level, short font, int maxHp, int hp, unsigned char isBoss,
+    std::string name, short body
+  );
+  void ReceiveActorStandEntryNamed(const unsigned char* data);
+  void ReceiveActorStandEntryNamedBody(const unsigned char* data);
+  void ReceiveActorStandEntryLegacy(const unsigned char* data);
+  void SpawnStandingActor(
+    unsigned char objectType, std::uint32_t aid, std::uint32_t gid, short speed, short bodyState, short healthState, int effectState, short job, short head,
+    int weapon, int shield, short accessory, short accessory2, short accessory3, short headPalette, short bodyPalette, short headDir, short robe,
+    int guildId, short guildVersion, short honor, int virtue, unsigned char pkMode, unsigned char sex, const unsigned char* posDir, unsigned char xSize,
+    unsigned char ySize, short level, short font, int maxHp, int hp, unsigned char isBoss, std::string name, short body
+  );
+  void ReceiveActorStateEntryNamed(const unsigned char* data);
+  void ReceiveActorStateEntryNamedBody(const unsigned char* data);
+  void ReceiveActorStateEntryLegacy(const unsigned char* data);
+  void SpawnStateActor(
+    unsigned char objectType, std::uint32_t aid, std::uint32_t gid, short speed, short bodyState, short healthState, int effectState, short job, short head,
+    int weapon, int shield, short accessory, short accessory2, short accessory3, short headPalette, short bodyPalette, short headDir, short robe,
+    int guildId, short guildVersion, short honor, int virtue, unsigned char pkMode, unsigned char sex, const unsigned char* posDir, unsigned char xSize,
+    unsigned char ySize, unsigned char state, short level, short font, int maxHp, int hp, unsigned char isBoss, std::string name, short body
+  );
 };
 
 void LaunchRollingCutterEffect(CGameActor* actor);
@@ -886,6 +918,7 @@ void LaunchSkillCastEffect(CGameMode* mode, CGameActor* source, CGameActor* targ
 void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t skillId, int delay, int effectId);
 void __stdcall sub_CDBC30(const vector3d* position, int actorId, float scale, int job);
 void __stdcall sub_D08670(int field14, int itemId, int quantity, int field8, int fieldC, int field10);
+void DecodeSrcDst(const unsigned char* packed, int* srcX, int* srcY, int* dstX, int* dstY, int* subX, int* subY);
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(CGameMode, mapName) == 0x68);
