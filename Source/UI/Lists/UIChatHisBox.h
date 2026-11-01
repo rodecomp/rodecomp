@@ -27,6 +27,8 @@ public:
   void Clear() override;
   virtual void AddText(const char* text, int color, const char* style);
   void AddTextWrapped(const char* text, int color, const char* style);
+  void sub_89DC30(const char* text, int& color, int& mode);
+  void sub_89E0F0(const char* text, int& color, int& mode);
   const char* HistoryText(unsigned int index);
   bool SaveChatLog(const char* path);
   void PlaceNaviLinks(int line);

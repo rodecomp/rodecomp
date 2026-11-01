@@ -140,8 +140,73 @@ void UIChatHisBox::AddTextWrapped(const char* text, int color, const char* style
 }
 
 // OFFSET: 0x008752F0
+// FUNCTION: fn_11198
+void UIChatHisBox3::AddText(const char* text, int color) {
+  const bool atBottom =
+    this->verticalOverflow == 0 || this->topLine == ((static_cast<int>(this->lines.size()) - this->geometry.height / this->lineHeight) + this->bottomMargin);
+
+  if (this->lines.size() >= this->maxLines) {
+    this->ShiftNaviLinks();
+    this->ShiftItemTags();
+    this->DropOldestLines();
+  }
+
+  this->unknown_00E4.push_back(color);
+
+  int mode = 3;
+  const auto* bytes = reinterpret_cast<const unsigned char*>(text);
+
+  if (_mbsstr(bytes, reinterpret_cast<const unsigned char*>("<ITEML>")) || _mbsstr(bytes, reinterpret_cast<const unsigned char*>("</ITEML>"))) {
+    this->sub_89DC30(text, color, mode);
+  } else if (g_navigationLinkParser->HasLink(std::string(text))) {
+    this->sub_89E0F0(text, color, mode);
+  } else {
+    this->UIListBox::AddLine(text);
+  }
+
+  if (this->verticalOverflow != 0 && atBottom && this->unknown_0130 != 0) {
+    this->topLine = (static_cast<int>(this->lines.size()) - this->geometry.height / this->lineHeight) + this->bottomMargin;
+    this->verticalBar->position = this->topLine;
+    this->verticalBar->Invalidate();
+  }
+
+  this->Invalidate();
+}
 
 // OFFSET: 0x00875520
+// FUNCTION: fn_11199
+void UIChatHisBox::AddText(const char* text, int color, const char* style) {
+  const bool atBottom =
+    this->verticalOverflow == 0 || this->topLine == ((static_cast<int>(this->lines.size()) - this->geometry.height / this->lineHeight) + this->bottomMargin);
+
+  if (this->lines.size() >= this->maxLines) {
+    this->ShiftNaviLinks();
+    this->ShiftItemTags();
+    this->DropOldestLines();
+  }
+
+  this->history.push_back(style ? std::string(style) : std::string());
+  this->unknown_00E4.push_back(color);
+
+  int mode = 4;
+  const auto* bytes = reinterpret_cast<const unsigned char*>(text);
+
+  if (_mbsstr(bytes, reinterpret_cast<const unsigned char*>("<ITEML>")) || _mbsstr(bytes, reinterpret_cast<const unsigned char*>("</ITEML>"))) {
+    this->sub_89DC30(text, color, mode);
+  } else if (g_navigationLinkParser->HasLink(std::string(text))) {
+    this->sub_89E0F0(text, color, mode);
+  } else {
+    this->UIListBox::AddLine(text);
+  }
+
+  if (this->verticalOverflow != 0 && atBottom) {
+    this->topLine = (static_cast<int>(this->lines.size()) - this->geometry.height / this->lineHeight) + this->bottomMargin;
+    this->verticalBar->position = this->topLine;
+    this->verticalBar->Invalidate();
+  }
+
+  this->Invalidate();
+}
 
 // OFFSET: 0x00875A70
 // FUNCTION: fn_11201
