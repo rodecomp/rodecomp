@@ -856,6 +856,20 @@ public:
   void ReceiveEquipItemList34(const unsigned char* packet);
   void ReceiveEquipItemList38(const unsigned char* packet);
   void ApplyRefiningMaterial(short itemId, unsigned char count, const unsigned char* materials, unsigned char catalystCount);
+  void ReceiveAddRelatedGuild(const unsigned char* data);
+  void ReceiveEquipItemResult(const unsigned char* packet);
+  void ReceiveGuildMemberAdd4(const unsigned char* data);
+  void SpawnStandingPc(
+    std::uint32_t aid, int job, short cellX, short cellY, unsigned char sex, short unknown_0024, int unknown_0028, int unknown_002C,
+    short unknown_0030, short unknown_004C, short unknown_0050, short unknown_0054, short unknown_0058, short robe, std::string name
+  );
+  void SpawnStandingPc2(
+    std::uint32_t aid, int job, short cellX, short cellY, unsigned char sex, short unknown_0024, int unknown_0028, int unknown_002C,
+    short unknown_0030, short unknown_004C, short unknown_0050, short unknown_0054, short unknown_0058, short robe, std::string name, short unknown_0078
+  );
+  void SpawnMirrorActor(std::uint32_t aid, std::uint32_t owner, short x, short y);
+  void ReceiveItem1748List2(const unsigned char* packet);
+  void ReceiveItem1758StoreList(const unsigned char* packet);
 };
 
 void LaunchRollingCutterEffect(CGameActor* actor);
