@@ -16,6 +16,7 @@
 class UIHairBitmap : public UIBitmapButton {
 public:
   using UIBitmapButton::UIBitmapButton;
+  UIHairBitmap();
 
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;

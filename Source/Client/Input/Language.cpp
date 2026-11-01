@@ -5,6 +5,7 @@
 #include "UI/UICaptchaPreviewWnd.h"
 #include "UI/UIRoundBoxTooltipWnd.h"
 #include "UI/UIMacroDetectorWnd.h"
+#include "UI/Window/UINewMakeCharWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/WindowManagerWindows.h"
@@ -377,6 +378,11 @@ void SuggestChatCommand(const char* text) {
 // FUNCTION: fn_17806
 int SubACFCE0() {
   return 0;
+}
+
+// OFFSET: 0x007D9960
+// FUNCTION: fn_09607
+UIHairBitmap::UIHairBitmap() : UIBitmapButton() {
 }
 
 // OFFSET: 0x007ECEC0
