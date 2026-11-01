@@ -2302,9 +2302,169 @@ void UIDisplayCharacter::Slot15(int width, int height) {
 }
 
 // OFFSET: 0x00829080
+// FUNCTION: fn_10338
+void UIShowInfoWnd::Slot15(int, int) {
+  for (int i = 0; i < 8; ++i) {
+    this->m_checks[i] = new (std::nothrow) UICheckBox();
+    this->m_checks[i]->SetSize(17, 13);
+    this->m_checks[i]->SetBitmaps("유저인터페이스\\styleshop\\check_able.bmp", "유저인터페이스\\styleshop\\Notcheck.bmp");
+    this->m_checks[i]->SetChecked(0);
+    this->m_checks[i]->Move(static_cast<int>(this->geometry.width * 0.1), this->geometry.height / 8 * i + this->m_checkTop);
+    this->m_checks[i]->SetId(189);
+    this->AddChild(this->m_checks[i]);
+  }
+
+  for (int i = 0; i < 8; ++i) {
+    this->m_checks[i]->SetChecked(0);
+    this->m_checks[i]->SetBitmaps("유저인터페이스\\styleshop\\check_able.bmp", "유저인터페이스\\styleshop\\Notcheck.bmp");
+  }
+
+  *reinterpret_cast<int*>(this->unknown_00AD) = 0;
+  this->unknown_00B1 = 0;
+  this->unknown_00BC = 0;
+  for (unsigned int i = 0; i < this->m_list.size(); ++i) {
+    this->m_list.clear();
+  }
+}
 
 // OFFSET: 0x00827D00
+// FUNCTION: fn_10332
+void UI2ndCostumeWnd::Slot15(int, int) {
+  this->m_display = new (std::nothrow) UIDisplayCharacter(*this->m_context);
+  this->m_display->SetSize(static_cast<int>(roundf(static_cast<float>(this->geometry.width) * 0.552f)),
+                           static_cast<int>(roundf(static_cast<float>(this->geometry.height) * 0.8f)));
+  this->m_display->Move(0, 0);
+  this->AddChild(this->m_display);
+
+  this->m_hideCheckBox = new (std::nothrow) UI2ndCostumeCheckBox();
+  this->m_hideCheckBox->SetSize(17, 13);
+  this->m_hideCheckBox->SetBitmaps("유저인터페이스\\styleshop\\check_able.bmp", "유저인터페이스\\styleshop\\Notcheck.bmp");
+  this->m_hideCheckBox->SetChecked(0);
+  this->m_hideCheckBox->Move(13, 230);
+  this->AddChild(this->m_hideCheckBox);
+
+  UIStaticText* hideText = new (std::nothrow) UIStaticText();
+  hideText->SetSize(100, 12);
+  hideText->Move(this->m_hideCheckBox->geometry.x + this->m_hideCheckBox->geometry.width + 5, 235);
+  hideText->SetText(LookupMessage(2837), 0);
+  hideText->SetFont(0, 11, 0, 0);
+  this->AddChild(hideText);
+
+  this->m_showCheckBox = new (std::nothrow) UI2ndCostumeCheckBox();
+  this->m_showCheckBox->SetSize(17, 13);
+  this->m_showCheckBox->SetBitmaps("유저인터페이스\\styleshop\\check_able.bmp", "유저인터페이스\\styleshop\\Notcheck.bmp");
+  this->m_showCheckBox->SetChecked(0);
+  this->m_showCheckBox->Move(13, 255);
+  this->AddChild(this->m_showCheckBox);
+
+  UIStaticText* showText = new (std::nothrow) UIStaticText();
+  showText->SetSize(100, 12);
+  showText->Move(this->m_showCheckBox->geometry.x + this->m_showCheckBox->geometry.width + 5, 260);
+  showText->SetText(LookupMessage(2832), 0);
+  showText->SetFont(0, 11, 0, 0);
+  this->AddChild(showText);
+
+  this->m_showInfo = new (std::nothrow) UIShowInfoWnd(*this->m_context);
+  this->m_showInfo->SetSize(this->geometry.width - this->m_display->geometry.width, this->geometry.height);
+  const int layout = 498;
+  this->m_showInfo->ArrangeCheckBoxes(layout);
+  this->m_showInfo->Move(this->m_display->geometry.width, 13);
+  this->m_showInfo->m_display = this->m_display;
+  this->AddChild(this->m_showInfo);
+
+  this->m_hideCheckBox->SetChecked(this->m_display->job == 0);
+  this->m_showCheckBox->SetChecked(this->m_hideCheckBox->geometry.unknown_0030 == 0);
+}
 
 // OFFSET: 0x00828380
+// FUNCTION: fn_10334
+void UIBasicStylingWnd::Slot15(int, int) {
+  this->m_display = new (std::nothrow) UIDisplayCharacter(*this->m_context);
+  this->m_display->SetSize(static_cast<int>(roundf(static_cast<float>(this->geometry.width) * 0.552f)),
+                           static_cast<int>(roundf(static_cast<float>(this->geometry.height) * 0.8f)));
+  this->m_display->LoadCostumes();
+  this->m_display->Move(0, 0);
+  this->AddChild(this->m_display);
+
+  int count = 0;
+  const int type = 1;
+  g_luaScript->Call("StylingShop_GetSizeInTable", "s>d", this->m_display->GetStyleTable(type).c_str(), &count);
+  for (int i = 0; i < count; ++i) {
+    char normal[64];
+    char hover[64];
+    char pressed[64];
+    std::memset(normal, 0, sizeof(normal));
+    std::memset(hover, 0, sizeof(hover));
+    std::memset(pressed, 0, sizeof(pressed));
+    sprintf_s(normal, "유저인터페이스\\styleshop\\color%02d_off.bmp", i + 1);
+    sprintf_s(hover, "유저인터페이스\\styleshop\\color%02d_off_over.bmp", i + 1);
+    sprintf_s(pressed, "유저인터페이스\\styleshop\\color%02d_on.bmp", i + 1);
+
+    UIStylingShopButton* button = new (std::nothrow) UIStylingShopButton();
+    button->SetBitmap(normal, 0, 0);
+    button->SetBitmap(hover, 1, 0);
+    button->SetBitmap(pressed, 2, 0);
+    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    button->Move((button->BitmapWidth() + 4) * (i % 4) + 108, (button->BitmapHeight() + 4) * (i / 4) + 237);
+    button->SetId(495);
+    this->AddChild(button);
+    this->m_paletteButtons.push_back(button);
+  }
+
+  UIStylingShopButton* defaultButton = new (std::nothrow) UIStylingShopButton();
+  defaultButton->SetBitmap("유저인터페이스\\styleshop\\color00_off.bmp", 0, 0);
+  defaultButton->SetBitmap("유저인터페이스\\styleshop\\color00_on.bmp", 2, 0);
+  defaultButton->SetSize(defaultButton->BitmapWidth(), defaultButton->BitmapHeight());
+  defaultButton->Move(77, 256);
+  defaultButton->SetId(495);
+  this->AddChild(defaultButton);
+  this->m_defaultPaletteButton = defaultButton;
+  g_windowMgr.LookupWindow(281);
+
+  this->m_showInfo = new (std::nothrow) UIShowInfoWnd(*this->m_context);
+  this->m_showInfo->SetSize(this->geometry.width - this->m_display->geometry.width, this->geometry.height);
+  const int layout = 200;
+  this->m_showInfo->ArrangeCheckBoxes(layout);
+  this->m_showInfo->Move(this->m_display->geometry.width, 13);
+  this->m_showInfo->m_display = this->m_display;
+  this->AddChild(this->m_showInfo);
+}
 
 // OFFSET: 0x008288C0
+// FUNCTION: fn_10335
+void UICostumeChangeWnd::Slot15(int, int) {
+  this->m_display = new UIDisplayCharacter(*this->m_context);
+  this->m_display->SetSize(static_cast<int>(roundf(static_cast<float>(this->geometry.width) * 0.552f)),
+                           static_cast<int>(roundf(static_cast<float>(this->geometry.height) * 0.8f)));
+  this->m_display->LoadCostumes();
+  this->m_display->Move(0, 0);
+  this->AddChild(this->m_display);
+
+  this->m_showInfo = new UIShowInfoWnd(*this->m_context);
+  this->m_showInfo->SetSize(this->geometry.width - this->m_display->geometry.width, this->geometry.height);
+  const int layout = 583;
+  this->m_showInfo->ArrangeCheckBoxes(layout);
+  this->m_showInfo->Move(this->m_display->geometry.width, 13);
+  this->m_showInfo->m_display = this->m_display;
+  this->AddChild(this->m_showInfo);
+
+  UIBitmapButton* previous = new UIBitmapButton();
+  previous->SetBitmap("유저인터페이스\\styleshop\\arrow_chr_l_upper_out.bmp", 0, 0);
+  previous->SetBitmap("유저인터페이스\\styleshop\\arrow_chr_l_upper_over.bmp", 1, 0);
+  previous->SetBitmap("유저인터페이스\\styleshop\\arrow_chr_l_upper_over.bmp", 2, 0);
+  previous->SetSize(previous->BitmapWidth(), previous->BitmapHeight());
+  previous->Move(19, 248);
+  previous->SetId(584);
+  previous->Enable(1);
+  this->AddChild(previous);
+
+  UIBitmapButton* next = new UIBitmapButton();
+  next->SetBitmap("유저인터페이스\\styleshop\\arrow_chr_r_upper_out.bmp", 0, 0);
+  next->SetBitmap("유저인터페이스\\styleshop\\arrow_chr_r_upper_over.bmp", 1, 0);
+  next->SetBitmap("유저인터페이스\\styleshop\\arrow_chr_r_upper_over.bmp", 2, 0);
+  next->SetSize(next->BitmapWidth(), next->BitmapHeight());
+  next->Move(220, 248);
+  next->SetId(585);
+  next->Enable(1);
+  this->AddChild(next);
+}
