@@ -953,6 +953,7 @@ public:
   ITEM_INFO GetItem1784At(int list, int index) const;
   void AddItem1784(const ITEM_INFO& item, int list);
   int GetCommandId(const char* name) const;
+  int GetTalkType(const char* text, int* talkType, std::string* parts);
   int GetItem1728Count() const;
   ITEM_INFO GetItemSlot(int index) const;
   ITEM_INFO GetItem21A0(int index) const;

@@ -19,6 +19,7 @@
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketId.h"
 #include "Network/TextEncoding.h"
+#include "Contents/Sound/SoundMgr.h"
 #include "Contents/Jobs/JobInheritance.h"
 #include "UI/Window/UIBasicInfoWnd.h"
 #include "UI/Window/UIWindowMgr.h"
@@ -46,6 +47,7 @@
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
+#include <initializer_list>
 #include <mbstring.h>
 #include <list>
 #include <string>
@@ -65,6 +67,14 @@ std::string g_guildName;
 
 // GLOBAL: gl_25140
 static std::string s_messageEndTag = "</MSG>";
+
+class CTokenizer {
+public:
+  std::string& operator[](int index);
+  void Parse(const std::string& text);
+
+  /* 0000 */ std::vector<std::string> tokens;
+};
 
 namespace EquipmentProperties {
 class CEquipmentPropertiesMgr {
@@ -946,6 +956,505 @@ int CSession::GetCommandId(const char* name) const {
   }
 
   return 3;
+}
+
+// OFFSET: 0x00DE1010
+// FUNCTION: fn_23478
+int CSession::GetTalkType(const char* text, int* talkType, std::string* parts) {
+  if (text == nullptr) {
+    *talkType = 3;
+    return -1;
+  }
+
+  CTokenizer tokenizer;
+  tokenizer.Parse(std::string(text));
+  if (tokenizer.tokens.size() == 0) {
+    *talkType = 3;
+    return -1;
+  }
+
+  LowercaseText(tokenizer[0]);
+  if (text[0] != '/') {
+    *talkType = 0;
+    return 0;
+  }
+
+  auto matches = [&tokenizer](std::initializer_list<char> command) {
+    const std::string& token = tokenizer[0];
+    return token.size() == command.size() && std::memcmp(token.data(), command.begin(), command.size()) == 0;
+  };
+  auto skipSpaces = [text](int offset) {
+    while (text[offset] == ' ') {
+      ++offset;
+    }
+    return offset;
+  };
+  const int count = static_cast<int>(tokenizer.tokens.size());
+
+  if (matches({'/', '\xA4', '\xD0'})) {
+    *talkType = 0x1;
+    return skipSpaces(3);
+  }
+  if (matches({'/', 'b'})) {
+    *talkType = 0x1;
+    return skipSpaces(2);
+  }
+  if (matches({'/', 'l', 'b'})) {
+    *talkType = 0x57;
+    return skipSpaces(3);
+  }
+  if (matches({'/', '\xA4', '\xD3', '\xA4', '\xD0'})) {
+    *talkType = 0x57;
+    return skipSpaces(5);
+  }
+  if (matches({'/', 'n', 'b'})) {
+    *talkType = 0x5A;
+    return skipSpaces(3);
+  }
+  if (matches({'/', '\xC6', '\xC4', '\xB6', '\xF5', '\xB8', '\xBB'})) {
+    *talkType = 0x66;
+    return skipSpaces(7);
+  }
+  if (matches({'/', '\xA4', '\xCC', '\xA4', '\xD0'})) {
+    *talkType = 0x5A;
+    return skipSpaces(5);
+  }
+  if (matches({'/', 'n', 'l', 'b'})) {
+    *talkType = 0x5B;
+    return skipSpaces(4);
+  }
+  if (matches({'/', '\xA4', '\xCF', '\xA4', '\xD0'})) {
+    *talkType = 0x5B;
+    return skipSpaces(5);
+  }
+  if (matches({'/', 'b', 'b'})) {
+    *talkType = 0x66;
+    return skipSpaces(3);
+  }
+  if (tokenizer[0] == "/지역파란말") {
+    *talkType = 0x67;
+    return skipSpaces(11);
+  }
+  if (matches({'/', 'm', 'b'})) {
+    *talkType = 0x67;
+    return skipSpaces(3);
+  }
+  if (matches({'/', 'k', 'i', 'l', 'l'})) {
+    *talkType = 0x4;
+    return skipSpaces(5);
+  }
+  if (matches({'/', 'v'}) || matches({'/', '\xA4', '\xBD'})) {
+    *talkType = 0xC;
+    if (count >= 2) {
+      parts[0] = tokenizer[1];
+      return -1;
+    }
+    char volume[20];
+    _itoa(g_soundMgr->sampleVolume, volume, 10);
+    parts[0].assign(volume, std::strlen(volume));
+    return -1;
+  }
+  if (matches({'/', 'b', 'v'}) || matches({'/', '\xA4', '\xD0', '\xA4', '\xBD'})) {
+    *talkType = 0xD;
+    if (count >= 2) {
+      parts[0] = tokenizer[1];
+      return -1;
+    }
+    char volume[20];
+    _itoa(CSoundMgr::Volume(g_soundMgr), volume, 10);
+    parts[0].assign(volume, std::strlen(volume));
+    return -1;
+  }
+  if ((matches({'/', 'g', 'c'}) || matches({'/', 'g', 'u', 'i', 'l', 'd', 'c', 'h', 'a', 't'})) && count >= 2) {
+    *talkType = 0x39;
+    parts[0] = text + (matches({'/', 'g', 'c'}) ? 4 : 11);
+    return -1;
+  }
+  if ((matches({'/', 'e', 'x'}) || matches({'/', '\xC2', '\xF7', '\xB4', '\xDC'})) && count >= 2) {
+    *talkType = 0x12;
+    parts[0] = text + (matches({'/', 'e', 'x'}) ? 4 : 6);
+    return -1;
+  }
+  if ((matches({'/', 'i', 'n'}) || matches({'/', '\xC7', '\xD8', '\xC1', '\xA6'})) && count >= 2) {
+    *talkType = 0x13;
+    parts[0] = text + (matches({'/', 'i', 'n'}) ? 4 : 6);
+    return -1;
+  }
+  if (matches({'/', 'r', 'e', 'd'})) {
+    *talkType = 0x14;
+    for (int index = 1; index < static_cast<int>(tokenizer.tokens.size()); ++index) {
+      const std::string& token = tokenizer[index];
+      parts[0].append(token.c_str(), token.size());
+      parts[0].append(" ");
+    }
+    return -1;
+  }
+  if ((matches({'/', '\xB0', '\xC5', '\xB7', '\xA1'}) || matches({'/', 'r', 'j', 'f', 'o'}) || matches({'/', '\xB1', '\xB3', '\xC8', '\xAF'}) || matches({'/', 'r', 'y', 'g', 'h', 'k', 's'}) || matches({'/', 'd', 'e', 'a', 'l'}) || matches({'/', '\xA4', '\xB7', '\xA4', '\xA7', '\xB9', '\xCC'})) && count == 2) {
+    *talkType = 0x19;
+    parts[0] = tokenizer[1];
+    return -1;
+  }
+  if ((matches({'/', '\xB1', '\xE6', '\xB5', '\xE5'}) || matches({'/', 'r', 'l', 'f', 'e', 'm'}) || matches({'/', 'g', 'u', 'i', 'l', 'd'})) && count == 2) {
+    *talkType = 0x37;
+    parts[0] = tokenizer[1];
+    return -1;
+  }
+  if ((matches({'/', '\xC7', '\xD8', '\xC3', '\xBC'}) || tokenizer[0] == "/gocp" || tokenizer[0] == "/breakguild") && count == 2) {
+    *talkType = 0x38;
+    parts[0] = tokenizer[1];
+    return -1;
+  }
+  if ((tokenizer[0] == "/결성" || tokenizer[0] == "/ruftjd" || tokenizer[0] == "/organize") && count == 2) {
+    *talkType = 0x1A;
+    parts[0] = tokenizer[1];
+    return -1;
+  }
+  if ((tokenizer[0] == "/몬스터" || tokenizer[0] == "/아이템" || tokenizer[0] == "/item" || tokenizer[0] == "/monster") && count >= 2) {
+    *talkType = 0x30;
+    parts[0] = tokenizer[1];
+    if (count > 2) {
+      std::string joined;
+      for (int index = 1; index < static_cast<int>(tokenizer.tokens.size()); ++index) {
+        if (index + 1 != static_cast<int>(tokenizer.tokens.size())) {
+          joined.append(tokenizer[index] + " ");
+        } else {
+          joined.append(tokenizer[index]);
+        }
+      }
+      parts[0] = joined;
+    }
+    return -1;
+  }
+  if ((tokenizer[0] == "/맵이동" || tokenizer[0] == "/mapmove" || tokenizer[0] == "/mm") && count > 1) {
+    *talkType = 0x31;
+    parts[0] = tokenizer[1];
+    if (tokenizer.tokens.size() == 4) {
+      parts[1] = tokenizer[2];
+      parts[2] = tokenizer[3];
+    } else {
+      parts[1] = parts[2].assign("0");
+    }
+    return -1;
+  }
+  if ((tokenizer[0] == "/제명" || tokenizer[0] == "/wpaud" || tokenizer[0] == "/expel") && count == 2) {
+    *talkType = 0x1C;
+    parts[0] = tokenizer[1];
+    return -1;
+  }
+  if (tokenizer[0] == "/sm" && count == 2) {
+    *talkType = 0x3A;
+    parts[0] = tokenizer[1];
+    return -1;
+  }
+  if (tokenizer[0] == "/resetstate") {
+    *talkType = 0x3D;
+    return -1;
+  }
+  if (tokenizer[0] == "/resetskill") {
+    *talkType = 0x3E;
+    if (tokenizer.tokens.size() >= 2) {
+      parts[0] = tokenizer[1];
+    } else {
+      parts[0].assign("1");
+    }
+    return -1;
+  }
+  if ((tokenizer[0] == "/changemaptype" || tokenizer[0] == "/cmt") && count == 4) {
+    *talkType = 0x3F;
+    parts[0] = tokenizer[1];
+    parts[1] = tokenizer[2];
+    parts[2] = tokenizer[3];
+    return -1;
+  }
+  if (tokenizer[0] == "/emblem" || tokenizer[0] == "/엠블렘" || tokenizer[0] == "/앰블렘" || tokenizer[0] == "/dpaqmffpa" || tokenizer[0] == "/doaqmffpa") {
+    *talkType = 0x40;
+    return -1;
+  }
+  if (tokenizer[0] == "/hide") {
+    *talkType = 0x58;
+    return -1;
+  }
+  if (tokenizer[0] == "/폰트" || tokenizer[0] == "/font") {
+    *talkType = 0x5C;
+    return -1;
+  }
+  if (tokenizer[0] == "/mineffect" || tokenizer[0] == LookupMessage(0x2BA)) {
+    *talkType = 0xE5;
+    return -1;
+  }
+  if (tokenizer[0] == "/remove" && count == 2) {
+    *talkType = 0x5F;
+    parts[0] = tokenizer[1];
+    return -1;
+  }
+  if (tokenizer[0] == "/summon" && count == 2) {
+    *talkType = 0x62;
+    parts[0] = tokenizer[1];
+    return -1;
+  }
+  if (tokenizer[0] == "/shift") {
+    *talkType = 0x60;
+    for (int index = 0; index < static_cast<int>(tokenizer.tokens.size()) - 1; ++index) {
+      parts[index] = tokenizer[index + 1];
+    }
+    return -1;
+  }
+  if (tokenizer[0] == "/recall" && count == 2) {
+    *talkType = 0x61;
+    parts[0] = tokenizer[1];
+    return -1;
+  }
+  if (tokenizer[0] == "/check" && count == 2) {
+    *talkType = 0x8F;
+    parts[0] = tokenizer[1];
+    return -1;
+  }
+  if (tokenizer[0] == "/rc" && count == 2) {
+    *talkType = 0x90;
+    parts[0] = tokenizer[1];
+    return -1;
+  }
+  if (tokenizer[0] == "/요금") {
+    *talkType = 0x65;
+    return -1;
+  }
+  if (tokenizer[0] == "/이름표시" || tokenizer[0] == "/showname") {
+    *talkType = 0x6C;
+    return skipSpaces(0);
+  }
+  if (tokenizer[0] == "/str+" && count > 1) {
+    *talkType = 0x89;
+    g_modeMgr.GetGameMode()->SendMsg(0x1E, 0xD, std::atoi(tokenizer[1].c_str()), 0, 0);
+    return *talkType == 0 ? 0 : skipSpaces(0);
+  }
+  if (tokenizer[0] == "/agi+" && count > 1) {
+    *talkType = 0x89;
+    g_modeMgr.GetGameMode()->SendMsg(0x1E, 0xE, std::atoi(tokenizer[1].c_str()), 0, 0);
+    return *talkType == 0 ? 0 : skipSpaces(0);
+  }
+  if (tokenizer[0] == "/luk+" && count > 1) {
+    *talkType = 0x89;
+    g_modeMgr.GetGameMode()->SendMsg(0x1E, 0x12, std::atoi(tokenizer[1].c_str()), 0, 0);
+    return *talkType == 0 ? 0 : skipSpaces(0);
+  }
+  if (tokenizer[0] == "/int+" && count > 1) {
+    *talkType = 0x89;
+    g_modeMgr.GetGameMode()->SendMsg(0x1E, 0x10, std::atoi(tokenizer[1].c_str()), 0, 0);
+    return *talkType == 0 ? 0 : skipSpaces(0);
+  }
+  if (tokenizer[0] == "/vit+" && count > 1) {
+    *talkType = 0x89;
+    g_modeMgr.GetGameMode()->SendMsg(0x1E, 0xF, std::atoi(tokenizer[1].c_str()), 0, 0);
+    return *talkType == 0 ? 0 : skipSpaces(0);
+  }
+  if (tokenizer[0] == "/dex+" && count > 1) {
+    *talkType = 0x89;
+    g_modeMgr.GetGameMode()->SendMsg(0x1E, 0x11, std::atoi(tokenizer[1].c_str()), 0, 0);
+    return *talkType == 0 ? 0 : skipSpaces(0);
+  }
+  if (tokenizer[0] == "/pow+" && count > 1) {
+    *talkType = 0x89;
+    g_modeMgr.GetGameMode()->SendMsg(0x13A, 0xDB, std::atoi(tokenizer[1].c_str()), 0, 0);
+    return *talkType == 0 ? 0 : skipSpaces(0);
+  }
+  if (tokenizer[0] == "/sta+" && count > 1) {
+    *talkType = 0x89;
+    g_modeMgr.GetGameMode()->SendMsg(0x13A, 0xDC, std::atoi(tokenizer[1].c_str()), 0, 0);
+    return *talkType == 0 ? 0 : skipSpaces(0);
+  }
+  if (tokenizer[0] == "/wis+" && count > 1) {
+    *talkType = 0x89;
+    g_modeMgr.GetGameMode()->SendMsg(0x13A, 0xDD, std::atoi(tokenizer[1].c_str()), 0, 0);
+    return *talkType == 0 ? 0 : skipSpaces(0);
+  }
+  if (tokenizer[0] == "/spl+" && count > 1) {
+    *talkType = 0x89;
+    g_modeMgr.GetGameMode()->SendMsg(0x13A, 0xDE, std::atoi(tokenizer[1].c_str()), 0, 0);
+    return *talkType == 0 ? 0 : skipSpaces(0);
+  }
+  if (tokenizer[0] == "/con+" && count > 1) {
+    *talkType = 0x89;
+    g_modeMgr.GetGameMode()->SendMsg(0x13A, 0xDF, std::atoi(tokenizer[1].c_str()), 0, 0);
+    return *talkType == 0 ? 0 : skipSpaces(0);
+  }
+  if (tokenizer[0] == "/crt+" && count > 1) {
+    *talkType = 0x89;
+    g_modeMgr.GetGameMode()->SendMsg(0x13A, 0xE0, std::atoi(tokenizer[1].c_str()), 0, 0);
+    return *talkType == 0 ? 0 : skipSpaces(0);
+  }
+  if (tokenizer[0] == "/hi") {
+    std::string message("");
+    *talkType = 0x97;
+    if (count > 1) {
+      parts[0] = tokenizer[1];
+      for (int index = 1; index < static_cast<int>(tokenizer.tokens.size()); ++index) {
+        message.append(tokenizer[index]);
+        message.append(" ");
+      }
+      g_windowMgr.SetUnknown04DC(message.c_str());
+    }
+    return -1;
+  }
+  if (tokenizer[0] == "/초대" || tokenizer[0] == "/cheo" || tokenizer[0] == "/invite") {
+    *talkType = 0xB8;
+    std::string command(text);
+    const std::size_t space = command.find(" ", 0);
+    if (space != std::string::npos) {
+      parts[0] = command.erase(0, space + 1);
+    } else {
+      g_windowMgr.SetUnknown04DC(LookupMessage(0x9E4));
+    }
+    return -1;
+  }
+  if (tokenizer[0] == "/길드초대" || tokenizer[0] == "/rlfemcheo" || tokenizer[0] == "/guildinvite") {
+    *talkType = 0xD3;
+    std::string command(text);
+    const std::size_t space = command.find(" ", 0);
+    if (space != std::string::npos) {
+      parts[0] = command.erase(0, space + 1);
+    } else {
+      g_windowMgr.SetUnknown04DC(LookupMessage(0x9E5));
+    }
+    return -1;
+  }
+  if (tokenizer[0] == "/web" && count >= 2) {
+    *talkType = 0xD0;
+    parts[0] = tokenizer[1];
+    return *talkType == 0 ? 0 : skipSpaces(0);
+  }
+  if ((tokenizer[0] == "/navi" || tokenizer[0] == "/navigation") && count >= 3) {
+    *talkType = 0xD1;
+    parts[0] = tokenizer[1];
+    parts[1] = tokenizer[2];
+    return -1;
+  }
+  if ((tokenizer[0] == "/navi2" || tokenizer[0] == "/navigation2") && count >= 4) {
+    *talkType = 0xD2;
+    parts[0] = tokenizer[1];
+    parts[1] = tokenizer[2];
+    parts[2] = tokenizer[3];
+    return -1;
+  }
+  if (tokenizer[0] == "/naviopen") {
+    *talkType = 0xD9;
+    return -1;
+  }
+  if ((tokenizer[0] == "/cl" || tokenizer[0] == "/clanchat") && count >= 2) {
+    *talkType = 0xD6;
+    parts[0] = text + (tokenizer[0] == "/cl" ? 4 : 10);
+    return -1;
+  }
+  if (tokenizer[0] == LookupMessage(0x9DF)) {
+    *talkType = 0xD8;
+    return -1;
+  }
+  if (tokenizer[0] == "/cashshop") {
+    *talkType = 0xDA;
+    return -1;
+  }
+  if (tokenizer[0] == "/goldpc") {
+    *talkType = 0xDB;
+    return -1;
+  }
+  if (tokenizer[0] == "/roulette") {
+    *talkType = 0xDC;
+    return -1;
+  }
+  if (tokenizer[0] == "/quake") {
+    *talkType = 0xDD;
+    return -1;
+  }
+  if (tokenizer[0] == "/매크로등록" || tokenizer[0] == "/macro_register" || tokenizer[0] == "/mr") {
+    *talkType = 0xE0;
+    return -1;
+  }
+  if (tokenizer[0] == "/매크로확인" || tokenizer[0] == "/macro_preview" || tokenizer[0] == "/mp") {
+    *talkType = 0xE1;
+    if (count >= 2) {
+      parts[0] = tokenizer[1];
+    }
+    return -1;
+  }
+  if (tokenizer[0] == "/매크로신고" || tokenizer[0] == "/macro_detector" || tokenizer[0] == "/md") {
+    *talkType = 0xE2;
+    if (count >= 2) {
+      parts[0] = tokenizer[1];
+    }
+    return -1;
+  }
+  if (tokenizer[0] == "/setcamera" && count > 2) {
+    *talkType = 0xE4;
+    parts[0] = tokenizer[1];
+    parts[1] = tokenizer[2];
+    if (tokenizer.tokens.size() == 4) {
+      parts[2] = tokenizer[3];
+    }
+    return -1;
+  }
+  if (tokenizer[0] == "/resetcooltime" || tokenizer[0] == "/rct") {
+    *talkType = 0xE6;
+    return -1;
+  }
+  if (tokenizer[0] == "/call" || tokenizer[0] == "/호출") {
+    *talkType = 0xE7;
+    return -1;
+  }
+  if (tokenizer[0] == "/환복" || tokenizer[0] == "/changedress" || tokenizer[0] == "/nocosplay") {
+    *talkType = 0xEF;
+    return -1;
+  }
+  if (tokenizer[0] == "/노점보기" || tokenizer[0] == "/showshop") {
+    *talkType = 0xFA;
+    return -1;
+  }
+  if (tokenizer[0] == "/prison") {
+    *talkType = 0xFB;
+    if (count >= 2) {
+      parts[0] = tokenizer[1];
+    }
+    return -1;
+  }
+  if (tokenizer[0] == "/계정한정" || tokenizer[0] == "/accountlimitedtool") {
+    *talkType = 0xFC;
+    return -1;
+  }
+  if (tokenizer[0] == "/모험가중개소" || tokenizer[0] == "/중개소" || tokenizer[0] == "/agency") {
+    *talkType = 0xED;
+    return -1;
+  }
+  if (tokenizer[0] == "/removeon") {
+    *talkType = 0xFE;
+    if (tokenizer.tokens.size() >= 2) {
+      parts[0] = tokenizer[1];
+    } else {
+      parts[0] = "0";
+    }
+    if (tokenizer.tokens.size() >= 3) {
+      parts[1] = tokenizer[2];
+    } else {
+      parts[1] = "0";
+    }
+    return -1;
+  }
+  if (tokenizer[0] == "/removeoff") {
+    *talkType = 0xFF;
+    if (count >= 2) {
+      parts[0] = tokenizer[1];
+    }
+    return -1;
+  }
+  if ((tokenizer[0] == "/MacroChecker" || tokenizer[0] == "/macrochecker") && count > 1) {
+    *talkType = 0x104;
+    parts[0] = tokenizer[1];
+    return -1;
+  }
+  if (tokenizer[0] == "/ProbabilityTest" || tokenizer[0] == "/확률테스트") {
+    *talkType = 0x117;
+    return -1;
+  }
+
+  *talkType = this->GetCommandId(tokenizer[0].c_str());
+  return -1;
 }
 
 // OFFSET: 0x00DDF890
