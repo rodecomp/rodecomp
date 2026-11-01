@@ -510,3 +510,221 @@ void UINewMakeCharWnd::Slot15(int width, int height) {
   focus.Set(this->m_nameEdit);
   this->m_message0 = 0xB8;
 }
+
+// OFFSET: 0x007DB630
+// FUNCTION: fn_09625
+int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  if (message == 0) {
+    char name[24] = {};
+    strcpy(name, this->m_nameEdit->Text());
+    memcpy(this->m_name, name, sizeof(this->m_name));
+    this->SendMsg(nullptr, 6, this->m_message0, 0, 0, 0);
+    return 0;
+  }
+
+  if (message != 6) {
+    if (message == 13) {
+      this->m_race = static_cast<int>(argument1);
+    }
+    return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+
+  switch (argument1) {
+  case 0xB8: {
+    for (int index = 0; index < 2; ++index) {
+      if ((g_doramCreationEnabled || index != 1) && sender == this->m_raceViews[index]) {
+        return 0;
+      }
+    }
+
+    int messageId;
+    if (this->m_nameEdit->Length() < 4) {
+      messageId = 0x15;
+    } else if (_mbsstr(reinterpret_cast<const unsigned char*>(this->m_nameEdit->Text()), reinterpret_cast<const unsigned char*>("<ITEML>")) != nullptr ||
+               _mbsstr(reinterpret_cast<const unsigned char*>(this->m_nameEdit->Text()), reinterpret_cast<const unsigned char*>("</ITEML>")) != nullptr) {
+      messageId = 0xAFC;
+    } else {
+      int valid = 1;
+      if (g_serviceType == 1) {
+        valid = ValidateCharacterName(this->m_nameEdit->Text());
+      }
+      int allowed = g_forbiddenWords.Allows(this->m_nameEdit->Text());
+      bool hasControlCharacter = g_session.HasControlCharacter(this->m_nameEdit->Text());
+      int blank = g_session.IsBlankString(this->m_nameEdit->Text());
+
+      if (!hasControlCharacter && allowed == 1 && valid == 1 && blank == 0) {
+        if (this->m_nameEdit->Length() >= 24) {
+          reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x213), 0, true, false, 0, "Message", 280, 120, 0);
+          this->m_nameEdit->SetText("");
+          return 0;
+        }
+
+        char name[24] = {};
+        strcpy(name, this->m_nameEdit->Text());
+        memcpy(this->m_name, name, sizeof(this->m_name));
+        memcpy_s(&g_charInfo, sizeof(g_charInfo), this->unknown_0210, sizeof(g_charInfo));
+        if (strstr(g_charInfo.name, "\xB1\xD7\xB6\xF3\xBA\xF1\xC6\xBC") != nullptr) {
+          return 0;
+        }
+        _strlwr(name);
+        if (strstr(name, "gravity") != nullptr) {
+          return 0;
+        }
+        if ((name[0] == '[' && name[1] == 'g' && name[2] == 'm') || (name[1] == '[' && name[2] == 'g' && name[3] == 'm') ||
+            (name[2] == '[' && name[3] == 'g' && name[4] == 'm')) {
+          return 0;
+        }
+
+        static_cast<CMode*>(g_charViewMode)->SendMsg(0x2715, 0, 0, 0, 0);
+        g_windowMgr.Schedule(this);
+      } else {
+        if (hasControlCharacter || allowed == 0) {
+          reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x14), 0, true, false, 0, "Message", 280, 120, 0);
+        }
+        if (valid == 0) {
+          reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0xBE), 0, true, false, 0, "Message", 280, 120, 0);
+        }
+        if (blank == 1) {
+          reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(199), 0, true, false, 0, "Message", 280, 120, 0);
+        }
+      }
+
+      CMode* mode = static_cast<CMode*>(g_charViewMode);
+      mode->SendMsg(0x271F, reinterpret_cast<int>(this->m_nameEdit->Text()), 0, 0, 0);
+      int payload[8];
+      payload[0] = this->m_stats[0];
+      payload[1] = this->m_stats[1];
+      payload[2] = this->m_stats[2];
+      payload[3] = this->m_stats[3];
+      payload[4] = this->m_stats[4];
+      payload[5] = this->m_stats[5];
+      payload[6] = this->m_headPalette;
+      payload[7] = this->m_head;
+      mode->SendMsg(0x2721, reinterpret_cast<int>(payload), 0, 0, 0);
+      return 0;
+    }
+
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(messageId), 0, true, false, 0, "Message", 280, 120, 0);
+    return 0;
+  }
+
+  case 0xB9:
+    g_windowMgr.Schedule(this);
+    static_cast<CMode*>(g_charViewMode)->SendMsg(0, 0x2714, 0, 0, 0);
+    return 0;
+
+  case 0xCC:
+    if (g_doramCreationEnabled || sender != this->m_raceViews[1]) {
+      for (int index = 0; index < 2; ++index) {
+        if (sender == this->m_raceViews[index]) {
+          this->m_race = index;
+          this->m_raceViews[index]->SendMsg(this, 13, 1, 0, 0, 0);
+        } else {
+          this->m_raceViews[index]->SendMsg(this, 13, 0, 0, 0, 0);
+        }
+        this->m_raceViews[index]->Invalidate();
+      }
+
+      if (sender == this->m_raceViews[this->m_race]) {
+        this->m_head = 1;
+        for (int index = 0; index < 24; ++index) {
+          this->m_hairStyleButtons[index]->SendMsg(this, 13, index == 0, 0, 0, 0);
+          this->m_hairStyleButtons[index]->m_race = this->m_race;
+          this->m_hairStyleButtons[index]->SendMsg(nullptr, 0x28, 0, 0, 0, 0);
+        }
+
+        if (this->m_race == 0) {
+          this->m_job = 0;
+        } else if (this->m_race == 1) {
+          this->m_job = 0x107A;
+        }
+        this->sub_7DBFD0();
+      }
+    }
+    return 0;
+
+  case 0xD7:
+    if (argument2 == 0x1EF) {
+      for (int index = 0; index < 9; ++index) {
+        if (sender == this->m_hairColorButtons[index]) {
+          this->m_hairColorButtons[index]->SendMsg(this, 13, 1, 0, 0, 0);
+          this->m_headPalette = static_cast<short>(index);
+          if (this->m_headPalette < 0) {
+            this->m_headPalette = 8;
+          }
+          this->sub_7DBFD0();
+        } else {
+          this->m_hairColorButtons[index]->SendMsg(this, 13, 0, 0, 0, 0);
+        }
+      }
+    }
+    return 0;
+
+  case 0xE2:
+    if (argument2 == 0) {
+      --this->m_action;
+      if (this->m_action < this->unknown_01FC) {
+        this->m_action = this->unknown_01FC + 7;
+      }
+      this->Invalidate();
+    }
+    return 0;
+
+  case 0xE3:
+    if (argument2 == 0) {
+      ++this->m_action;
+      if (this->m_action >= this->unknown_01FC + 8) {
+        this->m_action = this->unknown_01FC;
+      }
+      this->Invalidate();
+    }
+    return 0;
+
+  case 0x20C:
+    for (int index = 0; index < 24; ++index) {
+      if (sender == this->m_hairStyleButtons[index]) {
+        if (index >= (g_session.IsDoramJob(this->m_job) == true ? 6 : 0x17)) {
+          return 0;
+        }
+        this->m_hairStyleButtons[index]->SendMsg(this, 13, 1, 0, 0, 0);
+        this->m_head = static_cast<short>(index + 1);
+        if (this->m_head < 0) {
+          this->m_head = 0;
+        }
+        this->sub_7DBFD0();
+      } else {
+        this->m_hairStyleButtons[index]->SendMsg(this, 13, 0, 0, 0, 0);
+      }
+    }
+    return 0;
+
+  case 0x20D:
+    for (int index = 0; index < 2; ++index) {
+      if (sender == this->m_genderButtons[index]) {
+        if (index == this->m_sex) {
+          return 0;
+        }
+        this->m_sex = static_cast<unsigned char>(index);
+        if (index == 1) {
+          this->m_genderButtons[1]->SetBitmap("유저인터페이스\\make_character_ver2\\bt_male_on.bmp", 0, 0);
+        } else if (index == 0) {
+          this->m_genderButtons[0]->SetBitmap("유저인터페이스\\make_character_ver2\\bt_female_on.bmp", 0, 0);
+        }
+      } else if (index == 1) {
+        this->m_genderButtons[index]->SetBitmap("유저인터페이스\\make_character_ver2\\bt_male_off.bmp", 0, 0);
+      } else if (this->m_sex == 0) {
+        this->m_genderButtons[index]->SetBitmap("유저인터페이스\\make_character_ver2\\bt_female_off.bmp", 0, 0);
+      }
+      this->m_genderButtons[index]->Invalidate();
+    }
+
+    for (int index = 0; index < 24; ++index) {
+      this->m_hairStyleButtons[index]->m_sex = this->m_sex;
+      this->m_hairStyleButtons[index]->SendMsg(nullptr, 0x28, 0, 0, 0, 0);
+    }
+    this->sub_7DBFD0();
+    return 0;
+  }
+
+  return 0;
+}

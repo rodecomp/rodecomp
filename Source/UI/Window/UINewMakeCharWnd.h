@@ -10,6 +10,12 @@
 #include "UI/Window/InputFocus.h"
 #include "UI/Window/UIFrameWnd.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowDialogs.h"
+#include "Client/Mode/CLoginMode.h"
+#include "Contents/ForbiddenWords.h"
+#include "Contents/Jobs/JobInheritance.h"
+
+#include <mbstring.h>
 
 #include <cstdint>
 
@@ -42,6 +48,8 @@ protected:
   /* 0128 */ int m_race;
   /* 012C */ UIBitmapButton* m_preview;
   /* 0130 */ bool m_selected;
+
+  friend class UINewMakeCharWnd;
 };
 
 #pragma pack(push, 1)
@@ -68,6 +76,7 @@ public:
   void Paint() override;
   void Slot19() override;
   void sub_7DBFD0();
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
   /* 00B4 */ int m_viewX;
   /* 00B8 */ int m_viewY;
