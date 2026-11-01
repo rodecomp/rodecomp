@@ -13,6 +13,10 @@
 #include "Contents/MessageTable.h"
 #include "Contents/ForbiddenWords.h"
 #include "Contents/Messenger/ClientMessenger.h"
+#include "Contents/Jobs/JobInheritance.h"
+#include "Contents/ClientItemLists.h"
+#include "UI/Chat/ChatSuggestions.h"
+#include "UI/Rodex/UIRodexComposeWnd.h"
 #include "Contents/Items/ItemNaming.h"
 #include "UI/Window/WindowRegistration.h"
 #include "Contents/TipBoxTitles.h"
@@ -6767,5 +6771,154 @@ void UIEquipWnd::DrawEquipSlots() {
       const int y = slot < 8 ? this->m_contentTop + (row + 1) * 26 : this->m_contentTop;
       this->DrawBitmap(iconX[column], y + 18, banned ? &banned->image : nullptr, true);
     }
+  }
+}
+
+// OFFSET: 0x008F6560
+// FUNCTION: fn_12318
+void UIEquipWnd::RefreshTitleList() {
+  this->m_titleList->Clear();
+  this->m_titleList->AddLine(LookupMessage(2686), 0);
+  for (std::vector<int>::iterator it = g_session.unknown_6160.begin(); it != g_session.unknown_6160.end(); ++it) {
+    const std::string title = GetJobTitleString(*it);
+    this->m_titleList->AddLine(title.c_str(), *it);
+  }
+}
+
+// OFFSET: 0x008F5580
+// FUNCTION: fn_12304
+void UIItemCollectionWnd::Slot32(int x, int y) {
+  int slotX;
+  int slotY;
+  const int index = this->CardSlotAt(x, y, &slotX, &slotY);
+  if (index == -1) {
+    return;
+  }
+
+  ITEM_INFO card;
+  int cardId;
+  std::memcpy(&cardId, this->m_item.unknown_001C + index * sizeof(cardId), sizeof(cardId));
+  card.identified = 1;
+  card.unknown_0000[0] = 6;
+  card.unknown_0060 = 0;
+  card.SetItemId(cardId);
+  UIWindow* window = g_windowMgr.sub_A978D0(82);
+  window->SendMsg(nullptr, 76, card.identified, 0, 0, 0);
+  window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&card), index >= ItemSlotsCount(this->m_item), 0, 0);
+
+  if (UIItemCollectionWnd* comparison = static_cast<UIItemCollectionWnd*>(g_windowMgr.unknown_0220)) {
+    int compareId;
+    std::memcpy(&compareId, comparison->m_item.unknown_001C + index * sizeof(compareId), sizeof(compareId));
+    if (compareId != 0 && compareId != 254 && compareId != 255) {
+      ITEM_INFO compareCard;
+      compareCard.identified = 1;
+      compareCard.unknown_0000[0] = 6;
+      compareCard.unknown_0060 = 0;
+      compareCard.SetItemId(compareId);
+      UIWindow* compareWindow = g_windowMgr.sub_A978D0(250);
+      compareWindow->SendMsg(nullptr, 76, compareCard.identified, 0, 0, 0);
+      compareWindow->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&compareCard), 1, 0, 0);
+    }
+  }
+}
+
+// OFFSET: 0x008F5790
+// FUNCTION: fn_12305
+void UIItemCollection_ComparisonWnd::Slot32(int x, int y) {
+  int slotX;
+  int slotY;
+  const int index = this->CardSlotAt(x, y, &slotX, &slotY);
+  if (index == -1) {
+    return;
+  }
+
+  ITEM_INFO card;
+  int cardId;
+  std::memcpy(&cardId, this->m_item.unknown_001C + index * sizeof(cardId), sizeof(cardId));
+  card.identified = 1;
+  card.unknown_0000[0] = 6;
+  card.unknown_0060 = 0;
+  card.SetItemId(cardId);
+  UIWindow* window = g_windowMgr.sub_A978D0(82);
+  window->SendMsg(nullptr, 76, card.identified, 0, 0, 0);
+  window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&card), index >= ItemSlotsCount(this->m_item), 0, 0);
+}
+
+// OFFSET: 0x008F3660
+// FUNCTION: fn_12270
+void UIEquipWnd::Slot25(int x, int y) {
+  if (y < 17) {
+    this->UIFrameWnd::Slot25(x, y);
+  }
+
+  if (this->m_viewOther != 0) {
+    return;
+  }
+
+  ITEM_INFO item = this->ItemIconAt(x, y);
+  if (item.unknown_0000[1] == 0) {
+    return;
+  }
+
+  if (item.quantity > 0) {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    const EquipSlots slots = g_session.GetEquipSlots(item.unknown_0000[3]);
+    ItemDescriptions descriptions{g_itemDescriptions};
+    mode->drag.BeginItem(this->m_frameContext->windows, descriptions, this->m_page == 1 ? 24 : 2, item, item.quantity, slots.values[2]);
+  }
+
+  if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
+    if (g_windowMgr.GetHoverWindow() && item.identified != 0) {
+      if (g_windowMgr.GetHoverWindow()->geometry.id == 492) {
+        reinterpret_cast<UINpcTextEditDialogWnd*>(g_windowMgr.unknown_0318)->InsertItemTag(item);
+      } else if (g_windowMgr.GetHoverWindow()->geometry.id == 490) {
+        static_cast<UIChatEditCtrl*>(g_windowMgr.GetHoverWindow())->InsertItemLink(item);
+      } else if (g_windowMgr.GetHoverWindow()->geometry.id == 493) {
+        reinterpret_cast<UIChatEditCtrl*>(g_chatSuggestions->unknown_00BC)->InsertItemLink(item);
+      } else if (g_windowMgr.GetHoverWindow()->geometry.id == 491) {
+        reinterpret_cast<UIRodexComposeWnd*>(g_windowMgr.unknown_0458)->sub_7FF710(item);
+      } else if (g_windowMgr.GetHoverWindow()->geometry.id == 494) {
+        static_cast<UIChatEditCtrl*>(g_windowMgr.GetHoverWindow())->InsertItemLink(item);
+      }
+    }
+  }
+}
+
+// OFFSET: 0x008F33F0
+// FUNCTION: fn_12267
+void UInCashWnd::Slot26(int x, int y) {
+  ITEM_INFO item = this->ItemAt(x, y);
+  if (item.unknown_0000[1] == 0 || this->m_selected >= 0) {
+    return;
+  }
+
+  g_modeMgr.GetGameMode();
+  this->m_selected = ~this->m_selected;
+  reinterpret_cast<ClientItemLists&>(g_session).RemoveItem1720ByName(item);
+  this->m_totalPrice -= item.quantity * item.unknown_0014[1];
+  this->m_otherItems.clear();
+
+  const SessionMessengerContext& lists = reinterpret_cast<const SessionMessengerContext&>(g_session);
+  const int count = lists.GetList2Size();
+  for (int index = 0; index < count; ++index) {
+    ITEM_INFO other = g_session.GetItem1720At(index);
+    if (other.unknown_0000[1] != 0) {
+      this->m_otherItems.push_back(other);
+    }
+  }
+
+  if (lists.GetList2Size() == 3) {
+    this->m_firstOther = 0;
+    this->m_otherScroll->SetPosition(0);
+    this->m_otherScroll->SetRange(4, 4, 4);
+    this->m_otherScroll->Invalidate();
+    this->m_otherScroll->Show(0);
+  } else if (lists.GetList2Size() > 3 && lists.GetList2Size() < 7) {
+    this->m_otherScroll->SetRange(4, 4, lists.GetList2Size() + 1);
+    if (this->m_firstOther > lists.GetList2Size() - 3) {
+      this->m_firstOther = lists.GetList2Size() - 3;
+      this->m_otherScroll->SetPosition(this->m_firstOther);
+    }
+    this->m_otherScroll->Invalidate();
   }
 }

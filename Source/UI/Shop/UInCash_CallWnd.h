@@ -7,6 +7,7 @@
 #include <list>
 
 struct WindowPlacement;
+class UIScrollBar;
 
 class UInCashWnd : public UIFrameWnd {
 public:
@@ -15,6 +16,7 @@ public:
   void Slot11() override;
   void Paint() override;
   void Slot25(int x, int y) override;
+  void Slot26(int x, int y) override;
   void Slot32(int x, int y) override;
   void Slot35(int delta) override;
   ITEM_INFO ItemAt(int x, int y);
@@ -25,7 +27,9 @@ public:
   /* 00F0 */ unsigned char unknown_00F0[0x08];
   /* 00F8 */ std::list<ITEM_INFO> m_otherItems;
   /* 0100 */ WindowPlacement* m_placement;
-  /* 0104 */ unsigned char unknown_0104[0x54];
+  /* 0104 */ unsigned char unknown_0104[0x4C];
+  /* 0150 */ UIScrollBar* m_otherScroll;
+  /* 0154 */ unsigned char unknown_0154[0x04];
   /* 0158 */ int m_firstOther;
   /* 015C */ int m_selected;
   /* 0160 */ int m_pageCount;

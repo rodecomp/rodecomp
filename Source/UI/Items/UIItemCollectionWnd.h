@@ -66,6 +66,7 @@ public:
   void SetHeight(int height);
   int CardSlotAt(int x, int y, int* slotX, int* slotY);
   void Slot28(int x, int y) override;
+  void Slot32(int x, int y) override;
 };
 
 class UICombinedCardItemCollectionWnd : public UIItemCollectionWnd {
@@ -88,6 +89,7 @@ public:
   void Slot25(int x, int y) override;
   void Slot31(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
+  void Slot32(int x, int y) override;
 };
 
 class UICombinedCardItemCollection_ComparisonWnd : public UIItemCollectionWnd {

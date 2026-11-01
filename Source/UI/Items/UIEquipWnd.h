@@ -6,6 +6,7 @@
 struct NormalItemSlotWindow;
 struct ITEM_INFO;
 class UITabControl;
+class UIListBoxTitle;
 
 class UIEquipWnd : public UIFrameWnd {
 public:
@@ -28,7 +29,7 @@ public:
   /* 00F8 */ int unknown_00F8[8];
   /* 0118 */ int unknown_0118;
   /* 011C */ int unknown_011C;
-  /* 0120 */ int unknown_0120;
+  /* 0120 */ UIListBoxTitle* m_titleList;
   /* 0124 */ UIWindow* unknown_0124;
   /* 0128 */ int unknown_0128;
   /* 012C */ int unknown_012C;
@@ -44,6 +45,7 @@ public:
   /* 0178 */ int unknown_0178;
 
   void Slot19() override;
+  void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
   void Slot27(int x, int y) override;
   void Slot28(int x, int y) override;
@@ -53,6 +55,7 @@ public:
 
   void DrawDamageSkinPage();
   void DrawEquipSlots();
+  void RefreshTitleList();
   void NotifyEquipmentChanged();
   void UpdateCharacterView(int reset);
   ITEM_INFO GetSlotItem(int slot);
