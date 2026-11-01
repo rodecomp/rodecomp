@@ -2040,9 +2040,72 @@ void CUIItem::RequestNavigation() {
 }
 
 // OFFSET: 0x009DB8F0
+// FUNCTION: fn_14310
+void CUIQuest::RequestNavigation() {
+  std::string name;
+  int x = -1;
+  int y = -1;
+  std::vector<std::string> parts = Split(this->unknown_008C, ",");
+  if (parts.size() > 2) {
+    name = parts[0];
+    x = std::atoi(parts[1].c_str());
+    y = std::atoi(parts[2].c_str());
+  }
+
+  if (x != -1 && y != -1) {
+    g_navigationManager.sub_B99030(name, 0, 5, false, x, y, 1002);
+  } else {
+    g_navigationManager.sub_B99030(name, 1, 5, false, -1, -1, 1002);
+  }
+}
 
 // OFFSET: 0x009DBB80
+// FUNCTION: fn_14311
+void CUIItem::SearchNavigation() {
+  const std::size_t comma = this->unknown_008C.find(',');
+  if (comma == std::string::npos) {
+    return;
+  }
+
+  std::string name = this->unknown_008C.substr(0, comma);
+  g_navigationManager.unknown_1264 = name;
+  g_navigationManager.UpdateSearchResults();
+  g_navigationManager.unknown_12C4 = 0;
+  g_navigationManager.unknown_12C8 = 0;
+  g_navigationManager.SelectNodeState();
+
+  UIWindow* window = g_windowMgr.LookupWindow(203);
+  if (!window) {
+    window = g_windowMgr.EnsureWindow(203);
+  }
+  window->SendMsg(nullptr, 6, 499, 0, 0, 0);
+}
 
 // OFFSET: 0x009DBCB0
+// FUNCTION: fn_14312
+void CUIQuest::SearchNavigation() {
+  const std::size_t comma = this->unknown_008C.find(',');
+  if (comma == std::string::npos) {
+    return;
+  }
+
+  std::string name = this->unknown_008C.substr(0, comma);
+  g_navigationManager.unknown_1264 = name;
+  g_navigationManager.UpdateSearchResults();
+  g_navigationManager.unknown_12C4 = 0;
+  g_navigationManager.unknown_12C8 = 0;
+  if (!g_navigationManager.SelectNodeState()) {
+    this->RequestNavigation();
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4241)), 0, 0, 0, 0);
+    return;
+  }
+
+  UIWindow* window = g_windowMgr.LookupWindow(203);
+  if (!window) {
+    window = g_windowMgr.EnsureWindow(203);
+  }
+  window->Invalidate();
+  window->SendMsg(nullptr, 6, 499, 0, 0, 0);
+}
 
 }
