@@ -296,10 +296,6 @@ int g_isAppActive;
 void sub_E57380();
 int sub_C7F5A0();
 
-struct WindowLayerRenderer {
-  void sub_AA73B0();
-};
-
 static_assert(sizeof(CharacterSlotsPacket) == 0x1D);
 static_assert(offsetof(AcceptLoginPacket, body) == 0x2F);
 static_assert(sizeof(ServerAddress) == 0x20);
@@ -1001,7 +997,7 @@ void CLoginMode::Slot5(int value) {
     } else {
       g_windowMgr.CenterSurface0478();
     }
-    reinterpret_cast<WindowLayerRenderer*>(&g_windowMgr)->sub_AA73B0();
+    g_windowMgr.DrawWindows();
     this->DrawCursor();
     reinterpret_cast<ModeFade*>(this)->Draw();
     if (g_renderer->Draw()) {
@@ -1151,7 +1147,7 @@ void CLoginMode::Update() {
     } else {
       g_windowMgr.CenterSurface0478();
     }
-    reinterpret_cast<WindowLayerRenderer*>(&g_windowMgr)->sub_AA73B0();
+    g_windowMgr.DrawWindows();
     this->DrawCursor();
     reinterpret_cast<ModeFade*>(this)->Draw();
     g_renderer->Draw();

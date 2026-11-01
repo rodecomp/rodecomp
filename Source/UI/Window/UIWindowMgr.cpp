@@ -59,6 +59,10 @@
 #include "Contents/Messenger/ClientMessenger.h"
 #include "UI/Text/TextMarkup.h"
 #include "UI/Dialogs/UIWaitDBSaveWnd.h"
+#include "Render/Primitives/AlphaRectangle.h"
+#include "UI/Cooldowns/CooldownOwner.h"
+#include "UI/Text/UITransBalloonText.h"
+
 namespace {
 #pragma pack(push, 1)
 struct AddFriendPacket {
@@ -98,6 +102,17 @@ int g_windowCloseValue;
 
 // GLOBAL: gl_24684
 int g_savedWindowCloseValue;
+
+// STRING: st_04179
+static const char g_windowManagerDiagnosticFile[] = "C:\\repositories\\RagnarokClient\\RagnarokClient\\UIWindowMgr.cpp";
+
+// GLOBAL: gl_24696
+int g_renderDiagnosticLine = 0;
+
+// GLOBAL: gl_24697
+const char* g_renderDiagnosticFile = "";
+
+// OFFSET: 0x00AA73B0
 
 // OFFSET: 0x00A94FD0
 // FUNCTION: fn_17179
@@ -874,7 +889,7 @@ void UIWindowMgr::RefreshFrameSkins() {
     if (CUIRegisterMgr::s_instance == nullptr) {
       CUIRegisterMgr::s_instance = new (std::nothrow) CUIRegisterMgr;
     }
-    std::map<int, int>& entries = CUIRegisterMgr::s_instance->entries;
+    auto& entries = CUIRegisterMgr::s_instance->entries;
     if (entries.find(window->geometry.id) != entries.end()) {
       static_cast<CUIFrameWnd*>(window)->RefreshSkinColors();
     }

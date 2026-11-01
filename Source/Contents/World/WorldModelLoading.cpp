@@ -29,10 +29,6 @@
 
 void sub_E57380();
 
-struct WindowLayerRenderer {
-  void sub_AA73B0();
-};
-
 // GLOBAL: gl_24754
 float g_worldLightDirection[3];
 
@@ -326,7 +322,7 @@ void CWorld::InitWorld() {
       lastNoticeTime = now;
       g_windowMgr.SendNotice(4, percent, 0, 0, 0, 0);
       g_windowMgr.CenterSurface0478();
-      reinterpret_cast<WindowLayerRenderer*>(&g_windowMgr)->sub_AA73B0();
+      g_windowMgr.DrawWindows();
       if (g_renderer->Draw()) {
         g_renderer->Present(0);
       }

@@ -542,6 +542,7 @@ public:
   void CancelActiveDialog();
   void CenterSurface0478();
   void DrawLoginOverlay();
+  void DrawWindows();
   void RefreshWindow01C8Edits();
   void SetSurface0478(CBitmapRes* bitmap);
   void SendFlagEffect(int message);
@@ -567,6 +568,8 @@ public:
 };
 
 extern UIWindowMgr g_windowMgr;
+extern int g_renderDiagnosticLine;
+extern const char* g_renderDiagnosticFile;
 extern int g_dragWindowId;
 extern bool g_windowToggleFlag;
 extern unsigned char g_windowCloseByte;
