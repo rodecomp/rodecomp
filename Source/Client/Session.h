@@ -817,6 +817,7 @@ public:
   int SyncUnknown0E98();
   void LoadXmlTables();
   void LoadExternalSettings();
+  void ReloadLanguageTables();
   float GetOptionFloat(const char* key, float fallback);
   std::string GetAccessoryName(int id);
   std::string GetWeaponName(int weapon);

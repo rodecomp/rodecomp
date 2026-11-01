@@ -33,6 +33,9 @@
 #include "Utility/Cipher/XorBytes.h"
 #include "Script/LuaScript.h"
 #include "Contents/MapPropertyMgr.h"
+#include "Contents/ForbiddenWords.h"
+#include "Contents/Items/ItemNaming.h"
+#include "Contents/Skills/SkillInfo.h"
 #include <algorithm>
 #include <cmath>
 #include <cstdio>
@@ -6141,4 +6144,15 @@ void CSession::InitResourceNameTables() {
   palJobNames[221] = "dancer_b_riding";
   bodyJobNames[221] = "dancer_b_riding";
   this->InitJobKeyNames();
+}
+
+// OFFSET: 0x00DE7260
+// FUNCTION: fn_23496
+void CSession::ReloadLanguageTables() {
+  ImportMessageTable();
+  g_forbiddenWords.Load("manner.txt");
+  this->LoadXmlTables();
+  this->LoadMapNameTable();
+  LoadItemNameTables();
+  Sub7739F0();
 }

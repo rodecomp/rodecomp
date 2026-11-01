@@ -77,4 +77,6 @@ static_assert(offsetof(ItemMoveInfo, drop) == 0x0004);
 static_assert(offsetof(ItemMoveInfo, guildStorage) == 0x000B);
 #endif
 
+void LoadItemNameTables();
+
 #endif
