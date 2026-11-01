@@ -126,6 +126,8 @@ public:
   int Run() override;
   void Initialize(const char* name) override;
   void End() override;
+  void Update() override;
+  void Slot5(int value) override;
 
   void SubD8D4F0(int);
   void SubD8D500(const char* packet);

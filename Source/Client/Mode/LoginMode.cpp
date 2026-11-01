@@ -1,13 +1,19 @@
 #include "Client/Mode/CLoginMode.h"
 #include "Client/Mode/CGameMode.h"
+#include "Client/Application/ApplicationMessages.h"
 #include "Client/Application/ApplicationWindow.h"
 #include "Client/Application/Launcher.h"
 #include "Archive/PakRegistry.h"
+#include "Client/Input/Mouse.h"
+#include "Client/ModeFade.h"
 #include "Client/Stove/StoveMgr.h"
 #include "Client/ModeFadeOut.h"
 #include "Client/Application/ErrorDialog.h"
 #include "Client/Mode/ModeMgr.h"
+#include "Client/Mode/ModeTooltip.h"
 #include "Client/Session.h"
+#include "Client/Stove/StovePCSDK.h"
+#include "Contents/Async/AsyncWorkMgr.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/EntryQueueMgr.h"
@@ -19,6 +25,7 @@
 #include "Contents/Schedule/PartialShutDownSchedule.h"
 #include "Contents/Schedule/TimeScheduler.h"
 #include "Contents/Sound/SoundMgr.h"
+#include "Network/ClientKeepalive.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
 #include "Render/DeviceContext/DCSurface.h"
@@ -26,6 +33,7 @@
 #include "Render/Renderer.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/ResourcePreload.h"
+#include "Resource/TextureNames.h"
 #include "Security/NProtectGameGuardMgr.h"
 #include "UI/Buttons/UITextButton.h"
 #include "UI/UIBartermarketWnd.h"
@@ -36,7 +44,10 @@
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Window/UISelCharForUServerWnd.h"
 #include "UI/Window/WindowDialogs.h"
+#include "UI/Window/WindowFrameUpdate.h"
+#include "Utility/Async/NAsyncWorkMgr.h"
 #include "Utility/Cipher/XorBytes.h"
+#include "Utility/GGHashMgr.h"
 #include "Utility/Text/FormatString.h"
 #include "Utility/Text/TextTokens.h"
 
@@ -277,6 +288,17 @@ unsigned char g_loginExitFlag;
 CharacterInfo g_charInfo;
 // GLOBAL: gl_25255
 bool g_replayMode;
+// GLOBAL: gl_25383
+int g_restoreSurfaces;
+// GLOBAL: gl_25384
+int g_isAppActive;
+
+void sub_E57380();
+int sub_C7F5A0();
+
+struct WindowLayerRenderer {
+  void sub_AA73B0();
+};
 
 static_assert(sizeof(CharacterSlotsPacket) == 0x1D);
 static_assert(offsetof(AcceptLoginPacket, body) == 0x2F);
@@ -930,6 +952,66 @@ void CLoginMode::End() {
   this->unknown_6F50.clear();
 }
 
+// OFFSET: 0x00D975C0
+// FUNCTION: fn_22301
+void CLoginMode::Slot5(int value) {
+  if (value == 0) {
+    if (this->running == 0) {
+      return;
+    }
+    if (g_modalImmediate != 0) {
+      return;
+    }
+  } else {
+    GetRagConnection().UpdateStatus();
+  }
+
+  reinterpret_cast<ApplicationMessages*>(this)->Pump();
+  this->PollNetworkStatus();
+  SendClientKeepalive(this->cursorType, this->unknown_6F10, GetRagConnection(), *reinterpret_cast<const PacketLengths*>(&GetRagConnection()), g_session.m_aid);
+  g_mouse.Update();
+  g_windowMgr.ProcessMouse();
+  if (this->running != 0) {
+    this->SubD97780(this->cursorType);
+    reinterpret_cast<ModeTooltip*>(this)->Expire(g_windowMgr);
+  }
+
+  if (g_restoreSurfaces != 0) {
+    g_restoreSurfaces = 0;
+    GetRenderSystemHolder()->TestDevice();
+    g_windowMgr.InvalidateAll();
+    CBitmapRes* bitmap = reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str())));
+    g_windowMgr.SetSurface0478(bitmap);
+  }
+
+  if (g_isAppActive == 0 && GetRenderSystemHolder()->IsWindowed()) {
+    return;
+  }
+
+  if (sub_C7F5A0()) {
+    g_renderer->ClearDepth(1);
+    reinterpret_cast<WindowFrameUpdate*>(&g_windowMgr)->Update();
+    if (g_serviceType == 0 || g_serviceType == 4 || g_serviceType == 8 || g_serviceType == 9 || g_serviceType == 3 || g_serviceType == 10 ||
+        g_serviceType == 1 || g_serviceType == 11 || g_serviceType == 12 || g_serviceType == 5 || g_serviceType == 7 || g_serviceType == 14 ||
+        g_serviceType == 20) {
+      g_windowMgr.DrawLoginOverlay();
+      if (this->cursorType == 0) {
+        g_windowMgr.CenterSurface0478();
+      }
+    } else {
+      g_windowMgr.CenterSurface0478();
+    }
+    reinterpret_cast<WindowLayerRenderer*>(&g_windowMgr)->sub_AA73B0();
+    this->DrawCursor();
+    reinterpret_cast<ModeFade*>(this)->Draw();
+    if (g_renderer->Draw()) {
+      g_renderer->Present(1);
+    }
+  }
+
+  this->TakeScreenshot();
+}
+
 // OFFSET: 0x00D97780
 // FUNCTION: fn_22302
 void CLoginMode::SubD97780(int value) {
@@ -1023,6 +1105,8 @@ void CLoginMode::SubD97780(int value) {
 // FUNCTION: fn_22303
 void CLoginMode::SubD97B20(int) {
 }
+
+// OFFSET: 0x00D97D30
 
 // OFFSET: 0x00D97EF0
 // FUNCTION: fn_22306
