@@ -1767,7 +1767,11 @@ void UITabControl::Configure(
 }
 
 // OFFSET: 0x0087D240
+// FUNCTION: fn_11260
 bool UIItemTagCtrl::RemoveInvalidTag(std::list<ItemTagRecord>::iterator& entry) {
+  if (!this->geometry.surface) {
+    this->Resize(this->tagWidth / 2, 15);
+  }
   const std::string fitted = FitText(*this->geometry.surface, entry->name, this->tagWidth / 2);
   std::string remaining = this->taggedText;
   const int bytes = static_cast<int>(std::strlen(fitted.c_str()));
