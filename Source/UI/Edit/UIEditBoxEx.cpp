@@ -502,6 +502,25 @@ void CUIEditBoxEx::SetText(const std::string& text) {
   this->edit->SetText(text.c_str());
 }
 
+// OFFSET: 0x009E6500
+// FUNCTION: fn_14462
+void CUIEditCtrlEx::SetText(const char* value) {
+  this->text.assign(value);
+
+  if (this == g_windowMgr.GetHoverWindow()) {
+    CLanguage& input = this->m_edit->input;
+    input.ResetInput();
+    input.Insert(this->text.c_str());
+    input.Select(0, static_cast<int>(input.text.size()));
+  }
+
+  if (this->text.find("<ITEML>") != std::string::npos || this->text.find("</ITEML>") != std::string::npos) {
+    this->sub_869810(this->text.c_str());
+  }
+
+  this->selectedAll = 1;
+}
+
 #include <chrono>
 
 // OFFSET: 0x009E4410
