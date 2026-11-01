@@ -3918,6 +3918,25 @@ std::vector<unsigned char>* sub_972E60(std::vector<unsigned char>* result) {
   return result;
 }
 
+// OFFSET: 0x00972F50
+// FUNCTION: fn_13282
+std::vector<unsigned char> UIItemSellWnd2::BuildReplayRecords() {
+  std::vector<unsigned char> records;
+  {
+    const auto record = BuildReplayTaggedRecord(20800, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(20802, &this->unknown_00FC, 4);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(20801, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  return records;
+}
+
 // OFFSET: 0x00973080
 // FUNCTION: fn_13283
 std::vector<unsigned char>* sub_973080(std::vector<unsigned char>* result) {
@@ -3940,6 +3959,8 @@ std::vector<unsigned char>* sub_973170(std::vector<unsigned char>* result) {
   return result;
 }
 
+// OFFSET: 0x009734E0
+
 // OFFSET: 0x00973670
 // FUNCTION: fn_13288
 std::vector<unsigned char>* sub_973670(std::vector<unsigned char>* result) {
@@ -3950,6 +3971,8 @@ std::vector<unsigned char>* sub_973670(std::vector<unsigned char>* result) {
   result->insert(result->end(), second.begin(), second.end());
   return result;
 }
+
+// OFFSET: 0x00973760
 
 // OFFSET: 0x009738A0
 // FUNCTION: fn_13290

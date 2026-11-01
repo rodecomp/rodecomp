@@ -6,12 +6,14 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <vector>
 
 class UIStaticText;
 
 class UIMerchantItemShopWnd : public UIItemBaseWnd {
 public:
   UIMerchantItemShopWnd(UIWindowContext& windows, UIFrameContext& frames, int value);
+  std::vector<unsigned char> BuildReplayRecords();
   void Slot11() override;
   void Slot19() override;
   void Slot10(int x, int y, std::intptr_t value) override;
