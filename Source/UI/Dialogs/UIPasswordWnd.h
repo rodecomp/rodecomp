@@ -21,6 +21,8 @@ public:
 
 class UIPasswordWnd : public UIItemDropCntWnd {
 public:
+  UIPasswordWnd(UIWindowContext& windows, UIFrameContext& frames);
+
   /* 00BC */ int unknown_00BC;
   /* 00C0 */ unsigned char unknown_00C0[0x38];
   /* 00F8 */ int unknown_00F8;
