@@ -3960,6 +3960,34 @@ std::vector<unsigned char>* sub_973170(std::vector<unsigned char>* result) {
 }
 
 // OFFSET: 0x009734E0
+// FUNCTION: fn_13287
+std::vector<unsigned char> UIMerchantItemShopWnd::BuildReplayRecords() {
+  std::vector<unsigned char> records;
+  if (this->unknown_010C != 0) {
+    {
+      const auto record = BuildReplayTaggedRecord(21250, nullptr, 0);
+      records.insert(records.end(), record.begin(), record.end());
+    }
+    {
+      const auto record = BuildReplayTaggedRecord(21253, &this->unknown_0108, 4);
+      records.insert(records.end(), record.begin(), record.end());
+    }
+    {
+      const auto record = BuildReplayTaggedRecord(21251, nullptr, 0);
+      records.insert(records.end(), record.begin(), record.end());
+    }
+  } else {
+    {
+      const auto record = BuildReplayTaggedRecord(21200, nullptr, 0);
+      records.insert(records.end(), record.begin(), record.end());
+    }
+    {
+      const auto record = BuildReplayTaggedRecord(21201, nullptr, 0);
+      records.insert(records.end(), record.begin(), record.end());
+    }
+  }
+  return records;
+}
 
 // OFFSET: 0x00973670
 // FUNCTION: fn_13288
@@ -3973,6 +4001,30 @@ std::vector<unsigned char>* sub_973670(std::vector<unsigned char>* result) {
 }
 
 // OFFSET: 0x00973760
+// FUNCTION: fn_13289
+std::vector<unsigned char> UIMerchantShopMakeWnd::BuildReplayRecords() {
+  std::vector<unsigned char> records;
+  if (this->mode != 0) {
+    {
+      const auto record = BuildReplayTaggedRecord(21350, nullptr, 0);
+      records.insert(records.end(), record.begin(), record.end());
+    }
+    {
+      const auto record = BuildReplayTaggedRecord(21351, nullptr, 0);
+      records.insert(records.end(), record.begin(), record.end());
+    }
+  } else {
+    {
+      const auto record = BuildReplayTaggedRecord(21300, nullptr, 0);
+      records.insert(records.end(), record.begin(), record.end());
+    }
+    {
+      const auto record = BuildReplayTaggedRecord(21301, nullptr, 0);
+      records.insert(records.end(), record.begin(), record.end());
+    }
+  }
+  return records;
+}
 
 // OFFSET: 0x009738A0
 // FUNCTION: fn_13290
