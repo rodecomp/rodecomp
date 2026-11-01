@@ -3786,80 +3786,78 @@ void CPlayer::SendMsg(
 ) {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   switch (static_cast<std::int64_t>(a) << 32 | static_cast<std::uint32_t>(message)) {
-  case 0x00: {
-    this->unknown_050C = 0;
-    const int* route = reinterpret_cast<const int*>(b);
-    this->routeStartTick = route[0];
-    if (this->FindRoute(route[1], route[2], route[3], route[4], route[5], route[6], *reinterpret_cast<const int*>(g_session.unknown_16F4))) {
-      this->unknown_0158[5] = route[5];
-      *reinterpret_cast<int*>(this->unknown_0170) = route[6];
-      this->Slot15(1, 1);
-      this->unknown_023C = 0;
+  case 0x42: {
+    PlayerSkillRequest request;
+    request.skill = this->unknown_052C;
+    request.x = this->unknown_0534;
+    request.y = this->unknown_0538;
+    request.level = this->unknown_0530;
+    if (request.skill == 0x7D) {
+      g_windowMgr.EnsureWindow(0x54)->SendMsg(nullptr, 0x44, reinterpret_cast<std::intptr_t>(&request), 0, 0, 0);
+    } else if (request.skill == 0xDC) {
+      g_windowMgr.EnsureWindow(0x65)->SendMsg(nullptr, 0x44, reinterpret_cast<std::intptr_t>(&request), 0, 0, 0);
+    } else if (request.skill == 0x108 || request.skill == 0xA04) {
+      int metadata = 0;
+      int column = 0;
+      int row = 0;
+      int subColumn = 0;
+      int subRow = 0;
+      reinterpret_cast<const TerrainHeight*>(g_modeMgr.GetGameMode())
+        ->WorldSubcell(this->render.position.x, this->render.position.z, column, row, subColumn, subRow);
+      MovementRouteInterpolation route;
+      if (g_pathFinder.FindPath(timeGetTime(), column, row, subColumn, subRow, this->unknown_0534, this->unknown_0538, 150, route, 15) == true) {
+        metadata = route.EndMetadata();
+      }
+      mode->SendMsg(0x46, reinterpret_cast<int>(&request), metadata, 0, 0);
     } else {
-      int column;
-      int row;
-      int subColumn;
-      int subRow;
-      reinterpret_cast<const TerrainHeight*>(mode)->WorldSubcell(this->render.position.x, this->render.position.z, column, row, subColumn, subRow);
-      if (this->FindRoute(column, row, subColumn, subRow, route[5], route[6], *reinterpret_cast<const int*>(g_session.unknown_16F4))) {
-        this->unknown_0158[5] = route[5];
-        *reinterpret_cast<int*>(this->unknown_0170) = route[6];
-        this->Slot15(1, 1);
-      }
-    }
-    g_navigationManager.CheckArrival(this->unknown_0158[5], *reinterpret_cast<const int*>(this->unknown_0170));
-    break;
-  }
-  case 0x08:
-    this->Slot15(0, 1);
-    break;
-  case 0x09:
-    this->unknown_050C = 1;
-    this->unknown_0504 = timeGetTime();
-    reinterpret_cast<int&>(this->unknown_04F8) = b;
-    this->unknown_04FC = d;
-    break;
-  case 0x0A:
-    if (this->render.unknown_0070 != 6 && !StateFlag01(this->stateFlags)) {
-      CRenderObject* target = mode->scene->GetGameActorByAID(b);
-      if (target != nullptr) {
-        this->unknown_0508 =
-          static_cast<std::uint32_t>(*reinterpret_cast<const int*>(g_session.unknown_16F4) * 4 / 3) <
-              reinterpret_cast<const std::uint32_t*>(static_cast<CGameActor*>(target)->unknown_0170)[1]
-            ? 5
-            : 1;
-        this->unknown_051C = b;
-        this->unknown_0514 = 0;
-        this->unknown_0510 = d;
-        this->unknown_0520 = 0;
-      }
-    }
-    break;
-  case 0x0D:
-    this->unknown_0514 = 0;
-    this->unknown_0508 = 0;
-    mode->SendMsg(0x1A, 0, 0, 0, 0);
-    break;
-  case 0x0F: {
-    const int attackMode = this->unknown_0508;
-    if (attackMode != 1 && attackMode != 5) {
-      if (attackMode == 3) {
-        mode->SendMsg(0x1A, 0, 0, 0, 0);
-        break;
-      }
-      if (attackMode != 6) {
-        break;
-      }
-    }
-    if (this->unknown_0510 != 0) {
-      this->unknown_0510 = 2;
-      if (this->unknown_0520 != 0) {
-        this->SendMsg(nullptr, 0xD, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-        mode->SendMsg(0x49, 0, 0, 0, 0);
-      }
+      mode->SendMsg(0x46, reinterpret_cast<int>(&request), 0, 0, 0);
     }
     break;
   }
+  case 0x2A:
+    mode->SendMsg(0x45, this->unknown_052C, this->unknown_051C, this->unknown_0530, 0);
+    break;
+  case 0x28: {
+    CRenderObject* target = mode->scene->GetGameActorByAID(this->unknown_051C);
+    if (target == nullptr || static_cast<CGameActor*>(target)->unknown_0314 != 7) {
+      mode->SendMsg(0x89, 7, this->unknown_051C, 0, 0);
+    }
+    break;
+  }
+  case 0x1D:
+    mode->SendMsg(0x89, 0, this->unknown_051C, 0, 0);
+    break;
+  case 0x1F:
+    if (!StateFlag01(this->stateFlags)) {
+      if (this->render.unknown_0070 == 0) {
+        mode->SendMsg(0x89, 2, this->unknown_051C, 0, 0);
+      } else if (this->render.unknown_0070 == 6) {
+        mode->SendMsg(0x89, 3, this->unknown_051C, 0, 0);
+      }
+    }
+    break;
+  case 0x11:
+    this->SendMsg(nullptr, 0xD, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    if (this->render.unknown_0070 != 0x4B) {
+      if (this->IsSpecialState(this->render.unknown_0070)) {
+        this->unknown_0518 = 1;
+        this->unknown_053C = b;
+        this->unknown_0540 = d;
+      } else {
+        this->unknown_0518 = 0;
+        this->unknown_053C = -1;
+        this->unknown_0540 = -1;
+        this->SendMsg(nullptr, 0x5B, 0, b, b >> 31, d, d >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+    }
+    break;
+  case 0x5B:
+    g_unknown173AD3F = false;
+    if (timeGetTime() > this->unknown_0528 + 350) {
+      this->unknown_0528 = timeGetTime();
+      mode->SendMsg(0x8A, b, d, 0, 0);
+    }
+    break;
   case 0x10: {
     const std::uint32_t state = this->render.unknown_0070;
     if (state != 0 && state != 4 && state != 6) {
@@ -3921,46 +3919,78 @@ void CPlayer::SendMsg(
     mode->SendMsg(0x8B, CPlayer::AngleToDirection(this->render.angle), motion, 0, 0);
     break;
   }
-  case 0x11:
-    this->SendMsg(nullptr, 0xD, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-    if (this->render.unknown_0070 != 0x4B) {
-      if (this->IsSpecialState(this->render.unknown_0070)) {
-        this->unknown_0518 = 1;
-        this->unknown_053C = b;
-        this->unknown_0540 = d;
-      } else {
-        this->unknown_0518 = 0;
-        this->unknown_053C = -1;
-        this->unknown_0540 = -1;
-        this->SendMsg(nullptr, 0x5B, 0, b, b >> 31, d, d >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+  case 0x09:
+    this->unknown_050C = 1;
+    this->unknown_0504 = timeGetTime();
+    reinterpret_cast<int&>(this->unknown_04F8) = b;
+    this->unknown_04FC = d;
+    break;
+  case 0x00: {
+    this->unknown_050C = 0;
+    const int* route = reinterpret_cast<const int*>(b);
+    this->routeStartTick = route[0];
+    if (this->FindRoute(route[1], route[2], route[3], route[4], route[5], route[6], *reinterpret_cast<const int*>(g_session.unknown_16F4))) {
+      this->unknown_0158[5] = route[5];
+      *reinterpret_cast<int*>(this->unknown_0170) = route[6];
+      this->Slot15(1, 1);
+      this->unknown_023C = 0;
+    } else {
+      int column;
+      int row;
+      int subColumn;
+      int subRow;
+      reinterpret_cast<const TerrainHeight*>(mode)->WorldSubcell(this->render.position.x, this->render.position.z, column, row, subColumn, subRow);
+      if (this->FindRoute(column, row, subColumn, subRow, route[5], route[6], *reinterpret_cast<const int*>(g_session.unknown_16F4))) {
+        this->unknown_0158[5] = route[5];
+        *reinterpret_cast<int*>(this->unknown_0170) = route[6];
+        this->Slot15(1, 1);
       }
     }
+    g_navigationManager.CheckArrival(this->unknown_0158[5], *reinterpret_cast<const int*>(this->unknown_0170));
     break;
-  case 0x12:
-    if (this->render.unknown_0070 != 6 && !StateFlag01(this->stateFlags)) {
-      this->unknown_0508 = 2;
-      this->unknown_051C = b;
-    }
+  }
+  case 0x08:
+    this->Slot15(0, 1);
     break;
-  case 0x1D:
-    mode->SendMsg(0x89, 0, this->unknown_051C, 0, 0);
+  case 0x0D:
+    this->unknown_0514 = 0;
+    this->unknown_0508 = 0;
+    mode->SendMsg(0x1A, 0, 0, 0, 0);
     break;
-  case 0x1F:
-    if (!StateFlag01(this->stateFlags)) {
-      if (this->render.unknown_0070 == 0) {
-        mode->SendMsg(0x89, 2, this->unknown_051C, 0, 0);
-      } else if (this->render.unknown_0070 == 6) {
-        mode->SendMsg(0x89, 3, this->unknown_051C, 0, 0);
+  case 0x0F: {
+    const int attackMode = this->unknown_0508;
+    if (attackMode != 1 && attackMode != 5) {
+      if (attackMode == 3) {
+        mode->SendMsg(0x1A, 0, 0, 0, 0);
+        break;
+      }
+      if (attackMode != 6) {
+        break;
       }
     }
-    break;
-  case 0x28: {
-    CRenderObject* target = mode->scene->GetGameActorByAID(this->unknown_051C);
-    if (target == nullptr || static_cast<CGameActor*>(target)->unknown_0314 != 7) {
-      mode->SendMsg(0x89, 7, this->unknown_051C, 0, 0);
+    if (this->unknown_0510 != 0) {
+      this->unknown_0510 = 2;
+      if (this->unknown_0520 != 0) {
+        this->SendMsg(nullptr, 0xD, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        mode->SendMsg(0x49, 0, 0, 0, 0);
+      }
     }
     break;
   }
+  case 0x5A:
+    this->unknown_0530 = b;
+    break;
+  case 0x41:
+    if (this->render.unknown_0070 != 6 &&
+        (!StateFlag01(this->stateFlags) || (b == 0x89 && c == 0) || (b == 0xD4 && c == 0) || (b == 0x211 && c == 0) ||
+         (b == 0x212 && c == 0))) {
+      this->unknown_0508 = 4;
+      this->unknown_052C = b;
+      this->unknown_0534 = d;
+      this->unknown_0538 = f;
+      this->unknown_051C = 0;
+    }
+    break;
   case 0x29:
     if (this->render.unknown_0070 != 6 &&
         (!StateFlag01(this->stateFlags) || (d == 0x89 && e == 0) || (d == 0xD4 && e == 0) || (d == 0x211 && e == 0) ||
@@ -3969,9 +3999,6 @@ void CPlayer::SendMsg(
       this->unknown_051C = b;
       this->unknown_052C = d;
     }
-    break;
-  case 0x2A:
-    mode->SendMsg(0x45, this->unknown_052C, this->unknown_051C, this->unknown_0530, 0);
     break;
   case 0x3C:
     if (this->render.unknown_0070 != 6 && !StateFlag01(this->stateFlags)) {
@@ -3985,53 +4012,26 @@ void CPlayer::SendMsg(
       this->unknown_04FC = -1;
     }
     break;
-  case 0x41:
-    if (this->render.unknown_0070 != 6 &&
-        (!StateFlag01(this->stateFlags) || (b == 0x89 && c == 0) || (b == 0xD4 && c == 0) || (b == 0x211 && c == 0) ||
-         (b == 0x212 && c == 0))) {
-      this->unknown_0508 = 4;
-      this->unknown_052C = b;
-      this->unknown_0534 = d;
-      this->unknown_0538 = f;
-      this->unknown_051C = 0;
-    }
-    break;
-  case 0x42: {
-    PlayerSkillRequest request;
-    request.skill = this->unknown_052C;
-    request.x = this->unknown_0534;
-    request.y = this->unknown_0538;
-    request.level = this->unknown_0530;
-    if (request.skill == 0x7D) {
-      g_windowMgr.EnsureWindow(0x54)->SendMsg(nullptr, 0x44, reinterpret_cast<std::intptr_t>(&request), 0, 0, 0);
-    } else if (request.skill == 0xDC) {
-      g_windowMgr.EnsureWindow(0x65)->SendMsg(nullptr, 0x44, reinterpret_cast<std::intptr_t>(&request), 0, 0, 0);
-    } else if (request.skill == 0x108 || request.skill == 0xA04) {
-      int metadata = 0;
-      int column = 0;
-      int row = 0;
-      int subColumn = 0;
-      int subRow = 0;
-      reinterpret_cast<const TerrainHeight*>(g_modeMgr.GetGameMode())
-        ->WorldSubcell(this->render.position.x, this->render.position.z, column, row, subColumn, subRow);
-      MovementRouteInterpolation route;
-      if (g_pathFinder.FindPath(timeGetTime(), column, row, subColumn, subRow, this->unknown_0534, this->unknown_0538, 150, route, 15) == true) {
-        metadata = route.EndMetadata();
+  case 0x0A:
+    if (this->render.unknown_0070 != 6 && !StateFlag01(this->stateFlags)) {
+      CRenderObject* target = mode->scene->GetGameActorByAID(b);
+      if (target != nullptr) {
+        this->unknown_0508 =
+          static_cast<std::uint32_t>(*reinterpret_cast<const int*>(g_session.unknown_16F4) * 4 / 3) <
+              reinterpret_cast<const std::uint32_t*>(static_cast<CGameActor*>(target)->unknown_0170)[1]
+            ? 5
+            : 1;
+        this->unknown_051C = b;
+        this->unknown_0514 = 0;
+        this->unknown_0510 = d;
+        this->unknown_0520 = 0;
       }
-      mode->SendMsg(0x46, reinterpret_cast<int>(&request), metadata, 0, 0);
-    } else {
-      mode->SendMsg(0x46, reinterpret_cast<int>(&request), 0, 0, 0);
     }
     break;
-  }
-  case 0x5A:
-    this->unknown_0530 = b;
-    break;
-  case 0x5B:
-    g_unknown173AD3F = false;
-    if (timeGetTime() > this->unknown_0528 + 350) {
-      this->unknown_0528 = timeGetTime();
-      mode->SendMsg(0x8A, b, d, 0, 0);
+  case 0x12:
+    if (this->render.unknown_0070 != 6 && !StateFlag01(this->stateFlags)) {
+      this->unknown_0508 = 2;
+      this->unknown_051C = b;
     }
     break;
   case 0x67:
@@ -5492,4 +5492,35 @@ bool CPc::Slot14() {
   default:
     return CGameActor::Slot14();
   }
+}
+
+// OFFSET: 0x00DBA5D0
+// FUNCTION: fn_22673
+void CPlayer::ChangeState(int state, int resetPosition) {
+  if (this->render.unknown_0070 == 3) {
+    return;
+  }
+
+  if (state != 1) {
+    reinterpret_cast<int&>(this->unknown_04F8) = -1;
+    this->unknown_04FC = -1;
+  }
+
+  if (this->unknown_0518 != 0 && this->IsSpecialState(this->render.unknown_0070)) {
+    const int cellX = this->unknown_053C;
+    const int cellY = this->unknown_0540;
+    this->unknown_0518 = 0;
+    this->unknown_053C = -1;
+    this->unknown_0540 = -1;
+    this->SendMsg(nullptr, 91, 0, cellX, cellX >> 31, cellY, cellY >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+  }
+
+  if (state == 3) {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    mode->SendMsg(5, 0, 0, 0, 0);
+    mode->LaunchDummyEffect(&this->render.position, 0x174, 300, 0);
+    g_screenShakeDuration = 0;
+  }
+
+  CPc::ChangeState(state, resetPosition);
 }

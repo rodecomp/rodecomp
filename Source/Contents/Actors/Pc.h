@@ -218,6 +218,7 @@ public:
   float AdjustFollowDistance(CGameActor* target, float distance);
   void UpdatePendingAction();
   void Initialize();
+  void ChangeState(int state, int resetPosition);
 
   /* 0510 */ int unknown_0510;
   /* 0514 */ int unknown_0514;
