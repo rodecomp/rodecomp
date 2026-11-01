@@ -3731,6 +3731,113 @@ void CRagEffect::TexturedQuadSpin(const char* name, char phase, char kind) {
   }
 }
 
+// OFFSET: 0x00C425A0
+// FUNCTION: fn_45478
+void CRagEffect::TexturedFourRing(const char* name, char kind) {
+  const RenderObjectState& parent = this->state.parent->render;
+  this->render.position.x = parent.position.x;
+  this->render.position.y = parent.position.y;
+  this->render.position.z = parent.position.z;
+
+  if (this->state.stateCnt != 0) {
+    return;
+  }
+
+  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 90, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  this->state.unknown_11C84->renderFlag = 1;
+  this->state.unknown_11C84->renderFlag |= 5u;
+  this->state.unknown_11C84->duration = this->state.duration;
+  AllocateTextures(*this->state.unknown_11C84);
+  this->state.unknown_11C84->textures[0] = g_texMgr.Load(name, 0, false, true, false);
+  this->state.unknown_11C84->size = 0.0f;
+  this->state.unknown_11C84->slots[0].life = 0;
+  this->state.unknown_11C84->slots[1].life = 0;
+  this->state.unknown_11C84->slots[2].life = 0;
+  this->state.unknown_11C84->slots[3].life = 0;
+  const float scale = static_cast<float>(kind);
+
+  for (int index = 0; index < 2; ++index) {
+    this->state.unknown_11C84->slots[index].life = 1;
+    this->state.unknown_11C84->slots[index].process = 0;
+
+    if (kind == 0 || kind == 10 || kind == 20) {
+      this->state.unknown_11C84->slots[index].maxHeight = static_cast<float>(index) + 30.0f;
+    } else {
+      this->state.unknown_11C84->slots[index].maxHeight = static_cast<float>(index) + 20.0f;
+    }
+
+    if (kind == 0 || kind == 10) {
+      this->state.unknown_11C84->slots[index].alphaB = 65;
+      this->state.unknown_11C84->slots[index].alphaT = 2415;
+    } else if (kind == 20) {
+      this->state.unknown_11C84->slots[index].alphaB = 65;
+      this->state.unknown_11C84->slots[index].alphaT = 2170;
+    } else {
+      this->state.unknown_11C84->slots[index].alphaB = 32;
+      this->state.unknown_11C84->slots[index].alphaT = kind == 21 ? 2140 : 2385;
+    }
+
+    if (kind >= 10 && kind < 20) {
+      this->state.unknown_11C84->slots[index].alphaT = static_cast<std::int16_t>(this->state.duration > 30000 ? 30000 : this->state.duration - 90);
+    }
+
+    if (kind == 10 || kind == 20) {
+      this->state.unknown_11C84->slots[index].height[0] = static_cast<float>(index) * 0.4f + 7.0f;
+    } else if (kind == 11 || kind == 21) {
+      this->state.unknown_11C84->slots[index].height[0] = static_cast<float>(index) * 0.4f + 8.5f;
+    } else if (kind == 0) {
+      this->state.unknown_11C84->slots[index].height[0] = static_cast<float>(index) * 0.4f + 12.5f;
+    } else {
+      this->state.unknown_11C84->slots[index].height[0] = static_cast<float>(index) * 0.4f + 14.0f;
+    }
+
+    this->state.unknown_11C84->slots[index].height[1] = this->state.unknown_11C84->slots[index].height[0];
+    this->state.unknown_11C84->slots[index].height[4] = scale;
+  }
+
+  for (int index = 2; index < 4; ++index) {
+    this->state.unknown_11C84->slots[index].life = 1;
+    this->state.unknown_11C84->slots[index].process = 0;
+
+    if (kind == 0 || kind == 10 || kind == 20) {
+      this->state.unknown_11C84->slots[index].maxHeight = static_cast<float>(index) + 30.0f;
+    } else {
+      this->state.unknown_11C84->slots[index].maxHeight = static_cast<float>(index) + 20.0f;
+    }
+
+    if (kind == 10 || kind == 20) {
+      this->state.unknown_11C84->slots[index].distance = static_cast<float>(index - 2) * 30.2f;
+    } else if (kind == 11 || kind == 21) {
+      this->state.unknown_11C84->slots[index].distance = static_cast<float>(index - 2) * 30.2f + 15.1f;
+    } else if (kind == 0) {
+      this->state.unknown_11C84->slots[index].distance = static_cast<float>(index - 2) * 53.2f;
+    } else {
+      this->state.unknown_11C84->slots[index].distance = static_cast<float>(index - 2) * 53.2f + 26.6f;
+    }
+
+    if (kind == 10 || kind == 20) {
+      this->state.unknown_11C84->slots[index].height[0] = 7.8f;
+    } else if (kind == 11 || kind == 21) {
+      this->state.unknown_11C84->slots[index].height[0] = 9.3f;
+    } else if (kind == 0) {
+      this->state.unknown_11C84->slots[index].height[0] = 13.3f;
+    } else {
+      this->state.unknown_11C84->slots[index].height[0] = 14.8f;
+    }
+
+    this->state.unknown_11C84->slots[index].height[1] = this->state.unknown_11C84->slots[index].height[0];
+    this->state.unknown_11C84->slots[index].height[3] = kind >= 10 ? 18.6f : 26.6f;
+    this->state.unknown_11C84->slots[index].alphaB = 15;
+    this->state.unknown_11C84->slots[index].alphaT = kind < 20 ? 2415 : 2170;
+
+    if (kind >= 10 && kind < 20) {
+      this->state.unknown_11C84->slots[index].alphaT = static_cast<std::int16_t>(this->state.duration > 30000 ? 30000 : this->state.duration - 90);
+    }
+
+    this->state.unknown_11C84->slots[index].height[4] = scale;
+  }
+}
+
 // OFFSET: 0x00C42B40
 // FUNCTION: fn_20139
 void CRagEffect::TexturedSkillIcon(const char* name, std::int16_t level, std::int16_t mode) {
