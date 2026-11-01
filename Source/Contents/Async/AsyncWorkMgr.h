@@ -53,10 +53,7 @@ public:
     std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, int type, CMCStoreInfoBackup& owner,
     StoreBackupContext& context
   );
-  void SaveStore(
-    std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, std::string data, int type,
-    CMCStoreInfoBackup& owner, StoreBackupContext& context
-  );
+  void SaveStore(std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, std::string data, int type);
   void RegisterParty(
     std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, CAdvenPartyInfo info,
     RegisterPartyContext& context

@@ -1,5 +1,6 @@
 #include "Contents/Store/MCStoreInfoBackup.h"
 #include "Contents/Store/MCStoreInfoBackupAsyncWork.h"
+#include "Client/Session.h"
 #include "Network/Http/CURLPostHander.h"
 #include "Network/TextEncoding.h"
 
@@ -90,8 +91,7 @@ void CMCStoreInfoBackupLoadAsyncWork::Complete() {
 // OFFSET: 0x00608D60
 // FUNCTION: fn_04247
 CMCStoreInfoBackupSaveAsyncWork::CMCStoreInfoBackupSaveAsyncWork()
-    : NAsyncWork("MerchantStoreInformation_Save"), m_accountId(0), m_characterId(0), m_diagnostic(Diagnostic(false, "unknwon", saveSource, 30)), m_type(0),
-      m_owner(nullptr), m_context(nullptr) {
+    : NAsyncWork("MerchantStoreInformation_Save"), m_accountId(0), m_characterId(0), m_diagnostic(Diagnostic(false, "unknwon", saveSource, 30)), m_type(0) {
 }
 
 // INLINED
@@ -105,8 +105,7 @@ void CMCStoreInfoBackupSaveAsyncWork::Reset() {
 // OFFSET: 0x00609270
 // FUNCTION: fn_04249
 void CMCStoreInfoBackupSaveAsyncWork::Bind(
-  std::string url, std::uint32_t accountId, std::uint32_t characterId, std::string accountName, std::string token, std::string data, int type,
-  CMCStoreInfoBackup& owner, StoreBackupContext& context
+  std::string url, std::uint32_t accountId, std::uint32_t characterId, std::string accountName, std::string token, std::string data, int type
 ) {
   this->m_group = timeGetTime();
   this->m_accountId = accountId;
@@ -119,8 +118,6 @@ void CMCStoreInfoBackupSaveAsyncWork::Bind(
   AsyncDiagnostic diagnostic = Diagnostic(false, "unknwon", saveSource, 57);
   this->m_diagnostic.MoveFrom(diagnostic);
   this->m_type = type;
-  this->m_owner = &owner;
-  this->m_context = &context;
 }
 
 // OFFSET: 0x006095F0
@@ -151,5 +148,5 @@ bool CMCStoreInfoBackupSaveAsyncWork::Execute() {
 // OFFSET: 0x00609530
 // FUNCTION: fn_04251
 void CMCStoreInfoBackupSaveAsyncWork::Complete() {
-  this->m_owner->CompleteSave(this->m_diagnostic, this->m_response, *this->m_context);
+  g_session.m_storeInfoBackup.CompleteSave(this->m_diagnostic, this->m_response);
 }

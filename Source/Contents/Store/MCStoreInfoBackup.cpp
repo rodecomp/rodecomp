@@ -3,6 +3,8 @@
 #include "Contents/Store/MCStoreInfoBackup.h"
 #include "Contents/MessageTable.h"
 #include "Contents/Store/StoreBackupData.h"
+#include "Client/Session.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "Utility/Async/AsyncDiagnostic.h"
 
 #include <algorithm>
@@ -150,7 +152,7 @@ void CMCStoreInfoBackup::CompleteLoad(
 
 // OFFSET: 0x00607810
 // FUNCTION: fn_04239
-void CMCStoreInfoBackup::CompleteSave(AsyncDiagnostic diagnostic, std::string response, StoreBackupContext& context) {
+void CMCStoreInfoBackup::CompleteSave(AsyncDiagnostic diagnostic, std::string response) {
   --this->pendingSaves;
 
   if (!diagnostic.success) {
@@ -165,11 +167,11 @@ void CMCStoreInfoBackup::CompleteSave(AsyncDiagnostic diagnostic, std::string re
     return;
   }
 
-  context.ui.Notify(3, nullptr, 0);
+  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
 
   if (this->type == 0 || this->type == 1) {
     const char* message = LookupMessage(this->type == 0 ? 3685 : 3686);
-    context.ui.Notify(1, message, 0xFFFF);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0xFFFF, 0, 0, 0);
   }
 }
 
@@ -190,23 +192,20 @@ void CMCStoreInfoBackup::Load(
 
 // OFFSET: 0x00606EB0
 // FUNCTION: fn_04236
-void CMCStoreInfoBackup::Save(
-  int type, std::uint32_t accountId, std::uint32_t characterId, const char* accountName, const char* token16, const std::list<ITEM_INFO>& storeItems,
-  CAsyncWorkMgr& workManager, StoreBackupContext& context
-) {
+void CMCStoreInfoBackup::Save(int type) {
   this->type = type;
   Json::Value root;
   Json::Value data;
-  StoreBackupData{this->title, this->items}.Export(data, storeItems);
+  StoreBackupData{this->title, this->items}.Export(data, g_session.unknown_1758);
 
   if (!data.isNull()) {
     root["data"] = data;
     Json::StyledWriter writer;
     const std::string response = writer.write(root);
-    const std::string token(token16, 16);
+    const std::string token(reinterpret_cast<const char*>(&g_session.unknown_807C[8]), 16);
     const std::string url = this->SaveUrl();
-    const std::string name(accountName);
-    workManager.SaveStore(accountId, characterId, name, url, token, response, this->type, *this, context);
+    const std::string name(g_session.m_accountName.c_str());
+    g_asyncWorkMgr->SaveStore(g_session.m_aid, g_session.m_gid, name, url, token, response, this->type);
 
     ++this->pendingSaves;
   }

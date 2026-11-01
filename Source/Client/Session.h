@@ -7,6 +7,7 @@
 #include "Contents/Messenger/MessengerMember.h"
 #include "Contents/Party/PartyBookingMgr.h"
 #include "Contents/Skills/PlayerSkillBundle.h"
+#include "Contents/Store/MCStoreInfoBackup.h"
 #include "Contents/UserData/NormalItemSlots.h"
 #include "Resource/XmlNode.h"
 #include "UI/Cooldowns/CooldownState.h"
@@ -546,7 +547,8 @@ public:
   /* 7FA8 */ CInstantVar m_options;
   /* 7FB4 */ unsigned char unknown_7FB4[0x8];
   /* 7FBC */ int unknown_7FBC;
-  /* 7FC0 */ unsigned char unknown_7FC0[0xB4];
+  /* 7FC0 */ unsigned char unknown_7FC0[0x50];
+  /* 8010 */ CMCStoreInfoBackup m_storeInfoBackup;
   /* 8074 */ int unknown_8074;
   /* 8078 */ const char* const* m_jobSpriteNames;
   /* 807C */ unsigned char unknown_807C[0x20];

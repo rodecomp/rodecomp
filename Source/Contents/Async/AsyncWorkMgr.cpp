@@ -218,13 +218,12 @@ void CAsyncWorkMgr::LoadStore(
 // OFFSET: 0x00574C70
 // FUNCTION: fn_02510
 void CAsyncWorkMgr::SaveStore(
-  std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, std::string data, int type,
-  CMCStoreInfoBackup& owner, StoreBackupContext& context
+  std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, std::string data, int type
 ) {
   NAsyncWorkPtr work(this->m_pools, "MerchantStoreInformation_Save");
 
   if (work.Get()) {
-    static_cast<CMCStoreInfoBackupSaveAsyncWork*>(work.Get())->Bind(url, accountId, characterId, world, token, data, type, owner, context);
+    static_cast<CMCStoreInfoBackupSaveAsyncWork*>(work.Get())->Bind(url, accountId, characterId, world, token, data, type);
     this->Submit(work);
   }
 }

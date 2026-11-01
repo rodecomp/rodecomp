@@ -37,15 +37,12 @@ public:
   void CompleteLoad(
     AsyncDiagnostic diagnostic, std::uint32_t accountId, std::uint32_t characterId, std::string accountName, std::string response, StoreBackupContext& context
   );
-  void CompleteSave(AsyncDiagnostic diagnostic, std::string response, StoreBackupContext& context);
+  void CompleteSave(AsyncDiagnostic diagnostic, std::string response);
   void Load(
     std::uint32_t accountId, std::uint32_t characterId, std::string accountName, const char* token16, int type, CAsyncWorkMgr& workManager,
     StoreBackupContext& context
   );
-  void Save(
-    int type, std::uint32_t accountId, std::uint32_t characterId, const char* accountName, const char* token16, const std::list<ITEM_INFO>& storeItems,
-    CAsyncWorkMgr& workManager, StoreBackupContext& context
-  );
+  void Save(int type);
 
   /* 0004 */ bool enabled;
   /* 0005 */ bool loaded;

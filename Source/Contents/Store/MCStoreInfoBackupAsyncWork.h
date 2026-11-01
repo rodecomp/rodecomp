@@ -41,8 +41,7 @@ public:
   bool Execute() override;
   void Complete() override;
   void Bind(
-    std::string url, std::uint32_t accountId, std::uint32_t characterId, std::string accountName, std::string token, std::string data, int type,
-    CMCStoreInfoBackup& owner, StoreBackupContext& context
+    std::string url, std::uint32_t accountId, std::uint32_t characterId, std::string accountName, std::string token, std::string data, int type
   );
 
 protected:
@@ -55,14 +54,12 @@ protected:
   /* 0090 */ AsyncDiagnostic m_diagnostic;
   /* 00C8 */ std::string m_response;
   /* 00E0 */ int m_type;
-
-  CMCStoreInfoBackup* m_owner;
-  StoreBackupContext* m_context;
+  /* 00E4 */ unsigned char unknown_00E4[4];
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CMCStoreInfoBackupLoadAsyncWork) == 212);
-static_assert(sizeof(CMCStoreInfoBackupSaveAsyncWork) == 236);
+static_assert(sizeof(CMCStoreInfoBackupSaveAsyncWork) == 232);
 #endif
 
 #endif
