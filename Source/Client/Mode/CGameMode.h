@@ -59,6 +59,20 @@ struct PartyRosterEntry {
 
 static_assert(sizeof(PartyRosterEntry) == 0x36);
 
+#pragma pack(push, 1)
+struct SkillListEntry {
+  /* 0000 */ std::uint16_t id;
+  /* 0002 */ int type;
+  /* 0006 */ std::int16_t level;
+  /* 0008 */ std::int16_t spCost;
+  /* 000A */ std::int16_t range;
+  /* 000C */ unsigned char upgradable;
+  /* 000D */ std::int16_t unknown_000D;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(SkillListEntry) == 0xF);
+
 struct GameModeLoopSound {
   /* 0000 */ std::string name;
   /* 0018 */ std::uint32_t npcId;
@@ -335,6 +349,7 @@ public:
   void SpawnMandraAttack(std::uint32_t aid, int target, char flag);
   void OpenActorMenu(const ActorPickInfo* pick, int handled);
   int HandleActorPick(ActorPickInfo* pick, int result);
+  void ReceiveSkillList(int packetType, const std::vector<SkillListEntry>& skills);
   std::uint32_t FindUnknown01AC(std::uint32_t key);
   std::string ActorName(std::uint32_t id);
   std::uint32_t ActorNameColor(int job, std::uint32_t aid);

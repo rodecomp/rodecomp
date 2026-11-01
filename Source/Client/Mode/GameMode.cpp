@@ -1470,7 +1470,7 @@ void CGameMode::InitializeCamera() {
 #include "Contents/Schedule/Schedule.h"
 #include "UI/Text/UINameBalloonText.h"
 #include "UI/Text/UITransBalloonText.h"
-#include "Contents/Actors/Pc.h"
+#include "Contents/Messenger/ClientMessenger.h"
 #include "ActorPickNode.h"
 #include "Client/Registry.h"
 #include "Contents/Schedule/CheckGDISchedule.h"
@@ -3828,5 +3828,81 @@ struct ContactNpcPacket {
   /* 0006 */ unsigned char type;
 };
 #pragma pack(pop)
+
+namespace EquipmentProperties {
+class CEquipmentPropertiesMgr {
+public:
+  virtual ~CEquipmentPropertiesMgr();
+  /* 0004 */ unsigned char unknown_0004[0x1F8];
+
+  CEquipmentPropertiesMgr();
+  void RefreshPretend();
+};
+}
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(EquipmentProperties::CEquipmentPropertiesMgr) == 0x1FC);
+#endif
+
+// OFFSET: 0x00D07030
+// FUNCTION: fn_21580
+void CGameMode::ReceiveSkillList(int packetType, const std::vector<SkillListEntry>& skills) {
+  if (packetType == 0x10F || packetType == 0xB32) {
+    g_session.m_skillBundle.skills.clear();
+  } else if (packetType == 0x235) {
+    g_session.m_homunSkills.clear();
+  } else if (packetType == 0x29D) {
+    g_session.m_mercSkills.clear();
+  }
+
+  SkillWindows windows{g_windowMgr.window_02C4, g_windowMgr.window_01E8, *reinterpret_cast<WindowManagerWindows*>(&g_windowMgr)};
+  for (const SkillListEntry& entry : skills) {
+    CSkillInfo skill;
+    if ((entry.id != 0 && entry.id < 7999) || g_session.IsHomunculusSkill(entry.id) || g_session.IsMercenarySkill(entry.id)) {
+      skill.id = entry.id;
+      skill.unknown_000C = entry.type;
+      skill.level = entry.level;
+      skill.unknown_0014 = entry.spCost;
+      skill.unknown_0018 = entry.upgradable;
+      skill.unknown_001C = entry.range;
+      skill.name = skill.IdName(*g_session.m_hotkeyScript);
+      skill.unknown_0030 = entry.unknown_000D;
+      skill.unknown_0034 = skill.UseApAmount(*g_session.m_hotkeyScript, entry.level);
+      g_session.m_skillBundle.ApplyLevelChange(skill);
+
+      if (packetType == 0x10F || packetType == 0xB32) {
+        ClientSkills client{
+          g_session.m_skillBundle,
+          g_session.m_homunSkills,
+          g_session.m_mercSkills,
+          g_session.m_additionalSkills,
+          reinterpret_cast<const int&>(g_session.m_jobFlags),
+          g_activeSkillEffects
+        };
+        const SkillUseLevels levels{
+          g_session.m_skillBundle.unknown_0064, *reinterpret_cast<const std::vector<int>*>(g_session.unknown_0710), g_session.m_homunSkillLevels
+        };
+        client.Update(skill, 0, 0, *g_session.m_hotkeyScript, levels, windows);
+      } else if (packetType == 0x235) {
+        g_session.UpdateHomunSkill(skill, 0);
+      } else if (packetType == 0x29D) {
+        g_session.UpdateMercSkill(skill, 0);
+      }
+    }
+  }
+
+  if (packetType == 0x10F || packetType == 0xB32) {
+    windows.Notify();
+  } else if (packetType == 0x235) {
+    g_session.NotifyHomunSkillWindows();
+  } else if (packetType == 0x29D) {
+    g_session.NotifyMercSkillWindows();
+  }
+
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  g_equipmentPropertiesMgr->RefreshPretend();
+}
 
 // OFFSET: 0x00CE2880
