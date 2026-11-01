@@ -58,6 +58,7 @@
 #include "Contents/Hotkeys/EmotionHotkeys.h"
 #include "Contents/Messenger/ClientMessenger.h"
 #include "UI/Text/TextMarkup.h"
+#include "UI/Dialogs/UIWaitDBSaveWnd.h"
 namespace {
 #pragma pack(push, 1)
 struct AddFriendPacket {
@@ -3644,4 +3645,46 @@ bool UIWindowMgr::CloseWindow(int id) {
   }
 
   return closed;
+}
+
+// OFFSET: 0x00AA2A00
+// FUNCTION: fn_17218
+void UIWindowMgr::ShowWaitDBSaveWindow(UIWindowContext& windows, UIWaitDBSaveWndContext& waitContext) {
+  if (this->window_4F2AC != nullptr) {
+    return;
+  }
+
+  this->window_4F2AC = new UIWaitDBSaveWnd(windows, waitContext);
+  this->window_4F2AC->SetSize(g_renderer->viewport.width, g_renderer->viewport.height);
+  this->window_4F2AC->Move(0, 0);
+  this->window_4F2AC->SetId(10024);
+  this->rendered.push_back(this->window_4F2AC);
+
+  UIWindow* window = this->window_4F2AC;
+  if (window && (this->modal == nullptr || this->window_4F174 == window) && !this->LookupWindow(278) && !this->LookupWindow(4) &&
+      !this->LookupWindow(199) && !this->LookupWindow(200)) {
+    int companion = -1;
+    if (window->geometry.id == 12) {
+      companion = 234;
+    } else if (window->geometry.id == 82) {
+      companion = 250;
+    }
+
+    if (companion != -1) {
+      const auto entry = std::find_if(this->rendered.begin(), this->rendered.end(), [&](const UIWindow* value) { return value->geometry.id == companion; });
+      if (entry != this->rendered.end()) {
+        UIWindow* value = *entry;
+        this->rendered.erase(entry);
+        this->rendered.push_back(value);
+      }
+    }
+
+    const auto entry = std::find(this->rendered.begin(), this->rendered.end(), window);
+    if (entry != this->rendered.end()) {
+      this->rendered.erase(entry);
+      this->rendered.push_back(window);
+    }
+  }
+
+  this->window_4F2AC->Show(1);
 }

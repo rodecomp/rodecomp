@@ -20,6 +20,8 @@ class CWebBrowser;
 struct MessengerMember;
 struct ReplayOptions;
 struct ModeDragState;
+struct UIWaitDBSaveWndContext;
+struct UIWindowContext;
 
 struct WindowTextEntry {
   /* 0000 */ std::string text;
@@ -559,6 +561,7 @@ public:
   bool ProcessHotkeyAction(int action, int pressed);
   bool sub_AA35F0(int action);
   bool ProcessKeyDown(int key, int keyData, int pressed);
+  void ShowWaitDBSaveWindow(UIWindowContext& windows, UIWaitDBSaveWndContext& waitContext);
   void SendEmotionHotkey(int index);
 };
 
