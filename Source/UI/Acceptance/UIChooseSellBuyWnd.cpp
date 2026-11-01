@@ -160,6 +160,12 @@ UIChooseSellBuyWnd::UIChooseSellBuyWnd(UIWindowContext& windows, UIFrameContext&
     : UIFrameWnd(windows, frames, 0), identity(0), m_acceptance(&acceptance) {
 }
 
+// OFFSET: 0x008CAC40
+// FUNCTION: fn_11997
+UIItemCollectionWnd::~UIItemCollectionWnd() {
+  g_windowMgr.CloseWindow(276);
+}
+
 // OFFSET: 0x008CC430
 UIChooseSellBuyWnd::~UIChooseSellBuyWnd() = default;
 
@@ -1816,6 +1822,20 @@ void UIComboBoxWnd::Resize(int width, int height) {
   this->m_list->Resize(width, height);
   this->m_list->Refresh();
   this->m_list->Invalidate();
+}
+
+// OFFSET: 0x008F9520
+// FUNCTION: fn_12336
+int UICombinedCardItemCollection_ComparisonWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  if (message != 34) {
+    return this->UIItemCollectionWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+
+  UIWindow* window = g_windowMgr.LookupWindow(82);
+  if (window) {
+    this->Move(window->geometry.x - window->geometry.width, window->geometry.y);
+  }
+  return 0;
 }
 
 // OFFSET: 0x008F9570

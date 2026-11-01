@@ -17,6 +17,7 @@ struct WindowPlacement;
 class UIItemCollectionWnd : public UIFrameWnd {
 public:
   UIItemCollectionWnd(UIWindowContext& windows, UIFrameContext& frames);
+  ~UIItemCollectionWnd() override;
   void Slot11() override;
   void Slot15(int width, int height) override;
 
@@ -59,6 +60,7 @@ public:
   void Slot19() override;
   void Slot25(int x, int y) override;
   void Slot31(int x, int y) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void SetHeight(int height);
 };
 
@@ -88,6 +90,7 @@ public:
   void Slot15(int width, int height) override;
   void Slot25(int x, int y) override;
   void Slot31(int x, int y) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 };
 
 #endif
