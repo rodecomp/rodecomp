@@ -840,6 +840,7 @@ public:
   void ProcessMouseWheel(int requireControl);
   void ReceiveEquipItemList34(const unsigned char* packet);
   void ReceiveEquipItemList38(const unsigned char* packet);
+  void ApplyRefiningMaterial(short itemId, unsigned char count, const unsigned char* materials, unsigned char catalystCount);
 };
 
 void LaunchRollingCutterEffect(CGameActor* actor);

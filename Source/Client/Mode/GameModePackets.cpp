@@ -56,6 +56,7 @@
 #include "UI/Shop/UIMerchantItemShopWnd.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/UIRefiningWnd.h"
 #include "UI/Dialogs/UIWaitWnd.h"
 #include "UI/Window/WindowDialogs.h"
 #include "Utility/Math/Vector3d.h"
@@ -11452,4 +11453,13 @@ void CGameMode::ReceiveEquipItemList38(const unsigned char* packet) {
   }
 
   RefreshItemWindows(&g_windowMgr);
+}
+
+// OFFSET: 0x00D79500
+// FUNCTION: fn_22169
+void CGameMode::ApplyRefiningMaterial(short itemId, unsigned char count, const unsigned char* materials, unsigned char catalystCount) {
+  UIRefiningWnd* window = static_cast<UIRefiningWnd*>(g_windowMgr.LookupWindow(0x127));
+  if (window) {
+    window->ApplyItem(itemId, count, reinterpret_cast<RefiningMaterial*>(const_cast<unsigned char*>(materials)), catalystCount);
+  }
 }
