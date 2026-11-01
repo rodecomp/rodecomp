@@ -11146,3 +11146,61 @@ void NoticeSkillUse(CGameActor* target, CGameActor* source, std::uint16_t skillI
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFFFF, color, 0, 0);
   }
 }
+
+// OFFSET: 0x00D5E680
+// FUNCTION: fn_21966
+void ApplyActorSkillState(CGameActor* actor, std::uint16_t skillId, int duration) {
+  switch (skillId) {
+  case 0x39:
+  case 0x3E:
+  case 0x154B:
+    reinterpret_cast<unsigned char*>(&actor->render.unknown_008C)[2] = 1;
+    actor->unknown_0278 = timeGetTime() + duration;
+    break;
+  case 0x105:
+  case 0x3F7:
+    actor->SetFrameSequence(96, 0, 0, 96, 0, 0, 0, 0);
+    break;
+  case 0x10C:
+    actor->SetFrameSequence(96, 0, 0, 96, 0, 1, duration + 1000, 0);
+    break;
+  case 0x191:
+    actor->SetFrameSequence(96, 0, 0, 96, 0, 0, 0, 0);
+    actor->LaunchEffect(0x192, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    break;
+  case 0x8A9:
+    actor->SendMsg(nullptr, 0x8F, 0, 0x2DF, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, 0x8F, 0, 0x2E1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, 0x8F, 0, 0x2E0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, 0x8F, 0, 0x2E2, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    break;
+  case 0x14C4:
+    actor->SetFrameSequence(88, 0, 0, 88, 0, 0, 0, 0);
+    break;
+  }
+}
+
+// OFFSET: 0x00D79FD0
+// FUNCTION: fn_22185
+void SetActiveSkillEffect184(unsigned char enable) {
+  if (enable == 1) {
+    ActiveSkillEffect effect;
+    effect.id = 184;
+    effect.unknown_0004 = 999999;
+    effect.unknown_0008 = 0;
+    effect.unknown_0014 = 9999;
+    effect.unknown_0018 = 9999;
+    g_activeSkillEffects.push_back(effect);
+    return;
+  }
+
+  std::vector<ActiveSkillEffect>::iterator it = g_activeSkillEffects.begin();
+  for (; it != g_activeSkillEffects.end(); ++it) {
+    if (it->id == 184) {
+      break;
+    }
+  }
+  if (it != g_activeSkillEffects.end()) {
+    g_activeSkillEffects.erase(it);
+  }
+}
