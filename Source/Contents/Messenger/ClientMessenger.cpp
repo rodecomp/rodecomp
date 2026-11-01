@@ -2895,11 +2895,7 @@ int __stdcall sub_6A6E50(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
-  int count = 1;
-  int valuePosition = 1;
-  int indexPosition = -1;
-  int keyPosition = -1;
-  g_equipmentPropertiesMgr->ApplyProperty("AddHealValue", state, count, valuePosition, indexPosition, keyPosition);
+  g_equipmentPropertiesMgr->ApplyProperty("AddHealValue", state, 1, 1, -1, -1);
   return 0;
 }
 
