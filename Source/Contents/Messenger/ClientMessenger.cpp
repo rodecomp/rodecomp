@@ -3178,11 +3178,7 @@ int __stdcall sub_6A8650(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
-  int count = 3;
-  int valuePosition = 3;
-  int indexPosition = -1;
-  int keyPosition = -1;
-  g_equipmentPropertiesMgr->ApplyProperty("ClassSubDamage", state, count, valuePosition, indexPosition, keyPosition);
+  g_equipmentPropertiesMgr->ApplyProperty("ClassSubDamage", state, 3, 3, -1, -1);
   return 0;
 }
 
@@ -3194,11 +3190,7 @@ int __stdcall sub_6A87D0(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
-  int count = 2;
-  int valuePosition = 2;
-  int indexPosition = 1;
-  int keyPosition = -1;
-  g_equipmentPropertiesMgr->ApplyProperty("DisableSkill", state, count, valuePosition, indexPosition, keyPosition);
+  g_equipmentPropertiesMgr->ApplyProperty("DisableSkill", state, 2, 2, 1, -1);
   return 0;
 }
 
@@ -3208,11 +3200,7 @@ int __stdcall sub_6A8890(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
-  int count = 2;
-  int valuePosition = 2;
-  int indexPosition = 1;
-  int keyPosition = -1;
-  g_equipmentPropertiesMgr->ApplyProperty("EnableSkill", state, count, valuePosition, indexPosition, keyPosition);
+  g_equipmentPropertiesMgr->ApplyProperty("EnableSkill", state, 2, 2, 1, -1);
   return 0;
 }
 
@@ -3222,11 +3210,7 @@ int __stdcall sub_6A8950(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
-  int count = 1;
-  int valuePosition = 1;
-  int indexPosition = -1;
-  int keyPosition = -1;
-  g_equipmentPropertiesMgr->ApplyProperty("IndestructibleArmor", state, count, valuePosition, indexPosition, keyPosition);
+  g_equipmentPropertiesMgr->ApplyProperty("IndestructibleArmor", state, 1, 1, -1, -1);
   return 0;
 }
 
@@ -3236,11 +3220,7 @@ int __stdcall sub_6A8A10(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
-  int count = 1;
-  int valuePosition = 1;
-  int indexPosition = -1;
-  int keyPosition = -1;
-  g_equipmentPropertiesMgr->ApplyProperty("IndestructibleWeapon", state, count, valuePosition, indexPosition, keyPosition);
+  g_equipmentPropertiesMgr->ApplyProperty("IndestructibleWeapon", state, 1, 1, -1, -1);
   return 0;
 }
 
@@ -3260,11 +3240,7 @@ int __stdcall sub_6A8B90(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
-  int count = 1;
-  int valuePosition = 1;
-  int indexPosition = -1;
-  int keyPosition = -1;
-  g_equipmentPropertiesMgr->ApplyProperty("Magicimmune", state, count, valuePosition, indexPosition, keyPosition);
+  g_equipmentPropertiesMgr->ApplyProperty("Magicimmune", state, 1, 1, -1, -1);
   return 0;
 }
 
