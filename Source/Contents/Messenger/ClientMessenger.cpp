@@ -2736,11 +2736,7 @@ int __stdcall sub_6A6490(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
-  int count = 2;
-  int valuePosition = 1;
-  int indexPosition = 2;
-  int keyPosition = -1;
-  g_equipmentPropertiesMgr->ApplyProperty("subspconsumption", state, count, valuePosition, indexPosition, keyPosition);
+  g_equipmentPropertiesMgr->ApplyProperty("subspconsumption", state, 2, 1, 2, -1);
   return 0;
 }
 
@@ -2750,11 +2746,7 @@ int __stdcall sub_6A6550(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
-  int count = 2;
-  int valuePosition = 1;
-  int indexPosition = 2;
-  int keyPosition = -1;
-  g_equipmentPropertiesMgr->ApplyProperty("SubSPdrain", state, count, valuePosition, indexPosition, keyPosition);
+  g_equipmentPropertiesMgr->ApplyProperty("SubSPdrain", state, 2, 1, 2, -1);
   return 0;
 }
 
@@ -2764,11 +2756,7 @@ int __stdcall sub_6A6610(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
-  int count = 2;
-  int valuePosition = 2;
-  int indexPosition = 1;
-  int keyPosition = -1;
-  g_equipmentPropertiesMgr->ApplyProperty("SubSkillDelay", state, count, valuePosition, indexPosition, keyPosition);
+  g_equipmentPropertiesMgr->ApplyProperty("SubSkillDelay", state, 2, 2, 1, -1);
   return 0;
 }
 
@@ -2778,11 +2766,7 @@ int __stdcall sub_6A66D0(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
-  int count = 2;
-  int valuePosition = 2;
-  int indexPosition = -1;
-  int keyPosition = -1;
-  g_equipmentPropertiesMgr->ApplyProperty("SubSkillMDamage", state, count, valuePosition, indexPosition, keyPosition);
+  g_equipmentPropertiesMgr->ApplyProperty("SubSkillMDamage", state, 2, 2, -1, -1);
   return 0;
 }
 
@@ -2792,11 +2776,7 @@ int __stdcall sub_6A6790(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
-  int count = 2;
-  int valuePosition = 2;
-  int indexPosition = 1;
-  int keyPosition = -1;
-  g_equipmentPropertiesMgr->ApplyProperty("SubSkillSP", state, count, valuePosition, indexPosition, keyPosition);
+  g_equipmentPropertiesMgr->ApplyProperty("SubSkillSP", state, 2, 2, 1, -1);
   return 0;
 }
 
@@ -2806,11 +2786,7 @@ int __stdcall sub_6A6850(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
-  int count = 2;
-  int valuePosition = 2;
-  int indexPosition = 1;
-  int keyPosition = -1;
-  g_equipmentPropertiesMgr->ApplyProperty("SubSpecificSpellCastTime", state, count, valuePosition, indexPosition, keyPosition);
+  g_equipmentPropertiesMgr->ApplyProperty("SubSpecificSpellCastTime", state, 2, 2, 1, -1);
   return 0;
 }
 
@@ -2820,11 +2796,7 @@ int __stdcall sub_6A6910(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
-  int count = 1;
-  int valuePosition = 1;
-  int indexPosition = -1;
-  int keyPosition = -1;
-  g_equipmentPropertiesMgr->ApplyProperty("SubSpellCastTime", state, count, valuePosition, indexPosition, keyPosition);
+  g_equipmentPropertiesMgr->ApplyProperty("SubSpellCastTime", state, 1, 1, -1, -1);
   return 0;
 }
 
@@ -2834,11 +2806,7 @@ int __stdcall sub_6A69D0(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
-  int count = 1;
-  int valuePosition = 1;
-  int indexPosition = -1;
-  int keyPosition = -1;
-  g_equipmentPropertiesMgr->ApplyProperty("SubSpellDelay", state, count, valuePosition, indexPosition, keyPosition);
+  g_equipmentPropertiesMgr->ApplyProperty("SubSpellDelay", state, 1, 1, -1, -1);
   return 0;
 }
 
@@ -2848,11 +2816,7 @@ int __stdcall sub_6A6A90(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
-  int count = 2;
-  int valuePosition = 2;
-  int indexPosition = -1;
-  int keyPosition = -1;
-  g_equipmentPropertiesMgr->ApplyProperty("AddEXPPercent_KillRace", state, count, valuePosition, indexPosition, keyPosition);
+  g_equipmentPropertiesMgr->ApplyProperty("AddEXPPercent_KillRace", state, 2, 2, -1, -1);
   return 0;
 }
 
@@ -2862,11 +2826,7 @@ int __stdcall sub_6A6B50(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
-  int count = 3;
-  int valuePosition = 3;
-  int indexPosition = -1;
-  int keyPosition = -1;
-  g_equipmentPropertiesMgr->ApplyProperty("AddExtParam", state, count, valuePosition, indexPosition, keyPosition);
+  g_equipmentPropertiesMgr->ApplyProperty("AddExtParam", state, 3, 3, -1, -1);
   return 0;
 }
 
@@ -3176,11 +3136,7 @@ int __stdcall sub_6A8290(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
-  int count = 2;
-  int valuePosition = 2;
-  int indexPosition = -1;
-  int keyPosition = -1;
-  g_equipmentPropertiesMgr->ApplyProperty("AddBowAttackDamage", state, count, valuePosition, indexPosition, keyPosition);
+  g_equipmentPropertiesMgr->ApplyProperty("AddBowAttackDamage", state, 2, 2, -1, -1);
   return 0;
 }
 
@@ -3190,11 +3146,7 @@ int __stdcall sub_6A8350(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
-  int count = 1;
-  int valuePosition = 1;
-  int indexPosition = -1;
-  int keyPosition = -1;
-  g_equipmentPropertiesMgr->ApplyProperty("AddSpellDelay", state, count, valuePosition, indexPosition, keyPosition);
+  g_equipmentPropertiesMgr->ApplyProperty("AddSpellDelay", state, 1, 1, -1, -1);
   return 0;
 }
 
@@ -3206,11 +3158,7 @@ int __stdcall sub_6A84D0(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
-  int count = 1;
-  int valuePosition = 1;
-  int indexPosition = -1;
-  int keyPosition = -1;
-  g_equipmentPropertiesMgr->ApplyProperty("Clairvoyance", state, count, valuePosition, indexPosition, keyPosition);
+  g_equipmentPropertiesMgr->ApplyProperty("Clairvoyance", state, 1, 1, -1, -1);
   return 0;
 }
 
@@ -3220,11 +3168,7 @@ int __stdcall sub_6A8590(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
-  int count = 3;
-  int valuePosition = 3;
-  int indexPosition = -1;
-  int keyPosition = -1;
-  g_equipmentPropertiesMgr->ApplyProperty("ClassAddDamage", state, count, valuePosition, indexPosition, keyPosition);
+  g_equipmentPropertiesMgr->ApplyProperty("ClassAddDamage", state, 3, 3, -1, -1);
   return 0;
 }
 
