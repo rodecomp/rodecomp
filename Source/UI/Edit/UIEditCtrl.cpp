@@ -62,6 +62,7 @@
 #include "UI/Dialogs/UIPasswordWnd.h"
 #include "Client/Session.h"
 #include "Client/Mode/CGameMode.h"
+#include "Client/Mode/CLoginMode.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/ModeDragState.h"
@@ -5608,6 +5609,77 @@ void UIItemShopWnd2::Slot28(int x, int y) {
 }
 
 // OFFSET: 0x00986970
+// FUNCTION: fn_13375
+void UIItemShopWnd::Slot28(int x, int y) {
+  ITEM_INFO item = this->GetItemAt(x, y);
+  if (item.unknown_0000[1] > 0) {
+    int tooltipX = (x - 40) / 32 * 32 + 40;
+    int tooltipY = (y - 17) / 32 * 32 + 1;
+    this->ToScreen(tooltipX, tooltipY);
+
+    std::string text;
+    char currency[12];
+    sprintf(currency, "Zeny");
+    if (this->unknown_010C) {
+      if (g_serviceType == 6) {
+        sprintf(currency, "Koin");
+      } else if (g_serviceType == 0) {
+        if (g_hangameLogin == 1) {
+          sprintf(currency, "한코인");
+        } else {
+          sprintf(currency, LookupMessage(1307));
+        }
+      } else {
+        sprintf(currency, "Point");
+      }
+    }
+
+    char price[64];
+    ItemDescriptions descriptions{g_itemDescriptions};
+    bool languagePrefix = false;
+    WORD language = g_serverLanguage->language;
+    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+    if (this->unknown_00F8) {
+      if (item.unknown_0014[0] != item.unknown_0014[1]) {
+        if (item.identified == 1 && item.unknown_0098 != 0) {
+          text = FormatOwnedString(LookupMessage(2758), naming.DisplayName(item, 0).c_str(), item.unknown_0098, item.quantity, LookupMessage(588),
+                                   item.unknown_0014[0], FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64), currency);
+        } else {
+          text = FormatOwnedString("%s %d %s %d -> %s %s", naming.DisplayName(item, 0).c_str(), item.quantity, LookupMessage(588), item.unknown_0014[0],
+                                   FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64), currency);
+        }
+      } else {
+        if (item.identified == 1 && item.unknown_0098 != 0) {
+          text = FormatOwnedString(LookupMessage(2759), naming.DisplayName(item, 0).c_str(), item.unknown_0098, item.quantity, LookupMessage(588),
+                                   FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64), currency);
+        } else {
+          text = FormatOwnedString("%s %d %s %s %s", naming.DisplayName(item, 0).c_str(), item.quantity, LookupMessage(588),
+                                   FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64), currency);
+        }
+      }
+    } else {
+      if (item.unknown_0014[0] != item.unknown_0014[1]) {
+        if (item.identified == 1 && item.unknown_0098 != 0) {
+          text = FormatOwnedString(LookupMessage(2760), naming.DisplayName(item, 0).c_str(), item.unknown_0098, item.unknown_0014[0],
+                                   FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64), currency);
+        } else {
+          text = FormatOwnedString("%s %d -> %s %s", naming.DisplayName(item, 0).c_str(), item.unknown_0014[0],
+                                   FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64), currency);
+        }
+      } else {
+        if (item.identified == 1 && item.unknown_0098 != 0) {
+          text = FormatOwnedString(LookupMessage(2761), naming.DisplayName(item, 0).c_str(), item.unknown_0098,
+                                   FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64), currency);
+        } else {
+          text = FormatOwnedString("%s %s %s", naming.DisplayName(item, 0).c_str(), FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64),
+                                   currency);
+        }
+      }
+    }
+
+    reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+  }
+}
 
 // OFFSET: 0x00987000
 // FUNCTION: fn_13376
