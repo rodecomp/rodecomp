@@ -1869,6 +1869,16 @@ void CGameMode::sub_D079A0(unsigned char kind, int argument) {
 }
 
 // OFFSET: 0x00D08390
+// FUNCTION: fn_21588
+void CGameMode::sub_D08390(const unsigned char* packet) {
+  const int x = *reinterpret_cast<const std::int16_t*>(packet + 0x12);
+  const int y = *reinterpret_cast<const std::int16_t*>(packet + 0x14);
+  const int ip = *reinterpret_cast<const int*>(packet + 0x16);
+  const int port = *reinterpret_cast<const std::int16_t*>(packet + 0x1A);
+  const std::string host(reinterpret_cast<const char*>(packet + 0x1C), reinterpret_cast<const char*>(packet + 0x9C));
+  const std::string mapName(reinterpret_cast<const char*>(packet + 2), reinterpret_cast<const char*>(packet + 0x12));
+  this->ChangeZoneServer(mapName.c_str(), x, y, ip, port, host.c_str());
+}
 
 // OFFSET: 0x00D08110
 // FUNCTION: fn_21585
