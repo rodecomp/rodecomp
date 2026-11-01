@@ -23,6 +23,7 @@ public:
   void Slot11() override;
   void Slot19() override;
   void Paint() override;
+  std::vector<unsigned char> Slot44() override;
   int ButtonX(UIBitmapButton* button);
 };
 

@@ -154,6 +154,9 @@ const char* g_bookmarkKeySuffix = bookmarkKeySuffixText;
 // GLOBAL: gl_25332
 int g_window315Enabled = 1;
 
+// GLOBAL: gl_25391
+bool g_randomLoadingScreen;
+
 // OFFSET: 0x0087B500
 // FUNCTION: fn_11241
 void UIChatHisBox::Configure(int x, int y, int width, int height, unsigned char) {
@@ -6386,3 +6389,95 @@ int CSession::GetTraitStat(int type) {
 // OFFSET: 0x008C8330
 
 // OFFSET: 0x008C8A50
+
+// OFFSET: 0x008D4320
+// FUNCTION: fn_12107
+std::vector<unsigned char> UIChooseWarpWnd::Slot44() {
+  std::vector<unsigned char> records;
+  {
+    const auto record = BuildReplayTaggedRecord(21950, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  for (auto choice = this->m_choices.begin(); choice < this->m_choices.end(); ++choice) {
+    const auto record = BuildReplayTaggedRecord(21953, choice->c_str(), choice->size());
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(21951, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  return records;
+}
+
+// OFFSET: 0x008D4E70
+// FUNCTION: fn_12110
+std::vector<unsigned char> UIExchangeWnd::Slot44() {
+  std::vector<unsigned char> records;
+  {
+    const auto record = BuildReplayTaggedRecord(20600, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(20603, &this->unknown_0108, sizeof(this->unknown_0108));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(20604, &this->unknown_010C, sizeof(this->unknown_010C));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(20602, this->unknown_00F0.c_str(), this->unknown_00F0.size());
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(20605, &this->unknown_00CC, sizeof(this->unknown_00CC));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(20606, &this->unknown_00D0, sizeof(this->unknown_00D0));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(20607, &this->unknown_00D4, sizeof(this->unknown_00D4));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(20608, &this->unknown_00D8, sizeof(this->unknown_00D8));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(20609, &this->unknown_00DC, sizeof(this->unknown_00DC));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(20601, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  return records;
+}
+
+// OFFSET: 0x008D6D40
+// FUNCTION: fn_12117
+std::vector<unsigned char> UISayDialogWnd::Slot44() {
+  std::vector<unsigned char> records;
+  {
+    const auto record = BuildReplayTaggedRecord(22500, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  const UITagTextViewer* viewer = static_cast<UITagTextViewer*>(this->m_viewer);
+  for (auto text = viewer->m_texts.begin(); text != viewer->m_texts.end(); ++text) {
+    const auto record = BuildReplayTaggedRecord(22503, text->c_str(), text->size());
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(22504, &this->unknown_00D4, sizeof(this->unknown_00D4));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(22501, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  return records;
+}
+
+// OFFSET: 0x008E30B0

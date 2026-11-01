@@ -42,6 +42,7 @@ public:
   void Slot32(int x, int y) override;
   void Slot35(int delta) override;
   void Slot19() override;
+  std::vector<unsigned char> Slot44() override;
 
   void LayoutButtons();
   void CancelInput();
