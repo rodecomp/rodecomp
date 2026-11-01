@@ -6,6 +6,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <vector>
 
 struct WindowReplayRecorder;
 class UICheckBox;
@@ -15,6 +16,7 @@ class UIItemShopWnd : public UIItemBaseWnd {
 public:
   UIItemShopWnd();
   UIItemShopWnd(UIWindowContext& windows, UIFrameContext& frames);
+  std::vector<unsigned char> BuildReplayRecords();
   void Slot11() override;
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot25(int x, int y) override;

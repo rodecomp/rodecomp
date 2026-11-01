@@ -7,6 +7,7 @@
 #include "UI/Item/UIItemShopWnd.h"
 
 #include <cstdint>
+#include <vector>
 
 class UIStaticText;
 struct WindowResponseRecorder;
@@ -25,6 +26,7 @@ public:
 class UIParaItemShopWnd : public UIItemShopWnd {
 public:
   UIParaItemShopWnd();
+  std::vector<unsigned char> BuildReplayRecords();
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot32(int x, int y) override;
   void Paint() override;

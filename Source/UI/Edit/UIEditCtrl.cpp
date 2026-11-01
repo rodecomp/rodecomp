@@ -38,6 +38,7 @@
 #include "UI/Buttons/UISpriteButton.h"
 #include "UI/Buttons/UITextureButton.h"
 #include "UI/Item/UIItemPurchaseWnd.h"
+#include "UI/Item/UIParaItemShopWnd.h"
 #include "UI/Item/UIItemSellWnd.h"
 #include "UI/Item/UIItemSellWnd2.h"
 #include "UI/Item/UIItemShopWnd.h"
@@ -3959,6 +3960,58 @@ std::vector<unsigned char>* sub_973170(std::vector<unsigned char>* result) {
   return result;
 }
 
+// OFFSET: 0x00973260
+// FUNCTION: fn_13285
+std::vector<unsigned char> UIItemShopWnd::BuildReplayRecords() {
+  std::vector<unsigned char> records;
+  if (this->hovered != 0) {
+    {
+      const auto record = BuildReplayTaggedRecord(21050, nullptr, 0);
+      records.insert(records.end(), record.begin(), record.end());
+    }
+    {
+      const auto record = BuildReplayTaggedRecord(21051, nullptr, 0);
+      records.insert(records.end(), record.begin(), record.end());
+    }
+  } else {
+    {
+      const auto record = BuildReplayTaggedRecord(21000, nullptr, 0);
+      records.insert(records.end(), record.begin(), record.end());
+    }
+    {
+      const auto record = BuildReplayTaggedRecord(21001, nullptr, 0);
+      records.insert(records.end(), record.begin(), record.end());
+    }
+  }
+  return records;
+}
+
+// OFFSET: 0x009733A0
+// FUNCTION: fn_13286
+std::vector<unsigned char> UIParaItemShopWnd::BuildReplayRecords() {
+  std::vector<unsigned char> records;
+  if (this->unknown_0108 != 0) {
+    {
+      const auto record = BuildReplayTaggedRecord(21100, nullptr, 0);
+      records.insert(records.end(), record.begin(), record.end());
+    }
+    {
+      const auto record = BuildReplayTaggedRecord(21101, nullptr, 0);
+      records.insert(records.end(), record.begin(), record.end());
+    }
+  } else {
+    {
+      const auto record = BuildReplayTaggedRecord(21150, nullptr, 0);
+      records.insert(records.end(), record.begin(), record.end());
+    }
+    {
+      const auto record = BuildReplayTaggedRecord(21151, nullptr, 0);
+      records.insert(records.end(), record.begin(), record.end());
+    }
+  }
+  return records;
+}
+
 // OFFSET: 0x009734E0
 // FUNCTION: fn_13287
 std::vector<unsigned char> UIMerchantItemShopWnd::BuildReplayRecords() {
@@ -7145,6 +7198,66 @@ bool UIItemStoreSubWnd::FilterByName3(std::string query) {
     } else {
       ++it;
     }
+  }
+  return true;
+}
+
+// OFFSET: 0x00996950
+// FUNCTION: fn_13474
+bool UIItemStoreSubWnd::sub_996950() {
+  if (this->items.empty()) {
+    return false;
+  }
+
+  for (std::list<ITEM_INFO>::iterator it = this->items.begin(); it != this->items.end(); ++it) {
+    ITEM_INFO item = *it;
+    int highlightColor;
+    std::vector<char*> breaks;
+    char text[256];
+    char* cursor = text;
+    std::size_t remaining = 0x100;
+    char* highlight = nullptr;
+    this->BuildItemName(&item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
+  }
+  return true;
+}
+
+// OFFSET: 0x00996AF0
+// FUNCTION: fn_13475
+bool UIItemStoreSubWnd::sub_996AF0() {
+  if (this->items.empty()) {
+    return false;
+  }
+
+  for (std::list<ITEM_INFO>::iterator it = this->items.begin(); it != this->items.end(); ++it) {
+    ITEM_INFO item = *it;
+    int highlightColor;
+    std::vector<char*> breaks;
+    char text[256];
+    char* cursor = text;
+    std::size_t remaining = 0x100;
+    char* highlight = nullptr;
+    this->BuildItemName(&item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
+  }
+  return true;
+}
+
+// OFFSET: 0x00996C90
+// FUNCTION: fn_13476
+bool UIItemStoreSubWnd::sub_996C90() {
+  if (this->items.empty()) {
+    return false;
+  }
+
+  for (std::list<ITEM_INFO>::iterator it = this->items.begin(); it != this->items.end(); ++it) {
+    ITEM_INFO item = *it;
+    int highlightColor;
+    std::vector<char*> breaks;
+    char text[256];
+    char* cursor = text;
+    std::size_t remaining = 0x100;
+    char* highlight = nullptr;
+    this->BuildItemName(&item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
   }
   return true;
 }
