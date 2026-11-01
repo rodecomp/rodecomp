@@ -6,6 +6,8 @@
 class UIStaticBitmap;
 
 class UISlotBmpButton : public UIBitmapButton {
+  friend class UINewSelectCharWnd;
+
 public:
   UISlotBmpButton(UIWindowContext& windows, UIButtonContext& buttons, int index, bool);
   void Slot15(int width, int height) override;

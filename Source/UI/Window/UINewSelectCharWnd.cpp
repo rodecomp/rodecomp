@@ -15,10 +15,25 @@
 #include "Client/Session.h"
 #include "Render/Text/FontCache.h"
 #include "Render/Text/TextContext.h"
+#include "Contents/Actors/Pc.h"
+#include "Contents/SpriteRidingOffset.h"
+#include "UI/UIStaticBitmap.h"
+#include "UI/Window/WindowDialogs.h"
+#include "Contents/Async/AsyncWorkMgr.h"
+#include "Contents/Hotkeys/EmotionHotkeys.h"
+#include "Contents/Sound/SoundMgr.h"
+#include "Contents/UserData/AccountLinkedUserDataMgr.h"
+#include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketLengths.h"
+#include "Render/DeviceContext/DCSurface.h"
+#include "Script/LuaScript.h"
+#include "UI/Window/UIChangeNameWnd.h"
 
 #include <windows.h>
 #include <mmsystem.h>
 #include <algorithm>
+#include <cstdint>
+#include <cstdio>
 #include <cstring>
 
 // GLOBAL: gl_25006
@@ -49,6 +64,30 @@ char g_selectedSlotIndex;
 void* g_charViewMode;
 
 extern const char* LookupMessage(int id);
+
+#pragma pack(push, 1)
+struct BlockedCharacterEntry {
+  /* 0000 */ std::uint32_t gid;
+  /* 0004 */ char expireDate[20];
+};
+
+struct CharacterGidPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint32_t gid;
+};
+
+struct CharacterMovePacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int16_t from;
+  /* 0004 */ std::int16_t to;
+  /* 0006 */ std::int16_t count;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(BlockedCharacterEntry) == 0x18);
+static_assert(sizeof(CharacterGidPacket) == 6);
+static_assert(sizeof(CharacterMovePacket) == 8);
+
 
 // OFFSET: 0x007D4190
 // FUNCTION: fn_09577
@@ -107,7 +146,7 @@ void Nullsub243() {
 // OFFSET: 0x007D50D0
 // FUNCTION: fn_09587
 std::string UIStaticText::GetText() const {
-  return this->text;
+  return std::string(this->text.c_str(), this->text.size());
 }
 
 // OFFSET: 0x007D5130
@@ -237,6 +276,515 @@ void UINewSelectCharWnd::Slot19() {
 }
 
 // OFFSET: 0x007D77D0
+// FUNCTION: fn_09594
+int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  if (g_windowMgr.unknown_03BC != nullptr || g_windowMgr.unknown_03B8 != nullptr || g_windowMgr.LookupWindow(0x116) != nullptr) {
+    return 0;
+  }
+
+  switch (message) {
+  case 6:
+    switch (argument1) {
+    case 0xB8: {
+      if (this->m_unknown13C) {
+        break;
+      }
+
+      CharacterInfo* info =
+        reinterpret_cast<CharacterInfo*>(static_cast<CMode*>(g_charViewMode)->SendMsg(8, static_cast<unsigned char>(g_selectedSlotIndex), 0, 0, 0));
+      if (info == nullptr) {
+        this->SendMsg(nullptr, 6, 0xCB, this->m_pageSlot, 0, 0);
+        break;
+      }
+
+      if (info->deleteDate > 0) {
+        break;
+      }
+
+      g_session.SetPlayerNameKey(reinterpret_cast<const unsigned char*>(info->name));
+      g_session.SetFlag(info->sex == 'c' ? static_cast<char>(g_doramSex) : static_cast<char>(info->sex));
+      this->m_unknown118 = true;
+      const BlockedCharacterEntry* blocked = reinterpret_cast<const BlockedCharacterEntry*>(&g_session.unknown_07F4[0x40]);
+      for (int index = 0; index < g_session.unknown_59D0; ++index) {
+        if (info->gid == blocked[index].gid) {
+          char text[260];
+          std::memset(text, 0, sizeof(text));
+          std::sprintf(text, LookupMessage(0x337), blocked[index].expireDate);
+          reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text, 0, true, true, 0, "Message", 0x118, 0x78, 0);
+          this->m_unknown118 = false;
+          return 0;
+        }
+      }
+
+      g_soundMgr->PlayWave("버튼소리.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      static_cast<CMode*>(g_charViewMode)->SendMsg(0, 0x2712, 0, 0, 0);
+      this->m_unknown13C = true;
+      if (this->m_windowFC != nullptr) {
+        UIBitmapButton* button = static_cast<UIBitmapButton*>(this->m_windowFC);
+        button->SetBitmap("유저인터페이스\\select_character_ver3\\bt_gameStart_on.bmp", 0, 0);
+        button->SetBitmap("유저인터페이스\\select_character_ver3\\bt_gameStart_on.bmp", 1, 0);
+        button->SetBitmap("유저인터페이스\\select_character_ver3\\bt_gameStart_on.bmp", 2, 0);
+      }
+      break;
+    }
+    case 0xB9:
+      g_accountLinkedUserDataMgr->Save(
+        *reinterpret_cast<EmotionHotkeys*>(&g_session.unknown_0FF8), *g_luaScript, g_session.m_aid, GetRenderSystemHolder()->system,
+        reinterpret_cast<const char*>(&g_session.unknown_807C[8]), *g_asyncWorkMgr
+      );
+      if (g_loginModeFlag == 1) {
+        if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0xD68), 2, true, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
+          static_cast<CMode*>(g_charViewMode)->SendMsg(0x271B, 0, 0, 0, 0);
+        }
+      } else if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x11), 2, true, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
+        static_cast<CMode*>(g_charViewMode)->SendMsg(2, 0, 0, 0, 0);
+        g_windowMgr.Schedule(this);
+      }
+      break;
+    case 0xCB:
+      if (this->m_pageSlot != argument2) {
+        this->m_pageSlot = argument2;
+        this->SendMsg(this->m_slotButtons2[argument2], 6, 0xCC, 0, 0, 0);
+      }
+      if (this->m_slotStatus[static_cast<unsigned char>(g_selectedSlotIndex)] == 1 && static_cast<unsigned char>(g_selectedSlotIndex) < g_producibleSlotCount &&
+          g_windowMgr.EnsureWindow(0x116) != nullptr) {
+        g_windowMgr.CloseWindow(0x115);
+      }
+      break;
+    case 0xCC: {
+      if (this->m_unknown13C || g_windowMgr.HasModalWindow() == 1) {
+        break;
+      }
+
+      for (int index = 0; index < this->m_slotsPerPage; ++index) {
+        UIWindow* button = this->m_slotButtons2[index];
+        if (sender != button) {
+          button->SendMsg(this, 13, 0, 0, 0, 0);
+          continue;
+        }
+
+        this->m_pageSlot = index;
+        g_selectedSlotIndex = static_cast<char>(this->m_page * this->m_slotsPerPage + index);
+        this->m_slotButtons2[index]->SendMsg(this, 13, 1, 0, 0, 0);
+        if (argument2 != 0xE2 && this->m_slotStatus[static_cast<unsigned char>(g_selectedSlotIndex)] != 0 &&
+            static_cast<UISlotBmpButton*>(this->m_slotButtons2[index])->unknown_0128 == 0) {
+          this->SendMsg(nullptr, 6, 0xCB, this->m_pageSlot, 0, 0);
+          break;
+        }
+      }
+
+      if (argument2 == 0xE2) {
+        bool shown = false;
+        const CharacterInfo* info =
+          reinterpret_cast<const CharacterInfo*>(static_cast<CMode*>(g_charViewMode)->SendMsg(8, static_cast<unsigned char>(g_selectedSlotIndex), 0, 0, 0));
+        const int selected = static_cast<unsigned char>(g_selectedSlotIndex);
+        if (this->m_unknown138 != selected && selected < this->m_maxCharacters) {
+          if (info == nullptr) {
+            if (this->m_unknown138 != -1) {
+              static_cast<CLoginMode*>(g_modeMgr.GetLoginMode())->ShowNotice(0x2E, false);
+            }
+          } else {
+            if (info->unknown_00A6 > 0) {
+              shown = static_cast<CLoginMode*>(g_modeMgr.GetLoginMode())->ShowNotice(0x2D, false);
+            }
+            if (info->unknown_00AA > 0) {
+              static_cast<CLoginMode*>(g_modeMgr.GetLoginMode())->ShowNotice(0x2F, shown);
+            }
+          }
+        } else if (info != nullptr && info->unknown_00AA > 0) {
+          static_cast<CLoginMode*>(g_modeMgr.GetLoginMode())->ShowNotice(0x2F, shown);
+        }
+      }
+
+      this->sub_7D9310();
+      this->SaveCurrentSlot();
+      this->Invalidate();
+      break;
+    }
+    case 0xD3: {
+      if (this->m_slotStatus[static_cast<unsigned char>(g_selectedSlotIndex)] == 1) {
+        break;
+      }
+
+      const CharacterInfo* info =
+        reinterpret_cast<const CharacterInfo*>(static_cast<CMode*>(g_charViewMode)->SendMsg(8, static_cast<unsigned char>(g_selectedSlotIndex), 0, 0, 0));
+      const BlockedCharacterEntry* blocked = reinterpret_cast<const BlockedCharacterEntry*>(&g_session.unknown_07F4[0x40]);
+      for (int index = 0; index < g_session.unknown_59D0; ++index) {
+        if (info->gid == blocked[index].gid) {
+          char text[260];
+          std::memset(text, 0, sizeof(text));
+          std::sprintf(text, LookupMessage(0x337), blocked[index].expireDate);
+          reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text, 0, true, true, 0, "Message", 0x118, 0x78, 0);
+          return 0;
+        }
+      }
+
+      if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x13), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
+        this->m_unknown118 = true;
+        if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->RunEmailAddress() == 0xB8) {
+          static_cast<CMode*>(g_charViewMode)->SendMsg(0, 0x271A, 0, 0, 0);
+          g_windowMgr.Schedule(this);
+        }
+        this->m_unknown118 = false;
+      }
+      break;
+    }
+    case 0x11C:
+    case 0x11E: {
+      char text[260];
+      std::memset(text, 0, sizeof(text));
+      static_cast<CMode*>(g_charViewMode)->SendMsg(0x2724, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
+      reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text, 0, true, false, 0, "Message", 0x118, 0x78, 0);
+      break;
+    }
+    case 0x13C: {
+      if (this->m_page <= 0) {
+        break;
+      }
+
+      --this->m_page;
+      const char* prevNormal;
+      const char* prevOver;
+      const char* prevPress;
+      if (this->m_page == 0) {
+        prevPress = "유저인터페이스\\select_character_ver3\\bt_left_off.bmp";
+        prevOver = prevPress;
+        prevNormal = prevPress;
+      } else {
+        prevPress = "유저인터페이스\\select_character_ver3\\bt_left_press.bmp";
+        prevOver = "유저인터페이스\\select_character_ver3\\bt_left_over.bmp";
+        prevNormal = "유저인터페이스\\select_character_ver3\\bt_left_on.bmp";
+      }
+      this->m_prevPageButton->SetBitmap(prevNormal, 0, 0);
+      this->m_prevPageButton->SetBitmap(prevOver, 1, 0);
+      this->m_prevPageButton->SetBitmap(prevPress, 2, 0);
+      this->m_nextPageButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_right_on.bmp", 0, 0);
+      this->m_nextPageButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_right_over.bmp", 1, 0);
+      this->m_nextPageButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_right_press.bmp", 2, 0);
+      if (this->m_pageText != nullptr) {
+        char pageText[16] = {};
+        std::sprintf(pageText, "%d / %d", this->m_page + 1, this->m_pageCount);
+        this->m_pageText->SetText(pageText, 0);
+      }
+
+      for (unsigned index = 0; index < static_cast<unsigned>(this->m_totalSlots); ++index) {
+        if (static_cast<unsigned>(this->m_page) != index / this->m_slotsPerPage) {
+          continue;
+        }
+
+        const int column = this->m_page != 0 ? index % (this->m_page * this->m_slotsPerPage) : index;
+        UISlotBmpButton* button = static_cast<UISlotBmpButton*>(this->m_slotButtons2[column]);
+        if (this->m_slotStatus[index] == 1) {
+          button->SetSlot(-1, index);
+          this->m_characterWindows[column]->SetText("", 0);
+          if (index < static_cast<unsigned>(g_producibleSlotCount)) {
+            button->SendMsg(nullptr, 0x1AF, 0, 0, 0, 0);
+          } else {
+            button->SetDisabled(1);
+            button->Invalidate();
+          }
+          continue;
+        }
+
+        button->SetSlot(index, -1);
+        button->SendMsg(nullptr, 0x1AF, 1, 0, 0, 0);
+        const CharacterInfo* info = reinterpret_cast<const CharacterInfo*>(static_cast<CMode*>(g_charViewMode)->SendMsg(8, index, 0, 0, 0));
+        if (info != nullptr) {
+          this->m_characterWindows[column]->SetTextFitted(info->name);
+          UIStaticText* name = this->m_characterWindows[column];
+          name->Move(
+            (column % 5) * 0x9D - this->TextWidth(this->m_context->fonts, this->m_context->locale, name->GetText().c_str(), 0, 0, 0xC, 0, 0) / 2 + 0x58,
+            (column / 5) * 0xC3 + 0xBD
+          );
+        }
+      }
+
+      this->InvalidateChildren();
+      this->sub_7D9310();
+      break;
+    }
+    case 0x13D: {
+      if (this->m_page >= this->m_pageCount - 1) {
+        break;
+      }
+
+      ++this->m_page;
+      const char* nextNormal;
+      const char* nextOver;
+      const char* nextPress;
+      if (this->m_page < this->m_pageCount - 1) {
+        nextPress = "유저인터페이스\\select_character_ver3\\bt_right_press.bmp";
+        nextOver = "유저인터페이스\\select_character_ver3\\bt_right_over.bmp";
+        nextNormal = "유저인터페이스\\select_character_ver3\\bt_right_on.bmp";
+      } else {
+        nextPress = "유저인터페이스\\select_character_ver3\\bt_right_off.bmp";
+        nextOver = nextPress;
+        nextNormal = nextPress;
+      }
+      this->m_nextPageButton->SetBitmap(nextNormal, 0, 0);
+      this->m_nextPageButton->SetBitmap(nextOver, 1, 0);
+      this->m_nextPageButton->SetBitmap(nextPress, 2, 0);
+      this->m_prevPageButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_left_on.bmp", 0, 0);
+      this->m_prevPageButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_left_over.bmp", 1, 0);
+      this->m_prevPageButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_left_press.bmp", 2, 0);
+      if (this->m_pageText != nullptr) {
+        char pageText[16] = {};
+        std::sprintf(pageText, "%d / %d", this->m_page + 1, this->m_pageCount);
+        this->m_pageText->SetText(pageText, 0);
+      }
+
+      for (unsigned index = 0; index < static_cast<unsigned>(this->m_totalSlots); ++index) {
+        if (static_cast<unsigned>(this->m_page) != index / this->m_slotsPerPage) {
+          continue;
+        }
+
+        const int column = this->m_page != 0 ? index % (this->m_page * this->m_slotsPerPage) : index;
+        UISlotBmpButton* button = static_cast<UISlotBmpButton*>(this->m_slotButtons2[column]);
+        if (this->m_slotStatus[index] == 1) {
+          button->SetSlot(-1, index);
+          this->m_characterWindows[column]->SetText("", 0);
+          if (index < static_cast<unsigned>(g_producibleSlotCount)) {
+            button->SendMsg(nullptr, 0x1AF, 0, 0, 0, 0);
+          } else {
+            button->SetDisabled(1);
+            button->Invalidate();
+          }
+          continue;
+        }
+
+        button->SetSlot(index, -1);
+        button->SendMsg(nullptr, 0x1AF, 1, 0, 0, 0);
+        const CharacterInfo* info = reinterpret_cast<const CharacterInfo*>(static_cast<CMode*>(g_charViewMode)->SendMsg(8, index, 0, 0, 0));
+        if (info != nullptr) {
+          this->m_characterWindows[column]->SetTextFitted(info->name);
+          UIStaticText* name = this->m_characterWindows[column];
+          name->Move(
+            (column % 5) * 0x9D - this->TextWidth(this->m_context->fonts, this->m_context->locale, name->GetText().c_str(), 0, 0, 0xC, 0, 0) / 2 + 0x58,
+            (column / 5) * 0xC3 + 0xBD
+          );
+        }
+      }
+
+      this->InvalidateChildren();
+      this->sub_7D9310();
+      break;
+    }
+    case 0x15F: {
+      if (g_windowMgr.window_03DC != nullptr) {
+        g_windowMgr.CloseWindow(0x80);
+      }
+      const std::intptr_t info = static_cast<CMode*>(g_charViewMode)->SendMsg(8, static_cast<unsigned char>(g_selectedSlotIndex), 0, 0, 0);
+      UIWindow* window = g_windowMgr.EnsureWindow(0x80);
+      if (window != nullptr) {
+        window->SendMsg(nullptr, 0x22, info, 0, 0, 0);
+      }
+      break;
+    }
+    case 0x160: {
+      CharacterInfo* info =
+        reinterpret_cast<CharacterInfo*>(static_cast<CMode*>(g_charViewMode)->SendMsg(8, static_cast<unsigned char>(g_selectedSlotIndex), 0, 0, 0));
+      if (info->gid != g_renameGid) {
+        break;
+      }
+
+      std::memcpy(info->name, g_renameName, sizeof(info->name));
+      const int column = static_cast<unsigned char>(g_selectedSlotIndex) - this->m_slotsPerPage * this->m_page;
+      this->m_characterWindows[column]->SetTextFitted(info->name);
+      UIStaticText* name = this->m_characterWindows[column];
+      name->Move(
+        (column % 5) * 0x9D - this->TextWidth(this->m_context->fonts, this->m_context->locale, name->GetText().c_str(), 0, 0, 0xC, 0, 0) / 2 + 0x58,
+        (column / 5) * 0xC3 + 0xBD
+      );
+      break;
+    }
+    case 0x197: {
+      if (this->m_slotStatus[static_cast<unsigned char>(g_selectedSlotIndex)] == 1) {
+        break;
+      }
+
+      const CharacterInfo* info =
+        reinterpret_cast<const CharacterInfo*>(static_cast<CMode*>(g_charViewMode)->SendMsg(8, static_cast<unsigned char>(g_selectedSlotIndex), 0, 0, 0));
+      CharacterGidPacket packet;
+      packet.id = 0x827;
+      packet.gid = info->gid;
+      GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+      break;
+    }
+    case 0x198: {
+      CharacterGidPacket packet;
+      packet.id = 0x82B;
+      packet.gid = this->m_slotMap[static_cast<unsigned char>(g_selectedSlotIndex)];
+      GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+      break;
+    }
+    case 0x1A0:
+      g_windowMgr.EnsureWindow(200);
+      g_windowMgr.unknown_03BC->SendMsg(nullptr, 6, 0x124, 0, 0, 0);
+      g_windowMgr.unknown_03BC->SendMsg(nullptr, 6, 0xB8, 1, 0, 0);
+      break;
+    case 0x1A1:
+      g_windowMgr.EnsureWindow(200);
+      break;
+    case 0x1A2: {
+      CharacterGidPacket packet;
+      packet.id = 0x8C5;
+      packet.gid = g_session.m_aid;
+      GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+      break;
+    }
+    case 0x1B0:
+      this->m_unknown138 = static_cast<unsigned char>(g_selectedSlotIndex);
+      break;
+    case 0x1B1: {
+      const unsigned char selected = static_cast<unsigned char>(g_selectedSlotIndex);
+      if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x7E0), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
+        const CharacterInfo* info = reinterpret_cast<const CharacterInfo*>(static_cast<CMode*>(g_charViewMode)->SendMsg(8, this->m_unknown138, 0, 0, 0));
+        if (info != nullptr) {
+          CharacterMovePacket packet;
+          packet.id = 0x8D4;
+          packet.from = static_cast<std::int16_t>(this->m_unknown138);
+          packet.to = selected;
+          packet.count = static_cast<std::int16_t>(info->unknown_00A6);
+          GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+        }
+      }
+      this->m_unknown138 = -1;
+      break;
+    }
+    case 0x1B2:
+      this->m_slotButtons2[0]->Slot25(0, 0);
+      this->SendMsg(nullptr, 6, 0x1B0, 0, 0, 0);
+      break;
+    case 0x1B3:
+      this->m_slotButtons2[1]->Slot25(0, 0);
+      this->SendMsg(nullptr, 6, 0x1B0, 0, 0, 0);
+      break;
+    case 0x1B4:
+      this->m_slotButtons2[2]->Slot25(0, 0);
+      this->SendMsg(nullptr, 6, 0x1B0, 0, 0, 0);
+      break;
+    }
+    break;
+  case 13:
+    if (!this->m_unknown13C) {
+      this->m_pageSlot = argument1;
+    }
+    break;
+  case 0x12:
+    if (this->m_unknown13C) {
+      break;
+    }
+    if (g_windowMgr.unknown_0210 != nullptr) {
+      g_windowMgr.CloseWindow(0x12);
+    }
+    if (g_windowMgr.HasModalWindow() != 1 && this->m_unknown118 != true) {
+      const int previous = this->m_pageSlot;
+      this->m_pageSlot -= 5;
+      if (this->m_pageSlot < 0) {
+        if (this->m_page <= 0) {
+          this->m_pageSlot = previous;
+          break;
+        }
+        this->SendMsg(nullptr, 6, 0x13C, 0, 0, 0);
+        this->m_pageSlot += this->m_slotsPerPage;
+      }
+      for (int index = 0; index < this->m_slotsPerPage; ++index) {
+        this->m_slotButtons2[index]->SendMsg(this, 13, index == this->m_pageSlot, 0, 0, 0);
+      }
+      g_selectedSlotIndex = static_cast<char>(this->m_page * this->m_slotsPerPage + this->m_pageSlot);
+      this->sub_7D9310();
+      this->SaveCurrentSlot();
+    }
+    break;
+  case 0x13:
+    if (this->m_unknown13C) {
+      break;
+    }
+    if (g_windowMgr.unknown_0210 != nullptr) {
+      g_windowMgr.CloseWindow(0x12);
+    }
+    if (g_windowMgr.HasModalWindow() != 1 && this->m_unknown118 != true) {
+      const int previous = this->m_pageSlot;
+      this->m_pageSlot = previous + 5;
+      if (this->m_page * this->m_slotsPerPage + this->m_pageSlot >= this->m_maxCharacters) {
+        this->m_pageSlot = previous;
+        break;
+      }
+      if (this->m_pageSlot >= this->m_slotsPerPage) {
+        if (this->m_page < this->m_pageCount - 1) {
+          this->SendMsg(nullptr, 6, 0x13D, 0, 0, 0);
+        }
+        this->m_pageSlot %= this->m_slotsPerPage * this->m_page;
+      }
+      for (int index = 0; index < this->m_slotsPerPage; ++index) {
+        this->m_slotButtons2[index]->SendMsg(this, 13, index == this->m_pageSlot, 0, 0, 0);
+      }
+      g_selectedSlotIndex = static_cast<char>(this->m_page * this->m_slotsPerPage + this->m_pageSlot);
+      this->sub_7D9310();
+      this->SaveCurrentSlot();
+    }
+    break;
+  case 0x14:
+    if (this->m_unknown13C) {
+      break;
+    }
+    if (g_windowMgr.unknown_0210 != nullptr) {
+      g_windowMgr.CloseWindow(0x12);
+    }
+    if (g_windowMgr.HasModalWindow() != 1 && this->m_unknown118 != true) {
+      if (--this->m_pageSlot < 0) {
+        if (this->m_page <= 0) {
+          this->m_pageSlot = 0;
+          break;
+        }
+        this->SendMsg(nullptr, 6, 0x13C, 0, 0, 0);
+        this->m_pageSlot = this->m_slotsPerPage - 1;
+      }
+      for (int index = 0; index < this->m_slotsPerPage; ++index) {
+        this->m_slotButtons2[index]->SendMsg(this, 13, index == this->m_pageSlot, 0, 0, 0);
+      }
+      g_selectedSlotIndex = static_cast<char>(this->m_page * this->m_slotsPerPage + this->m_pageSlot);
+      this->sub_7D9310();
+      this->SaveCurrentSlot();
+    }
+    break;
+  case 0x15:
+    if (this->m_unknown13C) {
+      break;
+    }
+    if (g_windowMgr.unknown_0210 != nullptr) {
+      g_windowMgr.CloseWindow(0x12);
+    }
+    if (g_windowMgr.HasModalWindow() != 1 && this->m_unknown118 != true) {
+      const int previous = this->m_pageSlot;
+      this->m_pageSlot = previous + 1;
+      if (this->m_page * this->m_slotsPerPage + this->m_pageSlot >= this->m_maxCharacters) {
+        this->m_pageSlot = previous;
+        break;
+      }
+      if (this->m_pageSlot >= this->m_slotsPerPage) {
+        if (this->m_page < this->m_pageCount - 1) {
+          this->SendMsg(nullptr, 6, 0x13D, 0, 0, 0);
+        }
+        this->m_pageSlot %= this->m_slotsPerPage * this->m_page;
+      }
+      for (int index = 0; index < this->m_slotsPerPage; ++index) {
+        this->m_slotButtons2[index]->SendMsg(this, 13, index == this->m_pageSlot, 0, 0, 0);
+      }
+      g_selectedSlotIndex = static_cast<char>(this->m_page * this->m_slotsPerPage + this->m_pageSlot);
+      this->sub_7D9310();
+      this->SaveCurrentSlot();
+    }
+    break;
+  case 0x21:
+    this->SendMsg(nullptr, 6, 0xD3, 0, 0, 0);
+    break;
+  default:
+    return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+
+  return 0;
+}
 
 // OFFSET: 0x007D9090
 // FUNCTION: fn_09595

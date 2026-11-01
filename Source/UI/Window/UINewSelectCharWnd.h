@@ -11,6 +11,7 @@ class UIBitmapButton;
 class UIBmpTextButton;
 class UIStaticText;
 class CUIControl;
+struct UIButtonContext;
 
 extern void* g_charViewMode;
 extern char g_selectedSlotIndex;
@@ -67,10 +68,11 @@ protected:
   /* 00D0 */ std::vector<UIWindow*> m_slotButtons;
   /* 00DC */ std::vector<UIStaticText*> m_characterWindows;
   /* 00E8 */ std::vector<UIWindow*> m_slotButtons2;
-  /* 00F4 */ unsigned char unknown_00F4[8];
+  /* 00F4 */ UIBitmapButton* m_prevPageButton;
+  /* 00F8 */ UIBitmapButton* m_nextPageButton;
   /* 00FC */ UIWindow* m_windowFC;
   /* 0100 */ UIWindow* m_window100;
-  /* 0104 */ int m_unknown0104;
+  /* 0104 */ UIStaticText* m_pageText;
   /* 0108 */ CharSlotInfo* m_charSlotInfos;
   /* 010C */ char* m_slotStatus;
   /* 0110 */ short* m_slotShorts;
@@ -85,6 +87,7 @@ protected:
   /* 0134 */ int m_maxCharacters;
   /* 0138 */ int m_unknown138;
   /* 013C */ bool m_unknown13C;
+  UIButtonContext* m_controls;
 };
 
 #endif
