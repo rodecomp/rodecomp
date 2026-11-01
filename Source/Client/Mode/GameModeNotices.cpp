@@ -7135,12 +7135,11 @@ struct PartyRosterListPacket {
 void CGameMode::sub_D6F900(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const PartyRosterListPacket*>(data);
   std::vector<PartyRosterEntry> members;
-  const int count = (packet->length - 0x1C) / static_cast<int>(sizeof(PartyRosterRecord50));
+  const int count = (packet->length - 0x1C) / sizeof(PartyRosterRecord50);
   for (int index = 0; index < count; ++index) {
     const PartyRosterRecord50& record = packet->entries[index];
-    PartyRosterEntry entry;
+    PartyRosterEntry entry = {};
     entry.accountId = record.accountId;
-    entry.characterId = 0;
     std::memcpy(entry.name, record.name, sizeof(entry.name));
     std::memcpy(entry.mapName, record.mapName, sizeof(entry.mapName));
     entry.member = record.member;
@@ -7152,6 +7151,22 @@ void CGameMode::sub_D6F900(const unsigned char* data) {
 
   this->sub_D59FD0(reinterpret_cast<const char*>(packet->partyName), &members);
 }
+
+#pragma pack(push, 1)
+struct EquipItemUpdatePacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint16_t itemId;
+  /* 0004 */ unsigned char unknown_0004;
+  /* 0005 */ std::uint32_t cards[4];
+  /* 0015 */ ItemSlotOption options[5];
+  /* 002E */ unsigned char refine;
+  /* 002F */ unsigned char unknown_002F;
+};
+#pragma pack(pop)
+
+// OFFSET: 0x00D6D850
+
+// OFFSET: 0x00D6DAE0
 
 // OFFSET: 0x00D48530
 
