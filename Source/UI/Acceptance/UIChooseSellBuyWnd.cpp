@@ -5500,3 +5500,62 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 
   return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
 }
+
+// OFFSET: 0x008ECE60
+// FUNCTION: fn_12211
+void UIBookWnd::Paint() {
+  const int titleHeight = this->DrawTitleBar(this->m_context->fonts, this->m_context->locale, false, "", 0);
+  this->DrawPanelBackground(titleHeight, 0, "");
+
+  char* title = new char[110];
+  std::sprintf(title, "%s ( %d / %d )", this->m_bookName, this->m_page, this->m_pageCount);
+  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, this->geometry.width / 2 - 72, 2, title, 0, 0, 12, 0, 0, 0);
+
+  this->FillRegion(1, titleHeight, this->geometry.width - 2, this->geometry.height - 18, RGB(this->m_red, this->m_green, this->m_blue));
+  this->m_viewer->backgroundColor = 0xFF000000u | RGB(this->m_red, this->m_green, this->m_blue);
+  this->m_viewer->Invalidate();
+}
+
+// OFFSET: 0x008ECF50
+
+// OFFSET: 0x008E8480
+
+// OFFSET: 0x008D3AB0
+
+// OFFSET: 0x008D4100
+
+// INLINED
+static __forceinline std::vector<unsigned char> BuildAcceptanceReplayRecords(UITextViewer* viewer, std::uint16_t id, int message) {
+  std::vector<unsigned char> records;
+  {
+    const auto record = BuildReplayTaggedRecord(id, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+
+  char text[260];
+  std::memset(text, 0, sizeof(text));
+  viewer->CopyText(text, 0);
+  const char parentheses[] = {'(', ')', '\0'};
+  std::string decoration(parentheses);
+  decoration.append(LookupMessage(message));
+  {
+    const auto record = BuildReplayTaggedRecord(id + 2, text + 1, viewer->TextLength() - decoration.size());
+    records.insert(records.end(), record.begin(), record.end());
+  }
+
+  {
+    const auto record = BuildReplayTaggedRecord(id + 1, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  return records;
+}
+
+// OFFSET: 0x008D4A40
+
+// OFFSET: 0x008D3CD0
+
+// OFFSET: 0x008D5C80
+
+// OFFSET: 0x008D60B0
+
+// OFFSET: 0x008D64E0

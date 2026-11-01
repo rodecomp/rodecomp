@@ -8,6 +8,7 @@ struct UIButtonContext;
 class UISelectCartWnd : public UIFrameWnd {
 public:
   UISelectCartWnd(UIWindowContext& windows, UIFrameContext& frames);
+  void Slot15(int width, int height) override;
   void Paint() override;
   void Slot25(int x, int y) override;
   void AddCart(int index, int type);
