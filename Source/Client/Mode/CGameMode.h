@@ -510,6 +510,12 @@ public:
   void ReceiveGroundSkillExtended(const unsigned char* record);
   void ReceivePartyRoster(const unsigned char* packet);
   void sub_D59FD0(const char* partyName, std::vector<PartyRosterEntry>* members);
+  void sub_D48C60(const unsigned char* data);
+  void sub_D4A060(const unsigned char* data);
+  void sub_D6F900(const unsigned char* data);
+  void sub_D48530(const unsigned char* data);
+  void sub_D1A330(const unsigned char* data);
+  void sub_D1A520(int unknown_0004, std::string name, std::string text, bool flag);
   void SpawnGroundSkill(std::uint32_t aid, std::uint32_t owner, int value, std::int16_t x, std::int16_t y, int type, signed char level, unsigned char visible, unsigned char flags);
   void sub_D60D70(std::uint32_t aid, std::uint32_t owner, std::int16_t x, std::int16_t y);
   void sub_D41250(const unsigned char* record);

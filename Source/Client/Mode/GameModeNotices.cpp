@@ -41,6 +41,7 @@
 #include "Contents/Skills/SkillInfo.h"
 #include "Contents/Sound/SoundMgr.h"
 #include "Contents/World/World.h"
+#include "File/ShortcutFilename.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
 #include "Render/Renderer.h"
@@ -6993,3 +6994,178 @@ void CGameMode::ReceiveGuildMemberLeft(const unsigned char* data) {
   }
   g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0xFFFF, 4, 0, 0);
 }
+
+#pragma pack(push, 1)
+struct GuildPacketText {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::uint16_t length;
+  /* 0004 */ char text[1];
+};
+
+#pragma pack(push, 1)
+struct GuildMemberKickedPacket {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ char text[40];
+  /* 002A */ std::uint32_t characterId;
+};
+
+struct GuildMemberLeftPacket2 {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::uint32_t characterId;
+  /* 0006 */ char name[30];
+};
+#pragma pack(pop)
+
+// OFFSET: 0x00D48C60
+// FUNCTION: fn_21856
+void CGameMode::sub_D48C60(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const GuildMemberKickedPacket*>(data);
+  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  char reason[41];
+  std::memcpy(reason, packet->text, sizeof(packet->text));
+  reason[40] = '\0';
+
+  if (packet->characterId == g_session.m_gid) {
+    g_session.ClearShortcutSlots();
+    g_session.ClearSecondaryShortcutSlots();
+    g_guildId = 0;
+    g_windowMgr.CloseWindow(59);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(490)), 0xFF, 4, 0, 0);
+    this->SendMsg(172, 0, 0, 0, 0);
+    if (this->scene != nullptr && this->scene->player != nullptr) {
+      this->scene->player->Slot48(0);
+    }
+    guildInfo->ClearUnknown0114();
+    return;
+  }
+
+  if (guildInfo->unknown_00C0) {
+    guildInfo->DeleteMemberByCharacterId(static_cast<int>(packet->characterId));
+  }
+
+  std::string name = LookupPlayerName(packet->characterId);
+  if (name.empty()) {
+    name = LookupMessage(0x245);
+  }
+
+  char message[1024];
+  std::memset(message, 0, sizeof(message));
+  std::sprintf(message, LookupMessage(0x172), name.c_str());
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0xFFFF, 4, 0, 0);
+  std::memset(message, 0, sizeof(message));
+  sprintf_s(message, sizeof(message), LookupMessage(0x173), reason);
+  if (g_forbiddenWords.Contains(message) == true) {
+    std::string masked;
+    g_forbiddenWords.Mask(message, &masked);
+  }
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0xFFFF, 4, 0, 0);
+
+  GuildInfo::Unknown00ECEntry entry;
+  entry.name = name;
+  entry.unknown_0034 = reason;
+  guildInfo->AddUnknown00EC(entry);
+}
+
+// OFFSET: 0x00D4A060
+// FUNCTION: fn_21861
+void CGameMode::sub_D4A060(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const GuildMemberLeftPacket2*>(data);
+  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  char reason[40];
+  strcpy_s(reason, sizeof(reason), packet->name);
+
+  if (packet->characterId == g_session.m_gid) {
+    g_session.ClearShortcutSlots();
+    g_session.ClearSecondaryShortcutSlots();
+    guildInfo->Init();
+    g_windowMgr.CloseWindow(59);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(489)), 0xFF, 4, 0, 0);
+    if (this->scene != nullptr && this->scene->player != nullptr) {
+      this->scene->player->Slot49(0, 0);
+    }
+    this->SendMsg(172, 0, 0, 0, 0);
+    return;
+  }
+
+  if (guildInfo->unknown_00C0) {
+    guildInfo->DeleteMemberByCharacterId(static_cast<int>(packet->characterId));
+  }
+
+  std::string name = packet->characterId == g_session.m_gid ? std::string(g_session.DecodePlayerName()) : LookupPlayerName(packet->characterId);
+  if (name.empty()) {
+    name = LookupMessage(0x245);
+  }
+
+  char message[1024];
+  std::sprintf(message, LookupMessage(0x16C), name.c_str());
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0xFFFF, 4, 0, 0);
+  sprintf_s(message, sizeof(message), LookupMessage(0x16D), reason);
+  if (g_forbiddenWords.Contains(message) == true) {
+    std::string masked;
+    g_forbiddenWords.Mask(message, &masked);
+  }
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0xFFFF, 4, 0, 0);
+
+  if (CRenderObject* actor = this->scene->GetGameActorByAID(packet->characterId)) {
+    static_cast<CGameActor*>(actor)->Slot49(0, 0);
+  }
+}
+
+#pragma pack(push, 1)
+struct PartyRosterRecord50 {
+  /* 0000 */ std::uint32_t accountId;
+  /* 0004 */ char name[24];
+  /* 001C */ char mapName[16];
+  /* 002C */ unsigned char member;
+  /* 002D */ unsigned char offline;
+  /* 002E */ std::int16_t x;
+  /* 0030 */ std::int16_t y;
+};
+#pragma pack(pop)
+
+struct PartyRosterListPacket {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::int16_t length;
+  /* 0004 */ char partyName[24];
+  /* 001C */ PartyRosterRecord50 entries[1];
+};
+
+// OFFSET: 0x00D6F900
+// FUNCTION: fn_22124
+void CGameMode::sub_D6F900(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const PartyRosterListPacket*>(data);
+  std::vector<PartyRosterEntry> members;
+  const int count = (packet->length - 0x1C) / static_cast<int>(sizeof(PartyRosterRecord50));
+  for (int index = 0; index < count; ++index) {
+    const PartyRosterRecord50& record = packet->entries[index];
+    PartyRosterEntry entry;
+    entry.accountId = record.accountId;
+    entry.characterId = 0;
+    std::memcpy(entry.name, record.name, sizeof(entry.name));
+    std::memcpy(entry.mapName, record.mapName, sizeof(entry.mapName));
+    entry.member = record.member;
+    entry.offline = record.offline;
+    entry.x = record.x;
+    entry.y = record.y;
+    members.push_back(entry);
+  }
+
+  this->sub_D59FD0(reinterpret_cast<const char*>(packet->partyName), &members);
+}
+
+// OFFSET: 0x00D48530
+
+// OFFSET: 0x00D1A330
+// FUNCTION: fn_21617
+void CGameMode::sub_D1A330(const unsigned char* data) {
+  char nameBuffer[24];
+  std::memset(nameBuffer, 0, sizeof(nameBuffer));
+  StringFormat(nameBuffer, sizeof(nameBuffer), static_cast<std::size_t>(-1), "%s", reinterpret_cast<const char*>(data) + 8);
+
+  const int length = *reinterpret_cast<const std::uint16_t*>(data + 2) - 0x21;
+  std::string text(reinterpret_cast<const char*>(data) + 0x21, length > 0 ? static_cast<std::size_t>(length) : 0);
+
+  this->sub_D1A520(static_cast<int>(*reinterpret_cast<const std::uint32_t*>(data + 4)), std::string(nameBuffer), text, data[0x20] != 0);
+}
+
+// OFFSET: 0x00D1A520
