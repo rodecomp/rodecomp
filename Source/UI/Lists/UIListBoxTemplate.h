@@ -193,6 +193,7 @@ public:
   explicit CUIListBox(UIWindowContext& context)
       : CUIControl(context), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), selected(nullptr), locked(0) {
   }
+  ~CUIListBox() override;
 
   void Slot15(int width, int height) override;
   // OFFSET: 0x009D23B0
@@ -244,6 +245,8 @@ public:
     this->scrollBar->SetVisible(this->geometry.height);
     this->scrollBar->SetPosition(this->scrollBar->position);
   }
+
+  void Slot53(int resolveSkin) override;
 
   void SelectItem(CUIListItem* item);
   T* CreateItem();

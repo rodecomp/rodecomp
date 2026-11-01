@@ -1726,6 +1726,352 @@ void CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::Slot35(int
 }
 
 // OFFSET: 0x009D26D0
+// FUNCTION: fn_14023
+template <>
+void CUIListBoxEx<AdventureGuide::CUIItemInfo, AdventureGuide::CItemData>::AddNewItem() {
+  if (this->itemWidth <= 0 || this->rowHeight <= 0) {
+    return;
+  }
+
+  for (AdventureGuide::CUIItemInfo* item : this->items) {
+    this->RemoveChild(item, 1);
+  }
+  this->items.clear();
+  this->selected = static_cast<unsigned int>(-1);
+
+  if (this->rowHeight <= this->geometry.height) {
+    unsigned count = static_cast<unsigned>(this->geometry.height / this->rowHeight) + 1;
+    if (this->geometry.height % this->rowHeight > 1) {
+      ++count;
+    }
+    this->items.resize(count, nullptr);
+    for (AdventureGuide::CUIItemInfo*& slot : this->items) {
+      AdventureGuide::CUIItemInfo* item = new AdventureGuide::CUIItemInfo(*this->m_context);
+      item->SetSize(this->itemWidth, this->rowHeight);
+      item->Show(0);
+      CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
+      item->SetImageResources(images[0], images[1], images[2], images[3]);
+      item->onHover = [this](CUIListItem* listItem) {
+        for (AdventureGuide::CUIItemInfo* other : this->items) {
+          other->SetHighlighted(other == listItem);
+        }
+      };
+      item->onPress = [this](CUIListItem* listItem) {
+        if (this->unknown_00C4) {
+          return;
+        }
+        for (AdventureGuide::CUIItemInfo* other : this->items) {
+          if (listItem != other) {
+            other->SetSelected(0);
+          }
+        }
+        listItem->SetSelected(1);
+        if (listItem->index == static_cast<int>(this->selected) && this->unknown_00E0) {
+          return;
+        }
+        AdventureGuide::CUIItemInfo* selectedItem = dynamic_cast<AdventureGuide::CUIItemInfo*>(listItem);
+        if (!selectedItem) {
+          return;
+        }
+        this->selected = selectedItem->index;
+        if (this->onSelect && static_cast<int>(this->selected) >= 0 && this->selected < this->data.size()) {
+          auto node = this->data.begin();
+          for (int remaining = static_cast<int>(this->selected); remaining > 0; --remaining) {
+            ++node;
+          }
+          this->onSelect(selectedItem, *node);
+        }
+      };
+      this->AddChild(item);
+      slot = item;
+    }
+  }
+
+  this->scrollBar->SetTotal(this->geometry.height);
+  this->scrollBar->SetVisible(this->geometry.height);
+}
+
+// OFFSET: 0x009D2930
+// FUNCTION: fn_14024
+template <>
+void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>::AddNewItem() {
+  if (this->itemWidth <= 0 || this->rowHeight <= 0) {
+    return;
+  }
+
+  for (AdventureGuide::CUIMonsterInfo* item : this->items) {
+    this->RemoveChild(item, 1);
+  }
+  this->items.clear();
+  this->selected = static_cast<unsigned int>(-1);
+
+  if (this->rowHeight <= this->geometry.height) {
+    unsigned count = static_cast<unsigned>(this->geometry.height / this->rowHeight) + 1;
+    if (this->geometry.height % this->rowHeight > 1) {
+      ++count;
+    }
+    this->items.resize(count, nullptr);
+    for (AdventureGuide::CUIMonsterInfo*& slot : this->items) {
+      AdventureGuide::CUIMonsterInfo* item = new AdventureGuide::CUIMonsterInfo(*this->m_context);
+      item->SetSize(this->itemWidth, this->rowHeight);
+      item->Show(0);
+      CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
+      item->SetImageResources(images[0], images[1], images[2], images[3]);
+      item->onHover = [this](CUIListItem* listItem) {
+        for (AdventureGuide::CUIMonsterInfo* other : this->items) {
+          other->SetHighlighted(other == listItem);
+        }
+      };
+      item->onPress = [this](CUIListItem* listItem) {
+        if (this->unknown_00C4) {
+          return;
+        }
+        for (AdventureGuide::CUIMonsterInfo* other : this->items) {
+          if (listItem != other) {
+            other->SetSelected(0);
+          }
+        }
+        listItem->SetSelected(1);
+        if (listItem->index == static_cast<int>(this->selected) && this->unknown_00E0) {
+          return;
+        }
+        AdventureGuide::CUIMonsterInfo* selectedItem = dynamic_cast<AdventureGuide::CUIMonsterInfo*>(listItem);
+        if (!selectedItem) {
+          return;
+        }
+        this->selected = selectedItem->index;
+        if (this->onSelect && static_cast<int>(this->selected) >= 0 && this->selected < this->data.size()) {
+          auto node = this->data.begin();
+          for (int remaining = static_cast<int>(this->selected); remaining > 0; --remaining) {
+            ++node;
+          }
+          this->onSelect(selectedItem, *node);
+        }
+      };
+      this->AddChild(item);
+      slot = item;
+    }
+  }
+
+  this->scrollBar->SetTotal(this->geometry.height);
+  this->scrollBar->SetVisible(this->geometry.height);
+}
+
+// OFFSET: 0x009D2B90
+// FUNCTION: fn_14025
+template <>
+void CUIListBoxEx<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestInfo>::AddNewItem() {
+  if (this->itemWidth <= 0 || this->rowHeight <= 0) {
+    return;
+  }
+
+  for (AdventureGuide::CUIQuestInfo* item : this->items) {
+    this->RemoveChild(item, 1);
+  }
+  this->items.clear();
+  this->selected = static_cast<unsigned int>(-1);
+
+  if (this->rowHeight <= this->geometry.height) {
+    unsigned count = static_cast<unsigned>(this->geometry.height / this->rowHeight) + 1;
+    if (this->geometry.height % this->rowHeight > 1) {
+      ++count;
+    }
+    this->items.resize(count, nullptr);
+    for (AdventureGuide::CUIQuestInfo*& slot : this->items) {
+      AdventureGuide::CUIQuestInfo* item = new AdventureGuide::CUIQuestInfo(*this->m_context);
+      item->SetSize(this->itemWidth, this->rowHeight);
+      item->Show(0);
+      CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
+      item->SetImageResources(images[0], images[1], images[2], images[3]);
+      item->onHover = [this](CUIListItem* listItem) {
+        for (AdventureGuide::CUIQuestInfo* other : this->items) {
+          other->SetHighlighted(other == listItem);
+        }
+      };
+      item->onPress = [this](CUIListItem* listItem) {
+        if (this->unknown_00C4) {
+          return;
+        }
+        for (AdventureGuide::CUIQuestInfo* other : this->items) {
+          if (listItem != other) {
+            other->SetSelected(0);
+          }
+        }
+        listItem->SetSelected(1);
+        if (listItem->index == static_cast<int>(this->selected) && this->unknown_00E0) {
+          return;
+        }
+        AdventureGuide::CUIQuestInfo* selectedItem = dynamic_cast<AdventureGuide::CUIQuestInfo*>(listItem);
+        if (!selectedItem) {
+          return;
+        }
+        this->selected = selectedItem->index;
+        if (this->onSelect && static_cast<int>(this->selected) >= 0 && this->selected < this->data.size()) {
+          auto node = this->data.begin();
+          for (int remaining = static_cast<int>(this->selected); remaining > 0; --remaining) {
+            ++node;
+          }
+          this->onSelect(selectedItem, *node);
+        }
+      };
+      this->AddChild(item);
+      slot = item;
+    }
+  }
+
+  this->scrollBar->SetTotal(this->geometry.height);
+  this->scrollBar->SetVisible(this->geometry.height);
+}
+
+// OFFSET: 0x009D2DF0
+// FUNCTION: fn_14026
+template <>
+void CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::AddNewItem() {
+  if (this->itemWidth <= 0 || this->rowHeight <= 0) {
+    return;
+  }
+
+  for (AdventureGuide::CUITabInfo* item : this->items) {
+    this->RemoveChild(item, 1);
+  }
+  this->items.clear();
+  this->selected = static_cast<unsigned int>(-1);
+
+  if (this->rowHeight <= this->geometry.height) {
+    unsigned count = static_cast<unsigned>(this->geometry.height / this->rowHeight) + 1;
+    if (this->geometry.height % this->rowHeight > 1) {
+      ++count;
+    }
+    this->items.resize(count, nullptr);
+    for (AdventureGuide::CUITabInfo*& slot : this->items) {
+      AdventureGuide::CUITabInfo* item = new AdventureGuide::CUITabInfo(*this->m_context);
+      item->SetSize(this->itemWidth, this->rowHeight);
+      item->Show(0);
+      CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
+      item->SetImageResources(images[0], images[1], images[2], images[3]);
+      item->onHover = [this](CUIListItem* listItem) {
+        for (AdventureGuide::CUITabInfo* other : this->items) {
+          other->SetHighlighted(other == listItem);
+        }
+      };
+      item->onPress = [this](CUIListItem* listItem) {
+        if (this->unknown_00C4) {
+          return;
+        }
+        for (AdventureGuide::CUITabInfo* other : this->items) {
+          if (listItem != other) {
+            other->SetSelected(0);
+          }
+        }
+        listItem->SetSelected(1);
+        if (listItem->index == static_cast<int>(this->selected) && this->unknown_00E0) {
+          return;
+        }
+        AdventureGuide::CUITabInfo* selectedItem = dynamic_cast<AdventureGuide::CUITabInfo*>(listItem);
+        if (!selectedItem) {
+          return;
+        }
+        this->selected = selectedItem->index;
+        if (this->onSelect && static_cast<int>(this->selected) >= 0 && this->selected < this->data.size()) {
+          auto node = this->data.begin();
+          for (int remaining = static_cast<int>(this->selected); remaining > 0; --remaining) {
+            ++node;
+          }
+          this->onSelect(selectedItem, *node);
+        }
+      };
+      this->AddChild(item);
+      slot = item;
+    }
+  }
+
+  this->scrollBar->SetTotal(this->geometry.height);
+  this->scrollBar->SetVisible(this->geometry.height);
+}
+
+// OFFSET: 0x009D3360
+// FUNCTION: fn_14030
+template <>
+void CUIListBox<AdventureGuide::CUISubTab>::Slot53(int resolveSkin) {
+  CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
+  images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
+  images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
+  images[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
+  images[3] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->disabledName, resolveSkin));
+  for (AdventureGuide::CUISubTab* item : this->items) {
+    item->SetImageResources(images[0], images[1], images[2], images[3]);
+  }
+}
+
+// OFFSET: 0x009D3570
+// FUNCTION: fn_14031
+template <>
+void CUIListBox<AdventureGuide::CUITab>::Slot53(int resolveSkin) {
+  CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
+  images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
+  images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
+  images[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
+  images[3] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->disabledName, resolveSkin));
+  for (AdventureGuide::CUITab* item : this->items) {
+    item->SetImageResources(images[0], images[1], images[2], images[3]);
+  }
+}
+
+// OFFSET: 0x009D3780
+// FUNCTION: fn_14032
+template <>
+void CUIListBoxEx<AdventureGuide::CUIItemInfo, AdventureGuide::CItemData>::Slot53(int resolveSkin) {
+  CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
+  images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
+  images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
+  images[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
+  images[3] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->disabledName, resolveSkin));
+  for (AdventureGuide::CUIItemInfo* item : this->items) {
+    item->SetImageResources(images[0], images[1], images[2], images[3]);
+  }
+}
+
+// OFFSET: 0x009D3990
+// FUNCTION: fn_14033
+template <>
+void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>::Slot53(int resolveSkin) {
+  CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
+  images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
+  images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
+  images[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
+  images[3] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->disabledName, resolveSkin));
+  for (AdventureGuide::CUIMonsterInfo* item : this->items) {
+    item->SetImageResources(images[0], images[1], images[2], images[3]);
+  }
+}
+
+// OFFSET: 0x009D3BA0
+// FUNCTION: fn_14034
+template <>
+void CUIListBoxEx<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestInfo>::Slot53(int resolveSkin) {
+  CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
+  images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
+  images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
+  images[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
+  images[3] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->disabledName, resolveSkin));
+  for (AdventureGuide::CUIQuestInfo* item : this->items) {
+    item->SetImageResources(images[0], images[1], images[2], images[3]);
+  }
+}
+
+// OFFSET: 0x009D3DB0
+// FUNCTION: fn_14035
+template <>
+void CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::Slot53(int resolveSkin) {
+  CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
+  images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
+  images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
+  images[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
+  images[3] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->disabledName, resolveSkin));
+  for (AdventureGuide::CUITabInfo* item : this->items) {
+    item->SetImageResources(images[0], images[1], images[2], images[3]);
+  }
+}
 
 // OFFSET: 0x009D40B0
 // FUNCTION: fn_14039
@@ -2408,6 +2754,18 @@ template <>
 CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::CUIListBoxEx(UIWindowContext& context)
     : CUIControl(context), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
       unknown_00E0(1), rebind(0) {
+}
+
+// OFFSET: 0x009BE5F0
+// FUNCTION: fn_13949
+template <>
+CUIListBox<AdventureGuide::CUISubTab>::~CUIListBox() {
+}
+
+// OFFSET: 0x009BE750
+// FUNCTION: fn_13950
+template <>
+CUIListBox<AdventureGuide::CUITab>::~CUIListBox() {
 }
 
 // OFFSET: 0x009BE8B0
