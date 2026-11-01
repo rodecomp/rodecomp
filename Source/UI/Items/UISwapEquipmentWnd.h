@@ -24,6 +24,8 @@ public:
   UISwapEquipmentWnd(UIWindowContext& windows, UIFrameContext& frames);
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot15(int width, int height) override;
+  void Paint() override;
+  void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
   void Slot28(int x, int y) override;
   void Slot32(int x, int y) override;
@@ -31,6 +33,7 @@ public:
   ITEM_INFO ItemAtPoint(int x, int y);
   __declspec(noinline) ITEM_INFO GetSlotItem(int slot);
   void SetSlotValue(int index, int value);
+  void sub_82FD90();
 
 protected:
   /* 00B4 */ std::uint32_t unknown_00B4;

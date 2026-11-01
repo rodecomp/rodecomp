@@ -15,7 +15,16 @@
 #include "Contents/MessageTable.h"
 #include "Contents/PlayerNameDictionary.h"
 #include "Contents/World/World.h"
+#include "Resource/Bitmap/BitmapResource.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/TextureNames.h"
 #include "UI/Buttons/UIBasicButton.h"
+#include "UI/Chat/ChatSuggestions.h"
+#include "UI/Dialogs/UINpcEditDialogWnd.h"
+#include "UI/Edit/UIEditCtrl.h"
+#include "UI/Rodex/UIRodexComposeWnd.h"
+#include "UI/Shop/ItemDrawing.h"
+#include "UI/Window/FuncDrawWNDChar.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
 
@@ -23,6 +32,7 @@
 #include <timeapi.h>
 
 #include <cstdint>
+#include <cstring>
 #include <new>
 #include <string>
 
@@ -83,6 +93,8 @@ void UISwapEquipmentWnd::Slot10(int x, int y, std::intptr_t value) {
 
   g_modeMgr.gameMode->SendMsg(18, 0, 0, 0, 0);
 }
+
+// OFFSET: 0x0082FD90
 
 // OFFSET: 0x008315E0
 // FUNCTION: fn_10400
@@ -227,6 +239,60 @@ void UISwapBitmapButton::Paint() {
   this->DrawCenteredText(this->geometry.width / 2, this->geometry.height / 2 - 5, this->label.c_str(), this->label.size(), 0, 12, this->m_textColor, 0);
 }
 
+// OFFSET: 0x00830A30
+// FUNCTION: fn_10396
+void UISwapEquipmentWnd::Paint() {
+  this->ClearSurface(0xFFFFFFFF);
+  std::string background;
+  if (this->unknown_00BC == 1) {
+    background = "유저인터페이스\\swap_equipment\\equipwin_bg2_change.bmp";
+  } else if (this->unknown_00BC == 2) {
+    background = "유저인터페이스\\swap_equipment\\equipwin_special_change.bmp";
+  }
+
+  const char* resolved = Resolve(background.c_str());
+  CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(resolved));
+  if (bitmap) {
+    this->DrawBitmap(0, 0, &bitmap->image, false);
+  }
+
+  const char* title = LookupMessage(3110);
+  this->DrawCenteredText(140, 4, title, std::strlen(title), 0, 12, 0x14234B, 0);
+
+  this->sub_82FD90();
+
+  FuncDrawWNDChar drawer(
+    this,
+    this->geometry.width / 2 + 1,
+    this->geometry.height - 53,
+    g_session.SyncUnknown0E98(),
+    static_cast<short>(g_session.m_job),
+    g_session.m_job,
+    static_cast<short>(g_session.m_bodyCostume),
+    static_cast<short>(g_session.m_head),
+    static_cast<short>(this->unknown_00C4),
+    static_cast<short>(this->unknown_00C8),
+    static_cast<short>(this->unknown_00CC),
+    this->unknown_00D0,
+    0,
+    0,
+    g_session.m_bodyStyle,
+    g_session.m_headPalette,
+    0,
+    0,
+    this->unknown_00C0
+  );
+  drawer.Draw(false);
+
+  if (g_session.unknown_7EC8 != 0) {
+    ITEM_INFO dragItem = LookupClientItemByIdentity(g_session.m_inventoryItems, g_session.unknown_7EC8);
+    if (dragItem.unknown_0000[1] > 0) {
+      this->sub_8A8EE0(this->geometry.width / 2 - 24, 27, &dragItem, 0);
+      this->DrawFittedItemName(this->geometry.width / 2 - 24, 51, &dragItem, 0, 0, 12, 0);
+    }
+  }
+}
+
 // OFFSET: 0x00830E20
 // FUNCTION: fn_10397
 void UISwapEquipmentWnd::Slot26(int x, int y) {
@@ -242,6 +308,36 @@ void UISwapEquipmentWnd::Slot26(int x, int y) {
       mode->SendMsg(0x131, reinterpret_cast<int>(&item), 0, 0, 0);
     } else {
       mode->SendMsg(0x12F, slots.values[2], this->unknown_00BC == 2, 0, 0);
+    }
+  }
+}
+
+// OFFSET: 0x00830F40
+// FUNCTION: fn_10398
+void UISwapEquipmentWnd::Slot25(int x, int y) {
+  ITEM_INFO item = this->ItemAtPoint(x, y);
+  if (item.unknown_0000[1] <= 0 || item.quantity <= 0) {
+    return;
+  }
+
+  const EquipSlots slots = g_session.GetEquipSlots(item.unknown_0000[3]);
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  ItemDescriptions descriptions{g_itemDescriptions};
+  mode->drag.BeginItem(this->m_frameContext->windows, descriptions, this->unknown_00BC == 2 ? 18 : 17, item, item.quantity, slots.values[2]);
+
+  if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
+    if (g_windowMgr.GetHoverWindow() && item.identified != 0) {
+      if (g_windowMgr.GetHoverWindow()->geometry.id == 492) {
+        reinterpret_cast<UINpcTextEditDialogWnd*>(g_windowMgr.unknown_0318)->InsertItemTag(item);
+      } else if (g_windowMgr.GetHoverWindow()->geometry.id == 490) {
+        static_cast<UIChatEditCtrl*>(g_windowMgr.GetHoverWindow())->InsertItemLink(item);
+      } else if (g_windowMgr.GetHoverWindow()->geometry.id == 493) {
+        reinterpret_cast<UIChatEditCtrl*>(g_chatSuggestions->unknown_00BC)->InsertItemLink(item);
+      } else if (g_windowMgr.GetHoverWindow()->geometry.id == 491) {
+        reinterpret_cast<UIRodexComposeWnd*>(g_windowMgr.unknown_0458)->sub_7FF710(item);
+      } else if (g_windowMgr.GetHoverWindow()->geometry.id == 494) {
+        static_cast<UIChatEditCtrl*>(g_windowMgr.GetHoverWindow())->InsertItemLink(item);
+      }
     }
   }
 }
