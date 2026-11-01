@@ -17,6 +17,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"
+#include "Utility/Text/StringUtil.h"
 #include "Contents/Items/ItemDescription.h"
 #include <cstring>
 #include <format>
@@ -61,6 +62,7 @@ template void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMons
 template void CUIListBox<AdventureGuide::CUITab>::UpdateScrollBar();
 template void CUIListBox<AdventureGuide::CUISubTab>::UpdateScrollBar();
 template <> __declspec(noinline) void CUIListBox<AdventureGuide::CUISubTab>::SelectItem(CUIListItem* item);
+template <> AdventureGuide::CUISubTab* CUIListBox<AdventureGuide::CUISubTab>::CreateItem();
 
 // OFFSET: 0x009C28B0
 // OFFSET: 0x009C2980
@@ -1989,4 +1991,58 @@ CUIAdventureGuide::CUIAdventureGuide()
 // FUNCTION: fn_13986
 CUIAdventureGuide* CreateAdventureGuide() {
   return new CUIAdventureGuide();
+}
+
+// OFFSET: 0x009DB280
+// FUNCTION: fn_14306
+template <>
+AdventureGuide::CUISubTab* CUIListBox<AdventureGuide::CUISubTab>::CreateItem() {
+  AdventureGuide::CUISubTab* item = new AdventureGuide::CUISubTab(*this->m_context);
+  item->SetSize(this->itemWidth, this->rowHeight);
+  item->Show(0);
+  CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
+  item->SetImageResources(images[0], images[1], images[2], images[3]);
+  item->onHover = [this](CUIListItem* listItem) {
+    for (AdventureGuide::CUISubTab* other : this->items) {
+      other->SetHighlighted(other == listItem);
+    }
+  };
+  item->onPress = [this](CUIListItem* listItem) {
+    this->SelectItem(listItem);
+  };
+  this->AddChild(item);
+  this->items.push_back(item);
+  this->UpdateScrollBar();
+  this->Invalidate();
+  return item;
+}
+
+namespace AdventureGuide {
+
+// OFFSET: 0x009DB720
+// FUNCTION: fn_14309
+void CUIItem::RequestNavigation() {
+  std::string name;
+  int x = -1;
+  int y = -1;
+  std::vector<std::string> parts = Split(this->unknown_008C, ",");
+  if (parts.size() > 2) {
+    name = parts[0];
+    x = std::atoi(parts[1].c_str());
+    y = std::atoi(parts[2].c_str());
+  }
+
+  if (x != -1 && y != -1) {
+    g_navigationManager.sub_B99030(name, 0, 5, false, x, y, 1002);
+  } else {
+    g_navigationManager.sub_B99030(name, 1, 5, false, -1, -1, 1002);
+  }
+}
+
+// OFFSET: 0x009DB8F0
+
+// OFFSET: 0x009DBB80
+
+// OFFSET: 0x009DBCB0
+
 }

@@ -96,6 +96,8 @@ public:
   void Slot54(int type, int id) override;
   void BindItem(CUIItemInfo* item, const CItemData& data);
   void OnSelectItem(CUIItemInfo* item, const CItemData& data);
+  void RequestNavigation();
+  void SearchNavigation();
 
   /* 0084 */ UIWindow* unknown_0084;
   /* 0088 */ UIWindow* unknown_0088;
@@ -135,6 +137,8 @@ public:
   void Slot54(int type, int id) override;
 
   void OnSelectQuest(CUIQuestInfo* item, const CQuestInfo& data);
+  void RequestNavigation();
+  void SearchNavigation();
 
   /* 0084 */ UIWindow* unknown_0084;
   /* 0088 */ UIWindow* unknown_0088;
