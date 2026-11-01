@@ -15,9 +15,11 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <cstring>
 #include <ctime>
 #include <list>
 #include <map>
+#include <new>
 #include <set>
 #include <string>
 #include <utility>
@@ -121,16 +123,27 @@ struct SessionShop {
   /* 0004 */ std::vector<std::map<int, std::pair<int, int>>> unknown_0004;
 };
 
-struct SessionEntry5BD4Detail {
-  /* 0000 */ unsigned char unknown_0000[0x2C];
-  /* 002C */ std::string unknown_002C;
-  /* 0044 */ std::string unknown_0044;
-  /* 005C */ unsigned char unknown_005C[0x9C];
-};
-
 struct SessionEntry5BD4 {
-  /* 0000 */ unsigned char unknown_0000[0x60];
-  /* 0060 */ SessionEntry5BD4Detail unknown_0060;
+  SessionEntry5BD4() : item() {}
+  SessionEntry5BD4(const SessionEntry5BD4& other) {
+    std::memcpy(this->unknown_0000, other.unknown_0000, sizeof(this->unknown_0000));
+    std::memcpy(this->storeName, other.storeName, sizeof(this->storeName));
+    this->price = other.price;
+    this->quantity = other.quantity;
+    new (&this->item) ITEM_INFO(other.item);
+  }
+  ~SessionEntry5BD4() {
+    this->item.unknown_0044.~basic_string();
+    this->item.itemId.~basic_string();
+  }
+
+  /* 0000 */ unsigned char unknown_0000[8];
+  /* 0008 */ char storeName[80];
+  /* 0058 */ int price;
+  /* 005C */ std::uint16_t quantity;
+  union {
+    /* 0060 */ ITEM_INFO item;
+  };
 };
 
 static_assert(sizeof(SessionEntry5BD4) == 0x158);

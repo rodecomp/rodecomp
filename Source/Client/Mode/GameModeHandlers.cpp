@@ -2968,3 +2968,108 @@ void CGameMode::ReceiveClanChat(const unsigned char* packet) {
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0xB4B4FF, 21, 0, 0);
   }
 }
+
+#pragma pack(push, 1)
+struct SearchStorePacketHeader {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int16_t length;
+  /* 0004 */ unsigned char reset;
+  /* 0005 */ unsigned char hasNext;
+  /* 0006 */ unsigned char count;
+};
+
+struct SearchStoreOption {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int16_t value;
+  /* 0004 */ unsigned char parameter;
+};
+
+struct SearchStoreItemPacket {
+  /* 0000 */ unsigned char unknown_0000[8];
+  /* 0008 */ char storeName[80];
+  /* 0058 */ int itemId;
+  /* 005C */ unsigned char kind;
+  /* 005D */ int price;
+  /* 0061 */ std::uint16_t quantity;
+  /* 0063 */ std::uint32_t cards[4];
+  /* 0073 */ SearchStoreOption options[5];
+  /* 008C */ unsigned char refine;
+  /* 008D */ unsigned char grade;
+};
+
+struct SearchStoreItemPacketOld {
+  SearchStoreItemPacketOld() {
+    for (int i = 0; i < 80; ++i) {
+      this->storeName[i] = 0;
+    }
+    for (int i = 0; i < 16; ++i) {
+      this->cards[i] = 0;
+    }
+    for (int i = 0; i < 25; ++i) {
+      this->options[i] = 0;
+    }
+  }
+
+  /* 0000 */ unsigned char unknown_0000[8];
+  /* 0008 */ char storeName[80];
+  /* 0058 */ int itemId;
+  /* 005C */ unsigned char kind;
+  /* 005D */ int price;
+  /* 0061 */ std::uint16_t quantity;
+  /* 0063 */ unsigned char refine;
+  /* 0064 */ unsigned char cards[16];
+  /* 0074 */ unsigned char options[25];
+};
+#pragma pack(pop)
+
+static_assert(sizeof(SearchStoreItemPacket) == 0x8E);
+static_assert(sizeof(SearchStoreItemPacketOld) == 0x8D);
+
+// OFFSET: 0x00D3FA20
+// FUNCTION: fn_21814
+void CGameMode::ReceiveSearchStoreItems(const unsigned char* packet) {
+  const SearchStorePacketHeader* header = reinterpret_cast<const SearchStorePacketHeader*>(packet);
+  const SearchStoreItemPacket* items = reinterpret_cast<const SearchStoreItemPacket*>(packet + 7);
+  UIWindow* window = g_windowMgr.LookupWindow(181);
+  if (header->reset) {
+    if (window) {
+      window->SendMsg(nullptr, 60, 1, 387, 0, 0);
+    }
+    g_session.unknown_5BD4.clear();
+  }
+  reinterpret_cast<unsigned char*>(&g_session.unknown_5BE4)[1] = header->hasNext;
+  g_session.unknown_5BE0 = header->count;
+  const unsigned int count = (header->length - 7) / sizeof(SearchStoreItemPacket);
+  for (long long i = 0; i < count; ++i) {
+    const SearchStoreItemPacket record = items[i];
+    SessionEntry5BD4 entry;
+    std::memcpy(entry.unknown_0000, record.unknown_0000, sizeof(entry.unknown_0000));
+    std::memcpy(entry.storeName, record.storeName, sizeof(entry.storeName));
+    entry.price = record.price;
+    entry.quantity = record.quantity;
+    entry.item.SetItemId(record.itemId);
+    entry.item.unknown_0060 = record.refine;
+    entry.item.unknown_0000[0] = record.kind;
+    entry.item.identified = 1;
+    int optionCount = 0;
+    for (int j = 0; j < 5; ++j) {
+      if (record.options[j].id != 0) {
+        ++optionCount;
+      }
+    }
+    entry.item.unknown_0098 = optionCount;
+    for (long long j = 0; j < optionCount; ++j) {
+      reinterpret_cast<SearchStoreOption*>(entry.item.unknown_009C)[j] = record.options[j];
+    }
+    for (long long j = 0; j < 4; ++j) {
+      reinterpret_cast<std::uint32_t*>(entry.item.unknown_001C)[j] = record.cards[j];
+    }
+    entry.item.unknown_0088 = record.grade;
+    g_session.unknown_5BD4.push_back(entry);
+  }
+  if (window) {
+    window->SendMsg(nullptr, 60, 1, 184, 0, 0);
+  }
+}
+
+// OFFSET: 0x00D3FD70

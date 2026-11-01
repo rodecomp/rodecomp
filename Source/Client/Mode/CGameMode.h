@@ -742,6 +742,8 @@ public:
   void ReceiveTradeItemFilter(const unsigned char* packet);
   void ReceiveOpenStore(const unsigned char* packet);
   void ReceiveSearchStoreOpen(const unsigned char* packet);
+  void ReceiveSearchStoreItems(const unsigned char* packet);
+  void ReceiveSearchStoreItemsOld(const unsigned char* packet);
   void ReceiveStorageEquipList(const unsigned char* packet);
   void ReceiveStorageEquipList2(const unsigned char* packet);
   void ReceiveStorageEquipList3(const unsigned char* packet);
