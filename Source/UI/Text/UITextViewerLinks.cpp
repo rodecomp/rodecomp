@@ -143,34 +143,16 @@ bool UITextViewer::AddNaviLinks(std::string text, unsigned addedLines) {
   return true;
 }
 
-struct TextLinkHistory {
-  /* 0000 */ unsigned char unknown_0000[0xF0];
-  /* 00F0 */ unsigned int limit;
-  /* 00F4 */ unsigned char unknown_00F4[0xC];
-  /* 0100 */ std::vector<std::string> names;
-  /* 010C */ std::vector<int> values;
-  /* 0118 */ std::vector<std::string> details;
-
-  void sub_876D50(const char* name, int value, const char* detail);
-};
-
-#if defined(_WIN32) && !defined(_WIN64)
-static_assert(offsetof(TextLinkHistory, limit) == 0xF0);
-static_assert(offsetof(TextLinkHistory, names) == 0x100);
-static_assert(offsetof(TextLinkHistory, values) == 0x10C);
-static_assert(offsetof(TextLinkHistory, details) == 0x118);
-#endif
-
 // OFFSET: 0x00876D50
 // FUNCTION: fn_11207
-void TextLinkHistory::sub_876D50(const char* name, int value, const char* detail) {
-  if (this->names.size() >= this->limit) {
-    reinterpret_cast<UIChatHisBox*>(this)->DropOldestRecords();
+void UIChatHisBox::AddLinkRecord(const char* name, int value, const char* detail) {
+  if (this->unknown_0100.size() >= static_cast<unsigned int>(this->maxLines)) {
+    this->DropOldestRecords();
   }
 
-  this->names.push_back(std::string(name));
-  this->values.push_back(value);
-  this->details.push_back(std::string(detail));
+  this->unknown_0100.push_back(std::string(name));
+  this->unknown_010C.push_back(value);
+  this->unknown_0118.push_back(std::string(detail));
 }
 
 // OFFSET: 0x0089BA70

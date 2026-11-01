@@ -34,6 +34,7 @@ public:
   void ShiftNaviLinks();
   void ClearNaviLinks();
   void DropOldestRecords();
+  void AddLinkRecord(const char* name, int value, const char* detail);
   virtual void ResetContents();
   void ShiftItemTags();
   void PlaceItemTags(int line);
