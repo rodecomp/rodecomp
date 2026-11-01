@@ -10589,6 +10589,54 @@ struct GuildStorageLogItem {
 static_assert(sizeof(GuildStorageLogItem) == 0x100);
 
 // OFFSET: 0x00D3A1E0
+// FUNCTION: fn_21776
+void CGameMode::ReceiveMapMove(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const MapMovePacket*>(data);
+  g_session.m_playerX = packet->x;
+  g_session.m_playerY = packet->y;
+
+  char name[17];
+  std::memcpy(name, packet->mapName, sizeof(packet->mapName));
+  name[16] = '\0';
+  std::string mapName(name);
+  mapName.resize(mapName.size() - 4);
+
+  if (Replay::Instance().state == 2) {
+    Replay::Instance().SetState(3);
+    g_windowMgr.window_4F164->SendMsg(nullptr, 0x57, 0, 0, 0, 0);
+    g_windowMgr.CloseWindow(0xC6);
+  } else if (Replay::Instance().state == 7) {
+    Replay::Instance().SetState(8);
+  }
+
+  unsigned char sameMap;
+  if (std::strcmp(mapName.c_str(), g_session.m_navigationPlayerMap) == 0) {
+    this->ReloadScene();
+    this->InitializeState();
+    FadeOutMode(*g_renderer, *GetRenderSystemHolder()->system, ResourceMgr::Instance(), 0, false, 0.0f, 0.0f);
+    sameMap = 1;
+  } else {
+    g_session.SetNavigationPlayerMap(mapName.c_str());
+    g_session.m_loginTimeTicks = _Xtime_get_ticks();
+    mapName.append(".rsw", 4);
+    g_modeMgr.Switch(1, mapName.c_str());
+    static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(6))->SetMessage(LookupMessage(121), 17, 1);
+    g_windowMgr.unknown_0474 = 185;
+    g_session.ClearEntryList5BD4();
+    sameMap = 0;
+  }
+  this->unknown_060C[0] = sameMap;
+
+  for (std::vector<ActiveSkillEffect>::iterator it = g_activeSkillEffects.begin(); it != g_activeSkillEffects.end(); ++it) {
+    if (it->id == 200 || it->id == 201 || it->id == 4) {
+      g_activeSkillEffects.erase(it);
+      break;
+    }
+  }
+
+  g_session.RestoreItems5C68();
+  g_session.ClearItemQuantities();
+}
 
 // OFFSET: 0x00D50E40
 // FUNCTION: fn_21888
@@ -10613,6 +10661,60 @@ void CGameMode::ReceiveGuildPositionNames(const unsigned char* data) {
 }
 
 // OFFSET: 0x00D5A4C0
+// FUNCTION: fn_21961
+void CGameMode::ApplyGuildStorageLog(std::uint16_t result, const std::vector<GuildStorageLogItem>& items) {
+  for (std::vector<GuildStorageLogItem>::const_iterator it = items.begin(); it != items.end(); ++it) {
+    GuildStorageLogEntry entry;
+    entry.unknown_0000 = it->item.unknown_00B8[0];
+    entry.unknown_0004 = it->item.unknown_00B8[1];
+    entry.unknown_0008 = it->item.unknown_00C0;
+    strncpy_s(entry.unknown_0009, sizeof(entry.unknown_0009), reinterpret_cast<const char*>(it->item.unknown_00C1), _TRUNCATE);
+    strncpy_s(entry.unknown_0021, sizeof(entry.unknown_0021), reinterpret_cast<const char*>(it->item.unknown_00D9), _TRUNCATE);
+    entry.unknown_003C = it->item.DisplayName(0);
+    entry.unknown_0054 = it->item.identified;
+    entry.unknown_0058 = it->item.unknown_0000[0];
+    entry.unknown_005C = it->item.unknown_0060;
+    std::memcpy(entry.unknown_0060, it->item.unknown_001C, sizeof(entry.unknown_0060));
+    entry.unknown_0070 = it->unknown_00F8;
+    entry.unknown_0072 = it->item.unknown_0088;
+    g_guildStorageLogs[0].push_back(entry);
+  }
+
+  if (result == 0) {
+    return;
+  }
+
+  if (result == 1) {
+    GuildStorageLogEntry pivot;
+    std::sort(g_guildStorageLogs[0].begin(), g_guildStorageLogs[0].end(), [&pivot](const GuildStorageLogEntry& left, const GuildStorageLogEntry& right) {
+      return std::strcmp(left.unknown_0021, right.unknown_0021) > 0;
+    });
+    for (std::vector<GuildStorageLogEntry>::iterator it = g_guildStorageLogs[0].begin(); it != g_guildStorageLogs[0].end(); ++it) {
+      if (it->unknown_0008 == 1) {
+        g_guildStorageLogs[1].push_back(*it);
+      } else {
+        g_guildStorageLogs[2].push_back(*it);
+      }
+    }
+    g_windowMgr.EnsureWindow(253);
+    return;
+  }
+
+  char text[250];
+  int messageId;
+  if (result == 2) {
+    std::memset(text, 0, sizeof(text));
+    messageId = 2543;
+  } else {
+    std::memset(text, 0, sizeof(text));
+    messageId = 1816;
+  }
+  sprintf_s(text, sizeof(text), LookupMessage(messageId));
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
+  g_guildStorageLogs[0].clear();
+  g_guildStorageLogs[1].clear();
+  g_guildStorageLogs[2].clear();
+}
 
 // OFFSET: 0x00D5B3C0
 
@@ -10761,5 +10863,49 @@ void CGameMode::ReceiveEquipItemNotice(const unsigned char* data) {
       );
       break;
     }
+  }
+}
+// FUNCTION: fn_21964
+void NoticeSkillUse(CGameActor* target, CGameActor* source, std::uint16_t skillId, unsigned char silent) {
+  if (silent == 1) {
+    return;
+  }
+
+  const bool partyMember = g_session.IsPartyMember(target->render.accountId, true) && g_session.m_aid != target->render.accountId;
+  if (g_session.m_aid != target->render.accountId && !partyMember) {
+    return;
+  }
+
+  int color = 16;
+  char text[256];
+  std::memset(text, 0, sizeof(text));
+  std::string message;
+  if (partyMember) {
+    color = 17;
+    std::string name = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ActorName(target->render.accountId);
+    name = LookupMessage(1604);
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(1612), name.c_str());
+    message += text;
+  }
+
+  if (source) {
+    std::string name = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ActorName(source->render.accountId);
+    const std::size_t mark = name.find('#');
+    if (mark != std::string::npos) {
+      name.resize(mark);
+    }
+    if (name.empty()) {
+      const CActorNameCard& card = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->LookupNameCard(source->render.accountId);
+      name = card.unknown_007C.empty() ? std::string(LookupMessage(1604)) : card.unknown_007C;
+    }
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(1624), name.c_str());
+    message += text;
+  }
+
+  const std::string skillName = CSkillInfo::DisplayName(*g_luaScript, skillId);
+  StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(1625), skillName.c_str());
+  message += text;
+  if (!message.empty()) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFFFF, color, 0, 0);
   }
 }
