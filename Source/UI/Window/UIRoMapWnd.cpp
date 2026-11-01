@@ -998,3 +998,102 @@ void UIRoMapWnd::DrawWorld() {
 }
 
 // OFFSET: 0x00925530
+// FUNCTION: fn_12648
+void UIRoMapWnd::Slot15(int, int) {
+  this->m_worldCombo = new UIComboBoxDefWnd();
+  this->m_worldCombo->dropdownHeight = 67;
+  this->m_worldCombo->SetSize(110, this->m_comboHeight);
+  this->m_worldCombo->Move(17, 0);
+  this->m_worldCombo->borderRed = 100;
+  this->m_worldCombo->borderGreen = 100;
+  this->m_worldCombo->borderBlue = 100;
+  this->m_worldCombo->red = 232;
+  this->m_worldCombo->green = 232;
+  this->m_worldCombo->blue = 232;
+  this->AddChild(this->m_worldCombo);
+  const int worldCount = static_cast<int>(g_worldViewMgr.worlds.size());
+  for (int index = 0; index < worldCount; ++index) {
+    this->m_worldCombo->AddOption(g_worldViewMgr.worlds[index]->name, 0);
+  }
+
+  g_worldViewMgr.SelectCurrentWorld();
+  this->m_worldCombo->Select(g_worldViewMgr.currentWorld);
+  g_worldViewMgr.sub_6168F0();
+  this->Invalidate();
+  {
+    std::string name = g_navigationManager.GetCurrentTargetName();
+    if (!name.empty()) {
+      name.append(".rsw", 4);
+      g_worldViewMgr.SelectField(name.c_str());
+    } else {
+      g_worldViewMgr.ResetSelection();
+    }
+  }
+
+  reinterpret_cast<UINavigationWnd*>(this)->RefreshWorldMapLevels();
+  reinterpret_cast<UINavigationWnd*>(this)->RefreshWorldMapMarks();
+  const int closeX = this->geometry.width - 18;
+  UIBitmapButton* closeButton = new UIBitmapButton();
+  closeButton->SetBitmap("유저인터페이스\\basic_interface\\world_close_off.bmp", 0, 0);
+  closeButton->SetBitmap("유저인터페이스\\basic_interface\\world_close_on.bmp", 1, 0);
+  closeButton->SetBitmap("유저인터페이스\\basic_interface\\world_close_on.bmp", 2, 0);
+  closeButton->SetSize(closeButton->BitmapWidth(), closeButton->BitmapHeight());
+  closeButton->Move(closeX, 0);
+  closeButton->SetId(201);
+  closeButton->SetTooltip("ctrl+`");
+  this->AddChild(closeButton);
+
+  {
+    std::string checked = "유저인터페이스\\checkbox_1.bmp";
+    std::string unchecked = "유저인터페이스\\checkbox_0.bmp";
+    this->m_labelCheck = new (std::nothrow) UICheckBox();
+    this->m_labelCheck->SetSize(80, 12);
+    this->m_labelCheck->SetImages(checked.c_str(), unchecked.c_str(), LookupMessage(0x988));
+    this->m_labelCheck->SetId(192);
+    this->m_labelCheck->Move(closeX - 82, 3);
+    this->m_labelCheck->SetChecked(this->m_showLabels);
+    this->m_labelCheck->SetTooltip("Tab");
+    this->AddChild(this->m_labelCheck);
+
+    this->m_searchButton = new UIBitmapButton();
+    this->m_searchButton->SetBitmap("유저인터페이스\\navigation_interface\\NaviSearch_A.bmp", 0, 0);
+    this->m_searchButton->SetBitmap("유저인터페이스\\navigation_interface\\NaviSearch_B.bmp", 1, 0);
+    this->m_searchButton->SetBitmap("유저인터페이스\\navigation_interface\\NaviSearch_C.bmp", 2, 0);
+    this->m_searchButton->SetSize(this->m_searchButton->BitmapWidth(), this->m_searchButton->BitmapHeight());
+    this->m_searchButton->Move(-100, -100);
+    this->m_searchButton->SetId(321);
+    this->m_searchButton->SetTooltip(LookupMessage(0x894));
+    this->AddChild(this->m_searchButton);
+
+    this->m_searchListButton = new UIBitmapButton();
+    this->m_searchListButton->SetBitmap("유저인터페이스\\scroll0down.bmp", 0, 0);
+    this->m_searchListButton->SetBitmap("유저인터페이스\\scroll0down.bmp", 1, 0);
+    this->m_searchListButton->SetBitmap("유저인터페이스\\scroll0down.bmp", 2, 0);
+    this->m_searchListButton->SetSize(this->m_searchListButton->BitmapWidth(), this->m_searchListButton->BitmapHeight());
+    this->m_searchListButton->Move(-100, -100);
+    this->m_searchListButton->SetId(200);
+    this->m_searchListButton->SetTooltip(LookupMessage(0xC8D));
+    this->AddChild(this->m_searchListButton);
+
+    this->m_searchEdit = new UIEditCtrl();
+    this->m_searchEdit->SetSize(200, 18);
+    this->m_searchEdit->Move(-100, -100);
+    this->m_searchEdit->maximum = 60;
+    this->m_searchEdit->Background(232, 232, 232);
+    this->m_searchEdit->Border(200, 100, 100);
+    this->m_searchEdit->flat = 0;
+    UIEditCtrl* edit = this->m_searchEdit;
+    if (const char* tooltip = LookupMessage(0x8A2)) {
+      edit->tooltip = tooltip;
+    }
+    this->AddChild(this->m_searchEdit);
+    if (g_replayAnimationScaling != 0) {
+      this->m_searchEdit->disabled = 1;
+      this->m_searchEdit->Invalidate();
+    }
+
+    this->UpdateNavigationButtons();
+  }
+
+  this->RefreshPartyRecords();
+}
