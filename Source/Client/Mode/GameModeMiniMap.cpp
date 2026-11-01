@@ -797,3 +797,94 @@ void CGameMode::DrawTimeAttackCountdown(std::uint32_t value, int mode) {
     );
   }
 }
+
+// GLOBAL: gl_25101
+int g_miniMapTooltipId = -1;
+// STRING: st_16849
+char g_miniMapTooltipText[256];
+
+// OFFSET: 0x00CD1690
+// FUNCTION: fn_21257
+void CGameMode::RefreshMiniMapTooltips() {
+  int& tooltipId = *reinterpret_cast<int*>(&this->unknown_0418[0x04]);
+  std::string& tooltipText = *reinterpret_cast<std::string*>(&this->unknown_0418[0x08]);
+  std::map<int, std::string>& tooltipWindows = *reinterpret_cast<std::map<int, std::string>*>(&this->unknown_05D4[0x08]);
+
+  if (tooltipId == -1) {
+    if (tooltipWindows.size() == 0) {
+      return;
+    }
+
+    if (tooltipText.size() == 0) {
+      for (auto it = tooltipWindows.begin(); it != tooltipWindows.end(); ++it) {
+        g_windowMgr.CloseWindow(it->first);
+      }
+      tooltipWindows.clear();
+    } else {
+      for (auto it = tooltipWindows.begin(); it != tooltipWindows.end(); ++it) {
+        if (it->second == tooltipText) {
+          g_windowMgr.CloseWindow(it->first);
+          tooltipWindows.erase(it);
+          return;
+        }
+      }
+    }
+    return;
+  }
+
+  if (tooltipId == g_miniMapTooltipId && std::strcmp(g_miniMapTooltipText, tooltipText.c_str()) == 0) {
+    return;
+  }
+
+  g_miniMapTooltipId = tooltipId;
+  std::sprintf(g_miniMapTooltipText, tooltipText.c_str());
+  if (tooltipText.size() == 0) {
+    return;
+  }
+
+  UIWindow* window = nullptr;
+  for (int windowId = 216; windowId < 225; ++windowId) {
+    if (tooltipWindows.find(windowId) == tooltipWindows.end()) {
+      window = g_windowMgr.EnsureWindow(windowId);
+      tooltipWindows.insert(std::make_pair(windowId, tooltipText));
+      break;
+    }
+  }
+
+  int x;
+  int y = 0;
+  switch (tooltipId) {
+    case 10:
+      g_windowMgr.CycleWindowVisibilityTwice();
+      window->SendMsg(nullptr, 0x4E, reinterpret_cast<std::intptr_t>(tooltipText.c_str()), 0, 0, 0);
+      window->SendMsg(nullptr, 0x22, 10, 0, 0, 0);
+      x = g_renderer->viewport.centerX - window->geometry.width / 2;
+      y = g_renderer->viewport.centerY - window->geometry.height / 2;
+      break;
+    case 12:
+      window->SendMsg(nullptr, 0x4E, reinterpret_cast<std::intptr_t>(tooltipText.c_str()), 0, 0, 0);
+      x = 0;
+      y = g_renderer->viewport.height - window->geometry.height;
+      break;
+    case 13:
+      window->SendMsg(nullptr, 0x4E, reinterpret_cast<std::intptr_t>(tooltipText.c_str()), 0, 0, 0);
+      x = g_renderer->viewport.centerX - window->geometry.width / 2;
+      y = g_renderer->viewport.height - window->geometry.height;
+      break;
+    case 14:
+      window->SendMsg(nullptr, 0x4E, reinterpret_cast<std::intptr_t>(tooltipText.c_str()), 0, 0, 0);
+      x = g_renderer->viewport.width - window->geometry.width;
+      y = g_renderer->viewport.height - window->geometry.height;
+      break;
+    case -1:
+    case 11:
+      g_windowMgr.RestoreHiddenWindows();
+      tooltipWindows.clear();
+      tooltipId = -1;
+    default:
+      x = 160;
+      break;
+  }
+
+  window->Move(x, y);
+}

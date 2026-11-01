@@ -456,6 +456,7 @@ public:
     const TextureRegion& view, int x, int y, int size, std::string texture, int kind, std::uint32_t color, bool clamp
   );
   void DrawMiniMapCoordinates();
+  void RefreshMiniMapTooltips();
   void ReceiveGradeEnchantInfo(const unsigned char* packet);
   void ReceivePartyItemPickup(const unsigned char* packet);
   void ReceiveItemDisappear(std::uint32_t itemAid);
