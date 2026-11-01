@@ -442,8 +442,7 @@ void EffectLists::Release() {
 
 // OFFSET: 0x00B1D520
 // FUNCTION: fn_18557
-void __fastcall sub_B1D520(void* self) {
-  *reinterpret_cast<std::uintptr_t*>(self) = 0x01182CA8;
+CAllocator::~CAllocator() {
 }
 
 // OFFSET: 0x00B1D530

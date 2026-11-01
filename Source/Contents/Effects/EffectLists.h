@@ -14,8 +14,9 @@
 
 class CRenderObject;
 
+// VTABLE: vt_01629
 struct CAllocator {
-  virtual ~CAllocator() = default;
+  virtual ~CAllocator();
   virtual CEffect* Create() = 0;
 };
 
