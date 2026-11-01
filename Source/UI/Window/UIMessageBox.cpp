@@ -1533,6 +1533,71 @@ void UIMakeCharWnd::Slot19() {
 }
 
 // OFFSET: 0x008AC490
+// FUNCTION: fn_11733
+void UIMakeCharWnd::InitHairControls() {
+  const std::string prefix("유저인터페이스\\");
+  const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
+  int positions[2][2] = {{57, 262}, {104, 262}};
+  const char* tooltips[2] = {"", ""};
+  int ids[2] = {184, 185};
+
+  for (int index = 0; index < 2; ++index) {
+    auto* button = new UIBitmapButton();
+    button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
+    button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
+    button->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
+    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    button->Move(positions[index][0], this->geometry.height - button->BitmapHeight() - 5);
+    button->SetId(ids[index]);
+    button->SetTooltip(tooltips[index]);
+    this->AddChild(button);
+  }
+
+  this->unknown_02C4 = new (std::nothrow) UIBitmapButton();
+  this->unknown_02C4->SetBitmap("유저인터페이스\\scroll1left.bmp", 0, 0);
+  this->unknown_02C4->SetBitmap("유저인터페이스\\scroll1left.bmp", 1, 0);
+  this->unknown_02C4->SetBitmap("유저인터페이스\\scroll1left.bmp", 2, 0);
+  this->unknown_02C4->SetSize(this->unknown_02C4->BitmapWidth(), this->unknown_02C4->BitmapHeight());
+  this->unknown_02C4->Move(20, 80);
+  this->unknown_02C4->SetId(227);
+  this->unknown_02C4->SetTooltip(LookupMessage(0x87E));
+  this->AddChild(this->unknown_02C4);
+
+  this->unknown_02C8 = new (std::nothrow) UIBitmapButton();
+  this->unknown_02C8->SetBitmap("유저인터페이스\\scroll1right.bmp", 0, 0);
+  this->unknown_02C8->SetBitmap("유저인터페이스\\scroll1right.bmp", 1, 0);
+  this->unknown_02C8->SetBitmap("유저인터페이스\\scroll1right.bmp", 2, 0);
+  this->unknown_02C8->SetSize(this->unknown_02C4->BitmapWidth(), this->unknown_02C4->BitmapHeight());
+  this->unknown_02C8->Move(110, 80);
+  this->unknown_02C8->SetId(226);
+  this->unknown_02C8->SetTooltip(LookupMessage(0x87F));
+  this->AddChild(this->unknown_02C8);
+
+  this->unknown_02D4 = this->m_info.head - 1;
+  if (this->unknown_02D4 < 0) {
+    this->unknown_02D4 = 0;
+  }
+  this->unknown_02D8 = this->m_view.headPalette < 0 ? 0 : this->m_view.headPalette;
+
+  this->unknown_02CC = new UIScrollBar(*this->m_context);
+  this->unknown_02CC->Configure(10, 190, 0, 130);
+  this->AddChild(this->unknown_02CC);
+
+  this->unknown_02D0 = new UIScrollBar(*this->m_context);
+  this->unknown_02D0->Configure(10, 230, 0, 130);
+  this->AddChild(this->unknown_02D0);
+
+  if (this->unknown_02CC) {
+    this->unknown_02CC->SetRange(22, 1, 23);
+    this->unknown_02CC->Invalidate();
+  }
+  if (this->unknown_02D0) {
+    this->unknown_02D0->SetRange(8, 1, 9);
+    this->unknown_02D0->Invalidate();
+  }
+  this->unknown_02CC->SetPosition(this->unknown_02D4);
+  this->unknown_02D0->SetPosition(this->unknown_02D8);
+}
 
 // OFFSET: 0x008B0B60
 // FUNCTION: fn_11743
