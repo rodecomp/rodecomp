@@ -592,3 +592,180 @@ void UIBasicInfoWnd::Slot15(int width, int height) {
 }
 
 // OFFSET: 0x00998810
+// FUNCTION: fn_13492
+void UIBasicInfoWnd::Paint() {
+  char zenyText[64];
+  char text[128];
+
+  if (g_session.IsTreeGroupThree(g_session.GetDisplayJob()) == true) {
+    if (this->geometry.height == this->collapsedHeight) {
+      this->DrawCollapsed();
+    } else if (this->geometry.height == this->expandedHeight) {
+      this->DrawExpanded();
+    }
+    return;
+  }
+
+  if (this->geometry.height == this->collapsedHeight) {
+    unsigned red;
+    unsigned green;
+    unsigned blue;
+    SkinPaletteChannels(ResourceMgr::Instance(), 14, 6, red, green, blue);
+    DrawRoundedBorder(*this, 0, 17, this->geometry.width, this->geometry.height - 17, RGB(red, green, blue));
+    this->FillRegion(0, 17, this->geometry.width, 5, RGB(red, green, blue));
+    SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+    this->FillRegion(1, 17, this->geometry.width - 2, this->geometry.height - 19, RGB(red, green, blue));
+    this->FillRegion(2, this->geometry.height - 2, this->geometry.width - 4, 1, RGB(red, green, blue));
+    this->DrawTitleBar(this->m_controls->fonts, this->m_controls->locale, false, "", 0);
+
+    std::int64_t current = BaseExpCurrent();
+    std::int64_t maximum = BaseExpMaximum();
+    if (current < 0) {
+      current = 0;
+    }
+    if (maximum <= 0) {
+      maximum = current + 1;
+    }
+
+    int maxLevel;
+    if (g_session.IsTreeGroupTwo(g_session.GetDisplayJob())) {
+      maxLevel = g_session.m_maxLevel;
+    } else if (g_session.IsSuperNovice2Job(g_session.GetDisplayJob())) {
+      maxLevel = *reinterpret_cast<const int*>(&g_session.unknown_7EF0[0]);
+    } else if (g_session.IsExpandedJob(g_session.GetDisplayJob())) {
+      maxLevel = *reinterpret_cast<const int*>(&g_session.unknown_7EF0[4]);
+    } else {
+      maxLevel = g_session.IsDoramJob(g_session.GetDisplayJob()) == true ? *reinterpret_cast<const int*>(&g_session.unknown_7EF0[0x28])
+                                                                         : *reinterpret_cast<const int*>(g_session.unknown_7EE8);
+    }
+
+    double percent;
+    if (maxLevel == g_session.m_level) {
+      percent = 100.0;
+    } else {
+      percent = static_cast<float>(static_cast<int>(static_cast<double>(current) / static_cast<double>(maximum) * 1000.0)) * 0.1f;
+    }
+
+    int x = 9;
+    int family = 1;
+    int fontHeight = 14;
+    int length;
+    if (g_serviceType == 12) {
+      length = std::sprintf(text, "Nv. %2d / %s / Nv. %2d / Exp. %lld %%", g_session.m_level, g_session.GetJobName(g_session.GetDisplayJob(), -1),
+                            g_session.m_jobLevel, static_cast<long long>(percent));
+    } else {
+      if (g_serviceType == 0) {
+        switch (g_session.GetDisplayJob()) {
+        case 23:
+        case 4046:
+        case 4047:
+        case 4048:
+        case 4049:
+        case 4239:
+        case 4240:
+        case 4241:
+        case 4242:
+        case 4243:
+        case 4244:
+        case 4302:
+        case 4303:
+        case 4316:
+          family = 0;
+          fontHeight = 11;
+          break;
+        }
+      }
+
+      length = std::sprintf(text, "Lv.%2d / %s / Lv.%2d / Exp. %.1lf %%", g_session.m_level, g_session.GetJobName(g_session.GetDisplayJob(), -1),
+                            g_session.m_jobLevel, percent);
+      if (this->TextWidth(this->m_controls->fonts, this->m_controls->locale, text, length, family, fontHeight, 0, 0) + 9 > this->geometry.width) {
+        length = std::sprintf(text, "Lv%2d / %s / Lv%2d / Exp%.1lf%%", g_session.m_level, g_session.GetJobName(g_session.GetDisplayJob(), -1),
+                              g_session.m_jobLevel, percent);
+        const int remaining = this->geometry.width - this->TextWidth(this->m_controls->fonts, this->m_controls->locale, text, length, family, fontHeight, 0, 0);
+        if (remaining < 0) {
+          x = 3;
+        } else {
+          x = remaining / 2;
+        }
+      }
+    }
+    this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, x, 20, text, length, family, fontHeight, 0, 0, 0);
+
+    FormatGroupedInteger(g_session.m_zeny, zenyText, 64);
+
+    int offset = 0;
+    if (g_session.unknown_556C != 0) {
+      const std::uint32_t color = static_cast<float>(g_session.unknown_5568) * 100.0f / static_cast<float>(g_session.unknown_556C) < 25.0f ? 255 : 0;
+      const int hpLength = std::sprintf(text, x == 9 ? "HP. %d / %d" : "HP %d / %d", g_session.unknown_5568, g_session.unknown_556C);
+      this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, x, 36, text, hpLength, 1, 14, color, 0, 0);
+      offset = this->TextWidth(this->m_controls->fonts, this->m_controls->locale, text, hpLength, 1, 14, 0, 0);
+      length = std::sprintf(text, " | ");
+      this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, offset + x, 36, text, length, 1, 14, 0, 0, 0);
+    }
+
+    const int sp = *reinterpret_cast<const int*>(&g_session.unknown_5570[0]);
+    const int spMax = *reinterpret_cast<const int*>(&g_session.unknown_5570[4]);
+    if (spMax < 0) {
+      return;
+    }
+
+    const std::uint32_t color = static_cast<float>(sp) * 100.0f / static_cast<float>(spMax) < 25.0f ? 255 : 0;
+    offset += this->TextWidth(this->m_controls->fonts, this->m_controls->locale, text, length, 1, 14, 0, 0);
+    const int spLength = std::sprintf(text, x == 9 ? "SP. %d / %d" : "SP %d / %d", sp, spMax);
+    this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, offset + x, 36, text, spLength, 1, 14, color, 0, 0);
+  } else if (this->geometry.height == this->expandedHeight) {
+    CBitmapRes* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\basewin_bg2.bmp")));
+    this->DrawTitleBar(this->m_controls->fonts, this->m_controls->locale, false, "", 0);
+    this->DrawBitmap(0, 0, background ? &background->image : nullptr, false);
+
+    int family;
+    int fontHeight;
+    if (g_serviceType == 0 || g_serviceType == 14) {
+      family = 0;
+      fontHeight = 12;
+    } else {
+      family = 1;
+      fontHeight = 14;
+    }
+    this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 9, 36, g_session.GetJobName(g_session.GetDisplayJob(), -1), 0, family, fontHeight, 0, 0, 0);
+
+    std::memset(text, 0, sizeof(text));
+    if (g_serviceType == 1) {
+      this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 18, 3, "Basic Info", 0, 0, 12, 0xFFFFFF, 0, 0);
+      this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 17, 2, "Basic Info", 0, 0, 12, 0, 0, 0);
+    } else {
+      this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 18, 3, LookupMessage(238), 0, 0, 12, 0xFFFFFF, 0, 0);
+      this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 17, 2, LookupMessage(238), 0, 0, 12, 0, 0, 0);
+    }
+
+    this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 17, 51, "HP", 0, 1, 14, 0, 0, 0);
+    this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 17, 65, "SP", 0, 1, 14, 0, 0, 0);
+
+    if (g_session.unknown_556C != 0) {
+      std::sprintf(text, "%d%%", g_session.unknown_5568 * 100 / g_session.unknown_556C);
+      this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 173, 51, text, 0, 1, 14, 0, 0, 0);
+    }
+
+    const int spMax = *reinterpret_cast<const int*>(&g_session.unknown_5570[4]);
+    if (spMax != 0) {
+      std::sprintf(text, "%d%%", *reinterpret_cast<const int*>(&g_session.unknown_5570[0]) * 100 / spMax);
+      this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 173, 65, text, 0, 1, 14, 0, 0, 0);
+    }
+
+    std::sprintf(text, g_serviceType == 12 ? "Base. %d" : "Base Lv. %d", g_session.m_level);
+    this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 17, this->layoutOffset + 71, text, 0, 1, 14, 0, 0, 0);
+    std::sprintf(text, g_serviceType == 12 ? "Classe. %d" : "Job Lv. %d", g_session.m_jobLevel);
+    this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 17, this->layoutOffset + 83, text, 0, 1, 14, 0, 0, 0);
+
+    std::memset(zenyText, 0, sizeof(zenyText));
+    FormatGroupedInteger(g_session.m_zeny, zenyText, 64);
+    std::sprintf(text, "Zeny : %s", zenyText);
+    const int zenyWidth = this->TextWidth(this->m_controls->fonts, this->m_controls->locale, text, std::strlen(text), 1, 14, 0, 0);
+    this->DrawRightAlignedText(this->geometry.width - 5, this->layoutOffset + 103, text, std::strlen(text), 1, 14, 0, 0);
+
+    std::sprintf(text, g_serviceType == 12 ? "Peso : %3d / %3d" : "Weight : %3d / %3d", g_session.m_weight, g_session.m_maxWeight);
+    const int capacity = g_session.m_maxWeight < 1 ? 1 : g_session.m_maxWeight;
+    const std::uint32_t color = g_session.m_weight * 100 / capacity >= g_unknown173A5BC ? 255 : 0;
+    this->DrawRightAlignedText(this->geometry.width - zenyWidth - 10, this->layoutOffset + 103, text, std::strlen(text), 1, 14, color, 0);
+  }
+}
