@@ -15,7 +15,7 @@ CCommonObject::~CCommonObject() {
 // FUNCTION: fn_03417
 void CCommonObject::Clear() {
   for (char* buffer : this->m_buffers) {
-    std::free(buffer);
+    delete[] buffer;
   }
 
   this->m_buffers.clear();
@@ -36,12 +36,7 @@ bool CCommonObject::LoadTokens(std::vector<char*>& tokens, const char* name, int
   }
 
   const auto bytes = static_cast<unsigned>(file.Size());
-  std::unique_ptr<char, decltype(&std::free)> buffer(static_cast<char*>(std::malloc(static_cast<std::size_t>(bytes) + 1)), &std::free);
-
-  if (!buffer) {
-    file.Close();
-    throw std::bad_alloc();
-  }
+  std::unique_ptr<char[]> buffer(new char[static_cast<std::size_t>(bytes) + 1]);
 
   std::memcpy(buffer.get(), file.Data(), bytes);
   buffer.get()[bytes] = '\0';
