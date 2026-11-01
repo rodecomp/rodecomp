@@ -6435,6 +6435,10 @@ int CSession::GetTraitStat(int type) {
 // OFFSET: 0x008C7EA0
 
 // OFFSET: 0x008C8330
+// FUNCTION: fn_11952
+UIMakingArrowListWnd::UIMakingArrowListWnd(UIWindowContext& windows, UIFrameContext& frames)
+    : UIItemIdentifyWnd(windows, frames) {
+}
 
 // OFFSET: 0x008C8A50
 
