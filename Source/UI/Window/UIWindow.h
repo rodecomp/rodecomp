@@ -35,6 +35,7 @@ class TextureCache;
 class UITextViewer;
 struct WindowReplayRecorder;
 struct ITEM_INFO;
+class UIItemTagButton;
 
 struct UIWindowContext {
   RenderPrimitivePool& primitives;
@@ -197,6 +198,8 @@ public:
   std::string FitDisplayText(int width, const char* text, int family, int height, unsigned char bold);
   std::string FitVerticalDisplayText(int height, const char* text, int family, int fontHeight, unsigned char bold);
   std::list<int> WrapFormattedText(std::string text, std::list<std::string>* lines, int maxWidth, int family, int height, unsigned char bold);
+  UIItemTagButton* CreateItemTagButton(const std::string& title, const std::string& label, int tagId, UIWindow* parent, std::uint32_t color);
+  std::list<int> WrapText(std::string text, std::list<std::string>* lines, int maxWidth, int family, int height, unsigned char bold);
   const char* TruncateText(const char* text, int maxBytes);
   const char* ClipTextToWidth(const char* text, int maxWidth, int family, int height, unsigned char bold);
   int RecordEditTexts(WindowReplayRecorder& recorder);

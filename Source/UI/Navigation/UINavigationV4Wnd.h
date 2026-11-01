@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 
+class CBitmapRes;
 class CNavi_Object;
 class CTexture;
 class UIListBox_NaviSearch;
@@ -44,6 +45,7 @@ public:
   void FillRouteGroups();
   void SetRoadIcon(int slot);
   void InsertNavigationLink(std::string name, int x, int y);
+  void DrawTargetSprite(int x, int y, int width, int height, const CBitmapRes* background);
 
   /* 00B4 */ UIWindow* unknown_00B4;
   /* 00B8 */ UIWindow* unknown_00B8;

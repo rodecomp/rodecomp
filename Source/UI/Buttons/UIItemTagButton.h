@@ -7,8 +7,10 @@
 
 class UIItemTagButton : public UITextButton {
   friend class UIItemTagCtrl;
+  friend class UIWindow;
 
 public:
+  UIItemTagButton();
   UIItemTagButton(UIWindowContext& windows, UIButtonContext& buttons);
 
   void Paint() override;

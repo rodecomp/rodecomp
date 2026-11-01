@@ -5,6 +5,8 @@
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/MessageTable.h"
 #include "Contents/NavigationManager.h"
+#include "Contents/SpriteRidingOffset.h"
+#include "Client/Session.h"
 #include "Client/Mode/ModeCursor.h"
 #include "Client/Mode/ModeEvents.h"
 #include "Network/TextEncoding.h"
@@ -17,6 +19,7 @@
 #include "Render/Textures/Texture.h"
 #include "Resource/Bitmap/BitmapImage.h"
 #include "Resource/Bitmap/BitmapResource.h"
+#include "Resource/PaletteResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
 #include "Resource/Sprites/ActionResource.h"
@@ -24,6 +27,7 @@
 #include "UI/Buttons/UIBasicButton.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UIButton.h"
+#include "UI/Buttons/UIItemTagButton.h"
 #include "UI/Chat/ChatSuggestions.h"
 #include "UI/Edit/UIEditCtrl.h"
 #include "UI/Lists/UIListBoxNaviSearch.h"
@@ -61,6 +65,20 @@
 #include <string>
 #include <windows.h>
 #include <timeapi.h>
+
+namespace {
+  struct NavigationTargetLook {
+    /* 0000 */ int job;
+    /* 0004 */ int sex;
+    /* 0008 */ int bodyPalette;
+    /* 000C */ int head;
+    /* 0010 */ int headPalette;
+    /* 0014 */ int accessory0;
+    /* 0018 */ int accessory1;
+    /* 001C */ int accessory2;
+    /* 0020 */ int robe;
+  };
+}
 
 // INLINED
 inline WindowGeometry::WindowGeometry()
@@ -2917,3 +2935,32 @@ int UIPrivateAirplaneWnd::SendMsg(
 
   return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
 }
+
+// OFFSET: 0x00A7DA40
+
+// OFFSET: 0x00A7B4D0
+// FUNCTION: fn_16930
+UIItemTagButton* UIWindow::CreateItemTagButton(const std::string& title, const std::string& label, int tagId, UIWindow* parent, std::uint32_t color) {
+  const std::string text = "<" + label + ">";
+  UIItemTagButton* button = new (std::nothrow) UIItemTagButton();
+  if (button) {
+    button->Configure(text.c_str(), color, 0, 12, 0, 0);
+    if (title != label) {
+      button->SetTooltip(title.c_str());
+    }
+
+    button->m_hoverColor = color;
+    button->SetId(0x1D0);
+    button->m_value = 0x205;
+    button->Move(0, 0);
+    button->unknown_01F8 = tagId;
+    if (parent) {
+      parent->AddChild(button);
+    }
+  }
+
+  return button;
+}
+
+// OFFSET: 0x005C34B0
+

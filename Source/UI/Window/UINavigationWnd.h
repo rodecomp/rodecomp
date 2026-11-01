@@ -6,6 +6,8 @@
 #include <string>
 #include <vector>
 
+class CActRes;
+class CSprRes;
 class UIBitmapButton;
 class UIButton;
 class UICheckBox;
@@ -30,6 +32,8 @@ extern bool g_navigationMinimized;
 extern int g_navigationMode;
 extern UIWindow* g_navigationWindow;
 extern bool g_navigationHidden;
+extern CActRes* g_navigationActions;
+extern CSprRes* g_navigationSprites;
 
 class UINavigationWnd : public UIFrameWnd {
 public:
