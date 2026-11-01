@@ -2016,6 +2016,48 @@ bool UIGuildMemberManageWnd::DrawMember(GuildInfo::Member& member, int& index, i
 // OFFSET: 0x0095E320
 
 // OFFSET: 0x0095ACC0
+// FUNCTION: fn_13062
+void UIGuildNoticeWnd::Slot15(int, int) {
+  this->CreateTabs();
+
+  if (std::strcmp(g_guildName.c_str(), "") == 0) {
+    g_modeMgr.gameMode->SendMsg(107, 0, 0, 0, 0);
+  }
+
+  this->m_titleEdit = new UIEditCtrlVarId();
+  this->m_titleEdit->SetSize(this->geometry.width - 60, 16);
+  this->m_titleEdit->Move(50, 66);
+  this->m_titleEdit->maximum = 60;
+  this->m_titleEdit->Background(242, 242, 242);
+  this->m_titleEdit->SetId(281);
+  this->AddChild(this->m_titleEdit);
+  InputFocus focus{g_windowMgr.hoverWindow};
+  focus.Set(this->m_titleEdit);
+  this->m_titleEdit->SetText(GuildData().unknown_0030.c_str());
+
+  this->m_bodyEdit = new UIEditCtrl3(*this->m_context, *reinterpret_cast<UIEditContext*>(nullptr));
+  this->m_bodyEdit->SetSize(this->geometry.width - 10, 156);
+  this->m_bodyEdit->invalidatesParent = 1;
+  this->m_bodyEdit->Move(5, 104);
+  this->m_bodyEdit->maximum = 119;
+  this->m_bodyEdit->Background(242, 242, 242);
+  this->AddChild(this->m_bodyEdit);
+  this->m_bodyEdit->SetText(GuildData().unknown_0048.c_str());
+
+  const std::string prefix("유저인터페이스\\");
+  this->m_sendButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->m_sendButton->SetBitmap((prefix + "btn_send" + ".bmp").c_str(), 0, 0);
+  this->m_sendButton->SetBitmap((prefix + "btn_send_a" + ".bmp").c_str(), 1, 0);
+  this->m_sendButton->SetBitmap((prefix + "btn_send_b" + ".bmp").c_str(), 2, 0);
+  this->m_sendButton->SetSize(this->m_sendButton->BitmapWidth(), this->m_sendButton->BitmapHeight());
+
+  if (g_guildIsMaster != 0) {
+    this->m_sendButton->Move(this->geometry.width - 46, this->geometry.height - 24);
+  }
+
+  this->m_sendButton->SetId(277);
+  this->AddChild(this->m_sendButton);
+}
 
 // OFFSET: 0x00963BF0
 // FUNCTION: fn_13130
