@@ -2421,7 +2421,7 @@ void UIItemIdentifyWnd::Slot15(int, int) {
     int positions[1][2] = {{this->geometry.width - 92, this->geometry.height - 24}};
     int ids[1] = {184};
     for (int i = 0; i < 1; ++i) {
-      auto* button = new UIBitmapButton(*this->m_context, *reinterpret_cast<UIButtonContext*>(nullptr));
+      auto* button = new UIBitmapButton();
       button->SetBitmap((prefix + names[i][0] + ".bmp").c_str(), 0, 0);
       button->SetBitmap((prefix + names[i][1] + ".bmp").c_str(), 1, 0);
       button->SetBitmap((prefix + names[i][2] + ".bmp").c_str(), 2, 0);
@@ -2439,7 +2439,7 @@ void UIItemIdentifyWnd::Slot15(int, int) {
     int positions[1][2] = {{this->geometry.width - 46, this->geometry.height - 24}};
     int ids[1] = {185};
     for (int i = 0; i < 1; ++i) {
-      auto* button = new UIBitmapButton(*this->m_context, *reinterpret_cast<UIButtonContext*>(nullptr));
+      auto* button = new UIBitmapButton();
       button->SetBitmap((prefix + names[i][0] + ".bmp").c_str(), 0, 0);
       button->SetBitmap((prefix + names[i][1] + ".bmp").c_str(), 1, 0);
       button->SetBitmap((prefix + names[i][2] + ".bmp").c_str(), 2, 0);
