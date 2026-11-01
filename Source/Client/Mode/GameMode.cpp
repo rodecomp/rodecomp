@@ -3967,3 +3967,94 @@ CGameActor* CGameMode::NewActor(int job) {
   }
   return actor;
 }
+
+// GLOBAL: gl_25393
+int g_hoverActorGid;
+
+// INLINED
+__forceinline void CGameMode::ShowHoverActorName(CGameActor* actor) {
+  this->EnsureNameBalloon(this->itemNameBalloon);
+  CActorNameCard card = this->nameCard.Lookup(actor->render.accountId);
+  if (!card.received) {
+    return;
+  }
+
+  if (actor->unknown_02F8 == 1 && (this->scene->unknown_0048 == 1 || this->scene->unknown_004C == 1)) {
+    card.name = "??????";
+  } else {
+    const std::string name = this->nameCard.Name(actor->render.accountId);
+    card.name = name;
+  }
+
+  if (g_session.IsMonsterActor(actor) == 1) {
+    UINameBalloonText* balloon = this->itemNameBalloon;
+    unsigned char monsterType;
+    if (actor->GetEffectiveJob(-1) == 20269) {
+      monsterType = 0;
+    } else {
+      monsterType = actor->unknown_0304;
+    }
+    balloon->SetName(card, actor->IsPlayerClass(actor->GetEffectiveJob(-1)) == 0, monsterType);
+  } else {
+    this->itemNameBalloon->SetName(card, actor->IsPlayerClass(actor->GetEffectiveJob(-1)) == 0, 0);
+  }
+
+  const unsigned char showEmblem = g_serviceOptions.Get(0x40);
+  if ((g_session.IsNpcJob(actor->GetEffectiveJob(-1)) || g_session.IsMonsterActor(actor)) && card.unknown_0094) {
+    this->itemNameBalloon->SetIcon(FormatOwnedString("유저인터페이스\\group\\group_%d.bmp", card.unknown_0094).c_str(), 0);
+  } else if (g_session.IsAllyActor(actor->render.accountId, actor->GetEffectiveJob(-1)) && card.unknown_0094) {
+    this->nameBalloon->SetIcon(FormatOwnedString("유저인터페이스\\group\\group_%d.bmp", card.unknown_0094).c_str(), 0);
+  } else if (actor->Slot50() && showEmblem) {
+    std::string emblem = g_guildMgr->GetEmblemFilename(actor->Slot50());
+    const unsigned char framedEmblem = g_serviceOptions.Get(0xF3);
+    this->itemNameBalloon->SetIcon(emblem.c_str(), static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->unknown_004C == 1 && framedEmblem ? 1 : 0);
+  } else {
+    this->itemNameBalloon->SetIcon("", 0);
+  }
+
+  UINameBalloonText* balloon = this->itemNameBalloon;
+  if (balloon) {
+    balloon->m_textColor = this->ActorNameColor(actor->GetEffectiveJob(-1), actor->render.accountId);
+    balloon->m_outlineColor = 0;
+  }
+  this->PlaceWindowAtActor(this->itemNameBalloon, actor);
+}
+
+// OFFSET: 0x00CE1010
+// FUNCTION: fn_21331
+void CGameMode::UpdateHoverNameBalloon() {
+  CGameActor* actor;
+  if (g_hoverActorGid) {
+    actor = static_cast<CGameActor*>(this->scene->GetActorByGID(g_hoverActorGid));
+    if (!actor) {
+      return;
+    }
+
+    if (actor->render.visible == 1 && actor->render.enabled == 1 && !StateFlag02(actor->Slot13())) {
+      this->ShowHoverActorName(actor);
+    }
+  } else {
+    if (!this->unknown_0028) {
+      this->SendMsg(5, 0, 0, 0, 0);
+      return;
+    }
+
+    actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(*reinterpret_cast<std::uint32_t*>(&this->unknown_00EC[8])));
+    if (!actor) {
+      return;
+    }
+
+    if (!actor->unknown_0314 && actor->render.visible == 1 && actor->render.enabled == 1 && !StateFlag02(actor->Slot13())) {
+      *reinterpret_cast<int*>(&this->unknown_02B8[0x10]) = 0;
+      this->ShowHoverActorName(actor);
+    }
+  }
+
+  if (actor->GetEffectiveJob(-1) != 45 &&
+      (actor->unknown_0314 || (actor->render.visible == 1 && actor->render.enabled == 1 && !StateFlag02(actor->Slot13())))) {
+    this->SendMsg(4, static_cast<int>(actor->render.position.x), static_cast<int>(actor->render.position.z), 0, 0);
+    return;
+  }
+
+  this->SendMsg(5, 0, 0, 0, 0);
+}

@@ -360,6 +360,8 @@ public:
   const CActorNameCard& LookupNameCard(std::uint32_t id);
   std::vector<char> BuildActorEntryPacket(CGameActor* actor, std::uint16_t packetType);
   CGameActor* NewActor(int job);
+  void UpdateHoverNameBalloon();
+  void ShowHoverActorName(CGameActor* actor);
   const char* DragItemName();
   void PushUnknown01A4(int value);
   bool IsOverWeight(bool notify);
