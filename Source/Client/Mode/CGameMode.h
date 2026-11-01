@@ -92,7 +92,9 @@ public:
   /* 00CC */ CWorld* scene;
   /* 00D0 */ CView* camera;
   /* 00D4 */ CMousePointer* mousePointer;
-  /* 00D8 */ unsigned char unknown_00D8[0x0C];
+  /* 00D8 */ unsigned char unknown_00D8[0x04];
+  /* 00DC */ int unknown_00DC;
+  /* 00E0 */ int unknown_00E0;
   /* 00E4 */ int unknown_00E4;
   /* 00E8 */ int unknown_00E8;
   /* 00EC */ unsigned char unknown_00EC[0x10];
@@ -162,9 +164,12 @@ public:
   /* 05CE */ unsigned char unknown_05CE;
   /* 05CF */ unsigned char unknown_05CF;
   /* 05D0 */ UIWindow* unknown_05D0;
-  /* 05D4 */ unsigned char unknown_05D4[0x14];
+  /* 05D4 */ unsigned char unknown_05D4[0x10];
+  /* 05E4 */ std::uint32_t wheelTick;
   /* 05E8 */ std::uint32_t replayPauseTick;
-  /* 05EC */ unsigned char unknown_05EC[0x10];
+  /* 05EC */ unsigned char unknown_05EC[0x08];
+  /* 05F4 */ int unknown_05F4;
+  /* 05F8 */ int unknown_05F8;
   /* 05FC */ UIWindow* unknown_05FC;
   /* 0600 */ std::uint32_t unknown_0600;
   /* 0604 */ std::list<UIWindow*> unknown_0604;
@@ -827,6 +832,8 @@ public:
   void ReceiveEquipItemNotice(const unsigned char* data);
   void ReceiveEquipItemListFlags(const unsigned char* packet);
   void ReceiveParaResultList(const unsigned char* packet);
+  void ProcessRightButtonDrag();
+  void ProcessMouseWheel(int requireControl);
 };
 
 void LaunchRollingCutterEffect(CGameActor* actor);

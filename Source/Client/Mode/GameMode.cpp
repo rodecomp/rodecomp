@@ -38,9 +38,9 @@
 #include "Client/Application/Launcher.h"
 #include "UI/Text/NavigationLink.h"
 #include "Contents/RenewQuestMgr.h"
-#include <cstring>
-#include <string>
-#include <vector>
+#include "Client/Mode/ModeCursor.h"
+#include "Contents/Skills/AutomaticSkills.h"
+#include "UI/Shortcuts/UIShortCutWnd.h"
 #include "Contents/MapInfoMgr.h"
 #include <timeapi.h>
 #include "File/File.h"
@@ -3542,4 +3542,272 @@ void CGameMode::InitializeState() {
 
   reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId))->ClearUnknown0114();
   this->unknown_02EC = "";
+}
+
+// OFFSET: 0x00CE46B0
+// FUNCTION: fn_21337
+void CGameMode::ProcessRightButtonDrag() {
+  switch (g_mouse.buttons[1]) {
+  case 1: {
+    if (g_windowMgr.unknown_0210) {
+      g_windowMgr.CloseWindow(0x12);
+    }
+
+    this->SendMsg(0x12, 0, 0, 0, 0);
+    this->SendMsg(0x47, 0, 0, 0, 0);
+    this->unknown_00E4 = g_screenWidth;
+    this->unknown_00E8 = g_screenHeight;
+    if (!g_serviceOptions.Get(0x78)) {
+      return;
+    }
+
+    UIShortCutWnd* shortcuts = static_cast<UIShortCutWnd*>(g_windowMgr.window_01E8);
+    if (!shortcuts) {
+      return;
+    }
+
+    AutomaticSkills* automatic = reinterpret_cast<AutomaticSkills*>(g_session.unknown_7FB4);
+    if (shortcuts->m_slots[4]->unknown_0000 && automatic->Contains(static_cast<std::uint16_t>(shortcuts->m_slots[4]->itemId))) {
+      g_session.SetOption(AutomaticSkills::CancelOption(static_cast<std::int16_t>(shortcuts->m_slots[4]->itemId)), 1, 0);
+    } else {
+      automatic->DisableAll();
+    }
+
+    shortcuts->SendMsg(nullptr, 0x29, 8, 0, 0, 0);
+    return;
+  }
+  case 2:
+    if (!HIBYTE(GetAsyncKeyState(VK_MENU)) && !HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
+      reinterpret_cast<ModeCursor*>(&this->cursorAction)->Set(4, this->cursorTick);
+      if (this->hasViewParameters) {
+        float yaw = static_cast<float>(g_screenWidth) + this->camera->camera.desiredYaw - static_cast<float>(this->unknown_00DC);
+        const float low = static_cast<float>(this->viewParameters[3]);
+        const float high = static_cast<float>(this->viewParameters[4]);
+        if (yaw < low) {
+          yaw = low;
+        }
+        if (yaw > high) {
+          yaw = high;
+        }
+        this->camera->camera.desiredYaw = yaw;
+      } else if (this->unknown_0254 == 0 && g_session.IsAdminSubMode(6) == 0) {
+        float yaw = static_cast<float>(g_screenWidth) + this->camera->camera.desiredYaw - static_cast<float>(this->unknown_00DC);
+        const float low = this->unknown_0288 - 20.0f;
+        const float high = this->unknown_0288 + 20.0f;
+        if (yaw < low) {
+          yaw = low;
+        }
+        if (yaw > high) {
+          yaw = high;
+        }
+        this->camera->camera.desiredYaw = yaw;
+      } else {
+        this->camera->camera.AddYaw(static_cast<float>(g_screenWidth - this->unknown_00DC));
+      }
+
+      g_soundMgr->SetListenerYaw(this->camera->camera.desiredYaw);
+    }
+
+    if (!HIBYTE(GetAsyncKeyState(VK_MENU)) && HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
+      const float range = this->unknown_0254 ? 42.0f : 10.0f;
+      g_cameraPitch = this->camera->camera.desiredPitch - static_cast<float>((g_screenHeight - this->unknown_00E0) / 2);
+      float limit;
+      if (this->hasViewParameters) {
+        if (g_cameraPitch < static_cast<float>(this->viewParameters[7])) {
+          g_cameraPitch = static_cast<float>(this->viewParameters[7]);
+        }
+        limit = static_cast<float>(this->viewParameters[6]);
+      } else {
+        if (g_cameraPitch < -45.0f - range) {
+          g_cameraPitch = -45.0f - range;
+        }
+        if (HIBYTE(GetAsyncKeyState(VK_CONTROL)) && this->camera->camera.desiredDistance <= g_serviceOptionJitterScale) {
+          limit = range - 45.0f;
+        } else {
+          limit = range - 70.0f;
+        }
+      }
+
+      if (g_cameraPitch > limit) {
+        g_cameraPitch = limit;
+      }
+      this->camera->camera.desiredPitch = g_cameraPitch;
+    }
+
+    if (HIBYTE(GetAsyncKeyState(VK_CONTROL))) {
+      g_cameraDistance = this->camera->camera.desiredDistance - static_cast<float>((g_screenHeight - this->unknown_00E0) / 2);
+      float maxDistance = this->unknown_0254 ? g_serviceOptionJitterScale : g_cameraBaseDistance;
+      if (this->hasViewParameters) {
+        if (g_cameraDistance < static_cast<float>(this->viewParameters[0])) {
+          g_cameraDistance = static_cast<float>(this->viewParameters[0]);
+        }
+        maxDistance = static_cast<float>(this->viewParameters[1] + this->viewParameters[0]);
+        if (g_cameraDistance > maxDistance) {
+          g_cameraDistance = maxDistance;
+        }
+      } else if (g_session.IsAdminSubMode(5) == 0) {
+        if (g_cameraDistance < g_cameraMinDistance) {
+          g_cameraDistance = g_cameraMinDistance;
+        }
+        if (g_cameraDistance > maxDistance) {
+          g_cameraDistance = maxDistance;
+        }
+      }
+
+      this->camera->camera.desiredDistance = g_cameraDistance;
+    }
+    return;
+  case 4:
+    if (this->hasViewParameters) {
+      return;
+    }
+
+    if (HIBYTE(GetAsyncKeyState(VK_CONTROL))) {
+      this->camera->camera.desiredDistance = g_cameraBaseDistance;
+    }
+    if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
+      this->camera->camera.desiredPitch = -50.0f;
+    }
+    if (!g_serviceOptions.Get(0x78) && this->unknown_0254 && !HIBYTE(GetAsyncKeyState(VK_SHIFT)) && !HIBYTE(GetAsyncKeyState(VK_CONTROL))) {
+      this->camera->camera.desiredYaw = 0.0f;
+    }
+    return;
+  }
+}
+
+// OFFSET: 0x00CE7CE0
+// FUNCTION: fn_21339
+void CGameMode::ProcessMouseWheel(int requireControl) {
+  if (timeGetTime() - this->wheelTick < 16) {
+    return;
+  }
+
+  this->wheelTick = timeGetTime();
+  if (g_mouse.wheel == 0 || this->unknown_0408 != nullptr) {
+    return;
+  }
+
+  ClientSkills skills{
+    g_session.m_skillBundle,
+    g_session.m_homunSkills,
+    g_session.m_mercSkills,
+    g_session.m_additionalSkills,
+    reinterpret_cast<const int&>(g_session.m_jobFlags),
+    g_activeSkillEffects
+  };
+  CSkillInfo wheelSkill = skills.bundle.Lookup(0x27F, skills.classMode, skills.HasEffect(1717), skills.HasEffect(1716));
+  if (wheelSkill.level > 0) {
+    const int count = this->unknown_05F4;
+    if (count > this->unknown_05F8) {
+      this->unknown_05F8 = count;
+    }
+    this->unknown_05F4 = count + 4;
+  }
+
+  if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
+    const float step = g_mouse.wheel > 0 ? -5.0f : 5.0f;
+    const float range = this->unknown_0254 ? 20.0f : 10.0f;
+    g_cameraPitch = this->camera->camera.desiredPitch - step;
+    float limit;
+    if (this->hasViewParameters) {
+      if (g_cameraPitch < static_cast<float>(this->viewParameters[7])) {
+        g_cameraPitch = static_cast<float>(this->viewParameters[7]);
+      }
+      limit = static_cast<float>(this->viewParameters[6]);
+    } else {
+      if (g_cameraPitch < -45.0f - range) {
+        g_cameraPitch = -45.0f - range;
+      }
+      if (HIBYTE(GetAsyncKeyState(VK_CONTROL)) && this->camera->camera.desiredDistance <= g_serviceOptionJitterScale) {
+        limit = range - 45.0f;
+      } else {
+        limit = range - 70.0f;
+      }
+    }
+
+    if (g_cameraPitch > limit) {
+      g_cameraPitch = limit;
+    }
+    this->camera->camera.desiredPitch = g_cameraPitch;
+    return;
+  }
+
+  if (requireControl != 0 && !HIBYTE(GetAsyncKeyState(VK_CONTROL))) {
+    return;
+  }
+
+  if (g_serviceOptions.Get(0x79)) {
+    UIShortCutWnd* shortcuts = static_cast<UIShortCutWnd*>(g_windowMgr.window_01E8);
+    *reinterpret_cast<int*>(&g_session.unknown_544C[0x00]) = 1;
+    AutomaticSkills* automatic = reinterpret_cast<AutomaticSkills*>(g_session.unknown_7FB4);
+    if (g_mouse.wheel > 0) {
+      if (!shortcuts) {
+        return;
+      }
+
+      if (shortcuts->m_slots[3]->unknown_0000 && automatic->Contains(shortcuts->m_slots[3]->itemId)) {
+        g_session.SetOption(AutomaticSkills::CancelOption(static_cast<std::int16_t>(shortcuts->m_slots[3]->itemId)), 1, 0);
+      } else {
+        automatic->DisableAll();
+      }
+
+      shortcuts->SendMsg(nullptr, 0x29, 7, 0, 0, 0);
+    } else {
+      if (!shortcuts) {
+        return;
+      }
+
+      if (shortcuts->m_slots[2]->unknown_0000 && automatic->Contains(shortcuts->m_slots[2]->itemId)) {
+        g_session.SetOption(AutomaticSkills::CancelOption(static_cast<std::int16_t>(shortcuts->m_slots[2]->itemId)), 1, 0);
+      } else {
+        automatic->DisableAll();
+      }
+
+      shortcuts->SendMsg(nullptr, 0x29, 6, 0, 0, 0);
+    }
+    return;
+  }
+
+  const float step = g_mouse.wheel > 0 ? -24.3f : 24.3f;
+  g_cameraDistance = this->camera->camera.desiredDistance - step;
+  float maxDistance = this->unknown_0254 ? g_serviceOptionJitterScale : g_cameraBaseDistance;
+  CSkillInfo zoomSkill = skills.bundle.Lookup(0x1B9, skills.classMode, skills.HasEffect(1717), skills.HasEffect(1716));
+  bool extendedZoom = false;
+  if (this->hasViewParameters) {
+    if (g_cameraDistance < static_cast<float>(this->viewParameters[0])) {
+      g_cameraDistance = static_cast<float>(this->viewParameters[0]);
+    }
+    maxDistance = static_cast<float>(this->viewParameters[1] + this->viewParameters[0]);
+  } else if (zoomSkill.level <= 0 && this->scene->player->render.unknown_0070 == 6 && !this->scene->player->state.Attachments().HasId(0x14E)) {
+    switch (g_session.m_job) {
+    case 0xFCF:
+    case 0x1082:
+    case 0x108F:
+    case 0x1091:
+    case 0x10CE:
+      extendedZoom = true;
+      break;
+    }
+  }
+
+  if (extendedZoom) {
+    if (g_cameraDistance < g_cameraMinDistance) {
+      g_cameraDistance = g_cameraMinDistance;
+    }
+    if (g_cameraDistance > maxDistance * 3.0f) {
+      g_cameraDistance = maxDistance * 3.0f;
+    }
+    if (g_cameraDistance > maxDistance && this->camera->camera.desiredPitch > -50.0f) {
+      this->camera->camera.desiredPitch = -50.0f;
+    }
+  } else {
+    if (!this->hasViewParameters && g_cameraDistance < g_cameraMinDistance) {
+      g_cameraDistance = g_cameraMinDistance;
+    }
+    if (g_cameraDistance > maxDistance) {
+      g_cameraDistance = maxDistance;
+    }
+  }
+
+  this->camera->camera.desiredDistance = g_cameraDistance;
 }
