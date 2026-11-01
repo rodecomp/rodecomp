@@ -881,6 +881,10 @@ public:
     short unknown_0030, short unknown_004C, short unknown_0050, short unknown_0054, short unknown_0058, short robe, std::string name, short unknown_0078
   );
   void SpawnMirrorActor(std::uint32_t aid, std::uint32_t owner, short x, short y);
+  void ReceiveActorMoveEntryOld(const unsigned char* data);
+  void ReceiveActorMoveEntryOld2(const unsigned char* data);
+  void ReceiveActorMoveEntryNamed(const unsigned char* data);
+  void ReceiveActorMoveEntryOld0(const unsigned char* data);
   void ReceiveItem1748List2(const unsigned char* packet);
   void ReceiveItem1758StoreList(const unsigned char* packet);
   void ReceiveActorStandEntry(const unsigned char* data);

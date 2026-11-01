@@ -12935,6 +12935,545 @@ void CGameMode::SpawnMovingActor(
 }
 
 #pragma pack(push, 1)
+struct ActorMoveEntryOldPacket {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::uint32_t aid;
+  /* 0006 */ short speed;
+  /* 0008 */ short bodyState;
+  /* 000A */ short healthState;
+  /* 000C */ short effectState;
+  /* 000E */ short job;
+  /* 0010 */ short head;
+  /* 0012 */ int weapon;
+  /* 0016 */ int shield;
+  /* 001A */ short accessory;
+  /* 001C */ std::uint32_t moveStartTime;
+  /* 0020 */ short accessory2;
+  /* 0022 */ short accessory3;
+  /* 0024 */ short headPalette;
+  /* 0026 */ short bodyPalette;
+  /* 0028 */ short headDir;
+  /* 002A */ int guildId;
+  /* 002E */ short guildVersion;
+  /* 0030 */ short honor;
+  /* 0032 */ short virtue;
+  /* 0034 */ unsigned char pkMode;
+  /* 0035 */ unsigned char sex;
+  /* 0036 */ unsigned char moveData[6];
+  /* 003C */ unsigned char xSize;
+  /* 003D */ unsigned char ySize;
+  /* 003E */ short level;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(ActorMoveEntryOldPacket) == 0x40);
+
+// OFFSET: 0x00D346A0
+// FUNCTION: fn_21754
+void CGameMode::ReceiveActorMoveEntryOld(const unsigned char* data) {
+  const ActorMoveEntryOldPacket* packet = reinterpret_cast<const ActorMoveEntryOldPacket*>(data);
+  ActorMoveEntry entry;
+  entry.body = 0;
+  entry.aid = packet->aid;
+  entry.job = packet->job;
+  entry.moveStartTime = packet->moveStartTime;
+  entry.unknown_0008 = this->SubD07740(entry.job, packet->sex);
+  entry.speed = packet->speed;
+  entry.head = packet->head;
+  entry.weapon = packet->weapon;
+  entry.accessory = packet->accessory;
+  entry.healthState = packet->healthState;
+  entry.bodyState = packet->bodyState;
+  entry.effectState = packet->effectState;
+  entry.pkMode = packet->pkMode;
+  entry.accessory2 = packet->accessory2;
+  entry.accessory3 = packet->accessory3;
+  entry.headPalette = packet->headPalette;
+  entry.bodyPalette = packet->bodyPalette;
+  entry.headDir = packet->headDir;
+  entry.guildId = packet->guildId;
+  entry.guildVersion = packet->guildVersion;
+  entry.honor = packet->honor;
+  entry.shield = packet->shield;
+  entry.virtue = packet->virtue;
+  DecodeSrcDst(packet->moveData, &entry.srcX, &entry.srcY, &entry.dstX, &entry.dstY, &entry.subX, &entry.subY);
+  g_session.SyncServerTime(entry.moveStartTime);
+
+  CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(packet->aid));
+  if (actor) {
+    actor->SendMsg(nullptr, 0x7B, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    if (entry.head == 0x2E) {
+      if (g_session.unknown_1010 == packet->aid) {
+        g_session.unknown_1038 = entry.accessory;
+      }
+      if (entry.accessory && !actor->Slot50()) {
+        actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
+      }
+    }
+    if (g_session.GetSceneUnknown004C() && entry.head != 0x2E && actor->unknown_0188 == 0 &&
+        (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
+      this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+    }
+    if (actor->unknown_02E4) {
+      auto member = this->unknown_01B4.find(actor->render.accountId);
+      if (member != this->unknown_01B4.end()) {
+        member->second.x = entry.dstX;
+        member->second.y = entry.dstY;
+      }
+      member = this->unknown_01BC.find(actor->render.accountId);
+      if (member != this->unknown_01BC.end()) {
+        member->second.x = entry.dstX;
+        member->second.y = entry.dstY;
+      }
+    }
+  } else {
+    const short job = packet->job;
+    if ((job < 45 || job > 999) && (job < 1001 || job > 3998) && static_cast<unsigned short>(job - 20021) > 11978 && !g_session.IsSkillIdInRange6001(job)) {
+      actor = new CPc;
+    } else {
+      if (g_session.IsHomunAid(packet->aid)) {
+        g_groundMarkEnabled = 1;
+      }
+      if (g_session.IsMercenaryAid(packet->aid)) {
+        g_groundMarkAltEnabled = 1;
+      }
+      actor = this->NewActor(packet->job);
+      entry.unknown_0008 = 0;
+    }
+
+    if (actor && entry.head == 0x2E) {
+      if (g_session.unknown_1010 == packet->aid) {
+        g_session.unknown_1038 = entry.accessory;
+      }
+      if (entry.accessory) {
+        actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
+      }
+    }
+    this->scene->objects.push_back(actor);
+    this->scene->actors.push_back(actor);
+    actor->SendMsg(nullptr, 0x7A, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    if (g_session.GetSceneUnknown004C() && entry.head != 0x2E && actor->unknown_0188 == 0 &&
+        (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
+      this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+    }
+    if (this->unknown_01B4.find(entry.aid) != this->unknown_01B4.end() || this->unknown_01BC.find(entry.aid) != this->unknown_01BC.end()) {
+      actor->SetUnknown02E4(1);
+    }
+  }
+
+  this->sub_D591A0(packet->aid, packet->effectState, packet->level, packet->virtue);
+}
+
+#pragma pack(push, 1)
+struct ActorMoveEntryOld2Packet {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ unsigned char objectType;
+  /* 0003 */ std::uint32_t aid;
+  /* 0007 */ short speed;
+  /* 0009 */ short bodyState;
+  /* 000B */ short healthState;
+  /* 000D */ int effectState;
+  /* 0011 */ short job;
+  /* 0013 */ short head;
+  /* 0015 */ int weapon;
+  /* 0019 */ int shield;
+  /* 001D */ short accessory;
+  /* 001F */ std::uint32_t moveStartTime;
+  /* 0023 */ short accessory2;
+  /* 0025 */ short accessory3;
+  /* 0027 */ short headPalette;
+  /* 0029 */ short bodyPalette;
+  /* 002B */ short headDir;
+  /* 002D */ int guildId;
+  /* 0031 */ short guildVersion;
+  /* 0033 */ short honor;
+  /* 0035 */ int virtue;
+  /* 0039 */ unsigned char pkMode;
+  /* 003A */ unsigned char sex;
+  /* 003B */ unsigned char moveData[6];
+  /* 0041 */ unsigned char xSize;
+  /* 0042 */ unsigned char ySize;
+  /* 0043 */ short level;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(ActorMoveEntryOld2Packet) == 0x45);
+
+// OFFSET: 0x00D34B90
+// FUNCTION: fn_21755
+void CGameMode::ReceiveActorMoveEntryOld2(const unsigned char* data) {
+  const ActorMoveEntryOld2Packet* packet = reinterpret_cast<const ActorMoveEntryOld2Packet*>(data);
+  ActorMoveEntry entry;
+  entry.body = 0;
+  entry.aid = packet->aid;
+  entry.job = packet->job;
+  entry.moveStartTime = packet->moveStartTime;
+  entry.unknown_0008 = this->SubD07740(entry.job, packet->sex);
+  entry.speed = packet->speed;
+  entry.head = packet->head;
+  entry.weapon = packet->weapon;
+  entry.accessory = packet->accessory;
+  entry.healthState = packet->healthState;
+  entry.bodyState = packet->bodyState;
+  entry.effectState = packet->effectState;
+  entry.pkMode = packet->pkMode;
+  entry.accessory2 = packet->accessory2;
+  entry.accessory3 = packet->accessory3;
+  entry.headPalette = packet->headPalette;
+  entry.bodyPalette = packet->bodyPalette;
+  entry.headDir = packet->headDir;
+  entry.guildId = packet->guildId;
+  entry.guildVersion = packet->guildVersion;
+  entry.honor = packet->honor;
+  entry.shield = packet->shield;
+  entry.virtue = packet->virtue;
+  DecodeSrcDst(packet->moveData, &entry.srcX, &entry.srcY, &entry.dstX, &entry.dstY, &entry.subX, &entry.subY);
+  g_session.SyncServerTime(entry.moveStartTime);
+
+  CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(packet->aid));
+  if (actor) {
+    actor->unknown_0210 = packet->level;
+    actor->SendMsg(nullptr, 0x7B, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    if (packet->objectType == 7) {
+      if (g_session.unknown_1010 == packet->aid) {
+        g_session.unknown_1038 = entry.accessory;
+      }
+      if (entry.accessory && !actor->Slot50()) {
+        actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
+      }
+    }
+    if (g_session.GetSceneUnknown004C() && packet->objectType != 7 && actor->unknown_0188 == 0 &&
+        (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
+      this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+    }
+    if (actor->unknown_02E4) {
+      auto member = this->unknown_01B4.find(actor->render.accountId);
+      if (member != this->unknown_01B4.end()) {
+        member->second.x = entry.dstX;
+        member->second.y = entry.dstY;
+      }
+      member = this->unknown_01BC.find(actor->render.accountId);
+      if (member != this->unknown_01BC.end()) {
+        member->second.x = entry.dstX;
+        member->second.y = entry.dstY;
+      }
+    }
+  } else {
+    const short job = packet->job;
+    if ((job < 45 || job > 999) && (job < 1001 || job > 3998) && static_cast<unsigned short>(job - 20021) > 11978 && !g_session.IsSkillIdInRange6001(job) &&
+        packet->objectType != 9) {
+      actor = new CPc;
+    } else {
+      if (g_session.IsHomunAid(packet->aid)) {
+        g_groundMarkEnabled = 1;
+      }
+      if (g_session.IsMercenaryAid(packet->aid)) {
+        g_groundMarkAltEnabled = 1;
+      }
+      actor = this->NewActor(packet->job);
+      entry.unknown_0008 = 0;
+    }
+
+    if (actor && packet->objectType == 7) {
+      if (g_session.unknown_1010 == packet->aid) {
+        g_session.unknown_1038 = entry.accessory;
+      }
+      if (entry.accessory) {
+        actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
+      }
+    }
+    actor->unknown_0210 = packet->level;
+    actor->unknown_0314 = packet->objectType;
+    this->scene->objects.push_back(actor);
+    this->scene->actors.push_back(actor);
+    actor->SendMsg(nullptr, 0x7A, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    if (g_session.GetSceneUnknown004C() && packet->objectType == 7 && actor->unknown_0188 == 0 &&
+        (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
+      this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+    }
+    if (this->unknown_01B4.find(entry.aid) != this->unknown_01B4.end() || this->unknown_01BC.find(entry.aid) != this->unknown_01BC.end()) {
+      actor->SetUnknown02E4(1);
+    }
+  }
+
+  this->sub_D591A0(packet->aid, packet->effectState, packet->level, packet->virtue);
+}
+
+#pragma pack(push, 1)
+struct ActorMoveEntryNamedPacket {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::int16_t packetLength;
+  /* 0004 */ unsigned char objectType;
+  /* 0005 */ std::uint32_t aid;
+  /* 0009 */ short speed;
+  /* 000B */ short bodyState;
+  /* 000D */ short healthState;
+  /* 000F */ int effectState;
+  /* 0013 */ short job;
+  /* 0015 */ short head;
+  /* 0017 */ int weapon;
+  /* 001B */ int shield;
+  /* 001F */ short accessory;
+  /* 0021 */ std::uint32_t moveStartTime;
+  /* 0025 */ short accessory2;
+  /* 0027 */ short accessory3;
+  /* 0029 */ short headPalette;
+  /* 002B */ short bodyPalette;
+  /* 002D */ short headDir;
+  /* 002F */ short robe;
+  /* 0031 */ int guildId;
+  /* 0035 */ short guildVersion;
+  /* 0037 */ short honor;
+  /* 0039 */ int virtue;
+  /* 003D */ unsigned char pkMode;
+  /* 003E */ unsigned char sex;
+  /* 003F */ unsigned char moveData[6];
+  /* 0045 */ unsigned char xSize;
+  /* 0046 */ unsigned char ySize;
+  /* 0047 */ short level;
+  /* 0049 */ short font;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(ActorMoveEntryNamedPacket) == 0x4B);
+
+// OFFSET: 0x00D350A0
+// FUNCTION: fn_21756
+void CGameMode::ReceiveActorMoveEntryNamed(const unsigned char* data) {
+  const ActorMoveEntryNamedPacket* packet = reinterpret_cast<const ActorMoveEntryNamedPacket*>(data);
+  ActorMoveEntry entry;
+  entry.body = 0;
+  entry.robe = packet->robe;
+  const int nameLength = packet->packetLength - static_cast<int>(sizeof(ActorMoveEntryNamedPacket));
+  if (nameLength > 0) {
+    const char* nameBegin = reinterpret_cast<const char*>(data + sizeof(ActorMoveEntryNamedPacket));
+    this->nameCard.SetName(packet->aid, std::string(nameBegin, nameBegin + nameLength));
+  }
+
+  entry.aid = packet->aid;
+  entry.job = packet->job;
+  entry.moveStartTime = packet->moveStartTime;
+  entry.unknown_0008 = this->SubD07740(entry.job, packet->sex);
+  entry.speed = packet->speed;
+  entry.head = packet->head;
+  entry.weapon = packet->weapon;
+  entry.accessory = packet->accessory;
+  entry.healthState = packet->healthState;
+  entry.bodyState = packet->bodyState;
+  entry.effectState = packet->effectState;
+  entry.pkMode = packet->pkMode;
+  entry.accessory2 = packet->accessory2;
+  entry.accessory3 = packet->accessory3;
+  entry.headPalette = packet->headPalette;
+  entry.bodyPalette = packet->bodyPalette;
+  entry.headDir = packet->headDir;
+  entry.guildId = packet->guildId;
+  entry.guildVersion = packet->guildVersion;
+  entry.honor = packet->honor;
+  entry.shield = packet->shield;
+  entry.virtue = packet->virtue;
+  DecodeSrcDst(packet->moveData, &entry.srcX, &entry.srcY, &entry.dstX, &entry.dstY, &entry.subX, &entry.subY);
+  g_session.SyncServerTime(entry.moveStartTime);
+
+  CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(packet->aid));
+  if (actor) {
+    actor->unknown_0210 = packet->level;
+    *reinterpret_cast<short*>(actor->render.unknown_00FCBytes) = packet->font;
+    actor->SendMsg(nullptr, 0x7B, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    if (packet->objectType == 7) {
+      if (g_session.unknown_1010 == packet->aid) {
+        g_session.unknown_1038 = entry.accessory;
+      }
+      if (entry.accessory && !actor->Slot50()) {
+        actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
+      }
+    }
+    if (g_session.GetSceneUnknown004C() && packet->objectType == 7 && actor->unknown_0188 == 0 &&
+        (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
+      this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+    }
+    if (actor->unknown_02E4) {
+      auto member = this->unknown_01B4.find(actor->render.accountId);
+      if (member != this->unknown_01B4.end()) {
+        member->second.x = entry.dstX;
+        member->second.y = entry.dstY;
+      }
+      member = this->unknown_01BC.find(actor->render.accountId);
+      if (member != this->unknown_01BC.end()) {
+        member->second.x = entry.dstX;
+        member->second.y = entry.dstY;
+      }
+    }
+  } else {
+    const short job = packet->job;
+    if ((job < 45 || job > 999) && (job < 1001 || job > 3998) && static_cast<unsigned short>(job - 20021) > 11978 && !g_session.IsSkillIdInRange6001(job) &&
+        packet->objectType != 9) {
+      actor = new CPc;
+    } else {
+      if (g_session.IsHomunAid(packet->aid)) {
+        g_groundMarkEnabled = 1;
+      }
+      if (g_session.IsMercenaryAid(packet->aid)) {
+        g_groundMarkAltEnabled = 1;
+      }
+      actor = this->NewActor(packet->job);
+      entry.unknown_0008 = 0;
+    }
+
+    if (actor && packet->objectType != 0) {
+      if (g_session.unknown_1010 == packet->aid) {
+        g_session.unknown_1038 = entry.accessory;
+      }
+      if (entry.accessory) {
+        actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
+      }
+    }
+    actor->unknown_0314 = packet->objectType;
+    this->scene->objects.push_back(actor);
+    this->scene->actors.push_back(actor);
+    actor->SendMsg(nullptr, 0x7A, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    *reinterpret_cast<short*>(actor->render.unknown_00FCBytes) = packet->font;
+    actor->unknown_0210 = packet->level;
+    if (g_session.GetSceneUnknown004C() && packet->objectType == 7 && actor->unknown_0188 == 0 &&
+        (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
+      this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+    }
+    if (this->unknown_01B4.find(entry.aid) != this->unknown_01B4.end() || this->unknown_01BC.find(entry.aid) != this->unknown_01BC.end()) {
+      actor->SetUnknown02E4(1);
+    }
+  }
+
+  this->sub_D591A0(packet->aid, packet->effectState, packet->level, packet->virtue);
+}
+
+#pragma pack(push, 1)
+struct ActorMoveEntryOld0Packet {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::uint32_t aid;
+  /* 0006 */ short speed;
+  /* 0008 */ short bodyState;
+  /* 000A */ short healthState;
+  /* 000C */ short effectState;
+  /* 000E */ short job;
+  /* 0010 */ short head;
+  /* 0012 */ short weapon;
+  /* 0014 */ short accessory;
+  /* 0016 */ std::uint32_t moveStartTime;
+  /* 001A */ short shield;
+  /* 001C */ short accessory2;
+  /* 001E */ short accessory3;
+  /* 0020 */ short headPalette;
+  /* 0022 */ short bodyPalette;
+  /* 0024 */ short headDir;
+  /* 0026 */ int guildId;
+  /* 002A */ short guildVersion;
+  /* 002C */ short honor;
+  /* 002E */ short virtue;
+  /* 0030 */ unsigned char pkMode;
+  /* 0031 */ unsigned char sex;
+  /* 0032 */ unsigned char moveData[6];
+  /* 0038 */ unsigned char xSize;
+  /* 0039 */ unsigned char ySize;
+  /* 003A */ short level;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(ActorMoveEntryOld0Packet) == 0x3C);
+
+// OFFSET: 0x00D35630
+// FUNCTION: fn_21757
+void CGameMode::ReceiveActorMoveEntryOld0(const unsigned char* data) {
+  const ActorMoveEntryOld0Packet* packet = reinterpret_cast<const ActorMoveEntryOld0Packet*>(data);
+  ActorMoveEntry entry;
+  entry.body = 0;
+  entry.aid = packet->aid;
+  entry.job = packet->job;
+  entry.moveStartTime = packet->moveStartTime;
+  entry.unknown_0008 = this->SubD07740(entry.job, packet->sex);
+  entry.speed = packet->speed;
+  entry.head = packet->head;
+  entry.weapon = packet->weapon;
+  entry.shield = packet->weapon >> 31;
+  entry.accessory = packet->accessory;
+  entry.healthState = packet->healthState;
+  entry.bodyState = packet->bodyState;
+  entry.effectState = packet->effectState;
+  entry.pkMode = packet->pkMode;
+  entry.unknown_004C = packet->shield;
+  entry.accessory2 = packet->accessory2;
+  entry.accessory3 = packet->accessory3;
+  entry.headPalette = packet->headPalette;
+  entry.bodyPalette = packet->bodyPalette;
+  entry.headDir = packet->headDir;
+  entry.guildId = packet->guildId;
+  entry.guildVersion = packet->guildVersion;
+  entry.honor = packet->honor;
+  entry.virtue = packet->virtue;
+  DecodeSrcDst(packet->moveData, &entry.srcX, &entry.srcY, &entry.dstX, &entry.dstY, &entry.subX, &entry.subY);
+  g_session.SyncServerTime(entry.moveStartTime);
+
+  CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(packet->aid));
+  if (actor) {
+    actor->SendMsg(nullptr, 5, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    const int actorJob = actor->GetEffectiveJob(-1);
+    if ((actorJob > 45 && actorJob < 1000) || (actorJob > 1000 && actorJob < 3999) || static_cast<unsigned int>(actorJob - 20021) <= 11978) {
+      const std::uint32_t emblem = (packet->accessory2 << 16) | packet->accessory3;
+      if (emblem > 0) {
+        actor->Slot49(emblem, packet->shield);
+      }
+    }
+    if (entry.head == 0x2E) {
+      if (g_session.unknown_1010 == packet->aid) {
+        g_session.unknown_1038 = entry.accessory;
+      }
+      if (entry.accessory && !actor->Slot50()) {
+        actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
+      }
+    }
+  } else {
+    const short job = packet->job;
+    if ((job < 45 || job > 999) && (job < 1001 || job > 3998) && static_cast<unsigned short>(job - 20021) > 11978 && !g_session.IsSkillIdInRange6001(job)) {
+      actor = new CPc;
+    } else {
+      if (g_session.IsHomunAid(packet->aid)) {
+        g_groundMarkEnabled = 1;
+      }
+      if (g_session.IsMercenaryAid(packet->aid)) {
+        g_groundMarkAltEnabled = 1;
+      }
+      actor = this->NewActor(packet->job);
+      entry.unknown_0008 = 0;
+    }
+
+    if (actor && entry.head == 0x2E) {
+      if (g_session.unknown_1010 == packet->aid) {
+        g_session.unknown_1038 = entry.accessory;
+      }
+      if (entry.accessory) {
+        actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
+      }
+    }
+    this->scene->objects.push_back(actor);
+    this->scene->actors.push_back(actor);
+    actor->SendMsg(nullptr, 6, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    const int actorJob = actor->GetEffectiveJob(-1);
+    if ((actorJob > 45 && actorJob < 1000) || (actorJob > 1000 && actorJob < 3999) || static_cast<unsigned int>(actorJob - 20021) <= 11978) {
+      const std::uint32_t emblem = (packet->accessory2 << 16) | packet->accessory3;
+      if (emblem > 0 && !actor->Slot50()) {
+        actor->Slot49(emblem, packet->shield);
+      }
+    }
+  }
+
+  if (g_session.GetSceneUnknown004C() && entry.head != 0x2E && actor->unknown_0188 == 0 &&
+      (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
+    this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+  }
+
+  this->sub_D591A0(packet->aid, packet->effectState, packet->level, packet->virtue);
+}
+
+#pragma pack(push, 1)
 struct ActorStandEntryLegacyPacket {
   /* 0000 */ std::uint16_t packetType;
   /* 0002 */ std::int16_t packetLength;
