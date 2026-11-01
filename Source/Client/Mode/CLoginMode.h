@@ -161,6 +161,7 @@ public:
   void Zc_Accept_Enter2(const AcceptEnterPositionPacket* packet);
   void ShowLoginError(int code, int argument);
   void ReceiveAcceptLogin(const AcceptLoginPacket* packet, int version);
+  void PollNetworkStatus();
 };
 
 extern bool g_loginModeFlag;
@@ -174,6 +175,8 @@ extern char g_zoneServerIp[16];
 extern int g_zoneServerPort;
 extern char g_zoneServerHost[129];
 extern int g_hangameLogin;
+extern CharacterInfo g_charInfo;
+extern bool g_replayMode;
 
 int GetClientType();
 std::string GetMacAddress();

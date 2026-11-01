@@ -1,4 +1,5 @@
 #include "Client/Mode/CLoginMode.h"
+#include "Client/Mode/CGameMode.h"
 #include "Client/Application/ApplicationWindow.h"
 #include "Client/Application/Launcher.h"
 #include "Archive/PakRegistry.h"
@@ -14,8 +15,12 @@
 #include "Contents/GuildMgr.h"
 #include "Contents/MessageTable.h"
 #include "Contents/RenewQuestMgr.h"
+#include "Contents/Schedule/CheckGDISchedule.h"
+#include "Contents/Schedule/PartialShutDownSchedule.h"
+#include "Contents/Schedule/TimeScheduler.h"
 #include "Contents/Sound/SoundMgr.h"
 #include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketLengths.h"
 #include "Render/DeviceContext/DCSurface.h"
 #include "Render/RenderSystemBase.h"
 #include "Render/Renderer.h"
@@ -23,11 +28,13 @@
 #include "Resource/ResourcePreload.h"
 #include "Security/NProtectGameGuardMgr.h"
 #include "UI/Buttons/UITextButton.h"
+#include "UI/UIBartermarketWnd.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Dialogs/UIPasswordWnd.h"
 #include "UI/Dialogs/UIWaitWnd.h"
 #include "UI/Window/UINewSelectCharWnd.h"
+#include "UI/Window/UISelCharForUServerWnd.h"
 #include "UI/Window/WindowDialogs.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"
@@ -151,6 +158,97 @@ struct ServerAddress2 {
   /* 0000 */ ServerAddress address;
   /* 0020 */ char domain[128];
 };
+
+struct ResultPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ unsigned char result;
+};
+
+struct ShortResultPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int16_t result;
+};
+
+struct IntValuePacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ int value;
+};
+
+struct LoginErrorCodePacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ int code;
+  /* 0006 */ char text[20];
+};
+
+struct LoginErrorTimePacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ unsigned char code;
+  /* 0003 */ int remaining;
+};
+
+struct SecondPasswordResultPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint16_t result;
+  /* 0004 */ std::uint32_t accountId;
+};
+
+struct SecondPasswordStatePacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint16_t length;
+  /* 0004 */ std::int16_t result;
+};
+
+struct ShutdownNoticePacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ __time32_t endTime;
+  /* 0006 */ __time32_t startTime;
+};
+
+struct LoginMessagePacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint16_t length;
+  /* 0004 */ char text[1];
+};
+
+struct BlockedCharacter {
+  /* 0000 */ std::uint32_t gid;
+  /* 0004 */ char expireDate[20];
+};
+
+struct BlockedCharacterPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint16_t length;
+  /* 0004 */ BlockedCharacter characters[1];
+};
+
+struct CharacterInfoPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ CharacterInfo info;
+};
+
+struct AcceptEnterNeoUnionPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint16_t length;
+  /* 0004 */ CharacterSlotExtension extension;
+  /* 0018 */ CharacterInfo characters[1];
+};
+
+struct CharacterSlotCountsPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint16_t length;
+  /* 0004 */ unsigned char counts[6];
+  /* 000A */ CharacterSlotExtension extension;
+};
+
+struct GameRoomReplyPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ unsigned char permission;
+};
+
+struct ChangeCharacterNamePacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint32_t gid;
+};
 #pragma pack(pop)
 
 // GLOBAL: gl_25054
@@ -175,11 +273,18 @@ struct SessionAccount {
 std::uint32_t g_loginAcceptTime;
 // GLOBAL: gl_25252
 unsigned char g_loginExitFlag;
+// GLOBAL: gl_25221
+CharacterInfo g_charInfo;
+// GLOBAL: gl_25255
+bool g_replayMode;
 
 static_assert(sizeof(CharacterSlotsPacket) == 0x1D);
 static_assert(offsetof(AcceptLoginPacket, body) == 0x2F);
 static_assert(sizeof(ServerAddress) == 0x20);
 static_assert(sizeof(ServerAddress2) == 0xA0);
+static_assert(sizeof(AcceptEnterNeoUnionPacket) == 0x18 + sizeof(CharacterInfo));
+static_assert(offsetof(CharacterSlotCountsPacket, extension) == 0xA);
+static_assert(sizeof(BlockedCharacter) == 0x18);
 static_assert(offsetof(AcceptEnterPacket, characters) == 0x1B);
 
 template <std::size_t Length, std::uint64_t Key>
@@ -2174,4 +2279,577 @@ void CLoginMode::ReceiveAcceptLogin(const AcceptLoginPacket* packet, int version
   GetRagConnection().Close();
   g_loginFailCount = 0;
   this->pendingCursorType = 6;
+}
+
+static void IgnoreRemovedPacket(const unsigned char* packet) {
+}
+
+// OFFSET: 0x00D98470
+// FUNCTION: fn_22309
+void CLoginMode::PollNetworkStatus() {
+  if (g_replayMode) {
+    return;
+  }
+
+  memset(g_gameModePacketBuffer, 0, sizeof(g_gameModePacketBuffer));
+  if (!GetRagConnection().Update()) {
+    static_cast<CMode*>(g_charViewMode)->SendMsg(1, 0, 0, 0, 0);
+  }
+
+  if (g_charServerAccountIdPending == 1) {
+    int accountId;
+    if (GetRagConnection().Read(&accountId, 4, 1)) {
+      g_charServerAccountIdPending = 0;
+    }
+    return;
+  }
+
+  WindowDialogs& dialogs = *reinterpret_cast<WindowDialogs*>(&g_windowMgr);
+  while (GetRagConnection().ReadPacket(g_gameModePacketBuffer, nullptr, g_packetLengths)) {
+    switch (GetRagConnection().GetPacketType(reinterpret_cast<const char*>(g_gameModePacketBuffer))) {
+    case 0x69:
+    case 0x6D:
+    case 0x187:
+    case 0x283:
+    case 0x8E3:
+    case 0x8E4:
+    case 0x99D:
+    case 0x9C2:
+    case 0xA4D:
+    case 0xA73:
+    case 0xA79:
+    case 0xA7B:
+    case 0xAE0:
+    case 0xC20:
+      break;
+    case 0x6A: {
+      RefuseLoginPacket* packet = reinterpret_cast<RefuseLoginPacket*>(g_gameModePacketBuffer);
+      packet->blockDate[19] = '\0';
+      this->ShowLoginError(packet->result, reinterpret_cast<int>(packet->blockDate));
+      break;
+    }
+    case 0x6B:
+      this->ReceiveAcceptEnter(reinterpret_cast<const AcceptEnterPacket*>(g_gameModePacketBuffer), dialogs);
+      break;
+    case 0x6C:
+      GetRagConnection().Close();
+      switch (reinterpret_cast<const ResultPacket*>(g_gameModePacketBuffer)->result) {
+      case 1:
+        dialogs.Confirm(LookupMessage(0xD0), 0, true, true, 0, "Message", 280, 120, 0);
+        g_charServerAccountIdPending = 0;
+        this->pendingCursorType = 3;
+        break;
+      case 0x6F:
+        dialogs.Confirm(LookupMessage(0x749), 0, true, false, 0, "Message", 280, 120, 0);
+        g_charServerAccountIdPending = 0;
+        this->pendingCursorType = 3;
+        break;
+      case 0x76:
+        dialogs.Confirm(LookupMessage(0xEEA), 0, true, false, 0, "Message", 280, 120, 0);
+        this->pendingCursorType = 6;
+        break;
+      case 0x77:
+        dialogs.Confirm(LookupMessage(0xB71), 0, true, false, 0, "Message", 280, 120, 0);
+        this->pendingCursorType = 6;
+        break;
+      default:
+        dialogs.Confirm(LookupMessage(9), 0, true, false, 0, "Message", 280, 120, 0);
+        g_charServerAccountIdPending = 0;
+        this->pendingCursorType = 3;
+        break;
+      }
+      break;
+    case 0x6E: {
+      int message;
+      switch (reinterpret_cast<const ResultPacket*>(g_gameModePacketBuffer)->result) {
+      case 0:
+        message = 10;
+        break;
+      case 1:
+        message = 0x12A;
+        break;
+      case 2:
+        message = 0x4F8;
+        break;
+      case 3:
+        message = 0x54B;
+        break;
+      case 11:
+        message = 0x553;
+        break;
+      case 12:
+        message = 0x7E2;
+        break;
+      default:
+        message = 11;
+        break;
+      }
+      dialogs.Confirm(LookupMessage(message), 0, true, false, 0, "Message", 280, 120, 0);
+      this->pendingCursorType = 7;
+      break;
+    }
+    case 0x6F: {
+      CharacterInfo* remaining = new CharacterInfo[this->characterCount];
+      long long kept = 0;
+      for (long long i = 0; i < this->characterCount; ++i) {
+        if (this->characters[i].slot != static_cast<unsigned char>(g_selectedSlotIndex)) {
+          memcpy_s(&remaining[kept], sizeof(CharacterInfo), &this->characters[i], sizeof(CharacterInfo));
+          ++kept;
+        }
+      }
+      --this->characterCount;
+      --g_session.unknown_59BC;
+      memcpy_s(this->characters, sizeof(this->characters), remaining, this->characterCount * sizeof(CharacterInfo));
+      delete[] remaining;
+      this->pendingCursorType = 7;
+      break;
+    }
+    case 0x70: {
+      int message;
+      switch (reinterpret_cast<const ResultPacket*>(g_gameModePacketBuffer)->result) {
+      case 0:
+        message = g_serviceType == 0 ? 0x12F : 0x12D;
+        break;
+      case 1:
+        message = 0x54C;
+        break;
+      case 2:
+        message = 0x788;
+        break;
+      default:
+        message = 12;
+        break;
+      }
+      dialogs.Confirm(LookupMessage(message), 0, true, false, 0, "Message", 280, 120, 0);
+      this->pendingCursorType = 7;
+      break;
+    }
+    case 0x71:
+      this->ReceiveNotifyZoneServer(reinterpret_cast<const NotifyZoneServerPacket*>(g_gameModePacketBuffer));
+      break;
+    case 0x73:
+      this->Zc_Accept_Enter2(reinterpret_cast<const AcceptEnterPositionPacket*>(g_gameModePacketBuffer));
+      return;
+    case 0x74:
+      dialogs.Confirm(LookupMessage(9), 0, true, false, 0, "Message", 280, 120, 0);
+      GetRagConnection().Close();
+      g_charServerAccountIdPending = 0;
+      this->pendingCursorType = 3;
+      break;
+    case 0x81:
+      this->ReceiveNotifyBan(g_gameModePacketBuffer);
+      break;
+    case 0x1B5:
+      this->ReceiveBillingInfo(g_gameModePacketBuffer);
+      break;
+    case 0x1BE:
+      if (dialogs.Confirm(LookupMessage(0x2B3), 2, true, false, 0, "Message", 280, 120, 0) == 0xBB) {
+        GameRoomReplyPacket reply;
+        reply.id = 0x1BF;
+        reply.permission = 1;
+        GetRagConnection().Send(g_packetLengths.FixedLength(reply.id), &reply);
+      } else {
+        GetRagConnection().Close();
+        g_charServerAccountIdPending = 0;
+        this->pendingCursorType = 3;
+      }
+      break;
+    case 0x1C7: {
+      const std::uint8_t source[] = {0x17, 0x62, 0xEB, 0xFF, 0x1C, 0x00, 0xFE, 0xD4, 0x2D, 0x2D, 0x8E, 0xC1, 0x1E, 0x11, 0xEC, 0xC1,
+                                     0x2D, 0x64, 0xA4, 0xC1, 0x5D, 0x42, 0xB4, 0x90, 0x59};
+      thread_local EncryptedName<sizeof(source), 0xB195637DAFCB0D59ULL> text(source);
+      ShowErrorDialog(GetRenderSystemHolder()->system, text.Text(), 0);
+      break;
+    }
+    case 0x1F1: {
+      const LoginMessagePacket* packet = reinterpret_cast<const LoginMessagePacket*>(g_gameModePacketBuffer);
+      const std::string message(packet->text, packet->length - offsetof(LoginMessagePacket, text));
+      dialogs.Confirm(message.c_str(), 0, true, true, 0, "Message", 280, 120, 0);
+      g_charServerAccountIdPending = 0;
+      this->pendingCursorType = 3;
+      break;
+    }
+    case 0x20D: {
+      const BlockedCharacterPacket* packet = reinterpret_cast<const BlockedCharacterPacket*>(g_gameModePacketBuffer);
+      BlockedCharacter* blocked = reinterpret_cast<BlockedCharacter*>(&g_session.unknown_07F4[0x40]);
+      g_session.unknown_59D0 = (packet->length - offsetof(BlockedCharacterPacket, characters)) / sizeof(BlockedCharacter);
+      memset(blocked, 0, g_session.unknown_59D0 * sizeof(BlockedCharacter));
+      memcpy(blocked, packet->characters, g_session.unknown_59D0 * sizeof(BlockedCharacter));
+      break;
+    }
+    case 0x23D:
+      dialogs.Confirm(LookupMessage(0x3FC), 0, true, false, 0, "Message", 280, 120, 0);
+      break;
+    case 0x28B: {
+      const AcceptEnterNeoUnionPacket* packet = reinterpret_cast<const AcceptEnterNeoUnionPacket*>(g_gameModePacketBuffer);
+      this->slotExtension = packet->extension;
+      this->slotExtension.unknown_0001 = htonl(this->slotExtension.unknown_0001);
+      this->slotExtension.unknown_0005 = htonl(this->slotExtension.unknown_0005);
+      this->slotExtension.unknown_0009 = htonl(this->slotExtension.unknown_0009);
+
+      const unsigned int dataLength = packet->length - offsetof(AcceptEnterNeoUnionPacket, characters);
+      this->characterCount = dataLength / sizeof(CharacterInfo);
+      g_charViewCount = this->characterCount;
+      const unsigned char* characters = reinterpret_cast<const unsigned char*>(packet->characters) + dataLength % sizeof(CharacterInfo);
+      memcpy_s(this->characters, sizeof(this->characters), characters, this->characterCount * sizeof(CharacterInfo));
+      this->pendingCursorType = 19;
+      break;
+    }
+    case 0x28E: {
+      const ShortResultPacket* packet = reinterpret_cast<const ShortResultPacket*>(g_gameModePacketBuffer);
+      if (packet->result != 0) {
+        char text[300];
+        sprintf(text, LookupMessage(0x4BD), reinterpret_cast<const char*>(&g_session.unknown_5913[5]));
+        if (dialogs.Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) == 0xBB) {
+          ChangeCharacterNamePacket request;
+          request.id = 0x28F;
+          request.gid = *reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5913[1]);
+          GetRagConnection().Send(g_packetLengths.FixedLength(request.id), &request);
+          break;
+        }
+      } else if (dialogs.Confirm(LookupMessage(10), 0, true, true, 0, "Message", 280, 120, 0) != 0xB8) {
+        break;
+      }
+
+      if (UIWindow* window = g_windowMgr.window_03D4) {
+        window->SendMsg(nullptr, 6, 0x15F, 0, 0, 0);
+      }
+      break;
+    }
+    case 0x290:
+      this->ReceiveCharacterResult(reinterpret_cast<const CharacterResultPacket*>(g_gameModePacketBuffer), dialogs);
+      break;
+    case 0x2CA:
+      switch (reinterpret_cast<const ResultPacket*>(g_gameModePacketBuffer)->result) {
+      case 0:
+        dialogs.Confirm(LookupMessage(0x546), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      case 1:
+        dialogs.Confirm(LookupMessage(0x547), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      case 2:
+        dialogs.Confirm(LookupMessage(0x548), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      case 3:
+        dialogs.Confirm(LookupMessage(0x549), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      case 4:
+        dialogs.Confirm(LookupMessage(0x54A), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      case 5:
+        dialogs.Confirm(LookupMessage(0x554), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      }
+      this->pendingCursorType = GetRagConnection().NativeSocket() != INVALID_SOCKET ? 7 : 3;
+      break;
+    case 0x2EB:
+      this->Zc_Accept_Enter3(reinterpret_cast<const AcceptEnterPositionPacket*>(g_gameModePacketBuffer));
+      return;
+    case 0x448:
+      this->ReceiveCharacterList(reinterpret_cast<const CharacterListPacket*>(g_gameModePacketBuffer));
+      break;
+    case 0x828:
+      this->ReceiveDeleteReservation(reinterpret_cast<const CharacterDeletePacket*>(g_gameModePacketBuffer), dialogs);
+      break;
+    case 0x82A:
+      this->ReceiveDeleteCharacter(reinterpret_cast<const CharacterDeletePacket*>(g_gameModePacketBuffer), dialogs);
+      break;
+    case 0x82C:
+      this->ReceiveDeleteCancel(reinterpret_cast<const CharacterDeletePacket*>(g_gameModePacketBuffer), dialogs);
+      break;
+    case 0x82D:
+      this->ReceiveCharacterSlots(reinterpret_cast<const CharacterSlotsPacket*>(g_gameModePacketBuffer));
+      break;
+    case 0x83E: {
+      LoginErrorCodePacket* packet = reinterpret_cast<LoginErrorCodePacket*>(g_gameModePacketBuffer);
+      packet->text[19] = '\0';
+      this->ShowLoginError(packet->code, reinterpret_cast<int>(packet->text));
+      break;
+    }
+    case 0x840:
+      this->ReceiveMapStates(reinterpret_cast<const MapStatePacket*>(g_gameModePacketBuffer), dialogs);
+      break;
+    case 0x851:
+      IgnoreRemovedPacket(g_gameModePacketBuffer);
+      break;
+    case 0x8B9:
+      this->SubD911C0(reinterpret_cast<const PasswordModePacket*>(g_gameModePacketBuffer));
+      break;
+    case 0x8BB: {
+      const SecondPasswordResultPacket* packet = reinterpret_cast<const SecondPasswordResultPacket*>(g_gameModePacketBuffer);
+      g_loginAccountId = packet->accountId;
+      switch (packet->result) {
+      case 0:
+        g_windowMgr.CloseWindow(200);
+        dialogs.Confirm(LookupMessage(0x761), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      case 1:
+        g_windowMgr.CloseWindow(200);
+        dialogs.Confirm(LookupMessage(0x76A), 0, true, false, 0, "Message", 280, 120, 0);
+        this->pendingCursorType = 7;
+        break;
+      case 2:
+        g_windowMgr.CloseWindow(200);
+        dialogs.Confirm(LookupMessage(0x768), 0, true, false, 0, "Message", 280, 120, 0);
+        this->pendingCursorType = 7;
+        break;
+      case 3:
+        g_windowMgr.CloseWindow(200);
+        dialogs.Confirm(LookupMessage(0x769), 0, true, false, 0, "Message", 280, 120, 0);
+        this->pendingCursorType = 7;
+        break;
+      case 4:
+        g_windowMgr.CloseWindow(200);
+        dialogs.Confirm(LookupMessage(0x765), 0, true, false, 0, "Message", 280, 120, 0);
+        this->pendingCursorType = 7;
+        break;
+      }
+      break;
+    }
+    case 0x8BD: {
+      const SecondPasswordResultPacket* packet = reinterpret_cast<const SecondPasswordResultPacket*>(g_gameModePacketBuffer);
+      g_loginAccountId = packet->accountId;
+      switch (packet->result) {
+      case 0:
+        g_windowMgr.CloseWindow(200);
+        dialogs.Confirm(LookupMessage(0x762), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      case 1:
+        g_windowMgr.CloseWindow(200);
+        dialogs.Confirm(LookupMessage(0x766), 0, true, false, 0, "Message", 280, 120, 0);
+        this->pendingCursorType = 7;
+        break;
+      }
+      break;
+    }
+    case 0x8BF: {
+      const SecondPasswordResultPacket* packet = reinterpret_cast<const SecondPasswordResultPacket*>(g_gameModePacketBuffer);
+      g_loginAccountId = packet->accountId;
+      switch (packet->result) {
+      case 0:
+        g_windowMgr.CloseWindow(199);
+        dialogs.Confirm(LookupMessage(0x763), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      case 1:
+        g_windowMgr.CloseWindow(199);
+        dialogs.Confirm(LookupMessage(0x767), 0, true, false, 0, "Message", 280, 120, 0);
+        this->pendingCursorType = 7;
+        break;
+      case 2:
+        g_windowMgr.CloseWindow(199);
+        dialogs.Confirm(LookupMessage(0x768), 0, true, false, 0, "Message", 280, 120, 0);
+        this->pendingCursorType = 7;
+        break;
+      case 3:
+        g_windowMgr.CloseWindow(199);
+        dialogs.Confirm(LookupMessage(0x769), 0, true, false, 0, "Message", 280, 120, 0);
+        this->pendingCursorType = 7;
+        break;
+      }
+      break;
+    }
+    case 0x8C4: {
+      const SecondPasswordResultPacket* packet = reinterpret_cast<const SecondPasswordResultPacket*>(g_gameModePacketBuffer);
+      g_loginAccountId = packet->accountId;
+      switch (packet->result) {
+      case 0:
+        g_windowMgr.CloseWindow(199);
+        dialogs.Confirm(LookupMessage(0x76D), 0, true, false, 0, "Message", 280, 120, 0);
+        static_cast<UINewSelectCharWnd*>(g_windowMgr.window_03D4)->EnableButtonById(0x1A2);
+        g_passwordWndMode = 1;
+        break;
+      case 1:
+        g_windowMgr.CloseWindow(199);
+        dialogs.Confirm(LookupMessage(0x76E), 0, true, false, 0, "Message", 280, 120, 0);
+        this->pendingCursorType = 7;
+        break;
+      }
+      break;
+    }
+    case 0x8C6:
+      switch (reinterpret_cast<const SecondPasswordResultPacket*>(g_gameModePacketBuffer)->result) {
+      case 0:
+        g_windowMgr.CloseWindow(199);
+        dialogs.Confirm(LookupMessage(0x76F), 0, true, false, 0, "Message", 280, 120, 0);
+        static_cast<UINewSelectCharWnd*>(g_windowMgr.window_03D4)->DisableButtonById(0x1A2);
+        break;
+      case 1:
+        g_windowMgr.CloseWindow(199);
+        dialogs.Confirm(LookupMessage(0x770), 0, true, false, 0, "Message", 280, 120, 0);
+        this->pendingCursorType = 7;
+        break;
+      }
+      break;
+    case 0x8D5:
+    case 0xB70:
+      if (reinterpret_cast<const SecondPasswordStatePacket*>(g_gameModePacketBuffer)->result == 1) {
+        dialogs.Confirm(LookupMessage(0x7E1), 0, true, false, 0, "Message", 280, 120, 0);
+      }
+      break;
+    case 0x8FD:
+      this->SubD8D500(reinterpret_cast<const char*>(g_gameModePacketBuffer));
+      break;
+    case 0x986: {
+      const ShutdownNoticePacket* packet = reinterpret_cast<const ShutdownNoticePacket*>(g_gameModePacketBuffer);
+      __time32_t endTime = packet->endTime;
+      const __time32_t startTime = packet->startTime;
+      const tm when = *_localtime32(&endTime);
+      char text[0x400];
+      memset(text, 0, sizeof(text));
+      _snprintf(text, sizeof(text), LookupMessage(0x92C), when.tm_year + 1900, when.tm_mon + 1, when.tm_mday, when.tm_hour, when.tm_min, when.tm_sec);
+      dialogs.Confirm(text, 0, true, true, 0, "Message", 280, 120, 0);
+      const std::uint64_t timestamp = static_cast<std::int64_t>(startTime) * 10000000;
+      const std::int64_t interval = 3600000;
+      CPartialShutDownSchedule* schedule = new CPartialShutDownSchedule(timestamp, interval, 1);
+      schedule->SetPeriod(endTime, startTime);
+      reinterpret_cast<CTimeScheduler*>(g_timeScheduler)->AddSchedule(schedule);
+      break;
+    }
+    case 0x9A0:
+      for (int i = 1; i <= reinterpret_cast<const IntValuePacket*>(g_gameModePacketBuffer)->value; ++i) {
+        std::int16_t request = 0x9A1;
+        GetRagConnection().Send(sizeof(request), &request);
+      }
+      break;
+    case 0x9A2:
+      this->unknown_6F28 = reinterpret_cast<const IntValuePacket*>(g_gameModePacketBuffer)->value;
+      this->pendingCursorType = 24;
+      break;
+    case 0x9A5: {
+      const LoginErrorTimePacket* packet = reinterpret_cast<const LoginErrorTimePacket*>(g_gameModePacketBuffer);
+      if (packet->code != 0x12) {
+        GetRagConnection().Close();
+      }
+      this->unknown_6F78 = packet->remaining;
+      this->ShowLoginError(packet->code, reinterpret_cast<int>(""));
+      break;
+    }
+    case 0xAC4:
+      this->ReceiveAcceptLogin(reinterpret_cast<const AcceptLoginPacket*>(g_gameModePacketBuffer), 5);
+      break;
+    case 0xAC5:
+      this->ReceiveNotifyZoneServer2(reinterpret_cast<const NotifyZoneServer2Packet*>(g_gameModePacketBuffer));
+      break;
+    case 0xAC9:
+      this->ReceiveAcceptLogin(reinterpret_cast<const AcceptLoginPacket*>(g_gameModePacketBuffer), 4);
+      break;
+    case 0xACA: {
+      const ResultPacket* packet = reinterpret_cast<const ResultPacket*>(g_gameModePacketBuffer);
+      int message = 0xC82;
+      switch (packet->result) {
+      case 1:
+        message = 0xC7C;
+        break;
+      case 2:
+        message = 0xC7D;
+        break;
+      case 3:
+        message = 0xC7E;
+        break;
+      case 4:
+        message = 0xC7F;
+        break;
+      case 5:
+        message = 0xC80;
+        break;
+      case 6:
+        message = 0xC81;
+        break;
+      case 7:
+        message = 0xC8E;
+        break;
+      case 9:
+        message = 0xF47;
+        break;
+      }
+      GetRagConnection().Close();
+      const int code = packet->result;
+      const char* text = LookupMessage(message);
+      const std::uint8_t source[] = {0xC4, 0x08, 0xD1, 0xF2, 0xB1, 0x3A, 0x39};
+      thread_local EncryptedName<sizeof(source), 0xDD3913D5D7F97BE1ULL> format(source);
+      dialogs.Confirm(FormatString(format.Text(), text, code), 0, true, false, 0, "Message", 280, 120, 0);
+      g_charServerAccountIdPending = 0;
+      this->pendingCursorType = 3;
+      break;
+    }
+    case 0xACD:
+      this->ReceiveRefuseLogin(reinterpret_cast<const RefuseLoginPacket*>(g_gameModePacketBuffer));
+      break;
+    case 0xAD1:
+      this->ReceiveLoginError(reinterpret_cast<const LoginErrorPacket*>(g_gameModePacketBuffer));
+      break;
+    case 0xADE: {
+      const int value = reinterpret_cast<const IntValuePacket*>(g_gameModePacketBuffer)->value;
+      if (value > 0) {
+        g_unknown173A5BC = value;
+      }
+      break;
+    }
+    case 0xAE3:
+      this->ReceiveLoginErrorDetail(reinterpret_cast<const LoginErrorDetailPacket*>(g_gameModePacketBuffer));
+      break;
+    case 0xAE9:
+      this->SubD90C90(reinterpret_cast<const PasswordModePacket*>(g_gameModePacketBuffer));
+      break;
+    case 0xB02: {
+      const LoginErrorCodePacket* packet = reinterpret_cast<const LoginErrorCodePacket*>(g_gameModePacketBuffer);
+      const std::string text(packet->text, sizeof(packet->text));
+      this->ShowLoginError(packet->code, reinterpret_cast<int>(text.c_str()));
+      break;
+    }
+    case 0xB07:
+      this->ReceiveAcceptLogin(reinterpret_cast<const AcceptLoginPacket*>(g_gameModePacketBuffer), 6);
+      break;
+    case 0xB18: {
+      const std::int16_t slots = reinterpret_cast<const ShortResultPacket*>(g_gameModePacketBuffer)->result;
+      if (slots <= 100) {
+        g_extraInventorySlots = slots;
+      }
+      break;
+    }
+    case 0xB6F: {
+      const CharacterInfoPacket* packet = reinterpret_cast<const CharacterInfoPacket*>(g_gameModePacketBuffer);
+      g_charInfo = packet->info;
+      g_selectedSlotIndex = static_cast<char>(g_charInfo.slot);
+      memcpy_s(&this->characters[this->characterCount], sizeof(CharacterInfo), &packet->info, sizeof(CharacterInfo));
+      char* mapName = this->characters[this->characterCount].mapName;
+      StringFormat(mapName, sizeof(this->characters[this->characterCount].mapName), static_cast<std::size_t>(-1), "%s", g_session.GatName2RswName(mapName));
+      ++this->characterCount;
+      ++g_session.unknown_59BC;
+      this->pendingCursorType = 7;
+      break;
+    }
+    case 0xB71: {
+      const CharacterInfoPacket* packet = reinterpret_cast<const CharacterInfoPacket*>(g_gameModePacketBuffer);
+      CharacterInfo* character = reinterpret_cast<CharacterInfo*>(static_cast<CMode*>(g_charViewMode)->SendMsg(8, packet->info.slot, 0, 0, 0));
+      if (character && character->gid == *reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5913[1])) {
+        *character = packet->info;
+        StringFormat(character->mapName, sizeof(character->mapName), static_cast<std::size_t>(-1), "%s", g_session.GatName2RswName(character->mapName));
+        this->pendingCursorType = 7;
+      }
+      break;
+    }
+    case 0xB72:
+      this->ReceiveCharacterPage(reinterpret_cast<const CharacterPagePacket*>(g_gameModePacketBuffer));
+      break;
+    case 0xC05: {
+      const CharacterSlotCountsPacket* packet = reinterpret_cast<const CharacterSlotCountsPacket*>(g_gameModePacketBuffer);
+      g_session.unknown_8130 = packet->counts[1];
+      CharacterSlotsPacket slots;
+      slots.id = 0x82D;
+      slots.length = sizeof(CharacterSlotsPacket);
+      slots.normalSlots = packet->counts[0] + packet->counts[1];
+      slots.premiumSlots = packet->counts[2];
+      slots.billingSlots = packet->counts[3];
+      slots.producibleSlots = packet->counts[4];
+      slots.validSlots = packet->counts[5];
+      slots.extension = packet->extension;
+      this->ReceiveCharacterSlots(&slots);
+      break;
+    }
+    default:
+      GetRagConnection().ResetQueue();
+      break;
+    }
+  }
 }

@@ -793,6 +793,7 @@ extern int g_whisperRecord;
 extern UIWindow* g_saleOpenWindow;
 void sub_CCFF10();
 extern unsigned char g_gameModePacketBuffer[0x10000];
+extern int g_unknown173A5BC;
 extern int g_unknown_01738268;
 extern int g_unknown_0173826C;
 extern int g_unknown_01738270;
