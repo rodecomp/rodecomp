@@ -21,6 +21,7 @@ public:
   int MeasureText(const std::string& text, const unsigned& bytes);
   bool SyncTagsWithText();
   void SetTaggedText(const std::string& text, int width);
+  void sub_8962C0();
   void sub_89CFE0(const ITEM_INFO& item, unsigned int color);
   std::string sub_874A40(int tagId, unsigned int color);
 

@@ -813,3 +813,64 @@ UIShowAndEditTimeCtrl::UIShowAndEditTimeCtrl(UIWindowContext& windows) : UIWindo
   this->unknown_0084 = 0;
   this->unknown_0088 = 0;
 }
+
+#include "UI/Edit/UIItemTagCtrl.h"
+
+// OFFSET: 0x0085C4F0
+// FUNCTION: fn_10801
+void UIChatEditCtrl::Paint() {
+  const auto component = [&](int value) { return static_cast<unsigned char>(this->disabled != 0 && value > 30 ? value - 30 : value); };
+  const unsigned color = component(this->red) | (component(this->green) << 8) | (component(this->blue) << 16);
+  this->textY = 0;
+
+  if (this->flat == 0) {
+    RECT rectangle{0, 0, this->geometry.width, this->geometry.height};
+    const unsigned border = static_cast<unsigned char>(this->borderRed) | (static_cast<unsigned char>(this->borderGreen) << 8) |
+                            (static_cast<unsigned char>(this->borderBlue) << 16);
+    this->FillSurface(border, &rectangle);
+    SetRect(&rectangle, 1, 1, this->geometry.width - 1, this->geometry.height - 1);
+    this->FillSurface(color, &rectangle);
+  } else {
+    this->ClearSurface(color);
+  }
+
+  this->textY = this->topPadding + 2;
+  this->PaintText();
+
+  UIItemTagOnChat* tag = this->unknown_0144;
+  if (tag != nullptr) {
+    tag->SetTaggedText(this->text, this->geometry.width);
+    tag = this->unknown_0144;
+    tag->sub_8962C0();
+    tag = this->unknown_0144;
+    const int span = static_cast<int>(tag->unknown_0140.size() - tag->taggedText.size());
+    this->unknown_00F0 = span > 0 ? span : 0;
+    if (tag->unknown_011C == 0) {
+      delete tag;
+      this->unknown_0144 = nullptr;
+    }
+  }
+}
+
+// OFFSET: 0x00867FC0
+// FUNCTION: fn_10951
+void UIEditCtrl3::SetText(const char* value) {
+  this->text.assign(value, std::strlen(value));
+  this->Trim();
+
+  if (g_windowMgr.GetHoverWindow() == this) {
+    this->m_edit->input.ResetInput();
+    this->m_edit->input.ResetInput();
+    this->m_edit->input.Insert(this->text.c_str());
+  }
+
+  this->SelectAll();
+
+  if (this->text.find("<ITEML>") != std::string::npos || this->text.find("</ITEML>") != std::string::npos) {
+    this->sub_869810(this->text.c_str());
+  }
+
+  if (this->parent != nullptr) {
+    this->parent->Invalidate();
+  }
+}

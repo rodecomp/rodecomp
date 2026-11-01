@@ -136,6 +136,7 @@ public:
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   void SetText(const char* value) override;
+  void sub_869810(const char* value);
   void Slot35(int value) override;
   void Trim() override;
   virtual void UpdateScrollBar();
@@ -216,6 +217,7 @@ public:
 class UIChatEditCtrl : public UIEditCtrl {
 public:
   UIChatEditCtrl(UIWindowContext& windows, UIEditContext& edit);
+  void Paint() override;
   void Slot25(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   void InsertItemTag(int tagId);
