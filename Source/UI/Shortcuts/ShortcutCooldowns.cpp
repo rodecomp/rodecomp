@@ -53,16 +53,16 @@
 #include <timeapi.h>
 
 // OFFSET: 0x00E1DCA0
-  // FUNCTION: fn_23875
-  bool IsFirstRange(unsigned id) {
-    return id - 8000u <= 60;
-  }
+// FUNCTION: fn_23875
+int CSession::IsHomunculusSkill(unsigned id) const {
+  return id - 8000u <= 60;
+}
 
 // OFFSET: 0x00E1DD20
-  // FUNCTION: fn_23878
-  bool IsOtherRange(unsigned id) {
-    return id - 8200u <= 41 || id - 8400u <= 57;
-  }
+// FUNCTION: fn_23878
+int CSession::IsMercenarySkill(unsigned id) const {
+  return id - 8200u <= 41 || id - 8400u <= 57;
+}
 
 namespace {
   struct SearchStoreEntry {
