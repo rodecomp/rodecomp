@@ -58,6 +58,7 @@ public:
   void RefreshTitleList();
   void NotifyEquipmentChanged();
   void UpdateCharacterView(int reset);
+  void RefreshLook();
   ITEM_INFO GetSlotItem(int slot);
   ITEM_INFO ItemIconAt(int x, int y);
   ITEM_INFO ItemEntryAt(int x, int y);

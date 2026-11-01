@@ -24,6 +24,9 @@
 #include "Contents/SkinMgr.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CGameMode.h"
+#include "Client/Mode/EquipWindowLook.h"
+#include "Contents/Actors/Pc.h"
+#include "Contents/World/World.h"
 #include "Client/Mode/ModeEvents.h"
 #include "Client/Mode/ModeDragState.h"
 #include "Client/Replay.h"
@@ -7051,4 +7054,44 @@ void UISecondPasswordInputWnd::ShuffleKeypad()
   for (int index = 0; index < 10; ++index)
     unknown_0124[index]->Move(positions[digits[index]][0], positions[digits[index]][1]);
   Invalidate();
+}
+
+// OFFSET: 0x009099E0
+// FUNCTION: fn_12395
+void UIEquipWnd::RefreshLook()
+{
+  if (m_viewOther == 0) {
+    unknown_00F8[0] = g_session.GetDisplayJob();
+    unknown_00F8[1] = g_session.SyncUnknown0E98();
+    unknown_00F8[2] = g_session.m_head;
+    unknown_00F8[6] = g_session.m_bodyStyle;
+    unknown_00F8[7] = g_session.m_headPalette;
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    if (mode->scene && mode->scene->player)
+      unknown_011C = mode->scene->player->Slot46();
+  } else {
+    unknown_00F8[0] = g_equipWindowLook.job;
+    unknown_00F8[1] = g_equipWindowLook.sex;
+    unknown_00F8[2] = g_equipWindowLook.head;
+    unknown_00F8[6] = g_equipWindowLook.bodyPalette;
+    unknown_00F8[7] = g_equipWindowLook.headPalette;
+    unknown_011C = g_equipWindowLook.unknown_0024;
+  }
+  unknown_00F8[3] = 0;
+  unknown_00F8[4] = 0;
+  unknown_00F8[5] = 0;
+  unknown_0118 = 0;
+  ITEM_INFO middle = GetSlotItem(8);
+  if (middle.unknown_0000[1] != 0)
+    unknown_00F8[4] = middle.unknown_0070;
+  ITEM_INFO lower = GetSlotItem(9);
+  if (lower.unknown_0000[1] != 0 && middle.unknown_0000[1] != lower.unknown_0000[1])
+    unknown_00F8[5] = lower.unknown_0070;
+  ITEM_INFO upper = GetSlotItem(0);
+  if (upper.unknown_0000[1] != 0 && middle.unknown_0000[1] != upper.unknown_0000[1] && lower.unknown_0000[1] != upper.unknown_0000[1])
+    unknown_00F8[3] = upper.unknown_0070;
+  ITEM_INFO robe(0);
+  robe = GetSlotItem(2);
+  if (robe.unknown_0000[1] != 0)
+    unknown_0118 = robe.unknown_0070;
 }
