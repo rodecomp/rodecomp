@@ -11368,3 +11368,88 @@ void CGameMode::ReceiveEquipItemListFlags(const unsigned char* packet) {
 
   RefreshItemWindows(&g_windowMgr);
 }
+
+// OFFSET: 0x00D27EC0
+// FUNCTION: fn_21692
+void CGameMode::ReceiveEquipItemList34(const unsigned char* packet) {
+  reinterpret_cast<SessionItemLists*>(&g_session)->RemoveEquipment();
+  reinterpret_cast<SessionMessengerContext*>(&g_session)->ResetEquipment();
+  const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t*>(packet + 2) - 4) / 0x22;
+  const unsigned char* record = packet + 4;
+  for (int i = 0; i < count; ++i) {
+    ITEM_INFO item;
+    item.unknown_0000[1] = *reinterpret_cast<const std::int16_t*>(record);
+    item.unknown_0000[0] = record[6];
+    item.unknown_0000[2] = *reinterpret_cast<const std::uint16_t*>(record + 8);
+    item.unknown_0000[3] = *reinterpret_cast<const std::uint16_t*>(record + 10);
+    item.quantity = 1;
+    std::memcpy(item.unknown_001C, record + 0x0E, sizeof(item.unknown_001C));
+    item.SetItemId(*reinterpret_cast<const int*>(record + 2));
+    item.identified = record[7];
+    item.unknown_005D = record[0x0C];
+    item.unknown_0060 = record[0x0D];
+    item.unknown_0068 = *reinterpret_cast<const std::uint32_t*>(record + 0x1E);
+    if (g_session.IsPetEgg(std::atoi(item.itemId.c_str()))) {
+      if (item.unknown_005D) {
+        g_session.unknown_1050 = item.unknown_0000[1];
+      }
+    }
+
+    if (item.unknown_0000[3] == 0) {
+      reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1710(item, 0);
+      g_session.UpdateInventoryItem(item, 0);
+    } else {
+      char equipped = 1;
+      g_session.EquipUnknown17F0(item, &equipped);
+    }
+    record += 0x22;
+  }
+
+  RefreshItemWindows(&g_windowMgr);
+}
+
+// OFFSET: 0x00D280B0
+// FUNCTION: fn_21693
+void CGameMode::ReceiveEquipItemList38(const unsigned char* packet) {
+  reinterpret_cast<SessionItemLists*>(&g_session)->RemoveEquipment();
+  reinterpret_cast<SessionMessengerContext*>(&g_session)->ResetEquipment();
+  g_session.ResetItems2B50();
+  const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t*>(packet + 2) - 4) / 0x26;
+  const unsigned char* record = packet + 4;
+  for (int i = 0; i < count; ++i) {
+    ITEM_INFO item;
+    item.unknown_0000[1] = *reinterpret_cast<const std::int16_t*>(record);
+    item.unknown_0000[0] = record[6];
+    item.unknown_0000[2] = *reinterpret_cast<const std::uint16_t*>(record + 8);
+    item.unknown_0000[3] = *reinterpret_cast<const std::uint16_t*>(record + 10);
+    item.quantity = 1;
+    std::memcpy(item.unknown_001C, record + 0x0E, sizeof(item.unknown_001C));
+    item.SetItemId(*reinterpret_cast<const int*>(record + 2));
+    item.identified = record[7];
+    item.unknown_005D = record[0x0C];
+    item.unknown_0060 = record[0x0D];
+    item.unknown_0068 = *reinterpret_cast<const std::uint32_t*>(record + 0x1E);
+    item.unknown_0064 = *reinterpret_cast<const std::uint16_t*>(record + 0x22);
+    item.unknown_0070 = *reinterpret_cast<const std::uint16_t*>(record + 0x24);
+    if (g_session.IsPetEgg(std::atoi(item.itemId.c_str()))) {
+      if (item.unknown_005D) {
+        g_session.unknown_1050 = item.unknown_0000[1];
+      }
+    }
+
+    if (item.unknown_0000[3] == 0) {
+      reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1710(item, 0);
+      g_session.UpdateInventoryItem(item, 0);
+    } else {
+      char equipped = 1;
+      if (g_session.IsCostumeLocation(item.unknown_0000[3])) {
+        g_session.EquipItem2B50(item, &equipped);
+      } else {
+        g_session.EquipUnknown17F0(item, &equipped);
+      }
+    }
+    record += 0x26;
+  }
+
+  RefreshItemWindows(&g_windowMgr);
+}

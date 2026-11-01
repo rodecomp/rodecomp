@@ -835,6 +835,8 @@ public:
   void ReceiveParaResultList(const unsigned char* packet);
   void ProcessRightButtonDrag();
   void ProcessMouseWheel(int requireControl);
+  void ReceiveEquipItemList34(const unsigned char* packet);
+  void ReceiveEquipItemList38(const unsigned char* packet);
 };
 
 void LaunchRollingCutterEffect(CGameActor* actor);
