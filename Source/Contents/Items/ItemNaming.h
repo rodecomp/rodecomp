@@ -47,6 +47,12 @@ struct ItemNaming {
   const char* Message(int id) const;
 };
 
+struct ItemNamingContext : public ItemNaming {
+  int Element(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) const;
+  int Star(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) const;
+  int Apprentice(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) const;
+};
+
 extern std::map<int, ItemCardName> g_itemCardNames;
 extern std::map<int, ItemMoveInfo> g_itemMoveInfo;
 

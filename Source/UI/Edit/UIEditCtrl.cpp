@@ -7573,3 +7573,69 @@ bool UIEditCtrl3::ExtractItemLink(std::string& text, std::string& link, int& pos
 
   return true;
 }
+
+// OFFSET: 0x00971D30
+// FUNCTION: fn_13265
+void UIMerchantShopMakeWnd::PrintSellList() {
+  auto it = this->items.begin();
+  char line[256];
+  char name[256];
+  char text[24];
+  char price[32];
+  char grouped[32];
+
+  std::sprintf(line, "======================  SALE LIST  ======================");
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(line), 0x96FFFF, 0, 0, 0);
+  std::memset(name, 0, sizeof(name));
+
+  for (unsigned index = 0; index < this->items.size(); ++index, ++it) {
+    const ITEM_INFO& item = *it;
+    char* cursor = name;
+    int capacity = 256;
+    ItemDescriptions descriptions{g_itemDescriptions};
+    bool languagePrefix = false;
+    WORD language = g_serverLanguage->language;
+    ItemNamingContext naming{{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language}};
+
+    if (item.unknown_0060 != 0) {
+      cursor += item.Refine(cursor, capacity, 1);
+    }
+
+    if (naming.HasCards(item)) {
+      cursor += naming.Prefixes(item, cursor, capacity, 1);
+      cursor += descriptions.Name(item, cursor, capacity, 1);
+      cursor += naming.Suffixes(item, cursor, capacity, 1);
+      naming.Slots(item, cursor, capacity, 1);
+    } else if (item.HasSpecialCard()) {
+      cursor += naming.Star(item, cursor, capacity, 1);
+      cursor += naming.Creator(item, cursor, capacity, 1);
+      cursor += naming.Element(item, cursor, capacity, 1);
+      descriptions.Name(item, cursor, capacity, 1);
+    } else {
+      cursor += descriptions.Name(item, cursor, capacity, 1);
+      naming.Slots(item, cursor, capacity, 1);
+    }
+
+    std::sprintf(text, "%s ", this->priceEdits[index]->Text());
+    g_session.IsNumberWithCommas(text);
+    if (std::atoi(text) > 1000000000) {
+      std::sprintf(price, "1,000,000,000");
+    } else {
+      std::sprintf(price, "%s", FormatGroupedInteger(std::atoi(text), grouped, 32));
+    }
+
+    std::sprintf(line, "    %s  :  %s  Zeny", name, price);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(line), 0x5AFFFF, 0, 0, 0);
+
+    const double rate = PriceCommission(_atoi64(text)) * 0.01;
+    const std::int64_t commission = static_cast<std::int64_t>(_atoi64(text) * rate);
+    const std::string notice = FormatOwnedString("Commission : 1 EA = %s Zeny", FormatGroupedInteger(commission, line, 256));
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(notice.c_str()), 0x5AFFFF, 0, 0, 0);
+  }
+
+  std::sprintf(price, "%s", FormatGroupedInteger(g_session.m_zeny, grouped, 32));
+  std::sprintf(line, "                                          Current Zeny : %s Z", price);
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(line), 0x78FFFF, 0, 0, 0);
+  std::sprintf(line, "============================ ============================");
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(line), 0x96FFFF, 0, 0, 0);
+}

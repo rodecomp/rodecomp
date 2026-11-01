@@ -815,13 +815,6 @@ __declspec(noinline) void LoadItemNameTables() {
   }
 }
 
-struct ItemNamingContext : public ItemNaming {
-  int Element(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) const;
-  int Star(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) const;
-  int Apprentice(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) const;
-  std::uint32_t CardColor(const ITEM_INFO& item, int slot) const;
-};
-
 // OFFSET: 0x006D5650
 // FUNCTION: fn_06575
 std::uint32_t __fastcall ItemCardColor(const ITEM_INFO* item) {

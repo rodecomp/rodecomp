@@ -34,6 +34,7 @@ public:
   void SetItems(int count, const short* ids);
   int CommitPrice(int next);
   void PrintBuyList();
+  void PrintSellList();
   void Slot32(int x, int y) override;
   void Paint() override;
 
