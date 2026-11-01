@@ -1,5 +1,6 @@
 #include "UI/Lists/UITagListBox.h"
 
+#include "Client/Input/InputCharset.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/NavigationManager.h"
@@ -600,7 +601,63 @@ std::string UITagListBox::sub_9B8AA0(std::string text, std::vector<STagInfoV2>& 
   return result;
 }
 
+namespace {
+// INLINED
+int WrappedLineLength(const char* text, int length, int width) {
+  if (text == nullptr) {
+    return -1;
+  }
+
+  using NextCharacter = const char*(__thiscall*)(InputCharset*, const char*, int);
+  const char* end = text + length;
+  const char* current = text;
+  const char* limit = text + width;
+  while (current < limit && current < end) {
+    if (*current == '\n') {
+      return static_cast<int>(current - text) + 1;
+    }
+
+    if (IsHexColorToken(current, end)) {
+      current += 7;
+      limit += 7;
+    } else if (IsPipeColorToken(current)) {
+      current += 3;
+      limit += 3;
+    } else {
+      current = (*reinterpret_cast<NextCharacter**>(g_serverLanguage))[5](g_serverLanguage, current, static_cast<int>(limit - current));
+    }
+  }
+
+  return static_cast<int>(current - text);
+}
+}
+
 // OFFSET: 0x009BB8E0
+// FUNCTION: fn_13888
+void UITagListBox::sub_9BB8E0(std::string text, std::vector<STagInfoV2>& tags, int width) {
+  const int firstLine = static_cast<int>(this->lines.size());
+  const char* buffer = text.c_str();
+  std::size_t position = 0;
+  while (position < text.size()) {
+    const char* start = buffer + position;
+    int next = WrappedLineLength(start, static_cast<int>(text.size() - position), width) + static_cast<int>(position);
+    for (std::size_t index = 0; index < tags.size(); ++index) {
+      if (next > tags[index].unknown_0008 && next < tags[index].unknown_000C) {
+        next = tags[index].unknown_0008;
+        break;
+      }
+    }
+
+    const std::string line(start, buffer + next);
+    this->AddLine(line.c_str());
+    position = next;
+  }
+
+  for (std::vector<STagInfoV2>::iterator tag = tags.begin(); tag != tags.end(); ++tag) {
+    this->AddTagButton(*tag, static_cast<int>(this->lines.size()) - firstLine);
+  }
+  this->SendMsg(nullptr, 7, 0, 0, 0, 0);
+}
 
 // OFFSET: 0x009B7A20
 // FUNCTION: fn_13870
