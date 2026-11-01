@@ -621,6 +621,22 @@ void UINpcEditDialogWnd::Paint() {
   this->DrawTextAt(controls.fonts, controls.locale, 15, 6, g_serviceType == 12 ? "Insira o Numero" : "Input number ", 0, 0, 12, 0, 0, 0);
 }
 
+// OFFSET: 0x008EF850
+// FUNCTION: fn_12238
+void UINpcTextEditDialogWnd::Paint() {
+  this->DrawBorder(0, 0, 0, 0);
+  if (!this->m_tagCtrl) {
+    return;
+  }
+
+  this->m_tagCtrl->SetTaggedText(std::string(this->edit->Text()), this->edit->geometry.width);
+  this->m_tagCtrl->sub_8962C0();
+  if (this->m_tagCtrl->unknown_011C == 0) {
+    delete this->m_tagCtrl;
+    this->m_tagCtrl = nullptr;
+  }
+}
+
 // OFFSET: 0x008EF9A0
 // FUNCTION: fn_12239
 void UIPartyInvitationToWnd::Paint() {
