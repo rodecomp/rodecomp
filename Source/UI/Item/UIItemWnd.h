@@ -7,6 +7,7 @@
 #include <cstddef>
 #include <cstdint>
 
+class UIButton;
 class UITabControl;
 
 class UIItemWnd : public UIItemBaseWnd {
@@ -22,6 +23,7 @@ public:
   void Slot26(int x, int y) override;
   void Slot28(int x, int y) override;
   void Slot32(int x, int y) override;
+  void Paint() override;
 
   ITEM_INFO GetItemAt(int x, int y);
   void ReleaseSelection(unsigned char keep);
@@ -40,9 +42,9 @@ public:
   /* 0118 */ UITabControl* tabs;
   /* 011C */ UIWindow* optionBox;
   /* 0120 */ unsigned char unknown_0120[0x4];
-  /* 0124 */ int unknown_0124;
+  /* 0124 */ UIButton* unknown_0124;
   /* 0128 */ UIWindow* unknown_0128;
-  /* 012C */ int unknown_012C;
+  /* 012C */ UIButton* unknown_012C;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

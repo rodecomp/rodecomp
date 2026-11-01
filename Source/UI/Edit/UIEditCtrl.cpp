@@ -107,6 +107,7 @@
 #include "UI/Chat/ChatSuggestions.h"
 #include "UI/Dialogs/UINpcEditDialogWnd.h"
 #include "UI/Rodex/UIRodexComposeWnd.h"
+#include "UI/UIBartermarketWnd.h"
 // GLOBAL: gl_24862
 bool g_vendingSaleAlarm;
 
@@ -7790,4 +7791,151 @@ int UIItemSellWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
   }
 
   return 0;
+}
+
+// OFFSET: 0x00980F50
+// FUNCTION: fn_13338
+void UIItemWnd::Paint() {
+  UIButtonContext& controls = *this->m_controls;
+  this->DrawTitleBar(controls.fonts, controls.locale, true, LookupMessage(106), 0);
+
+  if (this->geometry.height == 17) {
+    return;
+  }
+
+  int rows;
+  if (this->geometry.height > 120) {
+    rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
+    for (int y = 17; rows > 0; --rows, y += 8) {
+      const auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
+      this->DrawBitmap(0, y, &left->image, false);
+    }
+  }
+
+  rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
+  for (int y = 17; rows > 0; --rows, y += 8) {
+    const auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
+    this->DrawBitmap(this->geometry.width - right->image.width, y, &right->image, false);
+  }
+
+  unsigned red, green, blue;
+  if (this->unknown_010C == 3 && g_session.m_blockPrivateTab == 1) {
+    SkinPaletteChannels(controls.resources, 0, 8, red, green, blue);
+    this->FillRegion(20, 17, this->geometry.width - 21, this->geometry.height - 38, RGB(red, green, blue));
+  } else {
+    SkinPaletteChannels(controls.resources, 2, 2, red, green, blue);
+    this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - 38, RGB(red, green, blue));
+    this->FillRegion(20, (this->geometry.height - 38) / 32 * 32 + 17, this->geometry.width - 24, (this->geometry.height - 38) % 32, RGB(red, green, blue));
+  }
+
+  if (this->unknown_0128) {
+    this->unknown_0128->Show(this->unknown_010C == 3 && g_session.m_blockPrivateTab == 1 ? 1 : 0);
+  }
+  if (this->unknown_0124) {
+    this->unknown_0124->Enable(this->unknown_010C == 3);
+  }
+  if (this->unknown_012C) {
+    this->unknown_012C->Enable(this->unknown_010C == 3);
+  }
+
+  this->DrawButtonBar(0, 0, 1);
+  this->FillRegion(20, 17, 1, this->geometry.height - 38, 0xC0C0C0);
+  this->FillRegion(18, this->geometry.height - 21, 2, 1, 0xFFFFFF);
+
+  const int slotColumns = (this->geometry.width - 40) / 32;
+  int slotRows = (this->geometry.height - 38) / 32;
+  for (int y = 17; slotRows > 0; --slotRows, y += 32) {
+    int count = slotColumns;
+    for (int x = 40; count > 0; --count, x += 32) {
+      if (this->unknown_010C == 3 && g_session.m_blockPrivateTab == 1) {
+        const auto* lock = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\inventory\\itemwin_mid_lock.bmp")));
+        this->DrawBitmap(x, y, &lock->image, false);
+      } else {
+        DrawItemSlotBackground(*this, x, y);
+      }
+    }
+  }
+
+  int visible = 0;
+  int index = 0;
+  for (auto it = this->items.begin(); it != this->items.end(); ++it, ++index) {
+    if (index < this->scroll * this->columns) {
+      continue;
+    }
+
+    if (g_session.IsPetEgg(std::atoi(it->itemId.c_str())) && it->unknown_005D) {
+      continue;
+    }
+
+    const int y = visible / this->columns * 32 + 17;
+    const int x = visible % this->columns * 32 + 40;
+    if (it->unknown_0074[1]) {
+      if (this->unknown_010C == 3 && g_session.m_blockPrivateTab == 1) {
+        const auto* mark = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\inventory\\itemwin_new_lock.bmp")));
+        this->DrawBitmap(x, y, &mark->image, false);
+      } else {
+        this->DrawNewItemMark(x, y);
+      }
+    }
+
+    if (++visible == this->visibleRows * this->columns) {
+      break;
+    }
+  }
+
+  ItemDescriptions descriptions{g_itemDescriptions};
+  visible = 0;
+  index = 0;
+  for (auto it = this->items.begin(); it != this->items.end(); ++it, ++index) {
+    if (index < this->scroll * this->columns) {
+      continue;
+    }
+
+    if (g_session.IsPetEgg(std::atoi(it->itemId.c_str())) && it->unknown_005D) {
+      continue;
+    }
+
+    const int top = visible / this->columns * 32;
+    const int x = visible % this->columns * 32 + 44;
+    const int y = top + 21;
+    DrawItemWithQuantity(*this, controls.resources, descriptions, controls.fonts, controls.locale, x, y, *it, 0, 0);
+
+    if (it->unknown_0088 > 0) {
+      this->DrawBitmap(
+        x, top + 33,
+        &static_cast<CBitmapRes*>(
+          ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", it->unknown_0088).c_str()))
+        )->image,
+        true
+      );
+    }
+
+    if (g_session.HasItem61B8(it->unknown_0000[1])) {
+      CTexture* background = g_texMgr.Load("유저인터페이스\\swap_equipment\\bg_change.bmp", 0, false, true, false);
+      if (background) {
+        this->geometry.surface->DrawScaledSurface(
+          x, y, 24, 24, background, background->Width(), background->Height(), 1.0f, 1.0f, 0x22FFFFFF, false, 0, 0, 0, 0
+        );
+      }
+
+      CTexture* icon = g_texMgr.Load("유저인터페이스\\swap_equipment\\ico_change.bmp", 0, false, true, false);
+      if (icon) {
+        this->geometry.surface->DrawScaledSurface(
+          x, y, icon->Width(), icon->Height(), icon, icon->Width(), icon->Height(), 1.0f, 1.0f, 0xFFFFFFFF, false, 0, 0, 0, 0
+        );
+      }
+    }
+
+    if (++visible == this->visibleRows * this->columns) {
+      break;
+    }
+  }
+
+  const int count = reinterpret_cast<const SessionMessengerContext*>(&g_session)->GetList0Size() + g_session.CountItems17F0() + g_session.CountItems2B50();
+  const std::uint32_t color = count >= g_extraInventorySlots + 100 ? 0xFF : 0x232323;
+  this->DrawTextAt(controls.fonts, controls.locale, 35, this->geometry.height - 15, FormatOwnedString("%d", count).c_str(), 0, 0, 11, color, 0, 0);
+  const int width = this->TextWidth(controls.fonts, controls.locale, FormatOwnedString("%d", count).c_str(), 0, 0, 11, 0, 0);
+  this->DrawTextAt(
+    controls.fonts, controls.locale, width + 36, this->geometry.height - 15, FormatOwnedString("/%d", g_extraInventorySlots + 100).c_str(), 0, 0, 11, 0, 0, 0
+  );
 }
