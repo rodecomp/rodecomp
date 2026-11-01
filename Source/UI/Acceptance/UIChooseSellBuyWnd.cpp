@@ -6569,3 +6569,7 @@ void UILoadingWnd::Slot15(int, int) {
   ResourceMgr::Instance().Load(Resolve(name));
   g_windowMgr.SetSurface0478(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name))));
 }
+// FUNCTION: fn_11966
+UIPetEggListWnd::UIPetEggListWnd(UIWindowContext& windows, UIFrameContext& frames)
+    : UIItemIdentifyWnd(windows, frames) {
+}
