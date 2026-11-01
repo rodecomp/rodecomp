@@ -2963,4 +2963,207 @@ UIItemTagButton* UIWindow::CreateItemTagButton(const std::string& title, const s
 }
 
 // OFFSET: 0x005C34B0
+// FUNCTION: fn_03558
+void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, const CBitmapRes* background) {
+  if (!g_navigationManager.GetCurrentTarget().object) {
+    return;
+  }
+
+  CNavi_Object* target = static_cast<CNavi_Object*>(g_navigationManager.GetCurrentTarget().object);
+  NavigationTargetLook look = {
+    target->unknown_0058, target->unknown_005C, target->unknown_0060, target->unknown_0064, target->unknown_0068,
+    target->unknown_006C, target->unknown_0070, target->unknown_0074, target->unknown_0078,
+  };
+  if (!look.job) {
+    this->DrawActionSprite(g_navigationSprites, g_navigationActions, x, y, width, height, 1500, true, background);
+    return;
+  }
+
+  std::vector<CActRes*> actions(9);
+  std::vector<CSprRes*> sprites(9);
+  int offsetX = 0;
+  int offsetY = 0;
+  float scale = 1.0f;
+  actions[0] = static_cast<CActRes*>(ResourceMgr::Instance().Load(GetBodyActionResourceName(look.job, look.sex, look.job, 0)));
+  sprites[0] = static_cast<CSprRes*>(ResourceMgr::Instance().Load(g_session.GetBodySprName(look.job, look.sex, look.job, 0)));
+  if (!sprites[0] || !actions[0]) {
+    return;
+  }
+
+  const std::vector<ActionFrame>* fitFrames = &actions[0]->Animation(0);
+  if (!fitFrames || fitFrames->empty()) {
+    return;
+  }
+
+  if (!this->FitSprite(&(*fitFrames)[0], sprites[0], width, height, &offsetX, &offsetY, &scale)) {
+    return;
+  }
+
+  offsetY += 10;
+  scale = 1.0f;
+  if (background) {
+    const BitmapImage& image = background->image;
+    this->geometry.surface->Copy(offsetX - image.width / 2 + x, offsetY - image.height / 2 + y, image.width, image.height, image.pixels, true);
+  }
+
+  const std::vector<ActionFrame>* bodyFrames = &actions[0]->Animation(0);
+  if (!bodyFrames) {
+    return;
+  }
+
+  const DWORD now = timeGetTime();
+  // GLOBAL: gl_25176
+  static DWORD bodyTime = now;
+  // GLOBAL: gl_25177
+  static DWORD accessoryTime0 = now;
+  // GLOBAL: gl_25178
+  static DWORD accessoryTime1 = now;
+  // GLOBAL: gl_25179
+  static DWORD accessoryTime2 = now;
+  // GLOBAL: gl_25180
+  static int bodyFrame = 0;
+  // GLOBAL: gl_25181
+  static int accessoryFrame0 = 0;
+  // GLOBAL: gl_25182
+  static int accessoryFrame1 = 0;
+  // GLOBAL: gl_25183
+  static int accessoryFrame2 = 0;
+
+  bodyFrame = 0;
+  const int bodyCount = static_cast<int>(bodyFrames->size());
+  if (static_cast<int>(now - bodyTime) / (this->unknown_011C / bodyCount) >= bodyCount) {
+    bodyTime = now;
+  }
+
+  if (look.robe) {
+    actions[8] = static_cast<CActRes*>(ResourceMgr::Instance().Load(g_session.GetRobeActName(look.job, look.job, look.sex, look.robe, 0, look.job)));
+    sprites[8] = static_cast<CSprRes*>(ResourceMgr::Instance().Load(g_session.GetRobeSprName(look.job, look.job, look.sex, look.robe, 0, look.job)));
+    if (sprites[8] && actions[8]) {
+      const std::vector<ActionFrame>* robeFrames = &actions[8]->Animation(0);
+      if (robeFrames && !robeFrames->empty()) {
+        const ActionFrame* robeFrame = &(*robeFrames)[bodyFrame];
+        if (robeFrame) {
+          const SpriteRleImage* const* images[2] = {sprites[8]->images[0].data(), sprites[8]->images[1].data()};
+          this->geometry.surface->DrawScaledSprite(
+            x, y, width, height, std::span<const SpriteFrameCell>(robeFrame->cells), images, robeFrame->cellCount, offsetX, offsetY, scale, nullptr,
+            this->m_context->renderer.atlas, this->m_context->renderSystem, g_serviceType, g_resourceReuseDelay
+          );
+        }
+      }
+    }
+  }
+
+  if (bodyFrames->empty()) {
+    return;
+  }
+
+  const std::uint32_t* bodyPalette = nullptr;
+  if (look.bodyPalette > 0) {
+    std::string paletteName = g_session.GetBodyPalName(look.job, look.sex, look.bodyPalette, look.job, 0, 0);
+    bodyPalette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(paletteName.c_str()))->palette;
+  }
+
+  const ActionFrame* body = &(*bodyFrames)[bodyFrame];
+  {
+    const SpriteRleImage* const* images[2] = {sprites[0]->images[0].data(), sprites[0]->images[1].data()};
+    this->geometry.surface->DrawScaledSprite(
+      x, y, width, height, std::span<const SpriteFrameCell>(body->cells), images, body->cellCount, offsetX, offsetY, 1.0f, bodyPalette,
+      this->m_context->renderer.atlas, this->m_context->renderSystem, g_serviceType, g_resourceReuseDelay
+    );
+  }
+
+  actions[1] = static_cast<CActRes*>(ResourceMgr::Instance().Load(g_session.GetHeadActName(look.job, look.sex, &look.head)));
+  sprites[1] = static_cast<CSprRes*>(ResourceMgr::Instance().Load(g_session.GetHeadSprName(look.job, look.sex, &look.head)));
+  if (sprites[1] && actions[1]) {
+    const std::vector<ActionFrame>* headFrames = &actions[1]->Animation(0);
+    if (headFrames) {
+      const std::uint32_t* headPalette = nullptr;
+      const ActionFrame* headFrame = &(*headFrames)[bodyFrame];
+      const int headX = body->anchors[0].x - headFrame->anchors[0].x;
+      const int headY = body->anchors[0].y - headFrame->anchors[0].y;
+      if (look.headPalette > 0) {
+        std::string paletteName = g_session.GetHeadPalName(look.head, look.job, look.sex, look.headPalette);
+        headPalette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(paletteName.c_str()))->palette;
+      }
+
+      const SpriteRleImage* const* images[2] = {sprites[1]->images[0].data(), sprites[1]->images[1].data()};
+      this->geometry.surface->DrawScaledSprite(
+        x + headX, y + headY, width, height, std::span<const SpriteFrameCell>(headFrame->cells), images, headFrame->cellCount, offsetX, offsetY, scale,
+        headPalette, this->m_context->renderer.atlas, this->m_context->renderSystem, g_serviceType, g_resourceReuseDelay
+      );
+    }
+  }
+
+  if (look.accessory0) {
+    actions[2] = static_cast<CActRes*>(ResourceMgr::Instance().Load(g_session.GetAccessoryActName(look.job, look.sex, look.head, look.accessory0)));
+    sprites[2] = static_cast<CSprRes*>(ResourceMgr::Instance().Load(g_session.GetAccessorySprName(look.job, look.sex, look.head, look.accessory0)));
+    if (sprites[2] && actions[2]) {
+      const std::vector<ActionFrame>* accessoryFrames = &actions[2]->Animation(0);
+      if (accessoryFrames) {
+        const int count = static_cast<int>(accessoryFrames->size());
+        if (static_cast<int>(now - accessoryTime0) / (this->unknown_011C / count) >= count) {
+          accessoryTime0 = now;
+        }
+
+        accessoryFrame0 = 0;
+        const ActionFrame* frame = &(*accessoryFrames)[accessoryFrame0];
+        const int accessoryX = body->anchors[0].x - frame->anchors[0].x;
+        const int accessoryY = body->anchors[0].y - frame->anchors[0].y;
+        const SpriteRleImage* const* images[2] = {sprites[2]->images[0].data(), sprites[2]->images[1].data()};
+        this->geometry.surface->DrawScaledSprite(
+          x + accessoryX, y + accessoryY, width, height, std::span<const SpriteFrameCell>(frame->cells), images, frame->cellCount, offsetX, offsetY,
+          scale, nullptr, this->m_context->renderer.atlas, this->m_context->renderSystem, g_serviceType, g_resourceReuseDelay
+        );
+      }
+    }
+  }
+
+  if (look.accessory1) {
+    actions[3] = static_cast<CActRes*>(ResourceMgr::Instance().Load(g_session.GetAccessoryActName(look.job, look.sex, look.head, look.accessory1)));
+    sprites[3] = static_cast<CSprRes*>(ResourceMgr::Instance().Load(g_session.GetAccessorySprName(look.job, look.sex, look.head, look.accessory1)));
+    if (sprites[3] && actions[3]) {
+      const std::vector<ActionFrame>* accessoryFrames = &actions[3]->Animation(0);
+      if (accessoryFrames) {
+        const int count = static_cast<int>(accessoryFrames->size());
+        if (static_cast<int>(now - accessoryTime1) / (this->unknown_011C / count) >= count) {
+          accessoryTime1 = now;
+        }
+
+        accessoryFrame1 = 0;
+        const ActionFrame* frame = &(*accessoryFrames)[accessoryFrame1];
+        const int accessoryX = body->anchors[0].x - frame->anchors[0].x;
+        const int accessoryY = body->anchors[0].y - frame->anchors[0].y;
+        const SpriteRleImage* const* images[2] = {sprites[3]->images[0].data(), sprites[3]->images[1].data()};
+        this->geometry.surface->DrawScaledSprite(
+          x + accessoryX, y + accessoryY, width, height, std::span<const SpriteFrameCell>(frame->cells), images, frame->cellCount, offsetX, offsetY,
+          scale, nullptr, this->m_context->renderer.atlas, this->m_context->renderSystem, g_serviceType, g_resourceReuseDelay
+        );
+      }
+    }
+  }
+
+  if (look.accessory2) {
+    actions[4] = static_cast<CActRes*>(ResourceMgr::Instance().Load(g_session.GetAccessoryActName(look.job, look.sex, look.head, look.accessory2)));
+    sprites[4] = static_cast<CSprRes*>(ResourceMgr::Instance().Load(g_session.GetAccessorySprName(look.job, look.sex, look.head, look.accessory2)));
+    if (sprites[4] && actions[4]) {
+      const std::vector<ActionFrame>* accessoryFrames = &actions[4]->Animation(0);
+      if (accessoryFrames) {
+        const int count = static_cast<int>(accessoryFrames->size());
+        if (static_cast<int>(now - accessoryTime2) / (this->unknown_011C / count) >= count) {
+          accessoryTime2 = now;
+        }
+
+        accessoryFrame2 = 0;
+        const ActionFrame* frame = &(*accessoryFrames)[accessoryFrame2];
+        const int accessoryX = body->anchors[0].x - frame->anchors[0].x;
+        const int accessoryY = body->anchors[0].y - frame->anchors[0].y;
+        const SpriteRleImage* const* images[2] = {sprites[4]->images[0].data(), sprites[4]->images[1].data()};
+        this->geometry.surface->DrawScaledSprite(
+          x + accessoryX, y + accessoryY, width, height, std::span<const SpriteFrameCell>(frame->cells), images, frame->cellCount, offsetX, offsetY,
+          scale, nullptr, this->m_context->renderer.atlas, this->m_context->renderSystem, g_serviceType, g_resourceReuseDelay
+        );
+      }
+    }
+  }
+}
 
