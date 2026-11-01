@@ -5775,12 +5775,12 @@ void UINotifyItemObtainWnd::Paint() {
   }
 
   const int kind = this->m_kind;
-  const int width = this->geometry.width;
+  const int width = this->geometry.width - 49;
   char text[256];
-  char* cursor = text;
-  std::size_t remaining = sizeof(text);
   char* highlight = nullptr;
+  char* cursor = text;
   std::vector<char*> breaks;
+  std::size_t remaining = sizeof(text);
   int highlightColor;
   this->BuildItemName(&this->m_item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
 
@@ -5791,7 +5791,7 @@ void UINotifyItemObtainWnd::Paint() {
     breaks.push_back(cursor);
   }
 
-  this->DrawItemNameSegments(kind == 0 ? 41 : 13, 10, width - 49, breaks, text, highlight, highlightColor, 0, 0, 12);
+  this->DrawItemNameSegments(kind == 0 ? 41 : 13, 10, width, breaks, text, highlight, highlightColor, 0, 0, 12);
 }
 
 // OFFSET: 0x008EB010
