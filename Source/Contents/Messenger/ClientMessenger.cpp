@@ -376,6 +376,7 @@ namespace EquipmentProperties {
     void EquipItem(const int& itemId, bool notify);
     void UnequipItem(const int& itemId, bool notify);
     void UnequipWearable(const int& mask);
+    __declspec(noinline) void EquipWearable(const ITEM_INFO* item, bool notify);
     void AddExpansion(const int& kind, const int& itemId, bool notify);
     void RemoveExpansion(const int& kind, const int& itemId);
     void RefreshExpansion(const int& kind, const int& itemId);
@@ -436,6 +437,7 @@ namespace EquipmentProperties {
     /* 0044 */ std::vector<CEquipmentAttachable> m_attachables;
     /* 0050 */ std::list<CEquipmentProperties*> m_children;
 
+    explicit CEquipmentWearable(const ITEM_INFO* item);
     void Load(bool force) override;
     void Clear() override;
     int GetType() override;
@@ -6724,5 +6726,36 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
   lua_settop(state, -2);
   if (!this->unknown_000C) {
     ShowErrorDialog(std::format("Check error in '{0}' table and restart game ", name), 0);
+  }
+}
+
+// OFFSET: 0x006B6C70
+// FUNCTION: fn_06201
+void EquipmentProperties::CEquipmentPropertiesMgr::EquipWearable(const ITEM_INFO* item, bool notify) {
+  if (item == nullptr) {
+    return;
+  }
+
+  this->m_dirty = true;
+  const int key = GetEquipLocationIndex(item->unknown_0000[3]);
+  const auto found = this->properties1.find(key);
+  if (found != this->properties1.end()) {
+    delete found->second;
+    this->properties1.erase(found);
+  }
+  CEquipmentWearable* replacement = new CEquipmentWearable(item);
+  CEquipmentWearable* wearable = this->properties1.insert({key, replacement}).first->second;
+  wearable->UpdateActive();
+  if (!wearable->IsActive()) {
+    wearable->Load(false);
+  } else {
+    wearable->Load(notify);
+    this->EquipItem(wearable->GetId(), notify);
+    for (CEquipmentAttachable& attachable : wearable->GetAttachables()) {
+      this->EquipItem(attachable.GetId(), notify);
+    }
+  }
+  if (this->unknown_0020 != nullptr) {
+    this->unknown_0020->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
   }
 }

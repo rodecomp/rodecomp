@@ -1328,34 +1328,6 @@ bool CSession::UnequipItem(int location, std::uint32_t identity) {
   return true;
 }
 
-// OFFSET: 0x006B6C70
-// FUNCTION: fn_06201
-__declspec(noinline) void EquipmentProperties::CEquipmentPropertiesMgr::EquipWearable(const ITEM_INFO* item, bool notify) {
-  if (item == nullptr) {
-    return;
-  }
-
-  this->m_dirty = true;
-  const int index = GetEquipLocationIndex(item->unknown_0000[3]);
-  CEquipmentWearable* existing = this->FindProperty1(index);
-  if (existing != nullptr) {
-    existing->UpdateActive();
-    if (existing->IsActive() == false) {
-      existing->Load(false);
-    } else {
-      existing->Load(notify);
-      this->EquipItem(existing->GetId(), notify);
-      for (CEquipmentAttachable& attachable : existing->GetAttachables()) {
-        this->EquipItem(attachable.GetId(), notify);
-      }
-    }
-  }
-
-  if (this->unknown_0020 != nullptr) {
-    this->unknown_0020->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
-  }
-}
-
 // OFFSET: 0x00DD7E10
 // FUNCTION: fn_23300
 EquipSlots CSession::GetEquipSlots(int location) {
