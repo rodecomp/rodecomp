@@ -9,8 +9,35 @@
 #include "UI/Edit/UIEditCtrl.h"
 #include "UI/Window/InputFocus.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowDialogs.h"
+#include "UI/Text/NavigationLink.h"
+#include "Client/Session.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/ForbiddenWords.h"
+#include "Contents/Jobs/JobInheritance.h"
+#include "Contents/MessageTable.h"
+#include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketLengths.h"
 
+#include <cstdio>
+#include <cstring>
 #include <string>
+
+#pragma pack(push, 1)
+struct CharacterRenamePacket {
+  /* 0000 */ short id;
+  /* 0002 */ std::uint32_t gid;
+  /* 0006 */ char name[24];
+};
+#pragma pack(pop)
+
+static_assert(sizeof(CharacterRenamePacket) == 30);
+
+// GLOBAL: gl_25092
+std::uint32_t g_renameGid;
+
+// GLOBAL: gl_25093
+char g_renameName[24];
 
 // OFFSET: 0x0092BCA0
 // FUNCTION: fn_12660
@@ -62,4 +89,102 @@ void UIChangeNameWnd::Slot15(int, int) {
 // FUNCTION: fn_12511
 UIChangeNameWnd::UIChangeNameWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
     : UIFrameWnd(windows, frames, 0), m_controls(&controls) {
+}
+
+// OFFSET: 0x00934A10
+// FUNCTION: fn_12743
+int UIChangeNameWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::intptr_t, std::intptr_t, std::intptr_t) {
+  switch (message) {
+  case 0:
+    this->SendMsg(nullptr, 6, this->m_message0, 0, 0, 0);
+    break;
+  case 6:
+    switch (a) {
+    case 184: {
+      if (g_navigationLinkParser->HasLink(this->m_edit->Text()) == true) {
+        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2812), 0, true, false, 0, "Message", 280, 120, 0);
+        this->m_edit->SetText("");
+        return 0;
+      }
+
+      std::string name(this->m_edit->Text());
+      if (name.find('\n', 0) != std::string::npos) {
+        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(3334), 0, true, false, 0, "Message", 280, 120, 0);
+        this->m_edit->SetText("");
+        return 0;
+      }
+
+      if (g_serviceType == 1 && !ValidateCharacterName(this->m_edit->Text())) {
+        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2018), 0, true, false, 0, "Message", 280, 120, 0);
+        this->m_edit->SetText("");
+        return 0;
+      }
+
+      if (this->m_edit->Length() < 4) {
+        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(21), 0, true, false, 0, "Message", 280, 120, 0);
+        return 0;
+      }
+
+      const bool allowed = g_forbiddenWords.Allows(this->m_edit->Text());
+      const bool blank = g_session.IsBlankString(this->m_edit->Text());
+      if (!allowed || blank) {
+        if (!allowed) {
+          reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(20), 0, true, false, 0, "Message", 280, 120, 0);
+        }
+        if (blank) {
+          reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(199), 0, true, false, 0, "Message", 280, 120, 0);
+        }
+        return 0;
+      }
+
+      if (this->m_edit->Length() >= 24 || !this->IsNameWithinLimit(this->m_edit->Text(), 24)) {
+        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(531), 0, true, false, 0, "Message", 280, 120, 0);
+        this->m_edit->SetText("");
+        return 0;
+      }
+
+      char newName[24] = {};
+      std::strcpy(newName, this->m_edit->Text());
+      memcpy_s(&this->m_info, sizeof(this->m_info), this->m_character, sizeof(CharacterInfo));
+      std::memcpy(this->m_info.name, newName, sizeof(newName));
+      if (std::strstr(this->m_info.name, "그라비티") != nullptr) {
+        return 0;
+      }
+
+      _strlwr(newName);
+      if (std::strstr(newName, "gravity") != nullptr) {
+        return 0;
+      }
+
+      if ((newName[0] == '[' && newName[1] == 'g' && newName[2] == 'm') || (newName[1] == '[' && newName[2] == 'g' && newName[3] == 'm') ||
+          (newName[2] == '[' && newName[3] == 'g' && newName[4] == 'm')) {
+        return 0;
+      }
+
+      char text[300];
+      std::sprintf(text, LookupMessage(1213), this->m_info.name);
+      if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) == 187) {
+        CharacterRenamePacket packet;
+        packet.id = 0x8FC;
+        packet.gid = this->m_character->gid;
+        g_renameGid = packet.gid;
+        std::memcpy(packet.name, this->m_info.name, sizeof(packet.name));
+        std::memcpy(g_renameName, this->m_info.name, sizeof(g_renameName));
+        GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+        g_windowMgr.Schedule(this);
+      }
+      break;
+    }
+    case 185:
+      g_windowMgr.Schedule(this);
+      break;
+    }
+    break;
+  case 34:
+    this->m_character = reinterpret_cast<CharacterInfo*>(a);
+    this->m_edit->SetText(this->m_character->name);
+    break;
+  }
+
+  return 0;
 }
