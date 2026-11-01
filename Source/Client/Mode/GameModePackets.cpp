@@ -15299,6 +15299,127 @@ void CGameMode::ReceiveRateInfo(const unsigned char* packet) {
 // OFFSET: 0x00D21EB0
 
 // OFFSET: 0x00D223F0
+// FUNCTION: fn_21659
+void CGameMode::ReceiveTaggedBroadcast(const unsigned char* data) {
+  char senderName[25] = {};
+  char text[0x400];
+  char head[0x400];
+  char body[0x400];
+  std::memset(text, 0, sizeof(text));
+  std::memset(head, 0, sizeof(head));
+  std::memset(body, 0, sizeof(body));
+
+  char tag[5] = {};
+  unsigned int size = *reinterpret_cast<const std::uint16_t*>(data + 2) - 4;
+  if (size >= 0x3FF) {
+    size = 0x3FF;
+  }
+  std::memcpy(text, data + 4, size);
+  text[size] = '\0';
+  const int length = static_cast<int>(std::strlen(text));
+
+  std::string message(text);
+  std::uint32_t color = 0xFFFF;
+  std::memcpy(tag, text, std::min<std::size_t>(std::strlen(text), 4));
+  tag[4] = '\0';
+  _strlwr(tag);
+
+  int fontType = 0x19;
+  const int hashPosition = static_cast<int>(message.find('#'));
+  const int colonPosition = static_cast<int>(message.find(':'));
+  bool systemMessage = false;
+  unsigned long rgb = 0;
+  if (std::strcmp(tag, "tool") == 0) {
+    std::memcpy(head, text + 4, 6);
+    head[6] = '\0';
+    std::sscanf(head, "%lx", &rgb);
+    color = ((rgb & 0xFF) << 16) | (rgb & 0xFF00) | ((rgb >> 16) & 0xFF);
+    std::memcpy(body, text + 10, length - 10);
+    body[length - 10] = '\0';
+    message = body;
+  } else if (std::strcmp(tag, "blue") == 0 || std::strcmp(tag, "블루") == 0) {
+    std::memcpy(head, text + 4, length - 4);
+    head[length - 4] = '\0';
+    message = head;
+    color = 0xFFFF00;
+  } else if (std::strcmp(tag, "micc") == 0) {
+    std::memcpy(senderName, text + 4, 24);
+    senderName[24] = '\0';
+    const std::set<std::string>& blocked = g_whisperBlockMgr->Names();
+    if (std::find(blocked.begin(), blocked.end(), senderName) != blocked.end()) {
+      return;
+    }
+
+    std::memcpy(head, text + 0x1C, 6);
+    head[6] = '\0';
+    std::sscanf(head, "%lx", &rgb);
+    color = ((rgb & 0xFF) << 16) | (rgb & 0xFF00) | ((rgb >> 16) & 0xFF);
+    const unsigned int bodySize = size - 0x22;
+    std::memcpy(body, text + 0x22, bodySize);
+    body[size - 0x22] = '\0';
+    message = body;
+    fontType = 0;
+
+    char check[0x400];
+    std::memset(check, 0, sizeof(check));
+    memcpy_s(check, sizeof(check), text + 0x40, bodySize);
+    if (std::strlen(check) >= 0x16A) {
+      return;
+    }
+
+    char filtered[0x188];
+    std::memset(filtered, 0, sizeof(filtered));
+    strcpy_s(filtered, sizeof(filtered), message.c_str());
+    if (g_forbiddenWords.Contains(filtered) == true) {
+      std::string masked;
+      g_forbiddenWords.Mask(filtered, &masked);
+      message = filtered;
+    }
+  } else if (std::strcmp(tag, "ssss") == 0) {
+    std::memcpy(head, text + 4, length - 4);
+    head[length - 4] = '\0';
+    message = head;
+    color = 0xFFFF;
+    fontType = 14;
+    systemMessage = true;
+  } else if (hashPosition > 0 && hashPosition < length) {
+    std::memcpy(head, text, hashPosition);
+    head[hashPosition] = '\0';
+    message = head;
+    if (colonPosition > 0 && colonPosition < length) {
+      std::memcpy(body, text + colonPosition, length - colonPosition + 1);
+      message += body;
+    }
+  }
+
+  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+  g_windowMgr.SendNotice(
+    1, reinterpret_cast<std::intptr_t>(message.c_str()), color, fontType, reinterpret_cast<std::intptr_t>(senderName), 0
+  );
+  if (!systemMessage) {
+    g_windowMgr.SendNotice(
+      0x13, reinterpret_cast<std::intptr_t>(message.c_str()), color, fontType, reinterpret_cast<std::intptr_t>(senderName), 0
+    );
+  }
+
+  message = reinterpret_cast<UITextViewer*>(g_chatSuggestions)->ConvertChat(message);
+  std::string linked;
+  DisplayNavigationLink(linked, message);
+  message = std::move(linked);
+
+  std::vector<std::string> lines;
+  WrapPlainText(message.c_str(), lines, 0x48, g_serverLanguage->language);
+  if (lines.begin() != lines.end()) {
+    if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
+      BroadcastBalloonMessage balloonMessage{{}, {}, std::chrono::seconds(20), 12, 0x40000000, 0, 0};
+      balloonMessage.start = std::chrono::system_clock::now();
+      for (const std::string& line : lines) {
+        balloonMessage.lines.emplace_back(line, color);
+      }
+      balloon->AddMessage(0, balloonMessage);
+    }
+  }
+}
 
 namespace {
   template <std::size_t Length, std::uint64_t Key>
@@ -15332,6 +15453,37 @@ namespace {
 }
 
 // OFFSET: 0x00D231F0
+// FUNCTION: fn_21661
+void CGameMode::ReceiveRefineStatusGraded(const char* playerName, int itemId, unsigned char refine, unsigned char grade, bool success) {
+  ITEM_INFO item;
+  item.SetItemId(itemId);
+  item.unknown_0060 = refine;
+  item.unknown_0088 = grade;
+  item.identified = 1;
+
+  int job = 0;
+  const std::uint8_t signatureSource[] = {0x1B, 0x2D, 0xBB, 0xD1};
+  thread_local EncryptedText<sizeof(signatureSource), 0xED796785D1DF137FULL> signature(signatureSource);
+  const char* signatureText = signature.Text();
+  const std::uint8_t functionSource[] = {0xB6, 0xA2, 0x4D, 0x4C, 0x66, 0x0C, 0x26, 0x81, 0xBB, 0xA8, 0x5B, 0x09};
+  thread_local EncryptedText<sizeof(functionSource), 0xF14F79170939C7F1ULL> function(functionSource);
+  g_luaScript->Call(function.Text(), signatureText, itemId, &job);
+  if (job != 0) {
+    item.unknown_0000[0] = 0x15;
+  }
+
+  std::string itemName = item.DisplayName(1);
+  std::string text = FormatOwnedString(LookupMessage(!success + 0x1108), playerName, itemName.c_str());
+  std::string line = text;
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0x62B0FF, 0, 0, 0);
+  if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
+    BroadcastBalloonMessage message{{}, {}, std::chrono::seconds(20), 12, 0x40000000, 0, 0};
+    message.start = std::chrono::system_clock::now();
+    std::uint32_t color = 0x62B0FF;
+    message.lines.emplace_back(line, color);
+    balloon->AddMessage(0, message);
+  }
+}
 
 // OFFSET: 0x00D23580
 // FUNCTION: fn_21662
