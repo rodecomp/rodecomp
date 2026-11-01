@@ -27,6 +27,7 @@ public:
   void SetTitle(std::string title);
   void SetSearchText(std::string text);
   void Slot15(int width, int height) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
   /* 00F0 */ unsigned char unknown_00F0[0xC];
   /* 00FC */ UIBitmapButton* closeButton;
@@ -38,6 +39,9 @@ public:
   /* 0124 */ std::string unknown_0124;
   /* 013C */ std::string searchText;
   /* 0154 */ ItemStoreFindWndInfo* saved;
+  /* 0158 */ unsigned char unknown_0158[0x4];
+  /* 015C */ bool sorted;
+  /* 015D */ unsigned char unknown_015D[0x7];
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
@@ -46,6 +50,8 @@ static_assert(offsetof(UIItemStoreFindWnd, searchText) == 0x13C);
 static_assert(offsetof(UIItemStoreFindWnd, saved) == 0x154);
 static_assert(offsetof(UIItemStoreFindWnd, closeButton) == 0xFC);
 static_assert(offsetof(UIItemStoreFindWnd, title) == 0x118);
+static_assert(offsetof(UIItemStoreFindWnd, sorted) == 0x15C);
+static_assert(sizeof(UIItemStoreFindWnd) == 0x164);
 #endif
 
 #endif

@@ -153,6 +153,7 @@ struct SessionMessengerContext {
   int GetList0Size() const;
   int GetList10Size() const;
   int GetList4Size() const;
+  int GetList5Size() const;
   int GetList6Size() const;
   int GetList7Size() const;
   int GetList8Size() const;
@@ -8299,4 +8300,129 @@ void UIItemPurchaseWnd::Slot15(int width, int height) {
   this->columns = 1;
   this->visibleRows = (height - 38) / 32;
   this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+}
+
+// GLOBAL: gl_25385
+bool g_itemStoreSortMode[3];
+
+// OFFSET: 0x0098DBF0
+// FUNCTION: fn_13425
+int UIItemStoreFindWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  switch (message) {
+  case 6:
+    if (a == 201) {
+      g_windowMgr.CloseWindow(153);
+      static_cast<UIItemStoreWnd*>(g_windowMgr.LookupWindow(33))->unknown_0140 = 0;
+      return 0;
+    }
+  case 14:
+    if (a == 7) {
+      int width = b <= 320 ? b : 320;
+      int height = c <= 336 ? c : 336;
+      if (width < 140) {
+        width = 140;
+      }
+      if (height < 145) {
+        height = 145;
+      }
+
+      const int newWidth = (width - 140) / 32 * 32 + 140;
+      const int newHeight = (height - 160) / 32 * 32 + 145;
+      if (newWidth != this->geometry.width || newHeight != this->geometry.height) {
+        this->scroll = 0;
+        this->Resize(newWidth, newHeight);
+        this->resizeHandle->Move(this->geometry.width - 15, this->geometry.height - 15);
+        this->scrollBar->Move(this->geometry.width - 15, 14);
+        this->scrollBar->Resize(this->scrollBar->geometry.width, this->geometry.height - 38);
+        this->closeButton->Move(this->geometry.width - 16, 3);
+        this->visibleRows = (newHeight - 38) / 32;
+        this->UpdateScrollBar();
+      }
+
+      this->m_frameContext->snapping.Store(this);
+    }
+    return 0;
+  case 23: {
+    this->items.erase(this->items.begin(), this->items.end());
+    const int size = reinterpret_cast<const SessionMessengerContext*>(&g_session)->GetList5Size();
+    for (int i = 0; i < size; ++i) {
+      ITEM_INFO item = g_session.GetItem1738At(i);
+      if (item.unknown_0000[1] != 0) {
+        this->items.push_back(item);
+      }
+    }
+
+    if (g_itemStoreSortMode[1]) {
+      reinterpret_cast<UIItemStoreSubWnd*>(this)->Sort1();
+    }
+    if (g_itemStoreSortMode[2]) {
+      reinterpret_cast<UIItemStoreSubWnd*>(this)->SortReversed1();
+    }
+    if (!this->searchText.empty()) {
+      reinterpret_cast<UIItemStoreSubWnd*>(this)->FilterByName1(std::string(this->searchText.c_str(), this->searchText.size()));
+    }
+
+    this->Invalidate();
+    this->UpdateScrollBar();
+    return 0;
+  }
+  case 34:
+    this->saved = reinterpret_cast<ItemStoreFindWndInfo*>(a);
+    if (!this->saved->IsValid()) {
+      this->saved->Reset();
+    }
+
+    this->Move(this->saved->x, this->saved->y);
+    this->SendMsg(nullptr, 14, 3, this->saved->width, this->saved->height, 0);
+    return 0;
+  case 38: {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    if (mode->drag.source == 1) {
+      mode->SendMsg(55, mode->drag.id, mode->drag.quantity, 0, 0);
+    } else if (mode->drag.source == 9) {
+      mode->SendMsg(79, mode->drag.id, mode->drag.quantity, 0, 0);
+    }
+
+    mode->SendMsg(18, 0, 0, 0, 0);
+    return 0;
+  }
+  case 55: {
+    char text[64];
+    std::sprintf(text, "%d/%d", a, b);
+    this->unknown_0124.assign(text, std::strlen(text));
+    this->Invalidate();
+    return 0;
+  }
+  case 246:
+    this->sorted = false;
+    this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    return 0;
+  case 364:
+    if (g_itemStoreSortMode[0] == true) {
+      this->SendMsg(nullptr, 246, 0, 0, 0, 0);
+      return 0;
+    }
+
+    this->sorted = true;
+    if (g_itemStoreSortMode[1] == true) {
+      reinterpret_cast<UIItemStoreSubWnd*>(this)->Sort1();
+    } else if (g_itemStoreSortMode[2] == true) {
+      reinterpret_cast<UIItemStoreSubWnd*>(this)->SortReversed1();
+    }
+    break;
+  case 365:
+    if (this->searchText.empty()) {
+      return 0;
+    }
+    if (!reinterpret_cast<UIItemStoreSubWnd*>(this)->FilterByName1(std::string(this->searchText.c_str(), this->searchText.size()))) {
+      return 0;
+    }
+    break;
+  default:
+    return UIItemBaseWnd::SendMsg(sender, message, a, b, c, d);
+  }
+
+  this->Invalidate();
+  this->UpdateScrollBar();
+  return 0;
 }
