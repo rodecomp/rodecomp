@@ -72,6 +72,16 @@ UIParaItemShopWnd::UIParaItemShopWnd() {
 }
 
 // OFFSET: 0x009A7DF0
+// FUNCTION: fn_13741
+UIParaResultWnd::UIParaResultWnd() : UIItemBaseWnd() {
+  this->title = nullptr;
+  this->total = nullptr;
+  this->unknown_00F8 = -1;
+  this->showQuantity = 0;
+  this->unknown_00B8 = 1;
+  this->unknown_00FC = 29;
+  this->unknown_0100 = 0;
+}
 
 // OFFSET: 0x009A80F0
 // FUNCTION: fn_13745
