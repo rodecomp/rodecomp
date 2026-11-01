@@ -36,11 +36,13 @@ public:
   /* 0150 */ UISpriteButton* m_buttons[4];
 
   void Slot15(int width, int height) override;
+  void Slot19() override;
   void Paint() override;
   void Slot25(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
   int LoadBookmark(const char* name);
+  char* StripColorCodes(const char* text);
 
 protected:
   UIBookContext* m_book;

@@ -82,6 +82,7 @@
 #include "UI/Items/UIExchangeWnd.h"
 #include "UI/Items/UIItemCollectionWnd.h"
 #include "UI/Items/UIItemIdentifyWnd.h"
+#include "UI/Text/UITransBalloonText.h"
 #include "UI/Items/UIItemParamChangeDisplayWnd.h"
 #include "UI/Items/UINotifyItemObtainWnd.h"
 #include "UI/Lists/UIChatHisBox.h"
@@ -7094,4 +7095,110 @@ void UIEquipWnd::RefreshLook()
   robe = GetSlotItem(2);
   if (robe.unknown_0000[1] != 0)
     unknown_0118 = robe.unknown_0070;
+}
+
+// OFFSET: 0x008D7CC0
+// FUNCTION: fn_12124
+char* UIBookWnd::StripColorCodes(const char* text) {
+  const unsigned length = static_cast<unsigned>(std::strlen(text));
+  const char* const end = text + length;
+  const char* const marker = text + TextContext::Marker(text, static_cast<unsigned>(end - text));
+  char* segmentBuffer = static_cast<char*>(std::malloc(length + 1));
+  char* result = static_cast<char*>(std::malloc(length + 1));
+  *result = '\0';
+  std::uint32_t color = 0;
+  while (text < end) {
+    const char* const start = ParseColorCode(text, color);
+    text = SegmentEnd(start, end);
+    std::string segment;
+    if (start != text) {
+      segment.assign(start, text - start);
+    }
+    if (marker != nullptr && *marker != '\0') {
+      segment.insert(0, marker, 3);
+    }
+    if (text != start) {
+      std::strcpy(segmentBuffer, segment.c_str());
+      std::strcat(result, segmentBuffer);
+    }
+  }
+  return result;
+}
+
+// OFFSET: 0x008F4AC0
+// FUNCTION: fn_12293
+void UIBookWnd::Slot19() {
+  if (!this->m_autoRead || this->m_autoTick == 0 || timeGetTime() <= this->m_autoTick + 4000) {
+    return;
+  }
+  int line = this->m_autoLine;
+  if (line >= this->m_lineCount) {
+    this->m_autoTick = 0;
+    if (this->unknown_00B8 != nullptr) {
+      g_windowMgr.Schedule(this->unknown_00B8);
+      this->unknown_00B8 = nullptr;
+    }
+    g_windowMgr.CloseWindow(106);
+    return;
+  }
+  const char* text = this->m_lines[line].c_str();
+  if ((std::strlen(text) == 0 || std::strcmp(text, " ") == 0) && line < this->m_lineCount - 1) {
+    this->m_autoLine = line + 1;
+  }
+  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(this->StripColorCodes(this->m_lines[this->m_autoLine].c_str())), 0xE1E4FF, 0, 0, 0);
+  UIWindow* balloon = this->unknown_00B8;
+  if (balloon == nullptr) {
+    balloon = new UITransBalloonText(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<BalloonTextContext*>(nullptr));
+    this->unknown_00B8 = balloon;
+    balloon->SetSize(8, 8);
+    g_windowMgr.AddRenderedFront(this->unknown_00B8);
+    balloon = this->unknown_00B8;
+  }
+  static_cast<UITransBalloonText*>(balloon)->SetText(this->StripColorCodes(this->m_lines[this->m_autoLine].c_str()), 100);
+  this->unknown_00B8->Move((g_renderer->viewport.width - 640) / 2 - this->unknown_00B8->geometry.width / 2 + 320, 81);
+  static_cast<UITransBalloonText*>(this->unknown_00B8)->m_textColor = 0xE1E4FF;
+  static_cast<UITransBalloonText*>(this->unknown_00B8)->m_outlineColor = 0;
+  ++this->m_autoLine;
+  this->m_autoTick = timeGetTime();
+}
+
+int ParseItemIdTag(const char* text, const char* end, int& length, int& itemId);
+
+// OFFSET: 0x008F8ED0
+
+// OFFSET: 0x008F8640
+// FUNCTION: fn_12331
+int UIChoose3Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  const char* text = reinterpret_cast<const char*>(a);
+  if (message != 27 || text == nullptr || std::strlen(text) == 0 || std::strcmp(text, LookupMessage(666)) == 0) {
+    return this->UIChooseWnd::SendMsg(sender, message, a, b, c, d);
+  }
+  int length = 0;
+  int itemId = 0;
+  const char* line = text;
+  if (ParseItemIdTag(text, text + std::strlen(text), length, itemId) == 1 && itemId > 0) {
+    line = FindItemDescription(itemId).identifiedName;
+  }
+  this->m_list->AddLine(line);
+  ++this->unknown_00B4;
+  this->m_items.push_back(this->unknown_00B4);
+  UIListBox* list = this->m_list;
+  const int listWidth = list->geometry.width;
+  const int growWidth = 0;
+  int growHeight = 0;
+  if (this->m_minimumLines < static_cast<int>(list->lines.size()) && list->LineCount() <= this->m_maximumLines) {
+    growHeight = list->lineHeight;
+  }
+  if (growWidth > 0 || growHeight > 0) {
+    const int okX = this->geometry.width - this->m_okButton->geometry.x;
+    const int okY = this->geometry.height - this->m_okButton->geometry.y;
+    const int cancelX = this->geometry.width - this->m_cancelButton->geometry.x;
+    const int cancelY = this->geometry.height - this->m_cancelButton->geometry.y;
+    list->Resize(listWidth + growWidth, list->geometry.height + growHeight);
+    this->Resize(this->geometry.width + growWidth, this->geometry.height + growHeight);
+    this->m_okButton->Move(this->geometry.width - okX, this->geometry.height - okY);
+    this->m_cancelButton->Move(this->geometry.width - cancelX, this->geometry.height - cancelY);
+  }
+  return 0;
 }

@@ -5,7 +5,7 @@
 
 #include <vector>
 
-struct WindowPlacement;
+struct ChooseWndInfo;
 struct UIButtonContext;
 struct UIListBoxContext;
 class UIBitmapButton;
@@ -18,19 +18,28 @@ public:
   void Slot11() override;
   void Slot15(int width, int height) override;
   void Paint() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   std::vector<unsigned char> Slot44() override;
 
   /* 00B4 */ int unknown_00B4;
   /* 00B8 */ std::vector<int> m_items;
   /* 00C4 */ UIListBox* m_list;
-  /* 00C8 */ unsigned char unknown_00C8[0x4];
-  /* 00CC */ WindowPlacement* m_placement;
+  /* 00C8 */ int unknown_00C8;
+  /* 00CC */ ChooseWndInfo* m_placement;
   /* 00D0 */ UIBitmapButton* m_okButton;
   /* 00D4 */ UIBitmapButton* m_cancelButton;
 
 protected:
   UIButtonContext* m_controls;
   UIListBoxContext* m_listContext;
+};
+
+class UIChoose3Wnd : public UIChooseWnd {
+public:
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
+
+  /* 00D8 */ int m_minimumLines;
+  /* 00DC */ int m_maximumLines;
 };
 
 #endif
