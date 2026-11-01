@@ -293,6 +293,7 @@ void UIGuildTotalInfoWnd::Slot35(int delta) {
 }
 
 // OFFSET: 0x00954020
+// FUNCTION: fn_13005
 UIGuildWnd::UIGuildWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
     : UIFrameWnd(windows, frames, 0), m_saved(nullptr), m_tabs{}, m_controls(&controls) {}
 // OFFSET: 0x00953900
@@ -2013,6 +2014,8 @@ bool UIGuildMemberManageWnd::DrawMember(GuildInfo::Member& member, int& index, i
 }
 
 // OFFSET: 0x0095E320
+
+// OFFSET: 0x0095ACC0
 
 // OFFSET: 0x00963BF0
 // FUNCTION: fn_13130

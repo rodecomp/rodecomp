@@ -171,6 +171,7 @@ protected:
 class UIGuildNoticeWnd : public UIGuildWnd {
 public:
   UIGuildNoticeWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
+  void Slot15(int width, int height) override;
   void Paint() override;
   void Slot25(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
@@ -178,7 +179,7 @@ public:
 protected:
   /* 00D0 */ UIEditCtrl* m_titleEdit;
   /* 00D4 */ UIEditCtrl* m_bodyEdit;
-  ForbiddenWords* m_forbiddenWords;
+  /* 00D8 */ UIBitmapButton* m_sendButton;
 };
 
 class UIGuildPositionManageWnd : public UIGuildWnd {
