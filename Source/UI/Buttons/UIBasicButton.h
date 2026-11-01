@@ -5,6 +5,7 @@
 
 class UIBasicButton : public UIButton {
 public:
+  UIBasicButton();
   UIBasicButton(UIWindowContext& windows, UIButtonContext& controls);
   ~UIBasicButton() override;
   void Paint() override;

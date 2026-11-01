@@ -25,6 +25,9 @@ public:
 
 class UIRodexEditCtrl3 : public UIEditCtrl3 {
 public:
+  // INLINED
+  UIRodexEditCtrl3() {
+  }
   UIRodexEditCtrl3(UIWindowContext& windows, UIEditContext& edit);
   void Slot15(int width, int height) override;
   void sub_855150();
@@ -35,6 +38,7 @@ public:
   UIRodexComposeWnd(UIWindowContext& windows, UIFrameContext& frames);
   ~UIRodexComposeWnd() override;
   void Slot10(int x, int y, std::intptr_t value) override;
+  void Slot15(int width, int height) override;
   void Slot19() override;
   void Slot25(int x, int y) override;
   void Slot28(int x, int y) override;

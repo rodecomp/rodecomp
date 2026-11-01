@@ -34,7 +34,9 @@ public:
   std::vector<unsigned char> Slot44() override;
   int Slot46() override;
   UIBitmapButton* AddCloseButton(UIButtonContext& controls, const char* tooltip, int width);
+  UIBitmapButton* AddCloseButton(const char* tooltip, int width);
   UIBitmapButton* AddBaseButton(UIButtonContext& controls);
+  UIBitmapButton* AddBaseButton();
   UIBitmapButton* AddBigCloseButton(UIButtonContext& controls, const char* tooltip, int width);
   UIBitmapButton* AddMinimizeButton(UIButtonContext& controls, const char* tooltip, int width);
   UIBitmapButton* AddBitmapButton(UIButtonContext& controls, int id, int x, int y, const char* name, const char* tooltip);

@@ -128,6 +128,7 @@ public:
 
 class UIEditCtrl3 : public UIEditCtrl2 {
 public:
+  UIEditCtrl3();
   UIEditCtrl3(UIWindowContext& windows, UIEditContext& edit);
   UIEditCtrl3(const UIEditCtrl3& other);
   ~UIEditCtrl3() override;

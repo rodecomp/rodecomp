@@ -30,6 +30,11 @@
 #include "UI/Shop/ItemDrawing.h"
 #include "UI/Window/WindowBorder.h"
 #include "Utility/Text/GroupedInteger.h"
+#include "UI/Buttons/UIBasicButton.h"
+#include "UI/Window/InputFocus.h"
+#include "Contents/SkinMgr.h"
+#include "Contents/MapSkyMgr.h"
+#include "Resource/SkinPalette.h"
 
 #include <cstdint>
 #include <cstdlib>
@@ -544,4 +549,125 @@ void UIRodexComposeWnd::Paint() {
       this->unknown_0100 = nullptr;
     }
   }
+}
+
+// OFFSET: 0x007FFB90
+// FUNCTION: fn_10005
+void UIRodexComposeWnd::Slot15(int, int) {
+  this->AddBaseButton();
+  this->AddCloseButton("", 0);
+
+  this->unknown_00B4 = new UIEditCtrl_Custom();
+  this->unknown_00B4->SetSize(0x96, 0x12);
+  this->unknown_00B4->Move(8, 0x1A);
+  this->unknown_00B4->maximum = 50;
+  this->unknown_00B4->Background(0xFF, 0xFF, 0xFF);
+  this->unknown_00B4->flat = 0;
+  this->unknown_00B4->Border(0xA6, 0xA6, 0xA6);
+  this->unknown_00B4->TextColor(0x313131, 0xFFFFFFFF);
+  this->unknown_00B4->unknown_0120 = 1;
+  this->unknown_00B4->unknown_0124 = 1;
+  this->AddChild(this->unknown_00B4);
+
+  this->unknown_00B8 = new UIEditCtrl_Custom();
+  this->unknown_00B8->SetSize(0x96, 0x12);
+  this->unknown_00B8->Move(8, 0x1A);
+  this->unknown_00B8->maximum = 50;
+  this->unknown_00B8->Background(0x110, 0x110, 0x110);
+  this->unknown_00B8->flat = 0;
+  this->unknown_00B8->Border(0xA6, 0xA6, 0xA6);
+  this->unknown_00B8->TextColor(0x95330F, 0xFFFFFFFF);
+  this->unknown_00B8->unknown_011C = 1;
+  this->unknown_00B8->unknown_0120 = 1;
+  this->unknown_00B8->unknown_0124 = 1;
+  this->unknown_00B8->disabled = 1;
+  this->unknown_00B8->Invalidate();
+  this->unknown_00B8->Show(0);
+  this->AddChild(this->unknown_00B8);
+
+  this->unknown_00BC = new UIBmpTextButton();
+  this->unknown_00BC->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_confirm_id_empty_out.bmp", 0, 0);
+  this->unknown_00BC->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_confirm_id_empty_over.bmp", 1, 0);
+  this->unknown_00BC->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_confirm_id_empty_press.bmp", 2, 0);
+  this->unknown_00BC->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_confirm_id_empty_press.bmp", 3, 0);
+  this->unknown_00BC->SetSize(this->unknown_00BC->BitmapWidth(), this->unknown_00BC->BitmapHeight());
+  {
+    const int textX = static_cast<int>(
+      static_cast<float>(this->unknown_00BC->geometry.width - this->TextWidth(this->m_context->fonts, this->m_context->locale, LookupMessage(0xDD9), 0, 0, 12, 0, 0)) *
+      g_depthAverageHalf
+    );
+    UIBmpTextButton* button = this->unknown_00BC;
+    const int textY = static_cast<int>(
+      static_cast<float>(button->geometry.height - this->TextHeight(this->m_context->fonts, this->m_context->locale, LookupMessage(0xDD9), 0, 0, 12, 0, 0)) *
+      g_depthAverageHalf
+    );
+    button->AddTextStyle(0, 12, 0x313131, 0, 0, textX, textY);
+    this->unknown_00BC->AddTextStyle(1, 12, 0x313131, 0, 0, textX, textY);
+    this->unknown_00BC->AddTextStyle(2, 12, 0x313131, 0, 1, textX, textY);
+    this->unknown_00BC->AddTextStyle(3, 12, 0xC2C2C2, 0, 0, textX, textY);
+  }
+  this->unknown_00BC->SetText(LookupMessage(0xDD9));
+  this->unknown_00BC->Move(0xA2, 0x1A);
+  this->unknown_00BC->SetId(0xD5);
+  this->AddChild(this->unknown_00BC);
+
+  this->unknown_00C0 = new UIStaticText();
+  this->unknown_00C0->SetSize(0x100, 0x10);
+  this->unknown_00C0->Move(0xAC, 0x19);
+  this->unknown_00C0->SetColor(0xC6, 0x28, 0x28);
+  this->unknown_00C0->SetFont(0, 11, 0, 0);
+  this->unknown_00C0->Show(0);
+  this->AddChild(this->unknown_00C0);
+
+  this->unknown_00C4 = new UIStaticText();
+  this->unknown_00C4->SetSize(0x100, 0x10);
+  this->unknown_00C4->Move(0xAC, 0x25);
+  this->unknown_00C4->SetColor(0xC6, 0x28, 0x28);
+  this->unknown_00C4->SetFont(0, 11, 0, 0);
+  this->unknown_00C4->Show(0);
+  this->AddChild(this->unknown_00C4);
+
+  this->unknown_00C8 = new UIStaticText();
+  this->unknown_00C8->SetSize(0xFD, 0x10);
+  this->unknown_00C8->Move(0xAC, 0x31);
+  this->unknown_00C8->SetColor(0xC6, 0x28, 0x28);
+  this->unknown_00C8->SetFont(0, 11, 0, 0);
+  this->unknown_00C8->Show(0);
+  this->AddChild(this->unknown_00C8);
+
+  this->unknown_00D0 = new UIEditCtrl_Custom();
+  this->unknown_00D0->SetSize(0x9B, 0xE);
+  this->unknown_00D0->Move(6, 0x32);
+  this->unknown_00D0->maximum = 50;
+  this->unknown_00D0->SetText("TITLE");
+  this->AddChild(this->unknown_00D0);
+
+  this->m_contents = new UIRodexEditCtrl3();
+  this->m_contents->SetSize(0x10B, 0xC0);
+  this->m_contents->invalidatesParent = 1;
+  this->m_contents->Move(0xF, 0x51);
+  this->m_contents->maximum = 1000;
+  const bool selected = g_skinInfo.Selected();
+  const SkinPaletteCell cell = {1, 2};
+  const std::uint32_t color = SkinPaletteColor(ResourceMgr::Instance(), cell, selected);
+  this->m_contents->Background(color & 0xFF, (color & 0xFFFF) >> 8, (color >> 16) & 0xFF);
+  this->m_contents->TextColor(0x313131, 0xFFFFFFFF);
+  this->AddChild(this->m_contents);
+  InputFocus focus{g_windowMgr.hoverWindow};
+  focus.Set(this->m_contents);
+  this->m_contents->SetId(0x1EB);
+
+  this->m_zeny = new UIEditCtrl_Currency();
+  this->m_zeny->SetSize(0x54, 0xE);
+  this->m_zeny->invalidatesParent = 0;
+  this->m_zeny->Move(0x2D, 0x15C);
+  this->m_zeny->maximum = 13;
+  this->m_zeny->SetText("0");
+  this->AddChild(this->m_zeny);
+
+  this->unknown_00D8 = new UIBasicButton();
+  this->unknown_00D8->Configure(0x46, LookupMessage(0xDD8));
+  this->unknown_00D8->Move(0xE2, 0x178);
+  this->unknown_00D8->SetId(0x159);
+  this->AddChild(this->unknown_00D8);
 }
