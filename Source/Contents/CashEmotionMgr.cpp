@@ -1734,6 +1734,58 @@ const char* UICashEmotionListChildWnd_Basic::Filter() {
 }
 
 // OFFSET: 0x007C4110
+// FUNCTION: fn_09352
+__declspec(noinline) void UICashEmotionListChildWnd_Basic::Refresh(const char* filter) {
+  for (UIWindow* item : this->m_items) {
+    this->RemoveChild(item, 0);
+  }
+  this->scrollPosition = 0;
+  this->unknown_009C = 0;
+
+  const int packId = g_cashEmotionMgr->BasePackId();
+  std::vector<int> emotions = g_cashEmotionMgr->FindBaseEmotions(filter);
+  int x = 15;
+  int y = 4;
+  std::vector<UIWindow*> recycled(this->m_items);
+  this->m_items.clear();
+
+  CashEmotionTable* table = g_cashEmotionMgr->GetBasePackEmotions();
+  int index = 0;
+  for (int emotionId : emotions) {
+    if (table->find(emotionId) == table->end()) {
+      continue;
+    }
+
+    UICashEmotionPiece* piece;
+    if (!recycled.empty()) {
+      piece = static_cast<UICashEmotionPiece*>(recycled.back());
+      recycled.pop_back();
+    } else {
+      piece = new (std::nothrow) UICashEmotionPiece();
+      if (!piece) {
+        continue;
+      }
+      piece->SetSize(40, 40);
+    }
+
+    piece->Set(packId, emotionId, false, true, false);
+    piece->Move(x, y);
+    this->AddChild(piece);
+    if (index % 5 == 4) {
+      x = 15;
+      y += 47;
+    } else {
+      x += 47;
+    }
+    ++index;
+    this->m_items.push_back(piece);
+  }
+
+  for (UIWindow* item : recycled) {
+    delete item;
+  }
+  this->UpdateScrollBars();
+}
 
 // OFFSET: 0x007C4440
 // FUNCTION: fn_09353
@@ -3992,3 +4044,6 @@ void UISpriteButton::SetSprite(const char* name) {
 }
 
 // OFFSET: 0x0084FE00
+// FUNCTION: fn_10666
+UIHeadsprButton::UIHeadsprButton() : UISpriteButton() {
+}
