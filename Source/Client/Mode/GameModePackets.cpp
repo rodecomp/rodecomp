@@ -9971,3 +9971,64 @@ struct EquipItemNoticePacket {
 static_assert(sizeof(EquipItemNoticePacket) == 7);
 
 // OFFSET: 0x00D50AA0
+
+#include "UI/Guild/UIGuild_Storage_Log.h"
+#include <algorithm>
+
+#pragma pack(push, 1)
+struct MapMovePacket {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ char mapName[16];
+  /* 0012 */ std::int16_t x;
+  /* 0014 */ std::int16_t y;
+};
+
+struct GuildPositionNameEntry {
+  /* 0000 */ int positionId;
+  /* 0004 */ char name[24];
+};
+
+struct GuildPositionNamePacket {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::int16_t length;
+  /* 0004 */ GuildPositionNameEntry entries[1];
+};
+#pragma pack(pop)
+
+static_assert(sizeof(MapMovePacket) == 0x16);
+static_assert(sizeof(GuildPositionNameEntry) == 0x1C);
+
+struct GuildStorageLogItem {
+  /* 0000 */ ITEM_INFO item;
+  /* 00F8 */ unsigned char unknown_00F8;
+};
+
+static_assert(sizeof(GuildStorageLogItem) == 0x100);
+
+// OFFSET: 0x00D3A1E0
+
+// OFFSET: 0x00D50E40
+// FUNCTION: fn_21888
+void CGameMode::ReceiveGuildPositionNames(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const GuildPositionNamePacket*>(data);
+  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  const int count = (packet->length - 4) / sizeof(GuildPositionNameEntry);
+  for (int i = 0; i < count; ++i) {
+    const GuildPositionNameEntry& position = packet->entries[i];
+    char name[25];
+    std::memcpy(name, position.name, sizeof(position.name));
+    name[24] = '\0';
+    if (g_forbiddenWords.Contains(name)) {
+      std::string masked;
+      g_forbiddenWords.Mask(name, &masked);
+    }
+
+    guildInfo->m_positions[position.positionId] = name;
+  }
+
+  g_windowMgr.RefreshGuildWindows();
+}
+
+// OFFSET: 0x00D5A4C0
+
+// OFFSET: 0x00D5B3C0

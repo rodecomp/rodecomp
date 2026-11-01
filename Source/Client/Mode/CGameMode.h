@@ -36,6 +36,7 @@ struct vector3d;
 struct ItemCardSlots;
 struct ItemSlotOptions;
 struct ReputePointEntry;
+struct GuildStorageLogItem;
 
 struct MiniMapMember {
   /* 0000 */ int x;
@@ -777,6 +778,9 @@ public:
   void ReceiveQuestHuntUpdate2(const unsigned char* data);
   void ReceiveGuildMemberExpelled(const unsigned char* data);
   void ReceiveGuildPositionUpdate(const unsigned char* data);
+  void ReceiveGuildPositionNames(const unsigned char* data);
+  void ReceiveMapMove(const unsigned char* data);
+  void ApplyGuildStorageLog(std::uint16_t result, const std::vector<GuildStorageLogItem>& items);
   void ReceiveGuildMemberLeft(const unsigned char* data);
   std::FILE* OpenRandomOptionSimulatorFile(const std::string& folder, const std::string& itemName);
   void ReceiveRandomOptionSimulation(const unsigned char* packet);
