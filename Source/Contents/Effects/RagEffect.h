@@ -17,6 +17,7 @@ struct matrix;
 struct CRagEffect : CRenderObject {
   CRagEffect();
   ~CRagEffect() override;
+  bool OnProcess() override;
 
   void InitEZ2STRFrame();
   void SpawnBlurAfterimage();
