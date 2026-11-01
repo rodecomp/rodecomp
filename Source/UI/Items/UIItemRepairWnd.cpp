@@ -291,12 +291,36 @@ int UIMakeTargetResultWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
 // OFFSET: 0x0099F780
 
 // OFFSET: 0x0099F850
+// FUNCTION: fn_13588
+UIMakeTargetListWnd::UIMakeTargetListWnd(
+  UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, UIListBoxContext& listContext, WindowResponseRecorder& recorder
+)
+    : UIFrameWnd(windows, frames, 0), itemIds() {
+}
 
 // OFFSET: 0x0099F8D0
+// FUNCTION: fn_13589
+UIMakeTargetProcessWnd::UIMakeTargetProcessWnd(
+  UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, WindowResponseRecorder& recorder
+)
+    : UIFrameWnd(windows, frames, 0), materials() {
+}
 
 // OFFSET: 0x0099F950
+// FUNCTION: fn_13590
+UIMakeTargetResultWnd::UIMakeTargetResultWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
+    : UIFrameWnd(windows, frames, 0) {
+  this->succeeded = false;
+  this->makeType = 0;
+}
 
 // OFFSET: 0x0099F9C0
+// FUNCTION: fn_13591
+UIWeaponRefineWnd::UIWeaponRefineWnd(
+  UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, UIListBoxContext& listContext, WindowResponseRecorder& recorder
+)
+    : UIFrameWnd(windows, frames, 0), itemIds(), indices() {
+}
 
 // OFFSET: 0x0099FB70
 // FUNCTION: fn_13592
