@@ -19,6 +19,12 @@ struct CRagEffect : CRenderObject {
   ~CRagEffect() override;
 
   void InitEZ2STRFrame();
+  void SpawnBlurAfterimage();
+  void SpawnHallucinationOnce();
+  void SpawnHallucinationTrail();
+  void SpawnActorHallucination();
+  void SpawnPaleBlur();
+  void SpawnLightBlur();
   bool ProcessEZ2STR(float x, float y, float z);
   __declspec(noinline) void Fireworks();
   bool ProcessEZ2STRC10830();

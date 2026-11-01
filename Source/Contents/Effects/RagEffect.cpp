@@ -26,6 +26,7 @@
 #include "Resource/World/TerrainResource.h"
 #include "Render/Textures/Texture.h"
 #include "Contents/Jobs/JobInheritance.h"
+#include "Contents/Actors/Npc.h"
 #include "Render/TextureQuad.h"
 #include <algorithm>
 #include <bit>
@@ -109,6 +110,31 @@ static void PlayEffectWave(const CRagEffect& effect, const char* name) {
 static std::list<CRenderObject*>& WorldObjects() {
   return static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->objects;
 }
+
+// INLINED
+static int BlendTintChannel(unsigned char tint, float value) {
+  return static_cast<int>(tint + value) >> 1;
+}
+
+// INLINED
+static bool HasTint(const EffectActor& parent) {
+  return reinterpret_cast<const unsigned char&>(parent.render.unknown_0090) != 0;
+}
+
+// INLINED
+static void SetBlendedTint(CRenderObject& target, const EffectActor& parent, const vector3d& color) {
+  const unsigned char* tint = reinterpret_cast<const unsigned char*>(&parent.render.unknown_0094);
+  target.SetColor(-1, BlendTintChannel(tint[1], color.x), BlendTintChannel(tint[2], color.y), BlendTintChannel(tint[3], color.z));
+}
+
+// INLINED
+static void SendAfterimageColor(CGameObject& target, CRagEffect& sender, const vector3d& color) {
+  const int red = static_cast<int>(color.x);
+  const int green = static_cast<int>(color.y);
+  const int blue = static_cast<int>(color.z);
+  target.SendMsg(&sender, 0, 0, red, red >> 31, green, green >> 31, blue, blue >> 31, 0, 0, 0, 0, 0, 0);
+}
+
 
 // GLOBAL: gl_25089
 static int g_statusIconIds[100];
@@ -9889,6 +9915,94 @@ void CRagEffect::MagnumBreak() {
   this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\ring_yellow.tga", 0, false, true, false);
 }
 
+// OFFSET: 0x00C1F130
+// FUNCTION: fn_20081
+void CRagEffect::SpawnBlurAfterimage() {
+  if (HasTint(*this->state.parent)) {
+    SetBlendedTint(*this->state.parent, *this->state.parent, this->render.position);
+    if (this->state.stateCnt == 9998) {
+      this->state.stateCnt = 0;
+    } else if (this->state.stateCnt % 5 != 0) {
+      return;
+    }
+
+    CRenderObject* blur = new CBlurPC(reinterpret_cast<CPc*>(this->state.parent));
+    SetBlendedTint(*blur, *this->state.parent, this->render.position);
+    WorldObjects().push_back(blur);
+    return;
+  }
+
+  this->state.parent->SetColor(
+    -1, static_cast<int>(this->render.position.x), static_cast<int>(this->render.position.y), static_cast<int>(this->render.position.z)
+  );
+  if (this->state.stateCnt == 9998) {
+    this->state.stateCnt = 0;
+  }
+
+  if (this->render.position.x == -1.0f) {
+    const int value = std::rand() % 14 > 0 ? 200 : 250;
+    this->state.parent->SetColor(-1, 250, value, value);
+    return;
+  }
+
+  if (this->render.position.x == -2.0f) {
+    this->state.parent->SetColor(-1, 250, 250, 200);
+    return;
+  }
+
+  if (this->state.duration != 30) {
+    if (this->state.stateCnt % 5 != 0) {
+      return;
+    }
+
+    const std::uint32_t action = this->state.parent->render.unknown_0070;
+    if (action == 0 || action == 10 || action == 6 || action == 11 || action == 13) {
+      return;
+    }
+  }
+
+  CBlurPC* blur = new CBlurPC(reinterpret_cast<CPc*>(this->state.parent));
+  SendAfterimageColor(*blur, *this, this->render.position);
+  CRenderObject* object = blur;
+  WorldObjects().push_back(object);
+}
+
+// OFFSET: 0x00C1F430
+// FUNCTION: fn_20082
+void CRagEffect::SpawnHallucinationOnce() {
+  if (HasTint(*this->state.parent)) {
+    SetBlendedTint(*this->state.parent, *this->state.parent, this->render.position);
+    if (this->state.stateCnt == 9998) {
+      this->state.stateCnt = 0;
+    } else if (this->state.stateCnt != 0) {
+      return;
+    }
+
+    CRenderObject* hallu = new CHalluPC(reinterpret_cast<CPc*>(this->state.parent));
+    SetBlendedTint(*hallu, *this->state.parent, this->render.position);
+    WorldObjects().push_back(hallu);
+    return;
+  }
+
+  this->state.parent->SetColor(
+    -1, static_cast<int>(this->render.position.x), static_cast<int>(this->render.position.y), static_cast<int>(this->render.position.z)
+  );
+  if (this->state.stateCnt == 9998) {
+    this->state.stateCnt = 0;
+  } else if (this->state.stateCnt != 0) {
+    return;
+  }
+
+  CHalluPC* hallu = new CHalluPC(reinterpret_cast<CPc*>(this->state.parent));
+  SendAfterimageColor(*hallu, *this, this->render.position);
+  CRenderObject* object = hallu;
+  WorldObjects().push_back(object);
+}
+
+// OFFSET: 0x00C1F660
+
+// OFFSET: 0x00C1F870
+
 // OFFSET: 0x00C1FE80
 // FUNCTION: fn_20085
 void CRagEffect::NapalmFragments() {
@@ -13728,6 +13842,10 @@ void CRagEffect::TripleRingStack(const char* name, char large) {
 
   this->state.unknown_11C84->slots[3].life = 0;
 }
+// OFFSET: 0x00C5BC90
+
+// OFFSET: 0x00C5BDB0
+
 // OFFSET: 0x00C5BED0
 // FUNCTION: fn_20226
 void CRagEffect::WideTripleRingStack(const char* name) {
