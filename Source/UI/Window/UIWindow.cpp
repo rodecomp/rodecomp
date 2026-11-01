@@ -1649,6 +1649,56 @@ const char* UIWindow::TruncateText(const char* text, int maxBytes) {
   return text;
 }
 
+// OFFSET: 0x00A81FD0
+void UIWindow::WrapTextWithBreaks(const char* text, std::vector<std::string>* lines, std::vector<int>* breaks, int width) {
+  using NextCharacter = const char* (__thiscall*)(InputCharset*, const char*, int);
+  const int totalWidth = this->TextWidth(this->m_context->fonts, this->m_context->locale, text, 0, 0, 12, 0, 0);
+  const int length = static_cast<int>(std::strlen(text));
+  if (totalWidth <= 0) {
+    return;
+  }
+
+  for (int offset = 0; offset < length;) {
+    int bytes = 0;
+    const char* start = text + offset;
+    int lineWidth = 0;
+    const char* end = start + std::strlen(start);
+    if (start >= end) {
+      continue;
+    }
+
+    bool newline = false;
+    const char* current = start;
+    do {
+      const int previous = bytes;
+      const char* next = (*reinterpret_cast<NextCharacter**>(g_serverLanguage))[5](g_serverLanguage, current, static_cast<int>(end - current));
+      const int characterBytes = static_cast<int>(next - current);
+      bytes += characterBytes;
+      lineWidth += this->TextWidth(this->m_context->fonts, this->m_context->locale, current, characterBytes, 0, 12, 0, 0);
+      if (characterBytes == 1 && *current == '\r') {
+        newline = true;
+        ++bytes;
+        break;
+      }
+      if (lineWidth > width) {
+        bytes = previous;
+        break;
+      }
+      current = next;
+    } while (current < end);
+
+    if (bytes > 0) {
+      char* buffer = static_cast<char*>(std::malloc(bytes + 1));
+      std::memcpy(buffer, start, bytes);
+      buffer[bytes] = '\0';
+      lines->push_back(std::string(buffer));
+      std::free(buffer);
+      breaks->emplace_back(newline);
+      offset += bytes;
+    }
+  }
+}
+
 // OFFSET: 0x00A7E120
 // FUNCTION: fn_16959
 std::list<int> UIWindow::WrapFormattedText(std::string text, std::list<std::string>* lines, int maxWidth, int family, int height, unsigned char bold) {
@@ -1931,7 +1981,7 @@ bool UINavigationV4Wnd::ClearRouteTexts() {
     text.clear();
   }
 
-  this->unknown_0104.clear();
+  this->unknown_0104.erase(this->unknown_0104.begin(), this->unknown_0104.end());
   return true;
 }
 
