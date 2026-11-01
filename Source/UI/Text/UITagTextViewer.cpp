@@ -238,3 +238,84 @@ void UITagTextViewer::SetAlign(unsigned char align) {
     break;
   }
 }
+
+#include "Contents/MapSkyMgr.h"
+#include "UI/Text/CreateLineInfo.h"
+
+static void AppendViewerText(std::vector<std::string>& texts, const std::string& text) {
+  struct Layout {
+    std::string* first;
+    std::string* last;
+    std::string* cap;
+  };
+  Layout* view = reinterpret_cast<Layout*>(&texts);
+  if (view->last == view->cap) {
+    const std::size_t count = static_cast<std::size_t>(view->last - view->first);
+    std::size_t capacity = count + count / 2;
+    if (capacity < count + 1) {
+      capacity = count + 1;
+    }
+    std::string* neu = static_cast<std::string*>(::operator new(capacity * sizeof(std::string)));
+    for (std::size_t i = 0; i < count; ++i) {
+      new (neu + i) std::string(view->first[i]);
+    }
+    for (std::size_t i = 0; i < count; ++i) {
+      view->first[i].~basic_string();
+    }
+    ::operator delete(view->first);
+    view->first = neu;
+    view->last = neu + count;
+    view->cap = neu + capacity;
+  }
+  new (view->last) std::string(text);
+  ++view->last;
+}
+
+// OFFSET: 0x0083E870
+
+// OFFSET: 0x0083F5E0
+// FUNCTION: fn_10533
+void UITagTextViewer::Layout() {
+  std::string joined;
+  for (std::vector<std::string>::iterator it = this->m_texts.begin(); it != this->m_texts.end(); ++it) {
+    joined += *it;
+    std::vector<std::string>::iterator next = it;
+    ++next;
+    if (next != this->m_texts.end()) {
+      joined += "\n";
+    }
+  }
+
+  reinterpret_cast<void (__thiscall*)(UITagTextViewer*)>((*reinterpret_cast<void***>(this))[53])(this);
+  AppendViewerText(this->m_texts, joined);
+  if (this->m_textWidth == 0) {
+    this->m_textWidth = this->geometry.width - this->m_margin - 0xD;
+  }
+
+  const LineFontFlags flags = {this->m_font.bold != 0, this->m_font.italic != 0};
+  CCreateLineInfo info(
+    this, joined.c_str(), this->m_textWidth, this->m_lineSpacing, this->m_font.color, this->m_font.height, flags, this->m_outlined != 0, this->m_outlineColor,
+    false, 0xFFFFFF, this->m_horizontalAlign
+  );
+
+  int offset = this->m_topMargin < 0 ? 0 : this->m_topMargin;
+  const unsigned int content = static_cast<unsigned int>(this->m_topMargin) + static_cast<unsigned int>(info.m_height);
+  if (static_cast<unsigned int>(this->geometry.height) > content) {
+    if (this->m_verticalAlign == 5) {
+      offset = this->geometry.height - this->m_topMargin - info.m_height;
+    } else if (this->m_verticalAlign == 4) {
+      offset = static_cast<int>(static_cast<float>(static_cast<unsigned int>(this->geometry.height - info.m_height)) * g_depthAverageHalf);
+    }
+  }
+
+  const std::vector<std::vector<UIWindow*>> lines = info.m_lines;
+  for (std::vector<UIWindow*> line : lines) {
+    for (UIWindow* window : line) {
+      window->Move(window->geometry.x + this->m_margin, window->geometry.y + offset);
+      this->AddChild(window);
+      this->StorePosition(window);
+    }
+  }
+
+  this->UpdateScroll();
+}
