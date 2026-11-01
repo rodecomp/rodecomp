@@ -56,7 +56,7 @@ class CGameActor : public EffectActor {
 public:
   CGameActor();
   ~CGameActor() override;
-  bool OnProcess() override;
+  bool OnProcess() override = 0;
   void SendMsg(CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m) override;
 
   /* 0158 */ int unknown_0158[6];
@@ -157,22 +157,8 @@ public:
   void SetRenderInfo(const float* bounds, float x, float y) override;
   void SetAction(unsigned animation, int motion, int repeat) override;
 
-  virtual bool Slot09(
-    int layer, int index, float distanceScale, const SpriteFrameCell& cell, float x, float y, const float* position, float scale,
-    float* bottomRhw, float* topRhw, const SpriteRleImage* image, SpriteQuad* quad, int* box, std::uint32_t* color, int offsetX, int offsetY,
-    int flags
-  );
-  virtual void Slot10(
-    const SpriteFrameCell* cell, const int* box, float shiftX, float bottomRhw, float topRhw, const std::uint32_t* palette,
-    const SpriteRleImage* image, float scale, short hover
-  );
-  virtual void Slot11(
-    SpriteQuad* quad, const SpriteFrameCell* cell, const int* box, float shiftX, float bottomRhw, float topRhw,
-    const std::uint32_t* palette, const SpriteRleImage* image, int blend, short hover
-  );
-  virtual void Slot12(SpriteQuad* quad, const int* box, float shiftX, int first, int second);
   virtual std::uint32_t Slot13();
-  virtual bool Slot14() = 0;
+  virtual bool Slot14();
   virtual void Slot15(int first, int second);
   virtual void Slot16();
   virtual void Slot17();
@@ -187,11 +173,11 @@ public:
   virtual void Slot26(int value);
   virtual void Slot27(int value);
   virtual void Slot28(int value);
-  virtual void Slot29(int value) = 0;
+  virtual void Slot29(int value) {}
   virtual void Slot30();
   virtual void Slot31();
-  virtual void Slot32() = 0;
-  virtual void Slot33(int value) = 0;
+  virtual void Slot32();
+  virtual void Slot33(int value);
   virtual void Slot34(int value);
   virtual std::int64_t Slot35();
   virtual void Slot36();
@@ -276,9 +262,7 @@ public:
   void ProcessViewCheck();
   void ProcessActorEffects();
   void ProcessDamageMessages();
-  void UpdateMotionFrame();
   void UpdateDamageMessages();
-  void UpdateWorldCell();
   void ProcessHitMessage(CGameObject* sender, const ActorHitInfo* info, int unused1, int unused2);
   int GetEffectCounter(int effectId);
   float GetNameOffset();

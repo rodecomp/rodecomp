@@ -103,7 +103,7 @@ void CGameActor::ProcessDamageMessages() {
 
 // OFFSET: 0x00CB2040
 // FUNCTION: fn_21100
-void CGameActor::UpdateWorldCell() {
+void CGameActor::Slot16() {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   int column;
   int row;
@@ -707,7 +707,7 @@ void CGameActor::UpdateHpGauge() {
 
 // OFFSET: 0x00CB0A90
 // FUNCTION: fn_21095
-void CGameActor::UpdateMotionFrame() {
+void CGameActor::Slot36() {
   const int frames = static_cast<int>(this->render.action->FrameCount(this->render.previousAnimation));
   this->render.curMotion = static_cast<int>(this->unknown_0240 * 0.37f * 4.0f / this->render.speed) % frames;
 }

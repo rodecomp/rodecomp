@@ -5184,7 +5184,7 @@ bool CGrannyPc::Slot14() {
     return true;
   }
   default:
-    return CGameActor::OnProcess();
+    return CGameActor::Slot14();
   }
 }
 
@@ -5264,6 +5264,6 @@ bool CPc::Slot14() {
     }
     return true;
   default:
-    return CGameActor::OnProcess();
+    return CGameActor::Slot14();
   }
 }

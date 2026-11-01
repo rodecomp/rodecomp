@@ -38,14 +38,24 @@ public:
   virtual void SetTlvert(float x, float y);
   virtual void SetAction(unsigned animation, int motion, int repeat);
   virtual void Slot08();
+  virtual bool Slot09(
+    int layer, int index, float distanceScale, const SpriteFrameCell& cell, float x, float y, const float* position, float scale,
+    float* bottomRhw, float* topRhw, const SpriteRleImage* image, SpriteQuad* quad, int* box, std::uint32_t* color, int offsetX, int offsetY,
+    int flags
+  );
+  virtual void Slot10(
+    const SpriteFrameCell* cell, const int* box, float shiftX, float bottomRhw, float topRhw, const std::uint32_t* palette,
+    const SpriteRleImage* image, float scale, short hover
+  );
+  virtual void Slot11(
+    SpriteQuad* quad, const SpriteFrameCell* cell, const int* box, float shiftX, float bottomRhw, float topRhw,
+    const std::uint32_t* palette, const SpriteRleImage* image, int blend, short hover
+  );
+  virtual void Slot12(SpriteQuad* quad, const int* box, float shiftX, int first, int second);
   static float __stdcall Heading(float x, float z, float targetX, float targetZ);
   void Face(float x, float z);
   float CalcDist(float x, float z) const;
   float CalcDist(float x, float y, float z) const;
-  bool ProjectCell(
-    int unused, int layer, float scale, const SpriteFrameCell& cell, float x, float y, const float* position, float shift, float& bottomDepth,
-    float& topDepth, const SpriteRleImage& image, SpriteCellQuad& quad, tagRECT& bounds, SpriteColor& color, int offsetX, int offsetY, int flags
-  );
   bool GetTargetPos(std::uint32_t targetAid, vector3d& targetPos) const;
   void UpdateTlvertex(const float* matrix);
   void SetAnimationSpeed(float speed);
@@ -71,15 +81,6 @@ public:
   int HoverHeight();
   void ScaleByPulse(float& scale) const;
   void ScaleByFadePulse(float& scale) const;
-  void DrawBlurCopies(
-    const SpriteFrameCell& cell, const int* box, float offset, float bottomRhw, float topRhw, const std::uint32_t* palette,
-    const SpriteRleImage* image, float scale, short shift
-  );
-  void JitterBounds(float* output, const int* input, float offset, int spread, int base);
-  void DrawJitterTrail(
-    SpriteQuad& quad, const SpriteFrameCell& cell, const int* box, float offset, float bottomRhw, float topRhw,
-    const std::uint32_t* palette, const SpriteRleImage* image, int blend, short shift
-  );
   void DrawPulseOutline(
     const SpriteFrameCell& cell, const int* box, float offset, float bottomRhw, float topRhw,
     const std::uint32_t* palette, const SpriteRleImage* image, std::uint32_t color

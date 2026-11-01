@@ -1799,8 +1799,8 @@ void CGameActor::Slot15(int state, int resetPosition) {
 
 // OFFSET: 0x00CA9E50
 // FUNCTION: fn_21013
-void CRenderObject::DrawBlurCopies(
-  const SpriteFrameCell& cell, const int* box, float offset, float bottomRhw, float topRhw, const std::uint32_t* palette,
+void CRenderObject::Slot10(
+  const SpriteFrameCell* cell, const int* box, float offset, float bottomRhw, float topRhw, const std::uint32_t* palette,
   const SpriteRleImage* image, float scale, short shift
 ) {
   if ((this->render.flags & 0x1000) == 0) {
@@ -1848,14 +1848,14 @@ void CRenderObject::DrawBlurCopies(
     quad.bottom -= static_cast<float>(shift);
     quad.bottomRhw = bottomRhw;
     quad.topRhw = topRhw;
-    quad.angle = static_cast<float>(cell.unknown_001C + static_cast<int>(this->render.unknown_007C));
+    quad.angle = static_cast<float>(cell->unknown_001C + static_cast<int>(this->render.unknown_007C));
     this->DrawQuad(quad, palette, 0x201, 0.0f, 0.0f, 0);
   }
 }
 
 // OFFSET: 0x00CAA1F0
 // FUNCTION: fn_21015
-void CRenderObject::JitterBounds(float* output, const int* input, float offset, int spread, int base) {
+void CRenderObject::Slot12(SpriteQuad* quad, const int* input, float offset, int spread, int base) {
   if ((this->render.flags & 0x2000) == 0) {
     return;
   }
@@ -1874,16 +1874,16 @@ void CRenderObject::JitterBounds(float* output, const int* input, float offset, 
     jitter[index] = 400.0f / mode->camera->camera.desiredDistance * static_cast<float>(value - base);
   }
 
-  output[0] = static_cast<float>(input[1]) + jitter[0];
-  output[2] = static_cast<float>(input[3]) + jitter[1];
-  output[1] = static_cast<float>(input[0]) + offset + jitter[2];
-  output[3] = static_cast<float>(input[2]) + offset + jitter[3];
+  quad->top = static_cast<float>(input[1]) + jitter[0];
+  quad->bottom = static_cast<float>(input[3]) + jitter[1];
+  quad->left = static_cast<float>(input[0]) + offset + jitter[2];
+  quad->right = static_cast<float>(input[2]) + offset + jitter[3];
 }
 
 // OFFSET: 0x00CAA2E0
 // FUNCTION: fn_21016
-void CRenderObject::DrawJitterTrail(
-  SpriteQuad& quad, const SpriteFrameCell& cell, const int* box, float offset, float bottomRhw, float topRhw,
+void CRenderObject::Slot11(
+  SpriteQuad* quad, const SpriteFrameCell* cell, const int* box, float offset, float bottomRhw, float topRhw,
   const std::uint32_t* palette, const SpriteRleImage* image, int blend, short shift
 ) {
   if ((this->render.flags & 0x200) == 0) {
@@ -1924,13 +1924,13 @@ void CRenderObject::DrawJitterTrail(
     trail.color = (static_cast<short>(alpha) << 24) + 0xFFFFFF;
     trail.bottomRhw = bottomRhw - spread * 0.000005f - 0.00001f;
     trail.topRhw = topRhw - spread * 0.000005f - 0.00001f;
-    trail.angle = static_cast<float>(static_cast<int>(this->render.unknown_007C) + cell.unknown_001C);
+    trail.angle = static_cast<float>(static_cast<int>(this->render.unknown_007C) + cell->unknown_001C);
     if (blend != 5) {
       this->DrawQuad(trail, palette, blend, 0.0f, 0.0f, 0);
     }
   }
 
-  quad.color = 0x96FFFFFF;
+  quad->color = 0x96FFFFFF;
 }
 
 // OFFSET: 0x00CAA0A0
@@ -5368,4 +5368,14 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
   if (this->render.accountId == g_session.m_aid && g_statusRefreshSuppressed == 0) {
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->ReapplySkillEffects();
   }
+}
+
+// OFFSET: 0x005A1950
+// FUNCTION: fn_45475
+void CGameActor::Slot32() {
+}
+
+// OFFSET: 0x005A1940
+// FUNCTION: fn_45476
+void CGameActor::Slot33(int) {
 }

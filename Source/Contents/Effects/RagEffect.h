@@ -338,10 +338,6 @@ struct CRagEffect : CRenderObject {
   void TorchDust(char kind);
 
   virtual void Slot08();
-  virtual void Slot09(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh, int twelfth, int thirteenth, int fourteenth, int fifteenth, int sixteenth, int seventeenth);
-  virtual void Slot10(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth);
-  virtual void Slot11(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth);
-  virtual void Slot12(int first, int second, int third, int fourth, int fifth);
   virtual void Slot13();
   virtual bool Slot14();
   virtual void Slot15();
