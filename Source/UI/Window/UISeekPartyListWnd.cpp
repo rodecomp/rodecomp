@@ -40,6 +40,213 @@ struct PACKET_CZ_PARTY_BOOKING_REQ_SEARCH {
 std::map<int, PartyBookingEntry> g_friendRows;
 
 // OFFSET: 0x00925D70
+// FUNCTION: fn_12649
+void UISeekPartyListWnd::Slot15(int width, int height) {
+  std::string label;
+
+  {
+    std::string title(LookupMessage(0x699));
+    this->m_title = new UIStaticText(*this->m_context, *this->m_controls);
+    this->m_title->SetSize(this->geometry.width - 0x20, 0xF);
+    this->m_title->SetTextFitted(title.c_str());
+    this->m_title->Move(0x10, 2);
+    this->m_title->shadow = 1;
+    this->AddChild(this->m_title);
+  }
+
+  this->AddCloseButton(*this->m_controls, "", 0);
+  this->AddMinimizeButton(*this->m_controls, "", 0);
+
+  label = "LEVEL";
+  this->m_levelLabel = new UIStaticText(*this->m_context, *this->m_controls);
+  this->m_levelLabel->SetSize(this->geometry.width - 10, 0x1E);
+  this->m_levelLabel->SetText(label.c_str(), 1);
+  this->m_levelLabel->Move(10, 0x17);
+  this->m_levelLabel->shadow = 1;
+  this->AddChild(this->m_levelLabel);
+
+  this->m_searchEdit = new UIEditCtrl(*this->m_context, *this->m_editContext);
+  this->m_searchEdit->SetSize(0x28, 0x10);
+  this->m_searchEdit->Move(0x32, 0x14);
+  this->m_searchEdit->maximum = 5;
+  this->m_searchEdit->Background(0xE8, 0xE8, 0xE8);
+  this->m_searchEdit->Border(0x64, 0x64, 0x64);
+  this->m_searchEdit->flat = 0;
+  this->AddChild(this->m_searchEdit);
+
+  label = "MAP";
+  this->m_mapLabel = new UIStaticText(*this->m_context, *this->m_controls);
+  this->m_mapLabel->SetSize(this->geometry.width - 10, 0x1E);
+  this->m_mapLabel->SetText(label.c_str(), 1);
+  this->m_mapLabel->Move(10, 0x2D);
+  this->m_mapLabel->shadow = 1;
+  this->AddChild(this->m_mapLabel);
+
+  label = "JOB";
+  this->m_jobLabel = new UIStaticText(*this->m_context, *this->m_controls);
+  this->m_jobLabel->SetSize(this->geometry.width - 10, 0x1E);
+  this->m_jobLabel->SetText(label.c_str(), 1);
+  this->m_jobLabel->Move(10, 0x46);
+  this->m_jobLabel->shadow = 1;
+  this->AddChild(this->m_jobLabel);
+
+  label = LookupMessage(0x72A);
+  this->m_footerText = new UIStaticText(*this->m_context, *this->m_controls);
+  this->m_footerText->SetSize(this->geometry.width - 10, 0x1E);
+  this->m_footerText->SetText(label.c_str(), 0);
+  this->m_footerText->Move(100, this->geometry.height - 0x14);
+  this->AddChild(this->m_footerText);
+
+  this->m_filterLabel0 = new UIStaticText(*this->m_context, *this->m_controls);
+  this->m_filterLabel0->SetSize(0x32, 0x14);
+  this->m_filterLabel0->SetText(LookupMessage(0x6A1), 0);
+  this->m_filterLabel0->Move(0x21, 0x68);
+  this->AddChild(this->m_filterLabel0);
+
+  this->m_filterLabel1 = new UIStaticText(*this->m_context, *this->m_controls);
+  this->m_filterLabel1->SetSize(0x32, 0x14);
+  this->m_filterLabel1->SetText(LookupMessage(0x197), 0);
+  this->m_filterLabel1->Move(0x6A, 0x68);
+  this->AddChild(this->m_filterLabel1);
+
+  this->m_filterLabel2 = new UIStaticText(*this->m_context, *this->m_controls);
+  this->m_filterLabel2->SetSize(0x32, 0x14);
+  this->m_filterLabel2->SetText(LookupMessage(0x198), 0);
+  this->m_filterLabel2->Move(0xDC, 0x68);
+  this->AddChild(this->m_filterLabel2);
+
+  this->m_filterLabel3 = new UIStaticText(*this->m_context, *this->m_controls);
+  this->m_filterLabel3->SetSize(0x32, 0x14);
+  this->m_filterLabel3->SetText(LookupMessage(0x6A2), 0);
+  this->m_filterLabel3->Move(0x16D, 0x68);
+  this->AddChild(this->m_filterLabel3);
+
+  this->m_scrollBar = new UIScrollBar(*this->m_context);
+  this->m_scrollBar->Configure(0x203, 0x78, 1, 200);
+  this->AddChild(this->m_scrollBar);
+
+  this->m_jobCategoryCombo = new UIComboBoxDefWnd(*this->m_context, *this->m_comboContext);
+  this->m_jobCategoryCombo->dropdownHeight = 0x50;
+  this->m_jobCategoryCombo->SetSize(0x96, 0x12);
+  this->m_jobCategoryCombo->Move(0x32, 0x44);
+  this->m_jobCategoryCombo->borderRed = 0x64;
+  this->m_jobCategoryCombo->borderGreen = 0x64;
+  this->m_jobCategoryCombo->borderBlue = 0x64;
+  this->m_jobCategoryCombo->red = 0xE8;
+  this->m_jobCategoryCombo->green = 0xE8;
+  this->m_jobCategoryCombo->blue = 0xE8;
+  this->AddChild(this->m_jobCategoryCombo);
+
+  this->m_jobCombo = new UIComboBoxDefWnd(*this->m_context, *this->m_comboContext);
+  this->m_jobCombo->dropdownHeight = 0x50;
+  this->m_jobCombo->SetSize(200, 0x12);
+  this->m_jobCombo->Move(0xDC, 0x44);
+  this->m_jobCombo->borderRed = 0x64;
+  this->m_jobCombo->borderGreen = 0x64;
+  this->m_jobCombo->borderBlue = 0x64;
+  this->m_jobCombo->red = 0xE8;
+  this->m_jobCombo->green = 0xE8;
+  this->m_jobCombo->blue = 0xE8;
+  this->AddChild(this->m_jobCombo);
+
+  this->m_regionCombo = new UIComboBoxDefWnd(*this->m_context, *this->m_comboContext);
+  this->m_regionCombo->dropdownHeight = 0x50;
+  this->m_regionCombo->SetSize(0x96, 0x12);
+  this->m_regionCombo->Move(0x32, 0x2B);
+  this->m_regionCombo->borderRed = 0x64;
+  this->m_regionCombo->borderGreen = 0x64;
+  this->m_regionCombo->borderBlue = 0x64;
+  this->m_regionCombo->red = 0xE8;
+  this->m_regionCombo->green = 0xE8;
+  this->m_regionCombo->blue = 0xE8;
+  this->AddChild(this->m_regionCombo);
+
+  this->m_mapCombo = new UIComboBoxDefWnd(*this->m_context, *this->m_comboContext);
+  this->m_mapCombo->dropdownHeight = 0x50;
+  this->m_mapCombo->SetSize(200, 0x12);
+  this->m_mapCombo->Move(0xDC, 0x2B);
+  this->m_mapCombo->borderRed = 0x64;
+  this->m_mapCombo->borderGreen = 0x64;
+  this->m_mapCombo->borderBlue = 0x64;
+  this->m_mapCombo->red = 0xE8;
+  this->m_mapCombo->green = 0xE8;
+  this->m_mapCombo->blue = 0xE8;
+  this->AddChild(this->m_mapCombo);
+
+  this->m_alarmCheck = new UICheckBox(*this->m_context, *this->m_controls);
+  this->m_alarmCheck->SetSize(0x3C, 0x14);
+  this->m_alarmCheck->SetSize(100, 0xC);
+  this->m_alarmCheck->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(0x69E));
+  this->m_alarmCheck->Move(0x1AE, 0x2B);
+  this->m_alarmCheck->SetChecked(g_session.m_partyBooking.m_alarm);
+  this->AddChild(this->m_alarmCheck);
+
+  {
+    std::string path = "유저인터페이스\\";
+    this->m_okButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+    this->m_okButton->SetBitmap((path + "btn_ok" + ".bmp").c_str(), 0, 0);
+    this->m_okButton->SetBitmap((path + "btn_ok_a" + ".bmp").c_str(), 1, 0);
+    this->m_okButton->SetBitmap((path + "btn_ok_b" + ".bmp").c_str(), 2, 0);
+    this->m_okButton->SetSize(this->m_okButton->BitmapWidth(), this->m_okButton->BitmapHeight());
+    this->m_okButton->Move(this->geometry.width - 0x2D, this->geometry.height - 0x18);
+    this->m_okButton->SetId(0xC9);
+    this->AddChild(this->m_okButton);
+  }
+
+  {
+    std::string path = "유저인터페이스\\";
+    this->m_findButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+    this->m_findButton->SetBitmap((path + "btn_find" + ".bmp").c_str(), 0, 0);
+    this->m_findButton->SetBitmap((path + "btn_find_a" + ".bmp").c_str(), 1, 0);
+    this->m_findButton->SetBitmap((path + "btn_find_b" + ".bmp").c_str(), 2, 0);
+    this->m_findButton->SetSize(this->m_findButton->BitmapWidth(), this->m_findButton->BitmapHeight());
+    this->m_findButton->Move(0x1E0, 0x25);
+    this->m_findButton->SetId(0x16D);
+    this->AddChild(this->m_findButton);
+  }
+
+  {
+    std::string path = "유저인터페이스\\basic_interface\\";
+    this->m_chatButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+    this->m_chatButton->SetBitmap((path + "direct_chat" + ".bmp").c_str(), 0, 0);
+    this->m_chatButton->SetBitmap((path + "direct_chat" + ".bmp").c_str(), 1, 0);
+    this->m_chatButton->SetBitmap((path + "direct_chat" + ".bmp").c_str(), 2, 0);
+    this->m_chatButton->SetSize(this->m_chatButton->BitmapWidth(), this->m_chatButton->BitmapHeight());
+    this->m_chatButton->Move(0x46, this->geometry.height - 0x18);
+    this->m_chatButton->SetId(0x17D);
+    this->AddChild(this->m_chatButton);
+  }
+
+  this->m_refreshButton = new UITextButton(*this->m_context, *this->m_controls);
+  this->m_refreshButton->Configure(LookupMessage(0x6E3), 0, 0, 0xC, 0, 0);
+  this->m_refreshButton->m_hoverColor = 0xEFB700;
+  this->m_refreshButton->SetTooltip(LookupMessage(0x6E4));
+  this->m_refreshButton->Move(10, this->geometry.height - 0x16);
+  this->m_refreshButton->SetId(0x17A);
+  this->AddChild(this->m_refreshButton);
+
+  {
+    std::string path = "유저인터페이스\\battle_field\\btn_help";
+    this->m_tabButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+    this->m_tabButton->SetBitmap((path + ".bmp").c_str(), 0, 0);
+    this->m_tabButton->SetBitmap((path + "_a.bmp").c_str(), 1, 0);
+    this->m_tabButton->SetBitmap((path + "_b.bmp").c_str(), 2, 0);
+    this->m_tabButton->SetSize(this->m_tabButton->BitmapWidth(), this->m_tabButton->BitmapHeight());
+    this->m_tabButton->Move(this->geometry.width - 0x6E, this->geometry.height - 0x18);
+    this->m_tabButton->SetId(0x157);
+    this->AddChild(this->m_tabButton);
+  }
+
+  this->m_firstRow = 0;
+  this->m_hoverIndex = -1;
+  this->m_columnCount = 1;
+  this->m_visibleRows = 5;
+  this->m_scrollable = 0;
+  this->unknown_01B4 = 0;
+  this->InitRegionFilter();
+  this->InitJobFilter();
+  this->UpdateScrollBar();
+}
 
 // OFFSET: 0x009393E0
 // FUNCTION: fn_12755

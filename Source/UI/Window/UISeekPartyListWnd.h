@@ -17,6 +17,9 @@ class UIScrollBar;
 class UIStaticText;
 class UITextButton;
 struct SeekPartyListWndInfo;
+struct UIButtonContext;
+struct UIComboBoxHeaderContext;
+struct UIEditContext;
 
 extern std::map<int, PartyBookingEntry> g_friendRows;
 
@@ -88,6 +91,10 @@ protected:
   /* 01C8 */ short m_filterJob;
   /* 01CA */ unsigned char unknown_01CA[6];
   /* 01D0 */ SeekPartyListWndInfo* m_saved;
+  UIStaticText* m_footerText;
+  UIButtonContext* m_controls;
+  UIEditContext* m_editContext;
+  UIComboBoxHeaderContext* m_comboContext;
 };
 
 #endif
