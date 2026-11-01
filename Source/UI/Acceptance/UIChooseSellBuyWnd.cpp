@@ -607,8 +607,99 @@ void UIMinimapZoomWnd::Slot15(int, int) {
 }
 
 // OFFSET: 0x008FF130
+// FUNCTION: fn_12357
+int UIMinimapZoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  if (message != 6) {
+    return this->UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+
+  switch (argument1) {
+  case 189:
+    if (!g_session.IsNavigationAllowed()) {
+      reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2767), 0, true, false, 0, "Message", 280, 120, 0);
+    } else if (!g_windowMgr.CloseWindow(273)) {
+      g_windowMgr.sub_A978D0(273);
+    }
+    return 0;
+  case 216:
+    g_windowMgr.unknown_0050 += (g_windowMgr.unknown_0050 / 3.0f + g_windowMgr.unknown_0050) * 0.25f;
+    if (g_windowMgr.unknown_0050 > 4.0f) {
+      g_windowMgr.unknown_0050 = 4.0f;
+    }
+    return 0;
+  case 217:
+    g_windowMgr.unknown_0050 -= g_windowMgr.unknown_0050 * 0.25f;
+    if (g_windowMgr.unknown_0050 < 1.0f) {
+      g_windowMgr.unknown_0050 = 1.0f;
+    }
+    return 0;
+  case 452:
+    g_windowMgr.unknown_0054 = g_windowMgr.unknown_0054 == 0;
+    for (auto it = this->m_zoom.begin(); it != this->m_zoom.end(); ++it) {
+      static_cast<UIButton*>(it->second)->Enable(g_windowMgr.unknown_0054);
+    }
+    this->Invalidate();
+    return 0;
+  case 453: {
+    const auto it = this->m_zoom.find(static_cast<int>(argument2));
+    if (it != this->m_zoom.end()) {
+      static_cast<UIButton*>(it->second)->Enable(1);
+      it->second->Move(static_cast<int>(argument3) - this->geometry.x, static_cast<int>(argument4) - this->geometry.y);
+    }
+    this->Invalidate();
+    return 0;
+  }
+  case 454:
+    if (!g_windowMgr.CloseWindow(140)) {
+      g_windowMgr.sub_A978D0(140);
+    }
+    return 0;
+  case 455: {
+    const auto it = this->m_zoom.find(static_cast<int>(argument2));
+    if (it != this->m_zoom.end()) {
+      static_cast<UIButton*>(it->second)->Enable(0);
+    }
+    this->Invalidate();
+    return 0;
+  }
+  case 502: {
+    const unsigned char enabled = g_serviceOptions.Get(223);
+    const auto& buttons = *reinterpret_cast<std::vector<UIWindow*>*>(&this->unknown_00BC);
+    for (auto it = buttons.begin(); it != buttons.end(); ++it) {
+      static_cast<UIButton*>(*it)->Enable(enabled);
+    }
+    this->Invalidate();
+    break;
+  }
+  }
+
+  std::string mapName = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->MapName();
+  TownInfo town = g_townInfoMgr->GetTownInfo(mapName.c_str(), static_cast<unsigned int>(argument1 - 1000));
+  if (!town.image.empty()) {
+    const std::size_t extension = mapName.find_first_of(".");
+    if (extension != std::string::npos) {
+      mapName = mapName.substr(0, extension);
+    }
+    g_navigationManager.sub_B99030(mapName.c_str(), 0, 5, true, town.x, town.y, 1002);
+  }
+  return 0;
+}
 
 // OFFSET: 0x0090C020
+// FUNCTION: fn_12437
+void UIMinimapZoomWnd::AddTownButton(int index, TownInfo town) {
+  UIBitmapButton* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+  button->SetBitmap(town.image.c_str(), 0, 0);
+  button->SetBitmap(town.image.c_str(), 1, 0);
+  button->SetBitmap(town.image.c_str(), 2, 0);
+  button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+  button->Move(0, 0);
+  button->Enable(0);
+  button->SetId(index + 1000);
+  button->SetTooltip(town.name.c_str());
+  this->AddChild(button);
+  this->m_zoom.insert(std::make_pair(index, static_cast<UIWindow*>(button)));
+}
 
 // OFFSET: 0x008EF1A0
 // FUNCTION: fn_12232
@@ -776,6 +867,84 @@ int UINpcEditDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
 }
 
 // OFFSET: 0x008FFD70
+// FUNCTION: fn_12366
+int UINpcTextEditDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  if (message != 6) {
+    if (g_linkInputOwner) {
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2730)), 0x64FFFF, 0, 0, 0);
+      return 0;
+    }
+
+    if (message == 28) {
+      this->unknown_00B8 = static_cast<int>(argument1);
+      return 0;
+    }
+
+    return this->UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+
+  Replay& replay = Replay::Instance();
+  ReplayPacketRecorder packets = {
+    g_packetLengths,
+    replay.baseFrame,
+    replay.started,
+    replay.frame,
+    replay.header.key0,
+    replay.header.key1,
+    replay.header.options.recordRestricted,
+    replay.file,
+    replay.fileOffset,
+    replay.records,
+    replay.cipherIndex,
+    replay.cipherBase,
+    replay.cipherKey,
+  };
+  WindowResponseRecorder recorder{replay.state, packets};
+  recorder.Record(this->geometry.id, static_cast<int>(argument1), argument2, argument3, argument4);
+  if (Replay::Instance().state == 7) {
+    this->edit->SetText("임시");
+  }
+
+  if (argument1 != 184 || !this->edit->Length()) {
+    return 0;
+  }
+
+  std::string text(this->edit->Text());
+  const std::size_t newline = text.find('\n');
+  if (newline != std::string::npos) {
+    text = text.substr(0, newline);
+    this->edit->SetText(text.c_str());
+  }
+
+  if (!g_forbiddenWords.Allows(this->edit->Text())) {
+    this->edit->TextColor(RGB(255, 0, 0), 0xFFFFFFFF);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(14)), 0xFF, 0, 0, 0);
+    return 0;
+  }
+
+  CMode* mode = static_cast<CMode*>(g_charViewMode);
+  if (g_navigationLinkParser->HasLink(std::string(this->edit->Text()))
+      || (!this->edit->LinkedText().empty() && this->m_tagCtrl && !this->m_tagCtrl->unknown_0140.empty())) {
+    this->edit->SetText("");
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3042)), 0xFF, 0, 0, 0);
+    return 0;
+  }
+
+  if (!this->edit->LinkedText().empty()) {
+    mode->SendMsg(164, this->unknown_00B8, reinterpret_cast<int>(this->edit->Text()), reinterpret_cast<int>(this->edit->LinkedText().c_str()), 0);
+  } else if (this->m_tagCtrl && !this->m_tagCtrl->unknown_0140.empty()) {
+    if (g_navigationLinkParser->HasUnownedItemLink(std::string(this->m_tagCtrl->unknown_0140.c_str())) == true) {
+      this->edit->SetText("");
+      return 0;
+    }
+    mode->SendMsg(164, this->unknown_00B8, reinterpret_cast<int>(this->edit->Text()), reinterpret_cast<int>(this->m_tagCtrl->unknown_0140.c_str()), 0);
+  } else {
+    mode->SendMsg(164, this->unknown_00B8, reinterpret_cast<int>(this->edit->Text()), 0, 0);
+  }
+
+  g_windowMgr.CloseWindow(100);
+  return 0;
+}
 
 // OFFSET: 0x008EF9A0
 // FUNCTION: fn_12239
