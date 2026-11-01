@@ -175,10 +175,19 @@ struct SessionItemLists {
 // OFFSET: 0x0063AAE0
 // FUNCTION: fn_04778
 CStoveMgr::CStoveMgr()
-    : vtable(nullptr), m_initialized(false), unknown_0008(0), m_environment(1), unknown_0010(0), unknown_0014(0), unknown_0018(), m_accessToken{},
+    : m_initialized(false), unknown_0008(0), m_environment(1), unknown_0010(0), unknown_0014(0), unknown_0018(), m_accessToken{},
       m_memberNumber{}, m_gameUserId{}, unknown_02B8() {
-  this->vtable = reinterpret_cast<void*>(0x0110C63C);
   this->Initialize();
+}
+
+CStoveMgr::~CStoveMgr() {
+  if (this->m_initialized) {
+    Stove::PCSDK::Result result = IAP_UnInitialize();
+    result.IsSuccessful();
+    result = Base_UnInitialize();
+    result.IsSuccessful();
+    this->m_initialized = false;
+  }
 }
 
 // GLOBAL: gl_24905

@@ -943,8 +943,7 @@ void ShutdownManagers() {
   CThemidaMgr::Destroy();
 
   if (g_launchPassCommandLine && g_stoveMgr != nullptr) {
-    typedef void(__thiscall * DeletingDestructor)(CStoveMgr*, unsigned char);
-    (*reinterpret_cast<DeletingDestructor**>(g_stoveMgr))[0](g_stoveMgr, 1);
+    delete g_stoveMgr;
     g_stoveMgr = nullptr;
   }
 

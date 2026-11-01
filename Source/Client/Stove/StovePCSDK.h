@@ -6,6 +6,7 @@
 namespace Stove::PCSDK {
   struct __declspec(dllimport) Result {
     ~Result();
+    Result& operator=(const Result& other);
 
     bool IsSuccessful() const;
 
@@ -146,6 +147,8 @@ bool Base_RestartAppIfNecessary(const Stove::PCSDK::Base::StovePCInitializeParam
 void Base_Initialize(const Stove::PCSDK::Base::StovePCInitializeParam* param, void (*callback)(Stove::PCSDK::CallbackResult));
 void Base_GetShutdown(void (*callback)(Stove::PCSDK::CallbackResult, Stove::PCSDK::Base::StovePCShutdown));
 Stove::PCSDK::Result IAP_Initialize(const wchar_t* shopKey);
+Stove::PCSDK::Result IAP_UnInitialize();
+Stove::PCSDK::Result Base_UnInitialize();
 void IAP_StartPurchase(const Stove::PCSDK::IAP::StovePCStartPurchaseParam* param,
                        void (*callback)(Stove::PCSDK::CallbackResult, Stove::PCSDK::IAP::StovePCPurchaseResult));
 void IAP_FetchTermsAgreement(Stove::PCSDK::IAP::StovePCTermsOption* option, void (*callback)(Stove::PCSDK::CallbackResult));

@@ -11,11 +11,19 @@ namespace Stove::PCSDK {
   struct CallbackResult;
 }
 
-class CStoveMgr {
+// VTABLE: vt_00291
+template <class T> class Singleton2 {
+public:
+  virtual ~Singleton2() {
+  }
+};
+
+// VTABLE: vt_00292
+class CStoveMgr : public Singleton2<CStoveMgr> {
 public:
   CStoveMgr();
+  ~CStoveMgr() override;
 
-  /* 0000 */ void* vtable;
   /* 0004 */ bool m_initialized;
   /* 0008 */ int unknown_0008;
   /* 000C */ int m_environment;
