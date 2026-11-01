@@ -734,6 +734,9 @@ public:
   void ReceiveSpecialBroadcast(const unsigned char* data);
   void ReceiveQuestHuntUpdate(const unsigned char* data);
   void ReceiveQuestHuntUpdate2(const unsigned char* data);
+  void ReceiveGuildMemberExpelled(const unsigned char* data);
+  void ReceiveGuildPositionUpdate(const unsigned char* data);
+  void ReceiveGuildMemberLeft(const unsigned char* data);
   std::FILE* OpenRandomOptionSimulatorFile(const std::string& folder, const std::string& itemName);
   void ReceiveRandomOptionSimulation(const unsigned char* packet);
   void ReceiveBuyingStoreOpenResult(const unsigned char* packet);

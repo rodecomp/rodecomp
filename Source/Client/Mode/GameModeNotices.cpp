@@ -19,6 +19,7 @@
 #include "Contents/Effects/EffectLists.h"
 #include "Contents/Effects/RagEffect.h"
 #include "Contents/Effects/EffectTypes.h"
+#include "Contents/ForbiddenWords.h"
 #include "Contents/GuildInfo.h"
 #include "Contents/GuildMgr.h"
 #include "Contents/Items/ItemDescription.h"
@@ -6834,4 +6835,142 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
   if (packet->aid == g_session.m_aid) {
     this->scene->player->SendMsg(nullptr, 110, 0, packet->type, packet->type >> 31, packet->state, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
+}
+
+#pragma pack(push, 1)
+struct GuildMemberRemovedPacket {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ char name[24];
+  /* 001A */ char reason[40];
+};
+#pragma pack(pop)
+
+// OFFSET: 0x00D48820
+// FUNCTION: fn_21855
+void CGameMode::ReceiveGuildMemberExpelled(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const GuildMemberRemovedPacket*>(data);
+  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  char reason[41];
+  std::memcpy(reason, packet->reason, sizeof(packet->reason));
+  reason[40] = '\0';
+  char name[25];
+  std::memcpy(name, packet->name, sizeof(packet->name));
+  name[24] = '\0';
+
+  if (std::string(name) == g_session.DecodePlayerName()) {
+    g_guildId = 0;
+    g_windowMgr.CloseWindow(59);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(490)), 0xFF, 4, 0, 0);
+    this->SendMsg(172, 0, 0, 0, 0);
+    return;
+  }
+
+  if (guildInfo->unknown_00C0) {
+    guildInfo->DeleteMember(name);
+  }
+
+  char message[1024];
+  std::memset(message, 0, sizeof(message));
+  std::sprintf(message, LookupMessage(370), name);
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0xFFFF, 4, 0, 0);
+  std::memset(message, 0, sizeof(message));
+  sprintf_s(message, sizeof(message), LookupMessage(371), reason);
+  if (g_forbiddenWords.Contains(message) == true) {
+    std::string masked;
+    g_forbiddenWords.Mask(message, &masked);
+  }
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0xFFFF, 4, 0, 0);
+
+  GuildInfo::Unknown00ECEntry entry;
+  entry.name = name;
+  entry.unknown_0034 = reason;
+  guildInfo->AddUnknown00EC(entry);
+}
+
+#pragma pack(push, 1)
+struct GuildPositionUpdateEntry {
+  /* 0000 */ int positionId;
+  /* 0004 */ unsigned int mode;
+  /* 0008 */ int ranking;
+  /* 000C */ int payRate;
+  /* 0010 */ char name[24];
+};
+
+struct GuildPositionUpdatePacket {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::int16_t length;
+  /* 0004 */ GuildPositionUpdateEntry entries[1];
+};
+#pragma pack(pop)
+
+// OFFSET: 0x00D49020
+// FUNCTION: fn_21857
+void CGameMode::ReceiveGuildPositionUpdate(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const GuildPositionUpdatePacket*>(data);
+  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  if (!guildInfo->unknown_00C4) {
+    return;
+  }
+
+  const int count = (packet->length - 4) / sizeof(GuildPositionUpdateEntry);
+  for (int i = 0; i < count; ++i) {
+    GuildPositionUpdateEntry position = packet->entries[i];
+    char name[25];
+    std::memcpy(name, position.name, sizeof(position.name));
+    name[24] = '\0';
+    if (g_forbiddenWords.Contains(name)) {
+      std::string masked;
+      g_forbiddenWords.Mask(name, &masked);
+    }
+
+    guildInfo->m_positions[position.positionId] = name;
+
+    GuildInfo::Unknown00D4Entry entry;
+    entry.unknown_0004 = position.positionId;
+    entry.unknown_0008 = guildInfo->m_positions[position.positionId];
+    entry.unknown_0020 = position.mode & 1;
+    entry.unknown_0024 = (position.mode >> 4) & 1;
+    entry.unknown_0028 = position.payRate;
+    entry.unknown_002C = (position.mode >> 8) & 1;
+    entry.unknown_0000 = position.ranking;
+    guildInfo->UpdateUnknown00D4(entry);
+  }
+
+  g_windowMgr.RefreshGuildWindows();
+}
+
+// OFFSET: 0x00D49CC0
+// FUNCTION: fn_21860
+void CGameMode::ReceiveGuildMemberLeft(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const GuildMemberRemovedPacket*>(data);
+  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  char reason[41];
+  std::memcpy(reason, packet->reason, sizeof(packet->reason));
+  reason[40] = '\0';
+  char name[25];
+  std::memcpy(name, packet->name, sizeof(packet->name));
+  name[24] = '\0';
+
+  if (std::string(name) == g_session.DecodePlayerName()) {
+    guildInfo->Init();
+    g_windowMgr.CloseWindow(59);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(489)), 0xFF, 4, 0, 0);
+    this->scene->player->Slot49(0, 0);
+    this->SendMsg(172, 0, 0, 0, 0);
+    return;
+  }
+
+  if (guildInfo->unknown_00C0) {
+    guildInfo->DeleteMember(name);
+  }
+
+  char message[1024];
+  std::sprintf(message, LookupMessage(364), name);
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0xFFFF, 4, 0, 0);
+  sprintf_s(message, sizeof(message), LookupMessage(365), reason);
+  if (g_forbiddenWords.Contains(message) == true) {
+    std::string masked;
+    g_forbiddenWords.Mask(message, &masked);
+  }
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0xFFFF, 4, 0, 0);
 }
