@@ -659,6 +659,7 @@ public:
   int IsBerserkActive() const;
   int IsTrickDeadActive() const;
   int HasActiveSkillEffect(int id) const;
+  void PlaySkillEffect(int skillId, int level, CGameActor* source, CGameActor* target);
   bool PlaySkillTargetEffect(int skillId, int level, CGameActor* source, CGameActor* target);
   bool PlaySkillGroundEffect(int skillId, vector3d position);
   int IsState291To303(int state) const;
