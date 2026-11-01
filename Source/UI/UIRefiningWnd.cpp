@@ -863,6 +863,97 @@ int UIRefiningWnd::SendMsg(
   return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
 }
 
+// OFFSET: 0x007F87B0
+// FUNCTION: fn_09924
+void UIRefiningWnd::ApplyItem(int id, int count, RefiningMaterial* materials, int catalystCount) {
+  switch (this->state) {
+  case 0:
+  case 1: {
+    if (id == -1 || count == 0) {
+      this->notice->SetNotice(LookupMessage(0xB9A), 3000, 1);
+      return;
+    }
+
+    ITEM_INFO found = LookupClientItemByIdentity(g_session.m_inventoryItems, id);
+    if (found.unknown_0000[1] == 0) {
+      return;
+    }
+
+    this->item = found;
+    int highlightColor;
+    std::vector<char*> breaks;
+    char text[0x104];
+    std::memset(text, 0, sizeof(text));
+    char* highlight = nullptr;
+    std::size_t remaining = sizeof(text);
+    char* cursor = text;
+    this->BuildItemName(&this->item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
+    if (this->item.identified == 1 && this->item.unknown_0098 != 0) {
+      sprintf_s(text, sizeof(text), LookupMessage(0xA28), text, this->item.unknown_0098);
+    }
+
+    this->item.SetName(text);
+    this->materials.assign(materials, materials + count);
+    this->selectedMaterial = -1;
+    this->catalystCount = catalystCount;
+    this->catalystEnabled = 0;
+    this->notice->SetNotice("", 0, 0);
+    this->state = 1;
+    this->result = 7;
+    this->stateTick = timeGetTime();
+    this->frame = 0;
+    if (this->unknown_00C0) {
+      this->unknown_00C0->SetDisabled(0);
+      this->unknown_00C0->Invalidate();
+    }
+
+    this->result = 7;
+    this->refiningButton->Enable(1);
+    this->refiningButton->SetDisabled(1);
+    this->refiningButton->Invalidate();
+    this->returnButton->Enable(0);
+    this->againButton->Enable(0);
+    this->Invalidate();
+    this->unknown_01F0 = 0;
+    break;
+  }
+  case 2:
+  case 3:
+  case 4:
+  case 5:
+  case 6: {
+    if (id == -1 || this->item.unknown_0000[1] != static_cast<std::uint32_t>(id)) {
+      return;
+    }
+
+    ITEM_INFO found = LookupClientItemByIdentity(g_session.m_inventoryItems, id);
+    if (found.unknown_0000[1] == 0) {
+      return;
+    }
+
+    this->nextItem = found;
+    int highlightColor;
+    std::vector<char*> breaks;
+    char text[0x104];
+    std::memset(text, 0, sizeof(text));
+    char* cursor = nullptr;
+    std::size_t remaining = sizeof(text);
+    char* name = text;
+    this->BuildItemName(&this->nextItem, &highlightColor, &breaks, &name, &remaining, &cursor, 1, 0);
+    if (this->nextItem.identified == 1 && this->nextItem.unknown_0098 != 0) {
+      sprintf_s(text, sizeof(text), LookupMessage(0xA28), text, this->nextItem.unknown_0098);
+    }
+
+    this->nextItem.SetName(text);
+    this->nextMaterials.assign(materials, materials + count);
+    this->nextCatalystCount = catalystCount;
+    break;
+  }
+  default:
+    break;
+  }
+}
+
 // OFFSET: 0x007F8C40
 // FUNCTION: fn_09925
 void UIRefining_BtnAgain::Enable(unsigned char value) {
