@@ -33,7 +33,7 @@ public:
 
   void Slot15(int width, int height) override;
   void Slot16() override;
-  virtual void Reset();
+  void Slot53() override;
 
   void OnButtonClick();
   void OnEditSubmit();

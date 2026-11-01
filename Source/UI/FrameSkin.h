@@ -7,6 +7,8 @@
 #include <cstdint>
 
 class CUIFrameWnd : public UIFrameWnd {
+  friend class CUIRegisterMgr;
+
 public:
   // INLINED
   CUIFrameWnd()
@@ -16,6 +18,7 @@ public:
 
   ~CUIFrameWnd() override;
   void Paint() override;
+  virtual void Slot53() = 0;
   void RefreshSkinColors();
   void SetSkinColors(int backgroundColumn, int backgroundRow, int borderColumn, int borderRow);
 

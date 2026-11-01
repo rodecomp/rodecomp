@@ -15,6 +15,7 @@ public:
   ~CUIVScrollBar() override;
   void Resize(int width, int height) override;
   void Show(int visible) override;
+  void Slot15(int width, int height) override;
   void Paint() override;
   void Slot25(int x, int y) override;
   void Slot35(int value) override;
@@ -59,6 +60,7 @@ class CUIHScrollBar : public CUIVScrollBar {
 public:
   explicit CUIHScrollBar(UIWindowContext& context);
   void Resize(int width, int height) override;
+  void Slot15(int width, int height) override;
   void Paint() override;
   void Slot25(int x, int y) override;
   void Slot35(int value) override;

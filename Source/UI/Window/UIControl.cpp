@@ -25,6 +25,8 @@
 #include "UI/Window/UIRegisterMgr.h"
 #include "Utility/Text/Base64.h"
 #include "Utility/Threading/NSyncObject.h"
+#include "Render/Renderer.h"
+#include "UI/FrameSkin.h"
 
 #include <algorithm>
 #include <cmath>
@@ -34,6 +36,12 @@
 
 // GLOBAL: gl_25174
 const char* g_uiInfoTempPath = "savedata\\UIInfo.temp";
+
+// GLOBAL: gl_25442
+const char* g_uiInfoPath = "savedata\\UIInfo.lua";
+
+// GLOBAL: gl_25443
+const char* g_uiInfoScriptPath = "Lua Files\\OptionInfo\\UIInfo_F";
 
 class CUIListBoxItemSelector {
 public:
@@ -224,7 +232,7 @@ __forceinline CUIButton::CUIButton(UIWindowContext& context) : CUIControl(contex
 
 // OFFSET: 0x009BDF40
 // FUNCTION: fn_13944
-CUIImageButton::CUIImageButton(UIWindowContext& context) : CUIButton(context), images(), disabledImage(), transparent(0), imageNames(), disabledName() {
+__forceinline CUIImageButton::CUIImageButton(UIWindowContext& context) : CUIButton(context), images(), disabledImage(), transparent(0), imageNames(), disabledName() {
 }
 
 // OFFSET: 0x009BE480
@@ -3113,4 +3121,137 @@ bool CUIRegisterMgr::SaveTemporary() {
     file.Close();
   }
   return true;
+}
+
+// OFFSET: 0x009D31F0
+void CUIRegisterMgr::Register(int key, std::function<CUIFrameWnd*()> factory) {
+  this->entries[key] = factory;
+}
+
+// OFFSET: 0x009EB770
+CUIFrameWnd* CUIRegisterMgr::Create(int key) {
+  auto entry = this->entries.find(key);
+  if (entry == this->entries.end()) {
+    return nullptr;
+  }
+
+  CUIFrameWnd* window = entry->second();
+  window->SetId(key);
+  window->Slot53();
+
+  if (static_cast<unsigned char>(window->unknown_00B4) != 0) {
+    auto position = this->unknown_000C.find(key);
+    if (position != this->unknown_000C.end()) {
+      RECT bounds{0, 0, g_renderer->viewport.width - window->geometry.width, g_renderer->viewport.height - window->geometry.height};
+      POINT savedPosition{position->second.first, position->second.second};
+      if (PtInRect(&bounds, savedPosition)) {
+        window->Move(position->second.first, position->second.second);
+      }
+    }
+  }
+
+  if (static_cast<unsigned char>(window->unknown_00B4 >> 8) != 0) {
+    auto size = this->unknown_0014.find(key);
+    if (size != this->unknown_0014.end()) {
+      window->Grow(size->second.first - window->geometry.width, size->second.second - window->geometry.height);
+    }
+  }
+
+  if (window->m_resolveSkin) {
+    window->RefreshSkinColors();
+  }
+  return window;
+}
+
+// OFFSET: 0x009EB920
+void CUIRegisterMgr::Load() {
+  CFile file;
+  if (file.Open(g_uiInfoPath, 0, false, true)) {
+    std::string data;
+    data.resize(file.GetSize(), '\0');
+    file.Read(data.data(), file.GetSize());
+    file.Close();
+    data = Base64Decode(data, false);
+
+    LuaScript script;
+    script.Open();
+    if (script.Execute(data.c_str(), data.size()) && script.Load(g_uiInfoScriptPath, true, false)) {
+      for (const auto& entry : this->entries) {
+        bool available = false;
+        int x = 0;
+        int y = 0;
+        script.Call("GetWindowPos", "d>bdd", entry.first, &available, &x, &y);
+        if (available) {
+          this->unknown_000C[entry.first] = std::pair<int, int>(x, y);
+        }
+
+        int width = 0;
+        int height = 0;
+        script.Call("GetWindowSize", "d>bdd", entry.first, &available, &width, &height);
+        if (available) {
+          this->unknown_0014[entry.first] = std::pair<int, int>(width, height);
+        }
+      }
+    }
+    script.Close();
+  }
+}
+
+// INLINED
+CUIThumb::CUIThumb(UIWindowContext& context)
+    : CUIControl(context), top(), middle(), bottom(), dragOrigin(0), transparent(0), resizable(1), tooltip(), topName(), middleName(), bottomName(), onDrag() {
+}
+
+// INLINED
+CUIVThumb::CUIVThumb(UIWindowContext& context) : CUIThumb(context) {
+}
+
+// INLINED
+CUIHThumb::CUIHThumb(UIWindowContext& context) : CUIVThumb(context) {
+}
+
+// OFFSET: 0x009EDBE0
+void CUIHScrollBar::Slot15(int, int) {
+  if (!this->upButton) {
+    this->upButton = new CUIImageButton(*this->m_context);
+    this->upButton->Show(0);
+    this->upButton->SetOnClick([this]() { this->PageUp(); });
+    this->AddChild(this->upButton);
+  }
+  if (!this->downButton) {
+    this->downButton = new CUIImageButton(*this->m_context);
+    this->downButton->Show(0);
+    this->downButton->SetOnClick([this]() { this->PageDown(); });
+    this->AddChild(this->downButton);
+  }
+  if (!this->thumb) {
+    this->thumb = new CUIHThumb(*this->m_context);
+    this->thumb->Show(0);
+    const std::function<void(int)> onDrag = [this](int value) { this->Slot55(value); };
+    this->thumb->onDrag = onDrag;
+    this->AddChild(this->thumb);
+  }
+}
+
+// OFFSET: 0x009F1DE0
+void CUIVScrollBar::Slot15(int, int) {
+  if (!this->upButton) {
+    this->upButton = new CUIImageButton(*this->m_context);
+    this->upButton->Show(0);
+    this->upButton->SetOnClick([this]() { this->SetPosition(this->position - this->step); });
+    this->AddChild(this->upButton);
+  }
+  if (!this->downButton) {
+    this->downButton = new CUIImageButton(*this->m_context);
+    this->downButton->Show(0);
+    this->downButton->SetOnClick([this]() { this->SetPosition(this->position + this->step); });
+    this->AddChild(this->downButton);
+  }
+  if (!this->thumb) {
+    this->thumb = new CUIVThumb(*this->m_context);
+    this->thumb->Show(0);
+    const std::function<void(int)> onDrag = [this](int value) { this->Slot55(value); };
+    this->thumb->onDrag = onDrag;
+    this->AddChild(this->thumb);
+  }
 }

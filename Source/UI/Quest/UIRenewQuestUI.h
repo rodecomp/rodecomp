@@ -65,7 +65,7 @@ public:
   void Slot15(int width, int height) override;
   void Slot16() override;
   void Paint() override;
-  virtual void Slot53(int value);
+  void Slot53() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   bool MatchesFilter(const RenewQuestInfo& info) const;
 

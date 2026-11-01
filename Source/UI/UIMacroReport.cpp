@@ -125,7 +125,7 @@ void CUIMacroReport::OnReportTypeSelect(CUIRadioButton* button) {
 
 // OFFSET: 0x00A441F0
 // FUNCTION: fn_16052
-void CUIMacroReport::Reset() {
+void CUIMacroReport::Slot53() {
   this->unknown_00B4 = 0;
   this->m_resolveSkin = false;
   this->Resize(0xE7, 0xBD);

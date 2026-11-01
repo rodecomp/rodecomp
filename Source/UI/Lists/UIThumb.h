@@ -9,6 +9,7 @@
 
 class CUIThumb : public CUIControl {
 public:
+  explicit CUIThumb(UIWindowContext& context);
   ~CUIThumb() override;
   void ResetCursor(int x, int y) override;
   void Slot28(int x, int y) override;
@@ -32,6 +33,7 @@ public:
 
 class CUIVThumb : public CUIThumb {
 public:
+  explicit CUIVThumb(UIWindowContext& context);
   void Paint() override;
   void Slot25(int x, int y) override;
   void Slot27(int x, int y) override;
@@ -40,6 +42,7 @@ public:
 
 class CUIHThumb : public CUIVThumb {
 public:
+  explicit CUIHThumb(UIWindowContext& context);
   void Paint() override;
   void Slot25(int x, int y) override;
   void Slot27(int x, int y) override;

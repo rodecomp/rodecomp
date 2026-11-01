@@ -921,7 +921,7 @@ void RenewQuestUI::CUIQuestList::Slot16() {
 
 // OFFSET: 0x00A5C200
 // FUNCTION: fn_16432
-void CUIRenewQuestUI::Slot53(int value) {
+void CUIRenewQuestUI::Slot53() {
   this->unknown_00B4 = 1;
   this->m_resolveSkin = true;
   this->Resize(381, 466);
