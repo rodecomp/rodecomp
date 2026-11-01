@@ -32,6 +32,26 @@ void UIItemRepairWnd::Paint() {
   this->DrawButtonBar(2, 0, 1);
 }
 
+// OFFSET: 0x009A3B50
+// FUNCTION: fn_13612
+void UIMakeTargetResultWnd::Paint() {
+  auto& controls = *this->m_controls;
+  const int titleHeight = this->DrawTitleBar(controls.fonts, controls.locale, false, "", 0);
+  this->DrawPanelBackground(titleHeight, 0, "");
+  this->DrawButtonBar(2, 0, 1);
+
+  ITEM_INFO item;
+  item.SetItemId(this->makeType);
+  item.unknown_0060 = 0;
+  item.identified = 1;
+
+  const int firstWidth = this->DrawFittedItemName(0x10, 2, &item, 0, 0, 0xC, 0);
+  this->DrawShadowedText(firstWidth + 0x10, 2, LookupMessage(0x1AC + (this->succeeded == 1)), 0, 0, 0xFFFFFF, 0, 0xC, 0);
+
+  const int secondWidth = this->DrawFittedItemName(0x10, 0x2A, &item, 0, 0, 0xC, 0);
+  this->DrawShadowedText(secondWidth + 0x10, 0x2A, LookupMessage(this->succeeded == 1 ? 0x1AF : 0x1AE), 0, 0, 0xFFFFFF, 0, 0xC, 0);
+}
+
 // OFFSET: 0x009A0B00
 // FUNCTION: fn_13604
 void UIItemRepairWnd::Slot15(int width, int height) {
