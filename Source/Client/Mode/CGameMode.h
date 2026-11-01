@@ -457,6 +457,7 @@ public:
   );
   void DrawMiniMapCoordinates();
   void RefreshMiniMapTooltips();
+  int UpdateMiniMapTooltip();
   void ReceiveGradeEnchantInfo(const unsigned char* packet);
   void ReceivePartyItemPickup(const unsigned char* packet);
   void ReceiveItemDisappear(std::uint32_t itemAid);

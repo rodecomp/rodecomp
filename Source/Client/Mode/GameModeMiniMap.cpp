@@ -22,6 +22,7 @@
 #include "Utility/Text/FormatString.h"
 
 #include <cstdio>
+#include <cstring>
 #include <timeapi.h>
 #include <windows.h>
 
@@ -887,4 +888,79 @@ void CGameMode::RefreshMiniMapTooltips() {
   }
 
   window->Move(x, y);
+}
+
+// OFFSET: 0x00CD0B30
+// FUNCTION: fn_21254
+int CGameMode::UpdateMiniMapTooltip() {
+  int& tooltipId = *reinterpret_cast<int*>(&this->unknown_0418[0x04]);
+  std::string& tooltipText = *reinterpret_cast<std::string*>(&this->unknown_0418[0x08]);
+  int id = tooltipId;
+  if (id > 9 || id == -1) {
+    this->RefreshMiniMapTooltips();
+    id = tooltipId;
+    if (id != -1) {
+      return id;
+    }
+    if (g_windowMgr.unknown_0348 == nullptr) {
+      return id;
+    }
+    return g_windowMgr.CloseWindow(0x4E);
+  }
+
+  if (tooltipText.size() == 0) {
+    return id;
+  }
+
+  UIWindow* window = g_windowMgr.unknown_0348;
+  if (window == nullptr) {
+    window = g_windowMgr.EnsureWindow(0x4E);
+    g_miniMapTooltipId = id;
+    std::sprintf(g_miniMapTooltipText, tooltipText.c_str());
+  } else if (id != g_miniMapTooltipId || std::strcmp(g_miniMapTooltipText, tooltipText.c_str()) != 0) {
+    g_miniMapTooltipId = id;
+    std::sprintf(g_miniMapTooltipText, tooltipText.c_str());
+  } else {
+    return 0;
+  }
+
+  window->SendMsg(nullptr, 0x22, -1, 0, 0, 0);
+
+  int x = 160;
+  int y = 0;
+  switch (id) {
+  case 0:
+    window->SendMsg(nullptr, 0x4E, reinterpret_cast<std::intptr_t>(tooltipText.c_str()), 0, 0, 0);
+    x = 200;
+    y = g_renderer->viewport.height - window->geometry.height;
+    break;
+  case 1:
+    window->SendMsg(nullptr, 0x4E, reinterpret_cast<std::intptr_t>(tooltipText.c_str()), 0, 0, 0);
+    x = g_renderer->viewport.centerX;
+    y = g_renderer->viewport.height - window->geometry.height;
+    break;
+  case 2:
+    window->SendMsg(nullptr, 0x4E, reinterpret_cast<std::intptr_t>(tooltipText.c_str()), 0, 0, 0);
+    x = g_renderer->viewport.width - 200;
+    y = g_renderer->viewport.height - window->geometry.height;
+    break;
+  case 3:
+    window->SendMsg(nullptr, 0x22, -2, 0, 0, 0);
+    window->SendMsg(nullptr, 0x4E, reinterpret_cast<std::intptr_t>(tooltipText.c_str()), 0, 0, 0);
+    window->SendMsg(nullptr, 0x22, 3, 0, 0, 0);
+    x = g_renderer->viewport.centerX;
+    y = g_renderer->viewport.centerY - window->geometry.height / 2;
+    break;
+  case 4:
+    window->SendMsg(nullptr, 0x4E, reinterpret_cast<std::intptr_t>(tooltipText.c_str()), 0, 0, 0);
+    window->SendMsg(nullptr, 0x22, 4, 0, 0, 0);
+    x = g_renderer->viewport.centerX;
+    y = g_renderer->viewport.centerY - window->geometry.height / 2;
+    break;
+  default:
+    break;
+  }
+
+  window->Move(x - window->geometry.width / 2, y);
+  return id;
 }
