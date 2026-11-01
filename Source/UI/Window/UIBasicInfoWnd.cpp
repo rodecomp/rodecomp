@@ -1,9 +1,18 @@
 #include "UI/Window/UIBasicInfoWnd.h"
 
+#include "Client/Mode/CGameMode.h"
 #include "Client/Session.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
+#include "Resource/Bitmap/BitmapResource.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/SkinPalette.h"
+#include "Resource/TextureNames.h"
+#include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Text/UIStaticText.h"
+#include "UI/UIBarGraph.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowBorder.h"
 #include "Contents/MessageTable.h"
 #include "UI/Items/UIEquipWnd.h"
 #include "UI/Layout/SnapMgr.h"
@@ -12,8 +21,34 @@
 #include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/Window/WindowDialogs.h"
 #include "UI/Window/WindowOrdering.h"
+#include "Utility/Text/FormatString.h"
+#include "Utility/Text/GroupedInteger.h"
 
+#include <cstdint>
 #include <cstdio>
+#include <cstring>
+#include <functional>
+#include <windows.h>
+
+namespace {
+
+std::int64_t BaseExpCurrent() {
+  return *reinterpret_cast<const std::int64_t*>(&g_session.unknown_162C[0x04]);
+}
+
+std::int64_t BaseExpMaximum() {
+  return *reinterpret_cast<const std::int64_t*>(&g_session.unknown_162C[0x0C]);
+}
+
+std::int64_t JobExpCurrent() {
+  return *reinterpret_cast<const std::int64_t*>(&g_session.unknown_162C[0x1C]);
+}
+
+std::int64_t JobExpMaximum() {
+  return *reinterpret_cast<const std::int64_t*>(&g_session.unknown_162C[0x14]);
+}
+
+}
 
 // OFFSET: 0x00997250
 // FUNCTION: fn_13484
@@ -330,3 +365,230 @@ int UIBasicInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
 
   return 0;
 }
+
+// OFFSET: 0x009974F0
+// FUNCTION: fn_13487
+void UIBasicInfoWnd::DrawExpanded() {
+  const int width = this->geometry.width;
+  const int job = g_session.GetDisplayJob();
+  const bool compact = g_serviceType == 0 || g_serviceType == 14;
+  const int family = compact ? 0 : 1;
+  const int fontHeight = compact ? 12 : 14;
+
+  CBitmapRes* background = static_cast<CBitmapRes*>(
+    ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\w_basewin_bg2.bmp"))
+  );
+  this->DrawBitmap(0, 0, &background->image, false);
+
+  this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 18, 3, LookupMessage(238), 0, 0, 12, 0xFFFFFF, 0, 0);
+  this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 17, 2, LookupMessage(238), 0, 0, 12, 0, 0, 0);
+
+  this->DrawTextAt(
+    this->m_controls->fonts, this->m_controls->locale, 9, 36, g_session.GetJobName(job, -1), 0, family, fontHeight, 0, 0, 0
+  );
+  this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 9, 51, LookupMessage(3068), 0, 1, 14, 0, 0, 0);
+  this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 9, 65, LookupMessage(3069), 0, 1, 14, 0, 0, 0);
+  this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 9, 80, LookupMessage(3628), 0, 1, 14, 0, 0, 0);
+
+  if (g_session.unknown_556C > 0) {
+    const std::int64_t percent = static_cast<std::int64_t>(g_session.unknown_5568) * 100 / g_session.unknown_556C;
+    std::string text = FormatOwnedString("%d%%", percent);
+    this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 173, 51, text.c_str(), 0, 1, 14, 0, 0, 0);
+  }
+
+  const int sp = *reinterpret_cast<const int*>(&g_session.unknown_5570[0]);
+  const int spMax = *reinterpret_cast<const int*>(&g_session.unknown_5570[4]);
+  if (spMax > 0) {
+    const std::int64_t percent = static_cast<std::int64_t>(sp) * 100 / spMax;
+    std::string text = FormatOwnedString("%d%%", percent);
+    this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 173, 65, text.c_str(), 0, 1, 14, 0, 0, 0);
+  }
+
+  const int apMax = g_session.GetTraitStat(233);
+  if (apMax > 0) {
+    std::string text = FormatOwnedString("%d%%", 100 * g_session.GetTraitStat(232) / apMax);
+    this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 173, 80, text.c_str(), 0, 1, 14, 0, 0, 0);
+  }
+
+  std::string baseLevel = FormatOwnedString(LookupMessage(1995), g_session.m_level);
+  this->DrawTextAt(
+    this->m_controls->fonts, this->m_controls->locale, 17, this->layoutOffset + 71, baseLevel.c_str(), 0, 1, 14, 0, 0, 0
+  );
+
+  std::string jobLevel = FormatOwnedString(LookupMessage(1996), g_session.m_jobLevel);
+  if (g_serviceType == 12) {
+    jobLevel = FormatOwnedString("Classe. %d", g_session.m_jobLevel);
+  }
+  this->DrawTextAt(
+    this->m_controls->fonts, this->m_controls->locale, 17, this->layoutOffset + 83, jobLevel.c_str(), 0, 1, 14, 0, 0, 0
+  );
+
+  char zenyBuffer[64];
+  std::memset(zenyBuffer, 0, sizeof(zenyBuffer));
+  FormatGroupedInteger(g_session.m_zeny, zenyBuffer, 64);
+  std::string zenyText = FormatOwnedString(LookupMessage(1997), zenyBuffer);
+  zenyText = " | " + zenyText;
+  this->DrawRightAlignedText(width - 5, this->layoutOffset + 103, zenyText.c_str(), 0, 1, 14, 0, 0);
+  const int zenyWidth = this->TextWidth(
+    this->m_controls->fonts, this->m_controls->locale, zenyText.c_str(), 0, 1, 14, 0, 0
+  );
+
+  const int denominator = g_session.m_maxWeight < 1 ? 1 : g_session.m_maxWeight;
+  const std::uint32_t weightColor = 100 * g_session.m_weight / denominator >= g_unknown173A5BC ? 255 : 0;
+  std::string weightText = g_serviceType == 12
+    ? FormatOwnedString("Peso : %3d / %3d", g_session.m_weight, g_session.m_maxWeight)
+    : FormatOwnedString(LookupMessage(1992), g_session.m_weight, g_session.m_maxWeight);
+  this->DrawRightAlignedText(
+    width - zenyWidth - 5, this->layoutOffset + 103, weightText.c_str(), 0, 1, 14, weightColor, 0
+  );
+}
+
+// OFFSET: 0x00997C20
+// FUNCTION: fn_13488
+void UIBasicInfoWnd::DrawCollapsed() {
+  const int width = this->geometry.width;
+  const int height = this->geometry.height;
+
+  unsigned red;
+  unsigned green;
+  unsigned blue;
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  this->FillRegion(1, 17, width - 2, height - 18, RGB(red, green, blue));
+  SkinPaletteChannels(ResourceMgr::Instance(), 14, 6, red, green, blue);
+  DrawRoundedBorder(*this, 0, 14, width, height - 14, RGB(red, green, blue));
+  this->DrawTitleBar(this->m_controls->fonts, this->m_controls->locale, false, "", 0);
+
+  int family = 1;
+  int fontHeight = 14;
+  if (g_serviceType == 0) {
+    switch (g_session.GetDisplayJob()) {
+    case 4046:
+    case 4047:
+    case 4048:
+    case 4049:
+    case 4239:
+    case 4240:
+    case 4241:
+    case 4242:
+    case 4243:
+    case 4244:
+    case 4302:
+    case 4303:
+    case 4316:
+      family = 0;
+      fontHeight = 11;
+      break;
+    }
+  }
+
+  std::string title = FormatOwnedString(
+    "%s %d / %s / %s %d", LookupMessage(3070), g_session.m_level, g_session.GetJobName(g_session.GetDisplayJob(), -1), LookupMessage(3627),
+    g_session.m_jobLevel
+  );
+  this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 8, 20, title.c_str(), 0, family, fontHeight, 0, 0, 0);
+
+  std::uint32_t hpColor = 0;
+  if (g_session.unknown_556C > 0) {
+    hpColor = 0.25f > static_cast<float>(g_session.unknown_5568) / static_cast<float>(g_session.unknown_556C) ? 255 : 0;
+  }
+  std::string hpText = FormatOwnedString("%s %d / %d", LookupMessage(3068), g_session.unknown_5568, g_session.unknown_556C);
+  this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 8, 36, hpText.c_str(), 0, family, fontHeight, hpColor, 0, 0);
+
+  std::int64_t current = BaseExpCurrent();
+  std::int64_t maximum = BaseExpMaximum();
+  if (current < 0) {
+    current = 0;
+  }
+  if (maximum <= 0) {
+    maximum = current + 1;
+  }
+  double percent;
+  if (g_session.m_level >= g_session.GetMaxBaseLevel(g_session.GetDisplayJob())) {
+    percent = 100.0;
+  } else {
+    percent = static_cast<double>(
+                static_cast<std::int64_t>(static_cast<double>(current) / static_cast<double>(maximum) * 1000.0)
+              ) *
+              0.1;
+  }
+  std::string expText = FormatOwnedString("| %s %.1lf%%", LookupMessage(3072), percent);
+  this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 136, 36, expText.c_str(), 0, family, fontHeight, 0, 0, 0);
+
+  const int sp = *reinterpret_cast<const int*>(&g_session.unknown_5570[0]);
+  const int spMax = *reinterpret_cast<const int*>(&g_session.unknown_5570[4]);
+  std::uint32_t spColor = 0;
+  if (spMax > 0) {
+    spColor = 0.25f > static_cast<float>(sp) / static_cast<float>(spMax) ? 255 : 0;
+  }
+  std::string spText = FormatOwnedString("%s %d / %d", LookupMessage(3069), sp, spMax);
+  this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 8, 52, spText.c_str(), 0, family, fontHeight, spColor, 0, 0);
+
+  std::string apText = FormatOwnedString("| %s %d / %d", LookupMessage(3628), g_session.GetTraitStat(232), g_session.GetTraitStat(233));
+  this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 136, 52, apText.c_str(), 0, family, fontHeight, 0, 0, 0);
+}
+
+// OFFSET: 0x009983C0
+// FUNCTION: fn_13491
+void UIBasicInfoWnd::Slot15(int width, int height) {
+  this->AddBaseButton(*this->m_controls);
+
+  UIBitmapButton* minimizeButton = this->AddMinimizeButton(*this->m_controls, "Alt+V, Ctrl+V", 0);
+  minimizeButton->Move(this->geometry.width - 14, 3);
+
+  this->nameText = new UIStaticText(*this->m_context, *this->m_controls);
+  this->nameText->SetSize(this->geometry.width - 20, 15);
+  this->nameText->Move(9, 23);
+  this->nameText->SetTextFitted(g_session.DecodePlayerName());
+  this->nameText->SetFont(0, 12, 0, 0);
+  this->AddChild(this->nameText);
+
+  UIBarGraphPlayer* hpBar = new UIBarGraphPlayer(*this->m_context);
+  hpBar->SetValues(
+    []() -> std::int64_t { return g_session.unknown_5568; },
+    []() -> std::int64_t { return g_session.unknown_556C; }
+  );
+  hpBar->SetSize(135, 9);
+  hpBar->Move(-100, -100);
+  this->AddChild(hpBar);
+  this->hpBar = hpBar;
+
+  UIBarGraphPlayer* spBar = new UIBarGraphPlayer(*this->m_context);
+  spBar->SetValues(
+    []() -> std::int64_t { return *reinterpret_cast<const int*>(&g_session.unknown_5570[0]); },
+    []() -> std::int64_t { return *reinterpret_cast<const int*>(&g_session.unknown_5570[4]); }
+  );
+  spBar->SetSize(135, 9);
+  spBar->Move(-100, -100);
+  this->AddChild(spBar);
+  this->spBar = spBar;
+
+  UIBarGraphPlayerAP* apBar = new UIBarGraphPlayerAP(*this->m_context);
+  apBar->SetValues(
+    []() -> std::int64_t { return g_session.GetTraitStat(232); },
+    []() -> std::int64_t { return g_session.GetTraitStat(233); }
+  );
+  apBar->SetSize(135, 9);
+  apBar->Move(-100, -100);
+  this->AddChild(apBar);
+  this->apBar = apBar;
+
+  UIINT64BarGraph* baseExpBar = new UIINT64BarGraph(*this->m_context);
+  baseExpBar->m_plainColor = 1;
+  baseExpBar->SetSize(112, 6);
+  baseExpBar->Move(84, this->layoutOffset + 76);
+  baseExpBar->SetValues(BaseExpCurrent(), BaseExpMaximum());
+  this->AddChild(baseExpBar);
+  this->baseExpBar = baseExpBar;
+
+  UIINT64BarGraph* jobExpBar = new UIINT64BarGraph(*this->m_context);
+  jobExpBar->m_plainColor = 1;
+  jobExpBar->SetSize(112, 6);
+  jobExpBar->Move(84, this->layoutOffset + 86);
+  jobExpBar->SetValues(JobExpCurrent(), JobExpMaximum());
+  this->AddChild(jobExpBar);
+  this->jobExpBar = jobExpBar;
+
+  this->SetHeight(height);
+}
+
+// OFFSET: 0x00998810

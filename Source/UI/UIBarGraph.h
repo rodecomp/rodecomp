@@ -118,6 +118,9 @@ protected:
 
 class UIBarGraphPlayerAP : public UIBarGraphPlayer {
 public:
+  explicit UIBarGraphPlayerAP(UIWindowContext& context) : UIBarGraphPlayer(context) {
+  }
+
   void Paint() override;
 };
 
