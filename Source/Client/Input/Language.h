@@ -60,6 +60,7 @@ struct CLanguage {
   );
 };
 
+// VTABLE: vt_01604
 struct CLanguageBase {
   virtual ~CLanguageBase() = default;
 
@@ -87,10 +88,18 @@ struct CLanguageBase {
   CLanguageBase();
 };
 
+// VTABLE: vt_01607
 struct CLanguageArabic : CLanguageBase {
   /* 00B8 */ bool lexiconLoaded;
 
   CLanguageArabic();
+};
+
+// VTABLE: vt_01606
+struct CLanguageTH : CLanguageBase {
+  /* 00B8 */ bool lexiconLoaded;
+
+  CLanguageTH();
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
@@ -108,6 +117,7 @@ static_assert(offsetof(CLanguageBase, servicePrefix) == 0x009C);
 static_assert(offsetof(CLanguageBase, alternateLanguage) == 0x00B4);
 static_assert(sizeof(CLanguageBase) == 0x00B8);
 static_assert(sizeof(CLanguageArabic) == 0x00BC);
+static_assert(sizeof(CLanguageTH) == 0x00BC);
 #endif
 
 void __stdcall SubACDD10();

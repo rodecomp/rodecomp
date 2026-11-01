@@ -2,6 +2,7 @@
 #include "Contents/CashEmotionMgr.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Network/TextEncoding.h"
+#include "Utility/Lexicon/LexiconBoundary.h"
 #include "Utility/Text/LanguageCharset.h"
 #include "Utility/Text/TextTokens.h"
 #include "UI/Chat/ChatSuggestions.h"
@@ -422,8 +423,50 @@ UIRoundBoxTooltipWnd::UIRoundBoxTooltipWnd(UIWindowContext& windows, UIFrameCont
 }
 
 // OFFSET: 0x00ACC7F0
+CLanguageBase::CLanguageBase()
+    : unknown_0004(), candidateList(nullptr), candidateCount(0), pageSize(0), selection(0),
+      candidateStorage(), text(), unknown_004C(0), cursor(0), anchor(0), composition(), candidate(), unknown_0088(),
+      language(static_cast<std::uint16_t>(reinterpret_cast<std::uintptr_t>(GetKeyboardLayout(0)))), codePage(0), unknown_0094(0),
+      unknown_0098(0), servicePrefix(), alternateLanguage(0), unknown_00B6() {
+  this->codePage = g_inlineCharset ? LanguageCodePage(this->language) : g_textCodePage;
+
+  switch (static_cast<std::uint16_t>(GetUserDefaultLangID() & 0x3FF)) {
+  case 7:
+    this->alternateLanguage = 7;
+    this->servicePrefix = "german\\";
+    break;
+  case 16:
+    this->alternateLanguage = 16;
+    this->servicePrefix = "italian\\";
+    break;
+  case 22:
+    this->alternateLanguage = 22;
+    this->servicePrefix = "portuguese\\";
+    break;
+  case 31:
+    this->alternateLanguage = 31;
+    this->servicePrefix = "turkish\\";
+    break;
+  default:
+    this->alternateLanguage = 9;
+    this->servicePrefix = "english\\";
+    break;
+  }
+
+  if (g_serviceType == 15) {
+    this->codePage = 0x4EA;
+  }
+}
 
 // OFFSET: 0x00ACCCD0
 // FUNCTION: fn_17751
 CLanguageArabic::CLanguageArabic() : lexiconLoaded(false) {
+}
+
+// GLOBAL: gl_25168
+LexiconBoundary g_lexiconBoundary;
+
+// OFFSET: 0x00ACCF00
+// FUNCTION: fn_17753
+CLanguageTH::CLanguageTH() : lexiconLoaded(g_lexiconBoundary.Load()) {
 }

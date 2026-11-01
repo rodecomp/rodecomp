@@ -14,5 +14,6 @@ struct LexiconBoundary {
 };
 
 extern std::uint32_t g_lexiconByteClasses[256];
+extern LexiconBoundary g_lexiconBoundary;
 
 #endif
