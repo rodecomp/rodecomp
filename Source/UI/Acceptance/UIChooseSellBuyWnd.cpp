@@ -2038,6 +2038,18 @@ int UICombinedCardItemCollectionWnd::SendMsg(UIWindow* sender, int message, std:
 }
 
 // OFFSET: 0x008FD5F0
+// FUNCTION: fn_12347
+int UIItemCollection_ComparisonWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  if (message != 34) {
+    return this->UIItemCollectionWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+
+  UIWindow* window = g_windowMgr.LookupWindow(12);
+  if (window) {
+    UIFrameWnd::Move(window->geometry.x - window->geometry.width, window->geometry.y);
+  }
+  return 0;
+}
 
 // OFFSET: 0x008F9570
 // FUNCTION: fn_12337
