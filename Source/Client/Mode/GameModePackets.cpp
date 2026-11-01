@@ -15691,6 +15691,7 @@ static_assert(sizeof(PartyMemberListEntry) == 0x2E);
 }
 
 // OFFSET: 0x00D20900
+// FUNCTION: fn_21650
 void CGameMode::ReceivePartyMemberInfo(const unsigned char* data) {
   const PartyMemberInfoPacket* packet = reinterpret_cast<const PartyMemberInfoPacket*>(data);
   char name[25];
@@ -15740,6 +15741,7 @@ void CGameMode::ReceivePartyMemberInfo(const unsigned char* data) {
 }
 
 // OFFSET: 0x00D2AFA0
+// FUNCTION: fn_21708
 void CGameMode::ReceivePartyMemberList(const unsigned char* data) {
   const PartyMemberListHeader* packet = reinterpret_cast<const PartyMemberListHeader*>(data);
   g_session.ClearPartyMembers();
@@ -15779,6 +15781,7 @@ void CGameMode::ReceivePartyMemberList(const unsigned char* data) {
 }
 
 // OFFSET: 0x00D59FD0
+// FUNCTION: fn_21960
 void CGameMode::sub_D59FD0(const char* value, std::vector<PartyRosterEntry>* members) {
   g_session.ClearPartyMembers();
   char partyName[25];
@@ -15820,6 +15823,7 @@ void CGameMode::sub_D59FD0(const char* value, std::vector<PartyRosterEntry>* mem
 }
 
 // OFFSET: 0x00D5EEF0
+// FUNCTION: fn_21968
 void CGameMode::sub_D5EEF0(
   const char* name, int accountId, const char* mapName, int leader, unsigned char offline, std::uint16_t job, std::uint16_t level,
   const char* value, unsigned char itemShare, unsigned char itemDistribute, int characterId
