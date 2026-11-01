@@ -4,6 +4,7 @@
 #include <cstdio>
 #include <cstring>
 #include <utility>
+#include <vector>
 
 namespace YExcel {
 class BasicExcelCell {
@@ -28,6 +29,29 @@ public:
   BasicExcelCell* Cell(size_t row, size_t col);
 };
 
+class CompoundDocument {
+public:
+  CompoundDocument();
+  ~CompoundDocument();
+
+private:
+  unsigned char m_data[0x330];
+};
+
+class Workbook {
+public:
+  Workbook();
+  ~Workbook();
+
+private:
+  unsigned char m_data[0x158];
+};
+
+class Worksheet {
+public:
+  ~Worksheet();
+};
+
 class BasicExcel {
 public:
   BasicExcel();
@@ -39,9 +63,18 @@ public:
   BasicExcelWorksheet* GetWorksheet(size_t sheetIndex);
 
 private:
-  unsigned char m_data[0x5A8];
+  /* 0000 */ CompoundDocument file_;
+  /* 0330 */ Workbook workbook_;
+  /* 0488 */ std::vector<Worksheet> worksheets_;
+  /* 0494 */ std::vector<BasicExcelWorksheet> yesheets_;
+  unsigned char m_tail[0x5A8 - 0x4A0];
 };
 static_assert(sizeof(BasicExcel) == 0x5A8);
+
+// OFFSET: 0x00C83CD0
+// FUNCTION: fn_20498
+BasicExcel::BasicExcel() {
+}
 }
 
 using YExcel::BasicExcel;
