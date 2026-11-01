@@ -2811,3 +2811,426 @@ void CGameMode::ReloadScene() {
   this->camera->camera.target[1] = this->scene->player->render.position.y;
   this->camera->camera.target[2] = this->scene->player->render.position.z;
 }
+
+// OFFSET: 0x00CDBEB0
+// FUNCTION: fn_21314
+void CGameMode::PlayItemUseEffect(int itemId, std::uint32_t aid) {
+  ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, itemId, 0);
+
+  CRenderObject* actor;
+  if (aid == g_session.m_aid) {
+    CPlayer* player = this->scene->player;
+    actor = player;
+    if (actor == nullptr) {
+      return;
+    }
+
+    if (itemId == 0x3113) {
+      const int job = player->GetEffectiveJob(-1);
+      char text[0x100];
+      strcpy_s(text, sizeof(text), LookupMessage(job >= 4054 && job <= 4112 ? 0x704 : 0x703));
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF00, 8, 0, 0);
+    }
+  } else {
+    actor = this->scene->GetGameActorByAID(aid);
+    if (actor == nullptr) {
+      return;
+    }
+  }
+
+  int effectId = -1;
+  int secondEffectId = -1;
+  switch (itemId) {
+  case 0x1F5:
+  case 0x1FB:
+  case 0x221:
+  case 0x239:
+  case 0x242:
+  case 0x256:
+  case 0x2D2F:
+  case 0x2D30:
+  case 0x2D32:
+  case 0x3909:
+    effectId = 0xCC;
+    break;
+  case 0x1F6:
+  case 0x243:
+  case 0x257:
+  case 0x2D31:
+  case 0x311E:
+    effectId = 0xCD;
+    break;
+  case 0x1F7:
+  case 0x1FC:
+  case 0x222:
+  case 0x2CEC:
+  case 0x2D2E:
+  case 0x2D36:
+    effectId = 0xCE;
+    break;
+  case 0x1F8:
+  case 0x1FD:
+  case 0x223:
+  case 0x22B:
+  case 0x22C:
+  case 0x22D:
+  case 0x2CED:
+  case 0x2CEF:
+  case 0x2D1C:
+  case 0x2D25:
+  case 0x2D26:
+  case 0x2D2D:
+  case 0x2D35:
+    effectId = 0xCF;
+    break;
+  case 0x1F9:
+  case 0x1FE:
+  case 0x2CEE:
+  case 0x2CF0:
+  case 0x2D1D:
+  case 0x2D34:
+    effectId = 0xD0;
+    break;
+  case 0x1FA:
+  case 0x1FF:
+  case 0x2D33:
+    effectId = 0xD1;
+    break;
+  case 0x200:
+  case 0x201:
+  case 0x203:
+  case 0x204:
+  case 0x213:
+  case 0x214:
+  case 0x216:
+  case 0x217:
+  case 0x224:
+  case 0x225:
+  case 0x226:
+  case 0x246:
+  case 0x2AA:
+    effectId = 0xD2;
+    break;
+  case 0x202:
+  case 0x215:
+  case 0x238:
+  case 0x25F:
+  case 0x2A8:
+  case 0x2AB:
+  case 0x302D:
+  case 0x3037:
+  case 0x3039:
+  case 0x3041:
+    effectId = 0xD3;
+    break;
+  case 0x205:
+  case 0x206:
+  case 0x207:
+  case 0x208:
+  case 0x209:
+  case 0x20E:
+  case 0x210:
+  case 0x211:
+  case 0x212:
+  case 0x218:
+  case 0x219:
+  case 0x21A:
+  case 0x21B:
+  case 0x21C:
+  case 0x21D:
+  case 0x21E:
+  case 0x21F:
+  case 0x220:
+  case 0x227:
+  case 0x228:
+  case 0x229:
+  case 0x232:
+  case 0x233:
+  case 0x234:
+  case 0x235:
+  case 0x236:
+  case 0x237:
+  case 0x23A:
+  case 0x23B:
+  case 0x23C:
+  case 0x23F:
+  case 0x240:
+  case 0x241:
+  case 0x244:
+  case 0x245:
+  case 0x247:
+  case 0x248:
+  case 0x249:
+  case 0x24A:
+  case 0x297:
+  case 0x2D1B:
+  case 0x2D37:
+  case 0x2D38:
+  case 0x2D39:
+  case 0x2D3A:
+  case 0x2D3B:
+  case 0x2D3C:
+  case 0x2D3D:
+  case 0x2D3E:
+    effectId = 7;
+    break;
+  case 0x20A:
+    g_soundMgr->PlayWave("_heal_effect.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    break;
+  case 0x20B:
+    g_soundMgr->PlayWave("effect\\EF_Blessing.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    break;
+  case 0x22A:
+  case 0x2F5A:
+  case 0x2F5B:
+  case 0x2F5C:
+  case 0x2FA3:
+  case 0x2FA4:
+  case 0x2FA5:
+  case 0x2FA6:
+  case 0x2FCE:
+  case 0x2FCF:
+  case 0x5817:
+  case 0x5818:
+  case 0x5819:
+    g_soundMgr->PlayWave("_heal_effect.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    effectId = 0x1EB;
+    break;
+  case 0x22E:
+  case 0x231:
+  case 0x2D40:
+  case 0x2D43:
+  case 0x2FCD:
+    effectId = 0x16C;
+    break;
+  case 0x22F:
+  case 0x230:
+  case 0x2D41:
+  case 0x2D42:
+  case 0x2DB5:
+    effectId = 0x16B;
+    break;
+  case 0x23D:
+  case 0x254:
+  case 0x255:
+  case 0x2D3F:
+  case 0x2FCA:
+    effectId = 0x1FD;
+    break;
+  case 0x23E:
+  case 0x3036:
+  case 0x3038:
+    effectId = 0xD2;
+    break;
+  case 0x285:
+  case 0x38AD:
+  case 0x580E:
+    effectId = 0xDA;
+    break;
+  case 0x290:
+  case 0x38AE:
+  case 0x5810:
+    effectId = 0xDB;
+    break;
+  case 0x291:
+  case 0x38AF:
+  case 0x580F:
+    effectId = 0xDC;
+    break;
+  case 0x296:
+  case 0x2FE6:
+    g_soundMgr->PlayWave("effect\\mapae.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    effectId = 0x1FB;
+    break;
+  case 0x2AC:
+    static_cast<EffectActor*>(actor)->LaunchEffect(0x105, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    effectId = 0xDC;
+    break;
+  case 0x2AD:
+    effectId = 0x1EC;
+    break;
+  case 0x2EF0:
+  case 0x5811:
+    g_soundMgr->PlayWave("effect\\fast.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    effectId = 0x207;
+    break;
+  case 0x2EF1:
+  case 0x5812:
+    effectId = 0x26;
+    break;
+  case 0x2EF2:
+    g_soundMgr->PlayWave("effect\\itempokjuk.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    effectId = 0x1FC;
+    break;
+  case 0x2EF7:
+    g_soundMgr->PlayWave("effect\\ro2effect.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    effectId = 0x221;
+    break;
+  case 0x2EFB:
+  case 0x588D:
+    g_soundMgr->PlayWave("wraith_die.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    break;
+  case 0x2EFC:
+    effectId = 0x240;
+    break;
+  case 0x2EFD:
+    effectId = 0x241;
+    break;
+  case 0x2EFE:
+    effectId = 0x242;
+    break;
+  case 0x2EFF:
+    effectId = 0x243;
+    break;
+  case 0x2F00:
+    effectId = 0x244;
+    break;
+  case 0x2F01:
+    effectId = 0x245;
+    break;
+  case 0x2F02:
+    g_soundMgr->PlayWave("ork_warrior_breath.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    break;
+  case 0x2F56:
+    g_soundMgr->PlayWave("evil_cloud_hermit_attack.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    effectId = 0x25B;
+    break;
+  case 0x2F57:
+    g_soundMgr->PlayWave("evil_cloud_hermit_attack.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    effectId = 0x33;
+    break;
+  case 0x2F58:
+    g_soundMgr->PlayWave("evil_cloud_hermit_attack.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    effectId = 0x93;
+    break;
+  case 0x2F59:
+    g_soundMgr->PlayWave("evil_cloud_hermit_attack.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    effectId = 0x34;
+    break;
+  case 0x2F63:
+    effectId = 0x264;
+    break;
+  case 0x2FBA:
+    static_cast<EffectActor*>(actor)->LaunchEffect(0x177, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    static_cast<EffectActor*>(actor)->LaunchEffect(0x1B8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    break;
+  case 0x2FDA:
+    effectId = 0x251;
+    break;
+  case 0x2FDB:
+    effectId = 0x254;
+    break;
+  case 0x2FDC:
+    effectId = 0x252;
+    break;
+  case 0x2FDD:
+    effectId = 0x255;
+    break;
+  case 0x2FDE:
+    effectId = 0x256;
+    break;
+  case 0x2FDF:
+    effectId = 0x253;
+    break;
+  case 0x3016:
+  case 0x3017:
+    effectId = 0x2BB;
+    break;
+  case 0x301B:
+    effectId = 0x152;
+    break;
+  case 0x301C:
+    effectId = 0x2C1;
+    break;
+  case 0x301D:
+    g_soundMgr->PlayWave("effect\\storm.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    effectId = 0x2C2;
+    break;
+  case 0x301E:
+    effectId = 0x2C3;
+    break;
+  case 0x3026:
+    g_soundMgr->PlayWave("effect\\pokjuk_jap.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    effectId = 0x2C5;
+    break;
+  case 0x3198:
+    g_soundMgr->PlayWave("effect\\itempokjuk.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    effectId = 0x3DB;
+    break;
+  case 0x3199:
+    g_soundMgr->PlayWave("effect\\itempokjuk.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    effectId = 0x3DC;
+    break;
+  case 0x31F4:
+    g_soundMgr->PlayWave("effect\\itempokjuk.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    effectId = 0x3EE;
+    break;
+  case 0x3280:
+    effectId = 0x56;
+    break;
+  case 0x38D2:
+    effectId = 0x2AA;
+    break;
+  case 0x38D3:
+    effectId = 0x2AB;
+    break;
+  case 0x38D4:
+    effectId = 0x2AC;
+    break;
+  case 0x38D5:
+    effectId = 0x2AD;
+    break;
+  case 0x38D6:
+    effectId = 0x2AE;
+    break;
+  case 0x18733:
+  case 0x18734:
+  case 0x18735:
+    effectId = 0x63D;
+    secondEffectId = 0x63E;
+    break;
+  case 0x18736:
+    effectId = 0x63B;
+    secondEffectId = 0x63C;
+    break;
+  case 0x19605:
+    effectId = 0x982;
+    break;
+  }
+
+  if ((itemId >= 0x2F09 && itemId <= 0x2F0D) || (itemId >= 0x2F27 && itemId <= 0x2F2B) || itemId == 0x2FAA) {
+    effectId = 0x251;
+  } else if ((itemId >= 0x2F0E && itemId <= 0x2F12) || (itemId >= 0x2F2C && itemId <= 0x2F30) || itemId == 0x2FAC) {
+    effectId = 0x252;
+  } else if ((itemId >= 0x2F13 && itemId <= 0x2F17) || (itemId >= 0x2F31 && itemId <= 0x2F35) || itemId == 0x2FAF) {
+    effectId = 0x253;
+  } else if ((itemId >= 0x2F18 && itemId <= 0x2F1C) || (itemId >= 0x2F36 && itemId <= 0x2F3A) || itemId == 0x2FAB) {
+    effectId = 0x254;
+  } else if ((itemId >= 0x2F1D && itemId <= 0x2F21) || (itemId >= 0x2F3B && itemId <= 0x2F3F) || itemId == 0x2FAD) {
+    effectId = 0x255;
+  } else if ((itemId >= 0x2F22 && itemId <= 0x2F26) || (itemId >= 0x2F40 && itemId <= 0x2F44) || itemId == 0x2FAE) {
+    effectId = 0x256;
+  }
+
+  if (effectId > 0) {
+    while (static_cast<EffectActor*>(actor)->state.Attachments().HasId(effectId)) {
+      actor->SendMsg(nullptr, 109, 0, effectId, effectId >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+    if (g_effectMgr->HasAllocator(effectId)) {
+      g_effectMgr->Spawn(actor->render.accountId, effectId, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    } else {
+      static_cast<EffectActor*>(actor)->LaunchEffect(effectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+  }
+
+  if (secondEffectId > 0) {
+    while (static_cast<EffectActor*>(actor)->state.Attachments().HasId(secondEffectId)) {
+      actor->SendMsg(nullptr, 109, 0, secondEffectId, secondEffectId >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+    if (g_effectMgr->HasAllocator(secondEffectId)) {
+      g_effectMgr->Spawn(actor->render.accountId, secondEffectId, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    } else {
+      static_cast<EffectActor*>(actor)->LaunchEffect(secondEffectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+  }
+}
