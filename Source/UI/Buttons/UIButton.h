@@ -42,6 +42,7 @@ class UIButton : public UIWindow {
   friend class UIRodexInboxWnd; friend class UIMiniMapWnd;
 
 public:
+  UIButton();
   UIButton(UIWindowContext& windowContext, UIButtonContext& buttonContext);
   ~UIButton() override;
   void Paint() override;

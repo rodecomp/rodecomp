@@ -3415,6 +3415,22 @@ UITVBitmapButton::UITVBitmapButton()
 }
 
 // OFFSET: 0x0086EC10
+// FUNCTION: fn_11082
+UITVTextButton::UITVTextButton() : UIButton() {
+  this->unknown_00B4 = 0;
+  this->unknown_00B5 = 0;
+  this->unknown_00B6 = 0;
+  this->m_border = 0;
+  this->m_value = 0;
+  this->m_fill = 0;
+  this->m_fillColor = 0xFFFFFF;
+  this->m_textColor = 0;
+  this->m_outlineColor = 0xFFFFFF;
+  this->m_highlightColor = 0;
+  this->m_outlined = 0;
+  this->m_fontHeight = 12;
+  this->m_fontFamily = 0;
+}
 
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/TipOfTheDay.h"
