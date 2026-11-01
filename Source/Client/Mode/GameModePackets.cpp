@@ -11293,6 +11293,78 @@ void ApplyActorSkillState(CGameActor* actor, std::uint16_t skillId, int duration
   }
 }
 
+// OFFSET: 0x00D5B030
+// FUNCTION: fn_21963
+void CGameMode::sub_D5B030(
+  std::uint32_t sourceAid, std::uint32_t targetAid, std::uint16_t x, std::uint16_t y, std::uint16_t skillId, int property, int delay, unsigned char silent, int
+) {
+  CGameActor* source = static_cast<CGameActor*>(this->scene->GetGameActorByAidIncludeMe(sourceAid));
+  if (!source) {
+    return;
+  }
+
+  CGameActor* target = static_cast<CGameActor*>(this->scene->GetGameActorByAidIncludeMe(targetAid));
+  NoticeSkillUse(source, target, skillId, silent);
+
+  if (delay == 0 && skillId == 0xA04) {
+    CEffect* effect = g_effectMgr->Find(source->render.accountId, 0x474);
+    if (effect) {
+      effect->Slot01();
+    } else {
+      g_effectMgr->Spawn(source->render.accountId, 0x474, source->render.position.x, source->render.position.y, source->render.position.z, 0, -1, 0, 0);
+    }
+  }
+
+  if (silent == 0 && skillId != 0x3E && skillId != 0x39 && !g_session.IsMonsterActor(source)) {
+    if (skillId == 0x14E || skillId == 0x14F) {
+      g_modeMgr.GetGameMode()->SendMsg(0x56, skillId, reinterpret_cast<std::intptr_t>(source), targetAid, 0);
+    } else {
+      g_modeMgr.GetGameMode()->SendMsg(0x56, skillId, reinterpret_cast<std::intptr_t>(source), 0, 0);
+    }
+  }
+
+  if (skillId != 0x10F) {
+    if (skillId == 0x49) {
+      if (target && source != target) {
+        source->Face(target->render.position.x, target->render.position.z);
+      }
+      g_modeMgr.GetGameMode()->SendMsg(0x56, 0x49, reinterpret_cast<std::intptr_t>(source), 0, 0);
+    } else if (skillId == 0x1479) {
+      g_effectMgr->Spawn(source->render.accountId, 0x7C4, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    }
+
+    CSkillActionMgr::GetInstance()->ActionSlot09(skillId, reinterpret_cast<int>(source), reinterpret_cast<int>(target), delay);
+    if (delay == 0) {
+      return;
+    }
+  }
+
+  int effectId = 0;
+  int motion = 0;
+  g_session.GetSkillActionInfo(skillId, effectId, motion, property, source->GetEffectiveJob(-1));
+  source->Slot15(motion, 1);
+
+  if (skillId != 0x3E && skillId != 0x39 && delay != 0) {
+    source->SendMsg(nullptr, 0x52, 0, delay, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  }
+  LaunchSkillActorEffect(source, x, y, skillId, delay, effectId);
+
+  if (skillId != 0x3E && skillId != 0x39 && g_session.IsMonsterActor(source)) {
+    int action = 0;
+    int loopType = 0;
+    g_session.GetMonsterSkillInfo(g_session.GetJobName(source->GetEffectiveJob(-1), -1), skillId, &action, &loopType, *reinterpret_cast<WindowDialogs*>(&g_windowMgr));
+    if (action != -1) {
+      source->SetAction(action * 8 - 8, 1, loopType == 0);
+      if (skillId == 0xC1) {
+        source->SetAnimationSpeed(static_cast<float>(static_cast<unsigned>(delay) / 300));
+      }
+    }
+  }
+
+  ApplyActorSkillState(source, skillId, delay);
+  LaunchSkillCastEffect(this, source, target, targetAid, skillId, x, y, delay);
+}
+
 // OFFSET: 0x00D79FD0
 // FUNCTION: fn_22185
 void SetActiveSkillEffect184(unsigned char enable) {
