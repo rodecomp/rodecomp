@@ -3905,6 +3905,50 @@ void CGameMode::ReceiveSkillList(int packetType, const std::vector<SkillListEntr
   g_equipmentPropertiesMgr->RefreshPretend();
 }
 
+// OFFSET: 0x00D07250
+// FUNCTION: fn_21581
+void CGameMode::ReceiveSkillUpdate(
+  std::uint16_t id, std::int16_t level, std::int16_t spCost, unsigned char upgradable, std::int16_t range, int type, std::int16_t unknown
+) {
+  *reinterpret_cast<int*>(&this->unknown_0100[0x0C]) = 0;
+
+  ClientSkills client{
+    g_session.m_skillBundle,
+    g_session.m_homunSkills,
+    g_session.m_mercSkills,
+    g_session.m_additionalSkills,
+    reinterpret_cast<const int&>(g_session.m_jobFlags),
+    g_activeSkillEffects
+  };
+  CSkillInfo skill = client.Lookup(id);
+  skill.level = level;
+  skill.unknown_0014 = spCost;
+  skill.unknown_0018 = upgradable;
+  skill.unknown_001C = range;
+  skill.unknown_000C = type;
+  skill.unknown_0030 = unknown;
+  skill.id = id;
+
+  if (g_session.IsHomunculusSkill(id)) {
+    g_session.UpdateHomunSkill(skill, 1);
+  } else if (g_session.IsMercenarySkill(id)) {
+    g_session.UpdateMercSkill(skill, 1);
+  } else {
+    const SkillUseLevels levels{
+      g_session.m_skillBundle.unknown_0064, *reinterpret_cast<const std::vector<int>*>(g_session.unknown_0710), g_session.m_homunSkillLevels
+    };
+    SkillWindows windows{g_windowMgr.window_02C4, g_windowMgr.window_01E8, *reinterpret_cast<WindowManagerWindows*>(&g_windowMgr)};
+    client.Update(skill, 1, 1, *g_session.m_hotkeyScript, levels, windows);
+  }
+
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  g_equipmentPropertiesMgr->RefreshPretend();
+}
+
+// OFFSET: 0x00CDB910
+
 // OFFSET: 0x00CE2880
 
 // OFFSET: 0x00CDD6B0

@@ -350,6 +350,10 @@ public:
   void OpenActorMenu(const ActorPickInfo* pick, int handled);
   int HandleActorPick(ActorPickInfo* pick, int result);
   void ReceiveSkillList(int packetType, const std::vector<SkillListEntry>& skills);
+  void ShowActorNameBalloon(std::uint32_t id);
+  void ReceiveSkillUpdate(
+    std::uint16_t id, std::int16_t level, std::int16_t spCost, unsigned char upgradable, std::int16_t range, int type, std::int16_t unknown
+  );
   std::uint32_t FindUnknown01AC(std::uint32_t key);
   std::string ActorName(std::uint32_t id);
   std::uint32_t ActorNameColor(int job, std::uint32_t aid);
