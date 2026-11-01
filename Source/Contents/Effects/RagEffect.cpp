@@ -10000,8 +10000,76 @@ void CRagEffect::SpawnHallucinationOnce() {
 }
 
 // OFFSET: 0x00C1F660
+// FUNCTION: fn_20083
+void CRagEffect::SpawnHallucinationTrail() {
+  if (HasTint(*this->state.parent)) {
+    SetBlendedTint(*this->state.parent, *this->state.parent, this->render.position);
+    if (this->state.stateCnt == 9998) {
+      this->state.stateCnt = 0;
+    } else if (this->state.stateCnt % 5 != 0) {
+      return;
+    }
+
+    CRenderObject* hallu = new CHalluPC2(reinterpret_cast<CPc*>(this->state.parent));
+    SetBlendedTint(*hallu, *this->state.parent, this->render.position);
+    WorldObjects().push_back(hallu);
+    return;
+  }
+
+  if (this->state.stateCnt == 9998) {
+    this->state.stateCnt = 0;
+  }
+
+  if (this->state.duration != 30 && this->state.stateCnt % 5 != 0) {
+    return;
+  }
+
+  CRenderObject* hallu = new CHalluPC2(reinterpret_cast<CPc*>(this->state.parent));
+  WorldObjects().push_back(hallu);
+}
 
 // OFFSET: 0x00C1F870
+// FUNCTION: fn_20084
+void CRagEffect::SpawnActorHallucination() {
+  if (HasTint(*this->state.parent)) {
+    SetBlendedTint(*this->state.parent, *this->state.parent, this->render.position);
+    if (this->state.stateCnt == 9998) {
+      this->state.stateCnt = 0;
+    } else if (this->state.stateCnt % 20 != 0) {
+      return;
+    }
+
+    CRenderObject* hallu;
+    if (!IsPlayerJob(reinterpret_cast<CGameActor*>(this->state.parent)->GetEffectiveJob(-1))) {
+      hallu = new CHalluNPC(reinterpret_cast<CGameActor*>(this->state.parent));
+    } else {
+      hallu = new CHalluPC(reinterpret_cast<CPc*>(this->state.parent));
+    }
+    SetBlendedTint(*hallu, *this->state.parent, this->render.position);
+    WorldObjects().push_back(hallu);
+    return;
+  }
+
+  this->state.parent->SetColor(
+    -1, static_cast<int>(this->render.position.x), static_cast<int>(this->render.position.y), static_cast<int>(this->render.position.z)
+  );
+  if (this->state.stateCnt == 9998) {
+    this->state.stateCnt = 0;
+  }
+
+  if (this->state.duration != 41 && this->state.stateCnt % 20 != 0) {
+    return;
+  }
+
+  CRenderObject* hallu;
+  if (!IsPlayerJob(reinterpret_cast<CGameActor*>(this->state.parent)->GetEffectiveJob(-1))) {
+    hallu = new CHalluNPC(reinterpret_cast<CGameActor*>(this->state.parent));
+  } else {
+    hallu = new CHalluPC(reinterpret_cast<CPc*>(this->state.parent));
+  }
+  SendAfterimageColor(*hallu, *this, this->render.position);
+  WorldObjects().push_back(hallu);
+}
 
 // OFFSET: 0x00C1FE80
 // FUNCTION: fn_20085
@@ -13843,8 +13911,42 @@ void CRagEffect::TripleRingStack(const char* name, char large) {
   this->state.unknown_11C84->slots[3].life = 0;
 }
 // OFFSET: 0x00C5BC90
+// FUNCTION: fn_20224
+void CRagEffect::SpawnPaleBlur() {
+  this->render.position.x = 155.0f;
+  this->render.position.z = 255.0f;
+  this->render.position.y = 155.0f;
+  this->state.parent->SetColor(-1, 155, 155, 255);
+  if (this->state.stateCnt == 9998) {
+    this->state.stateCnt = 0;
+  } else if (this->state.stateCnt % 20 != 0) {
+    return;
+  }
+
+  CBlurPC* blur = new CBlurPC(reinterpret_cast<CPc*>(this->state.parent));
+  SendAfterimageColor(*blur, *this, this->render.position);
+  CRenderObject* object = blur;
+  WorldObjects().push_back(object);
+}
 
 // OFFSET: 0x00C5BDB0
+// FUNCTION: fn_20225
+void CRagEffect::SpawnLightBlur() {
+  this->render.position.x = 225.0f;
+  this->render.position.z = 255.0f;
+  this->render.position.y = 225.0f;
+  this->state.parent->SetColor(-1, 225, 225, 255);
+  if (this->state.stateCnt == 9998) {
+    this->state.stateCnt = 0;
+  } else if (this->state.stateCnt % 10 != 0) {
+    return;
+  }
+
+  CBlurPC* blur = new CBlurPC(reinterpret_cast<CPc*>(this->state.parent));
+  SendAfterimageColor(*blur, *this, this->render.position);
+  CRenderObject* object = blur;
+  WorldObjects().push_back(object);
+}
 
 // OFFSET: 0x00C5BED0
 // FUNCTION: fn_20226
