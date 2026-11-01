@@ -28,6 +28,8 @@
 #include "Contents/Jobs/JobInheritance.h"
 #include "Contents/Actors/Npc.h"
 #include "Render/TextureQuad.h"
+#include "Contents/Effects/EffectLists.h"
+#include "Contents/Effects/EffectTypes.h"
 #include <algorithm>
 #include <bit>
 #include <cstdio>
@@ -9724,7 +9726,7 @@ void CRagEffect::SakuraFireArrow() {
 
 // OFFSET: 0x00C6D890
 // FUNCTION: fn_20300
-void CRagEffect::BeginSpellSwirl(const char*, char, char alpha) {
+void CRagEffect::BeginSpellSwirl(int, const char*, char alpha) {
   char name[64];
 
   const RenderObjectState& parent = this->state.parent->render;
@@ -9815,7 +9817,7 @@ void CRagEffect::BeginSpellSwirl(const char*, char, char alpha) {
 
 // OFFSET: 0x00C6DDC0
 // FUNCTION: fn_20301
-void CRagEffect::SevereRainstormCylinder(const char*, int, char alpha, float distance) {
+void CRagEffect::SevereRainstormCylinder(int, const char*, char alpha, float distance) {
   char name[128];
 
   const RenderObjectState& parent = this->state.parent->render;
@@ -19522,3 +19524,5 @@ void CRagEffect::TexturedClassChange(char kind) {
 
   Owner(this->state.unknown_11C84).InitSegment();
 }
+
+// OFFSET: 0x00C213C0
