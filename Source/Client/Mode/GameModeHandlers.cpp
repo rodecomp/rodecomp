@@ -3073,3 +3073,47 @@ void CGameMode::ReceiveSearchStoreItems(const unsigned char* packet) {
 }
 
 // OFFSET: 0x00D3FD70
+// FUNCTION: fn_21815
+void CGameMode::ReceiveSearchStoreItemsOld(const unsigned char* packet) {
+  const SearchStorePacketHeader* header = reinterpret_cast<const SearchStorePacketHeader*>(packet);
+  const SearchStoreItemPacketOld* next = reinterpret_cast<const SearchStoreItemPacketOld*>(packet + 7);
+  UIWindow* window = g_windowMgr.LookupWindow(181);
+  if (header->reset) {
+    if (window) {
+      window->SendMsg(nullptr, 60, 1, 387, 0, 0);
+    }
+    g_session.unknown_5BD4.clear();
+  }
+  reinterpret_cast<unsigned char*>(&g_session.unknown_5BE4)[1] = header->hasNext;
+  g_session.unknown_5BE0 = header->count;
+  const int count = (header->length - 7) / sizeof(SearchStoreItemPacketOld);
+  for (int i = 0; i < count; ++i) {
+    SearchStoreItemPacketOld record;
+    record = *next++;
+    SessionEntry5BD4 entry;
+    std::memcpy(entry.unknown_0000, record.unknown_0000, sizeof(entry.unknown_0000));
+    std::memcpy(entry.storeName, record.storeName, sizeof(entry.storeName));
+    entry.price = record.price;
+    entry.quantity = record.quantity;
+    entry.item.SetItemId(record.itemId);
+    entry.item.unknown_0060 = record.refine;
+    entry.item.unknown_0000[0] = record.kind;
+    entry.item.identified = 1;
+    const SearchStoreOption* options = reinterpret_cast<const SearchStoreOption*>(record.options);
+    int optionCount = 0;
+    for (int j = 0; j < 5; ++j) {
+      if (options[j].id != 0) {
+        ++optionCount;
+      }
+    }
+    entry.item.unknown_0098 = optionCount;
+    for (int j = 0; j < optionCount; ++j) {
+      reinterpret_cast<SearchStoreOption*>(entry.item.unknown_009C)[j] = options[j];
+    }
+    std::memcpy(entry.item.unknown_001C, record.cards, sizeof(record.cards));
+    g_session.unknown_5BD4.push_back(entry);
+  }
+  if (window) {
+    window->SendMsg(nullptr, 60, 1, 184, 0, 0);
+  }
+}
