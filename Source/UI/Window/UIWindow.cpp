@@ -1654,7 +1654,7 @@ const char* UIWindow::TruncateText(const char* text, int maxBytes) {
 std::list<int> UIWindow::WrapFormattedText(std::string text, std::list<std::string>* lines, int maxWidth, int family, int height, unsigned char bold) {
   lines->clear();
   if (maxWidth <= 0) {
-    maxWidth = this->FormattedTextWidth(text, family, height, bold);
+    maxWidth = this->FormattedTextWidth(text.c_str(), family, height, bold);
   }
 
   std::list<int> widths;
@@ -1737,7 +1737,7 @@ std::list<int> UIWindow::WrapFormattedText(std::string text, std::list<std::stri
       }
     }
 
-    if (width + characterWidth > maxWidth) {
+    if (maxWidth < characterWidth + width) {
       lines->push_back(line);
       if (colorCode.empty()) {
         line.clear();
@@ -3167,3 +3167,5 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
   }
 }
 
+
+// OFFSET: 0x00A84400
