@@ -3865,6 +3865,54 @@ int UISayDialogWnd::ButtonX(UIBitmapButton* button) {
 }
 
 // OFFSET: 0x008D76B0
+// FUNCTION: fn_12122
+__declspec(noinline) int UIItemCollectionWnd::CardSlotAt(int x, int y, int* slotX, int* slotY) {
+  const int localX = x - 3;
+  *slotX = localX / 25 * 25 + 4;
+  *slotY = this->geometry.height - 50;
+  this->ToScreen(*slotX, *slotY);
+  if (y <= this->geometry.height - 26) {
+    return -1;
+  }
+
+  int left = 0;
+  int slots = ItemSlotsCount(this->m_item);
+  bool equipment;
+  switch (this->m_item.unknown_0000[0]) {
+  case 4:
+  case 5:
+  case 8:
+  case 9:
+  case 11:
+  case 12:
+  case 13:
+  case 14:
+  case 15:
+  case 21:
+    equipment = true;
+    break;
+  default:
+    equipment = false;
+    break;
+  }
+  if (equipment && !this->m_item.IsApprenticeItem() && !this->m_item.HasSpecialCard()) {
+    slots = 4;
+  } else if (slots <= 0) {
+    return -1;
+  }
+
+  for (int index = 0; index < slots; ++index, left += 25) {
+    if (left < localX && localX < left + 25) {
+      int cardId;
+      std::memcpy(&cardId, this->m_item.unknown_001C + index * sizeof(cardId), sizeof(cardId));
+      if (cardId == 0) {
+        return -1;
+      }
+      return index;
+    }
+  }
+  return -1;
+}
 
 // OFFSET: 0x008FFBE0
 // FUNCTION: fn_12363
