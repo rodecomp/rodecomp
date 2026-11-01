@@ -28,6 +28,14 @@ int DrawBackBufferText(int x, int y, const char* text, COLORREF color) {
   return 0;
 }
 
+// OFFSET: 0x00569C90
+// FUNCTION: fn_02270
+void RenderSystemHolder::Shutdown() noexcept {
+  delete this->system;
+  this->system = nullptr;
+  ClearDirectDrawModes();
+}
+
 // OFFSET: 0x00569F10
 // FUNCTION: fn_02274
 CRenderer* RenderSystemHolder::CreateRenderer() {
