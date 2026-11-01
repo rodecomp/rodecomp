@@ -115,6 +115,30 @@ bool JsonCppLoader::sub_4F3C70(std::vector<unsigned char>& buffer, bool bson) {
 }
 
 // OFFSET: 0x004F3DF0
+// FUNCTION: fn_00488
+__declspec(noinline) bool JsonCppLoader::sub_4F3DF0(std::vector<unsigned char>& buffer) {
+  if (buffer.empty()) {
+    this->Fail("비어있는 버퍼가 전달되었습니다.");
+    return false;
+  }
+
+  JsonCppLoaderBsonOptions optionStorage;
+    JsonCppLoaderBsonOptions* options = reinterpret_cast<JsonCppLoaderBsonOptions*(__thiscall*)(JsonCppLoaderBsonOptions*, int)>(fn_00349)(&optionStorage, 1);
+  JsonValue parsed{};
+  JsonValue* result;
+  try {
+    result = static_cast<JsonValue*>(fn_00273(&parsed, &buffer, options));
+    if (&this->document != result) {
+      reinterpret_cast<void(__thiscall*)(JsonValue*, JsonValue*)>(fn_00769)(&this->document, result);
+    }
+  } catch (const std::exception& exception) {
+    reinterpret_cast<void(__thiscall*)(JsonValue*)>(fn_00367)(&parsed);
+    this->Fail("error : JsonCppLoader::LoadBson failed (reason : %s)", exception.what());
+    return false;
+  }
+  reinterpret_cast<void(__thiscall*)(JsonValue*)>(fn_00367)(&parsed);
+  return true;
+}
 
 // OFFSET: 0x004F3ED0
 
