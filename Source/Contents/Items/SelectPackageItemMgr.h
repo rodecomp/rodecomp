@@ -31,6 +31,7 @@ public:
 
   void AddTab(int packageId, int tabIndex, const std::string& name, int itemCount);
   std::optional<std::vector<ITEM_INFO>*> FindItems(int packageId, int tabIndex);
+  bool OpenItem(unsigned int itemIndex);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

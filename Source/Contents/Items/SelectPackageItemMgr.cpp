@@ -1,9 +1,13 @@
 #include "Contents/Items/SelectPackageItemMgr.h"
+#include "Client/Session.h"
 #include "Network/TextEncoding.h"
 #include "Script/LuaInstance.h"
+#include "UI/SelectPackageItemBox/SelectPackageItemBox.h"
+#include "UI/Window/UIWindowMgr.h"
 extern "C" {
 #include <lua.h>
 }
+#include <cstdlib>
 #include <new>
 #include <windows.h>
 
@@ -23,7 +27,7 @@ void CSelectPackageItemMgr::AddTab(int packageId, int tabIndex, const std::strin
     this->m_packages[packageId] = std::map<int, SelectPackageTab>();
   }
 
-  if (this->m_packages[packageId].find(tabIndex) == this->m_packages[packageId].end()) {
+  if (this->m_packages[packageId].end() == this->m_packages[packageId].find(tabIndex)) {
     this->m_packages[packageId][tabIndex] = SelectPackageTab();
   }
 
@@ -205,4 +209,24 @@ int CSelectPackageItemMgr::LuaAddTab(lua_State* L) {
   lua_pushboolean(L, 1);
   lua_pushstring(L, "good");
   return 2;
+}
+
+// OFFSET: 0x0061F2F0
+// FUNCTION: fn_04448
+bool CSelectPackageItemMgr::OpenItem(unsigned int itemIndex) {
+  const ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, itemIndex);
+  if (item.unknown_0000[1] > 0) {
+    const int packageId = std::atoi(item.itemId.c_str());
+    if (this->m_packages.find(packageId) != this->m_packages.end()) {
+      if (g_windowMgr.LookupWindow(0x2731) == nullptr || g_windowMgr.CloseWindow(0x2731)) {
+        CUISelectPackageItemBox* box = static_cast<CUISelectPackageItemBox*>(g_windowMgr.EnsureWindow(0x2731));
+        if (box != nullptr) {
+          box->Open(itemIndex);
+        }
+      }
+      return true;
+    }
+  }
+
+  return false;
 }
