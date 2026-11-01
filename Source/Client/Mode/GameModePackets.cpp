@@ -7481,8 +7481,108 @@ static_assert(sizeof(AddQuestHunt64) == 0x2E);
 static_assert(sizeof(AddQuestHunt) == 0x2A);
 
 // OFFSET: 0x00D20C00
+// FUNCTION: fn_21651
+void CGameMode::ReceiveAddQuest64(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const AddQuestPacket*>(data);
+  if (g_renewQuestMgr->SetOngoingQuestState(packet->questId, packet->state) == true) {
+    g_renewQuestMgr->sub_67B6B0();
+    return;
+  }
+
+  RenewQuestOngoingInfo info;
+  info.m_state = packet->state;
+  info.m_huntCount = static_cast<char>(packet->huntCount);
+  const tm* time = _localtime32(&packet->endTime);
+  info.m_year = time->tm_year + 1900;
+  info.m_month = time->tm_mon + 1;
+  info.m_day = time->tm_mday;
+  info.m_hour = packet->endTime != 0 ? time->tm_hour : 0;
+  info.m_minute = packet->endTime != 0 ? time->tm_min : 0;
+  _localtime32(&packet->startTime);
+
+  const auto* hunts = reinterpret_cast<const AddQuestHunt64*>(packet + 1);
+  for (int i = 0; i < packet->huntCount; ++i) {
+    const AddQuestHunt64& hunt = hunts[i];
+    info.m_huntId[i] = hunt.huntId;
+    info.m_huntUnknown01A0[i] = hunt.unknown_0008;
+    info.m_huntUnknown00D4[i] = hunt.mobId;
+    info.m_huntUnknown00E0[i] = hunt.unknown_0014;
+    info.m_huntUnknown01AC[i] = hunt.unknown_0010;
+    info.m_huntUnknown01B2[i] = hunt.unknown_0012;
+    const int mobId = hunt.mobId;
+    if ((mobId < 1001 || mobId > 3998) && static_cast<unsigned int>(mobId - 20021) > 11978) {
+      if (mobId == 0x1099) {
+        StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", LookupMessage(3558));
+      } else if (mobId == 0x109A) {
+        StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", LookupMessage(3559));
+      } else if (mobId == 0x287B) {
+        const std::string mapName = FormatOwnedString("%s.rsw", hunt.name);
+        StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", g_session.GetMapDisplayName(mapName.c_str()));
+      } else {
+        StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", g_session.GetJobName(mobId, 99));
+      }
+    } else {
+      StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", hunt.name);
+    }
+  }
+
+  g_renewQuestMgr->AddOngoingQuest(packet->questId, info);
+  g_renewQuestMgr->sub_67B6B0();
+  g_windowMgr.EnsureWindow(0x8F);
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x55E)), 0xFFFF, 0x13, 0, 0);
+}
 
 // OFFSET: 0x00D20EF0
+// FUNCTION: fn_21652
+void CGameMode::ReceiveAddQuest(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const AddQuestPacket*>(data);
+  if (g_renewQuestMgr->SetOngoingQuestState(packet->questId, packet->state) == true) {
+    g_renewQuestMgr->sub_67B6B0();
+    return;
+  }
+
+  RenewQuestOngoingInfo info;
+  info.m_state = packet->state;
+  info.m_huntCount = static_cast<char>(packet->huntCount);
+  const tm* time = _localtime32(&packet->endTime);
+  info.m_year = time->tm_year + 1900;
+  info.m_month = time->tm_mon + 1;
+  info.m_day = time->tm_mday;
+  info.m_hour = packet->endTime != 0 ? time->tm_hour : 0;
+  info.m_minute = packet->endTime != 0 ? time->tm_min : 0;
+  _localtime32(&packet->startTime);
+
+  const auto* hunts = reinterpret_cast<const AddQuestHunt*>(packet + 1);
+  for (int i = 0; i < packet->huntCount; ++i) {
+    const AddQuestHunt& hunt = hunts[i];
+    info.m_huntId[i] = hunt.huntId;
+    info.m_huntUnknown01A0[i] = hunt.unknown_0004;
+    info.m_huntUnknown00D4[i] = hunt.mobId;
+    info.m_huntUnknown00E0[i] = hunt.unknown_0010;
+    info.m_huntUnknown01AC[i] = hunt.unknown_000C;
+    info.m_huntUnknown01B2[i] = hunt.unknown_000E;
+    const int mobId = hunt.mobId;
+    if ((mobId < 1001 || mobId > 3998) && static_cast<unsigned int>(mobId - 20021) > 11978) {
+      if (mobId == 0x1099) {
+        StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", LookupMessage(3558));
+      } else if (mobId == 0x109A) {
+        StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", LookupMessage(3559));
+      } else if (mobId == 0x287B) {
+        const std::string mapName = FormatOwnedString("%s.rsw", hunt.name);
+        StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", g_session.GetMapDisplayName(mapName.c_str()));
+      } else {
+        StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", g_session.GetJobName(mobId, 99));
+      }
+    } else {
+      StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", hunt.name);
+    }
+  }
+
+  g_renewQuestMgr->AddOngoingQuest(packet->questId, info);
+  g_renewQuestMgr->sub_67B6B0();
+  g_windowMgr.EnsureWindow(0x8F);
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x55E)), 0xFFFF, 0x13, 0, 0);
+}
 
 #pragma pack(push, 1)
 struct BarterMarketItemListPacket {
@@ -7506,6 +7606,43 @@ struct BarterMarketItemRecord {
 static_assert(sizeof(BarterMarketItemRecord) == 0x1F);
 
 // OFFSET: 0x00D215B0
+// FUNCTION: fn_21655
+void CGameMode::ReceiveBarterMarketItemList(const unsigned char* data) {
+  if (data == nullptr) {
+    return;
+  }
+
+  g_barterMarketItemMgr->Clear();
+  const auto* packet = reinterpret_cast<const BarterMarketItemListPacket*>(data);
+  const std::int64_t count = (static_cast<std::int64_t>(packet->length) - 4) / static_cast<std::int64_t>(sizeof(BarterMarketItemRecord));
+  for (std::int64_t i = 0; i < count; ++i) {
+    BarterMarketItemRecord record;
+    memcpy_s(&record, sizeof(record), data + sizeof(BarterMarketItemListPacket) + i * sizeof(BarterMarketItemRecord), sizeof(record));
+
+    BarterMarketItem item;
+    char itemName[33] = {};
+    _itoa(record.itemId, itemName, 10);
+    item.name = itemName;
+    item.field_1c = record.type;
+    item.field_2c = record.currencyItemId;
+    item.field_28 = record.currencyAmount;
+    item.amount = record.weight / 10;
+    item.value = record.amount;
+    item.flag_24 = true;
+    item.flag_38 = record.amount == -1;
+    item.id = record.index;
+    item.field_40 = record.location;
+    item.field_44 = record.viewSprite;
+    g_barterMarketItemMgr->items.push_back(item);
+  }
+
+  if (UIWindow* window = g_windowMgr.EnsureWindow(0x14E)) {
+    window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  }
+  if (UIWindow* window = g_windowMgr.EnsureWindow(0x14F)) {
+    window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x00D17D30
 // FUNCTION: fn_21598
