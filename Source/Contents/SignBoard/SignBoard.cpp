@@ -60,6 +60,7 @@ void __fastcall sub_81FE50(CSignBoardMgr* manager) {
 }
 
 // OFFSET: 0x0081FE60
+// FUNCTION: fn_10247
 void CSignBoardMgr::Initialize() {
   std::string mapName;
   if (g_modeMgr.GetGameMode() != nullptr) {
