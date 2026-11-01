@@ -114,7 +114,7 @@ void CGameActor::Slot16() {
 // OFFSET: 0x00CB0FD0
 // FUNCTION: fn_21097
 #pragma auto_inline(off)
-bool CGameActor::OnProcess() {
+bool CGameActor::Slot14() {
   if (this->unknown_0278 != 0 && timeGetTime() > static_cast<std::uint32_t>(this->unknown_0278)) {
     this->render.isMotionFreezed = false;
     this->unknown_0278 = 0;
