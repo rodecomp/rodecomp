@@ -4285,6 +4285,232 @@ void CPlayer::Initialize() {
 }
 
 // OFFSET: 0x00DB4290
+// FUNCTION: fn_22651
+void CPc::ChangeState(int state, int resetPosition) {
+  int current = this->render.unknown_0070;
+  if (current == 3 || this->unknown_017C != 0) {
+    return;
+  }
+
+  if (state == 3) {
+    const int job = this->GetEffectiveJob(JobNames::BaseJob(this->unknown_025C));
+    this->LoadEquipAction(0, GetBodyActionResourceName(job, this->unknown_0260, this->unknown_04D0, this->Slot56()).c_str());
+    this->LoadEquipSprite(0, g_session.GetBodySprName(job, this->unknown_0260, this->unknown_04D0, this->Slot56()).c_str());
+    current = this->render.unknown_0070;
+  } else if (current == 0x51 || state == -1) {
+    return;
+  }
+
+  if (current == 4 && static_cast<char>(resetPosition) == 1) {
+    this->render.position.x = this->unknown_02D0;
+    this->render.position.z = this->unknown_02D4;
+  }
+
+  int action;
+  if (this->Slot55() > 0) {
+    action = this->ActionBase(state);
+  } else {
+    action = this->JobActionBase(state);
+  }
+
+  using SpawnArrow = void (CGameMode::*)(const vector3d*, std::uint32_t, float, int);
+  const SpawnArrow spawnArrow = reinterpret_cast<SpawnArrow>(&CGameMode::SpawnArrowEffect);
+
+  switch (state) {
+  case 0:
+    CGameActor::Slot15(0, resetPosition);
+    if (g_session.m_aid == this->render.accountId) {
+      switch (g_session.m_job) {
+      case 0xFCF:
+      case 0x1082:
+      case 0x108F:
+      case 0x1091:
+      case 0x10CE:
+        if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.desiredDistance > g_serviceOptionJitterScale) {
+          static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.desiredDistance = g_serviceOptionJitterScale;
+        }
+        break;
+      }
+    }
+    this->render.curMotion = this->unknown_043C;
+    switch (current) {
+    case 2:
+    case 4:
+    case 8:
+    case 0x34:
+    case 0x35:
+    case 0x36:
+    case 0x3A:
+    case 0x3B:
+    case 0x3E:
+    case 0x3F:
+    case 0x40:
+    case 0x41:
+    case 0x43:
+    case 0x44:
+    case 0x45:
+    case 0x46:
+    case 0x47:
+    case 0x48:
+    case 0x49:
+    case 0x4A:
+    case 0x4B:
+    case 0x4C:
+    case 0x4D:
+    case 0x4E:
+    case 0x4F:
+    case 0x50:
+      this->SetAction(action, 4, 0);
+      break;
+    default:
+      if (this->unknown_02C8 != 0) {
+        this->SetAction(action, 4, 0);
+      }
+      break;
+    }
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_02CC = 0;
+    break;
+  case 1:
+    this->unknown_0178 = 0;
+    if (this->bodyState != 1 && this->bodyState != 2) {
+      this->render.isMotionFreezed = false;
+    }
+    this->unknown_043C = 0;
+    CGameActor::Slot15(1, resetPosition);
+    break;
+  case 2: {
+    this->unknown_0178 = 0;
+    if (this->bodyState != 1 && this->bodyState != 2) {
+      this->render.isMotionFreezed = false;
+    }
+
+    bool weaponAllowed;
+    if (this->GetUnknown0404() == 1) {
+      weaponAllowed = false;
+    } else if (this->GetUnknown0404() == 2) {
+      weaponAllowed = true;
+    } else {
+      weaponAllowed = IsJobWeaponAllowed(
+        this->GetEffectiveJob(-1), this->unknown_0260, (static_cast<std::int64_t>(this->unknown_044C) << 32) | static_cast<std::uint32_t>(this->weapon)
+      );
+    }
+
+    int attackState;
+    switch (this->GetEffectiveJob(-1)) {
+    case 0xFCE:
+    case 0xFCF:
+    case 0xFD0:
+    case 0x1081:
+    case 0x1082:
+    case 0x108E:
+    case 0x108F:
+    case 0x1091:
+    case 0x1093:
+    case 0x1094:
+    case 0x10CE:
+    case 0x10DC:
+      if (std::max(rand() % 10, 0) < 7) {
+        weaponAllowed = true;
+        attackState = 9;
+      } else {
+        weaponAllowed = false;
+        attackState = 2;
+      }
+      break;
+    default:
+      attackState = weaponAllowed ? 9 : 2;
+      break;
+    }
+
+    CGameActor::Slot15(attackState, resetPosition);
+    this->unknown_0378 = AttackMotionLength(this->GetEffectiveJob(-1), this->unknown_0260, this->weapon, weaponAllowed);
+
+    int weaponView = this->weapon;
+    if (weaponView > 105) {
+      weaponView = GetWeaponViewValue(weaponView);
+    }
+    bool usesArrow = false;
+    g_luaScript->Call("IsItemUsingArrow", "d>b", weaponView, &usesArrow);
+    if (usesArrow == true) {
+      if (this->Slot58() == true) {
+        this->Slot59(false);
+      } else {
+        CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+        (mode->*spawnArrow)(&this->render.position, this->hitTargetAid, this->render.speed * this->unknown_0378, 0);
+      }
+      this->unknown_0378 = 8.0f / this->render.speed + this->unknown_0378;
+    }
+
+    if (g_session.IsDoramJob(this->GetEffectiveJob(-1)) == true && this->unknown_04D8[0] == 1) {
+      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      (mode->*spawnArrow)(&this->render.position, this->hitTargetAid, this->unknown_0378 * this->render.speed, this->GetEffectiveJob(-1));
+      this->unknown_0378 = 8.0f / this->render.speed + this->unknown_0378;
+    }
+    break;
+  }
+  case 6:
+    this->Slot16();
+    this->SetAction(action, 4, 1);
+    this->render.isMotionFinished = true;
+    this->render.curMotion = this->unknown_043C;
+    break;
+  case 7:
+    if (this->render.unknown_0114 == 1 || this->render.unknown_0070 == 6) {
+      return;
+    }
+    this->SetAction(action, 6, 1);
+    if (this->GetEffectiveJob(-1) == 0xFB4 || this->GetEffectiveJob(-1) == 0xFB5 || this->GetEffectiveJob(-1) == 0xFAF ||
+        this->GetEffectiveJob(-1) == 0xFE2 || this->GetEffectiveJob(-1) == 0xFE9 || this->GetEffectiveJob(-1) == 0xF ||
+        this->GetEffectiveJob(-1) == 0xFB0 || this->GetEffectiveJob(-1) == 0xFC6 || this->GetEffectiveJob(-1) == 0xFE6 ||
+        this->GetEffectiveJob(-1) == 0xFED || this->GetEffectiveJob(-1) == 0x100A || this->GetEffectiveJob(-1) == 0x10A6) {
+      this->SetSequenceInterval(4);
+      this->SetFrameSequence(0x60, 0, 0, 0x60, 0, 1, 400, 0);
+    } else if (this->GetEffectiveJob(-1) == 0x19) {
+      this->SetSequenceInterval(4);
+      this->SetFrameSequence(0x60, 2, 5, 0x60, 5, 1, 1000, 0);
+    } else if (this->GetEffectiveJob(-1) == 0x18) {
+      this->SetSequenceInterval(4);
+      this->SetFrameSequence(0x60, 0, 3, 0x60, 3, 1, 1000, 0);
+    } else if (this->GetEffectiveJob(-1) == 0x107E) {
+      this->SetSequenceInterval(4);
+      this->SetFrameSequence(0x60, 2, 5, 0x60, 5, 1, 1000, 0);
+    } else if (this->GetEffectiveJob(-1) == 0x1084) {
+      this->SetSequenceInterval(4);
+      this->SetFrameSequence(0x60, 0, 3, 0x60, 3, 1, 1000, 0);
+    }
+    this->unknown_0378 = 6.0f;
+    break;
+  case 8:
+    this->Slot16();
+    this->SetAction(action, 6, 1);
+    this->render.isMotionFinished = true;
+    break;
+  case 9: {
+    this->unknown_0178 = 0;
+    if (this->bodyState != 1 && this->bodyState != 2) {
+      this->render.isMotionFreezed = false;
+    }
+    const bool weaponAllowed = IsJobWeaponAllowed(
+      this->GetEffectiveJob(-1), this->unknown_0260, (static_cast<std::int64_t>(this->unknown_044C) << 32) | static_cast<std::uint32_t>(this->weapon)
+    );
+    CGameActor::Slot15(weaponAllowed ? 9 : 2, resetPosition);
+    this->unknown_0378 = AttackMotionLength(this->GetEffectiveJob(-1), this->unknown_0260, this->weapon, weaponAllowed);
+    if ((this->weapon == 14 && this->unknown_044C == 0) || (this->weapon == 13 && this->unknown_044C == 0)) {
+      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      (mode->*spawnArrow)(&this->render.position, this->hitTargetAid, this->unknown_0378 * this->render.speed, 0);
+      this->unknown_0378 = 8.0f / this->render.speed + this->unknown_0378;
+    }
+    break;
+  }
+  default:
+    CGameActor::Slot15(state, resetPosition);
+    return;
+  }
+
+  this->render.previousAnimation = this->Get8Dir(this->render.angle) + this->render.animation;
+  this->render.unknown_0070 = state;
+  this->render.unknown_008C = timeGetTime();
+}
 
 // OFFSET: 0x00DAC400
 // FUNCTION: fn_22594
