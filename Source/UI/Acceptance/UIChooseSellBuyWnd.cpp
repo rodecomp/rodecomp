@@ -12,6 +12,7 @@
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/MessageTable.h"
 #include "Contents/Items/ItemNaming.h"
+#include "UI/Window/WindowRegistration.h"
 #include "Contents/TipBoxTitles.h"
 #include "Contents/TipOfTheDay.h"
 #include "Contents/SkinMgr.h"
@@ -1560,6 +1561,8 @@ void UINpcTextEditDialogWnd::InsertItemTag(const ITEM_INFO& item) {
   this->edit->MoveCursorToEnd();
   this->m_tagCtrl->sub_89CFE0(item, 0x12B8A4);
 }
+
+// OFFSET: 0x008DA690
 
 // OFFSET: 0x008DACF0
 // FUNCTION: fn_12149
@@ -5983,4 +5986,11 @@ std::string CartTypeName(int type) {
       "마도카트",
   };
   return std::move(names[type]);
+}
+
+// OFFSET: 0x008D7460
+// FUNCTION: fn_12119
+int CSession::GetTraitStat(int type) {
+  std::map<int, int>& traitStats = reinterpret_cast<std::map<int, int>&>(this->unknown_7FC0);
+  return traitStats[type];
 }

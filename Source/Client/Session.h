@@ -966,6 +966,7 @@ public:
   void AddUnknown7F94(std::uint32_t id);
   void SetShowRankingSchedule(bool show, const void* data);
   void SetTraitStat(int type, int value);
+  int GetTraitStat(int type);
   void EndSkillOption();
   void ClearNormalItemSlots();
   void ResetItems6B68();

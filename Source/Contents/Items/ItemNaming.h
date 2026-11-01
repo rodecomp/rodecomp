@@ -65,6 +65,7 @@ std::uint32_t __fastcall ItemCardColor(const ITEM_INFO* item);
 std::string ItemDisplayName(int id);
 const char* ItemResourcePath(const ITEM_INFO& item);
 int ItemSlotsCount(const ITEM_INFO& item);
+int ItemUnidentifiedName(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume);
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(ItemCardName) == 12);
