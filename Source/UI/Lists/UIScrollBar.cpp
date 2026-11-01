@@ -504,6 +504,77 @@ void UITabControl::SetFlag(int index, bool value) {
   }
 }
 
+static void AppendTabString(std::vector<std::string>& vec, const char* text) {
+  struct Layout {
+    std::string* first;
+    std::string* last;
+    std::string* cap;
+  };
+  Layout* view = reinterpret_cast<Layout*>(&vec);
+  if (view->last == view->cap) {
+    const std::size_t count = static_cast<std::size_t>(view->last - view->first);
+    std::size_t capacity = count + count / 2;
+    if (capacity < count + 1) {
+      capacity = count + 1;
+    }
+    std::string* neu = static_cast<std::string*>(::operator new(capacity * sizeof(std::string)));
+    for (std::size_t i = 0; i < count; ++i) {
+      new (neu + i) std::string(view->first[i]);
+    }
+    for (std::size_t i = 0; i < count; ++i) {
+      view->first[i].~basic_string();
+    }
+    ::operator delete(view->first);
+    view->first = neu;
+    view->last = neu + count;
+    view->cap = neu + capacity;
+  }
+  new (view->last) std::string(text ? text : "");
+  ++view->last;
+}
+
+// OFFSET: 0x0089C440
+// FUNCTION: fn_11588
+void UITabControl::AddTab(const char* label, const char* tooltip) {
+  AppendTabString(this->labels, label);
+  AppendTabString(this->tooltips, "");
+
+  if (this->parent) {
+    const int tabWidth = this->parent->geometry.width / this->labels.size() - this->tabPadding;
+
+    for (std::size_t index = 0; index < this->labels.size(); ++index) {
+      if (this->TextWidth(this->m_controls->fonts, this->m_controls->locale, this->labels[index].c_str(), 0, 0, this->unknown_00E8, 0, 0) > tabWidth) {
+        if (index != this->labels.size() - 1) {
+          if (this->tooltips[index].empty()) {
+            this->tooltips[index] = this->labels[index];
+          }
+        } else if (std::strlen(tooltip) != 0) {
+          this->tooltips[index] = this->labels[index];
+        }
+      }
+    }
+  }
+
+  this->unknown_007C = 0;
+  this->colors.push_back(0xFFFFFFFFu);
+
+  int width;
+  if (this->layout == 0 || this->layout == 2) {
+    width = this->VerticalTextHeight(this->m_controls->fonts, this->m_controls->locale, label, 0, 0, this->unknown_00E8, 0);
+  } else {
+    width = this->TextWidth(this->m_controls->fonts, this->m_controls->locale, label, 0, 0, this->unknown_00E8, 0, 0);
+  }
+  this->widths.push_back(width + this->tabPadding);
+
+  if (std::strlen(tooltip) != 0) {
+    this->tooltips[this->labels.size() - 1] = tooltip;
+  }
+
+  this->flags.push_back(false);
+  this->RecalculateWidths();
+}
+
+
 // OFFSET: 0x00880B20
 // FUNCTION: fn_11283
 int UITabControl::TabCount() {
