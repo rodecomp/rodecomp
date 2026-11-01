@@ -321,6 +321,7 @@ public:
   void NotifyItemBounds();
   CCorpse* SpawnCorpse(float x, float y, float z, const char* action, const char* sprite, int animation, int motion, float angle);
   bool LaunchTargetEffect(int effectId, CGameActor* source, CGameActor* target, int argument);
+  void UpdateNameBalloon(CGameActor* actor);
   void ShowGuildEmblem(CGameActor* actor, int guildId, int unused);
   void RemoveUnknown0604(int window);
   void DrawMiniMapNumber();

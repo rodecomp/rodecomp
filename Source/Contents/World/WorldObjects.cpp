@@ -40,6 +40,10 @@
 #include "Contents/Messenger/ClientMessenger.h"
 #include "Contents/Messenger/WhisperBlockMgr.h"
 #include "File/ShortcutFilename.h"
+#include "Contents/ClanInfo.h"
+#include "Contents/ForbiddenWords.h"
+#include "Contents/Configuration/ServiceOptions.h"
+#include "UI/Text/UINameBalloonText.h"
 
 #include <atomic>
 #include <cstdio>
@@ -429,6 +433,125 @@ bool CGameMode::LaunchTargetEffect(int effectId, CGameActor* source, CGameActor*
     effect->SendMsg(nullptr, 44, 0, argument, 0, 0, 0, 0);
   }
   return true;
+}
+
+// OFFSET: 0x00CD7800
+// FUNCTION: fn_21297
+void CGameMode::UpdateNameBalloon(CGameActor* actor) {
+  if (!actor) {
+    return;
+  }
+
+  this->EnsureNameBalloon(this->nameBalloon);
+  CActorNameCard card = this->nameCard.Lookup(actor->render.accountId);
+  if (!card.received) {
+    return;
+  }
+
+  if (actor->unknown_02F8 == 1 && (this->scene->unknown_0048 == 1 || this->scene->unknown_004C == 1)) {
+    card.name = "??????";
+  } else {
+    const std::string name = this->nameCard.Name(actor->render.accountId);
+    card.name = name;
+  }
+
+  if (g_session.IsMonsterActor(actor) == 1) {
+    UINameBalloonText* balloon = this->nameBalloon;
+    unsigned char monsterType;
+    if (actor->GetEffectiveJob(-1) == 20269) {
+      monsterType = 0;
+    } else {
+      monsterType = actor->unknown_0304;
+    }
+    balloon->SetName(card, actor->IsPlayerClass(actor->GetEffectiveJob(-1)) == 0, monsterType);
+  } else if (actor->unknown_0314 == 7 || actor->unknown_0314 == 8) {
+    CActorNameCard masked = card;
+    char name[24] = {};
+    strncpy_s(name, sizeof(name), masked.name.c_str(), masked.name.size());
+    if (g_forbiddenWords.Contains(name) == true) {
+      std::string unused;
+      g_forbiddenWords.Mask(name, &unused);
+      masked.name = name;
+    }
+    this->nameBalloon->SetName(masked, actor->IsPlayerClass(actor->GetEffectiveJob(-1)) == 0, 0);
+  } else {
+    bool stripHash = true;
+    if (actor->IsPlayerClass(actor->GetEffectiveJob(-1)) == 1) {
+      stripHash &= g_session.IsAllyActor(actor->render.accountId, actor->GetEffectiveJob(-1)) != 0;
+    }
+    this->nameBalloon->SetName(card, stripHash, 0);
+  }
+
+  const unsigned char showEmblem = g_serviceOptions.Get(0x40);
+  if (((g_session.IsNpcJob(actor->GetEffectiveJob(-1)) || g_session.IsMonsterActor(actor)) && card.unknown_0094) ||
+      (g_session.IsAllyActor(actor->render.accountId, actor->GetEffectiveJob(-1)) && card.unknown_0094)) {
+    this->nameBalloon->SetIcon(FormatOwnedString("유저인터페이스\\group\\group_%d.bmp", card.unknown_0094).c_str(), 0);
+  } else if (actor->Slot50() && showEmblem) {
+    const unsigned char framedEmblem = g_serviceOptions.Get(0xF3);
+    std::string emblem = g_guildMgr->GetEmblemFilename(actor->Slot50());
+    this->nameBalloon->SetIcon(emblem.c_str(), static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->unknown_004C == 1 && framedEmblem ? 1 : 0);
+  } else if (reinterpret_cast<CGameActor*>(this->scene->player) == actor) {
+    char path[256];
+    std::memset(path, 0, sizeof(path));
+    if (g_clanInfo->m_hasClan == true && g_clanInfo->m_clanId) {
+      StringFormat(path, sizeof(path), static_cast<std::size_t>(-1), "유저인터페이스\\clan_system\\clan_emblem%02d.bmp", g_clanInfo->m_clanId);
+    }
+    this->nameBalloon->SetIcon(path, 0);
+  } else if (actor->unknown_0305) {
+    char path[256];
+    std::memset(path, 0, sizeof(path));
+    std::sprintf(path, "유저인터페이스\\clan_system\\clan_emblem%02d.bmp", actor->unknown_0308);
+    this->nameBalloon->SetIcon(path, 0);
+  } else {
+    this->nameBalloon->SetIcon("", 0);
+  }
+
+  UINameBalloonText* balloon = this->nameBalloon;
+  *reinterpret_cast<int*>(this->unknown_02E4) = balloon->geometry.width;
+  *reinterpret_cast<int*>(&this->unknown_02E4[4]) = balloon->geometry.height;
+  if (balloon) {
+    const int aid = actor->render.accountId;
+    if (g_serviceType == 12) {
+      switch (aid) {
+      case 0x189111:
+      case 0x189112:
+      case 0x189113:
+      case 0x189114:
+      case 0x189116:
+      case 0x189117:
+      case 0x189119:
+      case 0x18911A:
+        balloon->m_textColor = 0xFF;
+        balloon->m_outlineColor = 0x646464;
+        break;
+      default:
+        balloon->m_textColor = this->ActorNameColor(actor->GetEffectiveJob(-1), aid);
+        balloon->m_outlineColor = 0;
+        break;
+      }
+    } else {
+      balloon->m_textColor = this->ActorNameColor(actor->GetEffectiveJob(-1), aid);
+      balloon->m_outlineColor = 0;
+    }
+
+    if (!actor->IsPlayerClass(actor->GetEffectiveJob(-1)) && static_cast<short>(actor->unknown_0210) > 0 && g_session.IsMonsterActor(actor)) {
+      const short difference = static_cast<short>(g_session.m_level - actor->unknown_0210);
+      if (difference < -10) {
+        balloon->m_textColor = 0xFF;
+        balloon->m_outlineColor = 0;
+      } else if (difference >= 16) {
+        balloon->m_textColor = 0x9B9B9B;
+        balloon->m_outlineColor = 0;
+      }
+    }
+
+    if (g_session.m_aid == actor->unknown_02EC) {
+      balloon->m_textColor = 0xC8C8C8;
+      balloon->m_outlineColor = 0;
+    }
+  }
+
+  this->PlaceWindowAtActor(this->nameBalloon, actor);
 }
 
 // OFFSET: 0x00CD8820

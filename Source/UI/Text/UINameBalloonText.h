@@ -5,6 +5,8 @@
 
 #include <string>
 
+class CActorNameCard;
+
 class UINameBalloonText : public UIBalloonText {
 public:
   __declspec(noinline) UINameBalloonText(UIWindowContext& windows, BalloonTextContext& text);
@@ -12,6 +14,7 @@ public:
   void Slot19() override;
   void Paint() override;
   virtual void SetIcon(const char* name, unsigned char framed);
+  virtual void SetName(const CActorNameCard& card, bool stripHash, unsigned char monsterType);
 
   /* 00A0 */ std::string iconName;
   /* 00B8 */ int unknown_00B8;
