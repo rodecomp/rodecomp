@@ -191,6 +191,35 @@ UIBookWnd::UIBookWnd(UIWindowContext& windows, UIFrameContext& frames, UIBookCon
   this->m_bookName[0] = 0;
 }
 
+// OFFSET: 0x008C7860
+// FUNCTION: fn_11940
+UIEquipWnd::UIEquipWnd(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0) {
+  this->unknown_0124 = nullptr;
+  this->unknown_0128 = 0;
+  this->unknown_012C = 0;
+  this->unknown_0130 = 0;
+  this->unknown_0178 = 0;
+  this->m_placement = nullptr;
+  this->m_updateTick = timeGetTime();
+  this->unknown_00D8 = 0;
+  this->m_page = 0;
+  this->m_contentTop = 20;
+  for (int& value : this->unknown_00F8) {
+    value = 0;
+  }
+  this->unknown_011C = 0;
+  this->unknown_012C = 0;
+  this->m_scrollBar = nullptr;
+  for (int& value : this->unknown_0138) {
+    value = 0;
+  }
+  this->m_firstSlot = 0;
+  this->unknown_015C = g_session.m_damageSkinMode;
+  this->m_hoverSlot = g_session.m_damageSkinIndex;
+  this->m_damageSkinNames.reserve(g_session.unknown_80C8);
+  this->m_damageSkinIcons.reserve(g_session.unknown_80C8);
+}
+
 // OFFSET: 0x008CAC40
 // FUNCTION: fn_11997
 UIItemCollectionWnd::~UIItemCollectionWnd() {
