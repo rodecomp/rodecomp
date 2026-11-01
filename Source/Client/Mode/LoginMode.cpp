@@ -1107,6 +1107,59 @@ void CLoginMode::SubD97B20(int) {
 }
 
 // OFFSET: 0x00D97D30
+// FUNCTION: fn_22305
+void CLoginMode::Update() {
+  reinterpret_cast<ApplicationMessages*>(this)->Pump();
+  this->PollNetworkStatus();
+  SendClientKeepalive(this->cursorType, this->unknown_6F10, GetRagConnection(), *reinterpret_cast<const PacketLengths*>(&GetRagConnection()), g_session.m_aid);
+  g_mouse.Update();
+  g_windowMgr.ProcessMouse();
+  if (this->running != 0) {
+    this->SubD97780(this->cursorType);
+    reinterpret_cast<ModeTooltip*>(this)->Expire(g_windowMgr);
+  }
+
+  reinterpret_cast<CTimeScheduler*>(g_timeScheduler)->Process();
+  g_asyncWorkMgr->Update(1000);
+  g_ggHashMgr->VerifyPendingFiles();
+  if (g_launchPassCommandLine) {
+    Base_RunCallback();
+  }
+
+  if (g_restoreSurfaces != 0) {
+    g_restoreSurfaces = 0;
+    GetRenderSystemHolder()->TestDevice();
+    g_windowMgr.InvalidateAll();
+    CBitmapRes* bitmap = reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str())));
+    g_windowMgr.SetSurface0478(bitmap);
+  }
+
+  if (g_isAppActive == 0 && GetRenderSystemHolder()->IsWindowed()) {
+    return;
+  }
+
+  if (sub_C7F5A0()) {
+    g_renderer->ClearDepth(1);
+    reinterpret_cast<WindowFrameUpdate*>(&g_windowMgr)->Update();
+    if (g_serviceType == 0 || g_serviceType == 4 || g_serviceType == 8 || g_serviceType == 9 || g_serviceType == 3 || g_serviceType == 10 ||
+        g_serviceType == 1 || g_serviceType == 11 || g_serviceType == 12 || g_serviceType == 5 || g_serviceType == 7 || g_serviceType == 14 ||
+        g_serviceType == 20 || g_serviceType == 15) {
+      g_windowMgr.DrawLoginOverlay();
+      if (this->cursorType == 0) {
+        g_windowMgr.CenterSurface0478();
+      }
+    } else {
+      g_windowMgr.CenterSurface0478();
+    }
+    reinterpret_cast<WindowLayerRenderer*>(&g_windowMgr)->sub_AA73B0();
+    this->DrawCursor();
+    reinterpret_cast<ModeFade*>(this)->Draw();
+    g_renderer->Draw();
+    g_renderer->Present(1);
+  }
+
+  this->TakeScreenshot();
+}
 
 // OFFSET: 0x00D97EF0
 // FUNCTION: fn_22306
