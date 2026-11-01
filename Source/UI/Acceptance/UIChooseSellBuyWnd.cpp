@@ -1252,6 +1252,37 @@ void UIMenuWnd::Slot31(int x, int y) {
   this->m_frameContext->windows.CloseWindow(18);
 }
 
+// OFFSET: 0x008F4520
+// FUNCTION: fn_12288
+void UIItemCollectionWnd::Slot28(int x, int y) {
+  int slotX;
+  int slotY;
+  const int index = this->CardSlotAt(x, y, &slotX, &slotY);
+  if (index == -1 || this->m_compare != 1) {
+    return;
+  }
+
+  ITEM_INFO card;
+  int cardId;
+  std::memcpy(&cardId, this->m_item.unknown_001C + index * sizeof(cardId), sizeof(cardId));
+  card.identified = 1;
+  card.unknown_0000[0] = 6;
+  card.unknown_0060 = 0;
+  card.SetItemId(cardId);
+
+  ModeTooltip* tooltip = reinterpret_cast<ModeTooltip*>(g_charViewMode);
+  std::uint32_t color = 0xFFFFFFFF;
+  if (index >= ItemSlotsCount(this->m_item)) {
+    color = ItemCardColor(&this->m_item);
+  }
+
+  ItemDescriptions descriptions{g_itemDescriptions};
+  bool languagePrefix = false;
+  WORD language = g_serverLanguage->language;
+  ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+  tooltip->Show(naming.DisplayName(card, 0).c_str(), slotX, slotY, color, 0, 1);
+}
+
 // OFFSET: 0x008F46C0
 // FUNCTION: fn_12290
 void UIStatusWnd::Slot28(int x, int y) {
@@ -3768,6 +3799,8 @@ int UISayDialogWnd::ButtonX(UIBitmapButton* button) {
   }
   return x - button->BitmapWidth();
 }
+
+// OFFSET: 0x008D76B0
 
 // OFFSET: 0x008FFBE0
 // FUNCTION: fn_12363
