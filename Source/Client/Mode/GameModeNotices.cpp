@@ -7183,4 +7183,61 @@ void CGameMode::sub_D1A330(const unsigned char* data) {
   this->sub_D1A520(static_cast<int>(*reinterpret_cast<const std::uint32_t*>(data + 4)), std::string(nameBuffer), text, data[0x20] != 0);
 }
 
+#include "Contents/ShowRankingScheduler.h"
+
+// OFFSET: 0x00D06760
+// FUNCTION: fn_21576
+static std::map<int, RankingBoardStyle> RankNoticeStyles() {
+  std::map<int, RankingBoardStyle> styles;
+  styles.insert({0, {"========== BLACKSMITH RANK ============", 0x9B9B9B, 0xCDCDCD}});
+  styles.insert({1, {"=========== ALCHEMIST RANK =============", 0x9BCD9B, 0xCDFFCD}});
+  styles.insert({2, {"============ TAEKWON RANK =============", 0xCD9B9B, 0xFFCDCD}});
+  styles.insert({3, {"=========== KILLER RANK ==============", 0x9B9B9B, 0xCDCDCD}});
+  return styles;
+}
+
+#pragma pack(push, 1)
+struct RankingListPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int16_t type;
+  /* 0004 */ char names[10][24];
+  /* 00F4 */ int points[10];
+  /* 011C */ int myPoint;
+};
+#pragma pack(pop)
+
+// OFFSET: 0x00D19390
+// FUNCTION: fn_21605
+void CGameMode::ReceiveRankingList(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const RankingListPacket*>(data);
+  const int kind = packet->type;
+  // GLOBAL: gl_25258
+  static const std::map<int, RankingBoardStyle> styles = RankNoticeStyles();
+
+  const char* title;
+  std::uint32_t color;
+  std::uint32_t background;
+  auto style = styles.find(kind);
+  if (style != styles.end()) {
+    background = style->second.background;
+    title = style->second.title;
+    color = style->second.color;
+  } else {
+    title = "===========================================";
+    background = 0;
+    color = 0;
+  }
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(title), color, 0, 0, 0);
+
+  for (int index = 0; index < 10; ++index) {
+    const std::string line = FormatOwnedString("[ %2d ] %-18s  :  %4d POINT", index + 1, packet->names[index], packet->points[index]);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(line.c_str()), background, 0, 0, 0);
+  }
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>("==========================================="), color, 0, 0, 0);
+
+  const std::string mine = FormatOwnedString("MY POINT    :  %4d POINT ", packet->myPoint);
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(mine.c_str()), background, 0, 0, 0);
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>("==========================================="), color, 0, 0, 0);
+}
+
 // OFFSET: 0x00D1A520
