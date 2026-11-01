@@ -2205,6 +2205,80 @@ void UIAccessoryCusWnd::Slot15(int, int) {
 }
 
 // OFFSET: 0x008270A0
+// FUNCTION: fn_10326
+void UIDisplayCharacter::CreateButtons() {
+  UIBitmapButton* upperLeft = new (std::nothrow) UIBitmapButton();
+  upperLeft->SetBitmap("유저인터페이스\\styleshop\\arrow_chr_l_upper_out.bmp", 0, 0);
+  upperLeft->SetBitmap("유저인터페이스\\styleshop\\arrow_chr_l_upper_over.bmp", 1, 0);
+  upperLeft->SetBitmap("유저인터페이스\\styleshop\\arrow_chr_l_upper_over.bmp", 2, 0);
+  upperLeft->SetSize(upperLeft->BitmapWidth(), upperLeft->BitmapHeight());
+  upperLeft->Move(11, 90);
+  upperLeft->SetId(450);
+  this->AddChild(upperLeft);
+
+  UIBitmapButton* upperRight = new (std::nothrow) UIBitmapButton();
+  upperRight->SetBitmap("유저인터페이스\\styleshop\\arrow_chr_r_upper_out.bmp", 0, 0);
+  upperRight->SetBitmap("유저인터페이스\\styleshop\\arrow_chr_r_upper_over.bmp", 1, 0);
+  upperRight->SetBitmap("유저인터페이스\\styleshop\\arrow_chr_r_upper_over.bmp", 2, 0);
+  upperRight->SetSize(upperRight->BitmapWidth(), upperRight->BitmapHeight());
+  upperRight->Move(231, 90);
+  upperRight->SetId(451);
+  this->AddChild(upperRight);
+
+  UIBitmapButton* lowerLeft = new (std::nothrow) UIBitmapButton();
+  lowerLeft->SetBitmap("유저인터페이스\\styleshop\\arrow_chr_l_upper_out.bmp", 0, 0);
+  lowerLeft->SetBitmap("유저인터페이스\\styleshop\\arrow_chr_l_upper_over.bmp", 1, 0);
+  lowerLeft->SetBitmap("유저인터페이스\\styleshop\\arrow_chr_l_upper_over.bmp", 2, 0);
+  lowerLeft->SetSize(lowerLeft->BitmapWidth(), lowerLeft->BitmapHeight());
+  lowerLeft->Move(11, 117);
+  lowerLeft->SetId(354);
+  this->AddChild(lowerLeft);
+
+  UIBitmapButton* lowerRight = new (std::nothrow) UIBitmapButton();
+  lowerRight->SetBitmap("유저인터페이스\\styleshop\\arrow_chr_r_upper_out.bmp", 0, 0);
+  lowerRight->SetBitmap("유저인터페이스\\styleshop\\arrow_chr_r_upper_over.bmp", 1, 0);
+  lowerRight->SetBitmap("유저인터페이스\\styleshop\\arrow_chr_r_upper_over.bmp", 2, 0);
+  lowerRight->SetSize(lowerRight->BitmapWidth(), lowerRight->BitmapHeight());
+  lowerRight->Move(231, 117);
+  lowerRight->SetId(355);
+  this->AddChild(lowerRight);
+
+  this->m_favoriteButton = new (std::nothrow) UIBitmapButton();
+  this->m_favoriteButton->SetBitmap("유저인터페이스\\styleshop\\btn_favorite_off.bmp", 0, 0);
+  this->m_favoriteButton->SetBitmap("유저인터페이스\\styleshop\\btn_favorite_off_over.bmp", 1, 0);
+  this->m_favoriteButton->SetBitmap("유저인터페이스\\styleshop\\btn_favorite_on.bmp", 2, 0);
+  this->m_favoriteButton->SetSize(this->m_favoriteButton->BitmapWidth(), this->m_favoriteButton->BitmapHeight());
+  this->m_favoriteButton->Move(7, 174);
+  this->m_favoriteButton->SetId(356);
+  this->AddChild(this->m_favoriteButton);
+
+  UIBitmapButton* refresh = new (std::nothrow) UIBitmapButton();
+  refresh->SetBitmap("유저인터페이스\\styleshop\\btn_refresh_out.bmp", 0, 0);
+  refresh->SetBitmap("유저인터페이스\\styleshop\\btn_refresh_over.bmp", 1, 0);
+  refresh->SetBitmap("유저인터페이스\\styleshop\\btn_refresh_press.bmp", 2, 0);
+  refresh->SetSize(refresh->BitmapWidth(), refresh->BitmapHeight());
+  refresh->Move(7, 193);
+  refresh->SetId(185);
+  this->AddChild(refresh);
+
+  UIBitmapButton* rotateLeft = new (std::nothrow) UIBitmapButton();
+  rotateLeft->SetBitmap("유저인터페이스\\styleshop\\btn_rotatearrow_l_out.bmp", 0, 0);
+  rotateLeft->SetBitmap("유저인터페이스\\styleshop\\btn_rotatearrow_l_over.bmp", 1, 0);
+  rotateLeft->SetBitmap("유저인터페이스\\styleshop\\btn_rotatearrow_l_press.bmp", 2, 0);
+  rotateLeft->SetSize(rotateLeft->BitmapWidth(), rotateLeft->BitmapHeight());
+  rotateLeft->Move(-rotateLeft->BitmapWidth() - static_cast<int>(this->geometry.width * -0.5), 212);
+  rotateLeft->SetId(227);
+  this->AddChild(rotateLeft);
+
+  UIBitmapButton* rotateRight = new (std::nothrow) UIBitmapButton();
+  rotateRight->SetBitmap("유저인터페이스\\styleshop\\btn_rotatearrow_r_out.bmp", 0, 0);
+  rotateRight->SetBitmap("유저인터페이스\\styleshop\\btn_rotatearrow_r_over.bmp", 1, 0);
+  rotateRight->SetBitmap("유저인터페이스\\styleshop\\btn_rotatearrow_r_press.bmp", 2, 0);
+  rotateRight->SetSize(rotateRight->BitmapWidth(), rotateRight->BitmapHeight());
+  rotateRight->Move(static_cast<int>(this->geometry.width * 0.5), 212);
+  rotateRight->SetId(226);
+  this->AddChild(rotateRight);
+}
 
 // OFFSET: 0x00828B90
 // FUNCTION: fn_10336

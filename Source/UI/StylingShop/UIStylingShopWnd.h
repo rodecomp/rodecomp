@@ -228,6 +228,9 @@ public:
 class UI2ndCostumeCheckBox : public UICheckBox {
 public:
   // INLINED
+  UI2ndCostumeCheckBox() : UICheckBox() {
+  }
+  // INLINED
   UI2ndCostumeCheckBox(UIWindowContext& windowContext, UIButtonContext& controls) : UICheckBox(windowContext, controls) {
   }
   void Slot25(int x, int y) override;
@@ -235,6 +238,9 @@ public:
 
 class UIStylingShopButton : public UIBitmapButton {
 public:
+  // INLINED
+  UIStylingShopButton() : UIBitmapButton() {
+  }
   // INLINED
   UIStylingShopButton(UIWindowContext& windowContext, UIButtonContext& buttonContext) : UIBitmapButton(windowContext, buttonContext) {
   }
