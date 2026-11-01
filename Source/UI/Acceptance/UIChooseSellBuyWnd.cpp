@@ -5919,8 +5919,49 @@ void UIItemCollectionWnd::Paint() {
 }
 
 // OFFSET: 0x008DB1F0
+// FUNCTION: fn_12158
+void UIAutoMessageWnd::Slot15(int, int) {
+  this->m_edit = new UIEditCtrl(*this->m_context, *reinterpret_cast<UIEditContext*>(nullptr));
+  this->m_edit->SetSize(this->geometry.width - 77, 16);
+  this->m_edit->Move(15, 22);
+  this->m_edit->maximum = 100;
+  this->m_edit->Background(232, 232, 232);
+  this->m_edit->SetText(reinterpret_cast<const std::string&>(g_session.unknown_56B8[4]).c_str());
+  this->m_edit->SelectAll();
+  this->AddChild(this->m_edit);
+
+  const std::string prefix("유저인터페이스\\");
+  const int x = this->geometry.width - 55;
+  const int y = this->geometry.height - 32;
+  auto* button = new UIBitmapButton(*this->m_context, *reinterpret_cast<UIButtonContext*>(nullptr));
+  button->SetBitmap((prefix + "btn_ok" + ".bmp").c_str(), 0, 0);
+  button->SetBitmap((prefix + "btn_ok_a" + ".bmp").c_str(), 1, 0);
+  button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
+  button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+  button->Move(x, y);
+  button->SetId(184);
+  this->AddChild(button);
+  this->m_message0 = 184;
+}
 
 // OFFSET: 0x008EC840
+// FUNCTION: fn_12209
+void UInCash_CallWnd::Slot15(int, int) {
+  const int ids[] = {192};
+  const int positions[] = {0};
+  const char* names[] = {"NC_CashShop"};
+  const std::string prefix("유저인터페이스\\basic_interface\\");
+  for (int index = 0; index < 1; ++index) {
+    auto* button = new UIBitmapButton(*this->m_context, *reinterpret_cast<UIButtonContext*>(nullptr));
+    button->SetBitmap((prefix + names[index] + ".bmp").c_str(), 0, 0);
+    button->SetBitmap((prefix + names[index] + ".bmp").c_str(), 1, 0);
+    button->SetBitmap((prefix + names[index] + ".bmp").c_str(), 2, 0);
+    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    button->Move(0, positions[index]);
+    button->SetId(ids[index]);
+    this->AddChild(button);
+  }
+}
 
 // OFFSET: 0x008D7790
 // FUNCTION: fn_12123
