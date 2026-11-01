@@ -2547,6 +2547,7 @@ void UIGuildMemberManageWnd::Paint() {
 }
 
 // OFFSET: 0x00962380
+// FUNCTION: fn_13129
 int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, std::intptr_t a2, std::intptr_t a3, std::intptr_t a4) {
   switch (message) {
   case 6:
@@ -2564,7 +2565,7 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
       }
       break;
     case 201:
-      this->m_frameContext->windows.CloseWindow(59);
+      g_windowMgr.CloseWindow(59);
       return 0;
     case 213:
       g_guildOnlineFirst = !g_guildOnlineFirst;
@@ -2582,9 +2583,9 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
         this->m_hoverRow = this->unknown_016C = this->m_scrollTop + row;
         this->Invalidate();
         if (g_windowMgr.unknown_0214 != nullptr) {
-          this->m_frameContext->windows.CloseWindow(26);
+          g_windowMgr.CloseWindow(26);
         }
-        UIWindow* menu = this->m_frameContext->windows.EnsureWindow(26);
+        UIWindow* menu = g_windowMgr.EnsureWindow(26);
         int index = 0;
         const int count = static_cast<int>(GuildData().m_positions.size());
         for (; index < count; ++index) {
@@ -2676,7 +2677,7 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
           int accountId;
           int characterId;
         } request = {g_guildId, target.accountId, target.characterId};
-        this->m_frameContext->windows.EnsureWindow(76)->SendMsg(nullptr, 34, reinterpret_cast<std::intptr_t>(&request), 0, 0, 0);
+        g_windowMgr.EnsureWindow(76)->SendMsg(nullptr, 34, reinterpret_cast<std::intptr_t>(&request), 0, 0, 0);
       }
       break;
     }
@@ -2684,7 +2685,7 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
       GuildInfo::Member target;
       if (this->GetMember(this->m_hoverRow, target) && target.accountId == static_cast<int>(g_session.m_aid)) {
         *reinterpret_cast<float*>(g_session.unknown_0F54) = static_cast<float>(static_cast<std::uint32_t>(target.characterId));
-        this->m_frameContext->windows.EnsureWindow(75);
+        g_windowMgr.EnsureWindow(75);
       }
       break;
     }
@@ -2741,15 +2742,15 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
   case 49:
     this->unknown_0150.clear();
     if (g_windowMgr.unknown_0210 != 0) {
-      this->m_frameContext->windows.CloseWindow(18);
+      g_windowMgr.CloseWindow(18);
     }
     if (this->m_hoverRow != -1) {
       GuildInfo::Member member;
       if (this->GetMember(this->m_hoverRow, member) == true) {
         const int master = GuildData().unknown_00D0;
-        if (member.accountId == static_cast<int>(g_session.m_aid)) {
+        if (member.characterId == static_cast<int>(g_session.m_gid)) {
           if (master != 0) {
-            if (member.accountId != master) {
+            if (member.characterId != master) {
               this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(508), 17));
             }
           } else if (!(member.name == g_guildName)) {
@@ -2757,10 +2758,10 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
           }
         } else {
           if (master != 0) {
-            if (master == static_cast<int>(g_session.m_aid)) {
+            if (master == static_cast<int>(g_session.m_gid)) {
               this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(509), 16));
               this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(2923), 59));
-            } else if (GuildData().unknown_00B0 != 0 && member.accountId != master) {
+            } else if (GuildData().unknown_00B0 != 0 && member.characterId != master) {
               this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(509), 16));
             }
           } else if (g_guildName == g_session.DecodePlayerName()) {
@@ -2783,7 +2784,7 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
       }
     }
     if (!this->unknown_0150.empty()) {
-      UIWindow* menu = this->m_frameContext->windows.EnsureWindow(18);
+      UIWindow* menu = g_windowMgr.EnsureWindow(18);
       for (std::size_t index = 0; index < this->unknown_0150.size(); ++index) {
         menu->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(this->unknown_0150[index].text.c_str()), 0, 0, 0);
       }
