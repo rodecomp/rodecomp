@@ -43,6 +43,7 @@ public:
   std::string MobName(CNavi_Object* mob);
   void SelectRoute(int route);
   void FillRouteGroups();
+  bool LoadRoute(int index);
   void SetRoadIcon(int slot);
   void InsertNavigationLink(std::string name, int x, int y);
   void DrawTargetSprite(int x, int y, int width, int height, const CBitmapRes* background);

@@ -34,6 +34,8 @@ extern UIWindow* g_navigationWindow;
 extern bool g_navigationHidden;
 extern CActRes* g_navigationActions;
 extern CSprRes* g_navigationSprites;
+extern bool g_navigationFilter;
+extern int g_navigationSearchType;
 
 class UINavigationWnd : public UIFrameWnd {
 public:

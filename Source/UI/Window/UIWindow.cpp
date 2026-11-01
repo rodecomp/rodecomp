@@ -1,3 +1,4 @@
+#include "Client/Application/Launcher.h"
 #include "Client/Input/InputCharset.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Replay.h"
@@ -27,9 +28,11 @@
 #include "UI/Buttons/UIBasicButton.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UIButton.h"
+#include "UI/Buttons/UICheckBox.h"
 #include "UI/Buttons/UIItemTagButton.h"
 #include "UI/Chat/ChatSuggestions.h"
 #include "UI/Edit/UIEditCtrl.h"
+#include "UI/Lists/UIComboBoxDefWnd.h"
 #include "UI/Lists/UIListBoxNaviSearch.h"
 #include "UI/Lists/UIScrollBar.h"
 #include "UI/Lists/UIScrollBarNavi.h"
@@ -2276,7 +2279,7 @@ void UIListBox_NaviSearch::Paint() {
   }
 }
 
-// OFFSET: 0x005C5D40
+// OFFSET: 0x005C4EA0
 // FUNCTION: fn_03582
 void UINavigationroadiconWnd::Slot15(int, int) {
   this->AddCloseButton(*this->m_controls, LookupMessage(3045), 0);
@@ -2579,6 +2582,49 @@ void UINavigationV4Wnd::SelectRoute(int route) {
   }
 
   this->Invalidate();
+}
+
+// OFFSET: 0x005C9180
+// FUNCTION: fn_03631
+bool UINavigationV4Wnd::LoadRoute(int index) {
+  if (this->unknown_0104.empty() || static_cast<unsigned int>(index) > this->unknown_0104.size() || index < 0) {
+    return false;
+  }
+
+  std::string name = this->unknown_0104[index].c_str();
+  if (name.size() == 0) {
+    return false;
+  }
+
+  std::string path = FormatOwnedString("%s\\Navigationdata\\%s", g_applicationDirectory, name.c_str());
+  FILE* file = fopen(path.c_str(), "rb");
+  if (!file) {
+    return false;
+  }
+
+  g_navigationManager.ClearStates();
+  char delimiters[] = "\t ,\t\n";
+  char line[1024];
+  std::memset(line, 0, sizeof(line));
+  std::vector<std::string> tokens;
+  while (!feof(file)) {
+    fgets(line, 1024, file);
+    for (char* token = strtok(line, delimiters); token; token = strtok(nullptr, delimiters)) {
+      tokens.emplace_back(std::string(token));
+    }
+    g_navigationManager.AddState(tokens);
+    tokens.erase(tokens.begin(), tokens.end());
+  }
+  fclose(file);
+  g_navigationManager.BuildSingleNodePaths();
+
+  if (g_navigationManager.StateCount() > 0) {
+    reinterpret_cast<WindowReplayRecorder*>(this)->RecordData(0x38F, g_navigationManager.WriteStates());
+  }
+
+  this->FillRouteGroups();
+  this->SendMsg(this, 6, 190, 0, 0, 0);
+  return true;
 }
 
 // OFFSET: 0x005C9A20
