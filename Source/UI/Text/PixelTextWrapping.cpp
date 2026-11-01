@@ -150,6 +150,6 @@ void UIWindow::sub_8932D0(int* kind, std::vector<std::string>* lines, const std:
     return;
   }
 
-  std::vector<int> wrapped;
+  std::vector<bool> wrapped;
   this->WrapTextWithBreaks(characters, lines, &wrapped, this->geometry.width - 24);
 }

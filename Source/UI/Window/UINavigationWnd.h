@@ -8,6 +8,8 @@
 
 class CActRes;
 class CSprRes;
+struct NaviCell;
+struct NaviRouteLine;
 class UIBitmapButton;
 class UIButton;
 class UICheckBox;
@@ -34,6 +36,12 @@ extern UIWindow* g_navigationWindow;
 extern bool g_navigationHidden;
 extern CActRes* g_navigationActions;
 extern CSprRes* g_navigationSprites;
+extern bool g_unknown16FC585;
+extern bool g_unknown16FC586;
+extern std::string g_navigationSearchText;
+extern int g_navigationActiveLabel;
+extern std::vector<NaviCell> g_navigationPoints;
+extern std::vector<NaviRouteLine> g_navigationLabels;
 extern bool g_navigationFilter;
 extern int g_navigationSearchType;
 

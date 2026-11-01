@@ -11,6 +11,8 @@ class UIBasicButton;
 
 class UIPrivateAirplaneWnd : public UIFrameWnd {
 public:
+  // INLINED
+  UIPrivateAirplaneWnd() : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIFrameContext*>(nullptr), 0) {}
   void Slot15(int width, int height) override;
   void Slot19() override;
   void Paint() override;

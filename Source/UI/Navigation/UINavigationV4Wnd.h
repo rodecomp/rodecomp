@@ -30,7 +30,9 @@ public:
   void Slot11() override;
   void Slot15(int width, int height) override;
   void Slot19() override;
+  void Paint() override;
   void Slot31(int x, int y) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   bool ClearRouteTexts();
   void LayoutWithoutDetails();
   void LayoutWithDetails();
@@ -112,5 +114,10 @@ protected:
 extern int g_navigationTab;
 extern int g_navigationRoadIcon;
 extern CTexture* g_navigationMapTexture;
+extern std::string g_navigationText0;
+extern std::string g_navigationText1;
+extern std::string g_navigationText2;
+extern std::string g_navigationText3;
+extern std::string g_navigationText4;
 
 #endif
