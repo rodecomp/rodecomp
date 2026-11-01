@@ -1518,6 +1518,29 @@ void UITipboxWnd::ShowTip(int id) {
   reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(this);
 }
 
+// OFFSET: 0x008F5AF0
+// FUNCTION: fn_12313
+void UITipboxWnd::UpdatePageText() {
+  this->m_pageText->SetText(IntToString((std::max)(0, g_itemTagOwner->unknown_00B4) + 1, 0).c_str(), 0);
+  this->m_pageText->SetFont(0, 12, 1, 0);
+
+  const std::string separator = "/";
+  const int pages = static_cast<int>(g_itemTagOwner->m_currentEntry.paragraphs.size());
+  this->m_pageTotalText->SetText((separator + IntToString(pages, 0)).c_str(), 0);
+
+  const int pageWidth = this->ColoredTextWidth(
+    IntToString((std::max)(0, g_itemTagOwner->unknown_00B4) + 1, 0).c_str(),
+    std::strlen(IntToString((std::max)(0, g_itemTagOwner->unknown_00B4) + 1, 0).c_str()), 0, 12, 1
+  );
+  const int totalWidth = this->ColoredTextWidth(
+    (separator + IntToString(pages, 0)).c_str(), std::strlen((separator + IntToString(pages, 0)).c_str()), 0, 12, 0
+  );
+
+  const int offset = (36 - totalWidth - pageWidth) / 2;
+  this->m_pageText->Move(offset + 426, 320);
+  this->m_pageTotalText->Move(pageWidth + 426 + offset, 320);
+}
+
 // OFFSET: 0x008D0230
 // FUNCTION: fn_12083
 void UIExchangeWnd::Slot10(int x, int y, std::intptr_t value) {
@@ -4563,7 +4586,7 @@ UISkillDescribeWnd::UISkillDescribeWnd(UIWindowContext& windows, UIFrameContext&
 // FUNCTION: fn_11981
 UITipboxWnd::UITipboxWnd(UIWindowContext& windows, UIFrameContext& frames)
     : UIFrameWnd(windows, frames, 0), unknown_00B4(0), unknown_00B8(0),
-      unknown_00BC(0), unknown_00C8(0), unknown_00CC(0), unknown_00D0(0), unknown_00D4(0), unknown_00D8(0), m_buildTime(0), m_frameTime(0),
+      unknown_00BC(0), m_pageText(nullptr), m_pageTotalText(nullptr), unknown_00D0(0), unknown_00D4(0), unknown_00D8(0), m_buildTime(0), m_frameTime(0),
       unknown_00FC(false), unknown_0100(0) {
   this->unknown_00C0 = 0;
   this->unknown_00C4 = 0;

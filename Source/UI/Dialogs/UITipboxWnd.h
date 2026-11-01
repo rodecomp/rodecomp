@@ -7,6 +7,8 @@
 #include <string>
 #include <vector>
 
+class UIStaticText;
+
 struct TipBoxAnimation {
   /* 0000 */ std::uint32_t moveStart;
   /* 0004 */ std::uint32_t blinkStart;
@@ -34,6 +36,7 @@ public:
   void ShowTip(int id);
   void TrimAt(std::string& text, const char* marker);
   void UpdateAnimations();
+  void UpdatePageText();
   bool BuildAnimations();
 
   /* 00B4 */ int unknown_00B4;
@@ -41,8 +44,8 @@ public:
   /* 00BC */ int unknown_00BC;
   /* 00C0 */ int unknown_00C0;
   /* 00C4 */ int unknown_00C4;
-  /* 00C8 */ int unknown_00C8;
-  /* 00CC */ int unknown_00CC;
+  /* 00C8 */ UIStaticText* m_pageText;
+  /* 00CC */ UIStaticText* m_pageTotalText;
   /* 00D0 */ int unknown_00D0;
   /* 00D4 */ int unknown_00D4;
   /* 00D8 */ int unknown_00D8;
