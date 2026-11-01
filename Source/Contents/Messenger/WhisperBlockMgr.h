@@ -26,6 +26,11 @@ public:
   void Reset();
   void Export(Json::Value& values) const;
 
+  // INLINED
+  const std::set<std::string>& Names() const {
+    return this->m_names;
+  }
+
 protected:
   friend class CAccountLinkedUserDataMgr;
 

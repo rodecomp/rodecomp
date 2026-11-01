@@ -864,6 +864,10 @@ public:
   void ReceiveRefineBroadcast(const unsigned char* data);
   void ReceiveTradeBroadcast(const unsigned char* data);
   void ReceiveItemBroadcast(const unsigned char* data);
+  void ReceiveColorBroadcast(const unsigned char* data);
+  void ReceiveTaggedBroadcast(const unsigned char* data);
+  void ReceiveRefineStatusGraded(const char* playerName, int itemId, unsigned char refine, unsigned char grade, bool success);
+  void ReceiveItemObtainBroadcast(const unsigned char* data, bool package);
   void ReceiveRateInfo(const unsigned char* packet);
   void ReceiveEquipItemNotice(const unsigned char* data);
   void ReceiveEquipItemListFlags(const unsigned char* packet);

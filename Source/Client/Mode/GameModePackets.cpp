@@ -74,6 +74,14 @@
 #include "Contents/Schedule/CheckGDISchedule.h"
 #include "Contents/Schedule/EmotionSchedule.h"
 #include "Contents/Schedule/TimeScheduler.h"
+#include "Contents/Messenger/WhisperBlockMgr.h"
+#include "UI/Chat/ChatSuggestions.h"
+#include "UI/Text/NavigationLink.h"
+#include "UI/Text/TextWrapping.h"
+#include "UI/Text/UITextViewer.h"
+#include "Utility/Cipher/XorBytes.h"
+#include <algorithm>
+#include <set>
 #include <direct.h>
 #include <io.h>
 #include <timeapi.h>
@@ -15012,7 +15020,7 @@ struct RateInfoRecord {
 
 static_assert(sizeof(RateInfoRecord) == 0xD);
 
-// OFFSET: 0x00D78C70
+// OFFSET: 0x00D642F0
 // FUNCTION: fn_21993
 void CGameMode::SpawnStateActor(
   unsigned char objectType, std::uint32_t aid, std::uint32_t gid, short speed, short bodyState, short healthState, int effectState, short job, short head,
@@ -15156,6 +15164,8 @@ void CGameMode::SpawnStateActor(
     }
   }
 }
+
+// OFFSET: 0x00D78C70
 // FUNCTION: fn_22163
 void CGameMode::ReceiveRateInfo(const unsigned char* packet) {
   g_session.m_skillBundle.extraIds.clear();
@@ -15213,3 +15223,42 @@ void CGameMode::ReceiveRateInfo(const unsigned char* packet) {
   g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(deathLine.c_str()), 0x62B0FF, 0, 0, 0);
   g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>("=================================================================="), 0x62B0FF, 0, 0, 0);
 }
+
+// OFFSET: 0x00D21EB0
+
+// OFFSET: 0x00D223F0
+
+namespace {
+  template <std::size_t Length, std::uint64_t Key>
+  class EncryptedText {
+  public:
+    explicit EncryptedText(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+      for (std::uint64_t index = 0; index < Length; ++index) {
+        this->m_text[index] = source[index];
+      }
+    }
+
+    ~EncryptedText() {
+      for (std::uint64_t index = 0; index < Length; ++index) {
+        this->m_text[index] = 0;
+      }
+    }
+
+    const char* Text() {
+      if (this->m_encrypted) {
+        utility::XorBytes(this->m_text, Length, Key);
+        this->m_encrypted = false;
+      }
+
+      return reinterpret_cast<const char*>(this->m_text);
+    }
+
+  private:
+    std::uint8_t m_text[Length];
+    bool m_encrypted;
+  };
+}
+
+// OFFSET: 0x00D231F0
+
+// OFFSET: 0x00D23580
