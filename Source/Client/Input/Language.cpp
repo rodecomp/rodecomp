@@ -1,5 +1,9 @@
 #include "Client/Input/Language.h"
 #include "Contents/CashEmotionMgr.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
+#include "Network/TextEncoding.h"
+#include "Utility/Text/LanguageCharset.h"
+#include "Utility/Text/TextTokens.h"
 #include "UI/Chat/ChatSuggestions.h"
 #include "UI/Lists/UIMemberListBox.h"
 #include "UI/UICaptchaPreviewWnd.h"
@@ -415,4 +419,11 @@ UIMacroDetectorWnd::UIMacroDetectorWnd(UIWindowContext& windows, UIFrameContext&
 }
 // FUNCTION: fn_13537
 UIRoundBoxTooltipWnd::UIRoundBoxTooltipWnd(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0), viewer(nullptr) {
+}
+
+// OFFSET: 0x00ACC7F0
+
+// OFFSET: 0x00ACCCD0
+// FUNCTION: fn_17751
+CLanguageArabic::CLanguageArabic() : lexiconLoaded(false) {
 }
