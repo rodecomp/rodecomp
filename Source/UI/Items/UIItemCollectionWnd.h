@@ -13,6 +13,7 @@
 class UIBitmapButton;
 class UISpriteButton;
 struct WindowPlacement;
+struct CombinedCardItemCollectionWndInfo;
 
 class UIItemCollectionWnd : public UIFrameWnd {
 public:
@@ -74,8 +75,9 @@ public:
   void Move(int x, int y) override;
   void Slot11() override;
   void Slot31(int x, int y) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
-  /* 0250 */ WindowPlacement* m_cardPlacement;
+  /* 0250 */ CombinedCardItemCollectionWndInfo* m_cardPlacement;
 };
 
 class UIItemCollection_ComparisonWnd : public UIItemCollectionWnd {
@@ -85,6 +87,7 @@ public:
   void Move(int x, int y) override;
   void Slot25(int x, int y) override;
   void Slot31(int x, int y) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 };
 
 class UICombinedCardItemCollection_ComparisonWnd : public UIItemCollectionWnd {

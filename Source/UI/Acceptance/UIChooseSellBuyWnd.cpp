@@ -158,6 +158,9 @@ int g_window315Enabled = 1;
 // GLOBAL: gl_25391
 bool g_randomLoadingScreen;
 
+// GLOBAL: gl_24646
+UIWindow* g_linkInputOwner;
+
 // OFFSET: 0x0087B500
 // FUNCTION: fn_11241
 void UIChatHisBox::Configure(int x, int y, int width, int height, unsigned char) {
@@ -654,6 +657,8 @@ void UINpcTextEditDialogWnd::Paint() {
     this->m_tagCtrl = nullptr;
   }
 }
+
+// OFFSET: 0x008FFC90
 
 // OFFSET: 0x008EF9A0
 // FUNCTION: fn_12239
@@ -1958,6 +1963,25 @@ int UICombinedCardItemCollection_ComparisonWnd::SendMsg(UIWindow* sender, int me
   }
   return 0;
 }
+
+// OFFSET: 0x008F9460
+// FUNCTION: fn_12335
+int UICombinedCardItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  if (message != 34) {
+    return this->UIItemCollectionWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+
+  this->m_cardPlacement = reinterpret_cast<CombinedCardItemCollectionWndInfo*>(argument1);
+  if (!this->m_cardPlacement->IsValid()) {
+    this->m_cardPlacement->Reset();
+    this->Move((g_renderer->viewport.width - 640) / 2 + this->m_cardPlacement->x, this->m_cardPlacement->y * g_renderer->viewport.height / 480);
+  } else {
+    this->Move(this->m_cardPlacement->x, this->m_cardPlacement->y);
+  }
+  return 0;
+}
+
+// OFFSET: 0x008FD5F0
 
 // OFFSET: 0x008F9570
 // FUNCTION: fn_12337
