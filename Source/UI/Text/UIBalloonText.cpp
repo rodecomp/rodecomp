@@ -97,7 +97,7 @@ void UIBalloonText::SetText(const char* text, int width) {
     WrapPlainText(text, this->m_lines, width, this->m_textContext->codePage);
   }
 
-  if (!this->m_lines.empty()) {
+  if (this->m_lines.size() != 0) {
     this->FitText();
   }
 }
