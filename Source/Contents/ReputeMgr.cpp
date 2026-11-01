@@ -18,7 +18,8 @@ CReputeMgr::CReputeMgr() {
 // FUNCTION: fn_04290
 std::vector<std::string> CReputeMgr::GetGroupNames() const {
   std::vector<std::string> names;
-  std::for_each(this->m_groups.begin(), this->m_groups.end(), [&names](std::pair<const std::uint64_t, ReputeGroup> group) {
+  std::for_each(this->m_groups.begin(), this->m_groups.end(), [&names](const std::pair<const std::uint64_t, ReputeGroup>& entry) {
+    std::pair<const std::uint64_t, ReputeGroup> group = entry;
     names.push_back(group.second.name);
   });
   return names;
@@ -163,4 +164,13 @@ void CReputeMgr::InfoInserter::operator()(const std::pair<const int, ReputeInfoR
   }
 
   (*this->dest)[static_cast<std::uint64_t>(entry.first)] = std::move(info);
+}
+
+// OFFSET: 0x0060D060
+// FUNCTION: fn_04286
+void CReputeMgr::GroupInserter::operator()(const std::pair<const int, ReputeGroupRecord>& entry) const {
+  ReputeGroup group;
+  group.name = FromUtf8(entry.second.name, g_textCodePage);
+  group.reputes = std::vector<std::uint64_t>(entry.second.reputes.begin(), entry.second.reputes.end());
+  (*this->dest)[static_cast<std::uint64_t>(entry.first)] = group;
 }
