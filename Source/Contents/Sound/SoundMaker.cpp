@@ -46,15 +46,6 @@ std::uint32_t g_groundMarkAltAid;
 // GLOBAL: gl_25143
 std::uint32_t g_groundMarkAltEnabled;
 
-static bool CallSlot14(CGameActor* actor) {
-  union {
-    void (CGameActor::*asVoid)();
-    bool (CGameActor::*asBool)();
-  } slot14;
-  slot14.asVoid = &CGameActor::Slot14;
-  return (actor->*slot14.asBool)();
-}
-
 // OFFSET: 0x00DA1190
 // FUNCTION: fn_22354
 CCorpse::CCorpse() {
@@ -1405,7 +1396,7 @@ bool CNpc::OnProcess() {
     case 111:
       this->ProcessDamageMessages();
       this->UpdateGaugePositions();
-      result = CallSlot14(this);
+      result = this->Slot14();
       break;
     default:
       this->ProcessBodyState();
@@ -1415,7 +1406,7 @@ bool CNpc::OnProcess() {
         this->ModifyArgb(8, 8, 8, 8);
       }
       this->UpdateGaugePositions();
-      result = CallSlot14(this);
+      result = this->Slot14();
       break;
   }
 

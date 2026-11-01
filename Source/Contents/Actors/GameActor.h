@@ -172,7 +172,7 @@ public:
   ) = 0;
   virtual void Slot12(SpriteQuad* quad, const int* box, float shiftX, int first, int second) = 0;
   virtual std::uint32_t Slot13();
-  virtual void Slot14() = 0;
+  virtual bool Slot14() = 0;
   virtual void Slot15(int first, int second);
   virtual void Slot16() = 0;
   virtual void Slot17();

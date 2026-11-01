@@ -39,6 +39,7 @@ public:
   ) override;
   void Render(int argument) override;
 
+  bool Slot14() override;
   void Slot15(int first, int second) override;
   void Slot19(
     int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh
@@ -220,7 +221,6 @@ public:
     const std::uint32_t* palette, const SpriteRleImage* image, int blend, short hover
   ) override;
   void Slot12(SpriteQuad* quad, const int* box, float shiftX, int first, int second) override;
-  void Slot14() override;
   void Slot36() override;
 
   bool IsSpecialState(int state) const;
@@ -276,6 +276,7 @@ public:
   void Render(int argument) override;
   void SetAction(unsigned animation, int motion, int repeat) override;
   void Slot08() override;
+  bool Slot14() override;
   void Slot15(int first, int second) override;
   void Slot19(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh) override;
   void Slot20(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh) override;

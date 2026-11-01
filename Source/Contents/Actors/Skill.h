@@ -30,7 +30,7 @@ public:
     const std::uint32_t* palette, const SpriteRleImage* image, int blend, short hover
   ) override;
   void Slot12(SpriteQuad* quad, const int* box, float shiftX, int first, int second) override;
-  void Slot14() override;
+  bool Slot14() override;
   void Slot16() override;
   void Slot29(int value) override;
   void Slot32() override;

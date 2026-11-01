@@ -4798,12 +4798,7 @@ bool C3dGrannyGameActor::OnProcess() {
   this->ProcessActorEffects();
   this->UpdateHpGauge();
 
-  union {
-    void (CGameActor::*asVoid)();
-    bool (CGameActor::*asBool)();
-  } slot14;
-  slot14.asVoid = &CGameActor::Slot14;
-  const bool result = (this->*slot14.asBool)();
+  const bool result = this->Slot14();
 
   float facing = this->render.angle;
   if (facing > 360.0f) {
