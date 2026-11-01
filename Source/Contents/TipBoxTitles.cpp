@@ -377,14 +377,16 @@ std::vector<int>& CTipBoxMgr::Search(std::string& keyword) {
   for (const auto& item : this->m_entries) {
     const TipBoxEntry entry = item.second;
 
-    if (entry.searchable) {
-      std::string title = entry.title;
-      std::transform(title.begin(), title.end(), title.begin(), toupper);
-      std::transform(keyword.begin(), keyword.end(), keyword.begin(), toupper);
+    if (!entry.unknown_0018) {
+      continue;
+    }
 
-      if (_mbsstr(reinterpret_cast<const unsigned char*>(title.c_str()), reinterpret_cast<const unsigned char*>(keyword.c_str()))) {
-        this->m_randomList.push_back(item.first);
-      }
+    std::string title = entry.title;
+    std::transform(title.begin(), title.end(), title.begin(), [](unsigned char c) { return static_cast<char>(toupper(c)); });
+    std::transform(keyword.begin(), keyword.end(), keyword.begin(), [](unsigned char c) { return static_cast<char>(toupper(c)); });
+
+    if (_mbsstr(reinterpret_cast<const unsigned char*>(title.c_str()), reinterpret_cast<const unsigned char*>(keyword.c_str()))) {
+      this->m_randomList.push_back(item.first);
     }
   }
 
@@ -493,6 +495,75 @@ int sub_7AEC00(lua_State* state) {
   owner->m_entries[key].title = titleString;
   owner->m_entries[key].unknown_0018 = static_cast<int>(flag) == 1;
   owner->m_entries[key].unknown_001C = textString;
+  lua_pushboolean(state, 1);
+  lua_pushstring(state, "good");
+  return 2;
+}
+
+// OFFSET: 0x007AE600
+// FUNCTION: fn_09142
+int sub_7AE600(lua_State* state) {
+  if (!lua_isnumber(state, -1)) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, "8nd argment is must number");
+    return 2;
+  }
+  if (!lua_isnumber(state, -2)) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, "7nd argment is must number");
+    return 2;
+  }
+  if (!lua_isnumber(state, -3)) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, "6st argment is must number");
+    return 2;
+  }
+  if (!lua_isnumber(state, -4)) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, "5st argment is must number");
+    return 2;
+  }
+  if (!lua_isnumber(state, -5)) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, "4st argment is must number");
+    return 2;
+  }
+  if (!lua_isnumber(state, -6)) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, "3st argment is must number");
+    return 2;
+  }
+  if (!lua_isnumber(state, -7)) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, "2st argment is must number");
+    return 2;
+  }
+  if (!lua_isnumber(state, -8)) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, "1st argment is must number");
+    return 2;
+  }
+
+  int id = static_cast<int>(lua_tonumber(state, -8));
+  const int kind = static_cast<int>(lua_tonumber(state, -7));
+  const double x = lua_tonumber(state, -6);
+  const double y = lua_tonumber(state, -5);
+  const double width = lua_tonumber(state, -4);
+  const double height = lua_tonumber(state, -3);
+  const double clipX = lua_tonumber(state, -2);
+  const float scale = static_cast<float>(lua_tonumber(state, -1));
+  if (kind != -1 && id > 0) {
+    TipBoxImage image;
+    image.unknown_0000 = kind;
+    image.unknown_0004 = static_cast<int>(x);
+    image.unknown_0008 = static_cast<int>(y);
+    image.unknown_000C = static_cast<int>(width);
+    image.unknown_0010 = static_cast<int>(height);
+    image.unknown_0014 = static_cast<int>(clipX);
+    image.unknown_0018 = scale;
+    g_itemTagOwner->m_entries[id].images.push_back(image);
+  }
+
   lua_pushboolean(state, 1);
   lua_pushstring(state, "good");
   return 2;
