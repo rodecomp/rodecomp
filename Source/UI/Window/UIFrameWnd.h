@@ -31,7 +31,7 @@ public:
   void Slot31(int x, int y) override;
   void Slot36() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
-  std::vector<std::uint32_t> Slot44() override;
+  std::vector<unsigned char> Slot44() override;
   int Slot46() override;
   UIBitmapButton* AddCloseButton(UIButtonContext& controls, const char* tooltip, int width);
   UIBitmapButton* AddBaseButton(UIButtonContext& controls);

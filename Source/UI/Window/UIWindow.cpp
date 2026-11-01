@@ -530,8 +530,8 @@ void UIWindow::Slot43() {
 
 // OFFSET: 0x005C4480
 // FUNCTION: fn_03560
-std::vector<std::uint32_t> UIWindow::Slot44() {
-  std::vector<std::uint32_t> result;
+std::vector<unsigned char> UIWindow::Slot44() {
+  std::vector<unsigned char> result;
   return result;
 }
 

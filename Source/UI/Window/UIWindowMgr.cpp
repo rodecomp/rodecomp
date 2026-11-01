@@ -1521,13 +1521,13 @@ std::vector<unsigned char> UIWindowMgr::SaveReplayWindows() {
   for (UIWindow* window : this->rendered) {
     const unsigned id = static_cast<unsigned>(window->geometry.id);
     if (id <= 10040 && this->policy[id].actions[7]) {
-      std::vector<std::uint32_t> state = window->Slot44();
+      std::vector<unsigned char> state = window->Slot44();
       const int tag = window->geometry.id + 20100;
-      std::vector<unsigned char> chunk(state.size() * sizeof(std::uint32_t) + 6, 0);
+      std::vector<unsigned char> chunk(state.size() + 6, 0);
       *reinterpret_cast<std::int16_t*>(&chunk[0]) = static_cast<std::int16_t>(tag);
-      *reinterpret_cast<int*>(&chunk[2]) = static_cast<int>(state.size() * sizeof(std::uint32_t));
-      if (state.size() * sizeof(std::uint32_t)) {
-        std::memcpy(&chunk[6], state.data(), state.size() * sizeof(std::uint32_t));
+      *reinterpret_cast<int*>(&chunk[2]) = static_cast<int>(state.size());
+      if (state.size()) {
+        std::memcpy(&chunk[6], state.data(), state.size());
       }
       data.insert(data.end(), chunk.begin(), chunk.end());
     }

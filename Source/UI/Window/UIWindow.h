@@ -107,7 +107,7 @@ public:
   virtual bool Update(int redraw);
   virtual bool Slot42(void* output);
   virtual void Slot43();
-  virtual std::vector<std::uint32_t> Slot44();
+  virtual std::vector<unsigned char> Slot44();
   virtual void SetId(int value);
   virtual int Slot46();
   virtual void Slot47();

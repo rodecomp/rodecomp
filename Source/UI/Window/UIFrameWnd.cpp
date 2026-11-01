@@ -199,7 +199,7 @@ int UIFrameWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
 
 // OFFSET: 0x005C4420
 // FUNCTION: fn_03559
-std::vector<std::uint32_t> UIFrameWnd::Slot44() {
+std::vector<unsigned char> UIFrameWnd::Slot44() {
   return {};
 }
 
