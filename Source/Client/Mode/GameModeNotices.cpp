@@ -70,6 +70,9 @@
 #include "Utility/Text/FormatString.h"
 #include "Utility/Math/AffineMatrix.h"
 #include "UI/UIBroadcastBalloon.h"
+#include "UI/Chat/ChatSuggestions.h"
+#include "UI/Text/NavigationLink.h"
+#include "UI/Text/UITextViewer.h"
 #include <algorithm>
 #include <cstdint>
 #include <cstdio>
@@ -82,6 +85,9 @@
 
 // GLOBAL: gl_25253
 int g_localMapMove;
+
+// GLOBAL: gl_25441
+static const std::string g_whisperItemLinkTag = "<ITEML>";
 
 #include "UI/Rodex/UIRodexInboxWnd.h"
 #pragma pack(push, 1)
@@ -1245,6 +1251,8 @@ struct ClientItemLists {
   void AddItem1758(const ITEM_INFO& item);
   void AddItem1748(const ITEM_INFO& item);
   void AddItem1718(const RawItemBasic& item, int mode);
+  int IsGuildMemberName(const char* name);
+  int IsFriendName(const char* name);
 };
 
 struct AchievementStatePacket {
@@ -7484,6 +7492,143 @@ void CGameMode::ApplyStatusIcons(int level, unsigned int flags) {
     auto next = statusLevelEffects.find(level);
     if (next != statusLevelEffects.end()) {
       this->ApplyStatusChange(aid, 1, next->second, 9999, 0, 0, 0, 0, 9999);
+    }
+  }
+}
+
+// OFFSET: 0x00D1A520
+// FUNCTION: fn_21618
+void CGameMode::sub_D1A520(int unknown_0004, std::string name, std::string text, bool flag) {
+  const std::string sender(name);
+  std::vector<char> message(text.begin(), text.end());
+  message.push_back('\0');
+
+  std::string line(name);
+  line.append(" : ");
+  line.append(message.data());
+
+  if (g_windowMgr.ShowWhisperFrom(name.c_str(), line.c_str(), 0x222222, static_cast<std::uint32_t>(unknown_0004)) != 0) {
+    if (g_windowToggleFlag) {
+      char notice[24];
+      std::sprintf(notice, LookupMessage(941));
+      const char length = static_cast<char>(std::strlen(notice));
+      char head[24];
+      std::memcpy(head, message.data(), length);
+      head[length] = '\0';
+      if (std::strcmp(head, notice) != 0) {
+        std::string reply(LookupMessage(941));
+        reply.append(reinterpret_cast<const std::string&>(g_session.unknown_56B8[4]).c_str());
+        g_windowMgr.SetUnknown04DC(reply.c_str());
+        static_cast<CMode*>(g_charViewMode)->SendMsg(11, reinterpret_cast<int>(name.c_str()), 0, 0, 0);
+      }
+    }
+
+    if (flag) {
+      if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
+        std::string header = "[ ";
+        header.append(sender);
+        std::string body(message.data());
+        {
+          std::string linked;
+          DisplayNavigationLink(linked, body);
+          body = std::move(linked);
+        }
+        if (std::strstr(message.data(), g_whisperItemLinkTag.c_str()) != nullptr) {
+          body = reinterpret_cast<UITextViewer*>(g_chatSuggestions)->ConvertChat(body);
+          header = header + " ] : " + body;
+        } else {
+          header = header + " ] : " + message.data();
+        }
+
+        BroadcastBalloonMessage balloonMessage{{}, {}, std::chrono::seconds(20), 12, 0x40000000, 0, 0};
+        balloonMessage.start = std::chrono::system_clock::now();
+        std::uint32_t color = 0xFFFF;
+        balloonMessage.lines.emplace_back(header, color);
+        balloon->AddMessage(1, balloonMessage);
+      }
+    }
+    return;
+  }
+
+  std::string prefix;
+  if (g_windowMgr.IsFriend(name.c_str())) {
+    prefix = "[ Friend ";
+    prefix.append(sender);
+    if (unknown_0004 != 0) {
+      prefix.append(" (" + ShortcutFilename(static_cast<std::uint32_t>(unknown_0004)) + ")");
+    }
+    prefix = prefix + " ] : " + message.data();
+  } else if (flag) {
+    prefix = "[ ";
+    prefix.append(sender);
+    if (unknown_0004 != 0) {
+      prefix.append(" (" + ShortcutFilename(static_cast<std::uint32_t>(unknown_0004)) + ")");
+    }
+    prefix = prefix + " ] : " + message.data();
+  } else if (g_session.IsGuildMemberName(name.c_str())) {
+    prefix = "[ Member ";
+    prefix.append(sender);
+    if (unknown_0004 != 0) {
+      prefix.append(" (" + ShortcutFilename(static_cast<std::uint32_t>(unknown_0004)) + ")");
+    }
+    prefix = prefix + " ] : " + message.data();
+  } else {
+    ClientItemLists& lists = reinterpret_cast<ClientItemLists&>(g_session);
+    if (lists.IsFriendName(name.c_str())) {
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(917)), 0xFFFF, 0, 0, 0);
+      g_windowMgr.SendNotice(19, reinterpret_cast<std::intptr_t>(LookupMessage(917)), 0xFFFF, 0, 0, 0);
+    } else if (lists.IsGuildMemberName(name.c_str())) {
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(919)), 0xFFFF, 0, 0, 0);
+      g_windowMgr.SendNotice(19, reinterpret_cast<std::intptr_t>(LookupMessage(919)), 0xFFFF, 0, 0, 0);
+    }
+    prefix = "( From ";
+    prefix.append(sender);
+    if (unknown_0004 != 0) {
+      prefix.append(" [" + ShortcutFilename(static_cast<std::uint32_t>(unknown_0004)) + "]");
+    }
+    prefix = prefix + " ) : " + message.data();
+  }
+
+  if (std::strcmp(name.c_str(), g_session.DecodePlayerName()) != 0) {
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(prefix.c_str()), 0xFFFF, flag ? 25 : 2, reinterpret_cast<std::intptr_t>(sender.c_str()), 0);
+    g_windowMgr.AddWhisperName(name.c_str());
+    if (flag) {
+      if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
+        if (prefix.find(g_whisperItemLinkTag) != std::string::npos) {
+          prefix = reinterpret_cast<UITextViewer*>(g_chatSuggestions)->ConvertChat(prefix);
+        }
+        {
+          std::string linked;
+          DisplayNavigationLink(linked, prefix);
+          prefix = std::move(linked);
+        }
+
+        BroadcastBalloonMessage balloonMessage{{}, {}, std::chrono::seconds(20), 12, 0x40000000, 0, 0};
+        balloonMessage.start = std::chrono::system_clock::now();
+        std::uint32_t color = 0xFFFF;
+        const char* lineText = prefix.c_str();
+        balloonMessage.lines.emplace_back(lineText, color);
+        balloon->AddMessage(1, balloonMessage);
+      }
+    }
+    if (g_whisperRecord != 0) {
+      this->WriteChatLog(prefix.c_str());
+    }
+  }
+
+  if (g_windowToggleFlag) {
+    char notice[24];
+    std::sprintf(notice, LookupMessage(941));
+    const char length = static_cast<char>(std::strlen(notice));
+    char head[24];
+    std::memcpy(head, message.data(), length);
+    head[length] = '\0';
+    if (std::strcmp(head, notice) != 0) {
+      std::string reply(LookupMessage(941));
+      reply.append(reinterpret_cast<const std::string&>(g_session.unknown_56B8[4]).c_str());
+      g_windowMgr.SetUnknown04DC(reply.c_str());
+      static_cast<CMode*>(g_charViewMode)->SendMsg(11, reinterpret_cast<int>(name.c_str()), 0, 0, 0);
     }
   }
 }
