@@ -341,6 +341,8 @@ public:
   void Slot16() override;
   void Slot25(int x, int y) override;
 
+  void OnCloseButton();
+  void OnTitleClose();
   void sub_A3F0F0();
   void sub_A421E0();
   void sub_A433D0(UIWindow* window);

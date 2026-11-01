@@ -1733,6 +1733,18 @@ void CUIGameSettingsUI::Slot25(int x, int y) {
 void CUIGameSettingsUI::sub_A3F0F0() {
 }
 
+// OFFSET: 0x00A3F170
+// FUNCTION: fn_45481
+void CUIGameSettingsUI::OnCloseButton() {
+  g_windowMgr.CloseWindow(10014);
+}
+
+// OFFSET: 0x00A3F940
+// FUNCTION: fn_45482
+void CUIGameSettingsUI::OnTitleClose() {
+  g_windowMgr.CloseWindow(10014);
+}
+
 // OFFSET: 0x00A40240
 // FUNCTION: fn_15967
 bool CUIGameSettingsUI::IsTab4Selected() {
