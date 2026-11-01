@@ -5138,6 +5138,7 @@ void CGrannyPc::SendMsg(
 }
 
 // OFFSET: 0x00DAC080
+// FUNCTION: fn_22592
 bool CGrannyPc::Slot14() {
   if (this->unknown_0278 != 0 && timeGetTime() > static_cast<std::uint32_t>(this->unknown_0278)) {
     this->render.isMotionFreezed = false;
@@ -5188,6 +5189,7 @@ bool CGrannyPc::Slot14() {
 }
 
 // OFFSET: 0x00DAC200
+// FUNCTION: fn_22593
 bool CPc::Slot14() {
   if (this->unknown_0278 != 0 && timeGetTime() > static_cast<std::uint32_t>(this->unknown_0278)) {
     this->render.isMotionFreezed = false;
