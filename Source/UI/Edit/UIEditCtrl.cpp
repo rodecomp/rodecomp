@@ -7,6 +7,7 @@
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Render/Text/TextContext.h"
 #include "Resource/SkinPalette.h"
+#include "Contents/SkinMgr.h"
 #include "Resource/TextureNames.h"
 #include "Resource/Bitmap/BitmapImage.h"
 #include "Resource/Bitmap/BitmapResource.h"
@@ -6097,6 +6098,89 @@ UIItemStoreWnd::UIItemStoreWnd(UIWindowContext& windows, UIFrameContext& frames)
   this->unknown_0188 = 0;
   this->unknown_018C = 0;
   this->unknown_0190 = 0;
+}
+
+// OFFSET: 0x009792B0
+// FUNCTION: fn_13317
+void UIItemWnd::Slot15(int width, int height) {
+  this->resizer = new UIResizer(*this->m_context);
+  this->resizer->SetSize(16, 16);
+  static_cast<UIResizer*>(this->resizer)->SetDirection(7);
+  static_cast<UIResizer*>(this->resizer)->SetBitmapName("유저인터페이스\\btn_resize.bmp");
+  this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
+  static_cast<UIResizer*>(this->resizer)->SetColors(0xFFFF00FF, 0xFFFF00FF);
+  this->AddChild(this->resizer);
+
+  UIScrollBar* scrollBar = new UIScrollBar(*this->m_context);
+  this->scrollBar = scrollBar;
+  scrollBar->Configure(this->geometry.width - 15, 17, 1, this->geometry.height - 38);
+  this->AddChild(this->scrollBar);
+
+  this->baseButton = this->AddBaseButton();
+  this->minimizeButton = this->AddMinimizeButton(*this->m_controls, "Ctrl+E", 0);
+  this->closeButton = this->AddCloseButton("Alt+E", 0);
+  this->unknown_0110 = this->geometry.height;
+  this->columns = (width - 40) / 32;
+  this->visibleRows = (height - 38) / 32;
+  this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+
+  this->tabs = new (std::nothrow) UITabControl(*this->m_context, *this->m_controls);
+  this->tabs->Configure(0, 17, 10, 1, 0, 1, 0, 0, 0, 0, 0, 0);
+  this->tabs->Move(3, 18);
+  this->AddChild(this->tabs);
+  const char* labels[4] = {LookupMessage(1465), LookupMessage(2050), LookupMessage(1471), LookupMessage(2051)};
+  for (int index = 0; index < 4; ++index) {
+    this->tabs->AddTab(labels[index], "");
+  }
+  const SkinPaletteCell cell = {5, 2};
+  this->tabs->colors[3] = SkinPaletteColor(ResourceMgr::Instance(), cell, g_skinInfo.Selected());
+  this->tabs->Invalidate();
+
+  this->lockDropBox = new (std::nothrow) UICheckBox(*this->m_context, *this->m_controls);
+  this->lockDropBox->SetSize(14, 11);
+  this->lockDropBox->SetBitmaps("유저인터페이스\\inventory\\item_drop_lock_on.bmp", "유저인터페이스\\inventory\\item_drop_lock_off.bmp");
+  this->lockDropBox->Move(79, height - 16);
+  this->lockDropBox->SetChecked(g_session.m_lockItemDrop);
+  this->lockDropBox->SetTooltip(LookupMessage(2843));
+  this->AddChild(this->lockDropBox);
+
+  UICheckBox* compare = new (std::nothrow) UICheckBox(*this->m_context, *this->m_controls);
+  this->optionBox = compare;
+  compare->SetSize(12, 12);
+  static_cast<UICheckBox*>(this->optionBox)->SetBitmaps("유저인터페이스\\inventory\\item_compare_on.bmp", "유저인터페이스\\inventory\\item_compare_off.bmp");
+  this->optionBox->SetId(456);
+  this->optionBox->Move(103, height - 17);
+  static_cast<UICheckBox*>(this->optionBox)->SetChecked(g_serviceOptions.Get(264));
+  static_cast<UICheckBox*>(this->optionBox)->SetTooltip(LookupMessage(2842));
+  this->AddChild(this->optionBox);
+
+  this->countButton = new (std::nothrow) UIBitmapButton(*this->m_context, *this->m_controls);
+  this->countButton->SetBitmap("유저인터페이스\\inventory\\icon_num.bmp", 0, 0);
+  this->countButton->SetBitmap("유저인터페이스\\inventory\\icon_num.bmp", 1, 0);
+  this->countButton->SetBitmap("유저인터페이스\\inventory\\icon_num.bmp", 2, 0);
+  this->countButton->SetSize(this->countButton->BitmapWidth(), this->countButton->BitmapHeight());
+  this->countButton->Move(23, height - 17);
+  this->countButton->SetId(545);
+  this->countButton->SetTooltip(LookupMessage(3560));
+  this->AddChild(this->countButton);
+
+  UIBitmapButton* lockDeal = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->unknown_0124 = lockDeal;
+  lockDeal->SetBitmap(g_session.m_blockPrivateTab != 1 ? "유저인터페이스\\inventory\\bt_itemDeal_lock_off.bmp" : "유저인터페이스\\inventory\\bt_itemdeal_lock_on.bmp", 0, 0);
+  static_cast<UIBitmapButton*>(this->unknown_0124)->SetBitmap("유저인터페이스\\inventory\\bt_itemDeal_lock_over.bmp", 1, 0);
+  static_cast<UIBitmapButton*>(this->unknown_0124)->SetBitmap("유저인터페이스\\inventory\\bt_itemDeal_lock_press.bmp", 2, 0);
+  this->unknown_0124->SetSize(static_cast<UIBitmapButton*>(this->unknown_0124)->BitmapWidth(), static_cast<UIBitmapButton*>(this->unknown_0124)->BitmapHeight());
+  this->unknown_0124->Move(124, this->geometry.height - 19);
+  this->unknown_0124->SetTooltip(LookupMessage(2952));
+  this->unknown_0124->SetId(507);
+  this->AddChild(this->unknown_0124);
+
+  this->unknown_012C = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->RefreshSortButton();
+  this->unknown_012C->SetSize(static_cast<UIBitmapButton*>(this->unknown_012C)->BitmapWidth(), static_cast<UIBitmapButton*>(this->unknown_012C)->BitmapHeight());
+  this->unknown_012C->Move(157, this->geometry.height - 19);
+  this->unknown_012C->SetId(364);
+  this->AddChild(this->unknown_012C);
 }
 
 // OFFSET: 0x0096ED90

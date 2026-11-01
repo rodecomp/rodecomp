@@ -7,7 +7,9 @@
 #include <cstddef>
 #include <cstdint>
 
+class UIBitmapButton;
 class UIButton;
+class UICheckBox;
 class UITabControl;
 
 class UIItemWnd : public UIItemBaseWnd {
@@ -24,6 +26,7 @@ public:
   void Slot28(int x, int y) override;
   void Slot32(int x, int y) override;
   void Paint() override;
+  void Slot15(int width, int height) override;
 
   ITEM_INFO GetItemAt(int x, int y);
   void ReleaseSelection(unsigned char keep);
@@ -33,16 +36,18 @@ public:
   void RefreshItems();
 
   /* 00F0 */ ItemWndInfo* saved;
-  /* 00F4 */ unsigned char unknown_00F4[0xC];
+  /* 00F4 */ UIBitmapButton* baseButton;
+  /* 00F8 */ UIBitmapButton* minimizeButton;
+  /* 00FC */ UIBitmapButton* closeButton;
   /* 0100 */ int unknown_0100;
   /* 0104 */ int unknown_0104;
   /* 0108 */ int unknown_0108;
   /* 010C */ int unknown_010C;
   /* 0110 */ int unknown_0110;
-  /* 0114 */ unsigned char unknown_0114[0x4];
+  /* 0114 */ UICheckBox* lockDropBox;
   /* 0118 */ UITabControl* tabs;
   /* 011C */ UIWindow* optionBox;
-  /* 0120 */ unsigned char unknown_0120[0x4];
+  /* 0120 */ UIBitmapButton* countButton;
   /* 0124 */ UIButton* unknown_0124;
   /* 0128 */ UIWindow* unknown_0128;
   /* 012C */ UIButton* unknown_012C;
