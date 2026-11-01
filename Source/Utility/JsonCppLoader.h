@@ -39,10 +39,12 @@ public:
   bool IsObject() const;
   bool AsBool() const;
   int AsInt() const;
+  double AsDouble() const;
   std::string AsString() const;
   const JsonObject& GetObject() const;
   const JsonArray& GetArray() const;
   const JsonArray& ArrayRange() const;
+  const JsonObject* ObjectRange() const;
 
   /* 0000 */ unsigned char type;
   /* 0001 */ unsigned char unknown_0001;
@@ -150,6 +152,22 @@ inline int JsonValue::AsInt() const {
   }
 }
 
+inline double JsonValue::AsDouble() const {
+  const JsonValue* value = this->Dereference();
+  double real = 0.0;
+  switch (value->type & 0x0f) {
+    case 2:
+      return static_cast<double>(value->integer);
+    case 3:
+      return static_cast<double>(static_cast<unsigned long long>(value->integer));
+    case 5:
+      std::memcpy(&real, &value->integer, sizeof(real));
+      return real;
+    default:
+      throw std::domain_error("Not a double");
+  }
+}
+
 inline const JsonObject& JsonValue::GetObject() const {
   return *static_cast<const JsonObject*>(this->Dereference()->pointer);
 }
@@ -164,6 +182,17 @@ inline const JsonArray& JsonValue::ArrayRange() const {
   }
 
   return *static_cast<const JsonArray*>(this->pointer);
+}
+
+inline const JsonObject* JsonValue::ObjectRange() const {
+  switch (this->type & 0x0f) {
+    case 10:
+      return nullptr;
+    case 11:
+      return static_cast<const JsonObject*>(this->pointer);
+    default:
+      throw std::domain_error("Not an object");
+  }
 }
 
 class JsonCppLoader {
