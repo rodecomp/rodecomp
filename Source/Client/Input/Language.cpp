@@ -423,11 +423,12 @@ UIRoundBoxTooltipWnd::UIRoundBoxTooltipWnd(UIWindowContext& windows, UIFrameCont
 }
 
 // OFFSET: 0x00ACC7F0
+// FUNCTION: fn_17750
 CLanguageBase::CLanguageBase()
     : unknown_0004(), candidateList(nullptr), candidateCount(0), pageSize(0), selection(0),
-      candidateStorage(), text(), unknown_004C(0), cursor(0), anchor(0), composition(), candidate(), unknown_0088(),
-      language(static_cast<std::uint16_t>(reinterpret_cast<std::uintptr_t>(GetKeyboardLayout(0)))), codePage(0), unknown_0094(0),
-      unknown_0098(0), servicePrefix(), alternateLanguage(0), unknown_00B6() {
+      candidateStorage(), text(), cursor(0), anchor(0), composition(), candidate(),
+      language(static_cast<std::uint16_t>(reinterpret_cast<std::uintptr_t>(GetKeyboardLayout(0)))), unknown_0094(0),
+      unknown_0098(0), servicePrefix() {
   this->codePage = g_inlineCharset ? LanguageCodePage(this->language) : g_textCodePage;
 
   switch (static_cast<std::uint16_t>(GetUserDefaultLangID() & 0x3FF)) {
