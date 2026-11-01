@@ -87,7 +87,8 @@ bool CAchievementMgr::GetGroupAchievements(std::map<int, AchievementInfo>& out, 
     for (int i = 0; i < this->groupWidth; ++i) {
       int key = this->groupWidth * group + i;
       for (std::vector<int>::iterator it = this->groups[key].begin(); it != this->groups[key].end(); ++it) {
-        if (!out.insert(std::make_pair(*it, this->achievements[*it])).second) {
+        AchievementInfo info = this->achievements[*it];
+        if (!out.insert(std::make_pair(*it, info)).second) {
           return false;
         }
       }
@@ -97,7 +98,8 @@ bool CAchievementMgr::GetGroupAchievements(std::map<int, AchievementInfo>& out, 
 
   int key = this->groupWidth * group + index;
   for (std::vector<int>::iterator it = this->groups[key].begin(); it != this->groups[key].end(); ++it) {
-    if (!out.insert(std::make_pair(*it, this->achievements[*it])).second) {
+    AchievementInfo info = this->achievements[*it];
+    if (!out.insert(std::make_pair(*it, info)).second) {
       return false;
     }
   }
@@ -287,6 +289,22 @@ std::pair<bool, std::string> CAchievementMgr::InsertAchieveInfo(int id, std::str
 }
 
 // OFFSET: 0x0066F170
+// FUNCTION: fn_05324
+std::pair<bool, std::string> CAchievementMgr::InsertAchieveResource(int id, std::string text, int unknown0018, int unknown001C) {
+  const auto found = this->achievements.find(id);
+  if (found == this->achievements.end()) {
+    return std::pair<bool, std::string>(false, FormatOwnedString("achievement info [%d] cannot be find", id));
+  }
+
+  for (auto it = found->second.rewards.begin(); it != found->second.rewards.end(); ++it) {
+    if (it->text == text) {
+      return std::pair<bool, std::string>(false, FormatOwnedString("achievement info [%d] - resource info already exist", id));
+    }
+  }
+
+  found->second.rewards.push_back({text, unknown0018, unknown001C});
+  return std::pair<bool, std::string>(true, "good");
+}
 
 // OFFSET: 0x0066F450
 // FUNCTION: fn_05325
