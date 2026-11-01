@@ -822,6 +822,8 @@ public:
   void ReceiveGuildMemberList3(const unsigned char* data);
   void ReceiveGuildRelationList(const unsigned char* data);
   void ReceiveEquipItemNotice(const unsigned char* data);
+  void ReceiveEquipItemListFlags(const unsigned char* packet);
+  void ReceiveParaResultList(const unsigned char* packet);
 };
 
 void LaunchRollingCutterEffect(CGameActor* actor);

@@ -11204,3 +11204,167 @@ void SetActiveSkillEffect184(unsigned char enable) {
     g_activeSkillEffects.erase(it);
   }
 }
+
+// OFFSET: 0x00D316D0
+// FUNCTION: fn_21734
+void CGameMode::ReceiveExpChange(const unsigned char* packet) {
+  std::int64_t& exp = *reinterpret_cast<std::int64_t*>(&g_session.unknown_162C[0x04]);
+  std::int64_t& nextExp = *reinterpret_cast<std::int64_t*>(&g_session.unknown_162C[0x0C]);
+  std::int64_t& nextJobExp = *reinterpret_cast<std::int64_t*>(&g_session.unknown_162C[0x14]);
+  std::int64_t& jobExp = *reinterpret_cast<std::int64_t*>(&g_session.unknown_162C[0x1C]);
+  switch (*reinterpret_cast<const std::uint16_t*>(packet + 2)) {
+  case 1:
+    if (g_session.IsAdminSubMode(2)) {
+      char text[256];
+      std::memset(text, 0, sizeof(text));
+      const int raw = *reinterpret_cast<const int*>(packet + 4);
+      const std::int64_t value = raw;
+      const std::int64_t gained = value - exp;
+      if (raw != 0 && gained != 0) {
+        StringFormat(
+          text, sizeof(text), static_cast<std::size_t>(-1), "%lld : %lld/%lld More : %lld", gained, value, nextExp, (nextExp - exp) / gained
+        );
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xF51EF5, 0, 0, 0);
+      }
+    }
+    exp = *reinterpret_cast<const int*>(packet + 4);
+    g_session.InvalidateWindowFrames();
+    static_cast<UIINT64BarGraph*>(reinterpret_cast<UIBasicInfoWnd*>(g_windowMgr.unknown_01DC)->baseExpBar)->SetValues(exp, nextExp);
+    break;
+  case 2:
+    jobExp = *reinterpret_cast<const int*>(packet + 4);
+    g_session.InvalidateWindowFrames();
+    static_cast<UIINT64BarGraph*>(reinterpret_cast<UIBasicInfoWnd*>(g_windowMgr.unknown_01DC)->jobExpBar)->SetValues(jobExp, nextJobExp);
+    break;
+  case 20:
+    if (*reinterpret_cast<int*>(&this->unknown_0100[0x14])) {
+      *reinterpret_cast<int*>(&this->unknown_0100[0x14]) = 0;
+      reinterpret_cast<SessionMessengerContext*>(&g_session)->ResetSlots();
+    }
+    g_session.m_zeny = *reinterpret_cast<const int*>(packet + 4);
+    g_session.RefreshHpSpWindows();
+    g_session.InvalidateWindowFrames();
+    break;
+  case 22:
+    nextExp = *reinterpret_cast<const int*>(packet + 4);
+    g_session.InvalidateWindowFrames();
+    static_cast<UIINT64BarGraph*>(reinterpret_cast<UIBasicInfoWnd*>(g_windowMgr.unknown_01DC)->baseExpBar)->SetValues(exp, nextExp);
+    break;
+  case 23:
+    nextJobExp = *reinterpret_cast<const int*>(packet + 4);
+    g_session.InvalidateWindowFrames();
+    static_cast<UIINT64BarGraph*>(reinterpret_cast<UIBasicInfoWnd*>(g_windowMgr.unknown_01DC)->jobExpBar)->SetValues(jobExp, nextJobExp);
+    break;
+  }
+}
+
+#pragma pack(push, 1)
+struct ParaResultRecord {
+  /* 0000 */ int itemId;
+  /* 0004 */ std::int16_t quantity;
+  /* 0006 */ int location;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(ParaResultRecord) == 0x0A);
+
+// OFFSET: 0x00D39F20
+// FUNCTION: fn_21774
+void CGameMode::ReceiveParaResultList(const unsigned char* packet) {
+  const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t*>(packet + 2) - 6) / sizeof(ParaResultRecord);
+  switch (*reinterpret_cast<const std::int16_t*>(packet + 4)) {
+  case -1:
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3043)), 0xFF, 0, 0, 0);
+    break;
+  case 0:
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(54)), 0xFFFF00, 0, 0, 0);
+    break;
+  case 1:
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(55)), 0xFF, 0, 0, 0);
+    break;
+  case 2:
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(56)), 0xFF, 0, 0, 0);
+    break;
+  case 3:
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(221)), 0xFF, 0, 0, 0);
+    break;
+  case 9:
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1940)), 0xFF, 0, 0, 0);
+    break;
+  }
+
+  if (count <= 0) {
+    if (CMode* mode = g_modeMgr.GetGameMode()) {
+      mode->SendMsg(292, 0, 0, 0, 0);
+    }
+    return;
+  }
+
+  UIParaResultWnd* window = dynamic_cast<UIParaResultWnd*>(static_cast<UIFrameWnd*>(g_windowMgr.EnsureWindow(256)));
+  const ParaResultRecord* record = reinterpret_cast<const ParaResultRecord*>(packet + 6);
+  for (int i = 0; i < count; ++i) {
+    RawItemBasic item = {};
+    _itoa(record->itemId, item.itemId, 10);
+    item.unknown_0004 = record->location;
+    item.unknown_0008 = record->location;
+    item.id = -1;
+    item.identified = 1;
+    window->AddItem(item, record->quantity);
+    ++record;
+  }
+
+  window->SendMsg(nullptr, 36, (count - 2 > 0 ? count - 2 : 0) * 32 + 120, 0, 0, 0);
+  window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+}
+
+// OFFSET: 0x00D2C5D0
+// FUNCTION: fn_21716
+void CGameMode::ReceiveEquipItemListFlags(const unsigned char* packet) {
+  reinterpret_cast<SessionItemLists*>(&g_session)->RemoveEquipment();
+  reinterpret_cast<SessionMessengerContext*>(&g_session)->ResetEquipment();
+  g_session.ResetItems2B50();
+  const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t*>(packet + 2) - 4) / 0x25;
+  const unsigned char* record = packet + 4;
+  for (int i = 0; i < count; ++i) {
+    ITEM_INFO item;
+    item.unknown_0000[0] = record[6];
+    std::memcpy(item.unknown_001C, record + 0x0C, sizeof(item.unknown_001C));
+    item.unknown_0000[2] = *reinterpret_cast<const std::uint16_t*>(record + 7);
+    item.unknown_0000[1] = *reinterpret_cast<const std::int16_t*>(record);
+    item.unknown_0000[3] = *reinterpret_cast<const std::uint16_t*>(record + 9);
+    item.quantity = 1;
+    item.SetItemId(*reinterpret_cast<const int*>(record + 2));
+    const unsigned char flags = record[0x24];
+    item.identified = flags & 1;
+    item.unknown_005D = (flags >> 1) & 1;
+    item.unknown_0074[0] = (flags >> 2) & 1;
+    item.unknown_0060 = record[0x0B];
+    item.unknown_0068 = *reinterpret_cast<const std::uint32_t*>(record + 0x1C);
+    item.unknown_0064 = *reinterpret_cast<const std::uint16_t*>(record + 0x20);
+    item.unknown_0070 = *reinterpret_cast<const std::uint16_t*>(record + 0x22);
+    if (g_session.IsPetEgg(std::atoi(item.itemId.c_str())) && item.unknown_005D) {
+      g_session.unknown_1050 = item.unknown_0000[1];
+    }
+
+    if (item.unknown_0000[3] == 0) {
+      reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1710(item, 0);
+      g_session.UpdateInventoryItem(item, 0);
+    } else {
+      char equipped = 1;
+      if (g_session.IsCostumeLocation(item.unknown_0000[3])) {
+        g_session.EquipItem2B50(item, &equipped);
+      } else {
+        g_session.EquipUnknown17F0(item, &equipped);
+      }
+    }
+    record += 0x25;
+  }
+
+  RefreshItemWindows(&g_windowMgr);
+}
