@@ -544,6 +544,7 @@ public:
   void RefreshInventoryOrEquipItem(std::uint16_t itemId, unsigned char unknownValue, std::uint16_t refine, ItemCardSlots cards, ItemSlotOptions options);
   void RefreshInventoryOrEquipItem2(const unsigned char* data);
   void ReceiveRankingList(const unsigned char* data);
+  void ReceiveGuildStorageLogItems(const unsigned char* data);
   void sub_D1A330(const unsigned char* data);
   void sub_D1A520(int unknown_0004, std::string name, std::string text, bool flag);
   void SpawnGroundSkill(std::uint32_t aid, std::uint32_t owner, int value, std::int16_t x, std::int16_t y, int type, signed char level, unsigned char visible, unsigned char flags);

@@ -7321,4 +7321,64 @@ void CGameMode::ReceiveRankingList(const unsigned char* data) {
   g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>("==========================================="), color, 0, 0, 0);
 }
 
+struct GuildStorageLogItem {
+  /* 0000 */ ITEM_INFO item;
+  /* 00F8 */ unsigned char unknown_00F8;
+};
+
+#pragma pack(push, 1)
+struct GuildStorageLogItemRecord {
+  /* 0000 */ std::uint32_t unknown_0000;
+  /* 0004 */ std::uint32_t itemId;
+  /* 0008 */ std::uint32_t unknown_0008;
+  /* 000C */ unsigned char unknown_000C;
+  /* 000D */ unsigned char unknown_000D[8];
+  /* 0015 */ unsigned char identified;
+  /* 0016 */ std::int16_t type;
+  /* 0018 */ std::uint32_t cards[4];
+  /* 0028 */ char name[24];
+  /* 0040 */ char characterName[24];
+  /* 0058 */ unsigned char unknown_0058;
+  /* 0059 */ unsigned char refine;
+  /* 005A */ unsigned char grade;
+};
+
+struct GuildStorageLogItemsPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int16_t length;
+  /* 0004 */ std::uint16_t result;
+  /* 0006 */ std::int16_t count;
+  /* 0008 */ GuildStorageLogItemRecord records[1];
+};
+#pragma pack(pop)
+
+// OFFSET: 0x00D69A90
+// FUNCTION: fn_22055
+void CGameMode::ReceiveGuildStorageLogItems(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const GuildStorageLogItemsPacket*>(data);
+  std::vector<GuildStorageLogItem> items;
+  items.reserve(packet->count);
+  if (packet->result == 0 || packet->result == 1) {
+    for (long long index = 0; index < packet->count; ++index) {
+      const GuildStorageLogItemRecord& record = packet->records[index];
+      ITEM_INFO item;
+      item.unknown_00B8[0] = record.unknown_0000;
+      item.unknown_00B8[1] = record.unknown_0008;
+      item.unknown_00C0 = record.unknown_000C;
+      strncpy_s(reinterpret_cast<char*>(item.unknown_00C1), sizeof(item.unknown_00C1), record.name, _TRUNCATE);
+      strncpy_s(reinterpret_cast<char*>(item.unknown_00D9), sizeof(item.unknown_00D9), record.characterName, _TRUNCATE);
+      char number[16] = {};
+      item.itemId = _itoa(record.itemId, number, 10);
+      item.identified = record.identified;
+      item.unknown_0000[0] = record.type;
+      item.unknown_0060 = record.refine;
+      std::memcpy(item.unknown_001C, record.cards, sizeof(record.cards));
+      item.unknown_0088 = record.grade;
+      items.push_back({item, record.unknown_0058});
+    }
+  }
+
+  this->ApplyGuildStorageLog(packet->result, items);
+}
+
 // OFFSET: 0x00D1A520
