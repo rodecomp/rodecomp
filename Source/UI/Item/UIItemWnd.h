@@ -29,6 +29,7 @@ public:
   void ReleaseSelection(unsigned char keep);
   void DrawNewItemMark(int x, int y);
   void RefreshOptionBox();
+  void RefreshSortButton();
   void RefreshItems();
 
   /* 00F0 */ ItemWndInfo* saved;

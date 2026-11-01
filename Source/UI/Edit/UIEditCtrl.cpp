@@ -7133,6 +7133,23 @@ void UIMerchantShopMakeWnd::Paint() {
 // GLOBAL: gl_25363
 bool g_sortPrivateTab;
 
+// OFFSET: 0x009957C0
+// FUNCTION: fn_13461
+void UIItemWnd::RefreshSortButton() {
+  std::string name = "유저인터페이스\\inventory\\bt_sort";
+  if (!g_sortPrivateTab) {
+    name += "_off";
+  }
+
+  UIBitmapButton* button = static_cast<UIBitmapButton*>(this->unknown_012C);
+  button->SetBitmap((name + ".bmp").c_str(), 0, 0);
+  button->SetBitmap((name + "_over.bmp").c_str(), 1, 0);
+  button->SetBitmap((name + "_press.bmp").c_str(), 2, 0);
+  const std::string tooltip = std::string(LookupMessage(3007)) + " " + (g_sortPrivateTab ? "ON" : "OFF");
+  button->SetTooltip(tooltip.c_str());
+  this->Invalidate();
+}
+
 // OFFSET: 0x00990810
 // FUNCTION: fn_13428
 int UIMerchantItemPurchaseMSGWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
