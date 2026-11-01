@@ -12,6 +12,7 @@
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/MessageTable.h"
 #include "Contents/ForbiddenWords.h"
+#include "Contents/Messenger/ClientMessenger.h"
 #include "Contents/Items/ItemNaming.h"
 #include "UI/Window/WindowRegistration.h"
 #include "Contents/TipBoxTitles.h"
@@ -2655,7 +2656,7 @@ void UIStatusWnd::Slot15(int, int) {
 // OFFSET: 0x008E8860
 // FUNCTION: fn_12200
 void UISkillNameChangeWnd::Slot15(int, int) {
-  this->m_edit = new UIEditCtrl(*this->m_context, *reinterpret_cast<UIEditContext*>(nullptr));
+  this->m_edit = new UIEditCtrl();
   this->m_edit->SetSize(this->geometry.width - 77, 16);
   this->m_edit->Move(15, 22);
   this->m_edit->maximum = 29;
@@ -2682,6 +2683,39 @@ void UISkillNameChangeWnd::Slot15(int, int) {
 }
 
 // OFFSET: 0x008EA780
+// FUNCTION: fn_12205
+void UIToolTipWnd::Slot15(int width, int height) {
+  this->m_list = new UIListBox();
+  width -= 24;
+  height -= 60;
+  if (width < 20) {
+    width = 20;
+  }
+  if (height < 30) {
+    height = 30;
+  }
+  this->m_list->Configure(12, 22, width, height, 1);
+  this->m_list->SetId(184);
+  this->m_list->AddLine("__________");
+  this->m_list->AddLine("**********");
+  this->AddChild(this->m_list);
+
+  const std::string prefix("유저인터페이스\\");
+  const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
+  int ids[2] = {184, 185};
+  int positions[2][2] = {{this->geometry.width - 91, this->geometry.height - 24}, {this->geometry.width - 46, this->geometry.height - 24}};
+
+  for (int i = 0; i < 2; ++i) {
+    auto* button = new UIBitmapButton();
+    button->SetBitmap((prefix + names[i][0] + ".bmp").c_str(), 0, 0);
+    button->SetBitmap((prefix + names[i][1] + ".bmp").c_str(), 1, 0);
+    button->SetBitmap((prefix + names[i][2] + ".bmp").c_str(), 2, 0);
+    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    button->Move(positions[i][0], positions[i][1]);
+    button->SetId(ids[i]);
+    this->AddChild(button);
+  }
+}
 
 // OFFSET: 0x008E7130
 // FUNCTION: fn_12194
@@ -6572,4 +6606,76 @@ void UILoadingWnd::Slot15(int, int) {
 // FUNCTION: fn_11966
 UIPetEggListWnd::UIPetEggListWnd(UIWindowContext& windows, UIFrameContext& frames)
     : UIItemIdentifyWnd(windows, frames) {
+}
+
+// OFFSET: 0x008D1E80
+// FUNCTION: fn_12096
+void UIEquipWnd::DrawEquipSlots() {
+  if (this->m_page == 1) {
+    const auto* frame = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\equipwin_special.bmp")));
+    if (frame) {
+      this->DrawBitmap(0, this->m_contentTop + 14, &frame->image, false);
+    }
+  }
+
+  const int rowOffsets[4] = {0, 26, 52, 78};
+  int iconX[2] = {6, 251};
+  int nameX[2] = {28, 167};
+  int shopId = FindShopId(g_session, std::string());
+  if (g_session.GetShopType(shopId)) {
+    shopId = -1;
+  }
+
+  for (unsigned slot = 0; slot < 10; ++slot) {
+    ITEM_INFO item;
+    if (this->m_page == 1) {
+      if (this->m_viewOther == 0) {
+        item = g_session.GetItem2B50(slot);
+      } else {
+        item = g_session.GetItem3500(slot);
+      }
+    } else if (this->m_viewOther == 0) {
+      item = g_session.GetItem17F0(slot);
+    } else {
+      item = g_session.GetItem21A0(slot);
+    }
+
+    if (item.unknown_0000[1] == 0) {
+      continue;
+    }
+
+    if (item.quantity == 1) {
+      ItemDescriptions descriptions{g_itemDescriptions};
+      const unsigned row = slot & 3;
+      if (slot < 8) {
+        DrawItemIcon(*this, ResourceMgr::Instance(), descriptions, iconX[slot / 4], this->m_contentTop + 44 + row * 26, item, 0);
+        this->DrawItemName(nameX[slot / 4] + 5, this->m_contentTop + rowOffsets[row] + 51, 70, &item, 0, 0, 12);
+      } else {
+        DrawItemIcon(*this, ResourceMgr::Instance(), descriptions, iconX[row], this->m_contentTop + 18, item, 0);
+        this->DrawItemName(nameX[slot - 8] + 5, this->m_contentTop + 25, 70, &item, 0, 0, 12);
+      }
+    }
+
+    if (item.unknown_0088 > 0) {
+      if (slot < 8) {
+        const auto* grade = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
+          Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.unknown_0088).c_str())
+        ));
+        this->DrawBitmap(iconX[slot / 4], this->m_contentTop + 56 + (slot & 3) * 26, grade ? &grade->image : nullptr, true);
+      } else {
+        const auto* grade = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
+          Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.unknown_0088).c_str())
+        ));
+        this->DrawBitmap(iconX[slot & 3], this->m_contentTop + 30, grade ? &grade->image : nullptr, true);
+      }
+    }
+
+    if (shopId != -1 && g_session.GetShopEntry(0, std::atoi(item.itemId.c_str())).first == 0) {
+      const unsigned row = slot & 3;
+      const unsigned column = slot < 8 ? slot / 4 : row;
+      const auto* banned = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\ban.bmp")));
+      const int y = slot < 8 ? this->m_contentTop + (row + 1) * 26 : this->m_contentTop;
+      this->DrawBitmap(iconX[column], y + 18, banned ? &banned->image : nullptr, true);
+    }
+  }
 }

@@ -4,7 +4,9 @@
 #include "Contents/Messenger/MessengerMember.h"
 
 #include <list>
+#include <string>
 
+class CSession;
 struct PartyMemberEffects;
 
 struct ClientMessenger {
@@ -33,5 +35,7 @@ class CEquipmentPropertiesMgr;
 }
 
 extern EquipmentProperties::CEquipmentPropertiesMgr* g_equipmentPropertiesMgr;
+
+int FindShopId(CSession& session, std::string name);
 
 #endif

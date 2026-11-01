@@ -41,6 +41,7 @@ public:
   void Slot35(int delta) override;
 
   void DrawDamageSkinPage();
+  void DrawEquipSlots();
   void NotifyEquipmentChanged();
   void UpdateCharacterView(int reset);
   ITEM_INFO GetSlotItem(int slot);
