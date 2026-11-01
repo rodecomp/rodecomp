@@ -33,6 +33,15 @@
 #include <list>
 
 namespace {
+  // VTABLE: vt_01828
+  class CGameObjectIDGenerator {
+  public:
+    virtual ~CGameObjectIDGenerator();
+  };
+
+  // GLOBAL: gl_25444
+  CGameObjectIDGenerator g_gameObjectIdGenerator;
+
   // STATIC: 0x0135EF80
   // GLOBAL: gl_21923
   std::uint64_t nextIdentity = 0;
@@ -53,8 +62,7 @@ CGameObject::~CGameObject() = default;
 
 // OFFSET: 0x00CA8ED0
 // FUNCTION: fn_20996
-void __fastcall sub_CA8ED0(void* self) {
-  *reinterpret_cast<std::uintptr_t*>(self) = 0x0119FE74;
+CGameObjectIDGenerator::~CGameObjectIDGenerator() {
 }
 
 // OFFSET: 0x00CAFD20
