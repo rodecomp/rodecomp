@@ -6529,3 +6529,39 @@ std::vector<unsigned char> UISayDialogWnd::Slot44() {
 }
 
 // OFFSET: 0x008E30B0
+// FUNCTION: fn_12180
+void UILoadingWnd::Slot15(int, int) {
+  // GLOBAL: gl_25392
+  static int s_loadingScreenIndex;
+
+  this->m_progressBar = new UIBarGraph2(*this->m_context);
+  this->m_progressBar->SetSize(240, 15);
+  this->m_progressBar->Move(0, 0);
+  this->m_progressBar->SetValue(0.0f);
+  unsigned red, green, blue;
+  SkinPaletteChannels(ResourceMgr::Instance(), 22, 2, red, green, blue);
+  this->m_progressBar->m_fillRed = red;
+  this->m_progressBar->m_fillGreen = green;
+  this->m_progressBar->m_fillBlue = blue;
+  this->AddChild(this->m_progressBar);
+
+  const int count = static_cast<int>(g_loadingScreens.size());
+  char name[256];
+  if (g_localMapMove == 1) {
+    std::strcpy(name, "유저인터페이스\\loading_airplane.jpg");
+  } else if (!g_randomLoadingScreen) {
+    if (s_loadingScreenIndex < count) {
+      std::strcpy(name, g_loadingScreens[s_loadingScreenIndex++].c_str());
+    } else {
+      s_loadingScreenIndex = 0;
+      std::strcpy(name, "유저인터페이스\\loading00.jpg");
+    }
+  } else if (count != 0) {
+    std::strcpy(name, g_loadingScreens[std::rand() % count].c_str());
+  } else {
+    std::strcpy(name, "유저인터페이스\\loading00.jpg");
+  }
+
+  ResourceMgr::Instance().Load(Resolve(name));
+  g_windowMgr.SetSurface0478(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name))));
+}
