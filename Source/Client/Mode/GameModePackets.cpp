@@ -14937,8 +14937,50 @@ static_assert(sizeof(TradeBroadcastPacket) == 0x38);
 static_assert(sizeof(ItemBroadcastPacket) == 0x20);
 
 // OFFSET: 0x00D23B70
+// FUNCTION: fn_21663
+void CGameMode::ReceiveRefineBroadcast(const unsigned char* data) {
+  const RefineBroadcastPacket* packet = reinterpret_cast<const RefineBroadcastPacket*>(data);
+  std::string name(packet->name, 24);
+  ITEM_INFO item;
+  item.SetItemId(packet->itemId);
+  item.unknown_0060 = packet->refine;
+  item.identified = 1;
+  item.unknown_0088 = packet->grade;
+  ITEM_INFO material;
+  material.SetItemId(packet->materialId);
+  material.identified = 1;
+
+  std::string text = FormatOwnedString(LookupMessage(0x65C), name.c_str(), material.DisplayName(0).c_str(), item.DisplayName(1).c_str());
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 0, 0, 0);
+  if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
+    BroadcastBalloonMessage message{{}, {}, std::chrono::seconds(20), 12, 0x40000000, 0, 0};
+    message.start = std::chrono::system_clock::now();
+    std::uint32_t color = 0x62B0FF;
+    message.lines.emplace_back(text, color);
+    balloon->AddMessage(0, message);
+  }
+}
 
 // OFFSET: 0x00D23E20
+// FUNCTION: fn_21664
+void CGameMode::ReceiveTradeBroadcast(const unsigned char* data) {
+  const TradeBroadcastPacket* packet = reinterpret_cast<const TradeBroadcastPacket*>(data);
+  std::string name(packet->name, 24);
+  ITEM_INFO item;
+  item.SetItemId(packet->itemId);
+  item.identified = 1;
+  std::string otherName(packet->otherName, 24);
+
+  std::string text = FormatOwnedString(LookupMessage(0x65C), name.c_str(), otherName.c_str(), item.DisplayName(1).c_str());
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 0, 0, 0);
+  if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
+    BroadcastBalloonMessage message{{}, {}, std::chrono::seconds(20), 12, 0x40000000, 0, 0};
+    message.start = std::chrono::system_clock::now();
+    std::uint32_t color = 0x62B0FF;
+    message.lines.emplace_back(text, color);
+    balloon->AddMessage(0, message);
+  }
+}
 
 // OFFSET: 0x00D240F0
 
