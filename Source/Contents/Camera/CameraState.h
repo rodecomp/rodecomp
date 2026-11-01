@@ -13,7 +13,16 @@ struct CameraState {
   /* 0048 */ float desiredYaw;
   /* 004C */ float desiredDistance;
 
-  void Reset();
+  // INLINED
+  void Reset() {
+    this->yaw = this->desiredYaw = 0;
+    this->distance = this->desiredDistance = 300;
+    this->pitch = this->desiredPitch = -45;
+
+    for (unsigned axis = 0; axis < 3; ++axis) {
+      this->target[axis] = this->desiredTarget[axis] = 0;
+    }
+  }
   void AddDistance(float delta);
   void AddPitch(float delta);
   void AddYaw(float delta);

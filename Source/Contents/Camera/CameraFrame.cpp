@@ -2,15 +2,6 @@
 #include "Contents/Ground/TerrainHeight.h"
 #include "Render/Renderer.h"
 
-// OFFSET: 0x00ADC150
-// FUNCTION: fn_17928
-void ResetCamera(CameraState& camera, CameraFrame& frame) {
-  camera.Reset();
-  frame.up[0] = 0;
-  frame.up[1] = 1;
-  frame.up[2] = 0;
-}
-
 // INLINED
 void CameraFrame::Build(const CameraState& camera, const TerrainHeight& terrain) {
   constexpr float pi = 3.141592f;
@@ -38,19 +29,4 @@ void CameraFrame::Build(const CameraState& camera, const TerrainHeight& terrain)
 void CameraFrame::Refresh(const CameraState& camera, const TerrainHeight& terrain, CRenderer& renderer) {
   this->Build(camera, terrain);
   renderer.SetCamera(this->eye, camera.target, this->up);
-}
-
-// OFFSET: 0x00ADBF60
-// FUNCTION: fn_17927
-void UpdateCameraFrame(
-  CameraState& camera, CameraShake& shake, int& frameLatch, const float* desiredTarget, const ServiceOptions& options, const float& rendererScale,
-  const float& projectionScale, const float& baseDistance, CameraProjectionOutputs& outputs, const TerrainHeight& terrain, CameraFrame& frame,
-  CRenderer& renderer
-) {
-  camera.desiredTarget[0] = desiredTarget[0];
-  camera.desiredTarget[1] = desiredTarget[1];
-  camera.desiredTarget[2] = desiredTarget[2];
-  camera.Smooth(options, rendererScale, projectionScale, baseDistance, outputs);
-  shake.Apply(camera, frameLatch);
-  frame.Refresh(camera, terrain, renderer);
 }

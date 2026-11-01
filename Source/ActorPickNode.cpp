@@ -1,6 +1,16 @@
 #include "ActorPickNode.h"
 #include "Contents/Camera/Camera.h"
 #include "Contents/TerrainPathSearch.h"
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Contents/Actors/Pc.h"
+#include "Contents/Configuration/ServiceOptions.h"
+#include "Contents/World/SkyBox.h"
+#include "Contents/World/World.h"
+#include "Render/Projection/RendererViewport.h"
+#include "Render/Renderer.h"
+#include "Render/SpriteGeometry.h"
+#include "Resource/World/TerrainResource.h"
 
 #include <map>
 #include <string>
@@ -167,10 +177,15 @@ void CActorPickNode::MakeQuardTree(int depth, ActorPickBounds bounds) {
   }
 }
 
+// GLOBAL: gl_24536
+float g_projectionScale = 0.16f;
+
+// GLOBAL: gl_24775
+int g_worldViewDrawn;
+
 // OFFSET: 0x00ADAC70
 // FUNCTION: fn_17912
 CView::CView() {
-  this->vtable = reinterpret_cast<void*>(0x011598E8);
   this->camera.target[0] = 0.0f;
   this->camera.target[1] = 0.0f;
   this->camera.target[2] = 0.0f;
@@ -190,8 +205,44 @@ CView::CView() {
   this->frame.up[1] = 0.0f;
   this->frame.up[2] = 0.0f;
   this->camera.yaw = 0.0f;
-  this->unknown_0014 = 0;
+  this->shake.enabled = 0;
   this->unknown_01B4 = nullptr;
-  this->unknown_0018 = 0;
-  this->unknown_0010 = 0;
+  this->shake.start = 0;
+  *reinterpret_cast<unsigned char*>(&this->shake.unknown_0010) = 0;
+}
+
+// OFFSET: 0x00ADAEA0
+CView::~CView() {
+  if (this->unknown_01B4) {
+    delete this->unknown_01B4;
+  }
+}
+
+// OFFSET: 0x00ADC150
+// FUNCTION: fn_17928
+void CView::Reset() {
+  this->camera.Reset();
+  this->frame.up[0] = 0;
+  this->frame.up[1] = 1;
+  this->frame.up[2] = 0;
+}
+
+// OFFSET: 0x00ADC1D0
+// FUNCTION: fn_17929
+void CView::Slot2() {
+}
+
+// OFFSET: 0x00ADBF60
+// FUNCTION: fn_17927
+void CView::Update() {
+  const vector3d& position = this->scene->player->render.position;
+  this->camera.desiredTarget[0] = position.x;
+  this->camera.desiredTarget[1] = position.y;
+  this->camera.desiredTarget[2] = position.z;
+  const float rendererScale = g_renderer->UiScaleY();
+  CameraProjectionOutputs outputs{g_tangent, g_cotangent, g_cameraScaleY, g_cameraScaleX};
+  this->camera.Smooth(g_serviceOptions, rendererScale, g_projectionScale, g_cameraBaseDistance, outputs);
+  this->shake.Apply(this->camera, g_worldViewDrawn);
+  const TerrainHeight terrain = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Grid();
+  this->frame.Refresh(this->camera, terrain, *g_renderer);
 }

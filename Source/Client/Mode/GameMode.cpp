@@ -2748,9 +2748,8 @@ void CGameMode::End() {
   }
 
   if (this->camera) {
-    void** vtable = static_cast<void**>(this->camera->vtable);
-    reinterpret_cast<void(__thiscall*)(CView*)>(vtable[2])(this->camera);
-    reinterpret_cast<void(__thiscall*)(CView*, int)>(static_cast<void**>(this->camera->vtable)[0])(this->camera, 1);
+    this->camera->Slot2();
+    delete this->camera;
   }
 
   g_actorPickNode.Clear();

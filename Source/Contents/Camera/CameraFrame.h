@@ -21,13 +21,6 @@ struct CameraFrame {
   void AlternateView(const CameraState& camera, float yaw, const TerrainHeight& terrain, matrix& output) const;
 };
 
-void ResetCamera(CameraState& camera, CameraFrame& frame);
-
-void UpdateCameraFrame(
-  CameraState& camera, CameraShake& shake, int& frameLatch, const float* desiredTarget, const ServiceOptions& options, const float& rendererScale,
-  const float& projectionScale, const float& baseDistance, CameraProjectionOutputs& outputs, const TerrainHeight& terrain, CameraFrame& frame,
-  CRenderer& renderer
-);
 
 static_assert(sizeof(CameraFrame) == 120);
 

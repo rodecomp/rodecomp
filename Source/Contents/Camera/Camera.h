@@ -8,6 +8,7 @@
 #include <cstddef>
 
 struct CWorld;
+class CSkyBox;
 
 extern float g_cameraDistance;
 extern float g_cameraMinDistance;
@@ -18,17 +19,17 @@ extern float g_indoorCameraDistance;
 extern float g_outdoorCameraPitch;
 extern float g_outdoorCameraDistance;
 
+// VTABLE: vt_01610
 class CView {
 public:
   CView();
+  virtual ~CView();
+  virtual void Reset();
+  virtual void Slot2();
+  virtual void Render();
+  virtual void Update();
 
-  /* 0000 */ void* vtable;
-  /* 0004 */ unsigned char unknown_0004[0xC];
-  /* 0010 */ unsigned char unknown_0010;
-  /* 0011 */ unsigned char unknown_0011[3];
-  /* 0014 */ int unknown_0014;
-  /* 0018 */ int unknown_0018;
-  /* 001C */ unsigned char unknown_001C[4];
+  /* 0004 */ CameraShake shake;
   /* 0020 */ CameraState camera;
   /* 0050 */ float unknown_0050[3];
   /* 005C */ unsigned char unknown_005C[0xC];
@@ -37,7 +38,7 @@ public:
   /* 0080 */ CameraFrame frame;
   /* 00F8 */ WorldViewSpatial spatial;
   /* 01B0 */ CWorld* scene;
-  /* 01B4 */ void* unknown_01B4;
+  /* 01B4 */ CSkyBox* unknown_01B4;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

@@ -3,17 +3,6 @@
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Math/ScalarConversion.h"
 
-// INLINED
-void CameraState::Reset() {
-  this->yaw = this->desiredYaw = 0;
-  this->distance = this->desiredDistance = 300;
-  this->pitch = this->desiredPitch = -45;
-
-  for (unsigned axis = 0; axis < 3; ++axis) {
-    this->target[axis] = this->desiredTarget[axis] = 0;
-  }
-}
-
 // OFFSET: 0x00ADB070
 // FUNCTION: fn_17916
 void CameraState::AddDistance(float delta) {
