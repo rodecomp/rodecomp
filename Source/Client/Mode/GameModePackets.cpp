@@ -48,6 +48,7 @@
 #include "UI/Text/UIStaticText.h"
 #include "UI/Cooldowns/CooldownOwner.h"
 #include "UI/UIBarGraph.h"
+#include "UI/UIBroadcastBalloon.h"
 #include "UI/Window/UIHomunInfoWnd.h"
 #include "Contents/Sound/SoundMgr.h"
 #include "UI/Status/UIStatusWnd.h"
@@ -14903,3 +14904,53 @@ void CGameMode::ReceiveActorStateEntryNamedBody(const unsigned char* data) {
 // OFFSET: 0x00D63D70
 
 // OFFSET: 0x00D642F0
+
+#pragma pack(push, 1)
+struct RefineBroadcastPacket {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::uint16_t unknown_0002;
+  /* 0004 */ int itemId;
+  /* 0008 */ char name[24];
+  /* 0020 */ int materialId;
+  /* 0024 */ int refine;
+  /* 0028 */ unsigned char grade;
+};
+
+struct TradeBroadcastPacket {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::uint16_t unknown_0002;
+  /* 0004 */ int itemId;
+  /* 0008 */ char name[24];
+  /* 0020 */ char otherName[24];
+};
+
+struct ItemBroadcastPacket {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::uint16_t unknown_0002;
+  /* 0004 */ int itemId;
+  /* 0008 */ char name[24];
+};
+#pragma pack(pop)
+
+static_assert(sizeof(RefineBroadcastPacket) == 0x29);
+static_assert(sizeof(TradeBroadcastPacket) == 0x38);
+static_assert(sizeof(ItemBroadcastPacket) == 0x20);
+
+// OFFSET: 0x00D23B70
+
+// OFFSET: 0x00D23E20
+
+// OFFSET: 0x00D240F0
+
+#pragma pack(push, 1)
+struct RateInfoRecord {
+  /* 0000 */ unsigned char type;
+  /* 0001 */ int exp;
+  /* 0005 */ int death;
+  /* 0009 */ int drop;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(RateInfoRecord) == 0xD);
+
+// OFFSET: 0x00D78C70

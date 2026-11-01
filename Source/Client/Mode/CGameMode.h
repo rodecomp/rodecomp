@@ -861,6 +861,10 @@ public:
   void ReceiveGuildRelationList(const unsigned char* data);
   void ReceivePartyMemberLeft(const unsigned char* data);
   void ReceiveBroadcast(const unsigned char* packet);
+  void ReceiveRefineBroadcast(const unsigned char* data);
+  void ReceiveTradeBroadcast(const unsigned char* data);
+  void ReceiveItemBroadcast(const unsigned char* data);
+  void ReceiveRateInfo(const unsigned char* packet);
   void ReceiveEquipItemNotice(const unsigned char* data);
   void ReceiveEquipItemListFlags(const unsigned char* packet);
   void ReceiveParaResultList(const unsigned char* packet);

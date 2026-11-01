@@ -3,7 +3,7 @@
 
 #include "UI/Window/UIWindow.h"
 
-#include <chrono>
+#include <__msvc_chrono.hpp>
 #include <cstddef>
 #include <cstdint>
 #include <list>

@@ -74,6 +74,7 @@
 #include "UI/Text/NavigationLink.h"
 #include "UI/Text/UITextViewer.h"
 #include <algorithm>
+#include <chrono>
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
