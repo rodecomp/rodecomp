@@ -145,6 +145,8 @@ struct ClientItemLists {
   void RemoveItem1710(std::uint32_t id, int quantity);
   bool AddItem1710(const ITEM_INFO& item, unsigned char refresh);
   bool EquipItem6B68(const ITEM_INFO& item);
+  void ClearRecords0734();
+  void ClearPartyMembers();
 };
 
 void __fastcall sub_DFF150(CSession* session);
@@ -11847,6 +11849,61 @@ void CGameMode::ReceiveItem1748List2(const unsigned char* packet) {
   this->unknown_024C = 1;
 }
 
+#pragma pack(push, 1)
+struct PartyMemberLeftPacket {
+  /* 0000 */ std::uint16_t id;
+  /* 0002 */ std::uint32_t aid;
+  /* 0006 */ char name[24];
+  /* 001E */ unsigned char type;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(PartyMemberLeftPacket) == 0x1F);
+
+// OFFSET: 0x00D26BB0
+// FUNCTION: fn_21684
+void CGameMode::ReceivePartyMemberLeft(const unsigned char* data) {
+  const PartyMemberLeftPacket* packet = reinterpret_cast<const PartyMemberLeftPacket*>(data);
+  char name[25];
+  name[24] = '\0';
+  std::memcpy(name, packet->name, sizeof(packet->name));
+  switch (packet->type) {
+  case 0:
+  case 1:
+    this->SendMsg(0x40, g_session.GetPartyMemberAid(name), 0, 0, 0);
+    g_session.RemovePartyMemberByName(name);
+    break;
+  case 2:
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x750)), 0xFF, 0, 0, 0);
+    return;
+  case 3:
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x751)), 0xFF, 0, 0, 0);
+    return;
+  }
+
+  if (std::strcmp(g_session.DecodePlayerName(), name) == 0) {
+    g_session.unknown_5464 = 0;
+    reinterpret_cast<ClientItemLists*>(&g_session)->ClearPartyMembers();
+    g_session.unknown_54C4.assign("", 0);
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x54)), 0xFFFF00, 0, 0, 0);
+    g_windowMgr.CloseWindow(0x35);
+    this->SendMsg(0x41, 0, 0, 0, 0);
+    if (g_windowMgr.unknown_03F8) {
+      g_windowMgr.CloseWindow(0x89);
+    }
+    reinterpret_cast<ClientItemLists*>(&g_session)->ClearRecords0734();
+  }
+
+  sub_DFF150(&g_session);
+  if (CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(packet->aid))) {
+    actor->SetUnknown02E4(0);
+  }
+}
+
+// OFFSET: 0x00D373C0
 // OFFSET: 0x00D787E0
 // FUNCTION: fn_22162
 void CGameMode::ReceiveItem1758StoreList(const unsigned char* packet) {
