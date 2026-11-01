@@ -3129,11 +3129,7 @@ int __stdcall sub_6A7B10(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
-  int count = 3;
-  int valuePosition = 2;
-  int indexPosition = 3;
-  int keyPosition = 1;
-  g_equipmentPropertiesMgr->ApplyProperty("AddSFCTEquipAmount", state, count, valuePosition, indexPosition, keyPosition);
+  g_equipmentPropertiesMgr->ApplyProperty("AddSFCTEquipAmount", state, 3, 2, 3, 1);
   return 0;
 }
 
