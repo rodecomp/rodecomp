@@ -7334,3 +7334,51 @@ void UIMerchantItemShopWnd::Paint() {
     }
   }
 }
+
+// OFFSET: 0x00857B60
+// FUNCTION: fn_10763
+bool UIEditCtrl3::ExtractItemLink(std::string& text, std::string& link, int& position, const char* source) {
+  std::size_t close = text.find(g_itemLinkClose);
+  if (close == std::string::npos) {
+    return false;
+  }
+
+  do {
+    text = text.substr(0, close);
+    std::size_t open = text.find(g_itemLinkOpen);
+    if (close != std::string::npos && open == std::string::npos) {
+      position += g_itemLinkClose.size();
+      text = source;
+      text = text.substr(position);
+      return true;
+    }
+
+    close = text.find(g_itemLinkClose);
+    if (open != std::string::npos) {
+      for (;;) {
+        position += open;
+        text = text.substr(open + g_itemLinkOpen.size());
+        open = text.find(g_itemLinkOpen);
+        close = text.find(g_itemLinkClose);
+        if (open == std::string::npos) {
+          break;
+        }
+
+        position += g_itemLinkOpen.size();
+      }
+
+      link = text;
+      text = source;
+      std::string name = "";
+      if (!this->LinkDisplayName(link, name)) {
+        position += link.size() + g_itemLinkOpen.size() + g_itemLinkClose.size();
+        text = text.substr(position);
+        return true;
+      }
+
+      text = text.substr(position + link.size() + g_itemLinkOpen.size() + g_itemLinkClose.size());
+    }
+  } while (close != std::string::npos);
+
+  return true;
+}
