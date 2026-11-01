@@ -558,6 +558,8 @@ public:
   int GetHotkeyBehavior();
   std::vector<unsigned char> SaveReplayWindows();
   bool ProcessHotkeyAction(int action, int pressed);
+  bool sub_AA35F0(int action);
+  bool ProcessKeyDown(int key, int keyData, int pressed);
   void SendEmotionHotkey(int index);
 };
 

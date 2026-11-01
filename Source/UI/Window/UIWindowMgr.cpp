@@ -28,6 +28,8 @@
 #include "Contents/MessageTable.h"
 #include "Contents/NavigationManager.h"
 #include "Contents/WorldView/WorldViewData.h"
+#include "Contents/Skills/AutomaticSkills.h"
+#include "UI/Window/UIHotKeyWnd.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Client/Mode/CMode.h"
@@ -1168,6 +1170,110 @@ int UIWindowMgr::LoadReplayReserved(const std::vector<unsigned char>& data) {
     }
   }
   return static_cast<int>(offset);
+}
+
+// OFFSET: 0x00AA55C0
+// FUNCTION: fn_17223
+bool UIWindowMgr::ProcessKeyDown(int key, int keyData, int pressed) {
+  this->unknown_0025 = 1;
+  if (g_modeMgr.GetGameMode() == nullptr) {
+    return this->ProcessHotkeyAction(key, pressed);
+  }
+
+  if (this->LookupWindow(0x9C) != nullptr) {
+    this->unknown_0025 = 0;
+  } else if (!this->unknown_0024) {
+    UIWindow* hover = this->hoverWindow;
+    UIWindow* parent = hover ? hover->parent : nullptr;
+    if (!hover || !parent || parent == this->window_01C8 || !parent->geometry.visible) {
+      this->unknown_0025 = 0;
+    }
+  }
+
+  int action = this->TranslateHotkey(key, keyData);
+  if (this->unknown_0404 != nullptr) {
+    static_cast<UIHotKeyWnd*>(this->unknown_0404)->AssignSelectedHotkey(action);
+    return false;
+  }
+
+  bool hoverOnButton = false;
+  if (this->unknown_0024) {
+    const UIWindow* window = this->window_01C8;
+    if (window) {
+      UIWindow* const* buttons = reinterpret_cast<UIWindow* const*>(reinterpret_cast<const char*>(window) + 0xBC);
+      if (this->hoverWindow == buttons[0] || this->hoverWindow == buttons[1]) {
+        hoverOnButton = true;
+      }
+    }
+  }
+  if (!hoverOnButton) {
+    UIWindow* hover = this->hoverWindow;
+    if (hover) {
+      UIWindow* parent = hover->parent;
+      if (parent && parent != this->window_01C8 && parent->geometry.visible) {
+        hoverOnButton = true;
+      }
+    }
+  }
+
+  if (hoverOnButton) {
+    if (this->modifierKey == 0) {
+      switch (this->keyCode) {
+      case 0x09:
+      case 0x0D:
+      case 0x10:
+      case 0x11:
+      case 0x12:
+      case 0x14:
+      case 0x2D:
+      case 0x70:
+      case 0x71:
+      case 0x72:
+      case 0x73:
+      case 0x74:
+      case 0x75:
+      case 0x76:
+      case 0x77:
+      case 0x78:
+      case 0x79:
+      case 0x7A:
+      case 0x7B:
+        break;
+      default:
+        return this->ProcessHotkeyAction(key, pressed);
+      }
+    } else if (this->modifierKey == 0x10) {
+      return this->ProcessHotkeyAction(key, pressed);
+    } else if (this->modifierKey == 0x11) {
+      switch (this->keyCode) {
+      case 0x41:
+      case 0x43:
+      case 0x56:
+      case 0x58:
+        return this->ProcessHotkeyAction(key, pressed);
+      }
+    }
+  }
+
+  int& lastKey = *reinterpret_cast<int*>(g_session.unknown_61A8_0000);
+  if (lastKey != key) {
+    if (pressed == 0) {
+      return this->ProcessHotkeyAction(key, pressed);
+    }
+    reinterpret_cast<AutomaticSkills*>(g_session.unknown_7FB4)->DisableAll();
+  }
+  lastKey = key;
+
+  if ((key == 0x0D || key == 0x20) && this->sub_A8CA20()) {
+    return true;
+  }
+  if (!this->sub_AA35F0(action)) {
+    return this->ProcessHotkeyAction(key, pressed);
+  }
+  if (this->IsHoverParentVisible() || this->IsHoverOnWindow01C8Button()) {
+    this->unknown_0025 = 1;
+  }
+  return true;
 }
 
 // OFFSET: 0x00AA57E0
