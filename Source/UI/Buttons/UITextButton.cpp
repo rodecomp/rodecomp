@@ -3512,3 +3512,38 @@ void UITreeView::Paint() {
   this->LayoutNodes(this->root->children, 0, 0);
   this->Slot53();
 }
+
+// OFFSET: 0x0088F450
+// FUNCTION: fn_11388
+void UIString::Paint() {
+  if (this->unknown_00DC.empty()) {
+    return;
+  }
+
+  std::uint32_t color = (static_cast<std::uint32_t>(static_cast<unsigned char>(this->unknown_00A4)) << 16) |
+                        (static_cast<std::uint32_t>(static_cast<unsigned char>(this->unknown_00A0)) << 8) |
+                        static_cast<std::uint32_t>(static_cast<unsigned char>(this->unknown_009C));
+
+  const char* cur = this->unknown_00DC.c_str();
+  const char* end = cur + this->unknown_00DC.size();
+
+  if (!this->unknown_00AC.empty()) {
+    char path[128];
+    std::memset(path, 0, sizeof(path));
+    reinterpret_cast<ItemDescriptions*>(&g_session)->IconPath(path, this->unknown_00AC.c_str(), 0);
+    CRes* res = ResourceMgr::Instance().Load(Resolve(path));
+    if (!res) {
+      return;
+    }
+    this->DrawBitmap(0, 0, reinterpret_cast<const BitmapImage*>(res), true);
+    while (cur < end) {
+      cur = ParseColorCode(SegmentEnd(cur, end), color);
+    }
+    DrawColoredText(*this, 0, 24, 7, this->unknown_00DC.c_str(), static_cast<unsigned>(this->unknown_00DC.size()), color, 0, 12, false);
+  } else {
+    DrawColoredText(*this, 0, 0, 0, this->unknown_00DC.c_str(), static_cast<unsigned>(this->unknown_00DC.size()), color, 0, 12, false);
+  }
+}
+
+// OFFSET: 0x00899780
+

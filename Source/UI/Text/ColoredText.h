@@ -10,6 +10,7 @@ struct TextLocale;
 
 extern unsigned char g_hexDigits[256];
 
+const char* SegmentEnd(const char* text, const char* end);
 const char* ParseColorCode(const char* text, std::uint32_t& color);
 
 void DrawColoredText(
