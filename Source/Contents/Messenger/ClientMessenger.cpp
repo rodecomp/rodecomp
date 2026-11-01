@@ -23,11 +23,22 @@
 #include "Contents/Skills/SkillInfo.h"
 #include "Contents/SimpleStringMgr.h"
 #include "Contents/Configuration/GameSettingsMgr.h"
+#include "Contents/CashEmotionMgr.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceOptions.h"
+#include "Contents/Items/ItemInfoMgr.h"
+#include "Contents/MapInfoMgr.h"
+#include "Contents/SpecialPopupMgr.h"
+#include "Contents/TipBoxTitles.h"
+#include "Render/Text/EmbedFont.h"
+#include "Utility/Cipher/XorBytes.h"
 
 #include <algorithm>
 #include <array>
 #include <cstddef>
+#include <cstdint>
 #include <cstdlib>
+#include <ctime>
 #include <format>
 #include <list>
 #include <map>
@@ -6449,19 +6460,6 @@ void CGameMode::Zc_Mer_Par_Change(const unsigned char* data) {
 
   g_session.RefreshMercenaryInfo();
 }
-
-#include "Contents/CashEmotionMgr.h"
-#include "Contents/Configuration/ServiceConfiguration.h"
-#include "Contents/Configuration/ServiceOptions.h"
-#include "Contents/Items/ItemInfoMgr.h"
-#include "Contents/MapInfoMgr.h"
-#include "Contents/SpecialPopupMgr.h"
-#include "Contents/TipBoxTitles.h"
-#include "Render/Text/EmbedFont.h"
-#include "Utility/Cipher/XorBytes.h"
-
-#include <cstdint>
-#include <ctime>
 
 template <std::size_t Length, std::uint64_t Key>
 class EncryptedName {
