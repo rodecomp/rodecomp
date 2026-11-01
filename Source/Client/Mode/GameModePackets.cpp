@@ -14954,3 +14954,146 @@ struct RateInfoRecord {
 static_assert(sizeof(RateInfoRecord) == 0xD);
 
 // OFFSET: 0x00D78C70
+// FUNCTION: fn_21993
+void CGameMode::SpawnStateActor(
+  unsigned char objectType, std::uint32_t aid, std::uint32_t gid, short speed, short bodyState, short healthState, int effectState, short job, short head,
+  int weapon, int shield, short accessory, short accessory2, short accessory3, short headPalette, short bodyPalette, short headDir, short robe,
+  int guildId, short guildVersion, short honor, int virtue, unsigned char pkMode, unsigned char sex, const unsigned char* posDir, unsigned char xSize,
+  unsigned char ySize, unsigned char state, short level, short font, int maxHp, int hp, unsigned char isBoss, std::string name, short body
+) {
+  ActorStandEntry entry;
+  if (objectType == 0 && gid != 0) {
+    g_playerNameDictionary->Set(gid, name);
+  }
+  if (name.size() != 0) {
+    this->nameCard.SetName(aid, name);
+  }
+
+  entry.aid = aid;
+  entry.job = job;
+  entry.unknown_0008 = this->SubD07740(entry.job, sex);
+  entry.speed = speed;
+  entry.unknown_001C = xSize;
+  entry.unknown_0020 = ySize;
+  entry.unknown_0024 = head;
+  entry.unknown_0028 = weapon;
+  entry.unknown_0030 = accessory;
+  entry.effectState = healthState;
+  entry.bodyState = bodyState;
+  entry.stateFlags = effectState;
+  entry.unknown_0044 = pkMode;
+  entry.unknown_004C = accessory2;
+  entry.unknown_0050 = accessory3;
+  entry.unknown_0054 = headPalette;
+  entry.unknown_0058 = bodyPalette;
+  entry.unknown_005C = headDir;
+  entry.guildId = guildId;
+  entry.unknown_0068 = honor;
+  entry.unknown_006C = virtue;
+  entry.robe = robe;
+  entry.unknown_002C = shield;
+  entry.guildVersion = guildVersion;
+  entry.state = state;
+  if (objectType != 0) {
+    entry.unknown_0048 = entry.guildVersion;
+  }
+  entry.unknown_0074 = gid;
+  entry.unknown_0078 = body;
+  entry.cellX = (posDir[0] << 2) | (posDir[1] >> 6);
+  entry.direction = posDir[2] & 0x0F;
+  entry.cellY = ((posDir[1] & 0x3F) << 4) | (posDir[2] >> 4);
+
+  CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(entry.aid));
+  if (actor) {
+    if (objectType == 0) {
+      actor->SendMsg(nullptr, 0x7C, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    } else {
+      actor->SendMsg(nullptr, 3, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+  } else {
+    CGameActor* created;
+    if (objectType == 0) {
+      created = new CPc;
+    } else {
+      created = this->NewActor(job);
+    }
+    if (!created) {
+      return;
+    }
+
+    created->unknown_0314 = objectType;
+    this->scene->objects.push_back(created);
+    this->scene->actors.push_back(created);
+    actor = created;
+    if (objectType == 0) {
+      if (this->unknown_01B4.find(aid) != this->unknown_01B4.end() || this->unknown_01BC.find(aid) != this->unknown_01BC.end()) {
+        actor->SetUnknown02E4(1);
+      }
+      actor->SendMsg(nullptr, 0x79, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    } else {
+      if ((objectType == 1 || objectType == 6 || objectType == 12) && IsPlayerJob(job)) {
+        entry.unknown_0078 = job;
+      } else {
+        entry.unknown_0008 = 0;
+      }
+      actor->SendMsg(nullptr, 4, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+    g_championMonsterMgr->ApplyEffects(entry.job, actor, entry.aid);
+  }
+
+  std::int64_t bossFlag = 0;
+  if (isBoss && actor->unknown_0304 == 0) {
+    actor->unknown_0304 = isBoss;
+    bossFlag = 1;
+  }
+  actor->unknown_0210 = level;
+  *reinterpret_cast<short*>(actor->render.unknown_00FCBytes) = font;
+  if (objectType == 7) {
+    if (g_session.IsPetAid(aid)) {
+      g_session.unknown_1038 = entry.unknown_0030;
+    }
+    if (entry.unknown_0030 && !actor->Slot50()) {
+      actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.unknown_0030));
+    }
+  } else if (objectType == 8 && g_session.IsHomunAid(aid)) {
+    g_groundMarkEnabled = 1;
+  } else if (objectType == 9 && g_session.IsMercenaryAid(aid)) {
+    g_groundMarkAltEnabled = 1;
+  } else if (g_session.GetSceneUnknown004C() && actor->unknown_0188 == 0 &&
+             (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
+    this->ShowGuildEmblem(actor, guildId, guildVersion);
+  }
+
+  switch (actor->unknown_0314) {
+  case 0:
+  case 5:
+  case 8:
+  case 9:
+  case 10: {
+    const std::int64_t currentHp = hp;
+    const std::int64_t currentMaxHp = maxHp;
+    actor->SendMsg(
+      nullptr, 0x91, 0, static_cast<int>(currentHp), static_cast<int>(currentHp >> 32), static_cast<int>(currentMaxHp),
+      static_cast<int>(currentMaxHp >> 32), static_cast<int>(bossFlag), static_cast<int>(bossFlag >> 32), 0, 0, 0, 0, 0, 0
+    );
+    break;
+  }
+  case 13:
+  case 14:
+    actor->SendMsg(nullptr, 0x22, 0, gid, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    break;
+  }
+
+  if (objectType != 0 && job == 0x2D2) {
+    actor->Slot49(actor->Slot50(), guildVersion);
+    this->sub_D591A0(aid, effectState, level, virtue);
+  } else {
+    this->sub_D591A0(aid, effectState, level, virtue);
+    if (objectType == 0) {
+      int cell[2];
+      cell[0] = entry.cellX;
+      cell[1] = entry.cellY;
+      this->scene->AddPcPosFromCell(aid, cell);
+    }
+  }
+}
