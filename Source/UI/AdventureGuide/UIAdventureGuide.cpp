@@ -845,7 +845,8 @@ void CUIQuest::Slot54(int type, int id) {
 // FUNCTION: fn_14353
 void CUITab::SetSelected(bool selected) {
   CUIListItem::SetSelected(selected);
-  const bool expand = selected && this->subTabs && !this->subTabs->geometry.visible;
+  volatile bool selectedState = selected;
+  const bool expand = selectedState && this->subTabs && !this->subTabs->geometry.visible;
   if (this->subTabs) {
     this->subTabs->Show(expand);
   }
@@ -2016,6 +2017,8 @@ AdventureGuide::CUISubTab* CUIListBox<AdventureGuide::CUISubTab>::CreateItem() {
   this->Invalidate();
   return item;
 }
+
+// OFFSET: 0x009DB4B0
 
 namespace AdventureGuide {
 

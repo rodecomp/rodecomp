@@ -62,6 +62,9 @@ public:
 
 class CUITab : public CUIListItem {
 public:
+  // INLINED
+  CUITab() : CUIListItem(), unknown_00E8(nullptr), subTabs(nullptr), unknown_00F0(), type(7), page(nullptr), unknown_0110(0) {
+  }
   explicit CUITab(UIWindowContext& context);
   void Slot15(int width, int height) override;
   void Slot16() override;
