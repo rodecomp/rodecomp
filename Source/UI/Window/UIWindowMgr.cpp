@@ -113,6 +113,90 @@ int g_renderDiagnosticLine = 0;
 const char* g_renderDiagnosticFile = "";
 
 // OFFSET: 0x00AA73B0
+// FUNCTION: fn_17238
+void UIWindowMgr::DrawWindows() {
+  BalloonRectangle rectangle;
+
+  for (auto overlay = this->overlays.begin(); overlay != this->overlays.end(); ++overlay) {
+    overlay->second->Update(0);
+    CDC* surface = overlay->second->geometry.surface;
+    const std::uint32_t color = overlay->second->Color();
+    surface->Draw(
+      *GetRenderSystemHolder()->system, overlay->second->geometry.x, overlay->second->geometry.y, overlay->second->geometry.width,
+      overlay->second->geometry.height, color
+    );
+  }
+
+  for (auto entry = this->rendered.begin(); entry != this->rendered.end(); ++entry) {
+    UIWindow* window = *entry;
+    if (window->geometry.visible != 0 && (this->window_4F288 == nullptr || window->geometry.id == 359)) {
+      g_renderDiagnosticLine = 3783;
+      g_renderDiagnosticFile = g_windowManagerDiagnosticFile;
+      if (window->geometry.id == 189) {
+        window->Invalidate();
+      }
+
+      g_renderDiagnosticLine = 3811;
+      g_renderDiagnosticFile = g_windowManagerDiagnosticFile;
+      window->Update(0);
+      g_renderDiagnosticLine = 3815;
+      g_renderDiagnosticFile = g_windowManagerDiagnosticFile;
+      if (window->Slot07(&rectangle) == true) {
+        DrawAlphaRectangle(
+          g_renderer->primitives, g_renderer->queues, rectangle.x, rectangle.y, rectangle.width, rectangle.height, rectangle.color,
+          g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
+        );
+        g_renderDiagnosticLine = 3823;
+        g_renderDiagnosticFile = g_windowManagerDiagnosticFile;
+      } else if (window->Slot42(&rectangle) == true) {
+        window->Slot43();
+        g_renderDiagnosticLine = 3829;
+        g_renderDiagnosticFile = g_windowManagerDiagnosticFile;
+      }
+
+      if (window == this->modal) {
+        static_cast<UIRoMapWnd*>(this->modal)->DrawWorld();
+      }
+
+      g_renderDiagnosticLine = 3835;
+      g_renderDiagnosticFile = g_windowManagerDiagnosticFile;
+      if (window->m_cached == 1) {
+        CTexture* texture = window->m_texture;
+        if (texture != nullptr) {
+          const std::uint32_t color = window->Color();
+          texture->Draw(window->geometry.x, window->geometry.y, window->geometry.width, window->geometry.height, color);
+        }
+        g_renderDiagnosticLine = 3844;
+      } else {
+        CDC* surface = window->geometry.surface;
+        const std::uint32_t color = window->Color();
+        surface->Draw(
+          *GetRenderSystemHolder()->system, window->geometry.x, window->geometry.y, window->geometry.width, window->geometry.height, color
+        );
+        g_renderDiagnosticLine = 3850;
+      }
+      g_renderDiagnosticFile = g_windowManagerDiagnosticFile;
+      window->FlushPrimitives(g_renderer->queues, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+      g_renderDiagnosticLine = 3860;
+      g_renderDiagnosticFile = g_windowManagerDiagnosticFile;
+      g_cooldownOwner->Drawing().SubmitNormal(g_renderer->queues, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+      g_renderDiagnosticLine = 3866;
+      g_renderDiagnosticFile = g_windowManagerDiagnosticFile;
+      if (window == this->unknown_0464) {
+        g_rouletteMgr->Draw();
+      }
+
+      g_renderDiagnosticLine = 3873;
+      g_renderDiagnosticFile = g_windowManagerDiagnosticFile;
+      window->VisitChildren();
+      g_renderDiagnosticLine = 3877;
+      g_renderDiagnosticFile = g_windowManagerDiagnosticFile;
+    }
+  }
+
+  g_renderDiagnosticFile = g_windowManagerDiagnosticFile;
+  g_renderDiagnosticLine = 3886;
+}
 
 // OFFSET: 0x00A94FD0
 // FUNCTION: fn_17179
