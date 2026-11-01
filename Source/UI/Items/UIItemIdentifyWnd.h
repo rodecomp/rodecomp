@@ -29,6 +29,7 @@ public:
   void Slot26(int x, int y) override;
   void Slot33(int x, int y) override;
   void Slot35(int delta) override;
+  std::vector<unsigned char> Slot44() override;
   ITEM_INFO GetItem(int index, int* found);
   ITEM_INFO GetSelectedItem(int* found);
 };
@@ -36,6 +37,9 @@ public:
 class UIMakingArrowListWnd : public UIItemIdentifyWnd {
 public:
   void Paint() override;
+  std::vector<unsigned char> Slot44() override;
+
+  /* 00F0 */ std::int16_t unknown_00F0;
 };
 
 class UIPetEggListWnd : public UIItemIdentifyWnd {
@@ -47,6 +51,7 @@ class UIItemCompositionWnd : public UIItemIdentifyWnd {
 public:
   void Slot11() override;
   void Slot15(int width, int height) override;
+  std::vector<unsigned char> Slot44() override;
 
   /* 00F0 */ WindowPlacement* m_compositionPlacement;
   /* 00F4 */ int m_compositionState;

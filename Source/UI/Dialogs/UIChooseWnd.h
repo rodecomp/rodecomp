@@ -18,6 +18,7 @@ public:
   void Slot11() override;
   void Slot15(int width, int height) override;
   void Paint() override;
+  std::vector<unsigned char> Slot44() override;
 
   /* 00B4 */ int unknown_00B4;
   /* 00B8 */ std::vector<int> m_items;

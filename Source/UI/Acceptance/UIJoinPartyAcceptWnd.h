@@ -114,6 +114,7 @@ class UIStarPlaceAcceptWnd : public UIExchangeAcceptWnd {
 public:
   UIStarPlaceAcceptWnd(UIWindowContext& windows, UIFrameContext& frames, UIAcceptanceContext& acceptance);
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
+  std::vector<unsigned char> Slot44() override;
 
   /* 00C0 */ char m_place;
 };

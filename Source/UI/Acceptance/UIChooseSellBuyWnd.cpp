@@ -75,6 +75,7 @@
 #include "UI/Items/UIItemParamChangeDisplayWnd.h"
 #include "UI/Items/UINotifyItemObtainWnd.h"
 #include "UI/Lists/UIChatHisBox.h"
+#include "UI/Lists/UIMemberListBox.h"
 #include "UI/Lists/UIComboBox.h"
 #include "UI/Lists/UIComboBoxWnd.h"
 #include "UI/Lists/UIListBoxID.h"
@@ -3709,7 +3710,10 @@ void UIItemCollectionWnd::SetHeight(int height) {
 class UIAutoMessageWnd : public UIFrameWnd {
 public:
   UIAutoMessageWnd(UIWindowContext& windows, UIFrameContext& frames);
+  void Slot15(int width, int height) override;
   void Paint() override;
+
+  /* 00B4 */ UIEditCtrl* m_edit;
 };
 
 // OFFSET: 0x008ECE20
@@ -5517,12 +5521,80 @@ void UIBookWnd::Paint() {
 }
 
 // OFFSET: 0x008ECF50
+// FUNCTION: fn_12212
+void UICardItemIllustWnd::Paint() {
+  auto& controls = *this->m_controls;
+  this->DrawTitleBar(controls.fonts, controls.locale, false, "", 0);
+  if (this->m_bitmapPath.size() != 0) {
+    this->DrawBitmap(0, 17, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve(this->m_bitmapPath.c_str()))), false);
+  }
+
+  ITEM_INFO item;
+  item.itemId = this->m_name;
+  item.identified = this->unknown_00E4;
+  item.unknown_0060 = 0;
+  this->DrawFittedItemName(10, 3, &item, 0, 0, 12, 0);
+}
 
 // OFFSET: 0x008E8480
+// FUNCTION: fn_12198
+void UISelectCartWnd::Slot15(int, int) {
+  this->AddCloseButton(*this->m_controls, "", 0);
+
+  const int levels[] = {0, 40, 65, 80, 90, 100, 110, 120, 130};
+  std::vector<int>& carts = *reinterpret_cast<std::vector<int>*>(&this->unknown_00B8);
+  const int level = g_session.m_level;
+  carts.clear();
+  for (int type = 1; level > levels[type - 1]; ++type) {
+    carts.push_back(type);
+    if (type >= 9) {
+      break;
+    }
+  }
+  if (level > 100) {
+    carts.push_back(13);
+  }
+
+  int index = 0;
+  for (std::vector<int>::iterator cart = carts.begin(); cart != carts.end(); ++cart, ++index) {
+    this->AddCart(index, *cart);
+  }
+
+  const int count = static_cast<int>(carts.size());
+  if (count != 0) {
+    this->Resize(this->geometry.width, ((count - 1) / 5 + 1) * 98);
+  }
+}
 
 // OFFSET: 0x008D3AB0
+// FUNCTION: fn_12104
+std::vector<unsigned char> UIBabyAcceptWnd2::Slot44() {
+  std::vector<unsigned char> records;
+  {
+    const auto record = BuildReplayTaggedRecord(21550, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(21551, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  return records;
+}
 
 // OFFSET: 0x008D4100
+// FUNCTION: fn_12106
+std::vector<unsigned char> UIChooseSellBuyWnd::Slot44() {
+  std::vector<unsigned char> records;
+  {
+    const auto record = BuildReplayTaggedRecord(20850, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(20851, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  return records;
+}
 
 // INLINED
 static __forceinline std::vector<unsigned char> BuildAcceptanceReplayRecords(UITextViewer* viewer, std::uint16_t id, int message) {
@@ -5551,11 +5623,323 @@ static __forceinline std::vector<unsigned char> BuildAcceptanceReplayRecords(UIT
 }
 
 // OFFSET: 0x008D4A40
+// FUNCTION: fn_12109
+std::vector<unsigned char> UIExchangeAcceptWnd::Slot44() {
+  return BuildAcceptanceReplayRecords(this->viewer, 21650, 93);
+}
 
 // OFFSET: 0x008D3CD0
+// FUNCTION: fn_12105
+std::vector<unsigned char> UIBabyAcceptWnd::Slot44() {
+  return BuildAcceptanceReplayRecords(this->viewer, 21500, 794);
+}
 
 // OFFSET: 0x008D5C80
+// FUNCTION: fn_12113
+std::vector<unsigned char> UIJoinFriendAcceptWnd::Slot44() {
+  return BuildAcceptanceReplayRecords(this->viewer, 21600, 818);
+}
 
 // OFFSET: 0x008D60B0
+// FUNCTION: fn_12114
+std::vector<unsigned char> UIJoinGuildAcceptWnd::Slot44() {
+  return BuildAcceptanceReplayRecords(this->viewer, 21800, 377);
+}
 
 // OFFSET: 0x008D64E0
+// FUNCTION: fn_12115
+std::vector<unsigned char> UIJoinPartyAcceptWnd::Slot44() {
+  return BuildAcceptanceReplayRecords(this->viewer, 21750, 94);
+}
+
+// OFFSET: 0x008D7110
+// FUNCTION: fn_12118
+std::vector<unsigned char> UIStarPlaceAcceptWnd::Slot44() {
+  std::vector<unsigned char> records;
+  {
+    const auto record = BuildReplayTaggedRecord(21700, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(21702, &this->m_place, sizeof(this->m_place));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(21701, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  return records;
+}
+
+// OFFSET: 0x008D4600
+// FUNCTION: fn_12108
+std::vector<unsigned char> UIChooseWnd::Slot44() {
+  std::vector<unsigned char> records;
+  {
+    const auto record = BuildReplayTaggedRecord(21900, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+
+  const int count = static_cast<int>(this->m_list->lines.size());
+  for (int index = 0; index < count; ++index) {
+    const std::string& line = this->m_list->lines[index];
+    const auto record = BuildReplayTaggedRecord(21903, line.c_str(), line.size());
+    records.insert(records.end(), record.begin(), record.end());
+  }
+
+  {
+    const auto record = BuildReplayTaggedRecord(21901, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  return records;
+}
+
+// INLINED
+static __forceinline std::vector<unsigned char> BuildItemListReplayRecords(const std::list<ITEM_INFO>& items, std::uint16_t id, std::int16_t packetId) {
+  std::vector<unsigned char> records;
+  {
+    const auto record = BuildReplayTaggedRecord(id, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+
+  std::vector<unsigned char> packet(items.size() * 2 + 4, 0);
+  std::int16_t* fields = reinterpret_cast<std::int16_t*>(packet.data());
+  fields[0] = packetId;
+  fields[1] = static_cast<std::int16_t>(packet.size());
+  std::int16_t* index = fields + 2;
+  for (std::list<ITEM_INFO>::const_iterator item = items.begin(); item != items.end(); ++item) {
+    *index++ = static_cast<std::int16_t>(item->unknown_0000[1]);
+  }
+  {
+    const auto message = BuildReplayTaggedRecord(id + 3, packet.data(), packet.size());
+    records.insert(records.end(), message.begin(), message.end());
+  }
+
+  {
+    const auto record = BuildReplayTaggedRecord(id + 1, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  return records;
+}
+
+// OFFSET: 0x008D59B0
+// FUNCTION: fn_12112
+std::vector<unsigned char> UIItemIdentifyWnd::Slot44() {
+  return BuildItemListReplayRecords(this->m_items, 22300, 0x177);
+}
+
+// OFFSET: 0x008D56E0
+// FUNCTION: fn_12111
+std::vector<unsigned char> UIItemCompositionWnd::Slot44() {
+  return BuildItemListReplayRecords(this->m_items, 22350, 0x17B);
+}
+
+// OFFSET: 0x008D6910
+// FUNCTION: fn_12116
+std::vector<unsigned char> UIMakingArrowListWnd::Slot44() {
+  std::vector<unsigned char> records;
+  {
+    const auto record = BuildReplayTaggedRecord(22100, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+
+  for (std::list<ITEM_INFO>::iterator item = this->m_items.begin(); item != this->m_items.end(); ++item) {
+    const int itemId = std::atoi(item->itemId.c_str());
+    const auto record = BuildReplayTaggedRecord(22103, &itemId, sizeof(itemId));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+
+  {
+    const auto record = BuildReplayTaggedRecord(22102, &this->unknown_00F0, sizeof(this->unknown_00F0));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(22101, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  return records;
+}
+
+// OFFSET: 0x008EF5D0
+// FUNCTION: fn_12234
+void UINotifyItemObtainWnd::Paint() {
+  this->DrawBorder(0, 0, 0, 0);
+  if (this->m_itemId.size() != 0) {
+    ItemDescriptions descriptions{g_itemDescriptions};
+    DrawItemIconById(*this, descriptions, 13, 5, this->m_itemId.c_str(), this->m_identified);
+  }
+
+  const int kind = this->m_kind;
+  const int width = this->geometry.width;
+  char text[256];
+  char* cursor = text;
+  std::size_t remaining = sizeof(text);
+  char* highlight = nullptr;
+  std::vector<char*> breaks;
+  int highlightColor;
+  this->BuildItemName(&this->m_item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
+
+  const int written = sprintf_s(cursor, remaining, LookupMessage(696), this->m_item.quantity);
+  if (written > 0) {
+    remaining -= written;
+    cursor += written;
+    breaks.push_back(cursor);
+  }
+
+  this->DrawItemNameSegments(kind == 0 ? 41 : 13, 10, width - 49, breaks, text, highlight, highlightColor, 0, 0, 12);
+}
+
+// OFFSET: 0x008EB010
+// FUNCTION: fn_12207
+void UIWhisperWnd::Slot15(int, int) {
+  this->m_message0 = 184;
+
+  this->m_resizer = new UIResizer(*this->m_context);
+  this->m_resizer->SetSize(16, 16);
+  this->m_resizer->SetDirection(7);
+  this->m_resizer->SetBitmapName("유저인터페이스\\btn_resize.bmp");
+  this->m_resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
+  this->m_resizer->SetColors(0xFFFF00FF, 0xFFFF00FF);
+  this->AddChild(this->m_resizer);
+
+  this->m_edit = new UIChatEditCtrl(*this->m_context, *reinterpret_cast<UIEditContext*>(nullptr));
+  this->m_edit->SetSize(this->geometry.width - 30, 16);
+  this->m_edit->Move(3, this->geometry.height - 18);
+  this->m_edit->maximum = 70;
+  this->m_edit->Background(255, 0, 255);
+  this->m_edit->TextColor(RGB(255, 255, 255), 0xFFFFFFFF);
+  this->AddChild(this->m_edit);
+  InputFocus{g_windowMgr.hoverWindow}.Set(this->m_edit);
+  this->m_edit->SetId(490);
+
+  UIChatHisBox2* history = new UIChatHisBox2(*this->m_context, *reinterpret_cast<UIListBoxContext*>(nullptr));
+  this->m_chatHistory = history;
+  history->Configure(0, 0, this->geometry.width - 2, this->geometry.height - 38, 1);
+  this->m_chatHistory->Move(1, 17);
+  this->m_chatHistory->SetId(184);
+  static_cast<UIChatHisBox2*>(this->m_chatHistory)->backgroundRed = 255;
+  static_cast<UIChatHisBox2*>(this->m_chatHistory)->backgroundGreen = 0;
+  static_cast<UIChatHisBox2*>(this->m_chatHistory)->backgroundBlue = 255;
+  this->AddChild(this->m_chatHistory);
+
+  this->m_closeButton = this->AddCloseButton(*this->m_controls, "/q", 0);
+}
+
+// OFFSET: 0x008EE2B0
+// FUNCTION: fn_12224
+void UIItemCollectionWnd::Paint() {
+  int height = this->geometry.height;
+  if (this->m_item.identified == 1 && this->unknown_01FC != 0) {
+    height -= this->m_extraHeight;
+  }
+  const int bottom = this->m_compare == 1 ? height - 29 : height;
+
+  const char* background;
+  if (this->m_kind == 234 || this->m_kind == 250) {
+    this->DrawSkinBox("유저인터페이스\\basic_interface\\sysbox_comparison_", 0, 0, this->geometry.width, bottom, true);
+    background = "유저인터페이스\\basic_interface\\collection_Comparison_bg.bmp";
+  } else if (this->m_item.unknown_0088 > 0) {
+    const int width = this->geometry.width;
+    this->DrawSkinBox(FormatOwnedString("유저인터페이스\\sysbox_g%d_", this->m_item.unknown_0088).c_str(), 0, 0, width, bottom, false);
+    this->DrawBitmap(
+      0, 0,
+      reinterpret_cast<const BitmapImage*>(
+        ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\basic_interface\\collection_bg_g%d.bmp", this->m_item.unknown_0088).c_str()))
+      ),
+      true
+    );
+    background = nullptr;
+  } else {
+    this->DrawSkinBox("유저인터페이스\\sysbox_", 0, 0, this->geometry.width, bottom, true);
+    background = "유저인터페이스\\basic_interface\\collection_bg.bmp";
+  }
+  if (background != nullptr) {
+    this->DrawBitmap(0, 0, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve(background))), true);
+  }
+
+  if (this->unknown_01C4.size() != 0) {
+    this->DrawBitmap(10, 11, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve(this->unknown_01C4.c_str()))), true);
+  }
+  this->DrawFittedItemName(90, 10, &this->m_item, this->m_item.identified ? 0 : 0x808080, 0, 12, 0);
+
+  if (this->m_compare == 1) {
+    int offset = 0;
+    if (this->m_item.identified == 1 && this->unknown_01FC > 0) {
+      for (std::map<int, std::list<std::string>>::iterator card = this->m_cardTexts.begin(); card != this->m_cardTexts.end(); ++card) {
+        const char* box = this->m_kind == 234 ? "유저인터페이스\\basic_interface\\sysbox_comparison_" : "유저인터페이스\\sysbox_";
+        this->DrawSkinBox(box, 0, bottom + offset, this->geometry.width, static_cast<int>(card->second.size()) * 15 + 14, true);
+        offset += 8;
+        for (std::list<std::string>::iterator line = card->second.begin();;) {
+          if (*line == LookupMessage(3886)) {
+            this->DrawCenteredText(0, bottom + offset, line->c_str(), this->geometry.width, 0, 12, 0xFF, 0);
+            break;
+          }
+          this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 12, bottom + offset, line->c_str(), 0, 0, 12, 0, 0, 0);
+          ++line;
+          if (line == card->second.end()) {
+            break;
+          }
+          offset += 15;
+        }
+        offset += 21;
+      }
+    }
+
+    if (!this->m_item.HasSpecialCard()) {
+      const int top = bottom + offset;
+      const char* box = this->m_kind == 234 ? "유저인터페이스\\basic_interface\\sysbox_comparison_" : "유저인터페이스\\sysbox_";
+      this->DrawSkinBox(box, 0, top, this->geometry.width, 29, true);
+      const int y = top + 2;
+      int slot = 0;
+      for (int x = 4; x < 104; x += 25, ++slot) {
+        const int card = reinterpret_cast<const int*>(this->m_item.unknown_001C)[slot];
+        if (card < 1) {
+          const BitmapImage* bitmap = reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\empty_card_slot.bmp")));
+          if (this->m_kind == 234) {
+            const char* name = slot < ItemSlotsCount(this->m_item) ? "유저인터페이스\\basic_interface\\comparison_empty_card_slot.bmp"
+                                                                   : "유저인터페이스\\basic_interface\\comparison_disable_card_slot.bmp";
+            bitmap = reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve(name)));
+          } else if (ItemSlotsCount(this->m_item) <= slot) {
+            bitmap = reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\disable_card_slot.bmp")));
+          }
+          this->DrawBitmap(x, y, bitmap, true);
+        } else {
+          ItemDescriptions descriptions{g_itemDescriptions};
+          DrawItemIconById(*this, descriptions, x, y, FormatOwnedString("%d", card).c_str(), 0);
+        }
+      }
+    }
+  }
+
+  if (FindItemMoveInfo(std::atoi(this->m_item.itemId.c_str())).itemId < 1) {
+    this->m_moveInfo->Move(-1000, -1000);
+  } else {
+    this->m_moveInfo->Move(this->m_viewer->geometry.x, this->m_viewer->geometry.y + this->m_viewer->geometry.height);
+  }
+}
+
+// OFFSET: 0x008DB1F0
+
+// OFFSET: 0x008EC840
+
+// OFFSET: 0x008D7790
+// FUNCTION: fn_12123
+std::string CartTypeName(int type) {
+  std::string names[] = {
+      "NOTHING_CART",
+      "손수레",
+      "손수레1",
+      "손수레2",
+      "손수레3",
+      "손수레4",
+      "손수레5",
+      "손수레6",
+      "손수레7",
+      "손수레8",
+      "선물상자카트",
+      "포링싣은카트",
+      "포링카트",
+      "마도카트",
+  };
+  return std::move(names[type]);
+}
