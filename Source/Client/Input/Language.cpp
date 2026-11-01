@@ -407,6 +407,11 @@ UIChatHisBox2::UIChatHisBox2(UIWindowContext& windows, UIListBoxContext& list)
 UIChatHisBox3::UIChatHisBox3(UIWindowContext& windows, UIListBoxContext& list) : UIChatHisBox2(windows, list), unknown_0130(1), unknown_0134(12) {
 }
 
+// OFFSET: 0x00999FF0
+// FUNCTION: fn_13536
+UIColoringTextViewer::UIColoringTextViewer() : UIListBox(), color(0), lineLimit(0) {
+}
+
 // OFFSET: 0x0099A060
 
 // OFFSET: 0x007ECF50
