@@ -10,6 +10,19 @@ class DeviceOwnerDX9;
 struct DeviceOptionsDX9;
 
 struct RenderAdapter {
+  RenderAdapter();
+
+  // INLINED
+  RenderAdapter(int backend, UINT ordinal, const char* description, const GUID& drawGuid, const GUID& renderGuid)
+      : backend(backend), ordinal(ordinal), description(description), drawGuid(drawGuid), renderGuid(renderGuid), deviceGuid{} {
+  }
+
+  // INLINED
+  RenderAdapter(int backend, UINT ordinal, const char* description, GUID drawGuid, GUID renderGuid, const GUID& deviceGuid, const char* deviceName)
+      : backend(backend), ordinal(ordinal), description(description), drawGuid(drawGuid), renderGuid(renderGuid), deviceGuid(deviceGuid),
+        deviceName(deviceName) {
+  }
+
   /* 0000 */ int backend;
   /* 0004 */ UINT ordinal;
   /* 0008 */ std::string description;

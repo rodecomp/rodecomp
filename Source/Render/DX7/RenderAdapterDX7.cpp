@@ -17,7 +17,7 @@ std::vector<RenderAdapter> EnumerateAdaptersDX7() {
     const auto& device = devices[index];
 
     if (device.hardware) {
-      result.push_back({1, index, device.description, device.drawIdentity, device.renderIdentity, {}, {}});
+      result.push_back({1, index, device.description, device.drawIdentity, device.renderIdentity});
     }
   }
 

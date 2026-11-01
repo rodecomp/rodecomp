@@ -99,6 +99,11 @@ std::map<int, int> g_optionHotkeys;
 // GLOBAL: gl_25229
 bool g_restartClient;
 
+// OFFSET: 0x00A3D0A0
+// FUNCTION: fn_15905
+RenderAdapter::RenderAdapter() : backend(0), ordinal(0), drawGuid{}, renderGuid{}, deviceGuid{} {
+}
+
 template <>
 __declspec(noinline) void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::SelectItem(CUIListItem* item);
 template <>
