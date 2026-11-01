@@ -1713,14 +1713,14 @@ bool CNavigationManager::RouteToSavedTarget(int cellX, int cellY) {
 
 // OFFSET: 0x00BA10C0
 // FUNCTION: fn_19637
-void CNavigationManager::SelectTarget(int nodeIndex) {
+bool CNavigationManager::SelectTarget(int nodeIndex) {
   this->currentTarget = this->savedTarget;
   if (nodeIndex >= 0 && static_cast<unsigned int>(nodeIndex) < this->nodes.size()) {
     this->currentTarget.type = 6;
     this->currentTarget.object = this->nodes[nodeIndex];
   }
   this->currentTarget = NavigationTarget(this->currentTarget);
-  this->LoadTargetPreview();
+  return this->LoadTargetPreview();
 }
 
 // OFFSET: 0x00BA12D0

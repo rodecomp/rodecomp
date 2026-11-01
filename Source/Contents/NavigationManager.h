@@ -366,7 +366,7 @@ public:
   bool LoadTargetPreview();
   bool BuildTargetRouteLines();
   bool RouteToSavedTarget(int cellX, int cellY);
-  void SelectTarget(int nodeIndex);
+  bool SelectTarget(int nodeIndex);
   void CancelRoute();
   void DrawRoute(const float* matrix);
   void CheckArrival(int cellX, int cellY);
