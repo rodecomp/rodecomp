@@ -13796,6 +13796,370 @@ void CGameMode::ReceiveActorStandEntryLegacy(const unsigned char* data) {
   this->sub_D591A0(packet->aid, packet->effectState, packet->level, packet->virtue);
 }
 
+#pragma pack(push, 1)
+struct ActorStandEntryNamedOldPacket {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::int16_t packetLength;
+  /* 0004 */ unsigned char objectType;
+  /* 0005 */ std::uint32_t aid;
+  /* 0009 */ short speed;
+  /* 000B */ short bodyState;
+  /* 000D */ short healthState;
+  /* 000F */ int effectState;
+  /* 0013 */ short job;
+  /* 0015 */ short head;
+  /* 0017 */ int weapon;
+  /* 001B */ int shield;
+  /* 001F */ short accessory;
+  /* 0021 */ short accessory2;
+  /* 0023 */ short accessory3;
+  /* 0025 */ short headPalette;
+  /* 0027 */ short bodyPalette;
+  /* 0029 */ short headDir;
+  /* 002B */ short robe;
+  /* 002D */ int guildId;
+  /* 0031 */ short guildVersion;
+  /* 0033 */ short honor;
+  /* 0035 */ int virtue;
+  /* 0039 */ unsigned char pkMode;
+  /* 003A */ unsigned char sex;
+  /* 003B */ unsigned char posDir[3];
+  /* 003E */ unsigned char xSize;
+  /* 003F */ unsigned char ySize;
+  /* 0040 */ short level;
+  /* 0042 */ short font;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(ActorStandEntryNamedOldPacket) == 0x44);
+
+// OFFSET: 0x00D35AF0
+// FUNCTION: fn_21758
+void CGameMode::ReceiveActorStandEntryNamedOld(const unsigned char* data) {
+  const ActorStandEntryNamedOldPacket* packet = reinterpret_cast<const ActorStandEntryNamedOldPacket*>(data);
+  ActorStandEntry entry;
+  const int nameLength = packet->packetLength - static_cast<int>(sizeof(ActorStandEntryNamedOldPacket));
+  if (nameLength > 0) {
+    const char* nameBegin = reinterpret_cast<const char*>(data + sizeof(ActorStandEntryNamedOldPacket));
+    this->nameCard.SetName(packet->aid, std::string(nameBegin, nameBegin + nameLength));
+  }
+
+  entry.job = packet->job;
+  entry.unknown_0008 = this->SubD07740(entry.job, packet->sex);
+  entry.speed = packet->speed;
+  entry.unknown_001C = packet->xSize;
+  entry.unknown_0020 = packet->ySize;
+  entry.unknown_0024 = packet->head;
+  entry.unknown_0028 = packet->weapon;
+  entry.unknown_0030 = packet->accessory;
+  entry.effectState = packet->healthState;
+  entry.bodyState = packet->bodyState;
+  entry.stateFlags = packet->effectState;
+  entry.unknown_002C = packet->shield;
+  entry.unknown_0044 = packet->pkMode;
+  entry.unknown_004C = packet->accessory2;
+  entry.unknown_0050 = packet->accessory3;
+  entry.unknown_0054 = packet->headPalette;
+  entry.unknown_0058 = packet->bodyPalette;
+  entry.unknown_005C = packet->headDir;
+  entry.guildId = packet->guildId;
+  entry.unknown_0068 = packet->honor;
+  entry.unknown_006C = packet->virtue;
+  entry.guildVersion = packet->guildVersion;
+  entry.robe = packet->robe;
+  entry.aid = packet->aid;
+  if (packet->objectType == 0) {
+    entry.state = 0;
+  } else {
+    entry.unknown_0048 = entry.guildVersion;
+  }
+  entry.cellX = (packet->posDir[0] << 2) | (packet->posDir[1] >> 6);
+  entry.direction = packet->posDir[2] & 0x0F;
+  entry.cellY = ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4);
+
+  int created = 0;
+  CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(entry.aid));
+  if (!actor) {
+    created = 1;
+    if (packet->objectType == 0) {
+      actor = new CPc;
+    } else {
+      actor = this->NewActor(packet->job);
+      entry.unknown_0008 = 0;
+    }
+    actor->unknown_0314 = packet->objectType;
+  }
+
+  actor->unknown_0210 = packet->level;
+  if (packet->objectType == 0) {
+    *reinterpret_cast<short*>(actor->render.unknown_00FCBytes) = packet->font;
+    if (created) {
+      actor->SendMsg(nullptr, 0x79, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      if (this->unknown_01B4.find(packet->aid) != this->unknown_01B4.end() || this->unknown_01BC.find(packet->aid) != this->unknown_01BC.end()) {
+        actor->SetUnknown02E4(1);
+      }
+      this->scene->objects.push_back(actor);
+      this->scene->actors.push_back(actor);
+    } else {
+      actor->SendMsg(nullptr, 0x7C, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+    if (g_session.GetSceneUnknown004C() && actor->unknown_0188 == 0) {
+      this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+    }
+  } else {
+    if (packet->objectType == 7) {
+      if (g_session.unknown_1010 == packet->aid) {
+        g_session.unknown_1038 = entry.unknown_0030;
+      }
+      if (entry.unknown_0030) {
+        actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.unknown_0030));
+      }
+    } else if (packet->objectType == 8 && g_session.IsHomunAid(packet->aid)) {
+      g_groundMarkEnabled = 1;
+    } else if (packet->objectType == 9 && g_session.IsMercenaryAid(packet->aid)) {
+      g_groundMarkAltEnabled = 1;
+    }
+
+    if (created) {
+      this->scene->objects.push_back(actor);
+      this->scene->actors.push_back(actor);
+      actor->SendMsg(nullptr, 4, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    } else {
+      actor->SendMsg(nullptr, 3, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+    if (g_session.IsGuardianJob(packet->job) && g_session.GetSceneUnknown004C() && actor->unknown_0188 == 0) {
+      this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+    }
+
+    const int guildId = (packet->accessory2 << 16) | packet->accessory3;
+    if (created) {
+      if (guildId != 0) {
+        actor->Slot49(guildId, packet->guildVersion);
+      }
+    } else if (guildId != 0 && !actor->Slot50()) {
+      actor->Slot49(guildId, packet->guildVersion);
+    }
+  }
+
+  this->sub_D591A0(packet->aid, packet->effectState, packet->level, packet->virtue);
+}
+
+#pragma pack(push, 1)
+struct ActorStandEntryOldPacket {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::uint32_t aid;
+  /* 0006 */ short speed;
+  /* 0008 */ short bodyState;
+  /* 000A */ short healthState;
+  /* 000C */ short effectState;
+  /* 000E */ short job;
+  /* 0010 */ short head;
+  /* 0012 */ int weapon;
+  /* 0016 */ int shield;
+  /* 001A */ short accessory;
+  /* 001C */ short accessory2;
+  /* 001E */ short accessory3;
+  /* 0020 */ short headPalette;
+  /* 0022 */ short bodyPalette;
+  /* 0024 */ short headDir;
+  /* 0026 */ int guildId;
+  /* 002A */ short guildVersion;
+  /* 002C */ short honor;
+  /* 002E */ short virtue;
+  /* 0030 */ unsigned char pkMode;
+  /* 0031 */ unsigned char sex;
+  /* 0032 */ unsigned char posDir[3];
+  /* 0035 */ unsigned char xSize;
+  /* 0036 */ unsigned char ySize;
+  /* 0037 */ short level;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(ActorStandEntryOldPacket) == 0x39);
+
+// OFFSET: 0x00D35FD0
+
+#pragma pack(push, 1)
+struct ActorStandEntryOld2Packet {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::uint32_t aid;
+  /* 0006 */ short speed;
+  /* 0008 */ short bodyState;
+  /* 000A */ short healthState;
+  /* 000C */ int effectState;
+  /* 0010 */ short job;
+  /* 0012 */ short head;
+  /* 0014 */ int weapon;
+  /* 0018 */ int shield;
+  /* 001C */ short accessory;
+  /* 001E */ short accessory2;
+  /* 0020 */ short accessory3;
+  /* 0022 */ short headPalette;
+  /* 0024 */ short bodyPalette;
+  /* 0026 */ short headDir;
+  /* 0028 */ int guildId;
+  /* 002C */ short guildVersion;
+  /* 002E */ short honor;
+  /* 0030 */ int virtue;
+  /* 0034 */ unsigned char pkMode;
+  /* 0035 */ unsigned char sex;
+  /* 0036 */ unsigned char posDir[3];
+  /* 0039 */ unsigned char xSize;
+  /* 003A */ unsigned char ySize;
+  /* 003B */ short level;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(ActorStandEntryOld2Packet) == 0x3D);
+
+// OFFSET: 0x00D364C0
+
+#pragma pack(push, 1)
+struct ActorStandEntryOld3Packet {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::uint32_t aid;
+  /* 0006 */ short speed;
+  /* 0008 */ short bodyState;
+  /* 000A */ short healthState;
+  /* 000C */ int effectState;
+  /* 0010 */ short job;
+  /* 0012 */ short head;
+  /* 0014 */ int weapon;
+  /* 0018 */ int shield;
+  /* 001C */ short accessory;
+  /* 001E */ short accessory2;
+  /* 0020 */ short accessory3;
+  /* 0022 */ short headPalette;
+  /* 0024 */ short bodyPalette;
+  /* 0026 */ short headDir;
+  /* 0028 */ int guildId;
+  /* 002C */ short guildVersion;
+  /* 002E */ short honor;
+  /* 0030 */ int virtue;
+  /* 0034 */ unsigned char pkMode;
+  /* 0035 */ unsigned char sex;
+  /* 0036 */ unsigned char posDir[3];
+  /* 0039 */ unsigned char xSize;
+  /* 003A */ unsigned char ySize;
+  /* 003B */ short level;
+  /* 003D */ short font;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(ActorStandEntryOld3Packet) == 0x3F);
+
+// OFFSET: 0x00D369C0
+#pragma pack(push, 1)
+struct ActorStandEntryOld0Packet {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::uint32_t aid;
+  /* 0006 */ short speed;
+  /* 0008 */ short bodyState;
+  /* 000A */ short healthState;
+  /* 000C */ short effectState;
+  /* 000E */ short job;
+  /* 0010 */ short head;
+  /* 0012 */ short weapon;
+  /* 0014 */ short accessory;
+  /* 0016 */ short shield;
+  /* 0018 */ short accessory2;
+  /* 001A */ short accessory3;
+  /* 001C */ short headPalette;
+  /* 001E */ short bodyPalette;
+  /* 0020 */ short headDir;
+  /* 0022 */ int guildId;
+  /* 0026 */ short guildVersion;
+  /* 0028 */ short honor;
+  /* 002A */ short virtue;
+  /* 002C */ unsigned char pkMode;
+  /* 002D */ unsigned char sex;
+  /* 002E */ unsigned char posDir[3];
+  /* 0031 */ unsigned char xSize;
+  /* 0032 */ unsigned char ySize;
+  /* 0033 */ short level;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(ActorStandEntryOld0Packet) == 0x35);
+
+// OFFSET: 0x00D36ED0
+
+#pragma pack(push, 1)
+struct ActorStateEntryNamedOldPacket {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::int16_t packetLength;
+  /* 0004 */ unsigned char objectType;
+  /* 0005 */ std::uint32_t aid;
+  /* 0009 */ short speed;
+  /* 000B */ short bodyState;
+  /* 000D */ short healthState;
+  /* 000F */ int effectState;
+  /* 0013 */ short job;
+  /* 0015 */ short head;
+  /* 0017 */ int weapon;
+  /* 001B */ int shield;
+  /* 001F */ short accessory;
+  /* 0021 */ short accessory2;
+  /* 0023 */ short accessory3;
+  /* 0025 */ short headPalette;
+  /* 0027 */ short bodyPalette;
+  /* 0029 */ short headDir;
+  /* 002B */ short robe;
+  /* 002D */ int guildId;
+  /* 0031 */ short guildVersion;
+  /* 0033 */ short honor;
+  /* 0035 */ int virtue;
+  /* 0039 */ unsigned char pkMode;
+  /* 003A */ unsigned char sex;
+  /* 003B */ unsigned char posDir[3];
+  /* 003E */ unsigned char xSize;
+  /* 003F */ unsigned char ySize;
+  /* 0040 */ unsigned char state;
+  /* 0041 */ short level;
+  /* 0043 */ short font;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(ActorStateEntryNamedOldPacket) == 0x45);
+
+// OFFSET: 0x00D37A10
+
+#pragma pack(push, 1)
+struct ActorStateEntryOldPacket {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::uint32_t aid;
+  /* 0006 */ short speed;
+  /* 0008 */ short bodyState;
+  /* 000A */ short healthState;
+  /* 000C */ short effectState;
+  /* 000E */ short job;
+  /* 0010 */ short head;
+  /* 0012 */ int weapon;
+  /* 0016 */ int shield;
+  /* 001A */ short accessory;
+  /* 001C */ short accessory2;
+  /* 001E */ short accessory3;
+  /* 0020 */ short headPalette;
+  /* 0022 */ short bodyPalette;
+  /* 0024 */ short headDir;
+  /* 0026 */ int guildId;
+  /* 002A */ short guildVersion;
+  /* 002C */ short honor;
+  /* 002E */ short virtue;
+  /* 0030 */ unsigned char pkMode;
+  /* 0031 */ unsigned char sex;
+  /* 0032 */ unsigned char posDir[3];
+  /* 0035 */ unsigned char xSize;
+  /* 0036 */ unsigned char ySize;
+  /* 0037 */ unsigned char state;
+  /* 0038 */ short level;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(ActorStateEntryOldPacket) == 0x3A);
+
+// OFFSET: 0x00D37EA0
+
 // OFFSET: 0x00D630F0
 // FUNCTION: fn_21989
 void CGameMode::SpawnStandingActor(

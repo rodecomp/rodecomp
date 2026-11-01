@@ -872,6 +872,13 @@ public:
   void ReceiveAddRelatedGuild(const unsigned char* data);
   void ReceiveEquipItemResult(const unsigned char* packet);
   void ReceiveGuildMemberAdd4(const unsigned char* data);
+  void ReceiveActorStandEntryNamedOld(const unsigned char* data);
+  void ReceiveActorStandEntryOld(const unsigned char* data);
+  void ReceiveActorStandEntryOld2(const unsigned char* data);
+  void ReceiveActorStandEntryOld3(const unsigned char* data);
+  void ReceiveActorStandEntryOld0(const unsigned char* data);
+  void ReceiveActorStateEntryNamedOld(const unsigned char* data);
+  void ReceiveActorStateEntryOld(const unsigned char* data);
   void SpawnStandingPc(
     std::uint32_t aid, int job, short cellX, short cellY, unsigned char sex, short unknown_0024, int unknown_0028, int unknown_002C,
     short unknown_0030, short unknown_004C, short unknown_0050, short unknown_0054, short unknown_0058, short robe, std::string name
