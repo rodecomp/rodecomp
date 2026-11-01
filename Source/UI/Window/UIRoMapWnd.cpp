@@ -711,3 +711,77 @@ void CFlyingShipRouteInfo::BuildRoute(const std::vector<std::string>& mapNames) 
   }
   reinterpret_cast<unsigned char*>(&this->unknown_0034)[1] = 1;
 }
+
+// OFFSET: 0x00938FF0
+// FUNCTION: fn_12754
+int UIRoMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  switch (message) {
+  case 0:
+    if (sender == this->m_searchEdit) {
+      if (this->m_searchEdit->Length() > 0) {
+        this->SendMsg(this->m_searchEdit, 6, 321, 0, 0, 0);
+        return 0;
+      }
+    }
+    break;
+  case 6:
+    switch (argument1) {
+    case 192:
+      this->m_showLabels = !this->m_showLabels;
+      this->m_labelCheck->geometry.unknown_0030 = this->m_showLabels;
+      this->m_labelCheck->Invalidate();
+      this->Invalidate();
+      return 0;
+    case 200:
+      g_windowMgr.EnsureWindow(203);
+      if (g_navigationWindow) {
+        g_navigationWindow->SendMsg(nullptr, 6, 200, 0, 0, 0);
+      }
+      this->UpdateNavigationButtons();
+      return 0;
+    case 201:
+      g_windowMgr.CloseWindow(140);
+      return 0;
+    case 321:
+      if (this->m_searchEdit->Length()) {
+        std::string name(this->m_searchEdit->Text());
+        if (g_navigationManager.sub_B995D0(name, 0, true) == true) {
+          reinterpret_cast<UINavigationWnd*>(this)->RefreshWorldMapLevels();
+        }
+      }
+      return 0;
+    }
+    return 0;
+  case 39:
+    if (this->m_worldCombo == sender) {
+      g_worldViewMgr.currentWorld = argument1;
+      this->Invalidate();
+      return 0;
+    }
+    if (argument1 >= 0 && static_cast<unsigned int>(argument1) < this->unknown_01FC.size()) {
+      {
+      std::string name(g_worldViewMgr.CurrentWorld()->maps[this->unknown_0208]->fields[argument1]->name);
+      if (name.size() > 4) {
+        name.resize(name.size() - 4);
+      }
+      g_navigationMinimized = false;
+      g_navigationManager.sub_B995D0(name, 0, false);
+      if (g_windowMgr.LookupWindow(203)) {
+        static_cast<UINavigationV4Wnd*>(g_navigationWindow)->SelectRoute(0);
+        static_cast<UINavigationV4Wnd*>(g_navigationWindow)->SelectRouteNode(0);
+      }
+      this->UpdateNavigationButtons();
+      }
+      this->Invalidate();
+      return 0;
+    }
+    return 0;
+  case 60:
+    this->ClearRecords();
+    this->RefreshPartyRecords();
+    this->Invalidate();
+    return 0;
+  }
+
+  return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+}

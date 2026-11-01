@@ -4,6 +4,8 @@
 #include "Contents/FlyingShipRouteInfo.h"
 #include "Contents/WorldView/WorldViewData.h"
 #include "UI/Window/UIFrameWnd.h"
+#include "UI/Edit/UIEditCtrl.h"
+#include "UI/Navigation/UINavigationV4Wnd.h"
 
 #include <cstdint>
 #include <list>
@@ -57,6 +59,7 @@ public:
   void Slot27(int x, int y) override;
   void Slot31(int x, int y) override;
   void Slot33(int x, int y) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void ClearRecords();
   void ResetKafraBounds();
   void UpdateNavigationButtons();
@@ -98,10 +101,14 @@ private:
   /* 0198 */ CFlyingShipRouteInfo m_flyingShipRoute2;
   /* 01E8 */ int m_mouseX;
   /* 01EC */ int m_mouseY;
-  /* 01F0 */ unsigned char unknown_01F0[0xC];
+  /* 01F0 */ UIWindow* unknown_01F0;
+  /* 01F4 */ UIWindow* m_worldCombo;
+  /* 01F8 */ UIWindow* m_labelCheck;
   /* 01FC */ std::vector<std::string> unknown_01FC;
   /* 0208 */ int unknown_0208;
-  /* 020C */ unsigned char unknown_020C[0xC];
+  /* 020C */ UIWindow* unknown_020C;
+  /* 0210 */ UIWindow* unknown_0210;
+  /* 0214 */ UIEditCtrl* m_searchEdit;
   /* 0218 */ int m_kafraLeft;
   /* 021C */ int m_kafraTop;
   /* 0220 */ int m_kafraRight;
