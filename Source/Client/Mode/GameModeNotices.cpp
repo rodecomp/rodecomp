@@ -30,6 +30,7 @@
 #include "Contents/MapPropertyMgr.h"
 #include "Contents/MessageTable.h"
 #include "Contents/Messenger/ClientMessenger.h"
+#include "Contents/NavigationManager.h"
 #include "Contents/PlayerNameDictionary.h"
 #include "Contents/RenewQuestMgr.h"
 #include "Contents/RodexMailStore.h"
@@ -3586,6 +3587,24 @@ void CGameMode::ReceiveLongParChange(const unsigned char* data) {
 
   static_cast<UIINT64BarGraph*>(reinterpret_cast<UIBasicInfoWnd*>(g_windowMgr.unknown_01DC)->baseExpBar)->SetValues(exp, nextExp);
   static_cast<UIINT64BarGraph*>(reinterpret_cast<UIBasicInfoWnd*>(g_windowMgr.unknown_01DC)->jobExpBar)->SetValues(jobExp, nextJobExp);
+}
+
+// OFFSET: 0x00D73A10
+// FUNCTION: fn_22142
+void sub_D73A10(const unsigned char* packet) {
+  int group = packet[3] >= 100 ? 1 : 0;
+  int code = packet[3] >= 100 ? packet[3] - 100 : packet[3];
+  if (code >= 10) {
+    group += 2;
+    code -= 10;
+  }
+
+  const unsigned char mode = static_cast<unsigned char>(group + (code < 1 ? 0 : 4));
+  const int x = *reinterpret_cast<const std::int16_t*>(packet + 0x15);
+  const int y = *reinterpret_cast<const std::int16_t*>(packet + 0x17);
+  const int id = *reinterpret_cast<const std::int16_t*>(packet + 0x19);
+  const std::string name(reinterpret_cast<const char*>(packet + 5));
+  g_navigationManager.sub_B99030(name, packet[2], mode, packet[4] != 0, x, y, id);
 }
 
 // OFFSET: 0x00D73AF0
