@@ -12488,6 +12488,128 @@ void CGameMode::ReceiveActorMoveEntryBody(const unsigned char* data) {
 }
 
 // OFFSET: 0x00D619E0
+// FUNCTION: fn_21984
+void CGameMode::ReceiveActorMoveEntryLegacy(const unsigned char* data) {
+  const ActorMoveEntryLegacyPacket* packet = reinterpret_cast<const ActorMoveEntryLegacyPacket*>(data);
+  const int nameLength = packet->packetLength - static_cast<int>(sizeof(ActorMoveEntryLegacyPacket));
+  if (nameLength > 0) {
+    const char* nameBegin = reinterpret_cast<const char*>(data + sizeof(ActorMoveEntryLegacyPacket));
+    this->nameCard.SetName(packet->aid, std::string(nameBegin, nameBegin + nameLength));
+  }
+
+  ActorMoveEntry entry;
+  entry.robe = packet->robe;
+  entry.job = packet->job;
+  entry.aid = packet->aid;
+  entry.moveStartTime = packet->moveStartTime;
+  entry.unknown_0008 = this->SubD07740(entry.job, packet->sex);
+  entry.speed = packet->speed;
+  entry.head = packet->head;
+  entry.weapon = packet->weapon;
+  entry.accessory = packet->accessory;
+  entry.healthState = packet->healthState;
+  entry.bodyState = packet->bodyState;
+  entry.effectState = packet->effectState;
+  entry.pkMode = packet->pkMode;
+  entry.accessory2 = packet->accessory2;
+  entry.accessory3 = packet->accessory3;
+  entry.headPalette = packet->headPalette;
+  entry.bodyPalette = packet->bodyPalette;
+  entry.headDir = packet->headDir;
+  entry.guildId = packet->guildId;
+  entry.guildVersion = packet->guildVersion;
+  entry.honor = packet->honor;
+  entry.shield = packet->shield;
+  entry.virtue = packet->virtue;
+  DecodeSrcDst(packet->moveData, &entry.srcX, &entry.srcY, &entry.dstX, &entry.dstY, &entry.subX, &entry.subY);
+  g_session.SyncServerTime(entry.moveStartTime);
+
+  CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(packet->aid));
+  if (actor) {
+    if (actor->unknown_02E4) {
+      auto member = this->unknown_01B4.find(actor->render.accountId);
+      if (member != this->unknown_01B4.end()) {
+        member->second.x = entry.dstX;
+        member->second.y = entry.dstY;
+      }
+      member = this->unknown_01BC.find(actor->render.accountId);
+      if (member != this->unknown_01BC.end()) {
+        member->second.x = entry.dstX;
+        member->second.y = entry.dstY;
+      }
+    }
+    actor->SendMsg(nullptr, 0x7B, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  } else {
+    CGameActor* created;
+    if (packet->objectType == 0) {
+      created = new CPc;
+    } else {
+      created = this->NewActor(packet->job);
+    }
+    if (!created) {
+      return;
+    }
+
+    created->unknown_0314 = packet->objectType;
+    this->scene->objects.push_back(created);
+    this->scene->actors.push_back(created);
+    actor = created;
+    if (actor->unknown_0314 == 0) {
+      if (this->unknown_01B4.find(entry.aid) != this->unknown_01B4.end() || this->unknown_01BC.find(entry.aid) != this->unknown_01BC.end()) {
+        actor->SetUnknown02E4(1);
+      }
+    } else {
+      entry.unknown_0008 = 0;
+    }
+    g_championMonsterMgr->ApplyEffects(entry.job, actor, entry.aid);
+    actor->SendMsg(nullptr, 0x7A, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  }
+
+  std::int64_t bossFlag = 0;
+  if (packet->isBoss && actor->unknown_0304 == 0) {
+    actor->unknown_0304 = packet->isBoss;
+    bossFlag = 1;
+  }
+  actor->unknown_0210 = packet->level;
+  *reinterpret_cast<std::uint16_t*>(actor->render.unknown_00FCBytes) = packet->font;
+  if (packet->objectType == 7) {
+    if (g_session.IsPetAid(packet->aid)) {
+      g_session.unknown_1038 = entry.accessory;
+    }
+    if (entry.accessory && !actor->Slot50()) {
+      actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
+    }
+  } else if (packet->objectType == 8 && g_session.IsHomunAid(packet->aid)) {
+    g_groundMarkEnabled = 1;
+  } else if (packet->objectType == 9 && g_session.IsMercenaryAid(packet->aid)) {
+    g_groundMarkAltEnabled = 1;
+  } else if (g_session.GetSceneUnknown004C() && actor->unknown_0188 == 0 &&
+             (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
+    this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+  }
+
+  switch (actor->unknown_0314) {
+  case 0:
+  case 5:
+  case 8:
+  case 9:
+  case 10: {
+    const std::int64_t hp = packet->hp;
+    const std::int64_t maxHp = packet->maxHp;
+    actor->SendMsg(
+      nullptr, 0x91, 0, static_cast<int>(hp), static_cast<int>(hp >> 32), static_cast<int>(maxHp), static_cast<int>(maxHp >> 32),
+      static_cast<int>(bossFlag), static_cast<int>(bossFlag >> 32), 0, 0, 0, 0, 0, 0
+    );
+    break;
+  }
+  case 13:
+  case 14:
+    actor->SendMsg(nullptr, 0x22, 0, packet->aid, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    break;
+  }
+
+  this->sub_D591A0(packet->aid, packet->effectState, packet->level, packet->virtue);
+}
 
 // OFFSET: 0x00D61F40
 // FUNCTION: fn_21985
@@ -12822,6 +12944,134 @@ void CGameMode::ReceiveActorStandEntryNamedBody(const unsigned char* data) {
 }
 
 // OFFSET: 0x00D62B70
+// FUNCTION: fn_21988
+void CGameMode::ReceiveActorStandEntryLegacy(const unsigned char* data) {
+  const ActorStandEntryLegacyPacket* packet = reinterpret_cast<const ActorStandEntryLegacyPacket*>(data);
+  ActorStandEntry entry;
+  const int nameLength = packet->packetLength - static_cast<int>(sizeof(ActorStandEntryLegacyPacket));
+  if (nameLength > 0) {
+    const char* nameBegin = reinterpret_cast<const char*>(data + sizeof(ActorStandEntryLegacyPacket));
+    this->nameCard.SetName(packet->aid, std::string(nameBegin, nameBegin + nameLength));
+  }
+
+  entry.job = packet->job;
+  entry.unknown_0008 = this->SubD07740(entry.job, packet->sex);
+  entry.speed = packet->speed;
+  entry.unknown_001C = packet->xSize;
+  entry.unknown_0020 = packet->ySize;
+  entry.unknown_0024 = packet->head;
+  entry.unknown_0028 = packet->weapon;
+  entry.unknown_0030 = packet->accessory;
+  entry.effectState = packet->healthState;
+  entry.bodyState = packet->bodyState;
+  entry.stateFlags = packet->effectState;
+  entry.unknown_002C = packet->shield;
+  entry.unknown_0044 = packet->pkMode;
+  entry.unknown_004C = packet->accessory2;
+  entry.unknown_0050 = packet->accessory3;
+  entry.unknown_0054 = packet->headPalette;
+  entry.unknown_0058 = packet->bodyPalette;
+  entry.unknown_005C = packet->headDir;
+  entry.guildId = packet->guildId;
+  entry.unknown_0068 = packet->honor;
+  entry.unknown_006C = packet->virtue;
+  entry.guildVersion = packet->guildVersion;
+  entry.robe = packet->robe;
+  entry.aid = packet->aid;
+  if (packet->objectType == 0) {
+    entry.state = 0;
+  } else {
+    entry.unknown_0048 = entry.guildVersion;
+  }
+  entry.cellX = (packet->posDir[0] << 2) | (packet->posDir[1] >> 6);
+  entry.direction = packet->posDir[2] & 0x0F;
+  entry.cellY = ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4);
+
+  CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(entry.aid));
+  if (actor) {
+    if (packet->objectType == 0) {
+      actor->SendMsg(nullptr, 0x7C, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    } else {
+      actor->SendMsg(nullptr, 3, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+  } else {
+    CGameActor* created;
+    if (packet->objectType == 0) {
+      created = new CPc;
+    } else {
+      created = this->NewActor(packet->job);
+    }
+    if (!created) {
+      return;
+    }
+
+    created->unknown_0314 = packet->objectType;
+    this->scene->objects.push_back(created);
+    this->scene->actors.push_back(created);
+    actor = created;
+    if (packet->objectType == 0) {
+      if (this->unknown_01B4.find(packet->aid) != this->unknown_01B4.end() || this->unknown_01BC.find(packet->aid) != this->unknown_01BC.end()) {
+        actor->SetUnknown02E4(1);
+      }
+      actor->SendMsg(nullptr, 0x79, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    } else {
+      entry.unknown_0008 = 0;
+      actor->SendMsg(nullptr, 4, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+    g_championMonsterMgr->ApplyEffects(entry.job, actor, entry.aid);
+  }
+
+  std::int64_t bossFlag = 0;
+  if (packet->isBoss && actor->unknown_0304 == 0) {
+    actor->unknown_0304 = packet->isBoss;
+    bossFlag = 1;
+  }
+  actor->unknown_0210 = packet->level;
+  *reinterpret_cast<short*>(actor->render.unknown_00FCBytes) = packet->font;
+  if (packet->objectType == 7) {
+    if (g_session.IsPetAid(packet->aid)) {
+      g_session.unknown_1038 = entry.unknown_0030;
+    }
+    if (entry.unknown_0030 && !actor->Slot50()) {
+      actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.unknown_0030));
+    }
+  } else if (packet->objectType == 8 && g_session.IsHomunAid(packet->aid)) {
+    g_groundMarkEnabled = 1;
+  } else if (packet->objectType == 9 && g_session.IsMercenaryAid(packet->aid)) {
+    g_groundMarkAltEnabled = 1;
+  } else if (g_session.GetSceneUnknown004C() && actor->unknown_0188 == 0 &&
+             (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
+    this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+  }
+
+  switch (actor->unknown_0314) {
+  case 0:
+  case 5:
+  case 8:
+  case 9:
+  case 10: {
+    const std::int64_t hp = packet->hp;
+    const std::int64_t maxHp = packet->maxHp;
+    actor->SendMsg(
+      nullptr, 0x91, 0, static_cast<int>(hp), static_cast<int>(hp >> 32), static_cast<int>(maxHp), static_cast<int>(maxHp >> 32),
+      static_cast<int>(bossFlag), static_cast<int>(bossFlag >> 32), 0, 0, 0, 0, 0, 0
+    );
+    break;
+  }
+  case 13:
+  case 14:
+    actor->SendMsg(nullptr, 0x22, 0, packet->aid, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    break;
+  }
+
+  if (packet->objectType != 0) {
+    const std::uint32_t guildId = (packet->accessory2 << 16) | packet->accessory3;
+    if (guildId > 0 && !actor->Slot50()) {
+      actor->Slot49(guildId, packet->guildVersion);
+    }
+  }
+  this->sub_D591A0(packet->aid, packet->effectState, packet->level, packet->virtue);
+}
 
 // OFFSET: 0x00D630F0
 // FUNCTION: fn_21989
