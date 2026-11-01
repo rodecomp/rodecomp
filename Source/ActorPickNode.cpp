@@ -1,4 +1,5 @@
 #include "ActorPickNode.h"
+#include "Contents/Camera/Camera.h"
 #include "Contents/TerrainPathSearch.h"
 
 #include <map>
@@ -164,4 +165,33 @@ void CActorPickNode::MakeQuardTree(int depth, ActorPickBounds bounds) {
       this->children[index]->MakeQuardTree(depth - 1, childBounds);
     }
   }
+}
+
+// OFFSET: 0x00ADAC70
+// FUNCTION: fn_17912
+CView::CView() {
+  this->vtable = reinterpret_cast<void*>(0x011598E8);
+  this->camera.target[0] = 0.0f;
+  this->camera.target[1] = 0.0f;
+  this->camera.target[2] = 0.0f;
+  this->camera.desiredTarget[0] = 0.0f;
+  this->camera.desiredTarget[1] = 0.0f;
+  this->camera.desiredTarget[2] = 0.0f;
+  this->unknown_0050[0] = 0.0f;
+  this->unknown_0050[1] = 0.0f;
+  this->unknown_0050[2] = 0.0f;
+  this->unknown_0068[0] = 0.0f;
+  this->unknown_0068[1] = 0.0f;
+  this->unknown_0068[2] = 0.0f;
+  this->frame.eye[0] = 0.0f;
+  this->frame.eye[1] = 0.0f;
+  this->frame.eye[2] = 0.0f;
+  this->frame.up[0] = 0.0f;
+  this->frame.up[1] = 0.0f;
+  this->frame.up[2] = 0.0f;
+  this->camera.yaw = 0.0f;
+  this->unknown_0014 = 0;
+  this->unknown_01B4 = nullptr;
+  this->unknown_0018 = 0;
+  this->unknown_0010 = 0;
 }
