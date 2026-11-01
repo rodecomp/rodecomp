@@ -3811,3 +3811,22 @@ void CGameMode::ProcessMouseWheel(int requireControl) {
 
   this->camera->camera.desiredDistance = g_cameraDistance;
 }
+
+struct AiMessage {
+  /* 0000 */ int type;
+  /* 0004 */ int x;
+  /* 0008 */ int y;
+  /* 000C */ int level;
+  /* 0010 */ int skill;
+  /* 0014 */ int target;
+};
+
+#pragma pack(push, 1)
+struct ContactNpcPacket {
+  /* 0000 */ std::int16_t packetType;
+  /* 0002 */ std::uint32_t npcId;
+  /* 0006 */ unsigned char type;
+};
+#pragma pack(pop)
+
+// OFFSET: 0x00CE2880

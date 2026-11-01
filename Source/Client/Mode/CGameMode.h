@@ -334,6 +334,7 @@ public:
   void SpawnGrannyCorpse(float x, float y, float z, float angle, const char* name);
   void SpawnMandraAttack(std::uint32_t aid, int target, char flag);
   void OpenActorMenu(const ActorPickInfo* pick, int handled);
+  int HandleActorPick(ActorPickInfo* pick, int result);
   std::uint32_t FindUnknown01AC(std::uint32_t key);
   std::string ActorName(std::uint32_t id);
   std::uint32_t ActorNameColor(int job, std::uint32_t aid);

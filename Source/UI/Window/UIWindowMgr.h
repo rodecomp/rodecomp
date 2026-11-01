@@ -527,7 +527,6 @@ public:
   void AddWhisperName(const char* name);
   int ShowWhisperFrom(const char* name, const char* text, int color, std::uint32_t accountId);
   void RefreshFrameSkins();
-  bool HasUnknown030C();
   bool IsDropDownChild(const UIWindow* window);
   bool HasMiniPartyMember(std::uint32_t accountId);
   bool IsHoverParentVisible();

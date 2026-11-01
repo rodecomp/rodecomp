@@ -117,9 +117,9 @@ void UIWindowMgr::HideWindow01C8() {
 
 // OFFSET: 0x00A91D90
 // FUNCTION: fn_17172
-bool UIWindowMgr::HasUnknown030C() {
-  const std::uint32_t* unknown = reinterpret_cast<const std::uint32_t*>(this->unknown_030C);
-  return unknown != nullptr && unknown[1] != 0;
+bool CGameActor::HasUnknown030CEntry() {
+  const int* entry = reinterpret_cast<const int*>(this->unknown_030C);
+  return entry && entry[1] != 0;
 }
 
 // OFFSET: 0x00A91F60

@@ -39,5 +39,13 @@ static_assert(sizeof(CSoundMaker) == 0x170);
 
 extern std::uint32_t g_groundMarkAltEnabled;
 extern int g_groundMarkEnabled;
+extern std::uint32_t g_groundMarkAid;
+extern int g_groundMarkA;
+extern int g_groundMarkB;
+extern int g_groundMarkSet;
+extern std::uint32_t g_groundMarkAltAid;
+extern int g_groundMarkAltA;
+extern int g_groundMarkAltB;
+extern int g_groundMarkAltSet;
 
 #endif

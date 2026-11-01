@@ -52,19 +52,19 @@
 #include <windows.h>
 #include <timeapi.h>
 
-namespace {
-  // OFFSET: 0x00E1DCA0
+// OFFSET: 0x00E1DCA0
   // FUNCTION: fn_23875
   bool IsFirstRange(unsigned id) {
     return id - 8000u <= 60;
   }
 
-  // OFFSET: 0x00E1DD20
+// OFFSET: 0x00E1DD20
   // FUNCTION: fn_23878
   bool IsOtherRange(unsigned id) {
     return id - 8200u <= 41 || id - 8400u <= 57;
   }
 
+namespace {
   struct SearchStoreEntry {
     /* 0000 */ unsigned char unknown_0000[8];
     /* 0008 */ char storeName[80];
@@ -245,7 +245,8 @@ void ShortcutCooldowns::Paint(
     std::list<CooldownState>& states = (*entry).*values;
 
     for (const ShortcutCooldownIcon& icon : icons) {
-      if (entry->id == icon.id || (entry->id == 577 && !IsFirstRange(icon.id)) || (entry->id == 9999 && (IsFirstRange(icon.id) || IsOtherRange(icon.id)))) {
+      if (entry->id == icon.id || (entry->id == 577 && !g_session.IsHomunculusSkill(icon.id)) ||
+          (entry->id == 9999 && (g_session.IsHomunculusSkill(icon.id) || g_session.IsMercenarySkill(icon.id)))) {
         const auto previous = std::find_if(states.begin(), states.end(), [&](const CooldownState& state) { return state.slot == icon.slot; });
         if (previous == states.end()) {
           states.emplace_back(icon.slot, icon.x, icon.y, entry->duration, entry->end - entry->duration, 0, 0);
