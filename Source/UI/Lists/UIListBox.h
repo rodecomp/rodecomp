@@ -10,6 +10,7 @@ struct FrameFocus;
 class ResourceMgr;
 class UIScrollBar;
 class WindowManagerWindows;
+struct UIButtonContext;
 
 struct UIListBoxContext {
   FrameFocus& capture;
@@ -18,6 +19,7 @@ struct UIListBoxContext {
   const TextLocale& locale;
   const unsigned short& codePage;
   WindowManagerWindows& windows;
+  UIButtonContext& buttons;
 };
 
 class UIListBox : public UIWindow {

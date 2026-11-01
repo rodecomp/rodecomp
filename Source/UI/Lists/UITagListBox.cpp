@@ -10,6 +10,7 @@
 #include "UI/Text/PixelTextWrapping.h"
 #include "UI/Text/TextWrapping.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "Utility/Text/TextTokens.h"
 
 #include <algorithm>
 #include <cstdint>
@@ -401,8 +402,8 @@ void UITagListBox::sub_9B9EA0(std::intptr_t argument1, std::intptr_t argument2, 
   if (width == 138) {
     WrapPlainText(text, lines, 38, owner.codePage);
 
-    for (const std::string& line : lines) {
-      this->AddLine(line.c_str());
+    for (std::size_t index = 0; index < lines.size(); ++index) {
+      this->AddLine(lines[index].c_str());
     }
 
     this->unknown_00BC = (this->unknown_00BC & ~255) | 1;
@@ -414,12 +415,12 @@ void UITagListBox::sub_9B9EA0(std::intptr_t argument1, std::intptr_t argument2, 
       }
       WrapPixelText(*this->geometry.surface, owner.codePage, text, lines, this->geometry.width - extra - 4);
 
-      for (const std::string& line : lines) {
-        this->AddLine(line.c_str());
+      for (std::size_t index = 0; index < lines.size(); ++index) {
+        this->AddLine(lines[index].c_str());
       }
     } else {
       std::vector<STagInfoV2> tags;
-      const std::string parsed = this->sub_9B8AA0(std::string(text));
+      const std::string parsed = this->sub_9B8AA0(std::string(text), tags);
       this->sub_9BB8E0(parsed, tags, width == 0 ? 35 : width);
     }
 
@@ -561,4 +562,115 @@ void UITagListBox::sub_9BC0A0(std::intptr_t type, UIWindow* sender) {
     }
     break;
   }
+}
+
+// OFFSET: 0x009B8AA0
+// FUNCTION: fn_13874
+std::string UITagListBox::sub_9B8AA0(std::string text, std::vector<STagInfoV2>& tags) {
+  std::vector<STagString> extracted = ExtractTextTags(text);
+  if (extracted.empty()) {
+    return text;
+  }
+
+  tags.clear();
+  std::sort(extracted.begin(), extracted.end(), [](const STagString& left, const STagString& right) {
+    return static_cast<int>(left.position) < static_cast<int>(right.position);
+  });
+
+  std::string result;
+  std::size_t position = 0;
+  for (std::size_t index = 0; index < extracted.size(); ++index) {
+    const STagString& source = extracted[index];
+    STagInfoV2 tag;
+    result += text.substr(position, source.position - position);
+    tag.unknown_0008 = static_cast<int>(result.size());
+    const std::pair<std::string, std::string> parsed = this->ParseTag(source.text, source.tag);
+    result += parsed.first;
+    tag.unknown_000C = static_cast<int>(result.size());
+    tag.unknown_0010 = parsed.first;
+    tag.unknown_0028 = parsed.second;
+    tag.unknown_0004 = g_textTagRegistry[source.tag].type;
+    tags.push_back(tag);
+    position = source.position + source.text.size();
+  }
+
+  if (position < text.size() - 1) {
+    result += text.substr(position, text.size() - position);
+  }
+  return result;
+}
+
+// OFFSET: 0x009BB8E0
+
+// OFFSET: 0x009B7A20
+// FUNCTION: fn_13870
+void UITagListBox::AddTagButton(STagInfoV2 tag, int lineCount) {
+  if (tag.unknown_0010.empty()) {
+    return;
+  }
+
+  UITagButton* button = new UITagButton(*this->m_context, this->m_listContext->buttons);
+  button->Configure(tag.unknown_0010.c_str(), 0x00F4934A, 0, 12, 0, 1);
+  const int height = button->geometry.height;
+  button->ResizeToTextClipped(
+    this->TextWidth(this->m_listContext->fonts, this->m_listContext->locale, tag.unknown_0010.c_str(), 0, 0, 12, 0, 0) + 1, height
+  );
+  button->m_hoverColor = 0x00FF7864;
+  button->SetId(tag.unknown_0004);
+
+  std::string data = tag.unknown_0028;
+  if (!data.empty()) {
+    switch (tag.unknown_0004) {
+    case 438:
+    case 464: {
+      std::string remaining = data;
+      std::size_t separator = remaining.find(',');
+      while (separator != std::string::npos) {
+        const std::string field = remaining.substr(0, separator);
+        button->AddString(field);
+        remaining = remaining.substr(separator + 1);
+        separator = remaining.find(',');
+      }
+      button->AddString(remaining);
+      if (tag.unknown_0004 == 464) {
+        int id = 0;
+        if (!button->GetString(1).empty()) {
+          id = std::atoi(button->GetString(1).c_str());
+        }
+        button->item.unknown_0000[0] = id;
+        button->item.identified = 1;
+        button->item.unknown_0060 = 0;
+        button->item.itemId = button->GetString(0);
+      }
+      break;
+    }
+    case 501: {
+      std::vector<int> fields;
+      this->DecodeItemFields(data, fields);
+      this->ItemFromFields(fields, button->item);
+      break;
+    }
+    }
+  }
+
+  int x = 0;
+  unsigned int line = 0;
+  int bytes = 0;
+  const unsigned int count = static_cast<unsigned int>(this->lines.size());
+  for (unsigned int index = count - lineCount; index < count; ++index) {
+    bytes += static_cast<int>(this->lines[index].size());
+    if (tag.unknown_0008 < bytes) {
+      const int prefixLength = static_cast<int>(this->lines[index].size()) - bytes + tag.unknown_0008;
+      const std::string stripped = StripColorTokens(this->lines[index].c_str(), prefixLength);
+      const std::string prefix = stripped.substr(0, prefixLength);
+      x = this->TextWidth(this->m_listContext->fonts, this->m_listContext->locale, prefix.c_str(), 0, 0, 12, 0, 0) + 2;
+      line = index;
+      break;
+    }
+  }
+
+  button->m_value = line;
+  button->Move(x, -100);
+  this->AddChild(button);
+  this->m_tagWindows.push_back(button);
 }
