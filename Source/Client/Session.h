@@ -157,6 +157,12 @@ struct SubChatWndInfo {
   /* 0040 */ int height;
 };
 
+struct SessionEntry00A4 {
+  /* 0000 */ std::string name;
+  /* 0018 */ unsigned char unknown_0018[0x0C];
+  /* 0024 */ std::vector<int> values;
+};
+
 class CSession {
 public:
   /* 0000 */ std::uint32_t unknown_0000;
@@ -166,7 +172,8 @@ public:
   /* 008C */ std::list<CSkillInfo> m_mercSkills;
   /* 0094 */ std::list<ShortcutCooldownIcon> m_mainCooldownIcons;
   /* 009C */ std::list<ShortcutCooldownIcon> m_alternateCooldownIcons;
-  /* 00A4 */ unsigned char unknown_00A4[0x10];
+  /* 00A4 */ std::map<std::string, SessionEntry00A4> unknown_00A4;
+  /* 00AC */ std::map<std::string, std::string> unknown_00AC;
   /* 00B4 */ int m_simplifiedSkillList;
   /* 00B8 */ int m_showSkillDescription;
   /* 00BC */ unsigned char m_hotkeyPage;
@@ -254,7 +261,9 @@ public:
   /* 0FA8 */ std::vector<const char*> m_jobNameTable;
   /* 0FB4 */ std::map<unsigned, const char*> m_jobNameTableWoman;
   /* 0FBC */ std::map<unsigned, const char*> m_jobNameTableMan;
-  /* 0FC4 */ unsigned char unknown_0FC4[0x20];
+  /* 0FC4 */ std::map<unsigned, const char*> unknown_0FC4;
+  /* 0FCC */ std::vector<const char*> m_sexLabels;
+  /* 0FD8 */ std::vector<const char*> m_jobKeyNames;
   /* 0FE4 */ std::list<std::uint32_t> m_pingSamples;
   /* 0FEC */ std::vector<const char*> m_palJobNames;
   /* 0FF8 */ unsigned char unknown_0FF8[0x18];
@@ -270,7 +279,7 @@ public:
   /* 1050 */ int unknown_1050;
   /* 1054 */ int unknown_1054;
   /* 1058 */ int m_petActionTable[5][5][7];
-  /* 1314 */ unsigned char unknown_1314[0x258];
+  /* 1314 */ std::string unknown_1314[25];
   /* 156C */ XmlDocument m_petTalkTable;
   /* 159C */ XmlDocument m_monsterSkillInfo;
   /* 15CC */ XmlDocument m_monsterTalkTable;
@@ -334,7 +343,9 @@ public:
   /* 523C */ std::vector<std::pair<std::string, std::vector<std::string>>> m_mapViewParameters;
   /* 5248 */ std::vector<char*> m_indoorRswNames;
   /* 5254 */ std::map<int, float> m_npcLocationRadius;
-  /* 525C */ unsigned char unknown_525C[0x38];
+  /* 525C */ unsigned char unknown_525C[0x24];
+  /* 5280 */ std::list<int> unknown_5280;
+  /* 5288 */ unsigned char unknown_5288[0x0C];
   /* 5294 */ const char* const* m_bodyJobNames;
   /* 5298 */ unsigned char unknown_5298[0x08];
   /* 52A0 */ const char* const* m_sexNames;
@@ -384,9 +395,10 @@ public:
   /* 54A8 */ int unknown_54A8;
   /* 54AC */ std::string unknown_54AC;
   /* 54C4 */ std::string unknown_54C4;
-  /* 54DC */ unsigned char unknown_54DC[0x30];
+  /* 54DC */ std::string unknown_54DC;
+  /* 54F4 */ std::string unknown_54F4;
   /* 550C */ std::string unknown_550C;
-  /* 5524 */ unsigned char unknown_5524[0x18];
+  /* 5524 */ std::string unknown_5524;
   /* 553C */ std::string m_serverName;
   /* 5554 */ unsigned char unknown_5554[4];
   /* 5558 */ int unknown_5558;
@@ -502,7 +514,8 @@ public:
   };
   /* 5C1C */ int unknown_5C1C;
   /* 5C20 */ long long m_bankBalance;
-  /* 5C28 */ unsigned char unknown_5C28[0x40];
+  /* 5C28 */ std::map<int, int> unknown_5C28;
+  /* 5C30 */ unsigned char unknown_5C30[0x38];
   /* 5C68 */ ITEM_INFO unknown_5C68[5];
   /* 6140 */ std::uint16_t unknown_6140;
   /* 6144 */ std::map<int, SessionRecord6144> unknown_6144;
@@ -536,7 +549,7 @@ public:
   };
   /* 61B8 */ ITEM_INFO unknown_61B8[10];
   /* 6B68 */ ITEM_INFO unknown_6B68[10];
-  /* 7518 */ unsigned char unknown_7518[0x9B0];
+  /* 7518 */ ITEM_INFO unknown_7518[10];
   /* 7EC8 */ std::uint32_t unknown_7EC8;
   /* 7ECC */ unsigned char unknown_7ECC[0x04];
   /* 7ED0 */ int unknown_7ED0;
@@ -568,7 +581,7 @@ public:
   /* 8078 */ const char* const* m_jobSpriteNames;
   /* 807C */ unsigned char unknown_807C[0x20];
   /* 809C */ std::vector<std::string> unknown_809C;
-  /* 80A8 */ unsigned char unknown_80A8[0x0C];
+  /* 80A8 */ std::vector<std::string> unknown_80A8;
   /* 80B4 */ std::map<std::string, int> m_nameToId;
   /* 80BC */ std::map<int, SessionShop> m_shops;
   /* 80C4 */ int m_damageSkinIndex;
@@ -1006,6 +1019,7 @@ public:
   void UpdateUnknown1708(int enabled);
   void RefreshItem1738Window();
   void RefreshHpSpWindows();
+  CSession();
   void Init();
   void ResetCharacterState();
   void ClearItemContainers();
@@ -1064,6 +1078,7 @@ static_assert(sizeof(SessionRecord6144) == 0x38);
 static_assert(sizeof(SessionRecord6178) == 0x2C);
 static_assert(sizeof(ProhibitionLogEntry) == 0x54);
 static_assert(sizeof(SubChatWndInfo) == 0x44);
+static_assert(sizeof(SessionEntry00A4) == 0x30);
 static_assert(offsetof(SubChatWndInfo, x) == 0x34);
 static_assert(offsetof(CSession, m_noSubChatWnds) == 0x73C);
 static_assert(offsetof(CSession, m_subChatWnds) == 0x744);

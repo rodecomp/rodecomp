@@ -41,6 +41,16 @@
 #include "Contents/CashEmotionMgr.h"
 #include "Contents/Jobs/JobInheritance.h"
 #include "UI/Window/UIRoMapWnd.h"
+#include "Contents/AchievementMgr.h"
+#include "Contents/CheckAttendanceMgr.h"
+#include "Contents/Items/BarterMarketItemMgr.h"
+#include "Contents/Items/ChangeMaterialMgr.h"
+#include "Contents/Items/ItemInfoMgr.h"
+#include "Contents/Items/RuneSystem.h"
+#include "Contents/MapInfoMgr.h"
+#include "Contents/PetEvolutionMgr.h"
+#include "Contents/PrivateAirplaneMgr.h"
+#include "Contents/SpecialPopupMgr.h"
 #include <algorithm>
 #include <cmath>
 #include <cstdio>
@@ -74,6 +84,11 @@ public:
   void Parse(const std::string& text);
 
   /* 0000 */ std::vector<std::string> tokens;
+};
+
+class CUserHotkeyMgr {
+public:
+  static bool Initialize();
 };
 
 namespace EquipmentProperties {
@@ -3022,9 +3037,9 @@ void CSession::Init() {
   this->unknown_5C1C = 0;
   *reinterpret_cast<int*>(&this->unknown_5C15[0x03]) = 0;
   this->m_skipPriceWarning = true;
-  *reinterpret_cast<int*>(&this->unknown_5C28[0x08]) = 0;
-  *reinterpret_cast<int*>(&this->unknown_5C28[0x0C]) = 0;
-  *reinterpret_cast<int*>(&this->unknown_5C28[0x10]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_5C30[0x00]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_5C30[0x04]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_5C30[0x08]) = 0;
   this->unknown_06FC = 0;
   this->unknown_06A8 = 0;
   for (ITEM_INFO& item : this->unknown_5C68) {
@@ -3332,7 +3347,7 @@ void CSession::InitWeaponHitWaveNames() {
 // OFFSET: 0x00DF8C40
 // FUNCTION: fn_23513
 void CSession::InitJobKeyNames() {
-  std::vector<const char*>& names = reinterpret_cast<std::vector<const char*>&>(this->unknown_0FC4[0x14]);
+  std::vector<const char*>& names = this->m_jobKeyNames;
   names.resize(JT_2004_JOB_LAST, "NOVICE");
   names[JT_NOVICE] = "NOVICE";
   names[JT_SUPERNOVICE] = "SUPERNOVICE";
@@ -4626,6 +4641,87 @@ EncryptedName<13, 0x4B670715D543C1C3ULL>& DruidRidingName();
 EncryptedName<14, 0x7155E5EF0DFB0D03ULL>& KarnosRidingName();
 EncryptedName<14, 0x4B1D078937DB892BULL>& AliteaRidingName();
 
+// OFFSET: 0x00DC2B20
+// FUNCTION: fn_22763
+CSession::CSession() {
+  this->m_priorityClass = 32;
+  *reinterpret_cast<std::uint16_t*>(&this->unknown_8128[4]) = 0x100;
+  this->unknown_8148 = -1;
+  this->unknown_80A8.clear();
+
+  CItemInfoMgr::Create();
+  CSpecialPopupMgr::Create();
+  CRuneSystemMgr::Create();
+  if (!CUserHotkeyMgr::Initialize()) {
+    const std::uint8_t captionSource[] = {0x3A, 0x61, 0xAD, 0xBE, 0xF7, 0x67};
+    thread_local EncryptedName<sizeof(captionSource), 0xED796785D1DF137FULL> caption(captionSource);
+    const char* captionText = caption.Text();
+    const std::uint8_t textSource[] = {0xB2, 0x92, 0x4A, 0x6C, 0x65, 0x31, 0x20, 0x85, 0x9A, 0xA2, 0x40, 0x44, 0x70, 0x0B, 0x75, 0xCB, 0xB2,
+                                       0xB5, 0x5C, 0x68, 0x63, 0x1C, 0x06, 0x9F, 0x82, 0xB3, 0x58, 0x67, 0x74, 0x1C, 0x67, 0xD8, 0xF1};
+    thread_local EncryptedName<sizeof(textSource), 0xF14F79170939C7F1ULL> text(textSource);
+    MessageBoxA(nullptr, text.Text(), captionText, MB_OK);
+  }
+  if (!CBarterMarketItemMgr::CreateInstance()) {
+    const std::uint8_t captionSource[] = {0xE2, 0x87, 0x0D, 0x56, 0x43, 0x4B};
+    thread_local EncryptedName<sizeof(captionSource), 0xBF2B4B31397FF5A7ULL> caption(captionSource);
+    const char* captionText = caption.Text();
+    const std::uint8_t textSource[] = {0x40, 0x49, 0x5C, 0xCF, 0xDC, 0x33, 0x1E, 0xBC, 0x4A, 0x65, 0x4E, 0xC9, 0xC9, 0x38, 0x0F, 0x94,
+                                       0x68, 0x55, 0x44, 0xDE, 0xC9, 0x14, 0x09, 0xBC, 0x64, 0x6A, 0x48, 0xC9, 0x87, 0x67, 0x3E, 0xAB,
+                                       0x6C, 0x46, 0x5B, 0xDE, 0xF4, 0x33, 0x0E, 0xAD, 0x68, 0x49, 0x4C, 0xDE, 0x95, 0x74, 0x7D};
+    thread_local EncryptedName<sizeof(textSource), 0xD97D5DBDBB2F2709ULL> text(textSource);
+    MessageBoxA(nullptr, text.Text(), captionText, MB_OK);
+  }
+  if (!CExpandedBarterMarketItemMgr::CreateInstance()) {
+    const std::uint8_t captionSource[] = {0xDE, 0x25, 0x71, 0xF6, 0x15, 0x05};
+    thread_local EncryptedName<sizeof(captionSource), 0x050505679903579BULL> caption(captionSource);
+    const char* captionText = caption.Text();
+    const std::uint8_t textSource[] = {0xF4, 0xD3, 0x9E, 0x43, 0xDA, 0xD1, 0x8C, 0xE6, 0xFE, 0xFF, 0x8C, 0x45, 0xCF, 0xDA, 0x9D, 0xCE,
+                                       0xDC, 0xCF, 0x86, 0x52, 0xCF, 0xF6, 0x9B, 0xE6, 0xD0, 0x8F, 0xA0, 0x50, 0xC9, 0x85, 0xD5, 0xC0,
+                                       0xCF, 0xD8, 0x8C, 0x43, 0xDE, 0xF6, 0x81, 0xF0, 0xC9, 0xDC, 0x83, 0x54, 0xDE, 0x97, 0xC6, 0x83};
+    thread_local EncryptedName<sizeof(textSource), 0x83EFBFBB37EDBDBDULL> text(textSource);
+    MessageBoxA(nullptr, text.Text(), captionText, MB_OK);
+  }
+  if (!CPetEvolutionMgr::Create()) {
+    const std::uint8_t captionSource[] = {0x88, 0x83, 0xEB, 0xDA, 0xFF, 0x5B};
+    thread_local EncryptedName<sizeof(captionSource), 0xAD075B8DB599F1CDULL> caption(captionSource);
+    const char* captionText = caption.Text();
+    const std::uint8_t textSource[] = {0xA2, 0x2B, 0x9C, 0xA3, 0x90, 0x65, 0x56, 0xB1, 0x94, 0x0F, 0x90, 0xB8, 0xBB, 0x5E,
+                                       0x5E, 0xAF, 0xC1, 0x1D, 0x90, 0xBB, 0xB0, 0x33, 0x70, 0xB3, 0x88, 0x0F, 0xF9};
+    thread_local EncryptedName<sizeof(textSource), 0xDD3913D5D7F97BE1ULL> text(textSource);
+    MessageBoxA(nullptr, text.Text(), captionText, MB_OK);
+  }
+  if (!CAchievementMgr::CreateInstance()) {
+    const std::uint8_t captionSource[] = {0xCA, 0xEB, 0x99, 0x62, 0xC7, 0x7F};
+    thread_local EncryptedName<sizeof(captionSource), 0x39FF7FB50DEB998FULL> caption(captionSource);
+    const char* captionText = caption.Text();
+    const std::uint8_t textSource[] = {0x3C, 0x54, 0xEE, 0x79, 0x5E, 0x6A, 0xFD, 0x4A, 0x12, 0x70, 0xE3, 0x65, 0x7A,
+                                       0x68, 0xF9, 0x0F, 0x19, 0x7C, 0xE1, 0x74, 0x17, 0x66, 0xE5, 0x46, 0x0B, 0x15};
+    thread_local EncryptedName<sizeof(textSource), 0x2F8B0F37118D157FULL> text(textSource);
+    MessageBoxA(nullptr, text.Text(), captionText, MB_OK);
+  }
+
+  this->m_newRobeDrawOnTop = false;
+  *reinterpret_cast<int*>(&this->unknown_61A8_0000[4]) = 0;
+  this->m_swapEquipmentMode = 0;
+  this->unknown_7F74[0] = 1;
+  *reinterpret_cast<int*>(&this->unknown_7F74[4]) = 0;
+  CPrivateAirplaneMgr::Create();
+  CCheckAttendanceMgr::Create();
+  *reinterpret_cast<int*>(&this->unknown_5974[0x28]) = 0;
+  this->unknown_7FBC = 0;
+  CMapInfoMgr::Create();
+  this->unknown_8074 = 0;
+  *reinterpret_cast<int*>(&this->unknown_7EF0[0x74]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_7EF0[0x78]) = 0;
+  CChangeMaterialMgr::CreateInstance();
+  this->m_options.Clear();
+  *reinterpret_cast<int*>(&this->unknown_807C[0x18]) = 0;
+  this->m_damageSkinIndex = 0;
+  this->m_damageSkinMode = 0;
+  this->m_damageMillionUnit = 0;
+  this->m_navigationPlayerMap[0] = '\0';
+}
+
 // OFFSET: 0x00DE7290
 // FUNCTION: fn_23497
 void CSession::LoadLuaDataFiles() {
@@ -4836,7 +4932,6 @@ void CSession::LoadLuaDataFiles() {
   this->m_hotkeyScript->Load("Lua Files\\AdventureGuide\\AvailableJobList_F", true, false);
   this->m_hotkeyScript->Load("Lua Files\\AdventureGuide\\AvailableJobList", true, false);
 }
-
 // OFFSET: 0x00DE98B0
 // FUNCTION: fn_23502
 void CSession::InitResourceNameTables() {
