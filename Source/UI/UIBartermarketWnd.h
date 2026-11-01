@@ -100,11 +100,17 @@ public:
 
 class UIPurchaseButton : public UIBitmapButton {
 public:
+  // OFFSET: 0x008401C0
+  // FUNCTION: fn_10540
+  UIPurchaseButton() = default;
   void Slot28(int x, int y) override;
 };
 
 class UIExpandedBarterPurchaseButton : public UIBitmapButton {
 public:
+  // OFFSET: 0x00844CA0
+  // FUNCTION: fn_10568
+  UIExpandedBarterPurchaseButton() = default;
   void Slot28(int x, int y) override;
   std::string FormatChunkText(int refine, std::string name, int amount);
 };
