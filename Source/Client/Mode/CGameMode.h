@@ -11,6 +11,7 @@
 #include <list>
 #include <map>
 #include <string>
+#include <unordered_map>
 #include <unordered_set>
 #include <vector>
 
@@ -172,7 +173,10 @@ public:
   /* 0620 */ UIBroadcastBalloon* noticeBalloon;
   /* 0624 */ unsigned char unknown_0624[0x4];
   /* 0628 */ std::unordered_set<int> unknown_0628;
-  /* 0648 */ unsigned char unknown_0648[0x28];
+  /* 0648 */ unsigned char unknown_0648;
+  /* 0649 */ unsigned char unknown_0649[0x3];
+  /* 064C */ std::unordered_map<int, int> unknown_064C;
+  /* 066C */ unsigned char unknown_066C[0x4];
 
   std::string MapName();
   UIBroadcastBalloon* EnsureBroadcastBalloon();
@@ -790,6 +794,30 @@ public:
   void ReceiveBarterMarketItemList(const unsigned char* data);
   void ReceiveNotifyBan(const unsigned char* packet);
   void ReceiveSkillFailure(const unsigned char* data);
+  void ReceiveItemPickupAck8(const unsigned char* data);
+  void ReceiveItemPickupAck9(const unsigned char* data);
+  void ReceiveActorChat(const unsigned char* data);
+  void ReceivePartyChat(const unsigned char* data);
+  void ReceiveEffectNumber(const unsigned char* data);
+  void ReceiveGuildBanList(const unsigned char* data);
+  void ReceiveGuildBanList2(const unsigned char* data);
+  void ReceiveGuildBanList3(const unsigned char* data);
+  void ReceiveGuildChat(const unsigned char* data);
+  void ReceiveActorAction(
+    std::uint32_t sourceAid, std::uint32_t targetAid, std::uint32_t tick, int attackMT, int attackedMT, int damage, std::int16_t count, unsigned char type,
+    int damage2, unsigned char spDamaged
+  );
+  void ReceiveActorDisappear(const unsigned char* data);
+  void ReceiveGuildInfo2(const unsigned char* data);
+  void ReceiveGuildInfo3(const unsigned char* data);
+  void ReceiveGuildInfo4(const unsigned char* data);
+  void ReceiveGuildNotice(unsigned char* data);
+  void ReceiveGuildMemberAdd2(const unsigned char* data);
+  void ReceiveGuildMemberAdd3(const unsigned char* data);
+  void ReceiveGuildMemberList2(const unsigned char* data);
+  void ReceiveGuildMemberList3(const unsigned char* data);
+  void ReceiveGuildRelationList(const unsigned char* data);
+  void ReceiveEquipItemNotice(const unsigned char* data);
 };
 
 void LaunchRollingCutterEffect(CGameActor* actor);
@@ -822,11 +850,14 @@ static_assert(offsetof(CGameMode, unknown_02DC) == 0x2DC);
 static_assert(offsetof(CGameMode, unknown_05D0) == 0x5D0);
 static_assert(offsetof(CGameMode, unknown_0604) == 0x604);
 static_assert(offsetof(CGameMode, unknown_0628) == 0x628);
+static_assert(offsetof(CGameMode, unknown_064C) == 0x64C);
+static_assert(offsetof(CGameMode, unknown_066C) == 0x66C);
 static_assert(sizeof(CGameMode) == 0x670);
 #endif
 
 extern char g_pendingWhisperCount;
 extern int g_whisperRecord;
+extern int g_timeAttackStart;
 extern UIWindow* g_saleOpenWindow;
 void sub_CCFF10();
 extern int g_localMapMove;

@@ -4381,6 +4381,18 @@ void CGameMode::ReceiveOpenStore(const unsigned char* packet) {
 
 struct ACTSTRUCT {
   virtual ~ACTSTRUCT();
+
+  /* 0004 */ int damage;
+  /* 0008 */ int damage2;
+  /* 000C */ int type;
+  /* 0010 */ std::uint32_t targetId;
+  /* 0014 */ std::uint32_t tick;
+  /* 0018 */ int count;
+  /* 001C */ int unknown_001C;
+  /* 0020 */ int unknown_0020;
+  /* 0024 */ int attackMT;
+  /* 0028 */ int attackedMT;
+  /* 002C */ bool spDamaged;
 };
 
 // OFFSET: 0x00D051F0
@@ -9343,3 +9355,365 @@ void CGameMode::ReceiveChatRoomMemberList(const unsigned char* data) {
     }
   }
 }
+
+#include "Contents/ForbiddenWords.h"
+#include "Network/ActorNamePacket.h"
+
+// GLOBAL: gl_25381
+std::string g_gameModeNamelessTag = "<NAMELESS>";
+
+namespace {
+#pragma pack(push, 1)
+  struct ItemPickupAckV8Packet {
+    /* 0000 */ std::uint16_t packetType;
+    /* 0002 */ std::uint16_t index;
+    /* 0004 */ std::uint16_t amount;
+    /* 0006 */ int itemId;
+    /* 000A */ unsigned char identified;
+    /* 000B */ unsigned char damaged;
+    /* 000C */ unsigned char refine;
+    /* 000D */ std::uint32_t cards[4];
+    /* 001D */ std::uint32_t location;
+    /* 0021 */ unsigned char type;
+    /* 0022 */ unsigned char result;
+    /* 0023 */ std::uint32_t expireTime;
+    /* 0027 */ std::uint16_t bindOnEquip;
+    /* 0029 */ StoreItemOption options[5];
+    /* 0042 */ unsigned char favorite;
+    /* 0043 */ std::uint16_t look;
+  };
+
+  struct ItemPickupAckV9Packet {
+    /* 0000 */ std::uint16_t packetType;
+    /* 0002 */ std::uint16_t index;
+    /* 0004 */ std::uint16_t amount;
+    /* 0006 */ int itemId;
+    /* 000A */ unsigned char identified;
+    /* 000B */ unsigned char damaged;
+    /* 000C */ std::uint32_t cards[4];
+    /* 001C */ std::uint32_t location;
+    /* 0020 */ unsigned char type;
+    /* 0021 */ unsigned char result;
+    /* 0022 */ std::uint32_t expireTime;
+    /* 0026 */ std::uint16_t bindOnEquip;
+    /* 0028 */ StoreItemOption options[5];
+    /* 0041 */ unsigned char favorite;
+    /* 0042 */ std::uint16_t look;
+    /* 0044 */ unsigned char refine;
+    /* 0045 */ unsigned char grade;
+  };
+#pragma pack(pop)
+
+  static_assert(sizeof(ItemPickupAckV8Packet) == 0x45);
+  static_assert(sizeof(ItemPickupAckV9Packet) == 0x46);
+}
+
+// OFFSET: 0x00D30130
+
+// OFFSET: 0x00D309D0
+
+// OFFSET: 0x00D339F0
+
+// OFFSET: 0x00D33CE0
+
+#pragma pack(push, 1)
+struct EffectNumberPacket {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::uint32_t aid;
+  /* 0006 */ int count;
+  /* 000A */ int value;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(EffectNumberPacket) == 0xE);
+
+// OFFSET: 0x00D37700
+
+#pragma pack(push, 1)
+struct GuildBanRecord {
+  /* 0000 */ char name[24];
+  /* 0018 */ char reason[40];
+};
+
+struct GuildBanCharacterRecord {
+  /* 0000 */ int characterId;
+  /* 0004 */ char reason[40];
+};
+
+struct GuildBanNamedRecord {
+  /* 0000 */ int characterId;
+  /* 0004 */ char reason[40];
+  /* 002C */ char name[24];
+};
+#pragma pack(pop)
+
+static_assert(sizeof(GuildBanRecord) == 0x40);
+static_assert(sizeof(GuildBanCharacterRecord) == 0x2C);
+static_assert(sizeof(GuildBanNamedRecord) == 0x44);
+
+// OFFSET: 0x00D4B860
+
+// OFFSET: 0x00D4BDD0
+
+// OFFSET: 0x00D4C3D0
+
+// OFFSET: 0x00D4D150
+
+// OFFSET: 0x00D33500
+// FUNCTION: fn_21749
+void CGameMode::ReceiveActorAction(
+  std::uint32_t sourceAid, std::uint32_t targetAid, std::uint32_t tick, int attackMT, int attackedMT, int damage, std::int16_t count, unsigned char type,
+  int damage2, unsigned char spDamaged
+) {
+  if (damage == -30000) {
+    return;
+  }
+
+  ACTSTRUCT act;
+  act.damage = damage;
+  act.damage2 = damage2;
+  act.type = type;
+  act.targetId = targetAid;
+  act.tick = tick;
+  act.count = count;
+  act.unknown_001C = -1;
+  act.unknown_0020 = -1;
+  act.attackMT = attackMT;
+  act.attackedMT = attackedMT;
+  act.spDamaged = spDamaged != 0;
+  if (attackMT == 0.0f) {
+    act.attackMT = 0x5A0;
+  }
+  if (attackedMT == 0.0f && !g_session.IsType0Or4(act.type)) {
+    act.attackedMT = 0x5A0;
+  }
+
+  CRenderObject* actor;
+  if (sourceAid == g_session.m_aid) {
+    actor = this->scene->player;
+  } else {
+    actor = this->scene->GetGameActorByAID(sourceAid);
+  }
+  if (!actor) {
+    actor = this->scene->GetSkillByAID(sourceAid);
+    if (!actor) {
+      return;
+    }
+  }
+
+  if (actor->render.unknown_0070 == 0 && static_cast<CGameActor*>(actor)->hitTargetAid != targetAid && act.type != 1 && act.type != 2 && act.type != 3) {
+    if (sourceAid == g_session.m_aid) {
+      if (this->scene->GetGameActorByAID(g_session.unknown_1010)) {
+        const int hungerLevel = g_session.GetPetHungryState(g_session.unknown_1044);
+        const int action = g_session.GetPetActionNumber(hungerLevel, g_session.GetPetFriendlyState(g_session.m_petFriendly), 1);
+        if (rand() % 100 < 25 && g_session.CheckInterval(60000) == true) {
+          this->SendMsg(148, g_session.GetPetEmotionNumber(g_session.unknown_103C, 1, hungerLevel), 0, 0, 0);
+          this->SendMsg(148, action, 0, 0, 0);
+        }
+      }
+    } else {
+      char text[256];
+      g_session.GetMonsterTalkText(static_cast<CGameActor*>(actor)->GetEffectiveJob(-1), 0, 0, text, sourceAid);
+      if (std::strcmp(text, "") != 0) {
+        actor->SendMsg(nullptr, 7, 0, reinterpret_cast<int>(text), reinterpret_cast<int>(text) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        if (!g_serviceOptions.Get(114) && !g_serviceOptions.Get(148)) {
+          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFAFAFA, 0, 0, 0);
+        }
+      }
+    }
+  }
+  actor->SendMsg(nullptr, 11, 0, reinterpret_cast<int>(&act), reinterpret_cast<int>(&act) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+}
+
+#pragma pack(push, 1)
+struct ActorDisappearPacket {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::uint32_t aid;
+  /* 0006 */ unsigned char type;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(ActorDisappearPacket) == 7);
+
+// OFFSET: 0x00D39530
+
+#pragma pack(push, 1)
+struct GuildInfoV2Packet {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::uint32_t guildId;
+  /* 0006 */ int level;
+  /* 000A */ int userCount;
+  /* 000E */ int maxUserCount;
+  /* 0012 */ int averageLevel;
+  /* 0016 */ int exp;
+  /* 001A */ int maxExp;
+  /* 001E */ int point;
+  /* 0022 */ int honor;
+  /* 0026 */ int virtue;
+  /* 002A */ int emblemVersion;
+  /* 002E */ char guildName[24];
+  /* 0046 */ char masterName[24];
+  /* 005E */ char manageLand[24];
+};
+
+struct GuildInfoV3Packet {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::uint32_t guildId;
+  /* 0006 */ int level;
+  /* 000A */ int userCount;
+  /* 000E */ int maxUserCount;
+  /* 0012 */ int averageLevel;
+  /* 0016 */ int exp;
+  /* 001A */ int maxExp;
+  /* 001E */ int point;
+  /* 0022 */ int honor;
+  /* 0026 */ int virtue;
+  /* 002A */ int emblemVersion;
+  /* 002E */ char guildName[24];
+  /* 0046 */ char manageLand[20];
+  /* 005A */ std::uint32_t masterCharacterId;
+};
+
+struct GuildInfoV4Packet {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::uint32_t guildId;
+  /* 0006 */ int level;
+  /* 000A */ int userCount;
+  /* 000E */ int maxUserCount;
+  /* 0012 */ int averageLevel;
+  /* 0016 */ int exp;
+  /* 001A */ int maxExp;
+  /* 001E */ int point;
+  /* 0022 */ int honor;
+  /* 0026 */ int virtue;
+  /* 002A */ int emblemVersion;
+  /* 002E */ char guildName[24];
+  /* 0046 */ char manageLand[20];
+  /* 005A */ std::uint32_t masterCharacterId;
+  /* 005E */ char masterName[24];
+};
+#pragma pack(pop)
+
+static_assert(sizeof(GuildInfoV2Packet) == 0x76);
+static_assert(sizeof(GuildInfoV3Packet) == 0x5E);
+static_assert(sizeof(GuildInfoV4Packet) == 0x76);
+
+// OFFSET: 0x00D4D3B0
+
+// OFFSET: 0x00D4D600
+
+// OFFSET: 0x00D4D900
+
+#pragma pack(push, 1)
+struct GuildNoticePacket {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ char subject[60];
+  /* 003E */ char notice[120];
+};
+#pragma pack(pop)
+
+static_assert(sizeof(GuildNoticePacket) == 0xB6);
+
+// OFFSET: 0x00D4DD70
+
+#pragma pack(push, 1)
+struct GuildMemberAddV2Packet {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ int accountId;
+  /* 0006 */ std::uint32_t characterId;
+  /* 000A */ std::int16_t unknown_000A;
+  /* 000C */ std::int16_t unknown_000C;
+  /* 000E */ std::int16_t unknown_000E;
+  /* 0010 */ std::int16_t job;
+  /* 0012 */ std::int16_t level;
+  /* 0014 */ int exp;
+  /* 0018 */ int online;
+  /* 001C */ int positionId;
+  /* 0020 */ int unknown_0020;
+  /* 0024 */ char name[24];
+};
+
+struct GuildMemberAddV3Packet {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ int accountId;
+  /* 0006 */ std::uint32_t characterId;
+  /* 000A */ std::int16_t unknown_000A;
+  /* 000C */ std::int16_t unknown_000C;
+  /* 000E */ std::int16_t unknown_000E;
+  /* 0010 */ std::int16_t job;
+  /* 0012 */ std::int16_t level;
+  /* 0014 */ int exp;
+  /* 0018 */ int online;
+  /* 001C */ int positionId;
+  /* 0020 */ char memo[50];
+};
+#pragma pack(pop)
+
+static_assert(sizeof(GuildMemberAddV2Packet) == 0x3C);
+static_assert(sizeof(GuildMemberAddV3Packet) == 0x52);
+
+// OFFSET: 0x00D4E800
+
+// OFFSET: 0x00D4EBA0
+
+namespace {
+#pragma pack(push, 1)
+  struct GuildMemberNamedRecord {
+    /* 0000 */ int accountId;
+    /* 0004 */ std::uint32_t characterId;
+    /* 0008 */ std::int16_t unknown_0008;
+    /* 000A */ std::int16_t unknown_000A;
+    /* 000C */ std::int16_t unknown_000C;
+    /* 000E */ std::int16_t job;
+    /* 0010 */ std::int16_t level;
+    /* 0012 */ int exp;
+    /* 0016 */ int online;
+    /* 001A */ int positionId;
+    /* 001E */ int unknown_001E;
+    /* 0022 */ char name[24];
+  };
+
+  struct GuildMemberMemoOnlyRecord {
+    /* 0000 */ int accountId;
+    /* 0004 */ std::uint32_t characterId;
+    /* 0008 */ std::int16_t unknown_0008;
+    /* 000A */ std::int16_t unknown_000A;
+    /* 000C */ std::int16_t unknown_000C;
+    /* 000E */ std::int16_t job;
+    /* 0010 */ std::int16_t level;
+    /* 0012 */ int exp;
+    /* 0016 */ int online;
+    /* 001A */ int positionId;
+    /* 001E */ char memo[50];
+  };
+
+  struct GuildRelationRecord {
+    /* 0000 */ int relation;
+    /* 0004 */ int guildId;
+    /* 0008 */ char name[24];
+  };
+#pragma pack(pop)
+
+  static_assert(sizeof(GuildMemberNamedRecord) == 0x3A);
+  static_assert(sizeof(GuildMemberMemoOnlyRecord) == 0x50);
+  static_assert(sizeof(GuildRelationRecord) == 0x20);
+}
+
+// OFFSET: 0x00D4F180
+
+// OFFSET: 0x00D4F7A0
+
+// OFFSET: 0x00D4FD50
+
+#pragma pack(push, 1)
+struct EquipItemNoticePacket {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::int16_t index;
+  /* 0004 */ std::int16_t value;
+  /* 0006 */ unsigned char result;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(EquipItemNoticePacket) == 7);
+
+// OFFSET: 0x00D50AA0
