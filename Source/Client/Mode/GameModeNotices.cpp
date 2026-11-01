@@ -3864,8 +3864,6 @@ void CGameMode::ReceiveVendingItemSoldNow(const unsigned char* data) {
   sub_D08670(static_cast<int>(_time32(nullptr)), itemId, quantity, field8, 0, 0);
 }
 
-// OFFSET: 0x00D70790
-
 // OFFSET: 0x00D6C410
 // FUNCTION: fn_22080
 void CGameMode::ReceiveTraitStatusChangeAck(unsigned char result, unsigned short statusId, unsigned char value) {
@@ -3878,6 +3876,8 @@ void CGameMode::ReceiveTraitStatusChangeAck(unsigned char result, unsigned short
     }
   }
 }
+
+// OFFSET: 0x00D70790
 // FUNCTION: fn_22131
 void CGameMode::ReceiveVendingItemList2(int aid, int storeId, char own, int count, std::uint32_t duration, const unsigned char* data) {
   const auto* records = reinterpret_cast<const VendingItemRecord2*>(data);
@@ -5208,6 +5208,58 @@ void CGameMode::ReceiveRefineStatus(const char* playerName, int itemId, unsigned
 }
 
 // OFFSET: 0x00D6F000
+// FUNCTION: fn_22122
+void CGameMode::ReceiveGradeEnchantBroadcast(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const GradeEnchantBroadcastPacket*>(data);
+  std::string name(packet->name, 24);
+  std::string itemName;
+  ITEM_INFO item;
+  item.SetItemId(packet->itemId);
+  item.identified = 1;
+  {
+    ItemDescriptions descriptions{g_itemDescriptions};
+    bool languagePrefix = false;
+    WORD language = g_serverLanguage->language;
+    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+    itemName = naming.DisplayName(item, 0);
+  }
+
+  std::string grade;
+  if (packet->grade == 1) {
+    grade = "D";
+  } else if (packet->grade == 2) {
+    grade = "C";
+  } else if (packet->grade == 3) {
+    grade = "B";
+  } else if (packet->grade == 4) {
+    grade = "A";
+  } else if (packet->grade == 5) {
+    grade = "R";
+  } else if (packet->grade == 6) {
+    grade = "S";
+  } else if (packet->grade == 7) {
+    grade = "SS";
+  }
+
+  std::string text;
+  if (packet->success == 1) {
+    text = static_cast<const std::string&>(
+      FormatOwnedString(LookupMessage(3718), name.c_str(), grade.c_str(), itemName.c_str())
+    );
+  } else {
+    text = static_cast<const std::string&>(
+      FormatOwnedString(LookupMessage(3719), name.c_str(), grade.c_str(), itemName.c_str())
+    );
+  }
+
+  if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
+    BroadcastBalloonMessage message{{}, {}, std::chrono::seconds(20), 12, 0x40000000, 0, 0};
+    message.start = std::chrono::system_clock::now();
+    message.lines.emplace_back(text, 0x62B0FF, 0);
+    balloon->AddMessage(0, message);
+  }
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0x62B0FF, 0, 0, 0);
+}
 
 #pragma pack(push, 1)
 struct RodexMailItem {
@@ -5367,8 +5419,6 @@ void CGameMode::ReceiveRodexMailListRefresh(const unsigned char* data) {
   }
 }
 
-// OFFSET: 0x00D6A0D0
-
 // OFFSET: 0x00D19000
 // FUNCTION: fn_21604
 void CRenewQuestMgr::SetOngoingQuest(unsigned int id, const RenewQuestOngoingInfo& info) {
@@ -5448,7 +5498,6 @@ void CGameMode::ReceiveSpecialBroadcast(const unsigned char* data) {
   balloon->AddMessage(0, message);
 }
 
-
 #pragma pack(push, 1)
 struct QuestHuntUpdateEntry {
   /* 0000 */ unsigned int questId;
@@ -5484,6 +5533,8 @@ struct QuestHuntUpdatePacket2 {
 #pragma pack(pop)
 
 // OFFSET: 0x00D47C20
+
+// OFFSET: 0x00D6A0D0
 // FUNCTION: fn_22058
 void CGameMode::ReceiveRodexMailListAppend(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const RodexMailPagePacket*>(data);
@@ -7381,4 +7432,58 @@ void CGameMode::ReceiveGuildStorageLogItems(const unsigned char* data) {
   this->ApplyGuildStorageLog(packet->result, items);
 }
 
-// OFFSET: 0x00D1A520
+static std::map<int, int> BuildStatusFlagEffects() {
+  std::map<int, int> effects;
+  effects[0x1] = 0x373;
+  effects[0x2] = 0x374;
+  effects[0x4] = 0x375;
+  effects[0x8] = 0x376;
+  effects[0x10] = 0x377;
+  effects[0x20] = 0x378;
+  effects[0x40] = 0x379;
+  effects[0x80] = 0x37A;
+  effects[0x100] = 0x37B;
+  return effects;
+}
+
+static std::map<int, int> BuildStatusLevelEffects() {
+  std::map<int, int> effects;
+  effects[0] = 0;
+  effects[1] = 0x36B;
+  effects[2] = 0x36C;
+  effects[3] = 0x36D;
+  effects[4] = 0x36E;
+  effects[5] = 0;
+  effects[6] = 0x370;
+  effects[7] = 0x371;
+  effects[8] = 0x372;
+  return effects;
+}
+
+// OFFSET: 0x00D18D10
+// FUNCTION: fn_21602
+void CGameMode::ApplyStatusIcons(int level, unsigned int flags) {
+  // GLOBAL: gl_25274
+  static const std::map<int, int> statusFlagEffects = BuildStatusFlagEffects();
+  // GLOBAL: gl_25275
+  static const std::map<int, int> statusLevelEffects = BuildStatusLevelEffects();
+
+  const std::uint32_t aid = g_session.m_aid;
+  for (const auto& effect : statusFlagEffects) {
+    if (effect.second != 0x377 && effect.second != 0x378 && effect.second != 0x379) {
+      this->ApplyStatusChange(aid, (effect.first & flags) != 0, effect.second, 9999, 0, 0, 0, 0, 9999);
+    }
+  }
+
+  auto previous = statusLevelEffects.find(*reinterpret_cast<const int*>(&g_session.unknown_0F0C[0]));
+  if (previous != statusLevelEffects.end()) {
+    this->ApplyStatusChange(aid, 0, previous->second, 9999, 0, 0, 0, 0, 9999);
+  }
+
+  if (level != 0) {
+    auto next = statusLevelEffects.find(level);
+    if (next != statusLevelEffects.end()) {
+      this->ApplyStatusChange(aid, 1, next->second, 9999, 0, 0, 0, 0, 9999);
+    }
+  }
+}
