@@ -27,6 +27,32 @@ static_assert(offsetof(InputCharset, servicePrefix) == 0x9C);
 static_assert(offsetof(InputCharset, alternateLanguage) == 0xB4);
 #endif
 
+struct DefaultInputCharset : InputCharset {
+  DefaultInputCharset();
+  ~DefaultInputCharset();
+};
+
+struct TraditionalChineseInputCharset : InputCharset {
+  /* 00B8 */ unsigned char unknown_00B8[0x40C];
+
+  TraditionalChineseInputCharset();
+  ~TraditionalChineseInputCharset();
+};
+
+struct ThaiInputCharset : InputCharset {
+  /* 00B8 */ bool unknown_00B8;
+
+  ThaiInputCharset();
+  ~ThaiInputCharset();
+};
+
+struct ArabicInputCharset : InputCharset {
+  /* 00B8 */ bool unknown_00B8;
+
+  ArabicInputCharset();
+  ~ArabicInputCharset();
+};
+
 extern InputCharset* g_serverLanguage;
 
 #endif

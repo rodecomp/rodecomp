@@ -13,6 +13,7 @@
 #include "Resource/ResourceMgr.h"
 #include "Resource/XmlNode.h"
 #include "UI/Text/UIBalloonText.h"
+#include "Utility/Text/TextTokens.h"
 #include "Utility/Cipher/XorBytes.h"
 
 #include <cstddef>
@@ -136,7 +137,7 @@ const char* GetLicenceText() {
 }
 
 void sub_AD1270();
-void sub_AD1780();
+void InitializeLanguage();
 
 // OFFSET: 0x00ACFF90
 // FUNCTION: fn_17808
@@ -173,7 +174,7 @@ void InitializeServiceStrings() {
   }
   }
 
-  sub_AD1780();
+  InitializeLanguage();
 
   if (g_serviceType == 0 || g_serviceType == 6) {
     g_nameBalloonFontHeight = 13;
@@ -321,6 +322,109 @@ void sub_AD1270() {
 
   if (g_loadingScreens.empty()) {
     LoadLoadingScreens(0);
+  }
+}
+
+// OFFSET: 0x00AD1780
+// FUNCTION: fn_17811
+void InitializeLanguage() {
+  // GLOBAL: gl_25359
+  static DefaultInputCharset defaultCharset;
+  // GLOBAL: gl_25360
+  static TraditionalChineseInputCharset traditionalChineseCharset;
+  // GLOBAL: gl_25361
+  static ThaiInputCharset thaiCharset;
+  // GLOBAL: gl_25362
+  static ArabicInputCharset arabicCharset;
+
+  switch (g_serviceType) {
+  case 0:
+    g_language = 0;
+    g_textCodePage = 949;
+    g_serverLanguage = &defaultCharset;
+    break;
+  case 2:
+    g_language = 2;
+    g_textCodePage = 932;
+    g_serverLanguage = &defaultCharset;
+    break;
+  case 3:
+    g_language = 3;
+    g_serverLanguage = &traditionalChineseCharset;
+    g_textCodePage = 936;
+    break;
+  case 4:
+    g_language = 4;
+    g_serverLanguage = &traditionalChineseCharset;
+    g_textCodePage = 950;
+    break;
+  case 5:
+    g_language = 5;
+    g_serverLanguage = &thaiCharset;
+    g_textCodePage = 874;
+    break;
+  case 10:
+    g_language = 1;
+    g_inlineCharset = 1;
+    g_textCodePage = 0;
+    g_serverLanguage = &defaultCharset;
+    break;
+  case 11:
+    g_language = 1;
+    g_inlineCharset = 0;
+    g_textCodePage = 0;
+    g_serverLanguage = &defaultCharset;
+    break;
+  case 12:
+  case 18:
+    g_language = 6;
+    g_inlineCharset = 0;
+    g_textCodePage = 1252;
+    g_serverLanguage = &defaultCharset;
+    break;
+  case 14:
+    g_language = 1;
+    g_inlineCharset = 0;
+    g_textCodePage = 1251;
+    g_serverLanguage = &defaultCharset;
+    break;
+  case 15:
+    g_language = 7;
+    g_inlineCharset = 0;
+    g_textCodePage = 1258;
+    g_serverLanguage = &defaultCharset;
+    break;
+  case 17:
+    g_language = 1;
+    g_inlineCharset = 0;
+    g_textCodePage = 1145;
+    g_serverLanguage = &defaultCharset;
+    break;
+  case 19:
+    g_language = 12;
+    g_serverLanguage = &arabicCharset;
+    g_textCodePage = 1256;
+    break;
+  default: {
+    const std::uint8_t source[] = {0xF9, 0x1E, 0x87, 0xD1, 0x00, 0x4D, 0xE4, 0x2E, 0xF6, 0x16, 0xC2, 0x9D,
+                                   0x12, 0x46, 0xF7, 0x2F, 0xFE, 0x1F, 0xC0, 0x9D, 0x40, 0x02, 0xA2, 0x5B};
+    ShowErrorDialog(GetRenderSystemHolder()->system, DecryptText<0x5B832361BDA77197ULL>(source), 0);
+  }
+  case 1:
+  case 6:
+  case 7:
+  case 8:
+  case 9:
+  case 13:
+  case 20:
+    g_textCodePage = 0;
+    g_language = 1;
+    g_serverLanguage = &defaultCharset;
+    break;
+  }
+
+  if (g_serviceMode == 3) {
+    g_inlineCharset = 1;
   }
 }
 
