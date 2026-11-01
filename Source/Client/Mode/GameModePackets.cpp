@@ -15262,3 +15262,44 @@ namespace {
 // OFFSET: 0x00D231F0
 
 // OFFSET: 0x00D23580
+// FUNCTION: fn_21662
+void CGameMode::ReceiveItemObtainBroadcast(const unsigned char* data, bool package) {
+  std::string name;
+  std::string source;
+  name.assign(reinterpret_cast<const char*>(data + 10), static_cast<signed char>(data[9]));
+  const unsigned char* tail = data + static_cast<signed char>(data[9]);
+  if (data[4] == 0) {
+    ITEM_INFO box;
+    box.SetItemId(*reinterpret_cast<const int*>(tail + 11));
+    box.identified = 1;
+    source = box.DisplayName(0);
+  } else if (data[4] == 1) {
+    source.assign(reinterpret_cast<const char*>(tail + 11), static_cast<signed char>(tail[10]));
+  }
+
+  ITEM_INFO item;
+  item.SetItemId(*reinterpret_cast<const int*>(data + 5));
+  item.identified = 1;
+  std::string text;
+  if (data[4] == 2) {
+    text = FormatOwnedString(LookupMessage(0x74C), name.c_str(), item.DisplayName(0).c_str());
+  } else if (package && data[4] == 0) {
+    const int count = *reinterpret_cast<const int*>(tail + 16);
+    if (count > 0) {
+      text = FormatOwnedString(LookupMessage(0xF91), name.c_str(), source.c_str(), count, item.DisplayName(0).c_str());
+    } else {
+      text = FormatOwnedString(LookupMessage(0x65C), name.c_str(), source.c_str(), item.DisplayName(0).c_str());
+    }
+  } else {
+    text = FormatOwnedString(LookupMessage(0x65C), name.c_str(), source.c_str(), item.DisplayName(0).c_str());
+  }
+
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 0, 0, 0);
+  if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
+    BroadcastBalloonMessage message{{}, {}, std::chrono::seconds(20), 12, 0x40000000, 0, 0};
+    message.start = std::chrono::system_clock::now();
+    std::uint32_t color = 0x62B0FF;
+    message.lines.emplace_back(text, color);
+    balloon->AddMessage(0, message);
+  }
+}
