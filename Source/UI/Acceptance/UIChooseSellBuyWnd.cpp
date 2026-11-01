@@ -11,6 +11,7 @@
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/MessageTable.h"
+#include "Contents/ForbiddenWords.h"
 #include "Contents/Items/ItemNaming.h"
 #include "UI/Window/WindowRegistration.h"
 #include "Contents/TipBoxTitles.h"
@@ -1395,6 +1396,50 @@ ITEM_INFO UIItemParamChangeDisplayWnd::FindEquippedItem(int location) {
 void UIMenuWnd::AddItem(const char* text, const std::uint32_t& color) {
   this->m_items.push_back(text);
   this->m_colors.push_back(color);
+}
+
+// OFFSET: 0x008FEF80
+// FUNCTION: fn_12356
+int UIMenuWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  switch (message) {
+  case 72: {
+    const std::uint32_t color = 0;
+    this->AddItem(g_menuSeparator, color);
+    this->Invalidate();
+    return 0;
+  }
+  case 31: {
+    std::uint32_t color = static_cast<std::uint32_t>(b);
+    this->AddItem(reinterpret_cast<const char*>(a), color);
+    color = static_cast<std::uint32_t>(b);
+    this->AddItem(reinterpret_cast<const char*>(a), color);
+    this->Invalidate();
+    return 0;
+  }
+  case 83:
+    this->m_menuId = static_cast<int>(a);
+    this->unknown_00CC = static_cast<std::uint32_t>(b);
+    return 0;
+  case 30: {
+    int width = 20;
+    const int count = static_cast<int>(this->m_items.end() - this->m_items.begin());
+    for (int index = 0; index < count; ++index) {
+      const int textWidth = this->TextWidth(this->m_context->fonts, this->m_context->locale, this->m_items[index].c_str(), 0, 0, 12, 0, 0);
+      if (width < textWidth) {
+        width = textWidth;
+      }
+    }
+    this->Resize(width + 6, this->m_itemHeight * count / 2);
+    this->Invalidate();
+    return 0;
+  }
+  case 75:
+    this->m_items.clear();
+    this->m_colors.clear();
+    return 0;
+  default:
+    return UIWindow::SendMsg(sender, message, a, b, c, d);
+  }
 }
 
 // OFFSET: 0x008CEED0
@@ -4467,6 +4512,77 @@ UIJoinGuildAcceptWnd::UIJoinGuildAcceptWnd(UIWindowContext& windows, UIFrameCont
     : UIExchangeAcceptWnd(windows, frames, acceptance) {
 }
 
+// OFFSET: 0x008FE310
+// FUNCTION: fn_12352
+int UIJoinGuildAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  if (message == 6) {
+    this->m_acceptance->recorder.Record(this->geometry.id, static_cast<int>(a), b, c, d);
+    if (a == 184) {
+      this->m_frameContext->windows.CloseWindow(70);
+      this->m_frameContext->windows.CloseWindow(214);
+      this->m_frameContext->windows.CloseWindow(213);
+      this->m_frameContext->windows.CloseWindow(212);
+      this->m_context->mode->SendModeMessage(114, this->identity, 1, 0, 0);
+    } else if (a == 185) {
+      this->m_frameContext->windows.CloseWindow(70);
+      this->m_context->mode->SendModeMessage(114, this->identity, 0, 0, 0);
+    }
+    return 0;
+  }
+
+  if (message == 73) {
+    char name[260] = {};
+    strcpy_s(name, sizeof(name), reinterpret_cast<const char*>(b));
+    if (g_forbiddenWords.Contains(name) == true) {
+      std::string masked;
+      g_forbiddenWords.Mask(name, &masked);
+    }
+
+    this->identity = static_cast<std::uint32_t>(a);
+    std::string text = "(";
+    text += name;
+    text += ")";
+    text += LookupMessage(377);
+    this->viewer->Clear();
+    this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text.c_str()), 38, 0, 0);
+    return 0;
+  }
+
+  if (message == 123) {
+    const auto* bytes = reinterpret_cast<const unsigned char*>(a);
+    std::int16_t marker;
+    std::memcpy(&marker, bytes, sizeof(marker));
+    unsigned offset = 6;
+
+    if (marker == 0x5528) {
+      while (static_cast<unsigned>(b) > offset) {
+        std::int16_t kind;
+        std::uint32_t size;
+        std::memcpy(&kind, bytes + offset, sizeof(kind));
+        std::memcpy(&size, bytes + offset + 2, sizeof(size));
+        offset += 6;
+
+        if (kind == 0x5529) {
+          break;
+        }
+
+        if (kind == 0x552A) {
+          char name[260] = {};
+          std::memcpy(name, bytes + offset, size);
+          offset += size;
+          this->SendMsg(nullptr, 73, 0, reinterpret_cast<std::intptr_t>(name), 0, 0);
+        } else {
+          offset += size;
+        }
+      }
+    }
+
+    return 0;
+  }
+
+  return this->UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+}
+
 // OFFSET: 0x008C8510
 // FUNCTION: fn_11955
 UIMixAcceptWnd::UIMixAcceptWnd(UIWindowContext& windows, UIFrameContext& frames, UIAcceptanceContext& acceptance)
@@ -5600,6 +5716,45 @@ void UISelectCartWnd::Slot15(int, int) {
   if (count != 0) {
     this->Resize(this->geometry.width, ((count - 1) / 5 + 1) * 98);
   }
+}
+
+// OFFSET: 0x00904810
+// FUNCTION: fn_12378
+int UISelectCartWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  std::vector<int>& carts = *reinterpret_cast<std::vector<int>*>(&this->unknown_00B8);
+  if (message == 6) {
+    if (a != 201) {
+      const int type = static_cast<int>(a) - 9000;
+      std::vector<int>::iterator cart = carts.begin();
+      for (;; ++cart) {
+        if (cart == carts.end()) {
+          return 0;
+        }
+        if (*cart == type) {
+          break;
+        }
+      }
+      g_modeMgr.GetGameMode()->SendMsg(154, type, this->unknown_00B4, 0, 0);
+    }
+    g_windowMgr.CloseWindow(95);
+  } else if (message == 34) {
+    this->DeleteChildren();
+    this->AddCloseButton(*this->m_controls, "", 0);
+    carts.clear();
+    this->unknown_00B4 = static_cast<int>(c);
+    const char* types = reinterpret_cast<const char*>(a);
+    for (int i = 0; i < b; ++i) {
+      carts.push_back(types[i]);
+    }
+    int index = 0;
+    for (std::vector<int>::iterator cart = carts.begin(); cart != carts.end(); ++cart, ++index) {
+      this->AddCart(index, *cart);
+    }
+    if (b != 0) {
+      this->Resize(this->geometry.width, ((static_cast<int>(b) - 1) / 5 + 1) * 98);
+    }
+  }
+  return 0;
 }
 
 // OFFSET: 0x008D3AB0
