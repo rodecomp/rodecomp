@@ -87,6 +87,7 @@ public:
 
 class UIComboBox_BmpWnd : public UIComboBoxDefWnd {
 public:
+  UIComboBox_BmpWnd();
   void Paint() override;
   void Create(int width, int height, const char* path, const char* name);
 

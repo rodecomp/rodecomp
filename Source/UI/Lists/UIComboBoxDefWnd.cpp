@@ -741,3 +741,8 @@ int UITextViewEX::AddWords(std::string text, int attached, int red, int green, i
 
   return attached;
 }
+
+// OFFSET: 0x0086CFE0
+// FUNCTION: fn_11040
+UIComboBox_BmpWnd::UIComboBox_BmpWnd() : UIComboBoxDefWnd() {
+}
