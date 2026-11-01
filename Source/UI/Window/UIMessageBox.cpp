@@ -92,6 +92,7 @@
 #include "Render/Textures/Texture.h"
 #include "Resource/ImfResource.h"
 #include "Resource/PaletteResource.h"
+#include "Contents/Jobs/JobInheritance.h"
 
 // GLOBAL: gl_25153
 static const std::string s_messageBoxItemLinkOpening = "<ITEML>";
@@ -4072,4 +4073,181 @@ void UIMessageBoxAutoreturn::Configure(const char* text, int timeout) {
   button->SetId(185);
   this->AddChild(button);
   this->m_message0 = 185;
+}
+
+// OFFSET: 0x008BEE20
+// FUNCTION: fn_11806
+int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  switch (message) {
+  case 0: {
+    char name[25] = {};
+    std::strcpy(name, this->m_nameEdit->Text());
+    std::memcpy(this->m_info.name, name, sizeof(this->m_info.name));
+    this->SendMsg(nullptr, 6, this->m_message0, 0, 0, 0);
+    return 0;
+  }
+  case 6:
+    switch (a) {
+    case 184: {
+      int error;
+      if (_mbsstr(reinterpret_cast<const unsigned char*>(this->m_nameEdit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkOpening.c_str())) ||
+          _mbsstr(reinterpret_cast<const unsigned char*>(this->m_nameEdit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkClosing.c_str()))) {
+        error = 2812;
+      } else {
+        if (this->m_nameEdit->Length() < 4) {
+          reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(21), 0, true, false, 0, "Message", 280, 120, 0);
+          goto create;
+        }
+
+        const bool allowed = g_forbiddenWords.Allows(this->m_nameEdit->Text());
+        bool valid = true;
+        if (g_serviceType == 1) {
+          valid = ValidateCharacterName(this->m_nameEdit->Text());
+        }
+
+        const bool control = g_session.HasControlCharacter(this->m_nameEdit->Text());
+        const bool blank = g_session.IsBlankString(this->m_nameEdit->Text());
+        if (control || !allowed || !valid || blank) {
+          if (control || !allowed) {
+            reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(20), 0, true, false, 0, "Message", 280, 120, 0);
+          }
+          if (!valid) {
+            reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(190), 0, true, false, 0, "Message", 280, 120, 0);
+          }
+          if (blank) {
+            reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(199), 0, true, false, 0, "Message", 280, 120, 0);
+          }
+          goto create;
+        }
+
+        if (this->m_nameEdit->Length() < 24) {
+          char name[24] = {};
+          std::strcpy(name, this->m_nameEdit->Text());
+          std::memcpy(this->m_info.name, name, sizeof(this->m_info.name));
+          memcpy_s(&g_charInfo, sizeof(g_charInfo), &this->m_info, sizeof(this->m_info));
+          if (std::strstr(g_charInfo.name, "그라비티")) {
+            return 0;
+          }
+
+          _strlwr(name);
+          if (std::strstr(name, "gravity")) {
+            return 0;
+          }
+          if ((name[0] == '[' && name[1] == 'g' && name[2] == 'm') || (name[1] == '[' && name[2] == 'g' && name[3] == 'm') ||
+              (name[2] == '[' && name[3] == 'g' && name[4] == 'm')) {
+            return 0;
+          }
+
+          static_cast<CMode*>(g_charViewMode)->SendMsg(10005, 0, 0, 0, 0);
+          g_windowMgr.Schedule(this);
+          goto create;
+        }
+
+        error = 531;
+      }
+
+      reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(error), 0, true, false, 0, "Message", 280, 120, 0);
+      this->m_nameEdit->SetText("");
+      return 0;
+
+    create:
+      static_cast<CMode*>(g_charViewMode)->SendMsg(10015, reinterpret_cast<int>(this->m_nameEdit->Text()), 0, 0, 0);
+      int values[8];
+      values[0] = this->m_info.stats[0];
+      values[1] = this->m_info.stats[1];
+      values[2] = this->m_info.stats[2];
+      values[3] = this->m_info.stats[3];
+      values[4] = this->m_info.stats[4];
+      values[5] = this->m_info.stats[5];
+      values[6] = this->m_info.headPalette;
+      values[7] = this->m_info.head;
+      static_cast<CMode*>(g_charViewMode)->SendMsg(10017, reinterpret_cast<int>(values), 0, 0, 0);
+      return 0;
+    }
+    case 185:
+      g_windowMgr.Schedule(this);
+      static_cast<CMode*>(g_charViewMode)->SendMsg(0, 10004, 0, 0, 0);
+      return 0;
+    case 226:
+      if (--this->m_view.action < this->m_view.unknown_0148) {
+        this->m_view.action = this->m_view.unknown_0148 + 7;
+      }
+      this->Invalidate();
+      return 0;
+    case 227: {
+      int action = this->m_view.action + 1;
+      if (action >= this->m_view.unknown_0148 + 8) {
+        action = this->m_view.unknown_0148;
+      }
+      this->m_view.action = action;
+      this->Invalidate();
+      return 0;
+    }
+    default:
+      return 0;
+    }
+  case 8:
+  case 11:
+  case 12: {
+    const int sex = this->m_info.sex;
+    if (sender == this->unknown_02CC) {
+      const int previous = this->unknown_02D4;
+      if (message == 11) {
+        this->unknown_02D4 = previous - 1;
+      } else if (message == 12) {
+        this->unknown_02D4 = previous + 1;
+      } else {
+        this->unknown_02D4 = a + previous;
+      }
+      if (this->unknown_02D4 < 0) {
+        this->unknown_02D4 = 0;
+      } else if (this->unknown_02D4 > 22) {
+        this->unknown_02D4 = 22;
+      }
+      this->unknown_02CC->SetPosition(this->unknown_02D4);
+      this->unknown_02CC->Invalidate();
+      this->Invalidate();
+
+      this->m_info.head = static_cast<std::int16_t>(this->unknown_02D4 + 1);
+      int head = this->m_info.head;
+      this->m_view.actionNames[1].assign(g_session.GetHeadActName(this->m_info.job, sex, &head));
+      this->m_view.spriteNames[1].assign(g_session.GetHeadSprName(this->m_info.job, sex, &head));
+      this->m_info.head = static_cast<std::int16_t>(head);
+      this->m_view.imfName = GetBodyImfName(this->m_info.job, sex, this->m_info.head, this->m_info.unknown_0058);
+      if (this->m_view.headPalette) {
+        this->m_view.headPaletteName.assign(g_session.GetHeadPalName(head, this->m_info.job, sex, this->m_view.headPalette));
+      }
+      return this->unknown_02D4 - previous;
+    }
+
+    if (sender == this->unknown_02D0) {
+      const int previous = this->unknown_02D8;
+      if (message == 11) {
+        this->unknown_02D8 = previous - 1;
+      } else if (message == 12) {
+        this->unknown_02D8 = previous + 1;
+      } else {
+        this->unknown_02D8 = a + previous;
+      }
+      if (this->unknown_02D8 < 0) {
+        this->unknown_02D8 = 0;
+      } else if (this->unknown_02D8 > 8) {
+        this->unknown_02D8 = 8;
+      }
+      this->unknown_02D0->SetPosition(this->unknown_02D8);
+      this->unknown_02D0->Invalidate();
+      this->Invalidate();
+
+      this->m_view.headPalette = this->unknown_02D8;
+      if (this->m_view.headPalette) {
+        this->m_view.headPaletteName = g_session.GetHeadPalName(this->m_info.head, this->m_info.job, sex, this->m_view.headPalette);
+      }
+      this->m_info.headPalette = static_cast<std::int16_t>(this->m_view.headPalette);
+      return this->unknown_02D8 - previous;
+    }
+    return 0;
+  }
+  default:
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
 }

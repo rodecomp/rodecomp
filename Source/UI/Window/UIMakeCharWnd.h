@@ -18,6 +18,7 @@ public:
   void Slot18() override;
   void Slot19() override;
   void Paint() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   void InitHairControls();
 
   /* 00B4 */ UIBitmapEditCtrl* m_nameEdit;
