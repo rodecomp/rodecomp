@@ -3,7 +3,13 @@
 #include "Resource/ResourceMgr.h"
 #include "UI/Lists/UIScrollBarNavi.h"
 
-// INLINED
+// OFFSET: 0x0086E6E0
+// FUNCTION: fn_11075
+UIScrollBar_Navi::UIScrollBar_Navi() : UIScrollBar(*reinterpret_cast<UIWindowContext*>(nullptr)) {
+  this->arrowLength = 7;
+  this->thickness = 7;
+}
+
 UIScrollBar_Navi::UIScrollBar_Navi(UIWindowContext& windows) : UIScrollBar(windows) {
   this->arrowLength = 7;
   this->thickness = 7;

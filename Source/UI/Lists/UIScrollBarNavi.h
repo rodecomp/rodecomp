@@ -5,6 +5,7 @@
 
 class UIScrollBar_Navi : public UIScrollBar {
 public:
+  UIScrollBar_Navi();
   explicit UIScrollBar_Navi(UIWindowContext& windows);
   ~UIScrollBar_Navi() override;
   void Paint() override;
