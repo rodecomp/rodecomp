@@ -9,6 +9,7 @@
 #include <vector>
 
 class UIBitmapButton;
+class UICharInfoBalloonText;
 
 extern int g_charViewCount;
 
@@ -19,6 +20,7 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void Slot27(int x, int y) override;
   void Paint() override;
+  void UpdateCharInfoBalloon(int x, int y, std::uint32_t color);
   void sub_93F1F0(int x, int y, int slot);
 
 protected:
@@ -28,7 +30,7 @@ protected:
   /* 1998 */ std::uint32_t m_startTime;
   /* 199C */ UIWindow* m_checkBoxes[18];
   /* 19E4 */ UIBitmapButton* unknown_19E4;
-  /* 19E8 */ int unknown_19E8;
+  /* 19E8 */ UICharInfoBalloonText* unknown_19E8;
   /* 19EC */ std::vector<std::string> unknown_19EC;
   /* 19F8 */ int m_checkedCount;
   /* 19FC */ int m_columns;

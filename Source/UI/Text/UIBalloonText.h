@@ -21,6 +21,7 @@ class UIBalloonText : public UIWindow {
   friend class UIBalloonOpenBtn;
   friend class UIHotKeyWnd;
   friend class CGameMode;
+  friend class UISelCharForUServerWnd;
 
 public:
   UIBalloonText(UIWindowContext& windows, BalloonTextContext& text);

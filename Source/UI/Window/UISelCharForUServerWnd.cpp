@@ -12,8 +12,12 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowDialogs.h"
 #include "Client/Mode/ModeMgr.h"
+#include "Render/Renderer.h"
+#include "UI/Text/UICharInfoBalloonText.h"
 
 #include <cstdint>
+#include <cstdlib>
+#include <cstring>
 #include <string>
 #include <timeapi.h>
 
@@ -186,4 +190,88 @@ int UISelCharForUServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
 void UISelCharForUServerWnd::Slot27(int x, int y) {
   this->sub_93F1F0(x, y, -1);
   UIFrameWnd::Slot27(x, y);
+}
+
+// OFFSET: 0x0093F1F0
+// FUNCTION: fn_12777
+void UISelCharForUServerWnd::UpdateCharInfoBalloon(int x, int y, std::uint32_t color) {
+  const unsigned char red = (color >> 16) & 0xFF;
+  if (!this->unknown_19E8) {
+    this->unknown_19E8 = new UICharInfoBalloonText(*this->m_context, *reinterpret_cast<BalloonTextContext*>(nullptr));
+    this->unknown_19E8->SetSize(140, 200);
+    g_windowMgr.AddRendered(this->unknown_19E8);
+  }
+
+  this->unknown_19E8->Move(-400, -400);
+  this->unknown_19EC.clear();
+  if (x > 26 && x < this->geometry.width - 26 && static_cast<unsigned>(y - 95) < 270 && (y > 249 || y < 211)) {
+    const int index = (y - 95) / 135 * this->m_columns + (x - 27) / 81;
+    CharacterInfo* info = reinterpret_cast<CharacterInfo*>(static_cast<CMode*>(g_charViewMode)->SendMsg(8, index, 0, 0, 0));
+    if (info) {
+      char name[25];
+      std::memcpy(name, info->name, sizeof(info->name));
+      name[24] = '\0';
+      int width = this->TextWidth(this->m_context->fonts, this->m_context->locale, name, 0, 0, 12, 0, 0) + 60;
+
+      char text[100];
+      this->unknown_19EC.push_back("Name");
+      this->unknown_19EC.push_back(name);
+      this->unknown_19EC.push_back("Job");
+      this->unknown_19EC.push_back(g_session.GetJobName(info->job, -1));
+      this->unknown_19EC.push_back("Lv. ");
+      this->unknown_19EC.push_back(_itoa(info->level, text, 10));
+      this->unknown_19EC.push_back("EXP");
+      this->unknown_19EC.push_back(_itoa(static_cast<int>(info->exp), text, 10));
+      this->unknown_19EC.push_back("HP");
+      this->unknown_19EC.push_back(_i64toa(info->hp, text, 10));
+      this->unknown_19EC.push_back("SP");
+      this->unknown_19EC.push_back(_i64toa(info->sp, text, 10));
+      this->unknown_19EC.push_back("STR");
+      this->unknown_19EC.push_back(_itoa(info->stats[0], text, 10));
+      this->unknown_19EC.push_back("AGI");
+      this->unknown_19EC.push_back(_itoa(info->stats[1], text, 10));
+      this->unknown_19EC.push_back("VIT");
+      this->unknown_19EC.push_back(_itoa(info->stats[2], text, 10));
+      this->unknown_19EC.push_back("INT");
+      this->unknown_19EC.push_back(_itoa(info->stats[3], text, 10));
+      this->unknown_19EC.push_back("DEX");
+      this->unknown_19EC.push_back(_itoa(info->stats[4], text, 10));
+      this->unknown_19EC.push_back("LUK");
+      this->unknown_19EC.push_back(_itoa(info->stats[5], text, 10));
+
+      if (width < 140) {
+        width = 140;
+      }
+
+      this->unknown_19E8->Resize(width, 200);
+      this->unknown_19E8->m_outlineColor = 0;
+      this->unknown_19E8->m_textColor = ((color & 0xFF) << 16) | (color & 0xFF00) | red;
+      this->unknown_19E8->SetBackground(0x88000000);
+      this->unknown_19E8->m_lines = this->unknown_19EC;
+
+      int screenX = x + 20;
+      int screenY = y;
+      this->ToScreen(screenX, screenY);
+      if (screenX < -3) {
+        screenX = -3;
+      }
+      const int maxX = g_renderer->viewport.width - this->unknown_19E8->geometry.width + 3;
+      if (screenX > maxX) {
+        screenX = maxX;
+      }
+      if (screenY < -3) {
+        screenY = -3;
+      }
+      const int maxY = g_renderer->viewport.height - this->unknown_19E8->geometry.height + 3;
+      if (screenY > maxY) {
+        screenY = maxY;
+      }
+
+      this->unknown_19E8->Move(screenX, screenY);
+      return;
+    }
+  }
+
+  g_windowMgr.Schedule(this->unknown_19E8);
+  this->unknown_19E8 = nullptr;
 }
