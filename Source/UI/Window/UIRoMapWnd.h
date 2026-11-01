@@ -6,13 +6,20 @@
 #include "UI/Window/UIFrameWnd.h"
 #include "UI/Edit/UIEditCtrl.h"
 #include "UI/Navigation/UINavigationV4Wnd.h"
+#include "Utility/Math/AffineMatrix.h"
 
 #include <cstdint>
 #include <list>
 #include <string>
 #include <vector>
+#include <windows.h>
+#include <timeapi.h>
 
 class CTexture;
+class UIBitmapButton;
+class UICheckBox;
+class UIComboBoxDefWnd;
+class UIEditCtrl;
 
 struct RoMapMarker {
   /* 0000 */ std::string name;
@@ -51,10 +58,12 @@ struct CKafraMoveMapServiceInfo {
 
 class UIRoMapWnd : public UIFrameWnd {
   friend struct CKafraMoveMapServiceInfo;
+  friend class CFlyingShipRouteInfo;
 
 public:
   ~UIRoMapWnd() override;
   void Paint() override;
+  void Slot15(int width, int height) override;
   void Slot25(int x, int y) override;
   void Slot27(int x, int y) override;
   void Slot31(int x, int y) override;
@@ -83,6 +92,7 @@ public:
   );
   void DrawKafraMarkers(float elapsed);
   void DrawMapMarker(const RoMapMarker& marker, unsigned char skipSelected);
+  void DrawWorld();
   void RefreshPartyRecords();
   bool LocateRecord(WorldViewRecord& record);
 
@@ -95,19 +105,20 @@ private:
   /* 00CC */ unsigned char unknown_00CC;
   /* 00D0 */ int unknown_00D0;
   /* 00D4 */ unsigned char m_showLabels;
-  /* 00D5 */ unsigned char unknown_00D5[0xB];
+  /* 00D8 */ std::uint32_t m_lastTime;
+  /* 00DC */ unsigned char m_resetTime;
   /* 00E0 */ CKafraMoveMapServiceInfo m_kafraMarkers;
   /* 0148 */ CFlyingShipRouteInfo m_flyingShipRoute;
   /* 0198 */ CFlyingShipRouteInfo m_flyingShipRoute2;
   /* 01E8 */ int m_mouseX;
   /* 01EC */ int m_mouseY;
-  /* 01F0 */ UIWindow* unknown_01F0;
-  /* 01F4 */ UIWindow* m_worldCombo;
-  /* 01F8 */ UIWindow* m_labelCheck;
+  /* 01F0 */ int m_comboHeight;
+  /* 01F4 */ UIComboBoxDefWnd* m_worldCombo;
+  /* 01F8 */ UICheckBox* m_labelCheck;
   /* 01FC */ std::vector<std::string> unknown_01FC;
   /* 0208 */ int unknown_0208;
-  /* 020C */ UIWindow* unknown_020C;
-  /* 0210 */ UIWindow* unknown_0210;
+  /* 020C */ UIBitmapButton* m_searchButton;
+  /* 0210 */ UIBitmapButton* m_searchListButton;
   /* 0214 */ UIEditCtrl* m_searchEdit;
   /* 0218 */ int m_kafraLeft;
   /* 021C */ int m_kafraTop;

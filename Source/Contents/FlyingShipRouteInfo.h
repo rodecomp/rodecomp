@@ -6,6 +6,7 @@
 #include <vector>
 
 class UIRoMapWnd;
+struct WorldViewRecord;
 
 struct FlyingShipRouteEntry {
   /* 0000 */ std::string name;
@@ -30,18 +31,26 @@ public:
   bool IsRouteMap(std::string mapName);
   void Draw(UIRoMapWnd* wnd);
   void BuildRoute(const std::vector<std::string>& mapNames);
+  bool UpdateRoute(WorldViewRecord* record);
+  void Update(UIRoMapWnd* wnd, float elapsed);
 
   /* 0004 */ std::vector<FlyingShipRouteEntry> entries;
   /* 0010 */ int unknown_0010;
   /* 0014 */ int unknown_0014;
   /* 0018 */ int unknown_0018;
   /* 001C */ float unknown_001C;
-  /* 0020 */ int unknown_0020;
-  /* 0024 */ int unknown_0024;
+  /* 0020 */ float unknown_0020;
+  /* 0024 */ float unknown_0024;
   /* 0028 */ unsigned char unknown_0028;
   /* 002C */ int unknown_002C;
   /* 0030 */ int unknown_0030;
-  /* 0034 */ short unknown_0034;
+  union {
+    /* 0034 */ short unknown_0034;
+    struct {
+      /* 0034 */ unsigned char m_moving;
+      /* 0035 */ unsigned char m_routeBuilt;
+    };
+  };
   /* 0038 */ std::string unknown_0038;
 };
 

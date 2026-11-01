@@ -20,9 +20,16 @@
 #include "UI/Window/WindowBorder.h"
 #include "UI/Window/WindowManagerWindows.h"
 #include "Contents/Messenger/ClientMessenger.h"
+#include "Client/Replay.h"
+#include "Contents/MessageTable.h"
+#include "UI/Buttons/UIBitmapButton.h"
+#include "UI/Buttons/UICheckBox.h"
+#include "UI/Edit/UIEditCtrl.h"
+#include "UI/Lists/UIComboBoxDefWnd.h"
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
+#include <new>
 #include <vector>
 
 // GLOBAL: gl_24799
@@ -785,3 +792,209 @@ int UIRoMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
 
   return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
 }
+
+// OFFSET: 0x0091CFB0
+// FUNCTION: fn_12623
+bool CFlyingShipRouteInfo::UpdateRoute(WorldViewRecord* record) {
+  if (record != nullptr && this->IsRouteMap(record->name)) {
+    if (this->m_routeBuilt == 1) {
+      return true;
+    }
+
+    std::string name = record->name;
+    if (this->unknown_002C == 0) {
+      if (name.size() == 10 && std::memcmp(name.c_str(), "izlude.rsw", 10) == 0) {
+        std::vector<std::string> route;
+        route.push_back("izlude.rsw");
+        route.push_back("yuno.rsw");
+        route.push_back("ra_fild12.rsw");
+        route.push_back("izlude.rsw");
+        this->BuildRoute(route);
+      } else if (name.size() == 13 && std::memcmp(name.c_str(), "ra_fild12.rsw", 13) == 0) {
+        std::vector<std::string> route;
+        route.push_back("ra_fild12.rsw");
+        route.push_back("izlude.rsw");
+        route.push_back("yuno.rsw");
+        route.push_back("ra_fild12.rsw");
+        this->BuildRoute(route);
+      } else if (name.size() == 8 && std::memcmp(name.c_str(), "yuno.rsw", 8) == 0) {
+        std::vector<std::string> route;
+        route.push_back("yuno.rsw");
+        route.push_back("ra_fild12.rsw");
+        route.push_back("izlude.rsw");
+        route.push_back("yuno.rsw");
+        this->BuildRoute(route);
+      } else {
+        return false;
+      }
+      return true;
+    }
+
+    if (this->unknown_002C == 1) {
+      if (name.size() == 12 && std::memcmp(name.c_str(), "einbroch.rsw", 12) == 0) {
+        std::vector<std::string> route;
+        route.push_back("einbroch.rsw");
+        route.push_back("lighthalzen.rsw");
+        route.push_back("einbroch.rsw");
+        route.push_back("yuno.rsw");
+        route.push_back("hugel.rsw");
+        route.push_back("yuno.rsw");
+        route.push_back("einbroch.rsw");
+        this->BuildRoute(route);
+      } else if (name.size() == 15 && std::memcmp(name.c_str(), "lighthalzen.rsw", 15) == 0) {
+        std::vector<std::string> route;
+        route.push_back("lighthalzen.rsw");
+        route.push_back("einbroch.rsw");
+        route.push_back("yuno.rsw");
+        route.push_back("hugel.rsw");
+        route.push_back("yuno.rsw");
+        route.push_back("einbroch.rsw");
+        route.push_back("lighthalzen.rsw");
+        this->BuildRoute(route);
+      } else if (name.size() == 9 && std::memcmp(name.c_str(), "hugel.rsw", 9) == 0) {
+        std::vector<std::string> route;
+        route.push_back("hugel.rsw");
+        route.push_back("yuno.rsw");
+        route.push_back("einbroch.rsw");
+        route.push_back("lighthalzen.rsw");
+        route.push_back("einbroch.rsw");
+        route.push_back("yuno.rsw");
+        route.push_back("hugel.rsw");
+        this->BuildRoute(route);
+      } else if (name.size() == 8 && std::memcmp(name.c_str(), "yuno.rsw", 8) == 0) {
+        std::vector<std::string> route;
+        route.push_back("yuno.rsw");
+        route.push_back("einbroch.rsw");
+        route.push_back("lighthalzen.rsw");
+        route.push_back("einbroch.rsw");
+        route.push_back("yuno.rsw");
+        route.push_back("hugel.rsw");
+        route.push_back("yuno.rsw");
+        this->BuildRoute(route);
+      } else {
+        return false;
+      }
+      return true;
+    }
+
+    return false;
+  }
+
+  if (this->m_moving) {
+    this->unknown_0028 = 1;
+    this->unknown_0018 = 0;
+    this->unknown_0024 = 0.0f;
+    this->unknown_0034 = 0;
+  }
+  return false;
+}
+
+// INLINED
+__forceinline void CFlyingShipRouteInfo::Update(UIRoMapWnd* wnd, float elapsed) {
+  if (!this->UpdateRoute(wnd->unknown_00C0)) {
+    return;
+  }
+
+  const int last = static_cast<int>(this->entries.size()) - 1;
+  if (last > 0) {
+    int index = this->unknown_0018;
+    this->m_moving = 1;
+    if (this->unknown_0024 > this->unknown_0020) {
+      if (index >= last - 1) {
+        wnd->Invalidate();
+        index = -1;
+      }
+      ++index;
+      this->unknown_0024 = 0.0f;
+      this->unknown_0018 = index;
+    }
+
+    const float dx = this->entries[index].unknown_002C[0] - this->entries[index + 1].unknown_002C[0];
+    const float dy = this->entries[index].unknown_002C[1] - this->entries[index + 1].unknown_002C[1];
+    const float distance = SquareRoot(dx * dx + dy * dy);
+    if (this->unknown_0024 == 0.0f) {
+      this->unknown_0020 = distance;
+    }
+    this->unknown_0024 = elapsed * 200.0f + this->unknown_0024;
+    this->unknown_001C = this->unknown_0024 / this->unknown_0020;
+  }
+
+  this->Draw(wnd);
+}
+
+// OFFSET: 0x009196E0
+// FUNCTION: fn_12597
+void UIRoMapWnd::DrawWorld() {
+  g_worldViewMgr.Draw(this->m_showLabels, 0, 17, this->geometry.width, this->geometry.height - 17);
+  const int count = g_worldViewMgr.LevelCount();
+  for (int index = 0; index < count; ++index) {
+    int kind = 0;
+    const int* area = g_worldViewMgr.LevelAreaAt(kind, index, true);
+    if (area == nullptr) {
+      continue;
+    }
+
+    const int x = area[0] + 1;
+    const int y = area[1] + 1;
+    const int width = area[2] - area[0] - 2;
+    const int height = area[3] - area[1] - 2;
+    DrawAlphaRectangle(
+      g_renderer->primitives, g_renderer->queues, x, y, width, height, g_worldViewMgr.searchColors[kind], g_renderer->fog.supported != 0, g_depthStart,
+      g_depthEnd
+    );
+    DrawTexturedRectangle(
+      g_renderer->primitives, g_renderer->queues, x, y, width, height, 0xFFFFFFFF,
+      g_texMgr.Load(g_worldViewMgr.searchImages[kind].c_str(), 0, false, true, false), g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
+    );
+  }
+
+  this->DrawMarks();
+  if (!g_worldViewMgr.selection.name.empty() && g_worldViewMgr.currentWorld == g_worldViewMgr.selection.worldIndex) {
+    const WorldViewRecord& selection = g_worldViewMgr.selection;
+    DrawTexturedRectangle(
+      g_renderer->primitives, g_renderer->queues, selection.left, selection.top, selection.right - selection.left, selection.bottom - selection.top,
+      0xEEFFFFFF, g_texMgr.Load("유저인터페이스\\worldview_interface\\wv_Select.bmp", 0, false, true, false), g_renderer->fog.supported != 0,
+      g_depthStart, g_depthEnd
+    );
+  }
+
+  this->DrawRecordFaces(1);
+  this->DrawDungeonLinks();
+  const WorldViewRecord* selected = this->unknown_00C0;
+  if (selected != nullptr && this->unknown_00C8 != nullptr) {
+    DrawAlphaRectangle(
+      g_renderer->primitives, g_renderer->queues, selected->left, selected->top, selected->right - selected->left, selected->bottom - selected->top,
+      g_worldViewMgr.selectBoxColor, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
+    );
+    if (this->unknown_00D0 != 0) {
+      DrawAlphaRectangle(
+        g_renderer->primitives, g_renderer->queues, this->unknown_00C8[0], this->unknown_00C8[1], 130, 130, 0x88000000, g_renderer->fog.supported != 0,
+        g_depthStart, g_depthEnd
+      );
+      reinterpret_cast<CTexture*>(this->unknown_00D0)->Stretch(this->unknown_00C8[0], this->unknown_00C8[1], 130, 130);
+    }
+  }
+
+  const RoMapTooltipBox* tooltip = this->unknown_00C4;
+  if (tooltip != nullptr) {
+    DrawAlphaRectangle(
+      g_renderer->primitives, g_renderer->queues, tooltip->x, tooltip->y, tooltip->width, tooltip->height, 0x66000000, g_renderer->fog.supported != 0,
+      g_depthStart, g_depthEnd
+    );
+  }
+
+  if (this->m_resetTime == 1) {
+    this->m_lastTime = timeGetTime();
+    this->m_resetTime = 0;
+  }
+
+  const std::uint32_t now = timeGetTime();
+  const std::uint32_t delta = now - this->m_lastTime;
+  this->m_lastTime = now;
+  const float elapsed = static_cast<float>(delta) / 1000.0f;
+  this->DrawKafraMarkers(elapsed);
+  this->m_flyingShipRoute.Update(this, elapsed);
+  this->m_flyingShipRoute2.Update(this, elapsed);
+}
+
+// OFFSET: 0x00925530
