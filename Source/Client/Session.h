@@ -189,7 +189,8 @@ public:
   /* 0734 */ std::list<SessionRecord0734> unknown_0734;
   /* 073C */ std::map<int, SubChatWndInfo> m_noSubChatWnds;
   /* 0744 */ std::map<int, SubChatWndInfo> m_subChatWnds;
-  /* 074C */ unsigned char unknown_074C[0x04];
+  /* 074C */ bool m_canDragWnd;
+  /* 074D */ unsigned char unknown_074D[0x03];
   /* 0750 */ std::uint32_t m_prohibitionTarget;
   /* 0754 */ std::vector<ProhibitionLogEntry> m_prohibitionLog;
   /* 0760 */ std::string m_accountName;
@@ -330,8 +331,8 @@ public:
   /* 5218 */ std::vector<std::pair<const char*, int>> m_commandIds;
   /* 5224 */ std::vector<std::pair<const char*, const char*>> m_bgmFileNames;
   /* 5230 */ std::vector<std::pair<std::string, std::vector<std::string>>> m_fogParameters;
-  /* 523C */ unsigned char unknown_523C[0x0C];
-  /* 5248 */ std::vector<const char*> unknown_5248;
+  /* 523C */ std::vector<std::pair<std::string, std::vector<std::string>>> m_mapViewParameters;
+  /* 5248 */ std::vector<char*> m_indoorRswNames;
   /* 5254 */ std::map<int, float> m_npcLocationRadius;
   /* 525C */ unsigned char unknown_525C[0x38];
   /* 5294 */ const char* const* m_bodyJobNames;
@@ -898,6 +899,7 @@ public:
   void InitJobHitWaveNames();
   void InitWeaponHitWaveNames();
   const std::vector<std::string>* GetMapViewParameters(const char* rswName, int* found);
+  void LoadLuaDataFiles();
   void InitCommandTables();
   void InitJobKeyNames();
   void InitResourceNameTables();

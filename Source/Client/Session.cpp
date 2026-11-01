@@ -36,6 +36,10 @@
 #include "Contents/ForbiddenWords.h"
 #include "Contents/Items/ItemNaming.h"
 #include "Contents/Skills/SkillInfo.h"
+#include "Client/Application/ApplicationWindow.h"
+#include "Contents/CashEmotionMgr.h"
+#include "Contents/Jobs/JobInheritance.h"
+#include "UI/Window/UIRoMapWnd.h"
 #include <algorithm>
 #include <cmath>
 #include <cstdio>
@@ -1294,7 +1298,7 @@ bool CSession::IsUnknownName5248(const char* name) const {
     value.erase(position - 4, 3);
   }
 
-  return std::binary_search(this->unknown_5248.begin(), this->unknown_5248.end(), value.c_str(),
+  return std::binary_search(this->m_indoorRswNames.begin(), this->m_indoorRswNames.end(), value.c_str(),
                             [](const char* left, const char* right) { return std::strcmp(left, right) < 0; });
 }
 
@@ -2778,8 +2782,7 @@ const std::vector<std::string>* CSession::GetFogParameters(const char* rswName, 
 // OFFSET: 0x00DE3410
 // FUNCTION: fn_23479
 const std::vector<std::string>* CSession::GetMapViewParameters(const char* rswName, int* found) {
-  std::vector<std::pair<std::string, std::vector<std::string>>>& parameters =
-    reinterpret_cast<std::vector<std::pair<std::string, std::vector<std::string>>>&>(this->unknown_523C);
+  std::vector<std::pair<std::string, std::vector<std::string>>>& parameters = this->m_mapViewParameters;
   *found = 0;
   // GLOBAL: gl_24993
   static std::vector<std::string> s_defaultParameters(9);
@@ -4113,6 +4116,217 @@ EncryptedName<11, 0x61F59D5D41E76519ULL>& WereRaptorJobName1();
 EncryptedName<13, 0x4B670715D543C1C3ULL>& DruidRidingName();
 EncryptedName<14, 0x7155E5EF0DFB0D03ULL>& KarnosRidingName();
 EncryptedName<14, 0x4B1D078937DB892BULL>& AliteaRidingName();
+
+// OFFSET: 0x00DE7290
+// FUNCTION: fn_23497
+void CSession::LoadLuaDataFiles() {
+  if (this->m_hotkeyScript == nullptr) {
+    this->m_hotkeyScript = new LuaScript();
+    this->m_hotkeyScript->Open();
+  }
+
+  this->m_hotkeyScript->Load("Lua Files\\DataInfo\\ChangeDirectoryList", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\MsgString_KR", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\Common", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\wndInfo", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\HotKey", true, false);
+
+  WIN32_FIND_DATAA findData;
+  HANDLE find = FindFirstFileA("data", &findData);
+  if (find == INVALID_HANDLE_VALUE) {
+    CreateDirectoryA("data", nullptr);
+  } else {
+    FindClose(find);
+  }
+
+  this->m_hotkeyScript->Load("SaveData\\UserKeys", false, true);
+  ResetHotkeySlots();
+  this->m_hotkeyScript->Load("Lua Files\\DataInfo\\NPCIdentity", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\DataInfo\\jobName_F", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\DataInfo\\jobName", true, false);
+  {
+    const std::uint8_t source[] = {0x39, 0xB8, 0x8C, 0x7D, 0x2D, 0x0C, 0x89, 0x50, 0x06, 0x91, 0xA9, 0x3C, 0x1F, 0x04,
+                                   0xAC, 0x5B, 0x13, 0xA2, 0xB1, 0x0D, 0x0E, 0x11, 0xAC, 0x5B, 0x13, 0xA2, 0xED};
+    thread_local EncryptedName<sizeof(source), 0x35E5656B5DEDCD75ULL> name(source);
+    this->m_hotkeyScript->Load(name.Text(), true, false);
+  }
+  this->m_hotkeyScript->Load("Lua Files\\DataInfo\\AccessoryId", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\DataInfo\\accName_F", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\DataInfo\\accName", true, false);
+
+  std::string chatWndInfo("ChatWndInfo_U");
+  chatWndInfo = "SaveData\\ChatWndInfo_U";
+  if (!this->m_hotkeyScript->Load(chatWndInfo.c_str(), false, true) || !this->m_hotkeyScript->HasTable("ChatSubWnd_1")) {
+    this->m_hotkeyScript->Load("Lua Files\\ChatWndInfo\\ChatWndInfo", true, false);
+  }
+
+  this->m_hotkeyScript->Load("Lua Files\\ChatWndInfo\\ChatWndInfo_F", true, false);
+  this->m_canDragWnd = this->m_hotkeyScript->GlobalInteger("CanDragWnd") == 1;
+  this->m_hotkeyScript->Load("Lua Files\\SkillInfoz\\jobinheritlist", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\SkillInfoz\\SkillID", true, false);
+  {
+    const std::uint8_t source[] = {0xB1, 0xCC, 0xDA, 0x01, 0xD9, 0x94, 0x2D, 0x2C, 0x8E, 0xE5, 0xE8, 0x4A, 0xF6, 0x91, 0x2D, 0x00, 0x93, 0xDF,
+                                   0xD4, 0x5B, 0xC3, 0xAE, 0x2A, 0x20, 0x91, 0xD5, 0xF2, 0x4F, 0xF9, 0x92, 0x0D, 0x20, 0x8E, 0xCD, 0xBB};
+    thread_local EncryptedName<sizeof(source), 0x4941FD9F21BBB9FDULL> name(source);
+    this->m_hotkeyScript->Load(name.Text(), true, false);
+  }
+  {
+    const std::uint8_t source[] = {0x29, 0x6C, 0x24, 0x29, 0x6B, 0x4A, 0x77, 0xEC, 0x16, 0x45, 0x16, 0x62, 0x44, 0x4F, 0x77, 0xC0, 0x0B, 0x7F,
+                                   0x2A, 0x73, 0x71, 0x70, 0x70, 0xE0, 0x09, 0x75, 0x01, 0x6C, 0x5E, 0x40, 0x69, 0xE0, 0x15, 0x6D, 0x45};
+    thread_local EncryptedName<sizeof(source), 0x891B232D09451965ULL> name(source);
+    this->m_hotkeyScript->Load(name.Text(), true, false);
+  }
+  this->m_hotkeyScript->Load("Lua Files\\SkillInfoz\\SkillDelayList", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\SkillInfoz\\SkillInfo_F", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\SkillInfoz\\skilltreeview", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\StateIcon\\EFSTIDs", true, false);
+  {
+    const std::uint8_t source[] = {0xF5, 0x70, 0x16, 0x6F, 0x4D, 0x74, 0xE3, 0x10, 0xCA, 0x59, 0x24, 0x3B, 0x6A, 0x69, 0xEA, 0x3C, 0xDA,
+                                   0x6A, 0x19, 0x13, 0x58, 0x69, 0xEE, 0x01, 0xDC, 0x4C, 0x14, 0x20, 0x65, 0x54, 0xE1, 0x13, 0xD6, 0x05};
+    thread_local EncryptedName<sizeof(source), 0x758F1D0B4F7705B9ULL> name(source);
+    this->m_hotkeyScript->Load(name.Text(), true, false);
+  }
+  this->m_hotkeyScript->Load("Lua Files\\StateIcon\\StateIconInfo_F", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\StateIcon\\StateIconImgInfo", true, false);
+  this->m_hotkeyScript->Load("System\\LuaFiles514\\OptionInfo", false, true);
+  this->m_hotkeyScript->Load("Lua Files\\OptionInfo\\CmdInfo", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\OptionInfo\\OptionInfo_F", true, false);
+  this->m_hotkeyScript->Load("SaveData\\OptionInfo", false, true);
+  this->ApplySaveDataOptions();
+  this->m_hotkeyScript->Load("Lua Files\\DataInfo\\SpriteRobeId", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\DataInfo\\SpriteRobeName_F", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\DataInfo\\SpriteRobeName", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\SprEditInfo\\2DLayerDir_F", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\SprEditInfo\\BigLayerDir_male", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\SprEditInfo\\BigLayerDir_female", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\SprEditInfo\\SmallLayerDir_male", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\SprEditInfo\\SmallLayerDir_female", true, false);
+  if (this->m_hotkeyScript->Load("Lua Files\\SprEditInfo\\_New_2DLayerDir_F", true, false)) {
+    this->m_hotkeyScript->Load("Lua Files\\SprEditInfo\\_New_BigLayerDir_male", true, false);
+    this->m_hotkeyScript->Load("Lua Files\\SprEditInfo\\_New_BigLayerDir_female", true, false);
+    this->m_hotkeyScript->Load("Lua Files\\SprEditInfo\\_New_SmallLayerDir_male", true, false);
+    this->m_hotkeyScript->Load("Lua Files\\SprEditInfo\\_New_SmallLayerDir_female", true, false);
+    this->m_newRobeDrawOnTop = true;
+  } else {
+    MessageBoxA(nullptr, "NO!! 2D_LAYER_NEW_TABLE", "알림", MB_OK);
+  }
+
+  this->m_hotkeyScript->Load("Lua Files\\DataInfo\\PCJobName", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\DataInfo\\PCJobNameGender_F", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\DataInfo\\PCJobNameGender", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\DataInfo\\NpcLocationRadius", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\DataInfo\\NpcLocationRadius_F", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\EffectTool\\effectmsgid", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\EffectTool\\effectfunc", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\EffectTool\\EffectToolUtil_ver_2", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\SkillEffectInfo\\EffectID", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\SkillEffectInfo\\ActorState", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\SkillEffectInfo\\SkillEffectInfoList", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\SkillEffectInfo\\SkillEffectInfo_F", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\DataInfo\\KafraMoveMapServiceList", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\DataInfo\\KafraMoveMapServiceList_F", true, false);
+  this->LoadNavigationScripts();
+  this->m_hotkeyScript->Load("Lua Files\\DataInfo\\HelpMsgStr", true, false);
+  {
+    const std::uint8_t source[] = {0x1D, 0xFE, 0xAC, 0x21, 0xFD, 0x54, 0x2D, 0xB4, 0x22, 0xD7, 0x88, 0x6F, 0xCF, 0x4F, 0x38, 0x80, 0x24, 0xEE,
+                                   0xB8, 0x64, 0xE7, 0x78, 0x2F, 0xA5, 0x23, 0xF2, 0x9C, 0x74, 0xDE, 0x48, 0x24, 0x9D, 0x38, 0xF8, 0xB9, 0x01};
+    thread_local EncryptedName<sizeof(source), 0xD1413DBB01CD8B51ULL> name(source);
+    this->m_hotkeyScript->Load(name.Text(), true, false);
+  }
+  this->m_hotkeyScript->Load("Lua Files\\DataInfo\\WeaponTable", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\DataInfo\\WeaponTable_F", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\DataInfo\\JobIdentity", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\DataInfo\\ShadowTable", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\DataInfo\\ShadowTable_F", true, false);
+  g_worldViewMgr.Load(*this->m_hotkeyScript);
+  this->m_hotkeyScript->Load("Lua Files\\DataInfo\\EnumVAR", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\DataInfo\\AddRandomOptionNameTable", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\DataInfo\\AddRandomOption_F", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\DressRoom\\Dress_f", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\DressRoom\\jobDressList", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\DataInfo\\TitleTable", true, false);
+  if (!this->m_hotkeyScript->Load("Lua Files\\HatEffectInfo\\HatEffectIDs", true, false)) {
+    MessageBoxA(hWnd, "Fail to load HatEffectInfo\\HatEffectIDs.lua", "Error", MB_OK);
+  }
+  if (!this->m_hotkeyScript->Load("Lua Files\\HatEffectInfo\\EffectHatItemTable", true, false)) {
+    MessageBoxA(hWnd, "Fail to load HatEffectInfo\\EffectHatItemTable.lua", "Error", MB_OK);
+  }
+  if (!this->m_hotkeyScript->Load("Lua Files\\HatEffectInfo\\HatEffectInfo", true, false)) {
+    MessageBoxA(hWnd, "Fail to load HatEffectInfo\\HatEffectInfo.lua", "Error", MB_OK);
+  }
+  if (!this->m_hotkeyScript->Load("Lua Files\\HatEffectInfo\\FootPrintEffectInfo", true, false)) {
+    MessageBoxA(hWnd, "Fail to load HatEffectInfo\\FootPrintEffectInfo.lua", "Error", MB_OK);
+  }
+  if (!this->m_hotkeyScript->Load("Lua Files\\HatEffectInfo\\HatEffect_F", true, false)) {
+    MessageBoxA(hWnd, "Fail to load HatEffectInfo\\HatEffect_F.lua", "Error", MB_OK);
+  }
+
+  this->m_hotkeyScript->Load("Lua Files\\SignBoardList_F", true, false);
+  {
+    const std::uint8_t source[] = {0x25, 0x6A, 0x16, 0x75, 0xDB, 0xFC, 0x17, 0x06, 0x1A, 0x43, 0x24, 0x3C,
+                                   0xFA, 0xFB, 0x39, 0x0C, 0x08, 0x6D, 0x13, 0x19, 0xF4, 0xE6, 0x0F, 0x63};
+    thread_local EncryptedName<sizeof(source), 0x637B959D55771F69ULL> name(source);
+    this->m_hotkeyScript->Load(name.Text(), true, false);
+  }
+  this->m_hotkeyScript->Load("Lua Files\\StylingShop\\StylingShopInfo_F", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\StylingShop\\StylingShopInfo", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\EffectTool\\ForceRenderEffect", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\OffsetItemPos\\OffsetItemPos_F", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\OffsetItemPos\\OffsetItemPos", true, false);
+  {
+    const std::uint8_t source[] = {0x95, 0x8C, 0x80, 0xC3, 0x2B, 0x7C, 0xC1, 0x4E, 0xAA, 0xA5, 0x85, 0x82, 0x19, 0x74, 0xC4, 0x45, 0xBF, 0x96, 0xBD,
+                                   0xAF, 0x0C, 0x65, 0xC4, 0x45, 0xBC, 0xBD, 0x85, 0x96, 0x06, 0x51, 0xE9, 0x4A, 0xB2, 0xBB, 0x8E, 0x9B, 0x6D};
+    thread_local EncryptedName<sizeof(source), 0x2BAD156DE3E1F9D9ULL> name(source);
+    this->m_hotkeyScript->Load(name.Text(), true, false);
+  }
+  {
+    const std::uint8_t source[] = {0xC3, 0xC8, 0x8E, 0xA7, 0x3B, 0xAC, 0xC1, 0x10, 0xFC, 0xE1, 0x8B, 0xE6, 0x09, 0xA4, 0xC4, 0x1B, 0xE9, 0xD2,
+                                   0xB3, 0xCB, 0x1C, 0xB5, 0xC4, 0x1B, 0xEA, 0xE8, 0x9F, 0xE0, 0x0F, 0xA4, 0xC9, 0x10, 0xCD, 0xD2, 0x97, 0x87};
+    thread_local EncryptedName<sizeof(source), 0x75ADC57D87EFBD8FULL> name(source);
+    this->m_hotkeyScript->Load(name.Text(), true, false);
+  }
+  this->m_hotkeyScript->Load("Lua Files\\transparentItem\\transparentItem", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\transparentItem\\transparentItem_f", true, false);
+  this->LoadRobeAlpha();
+  this->LoadExternalSettings();
+  this->m_hotkeyScript->Load("Lua Files\\DataInfo\\TB_Layer_Priority", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\datainfo\\tb_cashshop_banner", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\datainfo\\tb_stoveshop_banner", true, false);
+  {
+    const std::uint8_t source[] = {0xA3, 0x04, 0xBE, 0x33, 0x2B, 0x26, 0xAB, 0x88, 0x9C, 0x2D, 0x9E, 0x74, 0x04,
+                                   0x3B, 0x9B, 0xAC, 0x88, 0x18, 0xAB, 0x50, 0x02, 0x21, 0xA1, 0x84, 0x88, 0x71};
+    thread_local EncryptedName<sizeof(source), 0xEDC74F6D13DF71EFULL> name(source);
+    this->m_hotkeyScript->Load(name.Text(), true, false);
+  }
+  {
+    const std::uint8_t source[] = {0xD9, 0xFA, 0x80, 0x2D, 0x1B, 0x60, 0x0D, 0x94, 0xE6, 0xD3, 0xA0, 0x6A, 0x34, 0x7D,
+                                   0x3D, 0xB0, 0xF2, 0xE6, 0x95, 0x4E, 0x32, 0x67, 0x07, 0x98, 0xF2, 0xD0, 0xA7, 0x0D};
+    thread_local EncryptedName<sizeof(source), 0xF161095D0DE18F95ULL> name(source);
+    this->m_hotkeyScript->Load(name.Text(), true, false);
+  }
+  this->m_hotkeyScript->Load("Lua Files\\datainfo\\tb_checkAttendance_banner", true, false);
+  {
+    const std::uint8_t source[] = {0xCB, 0x66, 0x0A, 0x5F, 0x7F, 0x60, 0x1D, 0x6E, 0xF4, 0x4F, 0x2F, 0x1E, 0x54, 0x68, 0x16, 0x6E, 0xD4, 0x78,
+                                   0x02, 0x11, 0x65, 0x4D, 0x10, 0x66, 0xE6, 0x74, 0x0E, 0x2C, 0x52, 0x60, 0x1F, 0x47, 0xEE, 0x60, 0x1F, 0x7F};
+    thread_local EncryptedName<sizeof(source), 0x0B7109397F6B1387ULL> name(source);
+    this->m_hotkeyScript->Load(name.Text(), true, false);
+  }
+  {
+    const std::uint8_t source[] = {0xE9, 0xE8, 0x0C, 0xD9, 0x25, 0x4E, 0x1B, 0x66, 0xD6, 0xC1, 0x29, 0x98, 0x0E, 0x46, 0x10, 0x66, 0xF6, 0xF6,
+                                   0x04, 0x97, 0x3F, 0x63, 0x16, 0x6E, 0xC4, 0xFA, 0x08, 0xAA, 0x08, 0x4E, 0x19, 0x4A, 0xCB, 0xFB, 0x02, 0xF9};
+    thread_local EncryptedName<sizeof(source), 0x03772763F96D9DA5ULL> name(source);
+    this->m_hotkeyScript->Load(name.Text(), true, false);
+  }
+  {
+    const std::uint8_t source[] = {0x21, 0xCE, 0xF4, 0x0D, 0xD5, 0x92, 0x7B, 0xA0, 0x1E, 0xE7, 0xD1, 0x4C, 0xFE, 0x9A, 0x70, 0xA0, 0x3E, 0xD0, 0xFC,
+                                   0x43, 0xCF, 0xBF, 0x76, 0xA8, 0x0C, 0xDC, 0xF0, 0x7E, 0xF8, 0x92, 0x79, 0x8C, 0x03, 0xDD, 0xFA, 0x72, 0xD5, 0xFB};
+    thread_local EncryptedName<sizeof(source), 0xC517FB932D95BB6DULL> name(source);
+    this->m_hotkeyScript->Load(name.Text(), true, false);
+  }
+  g_cashEmotionMgr->LoadScripts();
+  this->m_hotkeyScript->Load("Lua Files\\AdventureGuide\\AvailableJobList_F", true, false);
+  this->m_hotkeyScript->Load("Lua Files\\AdventureGuide\\AvailableJobList", true, false);
+}
 
 // OFFSET: 0x00DE98B0
 // FUNCTION: fn_23502
