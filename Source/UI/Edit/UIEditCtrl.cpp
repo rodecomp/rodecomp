@@ -104,6 +104,9 @@
 #include <windows.h>
 #include <timeapi.h>
 #include "Contents/Items/ItemLink.h"
+#include "UI/Chat/ChatSuggestions.h"
+#include "UI/Dialogs/UINpcEditDialogWnd.h"
+#include "UI/Rodex/UIRodexComposeWnd.h"
 // GLOBAL: gl_24862
 bool g_vendingSaleAlarm;
 
@@ -112,6 +115,9 @@ bool g_inputSuggestionsEnabled;
 
 // GLOBAL: gl_24653
 int g_skillTooltipActive;
+
+// GLOBAL: gl_24654
+DWORD g_skillTooltipTick;
 
 // GLOBAL: gl_24651
 static const std::string g_itemLinkOpen = "<ITEML>";
@@ -7638,4 +7644,150 @@ void UIMerchantShopMakeWnd::PrintSellList() {
   g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(line), 0x78FFFF, 0, 0, 0);
   std::sprintf(line, "============================ ============================");
   g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(line), 0x96FFFF, 0, 0, 0);
+}
+
+// OFFSET: 0x00985160
+
+// OFFSET: 0x00985610
+
+// OFFSET: 0x00988590
+
+// OFFSET: 0x0097EDE0
+
+// OFFSET: 0x0097F790
+
+// OFFSET: 0x0098CBF0
+// FUNCTION: fn_13422
+int UIItemSellWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  switch (message) {
+  case 6: {
+    reinterpret_cast<WindowResponseRecorder*>(this)->Record(this->geometry.id, static_cast<int>(a), b, c, d);
+    CMode* mode = g_modeMgr.gameMode;
+    if (a == 184) {
+      if (g_session.HasRequiredItems()) {
+        mode->SendMsg(35, 0, 0, 0, 0);
+      }
+    } else if (a != 185) {
+      break;
+    }
+
+    g_windowMgr.CloseWindow(22);
+    g_windowMgr.CloseWindow(24);
+    mode->SendMsg(40, 0, 0, 0, 0);
+    reinterpret_cast<SessionItemLists*>(&g_session)->ClearTradeItems();
+    return 0;
+  }
+  case 14:
+    if (a == 3) {
+      int width = b <= 320 ? b : 320;
+      int height = c <= 336 ? c : 336;
+      if (width < 232) {
+        width = 232;
+      }
+      if (height < 120) {
+        height = 120;
+      }
+
+      const int newWidth = (width - 280) / 32 * 32 + 280;
+      const int newHeight = (height - 120) / 32 * 32 + 120;
+      if (newWidth != this->geometry.width || newHeight != this->geometry.height) {
+        this->Resize(newWidth, newHeight);
+        this->columns = 1;
+        this->visibleRows = (newHeight - 38) / 32;
+        this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
+        this->scrollBar->Move(this->geometry.width - 15, 14);
+        this->scrollBar->Resize(this->scrollBar->geometry.width, this->geometry.height - 38);
+        this->UpdateScrollBar();
+      }
+
+      this->total->Move(12, this->geometry.height - 20);
+      const int positions[2][2] = {
+        {this->geometry.width - 106, this->geometry.height - 24},
+        {this->geometry.width - 61, this->geometry.height - 24},
+      };
+      for (int i = 0; i < 2; ++i) {
+        this->buttons[i]->Move(positions[i][0], positions[i][1]);
+      }
+
+      this->m_frameContext->snapping.Store(this);
+      return 0;
+    }
+    break;
+  case 23: {
+    this->items.erase(this->items.begin(), this->items.end());
+    int totalPrice = 0;
+    const int size = reinterpret_cast<const SessionMessengerContext*>(&g_session)->GetList4Size();
+    for (int i = 0; i < size; ++i) {
+      ITEM_INFO item = g_session.GetItem1730At(i);
+      if (item.unknown_0000[1] != 0) {
+        totalPrice += item.quantity * item.unknown_0014[1];
+        this->items.push_back(item);
+      }
+    }
+
+    char grouped[64];
+    char text[80];
+    std::sprintf(text, "Total : %s Zeny", FormatGroupedInteger(totalPrice, grouped, sizeof(grouped)));
+    this->total->SetTextAutoWidth(text);
+    this->Invalidate();
+    this->UpdateScrollBar();
+    return 0;
+  }
+  case 34:
+    this->saved = reinterpret_cast<ItemSellWndInfo*>(a);
+    if (!this->saved->IsValid()) {
+      this->saved->Reset();
+    }
+
+    this->SendMsg(nullptr, 14, 3, this->saved->width, this->saved->height, 0);
+    this->Move(this->saved->x, this->saved->y);
+    return 0;
+  case 38: {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    ModeDragState& drag = mode->drag;
+    ITEM_INFO item;
+    item.Assign(reinterpret_cast<const RawItemData&>(drag));
+    if (g_session.HasItem1718(drag.id)) {
+      ClientItemLists* lists = reinterpret_cast<ClientItemLists*>(&g_session);
+      lists->AddItem1730(item);
+      lists->ReduceItem1718(item);
+      if (g_windowMgr.unknown_0250) {
+        g_windowMgr.unknown_0250->SendMsg(nullptr, 23, 0, 0, 0, 0);
+      }
+
+      this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    }
+
+    mode->SendMsg(18, 0, 0, 0, 0);
+    return 0;
+  }
+  case 123: {
+    const auto* bytes = reinterpret_cast<const unsigned char*>(a);
+    ItemListChunkHeader header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
+    unsigned offset = 6;
+    if (header.type == 20750) {
+      while (static_cast<unsigned>(b) > offset) {
+        header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
+        offset += 6;
+        if (header.type == 20751) {
+          UIWindow* window = g_windowMgr.EnsureWindow(22);
+          if (window) {
+            window->SendMsg(nullptr, 36, 1, 0, 0, 0);
+            window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+          }
+
+          this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+          break;
+        }
+
+        offset += header.size;
+      }
+    }
+    break;
+  }
+  default:
+    return UIItemBaseWnd::SendMsg(sender, message, a, b, c, d);
+  }
+
+  return 0;
 }

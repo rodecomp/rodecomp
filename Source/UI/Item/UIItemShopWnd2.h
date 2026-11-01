@@ -15,6 +15,7 @@ class UIItemShopWnd2 : public UIItemBaseWnd {
 public:
   UIItemShopWnd2(UIWindowContext& windows, UIFrameContext& frames);
   void Slot11() override;
+  void Paint() override;
   void Slot28(int x, int y) override;
   void Slot32(int x, int y) override;
   void Slot10(int x, int y, std::intptr_t value) override;
