@@ -2184,6 +2184,10 @@ int UIBookWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
   return 0;
 }
 
+struct SessionItemLists {
+  void ClearTradeItems();
+};
+
 // OFFSET: 0x008F8860
 // FUNCTION: fn_12332
 int UIChooseSellBuyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
@@ -2202,9 +2206,7 @@ int UIChooseSellBuyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
         return 0;
       }
 
-      this->m_acceptance->firstShopItems.clear();
-      this->m_acceptance->secondShopItems.clear();
-      this->m_acceptance->thirdShopItems.clear();
+      reinterpret_cast<SessionItemLists*>(&g_session)->ClearTradeItems();
     }
 
     return 0;
@@ -4664,10 +4666,6 @@ namespace {
 #pragma pack(pop)
 }
 
-struct SessionItemLists {
-  void ClearTradeItems();
-};
-
 // OFFSET: 0x008E5A20
 // FUNCTION: fn_12190
 void UIPartyInvitationToWnd::Slot15(int, int) {
@@ -6176,3 +6174,11 @@ int CSession::GetTraitStat(int type) {
   std::map<int, int>& traitStats = reinterpret_cast<std::map<int, int>&>(this->unknown_7FC0);
   return traitStats[type];
 }
+
+// OFFSET: 0x008C7F00
+
+// OFFSET: 0x008C7EA0
+
+// OFFSET: 0x008C8330
+
+// OFFSET: 0x008C8A50

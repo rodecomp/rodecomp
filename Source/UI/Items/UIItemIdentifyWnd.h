@@ -21,6 +21,7 @@ public:
   /* 00D4 */ std::string m_title;
   /* 00EC */ WindowPlacement* m_placement;
 
+  UIItemIdentifyWnd(UIWindowContext& windows, UIFrameContext& frames);
   void Slot11() override;
   void Paint() override;
   void Slot15(int width, int height) override;
@@ -36,6 +37,7 @@ public:
 
 class UIMakingArrowListWnd : public UIItemIdentifyWnd {
 public:
+  UIMakingArrowListWnd(UIWindowContext& windows, UIFrameContext& frames);
   void Paint() override;
   std::vector<unsigned char> Slot44() override;
 
@@ -44,11 +46,13 @@ public:
 
 class UIPetEggListWnd : public UIItemIdentifyWnd {
 public:
+  UIPetEggListWnd(UIWindowContext& windows, UIFrameContext& frames);
   void Paint() override;
 };
 
 class UIItemCompositionWnd : public UIItemIdentifyWnd {
 public:
+  UIItemCompositionWnd(UIWindowContext& windows, UIFrameContext& frames);
   void Slot11() override;
   void Slot15(int width, int height) override;
   std::vector<unsigned char> Slot44() override;
