@@ -2905,11 +2905,7 @@ int __stdcall sub_6A6F10(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
-  int count = 2;
-  int valuePosition = 2;
-  int indexPosition = 2;
-  int keyPosition = -1;
-  g_equipmentPropertiesMgr->ApplyProperty("AddIgnore_MRES_RacePercent", state, count, valuePosition, indexPosition, keyPosition);
+  g_equipmentPropertiesMgr->ApplyProperty("AddIgnore_MRES_RacePercent", state, 2, 2, -1, -1);
   return 0;
 }
 
@@ -2919,11 +2915,7 @@ int __stdcall sub_6A6FD0(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
-  int count = 2;
-  int valuePosition = 2;
-  int indexPosition = 2;
-  int keyPosition = -1;
-  g_equipmentPropertiesMgr->ApplyProperty("AddIgnore_RES_RacePercent", state, count, valuePosition, indexPosition, keyPosition);
+  g_equipmentPropertiesMgr->ApplyProperty("AddIgnore_RES_RacePercent", state, 2, 2, -1, -1);
   return 0;
 }
 
@@ -2933,11 +2925,7 @@ int __stdcall sub_6A7090(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
-  int count = 3;
-  int valuePosition = 3;
-  int indexPosition = 3;
-  int keyPosition = -1;
-  g_equipmentPropertiesMgr->ApplyProperty("AddMDamage_Property", state, count, valuePosition, indexPosition, keyPosition);
+  g_equipmentPropertiesMgr->ApplyProperty("AddMDamage_Property", state, 3, 3, -1, -1);
   return 0;
 }
 
@@ -2947,11 +2935,7 @@ int __stdcall sub_6A7150(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
-  int count = 3;
-  int valuePosition = 3;
-  int indexPosition = 3;
-  int keyPosition = -1;
-  g_equipmentPropertiesMgr->ApplyProperty("AddMDamage_Size", state, count, valuePosition, indexPosition, keyPosition);
+  g_equipmentPropertiesMgr->ApplyProperty("AddMDamage_Size", state, 3, 3, -1, -1);
   return 0;
 }
 
