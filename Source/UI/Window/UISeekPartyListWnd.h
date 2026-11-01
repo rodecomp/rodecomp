@@ -27,6 +27,7 @@ struct SeekPartyMapEntry {
 
 class UISeekPartyListWnd : public UIFrameWnd {
 public:
+  UISeekPartyListWnd();
   void Slot11() override;
   void Slot15(int width, int height) override;
   void Paint() override;

@@ -495,3 +495,20 @@ void UISeekPartyListWnd::SelectJobCategory(int category) {
   this->m_jobCategoryChanged = 1;
   this->Invalidate();
 }
+
+// OFFSET: 0x00911CD0
+// FUNCTION: fn_12523
+UISeekPartyListWnd::UISeekPartyListWnd()
+    : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIFrameContext*>(nullptr), 0), m_title(nullptr), m_levelLabel(nullptr),
+      m_mapLabel(nullptr), m_jobLabel(nullptr), m_filterLabel0(nullptr), m_filterLabel1(nullptr), m_filterLabel2(nullptr), m_filterLabel3(nullptr),
+      m_searchEdit(nullptr), m_regionCombo(nullptr), m_mapCombo(nullptr), m_jobCategoryCombo(nullptr), m_jobCombo(nullptr), m_alarmCheck(nullptr),
+      m_findButton(nullptr), m_okButton(nullptr), m_chatButton(nullptr), m_scrollBar(nullptr), m_regionMaps(), m_jobOptions(), m_region(0),
+      m_jobCategory(0), m_jobCategoryChanged(0), m_restoreHeight(0), m_minimized(0), m_filterLevel(-5), m_filterMap(-5), m_filterJob(-5) {
+  std::memset(this->unknown_010C, 0, sizeof(this->unknown_010C));
+  std::memset(this->unknown_0194, 0, sizeof(this->unknown_0194));
+  this->unknown_01C1[0] = 1;
+  this->unknown_01C1[1] = 0;
+  this->unknown_01C1[2] = 0;
+  std::memset(this->unknown_01CA, 0, sizeof(this->unknown_01CA));
+  this->m_refreshButton = nullptr;
+}
