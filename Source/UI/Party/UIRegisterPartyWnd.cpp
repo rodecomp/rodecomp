@@ -300,7 +300,7 @@ int UIRegisterPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
       };
 
       if (owner.partyMember != 0) {
-        if (owner.forbidden.Contains(this->Text(*this->memo))) {
+        if (g_forbiddenWords.Contains(this->Text(*this->memo))) {
           notify(3372);
           return 0;
         }

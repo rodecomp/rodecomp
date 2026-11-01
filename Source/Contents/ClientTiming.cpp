@@ -55,31 +55,6 @@ private:
   bool m_encrypted;
 };
 
-class TableBytes : public ResourceBytes {
-public:
-  CFile file;
-
-  // INLINED
-  bool Open(const char* name) override {
-    return this->file.Open(name, 0, true, false);
-  }
-
-  // INLINED
-  const void* Data() const override {
-    return this->file.GetData();
-  }
-
-  // INLINED
-  int Size() const override {
-    return static_cast<int>(this->file.GetSize());
-  }
-
-  // INLINED
-  void Close() override {
-    this->file.Close();
-  }
-};
-
 }
 
 struct NaviUnknownBlock {
@@ -865,8 +840,7 @@ bool CSession::LoadExceptionMinimapNameTable() {
   this->m_navigationForbiddenMaps.reserve(512);
 
   CCommonObject& storage = reinterpret_cast<CCommonObject&>(this->unknown_5400[0x30]);
-  TableBytes file;
-  const bool loaded = storage.LoadTokens(tokens, "ExceptionMinimapNameTable.txt", 0, file);
+  const bool loaded = storage.LoadTokens(tokens, "ExceptionMinimapNameTable.txt", 0);
 
   for (char* token : tokens) {
     this->m_navigationForbiddenMaps.push_back(std::string(token));

@@ -9,7 +9,7 @@
 #include <cstring>
 #include <string>
 
-struct ForbiddenWords;
+class ForbiddenWords;
 class WindowManagerWindows;
 
 struct PartyInvitationContext {
@@ -27,9 +27,9 @@ inline void ReceivePartyInvitation(const void* packet, PartyInvitationContext& c
   std::strncpy(name, reinterpret_cast<const char*>(bytes + 6), 24);
   name[24] = '\0';
 
-  if (context.words.Contains(name)) {
+  if (g_forbiddenWords.Contains(name)) {
     std::string unused;
-    context.words.Mask(name, &unused);
+    g_forbiddenWords.Mask(name, &unused);
   }
 
   context.pendingName.assign(name, std::strlen(name));

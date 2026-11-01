@@ -10,7 +10,7 @@ class UIBitmapButton;
 class UICheckBox;
 class UIEditCtrl;
 class UINormalMB;
-struct ForbiddenWords;
+class ForbiddenWords;
 class UINoneVisibleButton;
 class UIPetInfoBarGraph;
 struct UIButtonContext;

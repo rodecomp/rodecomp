@@ -1,5 +1,6 @@
 #include "File/CommonObject.h"
-#include "Resource/Bitmap/BitmapResource.h"
+#include "Client/Input/InputCharset.h"
+#include "File/File.h"
 
 #include <cstdlib>
 #include <cstring>
@@ -23,52 +24,55 @@ void CCommonObject::Clear() {
 
 // OFFSET: 0x005B8810
 // FUNCTION: fn_03422
-bool CCommonObject::LoadTokens(std::vector<char*>& tokens, const char* name, int mode, ResourceBytes& file) {
+bool CCommonObject::LoadTokens(std::vector<char*>& tokens, const char* name, int mode) {
   tokens.clear();
 
   if (tokens.capacity() < 4096) {
     tokens.reserve(4096);
   }
 
-  if (!file.Open(name)) {
-    file.Close();
+  CFile file;
+
+  if (g_serverLanguage) {
+    name = g_serverLanguage->ServiceName(name);
+  }
+
+  if (!file.Open(name, 0, true, false)) {
     return false;
   }
 
-  const auto bytes = static_cast<unsigned>(file.Size());
-  std::unique_ptr<char[]> buffer(new char[static_cast<std::size_t>(bytes) + 1]);
-
-  std::memcpy(buffer.get(), file.Data(), bytes);
-  buffer.get()[bytes] = '\0';
+  const int size = static_cast<int>(file.GetSize());
+  char* buffer = new char[size + 1];
+  file.Read(buffer, size);
+  buffer[size] = '\0';
   file.Close();
-  char* start = buffer.get();
+  char* start = buffer;
 
-  for (unsigned index = 0; index < bytes; ++index) {
-    char& value = buffer.get()[index];
-
-    switch (value) {
+  for (int index = 0; index < size; ++index) {
+    switch (buffer[index]) {
     case '\n':
-      start = buffer.get() + index + 1;
+      start = buffer + index + 1;
       break;
     case '\r':
-      value = '\0';
+      buffer[index] = '\0';
 
-      if (*start != '\0' && mode != 0 && std::strncmp(start, "//", 2) != 0) {
+      if (start && *start != '\0' && mode != 0 && std::strncmp(start, "//", 2) != 0) {
         tokens.push_back(start);
       }
 
-      start = buffer.get() + index + 1;
+      start = buffer + index + 1;
       break;
     case '#':
       if (std::strncmp(start, "//", 2) != 0) {
-        value = '\0';
+        buffer[index] = '\0';
         tokens.push_back(start);
 
         if (mode == 2) {
-          tokens.push_back(nullptr);
+          start = nullptr;
+          tokens.push_back(start);
         }
 
-        start = buffer.get() + index + 1;
+        start = buffer + index + 1;
       }
 
       break;
@@ -77,7 +81,6 @@ bool CCommonObject::LoadTokens(std::vector<char*>& tokens, const char* name, int
     }
   }
 
-  this->m_buffers.push_back(buffer.get());
-  buffer.release();
+  this->m_buffers.push_back(buffer);
   return true;
 }

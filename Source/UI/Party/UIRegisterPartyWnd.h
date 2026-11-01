@@ -9,7 +9,7 @@ class UIEditCtrl;
 class UIJobSlotButton;
 class UIStaticText;
 class UIBasicButton;
-struct ForbiddenWords;
+class ForbiddenWords;
 struct AgencyRequestContext;
 struct RegisterPartyContext;
 struct UIEditContext;

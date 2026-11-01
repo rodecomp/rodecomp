@@ -161,9 +161,9 @@ int UIChatRoomTitle::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
   this->label->italic = 0;
   this->label->fontHeight = 12;
 
-  if (this->m_forbiddenWords->Contains(text)) {
+  if (g_forbiddenWords.Contains(text)) {
     std::string masked;
-    this->m_forbiddenWords->Mask(text, &masked);
+    g_forbiddenWords.Mask(text, &masked);
   }
 
   this->label->SetTextFitted(text);

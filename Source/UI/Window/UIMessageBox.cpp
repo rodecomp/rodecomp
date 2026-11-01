@@ -3525,7 +3525,7 @@ int UIHomunInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
         char text[512];
         std::sprintf(text, LookupMessage(2977), this->nameEdit->Text());
         if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) != 188) {
-          if (this->m_forbiddenWords->Contains(this->nameEdit->Text()) != true) {
+          if (g_forbiddenWords.Contains(this->nameEdit->Text()) != true) {
             g_modeMgr.GetGameMode()->SendMsg(185, reinterpret_cast<int>(this->nameEdit->Text()), 0, 0, 0);
             std::sprintf(name, this->nameEdit->Text());
             this->Invalidate();
@@ -3735,7 +3735,7 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
         char text[512];
         std::sprintf(text, LookupMessage(2931), this->nameEdit->Text());
         if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) != 188) {
-          if (this->m_forbiddenWords->Contains(this->nameEdit->Text()) != true) {
+          if (g_forbiddenWords.Contains(this->nameEdit->Text()) != true) {
             g_modeMgr.GetGameMode()->SendMsg(145, reinterpret_cast<int>(this->nameEdit->Text()), 0, 0, 0);
             std::sprintf(g_session.unknown_1018, this->nameEdit->Text());
             this->Invalidate();

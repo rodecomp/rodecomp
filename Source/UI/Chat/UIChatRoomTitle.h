@@ -7,7 +7,7 @@
 
 class UIStaticText;
 struct UIButtonContext;
-struct ForbiddenWords;
+class ForbiddenWords;
 
 struct ChatRoomTitleInfo {
   /* 0000 */ std::string title;

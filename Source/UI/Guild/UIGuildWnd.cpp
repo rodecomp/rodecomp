@@ -1898,9 +1898,9 @@ void UIGuildBanishedMemberWnd::Paint() {
     char reason[260];
     memset(reason, 0, sizeof(reason));
     strncpy_s(reason, sizeof(reason), member->unknown_0034.c_str(), member->unknown_0034.size());
-    if (this->m_forbiddenWords->Contains(reason) == true) {
+    if (g_forbiddenWords.Contains(reason) == true) {
       std::string masked;
-      this->m_forbiddenWords->Mask(reason, &masked);
+      g_forbiddenWords.Mask(reason, &masked);
     }
     this->m_reasons[drawn]->SetTextFitted(reason);
     this->m_reasons[drawn]->Move(g_guildBanishedColumnWidths[0] + 9, y);
@@ -2022,7 +2022,7 @@ int UIGuildNoticeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, s
       this->m_frameContext->windows.CloseWindow(59);
     } else if (a1 == 277) {
       std::string body(this->m_bodyEdit->Text());
-      if (this->m_forbiddenWords->Contains(this->m_titleEdit->Text()) == true || this->m_forbiddenWords->Contains(body.c_str()) == true) {
+      if (g_forbiddenWords.Contains(this->m_titleEdit->Text()) == true || g_forbiddenWords.Contains(body.c_str()) == true) {
         this->m_controls->services.Confirm(LookupMessage(14), 0, 1, 0, "Message", 280, 120);
       } else {
         if (GuildData().unknown_00B4) {

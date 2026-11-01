@@ -11,7 +11,7 @@ class UICheckBox;
 class UIEditCtrl2;
 class UIINT64BarGraph;
 class UINormalMB;
-struct ForbiddenWords;
+class ForbiddenWords;
 struct WindowResponseRecorder;
 struct UIButtonContext;
 struct UIEditContext;

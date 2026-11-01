@@ -4,13 +4,11 @@
 #include <string>
 #include <vector>
 
-class CCommonObject;
-class ResourceBytes;
-
 struct ForbiddenWords {
   /* 0000 */ std::vector<const char*> words;
 
-  bool Load(const char* name, CCommonObject& storage, ResourceBytes& file);
+  ~ForbiddenWords();
+  bool Load(const char* name);
   bool Allows(const char* text) const;
   bool Contains(const char* text) const;
   void Mask(char* text, std::string* value = nullptr) const;

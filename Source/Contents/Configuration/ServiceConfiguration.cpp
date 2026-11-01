@@ -249,33 +249,6 @@ void InitializeServiceStrings() {
   }
 }
 
-namespace {
-  class EtcInfoBytes : public ResourceBytes {
-  public:
-    CFile file;
-
-    // INLINED
-    bool Open(const char* name) override {
-      return this->file.Open(name, 0, true, false);
-    }
-
-    // INLINED
-    const void* Data() const override {
-      return this->file.GetData();
-    }
-
-    // INLINED
-    int Size() const override {
-      return static_cast<int>(this->file.GetSize());
-    }
-
-    // INLINED
-    void Close() override {
-      this->file.Close();
-    }
-  };
-}
-
 // OFFSET: 0x00AD0F60
 // FUNCTION: fn_17809
 void LoadLoadingScreens(int count) {
@@ -323,8 +296,7 @@ void sub_AD1270() {
     g_loadingScreens.clear();
 
     std::vector<char*> tokens;
-    EtcInfoBytes file;
-    storage.LoadTokens(tokens, "etcinfo.txt", 0, file);
+    storage.LoadTokens(tokens, "etcinfo.txt", 0);
 
     for (auto token = tokens.begin(); token != tokens.end(); ++token) {
       if (std::strcmp(*token, "loadingscreen") == 0) {

@@ -40,7 +40,7 @@ class UIStaticText;
 struct UIButtonContext;
 struct UIListBoxContext;
 struct GuildWndInfo;
-struct ForbiddenWords;
+class ForbiddenWords;
 
 bool CompareWideText(const char* left, const char* right);
 

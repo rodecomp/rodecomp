@@ -43,31 +43,6 @@ private:
   bool m_encrypted;
 };
 
-class TableBytes : public ResourceBytes {
-public:
-  CFile file;
-
-  // INLINED
-  bool Open(const char* name) override {
-    return this->file.Open(name, 0, true, false);
-  }
-
-  // INLINED
-  const void* Data() const override {
-    return this->file.GetData();
-  }
-
-  // INLINED
-  int Size() const override {
-    return static_cast<int>(this->file.GetSize());
-  }
-
-  // INLINED
-  void Close() override {
-    this->file.Close();
-  }
-};
-
 }
 
 // OFFSET: 0x00DE8740
@@ -78,8 +53,7 @@ bool CSession::LoadMapNameTable() {
   const std::uint8_t source[] = {0x52, 0x88, 0x4B, 0xB1, 0x0A, 0x62, 0x9E, 0x43, 0x5E,
                                  0x8B, 0x57, 0x9A, 0x45, 0x7B, 0x83, 0x63, 0x3F};
   thread_local EncryptedName<sizeof(source), 0x17FB0F6BFF3BE93FULL> name(source);
-  TableBytes file;
-  const bool loaded = storage.LoadTokens(tokens, name.Text(), 0, file);
+  const bool loaded = storage.LoadTokens(tokens, name.Text(), 0);
 
   for (auto token = tokens.begin(); token != tokens.end(); token += 2) {
     g_mapInfoMgr->AddMapDisplayName(token[0], token[1], false);

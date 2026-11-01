@@ -7,7 +7,6 @@
 #include <vector>
 
 class CFile;
-class ResourceBytes;
 
 class CCommonObject {
 public:
@@ -17,7 +16,7 @@ public:
   }
   virtual ~CCommonObject();
   void Clear();
-  bool LoadTokens(std::vector<char*>& tokens, const char* name, int mode, ResourceBytes& file);
+  bool LoadTokens(std::vector<char*>& tokens, const char* name, int mode);
   bool LoadCsv(const char* name, std::vector<std::string> (*transform)(const std::vector<std::string>&), void (*insert)(std::vector<const char*>&));
   bool LoadCsv(const char* name, std::function<std::vector<std::string>(std::vector<std::string>&)> transform,
                std::function<void(std::vector<const char*>&, std::any)> insert, std::any context);

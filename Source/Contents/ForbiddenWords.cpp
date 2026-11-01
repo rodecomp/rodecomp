@@ -14,6 +14,14 @@
 // GLOBAL: gl_24641
 ForbiddenWords g_forbiddenWords;
 
+// GLOBAL: gl_24642
+static CCommonObject g_forbiddenWordsObject;
+
+// OFFSET: 0x00AE5E50
+// FUNCTION: fn_18060
+ForbiddenWords::~ForbiddenWords() {
+}
+
 namespace {
   // OFFSET: 0x00AE7060
   // FUNCTION: fn_18065
@@ -30,9 +38,9 @@ namespace {
 
 // OFFSET: 0x00AE6F30
 // FUNCTION: fn_18064
-bool ForbiddenWords::Load(const char* name, CCommonObject& storage, ResourceBytes& file) {
+bool ForbiddenWords::Load(const char* name) {
   std::vector<char*> tokens;
-  const bool loaded = storage.LoadTokens(tokens, name, 1, file);
+  const bool loaded = g_forbiddenWordsObject.LoadTokens(tokens, name, 1);
 
   for (std::vector<char*>::iterator it = tokens.begin(); it != tokens.end(); ++it) {
     char* token = *it;
@@ -41,6 +49,15 @@ bool ForbiddenWords::Load(const char* name, CCommonObject& storage, ResourceByte
     while (*first == ' ' || *first == '\t') {
       ++first;
     }
+
+    char* last = first;
+
+    if (*last != '\0') {
+      while (*++last != '\0') {
+      }
+    }
+
+    *last = '\0';
 
     if (*first != '\0') {
       this->words.push_back(Lowercase(token, static_cast<unsigned short>(g_textCodePage)));
