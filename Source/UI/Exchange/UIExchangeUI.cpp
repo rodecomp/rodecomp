@@ -770,3 +770,16 @@ void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::Slot53(int resolv
     item->SetImageResources(images[0], images[1], images[2], images[3]);
   }
 }
+
+// OFFSET: 0x00A15740
+// FUNCTION: fn_15199
+template <>
+void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::Resize(int width, int height) {
+  UIWindow::Resize(width, height);
+  this->AddNewItem();
+  this->scrollBar->Resize(this->scrollBar->geometry.width, height);
+  this->scrollBar->SetTotal(this->data.size() * this->rowHeight + this->itemY);
+  this->scrollBar->SetVisible(this->geometry.height);
+  this->scrollBar->SetPosition(this->scrollBar->position);
+  this->rebind = 1;
+}

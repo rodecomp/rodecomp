@@ -100,4 +100,7 @@ static_assert(offsetof(ExchangeUI::CItemListBox, onSelect) == 0xE8);
 static_assert(offsetof(ExchangeUI::CItemListBox, binder) == 0x110);
 #endif
 
+template <>
+void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::Resize(int width, int height);
+
 #endif
