@@ -189,7 +189,8 @@ CNaviInfo::~CNaviInfo() {
   this->links.clear();
 }
 
-// INLINED
+// OFFSET: 0x005C2C10
+// FUNCTION: fn_03544
 NavigationTarget::~NavigationTarget() {
   this->type = -1;
   this->object = nullptr;
