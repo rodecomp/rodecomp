@@ -3487,6 +3487,12 @@ void CUIRegisterMgr::Register(int key, std::function<CUIFrameWnd*()> factory) {
   this->entries[key] = factory;
 }
 
+// OFFSET: 0x009EB200
+// FUNCTION: fn_14549
+CUIRegisterMgr::CUIRegisterMgr() {
+  InitializeCriticalSection(&this->lock);
+}
+
 // OFFSET: 0x009EB770
 // FUNCTION: fn_14555
 CUIFrameWnd* CUIRegisterMgr::Create(int key) {
