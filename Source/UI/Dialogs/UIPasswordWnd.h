@@ -16,6 +16,7 @@ public:
   /* 00B4 */ UIEditCtrl* m_edit;
   /* 00B8 */ std::uint32_t unknown_00B8;
 
+  void Show(int visible) override;
   void Paint() override;
   void Slot15(int width, int height) override;
 };

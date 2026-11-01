@@ -7152,6 +7152,22 @@ int UIMerchantItemPurchaseMSGWnd::SendMsg(UIWindow* sender, int message, std::in
 }
 
 // OFFSET: 0x00995170
+// FUNCTION: fn_13443
+void UIItemWnd::RefreshItems() {
+  this->items.clear();
+  for (int i = 0; i < reinterpret_cast<const SessionMessengerContext*>(&g_session)->GetList0Size(); ++i) {
+    ITEM_INFO item = g_session.GetInventoryItemAt(i);
+    if (item.unknown_0074[0] == 1) {
+      this->items.push_back(item);
+    }
+  }
+
+  if (g_sortPrivateTab) {
+    this->items.sort(ItemTypeNameLess());
+  }
+  this->Invalidate();
+  this->UpdateScrollBar();
+}
 
 // OFFSET: 0x00995E10
 // FUNCTION: fn_13466
@@ -8425,4 +8441,38 @@ int UIItemStoreFindWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
   this->Invalidate();
   this->UpdateScrollBar();
   return 0;
+}
+
+// OFFSET: 0x009948E0
+// FUNCTION: fn_13438
+void UIItemDropCntWnd::Show(int visible) {
+  this->geometry.visible = visible;
+  if (visible) {
+    CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    char text[40];
+    std::sprintf(text, "%d", gameMode->drag.quantity);
+    this->m_edit->SetText(text);
+    InputFocus focus{g_windowMgr.hoverWindow};
+    focus.Set(this->m_edit);
+    this->m_edit->SelectAll();
+
+    const char* dragName = gameMode->DragItemName();
+    std::string name;
+    if (dragName) {
+      ITEM_INFO item;
+      item.itemId = dragName;
+      item.unknown_0060 = 0;
+      item.identified = gameMode->drag.identified;
+      name = item.DisplayName(0);
+    }
+
+    reinterpret_cast<UIStaticText*>(this->unknown_00B8)->SetTextFittedCodePage(name.c_str());
+    this->Invalidate();
+    this->m_frameContext->snapping.Store(this);
+  } else {
+    if (this->m_edit == g_windowMgr.GetHoverWindow() && g_chatSuggestions) {
+      reinterpret_cast<UIWindow*>(g_chatSuggestions)->SendMsg(nullptr, 54, 0, 0, 0, 0);
+    }
+    g_windowMgr.RemoveSnapRectangle(this);
+  }
 }
