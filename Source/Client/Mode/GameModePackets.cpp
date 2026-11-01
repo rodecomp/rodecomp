@@ -14983,6 +14983,23 @@ void CGameMode::ReceiveTradeBroadcast(const unsigned char* data) {
 }
 
 // OFFSET: 0x00D240F0
+// FUNCTION: fn_21665
+void CGameMode::ReceiveItemBroadcast(const unsigned char* data) {
+  const ItemBroadcastPacket* packet = reinterpret_cast<const ItemBroadcastPacket*>(data);
+  std::string name(packet->name, 24);
+  ITEM_INFO item;
+  item.SetItemId(packet->itemId);
+  item.identified = 1;
+
+  std::string text = FormatOwnedString(LookupMessage(0x74C), name.c_str(), item.DisplayName(0).c_str());
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 0, 0, 0);
+  if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
+    BroadcastBalloonMessage message{{}, {}, std::chrono::seconds(20), 12, 0x40000000, 0, 0};
+    message.start = std::chrono::system_clock::now();
+    message.lines.emplace_back(text, 0x62B0FF, 0);
+    balloon->AddMessage(0, message);
+  }
+}
 
 #pragma pack(push, 1)
 struct RateInfoRecord {
@@ -15138,4 +15155,61 @@ void CGameMode::SpawnStateActor(
       this->scene->AddPcPosFromCell(aid, cell);
     }
   }
+}
+// FUNCTION: fn_22163
+void CGameMode::ReceiveRateInfo(const unsigned char* packet) {
+  g_session.m_skillBundle.extraIds.clear();
+  const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t*>(packet + 2) - 16) / sizeof(RateInfoRecord);
+  if (count <= 0) {
+    return;
+  }
+
+  RateInfoRecord basic = {};
+  RateInfoRecord premium = {};
+  RateInfoRecord server = {};
+  const RateInfoRecord* record = reinterpret_cast<const RateInfoRecord*>(packet + 16);
+  for (int i = count; i != 0; --i, ++record) {
+    const RateInfoRecord entry = *record;
+    if (entry.type == 0) {
+      basic = entry;
+    } else if (entry.type != 1) {
+      if (entry.type == 2) {
+        premium = entry;
+      } else if (entry.type == 3) {
+        server = entry;
+      }
+    }
+  }
+
+  std::string expLine = LookupMessage(1933);
+  std::string dropLine = LookupMessage(1934);
+  std::string deathLine = LookupMessage(1935);
+  expLine += FormatOwnedString(
+    LookupMessage(3032), static_cast<float>(*reinterpret_cast<const int*>(packet + 4)) * 0.001f, static_cast<float>(basic.exp) * 0.001f,
+    static_cast<float>(server.exp) * 0.001f, g_session.m_serverName.c_str(), static_cast<float>(premium.exp) * 0.001f
+  );
+  dropLine += FormatOwnedString(
+    LookupMessage(3032), static_cast<float>(*reinterpret_cast<const int*>(packet + 12)) * 0.001f, static_cast<float>(basic.drop) * 0.001f,
+    static_cast<float>(server.drop) * 0.001f, g_session.m_serverName.c_str(), static_cast<float>(premium.drop) * 0.001f
+  );
+  deathLine += FormatOwnedString(
+    LookupMessage(3032), static_cast<float>(*reinterpret_cast<const int*>(packet + 8)) * 0.001f, static_cast<float>(basic.death) * 0.001f,
+    static_cast<float>(server.death) * 0.001f, g_session.m_serverName.c_str(), static_cast<float>(premium.death) * 0.001f
+  );
+
+  std::uint32_t color = 0xFFFF;
+  if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
+    BroadcastBalloonMessage message{{}, {}, std::chrono::seconds(20), 12, 0x40000000, 0, 0};
+    message.start = std::chrono::system_clock::now();
+    message.lines.emplace_back(expLine, color);
+    message.lines.emplace_back(dropLine, color);
+    message.lines.emplace_back(deathLine, color);
+    balloon->AddMessage(0, message);
+  }
+
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>("=================================================================="), 0x62B0FF, 0, 0, 0);
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(expLine.c_str()), 0x62B0FF, 0, 0, 0);
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(dropLine.c_str()), 0x62B0FF, 0, 0, 0);
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(deathLine.c_str()), 0x62B0FF, 0, 0, 0);
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>("=================================================================="), 0x62B0FF, 0, 0, 0);
 }
