@@ -3948,6 +3948,151 @@ void CGameMode::ReceiveSkillUpdate(
 
 // OFFSET: 0x00CDB910
 
+// OFFSET: 0x00CE18A0
+// FUNCTION: fn_21332
+void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor* actor) {
+  const unsigned char selfTargetOption = g_serviceOptions.Get(0x69);
+  const unsigned char forceOption = g_serviceOptions.Get(0x6D);
+  ModeCursor& cursor = *reinterpret_cast<ModeCursor*>(&this->cursorAction);
+  const std::intptr_t mode = reinterpret_cast<std::intptr_t>(this->unknown_0408);
+
+  int attack;
+  if (mode == 2 || mode == 4) {
+    const int shiftHeld = HIBYTE(GetAsyncKeyState(VK_SHIFT));
+    attack = IsSupportSkill(this->unknown_040C) ? shiftHeld : shiftHeld == 0;
+    cursor.Set(11, this->cursorTick);
+  } else {
+    attack = HIBYTE(GetAsyncKeyState(VK_SHIFT)) == 0;
+    if (actor->unknown_0314 == 7) {
+      cursor.Set(0, this->cursorTick);
+    } else if (g_session.GetMapProperty08() == 0 && this->scene->unknown_004C == 0) {
+      cursor.Set(5, this->cursorTick);
+    } else if (g_session.IsLocalPlayerAid(actor->Slot50())) {
+      attack = 0;
+      cursor.Set(0, this->cursorTick);
+    }
+  }
+
+  handled = 1;
+  if (selfTargetOption) {
+    attack = 1;
+  }
+
+  const std::uint32_t homunAid = *reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5570[8]);
+  const std::uint32_t mercenaryAid = *reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5620[8]);
+  if (g_groundMarkEnabled != 0) {
+    if (g_mouse.buttons[1] == 1 && HIBYTE(GetAsyncKeyState(VK_MENU))) {
+      if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
+        CGameActor* homun = static_cast<CGameActor*>(this->scene->GetGameActorByAID(homunAid));
+        if (homun && homun->HasUnknown030CEntry()) {
+          AiMessage message = {};
+          message.type = 3;
+          message.target = actor->render.accountId;
+          homun->SetUnknown0330(reinterpret_cast<const float*>(&message), 0);
+        }
+      } else if (g_session.unknown_5610 != 0 && g_groundMarkAid == actor->render.accountId) {
+        CGameActor* homun = static_cast<CGameActor*>(this->scene->GetGameActorByAID(homunAid));
+        if (homun && homun->HasUnknown030CEntry()) {
+          AiMessage message = {};
+          message.type = 3;
+          message.target = g_groundMarkAid;
+          homun->SetUnknown0318(reinterpret_cast<const float*>(&message), 0);
+        }
+        g_session.unknown_5610 = 0;
+      } else {
+        cursor.Set(11, this->cursorTick);
+        g_groundMarkAid = actor->render.accountId;
+        g_groundMarkA = 0;
+        g_groundMarkB = 0;
+        g_groundMarkSet = 0;
+        g_session.unknown_5610 = 1;
+      }
+      g_session.unknown_560C = 1;
+    }
+
+    if (g_groundMarkEnabled != 0 && g_mouse.buttons[0] == 1 && g_session.IsHomunculusSkill(this->unknown_040C)) {
+      CGameActor* homun = static_cast<CGameActor*>(this->scene->GetGameActorByAID(homunAid));
+      if (homun && homun->HasUnknown030CEntry()) {
+        AiMessage message = {};
+        message.type = 7;
+        message.level = this->unknown_0414;
+        message.skill = this->unknown_040C;
+        message.target = actor->render.accountId;
+        homun->SetUnknown0318(reinterpret_cast<const float*>(&message), 0);
+      }
+      return;
+    }
+  }
+
+  if (g_groundMarkAltEnabled != 0 && g_mouse.buttons[0] == 1 && HIBYTE(GetAsyncKeyState(VK_MENU))) {
+    if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
+      CGameActor* mercenary = static_cast<CGameActor*>(this->scene->GetGameActorByAID(mercenaryAid));
+      if (mercenary && mercenary->HasUnknown0310Entry()) {
+        AiMessage message = {};
+        message.type = 3;
+        message.target = actor->render.accountId;
+        mercenary->SetUnknown0330(reinterpret_cast<const float*>(&message), 1);
+      }
+    } else if (g_session.unknown_56AC != 0 && g_groundMarkAltAid == actor->render.accountId) {
+      CGameActor* mercenary = static_cast<CGameActor*>(this->scene->GetGameActorByAID(mercenaryAid));
+      if (mercenary && mercenary->HasUnknown0310Entry()) {
+        AiMessage message = {};
+        message.type = 3;
+        message.target = g_groundMarkAltAid;
+        mercenary->SetUnknown0318(reinterpret_cast<const float*>(&message), 1);
+      }
+      g_session.unknown_56AC = 0;
+    } else {
+      cursor.Set(11, this->cursorTick);
+      g_groundMarkAltAid = actor->render.accountId;
+      g_groundMarkAltA = 0;
+      g_groundMarkAltB = 0;
+      g_groundMarkAltSet = 0;
+      g_session.unknown_56AC = 1;
+    }
+    g_session.unknown_56A8 = 1;
+  }
+
+  int& targetAid = *reinterpret_cast<int*>(&this->unknown_00EC[0x04]);
+  int& forced = *reinterpret_cast<int*>(&this->unknown_04F4[0xBC]);
+  if (attack != 0 && g_groundMarkAltEnabled != 0 && g_mouse.buttons[0] == 1 && g_session.IsMercenarySkill(this->unknown_040C)) {
+    CGameActor* mercenary = static_cast<CGameActor*>(this->scene->GetGameActorByAID(mercenaryAid));
+    if (mercenary && mercenary->HasUnknown0310Entry()) {
+      AiMessage message = {};
+      message.type = 7;
+      message.level = this->unknown_0414;
+      message.skill = this->unknown_040C;
+      message.target = actor->render.accountId;
+      mercenary->SetUnknown0318(reinterpret_cast<const float*>(&message), 1);
+    }
+    return;
+  }
+
+  if (g_mouse.buttons[0] == 1 && attack != 0 && !HIBYTE(GetAsyncKeyState(VK_MENU))) {
+    this->SendMsg(0x1A, 1, 0, 0, 0);
+    *reinterpret_cast<int*>(&this->unknown_00EC[0x08]) = targetAid;
+    *reinterpret_cast<int*>(&this->unknown_00EC[0x0C]) = 0;
+    if (g_session.GetSceneUnknown004C() == 0 && (HIBYTE(GetAsyncKeyState(VK_CONTROL)) || forceOption != 0)) {
+      this->RequestPlayerAction(targetAid, 0);
+      forced = 1;
+    } else {
+      this->RequestPlayerAction(targetAid, 1);
+      forced = 0;
+    }
+  } else if (forced == 0 && g_mouse.buttons[0] == 3) {
+    targetAid = 0;
+  }
+
+  if ((this->unknown_00DC != g_screenWidth || this->unknown_00E0 != g_screenHeight) && forced == 0 && g_mouse.buttons[0] == 0) {
+    targetAid = 0;
+  }
+
+  this->ShowActorNameBalloon(targetAid);
+  if (actor->render.unknown_0070 == 3) {
+    targetAid = 0;
+  }
+}
+
 // OFFSET: 0x00CE2880
 
 // OFFSET: 0x00CDD6B0
@@ -4057,3 +4202,5 @@ void CGameMode::UpdateHoverNameBalloon() {
 
   this->SendMsg(5, 0, 0, 0, 0);
 }
+
+// OFFSET: 0x00CE3D30

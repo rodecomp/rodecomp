@@ -351,6 +351,8 @@ public:
   int HandleActorPick(ActorPickInfo* pick, int result);
   void ReceiveSkillList(int packetType, const std::vector<SkillListEntry>& skills);
   void ShowActorNameBalloon(std::uint32_t id);
+  void ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor* actor);
+  void ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* actor);
   void ReceiveSkillUpdate(
     std::uint16_t id, std::int16_t level, std::int16_t spCost, unsigned char upgradable, std::int16_t range, int type, std::int16_t unknown
   );
