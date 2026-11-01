@@ -242,6 +242,31 @@ void UITagTextViewer::SetAlign(unsigned char align) {
 #include "Contents/MapSkyMgr.h"
 #include "UI/Text/CreateLineInfo.h"
 
+static void* AllocateViewerBlock(std::size_t bytes) {
+  if (bytes >= 4096) {
+    void* raw = ::operator new(bytes + 35);
+    const std::size_t aligned = (reinterpret_cast<std::size_t>(raw) + 35) & ~static_cast<std::size_t>(31);
+    reinterpret_cast<void**>(aligned)[-1] = raw;
+    return reinterpret_cast<void*>(aligned);
+  }
+  if (bytes == 0) {
+    return nullptr;
+  }
+  return ::operator new(bytes);
+}
+
+static void FreeViewerBlock(void* block, std::size_t bytes) {
+  if (block == nullptr) {
+    return;
+  }
+  if (bytes >= 4096) {
+    bytes += 35;
+    void* raw = reinterpret_cast<void**>(block)[-1];
+    block = raw;
+  }
+  ::operator delete(block, bytes);
+}
+
 static void AppendViewerText(std::vector<std::string>& texts, const std::string& text) {
   struct Layout {
     std::string* first;
@@ -249,29 +274,79 @@ static void AppendViewerText(std::vector<std::string>& texts, const std::string&
     std::string* cap;
   };
   Layout* view = reinterpret_cast<Layout*>(&texts);
-  if (view->last == view->cap) {
-    const std::size_t count = static_cast<std::size_t>(view->last - view->first);
-    std::size_t capacity = count + count / 2;
-    if (capacity < count + 1) {
-      capacity = count + 1;
-    }
-    std::string* neu = static_cast<std::string*>(::operator new(capacity * sizeof(std::string)));
-    for (std::size_t i = 0; i < count; ++i) {
-      new (neu + i) std::string(view->first[i]);
-    }
-    for (std::size_t i = 0; i < count; ++i) {
-      view->first[i].~basic_string();
-    }
-    ::operator delete(view->first);
-    view->first = neu;
-    view->last = neu + count;
-    view->cap = neu + capacity;
+  if (view->last != view->cap) {
+    new (view->last) std::string(text);
+    ++view->last;
+    return;
   }
-  new (view->last) std::string(text);
-  ++view->last;
+
+  const std::size_t count = static_cast<std::size_t>(view->last - view->first);
+  const std::size_t oldCapacity = static_cast<std::size_t>(view->cap - view->first);
+  std::size_t capacity = oldCapacity + (oldCapacity / 2);
+  if (capacity < count + 1) {
+    capacity = count + 1;
+  }
+  std::string* neu = static_cast<std::string*>(AllocateViewerBlock(capacity * sizeof(std::string)));
+  new (neu + count) std::string(text);
+  for (std::size_t index = 0; index < count; ++index) {
+    new (neu + index) std::string(view->first[index]);
+  }
+  for (std::size_t index = 0; index < count; ++index) {
+    view->first[index].~basic_string();
+  }
+  FreeViewerBlock(view->first, oldCapacity * sizeof(std::string));
+  view->first = neu;
+  view->last = neu + count + 1;
+  view->cap = neu + capacity;
 }
 
 // OFFSET: 0x0083E870
+// FUNCTION: fn_10521
+void UITagTextViewer::AddText(const std::string& text) {
+  AppendViewerText(this->m_texts, text);
+  if (this->m_textWidth == 0) {
+    this->m_textWidth = this->geometry.width - this->m_margin - 0xD;
+  }
+
+  const int previousCursor = this->m_cursorY;
+  const int spacing = previousCursor > 0 ? this->m_lineSpacing : 0;
+  this->m_cursorY = previousCursor + spacing;
+
+  const LineFontFlags flags = {this->m_font.bold != 0, this->m_font.italic != 0};
+  CCreateLineInfo info(
+    this, text.c_str(), this->m_textWidth, this->m_lineSpacing, this->m_font.color, this->m_font.height, flags, this->m_outlined != 0, this->m_outlineColor,
+    false, 0xFFFFFF, this->m_horizontalAlign
+  );
+  this->m_cursorY += info.m_height;
+
+  int offset = this->m_topMargin < 0 ? 0 : this->m_topMargin;
+  if (this->m_topMargin + this->m_cursorY < this->geometry.height) {
+    if (this->m_verticalAlign == 5) {
+      offset = this->geometry.height - this->m_topMargin - this->m_cursorY;
+    } else if (this->m_verticalAlign == 4) {
+      offset = static_cast<int>(static_cast<unsigned int>(static_cast<float>(this->geometry.height - this->m_cursorY) * g_depthAverageHalf));
+    }
+  }
+
+  for (std::map<UIWindow*, TagTextViewer::Position>::iterator it = this->m_positions.begin(); it != this->m_positions.end(); ++it) {
+    UIWindow* window = it->first;
+    window->Move(window->geometry.x, window->geometry.y - this->m_offsetY + offset);
+    it->second.x = static_cast<float>(window->geometry.x);
+    it->second.y = static_cast<float>(window->geometry.y);
+  }
+  this->m_offsetY = offset;
+
+  const std::vector<std::vector<UIWindow*>> lines = info.m_lines;
+  for (std::vector<UIWindow*> line : lines) {
+    for (UIWindow* window : line) {
+      window->Move(window->geometry.x + this->m_margin, window->geometry.y + offset + previousCursor + spacing);
+      this->AddChild(window);
+      this->StorePosition(window);
+    }
+  }
+
+  this->UpdateScroll();
+}
 
 // OFFSET: 0x0083F5E0
 // FUNCTION: fn_10533
