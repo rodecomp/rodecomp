@@ -3,7 +3,7 @@
 #include "Client/Replay.h"
 #include "Client/ReplayPacketRecorder.h"
 #include "Client/Session.h"
-#include "Contents/Actors/GameActor.h"
+#include "Contents/Actors/Npc.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Camera/Camera.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
@@ -33,7 +33,7 @@
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowDialogs.h"
-#include "Utility/Math/Vector3d.h"
+#include "Contents/Actors/GrannyGameActor.h"
 #include "Utility/Text/FormatString.h"
 #include "Client/Application/Launcher.h"
 #include "UI/Text/NavigationLink.h"
@@ -3906,3 +3906,20 @@ void CGameMode::ReceiveSkillList(int packetType, const std::vector<SkillListEntr
 }
 
 // OFFSET: 0x00CE2880
+
+// OFFSET: 0x00CDD6B0
+// FUNCTION: fn_21317
+CGameActor* CGameMode::NewActor(int job) {
+  CGameActor* actor;
+  if (IsPlayerJob(job)) {
+    actor = new CCharacterNpc;
+  } else {
+    const char* jobName = g_session.GetJobName(job, -1);
+    if (std::strstr(jobName, ".gr2") != nullptr) {
+      actor = new C3dGrannyGameActor(jobName);
+    } else {
+      actor = new CNpc;
+    }
+  }
+  return actor;
+}

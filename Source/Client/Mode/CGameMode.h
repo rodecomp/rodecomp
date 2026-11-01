@@ -355,6 +355,7 @@ public:
   std::uint32_t ActorNameColor(int job, std::uint32_t aid);
   const CActorNameCard& LookupNameCard(std::uint32_t id);
   std::vector<char> BuildActorEntryPacket(CGameActor* actor, std::uint16_t packetType);
+  CGameActor* NewActor(int job);
   const char* DragItemName();
   void PushUnknown01A4(int value);
   bool IsOverWeight(bool notify);

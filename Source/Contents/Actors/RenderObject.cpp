@@ -1,4 +1,5 @@
 #include "Contents/Actors/Npc.h"
+#include "Contents/Actors/GrannyGameActor.h"
 #include "Contents/Actors/RenderObject.h"
 #include "ActorPickNode.h"
 #include "Contents/Effects/MsgEffect.h"
@@ -126,61 +127,6 @@ private:
 };
 
 }
-
-struct GrannyActorLight {
-  /* 0000 */ vector3d direction;
-  /* 000C */ int intensity;
-  /* 0010 */ int red;
-  /* 0014 */ int green;
-  /* 0018 */ int blue;
-};
-
-class C3dGrannyGameActor : public CGameActor {
-public:
-  explicit C3dGrannyGameActor(const char* name);
-  void SetAction(unsigned animation, int motion, int repeat) override;
-  void Slot08() override;
-  void Slot36() override;
-  int Slot37() override;
-  void Unused6860(int value);
-  void Unused7950(int value);
-  void SetModel(int job, int value, int unused);
-  void Render(int argument) override;
-  void RenderLit(int argument, const GrannyActorLight& light);
-  void RenderShadowed(int argument);
-  void SpawnCorpseActor();
-  bool OnProcess() override;
-
-
-  /* 0410 */ CTexture* emblemTexture;
-  /* 0414 */ C3dGrannyModelRes* model;
-  /* 0418 */ granny_model_instance* instance;
-  /* 041C */ RenderCommand* commands[30];
-  /* 0494 */ RenderVertex* vertices[30];
-  /* 050C */ granny_system_clock clock;
-  /* 051C */ granny_system_clock lastClock;
-  /* 052C */ float unknown_052C;
-  /* 0530 */ unsigned char unknown_0530[0x08];
-  /* 0538 */ float angle;
-  /* 053C */ unsigned char alpha;
-  /* 053D */ unsigned char unknown_053D[0x03];
-  /* 0540 */ unsigned brightness;
-  /* 0544 */ int motion;
-  /* 0548 */ unsigned char unknown_0548[0x04];
-  /* 054C */ char name[0x104];
-  /* 0650 */ int unknown_0650;
-  /* 0654 */ int unknown_0654;
-  /* 0658 */ granny_control* controls[20];
-  /* 06A8 */ unsigned char unknown_06A8;
-  /* 06A9 */ unsigned char unknown_06A9[0x03];
-  /* 06AC */ CTexture* meshTextures[30];
-  /* 0724 */ std::uint16_t* meshIndices[30];
-  /* 079C */ int meshTriangleCounts[30];
-  /* 0814 */ matrix meshTransforms[30];
-  /* 0DB4 */ unsigned char unknown_0DB4[0x04];
-  /* 0DB8 */ CTexture* texture;
-  /* 0DBC */ std::vector<vector3d> unknown_0DBC;
-};
 
 class CGrannyCorpse3d : public CGameObject {
 public:
