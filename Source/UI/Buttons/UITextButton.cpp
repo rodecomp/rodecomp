@@ -3546,4 +3546,25 @@ void UIString::Paint() {
 }
 
 // OFFSET: 0x00899780
+// FUNCTION: fn_11557
+int UISlotBmpButton::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  if (message == 0x0D) {
+    this->unknown_0124 = argument1 != 0;
+    return 0;
+  }
+
+  if (message != 0x1AF) {
+    return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+
+  this->unknown_0128 = static_cast<int>(argument1);
+  const char* slot = argument1 != 0 ? "slot" : "slot2";
+  const char* img = this->m_inRange ? "img_buy" : "img_";
+  const std::string base = std::string("유저인터페이스\\select_character_ver3\\") + img + slot + "_";
+
+  this->SetBitmap((base + "normal.bmp").c_str(), 0, 0);
+  this->SetBitmap((base + "over.bmp").c_str(), 1, 0);
+  this->SetBitmap((base + "press.bmp").c_str(), 2, 0);
+  return 0;
+}
 
