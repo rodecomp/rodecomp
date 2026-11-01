@@ -599,12 +599,12 @@ void UIRenewDetailQuestInfoWnd::Paint() {
 
     CTexture* texture = g_texMgr.Load("유저인터페이스\\renew_questui\\bg_quest01.bmp", 0, false, true, false);
     if (texture) {
-      this->geometry.surface->DrawScaledSurface(9, 70, 324, 138, texture, texture->Width(), texture->Height(), 1.0f, 1.0f, 0x80FFFFFF, false, 0, 0, 0, 0, 0);
+      this->geometry.surface->DrawScaledSurface(9, 70, 324, 138, texture, texture->Width(), texture->Height(), 1.0f, 1.0f, 0x80FFFFFF, false, 0, 0, 0, 0);
     }
 
     texture = g_texMgr.Load("유저인터페이스\\renew_questui\\bg_quest02.bmp", 0, false, true, false);
     if (texture) {
-      this->geometry.surface->DrawScaledSurface(9, 283, 208, 92, texture, texture->Width(), texture->Height(), 1.0f, 1.0f, 0x80FFFFFF, false, 0, 0, 0, 0, 0);
+      this->geometry.surface->DrawScaledSurface(9, 283, 208, 92, texture, texture->Width(), texture->Height(), 1.0f, 1.0f, 0x80FFFFFF, false, 0, 0, 0, 0);
     }
   } else {
     this->DrawPanelBackground(0, 0, "유저인터페이스\\renew_questui\\bg_questSub.bmp");

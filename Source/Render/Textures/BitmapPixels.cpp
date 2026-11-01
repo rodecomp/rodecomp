@@ -413,13 +413,14 @@ void BitmapPixels::DrawSurface(
 // FUNCTION: fn_01840
 void BitmapPixels::DrawScaledSurface(
   int x, int y, int drawWidth, int drawHeight, CSurface* source, int sourceWidth, int sourceHeight, float scaleX, float scaleY, std::uint32_t color,
-  bool mirrored, int offsetX, int offsetY, int sourceX, int sourceY, int format
+  bool mirrored, int offsetX, int offsetY, int sourceX, int sourceY
 ) {
   if (!source || x < 0 || this->width < static_cast<unsigned>(x) || y < 0 || this->height < static_cast<unsigned>(y) || drawWidth < 0 || drawHeight < 0 ||
       this->width < static_cast<unsigned>(x) + drawWidth || this->height < static_cast<unsigned>(y) + drawHeight || !(scaleX > 0) || !(scaleY > 0) || !color) {
     return;
   }
 
+  const int format = static_cast<CTexture*>(source)->Format();
   SurfaceLock locked = source->Lock();
   if (!locked.success) {
     return;
@@ -582,8 +583,7 @@ void BitmapPixels::DrawScaledSprite(
     this->DrawScaledSurface(
       x, y, drawWidth, drawHeight, surface, image->width, image->height, scaleX, scaleY, color, cell.mirrored != 0,
       static_cast<int>(static_cast<float>(cell.x) * scaleX + static_cast<float>(offsetX)),
-      static_cast<int>(static_cast<float>(cell.y) * scaleY + static_cast<float>(offsetY)), static_cast<int>(record.u0 * 256), static_cast<int>(record.v0 * 256),
-      static_cast<CTexture*>(surface)->Format()
+      static_cast<int>(static_cast<float>(cell.y) * scaleY + static_cast<float>(offsetY)), static_cast<int>(record.u0 * 256), static_cast<int>(record.v0 * 256)
     );
   }
 }

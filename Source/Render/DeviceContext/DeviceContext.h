@@ -38,7 +38,7 @@ public:
   ) = 0;
   virtual void DrawScaledSurface(
     int x, int y, int width, int height, CSurface* source, int sourceWidth, int sourceHeight, float scaleX, float scaleY, std::uint32_t color, bool mirrored,
-    int offsetX, int offsetY, int sourceX, int sourceY, int format
+    int offsetX, int offsetY, int sourceX, int sourceY
   ) = 0;
   virtual void Brighten(int x, int y, int width, int height, int amount) = 0;
   virtual void Dim(int x, int y, int width, int height, int percent) = 0;

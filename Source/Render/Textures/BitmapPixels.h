@@ -40,7 +40,7 @@ struct BitmapPixels {
   );
   void DrawScaledSurface(
     int x, int y, int width, int height, CSurface* source, int sourceWidth, int sourceHeight, float scaleX, float scaleY, std::uint32_t color, bool mirrored,
-    int offsetX, int offsetY, int sourceX, int sourceY, int format
+    int offsetX, int offsetY, int sourceX, int sourceY
   );
   void
   DrawRleSprite(int x, int y, std::span<const SpriteFrameCell> cells, const SpriteRleImage* const* const* images, const std::uint32_t* palette, int cellCount);

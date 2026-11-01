@@ -2042,7 +2042,7 @@ void UIRuneSet_Info::Paint() {
       if (texture) {
         const float scale = 90.0f / static_cast<float>(texture->Width());
         this->geometry.surface->DrawScaledSurface(
-          g_runeSetSlotX[slot], g_runeSetSlotY[slot], 90, 120, texture, texture->Width(), texture->Height(), scale, scale, 0xFFFFFFFF, false, 0, 0, 0, 0, 0
+          g_runeSetSlotX[slot], g_runeSetSlotY[slot], 90, 120, texture, texture->Width(), texture->Height(), scale, scale, 0xFFFFFFFF, false, 0, 0, 0, 0
         );
         if (!this->m_runeSet->m_slots[slot]->IsActive()) {
           this->geometry.surface->Dim(g_runeSetSlotX[slot], g_runeSetSlotY[slot], 90, 120, 55);
@@ -2150,7 +2150,7 @@ void UIRune_Decom::Paint() {
   CTexture* texture = g_texMgr.Load(this->unknown_0094.c_str(), 0, false, true, false);
   if (texture) {
     const float scale = 180.0f / static_cast<float>(texture->Width());
-    this->geometry.surface->DrawScaledSurface(0xE1, 0x4B, 0xB4, 0xF0, texture, texture->Width(), texture->Height(), scale, scale, 0xFFFFFFFF, false, 0, 0, 0, 0, 0);
+    this->geometry.surface->DrawScaledSurface(0xE1, 0x4B, 0xB4, 0xF0, texture, texture->Width(), texture->Height(), scale, scale, 0xFFFFFFFF, false, 0, 0, 0, 0);
   }
 
   if (this->unknown_007C.size()) {

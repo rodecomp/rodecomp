@@ -1925,7 +1925,7 @@ void UINavigationV4Wnd::DrawMapTexture(int x, int y, int size) {
     const float scale = static_cast<float>(size) / static_cast<float>(g_navigationMapTexture->Width());
     this->geometry.surface->DrawScaledSurface(
       x, y, size, size, g_navigationMapTexture, g_navigationMapTexture->Width(), g_navigationMapTexture->Height(), scale, scale, 0xFFFFFFFFu, false, 0, 0, 0,
-      0, 0
+      0
     );
   }
 }

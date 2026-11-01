@@ -264,7 +264,7 @@ void CDCSurface::DrawScaledSprite(
 
 // OFFSET: 0x00549250
 // FUNCTION: fn_01872
-void CDCSurface::DrawScaledSurface(int, int, int, int, CSurface*, int, int, float, float, std::uint32_t, bool, int, int, int, int, int) {
+void CDCSurface::DrawScaledSurface(int, int, int, int, CSurface*, int, int, float, float, std::uint32_t, bool, int, int, int, int) {
 }
 
 // OFFSET: 0x00549370

@@ -127,11 +127,9 @@ void CDCBitmap::DrawScaledSprite(
 // OFFSET: 0x005469E0
 void CDCBitmap::DrawScaledSurface(
   int x, int y, int width, int height, CSurface* source, int sourceWidth, int sourceHeight, float scaleX, float scaleY, std::uint32_t color, bool mirrored,
-  int offsetX, int offsetY, int sourceX, int sourceY, int format
+  int offsetX, int offsetY, int sourceX, int sourceY
 ) {
-  this->m_bitmap.DrawScaledSurface(
-    x, y, width, height, source, sourceWidth, sourceHeight, scaleX, scaleY, color, mirrored, offsetX, offsetY, sourceX, sourceY, format
-  );
+  this->m_bitmap.DrawScaledSurface(x, y, width, height, source, sourceWidth, sourceHeight, scaleX, scaleY, color, mirrored, offsetX, offsetY, sourceX, sourceY);
 }
 
 // OFFSET: 0x005489F0
