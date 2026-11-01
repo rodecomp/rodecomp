@@ -5325,3 +5325,681 @@ void CGameActor::Slot32() {
 // FUNCTION: fn_45476
 void CGameActor::Slot33(int) {
 }
+
+// OFFSET: 0x00CCA380
+// FUNCTION: fn_21196
+void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, int, int) {
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  int hitCount = info->hitCount;
+  const int skillId = info->skillId;
+  int type = info->type;
+  const int unknown_001C = info->unknown_001C;
+  const int unknown_0020 = info->unknown_0020;
+  const int attackSpeed = info->attackSpeed;
+  const int motionSpeed = info->motionSpeed;
+  if (hitCount <= 0 || hitCount > 36) {
+    hitCount = 1;
+  }
+
+  const int level = skillId != 56 ? info->level : hitCount;
+  const int damage = info->damage / hitCount;
+  this->hitTargetAid = info->targetAid;
+
+  CRenderObject* target;
+  bool known = false;
+  if (g_session.m_aid == info->targetAid) {
+    target = reinterpret_cast<CRenderObject*>(mode->scene->player);
+    known = true;
+  } else {
+    target = mode->scene->GetGameActorByAID(info->targetAid);
+    if (target != nullptr) {
+      known = true;
+    } else {
+      target = mode->scene->GetSkillByAID(this->hitTargetAid);
+    }
+  }
+
+  vector3d targetPos;
+  if (target == nullptr) {
+    const CRenderObject* player = reinterpret_cast<const CRenderObject*>(mode->scene->player);
+    targetPos.x = this->render.position.x - (player->render.position.x - this->render.position.x);
+    targetPos.y = this->render.position.y - (player->render.position.y - this->render.position.y);
+    targetPos.z = this->render.position.z - (player->render.position.z - this->render.position.z);
+  } else {
+    if (known) {
+      this->SendValueMessage(reinterpret_cast<int>(&target->render.position), reinterpret_cast<CGameObject*>(this->GetEffectCounter(skillId)));
+    }
+
+    targetPos = target->render.position;
+    static_cast<CGameActor*>(target)->GetEffectiveJob(-1);
+  }
+
+  if (type != 8 && type != 9 && type != 13) {
+    hitCount = 1;
+  }
+
+  if (skillId == 2288 || skillId == 5316 || skillId == 5322 || CSkillActionMgr::GetInstance()->ActionSlot07(skillId)) {
+    this->Slot59(true);
+  }
+
+  switch (type) {
+  case 4:
+  case 5:
+  case 6:
+  case 8:
+  case 9:
+  case 13:
+  case 14:
+    break;
+  default:
+    return;
+  }
+
+  ActorDamageMessage message;
+  const int address = reinterpret_cast<int>(&message);
+  if (type == 5) {
+    if (skillId == 2284 || skillId == 732) {
+      this->SetAnimationSpeed(static_cast<float>(attackSpeed) / 432.0f * 4.0f);
+    }
+
+    g_session.PlaySkillEffect(skillId, hitCount, this, static_cast<CGameActor*>(target));
+    if (target != nullptr) {
+      if (!this->IsSkillWithoutAction(skillId)) {
+        const float speed = static_cast<float>(motionSpeed) / 288.0f;
+        const unsigned delay = static_cast<unsigned>(this->unknown_0378 * this->render.speed * 24.0f);
+        int effect = -1;
+        int followEffect = -1;
+        switch (skillId) {
+        case 5215:
+        case 5225:
+        case 5226:
+        case 5234:
+        case 5235:
+        case 5236:
+        case 5237:
+        case 5241:
+        case 5244:
+        case 5245:
+        case 5294:
+        case 5295:
+        case 5296:
+        case 5298:
+        case 5314:
+        case 5319:
+        case 5329:
+        case 5383:
+        case 5384:
+        case 5385:
+          effect = g_session.FindUnknown0708(skillId);
+          followEffect = g_session.FindUnknown0700(skillId);
+          break;
+        }
+
+        message.targetAid = this->hitTargetAid;
+        message.action = 0x60;
+        message.damage = damage;
+        message.time = timeGetTime() + delay;
+        message.attackerAid = this->render.accountId;
+        message.unknown_0014 = unknown_001C;
+        message.unknown_0018 = unknown_0020;
+        message.unknown_001C = effect;
+        message.effectId = followEffect;
+        message.unknown_0024 = level;
+        message.motionSpeed = speed;
+        message.unknown_002C = 0;
+        message.unknown_0030 = skillId;
+        message.unknown_0034 = 0;
+        target->SendMsg(this, 0x1B, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        return;
+      }
+    } else if (skillId == 2450 || skillId == 739 || skillId == 5030 || skillId == 2477) {
+      return;
+    }
+  } else if (type == 14) {
+    g_session.PlaySkillEffect(skillId, hitCount, this, static_cast<CGameActor*>(target));
+    if (target != nullptr) {
+      if (!this->IsSkillWithoutAction(skillId)) {
+        const unsigned delay = static_cast<unsigned>(this->unknown_0378 * this->render.speed * 24.0f);
+        message.targetAid = this->hitTargetAid;
+        message.action = 0x61;
+        message.damage = damage;
+        message.time = timeGetTime() + delay;
+        message.attackerAid = this->render.accountId;
+        message.unknown_0014 = unknown_001C;
+        message.unknown_0018 = unknown_0020;
+        message.unknown_001C = -1;
+        message.effectId = -1;
+        message.unknown_0024 = level;
+        message.motionSpeed = static_cast<float>(motionSpeed) / 288.0f;
+        message.unknown_002C = 0;
+        message.unknown_0030 = skillId;
+        message.unknown_0034 = 0;
+        target->SendMsg(this, 0x1B, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        return;
+      }
+    } else if (skillId == 2450 || skillId == 739) {
+      return;
+    }
+  }
+
+  int castEffect;
+  int motion;
+  g_session.GetSkillActionInfo2(skillId, castEffect, motion);
+  if (skillId != 2256 && skillId != 2257 && skillId != 490 && skillId != 3009 && !CSkillActionMgr::GetInstance()->ActionSlot05(skillId)) {
+    this->Slot39(attackSpeed);
+  }
+
+  bool keepMotion;
+  switch (skillId) {
+  case 143:
+  case 263:
+  case 271:
+  case 272:
+  case 273:
+  case 371:
+  case 2317:
+  case 2326:
+  case 2328:
+  case 2329:
+  case 2519:
+  case 2579:
+  case 5382:
+    keepMotion = true;
+    break;
+  case 2261:
+    keepMotion = type == 8;
+    break;
+  default:
+    keepMotion = CSkillActionMgr::GetInstance()->ActionSlot03(skillId, type);
+    break;
+  }
+  if (!keepMotion) {
+    this->Slot15(motion, 1);
+  }
+
+  if (ShowsCastEffect(skillId) && level != -2) {
+    CRagEffect* effect = this->LaunchEffect(castEffect, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    if (effect != nullptr) {
+      effect->SendMsg(nullptr, 44, 0, hitCount, 0, 0, 0, 0);
+    }
+  }
+
+  if (type != 5) {
+    g_session.PlaySkillEffect(skillId, hitCount, this, static_cast<CGameActor*>(target));
+  }
+
+  if (target != nullptr && target != this && !CSkillActionMgr::GetInstance()->ActionSlot03(skillId, type) && this->render.unknown_0070 != 9 &&
+      this->render.unknown_0070 != 2) {
+    this->Face(targetPos.x, targetPos.z);
+  }
+
+  const vector3d player = reinterpret_cast<const CRenderObject*>(mode->scene->player)->render.position;
+  switch (skillId) {
+  case 8601:
+    g_soundMgr->PlayWave(
+      "effect\\MT_SUMMON_ABR_BATTLE_WARIOR.wav", this->render.position.x - player.x, this->render.position.y, this->render.position.z - player.z, 250, 40,
+      1.0f, 0
+    );
+    break;
+  case 8602:
+    g_soundMgr->PlayWave(
+      "effect\\MT_SUMMON_ABR_DUAL_CANNON.wav", this->render.position.x - player.x, this->render.position.y, this->render.position.z - player.z, 250, 40,
+      1.0f, 0
+    );
+    break;
+  case 8605:
+    g_soundMgr->PlayWave(
+      "effect\\MT_SUMMON_ABR_INFINITY.wav", this->render.position.x - player.x, this->render.position.y, this->render.position.z - player.z, 250, 40, 1.0f,
+      0
+    );
+    break;
+  }
+
+  unsigned delay = static_cast<unsigned>(this->unknown_0378 * this->render.speed * 24.0f);
+  if (this->GetEffectiveJob(-1) == 0x3F8 || this->GetEffectiveJob(-1) == 0x58C) {
+    delay += 0xC0;
+  }
+
+  if (target == nullptr) {
+    return;
+  }
+
+  const int hitEffect = g_session.FindUnknown0708(skillId);
+  int followEffect = g_session.FindUnknown0700(skillId);
+  if (followEffect == 186) {
+    switch (level) {
+    case 2:
+      followEffect = 187;
+      break;
+    case 3:
+      followEffect = 188;
+      break;
+    case 4:
+      followEffect = 189;
+      break;
+    case 5:
+      followEffect = 190;
+      break;
+    }
+  }
+
+  CRagEffect* launched = this->LaunchEffect(hitEffect, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  if (launched != nullptr) {
+    launched->SendMsg(nullptr, 44, 0, hitCount, 0, 0, 0, 0);
+    launched->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&targetPos), 0, 0, 0, 0);
+  }
+
+  int effect = skillId < 493 && !(skillId >= 411 && skillId <= 472) ? 0 : -1;
+  switch (skillId) {
+  case 7:
+  case 17:
+  case 19:
+  case 8202:
+    effect = 0x31;
+    break;
+  case 14:
+  case 15:
+    effect = 0x33;
+    break;
+  case 20:
+    effect = 0x34;
+    break;
+  case 54:
+    if (damage != 0) {
+      effect = 0x98;
+      followEffect = -1;
+    }
+    break;
+  case 56:
+  case 57:
+  case 58:
+  case 59:
+  case 129:
+  case 184:
+  case 185:
+  case 186:
+  case 187:
+  case 188:
+  case 189:
+  case 347:
+  case 397:
+  case 654:
+    effect = -1;
+    break;
+  case 90:
+  case 91:
+  case 770:
+    effect = 0x93;
+    break;
+  case 136:
+    effect = 0;
+    break;
+  case 170:
+    type = 10;
+    break;
+  case 190:
+  case 2600:
+  case 2602:
+    effect = 0xB4;
+    break;
+  case 467:
+  case 468:
+    effect = 0x225;
+    break;
+  case 2022:
+    effect = 0x61F;
+    break;
+  case 2202:
+    effect = 0x637;
+    followEffect = 0x638;
+    break;
+  case 2307:
+    followEffect = 0x583;
+    break;
+  case 2317:
+  case 2519:
+    effect = 0x699;
+    break;
+  case 2323:
+    if (g_session.m_aid != this->hitTargetAid) {
+      effect = 0x6AC;
+    }
+    break;
+  case 2414:
+    effect = 0x639;
+    break;
+  case 2446:
+    effect = 0x657;
+    break;
+  case 5243:
+    effect = 0x82F;
+    followEffect = 0x830;
+    break;
+  case 5274:
+    effect = 0x722;
+    break;
+  case 5320:
+    effect = 0x854;
+    break;
+  case 5322:
+    effect = 0x843;
+    break;
+  }
+
+  int action;
+  switch (type) {
+  case 4:
+  case 9:
+    action = 0x27;
+    break;
+  case 6:
+    action = 0x61;
+    break;
+  case 10:
+    action = 0x5D;
+    break;
+  case 13:
+    action = 0x94;
+    break;
+  default:
+    action = 0x60;
+    break;
+  }
+
+  message.targetAid = this->hitTargetAid;
+  message.action = action;
+  message.damage = damage;
+  message.time = timeGetTime() + delay;
+  message.attackerAid = this->render.accountId;
+  message.unknown_0014 = unknown_001C;
+  message.unknown_0018 = unknown_0020;
+  message.unknown_001C = effect;
+  message.effectId = followEffect;
+  message.unknown_0024 = level;
+  message.motionSpeed = static_cast<float>(motionSpeed) / 288.0f;
+  message.unknown_002C = 0;
+  message.unknown_0030 = skillId;
+  message.unknown_0034 = 0;
+  switch (skillId) {
+  case 273:
+  case 371:
+  case 2218:
+  case 2328:
+  case 2329:
+  case 2330:
+    target->SendMsg(this, 0x1B, 0, address, address >> 31, damage, damage >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+    break;
+  case 2219:
+    message.time += 500;
+    target->SendMsg(this, 0x1B, 0, address, address >> 31, damage, damage >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+    break;
+  case 2220:
+    message.time += 1000;
+    target->SendMsg(this, 0x1B, 0, address, address >> 31, damage, damage >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+    break;
+  case 2221:
+    message.time += 1500;
+    target->SendMsg(this, 0x1B, 0, address, address >> 31, damage, damage >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+    break;
+  case 415:
+  case 417:
+  case 2592:
+  case 2593:
+    message.time += 300;
+    target->SendMsg(this, 0x82, 0, address, address >> 31, damage, damage >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+    break;
+  case 413:
+  case 419:
+  case 421:
+  case 2332:
+  case 2336:
+  case 2342:
+  case 2576:
+  case 2580:
+    target->SendMsg(this, 0x82, 0, address, address >> 31, damage, damage >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+    break;
+  case 77:
+    message.time += 500;
+    [[fallthrough]];
+  default:
+    if (hitCount == 1) {
+      target->SendMsg(this, 0x1B, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    } else {
+      target->SendMsg(this, 0x1B, 0, address, address >> 31, damage, damage >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+    break;
+  }
+
+  message.effectId = -1;
+  switch (skillId) {
+  case 263:
+    this->SetSequenceInterval(4);
+    this->SetFrameSequence(0x58, 0, 7, 0x58, 7, 1, g_session.FindUnknown0778(this->render.accountId), 0);
+    break;
+  case 266:
+  case 267:
+  case 2518:
+    if (this->unknown_0314 != 5) {
+      this->SetSequenceInterval(10);
+      if (g_session.IsDoramJob(this->GetEffectiveJob(-1)) == true) {
+        this->SetFrameSequence(0x58, 4, 5, 0x58, 5, 1, 1100, 0);
+      } else {
+        this->SetFrameSequence(0x60, 3, 4, 0x60, 4, 1, 1100, 0);
+      }
+    }
+    break;
+  case 271:
+    if (this->unknown_0314 != 5) {
+      this->SetSequenceInterval(4);
+      this->SetFrameSequence(0x58, 0, 7, 0x58, 7, 1, 3500, 0);
+      this->unknown_0184 = 1;
+    }
+    break;
+  case 272:
+    this->SetFrameSequence(0x60, 5, 5, 0x60, 5, 1, g_session.FindUnknown0778(this->render.accountId), 0);
+    static_cast<EffectActor*>(target)->LaunchEffect(0x106, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    this->LaunchEffect(0x107, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    static_cast<EffectActor*>(target)->LaunchEffect(0x111, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    break;
+  case 273:
+    this->SetSequenceInterval(6);
+    this->SetFrameSequence(0x60, 1, 2, 0x60, 2, 1, g_session.FindUnknown0778(this->render.accountId), 0);
+    static_cast<CMode*>(g_modeMgr.GetGameMode())->SendMsg(122, 0, 0, 0, 0);
+    g_soundMgr->PlayWave("effect\\mon_맹룡과강.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    this->LaunchEffect(0x107, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    this->LaunchEffect(0x14A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    break;
+  case 370:
+    this->SetFrameSequence(0x60, 3, 4, 0x60, 4, 1, 1, 0);
+    static_cast<CMode*>(g_modeMgr.GetGameMode())->SendMsg(122, 0, 0, 0, 0);
+    g_soundMgr->PlayWave("effect\\맹호경파산.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    static_cast<EffectActor*>(target)->LaunchEffect(0x178, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    break;
+  case 371:
+    this->SetSequenceInterval(6);
+    this->SetFrameSequence(0x60, 4, 4, 0x60, 4, 1, g_session.FindUnknown0778(this->render.accountId), 0);
+    static_cast<CMode*>(g_modeMgr.GetGameMode())->SendMsg(122, 0, 0, 0, 0);
+    this->LaunchEffect(0x179, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    this->LaunchEffect(0x107, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    break;
+  case 372: {
+    this->LaunchEffect(0x107, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    CRagEffect* follow = this->LaunchEffect(0x200, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    if (follow != nullptr) {
+      vector3d position = target->render.position;
+      follow->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
+    }
+    break;
+  }
+  case 2326:
+    this->SetSequenceInterval(6);
+    this->SetFrameSequence(0x60, 4, 4, 0x60, 4, 1, g_session.FindUnknown0778(this->render.accountId), 0);
+    break;
+  case 2327:
+  case 2330:
+    this->SetSequenceInterval(6);
+    this->SetFrameSequence(0x60, 5, 5, 0x60, 5, 1, g_session.FindUnknown0778(this->render.accountId), 0);
+    break;
+  case 2328:
+    this->SetSequenceInterval(6);
+    this->SetFrameSequence(0x60, 1, 2, 0x60, 2, 1, g_session.FindUnknown0778(this->render.accountId), 0);
+    if (!this->state.Attachments().HasId(0x378)) {
+      static_cast<CMode*>(g_modeMgr.GetGameMode())->SendMsg(122, 0, 0, 0, 0);
+      g_soundMgr->PlayWave("effect\\SR_EARTHSHAKER.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      this->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      this->LaunchEffect(0x378, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    break;
+  case 2329:
+    this->SetSequenceInterval(6);
+    this->SetFrameSequence(0x60, 3, 3, 0x60, 3, 1, g_session.FindUnknown0778(this->render.accountId), 0);
+    static_cast<CMode*>(g_modeMgr.GetGameMode())->SendMsg(122, 0, 0, 0, 0);
+    g_soundMgr->PlayWave("effect\\SR_FALLENEMPIRE.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    g_effectMgr->Spawn(target->render.accountId, 0x622, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(target->render.accountId, 0x623, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    break;
+  case 2332:
+    if (target != this) {
+      static_cast<EffectActor*>(target)->LaunchEffect(0x225, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      static_cast<EffectActor*>(target)->LaunchEffect(0x226, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      CRagEffect* follow = this->LaunchEffect(0x37B, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      if (follow != nullptr) {
+        vector3d position = target->render.position;
+        follow->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
+      }
+    }
+    break;
+  case 2559:
+    static_cast<EffectActor*>(target)->LaunchEffect(0x106, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    static_cast<EffectActor*>(target)->LaunchEffect(0x111, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    break;
+  case 2564:
+    this->SetSequenceInterval(4);
+    this->SetFrameSequence(0x58, 0, 7, 0x58, 7, 1, 3500, 0);
+    break;
+  case 5214:
+  case 5220:
+  case 5230:
+  case 5350:
+  case 5357:
+    this->SetFrameSequence(0x60, 1, 3, 0x60, 3, 1, 500, 0);
+    break;
+  case 5251:
+  case 5252:
+  case 5253:
+    this->SetSequenceInterval(4);
+    this->SetFrameSequence(0x60, 2, 2, 0x60, 2, 1, 500, 0);
+    break;
+  }
+
+  if (type != 6 && type != 8 && type != 9 && type != 13) {
+    return;
+  }
+
+  int total = damage;
+  for (int hit = 0; hit < hitCount - 1;) {
+    const int previous = hit;
+    ++hit;
+    message.effectId = -1;
+    message.unknown_0034 = hit;
+    if (skillId == 56) {
+      message.time += g_multiHitInterval + 80;
+      total += damage;
+      message.action = action;
+      message.damage = damage;
+      target->SendMsg(this, 0x1B, 0, address, address >> 31, total, total >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+      continue;
+    }
+
+    message.time += g_multiHitInterval;
+    total += damage;
+    message.damage = damage;
+    int kind = 0x1B;
+    switch (skillId) {
+    case 272:
+      message.action = action;
+      message.effectId = 122;
+      break;
+    case 372:
+      message.action = 0x6C;
+      this->SendMsg(this, 0x1B, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      message.action = action;
+      break;
+    case 2211:
+      message.effectId = 0x512;
+      if (g_serviceOptions.Get(229)) {
+        message.action = action;
+        message.effectId = -1;
+        break;
+      }
+      message.action = action;
+      break;
+    case 2213:
+      message.action = action;
+      if (previous & 1) {
+        message.unknown_001C = -1;
+      } else if (g_serviceOptions.Get(229)) {
+        message.unknown_001C = 0x601;
+        message.effectId = 0x602;
+      } else {
+        message.unknown_001C = 0x588;
+        message.effectId = 0x589;
+      }
+      break;
+    case 5320:
+      message.unknown_001C = -1;
+      message.effectId = g_session.FindUnknown0700(skillId);
+      message.action = action;
+      break;
+    case 5220:
+    case 5249:
+    case 5250:
+    case 5277:
+    case 5287:
+    case 5289:
+    case 5340:
+    case 5341:
+    case 5342:
+    case 5343:
+    case 5369:
+    case 5373:
+    case 5382:
+    case 5389:
+    case 5390:
+    case 5391:
+    case 5392:
+    case 5393:
+    case 8047:
+    case 8048:
+    case 8050:
+      message.effectId = g_session.FindUnknown0700(skillId);
+      message.action = action;
+      break;
+    case 413:
+    case 415:
+    case 417:
+    case 419:
+    case 421:
+    case 2332:
+    case 2336:
+    case 2342:
+    case 2576:
+    case 2580:
+    case 2592:
+    case 2593:
+      message.action = action;
+      kind = 0x85;
+      break;
+    case 737:
+    case 2321:
+      message.effectId = 0x593;
+      message.action = action;
+      break;
+    default:
+      message.action = action;
+      break;
+    }
+
+    target->SendMsg(this, kind, 0, address, address >> 31, total, total >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+  }
+}

@@ -35,6 +35,20 @@ struct ActorHitInfo {
   /* 002C */ unsigned char unknown_002C;
 };
 
+struct ActorSkillInfo {
+  /* 0000 */ int skillId;
+  /* 0004 */ int damage;
+  /* 0008 */ int type;
+  /* 000C */ std::uint32_t targetAid;
+  /* 0010 */ int unknown_0010;
+  /* 0014 */ int level;
+  /* 0018 */ int hitCount;
+  /* 001C */ int unknown_001C;
+  /* 0020 */ int unknown_0020;
+  /* 0024 */ int attackSpeed;
+  /* 0028 */ int motionSpeed;
+};
+
 struct ActorDamageMessage {
   /* 0000 */ std::uint32_t targetAid;
   /* 0004 */ int action;
@@ -265,6 +279,7 @@ public:
   void ProcessDamageMessages();
   void UpdateDamageMessages();
   void ProcessHitMessage(CGameObject* sender, const ActorHitInfo* info, int unused1, int unused2);
+  void ProcessSkillMessage(CGameObject* sender, const ActorSkillInfo* info, int unused1, int unused2);
   int GetEffectCounter(int effectId);
   float GetNameOffset();
   float GetNameHeight();
