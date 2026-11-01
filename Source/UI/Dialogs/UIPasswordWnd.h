@@ -55,6 +55,7 @@ protected:
 class UIStorePasswordInputWnd : public UIFrameWnd {
 public:
   UIStorePasswordInputWnd(UIWindowContext& windows, UIFrameContext& frames);
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
   /* 00B4 */ unsigned char unknown_00B4[0x8];
   /* 00BC */ int unknown_00BC;

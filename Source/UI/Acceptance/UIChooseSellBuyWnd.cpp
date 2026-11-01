@@ -13,6 +13,7 @@
 #include "Contents/MessageTable.h"
 #include "Contents/Items/ItemNaming.h"
 #include "Contents/TipBoxTitles.h"
+#include "Contents/TipOfTheDay.h"
 #include "Contents/SkinMgr.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CGameMode.h"
@@ -95,6 +96,7 @@
 #include "UI/Window/InputFocus.h"
 #include "UI/Window/UIMonsterDisplayWnd.h"
 #include "UI/Window/UINewSelectCharWnd.h"
+#include "UI/Window/WindowDialogs.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowBorder.h"
 #include "UI/Window/WindowManagerWindows.h"
@@ -103,6 +105,7 @@
 #include "Utility/Text/TextTokens.h"
 #include "Contents/PlayerNameDictionary.h"
 #include "Network/TextEncoding.h"
+#include "Render/Text/FontCache.h"
 #include "Render/Text/TextContext.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketId.h"
@@ -143,6 +146,9 @@ static const char bookmarkKeySuffixText[] = "\\BookMark";
 
 // GLOBAL: gl_24751
 const char* g_bookmarkKeySuffix = bookmarkKeySuffixText;
+
+// GLOBAL: gl_25332
+int g_window315Enabled = 1;
 
 // OFFSET: 0x0087B500
 // FUNCTION: fn_11241
@@ -5027,4 +5033,431 @@ UIStatusWnd::UIStatusWnd(UIWindowContext& windows, UIFrameContext& frames, UIBut
   this->m_titleHeight = 17;
   this->m_offsetY = 11;
   this->m_offsetX = 16;
+}
+
+// OFFSET: 0x00906DE0
+// FUNCTION: fn_12385
+int UITipOfTheDayWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  switch (message) {
+  case 6:
+    switch (a) {
+    case 201:
+      g_windowMgr.CloseWindow(38);
+      break;
+    case 213: {
+      this->m_showTipsAtStartup = static_cast<int>(b);
+      g_window315Enabled = static_cast<int>(b);
+      HKEY key;
+      DWORD disposition = 0;
+      if (RegCreateKeyExA(HKEY_LOCAL_MACHINE, g_subKey, 0, nullptr, 0, KEY_ALL_ACCESS, nullptr, &key, &disposition) == ERROR_SUCCESS) {
+        RegSetValueExA(key, "SHOWTIPSATSTARTUP", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->m_showTipsAtStartup), sizeof(this->m_showTipsAtStartup));
+        RegCloseKey(key);
+      }
+      break;
+    }
+    case 218:
+      if (g_tipOfTheDay.Size() != 0) {
+        ++this->m_tipIndex;
+        if (this->m_tipIndex >= g_tipOfTheDay.Size()) {
+          this->m_tipIndex = 0;
+        }
+        this->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(&g_tipOfTheDay.GetTip(this->m_tipIndex)), 0, 0, 0);
+      }
+      break;
+    case 246:
+      if (g_tipOfTheDay.Size() != 0) {
+        if (--this->m_tipIndex < 0) {
+          this->m_tipIndex = g_tipOfTheDay.Size() - 1;
+        }
+        this->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(&g_tipOfTheDay.GetTip(this->m_tipIndex)), 0, 0, 0);
+      }
+      break;
+    }
+    return 0;
+
+  case 29: {
+    const auto& tip = *reinterpret_cast<const StringList*>(a);
+    this->m_textViewer->Clear();
+    this->m_textViewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(175)), 38, 0, 0);
+    for (unsigned i = 0; i < tip.size(); ++i) {
+      this->m_textViewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(tip[i].c_str()), 38, 0, 0);
+    }
+    return 0;
+  }
+
+  default:
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
+}
+
+// OFFSET: 0x00905F40
+// FUNCTION: fn_12384
+int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  CMode* mode = static_cast<CMode*>(g_charViewMode);
+  auto& dialogs = *reinterpret_cast<WindowDialogs*>(&g_windowMgr);
+  const TextLocale locale = {};
+
+  if (message == 6) {
+    switch (a) {
+    case 184:
+      switch (this->unknown_00F4) {
+      case 0:
+        if (std::strlen(this->unknown_00D0) < 9 && std::strlen(this->unknown_00D0) > 3) {
+          int password = std::atoi(this->unknown_00D0);
+          for (unsigned i = 0; i < std::strlen(this->unknown_00D0); ++i) {
+            password += 100000000;
+          }
+          mode->SendMsg(188, password, g_session.m_storePasswordMode, 0, 0);
+          g_windowMgr.CloseWindow(115);
+          break;
+        }
+        dialogs.Confirm(LookupMessage(1011), 0, true, false, 0, "Message", 280, 120, 0);
+        this->unknown_00F4 = 0;
+        this->unknown_00F8 = this->unknown_00FC;
+        this->unknown_00EC = 0;
+        this->unknown_00F0 = 0;
+        std::memset(this->unknown_00D0, 0, sizeof(this->unknown_00D0));
+        std::memset(this->unknown_00D9, 0, sizeof(this->unknown_00D9));
+        std::memset(this->unknown_00E2, 0, sizeof(this->unknown_00E2));
+        this->Paint();
+        break;
+
+      case 1:
+        if (std::strlen(this->unknown_00D0) < 9 && std::strlen(this->unknown_00D0) > 3) {
+          this->unknown_00F4 = 2;
+          this->unknown_00F8 = this->unknown_0100;
+          this->unknown_00EC = 0;
+          this->unknown_00F0 = 0;
+          std::memset(this->unknown_00D9, 0, sizeof(this->unknown_00D9));
+          std::memset(this->unknown_00E2, 0, sizeof(this->unknown_00E2));
+          this->FillRegion(111, 79, 98, 14, 0xFFFFFF);
+          break;
+        }
+        dialogs.Confirm(LookupMessage(1011), 0, true, false, 0, "Message", 280, 120, 0);
+        this->unknown_00F4 = 1;
+        this->unknown_00F8 = this->unknown_00FC;
+        this->unknown_00EC = 0;
+        this->unknown_00F0 = 0;
+        std::memset(this->unknown_00D0, 0, sizeof(this->unknown_00D0));
+        std::memset(this->unknown_00D9, 0, sizeof(this->unknown_00D9));
+        std::memset(this->unknown_00E2, 0, sizeof(this->unknown_00E2));
+        this->Paint();
+        break;
+
+      case 2:
+        if (std::strlen(this->unknown_00D9) < 9 && std::strlen(this->unknown_00D9) > 3) {
+          this->unknown_00F8 = this->unknown_0104;
+          this->unknown_00F4 = 3;
+          this->unknown_00EC = 0;
+          this->unknown_00F0 = 0;
+          std::memset(this->unknown_00E2, 0, sizeof(this->unknown_00E2));
+          this->FillRegion(111, 118, 98, 14, 0xFFFFFF);
+          break;
+        }
+        dialogs.Confirm(LookupMessage(1011), 0, true, false, 0, "Message", 280, 120, 0);
+        this->unknown_00F8 = this->unknown_0100;
+        this->unknown_00F4 = 2;
+        this->unknown_00EC = 0;
+        this->unknown_00F0 = 0;
+        std::memset(this->unknown_00D0, 0, sizeof(this->unknown_00D0));
+        std::memset(this->unknown_00D9, 0, sizeof(this->unknown_00D9));
+        std::memset(this->unknown_00E2, 0, sizeof(this->unknown_00E2));
+        this->FillRegion(111, 79, 98, 14, 0xFFFFFF);
+        break;
+
+      case 3:
+        if (std::strlen(this->unknown_00E2) < 9 && std::strlen(this->unknown_00E2) > 3) {
+          if (std::strcmp(this->unknown_00D9, this->unknown_00E2) == 0) {
+            int password = std::atoi(this->unknown_00D0);
+            int newPassword = std::atoi(this->unknown_00E2);
+            for (unsigned i = 0; i < std::strlen(this->unknown_00D0); ++i) {
+              password += 100000000;
+            }
+            for (unsigned i = 0; i < std::strlen(this->unknown_00E2); ++i) {
+              newPassword += 100000000;
+            }
+            mode->SendMsg(188, password, g_session.m_storePasswordMode, newPassword, 0);
+            g_windowMgr.CloseWindow(115);
+          } else {
+            dialogs.Confirm(LookupMessage(1016), 0, true, false, 0, "Message", 280, 120, 0);
+            this->unknown_00F4 = 2;
+            this->unknown_00F8 = this->unknown_0100;
+            this->unknown_00EC = 0;
+            this->unknown_00F0 = 0;
+            std::memset(this->unknown_00D9, 0, sizeof(this->unknown_00D9));
+            std::memset(this->unknown_00E2, 0, sizeof(this->unknown_00E2));
+            this->FillRegion(111, 79, 98, 14, 0xFFFFFF);
+            this->FillRegion(110, 117, 100, 16, 0xFAE6C8);
+          }
+          break;
+        }
+        dialogs.Confirm(LookupMessage(1011), 0, true, false, 0, "Message", 280, 120, 0);
+        this->unknown_00F4 = 3;
+        this->unknown_00F8 = this->unknown_0104;
+        this->unknown_00EC = 0;
+        this->unknown_00F0 = 0;
+        std::memset(this->unknown_00D0, 0, sizeof(this->unknown_00D0));
+        std::memset(this->unknown_00D9, 0, sizeof(this->unknown_00D9));
+        std::memset(this->unknown_00E2, 0, sizeof(this->unknown_00E2));
+        this->FillRegion(111, 118, 98, 14, 0xFFFFFF);
+        break;
+      }
+      break;
+
+    case 185:
+      g_windowMgr.CloseWindow(115);
+      if (mode->cursorType == 9) {
+        g_windowMgr.EnsureWindow(277);
+      }
+      break;
+
+    case 292:
+      g_session.m_storePasswordMode = 2;
+      this->unknown_0108 = 1;
+      this->unknown_00F4 = 1;
+      this->unknown_00F8 = this->unknown_00FC;
+      this->unknown_00EC = 0;
+      this->unknown_00F0 = 0;
+      std::memset(this->unknown_00D0, 0, sizeof(this->unknown_00D0));
+      std::memset(this->unknown_00D9, 0, sizeof(this->unknown_00D9));
+      std::memset(this->unknown_00E2, 0, sizeof(this->unknown_00E2));
+      this->Paint();
+      break;
+
+    case 293:
+      if (++this->unknown_00EC > 8) {
+        dialogs.Confirm(LookupMessage(1011), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      }
+      switch (this->unknown_00F4) {
+      case 0:
+      case 1:
+        std::strcat(this->unknown_00D0, "0");
+        break;
+      case 2:
+        std::strcat(this->unknown_00D9, "0");
+        break;
+      case 3:
+        std::strcat(this->unknown_00E2, "0");
+        break;
+      }
+      this->DrawTextAt(g_fontCache, locale, this->unknown_00F0 + 112, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
+      this->unknown_00F0 += 5;
+      break;
+
+    case 294:
+      if (++this->unknown_00EC > 8) {
+        dialogs.Confirm(LookupMessage(1011), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      }
+      switch (this->unknown_00F4) {
+      case 0:
+      case 1:
+        std::strcat(this->unknown_00D0, "1");
+        break;
+      case 2:
+        std::strcat(this->unknown_00D9, "1");
+        break;
+      case 3:
+        std::strcat(this->unknown_00E2, "1");
+        break;
+      }
+      this->DrawTextAt(g_fontCache, locale, this->unknown_00F0 + 112, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
+      this->unknown_00F0 += 5;
+      break;
+
+    case 295:
+      if (++this->unknown_00EC > 8) {
+        dialogs.Confirm(LookupMessage(1011), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      }
+      switch (this->unknown_00F4) {
+      case 0:
+      case 1:
+        std::strcat(this->unknown_00D0, "2");
+        break;
+      case 2:
+        std::strcat(this->unknown_00D9, "2");
+        break;
+      case 3:
+        std::strcat(this->unknown_00E2, "2");
+        break;
+      }
+      this->DrawTextAt(g_fontCache, locale, this->unknown_00F0 + 112, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
+      this->unknown_00F0 += 5;
+      break;
+
+    case 296:
+      if (++this->unknown_00EC > 8) {
+        dialogs.Confirm(LookupMessage(1011), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      }
+      switch (this->unknown_00F4) {
+      case 0:
+      case 1:
+        std::strcat(this->unknown_00D0, "3");
+        break;
+      case 2:
+        std::strcat(this->unknown_00D9, "3");
+        break;
+      case 3:
+        std::strcat(this->unknown_00E2, "3");
+        break;
+      }
+      this->DrawTextAt(g_fontCache, locale, this->unknown_00F0 + 112, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
+      this->unknown_00F0 += 5;
+      break;
+
+    case 297:
+      if (++this->unknown_00EC > 8) {
+        dialogs.Confirm(LookupMessage(1011), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      }
+      switch (this->unknown_00F4) {
+      case 0:
+      case 1:
+        std::strcat(this->unknown_00D0, "4");
+        break;
+      case 2:
+        std::strcat(this->unknown_00D9, "4");
+        break;
+      case 3:
+        std::strcat(this->unknown_00E2, "4");
+        break;
+      }
+      this->DrawTextAt(g_fontCache, locale, this->unknown_00F0 + 112, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
+      this->unknown_00F0 += 5;
+      break;
+
+    case 298:
+      if (++this->unknown_00EC > 8) {
+        dialogs.Confirm(LookupMessage(1011), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      }
+      switch (this->unknown_00F4) {
+      case 0:
+      case 1:
+        std::strcat(this->unknown_00D0, "5");
+        break;
+      case 2:
+        std::strcat(this->unknown_00D9, "5");
+        break;
+      case 3:
+        std::strcat(this->unknown_00E2, "5");
+        break;
+      }
+      this->DrawTextAt(g_fontCache, locale, this->unknown_00F0 + 112, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
+      this->unknown_00F0 += 5;
+      break;
+
+    case 299:
+      if (++this->unknown_00EC > 8) {
+        dialogs.Confirm(LookupMessage(1011), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      }
+      switch (this->unknown_00F4) {
+      case 0:
+      case 1:
+        std::strcat(this->unknown_00D0, "6");
+        break;
+      case 2:
+        std::strcat(this->unknown_00D9, "6");
+        break;
+      case 3:
+        std::strcat(this->unknown_00E2, "6");
+        break;
+      }
+      this->DrawTextAt(g_fontCache, locale, this->unknown_00F0 + 112, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
+      this->unknown_00F0 += 5;
+      break;
+
+    case 300:
+      if (++this->unknown_00EC > 8) {
+        dialogs.Confirm(LookupMessage(1011), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      }
+      switch (this->unknown_00F4) {
+      case 0:
+      case 1:
+        std::strcat(this->unknown_00D0, "7");
+        break;
+      case 2:
+        std::strcat(this->unknown_00D9, "7");
+        break;
+      case 3:
+        std::strcat(this->unknown_00E2, "7");
+        break;
+      }
+      this->DrawTextAt(g_fontCache, locale, this->unknown_00F0 + 112, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
+      this->unknown_00F0 += 5;
+      break;
+
+    case 301:
+      if (++this->unknown_00EC > 8) {
+        dialogs.Confirm(LookupMessage(1011), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      }
+      switch (this->unknown_00F4) {
+      case 0:
+      case 1:
+        std::strcat(this->unknown_00D0, "8");
+        break;
+      case 2:
+        std::strcat(this->unknown_00D9, "8");
+        break;
+      case 3:
+        std::strcat(this->unknown_00E2, "8");
+        break;
+      }
+      this->DrawTextAt(g_fontCache, locale, this->unknown_00F0 + 112, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
+      this->unknown_00F0 += 5;
+      break;
+
+    case 302:
+      if (++this->unknown_00EC > 8) {
+        dialogs.Confirm(LookupMessage(1011), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      }
+      switch (this->unknown_00F4) {
+      case 0:
+      case 1:
+        std::strcat(this->unknown_00D0, "9");
+        break;
+      case 2:
+        std::strcat(this->unknown_00D9, "9");
+        break;
+      case 3:
+        std::strcat(this->unknown_00E2, "9");
+        break;
+      }
+      this->DrawTextAt(g_fontCache, locale, this->unknown_00F0 + 112, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
+      this->unknown_00F0 += 5;
+      break;
+
+    case 303:
+      if (this->unknown_00F4 == 0) {
+        this->unknown_00F4 = 0;
+        this->unknown_00F8 = this->unknown_00FC;
+      } else if (g_session.m_passwordInputAlternate) {
+        this->unknown_00F4 = 2;
+        this->unknown_00F8 = this->unknown_0100;
+      } else {
+        this->unknown_00F4 = 1;
+        this->unknown_00F8 = this->unknown_00FC;
+      }
+      this->unknown_00EC = 0;
+      this->unknown_00F0 = 0;
+      std::memset(this->unknown_00D0, 0, sizeof(this->unknown_00D0));
+      std::memset(this->unknown_00D9, 0, sizeof(this->unknown_00D9));
+      std::memset(this->unknown_00E2, 0, sizeof(this->unknown_00E2));
+      this->Paint();
+      break;
+
+    case 304:
+      this->SendMsg(this, 6, 184, 0, 0, 0);
+      break;
+    }
+  }
+
+  return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
 }
