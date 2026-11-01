@@ -825,6 +825,8 @@ public:
 };
 
 void LaunchRollingCutterEffect(CGameActor* actor);
+void LaunchSkillCastEffect(CGameMode* mode, CGameActor* source, CGameActor* target, std::uint32_t targetAid, std::uint16_t skillId, short x, short y, int delay);
+void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t skillId, int delay, int effectId);
 void __stdcall sub_CDBC30(const vector3d* position, int actorId, float scale, int job);
 void __stdcall sub_D08670(int field14, int itemId, int quantity, int field8, int fieldC, int field10);
 

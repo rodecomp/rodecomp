@@ -10032,3 +10032,104 @@ void CGameMode::ReceiveGuildPositionNames(const unsigned char* data) {
 // OFFSET: 0x00D5A4C0
 
 // OFFSET: 0x00D5B3C0
+
+#include "Contents/Actors/GroundScope.h"
+#include "Contents/Ground/TerrainHeight.h"
+#include <new>
+
+// OFFSET: 0x00D5E930
+// FUNCTION: fn_21967
+void LaunchSkillCastEffect(CGameMode* mode, CGameActor* source, CGameActor* target, std::uint32_t targetAid, std::uint16_t skillId, short x, short y, int delay) {
+  CSkillActionMgr::GetInstance()->ActionSlot10(skillId, delay, target, x, y);
+
+  if (targetAid == 0) {
+    float worldX = 0.0f;
+    float worldZ = 0.0f;
+    const int column = x;
+    const int row = y;
+    reinterpret_cast<const ::TerrainHeight*>(g_modeMgr.GetGameMode())->CellCenter(column, row, worldX, worldZ);
+    source->Face(worldX, worldZ);
+
+    CGroundScope* scope = new (std::nothrow) CGroundScope;
+    if (!scope) {
+      return;
+    }
+
+    scope->SendMsg(nullptr, 0x16, 0, source->render.accountId, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    scope->SendMsg(nullptr, 0xE, 0, column, column >> 31, row, row >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+    scope->SendMsg(nullptr, 0x73, 0, timeGetTime() + delay, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    const int id = skillId;
+    scope->SendMsg(nullptr, 0x75, 0, id, id >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    mode->scene->objects.push_back(scope);
+    return;
+  }
+
+  if (!target || source == target) {
+    return;
+  }
+
+  if (g_session.IsSkillIdInRange6018(target->GetEffectiveJob(-1)) || target->unknown_0314 == 9) {
+    if (mode->scene->unknown_0048 != 0 || mode->scene->unknown_004C != 0 || !IsSupportSkill(skillId)) {
+      source->SendMsg(nullptr, 0x51, 0, target->render.accountId, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+  }
+
+  source->hitTargetAid = targetAid;
+  source->Face(target->render.position.x, target->render.position.z);
+
+  CEffect* effect;
+  if (skillId == 0x14A4) {
+    effect = g_effectMgr->Spawn(target->render.accountId, 0x78A, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  }
+
+  const int delayFrames = delay / 16;
+  target->SendMsg(nullptr, 0x56, 0, 0x3C, 0, delayFrames, delayFrames >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+
+  switch (skillId) {
+  case 0x1EA:
+    mode->LaunchTargetEffect(0x21B, source, target, -1);
+    return;
+  case 0x89A: {
+    const float speed = target->render.speed;
+    effect = g_effectMgr->Spawn(target->render.accountId, 0x635, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    const int duration = static_cast<int>(speed * 150.0f + 200.0f) + delay;
+    if (effect) {
+      effect->Slot14(duration);
+    }
+    effect = g_effectMgr->Spawn(target->render.accountId, 0x636, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(duration);
+    }
+    return;
+  }
+  case 0x89C:
+    target->SendMsg(nullptr, 0x57, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    target->SendMsg(nullptr, 0x56, 0, 0x5A8, 0, delayFrames, delayFrames >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+    return;
+  case 0x8A6:
+    target->SendMsg(nullptr, 0x57, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    g_effectMgr->Spawn(target->render.accountId, 0x665, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    return;
+  case 0x8BC:
+    target->SendMsg(nullptr, 0x57, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    effect = g_effectMgr->Spawn(target->render.accountId, 0x673, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x8D3:
+    if (CRagEffect* ragEffect = source->LaunchEffect(0x313, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+      vector3d position = target->render.position;
+      ragEffect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
+    }
+    return;
+  default:
+    return;
+  }
+}
+
+// OFFSET: 0x00D5B940
