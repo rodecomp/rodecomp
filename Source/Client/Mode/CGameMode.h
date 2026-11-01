@@ -293,6 +293,10 @@ public:
   void ReceiveBookOpen(const unsigned char* packet);
   void ReceiveActorNameCard(const unsigned char* packet);
   void ReceiveServiceRequest(unsigned char type, int value);
+  void ReceiveAchievementUpdate(
+    int unknown01738784, short unknown01738788, int completed, int total, int id, unsigned char achieved, const std::uint32_t* objectives,
+    __time32_t completedAt, unsigned char rewarded
+  );
   void ReceiveAchievementResult(unsigned char result, int id);
   void ReceiveRuneRewardPacket(const unsigned char* packet);
   void ReceiveRuneGradeResult(int result, int tagId, int type, std::int64_t id, int grade, int gradeLevel);

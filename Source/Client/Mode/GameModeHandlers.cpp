@@ -5,6 +5,7 @@
 #include "Client/Input/InputCharset.h"
 #include "Client/Session.h"
 #include "Client/Replay.h"
+#include "Contents/AchievementMgr.h"
 #include "Contents/CashEmotionMgr.h"
 #include "Contents/ClanInfo.h"
 #include "Contents/Actors/Pc.h"
@@ -32,10 +33,12 @@
 #include "Script/LuaScript.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
+#include "Render/Renderer.h"
 #include "Resource/World/TerrainResource.h"
 #include "UI/Dialogs/UITipboxWnd.h"
 #include "UI/GameSettings/GameSettingsUI.h"
 #include "UI/Rodex/UIRodexInboxWnd.h"
+#include "UI/Text/UITransBalloonText.h"
 #include "UI/UIBarGraph.h"
 #include "UI/UIGradeEnchantWnd.h"
 #include "UI/Window/UIHomunInfoWnd.h"
@@ -2161,6 +2164,65 @@ void CGameMode::ReceiveGradeEnchantResult(const unsigned char* packet) {
       g_effectMgr->Spawn(g_session.m_aid, 1607, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       g_effectMgr->Spawn(g_session.m_aid, 1609, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)->Slot16(2800);
       break;
+    }
+  }
+}
+
+// OFFSET: 0x00D67C20
+// FUNCTION: fn_22038
+void CGameMode::ReceiveAchievementUpdate(
+  int unknown01738784, short unknown01738788, int completed, int total, int id, unsigned char achieved, const std::uint32_t* objectives,
+  __time32_t completedAt, unsigned char rewarded
+) {
+  const SessionRecord6144 previous = g_session.FindRecord6144(id);
+  if (reinterpret_cast<const unsigned char*>(&previous.unknown_0000)[1] == 0 && achieved == 1) {
+    this->unknown_0600 = timeGetTime();
+    if (!this->unknown_05FC) {
+      UIAchBalloonText* balloon =
+        new UIAchBalloonText(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<BalloonTextContext*>(nullptr));
+      this->unknown_05FC = balloon;
+      balloon->SetSize(g_renderer->viewport.width, 50);
+      g_windowMgr.AddRenderedFront(this->unknown_05FC);
+    }
+
+    AchievementInfo info;
+    info.unknown_004C = -1;
+    info.unknown_0050 = -1;
+    info.unknown_0054 = -1;
+    g_achievementMgr->GetAchievement(info, id);
+    const std::string text = FormatOwnedString(LookupMessage(0xA79), info.title.c_str());
+    static_cast<UIBalloonText*>(this->unknown_05FC)->WrapText(text.c_str(), 72);
+    static_cast<UIBalloonText*>(this->unknown_05FC)->m_fontHeight = 20;
+    static_cast<UIBalloonText*>(this->unknown_05FC)->m_textColor = 0xFFFFFF;
+    static_cast<UIBalloonText*>(this->unknown_05FC)->m_outlineColor = 0;
+    this->unknown_05FC->Move(0, 50);
+    g_effectMgr->Spawn(g_session.m_aid, 0x446, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    if (UIWindow* window = g_windowMgr.LookupWindow(0x133)) {
+      window->SendMsg(nullptr, 6, 0x11E, 0x1D9, 1, 0);
+    }
+  }
+
+  g_unknown_01738784 = unknown01738784;
+  g_unknown_01738788 = unknown01738788;
+  g_achievementCompleted = completed;
+  g_achievementTotal = total;
+
+  AchievementRecordPacket record;
+  record.id = id;
+  record.completed = achieved;
+  std::memcpy(record.objectives, objectives, sizeof(record.objectives));
+  record.completedAt = completedAt;
+  record.rewarded = rewarded;
+  g_session.UpdateRecord6144(record);
+
+  if (UIWindow* window = g_windowMgr.LookupWindow(0x10E)) {
+    window->SendMsg(nullptr, 60, id, 0, 0, 0);
+  }
+
+  g_session.RefreshTrackedAchievement(id);
+  if (g_session.HasUnknown6178Records() == true) {
+    if (UIWindow* window = g_windowMgr.EnsureWindow(0x10F)) {
+      window->Invalidate();
     }
   }
 }
