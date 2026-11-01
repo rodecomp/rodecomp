@@ -7954,3 +7954,422 @@ namespace {
 }
 
 // OFFSET: 0x00D27420
+// FUNCTION: fn_21636
+void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const SkillFailurePacket*>(data);
+  this->scene->player->render.isMotionFreezed = false;
+  if (packet->result != 0) {
+    return;
+  }
+
+  const unsigned char showMessage = g_serviceOptions.Get(0x71);
+  char text[256];
+  const char* notice;
+  switch (packet->cause) {
+  case 0:
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    if (packet->skillId == 1) {
+      switch (packet->value) {
+      case 0:
+        notice = LookupMessage(0x9F);
+        break;
+      case 1:
+        this->unknown_026E[0x16] = 0;
+        notice = LookupMessage(0xA0);
+        break;
+      case 2:
+        notice = LookupMessage(0xA1);
+        break;
+      case 3:
+        notice = LookupMessage(0xA2);
+        break;
+      case 4:
+        notice = LookupMessage(0xA3);
+        break;
+      case 5:
+        notice = LookupMessage(0xA4);
+        break;
+      case 6:
+        notice = LookupMessage(0xA5);
+        break;
+      case 7:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x17F)), 0xFF, 0xB, 0, 0);
+        [[fallthrough]];
+      case 8:
+        notice = LookupMessage(0x518);
+        break;
+      default:
+        return;
+      }
+    } else {
+      switch (packet->skillId) {
+      case 27:
+        notice = LookupMessage(0xD6);
+        break;
+      case 50:
+        notice = LookupMessage(0xCD);
+        break;
+      case 52:
+        notice = LookupMessage(0xCF);
+        break;
+      default:
+        if (!showMessage) {
+          return;
+        }
+        notice = LookupMessage(0xCC);
+        break;
+      }
+    }
+    break;
+  case 1:
+    notice = LookupMessage(0xCA);
+    break;
+  case 2:
+    notice = LookupMessage(0xCB);
+    break;
+  case 3:
+    notice = LookupMessage(0x328);
+    break;
+  case 4:
+    if (HidesUseFailureMessage(packet->skillId) || !showMessage) {
+      return;
+    }
+    std::sprintf(text, LookupMessage(0x5B4), CSkillInfo::DisplayName(*g_luaScript, packet->skillId));
+    notice = text;
+    break;
+  case 5:
+    notice = LookupMessage(0xE9);
+    break;
+  case 6:
+    notice = LookupMessage(0xEF);
+    break;
+  case 7:
+    notice = LookupMessage(0xF6);
+    break;
+  case 8:
+    notice = LookupMessage(0xF7);
+    break;
+  case 9:
+    notice = LookupMessage(0x244);
+    break;
+  case 10:
+    if (packet->skillId == 0x8A9 || packet->skillId == 0x8AA || packet->skillId == 0x8AB || packet->skillId == 0x8AC || packet->skillId == 0x8AD) {
+      this->scene->player->SendMsg(nullptr, 0x8F, 0, 0x2DF, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->scene->player->SendMsg(nullptr, 0x8F, 0, 0x2E0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->scene->player->SendMsg(nullptr, 0x8F, 0, 0x2E1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->scene->player->SendMsg(nullptr, 0x8F, 0, 0x2E2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+    if (!showMessage) {
+      return;
+    }
+    notice = LookupMessage(0x11D);
+    break;
+  case 11:
+    notice = LookupMessage(0x574);
+    break;
+  case 12:
+    notice = LookupMessage(0x575);
+    break;
+  case 13:
+    notice = LookupMessage(0x576);
+    break;
+  case 14:
+    notice = LookupMessage(0x577);
+    break;
+  case 15:
+    notice = LookupMessage(0x578);
+    break;
+  case 16:
+    notice = LookupMessage(0x579);
+    break;
+  case 17:
+    notice = LookupMessage(0x583);
+    break;
+  case 18:
+    notice = LookupMessage(0x584);
+    break;
+  case 19:
+    notice = LookupMessage(0x585);
+    break;
+  case 20:
+    notice = LookupMessage(0x586);
+    break;
+  case 21:
+    notice = LookupMessage(0x587);
+    break;
+  case 22:
+    notice = LookupMessage(0x588);
+    break;
+  case 23:
+    notice = LookupMessage(0x589);
+    break;
+  case 24:
+    notice = LookupMessage(0x591);
+    break;
+  case 25:
+    notice = LookupMessage(0x748);
+    break;
+  case 26:
+    notice = LookupMessage(0x593);
+    break;
+  case 27:
+    notice = LookupMessage(0x594);
+    break;
+  case 28:
+    notice = LookupMessage(0x789);
+    break;
+  case 29:
+    notice = LookupMessage(0x78C);
+    break;
+  case 30:
+    notice = LookupMessage(0x791);
+    break;
+  case 31:
+    notice = LookupMessage(0x599);
+    break;
+  case 32:
+    notice = LookupMessage(0x59A);
+    break;
+  case 33:
+    notice = LookupMessage(0x59B);
+    break;
+  case 34:
+    notice = LookupMessage(0x79C);
+    break;
+  case 35:
+    notice = LookupMessage(0x7A0);
+    break;
+  case 36:
+    notice = LookupMessage(0x79F);
+    break;
+  case 37:
+    notice = LookupMessage(0x59F);
+    break;
+  case 40:
+    notice = LookupMessage(0x5AA);
+    break;
+  case 43:
+    notice = LookupMessage(0x5AD);
+    break;
+  case 50:
+    notice = LookupMessage(0x5B6);
+    break;
+  case 51:
+    notice = LookupMessage(0x5C2);
+    break;
+  case 52:
+    notice = LookupMessage(0x5C3);
+    break;
+  case 53:
+    notice = LookupMessage(0x5C4);
+    break;
+  case 54:
+    notice = LookupMessage(0x5C5);
+    break;
+  case 57:
+    notice = LookupMessage(0x5EF);
+    break;
+  case 60:
+    notice = LookupMessage(0x5F2);
+    break;
+  case 71: {
+    ITEM_INFO item;
+    item.SetItemId(packet->itemId);
+    ItemDescriptions descriptions{g_itemDescriptions};
+    bool languagePrefix = false;
+    WORD language = g_serverLanguage->language;
+    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+    const std::string message = FormatOwnedString(LookupMessage(0x600), naming.DisplayName(item, 0).c_str(), packet->value);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFF, 0xB, 0, 0);
+    return;
+  }
+  case 72: {
+    ITEM_INFO item;
+    item.SetItemId(packet->itemId);
+    item.identified = 1;
+    ItemDescriptions descriptions{g_itemDescriptions};
+    bool languagePrefix = false;
+    WORD language = g_serverLanguage->language;
+    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+    const std::string message = FormatOwnedString(LookupMessage(0x602), naming.DisplayName(item, 0).c_str());
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFF, 0xB, 0, 0);
+    return;
+  }
+  case 73:
+    if (packet->value == 0) {
+      std::sprintf(text, LookupMessage(0x618));
+    } else {
+      std::sprintf(text, LookupMessage(0x617), CSkillInfo::DisplayName(*g_luaScript, packet->value));
+    }
+    notice = text;
+    break;
+  case 74:
+    if (packet->value == 0) {
+      std::sprintf(text, LookupMessage(0x61A));
+    } else {
+      std::sprintf(text, LookupMessage(0x619), packet->value);
+    }
+    notice = text;
+    break;
+  case 78: {
+    const int reason = packet->value;
+    if (reason == 0x15) {
+      notice = LookupMessage(0xA01);
+    } else if (reason == 0x11) {
+      notice = LookupMessage(0x9FD);
+    } else if (reason == 0x12) {
+      notice = LookupMessage(0x9FC);
+    } else if (reason == 0x14) {
+      notice = LookupMessage(0x9FB);
+    } else if (reason == 0x13) {
+      notice = LookupMessage(0x9FA);
+    } else if (reason == 0xB) {
+      notice = LookupMessage(0x69B);
+    } else if (reason == 0xD || reason == 0xE) {
+      notice = LookupMessage(0x69C);
+    } else if (reason == 4) {
+      notice = LookupMessage(0x747);
+    } else if (reason == 0x16) {
+      notice = LookupMessage(0x7CA);
+    } else {
+      return;
+    }
+    break;
+  }
+  case 79:
+    notice = LookupMessage(0x6D4);
+    break;
+  case 80:
+    notice = LookupMessage(0x71F);
+    break;
+  case 81:
+    notice = LookupMessage(0x720);
+    break;
+  case 82:
+    notice = LookupMessage(0x721);
+    break;
+  case 83:
+    notice = LookupMessage(0x7A2);
+    break;
+  case 84:
+    notice = LookupMessage(0x9A2);
+    break;
+  case 85:
+    std::memset(text, 0, sizeof(text));
+    if (packet->value > 0) {
+      StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(0x9F9), packet->value);
+    } else {
+      StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(0x9F8));
+    }
+    notice = text;
+    break;
+  case 86:
+    notice = LookupMessage(packet->value);
+    break;
+  case 87:
+    notice = LookupMessage(0xA03);
+    break;
+  case 88:
+    notice = LookupMessage(0xA42);
+    break;
+  case 89:
+    notice = LookupMessage(0xBA6);
+    break;
+  case 90: {
+    const std::string message = FormatOwnedString(LookupMessage(0xBB5), packet->value);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFF, 0xB, 0, 0);
+    return;
+  }
+  case 91: {
+    const std::string message = FormatOwnedString(LookupMessage(0xBBE), packet->value);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFF, 0xB, 0, 0);
+    return;
+  }
+  case 92: {
+    const std::string message = FormatOwnedString(LookupMessage(0xD82), packet->value);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFF, 0xB, 0, 0);
+    return;
+  }
+  case 93:
+    notice = LookupMessage(0xD9A);
+    break;
+  case 94:
+    notice = LookupMessage(0xD9B);
+    break;
+  case 95:
+    notice = LookupMessage(0xDC9);
+    break;
+  case 96:
+    notice = LookupMessage(0xDCA);
+    break;
+  case 97:
+    notice = LookupMessage(0xDCD);
+    break;
+  case 98: {
+    const std::string message = FormatOwnedString(LookupMessage(0xE00), packet->value);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFF, 0xB, 0, 0);
+    return;
+  }
+  case 99:
+    notice = LookupMessage(0xE14);
+    break;
+  case 100:
+    notice = LookupMessage(0xE3B);
+    break;
+  case 101: {
+    const std::string message = FormatOwnedString(LookupMessage(0xEBD), packet->value);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFF, 0xB, 0, 0);
+    return;
+  }
+  case 102:
+    notice = LookupMessage(0xF75);
+    break;
+  case 103:
+    notice = LookupMessage(0xF76);
+    break;
+  case 104:
+    notice = LookupMessage(0xF77);
+    break;
+  case 105:
+    notice = LookupMessage(0xF78);
+    break;
+  case 106:
+    notice = LookupMessage(0xF79);
+    break;
+  case 107:
+    notice = LookupMessage(0xF7A);
+    break;
+  case 108:
+    notice = LookupMessage(0xF7B);
+    break;
+  case 109:
+    notice = LookupMessage(0xF7C);
+    break;
+  case 110:
+    notice = LookupMessage(0xF7D);
+    break;
+  case 111:
+    notice = LookupMessage(0xF80);
+    break;
+  case 112:
+    notice = LookupMessage(0xF93);
+    break;
+  case 113:
+    notice = LookupMessage(0xFA4);
+    break;
+  case 114:
+    notice = LookupMessage(0xFA5);
+    break;
+  case 115:
+    notice = LookupMessage(0x1061);
+    break;
+  case 116:
+  case 117:
+    notice = LookupMessage(packet->value != 0 ? packet->value : 0x1119);
+    break;
+  default:
+    return;
+  }
+
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(notice), 0xFF, 0xB, 0, 0);
+}
