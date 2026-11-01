@@ -4012,3 +4012,64 @@ void UIFrameWnd::DrawSkinBox(const char* name, int x, int y, int width, int heig
     this->DrawBitmap(x - bitmap->image.width + width, y - bitmap->image.height + height, &bitmap->image, false);
   }
 }
+
+// OFFSET: 0x008A8280
+// FUNCTION: fn_11714
+void UIMessageBoxAutoreturn::Configure(const char* text, int timeout) {
+  this->messageText = text;
+  this->format = text;
+  this->started = timeGetTime();
+  this->deadline = timeGetTime() + static_cast<unsigned>(timeout);
+  const unsigned interval = this->deadline - this->started;
+  const unsigned seconds = interval / 1000 + (interval % 1000 != 0);
+  this->remaining = seconds;
+  this->seconds = seconds;
+
+  if (timeout != 0) {
+    this->counting = 1;
+    char buffer[512];
+    std::sprintf(buffer, this->format.c_str(), seconds);
+    this->messageText = buffer;
+  } else {
+    this->counting = 0;
+  }
+
+  this->SetSize(280, 120);
+  this->Slot15(280, 120);
+  this->Slot22(280, 120);
+  this->Move((g_renderer->viewport.width - 640) / 2 + 185, (g_renderer->viewport.height - 480) / 2 + 180);
+
+  this->viewer = new UITextViewer();
+  this->viewer->Configure(10, 22, 260, 48, 0);
+  unsigned red, green, blue;
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  this->viewer->backgroundColor = RGB(red, green, blue) | 0xFF000000u;
+  this->viewer->Invalidate();
+  this->AddChild(this->viewer);
+  this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(this->messageText.c_str()), 38, 0, 0);
+
+  this->gauge = new UIBarGraph2(*this->m_context);
+  this->gauge->SetSize(240, 15);
+  this->gauge->Move(20, this->geometry.height - 50);
+  this->gauge->SetValue(0);
+  SkinPaletteChannels(ResourceMgr::Instance(), 18, 2, red, green, blue);
+  this->gauge->m_backgroundRed = red;
+  this->gauge->m_backgroundGreen = green;
+  this->gauge->m_backgroundBlue = blue;
+  SkinPaletteChannels(ResourceMgr::Instance(), 22, 2, red, green, blue);
+  this->gauge->m_fillRed = red;
+  this->gauge->m_fillGreen = green;
+  this->gauge->m_fillBlue = blue;
+  this->AddChild(this->gauge);
+
+  const std::string root(prefix);
+  auto* button = new UIBitmapButton();
+  button->SetBitmap((root + "btn_cancel" + ".bmp").c_str(), 0, 0);
+  button->SetBitmap((root + "btn_cancel_a" + ".bmp").c_str(), 1, 0);
+  button->SetBitmap((root + "btn_cancel_b" + ".bmp").c_str(), 2, 0);
+  button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+  button->Move(234, 96);
+  button->SetId(185);
+  this->AddChild(button);
+  this->m_message0 = 185;
+}

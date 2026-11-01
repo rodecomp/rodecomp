@@ -6,7 +6,7 @@
 #include <string>
 
 class UITextViewer;
-class UIBarGraph;
+class UIBarGraph2;
 
 class UIMessageBoxAutoreturn : public UIFrameWnd {
 public:
@@ -15,9 +15,10 @@ public:
   void Slot19() override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
+  void Configure(const char* text, int timeout);
 
   /* 00B4 */ UITextViewer* viewer;
-  /* 00B8 */ UIBarGraph* gauge;
+  /* 00B8 */ UIBarGraph2* gauge;
   /* 00BC */ int counting;
   /* 00C0 */ std::uint32_t started;
   /* 00C4 */ std::uint32_t deadline;

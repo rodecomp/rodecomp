@@ -20,6 +20,21 @@ public:
   /* 007C */ float m_value;
 };
 
+class UIBarGraph2 : public UIBarGraph {
+public:
+  explicit UIBarGraph2(UIWindowContext& context);
+
+  void Paint() override;
+
+  /* 0080 */ int m_vertical;
+  /* 0084 */ int m_backgroundRed;
+  /* 0088 */ int m_backgroundGreen;
+  /* 008C */ int m_backgroundBlue;
+  /* 0090 */ int m_fillRed;
+  /* 0094 */ int m_fillGreen;
+  /* 0098 */ int m_fillBlue;
+};
+
 class UIBarGraph3 : public UIWindow {
 public:
   explicit UIBarGraph3(UIWindowContext& context);

@@ -9,21 +9,6 @@
 #include <string>
 #include <windows.h>
 
-class UIBarGraph2 : public UIBarGraph {
-public:
-  explicit UIBarGraph2(UIWindowContext& context);
-
-  void Paint() override;
-
-  /* 0080 */ int m_vertical;
-  /* 0084 */ int m_backgroundRed;
-  /* 0088 */ int m_backgroundGreen;
-  /* 008C */ int m_backgroundBlue;
-  /* 0090 */ int m_fillRed;
-  /* 0094 */ int m_fillGreen;
-  /* 0098 */ int m_fillBlue;
-};
-
 // OFFSET: 0x0086C190
 // FUNCTION: fn_11022
 UIBarGraph2::UIBarGraph2(UIWindowContext& context) : UIBarGraph(context) {
