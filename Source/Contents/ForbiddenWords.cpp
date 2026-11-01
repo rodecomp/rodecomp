@@ -131,13 +131,9 @@ void ForbiddenWords::Mask(char* text, std::string* value) const {
     if (open && close && std::strlen(current) != 0 && std::strlen(current) <= std::strlen(reinterpret_cast<const char*>(open))) {
       const auto skip = reinterpret_cast<const char*>(close) + 8 - reinterpret_cast<const char*>(open);
 
-      char* next = current;
-
       for (std::ptrdiff_t index = 0; index < skip; ++index) {
-        next = CharNextExA(static_cast<WORD>(g_textCodePage), current, 0);
+        current = CharNextExA(static_cast<WORD>(g_textCodePage), current, 0);
       }
-
-      current = next;
     }
 
     int advance = 1;
