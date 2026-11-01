@@ -3,7 +3,10 @@
 
 #include "UI/FrameSkin.h"
 #include "UI/Lists/UIListBoxTemplate.h"
+#include "UI/Navigation/UINavigationV4Wnd.h"
 #include "UI/Window/UIControl.h"
+#include "UI/Window/UINavigationWnd.h"
+#include "UI/Window/WindowOrdering.h"
 
 #include <string>
 
@@ -68,9 +71,10 @@ class CUIIntro : public CUIPage {
 public:
   // OFFSET: 0x009D8FE0
   // FUNCTION: fn_14274
-  explicit CUIIntro(UIWindowContext& context) : CUIPage(context), image(nullptr), contents(nullptr), unknown_0080(nullptr) {
+  explicit CUIIntro(UIWindowContext& context) : CUIPage(context), image(nullptr), contents(nullptr), banner(nullptr) {
   }
 
+  void Slot15(int width, int height) override;
   void Slot16() override;
   void Paint() override;
   void Slot54(int first, int second) override;
@@ -80,7 +84,7 @@ public:
 
   /* 0084 */ CUIStaticImage* image;
   /* 0088 */ CUIListBoxEx<CUITabInfo, Guide_Intro::Contents>* contents;
-  /* 0080 */ UIWindow* unknown_0080;
+  /* 0080 */ CUIStaticImage* banner;
 };
 
 class CUIItem : public CUIPage {
@@ -91,6 +95,7 @@ public:
       : CUIPage(context), unknown_0084(nullptr), unknown_0088(nullptr), unknown_008C(), location(-1), itemList(nullptr) {
   }
 
+  void Slot15(int width, int height) override;
   void Slot16() override;
   void Paint() override;
   void Slot54(int type, int id) override;
@@ -99,8 +104,8 @@ public:
   void RequestNavigation();
   void SearchNavigation();
 
-  /* 0084 */ UIWindow* unknown_0084;
-  /* 0088 */ UIWindow* unknown_0088;
+  /* 0084 */ CUIImageButton* unknown_0084;
+  /* 0088 */ CUIImageButton* unknown_0088;
   /* 008C */ std::string unknown_008C;
   /* 00A4 */ int location;
   /* 0080 */ CUIListBoxEx<CUIItemInfo, CItemData>* itemList;
@@ -113,14 +118,16 @@ public:
   explicit CUIMonster(UIWindowContext& context) : CUIPage(context), unknown_0084(nullptr), unknown_0088(), monsterList(nullptr) {
   }
 
+  void Slot15(int width, int height) override;
   void Slot16() override;
   void Paint() override;
   void Slot54(int first, int second) override;
 
   void OnSelectMonster(CUIMonsterInfo* item, const CMonsterData& data);
   void BindMonster(CUIMonsterInfo* item, const CMonsterData& data);
+  void SearchNavigation();
 
-  /* 0084 */ UIWindow* unknown_0084;
+  /* 0084 */ CUIImageButton* unknown_0084;
   /* 0088 */ std::string unknown_0088;
   /* 0080 */ CUIListBoxEx<CUIMonsterInfo, CMonsterData>* monsterList;
 };
@@ -132,6 +139,7 @@ public:
   explicit CUIQuest(UIWindowContext& context) : CUIPage(context), unknown_0084(nullptr), unknown_0088(nullptr), unknown_008C(), questList(nullptr) {
   }
 
+  void Slot15(int width, int height) override;
   void Slot16() override;
   void Paint() override;
   void Slot54(int type, int id) override;
@@ -140,8 +148,8 @@ public:
   void RequestNavigation();
   void SearchNavigation();
 
-  /* 0084 */ UIWindow* unknown_0084;
-  /* 0088 */ UIWindow* unknown_0088;
+  /* 0084 */ CUIImageButton* unknown_0084;
+  /* 0088 */ CUIImageButton* unknown_0088;
   /* 008C */ std::string unknown_008C;
   /* 0080 */ CUIListBoxEx<CUIQuestInfo, CQuestInfo>* questList;
 };

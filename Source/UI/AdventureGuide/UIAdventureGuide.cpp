@@ -2109,3 +2109,37 @@ void CUIQuest::SearchNavigation() {
 }
 
 }
+
+namespace AdventureGuide {
+
+// OFFSET: 0x009C5BB0
+
+
+// OFFSET: 0x009C6F50
+
+
+// OFFSET: 0x009CDD40
+
+
+// OFFSET: 0x009CAE30
+
+// OFFSET: 0x009DBAC0
+// FUNCTION: fn_45477
+void CUIMonster::SearchNavigation() {
+  g_navigationManager.unknown_1264 = this->unknown_0088;
+  g_navigationManager.UpdateSearchResults();
+  g_navigationManager.unknown_12C4 = 0;
+  g_navigationManager.unknown_12C8 = 0;
+  g_navigationManager.SelectNodeState();
+  if (g_windowMgr.LookupWindow(203)) {
+    g_navigationManager.SetViewMode(1);
+    g_navigationManager.ClearSavedTarget();
+    g_windowMgr.CloseWindow(314);
+    static_cast<UINavigationV4Wnd*>(g_navigationWindow)->RefreshLayout();
+    reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(g_windowMgr.LookupWindow(203));
+  } else {
+    g_windowMgr.EnsureWindow(203);
+  }
+}
+
+}
