@@ -1,12 +1,13 @@
 #ifndef RAGNAROK_SOURCE_UI_WINDOW_UILOGINWND_H
 #define RAGNAROK_SOURCE_UI_WINDOW_UILOGINWND_H
 
+#include "UI/Edit/UIEditCtrl_Currency.h"
+#include "UI/Lists/UIComboBoxDefWnd.h"
 #include "UI/Window/UIFrameWnd.h"
+#include "UI/Window/UIRPImageWnd2.h"
 
 #include <string>
 #include <vector>
-
-class UIEditCtrl;
 
 class UILoginWnd : public UIFrameWnd {
 public:
@@ -14,6 +15,7 @@ public:
   ~UILoginWnd() override;
 
   void Slot11() override;
+  void Slot15(int width, int height) override;
   void Slot18() override;
   void Slot19() override;
   void Paint() override;
@@ -23,9 +25,9 @@ public:
   void LoadLogin();
   void OpenWebPage();
 
-  /* 00B4 */ UIEditCtrl* idEdit;
-  /* 00B8 */ UIEditCtrl* passwordEdit;
-  /* 00BC */ int unknown_00BC;
+  /* 00B4 */ UIEditCtrl_Custom* idEdit;
+  /* 00B8 */ UIEditCtrl_Custom* passwordEdit;
+  /* 00BC */ UIWindow* unknown_00BC;
   /* 00C0 */ bool idPlaceholder;
   /* 00C1 */ bool passwordPlaceholder;
   /* 00C2 */ unsigned char unknown_00C2[0x2];
@@ -36,7 +38,7 @@ public:
   /* 00D4 */ int unknown_00D4;
   /* 00D8 */ std::vector<std::string> unknown_00D8;
   /* 00E4 */ int unknown_00E4;
-  /* 00E8 */ UIWindow* unknown_00E8;
+  /* 00E8 */ UIComboBoxDef2Wnd* unknown_00E8;
   /* 00EC */ const char* unknown_00EC;
 };
 

@@ -17,6 +17,7 @@ struct BitmapButtonTextStyle {
 
 class UIBmpTextButton : public UIBitmapButton {
 public:
+  UIBmpTextButton();
   UIBmpTextButton(UIWindowContext& windows, UIButtonContext& controls);
   ~UIBmpTextButton() override;
   void Paint() override;

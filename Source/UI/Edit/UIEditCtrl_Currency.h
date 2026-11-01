@@ -8,6 +8,7 @@
 
 class UIEditCtrl_Custom : public UIEditCtrl2 {
 public:
+  UIEditCtrl_Custom();
   UIEditCtrl_Custom(UIWindowContext& windows, UIEditContext& edit);
   void PaintText() override;
   void Synchronize() override;

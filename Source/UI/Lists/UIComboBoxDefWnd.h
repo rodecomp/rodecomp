@@ -73,6 +73,7 @@ public:
 
 class UIComboBoxDef2Wnd : public UIComboBoxDefWnd {
 public:
+  UIComboBoxDef2Wnd();
   UIComboBoxDef2Wnd(UIWindowContext& windows, UIComboBoxHeaderContext& controls);
   ~UIComboBoxDef2Wnd() override;
   void Slot15(int width, int height) override;
