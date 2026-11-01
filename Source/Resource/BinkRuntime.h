@@ -33,6 +33,8 @@ __declspec(dllimport) std::int32_t WINAPI BinkCopyToBuffer(
 );
 __declspec(dllimport) std::int32_t WINAPI BinkPause(BinkHandle* handle, std::int32_t pause);
 __declspec(dllimport) void WINAPI BinkSetVolume(BinkHandle* handle, std::uint32_t track, std::int32_t volume);
+__declspec(dllimport) void* WINAPI BinkOpenDirectSound(std::uintptr_t parameter);
+__declspec(dllimport) std::int32_t WINAPI BinkSetSoundSystem(void* (WINAPI* open)(std::uintptr_t), std::uintptr_t parameter);
 }
 
 #endif

@@ -19,6 +19,7 @@ public:
   CUIFrameWnd* Create(int key);
   void Load();
   bool SaveTemporary();
+  void sub_9EB920();
 
   /* 0004 */ std::map<int, std::function<CUIFrameWnd*()>> entries;
   /* 000C */ std::map<int, std::pair<int, int>> unknown_000C;

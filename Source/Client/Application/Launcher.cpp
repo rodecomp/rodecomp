@@ -48,18 +48,53 @@
 #include "UI/Party/UIRequestJoinPartyMgr.h"
 #include "UI/Text/NavigationLink.h"
 #include "UI/Window/UIRegisterMgr.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "Utility/Async/NMessageMgr.h"
 #include "Utility/GGHashMgr.h"
+#include "Archive/GPakUpdate.h"
+#include "Archive/PakRegistry.h"
+#include "Client/Application/ApplicationWindow.h"
+#include "Client/Application/ErrorDialog.h"
+#include "Client/Application/UnhandledExceptionHandler.h"
+#include "Client/Input/InputCharset.h"
+#include "Client/Mode/CLoginMode.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Client/Replay.h"
+#include "Client/Session.h"
+#include "Client/Timer.h"
+#include "Contents/Configuration/ServiceOptions.h"
+#include "Contents/MapInfoMgr.h"
+#include "Contents/MessageTable.h"
+#include "Contents/NavigationManager.h"
+#include "Contents/SkinMgr.h"
+#include "Contents/Sound/SoundConfiguration.h"
+#include "Contents/Sound/SoundMgr.h"
+#include "Network/Connection/Connection.h"
+#include "Network/Connection/ConnectionRuntime.h"
+#include "Render/DeviceContext/DCSurface.h"
+#include "Render/Renderer.h"
+#include "Render/Textures/TextureCache.h"
+#include "Resource/BinkRuntime.h"
+#include "Resource/Models/GrannyModelResource.h"
+#include "Resource/ResourceMgr.h"
+#include "UI/GameSettings/GameSettingsUI.h"
+#include "Utility/Math/AffineMatrix.h"
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
+#include <float.h>
+#include <imm.h>
 #include <io.h>
 #include <new>
+#include <objbase.h>
+#include <regex>
 #include <string>
 #include <windows.h>
 #include <shellapi.h>
 #include <sys/stat.h>
+#include <timeapi.h>
+#include <utility>
 
 // STATIC: 0x0173ad64
 // GLOBAL: gl_24472
@@ -81,6 +116,10 @@ public:
     for (std::uint64_t index = 0; index < Length; ++index) {
       this->m_text[index] = 0;
     }
+  }
+
+  bool Encrypted() const {
+    return this->m_encrypted;
   }
 
   const char* Text() {
@@ -757,7 +796,9 @@ void ApplyAiPatch() {
 
 // INLINED
 void ExitForProtectionCheck(const char* commandLine) {
-  if (std::strstr(commandLine, "/check_themida")) {
+  const std::uint8_t checkSource[] = {0x64, 0xB0, 0x1F, 0xE0, 0x92, 0x06, 0xA4, 0xB3, 0x23, 0xB6, 0x1A, 0xEC, 0x95, 0x0C, 0xFB};
+  thread_local EncryptedName<sizeof(checkSource), 0xC7FB6DF18577D34BULL> check(checkSource);
+  if (std::strstr(commandLine, check.Text())) {
     ExitProcess(0);
   }
 }
@@ -785,6 +826,21 @@ char g_launchAccountSex;
 
 // GLOBAL: gl_25078
 bool g_launchPassCommandLine;
+
+// GLOBAL: gl_25446
+char g_launchServerKind;
+
+// GLOBAL: gl_25447
+bool g_launchFromPc;
+
+// GLOBAL: gl_25388
+bool g_windowDragging;
+
+// GLOBAL: gl_25389
+RECT g_windowDragRect;
+
+// GLOBAL: gl_24400
+POINT g_windowDragStart;
 
 // OFFSET: 0x00E57E60
 // FUNCTION: fn_24361
@@ -856,8 +912,26 @@ namespace EquipmentProperties {
 class CEquipmentPropertiesMgr {
 public:
   virtual ~CEquipmentPropertiesMgr();
+
+  static CEquipmentPropertiesMgr* GetInstance();
+  void sub_6AD910();
 };
 }
+
+bool CreateCooldownOwner();
+CMapSkyMgr* GetMapSkyMgr();
+void sub_E198F0();
+void __fastcall sub_81FE50(CSignBoardMgr* manager);
+int sub_E58100(HINSTANCE instance, int showCommand);
+int sub_E59030();
+void sub_AEA780();
+void sub_3DE90E0(char* buffer);
+void IgnoreNull();
+LSTATUS SaveDisplayDeviceSettings();
+
+struct SessionMessengerContext {
+  void sub_DD9D50();
+};
 
 // INLINED
 template <typename T>
@@ -959,4 +1033,749 @@ void ShutdownManagers() {
   }
 
   CAdventureGuideMgr::Destroy();
+}
+
+// OFFSET: 0x00E5A330
+// FUNCTION: fn_24370
+std::pair<bool, std::string> InitializeManagers() {
+  if (!CConfigMgr::Create()) {
+    const std::uint8_t nameSource[] = {0xC6, 0x22, 0xE4, 0x79, 0x19, 0x08, 0xC2, 0xE2, 0xE2, 0x13, 0xB1, 0x2D, 0x3C, 0x13, 0xC0, 0xCE,
+                                       0xF1, 0x04, 0xC2, 0x79, 0x0C, 0x15, 0xC4, 0xC1, 0xE6, 0x04, 0xA3, 0x3E, 0x7F};
+    thread_local EncryptedName<sizeof(nameSource), 0xAFA5617F178B6185ULL> name(nameSource);
+    return std::make_pair(false, std::string(name.Text()));
+  }
+
+  if (std::strstr(g_commandLine, "/stove_sandbox") || std::strstr(g_commandLine, "/stove_live")) {
+    g_launchPassCommandLine = true;
+    g_stoveMgr = new (std::nothrow) CStoveMgr;
+    if (!g_stoveMgr->m_initialized) {
+      const std::uint8_t nameSource[] = {0x70, 0xC0, 0x39, 0xFA, 0xED, 0xF0, 0x16, 0xFC, 0x41, 0xA9, 0x77, 0xD6, 0xE9, 0xF0, 0x3A, 0xEF,
+                                         0x56, 0xDA, 0x23, 0xE6, 0xEF, 0xF4, 0x35, 0xF8, 0x56, 0xBB, 0x64, 0x95};
+      thread_local EncryptedName<sizeof(nameSource), 0x9B5B959B954D9333ULL> name(nameSource);
+      return std::make_pair(false, std::string(name.Text()));
+    }
+  }
+
+  if (!CThemidaMgr::Create()) {
+    const std::uint8_t nameSource[] = {0x22, 0xFB, 0xE7, 0x5C, 0xE6, 0xA0, 0x9B, 0x76, 0x2C, 0xC8, 0xFD, 0x03, 0xB1, 0x8A, 0x8D, 0x72,
+                                       0x00, 0xDB, 0xEA, 0x70, 0xE5, 0xBA, 0x8B, 0x76, 0x0F, 0xCC, 0xEA, 0x11, 0xA2, 0xC9};
+    thread_local EncryptedName<sizeof(nameSource), 0x17FFC98B398FAF61ULL> name(nameSource);
+    return std::make_pair(false, std::string(name.Text()));
+  }
+
+  if (!CReassemblyPacketMgr::CreateInstance()) {
+    const std::uint8_t nameSource[] = {0xFC, 0xEF, 0xBA, 0x5E, 0x3E, 0x5E, 0xE6, 0x5E, 0xDD, 0xD1, 0xA6, 0x6F, 0x2C, 0x4E, 0xE8, 0x56,
+                                       0xCB, 0xF0, 0xB8, 0x4D, 0x77, 0x17, 0xC0, 0x41, 0xDA, 0xDC, 0xAB, 0x5A, 0x04, 0x43, 0xF0, 0x47,
+                                       0xDE, 0xD3, 0xBC, 0x5A, 0x65, 0x04, 0x83};
+    thread_local EncryptedName<sizeof(nameSource), 0x33832D4D3FDFBDBFULL> name(nameSource);
+    return std::make_pair(false, std::string(name.Text()));
+  }
+
+  Singleton<CEZ2STREffectMgr>::GetInstance()->Load();
+  if (!CreateEffectMgr()) {
+    const std::uint8_t nameSource[] = {0xB2, 0x86, 0x8F, 0xDB, 0xC8, 0x6E, 0x01, 0x30, 0x96, 0xB1, 0xD3, 0x87, 0xEE, 0x7F, 0x10, 0x1C,
+                                       0x85, 0xA6, 0xA0, 0xD3, 0xDE, 0x79, 0x14, 0x13, 0x92, 0xA6, 0xC1, 0x94, 0xAD};
+    thread_local EncryptedName<sizeof(nameSource), 0x7D750DADBDE9C3F1ULL> name(nameSource);
+    return std::make_pair(false, std::string(name.Text()));
+  }
+
+  if (!CreateEffectMemoryMgr()) {
+    const std::uint8_t nameSource[] = {0xAA, 0x96, 0x5B, 0x61, 0x50, 0x4A, 0x7F, 0xA8, 0x8C, 0xBE, 0x52, 0x75, 0x4C, 0x64, 0x6C, 0x97,
+                                       0xD3, 0xE9, 0x7E, 0x75, 0x50, 0x48, 0x7F, 0x80, 0xA0, 0xBD, 0x4E, 0x73, 0x54, 0x47, 0x68, 0x80,
+                                       0xC1, 0xFA, 0x3D};
+    thread_local EncryptedName<sizeof(nameSource), 0xE50B2935073DD3E9ULL> name(nameSource);
+    return std::make_pair(false, std::string(name.Text()));
+  }
+
+  if (!CreateEntryQueueMgr()) {
+    const std::uint8_t nameSource[] = {0xEC, 0x0A, 0x45, 0x97, 0xAD, 0x6C, 0x02, 0x4A, 0xCA, 0x3A, 0x4E, 0xAE, 0xB8, 0x67, 0x69, 0x05,
+                                       0xEC, 0x3D, 0x4E, 0x82, 0xAB, 0x70, 0x1A, 0x51, 0xDC, 0x3B, 0x4A, 0x8D, 0xBC, 0x70, 0x7B, 0x16,
+                                       0xAF};
+    thread_local EncryptedName<sizeof(nameSource), 0x3F5315DFE32B4FAFULL> name(nameSource);
+    return std::make_pair(false, std::string(name.Text()));
+  }
+
+  if (!CTimeScheduler::Create()) {
+    const std::uint8_t nameSource[] = {0xD6, 0xA9, 0x78, 0xDE, 0x34, 0x36, 0xF6, 0x59, 0xF0, 0x99, 0x64, 0xDF, 0x34, 0x17, 0xAF, 0x0B,
+                                       0xD6, 0x8F, 0x74, 0xD2, 0x25, 0x00, 0xDC, 0x5F, 0xE6, 0x89, 0x70, 0xDD, 0x32, 0x00, 0xBD, 0x18,
+                                       0x95};
+    thread_local EncryptedName<sizeof(nameSource), 0x31956551B311FD95ULL> name(nameSource);
+    return std::make_pair(false, std::string(name.Text()));
+  }
+
+  if (!EquipmentResourceMgr::Create()) {
+    const std::uint8_t nameSource[] = {0xD2, 0x96, 0xF4, 0x33, 0x00, 0xE2, 0x52, 0x4C, 0xE3, 0xA0, 0xD8, 0x2C, 0x02, 0xE3, 0x07, 0x03,
+                                       0xD2, 0xB1, 0xD8, 0x00, 0x11, 0xF4, 0x74, 0x57, 0xE2, 0xB7, 0xDC, 0x0F, 0x06, 0xF4, 0x15, 0x10,
+                                       0x91};
+    thread_local EncryptedName<sizeof(nameSource), 0x393D916561BDC391ULL> name(nameSource);
+    return std::make_pair(false, std::string(name.Text()));
+  }
+
+  CTownInfoMgr::Create();
+  if (!g_townInfoMgr->LoadScript()) {
+    const std::uint8_t titleSource[] = {0x9C, 0x4B, 0x61, 0x16, 0xB9, 0x83};
+    thread_local EncryptedName<sizeof(titleSource), 0xFF7D83CB791339D9ULL> title(titleSource);
+    const char* caption = title.Text();
+    const std::uint8_t textSource[] = {0x41, 0xFC, 0xC4, 0xAF, 0xAE, 0x2D, 0x37, 0x82, 0x35, 0xF5, 0xDA, 0xAD, 0x82, 0x63, 0x18, 0x83,
+                                       0x7C, 0xE7, 0xB3};
+    thread_local EncryptedName<sizeof(textSource), 0xED5143E7C1B39315ULL> text(textSource);
+    MessageBoxA(nullptr, text.Text(), caption, MB_OK);
+  }
+
+  if (!CreateCooldownOwner()) {
+    const std::uint8_t nameSource[] = {0x2C, 0xEE, 0x4E, 0x86, 0x53, 0x73, 0x50, 0xDA, 0x0A, 0xDF, 0x6C, 0x8E, 0x4D, 0x3D, 0x03, 0xF4,
+                                       0x1D, 0xC8, 0x40, 0x9D, 0x5A, 0x4E, 0x57, 0xC4, 0x1B, 0xCC, 0x4F, 0x8A, 0x5A, 0x2F, 0x10, 0xB7};
+    thread_local EncryptedName<sizeof(nameSource), 0xB739073FE921AD6FULL> name(nameSource);
+    return std::make_pair(false, std::string(name.Text()));
+  }
+
+  if (!CRenewQuestMgr::Create()) {
+    const std::uint8_t nameSource[] = {0x48, 0xE7, 0xEC, 0x7B, 0x6C, 0xC0, 0xC8, 0xB6, 0x6E, 0xC6, 0xFD, 0x58, 0x6E, 0xC5, 0xA3, 0xF9,
+                                       0x48, 0xC7, 0xEC, 0x74, 0x7D, 0xD2, 0xD0, 0xAD, 0x78, 0xC1, 0xE8, 0x7B, 0x6A, 0xD2, 0xB1, 0xEA,
+                                       0x0B};
+    thread_local EncryptedName<sizeof(nameSource), 0xC399B7091589B50BULL> name(nameSource);
+    return std::make_pair(false, std::string(name.Text()));
+  }
+
+  g_renewQuestMgr->LoadQuestInfo();
+  if (!CClanInfo::Create()) {
+    const std::uint8_t nameSource[] = {0x44, 0xF8, 0x85, 0x2C, 0x97, 0x04, 0x33, 0xF3, 0x68, 0xF6, 0x8E, 0x3F, 0xC3, 0x77, 0x1E, 0xE7,
+                                       0x62, 0xDA, 0x9D, 0x28, 0xB0, 0x23, 0x2E, 0xE1, 0x66, 0xD5, 0x8A, 0x28, 0xD1, 0x64, 0x5D};
+    thread_local EncryptedName<sizeof(nameSource), 0x955D4DF94DE9BB07ULL> name(nameSource);
+    return std::make_pair(false, std::string(name.Text()));
+  }
+
+  CChampionMonsterMgr::Create();
+  if (!g_championMonsterMgr->Load()) {
+    const std::uint8_t titleSource[] = {0xB0, 0xF5, 0x8F, 0x92, 0x5D, 0x3D};
+    thread_local EncryptedName<sizeof(titleSource), 0x936F3D2FFDFD87F5ULL> title(titleSource);
+    const char* caption = title.Text();
+    const std::uint8_t textSource[] = {0x0C, 0x23, 0xD2, 0xE2, 0x5D, 0x7C, 0x2E, 0xE9, 0x02, 0x24, 0xDD, 0xFC, 0x59, 0x70, 0x33, 0xA7,
+                                       0x29, 0x22, 0xDF, 0xEA, 0x0D, 0x5C, 0x2F, 0xEE, 0x3B, 0x4B};
+    thread_local EncryptedName<sizeof(textSource), 0x8741152D8FB34B4FULL> text(textSource);
+    MessageBoxA(nullptr, text.Text(), caption, MB_OK);
+  }
+
+  if (!CMapPropertyMgr::Create()) {
+    const std::uint8_t nameSource[] = {0x9C, 0x0A, 0xCC, 0x17, 0x4F, 0x0B, 0x5C, 0x5D, 0xBA, 0x35, 0xD9, 0x1E, 0x52, 0x1E, 0x41, 0x17,
+                                       0xE5, 0x04, 0xDF, 0x02, 0x7E, 0x0D, 0x56, 0x64, 0xB1, 0x34, 0xD9, 0x06, 0x71, 0x1A, 0x56, 0x05,
+                                       0xF6, 0x47};
+    thread_local EncryptedName<sizeof(nameSource), 0x2D33791F67AD47DFULL> name(nameSource);
+    return std::make_pair(false, std::string(name.Text()));
+  }
+
+  sub_E198F0();
+  if (!RodexMailStore::Create()) {
+    const std::uint8_t nameSource[] = {0xE8, 0x1D, 0xF0, 0xC7, 0xE0, 0x57, 0x42, 0x7E, 0xD8, 0x3B, 0xFA, 0xCE, 0xC8, 0x48, 0x63, 0x3D,
+                                       0x91, 0x0C, 0xED, 0xC6, 0xE4, 0x5B, 0x74, 0x4E, 0xC5, 0x3C, 0xEB, 0xC2, 0xEB, 0x4C, 0x74, 0x2F,
+                                       0x82, 0x4F};
+    thread_local EncryptedName<sizeof(nameSource), 0x07112F85A39F4FABULL> name(nameSource);
+    return std::make_pair(false, std::string(name.Text()));
+  }
+
+  if (!RouletteMgr::Create()) {
+    const std::uint8_t nameSource[] = {0x14, 0xA3, 0xDA, 0xBE, 0x6F, 0x9D, 0x86, 0x31, 0x23, 0x94, 0xF8, 0xAC, 0x71, 0xCB, 0xD9, 0x06,
+                                       0x25, 0x94, 0xD4, 0xBF, 0x66, 0xB8, 0x8D, 0x36, 0x23, 0x90, 0xDB, 0xA8, 0x66, 0xD9, 0xCA, 0x45};
+    thread_local EncryptedName<sizeof(nameSource), 0x45E3F103CBB5F157ULL> name(nameSource);
+    return std::make_pair(false, std::string(name.Text()));
+  }
+
+  if (!CCURLMgr::Initialize()) {
+    const std::uint8_t nameSource[] = {0x20, 0x7A, 0x28, 0xF3, 0x15, 0xF8, 0xF8, 0xB1, 0x59, 0x03, 0x3E, 0xD3, 0x3C, 0xD4, 0xEB, 0xA6,
+                                       0x2A, 0x57, 0x0E, 0xD5, 0x38, 0xDB, 0xFC, 0xA6, 0x4B, 0x10, 0x7D};
+    thread_local EncryptedName<sizeof(nameSource), 0xC39FB559A17D3963ULL> name(nameSource);
+    return std::make_pair(false, std::string(name.Text()));
+  }
+
+  if (!CAccountLinkedUserDataMgr::Initialize()) {
+    const std::uint8_t nameSource[] = {0xEC, 0xE0, 0xA6, 0x54, 0x78, 0x1C, 0xD9, 0x05, 0xE3, 0xC8, 0xAB, 0x5C, 0x72, 0x0D, 0xE2, 0x02,
+                                       0xCA, 0xD3, 0x81, 0x56, 0x63, 0x08, 0xFA, 0x16, 0xDD, 0x9B, 0xFF, 0x74, 0x65, 0x0C, 0xD6, 0x05,
+                                       0xCA, 0xE8, 0xAB, 0x44, 0x63, 0x08, 0xD9, 0x12, 0xCA, 0x89, 0xEC, 0x37};
+    thread_local EncryptedName<sizeof(nameSource), 0x71B7691737C5A1AFULL> name(nameSource);
+    return std::make_pair(false, std::string(name.Text()));
+  }
+
+  if (!CCharacterLinkedUserDataMgr::Initialize()) {
+    const std::uint8_t nameSource[] = {0x66, 0xD2, 0x6F, 0xC2, 0x93, 0x60, 0x50, 0x1F, 0x40, 0xE3, 0x4B, 0xCA, 0x8F, 0x6A, 0x56, 0x0F,
+                                       0x70, 0xE2, 0x62, 0xD1, 0xA5, 0x60, 0x47, 0x0A, 0x68, 0xF6, 0x75, 0x99, 0xDB, 0x42, 0x41, 0x0E,
+                                       0x44, 0xE5, 0x62, 0xEA, 0x8F, 0x72, 0x47, 0x0A, 0x4B, 0xF2, 0x62, 0x8B, 0xC8, 0x01};
+    thread_local EncryptedName<sizeof(nameSource), 0x6B3301E1A3079125ULL> name(nameSource);
+    return std::make_pair(false, std::string(name.Text()));
+  }
+
+  if (!NMessageMgr::Initialize()) {
+    const std::uint8_t nameSource[] = {0xC7, 0x70, 0x08, 0x96, 0xD4, 0x60, 0x40, 0x4A, 0xC4, 0x5A, 0x1F, 0xDF, 0x9D, 0x42, 0x55, 0x4A,
+                                       0xE8, 0x49, 0x08, 0xAC, 0xC9, 0x72, 0x53, 0x4E, 0xE7, 0x5E, 0x08, 0xCD, 0x8E, 0x01};
+    thread_local EncryptedName<sizeof(nameSource), 0x2F2701A7E56D3D89ULL> name(nameSource);
+    return std::make_pair(false, std::string(name.Text()));
+  }
+
+  if (!CAsyncWorkMgr::Initialize(2)) {
+    const std::uint8_t nameSource[] = {0xFE, 0xDC, 0x48, 0x9E, 0x63, 0xE0, 0xDE, 0x16, 0xCF, 0xF6, 0x76, 0x80, 0x7F, 0xB9, 0xB3, 0x3A,
+                                       0xCF, 0xF8, 0x5A, 0x93, 0x68, 0xCA, 0xE7, 0x0A, 0xC9, 0xFC, 0x55, 0x84, 0x68, 0xAB, 0xA0, 0x79};
+    thread_local EncryptedName<sizeof(nameSource), 0x7989830DE73B9DBDULL> name(nameSource);
+    return std::make_pair(false, std::string(name.Text()));
+  }
+
+  if (!g_asyncWorkMgr->Start()) {
+    const std::uint8_t nameSource[] = {0x22, 0x65, 0xD6, 0xB1, 0xE6, 0xB3, 0xCE, 0xD8, 0x28, 0x4A, 0xD6, 0xBC, 0xE9, 0xBE, 0xFA, 0xD2,
+                                       0x19, 0x60, 0xE8, 0xA2, 0xF5, 0xF5, 0x84, 0x90, 0x55, 0x58, 0xD1, 0xA4, 0xF5, 0xA9, 0x85, 0x94,
+                                       0x6B};
+    thread_local EncryptedName<sizeof(nameSource), 0xBDADDD87C5A50B6BULL> name(nameSource);
+    return std::make_pair(false, std::string(name.Text()));
+  }
+
+  if (!CWhisperBlockMgr::Initialize()) {
+    const std::uint8_t nameSource[] = {0x4E, 0x0C, 0x01, 0xEA, 0xC8, 0x61, 0xF8, 0xFB, 0x4F, 0x37, 0x06, 0xE0, 0xD0, 0x5C, 0xFA, 0xFB,
+                                       0x37, 0x61, 0x2A, 0xF1, 0xDE, 0x70, 0xE9, 0xEC, 0x44, 0x35, 0x1A, 0xF7, 0xDA, 0x7F, 0xFE, 0xEC,
+                                       0x25, 0x72, 0x69};
+    thread_local EncryptedName<sizeof(nameSource), 0x899D11BB83695B0DULL> name(nameSource);
+    return std::make_pair(false, std::string(name.Text()));
+  }
+
+  if (!CreatePlayerNameDictionary()) {
+    const std::uint8_t nameSource[] = {0xB6, 0x75, 0x3F, 0x88, 0xAE, 0x40, 0xF5, 0x65, 0x94, 0x48, 0x36, 0xAD, 0xBE, 0x46, 0xF3, 0x42,
+                                       0x9A, 0x4B, 0x32, 0x9B, 0xAE, 0x1F, 0xBD, 0x68, 0x87, 0x40, 0x32, 0x9D, 0xB2, 0x6C, 0xE9, 0x58,
+                                       0x81, 0x44, 0x3D, 0x8A, 0xB2, 0x0D, 0xAE, 0x2B};
+    thread_local EncryptedName<sizeof(nameSource), 0x2B8725D7E95325F5ULL> name(nameSource);
+    return std::make_pair(false, std::string(name.Text()));
+  }
+
+  if (!CGuildMgr::Create()) {
+    const std::uint8_t nameSource[] = {0x92, 0x26, 0x84, 0xE0, 0x03, 0x35, 0xA8, 0xB4, 0xA3, 0x5B, 0xCB, 0xCA, 0x1D, 0x34, 0x84, 0xA7,
+                                       0xB4, 0x28, 0x9F, 0xFA, 0x1B, 0x30, 0x8B, 0xB0, 0xB4, 0x49, 0xD8, 0x89};
+    thread_local EncryptedName<sizeof(nameSource), 0xD3E5516F89F161D1ULL> name(nameSource);
+    return std::make_pair(false, std::string(name.Text()));
+  }
+
+  if (!CEmblemDataMgr::Initialize()) {
+    const std::uint8_t nameSource[] = {0xCE, 0x56, 0x12, 0x71, 0x0D, 0x80, 0x58, 0xB1, 0xEC, 0x67, 0x1E, 0x5E, 0x06, 0x97, 0x0F, 0xCF,
+                                       0xCE, 0x61, 0x1A, 0x72, 0x15, 0x80, 0x7C, 0x9B, 0xFE, 0x67, 0x1E, 0x7D, 0x02, 0x80, 0x1D, 0xDC,
+                                       0x8D};
+    thread_local EncryptedName<sizeof(nameSource), 0xF535E561137F138DULL> name(nameSource);
+    return std::make_pair(false, std::string(name.Text()));
+  }
+
+  if (!CreateNavigationLinkParser()) {
+    const std::uint8_t nameSource[] = {0x9C, 0xCF, 0x5E, 0x9E, 0xC8, 0x7E, 0x35, 0x9D, 0xE5, 0xD8, 0x4D, 0x9C, 0xE4, 0x6D, 0x22, 0xEE,
+                                       0xB1, 0xE8, 0x4B, 0x98, 0xEB, 0x7A, 0x22, 0x8F, 0xF6, 0x9B};
+    thread_local EncryptedName<sizeof(nameSource), 0xA7471985F93F9BDFULL> name(nameSource);
+    return std::make_pair(false, std::string(name.Text()));
+  }
+
+  if (!CreateSignBoardMgr()) {
+    const std::uint8_t nameSource[] = {0x14, 0xBC, 0xB8, 0xD2, 0xC5, 0x3D, 0x92, 0x3E, 0x25, 0x8B, 0x9C, 0xD2, 0xD9, 0x45, 0xC7, 0x1C,
+                                       0x25, 0x8A, 0xB0, 0xC1, 0xCE, 0x36, 0x93, 0x2C, 0x23, 0x8E, 0xBF, 0xD6, 0xCE, 0x57, 0xD4, 0x5F};
+    thread_local EncryptedName<sizeof(nameSource), 0x5FFD7FABB5D1EF57ULL> name(nameSource);
+    return std::make_pair(false, std::string(name.Text()));
+  }
+
+  sub_81FE50(s_signBoardMgr);
+  if (!CAdventurerAgencyMgr::Initialize()) {
+    return std::make_pair(false, std::string(AdventurerAgencyCreateInstanceName()().Text()));
+  }
+
+  if (!UIRequestJoinPartyMgr::Initialize(reinterpret_cast<WindowManagerWindows&>(g_windowMgr))) {
+    return std::make_pair(false, std::string(RequestJoinPartyCreateInstanceName()().Text()));
+  }
+
+  Singleton<CReputeMgr>::GetInstance()->sub_60DBF0();
+  CItemDBToIDMgr::GetInstance()->Load();
+  CItemReformMgr::Instance()->Load();
+  Singleton<CEnchantMgr>::GetInstance()->Init();
+  GetMapSkyMgr()->LoadData();
+  Singleton<CSelectPackageItemMgr>::GetInstance()->LoadScript();
+  Singleton<CUIRegisterMgr>::GetInstance()->sub_9EB920();
+  Singleton<CJobCodeForItem>::GetInstance()->Init();
+  EquipmentProperties::CEquipmentPropertiesMgr::GetInstance()->sub_6AD910();
+  if (!CAdventureGuideMgr::Create()) {
+    return std::make_pair(false, std::string(AdventureGuideCreateInstanceName()().Text()));
+  }
+
+  Singleton<NEO_PACKAGEITEM::CNeoPackageItemMgr>::GetInstance()->LoadScript();
+  Singleton<NEO_PACKAGEITEM::CPaidPackageItemMgr>::GetInstance()->LoadScript();
+  return std::make_pair(true, std::string(GoodResultName()().Text()));
+}
+
+// OFFSET: 0x00E5D390
+// FUNCTION: fn_24380
+int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, int showCommand) {
+  ExitForProtectionCheck(commandLine);
+
+  HANDLE mutex;
+  if (!AcquireInstanceMutex(&mutex)) {
+    return 0;
+  }
+
+  g_commandLine = commandLine;
+  if (RestartFromCommandLine(commandLine) == true) {
+    return 0;
+  }
+
+  {
+    myGPack::CGPakUpdate update;
+    if (update.Open("data.grf ")) {
+      update.Commit(nullptr);
+    }
+
+    GetCurrentDirectoryA(sizeof(g_applicationDirectory), g_applicationDirectory);
+    RemovePath(FormatOwnedString("%s%s", g_applicationDirectory, "\\skin\\default"), 1, false);
+  }
+
+  BinkSetSoundSystem(BinkOpenDirectSound, 0);
+  if (!InitUnhandledExceptionHandler(reinterpret_cast<int (*)()>(&IgnoreNull))) {
+    const std::uint8_t failureSource[] = {0xB6, 0xEA, 0xAF, 0x66, 0xCF, 0x3A, 0x50, 0x9B, 0xFB, 0xEA, 0xAF, 0x7C, 0xDF, 0x2E, 0x51, 0x87,
+                                          0xFB, 0xE5, 0xA0, 0x66, 0xC7, 0x4F};
+    thread_local EncryptedName<sizeof(failureSource), 0xEB3D4FAB0FC183DBULL> failure(failureSource);
+    ShowErrorDialog(GetRenderSystemHolder()->system, failure.Text(), MB_OK);
+    return 0;
+  }
+
+  const std::uint8_t replaySource[] = {0x1B, 0x9A, 0xA5, 0x93, 0xB0, 0x3A, 0xBF};
+  thread_local EncryptedName<sizeof(replaySource), 0xFFBF43D1FFD5FF49ULL> replay(replaySource);
+  g_replayMode = std::strstr(commandLine, replay.Text()) != nullptr;
+  Replay::Instance().SetState(1);
+
+  const std::uint8_t qmSource[] = {0xD6, 0x3C, 0x6E, 0x48, 0x07};
+  thread_local EncryptedName<sizeof(qmSource), 0x7DB1050779034DE7ULL> qm(qmSource);
+  if (std::strstr(commandLine, qm.Text())) {
+    const char* server;
+    const std::uint8_t sakSource[] = {0x80, 0xE4, 0x42, 0x80, 0x2C, 0x3B};
+    thread_local EncryptedName<sizeof(sakSource), 0x5D6B3B1DEB2397B1ULL> sak(sakSource);
+    if (std::strstr(commandLine, sak.Text())) {
+      const std::uint8_t sakraySource[] = {0x74, 0x94, 0xE4, 0x5E, 0xD6, 0x11, 0x84, 0x06, 0x25};
+      thread_local EncryptedName<sizeof(sakraySource), 0x7FE563BD3FB7F925ULL> sakray(sakraySource);
+      server = sakray.Text();
+    } else {
+      const std::uint8_t devSource[] = {0xCD, 0xBA, 0xAB, 0x5B};
+      thread_local EncryptedName<sizeof(devSource), 0x8B3FA35B5BDDDF89ULL> dev(devSource);
+      server = dev.Text();
+    }
+
+    StringFormat(g_launchServerName, sizeof(g_launchServerName), static_cast<std::size_t>(-1), server);
+  }
+
+  const std::uint8_t rocSource[] = {0x8E, 0xF7, 0x48, 0x1E, 0x62, 0x23};
+  thread_local EncryptedName<sizeof(rocSource), 0xE3FB23537D2785BFULL> roc(rocSource);
+  g_session.SetOption(18, std::strstr(commandLine, roc.Text()) != nullptr, 0);
+
+  const std::uint8_t stoveSandboxSource[] = {0xCC, 0x24, 0x61, 0x32, 0x61, 0xE4, 0x84, 0x6C, 0x82, 0x39, 0x71, 0x3F, 0x78, 0xF9, 0xDB};
+  thread_local EncryptedName<sizeof(stoveSandboxSource), 0x1FDB81175D1557E3ULL> stoveSandbox(stoveSandboxSource);
+  if (std::strstr(commandLine, stoveSandbox.Text())) {
+    g_launchPassCommandLine = true;
+  } else {
+    const std::uint8_t stoveLiveSource[] = {0xF8, 0x34, 0x89, 0x0C, 0x7B, 0x5C, 0x74, 0x1F, 0xBE, 0x31, 0x98, 0x63};
+    thread_local EncryptedName<sizeof(stoveLiveSource), 0x732B390D63FD47D7ULL> stoveLive(stoveLiveSource);
+    if (std::strstr(commandLine, stoveLive.Text())) {
+      g_launchPassCommandLine = true;
+    }
+  }
+
+  const std::uint8_t manifestSource[] = {0xFC, 0x96, 0x2C, 0xAF, 0x90, 0x05, 0xC2, 0xD3, 0xFE, 0x8D, 0x20, 0x92, 0x94, 0x0A, 0xC9, 0xDE,
+                                         0xF9, 0x9C, 0x32, 0xB9, 0xF9};
+  thread_local EncryptedName<sizeof(manifestSource), 0xB7A76BF9CD41F99FULL> manifest(manifestSource);
+  WIN32_FIND_DATAA manifestData;
+  HANDLE manifestFind = FindFirstFileA(manifest.Text(), &manifestData);
+  if (g_launchPassCommandLine ? manifestFind == INVALID_HANDLE_VALUE : manifestFind != INVALID_HANDLE_VALUE) {
+    FindClose(manifestFind);
+    const std::uint8_t captionSource[] = {0xE2, 0x5D, 0x16, 0x35, 0xBE, 0x29, 0xC0, 0x03, 0xE3, 0x46, 0x0B, 0x43};
+    thread_local EncryptedName<sizeof(captionSource), 0x71A509DB43792991ULL> caption(captionSource);
+    const char* title = caption.Text();
+    const std::uint8_t messageSource[] = {0x2E, 0x27, 0xE0, 0xD7, 0x9A, 0xCD, 0xAC, 0x71, 0xCB, 0xA0, 0x4F, 0x6D, 0x41, 0x1D, 0xAF, 0x73,
+                                          0xC5, 0xF5, 0xAF, 0x64, 0x14, 0x2A, 0xB1, 0xFD, 0xC0, 0x94, 0x48, 0x41, 0x38, 0x35, 0x49, 0x1C,
+                                          0xAB, 0xEF, 0x33, 0x1E, 0x1B, 0xED};
+    thread_local EncryptedName<sizeof(messageSource), 0xDD69EDFFA18F537DULL> message(messageSource);
+    MessageBoxA(hWnd, FormatOwnedString(message.Text()).c_str(), title, MB_OK);
+    return 0;
+  }
+
+  FindClose(manifestFind);
+  if (!g_launchPassCommandLine) {
+    const std::uint8_t accountMarkerSource[] = {0xA4, 0xAF, 0x59, 0x79};
+    thread_local EncryptedName<sizeof(accountMarkerSource), 0xB3CF9BEB7963DB89ULL> accountMarker(accountMarkerSource);
+    if (std::strstr(commandLine, accountMarker.Text()) && !g_replayMode) {
+      g_launchAccountEnabled = true;
+      char* marker = std::strstr(commandLine, "-t:");
+      char* account = marker + 3;
+      char* accountEnd = std::strstr(account, " ");
+      if (!accountEnd) {
+        accountEnd = account + std::strlen(account);
+      }
+
+      int length = accountEnd - account;
+      std::strncpy(g_launchAccountName, account, length > 500 ? 500 : length);
+      g_launchAccountName[length > 499 ? 499 : length] = 0;
+
+      char* password = accountEnd + 1;
+      char* passwordEnd = std::strstr(password, " ");
+      length = passwordEnd - password;
+      std::strncpy(g_launchAccountPassword, password, length > 24 ? 24 : length);
+      g_launchAccountPassword[length > 23 ? 23 : length] = 0;
+
+      g_launchAccountSex = passwordEnd[1];
+      char* server = passwordEnd + 3;
+      length = commandLine + std::strlen(commandLine) - server;
+      std::strncpy(g_launchServerName, server, length > 24 ? 24 : length);
+      g_launchServerName[length > 23 ? 23 : length] = 0;
+
+      const std::uint8_t nonPaySource[] = {0x3D, 0x4E, 0x89, 0x17, 0x4A, 0x00, 0xED, 0xEA, 0x14, 0x21};
+      thread_local EncryptedName<sizeof(nonPaySource), 0x8BBF792B47E72173ULL> nonPay(nonPaySource);
+      if (std::strstr(g_launchServerName, nonPay.Text())) {
+        g_launchServerKind = 2;
+      } else {
+        const std::uint8_t eventSource[] = {0x3C, 0x81, 0x70, 0x5B, 0xD9, 0x51};
+        thread_local EncryptedName<sizeof(eventSource), 0x9B9D51AD3515F779ULL> event(eventSource);
+        if (std::strstr(g_launchServerName, event.Text())) {
+          g_launchServerKind = 2;
+        }
+      }
+    } else {
+      const std::uint8_t secondManifestSource[] = {0x34, 0x90, 0x80, 0x2D, 0xC6, 0xDB, 0xB2, 0xD1, 0x36, 0x8B, 0x8C, 0x10, 0xC2, 0xD4, 0xB9, 0xDC,
+                                                   0x31, 0x9A, 0x9E, 0x3B, 0xAF};
+      thread_local EncryptedName<sizeof(secondManifestSource), 0xB5D7B5AF4FEDFF57ULL> secondManifest(secondManifestSource);
+      WIN32_FIND_DATAA secondManifestData;
+      HANDLE secondManifestFind = FindFirstFileA(secondManifest.Text(), &secondManifestData);
+      if (secondManifestFind != INVALID_HANDLE_VALUE) {
+        FindClose(secondManifestFind);
+        const std::uint8_t secondCaptionSource[] = {0xC4, 0x47, 0x4A, 0x7F, 0xDE, 0x15, 0xE0, 0x71, 0xC5, 0x5C, 0x57, 0x09};
+        thread_local EncryptedName<sizeof(secondCaptionSource), 0x038535BB092533B7ULL> secondCaption(secondCaptionSource);
+        const char* title = secondCaption.Text();
+        const std::uint8_t secondMessageSource[] = {0x80, 0x03, 0x88, 0x1F, 0x32, 0xE7, 0xEE, 0x57, 0x65, 0x84, 0x27, 0xA5, 0xE9, 0x37, 0xED, 0x55,
+                                                    0x6B, 0xD1, 0xC7, 0xAC, 0xBC, 0x00, 0xF3, 0xDB, 0x6E, 0xB0, 0x20, 0x89, 0x90, 0x1F, 0x0B, 0x3A,
+                                                    0x05, 0xCB, 0x5B, 0xD6, 0xB3, 0xC7};
+        thread_local EncryptedName<sizeof(secondMessageSource), 0xFB2BC75769E777D3ULL> secondMessage(secondMessageSource);
+        MessageBoxA(hWnd, FormatOwnedString(secondMessage.Text()).c_str(), title, MB_OK);
+        return 0;
+      }
+
+      g_launchAccountEnabled = false;
+      for (int index = 0; index < 500; ++index) {
+        g_launchAccountName[index] = 0;
+      }
+
+      for (int index = 0; index < 24; ++index) {
+        g_launchAccountPassword[index] = 0;
+      }
+    }
+  }
+
+  const std::uint8_t ragSource[] = {0x32, 0x47, 0xF8, 0xD2, 0x82, 0x77};
+  thread_local EncryptedName<sizeof(ragSource), 0x6BC977B3B5993503ULL> rag(ragSource);
+  std::strstr(commandLine, rag.Text());
+
+  {
+    std::string arguments(commandLine);
+    std::smatch match;
+    std::regex pattern("-inf:(\\d+)");
+    if (std::regex_search(arguments, match, pattern)) {
+      g_clientVersion = std::stoi(match[1].str());
+    }
+  }
+
+  const std::uint8_t accountSource[] = {0x74, 0xFC, 0x46, 0x4E, 0xE8, 0x58, 0x43, 0x73, 0x61, 0x9D};
+  thread_local EncryptedName<sizeof(accountSource), 0x072D2D872D259D5BULL> account(accountSource);
+  account.Text();
+  g_launchFromPc = std::strstr(commandLine, "pc") != nullptr;
+
+  char protection[64];
+  std::memset(protection, 0, sizeof(protection));
+  const std::uint8_t dataGrfSource[] = {0x3B, 0x18, 0xD5, 0x86, 0xDF, 0xAA, 0x2D, 0xE1, 0x5F};
+  thread_local EncryptedName<sizeof(dataGrfSource), 0x875FCDF1E7A1795FULL> dataGrf(dataGrfSource);
+  dataGrf.Text();
+  HMODULE kernel = GetModuleHandleA("kernel32.dll");
+  if (kernel) {
+    typedef DWORD(WINAPI * ReadProfileString)(LPCSTR, LPCSTR, LPCSTR, LPSTR, DWORD, LPCSTR);
+    typedef BOOL(WINAPI * WriteProfileString)(LPCSTR, LPCSTR, LPCSTR, LPCSTR);
+    auto readString = reinterpret_cast<ReadProfileString>(GetProcAddress(kernel, "GetPrivateProfileStringA"));
+    if (readString) {
+      auto writeString = reinterpret_cast<WriteProfileString>(GetProcAddress(kernel, "WritePrivateProfileStringA"));
+      if (writeString) {
+        bool loading = true;
+        while (loading) {
+          int added = 0;
+          char key[2] = {'9', 0};
+          do {
+            char file[0x74];
+            readString("Data", key, key, file, sizeof(file), ".\\DATA.INI");
+            if (file[0] != key[0] || file[1] != key[1]) {
+              g_pakRegistry.Add(file);
+              ++added;
+            }
+
+            --key[0];
+          } while (key[0] >= '0');
+
+          key[0] = '2';
+          key[1] = 0;
+          loading = added == 0 && writeString("Data", key, "data.grf", ".\\DATA.INI");
+        }
+      }
+    }
+  }
+  sub_3DE90E0(protection);
+
+  const std::uint8_t patchSandboxSource[] = {0x5A, 0x16, 0x15, 0xB6, 0x3B, 0x6C, 0x80, 0x0A, 0x14, 0x0B, 0x05, 0xBB, 0x22, 0x71, 0xDF};
+  thread_local EncryptedName<sizeof(patchSandboxSource), 0x79DF094DD9616575ULL> patchSandbox(patchSandboxSource);
+  if (!std::strstr(g_commandLine, patchSandbox.Text())) {
+    const std::uint8_t patchLiveSource[] = {0x98, 0x12, 0x89, 0xD0, 0x41, 0x48, 0xD0, 0xF1, 0xDE, 0x17, 0x98, 0xBF};
+    thread_local EncryptedName<sizeof(patchLiveSource), 0x9D8F2D37BFFD61B7ULL> patchLive(patchLiveSource);
+    if (!std::strstr(g_commandLine, patchLive.Text()) &&
+        ReplaceClientExecutable(const_cast<char*>(g_clientExeName), g_patcherExeName)) {
+      return 0;
+    }
+  }
+
+  g_session.Init();
+
+  const std::uint8_t setupSource[] = {0x64, 0x98, 0x01, 0x20, 0x45, 0xEF, 0x30, 0x3F, 0x52, 0xFD};
+  thread_local EncryptedName<sizeof(setupSource), 0x4755C1355575FD37ULL> setup(setupSource);
+  while (sub_E59030() == 0) {
+    if (_access(setup.Text(), 0) == 0) {
+      WaitForSingleObject(StartClientProcess(const_cast<char*>(setup.Text())), INFINITE);
+    }
+  }
+
+  const std::uint8_t saveDataSource[] = {0x74, 0xBC, 0x01, 0x06, 0x07, 0x54, 0xBF, 0x70, 0x07};
+  thread_local EncryptedName<sizeof(saveDataSource), 0x11CB35636377DD07ULL> saveData(saveDataSource);
+  WIN32_FIND_DATAA saveDataData;
+  HANDLE saveDataFind = FindFirstFileA(saveData.Text(), &saveDataData);
+  if (saveDataFind == INVALID_HANDLE_VALUE) {
+    const std::uint8_t saveDataDirectorySource[] = {0x54, 0xF2, 0x09, 0x6A, 0x3F, 0x7E, 0x43, 0x5C, 0x27};
+    thread_local EncryptedName<sizeof(saveDataDirectorySource), 0x3D371F5B0F7F9327ULL> saveDataDirectory(saveDataDirectorySource);
+    CreateDirectoryA(saveDataDirectory.Text(), nullptr);
+  } else {
+    FindClose(saveDataFind);
+  }
+
+  _controlfp(_PC_24, _MCW_PC);
+
+  UINT period = 0;
+  TIMECAPS caps;
+  if (timeGetDevCaps(&caps, sizeof(caps)) == TIMERR_NOERROR) {
+    period = caps.wPeriodMin < 1 ? 1 : caps.wPeriodMin;
+    if (caps.wPeriodMax < period) {
+      period = caps.wPeriodMax;
+    }
+
+    timeBeginPeriod(period);
+  }
+
+  ResetTimer();
+  CoInitialize(nullptr);
+
+  SoundMgrContext sound{g_soundConfiguration, g_serviceOptions, ResourceMgr::Instance()};
+  if (!CSoundMgr::Create(sound)) {
+    const std::uint8_t audioFailureSource[] = {0x68, 0xBA, 0x4D, 0x6E, 0x8C, 0x09, 0xA4, 0x12, 0x5A, 0xBB, 0x4C, 0x6A, 0xC3, 0x60, 0x99, 0x02,
+                                               0x5D, 0xEF, 0x6F, 0x66, 0x8A, 0x45, 0x92, 0x0F, 0x29};
+    thread_local EncryptedName<sizeof(audioFailureSource), 0x6BF729E30729CF29ULL> audioFailure(audioFailureSource);
+    if (audioFailure.Encrypted()) {
+      audioFailure.Text();
+    } else {
+      ShowErrorDialog(GetRenderSystemHolder()->system, audioFailure.Text(), MB_OK);
+      return 0;
+    }
+  }
+
+  reinterpret_cast<SessionMessengerContext*>(&g_session)->sub_DD9D50();
+
+  ResourceMgr& resources = ResourceMgr::Instance();
+  const std::uint8_t resourceNamesSource[] = {0x8F, 0xA4, 0x00, 0x0D, 0x46, 0x3C, 0x78, 0x4B, 0x9C, 0xA3, 0x1F, 0x26, 0x09, 0x25, 0x65, 0x6B,
+                                              0xFD};
+  thread_local EncryptedName<sizeof(resourceNamesSource), 0x1F1D51274373C1FDULL> resourceNames(resourceNamesSource);
+  resources.aliases.Load(reinterpret_cast<int>(resourceNames.Text()));
+
+  if (!sub_E58100(instance, showCommand)) {
+    return 1;
+  }
+
+  std::pair<bool, std::string> managers = InitializeManagers();
+  if (!managers.first) {
+    const std::uint8_t errorSource[] = {0x72, 0x27, 0xFF, 0xE8, 0x91, 0xA1};
+    thread_local EncryptedName<sizeof(errorSource), 0x5F93A1C3A7AD7537ULL> error(errorSource);
+    MessageBoxA(nullptr, managers.second.c_str(), error.Text(), MB_OK);
+    return 1;
+  }
+
+  if (GetRenderSystemHolder()->Initialize(g_configuredRenderBackend, hWnd) < 0) {
+    const std::uint8_t deviceFailureSource[] = {0x14, 0xE2, 0x87, 0xBB, 0xEE, 0xB1, 0x6D, 0x2E, 0x39, 0xEA, 0x9D, 0xF5, 0xE5, 0xF6, 0x29, 0x67,
+                                                0x18, 0xD1, 0xC9, 0xB2, 0xF3, 0xA3, 0x6D, 0x21, 0x3E, 0xEF, 0x8C, 0xF5, 0xE9, 0xA4, 0x3E, 0x67,
+                                                0x27, 0xF1, 0x86, 0xB7, 0xED, 0xA0, 0x20, 0x69, 0x57};
+    thread_local EncryptedName<sizeof(deviceFailureSource), 0x474DC581D5E98357ULL> deviceFailure(deviceFailureSource);
+    ShowErrorDialog(GetRenderSystemHolder()->system, deviceFailure.Text(), MB_OK);
+    return 1;
+  }
+
+  g_renderer = GetRenderSystemHolder()->CreateRenderer();
+  if (!g_replayMode && !InitializeConnections()) {
+    return 1;
+  }
+
+  InitTimer(60);
+  SetFocus(hWnd);
+  if (GetRenderSystemHolder()->IsWindowed()) {
+    ShowCursor(FALSE);
+  }
+
+  g_nProtectGameGuardMgr->SetHwnd(hWnd);
+  g_windowMgr.SetScreenSize(g_renderer->viewport.width, g_renderer->viewport.height);
+  g_windowMgr.LoadUIRectInfo();
+  g_grannyAnimationLibrary.Initialize();
+  const std::uint8_t guildFlagSource[] = {0xEA, 0xC8, 0x21, 0x16, 0x79, 0xD5, 0x40, 0x6D, 0xEA, 0xC8, 0x27, 0x2F, 0x72, 0xFC, 0x1A, 0x65,
+                                          0xE3, 0xC1, 0x29, 0x12, 0x72, 0xB0, 0x43, 0x56, 0xB6, 0x89, 0x22, 0x01, 0x27, 0x89};
+  thread_local EncryptedName<sizeof(guildFlagSource), 0x097389157345A787ULL> guildFlag(guildFlagSource);
+  g_grannyAnimationLibrary.Load(guildFlag.Text(), 1, 0);
+  g_skinInfo.Refresh();
+  CreateTrigonometricTable();
+
+  if (g_serviceType == 4 || g_serviceType == 8 || g_serviceType == 9 || (g_serviceType == 6 && g_serviceMode == 0) || g_serviceType == 12) {
+    g_loginStartMode = 1;
+  } else if (g_serviceType != 0 && ((g_serviceMode == 0 && g_serviceType != 6) || g_serviceType == 2 || g_serviceMode == 5 || g_serviceType == 3 ||
+                                      g_serviceType == 19)) {
+    g_loginStartMode = 2;
+  } else {
+    g_loginStartMode = 0;
+  }
+
+  const std::uint8_t memoSource[] = {0xE4, 0x0E, 0x84, 0xF0, 0x4B};
+  thread_local EncryptedName<sizeof(memoSource), 0xC5995F4B9FE96B89ULL> memo(memoSource);
+  WIN32_FIND_DATAA memoData;
+  HANDLE memoFind = FindFirstFileA(memo.Text(), &memoData);
+  if (memoFind == INVALID_HANDLE_VALUE) {
+    CreateDirectoryA("memo", nullptr);
+  } else {
+    FindClose(memoFind);
+  }
+
+  g_navigationManager.LoadSettings();
+
+  const std::uint8_t replayFolderSource[] = {0x49, 0xAC, 0xB1, 0x83, 0xB0, 0x04, 0x0F};
+  thread_local EncryptedName<sizeof(replayFolderSource), 0x610F7DD1EFC1C91BULL> replayFolder(replayFolderSource);
+  WIN32_FIND_DATAA replayData;
+  HANDLE replayFind = FindFirstFileA(replayFolder.Text(), &replayData);
+  if (replayFind == INVALID_HANDLE_VALUE) {
+    const std::uint8_t replayDirectorySource[] = {0xEB, 0x48, 0x4D, 0x5F, 0xEC, 0xEA, 0x15};
+    thread_local EncryptedName<sizeof(replayDirectorySource), 0xED15938D333D2DB9ULL> replayDirectory(replayDirectorySource);
+    CreateDirectoryA(replayDirectory.Text(), nullptr);
+  } else {
+    FindClose(replayFind);
+  }
+
+  WIN32_FIND_DATAA navigationData;
+  HANDLE navigationFind = FindFirstFileA("", &navigationData);
+  if (replayFind == INVALID_HANDLE_VALUE) {
+    const std::uint8_t navigationDirectorySource[] = {0x0D, 0x58, 0x2D, 0x02, 0x00, 0x4C, 0x05, 0xA0, 0x2C, 0x57, 0x3F, 0x0A, 0x13, 0x4C, 0x71};
+    thread_local EncryptedName<sizeof(navigationDirectorySource), 0xC9712D676B5B3943ULL> navigationDirectory(navigationDirectorySource);
+    CreateDirectoryA(navigationDirectory.Text(), nullptr);
+  } else {
+    FindClose(navigationFind);
+  }
+
+  ReleaseMutex(mutex);
+  CloseHandle(mutex);
+  SetPriorityClass(GetCurrentProcess(), dwPriorityClass);
+
+  g_modeMgr.Run(0, "login.rsw");
+
+  g_windowMgr.DestroyWindow0478();
+  GetRagConnection().Close();
+  Cleanup();
+  g_windowMgr.Shutdown();
+  g_windowMgr.SaveUIRectInfo();
+  g_navigationManager.SaveSettings();
+  g_session.SaveOptionInfo();
+  g_windowMgr.DestroyPersistentWindows();
+  CMapInfoMgr::Destroy();
+  ResourceMgr::Instance().UnloadAll();
+  g_texMgr.Clear();
+  SaveDisplayDeviceSettings();
+  GetRenderSystemHolder()->DestroySurface(reinterpret_cast<CSurface*>(g_renderer));
+  GetRenderSystemHolder()->Close();
+
+  MSG message;
+  while (PeekMessageA(&message, nullptr, 0, 0, PM_REMOVE)) {
+    if (message.message == WM_KEYDOWN && message.wParam == VK_PROCESSKEY) {
+      typedef void(__thiscall * KeyHandler)(InputCharset*, UINT);
+      (*reinterpret_cast<KeyHandler**>(g_serverLanguage))[3](g_serverLanguage, ImmGetVirtualKey(message.hwnd));
+    }
+
+    TranslateMessage(&message);
+    DispatchMessageA(&message);
+  }
+
+  if (g_windowDragging == true) {
+    POINT cursor;
+    GetCursorPos(&cursor);
+    const int deltaX = cursor.x - g_windowDragStart.x;
+    const int deltaY = cursor.y - g_windowDragStart.y;
+    if (deltaX != 0 || deltaY != 0) {
+      MoveWindow(hWnd, g_windowDragRect.left + deltaX, g_windowDragRect.top + deltaY, g_windowDragRect.right - g_windowDragRect.left,
+                 g_windowDragRect.bottom - g_windowDragRect.top, TRUE);
+    }
+
+    if ((GetAsyncKeyState(VK_LBUTTON) & 0x8000) == 0) {
+      g_windowDragging = false;
+      if (g_serviceOptions.Get(ServiceOption::ConfineCursor)) {
+        ClipApplicationCursor(hWnd);
+      }
+    }
+  }
+
+  CoUninitialize();
+  DestroyWindow(hWnd);
+  sub_AEA780();
+  ShutdownManagers();
+  CSoundMgr::Destroy();
+  CoUninitialize();
+  if (period) {
+    timeEndPeriod(period);
+  }
+
+  CleanupUnhandledExceptionHandler();
+
+  if (g_restartClient) {
+    const std::uint8_t devServerSource[] = {0x55, 0x86, 0x25, 0x99};
+    thread_local EncryptedName<sizeof(devServerSource), 0x4B755DB19953E311ULL> devServer(devServerSource);
+    if (!std::strstr(g_launchServerName, devServer.Text())) {
+      const char* parameters = LookupMessage(3445);
+      const char* file = LookupMessage(3445);
+      const std::uint8_t openSource[] = {0x22, 0xEF, 0x90, 0x69, 0xEB};
+      thread_local EncryptedName<sizeof(openSource), 0xD7A749EB27D5BF6DULL> open(openSource);
+      ShellExecuteA(nullptr, open.Text(), file, parameters, nullptr, SW_SHOWNORMAL);
+    } else if (g_serviceMode == 0) {
+      const std::uint8_t parametersSource[] = {0xE5, 0xF5, 0x65, 0x83, 0x89, 0x86, 0x46, 0x9C, 0xE9, 0xEC, 0x65, 0x9C, 0xDC, 0xC5, 0x1A, 0xD3,
+                                               0xEA, 0xEF, 0x7B, 0x9C, 0xCA, 0x87, 0x0A, 0x92, 0xE0, 0xAE, 0x76, 0x92, 0xDE, 0xCC, 0x1A, 0x89,
+                                               0xEC, 0xF3, 0x65, 0x96, 0xC1, 0x86, 0x0D, 0x98, 0xFB, 0xF3, 0x7E, 0xDD, 0xD2, 0xDA, 0x19, 0xC2,
+                                               0xCA, 0xE0, 0x7C, 0x96, 0xF0, 0xC6, 0x0D, 0x98, 0xB0, 0xB5, 0x21, 0xC2, 0x82, 0xA9};
+      thread_local EncryptedName<sizeof(parametersSource), 0xFD69A9B3F311818DULL> parameters(parametersSource);
+      const char* arguments = parameters.Text();
+      const std::uint8_t fileSource[] = {0x43, 0x6B, 0x9D, 0xDB, 0xFB, 0xD0, 0x02, 0x1E, 0x4F, 0x72, 0x9D, 0xC4, 0xAE, 0x93, 0x5E, 0x51,
+                                         0x4C, 0x71, 0x83, 0xC4, 0xB8, 0xD1, 0x4E, 0x10, 0x46, 0x30, 0x8E, 0xCA, 0xAC, 0x9A, 0x5E, 0x0B,
+                                         0x4A, 0x6D, 0x9D, 0xCE, 0xB3, 0xD0, 0x49, 0x1A, 0x5D, 0x6D, 0x86, 0x85, 0xA0, 0x8C, 0x5D, 0x40,
+                                         0x6C, 0x7E, 0x84, 0xCE, 0x82, 0x90, 0x49, 0x1A, 0x16, 0x2B, 0xD9, 0x9A, 0xF0, 0xFF};
+      thread_local EncryptedName<sizeof(fileSource), 0x7F2DFFC1ABE91F2BULL> file(fileSource);
+      const char* target = file.Text();
+      const std::uint8_t openSource[] = {0x74, 0xB7, 0x44, 0x55, 0xC1};
+      thread_local EncryptedName<sizeof(openSource), 0xBD2BA1C11B01E73BULL> open(openSource);
+      ShellExecuteA(nullptr, open.Text(), target, arguments, nullptr, SW_SHOWNORMAL);
+    } else {
+      const std::uint8_t parametersSource[] = {0x31, 0x79, 0xBF, 0xDF, 0x47, 0x4C, 0xBA, 0xD0, 0x3D, 0x60, 0xBF, 0xC0, 0x12, 0x0F, 0xE6, 0x9F,
+                                               0x3E, 0x63, 0xA1, 0xC0, 0x04, 0x4D, 0xF6, 0xDE, 0x34, 0x22, 0xAC, 0xCE, 0x10, 0x06, 0xE6, 0xC5,
+                                               0x38, 0x7F, 0xBF, 0xCA, 0x0F, 0x4C, 0xF1, 0xD4, 0x2F, 0x7F, 0xA4, 0x81, 0x1C, 0x10, 0xE5, 0x8E,
+                                               0x1E, 0x6C, 0xA6, 0xCA, 0x3E, 0x0C, 0xF1, 0xD4, 0x64, 0x3B, 0xFB, 0x9E, 0x4C, 0x63};
+      thread_local EncryptedName<sizeof(parametersSource), 0xB195637DAFCB0D59ULL> parameters(parametersSource);
+      const char* arguments = parameters.Text();
+      const std::uint8_t fileSource[] = {0x65, 0x17, 0xF9, 0x79, 0x7F, 0x7C, 0xA0, 0xB8, 0x69, 0x0E, 0xF9, 0x66, 0x2A, 0x3F, 0xFC, 0xF7,
+                                         0x6A, 0x0D, 0xE7, 0x66, 0x3C, 0x7D, 0xEC, 0xB6, 0x60, 0x4C, 0xEA, 0x68, 0x28, 0x36, 0xFC, 0xAD,
+                                         0x6C, 0x11, 0xF9, 0x6C, 0x37, 0x7C, 0xEB, 0xBC, 0x7B, 0x11, 0xE2, 0x27, 0x24, 0x20, 0xFF, 0xE6,
+                                         0x4A, 0x02, 0xE0, 0x6C, 0x06, 0x3C, 0xEB, 0xBC, 0x30, 0x55, 0xBD, 0x38, 0x74, 0x53};
+      thread_local EncryptedName<sizeof(fileSource), 0xD98F5345098D630DULL> file(fileSource);
+      const char* target = file.Text();
+      const std::uint8_t openSource[] = {0xDC, 0x25, 0x9A, 0xA1, 0x4D};
+      thread_local EncryptedName<sizeof(openSource), 0x9B0F234DEFDF7593ULL> open(openSource);
+      ShellExecuteA(nullptr, open.Text(), target, arguments, nullptr, SW_SHOWNORMAL);
+    }
+  }
+
+  CThemidaMgr::StopThread();
+  return 0;
 }

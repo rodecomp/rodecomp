@@ -15,4 +15,6 @@ struct SoundConfiguration {
   void LoadRegistry(const char* baseKey);
 };
 
+extern SoundConfiguration g_soundConfiguration;
+
 #endif

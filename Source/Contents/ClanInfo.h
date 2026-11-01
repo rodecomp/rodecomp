@@ -22,6 +22,7 @@ public:
   CClanInfo();
   ~CClanInfo();
 
+  static bool Create();
   static void Destroy();
   void Clear();
 };

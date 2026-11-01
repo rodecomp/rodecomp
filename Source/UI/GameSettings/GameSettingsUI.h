@@ -26,6 +26,8 @@ class CUITextButton;
 extern int g_textureDetailLevel;
 extern int g_textureFiltering;
 extern int g_configuredRenderBackend;
+extern int dwPriorityClass;
+extern bool g_restartClient;
 extern bool g_gameOptionFlag;
 extern std::map<int, int> g_optionHotkeys;
 
