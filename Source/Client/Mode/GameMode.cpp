@@ -3234,3 +3234,312 @@ void CGameMode::PlayItemUseEffect(int itemId, std::uint32_t aid) {
     }
   }
 }
+
+#include "ActorPickNode.h"
+#include "Client/Input/Mouse.h"
+#include "Client/Mode/CLoginMode.h"
+#include "Client/Mode/ModeTooltip.h"
+#include "Client/Registry.h"
+#include "Contents/ClientItemLists.h"
+#include "Contents/Effects/EffectPrim.h"
+#include "Contents/MapSkyMgr.h"
+#include "Contents/NavigationManager.h"
+#include "Contents/SignBoard/SignBoard.h"
+#include "Contents/Sound/SoundMaker.h"
+#include "Contents/TerrainPathSearch.h"
+#include "Contents/UserData/AccountLinkedUserDataMgr.h"
+#include "Network/GameTickPacket.h"
+#include "UI/Buttons/UITextButton.h"
+#include "UI/Layout/SnapMgr.h"
+#include "UI/Window/UIMileageWnd.h"
+#include "UI/Window/UIWindowFactory.h"
+#include <list>
+#include <new>
+#include <winsock2.h>
+#include <windows.h>
+
+struct SessionMessengerContext {
+  void UpdateRandomStats();
+};
+
+struct SessionItemLists {
+  void ClearTradeItems();
+};
+
+// GLOBAL: gl_24776
+int g_visibleMinX;
+
+// GLOBAL: gl_24777
+int g_visibleMinY;
+
+// GLOBAL: gl_24778
+int g_visibleMaxX;
+
+// GLOBAL: gl_24779
+int g_visibleMaxY;
+
+// GLOBAL: gl_25330
+std::uint32_t g_gameTickInterval = 12000;
+
+// GLOBAL: gl_25332
+int g_window315Enabled = 1;
+
+// OFFSET: 0x00CD5E90
+// FUNCTION: fn_21288
+void CGameMode::InitializeState() {
+  reinterpret_cast<ModeTooltip*>(this)->Clear();
+  this->nameCard.Clear();
+  this->unknown_019C.clear();
+  this->unknown_01A4.clear();
+  this->actorMenuIds.clear();
+  this->unknown_01B4.clear();
+  this->unknown_01C4.clear();
+  this->m_skillUnitIds.clear();
+  this->spriteMirrorActorIds.clear();
+  this->minimapMarkers.clear();
+
+  if (g_windowMgr.window_4F1CC) {
+    g_windowMgr.window_4F1CC->SendMsg(nullptr, 486, 0, 0, 0, 0);
+  }
+
+  g_snapMgr.Clear();
+  g_windowMgr.sub_AA6B80();
+  this->broadcastBalloon = nullptr;
+  this->noticeBalloon = nullptr;
+  g_windowMgr.SetSurface0478(nullptr);
+  g_windowMgr.EnsureWindow(0);
+  g_windowMgr.ShowWindowsWithId(67, 1);
+  g_windowMgr.EnsureWindow(204);
+
+  const char* worldName = reinterpret_cast<const char*>(g_modeMgr.GetGameMode()->SendMsg(9, 0, 0, 0, 0));
+  if (std::strcmp(worldName, "new_event.rsw") != 0) {
+    g_windowMgr.EnsureWindow(190);
+  }
+
+  if (g_closeWindow137State) {
+    g_windowMgr.EnsureWindow(137);
+  }
+
+  if (!g_replayAnimationScaling && g_serviceOptions.Get(270)) {
+    g_windowMgr.EnsureWindow(159);
+  }
+
+  if (g_closeWindow164State) {
+    g_windowMgr.EnsureWindow(164);
+  }
+
+  if (g_searchStoreInfoCreated) {
+    g_windowMgr.EnsureWindow(181);
+  }
+
+  g_windowMgr.EnsureWindow(268);
+  if (g_refreshWindow289) {
+    g_windowMgr.EnsureWindow(289);
+  }
+
+  this->running = 1;
+  g_visibleMinX = 0;
+  g_visibleMaxX = 0;
+  g_visibleMinY = 0;
+  g_visibleMaxY = 0;
+  ActorPickBounds bounds;
+  bounds.left = 0;
+  bounds.top = 0;
+  bounds.right = g_renderer->viewport.width;
+  bounds.bottom = g_renderer->viewport.height;
+  g_actorPickNode.MakeQuardTree(1, bounds);
+  g_pathFinder.attr = this->scene->terrain;
+  g_navigationManager.UpdateGround();
+  g_overrideColor = 0;
+
+  this->unknown_0010 = 1;
+  this->cursorOffsetX = 0.0f;
+  this->cursorOffsetY = 0.0f;
+  *reinterpret_cast<int*>(this->unknown_00D8) = 0;
+  *reinterpret_cast<int*>(&this->unknown_00D8[4]) = g_screenWidth;
+  *reinterpret_cast<int*>(&this->unknown_00D8[8]) = g_screenHeight;
+  this->unknown_00E4 = g_screenWidth;
+  this->unknown_00E8 = g_screenHeight;
+  *reinterpret_cast<int*>(&this->unknown_01F8[0x4C]) = 0;
+  this->unknown_024C = 0;
+  this->unknown_0250 = 0;
+  *reinterpret_cast<int*>(&this->unknown_0294[0x18]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_0294[0x1C]) = 0;
+  *reinterpret_cast<int*>(this->unknown_02B8) = 0;
+  *reinterpret_cast<int*>(&this->unknown_02B8[4]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_02B8[8]) = 0;
+  this->itemWindow = nullptr;
+  this->unknown_05D0 = nullptr;
+  *reinterpret_cast<int*>(this->unknown_01F8) = -1;
+  this->balloonActorId = 0;
+  *reinterpret_cast<int*>(this->unknown_02E4) = 0;
+  *reinterpret_cast<int*>(&this->unknown_02E4[4]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_02B8[0x0C]) = 1;
+  *reinterpret_cast<int*>(&this->unknown_02B8[0x10]) = 1;
+  this->unknown_02CC = 0;
+  *reinterpret_cast<int*>(this->unknown_02D0) = 0;
+  this->unknown_02D4 = 0;
+  this->drag.Clear();
+  this->unknown_02DC = 0;
+  this->unknown_02E0 = 0;
+  *reinterpret_cast<int*>(this->unknown_00EC) = 0;
+  *reinterpret_cast<int*>(&this->unknown_00EC[4]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_00EC[8]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_00EC[0x0C]) = 1;
+  this->unknown_00FC = 0;
+  *reinterpret_cast<int*>(this->unknown_0100) = 0;
+  *reinterpret_cast<std::uint32_t*>(&this->unknown_0100[0x04]) = timeGetTime() - 2000;
+  *reinterpret_cast<std::uint32_t*>(&this->unknown_0100[0x08]) = timeGetTime() - 2000;
+  *reinterpret_cast<int*>(&this->unknown_0100[0x0C]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_0100[0x10]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_0100[0x14]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_0418[0x38]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_0418[0x3C]) = 0;
+  *reinterpret_cast<std::string*>(&this->unknown_0418[0x20]) = "";
+  this->unknown_0408 = nullptr;
+  this->unknown_040C = 0;
+  g_pickInvert = 0;
+  *reinterpret_cast<int*>(this->unknown_045C) = 0;
+  *reinterpret_cast<int*>(&this->unknown_0418[4]) = -1;
+  *reinterpret_cast<int*>(&this->unknown_045C[4]) = -1;
+
+  char subKey[512];
+  std::strcpy(subKey, g_subKey);
+  std::strcat(subKey, "\\NameBaloon");
+  std::strcat(subKey, "\\");
+  std::strcat(subKey, g_session.m_serverName.c_str());
+  HKEY key;
+  if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, subKey, 0, KEY_QUERY_VALUE, &key) == ERROR_SUCCESS) {
+    RegCloseKey(key);
+    HKEY valueKey;
+    if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, subKey, 0, KEY_ALL_ACCESS, &valueKey) == ERROR_SUCCESS) {
+      DWORD position = 0;
+      DWORD type = REG_DWORD;
+      DWORD size = sizeof(position);
+      RegQueryValueExA(valueKey, "POS", nullptr, &type, reinterpret_cast<BYTE*>(&position), &size);
+      g_serviceOptions.Set(92, position == 1);
+      RegCloseKey(valueKey);
+    }
+  }
+
+  g_mouse.Reset();
+  *reinterpret_cast<int*>(&this->unknown_026E[0x02]) = 1;
+  this->unknown_026E[0x16] = 0;
+  *reinterpret_cast<std::uint32_t*>(&this->unknown_026E[0x06]) = timeGetTime();
+  *reinterpret_cast<std::uint32_t*>(&this->unknown_026E[0x0A]) = timeGetTime();
+  *reinterpret_cast<std::uint32_t*>(&this->unknown_01F8[0x50]) = timeGetTime();
+  *reinterpret_cast<std::uint32_t*>(this->unknown_01E0) = timeGetTime();
+  this->broadcastBalloon = nullptr;
+  *reinterpret_cast<std::uint32_t*>(&this->unknown_026E[0x0E]) = timeGetTime();
+  *reinterpret_cast<std::uint32_t*>(&this->unknown_026E[0x12]) = timeGetTime();
+  this->unknown_05CE = 1;
+  std::memset(&this->unknown_05EC[1], 0, 6);
+  *reinterpret_cast<int*>(&this->unknown_05EC[0x08]) = 0;
+  *reinterpret_cast<int*>(&this->unknown_05EC[0x0C]) = 0;
+  g_soundMgr->SetListenerYaw(this->camera->camera.desiredYaw);
+  this->SendMsg(41, 0, 0, 0, 0);
+
+  if (g_isStopByLogin) {
+    g_isStopByLogin = 0;
+    reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId))->Init();
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(22)), 0xFFE6E6, 0, 0, 0);
+    inet_ntoa(*reinterpret_cast<const in_addr*>(&g_session.unknown_0E9C[0x10]));
+    if (!g_accountLinkedUserDataMgr->m_loaded) {
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3457)), 255, 0, 0, 0);
+    }
+  }
+
+  reinterpret_cast<ClientItemLists*>(&g_session)->ResetUnknown166C();
+  reinterpret_cast<SessionMessengerContext*>(&g_session)->UpdateRandomStats();
+  reinterpret_cast<ClientItemLists*>(&g_session)->ClearItems1738();
+  reinterpret_cast<SessionItemLists*>(&g_session)->ClearTradeItems();
+  reinterpret_cast<ClientItemLists*>(&g_session)->ClearItems1768();
+  reinterpret_cast<ClientItemLists*>(&g_session)->ClearItems1758();
+  reinterpret_cast<ClientItemLists*>(&g_session)->ClearItems1750();
+
+  // GLOBAL: gl_25334
+  static int s_window315Checked;
+  if (!g_replayAnimationScaling && !s_window315Checked) {
+    s_window315Checked = 1;
+    if (g_window315Enabled) {
+      g_windowMgr.EnsureWindow(315);
+    }
+  }
+
+  if (g_replayAnimationScaling != 1) {
+    std::int16_t packet = 0x7D;
+    GetRagConnection().Send(2, &packet);
+    GetRagConnection().ResetDeferred();
+    g_session.SetOption(5, 1, 0);
+  }
+
+  SendGameTick(
+    true, *reinterpret_cast<std::uint32_t*>(&this->unknown_026E[0x02]), *reinterpret_cast<std::uint32_t*>(&this->unknown_026E[0x06]), g_gameTickInterval,
+    GetRagConnection(), g_packetLengths, g_pingLogEnabled, g_pingLogFirstTick, g_pingLogTicks
+  );
+  g_weatherEffect.ResetEffect();
+  g_weatherEffect.ApplyMapWeather(this->mapName);
+  if (std::strcmp(this->mapName, "xmas_fild01.rsw") == 0 || std::strcmp(this->mapName, "xmas.rsw") == 0) {
+    if (g_serviceOptions.Get(8)) {
+      g_weatherEffect.Snow();
+    } else {
+      g_weatherEffect.ExtendEffect();
+    }
+  }
+
+  if (!g_mapSkyMgr) {
+    g_mapSkyMgr = new (std::nothrow) CMapSkyMgr;
+  }
+
+  g_mapSkyMgr->Apply(this->mapName);
+  if ((g_serviceType == 8 || g_serviceType == 9) && std::strcmp(this->mapName, "comodo.rsw") == 0 && g_serviceOptions.Get(8)) {
+    g_weatherEffect.Fireworks();
+  }
+
+  *reinterpret_cast<int*>(&g_session.unknown_5570[0x08]) = -1;
+  g_groundMarkEnabled = 0;
+  g_session.ClearHomunStatus();
+  *reinterpret_cast<int*>(&g_session.unknown_5620[0x08]) = -1;
+  g_groundMarkAltEnabled = 0;
+  g_session.ResetMercenaryStats();
+  g_windowMgr.FocusWindow01C8Edit();
+
+  g_windowMgr.window_4F168 = nullptr;
+  const int replayState = Replay::Instance().state;
+  if (g_replayAnimationScaling) {
+    g_windowMgr.EnsureWindow(187);
+    if (replayState == 8) {
+      g_windowMgr.window_4F168->SendMsg(nullptr, 35, 0, 0, 0, 0);
+    }
+  }
+
+  if (replayState == 3) {
+    Replay::Instance().SetState(2);
+    g_windowMgr.EnsureWindow(198);
+    g_windowMgr.window_4F164->Move(Replay::Instance().unknown_01F4, Replay::Instance().unknown_01F8);
+    g_windowMgr.window_4F164->SendMsg(nullptr, 123, 0, 0, 0, 0);
+  } else if (replayState == 8) {
+    Replay::Instance().SetState(7);
+  }
+
+  g_navigationManager.ResumeRoute();
+  if (g_mileageWndActive) {
+    UIWindow* mileage = g_windowMgr.EnsureWindow(267);
+    if (mileage) {
+      mileage->SendMsg(nullptr, 34, g_mileageWndActive, g_mileageWndPoint, g_mileageWndElapsed, g_mileageWndBonus);
+    }
+  }
+
+  this->unknown_05FC = nullptr;
+  *reinterpret_cast<int*>(this->unknown_0600) = 0;
+  s_signBoardMgr->Initialize();
+  g_statusRefreshSuppressed = 0;
+  int& localMapMove = *reinterpret_cast<int*>(&g_session.unknown_61A8[4]);
+  if (localMapMove == 1) {
+    localMapMove = 0;
+  }
+
+  reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId))->ClearUnknown0114();
+  this->unknown_02EC = "";
+}

@@ -12,6 +12,8 @@ class CRenderSystemBase;
 class CAsyncWorkMgr;
 
 class CAccountLinkedUserDataMgr {
+  friend class CGameMode;
+
 public:
   CAccountLinkedUserDataMgr();
   virtual ~CAccountLinkedUserDataMgr();
