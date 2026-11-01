@@ -17,6 +17,7 @@ public:
   /* 00B8 */ std::uint32_t unknown_00B8;
 
   void Paint() override;
+  void Slot15(int width, int height) override;
 };
 
 class UIPasswordWnd : public UIItemDropCntWnd {

@@ -8190,3 +8190,53 @@ void UIItemWnd::Paint() {
     controls.fonts, controls.locale, width + 36, this->geometry.height - 15, FormatOwnedString("/%d", g_extraInventorySlots + 100).c_str(), 0, 0, 11, 0, 0, 0
   );
 }
+
+// OFFSET: 0x00974910
+// FUNCTION: fn_13308
+void UIItemDropCntWnd::Slot15(int, int) {
+  this->m_edit = new UIEditCtrl();
+  this->m_edit->SetSize(80, 16);
+  this->m_edit->Move(15, 22);
+  this->m_edit->maximum = 6;
+  this->m_edit->Background(232, 232, 232);
+  this->AddChild(this->m_edit);
+
+  CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  char text[40];
+  std::sprintf(text, "%d", gameMode->drag.quantity);
+  this->m_edit->SetText(text);
+  InputFocus focus{g_windowMgr.hoverWindow};
+  focus.Set(this->m_edit);
+  this->m_edit->SelectAll();
+
+  const char* dragName = gameMode->DragItemName();
+  std::string name;
+  if (dragName) {
+    ITEM_INFO item;
+    item.itemId = dragName;
+    item.unknown_0060 = 0;
+    item.identified = gameMode->drag.identified;
+    name = item.DisplayName(0);
+  }
+
+  auto* title = new UIStaticText();
+  this->unknown_00B8 = reinterpret_cast<std::uintptr_t>(title);
+  title->SetSize(100, 15);
+  title->Move(15, 6);
+  title->SetText(name.c_str(), 0);
+  this->AddChild(title);
+
+  const std::string prefix("유저인터페이스\\");
+  const int x = this->geometry.width - 55;
+  const int y = this->geometry.height - 32;
+  auto* button = new UIBitmapButton();
+  button->SetBitmap((prefix + "btn_ok" + ".bmp").c_str(), 0, 0);
+  button->SetBitmap((prefix + "btn_ok_a" + ".bmp").c_str(), 1, 0);
+  button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
+  button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+  button->Move(x, y);
+  button->SetId(184);
+  this->AddChild(button);
+  this->m_message0 = 184;
+  this->geometry.unknown_0030 = 0;
+}
