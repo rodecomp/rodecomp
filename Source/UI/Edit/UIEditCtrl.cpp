@@ -7159,7 +7159,7 @@ int UIMerchantItemPurchaseMSGWnd::SendMsg(UIWindow* sender, int message, std::in
 
   switch (a) {
   case 184:
-    static_cast<CMode*>(g_charViewMode)->SendMsg(83, reinterpret_cast<std::intptr_t>(this->m_controls), this->unknown_00D0, 0, 0);
+    static_cast<CMode*>(g_charViewMode)->SendMsg(83, this->purchaseIndex, this->unknown_00D0, 0, 0);
   case 185:
     g_windowMgr.CloseWindow(230);
     reinterpret_cast<ClientItemLists*>(&g_session)->ClearItems1760And1748();
@@ -7307,6 +7307,25 @@ bool UIItemStoreSubWnd::sub_996C90() {
 }
 
 // OFFSET: 0x00996E30
+// FUNCTION: fn_13477
+void UIMerchantItemPurchaseMSGWnd::SetPurchase(int value, int amount) {
+  this->purchaseIndex = value;
+  this->unknown_00D0 = amount;
+
+  int total = 0;
+  const int count = reinterpret_cast<const SessionMessengerContext*>(&g_session)->GetList10Size();
+  for (int i = 0; i < count; ++i) {
+    ITEM_INFO item;
+    item = g_session.GetItem1760At(i);
+    if (item.unknown_0000[1] > 0) {
+      total += item.quantity * item.unknown_0014[0];
+    }
+  }
+
+  const std::string text = IntToSignedString(total, true, false) + std::string(LookupMessage(2328));
+  this->secondLine->SetText(text.c_str(), 0);
+  this->Invalidate();
+}
 
 // OFFSET: 0x00857420
 // FUNCTION: fn_10762

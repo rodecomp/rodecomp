@@ -21,12 +21,11 @@ public:
   /* 00C0 */ UIStaticText* secondLine;
   /* 00C4 */ UIBitmapButton* buyButton;
   /* 00C8 */ UIBitmapButton* cancelButton;
+  /* 00CC */ int purchaseIndex;
+  /* 00D0 */ int unknown_00D0;
 
 protected:
   UIButtonContext* m_controls;
-
-public:
-  /* 00D0 */ int unknown_00D0;
 };
 
 #endif
