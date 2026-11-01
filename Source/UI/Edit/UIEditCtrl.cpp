@@ -8240,3 +8240,63 @@ void UIItemDropCntWnd::Slot15(int, int) {
   this->m_message0 = 184;
   this->geometry.unknown_0030 = 0;
 }
+
+// OFFSET: 0x00975050
+// FUNCTION: fn_13309
+void UIItemPurchaseWnd::Slot15(int width, int height) {
+  this->quantityEdit = new UIEditCtrl();
+  this->quantityEdit->SetSize(64, 16);
+  this->quantityEdit->maximum = 9;
+  this->quantityEdit->Move(-100, -100);
+  this->quantityEdit->Background(232, 232, 232);
+  this->quantityEdit->SetText("0");
+  this->AddChild(this->quantityEdit);
+  InputFocus focus{g_windowMgr.hoverWindow};
+  focus.Set(this->quantityEdit);
+  this->m_message0 = 271;
+
+  this->title = new UIStaticText();
+  this->title->SetSize(160, 15);
+  this->title->Move(12, this->geometry.height - 21);
+  this->AddChild(this->title);
+
+  UIStaticText* caption = new UIStaticText();
+  caption->SetSize(160, 15);
+  caption->SetText(LookupMessage(166), 0);
+  caption->Move(16, 2);
+  caption->shadow = 1;
+  this->AddChild(caption);
+
+  this->resizer = new UIResizer(*this->m_context);
+  this->resizer->SetSize(16, 16);
+  static_cast<UIResizer*>(this->resizer)->SetDirection(3);
+  static_cast<UIResizer*>(this->resizer)->SetBitmapName("유저인터페이스\\btn_resize.bmp");
+  this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
+  static_cast<UIResizer*>(this->resizer)->SetColors(0xFFFF00FF, 0xFFFF00FF);
+  this->AddChild(this->resizer);
+
+  UIScrollBar* scrollBar = new UIScrollBar(*this->m_context);
+  this->scrollBar = scrollBar;
+  scrollBar->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - 38);
+  this->AddChild(this->scrollBar);
+
+  const std::string prefix("유저인터페이스\\");
+  const char* names[2][3] = {{"btn_buy", "btn_buy_a", "btn_buy_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
+  int positions[2][2] = {{this->geometry.width - 106, this->geometry.height - 24}, {this->geometry.width - 61, this->geometry.height - 24}};
+  int ids[2] = {184, 185};
+  for (int index = 0; index < 2; ++index) {
+    this->buttons[index] = new UIBitmapButton();
+    UIBitmapButton* button = static_cast<UIBitmapButton*>(this->buttons[index]);
+    button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
+    button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
+    button->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
+    this->buttons[index]->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    this->buttons[index]->Move(positions[index][0], positions[index][1]);
+    this->buttons[index]->SetId(ids[index]);
+    this->AddChild(this->buttons[index]);
+  }
+
+  this->columns = 1;
+  this->visibleRows = (height - 38) / 32;
+  this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+}
