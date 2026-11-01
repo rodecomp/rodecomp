@@ -184,6 +184,7 @@ protected:
 class UIGuildPositionManageWnd : public UIGuildWnd {
 public:
   UIGuildPositionManageWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
+  void Slot15(int width, int height) override;
   void Slot19() override;
   void Paint() override;
   void Slot25(int x, int y) override;

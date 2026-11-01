@@ -2855,3 +2855,123 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
 
   return 0;
 }
+
+// OFFSET: 0x0095B380
+// FUNCTION: fn_13063
+void UIGuildPositionManageWnd::Slot15(int, int) {
+  this->CreateTabs();
+  this->m_positions = reinterpret_cast<const std::list<GuildPositionEntry>&>(GuildData().unknown_00D4);
+  if (std::strcmp(g_guildName.c_str(), "") == 0) {
+    g_modeMgr.gameMode->SendMsg(107, 0, 0, 0, 0);
+  }
+
+  GuildData().unknown_00C4 = 1;
+  g_modeMgr.gameMode->SendMsg(107, 2, 0, 0, 0);
+  this->m_scrollTop = 0;
+  this->m_hoverIndex = 0;
+  this->m_columns = 1;
+  this->m_visibleRows = 11;
+  this->m_scrollable = 0;
+  this->m_scrollBar = new UIScrollBar(*this->m_context);
+  this->m_scrollBar->Configure(this->geometry.width - 15, 41, 1, this->geometry.height - 70);
+  this->AddChild(this->m_scrollBar);
+
+  if (GuildData().unknown_00B4) {
+    for (int row = 0; row < 11; ++row) {
+      this->unknown_00D0[row] = new UICheckBox();
+      this->unknown_00D0[row]->SetSize(12, 12);
+      this->unknown_00D0[row]->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", "");
+      this->unknown_00D0[row]->Move(this->geometry.width - 148, row * g_guildPositionRowHeight + 66);
+      this->unknown_00D0[row]->geometry.unknown_0030 = 0;
+      this->unknown_00D0[row]->Invalidate();
+      this->AddChild(this->unknown_00D0[row]);
+    }
+
+    for (int row = 0; row < 11; ++row) {
+      this->unknown_00FC[row] = new UICheckBox();
+      this->unknown_00FC[row]->SetSize(12, 12);
+      this->unknown_00FC[row]->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", "");
+      this->unknown_00FC[row]->Move(this->geometry.width - 48, row * g_guildPositionRowHeight + 66);
+      this->unknown_00FC[row]->geometry.unknown_0030 = 0;
+      this->unknown_00FC[row]->Invalidate();
+      this->AddChild(this->unknown_00FC[row]);
+    }
+
+    for (int row = 0; row < 11; ++row) {
+      this->unknown_0128[row] = new UICheckBox();
+      this->unknown_0128[row]->SetSize(12, 12);
+      this->unknown_0128[row]->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", "");
+      this->unknown_0128[row]->Move(this->geometry.width - 124, row * g_guildPositionRowHeight + 66);
+      this->unknown_0128[row]->geometry.unknown_0030 = 0;
+      this->unknown_0128[row]->Invalidate();
+      this->AddChild(this->unknown_0128[row]);
+    }
+  }
+
+  if (GuildData().unknown_00B4) {
+    for (int row = 0; row < 11; ++row) {
+      this->unknown_0180[row] = new UIEditCtrlVarId();
+      this->unknown_0180[row]->SetSize(g_guildPositionColumnWidths[1] - 4, 16);
+      this->unknown_0180[row]->Move(g_guildPositionColumnWidths[0] + 9, row * g_guildPositionRowHeight + 66);
+      this->unknown_0180[row]->maximum = 30;
+      this->unknown_0180[row]->Background(242, 242, 242);
+      this->unknown_0180[row]->SetId(275);
+      this->AddChild(this->unknown_0180[row]);
+    }
+
+    for (int row = 0; row < 11; ++row) {
+      this->unknown_0154[row] = new UIEditCtrlVarId();
+      this->unknown_0154[row]->SetSize(g_guildPositionColumnWidths[4] / 2 - 4, 16);
+      this->unknown_0154[row]->Move(
+        g_guildPositionColumnWidths[1] + 12 + g_guildPositionColumnWidths[0] + g_guildPositionColumnWidths[2] + g_guildPositionColumnWidths[3],
+        row * g_guildPositionRowHeight + 66
+      );
+      this->unknown_0154[row]->maximum = 2;
+      this->unknown_0154[row]->Background(242, 242, 242);
+      this->unknown_0154[row]->SetId(276);
+      this->AddChild(this->unknown_0154[row]);
+    }
+  } else {
+    for (int row = 0; row < 11; ++row) {
+      this->unknown_01D8[row] = new UIStaticText();
+      this->unknown_01D8[row]->SetSize(g_guildPositionColumnWidths[1] - 4, 15);
+      this->unknown_01D8[row]->SetTextFitted("");
+      this->unknown_01D8[row]->Move(g_guildPositionColumnWidths[0] + 9, row * g_guildPositionRowHeight + 66);
+      this->AddChild(this->unknown_01D8[row]);
+    }
+
+    for (int row = 0; row < 11; ++row) {
+      this->unknown_01AC[row] = new UIStaticText();
+      this->unknown_01AC[row]->SetSize(g_guildPositionColumnWidths[4] / 2 - 4, 15);
+      this->unknown_01AC[row]->SetTextFitted("");
+      this->unknown_01AC[row]->Move(
+        g_guildPositionColumnWidths[1] + 12 + g_guildPositionColumnWidths[0] + g_guildPositionColumnWidths[2] + g_guildPositionColumnWidths[3],
+        row * g_guildPositionRowHeight + 66
+      );
+      this->AddChild(this->unknown_01AC[row]);
+    }
+  }
+
+  {
+    const std::string prefix("유저인터페이스\\");
+    int x = this->geometry.width - 61;
+    int y = this->geometry.height - 23;
+    UIBitmapButton* button = new UIBitmapButton();
+    this->m_button = button;
+    button->SetBitmap((prefix + "btn_ok" + ".bmp").c_str(), 0, 0);
+    button->SetBitmap((prefix + "btn_ok_a" + ".bmp").c_str(), 1, 0);
+    button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
+    button->SetBitmap((prefix + "btn_ok_dis" + ".bmp").c_str(), 3, 0);
+    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    if (!GuildData().unknown_00B4 || this->m_positionMap.empty()) {
+      x = -200;
+      y = -200;
+    }
+    this->m_button->Move(x, y);
+    this->m_button->SetId(184);
+    this->AddChild(this->m_button);
+    this->m_message0 = 184;
+  }
+
+  this->UpdateScroll();
+}
