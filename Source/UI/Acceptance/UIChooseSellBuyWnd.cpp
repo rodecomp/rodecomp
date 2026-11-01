@@ -174,6 +174,20 @@ UIChooseSellBuyWnd::UIChooseSellBuyWnd(UIWindowContext& windows, UIFrameContext&
     : UIFrameWnd(windows, frames, 0), identity(0), m_acceptance(&acceptance) {
 }
 
+// OFFSET: 0x008C6FA0
+// FUNCTION: fn_11926
+UIBookWnd::UIBookWnd(UIWindowContext& windows, UIFrameContext& frames, UIBookContext& book)
+    : UIFrameWnd(windows, frames, 0), m_book(&book) {
+  this->m_lineCount = 0;
+  this->m_pageCount = 0;
+  this->m_page = 1;
+  this->m_autoTick = 0;
+  this->m_autoLine = -1;
+  this->m_autoRead = 0;
+  this->unknown_00B8 = nullptr;
+  this->m_bookName[0] = 0;
+}
+
 // OFFSET: 0x008CAC40
 // FUNCTION: fn_11997
 UIItemCollectionWnd::~UIItemCollectionWnd() {
