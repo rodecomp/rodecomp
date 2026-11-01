@@ -2606,6 +2606,45 @@ void UIProhibitListWnd::Slot15(int, int) {
 }
 
 // OFFSET: 0x008EE7F0
+// FUNCTION: fn_12226
+void UIItemIdentifyWnd::Paint() {
+  const int titleHeight = this->DrawTitleBar(this->m_context->fonts, this->m_context->locale, false, this->m_title.c_str(), 0);
+  this->DrawPanelBackground(titleHeight, 0, "");
+  this->DrawButtonBar(2, 0, 1);
+
+  int row = 0;
+  int index = 0;
+  for (auto it = this->m_items.begin(); it != this->m_items.end(); ++it, ++index) {
+    if (index < this->m_scroll * this->m_columns) {
+      continue;
+    }
+
+    const int top = row / this->m_columns * 32;
+    const int y = top + 34;
+    if (this->m_selected == index) {
+      unsigned red, green, blue;
+      SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
+      this->FillRegion(5, top + 31, this->geometry.width - 24, 30, RGB(red, green, blue));
+    }
+
+    this->sub_8A8EE0(8, y, &*it, 0);
+    this->DrawFittedItemName(40, y, &*it, 0, 0, 12, 0);
+    if (it->unknown_0088 > 0) {
+      this->DrawBitmap(
+        8, y + 12,
+        &static_cast<CBitmapRes*>(
+          ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", it->unknown_0088).c_str()))
+        )->image,
+        true
+      );
+    }
+
+    ++row;
+    if (row == this->m_rows * this->m_columns) {
+      break;
+    }
+  }
+}
 
 // OFFSET: 0x008EECE0
 // FUNCTION: fn_12229
