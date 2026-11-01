@@ -122,6 +122,7 @@
 #include "Utility/Text/GroupedInteger.h"
 #include "Client/Mode/ModeTooltip.h"
 #include <algorithm>
+#include <random>
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
@@ -7032,4 +7033,22 @@ void UIStorePasswordInputWnd::Paint() {
       this->FillRegion(111, 79, 98, 14, 0xFFFFFF);
     }
   }
+}
+
+// OFFSET: 0x0090C5A0
+// FUNCTION: fn_12449
+void UISecondPasswordInputWnd::ShuffleKeypad()
+{
+  unsigned char digits[10];
+  for (int index = 0; index < 10; ++index)
+    digits[index] = static_cast<unsigned char>(index);
+  std::mt19937 engine(std::random_device{}());
+  std::shuffle(digits, digits + 10, engine);
+  const int positions[11][2] = {
+    {219, 78}, {279, 78}, {339, 78}, {219, 138}, {279, 138}, {339, 138},
+    {219, 198}, {279, 198}, {339, 198}, {219, 258}, {279, 258}
+  };
+  for (int index = 0; index < 10; ++index)
+    unknown_0124[index]->Move(positions[digits[index]][0], positions[digits[index]][1]);
+  Invalidate();
 }
