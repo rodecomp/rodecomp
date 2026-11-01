@@ -5,6 +5,13 @@
 #include "Client/ReplayPacketRecorder.h"
 #include "Client/Replay.h"
 #include "Client/Session.h"
+#include "Contents/Items/ItemDescription.h"
+#include "Contents/MessageTable.h"
+#include "Resource/Bitmap/BitmapResource.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/TextureNames.h"
+#include "UI/Buttons/UIButton.h"
+#include "UI/Shop/ItemDrawing.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowManagerWindows.h"
 
@@ -107,6 +114,53 @@ ITEM_INFO UIMakeTargetProcessWnd::GetItemAt(int x, int y) {
   }
 
   return ITEM_INFO(0);
+}
+
+// OFFSET: 0x009A38E0
+// FUNCTION: fn_13611
+void UIMakeTargetProcessWnd::Paint() {
+  UIButtonContext& controls = *this->m_controls;
+  const int titleHeight = this->DrawTitleBar(controls.fonts, controls.locale, false, "", 0);
+  this->DrawPanelBackground(titleHeight, 0, "");
+  this->DrawButtonBar(2, 0, 1);
+
+  switch (this->makeType) {
+  case 994:
+  case 995:
+  case 996:
+  case 997:
+  case 998:
+  case 999:
+  case 1000:
+    break;
+  default: {
+    ItemDescriptions descriptions{g_itemDescriptions};
+    const ITEM_INFO* material = this->materials;
+    for (int x = 8; x < 104; x += 32, ++material) {
+      auto* bar = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\btnbar_right2.bmp")));
+      DrawItemSlotBackground(*this, x - 4, this->geometry.height - bar->image.height - 32);
+      if (material->unknown_0000[1] != 0) {
+        DrawItemIcon(*this, controls.resources, descriptions, x, this->geometry.height - bar->image.height - 28, *material, 0);
+      }
+    }
+    break;
+  }
+  }
+
+  ITEM_INFO item;
+  item.SetItemId(this->makeType);
+  item.unknown_0060 = 0;
+  item.identified = 1;
+  const int nameWidth = this->DrawFittedItemName(16, 2, &item, 0, 0, 12, 0);
+  this->DrawShadowedText(nameWidth + 16, 2, LookupMessage(426), 0, 0, 0xFFFFFF, 0, 12, 0);
+  const int requiredWidth = this->DrawFittedItemName(16, 22, &item, 0, 0, 12, 0);
+  this->DrawShadowedText(requiredWidth + 16, 22, LookupMessage(427), 0, 0, 0xFFFFFF, 0, 12, 0);
+
+  const std::vector<const char*>& lines = FindMetalProcessItems(this->makeType);
+  int y = 42;
+  for (unsigned int index = 0; index < lines.size(); ++index, y += 20) {
+    this->DrawTextAt(controls.fonts, controls.locale, 16, y, lines[index], 0, 0, 12, 0, 0, 0);
+  }
 }
 
 // OFFSET: 0x009A3D10
