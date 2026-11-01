@@ -3124,11 +3124,13 @@ bool CUIRegisterMgr::SaveTemporary() {
 }
 
 // OFFSET: 0x009D31F0
+// FUNCTION: fn_14029
 void CUIRegisterMgr::Register(int key, std::function<CUIFrameWnd*()> factory) {
   this->entries[key] = factory;
 }
 
 // OFFSET: 0x009EB770
+// FUNCTION: fn_14555
 CUIFrameWnd* CUIRegisterMgr::Create(int key) {
   auto entry = this->entries.find(key);
   if (entry == this->entries.end()) {
@@ -3164,6 +3166,7 @@ CUIFrameWnd* CUIRegisterMgr::Create(int key) {
 }
 
 // OFFSET: 0x009EB920
+// FUNCTION: fn_14556
 void CUIRegisterMgr::Load() {
   CFile file;
   if (file.Open(g_uiInfoPath, 0, false, true)) {
@@ -3211,6 +3214,7 @@ CUIHThumb::CUIHThumb(UIWindowContext& context) : CUIVThumb(context) {
 }
 
 // OFFSET: 0x009EDBE0
+// FUNCTION: fn_14596
 void CUIHScrollBar::Slot15(int, int) {
   if (!this->upButton) {
     this->upButton = new CUIImageButton(*this->m_context);
@@ -3234,6 +3238,7 @@ void CUIHScrollBar::Slot15(int, int) {
 }
 
 // OFFSET: 0x009F1DE0
+// FUNCTION: fn_14706
 void CUIVScrollBar::Slot15(int, int) {
   if (!this->upButton) {
     this->upButton = new CUIImageButton(*this->m_context);
