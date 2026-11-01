@@ -313,6 +313,7 @@ protected:
 
 class UICashEmotionMiniWnd : public UIWindow {
 public:
+  UICashEmotionMiniWnd();
   ~UICashEmotionMiniWnd() override;
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -2530,6 +2531,14 @@ void UICashEmotionListWnd::RefreshSelection() {
   }
 }
 
+// OFFSET: 0x007C8E70
+// FUNCTION: fn_09425
+UICashEmotionMiniWnd::UICashEmotionMiniWnd()
+    : UIWindow(*reinterpret_cast<UIWindowContext*>(nullptr), 0), m_selected(nullptr), m_previous(nullptr), m_next(nullptr), m_page(0), m_selectedIndex(0) {
+  this->m_pieces.fill(nullptr);
+  this->m_action = new (std::nothrow) CCashEmotionAction_SelectedUnPurchasedPack;
+}
+
 // OFFSET: 0x007C90B0
 // FUNCTION: fn_09427
 UICashEmotionMiniWnd::~UICashEmotionMiniWnd() {
@@ -3981,3 +3990,5 @@ void UISpriteButton::SetSprite(const char* name) {
   this->actionName = baseName;
   this->actionName += "act";
 }
+
+// OFFSET: 0x0084FE00

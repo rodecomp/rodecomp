@@ -7,6 +7,7 @@
 
 class UISpriteButton : public UIButton {
 public:
+  UISpriteButton();
   UISpriteButton(UIWindowContext& windowContext, UIButtonContext& buttonContext);
   ~UISpriteButton() override;
   void Paint() override;
@@ -40,6 +41,7 @@ protected:
 class UIHeadsprButton : public UISpriteButton {
 public:
   using UISpriteButton::UISpriteButton;
+  UIHeadsprButton();
   void Paint() override;
 };
 
