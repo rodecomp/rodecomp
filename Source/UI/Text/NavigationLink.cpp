@@ -1101,6 +1101,25 @@ int CCreateLineInfo::AddLink(int index, int type) {
 }
 
 // OFFSET: 0x0083A5F0
+// FUNCTION: fn_10463
+UITextButton* CCreateLineInfo::CreateLinkWindow(const std::string& text, const std::vector<std::string>& parts, int type, LineTextStyle style) {
+  if (text.empty() || parts.empty()) {
+    return nullptr;
+  }
+
+  const int width = MeasureText(this->m_parent, text, style).cx;
+  UITextButton* button = new UITextButton();
+  button->Configure(text.c_str(), type == LINE_SEGMENT_URL ? 0xE6A300 : 0xF4934A, 0, 12, 0, 1);
+  button->m_hoverColor = type == LINE_SEGMENT_URL ? 0xEFB700 : 0xFF7864;
+  button->SetId(type);
+  button->ResizeToTextClipped(width + 1, button->geometry.height);
+
+  for (std::string part : parts) {
+    button->m_lines.push_back(part);
+  }
+
+  return button;
+}
 
 // OFFSET: 0x0083ACF0
 // FUNCTION: fn_10467

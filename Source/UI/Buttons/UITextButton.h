@@ -29,6 +29,7 @@ public:
   friend void RequestTextButtonService(UITextButton* button);
   friend void OpenTextButtonNavigation(UITextButton* button);
 
+  UITextButton();
   UITextButton(UIWindowContext& windows, UIButtonContext& buttons);
   ~UITextButton() override;
   void Paint() override;
