@@ -170,6 +170,7 @@ class JsonCppLoader {
 public:
   JsonValue& GetValue(JsonValue& out, const std::string& key, const JsonValue& node, int expectedType);
   void Fail(const char* format, ...);
+  bool sub_4F3CC0(const std::string& path);
 
   bool GetIntValue(const JsonValue& node, const std::string& key, int* out);
   bool GetStringValue(const JsonValue& node, const std::string& key, std::string* out);
@@ -181,6 +182,7 @@ public:
   bool GetBoolValue(const JsonValue& node, const std::string& key, bool* out);
   bool sub_4F3C70(std::vector<unsigned char>& buffer, bool bson);
   bool sub_4F3DF0(std::vector<unsigned char>& buffer);
+  bool sub_4F3ED0(const std::string& path);
   bool sub_4F4040(std::vector<unsigned char>& buffer);
   bool sub_50C2A0(std::map<std::string, EZ2STREffectRecord>* out);
   bool sub_50AE30(std::map<int, ReputeGroupRecord>* out);
