@@ -2,11 +2,60 @@
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Client/Stove/StoveMgr.h"
+#include "Contents/AdventureGuideMgr.h"
+#include "Contents/Async/AsyncWorkMgr.h"
+#include "Contents/CashEmotionMgr.h"
+#include "Contents/ChampionMonsterMgr.h"
+#include "Contents/ClanInfo.h"
+#include "Contents/ConfigMgr.h"
+#include "Contents/Configuration/GameSettingsMgr.h"
+#include "Contents/EffectResourceSwitcher.h"
+#include "Contents/Effects/EffectLists.h"
+#include "Contents/Effects/EffectMemoryMgr.h"
+#include "Contents/Emblems/EmblemDataMgr.h"
+#include "Contents/EnchantMgr.h"
+#include "Contents/EntryQueueMgr.h"
+#include "Contents/EquipmentResourceMgr.h"
+#include "Contents/GuildMgr.h"
+#include "Contents/ItemDBToIDMgr.h"
+#include "Contents/Items/ItemReformMgr.h"
+#include "Contents/Items/NeoPackageItemMgr.h"
+#include "Contents/Items/SelectPackageItemMgr.h"
+#include "Contents/JobCodeForItem.h"
+#include "Contents/MapPropertyMgr.h"
+#include "Contents/MapSkyMgr.h"
+#include "Contents/Messenger/ClientMessenger.h"
+#include "Contents/Messenger/WhisperBlockMgr.h"
+#include "Contents/Party/AdventurerAgencyMgr.h"
+#include "Contents/PlayerNameDictionary.h"
+#include "Contents/RenewQuestMgr.h"
+#include "Contents/ReputeMgr.h"
+#include "Contents/RodexMailStore.h"
+#include "Contents/RouletteMgr.h"
+#include "Contents/Schedule/TimeScheduler.h"
+#include "Contents/SignBoard/SignBoard.h"
+#include "Contents/SimpleStringMgr.h"
+#include "Contents/Skills/SkillInfo.h"
+#include "Contents/TownInfoMgr.h"
+#include "Contents/UserData/AccountLinkedUserDataMgr.h"
+#include "Contents/UserData/CharacterLinkedUserDataMgr.h"
+#include "Network/Http/CURLMgr.h"
+#include "Security/NProtectGameGuardMgr.h"
+#include "Security/ReassemblyPacketMgr.h"
+#include "Security/ThemidaMgr.h"
+#include "UI/Cooldowns/CooldownOwner.h"
+#include "UI/Party/UIRequestJoinPartyMgr.h"
+#include "UI/Text/NavigationLink.h"
+#include "UI/Window/UIRegisterMgr.h"
+#include "Utility/Async/NMessageMgr.h"
+#include "Utility/GGHashMgr.h"
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
 #include <io.h>
+#include <new>
 #include <string>
 #include <windows.h>
 #include <shellapi.h>
@@ -801,4 +850,114 @@ bool ReplaceClientExecutable(char* executable, const char* update) {
 
   StartClientProcess(executable);
   return true;
+}
+
+namespace EquipmentProperties {
+class CEquipmentPropertiesMgr {
+public:
+  virtual ~CEquipmentPropertiesMgr();
+};
+}
+
+// INLINED
+template <typename T>
+static void DestroyManager(T*& instance) {
+  if (instance == nullptr) {
+    instance = new (std::nothrow) T;
+  }
+
+  if (instance != nullptr) {
+    delete instance;
+    instance = nullptr;
+  }
+}
+
+// OFFSET: 0x00E574A0
+// FUNCTION: fn_24358
+void ShutdownManagers() {
+  DestroyManager(Singleton<CGameSettingsMgr>::s_instance);
+  DestroyManager(Singleton<NEO_PACKAGEITEM::CNeoPackageItemMgr>::s_instance);
+  DestroyManager(Singleton<NEO_PACKAGEITEM::CPaidPackageItemMgr>::s_instance);
+
+  Singleton<CJobCodeForItem>::GetInstance();
+  if (Singleton<CJobCodeForItem>::s_instance != nullptr) {
+    delete Singleton<CJobCodeForItem>::s_instance;
+    Singleton<CJobCodeForItem>::s_instance = nullptr;
+  }
+
+  DestroyManager(Singleton<CUIRegisterMgr>::s_instance);
+  DestroyManager(g_skillActionMgr);
+
+  Singleton<CEZ2STREffectMgr>::GetInstance();
+  if (Singleton<CEZ2STREffectMgr>::s_instance != nullptr) {
+    delete Singleton<CEZ2STREffectMgr>::s_instance;
+    Singleton<CEZ2STREffectMgr>::s_instance = nullptr;
+  }
+
+  DestroyManager(g_mapSkyMgr);
+  DestroyManager(Singleton<CEnchantMgr>::s_instance);
+  DestroyManager(g_itemReformMgr);
+  DestroyManager(g_itemDbToIdMgr);
+  DestroyManager(Singleton<CReputeMgr>::s_instance);
+
+  DestroySignBoardMgr();
+  DestroyNavigationLinkParser();
+  CEmblemDataMgr::Shutdown();
+  CGuildMgr::Destroy();
+  DestroyPlayerNameDictionary();
+
+  for (unsigned int attempt = 0; attempt < 30; ++attempt) {
+    if (g_accountLinkedUserDataMgr->unknown_0028 + g_adventurerAgencyMgr->pending == 0) {
+      break;
+    }
+
+    Sleep(100);
+    g_asyncWorkMgr->Update(1000);
+  }
+
+  g_asyncWorkMgr->Stop();
+  CWhisperBlockMgr::Shutdown();
+  CAsyncWorkMgr::Shutdown();
+  NMessageMgr::Shutdown();
+  CAccountLinkedUserDataMgr::Shutdown();
+  CCharacterLinkedUserDataMgr::Shutdown();
+  CCURLMgr::Shutdown();
+  RouletteMgr::Destroy();
+  RodexMailStore::Destroy();
+  CMapPropertyMgr::Destroy();
+  CChampionMonsterMgr::Destroy();
+  CClanInfo::Destroy();
+  CGGHashMgr::Destroy();
+  CNProtectGameGuardMgr::Destroy();
+  CCashEmotionMgr::Shutdown();
+  CSimpleStringMgr::Destroy();
+  CRenewQuestMgr::Destroy();
+  DestroyCooldownOwner();
+  CTownInfoMgr::Destroy();
+  EquipmentResourceMgr::Destroy();
+  CTimeScheduler::Destroy();
+  DestroyEntryQueueMgr();
+  DestroyEffectMemoryMgr();
+  DestroyEffectMgr();
+  CReassemblyPacketMgr::DestroyInstance();
+  CThemidaMgr::Destroy();
+
+  if (g_launchPassCommandLine && g_stoveMgr != nullptr) {
+    typedef void(__thiscall * DeletingDestructor)(CStoveMgr*, unsigned char);
+    (*reinterpret_cast<DeletingDestructor**>(g_stoveMgr))[0](g_stoveMgr, 1);
+    g_stoveMgr = nullptr;
+  }
+
+  DestroyManager(Singleton<CSelectPackageItemMgr>::s_instance);
+
+  CConfigMgr::Destroy();
+  CAdventurerAgencyMgr::Shutdown();
+  UIRequestJoinPartyMgr::Shutdown();
+
+  if (g_equipmentPropertiesMgr != nullptr) {
+    delete g_equipmentPropertiesMgr;
+    g_equipmentPropertiesMgr = nullptr;
+  }
+
+  CAdventureGuideMgr::Destroy();
 }

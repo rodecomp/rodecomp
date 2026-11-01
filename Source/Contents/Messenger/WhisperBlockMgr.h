@@ -2,9 +2,16 @@
 #define RAGNAROK_SOURCE_CONTENTS_MESSENGER_WHISPERBLOCKMGR_H
 
 #include <cstdint>
-#include <json/value.h>
 #include <set>
 #include <string>
+
+#if __has_include(<json/value.h>)
+#include <json/value.h>
+#else
+namespace Json {
+class Value;
+}
+#endif
 
 class CWhisperBlockMgr {
 public:

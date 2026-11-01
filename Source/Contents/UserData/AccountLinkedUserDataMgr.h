@@ -13,6 +13,7 @@ class CAsyncWorkMgr;
 
 class CAccountLinkedUserDataMgr {
   friend class CGameMode;
+  friend void ShutdownManagers();
 
 public:
   CAccountLinkedUserDataMgr();

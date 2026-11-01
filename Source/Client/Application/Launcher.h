@@ -11,6 +11,7 @@ bool RestartFromCommandLine(char* commandLine);
 
 void ExitForProtectionCheck(const char* commandLine);
 bool AcquireInstanceMutex(HANDLE* mutex);
+void ShutdownManagers();
 
 extern char* g_commandLine;
 extern bool g_launchAccountEnabled;

@@ -36,6 +36,8 @@ private:
 
 extern CooldownOwner* g_cooldownOwner;
 
+void DestroyCooldownOwner();
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CooldownOwner) == 36);
 #endif
