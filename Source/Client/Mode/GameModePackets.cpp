@@ -9795,6 +9795,44 @@ void CGameMode::ReceiveItemPickupAck9(const unsigned char* data) {
 }
 
 // OFFSET: 0x00D339F0
+// FUNCTION: fn_21751
+void CGameMode::ReceiveActorChat(const unsigned char* data) {
+  const int length = *reinterpret_cast<const std::uint16_t*>(data + 2) - 8;
+  if (length <= 0 || length > 361) {
+    return;
+  }
+
+  std::vector<char> text(length + 1, 0);
+  memcpy_s(text.data(), text.size(), data + 8, length);
+  const std::uint32_t aid = *reinterpret_cast<const std::uint32_t*>(data + 4);
+  CGameActor* speaker = static_cast<CGameActor*>(this->scene->GetGameActorByAID(aid));
+  if (speaker && !speaker->unknown_0314 && g_forbiddenWords.Contains(text.data()) == true) {
+    std::string masked;
+    g_forbiddenWords.Mask(text.data(), &masked);
+  }
+
+  if (g_windowMgr.window_027C) {
+    g_windowMgr.SendNotice(5, reinterpret_cast<std::intptr_t>(text.data()), 0x222222, 0, 0, 0);
+  } else {
+    if (IsMonsterJob(aid)) {
+      if (g_serviceType == 5) {
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.data()), 0xFFFF00, 1, 0, 0);
+      } else {
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.data()), g_serviceType == 10 ? 0x1D8DFF : 0xFFFF, 1, 0, 0);
+      }
+    } else if (MonsterJobColor(aid)) {
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.data()), MonsterJobColor(aid), 0, 0, 0);
+    } else if (!g_serviceOptions.Get(0x72) && !g_serviceOptions.Get(0x94)) {
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.data()), 0xFFFFFF, 1, 0, 0);
+    }
+    if (CRenderObject* actor = this->scene->GetGameActorByAID(aid)) {
+      actor->SendMsg(nullptr, 7, 0, reinterpret_cast<int>(text.data()), reinterpret_cast<int>(text.data()) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+  }
+  if (g_whisperRecord != 0) {
+    this->WriteChatLog(text.data());
+  }
+}
 
 // OFFSET: 0x00D33CE0
 
