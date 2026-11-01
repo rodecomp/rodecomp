@@ -211,6 +211,7 @@ public:
   void SendMousePointerState(int value);
   void ReceiveNpcAckMapmove(const unsigned char* packet);
   void ReceiveZoneServerChange(const unsigned char* packet);
+  void ReceiveZoneServerChange(const char* mapName, std::int16_t x, std::int16_t y, int ip, std::int16_t port);
   void RequestLocalMapMove(const char* mapName, std::uint16_t x, std::uint16_t y);
   bool CanFindPath(int sx, int sy, int cellX, int cellY, int dx, int dy);
   bool IsAllowedPair(int kind, int value);
@@ -792,6 +793,7 @@ extern char g_pendingWhisperCount;
 extern int g_whisperRecord;
 extern UIWindow* g_saleOpenWindow;
 void sub_CCFF10();
+extern int g_localMapMove;
 extern unsigned char g_gameModePacketBuffer[0x10000];
 extern int g_unknown173A5BC;
 extern int g_unknown_01738268;

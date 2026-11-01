@@ -1559,6 +1559,13 @@ void CGameMode::ReceiveZoneServerChange(const unsigned char* packet) {
   this->ChangeZoneServer(mapName.c_str(), change->x, change->y, static_cast<int>(change->ip), change->port, std::string());
 }
 
+// OFFSET: 0x00D79F00
+// FUNCTION: fn_22184
+void CGameMode::ReceiveZoneServerChange(const char* mapName, std::int16_t x, std::int16_t y, int ip, std::int16_t port) {
+  g_localMapMove = 1;
+  this->ChangeZoneServer(mapName, x, y, ip, port, std::string());
+}
+
 // OFFSET: 0x00D3A1E0
 
 // OFFSET: 0x00D272A0
