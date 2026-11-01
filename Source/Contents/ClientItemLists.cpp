@@ -265,7 +265,6 @@ struct ClientItemLists {
   void CopyItems1760To1770();
   std::pair<bool, ITEM_INFO> FindItem1750(const ITEM_INFO& item, unsigned char unknown);
   void ClearRecords0734();
-  void ClearPartyMembers();
   void ResetUnknown166C();
   void ResetHotkeyDescriptions();
   int IsDifferentName(const char* name, const char* other);
@@ -1473,11 +1472,11 @@ void ClientItemLists::ResetEquipped() {
 
 // OFFSET: 0x00DD8AF0
 // FUNCTION: fn_23325
-void ClientItemLists::ClearPartyMembers() {
+void CSession::ClearPartyMembers() {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
 
   if (mode) {
-    for (auto member = this->partyMembers.begin(); member != this->partyMembers.end(); ++member) {
+    for (auto member = this->m_partyMembers.begin(); member != this->m_partyMembers.end(); ++member) {
       CRenderObject* actor = mode->scene->GetGameActorByAidIncludeMe(member->accountId);
       if (actor && static_cast<EffectActor*>(actor)->state.Attachments().HasId(160) == true) {
         actor->SendMsg(nullptr, 109, 0, 160, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -1485,7 +1484,7 @@ void ClientItemLists::ClearPartyMembers() {
     }
   }
 
-  this->partyMembers.clear();
+  this->m_partyMembers.clear();
   this->unknown_5464 = 0;
   this->unknown_54C4 = "";
 }

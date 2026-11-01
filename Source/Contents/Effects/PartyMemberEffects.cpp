@@ -180,21 +180,14 @@ CRagEffect* EffectActor::LaunchTaggedEffect(int effectId, std::uint32_t tag) {
 
 // INLINED
 bool PartyMemberEffects::Enabled() const {
-  const auto* mode = this->activeMode;
-  return mode && (mode->playerOption48 != 0 || mode->playerOption54 != 0);
+  return this->mode && (this->mode->scene->unknown_0048 != 0 || this->mode->scene->unknown_0054 != 0);
 }
 
 // INLINED
 void PartyMemberEffects::EnsurePartyEffect(std::uint32_t accountId) {
-  PartyEffectMode& mode = *this->activeMode;
-
-  for (EffectActor* actor : mode.actors) {
-    if (actor->render.accountId == accountId) {
-      if (!actor->state.Attachments().HasId(160)) {
-        actor->LaunchEffect(160, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      }
-
-      return;
-    }
+  EffectActor* actor = static_cast<EffectActor*>(this->mode->scene->GetGameActorByAID(accountId));
+  if (actor && !actor->state.Attachments().HasId(160)) {
+    actor->LaunchEffect(160, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   }
 }
+

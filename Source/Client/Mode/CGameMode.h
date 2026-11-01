@@ -545,6 +545,8 @@ public:
   void ReceiveGroundSkill32(const unsigned char* record);
   void ReceiveGroundSkillExtended(const unsigned char* record);
   void ReceivePartyRoster(const unsigned char* packet);
+  void ReceivePartyMemberInfo(const unsigned char* packet);
+  void ReceivePartyMemberList(const unsigned char* packet);
   void sub_D59FD0(const char* partyName, std::vector<PartyRosterEntry>* members);
   void sub_D48C60(const unsigned char* data);
   void sub_D4A060(const unsigned char* data);

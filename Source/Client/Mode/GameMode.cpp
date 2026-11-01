@@ -2546,7 +2546,7 @@ void CGameMode::ChangeZoneServer(std::string mapName, int x, int y, int ip, int 
   g_session.ClearSecondaryShortcutSlots();
   g_session.unknown_6184 = 0;
   g_session.ResetInventoryItems();
-  reinterpret_cast<ClientItemLists&>(g_session).ClearPartyMembers();
+  g_session.ClearPartyMembers();
 
   std::string name = mapName;
   name.resize(name.size() - 4);

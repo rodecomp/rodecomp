@@ -1019,6 +1019,7 @@ public:
   void IgnoreText(std::string text);
   void SaveMiniPartyInfo();
   void LoadMiniPartyInfo();
+  void ClearPartyMembers();
   void SetItem1768Quantity(int index, int quantity);
   void SetUnknown5C1C(int value);
   void UpdateFriendName(std::uint32_t characterId, const char* name);

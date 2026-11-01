@@ -4935,7 +4935,7 @@ void ClientMessenger::AddFriend(MessengerMember& member) {
 
 // OFFSET: 0x00DD70B0
 // FUNCTION: fn_23283
-void ClientMessenger::AddPartyMember(MessengerMember& member, PartyMemberEffects& effects) {
+void ClientMessenger::AddPartyMember(MessengerMember& member) {
   if (member.map.size() > 4) {
     member.map.resize(member.map.size() - 3);
     member.map.append("rsw", 3);
@@ -4956,6 +4956,8 @@ void ClientMessenger::AddPartyMember(MessengerMember& member, PartyMemberEffects
   member.color = MemberColor(index);
   this->party.push_back(member);
 
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  PartyMemberEffects effects{mode};
   if (effects.Enabled()) {
     effects.EnsurePartyEffect(member.accountId);
   }

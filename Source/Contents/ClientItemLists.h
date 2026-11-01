@@ -105,7 +105,6 @@ struct ClientItemLists {
   void CopyItems1760To1770();
   std::pair<bool, ITEM_INFO> FindItem1750(const ITEM_INFO& item, unsigned char unknown);
   void ClearRecords0734();
-  void ClearPartyMembers();
   void ResetUnknown166C();
   void ResetHotkeyDescriptions();
   int IsDifferentName(const char* name, const char* other);

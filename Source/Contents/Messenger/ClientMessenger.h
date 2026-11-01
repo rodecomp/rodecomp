@@ -7,7 +7,6 @@
 #include <string>
 
 class CSession;
-struct PartyMemberEffects;
 
 struct ClientMessenger {
   std::list<MessengerMember>& party;
@@ -15,7 +14,7 @@ struct ClientMessenger {
 
   static std::int32_t MemberColor(int index);
   void AddFriend(MessengerMember& member);
-  void AddPartyMember(MessengerMember& member, PartyMemberEffects& effects);
+  void AddPartyMember(MessengerMember& member);
   void ClearFriends();
   int FriendCount() const;
   int PartyCount() const;

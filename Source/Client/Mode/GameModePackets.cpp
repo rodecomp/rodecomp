@@ -26,6 +26,7 @@
 #include "Contents/Effects/MonsterSkillEffects.h"
 #include "Contents/Skills/ClientSkills.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/ForbiddenWords.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Items/ItemNaming.h"
@@ -155,7 +156,6 @@ struct ClientItemLists {
   bool AddItem1710(const ITEM_INFO& item, unsigned char refresh);
   bool EquipItem6B68(const ITEM_INFO& item);
   void ClearRecords0734();
-  void ClearPartyMembers();
 };
 
 void __fastcall sub_DFF150(CSession* session);
@@ -12064,7 +12064,7 @@ void CGameMode::ReceivePartyMemberLeft(const unsigned char* data) {
 
   if (std::strcmp(g_session.DecodePlayerName(), name) == 0) {
     g_session.unknown_5464 = 0;
-    reinterpret_cast<ClientItemLists*>(&g_session)->ClearPartyMembers();
+    g_session.ClearPartyMembers();
     g_session.unknown_54C4.assign("", 0);
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x54)), 0xFFFF00, 0, 0, 0);
@@ -15655,4 +15655,221 @@ void CGameMode::ReceiveActorStateEntryLegacy(const unsigned char* data) {
     }
   }
   this->sub_D591A0(packet->aid, packet->effectState, packet->level, packet->virtue);
+}
+
+namespace {
+#pragma pack(push, 1)
+struct PartyMemberInfoPacket {
+  /* 0000 */ std::uint16_t id;
+  /* 0002 */ std::uint32_t accountId;
+  /* 0006 */ std::int32_t leader;
+  /* 000A */ unsigned char unknown_000A[4];
+  /* 000E */ unsigned char offline;
+  /* 000F */ char partyName[24];
+  /* 0027 */ char memberName[24];
+  /* 003F */ char mapName[16];
+};
+
+struct PartyMemberListHeader {
+  /* 0000 */ std::uint16_t id;
+  /* 0002 */ std::int16_t length;
+  /* 0004 */ char partyName[24];
+};
+
+struct PartyMemberListEntry {
+  /* 0000 */ std::uint32_t accountId;
+  /* 0004 */ char name[24];
+  /* 001C */ char mapName[16];
+  /* 002C */ unsigned char leader;
+  /* 002D */ unsigned char offline;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(PartyMemberInfoPacket) == 0x4F);
+static_assert(sizeof(PartyMemberListHeader) == 0x1C);
+static_assert(sizeof(PartyMemberListEntry) == 0x2E);
+}
+
+// OFFSET: 0x00D20900
+void CGameMode::ReceivePartyMemberInfo(const unsigned char* data) {
+  const PartyMemberInfoPacket* packet = reinterpret_cast<const PartyMemberInfoPacket*>(data);
+  char name[25];
+  name[24] = '\0';
+  std::memcpy(name, packet->memberName, sizeof(packet->memberName));
+  char partyName[25];
+  partyName[24] = '\0';
+  std::strncpy(partyName, packet->partyName, sizeof(packet->partyName));
+  if (g_forbiddenWords.Contains(partyName)) {
+    std::string masked;
+    g_forbiddenWords.Mask(partyName, &masked);
+  }
+  g_session.unknown_54C4 = partyName;
+
+  char map[17];
+  map[16] = '\0';
+  std::memcpy(map, packet->mapName, sizeof(packet->mapName));
+  MessengerMember member;
+  member.name = name;
+  member.accountId = packet->accountId;
+  member.map = map;
+  member.leader = packet->leader;
+  member.offline = packet->offline;
+
+  if (member.accountId == g_session.m_aid) {
+    if (member.leader == 0) {
+      g_session.unknown_5464 = 1;
+    }
+  } else if (member.offline == 1) {
+    this->SendMsg(0x40, member.accountId, 0, 0, 0);
+  } else {
+    std::string memberMap = member.map;
+    std::string currentMap = this->mapName;
+    if (memberMap.size() > 4) {
+      memberMap.resize(memberMap.size() - 3);
+    }
+    if (currentMap.size() > 4) {
+      currentMap.resize(currentMap.size() - 3);
+    }
+    if (memberMap != currentMap) {
+      this->SendMsg(0x40, member.accountId, 0, 0, 0);
+    }
+  }
+
+  ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.AddPartyMember(member);
+  sub_DFF150(&g_session);
+}
+
+// OFFSET: 0x00D2AFA0
+void CGameMode::ReceivePartyMemberList(const unsigned char* data) {
+  const PartyMemberListHeader* packet = reinterpret_cast<const PartyMemberListHeader*>(data);
+  g_session.ClearPartyMembers();
+  char partyName[25];
+  partyName[24] = '\0';
+  std::memcpy(partyName, packet->partyName, sizeof(packet->partyName));
+  if (g_forbiddenWords.Contains(partyName)) {
+    std::string masked;
+    g_forbiddenWords.Mask(partyName, &masked);
+  }
+  g_session.unknown_54C4 = partyName;
+
+  if (packet->length != 0x1C) {
+    const int count = (packet->length - 0x1C) / 0x2E;
+    const PartyMemberListEntry* entries = reinterpret_cast<const PartyMemberListEntry*>(data + sizeof(*packet));
+    for (int index = 0; index < count; ++index) {
+      const PartyMemberListEntry& entry = entries[index];
+      char name[25];
+      name[24] = '\0';
+      std::memcpy(name, entry.name, sizeof(entry.name));
+      char map[17];
+      map[16] = '\0';
+      std::memcpy(map, entry.mapName, sizeof(entry.mapName));
+      MessengerMember member;
+      member.accountId = entry.accountId;
+      member.name = name;
+      member.map = map;
+      member.leader = entry.leader;
+      member.offline = entry.offline;
+      ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.AddPartyMember(member);
+      if (member.accountId == g_session.m_aid && member.leader == 0) {
+        g_session.unknown_5464 = 1;
+      }
+    }
+    sub_DFF150(&g_session);
+  }
+}
+
+// OFFSET: 0x00D59FD0
+void CGameMode::sub_D59FD0(const char* value, std::vector<PartyRosterEntry>* members) {
+  g_session.ClearPartyMembers();
+  char partyName[25];
+  partyName[24] = '\0';
+  std::memcpy(partyName, value, 24);
+  if (g_forbiddenWords.Contains(partyName)) {
+    std::string masked;
+    g_forbiddenWords.Mask(partyName, &masked);
+  }
+  g_session.unknown_54C4 = partyName;
+
+  for (const PartyRosterEntry& entry : *members) {
+    char name[25];
+    name[24] = '\0';
+    std::memcpy(name, entry.name, sizeof(entry.name));
+    char map[17];
+    map[16] = '\0';
+    std::memcpy(map, entry.mapName, sizeof(entry.mapName));
+    MessengerMember member;
+    member.accountId = entry.accountId;
+    member.characterId = entry.characterId;
+    member.name = name;
+    member.map = map;
+    member.leader = entry.member;
+    member.offline = entry.offline;
+    member.job = static_cast<std::uint16_t>(entry.x);
+    member.level = static_cast<std::uint16_t>(entry.y);
+    member.color = member.offline == 0 ? 0x493A37 : 0xA38A86;
+    if (member.accountId == g_session.m_aid && member.leader == 0) {
+      member.color = 0x6F3007;
+      g_session.unknown_5464 = 1;
+    }
+    ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.AddPartyMember(member);
+  }
+
+  g_session.LoadMiniPartyInfo();
+  g_windowMgr.RestoreMiniPartyWindows();
+  sub_DFF150(&g_session);
+}
+
+// OFFSET: 0x00D5EEF0
+void CGameMode::sub_D5EEF0(
+  const char* name, int accountId, const char* mapName, int leader, unsigned char offline, std::uint16_t job, std::uint16_t level,
+  const char* value, unsigned char itemShare, unsigned char itemDistribute, int characterId
+) {
+  MessengerMember member;
+  member.name = name;
+  member.accountId = accountId;
+  member.characterId = characterId;
+  member.map = mapName;
+  member.leader = leader;
+  member.offline = offline;
+  member.job = job;
+  member.level = level;
+  char partyName[25];
+  partyName[24] = '\0';
+  std::strncpy(partyName, value, 24);
+  if (g_forbiddenWords.Contains(partyName)) {
+    std::string masked;
+    g_forbiddenWords.Mask(partyName, &masked);
+  }
+  g_session.unknown_54C4 = partyName;
+
+  if (member.accountId == g_session.m_aid) {
+    if (member.leader == 0) {
+      g_session.unknown_5464 = 1;
+    }
+  } else if (member.offline == 1) {
+    this->SendMsg(0x40, accountId, 0, 0, 0);
+    this->SetActorUnknown02E4(accountId, 0);
+  } else {
+    std::string memberMap = member.map;
+    std::string currentMap = this->mapName;
+    if (memberMap.size() > 4) {
+      memberMap.resize(memberMap.size() - 3);
+    }
+    if (currentMap.size() > 4) {
+      currentMap.resize(currentMap.size() - 3);
+    }
+    const bool sameMap = memberMap == currentMap;
+    if (!sameMap) {
+      this->SendMsg(0x40, accountId, 0, 0, 0);
+    }
+    this->SetActorUnknown02E4(accountId, sameMap);
+  }
+
+  g_session.unknown_54A8 = itemDistribute != 0;
+  g_session.unknown_54A4 = itemShare != 0;
+  ClientMessenger messenger{g_session.m_partyMembers, g_session.m_friends};
+  messenger.PartyCount();
+  messenger.AddPartyMember(member);
+  g_windowMgr.NotifyMemberWindows(&member);
+  this->SetActorUnknown02E4(accountId, 1);
 }
