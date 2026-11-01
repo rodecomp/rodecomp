@@ -37,6 +37,12 @@ static_assert(offsetof(WorldViewSpatial, clipped) == 0x0008);
 static_assert(offsetof(WorldViewSpatial, planes) == 0x0010);
 #endif
 
+extern int g_worldViewDrawn;
+extern int g_visibleMinX;
+extern int g_visibleMinY;
+extern int g_visibleMaxX;
+extern int g_visibleMaxY;
+
 int ClassifyModelView(const OrientedBounds& bounds, const ModelViewPlanes& planes);
 
 void DrawWorldModelLeaves(
