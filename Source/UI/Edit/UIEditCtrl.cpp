@@ -7218,6 +7218,7 @@ bool UIItemStoreSubWnd::sub_996950() {
     std::size_t remaining = 0x100;
     char* highlight = nullptr;
     this->BuildItemName(&item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
+    it->SetName(text);
   }
   return true;
 }
@@ -7238,6 +7239,7 @@ bool UIItemStoreSubWnd::sub_996AF0() {
     std::size_t remaining = 0x100;
     char* highlight = nullptr;
     this->BuildItemName(&item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
+    it->SetName(text);
   }
   return true;
 }
@@ -7258,6 +7260,7 @@ bool UIItemStoreSubWnd::sub_996C90() {
     std::size_t remaining = 0x100;
     char* highlight = nullptr;
     this->BuildItemName(&item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
+    it->SetName(text);
   }
   return true;
 }
