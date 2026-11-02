@@ -125,3 +125,9 @@ void UINormalMB::Create(UIWindow* owner, const char* text, int type, bool defaul
     break;
   }
 }
+
+// OFFSET: 0x00CFE370
+// FUNCTION: fn_21431
+void UINormalMB::SetAction(int id, void (*action)()) {
+  this->m_actions[id] = action;
+}
