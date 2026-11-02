@@ -1,3 +1,5 @@
+#include "Client/Input/InputCharset.h"
+#include "Client/Application/ApplicationWindow.h"
 #include "Client/Input/Language.h"
 #include "Contents/CashEmotionMgr.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
@@ -40,7 +42,7 @@ void CLanguage::ResetInput() {
 
 // OFFSET: 0x00ACD700
 // FUNCTION: fn_17767
-void CLanguage::DeleteSelection() {
+void CLanguageBase::DeleteSelection() {
   if (this->cursor == this->anchor) {
     return;
   }
@@ -51,22 +53,30 @@ void CLanguage::DeleteSelection() {
   this->cursor = begin;
   this->anchor = begin;
 
-  if (this->suggestionsEnabled && this->chatOpen && this->chatInput && this->focused == this->chatInput) {
-    this->suggestions.Update(this->text.c_str());
+  if (g_windowMgr.unknown_0024 && g_chatSuggestions && g_chatSuggestions->window && g_windowMgr.GetHoverWindow() == g_chatSuggestions->window) {
+    g_cashEmotionMgr->ProcessChatCommand(this->text.c_str());
   }
 }
 
 // OFFSET: 0x00ACD360
 // FUNCTION: fn_17760
-void CLanguage::Insert(const char* value) {
+void CLanguageBase::Insert(const char* value) {
   this->DeleteSelection();
   this->text.insert(static_cast<std::size_t>(this->cursor), value, std::strlen(value));
   this->anchor = this->cursor + static_cast<int>(std::strlen(value));
   this->cursor = this->anchor;
 
-  if (this->suggestionsEnabled && this->chatOpen && this->chatInput && this->focused == this->chatInput) {
-    this->suggestions.Update(this->text.c_str());
+  if (g_windowMgr.unknown_0024 && g_chatSuggestions && g_chatSuggestions->window && g_windowMgr.GetHoverWindow() == g_chatSuggestions->window) {
+    g_cashEmotionMgr->ProcessChatCommand(this->text.c_str());
   }
+}
+
+void CLanguage::DeleteSelection() {
+  g_serverLanguage->DeleteSelection();
+}
+
+void CLanguage::Insert(const char* value) {
+  g_serverLanguage->Insert(value);
 }
 
 // OFFSET: 0x00ACF590
@@ -100,34 +110,6 @@ void CLanguage::Selection(int& anchor, int& cursor) const {
 // OFFSET: 0x00ACDD10
 // FUNCTION: fn_17774
 void __stdcall SubACDD10() {
-}
-
-// OFFSET: 0x00ACDD20
-// FUNCTION: fn_17775
-void CLanguage::RefreshComposition(unsigned codePage) {
-  HIMC context = ImmGetContext(this->window);
-  if (!context) {
-    this->candidate.clear();
-    return;
-  }
-
-  WCHAR wide[256];
-  char converted[256];
-  const auto bytes = static_cast<std::uint32_t>(ImmGetCompositionStringW(context, GCS_COMPSTR, wide, sizeof(wide)));
-  const unsigned size = WideCharToMultiByte(codePage, 0, wide, bytes >> 1, converted, sizeof(converted), nullptr, nullptr);
-  ImmReleaseContext(this->window, context);
-  this->candidate.assign(converted, size);
-
-  char combined[256];
-  const std::size_t committed = std::min<std::size_t>(this->text.size(), 255);
-  std::memcpy(combined, this->text.data(), committed);
-  const std::size_t pending = std::min<std::size_t>(this->candidate.size(), 255 - committed);
-  std::memcpy(combined + committed, this->candidate.data(), pending);
-  combined[committed + pending] = 0;
-
-  if (this->suggestionsEnabled && this->chatOpen && this->chatInput && this->focused == this->chatInput) {
-    this->suggestions.Update(combined);
-  }
 }
 
 // OFFSET: 0x00ACD5C0
@@ -483,3 +465,43 @@ UIHairStyleButton::UIHairStyleButton(int style, int sex) : UIBitmapButton(), m_s
 }
 
 // OFFSET: 0x00999FF0
+
+// OFFSET: 0x00ACD140
+// FUNCTION: fn_17755
+CLanguageBase::~CLanguageBase() = default;
+
+// OFFSET: 0x00ACD200
+// FUNCTION: fn_17757
+CLanguageArabic::~CLanguageArabic() = default;
+
+// OFFSET: 0x00ACD300
+// FUNCTION: fn_17759
+CLanguageTH::~CLanguageTH() = default;
+
+// OFFSET: 0x00ACDD20
+// FUNCTION: fn_17775
+void CLanguageBase::RefreshComposition() {
+  HIMC context = ImmGetContext(hWnd);
+  if (!context) {
+    this->candidate.clear();
+    return;
+  }
+
+  WCHAR wide[256];
+  char converted[256];
+  const auto bytes = static_cast<std::uint32_t>(ImmGetCompositionStringW(context, GCS_COMPSTR, wide, sizeof(wide)));
+  const unsigned size = WideCharToMultiByte(this->codePage, 0, wide, bytes >> 1, converted, sizeof(converted), nullptr, nullptr);
+  ImmReleaseContext(hWnd, context);
+  this->candidate.assign(converted, size);
+
+  char combined[256];
+  const std::size_t committed = std::min<std::size_t>(this->text.size(), 255);
+  std::memcpy(combined, this->text.data(), committed);
+  const std::size_t pending = std::min<std::size_t>(this->candidate.size(), 255 - committed);
+  std::memcpy(combined + committed, this->candidate.data(), pending);
+  combined[committed + pending] = 0;
+
+  if (g_windowMgr.unknown_0024 && g_chatSuggestions && g_chatSuggestions->window && g_windowMgr.GetHoverWindow() == g_chatSuggestions->window) {
+    g_cashEmotionMgr->ProcessChatCommand(combined);
+  }
+}

@@ -62,10 +62,19 @@ struct CLanguage {
 
 // VTABLE: vt_01604
 struct CLanguageBase {
-  virtual ~CLanguageBase() = default;
+  virtual ~CLanguageBase();
+  virtual const char* DisplayText() const;
+  virtual int DisplayLength() const;
+  virtual void ProcessKey(unsigned virtualKey);
+  virtual LRESULT Message(HWND window, UINT message, WPARAM value, LPARAM flags, std::uint8_t& handled);
+  virtual const char* NextChar(const char* current, int remaining);
+  virtual void RefreshComposition();
+  virtual void ResetState();
+  virtual void EndComposition();
+  virtual void ResetCandidate();
 
   /* 0004 */ std::deque<unsigned int> unknown_0004;
-  /* 0018 */ void* candidateList;
+  /* 0018 */ CANDIDATELIST* candidateList;
   /* 001C */ int candidateCount;
   /* 0020 */ int pageSize;
   /* 0024 */ int selection;
@@ -76,7 +85,9 @@ struct CLanguageBase {
   /* 0054 */ int anchor;
   /* 0058 */ std::string composition;
   /* 0070 */ std::string candidate;
-  /* 0088 */ unsigned char unknown_0088[6];
+  /* 0088 */ int compositionCursor;
+  /* 008C */ unsigned char password;
+  /* 008D */ unsigned char unknown_008D;
   /* 008E */ std::uint16_t language;
   /* 0090 */ unsigned codePage;
   /* 0094 */ int unknown_0094;
@@ -86,6 +97,13 @@ struct CLanguageBase {
   /* 00B6 */ unsigned char unknown_00B6[2];
 
   CLanguageBase();
+  const char* Candidate(int index) const;
+  const char* Prefix(bool alternate) const;
+  const char* ServiceName(const char* name);
+  unsigned CodePage(unsigned fallback) const;
+  void SetServicePrefix(std::string prefix);
+  void DeleteSelection();
+  void Insert(const char* value);
 };
 
 // VTABLE: vt_01607
@@ -93,6 +111,7 @@ struct CLanguageArabic : CLanguageBase {
   /* 00B8 */ bool lexiconLoaded;
 
   CLanguageArabic();
+  ~CLanguageArabic() override;
 };
 
 // VTABLE: vt_01606
@@ -100,6 +119,8 @@ struct CLanguageTH : CLanguageBase {
   /* 00B8 */ bool lexiconLoaded;
 
   CLanguageTH();
+  ~CLanguageTH() override;
+  const char* NextChar(const char* current, int remaining) override;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

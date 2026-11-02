@@ -9089,7 +9089,7 @@ void UITipboxWnd::Slot19() {
     const int index = (std::max)(0, g_itemTagOwner->unknown_00B4);
     const std::string text = g_itemTagOwner->m_currentEntry.paragraphs[index];
     std::vector<std::string> lines;
-    WrapPlainText(text.c_str(), lines, 1000, static_cast<unsigned short>(g_textCodePage));
+    WrapPlainText(text.c_str(), lines, 1000);
     this->unknown_00BC->Clear();
     for (const std::string& line : lines) {
       this->unknown_00BC->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(line.c_str()), 32, 0, 0);
@@ -9967,7 +9967,7 @@ void UITipboxWnd::RefreshTip() {
   this->unknown_00D8->Enable(g_itemTagOwner->m_currentEntry.searchable);
 
   std::vector<std::string> lines;
-  WrapPlainText(title.c_str(), lines, 30, static_cast<unsigned short>(g_textCodePage));
+  WrapPlainText(title.c_str(), lines, 30);
 
   UIStaticText* const texts[2] = {this->unknown_00C0, this->unknown_00C4};
   for (int index = 0; index < 2; ++index) {

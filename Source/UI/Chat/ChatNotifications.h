@@ -52,7 +52,7 @@ inline void ChatNotifications::Text(const char* text, std::uint32_t color, const
   }
 
   std::vector<std::string> lines;
-  WrapPlainText(text, lines, 94, this->codePage);
+  WrapPlainText(text, lines, 94);
 
   for (const auto& line : lines) {
     this->queued.push_back({line, color});

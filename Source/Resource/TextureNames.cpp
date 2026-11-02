@@ -11,7 +11,7 @@
 
 // OFFSET: 0x00ACE510
 // FUNCTION: fn_17788
-const char* InputCharset::ServiceName(const char* name) {
+const char* CLanguageBase::ServiceName(const char* name) {
   if (g_serviceType == 0 || g_serviceType == 2 || g_serviceType == 20) {
     return name;
   }

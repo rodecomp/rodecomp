@@ -15529,7 +15529,7 @@ void CGameMode::ReceiveTaggedBroadcast(const unsigned char* data) {
   message = std::move(linked);
 
   std::vector<std::string> lines;
-  WrapPlainText(message.c_str(), lines, 0x48, g_serverLanguage->language);
+  WrapPlainText(message.c_str(), lines, 0x48);
   if (lines.begin() != lines.end()) {
     if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
       BroadcastBalloonMessage balloonMessage{{}, {}, std::chrono::seconds(20), 12, 0x40000000, 0, 0};

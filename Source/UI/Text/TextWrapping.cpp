@@ -1,3 +1,4 @@
+#include "Client/Input/InputCharset.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Render/Text/TextContext.h"
@@ -14,7 +15,7 @@
 
 // OFFSET: 0x009B4220
 // FUNCTION: fn_13829
-void WrapPlainText(const char* text, std::vector<std::string>& lines, int width, unsigned short codePage) {
+void WrapPlainText(const char* text, std::vector<std::string>& lines, int width) {
   const char* begin = text;
   const char* chunk = text;
   const char* current = text;
@@ -25,7 +26,7 @@ void WrapPlainText(const char* text, std::vector<std::string>& lines, int width,
   const char* marker = text + TextContext::Marker(text, bytes);
 
   while (current < end) {
-    current = CharNextExA(codePage, current, 0);
+    current = g_serverLanguage->NextChar(current, static_cast<int>(end - current));
 
     while (*current == ' ') {
       ++current;
@@ -80,7 +81,7 @@ namespace {
 // OFFSET: 0x009B4730
 // FUNCTION: fn_13833
 void WrapRichText(
-  const char* text, std::vector<std::string>& lines, int width, bool carriageReturns, unsigned short codePage, ItemDescriptions& items
+  const char* text, std::vector<std::string>& lines, int width, bool carriageReturns, ItemDescriptions& items
 ) {
   const char* begin = text;
   const char* current = text;
@@ -144,7 +145,7 @@ void WrapRichText(
           lines.emplace_back(name);
         }
       } else {
-        current = CharNextExA(codePage, current, 0);
+        current = g_serverLanguage->NextChar(current, static_cast<int>(end - current));
       }
     }
 

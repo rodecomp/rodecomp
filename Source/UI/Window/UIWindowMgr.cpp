@@ -1666,7 +1666,7 @@ int UIWindowMgr::SendNotice(int selector, std::intptr_t a, std::intptr_t b, std:
       color = 0xFFFFFF;
     }
     std::vector<std::string> lines;
-    WrapPlainText(text, lines, 94, 0);
+    WrapPlainText(text, lines, 94);
     for (unsigned int index = 0; index < lines.size(); ++index) {
       std::string line;
       line = lines[index];

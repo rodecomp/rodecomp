@@ -3609,7 +3609,7 @@ void UISlotBmpButton::Paint() {
     this->DrawBitmap(this->geometry.width / 2 - 0x2e, 0x1a, balloon ? &balloon->image : nullptr, false);
 
     std::vector<std::string> lines;
-    WrapPlainText(LookupMessage(0xaed), lines, 0x14, static_cast<unsigned short>(g_textCodePage));
+    WrapPlainText(LookupMessage(0xaed), lines, 0x14);
     int y = 0x22;
     for (const std::string& line : lines) {
       this->DrawCenteredText(0x21, y, line.c_str(), 0x5c, 0, 0xb, 0xffffff, 0);

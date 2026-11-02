@@ -61,7 +61,7 @@ void UIApplyForPartyWnd::Slot15(int, int) {
   }
 
   std::vector<std::string> lines;
-  WrapPlainText(LookupMessage(3370), lines, 40, this->m_application->codePage);
+  WrapPlainText(LookupMessage(3370), lines, 40);
   int y = 136;
 
   for (const auto& line : lines) {

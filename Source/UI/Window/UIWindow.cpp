@@ -2620,7 +2620,7 @@ void UINavigationV4Wnd::Paint() {
 
       std::string message = LookupMessage(0xc8f);
       std::vector<std::string> lines;
-      WrapPlainText(message.c_str(), lines, 0x26, g_serverLanguage->language);
+      WrapPlainText(message.c_str(), lines, 0x26);
       int y = (0x29 - static_cast<int>(lines.size())) * 7;
       for (unsigned int index = 0; index < lines.size(); ++index) {
         DrawOutlinedText(*this, 0x2a, y, lines[index].c_str(), 0, 0xffffff, 0, 0, 0xb, 1, 0);

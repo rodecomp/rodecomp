@@ -1,72 +1,10 @@
 #ifndef RAGNAROK_SOURCE_CLIENT_INPUT_INPUTCHARSET_H
 #define RAGNAROK_SOURCE_CLIENT_INPUT_INPUTCHARSET_H
 
-#include <cstddef>
-#include <cstdint>
-#include <string>
-#include <windows.h>
+#include "Client/Input/Language.h"
 
-struct InputCharset {
-  virtual void Slot00();
-  virtual const char* DisplayText() const;
-  virtual int DisplayLength() const;
-  virtual void ProcessKey(unsigned virtualKey);
-  virtual void Slot04();
-  virtual const char* NextChar(const char* current, int remaining);
-  virtual void Slot06();
-  virtual void ResetState();
-  virtual void EndComposition();
-  virtual void ResetCandidate();
+using InputCharset = CLanguageBase;
 
-  /* 0004 */ unsigned char unknown_0004[0x54];
-  /* 0058 */ std::string composition;
-  /* 0070 */ unsigned char unknown_0070[0x1E];
-  /* 008E */ std::uint16_t language;
-  /* 0090 */ unsigned char unknown_0090[0xC];
-  /* 009C */ std::string servicePrefix;
-  /* 00B4 */ std::uint16_t alternateLanguage;
-
-  const char* Prefix(bool alternate) const;
-
-  const char* ServiceName(const char* name);
-
-  unsigned CodePage(unsigned fallback) const;
-
-  void SetServicePrefix(std::string prefix);
-};
-
-#if defined(_WIN32) && !defined(_WIN64)
-static_assert(offsetof(InputCharset, language) == 0x8E);
-static_assert(offsetof(InputCharset, servicePrefix) == 0x9C);
-static_assert(offsetof(InputCharset, alternateLanguage) == 0xB4);
-#endif
-
-struct DefaultInputCharset : InputCharset {
-  DefaultInputCharset();
-  ~DefaultInputCharset();
-};
-
-struct TraditionalChineseInputCharset : InputCharset {
-  /* 00B8 */ unsigned char unknown_00B8[0x40C];
-
-  TraditionalChineseInputCharset();
-  ~TraditionalChineseInputCharset();
-};
-
-struct ThaiInputCharset : InputCharset {
-  /* 00B8 */ bool unknown_00B8;
-
-  ThaiInputCharset();
-  ~ThaiInputCharset();
-};
-
-struct ArabicInputCharset : InputCharset {
-  /* 00B8 */ bool unknown_00B8;
-
-  ArabicInputCharset();
-  ~ArabicInputCharset();
-};
-
-extern InputCharset* g_serverLanguage;
+extern CLanguageBase* g_serverLanguage;
 
 #endif

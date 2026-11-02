@@ -97,9 +97,9 @@ void UIBalloonText::SetText(const char* text, int width) {
   this->m_lines.clear();
 
   if (this->m_richText != 0) {
-    WrapRichText(text, this->m_lines, width, false, this->m_textContext->codePage, this->m_textContext->items);
+    WrapRichText(text, this->m_lines, width, false, this->m_textContext->items);
   } else {
-    WrapPlainText(text, this->m_lines, width, this->m_textContext->codePage);
+    WrapPlainText(text, this->m_lines, width);
   }
 
   if (this->m_lines.size() != 0) {
@@ -115,7 +115,7 @@ void UIBalloonText::WrapText(const char* text, int width) {
   }
 
   this->m_lines.clear();
-  WrapPlainText(text, this->m_lines, width, this->m_textContext->codePage);
+  WrapPlainText(text, this->m_lines, width);
 }
 
 // OFFSET: 0x00853530

@@ -1,4 +1,5 @@
 #include "Client/Input/InputCharset.h"
+#include "Client/Input/LanguageTC.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Archive/PakRegistry.h"
 #include "Client/Application/ErrorDialog.h"
@@ -29,7 +30,7 @@
 signed char g_language = 0;
 
 // GLOBAL: gl_24544
-InputCharset* g_serverLanguage;
+CLanguageBase* g_serverLanguage;
 
 // GLOBAL: gl_24972
 unsigned char g_startupSecondPhase;
@@ -329,13 +330,13 @@ void sub_AD1270() {
 // FUNCTION: fn_17811
 void InitializeLanguage() {
   // GLOBAL: gl_25359
-  static DefaultInputCharset defaultCharset;
+  static CLanguageBase defaultCharset;
   // GLOBAL: gl_25360
-  static TraditionalChineseInputCharset traditionalChineseCharset;
+  static CLanguageTC traditionalChineseCharset;
   // GLOBAL: gl_25361
-  static ThaiInputCharset thaiCharset;
+  static CLanguageTH thaiCharset;
   // GLOBAL: gl_25362
-  static ArabicInputCharset arabicCharset;
+  static CLanguageArabic arabicCharset;
 
   switch (g_serviceType) {
   case 0:

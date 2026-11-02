@@ -1,6 +1,8 @@
 #ifndef RAGNAROK_SOURCE_CLIENT_INPUT_LANGUAGETC_H
 #define RAGNAROK_SOURCE_CLIENT_INPUT_LANGUAGETC_H
 
+#include "Client/Input/Language.h"
+
 #include <array>
 #include <cstdint>
 #include <list>
@@ -11,27 +13,32 @@ struct TraditionalKeyMapping {
   /* 0001 */ std::uint8_t bytes[3];
 };
 
-struct CLanguageTC {
-  std::list<std::uint8_t>& keys;
-  std::array<TraditionalKeyMapping, 256>& mappings;
-  std::string& display;
-  std::uint8_t& unknown04C1;
+// VTABLE: vt_01605
+struct CLanguageTC : CLanguageBase {
+  /* 00B8 */ std::list<std::uint8_t> keys;
+  /* 00C0 */ std::array<TraditionalKeyMapping, 256> mappings;
+  /* 04C0 */ unsigned char unknown_04C0;
+  /* 04C1 */ std::uint8_t unknown04C1;
+  /* 04C2 */ unsigned char unknown_04C2[2];
 
-  void InitializeMappings();
-  void Key(int virtualKey);
-  const char* Display();
-  const char* DisplayText() const;
-  int DisplayLength() const;
-  const char* NextChar(const char* current, int unused);
-  const char* NextCharArabic(const char* current, int unused);
+  CLanguageTC();
+  ~CLanguageTC() override;
+  const char* DisplayText() const override;
+  int DisplayLength() const override;
+  void ProcessKey(unsigned virtualKey) override;
+  void RefreshComposition() override;
+  void EndComposition() override;
+  void ResetCandidate() override;
+
   int GetKeyStrokeSize() const;
-  void ClearKeys();
-  void ResetState();
-  void ResetCandidate();
-  void RetainSingleKey();
-  void FilterCandidate(std::string& candidate);
 };
 
 static_assert(sizeof(TraditionalKeyMapping) == 4);
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(offsetof(CLanguageTC, keys) == 0xB8);
+static_assert(offsetof(CLanguageTC, mappings) == 0xC0);
+static_assert(offsetof(CLanguageTC, unknown04C1) == 0x4C1);
+static_assert(sizeof(CLanguageTC) == 0x4C4);
+#endif
 
 #endif

@@ -9,7 +9,8 @@
 
 struct InputFocus;
 struct CLanguage;
-struct InputCharset;
+struct CLanguageBase;
+using InputCharset = CLanguageBase;
 struct BitmapImage;
 #include "UI/Window/WindowManagerWindows.h"
 class NavigationDestination;

@@ -6,7 +6,7 @@
 
 // OFFSET: 0x00ACE360
 // FUNCTION: fn_17781
-const char* InputCharset::Prefix(bool alternate) const {
+const char* CLanguageBase::Prefix(bool alternate) const {
   // STATIC: 0x016D3964
   // GLOBAL: gl_24373
   static char prefix[8];
@@ -21,12 +21,12 @@ const char* InputCharset::Prefix(bool alternate) const {
 }
 
 // INLINED
-unsigned InputCharset::CodePage(unsigned fallback) const {
+unsigned CLanguageBase::CodePage(unsigned fallback) const {
   return g_inlineCharset ? LanguageCodePage(this->language) : fallback;
 }
 
 // OFFSET: 0x00D9CE80
 // FUNCTION: fn_22314
-void InputCharset::SetServicePrefix(std::string prefix) {
+void CLanguageBase::SetServicePrefix(std::string prefix) {
   this->servicePrefix = prefix;
 }

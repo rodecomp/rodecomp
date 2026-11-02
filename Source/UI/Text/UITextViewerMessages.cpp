@@ -115,7 +115,7 @@ void UITextViewer::AppendText(char* text, int width, bool carriageReturns, bool 
   std::vector<std::string> wrapped;
 
   if (width == 138) {
-    WrapPlainText(text, wrapped, 38, owner.codePage);
+    WrapPlainText(text, wrapped, 38);
 
     for (const auto& line : wrapped) {
       this->AddLine(line.c_str());
@@ -154,7 +154,7 @@ void UITextViewer::AppendText(char* text, int width, bool carriageReturns, bool 
     WrapPixelText(*this->geometry.surface, owner.codePage, display.c_str(), wrapped, this->geometry.width - scrollWidth - 4);
   } else {
     WrapRichText(
-      display.c_str(), wrapped, width == 0 ? 35 : width, carriageReturns, owner.codePage, this->m_text->items.descriptions
+      display.c_str(), wrapped, width == 0 ? 35 : width, carriageReturns, this->m_text->items.descriptions
     );
   }
 

@@ -823,7 +823,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         _mbsstr(reinterpret_cast<const unsigned char*>(text), reinterpret_cast<const unsigned char*>("</ITEML>"))) {
       lines.push_back(std::string(text));
     } else {
-      WrapPlainText(text, lines, wrapWidth, g_serverLanguage->language);
+      WrapPlainText(text, lines, wrapWidth);
     }
 
     for (unsigned index = 0; index < lines.size(); ++index) {

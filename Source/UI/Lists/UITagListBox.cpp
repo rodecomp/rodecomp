@@ -401,7 +401,7 @@ void UITagListBox::sub_9B9EA0(std::intptr_t argument1, std::intptr_t argument2, 
   std::vector<std::string> lines;
 
   if (width == 138) {
-    WrapPlainText(text, lines, 38, owner.codePage);
+    WrapPlainText(text, lines, 38);
 
     for (std::size_t index = 0; index < lines.size(); ++index) {
       this->AddLine(lines[index].c_str());

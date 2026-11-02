@@ -149,7 +149,7 @@ void UIRegisterPartyWnd::Slot15(int, int) {
   this->m_message0 = registered ? 564 : 565;
   this->AddChild(submit);
   std::vector<std::string> lines;
-  WrapPlainText(LookupMessage(3370), lines, 40, owner.codePage);
+  WrapPlainText(LookupMessage(3370), lines, 40);
   int y = 136;
 
   for (const auto& line : lines) {

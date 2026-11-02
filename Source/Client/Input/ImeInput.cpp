@@ -1,50 +1,50 @@
-#include "Client/Input/ImeInput.h"
-#include "Client/Input/LanguageTC.h"
+#include "Client/Application/ApplicationWindow.h"
+#include "Client/Input/Language.h"
+#include "Network/TextEncoding.h"
 #include "Utility/Text/LanguageCharset.h"
+#include "Utility/Text/TextTokens.h"
 
 #include <algorithm>
+#include <cstring>
+#include <imm.h>
 #include <intrin.h>
 
 // OFFSET: 0x00ACEF00
 // FUNCTION: fn_17793
-LRESULT ImeInput::Message(HWND, UINT message, WPARAM value, LPARAM flags, std::uint8_t& handled) {
+LRESULT CLanguageBase::Message(HWND, UINT message, WPARAM value, LPARAM flags, std::uint8_t& handled) {
   const auto options = static_cast<std::uint16_t>(flags);
 
   switch (message) {
   case WM_INPUTLANGCHANGE:
     this->language = options;
-    this->codePage = this->languageCodePage ? LanguageCodePage(options) : this->fallbackCodePage;
+    this->codePage = g_inlineCharset ? LanguageCodePage(options) : g_textCodePage;
     break;
   case WM_IME_STARTCOMPOSITION:
-    this->input.DeleteSelection();
+    this->ResetState();
+    this->DeleteSelection();
     break;
   case WM_IME_ENDCOMPOSITION:
-    if (this->traditional) {
-      this->traditional->ClearKeys();
-    }
-    this->input.candidate.clear();
+    this->EndComposition();
+    this->candidate.assign("", 0);
     break;
   case WM_IME_COMPOSITION:
     if (options & GCS_COMPSTR) {
-      this->input.RefreshComposition(this->codePage);
-      if (this->traditional) {
-        this->traditional->FilterCandidate(this->input.candidate);
-        this->traditional->RetainSingleKey();
-      }
+      this->RefreshComposition();
+      this->ResetCandidate();
     }
 
     if (options & GCS_CURSORPOS) {
-      HIMC context = ImmGetContext(this->input.window);
+      HIMC context = ImmGetContext(hWnd);
       if (context) {
         ImmGetCompositionStringA(context, GCS_CURSORPOS, &this->compositionCursor, sizeof(this->compositionCursor));
-        ImmReleaseContext(this->input.window, context);
+        ImmReleaseContext(hWnd, context);
       } else {
-        this->input.candidate.clear();
+        this->candidate.clear();
       }
     }
 
     if (options & GCS_RESULTSTR) {
-      HIMC context = ImmGetContext(this->input.window);
+      HIMC context = ImmGetContext(hWnd);
       if (context) {
         WCHAR wide[256];
         char converted[256];
@@ -56,35 +56,35 @@ LRESULT ImeInput::Message(HWND, UINT message, WPARAM value, LPARAM flags, std::u
         }
 
         converted[size] = 0;
-        ImmReleaseContext(this->input.window, context);
-        this->input.Insert(converted);
+        ImmReleaseContext(hWnd, context);
+        this->Insert(converted);
       } else {
-        this->input.candidate.clear();
+        this->candidate.clear();
       }
     }
     break;
   case WM_IME_NOTIFY:
     if (value == IMN_OPENCANDIDATE || value == IMN_CHANGECANDIDATE) {
-      HIMC context = ImmGetContext(this->input.window);
+      HIMC context = ImmGetContext(hWnd);
       if (context) {
         const auto bytes = ImmGetCandidateListW(context, 0, nullptr, 0);
         if (static_cast<std::int32_t>(bytes) > 0) {
           this->candidateStorage.resize(bytes);
-          this->candidateList = reinterpret_cast<CANDIDATELIST*>(this->candidateStorage.data());
+          this->candidateList = reinterpret_cast<CANDIDATELIST*>(this->candidateStorage.empty() ? nullptr : this->candidateStorage.data());
           ImmGetCandidateListW(context, 0, this->candidateList, bytes);
-          this->input.compositionState = this->candidateList->dwCount;
-          this->selection = this->candidateList->dwSelection;
-          this->pageSize = std::min<unsigned>(this->candidateList->dwPageSize, 9);
+          this->candidateCount = static_cast<int>(this->candidateList->dwCount);
+          this->selection = static_cast<int>(this->candidateList->dwSelection);
+          this->pageSize = static_cast<int>(std::min<unsigned>(this->candidateList->dwPageSize, 9));
         } else {
-          this->input.compositionState = 0;
+          this->candidateCount = 0;
         }
 
-        ImmReleaseContext(this->input.window, context);
+        ImmReleaseContext(hWnd, context);
       } else {
-        this->input.compositionState = 0;
+        this->candidateCount = 0;
       }
     } else if (value == IMN_CLOSECANDIDATE) {
-      this->input.compositionState = 0;
+      this->candidateCount = 0;
     }
     break;
   default:
@@ -98,12 +98,12 @@ LRESULT ImeInput::Message(HWND, UINT message, WPARAM value, LPARAM flags, std::u
 
 // OFFSET: 0x00ACD840
 // FUNCTION: fn_17770
-const char* ImeInput::Candidate(int index) const {
+const char* CLanguageBase::Candidate(int index) const {
   // STATIC: 0x016D3978
   // GLOBAL: gl_24374
   static char output[256];
 
-  if (index >= this->input.compositionState) {
+  if (index >= this->candidateCount) {
     return "";
   }
 

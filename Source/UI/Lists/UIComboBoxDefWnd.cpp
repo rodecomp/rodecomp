@@ -513,7 +513,7 @@ void UIDescriptRace::sub_8A0B10() {
     this->DrawTextAt(50, 23, LookupMessage(3018), 0, 0, 12, 0x99634C, 1, 0);
     this->DrawTextAt(49, 22, LookupMessage(3018), 0, 0, 12, 0xFFFFFF, 1, 0);
     std::vector<std::string> lines;
-    WrapPlainText(LookupMessage(3021), lines, 40, g_serverLanguage->language);
+    WrapPlainText(LookupMessage(3021), lines, 40);
     int y = 22;
     for (unsigned index = 0; index < lines.size(); ++index) {
       this->DrawTextAt(112, y, lines[index].c_str(), 0, 0, 12, 0, 0, 0);
@@ -523,7 +523,7 @@ void UIDescriptRace::sub_8A0B10() {
     this->DrawTextAt(50, 23, LookupMessage(3016), 0, 0, 12, 0x99634C, 1, 0);
     this->DrawTextAt(49, 22, LookupMessage(3016), 0, 0, 12, 0xFFFFFF, 1, 0);
     std::vector<std::string> lines;
-    WrapPlainText(LookupMessage(3020), lines, 40, g_serverLanguage->language);
+    WrapPlainText(LookupMessage(3020), lines, 40);
     int y = 22;
     for (unsigned index = 0; index < lines.size(); ++index) {
       this->DrawTextAt(112, y, lines[index].c_str(), 0, 0, 12, 0, 0, 0);
