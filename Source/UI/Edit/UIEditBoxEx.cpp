@@ -375,23 +375,22 @@ void CUIEditBoxEx::SetBackgroundColor(std::uint32_t color) {
 // OFFSET: 0x009E4BF0
 // FUNCTION: fn_14444
 void CUIEditCtrlEx::HandleKeyDown(int key, std::intptr_t lparam) {
-  CLanguage& input = this->m_edit->input;
   const bool password = this->m_edit->password != 0;
   UIWindow* const chatWindow = g_chatSuggestions ? g_chatSuggestions->window : nullptr;
 
   switch (key) {
   case VK_BACK:
-    if (std::abs(input.cursor - input.anchor) == 0 && input.cursor >= 2 && input.cursor - 1 < this->text.size()) {
-      const bool lineBreak = this->text.substr(input.cursor - 2, 2) == "\r\n";
+    if (std::abs(g_serverLanguage->cursor - g_serverLanguage->anchor) == 0 && g_serverLanguage->cursor >= 2 && g_serverLanguage->cursor - 1 < this->text.size()) {
+      const bool lineBreak = this->text.substr(g_serverLanguage->cursor - 2, 2) == "\r\n";
       if (lineBreak) {
-        input.Character(VK_BACK, lparam, g_textCodePage);
+        g_serverLanguage->Character(VK_BACK, lparam);
       }
     }
     this->caretStart = std::chrono::system_clock::now();
     break;
   case VK_END:
     if ((static_cast<unsigned short>(GetKeyState(VK_CONTROL)) >> 8) != 0) {
-      g_serverLanguage->AdvanceCursor(static_cast<int>(this->text.size()) - input.cursor);
+      g_serverLanguage->AdvanceCursor(static_cast<int>(this->text.size()) - g_serverLanguage->cursor);
     } else {
       g_serverLanguage->AdvanceCursor(static_cast<int>(this->lines[this->line].text.size()) - this->column);
       this->unknown_01DC = 1;
@@ -399,48 +398,48 @@ void CUIEditCtrlEx::HandleKeyDown(int key, std::intptr_t lparam) {
     return;
   case VK_HOME:
     if ((static_cast<unsigned short>(GetKeyState(VK_CONTROL)) >> 8) != 0) {
-      g_serverLanguage->RetreatCursor(input.cursor);
+      g_serverLanguage->RetreatCursor(g_serverLanguage->cursor);
     } else {
       g_serverLanguage->RetreatCursor(this->column);
     }
     break;
   case VK_LEFT:
-    if (input.cursor >= 2 && input.cursor - 1 < this->text.size()) {
-      const bool lineBreak = this->text.substr(input.cursor - 2, 2) == "\r\n";
+    if (g_serverLanguage->cursor >= 2 && g_serverLanguage->cursor - 1 < this->text.size()) {
+      const bool lineBreak = this->text.substr(g_serverLanguage->cursor - 2, 2) == "\r\n";
       if (lineBreak) {
-        input.KeyDown(key, lparam, g_textCodePage, password, g_windowMgr.window_4F1FC, this->m_edit->windows, chatWindow);
+        g_serverLanguage->KeyDown(key, lparam);
       }
     }
-    input.KeyDown(key, lparam, g_textCodePage, password, g_windowMgr.window_4F1FC, this->m_edit->windows, chatWindow);
+    g_serverLanguage->KeyDown(key, lparam);
     this->caretStart = std::chrono::system_clock::now();
     break;
   case VK_UP:
   case VK_DOWN:
     return;
   case VK_RIGHT:
-    if (input.cursor >= 0 && input.cursor + 1 < this->text.size()) {
-      const bool lineBreak = this->text.substr(input.cursor, 2) == "\r\n";
+    if (g_serverLanguage->cursor >= 0 && g_serverLanguage->cursor + 1 < this->text.size()) {
+      const bool lineBreak = this->text.substr(g_serverLanguage->cursor, 2) == "\r\n";
       if (lineBreak) {
-        input.KeyDown(key, lparam, g_textCodePage, password, g_windowMgr.window_4F1FC, this->m_edit->windows, chatWindow);
+        g_serverLanguage->KeyDown(key, lparam);
       }
     }
-    input.KeyDown(key, lparam, g_textCodePage, password, g_windowMgr.window_4F1FC, this->m_edit->windows, chatWindow);
+    g_serverLanguage->KeyDown(key, lparam);
     this->caretStart = std::chrono::system_clock::now();
     break;
   case VK_INSERT:
   case 'C':
   case 'V':
   case 'X':
-    input.KeyDown(key, lparam, g_textCodePage, password, g_windowMgr.window_4F1FC, this->m_edit->windows, chatWindow);
+    g_serverLanguage->KeyDown(key, lparam);
     break;
   case VK_DELETE:
-    if (std::abs(input.cursor - input.anchor) == 0 && input.cursor >= 0 && input.cursor + 1 < this->text.size()) {
-      const bool lineBreak = this->text.substr(input.cursor, 2) == "\r\n";
+    if (std::abs(g_serverLanguage->cursor - g_serverLanguage->anchor) == 0 && g_serverLanguage->cursor >= 0 && g_serverLanguage->cursor + 1 < this->text.size()) {
+      const bool lineBreak = this->text.substr(g_serverLanguage->cursor, 2) == "\r\n";
       if (lineBreak) {
-        input.KeyDown(key, lparam, g_textCodePage, password, g_windowMgr.window_4F1FC, this->m_edit->windows, chatWindow);
+        g_serverLanguage->KeyDown(key, lparam);
       }
     }
-    input.KeyDown(key, lparam, g_textCodePage, password, g_windowMgr.window_4F1FC, this->m_edit->windows, chatWindow);
+    g_serverLanguage->KeyDown(key, lparam);
     this->caretStart = std::chrono::system_clock::now();
     break;
   case 'A':
@@ -456,12 +455,11 @@ void CUIEditCtrlEx::HandleKeyDown(int key, std::intptr_t lparam) {
 // OFFSET: 0x009E5B20
 // FUNCTION: fn_14450
 int CUIEditCtrlEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  CLanguage& input = this->m_edit->input;
   int position;
   switch (message) {
   case 0:
     if (reinterpret_cast<const unsigned char*>(&this->unknown_0184)[1] != 0 && (static_cast<unsigned short>(GetKeyState(VK_SHIFT)) >> 8) != 0) {
-      input.Insert("\r\n");
+      g_serverLanguage->Insert("\r\n");
       return 0;
     }
     UIWindow::SendMsg(sender, 0, a, b, c, d);
@@ -550,7 +548,7 @@ int CUIEditCtrlEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         return 3;
       }
     }
-    input.Character(a, b, g_textCodePage);
+    g_serverLanguage->Character(a, b);
     this->selectedAll = 1;
     return 3;
   case WM_IME_COMPOSITION:
@@ -646,10 +644,9 @@ void CUIEditCtrlEx::SetText(const char* value) {
   this->text.assign(value);
 
   if (this == g_windowMgr.GetHoverWindow()) {
-    CLanguage& input = this->m_edit->input;
     g_serverLanguage->ResetInput();
-    input.Insert(this->text.c_str());
-    g_serverLanguage->Select(0, static_cast<int>(input.text.size()));
+    g_serverLanguage->Insert(this->text.c_str());
+    g_serverLanguage->Select(0, static_cast<int>(g_serverLanguage->text.size()));
   }
 
   if (this->text.find("<ITEML>") != std::string::npos || this->text.find("</ITEML>") != std::string::npos) {

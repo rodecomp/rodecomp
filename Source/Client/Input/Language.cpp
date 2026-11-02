@@ -71,13 +71,7 @@ void CLanguageBase::Insert(const char* value) {
   }
 }
 
-void CLanguage::DeleteSelection() {
-  g_serverLanguage->DeleteSelection();
-}
 
-void CLanguage::Insert(const char* value) {
-  g_serverLanguage->Insert(value);
-}
 
 // OFFSET: 0x00ACF590
 // FUNCTION: fn_17797
@@ -128,24 +122,30 @@ void __stdcall SubACDD10() {
 
 // OFFSET: 0x00ACD5C0
 // FUNCTION: fn_17765
-void CLanguage::CopySelection(bool password) {
-  const int length = std::max(this->cursor, this->anchor) - std::min(this->cursor, this->anchor);
-  if (!length || !OpenClipboard(this->window)) {
+void CLanguageBase::CopySelection() {
+  const int length = std::abs(this->cursor - this->anchor);
+  if (!length || !OpenClipboard(hWnd)) {
     return;
   }
 
-  HGLOBAL memory = GlobalAlloc(GMEM_DDESHARE, static_cast<std::uint32_t>(length + 1));
+  HGLOBAL memory = GlobalAlloc(GMEM_DDESHARE, static_cast<std::uint32_t>(std::abs(this->cursor - this->anchor) + 1));
   if (memory) {
     auto* data = static_cast<char*>(GlobalLock(memory));
     if (data) {
-      const int begin = std::min(this->cursor, this->anchor);
-      if (password) {
-        std::memset(data, '*', static_cast<std::uint32_t>(this->text.size()) - static_cast<std::uint32_t>(begin));
-      } else {
-        std::memcpy(data, this->text.data() + begin, length);
+      int begin = this->anchor;
+      int end = this->cursor;
+      if (begin >= end) {
+        begin = this->cursor;
+        end = this->anchor;
       }
 
-      data[length] = 0;
+      if (this->password) {
+        std::memset(data, '*', static_cast<std::uint32_t>(this->text.size()) - static_cast<std::uint32_t>(begin));
+      } else {
+        std::memcpy(data, this->text.c_str() + begin, end - begin);
+      }
+
+      data[std::abs(this->cursor - this->anchor)] = 0;
       GlobalUnWire(memory);
       EmptyClipboard();
       SetClipboardData(CF_TEXT, memory);
@@ -157,12 +157,12 @@ void CLanguage::CopySelection(bool password) {
 
 // OFFSET: 0x00ACD540
 // FUNCTION: fn_17764
-void CLanguage::Paste(UIWindow* blockedFocus, WindowManagerWindows& windows) {
-  if (this->focused == blockedFocus || windows.LookupWindow(278) || windows.LookupWindow(128)) {
+void CLanguageBase::Paste() {
+  if (g_windowMgr.GetHoverWindow() == g_windowMgr.window_4F1FC || g_windowMgr.LookupWindow(278) || g_windowMgr.LookupWindow(128)) {
     return;
   }
 
-  if (!OpenClipboard(this->window)) {
+  if (!OpenClipboard(hWnd)) {
     return;
   }
 
@@ -180,12 +180,12 @@ void CLanguage::Paste(UIWindow* blockedFocus, WindowManagerWindows& windows) {
 
 // OFFSET: 0x00ACD6B0
 // FUNCTION: fn_17766
-void CLanguage::MoveBack(unsigned codePage) {
+void CLanguageBase::MoveBack() {
   if (this->cursor < 0) {
     this->cursor = 0;
   } else if (this->cursor != 0) {
     const char* begin = this->text.c_str();
-    this->cursor = static_cast<int>(CharPrevExA(static_cast<WORD>(codePage), begin, begin + this->cursor, 0) - begin);
+    this->cursor = static_cast<int>(CharPrevExA(static_cast<WORD>(this->codePage), begin, begin + this->cursor, 0) - begin);
   }
 }
 
@@ -203,19 +203,19 @@ void CLanguageBase::SelectionRange(int& begin, int& end) const {
 
 // OFFSET: 0x00ACE4B0
 // FUNCTION: fn_17786
-void CLanguage::SetFlag8C(unsigned char value) {
-  reinterpret_cast<unsigned char*>(this)[0x8C] = value;
+void CLanguageBase::SetPassword(unsigned char value) {
+  this->password = value;
 }
 // OFFSET: 0x00ACE4C0
 // FUNCTION: fn_17787
-void CLanguage::IncreaseSelection(unsigned codePage) {
+void CLanguageBase::MoveForward() {
   const auto length = static_cast<std::uint32_t>(this->text.size());
   const auto position = static_cast<std::uint32_t>(this->cursor);
   if (position > length) {
     this->cursor = static_cast<int>(length);
   } else if (position < length) {
     const char* begin = this->text.c_str();
-    this->cursor = static_cast<int>(CharNextExA(static_cast<WORD>(codePage), begin + position, 0) - begin);
+    this->cursor = static_cast<int>(CharNextExA(static_cast<WORD>(this->codePage), begin + position, 0) - begin);
   }
 }
 // OFFSET: 0x00ACE5E0
@@ -257,13 +257,19 @@ void CLanguageBase::RetreatCursor(int delta) {
 
 // OFFSET: 0x00ACE660
 // FUNCTION: fn_17791
-void CLanguage::Character(unsigned value, LPARAM, unsigned codePage) {
-  if (value == 8) {
+void CLanguageBase::Character(unsigned value, LPARAM) {
+  switch (value) {
+  case VK_BACK:
     if (this->cursor == this->anchor) {
-      this->MoveBack(codePage);
+      this->MoveBack();
     }
 
     this->DeleteSelection();
+    return;
+  case VK_TAB:
+  case '\n':
+  case VK_RETURN:
+  case VK_ESCAPE:
     return;
   }
 
@@ -271,60 +277,65 @@ void CLanguage::Character(unsigned value, LPARAM, unsigned codePage) {
     return;
   }
 
-  char bytes[sizeof(value)];
-  std::memcpy(bytes, &value, sizeof(value));
-  this->Insert(bytes);
+  this->DeleteSelection();
+  const char* bytes = reinterpret_cast<const char*>(&value);
+  this->text.insert(static_cast<std::size_t>(this->cursor), bytes, std::strlen(bytes));
+  this->anchor = this->cursor + static_cast<int>(std::strlen(bytes));
+  this->cursor = this->anchor;
+
+  if (this->text.c_str() && g_windowMgr.unknown_0024 && g_chatSuggestions && g_chatSuggestions->window &&
+      g_windowMgr.GetHoverWindow() == g_chatSuggestions->window) {
+    g_cashEmotionMgr->ProcessChatCommand(this->text.c_str());
+  }
 }
 
 // OFFSET: 0x00ACE880
 // FUNCTION: fn_17792
-void CLanguage::KeyDown(
-  unsigned key, LPARAM, unsigned codePage, bool password, UIWindow* blockedPasteFocus, WindowManagerWindows& windows, UIWindow* const& chatArrows
-) {
-  const auto cut = [&]() {
-    this->CopySelection(password);
-    this->DeleteSelection();
-  };
-
-  if ((static_cast<unsigned short>(GetKeyState(VK_SHIFT)) >> 8) != 0) {
+void CLanguageBase::KeyDown(unsigned key, LPARAM) {
+  if (static_cast<unsigned char>(static_cast<unsigned short>(GetKeyState(VK_SHIFT)) >> 8)) {
     switch (key) {
-    case VK_LEFT:
-      this->MoveBack(codePage);
-      break;
-    case VK_RIGHT:
-      this->IncreaseSelection(codePage);
+    case VK_END:
+      this->cursor = static_cast<int>(this->text.size());
       break;
     case VK_HOME:
       this->cursor = 0;
       break;
-    case VK_END:
-      this->cursor = static_cast<int>(this->text.size());
+    case VK_LEFT:
+      this->MoveBack();
+      break;
+    case VK_RIGHT:
+      this->MoveForward();
       break;
     case VK_INSERT:
-      this->Paste(blockedPasteFocus, windows);
+      this->Paste();
       break;
     case VK_DELETE:
-      cut();
+      this->CopySelection();
+      this->DeleteSelection();
       break;
     }
 
     return;
   }
 
-  if ((static_cast<unsigned short>(GetKeyState(VK_CONTROL)) >> 8) != 0) {
+  if (static_cast<unsigned char>(static_cast<unsigned short>(GetKeyState(VK_CONTROL)) >> 8)) {
     switch (key) {
-    case 'X':
-      cut();
-      break;
-    case 'C':
-      this->CopySelection(password);
-      break;
-    case 'V':
-      this->Paste(blockedPasteFocus, windows);
-      break;
     case 'A':
       this->anchor = 0;
-      this->cursor = std::max(static_cast<int>(this->text.size()), 0);
+      this->cursor = static_cast<int>(this->text.size());
+      if (this->cursor < 0) {
+        this->cursor = 0;
+      }
+      break;
+    case 'C':
+      this->CopySelection();
+      break;
+    case 'V':
+      this->Paste();
+      break;
+    case 'X':
+      this->CopySelection();
+      this->DeleteSelection();
       break;
     }
 
@@ -332,33 +343,38 @@ void CLanguage::KeyDown(
   }
 
   switch (key) {
-  case VK_DELETE:
-    if (this->cursor == this->anchor) {
-      this->IncreaseSelection(codePage);
-    }
-    this->DeleteSelection();
-    break;
-  case VK_LEFT:
-  case VK_RIGHT:
-    if (chatArrows && chatArrows->geometry.visible != 0) {
-      chatArrows->SendMsg(nullptr, 176, key, 0, 0, 0);
-    } else {
-      if (key == VK_LEFT) {
-        this->MoveBack(codePage);
-      } else {
-        this->IncreaseSelection(codePage);
-      }
-
-      this->anchor = this->cursor;
-    }
+  case VK_END:
+    this->cursor = static_cast<int>(this->text.size());
+    this->anchor = this->cursor;
     break;
   case VK_HOME:
     this->cursor = 0;
     this->anchor = 0;
     break;
-  case VK_END:
-    this->cursor = static_cast<int>(this->text.size());
+  case VK_LEFT:
+    if (g_chatSuggestions && g_chatSuggestions->Visible() && g_chatSuggestions->unknown_013C) {
+      g_chatSuggestions->unknown_013C->SendMsg(nullptr, 176, VK_LEFT, 0, 0, 0);
+      return;
+    }
+
+    this->MoveBack();
     this->anchor = this->cursor;
+    break;
+  case VK_RIGHT:
+    if (g_chatSuggestions && g_chatSuggestions->Visible() && g_chatSuggestions->unknown_013C) {
+      g_chatSuggestions->unknown_013C->SendMsg(nullptr, 176, VK_RIGHT, 0, 0, 0);
+      return;
+    }
+
+    this->MoveForward();
+    this->anchor = this->cursor;
+    break;
+  case VK_DELETE:
+    if (this->cursor == this->anchor) {
+      this->MoveForward();
+    }
+
+    this->DeleteSelection();
     break;
   }
 }

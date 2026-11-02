@@ -10,49 +10,6 @@
 class UIWindow;
 #include "UI/Window/WindowManagerWindows.h"
 
-class TextInputSuggestions {
-public:
-  virtual void Update(const char* text) = 0;
-
-protected:
-  ~TextInputSuggestions() = default;
-};
-
-struct CLanguage {
-  std::string& text;
-  int& cursor;
-  int& anchor;
-  std::string& composition;
-  std::string& candidate;
-  int& compositionState;
-  HWND& window;
-  const bool& suggestionsEnabled;
-  UIWindow* const& focused;
-  UIWindow* const& chatInput;
-  const bool& chatOpen;
-  TextInputSuggestions& suggestions;
-
-  void DeleteSelection();
-  void Insert(const char* value);
-
-
-  void RefreshComposition(unsigned codePage);
-
-  void CopySelection(bool password);
-  void Paste(UIWindow* blockedFocus, WindowManagerWindows& windows);
-
-  void MoveBack(unsigned codePage);
-
-  void IncreaseSelection(unsigned codePage);
-  void SetFlag8C(unsigned char value);
-
-  void Character(unsigned value, LPARAM unused, unsigned codePage);
-
-  void KeyDown(
-    unsigned key, LPARAM unused, unsigned codePage, bool password, UIWindow* blockedPasteFocus, WindowManagerWindows& windows, UIWindow* const& chatArrows
-  );
-};
-
 // VTABLE: vt_01604
 struct CLanguageBase {
   virtual ~CLanguageBase();
@@ -104,6 +61,13 @@ struct CLanguageBase {
   void CopyDisplayText(std::string& output) const;
   void AdvanceCursor(int delta);
   void RetreatCursor(int delta);
+  void CopySelection();
+  void Paste();
+  void MoveBack();
+  void MoveForward();
+  void SetPassword(unsigned char value);
+  void Character(unsigned value, LPARAM unused);
+  void KeyDown(unsigned key, LPARAM unused);
 };
 
 // VTABLE: vt_01607

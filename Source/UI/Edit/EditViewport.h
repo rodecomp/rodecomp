@@ -7,7 +7,7 @@
 class CDC;
 class FontCache;
 struct TextLocale;
-struct CLanguage;
+struct CLanguageBase;
 struct EditTextState;
 
 struct EditViewport {
@@ -17,7 +17,6 @@ struct EditViewport {
   int& firstVisible;
   const int& width;
   const UINT& codePage;
-  CLanguage& input;
   EditTextState& state;
   CDC& surface;
   FontCache& fonts;

@@ -684,7 +684,7 @@ void UIEditCtrl_Custom::PaintText() {
     const int left = begin ? this->TextWidth(display.c_str(), begin, 0, 12, 0, 0) : 0;
     const int right = end ? this->TextWidth(display.c_str(), end, 0, 12, 0, 0) : 0;
 
-    if (std::abs(this->m_edit->input.cursor - this->m_edit->input.anchor) != 0) {
+    if (std::abs(g_serverLanguage->cursor - g_serverLanguage->anchor) != 0) {
       this->DrawSelection(x + left, right - left);
       this->DrawLabel(x, y, display.c_str());
     } else if (this->m_edit->candidateCursor != 0) {
@@ -1743,10 +1743,10 @@ bool UIItemTagCtrl::RemoveInvalidTag(std::list<ItemTagRecord>::iterator& entry) 
     bool atCursor;
     if (before.find("<") != std::string::npos && after.find(">") == std::string::npos) {
       atCursor = (!g_windowMgr.unknown_0458 || static_cast<UIRodexComposeWnd*>(g_windowMgr.unknown_0458)->m_contents == g_windowMgr.GetHoverWindow()) &&
-                 absolute + bytes == this->m_edit->input.cursor;
+                 absolute + bytes == g_serverLanguage->cursor;
     } else if (before.find("<") == std::string::npos && after.find(">") != std::string::npos) {
       atCursor = (!g_windowMgr.unknown_0458 || static_cast<UIRodexComposeWnd*>(g_windowMgr.unknown_0458)->m_contents == g_windowMgr.GetHoverWindow()) &&
-                 absolute == this->m_edit->input.cursor;
+                 absolute == g_serverLanguage->cursor;
     } else if (before.find("<") != std::string::npos && after.find(">") != std::string::npos) {
       ++count;
       if (count > entry->index) {
@@ -1768,7 +1768,7 @@ bool UIItemTagCtrl::RemoveInvalidTag(std::list<ItemTagRecord>::iterator& entry) 
       }
       remaining += this->taggedText.substr(end + bytes);
       g_serverLanguage->ResetInput();
-      this->m_edit->input.Insert(remaining.c_str());
+      g_serverLanguage->Insert(remaining.c_str());
       this->RemoveTagChild(entry->child);
       entry = this->tags.erase(entry);
       return true;

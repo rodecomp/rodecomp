@@ -54,14 +54,13 @@ int UIEditCtrl2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
 // FUNCTION: fn_10912
 int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   using NextCharHandler = const char*(__thiscall*)(InputCharset*, const char*, int);
-  CLanguage& input = this->m_edit->input;
   unsigned char* const scrolling = reinterpret_cast<unsigned char*>(&this->unknown_015C);
   unsigned char* const lineMove = reinterpret_cast<unsigned char*>(&this->unknown_0184);
 
   if (message == 0) {
     if (lineMove[1] == 0 || (static_cast<unsigned short>(GetKeyState(VK_SHIFT)) >> 8) != 0 || lineMove[1] == 0) {
       char newline[] = "\r\n";
-      input.Insert(newline);
+      g_serverLanguage->Insert(newline);
       return 0;
     }
 
@@ -217,7 +216,6 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
 // OFFSET: 0x0085E420
 // FUNCTION: fn_10829
 void UIEditCtrl3::HandleInputMessage(unsigned key, std::intptr_t data) {
-  CLanguage& input = this->m_edit->input;
   const bool password = this->m_edit->password != 0;
   UIWindow* const chatWindow = g_chatSuggestions ? g_chatSuggestions->window : nullptr;
 
@@ -233,7 +231,7 @@ void UIEditCtrl3::HandleInputMessage(unsigned key, std::intptr_t data) {
         length += static_cast<int>(std::strlen(this->unknown_0168[line].c_str()));
       }
       if (length == this->cursor && this->unknown_0174[this->textY - 1]) {
-        input.Character(VK_BACK, data, g_textCodePage);
+        g_serverLanguage->Character(VK_BACK, data);
       }
     }
     break;
@@ -269,10 +267,10 @@ void UIEditCtrl3::HandleInputMessage(unsigned key, std::intptr_t data) {
         length += static_cast<int>(std::strlen(this->unknown_0168[line].c_str()));
       }
       if (length == this->cursor && this->unknown_0174[this->textY - 1]) {
-        input.KeyDown(key, data, g_textCodePage, password, g_windowMgr.window_4F1FC, this->m_edit->windows, chatWindow);
+        g_serverLanguage->KeyDown(key, data);
       }
     }
-    input.KeyDown(key, data, g_textCodePage, password, g_windowMgr.window_4F1FC, this->m_edit->windows, chatWindow);
+    g_serverLanguage->KeyDown(key, data);
     break;
   case VK_RIGHT:
     g_serverLanguage->Selection(this->anchor, this->cursor);
@@ -282,12 +280,12 @@ void UIEditCtrl3::HandleInputMessage(unsigned key, std::intptr_t data) {
         length += static_cast<int>(std::strlen(this->unknown_0168[line].c_str()));
       }
       if (length - 2 == this->cursor && this->unknown_0174[this->textY]) {
-        input.KeyDown(key, data, g_textCodePage, password, g_windowMgr.window_4F1FC, this->m_edit->windows, chatWindow);
-        input.KeyDown(key, data, g_textCodePage, password, g_windowMgr.window_4F1FC, this->m_edit->windows, chatWindow);
+        g_serverLanguage->KeyDown(key, data);
+        g_serverLanguage->KeyDown(key, data);
         return;
       }
     }
-    input.KeyDown(key, data, g_textCodePage, password, g_windowMgr.window_4F1FC, this->m_edit->windows, chatWindow);
+    g_serverLanguage->KeyDown(key, data);
     break;
   case VK_INSERT:
   case VK_DELETE:
@@ -295,7 +293,7 @@ void UIEditCtrl3::HandleInputMessage(unsigned key, std::intptr_t data) {
   case 'C':
   case 'V':
   case 'X':
-    input.KeyDown(key, data, g_textCodePage, password, g_windowMgr.window_4F1FC, this->m_edit->windows, chatWindow);
+    g_serverLanguage->KeyDown(key, data);
     break;
   }
 }
@@ -501,7 +499,7 @@ void UIEditCtrl3::PaintText() {
     const int y = (line - first) * this->unknown_0138;
     offset += static_cast<int>(std::strlen(lines[line].c_str()));
 
-    if (g_windowMgr.GetHoverWindow() == this && this->m_edit->input.cursor - this->m_edit->input.anchor != 0) {
+    if (g_windowMgr.GetHoverWindow() == this && g_serverLanguage->cursor - g_serverLanguage->anchor != 0) {
       const int selectionBegin = this->cursor < this->anchor ? this->cursor : this->anchor;
       const int selectionEnd = this->anchor < this->cursor ? this->cursor : this->anchor;
       int startX = 0;
@@ -769,7 +767,7 @@ void UIEditCtrl4::Slot23() {
   this->text.clear();
   g_serverLanguage->ResetInput();
   g_serverLanguage->ResetInput();
-  this->m_edit->input.Insert(this->text.c_str());
+  g_serverLanguage->Insert(this->text.c_str());
   this->m_edit->password = this->mask != 0;
   this->SelectAll();
 }
@@ -795,7 +793,7 @@ void UIEditCtrl4::SetPlaceholder(const char* value) {
   if (this->m_edit->focus.window == this) {
     g_serverLanguage->ResetInput();
     g_serverLanguage->ResetInput();
-    this->m_edit->input.Insert(this->placeholder.c_str());
+    g_serverLanguage->Insert(this->placeholder.c_str());
   }
 
   this->SelectAll();
@@ -891,7 +889,7 @@ void UIEditCtrl3::Trim() {
 
   g_serverLanguage->ResetInput();
   g_serverLanguage->ResetInput();
-  this->m_edit->input.Insert(this->text.c_str());
+  g_serverLanguage->Insert(this->text.c_str());
 
   while (this->text.size() < static_cast<unsigned>(limit)) {
     this->text += " ";
@@ -1027,7 +1025,7 @@ void UIEditCtrlVarId::SetText(const char* value) {
 void UIWhisperEditCtrl::Slot23() {
   g_serverLanguage->ResetInput();
   g_serverLanguage->ResetInput();
-  this->m_edit->input.Insert(this->text.c_str());
+  g_serverLanguage->Insert(this->text.c_str());
   this->m_edit->password = this->mask != 0;
   this->SelectAll();
   this->SelectAll();
@@ -1172,7 +1170,7 @@ void UIEditCtrl3::SetText(const char* value) {
   if (g_windowMgr.GetHoverWindow() == this) {
     g_serverLanguage->ResetInput();
     g_serverLanguage->ResetInput();
-    this->m_edit->input.Insert(this->text.c_str());
+    g_serverLanguage->Insert(this->text.c_str());
   }
 
   this->SelectAll();

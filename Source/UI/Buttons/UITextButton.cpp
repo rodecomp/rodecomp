@@ -1087,7 +1087,6 @@ void UIEditCtrl_Currency::Slot19() {
     return;
   }
 
-  CLanguage& input = this->m_edit->input;
   int anchor;
   int cursor;
   g_serverLanguage->Selection(anchor, cursor);
@@ -1118,7 +1117,7 @@ void UIEditCtrl_Currency::Slot19() {
 
   g_serverLanguage->ResetInput();
   g_serverLanguage->ResetInput();
-  input.Insert(this->text.c_str());
+  g_serverLanguage->Insert(this->text.c_str());
 
   const int length = static_cast<int>(this->text.size());
   anchor += length / 4 - (length - anchor) / 4 - separators;

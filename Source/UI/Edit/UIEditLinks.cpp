@@ -48,12 +48,12 @@ bool UIEditCtrl::RemoveInvalidLink(std::list<UIWindow*>::iterator& entry) {
       const bool allowed = !this->m_edit->linkInputRestricted || this->m_edit->permittedLinkInput == this->m_edit->focus.window;
       const auto boundary = left ? absolute + bytes : absolute;
 
-      if (allowed && boundary == static_cast<unsigned>(this->m_edit->input.cursor)) {
+      if (allowed && boundary == static_cast<unsigned>(g_serverLanguage->cursor)) {
         const auto begin = left ? absolute - 1 : absolute;
         const auto end = absolute + bytes + (right ? 1 : 0);
         remaining = this->text.substr(0, begin) + this->text.substr(end);
         g_serverLanguage->ResetInput();
-        this->m_edit->input.Insert(remaining.c_str());
+        g_serverLanguage->Insert(remaining.c_str());
         this->RemoveChild(button, 1);
         entry = this->links.erase(entry);
 
@@ -85,7 +85,7 @@ void UIEditCtrl::SetCursor(std::size_t position) {
 // FUNCTION: fn_10751
 void UIEditCtrl::MoveCursorToEnd() {
   if (this->m_edit->focus.window == this) {
-    g_serverLanguage->Select(static_cast<int>(this->m_edit->input.text.size()), static_cast<int>(this->m_edit->input.text.size()));
+    g_serverLanguage->Select(static_cast<int>(g_serverLanguage->text.size()), static_cast<int>(g_serverLanguage->text.size()));
     return;
   }
   this->anchor = static_cast<int>(this->text.size());
@@ -99,7 +99,7 @@ void UIEditCtrl::SnapLinkSelection(std::size_t prefix, std::size_t bytes) {
     return;
   }
 
-  const auto cursor = static_cast<unsigned>(this->m_edit->input.cursor);
+  const auto cursor = static_cast<unsigned>(g_serverLanguage->cursor);
   const auto end = prefix + bytes + 2;
 
   if (cursor > prefix && cursor < end) {
@@ -121,7 +121,7 @@ void UIEditCtrl::UpdateLinks() {
 
   for (auto entry = this->links.begin(); entry != this->links.end();) {
     if (this->RemoveInvalidLink(entry)) {
-      remaining.assign(this->m_edit->input.text.c_str());
+      remaining.assign(g_serverLanguage->text.c_str());
       break;
     }
 
@@ -189,7 +189,7 @@ void UIChatEditCtrl::InsertItemTag(int tagId) {
   const std::string tag = this->unknown_0144->sub_874A40(tagId, 0x7F00E4);
   const std::string combined = this->text + tag;
   g_serverLanguage->ResetInput();
-  this->m_edit->input.Insert(combined.c_str());
+  g_serverLanguage->Insert(combined.c_str());
   this->unknown_0144->taggedText = this->text;
 }
 

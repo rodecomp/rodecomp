@@ -12,7 +12,7 @@ void EditTextState::SetText(const char* value) {
   if (this->focused) {
     g_serverLanguage->ResetInput();
     g_serverLanguage->ResetInput();
-    this->input.Insert(this->text.c_str());
+    g_serverLanguage->Insert(this->text.c_str());
   }
 
   this->SelectAll();
@@ -47,7 +47,7 @@ void EditTextState::Trim() {
 // FUNCTION: fn_10778
 void EditTextState::SelectAll() {
   if (this->focused) {
-    g_serverLanguage->Select(0, static_cast<int>(this->input.text.size()));
+    g_serverLanguage->Select(0, static_cast<int>(g_serverLanguage->text.size()));
   } else {
     this->anchor = 0;
     this->cursor = static_cast<int>(this->text.size());
@@ -56,5 +56,5 @@ void EditTextState::SelectAll() {
 
 // OFFSET: 0x00858D50
 int EditTextState::Length() const {
-  return static_cast<int>(this->focused ? this->input.text.size() : this->text.size());
+  return static_cast<int>(this->focused ? g_serverLanguage->text.size() : this->text.size());
 }

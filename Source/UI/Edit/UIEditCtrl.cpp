@@ -213,7 +213,6 @@ struct EditPainting {
   const int& height;
   const int& screenWidth;
   const int& screenHeight;
-  CLanguage& input;
   const InputCharset& charset;
   EditViewport& viewport;
   CDC& surface;
@@ -301,7 +300,7 @@ void EditPainting::Draw() {
     if (this->mask != 0) {
       display.assign(this->text.size(), static_cast<char>(this->mask));
     } else {
-      const char* prefix = this->alternate ? this->input.candidate.c_str() : g_serverLanguage->Prefix(false);
+      const char* prefix = this->alternate ? g_serverLanguage->candidate.c_str() : g_serverLanguage->Prefix(false);
       display = prefix;
       display += this->text;
       const auto prefixBytes = static_cast<unsigned>(std::strlen(prefix));
@@ -312,7 +311,7 @@ void EditPainting::Draw() {
     const int left = begin == 0 ? 0 : measure(display.c_str(), static_cast<int>(begin));
     const int right = end == 0 ? 0 : measure(display.c_str(), static_cast<int>(end));
 
-    if (this->input.cursor != this->input.anchor) {
+    if (g_serverLanguage->cursor != g_serverLanguage->anchor) {
       highlight((x + left), (right - left));
       draw(display);
     } else if (this->candidateCursor != 0) {
@@ -453,7 +452,7 @@ void UIEditCtrl::Paint() {
 void UIEditCtrl::Slot23() {
   g_serverLanguage->ResetInput();
   g_serverLanguage->ResetInput();
-  this->m_edit->input.Insert(this->text.c_str());
+  g_serverLanguage->Insert(this->text.c_str());
   this->m_edit->password = this->mask != 0;
   this->SelectAll();
 }
@@ -536,10 +535,10 @@ void UIEditCtrl::SetText(const char* value) {
   this->text.assign(value, std::strlen(value));
   this->Trim();
 
-  if (this->m_edit->focus.window == this) {
+  if (g_windowMgr.GetHoverWindow() == this) {
     g_serverLanguage->ResetInput();
     g_serverLanguage->ResetInput();
-    this->m_edit->input.Insert(this->text.c_str());
+    g_serverLanguage->Insert(this->text.c_str());
   }
 
   this->SelectAll();
@@ -552,7 +551,7 @@ void UIEditCtrl::SetText(const char* value) {
 // OFFSET: 0x0085A590
 void UIEditCtrl::SelectAll() {
   const bool focused = this->m_edit->focus.window == this;
-  EditTextState state{this->text, this->anchor, this->cursor, this->maximum, focused, this->m_edit->input, g_textCodePage};
+  EditTextState state{this->text, this->anchor, this->cursor, this->maximum, focused, g_textCodePage};
   state.SelectAll();
 }
 
@@ -565,7 +564,7 @@ void UIEditCtrl::PaintText() {
 // INLINED
 void UIEditCtrl::PaintTextWithPolicy(bool alternate, const std::string* placeholder, std::uint32_t placeholderColor, bool placeholderEnabled) {
   const bool focused = this->m_edit->focus.window == this;
-  EditTextState state{this->text, this->anchor, this->cursor, this->maximum, focused, this->m_edit->input, g_textCodePage};
+  EditTextState state{this->text, this->anchor, this->cursor, this->maximum, focused, g_textCodePage};
   EditViewport viewport{
     this->text,
     this->anchor,
@@ -573,7 +572,6 @@ void UIEditCtrl::PaintTextWithPolicy(bool alternate, const std::string* placehol
     this->firstVisible,
     this->geometry.width,
     g_textCodePage,
-    this->m_edit->input,
     state,
     *this->geometry.surface,
     g_fontCache,
@@ -587,7 +585,7 @@ void UIEditCtrl::PaintTextWithPolicy(bool alternate, const std::string* placehol
     top += window->geometry.y;
   }
 
-  const bool chat = this->m_edit->input.chatInput == this || this->m_edit->otherChatInput == this;
+  const bool chat = (g_chatSuggestions && g_chatSuggestions->unknown_00BC == this) || this->m_edit->otherChatInput == this;
   const DWORD tick = timeGetTime();
   LinkLayout layout(*this);
   EditPainting painting{
@@ -602,14 +600,13 @@ void UIEditCtrl::PaintTextWithPolicy(bool alternate, const std::string* placehol
     this->secondColor,
     focused,
     chat,
-    this->m_edit->input.suggestionsEnabled,
+    reinterpret_cast<const bool&>(g_windowMgr.unknown_0024),
     tick,
     this->m_edit->candidateCursor,
     this->geometry.width,
     this->geometry.height,
     this->m_edit->screenWidth,
     this->m_edit->screenHeight,
-    this->m_edit->input,
     this->m_edit->charset,
     viewport,
     *this->geometry.surface,
@@ -635,7 +632,7 @@ void UIEditCtrl::PaintTextWithPolicy(bool alternate, const std::string* placehol
 // OFFSET: 0x00862FB0
 void UIEditCtrl::Synchronize() {
   const bool focused = this->m_edit->focus.window == this;
-  EditTextState state{this->text, this->anchor, this->cursor, this->maximum, focused, this->m_edit->input, g_textCodePage};
+  EditTextState state{this->text, this->anchor, this->cursor, this->maximum, focused, g_textCodePage};
   EditViewport viewport{
     this->text,
     this->anchor,
@@ -643,7 +640,6 @@ void UIEditCtrl::Synchronize() {
     this->firstVisible,
     this->geometry.width,
     g_textCodePage,
-    this->m_edit->input,
     state,
     *this->geometry.surface,
     g_fontCache,
@@ -655,14 +651,14 @@ void UIEditCtrl::Synchronize() {
 // OFFSET: 0x00868450
 void UIEditCtrl::Trim() {
   const bool focused = this->m_edit->focus.window == this;
-  EditTextState state{this->text, this->anchor, this->cursor, this->maximum, focused, this->m_edit->input, g_textCodePage};
+  EditTextState state{this->text, this->anchor, this->cursor, this->maximum, focused, g_textCodePage};
   state.Trim();
 }
 
 // OFFSET: 0x00858D50
 // FUNCTION: fn_10768
 int UIEditCtrl::Length() const {
-  return static_cast<int>(this->m_edit->focus.window == this ? this->m_edit->input.text.size() : this->text.size());
+  return static_cast<int>(this->m_edit->focus.window == this ? g_serverLanguage->text.size() : this->text.size());
 }
 
 // OFFSET: 0x00858D20
@@ -1088,7 +1084,6 @@ void UIItemWnd::Slot18() {
 // FUNCTION: fn_11518
 void UIEditCtrl_Custom::Synchronize() {
   const int previousCursor = this->cursor;
-  CLanguage& input = this->m_edit->input;
   g_serverLanguage->CopyDisplayText(this->text);
   g_serverLanguage->Selection(this->anchor, this->cursor);
   this->Trim();
@@ -1110,7 +1105,7 @@ void UIEditCtrl_Custom::Synchronize() {
 
   std::string visible;
 
-  if (static_cast<unsigned>(std::abs(input.cursor - input.anchor)) >= this->text.size()) {
+  if (static_cast<unsigned>(std::abs(g_serverLanguage->cursor - g_serverLanguage->anchor)) >= this->text.size()) {
     this->firstVisible = 0;
   }
 
@@ -4051,10 +4046,9 @@ void UIEditCtrl_Custom::Trim() {
   const char* previous = CharPrevExA(codePage, this->text.c_str(), next, 0);
   this->text.resize(length - std::strlen(previous));
 
-  CLanguage& input = this->m_edit->input;
   g_serverLanguage->ResetInput();
   g_serverLanguage->ResetInput();
-  input.Insert(this->text.c_str());
+  g_serverLanguage->Insert(this->text.c_str());
 
   while (this->text.size() < static_cast<unsigned>(this->maximum)) {
     this->text.append(" ", 1);
@@ -7121,7 +7115,7 @@ void UIChatEditCtrl::InsertItemLink(const ITEM_INFO& item) {
   const std::string name = naming.DisplayName(item, 0);
   const std::string tag = this->unknown_0144->AppendTag(name);
   g_serverLanguage->ResetInput();
-  this->m_edit->input.Insert(tag.c_str());
+  g_serverLanguage->Insert(tag.c_str());
   this->unknown_0144->sub_89CFE0(item, 0x12B8A4);
 }
 
