@@ -178,6 +178,12 @@ bool g_randomLoadingScreen;
 // GLOBAL: gl_24646
 UIWindow* g_linkInputOwner;
 
+// GLOBAL: gl_25459
+static const std::string s_partyItemLinkOpen = "<ITEML>";
+
+// GLOBAL: gl_25460
+static const std::string s_partyItemLinkClose = "</ITEML>";
+
 // OFFSET: 0x0087B500
 // FUNCTION: fn_11241
 void UIChatHisBox::Configure(int x, int y, int width, int height, unsigned char) {
@@ -1108,6 +1114,113 @@ int UIPartyInvitationToWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
     g_windowMgr.CloseWindow(208);
   }
 
+  return 0;
+}
+
+// OFFSET: 0x00900490
+// FUNCTION: fn_12368
+int UIPartySettingWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  switch (message) {
+  case 6:
+    switch (a) {
+    case 184: {
+      if (this->m_mode != 50) {
+        g_windowMgr.CloseWindow(53);
+      }
+      CMode* mode = g_modeMgr.GetGameMode();
+      if (ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyCount() != 0) {
+        if (g_session.unknown_5464 != 0) {
+          if (this->m_expShare != g_session.unknown_54A0 || this->m_itemShare != g_session.unknown_54A4 ||
+              this->m_itemDistribute != g_session.unknown_54A8) {
+            mode->SendMsg(259, this->m_expShare, this->m_itemShare, this->m_itemDistribute, 0);
+          }
+        }
+        return 0;
+      }
+      if (this->m_mode != 50) {
+        mode->SendMsg(168, 0, this->m_itemShare, this->m_itemDistribute, 0);
+        return 0;
+      }
+
+      std::string name = this->m_nameEdit->Text();
+      if (name.find('#') != std::string::npos) {
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2839)), 0xFF, 0, 0, 0);
+      } else if (name.find(s_partyItemLinkOpen) != std::string::npos || name.find(s_partyItemLinkClose) != std::string::npos) {
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2812)), 0xFF, 0, 0, 0);
+      } else if (std::strlen(name.c_str()) != 0) {
+        mode->SendMsg(285, reinterpret_cast<std::intptr_t>(name.c_str()), 0, 0, 0);
+        g_windowMgr.CloseWindow(53);
+        g_windowMgr.CloseWindow(207);
+        mode->SendMsg(168, 0, this->m_itemShare, this->m_itemDistribute, 0);
+      } else {
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2073)), 0xFF, 0, 0, 0);
+      }
+      return 0;
+    }
+    case 185:
+    case 201:
+      g_windowMgr.CloseWindow(53);
+      g_windowMgr.CloseWindow(207);
+      return 0;
+    case 215:
+      if (ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyCount() == 0 || g_session.unknown_5464 != 0) {
+        if (sender == this->m_expShareButtons[0] || sender == this->m_expShareButtons[1]) {
+          for (int i = 0; i < 2; ++i) {
+            if (sender == this->m_expShareButtons[i]) {
+              this->m_expShare = i;
+              this->m_expShareButtons[i]->SendMsg(this, 13, 1, 0, 0, 0);
+            } else {
+              this->m_expShareButtons[i]->SendMsg(this, 13, 0, 0, 0, 0);
+            }
+          }
+        }
+        if (sender == this->m_itemShareButtons[0] || sender == this->m_itemShareButtons[1]) {
+          for (int i = 0; i < 2; ++i) {
+            if (sender == this->m_itemShareButtons[i]) {
+              this->m_itemShare = i;
+              this->m_itemShareButtons[i]->SendMsg(this, 13, 1, 0, 0, 0);
+            } else {
+              this->m_itemShareButtons[i]->SendMsg(this, 13, 0, 0, 0, 0);
+            }
+          }
+        }
+      } else {
+        g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(294)), 0xFFFF64, 10, 0, 0);
+      }
+      return 0;
+    default:
+      return 0;
+    }
+  case 34:
+    this->m_placement = reinterpret_cast<WindowPlacement*>(a);
+    if (!static_cast<PartySettingWndInfo*>(this->m_placement)->IsValid()) {
+      static_cast<PartySettingWndInfo*>(this->m_placement)->Reset();
+    }
+    this->Move(this->m_placement->x, this->m_placement->y);
+    break;
+  case 60:
+    if (this->m_mode == 5) {
+      g_windowMgr.CloseWindow(53);
+    } else {
+      this->Invalidate();
+      this->m_expShare = g_session.unknown_54A0;
+      this->m_itemShare = g_session.unknown_54A4;
+      this->m_itemDistribute = g_session.unknown_54A8;
+      for (int i = 0; i < 2; ++i) {
+        this->m_expShareButtons[i]->SendMsg(this, 13, this->m_expShare == i, 0, 0, 0);
+        if (this->m_itemShareButtons[i]) {
+          this->m_itemShareButtons[i]->SendMsg(this, 13, this->m_itemShare == i, 0, 0, 0);
+        }
+      }
+      if (this->m_itemDistributeButton) {
+        this->m_itemDistributeButton->SendMsg(this, 13, 1, 0, 0, 0);
+      }
+    }
+    break;
+  default:
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
   return 0;
 }
 
