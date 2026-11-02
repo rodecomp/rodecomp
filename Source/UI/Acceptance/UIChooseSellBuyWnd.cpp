@@ -2950,6 +2950,370 @@ namespace {
 bool IsEquipViewHidden();
 
 // OFFSET: 0x008F9880
+// FUNCTION: fn_12342
+int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  switch (message) {
+  case 22:
+    this->m_page = a;
+    if (a == 2) {
+      this->m_titleList->Show(1);
+      this->RefreshTitleList();
+    } else {
+      this->m_titleList->Show(0);
+    }
+
+    if (this->m_viewOther == 0) {
+      if (this->m_page == 3) {
+        static_cast<UIButton*>(this->unknown_0138[0])->Enable(1);
+        static_cast<UIButton*>(this->unknown_0138[1])->Enable(1);
+        if (g_session.unknown_80C8 > 4) {
+          this->m_scrollBar->Show(1);
+        }
+        for (int index = 2; index < 6; ++index) {
+          this->unknown_0138[index]->Show(1);
+        }
+        this->unknown_00DC->Show(0);
+        this->unknown_0130->Enable(0);
+        this->m_viewButton->Enable(0);
+        this->m_otherButton->Enable(0);
+      } else {
+        static_cast<UIButton*>(this->unknown_0138[0])->Enable(0);
+        static_cast<UIButton*>(this->unknown_0138[1])->Enable(0);
+        this->m_scrollBar->Show(0);
+        for (int index = 2; index < 6; ++index) {
+          this->unknown_0138[index]->Show(0);
+        }
+        this->unknown_0130->Enable(1);
+        this->unknown_00DC->Show(1);
+      }
+
+      if (this->m_page == 1) {
+        this->unknown_00E0->Show(1);
+        this->unknown_00DC->Show(0);
+      } else {
+        this->unknown_00E0->Show(0);
+        this->unknown_00DC->Show(1);
+      }
+    }
+
+    if (this->m_page == 2 || this->m_page == 3) {
+      if (this->unknown_0124 && this->unknown_0124->geometry.unknown_0030 != 0) {
+        this->SendMsg(nullptr, 6, 508, 0, 0, 0);
+      }
+      if (this->unknown_012C) {
+        this->unknown_012C->SetState(0);
+        this->unknown_012C->Enable(0);
+      }
+    } else if (this->unknown_012C) {
+      this->unknown_012C->Enable(1);
+      if (this->unknown_0124) {
+        if (g_session.m_swapEquipmentMode == 1) {
+          this->unknown_0124->geometry.unknown_0030 = 0;
+          this->SendMsg(nullptr, 6, 508, 0, 0, 0);
+        }
+        static_cast<UISwapEquipmentWnd*>(this->unknown_0124)->unknown_00BC = this->m_page + 1;
+        this->unknown_0124->Invalidate();
+      }
+    }
+
+    if (this->m_viewOther == 0) {
+      switch (this->m_page) {
+      case 0:
+        this->unknown_00DC->Show(1);
+        this->unknown_00E0->Show(0);
+        this->unknown_012C->Enable(1);
+        this->unknown_0130->Enable(1);
+        break;
+      case 1:
+        this->unknown_00DC->Show(0);
+        this->unknown_00E0->Show(1);
+        this->unknown_012C->Enable(1);
+        this->unknown_0130->Enable(1);
+        break;
+      case 2:
+      case 3:
+        this->unknown_00DC->Show(0);
+        this->unknown_00E0->Show(0);
+        this->unknown_012C->Enable(0);
+        this->unknown_0130->Enable(0);
+        break;
+      }
+    }
+
+    if (this->m_viewOther == 0) {
+      switch (this->m_page) {
+      case 0:
+      case 1:
+        this->unknown_0178->Enable(1);
+        break;
+      case 2:
+      case 3:
+        this->unknown_0178->Enable(0);
+        break;
+      }
+    }
+
+    this->SendMsg(this, 106, 575, 0, 0, 0);
+    this->Invalidate();
+    return 0;
+  case 34:
+    this->m_placement = reinterpret_cast<NormalItemSlotWindow*>(a);
+    if (!reinterpret_cast<EquipWndInfo*>(this->m_placement)->IsValid()) {
+      reinterpret_cast<EquipWndInfo*>(this->m_placement)->Reset();
+    }
+    if (this->m_placement->height != this->m_placement->show && g_session.m_swapEquipmentMode == 0) {
+      this->SendMsg(nullptr, 6, 202, 0, 0, 0);
+    } else {
+      const int height = this->geometry.height + 20;
+      this->m_placement->show = height;
+      this->m_placement->height = height;
+    }
+    this->Move(this->m_placement->x, this->m_placement->y);
+    return 0;
+  case 60: {
+    if (this->m_page == 2) {
+      this->RefreshTitleList();
+      this->Invalidate();
+      return 0;
+    }
+
+    if (this->m_viewOther == 0) {
+      UICheckBox* check = this->unknown_00DC;
+      check->geometry.unknown_0030 = *reinterpret_cast<const int*>(g_session.unknown_5974);
+      check->Invalidate();
+    }
+
+    const int height = this->unknown_00D8 + 167;
+    this->m_viewButton->Move(this->geometry.width / 2 - 18, IsEquipViewHidden() * 230 + height - this->unknown_00D8 - 40);
+    this->m_otherButton->Move(this->geometry.width / 2 - 14, height - this->unknown_00D8 + (g_session.unknown_5C1C > 0 ? -60 : 170));
+    this->Invalidate();
+    return 0;
+  }
+  case 6:
+    switch (a) {
+    case 201:
+      g_windowMgr.CloseWindow(this->m_viewOther == 1 ? 139 : 10);
+      return 0;
+    case 202: {
+      const int height = this->geometry.height;
+      if (height == 17) {
+        this->Resize(this->geometry.width, this->m_show);
+      } else {
+        this->m_show = height;
+        this->Resize(this->geometry.width, 17);
+      }
+      this->m_frameContext->snapping.Store(this);
+      WindowOrdering{g_windowMgr.rendered, this->m_frameContext->windows, reinterpret_cast<const int&>(g_windowMgr.modal), g_windowMgr.window_4F174}.Promote(this);
+      const int delta = this->geometry.height - height;
+      if (delta != 0) {
+        g_snapMgr.MoveEdge(this, 0, delta, 3, this->m_frameContext->snapping);
+      }
+      return 0;
+    }
+    case 213:
+      if (this->m_viewOther != 0) {
+        return 0;
+      }
+      if (this->m_page == 1) {
+        g_modeMgr.gameMode->SendMsg(328, b, 0, 0, 0);
+        return 0;
+      }
+      g_modeMgr.gameMode->SendMsg(253, b, 0, 0, 0);
+      return 0;
+    case 215:
+      for (int index = 0; index < 4; ++index) {
+        this->unknown_0138[index + 2]->Invalidate();
+        if (sender == this->unknown_0138[index + 2]) {
+          this->unknown_015C = index;
+          this->unknown_0138[index + 2]->SendMsg(this, 13, 1, 0, 0, 0);
+        } else {
+          this->unknown_0138[index + 2]->SendMsg(this, 13, 0, 0, 0, 0);
+        }
+      }
+      return 0;
+    case 248: {
+      if (g_windowMgr.unknown_0304 != nullptr) {
+        g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(525)), 255, 0, 0, 0);
+        return 0;
+      }
+
+      std::string notice;
+      const bool enabled = g_session.unknown_5C1C > 0;
+      if (StateFlag05(g_session.m_jobFlags)) {
+        const int job = g_session.GetDisplayJob();
+        notice = LookupMessage(job == 4082 || job == 4083 || job == 4110 ? 2096 : 442);
+      } else if (StateFlag22(g_session.m_jobFlags)) {
+        notice = LookupMessage(1464);
+      } else if (StateFlag19(g_session.m_jobFlags) || StateFlag23(g_session.m_jobFlags) || StateFlag24(g_session.m_jobFlags) || StateFlag25(g_session.m_jobFlags) ||
+                 StateFlag26(g_session.m_jobFlags)) {
+        notice = LookupMessage(1463);
+      } else {
+        notice.clear();
+      }
+
+      if (enabled && notice.size() != 0) {
+        if (g_windowMgr.unknown_0210 != nullptr) {
+          g_windowMgr.CloseWindow(18);
+        }
+        UIWindow* menu = g_windowMgr.sub_A978D0(18);
+        if (!menu) {
+          return 0;
+        }
+        menu->SendMsg(nullptr, 75, 0, 0, 0, 0);
+        menu->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>("Cart Off"), 0, 0, 0);
+        menu->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(notice.c_str()), 0, 0, 0);
+        menu->SendMsg(nullptr, 83, 10, 0, 0, 0);
+        menu->SendMsg(nullptr, 30, 0, 0, 0, 0);
+        static_cast<UIMenuWnd*>(menu)->unknown_00DC = 1;
+        int x = g_mouse.x + 1;
+        int y = g_mouse.y + 1;
+        if (x < 1) {
+          x = 1;
+        }
+        int maxX = g_renderer->viewport.width - menu->geometry.width;
+        if (x <= maxX) {
+          maxX = x;
+        }
+        if (y < 1) {
+          y = 1;
+        }
+        int maxY = g_renderer->viewport.height - menu->geometry.height;
+        if (y <= maxY) {
+          maxY = y;
+        }
+        menu->Move(maxX, maxY);
+      } else {
+        this->UpdateCharacterView(0);
+      }
+
+      const int bottom = this->geometry.height - this->unknown_00D8;
+      const int half = this->geometry.width / 2;
+      this->m_viewButton->Move(half - 18, IsEquipViewHidden() * 230 + bottom - 40);
+      this->m_otherButton->Move(half - 14, bottom + (g_session.unknown_5C1C > 0 ? -60 : 170));
+      this->Invalidate();
+      return 0;
+    }
+    case 249:
+      if ((g_replayAnimationScaling == 0 || Replay::Instance().header.options.Get(ReplayRecordOption::Item) != 0) && !g_windowMgr.LookupWindow(227) &&
+          !g_windowMgr.CloseWindow(40) && g_session.unknown_5C1C > 0) {
+        g_windowMgr.sub_A978D0(40);
+      }
+      return 0;
+    case 271: {
+      if (this->m_hoverSlot >= 0) {
+        g_session.m_damageSkinIndex = this->m_hoverSlot;
+      }
+      g_session.m_damageSkinMode = this->unknown_015C;
+      const char* resourceName = nullptr;
+      const char* name80EC = nullptr;
+      const char* name8104 = nullptr;
+      g_session.m_hotkeyScript->Call("GetDamageResourceName", "d>sss", this->m_hoverSlot, &resourceName, &name80EC, &name8104);
+      g_session.m_damageResourceName = resourceName;
+      g_session.unknown_80EC = name80EC;
+      g_session.unknown_8104 = name8104;
+      int millionUnit = 0;
+      g_session.m_hotkeyScript->Call("GetDamageMillionUnit", "d>d", this->m_hoverSlot, &millionUnit);
+      g_session.m_damageMillionUnit = millionUnit;
+      return 0;
+    }
+    case 480: {
+      ChangeTitlePacket packet;
+      packet.packetType = ID_CZ_REQ_CHANGE_TITLE;
+      packet.titleId = b;
+      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
+      return 0;
+    }
+    case 508: {
+      const int height = this->unknown_00D8 + 167;
+      this->Resize(this->geometry.width, height + 158);
+      if (!this->unknown_0124) {
+        UISwapEquipmentWnd* created = new (std::nothrow) UISwapEquipmentWnd(*this->m_context, *this->m_frameContext);
+        this->unknown_0124 = created;
+        created->SetSize(280, 179);
+        if (this->m_page == 0) {
+          static_cast<UISwapEquipmentWnd*>(this->unknown_0124)->unknown_00BC = 1;
+        } else if (this->m_page == 1) {
+          static_cast<UISwapEquipmentWnd*>(this->unknown_0124)->unknown_00BC = 2;
+        }
+        this->AddChild(this->unknown_0124);
+      }
+      UIWindow* swap = this->unknown_0124;
+      if (swap->geometry.unknown_0030 == 0) {
+        swap->Move(0, 167);
+        this->unknown_0124->geometry.unknown_0030 = 1;
+        if (sender == this->unknown_012C) {
+          g_session.m_swapEquipmentMode = 1;
+        }
+        return 0;
+      }
+      swap->Move(-1000, -1000);
+      this->unknown_0124->geometry.unknown_0030 = 0;
+      this->Resize(this->geometry.width, height);
+      return 0;
+    }
+    case 575: {
+      TakeoffEquipAllPacket packet;
+      if (this->m_page == 1) {
+        packet.location = 0x3F7C00;
+      } else if (this->m_page == 0) {
+        packet.location = 0x83FF;
+      } else {
+        return 0;
+      }
+      packet.packetType = ID_CZ_REQ_TAKEOFF_EQUIP_ALL;
+      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
+      this->unknown_0130->SetDisabled(1);
+      this->unknown_0130->Invalidate();
+      return 0;
+    }
+    case 582:
+      if (!g_windowMgr.CloseWindow(10001)) {
+        g_windowMgr.sub_A978D0(10001);
+      }
+      return 0;
+    }
+    return 0;
+  case 106:
+    if (a == 575) {
+      if (this->m_page == 1) {
+        UIBitmapButton* button = this->unknown_0130;
+        button->SetDisabled(g_session.CountItems2B50() == 0);
+        button->Invalidate();
+        return 0;
+      }
+      if (this->m_page == 0) {
+        UIBitmapButton* button = this->unknown_0130;
+        button->SetDisabled(g_session.CountItems17F0() == 0);
+        button->Invalidate();
+        return 0;
+      }
+    }
+    return 0;
+  case 48:
+    this->UpdateCharacterView(a);
+    return 0;
+  case 8: {
+    const int previous = this->m_firstSlot;
+    if (a != 0) {
+      this->m_firstSlot = previous + a;
+    }
+    const int last = g_session.unknown_80C8 - 4;
+    if (this->m_firstSlot < 0) {
+      this->m_firstSlot = 0;
+    }
+    if (this->m_firstSlot > last) {
+      this->m_firstSlot = last;
+    }
+    static_cast<UIScrollBar*>(this->m_scrollBar)->SetPosition(this->m_firstSlot);
+    this->m_scrollBar->Invalidate();
+    this->Invalidate();
+    return this->m_firstSlot - previous;
+  }
+  default:
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
+}
 
 // OFFSET: 0x008F6750
 // FUNCTION: fn_12322
