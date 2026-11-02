@@ -8082,6 +8082,7 @@ void UIEquipWnd::Slot25(int x, int y) {
 }
 
 // OFFSET: 0x008C9880
+// FUNCTION: fn_11986
 UInCashWnd::UInCashWnd(UIWindowContext& windows, UIFrameContext& frames) : UIItemBaseWnd(windows, frames) {
   this->m_placement = nullptr;
   this->m_tab = 0;
