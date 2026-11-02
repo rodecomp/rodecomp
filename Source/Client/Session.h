@@ -123,6 +123,12 @@ struct SessionShop {
   /* 0004 */ std::vector<std::map<int, std::pair<int, int>>> unknown_0004;
 };
 
+struct SessionParameterNameLess {
+  bool operator()(const std::pair<std::string, std::vector<std::string>>& left, const std::pair<std::string, std::vector<std::string>>& right) const {
+    return std::strcmp(left.first.c_str(), right.first.c_str()) < 0;
+  }
+};
+
 struct SessionEntry5BD4 {
   SessionEntry5BD4() : item() {}
   SessionEntry5BD4(const SessionEntry5BD4& other) {
@@ -914,6 +920,7 @@ public:
   void InitWeaponHitWaveNames();
   const std::vector<std::string>* GetMapViewParameters(const char* rswName, int* found);
   void LoadLuaDataFiles();
+  bool LoadMapViewParameters();
   void InitCommandTables();
   void InitJobKeyNames();
   void InitResourceNameTables();

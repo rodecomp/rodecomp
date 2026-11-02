@@ -40,6 +40,10 @@
 #include "Client/Application/ApplicationWindow.h"
 #include "Contents/CashEmotionMgr.h"
 #include "Contents/Jobs/JobInheritance.h"
+#include "Contents/Jobs/JobNames.h"
+#include "Contents/SimpleStringMgr.h"
+#include "File/CommonObject.h"
+#include "Contents/WorldView/WorldViewData.h"
 #include "UI/Window/UIRoMapWnd.h"
 #include "Contents/AchievementMgr.h"
 #include "Contents/CheckAttendanceMgr.h"
@@ -89,6 +93,13 @@ public:
 class CUserHotkeyMgr {
 public:
   static bool Initialize();
+};
+
+// GLOBAL: gl_25445
+int g_sessionTableLoadCount;
+
+struct SessionMessengerContext {
+  void sub_DF33B0();
 };
 
 namespace EquipmentProperties {
@@ -3328,6 +3339,52 @@ const std::vector<std::string>* CSession::GetMapViewParameters(const char* rswNa
   }
 
   return &s_defaultParameters;
+}
+
+// OFFSET: 0x00DF8150
+// FUNCTION: fn_23509
+bool CSession::LoadMapViewParameters() {
+  this->m_mapViewParameters.clear();
+
+  CFile file;
+  if (!file.Open("ViewPointTable.txt", 0, true, false)) {
+    return false;
+  }
+
+  const char* cursor = static_cast<const char*>(file.GetData());
+  const char* end = cursor + file.GetSize();
+  std::string name;
+  std::vector<std::string> values;
+
+  for (const char* start = cursor; cursor < end; ++cursor) {
+    const char value = *cursor;
+    if (value == '\n' || value == '\r') {
+      start = cursor + 1;
+      continue;
+    }
+
+    if (value != '#') {
+      continue;
+    }
+
+    if (name.empty()) {
+      name.assign(start, cursor - start);
+    } else if (values.size() < 8) {
+      values.push_back(std::string(start, cursor));
+    } else {
+      std::string last(start, cursor);
+      values.push_back(last);
+      this->m_mapViewParameters.push_back(std::make_pair(name, values));
+      name.clear();
+      values.clear();
+    }
+
+    start = cursor + 1;
+  }
+
+  std::sort(this->m_mapViewParameters.begin(), this->m_mapViewParameters.end(), SessionParameterNameLess());
+  file.Close();
+  return true;
 }
 
 // OFFSET: 0x00DF8670
@@ -6973,4 +7030,84 @@ void CSession::ReloadLanguageTables() {
   this->LoadMapNameTable();
   LoadItemNameTables();
   Sub7739F0();
+}
+
+// OFFSET: 0x00DF33B0
+// FUNCTION: fn_23506
+void SessionMessengerContext::sub_DF33B0() {
+  CSession* session = reinterpret_cast<CSession*>(this);
+  ++g_sessionTableLoadCount;
+  session->InitJobHitWaveNames();
+
+  CCommonObject& storage = reinterpret_cast<CCommonObject&>(session->unknown_5400[0x30]);
+  std::vector<char*> tokens;
+  session->m_bgmFileNames.clear();
+  session->m_bgmFileNames.reserve(512);
+  storage.LoadTokens(tokens, "mp3NameTable.txt", 0);
+  for (auto token = tokens.begin(); token != tokens.end(); token += 2) {
+    session->m_bgmFileNames.push_back(std::make_pair(token[0], token[1]));
+  }
+  std::sort(session->m_bgmFileNames.begin(), session->m_bgmFileNames.end(),
+            [](const std::pair<const char*, const char*>& left, const std::pair<const char*, const char*>& right) {
+              return std::strcmp(left.first, right.first) < 0;
+            });
+  tokens = std::vector<char*>();
+
+  storage.LoadTokens(session->m_indoorRswNames, "indoorRswTable.txt", 0);
+  std::sort(session->m_indoorRswNames.begin(), session->m_indoorRswNames.end(),
+            [](const char* left, const char* right) { return std::strcmp(left, right) < 0; });
+
+  session->LoadMapViewParameters();
+  session->InitUnknownMapTables();
+  ImportMessageTable();
+  g_forbiddenWords.Load("manner.txt");
+  session->LoadXmlTables();
+  session->LoadMapNameTable();
+  LoadItemNameTables();
+  Sub7739F0();
+  g_simpleStringMgr->Init();
+
+  const std::uint8_t source[] = {0xA5, 0xA8, 0x04, 0x07, 0x1C, 0xEB, 0x1E, 0xFA, 0xD7, 0x9A, 0x06, 0x1D, 0x08, 0xE9, 0x71};
+  thread_local EncryptedName<sizeof(source), 0x9171997D6963C9F7ULL> setupName(source);
+  if (HWND window = FindWindowA(nullptr, setupName.Text())) {
+    ShowErrorDialog(nullptr, LookupMessage(3194), 0);
+    SendMessageA(window, WM_CLOSE, 0, 0);
+  }
+
+  session->LoadFogParameters();
+  session->LoadLuaDataFiles();
+  session->InitWeaponHitWaveNames();
+  session->InitResourceNameTables();
+  JobNameInitialization jobNames{*session->m_hotkeyScript,
+                                 *g_luaScript,
+                                 reinterpret_cast<std::vector<const char*>&>(session->unknown_0FC4[0x08]),
+                                 *reinterpret_cast<std::vector<int>*>(session->unknown_0710),
+                                 session->m_skillBundle.unknown_0064,
+                                 session->m_mercSkillLevels,
+                                 session->m_homunSkillLevels};
+  session->InitJobNameTable(jobNames);
+  session->InitNpcLocationRadius();
+  session->InitCommandTables();
+  session->ResetCharacterState();
+  session->ClearItemContainers();
+  session->m_inventoryItems.clear();
+  session->m_pingSamples.clear();
+  for (int index = 0; index < 10; ++index) {
+    session->unknown_17F0[index].Reset();
+  }
+
+  std::vector<char*> buyingStoreItems;
+  session->unknown_1778.clear();
+  session->unknown_1778.reserve(512);
+  storage.LoadTokens(buyingStoreItems, "BuyingStoreItemList.txt", 0);
+  for (char* token : buyingStoreItems) {
+    session->unknown_1778.push_back(std::atoi(token));
+  }
+  buyingStoreItems = std::vector<char*>();
+
+  session->unknown_5324 = 0;
+  session->m_mapPosListCount = -1;
+  session->LoadMapPosTable();
+  session->LoadExceptionMinimapNameTable();
+  session->InitPetActionTable();
 }
