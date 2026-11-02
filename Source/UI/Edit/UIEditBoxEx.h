@@ -25,8 +25,11 @@ public:
   void Invalidate() override;
   void SelectAll() override;
   void SetText(const char* value) override;
+  void Synchronize() override;
   void UpdateScrollBar() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
+
+  void sub_860C60(std::vector<std::string>* lines);
 
   void RefreshPlaceholder();
   void HandleKeyDown(int key, std::intptr_t lparam);

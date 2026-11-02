@@ -1,4 +1,4 @@
-﻿#include "UI/Edit/UIEditBoxEx.h"
+#include "UI/Edit/UIEditBoxEx.h"
 #include "Network/TextEncoding.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Lists/UIScrollBar.h"
@@ -187,6 +187,144 @@ void CUIEditCtrlEx::UpdateScrollBar() {
   scrollBar->SetRange(maximum, visible, total);
   scrollBar->SetPosition(this->scrollPosition);
   this->unknown_0134 = this->scrollMaximum > 0;
+}
+
+#include "Client/Input/InputCharset.h"
+#include "Client/Input/Language.h"
+#include "UI/Window/UIWindowMgr.h"
+#include <algorithm>
+
+// OFFSET: 0x009E5050
+// FUNCTION: fn_14446
+void CUIEditCtrlEx::Synchronize() {
+  if (this == g_windowMgr.GetHoverWindow()) {
+    this->m_edit->input.CopyDisplayText(this->text);
+    this->RefreshPlaceholder();
+  }
+  this->Trim();
+
+  const std::string prefix = g_serverLanguage->Prefix(false);
+  const std::string fullText = prefix + this->text;
+  std::vector<std::string> lines;
+  std::vector<bool> breaks;
+  if (reinterpret_cast<const unsigned char*>(&this->unknown_0184)[1] == 0) {
+    lines.push_back(fullText);
+    breaks.push_back(false);
+  } else {
+    int wrapWidth = this->geometry.width - this->unknown_0130->geometry.width - this->unknown_01B4;
+    this->WrapTextWithBreaks(fullText.c_str(), &lines, &breaks, wrapWidth);
+    this->sub_860C60(&lines);
+  }
+
+  this->lines.clear();
+  if (lines.empty()) {
+    this->UpdateScrollBar();
+    this->Invalidate();
+    return;
+  }
+
+  int anchor = 0;
+  int cursor = 0;
+  this->m_edit->input.Selection(anchor, cursor);
+  int selStart = anchor;
+  int selEnd = cursor;
+  if (selStart > selEnd) {
+    std::swap(selStart, selEnd);
+  }
+
+  int currentOffset = 0;
+  for (const std::string& rawLine : lines) {
+    EditLine line;
+    auto crPos = rawLine.find("\r\n");
+    bool hasCR = crPos != std::string::npos;
+    if (hasCR) {
+      line.text = rawLine.substr(0, crPos);
+    } else {
+      line.text = rawLine;
+    }
+    line.unknown_0018 = hasCR ? 1 : 0;
+
+    int lineLen = static_cast<int>(line.text.size());
+    int rawLineEnd = currentOffset + static_cast<int>(rawLine.size());
+
+    int begin = 0;
+    int end = 0;
+    if (static_cast<unsigned>(selStart) <= static_cast<unsigned>(rawLineEnd)) {
+      int val = selStart - currentOffset;
+      if (lineLen < val) {
+        begin = lineLen;
+      } else {
+        begin = std::max(0, val);
+      }
+      end = lineLen;
+    }
+    if (static_cast<unsigned>(selEnd) <= static_cast<unsigned>(rawLineEnd)) {
+      int val = selEnd - currentOffset;
+      if (lineLen >= val) {
+        end = std::max(0, val);
+      }
+    }
+    line.selectionBegin = begin;
+    line.selectionEnd = end;
+
+    currentOffset = rawLineEnd;
+    this->lines.push_back(line);
+  }
+
+  if (this->lines.back().unknown_0018 != 0) {
+    EditLine emptyLine{};
+    this->lines.push_back(emptyLine);
+  }
+
+  this->line = 0;
+  this->column = 0;
+  int remaining = std::max(anchor, cursor) + static_cast<int>(prefix.size());
+  int lineOffset = remaining;
+  for (std::size_t i = 0; i < this->lines.size(); ++i) {
+    int cr = this->lines[i].unknown_0018 ? 2 : 0;
+    int lineLen = static_cast<int>(this->lines[i].text.size());
+    int fullLen = lineLen + cr;
+    if (remaining - fullLen <= 0) {
+      this->column = remaining;
+      this->line = static_cast<int>(i);
+      lineOffset = remaining;
+      break;
+    }
+    remaining -= fullLen;
+    lineOffset = remaining;
+  }
+
+  const EditLine& current = this->lines[this->line];
+  if (current.unknown_0018 != 0 || this->unknown_01DC == 0) {
+    int cr = current.unknown_0018 ? 2 : 0;
+    int fullLen = static_cast<int>(current.text.size()) + cr;
+    if (lineOffset == fullLen && this->line < static_cast<int>(this->lines.size()) - 1) {
+      this->column = 0;
+      this->line++;
+    }
+  }
+
+  const int candidateCursor = this->m_edit->candidateCursor;
+  if (candidateCursor != 0) {
+    this->column += candidateCursor;
+    int cursorX = 0;
+    if (this->column > 0) {
+      cursorX = this->TextWidth(this->m_edit->buttons.fonts, this->m_edit->buttons.locale, this->lines[this->line].text.c_str(), this->column, 0, 12, 0, 0);
+    }
+
+    int end = std::max(anchor, cursor) + candidateCursor + static_cast<int>(prefix.size());
+    int readingOffset = end - currentOffset;
+    int readingX = 0;
+    if (readingOffset > 0) {
+      readingX = this->TextWidth(this->m_edit->buttons.fonts, this->m_edit->buttons.locale, this->lines[this->line].text.c_str(), readingOffset, 0, 12, 0, 0);
+    }
+    int delta = std::max(cursorX - readingX, 2);
+    this->MoveCandidateWindow(cursorX + 2 + delta);
+    this->MoveReadingWindow(readingX);
+  }
+
+  this->UpdateScrollBar();
+  this->Invalidate();
 }
 
 // OFFSET: 0x009E5A60
