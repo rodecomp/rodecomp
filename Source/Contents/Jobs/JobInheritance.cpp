@@ -1749,6 +1749,54 @@ bool CSession::UnequipItem2B50(int location) {
   return true;
 }
 
+// OFFSET: 0x00E1E250
+// FUNCTION: fn_45483
+bool LaunchLuaSkillEffect(int skillId, int level, CGameActor* source, CGameActor* target) {
+  vector3d position{0.0f, 0.0f, 0.0f};
+  std::uint32_t sourceId = 0;
+  if (source != nullptr) {
+    position = source->render.position;
+    sourceId = source->render.accountId;
+  }
+  const std::uint32_t targetId = target != nullptr ? target->render.accountId : 0;
+
+  bool hasInfo = false;
+  if (!g_luaScript->Call("HaveSkillEffectInfo", "d>b", skillId, &hasInfo) || !hasInfo) {
+    return false;
+  }
+
+  const char* waveName = nullptr;
+  if (g_luaScript->Call("GetEffectWaveFileName", "d>s", skillId, &waveName) && std::strcmp(waveName, "") != 0) {
+    g_soundMgr->PlayWave(waveName, 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+  }
+
+  int count = 0;
+  if (!g_luaScript->Call("GetEffectNum", "d>d", skillId, &count)) {
+    return false;
+  }
+
+  for (int index = 0; index < count; ++index) {
+    int effectId = -1;
+    if (!g_luaScript->Call("GetEffectID", "dd>d", skillId, index + 1, &effectId) || effectId == -1) {
+      continue;
+    }
+
+    if (g_effectMgr->HasAllocator(effectId)) {
+      g_effectMgr->Spawn(sourceId, effectId, position.x, position.y, position.z, sourceId != targetId ? targetId : 0, -1, 0, 0);
+    } else if (source != nullptr) {
+      CRagEffect* effect = source->LaunchEffect(effectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      if (effect != nullptr) {
+        bool onTarget = false;
+        g_luaScript->Call("IsOnTarget", "d>b", skillId, &onTarget);
+        if (onTarget && target != nullptr) {
+          effect->SendMsg(nullptr, 14, 0, reinterpret_cast<std::intptr_t>(&target->render.position), 0, 0, 0, 0);
+        }
+      }
+    }
+  }
+  return true;
+}
+
 // OFFSET: 0x00E24DE0
 // FUNCTION: fn_23901
 bool CSession::PlaySkillGroundEffect(int skillId, vector3d position) {
