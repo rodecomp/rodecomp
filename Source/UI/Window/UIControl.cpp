@@ -26,7 +26,9 @@
 #include "Utility/Text/Base64.h"
 #include "Utility/Threading/NSyncObject.h"
 #include "Render/Renderer.h"
+#include "UI/AdventureGuide/UIAdventureGuide.h"
 #include "UI/FrameSkin.h"
+#include "UI/Text/CreateLineInfo.h"
 
 #include <algorithm>
 #include <cmath>
@@ -1993,13 +1995,12 @@ void CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::AddNewItem
 // FUNCTION: fn_14030
 template <>
 void CUIListBox<AdventureGuide::CUISubTab>::Slot53(int resolveSkin) {
-  CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
-  images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
-  images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
-  images[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
-  images[3] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->disabledName, resolveSkin));
+  this->NormalImage() = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
+  this->unknown_0084 = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
+  this->unknown_0088 = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
+  this->unknown_008C = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->disabledName, resolveSkin));
   for (AdventureGuide::CUISubTab* item : this->items) {
-    item->SetImageResources(images[0], images[1], images[2], images[3]);
+    item->SetImageResources(this->NormalImage(), this->unknown_0084, this->unknown_0088, this->unknown_008C);
   }
 }
 
@@ -2007,13 +2008,12 @@ void CUIListBox<AdventureGuide::CUISubTab>::Slot53(int resolveSkin) {
 // FUNCTION: fn_14031
 template <>
 void CUIListBox<AdventureGuide::CUITab>::Slot53(int resolveSkin) {
-  CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
-  images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
-  images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
-  images[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
-  images[3] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->disabledName, resolveSkin));
+  this->NormalImage() = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
+  this->unknown_0084 = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
+  this->unknown_0088 = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
+  this->unknown_008C = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->disabledName, resolveSkin));
   for (AdventureGuide::CUITab* item : this->items) {
-    item->SetImageResources(images[0], images[1], images[2], images[3]);
+    item->SetImageResources(this->NormalImage(), this->unknown_0084, this->unknown_0088, this->unknown_008C);
   }
 }
 
@@ -2021,13 +2021,12 @@ void CUIListBox<AdventureGuide::CUITab>::Slot53(int resolveSkin) {
 // FUNCTION: fn_14032
 template <>
 void CUIListBoxEx<AdventureGuide::CUIItemInfo, AdventureGuide::CItemData>::Slot53(int resolveSkin) {
-  CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
-  images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
-  images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
-  images[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
-  images[3] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->disabledName, resolveSkin));
+  this->NormalImage() = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
+  this->unknown_0084 = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
+  this->unknown_0088 = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
+  this->unknown_008C = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->disabledName, resolveSkin));
   for (AdventureGuide::CUIItemInfo* item : this->items) {
-    item->SetImageResources(images[0], images[1], images[2], images[3]);
+    item->SetImageResources(this->NormalImage(), this->unknown_0084, this->unknown_0088, this->unknown_008C);
   }
 }
 
@@ -2035,13 +2034,12 @@ void CUIListBoxEx<AdventureGuide::CUIItemInfo, AdventureGuide::CItemData>::Slot5
 // FUNCTION: fn_14033
 template <>
 void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>::Slot53(int resolveSkin) {
-  CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
-  images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
-  images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
-  images[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
-  images[3] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->disabledName, resolveSkin));
+  this->NormalImage() = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
+  this->unknown_0084 = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
+  this->unknown_0088 = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
+  this->unknown_008C = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->disabledName, resolveSkin));
   for (AdventureGuide::CUIMonsterInfo* item : this->items) {
-    item->SetImageResources(images[0], images[1], images[2], images[3]);
+    item->SetImageResources(this->NormalImage(), this->unknown_0084, this->unknown_0088, this->unknown_008C);
   }
 }
 
@@ -2049,13 +2047,12 @@ void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>:
 // FUNCTION: fn_14034
 template <>
 void CUIListBoxEx<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestInfo>::Slot53(int resolveSkin) {
-  CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
-  images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
-  images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
-  images[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
-  images[3] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->disabledName, resolveSkin));
+  this->NormalImage() = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
+  this->unknown_0084 = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
+  this->unknown_0088 = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
+  this->unknown_008C = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->disabledName, resolveSkin));
   for (AdventureGuide::CUIQuestInfo* item : this->items) {
-    item->SetImageResources(images[0], images[1], images[2], images[3]);
+    item->SetImageResources(this->NormalImage(), this->unknown_0084, this->unknown_0088, this->unknown_008C);
   }
 }
 
@@ -2063,13 +2060,12 @@ void CUIListBoxEx<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestInfo>::Slo
 // FUNCTION: fn_14035
 template <>
 void CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::Slot53(int resolveSkin) {
-  CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
-  images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
-  images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
-  images[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
-  images[3] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->disabledName, resolveSkin));
+  this->NormalImage() = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
+  this->unknown_0084 = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
+  this->unknown_0088 = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
+  this->unknown_008C = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->disabledName, resolveSkin));
   for (AdventureGuide::CUITabInfo* item : this->items) {
-    item->SetImageResources(images[0], images[1], images[2], images[3]);
+    item->SetImageResources(this->NormalImage(), this->unknown_0084, this->unknown_0088, this->unknown_008C);
   }
 }
 
@@ -2760,12 +2756,14 @@ CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::CUIListBoxEx(UI
 // FUNCTION: fn_13949
 template <>
 CUIListBox<AdventureGuide::CUISubTab>::~CUIListBox() {
+  this->NormalImage().~CResPtr();
 }
 
 // OFFSET: 0x009BE750
 // FUNCTION: fn_13950
 template <>
 CUIListBox<AdventureGuide::CUITab>::~CUIListBox() {
+  this->NormalImage().~CResPtr();
 }
 
 // OFFSET: 0x009BE8B0
@@ -3623,4 +3621,117 @@ void CUIVScrollBar::Slot15(int, int) {
     this->thumb->onDrag = onDrag;
     this->AddChild(this->thumb);
   }
+}
+
+// OFFSET: 0x009BE1A0
+// FUNCTION: fn_13946
+CUIStaticText::CUIStaticText(UIWindowContext& context)
+    : CUIControl(context), unknown_0084(), unknown_0098(), unknown_00B0(), scrollBar(nullptr), unknown_00C4(), fitText(false), horizontalAlign(0),
+      verticalAlign(0), fontIndex(0), fontHeight(12), bold(0), color(0), shadow(false), shadowColor(0xFFFFFF), outline(false), outlineColor(0xFFFFFF), textX(0),
+      textY(0), text() {
+  new (&this->Tooltip()) std::string();
+}
+
+// OFFSET: 0x009DA310
+// FUNCTION: fn_14285
+CUIListItem::~CUIListItem() {
+  using ImageMap = std::map<int, CBitmapRes*>;
+  this->Images().~ImageMap();
+}
+
+// OFFSET: 0x009EFC30
+// FUNCTION: fn_14653
+CUIListItem::CUIListItem(UIWindowContext& context) : CUIControl(context), unknown_0084(), selected(0), disabledImage(nullptr), frozen(0), index(-1), onHover(), onPress() {
+  new (&this->Images()) std::map<int, CBitmapRes*>();
+  this->Images()[0] = nullptr;
+  this->Images()[1] = nullptr;
+  this->Images()[2] = nullptr;
+  this->m_clip = 1;
+}
+
+// OFFSET: 0x009F0110
+// FUNCTION: fn_14655
+void CUIListItem::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+  if (!this->frozen) {
+    if (!this->Images()[this->selected]) {
+      if (this->selected == 1) {
+        this->ClearSurface(0xFFDECE);
+      } else if (this->selected == 2) {
+        this->ClearSurface(0xEF9C73);
+      }
+    } else {
+      this->DrawBitmap(0, 0, &this->Images()[this->selected]->image, false);
+    }
+  } else if (this->disabledImage) {
+    this->DrawBitmap(0, 0, &this->disabledImage->image, false);
+  }
+}
+
+// OFFSET: 0x009F02E0
+// FUNCTION: fn_14663
+void CUIListItem::SetImageResources(CBitmapRes* normal, CBitmapRes* hover, CBitmapRes* pressed, CBitmapRes* disabled) {
+  this->Images().clear();
+  this->Images()[0] = normal;
+  this->Images()[1] = hover;
+  this->Images()[2] = pressed;
+  this->disabledImage = disabled;
+  this->Invalidate();
+}
+
+// OFFSET: 0x009ED5C0
+// FUNCTION: fn_14580
+void CUIEditBox::Slot15(int width, int height) {
+  this->edit = new CUIEditCtrl();
+  this->edit->SetSize(width, height);
+  this->edit->invalidatesParent = 1;
+  reinterpret_cast<unsigned char*>(&this->edit->unknown_0184)[1] = 1;
+  this->AddChild(this->edit);
+}
+
+// OFFSET: 0x009E9990
+// FUNCTION: fn_14511
+void CUITextViewer::AddLine(const std::string& text) {
+  const int scrollWidth = this->scrollBar->geometry.visible ? this->scrollBar->geometry.width : 0;
+  const int availableWidth = std::max(0, this->geometry.width - (this->paddingLeft + this->paddingRight + scrollWidth));
+  unsigned char align;
+  if (this->textX == 6) {
+    align = 2;
+  } else {
+    align = this->textX == 2 ? 1 : 0;
+  }
+  LineFontFlags flags{this->bold, false};
+  CCreateLineInfo lineInfo(
+    this, text.c_str(), availableWidth, this->lineSpacing, this->textColor, this->fontHeight, flags,
+    this->outline, this->outlineColor, this->unknown_0098, this->unknown_009C, align
+  );
+  if (!lineInfo.m_lines.empty()) {
+    this->lines.push_back(text);
+    this->contentHeight += this->childPositions.empty() ? 0 : this->lineSpacing;
+    for (const auto& row : lineInfo.m_lines) {
+      for (UIWindow* child : row) {
+        child->Move(child->geometry.x, child->geometry.y + this->contentHeight);
+        this->AddChild(child);
+        this->childPositions[child] = std::pair<int, int>(child->geometry.x, child->geometry.y);
+      }
+    }
+    this->contentHeight += lineInfo.m_height;
+    this->scrollBar->Move(this->geometry.width - this->scrollBar->geometry.width, 0);
+    this->scrollBar->SetTotal(this->contentHeight);
+    this->scrollBar->SetVisible(this->geometry.height - this->paddingTop - this->paddingBottom);
+    this->scrollBar->SetPosition(this->scrollBar->position);
+    const int newScrollWidth = this->scrollBar->geometry.visible ? this->scrollBar->geometry.width : 0;
+    this->padding->left = this->paddingLeft;
+    this->padding->top = this->paddingTop;
+    this->padding->right = this->paddingRight + newScrollWidth;
+    this->padding->bottom = this->paddingBottom;
+    this->padding->Invalidate();
+  }
+}
+
+// OFFSET: 0x009D8E30
+// FUNCTION: fn_14272
+CUIAdventureGuide::CUIAdventureGuide()
+    : background(nullptr), titleBar(nullptr), characterInfo(nullptr), titleText(nullptr), intro(nullptr), quest(nullptr), monster(nullptr), item(nullptr),
+      tabs(nullptr) {
 }

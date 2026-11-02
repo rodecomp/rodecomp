@@ -16,9 +16,8 @@
 class CUIListItem : public CUIControl {
 public:
   CUIListItem();
-  // INLINED
-  explicit CUIListItem(UIWindowContext& context) : CUIControl(context), selected(0), disabledImage(nullptr), frozen(0), index(-1) {
-  }
+  __declspec(noinline) explicit CUIListItem(UIWindowContext& context);
+  ~CUIListItem() override;
 
   void Slot25(int x, int y) override;
   void Slot27(int x, int y) override;
@@ -28,7 +27,11 @@ public:
   virtual void SetSelected(bool selected);
   virtual void SetHighlighted(bool highlighted);
   virtual void SetFrozen(bool frozen);
-  void SetImageResources(CBitmapRes* normal, CBitmapRes* hover, CBitmapRes* pressed, CBitmapRes* disabled);
+  __declspec(noinline) void SetImageResources(CBitmapRes* normal, CBitmapRes* hover, CBitmapRes* pressed, CBitmapRes* disabled);
+
+  std::map<int, CBitmapRes*>& Images() {
+    return *reinterpret_cast<std::map<int, CBitmapRes*>*>(&this->hitEnabled);
+  }
 
   /* 0084 */ unsigned char unknown_0084[0x04];
   /* 0088 */ int selected;
@@ -269,6 +272,10 @@ public:
     this->Invalidate();
   }
 
+  CResPtr<CBitmapRes>& NormalImage() {
+    return *reinterpret_cast<CResPtr<CBitmapRes>*>(&this->hitEnabled);
+  }
+
   /* 0084 */ CResPtr<CBitmapRes> unknown_0084;
   /* 0088 */ CResPtr<CBitmapRes> unknown_0088;
   /* 008C */ CResPtr<CBitmapRes> unknown_008C;
@@ -463,6 +470,10 @@ public:
       (*it)->index = -1;
       (*it)->Show(0);
     }
+  }
+
+  CResPtr<CBitmapRes>& NormalImage() {
+    return *reinterpret_cast<CResPtr<CBitmapRes>*>(&this->hitEnabled);
   }
 
   /* 0084 */ CResPtr<CBitmapRes> unknown_0084;
