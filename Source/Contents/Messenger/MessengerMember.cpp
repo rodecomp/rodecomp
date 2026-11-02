@@ -128,7 +128,7 @@ public:
 
 class UIMessengerGroupWnd : public UIFrameWnd {
 public:
-  UIMessengerGroupWnd();
+  UIMessengerGroupWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
   ~UIMessengerGroupWnd() override;
   void Slot11() override;
   void Slot15(int width, int height) override;
@@ -688,6 +688,23 @@ MiniPartyInfoEntry::MiniPartyInfoEntry(const char* text, int value) : text(text)
 }
 
 // OFFSET: 0x00739C80
+// FUNCTION: fn_07698
+UIMessengerGroupWnd::UIMessengerGroupWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls) : UIFrameWnd(windows, frames, 0) {
+  this->saved = nullptr;
+  this->scrollBar = nullptr;
+  this->scrollTop = 0;
+  this->columns = 1;
+  this->visibleRows = 5;
+  this->scrollable = 0;
+  this->rowHeight = 23;
+  this->iconModeButtons[1] = nullptr;
+  this->iconModeButtons[0] = nullptr;
+  this->iconIndex = 0;
+  for (int i = 0; i < 11; ++i) {
+    this->hiddenButtons[i] = 0;
+  }
+  this->m_controls = &controls;
+}
 
 // OFFSET: 0x0073A080
 // FUNCTION: fn_07700
