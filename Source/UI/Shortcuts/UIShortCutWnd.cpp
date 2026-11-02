@@ -510,7 +510,7 @@ void UINewChatWnd::Show(int visible) {
     g_windowMgr.StoreSnapRectangle(this);
   } else g_windowMgr.RemoveSnapRectangle(this);
 
-  for (UIWindow* tab : this->m_tabs) {
+  for (UIChatHisBox* tab : this->m_tabs) {
     tab->Show(this->geometry.visible);
   }
 
@@ -943,7 +943,7 @@ void UINewChatWnd::SaveChatLogs() {
 
   std::string name;
   int index = 0;
-  for (std::vector<UIWindow*>::iterator tab = this->m_tabs.begin(); tab != this->m_tabs.end(); ++tab, ++index) {
+  for (std::vector<UIChatHisBox*>::iterator tab = this->m_tabs.begin(); tab != this->m_tabs.end(); ++tab, ++index) {
     const std::map<int, SubChatWndInfo>::iterator info = g_session.m_noSubChatWnds.find(index);
     if (info != g_session.m_noSubChatWnds.end()) {
       name = info->second.name;
@@ -957,7 +957,7 @@ void UINewChatWnd::SaveChatLogs() {
         sprintf(path, "%s\\Chat\\Chat_%s_%03d.txt", g_applicationDirectory, name.c_str(), number);
       }
 
-      if (static_cast<UIChatHisBox*>(*tab)->SaveChatLog(path)) {
+      if ((*tab)->SaveChatLog(path)) {
         std::string message(path);
         message += " is Saved.";
         g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
@@ -990,7 +990,7 @@ void UINewChatWnd::SaveChatLogs() {
 void UINewChatWnd::RefreshTabs(bool arrange) {
   if (arrange && this->geometry.unknown_0030 != 0) {
     int index = 0;
-    for (std::vector<UIWindow*>::iterator tab = this->m_tabs.begin(); tab != this->m_tabs.end(); ++tab, ++index) {
+    for (std::vector<UIChatHisBox*>::iterator tab = this->m_tabs.begin(); tab != this->m_tabs.end(); ++tab, ++index) {
       if (this->m_currentTab == index) {
         (*tab)->Move(5, this->m_inputOffsetY + 2);
         (*tab)->Invalidate();

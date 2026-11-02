@@ -1,3 +1,4 @@
+#include "UI/Chat/UINewChatWnd.h"
 #include "Client/Application/Launcher.h"
 #include "Client/Input/InputCharset.h"
 #include "UI/Window/WindowDialogs.h"
@@ -1536,8 +1537,8 @@ std::string UIWindow::FitDisplayText(int width, const char* text, int family, in
   display = DisplayTextTag(std::move(display), "<ITEM>", "</ITEM>");
   display = RemoveTextLinkInfo(std::move(display));
 
-  if (this->m_context->chatConverter) {
-    display = this->m_context->chatConverter->ConvertChat(std::move(display));
+  if (g_windowMgr.window_01C8) {
+    display = static_cast<UINewChatWnd*>(g_windowMgr.window_01C8)->ConvertChat(std::move(display));
   }
 
   std::string navigation;
@@ -1606,8 +1607,8 @@ std::string UIWindow::FitVerticalDisplayText(int height, const char* text, int f
   display = DisplayTextTag(std::move(display), "<ITEM>", "</ITEM>");
   display = RemoveTextLinkInfo(std::move(display));
 
-  if (this->m_context->chatConverter) {
-    display = this->m_context->chatConverter->ConvertChat(std::move(display));
+  if (g_windowMgr.window_01C8) {
+    display = static_cast<UINewChatWnd*>(g_windowMgr.window_01C8)->ConvertChat(std::move(display));
   }
 
   std::string navigation;

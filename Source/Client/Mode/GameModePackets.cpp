@@ -1,3 +1,4 @@
+#include "UI/Chat/UINewChatWnd.h"
 #include "Resource/World/TerrainResource.h"
 #include "Client/Application/Launcher.h"
 #include "File/ShortcutFilename.h"
@@ -15362,7 +15363,7 @@ void CGameMode::ReceiveColorBroadcast(const unsigned char* data) {
     BroadcastBalloonMessage balloonMessage{{}, {}, std::chrono::seconds(20), 12, 0x40000000, 0, 0};
     balloonMessage.start = std::chrono::system_clock::now();
     balloonMessage.fontHeight = *reinterpret_cast<const short*>(data + 10);
-    message = reinterpret_cast<UITextViewer*>(g_chatSuggestions)->ConvertChat(message);
+    message = static_cast<UINewChatWnd*>(g_windowMgr.window_01C8)->ConvertChat(message);
     balloonMessage.lines.emplace_back(message, color);
     balloon->AddMessage(0, balloonMessage);
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
@@ -15475,7 +15476,7 @@ void CGameMode::ReceiveTaggedBroadcast(const unsigned char* data) {
     );
   }
 
-  message = reinterpret_cast<UITextViewer*>(g_chatSuggestions)->ConvertChat(message);
+  message = static_cast<UINewChatWnd*>(g_windowMgr.window_01C8)->ConvertChat(message);
   std::string linked;
   DisplayNavigationLink(linked, message);
   message = std::move(linked);

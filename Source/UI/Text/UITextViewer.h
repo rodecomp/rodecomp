@@ -6,7 +6,6 @@
 #include <windows.h>
 
 class UITextButton;
-class UIChatHisBox;
 
 class TextViewerActions {
 public:
@@ -23,7 +22,6 @@ struct UITextViewerContext {
   TextViewerActions& actions;
   HWND& applicationWindow;
 
-  const std::vector<UIChatHisBox*>* const& chatConversions;
 };
 
 class UITextViewer : public UIListBox {
@@ -55,7 +53,6 @@ public:
 
 private:
   UITextViewerContext* m_text;
-  std::string ConvertChat(std::string text);
   std::pair<int, int> LinkPosition(unsigned position, unsigned addedLines);
   void AddLinks(const char* text, unsigned addedLines, int kind);
   bool AddItemLinks(std::string text, unsigned addedLines);

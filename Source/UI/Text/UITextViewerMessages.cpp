@@ -1,3 +1,4 @@
+#include "UI/Chat/UINewChatWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Contents/Items/ItemInfo.h"
 #include "UI/Lists/UIScrollBar.h"
@@ -138,8 +139,8 @@ void UITextViewer::AppendText(char* text, int width, bool carriageReturns, bool 
     display = DisplayTextTag(std::move(display), "<ITEM>", "</ITEM>");
     display = RemoveTextLinkInfo(std::move(display));
 
-    if (this->m_text->chatConversions) {
-      display = this->ConvertChat(std::move(display));
+    if (g_windowMgr.window_01C8) {
+      display = static_cast<UINewChatWnd*>(g_windowMgr.window_01C8)->ConvertChat(std::move(display));
     }
 
     std::string navigation;

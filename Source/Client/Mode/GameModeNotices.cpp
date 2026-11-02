@@ -1,3 +1,4 @@
+#include "UI/Chat/UINewChatWnd.h"
 #include "Client/Application/Launcher.h"
 #include "Client/Input/InputCharset.h"
 #include "Client/Mode/CGameMode.h"
@@ -7654,7 +7655,7 @@ void CGameMode::sub_D1A520(int unknown_0004, std::string name, std::string text,
           body = std::move(linked);
         }
         if (std::strstr(message.data(), g_whisperItemLinkTag.c_str()) != nullptr) {
-          body = reinterpret_cast<UITextViewer*>(g_chatSuggestions)->ConvertChat(body);
+          body = static_cast<UINewChatWnd*>(g_windowMgr.window_01C8)->ConvertChat(body);
           header = header + " ] : " + body;
         } else {
           header = header + " ] : " + message.data();
@@ -7716,7 +7717,7 @@ void CGameMode::sub_D1A520(int unknown_0004, std::string name, std::string text,
     if (flag) {
       if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
         if (prefix.find(g_whisperItemLinkTag) != std::string::npos) {
-          prefix = reinterpret_cast<UITextViewer*>(g_chatSuggestions)->ConvertChat(prefix);
+          prefix = static_cast<UINewChatWnd*>(g_windowMgr.window_01C8)->ConvertChat(prefix);
         }
         {
           std::string linked;

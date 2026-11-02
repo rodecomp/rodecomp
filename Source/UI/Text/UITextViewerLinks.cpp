@@ -1,3 +1,4 @@
+#include "UI/Chat/UINewChatWnd.h"
 #include "Client/Input/InputCharset.h"
 #include "Contents/Items/ItemNaming.h"
 #include "Render/Text/TextContext.h"
@@ -18,15 +19,11 @@
 
 // OFFSET: 0x0091B800
 // FUNCTION: fn_12605
-std::string UITextViewer::ConvertChat(std::string text) {
+std::string UINewChatWnd::ConvertChat(std::string text) {
   std::string converted;
   DisplayNavigationLink(converted, text);
-  const auto* owners = this->m_text->chatConversions;
-
-  if (owners) {
-    for (std::size_t index = 0; index < owners->size(); ++index) {
-      converted = (*owners)[0]->Convert(converted);
-    }
+  for (std::size_t index = 0; index < this->m_tabs.size(); ++index) {
+    converted = this->m_tabs[0]->Convert(converted);
   }
 
   return converted;
@@ -60,8 +57,8 @@ bool UITextViewer::AddItemLinks(std::string text, unsigned addedLines) {
   parsed = DisplayTextTag(std::move(parsed), "<URL>", "</URL>");
   parsed = DisplayTextTag(std::move(parsed), "<NAVI>", "</NAVI>");
 
-  if (this->m_text->chatConversions) {
-    parsed = this->ConvertChat(std::move(parsed));
+  if (g_windowMgr.window_01C8) {
+    parsed = static_cast<UINewChatWnd*>(g_windowMgr.window_01C8)->ConvertChat(std::move(parsed));
   }
 
   std::string navigation;
@@ -103,8 +100,8 @@ bool UITextViewer::AddNaviLinks(std::string text, unsigned addedLines) {
   parsed = DisplayTextTag(std::move(parsed), "<URL>", "</URL>");
   parsed = DisplayTextTag(std::move(parsed), "<ITEM>", "</ITEM>");
 
-  if (this->m_text->chatConversions) {
-    parsed = this->ConvertChat(std::move(parsed));
+  if (g_windowMgr.window_01C8) {
+    parsed = static_cast<UINewChatWnd*>(g_windowMgr.window_01C8)->ConvertChat(std::move(parsed));
   }
 
   parsed = DisplayTextTag(std::move(parsed), "<TIPBOX>", "</TIPBOX>");
@@ -203,8 +200,8 @@ bool UITextViewer::AddQuestLinks(std::string text, unsigned addedLines) {
   parsed = DisplayTextTag(std::move(parsed), "<URL>", "</URL>");
   parsed = DisplayTextTag(std::move(parsed), "<NAVI>", "</NAVI>");
 
-  if (this->m_text->chatConversions) {
-    parsed = this->ConvertChat(std::move(parsed));
+  if (g_windowMgr.window_01C8) {
+    parsed = static_cast<UINewChatWnd*>(g_windowMgr.window_01C8)->ConvertChat(std::move(parsed));
   }
 
   std::string navigation;
@@ -248,8 +245,8 @@ void UITextViewer::AddTipLinks(std::string text, unsigned addedLines) {
   parsed = DisplayTextTag(std::move(parsed), "<ITEM>", "</ITEM>");
   parsed = DisplayTextTag(std::move(parsed), "<QUEST>", "</QUEST>");
 
-  if (this->m_text->chatConversions) {
-    parsed = this->ConvertChat(std::move(parsed));
+  if (g_windowMgr.window_01C8) {
+    parsed = static_cast<UINewChatWnd*>(g_windowMgr.window_01C8)->ConvertChat(std::move(parsed));
   }
 
   std::string navigation;
@@ -345,8 +342,8 @@ bool UITextViewer::AddUrlLinks(std::string text, unsigned addedLines) {
   parsed = DisplayTextTag(std::move(parsed), "<NAVI>", "</NAVI>");
   parsed = DisplayTextTag(std::move(parsed), "<ITEM>", "</ITEM>");
 
-  if (this->m_text->chatConversions) {
-    parsed = this->ConvertChat(std::move(parsed));
+  if (g_windowMgr.window_01C8) {
+    parsed = static_cast<UINewChatWnd*>(g_windowMgr.window_01C8)->ConvertChat(std::move(parsed));
   }
 
   parsed = DisplayTextTag(std::move(parsed), "<TIPBOX>", "</TIPBOX>");

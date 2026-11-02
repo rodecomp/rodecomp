@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <vector>
 
+class UIChatHisBox;
 class UITabControl;
 
 extern std::uint8_t g_chatInputFlag;
@@ -28,6 +29,7 @@ public:
   void Slot43() override;
   void SaveChatLogs();
   void RefreshTabs(bool arrange);
+  std::string ConvertChat(std::string text);
 
 private:
   /* 00BC */ int unknown_00BC;
@@ -40,7 +42,7 @@ private:
   /* 00D8 */ std::uint32_t m_listColor;
   /* 00DC */ unsigned char unknown_00DC[0x14];
   /* 00F0 */ int unknown_00F0;
-  /* 00F4 */ std::vector<UIWindow*> m_tabs;
+  /* 00F4 */ std::vector<UIChatHisBox*> m_tabs;
   /* 0100 */ unsigned char unknown_0100[0x8];
   /* 0108 */ int m_lockButtonX;
   /* 010C */ int m_chatModeX;
