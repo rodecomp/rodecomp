@@ -1012,6 +1012,7 @@ extern int g_unknown173A5BC;
 extern int g_unknown_01738268;
 extern int g_unknown_0173826C;
 extern int g_unknown_01738270;
+extern std::string g_gameModeNamelessTag;
 void __stdcall OpenWordDisplay(CGameActor* actor);
 
 #endif

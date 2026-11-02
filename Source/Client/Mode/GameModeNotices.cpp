@@ -2,6 +2,7 @@
 #include "Client/Input/InputCharset.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/CLoginMode.h"
+#include "Client/Mode/ModeEvents.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Replay.h"
 #include "Client/Stove/StoveMgr.h"
@@ -7170,6 +7171,46 @@ struct GuildMemberLeftPacket2 {
 };
 #pragma pack(pop)
 
+#include "Script/LuaScript.h"
+#include "UI/Shortcuts/ShortcutBindings.h"
+
+class GameModeEvents final : public ModeEvents {
+public:
+  // INLINED
+  std::intptr_t SendModeMessage(int event, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override {
+    return g_modeMgr.GetGameMode()->SendMsg(
+      event, static_cast<int>(argument1), static_cast<int>(argument2), static_cast<int>(argument3), static_cast<int>(argument4)
+    );
+  }
+};
+
+// INLINED
+void ClearGuildShortcutSkills() {
+  ClientSkills skills{
+    g_session.m_skillBundle,
+    g_session.m_homunSkills,
+    g_session.m_mercSkills,
+    g_session.m_additionalSkills,
+    reinterpret_cast<const int&>(g_session.m_jobFlags),
+    g_activeSkillEffects
+  };
+  const SkillUseLevels levels{
+    g_session.m_skillBundle.unknown_0064, *reinterpret_cast<const std::vector<int>*>(g_session.unknown_0710), g_session.m_homunSkillLevels
+  };
+  ShortcutBindings bindings{
+    {g_session.m_shortcutSlots, g_session.m_secondaryShortcutSlots},
+    g_session.m_normalItemSlots,
+    g_session.unknown_06FC,
+    g_session.unknown_06FC,
+    g_session.unknown_06A8,
+    skills,
+    reinterpret_cast<ShortcutCooldowns&>(g_session.m_requestTimers),
+    levels
+  };
+  GameModeEvents events;
+  bindings.ClearAdditionalSkills(g_session.m_hotkeyPage, *g_session.m_hotkeyScript, events);
+}
+
 // OFFSET: 0x00D48C60
 // FUNCTION: fn_21856
 void CGameMode::sub_D48C60(const unsigned char* data) {
@@ -7180,8 +7221,7 @@ void CGameMode::sub_D48C60(const unsigned char* data) {
   reason[40] = '\0';
 
   if (packet->characterId == g_session.m_gid) {
-    g_session.ClearShortcutSlots();
-    g_session.ClearSecondaryShortcutSlots();
+    ClearGuildShortcutSkills();
     g_guildInfo.m_guildId = 0;
     g_windowMgr.CloseWindow(59);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(490)), 0xFF, 4, 0, 0);
@@ -7199,7 +7239,7 @@ void CGameMode::sub_D48C60(const unsigned char* data) {
 
   std::string name = LookupPlayerName(packet->characterId);
   if (name.empty()) {
-    name = LookupMessage(0x245);
+    name = LookupMessage(0x245) + g_gameModeNamelessTag;
   }
 
   char message[1024];
@@ -7215,7 +7255,7 @@ void CGameMode::sub_D48C60(const unsigned char* data) {
   g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0xFFFF, 4, 0, 0);
 
   GuildInfo::Unknown00ECEntry entry;
-  entry.name = name;
+  entry.name = name.c_str();
   entry.unknown_0034 = reason;
   guildInfo->AddUnknown00EC(entry);
 }
@@ -7229,14 +7269,11 @@ void CGameMode::sub_D4A060(const unsigned char* data) {
   strcpy_s(reason, sizeof(reason), packet->name);
 
   if (packet->characterId == g_session.m_gid) {
-    g_session.ClearShortcutSlots();
-    g_session.ClearSecondaryShortcutSlots();
+    ClearGuildShortcutSkills();
     guildInfo->Init();
     g_windowMgr.CloseWindow(59);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(489)), 0xFF, 4, 0, 0);
-    if (this->scene != nullptr && this->scene->player != nullptr) {
-      this->scene->player->Slot49(0, 0);
-    }
+    this->scene->player->Slot49(0, 0);
     this->SendMsg(172, 0, 0, 0, 0);
     return;
   }
@@ -7245,9 +7282,14 @@ void CGameMode::sub_D4A060(const unsigned char* data) {
     guildInfo->DeleteMemberByCharacterId(static_cast<int>(packet->characterId));
   }
 
-  std::string name = packet->characterId == g_session.m_gid ? std::string(g_session.DecodePlayerName()) : LookupPlayerName(packet->characterId);
+  std::string name;
+  if (packet->characterId == g_session.m_gid) {
+    name = g_session.DecodePlayerName();
+  } else {
+    name = LookupPlayerName(packet->characterId);
+  }
   if (name.empty()) {
-    name = LookupMessage(0x245);
+    name = LookupMessage(0x245) + g_gameModeNamelessTag;
   }
 
   char message[1024];
