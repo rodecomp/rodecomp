@@ -6,7 +6,6 @@
 #include <string>
 
 class UIStaticText;
-struct UIButtonContext;
 class ForbiddenWords;
 
 struct ChatRoomTitleInfo {
@@ -40,7 +39,7 @@ public:
 protected:
   /* 00BC */ int roomId;
   /* 00C0 */ short unknown_00C0;
-  UIButtonContext* m_controls;
+  void* unknown_controls;
   ForbiddenWords* m_forbiddenWords;
 };
 

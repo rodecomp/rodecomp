@@ -7,7 +7,6 @@
 
 class UIBitmapButton;
 class UIStaticText;
-struct UIButtonContext;
 struct SeekPartyWndInfo;
 
 extern int g_partyBookingLevelLimit;
@@ -39,7 +38,7 @@ protected:
   /* 01E4 */ unsigned char m_minimized;
   /* 01E5 */ unsigned char unknown_01E5[3];
   /* 01E8 */ SeekPartyWndInfo* m_saved;
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 #endif

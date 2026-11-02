@@ -1,3 +1,4 @@
+#include "UI/Window/UINewSelectCharWnd.h"
 #include "Client/Session.h"
 #include "Contents/UserData/NormalItemSlots.h"
 #include "Resource/Bitmap/BitmapResource.h"
@@ -346,7 +347,6 @@ void UISeekPartyListWnd::Paint() {
 // OFFSET: 0x0092E230
 // FUNCTION: fn_12676
 void UISeekPartyMBWnd::Paint() {
-  auto& controls = *this->m_controls;
   this->DrawTitleBar(true, "", 0);
   if (this->m_minimized) {
     return;
@@ -368,7 +368,6 @@ void UISeekPartyMBWnd::Paint() {
 // OFFSET: 0x0092E300
 // FUNCTION: fn_12677
 void UISeekPartyWnd::Paint() {
-  auto& controls = *this->m_controls;
   this->DrawTitleBar(true, "", 0);
 
   unsigned red;
@@ -786,7 +785,6 @@ void UISelCharForUServerWnd::Paint() {
 // OFFSET: 0x0092EBE0
 // FUNCTION: fn_12679
 void UISerachStoreInfoWnd::Paint() {
-  UIButtonContext& controls = *this->m_controls;
   const bool empty = std::string(this->m_edits[1]->Text()).size() == 0;
   this->m_findButton->SetDisabled(empty);
   this->m_findButton->Invalidate();
@@ -856,7 +854,7 @@ void UISerachStoreInfoWnd::Paint() {
 
     const int top = this->unknown_00E8 * row + 100;
     const int y = top + 7;
-    DrawItemIcon(*this, controls.resources, descriptions, 13, top, entry->item, 0);
+    DrawItemIcon(*this, ResourceMgr::Instance(), descriptions, 13, top, entry->item, 0);
     if (entry->item.unknown_0088 > 0) {
       this->DrawBitmap(
         13, y + 5,

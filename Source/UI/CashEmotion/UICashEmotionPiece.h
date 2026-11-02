@@ -5,11 +5,9 @@
 
 #include <cstdint>
 
-struct UIButtonContext;
 class UICashEmotionSprBtn;
 
 struct UICashEmotionPieceContext {
-  UIButtonContext& buttons;
 };
 
 class UICashEmotionPiece : public UIWindow {

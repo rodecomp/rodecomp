@@ -1,3 +1,4 @@
+#include "Render/Text/FontCache.h"
 #include "UI/Items/MergeItemWnd.h"
 
 #include "Client/Input/InputCharset.h"
@@ -89,7 +90,7 @@ int CMergeItemWnd::ItemIdOf(int id) {
 // OFFSET: 0x007DF580
 // FUNCTION: fn_09664
 void CMergeItemWnd::CreateControls() {
-  this->m_mergeButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->m_mergeButton = new UIBitmapButton(*this->m_context);
   this->m_mergeButton->SetBitmap("유저인터페이스\\btn_ok.bmp", 0, 0);
   this->m_mergeButton->SetBitmap("유저인터페이스\\btn_ok_a.bmp", 1, 0);
   this->m_mergeButton->SetBitmap("유저인터페이스\\btn_ok_b.bmp", 2, 0);
@@ -97,7 +98,7 @@ void CMergeItemWnd::CreateControls() {
   this->m_mergeButton->SetId(184);
   this->AddChild(this->m_mergeButton);
 
-  this->m_cancelButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->m_cancelButton = new UIBitmapButton(*this->m_context);
   this->m_cancelButton->SetBitmap("유저인터페이스\\btn_cancel.bmp", 0, 0);
   this->m_cancelButton->SetBitmap("유저인터페이스\\btn_cancel_a.bmp", 1, 0);
   this->m_cancelButton->SetBitmap("유저인터페이스\\btn_cancel_b.bmp", 2, 0);
@@ -105,7 +106,7 @@ void CMergeItemWnd::CreateControls() {
   this->m_cancelButton->SetId(185);
   this->AddChild(this->m_cancelButton);
 
-  this->m_closeButton = this->AddCloseButton(*this->m_controls, "", 240);
+  this->m_closeButton = this->AddCloseButton("", 240);
 
   this->m_resizer = new UIResizer(*this->m_context);
   this->m_resizer->SetSize(16, 16);
@@ -129,7 +130,6 @@ void CMergeItemWnd::Slot15(int, int) {
 // OFFSET: 0x007DF850
 // FUNCTION: fn_09666
 void CMergeItemWnd::Paint() {
-  auto& controls = *this->m_controls;
   unsigned red, green, blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
   this->DrawTitleBar(true, LookupMessage(2169), 0);
@@ -161,7 +161,7 @@ void CMergeItemWnd::Paint() {
         box->Move(this->m_checkOffsetX + x, this->m_checkOffsetY + y);
         ItemDescriptions descriptions{g_itemDescriptions};
         DrawItemWithQuantity(
-          *this, controls.resources, descriptions, controls.fonts, controls.locale, this->m_slotOffsetX + x, this->m_slotOffsetY + y, item, 0, 0
+          *this, ResourceMgr::Instance(), descriptions, g_fontCache, this->m_context->locale, this->m_slotOffsetX + x, this->m_slotOffsetY + y, item, 0, 0
         );
       }
     }
@@ -359,7 +359,7 @@ int CMergeItemWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std:
     this->m_itemCount = argument2;
     const std::int16_t* ids = reinterpret_cast<const std::int16_t*>(argument1);
     for (int index = 0; index < this->m_itemCount; ++index) {
-      UICheckBox* box = new UICheckBox(*this->m_context, *this->m_controls);
+      UICheckBox* box = new UICheckBox(*this->m_context);
       box->SetSize(120, 12);
       box->SetBitmaps("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp");
       box->m_message = ids[index];

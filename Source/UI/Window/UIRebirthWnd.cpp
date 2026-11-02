@@ -23,7 +23,7 @@ void UIRebirthWnd::Slot15(int width, int height) {
   const RECT positions[5] = {{29, 22}, {29, 45}, {29, 68}, {29, 91}, {29, 119}};
 
   for (int index = 0; index < 5; ++index) {
-    UIBitmapButton* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    UIBitmapButton* button = new UIBitmapButton(*this->m_context);
     button->SetBitmap((path + names[index][0] + ".bmp").c_str(), 0, 0);
     button->SetBitmap((path + names[index][1] + ".bmp").c_str(), 1, 0);
     button->SetBitmap((path + names[index][2] + ".bmp").c_str(), 2, 0);
@@ -71,5 +71,5 @@ int UIRebirthWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
 
 // OFFSET: 0x00911950
 // FUNCTION: fn_12521
-UIRebirthWnd::UIRebirthWnd(UIWindowContext& windows, UIButtonContext& controls) : UIFrameWnd(windows, 0), m_controls(&controls) {
+UIRebirthWnd::UIRebirthWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0) {
 }

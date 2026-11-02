@@ -1,3 +1,6 @@
+#include "UI/Window/WindowDialogs.h"
+#include "UI/Window/UINewSelectCharWnd.h"
+#include "Client/Mode/ModeTooltip.h"
 #include "UI/UIGradeEnchantWnd.h"
 
 #include "Client/Application/ApplicationWindow.h"
@@ -54,18 +57,18 @@ UIGradeEnchantWnd::UIGradeEnchantWnd()
 
 // OFFSET: 0x007E6A60
 // FUNCTION: fn_09739
-UIGradeEnchant_BtnEnhancedDown::UIGradeEnchant_BtnEnhancedDown(UIWindowContext& windows, UIButtonContext& controls) : UIBitmapButton(windows, controls) {
+UIGradeEnchant_BtnEnhancedDown::UIGradeEnchant_BtnEnhancedDown(UIWindowContext& windows) : UIBitmapButton(windows) {
 }
 
 // OFFSET: 0x007E6AC0
 // FUNCTION: fn_09740
-UIGradeEnchant_BtnEnhancedUp::UIGradeEnchant_BtnEnhancedUp(UIWindowContext& windows, UIButtonContext& controls)
-    : UIBitmapButton(windows, controls), tooltipValue(0), tooltipEnabled(0) {
+UIGradeEnchant_BtnEnhancedUp::UIGradeEnchant_BtnEnhancedUp(UIWindowContext& windows)
+    : UIBitmapButton(windows), tooltipValue(0), tooltipEnabled(0) {
 }
 
 // OFFSET: 0x007E6B30
 // FUNCTION: fn_09741
-UIGradeEnchant_BtnStart::UIGradeEnchant_BtnStart(UIWindowContext& windows, UIButtonContext& controls) : UIBitmapButton(windows, controls) {
+UIGradeEnchant_BtnStart::UIGradeEnchant_BtnStart(UIWindowContext& windows) : UIBitmapButton(windows) {
 }
 
 // OFFSET: 0x007E7500
@@ -130,17 +133,17 @@ int UIGradeEnchantWnd::SuccessRate() {
 // OFFSET: 0x007E7780
 // FUNCTION: fn_09753
 void UIGradeEnchantWnd::Slot15(int, int) {
-  if (UIBitmapButton* close = this->AddCloseButton(*this->m_controls, "", 0)) {
+  if (UIBitmapButton* close = this->AddCloseButton("", 0)) {
     close->Move(0x180, 0x14);
   }
 
-  auto* title = new UIBasicButton(*this->m_context, *this->m_controls);
+  auto* title = new UIBasicButton(*this->m_context);
   title->Configure(0x2A, LookupMessage(0x513));
   title->Move(0x159, 299);
   title->SetId(0xB9);
   this->AddChild(title);
 
-  this->startButton = new UIGradeEnchant_BtnStart(*this->m_context, *this->m_controls);
+  this->startButton = new UIGradeEnchant_BtnStart(*this->m_context);
   this->startButton->SetBitmap("유저인터페이스\\grade_enchant\\btn_start.bmp", 0, 0);
   this->startButton->SetBitmap("유저인터페이스\\grade_enchant\\btn_start_over.bmp", 1, 0);
   this->startButton->SetBitmap("유저인터페이스\\grade_enchant\\btn_start_press.bmp", 2, 0);
@@ -152,7 +155,7 @@ void UIGradeEnchantWnd::Slot15(int, int) {
   this->startButton->Invalidate();
   this->AddChild(this->startButton);
 
-  this->enhancedUpButton = new UIGradeEnchant_BtnEnhancedUp(*this->m_context, *this->m_controls);
+  this->enhancedUpButton = new UIGradeEnchant_BtnEnhancedUp(*this->m_context);
   this->enhancedUpButton->SetBitmap("유저인터페이스\\grade_enchant\\btn_chance_up.bmp", 0, 0);
   this->enhancedUpButton->SetBitmap("유저인터페이스\\grade_enchant\\btn_chance_up_over.bmp", 1, 0);
   this->enhancedUpButton->SetBitmap("유저인터페이스\\grade_enchant\\btn_chance_up_pick.bmp", 2, 0);
@@ -163,7 +166,7 @@ void UIGradeEnchantWnd::Slot15(int, int) {
   this->enhancedUpButton->Invalidate();
   this->AddChild(this->enhancedUpButton);
 
-  this->enhancedDownButton = new UIGradeEnchant_BtnEnhancedDown(*this->m_context, *this->m_controls);
+  this->enhancedDownButton = new UIGradeEnchant_BtnEnhancedDown(*this->m_context);
   this->enhancedDownButton->SetBitmap("유저인터페이스\\grade_enchant\\btn_chance_down.bmp", 0, 0);
   this->enhancedDownButton->SetBitmap("유저인터페이스\\grade_enchant\\btn_chance_down_over.bmp", 1, 0);
   this->enhancedDownButton->SetBitmap("유저인터페이스\\grade_enchant\\btn_chance_down_pick.bmp", 2, 0);
@@ -174,7 +177,7 @@ void UIGradeEnchantWnd::Slot15(int, int) {
   this->enhancedDownButton->Invalidate();
   this->AddChild(this->enhancedDownButton);
 
-  auto* help = new UIBitmapButton(*this->m_context, *this->m_controls);
+  auto* help = new UIBitmapButton(*this->m_context);
   help->SetBitmap("유저인터페이스\\basic_interface\\btn_help_normal.bmp", 0, 0);
   help->SetBitmap("유저인터페이스\\basic_interface\\btn_help_over.bmp", 1, 0);
   help->SetBitmap("유저인터페이스\\basic_interface\\btn_help_pressed.bmp", 2, 0);
@@ -330,7 +333,7 @@ void UIGradeEnchantWnd::Slot31(int x, int y) {
 
   if (this->selectedMaterial != row) {
     if (this->unknown_0114 > 0) {
-      this->m_controls->services.Confirm(LookupMessage(3831), 0, 1, 0, "Message", 280, 120);
+      reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(3831), 0, true, false, 0, "Message", 280, 120, 0);
     }
 
     this->selectedMaterial = row;
@@ -375,7 +378,7 @@ void UIGradeEnchant_BtnEnhancedUp::Slot28(int x, int y) {
     screenY += window->geometry.y;
   }
 
-  this->m_buttonContext->services.Tooltip(this->m_tooltip.c_str(), screenX, screenY, -1, false, true);
+  static_cast<ModeTooltip*>(g_charViewMode)->Show(this->m_tooltip.c_str(), screenX, screenY, -1, false, true);
 }
 
 // OFFSET: 0x007E8CC0
@@ -493,7 +496,7 @@ int UIGradeEnchantWnd::SendMsg(
         const int quantity = LookupClientItem(g_session.m_inventoryItems, this->materials[this->selectedMaterial].itemId, 0).quantity;
         if (quantity >= this->materials[this->selectedMaterial].amount && g_session.m_zeny >= this->SelectedMaterialZeny()) {
           if (this->unknown_0110 != 0 || this->unknown_0114 != 0 ||
-              this->m_controls->services.Confirm(LookupMessage(3823), 2, 1, 0, "Message", 280, 120) != 188) {
+              reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(3823), 2, true, false, 0, "Message", 280, 120, 0) != 188) {
             this->unknown_0220 = 1;
 
             GradeEnchantRequestPacket packet;

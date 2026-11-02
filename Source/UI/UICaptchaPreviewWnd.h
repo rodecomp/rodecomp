@@ -4,7 +4,6 @@
 #include "UI/Window/UIFrameWnd.h"
 
 class UICaptchaImage;
-struct UIButtonContext;
 
 class UICaptchaPreviewWnd : public UIFrameWnd {
 public:
@@ -22,7 +21,7 @@ public:
   /* 00BC */ unsigned char* m_imageData;
   /* 00C0 */ int m_imageSize;
   /* 00C4 */ int m_imageReceived;
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 #endif

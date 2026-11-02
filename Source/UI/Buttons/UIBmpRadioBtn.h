@@ -8,7 +8,6 @@
 #include <string>
 #include <vector>
 
-struct UIButtonContext;
 
 struct UIBmpRadioBtnText {
   /* 0000 */ int id;
@@ -25,7 +24,7 @@ class UIBmpRadioBtn : public UIWindow {
   friend class UIRodexInboxWnd;
 
 public:
-  UIBmpRadioBtn(UIWindowContext& windows, UIButtonContext& controls);
+  UIBmpRadioBtn(UIWindowContext& windows);
   void Paint() override;
   void Slot25(int x, int y) override;
   void Slot28(int x, int y) override;
@@ -39,7 +38,7 @@ protected:
   /* 00DC */ bool m_hovered;
   /* 00DD */ unsigned char unknown_00DD[3];
   /* 00E0 */ std::string m_tooltip;
-  UIButtonContext* m_controls;
+  void* unknown_controls;
   /* 00FC */ int m_value;
   /* 0100 */ std::vector<UIBmpRadioBtnText> m_texts;
   /* 010C */ std::string m_label;
@@ -49,7 +48,7 @@ protected:
 class UIBmpRadioBtn2 : public UIBmpRadioBtn {
 public:
   // INLINED
-  UIBmpRadioBtn2(UIWindowContext& windows, UIButtonContext& controls) : UIBmpRadioBtn(windows, controls) {
+  UIBmpRadioBtn2(UIWindowContext& windows) : UIBmpRadioBtn(windows) {
   }
   void Invalidate() override;
   void Slot47() override;
@@ -59,7 +58,7 @@ public:
 class UICaptchaImage : public UIWindow {
 public:
   UICaptchaImage();
-  UICaptchaImage(UIWindowContext& windows, BitmapResourceContext& bitmaps, UIButtonContext& controls);
+  UICaptchaImage(UIWindowContext& windows, BitmapResourceContext& bitmaps);
   ~UICaptchaImage() override;
   void Paint() override;
   void Slot28(int x, int y) override;
@@ -68,7 +67,7 @@ public:
 
 protected:
   /* 01A0 */ std::string m_tooltip;
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 #endif

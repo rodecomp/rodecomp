@@ -284,7 +284,6 @@ void UINewSkillListWnd::sub_9AE930() {
 // OFFSET: 0x009AF300
 // FUNCTION: fn_13802
 void UINewSkillListWnd::sub_9AF300() {
-  auto& controls = *this->m_controls;
   LuaScript& script = *g_session.m_hotkeyScript;
   int drawn = 0;
   int index = 0;
@@ -785,14 +784,14 @@ bool UINewSkillListWnd::IsSkillArea(int x, int y) {
 // OFFSET: 0x009B1050
 // FUNCTION: fn_13814
 void UINewSkillListWnd::Slot15(int width, int height) {
-  this->m_tabs = new UITabControl(*this->m_context, *this->m_controls);
+  this->m_tabs = new UITabControl(*this->m_context);
   this->m_tabs->Configure(0, 17, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   this->m_tabs->Move(0, 6);
   this->AddChild(this->m_tabs);
 
-  this->m_btnHelp = this->AddBaseButton(*this->m_controls);
-  this->m_btnMinimize = this->AddMinimizeButton(*this->m_controls, "", 0);
-  this->m_btnClose = this->AddCloseButton(*this->m_controls, "Alt+S", 0);
+  this->m_btnHelp = this->AddBaseButton();
+  this->m_btnMinimize = this->AddMinimizeButton("", 0);
+  this->m_btnClose = this->AddCloseButton("Alt+S", 0);
 
   this->m_btnHelp->Move(22, 5);
   this->m_btnMinimize->Move(this->geometry.width - 30, 5);
@@ -805,7 +804,7 @@ void UINewSkillListWnd::Slot15(int width, int height) {
   this->AddChild(this->m_scrollBar);
 
   for (int i = 0; i < 10; ++i) {
-    UIBitmapButton* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    UIBitmapButton* button = new UIBitmapButton(*this->m_context);
     button->SetBitmap("유저인터페이스\\basic_interface\\skill_up_a.bmp", 0, 0);
     button->SetBitmap("유저인터페이스\\basic_interface\\skill_up_b.bmp", 1, 0);
     button->SetBitmap("유저인터페이스\\basic_interface\\skill_up_c.bmp", 2, 0);
@@ -817,7 +816,7 @@ void UINewSkillListWnd::Slot15(int width, int height) {
   }
 
   for (int i = 0; i < 42; ++i) {
-    UIBitmapButton* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    UIBitmapButton* button = new UIBitmapButton(*this->m_context);
     button->SetBitmap("유저인터페이스\\basic_interface\\arw_left.bmp", 0, 0);
     button->SetBitmap("유저인터페이스\\basic_interface\\arw_left.bmp", 1, 0);
     button->SetBitmap("유저인터페이스\\basic_interface\\arw_left.bmp", 2, 0);
@@ -829,7 +828,7 @@ void UINewSkillListWnd::Slot15(int width, int height) {
   }
 
   for (int i = 0; i < 42; ++i) {
-    UIBitmapButton* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    UIBitmapButton* button = new UIBitmapButton(*this->m_context);
     button->SetBitmap("유저인터페이스\\basic_interface\\arw_right.bmp", 0, 0);
     button->SetBitmap("유저인터페이스\\basic_interface\\arw_right.bmp", 1, 0);
     button->SetBitmap("유저인터페이스\\basic_interface\\arw_right.bmp", 2, 0);
@@ -842,7 +841,7 @@ void UINewSkillListWnd::Slot15(int width, int height) {
 
   const char* baseDir = "유저인터페이스\\";
   const char* applyNames[3] = {"btn_apply", "btn_apply_a", "btn_apply_b"};
-  this->m_btnApply = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->m_btnApply = new UIBitmapButton(*this->m_context);
   for (int state = 0; state < 3; ++state) {
     std::string path = std::string(baseDir) + applyNames[state] + ".bmp";
     this->m_btnApply->SetBitmap(Resolve(path.c_str()), state, 0);
@@ -855,7 +854,7 @@ void UINewSkillListWnd::Slot15(int width, int height) {
   this->AddChild(this->m_btnApply);
 
   const char* resetNames[3] = {"btn_reset", "btn_reset_a", "btn_reset_b"};
-  this->m_btnCancel = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->m_btnCancel = new UIBitmapButton(*this->m_context);
   for (int state = 0; state < 3; ++state) {
     std::string path = std::string(baseDir) + resetNames[state] + ".bmp";
     this->m_btnCancel->SetBitmap(Resolve(path.c_str()), state, 0);
@@ -885,7 +884,6 @@ void UINewSkillListWnd::Slot15(int width, int height) {
 // OFFSET: 0x009B2160
 // FUNCTION: fn_13815
 void UINewSkillListWnd::Paint() {
-  auto& controls = *this->m_controls;
   const int left = this->m_tabs->geometry.width;
   this->ClearSurface(0xFFFF00FF);
   this->FillRegion(left, this->m_topMargin, this->geometry.width - left, this->geometry.height - this->m_bottomMargin - this->m_topMargin, 0xFFFFFF);
@@ -1604,7 +1602,6 @@ static int SkillValueOf(const std::list<NewSkillListValue>& values, int id) {
 // OFFSET: 0x009AF960
 // FUNCTION: fn_13803
 void UINewSkillListWnd::sub_9AF960() {
-  auto& controls = *this->m_controls;
   LuaScript& script = *g_session.m_hotkeyScript;
 
   CBitmapRes* emptySlot = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\no_skill.bmp")));

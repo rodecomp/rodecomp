@@ -1,3 +1,8 @@
+#include "UI/Window/UINewSelectCharWnd.h"
+#include "Client/Replay.h"
+#include "UI/Window/WindowPolicy.h"
+#include "Render/Text/FontCache.h"
+#include "Client/Mode/ModeTooltip.h"
 #include "Render/DeviceContext/DeviceContext.h"
 #include "UI/UIBarGraph.h"
 #include "UI/Buttons/UIBmpRadioBtn.h"
@@ -32,7 +37,6 @@
 #include "UI/Lists/UIListBoxID.h"
 #include "UI/Lists/UIScrollBarVariants.h"
 #include "UI/Lists/TableBox.h"
-#include "UI/Window/WindowPolicy.h"
 #include "UI/Text/UITransBalloonText.h"
 #include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/Text/UIString.h"
@@ -57,7 +61,7 @@ int g_screenHeight;
 
 // OFFSET: 0x0086EEB0
 // FUNCTION: fn_11085
-UITextButton::UITextButton(UIWindowContext& windows, UIButtonContext& buttons) : UIButton(windows, buttons), m_outlineColor(0xFFFFFF), m_value(0) {
+UITextButton::UITextButton(UIWindowContext& windows) : UIButton(windows), m_outlineColor(0xFFFFFF), m_value(0) {
 }
 
 // OFFSET: 0x00874690
@@ -257,7 +261,7 @@ void UIBmpRadioBtn::Slot28(int, int) {
       screenY = (screenY + window->geometry.y);
     }
 
-    this->m_controls->services.Tooltip(this->m_tooltip.c_str(), screenX, screenY, -1, false, true);
+    static_cast<ModeTooltip*>(g_charViewMode)->Show(this->m_tooltip.c_str(), screenX, screenY, -1, false, true);
   }
 }
 
@@ -385,7 +389,7 @@ void UICaptchaImage::Slot28(int, int) {
       screenY = (screenY + window->geometry.y);
     }
 
-    this->m_controls->services.Tooltip(this->m_tooltip.c_str(), screenX, screenY, -1, false, true);
+    static_cast<ModeTooltip*>(g_charViewMode)->Show(this->m_tooltip.c_str(), screenX, screenY, -1, false, true);
   }
 }
 
@@ -407,7 +411,7 @@ void UIBarGraph4::Slot28(int, int) {
   std::memset(text, 0, sizeof(text));
   const int permille = static_cast<int>(static_cast<float>(*this->m_current) / static_cast<float>(*this->m_maximum) * 1000.0f);
   std::sprintf(text, "%.1f %%", static_cast<float>(permille) * 0.1f);
-  this->m_controls->services.Tooltip(text, screenX, screenY, -1, false, true);
+  static_cast<ModeTooltip*>(g_charViewMode)->Show(text, screenX, screenY, -1, false, true);
 }
 
 // OFFSET: 0x008918D0
@@ -428,7 +432,7 @@ void UIINT64BarGraph::Slot28(int, int) {
   std::memset(text, 0, sizeof(text));
   const int permille = static_cast<int>(static_cast<double>(this->m_current) / static_cast<double>(this->m_maximum) * 1000.0);
   std::sprintf(text, "%.1f %%", static_cast<float>(permille) * 0.1f);
-  this->m_controls->services.Tooltip(text, screenX, screenY, -1, false, true);
+  static_cast<ModeTooltip*>(g_charViewMode)->Show(text, screenX, screenY, -1, false, true);
 }
 
 // OFFSET: 0x00891A40
@@ -475,7 +479,7 @@ void UITabControl::Slot28(int x, int y) {
     screenY = (screenY + window->geometry.y);
   }
 
-  this->m_controls->services.Tooltip(this->tooltips[index].c_str(), screenX, screenY, -1, false, true);
+  static_cast<ModeTooltip*>(g_charViewMode)->Show(this->tooltips[index].c_str(), screenX, screenY, -1, false, true);
 }
 
 // OFFSET: 0x00822660
@@ -521,7 +525,7 @@ void UIBasicItemCtrl::Slot28(int, int) {
   }
 
   if (!text.empty()) {
-    this->m_controls->services.Tooltip(text.c_str(), screenX, screenY, -1, false, true);
+    static_cast<ModeTooltip*>(g_charViewMode)->Show(text.c_str(), screenX, screenY, -1, false, true);
   }
 }
 
@@ -552,7 +556,7 @@ void UIBasicSkillCtrl::Slot28(int, int) {
   }
 
   if (!text.empty()) {
-    this->m_controls->services.Tooltip(text.c_str(), screenX, screenY, -1, false, true);
+    static_cast<ModeTooltip*>(g_charViewMode)->Show(text.c_str(), screenX, screenY, -1, false, true);
   }
 }
 
@@ -628,7 +632,7 @@ void UIMemberListBox::Slot28(int, int y) {
     screenY = (screenY + window->geometry.y);
   }
 
-  this->m_controls->services.Tooltip(this->lines[line].c_str(), screenX, screenY, -1, false, true);
+  static_cast<ModeTooltip*>(g_charViewMode)->Show(this->lines[line].c_str(), screenX, screenY, -1, false, true);
 }
 
 // OFFSET: 0x00891E40
@@ -650,7 +654,7 @@ void UIStaticItem::Slot28(int, int) {
     screenY = (screenY + window->geometry.y);
   }
 
-  this->m_controls->services.Tooltip(text, screenX, screenY, -1, false, true);
+  static_cast<ModeTooltip*>(g_charViewMode)->Show(text, screenX, screenY, -1, false, true);
 }
 
 // OFFSET: 0x00892040
@@ -1866,7 +1870,6 @@ void UIItemMoveInfo::Paint() {
   if (this->m_outline != 0) {
     DrawOutlinedText(*this, 1, 1, this->m_text.c_str(), 0, this->m_color, this->m_outlineColor, this->m_family, this->m_height, 1, 0);
   } else {
-    auto& controls = *this->m_buttonContext;
     this->DrawTextAt(1, 1, this->m_text.c_str(), 0, this->m_family, this->m_height, this->m_color, 0, 0);
   }
 
@@ -1887,7 +1890,6 @@ void UIItemTagButton::Paint() {
   if (this->m_outline != 0) {
     DrawOutlinedText(*this, 1, this->textY, this->m_text.c_str(), 0, this->m_color, this->m_outlineColor, this->m_family, this->m_height, 1, 0);
   } else {
-    auto& controls = *this->m_buttonContext;
     this->DrawTextAt(1, this->textY, this->m_text.c_str(), 0, this->m_family, this->m_height, this->m_color, 0, 0);
   }
 
@@ -2294,8 +2296,8 @@ void UIBasicSkillCtrl::Paint() {
       this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(text)))->image, true);
       if (skill.level != 0) {
         std::sprintf(text, "%d", skill.level);
-        FontCache& fonts = this->m_controls->fonts;
-        const TextLocale& locale = this->m_controls->locale;
+        FontCache& fonts = g_fontCache;
+        const TextLocale& locale = this->m_context->locale;
         const int x = this->geometry.width - this->TextWidth(text, 0, 0, 11, 0, 0);
         this->DrawTextAt(x, 15, text, 0, 0, 11, 0xFFFFFF, 0, 0);
         this->DrawTextAt(x - 2, 15, text, 0, 0, 11, 0xFFFFFF, 0, 0);
@@ -2331,8 +2333,8 @@ void UIBmpRadioBtn::Paint() {
     return;
   }
 
-  FontCache& fonts = this->m_controls->fonts;
-  const TextLocale& locale = this->m_controls->locale;
+  FontCache& fonts = g_fontCache;
+  const TextLocale& locale = this->m_context->locale;
   if (this->m_disabled == true) {
     for (auto it = this->m_texts.begin(); it != this->m_texts.end(); ++it) {
       if (it->id == 3) {
@@ -2549,7 +2551,7 @@ void UISlotBmpButton::Slot15(int, int) {
   const std::string path = "유저인터페이스\\renewalparty\\";
   char name[256];
   std::sprintf(name, "%sicon_jobs_%d.bmp", path.c_str(), 0);
-  this->icon = new UIStaticBitmap(*this->m_context, *this->m_buttonContext);
+  this->icon = new UIStaticBitmap(*this->m_context);
   this->icon->SetBitmap(name);
   this->icon->SetSize(this->icon->geometry.width, this->icon->geometry.height);
   this->icon->Move(118, 14);
@@ -2627,7 +2629,7 @@ void UITreeView::AddNodeButtons(UITreeNode* node, int id) {
   std::string path = "유저인터페이스\\basic_interface\\";
 
   for (int index = 0; index < 2; ++index) {
-    UITVBitmapButton* button = new UITVBitmapButton(*this->m_context, *this->m_controls);
+    UITVBitmapButton* button = new UITVBitmapButton(*this->m_context);
     button->SetBitmap((path + names[index]).c_str(), 0, 0);
     button->SetBitmap((path + names[index]).c_str(), 1, 0);
     button->SetBitmap((path + names[index]).c_str(), 2, 0);
@@ -2652,7 +2654,7 @@ void UITreeView::AddNodeButtons(UITreeNode* node, int id) {
 // OFFSET: 0x008814C0
 // FUNCTION: fn_11297
 void UITreeView::AddNodeLabel(UITreeNode* node, int id) {
-  UITVTextButton* button = new UITVTextButton(*this->m_context, *this->m_controls);
+  UITVTextButton* button = new UITVTextButton(*this->m_context);
   button->SetSize(1, 1);
   button->SetLabel(node->name);
   button->ResizeToText();
@@ -3409,7 +3411,7 @@ void UIRPImageWnd::Paint() {
 // OFFSET: 0x0086EBB0
 // FUNCTION: fn_11081
 UITVBitmapButton::UITVBitmapButton()
-    : UIBitmapButton(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIButtonContext*>(nullptr)), m_value(0) {
+    : UIBitmapButton(*reinterpret_cast<UIWindowContext*>(nullptr)), m_value(0) {
 }
 
 // OFFSET: 0x0086EC10

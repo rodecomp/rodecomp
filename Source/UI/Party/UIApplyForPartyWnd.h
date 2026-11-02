@@ -10,7 +10,6 @@ struct AgencyRequestContext;
 struct PartyInfoContext;
 
 struct UIApplyForPartyContext {
-  UIButtonContext& buttons;
   PartyRowContext& rows;
   AgencyRequestContext& requests;
   PartyInfoContext& completion;

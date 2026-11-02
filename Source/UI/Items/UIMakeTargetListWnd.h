@@ -5,14 +5,13 @@
 
 #include <vector>
 
-struct UIButtonContext;
 struct WindowResponseRecorder;
 struct UIListBoxContext;
 class UIListBox;
 
 class UIMakeTargetListWnd : public UIFrameWnd {
 public:
-  UIMakeTargetListWnd(UIWindowContext& windows, UIButtonContext& controls, UIListBoxContext& listContext, WindowResponseRecorder& recorder);
+  UIMakeTargetListWnd(UIWindowContext& windows, UIListBoxContext& listContext, WindowResponseRecorder& recorder);
   std::vector<unsigned char> BuildReplayRecords();
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -21,7 +20,7 @@ public:
   /* 00B4 */ UIListBox* m_list;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
   UIListBoxContext* m_listContext;
 
 public:

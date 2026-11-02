@@ -9,7 +9,7 @@
 // OFFSET: 0x0094C2D0
 // FUNCTION: fn_12895
 void UINoteWnd::Slot15(int width, int height) {
-  UIBasicButton* button = new UIBasicButton(*this->m_context, *this->m_controls);
+  UIBasicButton* button = new UIBasicButton(*this->m_context);
   button->Configure(60, LookupMessage(0xBE5));
   button->Move(width - 68, height - 26);
   button->SetId(201);
@@ -65,8 +65,8 @@ void UINoteWnd_Scroll::Slot35(int delta) {
 
 // OFFSET: 0x00946D00
 // FUNCTION: fn_12852
-UINoteWnd::UINoteWnd(UIWindowContext& windows, UIButtonContext& controls)
-    : UIFrameWnd(windows, 0), m_scroll(nullptr), m_controls(&controls) {
+UINoteWnd::UINoteWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0), m_scroll(nullptr) {
 }
 
 // OFFSET: 0x00950840

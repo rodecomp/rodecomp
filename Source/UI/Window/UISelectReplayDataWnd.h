@@ -23,7 +23,7 @@ public:
   /* 00BC */ UIStaticText* m_texts[5];
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
   UIListBoxContext* m_listContext;
 };
 

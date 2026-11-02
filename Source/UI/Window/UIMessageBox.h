@@ -7,7 +7,6 @@
 
 class UITextViewer;
 struct UITextViewerContext;
-struct UIButtonContext;
 class UIWindowMgr;
 
 struct WindowResponseRecorder;

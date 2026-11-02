@@ -24,7 +24,7 @@ void UIGraffiStrboxWnd::Slot15(int, int) {
   int positions[2][2] = {{189, 96}, {234, 96}};
 
   for (int index = 0; index < 2; ++index) {
-    auto* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    auto* button = new UIBitmapButton(*this->m_context);
     button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
     button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
     button->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
@@ -39,6 +39,6 @@ void UIGraffiStrboxWnd::Slot15(int, int) {
 
 // OFFSET: 0x008C7C50
 // FUNCTION: fn_11942
-UIGraffiStrboxWnd::UIGraffiStrboxWnd(UIWindowContext& windows, UIButtonContext& controls, UIEditContext& edits)
-    : UIFrameWnd(windows, 0), m_controls(&controls), m_editContext(&edits) {
+UIGraffiStrboxWnd::UIGraffiStrboxWnd(UIWindowContext& windows, UIEditContext& edits)
+    : UIFrameWnd(windows, 0), m_editContext(&edits) {
 }

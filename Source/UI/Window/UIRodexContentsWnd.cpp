@@ -1,3 +1,4 @@
+#include "Render/Text/FontCache.h"
 #include "UI/Window/UIRodexContentsWnd.h"
 
 #include "Client/Input/InputCharset.h"
@@ -58,9 +59,9 @@ void UIRodexContentsWnd::SetContentsText(const char* text) {
 
 // OFFSET: 0x00801CE0
 // FUNCTION: fn_10015
-UIRodexContentsWnd::UIRodexContentsWnd(UIWindowContext& windows, UIButtonContext& controls)
+UIRodexContentsWnd::UIRodexContentsWnd(UIWindowContext& windows)
     : UIFrameWnd(windows, 0), m_contents(nullptr), m_zeny(0), m_itemButton(nullptr), m_zenyButton(nullptr), unknown_0104(nullptr),
-      unknown_0108(nullptr), m_controls(&controls) {
+      unknown_0108(nullptr) {
   this->m_items.clear();
   this->m_itemIndex = 0;
   this->unknown_010C = false;
@@ -102,8 +103,8 @@ void UIRodexContentsWnd::DisableZenyButton() {
 // OFFSET: 0x008020B0
 // FUNCTION: fn_10020
 void UIRodexContentsWnd::Slot15(int, int) {
-  this->AddBaseButton(*this->m_controls);
-  this->AddCloseButton(*this->m_controls, "", 0);
+  this->AddBaseButton();
+  this->AddCloseButton("", 0);
 
   RodexMailStore* store = g_rodexMailStore;
   std::map<std::int64_t, RodexMail>* mails = nullptr;
@@ -126,7 +127,7 @@ void UIRodexContentsWnd::Slot15(int, int) {
                             mail->second.unknown_0001);
 
       if (store->unknown_0010 == 0 && (mail->second.unknown_0001 & 8) == 0 && mail->second.unknown_0194 == 0) {
-        UIBasicButton* report = new UIBasicButton(*this->m_context, *this->m_controls);
+        UIBasicButton* report = new UIBasicButton(*this->m_context);
         report->Configure(70, LookupMessage(3548));
         report->Move(224, 29);
         report->SetId(310);
@@ -137,7 +138,7 @@ void UIRodexContentsWnd::Slot15(int, int) {
     }
   }
 
-  this->unknown_0104 = new UIBasicButton(*this->m_context, *this->m_controls);
+  this->unknown_0104 = new UIBasicButton(*this->m_context);
   this->unknown_0104->Configure(50, LookupMessage(3542));
   this->unknown_0104->Move(6, 376);
   this->unknown_0104->SetId(211);
@@ -147,7 +148,6 @@ void UIRodexContentsWnd::Slot15(int, int) {
 // OFFSET: 0x008023F0
 // FUNCTION: fn_10021
 void UIRodexContentsWnd::Paint() {
-  auto& controls = *this->m_controls;
   this->ClearSurface(0xFF00FF);
 
   const auto* background = static_cast<CBitmapRes*>(
@@ -185,7 +185,7 @@ void UIRodexContentsWnd::Paint() {
       ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\shadow_item_on.bmp"))
     );
     this->DrawBitmap(x - 4, 319, &slot->image, true);
-    DrawItemWithQuantity(*this, controls.resources, descriptions, controls.fonts, controls.locale, x, 309, *item, 0, 0);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, this->m_context->locale, x, 309, *item, 0, 0);
     if (item->unknown_0088 > 0) {
       ResourceMgr& resources = ResourceMgr::Instance();
       const std::string name = FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item->unknown_0088);
@@ -384,7 +384,7 @@ void UIRodexContentsWnd::SetMailContents(std::string title, std::string sender, 
   this->AddChild(this->m_contents);
 
   if (hasItem) {
-    this->m_itemButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+    this->m_itemButton = new UIBitmapButton(*this->m_context);
     this->m_itemButton->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_receive_out.bmp", 0, 0);
     this->m_itemButton->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_receive_over.bmp", 1, 0);
     this->m_itemButton->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_receive_press.bmp", 2, 0);
@@ -396,7 +396,7 @@ void UIRodexContentsWnd::SetMailContents(std::string title, std::string sender, 
 
   if (zeny > 0) {
     this->m_zeny = zeny;
-    this->m_zenyButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+    this->m_zenyButton = new UIBitmapButton(*this->m_context);
     this->m_zenyButton->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_receive_out.bmp", 0, 0);
     this->m_zenyButton->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_receive_over.bmp", 1, 0);
     this->m_zenyButton->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_receive_press.bmp", 2, 0);
@@ -407,7 +407,7 @@ void UIRodexContentsWnd::SetMailContents(std::string title, std::string sender, 
   }
 
   if (g_rodexMailStore->unknown_0010 == 0 && (flags & 8) == 0) {
-    this->unknown_0108 = new UIBasicButton(*this->m_context, *this->m_controls);
+    this->unknown_0108 = new UIBasicButton(*this->m_context);
     this->unknown_0108->Configure(70, LookupMessage(3543));
     this->unknown_0108->Move(224, 376);
     this->unknown_0108->SetId(305);

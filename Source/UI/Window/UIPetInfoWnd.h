@@ -13,13 +13,12 @@ class UINormalMB;
 class ForbiddenWords;
 class UINoneVisibleButton;
 class UIPetInfoBarGraph;
-struct UIButtonContext;
 struct UIEditContext;
 struct WindowResponseRecorder;
 
 class UIPetInfoWnd : public UIFrameWnd {
 public:
-  UIPetInfoWnd(UIWindowContext& windows, UIButtonContext& controls);
+  UIPetInfoWnd(UIWindowContext& windows);
   ~UIPetInfoWnd() override;
 
   void Slot11() override;
@@ -39,7 +38,7 @@ public:
   /* 00E8 */ UICheckBox* unknown_00E8;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
   UIEditContext* m_editContext;
   WindowResponseRecorder* m_recorder;
   ForbiddenWords* m_forbiddenWords;

@@ -12,7 +12,7 @@ class UITagButton : public UITextButton {
   friend class UITagListBox;
 
 public:
-  UITagButton(UIWindowContext& windows, UIButtonContext& buttons);
+  UITagButton(UIWindowContext& windows);
 
   /* 00F8 */ ITEM_INFO item;
   /* 01F0 */ std::vector<std::string> m_strings;

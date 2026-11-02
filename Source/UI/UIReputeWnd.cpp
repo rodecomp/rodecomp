@@ -1,3 +1,4 @@
+#include "UI/Window/UIWindowMgr.h"
 #include "UI/UIReputeWnd.h"
 #include "Contents/MessageTable.h"
 #include "Contents/ReputeMgr.h"
@@ -47,8 +48,8 @@ bool UIReputeWnd::Slot02() {
 // OFFSET: 0x0060F180
 // FUNCTION: fn_04313
 void UIReputeWnd::Slot15(int width, int height) {
-  this->AddBaseButton(*this->m_controls);
-  this->AddCloseButton(*this->m_controls, "", 0);
+  this->AddBaseButton();
+  this->AddCloseButton("", 0);
 
   this->m_groupCombo = new UIComboBoxDefWnd(*this->m_context, *this->m_comboContext);
   this->m_groupCombo->dropdownHeight = 160;
@@ -72,7 +73,7 @@ void UIReputeWnd::Slot15(int width, int height) {
   this->m_searchEdit->flat = 0;
   this->AddChild(this->m_searchEdit);
 
-  UIBitmapButton* search = new UIBitmapButton(*this->m_context, *this->m_controls);
+  UIBitmapButton* search = new UIBitmapButton(*this->m_context);
   search->SetBitmap("유저인터페이스\\Reputation\\btn_search.bmp", 0, 0);
   search->SetBitmap("유저인터페이스\\Reputation\\btn_search_over.bmp", 1, 0);
   search->SetBitmap("유저인터페이스\\Reputation\\btn_search_press.bmp", 2, 0);
@@ -84,7 +85,7 @@ void UIReputeWnd::Slot15(int width, int height) {
   this->AddChild(search);
   this->m_message0 = 321;
 
-  this->m_prevButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->m_prevButton = new UIBitmapButton(*this->m_context);
   this->m_prevButton->SetBitmap("유저인터페이스\\Reputation\\arrow_prev.bmp", 0, 0);
   this->m_prevButton->SetBitmap("유저인터페이스\\Reputation\\arrow_prev.bmp", 1, 0);
   this->m_prevButton->SetBitmap("유저인터페이스\\Reputation\\arrow_prev.bmp", 2, 0);
@@ -95,7 +96,7 @@ void UIReputeWnd::Slot15(int width, int height) {
   this->m_prevButton->SetId(316);
   this->AddChild(this->m_prevButton);
 
-  this->m_nextButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->m_nextButton = new UIBitmapButton(*this->m_context);
   this->m_nextButton->SetBitmap("유저인터페이스\\Reputation\\arrow_next.bmp", 0, 0);
   this->m_nextButton->SetBitmap("유저인터페이스\\Reputation\\arrow_next.bmp", 1, 0);
   this->m_nextButton->SetBitmap("유저인터페이스\\Reputation\\arrow_next.bmp", 2, 0);
@@ -106,7 +107,7 @@ void UIReputeWnd::Slot15(int width, int height) {
   this->m_nextButton->SetId(317);
   this->AddChild(this->m_nextButton);
 
-  UIBasicButton* close = new UIBasicButton(*this->m_context, *this->m_controls);
+  UIBasicButton* close = new UIBasicButton(*this->m_context);
   close->Configure(42, LookupMessage(3045));
   close->Move(589, 425);
   close->SetId(201);
@@ -126,7 +127,6 @@ void UIReputeWnd::Slot15(int width, int height) {
 // OFFSET: 0x0060F8F0
 // FUNCTION: fn_04314
 void UIReputeWnd::Paint() {
-  auto& controls = *this->m_controls;
   this->ClearSurface(0xFFFFFFFF);
   const int titleHeight = this->DrawTitleBar(false, LookupMessage(3827), 0);
   const int barHeight = this->DrawButtonBar(2, 0, 1);

@@ -8,14 +8,13 @@
 #include <list>
 #include <string>
 
-struct UIButtonContext;
 class UIRodexEditCtrl3;
 class UIBitmapButton;
 class UIBasicButton;
 
 class UIRodexContentsWnd : public UIFrameWnd {
 public:
-  UIRodexContentsWnd(UIWindowContext& windows, UIButtonContext& controls);
+  UIRodexContentsWnd(UIWindowContext& windows);
 
   void Paint() override;
   void Slot15(int width, int height) override;
@@ -45,7 +44,7 @@ public:
   /* 010C */ bool unknown_010C;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 #endif

@@ -39,7 +39,6 @@ void UIKeyStrokeWnd::Slot15(int, int) {}
 // OFFSET: 0x0096D720
 // FUNCTION: fn_13203
 void UICandidateWnd::Paint() {
-  UIButtonContext& controls = *this->m_controls;
   this->DrawBorder(0, 0, 0, 0);
   char text[65];
   switch (g_language) {
@@ -137,7 +136,6 @@ int UICandidateWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
   if (message != 65) {
     return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
-  UIButtonContext& controls = *this->m_controls;
   const std::string* candidates = reinterpret_cast<const std::string*>(argument1);
   for (int i = 0; i < 9; ++i) {
     this->m_candidates[i] = candidates[i];

@@ -35,9 +35,9 @@ UIPetEvolutionWnd::~UIPetEvolutionWnd() {
 // OFFSET: 0x009AB170
 // FUNCTION: fn_13763
 void UIPetEvolutionWnd::Slot15(int width, int height) {
-  this->AddCloseButton(*this->m_controls, "", 0);
+  this->AddCloseButton("", 0);
 
-  UIBitmapButton* okButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+  UIBitmapButton* okButton = new UIBitmapButton(*this->m_context);
   okButton->SetBitmap("유저인터페이스\\btn_big_ok.bmp", 0, 0);
   okButton->SetBitmap("유저인터페이스\\btn_big_ok_a.bmp", 1, 0);
   okButton->SetBitmap("유저인터페이스\\btn_big_ok_b.bmp", 2, 0);
@@ -46,7 +46,7 @@ void UIPetEvolutionWnd::Slot15(int width, int height) {
   okButton->SetId(184);
   this->AddChild(okButton);
 
-  UIBitmapButton* cancelButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+  UIBitmapButton* cancelButton = new UIBitmapButton(*this->m_context);
   cancelButton->SetBitmap("유저인터페이스\\btn_big_cancel.bmp", 0, 0);
   cancelButton->SetBitmap("유저인터페이스\\btn_big_cancel_a.bmp", 1, 0);
   cancelButton->SetBitmap("유저인터페이스\\btn_big_cancel_b.bmp", 2, 0);
@@ -199,7 +199,7 @@ int UIPetEvolutionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
 void UIPetEvolutionWnd::RebuildButtons() {
   const char* name = g_session.GetPetString(g_session.GetPetJobByEggItem(this->m_petEggId));
   if (name) {
-    UITextButton* button = new UITextButton(*this->m_context, *this->m_controls);
+    UITextButton* button = new UITextButton(*this->m_context);
     button->Configure(name, 0xFF6464, 0, 12, 1, 1);
     button->m_hoverColor = 0x9B9B9B;
     button->ResizeToTextClipped(button->geometry.width - 10, button->geometry.height);
@@ -212,7 +212,7 @@ void UIPetEvolutionWnd::RebuildButtons() {
 
   name = g_session.GetPetString(g_session.GetPetJobByEggItem(this->m_evolvedEggId));
   if (name) {
-    UITextButton* button = new UITextButton(*this->m_context, *this->m_controls);
+    UITextButton* button = new UITextButton(*this->m_context);
     button->Configure(name, 0xFF6464, 0, 12, 1, 1);
     button->m_hoverColor = 0x9B9B9B;
     button->ResizeToTextClipped(button->geometry.width - 10, button->geometry.height);
@@ -232,7 +232,7 @@ void UIPetEvolutionWnd::RebuildButtons() {
     std::memset(text, 0, sizeof(text));
     int capacity = sizeof(text);
     item.sub_6D5810(text, capacity, 0);
-    UITextButton* button = new UITextButton(*this->m_context, *this->m_controls);
+    UITextButton* button = new UITextButton(*this->m_context);
     button->Configure(text, 0xFF6464, 0, 12, 1, 1);
     button->m_hoverColor = 0x9B9B9B;
     button->ResizeToTextClipped(button->geometry.width, button->geometry.height);

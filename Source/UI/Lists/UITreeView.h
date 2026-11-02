@@ -12,7 +12,6 @@ class UIEditCtrl2;
 struct UIEditContext;
 class UITVBitmapButton;
 class UITVTextButton;
-struct UIButtonContext;
 
 struct UITreeNode {
   /* 0000 */ int id;
@@ -38,7 +37,7 @@ static_assert(offsetof(UITreeNode, children) == 0x180);
 
 class UITreeView : public UIWindow {
 public:
-  UITreeView(UIWindowContext& windows, UIEditContext& edit, UIButtonContext& controls);
+  UITreeView(UIWindowContext& windows, UIEditContext& edit);
   void Resize(int width, int height) override;
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -72,7 +71,7 @@ protected:
   /* 00AC */ unsigned char unknown_00AC;
 
   UIEditContext* m_edit;
-  UIButtonContext* m_controls;
+  void* unknown_controls;
   /* 00B0 */ int unknown_00B0;
 };
 

@@ -42,7 +42,6 @@ std::vector<unsigned char> UIWeaponRefineWnd::BuildReplayRecords() {
 // OFFSET: 0x009A3CD0
 // FUNCTION: fn_13613
 void UIWeaponRefineWnd::Paint() {
-  auto& controls = *this->m_controls;
   const int titleHeight = this->DrawTitleBar(true, LookupMessage(910), 0);
   this->DrawPanelBackground(titleHeight, 0, "");
   this->DrawButtonBar(2, 0, 1);

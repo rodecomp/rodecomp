@@ -1,3 +1,5 @@
+#include "UI/Window/UINewSelectCharWnd.h"
+#include "Client/Mode/ModeTooltip.h"
 #include "UI/UILapineUpgradeBoxWnd.h"
 
 #include "Client/Mode/ModeMgr.h"
@@ -46,9 +48,9 @@ namespace {
 
 // OFFSET: 0x00602D30
 // FUNCTION: fn_04187
-UILapineUpgradeBoxWnd::UILapineUpgradeBoxWnd(UIWindowContext& windows, UIButtonContext& controls)
+UILapineUpgradeBoxWnd::UILapineUpgradeBoxWnd(UIWindowContext& windows)
     : UIFrameWnd(windows, 0), closeButton(nullptr), upgradeButton(nullptr), selectButton(nullptr), ingredientList(nullptr), ingredientId(0),
-      noticeTick(0), noticeDuration(3000), waiting(0), m_controls(&controls) {
+      noticeTick(0), noticeDuration(3000), waiting(0) {
 }
 
 // OFFSET: 0x00602E60
@@ -74,15 +76,14 @@ void UILapineUpgradeBoxWndNoop() {}
 // OFFSET: 0x006036E0
 // FUNCTION: fn_04198
 void UILapineUpgradeBoxWnd::Slot15(int, int) {
-  UIButtonContext& controls = *this->m_controls;
-  this->AddBaseButton(controls);
-  this->AddCloseButton(controls, "", 0);
+  this->AddBaseButton();
+  this->AddCloseButton("", 0);
 
   this->ingredientList = new UILapineUpgradeBox_IngredientListWnd(*this->m_context, 150, 204);
   this->ingredientList->Move(241, 17);
   this->AddChild(this->ingredientList);
 
-  this->closeButton = new UIBitmapButton(*this->m_context, controls);
+  this->closeButton = new UIBitmapButton(*this->m_context);
   this->closeButton->SetBitmap("유저인터페이스\\lapine\\btn_cancel_out.bmp", 0, 0);
   this->closeButton->SetBitmap("유저인터페이스\\lapine\\btn_cancel_over.bmp", 1, 0);
   this->closeButton->SetBitmap("유저인터페이스\\lapine\\btn_cancel_press.bmp", 2, 0);
@@ -92,7 +93,7 @@ void UILapineUpgradeBoxWnd::Slot15(int, int) {
   this->closeButton->SetId(201);
   this->AddChild(this->closeButton);
 
-  this->upgradeButton = new UIBitmapButton(*this->m_context, controls);
+  this->upgradeButton = new UIBitmapButton(*this->m_context);
   this->upgradeButton->SetBitmap("유저인터페이스\\lapine\\btn_make_out.bmp", 0, 0);
   this->upgradeButton->SetBitmap("유저인터페이스\\lapine\\btn_make_over.bmp", 1, 0);
   this->upgradeButton->SetBitmap("유저인터페이스\\lapine\\btn_make_press.bmp", 2, 0);
@@ -102,7 +103,7 @@ void UILapineUpgradeBoxWnd::Slot15(int, int) {
   this->upgradeButton->SetId(509);
   this->AddChild(this->upgradeButton);
 
-  this->selectButton = new UIBitmapButton(*this->m_context, controls);
+  this->selectButton = new UIBitmapButton(*this->m_context);
   this->selectButton->SetBitmap("유저인터페이스\\lapine\\btn_moveitem_out.bmp", 0, 0);
   this->selectButton->SetBitmap("유저인터페이스\\lapine\\btn_moveitem_over.bmp", 1, 0);
   this->selectButton->SetBitmap("유저인터페이스\\lapine\\btn_moveitem_press.bmp", 2, 0);
@@ -137,9 +138,8 @@ void UILapineUpgradeBox_IngredientInfoWnd::Paint() {
     this->DrawBitmap(32, 0, bitmap ? &bitmap->image : nullptr, false);
   }
 
-  UIButtonContext& controls = *this->m_controls;
   ItemDescriptions descriptions{g_itemDescriptions};
-  DrawItemIcon(*this, controls.resources, descriptions, 4, 3, this->item, 0);
+  DrawItemIcon(*this, ResourceMgr::Instance(), descriptions, 4, 3, this->item, 0);
 
   const std::string name = this->FitDisplayText(100, this->item.unknown_0044.c_str(), 0, 12, 0);
   this->DrawShadowedText(36, 9, name.c_str(), 0, 0, 0xE0E0E0, 0, 12, 0);
@@ -148,7 +148,6 @@ void UILapineUpgradeBox_IngredientInfoWnd::Paint() {
 // OFFSET: 0x00603B60
 // FUNCTION: fn_04200
 void UILapineUpgradeBoxWnd::Paint() {
-  UIButtonContext& controls = *this->m_controls;
   CBitmapRes* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\lapine\\bg_lapineUpgrade.bmp")));
   this->DrawBitmap(0, 0, &background->image, true);
 
@@ -161,7 +160,7 @@ void UILapineUpgradeBoxWnd::Paint() {
 
   if (this->item.unknown_0000[1] != 0) {
     ItemDescriptions descriptions{g_itemDescriptions};
-    DrawItemIcon(*this, controls.resources, descriptions, 101, 165, this->item, 0);
+    DrawItemIcon(*this, ResourceMgr::Instance(), descriptions, 101, 165, this->item, 0);
   }
 
   if (timeGetTime() < this->noticeTick + this->noticeDuration) {
@@ -466,7 +465,7 @@ void UILapineUpgradeBox_IngredientInfoWnd::Slot28(int x, int y) {
     int tipX = 0;
     int tipY = -20;
     this->ToScreen(tipX, tipY);
-    this->m_controls->services.Tooltip(this->tooltip.c_str(), tipX, tipY, -1, false, true);
+    static_cast<ModeTooltip*>(g_charViewMode)->Show(this->tooltip.c_str(), tipX, tipY, -1, false, true);
   }
 }
 
@@ -479,7 +478,7 @@ void UILapineUpgradeBoxWnd::Slot28(int x, int y) {
     int tipX = 101;
     int tipY = 145;
     this->ToScreen(tipX, tipY);
-    this->m_controls->services.Tooltip(this->item.unknown_0044.c_str(), tipX, tipY, -1, false, true);
+    static_cast<ModeTooltip*>(g_charViewMode)->Show(this->item.unknown_0044.c_str(), tipX, tipY, -1, false, true);
   }
 }
 

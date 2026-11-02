@@ -3,7 +3,6 @@
 
 #include "UI/Lists/UIChatHisBox.h"
 
-struct UIButtonContext;
 
 class UIChatHisBox2 : public UIChatHisBox {
 public:
@@ -42,7 +41,7 @@ public:
   void Slot33(int x, int y) override;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 #endif

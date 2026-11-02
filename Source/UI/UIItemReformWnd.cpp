@@ -89,16 +89,16 @@ void UIItemReformWnd_List::Move(int x, int y) {
 // OFFSET: 0x005FCD20
 // FUNCTION: fn_04108
 void UIItemReformWnd::Slot15(int width, int height) {
-  this->AddBaseButton(*this->m_controls);
-  this->AddCloseButton(*this->m_controls, "", 0);
+  this->AddBaseButton();
+  this->AddCloseButton("", 0);
 
-  UIBasicButton* cancel = new UIBasicButton(*this->m_context, *this->m_controls);
+  UIBasicButton* cancel = new UIBasicButton(*this->m_context);
   cancel->Configure(60, LookupMessage(218));
   cancel->Move(300, 236);
   cancel->SetId(201);
   this->AddChild(cancel);
 
-  this->reformButton = new UIBasicButton(*this->m_context, *this->m_controls);
+  this->reformButton = new UIBasicButton(*this->m_context);
   this->reformButton->Configure(60, LookupMessage(3847));
   this->reformButton->Move(365, 236);
   this->reformButton->SetId(184);
@@ -129,7 +129,7 @@ void UIItemReformWnd::Slot15(int width, int height) {
     this->materialIcons.push_back(icon);
   }
 
-  this->detailButton = new UIItemReformWnd_DetailBtn(*this->m_context, *this->m_controls);
+  this->detailButton = new UIItemReformWnd_DetailBtn(*this->m_context);
   this->detailButton->SetSize(149, 14);
   this->detailButton->Move(36, 124);
   this->detailButton->Enable(0);
@@ -183,7 +183,6 @@ void UIItemReformWnd::Paint() {
 void UIItemReformWnd_DetailBtn::Paint() {
   this->ClearSurface(0xFFFF00FF);
   std::string text = LookupMessage(3854);
-  UIButtonContext& controls = *this->m_buttonContext;
   const unsigned int textWidth = this->TextWidth(text.c_str(), 0, 0, 12, 0, 0);
   this->DrawCenteredText(0, 0, text.c_str(), this->geometry.width, 0, 12, 0, 0);
   this->FillRegion((this->geometry.width - textWidth) * 0.5, 12, textWidth, 1, 0);

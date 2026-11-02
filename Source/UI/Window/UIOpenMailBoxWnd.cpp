@@ -12,7 +12,7 @@ void UIOpenMailBoxWnd::Slot53() {
 // OFFSET: 0x0094C410
 // FUNCTION: fn_12896
 void UIOpenMailBoxWnd::Slot15(int width, int height) {
-  auto* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+  auto* button = new UIBitmapButton(*this->m_context);
   button->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\icon_noti_gotmail.bmp", 0, 0);
   button->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\icon_noti_gotmail.bmp", 1, 0);
   button->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\icon_noti_gotmail.bmp", 2, 0);
@@ -66,6 +66,6 @@ int UIOpenMailBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
 
 // OFFSET: 0x00946DE0
 // FUNCTION: fn_12853
-UIOpenMailBoxWnd::UIOpenMailBoxWnd(UIWindowContext& windows, UIButtonContext& controls)
-    : UIFrameWnd(windows, 0), m_controls(&controls) {
+UIOpenMailBoxWnd::UIOpenMailBoxWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0) {
 }

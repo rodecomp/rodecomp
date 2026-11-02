@@ -6,7 +6,6 @@
 #include <string>
 #include <vector>
 
-struct UIButtonContext;
 struct WindowPlacement;
 class UIBitmapButton;
 class UIChatEditCtrl;
@@ -45,7 +44,7 @@ public:
   void SaveChatLog();
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 #endif

@@ -9,7 +9,6 @@
 #include <utility>
 #include <vector>
 
-struct UIButtonContext;
 struct UIComboBoxHeaderContext;
 struct UIEditContext;
 struct SeekPartyMBWndInfo;
@@ -27,7 +26,7 @@ struct SeekPartyRegistration {
 
 class UISeekPartyMBWnd : public UIFrameWnd {
 public:
-  UISeekPartyMBWnd(UIWindowContext& windows, UIButtonContext& controls);
+  UISeekPartyMBWnd(UIWindowContext& windows);
   ~UISeekPartyMBWnd() override;
   void Slot11() override;
   void Slot15(int width, int height) override;
@@ -58,7 +57,7 @@ protected:
   /* 0169 */ SeekPartyRegistration m_registration;
   /* 0179 */ unsigned char unknown_0179[3];
   /* 017C */ SeekPartyMBWndInfo* m_saved;
-  UIButtonContext* m_controls;
+  void* unknown_controls;
   UIStaticText* m_titleText;
   UIStaticText* m_levelText;
   UIEditContext* m_editContext;

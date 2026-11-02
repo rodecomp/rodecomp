@@ -1,3 +1,4 @@
+#include "Contents/MessageTable.h"
 #include "Client/Mode/ModeEvents.h"
 #include "Client/ReplayPacketRecorder.h"
 #include "UI/Buttons/UIButton.h"
@@ -36,7 +37,7 @@ int UIJoinPartyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     std::string text = "(";
     text += reinterpret_cast<const char*>(b);
     text += ")";
-    text += this->m_acceptance->text.buttons.services.MessageText(94);
+    text += LookupMessage(94);
     this->viewer->Clear();
     this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text.c_str()), 38, 0, 0);
 

@@ -42,10 +42,9 @@ void UIMacroBlackListCheckWnd::Slot15(int width, int height) {
   std::mt19937 engine(std::random_device{}());
   std::shuffle(this->digits, this->digits + 10, engine);
 
-  UIButtonContext& controls = *this->m_controls;
   std::string directory;
 
-  this->okButton = new UIBitmapButton(*this->m_context, controls);
+  this->okButton = new UIBitmapButton(*this->m_context);
   this->okButton->SetBitmap("유저인터페이스\\btn_big_ok.bmp", 0, 0);
   this->okButton->SetBitmap("유저인터페이스\\btn_big_ok_a.bmp", 1, 0);
   this->okButton->SetBitmap("유저인터페이스\\btn_big_ok_b.bmp", 2, 0);
@@ -71,7 +70,7 @@ void UIMacroBlackListCheckWnd::Slot15(int width, int height) {
   for (int i = 0; i < 10; ++i) {
     const int digit = this->digits[i];
     UIBitmapButton*& button = this->digitButtons[i];
-    button = new UIBitmapButton(*this->m_context, controls);
+    button = new UIBitmapButton(*this->m_context);
     button->SetBitmap((directory + names[digit][0] + ".bmp").c_str(), 0, 0);
     button->SetBitmap((directory + names[digit][1] + ".bmp").c_str(), 1, 0);
     button->SetBitmap((directory + names[digit][2] + ".bmp").c_str(), 2, 0);
@@ -81,7 +80,7 @@ void UIMacroBlackListCheckWnd::Slot15(int width, int height) {
     this->AddChild(button);
   }
 
-  this->resetButton = new UIBitmapButton(*this->m_context, controls);
+  this->resetButton = new UIBitmapButton(*this->m_context);
   this->resetButton->SetBitmap((directory + names[10][0] + ".bmp").c_str(), 0, 0);
   this->resetButton->SetBitmap((directory + names[10][1] + ".bmp").c_str(), 1, 0);
   this->resetButton->SetBitmap((directory + names[10][2] + ".bmp").c_str(), 2, 0);

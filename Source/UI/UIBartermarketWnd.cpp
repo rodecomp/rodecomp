@@ -1705,7 +1705,7 @@ void UIBarterItemPurchaseWnd::Paint() {
     }
 
     const ITEM_INFO item = it->ToItemInfo();
-    DrawItemWithQuantity(*this, this->m_controls->resources, descriptions, this->m_controls->fonts, this->m_controls->locale, x + 44, y + 21, item, 0, 0);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, this->m_context->locale, x + 44, y + 21, item, 0, 0);
     this->DrawItemName(x + 76, y + 29, 100, &item, 0, 0, 12);
     const std::string iconId = std::to_string(it->field_2c);
     DrawItemIconById(*this, descriptions, this->geometry.width - 70, y + 21, iconId.c_str(), 1);
@@ -1787,9 +1787,9 @@ void UIBartermarketWnd::Paint() {
 
     const ITEM_INFO item = it->ToItemInfo();
     if (it->flag_38) {
-      DrawItemIcon(*this, this->m_controls->resources, descriptions, x + 44, y + 21, item, 0);
+      DrawItemIcon(*this, ResourceMgr::Instance(), descriptions, x + 44, y + 21, item, 0);
     } else {
-      DrawItemWithQuantity(*this, this->m_controls->resources, descriptions, this->m_controls->fonts, this->m_controls->locale, x + 44, y + 21, item, 0, 0);
+      DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, this->m_context->locale, x + 44, y + 21, item, 0, 0);
     }
     this->DrawItemName(x + 76, y + 29, 120, &item, 0, 0, 12);
     const std::string iconId = std::to_string(it->field_2c);

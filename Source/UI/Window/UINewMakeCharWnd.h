@@ -36,8 +36,8 @@ public:
 class UIHairStyleButton : public UIBitmapButton {
 public:
   // INLINED
-  UIHairStyleButton(UIWindowContext& windows, UIButtonContext& controls, int style, int sex)
-      : UIBitmapButton(windows, controls), m_style(style), m_sex(sex), m_race(0), m_preview(nullptr), m_selected(false) {
+  UIHairStyleButton(UIWindowContext& windows, int style, int sex)
+      : UIBitmapButton(windows), m_style(style), m_sex(sex), m_race(0), m_preview(nullptr), m_selected(false) {
   }
   UIHairStyleButton(int style, int sex);
   void Slot15(int width, int height) override;
@@ -134,7 +134,7 @@ public:
   /* 0360 */ unsigned long m_startTime;
   /* 0364 */ int unknown_0364;
   /* 0368 */ int unknown_0368;
-  UIButtonContext* m_controls;
+  void* unknown_controls;
   UIEditContext* m_editContext;
 };
 

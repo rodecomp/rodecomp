@@ -6,7 +6,6 @@
 class UIButton;
 class UIEditCtrl;
 class UIStaticText;
-struct UIButtonContext;
 struct UIEditContext;
 
 class UIItemDropCntWnd : public UIFrameWnd {
@@ -50,7 +49,7 @@ public:
   void Slot15(int width, int height) override;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
   UIEditContext* m_editContext;
 };
 

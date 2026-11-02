@@ -9,7 +9,6 @@
 #include <utility>
 #include <vector>
 
-struct UIButtonContext;
 struct UIEditContext;
 struct UIListBoxContext;
 class UIBitmapButton;
@@ -21,7 +20,7 @@ class UIStaticText;
 
 class UIChatRoomWnd : public UIFrameWnd {
 public:
-  UIChatRoomWnd(UIWindowContext& windows, UIButtonContext& controls);
+  UIChatRoomWnd(UIWindowContext& windows);
   void Move(int x, int y) override;
   void Slot11() override;
   void Slot15(int width, int height) override;
@@ -52,7 +51,7 @@ public:
   /* 0120 */ ChatRoomWndInfo* saved;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
   UIEditContext* m_editContext;
   UIListBoxContext* m_listContext;
 };

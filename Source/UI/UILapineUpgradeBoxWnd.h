@@ -8,7 +8,6 @@
 #include <string>
 
 class UIBitmapButton;
-struct UIButtonContext;
 class UILapineUpgradeBox_IngredientListWnd;
 
 class UILapineUpgradeBox_IngredientInfoWnd : public UIFrameWnd {
@@ -32,14 +31,14 @@ public:
   /* 01CC */ int quantity;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 class UILapineUpgradeBoxWnd : public UIFrameWnd {
   friend class UILapineUpgradeBox_IngredientListWnd;
 
 public:
-  UILapineUpgradeBoxWnd(UIWindowContext& windows, UIButtonContext& controls);
+  UILapineUpgradeBoxWnd(UIWindowContext& windows);
   ~UILapineUpgradeBoxWnd() override;
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot15(int width, int height) override;
@@ -71,7 +70,7 @@ public:
   /* 0214 */ unsigned char waiting;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 #endif

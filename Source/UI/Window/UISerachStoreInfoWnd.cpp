@@ -87,7 +87,7 @@ ITEM_INFO UISerachStoreInfoWnd::ItemAt(int x, int y) {
 void UISerachStoreInfoWnd::Slot15(int width, int height) {
   UIRadioBtn** radio = this->m_radios;
   for (int x = 10; x < 90; x += 40) {
-    *radio = new UIRadioBtn(*this->m_context, *this->m_controls);
+    *radio = new UIRadioBtn(*this->m_context);
     (*radio)->SetSize(this->geometry.width / 2, 12);
     (*radio)->Move(x, 40);
     this->AddChild(*radio);
@@ -144,7 +144,7 @@ void UISerachStoreInfoWnd::Slot15(int width, int height) {
   this->m_edits[3]->Invalidate();
   this->AddChild(this->m_edits[3]);
 
-  UICheckBox* check = new UICheckBox(*this->m_context, *this->m_controls);
+  UICheckBox* check = new UICheckBox(*this->m_context);
   check->SetSize(0xA0, 0xC);
   check->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(0x6FC));
   check->Move(100, 0x3C);
@@ -153,7 +153,7 @@ void UISerachStoreInfoWnd::Slot15(int width, int height) {
 
   {
     std::string path = "유저인터페이스\\";
-    this->m_findButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+    this->m_findButton = new UIBitmapButton(*this->m_context);
     this->m_findButton->SetBitmap((path + "btn_find" + ".bmp").c_str(), 0, 0);
     this->m_findButton->SetBitmap((path + "btn_find_a" + ".bmp").c_str(), 1, 0);
     this->m_findButton->SetBitmap((path + "btn_find_b" + ".bmp").c_str(), 2, 0);
@@ -163,7 +163,7 @@ void UISerachStoreInfoWnd::Slot15(int width, int height) {
     this->AddChild(this->m_findButton);
   }
 
-  this->m_prevButton = new UITextButton(*this->m_context, *this->m_controls);
+  this->m_prevButton = new UITextButton(*this->m_context);
   this->m_prevButton->Configure(LookupMessage(0x41D), 0x8E8E8E, 0, 0xC, 0, 0);
   this->m_prevButton->m_hoverColor = 0xEFB700;
   this->m_prevButton->Move(
@@ -173,7 +173,7 @@ void UISerachStoreInfoWnd::Slot15(int width, int height) {
   this->m_prevButton->SetId(0x13C);
   this->AddChild(this->m_prevButton);
 
-  this->m_nextButton = new UITextButton(*this->m_context, *this->m_controls);
+  this->m_nextButton = new UITextButton(*this->m_context);
   this->m_nextButton->Configure(LookupMessage(0x41E), 0x8E8E8E, 0, 0xC, 0, 0);
   this->m_nextButton->m_hoverColor = 0xEFB700;
   this->m_nextButton->Move(this->geometry.width / 2 + 0x14, this->geometry.height - 0x15);
@@ -181,8 +181,8 @@ void UISerachStoreInfoWnd::Slot15(int width, int height) {
   this->m_nextButton->SetId(0x13D);
   this->AddChild(this->m_nextButton);
 
-  this->AddBaseButton(*this->m_controls);
-  this->AddCloseButton(*this->m_controls, "", 0);
+  this->AddBaseButton();
+  this->AddCloseButton("", 0);
   this->SendMsg(this, 0x3C, 0, 0, 0, 0);
   InputFocus{g_windowMgr.hoverWindow}.Set(this->m_edits[1]);
   this->m_message0 = 0x16D;

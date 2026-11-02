@@ -50,7 +50,7 @@ public:
 class UIItemReformWnd_DetailBtn : public UIButton {
 public:
   // INLINED
-  UIItemReformWnd_DetailBtn(UIWindowContext& windowContext, UIButtonContext& buttonContext) : UIButton(windowContext, buttonContext) {
+  UIItemReformWnd_DetailBtn(UIWindowContext& windowContext) : UIButton(windowContext) {
   }
   void Paint() override;
   void Slot47() override;
@@ -89,7 +89,7 @@ public:
   /* 02D0 */ std::vector<ITEM_INFO> materials;
   /* 02DC */ std::string information;
   /* 02F4 */ std::string warning;
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 #endif

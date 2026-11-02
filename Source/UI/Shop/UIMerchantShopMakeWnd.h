@@ -13,7 +13,6 @@
 
 class UIBasicButton;
 class UIEditCtrl;
-struct UIButtonContext;
 
 class UIMerchantShopMakeWnd : public UIFrameWnd {
 public:
@@ -68,7 +67,7 @@ public:
   /* 018C */ short unknown_018C;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

@@ -6,11 +6,10 @@
 #include <cstdint>
 #include <string>
 
-struct UIButtonContext;
 
 class UIRadioBtn : public UIWindow {
 public:
-  UIRadioBtn(UIWindowContext& windows, UIButtonContext& controls);
+  UIRadioBtn(UIWindowContext& windows);
   ~UIRadioBtn() override;
   void Paint() override;
   void Slot25(int x, int y) override;
@@ -29,7 +28,7 @@ public:
   /* 00EC */ std::uint32_t textColor;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 #endif

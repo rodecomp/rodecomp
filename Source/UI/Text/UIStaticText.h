@@ -5,12 +5,11 @@
 
 #include <string>
 
-struct UIButtonContext;
 
 class UIStaticText : public UIWindow {
 public:
   UIStaticText();
-  UIStaticText(UIWindowContext& windows, UIButtonContext& controls);
+  UIStaticText(UIWindowContext& windows);
   ~UIStaticText() override;
   void Paint() override;
   void Slot25(int x, int y) override;
@@ -48,7 +47,7 @@ public:
   /* 00C0 */ std::string tooltip;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 class UIStaticText2 : public UIStaticText {
@@ -58,7 +57,7 @@ public:
 
 class UIStaticText3 : public UIStaticText {
 public:
-  UIStaticText3(UIWindowContext& windows, UIButtonContext& controls);
+  UIStaticText3(UIWindowContext& windows);
   void Paint() override;
 
   /* 00D8 */ int textX;

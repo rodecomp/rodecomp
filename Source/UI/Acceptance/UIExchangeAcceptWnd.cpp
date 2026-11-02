@@ -1,3 +1,4 @@
+#include "Contents/MessageTable.h"
 #include "Client/Mode/ModeEvents.h"
 #include "Client/ReplayPacketRecorder.h"
 #include "Contents/UserData/NormalItemSlots.h"
@@ -66,7 +67,7 @@ int UIExchangeAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     std::string text = "(";
     text += reinterpret_cast<const char*>(a);
     text += ")";
-    text += owner.text.buttons.services.MessageText(93);
+    text += LookupMessage(93);
     this->viewer->Clear();
     this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text.c_str()), 138, 0, 0);
     text = "C-Code : ";

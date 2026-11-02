@@ -23,7 +23,7 @@ struct PartyRowContext {
 
 class UIPartyInfoWnd : public UIBitmapButton {
 public:
-  UIPartyInfoWnd(UIWindowContext& windows, UIButtonContext& buttons, PartyRowContext& row);
+  UIPartyInfoWnd(UIWindowContext& windows, PartyRowContext& row);
   ~UIPartyInfoWnd() override;
   void Paint() override;
   void Slot31(int x, int y) override;
@@ -31,7 +31,7 @@ public:
   void SetInfo(const CAdvenPartyInfo& value);
   void Reset();
   CAdvenPartyInfo* Info();
-  static const char* TypeName(int type, ButtonServices& services);
+  static const char* TypeName(int type);
 
   /* 0120 */ std::string memo;
   /* 0138 */ std::string levels;

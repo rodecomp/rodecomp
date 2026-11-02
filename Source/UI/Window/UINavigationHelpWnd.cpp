@@ -1,3 +1,4 @@
+#include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UINavigationHelpWnd.h"
 
 #include "Contents/MessageTable.h"
@@ -46,7 +47,7 @@ void UINavigationHelpWnd::Slot15(int width, int height) {
   this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(3217)), 0x30, 0, 0);
   this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(3218)), 0x30, 0, 0);
 
-  this->AddCloseButton(*this->m_controls, LookupMessage(2202), 0);
+  this->AddCloseButton(LookupMessage(2202), 0);
 }
 
 // OFFSET: 0x0092CEC0
@@ -67,6 +68,6 @@ int UINavigationHelpWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::i
 
 // OFFSET: 0x009115B0
 // FUNCTION: fn_12517
-UINavigationHelpWnd::UINavigationHelpWnd(UIWindowContext& windows, UIButtonContext& controls, UITextViewerContext& text)
-    : UIFrameWnd(windows, 0), m_controls(&controls), m_text(&text), m_viewer(nullptr), unknown_00B8(0) {
+UINavigationHelpWnd::UINavigationHelpWnd(UIWindowContext& windows, UITextViewerContext& text)
+    : UIFrameWnd(windows, 0), m_text(&text), m_viewer(nullptr), unknown_00B8(0) {
 }

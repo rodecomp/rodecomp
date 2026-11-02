@@ -11,7 +11,6 @@ class UIButton;
 class UICheckBox;
 class UIHeadsprButton;
 struct MiniMapWndInfo;
-struct UIButtonContext;
 
 struct MiniMapMark {
   /* 0000 */ int x;
@@ -20,7 +19,7 @@ struct MiniMapMark {
 
 class UIMiniMapWnd : public UIFrameWnd {
 public:
-  UIMiniMapWnd(UIWindowContext& windows, UIButtonContext& controls);
+  UIMiniMapWnd(UIWindowContext& windows);
   void Slot11() override;
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -52,7 +51,7 @@ public:
   /* 0160 */ std::vector<MiniMapMark> warpMarks;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 #endif

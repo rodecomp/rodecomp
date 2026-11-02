@@ -13,7 +13,7 @@ protected:
 
 class UINaviLinkButton : public UITextButton {
 public:
-  UINaviLinkButton(UIWindowContext& windows, UIButtonContext& buttons, NavigationDestination& navigation);
+  UINaviLinkButton(UIWindowContext& windows, NavigationDestination& navigation);
   ~UINaviLinkButton() override;
   void Slot25(int x, int y) override;
   std::string Link();

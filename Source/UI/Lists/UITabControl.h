@@ -6,12 +6,11 @@
 #include <string>
 #include <vector>
 
-struct UIButtonContext;
 class UIEditCtrl;
 
 class UITabControl : public UIWindow {
 public:
-  UITabControl(UIWindowContext& windows, UIButtonContext& controls);
+  UITabControl(UIWindowContext& windows);
   int TabCount();
   int TabAt(int x, int y);
   void FillTab(int index, int x, int y, int width, int height, std::uint32_t color);
@@ -65,7 +64,7 @@ public:
   /* 00EC */ std::vector<bool> flags;
 
 private:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 #endif

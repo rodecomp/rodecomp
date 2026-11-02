@@ -17,7 +17,7 @@ void UIEscOptionWnd::Slot15(int, int) {
   const char* names[7] = {"esc_01", "esc_001", "esc_08", "esc_09", "esc_02", "esc_05", "esc_10"};
 
   for (int i = 0; i < 7; ++i) {
-    UIBitmapButton* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    UIBitmapButton* button = new UIBitmapButton(*this->m_context);
     this->m_buttons[i] = button;
     button->SetBitmap((prefix + names[i] + "a.bmp").c_str(), 0, 0);
     button->SetBitmap((prefix + names[i] + "b.bmp").c_str(), 1, 0);
@@ -66,8 +66,8 @@ void UIEscOptionWnd::LayoutButtons() {
 
 // OFFSET: 0x00911250
 // FUNCTION: fn_12512
-UIEscOptionWnd::UIEscOptionWnd(UIWindowContext& windows, UIButtonContext& controls)
-    : UIFrameWnd(windows, 0), m_titleHeight(17), m_controls(&controls) {
+UIEscOptionWnd::UIEscOptionWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0), m_titleHeight(17) {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   int escMode;
   if (mode->unknown_0250 == 0) {

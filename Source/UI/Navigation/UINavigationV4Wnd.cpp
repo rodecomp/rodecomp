@@ -2,8 +2,8 @@
 
 // OFFSET: 0x005C2860
 // FUNCTION: fn_03536
-UINavigationRuideWnd::UINavigationRuideWnd(UIWindowContext& windows, UIButtonContext& controls, UIListBoxContext& lists)
-    : UIFrameWnd(windows, 0), m_controls(&controls), m_listContext(&lists) {
+UINavigationRuideWnd::UINavigationRuideWnd(UIWindowContext& windows, UIListBoxContext& lists)
+    : UIFrameWnd(windows, 0), m_listContext(&lists) {
 }
 
 // OFFSET: 0x005C28C0
@@ -16,6 +16,6 @@ UINavigationV4Wnd::UINavigationV4Wnd(UIWindowContext& windows) : UIFrameWnd(wind
 
 // OFFSET: 0x005C2960
 // FUNCTION: fn_03538
-UINavigationroadiconWnd::UINavigationroadiconWnd(UIWindowContext& windows, UIButtonContext& controls)
-    : UIFrameWnd(windows, 0), m_controls(&controls) {
+UINavigationroadiconWnd::UINavigationroadiconWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0) {
 }

@@ -17,7 +17,6 @@ class UIComboBoxDefWnd;
 class UIEditCtrl;
 class UIListBoxNavi;
 class UIResizer;
-struct UIButtonContext;
 struct UIComboBoxHeaderContext;
 struct UIEditContext;
 struct UIListBoxContext;
@@ -93,7 +92,7 @@ protected:
   /* 0128 */ UIResizer* unknown_0128;
   /* 012C */ std::vector<std::string> m_history;
 
-  UIButtonContext* m_controls;
+  void* unknown_controls;
   UIListBoxContext* m_listContext;
   UIComboBoxHeaderContext* m_comboContext;
   UIEditContext* m_editContext;

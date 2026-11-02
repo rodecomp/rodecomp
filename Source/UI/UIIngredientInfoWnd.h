@@ -6,7 +6,6 @@
 
 #include <string>
 
-struct UIButtonContext;
 class UILapineBox_IngredientListWnd;
 
 class UIIngredientInfoWnd : public UIFrameWnd {

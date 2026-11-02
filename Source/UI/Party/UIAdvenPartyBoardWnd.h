@@ -30,7 +30,6 @@ struct StopRecruitingContext;
 struct WindowOrdering;
 
 struct UIAdvenPartyBoardContext {
-  UIButtonContext& buttons;
   UIEditContext& edits;
   UIComboBoxHeaderContext& combos;
   PartyRowContext& rows;

@@ -1,3 +1,4 @@
+#include "Script/LuaScript.h"
 #include "Client/Session.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
@@ -42,8 +43,8 @@ namespace {
 
 // OFFSET: 0x007B2420
 // FUNCTION: fn_09186
-UIAchievementWnd::UIAchievementWnd(UIWindowContext& windows, UIButtonContext& controls)
-    : UIFrameWnd(windows, 0), upper(nullptr), tab(nullptr), list(nullptr), group(0), sub(-1), m_controls(&controls) {
+UIAchievementWnd::UIAchievementWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0), upper(nullptr), tab(nullptr), list(nullptr), group(0), sub(-1) {
 }
 
 // OFFSET: 0x007B2E80
@@ -93,7 +94,7 @@ void UIAchListWnd::Create(int width, int height, int rows) {
 
   this->buttons = new UIButton*[this->rowCount];
   for (int index = 0; index < this->rowCount; ++index) {
-    this->buttons[index] = new UIButton(*this->m_context, *this->m_controls);
+    this->buttons[index] = new UIButton(*this->m_context);
     this->buttons[index]->SetSize(30, 30);
     this->buttons[index]->Move(5, this->unknown_0084 * index + 5);
     this->buttons[index]->SetId(index);
@@ -108,7 +109,6 @@ void UIAchListWnd::Create(int width, int height, int rows) {
 // OFFSET: 0x007B3DA0
 // FUNCTION: fn_09209
 void UIAchTab::DrawGroup(int group) {
-  UIButtonContext& controls = *this->m_controls;
   int y = this->groupHeight * group;
   std::string name = this->groups[group].name;
   int textY = (this->groupHeight - this->TextHeight(name.c_str(), 0, 0, this->fontHeight, 0, 0)) / 2 + y;
@@ -196,7 +196,7 @@ bool UIAchTab::sub_7B4370(int x, int y, int* a, int* b) {
 // OFFSET: 0x007B4470
 // FUNCTION: fn_09212
 void UIAchievementWnd::CreateTab() {
-  UIAchTab* tab = new (std::nothrow) UIAchTab(*this->m_context, *this->m_controls);
+  UIAchTab* tab = new (std::nothrow) UIAchTab(*this->m_context);
   this->tab = tab;
   tab->Slot15(0, 0);
   tab->tabWidth = 102;
@@ -266,7 +266,7 @@ void UIAchUpperWnd::Slot15(int, int) {
   int index = 0;
   UIWindow** slot = this->buttons;
   for (int y = 10; y < 40; y += 15) {
-    *slot = new UIRadioBtn(*this->m_context, *this->m_controls);
+    *slot = new UIRadioBtn(*this->m_context);
     (*slot)->SetSize(12, 12);
     (*slot)->Move(150, y);
     (*slot)->SendMsg(this, 13, index == this->selected, 0, 0, 0);
@@ -280,7 +280,7 @@ void UIAchUpperWnd::Slot15(int, int) {
 // FUNCTION: fn_09215
 void UIAchViewWnd::Slot15(int, int) {
   const std::string name = "유저인터페이스\\achievement_re\\btn_receive";
-  this->receiveButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->receiveButton = new UIBitmapButton(*this->m_context);
   this->receiveButton->SetBitmap((name + "_out.bmp").c_str(), 0, 0);
   this->receiveButton->SetBitmap((name + "_over.bmp").c_str(), 1, 0);
   this->receiveButton->SetBitmap((name + "_press.bmp").c_str(), 2, 0);
@@ -332,7 +332,6 @@ void UIAchViewWnd::Slot15(int, int) {
 // OFFSET: 0x007B5FF0
 // FUNCTION: fn_09217
 void UIAchListWnd::Paint() {
-  UIButtonContext& controls = *this->m_controls;
   this->DrawBitmap(0, 0, AchievementBitmap("유저인터페이스\\achievement_re\\bg_list.bmp"), false);
 
   std::map<int, AchievementInfo>* achievements = reinterpret_cast<std::map<int, AchievementInfo>*>(this->unknown_00AC);
@@ -402,26 +401,26 @@ void UIAchListWnd::Paint() {
 // OFFSET: 0x007B5B60
 // FUNCTION: fn_09216
 void UIAchievementWnd::Slot15(int, int) {
-  this->AddCloseButton(*this->m_controls, "", 0);
+  this->AddCloseButton("", 0);
 
-  this->upper = new (std::nothrow) UIAchUpperWnd(*this->m_context, *this->m_controls);
+  this->upper = new (std::nothrow) UIAchUpperWnd(*this->m_context);
   this->upper->SetSize(this->geometry.width, 46);
   this->upper->Move(0, 17);
   this->AddChild(this->upper);
 
   this->CreateTab();
 
-  this->list = new (std::nothrow) UIAchListWnd(*this->m_context, *this->m_controls);
+  this->list = new (std::nothrow) UIAchListWnd(*this->m_context);
   this->list->Create(320, 405, 5);
   this->list->Move(102, 63);
   this->AddChild(this->list);
 
-  this->view = new UIAchViewWnd(*this->m_context, *this->m_controls);
+  this->view = new UIAchViewWnd(*this->m_context);
   this->view->SetSize(328, 405);
   this->view->Move(422, 63);
   this->AddChild(this->view);
 
-  this->summary = new UIAchSummaryWnd(*this->m_context, *this->m_controls);
+  this->summary = new UIAchSummaryWnd(*this->m_context);
   this->summary->SetSize(648, 404);
   this->summary->Move(102, 63);
   this->AddChild(this->summary);
@@ -493,7 +492,6 @@ void UIAchTV::Paint() {
 // OFFSET: 0x007B67B0
 // FUNCTION: fn_09219
 void UIAchSummaryWnd::Paint() {
-  UIButtonContext& controls = *this->m_controls;
   this->DrawBitmap(0, 0, AchievementBitmap("유저인터페이스\\achievement_re\\bg_summary.bmp"), false);
   this->DrawTextAt(82, 27, LookupMessage(2679), 0, 0, 12, 0xA55239, 1, 0);
   this->DrawRightAlignedText(600, 28, FormatOwnedString("%d/%d", this->gauges[0]->value, this->gauges[0]->maximum).c_str(), 0, 0, 11, 0x635AA5, 0);
@@ -544,7 +542,6 @@ void UIAchTab::Paint() {
 // OFFSET: 0x007B7010
 // FUNCTION: fn_09222
 void UIAchUpperWnd::Paint() {
-  UIButtonContext& controls = *this->m_controls;
   int visible;
 
   if (this->title == LookupMessage(2679)) {
@@ -580,7 +577,6 @@ void UIAchUpperWnd::Paint() {
 // OFFSET: 0x007B7420
 // FUNCTION: fn_09223
 void UIAchViewWnd::Paint() {
-  UIButtonContext& controls = *this->m_controls;
   this->DrawBitmap(0, 0, AchievementBitmap("유저인터페이스\\achievement_re\\bg_detail.bmp"), false);
   if (this->achievementId == -1 || this->info == nullptr) {
     return;
@@ -1058,12 +1054,12 @@ void UIAchTracingWnd::Slot11() {
 // FUNCTION: fn_09268
 void UIAchTracingWnd::Slot15(int, int) {
   for (int index = 0; index < 3; ++index) {
-    this->toggleButtons[index] = new UITextButton(*this->m_context, *this->m_controls);
+    this->toggleButtons[index] = new UITextButton(*this->m_context);
     this->toggleButtons[index]->Configure("", 0, 0, 12, 1, 0);
     this->toggleButtons[index]->SetId(478);
     this->AddChild(this->toggleButtons[index]);
 
-    this->openButtons[index] = new UITextButton(*this->m_context, *this->m_controls);
+    this->openButtons[index] = new UITextButton(*this->m_context);
     this->openButtons[index]->Configure("▶", 0, 0, 12, 1, 0);
     this->openButtons[index]->SetId(479);
     this->AddChild(this->openButtons[index]);
@@ -1073,7 +1069,6 @@ void UIAchTracingWnd::Slot15(int, int) {
 // OFFSET: 0x007BA590
 // FUNCTION: fn_09269
 void UIAchTracingWnd::Paint() {
-  UIButtonContext& controls = *this->m_controls;
   this->ClearSurface(0xFFFF00FF);
 
   int y = 10;
@@ -1212,7 +1207,7 @@ void UIAchSummaryWnd::Slot15(int, int) {
 
   UIWindow** slot = this->buttons;
   for (int x = 62; x < 694; x += 316) {
-    UITextButton* button = new UITextButton(*this->m_context, *this->m_controls);
+    UITextButton* button = new UITextButton(*this->m_context);
     *slot = button;
     button->Configure("", 0x997836, 0, 12, 1, 0);
     static_cast<UITextButton*>(*slot)->m_hoverColor = 0x635AA5;
@@ -1479,9 +1474,9 @@ void UIAchViewWnd::UpdateInfo() {
 
 // OFFSET: 0x007B1E60
 // FUNCTION: fn_09181
-UIAchListWnd::UIAchListWnd(UIWindowContext& windows, UIButtonContext& controls)
+UIAchListWnd::UIAchListWnd(UIWindowContext& windows)
     : UIWindow(windows, 0), buttons(nullptr), unknown_0084(0), rowCount(0), unknown_008C(0), selectedIndex(0), unknown_0094(11), scrollable(0),
-      unknown_009C(0), unknown_00AC(nullptr), scrollBar(nullptr), m_controls(&controls) {
+      unknown_009C(0), unknown_00AC(nullptr), scrollBar(nullptr) {
 }
 
 // OFFSET: 0x007B1F40
@@ -1493,19 +1488,19 @@ UIAchScrollBar::UIAchScrollBar(UIWindowContext& windows) : UIScrollBar(windows) 
 
 // OFFSET: 0x007B1FB0
 // FUNCTION: fn_09183
-UIAchSummaryWnd::UIAchSummaryWnd(UIWindowContext& windows, UIButtonContext& controls) : UIWindow(windows, 0), unknown_007C(7), m_controls(&controls) {
+UIAchSummaryWnd::UIAchSummaryWnd(UIWindowContext& windows) : UIWindow(windows, 0), unknown_007C(7) {
 }
 
 // OFFSET: 0x007B21D0
 // FUNCTION: fn_09184
-UIAchUpperWnd::UIAchUpperWnd(UIWindowContext& windows, UIButtonContext& controls)
+UIAchUpperWnd::UIAchUpperWnd(UIWindowContext& windows)
     : UIWindow(windows, 0), unknown_0094(0), unknown_0098(0), unknown_009C(0), unknown_00A0(0), unknown_00A4(nullptr), unknown_00A8(nullptr), buttons{},
-      selected(0), m_controls(&controls) {
+      selected(0) {
 }
 
 // OFFSET: 0x007B22B0
 // FUNCTION: fn_09185
-UIAchViewWnd::UIAchViewWnd(UIWindowContext& windows, UIButtonContext& controls) : UIWindow(windows, 0), achievementId(-1), info(nullptr), m_controls(&controls) {
+UIAchViewWnd::UIAchViewWnd(UIWindowContext& windows) : UIWindow(windows, 0), achievementId(-1), info(nullptr) {
   this->receiveButton = nullptr;
   this->description = nullptr;
   for (int index = 0; index < 10; ++index) {

@@ -1,3 +1,6 @@
+#include "UI/Window/UINewSelectCharWnd.h"
+#include "Client/Mode/ModeTooltip.h"
+#include "Client/Replay.h"
 #include "Client/Mode/ModeCursor.h"
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Resource/Bitmap/BitmapResource.h"
@@ -8,8 +11,8 @@
 
 // OFFSET: 0x0084F010
 // FUNCTION: fn_10656
-UICheckBox::UICheckBox(UIWindowContext& windowContext, UIButtonContext& controls)
-    : UIWindow(windowContext, 0), m_disabled(0), m_hidden(0), m_color(0), m_fontHeight(12), m_message(-1), m_notify(0), m_controls(&controls) {
+UICheckBox::UICheckBox(UIWindowContext& windowContext)
+    : UIWindow(windowContext, 0), m_disabled(0), m_hidden(0), m_color(0), m_fontHeight(12), m_message(-1), m_notify(0) {
   this->geometry.unknown_0030 = 0;
   this->geometry.id = 213;
 }
@@ -40,7 +43,7 @@ void UICheckBox::Paint() {
   int width = 0;
   if (this->geometry.unknown_0030 == 0 || this->geometry.unknown_0030 == 1) {
     const std::string& name = this->geometry.unknown_0030 == 0 ? this->m_unchecked : this->m_checked;
-    CBitmapRes* bitmap = static_cast<CBitmapRes*>(this->m_controls->resources.Load(name.c_str()));
+    CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(name.c_str()));
     this->DrawBitmap(0, (this->geometry.height - bitmap->image.height) / 2, &bitmap->image, false);
     width = bitmap->image.width;
   }
@@ -87,7 +90,7 @@ void UICheckBox::SetHidden(bool hidden) {
 // OFFSET: 0x0085EB90
 // FUNCTION: fn_10841
 void UICheckBox::Slot25(int, int) {
-  if (this->m_disabled != 0 || this->m_controls->restricted) {
+  if (this->m_disabled != 0 || g_replayAnimationScaling) {
     return;
   }
 
@@ -118,7 +121,7 @@ void UICheckBox::Slot28(int x, int y) {
   }
 
   const std::string& tooltip = this->geometry.unknown_0030 != 0 || this->m_uncheckedTooltip.empty() ? this->m_tooltip : this->m_uncheckedTooltip;
-  this->m_controls->services.Tooltip(tooltip.c_str(), screenX, screenY, -1, false, true);
+  static_cast<ModeTooltip*>(g_charViewMode)->Show(tooltip.c_str(), screenX, screenY, -1, false, true);
 }
 
 // OFFSET: 0x0085F9C0
@@ -134,16 +137,16 @@ void UICheckBox::ResetCursor(int, int) {
 void UICheckBox::SetImages(const char* checked, const char* unchecked, const char* text) {
   this->m_checked = checked;
   this->m_unchecked = unchecked;
-  this->m_controls->resources.Load(this->m_unchecked.c_str());
+  ResourceMgr::Instance().Load(this->m_unchecked.c_str());
   this->m_text = text ? text : "";
 
   if (!this->m_text.empty()) {
     const int width = this->TextWidth(this->m_text.c_str(), 0, 0, 12, 0, 0);
     CBitmapRes* bitmap = nullptr;
     if (this->geometry.unknown_0030 == 0) {
-      bitmap = static_cast<CBitmapRes*>(this->m_controls->resources.Load(this->m_unchecked.c_str()));
+      bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(this->m_unchecked.c_str()));
     } else if (this->geometry.unknown_0030 == 1) {
-      bitmap = static_cast<CBitmapRes*>(this->m_controls->resources.Load(this->m_checked.c_str()));
+      bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(this->m_checked.c_str()));
     }
 
     const int desired = ((bitmap->image.width + width) + 3);

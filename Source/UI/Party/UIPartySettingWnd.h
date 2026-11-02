@@ -5,13 +5,12 @@
 #include "UI/Window/UIFrameWnd.h"
 
 class UIEditCtrl;
-struct UIButtonContext;
 struct UIEditContext;
 struct WindowPlacement;
 
 class UIPartySettingWnd : public UIFrameWnd {
 public:
-  UIPartySettingWnd(UIWindowContext& windows, UIButtonContext& controls);
+  UIPartySettingWnd(UIWindowContext& windows);
   void Slot11() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   /* 00B4 */ UIRadioBtn* m_expShareButtons[2];
@@ -29,7 +28,7 @@ public:
   void Slot25(int x, int y) override;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 
 public:
   /* 00E0 */ UIEditCtrl* m_edit;
@@ -40,7 +39,7 @@ protected:
 
 class UIPartyInvitationToWnd : public UIPartySettingWnd {
 public:
-  UIPartyInvitationToWnd(UIWindowContext& windows, UIButtonContext& controls);
+  UIPartyInvitationToWnd(UIWindowContext& windows);
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 

@@ -26,7 +26,7 @@ public:
   /* 0120 */ const BitmapImage* m_image;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 #endif

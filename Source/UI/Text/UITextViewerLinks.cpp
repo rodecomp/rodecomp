@@ -79,7 +79,7 @@ bool UITextViewer::AddItemLinks(std::string text, unsigned addedLines) {
   }
 
   for (const auto& link : extracted) {
-    auto* button = new UITextButton(*this->m_context, this->m_text->buttons);
+    auto* button = new UITextButton(*this->m_context);
     button->Configure(link.display.c_str(), 0x00F4934A, 0, 12, 0, 1);
     const int height = button->geometry.height;
     const int width = this->TextWidth(link.display.c_str(), 0, 0, 12, 0, 0);
@@ -124,7 +124,7 @@ bool UITextViewer::AddNaviLinks(std::string text, unsigned addedLines) {
   }
 
   for (const auto& link : extracted) {
-    auto* button = new UITextButton(*this->m_context, this->m_text->buttons);
+    auto* button = new UITextButton(*this->m_context);
     button->Configure(link.display.c_str(), 0x00F4934A, 0, 12, 0, 1);
     const int height = button->geometry.height;
     const int width = this->TextWidth(link.display.c_str(), 0, 0, 12, 0, 0);
@@ -224,7 +224,7 @@ bool UITextViewer::AddQuestLinks(std::string text, unsigned addedLines) {
   }
 
   for (const auto& link : extracted) {
-    auto* button = new UITextButton(*this->m_context, this->m_text->buttons);
+    auto* button = new UITextButton(*this->m_context);
     button->Configure(link.display.c_str(), 0x00F4934A, 0, 12, 0, 1);
     const int height = button->geometry.height;
     const int width = this->TextWidth(link.display.c_str(), 0, 0, 12, 0, 0);
@@ -308,7 +308,7 @@ void UITextViewer::AddTipLinks(std::string text, unsigned addedLines) {
       }
 
       for (unsigned fragment = 0; fragment < labels.size(); ++fragment) {
-        auto* button = new UITextButton(*this->m_context, this->m_text->buttons);
+        auto* button = new UITextButton(*this->m_context);
         button->Configure(labels[fragment].c_str(), 0x00F4934A, 0, 12, 0, 1);
         const int height = button->geometry.height;
         const int width = this->TextWidth(labels[fragment].c_str(), 0, 0, 12, 0, 0);
@@ -323,7 +323,7 @@ void UITextViewer::AddTipLinks(std::string text, unsigned addedLines) {
         this->links.push_back(button);
       }
     } else {
-      auto* button = new UITextButton(*this->m_context, this->m_text->buttons);
+      auto* button = new UITextButton(*this->m_context);
       button->Configure(link.display.c_str(), 0x00F4934A, 0, 12, 0, 1);
       const int height = button->geometry.height;
       const int width = this->TextWidth(link.display.c_str(), 0, 0, 12, 0, 0);
@@ -369,7 +369,7 @@ bool UITextViewer::AddUrlLinks(std::string text, unsigned addedLines) {
   }
 
   for (const auto& link : extracted) {
-    auto* button = new UITextButton(*this->m_context, this->m_text->buttons);
+    auto* button = new UITextButton(*this->m_context);
     button->Configure(link.display.c_str(), 0x00E6A300, 0, 12, 0, 1);
     button->m_hoverColor = 0x00EFB700;
     button->SetId(437);

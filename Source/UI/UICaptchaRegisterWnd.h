@@ -10,7 +10,6 @@ class UIComboBoxDefWnd;
 class UIStaticBitmap;
 class UIEditCtrl;
 class UIBitmapButton;
-struct UIButtonContext;
 
 class UICaptchaRegisterWnd : public UIFrameWnd {
 public:
@@ -33,7 +32,7 @@ public:
   /* 00E4 */ unsigned int m_decompressedSize;
 
 protected:
-  /* 00E8 */ UIButtonContext* m_controls;
+  /* 00E8 */ void* unknown_controls;
 };
 
 #endif

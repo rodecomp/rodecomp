@@ -7,7 +7,6 @@
 #include <cstddef>
 #include <list>
 
-struct UIButtonContext;
 
 class UIItemBaseWnd : public UIFrameWnd {
 public:
@@ -32,7 +31,7 @@ public:
   /* 00C4 */ UIWindow* buttons[2];
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 
 public:
   /* 00D8 */ int scroll;

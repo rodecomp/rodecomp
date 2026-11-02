@@ -6,7 +6,6 @@
 #include <cstdint>
 #include <string>
 
-struct UIButtonContext;
 
 struct MonsterInfo {
   /* 0000 */ short unknown_0000;
@@ -37,7 +36,7 @@ public:
   /* 00D8 */ std::string name;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 extern std::uint32_t g_monsterInfoActorId;

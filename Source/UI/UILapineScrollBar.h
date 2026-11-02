@@ -13,7 +13,6 @@
 #include <vector>
 
 class UIBitmapButton;
-struct UIButtonContext;
 class UILapineUpgradeBox_IngredientInfoWnd;
 class UILapineBoxWnd;
 
@@ -120,7 +119,7 @@ public:
   /* 0128 */ unsigned char waiting;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 #endif

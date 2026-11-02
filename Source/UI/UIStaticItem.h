@@ -5,12 +5,11 @@
 #include "UI/Window/UIWindow.h"
 
 struct ItemDescriptions;
-struct UIButtonContext;
 #include "UI/Window/WindowManagerWindows.h"
 
 class UIStaticItem : public UIWindow {
 public:
-  UIStaticItem(UIWindowContext& windows, ItemDescriptions& descriptions, UIButtonContext& controls, WindowManagerWindows& windowList);
+  UIStaticItem(UIWindowContext& windows, ItemDescriptions& descriptions, WindowManagerWindows& windowList);
   ~UIStaticItem() override;
   void Paint() override;
   void Slot28(int x, int y) override;
@@ -19,7 +18,7 @@ public:
 protected:
   /* 0080 */ ITEM_INFO m_item;
   ItemDescriptions* m_descriptions;
-  UIButtonContext* m_controls;
+  void* unknown_controls;
   WindowManagerWindows* m_windows;
 };
 

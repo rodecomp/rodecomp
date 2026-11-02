@@ -10,7 +10,6 @@ class UIBitmapButton;
 class UICheckBox;
 class UIResizer;
 class UIScrollBar;
-struct UIButtonContext;
 
 class CMergeItemWnd : public UIFrameWnd {
 public:
@@ -57,7 +56,7 @@ public:
   /* 0114 */ int m_scrollable;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 #endif

@@ -46,7 +46,7 @@ public:
   /* 0114 */ int extendedExpandedHeight;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 #endif

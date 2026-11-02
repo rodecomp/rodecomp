@@ -8,7 +8,7 @@ class UIListBox;
 
 class UISelectServerWnd : public UIFrameWnd {
 public:
-  UISelectServerWnd(UIWindowContext& windows, UIButtonContext& controls);
+  UISelectServerWnd(UIWindowContext& windows);
 
   void Slot15(int width, int height) override;
   void Slot18() override;
@@ -22,7 +22,7 @@ public:
   /* 00D8 */ int m_event;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 #endif

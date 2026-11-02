@@ -7,7 +7,6 @@
 #include <string>
 #include <vector>
 
-struct UIButtonContext;
 class UIStaticText;
 class UITabControl;
 
@@ -51,7 +50,7 @@ protected:
   /* 0184 */ std::uint32_t* unknown_0184;
   /* 0188 */ std::uint32_t* unknown_0188;
   /* 018C */ std::uint32_t* unknown_018C;
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 
   void FillRows();
 };

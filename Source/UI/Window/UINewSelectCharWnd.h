@@ -11,7 +11,6 @@ class UIBitmapButton;
 class UIBmpTextButton;
 class UIStaticText;
 class CUIControl;
-struct UIButtonContext;
 
 extern void* g_charViewMode;
 extern char g_selectedSlotIndex;
@@ -88,7 +87,7 @@ protected:
   /* 0134 */ int m_maxCharacters;
   /* 0138 */ int m_unknown138;
   /* 013C */ bool m_unknown13C;
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 #endif

@@ -6,7 +6,6 @@
 #include <windows.h>
 
 class UITextButton;
-struct UIButtonContext;
 struct ItemNaming;
 struct TipBoxTitles;
 struct ItemLinkDisplay;
@@ -24,7 +23,6 @@ protected:
 
 struct UITextViewerContext {
   UIListBoxContext& list;
-  UIButtonContext& buttons;
   ItemNaming& items;
   const TipBoxTitles& tips;
   TextViewerActions& actions;

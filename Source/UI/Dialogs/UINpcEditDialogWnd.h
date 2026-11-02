@@ -3,7 +3,6 @@
 
 #include "UI/Window/UIFrameWnd.h"
 
-struct UIButtonContext;
 class UIEditCtrl;
 class UIItemTagOnMegaPhone;
 struct ITEM_INFO;
@@ -12,13 +11,13 @@ struct UIEditContext;
 
 class UINpcEditDialogWnd : public UIFrameWnd {
 public:
-  UINpcEditDialogWnd(UIWindowContext& windows, UIButtonContext& controls);
+  UINpcEditDialogWnd(UIWindowContext& windows);
   void Paint() override;
   void Slot15(int width, int height) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 
 public:
   /* 00B4 */ UIEditCtrl* edit;
@@ -30,7 +29,7 @@ protected:
 
 class UINpcTextEditDialogWnd : public UINpcEditDialogWnd {
 public:
-  UINpcTextEditDialogWnd(UIWindowContext& windows, UIButtonContext& controls);
+  UINpcTextEditDialogWnd(UIWindowContext& windows);
   void Slot15(int width, int height) override;
   void InsertItemTag(const ITEM_INFO& item);
   void InsertSkillTag(int tagId);

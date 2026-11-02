@@ -7,10 +7,9 @@
 #include <string>
 #include <vector>
 
-struct UIButtonContext;
 class UIMenuWnd : public UIFrameWnd {
 public:
-  UIMenuWnd(UIWindowContext& windows, UIButtonContext& controls);
+  UIMenuWnd(UIWindowContext& windows);
   /* 00B4 */ int m_menuId;
   /* 00B8 */ int m_selected;
   /* 00BC */ int m_itemHeight;
@@ -31,7 +30,7 @@ public:
   int ItemAt(int x, int y);
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 extern const char* g_menuSeparator;

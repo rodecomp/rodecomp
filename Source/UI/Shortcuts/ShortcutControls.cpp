@@ -1,3 +1,4 @@
+#include "Contents/MessageTable.h"
 #include "UI/Shortcuts/ShortcutControls.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UICheckBox.h"
@@ -10,16 +11,16 @@
 // OFFSET: 0x0092A190
 // FUNCTION: fn_12654
 ShortcutControls ShortcutControls::Create(
-  UIFrameWnd& frame, UIWindowContext& windows, UIButtonContext& buttons, int bankOption, NormalItemSlot** slots, NormalItemSlot** itemSlots
+  UIFrameWnd& frame, UIWindowContext& windows, int bankOption, NormalItemSlot** slots, NormalItemSlot** itemSlots
 ) {
   ShortcutControls result;
-  frame.AddCloseButton(buttons, "F12", 0)->Move(frame.geometry.width - 10, 0);
+  frame.AddCloseButton("F12", 0)->Move(frame.geometry.width - 10, 0);
 
   for (int index = 0; index < 36; ++index) {
     slots[index] = nullptr;
   }
 
-  result.bank = new (std::nothrow) UICheckBox(windows, buttons);
+  result.bank = new (std::nothrow) UICheckBox(windows);
   result.bank->SetSize(10, 26);
   result.bank->SetImages(
     "유저인터페이스\\shortcut_2_bts.bmp",
@@ -28,14 +29,14 @@ ShortcutControls ShortcutControls::Create(
   result.bank->SetId(549);
   result.bank->Move(3, 4);
   result.bank->SetChecked(bankOption);
-  result.bank->SetTooltip(buttons.services.MessageText(3596));
+  result.bank->SetTooltip(LookupMessage(3596));
   frame.AddChild(result.bank);
 
   const auto create = [&](
                         int id, int x, int y, unsigned char disabled, unsigned char enabled, const char* normal, const char* over, const char* pressed,
                         const char* unavailable
                       ) {
-    UIBitmapButton* button = new UIBitmapButton(windows, buttons);
+    UIBitmapButton* button = new UIBitmapButton(windows);
     button->SetBitmap(normal, 0, 0);
     button->SetBitmap(over, 1, 0);
     button->SetBitmap(pressed, 2, 0);

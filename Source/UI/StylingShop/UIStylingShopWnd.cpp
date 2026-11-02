@@ -1,3 +1,8 @@
+#include "Client/Replay.h"
+#include "UI/Window/WindowPolicy.h"
+#include "UI/Window/UINewSelectCharWnd.h"
+#include "Client/Mode/ModeTooltip.h"
+#include "Client/Mode/CMode.h"
 #include "UI/StylingShop/UIStylingShopWnd.h"
 #include "Client/Mode/ModeEvents.h"
 #include "Client/Session.h"
@@ -11,7 +16,6 @@
 #include "Script/LuaScript.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowDialogs.h"
-#include "UI/Window/WindowPolicy.h"
 #include <cstring>
 #include <mbstring.h>
 
@@ -163,16 +167,16 @@ void UIStylingShopButton::Slot31(int, int) {
   this->geometry.unknown_0030 = 2;
   UIWindow* parent = this->parent;
   if (parent) {
-    if (WindowPolicy(this->m_buttonContext->policy, this->m_buttonContext->restricted, 3, parent->geometry.id) != 0) {
+    if (WindowPolicy(g_windowMgr.policy[0].actions, g_replayAnimationScaling != 0, 3, parent->geometry.id) != 0) {
       int id = this->geometry.id;
-      if (id == 185 && this->m_context->mode && *this->m_buttonContext->activeModeType == 2) {
-        const char* text = this->m_buttonContext->services.MessageText(17);
-        if (this->m_buttonContext->services.Confirm(text, 2, 1, 0, "Message", 280, 120) == 187) {
+      if (id == 185 && this->m_context->mode && static_cast<CMode*>(g_charViewMode)->cursorType == 2) {
+        const char* text = LookupMessage(17);
+        if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text, 2, true, false, 0, "Message", 280, 120, 0) == 187) {
           this->m_context->mode->SendModeMessage(2, 0, 0, 0, 0);
         }
       } else {
         if (id == 184 || id == 321) {
-          this->m_buttonContext->services.Submit(parent);
+          RecordEditTextsNoArg(parent);
           id = this->geometry.id;
           parent = this->parent;
         }
@@ -202,7 +206,7 @@ void UIStylingShopButton::Slot28(int, int) {
     screenY += window->geometry.y;
   }
 
-  this->m_buttonContext->services.Tooltip("No Color", screenX, screenY, -1, false, true);
+  static_cast<ModeTooltip*>(g_charViewMode)->Show("No Color", screenX, screenY, -1, false, true);
 }
 
 // OFFSET: 0x0082A210
@@ -1322,8 +1326,8 @@ UISlotOfMyStyleWnd::UISlotOfMyStyleWnd(UIWindowContext& context) : UIStylingshop
 
 // OFFSET: 0x00823370
 // FUNCTION: fn_10293
-UIStylingShopWnd::UIStylingShopWnd(UIWindowContext& windows, UIButtonContext& controls)
-    : UIFrameWnd(windows, 0), m_controls(&controls) {
+UIStylingShopWnd::UIStylingShopWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0) {
 }
 
 #include "Contents/Items/ItemInfo.h"
@@ -1509,7 +1513,7 @@ struct StyleChangePacket {
 // OFFSET: 0x00827AE0
 // FUNCTION: fn_10331
 void UIStylingShopWnd::AddTab(const char* normal, const char* hover, const char* pressed, const int& id, UIStylingshopTabParentWnd* tab, const char* tooltip) {
-  UIStylingShopButton* button = new (std::nothrow) UIStylingShopButton(*this->m_context, *this->m_controls);
+  UIStylingShopButton* button = new (std::nothrow) UIStylingShopButton(*this->m_context);
   button->SetBitmap(normal, 0, 0);
   button->SetBitmap(hover, 1, 0);
   button->SetBitmap(pressed, 2, 0);
@@ -1553,7 +1557,7 @@ void UISlotOfMyStyleWnd::Slot15(int, int) {
 // OFFSET: 0x008294D0
 // FUNCTION: fn_10340
 void UIStylingShopWnd::Slot15(int, int) {
-  this->AddCloseButton(*this->m_controls, "", 0);
+  this->AddCloseButton("", 0);
 
   UIBasicStylingWnd* basic = new (std::nothrow) UIBasicStylingWnd(*this->m_context);
   this->AddTab("유저인터페이스\\styleshop\\tab_hair_off.bmp", "유저인터페이스\\styleshop\\tab_hair_off.bmp", "유저인터페이스\\styleshop\\tab_hair_on.bmp", 200, basic,
@@ -1584,7 +1588,7 @@ void UIStylingShopWnd::Slot15(int, int) {
   this->m_preview->Show(0);
   this->AddChild(this->m_preview);
 
-  this->m_buyButton = static_cast<UIStylingShopButton*>(new (std::nothrow) UIBitmapButton(*this->m_context, *this->m_controls));
+  this->m_buyButton = static_cast<UIStylingShopButton*>(new (std::nothrow) UIBitmapButton(*this->m_context));
   this->m_buyButton->SetBitmap("유저인터페이스\\styleshop\\btn_buy_out.bmp", 0, 0);
   this->m_buyButton->SetBitmap("유저인터페이스\\styleshop\\btn_buy_over.bmp", 1, 0);
   this->m_buyButton->SetBitmap("유저인터페이스\\styleshop\\btn_buy_down.bmp", 2, 0);
@@ -1599,7 +1603,7 @@ void UIStylingShopWnd::Slot15(int, int) {
   text += FormatGroupedInteger(g_session.m_zeny, zeny, 256);
   text += "\tz";
 
-  UIStaticText* label = new (std::nothrow) UIStaticText(*this->m_context, *this->m_controls);
+  UIStaticText* label = new (std::nothrow) UIStaticText(*this->m_context);
   label->SetSize(200, 12);
   label->Move(9, 310);
   label->SetFont(0, 11, 0, 0);

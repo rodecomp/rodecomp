@@ -28,7 +28,7 @@ public:
   /* 0170 */ UIWindow* m_scrollBar;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 #endif

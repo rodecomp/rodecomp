@@ -51,7 +51,7 @@ struct AccountLimitedRange {
 // OFFSET: 0x0094A450
 // FUNCTION: fn_12890
 void UIAccountLimitedToolWnd::Slot15(int, int) {
-  this->AddCloseButton(*this->m_controls, "", 0);
+  this->AddCloseButton("", 0);
 
   const int editPositions[15][2] = {
     {90, 25},   {90, 77},   {90, 99},   {125, 99}, {160, 99}, {268, 99},  {305, 99},  {90, 121},
@@ -100,7 +100,7 @@ void UIAccountLimitedToolWnd::Slot15(int, int) {
     this->AddChild(this->m_edits[i]);
   }
 
-  this->m_accountIdText = new UIStaticText(*this->m_context, *this->m_controls);
+  this->m_accountIdText = new UIStaticText(*this->m_context);
   this->m_accountIdText->SetSize(200, 17);
   this->m_accountIdText->Move(90, 47);
   this->m_accountIdText->background = 0xFF969696;
@@ -117,7 +117,7 @@ void UIAccountLimitedToolWnd::Slot15(int, int) {
     {"btn_deleteItem", "btn_deleteItem_a", "btn_deleteItem_b", "btn_deleteItem_c"},
   };
   for (int i = 0; i < 3; ++i) {
-    this->m_buttons[i] = new UIBitmapButton(*this->m_context, *this->m_controls);
+    this->m_buttons[i] = new UIBitmapButton(*this->m_context);
     this->m_buttons[i]->SetBitmap((prefix + buttonNames[i][0] + ".bmp").c_str(), 0, 0);
     this->m_buttons[i]->SetBitmap((prefix + buttonNames[i][1] + ".bmp").c_str(), 1, 0);
     this->m_buttons[i]->SetBitmap((prefix + buttonNames[i][2] + ".bmp").c_str(), 2, 0);
@@ -142,7 +142,6 @@ void UIAccountLimitedToolWnd::Slot15(int, int) {
 // OFFSET: 0x0094CF50
 // FUNCTION: fn_12901
 void UIAccountLimitedToolWnd::Paint() {
-  auto& controls = *this->m_controls;
   this->DrawTitleBar(false, LookupMessage(3650), 0);
   this->DrawPanelBackground(17, 0, "");
   this->DrawTextAt(5, 28, LookupMessage(3651), 0, 0, 12, 0, 0, 0);
@@ -367,8 +366,8 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 
 // OFFSET: 0x00946800
 // FUNCTION: fn_12846
-UIAccountLimitedToolWnd::UIAccountLimitedToolWnd(UIWindowContext& windows, UIButtonContext& controls, UIEditContext& edits, UITextViewerContext& texts)
-    : UIFrameWnd(windows, 0), m_accountIdText(nullptr), m_viewer(nullptr), m_controls(&controls), m_editContext(&edits), m_textContext(&texts) {
+UIAccountLimitedToolWnd::UIAccountLimitedToolWnd(UIWindowContext& windows, UIEditContext& edits, UITextViewerContext& texts)
+    : UIFrameWnd(windows, 0), m_accountIdText(nullptr), m_viewer(nullptr), m_editContext(&edits), m_textContext(&texts) {
   SecureZeroMemory(this->m_edits, sizeof(this->m_edits));
   SecureZeroMemory(this->m_buttons, sizeof(this->m_buttons));
 }

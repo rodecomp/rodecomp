@@ -8,11 +8,9 @@
 class CActRes;
 class CSprRes;
 #include "UI/Window/WindowManagerWindows.h"
-struct UIButtonContext;
 
 struct UIWaitDBSaveWndContext {
   WindowManagerWindows& windows;
-  UIButtonContext& buttons;
 };
 
 class UIWaitDBSaveWnd : public UIWindow {

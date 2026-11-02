@@ -2,7 +2,7 @@
 
 // OFFSET: 0x007BAD70
 // FUNCTION: fn_09276
-UIJobSlotButton::UIJobSlotButton(UIWindowContext& windows, UIButtonContext& controls) : UIBitmapButton(windows, controls), selected(0) {
+UIJobSlotButton::UIJobSlotButton(UIWindowContext& windows) : UIBitmapButton(windows), selected(0) {
 }
 
 // OFFSET: 0x007BB6B0

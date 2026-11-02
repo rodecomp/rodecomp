@@ -1,3 +1,4 @@
+#include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UIBattleMsgOptionWnd.h"
 
 #include "Client/Session.h"
@@ -73,8 +74,8 @@ void UIBattleMsgOptionWnd::Slot15(int, int height) {
   this->m_scrollBar = new UIScrollBar(*this->m_context);
   this->m_scrollBar->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - 38);
   this->AddChild(this->m_scrollBar);
-  this->AddBaseButton(*this->m_controls);
-  this->AddCloseButton(*this->m_controls, "ESC", 0);
+  this->AddBaseButton();
+  this->AddCloseButton("ESC", 0);
   this->m_allCheckBox = new UICheckBox();
   this->m_allCheckBox->SetSize(70, 12);
   this->m_allCheckBox->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", "all on");
@@ -184,7 +185,6 @@ void UIBattleMsgOptionWnd::UpdateScrollBar() {
 // OFFSET: 0x0092B9C0
 // FUNCTION: fn_12659
 void UIBattleMsgOptionWnd::Paint() {
-  auto& controls = *this->m_controls;
 
   const int titleHeight = this->DrawTitleBar(true, this->text.c_str(), 0);
   this->DrawPanelBackground(titleHeight, 0, "");

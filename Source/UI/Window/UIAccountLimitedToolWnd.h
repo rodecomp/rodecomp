@@ -5,7 +5,6 @@
 
 #include <string>
 
-struct UIButtonContext;
 struct UIEditContext;
 struct UITextViewerContext;
 class UIBitmapButton;
@@ -15,7 +14,7 @@ class UITextViewer;
 
 class UIAccountLimitedToolWnd : public UIFrameWnd {
 public:
-  UIAccountLimitedToolWnd(UIWindowContext& windows, UIButtonContext& controls, UIEditContext& edits, UITextViewerContext& texts);
+  UIAccountLimitedToolWnd(UIWindowContext& windows, UIEditContext& edits, UITextViewerContext& texts);
   void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
@@ -27,7 +26,7 @@ public:
   /* 0104 */ std::string unknown_0104;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
   UIEditContext* m_editContext;
   UITextViewerContext* m_textContext;
 };

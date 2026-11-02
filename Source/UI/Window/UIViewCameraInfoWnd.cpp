@@ -34,7 +34,6 @@ void UIViewCameraInfoWnd::Paint() {
     return;
   }
 
-  auto& controls = *this->m_controls;
   this->DrawTextAt(10, 10,
                    FormatOwnedString("range : %4.3f", mode->camera->camera.distance).c_str(), 0, 0, 12, 0xFF, 1, 0);
   this->DrawTextAt(10, 25,

@@ -288,7 +288,7 @@ ITEM_INFO UISwapEquipmentWnd::GetSlotItem(int slot) {
 // OFFSET: 0x00830760
 // FUNCTION: fn_10394
 void UISwapEquipmentWnd::Slot15(int width, int height) {
-  this->m_swapButton = new (std::nothrow) UISwapBitmapButton(*this->m_context, *this->m_controls);
+  this->m_swapButton = new (std::nothrow) UISwapBitmapButton(*this->m_context);
   this->m_swapButton->SetBitmap("유저인터페이스\\swap_equipment\\btn_change2_normal.bmp", 0, 0);
   this->m_swapButton->SetBitmap("유저인터페이스\\swap_equipment\\btn_change2_over.bmp", 1, 0);
   this->m_swapButton->SetBitmap("유저인터페이스\\swap_equipment\\btn_change2_press.bmp", 2, 0);
@@ -301,7 +301,7 @@ void UISwapEquipmentWnd::Slot15(int width, int height) {
   this->m_swapButton->SetId(0x1FC);
   this->AddChild(this->m_swapButton);
 
-  UIBasicButton* close = new (std::nothrow) UIBasicButton(*this->m_context, *this->m_controls);
+  UIBasicButton* close = new (std::nothrow) UIBasicButton(*this->m_context);
   close->Configure(0x32, LookupMessage(0xDA));
   close->Move(0xE0, 0x9B);
   close->SetId(0xB9);

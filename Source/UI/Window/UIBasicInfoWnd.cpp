@@ -1,3 +1,5 @@
+#include "UI/Window/UINewSelectCharWnd.h"
+#include "Client/Mode/ModeTooltip.h"
 #include "UI/Window/UIBasicInfoWnd.h"
 
 #include "Client/Mode/CGameMode.h"
@@ -213,7 +215,7 @@ void UIBasicInfoWnd::Slot28(int x, int y) {
   int screenX = 0;
   int screenY = top - 19;
   this->ToScreen(screenX, screenY);
-  this->m_controls->services.Tooltip(text, screenX, screenY, -1, false, true);
+  static_cast<ModeTooltip*>(g_charViewMode)->Show(text, screenX, screenY, -1, false, true);
 }
 
 // OFFSET: 0x009995A0
@@ -525,12 +527,12 @@ void UIBasicInfoWnd::DrawCollapsed() {
 // OFFSET: 0x009983C0
 // FUNCTION: fn_13491
 void UIBasicInfoWnd::Slot15(int width, int height) {
-  this->AddBaseButton(*this->m_controls);
+  this->AddBaseButton();
 
-  UIBitmapButton* minimizeButton = this->AddMinimizeButton(*this->m_controls, "Alt+V, Ctrl+V", 0);
+  UIBitmapButton* minimizeButton = this->AddMinimizeButton("Alt+V, Ctrl+V", 0);
   minimizeButton->Move(this->geometry.width - 14, 3);
 
-  this->nameText = new UIStaticText(*this->m_context, *this->m_controls);
+  this->nameText = new UIStaticText(*this->m_context);
   this->nameText->SetSize(this->geometry.width - 20, 15);
   this->nameText->Move(9, 23);
   this->nameText->SetTextFitted(g_session.DecodePlayerName());

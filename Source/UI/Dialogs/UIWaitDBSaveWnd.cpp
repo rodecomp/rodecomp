@@ -73,7 +73,7 @@ UIWaitDBSaveWnd::UIWaitDBSaveWnd(UIWindowContext& windowContext, UIWaitDBSaveWnd
 // OFFSET: 0x00AB4CE0
 // FUNCTION: fn_17448
 void UIWaitDBSaveWnd::Slot15(int width, int height) {
-  UIButton* button = new UIButton(*this->m_context, this->m_waitContext.buttons);
+  UIButton* button = new UIButton(*this->m_context);
   button->SetSize(width, height);
   button->Move(0, 0);
   button->SetId(0);

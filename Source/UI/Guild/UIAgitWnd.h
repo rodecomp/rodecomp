@@ -6,11 +6,9 @@
 
 #include <cstdint>
 
-struct UIButtonContext;
 struct WindowResponseRecorder;
 
 struct UIAgitMessageBoxContext {
-  UIButtonContext& buttons;
   WindowResponseRecorder& recorder;
 };
 

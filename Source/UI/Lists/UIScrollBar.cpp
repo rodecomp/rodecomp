@@ -1,3 +1,4 @@
+#include "Render/Text/FontCache.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/ModeCursor.h"
 #include "Render/DeviceContext/DeviceContext.h"
@@ -438,8 +439,8 @@ int UIImgMenu::ItemAt(int x, int y) {
 
 // OFFSET: 0x0086ECF0
 // FUNCTION: fn_11083
-UITabControl::UITabControl(UIWindowContext& windows, UIButtonContext& controls)
-    : UIWindow(windows, 0), unknown_00E8(12), flags(), m_controls(&controls) {
+UITabControl::UITabControl(UIWindowContext& windows)
+    : UIWindow(windows, 0), unknown_00E8(12), flags() {
   this->unknown_007C = -1;
   this->dragX = 0;
   this->dragY = 0;
@@ -653,8 +654,8 @@ void UIEditCtrl_Custom::PaintText() {
   int x = this->unknown_0120 + 3;
   const int y = this->unknown_0124 + this->textY;
   std::string display;
-  FontCache& fonts = this->m_edit->buttons.fonts;
-  const TextLocale& locale = this->m_edit->buttons.locale;
+  FontCache& fonts = g_fontCache;
+  const TextLocale& locale = this->m_context->locale;
   const auto align = [&]() {
     if (this->unknown_0128 == 1) {
       x = this->geometry.width - x - this->TextWidth(display.c_str(), 0, 0, 12, this->unknown_011C, 0);
@@ -736,8 +737,8 @@ void UIBasicItemCtrl::DrawItemIcon(int x, int y, int, bool compact) {
   }
 
   const std::string count = FormatOwnedString("%d", this->m_item.quantity);
-  FontCache& fonts = this->m_controls->fonts;
-  const TextLocale& locale = this->m_controls->locale;
+  FontCache& fonts = g_fontCache;
+  const TextLocale& locale = this->m_context->locale;
   int textY;
   if (compact) {
     textY = y + 20;
@@ -1868,7 +1869,7 @@ std::string UIChatHisBox::RenderItemLinks(const char* lineText, std::string& sou
           break;
         }
 
-        UIItemTagButton* button = new (std::nothrow) UIItemTagButton(*this->m_context, this->m_listContext->buttons);
+        UIItemTagButton* button = new (std::nothrow) UIItemTagButton(*this->m_context);
         if (button) {
           std::memcpy(button->unknown_00F8, &item, sizeof(item));
           button->Configure(label.c_str(), 0x82F2E1, 0, 12, 0, 0);
@@ -1962,7 +1963,7 @@ std::string UIChatHisBox::RenderNavigationLinks(const char* text, std::string& s
       tail = line.substr(position + label.size());
     }
 
-    UINaviLinkButton* button = new (std::nothrow) UINaviLinkButton(*this->m_context, this->m_listContext->buttons, this->m_listContext->navigation);
+    UINaviLinkButton* button = new (std::nothrow) UINaviLinkButton(*this->m_context, this->m_listContext->navigation);
     if (button) {
       button->link = link;
       button->Configure(label.c_str(), 0x82F2E1, 0, 12, 0, 0);

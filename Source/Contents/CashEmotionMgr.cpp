@@ -1,3 +1,5 @@
+#include "UI/Window/UINewSelectCharWnd.h"
+#include "Client/Mode/ModeTooltip.h"
 #include "Contents/CashEmotionMgr.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Render/DeviceContext/DeviceContext.h"
@@ -276,7 +278,7 @@ static_assert(sizeof(CashEmotionPurchasePacket) == 7);
 
 class UICashEmotionListWnd : public UIFrameWnd {
 public:
-  UICashEmotionListWnd(UIWindowContext& windows, UIButtonContext& controls, UIEditContext& edits);
+  UICashEmotionListWnd(UIWindowContext& windows, UIEditContext& edits);
   void Slot11() override;
   void Slot15(int width, int height) override;
   void Slot19() override;
@@ -310,7 +312,7 @@ protected:
   /* 00E4 */ UIBitmapButton* unknown_00E4;
   /* 00E8 */ UICashEmotionListChildWnd_Abstract* m_currentList;
   /* 00EC */ UIStaticText* m_period;
-  UIButtonContext* m_controls;
+  void* unknown_controls;
   UIEditContext* m_edits;
 };
 
@@ -2158,16 +2160,16 @@ int UICashEmotionListChildWnd_UnPurchased::SendMsg(UIWindow* sender, int message
 
 // OFFSET: 0x007C6CB0
 // FUNCTION: fn_09401
-UICashEmotionListWnd::UICashEmotionListWnd(UIWindowContext& windows, UIButtonContext& controls, UIEditContext& edits)
+UICashEmotionListWnd::UICashEmotionListWnd(UIWindowContext& windows, UIEditContext& edits)
     : UIFrameWnd(windows, 0), m_placement(nullptr), m_basicList(nullptr), m_purchaseList(nullptr), m_unpurchasedList(nullptr), m_searchList(nullptr),
       m_tab(0), unknown_00D4(nullptr), m_searchEdit(nullptr), unknown_00DC(nullptr), unknown_00E0(nullptr), unknown_00E4(nullptr), m_currentList(nullptr),
-      m_period(nullptr), m_controls(&controls), m_edits(&edits) {
+      m_period(nullptr), m_edits(&edits) {
 }
 
 // OFFSET: 0x007C7240
 // FUNCTION: fn_09405
 UIBitmapButton* UICashEmotionListWnd::CreateButton(int x, int y, int width, int height, int id, const char* format, bool hasDisabled) {
-  UIBitmapButton* button = new (std::nothrow) UIBitmapButton(*this->m_context, *this->m_controls);
+  UIBitmapButton* button = new (std::nothrow) UIBitmapButton(*this->m_context);
   if (!button) {
     return nullptr;
   }
@@ -2190,8 +2192,8 @@ UIBitmapButton* UICashEmotionListWnd::CreateButton(int x, int y, int width, int 
 // OFFSET: 0x007C74D0
 // FUNCTION: fn_09406
 void UICashEmotionListWnd::Slot15(int width, int height) {
-  this->AddCloseButton(*this->m_controls, "Alt+L", 0);
-  if (UIBitmapButton* base = this->AddBaseButton(*this->m_controls)) {
+  this->AddCloseButton("Alt+L", 0);
+  if (UIBitmapButton* base = this->AddBaseButton()) {
     base->Move(32, 3);
   }
 
@@ -2203,7 +2205,7 @@ void UICashEmotionListWnd::Slot15(int width, int height) {
   };
   int x = 46;
   for (int index = 0; index < 4; ++index) {
-    UIBmpRadioBtn2* tab = new (std::nothrow) UIBmpRadioBtn2(*this->m_context, *this->m_controls);
+    UIBmpRadioBtn2* tab = new (std::nothrow) UIBmpRadioBtn2(*this->m_context);
     if (!tab) {
       continue;
     }
@@ -2268,7 +2270,7 @@ void UICashEmotionListWnd::Slot15(int width, int height) {
     this->SendMsg(first->second, 6, 215, 0, 0, 0);
   }
 
-  this->m_period = new UIStaticText(*this->m_context, *this->m_controls);
+  this->m_period = new UIStaticText(*this->m_context);
   this->m_period->SetSize(200, 14);
   this->m_period->Move(39, 359);
   this->m_period->SetColor(214, 24, 16);
@@ -2771,7 +2773,7 @@ void UICashEmotionMiniWnd::Slot15(int width, int height) {
     }
   }
 
-  this->m_previous = new (std::nothrow) UIBitmapButton(*this->m_context, this->m_controls->buttons);
+  this->m_previous = new (std::nothrow) UIBitmapButton(*this->m_context);
   if (this->m_previous) {
     this->m_previous->SetBitmap("유저인터페이스\\cashemotion\\btn_arrow_l_normal.bmp", 0, 0);
     this->m_previous->SetBitmap("유저인터페이스\\cashemotion\\btn_arrow_l_over.bmp", 1, 0);
@@ -2782,7 +2784,7 @@ void UICashEmotionMiniWnd::Slot15(int width, int height) {
     this->AddChild(this->m_previous);
   }
 
-  this->m_next = new (std::nothrow) UIBitmapButton(*this->m_context, this->m_controls->buttons);
+  this->m_next = new (std::nothrow) UIBitmapButton(*this->m_context);
   if (this->m_next) {
     this->m_next->SetBitmap("유저인터페이스\\cashemotion\\bth_arrow_r_normal.bmp", 0, 0);
     this->m_next->SetBitmap("유저인터페이스\\cashemotion\\bth_arrow_r_over.bmp", 1, 0);
@@ -3486,7 +3488,7 @@ void UICashEmotionPiece::Set(int packId, int emotionId, bool showTooltip, bool h
 // OFFSET: 0x007CBC70
 // FUNCTION: fn_09482
 void UICashEmotionPiece::Slot15(int width, int height) {
-  this->m_button = new (std::nothrow) UICashEmotionSprBtn(*this->m_context, this->m_controls->buttons, this);
+  this->m_button = new (std::nothrow) UICashEmotionSprBtn(*this->m_context, this);
   if (this->m_button) {
     this->m_button->SetSize(width, height);
     this->m_button->Move(0, 0);
@@ -3710,8 +3712,8 @@ void UICashEmotionScrollWnd::Slot53() {
 
 // OFFSET: 0x007CC870
 // FUNCTION: fn_09499
-UICashEmotionSprBtn::UICashEmotionSprBtn(UIWindowContext& windowContext, UIButtonContext& buttonContext, UIWindow* target)
-    : UISpriteButton2(windowContext, buttonContext, target), m_selected(false) {
+UICashEmotionSprBtn::UICashEmotionSprBtn(UIWindowContext& windowContext, UIWindow* target)
+    : UISpriteButton2(windowContext, target), m_selected(false) {
 }
 
 // OFFSET: 0x007CC990
@@ -3844,7 +3846,7 @@ void UICashEmotionSprBtn::Slot28(int x, int y) {
     int screenY = -20;
     this->ToScreen(screenX, screenY);
 
-    this->m_buttonContext->services.Tooltip(this->m_tooltip.c_str(), screenX, screenY, -1, false, false);
+    static_cast<ModeTooltip*>(g_charViewMode)->Show(this->m_tooltip.c_str(), screenX, screenY, -1, false, false);
   }
 
   if (!this->m_disabled) {
@@ -3854,13 +3856,13 @@ void UICashEmotionSprBtn::Slot28(int x, int y) {
 
 // OFFSET: 0x008502C0
 // FUNCTION: fn_10674
-UISpriteButton2::UISpriteButton2(UIWindowContext& windowContext, UIButtonContext& buttonContext, UIWindow* target)
-    : UISpriteButton(windowContext, buttonContext), m_target(target) {
+UISpriteButton2::UISpriteButton2(UIWindowContext& windowContext, UIWindow* target)
+    : UISpriteButton(windowContext), m_target(target) {
 }
 
 // OFFSET: 0x00850320
 // FUNCTION: fn_10675
-UISpriteButton::UISpriteButton(UIWindowContext& windowContext, UIButtonContext& buttonContext) : UIButton(windowContext, buttonContext) {
+UISpriteButton::UISpriteButton(UIWindowContext& windowContext) : UIButton(windowContext) {
   this->unknown_00BC = 0;
   this->unknown_00C0 = 0;
   this->unknown_00B4 = 0;

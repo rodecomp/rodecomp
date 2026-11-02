@@ -27,7 +27,7 @@ UIBitmapButton* UIEmotionWnd::AddCloseButton(const char* tooltip, int width) {
     width = this->geometry.width;
   }
 
-  UIBitmapButton* button = new UIBitmapButton(*this->m_context, *reinterpret_cast<UIButtonContext*>(nullptr));
+  UIBitmapButton* button = new UIBitmapButton(*this->m_context);
   button->SetBitmap("유저인터페이스\\basic_interface\\sys_close_off.bmp", 0, 0);
   button->SetBitmap("유저인터페이스\\basic_interface\\sys_close_on.bmp", 1, 0);
   button->SetBitmap("유저인터페이스\\basic_interface\\sys_close_on.bmp", 2, 0);
@@ -59,7 +59,7 @@ void UIEmotionWnd::Slot15(int, int) {
     char buffer[16];
     std::sprintf(buffer, "Alt + %d", i + 1);
 
-    UIStaticText* label = new UIStaticText(*this->m_context, *reinterpret_cast<UIButtonContext*>(nullptr));
+    UIStaticText* label = new UIStaticText(*this->m_context);
     this->m_labels[i] = label;
     label->SetSize(70, 16);
     label->Move(20, y);
@@ -70,10 +70,10 @@ void UIEmotionWnd::Slot15(int, int) {
   }
 
   this->m_labels[9]->SetText("Alt + 0", 0);
-  this->UIFrameWnd::AddCloseButton(*reinterpret_cast<UIButtonContext*>(nullptr), "Alt+M", 0);
+  this->UIFrameWnd::AddCloseButton("Alt+M", 0);
 
   std::string path = "유저인터페이스\\";
-  this->viewButton = new UIBitmapButton(*this->m_context, *reinterpret_cast<UIButtonContext*>(nullptr));
+  this->viewButton = new UIBitmapButton(*this->m_context);
   this->viewButton->SetBitmap((path + "btn_view" + ".bmp").c_str(), 0, 0);
   this->viewButton->SetBitmap((path + "btn_view_a" + ".bmp").c_str(), 1, 0);
   this->viewButton->SetBitmap((path + "btn_view_b" + ".bmp").c_str(), 2, 0);

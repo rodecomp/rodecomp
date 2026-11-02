@@ -10,7 +10,6 @@
 struct InputFocus;
 struct CLanguage;
 struct InputCharset;
-struct UIButtonContext;
 struct BitmapImage;
 #include "UI/Window/WindowManagerWindows.h"
 class NavigationDestination;
@@ -24,7 +23,6 @@ struct UIEditContext {
   CLanguage& input;
   unsigned char& password;
   const InputCharset& charset;
-  UIButtonContext& buttons;
   WindowManagerWindows& windows;
   NavigationDestination& navigation;
   const BitmapImage& colorChip;

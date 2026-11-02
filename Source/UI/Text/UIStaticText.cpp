@@ -1,3 +1,5 @@
+#include "UI/Window/UINewSelectCharWnd.h"
+#include "Client/Mode/ModeTooltip.h"
 #include "Render/DeviceContext/DeviceContext.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Buttons/UIBmpTextButton.h"
@@ -7,9 +9,9 @@
 
 // OFFSET: 0x00850550
 // FUNCTION: fn_10678
-__declspec(noinline) UIStaticText::UIStaticText(UIWindowContext& windows, UIButtonContext& controls)
+__declspec(noinline) UIStaticText::UIStaticText(UIWindowContext& windows)
     : UIWindow(windows, 0), red(0), green(0), blue(0), shadow(0), outline(0), background(0xFFFF00FFu), outlineColor(0x969696), fontHeight(12), fontFamily(0),
-      bold(0), italic(0), tooltipEnabled(0), m_controls(&controls) {
+      bold(0), italic(0), tooltipEnabled(0) {
 }
 
 // OFFSET: 0x00853050
@@ -197,7 +199,7 @@ void UIStaticText::Slot28(int, int) {
     y = (y + node->geometry.y);
   }
 
-  this->m_controls->services.Tooltip(this->tooltip.c_str(), x, y, -1, false, true);
+  static_cast<ModeTooltip*>(g_charViewMode)->Show(this->tooltip.c_str(), x, y, -1, false, true);
 }
 
 // OFFSET: 0x0085FAB0
@@ -233,7 +235,6 @@ void UIStaticText::Slot35(int value) {
 // OFFSET: 0x0085DAF0
 // FUNCTION: fn_10818
 void UIStaticText2::Paint() {
-  UIButtonContext& controls = *this->m_controls;
   this->ClearSurface(this->background);
 
   if (this->shadow != 0) {
@@ -255,7 +256,6 @@ void UIStaticText2::Paint() {
 // OFFSET: 0x0085DCA0
 // FUNCTION: fn_10819
 void UIStaticText3::Paint() {
-  UIButtonContext& controls = *this->m_controls;
   this->ClearSurface(this->background);
 
   if (this->shadow != 0) {
@@ -360,5 +360,5 @@ void UIStaticText::SetTextWithinWidth(const char* value, int outlineValue) {
 
 // OFFSET: 0x008504F0
 // FUNCTION: fn_10677
-UIStaticText3::UIStaticText3(UIWindowContext& windows, UIButtonContext& controls) : UIStaticText(windows, controls), textX(0) {
+UIStaticText3::UIStaticText3(UIWindowContext& windows) : UIStaticText(windows), textX(0) {
 }

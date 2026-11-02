@@ -88,10 +88,9 @@ namespace {
 // OFFSET: 0x0091FFD0
 // FUNCTION: fn_12639
 void UIHotKeyWnd::Slot15(int, int) {
-  UIButtonContext& controls = *reinterpret_cast<UIButtonContext*>(nullptr);
   reinterpret_cast<AutomaticSkills*>(g_session.unknown_7FB4)->DisableAll();
-  this->AddBaseButton(controls);
-  this->AddCloseButton(controls, "", 0);
+  this->AddBaseButton();
+  this->AddCloseButton("", 0);
 
   this->m_balloon = new UITransBalloonText(*this->m_context, *reinterpret_cast<BalloonTextContext*>(nullptr));
   this->m_balloon->SetSize(this->geometry.width, 20);
@@ -99,7 +98,7 @@ void UIHotKeyWnd::Slot15(int, int) {
   this->m_balloon->Show(0);
   g_windowMgr.AddRendered(this->m_balloon);
 
-  this->unknown_0100 = new UITabControl(*this->m_context, controls);
+  this->unknown_0100 = new UITabControl(*this->m_context);
   this->unknown_0100->Configure(1, this->unknown_00C4 - 3, 20, 1, 1, 0, 0, 0, 0, 0, 0, 0);
   this->unknown_0100->Move(this->unknown_00C8, this->unknown_00CC + this->unknown_00BC);
   this->AddChild(this->unknown_0100);

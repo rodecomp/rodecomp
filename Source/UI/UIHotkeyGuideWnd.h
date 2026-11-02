@@ -7,7 +7,6 @@
 #include <string>
 #include <vector>
 
-struct UIButtonContext;
 
 struct HotkeyGuideEntry {
   /* 0000 */ int id;
@@ -45,7 +44,7 @@ struct HotkeyGuideLabel {
 
 class UIHotkeyGuideWnd : public UIFrameWnd {
 public:
-  UIHotkeyGuideWnd(UIWindowContext& windows, UIButtonContext& controls);
+  UIHotkeyGuideWnd(UIWindowContext& windows);
   void Slot15(int width, int height) override;
   void Slot19() override;
   void Paint() override;
@@ -60,7 +59,7 @@ protected:
   /* 00C8 */ std::vector<UIWindow*> m_tabs;
   /* 00D4 */ int m_current;
   /* 00D8 */ std::vector<int> m_keys;
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

@@ -8,14 +8,13 @@
 class UIBitmapButton;
 class UICheckBox;
 class UIStaticText;
-struct UIButtonContext;
 struct JobListWndInfo;
 
 extern std::map<int, bool> g_partyBookingJobs;
 
 class UIJobListWnd : public UIFrameWnd {
 public:
-  UIJobListWnd(UIWindowContext& windows, UIButtonContext& controls);
+  UIJobListWnd(UIWindowContext& windows);
   void Slot11() override;
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -29,7 +28,7 @@ protected:
   /* 00D4 */ unsigned char unknown_00D4[0x14];
   /* 00E8 */ int unknown_00E8;
   /* 00EC */ JobListWndInfo* m_saved;
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 #endif

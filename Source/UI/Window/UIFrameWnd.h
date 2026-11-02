@@ -7,7 +7,6 @@
 #include "UI/Window/WindowManagerWindows.h"
 class UIBitmapButton;
 class UICheckBox;
-struct UIButtonContext;
 
 class UIFrameWnd : public UIWindow {
 public:
@@ -25,19 +24,16 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   std::vector<unsigned char> Slot44() override;
   int Slot46() override;
-  UIBitmapButton* AddCloseButton(UIButtonContext& controls, const char* tooltip, int width);
   UIBitmapButton* AddCloseButton(const char* tooltip, int width);
-  UIBitmapButton* AddBaseButton(UIButtonContext& controls);
   UIBitmapButton* AddBaseButton();
-  UIBitmapButton* AddBigCloseButton(UIButtonContext& controls, const char* tooltip, int width);
-  UIBitmapButton* AddMinimizeButton(UIButtonContext& controls, const char* tooltip, int width);
-  UIBitmapButton* AddBitmapButton(UIButtonContext& controls, int id, int x, int y, const char* name, const char* tooltip);
-  UIBitmapButton* AddNumberedButton(UIButtonContext& controls, int id, int x, int y, const char* name, const char* tooltip, bool prefix);
-  UICheckBox* AddStyledCheckBox(
-    UIButtonContext& controls, int id, int width, int height, const char* text, int x, int y, bool checked, const char* tooltip, int fontHeight,
+  UIBitmapButton* AddBigCloseButton(const char* tooltip, int width);
+  UIBitmapButton* AddMinimizeButton(const char* tooltip, int width);
+  UIBitmapButton* AddBitmapButton(int id, int x, int y, const char* name, const char* tooltip);
+  UIBitmapButton* AddNumberedButton(int id, int x, int y, const char* name, const char* tooltip, bool prefix);
+  UICheckBox* AddStyledCheckBox(int id, int width, int height, const char* text, int x, int y, bool checked, const char* tooltip, int fontHeight,
     std::uint32_t color, const char* checkedImage, const char* uncheckedImage
   );
-  UICheckBox* AddCheckBox(UIButtonContext& controls, int id, int width, int height, const char* text, int x, int y, int checked, const char* tooltip);
+  UICheckBox* AddCheckBox(int id, int width, int height, const char* text, int x, int y, int checked, const char* tooltip);
   void DrawBorder(int x, int y, int width, int height);
   void DrawSkinBox(const char* name, int x, int y, int width, int height, bool tiled);
   void FitLastTextLine(int width, unsigned lineCount, int family, int height, FrameTextLines& lines);

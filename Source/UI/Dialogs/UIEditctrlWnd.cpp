@@ -42,14 +42,14 @@ const char* g_miniMapMemoLineFormat = "%d\t%d\t%s\r\n";
 
 // OFFSET: 0x0099B0C0
 // FUNCTION: fn_13549
-UIEditctrlWnd::UIEditctrlWnd(UIWindowContext& windows, UIButtonContext& controls, UIEditContext& edit)
-    : UIFrameWnd(windows, 0), m_controls(&controls), m_editContext(&edit) {
+UIEditctrlWnd::UIEditctrlWnd(UIWindowContext& windows, UIEditContext& edit)
+    : UIFrameWnd(windows, 0), m_editContext(&edit) {
 }
 
 // OFFSET: 0x0099B120
 // FUNCTION: fn_13550
-UIMiniMapWnd::UIMiniMapWnd(UIWindowContext& windows, UIButtonContext& controls)
-    : UIFrameWnd(windows, 0), m_controls(&controls) {
+UIMiniMapWnd::UIMiniMapWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0) {
   this->dragging = 0;
   this->unknown_0114 = 0;
   this->unknown_011C = nullptr;
@@ -74,7 +74,7 @@ void UIMiniMapWnd::AddTownMarks() {
       mark.y = static_cast<int>(this->originY - (static_cast<float>(info.y) * this->scale + 6.0f));
       this->warpMarks.push_back(mark);
     } else {
-      UIBitmapButton* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+      UIBitmapButton* button = new UIBitmapButton(*this->m_context);
       button->SetBitmap(info.image.c_str(), 0, 0);
       button->SetBitmap(info.image.c_str(), 1, 0);
       button->SetBitmap(info.image.c_str(), 2, 0);
@@ -152,8 +152,8 @@ int UIMiniMapWnd::LoadMemos() {
 // OFFSET: 0x0099C090
 // FUNCTION: fn_13556
 void UIEditctrlWnd::Slot15(int, int) {
-  this->AddCloseButton(*this->m_controls, LookupMessage(2741), 0);
-  this->AddNumberedButton(*this->m_controls, 184, 205, 19, "minimap\\memo_ok", LookupMessage(2754), true);
+  this->AddCloseButton(LookupMessage(2741), 0);
+  this->AddNumberedButton(184, 205, 19, "minimap\\memo_ok", LookupMessage(2754), true);
 
   this->edit = new UIEditCtrl(*this->m_context, *this->m_editContext);
   this->edit->SetSize(200, 18);
@@ -187,22 +187,21 @@ void UIMiniMapWnd::Slot15(int width, int height) {
     this->originY = 531.0f - margin;
   }
 
-  UIButtonContext& controls = *this->m_controls;
   const int y = bottom - 19;
-  this->unknown_011C = this->AddCheckBox(controls, 361, 100, 12, LookupMessage(2742), 20, y, 1, LookupMessage(2743));
-  this->unknown_0120 = this->AddCheckBox(controls, 194, 100, 12, LookupMessage(2744), 120, y, 1, LookupMessage(2745));
-  this->unknown_0124 = this->AddCheckBox(controls, 373, 100, 12, LookupMessage(2746), 220, y, 1, LookupMessage(2747));
-  this->AddCloseButton(controls, LookupMessage(2741), 0);
-  this->AddNumberedButton(controls, 356, this->geometry.width - 120, bottom - 23, "minimap\\memo_ready", LookupMessage(2748), true);
+  this->unknown_011C = this->AddCheckBox(361, 100, 12, LookupMessage(2742), 20, y, 1, LookupMessage(2743));
+  this->unknown_0120 = this->AddCheckBox(194, 100, 12, LookupMessage(2744), 120, y, 1, LookupMessage(2745));
+  this->unknown_0124 = this->AddCheckBox(373, 100, 12, LookupMessage(2746), 220, y, 1, LookupMessage(2747));
+  this->AddCloseButton(LookupMessage(2741), 0);
+  this->AddNumberedButton(356, this->geometry.width - 120, bottom - 23, "minimap\\memo_ready", LookupMessage(2748), true);
   this->AddTownMarks();
-  this->unknown_012C = this->AddNumberedButton(controls, 205, -100, -100, "minimap\\boss", LookupMessage(2749), true);
+  this->unknown_012C = this->AddNumberedButton(205, -100, -100, "minimap\\boss", LookupMessage(2749), true);
   static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ResendMinimapMarkers();
   for (int index = 0; index < 20; ++index) {
-    this->memoButtons[index] = this->AddNumberedButton(controls, index + 601, -100, -100, "minimap\\memopoint", nullptr, true);
+    this->memoButtons[index] = this->AddNumberedButton(index + 601, -100, -100, "minimap\\memopoint", nullptr, true);
   }
 
   this->LoadMemos();
-  this->m_playerHead = new UIHeadsprButton(*this->m_context, controls);
+  this->m_playerHead = new UIHeadsprButton(*this->m_context);
   this->UpdatePlayerHead();
   this->m_playerHead->Move(-100, -100);
   this->m_playerHead->unknown_00BC = 0;
@@ -216,7 +215,6 @@ void UIMiniMapWnd::Slot15(int width, int height) {
 // OFFSET: 0x0099C530
 // FUNCTION: fn_13558
 void UIEditctrlWnd::Paint() {
-  UIButtonContext& controls = *this->m_controls;
   this->ClearSurface(0xFFFFFFFF);
   this->DrawTitleBar(true, LookupMessage(2755), 0);
 }
@@ -328,7 +326,6 @@ void UIMiniMapWnd::Paint() {
   static_cast<CGameMode*>(g_modeMgr.GetGameMode())->PlayerCell(&column, &row);
   const std::string title =
     FormatOwnedString("%s ( %s ) %d %d", g_session.GetPlayerMapDisplayName(), g_session.m_navigationPlayerMap, column, row);
-  UIButtonContext& controls = *this->m_controls;
   this->DrawPanelBackground(this->DrawTitleBar(true, title.c_str(), 0), 0, "");
   this->DrawButtonBar(1, 0, 1);
   this->FillRegion(2, 19, 512, 512, 0xFFAAAAAA);
@@ -505,7 +502,7 @@ int UIMiniMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
   case 485: {
     const int id = static_cast<int>(this->questButtons.size()) + 2001;
     const std::string name = FormatOwnedString("유저인터페이스\\minimap\\Quest_%d_%d.bmp", argument1, argument2);
-    UIBitmapButton* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    UIBitmapButton* button = new UIBitmapButton(*this->m_context);
     button->SetBitmap(name.c_str(), 0, 0);
     button->SetBitmap(name.c_str(), 1, 0);
     button->SetBitmap(name.c_str(), 2, 0);

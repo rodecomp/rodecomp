@@ -6,7 +6,6 @@
 #include <cstdint>
 
 class UIBitmapButton;
-struct UIButtonContext;
 
 class UIMacroBlackListCheckWnd : public UIFrameWnd {
 public:
@@ -38,7 +37,7 @@ public:
   /* 0158 */ std::uint32_t startTick;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 #endif

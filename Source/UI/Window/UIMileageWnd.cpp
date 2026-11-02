@@ -1,3 +1,5 @@
+#include "UI/Window/UINewSelectCharWnd.h"
+#include "Client/Mode/ModeTooltip.h"
 #include "UI/Window/UIMileageWnd.h"
 #include "Client/Session.h"
 #include "Contents/MessageTable.h"
@@ -88,7 +90,7 @@ void UIMileageWnd::Slot28(int x, int y) {
   int tipX = 10;
   int tipY = -20;
   this->ToScreen(tipX, tipY);
-  this->m_controls->services.Tooltip(this->m_tooltip.c_str(), tipX, tipY, -1, false, true);
+  static_cast<ModeTooltip*>(g_charViewMode)->Show(this->m_tooltip.c_str(), tipX, tipY, -1, false, true);
 }
 
 // OFFSET: 0x0094F040
@@ -159,7 +161,7 @@ int UIMileageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
 
 // OFFSET: 0x00946B50
 // FUNCTION: fn_12850
-UIMileageWnd::UIMileageWnd(UIWindowContext& windows, UIButtonContext& controls)
-    : UIFrameWnd(windows, 0), m_startTime(0), m_point(0), m_remaining(0), m_bonus(1), m_controls(&controls) {
+UIMileageWnd::UIMileageWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0), m_startTime(0), m_point(0), m_remaining(0), m_bonus(1) {
   this->m_tooltip.clear();
 }

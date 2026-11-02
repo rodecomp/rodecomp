@@ -1,3 +1,4 @@
+#include "Contents/MessageTable.h"
 #include "Client/Input/Language.h"
 #include "Contents/Party/AdventurerAgencyMgr.h"
 #include "Contents/Party/AgencyRequestContext.h"
@@ -69,10 +70,9 @@ void UIRegisterPartyWnd::Slot11() {
 // FUNCTION: fn_09300
 void UIRegisterPartyWnd::Slot15(int, int) {
   auto& owner = *this->m_registration;
-  auto& controls = owner.buttons;
 
   const auto label = [&](const char* text, int x, int y, int width) {
-    auto* value = new UIStaticText(*this->m_context, controls);
+    auto* value = new UIStaticText(*this->m_context);
     value->SetSize(width, 15);
     value->Move(x, y);
     value->SetText(text, 0);
@@ -83,11 +83,11 @@ void UIRegisterPartyWnd::Slot15(int, int) {
 
     return value;
   };
-  label(controls.services.MessageText(3415), 10, 23, 40);
+  label(LookupMessage(3415), 10, 23, 40);
   this->character = label(owner.characterName.c_str(), 60, 23, 119);
   this->character->text = FitText(*this->character->geometry.surface, owner.characterName, 119);
   this->character->tooltipEnabled = this->character->text != owner.characterName;
-  label(controls.services.MessageText(408), 10, 49, 40);
+  label(LookupMessage(408), 10, 49, 40);
   const int level = owner.playerLevel;
 
   const auto edit = [&](int x, int value) {
@@ -106,25 +106,25 @@ void UIRegisterPartyWnd::Slot15(int, int) {
   };
   this->minimum = edit(60, std::max((level - 5), 1));
   this->maximum = edit(96, (level + 5));
-  label(controls.services.MessageText(3369), 10, 73, this->geometry.width);
-  auto* roleLabel = label(controls.services.MessageText(504), 10, 97, this->geometry.width);
+  label(LookupMessage(3369), 10, 73, this->geometry.width);
+  auto* roleLabel = label(LookupMessage(504), 10, 97, this->geometry.width);
   roleLabel->outline = 1;
   const char* roles[] = {"def", "heal", "atk", "buf"};
   const int tooltips[] = {3420, 3491, 3444, 3508};
 
   for (int index = 0; index < 4; ++index) {
-    auto* job = new UIJobSlotButton(*this->m_context, controls);
+    auto* job = new UIJobSlotButton(*this->m_context);
     this->jobs[index] = job;
     job->SetSize(16, 16);
     job->Move(60 + index * 18, 95);
     job->selectedImage = std::string(prefix) + "UIadventurerAgency\\btn_job_" + roles[index] + "_on.bmp";
     job->unselectedImage = std::string(prefix) + "UIadventurerAgency\\btn_job_" + roles[index] + "_off.bmp";
     job->SetSelected(1);
-    job->SetTooltip(controls.services.MessageText(tooltips[index]));
+    job->SetTooltip(LookupMessage(tooltips[index]));
     this->AddChild(job);
   }
 
-  label(controls.services.MessageText(3359), 10, 121, this->geometry.width - 32);
+  label(LookupMessage(3359), 10, 121, this->geometry.width - 32);
   this->memo = new UIEditCtrl(*this->m_context, owner.edits);
   this->memo->SetSize(139, 14);
   this->memo->maximum = 24;
@@ -133,9 +133,9 @@ void UIRegisterPartyWnd::Slot15(int, int) {
   this->memo->Background(232, 232, 232);
   this->AddChild(this->memo);
 
-  auto* submit = new UIBasicButton(*this->m_context, controls);
+  auto* submit = new UIBasicButton(*this->m_context);
   const bool registered = g_adventurerAgencyMgr->registered;
-  const char* title = controls.services.MessageText(registered ? 3376 : 3371);
+  const char* title = LookupMessage(registered ? 3376 : 3371);
   submit->Configure(this->TextWidth(title, 0, 0, 12, 0, 0) + 10, title);
   submit->Move(108, 165);
   submit->SetId(registered ? 564 : 565);
@@ -149,7 +149,7 @@ void UIRegisterPartyWnd::Slot15(int, int) {
   this->m_message0 = registered ? 564 : 565;
   this->AddChild(submit);
   std::vector<std::string> lines;
-  WrapPlainText(controls.services.MessageText(3370), lines, 40, owner.codePage);
+  WrapPlainText(LookupMessage(3370), lines, 40, owner.codePage);
   int y = 136;
 
   for (const auto& line : lines) {
@@ -159,7 +159,7 @@ void UIRegisterPartyWnd::Slot15(int, int) {
     y += 12;
   }
 
-  auto* close = new UIBitmapButton(*this->m_context, controls);
+  auto* close = new UIBitmapButton(*this->m_context);
   const char* suffixes[] = {"", "_a", "_b"};
 
   for (int state = 0; state < 3; ++state) {
@@ -177,14 +177,14 @@ void UIRegisterPartyWnd::Slot15(int, int) {
   this->types->SetSize(63, 18);
   this->types->Move(60, 70);
   this->AddChild(this->types);
-  this->types->AddOption(controls.services.MessageText(3377), 0);
+  this->types->AddOption(LookupMessage(3377), 0);
 
   for (int id = 3360; id <= 3365; ++id) {
-    this->types->AddOption(controls.services.MessageText(id), 0);
+    this->types->AddOption(LookupMessage(id), 0);
   }
 
   this->types->Select(0);
-  auto* titleClose = new UIBitmapButton(*this->m_context, controls);
+  auto* titleClose = new UIBitmapButton(*this->m_context);
   const std::string off = std::string(prefix) + "basic_interface\\big_sys_close_off.bmp";
   const std::string on = std::string(prefix) + "basic_interface\\big_sys_close_on.bmp";
   titleClose->SetBitmap(off.c_str(), 0, 0);
@@ -242,9 +242,8 @@ void UIRegisterPartyWnd::NormalizeLevels() {
 // OFFSET: 0x007BFBB0
 // FUNCTION: fn_09305
 void UIRegisterPartyWnd::Paint() {
-  auto& controls = this->m_registration->buttons;
   this->geometry.surface->Fill(nullptr, 0xFFFF00FFu);
-  const auto load = [&](const char* name) { return static_cast<CBitmapRes*>(controls.resources.Load((std::string(prefix) + name).c_str())); };
+  const auto load = [&](const char* name) { return static_cast<CBitmapRes*>(ResourceMgr::Instance().Load((std::string(prefix) + name).c_str())); };
   const auto* background = load("UIadventurerAgency\\bg_agency_register.bmp");
   this->DrawBitmap(0, 0, background ? &background->image : nullptr, false);
   this->DrawTextAt(86, 50, "~", 0, 0, 12, 0, 0, 0);
@@ -273,7 +272,7 @@ void UIRegisterPartyWnd::Paint() {
     }
   }
 
-  const char* caption = controls.services.MessageText(3356);
+  const char* caption = LookupMessage(3356);
   this->DrawTextAt(19, titleHeight - 13, caption, 0, 0, 12, 0xFFFFFF, 0, 0);
   this->DrawTextAt(18, titleHeight - 14, caption, 0, 0, 12, 0, 0, 0);
   const auto* base = load("basic_interface\\sys_base_off.bmp");
@@ -295,7 +294,7 @@ int UIRegisterPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
 
       const auto notify = [&](int id) {
         char text[256] = {};
-        _snprintf_s(text, sizeof(text), _TRUNCATE, owner.buttons.services.MessageText(id));
+        _snprintf_s(text, sizeof(text), _TRUNCATE, LookupMessage(id));
         owner.completion.messages.Message(text, 0xFF);
       };
 

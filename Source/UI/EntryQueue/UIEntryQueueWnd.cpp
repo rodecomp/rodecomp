@@ -43,7 +43,6 @@ void UIEntryQueueHelpWnd::Slot18() {
 // OFFSET: 0x00BA4270
 // FUNCTION: fn_19681
 void UIEntryQueueHelpWnd::Paint() {
-  auto& controls = this->m_entryQueue->text.buttons;
   this->DrawTitleBar(true, LookupMessage(2125), 0);
   this->DrawPanelBackground(17, 0, "");
 }
@@ -110,11 +109,10 @@ UIEntryQueueRequestWnd::UIEntryQueueRequestWnd(UIWindowContext& windows, UIEntry
 // FUNCTION: fn_19691
 bool UIEntryQueueRequestWnd::Create() {
   auto& text = this->m_entryQueue->text;
-  auto& controls = text.buttons;
 
   this->Resize(300, 250);
-  this->AddBaseButton(controls);
-  this->AddCloseButton(controls, "", 0);
+  this->AddBaseButton();
+  this->AddCloseButton("", 0);
   this->SetSize(300, 250);
   this->Slot15(300, 250);
   this->Slot22(300, 250);
@@ -145,7 +143,7 @@ bool UIEntryQueueRequestWnd::Create() {
 
   const std::string path = "유저인터페이스\\";
 
-  this->m_ok = new UIBitmapButton(*this->m_context, controls);
+  this->m_ok = new UIBitmapButton(*this->m_context);
   this->m_ok->SetBitmap((path + "btn_ok" + ".bmp").c_str(), 0, 0);
   this->m_ok->SetBitmap((path + "btn_ok_a" + ".bmp").c_str(), 1, 0);
   this->m_ok->SetBitmap((path + "btn_ok_b" + ".bmp").c_str(), 2, 0);
@@ -154,7 +152,7 @@ bool UIEntryQueueRequestWnd::Create() {
   this->m_ok->SetId(0);
   this->AddChild(this->m_ok);
 
-  this->m_cancel = new UIBitmapButton(*this->m_context, controls);
+  this->m_cancel = new UIBitmapButton(*this->m_context);
   this->m_cancel->SetBitmap((path + "btn_cancel" + ".bmp").c_str(), 0, 0);
   this->m_cancel->SetBitmap((path + "btn_cancel_a" + ".bmp").c_str(), 1, 0);
   this->m_cancel->SetBitmap((path + "btn_cancel_b" + ".bmp").c_str(), 2, 0);
@@ -163,7 +161,7 @@ bool UIEntryQueueRequestWnd::Create() {
   this->m_cancel->SetId(1);
   this->AddChild(this->m_cancel);
 
-  this->m_countdown = new UIStaticText(*this->m_context, controls);
+  this->m_countdown = new UIStaticText(*this->m_context);
   this->m_countdown->SetSize(150, 20);
   this->m_countdown->Move(10, this->geometry.height - 20);
   this->AddChild(this->m_countdown);
@@ -178,7 +176,6 @@ void UIEntryQueueRequestWnd::Slot18() {
 // OFFSET: 0x00BA5390
 // FUNCTION: fn_19693
 void UIEntryQueueRequestWnd::Paint() {
-  auto& controls = this->m_entryQueue->text.buttons;
   this->DrawTitleBar(true, LookupMessage(2133), 0);
   this->DrawPanelBackground(17, 0, "");
 
@@ -242,10 +239,9 @@ UIEntryQueueStandByWnd::UIEntryQueueStandByWnd(UIWindowContext& windows, UIEntry
 // FUNCTION: fn_19698
 bool UIEntryQueueStandByWnd::Create() {
   auto& text = this->m_entryQueue->text;
-  auto& controls = text.buttons;
 
   this->Resize(280, 120);
-  this->AddBaseButton(controls);
+  this->AddBaseButton();
   this->SetSize(280, 120);
   this->Slot15(280, 120);
   this->Slot22(280, 120);
@@ -261,7 +257,7 @@ bool UIEntryQueueStandByWnd::Create() {
 
   const std::string path = "유저인터페이스\\";
 
-  this->m_cancel = new UIBitmapButton(*this->m_context, controls);
+  this->m_cancel = new UIBitmapButton(*this->m_context);
   this->m_cancel->SetBitmap((path + "cancel_waiting" + ".bmp").c_str(), 0, 0);
   this->m_cancel->SetBitmap((path + "cancel_waiting_a" + ".bmp").c_str(), 1, 0);
   this->m_cancel->SetBitmap((path + "cancel_waiting_b" + ".bmp").c_str(), 2, 0);
@@ -270,7 +266,7 @@ bool UIEntryQueueStandByWnd::Create() {
   this->m_cancel->SetId(0);
   this->AddChild(this->m_cancel);
 
-  this->m_close = new UIBitmapButton(*this->m_context, controls);
+  this->m_close = new UIBitmapButton(*this->m_context);
   this->m_close->SetBitmap((path + "btn_close" + ".bmp").c_str(), 0, 0);
   this->m_close->SetBitmap((path + "btn_close_a" + ".bmp").c_str(), 1, 0);
   this->m_close->SetBitmap((path + "btn_close_b" + ".bmp").c_str(), 2, 0);
@@ -289,7 +285,6 @@ void UIEntryQueueStandByWnd::Slot18() {
 // OFFSET: 0x00BA5E60
 // FUNCTION: fn_19700
 void UIEntryQueueStandByWnd::Paint() {
-  auto& controls = this->m_entryQueue->text.buttons;
   this->DrawTitleBar(true, LookupMessage(2135), 0);
   this->DrawPanelBackground(17, 0, "");
 }
@@ -353,11 +348,10 @@ int UIEntryQueueWnd::SelectedIndex() {
 // OFFSET: 0x00BA6420
 // FUNCTION: fn_19707
 void UIEntryQueueWnd::Slot15(int width, int height) {
-  auto& controls = this->m_entryQueue->text.buttons;
 
   this->Resize(350, 350);
-  this->AddBaseButton(controls);
-  this->AddCloseButton(controls, "", 0);
+  this->AddBaseButton();
+  this->AddCloseButton("", 0);
 
   this->m_list = new UIEntryQueueListBox(*this->m_context, *this->m_listContext);
   this->m_list->SetSize(130, 270);
@@ -380,7 +374,7 @@ void UIEntryQueueWnd::Slot15(int width, int height) {
   };
   int index = 0;
   for (int y = 165; y < 305; y += 20, ++index) {
-    this->m_labels[index] = new UIStaticText(*this->m_context, controls);
+    this->m_labels[index] = new UIStaticText(*this->m_context);
     if (this->m_labels[index]) {
       const char* label = labels[index];
       const TextLocale locale = {};
@@ -392,7 +386,7 @@ void UIEntryQueueWnd::Slot15(int width, int height) {
   }
 
   for (int value = 0; value < 7; ++value) {
-    this->m_values[value] = new UIStaticText(*this->m_context, controls);
+    this->m_values[value] = new UIStaticText(*this->m_context);
     if (this->m_labels[value]) {
       this->m_values[value]->SetSize(157, 25);
       this->AddChild(this->m_values[value]);
@@ -409,7 +403,7 @@ void UIEntryQueueWnd::Slot15(int width, int height) {
   int id = 0;
   const char** name = names;
   for (int x = 8; x < 287; x += 93, name += 3) {
-    this->m_applyButtons[id] = new UIBitmapButton(*this->m_context, controls);
+    this->m_applyButtons[id] = new UIBitmapButton(*this->m_context);
     this->m_applyButtons[id]->SetBitmap((path + name[0] + ".bmp").c_str(), 0, 0);
     this->m_applyButtons[id]->SetBitmap((path + name[1] + ".bmp").c_str(), 1, 0);
     this->m_applyButtons[id]->SetBitmap((path + name[2] + ".bmp").c_str(), 2, 0);
@@ -420,7 +414,7 @@ void UIEntryQueueWnd::Slot15(int width, int height) {
     ++id;
   }
 
-  this->m_helpButton = new UIBitmapButton(*this->m_context, controls);
+  this->m_helpButton = new UIBitmapButton(*this->m_context);
   this->m_helpButton->SetBitmap((path + "btn_help" + ".bmp").c_str(), 0, 0);
   this->m_helpButton->SetBitmap((path + "btn_help" + "_a.bmp").c_str(), 1, 0);
   this->m_helpButton->SetBitmap((path + "btn_help" + "_b.bmp").c_str(), 2, 0);
@@ -644,7 +638,6 @@ void UIEntryQueueWnd::Slot11() {
 // FUNCTION: fn_19679
 void UIEntryQueueHelpWnd::Slot15(int width, int height) {
   auto& text = this->m_entryQueue->text;
-  auto& controls = text.buttons;
 
   this->Resize(280, 280);
 
@@ -679,7 +672,7 @@ void UIEntryQueueHelpWnd::Slot15(int width, int height) {
 
   const std::string path = "유저인터페이스\\";
 
-  this->m_close = new UIBitmapButton(*this->m_context, controls);
+  this->m_close = new UIBitmapButton(*this->m_context);
   this->m_close->SetBitmap((path + "btn_close" + ".bmp").c_str(), 0, 0);
   this->m_close->SetBitmap((path + "btn_close_a" + ".bmp").c_str(), 1, 0);
   this->m_close->SetBitmap((path + "btn_close_b" + ".bmp").c_str(), 2, 0);

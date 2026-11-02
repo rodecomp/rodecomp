@@ -29,7 +29,6 @@ UIAgitMessageBox::UIAgitMessageBox()
 // OFFSET: 0x0095D580
 // FUNCTION: fn_13068
 void UIAgitMessageBox::Paint() {
-  auto& controls = this->m_dialog->buttons;
   this->DrawTitleBar(true, LookupMessage(3640), 0);
   this->DrawPanelBackground(17, 0, "");
   this->DrawButtonBar(2, 0, 1);

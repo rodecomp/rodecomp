@@ -1,3 +1,5 @@
+#include "UI/Window/UINewSelectCharWnd.h"
+#include "Client/Mode/ModeTooltip.h"
 #include "UI/UIRefiningWnd.h"
 
 #include "Client/Application/ApplicationWindow.h"
@@ -59,33 +61,33 @@ UIRefiningWnd::UIRefiningWnd(UIWindowContext& windows)
 
 // OFFSET: 0x007F4A70
 // FUNCTION: fn_09891
-UIRefining_BtnAgain::UIRefining_BtnAgain(UIWindowContext& windows, UIButtonContext& controls) : UIBitmapButton(windows, controls), cost(0) {
+UIRefining_BtnAgain::UIRefining_BtnAgain(UIWindowContext& windows) : UIBitmapButton(windows), cost(0) {
 }
 
 // OFFSET: 0x007F4AD0
 // FUNCTION: fn_09892
-UIRefining_BtnRefining::UIRefining_BtnRefining(UIWindowContext& windows, UIButtonContext& controls) : UIBitmapButton(windows, controls), cost(0) {
+UIRefining_BtnRefining::UIRefining_BtnRefining(UIWindowContext& windows) : UIBitmapButton(windows), cost(0) {
 }
 
 // OFFSET: 0x007F4B30
 // FUNCTION: fn_09893
-UIRefining_BtnReturn::UIRefining_BtnReturn(UIWindowContext& windows, UIButtonContext& controls) : UIBitmapButton(windows, controls), highlighted(1) {
+UIRefining_BtnReturn::UIRefining_BtnReturn(UIWindowContext& windows) : UIBitmapButton(windows), highlighted(1) {
 }
 
 // OFFSET: 0x007F5E30
 // FUNCTION: fn_09907
 void UIRefiningWnd::Slot15(int width, int height) {
-  this->AddBaseButton(*this->m_controls);
-  this->AddCloseButton(*this->m_controls, "", 0);
+  this->AddBaseButton();
+  this->AddCloseButton("", 0);
 
-  UIBasicButton* basic = new UIBasicButton(*this->m_context, *this->m_controls);
+  UIBasicButton* basic = new UIBasicButton(*this->m_context);
   basic->Configure(56, LookupMessage(218));
   basic->Move(204, 322);
   basic->SetId(185);
   this->AddChild(basic);
   this->unknown_00C0 = basic;
 
-  this->refiningButton = new UIRefining_BtnRefining(*this->m_context, *this->m_controls);
+  this->refiningButton = new UIRefining_BtnRefining(*this->m_context);
   this->refiningButton->SetBitmap("유저인터페이스\\refining_renewal\\bt_refining_normal.bmp", 0, 0);
   this->refiningButton->SetBitmap("유저인터페이스\\refining_renewal\\bt_refining_normal.bmp", 1, 0);
   this->refiningButton->SetBitmap("유저인터페이스\\refining_renewal\\bt_refining_press.bmp", 2, 0);
@@ -97,26 +99,26 @@ void UIRefiningWnd::Slot15(int width, int height) {
   this->refiningButton->Invalidate();
   this->AddChild(this->refiningButton);
 
-  this->returnButton = new UIRefining_BtnReturn(*this->m_context, *this->m_controls);
+  this->returnButton = new UIRefining_BtnReturn(*this->m_context);
   this->returnButton->UpdateBitmaps();
   this->returnButton->Move(20, 267);
   this->returnButton->SetId(519);
   this->returnButton->Enable(0);
   this->AddChild(this->returnButton);
 
-  this->againButton = new UIRefining_BtnAgain(*this->m_context, *this->m_controls);
+  this->againButton = new UIRefining_BtnAgain(*this->m_context);
   this->againButton->UpdateBitmaps();
   this->againButton->Move(142, 267);
   this->againButton->SetId(520);
   this->againButton->Enable(0);
   this->AddChild(this->againButton);
 
-  this->notice = new UIRefining_Notice(*this->m_context, *this->m_controls);
+  this->notice = new UIRefining_Notice(*this->m_context);
   this->notice->SetSize(194, 22);
   this->notice->Move(6, 322);
   this->AddChild(this->notice);
 
-  UIBitmapButton* help = new UIBitmapButton(*this->m_context, *this->m_controls);
+  UIBitmapButton* help = new UIBitmapButton(*this->m_context);
   help->SetBitmap("유저인터페이스\\basic_interface\\btn_help_normal.bmp", 0, 0);
   help->SetBitmap("유저인터페이스\\basic_interface\\btn_help_over.bmp", 1, 0);
   help->SetBitmap("유저인터페이스\\basic_interface\\btn_help_pressed.bmp", 2, 0);
@@ -338,7 +340,6 @@ void UIRefiningWnd::ApplyResult() {
 // FUNCTION: fn_09909
 void UIRefining_BtnAgain::Paint() {
   UIBitmapButton::Paint();
-  auto& controls = *this->m_buttonContext;
   if (this->m_disabled == 1) {
     int width = this->TextWidth(LookupMessage(3241), 0, 0, 12, 1, 0);
     std::uint32_t color = this->success == 1 ? 0xE1C1F : (this->m_disabled == 1 ? 0x6F4333 : 0x3E1B12);
@@ -370,7 +371,6 @@ void UIRefining_BtnAgain::Paint() {
 // FUNCTION: fn_09910
 void UIRefining_BtnRefining::Paint() {
   UIBitmapButton::Paint();
-  auto& controls = *this->m_buttonContext;
   int width = this->TextWidth(LookupMessage(2966), 0, 0, 13, 1, 0);
   std::uint32_t color = this->m_disabled == 1 ? 0x94644A : 0x3E1B12;
   this->DrawTextAt(static_cast<int>(static_cast<float>(this->geometry.width - width) * 0.5f),
@@ -388,7 +388,6 @@ void UIRefining_BtnRefining::Paint() {
 // FUNCTION: fn_09911
 void UIRefining_BtnReturn::Paint() {
   UIBitmapButton::Paint();
-  auto& controls = *this->m_buttonContext;
   int width = this->TextWidth(LookupMessage(2973), 0, 0, 12, 1, 0);
   std::uint32_t color = this->highlighted == 1 ? 0xE1C1F : 0x3E1B12;
   this->DrawTextAt(static_cast<int>(static_cast<float>(this->geometry.width - width) * 0.5f),
@@ -408,7 +407,6 @@ void UIRefining_Notice::Paint() {
     std::list<std::string> lines;
     this->WrapFormattedText(this->text, &lines, this->geometry.width - 18, 0, 11, 0);
 
-    auto& controls = *this->m_controls;
     int offset = 0;
     for (const std::string& line : lines) {
       this->DrawTextAt(18, static_cast<int>((this->geometry.height - lines.size() * 11) * 0.5 + offset), line.c_str(), 0, 0, 11, color, 0, 0
@@ -547,7 +545,7 @@ void UIRefiningWnd::Slot28(int x, int y) {
     int tipX = 81;
     int tipY = 150;
     this->ToScreen(tipX, tipY);
-    this->m_controls->services.Tooltip(name, tipX, tipY - 20, -1, false, true);
+    static_cast<ModeTooltip*>(g_charViewMode)->Show(name, tipX, tipY - 20, -1, false, true);
     return;
   }
 
@@ -560,7 +558,7 @@ void UIRefiningWnd::Slot28(int x, int y) {
     int tipX = 161;
     int tipY = 150;
     this->ToScreen(tipX, tipY);
-    this->m_controls->services.Tooltip(name, tipX, tipY - 20, -1, false, true);
+    static_cast<ModeTooltip*>(g_charViewMode)->Show(name, tipX, tipY - 20, -1, false, true);
     return;
   }
 
@@ -591,7 +589,7 @@ void UIRefiningWnd::Slot28(int x, int y) {
     int tipX = slot * 49 + 11;
     int tipY = 35;
     this->ToScreen(tipX, tipY);
-    this->m_controls->services.Tooltip(name, tipX, tipY, -1, false, true);
+    static_cast<ModeTooltip*>(g_charViewMode)->Show(name, tipX, tipY, -1, false, true);
   }
 }
 
@@ -1074,7 +1072,6 @@ void UIRefiningWnd::Paint() {
   CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background.c_str())));
   this->DrawBitmap(1, 17, bitmap ? &bitmap->image : nullptr, false);
 
-  UIButtonContext& controls = *this->m_controls;
   ItemDescriptions descriptions{g_itemDescriptions};
 
   if (this->state == 1) {
@@ -1097,11 +1094,11 @@ void UIRefiningWnd::Paint() {
       ITEM_INFO icon;
       icon.SetItemId(material->itemId);
       const int owned = LookupClientItem(g_session.m_inventoryItems, material->itemId, 0).quantity;
-      DrawItemIcon(*this, controls.resources, descriptions, x + 12, 69, icon, 0);
+      DrawItemIcon(*this, ResourceMgr::Instance(), descriptions, x + 12, 69, icon, 0);
       const std::string count = FormatOwnedString("%s%d^000000/1", owned != 0 ? "" : color, owned);
       this->DrawFormattedText(x, 107, count, 48, 6, 0, 12, 0, 0);
       if (index == this->selectedMaterial && (this->state == 1 || (this->state == 2 && this->frame == 0))) {
-        DrawItemIcon(*this, controls.resources, descriptions, 81, 150, icon, 0);
+        DrawItemIcon(*this, ResourceMgr::Instance(), descriptions, 81, 150, icon, 0);
       }
       ++index;
       x += 49;
@@ -1111,17 +1108,17 @@ void UIRefiningWnd::Paint() {
       ITEM_INFO icon;
       icon.SetItemId(this->catalystItemId);
       const int owned = LookupClientItem(g_session.m_inventoryItems, this->catalystItemId, 0).quantity;
-      DrawItemIcon(*this, controls.resources, descriptions, 218, 69, icon, 0);
+      DrawItemIcon(*this, ResourceMgr::Instance(), descriptions, 218, 69, icon, 0);
       const std::string count = FormatOwnedString("%s%d^000000/%d", this->catalystCount <= owned ? "" : color, owned, this->catalystCount);
       this->DrawFormattedText(206, 107, count, 48, 6, 0, 12, 0, 0);
       if (this->catalystEnabled == 1 && (this->state == 1 || (this->state == 2 && this->frame < 13))) {
-        DrawItemIcon(*this, controls.resources, descriptions, 161, 150, icon, 0);
+        DrawItemIcon(*this, ResourceMgr::Instance(), descriptions, 161, 150, icon, 0);
       }
     }
   }
 
   if (this->item.unknown_0000[1] != 0) {
-    DrawItemIcon(*this, controls.resources, descriptions, 120, 212, this->item, 0);
+    DrawItemIcon(*this, ResourceMgr::Instance(), descriptions, 120, 212, this->item, 0);
     if (this->item.unknown_0088 > 0) {
       bitmap = static_cast<CBitmapRes*>(
         ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", this->item.unknown_0088).c_str()))

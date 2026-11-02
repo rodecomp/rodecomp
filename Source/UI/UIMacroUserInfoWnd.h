@@ -9,11 +9,10 @@
 
 class UIButton;
 class UIScrollBar;
-struct UIButtonContext;
 
 class UIMacroUserInfoWnd : public UIFrameWnd {
 public:
-  UIMacroUserInfoWnd(UIWindowContext& windows, UIButtonContext& controls);
+  UIMacroUserInfoWnd(UIWindowContext& windows);
   bool Slot08() override;
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -23,7 +22,7 @@ public:
 
   /* 00B4 */ std::string m_name;
   /* 00CC */ std::string m_message;
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 struct MacroReporterEntry {
@@ -47,7 +46,7 @@ struct MacroReporterState {
 
 class UIMacroReporterWnd : public UIFrameWnd {
 public:
-  UIMacroReporterWnd(UIWindowContext& windows, UIButtonContext& controls);
+  UIMacroReporterWnd(UIWindowContext& windows);
   void Slot11() override;
   void Slot15(int width, int height) override;
   void Slot19() override;
@@ -90,7 +89,7 @@ public:
   /* 024C */ bool m_namesValid;
   /* 024D */ bool m_targetValid;
   /* 0250 */ int m_nameCount;
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 #endif

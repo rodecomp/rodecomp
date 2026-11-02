@@ -40,18 +40,18 @@ void UISeekPartyWnd::Slot15(int, int) {
   const int maximum = g_partyBookingLevelLimit + 0xF <= g_partyBookingLevelMax ? g_partyBookingLevelLimit + 0xF : g_partyBookingLevelMax;
   std::sprintf(text, "%s - %d~%d", LookupMessage(0x6DA), g_partyBookingLevelLimit, maximum);
 
-  this->m_label = new UIStaticText(*this->m_context, *this->m_controls);
+  this->m_label = new UIStaticText(*this->m_context);
   this->m_label->SetSize(this->geometry.width - 0x20, 0xF);
   this->m_label->SetTextFitted(text);
   this->m_label->Move(0x10, 2);
   this->m_label->shadow = 1;
   this->AddChild(this->m_label);
 
-  this->AddCloseButton(*this->m_controls, "", 0);
-  this->AddMinimizeButton(*this->m_controls, "", 0);
+  this->AddCloseButton("", 0);
+  this->AddMinimizeButton("", 0);
 
   const std::string path = "유저인터페이스\\";
-  this->m_cancelButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->m_cancelButton = new UIBitmapButton(*this->m_context);
   this->m_cancelButton->SetBitmap((path + "btn_cancel" + ".bmp").c_str(), 0, 0);
   this->m_cancelButton->SetBitmap((path + "btn_cancel_a" + ".bmp").c_str(), 1, 0);
   this->m_cancelButton->SetBitmap((path + "btn_cancel_b" + ".bmp").c_str(), 2, 0);
@@ -60,7 +60,7 @@ void UISeekPartyWnd::Slot15(int, int) {
   this->m_cancelButton->SetId(0xC9);
   this->AddChild(this->m_cancelButton);
 
-  this->m_rewriteButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->m_rewriteButton = new UIBitmapButton(*this->m_context);
   this->m_rewriteButton->SetBitmap((path + "btn_rewrite" + ".bmp").c_str(), 0, 0);
   this->m_rewriteButton->SetBitmap((path + "btn_rewrite_a" + ".bmp").c_str(), 1, 0);
   this->m_rewriteButton->SetBitmap((path + "btn_rewrite_b" + ".bmp").c_str(), 2, 0);

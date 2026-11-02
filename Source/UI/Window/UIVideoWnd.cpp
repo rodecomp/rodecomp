@@ -35,7 +35,7 @@ UIVideoWnd::~UIVideoWnd() {
 
 // OFFSET: 0x00AB4060
 // FUNCTION: fn_17436
-UIVideoSkipButton::UIVideoSkipButton(UIWindowContext& windowContext, UIButtonContext& buttonContext) : UIButton(windowContext, buttonContext) {
+UIVideoSkipButton::UIVideoSkipButton(UIWindowContext& windowContext) : UIButton(windowContext) {
 }
 
 // OFFSET: 0x00AB4380
@@ -47,7 +47,7 @@ bool UIVideoWnd::Slot02() {
 // OFFSET: 0x00AB4390
 // FUNCTION: fn_17441
 void UIVideoWnd::Slot15(int width, int height) {
-  UIVideoSkipButton* button = new UIVideoSkipButton(*this->m_context, this->m_videoContext->buttons);
+  UIVideoSkipButton* button = new UIVideoSkipButton(*this->m_context);
   button->SetSize(127, 43);
   button->Move(width - button->geometry.width - 33, height - button->geometry.height - 110);
   button->SetId(521);
@@ -59,7 +59,6 @@ void UIVideoWnd::Slot15(int width, int height) {
 void UIVideoSkipButton::Paint() {
   this->ClearSurface(0xFF000000);
   std::string text = "SKIP>";
-  UIButtonContext& controls = *this->m_buttonContext;
   const int textWidth = this->TextWidth(text.c_str(), 0, 0, 30, 1, 0);
   const int textHeight = this->TextHeight(text.c_str(), 0, 0, 30, 1, 0);
   const std::uint32_t color = this->geometry.unknown_0030 == 1 ? 0x4EC7FF : 0xFFFFFF;

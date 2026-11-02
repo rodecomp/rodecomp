@@ -37,7 +37,7 @@ class RuneSetData;
 
 class UIRuneSetReWard : public UIBitmapButton {
 public:
-  UIRuneSetReWard(UIWindowContext& windows, UIButtonContext& controls);
+  UIRuneSetReWard(UIWindowContext& windows);
 
   void Paint() override;
   void Slot28(int x, int y) override;
@@ -73,7 +73,7 @@ public:
 
 class UIRuneSystem_tagListWnd : public UIWindow {
 public:
-  UIRuneSystem_tagListWnd(UIWindowContext& windows, UIButtonContext& controls);
+  UIRuneSystem_tagListWnd(UIWindowContext& windows);
   void Paint() override;
   void Slot25(int x, int y) override;
   void Slot28(int x, int y) override;
@@ -182,7 +182,7 @@ public:
 
 class UIRuneSystem_Decom_RadioBtn : public UIRadioBtn {
 public:
-  UIRuneSystem_Decom_RadioBtn(UIWindowContext& windows, UIButtonContext& controls);
+  UIRuneSystem_Decom_RadioBtn(UIWindowContext& windows);
 
   void Paint() override;
 
@@ -304,7 +304,7 @@ struct RuneDecomResultPacket {
 
 class UIRuneSystem_DecomResultWnd : public UIFrameWnd {
 public:
-  UIRuneSystem_DecomResultWnd(UIWindowContext& windows, UIButtonContext& controls);
+  UIRuneSystem_DecomResultWnd(UIWindowContext& windows);
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 

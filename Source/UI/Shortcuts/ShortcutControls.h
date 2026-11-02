@@ -2,7 +2,6 @@
 #define RAGNAROK_SOURCE_UI_SHORTCUTS_SHORTCUTCONTROLS_H
 
 struct UIWindowContext;
-struct UIButtonContext;
 class UIFrameWnd;
 class UICheckBox;
 class UIBitmapButton;
@@ -16,7 +15,7 @@ struct ShortcutControls {
   UIBitmapButton* hideItems;
 
   static ShortcutControls
-  Create(UIFrameWnd& frame, UIWindowContext& windows, UIButtonContext& buttons, int bankOption, NormalItemSlot** slots, NormalItemSlot** itemSlots);
+  Create(UIFrameWnd& frame, UIWindowContext& windows, int bankOption, NormalItemSlot** slots, NormalItemSlot** itemSlots);
 };
 
 #endif

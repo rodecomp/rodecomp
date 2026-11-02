@@ -68,7 +68,7 @@ public:
 
 protected:
   InputFocus* m_focus;
-  UIButtonContext* m_controls;
+  void* unknown_controls;
   UIEditContext* m_editContext;
 };
 

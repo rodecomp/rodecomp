@@ -360,7 +360,7 @@ int UITextViewEX::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
   }
 }
 
-UIItemTagButton::UIItemTagButton(UIWindowContext& windows, UIButtonContext& buttons) : UITextButton(windows, buttons), unknown_01F8(0), textY(1) {
+UIItemTagButton::UIItemTagButton(UIWindowContext& windows) : UITextButton(windows), unknown_01F8(0), textY(1) {
 }
 
 // OFFSET: 0x00874A40
@@ -374,7 +374,7 @@ std::string UIItemTagCtrl::sub_874A40(int tagId, unsigned int color) {
   UIItemTagButton* button;
   {
     const std::string text = "<" + label + ">";
-    button = new (std::nothrow) UIItemTagButton(*this->m_context, this->m_edit->buttons);
+    button = new (std::nothrow) UIItemTagButton(*this->m_context);
     if (button) {
       button->Configure(text.c_str(), 0x7F00E4, 0, 12, 0, 0);
       if (title != label) {

@@ -81,7 +81,7 @@ void CSignBoardMgr::Initialize() {
     case 1: {
       C3DCooRendering* object = new C3DCooRendering();
       object->type = it->type;
-      object->Create(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIButtonContext*>(nullptr));
+      object->Create(*reinterpret_cast<UIWindowContext*>(nullptr));
       std::string image;
       if (_mbsstr(reinterpret_cast<const unsigned char*>(it->image), reinterpret_cast<const unsigned char*>("유저인터페이스")) == nullptr) {
         image = "유저인터페이스\\";
@@ -111,7 +111,7 @@ void CSignBoardMgr::Initialize() {
     case 3: {
       C3DCooRendering* object = new C3DCooRendering();
       object->type = it->type;
-      object->Create(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIButtonContext*>(nullptr));
+      object->Create(*reinterpret_cast<UIWindowContext*>(nullptr));
       std::string image;
       if (_mbsstr(reinterpret_cast<const unsigned char*>(it->image), reinterpret_cast<const unsigned char*>("유저인터페이스")) == nullptr) {
         image = "유저인터페이스\\";
@@ -193,7 +193,7 @@ CIcon::CIcon() {
 
 // OFFSET: 0x00821180
 // FUNCTION: fn_10257
-CSignBoardWnd::CSignBoardWnd(UIWindowContext& windows, UIButtonContext& controls) : UIWindow(windows, 0), m_controls(&controls) {
+CSignBoardWnd::CSignBoardWnd(UIWindowContext& windows) : UIWindow(windows, 0) {
 }
 
 // OFFSET: 0x008213D0
@@ -256,7 +256,7 @@ void CBmpObjWnd::Slot15(int width, int height) {
 void CSignBoardWnd::Slot15(int width, int height) {
   CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\signboard\\bg_signboard.bmp")));
   this->Resize(bitmap->image.width, bitmap->image.height);
-  UIStaticText* text = new (std::nothrow) UIStaticText(*this->m_context, *this->m_controls);
+  UIStaticText* text = new (std::nothrow) UIStaticText(*this->m_context);
   this->text = text;
   text->SetSize(0x7e, 0xe);
   text->Move(0x1e, this->geometry.height / 2 - 7);
@@ -285,7 +285,7 @@ void CSignBoardWnd::Paint() {
 
 // OFFSET: 0x00821D10
 // FUNCTION: fn_10267
-void C3DCooRendering::Create(UIWindowContext& windows, UIButtonContext& controls) {
+void C3DCooRendering::Create(UIWindowContext& windows) {
   UIWindow* window;
   int width;
   int height;
@@ -296,7 +296,7 @@ void C3DCooRendering::Create(UIWindowContext& windows, UIButtonContext& controls
     height = 0xaa;
     break;
   case 3:
-    window = new (std::nothrow) CSignBoardWnd(windows, controls);
+    window = new (std::nothrow) CSignBoardWnd(windows);
     width = 0xa2;
     height = 0x24;
     break;

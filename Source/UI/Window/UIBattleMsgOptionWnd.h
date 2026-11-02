@@ -8,7 +8,6 @@
 
 class UICheckBox;
 class UIScrollBar;
-struct UIButtonContext;
 
 class UIBattleMsgOptionWnd : public UIFrameWnd {
 public:
@@ -38,7 +37,7 @@ public:
   /* 0114 */ UICheckBox* m_allCheckBox;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 #endif

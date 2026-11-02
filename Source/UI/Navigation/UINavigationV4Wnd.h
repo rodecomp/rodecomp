@@ -12,7 +12,6 @@ class CTexture;
 class UIListBox_NaviSearch;
 struct UIListBoxContext;
 class UIStaticText;
-struct UIButtonContext;
 
 struct NavigationWindowInfo {
   /* 0000 */ int x;
@@ -75,7 +74,7 @@ public:
   /* 0114 */ int unknown_0114;
   /* 0118 */ int unknown_0118;
   /* 011C */ int unknown_011C;
-  UIButtonContext* m_controls;
+  void* unknown_controls;
   UIListBoxContext* m_listContext;
 };
 
@@ -83,7 +82,7 @@ class UIStaticBitmap;
 
 class UINavigationroadiconWnd : public UIFrameWnd {
 public:
-  UINavigationroadiconWnd(UIWindowContext& windows, UIButtonContext& controls);
+  UINavigationroadiconWnd(UIWindowContext& windows);
   void Slot15(int width, int height) override;
   void Paint() override;
   void Slot31(int x, int y) override;
@@ -92,19 +91,19 @@ public:
   /* 00B4 */ UIStaticBitmap* icon;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 class UINavigationRuideWnd : public UIFrameWnd {
 public:
-  UINavigationRuideWnd(UIWindowContext& windows, UIButtonContext& controls, UIListBoxContext& lists);
+  UINavigationRuideWnd(UIWindowContext& windows, UIListBoxContext& lists);
   void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   void RefreshRoute();
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 
 public:
   /* 00B4 */ UIListBox_NaviSearch* routeList;

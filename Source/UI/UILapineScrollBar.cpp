@@ -1,3 +1,4 @@
+#include "Render/Text/FontCache.h"
 #include "UI/UIIngredientInfoWnd.h"
 #include "UI/UILapineScrollBar.h"
 
@@ -148,22 +149,21 @@ void UILapineBox_IngredientListWnd::Slot10(int, int, std::intptr_t value) {
 // OFFSET: 0x005FF920
 // FUNCTION: fn_04153
 void UILapineBoxWnd::Slot15(int, int) {
-  UIButtonContext& controls = *this->m_controls;
-  UIBitmapButton* base = new UIBitmapButton(*this->m_context, controls);
+  UIBitmapButton* base = new UIBitmapButton(*this->m_context);
   base->SetBitmap("유저인터페이스\\basic_interface\\sys_base_off.bmp", 0, 0);
   base->SetBitmap("유저인터페이스\\basic_interface\\sys_base_on.bmp", 1, 0);
   base->SetBitmap("유저인터페이스\\basic_interface\\sys_base_on.bmp", 2, 0);
   base->SetSize(base->BitmapWidth(), base->BitmapHeight());
   base->Move(3, 3);
   this->AddChild(base);
-  this->AddCloseButton(controls, "", 0);
+  this->AddCloseButton("", 0);
 
   UILapineBox_IngredientListWnd* list = new UILapineBox_IngredientListWnd(*this->m_context, 150, 204);
   this->ingredientList = list;
   list->Move(241, 17);
   this->AddChild(list);
 
-  UIBitmapButton* cancel = new UIBitmapButton(*this->m_context, controls);
+  UIBitmapButton* cancel = new UIBitmapButton(*this->m_context);
   this->cancelButton = cancel;
   cancel->SetBitmap("유저인터페이스\\lapine\\btn_cancel_out.bmp", 0, 0);
   cancel->SetBitmap("유저인터페이스\\lapine\\btn_cancel_over.bmp", 1, 0);
@@ -174,7 +174,7 @@ void UILapineBoxWnd::Slot15(int, int) {
   cancel->SetId(201);
   this->AddChild(cancel);
 
-  UIBitmapButton* make = new UIBitmapButton(*this->m_context, controls);
+  UIBitmapButton* make = new UIBitmapButton(*this->m_context);
   this->makeButton = make;
   make->SetBitmap("유저인터페이스\\lapine\\btn_make_out.bmp", 0, 0);
   make->SetBitmap("유저인터페이스\\lapine\\btn_make_over.bmp", 1, 0);
@@ -185,7 +185,7 @@ void UILapineBoxWnd::Slot15(int, int) {
   make->SetId(503);
   this->AddChild(make);
 
-  UIBitmapButton* move = new UIBitmapButton(*this->m_context, controls);
+  UIBitmapButton* move = new UIBitmapButton(*this->m_context);
   this->moveButton = move;
   move->SetBitmap("유저인터페이스\\lapine\\btn_moveitem_out.bmp", 0, 0);
   move->SetBitmap("유저인터페이스\\lapine\\btn_moveitem_over.bmp", 1, 0);
@@ -242,7 +242,6 @@ void UIIngredientInfoWnd::Paint() {
 // OFFSET: 0x005FFF90
 // FUNCTION: fn_04156
 void UILapineBoxWnd::Paint() {
-  UIButtonContext& controls = *this->m_controls;
   CBitmapRes* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\lapine\\bg_lapine.bmp")));
   this->DrawBitmap(0, 0, &background->image, true);
 
@@ -279,7 +278,7 @@ void UILapineBoxWnd::Paint() {
     }
     CBitmapRes* slot = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\lapine\\shadow_item_off.bmp")));
     this->DrawBitmap(x - 4, y + 11, &slot->image, true);
-    DrawItemWithQuantity(*this, controls.resources, descriptions, controls.fonts, controls.locale, x, y, this->items[index], 0, 0);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, this->m_context->locale, x, y, this->items[index], 0, 0);
   }
 
   if (timeGetTime() < this->noticeTick + this->noticeDuration) {

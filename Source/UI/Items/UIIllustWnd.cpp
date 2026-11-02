@@ -116,7 +116,7 @@ int UIIllustWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1,
       this->m_titled = 1;
       return 0;
     }
-    this->AddCloseButton(*this->m_controls, "", 0)->Move(this->geometry.width - 16, 3);
+    this->AddCloseButton("", 0)->Move(this->geometry.width - 16, 3);
     this->m_closable = 1;
     this->Invalidate();
     return 0;
@@ -187,7 +187,7 @@ int UIMultiIllustWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
       this->m_closable = 0;
       return 0;
     }
-    this->AddCloseButton(*this->m_controls, "", 0)->Move(this->geometry.width - 16, 3);
+    this->AddCloseButton("", 0)->Move(this->geometry.width - 16, 3);
     this->m_closable = 1;
     this->Invalidate();
     return 0;

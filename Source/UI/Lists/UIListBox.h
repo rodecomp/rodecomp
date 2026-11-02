@@ -11,7 +11,6 @@ class ResourceMgr;
 class UIScrollBar;
 #include "UI/Window/WindowManagerWindows.h"
 class NavigationDestination;
-struct UIButtonContext;
 
 struct UIListBoxContext {
   FrameFocus& capture;
@@ -20,7 +19,6 @@ struct UIListBoxContext {
   const TextLocale& locale;
   const unsigned short& codePage;
   WindowManagerWindows& windows;
-  UIButtonContext& buttons;
   NavigationDestination& navigation;
 };
 

@@ -4,8 +4,8 @@
 
 // OFFSET: 0x0084EAB0
 // FUNCTION: fn_10650
-UIBitmapButton::UIBitmapButton(UIWindowContext& windowContext, UIButtonContext& buttonContext)
-    : UIButton(windowContext, buttonContext), m_bitmapWidth(0), m_bitmapHeight(0), m_invalidateParent(0) {
+UIBitmapButton::UIBitmapButton(UIWindowContext& windowContext)
+    : UIButton(windowContext), m_bitmapWidth(0), m_bitmapHeight(0), m_invalidateParent(0) {
 }
 
 // OFFSET: 0x008511B0

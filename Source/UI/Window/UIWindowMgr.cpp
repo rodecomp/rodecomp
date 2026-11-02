@@ -1,3 +1,4 @@
+#include "UI/Window/WindowPolicy.h"
 #include "Render/Renderer.h"
 #include "UI/Chat/UISubChatHisWnd.h"
 #include "Client/Browser/WebBrowser.h"
@@ -1955,15 +1956,6 @@ void UIWindowMgr::sub_A8C4B0(int id) {
   g_session.EraseRecord0734(id);
   this->unknown_4F248.push_back(id);
   sub_DFF150(&g_session);
-}
-
-__forceinline void RecordEditTextsNoArg(UIWindow* window) {
-  union {
-    int (UIWindow::*method)(WindowReplayRecorder&);
-    void (__thiscall* call)(UIWindow*);
-  } convert;
-  convert.method = &UIWindow::RecordEditTexts;
-  convert.call(window);
 }
 
 // OFFSET: 0x00A8CA20
@@ -3954,7 +3946,7 @@ void UIWindowMgr::ShowWaitDBSaveWindow() {
   }
 
   WindowDialogs& dialogs = *reinterpret_cast<WindowDialogs*>(this);
-  UIWaitDBSaveWndContext waitContext{*reinterpret_cast<WindowManagerWindows*>(this), dialogs.dialog.text.buttons};
+  UIWaitDBSaveWndContext waitContext{*reinterpret_cast<WindowManagerWindows*>(this)};
   this->window_4F2AC = new UIWaitDBSaveWnd(dialogs.windows, waitContext);
   this->window_4F2AC->SetSize(g_renderer->viewport.width, g_renderer->viewport.height);
   this->window_4F2AC->Move(0, 0);

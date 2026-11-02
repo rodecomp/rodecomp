@@ -6,11 +6,9 @@
 
 class UIBitmapButton;
 class UIStaticText;
-struct UIButtonContext;
 
 struct UIComboBoxHeaderContext {
   UIComboBoxContext& combo;
-  UIButtonContext& buttons;
 };
 
 class UIComboBoxDefWnd : public UIWindow {
@@ -56,7 +54,7 @@ public:
   /* 0080 */ UIStaticText* label;
 
 protected:
-  UIButtonContext* m_buttons;
+  void* unknown_buttons;
 
 public:
   /* 0084 */ unsigned char borderless;

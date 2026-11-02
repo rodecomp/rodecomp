@@ -13,7 +13,6 @@ UIRadioBtn::~UIRadioBtn() = default;
 // OFFSET: 0x0085D470
 // FUNCTION: fn_10814
 void UIRadioBtn::Paint() {
-  UIButtonContext& controls = *this->m_controls;
 
   if (!this->checkedBitmap.empty() && !this->uncheckedBitmap.empty()) {
     this->ClearSurface(0xFFFF00FF);
@@ -88,7 +87,7 @@ void UIRadioBtn::SetText(const char* value) {
 
 // OFFSET: 0x0084FFE0
 // FUNCTION: fn_10670
-UIRadioBtn::UIRadioBtn(UIWindowContext& windows, UIButtonContext& controls) : UIWindow(windows, 0), m_controls(&controls) {
+UIRadioBtn::UIRadioBtn(UIWindowContext& windows) : UIWindow(windows, 0) {
   this->geometry.unknown_0030 = 0;
   this->enabled = 1;
   this->geometry.id = 215;

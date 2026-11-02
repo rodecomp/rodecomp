@@ -9,7 +9,6 @@
 #include <vector>
 
 class UIStaticText;
-struct UIButtonContext;
 
 class CBmpObjWnd : public UIWindow {
 public:
@@ -23,7 +22,7 @@ public:
 
 class CSignBoardWnd : public UIWindow {
 public:
-  CSignBoardWnd(UIWindowContext& windows, UIButtonContext& controls);
+  CSignBoardWnd(UIWindowContext& windows);
   ~CSignBoardWnd() override;
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -35,7 +34,7 @@ public:
   /* 00B0 */ std::string unknown_00B0;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 class CIcon : public CRenderObject {
@@ -55,7 +54,7 @@ public:
   ~C3DCooRendering() override;
   bool OnProcess() override;
   void Render(int argument) override;
-  void Create(UIWindowContext& windows, UIButtonContext& controls);
+  void Create(UIWindowContext& windows);
   void SetOverrideColor();
   void SetBoard(const std::string& text, const std::string& color);
   void SetWindowImage(const std::string& name);

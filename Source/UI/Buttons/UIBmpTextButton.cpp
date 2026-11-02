@@ -8,7 +8,7 @@
 
 // OFFSET: 0x0084ED30
 // FUNCTION: fn_10652
-UIBmpTextButton::UIBmpTextButton(UIWindowContext& windows, UIButtonContext& controls) : UIBitmapButton(windows, controls) {
+UIBmpTextButton::UIBmpTextButton(UIWindowContext& windows) : UIBitmapButton(windows) {
 }
 
 // OFFSET: 0x00852360
@@ -39,7 +39,7 @@ void UIBmpTextButton::Paint() {
 
   if (disabled || state <= 2) {
     const char* path = this->m_names[disabled ? 3 : state].c_str();
-    auto* resource = static_cast<CBitmapRes*>(this->m_buttonContext->resources.Load(path));
+    auto* resource = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(path));
     this->DrawBitmap(0, 0, resource ? &resource->image : nullptr, false);
 
     if (!this->text.empty()) {

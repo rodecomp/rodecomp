@@ -32,7 +32,7 @@ void UIShowWarpWnd::Slot15(int width, int height) {
   this->AddChild(list);
 
   const std::string prefix = "유저인터페이스\\";
-  auto* close = new UIBitmapButton(*this->m_context, *this->m_controls);
+  auto* close = new UIBitmapButton(*this->m_context);
   close->SetBitmap((prefix + "btn_close" + ".bmp").c_str(), 0, 0);
   close->SetBitmap((prefix + "btn_close_a" + ".bmp").c_str(), 1, 0);
   close->SetBitmap((prefix + "btn_close_b" + ".bmp").c_str(), 2, 0);
@@ -83,6 +83,6 @@ int UIShowWarpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
 
 // OFFSET: 0x009470C0
 // FUNCTION: fn_12858
-UIShowWarpWnd::UIShowWarpWnd(UIWindowContext& windows, UIButtonContext& controls, UIListBoxContext& lists, WindowResponseRecorder& recorder)
-    : UIFrameWnd(windows, 0), m_controls(&controls), m_listContext(&lists), m_recorder(&recorder) {
+UIShowWarpWnd::UIShowWarpWnd(UIWindowContext& windows, UIListBoxContext& lists, WindowResponseRecorder& recorder)
+    : UIFrameWnd(windows, 0), m_listContext(&lists), m_recorder(&recorder) {
 }

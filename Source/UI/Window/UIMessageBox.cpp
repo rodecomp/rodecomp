@@ -1,3 +1,4 @@
+#include "Render/Text/FontCache.h"
 #include "Client/ReplayPacketRecorder.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Resource/Bitmap/BitmapResource.h"
@@ -265,8 +266,7 @@ UIMessageBox::~UIMessageBox() = default;
 // OFFSET: 0x008B8E60
 // FUNCTION: fn_11768
 void UIMessageBox::Paint() {
-  auto& controls = this->m_dialog->text.buttons;
-  const auto load = [&](const char* name) { return static_cast<CBitmapRes*>(controls.resources.Load((std::string(prefix) + name).c_str())); };
+  const auto load = [&](const char* name) { return static_cast<CBitmapRes*>(ResourceMgr::Instance().Load((std::string(prefix) + name).c_str())); };
   int leftWidth = 0;
   int rightWidth = 0;
   int titleHeight = 0;
@@ -300,10 +300,10 @@ void UIMessageBox::Paint() {
   const auto* base = load("basic_interface\\sys_base_off.bmp");
   this->DrawBitmap(3, 3, base ? &base->image : nullptr, true);
 
-  const auto border = Palette(controls.resources, 14, 6);
+  const auto border = Palette(ResourceMgr::Instance(), 14, 6);
   DrawRoundedBorder(*this, 0, 17, width, height - 17, border);
   this->FillRegion(0, 17, width, 5, border);
-  const auto background = Palette(controls.resources, 2, 2);
+  const auto background = Palette(ResourceMgr::Instance(), 2, 2);
   this->FillRegion(1, 17, width - 2, height - 19, background);
   this->FillRegion(2, height - 2, width - 4, 1, background);
 }
@@ -417,25 +417,24 @@ void UIMakeCharWnd::Paint() {
 // OFFSET: 0x008B88F0
 // FUNCTION: fn_11767
 void UIMerInfoWnd::Paint() {
-  auto& controls = *this->m_controls;
   const auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\homuninfo_bg.bmp")));
   this->DrawBitmap(0, 0, &background->image, false);
   char title[50] = {};
   const unsigned kind = g_session.m_mercenaryClass;
   const int titleId = kind - 6017 <= 9 ? 1181 : kind - 6037 <= 9 ? 1182 : kind - 6027 <= 9 ? 1183 : 1367;
-  std::sprintf(title, controls.services.MessageText(titleId));
+  std::sprintf(title, LookupMessage(titleId));
   this->DrawTextAt(5, 2, title, 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(100, 24, controls.services.MessageText(407), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(100, 47, controls.services.MessageText(408), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(100, 111, controls.services.MessageText(1184), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(100, 135, controls.services.MessageText(1185), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(100, 159, controls.services.MessageText(1186), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(230, 133, controls.services.MessageText(1187), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(100, 24, LookupMessage(407), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(100, 47, LookupMessage(408), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(100, 111, LookupMessage(1184), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(100, 135, LookupMessage(1185), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(100, 159, LookupMessage(1186), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(230, 133, LookupMessage(1187), 0, 0, 12, 0, 0, 0);
   char number[24] = {};
   for (int i = 0; i < 8; ++i) {
     const int value = i == 7 ? (2000 - g_session.m_mercenaryStats[i]) / 10 : g_session.m_mercenaryStats[i];
     const int bytes = std::sprintf(number, "%d", value);
-    DrawTextRight(*this, controls.fonts, controls.locale, 79, 24 + 18 * i, number, bytes, 1, 14, 0, 0);
+    DrawTextRight(*this, g_fontCache, this->m_context->locale, 79, 24 + 18 * i, number, bytes, 1, 14, 0, 0);
   }
   this->DrawTextAt(136, 24, g_session.m_mercenaryName, 0, 0, 12, 0x646464, 0, 0);
   this->DrawTextAt(135, 24, g_session.m_mercenaryName, 0, 0, 12, 0, 0, 0);
@@ -448,7 +447,7 @@ void UIMerInfoWnd::Paint() {
     this->DrawTextAt(218, 70, text, bytes, 1, 14, 0, 0, 0);
     bytes = std::sprintf(text, "%d / %d", g_session.m_mercenarySp, g_session.m_mercenaryMaxSp);
     this->DrawTextAt(218, 85, text, bytes, 1, 14, 0, 0, 0);
-    std::strftime(text, 128, controls.services.MessageText(1260), _localtime32(&g_session.m_mercenaryExpiration));
+    std::strftime(text, 128, LookupMessage(1260), _localtime32(&g_session.m_mercenaryExpiration));
     this->DrawTextAt(155, 111, text, static_cast<int>(std::strlen(text)), 0, 12, 255, 0, 0);
     bytes = std::sprintf(text, "%d", g_session.m_mercenaryLoyalty);
     this->DrawTextAt(170, 133, text, bytes, 1, 14, 0, 0, 0);
@@ -462,15 +461,14 @@ void UIMerInfoWnd::Paint() {
 // OFFSET: 0x008A6E20
 // FUNCTION: fn_11712
 long long UIBank_NewWnd::TransactionAmount(unsigned char deposit) {
-  auto& services = this->m_controls->services;
   std::string text = this->m_amountEdit->Text();
   this->m_amountEdit->SetText("");
   const auto fail = [&](int notice, int status) {
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(services.MessageText(notice)), 255, 0, 0, 0);
-    this->m_status = services.MessageText(status);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(notice)), 255, 0, 0, 0);
+    this->m_status = LookupMessage(status);
     return 0LL;
   };
-  if (text == std::string(services.MessageText(2778))) {
+  if (text == std::string(LookupMessage(2778))) {
     const long long cash = g_session.m_zeny;
     const long long balance = g_session.m_bankBalance;
     const long long excess = cash + balance > 0x7FFFFFFF ? cash + balance - 0x7FFFFFFF : 0;
@@ -545,18 +543,17 @@ bool UIBank_NewWnd::IsNumeric(std::string text) {
 // OFFSET: 0x008B7AD0
 // FUNCTION: fn_11760
 void UIBank_NewWnd::Paint() {
-  auto& controls = *this->m_controls;
   const auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\bank\\bg_bank.bmp")));
-  const int titleHeight = this->DrawTitleBar(true, controls.services.MessageText(2771), 0);
+  const int titleHeight = this->DrawTitleBar(true, LookupMessage(2771), 0);
   this->DrawBitmap(0, titleHeight, &background->image, false);
   char number[260] = {};
   char text[260] = {};
-  this->DrawTextAt(30, 29, controls.services.MessageText(2772), 0, 0, 12, 0, 0, 0);
-  const int x = this->TextWidth(controls.services.MessageText(2772), 0, 0, 12, 0, 0) + 43;
+  this->DrawTextAt(30, 29, LookupMessage(2772), 0, 0, 12, 0, 0, 0);
+  const int x = this->TextWidth(LookupMessage(2772), 0, 0, 12, 0, 0) + 43;
   FormatGroupedInteger(g_session.m_bankBalance, number, 260);
   std::sprintf(text, "%s z", number);
   this->DrawTextAt(x, 29, text, 0, 0, 11, 0, 0, 0);
-  this->DrawTextAt(30, 46, controls.services.MessageText(2773), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(30, 46, LookupMessage(2773), 0, 0, 12, 0, 0, 0);
   FormatGroupedInteger(g_session.m_zeny, number, 260);
   std::sprintf(text, "%s z", number);
   this->DrawTextAt(x, 46, text, 0, 0, 11, 0, 0, 0);
@@ -570,7 +567,6 @@ void UIBank_NewWnd::Paint() {
 // OFFSET: 0x008B7CF0
 // FUNCTION: fn_11761
 void UIChatRoomWnd::Paint() {
-  auto& controls = *this->m_controls;
   const int titleHeight = this->DrawTitleBar(false, "", 0);
   this->DrawPanelBackground(titleHeight, 0, "");
   unsigned red, green, blue;
@@ -640,8 +636,7 @@ void UIMessageBox::FormatCountdown() {
 
 // INLINED
 void UIMessageBox::AddButton(const char* name, int id, int x, int y) {
-  auto& controls = this->m_dialog->text.buttons;
-  auto* button = new UIBitmapButton(*this->m_context, controls);
+  auto* button = new UIBitmapButton(*this->m_context);
   const char* suffixes[] = {"", "_a", "_b"};
 
   for (int state = 0; state < 3; ++state) {
@@ -681,7 +676,7 @@ void UIMessageBox::Configure(
   int inset = 0;
 
   if (icon) {
-    auto* image = new UIStaticBitmap(*this->m_context, this->m_dialog->text.buttons);
+    auto* image = new UIStaticBitmap(*this->m_context);
     image->SetBitmap(icon);
     image->SetSize(image->geometry.width, image->geometry.height);
     image->Move(10, 22);
@@ -691,7 +686,7 @@ void UIMessageBox::Configure(
 
   this->viewer = new UITextViewer(*this->m_context, this->m_dialog->text);
   this->viewer->Configure(inset + 10, 22, width - inset - 20, height - 55, 0);
-  this->viewer->backgroundColor = Palette(this->m_dialog->text.buttons.resources, 2, 2) | 0xFF000000u;
+  this->viewer->backgroundColor = Palette(ResourceMgr::Instance(), 2, 2) | 0xFF000000u;
   this->viewer->Invalidate();
   this->AddChild(this->viewer);
   this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(this->messageText.data()), static_cast<int>(static_cast<double>(width) / 7.5), 0, 0);
@@ -715,10 +710,9 @@ void UIMessageBox::Configure(
   case 5: {
     this->AddButton("btn_ok", 184, width - 46, height - 24);
     this->m_message0 = 184;
-    auto& controls = this->m_dialog->text.buttons;
 
-    auto* button = new UITextButton(*this->m_context, controls);
-    button->Configure(controls.services.MessageText(3445), 0x00F4934A, 0, 12, 0, 0);
+    auto* button = new UITextButton(*this->m_context);
+    button->Configure(LookupMessage(3445), 0x00F4934A, 0, 12, 0, 0);
     button->m_hoverColor = 0x00FF7864;
     button->Move(14, 70);
     button->SetId(426);
@@ -779,8 +773,7 @@ int UIMessageBox::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     return 0;
   case 98:
     if (a == 426) {
-      auto& controls = this->m_dialog->text.buttons;
-      ShellExecuteA(this->m_dialog->text.applicationWindow, "open", controls.services.MessageText(3445), nullptr, nullptr, SW_SHOWNORMAL);
+      ShellExecuteA(this->m_dialog->text.applicationWindow, "open", LookupMessage(3445), nullptr, nullptr, SW_SHOWNORMAL);
     }
 
     return 0;
@@ -886,10 +879,10 @@ void UIHomunInfoWnd::Slot11() {
 // OFFSET: 0x008B0CA0
 // FUNCTION: fn_11744
 void UIMerInfoWnd::Slot15(int, int) {
-  this->AddCloseButton(*this->m_controls, "", 0);
+  this->AddCloseButton("", 0);
   {
     const std::string name("유저인터페이스\\btn_fired");
-    this->button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    this->button = new UIBitmapButton(*this->m_context);
     this->button->SetBitmap((name + ".bmp").c_str(), 0, 0);
     this->button->SetBitmap((name + "_a.bmp").c_str(), 1, 0);
     this->button->SetBitmap((name + "_b.bmp").c_str(), 2, 0);
@@ -900,7 +893,7 @@ void UIMerInfoWnd::Slot15(int, int) {
   }
   {
     const std::string name("유저인터페이스\\btn_skill");
-    this->button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    this->button = new UIBitmapButton(*this->m_context);
     this->button->SetBitmap((name + ".bmp").c_str(), 0, 0);
     this->button->SetBitmap((name + "_a.bmp").c_str(), 1, 0);
     this->button->SetBitmap((name + "_b.bmp").c_str(), 2, 0);
@@ -1025,7 +1018,6 @@ void UIBank_NewWnd::AnimateLoading() {
 // OFFSET: 0x008AE8A0
 // FUNCTION: fn_11741
 void UILoginOTPWnd::Slot15(int, int) {
-  auto& controls = *this->m_controls;
   const std::uint8_t prefixSource[] = {0x8F, 0xC8, 0x2D, 0x7F, 0xC9, 0xF9, 0xFA, 0xB4, 0x89, 0x83, 0x2D, 0x49, 0xB4, 0x8D, 0x63, 0x79};
   thread_local EncryptedName<sizeof(prefixSource), 0x793F370985ED674FULL> prefixName(prefixSource);
   const std::string prefix(prefixName.Text());
@@ -1041,13 +1033,13 @@ void UILoginOTPWnd::Slot15(int, int) {
   InputFocus focus{g_windowMgr.hoverWindow};
   focus.Set(this->unknown_00B4);
 
-  UIStaticText* label = new UIStaticText(*this->m_context, controls);
+  UIStaticText* label = new UIStaticText(*this->m_context);
   label->SetSize(80, 20);
   label->Move(141 - this->TextWidth(LookupMessage(3410), 0, 0, 12, 0, 0), 67);
   label->SetText(LookupMessage(3410), 0);
   this->AddChild(label);
 
-  this->timerText = new UIStaticText(*this->m_context, controls);
+  this->timerText = new UIStaticText(*this->m_context);
   this->timerText->SetSize(80, 20);
   this->timerText->Move(150, 66);
   this->timerText->SetText(LookupMessage(3410), 0);
@@ -1055,19 +1047,19 @@ void UILoginOTPWnd::Slot15(int, int) {
   this->timerText->SetColor(205, 19, 41);
   this->AddChild(this->timerText);
 
-  label = new UIStaticText(*this->m_context, controls);
+  label = new UIStaticText(*this->m_context);
   label->SetSize(200, 40);
   label->SetText(LookupMessage(3385), 0);
   label->Move(static_cast<int>(141.0f - this->TextWidth(LookupMessage(3385), 0, 0, 12, 0, 0) * 0.5f), 28);
   this->AddChild(label);
 
-  label = new UIStaticText(*this->m_context, controls);
+  label = new UIStaticText(*this->m_context);
   label->SetSize(200, 40);
   label->SetText(LookupMessage(3386), 0);
   label->Move(static_cast<int>(141.0f - this->TextWidth(LookupMessage(3386), 0, 0, 12, 0, 0) * 0.5f), 42);
   this->AddChild(label);
 
-  label = new UIStaticText(*this->m_context, controls);
+  label = new UIStaticText(*this->m_context);
   label->SetSize(80, 20);
   label->Move(74 - this->TextWidth(LookupMessage(3255), 0, 0, 12, 0, 0), 98);
   label->SetText(LookupMessage(3255), 0);
@@ -1075,7 +1067,7 @@ void UILoginOTPWnd::Slot15(int, int) {
   label->SetColor(64, 64, 64);
   this->AddChild(label);
 
-  UIBmpTextButton* button = new UIBmpTextButton(*this->m_context, controls);
+  UIBmpTextButton* button = new UIBmpTextButton(*this->m_context);
   const std::uint8_t normalSource[] = {0xDD, 0xAA, 0x53, 0xD3, 0xB1, 0xED, 0x92, 0x28, 0xDB, 0xE1, 0x53, 0xE5, 0xCC, 0x99, 0x0B, 0x89, 0x72,
                                        0x62, 0xFA, 0x47, 0x2E, 0x4A, 0x39, 0x91, 0x78, 0x77, 0xF5, 0x48, 0x12, 0x46, 0x0B, 0x87, 0x69, 0x5A,
                                        0xFC, 0x5D, 0x01, 0x7C, 0x39, 0x8A, 0x6F, 0x68, 0xF2, 0x45, 0x5F, 0x41, 0x3A, 0x95, 0x1D};
@@ -1109,7 +1101,6 @@ void UILoginOTPWnd::Slot15(int, int) {
 // OFFSET: 0x008B84B0
 // FUNCTION: fn_11764
 void UILoginOTPWnd::Paint() {
-  auto& controls = *this->m_controls;
   auto& resources = ResourceMgr::Instance();
   const std::uint8_t source[] = {0x11, 0xF4, 0x57, 0x1F, 0xF9, 0x49, 0x2E, 0xE2, 0x17, 0xBF, 0x57, 0x29, 0x84, 0x3D, 0xB7, 0x43,
                                  0xBE, 0x3C, 0xFE, 0x8B, 0x66, 0xEE, 0x85, 0x5B, 0xB4, 0x29, 0xF1, 0x84, 0x5A, 0xE2, 0xB7, 0x4D,
@@ -1117,7 +1108,7 @@ void UILoginOTPWnd::Paint() {
   thread_local EncryptedName<sizeof(source), 0x2FEB8739E5975BD1ULL> name(source);
   const auto* background = static_cast<CBitmapRes*>(resources.Load(Resolve(name.Text())));
   this->DrawBitmap(0, 0, &background->image, false);
-  this->DrawTitleBar(true, controls.services.MessageText(3254), 280);
+  this->DrawTitleBar(true, LookupMessage(3254), 280);
 }
 
 // OFFSET: 0x008C3620
@@ -1285,7 +1276,6 @@ void UIReplayRECControlWnd::ApplyMode() {
 // OFFSET: 0x008B9790
 // FUNCTION: fn_11771
 void UINoticeWnd::Paint() {
-  auto& controls = *this->m_controls;
   this->DrawTitleBar(false, "", 0);
 
   if (this->geometry.height == 17) {
@@ -1446,7 +1436,6 @@ void UIPayConfirmWnd::Configure(const std::string& text, int itemId) {
 // OFFSET: 0x008B9940
 // FUNCTION: fn_11772
 void UIPayConfirmWnd::Paint() {
-  auto& controls = *this->m_controls;
   this->DrawTitleBar(true, this->m_title.c_str(), 0);
   this->DrawPanelBackground(17, 0, "");
   this->DrawButtonBar(2, 0, 1);
@@ -1485,7 +1474,6 @@ void UIReplayRECControlWnd::Paint() {
 // OFFSET: 0x008BA010
 // FUNCTION: fn_11776
 void UISelectReplayDataWnd::Paint() {
-  auto& controls = *this->m_controls;
   this->DrawTitleBar(true, LookupMessage(2084), 0);
   this->DrawPanelBackground(17, 0, "");
   this->DrawButtonBar(2, 0, 1);
@@ -1497,7 +1485,6 @@ void UISelectReplayDataWnd::Paint() {
 // OFFSET: 0x008BA0B0
 // FUNCTION: fn_11777
 void UISelectServerWnd::Paint() {
-  auto& controls = *this->m_controls;
   const char* title = LookupMessage(2082);
 
   if (g_modeMgr.GetLoginMode()->cursorType == 30) {
@@ -1512,7 +1499,6 @@ void UISelectServerWnd::Paint() {
 // OFFSET: 0x008BA110
 // FUNCTION: fn_11778
 void UITalkboxTrapInputWnd::Paint() {
-  auto& controls = *this->m_controls;
   const int titleHeight = this->DrawTitleBar(false, "", 0);
   this->DrawPanelBackground(titleHeight, 0, "");
   this->DrawButtonBar(2, 0, 1);
@@ -1659,9 +1645,9 @@ void UIChatRoomWnd::Slot15(int, int) {
   this->memberList->SetId(184);
   this->AddChild(this->memberList);
 
-  this->closeButton = this->AddCloseButton(*this->m_controls, "/q", 0);
+  this->closeButton = this->AddCloseButton("/q", 0);
 
-  this->titleText = new UIStaticText(*this->m_context, *this->m_controls);
+  this->titleText = new UIStaticText(*this->m_context);
   this->titleText->SetSize(this->geometry.width - 30, 15);
   this->titleText->Move(9, 2);
   this->titleText->SetTextFitted("");
@@ -1678,7 +1664,7 @@ void UINoticeWnd::Slot15(int, int) {
   int positions[3][2] = {{534, 376}, {244, 376}, {294, 376}};
 
   for (int index = 0; index < 3; ++index) {
-    auto* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    auto* button = new UIBitmapButton(*this->m_context);
     button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
     button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
     button->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
@@ -1848,7 +1834,7 @@ void UIReplayRECControlWnd::Slot15(int, int) {
   int ids[6] = {420, 421, 422, 423, 424, 425};
 
   for (int index = 0; index < 2; ++index) {
-    this->buttons[index] = new UIReplayButton(*this->m_context, *this->m_controls);
+    this->buttons[index] = new UIReplayButton(*this->m_context);
     this->buttons[index]->SetBitmap((prefix + names[index] + "a.bmp").c_str(), 0, 0);
     this->buttons[index]->SetBitmap((prefix + names[index] + "a.bmp").c_str(), 1, 0);
     this->buttons[index]->SetBitmap((prefix + names[index] + "b.bmp").c_str(), 2, 0);
@@ -1860,7 +1846,7 @@ void UIReplayRECControlWnd::Slot15(int, int) {
   }
 
   for (int index = 2; index < 6; ++index) {
-    this->buttons[index] = new UIBitmapButton(*this->m_context, *this->m_controls);
+    this->buttons[index] = new UIBitmapButton(*this->m_context);
     this->buttons[index]->SetBitmap((prefix + names[index] + "a.bmp").c_str(), 0, 0);
     this->buttons[index]->SetBitmap((prefix + names[index] + "a.bmp").c_str(), 1, 0);
     this->buttons[index]->SetBitmap((prefix + names[index] + "b.bmp").c_str(), 2, 0);
@@ -1872,7 +1858,7 @@ void UIReplayRECControlWnd::Slot15(int, int) {
   }
 
   for (int index = 0; index < 5; ++index) {
-    UIStaticBitmap* tab = new UIStaticBitmap(*this->m_context, *this->m_controls);
+    UIStaticBitmap* tab = new UIStaticBitmap(*this->m_context);
     this->tabs[index] = tab;
     tab->SetBitmap((prefix + names[index + 6] + ".bmp").c_str());
     tab->SetSize(tab->geometry.width, tab->geometry.height);
@@ -1884,7 +1870,7 @@ void UIReplayRECControlWnd::Slot15(int, int) {
   int textSizes[2][2] = {{50, 12}, {80, 12}};
   const char* labels[2] = {"000:00:00", LookupMessage(0x7B3)};
   for (int index = 0; index < 2; ++index) {
-    this->texts[index] = new UIStaticText(*this->m_context, *this->m_controls);
+    this->texts[index] = new UIStaticText(*this->m_context);
     this->texts[index]->SetSize(textSizes[index][0], textSizes[index][1]);
     this->texts[index]->SetText(labels[index], 0);
     this->texts[index]->Move(-100, -100);
@@ -1897,7 +1883,7 @@ void UIReplayRECControlWnd::Slot15(int, int) {
     "Basicinfo", "Equip", "Item", "Skill", "Guild", "Party", "Chatting", "Shortcut", "Status", "ALL", "User Defined File Name", "Repeated File Check",
   };
   for (int index = 0; index < 10; ++index) {
-    UICheckBox* option = new UICheckBox(*this->m_context, *this->m_controls);
+    UICheckBox* option = new UICheckBox(*this->m_context);
     this->options[index] = option;
     option->SetSize(70, 12);
     option->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", optionNames[index]);
@@ -1907,7 +1893,7 @@ void UIReplayRECControlWnd::Slot15(int, int) {
   }
 
   for (int index = 0; index < 2; ++index) {
-    this->fileOptions[index] = new UICheckBox(*this->m_context, *this->m_controls);
+    this->fileOptions[index] = new UICheckBox(*this->m_context);
     this->fileOptions[index]->SetSize(150, 12);
     this->fileOptions[index]->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", optionNames[index + 10]);
     this->fileOptions[index]->Move(-100, -100);
@@ -1960,7 +1946,7 @@ void UISelectReplayDataWnd::Slot15(int width, int height) {
   int positions[4][2] = {{189, height - 25}, {-100, -100}, {234, height - 25}, {100, height - 25}};
 
   for (int index = 0; index < 4; ++index) {
-    auto* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    auto* button = new UIBitmapButton(*this->m_context);
     button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
     button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
     button->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
@@ -1977,7 +1963,7 @@ void UISelectReplayDataWnd::Slot15(int width, int height) {
 
   UIStaticText** text = this->m_texts;
   for (int y = 35; y < 110; y += 15) {
-    *text = new UIStaticText(*this->m_context, *this->m_controls);
+    *text = new UIStaticText(*this->m_context);
     (*text)->SetSize(width - 12, 15);
     (*text)->SetText("", 0);
     (*text)->Move(12, y);
@@ -2005,7 +1991,7 @@ void UITalkboxTrapInputWnd::Slot15(int, int) {
   int positions[2][2] = {{189, 96}, {234, 96}};
 
   for (int index = 0; index < 2; ++index) {
-    auto* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    auto* button = new UIBitmapButton(*this->m_context);
     button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
     button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
     button->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
@@ -2095,7 +2081,6 @@ void UIItemWnd::DrawNewItemMark(int x, int y) {
 // OFFSET: 0x008AAA10
 // FUNCTION: fn_11724
 void UIMonsterInfoWnd::DrawResistance(int x, int y, const char* label, int value, std::uint32_t border, std::uint32_t fill) {
-  auto& controls = *this->m_controls;
   char text[64];
   wsprintfA(text, "%s:%d", label, value);
   unsigned red;
@@ -2111,7 +2096,6 @@ void UIMonsterInfoWnd::DrawResistance(int x, int y, const char* label, int value
 // OFFSET: 0x008B8ED0
 // FUNCTION: fn_11770
 void UIMonsterInfoWnd::Paint() {
-  auto& controls = *this->m_controls;
   unsigned red;
   unsigned green;
   unsigned blue;
@@ -2619,7 +2603,7 @@ int sub_8AB060() {
 UINoticeWnd::UINoticeWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0) {
   this->m_patchFile = "notice_patch.txt";
   for (int i = 0; i < 19; ++i) {
-    this->m_texts[i] = new UIStaticText(*this->m_context, *this->m_controls);
+    this->m_texts[i] = new UIStaticText(*this->m_context);
   }
   this->unknown_0108 = 20;
   this->unknown_010C = 0;
@@ -2635,15 +2619,15 @@ UINoticeWnd::UINoticeWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0) {
 // OFFSET: 0x008AD190
 // FUNCTION: fn_11737
 void UIBank_NewWnd::Slot15(int, int) {
-  this->AddCloseButton(*this->m_controls, "Exit", 0);
-  this->AddBitmapButton(*this->m_controls, 462, 209, 77, "bank\\btn_deposit", LookupMessage(2774));
-  this->AddBitmapButton(*this->m_controls, 463, 209, 102, "bank\\btn_withdraw", LookupMessage(2775));
-  this->AddBitmapButton(*this->m_controls, 279, 177, 89, "bank\\btn_upper", LookupMessage(2776));
-  this->AddBitmapButton(*this->m_controls, 280, 177, 99, "bank\\btn_buttom", LookupMessage(2777));
-  this->AddBitmapButton(*this->m_controls, 392, 189, 132, "bank\\btn_10mil", "+ 100,000");
-  this->AddBitmapButton(*this->m_controls, 391, 141, 132, "bank\\btn_100mil", "+ 1,000,000");
-  this->AddBitmapButton(*this->m_controls, 390, 93, 132, "bank\\btn_1000mil", "+ 10,000,000");
-  this->AddBitmapButton(*this->m_controls, 389, 45, 132, "bank\\btn_max", LookupMessage(2778));
+  this->AddCloseButton("Exit", 0);
+  this->AddBitmapButton(462, 209, 77, "bank\\btn_deposit", LookupMessage(2774));
+  this->AddBitmapButton(463, 209, 102, "bank\\btn_withdraw", LookupMessage(2775));
+  this->AddBitmapButton(279, 177, 89, "bank\\btn_upper", LookupMessage(2776));
+  this->AddBitmapButton(280, 177, 99, "bank\\btn_buttom", LookupMessage(2777));
+  this->AddBitmapButton(392, 189, 132, "bank\\btn_10mil", "+ 100,000");
+  this->AddBitmapButton(391, 141, 132, "bank\\btn_100mil", "+ 1,000,000");
+  this->AddBitmapButton(390, 93, 132, "bank\\btn_1000mil", "+ 10,000,000");
+  this->AddBitmapButton(389, 45, 132, "bank\\btn_max", LookupMessage(2778));
 
   this->m_amountEdit = new UIEditCtrl(*this->m_context, *this->m_editContext);
   this->m_amountEdit->SetSize(99, 17);
@@ -2671,7 +2655,7 @@ void UICntWnd::Slot15(int, int) {
   focus.Set(this->m_edit);
   this->m_edit->SelectAll();
 
-  this->m_text = new UIStaticText(*this->m_context, *this->m_controls);
+  this->m_text = new UIStaticText(*this->m_context);
   this->m_text->SetSize(this->geometry.width - 30, 15);
   this->m_text->Move(15, 6);
   this->AddChild(this->m_text);
@@ -2679,7 +2663,7 @@ void UICntWnd::Slot15(int, int) {
   const std::string prefix("유저인터페이스\\");
   const int width = this->geometry.width;
   const int height = this->geometry.height;
-  UIBitmapButton* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+  UIBitmapButton* button = new UIBitmapButton(*this->m_context);
   button->SetBitmap((prefix + "btn_ok" + ".bmp").c_str(), 0, 0);
   button->SetBitmap((prefix + "btn_ok_a" + ".bmp").c_str(), 1, 0);
   button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
@@ -3015,7 +2999,6 @@ int UISelectServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
 // OFFSET: 0x008B99A0
 // FUNCTION: fn_11773
 void UIPetInfoWnd::Paint() {
-  auto& controls = *this->m_controls;
   unsigned red;
   unsigned green;
   unsigned blue;
@@ -3145,7 +3128,7 @@ void UIPetInfoWnd::UpdateFriendlyGauge() {
 // FUNCTION: fn_11745
 void UIMonsterInfoWnd::Slot15(int, int) {
   const std::string prefix("유저인터페이스\\");
-  auto* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+  auto* button = new UIBitmapButton(*this->m_context);
   button->SetBitmap((prefix + "btn_ok" + ".bmp").c_str(), 0, 0);
   button->SetBitmap((prefix + "btn_ok_a" + ".bmp").c_str(), 1, 0);
   button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
@@ -3166,8 +3149,8 @@ void UIMonsterInfoWnd::Slot15(int, int) {
 
 // OFFSET: 0x008A4300
 // FUNCTION: fn_11667
-UIPetInfoWnd::UIPetInfoWnd(UIWindowContext& windows, UIButtonContext& controls)
-    : UIFrameWnd(windows, 0), friendlyGauge(nullptr), m_controls(&controls) {
+UIPetInfoWnd::UIPetInfoWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0), friendlyGauge(nullptr) {
   this->friendlyText.clear();
   this->unknown_00E4 = 0;
   this->unknown_00E8 = 0;
@@ -3180,7 +3163,7 @@ UIPetInfoWnd::UIPetInfoWnd(UIWindowContext& windows, UIButtonContext& controls)
 
 // OFFSET: 0x008A43E0
 // FUNCTION: fn_11668
-UIReplayButton::UIReplayButton(UIWindowContext& windows, UIButtonContext& controls) : UIBitmapButton(windows, controls) {
+UIReplayButton::UIReplayButton(UIWindowContext& windows) : UIBitmapButton(windows) {
 }
 
 // OFFSET: 0x008A4440
@@ -3212,16 +3195,16 @@ UISelectReplayDataWnd::UISelectReplayDataWnd(UIWindowContext& windows) : UIFrame
 
 // OFFSET: 0x008A4640
 // FUNCTION: fn_11672
-UISelectServerWnd::UISelectServerWnd(UIWindowContext& windows, UIButtonContext& controls)
-    : UIFrameWnd(windows, 0), m_controls(&controls) {
+UISelectServerWnd::UISelectServerWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0) {
   this->m_serverList = nullptr;
   this->m_okButton = nullptr;
 }
 
 // OFFSET: 0x008A46E0
 // FUNCTION: fn_11673
-UITalkboxTrapInputWnd::UITalkboxTrapInputWnd(UIWindowContext& windows, UIButtonContext& controls, UIEditContext& editContext)
-    : UIFrameWnd(windows, 0), m_controls(&controls), m_editContext(&editContext) {
+UITalkboxTrapInputWnd::UITalkboxTrapInputWnd(UIWindowContext& windows, UIEditContext& editContext)
+    : UIFrameWnd(windows, 0), m_editContext(&editContext) {
 }
 
 // OFFSET: 0x008A4E00
@@ -3402,7 +3385,7 @@ int UILoginOTPWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 // OFFSET: 0x008ADC80
 // FUNCTION: fn_11740
 void UIHomunInfoWnd::Slot15(int, int) {
-  this->AddCloseButton(*this->m_controls, "", 0);
+  this->AddCloseButton("", 0);
   this->nameEdit = new UIEditCtrl2(*this->m_context, *this->m_editContext);
   this->nameEdit->SetSize(80, 16);
   char* const name = reinterpret_cast<char*>(&g_session.unknown_5570[0x0C]);
@@ -3416,7 +3399,7 @@ void UIHomunInfoWnd::Slot15(int, int) {
   this->AddChild(this->nameEdit);
   {
     const std::string bitmap("유저인터페이스\\btn_del");
-    this->button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    this->button = new UIBitmapButton(*this->m_context);
     this->button->SetBitmap((bitmap + ".bmp").c_str(), 0, 0);
     this->button->SetBitmap((bitmap + "_a.bmp").c_str(), 1, 0);
     this->button->SetBitmap((bitmap + "_b.bmp").c_str(), 2, 0);
@@ -3427,7 +3410,7 @@ void UIHomunInfoWnd::Slot15(int, int) {
   }
   {
     const std::string bitmap("유저인터페이스\\btn_skill");
-    this->button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    this->button = new UIBitmapButton(*this->m_context);
     this->button->SetBitmap((bitmap + ".bmp").c_str(), 0, 0);
     this->button->SetBitmap((bitmap + "_a.bmp").c_str(), 1, 0);
     this->button->SetBitmap((bitmap + "_b.bmp").c_str(), 2, 0);
@@ -3438,7 +3421,7 @@ void UIHomunInfoWnd::Slot15(int, int) {
   }
   {
     const std::string bitmap("유저인터페이스\\btn_feed");
-    this->button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    this->button = new UIBitmapButton(*this->m_context);
     this->button->SetBitmap((bitmap + ".bmp").c_str(), 0, 0);
     this->button->SetBitmap((bitmap + "_a.bmp").c_str(), 1, 0);
     this->button->SetBitmap((bitmap + "_b.bmp").c_str(), 2, 0);
@@ -3450,7 +3433,7 @@ void UIHomunInfoWnd::Slot15(int, int) {
   }
   {
     const std::string bitmap("유저인터페이스\\btn_rewrite");
-    this->button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    this->button = new UIBitmapButton(*this->m_context);
     this->button->SetBitmap((bitmap + ".bmp").c_str(), 0, 0);
     this->button->SetBitmap((bitmap + "_a.bmp").c_str(), 1, 0);
     this->button->SetBitmap((bitmap + "_b.bmp").c_str(), 2, 0);
@@ -3488,7 +3471,7 @@ void UIHomunInfoWnd::Slot15(int, int) {
   this->AddChild(this->intimacyBar);
   this->m_message0 = 201;
 
-  this->unknown_00D4 = new UICheckBox(*this->m_context, *this->m_controls);
+  this->unknown_00D4 = new UICheckBox(*this->m_context);
   this->unknown_00D4->SetSize(12, 12);
   this->unknown_00D4->Move(210, 142);
   this->unknown_00D4->SetBitmaps("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp");
@@ -3499,7 +3482,6 @@ void UIHomunInfoWnd::Slot15(int, int) {
 // OFFSET: 0x008B7DB0
 // FUNCTION: fn_11763
 void UIHomunInfoWnd::Paint() {
-  auto& controls = *this->m_controls;
   const auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\homuninfo_bg.bmp")));
   this->DrawBitmap(0, 0, &background->image, false);
   DrawFilledRoundedBorder(*this, 0, this->geometry.height - 40, this->geometry.width, 40, 0xFFFFFF);
@@ -3670,8 +3652,7 @@ int UIHomunInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
 // OFFSET: 0x008B2820
 // FUNCTION: fn_11747
 void UIPetInfoWnd::Slot15(int, int) {
-  auto& controls = *this->m_controls;
-  this->AddCloseButton(controls, "", 0);
+  this->AddCloseButton("", 0);
   this->nameEdit = new UIEditCtrl2(*this->m_context, *this->m_editContext);
   this->nameEdit->SetSize(80, 16);
   if (std::strcmp(g_session.unknown_1018, "") == 0) {
@@ -3684,7 +3665,7 @@ void UIPetInfoWnd::Slot15(int, int) {
   this->AddChild(this->nameEdit);
   {
     const std::string prefix("유저인터페이스\\");
-    this->unknown_00BC = new UIBitmapButton(*this->m_context, controls);
+    this->unknown_00BC = new UIBitmapButton(*this->m_context);
     this->unknown_00BC->SetBitmap((prefix + "btn_rewrite" + ".bmp").c_str(), 0, 0);
     this->unknown_00BC->SetBitmap((prefix + "btn_rewrite_a" + ".bmp").c_str(), 1, 0);
     this->unknown_00BC->SetBitmap((prefix + "btn_rewrite_b" + ".bmp").c_str(), 2, 0);
@@ -3695,14 +3676,14 @@ void UIPetInfoWnd::Slot15(int, int) {
   }
 
   const char tooltip[] = "Pet Command";
-  this->unknown_00C0 = new UINoneVisibleButton(*this->m_context, controls);
+  this->unknown_00C0 = new UINoneVisibleButton(*this->m_context);
   this->unknown_00C0->SetSize(120, 18);
   this->unknown_00C0->Move(150, 44);
   this->unknown_00C0->SetId(268);
   this->AddChild(this->unknown_00C0);
   {
     const std::string prefix("유저인터페이스\\basic_interface\\");
-    UIBitmapButton* button = new UIBitmapButton(*this->m_context, controls);
+    UIBitmapButton* button = new UIBitmapButton(*this->m_context);
     button->SetBitmap((prefix + "txtbox_btn_a" + ".bmp").c_str(), 0, 0);
     button->SetBitmap((prefix + "txtbox_btn_b" + ".bmp").c_str(), 1, 0);
     button->SetBitmap((prefix + "txtbox_btn_c" + ".bmp").c_str(), 2, 0);
@@ -3724,7 +3705,7 @@ void UIPetInfoWnd::Slot15(int, int) {
   const int petEgg = std::atoi(LookupClientItemByIdentity(g_session.m_inventoryItems, g_activePetEggIndex).itemId.c_str());
   this->unknown_00E4 = g_petEvolutionMgr->IsAutoFeeding(petEgg);
   if (this->unknown_00E4 == true) {
-    this->unknown_00E8 = new UICheckBox(*this->m_context, controls);
+    this->unknown_00E8 = new UICheckBox(*this->m_context);
     this->unknown_00E8->SetSize(12, 12);
     this->unknown_00E8->Move(this->TextWidth(LookupMessage(2577), 0, 0, 12, 0, 0) + 110, 159);
     this->unknown_00E8->SetBitmaps("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp");
@@ -3923,7 +3904,7 @@ void UISelectServerWnd::Slot15(int width, int height) {
       continue;
     }
 
-    UIBitmapButton* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    UIBitmapButton* button = new UIBitmapButton(*this->m_context);
     button->SetBitmap((prefix + names[i][0] + ".bmp").c_str(), 0, 0);
     button->SetBitmap((prefix + names[i][1] + ".bmp").c_str(), 1, 0);
     button->SetBitmap((prefix + names[i][2] + ".bmp").c_str(), 2, 0);
@@ -3948,7 +3929,7 @@ void UIReplayControlWnd::Slot15(int, int) {
   const char* const names[6] = {"replay_stop_", "replay_end_", "replay_speedadd_", "replay_speedmin_", "replay_start_", "replay_pause_"};
 
   for (int i = 0; i < 4; ++i) {
-    this->m_buttons[i] = new UIBitmapButton(*this->m_context, *this->m_controls);
+    this->m_buttons[i] = new UIBitmapButton(*this->m_context);
     UIBitmapButton* button = static_cast<UIBitmapButton*>(this->m_buttons[i]);
     button->SetBitmap((prefix + names[i] + "a.bmp").c_str(), 0, 0);
     button->SetBitmap((prefix + names[i] + "a.bmp").c_str(), 1, 0);
@@ -3959,7 +3940,7 @@ void UIReplayControlWnd::Slot15(int, int) {
     this->AddChild(button);
   }
 
-  this->m_playButton = new UIReplayButton(*this->m_context, *this->m_controls);
+  this->m_playButton = new UIReplayButton(*this->m_context);
   this->m_playButton->SetBitmap((prefix + names[4] + "a.bmp").c_str(), 0, 0);
   this->m_playButton->SetBitmap((prefix + names[4] + "a.bmp").c_str(), 1, 0);
   this->m_playButton->SetBitmap((prefix + names[4] + "b.bmp").c_str(), 2, 0);
@@ -3968,7 +3949,7 @@ void UIReplayControlWnd::Slot15(int, int) {
   this->m_playButton->SetId(ids[4]);
   this->AddChild(this->m_playButton);
 
-  this->m_pauseButton = new UIReplayButton(*this->m_context, *this->m_controls);
+  this->m_pauseButton = new UIReplayButton(*this->m_context);
   this->m_pauseButton->SetBitmap((prefix + names[5] + "a.bmp").c_str(), 0, 0);
   this->m_pauseButton->SetBitmap((prefix + names[5] + "a.bmp").c_str(), 1, 0);
   this->m_pauseButton->SetBitmap((prefix + names[5] + "b.bmp").c_str(), 2, 0);
@@ -3995,7 +3976,7 @@ void UIReplayControlWnd::Slot15(int, int) {
 
   const int textPositions[4][2] = {{8, 26}, {8, 40}, {-100, -100}, {8, 54}};
   for (int i = 0; i < 4; ++i) {
-    this->m_texts[i] = new UIStaticText(*this->m_context, *this->m_controls);
+    this->m_texts[i] = new UIStaticText(*this->m_context);
     this->m_texts[i]->SetSize(188, 14);
     this->m_texts[i]->SetText("", 0);
     this->m_texts[i]->Move(textPositions[i][0], textPositions[i][1]);

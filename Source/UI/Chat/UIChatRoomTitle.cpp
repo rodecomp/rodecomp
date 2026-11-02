@@ -20,7 +20,7 @@ UIChatRoomTitle::UIChatRoomTitle(UIWindowContext& context) : UIWindow(context, 0
 // OFFSET: 0x0085AB80
 // FUNCTION: fn_10785
 void UIChatRoomTitle::Slot15(int, int) {
-  this->label = new UIStaticText(*this->m_context, *this->m_controls);
+  this->label = new UIStaticText(*this->m_context);
   this->label->SetSize(this->geometry.width - 34, 15);
   this->label->Move(31, 8);
   this->label->SetTextFitted("");

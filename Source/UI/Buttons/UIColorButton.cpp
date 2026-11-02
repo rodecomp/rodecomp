@@ -5,7 +5,6 @@
 // OFFSET: 0x0085C9A0
 // FUNCTION: fn_10804
 void UIColorButton::Paint() {
-  UIButtonContext& controls = *this->m_buttonContext;
   const int textWidth = this->TextWidth(this->label.c_str(), 0, 0, 12, 0, 0);
   unsigned red, green, blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 22, 2, red, green, blue);

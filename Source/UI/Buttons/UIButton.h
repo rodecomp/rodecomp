@@ -21,18 +21,6 @@ protected:
   ~ButtonServices() = default;
 };
 
-struct UIButtonContext {
-  ResourceMgr& resources;
-  LuaScript& behavior;
-  FontCache& fonts;
-  const TextLocale& locale;
-  ButtonServices& services;
-  const int* policy;
-  const bool& restricted;
-  const int* activeModeType;
-  UIWindow* const& hoverParent;
-};
-
 class UIButton : public UIWindow {
   friend class UIAdvenPartyBoardWnd;
   friend class UIAchListWnd;
@@ -43,7 +31,7 @@ class UIButton : public UIWindow {
 
 public:
   UIButton();
-  UIButton(UIWindowContext& windowContext, UIButtonContext& buttonContext);
+  UIButton(UIWindowContext& windowContext);
   ~UIButton() override;
   void Paint() override;
   void Slot25(int x, int y) override;
@@ -77,7 +65,7 @@ protected:
   /* 00AC */ unsigned char m_disabled;
   /* 00AD */ unsigned char m_drawLabel;
   /* 00B0 */ int m_argument;
-  UIButtonContext* m_buttonContext;
+  void* unknown_buttonContext;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

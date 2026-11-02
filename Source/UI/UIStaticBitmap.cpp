@@ -1,3 +1,5 @@
+#include "UI/Window/UINewSelectCharWnd.h"
+#include "Client/Mode/ModeTooltip.h"
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
@@ -6,8 +8,8 @@
 
 // OFFSET: 0x00850430
 // FUNCTION: fn_10676
-UIStaticBitmap::UIStaticBitmap(UIWindowContext& windows, UIButtonContext& controls)
-    : UIWindow(windows, 0), tooltipX(0), tooltipY(-20), forwardHover(0), m_controls(&controls) {
+UIStaticBitmap::UIStaticBitmap(UIWindowContext& windows)
+    : UIWindow(windows, 0), tooltipX(0), tooltipY(-20), forwardHover(0) {
 }
 
 // OFFSET: 0x00852F20
@@ -79,7 +81,7 @@ void UIStaticBitmap::Slot28(int x, int y) {
       screenY = (screenY + window->geometry.y);
     }
 
-    this->m_controls->services.Tooltip(this->tooltip.c_str(), screenX, screenY, -1, false, true);
+    static_cast<ModeTooltip*>(g_charViewMode)->Show(this->tooltip.c_str(), screenX, screenY, -1, false, true);
   }
 }
 

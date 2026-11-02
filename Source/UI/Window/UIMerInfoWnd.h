@@ -4,7 +4,6 @@
 #include "UI/Window/UIFrameWnd.h"
 #include "Contents/UserData/NormalItemSlots.h"
 
-struct UIButtonContext;
 class UIBitmapButton;
 class UIBarGraphPlayer;
 struct WindowResponseRecorder;
@@ -25,7 +24,7 @@ public:
   /* 00C4 */ MerInfoWndInfo* saved;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
   WindowResponseRecorder* m_recorder;
 };
 

@@ -23,7 +23,7 @@ void UIOpenRoulletteWnd::Slot19() {
 // OFFSET: 0x0094C4E0
 // FUNCTION: fn_12897
 void UIOpenRoulletteWnd::Slot15(int width, int height) {
-  auto* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+  auto* button = new UIBitmapButton(*this->m_context);
   button->SetBitmap("유저인터페이스\\basic_interface\\roullette\\RoulletteIcon.bmp", 0, 0);
   button->SetBitmap("유저인터페이스\\basic_interface\\roullette\\RoulletteIcon.bmp", 1, 0);
   button->SetBitmap("유저인터페이스\\basic_interface\\roullette\\RoulletteIcon.bmp", 2, 0);
@@ -56,6 +56,6 @@ int UIOpenRoulletteWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
 
 // OFFSET: 0x00946E40
 // FUNCTION: fn_12854
-UIOpenRoulletteWnd::UIOpenRoulletteWnd(UIWindowContext& windows, UIButtonContext& controls)
-    : UIFrameWnd(windows, 0), m_controls(&controls) {
+UIOpenRoulletteWnd::UIOpenRoulletteWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0) {
 }

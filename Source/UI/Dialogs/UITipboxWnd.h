@@ -12,7 +12,6 @@ class UIEditCtrl;
 class UIListBoxID;
 class UITagTextViewer;
 class UIBitmapButton;
-struct UIButtonContext;
 struct UIEditContext;
 
 struct TipBoxAnimation {
@@ -70,7 +69,7 @@ public:
   /* 0100 */ int unknown_0100;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
   UIEditContext* m_editContext;
 };
 

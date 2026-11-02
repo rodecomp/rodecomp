@@ -5,7 +5,6 @@
 
 #include <vector>
 
-struct UIButtonContext;
 
 struct TransMenuItem {
   /* 0000 */ char text[24];
@@ -15,7 +14,7 @@ struct TransMenuItem {
 
 class UITransMenuWnd : public UIFrameWnd {
 public:
-  UITransMenuWnd(UIWindowContext& windows, UIButtonContext& controls);
+  UITransMenuWnd(UIWindowContext& windows);
   void Resize(int width, int height) override;
   void Move(int x, int y) override;
   bool Slot07(void* output) override;
@@ -38,7 +37,7 @@ protected:
   /* 00DC */ int m_lineHeight;
   /* 00E0 */ int m_margin;
   /* 00E4 */ int m_selected;
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

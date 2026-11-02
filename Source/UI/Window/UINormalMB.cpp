@@ -19,7 +19,6 @@ UINormalMB::UINormalMB(UIWindowContext& windows) : UIFrameWnd(windows, 0), m_own
 // OFFSET: 0x0094D840
 // FUNCTION: fn_12906
 void UINormalMB::Paint() {
-  UIButtonContext& controls = this->m_textContext->buttons;
   this->DrawTitleBar(true, this->m_title.c_str(), 0);
   this->DrawPanelBackground(17, 0, "");
 }
@@ -61,7 +60,7 @@ int UINormalMB::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
 
 // INLINED
 __forceinline void UINormalMB::AddButton(const char* normal, const char* hover, const char* pressed, int x, int y, int id) {
-  auto* button = new UIBitmapButton(*this->m_context, this->m_textContext->buttons);
+  auto* button = new UIBitmapButton(*this->m_context);
   button->SetBitmap(normal, 0, 0);
   button->SetBitmap(hover, 1, 0);
   button->SetBitmap(pressed, 2, 0);
@@ -86,7 +85,7 @@ void UINormalMB::Create(UIWindow* owner, const char* text, int type, bool defaul
   int inset = 0;
 
   if (icon) {
-    auto* image = new UIStaticBitmap(*this->m_context, this->m_textContext->buttons);
+    auto* image = new UIStaticBitmap(*this->m_context);
     image->SetBitmap(icon);
     image->SetSize(image->geometry.width, image->geometry.height);
     image->Move(10, 22);

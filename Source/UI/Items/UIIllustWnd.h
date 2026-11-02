@@ -5,7 +5,6 @@
 
 #include <string>
 
-struct UIButtonContext;
 
 class UIIllustWnd : public UIFrameWnd {
 public:
@@ -21,7 +20,7 @@ protected:
   /* 00B4 */ int m_titled;
   /* 00B8 */ int m_closable;
   /* 00BC */ std::string m_bitmapName;
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 class UIMultiIllustWnd : public UIFrameWnd {
@@ -40,7 +39,7 @@ protected:
   /* 00B8 */ int m_closable;
   /* 00BC */ std::string m_bitmapName;
   /* 00D4 */ int m_state;
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 #endif

@@ -1,3 +1,4 @@
+#include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UISecondCostumeWnd.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -157,7 +158,7 @@ void UISecondCostumeWnd::SelectSavedEntries() {
 // FUNCTION: fn_12898
 void UISecondCostumeWnd::Slot15(int width, int height) {
   this->LoadLists();
-  this->AddCloseButton(*this->m_controls, "Close", 0);
+  this->AddCloseButton("Close", 0);
 
   this->m_list = new UIListBoxNavi(*this->m_context, *this->m_listContext);
   this->m_list->SetSize(width - 212, 160);
@@ -186,7 +187,7 @@ void UISecondCostumeWnd::Slot15(int width, int height) {
   this->m_typeCombo->AddOption(LookupMessage(2766), 0);
   this->m_typeCombo->Select(this->m_tab);
 
-  auto* previous = new UIBitmapButton(*this->m_context, *this->m_controls);
+  auto* previous = new UIBitmapButton(*this->m_context);
   previous->SetBitmap("유저인터페이스\\scroll1left.bmp", 0, 0);
   previous->SetBitmap("유저인터페이스\\scroll1left.bmp", 1, 0);
   previous->SetBitmap("유저인터페이스\\scroll1left.bmp", 2, 0);
@@ -195,7 +196,7 @@ void UISecondCostumeWnd::Slot15(int width, int height) {
   previous->SetId(227);
   this->AddChild(previous);
 
-  auto* next = new UIBitmapButton(*this->m_context, *this->m_controls);
+  auto* next = new UIBitmapButton(*this->m_context);
   next->SetBitmap("유저인터페이스\\scroll1right.bmp", 0, 0);
   next->SetBitmap("유저인터페이스\\scroll1right.bmp", 1, 0);
   next->SetBitmap("유저인터페이스\\scroll1right.bmp", 2, 0);
@@ -287,9 +288,9 @@ bool UISecondCostumeWnd::Slot03() {
 // OFFSET: 0x00946FB0
 // FUNCTION: fn_12857
 UISecondCostumeWnd::UISecondCostumeWnd(
-  UIWindowContext& windows, UIButtonContext& controls, UIListBoxContext& lists, UIComboBoxHeaderContext& combos
+  UIWindowContext& windows, UIListBoxContext& lists, UIComboBoxHeaderContext& combos
 )
-    : UIFrameWnd(windows, 0), m_controls(&controls), m_listContext(&lists), m_comboContext(&combos) {
+    : UIFrameWnd(windows, 0), m_listContext(&lists), m_comboContext(&combos) {
   this->m_typeCombo = nullptr;
   this->m_list = nullptr;
   this->m_tab = 0;

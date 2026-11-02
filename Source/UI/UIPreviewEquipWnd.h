@@ -7,11 +7,10 @@ class CCharacterRender;
 class UIBasicButton;
 class UIBitmapButton;
 struct PreviewEquipWndInfo;
-struct UIButtonContext;
 
 class UIPreviewEquipWnd : public UIFrameWnd {
 public:
-  UIPreviewEquipWnd(UIWindowContext& windows, UIButtonContext& controls);
+  UIPreviewEquipWnd(UIWindowContext& windows);
   ~UIPreviewEquipWnd() override;
   void Slot11() override;
   void Paint() override;
@@ -29,7 +28,7 @@ public:
   /* 00C4 */ UIBasicButton* unknown_00C4;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 #endif

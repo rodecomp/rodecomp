@@ -12,7 +12,6 @@
 #include <utility>
 
 struct SkillListWndInfo;
-struct UIButtonContext;
 class UIBitmapButton;
 class UIResizer;
 class UIScrollBar;
@@ -91,7 +90,7 @@ public:
   /* 02AC */ int m_detailId;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 #endif

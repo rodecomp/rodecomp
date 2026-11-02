@@ -5,12 +5,11 @@
 
 #include <string>
 
-struct UIButtonContext;
 
 class UIStaticBitmap : public UIWindow {
 public:
   UIStaticBitmap();
-  UIStaticBitmap(UIWindowContext& windows, UIButtonContext& controls);
+  UIStaticBitmap(UIWindowContext& windows);
   ~UIStaticBitmap() override;
   void Paint() override;
   void Slot25(int x, int y) override;
@@ -32,7 +31,7 @@ public:
   /* 00B4 */ int forwardHover;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

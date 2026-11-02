@@ -1,3 +1,4 @@
+#include "Render/Text/FontCache.h"
 #include "UI/Item/UIParaItemShopWnd.h"
 
 #include "Client/Input/InputCharset.h"
@@ -229,12 +230,12 @@ void __stdcall Nullsub344(int, int) {
 // OFFSET: 0x009A83C0
 // FUNCTION: fn_13750
 void UIParaResultWnd::Slot15(int width, int height) {
-  this->total = new UIStaticText(*this->m_context, *this->m_controls);
+  this->total = new UIStaticText(*this->m_context);
   this->total->SetSize(160, 15);
   this->total->Move(12, this->geometry.height - 21);
   this->AddChild(this->total);
 
-  this->title = new UIStaticText(*this->m_context, *this->m_controls);
+  this->title = new UIStaticText(*this->m_context);
   this->title->SetSize(70, 15);
   this->title->SetText(LookupMessage(2530), 0);
   this->title->Move(16, 2);
@@ -259,7 +260,7 @@ void UIParaResultWnd::Slot15(int width, int height) {
     const std::string prefix = "유저인터페이스\\";
     const int x = this->geometry.width - 61;
     const int y = this->geometry.height - 24;
-    UIBitmapButton* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    UIBitmapButton* button = new UIBitmapButton(*this->m_context);
     this->buttons[0] = button;
     button->SetBitmap((prefix + "btn_ok.bmp").c_str(), 0, 0);
     button->SetBitmap((prefix + "btn_ok_a.bmp").c_str(), 1, 0);
@@ -674,7 +675,6 @@ int UIParaResultWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
 // OFFSET: 0x009A8820
 // FUNCTION: fn_13751
 void UIParaItemShopWnd::Paint() {
-  UIButtonContext& controls = *this->m_controls;
   const int titleHeight = this->DrawTitleBar(false, "", 0);
   if (titleHeight == this->geometry.height) {
     return;
@@ -682,7 +682,7 @@ void UIParaItemShopWnd::Paint() {
 
   const int barHeight = this->DrawButtonBar(this->unknown_00B8 == 1 ? 2 : 0, 0, 1);
   unsigned red = 0xFF, green = 0xFF, blue = 0xFF;
-  SkinPaletteChannels(controls.resources, 2, 2, red, green, blue);
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
   const int height = this->geometry.height - barHeight - titleHeight;
   this->FillRegion(0, titleHeight, this->geometry.width, height, RGB(red, green, blue));
 
@@ -728,14 +728,14 @@ void UIParaItemShopWnd::Paint() {
     const int top = visible * 32 + titleHeight;
     if (this->hovered == index) {
       unsigned hoverRed = 0xFF, hoverGreen = 0xFF, hoverBlue = 0xFF;
-      SkinPaletteChannels(controls.resources, 6, 2, hoverRed, hoverGreen, hoverBlue);
+      SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, hoverRed, hoverGreen, hoverBlue);
       this->FillRegion(72, top + 2, 191, 28, RGB(hoverRed, hoverGreen, hoverBlue));
     }
 
     if (this->unknown_00F8 == 1 || it->quantity != 0) {
-      DrawItemWithQuantity(*this, controls.resources, descriptions, controls.fonts, controls.locale, 34, top + 4, *it, 0, 0);
+      DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, this->m_context->locale, 34, top + 4, *it, 0, 0);
     } else {
-      DrawItemWithQuantityAuxiliary(*this, descriptions, controls.fonts, controls.locale, 1, 34, top + 4, *it, 0, 0);
+      DrawItemWithQuantityAuxiliary(*this, descriptions, g_fontCache, this->m_context->locale, 1, 34, top + 4, *it, 0, 0);
     }
 
     this->DrawWrappedItemName(70, top + 12, 120, &*it, 0, 0, 12);
@@ -797,7 +797,6 @@ void UIParaItemShopWnd::Paint() {
 // OFFSET: 0x009A90E0
 // FUNCTION: fn_13752
 void UIParaResultWnd::Paint() {
-  UIButtonContext& controls = *this->m_controls;
   this->DrawTitleBar(false, "", 0);
 
   if (this->geometry.height == 17) {
@@ -818,7 +817,7 @@ void UIParaResultWnd::Paint() {
 
   {
     unsigned red = 0, green = 0, blue = 0;
-    SkinPaletteChannels(controls.resources, 2, 2, red, green, blue);
+    SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
     const int listHeight = this->geometry.height - this->unknown_00FC - 17;
     this->FillRegion(20, 17, (this->geometry.width - 60) % 32, listHeight, RGB(red, green, blue));
     this->FillRegion(20, listHeight / 32 * 32 + 17, this->geometry.width - 24, listHeight % 32, RGB(red, green, blue));
@@ -833,7 +832,7 @@ void UIParaResultWnd::Paint() {
 
   {
     unsigned red = 0, green = 0, blue = 0;
-    SkinPaletteChannels(controls.resources, 2, 2, red, green, blue);
+    SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
     this->FillRegion(72, 17, columns * 32 - 32, slots * 32, RGB(red, green, blue));
   }
 
@@ -854,12 +853,12 @@ void UIParaResultWnd::Paint() {
     const int top = visible / this->columns * 32;
     if (this->unknown_00F8 == index) {
       unsigned hoverRed = 0, hoverGreen = 0, hoverBlue = 0;
-      SkinPaletteChannels(controls.resources, 6, 2, hoverRed, hoverGreen, hoverBlue);
+      SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, hoverRed, hoverGreen, hoverBlue);
       this->FillRegion(column + 72, top + 19, 191, 28, RGB(hoverRed, hoverGreen, hoverBlue));
     }
 
     const int x = column + 44;
-    DrawItemWithQuantity(*this, controls.resources, descriptions, controls.fonts, controls.locale, x, top + 21, *it, 0, 0);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, this->m_context->locale, x, top + 21, *it, 0, 0);
     this->DrawWrappedItemName(column + 76, top + 29, 110, &*it, 0, 0, 12);
 
     if (it->unknown_0088 > 0) {

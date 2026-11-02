@@ -6,7 +6,6 @@
 #include <map>
 
 struct TownInfo;
-struct UIButtonContext;
 
 class UIMinimapZoomWnd : public UIFrameWnd {
 public:
@@ -24,7 +23,7 @@ public:
   /* 00C4 */ int unknown_00C4;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 #endif

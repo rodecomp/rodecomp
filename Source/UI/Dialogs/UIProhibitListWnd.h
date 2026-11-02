@@ -3,12 +3,11 @@
 
 #include "UI/Window/UIFrameWnd.h"
 
-struct UIButtonContext;
 struct UIEditContext;
 
 class UIProhibitListWnd : public UIFrameWnd {
 public:
-  UIProhibitListWnd(UIWindowContext& windows, UIButtonContext& controls, UIEditContext& edits);
+  UIProhibitListWnd(UIWindowContext& windows, UIEditContext& edits);
   /* 00B4 */ int m_count;
   /* 00B8 */ std::uint32_t m_aid;
 
@@ -18,7 +17,7 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
   UIEditContext* m_edits;
 };
 

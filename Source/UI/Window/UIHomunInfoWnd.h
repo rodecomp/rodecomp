@@ -13,7 +13,6 @@ class UIINT64BarGraph;
 class UINormalMB;
 class ForbiddenWords;
 struct WindowResponseRecorder;
-struct UIButtonContext;
 struct UIEditContext;
 
 class UIHomunInfoWnd : public UIFrameWnd {
@@ -35,7 +34,7 @@ public:
   /* 00D4 */ UICheckBox* unknown_00D4;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
   UIEditContext* m_editContext;
   WindowResponseRecorder* m_recorder;
   ForbiddenWords* m_forbiddenWords;

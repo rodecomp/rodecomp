@@ -41,7 +41,6 @@ class UIListBoxAgit;
 class UIListBoxAgitMenu;
 class UIScrollBar;
 class UIStaticText;
-struct UIButtonContext;
 struct UIListBoxContext;
 struct GuildWndInfo;
 class ForbiddenWords;
@@ -65,7 +64,7 @@ struct GuildWndNameEntry {
 
 class UIGuildWnd : public UIFrameWnd {
 public:
-  UIGuildWnd(UIWindowContext& windows, UIButtonContext& controls);
+  UIGuildWnd(UIWindowContext& windows);
   void Slot11() override;
   void Paint() override;
   void Slot25(int x, int y) override;
@@ -78,12 +77,12 @@ protected:
 
   /* 00B4 */ GuildWndInfo* m_saved;
   /* 00B8 */ UIStaticText* m_tabs[6];
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 class UIGuildBanishedMemberWnd : public UIGuildWnd {
 public:
-  UIGuildBanishedMemberWnd(UIWindowContext& windows, UIButtonContext& controls);
+  UIGuildBanishedMemberWnd(UIWindowContext& windows);
   int Tab() override;
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -106,7 +105,7 @@ protected:
 
 class UIGuildInfoManageWnd : public UIGuildWnd {
 public:
-  UIGuildInfoManageWnd(UIWindowContext& windows, UIButtonContext& controls);
+  UIGuildInfoManageWnd(UIWindowContext& windows);
   int Tab() override;
   void Slot15(int width, int height) override;
   void Slot19() override;
@@ -136,7 +135,7 @@ protected:
 
 class UIGuildMemberManageWnd : public UIGuildWnd {
 public:
-  UIGuildMemberManageWnd(UIWindowContext& windows, UIButtonContext& controls);
+  UIGuildMemberManageWnd(UIWindowContext& windows);
   int Tab() override;
   void Slot15(int width, int height) override;
   void Slot19() override;
@@ -175,7 +174,7 @@ protected:
 
 class UIGuildNoticeWnd : public UIGuildWnd {
 public:
-  UIGuildNoticeWnd(UIWindowContext& windows, UIButtonContext& controls);
+  UIGuildNoticeWnd(UIWindowContext& windows);
   void Slot15(int width, int height) override;
   void Paint() override;
   void Slot25(int x, int y) override;
@@ -189,7 +188,7 @@ protected:
 
 class UIGuildPositionManageWnd : public UIGuildWnd {
 public:
-  UIGuildPositionManageWnd(UIWindowContext& windows, UIButtonContext& controls);
+  UIGuildPositionManageWnd(UIWindowContext& windows);
   void Slot15(int width, int height) override;
   void Slot19() override;
   void Paint() override;
@@ -225,7 +224,7 @@ protected:
 
 class UIGuildSkillWnd : public UIGuildWnd {
 public:
-  UIGuildSkillWnd(UIWindowContext& windows, UIButtonContext& controls);
+  UIGuildSkillWnd(UIWindowContext& windows);
   int Tab() override;
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -259,7 +258,7 @@ protected:
 
 class UIGuildTotalInfoWnd : public UIGuildWnd {
 public:
-  UIGuildTotalInfoWnd(UIWindowContext& windows, UIButtonContext& controls);
+  UIGuildTotalInfoWnd(UIWindowContext& windows);
   int Tab() override;
   void Slot15(int width, int height) override;
   void Paint() override;

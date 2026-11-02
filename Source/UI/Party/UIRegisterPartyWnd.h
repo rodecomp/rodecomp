@@ -16,7 +16,6 @@ struct UIEditContext;
 struct UIComboBoxHeaderContext;
 
 struct UIRegisterPartyContext {
-  UIButtonContext& buttons;
   UIEditContext& edits;
   UIComboBoxHeaderContext& combos;
   ForbiddenWords& forbidden;

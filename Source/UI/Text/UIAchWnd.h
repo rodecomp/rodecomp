@@ -51,7 +51,7 @@ public:
 
 class UIAchListWnd : public UIWindow {
 public:
-  UIAchListWnd(UIWindowContext& windows, UIButtonContext& controls);
+  UIAchListWnd(UIWindowContext& windows);
   ~UIAchListWnd() override;
 
   /* 0080 */ UIButton** buttons;
@@ -78,7 +78,7 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
 private:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 struct UIAchTabGroup {
@@ -89,9 +89,9 @@ struct UIAchTabGroup {
 class UIAchTab : public UIWindow {
 public:
   // INLINED
-  UIAchTab(UIWindowContext& windows, UIButtonContext& controls)
+  UIAchTab(UIWindowContext& windows)
       : UIWindow(windows, 0), unknown_007C(-1), unknown_0080(-1), fontHeight(0), hoverGroup(0), hoverSub(0), scrollBar(nullptr), scrollable(0),
-        scrollBarX(13), visibleSubs(3), m_controls(&controls) {
+        scrollBarX(13), visibleSubs(3) {
     this->fontHeight = 12;
     this->scrollPos = 0;
   }
@@ -132,7 +132,7 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
 private:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 class UIAchTV : public UITextViewer {
@@ -174,7 +174,7 @@ private:
 
 class UIAchViewWnd : public UIWindow {
 public:
-  UIAchViewWnd(UIWindowContext& windows, UIButtonContext& controls);
+  UIAchViewWnd(UIWindowContext& windows);
 
   /* 007C */ UIBitmapButton* receiveButton;
   /* 0080 */ UIAchTV* description;
@@ -191,12 +191,12 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
 private:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 class UIAchUpperWnd : public UIWindow {
 public:
-  UIAchUpperWnd(UIWindowContext& windows, UIButtonContext& controls);
+  UIAchUpperWnd(UIWindowContext& windows);
 
   /* 007C */ std::string title;
   /* 0094 */ int unknown_0094;
@@ -213,12 +213,12 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
 private:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 class UIAchSummaryWnd : public UIWindow {
 public:
-  UIAchSummaryWnd(UIWindowContext& windows, UIButtonContext& controls);
+  UIAchSummaryWnd(UIWindowContext& windows);
 
   /* 007C */ int unknown_007C;
   /* 0080 */ std::vector<UICustomGageBar*> gauges;
@@ -233,12 +233,12 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
 private:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 class UIAchievementWnd : public UIFrameWnd {
 public:
-  UIAchievementWnd(UIWindowContext& windows, UIButtonContext& controls);
+  UIAchievementWnd(UIWindowContext& windows);
   ~UIAchievementWnd() override;
 
   /* 00B4 */ UIAchUpperWnd* upper;
@@ -259,7 +259,7 @@ public:
   void SelectTab(int group, int sub);
 
 private:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 
@@ -292,7 +292,7 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
 private:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 extern std::vector<AchTracingEntry> g_achievementTracking;

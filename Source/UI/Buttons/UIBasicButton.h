@@ -6,7 +6,7 @@
 class UIBasicButton : public UIButton {
 public:
   UIBasicButton();
-  UIBasicButton(UIWindowContext& windows, UIButtonContext& controls);
+  UIBasicButton(UIWindowContext& windows);
   ~UIBasicButton() override;
   void Paint() override;
   bool Configure(int width, const char* value);

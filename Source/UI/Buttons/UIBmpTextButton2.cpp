@@ -5,7 +5,7 @@
 
 // OFFSET: 0x0084ECB0
 // FUNCTION: fn_10651
-UIBmpTextButton2::UIBmpTextButton2(UIWindowContext& windows, UIButtonContext& buttons) : UIBitmapButton(windows, buttons) {
+UIBmpTextButton2::UIBmpTextButton2(UIWindowContext& windows) : UIBitmapButton(windows) {
 }
 
 // OFFSET: 0x0085BCF0

@@ -6,11 +6,10 @@
 #include <cstdint>
 #include <string>
 
-struct UIButtonContext;
 
 class UIMileageWnd : public UIFrameWnd {
 public:
-  UIMileageWnd(UIWindowContext& windows, UIButtonContext& controls);
+  UIMileageWnd(UIWindowContext& windows);
   void Paint() override;
   void Slot19() override;
   void Slot25(int x, int y) override;
@@ -26,7 +25,7 @@ protected:
   /* 00BC */ int m_remaining;
   /* 00C0 */ int m_bonus;
   /* 00C4 */ std::string m_tooltip;
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 extern int g_mileageWndActive;

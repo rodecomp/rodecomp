@@ -1,3 +1,4 @@
+#include "Contents/MessageTable.h"
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
@@ -8,8 +9,8 @@
 
 // OFFSET: 0x007BAE20
 // FUNCTION: fn_09277
-UIPartyInfoWnd::UIPartyInfoWnd(UIWindowContext& windows, UIButtonContext& buttons, PartyRowContext& row)
-    : UIBitmapButton(windows, buttons), tanker(0), dealer(0), healer(0), assist(0), m_row(&row) {
+UIPartyInfoWnd::UIPartyInfoWnd(UIWindowContext& windows, PartyRowContext& row)
+    : UIBitmapButton(windows), tanker(0), dealer(0), healer(0), assist(0), m_row(&row) {
   this->m_drawLabel = 0;
 }
 
@@ -24,12 +25,12 @@ CAdvenPartyInfo* UIPartyInfoWnd::Info() {
 
 // OFFSET: 0x007BBF00
 // FUNCTION: fn_09294
-const char* UIPartyInfoWnd::TypeName(int value, ButtonServices& services) {
+const char* UIPartyInfoWnd::TypeName(int value) {
   if (value == 0) {
-    return services.MessageText(3377);
+    return LookupMessage(3377);
   }
 
-  return value >= 1 && value <= 6 ? services.MessageText(3359 + value) : "";
+  return value >= 1 && value <= 6 ? LookupMessage(3359 + value) : "";
 }
 
 // OFFSET: 0x007C1E20
@@ -73,15 +74,14 @@ void UIPartyInfoWnd::Paint() {
     return;
   }
 
-  auto& controls = *this->m_buttonContext;
   CBitmapRes* background = nullptr;
 
   if (this->geometry.unknown_0030 <= 2) {
-    background = static_cast<CBitmapRes*>(controls.resources.Load(this->m_names[this->geometry.unknown_0030].c_str()));
+    background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(this->m_names[this->geometry.unknown_0030].c_str()));
   }
 
   if (this->m_disabled != 0 && !this->m_names[3].empty()) {
-    background = static_cast<CBitmapRes*>(controls.resources.Load(this->m_names[3].c_str()));
+    background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(this->m_names[3].c_str()));
   }
 
   if (background) {
@@ -90,14 +90,14 @@ void UIPartyInfoWnd::Paint() {
 
   const auto text = [&](int x, const char* value, int bytes = 0) { this->DrawTextAt(x, 5, value, bytes, 0, 12, 0, 0, 0); };
   text(11, this->levels.c_str());
-  text(64, TypeName(this->type, controls.services));
+  text(64, TypeName(this->type));
   constexpr char prefix[] = "유저인터페이스\\UIadventurerAgency\\";
   const char* jobs[] = {"def", "heal", "atk", "buf"};
   const bool flags[] = {this->info.tanker, this->info.healer, this->info.dealer, this->info.assist};
 
   for (int index = 0; index < 4; ++index) {
     const std::string path = std::string(prefix) + "btn_job_" + jobs[index] + (flags[index] ? "_on.bmp" : "_off.bmp");
-    auto* resource = static_cast<CBitmapRes*>(controls.resources.Load(path.c_str()));
+    auto* resource = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(path.c_str()));
     this->DrawBitmap(109 + index * 18, 3, resource ? &resource->image : nullptr, false);
   }
 
@@ -126,7 +126,7 @@ void UIPartyInfoWnd::Slot33(int, int) {
   }
 
   const std::string name = this->info.characterName;
-  const char* relationship = this->m_row->services.IsFriend(name) ? this->m_buttonContext->services.MessageText(102) : nullptr;
+  const char* relationship = this->m_row->services.IsFriend(name) ? LookupMessage(102) : nullptr;
 
   if (this->m_row->services.IsGuildMember(this->info.accountId)) {
     relationship = "GuildMember";

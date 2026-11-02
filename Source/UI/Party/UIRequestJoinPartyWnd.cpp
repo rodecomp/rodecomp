@@ -1,3 +1,4 @@
+#include "Contents/MessageTable.h"
 #include "Client/Mode/ModeEvents.h"
 #include "Client/Session.h"
 #include "Render/DeviceContext/DeviceContext.h"
@@ -32,9 +33,8 @@ UIRequestJoinPartyWnd::~UIRequestJoinPartyWnd() = default;
 // FUNCTION: fn_09301
 void UIRequestJoinPartyWnd::Slot15(int, int) {
   auto& text = this->m_request->text;
-  auto& controls = text.buttons;
 
-  this->icon = new UIBitmapButton(*this->m_context, controls);
+  this->icon = new UIBitmapButton(*this->m_context);
   this->icon->SetSize(25, 25);
   const std::string initial = std::string(prefix) + "renewalparty\\icon_jobs_4046.bmp";
 
@@ -45,7 +45,7 @@ void UIRequestJoinPartyWnd::Slot15(int, int) {
   this->icon->Move(12, 29);
   this->AddChild(this->icon);
 
-  this->levelText = new UIStaticText(*this->m_context, controls);
+  this->levelText = new UIStaticText(*this->m_context);
   this->levelText->SetSize(25, 14);
   this->levelText->Move(16, 56);
   this->levelText->SetText("1", 0);
@@ -58,8 +58,8 @@ void UIRequestJoinPartyWnd::Slot15(int, int) {
   const int x[] = {122, 169};
 
   for (int index = 0; index < 2; ++index) {
-    auto* button = new UIBasicButton(*this->m_context, controls);
-    const char* label = controls.services.MessageText(messages[index]);
+    auto* button = new UIBasicButton(*this->m_context);
+    const char* label = LookupMessage(messages[index]);
     button->Configure(this->TextWidth(label, 0, 0, 12, 0, 0) + 10, label);
     button->Move(x[index], 136);
     button->SetId(ids[index]);
@@ -73,7 +73,7 @@ void UIRequestJoinPartyWnd::Slot15(int, int) {
   this->details->Invalidate();
   this->AddChild(this->details);
 
-  this->block = new UICheckBox(*this->m_context, controls);
+  this->block = new UICheckBox(*this->m_context);
   this->block->SetSize(24, 47);
   const std::string checked = std::string(prefix) + "uiadventureragency\\btn_block_on.bmp";
   const std::string unchecked = std::string(prefix) + "uiadventureragency\\btn_block_off.bmp";
@@ -83,7 +83,7 @@ void UIRequestJoinPartyWnd::Slot15(int, int) {
   this->block->SetId(213);
   this->AddChild(this->block);
   std::vector<std::string> unused;
-  WrapPlainText(controls.services.MessageText(3518), unused, 30, text.list.codePage);
+  WrapPlainText(LookupMessage(3518), unused, 30, text.list.codePage);
 
   this->blockText = new UITextViewer(*this->m_context, text);
   this->blockText->Configure(31, 81, 182, 47, 0);
@@ -91,9 +91,9 @@ void UIRequestJoinPartyWnd::Slot15(int, int) {
   this->blockText->Invalidate();
   this->AddChild(this->blockText);
   this->blockText->lineHeight = 15;
-  this->blockText->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(controls.services.MessageText(3518)), 30, 0, 0);
+  this->blockText->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(3518)), 30, 0, 0);
 
-  auto* close = new UIBitmapButton(*this->m_context, controls);
+  auto* close = new UIBitmapButton(*this->m_context);
   const std::string off = std::string(prefix) + "basic_interface\\big_sys_close_off.bmp";
   const std::string on = std::string(prefix) + "basic_interface\\big_sys_close_on.bmp";
   close->SetBitmap(off.c_str(), 0, 0);
@@ -109,8 +109,7 @@ void UIRequestJoinPartyWnd::Slot15(int, int) {
 // OFFSET: 0x007BFC20
 // FUNCTION: fn_09306
 void UIRequestJoinPartyWnd::Paint() {
-  auto& controls = this->m_request->text.buttons;
-  const auto load = [&](const char* name) { return static_cast<CBitmapRes*>(controls.resources.Load((std::string(prefix) + name).c_str())); };
+  const auto load = [&](const char* name) { return static_cast<CBitmapRes*>(ResourceMgr::Instance().Load((std::string(prefix) + name).c_str())); };
   const auto* background = load("UIadventurerAgency\\bg_agency_admit.bmp");
   this->DrawBitmap(0, 0, background ? &background->image : nullptr, false);
   int leftWidth = 0;
@@ -138,7 +137,7 @@ void UIRequestJoinPartyWnd::Paint() {
     }
   }
 
-  const char* caption = controls.services.MessageText(3505);
+  const char* caption = LookupMessage(3505);
   this->DrawTextAt(19, titleHeight - 13, caption, 0, 0, 12, 0xFFFFFF, 0, 0);
   this->DrawTextAt(18, titleHeight - 14, caption, 0, 0, 12, 0, 0, 0);
   const auto* base = load("basic_interface\\sys_base_off.bmp");
@@ -191,12 +190,11 @@ int UIRequestJoinPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
   char level[5] = {};
   _snprintf_s(level, sizeof(level), _TRUNCATE, "%d", this->level);
   this->levelText->SetText(level, 0);
-  auto& controls = this->m_request->text.buttons;
   const int width = this->TextWidth(level, 0, 0, 12, 0, 0);
   this->levelText->Move(25 - width / 2, 56);
   this->details->Clear();
   char messageText[1024] = {};
-  _snprintf_s(messageText, sizeof(messageText), _TRUNCATE, controls.services.MessageText(3378), request.name);
+  _snprintf_s(messageText, sizeof(messageText), _TRUNCATE, LookupMessage(3378), request.name);
   this->details->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(messageText), 0, 0, 1);
   this->details->Move(43, static_cast<unsigned>(this->details->lines.size()) - 3u >= 1u ? 30 : 20);
   this->Invalidate();

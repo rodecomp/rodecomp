@@ -88,7 +88,6 @@ public:
 };
 
 struct UIFriendOptionContext {
-  UIButtonContext& buttons;
   int& option0;
   int& option1;
   int& option2;
@@ -115,7 +114,7 @@ private:
 
 class UIJobIconButton : public UIBitmapButton {
 public:
-  UIJobIconButton(UIWindowContext& windows, UIButtonContext& buttons);
+  UIJobIconButton(UIWindowContext& windows);
   ~UIJobIconButton() override;
   void Paint() override;
   void Slot25(int x, int y) override;
@@ -127,7 +126,7 @@ public:
 
 class UIMessengerGroupWnd : public UIFrameWnd {
 public:
-  UIMessengerGroupWnd(UIWindowContext& windows, UIButtonContext& controls);
+  UIMessengerGroupWnd(UIWindowContext& windows);
   ~UIMessengerGroupWnd() override;
   void Slot11() override;
   void Slot15(int width, int height) override;
@@ -182,7 +181,7 @@ public:
   /* 0278 */ UIButton* iconModeButtons[2];
   /* 0280 */ unsigned char hiddenButtons[11];
   /* 028C */ int mode;
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 // GLOBAL: gl_24961
@@ -520,42 +519,40 @@ UIFriendOptionWnd::~UIFriendOptionWnd() = default;
 // OFFSET: 0x00738F30
 // FUNCTION: fn_07681
 void UIFriendOptionWnd::Slot15(int, int) {
-  auto& controls = this->m_options->buttons;
 
-  const char* label = controls.services.MessageText(361);
+  const char* label = LookupMessage(361);
   int width = std::min(this->TextWidth(label, 0, 0, 12, 0, 0) + 12, this->geometry.width - 15);
-  this->option0Box = new UICheckBox(*this->m_context, controls);
+  this->option0Box = new UICheckBox(*this->m_context);
   this->option0Box->SetSize(width, 12);
-  this->option0Box->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", controls.services.MessageText(361));
+  this->option0Box->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(361));
   this->option0Box->Move(6, 21);
   this->option0Box->SetChecked(this->m_options->option0);
   this->AddChild(this->option0Box);
 
-  label = controls.services.MessageText(359);
+  label = LookupMessage(359);
   width = std::min(this->TextWidth(label, 0, 0, 12, 0, 0) + 12, this->geometry.width - 15);
-  this->option2Box = new UICheckBox(*this->m_context, controls);
+  this->option2Box = new UICheckBox(*this->m_context);
   this->option2Box->SetSize(width, 12);
-  this->option2Box->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", controls.services.MessageText(359));
+  this->option2Box->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(359));
   this->option2Box->Move(6, 37);
   this->option2Box->SetChecked(this->m_options->option2);
   this->AddChild(this->option2Box);
 
-  label = controls.services.MessageText(362);
+  label = LookupMessage(362);
   width = std::min(this->TextWidth(label, 0, 0, 12, 0, 0) + 12, this->geometry.width - 15);
-  this->option1Box = new UICheckBox(*this->m_context, controls);
+  this->option1Box = new UICheckBox(*this->m_context);
   this->option1Box->SetSize(width, 12);
-  this->option1Box->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", controls.services.MessageText(362));
+  this->option1Box->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(362));
   this->option1Box->Move(6, 53);
   this->option1Box->SetChecked(this->m_options->option1);
   this->AddChild(this->option1Box);
 
-  this->closeButton = this->AddCloseButton(controls, "Alt+I", 0);
+  this->closeButton = this->AddCloseButton("Alt+I", 0);
 }
 
 // OFFSET: 0x007391C0
 // FUNCTION: fn_07682
 void UIFriendOptionWnd::Paint() {
-  auto& controls = this->m_options->buttons;
 
   const int titleHeight = this->DrawTitleBar(true, LookupMessage(355), 0);
   this->DrawPanelBackground(titleHeight, 0, "");
@@ -613,7 +610,7 @@ void UIFriendOptionWnd::Slot11() {
 
 // OFFSET: 0x00739330
 // FUNCTION: fn_07685
-UIJobIconButton::UIJobIconButton(UIWindowContext& windows, UIButtonContext& buttons) : UIBitmapButton(windows, buttons) {
+UIJobIconButton::UIJobIconButton(UIWindowContext& windows) : UIBitmapButton(windows) {
   this->unknown_0120 = 0;
 }
 
@@ -688,7 +685,7 @@ MiniPartyInfoEntry::MiniPartyInfoEntry(const char* text, int value) : text(text)
 
 // OFFSET: 0x00739C80
 // FUNCTION: fn_07698
-UIMessengerGroupWnd::UIMessengerGroupWnd(UIWindowContext& windows, UIButtonContext& controls) : UIFrameWnd(windows, 0) {
+UIMessengerGroupWnd::UIMessengerGroupWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0) {
   this->saved = nullptr;
   this->scrollBar = nullptr;
   this->scrollTop = 0;
@@ -702,7 +699,6 @@ UIMessengerGroupWnd::UIMessengerGroupWnd(UIWindowContext& windows, UIButtonConte
   for (int i = 0; i < 11; ++i) {
     this->hiddenButtons[i] = 0;
   }
-  this->m_controls = &controls;
 }
 
 // OFFSET: 0x0073A080
@@ -803,8 +799,8 @@ void UIMessengerGroupWnd::Slot15(int, int) {
   this->iconPositions[1].y = 1;
   this->iconPositions[1].size = 27;
 
-  this->iconModeButtons[0] = this->AddMinimizeButton(*this->m_controls, "", 0);
-  this->iconModeButtons[1] = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->iconModeButtons[0] = this->AddMinimizeButton("", 0);
+  this->iconModeButtons[1] = new UIBitmapButton(*this->m_context);
   static_cast<UIBitmapButton*>(this->iconModeButtons[1])->SetBitmap("유저인터페이스\\renewalparty\\btn_titlebar_maximum_out.bmp", 0, 0);
   static_cast<UIBitmapButton*>(this->iconModeButtons[1])->SetBitmap("유저인터페이스\\renewalparty\\btn_titlebar_maximum_over.bmp", 1, 0);
   static_cast<UIBitmapButton*>(this->iconModeButtons[1])->SetBitmap("유저인터페이스\\renewalparty\\btn_titlebar_maximum_press.bmp", 2, 0);
@@ -824,7 +820,7 @@ void UIMessengerGroupWnd::Slot15(int, int) {
   }
 
   for (int index = 0; index < 40; ++index) {
-    this->jobIcons[index] = new UIJobIconButton(*this->m_context, *this->m_controls);
+    this->jobIcons[index] = new UIJobIconButton(*this->m_context);
     this->jobIcons[index]->SetSize(50, 50);
     this->jobIcons[index]->SetBitmap("유저인터페이스\\renewalparty\\icon_jobs_4046.bmp", 0, 0);
     this->jobIcons[index]->SetBitmap("유저인터페이스\\renewalparty\\icon_jobs_4046.bmp", 1, 0);
@@ -841,7 +837,7 @@ void UIMessengerGroupWnd::Slot15(int, int) {
   int tabWidths[2] = {48, this->TextWidth(LookupMessage(0x67), 0, 0, 12, 0, 0) + 13};
   int tabValues[2] = {0, 1};
   for (int index = 0; index < 2; ++index) {
-    UIRadioBtn* tab = new UIRadioBtn(*this->m_context, *this->m_controls);
+    UIRadioBtn* tab = new UIRadioBtn(*this->m_context);
     this->tabs[index] = tab;
     tab->SetSize(tabWidths[index], 12);
     tab->Move(index * 60 + 4, this->geometry.height - 16);
@@ -862,13 +858,13 @@ void UIMessengerGroupWnd::Slot15(int, int) {
     sprintf(title, "%s(%d/%d)", titles[this->mode], this->members.size(), 40);
   }
 
-  this->titleText = new UIStaticText(*this->m_context, *this->m_controls);
+  this->titleText = new UIStaticText(*this->m_context);
   this->titleText->SetSize(this->geometry.width - 57, 15);
   this->titleText->SetTextFitted(title);
   this->titleText->Move(16, 2);
   this->titleText->shadow = 1;
   this->AddChild(this->titleText);
-  this->closeButton = this->AddCloseButton(*this->m_controls, "Alt+Z", 0);
+  this->closeButton = this->AddCloseButton("Alt+Z", 0);
 
   {
     std::string prefix = "유저인터페이스\\basic_interface\\mesbtn_0";
@@ -899,7 +895,7 @@ void UIMessengerGroupWnd::Slot15(int, int) {
     for (int index = 0; index < 11; ++index) {
       char number[8];
       _itoa(index + 1, number, 10);
-      UIBitmapButton* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+      UIBitmapButton* button = new UIBitmapButton(*this->m_context);
       this->buttons[index] = button;
 
       bool useDisabledImage = false;

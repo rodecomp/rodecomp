@@ -2465,7 +2465,7 @@ std::vector<unsigned char> CGameMode::SaveGroundItems() {
 // FUNCTION: fn_21409
 UIBroadcastBalloon* CGameMode::EnsureBroadcastBalloon() {
   if (!this->broadcastBalloon) {
-    this->broadcastBalloon = new UIBroadcastBalloon(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIButtonContext*>(nullptr));
+    this->broadcastBalloon = new UIBroadcastBalloon(*reinterpret_cast<UIWindowContext*>(nullptr));
     this->broadcastBalloon->SetSize(g_renderer->viewport.width, 50);
     this->broadcastBalloon->Move(0, 51);
     g_windowMgr.AddRenderedFront(this->broadcastBalloon);
@@ -2514,7 +2514,7 @@ void CGameMode::ShowNoticeBalloon(const std::vector<std::string>* lines) {
 
   UIBroadcastBalloon* balloon = this->noticeBalloon;
   if (!balloon) {
-    this->noticeBalloon = new UIBroadcastBalloon(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIButtonContext*>(nullptr));
+    this->noticeBalloon = new UIBroadcastBalloon(*reinterpret_cast<UIWindowContext*>(nullptr));
     this->noticeBalloon->SetSize(g_renderer->viewport.width, 50);
     this->noticeBalloon->Move(0, 130 * g_renderer->viewport.height / 480);
     g_windowMgr.AddRenderedFront(this->noticeBalloon);

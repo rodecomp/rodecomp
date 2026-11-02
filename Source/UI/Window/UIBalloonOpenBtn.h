@@ -7,11 +7,10 @@
 
 class UIBitmapButton;
 class UITransBalloonText;
-struct UIButtonContext;
 
 class UIBalloonOpenBtn : public UIFrameWnd {
 public:
-  UIBalloonOpenBtn(UIWindowContext& windows, UIButtonContext& controls);
+  UIBalloonOpenBtn(UIWindowContext& windows);
   void Paint() override;
   void Slot15(int width, int height) override;
   void Slot19() override;
@@ -24,7 +23,7 @@ protected:
   /* 00C8 */ int m_balloonId;
   /* 00CC */ UITransBalloonText* m_balloon;
   /* 00D0 */ UIBitmapButton* m_button;
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 #endif

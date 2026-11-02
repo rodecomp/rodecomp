@@ -8,12 +8,11 @@
 
 struct ItemNaming;
 struct ClientSkills;
-struct UIButtonContext;
 #include "UI/Window/WindowManagerWindows.h"
 
 class UIBasicItemCtrl : public UIWindow {
 public:
-  UIBasicItemCtrl(UIWindowContext& windows, ItemNaming& naming, UIButtonContext& controls, WindowManagerWindows& windowList);
+  UIBasicItemCtrl(UIWindowContext& windows, ItemNaming& naming, WindowManagerWindows& windowList);
   void Slot10(int argument1, int argument2, std::intptr_t argument3) override;
   void Paint() override;
   void Slot26(int x, int y) override;
@@ -28,13 +27,13 @@ protected:
   /* 0088 */ std::string m_tooltip;
   /* 00A0 */ ITEM_INFO m_item;
   ItemNaming* m_naming;
-  UIButtonContext* m_controls;
+  void* unknown_controls;
   WindowManagerWindows* m_windows;
 };
 
 class UIBasicSkillCtrl : public UIWindow {
 public:
-  UIBasicSkillCtrl(UIWindowContext& windows, ClientSkills& skills, UIButtonContext& controls);
+  UIBasicSkillCtrl(UIWindowContext& windows, ClientSkills& skills);
   void Slot10(int argument1, int argument2, std::intptr_t argument3) override;
   void Paint() override;
   void Slot26(int x, int y) override;
@@ -44,7 +43,7 @@ public:
 protected:
   /* 007C */ int m_skillId;
   ClientSkills* m_skills;
-  UIButtonContext* m_controls;
+  void* unknown_controls;
   int m_level;
 };
 

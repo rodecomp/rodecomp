@@ -5,7 +5,6 @@
 
 #include <cstdint>
 
-struct UIButtonContext;
 
 class UINoticeMessageBox_LockSellItem : public UIFrameWnd {
 public:
@@ -19,7 +18,7 @@ public:
   /* 00B8 */ std::uint32_t duration;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 #endif

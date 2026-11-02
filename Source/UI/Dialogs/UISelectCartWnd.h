@@ -3,7 +3,6 @@
 
 #include "UI/Window/UIFrameWnd.h"
 
-struct UIButtonContext;
 
 class UISelectCartWnd : public UIFrameWnd {
 public:
@@ -15,7 +14,7 @@ public:
   void AddCart(int index, int type);
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 
 public:
   /* 00B4 */ int unknown_00B4;

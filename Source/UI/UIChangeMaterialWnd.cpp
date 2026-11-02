@@ -1,3 +1,4 @@
+#include "Render/Text/FontCache.h"
 #include "UI/UIChangeMaterialWnd.h"
 
 #include "Client/Input/InputCharset.h"
@@ -36,10 +37,9 @@
 
 // OFFSET: 0x005E03B0
 // FUNCTION: fn_03861
-UIChangeMaterialWnd::UIChangeMaterialWnd(UIWindowContext& windows, UIButtonContext& controls, UIEditContext& edits)
+UIChangeMaterialWnd::UIChangeMaterialWnd(UIWindowContext& windows, UIEditContext& edits)
     : UIFrameWnd(windows, 0), m_sortBox(nullptr), m_button(nullptr), m_resultX(168), m_resultY(131), m_resultItem(),
-      m_materialPos{{90, 86}, {246, 86}, {168, 222}, {168, 40}, {90, 176}, {246, 176}}, m_materials(), m_resultAmount(0), m_resultText(),
-      m_controls(&controls), m_editContext(&edits) {
+      m_materialPos{{90, 86}, {246, 86}, {168, 222}, {168, 40}, {90, 176}, {246, 176}}, m_materials(), m_resultAmount(0), m_resultText(), m_editContext(&edits) {
   *reinterpret_cast<int*>(reinterpret_cast<char*>(this) + 0xB4) = 0;
   *reinterpret_cast<int*>(reinterpret_cast<char*>(this) + 0xB8) = 0;
 }
@@ -547,13 +547,13 @@ void UIChangeMaterialWnd::Paint() {
   const MaterialSlotPos* position = this->m_materialPos;
   for (auto it = this->m_materials.begin(); it != this->m_materials.end(); ++it, ++position) {
     if (it->identified == 1) {
-      DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, controls.fonts, controls.locale, position->x, position->y, *it, 1, 0);
+      DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, this->m_context->locale, position->x, position->y, *it, 1, 0);
     } else {
-      DrawItemWithQuantityAuxiliary(*this, descriptions, controls.fonts, controls.locale, 1, position->x, position->y, *it, 1, 0);
+      DrawItemWithQuantityAuxiliary(*this, descriptions, g_fontCache, this->m_context->locale, 1, position->x, position->y, *it, 1, 0);
     }
   }
 
-  DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, controls.fonts, controls.locale, this->m_resultX, this->m_resultY, this->m_resultItem, 1, 0);
+  DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, this->m_context->locale, this->m_resultX, this->m_resultY, this->m_resultItem, 1, 0);
 
   const std::string amount = FormatOwnedString(LookupMessage(0xE8C), this->m_resultAmount / 10);
   const int width = this->TextWidth(amount.c_str(), 0, 0x1D, 0x17, 1, 0);
@@ -698,7 +698,7 @@ void UIChangeMaterialWnd_List::Slot28(int x, int y) {
 // OFFSET: 0x005E1320
 // FUNCTION: fn_03876
 void UIChangeMaterialWnd::Slot15(int width, int height) {
-  UIBitmapButton* close = new UIBitmapButton(*this->m_context, *this->m_controls);
+  UIBitmapButton* close = new UIBitmapButton(*this->m_context);
   close->SetBitmap("유저인터페이스\\basic_interface\\sys_close_off.bmp", 0, 0);
   close->SetBitmap("유저인터페이스\\basic_interface\\sys_close_on.bmp", 1, 0);
   close->SetBitmap("유저인터페이스\\basic_interface\\sys_close_on.bmp", 2, 0);
@@ -719,7 +719,7 @@ void UIChangeMaterialWnd::Slot15(int width, int height) {
   edit->topPadding = -1;
   this->AddChild(edit);
 
-  UIBmpTextButton* search = new UIBmpTextButton(*this->m_context, *this->m_controls);
+  UIBmpTextButton* search = new UIBmpTextButton(*this->m_context);
   search->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_search.bmp", 0, 0);
   search->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_search_over.bmp", 1, 0);
   search->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_search_press.bmp", 2, 0);
@@ -730,7 +730,7 @@ void UIChangeMaterialWnd::Slot15(int width, int height) {
   search->SetId(321);
   this->AddChild(search);
 
-  UIBitmapButton* refresh = new UIBitmapButton(*this->m_context, *this->m_controls);
+  UIBitmapButton* refresh = new UIBitmapButton(*this->m_context);
   refresh->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_refresh.bmp", 0, 0);
   refresh->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_refresh_over.bmp", 1, 0);
   refresh->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_refresh_press.bmp", 2, 0);
@@ -740,7 +740,7 @@ void UIChangeMaterialWnd::Slot15(int width, int height) {
   refresh->SetId(415);
   this->AddChild(refresh);
 
-  this->m_sortBox = new UIChangeMaterialWnd_CheckBox(*this->m_context, *this->m_controls);
+  this->m_sortBox = new UIChangeMaterialWnd_CheckBox(*this->m_context);
   this->m_sortBox->SetSize(74, 14);
   this->m_sortBox->SetBitmaps("유저인터페이스\\ChangeMaterial\\btn_sort_up.bmp", "유저인터페이스\\ChangeMaterial\\btn_sort_down.bmp");
   this->m_sortBox->ascendingText = LookupMessage(3722);
@@ -751,7 +751,7 @@ void UIChangeMaterialWnd::Slot15(int width, int height) {
   this->m_sortBox->SetChecked(1);
   this->AddChild(this->m_sortBox);
 
-  UIBitmapButton* change = new UIBitmapButton(*this->m_context, *this->m_controls);
+  UIBitmapButton* change = new UIBitmapButton(*this->m_context);
   this->m_button = change;
   change->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_change_start.bmp", 0, 0);
   change->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_change_over.bmp", 1, 0);
@@ -762,7 +762,7 @@ void UIChangeMaterialWnd::Slot15(int width, int height) {
   change->SetId(184);
   this->AddChild(change);
 
-  UIBasicButton* cancel = new UIBasicButton(*this->m_context, *this->m_controls);
+  UIBasicButton* cancel = new UIBasicButton(*this->m_context);
   cancel->Configure(42, LookupMessage(3045));
   cancel->Move(width - cancel->geometry.width - 55, height - cancel->geometry.height - 12);
   cancel->SetId(201);

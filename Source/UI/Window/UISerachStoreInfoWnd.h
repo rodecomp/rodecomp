@@ -9,7 +9,6 @@ class UIBitmapButton;
 class UIEditCtrl;
 class UIRadioBtn;
 class UITextButton;
-struct UIButtonContext;
 struct UIEditContext;
 
 class UISerachStoreInfoWnd : public UIFrameWnd {
@@ -38,7 +37,7 @@ protected:
   /* 00ED */ unsigned char unknown_00ED;
   /* 00F0 */ std::string unknown_00F0;
 
-  UIButtonContext* m_controls;
+  void* unknown_controls;
   UIEditContext* m_editContext;
 };
 

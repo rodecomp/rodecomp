@@ -11,7 +11,7 @@ class UIItemMoveInfo : public UITextButton {
   friend class UIItemCollectionWnd;
 
 public:
-  UIItemMoveInfo(UIWindowContext& windows, UIButtonContext& buttons, WindowManagerWindows& windowList, WindowVisibility& visibility);
+  UIItemMoveInfo(UIWindowContext& windows, WindowManagerWindows& windowList, WindowVisibility& visibility);
   void Paint() override;
   void Slot28(int x, int y) override;
   void Slot48() override;

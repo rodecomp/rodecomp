@@ -24,7 +24,7 @@ static_assert(sizeof(RefiningMaterial) == 9);
 
 class UIRefining_BtnAgain : public UIBitmapButton {
 public:
-  UIRefining_BtnAgain(UIWindowContext& windows, UIButtonContext& controls);
+  UIRefining_BtnAgain(UIWindowContext& windows);
   void Paint() override;
   void Enable(unsigned char value) override;
   void UpdateBitmaps();
@@ -36,7 +36,7 @@ public:
 
 class UIRefining_BtnRefining : public UIBitmapButton {
 public:
-  UIRefining_BtnRefining(UIWindowContext& windows, UIButtonContext& controls);
+  UIRefining_BtnRefining(UIWindowContext& windows);
   void Paint() override;
   void Enable(unsigned char value) override;
 
@@ -45,7 +45,7 @@ public:
 
 class UIRefining_BtnReturn : public UIBitmapButton {
 public:
-  UIRefining_BtnReturn(UIWindowContext& windows, UIButtonContext& controls);
+  UIRefining_BtnReturn(UIWindowContext& windows);
   void Paint() override;
   void UpdateBitmaps();
 
@@ -55,8 +55,8 @@ public:
 class UIRefining_Notice : public UIStaticText {
 public:
   // INLINED
-  UIRefining_Notice(UIWindowContext& windows, UIButtonContext& controls)
-      : UIStaticText(windows, controls), savedHighlight(0), expireTick(0), autoShown(0), highlight(0) {}
+  UIRefining_Notice(UIWindowContext& windows)
+      : UIStaticText(windows), savedHighlight(0), expireTick(0), autoShown(0), highlight(0) {}
   void Slot19() override;
   void Paint() override;
   void SetNotice(const char* value, int duration, unsigned char highlight);
@@ -111,7 +111,7 @@ public:
   /* 0208 */ ITEM_INFO nextItem;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 #endif

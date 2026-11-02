@@ -15,7 +15,7 @@ class UICheckBox : public UIWindow {
 
 public:
   UICheckBox();
-  UICheckBox(UIWindowContext& windowContext, UIButtonContext& controls);
+  UICheckBox(UIWindowContext& windowContext);
   ~UICheckBox() override;
   void Paint() override;
   void Slot25(int x, int y) override;
@@ -40,7 +40,7 @@ protected:
   /* 00EC */ int m_message;
   /* 00F0 */ int m_notify;
   /* 00F4 */ std::string m_uncheckedTooltip;
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 
 private:
   void Notify();

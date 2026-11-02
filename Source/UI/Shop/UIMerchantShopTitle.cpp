@@ -14,7 +14,7 @@
 // OFFSET: 0x0085ACE0
 // FUNCTION: fn_10788
 void UIMerchantShopTitle::Slot15(int, int) {
-  this->label = new UIStaticText(*this->m_context, *this->m_controls);
+  this->label = new UIStaticText(*this->m_context);
   this->label->SetSize(this->geometry.width - 34, 15);
   this->label->Move(31, 8);
   this->label->SetTextFitted("");
@@ -89,8 +89,8 @@ void UIMerchantShopTitle::Slot32(int, int) {
 
 // OFFSET: 0x0084FE60
 // FUNCTION: fn_10667
-UIMerchantShopTitle::UIMerchantShopTitle(UIWindowContext& windows, UIButtonContext& controls, ForbiddenWords& forbiddenWords, int buyingShop)
-    : UIWindow(windows, 0), buyingShop(buyingShop), m_controls(&controls), m_forbiddenWords(&forbiddenWords) {
+UIMerchantShopTitle::UIMerchantShopTitle(UIWindowContext& windows, ForbiddenWords& forbiddenWords, int buyingShop)
+    : UIWindow(windows, 0), buyingShop(buyingShop), m_forbiddenWords(&forbiddenWords) {
   this->geometry.id = 189;
 }
 

@@ -7,7 +7,6 @@
 #include <list>
 #include <vector>
 
-struct UIButtonContext;
 struct WindowResponseRecorder;
 struct UIListBoxContext;
 class UIListBox;
@@ -24,7 +23,7 @@ static_assert(sizeof(UIItemRepairEntry) == 0x18);
 
 class UIItemRepairWnd : public UIFrameWnd {
 public:
-  UIItemRepairWnd(UIWindowContext& windows, UIButtonContext& controls, UIListBoxContext& listContext, WindowResponseRecorder& recorder);
+  UIItemRepairWnd(UIWindowContext& windows, UIListBoxContext& listContext, WindowResponseRecorder& recorder);
   ~UIItemRepairWnd() override;
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -32,7 +31,7 @@ public:
   std::vector<unsigned char> BuildReplayRecords();
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
   UIListBoxContext* m_listContext;
 
 public:

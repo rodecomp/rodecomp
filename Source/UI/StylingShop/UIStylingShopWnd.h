@@ -119,12 +119,12 @@ void ToggleStylingAccessory(int itemId, int slot);
 
 class UIStylingShopWnd : public UIFrameWnd {
 public:
-  UIStylingShopWnd(UIWindowContext& windows, UIButtonContext& controls);
+  UIStylingShopWnd(UIWindowContext& windows);
 
   /* 00B4 */ UIStylingShopButton* m_buyButton;
   /* 00B8 */ UIDisplayCharacter* m_preview;
   /* 00BC */ std::map<UIWindow*, UIStylingshopTabParentWnd*> m_tabs;
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 
   void Slot15(int width, int height) override;
   void Slot19() override;
@@ -231,7 +231,7 @@ public:
   UI2ndCostumeCheckBox() : UICheckBox() {
   }
   // INLINED
-  UI2ndCostumeCheckBox(UIWindowContext& windowContext, UIButtonContext& controls) : UICheckBox(windowContext, controls) {
+  UI2ndCostumeCheckBox(UIWindowContext& windowContext) : UICheckBox(windowContext) {
   }
   void Slot25(int x, int y) override;
 };
@@ -242,7 +242,7 @@ public:
   UIStylingShopButton() : UIBitmapButton() {
   }
   // INLINED
-  UIStylingShopButton(UIWindowContext& windowContext, UIButtonContext& buttonContext) : UIBitmapButton(windowContext, buttonContext) {
+  UIStylingShopButton(UIWindowContext& windowContext) : UIBitmapButton(windowContext) {
   }
   // INLINED
   void SetArgument(int argument) {

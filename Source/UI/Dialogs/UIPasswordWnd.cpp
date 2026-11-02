@@ -54,7 +54,7 @@ void UIPasswordWnd::CreateKeypad(unsigned int seed) {
   const int commandPositions[5][2] = {{414, 192}, {414, 220}, {414, 248}, {414, 192}, {414, 276}};
 
   for (int i = 0; i < 5; ++i) {
-    UIBitmapButton* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    UIBitmapButton* button = new UIBitmapButton(*this->m_context);
     this->unknown_0150[i] = button;
     button->SetBitmap((prefix + commandNames[i][0] + ".bmp").c_str(), 0, 0);
     button->SetBitmap((prefix + commandNames[i][1] + ".bmp").c_str(), 1, 0);
@@ -79,7 +79,7 @@ void UIPasswordWnd::CreateKeypad(unsigned int seed) {
 
   for (int i = 0; i < 10; ++i) {
     const int digit = this->m_digits[i];
-    UIBitmapButton* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    UIBitmapButton* button = new UIBitmapButton(*this->m_context);
     this->unknown_0124[i] = button;
     button->SetBitmap((prefix + keyNames[digit][0] + ".bmp").c_str(), 0, 0);
     button->SetBitmap((prefix + keyNames[digit][1] + ".bmp").c_str(), 1, 0);
@@ -90,7 +90,7 @@ void UIPasswordWnd::CreateKeypad(unsigned int seed) {
     this->AddChild(button);
   }
 
-  UIBitmapButton* reset = new UIBitmapButton(*this->m_context, *this->m_controls);
+  UIBitmapButton* reset = new UIBitmapButton(*this->m_context);
   this->unknown_0124[10] = reset;
   reset->SetBitmap((prefix + keyNames[10][0] + ".bmp").c_str(), 0, 0);
   reset->SetBitmap((prefix + keyNames[10][1] + ".bmp").c_str(), 1, 0);
@@ -114,13 +114,13 @@ void UIPasswordWnd::CreateKeypad(unsigned int seed) {
   }
   this->unknown_0150[2]->Enable(0);
 
-  this->unknown_0164 = new UIStaticText(*this->m_context, *this->m_controls);
+  this->unknown_0164 = new UIStaticText(*this->m_context);
   this->unknown_0164->SetSize(300, 15);
   this->unknown_0164->SetText(LookupMessage(0x771), 0);
   this->unknown_0164->Move(200, 30);
   this->AddChild(this->unknown_0164);
 
-  UIStaticText* notice = new UIStaticText(*this->m_context, *this->m_controls);
+  UIStaticText* notice = new UIStaticText(*this->m_context);
   notice->SetSize(320, 15);
   notice->SetText(LookupMessage(0x772), 0);
   notice->Move(200, 50);

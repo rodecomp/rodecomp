@@ -17,7 +17,6 @@ class UIScrollBar;
 class UIStaticText;
 class UITextButton;
 struct SeekPartyListWndInfo;
-struct UIButtonContext;
 struct UIComboBoxHeaderContext;
 struct UIEditContext;
 
@@ -92,7 +91,7 @@ protected:
   /* 01CA */ unsigned char unknown_01CA[6];
   /* 01D0 */ SeekPartyListWndInfo* m_saved;
   UIStaticText* m_footerText;
-  UIButtonContext* m_controls;
+  void* unknown_controls;
   UIEditContext* m_editContext;
   UIComboBoxHeaderContext* m_comboContext;
 };

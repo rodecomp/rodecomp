@@ -1,3 +1,4 @@
+#include "Render/Text/FontCache.h"
 #include "UI/Item/UIMerchantItemLogWnd.h"
 
 #include "Client/Mode/ModeTooltip.h"
@@ -36,7 +37,7 @@ UIMerchantItemLogWnd::UIMerchantItemLogWnd(UIWindowContext& windows, int mode) :
 // OFFSET: 0x0099E510
 // FUNCTION: fn_13575
 void UIMerchantItemLogWnd::Slot15(int width, int height) {
-  UIStaticText* title = new UIStaticText(*this->m_context, *this->m_controls);
+  UIStaticText* title = new UIStaticText(*this->m_context);
   title->SetSize(160, 15);
   title->SetText(LookupMessage(2559 + (this->unknown_00FC != 0)), 0);
   title->Move(16, 2);
@@ -57,7 +58,7 @@ void UIMerchantItemLogWnd::Slot15(int width, int height) {
   scrollBar->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - 38);
   this->AddChild(scrollBar);
 
-  UIBitmapButton* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+  UIBitmapButton* button = new UIBitmapButton(*this->m_context);
   this->buttons[0] = button;
   button->SetBitmap("유저인터페이스\\btn_close.bmp", 0, 0);
   button->SetBitmap("유저인터페이스\\btn_close_a.bmp", 1, 0);
@@ -74,7 +75,6 @@ void UIMerchantItemLogWnd::Slot15(int width, int height) {
 // OFFSET: 0x0099E7A0
 // FUNCTION: fn_13576
 void UIMerchantItemLogWnd::Paint() {
-  UIButtonContext& controls = *this->m_controls;
   this->DrawTitleBar(false, "", 0);
 
   if (this->geometry.height == 17) {
@@ -82,7 +82,7 @@ void UIMerchantItemLogWnd::Paint() {
   }
 
   unsigned red, green, blue;
-  SkinPaletteChannels(controls.resources, 2, 2, red, green, blue);
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
   this->FillRegion(0, 17, this->geometry.width, this->geometry.height - 38, RGB(red, green, blue));
 
   int rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
@@ -121,7 +121,7 @@ void UIMerchantItemLogWnd::Paint() {
 
     const int top = visible / this->columns * 32;
     const int x = visible % this->columns * 32 + 44;
-    DrawItemWithQuantity(*this, controls.resources, descriptions, controls.fonts, controls.locale, x, top + 21, *it, 0, 0);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, this->m_context->locale, x, top + 21, *it, 0, 0);
 
     if (it->unknown_0088 > 0) {
       this->DrawBitmap(

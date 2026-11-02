@@ -11,7 +11,6 @@
 #include <vector>
 
 class UIButton;
-struct UIButtonContext;
 struct UIEditContext;
 
 struct MaterialSlotPos {
@@ -53,7 +52,7 @@ public:
 class UIChangeMaterialWnd_CheckBox : public UICheckBox {
 public:
   // INLINED
-  UIChangeMaterialWnd_CheckBox(UIWindowContext& windows, UIButtonContext& controls) : UICheckBox(windows, controls) {}
+  UIChangeMaterialWnd_CheckBox(UIWindowContext& windows) : UICheckBox(windows) {}
   void Paint() override;
 
   /* 010C */ std::string ascendingText;
@@ -62,7 +61,7 @@ public:
 
 class UIChangeMaterialWnd : public UIFrameWnd {
 public:
-  UIChangeMaterialWnd(UIWindowContext& windows, UIButtonContext& controls, UIEditContext& edits);
+  UIChangeMaterialWnd(UIWindowContext& windows, UIEditContext& edits);
   void Slot15(int width, int height) override;
   bool Slot02() override;
   void Paint() override;
@@ -85,7 +84,7 @@ public:
   /* 0208 */ std::string m_resultText;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
   UIEditContext* m_editContext;
 };
 

@@ -7,7 +7,7 @@ class UICashEmotionSprBtn : public UISpriteButton2 {
   friend class UICashEmotionPiece;
 
 public:
-  UICashEmotionSprBtn(UIWindowContext& windowContext, UIButtonContext& buttonContext, UIWindow* target);
+  UICashEmotionSprBtn(UIWindowContext& windowContext, UIWindow* target);
   void Paint() override;
   void Slot28(int x, int y) override;
 

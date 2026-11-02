@@ -7,7 +7,7 @@
 
 // OFFSET: 0x0084EA20
 // FUNCTION: fn_10649
-UIBasicButton::UIBasicButton(UIWindowContext& windows, UIButtonContext& controls) : UIButton(windows, controls), invalidateParent(0) {
+UIBasicButton::UIBasicButton(UIWindowContext& windows) : UIButton(windows), invalidateParent(0) {
   this->geometry.height = 20;
 }
 
@@ -49,7 +49,7 @@ void UIBasicButton::Paint() {
     static constexpr const char* skins[] = {"out", "over", "press", "disable"};
     const std::string prefix = std::string("유저인터페이스\\basic_interface\\btn_") + skins[state];
     const auto drawBitmap = [&](const char* suffix, int x) {
-      auto* bitmap = static_cast<CBitmapRes*>(this->m_buttonContext->resources.Load((prefix + suffix).c_str()));
+      auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load((prefix + suffix).c_str()));
       this->DrawBitmap(x, 0, bitmap ? &bitmap->image : nullptr, false);
     };
     drawBitmap("_left.bmp", 0);

@@ -6,7 +6,6 @@
 
 class UIBarGraph4;
 class UIStaticText;
-struct UIButtonContext;
 
 class UIReplayControlWnd : public UIFrameWnd {
 public:
@@ -27,7 +26,7 @@ public:
   /* 00D4 */ UIStaticText* m_texts[4];
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 #endif

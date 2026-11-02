@@ -20,7 +20,7 @@ struct TalkboxTrapRequest {
 
 class UITalkboxTrapInputWnd : public UIFrameWnd {
 public:
-  UITalkboxTrapInputWnd(UIWindowContext& windows, UIButtonContext& controls, UIEditContext& editContext);
+  UITalkboxTrapInputWnd(UIWindowContext& windows, UIEditContext& editContext);
 
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -30,7 +30,7 @@ public:
   /* 00C4 */ UIEditCtrl* edit;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
   UIEditContext* m_editContext;
 };
 

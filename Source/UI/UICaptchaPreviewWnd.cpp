@@ -68,7 +68,7 @@ void UICaptchaPreviewWnd::Slot15(int, int) {
   this->m_image->SetSize(220, 90);
   this->m_image->Move(0, 0);
   this->AddChild(this->m_image);
-  this->AddCloseButton(*this->m_controls, "", 0);
+  this->AddCloseButton("", 0);
 }
 
 // OFFSET: 0x007ED710

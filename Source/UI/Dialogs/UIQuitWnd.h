@@ -3,7 +3,6 @@
 
 #include "UI/Window/UIFrameWnd.h"
 
-struct UIButtonContext;
 
 class UIQuitWnd : public UIFrameWnd {
 public:
@@ -13,7 +12,7 @@ public:
   void Slot15(int width, int height) override;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 #endif

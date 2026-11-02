@@ -30,12 +30,12 @@ int UIClanInfoManageWnd::Slot53() {
 void UIClanInfoManageWnd::Slot15(int width, int height) {
   if (!this->m_title) {
     const char* title = LookupMessage(2355);
-    this->m_title = new UIStaticText(*this->m_context, *this->m_controls);
+    this->m_title = new UIStaticText(*this->m_context);
     this->m_title->SetSize(62, 15);
     this->m_title->SetTextFitted(title);
     this->m_title->Move(3, 22);
     this->AddChild(this->m_title);
-    this->AddCloseButton(*this->m_controls, "Ctrl+G", 0);
+    this->AddCloseButton("Ctrl+G", 0);
   }
 
   this->unknown_00BC = -1;
@@ -51,7 +51,6 @@ void UIClanInfoManageWnd::Slot15(int width, int height) {
 // FUNCTION: fn_10630
 void UIClanInfoManageWnd::Paint() {
   UIClanWnd::Paint();
-  auto& controls = *this->m_controls;
   char text[1024];
   std::memset(text, 0, sizeof(text));
   std::sprintf(text, "%s : %s", LookupMessage(2357), g_clanInfo->m_clanName.c_str());
@@ -152,7 +151,6 @@ void UIClanWnd::Paint() {
   this->FillRegion(0, 17, this->geometry.width, 24, RGB(red, green, blue));
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
   this->FillRegion(1, 18, 64, 23, RGB(red, green, blue));
-  auto& controls = *this->m_controls;
   this->DrawTitleBar(false, "", 0);
   SkinPaletteChannels(ResourceMgr::Instance(), 14, 6, red, green, blue);
   this->FillRegion(0, 41, this->geometry.width, this->geometry.height - 41, RGB(red, green, blue));

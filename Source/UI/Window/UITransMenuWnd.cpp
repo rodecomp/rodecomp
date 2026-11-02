@@ -19,7 +19,6 @@ void UITransMenuWnd::Paint() {
       this->FillRegion(0, (i - 1) * half + cellHeight * i + this->m_margin, this->geometry.width, cellHeight + half, 0xC8C8C8);
     }
 
-    auto& controls = *this->m_controls;
     const int margin = this->m_margin;
     this->DrawTextAt(margin, (margin / 2 + cellHeight) * i + margin, this->m_items[i].text, 0, 0, this->m_lineHeight, color, 0, 0);
   }
@@ -105,7 +104,7 @@ int UITransMenuWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
 
 // OFFSET: 0x009471E0
 // FUNCTION: fn_12859
-UITransMenuWnd::UITransMenuWnd(UIWindowContext& windows, UIButtonContext& controls) : UIFrameWnd(windows, 0), m_controls(&controls) {
+UITransMenuWnd::UITransMenuWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0) {
   this->m_margin = 5;
   this->m_lineHeight = 12;
   this->m_selected = -1;

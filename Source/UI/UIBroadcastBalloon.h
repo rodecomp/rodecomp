@@ -10,7 +10,6 @@
 #include <map>
 #include <string>
 
-struct UIButtonContext;
 
 struct BroadcastBalloonLine {
   /* 0000 */ std::string text;
@@ -30,7 +29,7 @@ struct BroadcastBalloonMessage {
 
 class UIBroadcastBalloon : public UIWindow {
 public:
-  UIBroadcastBalloon(UIWindowContext& windows, UIButtonContext& controls);
+  UIBroadcastBalloon(UIWindowContext& windows);
   void Paint() override;
   bool CanHitTest() override;
   void Slot19() override;
@@ -45,7 +44,7 @@ public:
 
 protected:
   /* 007C */ std::map<int, std::list<BroadcastBalloonMessage>> m_messages;
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

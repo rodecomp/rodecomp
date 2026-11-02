@@ -7,7 +7,6 @@
 #include <vector>
 
 class UITextButton;
-struct UIButtonContext;
 
 class UIPetEvolutionWnd : public UIFrameWnd {
 public:
@@ -24,7 +23,7 @@ public:
   /* 00C8 */ std::vector<std::pair<int, int>> m_materials;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 #endif

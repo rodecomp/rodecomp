@@ -6,7 +6,6 @@
 #include <cstdint>
 #include <functional>
 
-struct UIButtonContext;
 
 class UIBarGraph : public UIWindow {
 public:
@@ -58,7 +57,7 @@ public:
   /* 0084 */ bool m_plainColor;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 class UIINT64BarGraph : public UIWindow {
@@ -76,7 +75,7 @@ public:
 protected:
   /* 0080 */ std::int64_t m_current;
   /* 0088 */ std::int64_t m_maximum;
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 class UIPetInfoBarGraph : public UIWindow {

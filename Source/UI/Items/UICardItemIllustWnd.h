@@ -5,11 +5,10 @@
 
 #include <string>
 
-struct UIButtonContext;
 
 class UICardItemIllustWnd : public UIFrameWnd {
 public:
-  UICardItemIllustWnd(UIWindowContext& windows, UIButtonContext& controls);
+  UICardItemIllustWnd(UIWindowContext& windows);
   void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
@@ -19,7 +18,7 @@ public:
   /* 00E4 */ unsigned char unknown_00E4;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 #endif

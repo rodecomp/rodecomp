@@ -127,7 +127,7 @@ void UINavigationWnd::Slot15(int width, int height) {
   const int ids[6] = {321, 184, 189, 190, 284, 191};
 
   for (int index = 0; index < 6; ++index) {
-    UIBitmapButton* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    UIBitmapButton* button = new UIBitmapButton(*this->m_context);
     this->m_buttons[index] = button;
     button->SetBitmap((path + names[index] + "_A.bmp").c_str(), 0, 0);
     button->SetBitmap((path + names[index] + "_B.bmp").c_str(), 1, 0);
@@ -139,10 +139,10 @@ void UINavigationWnd::Slot15(int width, int height) {
     this->AddChild(this->m_buttons[index]);
   }
 
-  this->m_closeButton = this->AddCloseButton(*this->m_controls, LookupMessage(0x89A), 0);
-  this->m_minimizeButton = this->AddMinimizeButton(*this->m_controls, "", 0);
+  this->m_closeButton = this->AddCloseButton(LookupMessage(0x89A), 0);
+  this->m_minimizeButton = this->AddMinimizeButton("", 0);
 
-  this->unknown_0120 = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->unknown_0120 = new UIBitmapButton(*this->m_context);
   this->unknown_0120->SetBitmap((path + "NaviHelp_off.bmp").c_str(), 0, 0);
   this->unknown_0120->SetBitmap((path + "NaviHelp_on.bmp").c_str(), 1, 0);
   this->unknown_0120->SetBitmap((path + "NaviHelp_on.bmp").c_str(), 2, 0);
@@ -186,7 +186,7 @@ void UINavigationWnd::Slot15(int width, int height) {
     this->m_titleBar->Invalidate();
   }
 
-  UICheckBox* box = new UICheckBox(*this->m_context, *this->m_controls);
+  UICheckBox* box = new UICheckBox(*this->m_context);
   this->unknown_0118 = box;
   box->SetSize(this->TextWidth(LookupMessage(0x8A3), 10, 0, 12, 0, 0), 12);
   path = base;
@@ -196,7 +196,7 @@ void UINavigationWnd::Slot15(int width, int height) {
   this->unknown_0118->SetTooltip(LookupMessage(0x8A4));
   this->AddChild(this->unknown_0118);
 
-  box = new UICheckBox(*this->m_context, *this->m_controls);
+  box = new UICheckBox(*this->m_context);
   this->unknown_0114 = box;
   box->SetSize(this->TextWidth(LookupMessage(0x8A5), 10, 0, 12, 0, 0), 12);
   path = base;
@@ -206,7 +206,7 @@ void UINavigationWnd::Slot15(int width, int height) {
   this->unknown_0114->SetTooltip(LookupMessage(0x8A6));
   this->AddChild(this->unknown_0114);
 
-  box = new UICheckBox(*this->m_context, *this->m_controls);
+  box = new UICheckBox(*this->m_context);
   this->unknown_011C = box;
   box->SetSize(this->TextWidth(LookupMessage(0x8A7), 10, 0, 12, 0, 0), 12);
   path = base;

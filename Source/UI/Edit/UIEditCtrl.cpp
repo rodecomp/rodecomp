@@ -1,3 +1,4 @@
+#include "Render/Text/FontCache.h"
 #include "Client/Input/InputCharset.h"
 #include "Client/Input/Language.h"
 #include "Client/Replay.h"
@@ -497,7 +498,7 @@ void UIEditCtrl::Slot28(int x, int y) {
       top += window->geometry.y;
     }
 
-    this->m_edit->buttons.services.Tooltip(this->tooltip.c_str(), left, top, -1, false, true);
+    static_cast<ModeTooltip*>(g_charViewMode)->Show(this->tooltip.c_str(), left, top, -1, false, true);
   }
 }
 
@@ -575,8 +576,8 @@ void UIEditCtrl::PaintTextWithPolicy(bool alternate, const std::string* placehol
     this->m_edit->input,
     state,
     *this->geometry.surface,
-    this->m_edit->buttons.fonts,
-    this->m_edit->buttons.locale
+    g_fontCache,
+    this->m_context->locale
   };
   UIWindow* parent = this->parent;
   int left = 0, top = 0;
@@ -612,8 +613,8 @@ void UIEditCtrl::PaintTextWithPolicy(bool alternate, const std::string* placehol
     this->m_edit->charset,
     viewport,
     *this->geometry.surface,
-    this->m_edit->buttons.fonts,
-    this->m_edit->buttons.locale,
+    g_fontCache,
+    this->m_context->locale,
     this->m_edit->colorChip,
     parent,
     this->m_edit->candidateWindow,
@@ -645,8 +646,8 @@ void UIEditCtrl::Synchronize() {
     this->m_edit->input,
     state,
     *this->geometry.surface,
-    this->m_edit->buttons.fonts,
-    this->m_edit->buttons.locale
+    g_fontCache,
+    this->m_context->locale
   };
   viewport.Synchronize();
 }
@@ -781,7 +782,7 @@ void UIEditCtrl::DrawSelectionAt(int x, int y, int width) {
 
   if (left < right && extent > 0) {
     unsigned red, green, blue;
-    SkinPaletteChannels(this->m_edit->buttons.resources, 6, 2, red, green, blue);
+    SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
     this->FillRegion(left, y, left + extent > right ? right - left : extent, 14, RGB(red, green, blue));
   }
 }
@@ -795,7 +796,7 @@ void UIEditCtrl::DrawSelection(int x, int width) {
 
   if (left < right && extent > 0) {
     unsigned red, green, blue;
-    SkinPaletteChannels(this->m_edit->buttons.resources, 6, 2, red, green, blue);
+    SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
     this->FillRegion(left, 0, left + extent > right ? right - left : extent, this->geometry.height, RGB(red, green, blue));
   }
 }
@@ -1068,7 +1069,7 @@ int UISpriteButton::FrameWidth(int action, int frame) {
 // OFFSET: 0x0097D220
 // FUNCTION: fn_13325
 void UINoticeMessageBox_LockSellItem::Slot15(int, int) {
-  auto* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+  auto* button = new UIBitmapButton(*this->m_context);
   button->SetBitmap("유저인터페이스\\inventory\\bt_close.bmp", 0, 0);
   button->SetBitmap("유저인터페이스\\inventory\\bt_close.bmp", 1, 0);
   button->SetBitmap("유저인터페이스\\inventory\\bt_close.bmp", 2, 0);
@@ -1113,8 +1114,8 @@ void UIEditCtrl_Custom::Synchronize() {
     this->firstVisible = 0;
   }
 
-  FontCache& fonts = this->m_edit->buttons.fonts;
-  const TextLocale& locale = this->m_edit->buttons.locale;
+  FontCache& fonts = g_fontCache;
+  const TextLocale& locale = this->m_context->locale;
   const int available = this->geometry.width - 12;
 
   if (this->cursor > previousCursor || clamped) {
@@ -1588,7 +1589,6 @@ void UIItemDropCntWnd::Paint() {
 // OFFSET: 0x0097E3F0
 // FUNCTION: fn_13328
 void UIItemBaseWnd::Paint() {
-  UIButtonContext& controls = *this->m_controls;
   this->DrawTitleBar(false, "", 0);
 
   if (this->geometry.height == 17) {
@@ -1608,7 +1608,7 @@ void UIItemBaseWnd::Paint() {
   }
 
   unsigned red, green, blue;
-  SkinPaletteChannels(controls.resources, 2, 2, red, green, blue);
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
   this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - 38, RGB(red, green, blue));
   this->FillRegion(20, (this->geometry.height - 38) / 32 * 32 + 17, this->geometry.width - 24, (this->geometry.height - 38) % 32, RGB(red, green, blue));
   this->DrawButtonBar(this->unknown_00B8 != 0 ? 2 : 0, 0, 1);
@@ -1638,9 +1638,9 @@ void UIItemBaseWnd::Paint() {
     const int x = visible % this->columns * 32 + 44;
 
     if (this->showQuantity != 0) {
-      DrawItemWithQuantity(*this, controls.resources, descriptions, controls.fonts, controls.locale, x, top + 21, *it, 0, 0);
+      DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, this->m_context->locale, x, top + 21, *it, 0, 0);
     } else {
-      DrawItemIcon(*this, controls.resources, descriptions, x, top + 21, *it, 0);
+      DrawItemIcon(*this, ResourceMgr::Instance(), descriptions, x, top + 21, *it, 0);
     }
 
     if (it->unknown_0088 > 0) {
@@ -1672,7 +1672,6 @@ void UIMerchantItemMyShopWnd::Paint() {
     const int remaining = this->duration - (timeGetTime() - this->startTick);
 
     if (remaining > 0) {
-      UIButtonContext& controls = *this->m_controls;
       const int days = remaining / 86400000;
       const int hours = remaining / 3600000 % 24;
       const int minutes = remaining / 60000 % 60;
@@ -1704,14 +1703,14 @@ void UIMerchantItemMyShopWnd::Paint() {
 // OFFSET: 0x0097A670
 // FUNCTION: fn_13319
 void UIMerchantItemPurchaseMSGWnd::Slot15(int, int) {
-  this->title = new UIStaticText(*this->m_context, *this->m_controls);
+  this->title = new UIStaticText(*this->m_context);
   this->title->SetSize(100, 15);
   this->title->SetTextFitted(LookupMessage(2326));
   this->title->Move(16, 2);
   this->title->shadow = 1;
   this->AddChild(this->title);
 
-  this->buyButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->buyButton = new UIBitmapButton(*this->m_context);
   this->buyButton->SetBitmap("유저인터페이스\\btn_buy.bmp", 0, 0);
   this->buyButton->SetBitmap("유저인터페이스\\btn_buy_a.bmp", 1, 0);
   this->buyButton->SetBitmap("유저인터페이스\\btn_buy_b.bmp", 2, 0);
@@ -1720,7 +1719,7 @@ void UIMerchantItemPurchaseMSGWnd::Slot15(int, int) {
   this->buyButton->SetId(184);
   this->AddChild(this->buyButton);
 
-  this->cancelButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->cancelButton = new UIBitmapButton(*this->m_context);
   this->cancelButton->SetBitmap("유저인터페이스\\btn_cancel.bmp", 0, 0);
   this->cancelButton->SetBitmap("유저인터페이스\\btn_cancel_a.bmp", 1, 0);
   this->cancelButton->SetBitmap("유저인터페이스\\btn_cancel_b.bmp", 2, 0);
@@ -1729,18 +1728,18 @@ void UIMerchantItemPurchaseMSGWnd::Slot15(int, int) {
   this->cancelButton->SetId(185);
   this->AddChild(this->cancelButton);
 
-  this->firstLine = new UIStaticText(*this->m_context, *this->m_controls);
+  this->firstLine = new UIStaticText(*this->m_context);
   this->firstLine->SetSize(200, 15);
   this->firstLine->SetText(LookupMessage(2327), 0);
   this->firstLine->Move(10, 20);
   this->AddChild(this->firstLine);
 
-  this->secondLine = new UIStaticText(*this->m_context, *this->m_controls);
+  this->secondLine = new UIStaticText(*this->m_context);
   this->secondLine->SetSize(200, 15);
   this->secondLine->Move(10, 40);
   this->AddChild(this->secondLine);
 
-  this->thirdLine = new UIStaticText(*this->m_context, *this->m_controls);
+  this->thirdLine = new UIStaticText(*this->m_context);
   this->thirdLine->SetSize(200, 15);
   this->thirdLine->SetText(LookupMessage(2329), 0);
   this->thirdLine->Move(10, 60);
@@ -1760,7 +1759,6 @@ void UIMerchantItemPurchaseMSGWnd::Paint() {
 void UIMerchantItemWnd::Paint() {
   UIItemBaseWnd::Paint();
 
-  UIButtonContext& controls = *this->m_controls;
   const auto* count = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\inventory\\icon_num.bmp")));
   this->DrawBitmap(10, this->geometry.height - 22, &count->image, true);
 
@@ -2561,7 +2559,7 @@ void UIMerchantShopMakeWnd::SendShopRequest() {
 // OFFSET: 0x00974820
 // FUNCTION: fn_13306
 void UIMerchantShopMakeWnd::AddActionButton() {
-  this->unknown_0168 = new UIBasicButton(*this->m_context, *this->m_controls);
+  this->unknown_0168 = new UIBasicButton(*this->m_context);
   this->unknown_0168->Configure(60, LookupMessage(3637));
   this->unknown_0168->Move(this->geometry.width - 156, this->geometry.height - 24);
   this->unknown_0168->SetTooltip(LookupMessage(3638));
@@ -2808,7 +2806,7 @@ void UIMerchantShopMakeWnd::SetItems(int count, const short* ids) {
 void UIMerchantItemMyShopWnd::OpenShop() {
   this->shopOpen = 1;
   if (!this->actionButton) {
-    this->actionButton = new UIBasicButton(*this->m_context, *this->m_controls);
+    this->actionButton = new UIBasicButton(*this->m_context);
     this->actionButton->Configure(42, LookupMessage(2925));
     this->actionButton->Move(this->geometry.width - this->actionButton->geometry.width - 66, this->geometry.height - 24);
     this->actionButton->SetId(506);
@@ -3318,7 +3316,7 @@ void UIMerchantItemWnd::Slot10(int x, int y, std::intptr_t value) {
 // FUNCTION: fn_13321
 void UIMerchantItemShopWnd::Slot15(int width, int height) {
   if (this->unknown_010C) {
-    this->notice = new UIStaticText(*this->m_context, *this->m_controls);
+    this->notice = new UIStaticText(*this->m_context);
     this->notice->SetSize(160, 15);
     char text[80];
     std::sprintf(text, LookupMessage(1735), 0);
@@ -3524,7 +3522,7 @@ std::string UIEditCtrl3::PlaceLineLinks(const char* line, std::string& text, con
         break;
       }
 
-      UIItemTagButton* button = new (std::nothrow) UIItemTagButton(*this->m_context, this->m_edit->buttons);
+      UIItemTagButton* button = new (std::nothrow) UIItemTagButton(*this->m_context);
       reinterpret_cast<ITEM_INFO&>(button->unknown_00F8) = item;
       button->Configure(name.c_str(), 0x82F2E1, 0, 12, 0, 0);
       button->SetTooltip(item.DisplayName(0).c_str());
@@ -3681,13 +3679,13 @@ void UIEditCtrl3::WrapLines(std::vector<std::string>& lines) {
 // OFFSET: 0x00975CD0
 // FUNCTION: fn_13310
 void UIItemSellWnd2::Slot15(int width, int height) {
-  this->total = new UIStaticText(*this->m_context, *this->m_controls);
+  this->total = new UIStaticText(*this->m_context);
   this->total->SetSize(160, 15);
   this->total->SetTextAutoWidth("");
   this->total->Move(12, this->geometry.height - 21);
   this->AddChild(this->total);
 
-  UIStaticText* title = new UIStaticText(*this->m_context, *this->m_controls);
+  UIStaticText* title = new UIStaticText(*this->m_context);
   title->SetSize(90, 15);
   title->SetText(LookupMessage(1569), 0);
   title->Move(16, 2);
@@ -3712,7 +3710,7 @@ void UIItemSellWnd2::Slot15(int width, int height) {
   int positions[2][2] = {{this->geometry.width - 106, this->geometry.height - 24}, {this->geometry.width - 61, this->geometry.height - 24}};
   int ids[2] = {184, 185};
   for (int index = 0; index < 2; ++index) {
-    this->buttons[index] = new UIBitmapButton(*this->m_context, *this->m_controls);
+    this->buttons[index] = new UIBitmapButton(*this->m_context);
     UIBitmapButton* button = static_cast<UIBitmapButton*>(this->buttons[index]);
     button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
     button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
@@ -3731,7 +3729,7 @@ void UIItemSellWnd2::Slot15(int width, int height) {
 // OFFSET: 0x009768A0
 // FUNCTION: fn_13311
 void UIItemSellWnd::Slot15(int width, int height) {
-  this->total = new UIStaticText(*this->m_context, *this->m_controls);
+  this->total = new UIStaticText(*this->m_context);
   this->total->SetSize(160, 15);
   char text[80];
   std::sprintf(text, "Total : %d Zeny", 0);
@@ -3739,7 +3737,7 @@ void UIItemSellWnd::Slot15(int width, int height) {
   this->total->Move(12, this->geometry.height - 21);
   this->AddChild(this->total);
 
-  UIStaticText* title = new UIStaticText(*this->m_context, *this->m_controls);
+  UIStaticText* title = new UIStaticText(*this->m_context);
   title->SetSize(90, 15);
   title->SetText(LookupMessage(168), 0);
   title->Move(16, 2);
@@ -3764,7 +3762,7 @@ void UIItemSellWnd::Slot15(int width, int height) {
   int positions[2][2] = {{this->geometry.width - 106, this->geometry.height - 24}, {this->geometry.width - 61, this->geometry.height - 24}};
   int ids[2] = {184, 185};
   for (int index = 0; index < 2; ++index) {
-    this->buttons[index] = new UIBitmapButton(*this->m_context, *this->m_controls);
+    this->buttons[index] = new UIBitmapButton(*this->m_context);
     UIBitmapButton* button = static_cast<UIBitmapButton*>(this->buttons[index]);
     button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
     button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
@@ -3783,7 +3781,7 @@ void UIItemSellWnd::Slot15(int width, int height) {
 // OFFSET: 0x00977510
 // FUNCTION: fn_13312
 void UIItemShopWnd2::Slot15(int width, int height) {
-  this->title = new UIStaticText(*this->m_context, *this->m_controls);
+  this->title = new UIStaticText(*this->m_context);
   this->title->SetSize(70, 15);
   this->title->SetText(LookupMessage(167), 0);
   this->title->Move(16, 2);
@@ -3798,7 +3796,7 @@ void UIItemShopWnd2::Slot15(int width, int height) {
   static_cast<UIResizer*>(this->resizer)->SetColors(0xFFFF00FF, 0xFFFF00FF);
   this->AddChild(this->resizer);
 
-  this->checkBox = new UICheckBox(*this->m_context, *this->m_controls);
+  this->checkBox = new UICheckBox(*this->m_context);
   this->checkBox->SetSize(200, 12);
   this->checkBox->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(295));
   this->checkBox->Move(12, this->geometry.height - 20);
@@ -3818,7 +3816,7 @@ void UIItemShopWnd2::Slot15(int width, int height) {
 // OFFSET: 0x009777B0
 // FUNCTION: fn_13313
 void UIItemShopWnd::Slot15(int width, int height) {
-  this->title = new UIStaticText(*this->m_context, *this->m_controls);
+  this->title = new UIStaticText(*this->m_context);
   this->title->SetSize(70, 15);
   this->title->SetText(LookupMessage(167), 0);
   this->title->Move(16, 2);
@@ -3833,7 +3831,7 @@ void UIItemShopWnd::Slot15(int width, int height) {
   static_cast<UIResizer*>(this->resizer)->SetColors(0xFFFF00FF, 0xFFFF00FF);
   this->AddChild(this->resizer);
 
-  this->checkBox = new UICheckBox(*this->m_context, *this->m_controls);
+  this->checkBox = new UICheckBox(*this->m_context);
   this->checkBox->SetSize(200, 12);
   this->checkBox->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(295));
   this->checkBox->Move(12, this->geometry.height - 20);
@@ -3859,7 +3857,7 @@ void UIItemStoreFindWnd::Slot15(int width, int height) {
 
   char text[64];
   std::sprintf(text, "서브창고");
-  this->title = new UIStaticText(*this->m_context, *this->m_controls);
+  this->title = new UIStaticText(*this->m_context);
   this->title->SetSize(this->geometry.width - 32, 15);
   this->title->SetTextFitted(text);
   this->title->Move(16, 2);
@@ -3874,7 +3872,7 @@ void UIItemStoreFindWnd::Slot15(int width, int height) {
   this->resizeHandle->SetColors(0xFFFF00FF, 0xFFFF00FF);
   this->AddChild(this->resizeHandle);
 
-  this->closeButton = this->AddCloseButton(*this->m_controls, "", 0);
+  this->closeButton = this->AddCloseButton("", 0);
   this->closeButton->Move(width - 16, 3);
 }
 
@@ -3887,7 +3885,7 @@ void UIItemStoreSubWnd::Slot15(int width, int height) {
 
   char text[64];
   std::sprintf(text, "서브창고");
-  this->title = new UIStaticText(*this->m_context, *this->m_controls);
+  this->title = new UIStaticText(*this->m_context);
   this->title->SetSize(this->geometry.width - 32, 15);
   this->title->SetTextFitted(text);
   this->title->Move(16, 2);
@@ -3906,14 +3904,14 @@ void UIItemStoreSubWnd::Slot15(int width, int height) {
 // OFFSET: 0x0097BD30
 // FUNCTION: fn_13322
 void UIMerchantItemWnd::Slot15(int width, int height) {
-  UIStaticText* title = new UIStaticText(*this->m_context, *this->m_controls);
+  UIStaticText* title = new UIStaticText(*this->m_context);
   title->SetSize(90, 15);
   title->SetText(LookupMessage(222), 0);
   title->Move(16, 2);
   title->shadow = 1;
   this->AddChild(title);
 
-  this->info = new UIStaticText(*this->m_context, *this->m_controls);
+  this->info = new UIStaticText(*this->m_context);
   this->info->SetSize(220, 15);
   char text[128];
   std::sprintf(text, "Num: %d/%d Weight: %d/%d", g_session.cartCount, g_session.cartMaxCount, g_session.cartWeight, g_session.cartMaxWeight);
@@ -3934,7 +3932,7 @@ void UIMerchantItemWnd::Slot15(int width, int height) {
   scrollBar->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - 38);
   this->AddChild(this->scrollBar);
 
-  this->closeButton = this->AddCloseButton(*this->m_controls, "Alt+W", 0);
+  this->closeButton = this->AddCloseButton("Alt+W", 0);
   this->columns = (width - 40) / 32;
   this->visibleRows = (height - 38) / 32;
   this->SendMsg(nullptr, 23, 0, 0, 0, 0);
@@ -3944,7 +3942,7 @@ void UIMerchantItemWnd::Slot15(int width, int height) {
 // OFFSET: 0x0097BFF0
 // FUNCTION: fn_13323
 void UIMerchantMirrorItemWnd::Slot15(int width, int height) {
-  UIStaticText* title = new UIStaticText(*this->m_context, *this->m_controls);
+  UIStaticText* title = new UIStaticText(*this->m_context);
   title->SetSize(150, 15);
   int messageId;
   if (this->unknown_00F4 == 1) {
@@ -5572,7 +5570,7 @@ int UIMerchantItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
 // OFFSET: 0x0097AA00
 // FUNCTION: fn_13320
 void UIMerchantItemPurchaseWnd::Slot15(int width, int height) {
-  this->total = new UIStaticText(*this->m_context, *this->m_controls);
+  this->total = new UIStaticText(*this->m_context);
   this->total->SetSize(160, 15);
   char text[80];
   std::sprintf(text, "Total : %d Zeny", 0);
@@ -5580,7 +5578,7 @@ void UIMerchantItemPurchaseWnd::Slot15(int width, int height) {
   this->total->Move(12, this->geometry.height - 21);
   this->AddChild(this->total);
 
-  UIStaticText* title = new UIStaticText(*this->m_context, *this->m_controls);
+  UIStaticText* title = new UIStaticText(*this->m_context);
   title->SetSize(160, 15);
   title->SetText(LookupMessage(this->unknown_0108 ? 168 : 228), 0);
   title->Move(16, 2);
@@ -5593,7 +5591,7 @@ void UIMerchantItemPurchaseWnd::Slot15(int width, int height) {
   if (this->unknown_0108) {
     const char* names[2][3] = {{"btn_sell", "btn_sell_a", "btn_sell_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
     for (int index = 0; index < 2; ++index) {
-      this->buttons[index] = new UIBitmapButton(*this->m_context, *this->m_controls);
+      this->buttons[index] = new UIBitmapButton(*this->m_context);
       UIBitmapButton* button = static_cast<UIBitmapButton*>(this->buttons[index]);
       button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
       button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
@@ -5606,7 +5604,7 @@ void UIMerchantItemPurchaseWnd::Slot15(int width, int height) {
   } else {
     const char* names[2][3] = {{"btn_buy", "btn_buy_a", "btn_buy_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
     for (int index = 0; index < 2; ++index) {
-      this->buttons[index] = new UIBitmapButton(*this->m_context, *this->m_controls);
+      this->buttons[index] = new UIBitmapButton(*this->m_context);
       UIBitmapButton* button = static_cast<UIBitmapButton*>(this->buttons[index]);
       button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
       button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
@@ -5628,7 +5626,7 @@ void UIMerchantItemPurchaseWnd::Slot15(int width, int height) {
 // FUNCTION: fn_13318
 void UIMerchantItemMyShopWnd::Slot15(int width, int height) {
   if (this->unknown_0100) {
-    this->notice = new UIStaticText(*this->m_context, *this->m_controls);
+    this->notice = new UIStaticText(*this->m_context);
     this->notice->SetSize(160, 15);
     char text[80];
     std::sprintf(text, LookupMessage(1735), 0);
@@ -5637,7 +5635,7 @@ void UIMerchantItemMyShopWnd::Slot15(int width, int height) {
     this->AddChild(this->notice);
   }
 
-  this->title = new UIStaticText(*this->m_context, *this->m_controls);
+  this->title = new UIStaticText(*this->m_context);
   this->title->SetSize(240, 15);
   this->title->SetText(LookupMessage(this->unknown_0100 ? 1734 : 3237), 0);
   this->title->Move(16, 2);
@@ -5657,7 +5655,7 @@ void UIMerchantItemMyShopWnd::Slot15(int width, int height) {
   scrollBar->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - this->unknown_011C - 17);
   this->AddChild(this->scrollBar);
 
-  this->saleAlarm = new UICheckBox(*this->m_context, *this->m_controls);
+  this->saleAlarm = new UICheckBox(*this->m_context);
   this->saleAlarm->SetSize(240, 12);
   this->saleAlarm->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(this->unknown_0100 ? 2698 : 2642));
   this->saleAlarm->FitToText();
@@ -5670,7 +5668,7 @@ void UIMerchantItemMyShopWnd::Slot15(int width, int height) {
   int positions[1][2] = {{this->geometry.width - 61, this->geometry.height - 24}};
   int ids[1] = {201};
   for (int index = 0; index < 1; ++index) {
-    this->buttons[index] = new UIBitmapButton(*this->m_context, *this->m_controls);
+    this->buttons[index] = new UIBitmapButton(*this->m_context);
     UIBitmapButton* button = static_cast<UIBitmapButton*>(this->buttons[index]);
     button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
     button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
@@ -6561,7 +6559,6 @@ UIItemBaseWnd::UIItemBaseWnd(UIWindowContext& windowContext)
   this->unknown_00B8 = 0;
   this->buttons[0] = nullptr;
   this->buttons[1] = nullptr;
-  this->m_controls = nullptr;
   this->scroll = 0;
 }
 
@@ -6686,14 +6683,14 @@ void UIItemWnd::Slot15(int width, int height) {
   this->AddChild(this->scrollBar);
 
   this->baseButton = this->AddBaseButton();
-  this->minimizeButton = this->AddMinimizeButton(*this->m_controls, "Ctrl+E", 0);
+  this->minimizeButton = this->AddMinimizeButton("Ctrl+E", 0);
   this->closeButton = this->AddCloseButton("Alt+E", 0);
   this->unknown_0110 = this->geometry.height;
   this->columns = (width - 40) / 32;
   this->visibleRows = (height - 38) / 32;
   this->SendMsg(nullptr, 23, 0, 0, 0, 0);
 
-  this->tabs = new (std::nothrow) UITabControl(*this->m_context, *this->m_controls);
+  this->tabs = new (std::nothrow) UITabControl(*this->m_context);
   this->tabs->Configure(0, 17, 10, 1, 0, 1, 0, 0, 0, 0, 0, 0);
   this->tabs->Move(3, 18);
   this->AddChild(this->tabs);
@@ -6705,7 +6702,7 @@ void UIItemWnd::Slot15(int width, int height) {
   this->tabs->colors[3] = SkinPaletteColor(ResourceMgr::Instance(), cell, g_skinInfo.Selected());
   this->tabs->Invalidate();
 
-  this->lockDropBox = new (std::nothrow) UICheckBox(*this->m_context, *this->m_controls);
+  this->lockDropBox = new (std::nothrow) UICheckBox(*this->m_context);
   this->lockDropBox->SetSize(14, 11);
   this->lockDropBox->SetBitmaps("유저인터페이스\\inventory\\item_drop_lock_on.bmp", "유저인터페이스\\inventory\\item_drop_lock_off.bmp");
   this->lockDropBox->Move(79, height - 16);
@@ -6713,7 +6710,7 @@ void UIItemWnd::Slot15(int width, int height) {
   this->lockDropBox->SetTooltip(LookupMessage(2843));
   this->AddChild(this->lockDropBox);
 
-  UICheckBox* compare = new (std::nothrow) UICheckBox(*this->m_context, *this->m_controls);
+  UICheckBox* compare = new (std::nothrow) UICheckBox(*this->m_context);
   this->optionBox = compare;
   compare->SetSize(12, 12);
   static_cast<UICheckBox*>(this->optionBox)->SetBitmaps("유저인터페이스\\inventory\\item_compare_on.bmp", "유저인터페이스\\inventory\\item_compare_off.bmp");
@@ -6723,7 +6720,7 @@ void UIItemWnd::Slot15(int width, int height) {
   static_cast<UICheckBox*>(this->optionBox)->SetTooltip(LookupMessage(2842));
   this->AddChild(this->optionBox);
 
-  this->countButton = new (std::nothrow) UIBitmapButton(*this->m_context, *this->m_controls);
+  this->countButton = new (std::nothrow) UIBitmapButton(*this->m_context);
   this->countButton->SetBitmap("유저인터페이스\\inventory\\icon_num.bmp", 0, 0);
   this->countButton->SetBitmap("유저인터페이스\\inventory\\icon_num.bmp", 1, 0);
   this->countButton->SetBitmap("유저인터페이스\\inventory\\icon_num.bmp", 2, 0);
@@ -6733,7 +6730,7 @@ void UIItemWnd::Slot15(int width, int height) {
   this->countButton->SetTooltip(LookupMessage(3560));
   this->AddChild(this->countButton);
 
-  UIBitmapButton* lockDeal = new UIBitmapButton(*this->m_context, *this->m_controls);
+  UIBitmapButton* lockDeal = new UIBitmapButton(*this->m_context);
   this->unknown_0124 = lockDeal;
   lockDeal->SetBitmap(g_session.m_blockPrivateTab != 1 ? "유저인터페이스\\inventory\\bt_itemDeal_lock_off.bmp" : "유저인터페이스\\inventory\\bt_itemdeal_lock_on.bmp", 0, 0);
   static_cast<UIBitmapButton*>(this->unknown_0124)->SetBitmap("유저인터페이스\\inventory\\bt_itemDeal_lock_over.bmp", 1, 0);
@@ -6744,7 +6741,7 @@ void UIItemWnd::Slot15(int width, int height) {
   this->unknown_0124->SetId(507);
   this->AddChild(this->unknown_0124);
 
-  this->unknown_012C = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->unknown_012C = new UIBitmapButton(*this->m_context);
   this->RefreshSortButton();
   this->unknown_012C->SetSize(static_cast<UIBitmapButton*>(this->unknown_012C)->BitmapWidth(), static_cast<UIBitmapButton*>(this->unknown_012C)->BitmapHeight());
   this->unknown_012C->Move(157, this->geometry.height - 19);
@@ -6793,7 +6790,6 @@ UIMerchantItemPurchaseMSGWnd::UIMerchantItemPurchaseMSGWnd(UIWindowContext& wind
   this->secondLine = nullptr;
   this->buyButton = nullptr;
   this->cancelButton = nullptr;
-  this->m_controls = nullptr;
   this->unknown_00D0 = 0;
 }
 
@@ -7132,11 +7128,10 @@ void UIChatEditCtrl::InsertItemLink(const ITEM_INFO& item) {
 // OFFSET: 0x00980340
 // FUNCTION: fn_13335
 void UIItemStoreFindWnd::Paint() {
-  UIButtonContext& controls = *this->m_controls;
   this->DrawTitleBar(true, "", 0);
 
   unsigned red, green, blue;
-  SkinPaletteChannels(controls.resources, 2, 2, red, green, blue);
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
   this->FillRegion(0, 17, this->geometry.width, this->geometry.height - 38, RGB(red, green, blue));
   this->DrawButtonBar(0, 0, 1);
 
@@ -7148,7 +7143,7 @@ void UIItemStoreFindWnd::Paint() {
   }
 
   unsigned fillRed, fillGreen, fillBlue;
-  SkinPaletteChannels(controls.resources, 2, 2, fillRed, fillGreen, fillBlue);
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, fillRed, fillGreen, fillBlue);
   this->FillRegion(72, 17, columns * 32 - 32, rows * 32, RGB(fillRed, fillGreen, fillBlue));
 
   ItemDescriptions descriptions{g_itemDescriptions};
@@ -7168,7 +7163,7 @@ void UIItemStoreFindWnd::Paint() {
     const int left = visible % this->columns * 32 + 10;
     const int width = this->geometry.width - left - 66;
     const int x = left + 4;
-    DrawItemWithQuantity(*this, controls.resources, descriptions, controls.fonts, controls.locale, x, top + 21, *it, 0, 0);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, this->m_context->locale, x, top + 21, *it, 0, 0);
     this->DrawWrappedItemName(left + 40, top + 29, width, &*it, 0, 0, 12);
 
     if (it->unknown_0088 > 0) {
@@ -7192,11 +7187,10 @@ void UIItemStoreFindWnd::Paint() {
 // OFFSET: 0x00980610
 // FUNCTION: fn_13336
 void UIItemStoreSubWnd::Paint() {
-  UIButtonContext& controls = *this->m_controls;
   this->DrawTitleBar(true, "", 0);
 
   unsigned red, green, blue;
-  SkinPaletteChannels(controls.resources, 2, 2, red, green, blue);
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
   this->FillRegion(0, 17, this->geometry.width, this->geometry.height - 38, RGB(red, green, blue));
   this->DrawButtonBar(0, 0, 1);
 
@@ -7208,7 +7202,7 @@ void UIItemStoreSubWnd::Paint() {
   }
 
   unsigned fillRed, fillGreen, fillBlue;
-  SkinPaletteChannels(controls.resources, 2, 2, fillRed, fillGreen, fillBlue);
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, fillRed, fillGreen, fillBlue);
   this->FillRegion(72, 17, columns * 32 - 32, rows * 32, RGB(fillRed, fillGreen, fillBlue));
 
   ItemDescriptions descriptions{g_itemDescriptions};
@@ -7228,7 +7222,7 @@ void UIItemStoreSubWnd::Paint() {
     const int left = visible % this->columns * 32 + 10;
     const int width = this->geometry.width - left - 66;
     const int x = left + 4;
-    DrawItemWithQuantity(*this, controls.resources, descriptions, controls.fonts, controls.locale, x, top + 21, *it, 0, 0);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, this->m_context->locale, x, top + 21, *it, 0, 0);
     this->DrawWrappedItemName(left + 40, top + 29, width, &*it, 0, 0, 12);
 
     if (it->unknown_0088 > 0) {
@@ -7252,7 +7246,6 @@ void UIItemStoreSubWnd::Paint() {
 // OFFSET: 0x0097E7A0
 // FUNCTION: fn_13330
 void UIItemPurchaseWnd::Paint() {
-  UIButtonContext& controls = *this->m_controls;
   this->DrawTitleBar(false, "", 0);
 
   if (this->geometry.height == 17) {
@@ -7272,13 +7265,13 @@ void UIItemPurchaseWnd::Paint() {
   }
 
   unsigned red, green, blue;
-  SkinPaletteChannels(controls.resources, 2, 2, red, green, blue);
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
   this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - 38, RGB(red, green, blue));
   this->FillRegion(20, (this->geometry.height - 38) / 32 * 32 + 17, this->geometry.width - 24, (this->geometry.height - 38) % 32, RGB(red, green, blue));
   this->DrawButtonBar(this->unknown_00B8 != 0 ? 2 : 0, 0, 1);
 
   const int height = this->geometry.height;
-  SkinPaletteChannels(controls.resources, 2, 2, red, green, blue);
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
   this->FillRegion(40, 17, this->geometry.width - 50, (height - 38) / 32 * 32, RGB(red, green, blue));
 
   int slots = (height - 58) / 32;
@@ -7303,12 +7296,12 @@ void UIItemPurchaseWnd::Paint() {
     const int top = visible / this->columns * 32;
     if (this->hovered == index) {
       unsigned hoverRed, hoverGreen, hoverBlue;
-      SkinPaletteChannels(controls.resources, 6, 2, hoverRed, hoverGreen, hoverBlue);
+      SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, hoverRed, hoverGreen, hoverBlue);
       this->FillRegion(column + 72, top + 19, 191, 28, RGB(hoverRed, hoverGreen, hoverBlue));
     }
 
     const int x = column + 44;
-    DrawItemWithQuantity(*this, controls.resources, descriptions, controls.fonts, controls.locale, x, top + 21, *it, 0, 0);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, this->m_context->locale, x, top + 21, *it, 0, 0);
 
     int nameWidth = 110;
     const int amount = static_cast<int>(it->unknown_0014[0]);
@@ -7378,7 +7371,6 @@ void UIItemPurchaseWnd::Paint() {
 // OFFSET: 0x0097F220
 // FUNCTION: fn_13332
 void UIItemSellWnd::Paint() {
-  UIButtonContext& controls = *this->m_controls;
   char price[64];
   char text[64];
   this->DrawTitleBar(false, "", 0);
@@ -7400,7 +7392,7 @@ void UIItemSellWnd::Paint() {
   }
 
   unsigned red, green, blue;
-  SkinPaletteChannels(controls.resources, 2, 2, red, green, blue);
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
   this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - 38, RGB(red, green, blue));
   this->FillRegion(20, (this->geometry.height - 38) / 32 * 32 + 17, this->geometry.width - 24, (this->geometry.height - 38) % 32, RGB(red, green, blue));
   this->DrawButtonBar(this->unknown_00B8 != 0 ? 2 : 0, 0, 1);
@@ -7413,7 +7405,7 @@ void UIItemSellWnd::Paint() {
   }
 
   unsigned fillRed, fillGreen, fillBlue;
-  SkinPaletteChannels(controls.resources, 2, 2, fillRed, fillGreen, fillBlue);
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, fillRed, fillGreen, fillBlue);
   this->FillRegion(72, 17, columns * 32 - 32, slotRows * 32, RGB(fillRed, fillGreen, fillBlue));
 
   ItemDescriptions descriptions{g_itemDescriptions};
@@ -7433,12 +7425,12 @@ void UIItemSellWnd::Paint() {
     const int top = visible / this->columns * 32;
     if (this->hovered == index) {
       unsigned hoverRed, hoverGreen, hoverBlue;
-      SkinPaletteChannels(controls.resources, 6, 2, hoverRed, hoverGreen, hoverBlue);
+      SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, hoverRed, hoverGreen, hoverBlue);
       this->FillRegion(column + 72, top + 19, 191, 28, RGB(hoverRed, hoverGreen, hoverBlue));
     }
 
     const int x = column + 44;
-    DrawItemWithQuantity(*this, controls.resources, descriptions, controls.fonts, controls.locale, x, top + 21, *it, 0, 0);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, this->m_context->locale, x, top + 21, *it, 0, 0);
 
     int nameWidth = 100;
     const int amount = static_cast<int>(it->unknown_0014[0]);
@@ -7482,7 +7474,6 @@ void UIItemSellWnd::Paint() {
 // OFFSET: 0x0097FBF0
 // FUNCTION: fn_13334
 void UIItemShopWnd::Paint() {
-  UIButtonContext& controls = *this->m_controls;
   this->DrawTitleBar(false, "", 0);
 
   if (this->geometry.height == 17) {
@@ -7502,7 +7493,7 @@ void UIItemShopWnd::Paint() {
   }
 
   unsigned red, green, blue;
-  SkinPaletteChannels(controls.resources, 2, 2, red, green, blue);
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
   this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - this->unknown_0104 - 17, RGB(red, green, blue));
   this->FillRegion(
     20, (this->geometry.height - this->unknown_0104 - 17) / 32 * 32 + 17, this->geometry.width - 24,
@@ -7520,7 +7511,7 @@ void UIItemShopWnd::Paint() {
   if (this->unknown_010C != 0) {
     slotRows = (this->geometry.height - this->unknown_0104 - 17) / 32;
   }
-  SkinPaletteChannels(controls.resources, 2, 2, red, green, blue);
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
   this->FillRegion(72, 17, columns * 32 - 32, slotRows * 32, RGB(red, green, blue));
   if (this->unknown_010C != 0) {
     this->FillRegion(40, slotRows * 32 - 15, 32, 32, RGB(red, green, blue));
@@ -7543,12 +7534,12 @@ void UIItemShopWnd::Paint() {
     const int top = visible / this->columns * 32;
     if (this->hovered == index) {
       unsigned hoverRed, hoverGreen, hoverBlue;
-      SkinPaletteChannels(controls.resources, 6, 2, hoverRed, hoverGreen, hoverBlue);
+      SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, hoverRed, hoverGreen, hoverBlue);
       this->FillRegion(column + 72, top + 19, 191, 28, RGB(hoverRed, hoverGreen, hoverBlue));
     }
 
     const int x = column + 44;
-    DrawItemWithQuantity(*this, controls.resources, descriptions, controls.fonts, controls.locale, x, top + 21, *it, 0, 0);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, this->m_context->locale, x, top + 21, *it, 0, 0);
 
     int nameWidth = 100;
     const int amount = static_cast<int>(it->unknown_0014[0]);
@@ -7628,7 +7619,6 @@ void UIItemShopWnd::Paint() {
 // OFFSET: 0x009808E0
 // FUNCTION: fn_13337
 void UIItemStoreWnd::Paint() {
-  UIButtonContext& controls = *this->m_controls;
   this->DrawTitleBar(false, "", 0);
 
   if (this->geometry.height == 17) {
@@ -7648,7 +7638,7 @@ void UIItemStoreWnd::Paint() {
   }
 
   unsigned red, green, blue;
-  SkinPaletteChannels(controls.resources, 2, 2, red, green, blue);
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
   this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - 38, RGB(red, green, blue));
   this->FillRegion(20, (this->geometry.height - 38) / 32 * 32 + 17, this->geometry.width - 24, (this->geometry.height - 38) % 32, RGB(red, green, blue));
   this->DrawButtonBar(this->unknown_00B8 != 0 ? 3 : 0, 0, 1);
@@ -7658,7 +7648,7 @@ void UIItemStoreWnd::Paint() {
   if (!this->unknown_0190) {
     this->scrollBar->Show(0);
     unsigned fillRed, fillGreen, fillBlue;
-    SkinPaletteChannels(controls.resources, 2, 2, fillRed, fillGreen, fillBlue);
+    SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, fillRed, fillGreen, fillBlue);
     this->FillRegion(40, 17, columns * 32, slotRows * 32, RGB(fillRed, fillGreen, fillBlue));
     DrawRoundedBorder(*this, 55, 131, 187, 139, 0xCE9484);
     DrawFilledRoundedBorder(*this, 56, 132, 185, 137, 0xFFE7DE);
@@ -7678,7 +7668,7 @@ void UIItemStoreWnd::Paint() {
   }
 
   unsigned fillRed, fillGreen, fillBlue;
-  SkinPaletteChannels(controls.resources, 2, 2, fillRed, fillGreen, fillBlue);
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, fillRed, fillGreen, fillBlue);
   this->FillRegion(72, 17, columns * 32 - 32, slotRows * 32, RGB(fillRed, fillGreen, fillBlue));
 
   ItemDescriptions descriptions{g_itemDescriptions};
@@ -7697,7 +7687,7 @@ void UIItemStoreWnd::Paint() {
     const int top = visible / this->columns * 32;
     const int column = visible % this->columns * 32;
     const int x = column + 44;
-    DrawItemWithQuantity(*this, controls.resources, descriptions, controls.fonts, controls.locale, x, top + 21, *it, 0, 0);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, this->m_context->locale, x, top + 21, *it, 0, 0);
     this->DrawWrappedItemName(column + 80, top + 29, 180, &*it, 0, 0, 12);
 
     if (it->unknown_0088 > 0) {
@@ -7726,7 +7716,6 @@ void UIItemStoreWnd::Paint() {
 // OFFSET: 0x009819C0
 // FUNCTION: fn_13341
 void UIMerchantItemPurchaseWnd::Paint() {
-  UIButtonContext& controls = *this->m_controls;
   this->DrawTitleBar(false, "", 0);
 
   if (this->geometry.height == 17) {
@@ -7746,7 +7735,7 @@ void UIMerchantItemPurchaseWnd::Paint() {
   }
 
   unsigned red, green, blue;
-  SkinPaletteChannels(controls.resources, 2, 2, red, green, blue);
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
   this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - 38, RGB(red, green, blue));
   this->FillRegion(20, (this->geometry.height - 38) / 32 * 32 + 17, this->geometry.width - 24, (this->geometry.height - 38) % 32, RGB(red, green, blue));
   this->DrawButtonBar(this->unknown_00B8 != 0 ? 2 : 0, 0, 1);
@@ -7759,7 +7748,7 @@ void UIMerchantItemPurchaseWnd::Paint() {
   }
 
   unsigned fillRed, fillGreen, fillBlue;
-  SkinPaletteChannels(controls.resources, 2, 2, fillRed, fillGreen, fillBlue);
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, fillRed, fillGreen, fillBlue);
   this->FillRegion(72, 17, columns * 32 - 32, slotRows * 32, RGB(fillRed, fillGreen, fillBlue));
 
   ItemDescriptions descriptions{g_itemDescriptions};
@@ -7775,12 +7764,12 @@ void UIMerchantItemPurchaseWnd::Paint() {
     const int top = visible / this->columns * 32;
     if (this->hovered == index) {
       unsigned hoverRed, hoverGreen, hoverBlue;
-      SkinPaletteChannels(controls.resources, 6, 2, hoverRed, hoverGreen, hoverBlue);
+      SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, hoverRed, hoverGreen, hoverBlue);
       this->FillRegion(column + 72, top + 19, 191, 28, RGB(hoverRed, hoverGreen, hoverBlue));
     }
 
     const int x = column + 44;
-    DrawItemWithQuantity(*this, controls.resources, descriptions, controls.fonts, controls.locale, x, top + 21, *it, 0, 0);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, this->m_context->locale, x, top + 21, *it, 0, 0);
     this->DrawWrappedItemName(column + 76, top + 29, 90, &*it, 0, 0, 12);
 
     if (it->unknown_0088 > 0) {
@@ -7811,12 +7800,11 @@ void UIMerchantItemPurchaseWnd::Paint() {
 // OFFSET: 0x00982A80
 // FUNCTION: fn_13344
 void UIMerchantShopMakeWnd::Paint() {
-  UIButtonContext& controls = *this->m_controls;
   this->ClearSurface(0xFF);
   this->DrawTitleBar(false, "", 0);
 
   unsigned red, green, blue;
-  SkinPaletteChannels(controls.resources, 2, 2, red, green, blue);
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
   this->FillRegion(0, 17, this->geometry.width, this->geometry.height - 38, RGB(red, green, blue));
 
   int barHeight;
@@ -7979,7 +7967,7 @@ void UIMerchantShopMakeWnd::Paint() {
     const int top = visible / this->columns * 42;
     const int column = visible % this->columns * 42;
     const int x = column + 7;
-    DrawItemWithQuantity(*this, controls.resources, descriptions, controls.fonts, controls.locale, x, top + 48, *it, 0, 0);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, this->m_context->locale, x, top + 48, *it, 0, 0);
     this->DrawWrappedItemName(column + 39, top + 57, 100, &*it, 0, 0, 12);
 
     if (it->unknown_0088 > 0) {
@@ -8556,7 +8544,6 @@ bool UIEditCtrl3::LinkDisplayName(const std::string& encoded, std::string& outpu
 }
 // FUNCTION: fn_13342
 void UIMerchantItemShopWnd::Paint() {
-  UIButtonContext& controls = *this->m_controls;
   this->DrawTitleBar(false, "", 0);
 
   if (this->geometry.height == 17) {
@@ -8578,7 +8565,7 @@ void UIMerchantItemShopWnd::Paint() {
   }
 
   unsigned red, green, blue;
-  SkinPaletteChannels(controls.resources, 2, 2, red, green, blue);
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
   this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - this->unknown_0118 - 17, RGB(red, green, blue));
   this->FillRegion(
     20, static_cast<unsigned>(this->geometry.height - this->unknown_0118 - 17) / 32 * 32 + 17, this->geometry.width - 24,
@@ -8594,7 +8581,7 @@ void UIMerchantItemShopWnd::Paint() {
   }
 
   unsigned fillRed, fillGreen, fillBlue;
-  SkinPaletteChannels(controls.resources, 2, 2, fillRed, fillGreen, fillBlue);
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, fillRed, fillGreen, fillBlue);
   this->FillRegion(72, 17, columns * 32 - 32, slotRows * 32, RGB(fillRed, fillGreen, fillBlue));
 
   {
@@ -8625,7 +8612,7 @@ void UIMerchantItemShopWnd::Paint() {
     const int left = column + 40;
     if (this->hovered == index) {
       unsigned hoverRed, hoverGreen, hoverBlue;
-      SkinPaletteChannels(controls.resources, 6, 2, hoverRed, hoverGreen, hoverBlue);
+      SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, hoverRed, hoverGreen, hoverBlue);
       this->FillRegion(left + 32, top + 19, 191, 28, RGB(hoverRed, hoverGreen, hoverBlue));
     }
 
@@ -8637,10 +8624,10 @@ void UIMerchantItemShopWnd::Paint() {
                             this->TextWidth(price, 0, 0, 12, 0, 0) - 18;
       this->DrawTextAt(quantityX, top + 29, price, 0, 0, 12, 0xFF, 0, 0);
       x = left + 4;
-      DrawItemIcon(*this, controls.resources, descriptions, x, top + 21, *it, 0);
+      DrawItemIcon(*this, ResourceMgr::Instance(), descriptions, x, top + 21, *it, 0);
     } else {
       x = column + 44;
-      DrawItemWithQuantity(*this, controls.resources, descriptions, controls.fonts, controls.locale, x, top + 21, *it, 0, 0);
+      DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, this->m_context->locale, x, top + 21, *it, 0, 0);
     }
 
     if (it->unknown_0088 > 0) {
@@ -8919,7 +8906,6 @@ void UISkillListWnd::Slot28(int x, int y) {
 // OFFSET: 0x0097EDE0
 // FUNCTION: fn_13331
 void UIItemSellWnd2::Paint() {
-  UIButtonContext& controls = *this->m_controls;
   this->DrawTitleBar(false, "", 0);
 
   if (this->geometry.height == 17) {
@@ -8939,7 +8925,7 @@ void UIItemSellWnd2::Paint() {
   }
 
   unsigned red, green, blue;
-  SkinPaletteChannels(controls.resources, 2, 2, red, green, blue);
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
   this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - 38, RGB(red, green, blue));
   this->FillRegion(20, (this->geometry.height - 38) / 32 * 32 + 17, this->geometry.width - 24, (this->geometry.height - 38) % 32, RGB(red, green, blue));
   this->DrawButtonBar(this->unknown_00B8 != 0 ? 2 : 0, 0, 1);
@@ -8952,7 +8938,7 @@ void UIItemSellWnd2::Paint() {
   }
 
   unsigned fillRed, fillGreen, fillBlue;
-  SkinPaletteChannels(controls.resources, 2, 2, fillRed, fillGreen, fillBlue);
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, fillRed, fillGreen, fillBlue);
   this->FillRegion(72, 17, columns * 32 - 32, slotRows * 32, RGB(fillRed, fillGreen, fillBlue));
 
   ItemDescriptions descriptions{g_itemDescriptions};
@@ -8972,12 +8958,12 @@ void UIItemSellWnd2::Paint() {
     const int top = visible / this->columns * 32;
     if (this->hovered == index) {
       unsigned hoverRed, hoverGreen, hoverBlue;
-      SkinPaletteChannels(controls.resources, 6, 2, hoverRed, hoverGreen, hoverBlue);
+      SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, hoverRed, hoverGreen, hoverBlue);
       this->FillRegion(column + 72, top + 19, 191, 28, RGB(hoverRed, hoverGreen, hoverBlue));
     }
 
     const int x = column + 44;
-    DrawItemWithQuantity(*this, controls.resources, descriptions, controls.fonts, controls.locale, x, top + 21, *it, 0, 0);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, this->m_context->locale, x, top + 21, *it, 0, 0);
     this->DrawFittedItemName(column + 76, top + 29, &*it, 0, 0, 12, 0);
 
     if (it->unknown_0088 > 0) {
@@ -8999,7 +8985,6 @@ void UIItemSellWnd2::Paint() {
 // OFFSET: 0x0097F790
 // FUNCTION: fn_13333
 void UIItemShopWnd2::Paint() {
-  UIButtonContext& controls = *this->m_controls;
   this->DrawTitleBar(false, "", 0);
 
   if (this->geometry.height == 17) {
@@ -9019,7 +9004,7 @@ void UIItemShopWnd2::Paint() {
   }
 
   unsigned red, green, blue;
-  SkinPaletteChannels(controls.resources, 2, 2, red, green, blue);
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
   this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - this->unknown_0104 - 17, RGB(red, green, blue));
   this->FillRegion(20, (this->geometry.height - this->unknown_0104 - 17) / 32 * 32 + 17, this->geometry.width - 24, (this->geometry.height - this->unknown_0104 - 17) % 32, RGB(red, green, blue));
   this->DrawButtonBar(this->unknown_00B8 != 0 ? 2 : 0, 0, 1);
@@ -9032,7 +9017,7 @@ void UIItemShopWnd2::Paint() {
   }
 
   unsigned fillRed, fillGreen, fillBlue;
-  SkinPaletteChannels(controls.resources, 2, 2, fillRed, fillGreen, fillBlue);
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, fillRed, fillGreen, fillBlue);
   this->FillRegion(72, 17, columns * 32 - 32, slotRows * 32, RGB(fillRed, fillGreen, fillBlue));
 
   ItemDescriptions descriptions{g_itemDescriptions};
@@ -9052,12 +9037,12 @@ void UIItemShopWnd2::Paint() {
     const int top = visible / this->columns * 32;
     if (this->hovered == index) {
       unsigned hoverRed, hoverGreen, hoverBlue;
-      SkinPaletteChannels(controls.resources, 6, 2, hoverRed, hoverGreen, hoverBlue);
+      SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, hoverRed, hoverGreen, hoverBlue);
       this->FillRegion(column + 72, top + 19, 191, 28, RGB(hoverRed, hoverGreen, hoverBlue));
     }
 
     const int x = column + 44;
-    DrawItemWithQuantity(*this, controls.resources, descriptions, controls.fonts, controls.locale, x, top + 21, *it, 0, 0);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, this->m_context->locale, x, top + 21, *it, 0, 0);
     this->DrawFittedItemName(column + 76, top + 29, &*it, 0, 0, 12, 0);
 
     if (it->unknown_0088 > 0) {
@@ -9215,7 +9200,6 @@ int UIItemSellWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 // OFFSET: 0x00980F50
 // FUNCTION: fn_13338
 void UIItemWnd::Paint() {
-  UIButtonContext& controls = *this->m_controls;
   this->DrawTitleBar(true, LookupMessage(106), 0);
 
   if (this->geometry.height == 17) {
@@ -9239,10 +9223,10 @@ void UIItemWnd::Paint() {
 
   unsigned red, green, blue;
   if (this->unknown_010C == 3 && g_session.m_blockPrivateTab == 1) {
-    SkinPaletteChannels(controls.resources, 0, 8, red, green, blue);
+    SkinPaletteChannels(ResourceMgr::Instance(), 0, 8, red, green, blue);
     this->FillRegion(20, 17, this->geometry.width - 21, this->geometry.height - 38, RGB(red, green, blue));
   } else {
-    SkinPaletteChannels(controls.resources, 2, 2, red, green, blue);
+    SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
     this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - 38, RGB(red, green, blue));
     this->FillRegion(20, (this->geometry.height - 38) / 32 * 32 + 17, this->geometry.width - 24, (this->geometry.height - 38) % 32, RGB(red, green, blue));
   }
@@ -9317,7 +9301,7 @@ void UIItemWnd::Paint() {
     const int top = visible / this->columns * 32;
     const int x = visible % this->columns * 32 + 44;
     const int y = top + 21;
-    DrawItemWithQuantity(*this, controls.resources, descriptions, controls.fonts, controls.locale, x, y, *it, 0, 0);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, this->m_context->locale, x, y, *it, 0, 0);
 
     if (it->unknown_0088 > 0) {
       this->DrawBitmap(

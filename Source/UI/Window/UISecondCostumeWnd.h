@@ -10,7 +10,6 @@
 
 class UIComboBoxDefWnd;
 class UIListBox;
-struct UIButtonContext;
 struct UIComboBoxHeaderContext;
 struct UIListBoxContext;
 
@@ -21,7 +20,7 @@ struct SecondCostumeEntry {
 
 class UISecondCostumeWnd : public UIFrameWnd {
 public:
-  UISecondCostumeWnd(UIWindowContext& windows, UIButtonContext& controls, UIListBoxContext& lists, UIComboBoxHeaderContext& combos);
+  UISecondCostumeWnd(UIWindowContext& windows, UIListBoxContext& lists, UIComboBoxHeaderContext& combos);
   bool Slot03() override;
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -40,7 +39,7 @@ protected:
   /* 00D0 */ std::vector<SecondCostumeEntry> m_entries[4];
   /* 0100 */ std::uint32_t unknown_0100;
   /* 0104 */ int m_page;
-  UIButtonContext* m_controls;
+  void* unknown_controls;
   UIListBoxContext* m_listContext;
   UIComboBoxHeaderContext* m_comboContext;
   /* 0108 */ std::string unknown_0108[7];

@@ -14,12 +14,11 @@ struct WindowDialogs;
 struct UIVideoWndContext {
   WindowManagerWindows& windows;
   WindowDialogs& dialogs;
-  UIButtonContext& buttons;
 };
 
 class UIVideoSkipButton : public UIButton {
 public:
-  UIVideoSkipButton(UIWindowContext& windowContext, UIButtonContext& buttonContext);
+  UIVideoSkipButton(UIWindowContext& windowContext);
 
   void Paint() override;
 };

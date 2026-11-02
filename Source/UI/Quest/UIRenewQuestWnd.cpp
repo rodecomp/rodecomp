@@ -572,7 +572,7 @@ void UIRenewDetailQuestInfoWnd::Slot15(int, int) {
   this->m_recommendedWnd->Move(0, 62);
   this->AddChild(this->m_recommendedWnd);
 
-  this->m_closeButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->m_closeButton = new UIBitmapButton(*this->m_context);
   this->m_closeButton->SetBitmap("유저인터페이스\\basic_interface\\btn_close.bmp", 0, 0);
   this->m_closeButton->SetBitmap("유저인터페이스\\basic_interface\\btn_close_a.bmp", 1, 0);
   this->m_closeButton->SetBitmap("유저인터페이스\\basic_interface\\btn_close_b.bmp", 2, 0);
@@ -698,9 +698,9 @@ UIRenewQuestScrollBar::UIRenewQuestScrollBar(UIWindowContext& windows) : UIScrol
 
 // OFFSET: 0x007FBFD0
 // FUNCTION: fn_09967
-UIRenewQuestWnd::UIRenewQuestWnd(UIWindowContext& windows, UIButtonContext& controls)
+UIRenewQuestWnd::UIRenewQuestWnd(UIWindowContext& windows)
     : UIFrameWnd(windows, 0), m_tabs(nullptr), m_scrollBar(nullptr), m_optionCheckBox(nullptr), m_closeButton(nullptr), m_tab(0), m_scroll(0),
-      m_selected(0), m_scrollable(false), m_pressed(0), m_controls(&controls) {
+      m_selected(0), m_scrollable(false), m_pressed(0) {
   std::memset(&this->m_rows, 0, sizeof(this->m_rows));
   this->m_questIds[0].clear();
   this->m_questIds[1].clear();
@@ -722,12 +722,11 @@ void UIRenewQuestWnd::Slot15(int, int) {
     g_windowMgr.EnsureWindow(204);
   }
   const bool checked = g_windowMgr.window_0428->geometry.visible != 0;
-  this->m_optionCheckBox = this->AddStyledCheckBox(
-    *this->m_controls, 213, 10, 12, LookupMessage(2019), 38, 447, checked, nullptr, 12, 0x212121, "유저인터페이스\\renew_questui\\checkbox_on.bmp",
+  this->m_optionCheckBox = this->AddStyledCheckBox(213, 10, 12, LookupMessage(2019), 38, 447, checked, nullptr, 12, 0x212121, "유저인터페이스\\renew_questui\\checkbox_on.bmp",
     "유저인터페이스\\renew_questui\\checkbox_off.bmp"
   );
 
-  this->m_closeButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->m_closeButton = new UIBitmapButton(*this->m_context);
   this->m_closeButton->SetBitmap("유저인터페이스\\basic_interface\\btn_close.bmp", 0, 0);
   this->m_closeButton->SetBitmap("유저인터페이스\\basic_interface\\btn_close_a.bmp", 1, 0);
   this->m_closeButton->SetBitmap("유저인터페이스\\basic_interface\\btn_close_b.bmp", 2, 0);
@@ -743,8 +742,7 @@ void UIRenewQuestWnd::Slot15(int, int) {
 
   for (int index = 0; index < 9; ++index) {
     const int y = 46 + index * 46;
-    UICheckBox* check = this->AddStyledCheckBox(
-      *this->m_controls, 389 + index, 14, 14, nullptr, 350, y - 19, true, nullptr, 0, 0, "유저인터페이스\\renew_questui\\bt_check_on.bmp",
+    UICheckBox* check = this->AddStyledCheckBox(389 + index, 14, 14, nullptr, 350, y - 19, true, nullptr, 0, 0, "유저인터페이스\\renew_questui\\bt_check_on.bmp",
       "유저인터페이스\\renew_questui\\bt_check_off.bmp"
     );
     this->m_rows.checkBoxes[index] = check;
@@ -752,15 +750,14 @@ void UIRenewQuestWnd::Slot15(int, int) {
     this->m_rows.checkBoxes[index]->SetTooltip(LookupMessage(3409));
     this->m_rows.checkBoxes[index]->SetHidden(true);
 
-    UICheckBox* lock = this->AddStyledCheckBox(
-      *this->m_controls, 389 + index, 20, 17, nullptr, 344, y, true, nullptr, 0, 0, "유저인터페이스\\renew_questui\\bt_lock_open.bmp",
+    UICheckBox* lock = this->AddStyledCheckBox(389 + index, 20, 17, nullptr, 344, y, true, nullptr, 0, 0, "유저인터페이스\\renew_questui\\bt_lock_open.bmp",
       "유저인터페이스\\renew_questui\\bt_lock.bmp"
     );
     this->m_rows.lockBoxes[index] = lock;
     lock->m_message = 1;
     this->m_rows.lockBoxes[index]->SetHidden(true);
 
-    this->m_rows.icons[index] = new UIStaticBitmap(*this->m_context, *this->m_controls);
+    this->m_rows.icons[index] = new UIStaticBitmap(*this->m_context);
     this->m_rows.icons[index]->SetBitmap("유저인터페이스\\renew_questui\\ico_nq.bmp");
     this->m_rows.icons[index]->SetSize(this->m_rows.icons[index]->geometry.width, this->m_rows.icons[index]->geometry.height);
     this->m_rows.icons[index]->Move(46, y - 15);

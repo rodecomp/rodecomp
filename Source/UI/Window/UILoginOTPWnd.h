@@ -3,14 +3,13 @@
 
 #include "UI/Window/UIFrameWnd.h"
 
-struct UIButtonContext;
 struct UIEditContext;
 class UIEditCtrl;
 class UIStaticText;
 
 class UILoginOTPWnd : public UIFrameWnd {
 public:
-  UILoginOTPWnd(UIWindowContext& windows, UIButtonContext& controls);
+  UILoginOTPWnd(UIWindowContext& windows);
   void Slot15(int width, int height) override;
   void Slot18() override;
   void Slot19() override;
@@ -23,7 +22,7 @@ public:
   /* 00C0 */ int unknown_00C0;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
   UIEditContext* m_editContext;
 };
 

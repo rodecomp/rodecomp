@@ -1,3 +1,5 @@
+#include "Script/LuaScript.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "UI/UIHotkeyGuideWnd.h"
 
 #include "Contents/Hotkeys/HotkeyInfo.h"
@@ -15,8 +17,8 @@
 
 // OFFSET: 0x009663D0
 // FUNCTION: fn_13154
-UIHotkeyGuideWnd::UIHotkeyGuideWnd(UIWindowContext& windows, UIButtonContext& controls)
-    : UIFrameWnd(windows, 0), m_controls(&controls) {
+UIHotkeyGuideWnd::UIHotkeyGuideWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0) {
   this->m_current = 4698;
 }
 
@@ -53,15 +55,14 @@ HotkeyGuideLabel::~HotkeyGuideLabel() {
 // OFFSET: 0x00966C70
 // FUNCTION: fn_13164
 void UIHotkeyGuideWnd::Slot15(int, int) {
-  UIButtonContext& controls = *this->m_controls;
-  UIBitmapButton* base = new UIBitmapButton(*this->m_context, controls);
+  UIBitmapButton* base = new UIBitmapButton(*this->m_context);
   base->SetBitmap("유저인터페이스\\basic_interface\\sys_base_off.bmp", 0, 0);
   base->SetBitmap("유저인터페이스\\basic_interface\\sys_base_on.bmp", 1, 0);
   base->SetBitmap("유저인터페이스\\basic_interface\\sys_base_on.bmp", 2, 0);
   base->SetSize(base->BitmapWidth(), base->BitmapHeight());
   base->Move(3, 3);
   this->AddChild(base);
-  this->AddCloseButton(controls, "", 0);
+  this->AddCloseButton("", 0);
 
   this->m_labels[8] = HotkeyGuideLabel("←", HotkeyGuideKey(528, 93, 0, 75, 15, 36), HotkeyGuideKey());
   this->m_labels[9] = HotkeyGuideLabel("Tab", HotkeyGuideKey(21, 132, 0, 55, 15, 36), HotkeyGuideKey());
@@ -166,7 +167,7 @@ void UIHotkeyGuideWnd::Slot15(int, int) {
   int messages[18] = {105, 104, 283, 106, 103, 3134, 1317, 2859, 2353, 265, 3135, 2350, 3136, 2646, 3225, 3137, 574, 3138};
   int hotkeys[18] = {47, 1, 2, 9, 5, 10, 3, 8, 42, -1, 46, 38, 51, 49, 6, 37, 17, 12};
   for (int i = 0; i < 18; ++i) {
-    HotkeyInfo hotkey = GetHotkeyInfo(controls.behavior, 1, hotkeys[i]);
+    HotkeyInfo hotkey = GetHotkeyInfo(*g_luaScript, 1, hotkeys[i]);
     if (messages[i] == 265) {
       this->m_entries.push_back(HotkeyGuideEntry(messages[i], 27, 0));
     } else {
@@ -176,7 +177,7 @@ void UIHotkeyGuideWnd::Slot15(int, int) {
 
   int index = 0;
   for (auto entry = this->m_entries.begin(); entry != this->m_entries.end(); ++entry) {
-    UIBasicButton* tab = new UIBasicButton(*this->m_context, controls);
+    UIBasicButton* tab = new UIBasicButton(*this->m_context);
     tab->Configure(118, LookupMessage(entry->id));
     tab->Move(index / 6 * 246 + 26, index % 6 * 30 + 310);
     tab->SetId(entry->id);
@@ -185,7 +186,7 @@ void UIHotkeyGuideWnd::Slot15(int, int) {
     ++index;
   }
 
-  UIBmpTextButton* settings = new UIBmpTextButton(*this->m_context, controls);
+  UIBmpTextButton* settings = new UIBmpTextButton(*this->m_context);
   settings->SetBitmap("유저인터페이스\\hotkey_guide\\bt_keysettings_normal.bmp", 0, 0);
   settings->SetBitmap("유저인터페이스\\hotkey_guide\\bt_keysettings_over.bmp", 1, 0);
   settings->SetBitmap("유저인터페이스\\hotkey_guide\\bt_keysettings_press.bmp", 2, 0);
@@ -199,7 +200,6 @@ void UIHotkeyGuideWnd::Slot15(int, int) {
 // OFFSET: 0x0096B730
 // FUNCTION: fn_13165
 void UIHotkeyGuideWnd::Paint() {
-  UIButtonContext& controls = *this->m_controls;
   auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\hotkey_guide\\bg_shortcuts.bmp")));
   this->DrawBitmap(0, 0, &background->image, false);
   this->DrawTitleBar(false, LookupMessage(3128), 0);
@@ -332,7 +332,6 @@ void UIHotkeyGuideWnd::DrawKey(const HotkeyGuideKey* key) {
 // OFFSET: 0x0096C730
 // FUNCTION: fn_13174
 void UIHotkeyGuideWnd::DrawKeyLabel(std::string text, const HotkeyGuideKey* key) {
-  UIButtonContext& controls = *this->m_controls;
   int x = key->x;
   if (key->align == 6) {
     int textWidth = this->TextWidth(text.c_str(), 0, 0, 12, 0, 0);

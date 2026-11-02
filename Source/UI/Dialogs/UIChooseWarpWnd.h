@@ -6,13 +6,12 @@
 #include <string>
 #include <vector>
 
-struct UIButtonContext;
 struct UIListBoxContext;
 class UIListBox;
 
 class UIChooseWarpWnd : public UIFrameWnd {
 public:
-  UIChooseWarpWnd(UIWindowContext& windows, UIButtonContext& controls, UIListBoxContext& listContext);
+  UIChooseWarpWnd(UIWindowContext& windows, UIListBoxContext& listContext);
   void Slot15(int width, int height) override;
   void Paint() override;
   std::vector<unsigned char> Slot44() override;
@@ -23,7 +22,7 @@ public:
   /* 00BC */ std::vector<std::string> m_choices;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
   UIListBoxContext* m_listContext;
 };
 

@@ -12,7 +12,6 @@ struct ReputeInfo;
 class UIBitmapButton;
 class UIComboBoxDefWnd;
 class UIEditCtrl;
-struct UIButtonContext;
 struct UIComboBoxHeaderContext;
 struct UIEditContext;
 
@@ -39,7 +38,7 @@ public:
   std::vector<const ReputeInfo*> m_reputes;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
   UIEditContext* m_editContext;
   UIComboBoxHeaderContext* m_comboContext;
 };

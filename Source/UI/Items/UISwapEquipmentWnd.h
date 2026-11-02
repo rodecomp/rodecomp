@@ -7,7 +7,6 @@
 #include <cstdint>
 
 struct ITEM_INFO;
-struct UIButtonContext;
 
 extern unsigned long g_swapEquipmentTick;
 
@@ -49,7 +48,7 @@ protected:
   /* 00D4 */ int unknown_00D4;
   /* 00D8 */ int unknown_00D8;
   /* 00DC */ int unknown_00DC;
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 #endif

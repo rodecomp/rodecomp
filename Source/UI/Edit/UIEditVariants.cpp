@@ -442,8 +442,8 @@ void UIEditCtrl_OldList::RecallHistory(int step) {
 // OFFSET: 0x008551B0
 // FUNCTION: fn_10753
 void UIEditCtrl3::PaintText() {
-  FontCache& fonts = this->m_edit->buttons.fonts;
-  const TextLocale& locale = this->m_edit->buttons.locale;
+  FontCache& fonts = g_fontCache;
+  const TextLocale& locale = this->m_context->locale;
 
   int x = 3;
   if (this->invalidatesParent == 0 && this->firstVisible != 0) {

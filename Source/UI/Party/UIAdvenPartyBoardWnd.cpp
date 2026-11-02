@@ -1,3 +1,4 @@
+#include "Contents/MessageTable.h"
 #include "Client/Input/Language.h"
 #include "Contents/Party/AdventurerAgencyMgr.h"
 #include "Contents/Party/AgencyRequestContext.h"
@@ -52,7 +53,6 @@ void UIAdvenPartyBoardWnd::Slot11() {
 // FUNCTION: fn_09298
 void UIAdvenPartyBoardWnd::Slot15(int, int) {
   auto& owner = *this->m_board;
-  auto& controls = owner.buttons;
 
   this->minimum = new UIEditCtrl2(*this->m_context, owner.edits);
   this->minimum->SetSize(25, 14);
@@ -82,14 +82,14 @@ void UIAdvenPartyBoardWnd::Slot15(int, int) {
   const int tooltips[] = {3420, 3491, 3444, 3508};
 
   for (int index = 0; index < 4; ++index) {
-    auto* job = new UIJobSlotButton(*this->m_context, controls);
+    auto* job = new UIJobSlotButton(*this->m_context);
     this->jobs[index] = job;
     job->SetSize(16, 16);
     job->Move(160 + index * 18, 23);
     job->selectedImage = std::string(prefix) + "btn_job_" + roles[index] + "_on.bmp";
     job->unselectedImage = std::string(prefix) + "btn_job_" + roles[index] + "_off.bmp";
     job->SetSelected(0);
-    job->SetTooltip(controls.services.MessageText(tooltips[index]));
+    job->SetTooltip(LookupMessage(tooltips[index]));
     this->AddChild(job);
   }
 
@@ -99,7 +99,7 @@ void UIAdvenPartyBoardWnd::Slot15(int, int) {
   memo->maximum = 150;
   memo->TextColor(0, 0xFFFFFFFFu);
   memo->placeholderEnabled = 1;
-  memo->placeholder = controls.services.MessageText(3419);
+  memo->placeholder = LookupMessage(3419);
   memo->placeholderColor = 0x646464;
   memo->Move(238, 24);
   memo->Background(255, 255, 255);
@@ -114,28 +114,28 @@ void UIAdvenPartyBoardWnd::Slot15(int, int) {
     button->SetSize(button->BitmapWidth(), button->BitmapHeight());
   };
 
-  auto* search = new UIBmpTextButton(*this->m_context, controls);
+  auto* search = new UIBmpTextButton(*this->m_context);
   artwork(search, "btn_search");
   search->Move(354, 22);
   search->SetId(365);
-  search->SetText(controls.services.MessageText(3366));
+  search->SetText(LookupMessage(3366));
   this->AddChild(search);
 
-  auto* reset = new UIBmpTextButton(*this->m_context, controls);
+  auto* reset = new UIBmpTextButton(*this->m_context);
   artwork(reset, "btn_initialize");
   reset->Move(401, 22);
   reset->SetId(363);
-  reset->SetText(controls.services.MessageText(3367));
+  reset->SetText(LookupMessage(3367));
   this->AddChild(reset);
 
-  this->refresh = new UIBitmapButton(*this->m_context, controls);
+  this->refresh = new UIBitmapButton(*this->m_context);
   artwork(this->refresh, "btn_refresh");
   this->refresh->Move(452, 22);
   this->refresh->SetId(415);
   this->AddChild(this->refresh);
 
   const auto arrow = [&](const char* name, int id, int x) {
-    auto* button = new UIBitmapButton(*this->m_context, controls);
+    auto* button = new UIBitmapButton(*this->m_context);
 
     for (int state = 0; state < 4; ++state) {
       button->SetBitmap((std::string(prefix) + name + (state == 3 ? "_disable.bmp" : ".bmp")).c_str(), state, 0);
@@ -152,7 +152,7 @@ void UIAdvenPartyBoardWnd::Slot15(int, int) {
   this->next = arrow("btn_list_right", 218, 265);
 
   for (int index = 0; index < 10; ++index) {
-    auto* row = new UIPartyInfoWnd(*this->m_context, controls, owner.rows);
+    auto* row = new UIPartyInfoWnd(*this->m_context, owner.rows);
     this->rows[index] = row;
     artwork(row, "btn_list");
     row->Move(1, 73 + index * 24);
@@ -164,7 +164,7 @@ void UIAdvenPartyBoardWnd::Slot15(int, int) {
     this->AddChild(row);
   }
 
-  this->ownParty = new UIPartyInfoWnd(*this->m_context, controls, owner.rows);
+  this->ownParty = new UIPartyInfoWnd(*this->m_context, owner.rows);
   const char* ownImages[] = {"btn_recruit_on.bmp", "btn_recruit_on.bmp", "btn_recruiting_press.bmp", "btn_recruiting_disable.bmp"};
 
   for (int state = 0; state < 4; ++state) {
@@ -177,7 +177,7 @@ void UIAdvenPartyBoardWnd::Slot15(int, int) {
   this->ownParty->Enable(0);
   this->AddChild(this->ownParty);
 
-  auto* recruit = new UIBmpTextButton(*this->m_context, controls);
+  auto* recruit = new UIBmpTextButton(*this->m_context);
   this->recruit = recruit;
   artwork(recruit, "btn_recruit");
   recruit->Move(1, 49);
@@ -192,11 +192,11 @@ void UIAdvenPartyBoardWnd::Slot15(int, int) {
   this->AddChild(this->types);
 
   for (int type = 0; type <= 6; ++type) {
-    this->types->AddOption(UIPartyInfoWnd::TypeName(type, controls.services), 0);
+    this->types->AddOption(UIPartyInfoWnd::TypeName(type), 0);
   }
 
   this->types->Select(0);
-  this->pageText = new UIStaticText(*this->m_context, controls);
+  this->pageText = new UIStaticText(*this->m_context);
   this->pageText->SetSize(this->geometry.width, 18);
   const int textWidth = this->TextWidth("1/1", 0, 0, 12, 0, 0);
   this->pageText->Resize((textWidth + 1), 16);
@@ -206,21 +206,21 @@ void UIAdvenPartyBoardWnd::Slot15(int, int) {
   this->LoadPage(1);
   this->m_message0 = 365;
 
-  auto* close = new UIBasicButton(*this->m_context, controls);
-  close->Configure(42, controls.services.MessageText(3045));
+  auto* close = new UIBasicButton(*this->m_context);
+  close->Configure(42, LookupMessage(3045));
   close->Move(this->geometry.width - close->geometry.width - 10, 317);
   close->SetId(201);
   this->AddChild(close);
 
-  this->stop = new UIBasicButton(*this->m_context, controls);
-  const char* stopText = controls.services.MessageText(3375);
+  this->stop = new UIBasicButton(*this->m_context);
+  const char* stopText = LookupMessage(3375);
   this->stop->Configure((this->TextWidth(stopText, 0, 0, 12, 0, 0) + 10), stopText);
   this->stop->Move(close->geometry.x - this->stop->geometry.width - 5, 317);
   this->stop->SetId(410);
   this->AddChild(this->stop);
   this->stop->Enable(0);
 
-  auto* titleClose = new UIBitmapButton(*this->m_context, controls);
+  auto* titleClose = new UIBitmapButton(*this->m_context);
   const std::string basic = std::string("유저인터페이스\\basic_interface\\");
   titleClose->SetBitmap((basic + "sys_close_off.bmp").c_str(), 0, 0);
   titleClose->SetBitmap((basic + "sys_close_on.bmp").c_str(), 1, 0);
@@ -254,7 +254,6 @@ void UIAdvenPartyBoardWnd::LoadPage(int pageValue) {
 // OFFSET: 0x007C2120
 // FUNCTION: fn_09322
 void UIAdvenPartyBoardWnd::Registration(bool value) {
-  auto& controls = this->m_board->buttons;
 
   if (this->m_board->partyMember != 0) {
     this->recruit->SetTooltip("");
@@ -268,7 +267,7 @@ void UIAdvenPartyBoardWnd::Registration(bool value) {
     this->stop->SetDisabled(value ? 0 : 1);
     this->stop->Invalidate();
   } else {
-    this->recruit->SetTooltip(controls.services.MessageText(2047));
+    this->recruit->SetTooltip(LookupMessage(2047));
     this->ownParty->Enable(0);
     this->ownParty->SetDisabled(1);
     this->ownParty->Invalidate();
@@ -304,7 +303,6 @@ void UIAdvenPartyBoardWnd::RefreshRows() {
 
   char text[1024] = {};
   _snprintf_s(text, sizeof(text), _TRUNCATE, "%d / %d", this->page, this->totalPages);
-  auto& controls = this->m_board->buttons;
   const int width = this->TextWidth(text, 0, 0, 12, 0, 0);
   this->pageText->Resize((width + 1), 16);
   this->pageText->SetText(text, 0);
@@ -556,9 +554,8 @@ int UIAdvenPartyBoardWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
 // OFFSET: 0x007BF520
 // FUNCTION: fn_09302
 void UIAdvenPartyBoardWnd::Paint() {
-  auto& controls = this->m_board->buttons;
   this->geometry.surface->Fill(nullptr, 0xFFFF00FFu);
-  const auto load = [&](const char* path) { return static_cast<CBitmapRes*>(controls.resources.Load(path)); };
+  const auto load = [&](const char* path) { return static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(path)); };
   auto* background = load((std::string(prefix) + "bg_agencyList.bmp").c_str());
   this->DrawBitmap(0, 0, background ? &background->image : nullptr, false);
   constexpr char basic[] = "유저인터페이스\\basic_interface\\";
@@ -587,7 +584,7 @@ void UIAdvenPartyBoardWnd::Paint() {
     }
   }
 
-  const char* title = controls.services.MessageText(3504);
+  const char* title = LookupMessage(3504);
   this->DrawTextAt(19, titleHeight - 13, title, 0, 0, 12, 0xFFFFFF, 0, 0);
   this->DrawTextAt(18, titleHeight - 14, title, 0, 0, 12, 0, 0, 0);
   auto* icon = skin("sys_base_off.bmp");

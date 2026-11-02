@@ -13,7 +13,6 @@ struct ShortcutTooltip;
 struct ShortcutDetails;
 struct ShortcutUse;
 struct ShortcutVisibility;
-struct UIButtonContext;
 struct CooldownClock;
 struct ModeDragState;
 struct NormalItemSlot;
@@ -21,7 +20,6 @@ struct NormalItemSlotWindow;
 class AutomaticSkills;
 
 struct ShortcutWindowContext {
-  UIButtonContext& buttons;
   ShortcutBindings& bindings;
   ShortcutPainting& painting;
   ShortcutPress& press;

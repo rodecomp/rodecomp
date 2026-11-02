@@ -4,11 +4,10 @@
 #include "UI/Window/UIFrameWnd.h"
 
 class UIBasicButton;
-struct UIButtonContext;
 
 class UIDebuffRemoveWnd : public UIFrameWnd {
 public:
-  UIDebuffRemoveWnd(UIWindowContext& windows, UIButtonContext& controls);
+  UIDebuffRemoveWnd(UIWindowContext& windows);
   void Slot15(int width, int height) override;
   void Paint() override;
   void Slot25(int x, int y) override;
@@ -18,7 +17,7 @@ public:
 
 protected:
   /* 00B4 */ UIBasicButton* m_button;
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 #endif

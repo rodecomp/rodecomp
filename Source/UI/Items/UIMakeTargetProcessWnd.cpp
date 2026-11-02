@@ -119,7 +119,6 @@ ITEM_INFO UIMakeTargetProcessWnd::GetItemAt(int x, int y) {
 // OFFSET: 0x009A38E0
 // FUNCTION: fn_13611
 void UIMakeTargetProcessWnd::Paint() {
-  UIButtonContext& controls = *this->m_controls;
   const int titleHeight = this->DrawTitleBar(false, "", 0);
   this->DrawPanelBackground(titleHeight, 0, "");
   this->DrawButtonBar(2, 0, 1);
@@ -140,7 +139,7 @@ void UIMakeTargetProcessWnd::Paint() {
       auto* bar = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\btnbar_right2.bmp")));
       DrawItemSlotBackground(*this, x - 4, this->geometry.height - bar->image.height - 32);
       if (material->unknown_0000[1] != 0) {
-        DrawItemIcon(*this, controls.resources, descriptions, x, this->geometry.height - bar->image.height - 28, *material, 0);
+        DrawItemIcon(*this, ResourceMgr::Instance(), descriptions, x, this->geometry.height - bar->image.height - 28, *material, 0);
       }
     }
     break;

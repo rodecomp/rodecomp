@@ -1,10 +1,11 @@
+#include "Client/Replay.h"
+#include "UI/Window/WindowPolicy.h"
 #include "Render/DeviceContext/DeviceContext.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Lists/UIComboBoxDefWnd.h"
 #include "UI/Lists/UIItemStoreComboBox.h"
 #include "UI/Lists/UIListBox.h"
 #include "UI/Text/UIStaticText.h"
-#include "UI/Window/WindowPolicy.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Lists/UIComboBoxWnd.h"
 #include <cstdio>
@@ -46,8 +47,7 @@ UIComboBoxDefWnd::~UIComboBoxDefWnd() = default;
 // OFFSET: 0x00885920
 // FUNCTION: fn_11319
 void UIComboBoxDefWnd::Slot15(int, int) {
-  auto& controls = this->m_controls->buttons;
-  this->button = new UIBitmapButton(*this->m_context, controls);
+  this->button = new UIBitmapButton(*this->m_context);
   const char* names[] = {"txtbox_btn_a.bmp", "txtbox_btn_b.bmp", "txtbox_btn_c.bmp"};
 
   for (int state = 0; state < 3; ++state) {
@@ -64,7 +64,7 @@ void UIComboBoxDefWnd::Slot15(int, int) {
   this->list->Move(0, this->button->BitmapHeight());
   this->AddChild(this->list);
 
-  this->label = new UIStaticText(*this->m_context, controls);
+  this->label = new UIStaticText(*this->m_context);
   this->label->SetSize((this->geometry.width - this->button->BitmapWidth()), this->button->BitmapHeight());
   this->label->SetText("(NO SELECT)", 0);
   this->label->Move(2, 3);
@@ -78,9 +78,8 @@ void UIComboBox_BmpWnd::Create(int width, int height, const char* path, const ch
   UIWindow::Resize(width, height);
   this->name = name;
   const std::string base(path);
-  auto& controls = this->m_controls->buttons;
 
-  this->button = new UIBitmapButton(*this->m_context, controls);
+  this->button = new UIBitmapButton(*this->m_context);
   this->button->SetBitmap((base + "_out.bmp").c_str(), 0, 0);
   this->button->SetBitmap((base + "_over.bmp").c_str(), 1, 0);
   this->button->SetBitmap((base + "_press.bmp").c_str(), 2, 0);
@@ -96,7 +95,7 @@ void UIComboBox_BmpWnd::Create(int width, int height, const char* path, const ch
 
   char text[12] = {};
   std::sprintf(text, "(NO SELECT)");
-  this->label = new UIStaticText(*this->m_context, controls);
+  this->label = new UIStaticText(*this->m_context);
   this->label->SetSize((this->geometry.width - this->button->BitmapWidth()), this->button->BitmapHeight());
   this->label->SetText(text, 0);
   this->label->Move(2, 3);
@@ -190,7 +189,7 @@ int UIComboBoxDefWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
 
     return 0;
   case 39:
-    if (WindowPolicy(this->m_controls->buttons.policy, this->m_controls->buttons.restricted, 3, this->parent->geometry.id) == 0 ||
+    if (WindowPolicy(g_windowMgr.policy[0].actions, g_replayAnimationScaling != 0, 3, this->parent->geometry.id) == 0 ||
         value < 0) {
       return 0;
     }
@@ -268,10 +267,9 @@ UIComboBoxDef2Wnd::~UIComboBoxDef2Wnd() = default;
 // OFFSET: 0x00885250
 // FUNCTION: fn_11318
 void UIComboBoxDef2Wnd::Slot15(int width, int) {
-  auto& controls = this->m_controls->buttons;
   const std::string path = std::string(prefix) + (this->skin == 1 ? "login_interface\\" : "UIadventurerAgency\\");
 
-  this->button = new UIBitmapButton(*this->m_context, controls);
+  this->button = new UIBitmapButton(*this->m_context);
   const char* names[] = {"btn_dropdown_out.bmp", "btn_dropdown_over.bmp", "btn_dropdown_press.bmp"};
 
   for (int state = 0; state < 3; ++state) {
@@ -290,7 +288,7 @@ void UIComboBoxDef2Wnd::Slot15(int width, int) {
   list->Move(0, this->button->BitmapHeight());
   this->AddChild(list);
 
-  this->label = new UIStaticText(*this->m_context, controls);
+  this->label = new UIStaticText(*this->m_context);
   this->label->SetSize((this->geometry.width - this->button->BitmapWidth()), (this->button->BitmapHeight() - 6));
   this->label->SetText("", 0);
   int x = 0;
@@ -318,7 +316,6 @@ void UIComboBoxDef2Wnd::Paint() {
     return;
   }
 
-  auto& controls = this->m_controls->buttons;
   const int width = this->TextWidth(this->label->text.c_str(), 0, 0, 12, 0, 0);
   const int x = static_cast<int>(static_cast<float>(this->geometry.width) * 0.5f - static_cast<float>(width) * 0.5f);
 
@@ -333,7 +330,7 @@ void UIComboBoxDef2Wnd::Paint() {
 // FUNCTION: fn_11329
 void UINewComboBoxCtrl::Slot15(int, int) {
   const std::string base = "유저인터페이스\\basic_interface\\txtbox_btn_";
-  this->button = new UIBitmapButton(*this->m_context, *this->m_buttons);
+  this->button = new UIBitmapButton(*this->m_context);
   this->button->SetBitmap((base + "a.bmp").c_str(), 0, 0);
   this->button->SetBitmap((base + "b.bmp").c_str(), 1, 0);
   this->button->SetBitmap((base + "c.bmp").c_str(), 2, 0);
@@ -342,7 +339,7 @@ void UINewComboBoxCtrl::Slot15(int, int) {
   this->button->SetId(273);
   this->AddChild(this->button);
 
-  this->label = new UIStaticText(*this->m_context, *this->m_buttons);
+  this->label = new UIStaticText(*this->m_context);
   this->label->SetSize((this->geometry.width - this->button->BitmapWidth()), this->button->BitmapHeight());
   this->label->SetText("(No Select)", 0);
   this->label->Move(2, 3);

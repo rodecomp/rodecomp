@@ -5,7 +5,6 @@
 
 class UIBitmapButton;
 class UIStaticText;
-struct UIButtonContext;
 
 class UIMerchantItemPurchaseMSGWnd : public UIFrameWnd {
 public:
@@ -25,7 +24,7 @@ public:
   /* 00D0 */ int unknown_00D0;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 #endif

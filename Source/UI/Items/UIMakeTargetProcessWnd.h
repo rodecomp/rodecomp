@@ -6,12 +6,11 @@
 
 #include <vector>
 
-struct UIButtonContext;
 struct WindowResponseRecorder;
 
 class UIMakeTargetProcessWnd : public UIFrameWnd {
 public:
-  UIMakeTargetProcessWnd(UIWindowContext& windows, UIButtonContext& controls, WindowResponseRecorder& recorder);
+  UIMakeTargetProcessWnd(UIWindowContext& windows, WindowResponseRecorder& recorder);
   void Paint() override;
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot15(int width, int height) override;
@@ -24,7 +23,7 @@ public:
   /* 00B8 */ ITEM_INFO materials[3];
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
   WindowResponseRecorder* m_recorder;
 };
 

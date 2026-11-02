@@ -1,3 +1,7 @@
+#include "Client/Mode/ModeTooltip.h"
+#include "UI/Window/UINewSelectCharWnd.h"
+#include "Contents/MessageTable.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "Contents/Party/AdventurerAgencyMgr.h"
 #include "Contents/Party/AgencyRequestContext.h"
 #include "Render/DeviceContext/DeviceContext.h"
@@ -42,14 +46,13 @@ void UIApplyForPartyWnd::Slot11() {
 // OFFSET: 0x007BD970
 // FUNCTION: fn_09299
 void UIApplyForPartyWnd::Slot15(int, int) {
-  auto& controls = this->m_application->buttons;
   const int messages[] = {3374, 3373, 3045};
   const int ids[] = {381, 271, 201};
   const int positions[] = {51, 108, 173};
 
   for (int index = 0; index < 3; ++index) {
-    auto* button = new UIBasicButton(*this->m_context, controls);
-    const char* label = controls.services.MessageText(messages[index]);
+    auto* button = new UIBasicButton(*this->m_context);
+    const char* label = LookupMessage(messages[index]);
     const int width = this->TextWidth(label, 0, 0, 12, 0, 0);
     button->Configure(width + 10, label);
     button->Move(positions[index], 165);
@@ -58,11 +61,11 @@ void UIApplyForPartyWnd::Slot15(int, int) {
   }
 
   std::vector<std::string> lines;
-  WrapPlainText(controls.services.MessageText(3370), lines, 40, this->m_application->codePage);
+  WrapPlainText(LookupMessage(3370), lines, 40, this->m_application->codePage);
   int y = 136;
 
   for (const auto& line : lines) {
-    auto* label = new UIStaticText(*this->m_context, controls);
+    auto* label = new UIStaticText(*this->m_context);
     label->SetSize(this->geometry.width - 18, 15);
     label->Move(9, y);
     label->SetText(line.c_str(), 0);
@@ -74,7 +77,7 @@ void UIApplyForPartyWnd::Slot15(int, int) {
     y += 12;
   }
 
-  auto* close = new UIBitmapButton(*this->m_context, controls);
+  auto* close = new UIBitmapButton(*this->m_context);
   const std::string off = std::string(prefix) + "basic_interface\\big_sys_close_off.bmp";
   const std::string on = std::string(prefix) + "basic_interface\\big_sys_close_on.bmp";
   close->SetBitmap(off.c_str(), 0, 0);
@@ -97,9 +100,8 @@ void UIApplyForPartyWnd::SetInfo(CAdvenPartyInfo value) {
 // OFFSET: 0x007BF5A0
 // FUNCTION: fn_09303
 void UIApplyForPartyWnd::Paint() {
-  auto& controls = this->m_application->buttons;
   this->geometry.surface->Fill(nullptr, 0xFFFF00FFu);
-  const auto load = [&](const char* name) { return static_cast<CBitmapRes*>(controls.resources.Load((std::string(prefix) + name).c_str())); };
+  const auto load = [&](const char* name) { return static_cast<CBitmapRes*>(ResourceMgr::Instance().Load((std::string(prefix) + name).c_str())); };
   const auto* background = load("UIadventurerAgency\\bg_agency_register.bmp");
   this->DrawBitmap(0, 0, background ? &background->image : nullptr, false);
   int leftWidth = 0;
@@ -127,22 +129,22 @@ void UIApplyForPartyWnd::Paint() {
     }
   }
 
-  const char* caption = controls.services.MessageText(3368);
+  const char* caption = LookupMessage(3368);
   this->DrawTextAt(19, titleHeight - 13, caption, 0, 0, 12, 0xFFFFFF, 0, 0);
   this->DrawTextAt(18, titleHeight - 14, caption, 0, 0, 12, 0, 0, 0);
   const auto* base = load("basic_interface\\sys_base_off.bmp");
   this->DrawBitmap(3, 3, base ? &base->image : nullptr, true);
   const auto text = [&](int x, int y, const char* value) { this->DrawTextAt(x, y, value, 0, 0, 12, 0, 0, 0); };
-  text(10, 25, controls.services.MessageText(3415));
+  text(10, 25, LookupMessage(3415));
   const std::string fitted = FitText(*this->geometry.surface, this->info.characterName, 119);
   text(60, 25, fitted.c_str());
-  text(10, 49, controls.services.MessageText(408));
+  text(10, 49, LookupMessage(408));
   char levels[10] = {};
   _snprintf_s(levels, sizeof(levels), _TRUNCATE, "%d~%d", this->info.minimumLevel, this->info.maximumLevel);
   text(60, 49, levels);
-  text(10, 73, controls.services.MessageText(3369));
-  text(60, 73, UIPartyInfoWnd::TypeName(this->info.type, controls.services));
-  text(10, 97, controls.services.MessageText(504));
+  text(10, 73, LookupMessage(3369));
+  text(60, 73, UIPartyInfoWnd::TypeName(this->info.type));
+  text(10, 97, LookupMessage(504));
   const char* jobs[] = {"def", "heal", "atk", "buf"};
   const bool selected[] = {this->info.tanker, this->info.healer, this->info.dealer, this->info.assist};
 
@@ -152,7 +154,7 @@ void UIApplyForPartyWnd::Paint() {
     this->DrawBitmap(60 + index * 18, 95, icon ? &icon->image : nullptr, false);
   }
 
-  text(10, 121, controls.services.MessageText(3359));
+  text(10, 121, LookupMessage(3359));
   text(60, 121, this->info.memo.c_str());
 }
 
@@ -168,13 +170,13 @@ void UIApplyForPartyWnd::Slot28(int x, int y) {
 
   for (int index = 0; index < 4; ++index) {
     if (x > positions[index] && x < positions[index] + 16) {
-      const char* label = this->m_application->buttons.services.MessageText(messages[index]);
+      const char* label = LookupMessage(messages[index]);
 
       if (*label != '\0') {
         int screenX = positions[index];
         int screenY = 75;
         this->ToScreen(screenX, screenY);
-        this->m_application->buttons.services.Tooltip(label, screenX, screenY, -1, false, true);
+        static_cast<ModeTooltip*>(g_charViewMode)->Show(label, screenX, screenY, -1, false, true);
       }
 
       break;
@@ -197,7 +199,7 @@ int UIApplyForPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
       break;
     case 381: {
       const std::string name = this->info.characterName;
-      const char* relationship = owner.rows.services.IsFriend(name) ? owner.buttons.services.MessageText(102) : nullptr;
+      const char* relationship = owner.rows.services.IsFriend(name) ? LookupMessage(102) : nullptr;
 
       if (owner.rows.services.IsGuildMember(this->info.accountId)) {
         relationship = "GuildMember";

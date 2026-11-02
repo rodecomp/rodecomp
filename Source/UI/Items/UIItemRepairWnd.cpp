@@ -1,3 +1,4 @@
+#include "UI/Window/UIWindowMgr.h"
 #include "UI/Items/UIItemRepairWnd.h"
 
 #include "Client/Input/InputCharset.h"
@@ -26,7 +27,6 @@
 // OFFSET: 0x009A3860
 // FUNCTION: fn_13609
 void UIItemRepairWnd::Paint() {
-  auto& controls = *this->m_controls;
   const int titleHeight = this->DrawTitleBar(true, LookupMessage(812), 0);
   this->DrawPanelBackground(titleHeight, 0, "");
   this->DrawButtonBar(2, 0, 1);
@@ -35,7 +35,6 @@ void UIItemRepairWnd::Paint() {
 // OFFSET: 0x009A3B50
 // FUNCTION: fn_13612
 void UIMakeTargetResultWnd::Paint() {
-  auto& controls = *this->m_controls;
   const int titleHeight = this->DrawTitleBar(false, "", 0);
   this->DrawPanelBackground(titleHeight, 0, "");
   this->DrawButtonBar(2, 0, 1);
@@ -69,7 +68,7 @@ void UIItemRepairWnd::Slot15(int width, int height) {
   int ids[2] = {184, 185};
 
   for (int i = 0; i < 2; ++i) {
-    auto* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    auto* button = new UIBitmapButton(*this->m_context);
     button->SetBitmap((prefix + names[i][0] + ".bmp").c_str(), 0, 0);
     button->SetBitmap((prefix + names[i][1] + ".bmp").c_str(), 1, 0);
     button->SetBitmap((prefix + names[i][2] + ".bmp").c_str(), 2, 0);
@@ -99,7 +98,7 @@ void UIMakeTargetListWnd::Slot15(int width, int height) {
   int ids[2] = {184, 185};
 
   for (int i = 0; i < 2; ++i) {
-    auto* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    auto* button = new UIBitmapButton(*this->m_context);
     button->SetBitmap((prefix + names[i][0] + ".bmp").c_str(), 0, 0);
     button->SetBitmap((prefix + names[i][1] + ".bmp").c_str(), 1, 0);
     button->SetBitmap((prefix + names[i][2] + ".bmp").c_str(), 2, 0);
@@ -121,7 +120,7 @@ void UIMakeTargetProcessWnd::Slot15(int width, int height) {
   int ids[2] = {184, 185};
 
   for (int i = 0; i < 2; ++i) {
-    auto* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    auto* button = new UIBitmapButton(*this->m_context);
     button->SetBitmap((prefix + names[i][0] + ".bmp").c_str(), 0, 0);
     button->SetBitmap((prefix + names[i][1] + ".bmp").c_str(), 1, 0);
     button->SetBitmap((prefix + names[i][2] + ".bmp").c_str(), 2, 0);
@@ -139,7 +138,7 @@ void UIMakeTargetProcessWnd::Slot15(int width, int height) {
 void UIMakeTargetResultWnd::Slot15(int width, int height) {
   const std::string prefix("유저인터페이스\\");
 
-  auto* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+  auto* button = new UIBitmapButton(*this->m_context);
   button->SetBitmap((prefix + "btn_ok" + ".bmp").c_str(), 0, 0);
   button->SetBitmap((prefix + "btn_ok_a" + ".bmp").c_str(), 1, 0);
   button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
@@ -168,7 +167,7 @@ void UIWeaponRefineWnd::Slot15(int width, int height) {
   int ids[2] = {184, 185};
 
   for (int i = 0; i < 2; ++i) {
-    auto* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    auto* button = new UIBitmapButton(*this->m_context);
     button->SetBitmap((prefix + names[i][0] + ".bmp").c_str(), 0, 0);
     button->SetBitmap((prefix + names[i][1] + ".bmp").c_str(), 1, 0);
     button->SetBitmap((prefix + names[i][2] + ".bmp").c_str(), 2, 0);
@@ -310,7 +309,7 @@ int UIMakeTargetResultWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
 
 // OFFSET: 0x0099F780
 // FUNCTION: fn_13587
-UIItemRepairWnd::UIItemRepairWnd(UIWindowContext& windows, UIButtonContext& controls, UIListBoxContext& listContext,
+UIItemRepairWnd::UIItemRepairWnd(UIWindowContext& windows, UIListBoxContext& listContext,
                                  WindowResponseRecorder& recorder)
     : UIFrameWnd(windows, 0), itemIds(), indices(), entries() {
 }
@@ -318,7 +317,7 @@ UIItemRepairWnd::UIItemRepairWnd(UIWindowContext& windows, UIButtonContext& cont
 // OFFSET: 0x0099F850
 // FUNCTION: fn_13588
 UIMakeTargetListWnd::UIMakeTargetListWnd(
-  UIWindowContext& windows, UIButtonContext& controls, UIListBoxContext& listContext, WindowResponseRecorder& recorder
+  UIWindowContext& windows, UIListBoxContext& listContext, WindowResponseRecorder& recorder
 )
     : UIFrameWnd(windows, 0), itemIds() {
 }
@@ -326,14 +325,14 @@ UIMakeTargetListWnd::UIMakeTargetListWnd(
 // OFFSET: 0x0099F8D0
 // FUNCTION: fn_13589
 UIMakeTargetProcessWnd::UIMakeTargetProcessWnd(
-  UIWindowContext& windows, UIButtonContext& controls, WindowResponseRecorder& recorder
+  UIWindowContext& windows, WindowResponseRecorder& recorder
 )
     : UIFrameWnd(windows, 0), materials() {
 }
 
 // OFFSET: 0x0099F950
 // FUNCTION: fn_13590
-UIMakeTargetResultWnd::UIMakeTargetResultWnd(UIWindowContext& windows, UIButtonContext& controls)
+UIMakeTargetResultWnd::UIMakeTargetResultWnd(UIWindowContext& windows)
     : UIFrameWnd(windows, 0) {
   this->succeeded = false;
   this->makeType = 0;
@@ -342,7 +341,7 @@ UIMakeTargetResultWnd::UIMakeTargetResultWnd(UIWindowContext& windows, UIButtonC
 // OFFSET: 0x0099F9C0
 // FUNCTION: fn_13591
 UIWeaponRefineWnd::UIWeaponRefineWnd(
-  UIWindowContext& windows, UIButtonContext& controls, UIListBoxContext& listContext, WindowResponseRecorder& recorder
+  UIWindowContext& windows, UIListBoxContext& listContext, WindowResponseRecorder& recorder
 )
     : UIFrameWnd(windows, 0), itemIds(), indices() {
 }

@@ -7,7 +7,6 @@
 #include <cstddef>
 #include <string>
 
-struct UIButtonContext;
 struct WindowPlacement;
 
 class UIItemParamChangeDisplayWnd : public UIFrameWnd {
@@ -35,7 +34,7 @@ public:
   void SumEquippedStats();
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

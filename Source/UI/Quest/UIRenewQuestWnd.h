@@ -17,7 +17,6 @@ class UICheckBox;
 class UIStaticBitmap;
 class UIStaticText;
 class UITab;
-struct UIButtonContext;
 
 class UINpcSprWnd : public UIWindow {
 public:
@@ -96,7 +95,7 @@ public:
   /* 00F4 */ bool m_recommended;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 class UIRenewQuestScrollBar : public UIScrollBar {
@@ -113,7 +112,7 @@ struct RenewQuestRowControls {
 
 class UIRenewQuestWnd : public UIFrameWnd {
 public:
-  UIRenewQuestWnd(UIWindowContext& windows, UIButtonContext& controls);
+  UIRenewQuestWnd(UIWindowContext& windows);
   void Slot15(int width, int height) override;
   void Paint() override;
   void Slot25(int x, int y) override;
@@ -138,7 +137,7 @@ public:
   /* 0144 */ std::vector<unsigned int> m_questIds[4];
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

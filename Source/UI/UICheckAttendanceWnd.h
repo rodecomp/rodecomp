@@ -8,7 +8,6 @@
 #include <vector>
 
 class UIBmpTextButton;
-struct UIButtonContext;
 
 struct AttendanceBanner {
   /* 0000 */ std::string image;
@@ -19,7 +18,7 @@ struct AttendanceBanner {
 
 class UICheckAttendanceWnd_Banner : public UIWindow {
 public:
-  UICheckAttendanceWnd_Banner(UIWindowContext& windows, UIButtonContext& controls);
+  UICheckAttendanceWnd_Banner(UIWindowContext& windows);
   ~UICheckAttendanceWnd_Banner() override;
   void Slot19() override;
   void Paint() override;
@@ -35,7 +34,7 @@ public:
   /* 0098 */ std::uint32_t m_lastSwitch;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 class UICheckAttendanceWnd : public UIFrameWnd {
@@ -67,7 +66,7 @@ public:
   /* 00CC */ UIBmpTextButton* m_notice;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 #endif

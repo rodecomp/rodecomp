@@ -8,7 +8,6 @@
 class UIBitmapButton;
 class UIBitmapEditCtrl;
 class UIScrollBar;
-struct UIButtonContext;
 
 class UIMakeCharWnd : public UIFrameWnd {
 public:
@@ -33,7 +32,7 @@ public:
   /* 02D8 */ int unknown_02D8;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
 };
 
 #endif

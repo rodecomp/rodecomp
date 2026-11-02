@@ -34,16 +34,16 @@ static_assert(sizeof(PartyBookingUpdatePacket) == 14);
 void UIJobListWnd::Slot15(int width, int height) {
   char title[9] = {};
   std::sprintf(title, "Job List");
-  this->m_title = new UIStaticText(*this->m_context, *this->m_controls);
+  this->m_title = new UIStaticText(*this->m_context);
   this->m_title->SetSize(this->geometry.width - 32, 15);
   this->m_title->SetTextFitted(title);
   this->m_title->Move(16, 2);
   this->m_title->shadow = 1;
   this->AddChild(this->m_title);
-  this->AddCloseButton(*this->m_controls, "", 0);
+  this->AddCloseButton("", 0);
 
   const std::string path = "유저인터페이스\\";
-  this->m_okButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->m_okButton = new UIBitmapButton(*this->m_context);
   this->m_okButton->SetBitmap((path + "btn_ok" + ".bmp").c_str(), 0, 0);
   this->m_okButton->SetBitmap((path + "btn_ok_a" + ".bmp").c_str(), 1, 0);
   this->m_okButton->SetBitmap((path + "btn_ok_b" + ".bmp").c_str(), 2, 0);
@@ -148,7 +148,7 @@ void UIJobListWnd::RefreshJobs() {
 
   int index = 0;
   for (auto it = g_partyBookingJobs.begin(); it != g_partyBookingJobs.end(); ++it, ++index) {
-    this->m_jobChecks[index] = new UICheckBox(*this->m_context, *this->m_controls);
+    this->m_jobChecks[index] = new UICheckBox(*this->m_context);
     this->m_jobChecks[index]->SetSize(120, 15);
     const int job = it->first;
     if (job == -1) {
@@ -175,6 +175,6 @@ void UIJobListWnd::RefreshJobs() {
 
 // OFFSET: 0x00911410
 // FUNCTION: fn_12514
-UIJobListWnd::UIJobListWnd(UIWindowContext& windows, UIButtonContext& controls)
-    : UIFrameWnd(windows, 0), m_title(nullptr), m_okButton(nullptr), unknown_00E8(0), m_controls(&controls) {
+UIJobListWnd::UIJobListWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0), m_title(nullptr), m_okButton(nullptr), unknown_00E8(0) {
 }

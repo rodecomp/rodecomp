@@ -127,7 +127,7 @@ void UISubChatHisWnd::Slot11() {
 void UISubChatHisWnd::Slot15(int width, int height) {
   {
     const std::string name = "유저인터페이스\\basic_interface\\stickon";
-    auto* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    auto* button = new UIBitmapButton(*this->m_context);
     this->m_stickButton = button;
     button->SetBitmap((name + "_a.bmp").c_str(), 0, 0);
     button->SetBitmap((name + "_b.bmp").c_str(), 1, 0);
@@ -141,7 +141,7 @@ void UISubChatHisWnd::Slot15(int width, int height) {
   {
     std::string name = "유저인터페이스\\basic_interface\\battle_option";
     name += "2";
-    auto* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    auto* button = new UIBitmapButton(*this->m_context);
     this->m_optionButton = button;
     button->SetBitmap((name + "_a.bmp").c_str(), 0, 0);
     button->SetBitmap((name + "_b.bmp").c_str(), 1, 0);
@@ -154,7 +154,7 @@ void UISubChatHisWnd::Slot15(int width, int height) {
 
   {
     const std::string name = "유저인터페이스\\basic_interface\\wnd_mini";
-    auto* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    auto* button = new UIBitmapButton(*this->m_context);
     this->m_miniButton = button;
     button->SetBitmap((name + "_a.bmp").c_str(), 0, 0);
     button->SetBitmap((name + "_b.bmp").c_str(), 1, 0);
@@ -208,8 +208,8 @@ void UISubChatHisWnd::Slot15(int width, int height) {
 
 // OFFSET: 0x00912340
 // FUNCTION: fn_12529
-UISubChatHisWnd::UISubChatHisWnd(UIWindowContext& windows, UIButtonContext& controls, UIEditContext& edit, UIListBoxContext& list)
-    : UIFrameWnd(windows, 0), m_controls(&controls), m_editContext(&edit), m_listContext(&list) {
+UISubChatHisWnd::UISubChatHisWnd(UIWindowContext& windows, UIEditContext& edit, UIListBoxContext& list)
+    : UIFrameWnd(windows, 0), m_editContext(&edit), m_listContext(&list) {
   this->m_saved = nullptr;
   this->m_resizer = nullptr;
   this->m_chatBox = nullptr;

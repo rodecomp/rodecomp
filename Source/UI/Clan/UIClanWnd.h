@@ -3,7 +3,6 @@
 
 #include "UI/Window/UIFrameWnd.h"
 
-struct UIButtonContext;
 struct ClanWndInfo;
 class CBitmapRes;
 class UIStaticText;
@@ -19,7 +18,7 @@ public:
   virtual int Slot53() = 0;
 
 protected:
-  UIButtonContext* m_controls;
+  void* unknown_controls;
   /* 00B4 */ ClanWndInfo* m_saved;
   /* 00B8 */ UIStaticText* m_title;
 };

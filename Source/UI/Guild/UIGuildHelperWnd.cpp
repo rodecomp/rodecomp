@@ -53,7 +53,6 @@ UIGuildBanReasonDescWnd::UIGuildBanReasonDescWnd() {
 // OFFSET: 0x0095DB20
 // FUNCTION: fn_13071
 void UIGuildHelperWnd::Paint() {
-  auto& controls = *this->m_controls;
   this->DrawTitleBar(true, LookupMessage(2074), 0);
   this->DrawPanelBackground(17, 0, "");
   this->DrawButtonBar(2, 0, 1);
@@ -97,7 +96,6 @@ void UIGuildHelperWnd::Slot27(int x, int y) {
 // OFFSET: 0x0095D5C0
 // FUNCTION: fn_13069
 void UICreateGuildWnd::Paint() {
-  auto& controls = *this->m_controls;
   this->DrawPanelBackground(17, 0, "");
   this->DrawButtonBar(2, 0, 1);
   int text;
@@ -131,7 +129,6 @@ void UICreateGuildWnd::Slot31(int, int) {
 // OFFSET: 0x0095F420
 // FUNCTION: fn_13078
 void UIGuildTipWnd::Paint() {
-  auto& controls = *this->m_controls;
   this->DrawTitleBar(true, LookupMessage(2078), 0);
   this->DrawPanelBackground(17, 0, "");
   this->DrawButtonBar(2, 0, 1);
@@ -288,7 +285,7 @@ void UICreateGuildWnd::Slot15(int, int) {
     int ids[2] = {184, 185};
 
     for (unsigned int i = 0; i < 2; ++i) {
-      auto* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+      auto* button = new UIBitmapButton(*this->m_context);
       button->SetBitmap((prefix + names[i][0] + ".bmp").c_str(), 0, 0);
       button->SetBitmap((prefix + names[i][1] + ".bmp").c_str(), 1, 0);
       button->SetBitmap((prefix + names[i][2] + ".bmp").c_str(), 2, 0);
@@ -313,7 +310,7 @@ void UIGuildHelperWnd::Slot15(int width, int height) {
 
   int x = 8;
   for (int i = 0; i < 3; ++i) {
-    this->m_button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    this->m_button = new UIBitmapButton(*this->m_context);
     this->m_button->SetBitmap((prefix + names[i][0] + ".bmp").c_str(), 0, 0);
     this->m_button->SetBitmap((prefix + names[i][1] + ".bmp").c_str(), 1, 0);
     this->m_button->SetBitmap((prefix + names[i][2] + ".bmp").c_str(), 2, 0);
