@@ -7,6 +7,7 @@
 #include "Contents/Skills/SkillInfo.h"
 #include "File/File.h"
 #include "File/ShortcutFilename.h"
+#include "Render/DeviceContext/DCSurface.h"
 #include "UI/Exchange/UIExchangeUI.h"
 #include "UI/Items/UISpellListWnd.h"
 #include "Client/Registry.h"
@@ -21,7 +22,6 @@
 #include "UI/Chat/ChatSuggestions.h"
 #include "UI/Rodex/UIRodexComposeWnd.h"
 #include "Contents/Items/ItemNaming.h"
-#include "UI/Window/WindowRegistration.h"
 #include "Contents/GuildInfo.h"
 #include "Contents/TipBoxTitles.h"
 #include "Contents/TipOfTheDay.h"
@@ -879,7 +879,7 @@ void UIMonsterDisplayWnd::Paint() {
     if (cell.imageType == 0) {
       texture = g_renderer->atlas.Find(image, sprite->palette, record);
       if (!texture) {
-        texture = g_renderer->atlas.Insert(this->m_context->renderSystem, image, sprite->palette, record, g_serviceType, g_resourceReuseDelay);
+        texture = g_renderer->atlas.Insert(*GetRenderSystemHolder()->system, image, sprite->palette, record, g_serviceType, g_resourceReuseDelay);
       }
     } else {
       texture = static_cast<CTexture*>(const_cast<void*>(image->unknown_0008));
@@ -1777,7 +1777,7 @@ void UIPetTamingDeceiveWnd::Paint() {
     const SpriteRleImage* image = sprite->images[0][cell.image];
     CTexture* texture = g_renderer->atlas.Find(image, sprite->palette, record);
     if (!texture) {
-      texture = g_renderer->atlas.Insert(this->m_context->renderSystem, image, sprite->palette, record, g_serviceType, g_resourceReuseDelay);
+      texture = g_renderer->atlas.Insert(*GetRenderSystemHolder()->system, image, sprite->palette, record, g_serviceType, g_resourceReuseDelay);
     }
     this->geometry.surface->DrawSurface(
       this->geometry.width / 2 + cell.x, this->geometry.height / 2 + cell.y, texture, static_cast<int>(record.u0 * 256.0f),
@@ -1981,7 +1981,7 @@ void UIMenuWnd::Slot31(int x, int y) {
   if (target) {
     target->SendMsg(nullptr, 48, choice, 0, 0, 0);
   } else if (this->m_menuId == 10041) {
-    this->m_context->mode->SendModeMessage(24, choice, 0, 0, 0);
+    static_cast<CMode*>(g_charViewMode)->SendMsg(24, choice, 0, 0, 0);
   }
   g_windowMgr.CloseWindow(18);
 }
@@ -3317,10 +3317,10 @@ int UIBabyAcceptWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
     this->m_acceptance->recorder.Record(this->geometry.id, static_cast<int>(a), b, c, d);
     if (a == 184) {
       g_windowMgr.CloseWindow(110);
-      this->m_context->mode->SendModeMessage(173, this->identity, 1, 0, 0);
+      static_cast<CMode*>(g_charViewMode)->SendMsg(173, this->identity, 1, 0, 0);
     } else if (a == 185) {
       g_windowMgr.CloseWindow(110);
-      this->m_context->mode->SendModeMessage(173, this->identity, 0, 0, 0);
+      static_cast<CMode*>(g_charViewMode)->SendMsg(173, this->identity, 0, 0, 0);
     }
     return 0;
   }
@@ -3370,7 +3370,7 @@ int UIBabyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
       g_windowMgr.EnsureWindow(110)->SendMsg(nullptr, 91, 184, b, 0, 0);
     } else if (a == 185) {
       g_windowMgr.CloseWindow(105);
-      this->m_context->mode->SendModeMessage(173, this->identity, 0, 0, 0);
+      static_cast<CMode*>(g_charViewMode)->SendMsg(173, this->identity, 0, 0, 0);
     }
     return 0;
   }
@@ -3606,10 +3606,10 @@ int UIChooseSellBuyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
 
     if (this->geometry.visible != 0) {
       if (response == 185) {
-        this->m_context->mode->SendModeMessage(40, 0, 0, 0, 0);
+        static_cast<CMode*>(g_charViewMode)->SendMsg(40, 0, 0, 0, 0);
         g_windowMgr.CloseWindow(25);
       } else if (response == 223 || response == 224) {
-        this->m_context->mode->SendModeMessage(response == 223 ? 37 : 38, this->identity, 0, 0, 0);
+        static_cast<CMode*>(g_charViewMode)->SendMsg(response == 223 ? 37 : 38, this->identity, 0, 0, 0);
         g_windowMgr.LookupWindow(25)->Show(0);
       } else {
         return 0;
@@ -6431,10 +6431,10 @@ int UIJoinGuildAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       g_windowMgr.CloseWindow(214);
       g_windowMgr.CloseWindow(213);
       g_windowMgr.CloseWindow(212);
-      this->m_context->mode->SendModeMessage(114, this->identity, 1, 0, 0);
+      static_cast<CMode*>(g_charViewMode)->SendMsg(114, this->identity, 1, 0, 0);
     } else if (a == 185) {
       g_windowMgr.CloseWindow(70);
-      this->m_context->mode->SendModeMessage(114, this->identity, 0, 0, 0);
+      static_cast<CMode*>(g_charViewMode)->SendMsg(114, this->identity, 0, 0, 0);
     }
     return 0;
   }
@@ -6769,7 +6769,7 @@ int UICoupleAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     } else {
       return 0;
     }
-    this->m_context->mode->SendModeMessage(167, this->identity, accepted, 0, 0);
+    static_cast<CMode*>(g_charViewMode)->SendMsg(167, this->identity, accepted, 0, 0);
     return 0;
   }
 
@@ -6858,7 +6858,7 @@ int UIJoinFriendAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     } else {
       return 0;
     }
-    this->m_context->mode->SendModeMessage(175, this->m_accountId, this->m_characterId, accepted, 0);
+    static_cast<CMode*>(g_charViewMode)->SendMsg(175, this->m_accountId, this->m_characterId, accepted, 0);
     return 0;
   }
 
@@ -6911,7 +6911,7 @@ int UIMixAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     if (a == 184) {
       g_windowMgr.CloseWindow(160);
       g_windowMgr.CloseWindow(161);
-      this->m_context->mode->SendModeMessage(266, 0, 0, 0, 0);
+      static_cast<CMode*>(g_charViewMode)->SendMsg(266, 0, 0, 0, 0);
       g_windowMgr.CloseWindow(163);
       reinterpret_cast<SessionItemLists*>(&g_session)->ClearTradeItems();
     } else if (a == 185) {
@@ -7088,7 +7088,7 @@ int UISkillNameChangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
   if (message == 6) {
     if (a == 184) {
       if (this->m_skillId != -1 && this->m_edit->Length() != 0) {
-        this->m_context->mode->SendModeMessage(98, this->m_skillId, reinterpret_cast<std::intptr_t>(this->m_edit->Text()), 0, 0);
+        static_cast<CMode*>(g_charViewMode)->SendMsg(98, this->m_skillId, reinterpret_cast<std::intptr_t>(this->m_edit->Text()), 0, 0);
       }
       g_windowMgr.CloseWindow(55);
     }
@@ -9548,7 +9548,7 @@ int UIFrameWnd::BuildItemName(
   ItemDescriptions descriptions{g_itemDescriptions};
 
   const auto unknownCreator = [&]() {
-    this->m_context->registration.Add(this);
+    g_windowMgr.RegisterWindow(this);
     const int error = strncpy_s(*cursor, *remaining, LookupMessage(581), _TRUNCATE);
     if (error == 0 || error == STRUNCATE) {
       const std::size_t bytes = *cursor ? strnlen(*cursor, *remaining) : 0;
@@ -10291,7 +10291,8 @@ void UIExchangeWnd::Paint() {
       continue;
     }
     const int y = this->m_rowHeight * row;
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, this->m_context->fonts, this->m_context->locale, 16, y + 21, item, 0, 0);
+    const TextLocale locale = {};
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, locale, 16, y + 21, item, 0, 0);
     this->DrawFittedItemName(48, y + 29, &item, 0, 0, 12, 1);
     if (item.unknown_0088 > 0) {
       const std::string path = FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.unknown_0088);
@@ -10309,7 +10310,8 @@ void UIExchangeWnd::Paint() {
       continue;
     }
     const int y = this->m_rowHeight * row;
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, this->m_context->fonts, this->m_context->locale, 295, y + 21, item, 0, 0);
+    const TextLocale locale = {};
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, locale, 295, y + 21, item, 0, 0);
     this->DrawFittedItemName(327, y + 29, &item, 0, 0, 12, 1);
     if (item.unknown_0088 > 0) {
       const std::string path = FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.unknown_0088);

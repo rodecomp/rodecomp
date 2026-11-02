@@ -1,17 +1,16 @@
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
-#include "UI/Window/WindowRegistration.h"
 
 // OFFSET: 0x00A8B060
 // FUNCTION: fn_17120
-void WindowRegistration::Add(UIWindow* window) {
-  for (UIWindow* existing : this->windows) {
+void UIWindowMgr::RegisterWindow(UIWindow* window) {
+  for (UIWindow* existing : this->registeredWindows) {
     if (existing == window) {
       return;
     }
   }
 
-  this->windows.push_back(window);
+  this->registeredWindows.push_back(window);
 }
 
 // OFFSET: 0x00AA7200

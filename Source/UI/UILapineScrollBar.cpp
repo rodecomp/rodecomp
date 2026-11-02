@@ -1,4 +1,5 @@
 #include "Render/Text/FontCache.h"
+#include "Render/Text/TextContext.h"
 #include "UI/UIIngredientInfoWnd.h"
 #include "UI/UILapineScrollBar.h"
 
@@ -230,9 +231,11 @@ void UIIngredientInfoWnd::Paint() {
   ItemDescriptions descriptions{g_itemDescriptions};
   std::uint32_t color = 0;
   if (this->insufficient == 0) {
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, this->m_context->fonts, this->m_context->locale, 4, 3, this->item, 0, 0);
+    const TextLocale locale = {};
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, locale, 4, 3, this->item, 0, 0);
   } else {
-    DrawItemWithQuantityAuxiliary(*this, descriptions, this->m_context->fonts, this->m_context->locale, 2, 4, 3, this->item, this->item.identified, 0);
+    const TextLocale locale = {};
+    DrawItemWithQuantityAuxiliary(*this, descriptions, g_fontCache, locale, 2, 4, 3, this->item, this->item.identified, 0);
     color = 0x969696;
   }
 
@@ -278,7 +281,8 @@ void UILapineBoxWnd::Paint() {
     }
     CBitmapRes* slot = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\lapine\\shadow_item_off.bmp")));
     this->DrawBitmap(x - 4, y + 11, &slot->image, true);
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, this->m_context->locale, x, y, this->items[index], 0, 0);
+    const TextLocale locale = {};
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, locale, x, y, this->items[index], 0, 0);
   }
 
   if (timeGetTime() < this->noticeTick + this->noticeDuration) {

@@ -5,7 +5,6 @@
 #include "Client/Mode/ModeTooltip.h"
 #include "Contents/MessageTable.h"
 #include "Client/Mode/CMode.h"
-#include "Client/Mode/ModeCursor.h"
 #include "Client/Mode/ModeEvents.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
@@ -143,7 +142,7 @@ void UIButton::Slot29(int x, int y) {
 // OFFSET: 0x0085F950
 // FUNCTION: fn_10875
 void UIButton::ResetCursor(int, int) {
-  this->m_context->cursor.Set(this->m_disabled != 0 ? 0 : 2, this->m_context->cursorTick);
+  static_cast<CMode*>(g_charViewMode)->SetCursorAction(this->m_disabled != 0 ? 0 : 2);
 }
 
 // OFFSET: 0x0085EED0
@@ -170,10 +169,10 @@ void UIButton::Slot31(int x, int y) {
     if (parent) {
       if (WindowPolicy(g_windowMgr.policy[0].actions, g_replayAnimationScaling != 0, 3, parent->geometry.id) != 0) {
         int id = this->geometry.id;
-        if (id == 185 && this->m_context->mode && static_cast<CMode*>(g_charViewMode)->cursorType == 2) {
+        if (id == 185 && g_charViewMode && static_cast<CMode*>(g_charViewMode)->cursorType == 2) {
           const char* text = LookupMessage(17);
           if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text, 2, true, false, 0, "Message", 280, 120, 0) == 187) {
-            this->m_context->mode->SendModeMessage(2, 0, 0, 0, 0);
+            static_cast<CMode*>(g_charViewMode)->SendMsg(2, 0, 0, 0, 0);
           }
         } else {
           if (id == 184 || id == 321) {
@@ -186,7 +185,7 @@ void UIButton::Slot31(int x, int y) {
         }
       }
     } else {
-      this->m_context->mode->SendModeMessage(0, this->geometry.id, this->m_argument, 0, 0);
+      static_cast<CMode*>(g_charViewMode)->SendMsg(0, this->geometry.id, this->m_argument, 0, 0);
     }
   }
 

@@ -1,3 +1,4 @@
+#include "Client/Mode/CMode.h"
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "Client/Mode/ModeTooltip.h"
 #include "UI/UILapineUpgradeBoxWnd.h"
@@ -173,16 +174,16 @@ void UILapineUpgradeBoxWnd::Paint() {
 // OFFSET: 0x006035E0
 // FUNCTION: fn_04194
 void UILapineUpgradeBoxWnd::Slot10(int x, int y, std::intptr_t value) {
-  ModeEvents* mode = this->m_context->mode;
+  CMode* mode = static_cast<CMode*>(g_charViewMode);
   if (this->item.unknown_0000[1] > 0) {
-    mode->SendModeMessage(18, 0, 0, 0, 0);
+    mode->SendMsg(18, 0, 0, 0, 0);
     return;
   }
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   if (drag->source == 27) {
     this->SendMsg(this, 31, drag->id, 0, 0, 0);
   }
-  mode->SendModeMessage(18, 0, 0, 0, 0);
+  mode->SendMsg(18, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x00603650

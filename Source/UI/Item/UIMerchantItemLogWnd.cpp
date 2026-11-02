@@ -1,4 +1,5 @@
 #include "Render/Text/FontCache.h"
+#include "Render/Text/TextContext.h"
 #include "UI/Item/UIMerchantItemLogWnd.h"
 
 #include "Client/Mode/ModeTooltip.h"
@@ -121,7 +122,8 @@ void UIMerchantItemLogWnd::Paint() {
 
     const int top = visible / this->columns * 32;
     const int x = visible % this->columns * 32 + 44;
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, this->m_context->locale, x, top + 21, *it, 0, 0);
+    const TextLocale locale = {};
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, locale, x, top + 21, *it, 0, 0);
 
     if (it->unknown_0088 > 0) {
       this->DrawBitmap(

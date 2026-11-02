@@ -1,3 +1,4 @@
+#include "Render/Renderer.h"
 #include "UI/Window/UIVideoWnd.h"
 
 #include "Contents/MessageTable.h"
@@ -70,7 +71,7 @@ void UIVideoSkipButton::Paint() {
 // OFFSET: 0x00AB4600
 // FUNCTION: fn_17443
 void UIVideoWnd::Paint() {
-  this->SetSolid(this->m_context->primitives, this->geometry.width, this->geometry.height, 0xFF000000);
+  this->SetSolid(g_renderer->primitives, this->geometry.width, this->geometry.height, 0xFF000000);
   if (this->m_movie->State() != 1) {
     return;
   }
@@ -80,7 +81,7 @@ void UIVideoWnd::Paint() {
   const int height = this->geometry.height;
   const float scaled = (std::min)(static_cast<float>(static_cast<int>(handle->height)) / static_cast<float>(static_cast<int>(handle->width)) * static_cast<float>(width), static_cast<float>(height));
   const int videoHeight = static_cast<int>(scaled);
-  this->DrawStretched(this->m_context->primitives, 0, static_cast<int>((height - videoHeight) * 0.5), this->m_texture, 0xFFFFFFFF, width, videoHeight);
+  this->DrawStretched(g_renderer->primitives, 0, static_cast<int>((height - videoHeight) * 0.5), this->m_texture, 0xFFFFFFFF, width, videoHeight);
 }
 
 // OFFSET: 0x00AB4680

@@ -1,7 +1,8 @@
+#include "Client/Mode/CMode.h"
+#include "Render/DeviceContext/DCSurface.h"
 #include "UI/Quest/UIRenewQuestWnd.h"
 
 #include "Client/Application/ApplicationWindow.h"
-#include "Client/Mode/ModeCursor.h"
 #include "Client/ReplayPacketRecorder.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Items/ItemDescription.h"
@@ -28,6 +29,7 @@
 #include "UI/Text/UIStaticText.h"
 #include "UI/Text/UITagTextViewer.h"
 #include "UI/UIStaticBitmap.h"
+#include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Window/UITab.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowDialogs.h"
@@ -108,7 +110,7 @@ void UINpcSprWnd::Paint() {
       if (cell.imageType == 0) {
         texture = g_renderer->atlas.Find(image, palette, record);
         if (!texture) {
-          texture = g_renderer->atlas.Insert(this->m_context->renderSystem, image, palette, record, g_serviceType, g_resourceReuseDelay);
+          texture = g_renderer->atlas.Insert(*GetRenderSystemHolder()->system, image, palette, record, g_serviceType, g_resourceReuseDelay);
         }
       } else {
         texture = static_cast<CTexture*>(const_cast<void*>(image->unknown_0008));
@@ -136,7 +138,7 @@ void UINpcSprWnd::Slot31(int, int) {
 // OFFSET: 0x007F97F0
 // FUNCTION: fn_09936
 void UINpcSprWnd::ResetCursor(int, int) {
-  this->m_context->cursor.Set(2, this->m_context->cursorTick);
+  static_cast<CMode*>(g_charViewMode)->SetCursorAction(2);
 }
 
 // OFFSET: 0x007F9800

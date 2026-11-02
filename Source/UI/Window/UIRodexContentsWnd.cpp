@@ -1,4 +1,5 @@
 #include "Render/Text/FontCache.h"
+#include "Render/Text/TextContext.h"
 #include "UI/Window/UIRodexContentsWnd.h"
 
 #include "Client/Input/InputCharset.h"
@@ -185,7 +186,8 @@ void UIRodexContentsWnd::Paint() {
       ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\shadow_item_on.bmp"))
     );
     this->DrawBitmap(x - 4, 319, &slot->image, true);
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, this->m_context->locale, x, 309, *item, 0, 0);
+    const TextLocale locale = {};
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, locale, x, 309, *item, 0, 0);
     if (item->unknown_0088 > 0) {
       ResourceMgr& resources = ResourceMgr::Instance();
       const std::string name = FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item->unknown_0088);

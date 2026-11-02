@@ -1,7 +1,9 @@
+#include "Client/Mode/CMode.h"
+#include "Render/Text/FontCache.h"
+#include "Render/Text/TextContext.h"
 #include "UI/Window/UIHotKeyWnd.h"
 #include "UI/Chat/ChatSuggestions.h"
 #include "Client/Session.h"
-#include "Client/Mode/ModeCursor.h"
 #include "Client/Mode/ModeTooltip.h"
 #include "Contents/Hotkeys/UserHotkeyMgr.h"
 #include "Contents/Skills/AutomaticSkills.h"
@@ -398,7 +400,7 @@ void UISerachStoreInfoWnd::Slot28(int x, int y) {
           text = text.substr(0, end);
         }
 
-        this->m_context->cursor.Set(2, this->m_context->cursorTick);
+        static_cast<CMode*>(g_charViewMode)->SetCursorAction(2);
       }
     } else {
       text = item.DisplayName(0);
@@ -425,8 +427,8 @@ void UIHotKeyWnd::Paint() {
     return;
   }
 
-  FontCache& fonts = this->m_context->fonts;
-  const TextLocale& locale = this->m_context->locale;
+  FontCache& fonts = g_fontCache;
+  const TextLocale locale = {};
 
   this->unknown_00BC = this->DrawTitleBar(true, LookupMessage(1494), 0);
   this->unknown_00C0 = this->DrawButtonBar(2, 0, 1);

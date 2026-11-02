@@ -1,4 +1,4 @@
-#include "Client/Mode/ModeCursor.h"
+#include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
 #include "Contents/Configuration/ServiceOptions.h"
@@ -7,6 +7,7 @@
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
 #include "UI/Shop/UIMerchantShopTitle.h"
+#include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowBorder.h"
 #include "UI/Text/UIStaticText.h"
@@ -71,9 +72,9 @@ void UIMerchantShopTitle::Slot26(int, int) {
 // FUNCTION: fn_10878
 void UIMerchantShopTitle::ResetCursor(int x, int y) {
   if (x >= 0 && x < this->geometry.width && y >= 0 && y <= this->geometry.height) {
-    this->m_context->cursor.Set(2, this->m_context->cursorTick);
+    static_cast<CMode*>(g_charViewMode)->SetCursorAction(2);
   } else {
-    this->m_context->cursor.Set(0, this->m_context->cursorTick);
+    static_cast<CMode*>(g_charViewMode)->SetCursorAction(0);
   }
 }
 

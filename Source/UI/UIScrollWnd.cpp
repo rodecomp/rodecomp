@@ -1,3 +1,4 @@
+#include "Render/DeviceContext/DCSurface.h"
 #include "UI/UIScrollWnd.h"
 #include "Render/DeviceContext/DCBitmap.h"
 #include "Render/Primitives/RenderPrimitivePool.h"
@@ -134,7 +135,7 @@ bool UIScrollWnd::UpdateCached(int redraw) {
       if (child != this->horizontalBar && child != this->scrollBar) {
         primitives.push_back(child->DrawPrimitive());
       } else {
-        static_cast<CDCBitmap*>(child->geometry.surface)->UploadTexture(this->m_context->renderSystem, child->m_texture);
+        static_cast<CDCBitmap*>(child->geometry.surface)->UploadTexture(*GetRenderSystemHolder()->system, child->m_texture);
         primitives.push_back(this->BuildPrimitive(
           child->geometry.x + this->unknown_009C, child->geometry.y + this->scrollPosition, 0, 0, child->geometry.width, child->geometry.height,
           child->m_texture, child->Color()
@@ -225,7 +226,7 @@ RenderPrimitive* UIScrollWnd::DrawPrimitive() {
 // OFFSET: 0x009AD100
 // FUNCTION: fn_13782
 RenderPrimitive* UIScrollWnd::BuildPrimitive(int x, int y, int sourceX, int sourceY, int width, int height, CTexture* texture, std::uint32_t color) {
-  RenderPrimitive* primitive = this->m_context->primitives.Acquire();
+  RenderPrimitive* primitive = g_renderer->primitives.Acquire();
   primitive->texture = texture;
   const float textureWidth = static_cast<float>(std::bit_cast<std::int32_t>(texture->TextureWidth()));
   const float textureHeight = static_cast<float>(std::bit_cast<std::int32_t>(texture->TextureHeight()));

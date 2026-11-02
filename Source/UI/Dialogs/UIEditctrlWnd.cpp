@@ -1,8 +1,8 @@
+#include "Client/Mode/CMode.h"
 #include "UI/Dialogs/UIEditctrlWnd.h"
 
 #include "Client/Application/Launcher.h"
 #include "Client/Mode/CGameMode.h"
-#include "Client/Mode/ModeCursor.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
 #include "Render/DeviceContext/DeviceContext.h"
@@ -22,6 +22,7 @@
 #include "UI/Dialogs/UIMiniMapWnd.h"
 #include "UI/Edit/UIEditCtrl.h"
 #include "UI/Window/InputFocus.h"
+#include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowDialogs.h"
 #include "Utility/Text/FormatString.h"
@@ -238,9 +239,9 @@ void UIMiniMapWnd::Slot25(int x, int y) {
 // FUNCTION: fn_13561
 void UIMiniMapWnd::ResetCursor(int, int) {
   if (this->dragging) {
-    this->m_context->cursor.Set(1, this->m_context->cursorTick);
+    static_cast<CMode*>(g_charViewMode)->SetCursorAction(1);
   } else {
-    this->m_context->cursor.Set(0, this->m_context->cursorTick);
+    static_cast<CMode*>(g_charViewMode)->SetCursorAction(0);
   }
 }
 

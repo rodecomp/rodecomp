@@ -1,3 +1,4 @@
+#include "Render/Renderer.h"
 #include "UI/Window/UIRPImageWnd2.h"
 
 // OFFSET: 0x0094EAF0
@@ -7,9 +8,9 @@ void UIRPImageWnd2::Paint() {
     return;
   }
 
-  this->SetSolid(this->m_context->primitives, this->geometry.width, this->geometry.height, 0);
+  this->SetSolid(g_renderer->primitives, this->geometry.width, this->geometry.height, 0);
   for (int i = 0; i < this->m_imageCount; ++i) {
-    this->DrawNamed(this->m_context->primitives, 0, 0, this->m_imageName, 0xFFFFFFFF, 0, 0);
+    this->DrawNamed(g_renderer->primitives, 0, 0, this->m_imageName, 0xFFFFFFFF, 0, 0);
   }
 }
 

@@ -1,5 +1,4 @@
 #include "Client/Mode/CMode.h"
-#include "Client/Mode/ModeCursor.h"
 #include "UI/Window/UIWindowMgr.h"
 
 #include <windows.h>
@@ -26,13 +25,13 @@ CMode::CMode() {
 
 // OFFSET: 0x00AD75E0
 // FUNCTION: fn_17850
-void ModeCursor::Set(std::int32_t value, std::uint32_t& changeTick) {
-  if (this->type == value) {
+void CMode::SetCursorAction(int action) {
+  if (this->cursorAction == action) {
     return;
   }
 
-  this->type = value;
-  this->frame = 0;
-  changeTick = timeGetTime();
-  g_windowMgr.SendNotice(15, this->type, 0, 0, 0, 0);
+  this->cursorAction = action;
+  this->cursorActionFrame = 0;
+  this->cursorTick = timeGetTime();
+  g_windowMgr.SendNotice(15, this->cursorAction, 0, 0, 0, 0);
 }

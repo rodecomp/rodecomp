@@ -1,4 +1,5 @@
 #include "Render/Text/FontCache.h"
+#include "Render/Text/TextContext.h"
 #include "UI/Items/MergeItemWnd.h"
 
 #include "Client/Input/InputCharset.h"
@@ -160,8 +161,9 @@ void CMergeItemWnd::Paint() {
         box->SetHidden(false);
         box->Move(this->m_checkOffsetX + x, this->m_checkOffsetY + y);
         ItemDescriptions descriptions{g_itemDescriptions};
+        const TextLocale locale = {};
         DrawItemWithQuantity(
-          *this, ResourceMgr::Instance(), descriptions, g_fontCache, this->m_context->locale, this->m_slotOffsetX + x, this->m_slotOffsetY + y, item, 0, 0
+          *this, ResourceMgr::Instance(), descriptions, g_fontCache, locale, this->m_slotOffsetX + x, this->m_slotOffsetY + y, item, 0, 0
         );
       }
     }

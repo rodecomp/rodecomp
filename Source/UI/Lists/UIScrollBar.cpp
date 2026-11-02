@@ -1,7 +1,6 @@
 #include "Network/TextEncoding.h"
 #include "Render/Text/FontCache.h"
 #include "Client/Mode/ModeMgr.h"
-#include "Client/Mode/ModeCursor.h"
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
@@ -297,7 +296,7 @@ void UIScrollBar::Slot27(int x, int y) {
 // OFFSET: 0x00892570
 // FUNCTION: fn_11474
 void UIScrollBar::ResetCursor(int, int) {
-  this->m_context->cursor.Set(this->maximum != 0 ? 2 : 0, this->m_context->cursorTick);
+  static_cast<CMode*>(g_charViewMode)->SetCursorAction(this->maximum != 0 ? 2 : 0);
 }
 
 // OFFSET: 0x00890E90
@@ -656,7 +655,7 @@ void UIEditCtrl_Custom::PaintText() {
   const int y = this->unknown_0124 + this->textY;
   std::string display;
   FontCache& fonts = g_fontCache;
-  const TextLocale& locale = this->m_context->locale;
+  const TextLocale locale = {};
   const auto align = [&]() {
     if (this->unknown_0128 == 1) {
       x = this->geometry.width - x - this->TextWidth(display.c_str(), 0, 0, 12, this->unknown_011C, 0);
@@ -739,7 +738,7 @@ void UIBasicItemCtrl::DrawItemIcon(int x, int y, int, bool compact) {
 
   const std::string count = FormatOwnedString("%d", this->m_item.quantity);
   FontCache& fonts = g_fontCache;
-  const TextLocale& locale = this->m_context->locale;
+  const TextLocale locale = {};
   int textY;
   if (compact) {
     textY = y + 20;
@@ -1360,7 +1359,7 @@ void UIChatHisBox::Paint() {
   }
 
   FontCache& fonts = g_fontCache;
-  const TextLocale& locale = this->m_context->locale;
+  const TextLocale locale = {};
   for (int row = 0; top + row < static_cast<int>(end); ++row) {
     const int index = top + row;
     int x;
@@ -1482,7 +1481,7 @@ int UITreeView::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
     }
     break;
   case 108:
-    this->m_context->cursor.Set(0, this->m_context->cursorTick);
+    static_cast<CMode*>(g_charViewMode)->SetCursorAction(0);
     if (this->unknown_008C && this->unknown_008C->id != a) {
       UITreeNode* target = reinterpret_cast<UITreeNode*>(a);
       this->unknown_0090 = target;
@@ -1506,7 +1505,7 @@ int UITreeView::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
         break;
       }
 
-      this->m_context->cursor.Set(2, this->m_context->cursorTick);
+      static_cast<CMode*>(g_charViewMode)->SetCursorAction(2);
       UITreeNode* node = this->unknown_008C;
       UITVTextButton* label = node->labelButton;
       this->RemoveChildNode(node->unknown_0170, node->id, true);

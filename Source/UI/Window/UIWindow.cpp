@@ -1,6 +1,9 @@
 #include "UI/Chat/UINewChatWnd.h"
 #include "Client/Application/Launcher.h"
 #include "Client/Input/InputCharset.h"
+#include "Client/Mode/CMode.h"
+#include "Render/DeviceContext/DCSurface.h"
+#include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Window/WindowDialogs.h"
 #include "UI/Window/UIRoMapWnd.h"
 #include "File/FileEnumeration.h"
@@ -16,7 +19,6 @@
 #include "Contents/NavigationManager.h"
 #include "Contents/SpriteRidingOffset.h"
 #include "Client/Session.h"
-#include "Client/Mode/ModeCursor.h"
 #include "Client/Mode/ModeEvents.h"
 #include "Network/TextEncoding.h"
 #include "Render/DeviceContext/DCBitmap.h"
@@ -214,15 +216,6 @@ static const char* FindColorCode(const char* text, const char* end) {
   return text;
 }
 
-// INLINED
-void UIWindowContext::DestroyDeferredChildren() {
-  for (UIWindow* window : this->deferredDeletion) {
-    delete window;
-  }
-
-  this->deferredDeletion.clear();
-}
-
 // OFFSET: 0x00A79A90
 // FUNCTION: fn_16914
 UIWindow::UIWindow(UIWindowContext& context, unsigned char cached)
@@ -318,7 +311,7 @@ bool UIWindow::CanHitTest() {
 // OFFSET: 0x00A7BB00
 // FUNCTION: fn_16933
 void UIWindow::Slot10(int, int, std::intptr_t) {
-  this->m_context->mode->SendModeMessage(18, 0, 0, 0, 0);
+  static_cast<CMode*>(g_charViewMode)->SendMsg(18, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x005CA0F0
@@ -421,7 +414,7 @@ void UIWindow::Slot29(int, int) {
 // OFFSET: 0x00A81D60
 // FUNCTION: fn_16988
 void UIWindow::ResetCursor(int, int) {
-  this->m_context->cursor.Set(0, this->m_context->cursorTick);
+  static_cast<CMode*>(g_charViewMode)->SetCursorAction(0);
 }
 
 // OFFSET: 0x005C7240
@@ -527,7 +520,7 @@ bool UIWindow::Update(int redraw) {
       }
     }
 
-    this->m_context->renderer.RenderToTexture(this->geometry.width, this->geometry.height, primitives, this->m_texture);
+    g_renderer->RenderToTexture(this->geometry.width, this->geometry.height, primitives, this->m_texture);
     return this->parent != nullptr;
   }
 
@@ -612,10 +605,10 @@ void UIWindow::Slot48() {
 // FUNCTION: fn_16970
 RenderPrimitive* UIWindow::DrawPrimitive() {
   if (this->m_cached == 0) {
-    static_cast<CDCBitmap*>(this->geometry.surface)->UploadTexture(this->m_context->renderSystem, this->m_texture);
+    static_cast<CDCBitmap*>(this->geometry.surface)->UploadTexture(*GetRenderSystemHolder()->system, this->m_texture);
   }
 
-  RenderPrimitive* primitive = this->m_context->primitives.Acquire();
+  RenderPrimitive* primitive = g_renderer->primitives.Acquire();
   primitive->texture = this->m_texture;
   const float width = static_cast<float>(std::bit_cast<std::int32_t>(this->m_texture->TextureWidth()));
   const float height = static_cast<float>(std::bit_cast<std::int32_t>(this->m_texture->TextureHeight()));
@@ -849,13 +842,13 @@ void UIWindow::ClearChildren(bool destroy) {
 
 // OFFSET: 0x00AA5E90
 // FUNCTION: fn_17226
-void UIWindow::DeferDeletion(UIWindow* window) {
+void UIWindowMgr::DeferDeletion(UIWindow* window) {
   if (!window) {
     return;
   }
 
-  this->m_context->windowMgr.ForgetWindowReferences(window);
-  this->m_context->deferredDeletion.insert(window);
+  this->ForgetWindowReferences(window);
+  this->deferredDeletion.insert(window);
   window->Show(0);
 }
 
@@ -869,7 +862,7 @@ void UIWindow::RemoveChild(UIWindow* child, unsigned char destroy) {
   for (auto entry = this->m_children.begin(); entry != this->m_children.end(); ++entry) {
     if (*entry == child) {
       if (destroy == 1) {
-        this->DeferDeletion(child);
+        g_windowMgr.DeferDeletion(child);
       }
 
       this->m_children.erase(entry);
@@ -2104,7 +2097,7 @@ void UINavigationV4Wnd::Slot11() {
   info->width = this->geometry.width;
   this->info->height = this->geometry.height;
   const int margin = this->info->expanded ? 272 : 228;
-  const int maximumX = this->m_context->renderer.viewport.width - margin;
+  const int maximumX = g_renderer->viewport.width - margin;
   if (maximumX < this->geometry.x) {
     this->geometry.x = maximumX;
   }
@@ -2114,7 +2107,7 @@ void UINavigationV4Wnd::Slot11() {
   }
 
   this->info->x = this->geometry.x;
-  const int maximumY = this->m_context->renderer.viewport.height - 338;
+  const int maximumY = g_renderer->viewport.height - 338;
   if (maximumY < this->geometry.y) {
     this->geometry.y = maximumY;
   }
@@ -3403,7 +3396,7 @@ void UIWindow::DrawActionSprite(
     const SpriteRleImage* const* images[2] = {sprite->images[0].data(), sprite->images[1].data()};
     this->geometry.surface->DrawScaledSprite(
       x, y, width, height, std::span<const SpriteFrameCell>(frame.cells), images, frame.cellCount, offsetX, offsetY, scale, nullptr,
-      this->m_context->renderer.atlas, this->m_context->renderSystem, g_serviceType, g_resourceReuseDelay
+      g_renderer->atlas, *GetRenderSystemHolder()->system, g_serviceType, g_resourceReuseDelay
     );
   }
 }
@@ -3844,7 +3837,7 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
           const SpriteRleImage* const* images[2] = {sprites[8]->images[0].data(), sprites[8]->images[1].data()};
           this->geometry.surface->DrawScaledSprite(
             x, y, width, height, std::span<const SpriteFrameCell>(robeFrame->cells), images, robeFrame->cellCount, offsetX, offsetY, scale, nullptr,
-            this->m_context->renderer.atlas, this->m_context->renderSystem, g_serviceType, g_resourceReuseDelay
+            g_renderer->atlas, *GetRenderSystemHolder()->system, g_serviceType, g_resourceReuseDelay
           );
         }
       }
@@ -3866,7 +3859,7 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
     const SpriteRleImage* const* images[2] = {sprites[0]->images[0].data(), sprites[0]->images[1].data()};
     this->geometry.surface->DrawScaledSprite(
       x, y, width, height, std::span<const SpriteFrameCell>(body->cells), images, body->cellCount, offsetX, offsetY, 1.0f, bodyPalette,
-      this->m_context->renderer.atlas, this->m_context->renderSystem, g_serviceType, g_resourceReuseDelay
+      g_renderer->atlas, *GetRenderSystemHolder()->system, g_serviceType, g_resourceReuseDelay
     );
   }
 
@@ -3887,7 +3880,7 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
       const SpriteRleImage* const* images[2] = {sprites[1]->images[0].data(), sprites[1]->images[1].data()};
       this->geometry.surface->DrawScaledSprite(
         x + headX, y + headY, width, height, std::span<const SpriteFrameCell>(headFrame->cells), images, headFrame->cellCount, offsetX, offsetY, scale,
-        headPalette, this->m_context->renderer.atlas, this->m_context->renderSystem, g_serviceType, g_resourceReuseDelay
+        headPalette, g_renderer->atlas, *GetRenderSystemHolder()->system, g_serviceType, g_resourceReuseDelay
       );
     }
   }
@@ -3910,7 +3903,7 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
         const SpriteRleImage* const* images[2] = {sprites[2]->images[0].data(), sprites[2]->images[1].data()};
         this->geometry.surface->DrawScaledSprite(
           x + accessoryX, y + accessoryY, width, height, std::span<const SpriteFrameCell>(frame->cells), images, frame->cellCount, offsetX, offsetY,
-          scale, nullptr, this->m_context->renderer.atlas, this->m_context->renderSystem, g_serviceType, g_resourceReuseDelay
+          scale, nullptr, g_renderer->atlas, *GetRenderSystemHolder()->system, g_serviceType, g_resourceReuseDelay
         );
       }
     }
@@ -3934,7 +3927,7 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
         const SpriteRleImage* const* images[2] = {sprites[3]->images[0].data(), sprites[3]->images[1].data()};
         this->geometry.surface->DrawScaledSprite(
           x + accessoryX, y + accessoryY, width, height, std::span<const SpriteFrameCell>(frame->cells), images, frame->cellCount, offsetX, offsetY,
-          scale, nullptr, this->m_context->renderer.atlas, this->m_context->renderSystem, g_serviceType, g_resourceReuseDelay
+          scale, nullptr, g_renderer->atlas, *GetRenderSystemHolder()->system, g_serviceType, g_resourceReuseDelay
         );
       }
     }
@@ -3958,7 +3951,7 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
         const SpriteRleImage* const* images[2] = {sprites[4]->images[0].data(), sprites[4]->images[1].data()};
         this->geometry.surface->DrawScaledSprite(
           x + accessoryX, y + accessoryY, width, height, std::span<const SpriteFrameCell>(frame->cells), images, frame->cellCount, offsetX, offsetY,
-          scale, nullptr, this->m_context->renderer.atlas, this->m_context->renderSystem, g_serviceType, g_resourceReuseDelay
+          scale, nullptr, g_renderer->atlas, *GetRenderSystemHolder()->system, g_serviceType, g_resourceReuseDelay
         );
       }
     }

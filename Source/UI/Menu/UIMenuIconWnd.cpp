@@ -1,3 +1,4 @@
+#include "Render/Renderer.h"
 #include "UI/Menu/UIMenuIconWnd.h"
 
 #include "Client/Application/ApplicationWindow.h"
@@ -219,7 +220,7 @@ void UIMenuIconWnd::Paint() {
         this->unknown_00BC[it->first]->Enable(0);
       }
     } else {
-      this->DrawNamed(this->m_context->primitives, 0, 13, "유저인터페이스\\menu_icon\\bg_menu.tga", 0xFFFFFFFF, 0, 0);
+      this->DrawNamed(g_renderer->primitives, 0, 13, "유저인터페이스\\menu_icon\\bg_menu.tga", 0xFFFFFFFF, 0, 0);
       const bool pinned = std::find(this->unknown_00C4.begin(), this->unknown_00C4.end(), it->first) != this->unknown_00C4.end();
       it->second->Enable(!pinned);
       if (this->unknown_00BC.find(it->first) != this->unknown_00BC.end()) {

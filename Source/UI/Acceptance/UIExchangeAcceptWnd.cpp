@@ -1,3 +1,4 @@
+#include "Client/Mode/CMode.h"
 #include "Contents/MessageTable.h"
 #include "Client/Mode/ModeEvents.h"
 #include "Client/ReplayPacketRecorder.h"
@@ -6,6 +7,7 @@
 #include "UI/Buttons/UIButton.h"
 #include "UI/Acceptance/UIJoinPartyAcceptWnd.h"
 #include "UI/Text/UITextViewer.h"
+#include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Window/WindowManagerWindows.h"
 
 #include <cstring>
@@ -42,7 +44,7 @@ int UIExchangeAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
 
     if (response == 184 || response == 185) {
       g_windowMgr.CloseWindow(32);
-      this->m_context->mode->SendModeMessage(50, response == 184 ? 3 : 4, 0, 0, 0);
+      static_cast<CMode*>(g_charViewMode)->SendMsg(50, response == 184 ? 3 : 4, 0, 0, 0);
     }
 
     return 0;

@@ -416,7 +416,7 @@ void UIReplayButton::Slot31(int x, int y) {
       this->parent->SendMsg(this, 6, this->geometry.id, this->m_argument, 0, 0);
       this->parent->SendMsg(nullptr, 35, 0, 0, 0, 0);
     } else {
-      this->m_context->mode->SendModeMessage(0, this->geometry.id, this->m_argument, 0, 0);
+      static_cast<CMode*>(g_charViewMode)->SendMsg(0, this->geometry.id, this->m_argument, 0, 0);
     }
   }
 
@@ -451,10 +451,10 @@ int UIAllyGuildAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
   if (message == 6) {
     if (a == 184) {
       g_windowMgr.CloseWindow(72);
-      this->m_context->mode->SendModeMessage(120, this->identity, 1, 0, 0);
+      static_cast<CMode*>(g_charViewMode)->SendMsg(120, this->identity, 1, 0, 0);
     } else if (a == 185) {
       g_windowMgr.CloseWindow(72);
-      this->m_context->mode->SendModeMessage(120, this->identity, 0, 0, 0);
+      static_cast<CMode*>(g_charViewMode)->SendMsg(120, this->identity, 0, 0, 0);
     }
 
     return 0;
@@ -587,7 +587,7 @@ int UICntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intpt
   switch (message) {
   case 6:
     if (a == 184) {
-      this->m_context->mode->SendModeMessage(this->m_event, std::atoi(this->m_edit->Text()), 0, 0, 0);
+      static_cast<CMode*>(g_charViewMode)->SendMsg(this->m_event, std::atoi(this->m_edit->Text()), 0, 0, 0);
     }
 
     g_windowMgr.Schedule(this);

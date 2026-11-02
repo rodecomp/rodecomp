@@ -2,7 +2,6 @@
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/CMode.h"
-#include "Client/Mode/ModeCursor.h"
 #include "Client/Mode/ModeDragState.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/ModeTooltip.h"
@@ -26,6 +25,7 @@
 #include "UI/Lists/UIScrollBarVariants.h"
 #include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/UIStaticBitmap.h"
+#include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowDialogs.h"
 #include "UI/Window/WindowManagerWindows.h"
@@ -701,7 +701,7 @@ void UICashShopWnd_Item::Slot28(int x, int y) {
 // OFFSET: 0x007D1230
 // FUNCTION: fn_09550
 void UICashShopWnd_Banner::ResetCursor(int, int) {
-  this->m_context->cursor.Set(2, this->m_context->cursorTick);
+  static_cast<CMode*>(g_charViewMode)->SetCursorAction(2);
 }
 
 // OFFSET: 0x007D1240

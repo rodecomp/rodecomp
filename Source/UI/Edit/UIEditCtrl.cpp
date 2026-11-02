@@ -93,7 +93,6 @@
 #include "Contents/UserData/CharacterConfigSave.h"
 #include "UI/Edit/UIItemTagCtrl.h"
 #include "UI/Window/WindowBorder.h"
-#include "UI/Window/WindowRegistration.h"
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "Contents/TipBoxTitles.h"
 #include <algorithm>
@@ -413,6 +412,7 @@ void UIEditCtrl::PaintText() {
 void UIEditCtrl::Synchronize() {
   const bool focused = g_windowMgr.hoverWindow == this;
   EditTextState state{this->text, this->anchor, this->cursor, this->maximum, focused, g_textCodePage};
+  const TextLocale locale = {};
   EditViewport viewport{
     this->text,
     this->anchor,
@@ -423,7 +423,7 @@ void UIEditCtrl::Synchronize() {
     state,
     *this->geometry.surface,
     g_fontCache,
-    this->m_context->locale
+    locale
   };
   viewport.Synchronize();
 }
@@ -890,7 +890,7 @@ void UIEditCtrl_Custom::Synchronize() {
   }
 
   FontCache& fonts = g_fontCache;
-  const TextLocale& locale = this->m_context->locale;
+  const TextLocale locale = {};
   const int available = this->geometry.width - 12;
 
   if (this->cursor > previousCursor || clamped) {
@@ -1412,7 +1412,8 @@ void UIItemBaseWnd::Paint() {
     const int x = visible % this->columns * 32 + 44;
 
     if (this->showQuantity != 0) {
-      DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, this->m_context->locale, x, top + 21, *it, 0, 0);
+      const TextLocale locale = {};
+      DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, locale, x, top + 21, *it, 0, 0);
     } else {
       DrawItemIcon(*this, ResourceMgr::Instance(), descriptions, x, top + 21, *it, 0);
     }
@@ -6864,7 +6865,8 @@ void UIItemStoreFindWnd::Paint() {
     const int left = visible % this->columns * 32 + 10;
     const int width = this->geometry.width - left - 66;
     const int x = left + 4;
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, this->m_context->locale, x, top + 21, *it, 0, 0);
+    const TextLocale locale = {};
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, locale, x, top + 21, *it, 0, 0);
     this->DrawWrappedItemName(left + 40, top + 29, width, &*it, 0, 0, 12);
 
     if (it->unknown_0088 > 0) {
@@ -6923,7 +6925,8 @@ void UIItemStoreSubWnd::Paint() {
     const int left = visible % this->columns * 32 + 10;
     const int width = this->geometry.width - left - 66;
     const int x = left + 4;
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, this->m_context->locale, x, top + 21, *it, 0, 0);
+    const TextLocale locale = {};
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, locale, x, top + 21, *it, 0, 0);
     this->DrawWrappedItemName(left + 40, top + 29, width, &*it, 0, 0, 12);
 
     if (it->unknown_0088 > 0) {
@@ -7002,7 +7005,8 @@ void UIItemPurchaseWnd::Paint() {
     }
 
     const int x = column + 44;
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, this->m_context->locale, x, top + 21, *it, 0, 0);
+    const TextLocale locale = {};
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, locale, x, top + 21, *it, 0, 0);
 
     int nameWidth = 110;
     const int amount = static_cast<int>(it->unknown_0014[0]);
@@ -7131,7 +7135,8 @@ void UIItemSellWnd::Paint() {
     }
 
     const int x = column + 44;
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, this->m_context->locale, x, top + 21, *it, 0, 0);
+    const TextLocale locale = {};
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, locale, x, top + 21, *it, 0, 0);
 
     int nameWidth = 100;
     const int amount = static_cast<int>(it->unknown_0014[0]);
@@ -7240,7 +7245,8 @@ void UIItemShopWnd::Paint() {
     }
 
     const int x = column + 44;
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, this->m_context->locale, x, top + 21, *it, 0, 0);
+    const TextLocale locale = {};
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, locale, x, top + 21, *it, 0, 0);
 
     int nameWidth = 100;
     const int amount = static_cast<int>(it->unknown_0014[0]);
@@ -7388,7 +7394,8 @@ void UIItemStoreWnd::Paint() {
     const int top = visible / this->columns * 32;
     const int column = visible % this->columns * 32;
     const int x = column + 44;
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, this->m_context->locale, x, top + 21, *it, 0, 0);
+    const TextLocale locale = {};
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, locale, x, top + 21, *it, 0, 0);
     this->DrawWrappedItemName(column + 80, top + 29, 180, &*it, 0, 0, 12);
 
     if (it->unknown_0088 > 0) {
@@ -7470,7 +7477,8 @@ void UIMerchantItemPurchaseWnd::Paint() {
     }
 
     const int x = column + 44;
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, this->m_context->locale, x, top + 21, *it, 0, 0);
+    const TextLocale locale = {};
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, locale, x, top + 21, *it, 0, 0);
     this->DrawWrappedItemName(column + 76, top + 29, 90, &*it, 0, 0, 12);
 
     if (it->unknown_0088 > 0) {
@@ -7668,7 +7676,8 @@ void UIMerchantShopMakeWnd::Paint() {
     const int top = visible / this->columns * 42;
     const int column = visible % this->columns * 42;
     const int x = column + 7;
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, this->m_context->locale, x, top + 48, *it, 0, 0);
+    const TextLocale locale = {};
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, locale, x, top + 48, *it, 0, 0);
     this->DrawWrappedItemName(column + 39, top + 57, 100, &*it, 0, 0, 12);
 
     if (it->unknown_0088 > 0) {
@@ -8290,7 +8299,7 @@ void UIMerchantItemShopWnd::Paint() {
     if (!actor.empty()) {
       sprintf(title, "%s - %s", label, actor.c_str());
     } else {
-      this->m_context->registration.Add(this);
+      g_windowMgr.RegisterWindow(this);
       sprintf(title, "%s", label);
     }
     this->DrawTextAt(17, 3, title, 0, 0, 12, 0xFFFFFF, 0, 0);
@@ -8326,7 +8335,8 @@ void UIMerchantItemShopWnd::Paint() {
       DrawItemIcon(*this, ResourceMgr::Instance(), descriptions, x, top + 21, *it, 0);
     } else {
       x = column + 44;
-      DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, this->m_context->locale, x, top + 21, *it, 0, 0);
+      const TextLocale locale = {};
+      DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, locale, x, top + 21, *it, 0, 0);
     }
 
     if (it->unknown_0088 > 0) {
@@ -8659,7 +8669,8 @@ void UIItemSellWnd2::Paint() {
     }
 
     const int x = column + 44;
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, this->m_context->locale, x, top + 21, *it, 0, 0);
+    const TextLocale locale = {};
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, locale, x, top + 21, *it, 0, 0);
     this->DrawFittedItemName(column + 76, top + 29, &*it, 0, 0, 12, 0);
 
     if (it->unknown_0088 > 0) {
@@ -8738,7 +8749,8 @@ void UIItemShopWnd2::Paint() {
     }
 
     const int x = column + 44;
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, this->m_context->locale, x, top + 21, *it, 0, 0);
+    const TextLocale locale = {};
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, locale, x, top + 21, *it, 0, 0);
     this->DrawFittedItemName(column + 76, top + 29, &*it, 0, 0, 12, 0);
 
     if (it->unknown_0088 > 0) {
@@ -8997,7 +9009,8 @@ void UIItemWnd::Paint() {
     const int top = visible / this->columns * 32;
     const int x = visible % this->columns * 32 + 44;
     const int y = top + 21;
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, this->m_context->locale, x, y, *it, 0, 0);
+    const TextLocale locale = {};
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, locale, x, y, *it, 0, 0);
 
     if (it->unknown_0088 > 0) {
       this->DrawBitmap(

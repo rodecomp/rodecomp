@@ -1,3 +1,4 @@
+#include "Render/DeviceContext/DCSurface.h"
 #include "UI/Window/WindowDialogs.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UINewMakeCharWnd.h"
@@ -210,7 +211,7 @@ void UINewMakeCharWnd::Paint() {
     if (cell.imageType == 0) {
       texture = g_renderer->atlas.Find(image, palette, record);
       if (!texture) {
-        texture = g_renderer->atlas.Insert(this->m_context->renderSystem, image, palette, record, g_serviceType, g_resourceReuseDelay);
+        texture = g_renderer->atlas.Insert(*GetRenderSystemHolder()->system, image, palette, record, g_serviceType, g_resourceReuseDelay);
       }
     } else {
       texture = static_cast<CTexture*>(const_cast<void*>(image->unknown_0008));

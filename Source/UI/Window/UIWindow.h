@@ -10,19 +10,12 @@
 #include <unordered_set>
 #include <vector>
 
-class CRenderSystemBase;
-class ModeEvents;
-class RenderPrimitivePool;
-class CRenderer;
-struct ModeCursor;
-struct WindowRegistration;
 class UIWindow;
 class UIWindowMgr;
 class CUIGameSettingsUI;
 struct RenderQueues;
 struct BitmapImage;
 class FontCache;
-struct TextLocale;
 struct tagRECT;
 struct tagSIZE;
 struct ActionFrame;
@@ -38,20 +31,7 @@ struct ITEM_INFO;
 class UIItemTagButton;
 
 struct UIWindowContext {
-  RenderPrimitivePool& primitives;
-  CRenderSystemBase& renderSystem;
-  CRenderer& renderer;
-  ModeEvents*& mode;
-  ModeCursor& cursor;
-  std::uint32_t& cursorTick;
-  WindowRegistration& registration;
-  UIWindowMgr& windowMgr;
-  std::unordered_set<UIWindow*>& deferredDeletion;
   UITextViewer* const& chatConverter;
-  FontCache& fonts;
-  const TextLocale& locale;
-
-  void DestroyDeferredChildren();
 };
 
 class UIWindow : public UIRPData {
@@ -253,7 +233,6 @@ protected:
 
 private:
   UIWindow* Parent() const;
-  void DeferDeletion(UIWindow* window);
   UIWindow(const UIWindow&) = delete;
   UIWindow& operator=(const UIWindow&) = delete;
 };

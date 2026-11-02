@@ -41,6 +41,7 @@ public:
   CMode();
   std::uint32_t ClearTooltip();
   void ExpireTooltip();
+  void SetCursorAction(int action);
   void TakeScreenshot();
   void DrawCursor();
   void DrawFadeIn();

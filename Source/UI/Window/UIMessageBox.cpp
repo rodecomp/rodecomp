@@ -1,3 +1,4 @@
+#include "Render/DeviceContext/DCSurface.h"
 #include "Render/Text/FontCache.h"
 #include "Client/ReplayPacketRecorder.h"
 #include "Contents/Items/ItemDescription.h"
@@ -401,7 +402,7 @@ void UIMakeCharWnd::Paint() {
     if (cell.imageType == 0) {
       texture = g_renderer->atlas.Find(image, palette, record);
       if (!texture) {
-        texture = g_renderer->atlas.Insert(this->m_context->renderSystem, image, palette, record, g_serviceType, g_resourceReuseDelay);
+        texture = g_renderer->atlas.Insert(*GetRenderSystemHolder()->system, image, palette, record, g_serviceType, g_resourceReuseDelay);
       }
     } else {
       texture = static_cast<CTexture*>(const_cast<void*>(image->unknown_0008));
@@ -434,7 +435,8 @@ void UIMerInfoWnd::Paint() {
   for (int i = 0; i < 8; ++i) {
     const int value = i == 7 ? (2000 - g_session.m_mercenaryStats[i]) / 10 : g_session.m_mercenaryStats[i];
     const int bytes = std::sprintf(number, "%d", value);
-    DrawTextRight(*this, g_fontCache, this->m_context->locale, 79, 24 + 18 * i, number, bytes, 1, 14, 0, 0);
+    const TextLocale locale = {};
+    DrawTextRight(*this, g_fontCache, locale, 79, 24 + 18 * i, number, bytes, 1, 14, 0, 0);
   }
   this->DrawTextAt(136, 24, g_session.m_mercenaryName, 0, 0, 12, 0x646464, 0, 0);
   this->DrawTextAt(135, 24, g_session.m_mercenaryName, 0, 0, 12, 0, 0, 0);

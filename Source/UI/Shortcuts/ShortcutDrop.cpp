@@ -1,9 +1,11 @@
+#include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeDragState.h"
 #include "Client/Mode/ModeEvents.h"
 #include "Client/Session.h"
 #include "Contents/Skills/ClientSkills.h"
 #include "UI/Shortcuts/UIQuickSlotWnd.h"
 #include "UI/Shortcuts/ShortcutDrop.h"
+#include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Window/UIWindow.h"
 #include <algorithm>
 #include <cstdlib>
@@ -272,6 +274,6 @@ void UIQuickSlotWnd::Slot10(int x, int y, std::intptr_t argument) {
     }
   }
 
-  this->m_context->mode->SendModeMessage(18, 0, 0, 0, 0);
+  static_cast<CMode*>(g_charViewMode)->SendMsg(18, 0, 0, 0, 0);
 }
 

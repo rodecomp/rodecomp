@@ -38,7 +38,6 @@
 #include "Client/Application/Launcher.h"
 #include "UI/Text/NavigationLink.h"
 #include "Contents/RenewQuestMgr.h"
-#include "Client/Mode/ModeCursor.h"
 #include "Contents/Skills/AutomaticSkills.h"
 #include "UI/Shortcuts/UIShortCutWnd.h"
 #include "Contents/MapInfoMgr.h"
@@ -3592,7 +3591,7 @@ void CGameMode::ProcessRightButtonDrag() {
   }
   case 2:
     if (!HIBYTE(GetAsyncKeyState(VK_MENU)) && !HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
-      reinterpret_cast<ModeCursor*>(&this->cursorAction)->Set(4, this->cursorTick);
+      this->SetCursorAction(4);
       if (this->hasViewParameters) {
         float yaw = static_cast<float>(g_screenWidth) + this->camera->camera.desiredYaw - static_cast<float>(this->unknown_00DC);
         const float low = static_cast<float>(this->viewParameters[3]);
@@ -4020,23 +4019,22 @@ void CGameMode::ShowActorNameBalloon(std::uint32_t id) {
 void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor* actor) {
   const unsigned char selfTargetOption = g_serviceOptions.Get(0x69);
   const unsigned char forceOption = g_serviceOptions.Get(0x6D);
-  ModeCursor& cursor = *reinterpret_cast<ModeCursor*>(&this->cursorAction);
   const std::intptr_t mode = reinterpret_cast<std::intptr_t>(this->unknown_0408);
 
   int attack;
   if (mode == 2 || mode == 4) {
     const int shiftHeld = HIBYTE(GetAsyncKeyState(VK_SHIFT));
     attack = IsSupportSkill(this->unknown_040C) ? shiftHeld : shiftHeld == 0;
-    cursor.Set(11, this->cursorTick);
+    this->SetCursorAction(11);
   } else {
     attack = HIBYTE(GetAsyncKeyState(VK_SHIFT)) == 0;
     if (actor->unknown_0314 == 7) {
-      cursor.Set(0, this->cursorTick);
+      this->SetCursorAction(0);
     } else if (g_session.GetMapProperty08() == 0 && this->scene->unknown_004C == 0) {
-      cursor.Set(5, this->cursorTick);
+      this->SetCursorAction(5);
     } else if (g_session.IsLocalPlayerAid(actor->Slot50())) {
       attack = 0;
-      cursor.Set(0, this->cursorTick);
+      this->SetCursorAction(0);
     }
   }
 
@@ -4067,7 +4065,7 @@ void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor*
         }
         g_session.unknown_5610 = 0;
       } else {
-        cursor.Set(11, this->cursorTick);
+        this->SetCursorAction(11);
         g_groundMarkAid = actor->render.accountId;
         g_groundMarkA = 0;
         g_groundMarkB = 0;
@@ -4110,7 +4108,7 @@ void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor*
       }
       g_session.unknown_56AC = 0;
     } else {
-      cursor.Set(11, this->cursorTick);
+      this->SetCursorAction(11);
       g_groundMarkAltAid = actor->render.accountId;
       g_groundMarkAltA = 0;
       g_groundMarkAltB = 0;
@@ -4244,7 +4242,6 @@ int CGameMode::ProcessMousePick(int result, ActorPickInfo* pick) {
     return result;
   }
 
-  ModeCursor& cursor = *reinterpret_cast<ModeCursor*>(&this->cursorAction);
   int& lockedPick = this->forcedAttack;
   int& pickTarget = *reinterpret_cast<int*>(&this->unknown_00EC[0x00]);
   int& clickTarget = *reinterpret_cast<int*>(&this->unknown_00EC[0x04]);
@@ -4262,12 +4259,12 @@ int CGameMode::ProcessMousePick(int result, ActorPickInfo* pick) {
       return result;
     }
   } else {
-    cursor.Set(5, this->cursorTick);
+    this->SetCursorAction(5);
     if (lockedPick != 0) {
       if (g_sub_1319eb4 == 1) {
         this->SendMsg(26, 0, 0, 0, 0);
       } else {
-        cursor.Set(0, this->cursorTick);
+        this->SetCursorAction(0);
         if (!pick) {
           return result;
         }
@@ -4287,11 +4284,11 @@ int CGameMode::ProcessMousePick(int result, ActorPickInfo* pick) {
     if (clickTarget != 0) {
       if (pick) {
         if (pick->kind == 3) {
-          cursor.Set(0, this->cursorTick);
+          this->SetCursorAction(0);
           return 0;
         }
         if (pick->kind == 4) {
-          cursor.Set(0, this->cursorTick);
+          this->SetCursorAction(0);
           this->ShowActorNameBalloon(pick->accountId);
           return this->HandleActorPick(pick, result);
         }
@@ -4775,9 +4772,8 @@ void CGameMode::ProcessInput() {
   }
 
   if (handled == 0) {
-    ModeCursor& cursor = *reinterpret_cast<ModeCursor*>(&this->cursorAction);
     if (this->unknown_0408 != nullptr) {
-      cursor.Set(10, this->cursorTick);
+      this->SetCursorAction(10);
     } else if (g_mouse.buttons[1] != 2) {
       int column = -1;
       int row = -1;
@@ -4787,9 +4783,9 @@ void CGameMode::ProcessInput() {
       );
       const TerrainHeightCell* cell = this->scene->terrain->Grid().CellAt(column, row);
       if (cell && cell->type != 1 && cell->type != 5) {
-        cursor.Set(0, this->cursorTick);
+        this->SetCursorAction(0);
       } else {
-        cursor.Set(13, this->cursorTick);
+        this->SetCursorAction(13);
       }
     }
   }
@@ -4900,7 +4896,6 @@ static_assert(sizeof(TalkSelectPacket) == 8);
 void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* actor) {
   const unsigned char selfTargetOption = g_serviceOptions.Get(0x69);
   const unsigned char forceOption = g_serviceOptions.Get(0x6D);
-  ModeCursor& cursor = *reinterpret_cast<ModeCursor*>(&this->cursorAction);
   const std::intptr_t mode = reinterpret_cast<std::intptr_t>(this->unknown_0408);
 
   int skillMode;
@@ -4993,14 +4988,14 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
   }
 
   if (resetCursor) {
-    cursor.Set(0, this->cursorTick);
+    this->SetCursorAction(0);
   } else if (attack && actor->render.unknown_0070 != 3) {
-    cursor.Set(skillMode ? 11 : 5, this->cursorTick);
+    this->SetCursorAction(skillMode ? 11 : 5);
     handled = 1;
   } else if (skillMode && actor->render.unknown_0070 != 3) {
-    cursor.Set(10, this->cursorTick);
+    this->SetCursorAction(10);
   } else {
-    cursor.Set(0, this->cursorTick);
+    this->SetCursorAction(0);
   }
 
   const std::uint32_t homunAid = *reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5570[8]);
@@ -5025,7 +5020,7 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
       }
       g_session.unknown_5610 = 0;
     } else {
-      cursor.Set(11, this->cursorTick);
+      this->SetCursorAction(11);
       g_groundMarkAid = actor->render.accountId;
       g_groundMarkA = 0;
       g_groundMarkB = 0;
@@ -5067,7 +5062,7 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
       }
       g_session.unknown_56AC = 0;
     } else {
-      cursor.Set(11, this->cursorTick);
+      this->SetCursorAction(11);
       g_groundMarkAltAid = actor->render.accountId;
       g_groundMarkAltA = 0;
       g_groundMarkAltB = 0;
@@ -5305,7 +5300,6 @@ void CGameMode::ProcessStatusIconTooltip(int x, int y) {
 int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
   const unsigned char selfTargetOption = g_serviceOptions.Get(0x69);
   const unsigned char forceOption = g_serviceOptions.Get(0x6D);
-  ModeCursor& cursor = *reinterpret_cast<ModeCursor*>(&this->cursorAction);
   const int& siegeMode = *reinterpret_cast<const int*>(&g_session.unknown_5454[4]);
   const std::uint32_t& homunAid = *reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5570[8]);
   const std::uint32_t& mercenaryAid = *reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5620[8]);
@@ -5315,14 +5309,14 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
     switch (pick->kind) {
     case 0:
       if (pick->job != 45 && g_session.IsAllyActor(pick->accountId, pick->job) == 1) {
-        cursor.Set(1, this->cursorTick);
+        this->SetCursorAction(1);
         if (g_mouse.buttons[0] == 2) {
           result = 2;
         } else {
           result = 1;
         }
       } else if (pick->job == 45) {
-        cursor.Set(7, this->cursorTick);
+        this->SetCursorAction(7);
         result = 2;
       } else {
         result = 1;
@@ -5387,18 +5381,18 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
 
           const int state = actor != nullptr ? actor->render.unknown_0070 : 3;
           if (attack && state != 3) {
-            cursor.Set(skillMode ? 11 : 5, this->cursorTick);
+            this->SetCursorAction(skillMode ? 11 : 5);
             result = 1;
             *reinterpret_cast<int*>(&this->unknown_00EC[0]) = pick->accountId;
           } else {
-            cursor.Set(skillMode && state != 3 ? 10 : 0, this->cursorTick);
+            this->SetCursorAction(skillMode && state != 3 ? 10 : 0);
             result = 0;
             if (g_mouse.buttons[0] == 0 && this->unknown_0028 == 0 && *reinterpret_cast<int*>(&this->unknown_00EC[4]) == 0) {
               *reinterpret_cast<int*>(&this->unknown_00EC[0]) = pick->accountId;
             }
           }
         } else if (g_session.IsNpcJob(pick->job) == true) {
-          cursor.Set(1, this->cursorTick);
+          this->SetCursorAction(1);
           if (g_mouse.buttons[0] == 2) {
             result = 2;
           }
@@ -5433,14 +5427,14 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
           if (this->unknown_00F8 != 0) {
             if (attack) {
               if (skillMode) {
-                cursor.Set(11, this->cursorTick);
+                this->SetCursorAction(11);
               } else if (actor != nullptr && actor->unknown_0314 == 7) {
-                cursor.Set(0, this->cursorTick);
+                this->SetCursorAction(0);
               } else {
-                cursor.Set(5, this->cursorTick);
+                this->SetCursorAction(5);
               }
             } else {
-              cursor.Set(skillMode ? 10 : 0, this->cursorTick);
+              this->SetCursorAction(skillMode ? 10 : 0);
             }
           }
 
@@ -5521,7 +5515,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
           break;
         }
       }
-      cursor.Set(action, this->cursorTick);
+      this->SetCursorAction(action);
       if (g_mouse.buttons[0] == 2) {
         result = 2;
       }
@@ -5529,24 +5523,24 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
     }
     case 1:
       result = 1;
-      cursor.Set(9, this->cursorTick);
+      this->SetCursorAction(9);
       if (g_mouse.buttons[0] == 2) {
         result = 2;
       }
       break;
     case 3:
       result = 0;
-      cursor.Set(0, this->cursorTick);
+      this->SetCursorAction(0);
       break;
     case 4: {
       result = 0;
-      cursor.Set(0, this->cursorTick);
+      this->SetCursorAction(0);
       CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(pick->accountId));
       if (actor != nullptr && actor->render.unknown_0070 != 3) {
         if (g_session.m_aid == static_cast<std::uint32_t>(actor->unknown_02EC)) {
           if (actor->unknown_0314 == 8 && this->unknown_040C == 0xE7) {
             result = 1;
-            cursor.Set(11, this->cursorTick);
+            this->SetCursorAction(11);
             *reinterpret_cast<int*>(&this->unknown_00EC[4]) = pick->accountId;
           }
         } else {
@@ -5559,7 +5553,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
               }
             }
             result = 1;
-            cursor.Set(5, this->cursorTick);
+            this->SetCursorAction(5);
             *reinterpret_cast<int*>(&this->unknown_00EC[4]) = pick->accountId;
           }
         }
@@ -5644,7 +5638,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
           }
           g_session.unknown_5610 = 0;
         } else {
-          cursor.Set(11, this->cursorTick);
+          this->SetCursorAction(11);
           g_groundMarkAid = pick->accountId;
           g_groundMarkA = 0;
           g_groundMarkB = 0;
@@ -5688,7 +5682,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
           }
           g_session.unknown_56AC = 0;
         } else {
-          cursor.Set(11, this->cursorTick);
+          this->SetCursorAction(11);
           g_groundMarkAltAid = pick->accountId;
           g_groundMarkAltA = 0;
           g_groundMarkAltB = 0;
@@ -5844,7 +5838,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
       return result;
     }
   case 3:
-    cursor.Set(0, this->cursorTick);
+    this->SetCursorAction(0);
     return 0;
   case 1:
     if (g_mouse.buttons[0] == 1 && reinterpret_cast<std::intptr_t>(this->unknown_0408) == 0) {
@@ -5852,12 +5846,12 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
     }
     break;
   case 4: {
-    cursor.Set(0, this->cursorTick);
+    this->SetCursorAction(0);
     if (g_session.IsMercenaryJob(pick->job)) {
       CWorld* scene = this->scene;
       if (this->unknown_040C == 0xE7 || ((scene->unknown_0048 != 0 || scene->unknown_004C != 0 || siegeMode != 0) && !g_session.IsHomunAid(pick->accountId))) {
         if ((this->scene->unknown_0048 != 0 || this->scene->unknown_004C != 0 || siegeMode != 0) && !g_session.IsHomunAid(pick->accountId)) {
-          cursor.Set(5, this->cursorTick);
+          this->SetCursorAction(5);
         }
         this->RequestPlayerAction(pick->accountId, 1);
         this->forcedAttack = 0;

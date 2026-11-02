@@ -1,4 +1,4 @@
-#include "Client/Mode/ModeCursor.h"
+#include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/ForbiddenWords.h"
 #include "Contents/MessageTable.h"
@@ -7,6 +7,7 @@
 #include "Resource/TextureNames.h"
 #include "UI/Chat/UIChatRoomTitle.h"
 #include "UI/Text/UIStaticText.h"
+#include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 
 #include <cstdio>
@@ -81,9 +82,9 @@ void UIChatRoomTitle::Paint() {
 // FUNCTION: fn_10876
 void UIChatRoomTitle::ResetCursor(int x, int y) {
   if (x >= 0 && x < this->geometry.width && y >= 0 && y <= this->geometry.height) {
-    this->m_context->cursor.Set(2, this->m_context->cursorTick);
+    static_cast<CMode*>(g_charViewMode)->SetCursorAction(2);
   } else {
-    this->m_context->cursor.Set(0, this->m_context->cursorTick);
+    static_cast<CMode*>(g_charViewMode)->SetCursorAction(0);
   }
 }
 

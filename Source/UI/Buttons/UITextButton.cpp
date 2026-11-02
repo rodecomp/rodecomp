@@ -1,4 +1,6 @@
 #include "Client/Input/InputCharset.h"
+#include "Client/Mode/CMode.h"
+#include "Render/Renderer.h"
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "Client/Replay.h"
 #include "UI/Window/WindowPolicy.h"
@@ -24,7 +26,6 @@
 #include "UI/UIBasicCtrl.h"
 #include "Utility/Text/FormatString.h"
 #include "UI/Lists/UIMemberListBox.h"
-#include "Client/Mode/ModeCursor.h"
 #include "UI/Buttons/UIBitmapButton2.h"
 #include "UI/Buttons/UISlotBmpButton.h"
 #include "UI/UIStaticBitmap.h"
@@ -1050,14 +1051,14 @@ void UITreeView::Slot27(int x, int y) {
 // OFFSET: 0x00892560
 // FUNCTION: fn_11473
 void UIImgMenu::ResetCursor(int, int) {
-  this->m_context->cursor.Set(2, this->m_context->cursorTick);
+  static_cast<CMode*>(g_charViewMode)->SetCursorAction(2);
 }
 
 // OFFSET: 0x008925A0
 // FUNCTION: fn_11475
 void UIString::ResetCursor(int, int) {
   if (!this->unknown_0084.empty() || !this->unknown_00AC.empty()) {
-    this->m_context->cursor.Set(2, this->m_context->cursorTick);
+    static_cast<CMode*>(g_charViewMode)->SetCursorAction(2);
   }
 }
 
@@ -1076,7 +1077,7 @@ void UITVTextButton::ResetCursor(int x, int y) {
   if (this->m_disabled != 0) {
     UIWindow::ResetCursor(x, y);
   } else {
-    this->m_context->cursor.Set(0, this->m_context->cursorTick);
+    static_cast<CMode*>(g_charViewMode)->SetCursorAction(0);
   }
 }
 
@@ -2296,7 +2297,7 @@ void UIBasicSkillCtrl::Paint() {
       if (skill.level != 0) {
         std::sprintf(text, "%d", skill.level);
         FontCache& fonts = g_fontCache;
-        const TextLocale& locale = this->m_context->locale;
+        const TextLocale locale = {};
         const int x = this->geometry.width - this->TextWidth(text, 0, 0, 11, 0, 0);
         this->DrawTextAt(x, 15, text, 0, 0, 11, 0xFFFFFF, 0, 0);
         this->DrawTextAt(x - 2, 15, text, 0, 0, 11, 0xFFFFFF, 0, 0);
@@ -2333,7 +2334,7 @@ void UIBmpRadioBtn::Paint() {
   }
 
   FontCache& fonts = g_fontCache;
-  const TextLocale& locale = this->m_context->locale;
+  const TextLocale locale = {};
   if (this->m_disabled == true) {
     for (auto it = this->m_texts.begin(); it != this->m_texts.end(); ++it) {
       if (it->id == 3) {
@@ -3399,9 +3400,9 @@ void UITextViewEX::Paint() {
 // OFFSET: 0x0088D560
 // FUNCTION: fn_11376
 void UIRPImageWnd::Paint() {
-  this->SetSolid(this->m_context->primitives, this->geometry.width, this->geometry.height, 0);
+  this->SetSolid(g_renderer->primitives, this->geometry.width, this->geometry.height, 0);
   for (int i = 0; i < this->m_imageCount; ++i) {
-    this->DrawNamed(this->m_context->primitives, 0, 0, this->m_imageName.c_str(), 0xFFFFFFFF, 0, 0);
+    this->DrawNamed(g_renderer->primitives, 0, 0, this->m_imageName.c_str(), 0xFFFFFFFF, 0, 0);
   }
 }
 
@@ -3452,7 +3453,7 @@ void UIChatHisBox2::Paint() {
   }
 
   FontCache& fonts = g_fontCache;
-  const TextLocale& locale = this->m_context->locale;
+  const TextLocale locale = {};
   for (int row = 0; top + row < static_cast<int>(end); ++row) {
     const int index = top + row;
     int x;
@@ -3487,7 +3488,7 @@ void UIChatHisBox3::Paint() {
   }
 
   FontCache& fonts = g_fontCache;
-  const TextLocale& locale = this->m_context->locale;
+  const TextLocale locale = {};
   for (int row = 0; top + row < static_cast<int>(end); ++row) {
     const int index = top + row;
     this->DrawTextAt(2, this->lineHeight * row + 3, this->lines[index].c_str(), 0, 0, this->unknown_0134, this->unknown_00E4[index], 0, 0);

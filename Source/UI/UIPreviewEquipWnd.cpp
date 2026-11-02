@@ -131,8 +131,8 @@ void UIPreviewEquipWnd::Slot15(int width, int height) {
 // OFFSET: 0x007F3CD0
 // FUNCTION: fn_09883
 void UIPreviewEquipWnd::Paint() {
-  this->SetSolid(this->m_context->primitives, this->geometry.width, this->geometry.height, 0);
-  this->DrawNamed(this->m_context->primitives, 0, 0, "유저인터페이스\\equip_preview\\bg_mounting2.bmp", 0xffffffff, 0, 0);
+  this->SetSolid(g_renderer->primitives, this->geometry.width, this->geometry.height, 0);
+  this->DrawNamed(g_renderer->primitives, 0, 0, "유저인터페이스\\equip_preview\\bg_mounting2.bmp", 0xffffffff, 0, 0);
   void (UIPreviewEquipWnd::*draw)() = &UIPreviewEquipWnd::DrawCharacter;
   (this->*draw)();
 }

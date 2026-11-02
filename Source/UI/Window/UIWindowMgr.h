@@ -471,11 +471,13 @@ public:
   UIWindow* FindSnapExcludedWindow(int cell);
   void Schedule(UIWindow* window);
   void AddRendered(UIWindow* window);
+  void RegisterWindow(UIWindow* window);
   void UnregisterWindow(UIWindow* window);
   void InvalidateRegisteredWindows();
   void SetUnknown04DC(const char* text);
   void Destroy(UIWindow* window);
   void ForgetWindowReferences(UIWindow* removed);
+  void DeferDeletion(UIWindow* window);
   void DismissTransient();
   void MoveTransient(int x, int y);
   void RetireTransientWindow();

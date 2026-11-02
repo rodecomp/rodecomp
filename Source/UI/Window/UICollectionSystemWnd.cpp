@@ -1,3 +1,4 @@
+#include "Render/DeviceContext/DCSurface.h"
 #include "UI/Window/UICollectionSystemWnd.h"
 
 #include "Client/Mode/ModeMgr.h"
@@ -44,7 +45,7 @@ void CUICollectionSystemWnd::Paint() {
     const SpriteRleImage* image = this->m_sprite->images[0][cell.image];
     CTexture* texture = g_renderer->atlas.Find(image, palette, record);
     if (!texture) {
-      texture = g_renderer->atlas.Insert(this->m_context->renderSystem, image, palette, record, g_serviceType, g_resourceReuseDelay);
+      texture = g_renderer->atlas.Insert(*GetRenderSystemHolder()->system, image, palette, record, g_serviceType, g_resourceReuseDelay);
     }
     this->geometry.surface->DrawSurface(
       this->geometry.width / 2 + cell.x, this->geometry.height / 2 + cell.y, texture, static_cast<int>(record.u0 * 256.0f),

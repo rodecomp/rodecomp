@@ -37,10 +37,10 @@ void UITextureButton::Slot31(int x, int y) {
     if (parent) {
       if (WindowPolicy(g_windowMgr.policy[0].actions, g_replayAnimationScaling != 0, 3, parent->geometry.id) > 0) {
         int id = this->geometry.id;
-        if (id == 185 && this->m_context->mode && static_cast<CMode*>(g_charViewMode)->cursorType == 2) {
+        if (id == 185 && g_charViewMode && static_cast<CMode*>(g_charViewMode)->cursorType == 2) {
           const char* text = LookupMessage(17);
           if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text, 2, true, false, 0, "Message", 280, 120, 0) == 187) {
-            this->m_context->mode->SendModeMessage(2, 0, 0, 0, 0);
+            static_cast<CMode*>(g_charViewMode)->SendMsg(2, 0, 0, 0, 0);
           }
         } else {
           if (id == 184 || id == 321) {
@@ -52,7 +52,7 @@ void UITextureButton::Slot31(int x, int y) {
         }
       }
     } else {
-      this->m_context->mode->SendModeMessage(0, this->geometry.id, this->m_argument, 0, 0);
+      static_cast<CMode*>(g_charViewMode)->SendMsg(0, this->geometry.id, this->m_argument, 0, 0);
     }
   }
 

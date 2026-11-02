@@ -1,15 +1,16 @@
+#include "Client/Mode/CMode.h"
 #include "UI/Window/UIControl.h"
 #include "UI/Buttons/UIRadioButton.h"
 #include "UI/Buttons/UITextButton.h"
 #include "UI/Lists/UIListBoxTemplate.h"
 #include "UI/Lists/UIThumb.h"
 #include "UI/Edit/UIEditCtrl.h"
-#include "Client/Mode/ModeCursor.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/ModeTooltip.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
+#include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UIPadding.h"
 #include "UI/Text/UIStaticTextControl.h"
@@ -537,7 +538,7 @@ void CUIHThumb::Slot27(int x, int) {
 // OFFSET: 0x009F24F0
 // FUNCTION: fn_14714
 void CUIThumb::ResetCursor(int, int) {
-  this->m_context->cursor.Set(2, this->m_context->cursorTick);
+  static_cast<CMode*>(g_charViewMode)->SetCursorAction(2);
 }
 
 // OFFSET: 0x009F2450
@@ -859,7 +860,7 @@ void CUIButton::Slot48() {
 // OFFSET: 0x009EEAA0
 // FUNCTION: fn_14633
 void CUIButton::ResetCursor(int, int) {
-  this->m_context->cursor.Set(this->disabled ? 0 : 2, this->m_context->cursorTick);
+  static_cast<CMode*>(g_charViewMode)->SetCursorAction(this->disabled ? 0 : 2);
 }
 
 // OFFSET: 0x009ECCD0
@@ -2593,7 +2594,7 @@ void CUIResizer::Slot27(int x, int y) {
 // OFFSET: 0x009E96B0
 // FUNCTION: fn_14507
 void CUIResizer::ResetCursor(int, int) {
-  this->m_context->cursor.Set(2, this->m_context->cursorTick);
+  static_cast<CMode*>(g_charViewMode)->SetCursorAction(2);
 }
 
 // OFFSET: 0x009E96C0
@@ -3174,8 +3175,8 @@ void CUIBasicButton::Slot55() {
     return;
   }
 
-  FontCache& fonts = this->m_context->fonts;
-  const TextLocale& locale = this->m_context->locale;
+  FontCache& fonts = g_fontCache;
+  const TextLocale locale = {};
   if (this->disabled) {
     this->DrawTextAt(this->textX + 1, this->textY + 1, this->displayText.c_str(), 0, 0, 12, 0xE2E2E2, 0, 0);
     this->DrawTextAt(this->textX, this->textY, this->displayText.c_str(), 0, 0, 12, 0x6F6F6F, 0, 0);

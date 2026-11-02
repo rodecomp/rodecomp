@@ -1,8 +1,8 @@
 #include "Render/Text/FontCache.h"
+#include "Render/Text/TextContext.h"
 #include "UI/UICheckAttendanceWnd.h"
 
 #include "Client/Mode/CMode.h"
-#include "Client/Mode/ModeCursor.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/ModeTooltip.h"
 #include "Client/Session.h"
@@ -24,6 +24,7 @@
 #include "UI/Buttons/UIBmpRadioBtn.h"
 #include "UI/Buttons/UIBmpTextButton.h"
 #include "UI/Shop/ItemDrawing.h"
+#include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
 
@@ -208,7 +209,8 @@ void UICheckAttendanceWnd::Paint() {
 
     const int x = (day - 1) % 5 * 62;
     const int y = (day - 1) / 5 * 64;
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, this->m_context->locale, x + 43, y + 109 + bannerHeight, item, 1, 0);
+    const TextLocale locale = {};
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, locale, x + 43, y + 109 + bannerHeight, item, 1, 0);
     this->DrawCenteredText(x + 26, y + 140 + bannerHeight, FormatOwnedString(LookupMessage(3467), day).c_str(), 58, 0, 12, 0xA44F3B, 1);
   }
 }
@@ -296,7 +298,7 @@ void UICheckAttendanceWnd::Slot28(int x, int y) {
 // OFFSET: 0x007DDEF0
 // FUNCTION: fn_09646
 void UICheckAttendanceWnd_Banner::ResetCursor(int, int) {
-  this->m_context->cursor.Set(2, this->m_context->cursorTick);
+  static_cast<CMode*>(g_charViewMode)->SetCursorAction(2);
 }
 
 // OFFSET: 0x007DDF00

@@ -1,4 +1,5 @@
 #include "Render/Text/FontCache.h"
+#include "Render/Text/TextContext.h"
 #include "UI/Item/UIParaItemShopWnd.h"
 
 #include "Client/Input/InputCharset.h"
@@ -729,9 +730,11 @@ void UIParaItemShopWnd::Paint() {
     }
 
     if (this->unknown_00F8 == 1 || it->quantity != 0) {
-      DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, this->m_context->locale, 34, top + 4, *it, 0, 0);
+      const TextLocale locale = {};
+      DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, locale, 34, top + 4, *it, 0, 0);
     } else {
-      DrawItemWithQuantityAuxiliary(*this, descriptions, g_fontCache, this->m_context->locale, 1, 34, top + 4, *it, 0, 0);
+      const TextLocale locale = {};
+      DrawItemWithQuantityAuxiliary(*this, descriptions, g_fontCache, locale, 1, 34, top + 4, *it, 0, 0);
     }
 
     this->DrawWrappedItemName(70, top + 12, 120, &*it, 0, 0, 12);
@@ -854,7 +857,8 @@ void UIParaResultWnd::Paint() {
     }
 
     const int x = column + 44;
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, this->m_context->locale, x, top + 21, *it, 0, 0);
+    const TextLocale locale = {};
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, locale, x, top + 21, *it, 0, 0);
     this->DrawWrappedItemName(column + 76, top + 29, 110, &*it, 0, 0, 12);
 
     if (it->unknown_0088 > 0) {

@@ -1,7 +1,8 @@
-#include "Client/Mode/ModeCursor.h"
+#include "Client/Mode/CMode.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
+#include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Window/UIResizer.h"
 #include "UI/Window/UIWindowMgr.h"
 
@@ -110,9 +111,9 @@ void UIResizer::Slot27(int x, int y) {
 // FUNCTION: fn_10879
 void UIResizer::ResetCursor(int x, int y) {
   if (g_windowMgr.Capture() == this || (x >= 0 && x < this->geometry.width && y >= 0 && y <= this->geometry.height)) {
-    this->m_context->cursor.Set(2, this->m_context->cursorTick);
+    static_cast<CMode*>(g_charViewMode)->SetCursorAction(2);
   } else if (g_windowMgr.Capture() != this) {
-    this->m_context->cursor.Set(0, this->m_context->cursorTick);
+    static_cast<CMode*>(g_charViewMode)->SetCursorAction(0);
   }
 }
 

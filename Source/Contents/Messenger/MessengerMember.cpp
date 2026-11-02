@@ -648,7 +648,7 @@ void UIJobIconButton::Paint() {
 // OFFSET: 0x007395E0
 // FUNCTION: fn_07688
 void UIJobIconButton::Slot25(int x, int y) {
-  if (UIWindow* window = this->m_context->windowMgr.LookupWindow(34)) {
+  if (UIWindow* window = g_windowMgr.LookupWindow(34)) {
     window->Slot25(x + this->geometry.x, y + this->geometry.y);
   }
 }
@@ -656,7 +656,7 @@ void UIJobIconButton::Slot25(int x, int y) {
 // OFFSET: 0x00739610
 // FUNCTION: fn_07689
 void UIJobIconButton::Slot31(int x, int y) {
-  if (UIWindow* window = this->m_context->windowMgr.LookupWindow(34)) {
+  if (UIWindow* window = g_windowMgr.LookupWindow(34)) {
     window->Slot31(x + this->geometry.x, y + this->geometry.y);
   }
 }
@@ -664,7 +664,7 @@ void UIJobIconButton::Slot31(int x, int y) {
 // OFFSET: 0x00739640
 // FUNCTION: fn_07690
 void UIJobIconButton::Slot33(int x, int y) {
-  if (UIWindow* window = this->m_context->windowMgr.LookupWindow(34)) {
+  if (UIWindow* window = g_windowMgr.LookupWindow(34)) {
     window->Slot33(x + this->geometry.x, y + this->geometry.y);
   }
 }

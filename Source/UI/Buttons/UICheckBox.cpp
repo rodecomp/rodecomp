@@ -1,7 +1,7 @@
+#include "Client/Mode/CMode.h"
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "Client/Mode/ModeTooltip.h"
 #include "Client/Replay.h"
-#include "Client/Mode/ModeCursor.h"
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
@@ -128,7 +128,7 @@ void UICheckBox::Slot28(int x, int y) {
 // FUNCTION: fn_10877
 void UICheckBox::ResetCursor(int, int) {
   if (this->m_disabled == 0) {
-    this->m_context->cursor.Set(2, this->m_context->cursorTick);
+    static_cast<CMode*>(g_charViewMode)->SetCursorAction(2);
   }
 }
 

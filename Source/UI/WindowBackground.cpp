@@ -1,6 +1,7 @@
 #include "Client/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Skills/ClientSkills.h"
+#include "Render/DeviceContext/DCSurface.h"
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Render/Renderer.h"
 #include "Render/Textures/SpriteAtlas.h"
@@ -106,7 +107,7 @@ void UIWindow::DrawRobeSprite(int job, int sex, int robe, int x, int y, bool ove
   if (cell.imageType == 0) {
     texture = g_renderer->atlas.Find(image, sprite->palette, record);
     if (!texture) {
-      texture = g_renderer->atlas.Insert(this->m_context->renderSystem, image, sprite->palette, record, g_serviceType, g_resourceReuseDelay);
+      texture = g_renderer->atlas.Insert(*GetRenderSystemHolder()->system, image, sprite->palette, record, g_serviceType, g_resourceReuseDelay);
     }
   } else {
     texture = static_cast<CTexture*>(const_cast<void*>(image->unknown_0008));

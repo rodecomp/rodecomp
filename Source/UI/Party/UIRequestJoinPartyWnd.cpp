@@ -1,3 +1,4 @@
+#include "Client/Mode/CMode.h"
 #include "Contents/MessageTable.h"
 #include "Client/Mode/ModeEvents.h"
 #include "Client/Session.h"
@@ -13,6 +14,7 @@
 #include "UI/Party/UIRequestJoinPartyWnd.h"
 #include "UI/Text/UIStaticText.h"
 #include "UI/Text/UITextViewer.h"
+#include "UI/Window/UINewSelectCharWnd.h"
 
 #include <cstdio>
 
@@ -161,7 +163,7 @@ int UIRequestJoinPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       this->m_request->requests.Block(this->accountId);
     }
 
-    this->m_context->mode->SendModeMessage(264, this->characterId, value == 541, reinterpret_cast<std::intptr_t>(&this->accountId), 0);
+    static_cast<CMode*>(g_charViewMode)->SendMsg(264, this->characterId, value == 541, reinterpret_cast<std::intptr_t>(&this->accountId), 0);
     this->m_request->requests.Advance();
     this->block->SetChecked(0);
 
