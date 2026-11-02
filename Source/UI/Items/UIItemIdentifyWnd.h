@@ -33,6 +33,7 @@ public:
   std::vector<unsigned char> Slot44() override;
   ITEM_INFO GetItem(int index, int* found);
   ITEM_INFO GetSelectedItem(int* found);
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 };
 
 class UIMakingArrowListWnd : public UIItemIdentifyWnd {

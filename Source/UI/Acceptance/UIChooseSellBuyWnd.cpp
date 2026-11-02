@@ -2600,6 +2600,180 @@ int UICombinedCardItemCollectionWnd::SendMsg(UIWindow* sender, int message, std:
   return 0;
 }
 
+// OFFSET: 0x008FD640
+// FUNCTION: fn_12348
+int UIItemCompositionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  switch (message) {
+  case 6: {
+    Replay& replay = Replay::Instance();
+    ReplayPacketRecorder packets{g_packetLengths, replay.baseFrame, replay.started, replay.frame, replay.header.key0, replay.header.key1,
+                                 replay.header.options.recordRestricted, replay.file, replay.fileOffset, replay.records, replay.cipherIndex,
+                                 replay.cipherBase, replay.cipherKey};
+    WindowResponseRecorder{replay.state, packets}.Record(this->geometry.id, static_cast<int>(a), b, this->m_selected, d);
+    if (g_replayAnimationScaling != 0) {
+      this->m_selected = static_cast<int>(c);
+    }
+    if (a == 184) {
+      if (this->m_selected != -1) {
+        int found;
+        ITEM_INFO item = this->GetItem(this->m_selected, &found);
+        if (found != 0) {
+          static_cast<CMode*>(g_charViewMode)->SendMsg(0x7C, item.unknown_0000[1], this->m_compositionState, 0, 0);
+        } else {
+          static_cast<CMode*>(g_charViewMode)->SendMsg(0x7C, -1, -1, 0, 0);
+        }
+        g_windowMgr.CloseWindow(0x4A);
+      }
+    } else if (a == 185) {
+      static_cast<CMode*>(g_charViewMode)->SendMsg(0x7C, -1, -1, 0, 0);
+      g_windowMgr.CloseWindow(0x4A);
+    }
+    return 0;
+  }
+  case 0x22: {
+    ItemCompositionWndInfo* placement = reinterpret_cast<ItemCompositionWndInfo*>(a);
+    this->m_compositionPlacement = placement;
+    if (!placement->IsValid()) {
+      placement->Reset();
+    }
+    this->Move(placement->x, placement->y);
+    return 0;
+  }
+  case 0x4D:
+    this->m_compositionState = static_cast<int>(a);
+    if (a != 0) {
+      ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, static_cast<std::uint32_t>(a));
+      if (item.unknown_0000[1] != 0) {
+        const std::string name = item.DisplayName(0);
+        this->m_title = FormatOwnedString("%s (%s)", LookupMessage(0x20A), name.c_str());
+      }
+    }
+    return 0;
+  case 0x7B: {
+    const unsigned char* records = reinterpret_cast<const unsigned char*>(a);
+    FramedMessageHeader header;
+    std::memcpy(&header, records, sizeof(header));
+    if (header.type == 0x574E) {
+      unsigned int position = sizeof(header);
+      while (position < static_cast<unsigned int>(b)) {
+        std::memcpy(&header, records + position, sizeof(header));
+        position += sizeof(header);
+        if (header.type == 0x574F) {
+          break;
+        }
+        if (header.type == 0x5751) {
+          std::vector<unsigned char> packet(header.length, 0);
+          std::memcpy(packet.data(), records + position, header.length);
+          position += header.length;
+          static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ReceiveUnknownD4E2A0(packet.data());
+        } else {
+          position += header.length;
+        }
+      }
+    }
+    return 0;
+  }
+  default:
+    return UIItemIdentifyWnd::SendMsg(sender, message, a, b, c, d);
+  }
+}
+
+// OFFSET: 0x008FDA10
+// FUNCTION: fn_12349
+int UIItemIdentifyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  switch (message) {
+  case 6: {
+    Replay& replay = Replay::Instance();
+    ReplayPacketRecorder packets{g_packetLengths, replay.baseFrame, replay.started, replay.frame, replay.header.key0, replay.header.key1,
+                                 replay.header.options.recordRestricted, replay.file, replay.fileOffset, replay.records, replay.cipherIndex,
+                                 replay.cipherBase, replay.cipherKey};
+    WindowResponseRecorder{replay.state, packets}.Record(this->geometry.id, static_cast<int>(a), b, this->m_selected, d);
+    if (g_replayAnimationScaling != 0) {
+      this->m_selected = static_cast<int>(c);
+    }
+    if (a == 184) {
+      if (this->m_selected != -1) {
+        int found;
+        ITEM_INFO item = this->GetItem(this->m_selected, &found);
+        if (found != 0) {
+          static_cast<CMode*>(g_charViewMode)->SendMsg(0x79, item.unknown_0000[1], 0, 0, 0);
+        }
+        g_windowMgr.CloseWindow(0x49);
+      }
+    } else if (a == 185) {
+      static_cast<CMode*>(g_charViewMode)->SendMsg(0x79, -1, 0, 0, 0);
+      g_windowMgr.CloseWindow(0x49);
+    }
+    return 0;
+  }
+  case 7:
+  case 9:
+  case 10: {
+    const int previous = this->m_scroll;
+    if (message == 9) {
+      this->m_scroll = previous - this->m_rows + 1;
+    } else if (message == 10) {
+      this->m_scroll = previous + this->m_rows - 1;
+    } else {
+      this->m_scroll = previous + static_cast<int>(a);
+    }
+    if (this->m_scroll != previous) {
+      this->UpdateScroll();
+      this->Invalidate();
+    }
+    return this->m_scroll - previous;
+  }
+  case 0x1F: {
+    ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, static_cast<std::uint32_t>(b));
+    this->m_items.push_back(item);
+    this->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
+    return 0;
+  }
+  case 0x22: {
+    ItemIdentifyWndInfo* placement = reinterpret_cast<ItemIdentifyWndInfo*>(a);
+    this->m_placement = placement;
+    if (!placement->IsValid()) {
+      placement->Reset();
+    }
+    this->Move(placement->x, placement->y);
+    return 0;
+  }
+  case 0x3C:
+    this->UpdateScroll();
+    this->Invalidate();
+    return 0;
+  case 0x4B:
+    this->m_items.clear();
+    return 0;
+  case 0x7B: {
+    const unsigned char* records = reinterpret_cast<const unsigned char*>(a);
+    FramedMessageHeader header;
+    std::memcpy(&header, records, sizeof(header));
+    if (header.type == 0x571C) {
+      unsigned int position = sizeof(header);
+      while (position < static_cast<unsigned int>(b)) {
+        std::memcpy(&header, records + position, sizeof(header));
+        position += sizeof(header);
+        if (header.type == 0x571D) {
+          break;
+        }
+        if (header.type == 0x571F) {
+          std::vector<unsigned char> packet(header.length, 0);
+          std::memcpy(packet.data(), records + position, header.length);
+          position += header.length;
+          static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ReceiveUnknownD4E3F0(packet.data());
+        } else {
+          position += header.length;
+        }
+      }
+    }
+    return 0;
+  }
+  default:
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
+}
+
 // OFFSET: 0x008FD5F0
 // FUNCTION: fn_12347
 int UIItemCollection_ComparisonWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
@@ -3168,9 +3342,9 @@ void UICardItemIllustWnd::Slot15(int, int) {
 // OFFSET: 0x008E2590
 // FUNCTION: fn_12178
 void UIItemIdentifyWnd::Slot15(int, int) {
-  this->m_title = LookupMessage(521);
-  this->m_scroll = 0;
+  this->m_title.assign(LookupMessage(521));
   this->m_selected = -1;
+  this->m_scroll = 0;
   this->m_columns = 1;
   this->m_rows = 4;
   this->m_scrollable = 0;
@@ -3206,8 +3380,10 @@ void UIItemIdentifyWnd::Slot15(int, int) {
     for (int i = 0; i < 1; ++i) {
       auto* button = new UIBitmapButton();
       button->SetBitmap((prefix + names[i][0] + ".bmp").c_str(), 0, 0);
-      button->SetBitmap((prefix + names[i][1] + ".bmp").c_str(), 1, 0);
-      button->SetBitmap((prefix + names[i][2] + ".bmp").c_str(), 2, 0);
+      const std::string hover = prefix + names[i][1] + ".bmp";
+      button->SetBitmap(hover.c_str(), 1, 0);
+      const std::string pressed = prefix + names[i][2] + ".bmp";
+      button->SetBitmap(pressed.c_str(), 2, 0);
       button->SetSize(button->BitmapWidth(), button->BitmapHeight());
       button->Move(positions[i][0], positions[i][1]);
       button->SetId(ids[i]);
