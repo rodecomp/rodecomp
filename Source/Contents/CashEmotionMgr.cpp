@@ -21,6 +21,7 @@
 #include "Resource/TextureNames.h"
 #include "Script/LuaScript.h"
 #include "UI/Buttons/UIBitmapButton.h"
+#include "UI/Buttons/UIBmpRadioBtn.h"
 #include "UI/Buttons/UICashEmotionSprBtn.h"
 #include "UI/CashEmotion/UICashEmotionPack.h"
 #include "UI/CashEmotion/UICashEmotionPiece.h"
@@ -275,15 +276,16 @@ static_assert(sizeof(CashEmotionPurchasePacket) == 7);
 
 class UICashEmotionListWnd : public UIFrameWnd {
 public:
-  UICashEmotionListWnd(UIWindowContext& windows, UIFrameContext& frame, UIButtonContext& controls);
+  UICashEmotionListWnd(UIWindowContext& windows, UIFrameContext& frame, UIButtonContext& controls, UIEditContext& edits);
   void Slot11() override;
+  void Slot15(int width, int height) override;
   void Slot19() override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
   UIBitmapButton* CreateButton(int x, int y, int width, int height, int id, const char* format, bool hasDisabled);
   void RefreshCurrentList();
-  void ShowPack(int packId);
+  __declspec(noinline) void ShowPack(int packId);
   void sub_7C7E50();
   void ResetLists();
   int SetPeriod(int packId);
@@ -297,8 +299,8 @@ protected:
   /* 00B4 */ CashEmotionListWndInfo* m_placement;
   /* 00B8 */ UICashEmotionListChildWnd_Basic* m_basicList;
   /* 00BC */ UICashEmotionListChildWnd_Purchase* m_purchaseList;
-  /* 00C0 */ UICashEmotionListChildWnd_Search* m_searchList;
-  /* 00C4 */ UICashEmotionListChildWnd_UnPurchased* m_unpurchasedList;
+  /* 00C0 */ UICashEmotionListChildWnd_UnPurchased* m_unpurchasedList;
+  /* 00C4 */ UICashEmotionListChildWnd_Search* m_searchList;
   /* 00C8 */ std::map<char, UIWindow*> m_tabs;
   /* 00D0 */ char m_tab;
   /* 00D4 */ UIBitmapButton* unknown_00D4;
@@ -309,6 +311,7 @@ protected:
   /* 00E8 */ UICashEmotionListChildWnd_Abstract* m_currentList;
   /* 00EC */ UIStaticText* m_period;
   UIButtonContext* m_controls;
+  UIEditContext* m_edits;
 };
 
 class UICashEmotionMiniWnd : public UIWindow {
@@ -2155,10 +2158,10 @@ int UICashEmotionListChildWnd_UnPurchased::SendMsg(UIWindow* sender, int message
 
 // OFFSET: 0x007C6CB0
 // FUNCTION: fn_09401
-UICashEmotionListWnd::UICashEmotionListWnd(UIWindowContext& windows, UIFrameContext& frame, UIButtonContext& controls)
-    : UIFrameWnd(windows, frame, 0), m_placement(nullptr), m_basicList(nullptr), m_purchaseList(nullptr), m_searchList(nullptr), m_unpurchasedList(nullptr),
+UICashEmotionListWnd::UICashEmotionListWnd(UIWindowContext& windows, UIFrameContext& frame, UIButtonContext& controls, UIEditContext& edits)
+    : UIFrameWnd(windows, frame, 0), m_placement(nullptr), m_basicList(nullptr), m_purchaseList(nullptr), m_unpurchasedList(nullptr), m_searchList(nullptr),
       m_tab(0), unknown_00D4(nullptr), m_searchEdit(nullptr), unknown_00DC(nullptr), unknown_00E0(nullptr), unknown_00E4(nullptr), m_currentList(nullptr),
-      m_period(nullptr), m_controls(&controls) {
+      m_period(nullptr), m_controls(&controls), m_edits(&edits) {
 }
 
 // OFFSET: 0x007C7240
@@ -2182,6 +2185,97 @@ UIBitmapButton* UICashEmotionListWnd::CreateButton(int x, int y, int width, int 
   button->SetId(id);
   this->AddChild(button);
   return button;
+}
+
+// OFFSET: 0x007C74D0
+// FUNCTION: fn_09406
+void UICashEmotionListWnd::Slot15(int width, int height) {
+  this->AddCloseButton(*this->m_controls, "Alt+L", 0);
+  if (UIBitmapButton* base = this->AddBaseButton(*this->m_controls)) {
+    base->Move(32, 3);
+  }
+
+  const char* const tabs[] = {
+    "유저인터페이스\\cashemotion\\tap_basic_%s.bmp",
+    "유저인터페이스\\cashemotion\\tap_bought_%s.bmp",
+    "유저인터페이스\\cashemotion\\tap_unbought_%s.bmp",
+    "유저인터페이스\\cashemotion\\tap_search_%s.bmp",
+  };
+  int x = 46;
+  for (int index = 0; index < 4; ++index) {
+    UIBmpRadioBtn2* tab = new (std::nothrow) UIBmpRadioBtn2(*this->m_context, *this->m_controls);
+    if (!tab) {
+      continue;
+    }
+
+    const char* format = tabs[index];
+    std::string normal = FormatOwnedString(format, "normal");
+    tab->SetBitmap(normal.c_str(), 0);
+    tab->SetBitmap(FormatOwnedString(format, "normal").c_str(), 1);
+    tab->SetBitmap(FormatOwnedString(format, "press").c_str(), 2);
+    tab->SetBitmap(FormatOwnedString(format, "disable").c_str(), 3);
+    tab->Move(0, x);
+
+    const char id = static_cast<char>(index + 1);
+    tab->SendMsg(this, 13, id == 1, 0, 0, 0);
+    this->AddChild(tab);
+    this->m_tabs.insert(std::make_pair(id, static_cast<UIWindow*>(tab)));
+
+    if (CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(normal.c_str())))) {
+      x += bitmap->image.height;
+    }
+  }
+
+  this->unknown_00D4 = this->CreateButton(36, 22, 20, 18, 189, "유저인터페이스\\cashemotion\\btn_arrowback_%s.bmp", false);
+  this->unknown_00DC = this->CreateButton(221, 22, 26, 18, 190, "유저인터페이스\\cashemotion\\btn_search_%s.bmp", true);
+  this->unknown_00E0 = this->CreateButton(252, 22, 37, 18, 191, "유저인터페이스\\cashemotion\\btn_shortui_%s.bmp", false);
+  this->unknown_00E4 = this->CreateButton(247, 355, 42, 20, 526, "유저인터페이스\\cashemotion\\btn_buy_%s.bmp", true);
+
+  this->m_searchEdit = new (std::nothrow) UIEditCtrl2(*this->m_context, *this->m_edits);
+  if (this->m_searchEdit) {
+    this->m_searchEdit->SetSize(160, 16);
+    this->m_searchEdit->Move(61, 23);
+    this->m_searchEdit->maximum = 20;
+    this->AddChild(this->m_searchEdit);
+  }
+
+  this->m_basicList = new (std::nothrow) UICashEmotionListChildWnd_Basic(*this->m_context, 271, 303, 0);
+  if (this->m_basicList) {
+    this->m_basicList->Move(28, 47);
+    this->AddChild(this->m_basicList);
+  }
+
+  this->m_purchaseList = new (std::nothrow) UICashEmotionListChildWnd_Purchase(*this->m_context, 271, 303);
+  if (this->m_purchaseList) {
+    this->m_purchaseList->Move(28, 47);
+    this->AddChild(this->m_purchaseList);
+  }
+
+  this->m_unpurchasedList = new (std::nothrow) UICashEmotionListChildWnd_UnPurchased(*this->m_context, 271, 303);
+  if (this->m_unpurchasedList) {
+    this->m_unpurchasedList->Move(28, 47);
+    this->AddChild(this->m_unpurchasedList);
+  }
+
+  this->m_searchList = new (std::nothrow) UICashEmotionListChildWnd_Search(*this->m_context, 271, 303);
+  if (this->m_searchList) {
+    this->m_searchList->Move(28, 47);
+    this->AddChild(this->m_searchList);
+  }
+
+  auto first = this->m_tabs.find(1);
+  if (first != this->m_tabs.end()) {
+    this->SendMsg(first->second, 6, 215, 0, 0, 0);
+  }
+
+  this->m_period = new UIStaticText(*this->m_context, *this->m_controls);
+  this->m_period->SetSize(200, 14);
+  this->m_period->Move(39, 359);
+  this->m_period->SetColor(214, 24, 16);
+  this->m_period->Show(0);
+  this->AddChild(this->m_period);
+
+  this->RestartExpirySchedule();
 }
 
 // OFFSET: 0x007C7C20
@@ -2249,12 +2343,12 @@ void UICashEmotionListWnd::sub_7C7E50() {
     this->m_purchaseList->Refresh(this->m_tab == 2 && this->m_searchEdit ? this->m_searchEdit->Text() : nullptr);
   }
 
-  if (this->m_searchList) {
-    this->m_searchList->Refresh(this->m_tab == 3 && this->m_searchEdit ? this->m_searchEdit->Text() : nullptr);
+  if (this->m_unpurchasedList) {
+    this->m_unpurchasedList->Refresh(this->m_tab == 3 && this->m_searchEdit ? this->m_searchEdit->Text() : nullptr);
   }
 
-  if (this->m_unpurchasedList) {
-    this->m_unpurchasedList->Refresh(this->m_tab == 4 && this->m_searchEdit ? this->m_searchEdit->Text() : nullptr);
+  if (this->m_searchList) {
+    this->m_searchList->Refresh(this->m_tab == 4 && this->m_searchEdit ? this->m_searchEdit->Text() : nullptr);
   }
 }
 
@@ -2269,12 +2363,12 @@ void UICashEmotionListWnd::ResetLists() {
     this->m_purchaseList->Refresh(nullptr);
   }
 
-  if (this->m_searchList) {
-    this->m_searchList->Refresh(nullptr);
-  }
-
   if (this->m_unpurchasedList) {
     this->m_unpurchasedList->Refresh(nullptr);
+  }
+
+  if (this->m_searchList) {
+    this->m_searchList->Refresh(nullptr);
   }
 }
 
@@ -2467,9 +2561,9 @@ void UICashEmotionListWnd::SetTab(char tab) {
   } else if (tab == 2) {
     list = this->m_purchaseList;
   } else if (tab == 3) {
-    list = this->m_searchList;
-  } else if (tab == 4) {
     list = this->m_unpurchasedList;
+  } else if (tab == 4) {
+    list = this->m_searchList;
   } else {
     list = nullptr;
   }
@@ -2481,11 +2575,11 @@ void UICashEmotionListWnd::SetTab(char tab) {
   if (this->m_purchaseList) {
     this->m_purchaseList->Show(tab == 2);
   }
-  if (this->m_searchList) {
-    this->m_searchList->Show(tab == 3);
-  }
   if (this->m_unpurchasedList) {
-    this->m_unpurchasedList->Show(tab == 4);
+    this->m_unpurchasedList->Show(tab == 3);
+  }
+  if (this->m_searchList) {
+    this->m_searchList->Show(tab == 4);
   }
 
   this->m_tab = tab;

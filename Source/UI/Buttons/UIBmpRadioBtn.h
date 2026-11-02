@@ -48,6 +48,9 @@ protected:
 
 class UIBmpRadioBtn2 : public UIBmpRadioBtn {
 public:
+  // INLINED
+  UIBmpRadioBtn2(UIWindowContext& windows, UIButtonContext& controls) : UIBmpRadioBtn(windows, controls) {
+  }
   void Invalidate() override;
   void Slot47() override;
   void Slot48() override;
