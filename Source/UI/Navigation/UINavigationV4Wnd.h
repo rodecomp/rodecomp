@@ -75,6 +75,8 @@ public:
   /* 0114 */ int unknown_0114;
   /* 0118 */ int unknown_0118;
   /* 011C */ int unknown_011C;
+  UIButtonContext* m_controls;
+  UIListBoxContext* m_listContext;
 };
 
 class UIStaticBitmap;

@@ -2173,6 +2173,33 @@ void UINavigationroadiconWnd::Slot31(int x, int y) {
   UIFrameWnd::Slot31(x, y);
 }
 
+// OFFSET: 0x005C6CC0
+// FUNCTION: fn_03590
+void UIPrivateAirplaneWnd::Paint() {
+  this->DrawBitmap(
+    0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\private_airplane\\bg_pay.bmp")))->image, false
+  );
+  this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 19, 4, LookupMessage(0xd02), 0, 0, 12, 0xffffff, 0, 0);
+  this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 18, 3, LookupMessage(0xd02), 0, 0, 12, 0, 0, 0);
+
+  if (this->m_text.size() == 0) {
+    return;
+  }
+
+  this->DrawBitmap(
+    7, 86, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\private_airplane\\ico_notic.bmp")))->image, true
+  );
+
+  std::list<std::string> lines;
+  this->WrapText(this->m_text, &lines, 0xa4, 0, 12, 0);
+
+  int offset = 0;
+  for (auto it = lines.begin(); it != lines.end(); ++it, offset += 12) {
+    const int y = static_cast<int>(static_cast<unsigned>(32 - lines.size() * 12) * 0.5 + 78.0 + offset);
+    this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 26, y, it->c_str(), 0, 0, 12, 0x3512b5, 0, 0);
+  }
+}
+
 // OFFSET: 0x005C72A0
 // FUNCTION: fn_03604
 void UINavigationV4Wnd::Slot19() {
@@ -2314,6 +2341,190 @@ void UIListBox_NaviSearch::Paint() {
 }
 
 // OFFSET: 0x005C4EA0
+// FUNCTION: fn_03581
+void UINavigationV4Wnd::Slot15(int, int) {
+  UIBitmapButton* closeButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->unknown_00B8 = closeButton;
+  closeButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_close_normal.bmp", 0, 0);
+  closeButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_close_over.bmp", 1, 0);
+  closeButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_close_press.bmp", 2, 0);
+  closeButton->SetSize(closeButton->geometry.width, closeButton->geometry.height);
+  closeButton->SetId(201);
+  closeButton->SetTooltip(LookupMessage(0x0BE5));
+  this->AddChild(closeButton);
+
+  UIBitmapButton* maximizeButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->unknown_00C4 = maximizeButton;
+  maximizeButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_maximize_normal.bmp", 0, 0);
+  maximizeButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_maximize_over.bmp", 1, 0);
+  maximizeButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_maximize_press.bmp", 2, 0);
+  maximizeButton->SetSize(maximizeButton->geometry.width, maximizeButton->geometry.height);
+  maximizeButton->SetId(200);
+  maximizeButton->SetTooltip(LookupMessage(0x089B));
+  this->AddChild(maximizeButton);
+
+  UICheckBox* minimizeCheck = new UICheckBox(*this->m_context, *this->m_controls);
+  this->unknown_00D4 = minimizeCheck;
+  minimizeCheck->SetSize(110, 12);
+  minimizeCheck->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", "Minimize");
+  minimizeCheck->SetChecked(0);
+  minimizeCheck->SetTooltip(LookupMessage(0x089C));
+  this->AddChild(minimizeCheck);
+
+  UIBitmapButton* roadIconButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->unknown_00C8 = roadIconButton;
+  this->SetRoadIcon(g_navigationRoadIcon);
+  roadIconButton->SetSize(roadIconButton->geometry.width, roadIconButton->geometry.height);
+  roadIconButton->SetId(189);
+  roadIconButton->SetTooltip(LookupMessage(0x0C8B));
+  this->AddChild(roadIconButton);
+
+  UIBitmapButton* roadListButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->unknown_00D8 = roadListButton;
+  roadListButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_roadlistwnd_normal.bmp", 0, 0);
+  roadListButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_roadlistwnd_over.bmp", 1, 0);
+  roadListButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_roadlistwnd_press.bmp", 2, 0);
+  roadListButton->SetSize(roadListButton->geometry.width, roadListButton->geometry.height);
+  roadListButton->SetId(442);
+  roadListButton->SetTooltip(LookupMessage(0x0C85));
+  this->AddChild(roadListButton);
+
+  UIListBox_NaviSearch* roadList = new UIListBox_NaviSearch(*this->m_context, *this->m_listContext);
+  this->unknown_00EC = roadList;
+  roadList->SetSize(138, 244);
+  roadList->backgroundRed = 255;
+  roadList->backgroundGreen = 255;
+  roadList->backgroundBlue = 255;
+  roadList->SetId(336);
+  this->AddChild(roadList);
+
+  UIListBox_NaviSearch* searchList = new UIListBox_NaviSearch(*this->m_context, *this->m_listContext);
+  this->unknown_00F0 = searchList;
+  searchList->SetSize(132, 80);
+  searchList->backgroundRed = 240;
+  searchList->backgroundGreen = 244;
+  searchList->backgroundBlue = 253;
+  searchList->SetId(441);
+  this->AddChild(searchList);
+
+  UICheckBox* filterCheck = new UICheckBox(*this->m_context, *this->m_controls);
+  this->unknown_00F4 = filterCheck;
+  filterCheck->SetSize(110, 12);
+  filterCheck->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", "service");
+  filterCheck->SetId(213);
+  filterCheck->SetChecked(g_navigationFilter);
+  filterCheck->SetTooltip(LookupMessage(0x0C8C));
+  this->AddChild(filterCheck);
+
+  UIBitmapButton* shareButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->unknown_00F8 = shareButton;
+  shareButton->SetBitmap("유저인터페이스\\private_airplane\\btn_share_normal.bmp", 0, 0);
+  shareButton->SetBitmap("유저인터페이스\\private_airplane\\btn_share_over.bmp", 1, 0);
+  shareButton->SetBitmap("유저인터페이스\\private_airplane\\btn_share_press.bmp", 2, 0);
+  shareButton->SetSize(shareButton->geometry.width, shareButton->geometry.height);
+  shareButton->SetId(354);
+  shareButton->SetTooltip(LookupMessage(0x0C86));
+  this->AddChild(shareButton);
+
+  UIBitmapButton* findButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->unknown_00FC = findButton;
+  findButton->SetBitmap("유저인터페이스\\private_airplane\\btn_find_normal.bmp", 0, 0);
+  findButton->SetBitmap("유저인터페이스\\private_airplane\\btn_find_over.bmp", 1, 0);
+  findButton->SetBitmap("유저인터페이스\\private_airplane\\btn_find_press.bmp", 2, 0);
+  findButton->SetSize(findButton->geometry.width, findButton->geometry.height);
+  findButton->SetId(430);
+  findButton->SetTooltip(LookupMessage(0x0895));
+  this->AddChild(findButton);
+
+  UIBitmapButton* moveButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->unknown_0100 = moveButton;
+  moveButton->SetBitmap("유저인터페이스\\private_airplane\\btn_move_normal.bmp", 0, 0);
+  moveButton->SetBitmap("유저인터페이스\\private_airplane\\btn_move_over.bmp", 1, 0);
+  moveButton->SetBitmap("유저인터페이스\\private_airplane\\btn_move_press.bmp", 2, 0);
+  moveButton->SetSize(moveButton->geometry.width, moveButton->geometry.height);
+  moveButton->SetId(499);
+  this->AddChild(moveButton);
+
+  UIStaticText* label = new UIStaticText(*this->m_context, *this->m_controls);
+  this->unknown_00E8 = label;
+  label->SetSize(100, 20);
+  this->AddChild(label);
+  label->SetText(LookupMessage(0x0C87), 0);
+  label->SetColor(0, 0, 0);
+
+  this->unknown_00B4 = this->AddCloseButton(*this->m_controls, LookupMessage(0x0BE5), 0);
+  this->unknown_00BC = this->AddMinimizeButton(*this->m_controls, LookupMessage(0x089C), 0);
+
+  UIBitmapButton* helpButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->unknown_00C0 = helpButton;
+  helpButton->SetBitmap("유저인터페이스\\navigation_interface\\NaviHelp_off.bmp", 0, 0);
+  helpButton->SetBitmap("유저인터페이스\\navigation_interface\\NaviHelp_on.bmp", 1, 0);
+  helpButton->SetBitmap("유저인터페이스\\navigation_interface\\NaviHelp_on.bmp", 2, 0);
+  helpButton->SetSize(helpButton->geometry.width, helpButton->geometry.height);
+  helpButton->SetId(343);
+  helpButton->SetTooltip(LookupMessage(0x089D));
+  this->AddChild(helpButton);
+
+  UIBitmapButton* dataButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->unknown_00CC = dataButton;
+  dataButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_Navidata_Open_normal.bmp", 0, 0);
+  dataButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_Navidata_Open_over.bmp", 1, 0);
+  dataButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_Navidata_Open_press.bmp", 2, 0);
+  dataButton->SetSize(dataButton->geometry.width, dataButton->geometry.height);
+  dataButton->SetId(191);
+  dataButton->SetTooltip(LookupMessage(0x0899));
+  this->AddChild(dataButton);
+
+  UIBitmapEditCtrl* searchEdit = new UIBitmapEditCtrl();
+  this->unknown_00E0 = searchEdit;
+  searchEdit->SetSize(113, 18);
+  searchEdit->maximum = 30;
+  searchEdit->SetBitmapName("유저인터페이스\\navigation_interface3\\bg_search.bmp");
+  searchEdit->SetId(516);
+  this->AddChild(searchEdit);
+
+  UIBitmapButton* searchButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->unknown_00E4 = searchButton;
+  searchButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_searchbar_normal.bmp", 3, 0);
+  searchButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_searchbar_normal.bmp", 0, 0);
+  searchButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_searchbar_over.bmp", 1, 0);
+  searchButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_searchbar_press.bmp", 2, 0);
+  searchButton->SetSize(searchButton->geometry.width, searchButton->geometry.height);
+  searchButton->SetId(321);
+  searchButton->SetTooltip(LookupMessage(0x0894));
+  this->AddChild(searchButton);
+
+  UIBitmapButton* backButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->unknown_00D0 = backButton;
+  backButton->SetBitmap("유저인터페이스\\navigation_interface3\\bt_back.bmp", 3, 0);
+  backButton->SetBitmap("유저인터페이스\\navigation_interface3\\bt_back.bmp", 0, 0);
+  backButton->SetBitmap("유저인터페이스\\navigation_interface3\\bt_back_on.bmp", 1, 0);
+  backButton->SetBitmap("유저인터페이스\\navigation_interface3\\bt_back_on.bmp", 2, 0);
+  backButton->SetSize(backButton->geometry.width, backButton->geometry.height);
+  backButton->SetId(284);
+  backButton->SetTooltip(LookupMessage(0x0C88));
+  this->AddChild(backButton);
+
+  UIComboBox_BmpWnd* searchType = new UIComboBox_BmpWnd();
+  this->unknown_00DC = searchType;
+  searchType->dropdownHeight = 67;
+  searchType->Create(61, 18, "유저인터페이스\\navigation_interface3\\bg_combo.bmp", "유저인터페이스\\navigation_interface3\\dropdown_on");
+  searchType->borderRed = 100;
+  searchType->borderGreen = 100;
+  searchType->borderBlue = 100;
+  searchType->red = 232;
+  searchType->green = 232;
+  searchType->blue = 232;
+  this->AddChild(searchType);
+  searchType->AddOption(LookupMessage(0x089E), 0);
+  searchType->AddOption(LookupMessage(0x089F), 0);
+  searchType->AddOption(LookupMessage(0x08A0), 0);
+  searchType->AddOption(LookupMessage(0x08A1), 0);
+  searchType->Select(g_navigationSearchType);
+
+  this->RefreshLayout();
+}
+// OFFSET: 0x005C5D40
 // FUNCTION: fn_03582
 void UINavigationroadiconWnd::Slot15(int, int) {
   this->AddCloseButton(*this->m_controls, LookupMessage(3045), 0);
@@ -3766,6 +3977,30 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
 
 
 // OFFSET: 0x00A84400
+// OFFSET: 0x00A84400
+// FUNCTION: fn_17010
+int UIWindow::sub_A84400(
+  int x, int y, const std::string& text, int width, int lineSpacing, int align, int family, int height, std::uint32_t color, unsigned char bold
+) {
+  std::list<std::string> lines;
+  this->WrapFormattedText(text, &lines, width, family, height, bold);
+
+  if (width == 0) {
+    width = this->FormattedTextWidth(text, family, height, bold);
+  }
+
+  int totalHeight = 0;
+  for (auto line = lines.begin(); line != lines.end(); ++line) {
+    this->DrawFormattedText(x, y + totalHeight, *line, width, align, family, height, color, bold);
+    totalHeight += height;
+    auto nextLine = line;
+    ++nextLine;
+    if (nextLine != lines.end()) {
+      totalHeight += lineSpacing;
+    }
+  }
+  return totalHeight;
+}
 
 // OFFSET: 0x00A7DA40
 // FUNCTION: fn_16958
