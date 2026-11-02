@@ -4160,8 +4160,6 @@ void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor*
   }
 }
 
-// OFFSET: 0x00CE2880
-
 // OFFSET: 0x00CDD6B0
 // FUNCTION: fn_21317
 CGameActor* CGameMode::NewActor(int job) {
@@ -4651,6 +4649,233 @@ void CGameMode::UpdateHoverNameBalloon() {
 }
 
 // OFFSET: 0x00CE3D30
+// FUNCTION: fn_21335
+void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* actor) {
+  const unsigned char selfTargetOption = g_serviceOptions.Get(0x69);
+  const unsigned char forceOption = g_serviceOptions.Get(0x6D);
+  ModeCursor& cursor = *reinterpret_cast<ModeCursor*>(&this->cursorAction);
+  const std::intptr_t mode = reinterpret_cast<std::intptr_t>(this->unknown_0408);
+
+  int skillMode;
+  int shiftHeld;
+  bool optionalSelf;
+  int support;
+  int attack;
+  if (mode == 2 || mode == 4) {
+    skillMode = 1;
+    shiftHeld = HIBYTE(GetAsyncKeyState(VK_SHIFT));
+    optionalSelf = IsOptionalSelfTargetSkill(this->unknown_040C);
+    support = IsSupportSkill(this->unknown_040C);
+    attack = shiftHeld;
+    if (support) {
+      attack = shiftHeld == 0;
+    }
+  } else {
+    skillMode = 0;
+    shiftHeld = HIBYTE(GetAsyncKeyState(VK_SHIFT));
+    attack = shiftHeld;
+    support = 0;
+    optionalSelf = false;
+  }
+
+  bool resetCursor = false;
+  if (pick) {
+    if (this->scene->unknown_0050 != 0) {
+      if (actor && g_session.unknown_0F24[0] != actor->render.unknown_00FB) {
+        attack = 1;
+      }
+    } else {
+      if (g_session.GetMapProperty07()) {
+        if (!g_session.IsPartyMember(actor->render.accountId, true)) {
+          attack = 1;
+        }
+      } else if (g_session.GetMapProperty08()) {
+        if (!g_session.IsLocalPlayerAid(actor->Slot50())) {
+          attack = 1;
+        }
+      }
+
+      CWorld* scene = this->scene;
+      if (scene->unknown_004C == 0) {
+        if (pick->unknown_0024 != 0 || scene->unknown_0048 != 0 || scene->unknown_0054 != 0 ||
+            *reinterpret_cast<const int*>(&g_session.unknown_5454[4]) != 0) {
+          if (!g_session.IsPartyMember(actor->render.accountId, true)) {
+            attack = 1;
+          }
+        }
+      } else if (actor) {
+        GuildInfo* guildInfo = &g_guildInfo;
+        bool friendly = true;
+        bool known = true;
+        switch (actor->unknown_0314) {
+        case 8:
+        case 9:
+        case 10:
+        case 13:
+        case 14: {
+          CGameActor* summoner = static_cast<CGameActor*>(scene->GetGameActorByAID(actor->unknown_02EC));
+          if (!summoner) {
+            known = this->scene->player->render.accountId == static_cast<std::uint32_t>(actor->unknown_02EC);
+          } else if (!g_session.IsLocalPlayerAid(summoner->Slot50())) {
+            friendly = guildInfo->HasRelatedGuild(summoner->Slot50());
+          }
+          break;
+        }
+        default:
+          if (!g_session.IsLocalPlayerAid(actor->Slot50())) {
+            friendly = guildInfo->HasRelatedGuild(actor->Slot50());
+          }
+          break;
+        }
+
+        if (!friendly) {
+          attack = 1;
+        } else if (known) {
+          attack = 0;
+          if (!skillMode) {
+            resetCursor = true;
+          } else {
+            attack = support;
+            if ((selfTargetOption || shiftHeld) && optionalSelf == true) {
+              attack = 1;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  if (resetCursor) {
+    cursor.Set(0, this->cursorTick);
+  } else if (attack && actor->render.unknown_0070 != 3) {
+    cursor.Set(skillMode ? 11 : 5, this->cursorTick);
+    handled = 1;
+  } else if (skillMode && actor->render.unknown_0070 != 3) {
+    cursor.Set(10, this->cursorTick);
+  } else {
+    cursor.Set(0, this->cursorTick);
+  }
+
+  const std::uint32_t homunAid = *reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5570[8]);
+  const std::uint32_t mercenaryAid = *reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5620[8]);
+  const bool engaged = (attack || this->scene->unknown_004C != 0) && actor->render.unknown_0070 != 3 && !skillMode;
+  if (engaged && g_groundMarkEnabled != 0 && g_mouse.buttons[1] == 1 && HIBYTE(GetAsyncKeyState(VK_MENU))) {
+    if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
+      CGameActor* homun = static_cast<CGameActor*>(this->scene->GetGameActorByAID(homunAid));
+      if (homun && homun->HasUnknown030CEntry()) {
+        AiMessage message = {};
+        message.type = 3;
+        message.target = actor->render.accountId;
+        homun->SetUnknown0330(reinterpret_cast<const float*>(&message), 0);
+      }
+    } else if (g_session.unknown_5610 != 0 && g_groundMarkAid == actor->render.accountId) {
+      CGameActor* homun = static_cast<CGameActor*>(this->scene->GetGameActorByAID(homunAid));
+      if (homun && homun->HasUnknown030CEntry()) {
+        AiMessage message = {};
+        message.type = 3;
+        message.target = g_groundMarkAid;
+        homun->SetUnknown0318(reinterpret_cast<const float*>(&message), 0);
+      }
+      g_session.unknown_5610 = 0;
+    } else {
+      cursor.Set(11, this->cursorTick);
+      g_groundMarkAid = actor->render.accountId;
+      g_groundMarkA = 0;
+      g_groundMarkB = 0;
+      g_groundMarkSet = 0;
+      g_session.unknown_5610 = 1;
+    }
+    g_session.unknown_560C = 1;
+  }
+
+  if (g_groundMarkEnabled != 0 && g_mouse.buttons[0] == 1 && g_session.IsHomunculusSkill(this->unknown_040C)) {
+    CGameActor* homun = static_cast<CGameActor*>(this->scene->GetGameActorByAID(homunAid));
+    if (homun && homun->HasUnknown030CEntry()) {
+      AiMessage message = {};
+      message.type = 7;
+      message.level = this->unknown_0414;
+      message.skill = this->unknown_040C;
+      message.target = actor->render.accountId;
+      homun->SetUnknown0318(reinterpret_cast<const float*>(&message), 0);
+    }
+    return;
+  }
+
+  if (engaged && g_groundMarkAltEnabled != 0 && g_mouse.buttons[0] == 1 && HIBYTE(GetAsyncKeyState(VK_MENU))) {
+    if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
+      CGameActor* mercenary = static_cast<CGameActor*>(this->scene->GetGameActorByAID(mercenaryAid));
+      if (mercenary && mercenary->HasUnknown0310Entry()) {
+        AiMessage message = {};
+        message.type = 3;
+        message.target = actor->render.accountId;
+        mercenary->SetUnknown0330(reinterpret_cast<const float*>(&message), 1);
+      }
+    } else if (g_session.unknown_56AC != 0 && g_groundMarkAltAid == actor->render.accountId) {
+      CGameActor* mercenary = static_cast<CGameActor*>(this->scene->GetGameActorByAID(mercenaryAid));
+      if (mercenary && mercenary->HasUnknown0310Entry()) {
+        AiMessage message = {};
+        message.type = 3;
+        message.target = g_groundMarkAltAid;
+        mercenary->SetUnknown0318(reinterpret_cast<const float*>(&message), 1);
+      }
+      g_session.unknown_56AC = 0;
+    } else {
+      cursor.Set(11, this->cursorTick);
+      g_groundMarkAltAid = actor->render.accountId;
+      g_groundMarkAltA = 0;
+      g_groundMarkAltB = 0;
+      g_groundMarkAltSet = 0;
+      g_session.unknown_56AC = 1;
+    }
+    g_session.unknown_56A8 = 1;
+  }
+
+  if (attack != 0 && g_groundMarkAltEnabled != 0 && g_mouse.buttons[0] == 1 && g_session.IsMercenarySkill(this->unknown_040C)) {
+    CGameActor* mercenary = static_cast<CGameActor*>(this->scene->GetGameActorByAID(mercenaryAid));
+    if (mercenary && mercenary->HasUnknown0310Entry()) {
+      AiMessage message = {};
+      message.type = 7;
+      message.level = this->unknown_0414;
+      message.skill = this->unknown_040C;
+      message.target = actor->render.accountId;
+      mercenary->SetUnknown0318(reinterpret_cast<const float*>(&message), 1);
+    }
+    return;
+  }
+
+  int& forced = this->forcedAttack;
+  if (g_mouse.buttons[0] == 1 && attack != 0 && !HIBYTE(GetAsyncKeyState(VK_MENU))) {
+    this->SendMsg(0x1A, 1, 0, 0, 0);
+    *reinterpret_cast<std::uint32_t*>(&this->unknown_00EC[0x08]) = actor->render.accountId;
+    *reinterpret_cast<int*>(&this->unknown_00EC[0x0C]) = 0;
+    if (g_session.GetSceneUnknown004C() == 0 && (HIBYTE(GetAsyncKeyState(VK_CONTROL)) || forceOption != 0)) {
+      this->RequestPlayerAction(actor->render.accountId, 0);
+      if (!skillMode) {
+        forced = 1;
+      }
+    } else {
+      this->RequestPlayerAction(actor->render.accountId, 1);
+      forced = 0;
+    }
+  }
+
+  if (g_mouse.buttons[1] == 1 && shiftHeld) {
+    if (this->IsOverWeight(true)) {
+      return;
+    }
+    this->SendMsg(0x1A, 1, 0, 0, 0);
+    g_hoverActorGid = actor->Slot42();
+    *reinterpret_cast<int*>(&this->unknown_00EC[0x0C]) = 0;
+  }
+
+  int& balloonAid = *reinterpret_cast<int*>(&this->unknown_00EC[0x00]);
+  if (this->unknown_00DC == g_screenWidth && this->unknown_00E0 == g_screenHeight) {
+    this->ShowActorNameBalloon(balloonAid);
+    return;
+  }
+  balloonAid = 0;
+  this->ShowActorNameBalloon(0);
+}
 
 // OFFSET: 0x00CFE510
 // FUNCTION: fn_21434
