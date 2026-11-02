@@ -4,7 +4,7 @@
 #include <list>
 
 class UIWindow;
-class WindowManagerWindows;
+#include "UI/Window/WindowManagerWindows.h"
 
 struct FrameFocus {
   std::list<int>& order;

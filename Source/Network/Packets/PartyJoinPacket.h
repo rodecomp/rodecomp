@@ -11,7 +11,7 @@
 
 class CConnection;
 class PacketLengths;
-class WindowManagerWindows;
+#include "UI/Window/WindowManagerWindows.h"
 
 void SendPartyJoin(CConnection& connection, const PacketLengths& lengths, const std::uint32_t* accountId, const std::uint32_t* characterId);
 void SendPartyJoinDecision(CConnection& connection, const PacketLengths& lengths, std::uint32_t characterId, bool accepted, const std::uint32_t* accountId);

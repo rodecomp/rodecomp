@@ -8,7 +8,7 @@
 #include <vector>
 
 class UIWindow;
-class WindowManagerWindows;
+#include "UI/Window/WindowManagerWindows.h"
 
 struct EmblemCache {
   std::uint32_t& guildId;

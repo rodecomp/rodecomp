@@ -7,7 +7,7 @@
 
 class CActRes;
 class CSprRes;
-class WindowManagerWindows;
+#include "UI/Window/WindowManagerWindows.h"
 struct UIButtonContext;
 
 struct UIWaitDBSaveWndContext {

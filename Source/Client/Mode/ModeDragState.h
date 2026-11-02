@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <string>
 
-class WindowManagerWindows;
+#include "UI/Window/WindowManagerWindows.h"
 class ResourceMgr;
 struct ItemDescriptions;
 struct ITEM_INFO;

@@ -5471,7 +5471,7 @@ void UInCashWnd::Slot25(int x, int y) {
       this->m_selectedIndex = item.unknown_0064;
       source = 6;
     }
-    mode->drag.BeginItem(*reinterpret_cast<WindowManagerWindows*>(&g_windowMgr), descriptions, source, item, 1, -1);
+    mode->drag.BeginItem(g_windowMgr, descriptions, source, item, 1, -1);
   }
 }
 

@@ -118,7 +118,7 @@ void CUIGameItem::Slot26(int, int) {
     return;
   }
 
-  WindowManagerWindows& windows = reinterpret_cast<WindowManagerWindows&>(g_windowMgr);
+  WindowManagerWindows& windows = g_windowMgr;
   UIWindow* window = windows.EnsureWindow(12);
   if (window != nullptr) {
     window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&this->itemInfo), 0, 0, 0);

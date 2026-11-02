@@ -6,7 +6,7 @@
 #include <vector>
 
 class UIWindow;
-class WindowManagerWindows;
+#include "UI/Window/WindowManagerWindows.h"
 class UIEditCtrl;
 struct InputFocus;
 struct ItemTagRetirement;

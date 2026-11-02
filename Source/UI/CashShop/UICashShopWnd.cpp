@@ -652,7 +652,7 @@ void UICashShopWnd_CartItem::Slot25(int, int) {
   if (this->m_item.unknown_0000[1] != 0) {
     ItemDescriptions descriptions{g_itemDescriptions};
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())
-      ->drag.BeginItem(*reinterpret_cast<WindowManagerWindows*>(&g_windowMgr), descriptions, 4, this->m_item, this->m_item.quantity, -1);
+      ->drag.BeginItem(g_windowMgr, descriptions, 4, this->m_item, this->m_item.quantity, -1);
   }
 }
 
@@ -661,7 +661,7 @@ void UICashShopWnd_CartItem::Slot25(int, int) {
 void UICashShopWnd_Item::Slot25(int, int) {
   if (this->m_item.unknown_0000[1] != 0) {
     ItemDescriptions descriptions{g_itemDescriptions};
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(*reinterpret_cast<WindowManagerWindows*>(&g_windowMgr), descriptions, 6, this->m_item, 1, -1);
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(g_windowMgr, descriptions, 6, this->m_item, 1, -1);
   }
 }
 
@@ -741,7 +741,7 @@ void UICashShopWnd_Banner::Slot19() {
 // FUNCTION: fn_09553
 void UICashShopWnd_CartItem::Slot33(int x, int) {
   if (static_cast<unsigned int>(x - 4) <= 0x25) {
-    UIWindow* window = reinterpret_cast<WindowManagerWindows*>(&g_windowMgr)->EnsureWindow(12);
+    UIWindow* window = g_windowMgr.EnsureWindow(12);
     if (window != nullptr) {
       window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&this->m_item), 0, 0, 0);
     }
@@ -752,7 +752,7 @@ void UICashShopWnd_CartItem::Slot33(int x, int) {
 // FUNCTION: fn_09554
 void UICashShopWnd_Item::Slot33(int x, int y) {
   if (static_cast<unsigned int>(x - 5) <= 0x4B && static_cast<unsigned int>(y - 0x17) <= 0x64) {
-    UIWindow* window = reinterpret_cast<WindowManagerWindows*>(&g_windowMgr)->EnsureWindow(12);
+    UIWindow* window = g_windowMgr.EnsureWindow(12);
     if (window != nullptr) {
       window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&this->m_item), 0, 0, 0);
     }

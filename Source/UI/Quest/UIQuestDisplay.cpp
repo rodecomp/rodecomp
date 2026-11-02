@@ -245,7 +245,7 @@ int UIQuestDisplay::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       this->m_menuItems.push_back({text2.c_str(), 48});
     }
     if (!this->m_menuItems.empty()) {
-      UIWindow* menu = reinterpret_cast<WindowManagerWindows*>(&g_windowMgr)->EnsureWindow(18);
+      UIWindow* menu = g_windowMgr.EnsureWindow(18);
       for (size_t i = 0; i < this->m_menuItems.size(); ++i) {
         menu->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(this->m_menuItems[i].text.c_str()), 0, 0, 0);
       }

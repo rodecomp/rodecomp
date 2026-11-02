@@ -10,7 +10,7 @@ struct StopRecruitingContext;
 struct RegisterPartyContext;
 struct PartyInfoContext;
 struct AgencyRequestContext;
-class WindowManagerWindows;
+#include "UI/Window/WindowManagerWindows.h"
 class LuaScript;
 
 class CAdventurerAgencyMgr {

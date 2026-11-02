@@ -1386,7 +1386,7 @@ std::pair<bool, std::string> InitializeManagers() {
     return std::make_pair(false, std::string(AdventurerAgencyCreateInstanceName()().Text()));
   }
 
-  if (!UIRequestJoinPartyMgr::Initialize(reinterpret_cast<WindowManagerWindows&>(g_windowMgr))) {
+  if (!UIRequestJoinPartyMgr::Initialize(g_windowMgr)) {
     return std::make_pair(false, std::string(RequestJoinPartyCreateInstanceName()().Text()));
   }
 

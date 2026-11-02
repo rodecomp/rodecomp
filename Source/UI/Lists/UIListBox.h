@@ -9,7 +9,7 @@
 struct FrameFocus;
 class ResourceMgr;
 class UIScrollBar;
-class WindowManagerWindows;
+#include "UI/Window/WindowManagerWindows.h"
 class NavigationDestination;
 struct UIButtonContext;
 

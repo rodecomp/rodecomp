@@ -6,7 +6,7 @@
 
 class CAsyncWorkMgr;
 class LuaScript;
-class WindowManagerWindows;
+#include "UI/Window/WindowManagerWindows.h"
 
 struct AgencyRequestContext {
   CAsyncWorkMgr& work;

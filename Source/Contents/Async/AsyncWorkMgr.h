@@ -8,7 +8,7 @@ class CAsyncWorkRecycleObjectPoolMgr;
 class CConnection;
 class CEmblemDataMgr;
 class CMCStoreInfoBackup;
-class WindowManagerWindows;
+#include "UI/Window/WindowManagerWindows.h"
 struct AccountConfigLoad;
 struct CharacterConfigLoad;
 struct EmblemUploadContext;

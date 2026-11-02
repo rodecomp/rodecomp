@@ -6,7 +6,7 @@ struct NormalItemSlotWindow;
 struct ShortcutVisibility;
 struct ServiceOptions;
 struct SkillLevelRegistry;
-class WindowManagerWindows;
+#include "UI/Window/WindowManagerWindows.h"
 
 struct CharacterConfigLoad {
   int* useLevels;

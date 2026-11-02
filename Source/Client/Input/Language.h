@@ -8,7 +8,7 @@
 #include <windows.h>
 
 class UIWindow;
-class WindowManagerWindows;
+#include "UI/Window/WindowManagerWindows.h"
 
 class TextInputSuggestions {
 public:

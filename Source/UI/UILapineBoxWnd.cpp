@@ -128,7 +128,7 @@ void UILapineBoxWnd::DragIngredient(int x, int y) {
 
   if (item.unknown_0000[1] != 0) {
     ItemDescriptions descriptions{g_itemDescriptions};
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(*reinterpret_cast<WindowManagerWindows*>(&g_windowMgr), descriptions, 0x1A, item, item.quantity, -1);
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(g_windowMgr, descriptions, 0x1A, item, item.quantity, -1);
   }
 
   item.~ITEM_INFO();

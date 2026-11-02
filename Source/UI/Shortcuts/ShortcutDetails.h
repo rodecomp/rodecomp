@@ -7,7 +7,7 @@
 #include "UI/Shortcuts/ShortcutGrid.h"
 
 class UIWindow;
-class WindowManagerWindows;
+#include "UI/Window/WindowManagerWindows.h"
 struct SkillDetailClose;
 
 struct ShortcutDetails {

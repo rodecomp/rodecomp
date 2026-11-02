@@ -3869,7 +3869,7 @@ void CGameMode::ReceiveSkillList(int packetType, const std::vector<SkillListEntr
     g_session.m_mercSkills.clear();
   }
 
-  SkillWindows windows{g_windowMgr.window_02C4, g_windowMgr.window_01E8, *reinterpret_cast<WindowManagerWindows*>(&g_windowMgr)};
+  SkillWindows windows{g_windowMgr.window_02C4, g_windowMgr.window_01E8, g_windowMgr};
   for (const SkillListEntry& entry : skills) {
     CSkillInfo skill;
     if ((entry.id != 0 && entry.id < 7999) || g_session.IsHomunculusSkill(entry.id) || g_session.IsMercenarySkill(entry.id)) {
@@ -3951,7 +3951,7 @@ void CGameMode::ReceiveSkillUpdate(
     const SkillUseLevels levels{
       g_session.m_skillBundle.unknown_0064, *reinterpret_cast<const std::vector<int>*>(g_session.unknown_0710), g_session.m_homunSkillLevels
     };
-    SkillWindows windows{g_windowMgr.window_02C4, g_windowMgr.window_01E8, *reinterpret_cast<WindowManagerWindows*>(&g_windowMgr)};
+    SkillWindows windows{g_windowMgr.window_02C4, g_windowMgr.window_01E8, g_windowMgr};
     client.Update(skill, 1, 1, *g_session.m_hotkeyScript, levels, windows);
   }
 

@@ -8,7 +8,7 @@
 #include "UI/Shortcuts/ShortcutGrid.h"
 
 class UIFrameWnd;
-class WindowManagerWindows;
+#include "UI/Window/WindowManagerWindows.h"
 class ResourceMgr;
 struct ModeDragState;
 

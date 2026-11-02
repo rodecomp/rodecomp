@@ -5,7 +5,7 @@
 #include <cstdint>
 #include <list>
 
-class WindowManagerWindows;
+#include "UI/Window/WindowManagerWindows.h"
 
 struct PartyJoinRequest {
   /* 0000 */ char name[24];

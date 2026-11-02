@@ -154,7 +154,7 @@ void UIWindowMgr::RebuildMiniPartyWindows() {
     }
   }
 
-  WindowOrdering ordering{this->rendered, reinterpret_cast<WindowManagerWindows&>(*this), reinterpret_cast<const int&>(this->modal), this->window_4F174};
+  WindowOrdering ordering{this->rendered, *this, reinterpret_cast<const int&>(this->modal), this->window_4F174};
   if (this->Window4F250Ready()) {
     ordering.Promote(this->window_4F250);
   }

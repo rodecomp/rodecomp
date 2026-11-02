@@ -1320,7 +1320,7 @@ void UIItemStoreFindWnd::Slot32(int x, int y) {
         mode->SendMsg(333, static_cast<int>(item.unknown_0000[1]), item.quantity, 0, 0);
       }
     } else {
-      this->m_frameContext->windows.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+      g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     }
   }
 }
@@ -1348,7 +1348,7 @@ void UIItemStoreSubWnd::Slot32(int x, int y) {
         mode->SendMsg(333, static_cast<int>(item.unknown_0000[1]), item.quantity, 0, 0);
       }
     } else {
-      this->m_frameContext->windows.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+      g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     }
   }
 }
@@ -1374,7 +1374,7 @@ void UIItemStoreWnd::Slot32(int x, int y) {
     } else if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
       mode->SendMsg(333, static_cast<int>(item.unknown_0000[1]), item.quantity, 0, 0);
     } else {
-      this->m_frameContext->windows.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+      g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     }
   }
 }
@@ -1464,7 +1464,7 @@ void UIMerchantItemPurchaseWnd::Slot32(int x, int y) {
         reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0300)->SendMsg(nullptr, 38, 0, 0, 0, 0);
       }
     } else {
-      this->m_frameContext->windows.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+      g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     }
   }
 }
@@ -1491,7 +1491,7 @@ void UIMerchantItemShopWnd::Slot32(int x, int y) {
         reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0308)->SendMsg(nullptr, 38, 0, 0, 0, 0);
       }
     } else {
-      this->m_frameContext->windows.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+      g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     }
   }
 }
@@ -1521,7 +1521,7 @@ void UIMerchantItemWnd::Slot32(int x, int y) {
         mode->SendMsg(335, static_cast<int>(item.unknown_0000[1]), item.quantity, 0, 0);
       }
     } else {
-      this->m_frameContext->windows.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+      g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     }
   }
 }
@@ -1547,7 +1547,7 @@ void UIMerchantMirrorItemWnd::Slot32(int x, int y) {
         reinterpret_cast<UIWindow*>(g_windowMgr.unknown_040C)->SendMsg(nullptr, 38, 0, 0, 0, 0);
       }
     } else {
-      this->m_frameContext->windows.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+      g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     }
   }
 }
@@ -1575,7 +1575,7 @@ void UIMerchantShopMakeWnd::Slot32(int x, int y) {
         reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0410)->SendMsg(nullptr, 38, 0, 0, 0, 0);
       }
     } else {
-      this->m_frameContext->windows.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+      g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     }
   }
 }
@@ -2232,7 +2232,7 @@ void UIItemSellWnd2::Slot32(int x, int y) {
   ITEM_INFO item = this->GetItemAt(x, y);
 
   if (item.unknown_0000[1] > 0) {
-    this->m_frameContext->windows.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
   }
 }
 
@@ -2242,7 +2242,7 @@ void UIItemSellWnd::Slot32(int x, int y) {
   ITEM_INFO item = this->GetItemAt(x, y);
 
   if (item.unknown_0000[1] > 0) {
-    this->m_frameContext->windows.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
   }
 }
 
@@ -2253,7 +2253,7 @@ void UIItemShopWnd2::Slot32(int x, int y) {
 
   if (item.unknown_0000[1] > 0) {
     g_modeMgr.GetGameMode();
-    this->m_frameContext->windows.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
   }
 }
 
@@ -2264,7 +2264,7 @@ void UIMerchantItemMyShopWnd::Slot32(int x, int y) {
 
   if (item.unknown_0000[1] > 0) {
     g_modeMgr.GetGameMode();
-    this->m_frameContext->windows.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
   }
 }
 
@@ -4517,7 +4517,7 @@ void UISkillListWnd::Slot25(int x, int y) {
 
     if (mode) {
       mode->drag.BeginSkill(
-        reinterpret_cast<WindowManagerWindows&>(g_windowMgr), ResourceMgr::Instance(), 8, skill.id, skill.name,
+        g_windowMgr, ResourceMgr::Instance(), 8, skill.id, skill.name,
         reinterpret_cast<CharacterConfigSave*>(&g_session)->SkillLevel(skill.id), -1
       );
     }
@@ -4579,7 +4579,7 @@ void UIItemPurchaseWnd::Slot32(int x, int y) {
 
   if (item.unknown_0000[1] > 0) {
     g_modeMgr.GetGameMode();
-    this->m_frameContext->windows.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
   }
 }
 
@@ -4597,7 +4597,7 @@ void UIItemShopWnd::Slot32(int x, int y) {
 
   if (item.unknown_0000[1] > 0) {
     g_modeMgr.GetGameMode();
-    this->m_frameContext->windows.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
   }
 }
 

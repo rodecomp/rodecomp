@@ -9,7 +9,7 @@
 struct ItemNaming;
 struct ClientSkills;
 struct UIButtonContext;
-class WindowManagerWindows;
+#include "UI/Window/WindowManagerWindows.h"
 
 class UIBasicItemCtrl : public UIWindow {
 public:

@@ -10,7 +10,7 @@
 #include <string>
 
 class ForbiddenWords;
-class WindowManagerWindows;
+#include "UI/Window/WindowManagerWindows.h"
 
 struct PartyInvitationContext {
   ForbiddenWords& words;

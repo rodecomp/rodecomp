@@ -12,7 +12,7 @@ struct CLanguage;
 struct InputCharset;
 struct UIButtonContext;
 struct BitmapImage;
-class WindowManagerWindows;
+#include "UI/Window/WindowManagerWindows.h"
 class NavigationDestination;
 class UINaviLinkButton;
 class UIItemTagButton;

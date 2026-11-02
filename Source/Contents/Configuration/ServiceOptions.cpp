@@ -1310,7 +1310,7 @@ void ApplyServiceOptionWindow27() {
     return;
   }
 
-  reinterpret_cast<WindowManagerWindows*>(&g_windowMgr)->EnsureWindow(0x1B);
+  g_windowMgr.EnsureWindow(0x1B);
 }
 
 // GLOBAL: gl_24912

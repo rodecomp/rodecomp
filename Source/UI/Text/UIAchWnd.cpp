@@ -323,7 +323,7 @@ void UIAchViewWnd::Slot15(int, int) {
   }
 
   for (UIToolTipBitmapWnd*& reward : this->rewards) {
-    reward = new (std::nothrow) UIToolTipBitmapWnd(*this->m_context, reinterpret_cast<WindowManagerWindows&>(g_windowMgr));
+    reward = new (std::nothrow) UIToolTipBitmapWnd(*this->m_context, g_windowMgr);
     reward->Show(0);
     this->AddChild(reward);
   }

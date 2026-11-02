@@ -8,7 +8,7 @@
 
 class BinkMovie;
 class CTexture;
-class WindowManagerWindows;
+#include "UI/Window/WindowManagerWindows.h"
 struct WindowDialogs;
 
 struct UIVideoWndContext {

@@ -6,7 +6,7 @@
 
 struct ItemDescriptions;
 struct UIButtonContext;
-class WindowManagerWindows;
+#include "UI/Window/WindowManagerWindows.h"
 
 class UIStaticItem : public UIWindow {
 public:

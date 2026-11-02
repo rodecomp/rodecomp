@@ -1001,7 +1001,7 @@ void UINewSkillListWnd::Slot25(int x, int y) {
         if (level == 0) {
           level = skill.level;
         }
-        gameMode->drag.BeginSkill(reinterpret_cast<WindowManagerWindows&>(g_windowMgr), ResourceMgr::Instance(), 8, skill.id, skill.name, level, -1);
+        gameMode->drag.BeginSkill(g_windowMgr, ResourceMgr::Instance(), 8, skill.id, skill.name, level, -1);
       }
     }
   }

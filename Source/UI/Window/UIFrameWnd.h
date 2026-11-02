@@ -5,7 +5,7 @@
 #include "UI/Window/UIWindow.h"
 
 struct WindowSnapping;
-class WindowManagerWindows;
+#include "UI/Window/WindowManagerWindows.h"
 class UIBitmapButton;
 class UICheckBox;
 struct UIButtonContext;

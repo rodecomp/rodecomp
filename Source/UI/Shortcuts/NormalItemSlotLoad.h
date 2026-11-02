@@ -3,7 +3,7 @@
 
 #include "Contents/UserData/NormalItemSlots.h"
 
-class WindowManagerWindows;
+#include "UI/Window/WindowManagerWindows.h"
 struct ShortcutVisibility;
 
 void LoadNormalItemSlots(

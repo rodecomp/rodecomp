@@ -10,7 +10,7 @@
 class UIWindow;
 class CMouse;
 struct WindowOrdering;
-class WindowManagerWindows;
+#include "UI/Window/WindowManagerWindows.h"
 struct WindowDropDown;
 
 struct WindowMouseHit {

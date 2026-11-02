@@ -5,7 +5,7 @@
 #include "Utility/Async/AsyncDiagnostic.h"
 #include "Utility/Async/NAsyncWork.h"
 
-class WindowManagerWindows;
+#include "UI/Window/WindowManagerWindows.h"
 
 class CLoadPartyListAsyncWork : public NAsyncWork {
 public:

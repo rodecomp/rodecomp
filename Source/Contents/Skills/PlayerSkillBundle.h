@@ -9,7 +9,7 @@
 #include <map>
 #include <unordered_map>
 
-class WindowManagerWindows;
+#include "UI/Window/WindowManagerWindows.h"
 
 struct SkillIdHash {
   std::size_t operator()(std::uint32_t id) const;
