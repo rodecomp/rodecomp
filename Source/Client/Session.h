@@ -924,6 +924,7 @@ public:
   void InitCommandTables();
   void InitJobKeyNames();
   void InitResourceNameTables();
+  void InitJobSpriteNames();
   const char* GetEFSTImgFileName(int efstId, int type);
   int IsTreeGroupTwo(int job) const;
   bool IsTreeGroupThree(int job) const;
