@@ -99,6 +99,8 @@ std::map<int, int> g_optionHotkeys;
 // GLOBAL: gl_25229
 bool g_restartClient;
 
+RenderAdapter sub_56A0F0();
+
 // OFFSET: 0x00A3D0A0
 // FUNCTION: fn_15905
 RenderAdapter::RenderAdapter() : backend(0), ordinal(0), drawGuid{}, renderGuid{}, deviceGuid{} {
@@ -2097,6 +2099,24 @@ void GameSettingsUI::CUIGroupFullscreen::Slot16() {
   this->m_offText->SetText(offText, std::strlen(offText));
 }
 
+// OFFSET: 0x00A41260
+// FUNCTION: fn_15989
+void GameSettingsUI::CUIGroupGraphics::Slot16() {
+  const char* title = LookupMessage(0xc6d);
+  this->m_title->SetText(title, std::strlen(title));
+  const char* modeText = LookupMessage(0xc6e);
+  this->m_modeText->SetText(modeText, std::strlen(modeText));
+  GetRenderSystemHolder();
+  this->m_pendingAdapter = sub_56A0F0();
+  this->m_adapter = this->m_pendingAdapter;
+  DisplayMode mode{};
+  mode.width = g_configuredScreenWidth;
+  mode.height = g_configuredScreenHeight;
+  mode.bitsPerPixel = g_configuredBitsPerPixel;
+  this->m_pendingMode = std::move(mode);
+  this->m_mode = this->m_pendingMode;
+}
+
 // OFFSET: 0x00A41510
 // FUNCTION: fn_15990
 void GameSettingsUI::CUIGroupGraphicsAPI::Slot16() {
@@ -2148,6 +2168,14 @@ void GameSettingsUI::CUIGroupTrilinear::Slot16() {
   this->m_onText->SetText(onText, std::strlen(onText));
   const char* offText = LookupMessage(0x1034);
   this->m_offText->SetText(offText, std::strlen(offText));
+}
+
+// OFFSET: 0x00A193A0
+// FUNCTION: fn_15341
+template <>
+CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::CUIListBoxEx(UIWindowContext& context)
+    : CUIControl(context), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
+      unknown_00E0(1), rebind(0) {
 }
 
 // OFFSET: 0x00A19560
@@ -2315,6 +2343,13 @@ GameSettingsUI::CUIGroupEmblem::CUIGroupEmblem(UIWindowContext& context) : CUIGr
 // OFFSET: 0x00A3C730
 // FUNCTION: fn_15891
 GameSettingsUI::CUIGroupFullscreen::CUIGroupFullscreen(UIWindowContext& context) : CUIGroup(context), m_onButton(nullptr), m_onText(nullptr), m_offButton(nullptr), m_offText(nullptr) {
+}
+
+// OFFSET: 0x00A3C7E0
+// FUNCTION: fn_15892
+GameSettingsUI::CUIGroupGraphics::CUIGroupGraphics(UIWindowContext& context)
+    : CUIGroup(context), m_adapterCombo(nullptr), m_modeText(nullptr), m_modeCombo(nullptr),
+      m_adapter(), m_pendingAdapter(), m_mode(), m_pendingMode() {
 }
 
 // OFFSET: 0x00A3C910
@@ -3660,6 +3695,12 @@ void CUIGameSettingsUI::ResetToDefaults() {
   for (GameSettingsUI::CUIListPage* page : this->m_pages) {
     page->RefreshOptions();
   }
+}
+
+// OFFSET: 0x00A1A1C0
+// FUNCTION: fn_15348
+template <>
+CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::~CUIListBoxEx() {
 }
 
 // OFFSET: 0x00A1A320

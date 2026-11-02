@@ -104,6 +104,7 @@ class CUIGroupGraphics : public CUIGroup {
 public:
   __declspec(noinline) explicit CUIGroupGraphics(UIWindowContext& context);
   void Slot15(int width, int height) override;
+  void Slot16() override;
   void Refresh() override;
   int GetPendingBackend();
   void LoadAdapters();
