@@ -346,6 +346,7 @@ class CUIGameSettingsUI : public UIFrameWnd {
 public:
   CUIGameSettingsUI();
 
+  void Slot15(int width, int height) override;
   void Slot16() override;
   void Slot25(int x, int y) override;
 
@@ -368,14 +369,14 @@ public:
   void ResetToDefaults();
 
   /* 00B8 */ unsigned char unknown_00B8[0x1C];
-  /* 00D8 */ CUIControl* m_titleBar;
+  /* 00D8 */ CUITitleBar* m_titleBar;
   /* 00DC */ GameSettingsUI::CUIPage* m_currentPage;
   /* 00E0 */ GameSettingsUI::CUIGraphicsPage* m_graphicsPage;
   /* 00E4 */ std::vector<GameSettingsUI::CUIListPage*> m_pages;
   /* 00F0 */ CUITab* m_tab;
-  /* 00F4 */ CUIControl* m_pageContainer;
-  /* 00F8 */ CUIControl* m_applyButton;
-  /* 00FC */ unsigned char unknown_00FC[0x04];
+  /* 00F4 */ CUIImageButton* m_pageContainer;
+  /* 00F8 */ CUIImageButton* m_applyButton;
+  /* 00FC */ CUIImageButton* m_closeButton;
 };
 
 #endif

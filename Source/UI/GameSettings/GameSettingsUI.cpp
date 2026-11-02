@@ -3883,6 +3883,388 @@ void GameSettingsUI::CUIGraphicsPage::ApplySettings() {
   }
 }
 
+// OFFSET: 0x00A1FB10
+// FUNCTION: fn_15391
+void CUIGameSettingsUI::Slot15(int width, int height) {
+  this->m_titleBar = new CUITitleBar(*this->m_context);
+  this->m_titleBar->SetSize(400, 17);
+  this->m_titleBar->Move(0, 0);
+  {
+    CUITitleBar* titleBar = this->m_titleBar;
+    const std::uint8_t titleRightSource[] = {
+        0x03, 0x6C, 0x15, 0x71, 0x9B, 0x25, 0xFA, 0x46, 0x05, 0x27, 0x15, 0x47, 0xE6, 0x51, 0x63, 0xE9, 0xA2, 0xB0, 0xBC, 0xE8, 0x04, 0x82, 0x51, 0xFF,
+        0xA6, 0xB1, 0xB3, 0xEA, 0x38, 0x8E, 0x63, 0xFF, 0xAA, 0xB7, 0xB9, 0xEE, 0x39, 0x8A, 0x4D, 0xD4, 0xB1, 0xAA, 0xB2, 0xE3, 0x2F, 0xC5, 0x5D, 0xE6,
+        0xB3, 0xC3};
+    thread_local EncryptedName<sizeof(titleRightSource), 0x8B3FEB5B8BD5C3C3ULL> titleRightName(titleRightSource);
+    const std::string titleRight(titleRightName.Text());
+    const std::uint8_t titleMiddleSource[] = {
+        0x75, 0xDA, 0xA1, 0xA5, 0x3D, 0x95, 0xDE, 0x42, 0x73, 0x91, 0xA1, 0x93, 0x40, 0xE1, 0x47, 0xED, 0xD4, 0x06, 0x08, 0x3C, 0xA2, 0x32, 0x75, 0xFB,
+        0xD0, 0x07, 0x07, 0x3E, 0x9E, 0x3E, 0x47, 0xFB, 0xDC, 0x01, 0x0D, 0x3A, 0x9F, 0x3A, 0x69, 0xD0, 0xD8, 0x1C, 0x05, 0x71, 0x9F, 0x36, 0x6B, 0x8F};
+    thread_local EncryptedName<sizeof(titleMiddleSource), 0x8F1B5BFD5F6175B5ULL> titleMiddleName(titleMiddleSource);
+    const std::string titleMiddle(titleMiddleName.Text());
+    const std::uint8_t titleLeftSource[] = {
+        0x09, 0x18, 0xE5, 0x6D, 0x7B, 0xFD, 0x46, 0xCA, 0x0F, 0x53, 0xE5, 0x5B, 0x06, 0x89, 0xDF, 0x65, 0xA8, 0xC4, 0x4C, 0xF4, 0xE4, 0x5A, 0xED, 0x73,
+        0xAC, 0xC5, 0x43, 0xF6, 0xD8, 0x56, 0xDF, 0x73, 0xA0, 0xC3, 0x49, 0xF2, 0xD9, 0x52, 0xF1, 0x58, 0xA5, 0xD2, 0x43, 0xE3, 0x95, 0x51, 0xEE, 0x77,
+        0xC9};
+    thread_local EncryptedName<sizeof(titleLeftSource), 0x078333BB9725B7C9ULL> titleLeftName(titleLeftSource);
+    const std::string titleLeft(titleLeftName.Text());
+    titleBar->SetImages(titleLeft, titleMiddle, titleRight);
+  }
+  this->AddChild(this->m_titleBar);
+
+  CUIStaticText* title = new CUIStaticText(*this->m_context);
+  title->SetSize(100, 17);
+  title->Move(18, 0);
+  {
+    const std::uint8_t titleTextSource[] = {0x17, 0x67, 0xC5, 0x1A, 0x85, 0xDF, 0x58, 0xCA, 0x03, 0xB3};
+    thread_local EncryptedName<sizeof(titleTextSource), 0x0BEB63A5C905B3A7ULL> titleTextName(titleTextSource);
+    const char* value = titleTextName.Text();
+    title->SetText(value, std::strlen(value));
+  }
+  title->SetFitText(0);
+  title->SetAlign(0, 6);
+  {
+    const std::uint8_t titleFontSource[] = {0x76, 0x2C, 0x47, 0x68, 0x0C, 0xCD};
+    thread_local EncryptedName<sizeof(titleFontSource), 0x8B65CD61012B5931ULL> titleFontName(titleFontSource);
+    title->SetFont(std::string(titleFontName.Text()));
+  }
+  title->SetFontHeight(12);
+  title->SetBold(0);
+  title->SetColor(0);
+  title->SetShadow(1, 0xFFFFFF);
+  title->SetOutline(0, 0xFFFFFF);
+  this->m_titleBar->titleText = title;
+  this->m_titleBar->AddChild(title);
+
+  CUIImageButton* baseButton = new CUIImageButton(*this->m_context);
+  baseButton->SetSize(11, 11);
+  baseButton->Move(3, 3);
+  baseButton->SetOnClick([this]() { this->sub_A3F0F0(); });
+  baseButton->disabled = 0;
+  baseButton->Invalidate();
+  {
+    const std::uint8_t baseDisabledSource[] = {
+        0x23, 0xF8, 0xD5, 0xA7, 0xD7, 0x4F, 0x1E, 0xD2, 0x25, 0xB3, 0xD5, 0x91, 0xAA, 0x3B, 0x87, 0x7D, 0x82, 0x24, 0x7C, 0x3E, 0x48, 0xE8, 0xB5, 0x6B,
+        0x86, 0x25, 0x73, 0x3C, 0x74, 0xE4, 0x87, 0x6C, 0x9A, 0x24, 0x4A, 0x3F, 0x76, 0xF2, 0xBE, 0x40, 0x8C, 0x31, 0x73, 0x73, 0x75, 0xEC, 0xAB, 0x1F};
+    thread_local EncryptedName<sizeof(baseDisabledSource), 0x1FDB81175D1557E3ULL> baseDisabledName(baseDisabledSource);
+    const std::string baseDisabled(baseDisabledName.Text());
+    const std::uint8_t basePressedSource[] = {
+        0x07, 0x62, 0x25, 0xC7, 0xDF, 0xB3, 0xA0, 0x38, 0x01, 0x29, 0x25, 0xF1, 0xA2, 0xC7, 0x39, 0x97, 0xA6, 0xBE, 0x8C, 0x5E, 0x40, 0x14, 0x0B, 0x81,
+        0xA2, 0xBF, 0x83, 0x5C, 0x7C, 0x18, 0x39, 0x86, 0xBE, 0xBE, 0xBA, 0x5F, 0x7E, 0x0E, 0x00, 0xAA, 0xA8, 0xA3, 0xCB, 0x5F, 0x72, 0x0D, 0x65};
+    thread_local EncryptedName<sizeof(basePressedSource), 0xF5657D1F3DE5CDC7ULL> basePressedName(basePressedSource);
+    const std::string basePressed(basePressedName.Text());
+    const std::uint8_t baseHoverSource[] = {
+        0x01, 0x60, 0x13, 0xC9, 0x57, 0xD3, 0x38, 0xA4, 0x07, 0x2B, 0x13, 0xFF, 0x2A, 0xA7, 0xA1, 0x0B, 0xA0, 0xBC, 0xBA, 0x50, 0xC8, 0x74, 0x93, 0x1D,
+        0xA4, 0xBD, 0xB5, 0x52, 0xF4, 0x78, 0xA1, 0x1A, 0xB8, 0xBC, 0x8C, 0x51, 0xF6, 0x6E, 0x98, 0x36, 0xAE, 0xA1, 0xFD, 0x51, 0xFA, 0x6D, 0xFD};
+    thread_local EncryptedName<sizeof(baseHoverSource), 0x69FD1D9733D3CFC1ULL> baseHoverName(baseHoverSource);
+    const std::string baseHover(baseHoverName.Text());
+    const std::uint8_t baseNormalSource[] = {
+        0x25, 0x20, 0x8D, 0xEF, 0xF7, 0xCF, 0x96, 0x3A, 0x23, 0x6B, 0x8D, 0xD9, 0x8A, 0xBB, 0x0F, 0x95, 0x84, 0xFC, 0x24, 0x76, 0x68, 0x68, 0x3D, 0x83,
+        0x80, 0xFD, 0x2B, 0x74, 0x54, 0x64, 0x0F, 0x84, 0x9C, 0xFC, 0x12, 0x77, 0x56, 0x72, 0x36, 0xA8, 0x8A, 0xE9, 0x2B, 0x3B, 0x55, 0x6C, 0x23, 0xF7};
+    thread_local EncryptedName<sizeof(baseNormalSource), 0xF7530137154D8FE5ULL> baseNormalName(baseNormalSource);
+    const std::string baseNormal(baseNormalName.Text());
+    baseButton->SetImages(baseNormal, baseHover, basePressed, baseDisabled);
+  }
+  this->m_titleBar->AddChild(baseButton);
+
+  CUIImageButton* closeButton = new CUIImageButton(*this->m_context);
+  closeButton->SetSize(11, 11);
+  closeButton->Move(386, 3);
+  closeButton->SetOnClick([this]() { this->OnTitleClose(); });
+  closeButton->disabled = 0;
+  closeButton->Invalidate();
+  {
+    const std::uint8_t closeDisabledSource[] = {
+        0x51, 0x86, 0xB9, 0xB9, 0x1B, 0xC7, 0x60, 0xBC, 0x57, 0xCD, 0xB9, 0x8F, 0x66, 0xB3, 0xF9, 0x13, 0xF0, 0x5A, 0x10, 0x20, 0x84, 0x60, 0xCB, 0x05,
+        0xF4, 0x5B, 0x1F, 0x22, 0xB8, 0x6C, 0xF9, 0x02, 0xE8, 0x5A, 0x26, 0x20, 0xB7, 0x66, 0xD6, 0x14, 0xCE, 0x46, 0x1F, 0x25, 0xF5, 0x6B, 0xC8, 0x01,
+        0x91};
+    thread_local EncryptedName<sizeof(closeDisabledSource), 0x71A509DB43792991ULL> closeDisabledName(closeDisabledSource);
+    const std::string closeDisabled(closeDisabledName.Text());
+    const std::uint8_t closePressedSource[] = {
+        0x17, 0xE8, 0x3D, 0x99, 0xCD, 0xF7, 0xEE, 0xBE, 0x11, 0xA3, 0x3D, 0xAF, 0xB0, 0x83, 0x77, 0x11, 0xB6, 0x34, 0x94, 0x00, 0x52, 0x50, 0x45, 0x07,
+        0xB2, 0x35, 0x9B, 0x02, 0x6E, 0x5C, 0x77, 0x00, 0xAE, 0x34, 0xA2, 0x00, 0x61, 0x56, 0x58, 0x16, 0x88, 0x28, 0x93, 0x4D, 0x6F, 0x54, 0x5B, 0x73};
+    thread_local EncryptedName<sizeof(closePressedSource), 0x732B390D63FD47D7ULL> closePressedName(closePressedSource);
+    const std::string closePressed(closePressedName.Text());
+    const std::uint8_t closeHoverSource[] = {
+        0x5F, 0x56, 0x81, 0x37, 0x39, 0xA5, 0x62, 0x7A, 0x59, 0x1D, 0x81, 0x01, 0x44, 0xD1, 0xFB, 0xD5, 0xFE, 0x8A, 0x28, 0xAE, 0xA6, 0x02, 0xC9, 0xC3,
+        0xFA, 0x8B, 0x27, 0xAC, 0x9A, 0x0E, 0xFB, 0xC4, 0xE6, 0x8A, 0x1E, 0xAE, 0x95, 0x04, 0xD4, 0xD2, 0xC0, 0x96, 0x2F, 0xE3, 0x9B, 0x06, 0xD7, 0xB7};
+    thread_local EncryptedName<sizeof(closeHoverSource), 0xB7A76BF9CD41F99FULL> closeHoverName(closeHoverSource);
+    const std::string closeHover(closeHoverName.Text());
+    const std::uint8_t closeNormalSource[] = {
+        0x7F, 0x2A, 0xE7, 0x87, 0x93, 0xED, 0x3E, 0x2E, 0x79, 0x61, 0xE7, 0xB1, 0xEE, 0x99, 0xA7, 0x81, 0xDE, 0xF6, 0x4E, 0x1E, 0x0C, 0x4A, 0x95, 0x97,
+        0xDA, 0xF7, 0x41, 0x1C, 0x30, 0x46, 0xA7, 0x90, 0xC6, 0xF6, 0x78, 0x1E, 0x3F, 0x4C, 0x88, 0x86, 0xE0, 0xEA, 0x41, 0x1B, 0x7D, 0x41, 0x96, 0x93,
+        0xBF};
+    thread_local EncryptedName<sizeof(closeNormalSource), 0xE3FB23537D2785BFULL> closeNormalName(closeNormalSource);
+    const std::string closeNormal(closeNormalName.Text());
+    closeButton->SetImages(closeNormal, closeHover, closePressed, closeDisabled);
+  }
+  this->m_titleBar->SetSecondButton(closeButton);
+
+  this->m_currentPage = new GameSettingsUI::CUIBasicPage(*this->m_context);
+  this->m_currentPage->SetSize(400, 288);
+  this->m_currentPage->Move(0, 34);
+  this->AddChild(this->m_currentPage);
+
+  this->m_graphicsPage = new GameSettingsUI::CUIGraphicsPage(*this->m_context);
+  this->m_graphicsPage->SetSize(400, 288);
+  this->m_graphicsPage->Move(0, 34);
+  this->AddChild(this->m_graphicsPage);
+
+  for (int index = 0; index < 3; ++index) {
+    GameSettingsUI::CUIListPage* page = new GameSettingsUI::CUIListPage(*this->m_context);
+    page->SetSize(400, 288);
+    this->AddChild(page);
+    this->m_pages.push_back(page);
+  }
+  this->m_pages[0]->Move(0, 34);
+  this->m_pages[1]->Move(0, 34);
+  this->m_pages[2]->Move(0, 34);
+
+  this->m_tab = new CUITab(*this->m_context);
+  this->m_tab->SetSize(400, 18);
+  this->m_tab->Move(0, 17);
+  this->m_tab->SetOnChange([this](CUITabButton* button) { this->sub_A433D0(button); });
+  this->AddChild(this->m_tab);
+
+  CUITabButton* basicButton = new CUITabButton(*this->m_context);
+  basicButton->SetSize(72, 18);
+  basicButton->Move(0, 0);
+  basicButton->SetOnClick([this]() { this->sub_A43380(); });
+  basicButton->disabled = 0;
+  basicButton->Invalidate();
+  basicButton->SetId(0);
+  {
+    const std::uint8_t basicLabelSource[] = {0xCC, 0xB1, 0x35, 0x1A, 0xDF, 0x51, 0xDA, 0x1C, 0xD9, 0x53};
+    thread_local EncryptedName<sizeof(basicLabelSource), 0xDD69EDFFA18F537DULL> basicLabelName(basicLabelSource);
+    basicButton->SetText(std::string(basicLabelName.Text()));
+  }
+  basicButton->SetFitText(0);
+  basicButton->SetAlign(6, 6);
+  {
+    const std::uint8_t basicFontSource[] = {0x34, 0x54, 0x8B, 0x2E, 0x46, 0x79};
+    thread_local EncryptedName<sizeof(basicFontSource), 0x8BBF792B47E72173ULL> basicFontName(basicFontSource);
+    basicButton->SetFont(std::string(basicFontName.Text()));
+  }
+  basicButton->SetFontHeight(12);
+  basicButton->SetBold(0);
+  basicButton->SetTextColors(0, 0, 0, 0x808080);
+  basicButton->SetShadow(0, 0xFFFFFF);
+  basicButton->SetOutline(0, 0xFFFFFF);
+  basicButton->SetSkinColors(0, 0, 0, 0, 3, 1);
+  this->m_tab->AddChild(basicButton);
+
+  CUITabButton* effectButton = new CUITabButton(*this->m_context);
+  effectButton->SetSize(72, 18);
+  effectButton->Move(71, 0);
+  effectButton->SetOnClick([this]() { this->sub_A433A0(); });
+  effectButton->disabled = 0;
+  effectButton->Invalidate();
+  effectButton->SetId(1);
+  {
+    const std::uint8_t effectLabelSource[] = {0x49, 0x17, 0xA5, 0x9C, 0x2D, 0x35, 0xEF, 0x0F, 0x3A, 0x1A, 0xC7, 0x79};
+    thread_local EncryptedName<sizeof(effectLabelSource), 0xB3CF9BEB7963DB89ULL> effectLabelName(effectLabelSource);
+    effectButton->SetText(std::string(effectLabelName.Text()));
+  }
+  effectButton->SetFitText(0);
+  effectButton->SetAlign(6, 6);
+  {
+    const std::uint8_t effectFontSource[] = {0x10, 0x8A, 0x81, 0x26, 0xC2, 0xB5};
+    thread_local EncryptedName<sizeof(effectFontSource), 0xB5D7B5AF4FEDFF57ULL> effectFontName(effectFontSource);
+    effectButton->SetFont(std::string(effectFontName.Text()));
+  }
+  effectButton->SetFontHeight(12);
+  effectButton->SetBold(0);
+  effectButton->SetTextColors(0, 0, 0, 0x808080);
+  effectButton->SetShadow(0, 0xFFFFFF);
+  effectButton->SetOutline(0, 0xFFFFFF);
+  effectButton->useSkinColors = 1;
+  this->m_tab->AddChild(effectButton);
+
+  CUITabButton* controlButton = new CUITabButton(*this->m_context);
+  controlButton->SetSize(72, 18);
+  controlButton->Move(142, 0);
+  controlButton->SetOnClick([this]() { this->sub_A43390(); });
+  controlButton->disabled = 0;
+  controlButton->Invalidate();
+  controlButton->SetId(2);
+  {
+    const std::uint8_t controlLabelSource[] = {0xBD, 0x36, 0xD3, 0x9B, 0x1A, 0x80, 0xBD, 0x27, 0xCA, 0x36, 0xB1, 0x35};
+    thread_local EncryptedName<sizeof(controlLabelSource), 0x9B9D51AD3515F779ULL> controlLabelName(controlLabelSource);
+    controlButton->SetText(std::string(controlLabelName.Text()));
+  }
+  controlButton->SetFitText(0);
+  controlButton->SetAlign(6, 6);
+  {
+    const std::uint8_t controlFontSource[] = {0xF0, 0x46, 0x49, 0x60, 0xD6, 0x35};
+    thread_local EncryptedName<sizeof(controlFontSource), 0x038535BB092533B7ULL> controlFontName(controlFontSource);
+    controlButton->SetFont(std::string(controlFontName.Text()));
+  }
+  controlButton->SetFontHeight(12);
+  controlButton->SetBold(0);
+  controlButton->SetTextColors(0, 0, 0, 0x808080);
+  controlButton->SetShadow(0, 0xFFFFFF);
+  controlButton->SetOutline(0, 0xFFFFFF);
+  controlButton->SetSkinColors(0, 0, 0, 0, 3, 1);
+  this->m_tab->AddChild(controlButton);
+
+  CUITabButton* graphicsButton = new CUITabButton(*this->m_context);
+  graphicsButton->SetSize(72, 18);
+  graphicsButton->Move(213, 0);
+  graphicsButton->SetOnClick([this]() { this->sub_A433C0(); });
+  graphicsButton->disabled = 0;
+  graphicsButton->Invalidate();
+  graphicsButton->SetId(3);
+  {
+    const std::uint8_t graphicsLabelSource[] = {0x62, 0xA0, 0x50, 0xC8, 0x90, 0x0F, 0x0B, 0x47, 0x60, 0xB6, 0x43, 0x69};
+    thread_local EncryptedName<sizeof(graphicsLabelSource), 0xFB2BC75769E777D3ULL> graphicsLabelName(graphicsLabelSource);
+    graphicsButton->SetText(std::string(graphicsLabelName.Text()));
+  }
+  graphicsButton->SetFitText(0);
+  graphicsButton->SetAlign(6, 6);
+  {
+    const std::uint8_t graphicsFontSource[] = {0xBA, 0xC0, 0x5F, 0x86, 0x3C, 0x37};
+    thread_local EncryptedName<sizeof(graphicsFontSource), 0x91493751EF33B5FDULL> graphicsFontName(graphicsFontSource);
+    graphicsButton->SetFont(std::string(graphicsFontName.Text()));
+  }
+  graphicsButton->SetFontHeight(12);
+  graphicsButton->SetBold(0);
+  graphicsButton->SetTextColors(0, 0, 0, 0x808080);
+  graphicsButton->SetShadow(0, 0xFFFFFF);
+  graphicsButton->SetOutline(0, 0xFFFFFF);
+  graphicsButton->SetSkinColors(0, 0, 0, 0, 3, 1);
+  this->m_tab->AddChild(graphicsButton);
+
+  CUITabButton* etcButton = new CUITabButton(*this->m_context);
+  etcButton->SetSize(72, 18);
+  etcButton->Move(284, 0);
+  etcButton->SetOnClick([this]() { this->sub_A433B0(); });
+  etcButton->disabled = 0;
+  etcButton->Invalidate();
+  etcButton->SetId(4);
+  {
+    const std::uint8_t etcLabelSource[] = {0xB2, 0xD7, 0x5C, 0x0D, 0x93, 0xCB, 0x7A, 0xAA, 0xA7, 0x35};
+    thread_local EncryptedName<sizeof(etcLabelSource), 0x6BC977B3B5993503ULL> etcLabelName(etcLabelSource);
+    etcButton->SetText(std::string(etcLabelName.Text()));
+  }
+  etcButton->SetFitText(0);
+  etcButton->SetAlign(6, 6);
+  {
+    const std::uint8_t etcFontSource[] = {0xB4, 0x60, 0x1F, 0x4A, 0x14, 0xF7};
+    thread_local EncryptedName<sizeof(etcFontSource), 0xB5F3F779237315F3ULL> etcFontName(etcFontSource);
+    etcButton->SetFont(std::string(etcFontName.Text()));
+  }
+  etcButton->SetFontHeight(12);
+  etcButton->SetBold(0);
+  etcButton->SetTextColors(0, 0, 0, 0x808080);
+  etcButton->SetShadow(0, 0xFFFFFF);
+  etcButton->SetOutline(0, 0xFFFFFF);
+  etcButton->SetSkinColors(0, 0, 0, 0, 3, 1);
+  this->m_tab->AddChild(etcButton);
+
+  this->m_pageContainer = new CUIImageButton(*this->m_context);
+  this->m_pageContainer->SetSize(42, 20);
+  this->m_pageContainer->Move(5, 326);
+  this->m_pageContainer->SetOnClick([this]() { this->ResetToDefaults(); });
+  this->m_pageContainer->disabled = 0;
+  this->m_pageContainer->Invalidate();
+  {
+    CUIImageButton* button = this->m_pageContainer;
+    const std::uint8_t resetDisabledSource[] = {
+        0x9F, 0xD6, 0x61, 0x1D, 0x31, 0x03, 0x9A, 0x4A, 0x99, 0x9D, 0x61, 0x2B, 0x4C, 0x77, 0x03, 0xE5, 0x2B, 0x17, 0xFE, 0x95, 0x94, 0xBE, 0x3A, 0xF3,
+        0x71, 0x1B, 0xCC, 0x97, 0xF1};
+    thread_local EncryptedName<sizeof(resetDisabledSource), 0x875FCDF1E7A1795FULL> resetDisabledName(resetDisabledSource);
+    const std::string resetDisabled(resetDisabledName.Text());
+    const std::uint8_t resetPressedSource[] = {
+        0xA9, 0x2A, 0x9F, 0xDF, 0x77, 0xB9, 0xAE, 0x74, 0xAF, 0x61, 0x9F, 0xE9, 0x0A, 0xCD, 0x37, 0xDB, 0x1D, 0xEB, 0x00, 0x57, 0xD2, 0x04, 0x0E, 0xCD,
+        0x36, 0xE4, 0x71, 0x47, 0xDA, 0x07, 0x6B};
+    thread_local EncryptedName<sizeof(resetPressedSource), 0xB96B77B7255F8569ULL> resetPressedName(resetPressedSource);
+    const std::string resetPressed(resetPressedName.Text());
+    const std::uint8_t resetHoverSource[] = {
+        0xB9, 0x02, 0x47, 0x89, 0xB3, 0x21, 0x26, 0x56, 0xBF, 0x49, 0x47, 0xBF, 0xCE, 0x55, 0xBF, 0xF9, 0x0D, 0xC3, 0xD8, 0x01, 0x16, 0x9C, 0x86, 0xEF,
+        0x26, 0xCF, 0xA9, 0x11, 0x1E, 0x9F, 0xE3};
+    thread_local EncryptedName<sizeof(resetHoverSource), 0x9BE3EF737387AD79ULL> resetHoverName(resetHoverSource);
+    const std::string resetHover(resetHoverName.Text());
+    const std::uint8_t resetNormalSource[] = {
+        0x11, 0x76, 0xD9, 0xE3, 0x6B, 0x95, 0x18, 0xAA, 0x17, 0x3D, 0xD9, 0xD5, 0x16, 0xE1, 0x81, 0x05, 0xA5, 0xB7, 0x46, 0x6B, 0xCE, 0x28, 0xB8, 0x13,
+        0xFF, 0xBB, 0x74, 0x69, 0xAB};
+    thread_local EncryptedName<sizeof(resetNormalSource), 0x67DD5BAB1919D9D1ULL> resetNormalName(resetNormalSource);
+    const std::string resetNormal(resetNormalName.Text());
+    button->SetImages(resetNormal, resetHover, resetPressed, resetDisabled);
+  }
+  this->AddChild(this->m_pageContainer);
+
+  this->m_applyButton = new CUIImageButton(*this->m_context);
+  this->m_applyButton->SetSize(42, 20);
+  this->m_applyButton->Move(301, 326);
+  this->m_applyButton->SetOnClick([this]() { this->OnApply(); });
+  this->m_applyButton->disabled = 0;
+  this->m_applyButton->Invalidate();
+  {
+    CUIImageButton* button = this->m_applyButton;
+    const std::uint8_t applyDisabledSource[] = {
+        0xC7, 0x72, 0xB7, 0x99, 0xA3, 0xFB, 0x0E, 0xDC, 0xC1, 0x39, 0xB7, 0xAF, 0xDE, 0x8F, 0x97, 0x73, 0x73, 0xB3, 0x28, 0x02, 0x13, 0x45, 0xA7, 0x68,
+        0x29, 0xBF, 0x1A, 0x13, 0x63};
+    thread_local EncryptedName<sizeof(applyDisabledSource), 0x11CB35636377DD07ULL> applyDisabledName(applyDisabledSource);
+    const std::string applyDisabled(applyDisabledName.Text());
+    const std::uint8_t applyPressedSource[] = {
+        0xB5, 0xCA, 0xA1, 0x23, 0x8D, 0xC7, 0x1A, 0xB4, 0xB3, 0x81, 0xA1, 0x15, 0xF0, 0xB3, 0x83, 0x1B, 0x01, 0x0B, 0x3E, 0xB8, 0x3D, 0x79, 0xB3, 0x00,
+        0x2A, 0x04, 0x4F, 0xBB, 0x20, 0x79, 0xDF};
+    thread_local EncryptedName<sizeof(applyPressedSource), 0x79DF094DD9616575ULL> applyPressedName(applyPressedSource);
+    const std::string applyPressed(applyPressedName.Text());
+    const std::uint8_t applyHoverSource[] = {
+        0x77, 0xCE, 0x3D, 0x45, 0xF7, 0xE3, 0x4A, 0x50, 0x71, 0x85, 0x3D, 0x73, 0x8A, 0x97, 0xD3, 0xFF, 0xC3, 0x0F, 0xA2, 0xDE, 0x47, 0x5D, 0xE3, 0xE4,
+        0xE8, 0x03, 0xD3, 0xDD, 0x5A, 0x5D, 0x8F};
+    thread_local EncryptedName<sizeof(applyHoverSource), 0x9D8F2D37BFFD61B7ULL> applyHoverName(applyHoverSource);
+    const std::string applyHover(applyHoverName.Text());
+    const std::uint8_t applyNormalSource[] = {
+        0x9B, 0x32, 0xE5, 0xD7, 0x47, 0xE3, 0xE8, 0xCA, 0x9D, 0x79, 0xE5, 0xE1, 0x3A, 0x97, 0x71, 0x65, 0x2F, 0xF3, 0x7A, 0x4C, 0xF7, 0x5D, 0x41, 0x7E,
+        0x75, 0xFF, 0x48, 0x5D, 0x87};
+    thread_local EncryptedName<sizeof(applyNormalSource), 0x072D2D872D259D5BULL> applyNormalName(applyNormalSource);
+    const std::string applyNormal(applyNormalName.Text());
+    button->SetImages(applyNormal, applyHover, applyPressed, applyDisabled);
+  }
+  this->AddChild(this->m_applyButton);
+
+  this->m_closeButton = new CUIImageButton(*this->m_context);
+  this->m_closeButton->SetSize(42, 20);
+  this->m_closeButton->Move(348, 326);
+  this->m_closeButton->SetOnClick([this]() { this->OnCloseButton(); });
+  this->m_closeButton->disabled = 0;
+  this->m_closeButton->Invalidate();
+  {
+    CUIImageButton* button = this->m_closeButton;
+    const std::uint8_t closeButtonDisabledSource[] = {
+        0x3D, 0x6E, 0xB3, 0xB9, 0xE7, 0x9F, 0xD8, 0xD2, 0x3B, 0x25, 0xB3, 0x8F, 0x9A, 0xEB, 0x41, 0x7D, 0x89, 0xAF, 0x2C, 0x20, 0x4B, 0x3E, 0x6E, 0x7A,
+        0xD3, 0xA3, 0x1E, 0x33, 0x27};
+    thread_local EncryptedName<sizeof(closeButtonDisabledSource), 0x1F1D51274373C1FDULL> closeButtonDisabledName(closeButtonDisabledSource);
+    const std::string closeButtonDisabled(closeButtonDisabledName.Text());
+    const std::uint8_t closeButtonPressedSource[] = {
+        0xE7, 0x3C, 0xBF, 0xF5, 0x9B, 0xD1, 0xF2, 0xF0, 0xE1, 0x77, 0xBF, 0xC3, 0xE6, 0xA5, 0x6B, 0x5F, 0x53, 0xFD, 0x20, 0x6C, 0x37, 0x70, 0x44, 0x58,
+        0x78, 0xF2, 0x51, 0x6D, 0x36, 0x6F, 0x37};
+    thread_local EncryptedName<sizeof(closeButtonPressedSource), 0x3D371F5B0F7F9327ULL> closeButtonPressedName(closeButtonPressedSource);
+    const std::string closeButtonPressed(closeButtonPressedName.Text());
+    const std::uint8_t closeButtonHoverSource[] = {
+        0xE9, 0x60, 0xE9, 0xFD, 0x23, 0xE7, 0x32, 0xA6, 0xEF, 0x2B, 0xE9, 0xCB, 0x5E, 0x93, 0xAB, 0x09, 0x5D, 0xA1, 0x76, 0x64, 0x8F, 0x46, 0x84, 0x0E,
+        0x76, 0xAD, 0x07, 0x65, 0x8E, 0x59, 0xF7};
+    thread_local EncryptedName<sizeof(closeButtonHoverSource), 0x6BF729E30729CF29ULL> closeButtonHoverName(closeButtonHoverSource);
+    const std::string closeButtonHover(closeButtonHoverName.Text());
+    const std::uint8_t closeButtonNormalSource[] = {
+        0xF7, 0x52, 0xB5, 0xAF, 0xF5, 0x0F, 0x90, 0x8A, 0xF1, 0x19, 0xB5, 0x99, 0x88, 0x7B, 0x09, 0x25, 0x43, 0x93, 0x2A, 0x36, 0x59, 0xAE, 0x26, 0x22,
+        0x19, 0x9F, 0x18, 0x25, 0x35};
+    thread_local EncryptedName<sizeof(closeButtonNormalSource), 0x4755C1355575FD37ULL> closeButtonNormalName(closeButtonNormalSource);
+    const std::string closeButtonNormal(closeButtonNormalName.Text());
+    button->SetImages(closeButtonNormal, closeButtonHover, closeButtonPressed, closeButtonDisabled);
+  }
+  this->AddChild(this->m_closeButton);
+
+  basicButton->page = this->m_currentPage;
+  graphicsButton->page = this->m_graphicsPage;
+  effectButton->page = this->m_pages[0];
+  controlButton->page = this->m_pages[1];
+  etcButton->page = this->m_pages[2];
+  this->m_tab->Select(basicButton);
+}
+
  // OFFSET: 0x00A40C40
 // FUNCTION: fn_15986
 void CUIGameSettingsUI::Slot16() {
