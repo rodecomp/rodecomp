@@ -20,7 +20,7 @@
   },
   "lintLimits": {
     "maxInitializerNumbers": 65536,
-    "maxFiles": 48
+    "maxFiles": 400
   },
   "compileCommands": "data/compile.json"
 }
