@@ -28,6 +28,10 @@
 #include "Contents/MessageTable.h"
 #include "Contents/NavigationManager.h"
 #include "Contents/WorldView/WorldViewData.h"
+#include "Resource/ResourceMgr.h"
+#include "File/ShortcutFilename.h"
+#include "Contents/Sound/SoundMgr.h"
+#include "Contents/ClientItemLists.h"
 #include "Contents/Skills/AutomaticSkills.h"
 #include "UI/Window/UIHotKeyWnd.h"
 #include "UI/Window/UIWindow.h"
@@ -946,6 +950,78 @@ void UIWindowMgr::SelectWhisperName(const char* name) {
   UIWindow* field = *reinterpret_cast<UIWindow**>(reinterpret_cast<char*>(this->window_01C8) + 0xC0);
   *reinterpret_cast<int*>(reinterpret_cast<char*>(field) + 0x128) = index;
   this->window_01C8->SendMsg(field, 0x27, index, 0, 0, 0);
+}
+
+// GLOBAL: gl_25163
+const char* g_newWhisperWave = "..\\..\\BGM\\Msg_NewMsg.wav";
+
+// OFFSET: 0x00A8B3D0
+// FUNCTION: fn_17123
+int UIWindowMgr::ShowWhisperFrom(const char* name, const char* text, int color, std::uint32_t accountId) {
+  int shown = 0;
+  const bool isFriend = g_session.IsFriendName(name) != 0;
+  if ((g_session.m_autoOpenWhisperWindow != 0 && !isFriend) || (g_session.m_autoOpenFriendWhisperWindow != 0 && isFriend)) {
+    const char* label = nullptr;
+    if (isFriend) {
+      label = LookupMessage(102);
+    } else if (g_session.IsGuildMemberCharacter(accountId)) {
+      label = "GuildMember";
+    } else if (reinterpret_cast<ClientItemLists*>(&g_session)->IsFriendName(name)) {
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(917)), 0xFFFF, 0, 0, 0);
+    } else if (reinterpret_cast<ClientItemLists*>(&g_session)->IsGuildMemberName(name)) {
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(919)), 0xFFFF, 0, 0, 0);
+    }
+
+    shown = this->SendNotice(14, reinterpret_cast<std::intptr_t>(name), reinterpret_cast<std::intptr_t>(label), reinterpret_cast<std::intptr_t>(ShortcutFilename(accountId).c_str()), 0, 0);
+    if (shown) {
+      if (ResourceMgr::Instance().Exists(g_newWhisperWave)) {
+        g_soundMgr->PlayWave(g_newWhisperWave, 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      } else if (g_session.m_whisperOpenSound != 0) {
+        g_soundMgr->PlayWave("버튼소리.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      }
+    }
+  }
+
+  if (std::strcmp(name, g_session.DecodePlayerName()) == 0) {
+    return 0;
+  }
+
+  if (g_session.m_autoOpenWhisperWindow != 0 && shown) {
+    this->AddWhisperName(name);
+  }
+
+  const auto entry = this->namedWindows.find(std::string(name));
+  if (entry == this->namedWindows.end()) {
+    return 0;
+  }
+
+  UIWindow* window = entry->second;
+  window->SendMsg(nullptr, 37, reinterpret_cast<std::intptr_t>(text), color, 2, 0);
+  if ((this->modal == nullptr || this->window_4F174 == window) && !this->LookupWindow(278) && !this->LookupWindow(4) && !this->LookupWindow(199) &&
+      !this->LookupWindow(200)) {
+    int companion = -1;
+    if (window->geometry.id == 12) {
+      companion = 234;
+    } else if (window->geometry.id == 82) {
+      companion = 250;
+    }
+
+    if (companion != -1) {
+      const auto found = std::find_if(this->rendered.begin(), this->rendered.end(), [&](const UIWindow* value) { return value->geometry.id == companion; });
+      if (found != this->rendered.end()) {
+        UIWindow* value = *found;
+        this->rendered.erase(found);
+        this->rendered.push_back(value);
+      }
+    }
+
+    const auto found = std::find(this->rendered.begin(), this->rendered.end(), window);
+    if (found != this->rendered.end()) {
+      this->rendered.erase(found);
+      this->rendered.push_back(window);
+    }
+  }
+  return 1;
 }
 
 // OFFSET: 0x00A8B240
