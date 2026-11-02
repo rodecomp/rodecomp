@@ -63,6 +63,7 @@ template void CUIListBox<AdventureGuide::CUITab>::UpdateScrollBar();
 template void CUIListBox<AdventureGuide::CUISubTab>::UpdateScrollBar();
 template <> __declspec(noinline) void CUIListBox<AdventureGuide::CUISubTab>::SelectItem(CUIListItem* item);
 template <> AdventureGuide::CUISubTab* CUIListBox<AdventureGuide::CUISubTab>::CreateItem();
+template <> AdventureGuide::CUITab* CUIListBox<AdventureGuide::CUITab>::CreateItem();
 
 // OFFSET: 0x009C28B0
 // OFFSET: 0x009C2980
@@ -2019,6 +2020,28 @@ AdventureGuide::CUISubTab* CUIListBox<AdventureGuide::CUISubTab>::CreateItem() {
 }
 
 // OFFSET: 0x009DB4B0
+// FUNCTION: fn_14307
+template <>
+AdventureGuide::CUITab* CUIListBox<AdventureGuide::CUITab>::CreateItem() {
+  AdventureGuide::CUITab* item = new AdventureGuide::CUITab(*this->m_context);
+  item->SetSize(this->itemWidth, this->rowHeight);
+  item->Show(0);
+  CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
+  item->SetImageResources(images[0], images[1], images[2], images[3]);
+  item->onHover = [this](CUIListItem* listItem) {
+    for (AdventureGuide::CUITab* other : this->items) {
+      other->SetHighlighted(other == listItem);
+    }
+  };
+  item->onPress = [this](CUIListItem* listItem) {
+    this->SelectItem(listItem);
+  };
+  this->AddChild(item);
+  this->items.push_back(item);
+  this->UpdateScrollBar();
+  this->Invalidate();
+  return item;
+}
 
 namespace AdventureGuide {
 
