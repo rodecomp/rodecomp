@@ -114,6 +114,8 @@
 #include "UI/Window/WindowBorder.h"
 #include "UI/Layout/WindowSnapping.h"
 #include "UI/Layout/SnapMgr.h"
+#include "UI/Window/FuncDrawWNDChar.h"
+#include "UI/Lists/UITabControl.h"
 #include "UI/Window/WindowManagerWindows.h"
 #include "UI/Window/WindowOrdering.h"
 #include "Utility/Text/FormatString.h"
@@ -480,6 +482,103 @@ void UIEmailAddressWnd::Paint() {
   auto& controls = *this->m_controls;
   this->DrawBorder(0, 0, 0, 0);
   this->DrawTextAt(controls.fonts, controls.locale, 15, 6, controls.services.MessageText(g_serviceType == 0 ? 1815 : 299), 0, 0, 12, 0, 0, 0);
+}
+
+// OFFSET: 0x008ED240
+// FUNCTION: fn_12221
+void UIEquipWnd::Paint() {
+  if (CBitmapRes* titleBar = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\titlebar_fix.bmp")))) {
+    this->DrawBitmap(0, 0, &titleBar->image, false);
+  }
+  this->DrawPanelBackground(17, 0, "");
+  this->FillRegion(this->m_tabs->geometry.width, 34, this->geometry.width - this->m_tabs->geometry.width, 1, 0xC3C3C3);
+
+  if (this->m_viewOther == 1) {
+    char title[100];
+    std::sprintf(title, LookupMessage(1361), reinterpret_cast<const char*>(&g_session.unknown_5974[0x2C]));
+    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 17, 4, title, 0, 0, 12, 0xFFFFFF, 0, 0);
+    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 16, 3, title, 0, 0, 12, 0, 0, 0);
+  } else {
+    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 17, 4, LookupMessage(104), 0, 0, 12, 0xFFFFFF, 0, 0);
+    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 16, 3, LookupMessage(104), 0, 0, 12, 0, 0, 0);
+  }
+
+  if (this->geometry.height == 17) {
+    return;
+  }
+
+  const char* background = this->m_viewOther != 0 ? "유저인터페이스\\basic_interface\\equipwin_bg.bmp" : "유저인터페이스\\basic_interface\\equipwin_bg2.bmp";
+  if (CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background)))) {
+    this->DrawBitmap(0, this->m_contentTop + 17, &bitmap->image, false);
+  }
+
+  if (this->m_page == 2) {
+    this->FillRegion(1, this->m_contentTop + 15, this->geometry.width - 2, 131, 0xFFFFFF);
+    DrawRectangleBorder(*this, 2, this->m_contentTop + 38, this->geometry.width - 4, 107, 0x646464);
+    const std::string jobTitle = GetJobTitleString(g_session.unknown_615C);
+    this->DrawCenteredText(1, this->m_contentTop + 20, jobTitle.c_str(), this->geometry.width - 2, 0, 13, 0, 1);
+  }
+  if (this->m_page == 3) {
+    this->DrawDamageSkinPage();
+  }
+
+  if (this->m_page == 0 || this->m_page == 1) {
+    if (CBitmapRes* invert = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\item_invert.bmp")))) {
+      int columns[2] = {4, 248};
+      for (int i = 0; i < 3; ++i) {
+        const int slot = this->m_highlight[i];
+        if (slot >= 0 && slot <= 7) {
+          this->DrawBitmap(columns[slot / 4], this->m_contentTop + 51 + 26 * (slot % 4), &invert->image, true);
+        } else if (slot == 8 || slot == 9) {
+          this->DrawBitmap(columns[slot % 4], this->m_contentTop + 25, &invert->image, true);
+        }
+      }
+    }
+
+    this->DrawEquipSlots();
+    this->RefreshLook();
+    FuncDrawWNDChar drawer(
+      this,
+      this->geometry.width / 2 + 1,
+      149,
+      static_cast<unsigned char>(this->unknown_00F8[1]),
+      static_cast<short>(this->unknown_00F8[0]),
+      this->unknown_00F8[0],
+      static_cast<short>(this->unknown_011C),
+      static_cast<short>(this->unknown_00F8[2]),
+      static_cast<short>(this->unknown_00F8[3]),
+      static_cast<short>(this->unknown_00F8[4]),
+      static_cast<short>(this->unknown_00F8[5]),
+      this->unknown_0118,
+      0,
+      g_session.unknown_8074,
+      this->unknown_00F8[6],
+      this->unknown_00F8[7],
+      0,
+      0,
+      this->m_updateTick
+    );
+    drawer.Draw(false);
+
+    if (this->m_viewOther == 0) {
+      if (this->m_page == 0) {
+        ITEM_INFO dragItem = LookupClientItemByIdentity(g_session.m_inventoryItems, g_session.unknown_16EC);
+        if (dragItem.unknown_0000[1] != 0) {
+          this->sub_8A8EE0(this->geometry.width / 2 - 25, this->m_contentTop + 44, &dragItem, 0);
+          this->DrawItemName(this->geometry.width / 2 - 25, this->m_contentTop + 68, 40, &dragItem, 0, 0, 12);
+        }
+        this->m_otherButton->Enable(1);
+        this->m_viewButton->Enable(1);
+      } else {
+        this->m_otherButton->Enable(0);
+        this->m_viewButton->Enable(0);
+      }
+    }
+  }
+
+  if (this->unknown_0124) {
+    this->unknown_0124->SendMsg(nullptr, 60, 0, 0, 0, 0);
+  }
 }
 
 // OFFSET: 0x008EE230

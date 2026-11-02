@@ -7,6 +7,7 @@ struct NormalItemSlotWindow;
 struct ITEM_INFO;
 class UITabControl;
 class UIListBoxTitle;
+class UIBitmapButton;
 
 class UIEquipWnd : public UIFrameWnd {
 public:
@@ -15,11 +16,13 @@ public:
   void Move(int x, int y) override;
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot11() override;
+  void Paint() override;
   /* 00B4 */ int m_viewOther;
   /* 00B8 */ int m_highlight[3];
   /* 00C4 */ int m_show;
   /* 00C8 */ NormalItemSlotWindow* m_placement;
-  /* 00CC */ unsigned char unknown_00CC[0x08];
+  /* 00CC */ UIBitmapButton* m_viewButton;
+  /* 00D0 */ UIBitmapButton* m_otherButton;
   /* 00D4 */ std::uint32_t m_updateTick;
   /* 00D8 */ int unknown_00D8;
   /* 00DC */ unsigned char unknown_00DC[0x10];
