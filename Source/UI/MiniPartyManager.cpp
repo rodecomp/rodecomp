@@ -137,7 +137,7 @@ void UIWindowMgr::RebuildMiniPartyWindows() {
       continue;
     }
 
-    UIMiniPartyWnd* window = new UIMiniPartyWnd(dialogs.windows, dialogs.frames);
+    UIMiniPartyWnd* window = new UIMiniPartyWnd(dialogs.windows);
     window->SetSize(174, 52);
     window->m_cell = record.unknown_0008;
     this->AddMiniPartyWindow(window);

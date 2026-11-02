@@ -31,7 +31,7 @@ void UIMiniBtnWnd::Slot25(int, int) {
   if (window) {
     visible = window->geometry.visible == 0;
   } else {
-    window = this->m_frameContext->windows.EnsureWindow(this->m_windowId);
+    window = g_windowMgr.EnsureWindow(this->m_windowId);
     visible = true;
   }
 
@@ -50,7 +50,7 @@ void UIMiniBtnWnd::Toggle() {
   if (window) {
     visible = window->geometry.visible == 0;
   } else {
-    window = this->m_frameContext->windows.EnsureWindow(this->m_windowId);
+    window = g_windowMgr.EnsureWindow(this->m_windowId);
     visible = true;
   }
 
@@ -63,5 +63,5 @@ void UIMiniBtnWnd::Toggle() {
 
 // OFFSET: 0x009114F0
 // FUNCTION: fn_12516
-UIMiniBtnWnd::UIMiniBtnWnd(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0), m_windowId(-1) {
+UIMiniBtnWnd::UIMiniBtnWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0), m_windowId(-1) {
 }

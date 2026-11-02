@@ -80,7 +80,6 @@
 #include "Network/Packets/PacketLengths.h"
 #include "UI/Text/UIStaticText.h"
 #include "UI/Lists/UIScrollBar.h"
-#include "UI/Layout/WindowSnapping.h"
 #include "UI/PriceCommission.h"
 #include "UI/Shop/PriceColor.h"
 #include "UI/Window/WindowDialogs.h"
@@ -803,7 +802,7 @@ void UIEditCtrl::DrawSelection(int x, int width) {
 
 // OFFSET: 0x0096F410
 // FUNCTION: fn_13233
-UISkillListWnd::UISkillListWnd(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0) {
+UISkillListWnd::UISkillListWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0) {
   this->scrollBar = nullptr;
   this->unknown_00C0 = 0;
   this->hovered = -1;
@@ -1394,7 +1393,7 @@ void UIItemWnd::Slot32(int x, int y) {
 
       item = LookupClientItemByIdentity(g_session.m_inventoryItems, item.unknown_0000[1]);
       ItemDescriptions descriptions{g_itemDescriptions};
-      mode->drag.BeginItem(this->m_frameContext->windows, descriptions, 1, item, item.quantity, -1);
+      mode->drag.BeginItem(g_windowMgr, descriptions, 1, item, item.quantity, -1);
       if (mode->ConfirmDraggedItemUse()) {
         return;
       }
@@ -1460,7 +1459,7 @@ void UIMerchantItemPurchaseWnd::Slot32(int x, int y) {
       if (g_windowMgr.unknown_0300) {
         item = g_session.FindItem1760ByItemId(item.itemId.c_str());
         ItemDescriptions descriptions{g_itemDescriptions};
-        mode->drag.BeginItem(this->m_frameContext->windows, descriptions, 13, item, item.quantity, -1);
+        mode->drag.BeginItem(g_windowMgr, descriptions, 13, item, item.quantity, -1);
         reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0300)->SendMsg(nullptr, 38, 0, 0, 0, 0);
       }
     } else {
@@ -1487,7 +1486,7 @@ void UIMerchantItemShopWnd::Slot32(int x, int y) {
     if (HIBYTE(GetAsyncKeyState(VK_MENU))) {
       if (g_windowMgr.unknown_0308) {
         ItemDescriptions descriptions{g_itemDescriptions};
-        mode->drag.BeginItem(this->m_frameContext->windows, descriptions, 12, item, item.quantity, -1);
+        mode->drag.BeginItem(g_windowMgr, descriptions, 12, item, item.quantity, -1);
         reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0308)->SendMsg(nullptr, 38, 0, 0, 0, 0);
       }
     } else {
@@ -1538,12 +1537,12 @@ void UIMerchantMirrorItemWnd::Slot32(int x, int y) {
       if (g_windowMgr.unknown_02FC) {
         item = g_session.FindItem1750(item.unknown_0000[1]);
         ItemDescriptions descriptions{g_itemDescriptions};
-        mode->drag.BeginItem(this->m_frameContext->windows, descriptions, 11, item, item.quantity, -1);
+        mode->drag.BeginItem(g_windowMgr, descriptions, 11, item, item.quantity, -1);
         reinterpret_cast<UIWindow*>(g_windowMgr.unknown_02FC)->SendMsg(nullptr, 38, 0, 0, 0, 0);
       } else if (g_windowMgr.unknown_040C) {
         item = g_session.FindItem1750(item.unknown_0000[1]);
         ItemDescriptions descriptions{g_itemDescriptions};
-        mode->drag.BeginItem(this->m_frameContext->windows, descriptions, 20, item, item.quantity, -1);
+        mode->drag.BeginItem(g_windowMgr, descriptions, 20, item, item.quantity, -1);
         reinterpret_cast<UIWindow*>(g_windowMgr.unknown_040C)->SendMsg(nullptr, 38, 0, 0, 0, 0);
       }
     } else {
@@ -1564,14 +1563,14 @@ void UIMerchantShopMakeWnd::Slot32(int x, int y) {
       if (g_windowMgr.unknown_02F8) {
         item = g_session.FindItem1768(item.unknown_0000[1]);
         ItemDescriptions descriptions{g_itemDescriptions};
-        gameMode->drag.BeginItem(this->m_frameContext->windows, descriptions, 10, item, item.quantity, -1);
+        gameMode->drag.BeginItem(g_windowMgr, descriptions, 10, item, item.quantity, -1);
         reinterpret_cast<UIWindow*>(g_windowMgr.unknown_02F8)->SendMsg(nullptr, 38, 0, 0, 0, 0);
         InputFocus focus{g_windowMgr.hoverWindow};
         focus.Set(nullptr);
       } else if (g_windowMgr.unknown_0410) {
         item = g_session.FindItem1768(item.unknown_0000[1]);
         ItemDescriptions descriptions{g_itemDescriptions};
-        gameMode->drag.BeginItem(this->m_frameContext->windows, descriptions, 19, item, item.quantity, -1);
+        gameMode->drag.BeginItem(g_windowMgr, descriptions, 19, item, item.quantity, -1);
         reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0410)->SendMsg(nullptr, 38, 0, 0, 0, 0);
       }
     } else {
@@ -4552,7 +4551,7 @@ void UIMerchantItemShopWnd::Slot25(int x, int y) {
 
     if (item.unknown_0000[1] > 0) {
       ItemDescriptions descriptions{g_itemDescriptions};
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(this->m_frameContext->windows, descriptions, 12, item, 1, -1);
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(g_windowMgr, descriptions, 12, item, 1, -1);
     }
   }
 }
@@ -4864,7 +4863,7 @@ int UIItemBaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         this->UpdateScrollBar();
       }
 
-      this->m_frameContext->snapping.Store(this);
+      g_windowMgr.StoreSnapRectangle(this);
       return 0;
     }
     break;
@@ -4910,7 +4909,7 @@ int UIMerchantItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
 
       this->info->Move(16, this->geometry.height - 19);
       this->closeButton->Move(this->geometry.width - 14, 3);
-      this->m_frameContext->snapping.Store(this);
+      g_windowMgr.StoreSnapRectangle(this);
       return 0;
     }
     break;
@@ -4991,7 +4990,7 @@ int UIMerchantMirrorItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         this->UpdateScrollBar();
       }
 
-      this->m_frameContext->snapping.Store(this);
+      g_windowMgr.StoreSnapRectangle(this);
       return 0;
     }
     break;
@@ -5131,7 +5130,7 @@ int UIItemSellWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
         this->buttons[i]->Move(positions[i][0], positions[i][1]);
       }
 
-      this->m_frameContext->snapping.Store(this);
+      g_windowMgr.StoreSnapRectangle(this);
       return 0;
     }
     break;
@@ -5400,7 +5399,7 @@ int UIMerchantItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intpt
       for (int i = 0; i < 2; ++i) {
         this->buttons[i]->Move(positions[i][0], positions[i][1]);
       }
-      this->m_frameContext->snapping.Store(this);
+      g_windowMgr.StoreSnapRectangle(this);
     }
     return 0;
   case 23: {
@@ -5482,7 +5481,7 @@ int UIMerchantItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
         this->visibleRows = static_cast<unsigned>(newHeight - this->unknown_0118 - 17) / 32;
       }
 
-      this->m_frameContext->snapping.Store(this);
+      g_windowMgr.StoreSnapRectangle(this);
       return 0;
     }
     break;
@@ -5764,7 +5763,7 @@ void UIItemPurchaseWnd::Slot25(int x, int y) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     item = g_session.FindItem1720ByItemId(item.itemId.c_str());
     ItemDescriptions descriptions{g_itemDescriptions};
-    mode->drag.BeginItem(this->m_frameContext->windows, descriptions, 4, item, item.quantity, -1);
+    mode->drag.BeginItem(g_windowMgr, descriptions, 4, item, item.quantity, -1);
   }
 }
 
@@ -5792,7 +5791,7 @@ void UIItemSellWnd2::Slot25(int x, int y) {
     item = this->GetItemByIndex(this->hovered);
 
     if (item.unknown_0000[1] > 0) {
-      this->m_frameContext->windows.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 1, 0, 0);
+      g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 1, 0, 0);
     }
   }
 
@@ -5800,7 +5799,7 @@ void UIItemSellWnd2::Slot25(int x, int y) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     item = g_session.FindItem1730(item.unknown_0000[1]);
     ItemDescriptions descriptions{g_itemDescriptions};
-    mode->drag.BeginItem(this->m_frameContext->windows, descriptions, 5, item, item.quantity, -1);
+    mode->drag.BeginItem(g_windowMgr, descriptions, 5, item, item.quantity, -1);
   }
 }
 
@@ -5828,7 +5827,7 @@ void UIItemSellWnd::Slot25(int x, int y) {
     item = this->GetItemByIndex(this->hovered);
 
     if (item.unknown_0000[1] > 0) {
-      this->m_frameContext->windows.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 1, 0, 0);
+      g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 1, 0, 0);
     }
   }
 
@@ -5836,7 +5835,7 @@ void UIItemSellWnd::Slot25(int x, int y) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     item = g_session.FindItem1730(item.unknown_0000[1]);
     ItemDescriptions descriptions{g_itemDescriptions};
-    mode->drag.BeginItem(this->m_frameContext->windows, descriptions, 5, item, item.quantity, -1);
+    mode->drag.BeginItem(g_windowMgr, descriptions, 5, item, item.quantity, -1);
   }
 }
 
@@ -5864,7 +5863,7 @@ void UIItemShopWnd2::Slot25(int x, int y) {
     item = this->GetItemByIndex(this->hovered);
 
     if (item.unknown_0000[1] > 0) {
-      this->m_frameContext->windows.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 1, 0, 0);
+      g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 1, 0, 0);
     }
   }
 
@@ -5872,7 +5871,7 @@ void UIItemShopWnd2::Slot25(int x, int y) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     const ITEM_INFO owned = LookupClientItemByIdentity(g_session.m_inventoryItems, item.unknown_0000[1]);
     ItemDescriptions descriptions{g_itemDescriptions};
-    mode->drag.BeginItem(this->m_frameContext->windows, descriptions, 3, item, owned.unknown_0000[1] > 0 ? item.quantity : 1, -1);
+    mode->drag.BeginItem(g_windowMgr, descriptions, 3, item, owned.unknown_0000[1] > 0 ? item.quantity : 1, -1);
   }
 }
 
@@ -5900,7 +5899,7 @@ void UIItemShopWnd::Slot25(int x, int y) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     const ITEM_INFO owned = LookupClientItemByIdentity(g_session.m_inventoryItems, item.unknown_0000[1]);
     ItemDescriptions descriptions{g_itemDescriptions};
-    mode->drag.BeginItem(this->m_frameContext->windows, descriptions, 3, item, owned.unknown_0000[1] > 0 ? item.quantity : 1, -1);
+    mode->drag.BeginItem(g_windowMgr, descriptions, 3, item, owned.unknown_0000[1] > 0 ? item.quantity : 1, -1);
   }
 }
 
@@ -5917,7 +5916,7 @@ void UIItemStoreFindWnd::Slot25(int x, int y) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     item = g_session.FindItem1738(item.unknown_0000[1]);
     ItemDescriptions descriptions{g_itemDescriptions};
-    mode->drag.BeginItem(this->m_frameContext->windows, descriptions, 6, item, item.quantity, -1);
+    mode->drag.BeginItem(g_windowMgr, descriptions, 6, item, item.quantity, -1);
   }
 }
 
@@ -5934,7 +5933,7 @@ void UIItemStoreSubWnd::Slot25(int x, int y) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     item = g_session.FindItem1738(item.unknown_0000[1]);
     ItemDescriptions descriptions{g_itemDescriptions};
-    mode->drag.BeginItem(this->m_frameContext->windows, descriptions, 6, item, item.quantity, -1);
+    mode->drag.BeginItem(g_windowMgr, descriptions, 6, item, item.quantity, -1);
   }
 }
 
@@ -5955,7 +5954,7 @@ void UIItemStoreWnd::Slot25(int x, int y) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     item = g_session.FindItem1738(item.unknown_0000[1]);
     ItemDescriptions descriptions{g_itemDescriptions};
-    mode->drag.BeginItem(this->m_frameContext->windows, descriptions, 6, item, item.quantity, -1);
+    mode->drag.BeginItem(g_windowMgr, descriptions, 6, item, item.quantity, -1);
   }
 }
 
@@ -5983,7 +5982,7 @@ void UIMerchantItemPurchaseWnd::Slot25(int x, int y) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     item = g_session.FindItem1760ByItemId(item.itemId.c_str());
     ItemDescriptions descriptions{g_itemDescriptions};
-    mode->drag.BeginItem(this->m_frameContext->windows, descriptions, this->unknown_0108 != 0 ? 21 : 13, item, item.quantity, -1);
+    mode->drag.BeginItem(g_windowMgr, descriptions, this->unknown_0108 != 0 ? 21 : 13, item, item.quantity, -1);
   }
 }
 
@@ -6005,7 +6004,7 @@ void UIMerchantMirrorItemWnd::Slot25(int x, int y) {
     item = g_session.FindItem1750(item.unknown_0000[1]);
     ItemDescriptions descriptions{g_itemDescriptions};
     mode->drag.BeginItem(
-      this->m_frameContext->windows, descriptions, this->unknown_00F4 == 1 ? 20 : this->unknown_00F4 == 2 ? 22 : 11, item, item.quantity, -1
+      g_windowMgr, descriptions, this->unknown_00F4 == 1 ? 20 : this->unknown_00F4 == 2 ? 22 : 11, item, item.quantity, -1
     );
   }
 }
@@ -6028,7 +6027,7 @@ void UIMerchantShopMakeWnd::Slot25(int x, int y) {
     CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     item = g_session.FindItem1768(item.unknown_0000[1]);
     ItemDescriptions descriptions{g_itemDescriptions};
-    gameMode->drag.BeginItem(this->m_frameContext->windows, descriptions, this->mode != 0 ? 19 : 10, item, item.quantity, -1);
+    gameMode->drag.BeginItem(g_windowMgr, descriptions, this->mode != 0 ? 19 : 10, item, item.quantity, -1);
   }
 }
 
@@ -6556,8 +6555,8 @@ bool UIEditCtrl::DecodeItemLink(const std::vector<int>& values, ITEM_INFO& item)
 
 // OFFSET: 0x0096E650
 // FUNCTION: fn_13214
-UIItemBaseWnd::UIItemBaseWnd(UIWindowContext& windowContext, UIFrameContext& frameContext)
-    : UIFrameWnd(windowContext, frameContext, 0), resizer(nullptr), scrollBar(nullptr), scroll(0), unknown_00E4(0) {
+UIItemBaseWnd::UIItemBaseWnd(UIWindowContext& windowContext)
+    : UIFrameWnd(windowContext, 0), resizer(nullptr), scrollBar(nullptr), scroll(0), unknown_00E4(0) {
   this->showQuantity = 1;
   this->unknown_00B8 = 0;
   this->buttons[0] = nullptr;
@@ -6568,12 +6567,12 @@ UIItemBaseWnd::UIItemBaseWnd(UIWindowContext& windowContext, UIFrameContext& fra
 
 // OFFSET: 0x0096E750
 // FUNCTION: fn_13215
-UIItemDropCntWnd::UIItemDropCntWnd(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0) {
+UIItemDropCntWnd::UIItemDropCntWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0) {
 }
 
 // OFFSET: 0x0096E7B0
 // FUNCTION: fn_13216
-UIItemPurchaseWnd::UIItemPurchaseWnd(UIWindowContext& windows, UIFrameContext& frames) : UIItemBaseWnd(windows, frames) {
+UIItemPurchaseWnd::UIItemPurchaseWnd(UIWindowContext& windows) : UIItemBaseWnd(windows) {
   this->hovered = -1;
   this->unknown_00B8 = 1;
   this->unknown_00FC = 0;
@@ -6582,7 +6581,7 @@ UIItemPurchaseWnd::UIItemPurchaseWnd(UIWindowContext& windows, UIFrameContext& f
 
 // OFFSET: 0x0096E830
 // FUNCTION: fn_13217
-UIItemSellWnd2::UIItemSellWnd2(UIWindowContext& windows, UIFrameContext& frames) : UIItemBaseWnd(windows, frames) {
+UIItemSellWnd2::UIItemSellWnd2(UIWindowContext& windows) : UIItemBaseWnd(windows) {
   this->hovered = -1;
   this->unknown_00B8 = 1;
   this->saved = nullptr;
@@ -6591,7 +6590,7 @@ UIItemSellWnd2::UIItemSellWnd2(UIWindowContext& windows, UIFrameContext& frames)
 
 // OFFSET: 0x0096E8B0
 // FUNCTION: fn_13218
-UIItemSellWnd::UIItemSellWnd(UIWindowContext& windows, UIFrameContext& frames) : UIItemBaseWnd(windows, frames) {
+UIItemSellWnd::UIItemSellWnd(UIWindowContext& windows) : UIItemBaseWnd(windows) {
   this->hovered = -1;
   this->unknown_00B8 = 1;
   this->saved = nullptr;
@@ -6599,7 +6598,7 @@ UIItemSellWnd::UIItemSellWnd(UIWindowContext& windows, UIFrameContext& frames) :
 
 // OFFSET: 0x0096E930
 // FUNCTION: fn_13219
-UIItemShopWnd2::UIItemShopWnd2(UIWindowContext& windows, UIFrameContext& frames) : UIItemBaseWnd(windows, frames) {
+UIItemShopWnd2::UIItemShopWnd2(UIWindowContext& windows) : UIItemBaseWnd(windows) {
   this->hovered = -1;
   this->showQuantity = 0;
   this->unknown_00F8 = 0;
@@ -6611,7 +6610,7 @@ UIItemShopWnd2::UIItemShopWnd2(UIWindowContext& windows, UIFrameContext& frames)
 
 // OFFSET: 0x0096E9D0
 // FUNCTION: fn_13220
-UIItemShopWnd::UIItemShopWnd(UIWindowContext& windows, UIFrameContext& frames) : UIItemBaseWnd(windows, frames) {
+UIItemShopWnd::UIItemShopWnd(UIWindowContext& windows) : UIItemBaseWnd(windows) {
   this->hovered = -1;
   this->showQuantity = 0;
   this->unknown_00F8 = 0;
@@ -6624,7 +6623,7 @@ UIItemShopWnd::UIItemShopWnd(UIWindowContext& windows, UIFrameContext& frames) :
 
 // OFFSET: 0x0096EA80
 // FUNCTION: fn_13221
-UIItemStoreFindWnd::UIItemStoreFindWnd(UIWindowContext& windows, UIFrameContext& frames) : UIItemBaseWnd(windows, frames) {
+UIItemStoreFindWnd::UIItemStoreFindWnd(UIWindowContext& windows) : UIItemBaseWnd(windows) {
   this->saved = nullptr;
   this->scrollBar = nullptr;
   this->scroll = 0;
@@ -6636,7 +6635,7 @@ UIItemStoreFindWnd::UIItemStoreFindWnd(UIWindowContext& windows, UIFrameContext&
 
 // OFFSET: 0x0096EB70
 // FUNCTION: fn_13222
-UIItemStoreSubWnd::UIItemStoreSubWnd(UIWindowContext& windows, UIFrameContext& frames) : UIItemBaseWnd(windows, frames) {
+UIItemStoreSubWnd::UIItemStoreSubWnd(UIWindowContext& windows) : UIItemBaseWnd(windows) {
   this->saved = nullptr;
   this->scrollBar = nullptr;
   this->scroll = 0;
@@ -6648,7 +6647,7 @@ UIItemStoreSubWnd::UIItemStoreSubWnd(UIWindowContext& windows, UIFrameContext& f
 
 // OFFSET: 0x0096EC60
 // FUNCTION: fn_13223
-UIItemStoreWnd::UIItemStoreWnd(UIWindowContext& windows, UIFrameContext& frames) : UIItemBaseWnd(windows, frames) {
+UIItemStoreWnd::UIItemStoreWnd(UIWindowContext& windows) : UIItemBaseWnd(windows) {
   this->unknown_016C = 0;
   this->unknown_0170 = 0;
   this->unknown_0174 = 0;
@@ -6755,7 +6754,7 @@ void UIItemWnd::Slot15(int width, int height) {
 
 // OFFSET: 0x0096ED90
 // FUNCTION: fn_13224
-UIItemWnd::UIItemWnd(UIWindowContext& windows, UIFrameContext& frames) : UIItemBaseWnd(windows, frames) {
+UIItemWnd::UIItemWnd(UIWindowContext& windows) : UIItemBaseWnd(windows) {
   this->unknown_0124 = 0;
   this->unknown_0128 = nullptr;
   this->unknown_012C = 0;
@@ -6772,7 +6771,7 @@ UIItemWnd::UIItemWnd(UIWindowContext& windows, UIFrameContext& frames) : UIItemB
 
 // OFFSET: 0x0096EE60
 // FUNCTION: fn_13225
-UIMerchantItemMyShopWnd::UIMerchantItemMyShopWnd(UIWindowContext& windows, UIFrameContext& frames, int value) : UIItemBaseWnd(windows, frames) {
+UIMerchantItemMyShopWnd::UIMerchantItemMyShopWnd(UIWindowContext& windows, int value) : UIItemBaseWnd(windows) {
   this->unknown_0100 = value;
   this->startTick = 0;
   this->duration = 0;
@@ -6786,8 +6785,8 @@ UIMerchantItemMyShopWnd::UIMerchantItemMyShopWnd(UIWindowContext& windows, UIFra
 
 // OFFSET: 0x0096EF10
 // FUNCTION: fn_13226
-UIMerchantItemPurchaseMSGWnd::UIMerchantItemPurchaseMSGWnd(UIWindowContext& windowContext, UIFrameContext& frameContext)
-    : UIFrameWnd(windowContext, frameContext, 0) {
+UIMerchantItemPurchaseMSGWnd::UIMerchantItemPurchaseMSGWnd(UIWindowContext& windowContext)
+    : UIFrameWnd(windowContext, 0) {
   this->title = nullptr;
   this->firstLine = nullptr;
   this->thirdLine = nullptr;
@@ -6800,7 +6799,7 @@ UIMerchantItemPurchaseMSGWnd::UIMerchantItemPurchaseMSGWnd(UIWindowContext& wind
 
 // OFFSET: 0x0096EFC0
 // FUNCTION: fn_13227
-UIMerchantItemPurchaseWnd::UIMerchantItemPurchaseWnd(UIWindowContext& windows, UIFrameContext& frames, int value) : UIItemBaseWnd(windows, frames) {
+UIMerchantItemPurchaseWnd::UIMerchantItemPurchaseWnd(UIWindowContext& windows, int value) : UIItemBaseWnd(windows) {
   this->unknown_0108 = value;
   this->unknown_00B8 = 1;
   this->unknown_00F8 = 0;
@@ -6812,7 +6811,7 @@ UIMerchantItemPurchaseWnd::UIMerchantItemPurchaseWnd(UIWindowContext& windows, U
 
 // OFFSET: 0x0096F060
 // FUNCTION: fn_13228
-UIMerchantItemShopWnd::UIMerchantItemShopWnd(UIWindowContext& windows, UIFrameContext& frames, int value) : UIItemBaseWnd(windows, frames) {
+UIMerchantItemShopWnd::UIMerchantItemShopWnd(UIWindowContext& windows, int value) : UIItemBaseWnd(windows) {
   this->unknown_0108 = 0;
   this->unknown_010C = value;
   this->startTick = 0;
@@ -6826,14 +6825,14 @@ UIMerchantItemShopWnd::UIMerchantItemShopWnd(UIWindowContext& windows, UIFrameCo
 
 // OFFSET: 0x0096F110
 // FUNCTION: fn_13229
-UIMerchantItemWnd::UIMerchantItemWnd(UIWindowContext& windows, UIFrameContext& frames) : UIItemBaseWnd(windows, frames) {
+UIMerchantItemWnd::UIMerchantItemWnd(UIWindowContext& windows) : UIItemBaseWnd(windows) {
   this->unknown_00B8 = 1;
   this->saved = nullptr;
 }
 
 // OFFSET: 0x0096F180
 // FUNCTION: fn_13230
-UIMerchantMirrorItemWnd::UIMerchantMirrorItemWnd(UIWindowContext& windows, UIFrameContext& frames, int value) : UIItemBaseWnd(windows, frames) {
+UIMerchantMirrorItemWnd::UIMerchantMirrorItemWnd(UIWindowContext& windows, int value) : UIItemBaseWnd(windows) {
   this->unknown_00F4 = value;
   this->unknown_00B8 = 1;
   this->saved = nullptr;
@@ -6841,7 +6840,7 @@ UIMerchantMirrorItemWnd::UIMerchantMirrorItemWnd(UIWindowContext& windows, UIFra
 
 // OFFSET: 0x0096F3A0
 // FUNCTION: fn_13232
-UINoticeMessageBox_LockSellItem::UINoticeMessageBox_LockSellItem(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0) {
+UINoticeMessageBox_LockSellItem::UINoticeMessageBox_LockSellItem(UIWindowContext& windows) : UIFrameWnd(windows, 0) {
   this->startTick = timeGetTime();
   this->duration = 2000;
 }
@@ -6890,7 +6889,7 @@ int UIItemShopWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
         this->UpdateScrollBar();
       }
 
-      this->m_frameContext->snapping.Store(this);
+      g_windowMgr.StoreSnapRectangle(this);
       return 0;
     }
     break;
@@ -7079,7 +7078,7 @@ int UIItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         this->UpdateScrollBar();
       }
 
-      this->m_frameContext->snapping.Store(this);
+      g_windowMgr.StoreSnapRectangle(this);
       return 0;
     }
     break;
@@ -8025,7 +8024,7 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
         normal = "유저인터페이스\\inventory\\bt_itemDeal_lock_off.bmp";
       } else {
         if (!this->unknown_0128) {
-          this->unknown_0128 = new UINoticeMessageBox_LockSellItem(*this->m_context, *this->m_frameContext);
+          this->unknown_0128 = new UINoticeMessageBox_LockSellItem(*this->m_context);
           this->unknown_0128->SetSize(242, 26);
           this->unknown_0128->Move(30, this->geometry.height - 50);
           this->AddChild(this->unknown_0128);
@@ -8073,11 +8072,11 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
         this->unknown_0110 = height;
         this->Resize(this->geometry.width, 17);
       }
-      this->m_frameContext->snapping.Store(this);
+      g_windowMgr.StoreSnapRectangle(this);
       reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(this);
       const int delta = this->geometry.height - height;
       if (delta != 0) {
-        g_snapMgr.MoveEdge(this, 0, delta, 3, this->m_frameContext->snapping);
+        g_snapMgr.MoveEdge(this, 0, delta, 3);
       }
       return 0;
     }
@@ -8121,7 +8120,7 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
       }
     }
     this->unknown_0110 = this->geometry.height;
-    this->m_frameContext->snapping.Store(this);
+    g_windowMgr.StoreSnapRectangle(this);
     this->lockDropBox->Move(79, this->geometry.height - 16);
     this->optionBox->Move(103, this->geometry.height - 17);
     this->countButton->Move(23, this->geometry.height - 17);
@@ -8834,7 +8833,7 @@ void UIItemWnd::Slot25(int x, int y) {
     if (item.unknown_0074[2] == 0) {
       item = LookupClientItemByIdentity(g_session.m_inventoryItems, item.unknown_0000[1]);
       ItemDescriptions descriptions{g_itemDescriptions};
-      mode->drag.BeginItem(this->m_frameContext->windows, descriptions, 1, item, item.quantity, -1);
+      mode->drag.BeginItem(g_windowMgr, descriptions, 1, item, item.quantity, -1);
 
       if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
         if (g_windowMgr.GetHoverWindow() && item.identified != 0) {
@@ -8872,7 +8871,7 @@ void UIMerchantItemWnd::Slot25(int x, int y) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     item = g_session.FindItem1740(item.unknown_0000[1]);
     ItemDescriptions descriptions{g_itemDescriptions};
-    mode->drag.BeginItem(this->m_frameContext->windows, descriptions, 9, item, item.quantity, -1);
+    mode->drag.BeginItem(g_windowMgr, descriptions, 9, item, item.quantity, -1);
 
     if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
       if (g_windowMgr.GetHoverWindow() && item.identified != 0) {
@@ -9130,7 +9129,7 @@ int UIItemSellWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         this->buttons[i]->Move(positions[i][0], positions[i][1]);
       }
 
-      this->m_frameContext->snapping.Store(this);
+      g_windowMgr.StoreSnapRectangle(this);
       return 0;
     }
     break;
@@ -9506,7 +9505,7 @@ int UIItemStoreFindWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
         this->UpdateScrollBar();
       }
 
-      this->m_frameContext->snapping.Store(this);
+      g_windowMgr.StoreSnapRectangle(this);
     }
     return 0;
   case 23: {
@@ -9619,7 +9618,7 @@ void UIItemDropCntWnd::Show(int visible) {
 
     reinterpret_cast<UIStaticText*>(this->unknown_00B8)->SetTextFittedCodePage(name.c_str());
     this->Invalidate();
-    this->m_frameContext->snapping.Store(this);
+    g_windowMgr.StoreSnapRectangle(this);
   } else {
     if (this->m_edit == g_windowMgr.GetHoverWindow() && g_chatSuggestions) {
       reinterpret_cast<UIWindow*>(g_chatSuggestions)->SendMsg(nullptr, 54, 0, 0, 0, 0);

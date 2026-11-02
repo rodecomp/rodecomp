@@ -10,7 +10,6 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "Client/Input/InputCharset.h"
 #include "UI/Buttons/UIBitmapButton.h"
-#include "UI/Layout/WindowSnapping.h"
 #include "UI/Lists/UIScrollBar.h"
 #include "UI/Text/UIStaticText.h"
 #include "UI/Window/UIResizer.h"
@@ -30,7 +29,7 @@
 
 // OFFSET: 0x0099E0E0
 // FUNCTION: fn_13571
-UIMerchantItemLogWnd::UIMerchantItemLogWnd(UIWindowContext& windows, UIFrameContext& frames, int mode) : UIItemBaseWnd(windows, frames) {
+UIMerchantItemLogWnd::UIMerchantItemLogWnd(UIWindowContext& windows, int mode) : UIItemBaseWnd(windows) {
   this->unknown_00FC = mode;
 }
 
@@ -218,7 +217,7 @@ int UIMerchantItemLogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
   switch (message) {
   case 6:
     if (a == 201) {
-      this->m_frameContext->windows.CloseWindow(this->unknown_00FC != 0 ? 258 : 257);
+      g_windowMgr.CloseWindow(this->unknown_00FC != 0 ? 258 : 257);
     }
     break;
   case 14:
@@ -240,7 +239,7 @@ int UIMerchantItemLogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       }
 
       this->buttons[0]->Move(this->geometry.width - 61, this->geometry.height - 24);
-      this->m_frameContext->snapping.Store(this);
+      g_windowMgr.StoreSnapRectangle(this);
     }
     break;
   case 23: {

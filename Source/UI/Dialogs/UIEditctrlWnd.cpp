@@ -42,14 +42,14 @@ const char* g_miniMapMemoLineFormat = "%d\t%d\t%s\r\n";
 
 // OFFSET: 0x0099B0C0
 // FUNCTION: fn_13549
-UIEditctrlWnd::UIEditctrlWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, UIEditContext& edit)
-    : UIFrameWnd(windows, frames, 0), m_controls(&controls), m_editContext(&edit) {
+UIEditctrlWnd::UIEditctrlWnd(UIWindowContext& windows, UIButtonContext& controls, UIEditContext& edit)
+    : UIFrameWnd(windows, 0), m_controls(&controls), m_editContext(&edit) {
 }
 
 // OFFSET: 0x0099B120
 // FUNCTION: fn_13550
-UIMiniMapWnd::UIMiniMapWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
-    : UIFrameWnd(windows, frames, 0), m_controls(&controls) {
+UIMiniMapWnd::UIMiniMapWnd(UIWindowContext& windows, UIButtonContext& controls)
+    : UIFrameWnd(windows, 0), m_controls(&controls) {
   this->dragging = 0;
   this->unknown_0114 = 0;
   this->unknown_011C = nullptr;

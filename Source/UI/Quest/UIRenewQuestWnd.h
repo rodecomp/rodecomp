@@ -77,7 +77,7 @@ public:
 
 class UIRenewDetailQuestInfoWnd : public UIFrameWnd {
 public:
-  UIRenewDetailQuestInfoWnd(UIWindowContext& windows, UIFrameContext& frames);
+  UIRenewDetailQuestInfoWnd(UIWindowContext& windows);
   void Slot15(int width, int height) override;
   void Paint() override;
   void Slot25(int x, int y) override;
@@ -113,7 +113,7 @@ struct RenewQuestRowControls {
 
 class UIRenewQuestWnd : public UIFrameWnd {
 public:
-  UIRenewQuestWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
+  UIRenewQuestWnd(UIWindowContext& windows, UIButtonContext& controls);
   void Slot15(int width, int height) override;
   void Paint() override;
   void Slot25(int x, int y) override;

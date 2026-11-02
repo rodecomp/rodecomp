@@ -184,7 +184,7 @@ int UIMakeTargetProcessWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
 
     if (response == 184) {
       g_modeMgr.GetGameMode()->SendMsg(130, this->makeType, reinterpret_cast<int>(this->materials), 0, 0);
-      this->m_frameContext->windows.CloseWindow(80);
+      g_windowMgr.CloseWindow(80);
       return 0;
     }
 
@@ -206,7 +206,7 @@ int UIMakeTargetProcessWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
         reinterpret_cast<UIWindow*>(g_windowMgr.unknown_01D4)->SendMsg(nullptr, 23, 0, 0, 0, 0);
       }
 
-      this->m_frameContext->windows.CloseWindow(80);
+      g_windowMgr.CloseWindow(80);
       return 0;
     }
 

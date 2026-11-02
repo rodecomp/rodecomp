@@ -1,7 +1,8 @@
 #include "UI/Layout/SnapMgr.h"
 #include "UI/Layout/SnapObject.h"
 #include "UI/Window/UIWindow.h"
-#include "UI/Layout/WindowSnapping.h"
+#include "Render/Renderer.h"
+#include "UI/Window/UIWindowMgr.h"
 
 // STATIC: 0x01334698
 // GLOBAL: gl_21916
@@ -177,7 +178,7 @@ void CSnapMgr::CaptureOrigins(UIWindow* window) {
 
 // OFFSET: 0x007E2A10
 // FUNCTION: fn_09706
-void CSnapMgr::ConstrainGroup(UIWindow* window, int& dx, int& dy, WindowSnapping& snapping) {
+void CSnapMgr::ConstrainGroup(UIWindow* window, int& dx, int& dy) {
   if (!this->root) {
     return;
   }
@@ -193,7 +194,7 @@ void CSnapMgr::ConstrainGroup(UIWindow* window, int& dx, int& dy, WindowSnapping
       const int savedY = member->geometry.y;
       member->Slot13(dx, dy);
       int x, y;
-      snapping.Constrain(member, x, y, 1);
+      g_windowMgr.ConstrainSnap(member, x, y, 1);
 
       member->geometry.x = savedY;
       if (Magnitude(resultX) < Magnitude(x)) {
@@ -212,7 +213,7 @@ void CSnapMgr::ConstrainGroup(UIWindow* window, int& dx, int& dy, WindowSnapping
 
 // OFFSET: 0x007E3390
 // FUNCTION: fn_09718
-void CSnapMgr::MoveConnected(UIWindow* window, int dx, int dy, WindowSnapping& snapping) {
+void CSnapMgr::MoveConnected(UIWindow* window, int dx, int dy) {
   if (!this->root || this->root->window != window) {
     return;
   }
@@ -220,14 +221,14 @@ void CSnapMgr::MoveConnected(UIWindow* window, int dx, int dy, WindowSnapping& s
   for (SnapObject* object : this->objects) {
     if (this->ConnectedToRoot(object->window)) {
       object->window->Slot13(dx, dy);
-      snapping.Store(object->window);
+      g_windowMgr.StoreSnapRectangle(object->window);
     }
   }
 }
 
 // OFFSET: 0x007E31C0
 // FUNCTION: fn_09717
-void CSnapMgr::MoveBranch(SnapObject* object, int dx, int dy, int side, WindowSnapping& snapping) {
+void CSnapMgr::MoveBranch(SnapObject* object, int dx, int dy, int side) {
   if (side == -1 || object->visited == 1) {
     return;
   }
@@ -236,17 +237,17 @@ void CSnapMgr::MoveBranch(SnapObject* object, int dx, int dy, int side, WindowSn
   if (object->window) {
     object->window->geometry.x = (object->window->geometry.x + dx);
     object->window->geometry.y = (object->window->geometry.y + dy);
-    snapping.Store(object->window);
+    g_windowMgr.StoreSnapRectangle(object->window);
   }
 
   for (SnapObject* next : object->edges[side]) {
-    MoveBranch(next, dx, dy, side, snapping);
+    MoveBranch(next, dx, dy, side);
   }
 }
 
 // OFFSET: 0x007E2FD0
 // FUNCTION: fn_09716
-void CSnapMgr::MoveEdge(UIWindow* window, int dx, int dy, int side, WindowSnapping& snapping) {
+void CSnapMgr::MoveEdge(UIWindow* window, int dx, int dy, int side) {
   this->ResetVisited();
   SnapObject* object = this->Find(window);
   if (!object) {
@@ -261,7 +262,7 @@ void CSnapMgr::MoveEdge(UIWindow* window, int dx, int dy, int side, WindowSnappi
     const int height = object->window->geometry.height;
     object->AccumulateHeight(down, 3);
     const int candidateBottom = ((object->window->geometry.y - dy) + down);
-    const int screenHeight = snapping.screenHeight;
+    const int screenHeight = g_renderer->viewport.height;
 
     if (((y + height) - up) != 0 && (!g_snapMgr.root || g_snapMgr.root != object || candidateBottom == screenHeight)) {
       bool moveSelf = side != 3;
@@ -297,12 +298,12 @@ void CSnapMgr::MoveEdge(UIWindow* window, int dx, int dy, int side, WindowSnappi
       if (moveSelf && side == 1 && object->window) {
         object->window->geometry.x = (object->window->geometry.x + dx);
         object->window->geometry.y = (object->window->geometry.y + dy);
-        snapping.Store(object->window);
+        g_windowMgr.StoreSnapRectangle(object->window);
       }
     }
 
     for (SnapObject* next : object->edges[side]) {
-      MoveBranch(next, dx, dy, side, snapping);
+      MoveBranch(next, dx, dy, side);
     }
   }
 

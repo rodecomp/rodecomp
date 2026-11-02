@@ -120,7 +120,6 @@
 #include "UI/Window/WindowDialogs.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowBorder.h"
-#include "UI/Layout/WindowSnapping.h"
 #include "UI/Layout/SnapMgr.h"
 #include "UI/Window/FuncDrawWNDChar.h"
 #include "UI/Lists/UITabControl.h"
@@ -209,14 +208,14 @@ void UIChatHisBox::Configure(int x, int y, int width, int height, unsigned char)
 
 // OFFSET: 0x008C73C0
 // FUNCTION: fn_11930
-UIChooseSellBuyWnd::UIChooseSellBuyWnd(UIWindowContext& windows, UIFrameContext& frames, UIAcceptanceContext& acceptance)
-    : UIFrameWnd(windows, frames, 0), identity(0), m_acceptance(&acceptance) {
+UIChooseSellBuyWnd::UIChooseSellBuyWnd(UIWindowContext& windows, UIAcceptanceContext& acceptance)
+    : UIFrameWnd(windows, 0), identity(0), m_acceptance(&acceptance) {
 }
 
 // OFFSET: 0x008C6FA0
 // FUNCTION: fn_11926
-UIBookWnd::UIBookWnd(UIWindowContext& windows, UIFrameContext& frames, UIBookContext& book)
-    : UIFrameWnd(windows, frames, 0), m_book(&book) {
+UIBookWnd::UIBookWnd(UIWindowContext& windows, UIBookContext& book)
+    : UIFrameWnd(windows, 0), m_book(&book) {
   this->m_lineCount = 0;
   this->m_pageCount = 0;
   this->m_page = 1;
@@ -229,7 +228,7 @@ UIBookWnd::UIBookWnd(UIWindowContext& windows, UIFrameContext& frames, UIBookCon
 
 // OFFSET: 0x008C7860
 // FUNCTION: fn_11940
-UIEquipWnd::UIEquipWnd(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0) {
+UIEquipWnd::UIEquipWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0) {
   this->unknown_0124 = nullptr;
   this->unknown_0128 = 0;
   this->unknown_012C = 0;
@@ -297,8 +296,8 @@ void UIChooseSellBuyWnd::CreateViewer(int width, int height) {
 
 // OFFSET: 0x008C7420
 // FUNCTION: fn_11931
-UIChooseWarpWnd::UIChooseWarpWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, UIListBoxContext& listContext)
-    : UIFrameWnd(windows, frames, 0), m_list(nullptr), unknown_00B8(0), m_choices(), m_controls(&controls), m_listContext(&listContext) {
+UIChooseWarpWnd::UIChooseWarpWnd(UIWindowContext& windows, UIButtonContext& controls, UIListBoxContext& listContext)
+    : UIFrameWnd(windows, 0), m_list(nullptr), unknown_00B8(0), m_choices(), m_controls(&controls), m_listContext(&listContext) {
   this->m_choices.reserve(6);
 }
 
@@ -1245,7 +1244,7 @@ int UIPasswordWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     if (a == 184) {
       CMode* mode = g_modeMgr.gameMode;
       mode->SendMsg(45, this->unknown_00BC, reinterpret_cast<int>(this->m_edit->Text()), 0, 0);
-      this->m_frameContext->windows.CloseWindow(29);
+      g_windowMgr.CloseWindow(29);
     }
     return 0;
   case 47:
@@ -1994,13 +1993,13 @@ void UIMenuWnd::Slot31(int x, int y) {
 
   const int choice = (index - separators) / 2;
   UIWindow* target = this->m_menuId == 301 ? g_windowMgr.FindSnapExcludedWindow(static_cast<int>(this->unknown_00CC))
-                                           : this->m_frameContext->windows.LookupWindow(this->m_menuId);
+                                           : g_windowMgr.LookupWindow(this->m_menuId);
   if (target) {
     target->SendMsg(nullptr, 48, choice, 0, 0, 0);
   } else if (this->m_menuId == 10041) {
     this->m_context->mode->SendModeMessage(24, choice, 0, 0, 0);
   }
-  this->m_frameContext->windows.CloseWindow(18);
+  g_windowMgr.CloseWindow(18);
 }
 
 // OFFSET: 0x008F4520
@@ -2510,7 +2509,7 @@ void UIItemCollectionWnd::Slot19() {
 // FUNCTION: fn_12297
 void UINotifyItemObtainWnd::Slot19() {
   if (timeGetTime() > this->m_shownTick + 5000) {
-    this->m_frameContext->windows.CloseWindow(58);
+    g_windowMgr.CloseWindow(58);
   }
 }
 
@@ -2525,7 +2524,7 @@ void UIPetTamingDeceiveWnd::Slot19() {
       this->m_finishTime = timeGetTime();
     }
   } else if (this->m_frame == frame && this->m_delay <= this->m_maxDelay && timeGetTime() - this->m_finishTime >= 2000) {
-    this->m_frameContext->windows.CloseWindow(91);
+    g_windowMgr.CloseWindow(91);
   }
 }
 
@@ -3102,11 +3101,11 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
         this->m_show = height;
         this->Resize(this->geometry.width, 17);
       }
-      this->m_frameContext->snapping.Store(this);
-      WindowOrdering{g_windowMgr.rendered, this->m_frameContext->windows, reinterpret_cast<const int&>(g_windowMgr.modal), g_windowMgr.window_4F174}.Promote(this);
+      g_windowMgr.StoreSnapRectangle(this);
+      WindowOrdering{g_windowMgr.rendered, g_windowMgr, reinterpret_cast<const int&>(g_windowMgr.modal), g_windowMgr.window_4F174}.Promote(this);
       const int delta = this->geometry.height - height;
       if (delta != 0) {
-        g_snapMgr.MoveEdge(this, 0, delta, 3, this->m_frameContext->snapping);
+        g_snapMgr.MoveEdge(this, 0, delta, 3);
       }
       return 0;
     }
@@ -3228,7 +3227,7 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       const int height = this->unknown_00D8 + 167;
       this->Resize(this->geometry.width, height + 158);
       if (!this->unknown_0124) {
-        UISwapEquipmentWnd* created = new (std::nothrow) UISwapEquipmentWnd(*this->m_context, *this->m_frameContext);
+        UISwapEquipmentWnd* created = new (std::nothrow) UISwapEquipmentWnd(*this->m_context);
         this->unknown_0124 = created;
         created->SetSize(280, 179);
         if (this->m_page == 0) {
@@ -3343,10 +3342,10 @@ int UIBabyAcceptWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
   if (message == 6) {
     this->m_acceptance->recorder.Record(this->geometry.id, static_cast<int>(a), b, c, d);
     if (a == 184) {
-      this->m_frameContext->windows.CloseWindow(110);
+      g_windowMgr.CloseWindow(110);
       this->m_context->mode->SendModeMessage(173, this->identity, 1, 0, 0);
     } else if (a == 185) {
-      this->m_frameContext->windows.CloseWindow(110);
+      g_windowMgr.CloseWindow(110);
       this->m_context->mode->SendModeMessage(173, this->identity, 0, 0, 0);
     }
     return 0;
@@ -3393,10 +3392,10 @@ int UIBabyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
   if (message == 6) {
     this->m_acceptance->recorder.Record(this->geometry.id, static_cast<int>(a), b, c, d);
     if (a == 184) {
-      this->m_frameContext->windows.CloseWindow(105);
-      this->m_frameContext->windows.EnsureWindow(110)->SendMsg(nullptr, 91, 184, b, 0, 0);
+      g_windowMgr.CloseWindow(105);
+      g_windowMgr.EnsureWindow(110)->SendMsg(nullptr, 91, 184, b, 0, 0);
     } else if (a == 185) {
-      this->m_frameContext->windows.CloseWindow(105);
+      g_windowMgr.CloseWindow(105);
       this->m_context->mode->SendModeMessage(173, this->identity, 0, 0, 0);
     }
     return 0;
@@ -3453,7 +3452,7 @@ int UIBookWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
     switch (a) {
     case 201:
       this->SendMsg(this, 6, 356, 0, 0, 0);
-      this->m_frameContext->windows.CloseWindow(106);
+      g_windowMgr.CloseWindow(106);
       break;
     case 354:
       if (this->m_autoRead == 0) {
@@ -3557,7 +3556,7 @@ int UIBookWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
       g_windowMgr.Schedule(this->unknown_00B8);
       this->unknown_00B8 = nullptr;
     }
-    this->m_frameContext->windows.CloseWindow(106);
+    g_windowMgr.CloseWindow(106);
     break;
 
   case 94: {
@@ -3634,10 +3633,10 @@ int UIChooseSellBuyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
     if (this->geometry.visible != 0) {
       if (response == 185) {
         this->m_context->mode->SendModeMessage(40, 0, 0, 0, 0);
-        this->m_frameContext->windows.CloseWindow(25);
+        g_windowMgr.CloseWindow(25);
       } else if (response == 223 || response == 224) {
         this->m_context->mode->SendModeMessage(response == 223 ? 37 : 38, this->identity, 0, 0, 0);
-        this->m_frameContext->windows.LookupWindow(25)->Show(0);
+        g_windowMgr.LookupWindow(25)->Show(0);
       } else {
         return 0;
       }
@@ -3670,9 +3669,9 @@ int UIChooseSellBuyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
         if (kind == 20851) {
           this->m_acceptance->replayShopState = 1;
           this->SendMsg(nullptr, 28, 0, 0, 0, 0);
-          this->m_frameContext->windows.CloseWindow(22);
-          this->m_frameContext->windows.CloseWindow(23);
-          this->m_frameContext->windows.CloseWindow(24);
+          g_windowMgr.CloseWindow(22);
+          g_windowMgr.CloseWindow(23);
+          g_windowMgr.CloseWindow(24);
 
           return 0;
         }
@@ -3776,7 +3775,7 @@ void UIItemCollectionWnd::Slot15(int width, int height) {
 
   this->m_previewTick = 0;
   if (!this->m_moveInfo) {
-    this->m_moveInfo = new UIItemMoveInfo(*this->m_context, *reinterpret_cast<UIButtonContext*>(nullptr), this->m_frameContext->windows,
+    this->m_moveInfo = new UIItemMoveInfo(*this->m_context, *reinterpret_cast<UIButtonContext*>(nullptr), g_windowMgr,
                                           *reinterpret_cast<WindowVisibility*>(nullptr));
     this->m_moveInfo->Configure(LookupMessage(2796), 0, 0, 12, 0, 1);
     this->m_moveInfo->SetId(487);
@@ -4476,7 +4475,7 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
         this->m_chatHistory->Move(1, 17);
         this->m_closeButton->Move(this->geometry.width - 14, 3);
       }
-      this->m_frameContext->snapping.Store(this);
+      g_windowMgr.StoreSnapRectangle(this);
     }
     return 0;
   case 34: {
@@ -5485,7 +5484,7 @@ void UIItemCollectionWnd::SetHeight(int height) {
 
 class UIAutoMessageWnd : public UIFrameWnd {
 public:
-  UIAutoMessageWnd(UIWindowContext& windows, UIFrameContext& frames);
+  UIAutoMessageWnd(UIWindowContext& windows);
   void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
@@ -5976,128 +5975,128 @@ void UInCashWnd::Slot32(int x, int y) {
 
 // OFFSET: 0x008C6E20
 // FUNCTION: fn_11923
-UIAutoMessageWnd::UIAutoMessageWnd(UIWindowContext& windows, UIFrameContext& frames)
-    : UIFrameWnd(windows, frames, 0) {
+UIAutoMessageWnd::UIAutoMessageWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0) {
 }
 
 // OFFSET: 0x008C6E80
 // FUNCTION: fn_11924
-UIBabyAcceptWnd2::UIBabyAcceptWnd2(UIWindowContext& windows, UIFrameContext& frames, UIAcceptanceContext& acceptance)
-    : UIExchangeAcceptWnd(windows, frames, acceptance) {
+UIBabyAcceptWnd2::UIBabyAcceptWnd2(UIWindowContext& windows, UIAcceptanceContext& acceptance)
+    : UIExchangeAcceptWnd(windows, acceptance) {
 }
 
 // OFFSET: 0x008C6F10
 // FUNCTION: fn_11925
-UIBabyAcceptWnd::UIBabyAcceptWnd(UIWindowContext& windows, UIFrameContext& frames, UIAcceptanceContext& acceptance)
-    : UIExchangeAcceptWnd(windows, frames, acceptance) {
+UIBabyAcceptWnd::UIBabyAcceptWnd(UIWindowContext& windows, UIAcceptanceContext& acceptance)
+    : UIExchangeAcceptWnd(windows, acceptance) {
 }
 
 // OFFSET: 0x008C7630
 // FUNCTION: fn_11935
-UIComboBoxIDWnd::UIComboBoxIDWnd(UIWindowContext& windows, UIFrameContext& frames)
-    : UIFrameWnd(windows, frames, 0), m_list(nullptr), m_owner(nullptr) {
+UIComboBoxIDWnd::UIComboBoxIDWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0), m_list(nullptr), m_owner(nullptr) {
 }
 
 // OFFSET: 0x008C76A0
 // FUNCTION: fn_11936
-UIComboBoxWnd::UIComboBoxWnd(UIWindowContext& windows, UIFrameContext& frames)
-    : UIFrameWnd(windows, frames, 0), m_list(nullptr), m_owner(nullptr) {
+UIComboBoxWnd::UIComboBoxWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0), m_list(nullptr), m_owner(nullptr) {
 }
 
 // OFFSET: 0x008C77A0
 // FUNCTION: fn_11938
-UIDisconnectedServerMsgWnd::UIDisconnectedServerMsgWnd(UIWindowContext& windows, UIFrameContext& frames, UITextViewerContext& text)
-    : UIFrameWnd(windows, frames, 0), m_viewer(nullptr), m_textContext(&text) {
+UIDisconnectedServerMsgWnd::UIDisconnectedServerMsgWnd(UIWindowContext& windows, UITextViewerContext& text)
+    : UIFrameWnd(windows, 0), m_viewer(nullptr), m_textContext(&text) {
 }
 
 // OFFSET: 0x008C82D0
 // FUNCTION: fn_11951
-UILoadingWnd::UILoadingWnd(UIWindowContext& windows, UIFrameContext& frames)
-    : UIFrameWnd(windows, frames, 0), m_progressBar(nullptr) {
+UILoadingWnd::UILoadingWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0), m_progressBar(nullptr) {
 }
 
 // OFFSET: 0x008C8650
 // FUNCTION: fn_11957
-UINoticeConfirmWnd::UINoticeConfirmWnd(UIWindowContext& windows, UIFrameContext& frames)
-    : UIFrameWnd(windows, frames, 0), m_event(28) {
+UINoticeConfirmWnd::UINoticeConfirmWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0), m_event(28) {
 }
 
 // OFFSET: 0x008C8770
 // FUNCTION: fn_11959
-UINotifyLevelUpWnd::UINotifyLevelUpWnd(UIWindowContext& windows, UIFrameContext& frames)
-    : UIFrameWnd(windows, frames, 0) {
+UINotifyLevelUpWnd::UINotifyLevelUpWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0) {
 }
 
 // OFFSET: 0x008C87D0
 // FUNCTION: fn_11960
-UINotifyQuestWnd::UINotifyQuestWnd(UIWindowContext& windows, UIFrameContext& frames)
-    : UIFrameWnd(windows, frames, 0) {
+UINotifyQuestWnd::UINotifyQuestWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0) {
 }
 
 // OFFSET: 0x008C8830
 // FUNCTION: fn_11961
-UINpcEditDialogWnd::UINpcEditDialogWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
-    : UIFrameWnd(windows, frames, 0), m_controls(&controls) {
+UINpcEditDialogWnd::UINpcEditDialogWnd(UIWindowContext& windows, UIButtonContext& controls)
+    : UIFrameWnd(windows, 0), m_controls(&controls) {
 }
 
 // OFFSET: 0x008C8890
 // FUNCTION: fn_11962
-UINpcTextEditDialogWnd::UINpcTextEditDialogWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
-    : UINpcEditDialogWnd(windows, frames, controls), m_tagCtrl(nullptr) {
+UINpcTextEditDialogWnd::UINpcTextEditDialogWnd(UIWindowContext& windows, UIButtonContext& controls)
+    : UINpcEditDialogWnd(windows, controls), m_tagCtrl(nullptr) {
 }
 
 // OFFSET: 0x008C8B50
 // FUNCTION: fn_11968
-UIProhibitListWnd::UIProhibitListWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, UIEditContext& edits)
-    : UIFrameWnd(windows, frames, 0), m_count(0), m_controls(&controls), m_edits(&edits) {
+UIProhibitListWnd::UIProhibitListWnd(UIWindowContext& windows, UIButtonContext& controls, UIEditContext& edits)
+    : UIFrameWnd(windows, 0), m_count(0), m_controls(&controls), m_edits(&edits) {
 }
 
 // OFFSET: 0x008C8BB0
 // FUNCTION: fn_11969
-UIQuitWnd::UIQuitWnd(UIWindowContext& windows, UIFrameContext& frames)
-    : UIFrameWnd(windows, frames, 0) {
+UIQuitWnd::UIQuitWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0) {
 }
 
 // OFFSET: 0x008C8C10
 // FUNCTION: fn_11970
-UIRestartWnd::UIRestartWnd(UIWindowContext& windows, UIFrameContext& frames)
-    : UIFrameWnd(windows, frames, 0) {
+UIRestartWnd::UIRestartWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0) {
 }
 
 // OFFSET: 0x008C93D0
 // FUNCTION: fn_11980
-UITipOfTheDayWnd::UITipOfTheDayWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
-    : UIFrameWnd(windows, frames, 0), m_controls(&controls) {
+UITipOfTheDayWnd::UITipOfTheDayWnd(UIWindowContext& windows, UIButtonContext& controls)
+    : UIFrameWnd(windows, 0), m_controls(&controls) {
 }
 
 // OFFSET: 0x008C9560
 // FUNCTION: fn_11982
-UIToolTipWnd::UIToolTipWnd(UIWindowContext& windows, UIFrameContext& frames)
-    : UIFrameWnd(windows, frames, 0) {
+UIToolTipWnd::UIToolTipWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0) {
 }
 
 // OFFSET: 0x008C95C0
 // FUNCTION: fn_11983
-UIWaitWnd::UIWaitWnd(UIWindowContext& windows, UIFrameContext& frames)
-    : UIFrameWnd(windows, frames, 0), m_button(nullptr) {
+UIWaitWnd::UIWaitWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0), m_button(nullptr) {
 }
 
 // OFFSET: 0x008C9990
 // FUNCTION: fn_11987
-UInCash_CallWnd::UInCash_CallWnd(UIWindowContext& windows, UIFrameContext& frames)
-    : UIFrameWnd(windows, frames, 0) {
+UInCash_CallWnd::UInCash_CallWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0) {
 }
 
 // OFFSET: 0x008C8F00
 // FUNCTION: fn_11973
-UISelectCartWnd::UISelectCartWnd(UIWindowContext& windows, UIFrameContext& frames)
-    : UIFrameWnd(windows, frames, 0), unknown_00B4(0), unknown_00B8(0), unknown_00BC(0), unknown_00C0(0) {
+UISelectCartWnd::UISelectCartWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0), unknown_00B4(0), unknown_00B8(0), unknown_00BC(0), unknown_00C0(0) {
 }
 
 // OFFSET: 0x008C9280
 // FUNCTION: fn_11979
-UIStorePasswordInputWnd::UIStorePasswordInputWnd(UIWindowContext& windows, UIFrameContext& frames)
-    : UIFrameWnd(windows, frames, 0), unknown_00BC(-1), unknown_00C0(2) {
+UIStorePasswordInputWnd::UIStorePasswordInputWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0), unknown_00BC(-1), unknown_00C0(2) {
   std::memset(this->unknown_00D0, 0, sizeof(this->unknown_00D0));
   std::memset(this->unknown_00D9, 0, sizeof(this->unknown_00D9));
   std::memset(this->unknown_00E2, 0, sizeof(this->unknown_00E2));
@@ -6122,21 +6121,21 @@ UIStorePasswordInputWnd::UIStorePasswordInputWnd(UIWindowContext& windows, UIFra
 
 // OFFSET: 0x008C8D40
 // FUNCTION: fn_11972
-UISecondPasswordInputWnd::UISecondPasswordInputWnd(UIWindowContext& windows, UIFrameContext& frames)
-    : UIStorePasswordInputWnd(windows, frames), unknown_010C(4), unknown_011C(0), unknown_0120(0), unknown_0124(), unknown_014C(0),
+UISecondPasswordInputWnd::UISecondPasswordInputWnd(UIWindowContext& windows)
+    : UIStorePasswordInputWnd(windows), unknown_010C(4), unknown_011C(0), unknown_0120(0), unknown_0124(), unknown_014C(0),
       unknown_0150(0), unknown_0154(0), unknown_0158(0), unknown_0164(0) {
 }
 
 // OFFSET: 0x008C8F80
 // FUNCTION: fn_11974
-UISkillDescribeWnd::UISkillDescribeWnd(UIWindowContext& windows, UIFrameContext& frames)
-    : UIFrameWnd(windows, frames, 0), m_text(nullptr) {
+UISkillDescribeWnd::UISkillDescribeWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0), m_text(nullptr) {
 }
 
 // OFFSET: 0x008C9430
 // FUNCTION: fn_11981
-UITipboxWnd::UITipboxWnd(UIWindowContext& windows, UIFrameContext& frames)
-    : UIFrameWnd(windows, frames, 0), unknown_00B4(0), unknown_00B8(0),
+UITipboxWnd::UITipboxWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0), unknown_00B4(0), unknown_00B8(0),
       unknown_00BC(0), m_pageText(nullptr), m_pageTotalText(nullptr), unknown_00D0(0), unknown_00D4(0), unknown_00D8(0), m_buildTime(0), m_frameTime(0),
       unknown_00FC(false), unknown_0100(0) {
   this->unknown_00C0 = 0;
@@ -6145,14 +6144,14 @@ UITipboxWnd::UITipboxWnd(UIWindowContext& windows, UIFrameContext& frames)
 
 // OFFSET: 0x008C86B0
 // FUNCTION: fn_11958
-UINotifyItemObtainWnd::UINotifyItemObtainWnd(UIWindowContext& windows, UIFrameContext& frames)
-    : UIFrameWnd(windows, frames, 0), m_identified(false) {
+UINotifyItemObtainWnd::UINotifyItemObtainWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0), m_identified(false) {
 }
 
 // OFFSET: 0x008C7CB0
 // FUNCTION: fn_11943
-UIItemCollectionWnd::UIItemCollectionWnd(UIWindowContext& windows, UIFrameContext& frames)
-    : UIFrameWnd(windows, frames, 0), m_helpButton(nullptr) {
+UIItemCollectionWnd::UIItemCollectionWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0), m_helpButton(nullptr) {
   this->m_placement = nullptr;
   this->m_item.Reset();
   this->unknown_0238 = 0;
@@ -6171,87 +6170,87 @@ UIItemCollectionWnd::UIItemCollectionWnd(UIWindowContext& windows, UIFrameContex
 
 // OFFSET: 0x008C7570
 // FUNCTION: fn_11933
-UICombinedCardItemCollectionWnd::UICombinedCardItemCollectionWnd(UIWindowContext& windows, UIFrameContext& frames)
-    : UIItemCollectionWnd(windows, frames), m_cardPlacement(nullptr) {
+UICombinedCardItemCollectionWnd::UICombinedCardItemCollectionWnd(UIWindowContext& windows)
+    : UIItemCollectionWnd(windows), m_cardPlacement(nullptr) {
 }
 
 // OFFSET: 0x008C75D0
 // FUNCTION: fn_11934
-UICombinedCardItemCollection_ComparisonWnd::UICombinedCardItemCollection_ComparisonWnd(UIWindowContext& windows, UIFrameContext& frames)
-    : UIItemCollectionWnd(windows, frames) {
+UICombinedCardItemCollection_ComparisonWnd::UICombinedCardItemCollection_ComparisonWnd(UIWindowContext& windows)
+    : UIItemCollectionWnd(windows) {
 }
 
 // OFFSET: 0x008C7E40
 // FUNCTION: fn_11944
-UIItemCollection_ComparisonWnd::UIItemCollection_ComparisonWnd(UIWindowContext& windows, UIFrameContext& frames)
-    : UIItemCollectionWnd(windows, frames) {
+UIItemCollection_ComparisonWnd::UIItemCollection_ComparisonWnd(UIWindowContext& windows)
+    : UIItemCollectionWnd(windows) {
 }
 
 // OFFSET: 0x008C6FA0
 
 // OFFSET: 0x008C7070
 // FUNCTION: fn_11927
-UICardItemIllustWnd::UICardItemIllustWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
-    : UIFrameWnd(windows, frames, 0), m_controls(&controls) {
+UICardItemIllustWnd::UICardItemIllustWnd(UIWindowContext& windows, UIButtonContext& controls)
+    : UIFrameWnd(windows, 0), m_controls(&controls) {
 }
 
 // OFFSET: 0x008C8390
 // FUNCTION: fn_11953
-UIMenuWnd::UIMenuWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
-    : UIFrameWnd(windows, frames, 0), m_menuId(10041), m_selected(-1), m_itemHeight(14), unknown_00CC(0), unknown_00DC(0), m_controls(&controls) {
+UIMenuWnd::UIMenuWnd(UIWindowContext& windows, UIButtonContext& controls)
+    : UIFrameWnd(windows, 0), m_menuId(10041), m_selected(-1), m_itemHeight(14), unknown_00CC(0), unknown_00DC(0), m_controls(&controls) {
 }
 
 // OFFSET: 0x008C85A0
 // FUNCTION: fn_11956
-UIMonsterDisplayWnd::UIMonsterDisplayWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
-    : UIFrameWnd(windows, frames, 0), m_controls(&controls) {
+UIMonsterDisplayWnd::UIMonsterDisplayWnd(UIWindowContext& windows, UIButtonContext& controls)
+    : UIFrameWnd(windows, 0), m_controls(&controls) {
 }
 
 // OFFSET: 0x008C8900
 // FUNCTION: fn_11963
-UIPartyInvitationToWnd::UIPartyInvitationToWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
-    : UIPartySettingWnd(windows, frames, controls) {
+UIPartyInvitationToWnd::UIPartyInvitationToWnd(UIWindowContext& windows, UIButtonContext& controls)
+    : UIPartySettingWnd(windows, controls) {
 }
 
 // OFFSET: 0x008C8980
 // FUNCTION: fn_11964
-UIPartySettingWnd::UIPartySettingWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
-    : UIFrameWnd(windows, frames, 0), m_controls(&controls) {
+UIPartySettingWnd::UIPartySettingWnd(UIWindowContext& windows, UIButtonContext& controls)
+    : UIFrameWnd(windows, 0), m_controls(&controls) {
   this->m_mode = 0;
   this->m_placement = nullptr;
 }
 
 // OFFSET: 0x008C8AB0
 // FUNCTION: fn_11967
-UIPetTamingDeceiveWnd::UIPetTamingDeceiveWnd(UIWindowContext& windows, UIFrameContext& frames)
-    : UIFrameWnd(windows, frames, 0), m_delay(1), m_state(0), m_tick(0), m_frame(-1), m_maxDelay(10000), m_started(0) {
+UIPetTamingDeceiveWnd::UIPetTamingDeceiveWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0), m_delay(1), m_state(0), m_tick(0), m_frame(-1), m_maxDelay(10000), m_started(0) {
   this->m_finishTime = 0xFFFFFFFF;
 }
 
 // OFFSET: 0x008C9060
 // FUNCTION: fn_11975
-UISkillNameChangeWnd::UISkillNameChangeWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
-    : UIFrameWnd(windows, frames, 0), m_controls(&controls) {
+UISkillNameChangeWnd::UISkillNameChangeWnd(UIWindowContext& windows, UIButtonContext& controls)
+    : UIFrameWnd(windows, 0), m_controls(&controls) {
 }
 
 // OFFSET: 0x008C91F0
 
 // OFFSET: 0x008C7710
 // FUNCTION: fn_11937
-UICoupleAcceptWnd::UICoupleAcceptWnd(UIWindowContext& windows, UIFrameContext& frames, UIAcceptanceContext& acceptance)
-    : UIExchangeAcceptWnd(windows, frames, acceptance) {
+UICoupleAcceptWnd::UICoupleAcceptWnd(UIWindowContext& windows, UIAcceptanceContext& acceptance)
+    : UIExchangeAcceptWnd(windows, acceptance) {
 }
 
 // OFFSET: 0x008C8120
 // FUNCTION: fn_11948
-UIJoinFriendAcceptWnd::UIJoinFriendAcceptWnd(UIWindowContext& windows, UIFrameContext& frames, UIAcceptanceContext& acceptance)
-    : UIExchangeAcceptWnd(windows, frames, acceptance) {
+UIJoinFriendAcceptWnd::UIJoinFriendAcceptWnd(UIWindowContext& windows, UIAcceptanceContext& acceptance)
+    : UIExchangeAcceptWnd(windows, acceptance) {
 }
 
 // OFFSET: 0x008C81B0
 // FUNCTION: fn_11949
-UIJoinGuildAcceptWnd::UIJoinGuildAcceptWnd(UIWindowContext& windows, UIFrameContext& frames, UIAcceptanceContext& acceptance)
-    : UIExchangeAcceptWnd(windows, frames, acceptance) {
+UIJoinGuildAcceptWnd::UIJoinGuildAcceptWnd(UIWindowContext& windows, UIAcceptanceContext& acceptance)
+    : UIExchangeAcceptWnd(windows, acceptance) {
 }
 
 // OFFSET: 0x008FE310
@@ -6260,13 +6259,13 @@ int UIJoinGuildAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
   if (message == 6) {
     this->m_acceptance->recorder.Record(this->geometry.id, static_cast<int>(a), b, c, d);
     if (a == 184) {
-      this->m_frameContext->windows.CloseWindow(70);
-      this->m_frameContext->windows.CloseWindow(214);
-      this->m_frameContext->windows.CloseWindow(213);
-      this->m_frameContext->windows.CloseWindow(212);
+      g_windowMgr.CloseWindow(70);
+      g_windowMgr.CloseWindow(214);
+      g_windowMgr.CloseWindow(213);
+      g_windowMgr.CloseWindow(212);
       this->m_context->mode->SendModeMessage(114, this->identity, 1, 0, 0);
     } else if (a == 185) {
-      this->m_frameContext->windows.CloseWindow(70);
+      g_windowMgr.CloseWindow(70);
       this->m_context->mode->SendModeMessage(114, this->identity, 0, 0, 0);
     }
     return 0;
@@ -6327,26 +6326,26 @@ int UIJoinGuildAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
 
 // OFFSET: 0x008C8510
 // FUNCTION: fn_11955
-UIMixAcceptWnd::UIMixAcceptWnd(UIWindowContext& windows, UIFrameContext& frames, UIAcceptanceContext& acceptance)
-    : UIExchangeAcceptWnd(windows, frames, acceptance) {
+UIMixAcceptWnd::UIMixAcceptWnd(UIWindowContext& windows, UIAcceptanceContext& acceptance)
+    : UIExchangeAcceptWnd(windows, acceptance) {
 }
 
 // OFFSET: 0x008C9160
 // FUNCTION: fn_11977
-UIStarPlaceAcceptWnd::UIStarPlaceAcceptWnd(UIWindowContext& windows, UIFrameContext& frames, UIAcceptanceContext& acceptance)
-    : UIExchangeAcceptWnd(windows, frames, acceptance) {
+UIStarPlaceAcceptWnd::UIStarPlaceAcceptWnd(UIWindowContext& windows, UIAcceptanceContext& acceptance)
+    : UIExchangeAcceptWnd(windows, acceptance) {
 }
 
 // OFFSET: 0x008C97F0
 // FUNCTION: fn_11985
-UIYourItemWnd::UIYourItemWnd(UIWindowContext& windows, UIFrameContext& frames, UIAcceptanceContext& acceptance)
-    : UIExchangeAcceptWnd(windows, frames, acceptance) {
+UIYourItemWnd::UIYourItemWnd(UIWindowContext& windows, UIAcceptanceContext& acceptance)
+    : UIExchangeAcceptWnd(windows, acceptance) {
 }
 
 // OFFSET: 0x008C8C70
 // FUNCTION: fn_11971
-UISayDialogWnd::UISayDialogWnd(UIWindowContext& windows, UIFrameContext& frames)
-    : UIFrameWnd(windows, frames, 0) {
+UISayDialogWnd::UISayDialogWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0) {
   this->m_viewer = nullptr;
   this->m_placement = nullptr;
 }
@@ -6595,10 +6594,10 @@ int UICoupleAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   if (message == 6) {
     int accepted;
     if (a == 184) {
-      this->m_frameContext->windows.CloseWindow(104);
+      g_windowMgr.CloseWindow(104);
       accepted = 1;
     } else if (a == 185) {
-      this->m_frameContext->windows.CloseWindow(104);
+      g_windowMgr.CloseWindow(104);
       accepted = 0;
     } else {
       return 0;
@@ -6684,10 +6683,10 @@ int UIJoinFriendAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     this->m_acceptance->recorder.Record(this->geometry.id, static_cast<int>(a), b, c, d);
     int accepted;
     if (a == 184) {
-      this->m_frameContext->windows.CloseWindow(109);
+      g_windowMgr.CloseWindow(109);
       accepted = 1;
     } else if (a == 185) {
-      this->m_frameContext->windows.CloseWindow(109);
+      g_windowMgr.CloseWindow(109);
       accepted = 0;
     } else {
       return 0;
@@ -6743,13 +6742,13 @@ int UIJoinFriendAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
 int UIMixAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   if (message == 6) {
     if (a == 184) {
-      this->m_frameContext->windows.CloseWindow(160);
-      this->m_frameContext->windows.CloseWindow(161);
+      g_windowMgr.CloseWindow(160);
+      g_windowMgr.CloseWindow(161);
       this->m_context->mode->SendModeMessage(266, 0, 0, 0, 0);
-      this->m_frameContext->windows.CloseWindow(163);
+      g_windowMgr.CloseWindow(163);
       reinterpret_cast<SessionItemLists*>(&g_session)->ClearTradeItems();
     } else if (a == 185) {
-      this->m_frameContext->windows.CloseWindow(163);
+      g_windowMgr.CloseWindow(163);
     }
     return 0;
   }
@@ -6924,7 +6923,7 @@ int UISkillNameChangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       if (this->m_skillId != -1 && this->m_edit->Length() != 0) {
         this->m_context->mode->SendModeMessage(98, this->m_skillId, reinterpret_cast<std::intptr_t>(this->m_edit->Text()), 0, 0);
       }
-      this->m_frameContext->windows.CloseWindow(55);
+      g_windowMgr.CloseWindow(55);
     }
     return 0;
   }
@@ -6949,10 +6948,10 @@ int UIStarPlaceAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     this->m_acceptance->recorder.Record(this->geometry.id, static_cast<int>(a), b, c, d);
     if (a == 184) {
       CMode* mode = g_modeMgr.GetGameMode();
-      this->m_frameContext->windows.CloseWindow(119);
+      g_windowMgr.CloseWindow(119);
       mode->SendMsg(190, this->m_place, 0, 0, 0);
     } else if (a == 185) {
-      this->m_frameContext->windows.CloseWindow(119);
+      g_windowMgr.CloseWindow(119);
     }
     return 0;
   }
@@ -7014,7 +7013,7 @@ int UIYourItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     } else if (a != 185) {
       return 0;
     }
-    this->m_frameContext->windows.CloseWindow(138);
+    g_windowMgr.CloseWindow(138);
     return 0;
   }
 
@@ -7068,8 +7067,8 @@ void UIPasswordWnd::Slot15(int, int) {
   this->unknown_00BC = 0;
 }
 // FUNCTION: fn_11978
-UIStatusWnd::UIStatusWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
-    : UIFrameWnd(windows, frames, 0), m_controls(&controls) {
+UIStatusWnd::UIStatusWnd(UIWindowContext& windows, UIButtonContext& controls)
+    : UIFrameWnd(windows, 0), m_controls(&controls) {
   this->geometry.unknown_0030 = 0;
   this->m_info = nullptr;
   this->m_titleHeight = 17;
@@ -7152,11 +7151,11 @@ int UIStatusWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
         this->m_expandedHeight = height;
         this->Resize(this->geometry.width, 17);
       }
-      this->m_frameContext->snapping.Store(this);
+      g_windowMgr.StoreSnapRectangle(this);
       reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(this);
       const int delta = this->geometry.height - height;
       if (delta != 0) {
-        g_snapMgr.MoveEdge(this, 0, delta, 3, this->m_frameContext->snapping);
+        g_snapMgr.MoveEdge(this, 0, delta, 3);
       }
       break;
     }
@@ -8334,19 +8333,19 @@ int CSession::GetTraitStat(int type) {
 
 // OFFSET: 0x008C7F00
 // FUNCTION: fn_11946
-UIItemIdentifyWnd::UIItemIdentifyWnd(UIWindowContext& windows, UIFrameContext& frames)
-    : UIFrameWnd(windows, frames, 0), m_placement(nullptr) {
+UIItemIdentifyWnd::UIItemIdentifyWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0), m_placement(nullptr) {
 }
 
 // OFFSET: 0x008C7EA0
 // FUNCTION: fn_11945
-UIItemCompositionWnd::UIItemCompositionWnd(UIWindowContext& windows, UIFrameContext& frames)
-    : UIItemIdentifyWnd(windows, frames), m_compositionPlacement(nullptr) {
+UIItemCompositionWnd::UIItemCompositionWnd(UIWindowContext& windows)
+    : UIItemIdentifyWnd(windows), m_compositionPlacement(nullptr) {
 }
 
 // OFFSET: 0x008C90E0
 // FUNCTION: fn_11976
-UISpellListWnd::UISpellListWnd(UIWindowContext& windows, UIFrameContext& frames) : UIItemIdentifyWnd(windows, frames) {
+UISpellListWnd::UISpellListWnd(UIWindowContext& windows) : UIItemIdentifyWnd(windows) {
   this->unknown_00FC = 0;
 }
 
@@ -8419,8 +8418,8 @@ int UIPetEggListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
 
 // OFFSET: 0x008C8330
 // FUNCTION: fn_11952
-UIMakingArrowListWnd::UIMakingArrowListWnd(UIWindowContext& windows, UIFrameContext& frames)
-    : UIItemIdentifyWnd(windows, frames) {
+UIMakingArrowListWnd::UIMakingArrowListWnd(UIWindowContext& windows)
+    : UIItemIdentifyWnd(windows) {
 }
 
 // OFFSET: 0x008C8A50
@@ -8553,8 +8552,8 @@ void UILoadingWnd::Slot15(int, int) {
   g_windowMgr.SetSurface0478(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name))));
 }
 // FUNCTION: fn_11966
-UIPetEggListWnd::UIPetEggListWnd(UIWindowContext& windows, UIFrameContext& frames)
-    : UIItemIdentifyWnd(windows, frames) {
+UIPetEggListWnd::UIPetEggListWnd(UIWindowContext& windows)
+    : UIItemIdentifyWnd(windows) {
 }
 
 // OFFSET: 0x008D1E80
@@ -8719,7 +8718,7 @@ void UIEquipWnd::Slot25(int x, int y) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     const EquipSlots slots = g_session.GetEquipSlots(item.unknown_0000[3]);
     ItemDescriptions descriptions{g_itemDescriptions};
-    mode->drag.BeginItem(this->m_frameContext->windows, descriptions, this->m_page == 1 ? 24 : 2, item, item.quantity, slots.values[2]);
+    mode->drag.BeginItem(g_windowMgr, descriptions, this->m_page == 1 ? 24 : 2, item, item.quantity, slots.values[2]);
   }
 
   if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
@@ -8741,7 +8740,7 @@ void UIEquipWnd::Slot25(int x, int y) {
 
 // OFFSET: 0x008C9880
 // FUNCTION: fn_11986
-UInCashWnd::UInCashWnd(UIWindowContext& windows, UIFrameContext& frames) : UIItemBaseWnd(windows, frames) {
+UInCashWnd::UInCashWnd(UIWindowContext& windows) : UIItemBaseWnd(windows) {
   this->m_placement = nullptr;
   this->m_tab = 0;
   this->m_selected = 0;
@@ -10048,7 +10047,7 @@ int UIProhibitListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       if (!IsMonsterJob(g_session.m_aid)) {
         return 0;
       }
-      counter = new UICntWnd(*this->m_context, *this->m_frameContext, *this->m_controls, *this->m_edits);
+      counter = new UICntWnd(*this->m_context, *this->m_controls, *this->m_edits);
       counter->SetSize(0xB6, 0x2E);
       counter->Move((g_renderer->viewport.width - 640) / 2 + 200, ScaleByScreenHeight(200));
       g_windowMgr.AddRendered(counter);
@@ -10063,7 +10062,7 @@ int UIProhibitListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       if (a != 2 || !IsAdminAccount(g_session.m_aid)) {
         return 0;
       }
-      counter = new UICntWnd(*this->m_context, *this->m_frameContext, *this->m_controls, *this->m_edits);
+      counter = new UICntWnd(*this->m_context, *this->m_controls, *this->m_edits);
       counter->SetSize(0xB6, 0x2E);
       counter->Move((g_renderer->viewport.width - 640) / 2 + 200, ScaleByScreenHeight(200));
       g_windowMgr.AddRendered(counter);

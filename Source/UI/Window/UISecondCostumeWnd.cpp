@@ -225,7 +225,7 @@ int UISecondCostumeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
   case 6:
     switch (a) {
     case 201:
-      this->m_frameContext->windows.CloseWindow(259);
+      g_windowMgr.CloseWindow(259);
       break;
 
     case 226:
@@ -287,9 +287,9 @@ bool UISecondCostumeWnd::Slot03() {
 // OFFSET: 0x00946FB0
 // FUNCTION: fn_12857
 UISecondCostumeWnd::UISecondCostumeWnd(
-  UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, UIListBoxContext& lists, UIComboBoxHeaderContext& combos
+  UIWindowContext& windows, UIButtonContext& controls, UIListBoxContext& lists, UIComboBoxHeaderContext& combos
 )
-    : UIFrameWnd(windows, frames, 0), m_controls(&controls), m_listContext(&lists), m_comboContext(&combos) {
+    : UIFrameWnd(windows, 0), m_controls(&controls), m_listContext(&lists), m_comboContext(&combos) {
   this->m_typeCombo = nullptr;
   this->m_list = nullptr;
   this->m_tab = 0;

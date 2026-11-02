@@ -99,7 +99,7 @@ void UIRoMapWnd::UpdateNavigationButtons() {
 // FUNCTION: fn_12725
 void UIRoMapWnd::Slot33(int, int) {
   if (g_windowMgr.unknown_0214 != 0) {
-    this->m_frameContext->windows.CloseWindow(26);
+    g_windowMgr.CloseWindow(26);
   }
 
   this->unknown_0208 = 0;
@@ -677,7 +677,7 @@ void UIRoMapWnd::DrawMapMarker(const RoMapMarker& marker, unsigned char skipSele
 
 // OFFSET: 0x009119B0
 // FUNCTION: fn_12522
-UIRoMapWnd::UIRoMapWnd(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0), unknown_00D0(0) {
+UIRoMapWnd::UIRoMapWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0), unknown_00D0(0) {
   g_luaScript->Call("ReadKafraMoveMapServiceInfo", "");
   g_luaScript->Call("ReadKafraMiniMapPosInfo", "");
   this->unknown_01FC.clear();

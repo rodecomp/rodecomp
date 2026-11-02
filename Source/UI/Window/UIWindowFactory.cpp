@@ -15,7 +15,6 @@
 
 struct LayoutWindowContexts {
   UIWindowContext& windows;
-  UIFrameContext& frames;
   UIEntryQueueContext& entryQueue;
   UIListBoxContext& listBox;
   QuickSlotPainting& quickSlots;
@@ -45,21 +44,21 @@ UIWindow* UIWindowMgr::CreateLayoutWindow(int id) {
     LayoutWindowContexts& contexts = *reinterpret_cast<LayoutWindowContexts*>(this);
     switch (id) {
     case 0x9C:
-      window = new UIHotKeyWnd(contexts.windows, contexts.frames);
+      window = new UIHotKeyWnd(contexts.windows);
       this->unknown_0404 = window;
       break;
     case 0x9D:
-      window = new UIEntryQueueWnd(contexts.windows, contexts.frames, contexts.entryQueue, contexts.listBox);
+      window = new UIEntryQueueWnd(contexts.windows, contexts.entryQueue, contexts.listBox);
       break;
     case 0x9F:
-      window = new UIQuickSlotWnd(contexts.windows, contexts.frames, contexts.quickSlots);
+      window = new UIQuickSlotWnd(contexts.windows, contexts.quickSlots);
       break;
     case 0xB5:
       window = new UISerachStoreInfoWnd();
       g_searchStoreInfoCreated = true;
       break;
     case 0xD1:
-      window = new UIEntryQueueStandByWnd(contexts.windows, contexts.frames, contexts.entryQueue);
+      window = new UIEntryQueueStandByWnd(contexts.windows, contexts.entryQueue);
       break;
     }
 

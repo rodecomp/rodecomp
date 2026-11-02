@@ -46,7 +46,7 @@ struct UIAdvenPartyBoardContext {
 
 class UIAdvenPartyBoardWnd : public UIFrameWnd {
 public:
-  UIAdvenPartyBoardWnd(UIWindowContext& windows, UIFrameContext& frames, UIAdvenPartyBoardContext& board);
+  UIAdvenPartyBoardWnd(UIWindowContext& windows, UIAdvenPartyBoardContext& board);
   ~UIAdvenPartyBoardWnd() override;
   void Slot11() override;
   void Slot15(int width, int height) override;

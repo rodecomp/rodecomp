@@ -5,6 +5,7 @@
 #include "Network/Packets/PacketLengths.h"
 #include "UI/Window/InputFocus.h"
 #include "UI/Window/UIBank_NewWnd.h"
+#include "Render/DX7/RenderSystemDX7.h"
 #include "UI/Layout/SnapMgr.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UICheckBox.h"
@@ -28,7 +29,6 @@
 #include "UI/Window/UINoticeWnd.h"
 #include "UI/Window/UIFrameWnd.h"
 #include "UI/Window/WindowManagerWindows.h"
-#include "UI/Layout/WindowSnapping.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/ForbiddenWords.h"
@@ -62,8 +62,8 @@ std::uint32_t g_monsterInfoActorId;
 
 // OFFSET: 0x008A3700
 // FUNCTION: fn_11657
-UIFrameWnd::UIFrameWnd(UIWindowContext& windowContext, UIFrameContext& frameContext, unsigned char cached)
-    : UIWindow(windowContext, cached), m_dragX(0), m_dragY(0), m_message0(600), m_message1(600), m_frameContext(&frameContext) {
+UIFrameWnd::UIFrameWnd(UIWindowContext& windowContext, unsigned char cached)
+    : UIWindow(windowContext, cached), m_dragX(0), m_dragY(0), m_message0(600), m_message1(600) {
   this->m_textCache.max_load_factor(1.0f);
   this->m_textCache.rehash(8);
 }
@@ -128,31 +128,30 @@ void UIFrameWnd::Slot25(int x, int y) {
   this->m_originY = this->geometry.y;
   this->geometry.targetAlpha = 128;
   this->geometry.alphaStart = timeGetTime();
-  this->m_frameContext->snapping.graph.CaptureOrigins(this);
+  g_snapMgr.CaptureOrigins(this);
 }
 
 // OFFSET: 0x008BA510
 // FUNCTION: fn_11786
 void UIFrameWnd::Slot27(int x, int y) {
-  if (g_windowMgr.Capture() != this || x <= -this->m_frameContext->dragLimitX || y <= -this->m_frameContext->dragLimitY) {
+  if (g_windowMgr.Capture() != this || x <= -g_configuredScreenWidth || y <= -g_configuredScreenHeight) {
     return;
   }
 
   this->ToScreen(x, y);
   const int dx = x - this->m_dragX;
   const int dy = y - this->m_dragY;
-  WindowSnapping& snapping = this->m_frameContext->snapping;
 
-  if (!snapping.graph.Contains(this)) {
+  if (!g_snapMgr.Contains(this)) {
     this->Move(this->m_originX + dx, this->m_originY + dy);
     return;
   }
 
   this->Slot13(dx, dy);
   int ownX, ownY;
-  snapping.Constrain(this, ownX, ownY, 0);
+  g_windowMgr.ConstrainSnap(this, ownX, ownY, 0);
   int groupX = dx, groupY = dy;
-  snapping.graph.ConstrainGroup(this, groupX, groupY, snapping);
+  g_snapMgr.ConstrainGroup(this, groupX, groupY);
 
   if (std::abs(groupX) < std::abs(ownX)) {
     groupX = ownX;
@@ -163,8 +162,8 @@ void UIFrameWnd::Slot27(int x, int y) {
   }
 
   this->Slot13(dx + groupX, dy + groupY);
-  snapping.Store(this);
-  snapping.graph.MoveConnected(this, dx + groupX, dy + groupY, snapping);
+  g_windowMgr.StoreSnapRectangle(this);
+  g_snapMgr.MoveConnected(this, dx + groupX, dy + groupY);
 }
 
 // OFFSET: 0x008BA3C0
@@ -183,18 +182,17 @@ void UIFrameWnd::Slot31(int, int) {
   this->geometry.targetAlpha = 255;
   this->geometry.alphaStart = timeGetTime();
   g_windowMgr.ReleaseCapture();
-  this->m_frameContext->snapping.graph.Refresh(this);
+  g_snapMgr.Refresh(this);
 }
 
 // OFFSET: 0x008BB340
 // FUNCTION: fn_11796
 void UIFrameWnd::Slot36() {
-  WindowSnapping& snapping = this->m_frameContext->snapping;
   int x, y;
-  snapping.Constrain(this, x, y, 0);
+  g_windowMgr.ConstrainSnap(this, x, y, 0);
   this->geometry.x += x;
   this->geometry.y += y;
-  snapping.Store(this);
+  g_windowMgr.StoreSnapRectangle(this);
 }
 
 // OFFSET: 0x008BDC90
@@ -207,7 +205,7 @@ int UIFrameWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
     }
   } else if (message == 98) {
     if (c > 0) {
-      UIWindow* window = this->m_frameContext->windows.EnsureWindow(12);
+      UIWindow* window = g_windowMgr.EnsureWindow(12);
       if (window) {
         window->SendMsg(nullptr, 24, c, 0, 0, 0);
       }
@@ -451,10 +449,10 @@ void UIMonsterInfoWnd::Slot28(int x, int y) {
 int UIAllyGuildAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   if (message == 6) {
     if (a == 184) {
-      this->m_frameContext->windows.CloseWindow(72);
+      g_windowMgr.CloseWindow(72);
       this->m_context->mode->SendModeMessage(120, this->identity, 1, 0, 0);
     } else if (a == 185) {
-      this->m_frameContext->windows.CloseWindow(72);
+      g_windowMgr.CloseWindow(72);
       this->m_context->mode->SendModeMessage(120, this->identity, 0, 0, 0);
     }
 
@@ -611,20 +609,20 @@ int UICntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intpt
 
 // OFFSET: 0x008A34B0
 // FUNCTION: fn_11653
-UIAllyGuildAcceptWnd::UIAllyGuildAcceptWnd(UIWindowContext& windows, UIFrameContext& frames, UIAcceptanceContext& acceptance)
-    : UIExchangeAcceptWnd(windows, frames, acceptance) {
+UIAllyGuildAcceptWnd::UIAllyGuildAcceptWnd(UIWindowContext& windows, UIAcceptanceContext& acceptance)
+    : UIExchangeAcceptWnd(windows, acceptance) {
 }
 
 // OFFSET: 0x008A3510
 // FUNCTION: fn_11654
-UIBank_NewWnd::UIBank_NewWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, UIEditContext& editContext)
-    : UIFrameWnd(windows, frames, 0), m_amountEdit(nullptr), m_status(), m_controls(&controls), m_editContext(&editContext) {
+UIBank_NewWnd::UIBank_NewWnd(UIWindowContext& windows, UIButtonContext& controls, UIEditContext& editContext)
+    : UIFrameWnd(windows, 0), m_amountEdit(nullptr), m_status(), m_controls(&controls), m_editContext(&editContext) {
 }
 
 // OFFSET: 0x008A35A0
 // FUNCTION: fn_11655
-UIChatRoomWnd::UIChatRoomWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
-    : UIFrameWnd(windows, frames, 0), title(), unknown_00CC(), unknown_010C(), unknown_0114(), saved(nullptr), m_controls(&controls) {
+UIChatRoomWnd::UIChatRoomWnd(UIWindowContext& windows, UIButtonContext& controls)
+    : UIFrameWnd(windows, 0), title(), unknown_00CC(), unknown_010C(), unknown_0114(), saved(nullptr), m_controls(&controls) {
 }
 
 // OFFSET: 0x008BB9E0
@@ -745,7 +743,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       this->titleText->Resize(this->geometry.width - 30, 12);
       this->titleText->SetTextFitted(title.c_str());
     }
-    this->m_frameContext->snapping.Store(this);
+    g_windowMgr.StoreSnapRectangle(this);
     return 0;
   }
   case 34: {
@@ -1093,24 +1091,24 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 
 // OFFSET: 0x008A36A0
 // FUNCTION: fn_11656
-UICntWnd::UICntWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, UIEditContext& editContext)
-    : UIFrameWnd(windows, frames, 0), m_controls(&controls), m_editContext(&editContext) {
+UICntWnd::UICntWnd(UIWindowContext& windows, UIButtonContext& controls, UIEditContext& editContext)
+    : UIFrameWnd(windows, 0), m_controls(&controls), m_editContext(&editContext) {
 }
 
 // OFFSET: 0x008A37F0
 // FUNCTION: fn_11658
-UIHomunInfoWnd::UIHomunInfoWnd(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0), unknown_00D0(0), unknown_00D4(0) {
+UIHomunInfoWnd::UIHomunInfoWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0), unknown_00D0(0), unknown_00D4(0) {
 }
 
 // OFFSET: 0x008A3860
 // FUNCTION: fn_11659
-UILoginOTPWnd::UILoginOTPWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
-    : UIFrameWnd(windows, frames, 0), unknown_00B4(0), unknown_00B8(0), timerText(nullptr), unknown_00C0(0), m_controls(&controls) {
+UILoginOTPWnd::UILoginOTPWnd(UIWindowContext& windows, UIButtonContext& controls)
+    : UIFrameWnd(windows, 0), unknown_00B4(0), unknown_00B8(0), timerText(nullptr), unknown_00C0(0), m_controls(&controls) {
 }
 
 // OFFSET: 0x008A38E0
 // FUNCTION: fn_11660
-UILoginWnd::UILoginWnd(UIWindowContext& windows, UIFrameContext& frames)
-    : UIFrameWnd(windows, frames, 0), idEdit(nullptr), passwordEdit(nullptr), unknown_00BC(0), unknown_00C4(0), saveId(0), unknown_00CC(1), unknown_00D0(0),
+UILoginWnd::UILoginWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0), idEdit(nullptr), passwordEdit(nullptr), unknown_00BC(0), unknown_00C4(0), saveId(0), unknown_00CC(1), unknown_00D0(0),
       unknown_00D4(0), unknown_00D8(), unknown_00E8(0), unknown_00EC("G000") {
 }

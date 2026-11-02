@@ -47,8 +47,8 @@ namespace {
 
 // OFFSET: 0x007BAF30
 // FUNCTION: fn_09278
-UIRegisterPartyWnd::UIRegisterPartyWnd(UIWindowContext& windows, UIFrameContext& frames, UIRegisterPartyContext& registration)
-    : UIFrameWnd(windows, frames, 0), selectedType(0), m_registration(&registration) {
+UIRegisterPartyWnd::UIRegisterPartyWnd(UIWindowContext& windows, UIRegisterPartyContext& registration)
+    : UIFrameWnd(windows, 0), selectedType(0), m_registration(&registration) {
 }
 
 // OFFSET: 0x007BB810

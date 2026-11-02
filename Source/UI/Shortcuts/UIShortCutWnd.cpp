@@ -25,7 +25,6 @@
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Buttons/UICheckBox.h"
-#include "UI/Layout/WindowSnapping.h"
 #include "UI/Lists/UIChatHisBox.h"
 #include "UI/Lists/UITabControl.h"
 #include "UI/Window/UIWindow.h"
@@ -95,8 +94,8 @@ static bool g_subChatMiniSecondCollapsed;
 
 // OFFSET: 0x009122B0
 // FUNCTION: fn_12528
-UIShortCutWnd::UIShortCutWnd(UIWindowContext& windows, UIFrameContext& frames, ShortcutWindowContext& shortcuts)
-    : UIFrameWnd(windows, frames, 0), m_shortcuts(&shortcuts) {
+UIShortCutWnd::UIShortCutWnd(UIWindowContext& windows, ShortcutWindowContext& shortcuts)
+    : UIFrameWnd(windows, 0), m_shortcuts(&shortcuts) {
   this->m_controls.decrease = nullptr;
   this->m_controls.increase = nullptr;
 }
@@ -117,11 +116,11 @@ bool UIShortCutWnd::Slot03() {
 void UIShortCutWnd::Move(int x, int y) {
   this->geometry.x = x;
   this->geometry.y = y;
-  this->m_frameContext->snapping.Constrain(this, x, y, 0);
+  g_windowMgr.ConstrainSnap(this, x, y, 0);
   this->geometry.x = (this->geometry.x + x);
   const int top = (this->geometry.y + y);
   this->geometry.y = top < 0 ? 0 : top;
-  this->m_frameContext->snapping.Store(this);
+  g_windowMgr.StoreSnapRectangle(this);
 }
 
 // OFFSET: 0x00917640
@@ -146,16 +145,14 @@ void UIShortCutWnd::Show(int visible) {
   this->geometry.visible = visible;
 
   if (visible == 0) {
-    if (this->m_frameContext->snapping.enabled) {
-      this->m_frameContext->snapping.rectangles.erase(this);
-    }
+    g_windowMgr.RemoveSnapRectangle(this);
 
     return;
   }
 
   this->SendMsg(nullptr, 23, 0, 0, 0, 0);
   this->Invalidate();
-  this->m_frameContext->snapping.Store(this);
+  g_windowMgr.StoreSnapRectangle(this);
 }
 
 // OFFSET: 0x0092A190
@@ -434,8 +431,8 @@ int UIShortCutWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       *this->m_controls.showItems,
       *this->m_controls.hideItems,
       owner.itemSlotActive,
-      this->m_frameContext->snapping.screenWidth,
-      this->m_frameContext->snapping.screenHeight
+      g_windowMgr.unknown_047C,
+      g_windowMgr.unknown_0480
     };
     layout.ResizeRows();
     return 0;
@@ -456,8 +453,8 @@ int UIShortCutWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       *this->m_controls.showItems,
       *this->m_controls.hideItems,
       owner.itemSlotActive,
-      this->m_frameContext->snapping.screenWidth,
-      this->m_frameContext->snapping.screenHeight
+      g_windowMgr.unknown_047C,
+      g_windowMgr.unknown_0480
     };
     layout.Restore(reinterpret_cast<NormalItemSlotWindow*>(a));
     return 0;
@@ -510,10 +507,8 @@ void UINewChatWnd::Show(int visible) {
 
   if (visible != 0) {
     this->Invalidate();
-    this->m_frameContext->snapping.Store(this);
-  } else if (this->m_frameContext->snapping.enabled) {
-    this->m_frameContext->snapping.rectangles.erase(this);
-  }
+    g_windowMgr.StoreSnapRectangle(this);
+  } else g_windowMgr.RemoveSnapRectangle(this);
 
   for (UIWindow* tab : this->m_tabs) {
     tab->Show(this->geometry.visible);
@@ -894,7 +889,7 @@ int UISubChatMiniWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
 // FUNCTION: fn_12763
 int UIWindowCallBtnWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::intptr_t, std::intptr_t, std::intptr_t) {
   if (message == 6) {
-    this->m_frameContext->windows.EnsureWindow(a);
+    g_windowMgr.EnsureWindow(a);
   }
   return 0;
 }
@@ -1125,19 +1120,19 @@ bool UINavigationWnd::LoadRoute(int index) {
 
 // OFFSET: 0x00911490
 // FUNCTION: fn_12515
-UIMemorialDunWnd::UIMemorialDunWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
-    : UIFrameWnd(windows, frames, 0), m_partyButton(nullptr), m_controls(&controls) {
+UIMemorialDunWnd::UIMemorialDunWnd(UIWindowContext& windows, UIButtonContext& controls)
+    : UIFrameWnd(windows, 0), m_partyButton(nullptr), m_controls(&controls) {
 }
 
 // OFFSET: 0x00912460
 // FUNCTION: fn_12530
-UISubChatMiniWnd::UISubChatMiniWnd(UIWindowContext& windows, UIFrameContext& frames)
-    : UIFrameWnd(windows, frames, 0), unknown_00B4(2), m_rowHeight(32), m_offsetY(32) {
+UISubChatMiniWnd::UISubChatMiniWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0), unknown_00B4(2), m_rowHeight(32), m_offsetY(32) {
 }
 
 // OFFSET: 0x00911700
 // FUNCTION: fn_12518
-UINewChatWnd::UINewChatWnd(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0) {
+UINewChatWnd::UINewChatWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0) {
   this->unknown_00BC = 0;
   this->unknown_00C0 = 0;
   this->m_inputEdit = nullptr;

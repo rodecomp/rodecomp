@@ -12,7 +12,7 @@ class UIListBox;
 
 class UIChooseWarpWnd : public UIFrameWnd {
 public:
-  UIChooseWarpWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, UIListBoxContext& listContext);
+  UIChooseWarpWnd(UIWindowContext& windows, UIButtonContext& controls, UIListBoxContext& listContext);
   void Slot15(int width, int height) override;
   void Paint() override;
   std::vector<unsigned char> Slot44() override;

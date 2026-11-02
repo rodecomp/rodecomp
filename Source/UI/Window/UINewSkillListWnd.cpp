@@ -26,7 +26,6 @@
 #include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/Window/InputFocus.h"
 #include "UI/Window/WindowDialogs.h"
-#include "UI/Layout/WindowSnapping.h"
 #include "UI/Skill/UISkillDescribeWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowBorder.h"
@@ -1423,7 +1422,7 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         this->Invalidate();
       }
       this->Move(this->m_saved->x, this->m_saved->y);
-      this->m_frameContext->snapping.Store(this);
+      g_windowMgr.StoreSnapRectangle(this);
       return 0;
     }
     break;
@@ -1742,7 +1741,7 @@ void UINewSkillListWnd::sub_9AF960() {
 
 // OFFSET: 0x009AE260
 // FUNCTION: fn_13797
-UINewSkillListWnd::UINewSkillListWnd(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0) {
+UINewSkillListWnd::UINewSkillListWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0) {
   this->m_tab = 0;
   this->m_needsRedraw = 1;
   this->m_selectedSkill = -1;

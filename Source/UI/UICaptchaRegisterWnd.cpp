@@ -53,8 +53,8 @@ static_assert(sizeof(CaptchaRegisterPacket) == 20);
 
 // OFFSET: 0x007EA1C0
 // FUNCTION: fn_09786
-UICaptchaRegisterWnd::UICaptchaRegisterWnd(UIWindowContext& windows, UIFrameContext& frames)
-    : UIFrameWnd(windows, frames, 0), m_pathText(nullptr), m_fileComboBox(nullptr),
+UICaptchaRegisterWnd::UICaptchaRegisterWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0), m_pathText(nullptr), m_fileComboBox(nullptr),
       m_captchaBitmap(nullptr), m_editCtrl(nullptr), registerButton(nullptr), m_selectedFile(), m_decompressedData(nullptr), m_decompressedSize(0) {}
 
 // OFFSET: 0x007EA3B0
@@ -133,7 +133,7 @@ int UICaptchaRegisterWnd::SendMsg(
 ) {
   if (message == 6) {
     if (a1 == 201) {
-      this->m_frameContext->windows.CloseWindow(284);
+      g_windowMgr.CloseWindow(284);
     } else if (a1 == 345) {
       if (this->m_editCtrl->Length() < 4) {
         static_cast<UIWindowMgrHelper*>(&g_windowMgr)->sub_A901E0(LookupMessage(2872), 0, 1, 0, 0, "Message", 280, 120, 0);

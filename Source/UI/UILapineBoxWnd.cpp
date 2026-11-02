@@ -38,7 +38,7 @@ struct RandomCombineItemPacket {
 // OFFSET: 0x005FEFF0
 // FUNCTION: fn_04140
 UILapineBoxWnd::UILapineBoxWnd()
-    : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIFrameContext*>(nullptr), 0), cancelButton(nullptr), makeButton(nullptr),
+    : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(nullptr), 0), cancelButton(nullptr), makeButton(nullptr),
       moveButton(nullptr), ingredientList(nullptr), unknown_00C4(0), noticeTick(0), noticeDuration(3000), waiting(0) {
 }
 
@@ -69,7 +69,7 @@ void UIIngredientInfoWnd::Click(int, int) {
 void UIIngredientInfoWnd::Slot25(int x, int y) {
   if (this->insufficient != 1 && this->item.unknown_0000[1] > 0) {
     ItemDescriptions descriptions{g_itemDescriptions};
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(this->m_frameContext->windows, descriptions, 27, this->item, this->quantity, -1);
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(g_windowMgr, descriptions, 27, this->item, this->quantity, -1);
   }
 }
 
@@ -191,7 +191,7 @@ void UILapineBoxWnd::Slot19() {
 // FUNCTION: fn_04168
 void UIIngredientInfoWnd::Slot32(int, int) {
   if (this->item.unknown_0000[1] != 0) {
-    UIWindow* window = this->m_frameContext->windows.EnsureWindow(12);
+    UIWindow* window = g_windowMgr.EnsureWindow(12);
     window->SendMsg(this, 0x18, reinterpret_cast<std::intptr_t>(&this->item), 0, 0, 0);
   }
 }

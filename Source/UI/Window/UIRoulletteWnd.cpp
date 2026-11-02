@@ -49,7 +49,7 @@ struct RouletteReceiveItemPacket {
 // OFFSET: 0x0080B930
 // FUNCTION: fn_10083
 UIRoulletteWnd::UIRoulletteWnd()
-    : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIFrameContext*>(nullptr), 0),
+    : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(nullptr), 0),
       m_prizeButton(nullptr),
       m_prizeSprite(nullptr),
       m_stageArrow(nullptr),
@@ -356,7 +356,7 @@ void UIRoulletteWnd::Slot32(int x, int y) {
   }
 
   if (item.quantity != 0) {
-    this->m_frameContext->windows.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
   }
 }
 
@@ -367,7 +367,7 @@ int UIRoulletteWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     if (argument1 == 201) {
       if (g_rouletteMgr->m_spinning == 0) {
         if (g_windowMgr.unknown_0464 != nullptr) {
-          this->m_frameContext->windows.CloseWindow(269);
+          g_windowMgr.CloseWindow(269);
           return 0;
         }
       } else {

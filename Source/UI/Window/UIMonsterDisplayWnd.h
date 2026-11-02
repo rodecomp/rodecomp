@@ -9,7 +9,7 @@ struct UIButtonContext;
 
 class UIMonsterDisplayWnd : public UIFrameWnd {
 public:
-  UIMonsterDisplayWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
+  UIMonsterDisplayWnd(UIWindowContext& windows, UIButtonContext& controls);
   /* 00B4 */ std::string m_name;
   /* 00CC */ std::string unknown_00CC;
   /* 00E4 */ unsigned char unknown_00E4;

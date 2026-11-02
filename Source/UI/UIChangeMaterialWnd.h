@@ -62,7 +62,7 @@ public:
 
 class UIChangeMaterialWnd : public UIFrameWnd {
 public:
-  UIChangeMaterialWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, UIEditContext& edits);
+  UIChangeMaterialWnd(UIWindowContext& windows, UIButtonContext& controls, UIEditContext& edits);
   void Slot15(int width, int height) override;
   bool Slot02() override;
   void Paint() override;
@@ -91,7 +91,7 @@ protected:
 
 class UIChangeMaterialWnd_List : public UIFrameWnd {
 public:
-  UIChangeMaterialWnd_List(UIWindowContext& windows, UIFrameContext& frames);
+  UIChangeMaterialWnd_List(UIWindowContext& windows);
 
   void Paint() override;
   void Move(int x, int y) override;

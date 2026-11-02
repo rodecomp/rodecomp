@@ -238,7 +238,7 @@ private:
 
 class UIAchievementWnd : public UIFrameWnd {
 public:
-  UIAchievementWnd(UIWindowContext& windows, UIFrameContext& frame, UIButtonContext& controls);
+  UIAchievementWnd(UIWindowContext& windows, UIButtonContext& controls);
   ~UIAchievementWnd() override;
 
   /* 00B4 */ UIAchUpperWnd* upper;
@@ -284,7 +284,7 @@ public:
   /* 00B8 */ UITextButton* toggleButtons[3];
   /* 00C4 */ UITextButton* openButtons[3];
 
-  UIAchTracingWnd(UIWindowContext& windows, UIFrameContext& frames);
+  UIAchTracingWnd(UIWindowContext& windows);
   bool Slot08() override;
   void Slot11() override;
   void Slot15(int width, int height) override;

@@ -91,7 +91,7 @@ static_assert(sizeof(CharacterMovePacket) == 8);
 
 // OFFSET: 0x007D4190
 // FUNCTION: fn_09577
-UINewSelectCharWnd::UINewSelectCharWnd() : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIFrameContext*>(nullptr), 0) {
+UINewSelectCharWnd::UINewSelectCharWnd() : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(nullptr), 0) {
   this->m_slotsPerPage = 15;
   this->m_unknown13C = false;
   this->m_window100 = nullptr;

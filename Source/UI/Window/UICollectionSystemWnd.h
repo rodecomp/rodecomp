@@ -10,7 +10,7 @@ class CSprRes;
 
 class CUICollectionSystemWnd : public UIFrameWnd {
 public:
-  CUICollectionSystemWnd(UIWindowContext& windows, UIFrameContext& frames);
+  CUICollectionSystemWnd(UIWindowContext& windows);
   void Slot15(int width, int height) override;
   void Paint() override;
   void Slot19() override;

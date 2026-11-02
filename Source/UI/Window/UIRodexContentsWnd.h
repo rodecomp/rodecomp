@@ -15,7 +15,7 @@ class UIBasicButton;
 
 class UIRodexContentsWnd : public UIFrameWnd {
 public:
-  UIRodexContentsWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
+  UIRodexContentsWnd(UIWindowContext& windows, UIButtonContext& controls);
 
   void Paint() override;
   void Slot15(int width, int height) override;

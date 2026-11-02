@@ -20,8 +20,8 @@
 
 // OFFSET: 0x007F2F90
 // FUNCTION: fn_09879
-UIPreviewEquipWnd::UIPreviewEquipWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
-    : UIFrameWnd(windows, frames, 1), saved(nullptr), m_render(nullptr), m_leftButton(nullptr), m_rightButton(nullptr), unknown_00C4(0), m_controls(&controls) {
+UIPreviewEquipWnd::UIPreviewEquipWnd(UIWindowContext& windows, UIButtonContext& controls)
+    : UIFrameWnd(windows, 1), saved(nullptr), m_render(nullptr), m_leftButton(nullptr), m_rightButton(nullptr), unknown_00C4(0), m_controls(&controls) {
 }
 
 // OFFSET: 0x007F3090

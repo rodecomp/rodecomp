@@ -93,7 +93,7 @@ void UIMacroDetectorWnd::InitImageData(unsigned short size) {
 // FUNCTION: fn_09820
 int UICaptchaPreviewWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   if (message == 6 && a == 201) {
-    this->m_frameContext->windows.CloseWindow(288);
+    g_windowMgr.CloseWindow(288);
   }
   return UIWindow::SendMsg(sender, message, a, b, c, d);
 }
@@ -105,7 +105,7 @@ int UIMacroDetectorWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
     this->SendMsg(this, 6, 345, 0, 0, 0);
   } else if (message == 6) {
     if (a == 201) {
-      this->m_frameContext->windows.CloseWindow(284);
+      g_windowMgr.CloseWindow(284);
     } else if (a == 345 && this->m_editCtrl->Length() != 0 && this->m_lastAnswer != this->m_editCtrl->Text()) {
       CaptchaAnswerPacket packet;
       packet.id = 0xA5C;

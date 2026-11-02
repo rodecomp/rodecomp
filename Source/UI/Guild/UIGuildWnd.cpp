@@ -292,24 +292,24 @@ void UIGuildTotalInfoWnd::Slot35(int delta) {
 
 // OFFSET: 0x00954020
 // FUNCTION: fn_13005
-UIGuildWnd::UIGuildWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
-    : UIFrameWnd(windows, frames, 0), m_saved(nullptr), m_tabs{}, m_controls(&controls) {}
+UIGuildWnd::UIGuildWnd(UIWindowContext& windows, UIButtonContext& controls)
+    : UIFrameWnd(windows, 0), m_saved(nullptr), m_tabs{}, m_controls(&controls) {}
 // OFFSET: 0x00953900
 // FUNCTION: fn_12995
-UIGuildBanishedMemberWnd::UIGuildBanishedMemberWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
-    : UIGuildWnd(windows, frames, controls) {
+UIGuildBanishedMemberWnd::UIGuildBanishedMemberWnd(UIWindowContext& windows, UIButtonContext& controls)
+    : UIGuildWnd(windows, controls) {
 }
 
 // OFFSET: 0x009539C0
 // FUNCTION: fn_12997
-UIGuildInfoManageWnd::UIGuildInfoManageWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
-    : UIGuildWnd(windows, frames, controls), unknown_00D8(), unknown_00E0(), unknown_00EC(0), unknown_00F0(0), m_guildId(g_guildInfo.m_guildId) {
+UIGuildInfoManageWnd::UIGuildInfoManageWnd(UIWindowContext& windows, UIButtonContext& controls)
+    : UIGuildWnd(windows, controls), unknown_00D8(), unknown_00E0(), unknown_00EC(0), unknown_00F0(0), m_guildId(g_guildInfo.m_guildId) {
 }
 
 // OFFSET: 0x00953B00
 // FUNCTION: fn_12999
-UIGuildMemberManageWnd::UIGuildMemberManageWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
-    : UIGuildWnd(windows, frames, controls), unknown_0150(), m_scrollTop(0), m_hoverRow(10), m_columns(1), m_visibleRows(6), unknown_016C(0),
+UIGuildMemberManageWnd::UIGuildMemberManageWnd(UIWindowContext& windows, UIButtonContext& controls)
+    : UIGuildWnd(windows, controls), unknown_0150(), m_scrollTop(0), m_hoverRow(10), m_columns(1), m_visibleRows(6), unknown_016C(0),
       m_scrollable(0), m_rowSpacing(0), m_members(), unknown_0180(), m_sortOrders() {
   this->m_buttonTime = 0;
   this->m_scrollBar = nullptr;
@@ -325,13 +325,13 @@ UIGuildMemberManageWnd::UIGuildMemberManageWnd(UIWindowContext& windows, UIFrame
 
 // OFFSET: 0x00953D10
 // FUNCTION: fn_13000
-UIGuildNoticeWnd::UIGuildNoticeWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls) : UIGuildWnd(windows, frames, controls) {
+UIGuildNoticeWnd::UIGuildNoticeWnd(UIWindowContext& windows, UIButtonContext& controls) : UIGuildWnd(windows, controls) {
 }
 
 // OFFSET: 0x00953D70
 // FUNCTION: fn_13001
-UIGuildPositionManageWnd::UIGuildPositionManageWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
-    : UIGuildWnd(windows, frames, controls), m_buttonTime(0) {
+UIGuildPositionManageWnd::UIGuildPositionManageWnd(UIWindowContext& windows, UIButtonContext& controls)
+    : UIGuildWnd(windows, controls), m_buttonTime(0) {
   for (int index = 0; index < 11; ++index) {
     this->unknown_00D0[index] = 0;
     this->unknown_00FC[index] = 0;
@@ -345,7 +345,7 @@ UIGuildPositionManageWnd::UIGuildPositionManageWnd(UIWindowContext& windows, UIF
 
 // OFFSET: 0x00953E80
 // FUNCTION: fn_13002
-UIGuildSkillWnd::UIGuildSkillWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls) : UIGuildWnd(windows, frames, controls) {
+UIGuildSkillWnd::UIGuildSkillWnd(UIWindowContext& windows, UIButtonContext& controls) : UIGuildWnd(windows, controls) {
   this->m_actionButtons[0] = nullptr;
   this->m_actionButtons[1] = nullptr;
   this->m_hoverIndex = -1;
@@ -683,28 +683,28 @@ int UIGuildWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, std::in
     return 0;
   }
 
-  this->m_frameContext->windows.CloseWindow(59);
+  g_windowMgr.CloseWindow(59);
   switch (a1) {
   case 0:
-    this->m_frameContext->windows.EnsureWindow(60);
+    g_windowMgr.EnsureWindow(60);
     return 0;
   case 1:
-    this->m_frameContext->windows.EnsureWindow(61);
+    g_windowMgr.EnsureWindow(61);
     return 0;
   case 2:
-    this->m_frameContext->windows.EnsureWindow(62);
+    g_windowMgr.EnsureWindow(62);
     return 0;
   case 3:
-    this->m_frameContext->windows.EnsureWindow(63);
+    g_windowMgr.EnsureWindow(63);
     return 0;
   case 4:
-    this->m_frameContext->windows.EnsureWindow(64);
+    g_windowMgr.EnsureWindow(64);
     return 0;
   case 5:
-    this->m_frameContext->windows.EnsureWindow(65);
+    g_windowMgr.EnsureWindow(65);
     return 0;
   case 6:
-    this->m_frameContext->windows.EnsureWindow(66);
+    g_windowMgr.EnsureWindow(66);
     return 0;
   }
 
@@ -781,7 +781,7 @@ int UIGuildBanishedMemberWnd::SendMsg(UIWindow* sender, int message, std::intptr
   switch (message) {
   case 6:
     if (a1 == 201) {
-      this->m_frameContext->windows.CloseWindow(59);
+      g_windowMgr.CloseWindow(59);
       return 0;
     }
     break;
@@ -887,7 +887,7 @@ int UIGuildTotalInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1
   switch (message) {
   case 6:
     if (a1 == 201) {
-      this->m_frameContext->windows.CloseWindow(59);
+      g_windowMgr.CloseWindow(59);
     }
     return 0;
   case 7:
@@ -1128,9 +1128,9 @@ int UIGuildLeaveReasonDescWnd::SendMsg(UIWindow* sender, int message, std::intpt
 
   if (a1 == 184) {
     g_modeMgr.gameMode->SendMsg(110, reinterpret_cast<int>(this->m_reasonEdit->Text()), 0, 0, 0);
-    this->m_frameContext->windows.CloseWindow(75);
+    g_windowMgr.CloseWindow(75);
   } else if (a1 == 185) {
-    this->m_frameContext->windows.CloseWindow(75);
+    g_windowMgr.CloseWindow(75);
   }
 
   return 0;
@@ -2057,7 +2057,7 @@ void UIGuildNoticeWnd::Slot15(int, int) {
 int UIGuildNoticeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, std::intptr_t a2, std::intptr_t a3, std::intptr_t a4) {
   if (message == 6) {
     if (a1 == 201) {
-      this->m_frameContext->windows.CloseWindow(59);
+      g_windowMgr.CloseWindow(59);
     } else if (a1 == 277) {
       std::string body(this->m_bodyEdit->Text());
       if (g_forbiddenWords.Contains(this->m_titleEdit->Text()) == true || g_forbiddenWords.Contains(body.c_str()) == true) {
@@ -2085,7 +2085,7 @@ int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, st
   case 6:
     switch (a1) {
     case 201:
-      this->m_frameContext->windows.CloseWindow(59);
+      g_windowMgr.CloseWindow(59);
       return 0;
     case 184:
       if (this->m_hoverIndex != -1) {
@@ -2195,9 +2195,9 @@ int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, st
       if (skill.available != 0) {
         const int command = this->m_menuItems[a1].value;
         if (command == 3) {
-          this->m_frameContext->windows.EnsureWindow(46)->SendMsg(nullptr, 61, skill.id, 0, 0, 0);
+          g_windowMgr.EnsureWindow(46)->SendMsg(nullptr, 61, skill.id, 0, 0, 0);
         } else if (command == 14) {
-          this->m_frameContext->windows.EnsureWindow(55)->SendMsg(nullptr, 68, skill.id, 0, 0, 0);
+          g_windowMgr.EnsureWindow(55)->SendMsg(nullptr, 68, skill.id, 0, 0, 0);
         }
       }
       return 0;
@@ -2206,7 +2206,7 @@ int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, st
   case 49:
     this->m_menuItems.clear();
     if (g_windowMgr.unknown_0210 != 0) {
-      this->m_frameContext->windows.CloseWindow(18);
+      g_windowMgr.CloseWindow(18);
     }
     if (this->m_hoverIndex != -1) {
       CSkillInfo skill = this->SkillAt(this->m_hoverIndex);
@@ -2216,7 +2216,7 @@ int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, st
       }
     }
     if (!this->m_menuItems.empty()) {
-      UIWindow* menu = this->m_frameContext->windows.EnsureWindow(18);
+      UIWindow* menu = g_windowMgr.EnsureWindow(18);
       for (std::size_t index = 0; index < this->m_menuItems.size(); ++index) {
         menu->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(this->m_menuItems[index].text.c_str()), 0, 0, 0);
       }
@@ -2253,14 +2253,14 @@ int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, st
 
 // OFFSET: 0x00953F60
 // FUNCTION: fn_13003
-UIGuildTipWnd::UIGuildTipWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
-    : UIFrameWnd(windows, frames, 0), m_controls(&controls) {
+UIGuildTipWnd::UIGuildTipWnd(UIWindowContext& windows, UIButtonContext& controls)
+    : UIFrameWnd(windows, 0), m_controls(&controls) {
 }
 
 // OFFSET: 0x00953FC0
 // FUNCTION: fn_13004
-UIGuildTotalInfoWnd::UIGuildTotalInfoWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
-    : UIGuildWnd(windows, frames, controls) {
+UIGuildTotalInfoWnd::UIGuildTotalInfoWnd(UIWindowContext& windows, UIButtonContext& controls)
+    : UIGuildWnd(windows, controls) {
 }
 
 // OFFSET: 0x00954120
@@ -2384,7 +2384,7 @@ int UIGuildPositionManageWnd::SendMsg(UIWindow* sender, int message, std::intptr
       }
       return 0;
     case 201:
-      this->m_frameContext->windows.CloseWindow(59);
+      g_windowMgr.CloseWindow(59);
       return 0;
     case 213:
       if (this->unknown_00D0[0] && this->unknown_00FC[0] && this->unknown_0128[0]) {
@@ -3062,13 +3062,13 @@ int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
   case 49:
     this->unknown_00E0.erase(this->unknown_00E0.begin(), this->unknown_00E0.end());
     if (g_windowMgr.unknown_0210 != 0) {
-      this->m_frameContext->windows.CloseWindow(18);
+      g_windowMgr.CloseWindow(18);
     }
     if (g_guildInfo.unknown_00B4 != 0) {
       this->unknown_00E0.push_back(GuildWndNameEntry{LookupMessage(351), 27});
     }
     if (!this->unknown_00E0.empty()) {
-      UIWindow* menu = this->m_frameContext->windows.EnsureWindow(18);
+      UIWindow* menu = g_windowMgr.EnsureWindow(18);
       for (std::size_t index = 0; index < this->unknown_00E0.size(); ++index) {
         menu->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(this->unknown_00E0[index].name.c_str()), 0, 0, 0);
       }
@@ -3092,11 +3092,11 @@ int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
   case 6:
     switch (a1) {
     case 201:
-      this->m_frameContext->windows.CloseWindow(59);
+      g_windowMgr.CloseWindow(59);
       return 0;
     case 278: {
       if (g_windowMgr.unknown_0214 != 0) {
-        this->m_frameContext->windows.CloseWindow(26);
+        g_windowMgr.CloseWindow(26);
       }
       this->unknown_00D8.clear();
       char directory[256];
@@ -3109,7 +3109,7 @@ int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
         return 0;
       }
 
-      UIWindow* menu = this->m_frameContext->windows.EnsureWindow(26);
+      UIWindow* menu = g_windowMgr.EnsureWindow(26);
       for (std::list<std::string>::iterator it = this->unknown_00D8.begin(); it != this->unknown_00D8.end(); ++it) {
         menu->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(it->c_str()), 0, 0, 0);
       }
@@ -3124,7 +3124,7 @@ int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     }
     case 449:
       reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2564), 0, false, false, 0, "Message", 280, 120, 0);
-      this->m_frameContext->windows.EnsureWindow(215);
+      g_windowMgr.EnsureWindow(215);
       return 0;
     }
     break;

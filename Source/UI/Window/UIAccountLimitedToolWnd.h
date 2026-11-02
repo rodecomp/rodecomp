@@ -15,7 +15,7 @@ class UITextViewer;
 
 class UIAccountLimitedToolWnd : public UIFrameWnd {
 public:
-  UIAccountLimitedToolWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, UIEditContext& edits, UITextViewerContext& texts);
+  UIAccountLimitedToolWnd(UIWindowContext& windows, UIButtonContext& controls, UIEditContext& edits, UITextViewerContext& texts);
   void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;

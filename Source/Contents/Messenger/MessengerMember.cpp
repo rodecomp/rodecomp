@@ -29,7 +29,6 @@
 #include "UI/Window/WindowDialogs.h"
 #include "UI/Text/UIStaticText.h"
 #include "File/ShortcutFilename.h"
-#include "UI/Layout/WindowSnapping.h"
 #include "UI/Buttons/UITextButton.h"
 #include "UI/Buttons/UIRadioBtn.h"
 #include "UI/Window/UIResizer.h"
@@ -67,7 +66,7 @@ namespace {
 
 class UIDragMiniPartyWnd : public UIFrameWnd {
 public:
-  UIDragMiniPartyWnd(UIWindowContext& windowContext, UIFrameContext& frameContext, MessengerMember member);
+  UIDragMiniPartyWnd(UIWindowContext& windowContext, MessengerMember member);
   ~UIDragMiniPartyWnd() override;
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -97,7 +96,7 @@ struct UIFriendOptionContext {
 
 class UIFriendOptionWnd : public UIFrameWnd {
 public:
-  UIFriendOptionWnd(UIWindowContext& windows, UIFrameContext& frames);
+  UIFriendOptionWnd(UIWindowContext& windows);
   ~UIFriendOptionWnd() override;
   void Slot11() override;
   void Slot15(int width, int height) override;
@@ -128,7 +127,7 @@ public:
 
 class UIMessengerGroupWnd : public UIFrameWnd {
 public:
-  UIMessengerGroupWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
+  UIMessengerGroupWnd(UIWindowContext& windows, UIButtonContext& controls);
   ~UIMessengerGroupWnd() override;
   void Slot11() override;
   void Slot15(int width, int height) override;
@@ -237,8 +236,8 @@ MessengerMember& MessengerMember::operator=(const MessengerMember& other) {
 
 // OFFSET: 0x007382E0
 // FUNCTION: fn_07664
-UIDragMiniPartyWnd::UIDragMiniPartyWnd(UIWindowContext& windowContext, UIFrameContext& frameContext, MessengerMember member)
-    : UIFrameWnd(windowContext, frameContext, 0), member(member), gauge(nullptr), iconIndex(0) {
+UIDragMiniPartyWnd::UIDragMiniPartyWnd(UIWindowContext& windowContext, MessengerMember member)
+    : UIFrameWnd(windowContext, 0), member(member), gauge(nullptr), iconIndex(0) {
   this->geometry.unknown_0030 = 0;
 }
 
@@ -510,7 +509,7 @@ void UIPcGage::SetLimits(int first, int second) {
 
 // OFFSET: 0x00738E10
 // FUNCTION: fn_07679
-UIFriendOptionWnd::UIFriendOptionWnd(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0) {
+UIFriendOptionWnd::UIFriendOptionWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0) {
   this->saved = nullptr;
 }
 
@@ -569,7 +568,7 @@ void UIFriendOptionWnd::Paint() {
 int UIFriendOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   if (message == 6) {
     if (a == 201) {
-      this->m_frameContext->windows.CloseWindow(68);
+      g_windowMgr.CloseWindow(68);
     } else if (a == 213) {
       if (sender == this->option0Box) {
         this->m_options->option0 = static_cast<int>(b);
@@ -689,7 +688,7 @@ MiniPartyInfoEntry::MiniPartyInfoEntry(const char* text, int value) : text(text)
 
 // OFFSET: 0x00739C80
 // FUNCTION: fn_07698
-UIMessengerGroupWnd::UIMessengerGroupWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls) : UIFrameWnd(windows, frames, 0) {
+UIMessengerGroupWnd::UIMessengerGroupWnd(UIWindowContext& windows, UIButtonContext& controls) : UIFrameWnd(windows, 0) {
   this->saved = nullptr;
   this->scrollBar = nullptr;
   this->scrollTop = 0;
@@ -773,7 +772,7 @@ __declspec(noinline) MessengerMember UIMessengerGroupWnd::MemberAt(int x, int y)
 // OFFSET: 0x0073A330
 // FUNCTION: fn_07703
 __declspec(noinline) void UIMessengerGroupWnd::OpenMiniPartyWnd(int cell, const MessengerMember& member) {
-  UIMiniPartyWnd* window = new UIMiniPartyWnd(*this->m_context, *this->m_frameContext);
+  UIMiniPartyWnd* window = new UIMiniPartyWnd(*this->m_context);
   window->SetSize(174, 52);
   window->m_cell = cell;
   g_windowMgr.AddMiniPartyWindow(window);
@@ -1201,7 +1200,7 @@ void UIMessengerGroupWnd::Slot33(int x, int y) {
   if (this->mode == 1 && !g_messengerGroupCollapsed && !g_windowMgr.HasMiniPartyMember(selectedMember.accountId)) {
     gameMode->SetDragIds(29, this->selected);
     if (!g_windowMgr.window_4F250) {
-      UIDragMiniPartyWnd* window = new (std::nothrow) UIDragMiniPartyWnd(*this->m_context, *this->m_frameContext, selectedMember);
+      UIDragMiniPartyWnd* window = new (std::nothrow) UIDragMiniPartyWnd(*this->m_context, selectedMember);
       {
         window->SetSize(this->geometry.width, this->rowHeight);
         window->Move(-1000, -1000);
@@ -1787,7 +1786,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
         this->ToScreen(x, y);
         window->Move(x + 2 + this->geometry.width, y);
       }
-      this->m_frameContext->snapping.Store(this);
+      g_windowMgr.StoreSnapRectangle(this);
     }
     return 0;
   case 0x17: {
@@ -2060,8 +2059,8 @@ void UIMessengerGroupWnd::Slot11() {
 
 // OFFSET: 0x0073FFC0
 // FUNCTION: fn_07726
-UIMiniPartyInfoWnd::UIMiniPartyInfoWnd(UIWindowContext& windowContext, UIFrameContext& frameContext)
-    : UIFrameWnd(windowContext, frameContext, 0), m_gauge(nullptr), m_owner(nullptr) {
+UIMiniPartyInfoWnd::UIMiniPartyInfoWnd(UIWindowContext& windowContext)
+    : UIFrameWnd(windowContext, 0), m_gauge(nullptr), m_owner(nullptr) {
   this->m_entries.clear();
 }
 

@@ -1716,7 +1716,7 @@ int UIWindowMgr::SendNotice(int selector, std::intptr_t a, std::intptr_t b, std:
     if (this->namedWindows.find(name) != this->namedWindows.end()) {
       return 0;
     }
-    UIWhisperWnd* window = new UIWhisperWnd(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIFrameContext*>(nullptr));
+    UIWhisperWnd* window = new UIWhisperWnd(*reinterpret_cast<UIWindowContext*>(nullptr));
     window->SetSize(280, 120);
     this->rendered.push_back(window);
     window->SendMsg(nullptr, 34, reinterpret_cast<std::intptr_t>(&this->m_whisperPlacement), 0, 0, 0);

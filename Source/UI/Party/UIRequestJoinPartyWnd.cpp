@@ -21,8 +21,8 @@ namespace {
 
 // OFFSET: 0x007BB030
 // FUNCTION: fn_09280
-UIRequestJoinPartyWnd::UIRequestJoinPartyWnd(UIWindowContext& windows, UIFrameContext& frames, UIRequestJoinPartyContext& request)
-    : UIFrameWnd(windows, frames, 0), m_request(&request) {
+UIRequestJoinPartyWnd::UIRequestJoinPartyWnd(UIWindowContext& windows, UIRequestJoinPartyContext& request)
+    : UIFrameWnd(windows, 0), m_request(&request) {
 }
 
 // OFFSET: 0x007BB960

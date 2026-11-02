@@ -1322,8 +1322,8 @@ UISlotOfMyStyleWnd::UISlotOfMyStyleWnd(UIWindowContext& context) : UIStylingshop
 
 // OFFSET: 0x00823370
 // FUNCTION: fn_10293
-UIStylingShopWnd::UIStylingShopWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
-    : UIFrameWnd(windows, frames, 0), m_controls(&controls) {
+UIStylingShopWnd::UIStylingShopWnd(UIWindowContext& windows, UIButtonContext& controls)
+    : UIFrameWnd(windows, 0), m_controls(&controls) {
 }
 
 #include "Contents/Items/ItemInfo.h"

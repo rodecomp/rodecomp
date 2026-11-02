@@ -134,7 +134,7 @@ void UIWindowMgr::RestoreMiniPartyWindows() {
     }
 
     const SessionRecord0734 record = g_session.FindRecord0734(member.accountId);
-    UIMiniPartyWnd* window = new UIMiniPartyWnd(dialogs.windows, dialogs.frames);
+    UIMiniPartyWnd* window = new UIMiniPartyWnd(dialogs.windows);
     window->SetSize(174, 52);
     window->m_cell = record.unknown_0008;
     this->AddMiniPartyWindow(window);
@@ -1168,7 +1168,7 @@ int WindowDialogs::RunEmailAddress() {
   }
 
   auto* window = new UIEmailAddressWnd(
-    this->windows, this->frames, *reinterpret_cast<UIButtonContext*>(nullptr), *reinterpret_cast<UIEditContext*>(nullptr)
+    this->windows, *reinterpret_cast<UIButtonContext*>(nullptr), *reinterpret_cast<UIEditContext*>(nullptr)
   );
   window->SetSize(280, 48);
   window->Move((g_renderer->viewport.width - 640) / 2 + 185, (g_renderer->viewport.height - 480) / 2 + 180);

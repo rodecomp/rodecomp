@@ -36,8 +36,8 @@
 
 // OFFSET: 0x005E03B0
 // FUNCTION: fn_03861
-UIChangeMaterialWnd::UIChangeMaterialWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, UIEditContext& edits)
-    : UIFrameWnd(windows, frames, 0), m_sortBox(nullptr), m_button(nullptr), m_resultX(168), m_resultY(131), m_resultItem(),
+UIChangeMaterialWnd::UIChangeMaterialWnd(UIWindowContext& windows, UIButtonContext& controls, UIEditContext& edits)
+    : UIFrameWnd(windows, 0), m_sortBox(nullptr), m_button(nullptr), m_resultX(168), m_resultY(131), m_resultItem(),
       m_materialPos{{90, 86}, {246, 86}, {168, 222}, {168, 40}, {90, 176}, {246, 176}}, m_materials(), m_resultAmount(0), m_resultText(),
       m_controls(&controls), m_editContext(&edits) {
   *reinterpret_cast<int*>(reinterpret_cast<char*>(this) + 0xB4) = 0;
@@ -46,8 +46,8 @@ UIChangeMaterialWnd::UIChangeMaterialWnd(UIWindowContext& windows, UIFrameContex
 
 // OFFSET: 0x005E0560
 // FUNCTION: fn_03862
-UIChangeMaterialWnd_List::UIChangeMaterialWnd_List(UIWindowContext& windows, UIFrameContext& frames)
-    : UIFrameWnd(windows, frames, 0), m_selectedIndex(0), m_hoverIndex(0), m_scrollOffset(0), m_previousScrollOffset(0), m_scrollBar(nullptr), m_items(),
+UIChangeMaterialWnd_List::UIChangeMaterialWnd_List(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0), m_selectedIndex(0), m_hoverIndex(0), m_scrollOffset(0), m_previousScrollOffset(0), m_scrollBar(nullptr), m_items(),
       m_entries() {
   *reinterpret_cast<int*>(reinterpret_cast<char*>(this) + 0xB4) = 27;
   *reinterpret_cast<int*>(reinterpret_cast<char*>(this) + 0xB8) = 16;
@@ -768,7 +768,7 @@ void UIChangeMaterialWnd::Slot15(int width, int height) {
   cancel->SetId(201);
   this->AddChild(cancel);
 
-  UIChangeMaterialWnd_List* list = new UIChangeMaterialWnd_List(*this->m_context, *this->m_frameContext);
+  UIChangeMaterialWnd_List* list = new UIChangeMaterialWnd_List(*this->m_context);
   *reinterpret_cast<UIChangeMaterialWnd_List**>(reinterpret_cast<char*>(this) + 0xB4) = list;
   list->SetSize(186, 216);
   list->Move(310, 41);

@@ -32,7 +32,7 @@
 
 // OFFSET: 0x00BA3920
 // FUNCTION: fn_19677
-UIEntryQueueHelpWnd::UIEntryQueueHelpWnd(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0), m_viewer(nullptr), m_close(nullptr) {
+UIEntryQueueHelpWnd::UIEntryQueueHelpWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0), m_viewer(nullptr), m_close(nullptr) {
 }
 
 // OFFSET: 0x00BA4260
@@ -57,7 +57,7 @@ void UIEntryQueueHelpWnd::Slot19() {
 // FUNCTION: fn_19683
 int UIEntryQueueHelpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   if (message == 6 && a == 0) {
-    this->m_frameContext->windows.CloseWindow(211);
+    g_windowMgr.CloseWindow(211);
   }
 
   return 0;
@@ -100,8 +100,8 @@ void UIEntryQueueListBox::Slot31(int x, int y) {
 
 // OFFSET: 0x00BA47A0
 // FUNCTION: fn_19689
-UIEntryQueueRequestWnd::UIEntryQueueRequestWnd(UIWindowContext& windows, UIFrameContext& frames, UIEntryQueueContext& entryQueue)
-    : UIFrameWnd(windows, frames, 0), m_entryQueue(&entryQueue), m_interval(1000), m_elapsed(0), m_delta(0), m_lastTick(0) {
+UIEntryQueueRequestWnd::UIEntryQueueRequestWnd(UIWindowContext& windows, UIEntryQueueContext& entryQueue)
+    : UIFrameWnd(windows, 0), m_entryQueue(&entryQueue), m_interval(1000), m_elapsed(0), m_delta(0), m_lastTick(0) {
 }
 
 // OFFSET: 0x00BA4870
@@ -215,13 +215,13 @@ int UIEntryQueueRequestWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
 
     if (response == 0) {
       g_entryQueueMgr->SendAdmissionReply(1);
-      this->m_frameContext->windows.CloseWindow(209);
-      this->m_frameContext->windows.CloseWindow(210);
+      g_windowMgr.CloseWindow(209);
+      g_windowMgr.CloseWindow(210);
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2132)), 0x64FFFF, 0, 0, 0);
     } else if (response == 1) {
       g_entryQueueMgr->SendAdmissionReply(2);
-      this->m_frameContext->windows.CloseWindow(209);
-      this->m_frameContext->windows.CloseWindow(210);
+      g_windowMgr.CloseWindow(209);
+      g_windowMgr.CloseWindow(210);
       return 0;
     }
   }
@@ -231,8 +231,8 @@ int UIEntryQueueRequestWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
 
 // OFFSET: 0x00BA5560
 // FUNCTION: fn_19696
-UIEntryQueueStandByWnd::UIEntryQueueStandByWnd(UIWindowContext& windows, UIFrameContext& frames, UIEntryQueueContext& entryQueue)
-    : UIFrameWnd(windows, frames, 0), m_entryQueue(&entryQueue), m_waiting(0), m_ranking(0), m_viewer(nullptr), m_queueText(), m_waitingText(),
+UIEntryQueueStandByWnd::UIEntryQueueStandByWnd(UIWindowContext& windows, UIEntryQueueContext& entryQueue)
+    : UIFrameWnd(windows, 0), m_entryQueue(&entryQueue), m_waiting(0), m_ranking(0), m_viewer(nullptr), m_queueText(), m_waitingText(),
       m_rankingText() {
 }
 
@@ -309,7 +309,7 @@ int UIEntryQueueStandByWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
     if (response == 0) {
       g_entryQueueMgr->SendCancel();
     } else if (response == 1) {
-      this->m_frameContext->windows.CloseWindow(209);
+      g_windowMgr.CloseWindow(209);
       return 0;
     }
   }
@@ -337,8 +337,8 @@ void UIEntryQueueStandByWnd::SetInfo(const char* queueName, int waiting, int ran
 
 // OFFSET: 0x00BA6000
 // FUNCTION: fn_19704
-UIEntryQueueWnd::UIEntryQueueWnd(UIWindowContext& windows, UIFrameContext& frames, UIEntryQueueContext& entryQueue, UIListBoxContext& list)
-    : UIFrameWnd(windows, frames, 0), unknown_00BC(), m_labels(), m_values(), m_list(nullptr), saved(nullptr), m_entryQueue(&entryQueue),
+UIEntryQueueWnd::UIEntryQueueWnd(UIWindowContext& windows, UIEntryQueueContext& entryQueue, UIListBoxContext& list)
+    : UIFrameWnd(windows, 0), unknown_00BC(), m_labels(), m_values(), m_list(nullptr), saved(nullptr), m_entryQueue(&entryQueue),
       m_listContext(&list), m_applyButtons(), m_helpButton(nullptr) {
 }
 
@@ -514,14 +514,14 @@ int UIEntryQueueWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
       break;
     }
     case 3:
-      if (!this->m_frameContext->windows.CloseWindow(211)) {
-        this->m_frameContext->windows.EnsureWindow(211);
+      if (!g_windowMgr.CloseWindow(211)) {
+        g_windowMgr.EnsureWindow(211);
       }
       return 0;
     case 4:
     case 201:
       this->m_entryQueue->recorder.Record(this->geometry.id, static_cast<int>(a), b, c, d);
-      this->m_frameContext->windows.CloseWindow(157);
+      g_windowMgr.CloseWindow(157);
       return 0;
     default:
       return 0;

@@ -22,7 +22,7 @@
 
 // OFFSET: 0x009AAF30
 // FUNCTION: fn_13761
-UIPetEvolutionWnd::UIPetEvolutionWnd(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0) {
+UIPetEvolutionWnd::UIPetEvolutionWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0) {
   this->m_petEggId = -1;
   this->m_evolvedEggId = -1;
 }

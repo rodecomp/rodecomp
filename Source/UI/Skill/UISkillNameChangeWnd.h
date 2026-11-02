@@ -10,7 +10,7 @@ class UIEditCtrl;
 
 class UISkillNameChangeWnd : public UIFrameWnd {
 public:
-  UISkillNameChangeWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
+  UISkillNameChangeWnd(UIWindowContext& windows, UIButtonContext& controls);
   /* 00B4 */ UIEditCtrl* m_edit;
   /* 00B8 */ int m_skillId;
   /* 00BC */ std::string m_name;

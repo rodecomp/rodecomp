@@ -11,7 +11,7 @@ struct UIButtonContext;
 
 class UIBalloonOpenBtn : public UIFrameWnd {
 public:
-  UIBalloonOpenBtn(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
+  UIBalloonOpenBtn(UIWindowContext& windows, UIButtonContext& controls);
   void Paint() override;
   void Slot15(int width, int height) override;
   void Slot19() override;

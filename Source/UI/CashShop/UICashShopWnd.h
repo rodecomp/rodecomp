@@ -102,7 +102,7 @@ public:
 
 class UICashShopWnd : public UIFrameWnd {
 public:
-  UICashShopWnd(UIWindowContext& windows, UIFrameContext& frames);
+  UICashShopWnd(UIWindowContext& windows);
   ~UICashShopWnd() override;
   bool Slot03() override;
   void Slot10(int x, int y, std::intptr_t value) override;

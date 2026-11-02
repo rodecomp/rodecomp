@@ -11,7 +11,7 @@
 
 class UILoginWnd : public UIFrameWnd {
 public:
-  UILoginWnd(UIWindowContext& windows, UIFrameContext& frames);
+  UILoginWnd(UIWindowContext& windows);
   ~UILoginWnd() override;
 
   void Slot11() override;

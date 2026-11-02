@@ -15,7 +15,7 @@ extern bool g_vendingSaleAlarm;
 
 class UIMerchantItemMyShopWnd : public UIItemBaseWnd {
 public:
-  UIMerchantItemMyShopWnd(UIWindowContext& windows, UIFrameContext& frames, int value);
+  UIMerchantItemMyShopWnd(UIWindowContext& windows, int value);
   void Slot11() override;
   void Slot15(int width, int height) override;
   void Slot19() override;

@@ -9,7 +9,7 @@ struct UIButtonContext;
 
 class UINoticeMessageBox_LockSellItem : public UIFrameWnd {
 public:
-  UINoticeMessageBox_LockSellItem(UIWindowContext& windows, UIFrameContext& frames);
+  UINoticeMessageBox_LockSellItem(UIWindowContext& windows);
   void Slot15(int width, int height) override;
   void Slot19() override;
   void Paint() override;

@@ -9,8 +9,8 @@
 
 // OFFSET: 0x008C8240
 // FUNCTION: fn_11950
-UIJoinPartyAcceptWnd::UIJoinPartyAcceptWnd(UIWindowContext& windows, UIFrameContext& frames, UIAcceptanceContext& acceptance)
-    : UIExchangeAcceptWnd(windows, frames, acceptance) {
+UIJoinPartyAcceptWnd::UIJoinPartyAcceptWnd(UIWindowContext& windows, UIAcceptanceContext& acceptance)
+    : UIExchangeAcceptWnd(windows, acceptance) {
 }
 
 // OFFSET: 0x008CCEE0
@@ -24,7 +24,7 @@ int UIJoinPartyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     this->m_acceptance->recorder.Record(this->geometry.id, response, b, c, d);
 
     if (response == 184 || response == 185) {
-      this->m_frameContext->windows.CloseWindow(35);
+      g_windowMgr.CloseWindow(35);
       this->m_context->mode->SendModeMessage(60, this->identity, response == 184, 0, 0);
     }
 

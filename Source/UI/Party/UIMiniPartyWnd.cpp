@@ -16,7 +16,6 @@
 #include "UI/Gauges/UIPcGage.h"
 #include "UI/MiniPartyGrid.h"
 #include "UI/Layout/SnapMgr.h"
-#include "UI/Layout/WindowSnapping.h"
 #include "UI/Window/MiniPartyWndAreaMgr.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowDialogs.h"
@@ -30,8 +29,8 @@
 
 // OFFSET: 0x007426F0
 // FUNCTION: fn_07737
-UIMiniPartyWnd::UIMiniPartyWnd(UIWindowContext& windowContext, UIFrameContext& frameContext)
-    : UIFrameWnd(windowContext, frameContext, 1), m_cell(-1), m_infoWnd(nullptr), m_background(nullptr), m_sizeMode(0) {
+UIMiniPartyWnd::UIMiniPartyWnd(UIWindowContext& windowContext)
+    : UIFrameWnd(windowContext, 1), m_cell(-1), m_infoWnd(nullptr), m_background(nullptr), m_sizeMode(0) {
   this->m_imageName = "유저인터페이스\\renewalparty\\img_partymini_bg.tga";
   this->geometry.id = 301;
 }
@@ -46,7 +45,7 @@ void UIMiniPartyWnd::Move(int x, int y) {
 // OFFSET: 0x00742AC0
 // FUNCTION: fn_07740
 void UIMiniPartyWnd::Slot15(int, int) {
-  UIMiniPartyInfoWnd* info = new UIMiniPartyInfoWnd(*this->m_context, *this->m_frameContext);
+  UIMiniPartyInfoWnd* info = new UIMiniPartyInfoWnd(*this->m_context);
   this->m_infoWnd = info;
   info->m_owner = this;
   info->SetSize(174, 52);
@@ -83,7 +82,7 @@ void UIMiniPartyWnd::Slot25(int x, int y) {
   this->m_originX = this->geometry.x;
   this->m_originY = this->geometry.y;
   this->geometry.alphaStart = timeGetTime();
-  this->m_frameContext->snapping.graph.CaptureOrigins(this);
+  g_snapMgr.CaptureOrigins(this);
 }
 
 // OFFSET: 0x00740B80

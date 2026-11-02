@@ -50,8 +50,8 @@ struct RefiningClosePacket {
 
 // OFFSET: 0x007F4920
 // FUNCTION: fn_09890
-UIRefiningWnd::UIRefiningWnd(UIWindowContext& windows, UIFrameContext& frames)
-    : UIFrameWnd(windows, frames, 0), refiningButton(nullptr), returnButton(nullptr),
+UIRefiningWnd::UIRefiningWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0), refiningButton(nullptr), returnButton(nullptr),
       unknown_00C0(nullptr), state(0), result(7), frameInterval(100), stateTick(0), frame(0), selectedMaterial(-1), materials(), catalystEnabled(0),
       catalystItemId(0), catalystCount(0), item(0), unknown_01F0(0), nextMaterials(), nextCatalystCount(0), nextItem(0) {
   this->catalystItemId = 6635;
@@ -436,7 +436,7 @@ void UIRefiningWnd::Slot25(int x, int y) {
 
   if (this->state == 1 && this->item.unknown_0000[1] > 0 && static_cast<unsigned>(x - 109) <= 46 && static_cast<unsigned>(y - 201) <= 46) {
     ItemDescriptions descriptions{g_itemDescriptions};
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(this->m_frameContext->windows, descriptions, 28, this->item, 1, -1);
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(g_windowMgr, descriptions, 28, this->item, 1, -1);
   }
 }
 
@@ -694,7 +694,7 @@ void UIRefiningWnd::Slot33(int x, int y) {
 
   if (this->state == 1) {
     if (this->selectedMaterial != -1 && x >= 81 && x <= 105 && y >= 150 && y <= 174) {
-      UIWindow* window = this->m_frameContext->windows.EnsureWindow(12);
+      UIWindow* window = g_windowMgr.EnsureWindow(12);
       if (!window) {
         return;
       }
@@ -704,7 +704,7 @@ void UIRefiningWnd::Slot33(int x, int y) {
     }
 
     if (this->catalystEnabled == 1 && x >= 161 && x <= 185 && y >= 150 && y <= 174) {
-      UIWindow* window = this->m_frameContext->windows.EnsureWindow(12);
+      UIWindow* window = g_windowMgr.EnsureWindow(12);
       if (!window) {
         return;
       }
@@ -725,7 +725,7 @@ void UIRefiningWnd::Slot33(int x, int y) {
       if (static_cast<unsigned>(slot) < this->materials.size()) {
         ITEM_INFO info = LookupClientItem(g_session.m_inventoryItems, this->materials[slot].itemId, 0);
         if (info.unknown_0000[1] != 0) {
-          UIWindow* window = this->m_frameContext->windows.EnsureWindow(12);
+          UIWindow* window = g_windowMgr.EnsureWindow(12);
           if (window) {
             window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&info), 0, 0, 0);
           }
@@ -739,7 +739,7 @@ void UIRefiningWnd::Slot33(int x, int y) {
         }
         ITEM_INFO info = LookupClientItem(g_session.m_inventoryItems, this->catalystItemId, 0);
         if (info.unknown_0000[1] != 0) {
-          UIWindow* window = this->m_frameContext->windows.EnsureWindow(12);
+          UIWindow* window = g_windowMgr.EnsureWindow(12);
           if (window) {
             window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&info), 0, 0, 0);
           }
@@ -750,7 +750,7 @@ void UIRefiningWnd::Slot33(int x, int y) {
   }
 
   if (this->item.unknown_0000[1] != 0 && static_cast<unsigned>(x - 109) <= 46 && static_cast<unsigned>(y - 201) <= 46) {
-    UIWindow* window = this->m_frameContext->windows.EnsureWindow(12);
+    UIWindow* window = g_windowMgr.EnsureWindow(12);
     if (window) {
       window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&this->item), 0, 0, 0);
     }
@@ -819,7 +819,7 @@ int UIRefiningWnd::SendMsg(
         RefiningClosePacket packet;
         packet.id = 0xAA4;
         GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
-        this->m_frameContext->windows.CloseWindow(295);
+        g_windowMgr.CloseWindow(295);
       }
     } else if (argument1 == 519) {
       this->notice->SetNotice("", 0, 0);

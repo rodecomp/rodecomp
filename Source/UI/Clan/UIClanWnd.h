@@ -11,7 +11,7 @@ class UIStaticText;
 class UIClanWnd : public UIFrameWnd {
 public:
   // INLINED
-  UIClanWnd(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0), m_saved(nullptr), m_title(nullptr) {
+  UIClanWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0), m_saved(nullptr), m_title(nullptr) {
   }
   void Slot11() override;
   void Paint() override;
@@ -26,7 +26,7 @@ protected:
 
 class UIClanInfoManageWnd : public UIClanWnd {
 public:
-  UIClanInfoManageWnd(UIWindowContext& windows, UIFrameContext& frames);
+  UIClanInfoManageWnd(UIWindowContext& windows);
   void Slot15(int width, int height) override;
   void Slot25(int x, int y) override;
   void Paint() override;

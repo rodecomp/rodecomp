@@ -10,7 +10,7 @@ struct UIButtonContext;
 
 class UIReplayControlWnd : public UIFrameWnd {
 public:
-  UIReplayControlWnd(UIWindowContext& windows, UIFrameContext& frames);
+  UIReplayControlWnd(UIWindowContext& windows);
 
   bool Slot03() override;
   void Slot15(int width, int height) override;

@@ -26,7 +26,7 @@ struct NavigationWindowInfo {
 
 class UINavigationV4Wnd : public UIFrameWnd {
 public:
-  UINavigationV4Wnd(UIWindowContext& windows, UIFrameContext& frames);
+  UINavigationV4Wnd(UIWindowContext& windows);
   void Slot11() override;
   void Slot15(int width, int height) override;
   void Slot19() override;
@@ -83,7 +83,7 @@ class UIStaticBitmap;
 
 class UINavigationroadiconWnd : public UIFrameWnd {
 public:
-  UINavigationroadiconWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
+  UINavigationroadiconWnd(UIWindowContext& windows, UIButtonContext& controls);
   void Slot15(int width, int height) override;
   void Paint() override;
   void Slot31(int x, int y) override;
@@ -97,7 +97,7 @@ protected:
 
 class UINavigationRuideWnd : public UIFrameWnd {
 public:
-  UINavigationRuideWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, UIListBoxContext& lists);
+  UINavigationRuideWnd(UIWindowContext& windows, UIButtonContext& controls, UIListBoxContext& lists);
   void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;

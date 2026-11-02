@@ -12,7 +12,7 @@
 
 class UISkillListWnd : public UIFrameWnd {
 public:
-  UISkillListWnd(UIWindowContext& windows, UIFrameContext& frames);
+  UISkillListWnd(UIWindowContext& windows);
   bool Slot03() override;
   void Slot11() override;
   void Paint() override;

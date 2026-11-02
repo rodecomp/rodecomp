@@ -11,7 +11,7 @@ struct UIButtonContext;
 
 class UIPreviewEquipWnd : public UIFrameWnd {
 public:
-  UIPreviewEquipWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
+  UIPreviewEquipWnd(UIWindowContext& windows, UIButtonContext& controls);
   ~UIPreviewEquipWnd() override;
   void Slot11() override;
   void Paint() override;

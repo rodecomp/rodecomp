@@ -29,8 +29,8 @@ namespace {
 
 // OFFSET: 0x007BAC40
 // FUNCTION: fn_09274
-UIAdvenPartyBoardWnd::UIAdvenPartyBoardWnd(UIWindowContext& windows, UIFrameContext& frames, UIAdvenPartyBoardContext& board)
-    : UIFrameWnd(windows, frames, 0), unknown_0104(0), unknown_0108(0), page(1), totalPages(1), unknown_0114(1), unknown_0118(0), selectedType(0),
+UIAdvenPartyBoardWnd::UIAdvenPartyBoardWnd(UIWindowContext& windows, UIAdvenPartyBoardContext& board)
+    : UIFrameWnd(windows, 0), unknown_0104(0), unknown_0108(0), page(1), totalPages(1), unknown_0114(1), unknown_0118(0), selectedType(0),
       m_board(&board) {
 }
 

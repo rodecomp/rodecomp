@@ -14,7 +14,7 @@ class UIBasicButton;
 
 class UIItemReformWnd_List : public UIFrameWnd {
 public:
-  UIItemReformWnd_List(UIWindowContext& windowContext, UIFrameContext& frameContext);
+  UIItemReformWnd_List(UIWindowContext& windowContext);
   void Move(int x, int y) override;
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -68,7 +68,7 @@ public:
 
 class UIItemReformWnd : public UIFrameWnd {
 public:
-  UIItemReformWnd(UIWindowContext& windowContext, UIFrameContext& frameContext);
+  UIItemReformWnd(UIWindowContext& windowContext);
 
   void Slot15(int width, int height) override;
   void Slot19() override;

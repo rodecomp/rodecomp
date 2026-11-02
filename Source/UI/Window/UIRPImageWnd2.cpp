@@ -23,5 +23,5 @@ void UIRPImageWnd2::SetImage(std::string imageName, int imageCount) {
 
 // OFFSET: 0x00946F20
 // FUNCTION: fn_12856
-UIRPImageWnd2::UIRPImageWnd2(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 1), m_drawImage(0) {
+UIRPImageWnd2::UIRPImageWnd2(UIWindowContext& windows) : UIFrameWnd(windows, 1), m_drawImage(0) {
 }

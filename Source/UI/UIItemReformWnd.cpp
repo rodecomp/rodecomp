@@ -46,16 +46,16 @@ struct PACKET_CZ_ITEM_REFORM {
 
 // OFFSET: 0x005FC010
 // FUNCTION: fn_04095
-UIItemReformWnd::UIItemReformWnd(UIWindowContext& windowContext, UIFrameContext& frameContext)
-    : UIFrameWnd(windowContext, frameContext, 0), reformButton(nullptr), list(nullptr), baseIcon(nullptr), resultIcon(nullptr),
+UIItemReformWnd::UIItemReformWnd(UIWindowContext& windowContext)
+    : UIFrameWnd(windowContext, 0), reformButton(nullptr), list(nullptr), baseIcon(nullptr), resultIcon(nullptr),
       materialIcons(), detailButton(nullptr), detailMsg(nullptr), reformItem(), selectedItem(nullptr), resultItem(), materials(),
       information(), warning() {
 }
 
 // OFFSET: 0x005FC160
 // FUNCTION: fn_04096
-UIItemReformWnd_List::UIItemReformWnd_List(UIWindowContext& windowContext, UIFrameContext& frameContext)
-    : UIFrameWnd(windowContext, frameContext, 0), itemHeight(32), selectedIndex(0xFFFFFFFF), hoverIndex(0), scrollPosition(0),
+UIItemReformWnd_List::UIItemReformWnd_List(UIWindowContext& windowContext)
+    : UIFrameWnd(windowContext, 0), itemHeight(32), selectedIndex(0xFFFFFFFF), hoverIndex(0), scrollPosition(0),
       scrollBar(nullptr), items() {
 }
 
@@ -106,7 +106,7 @@ void UIItemReformWnd::Slot15(int width, int height) {
   this->reformButton->Invalidate();
   this->AddChild(this->reformButton);
 
-  this->list = new UIItemReformWnd_List(*this->m_context, *this->m_frameContext);
+  this->list = new UIItemReformWnd_List(*this->m_context);
   this->list->SetSize(222, 192);
   this->list->Move(215, 21);
   this->AddChild(this->list);
@@ -321,7 +321,7 @@ void UIItemReformWnd_List::Slot33(int x, int y) {
   const unsigned int count = this->items.size();
   const unsigned int index = std::max(0u, std::min(y / this->itemHeight + this->scrollPosition, count - 1));
   if (index < count) {
-    if (UIWindow* window = this->m_frameContext->windows.EnsureWindow(12)) {
+    if (UIWindow* window = g_windowMgr.EnsureWindow(12)) {
       window->SendMsg(this, 24, reinterpret_cast<std::intptr_t>(&this->items[index]), 0, 0, 0);
     }
   }

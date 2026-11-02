@@ -58,8 +58,8 @@ void UIRodexContentsWnd::SetContentsText(const char* text) {
 
 // OFFSET: 0x00801CE0
 // FUNCTION: fn_10015
-UIRodexContentsWnd::UIRodexContentsWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
-    : UIFrameWnd(windows, frames, 0), m_contents(nullptr), m_zeny(0), m_itemButton(nullptr), m_zenyButton(nullptr), unknown_0104(nullptr),
+UIRodexContentsWnd::UIRodexContentsWnd(UIWindowContext& windows, UIButtonContext& controls)
+    : UIFrameWnd(windows, 0), m_contents(nullptr), m_zeny(0), m_itemButton(nullptr), m_zenyButton(nullptr), unknown_0104(nullptr),
       unknown_0108(nullptr), m_controls(&controls) {
   this->m_items.clear();
   this->m_itemIndex = 0;
@@ -231,7 +231,7 @@ void UIRodexContentsWnd::Slot28(int x, int y) {
 void UIRodexContentsWnd::Slot32(int x, int y) {
   ITEM_INFO item = this->GetItemAtPoint(x, y);
   if (std::atoi(item.itemId.c_str()) != 0) {
-    this->m_frameContext->windows.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
   }
 }
 

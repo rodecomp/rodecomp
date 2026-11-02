@@ -556,8 +556,8 @@ void UIRecommededQuestScrollWnd::SetQuest(unsigned int questId) {
 
 // OFFSET: 0x007FB4D0
 // FUNCTION: fn_09957
-UIRenewDetailQuestInfoWnd::UIRenewDetailQuestInfoWnd(UIWindowContext& windows, UIFrameContext& frames)
-    : UIFrameWnd(windows, frames, 0), m_ongoingWnd(nullptr), m_recommendedWnd(nullptr), m_questId(0), m_timeText(""), m_imageName(""),
+UIRenewDetailQuestInfoWnd::UIRenewDetailQuestInfoWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0), m_ongoingWnd(nullptr), m_recommendedWnd(nullptr), m_questId(0), m_timeText(""), m_imageName(""),
       m_recommended(false) {
 }
 
@@ -698,8 +698,8 @@ UIRenewQuestScrollBar::UIRenewQuestScrollBar(UIWindowContext& windows) : UIScrol
 
 // OFFSET: 0x007FBFD0
 // FUNCTION: fn_09967
-UIRenewQuestWnd::UIRenewQuestWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
-    : UIFrameWnd(windows, frames, 0), m_tabs(nullptr), m_scrollBar(nullptr), m_optionCheckBox(nullptr), m_closeButton(nullptr), m_tab(0), m_scroll(0),
+UIRenewQuestWnd::UIRenewQuestWnd(UIWindowContext& windows, UIButtonContext& controls)
+    : UIFrameWnd(windows, 0), m_tabs(nullptr), m_scrollBar(nullptr), m_optionCheckBox(nullptr), m_closeButton(nullptr), m_tab(0), m_scroll(0),
       m_selected(0), m_scrollable(false), m_pressed(0), m_controls(&controls) {
   std::memset(&this->m_rows, 0, sizeof(this->m_rows));
   this->m_questIds[0].clear();

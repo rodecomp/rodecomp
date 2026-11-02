@@ -18,7 +18,7 @@ struct UIEditContext;
 
 class UIReputeWnd : public UIFrameWnd {
 public:
-  UIReputeWnd(UIWindowContext& windows, UIFrameContext& frames);
+  UIReputeWnd(UIWindowContext& windows);
   bool Slot02() override;
   void Slot15(int width, int height) override;
   void Paint() override;

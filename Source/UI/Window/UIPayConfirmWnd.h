@@ -10,7 +10,7 @@ struct BitmapImage;
 class UIPayConfirmWnd : public UIMessageBox {
 public:
   // INLINED
-  UIPayConfirmWnd(UIWindowContext& windows, UIFrameContext& frames, UIMessageBoxContext& dialog) : UIMessageBox(windows, frames, dialog) {
+  UIPayConfirmWnd(UIWindowContext& windows, UIMessageBoxContext& dialog) : UIMessageBox(windows, dialog) {
   }
 
   void Configure(const std::string& text, int itemId);

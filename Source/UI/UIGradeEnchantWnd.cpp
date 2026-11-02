@@ -46,7 +46,7 @@ struct GradeEnchantClosePacket {
 // OFFSET: 0x007E68F0
 // FUNCTION: fn_09738
 UIGradeEnchantWnd::UIGradeEnchantWnd()
-    : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIFrameContext*>(nullptr), 0), enhancedUpButton(nullptr), state(0),
+    : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(nullptr), 0), enhancedUpButton(nullptr), state(0),
       result(-1), unknown_00C8(200), unknown_00CC(100), stateTick(0), unknown_00D4(0), unknown_00D8(1), unknown_00DC(1), unknown_00E0(0),
       selectedMaterial(-1), hoverMaterial(-1), materials(), info{}, unknown_0108(0), unknown_010C(0), unknown_0110(0), unknown_0114(0), unknown_0118(0),
       unknown_011C(), item(0), unknown_0220(0), startButton(nullptr), enhancedDownButton(nullptr) {
@@ -307,7 +307,7 @@ void UIGradeEnchantWnd::Slot25(int x, int y) {
 
   if (this->state == 1 && this->item.unknown_0000[1] > 0 && x >= 64 && x <= 110 && y >= 125 && y <= 171) {
     ItemDescriptions descriptions{g_itemDescriptions};
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(this->m_frameContext->windows, descriptions, 33, this->item, 1, -1);
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(g_windowMgr, descriptions, 33, this->item, 1, -1);
   }
 }
 
@@ -456,7 +456,7 @@ void UIGradeEnchantWnd::Slot33(int x, int y) {
     if (x >= 158 && x <= 393 && y >= 102 && y <= 219) {
       const int row = (y - 102) / 40;
       if (y <= row * 40 + 139 && row < 3 && row >= 0 && static_cast<unsigned>(row) < this->materials.size()) {
-        UIWindow* window = this->m_frameContext->windows.EnsureWindow(12);
+        UIWindow* window = g_windowMgr.EnsureWindow(12);
         if (window) {
           ITEM_INFO material = LookupClientItem(g_session.m_inventoryItems, this->materials[row].itemId, 0);
           window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&material), 0, 0, 0);
@@ -466,7 +466,7 @@ void UIGradeEnchantWnd::Slot33(int x, int y) {
     }
 
     if (x >= 195 && x <= 219 && y >= 228 && y <= 252) {
-      UIWindow* window = this->m_frameContext->windows.EnsureWindow(12);
+      UIWindow* window = g_windowMgr.EnsureWindow(12);
       if (window) {
         ITEM_INFO blessing = LookupClientItem(g_session.m_inventoryItems, this->info.unknown_0000, 0);
         window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&blessing), 0, 0, 0);
@@ -475,7 +475,7 @@ void UIGradeEnchantWnd::Slot33(int x, int y) {
   }
 
   if (this->item.unknown_0000[1] > 0 && x >= 53 && x <= 99 && y >= 114 && y <= 160) {
-    UIWindow* window = this->m_frameContext->windows.EnsureWindow(12);
+    UIWindow* window = g_windowMgr.EnsureWindow(12);
     if (window) {
       window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&this->item), 0, 0, 0);
     }
@@ -511,7 +511,7 @@ int UIGradeEnchantWnd::SendMsg(
       GradeEnchantClosePacket packet;
       packet.id = 0xB5C;
       GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
-      this->m_frameContext->windows.CloseWindow(343);
+      g_windowMgr.CloseWindow(343);
     } else if (argument1 == 279) {
       if (this->info.unknown_0000 > 0 && this->unknown_0114 < this->info.unknown_0008 * this->info.unknown_0004 &&
           LookupClientItem(g_session.m_inventoryItems, this->info.unknown_0000, 0).quantity >= this->unknown_0114 + this->info.unknown_0004) {

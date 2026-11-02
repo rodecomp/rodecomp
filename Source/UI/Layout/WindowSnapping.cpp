@@ -1,33 +1,34 @@
 #include "UI/Layout/SnapMgr.h"
 #include "UI/Window/UIWindow.h"
-#include "UI/Layout/WindowSnapping.h"
+#include "Contents/Configuration/ServiceOptions.h"
+#include "UI/Window/UIWindowMgr.h"
 
 // OFFSET: 0x00AAB0D0
 // FUNCTION: fn_17280
-void WindowSnapping::Store(UIWindow* window) {
-  for (UIWindow* entry : this->excluded) {
+void UIWindowMgr::StoreSnapRectangle(UIWindow* window) {
+  for (UIWindow* entry : this->snapExcluded) {
     if (entry == window) {
       return;
     }
   }
 
-  if (!this->enabled || !window) {
+  if (!g_serviceOptions.Get(141) || !window) {
     return;
   }
 
-  SnapRectangle& rectangle = this->rectangles[window];
+  SnapRectangle& rectangle = this->snapRectangles[window];
   rectangle.Set(window->geometry.x, window->geometry.y, window->geometry.width, window->geometry.height);
 }
 
 // OFFSET: 0x00A914A0
 // FUNCTION: fn_17161
-void WindowSnapping::Constrain(UIWindow* window, int& dx, int& dy, int groupMember) {
+void UIWindowMgr::ConstrainSnap(UIWindow* window, int& dx, int& dy, int groupMember) {
   dx = 0;
   dy = 0;
   SnapRectangle moving;
   moving.Set(window->geometry.x, window->geometry.y, window->geometry.width, window->geometry.height);
   SnapRectangle screen;
-  screen.Set(0, 0, this->screenWidth, this->screenHeight);
+  screen.Set(0, 0, this->unknown_047C, this->unknown_0480);
   screen.ReverseEdges();
   int x = 0, y = 0;
   screen.Snap(moving, x, y);
@@ -47,12 +48,12 @@ void WindowSnapping::Constrain(UIWindow* window, int& dx, int& dy, int groupMemb
     return;
   }
 
-  const bool root = this->graph.IsRoot(window);
+  const bool root = g_snapMgr.IsRoot(window);
 
-  for (auto& [other, rectangle] : this->rectangles) {
-    const bool connected = this->graph.Connected(window, other);
-    const bool otherRoot = this->graph.IsRoot(other);
-    const bool otherConnected = this->graph.ConnectedToRoot(other);
+  for (auto& [other, rectangle] : this->snapRectangles) {
+    const bool connected = g_snapMgr.Connected(window, other);
+    const bool otherRoot = g_snapMgr.IsRoot(other);
+    const bool otherConnected = g_snapMgr.ConnectedToRoot(other);
 
     if (groupMember != 0) {
       if (window == other || otherRoot || connected || otherConnected) {

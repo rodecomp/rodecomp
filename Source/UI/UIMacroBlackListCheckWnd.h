@@ -10,7 +10,7 @@ struct UIButtonContext;
 
 class UIMacroBlackListCheckWnd : public UIFrameWnd {
 public:
-  UIMacroBlackListCheckWnd(UIWindowContext& windows, UIFrameContext& frames);
+  UIMacroBlackListCheckWnd(UIWindowContext& windows);
   void Slot15(int width, int height) override;
   void Slot19() override;
   void Paint() override;

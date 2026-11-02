@@ -4,13 +4,13 @@
 
 // OFFSET: 0x008C7280
 // FUNCTION: fn_11929
-UIChatRoomMakeWnd::UIChatRoomMakeWnd(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0) {
+UIChatRoomMakeWnd::UIChatRoomMakeWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0) {
   this->m_title = LookupMessage(125);
 }
 
 // OFFSET: 0x008C7120
 // FUNCTION: fn_11928
-UIChatRoomChangeWnd::UIChatRoomChangeWnd(UIWindowContext& windows, UIFrameContext& frames) : UIChatRoomMakeWnd(windows, frames) {
+UIChatRoomChangeWnd::UIChatRoomChangeWnd(UIWindowContext& windows) : UIChatRoomMakeWnd(windows) {
   this->m_title = LookupMessage(126);
 }
 

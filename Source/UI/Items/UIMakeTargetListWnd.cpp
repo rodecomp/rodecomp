@@ -65,8 +65,8 @@ int UIMakeTargetListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
 
       UIListBox* list = this->m_list;
       if (list->LineCount() == 0) {
-        this->m_frameContext->windows.CloseWindow(79);
-        this->m_frameContext->windows.CloseWindow(79);
+        g_windowMgr.CloseWindow(79);
+        g_windowMgr.CloseWindow(79);
         return 0;
       }
 
@@ -78,15 +78,15 @@ int UIMakeTargetListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
         case 4252: {
           ITEM_INFO materials[3];
           g_modeMgr.GetGameMode()->SendMsg(130, this->itemIds[this->m_list->selected], reinterpret_cast<int>(materials), 0, 0);
-          this->m_frameContext->windows.CloseWindow(79);
+          g_windowMgr.CloseWindow(79);
           return 0;
         }
 
         default: {
-          UIWindow* window = this->m_frameContext->windows.EnsureWindow(80);
+          UIWindow* window = g_windowMgr.EnsureWindow(80);
           window->SendMsg(this, 40, this->itemIds[this->m_list->selected], 0, 0, 0);
           window->Move(this->geometry.x, this->geometry.y);
-          this->m_frameContext->windows.CloseWindow(79);
+          g_windowMgr.CloseWindow(79);
           return 0;
         }
         }
@@ -94,7 +94,7 @@ int UIMakeTargetListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     } else if (response == 185) {
       ITEM_INFO materials[3];
       g_modeMgr.GetGameMode()->SendMsg(130, 0, reinterpret_cast<int>(materials), 0, 0);
-      this->m_frameContext->windows.CloseWindow(79);
+      g_windowMgr.CloseWindow(79);
       return 0;
     }
 

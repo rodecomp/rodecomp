@@ -19,7 +19,7 @@ struct WindowResponseRecorder;
 
 class UIPetInfoWnd : public UIFrameWnd {
 public:
-  UIPetInfoWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
+  UIPetInfoWnd(UIWindowContext& windows, UIButtonContext& controls);
   ~UIPetInfoWnd() override;
 
   void Slot11() override;

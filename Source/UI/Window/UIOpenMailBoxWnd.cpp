@@ -57,8 +57,8 @@ int UIOpenMailBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
     return 0;
   }
 
-  if (!this->m_frameContext->windows.CloseWindow(263)) {
-    this->m_frameContext->windows.EnsureWindow(263);
+  if (!g_windowMgr.CloseWindow(263)) {
+    g_windowMgr.EnsureWindow(263);
   }
 
   return 0;
@@ -66,6 +66,6 @@ int UIOpenMailBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
 
 // OFFSET: 0x00946DE0
 // FUNCTION: fn_12853
-UIOpenMailBoxWnd::UIOpenMailBoxWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
-    : UIFrameWnd(windows, frames, 0), m_controls(&controls) {
+UIOpenMailBoxWnd::UIOpenMailBoxWnd(UIWindowContext& windows, UIButtonContext& controls)
+    : UIFrameWnd(windows, 0), m_controls(&controls) {
 }

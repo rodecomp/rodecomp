@@ -41,8 +41,8 @@ unsigned long g_swapEquipmentTick;
 
 // OFFSET: 0x0082F560
 // FUNCTION: fn_10387
-UISwapEquipmentWnd::UISwapEquipmentWnd(UIWindowContext& windows, UIFrameContext& frames)
-    : UIFrameWnd(windows, frames, 0), m_swapButton(nullptr), unknown_00BC(0), unknown_00C0(timeGetTime()), unknown_00D4(-1), unknown_00D8(-1),
+UISwapEquipmentWnd::UISwapEquipmentWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0), m_swapButton(nullptr), unknown_00BC(0), unknown_00C0(timeGetTime()), unknown_00D4(-1), unknown_00D8(-1),
       unknown_00DC(-1) {
   this->geometry.unknown_0030 = 0;
 }
@@ -404,7 +404,7 @@ void UISwapEquipmentWnd::Slot25(int x, int y) {
   const EquipSlots slots = g_session.GetEquipSlots(item.unknown_0000[3]);
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   ItemDescriptions descriptions{g_itemDescriptions};
-  mode->drag.BeginItem(this->m_frameContext->windows, descriptions, this->unknown_00BC == 2 ? 18 : 17, item, item.quantity, slots.values[2]);
+  mode->drag.BeginItem(g_windowMgr, descriptions, this->unknown_00BC == 2 ? 18 : 17, item, item.quantity, slots.values[2]);
 
   if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
     if (g_windowMgr.GetHoverWindow() && item.identified != 0) {

@@ -304,7 +304,7 @@ struct RuneDecomResultPacket {
 
 class UIRuneSystem_DecomResultWnd : public UIFrameWnd {
 public:
-  UIRuneSystem_DecomResultWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
+  UIRuneSystem_DecomResultWnd(UIWindowContext& windows, UIButtonContext& controls);
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
@@ -315,7 +315,7 @@ public:
 
 class UIRuneSystemWnd : public UIFrameWnd {
 public:
-  UIRuneSystemWnd(UIWindowContext& windows, UIFrameContext& frames);
+  UIRuneSystemWnd(UIWindowContext& windows);
   void Slot15(int width, int height) override;
   void Slot19() override;
   void Paint() override;

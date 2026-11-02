@@ -14,7 +14,7 @@ int g_passwordWndMode;
 
 // OFFSET: 0x008C89F0
 // FUNCTION: fn_11965
-UIPasswordWnd::UIPasswordWnd(UIWindowContext& windows, UIFrameContext& frames) : UIItemDropCntWnd(windows, frames) {}
+UIPasswordWnd::UIPasswordWnd(UIWindowContext& windows) : UIItemDropCntWnd(windows) {}
 
 // OFFSET: 0x0090C970
 // FUNCTION: fn_12451

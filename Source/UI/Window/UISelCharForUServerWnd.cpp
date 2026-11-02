@@ -38,7 +38,7 @@ struct PACKET_CZ_SELECT_CHARACTERS {
 // OFFSET: 0x009120E0
 // FUNCTION: fn_12526
 UISelCharForUServerWnd::UISelCharForUServerWnd()
-    : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIFrameContext*>(nullptr), 0), m_columns(6) {
+    : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(nullptr), 0), m_columns(6) {
   if (g_charViewCount > 12) {
     this->m_columns = 9;
   }

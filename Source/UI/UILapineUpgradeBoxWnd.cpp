@@ -46,15 +46,15 @@ namespace {
 
 // OFFSET: 0x00602D30
 // FUNCTION: fn_04187
-UILapineUpgradeBoxWnd::UILapineUpgradeBoxWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
-    : UIFrameWnd(windows, frames, 0), closeButton(nullptr), upgradeButton(nullptr), selectButton(nullptr), ingredientList(nullptr), ingredientId(0),
+UILapineUpgradeBoxWnd::UILapineUpgradeBoxWnd(UIWindowContext& windows, UIButtonContext& controls)
+    : UIFrameWnd(windows, 0), closeButton(nullptr), upgradeButton(nullptr), selectButton(nullptr), ingredientList(nullptr), ingredientId(0),
       noticeTick(0), noticeDuration(3000), waiting(0), m_controls(&controls) {
 }
 
 // OFFSET: 0x00602E60
 // FUNCTION: fn_04188
-UILapineUpgradeBox_IngredientInfoWnd::UILapineUpgradeBox_IngredientInfoWnd(UIWindowContext& windows, UIFrameContext& frames)
-    : UIFrameWnd(windows, frames, 0), selected(0), quantity(0) {
+UILapineUpgradeBox_IngredientInfoWnd::UILapineUpgradeBox_IngredientInfoWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0), selected(0), quantity(0) {
 }
 
 // INLINED
@@ -224,7 +224,7 @@ void UILapineUpgradeBoxWnd::Slot25(int x, int y) {
   }
   if (static_cast<unsigned>(x - 101) <= 24 && static_cast<unsigned>(y - 165) <= 24 && this->item.unknown_0000[1] != 0) {
     ItemDescriptions descriptions{g_itemDescriptions};
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(this->m_frameContext->windows, descriptions, 26, this->item, 1, -1);
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(g_windowMgr, descriptions, 26, this->item, 1, -1);
   }
 }
 
@@ -233,7 +233,7 @@ void UILapineUpgradeBoxWnd::Slot25(int x, int y) {
 void UILapineUpgradeBox_IngredientInfoWnd::Slot25(int x, int y) {
   if (this->item.unknown_0000[1] != 0) {
     ItemDescriptions descriptions{g_itemDescriptions};
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(this->m_frameContext->windows, descriptions, 27, this->item, this->quantity, -1);
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(g_windowMgr, descriptions, 27, this->item, this->quantity, -1);
   }
 }
 
@@ -259,7 +259,7 @@ void UILapineUpgradeBox_IngredientInfoWnd::Slot35(int argument) {
 // FUNCTION: fn_04211
 void UILapineUpgradeBoxWnd::Slot32(int x, int y) {
   if (static_cast<unsigned>(x - 101) <= 24 && static_cast<unsigned>(y - 165) <= 24 && this->item.unknown_0000[1] != 0) {
-    UIWindow* window = this->m_frameContext->windows.EnsureWindow(12);
+    UIWindow* window = g_windowMgr.EnsureWindow(12);
     window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&this->item), 0, 0, 0);
   }
 }
@@ -268,7 +268,7 @@ void UILapineUpgradeBoxWnd::Slot32(int x, int y) {
 // FUNCTION: fn_04212
 void UILapineUpgradeBox_IngredientInfoWnd::Slot32(int x, int y) {
   if (this->item.unknown_0000[1] != 0) {
-    UIWindow* window = this->m_frameContext->windows.EnsureWindow(12);
+    UIWindow* window = g_windowMgr.EnsureWindow(12);
     window->SendMsg(this, 24, reinterpret_cast<std::intptr_t>(&this->item), 0, 0, 0);
   }
 }
@@ -522,7 +522,7 @@ bool UILapineUpgradeBox_IngredientListWnd::AddIngredient(std::uint32_t identity)
     }
   }
   auto* owner = static_cast<UILapineUpgradeBoxWnd*>(this->parent);
-  auto* entry = new UILapineUpgradeBox_IngredientInfoWnd(*this->m_context, owner->FrameContext());
+  auto* entry = new UILapineUpgradeBox_IngredientInfoWnd(*this->m_context);
   entry->SetSize(136, 30);
   entry->SetItem(identity);
   entry->quantity = 1;

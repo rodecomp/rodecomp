@@ -28,8 +28,8 @@ namespace {
 
 // OFFSET: 0x007EB0A0
 // FUNCTION: fn_09792
-UIMacroBlackListCheckWnd::UIMacroBlackListCheckWnd(UIWindowContext& windows, UIFrameContext& frames)
-    : UIFrameWnd(windows, frames, 0), digitButtons(), resetButton(nullptr),
+UIMacroBlackListCheckWnd::UIMacroBlackListCheckWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0), digitButtons(), resetButton(nullptr),
       unknown_00E4(0), inputLength(0), input(), code(), charSizes(), charFlags(), charColors(), duration(0), startTick(0) {}
 
 // OFFSET: 0x007EB230

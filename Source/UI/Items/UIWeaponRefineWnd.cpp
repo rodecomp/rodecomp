@@ -67,20 +67,20 @@ int UIWeaponRefineWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       UIListBox* list = this->m_list;
       if (list->LineCount() == 0) {
         g_modeMgr.gameMode->SendMsg(182, -1, 0, 0, 0);
-        this->m_frameContext->windows.CloseWindow(111);
-        this->m_frameContext->windows.CloseWindow(111);
+        g_windowMgr.CloseWindow(111);
+        g_windowMgr.CloseWindow(111);
         return 0;
       }
 
       const int selected = list->selected;
       if (selected >= 0) {
         g_modeMgr.gameMode->SendMsg(182, this->indices[selected], 0, 0, 0);
-        this->m_frameContext->windows.CloseWindow(111);
+        g_windowMgr.CloseWindow(111);
         return 0;
       }
     } else if (response == 185) {
       g_modeMgr.gameMode->SendMsg(182, -1, 0, 0, 0);
-      this->m_frameContext->windows.CloseWindow(111);
+      g_windowMgr.CloseWindow(111);
       return 0;
     }
 

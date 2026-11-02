@@ -276,7 +276,7 @@ static_assert(sizeof(CashEmotionPurchasePacket) == 7);
 
 class UICashEmotionListWnd : public UIFrameWnd {
 public:
-  UICashEmotionListWnd(UIWindowContext& windows, UIFrameContext& frame, UIButtonContext& controls, UIEditContext& edits);
+  UICashEmotionListWnd(UIWindowContext& windows, UIButtonContext& controls, UIEditContext& edits);
   void Slot11() override;
   void Slot15(int width, int height) override;
   void Slot19() override;
@@ -2158,8 +2158,8 @@ int UICashEmotionListChildWnd_UnPurchased::SendMsg(UIWindow* sender, int message
 
 // OFFSET: 0x007C6CB0
 // FUNCTION: fn_09401
-UICashEmotionListWnd::UICashEmotionListWnd(UIWindowContext& windows, UIFrameContext& frame, UIButtonContext& controls, UIEditContext& edits)
-    : UIFrameWnd(windows, frame, 0), m_placement(nullptr), m_basicList(nullptr), m_purchaseList(nullptr), m_unpurchasedList(nullptr), m_searchList(nullptr),
+UICashEmotionListWnd::UICashEmotionListWnd(UIWindowContext& windows, UIButtonContext& controls, UIEditContext& edits)
+    : UIFrameWnd(windows, 0), m_placement(nullptr), m_basicList(nullptr), m_purchaseList(nullptr), m_unpurchasedList(nullptr), m_searchList(nullptr),
       m_tab(0), unknown_00D4(nullptr), m_searchEdit(nullptr), unknown_00DC(nullptr), unknown_00E0(nullptr), unknown_00E4(nullptr), m_currentList(nullptr),
       m_period(nullptr), m_controls(&controls), m_edits(&edits) {
 }
@@ -2512,7 +2512,7 @@ int UICashEmotionListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       std::string text;
       text = free ? std::vformat(format, std::make_format_args(title)) : std::vformat(format, std::make_format_args(title, price));
 
-      UINormalMB* box = new UINormalMB(*this->m_context, *this->m_frameContext);
+      UINormalMB* box = new UINormalMB(*this->m_context);
       box->Create(nullptr, text.c_str(), 2, true, nullptr, 280, 128, nullptr);
       box->m_keepOpen = 1;
       g_windowMgr.AddRendered(box);

@@ -10,7 +10,7 @@ class UIStaticText;
 
 class UILoginOTPWnd : public UIFrameWnd {
 public:
-  UILoginOTPWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
+  UILoginOTPWnd(UIWindowContext& windows, UIButtonContext& controls);
   void Slot15(int width, int height) override;
   void Slot18() override;
   void Slot19() override;

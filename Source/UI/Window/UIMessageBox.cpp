@@ -161,8 +161,8 @@ namespace {
 
 // OFFSET: 0x008A39C0
 // FUNCTION: fn_11661
-UIMakeCharWnd::UIMakeCharWnd(UIWindowContext& windows, UIFrameContext& frames)
-    : UIFrameWnd(windows, frames, 0), unknown_02C4(0), unknown_02C8(0), unknown_02CC(0), unknown_02D0(0), unknown_02D4(0), unknown_02D8(0) {
+UIMakeCharWnd::UIMakeCharWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0), unknown_02C4(0), unknown_02C8(0), unknown_02CC(0), unknown_02D0(0), unknown_02D4(0), unknown_02D8(0) {
   this->geometry.unknown_0034 = 0;
   this->m_nameEdit = nullptr;
   this->m_info.sex = static_cast<unsigned char>(g_doramSex);
@@ -230,25 +230,25 @@ UIMakeCharWnd::UIMakeCharWnd(UIWindowContext& windows, UIFrameContext& frames)
 
 // OFFSET: 0x008A3F60
 // FUNCTION: fn_11662
-UIMerInfoWnd::UIMerInfoWnd(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0) {
+UIMerInfoWnd::UIMerInfoWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0) {
 }
 
 // OFFSET: 0x008A3FC0
 // FUNCTION: fn_11663
-UIMessageBox::UIMessageBox(UIWindowContext& windows, UIFrameContext& frames, UIMessageBoxContext& dialog)
-    : UIFrameWnd(windows, frames, 0), counting(0), protectedMessage(0), m_dialog(&dialog) {
+UIMessageBox::UIMessageBox(UIWindowContext& windows, UIMessageBoxContext& dialog)
+    : UIFrameWnd(windows, 0), counting(0), protectedMessage(0), m_dialog(&dialog) {
 }
 
 // OFFSET: 0x008A40B0
 // FUNCTION: fn_11664
-UIMessageBoxAutoreturn::UIMessageBoxAutoreturn(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0) {
+UIMessageBoxAutoreturn::UIMessageBoxAutoreturn(UIWindowContext& windows) : UIFrameWnd(windows, 0) {
   this->counting = 0;
 }
 
 // OFFSET: 0x008A4170
 // FUNCTION: fn_11665
-UIMonsterInfoWnd::UIMonsterInfoWnd(UIWindowContext& windows, UIFrameContext& frames)
-    : UIFrameWnd(windows, frames, 0), info(), unknown_00D4(0) {
+UIMonsterInfoWnd::UIMonsterInfoWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0), info(), unknown_00D4(0) {
 }
 
 // INLINED
@@ -2616,7 +2616,7 @@ int sub_8AB060() {
 
 // OFFSET: 0x008A4220
 // FUNCTION: fn_11666
-UINoticeWnd::UINoticeWnd(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0) {
+UINoticeWnd::UINoticeWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0) {
   this->m_patchFile = "notice_patch.txt";
   for (int i = 0; i < 19; ++i) {
     this->m_texts[i] = new UIStaticText(*this->m_context, *this->m_controls);
@@ -3166,8 +3166,8 @@ void UIMonsterInfoWnd::Slot15(int, int) {
 
 // OFFSET: 0x008A4300
 // FUNCTION: fn_11667
-UIPetInfoWnd::UIPetInfoWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
-    : UIFrameWnd(windows, frames, 0), friendlyGauge(nullptr), m_controls(&controls) {
+UIPetInfoWnd::UIPetInfoWnd(UIWindowContext& windows, UIButtonContext& controls)
+    : UIFrameWnd(windows, 0), friendlyGauge(nullptr), m_controls(&controls) {
   this->friendlyText.clear();
   this->unknown_00E4 = 0;
   this->unknown_00E8 = 0;
@@ -3185,14 +3185,14 @@ UIReplayButton::UIReplayButton(UIWindowContext& windows, UIButtonContext& contro
 
 // OFFSET: 0x008A4440
 // FUNCTION: fn_11669
-UIReplayControlWnd::UIReplayControlWnd(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0) {
+UIReplayControlWnd::UIReplayControlWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0) {
   this->m_paused = false;
 }
 
 // OFFSET: 0x008A4500
 // FUNCTION: fn_11670
-UIReplayRECControlWnd::UIReplayRECControlWnd(UIWindowContext& windows, UIFrameContext& frames, InputFocus& focus, int mode)
-    : UIFrameWnd(windows, frames, 0), mode(mode), recordStart(0), m_focus(&focus) {
+UIReplayRECControlWnd::UIReplayRECControlWnd(UIWindowContext& windows, InputFocus& focus, int mode)
+    : UIFrameWnd(windows, 0), mode(mode), recordStart(0), m_focus(&focus) {
   for (int i = 0; i < 10; ++i) {
     this->options[i] = nullptr;
     this->recordOptions[i] = 0;
@@ -3201,7 +3201,7 @@ UIReplayRECControlWnd::UIReplayRECControlWnd(UIWindowContext& windows, UIFrameCo
 
 // OFFSET: 0x008A45A0
 // FUNCTION: fn_11671
-UISelectReplayDataWnd::UISelectReplayDataWnd(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0) {
+UISelectReplayDataWnd::UISelectReplayDataWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0) {
   this->m_list = nullptr;
   this->m_serverButton = nullptr;
   this->m_texts[0] = nullptr;
@@ -3212,16 +3212,16 @@ UISelectReplayDataWnd::UISelectReplayDataWnd(UIWindowContext& windows, UIFrameCo
 
 // OFFSET: 0x008A4640
 // FUNCTION: fn_11672
-UISelectServerWnd::UISelectServerWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
-    : UIFrameWnd(windows, frames, 0), m_controls(&controls) {
+UISelectServerWnd::UISelectServerWnd(UIWindowContext& windows, UIButtonContext& controls)
+    : UIFrameWnd(windows, 0), m_controls(&controls) {
   this->m_serverList = nullptr;
   this->m_okButton = nullptr;
 }
 
 // OFFSET: 0x008A46E0
 // FUNCTION: fn_11673
-UITalkboxTrapInputWnd::UITalkboxTrapInputWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, UIEditContext& editContext)
-    : UIFrameWnd(windows, frames, 0), m_controls(&controls), m_editContext(&editContext) {
+UITalkboxTrapInputWnd::UITalkboxTrapInputWnd(UIWindowContext& windows, UIButtonContext& controls, UIEditContext& editContext)
+    : UIFrameWnd(windows, 0), m_controls(&controls), m_editContext(&editContext) {
 }
 
 // OFFSET: 0x008A4E00
@@ -3623,7 +3623,7 @@ int UIHomunInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       }
       return 0;
     case 290:
-      this->unknown_00D0 = new UINormalMB(*this->m_context, *this->m_frameContext);
+      this->unknown_00D0 = new UINormalMB(*this->m_context);
       this->unknown_00D0->Create(this, LookupMessage(601), 2, true, nullptr, 280, 120, nullptr);
       g_windowMgr.AddRendered(this->unknown_00D0);
       return 0;
@@ -3751,7 +3751,7 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2985)), 255, 0, 0, 0);
         break;
       }
-      this->window_00C4 = new UINormalMB(*this->m_context, *this->m_frameContext);
+      this->window_00C4 = new UINormalMB(*this->m_context);
       this->window_00C4->Create(this, LookupMessage(601), 2, true, nullptr, 280, 120, nullptr);
       g_windowMgr.AddRendered(this->window_00C4);
       g_windowMgr.CloseWindow(260);

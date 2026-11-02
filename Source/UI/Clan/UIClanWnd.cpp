@@ -17,7 +17,7 @@
 
 // OFFSET: 0x0084CBD0
 // FUNCTION: fn_10625
-UIClanInfoManageWnd::UIClanInfoManageWnd(UIWindowContext& windows, UIFrameContext& frames) : UIClanWnd(windows, frames), m_emblem(nullptr) {}
+UIClanInfoManageWnd::UIClanInfoManageWnd(UIWindowContext& windows) : UIClanWnd(windows), m_emblem(nullptr) {}
 
 // OFFSET: 0x0084CEF0
 // FUNCTION: fn_10628

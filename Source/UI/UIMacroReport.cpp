@@ -93,7 +93,7 @@ void CUIMacroReport::SendReport() {
     strncpy_s(packet.message, sizeof(packet.message), message.c_str(), _TRUNCATE);
   }
   GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
-  this->m_frameContext->windows.CloseWindow(10005);
+  g_windowMgr.CloseWindow(10005);
 }
 
 // OFFSET: 0x00A47C30
@@ -243,7 +243,7 @@ void CUIMacroReport::Slot15(int width, int height) {
   CUIImageButton* closeButton = new CUIImageButton(*this->m_context);
   closeButton->SetSize(11, 11);
   closeButton->Move(217, 3);
-  closeButton->SetOnClick([this]() { this->m_frameContext->windows.CloseWindow(10005); });
+  closeButton->SetOnClick([this]() { g_windowMgr.CloseWindow(10005); });
   closeButton->disabled = 0;
   closeButton->Invalidate();
   {
@@ -352,7 +352,7 @@ void CUIMacroReport::Slot15(int width, int height) {
   this->unknown_00EC = new CUIImageButton(*this->m_context);
   this->unknown_00EC->SetSize(58, 20);
   this->unknown_00EC->Move(117, 165);
-  this->unknown_00EC->SetOnClick([this]() { this->m_frameContext->windows.CloseWindow(10005); });
+  this->unknown_00EC->SetOnClick([this]() { g_windowMgr.CloseWindow(10005); });
   this->unknown_00EC->disabled = 0;
   this->unknown_00EC->Invalidate();
   {

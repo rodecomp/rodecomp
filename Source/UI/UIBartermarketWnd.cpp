@@ -17,7 +17,6 @@
 #include "Resource/TextureNames.h"
 #include "UI/Shop/ItemDrawing.h"
 #include "UI/Text/ColoredText.h"
-#include "UI/Layout/WindowSnapping.h"
 #include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/Window/UIResizer.h"
 #include "UI/Window/UIWindowMgr.h"
@@ -32,8 +31,8 @@
 
 // OFFSET: 0x00844BE0
 // FUNCTION: fn_10567
-UIExpandedBarterItemPurchaseWnd::UIExpandedBarterItemPurchaseWnd(UIWindowContext& windowContext, UIFrameContext& frameContext)
-    : UIFrameWnd(windowContext, frameContext, 0) {
+UIExpandedBarterItemPurchaseWnd::UIExpandedBarterItemPurchaseWnd(UIWindowContext& windowContext)
+    : UIFrameWnd(windowContext, 0) {
   new (&this->unknown_00B4) std::list<BarterMarketEntry>();
   this->resizer = nullptr;
   this->scrollBar = nullptr;
@@ -45,8 +44,8 @@ UIExpandedBarterItemPurchaseWnd::UIExpandedBarterItemPurchaseWnd(UIWindowContext
 
 // OFFSET: 0x00844D00
 // FUNCTION: fn_10569
-UIExpandedBartermarketWnd::UIExpandedBartermarketWnd(UIWindowContext& windowContext, UIFrameContext& frameContext)
-    : UIFrameWnd(windowContext, frameContext, 0) {
+UIExpandedBartermarketWnd::UIExpandedBartermarketWnd(UIWindowContext& windowContext)
+    : UIFrameWnd(windowContext, 0) {
   new (&this->unknown_00B4) std::list<BarterMarketEntry>();
   this->unknown_00BC = nullptr;
   this->scrollBar = nullptr;
@@ -545,7 +544,7 @@ int UIExpandedBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std:
 
     this->buyButton->Move(this->geometry.width - 105, this->geometry.height - 24);
     this->cancelButton->Move(this->geometry.width - 60, this->geometry.height - 24);
-    this->m_frameContext->snapping.Store(this);
+    g_windowMgr.StoreSnapRectangle(this);
     return 0;
   }
 
@@ -707,7 +706,7 @@ int UIExpandedBartermarketWnd::SendMsg(UIWindow* sender, int message, std::intpt
       this->scrollBar->Resize(this->scrollBar->geometry.width, this->geometry.height - 46);
       this->UpdateScrollBar();
     }
-    this->m_frameContext->snapping.Store(this);
+    g_windowMgr.StoreSnapRectangle(this);
     return 0;
   }
 
@@ -1303,7 +1302,7 @@ int UIBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       this->buttons[index]->Move(xs[index], y);
     }
 
-    this->m_frameContext->snapping.Store(this);
+    g_windowMgr.StoreSnapRectangle(this);
     return 0;
   }
 
@@ -1480,7 +1479,7 @@ int UIBartermarketWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         this->UpdateScrollBar();
       }
 
-      this->m_frameContext->snapping.Store(this);
+      g_windowMgr.StoreSnapRectangle(this);
     }
     return 0;
   }

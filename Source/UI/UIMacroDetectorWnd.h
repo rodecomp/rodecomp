@@ -12,7 +12,7 @@ class UIBitmapButton;
 
 class UIMacroDetectorWnd : public UIFrameWnd {
 public:
-  UIMacroDetectorWnd(UIWindowContext& windows, UIFrameContext& frames);
+  UIMacroDetectorWnd(UIWindowContext& windows);
   void Slot15(int width, int height) override;
   void Slot19() override;
   void Paint() override;

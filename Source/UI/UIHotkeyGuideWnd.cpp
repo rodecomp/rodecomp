@@ -15,8 +15,8 @@
 
 // OFFSET: 0x009663D0
 // FUNCTION: fn_13154
-UIHotkeyGuideWnd::UIHotkeyGuideWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
-    : UIFrameWnd(windows, frames, 0), m_controls(&controls) {
+UIHotkeyGuideWnd::UIHotkeyGuideWnd(UIWindowContext& windows, UIButtonContext& controls)
+    : UIFrameWnd(windows, 0), m_controls(&controls) {
   this->m_current = 4698;
 }
 
@@ -287,14 +287,14 @@ void UIHotkeyGuideWnd::Slot19() {
 int UIHotkeyGuideWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   if (message == 6) {
     if (a == 342) {
-      UIWindow* window = this->m_frameContext->windows.EnsureWindow(156);
+      UIWindow* window = g_windowMgr.EnsureWindow(156);
       if (window) {
         window->SendMsg(this, 22, 1, 0, 0, 0);
       }
     }
 
     if (a == 201 || a == 342) {
-      this->m_frameContext->windows.CloseWindow(303);
+      g_windowMgr.CloseWindow(303);
     }
   }
 

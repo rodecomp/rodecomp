@@ -9,7 +9,7 @@ struct UIEditContext;
 
 class UIBank_NewWnd : public UIFrameWnd {
 public:
-  UIBank_NewWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, UIEditContext& editContext);
+  UIBank_NewWnd(UIWindowContext& windows, UIButtonContext& controls, UIEditContext& editContext);
   bool Slot03() override;
   void Slot15(int width, int height) override;
   long long AdjustAmount(int amount);

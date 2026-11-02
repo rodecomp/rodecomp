@@ -197,7 +197,7 @@ void UIRodexComposeWnd::Slot25(int x, int y) {
   ITEM_INFO item = this->GetItemAtPoint(x, y);
   if (item.unknown_0000[1] > 0) {
     ItemDescriptions descriptions{g_itemDescriptions};
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(this->m_frameContext->windows, descriptions, 15, item, item.quantity, -1);
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(g_windowMgr, descriptions, 15, item, item.quantity, -1);
   }
 }
 
@@ -239,14 +239,14 @@ void UIRodexComposeWnd::Slot19() {
 void UIRodexComposeWnd::Slot32(int x, int y) {
   ITEM_INFO item = this->GetItemAtPoint(x, y);
   if (std::atoi(item.itemId.c_str()) != 0) {
-    this->m_frameContext->windows.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
   }
 }
 
 // OFFSET: 0x007FEDD0
 // FUNCTION: fn_09992
-UIRodexComposeWnd::UIRodexComposeWnd(UIWindowContext& windows, UIFrameContext& frames)
-    : UIFrameWnd(windows, frames, 0), unknown_00B4(nullptr), unknown_00B8(nullptr), unknown_00BC(nullptr), unknown_00C0(nullptr), unknown_00C4(nullptr),
+UIRodexComposeWnd::UIRodexComposeWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0), unknown_00B4(nullptr), unknown_00B8(nullptr), unknown_00BC(nullptr), unknown_00C0(nullptr), unknown_00C4(nullptr),
       unknown_00C8(nullptr), unknown_00CC(0), unknown_00D0(nullptr), m_contents(nullptr), unknown_00D8(nullptr), m_zeny(nullptr), unknown_00E0(0),
       unknown_00E4(0), m_itemIndex(0), unknown_00F8(0), unknown_0100(nullptr) {
   this->m_items.clear();

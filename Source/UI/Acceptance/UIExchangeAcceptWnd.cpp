@@ -11,8 +11,8 @@
 
 // OFFSET: 0x008C7AA0
 // FUNCTION: fn_11941
-UIExchangeAcceptWnd::UIExchangeAcceptWnd(UIWindowContext& windows, UIFrameContext& frames, UIAcceptanceContext& acceptance)
-    : UIChooseSellBuyWnd(windows, frames, acceptance), saved(nullptr) {
+UIExchangeAcceptWnd::UIExchangeAcceptWnd(UIWindowContext& windows, UIAcceptanceContext& acceptance)
+    : UIChooseSellBuyWnd(windows, acceptance), saved(nullptr) {
 }
 
 // OFFSET: 0x008CC9C0
@@ -40,7 +40,7 @@ int UIExchangeAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     owner.recorder.Record(this->geometry.id, response, b, c, d);
 
     if (response == 184 || response == 185) {
-      this->m_frameContext->windows.CloseWindow(32);
+      g_windowMgr.CloseWindow(32);
       this->m_context->mode->SendModeMessage(50, response == 184 ? 3 : 4, 0, 0, 0);
     }
 

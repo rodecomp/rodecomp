@@ -10,7 +10,7 @@
 struct UIButtonContext;
 class UIMenuWnd : public UIFrameWnd {
 public:
-  UIMenuWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
+  UIMenuWnd(UIWindowContext& windows, UIButtonContext& controls);
   /* 00B4 */ int m_menuId;
   /* 00B8 */ int m_selected;
   /* 00BC */ int m_itemHeight;

@@ -2499,7 +2499,7 @@ void __stdcall OpenWordDisplay(CGameActor* actor) {
     }
   }
 
-  UIWordDisplayWnd* window = new UIWordDisplayWnd(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIFrameContext*>(nullptr));
+  UIWordDisplayWnd* window = new UIWordDisplayWnd(*reinterpret_cast<UIWindowContext*>(nullptr));
   window->SendMsg(nullptr, 34, actor->render.accountId, 0, 0, 0);
   g_windowMgr.AddRendered(window);
   actor->unknown_018C = reinterpret_cast<int>(window);

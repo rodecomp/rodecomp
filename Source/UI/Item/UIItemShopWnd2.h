@@ -13,7 +13,7 @@ class UIStaticText;
 
 class UIItemShopWnd2 : public UIItemBaseWnd {
 public:
-  UIItemShopWnd2(UIWindowContext& windows, UIFrameContext& frames);
+  UIItemShopWnd2(UIWindowContext& windows);
   void Slot11() override;
   void Paint() override;
   void Slot28(int x, int y) override;

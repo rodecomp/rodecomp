@@ -3,7 +3,7 @@
 // OFFSET: 0x008C7FC0
 // FUNCTION: fn_11947
 UIItemParamChangeDisplayWnd::UIItemParamChangeDisplayWnd()
-    : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIFrameContext*>(nullptr), 0),
+    : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(nullptr), 0),
       m_before(0),
       m_after(0),
       m_beforeSecond(0),

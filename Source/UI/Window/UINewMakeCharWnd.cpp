@@ -28,7 +28,7 @@
 // OFFSET: 0x007D9A50
 // FUNCTION: fn_09609
 UINewMakeCharWnd::UINewMakeCharWnd()
-    : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIFrameContext*>(nullptr), 0),
+    : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(nullptr), 0),
       unknown_02C0(0),
       m_race(0),
       m_raceViews() {

@@ -8,7 +8,7 @@ struct UITextViewerContext;
 
 class UINoticeConfirmWnd : public UIFrameWnd {
 public:
-  UINoticeConfirmWnd(UIWindowContext& windows, UIFrameContext& frames);
+  UINoticeConfirmWnd(UIWindowContext& windows);
   /* 00B4 */ UITextViewer* m_viewer;
   /* 00B8 */ int m_event;
 

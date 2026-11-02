@@ -367,8 +367,8 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 
 // OFFSET: 0x00946800
 // FUNCTION: fn_12846
-UIAccountLimitedToolWnd::UIAccountLimitedToolWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, UIEditContext& edits, UITextViewerContext& texts)
-    : UIFrameWnd(windows, frames, 0), m_accountIdText(nullptr), m_viewer(nullptr), m_controls(&controls), m_editContext(&edits), m_textContext(&texts) {
+UIAccountLimitedToolWnd::UIAccountLimitedToolWnd(UIWindowContext& windows, UIButtonContext& controls, UIEditContext& edits, UITextViewerContext& texts)
+    : UIFrameWnd(windows, 0), m_accountIdText(nullptr), m_viewer(nullptr), m_controls(&controls), m_editContext(&edits), m_textContext(&texts) {
   SecureZeroMemory(this->m_edits, sizeof(this->m_edits));
   SecureZeroMemory(this->m_buttons, sizeof(this->m_buttons));
 }

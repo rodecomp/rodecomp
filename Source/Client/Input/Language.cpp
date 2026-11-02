@@ -392,8 +392,8 @@ UIHairBitmap::UIHairBitmap() : UIBitmapButton() {
 
 // OFFSET: 0x007ECEC0
 // FUNCTION: fn_09804
-UICaptchaPreviewWnd::UICaptchaPreviewWnd(UIWindowContext& windows, UIFrameContext& frames)
-    : UIFrameWnd(windows, frames, 0), m_image(nullptr), m_captchaKey(), m_imageData(nullptr), m_imageSize(0), m_imageReceived(0) {
+UICaptchaPreviewWnd::UICaptchaPreviewWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0), m_image(nullptr), m_captchaKey(), m_imageData(nullptr), m_imageSize(0), m_imageReceived(0) {
 }
 
 // OFFSET: 0x0086C7B0
@@ -416,15 +416,15 @@ UIColoringTextViewer::UIColoringTextViewer() : UIListBox(), color(0), lineLimit(
 
 // OFFSET: 0x007ECF50
 // FUNCTION: fn_09805
-UIMacroDetectorWnd::UIMacroDetectorWnd(UIWindowContext& windows, UIFrameContext& frames)
-    : UIFrameWnd(windows, frames, 0), m_button(nullptr), m_imageData(nullptr), m_imageSize(0), m_imageReceived(0), unknown_00D0(0), totalDuration(0),
+UIMacroDetectorWnd::UIMacroDetectorWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0), m_button(nullptr), m_imageData(nullptr), m_imageSize(0), m_imageReceived(0), unknown_00D0(0), totalDuration(0),
       startTick(0), messageDuration(0), m_lastAnswer(), message(), unknown_0110(0), messageTick(3000), m_image(nullptr), m_editCtrl(nullptr) {
   std::memset(this->m_captchaKey, 0, sizeof(this->m_captchaKey));
   g_windowMgr.CloseWindow(155);
   g_windowMgr.CloseWindow(39);
 }
 // FUNCTION: fn_13537
-UIRoundBoxTooltipWnd::UIRoundBoxTooltipWnd(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0), viewer(nullptr) {
+UIRoundBoxTooltipWnd::UIRoundBoxTooltipWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0), viewer(nullptr) {
 }
 
 // OFFSET: 0x00ACC7F0

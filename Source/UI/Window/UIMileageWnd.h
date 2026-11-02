@@ -10,7 +10,7 @@ struct UIButtonContext;
 
 class UIMileageWnd : public UIFrameWnd {
 public:
-  UIMileageWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
+  UIMileageWnd(UIWindowContext& windows, UIButtonContext& controls);
   void Paint() override;
   void Slot19() override;
   void Slot25(int x, int y) override;

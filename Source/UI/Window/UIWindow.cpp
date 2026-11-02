@@ -3011,7 +3011,7 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
 // FUNCTION: fn_03627
 int UINavigationroadiconWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::intptr_t, std::intptr_t, std::intptr_t) {
   if (message == 6 && a == 201) {
-    this->m_frameContext->windows.CloseWindow(306);
+    g_windowMgr.CloseWindow(306);
   }
 
   return 0;
@@ -3110,7 +3110,7 @@ int UIListBox_NaviSearch::SendMsg(
 int UINavigationRuideWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::intptr_t, std::intptr_t, std::intptr_t) {
   if (message == 6) {
     if (a == 201) {
-      this->m_frameContext->windows.CloseWindow(314);
+      g_windowMgr.CloseWindow(314);
     }
   } else if (message != 60) {
     return 0;

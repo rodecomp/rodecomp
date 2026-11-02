@@ -109,8 +109,8 @@ struct CashShopReplaceCartItemText {
 
 // OFFSET: 0x007CD5F0
 // FUNCTION: fn_09511
-UICashShopWnd::UICashShopWnd(UIWindowContext& windows, UIFrameContext& frames)
-    : UIFrameWnd(windows, frames, 0), m_banner(nullptr), m_secondBanner(nullptr), m_selectedTab(0), m_itemsPerPage(9), m_columns(3), m_page(0),
+UICashShopWnd::UICashShopWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0), m_banner(nullptr), m_secondBanner(nullptr), m_selectedTab(0), m_itemsPerPage(9), m_columns(3), m_page(0),
       m_pageCount(0), unknown_00E0(nullptr), unknown_00E8(0), unknown_00EC(0), unknown_00F0(0), unknown_00F4(nullptr), m_cart(nullptr) {
 }
 

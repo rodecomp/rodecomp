@@ -105,7 +105,7 @@ int UITransMenuWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
 
 // OFFSET: 0x009471E0
 // FUNCTION: fn_12859
-UITransMenuWnd::UITransMenuWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls) : UIFrameWnd(windows, frames, 0), m_controls(&controls) {
+UITransMenuWnd::UITransMenuWnd(UIWindowContext& windows, UIButtonContext& controls) : UIFrameWnd(windows, 0), m_controls(&controls) {
   this->m_margin = 5;
   this->m_lineHeight = 12;
   this->m_selected = -1;

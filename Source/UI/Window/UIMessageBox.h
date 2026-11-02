@@ -23,7 +23,7 @@ struct UIMessageBoxContext {
 
 class UIMessageBox : public UIFrameWnd {
 public:
-  UIMessageBox(UIWindowContext& windows, UIFrameContext& frames, UIMessageBoxContext& dialog);
+  UIMessageBox(UIWindowContext& windows, UIMessageBoxContext& dialog);
   ~UIMessageBox() override;
   void Slot18() override;
   void Slot19() override;

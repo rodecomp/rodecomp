@@ -186,8 +186,8 @@ void UIHotKeyWnd::UpdatePageButtons() {
 
 // OFFSET: 0x00911300
 // FUNCTION: fn_12513
-UIHotKeyWnd::UIHotKeyWnd(UIWindowContext& windows, UIFrameContext& frames)
-    : UIFrameWnd(windows, frames, 0), m_selectedRow(-1), m_rowsPerPage(18), unknown_00BC(17), unknown_00C0(0), unknown_00C4(20), unknown_00C8(3), unknown_00CC(3),
+UIHotKeyWnd::UIHotKeyWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0), m_selectedRow(-1), m_rowsPerPage(18), unknown_00BC(17), unknown_00C0(0), unknown_00C4(20), unknown_00C8(3), unknown_00CC(3),
       unknown_00D0(20), unknown_00D4(80), unknown_00D8(135), m_balloon(nullptr), m_tab(0), m_page(1), m_pageCount(0), unknown_0114(0) {
 }
 

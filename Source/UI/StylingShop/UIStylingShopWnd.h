@@ -119,7 +119,7 @@ void ToggleStylingAccessory(int itemId, int slot);
 
 class UIStylingShopWnd : public UIFrameWnd {
 public:
-  UIStylingShopWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
+  UIStylingShopWnd(UIWindowContext& windows, UIButtonContext& controls);
 
   /* 00B4 */ UIStylingShopButton* m_buyButton;
   /* 00B8 */ UIDisplayCharacter* m_preview;

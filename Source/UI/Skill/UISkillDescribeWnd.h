@@ -10,7 +10,7 @@ class UITextViewer;
 
 class UISkillDescribeWnd : public UIFrameWnd {
 public:
-  UISkillDescribeWnd(UIWindowContext& windows, UIFrameContext& frames);
+  UISkillDescribeWnd(UIWindowContext& windows);
 
   /* 00B4 */ UIBitmapButton* m_closeButton;
   /* 00B8 */ UITextViewer* m_viewer;

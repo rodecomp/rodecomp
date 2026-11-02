@@ -17,7 +17,7 @@ struct UIEditContext;
 
 class UIReplayRECControlWnd : public UIFrameWnd {
 public:
-  UIReplayRECControlWnd(UIWindowContext& windows, UIFrameContext& frames, InputFocus& focus, int mode);
+  UIReplayRECControlWnd(UIWindowContext& windows, InputFocus& focus, int mode);
   ~UIReplayRECControlWnd() override;
 
   bool Slot03() override;

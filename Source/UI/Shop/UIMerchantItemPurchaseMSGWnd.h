@@ -9,7 +9,7 @@ struct UIButtonContext;
 
 class UIMerchantItemPurchaseMSGWnd : public UIFrameWnd {
 public:
-  UIMerchantItemPurchaseMSGWnd(UIWindowContext& windowContext, UIFrameContext& frameContext);
+  UIMerchantItemPurchaseMSGWnd(UIWindowContext& windowContext);
   void Slot15(int width, int height) override;
   void Paint() override;
   void SetPurchase(int value, int amount);

@@ -42,8 +42,8 @@ namespace {
 
 // OFFSET: 0x007B2420
 // FUNCTION: fn_09186
-UIAchievementWnd::UIAchievementWnd(UIWindowContext& windows, UIFrameContext& frame, UIButtonContext& controls)
-    : UIFrameWnd(windows, frame, 0), upper(nullptr), tab(nullptr), list(nullptr), group(0), sub(-1), m_controls(&controls) {
+UIAchievementWnd::UIAchievementWnd(UIWindowContext& windows, UIButtonContext& controls)
+    : UIFrameWnd(windows, 0), upper(nullptr), tab(nullptr), list(nullptr), group(0), sub(-1), m_controls(&controls) {
 }
 
 // OFFSET: 0x007B2E80
@@ -1035,7 +1035,7 @@ void UIAchTab::SetLabel(const char* text, int group, int sub) {
 
 // OFFSET: 0x007BA260
 // FUNCTION: fn_09264
-UIAchTracingWnd::UIAchTracingWnd(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0) {
+UIAchTracingWnd::UIAchTracingWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0) {
   this->info = nullptr;
 }
 
@@ -1147,7 +1147,7 @@ int UIAchTracingWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         return 0;
       }
     } else if (argument1 == 479) {
-      UIWindow* window = this->m_frameContext->windows.EnsureWindow(270);
+      UIWindow* window = g_windowMgr.EnsureWindow(270);
       if (window) {
         static_cast<UIAchievementWnd*>(window)->SelectAchievement(argument2);
         this->Invalidate();

@@ -58,14 +58,14 @@ void UIQuickSlotWnd::Slot25(int x, int y) {
     CSkillInfo skill = painting.skills.Lookup(entry.id);
     if (skill.available && skill.level) {
       if (CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode())) {
-        mode->drag.BeginSkill(this->m_frameContext->windows, ResourceMgr::Instance(), 16, skill.id, skill.name, entry.count, index);
+        mode->drag.BeginSkill(g_windowMgr, ResourceMgr::Instance(), 16, skill.id, skill.name, entry.count, index);
       }
     }
   } else if (entry.id != 0) {
     ITEM_INFO item = LookupClientItem(painting.inventory, static_cast<int>(entry.id), 1);
     if (item.unknown_0000[1] > 0) {
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-      mode->drag.BeginItem(this->m_frameContext->windows, painting.descriptions, 16, item, item.quantity, -1);
+      mode->drag.BeginItem(g_windowMgr, painting.descriptions, 16, item, item.quantity, -1);
     }
   }
 }
@@ -146,7 +146,7 @@ void UIQuickSlotWnd::Slot32(int x, int y) {
 
   const QuickSlotEntry entry = this->m_entries[index];
   if (entry.skill) {
-    WindowManagerWindows& windows = this->m_frameContext->windows;
+    WindowManagerWindows& windows = g_windowMgr;
     UIWindow* detail = windows.EnsureWindow(46);
     if (detail) {
       if (*reinterpret_cast<std::uint32_t*>(reinterpret_cast<char*>(detail) + 0x104) == entry.id) {
@@ -174,7 +174,7 @@ void UIQuickSlotWnd::Slot32(int x, int y) {
   } else if (entry.id != 0) {
     ITEM_INFO item = LookupClientItem(this->m_painting->inventory, static_cast<int>(entry.id), 1);
     if (item.unknown_0000[1] > 0) {
-      UIWindow* detail = this->m_frameContext->windows.EnsureWindow(12);
+      UIWindow* detail = g_windowMgr.EnsureWindow(12);
       detail->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     }
   }
@@ -182,8 +182,8 @@ void UIQuickSlotWnd::Slot32(int x, int y) {
 
 // OFFSET: 0x009118C0
 // FUNCTION: fn_12520
-UIQuickSlotWnd::UIQuickSlotWnd(UIWindowContext& windows, UIFrameContext& frames, QuickSlotPainting& painting)
-    : UIFrameWnd(windows, frames, 0), m_selected(-1), m_painting(&painting) {
+UIQuickSlotWnd::UIQuickSlotWnd(UIWindowContext& windows, QuickSlotPainting& painting)
+    : UIFrameWnd(windows, 0), m_selected(-1), m_painting(&painting) {
   for (int i = 0; i < 2; ++i) {
     this->m_entries[i].skill = 0;
     this->m_entries[i].id = 0;

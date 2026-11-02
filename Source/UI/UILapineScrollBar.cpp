@@ -361,7 +361,7 @@ unsigned char UILapineBox_IngredientListWnd::AddIngredient(std::uint32_t id) {
   }
 
   UILapineBoxWnd* owner = static_cast<UILapineBoxWnd*>(this->parent);
-  UIIngredientInfoWnd* info = new UIIngredientInfoWnd(*this->m_context, owner->FrameContext());
+  UIIngredientInfoWnd* info = new UIIngredientInfoWnd(*this->m_context);
   info->SetSize(136, 30);
   info->sub_6028C0(id);
   info->quantity = it->quantity;

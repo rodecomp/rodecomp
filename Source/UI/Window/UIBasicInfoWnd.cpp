@@ -16,7 +16,6 @@
 #include "Contents/MessageTable.h"
 #include "UI/Items/UIEquipWnd.h"
 #include "UI/Layout/SnapMgr.h"
-#include "UI/Layout/WindowSnapping.h"
 #include "UI/Lists/UITabControl.h"
 #include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/Window/WindowDialogs.h"
@@ -52,7 +51,7 @@ std::int64_t JobExpMaximum() {
 
 // OFFSET: 0x00997250
 // FUNCTION: fn_13484
-UIBasicInfoWnd::UIBasicInfoWnd(UIWindowContext& windowContext, UIFrameContext& frameContext) : UIFrameWnd(windowContext, frameContext, 0) {
+UIBasicInfoWnd::UIBasicInfoWnd(UIWindowContext& windowContext) : UIFrameWnd(windowContext, 0) {
   this->saved = nullptr;
   this->mode = 0;
   this->layoutOffset = 13;
@@ -268,11 +267,11 @@ int UIBasicInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     case 202: {
       const int height = this->geometry.height;
       this->SetHeight(height == this->collapsedHeight ? this->expandedHeight : this->collapsedHeight);
-      this->m_frameContext->snapping.Store(this);
+      g_windowMgr.StoreSnapRectangle(this);
       reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(this);
       const int delta = this->geometry.height - height;
       if (delta != 0) {
-        g_snapMgr.MoveEdge(this, 0, delta, 3, this->m_frameContext->snapping);
+        g_snapMgr.MoveEdge(this, 0, delta, 3);
       }
       break;
     }
@@ -308,7 +307,7 @@ int UIBasicInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       g_windowMgr.CloseWindow(59);
       reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(36, 0);
       this->SetHeight(this->collapsedHeight);
-      this->m_frameContext->snapping.Store(this);
+      g_windowMgr.StoreSnapRectangle(this);
       break;
     case 247:
       if (!g_windowMgr.LookupWindow(227) && !g_windowMgr.CloseWindow(40) && g_session.unknown_5C1C > 0) {

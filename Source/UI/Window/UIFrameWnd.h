@@ -4,22 +4,14 @@
 #include "UI/Window/FrameTextCache.h"
 #include "UI/Window/UIWindow.h"
 
-struct WindowSnapping;
 #include "UI/Window/WindowManagerWindows.h"
 class UIBitmapButton;
 class UICheckBox;
 struct UIButtonContext;
 
-struct UIFrameContext {
-  WindowSnapping& snapping;
-  WindowManagerWindows& windows;
-  const int& dragLimitX;
-  const int& dragLimitY;
-};
-
 class UIFrameWnd : public UIWindow {
 public:
-  UIFrameWnd(UIWindowContext& windowContext, UIFrameContext& frameContext, unsigned char cached);
+  UIFrameWnd(UIWindowContext& windowContext, unsigned char cached);
   ~UIFrameWnd() override;
   bool Slot02() override;
   void Move(int x, int y) override;
@@ -74,7 +66,7 @@ protected:
   /* 008C */ int m_message0;
   /* 0090 */ int m_message1;
   /* 0094 */ FrameTextCache m_textCache;
-  UIFrameContext* m_frameContext;
+  unsigned char unknown_00B8[4];
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

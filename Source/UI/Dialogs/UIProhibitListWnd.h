@@ -8,7 +8,7 @@ struct UIEditContext;
 
 class UIProhibitListWnd : public UIFrameWnd {
 public:
-  UIProhibitListWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, UIEditContext& edits);
+  UIProhibitListWnd(UIWindowContext& windows, UIButtonContext& controls, UIEditContext& edits);
   /* 00B4 */ int m_count;
   /* 00B8 */ std::uint32_t m_aid;
 

@@ -1515,7 +1515,7 @@ UIRuneSystemTab::UIRuneSystemTab(UIWindowContext& windows) : UIWindow(windows, 0
 
 // OFFSET: 0x00814D40
 // FUNCTION: fn_10137
-UIRuneSystemWnd::UIRuneSystemWnd(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0), m_nextTick(0) {
+UIRuneSystemWnd::UIRuneSystemWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0), m_nextTick(0) {
   RuneSystemOpenPacket packet;
   packet.id = 0x0BE0;
   packet.open = 1;
@@ -1529,8 +1529,8 @@ UIRuneSystem_ActiveWnd::UIRuneSystem_ActiveWnd(UIWindowContext& windows) : UIWin
 
 // OFFSET: 0x00814EE0
 // FUNCTION: fn_10139
-UIRuneSystem_DecomResultWnd::UIRuneSystem_DecomResultWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
-    : UIFrameWnd(windows, frames, 0), m_total(0) {
+UIRuneSystem_DecomResultWnd::UIRuneSystem_DecomResultWnd(UIWindowContext& windows, UIButtonContext& controls)
+    : UIFrameWnd(windows, 0), m_total(0) {
   UIBitmapButton* button = new UIBitmapButton(windows, controls);
   this->AddChild(button);
   button->SetBitmap("유저인터페이스\\runesystem\\bt_ok_nomal.bmp", 0, 0);

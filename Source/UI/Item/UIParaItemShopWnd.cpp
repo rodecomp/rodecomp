@@ -26,7 +26,6 @@
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UICheckBox.h"
 #include "UI/Dialogs/UIPasswordWnd.h"
-#include "UI/Layout/WindowSnapping.h"
 #include "UI/Lists/UIScrollBar.h"
 #include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/Text/UIStaticText.h"
@@ -431,7 +430,7 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
         this->buttons[i]->Move(positions[i][0], positions[i][1]);
       }
 
-      this->m_frameContext->snapping.Store(this);
+      g_windowMgr.StoreSnapRectangle(this);
       return 0;
     }
     break;
@@ -571,7 +570,7 @@ int UIParaItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         this->UpdateScrollBar();
       }
 
-      this->m_frameContext->snapping.Store(this);
+      g_windowMgr.StoreSnapRectangle(this);
       return 0;
     }
     break;
@@ -637,7 +636,7 @@ int UIParaResultWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
       this->total->Move(12, this->geometry.height - 20);
       this->buttons[0]->Move(this->geometry.width - 61, this->geometry.height - 24);
       this->Move(g_renderer->viewport.width / 2 - this->geometry.width / 2, g_renderer->viewport.height / 2 - this->geometry.height / 2);
-      this->m_frameContext->snapping.Store(this);
+      g_windowMgr.StoreSnapRectangle(this);
       return 0;
     }
     break;

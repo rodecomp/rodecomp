@@ -16,7 +16,7 @@ std::vector<GuildStorageLogEntry> g_guildStorageLogs[3];
 
 // OFFSET: 0x009469D0
 // FUNCTION: fn_12849
-UIGuild_Storage_Log::UIGuild_Storage_Log(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0) {
+UIGuild_Storage_Log::UIGuild_Storage_Log(UIWindowContext& windows) : UIFrameWnd(windows, 0) {
   this->unknown_0184 = 0;
   this->unknown_0188 = 0;
   this->unknown_018C = 0;
@@ -43,7 +43,7 @@ int UIGuild_Storage_Log::SendMsg(UIWindow* sender, int message, std::intptr_t a,
   case 6:
     switch (a) {
     case 184:
-      this->m_frameContext->windows.CloseWindow(253);
+      g_windowMgr.CloseWindow(253);
       break;
 
     case 218: {

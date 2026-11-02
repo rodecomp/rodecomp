@@ -17,7 +17,7 @@ struct CombinedCardItemCollectionWndInfo;
 
 class UIItemCollectionWnd : public UIFrameWnd {
 public:
-  UIItemCollectionWnd(UIWindowContext& windows, UIFrameContext& frames);
+  UIItemCollectionWnd(UIWindowContext& windows);
   ~UIItemCollectionWnd() override;
   void Slot11() override;
   void Slot15(int width, int height) override;
@@ -72,7 +72,7 @@ public:
 
 class UICombinedCardItemCollectionWnd : public UIItemCollectionWnd {
 public:
-  UICombinedCardItemCollectionWnd(UIWindowContext& windows, UIFrameContext& frames);
+  UICombinedCardItemCollectionWnd(UIWindowContext& windows);
   void Slot15(int width, int height) override;
   void Move(int x, int y) override;
   void Slot11() override;
@@ -84,7 +84,7 @@ public:
 
 class UIItemCollection_ComparisonWnd : public UIItemCollectionWnd {
 public:
-  UIItemCollection_ComparisonWnd(UIWindowContext& windows, UIFrameContext& frames);
+  UIItemCollection_ComparisonWnd(UIWindowContext& windows);
   void Slot15(int width, int height) override;
   void Move(int x, int y) override;
   void Slot25(int x, int y) override;
@@ -95,7 +95,7 @@ public:
 
 class UICombinedCardItemCollection_ComparisonWnd : public UIItemCollectionWnd {
 public:
-  UICombinedCardItemCollection_ComparisonWnd(UIWindowContext& windows, UIFrameContext& frames);
+  UICombinedCardItemCollection_ComparisonWnd(UIWindowContext& windows);
   void Slot15(int width, int height) override;
   void Slot25(int x, int y) override;
   void Slot31(int x, int y) override;

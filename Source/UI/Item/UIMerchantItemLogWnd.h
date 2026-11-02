@@ -23,7 +23,7 @@ public:
     /* 0038 */ std::uint32_t characterId;
   };
 
-  UIMerchantItemLogWnd(UIWindowContext& windows, UIFrameContext& frames, int mode);
+  UIMerchantItemLogWnd(UIWindowContext& windows, int mode);
   void Slot15(int width, int height) override;
   void Slot19() override;
   void Paint() override;

@@ -19,7 +19,7 @@ int g_partyBookingLevelMax;
 
 // OFFSET: 0x00912010
 // FUNCTION: fn_12525
-UISeekPartyWnd::UISeekPartyWnd() : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIFrameContext*>(nullptr), 0) {
+UISeekPartyWnd::UISeekPartyWnd() : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(nullptr), 0) {
   this->m_label = nullptr;
   this->m_cancelButton = nullptr;
   this->m_level = 1;

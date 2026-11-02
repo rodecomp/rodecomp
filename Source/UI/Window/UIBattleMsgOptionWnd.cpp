@@ -31,7 +31,7 @@ void UIBattleMsgOptionWnd::Slot35(int delta) {
 
 // OFFSET: 0x00910C40
 // FUNCTION: fn_12510
-UIBattleMsgOptionWnd::UIBattleMsgOptionWnd(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0) {
+UIBattleMsgOptionWnd::UIBattleMsgOptionWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0) {
   this->unknown_00B8 = -1;
   this->messages.push_back(LookupMessage(0x50B));
 
@@ -246,7 +246,7 @@ int UIBattleMsgOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     if (a == 193) {
       if (this->unknown_0108 == b && this->unknown_0110 == (c != 0)) {
         if (d != 2) {
-          this->m_frameContext->windows.CloseWindow(132);
+          g_windowMgr.CloseWindow(132);
           return 0;
         }
       } else if (d == 1) {
@@ -276,7 +276,7 @@ int UIBattleMsgOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     }
 
     if (a == 201) {
-      this->m_frameContext->windows.CloseWindow(132);
+      g_windowMgr.CloseWindow(132);
       return 0;
     }
 

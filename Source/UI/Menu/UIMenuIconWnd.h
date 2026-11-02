@@ -16,7 +16,7 @@ public:
 
 class UIMenuIconWnd : public UIFrameWnd {
 public:
-  UIMenuIconWnd(UIWindowContext& windowContext, UIFrameContext& frameContext);
+  UIMenuIconWnd(UIWindowContext& windowContext);
 
   /* 00B4 */ std::map<int, UIButton*> unknown_00B4;
   /* 00BC */ std::map<int, UIButton*> unknown_00BC;

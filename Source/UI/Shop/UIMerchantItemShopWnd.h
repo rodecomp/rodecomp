@@ -12,7 +12,7 @@ class UIStaticText;
 
 class UIMerchantItemShopWnd : public UIItemBaseWnd {
 public:
-  UIMerchantItemShopWnd(UIWindowContext& windows, UIFrameContext& frames, int value);
+  UIMerchantItemShopWnd(UIWindowContext& windows, int value);
   std::vector<unsigned char> BuildReplayRecords();
   void Slot11() override;
   void Slot19() override;

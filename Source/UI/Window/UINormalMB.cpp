@@ -12,7 +12,7 @@
 
 // OFFSET: 0x00946C00
 // FUNCTION: fn_12851
-UINormalMB::UINormalMB(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0), m_owner(nullptr), m_viewer(nullptr) {
+UINormalMB::UINormalMB(UIWindowContext& windows) : UIFrameWnd(windows, 0), m_owner(nullptr), m_viewer(nullptr) {
   this->m_keepOpen = 0;
 }
 

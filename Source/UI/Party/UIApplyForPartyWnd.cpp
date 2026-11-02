@@ -21,8 +21,8 @@ namespace {
 
 // OFFSET: 0x007BAD00
 // FUNCTION: fn_09275
-UIApplyForPartyWnd::UIApplyForPartyWnd(UIWindowContext& windows, UIFrameContext& frames, UIApplyForPartyContext& application)
-    : UIFrameWnd(windows, frames, 0), m_application(&application) {
+UIApplyForPartyWnd::UIApplyForPartyWnd(UIWindowContext& windows, UIApplyForPartyContext& application)
+    : UIFrameWnd(windows, 0), m_application(&application) {
 }
 
 // OFFSET: 0x007BB610
@@ -190,7 +190,7 @@ int UIApplyForPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
 
     switch (static_cast<int>(a)) {
     case 201:
-      this->m_frameContext->windows.CloseWindow(345);
+      g_windowMgr.CloseWindow(345);
       break;
     case 271:
       g_adventurerAgencyMgr->RequestInfo(this->info.accountId, owner.requests, owner.completion);

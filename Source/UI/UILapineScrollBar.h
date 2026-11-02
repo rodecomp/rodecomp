@@ -104,9 +104,6 @@ public:
   __declspec(noinline) void MaterialPosition(int* out, int index);
   void SetWaiting(unsigned char waiting);
   // INLINED
-  UIFrameContext& FrameContext() {
-    return *this->m_frameContext;
-  }
 
   /* 00B4 */ UIBitmapButton* cancelButton;
   /* 00B8 */ UIBitmapButton* makeButton;

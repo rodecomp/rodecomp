@@ -9,7 +9,7 @@ struct UITextViewerContext;
 
 class UIWaitWnd : public UIFrameWnd {
 public:
-  UIWaitWnd(UIWindowContext& windows, UIFrameContext& frames);
+  UIWaitWnd(UIWindowContext& windows);
   /* 00B4 */ UITextViewer* m_textViewer;
   /* 00B8 */ UIBitmapButton* m_button;
 

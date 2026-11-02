@@ -11,7 +11,7 @@ struct WindowResponseRecorder;
 
 class UIMakeTargetProcessWnd : public UIFrameWnd {
 public:
-  UIMakeTargetProcessWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, WindowResponseRecorder& recorder);
+  UIMakeTargetProcessWnd(UIWindowContext& windows, UIButtonContext& controls, WindowResponseRecorder& recorder);
   void Paint() override;
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot15(int width, int height) override;

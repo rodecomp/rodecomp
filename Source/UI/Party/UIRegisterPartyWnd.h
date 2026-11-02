@@ -32,7 +32,7 @@ struct UIRegisterPartyContext {
 
 class UIRegisterPartyWnd : public UIFrameWnd {
 public:
-  UIRegisterPartyWnd(UIWindowContext& windows, UIFrameContext& frames, UIRegisterPartyContext& registration);
+  UIRegisterPartyWnd(UIWindowContext& windows, UIRegisterPartyContext& registration);
   ~UIRegisterPartyWnd() override;
   void Slot11() override;
   void Slot15(int width, int height) override;

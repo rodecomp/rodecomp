@@ -501,6 +501,8 @@ public:
   void ShowWindows189(unsigned char show);
   void DestroyPersistentWindows();
   void RemoveSnapRectangle(UIWindow* window);
+  void StoreSnapRectangle(UIWindow* window);
+  void ConstrainSnap(UIWindow* window, int& dx, int& dy, int groupMember);
   void ReleaseRetainedWindow(int id);
   void InvalidateAll();
   void RefreshClanWnd();

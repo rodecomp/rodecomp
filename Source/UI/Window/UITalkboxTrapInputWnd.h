@@ -20,7 +20,7 @@ struct TalkboxTrapRequest {
 
 class UITalkboxTrapInputWnd : public UIFrameWnd {
 public:
-  UITalkboxTrapInputWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, UIEditContext& editContext);
+  UITalkboxTrapInputWnd(UIWindowContext& windows, UIButtonContext& controls, UIEditContext& editContext);
 
   void Slot15(int width, int height) override;
   void Paint() override;

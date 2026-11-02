@@ -31,7 +31,7 @@ CGuildTip g_guildTip;
 
 // OFFSET: 0x00953960
 // FUNCTION: fn_12996
-UIGuildHelperWnd::UIGuildHelperWnd() : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(0), *reinterpret_cast<UIFrameContext*>(0), 0) {
+UIGuildHelperWnd::UIGuildHelperWnd() : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(0), 0) {
 }
 
 // OFFSET: 0x00953810
@@ -42,7 +42,7 @@ UICreateGuildWnd::UICreateGuildWnd(int mode) : m_mode(mode) {
 // OFFSET: 0x00953A90
 // FUNCTION: fn_12998
 UIGuildLeaveReasonDescWnd::UIGuildLeaveReasonDescWnd()
-    : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(0), *reinterpret_cast<UIFrameContext*>(0), 0), m_reasonEdit(nullptr), m_reasonText(nullptr) {
+    : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(0), 0), m_reasonEdit(nullptr), m_reasonText(nullptr) {
 }
 
 // OFFSET: 0x00953880
@@ -181,15 +181,15 @@ int UICreateGuildWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, s
       mode->SendMsg(112, reinterpret_cast<int>(name.c_str()), 0, 0, 0);
     } else {
       mode->SendMsg(106, reinterpret_cast<int>(name.c_str()), 0, 0, 0);
-      this->m_frameContext->windows.CloseWindow(215);
+      g_windowMgr.CloseWindow(215);
     }
     break;
   }
   case 185:
     if (this->m_mode == 0) {
-      this->m_frameContext->windows.CloseWindow(213);
+      g_windowMgr.CloseWindow(213);
     } else {
-      this->m_frameContext->windows.CloseWindow(215);
+      g_windowMgr.CloseWindow(215);
     }
     break;
   }
@@ -202,10 +202,10 @@ int UICreateGuildWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, s
 int UIGuildBanReasonDescWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, std::intptr_t a2, std::intptr_t a3, std::intptr_t a4) {
   if (message == 6) {
     if (a1 == 184) {
-      this->m_frameContext->windows.CloseWindow(76);
+      g_windowMgr.CloseWindow(76);
       g_modeMgr.gameMode->SendMsg(111, reinterpret_cast<int>(&this->m_target), reinterpret_cast<int>(this->m_reasonEdit->Text()), 0, 0);
     } else if (a1 == 185) {
-      this->m_frameContext->windows.CloseWindow(76);
+      g_windowMgr.CloseWindow(76);
     }
     return 0;
   }
@@ -224,18 +224,18 @@ int UIGuildHelperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, s
   if (message == 6) {
     switch (a1) {
     case 184:
-      this->m_frameContext->windows.CloseWindow(214);
-      this->m_frameContext->windows.CloseWindow(213);
-      this->m_frameContext->windows.CloseWindow(212);
+      g_windowMgr.CloseWindow(214);
+      g_windowMgr.CloseWindow(213);
+      g_windowMgr.CloseWindow(212);
       break;
     case 343:
-      if (!this->m_frameContext->windows.CloseWindow(214)) {
-        this->m_frameContext->windows.EnsureWindow(214);
+      if (!g_windowMgr.CloseWindow(214)) {
+        g_windowMgr.EnsureWindow(214);
       }
       break;
     case 448:
-      if (!this->m_frameContext->windows.CloseWindow(213)) {
-        this->m_frameContext->windows.EnsureWindow(213);
+      if (!g_windowMgr.CloseWindow(213)) {
+        g_windowMgr.EnsureWindow(213);
         if (g_windowMgr.unknown_0438) {
           int x = 0;
           int y = 0;
@@ -265,7 +265,7 @@ int UIGuildHelperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, s
 // FUNCTION: fn_13133
 int UIGuildTipWnd::SendMsg(UIWindow*, int message, std::intptr_t a1, std::intptr_t, std::intptr_t, std::intptr_t) {
   if (message == 6 && a1 == 201) {
-    this->m_frameContext->windows.CloseWindow(214);
+    g_windowMgr.CloseWindow(214);
   }
 
   return 0;

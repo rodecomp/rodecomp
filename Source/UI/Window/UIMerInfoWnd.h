@@ -11,7 +11,7 @@ struct WindowResponseRecorder;
 
 class UIMerInfoWnd : public UIFrameWnd {
 public:
-  UIMerInfoWnd(UIWindowContext& windows, UIFrameContext& frames);
+  UIMerInfoWnd(UIWindowContext& windows);
 
   void Slot11() override;
   void Slot15(int width, int height) override;

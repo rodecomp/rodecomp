@@ -3,12 +3,10 @@
 
 class UIWindowMgr;
 struct UIWindowContext;
-struct UIFrameContext;
 
 struct MiniPartyWindows {
   UIWindowMgr& windows;
   UIWindowContext& windowContext;
-  UIFrameContext& frames;
 
   void Rebuild();
 };

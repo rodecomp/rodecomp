@@ -208,8 +208,8 @@ void UISubChatHisWnd::Slot15(int width, int height) {
 
 // OFFSET: 0x00912340
 // FUNCTION: fn_12529
-UISubChatHisWnd::UISubChatHisWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, UIEditContext& edit, UIListBoxContext& list)
-    : UIFrameWnd(windows, frames, 0), m_controls(&controls), m_editContext(&edit), m_listContext(&list) {
+UISubChatHisWnd::UISubChatHisWnd(UIWindowContext& windows, UIButtonContext& controls, UIEditContext& edit, UIListBoxContext& list)
+    : UIFrameWnd(windows, 0), m_controls(&controls), m_editContext(&edit), m_listContext(&list) {
   this->m_saved = nullptr;
   this->m_resizer = nullptr;
   this->m_chatBox = nullptr;

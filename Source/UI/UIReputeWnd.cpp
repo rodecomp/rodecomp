@@ -34,8 +34,8 @@ CReputeMgr* Singleton<CReputeMgr>::GetInstance() {
 
 // OFFSET: 0x0060EF80
 // FUNCTION: fn_04309
-UIReputeWnd::UIReputeWnd(UIWindowContext& windows, UIFrameContext& frames)
-    : UIFrameWnd(windows, frames, 0), m_groupCombo(nullptr), m_searchEdit(nullptr),
+UIReputeWnd::UIReputeWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0), m_groupCombo(nullptr), m_searchEdit(nullptr),
       m_perPage(8), m_page(1), m_pageCount(1), m_groupSelected(false), m_totalPoints(0), m_reputes() {}
 
 // OFFSET: 0x0060F170
@@ -230,7 +230,7 @@ int UIReputeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     switch (a) {
     case 201:
       this->ClearUpdated();
-      this->m_frameContext->windows.CloseWindow(346);
+      g_windowMgr.CloseWindow(346);
       break;
     case 316:
       this->ClearUpdated();

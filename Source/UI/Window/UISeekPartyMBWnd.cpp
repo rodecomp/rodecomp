@@ -81,7 +81,7 @@ int UISeekPartyMBWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       const int maximum = g_partyBookingLevelMax;
       if (this->m_registration.detail.level >= 1 && this->m_registration.detail.level <= maximum) {
         this->m_registration.detail.mapId = static_cast<short>((this->m_type + 1) * 256 | this->m_subType);
-        if (!this->m_frameContext->windows.CloseWindow(164)) {
+        if (!g_windowMgr.CloseWindow(164)) {
           PACKET_CZ_PARTY_BOOKING_REQ_REGISTER packet;
           packet.packetType = ID_CZ_PARTY_BOOKING_REQ_REGISTER;
           packet.detail = this->m_registration.detail;
@@ -97,8 +97,8 @@ int UISeekPartyMBWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
     }
     case 185:
     case 201:
-      this->m_frameContext->windows.CloseWindow(168);
-      this->m_frameContext->windows.CloseWindow(170);
+      g_windowMgr.CloseWindow(168);
+      g_windowMgr.CloseWindow(170);
       break;
     case 202:
       if (this->m_minimized) {
@@ -253,8 +253,8 @@ void UISeekPartyMBWnd::ShowJobCategory(int category) {
 
 // OFFSET: 0x00911EE0
 // FUNCTION: fn_12524
-UISeekPartyMBWnd::UISeekPartyMBWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
-    : UIFrameWnd(windows, frames, 0), unknown_00BC(nullptr), unknown_00C0(nullptr), m_levelEdit(nullptr), m_typeCombo(nullptr), m_subTypeCombo(nullptr), m_jobCategoryCombo(nullptr),
+UISeekPartyMBWnd::UISeekPartyMBWnd(UIWindowContext& windows, UIButtonContext& controls)
+    : UIFrameWnd(windows, 0), unknown_00BC(nullptr), unknown_00C0(nullptr), m_levelEdit(nullptr), m_typeCombo(nullptr), m_subTypeCombo(nullptr), m_jobCategoryCombo(nullptr),
       m_jobChecks(), m_subTypes(), unknown_0154(nullptr), unknown_0158(nullptr), m_jobCategory(-1), m_subType(0), m_restoreHeight(0), m_minimized(0),
       m_controls(&controls), m_titleText(nullptr), m_levelText(nullptr) {
 }

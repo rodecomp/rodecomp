@@ -5,7 +5,6 @@
 
 class SnapObject;
 class UIWindow;
-struct WindowSnapping;
 
 class CSnapMgr {
 public:
@@ -22,9 +21,9 @@ public:
   void UpdateLinks(SnapObject* object);
   void Refresh(UIWindow* window);
   void CaptureOrigins(UIWindow* window);
-  void ConstrainGroup(UIWindow* window, int& dx, int& dy, WindowSnapping& snapping);
-  void MoveConnected(UIWindow* window, int dx, int dy, WindowSnapping& snapping);
-  void MoveEdge(UIWindow* window, int dx, int dy, int side, WindowSnapping& snapping);
+  void ConstrainGroup(UIWindow* window, int& dx, int& dy);
+  void MoveConnected(UIWindow* window, int dx, int dy);
+  void MoveEdge(UIWindow* window, int dx, int dy, int side);
 
   /* 0004 */ SnapObject* root;
   /* 0008 */ std::list<SnapObject*> objects;
@@ -32,7 +31,7 @@ public:
 private:
   void ResetVisited();
   SnapObject* Find(const UIWindow* window) const;
-  static void MoveBranch(SnapObject* object, int dx, int dy, int side, WindowSnapping& snapping);
+  static void MoveBranch(SnapObject* object, int dx, int dy, int side);
   CSnapMgr(const CSnapMgr&) = delete;
   CSnapMgr& operator=(const CSnapMgr&) = delete;
 };

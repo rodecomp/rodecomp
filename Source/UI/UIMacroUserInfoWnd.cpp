@@ -23,7 +23,6 @@
 #include "UI/Buttons/UITextButton.h"
 #include "UI/Edit/UIEditCtrl.h"
 #include "UI/Layout/SnapMgr.h"
-#include "UI/Layout/WindowSnapping.h"
 #include "Contents/UserData/NormalItemSlots.h"
 #include "UI/Lists/UIScrollBar.h"
 #include "UI/Window/FrameFocus.h"
@@ -47,8 +46,8 @@ MacroReporterEntry::MacroReporterEntry(std::string name, int id, short unknown_0
 
 // OFFSET: 0x007EEA00
 // FUNCTION: fn_09832
-UIMacroReporterWnd::UIMacroReporterWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
-    : UIFrameWnd(windows, frames, 0), m_scrollBar(nullptr), m_scrollable(false), unknown_00C8(13), m_firstRow(0), m_visibleRows(10), unknown_00D4(nullptr),
+UIMacroReporterWnd::UIMacroReporterWnd(UIWindowContext& windows, UIButtonContext& controls)
+    : UIFrameWnd(windows, 0), m_scrollBar(nullptr), m_scrollable(false), unknown_00C8(13), m_firstRow(0), m_visibleRows(10), unknown_00D4(nullptr),
       m_reportButton(nullptr), m_mode(0), m_edit(nullptr), unknown_00F4(1), unknown_00F8(5), m_state(nullptr), unknown_010C(false), m_controls(&controls) {
   this->m_tabs[0] = nullptr;
   this->m_tabs[1] = nullptr;
@@ -61,8 +60,8 @@ UIMacroReporterWnd::UIMacroReporterWnd(UIWindowContext& windows, UIFrameContext&
 
 // OFFSET: 0x007EEBC0
 // FUNCTION: fn_09833
-UIMacroUserInfoWnd::UIMacroUserInfoWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
-    : UIFrameWnd(windows, frames, 0), m_controls(&controls) {
+UIMacroUserInfoWnd::UIMacroUserInfoWnd(UIWindowContext& windows, UIButtonContext& controls)
+    : UIFrameWnd(windows, 0), m_controls(&controls) {
 }
 
 // OFFSET: 0x007EF2C0
@@ -253,7 +252,7 @@ void UIMacroReporterWnd::Slot25(int x, int y) {
   this->m_dragY = y;
   this->m_originX = this->geometry.x;
   this->m_originY = this->geometry.y;
-  this->m_frameContext->snapping.graph.CaptureOrigins(this);
+  g_snapMgr.CaptureOrigins(this);
 }
 
 // OFFSET: 0x007F11F0
@@ -265,7 +264,7 @@ void UIMacroReporterWnd::Slot31(int, int) {
 
   g_dragWindowId = -1;
   g_windowMgr.ReleaseCapture();
-  this->m_frameContext->snapping.graph.Refresh(this);
+  g_snapMgr.Refresh(this);
 }
 
 // OFFSET: 0x007F1230

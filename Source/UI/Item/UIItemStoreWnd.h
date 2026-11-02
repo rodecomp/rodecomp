@@ -12,7 +12,7 @@ class UIStaticText;
 
 class UIItemStoreWnd : public UIItemBaseWnd {
 public:
-  UIItemStoreWnd(UIWindowContext& windows, UIFrameContext& frames);
+  UIItemStoreWnd(UIWindowContext& windows);
   __declspec(noinline) ~UIItemStoreWnd() override;
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot28(int x, int y) override;

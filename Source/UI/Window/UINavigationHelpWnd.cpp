@@ -60,13 +60,13 @@ void UINavigationHelpWnd::Paint() {
 // FUNCTION: fn_12748
 int UINavigationHelpWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::intptr_t, std::intptr_t, std::intptr_t) {
   if (message == 6 && a == 201) {
-    this->m_frameContext->windows.CloseWindow(229);
+    g_windowMgr.CloseWindow(229);
   }
   return 0;
 }
 
 // OFFSET: 0x009115B0
 // FUNCTION: fn_12517
-UINavigationHelpWnd::UINavigationHelpWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, UITextViewerContext& text)
-    : UIFrameWnd(windows, frames, 0), m_controls(&controls), m_text(&text), m_viewer(nullptr), unknown_00B8(0) {
+UINavigationHelpWnd::UINavigationHelpWnd(UIWindowContext& windows, UIButtonContext& controls, UITextViewerContext& text)
+    : UIFrameWnd(windows, 0), m_controls(&controls), m_text(&text), m_viewer(nullptr), unknown_00B8(0) {
 }

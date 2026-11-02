@@ -18,7 +18,7 @@ struct UIEditContext;
 
 class UIHomunInfoWnd : public UIFrameWnd {
 public:
-  UIHomunInfoWnd(UIWindowContext& windows, UIFrameContext& frames);
+  UIHomunInfoWnd(UIWindowContext& windows);
   void Slot11() override;
   void Slot15(int width, int height) override;
   void Paint() override;

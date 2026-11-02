@@ -12,7 +12,7 @@ class UIStaticText;
 
 class UIItemSellWnd2 : public UIItemBaseWnd {
 public:
-  UIItemSellWnd2(UIWindowContext& windows, UIFrameContext& frames);
+  UIItemSellWnd2(UIWindowContext& windows);
   std::vector<unsigned char> BuildReplayRecords();
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot11() override;

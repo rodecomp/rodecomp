@@ -12,7 +12,6 @@
 #include "Network/Packets/PacketId.h"
 #include "Network/Packets/PacketLengths.h"
 #include "Script/LuaScript.h"
-#include "UI/Layout/WindowSnapping.h"
 #include "UI/Window/UINavigationWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowDialogs.h"
@@ -48,8 +47,8 @@ UIMenuIcon::UIMenuIcon() {}
 
 // OFFSET: 0x0084A240
 // FUNCTION: fn_10607
-UIMenuIconWnd::UIMenuIconWnd(UIWindowContext& windowContext, UIFrameContext& frameContext)
-    : UIFrameWnd(windowContext, frameContext, 1), unknown_00CC(nullptr), unknown_00D0(nullptr), unknown_00D4(nullptr) {}
+UIMenuIconWnd::UIMenuIconWnd(UIWindowContext& windowContext)
+    : UIFrameWnd(windowContext, 1), unknown_00CC(nullptr), unknown_00D0(nullptr), unknown_00D4(nullptr) {}
 
 // OFFSET: 0x0084A850
 // FUNCTION: fn_10612
@@ -104,7 +103,7 @@ bool UIMenuIconWnd::Slot08() {
 void UIMenuIconWnd::Move(int x, int y) {
   this->geometry.x = x;
   this->geometry.y = y - 4;
-  this->m_frameContext->snapping.Store(this);
+  g_windowMgr.StoreSnapRectangle(this);
 }
 
 // OFFSET: 0x0084A9A0

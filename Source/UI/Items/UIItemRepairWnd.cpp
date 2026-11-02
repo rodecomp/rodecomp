@@ -200,8 +200,8 @@ int UIItemRepairWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
       UIListBox* list = this->m_list;
       if (list->LineCount() == 0) {
         g_modeMgr.gameMode->SendMsg(174, -1, 0, 0, 0);
-        this->m_frameContext->windows.CloseWindow(107);
-        this->m_frameContext->windows.CloseWindow(107);
+        g_windowMgr.CloseWindow(107);
+        g_windowMgr.CloseWindow(107);
         return 0;
       }
 
@@ -214,12 +214,12 @@ int UIItemRepairWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
           }
         }
 
-        this->m_frameContext->windows.CloseWindow(107);
+        g_windowMgr.CloseWindow(107);
         return 0;
       }
     } else if (response == 185) {
       g_modeMgr.gameMode->SendMsg(174, -1, 0, 0, 0);
-      this->m_frameContext->windows.CloseWindow(107);
+      g_windowMgr.CloseWindow(107);
       return 0;
     }
 
@@ -291,7 +291,7 @@ int UIItemRepairWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
 // FUNCTION: fn_13618
 int UIMakeTargetResultWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   if (message == 6) {
-    this->m_frameContext->windows.CloseWindow(81);
+    g_windowMgr.CloseWindow(81);
     return 0;
   }
 
@@ -310,31 +310,31 @@ int UIMakeTargetResultWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
 
 // OFFSET: 0x0099F780
 // FUNCTION: fn_13587
-UIItemRepairWnd::UIItemRepairWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, UIListBoxContext& listContext,
+UIItemRepairWnd::UIItemRepairWnd(UIWindowContext& windows, UIButtonContext& controls, UIListBoxContext& listContext,
                                  WindowResponseRecorder& recorder)
-    : UIFrameWnd(windows, frames, 0), itemIds(), indices(), entries() {
+    : UIFrameWnd(windows, 0), itemIds(), indices(), entries() {
 }
 
 // OFFSET: 0x0099F850
 // FUNCTION: fn_13588
 UIMakeTargetListWnd::UIMakeTargetListWnd(
-  UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, UIListBoxContext& listContext, WindowResponseRecorder& recorder
+  UIWindowContext& windows, UIButtonContext& controls, UIListBoxContext& listContext, WindowResponseRecorder& recorder
 )
-    : UIFrameWnd(windows, frames, 0), itemIds() {
+    : UIFrameWnd(windows, 0), itemIds() {
 }
 
 // OFFSET: 0x0099F8D0
 // FUNCTION: fn_13589
 UIMakeTargetProcessWnd::UIMakeTargetProcessWnd(
-  UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, WindowResponseRecorder& recorder
+  UIWindowContext& windows, UIButtonContext& controls, WindowResponseRecorder& recorder
 )
-    : UIFrameWnd(windows, frames, 0), materials() {
+    : UIFrameWnd(windows, 0), materials() {
 }
 
 // OFFSET: 0x0099F950
 // FUNCTION: fn_13590
-UIMakeTargetResultWnd::UIMakeTargetResultWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
-    : UIFrameWnd(windows, frames, 0) {
+UIMakeTargetResultWnd::UIMakeTargetResultWnd(UIWindowContext& windows, UIButtonContext& controls)
+    : UIFrameWnd(windows, 0) {
   this->succeeded = false;
   this->makeType = 0;
 }
@@ -342,9 +342,9 @@ UIMakeTargetResultWnd::UIMakeTargetResultWnd(UIWindowContext& windows, UIFrameCo
 // OFFSET: 0x0099F9C0
 // FUNCTION: fn_13591
 UIWeaponRefineWnd::UIWeaponRefineWnd(
-  UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, UIListBoxContext& listContext, WindowResponseRecorder& recorder
+  UIWindowContext& windows, UIButtonContext& controls, UIListBoxContext& listContext, WindowResponseRecorder& recorder
 )
-    : UIFrameWnd(windows, frames, 0), itemIds(), indices() {
+    : UIFrameWnd(windows, 0), itemIds(), indices() {
 }
 
 // OFFSET: 0x0099FB70
