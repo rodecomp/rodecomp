@@ -8,13 +8,6 @@
 
 class BinkMovie;
 class CTexture;
-#include "UI/Window/WindowManagerWindows.h"
-struct WindowDialogs;
-
-struct UIVideoWndContext {
-  WindowManagerWindows& windows;
-  WindowDialogs& dialogs;
-};
 
 class UIVideoSkipButton : public UIButton {
 public:
@@ -25,7 +18,7 @@ public:
 
 class UIVideoWnd : public UIWindow {
 public:
-  UIVideoWnd(UIWindowContext& windowContext, UIVideoWndContext& videoContext);
+  UIVideoWnd(UIWindowContext& windowContext);
   ~UIVideoWnd() override;
   bool Slot02() override;
   void Slot15(int width, int height) override;
@@ -36,7 +29,6 @@ public:
   /* 007C */ BinkMovie* m_movie;
   /* 0080 */ CTexture* m_texture;
   /* 0084 */ int m_savedVolume;
-  UIVideoWndContext* m_videoContext;
 };
 
 #endif

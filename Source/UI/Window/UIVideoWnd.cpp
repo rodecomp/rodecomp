@@ -13,8 +13,8 @@
 
 // OFFSET: 0x00AB40C0
 // FUNCTION: fn_17437
-UIVideoWnd::UIVideoWnd(UIWindowContext& windowContext, UIVideoWndContext& videoContext)
-    : UIWindow(windowContext, 1), m_movie(nullptr), m_texture(nullptr), m_savedVolume(-1), m_videoContext(&videoContext) {
+UIVideoWnd::UIVideoWnd(UIWindowContext& windowContext)
+    : UIWindow(windowContext, 1), m_movie(nullptr), m_texture(nullptr), m_savedVolume(-1) {
   this->m_movie = new BinkMovie();
 }
 
@@ -91,7 +91,7 @@ void UIVideoWnd::Slot19() {
   }
 
   if (this->m_movie->State() == 2) {
-    this->m_videoContext->windows.CloseWindow(304);
+    g_windowMgr.CloseWindow(304);
   }
 }
 
@@ -107,13 +107,13 @@ int UIVideoWnd::SendMsg(
     }
     break;
   case 5:
-    if (this->m_videoContext->dialogs.Confirm(LookupMessage(3142), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
-      this->m_videoContext->windows.CloseWindow(304);
+    if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(3142), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+      g_windowMgr.CloseWindow(304);
     }
     break;
   case 6:
     if (argument1 == 521) {
-      this->m_videoContext->windows.CloseWindow(304);
+      g_windowMgr.CloseWindow(304);
     }
     break;
   case 150:
