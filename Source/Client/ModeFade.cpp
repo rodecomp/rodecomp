@@ -1,6 +1,9 @@
 #include "Client/ModeFade.h"
+#include "Client/Mode/CMode.h"
 #include "Contents/Sound/SoundMgr.h"
 #include "Render/Primitives/AlphaRectangle.h"
+#include "Render/Renderer.h"
+#include "Render/TextureQuad.h"
 
 #include <timeapi.h>
 
@@ -9,18 +12,18 @@ std::uint32_t g_modeFadeTick = 0;
 
 // OFFSET: 0x00AD6740
 // FUNCTION: fn_17842
-void ModeFade::Draw() {
-  if (this->requested != 0) {
+void CMode::DrawFadeIn() {
+  if (this->fadeInRequested != 0) {
     g_modeFadeTick = timeGetTime();
     g_soundMgr->FadeIn();
-    this->requested = 0;
+    this->fadeInRequested = 0;
   }
 
   const std::uint32_t elapsed = timeGetTime() - g_modeFadeTick;
   if (elapsed < 255) {
     DrawAlphaRectangle(
-      this->primitives, this->queues, 0, 0, this->screenWidth, this->screenHeight, (255 - elapsed) << 24, this->depthAlpha, this->depthStart,
-      this->depthEnd
+      g_renderer->primitives, g_renderer->queues, 0, 0, g_renderer->viewport.width, g_renderer->viewport.height, (255 - elapsed) << 24,
+      g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
     );
   }
 }

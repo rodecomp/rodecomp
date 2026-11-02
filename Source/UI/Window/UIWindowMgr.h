@@ -483,6 +483,7 @@ public:
   void ClearWindow01B8();
   void ClearUnknown04DC();
   int ProcessMouse();
+  void UpdateFrameWindows();
   bool CloseWindow(int id);
   void CloseWindowExcept251(int id);
   void RecordWindowPacket(int argument);

@@ -15,7 +15,7 @@ public:
   /* 0004 */ int cursorType;
   /* 0008 */ std::uint32_t cursorFrame;
   /* 000C */ int pendingCursorType;
-  /* 0010 */ int unknown_0010;
+  /* 0010 */ int fadeInRequested;
   /* 0014 */ int running;
   /* 0018 */ int unknown_0018;
   /* 001C */ UIWindow* tooltip;
@@ -42,6 +42,7 @@ public:
   std::uint32_t ClearTooltip();
   void TakeScreenshot();
   void DrawCursor();
+  void DrawFadeIn();
   void DrawTexture(const tagRECT& rect, int angle, float rhw, std::uint32_t color, CTexture* texture, TextureRegion region);
 };
 

@@ -21,7 +21,7 @@ CMode::CMode() {
   this->screenshotRequested = 0;
   this->cursorOffsetX = 0.0f;
   this->cursorOffsetY = 0.0f;
-  this->unknown_0010 = 0;
+  this->fadeInRequested = 0;
 }
 
 // OFFSET: 0x00AD75E0

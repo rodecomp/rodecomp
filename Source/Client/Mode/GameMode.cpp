@@ -3366,7 +3366,7 @@ void CGameMode::InitializeState() {
   g_navigationManager.UpdateGround();
   g_overrideColor = 0;
 
-  this->unknown_0010 = 1;
+  this->fadeInRequested = 1;
   this->cursorOffsetX = 0.0f;
   this->cursorOffsetY = 0.0f;
   *reinterpret_cast<int*>(this->unknown_00D8) = 0;

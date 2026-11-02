@@ -1,3 +1,4 @@
+#include "Client/Application/ApplicationMessages.h"
 #include "Contents/Models/ModelActor.h"
 #include "Contents/Ground/TerrainHeight.h"
 #include "Contents/World/WorldModelLoading.h"
@@ -27,7 +28,6 @@
 #include <timeapi.h>
 #include <windows.h>
 
-void sub_E57380();
 
 // GLOBAL: gl_24754
 float g_worldLightDirection[3];
@@ -326,7 +326,7 @@ void CWorld::InitWorld() {
       if (g_renderer->Draw()) {
         g_renderer->Present(0);
       }
-      sub_E57380();
+      PumpApplicationMessages();
     }
 
     reinterpret_cast<const ::TerrainHeight*>(g_modeMgr.GetGameMode())

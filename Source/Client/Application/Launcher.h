@@ -19,6 +19,9 @@ extern char g_launchAccountName[0x1F4];
 extern char g_launchAccountPassword[24];
 extern char g_launchAccountSex;
 extern bool g_launchPassCommandLine;
+extern bool g_windowDragging;
+extern RECT g_windowDragRect;
+extern POINT g_windowDragStart;
 
 __declspec(noinline) HANDLE StartClientProcess(char* program);
 

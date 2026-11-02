@@ -1,6 +1,7 @@
 #include "Client/Application/ApplicationMessages.h"
 #include "Client/Application/ApplicationWindow.h"
-#include "Client/Input/LanguageTC.h"
+#include "Client/Application/Launcher.h"
+#include "Client/Input/InputCharset.h"
 #include "Contents/Configuration/ServiceOptions.h"
 
 #include <cstdint>
@@ -8,38 +9,36 @@
 
 // OFFSET: 0x00E57380
 // FUNCTION: fn_24357
-void ApplicationMessages::Pump() {
+void PumpApplicationMessages() {
   MSG message;
 
   while (PeekMessageA(&message, nullptr, 0, 0, PM_REMOVE)) {
     if (message.message == WM_KEYDOWN && message.wParam == VK_PROCESSKEY) {
-      const UINT key = ImmGetVirtualKey(message.hwnd);
-      if (this->traditional) {
-        this->traditional->Key(static_cast<int>(key));
-      }
+      typedef void(__thiscall * KeyHandler)(InputCharset*, UINT);
+      (*reinterpret_cast<KeyHandler**>(g_serverLanguage))[3](g_serverLanguage, ImmGetVirtualKey(message.hwnd));
     }
 
     TranslateMessage(&message);
     DispatchMessageA(&message);
   }
 
-  if (this->dragging == 1) {
+  if (g_windowDragging == true) {
     POINT point;
     GetCursorPos(&point);
-    const int deltaX = point.x - this->dragStart.x;
-    const int deltaY = point.y - this->dragStart.y;
+    const int deltaX = point.x - g_windowDragStart.x;
+    const int deltaY = point.y - g_windowDragStart.y;
 
     if (deltaX != 0 || deltaY != 0) {
       MoveWindow(
-        this->window, this->dragRectangle.left + deltaX, this->dragRectangle.top + deltaY, this->dragRectangle.right - this->dragRectangle.left,
-        this->dragRectangle.bottom - this->dragRectangle.top, TRUE
+        hWnd, g_windowDragRect.left + deltaX, g_windowDragRect.top + deltaY, g_windowDragRect.right - g_windowDragRect.left,
+        g_windowDragRect.bottom - g_windowDragRect.top, TRUE
       );
     }
 
     if ((GetAsyncKeyState(VK_LBUTTON) & 0x8000) == 0) {
-      this->dragging = 0;
-      if (this->service.Get(ServiceOption::ConfineCursor) != 0) {
-        ClipApplicationCursor(this->window);
+      g_windowDragging = false;
+      if (g_serviceOptions.Get(ServiceOption::ConfineCursor) != 0) {
+        ClipApplicationCursor(hWnd);
       }
     }
   }

@@ -5,7 +5,6 @@
 #include "Client/Application/Launcher.h"
 #include "Archive/PakRegistry.h"
 #include "Client/Input/Mouse.h"
-#include "Client/ModeFade.h"
 #include "Client/Stove/StoveMgr.h"
 #include "Client/ModeFadeOut.h"
 #include "Client/Application/ErrorDialog.h"
@@ -49,7 +48,6 @@
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Window/UISelCharForUServerWnd.h"
 #include "UI/Window/WindowDialogs.h"
-#include "UI/Window/WindowFrameUpdate.h"
 #include "Utility/Async/NAsyncWorkMgr.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/GGHashMgr.h"
@@ -318,7 +316,6 @@ int g_restoreSurfaces;
 // GLOBAL: gl_25384
 int g_isAppActive;
 
-void sub_E57380();
 int sub_C7F5A0();
 
 static_assert(sizeof(CharacterSlotsPacket) == 0x1D);
@@ -987,7 +984,7 @@ void CLoginMode::Slot5(int value) {
     GetRagConnection().UpdateStatus();
   }
 
-  reinterpret_cast<ApplicationMessages*>(this)->Pump();
+  PumpApplicationMessages();
   this->PollNetworkStatus();
   SendClientKeepalive(this->cursorType, this->unknown_6F10, GetRagConnection(), *reinterpret_cast<const PacketLengths*>(&GetRagConnection()), g_session.m_aid);
   g_mouse.Update();
@@ -1011,7 +1008,7 @@ void CLoginMode::Slot5(int value) {
 
   if (sub_C7F5A0()) {
     g_renderer->ClearDepth(1);
-    reinterpret_cast<WindowFrameUpdate*>(&g_windowMgr)->Update();
+    g_windowMgr.UpdateFrameWindows();
     if (g_serviceType == 0 || g_serviceType == 4 || g_serviceType == 8 || g_serviceType == 9 || g_serviceType == 3 || g_serviceType == 10 ||
         g_serviceType == 1 || g_serviceType == 11 || g_serviceType == 12 || g_serviceType == 5 || g_serviceType == 7 || g_serviceType == 14 ||
         g_serviceType == 20) {
@@ -1024,7 +1021,7 @@ void CLoginMode::Slot5(int value) {
     }
     g_windowMgr.DrawWindows();
     this->DrawCursor();
-    reinterpret_cast<ModeFade*>(this)->Draw();
+    this->DrawFadeIn();
     if (g_renderer->Draw()) {
       g_renderer->Present(1);
     }
@@ -1130,7 +1127,7 @@ void CLoginMode::SubD97B20(int) {
 // OFFSET: 0x00D97D30
 // FUNCTION: fn_22305
 void CLoginMode::Update() {
-  reinterpret_cast<ApplicationMessages*>(this)->Pump();
+  PumpApplicationMessages();
   this->PollNetworkStatus();
   SendClientKeepalive(this->cursorType, this->unknown_6F10, GetRagConnection(), *reinterpret_cast<const PacketLengths*>(&GetRagConnection()), g_session.m_aid);
   g_mouse.Update();
@@ -1161,7 +1158,7 @@ void CLoginMode::Update() {
 
   if (sub_C7F5A0()) {
     g_renderer->ClearDepth(1);
-    reinterpret_cast<WindowFrameUpdate*>(&g_windowMgr)->Update();
+    g_windowMgr.UpdateFrameWindows();
     if (g_serviceType == 0 || g_serviceType == 4 || g_serviceType == 8 || g_serviceType == 9 || g_serviceType == 3 || g_serviceType == 10 ||
         g_serviceType == 1 || g_serviceType == 11 || g_serviceType == 12 || g_serviceType == 5 || g_serviceType == 7 || g_serviceType == 14 ||
         g_serviceType == 20 || g_serviceType == 15) {
@@ -1174,7 +1171,7 @@ void CLoginMode::Update() {
     }
     g_windowMgr.DrawWindows();
     this->DrawCursor();
-    reinterpret_cast<ModeFade*>(this)->Draw();
+    this->DrawFadeIn();
     g_renderer->Draw();
     g_renderer->Present(1);
   }
@@ -2277,7 +2274,7 @@ void CLoginMode::ShowLoginError(int code, int argument) {
 // OFFSET: 0x00D8C6A0
 // FUNCTION: fn_22258
 CLoginMode::CLoginMode() : wallpaperName(), unknown_6F1C(), unknown_6F2C(), unknown_6F38(), unknown_6F50(), mapStates() {
-  this->unknown_0010 = 1;
+  this->fadeInRequested = 1;
   this->unknown_6F10 = timeGetTime() + 12000;
   this->savedInlineCharset = g_inlineCharset;
   g_inlineCharset = 0;
