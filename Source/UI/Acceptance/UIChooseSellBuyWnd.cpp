@@ -152,6 +152,7 @@
 #include <vector>
 #include <windows.h>
 #include <timeapi.h>
+#include "UI/Window/UICntWnd.h"
 
 namespace {
   constexpr char prefix[] = "유저인터페이스\\";
@@ -5390,8 +5391,8 @@ UINpcTextEditDialogWnd::UINpcTextEditDialogWnd(UIWindowContext& windows, UIFrame
 
 // OFFSET: 0x008C8B50
 // FUNCTION: fn_11968
-UIProhibitListWnd::UIProhibitListWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
-    : UIFrameWnd(windows, frames, 0), m_count(0), m_controls(&controls) {
+UIProhibitListWnd::UIProhibitListWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, UIEditContext& edits)
+    : UIFrameWnd(windows, frames, 0), m_count(0), m_controls(&controls), m_edits(&edits) {
 }
 
 // OFFSET: 0x008C8BB0
@@ -8736,4 +8737,62 @@ void UIFrameWnd::DrawItemNameText(
     }
   }
   this->DrawTextLines(position->x, position->y, position->family, position->height, lines);
+}
+
+// OFFSET: 0x00900D90
+// FUNCTION: fn_12372
+int UIProhibitListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  if (message == 6) {
+    if (a == 0xC9) {
+      g_windowMgr.CloseWindow(0x67);
+    } else if (a == 0x10C) {
+      UIWindow* menu = g_windowMgr.EnsureWindow(0x1A);
+      const std::string labels[4] = {LookupMessage(0x250), LookupMessage(0x251), LookupMessage(0x252), LookupMessage(0x253)};
+      menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(LookupMessage(0x2CF)), 0, 0, 0);
+      menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(LookupMessage(0x2D0)), 0, 0, 0);
+      menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(LookupMessage(0x2D1)), 0, 0, 0);
+      menu->SendMsg(nullptr, 0x28, 0, 0, 0, 0);
+      menu->Resize(0x82, 0x30);
+      menu->SendMsg(nullptr, 0x53, 0x67, 0, 0, 0);
+      int x = 0xA0;
+      int y = 0x2C;
+      this->ToScreen(x, y);
+      menu->Move(x, y);
+    }
+  } else if (message == 0x22) {
+    this->m_aid = static_cast<std::uint32_t>(a);
+  } else if (message == 0x27) {
+    CMode* mode = g_modeMgr.GetGameMode();
+    int text;
+    UICntWnd* counter;
+    if (a == 0) {
+      if (!IsMonsterJob(g_session.m_aid)) {
+        return 0;
+      }
+      counter = new UICntWnd(*this->m_context, *this->m_frameContext, *this->m_controls, *this->m_edits);
+      counter->SetSize(0xB6, 0x2E);
+      counter->Move((g_renderer->viewport.width - 640) / 2 + 200, ScaleByScreenHeight(200));
+      g_windowMgr.AddRendered(counter);
+      counter->SendMsg(nullptr, 0x50, 0x98, 0, 0, 0);
+      text = 0x186;
+    } else if (a == 1) {
+      if (IsAdminAccount(g_session.m_aid)) {
+        mode->SendMsg(0x97, 30000, 0, 0, 0);
+      }
+      return 0;
+    } else {
+      if (a != 2 || !IsAdminAccount(g_session.m_aid)) {
+        return 0;
+      }
+      counter = new UICntWnd(*this->m_context, *this->m_frameContext, *this->m_controls, *this->m_edits);
+      counter->SetSize(0xB6, 0x2E);
+      counter->Move((g_renderer->viewport.width - 640) / 2 + 200, ScaleByScreenHeight(200));
+      g_windowMgr.AddRendered(counter);
+      counter->SendMsg(nullptr, 0x50, 0x97, 0, 0, 0);
+      text = 0x185;
+    }
+    counter->SendMsg(nullptr, 0x1D, reinterpret_cast<std::intptr_t>(LookupMessage(text)), 0, 0, 0);
+    counter->SendMsg(nullptr, 0x51, 1, 0, 0, 0);
+  }
+  return 0;
 }
