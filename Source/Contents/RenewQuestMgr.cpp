@@ -11,6 +11,7 @@
 #include "UI/Quest/UIOngoingQuestInfo.h"
 #include "UI/Quest/UIRenewQuestUI.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "Client/Session.h"
 
 extern "C" {
 #include <lua.h>
@@ -486,24 +487,24 @@ void CRenewQuestMgr::LoadQuestInfo() {
     lua.Execute("LoadQuestFilterInfo");
   }
 
-  g_luaScript->Register("AddOngoingDescription", L_AddOngoingDescription);
-  g_luaScript->Register("AddOngoingRewardInfo", L_AddOngoingRewardInfo);
-  g_luaScript->Register("InsertRecommededQuestInfo", L_InsertRecommendedQuestInfo);
-  g_luaScript->Register("AddRecommendedQuestInfo", L_AddRecommendedQuestInfo);
-  g_luaScript->Register("SetRecommendedQuestActive", L_SetRecommendedQuestActive);
-  g_luaScript->Load("Lua Files\\DataInfo\\QuestInfo_f", true, false);
-  g_luaScript->Load("savedata\\OngoingSimpleViewList", false, true);
-  g_luaScript->Load("savedata\\RecommendedActiveList", false, true);
+  g_session.m_hotkeyScript->Register("AddOngoingDescription", L_AddOngoingDescription);
+  g_session.m_hotkeyScript->Register("AddOngoingRewardInfo", L_AddOngoingRewardInfo);
+  g_session.m_hotkeyScript->Register("InsertRecommededQuestInfo", L_InsertRecommendedQuestInfo);
+  g_session.m_hotkeyScript->Register("AddRecommendedQuestInfo", L_AddRecommendedQuestInfo);
+  g_session.m_hotkeyScript->Register("SetRecommendedQuestActive", L_SetRecommendedQuestActive);
+  g_session.m_hotkeyScript->Load("Lua Files\\DataInfo\\QuestInfo_f", true, false);
+  g_session.m_hotkeyScript->Load("savedata\\OngoingSimpleViewList", false, true);
+  g_session.m_hotkeyScript->Load("savedata\\RecommendedActiveList", false, true);
   if (g_serviceMode == 1) {
-    g_luaScript->Load("system\\OngoingQuestInfoList_Sakray", false, true);
-    g_luaScript->Load("system\\RecommendedQuestInfoList_Sakray", false, true);
+    g_session.m_hotkeyScript->Load("system\\OngoingQuestInfoList_Sakray", false, true);
+    g_session.m_hotkeyScript->Load("system\\RecommendedQuestInfoList_Sakray", false, true);
   } else {
-    g_luaScript->Load("system\\OngoingQuestInfoList_True", false, true);
-    g_luaScript->Load("system\\RecommendedQuestInfoList_True", false, true);
+    g_session.m_hotkeyScript->Load("system\\OngoingQuestInfoList_True", false, true);
+    g_session.m_hotkeyScript->Load("system\\RecommendedQuestInfoList_True", false, true);
   }
 
-  g_luaScript->Call("RecommendedQuestInfoLoad", "");
-  g_luaScript->Call("RecommendedQuestActiveLoad", "");
+  g_session.m_hotkeyScript->Call("RecommendedQuestInfoLoad", "");
+  g_session.m_hotkeyScript->Call("RecommendedQuestActiveLoad", "");
 }
 
 // OFFSET: 0x0067A500
