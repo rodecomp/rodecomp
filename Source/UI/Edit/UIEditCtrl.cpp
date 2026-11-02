@@ -7,6 +7,9 @@
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Render/Text/TextContext.h"
 #include "Resource/SkinPalette.h"
+#include "Contents/Configuration/GameSettingsMgr.h"
+#include "UI/Layout/SnapMgr.h"
+#include "UI/Window/WindowOrdering.h"
 #include "Contents/SkinMgr.h"
 #include "Resource/TextureNames.h"
 #include "Resource/Bitmap/BitmapImage.h"
@@ -7672,6 +7675,255 @@ void UIMerchantShopMakeWnd::Paint() {
 
 // GLOBAL: gl_25363
 bool g_sortPrivateTab;
+
+// OFFSET: 0x0098F700
+// FUNCTION: fn_13426
+int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  switch (message) {
+  case 6:
+    switch (a) {
+    case 456:
+      Singleton<CGameSettingsMgr>::GetInstance()->ToggleOption(264);
+      return 0;
+    case 507: {
+      const char* normal;
+      const char* over;
+      const char* press;
+      if (g_session.m_blockPrivateTab == 1) {
+        if (this->unknown_0128) {
+          this->SendMsg(this->unknown_0128, 6, 201, 0, 0, 0);
+        }
+        g_session.m_blockPrivateTab = 0;
+        press = "유저인터페이스\\inventory\\bt_itemDeal_lock_press.bmp";
+        over = "유저인터페이스\\inventory\\bt_itemDeal_lock_over.bmp";
+        normal = "유저인터페이스\\inventory\\bt_itemDeal_lock_off.bmp";
+      } else {
+        if (!this->unknown_0128) {
+          this->unknown_0128 = new UINoticeMessageBox_LockSellItem(*this->m_context, *this->m_frameContext);
+          this->unknown_0128->SetSize(242, 26);
+          this->unknown_0128->Move(30, this->geometry.height - 50);
+          this->AddChild(this->unknown_0128);
+        }
+        g_session.m_blockPrivateTab = 1;
+        press = "유저인터페이스\\inventory\\bt_itemDeal_lock_on_press.bmp";
+        over = "유저인터페이스\\inventory\\bt_itemDeal_lock_on_over.bmp";
+        normal = "유저인터페이스\\inventory\\bt_itemDeal_lock_on.bmp";
+      }
+      UIBitmapButton* button = static_cast<UIBitmapButton*>(this->unknown_0124);
+      button->SetBitmap(normal, 0, 0);
+      button->SetBitmap(over, 1, 0);
+      button->SetBitmap(press, 2, 0);
+      this->unknown_0124->Invalidate();
+      this->Invalidate();
+      return 0;
+    }
+    case 545:
+      if (CMode* mode = g_modeMgr.GetGameMode()) {
+        mode->SendMsg(310, 0, 0, 0, 0);
+      }
+      return 0;
+    case 364:
+      if (this->unknown_010C != 3) {
+        return 0;
+      }
+      g_sortPrivateTab = !g_sortPrivateTab;
+      this->RefreshSortButton();
+      this->RefreshItems();
+      return 0;
+    case 201:
+      if (this->unknown_0128 == sender) {
+        this->RemoveChild(this->unknown_0128, 0);
+        this->unknown_0128 = nullptr;
+        this->Invalidate();
+      } else {
+        g_windowMgr.CloseWindow(8);
+      }
+      return 0;
+    case 202: {
+      const int height = this->geometry.height;
+      if (height == 17) {
+        this->Resize(this->geometry.width, this->unknown_0110);
+      } else {
+        this->unknown_0110 = height;
+        this->Resize(this->geometry.width, 17);
+      }
+      this->m_frameContext->snapping.Store(this);
+      reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(this);
+      const int delta = this->geometry.height - height;
+      if (delta != 0) {
+        g_snapMgr.MoveEdge(this, 0, delta, 3, this->m_frameContext->snapping);
+      }
+      return 0;
+    }
+    case 213:
+      g_session.m_lockItemDrop = !g_session.m_lockItemDrop;
+      return 0;
+    default:
+      return 0;
+    }
+  case 14: {
+    if (a != 7) {
+      return 0;
+    }
+    int width = b <= 320 ? b : 320;
+    int height = c <= 240 ? c : 240;
+    if (width < 232) {
+      width = 232;
+    }
+    if (height < 102) {
+      height = 102;
+    }
+    const int tabHeight = this->tabs->geometry.height;
+    if (height < tabHeight + 38) {
+      height = tabHeight + 38;
+    }
+    const int rowsHeight = tabHeight + (height - tabHeight - 38) / 32 * 32;
+    const int newWidth = (width - 280) / 32 * 32 + 280;
+    if (newWidth != this->geometry.width || rowsHeight + 38 != this->geometry.height) {
+      this->Resize(newWidth, rowsHeight + 38);
+      this->columns = (newWidth - 40) / 32;
+      this->visibleRows = rowsHeight / 32;
+      this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
+      this->scrollBar->Move(this->geometry.width - 15, 17);
+      this->scrollBar->Resize(this->scrollBar->geometry.width, this->geometry.height - 38);
+      this->UpdateScrollBar();
+      this->Invalidate();
+      const int positions[3] = {3, this->geometry.width - 28, this->geometry.width - 14};
+      UIBitmapButton* buttons[3] = {this->baseButton, this->minimizeButton, this->closeButton};
+      for (int index = 0; index < 3; ++index) {
+        buttons[index]->Move(positions[index], 3);
+      }
+    }
+    this->unknown_0110 = this->geometry.height;
+    this->m_frameContext->snapping.Store(this);
+    this->lockDropBox->Move(79, this->geometry.height - 16);
+    this->optionBox->Move(103, this->geometry.height - 17);
+    this->countButton->Move(23, this->geometry.height - 17);
+    this->unknown_0124->Move(124, this->geometry.height - 19);
+    if (this->unknown_0128) {
+      this->unknown_0128->Move(30, this->geometry.height - 50);
+    }
+    this->unknown_012C->Move(157, this->geometry.height - 19);
+    return 0;
+  }
+  case 22:
+    this->unknown_010C = static_cast<int>(a);
+    this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    return 0;
+  case 23:
+    if (this->unknown_010C == 3) {
+      this->RefreshItems();
+      return 0;
+    }
+    this->items.erase(this->items.begin(), this->items.end());
+    for (int i = 0; i < reinterpret_cast<const SessionMessengerContext*>(&g_session)->GetList0Size(); ++i) {
+      ITEM_INFO item = g_session.GetInventoryItemAt(i);
+      if (item.unknown_0000[1] == 0) {
+        continue;
+      }
+      const unsigned type = item.unknown_0000[0];
+      bool include = false;
+      if (item.unknown_0074[0] != 0) {
+        include = this->unknown_010C == 3;
+      } else if (this->unknown_010C == 0) {
+        if (type <= 2 || type == 18) {
+          if (this->unknown_0100 == 0) {
+            include = type == 0;
+          } else if (this->unknown_0100 == 2) {
+            include = type == 1 || type == 2;
+          } else if (this->unknown_0100 == 3) {
+            include = true;
+          }
+        }
+      } else if (this->unknown_010C == 1) {
+        switch (type) {
+        case 4:
+        case 5:
+        case 8:
+        case 9:
+        case 11:
+        case 12:
+        case 13:
+        case 14:
+        case 15:
+          if (this->unknown_0104 == 0) {
+            include = type == 5 || type == 9 || type == 8;
+          } else if (this->unknown_0104 == 1) {
+            include = type == 4 || type == 11 || type == 12 || type == 13 || type == 14;
+          } else if (this->unknown_0104 == 3) {
+            include = true;
+          }
+          break;
+        default:
+          break;
+        }
+      } else if (this->unknown_010C == 2) {
+        if (type == 6 || type == 3 || type == 7 || type == 10 || type == 16 || type == 17 || type == 19) {
+          include = this->unknown_0108 == 4;
+        }
+      }
+      if (include) {
+        this->items.push_back(item);
+      }
+    }
+    this->Invalidate();
+    this->UpdateScrollBar();
+    return 0;
+  case 34:
+    this->saved = reinterpret_cast<ItemWndInfo*>(a);
+    if (this->saved->IsValid() == 0) {
+      this->saved->Reset();
+    }
+    this->SendMsg(nullptr, 14, 7, this->saved->width, this->saved->unknown_0010, 0);
+    this->unknown_010C = this->saved->unknown_0014;
+    this->unknown_0100 = 3;
+    this->unknown_0104 = 3;
+    this->unknown_0108 = 4;
+    this->tabs->unknown_007C = this->saved->unknown_0014;
+    this->Invalidate();
+    this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    if (this->saved->height != this->saved->unknown_0010) {
+      this->SendMsg(nullptr, 6, 202, 0, 0, 0);
+    }
+    this->Move(this->saved->x, this->saved->y);
+    return 0;
+  case 38: {
+    CMode* mode = g_modeMgr.GetGameMode();
+    ModeDragState& drag = static_cast<CGameMode*>(mode)->drag;
+    switch (drag.source) {
+    case 2:
+      mode->SendMsg(20, drag.slot, 0, 0, 0);
+      break;
+    case 6:
+      mode->SendMsg(56, static_cast<int>(drag.id), drag.quantity, 0, 0);
+      break;
+    case 9:
+      mode->SendMsg(77, static_cast<int>(drag.id), drag.quantity, 0, 0);
+      break;
+    case 15:
+      if (g_windowMgr.unknown_0458) {
+        g_windowMgr.unknown_0458->SendMsg(nullptr, 104, static_cast<std::intptr_t>(drag.id), drag.quantity, 0, 0);
+      }
+      break;
+    case 17:
+      mode->SendMsg(303, drag.slot, 0, 0, 0);
+      break;
+    case 18:
+      mode->SendMsg(303, drag.slot, 1, 0, 0);
+      break;
+    case 24:
+      mode->SendMsg(20, drag.slot, 1, 0, 0);
+      break;
+    default:
+      break;
+    }
+    mode->SendMsg(18, 0, 0, 0, 0);
+    return 0;
+  }
+  default:
+    return UIItemBaseWnd::SendMsg(sender, message, a, b, c, d);
+  }
+}
 
 // OFFSET: 0x009957C0
 // FUNCTION: fn_13461
