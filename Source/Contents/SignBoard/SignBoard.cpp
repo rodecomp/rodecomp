@@ -1,6 +1,7 @@
 #include "Contents/SignBoard/SignBoard.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
+#include "Client/Session.h"
 #include "Contents/Ground/TerrainHeight.h"
 #include "Contents/World/World.h"
 #include "Network/TextEncoding.h"
@@ -135,16 +136,16 @@ void CSignBoardMgr::Initialize() {
 // FUNCTION: fn_10248
 void CSignBoardMgr::LoadList() {
   SignBoardInfo defaults;
-  g_luaScript->Call(
+  g_session.m_hotkeyScript->Call(
     "GetSignBoardListTable", "d>sddddsss", 1, &defaults.map, &defaults.column, &defaults.row, &defaults.offset, &defaults.type, &defaults.image,
     &defaults.unknown_0014, &defaults.unknown_001C
   );
 
   int count = 0;
-  g_luaScript->Call("GetTableSizeForC", "s>d", "SignBoardList", &count);
+  g_session.m_hotkeyScript->Call("GetTableSizeForC", "s>d", "SignBoardList", &count);
   for (int index = 2; index < count + 1; ++index) {
     SignBoardInfo info;
-    g_luaScript->Call(
+    g_session.m_hotkeyScript->Call(
       "GetSignBoardListTable", "d>sddddsss", index, &info.map, &info.column, &info.row, &info.offset, &info.type, &info.image, &info.unknown_0014,
       &info.unknown_001C
     );
