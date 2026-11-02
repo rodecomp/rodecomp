@@ -2222,7 +2222,7 @@ void UIExchangeWnd::Slot10(int x, int y, std::intptr_t value) {
     return;
   }
 
-  reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+  g_windowMgr.ShowWindowById(15, 1);
   g_windowMgr.window_01EC->SendMsg(nullptr, 13, 5, 0, 0, 0);
 }
 
@@ -2296,14 +2296,14 @@ void UInCashWnd::Slot10(int x, int y, std::intptr_t value) {
         return;
       }
 
-      reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+      g_windowMgr.ShowWindowById(15, 1);
       g_windowMgr.window_01EC->SendMsg(nullptr, 13, 20, quantity, 0, 0);
       return;
     }
     break;
   case 6:
     if (x > 444) {
-      reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+      g_windowMgr.ShowWindowById(15, 1);
       g_windowMgr.window_01EC->SendMsg(nullptr, 13, 19, 0, 0, 0);
       return;
     }
@@ -3749,8 +3749,7 @@ void UIItemCollectionWnd::Slot15(int width, int height) {
 
   this->m_previewTick = 0;
   if (!this->m_moveInfo) {
-    this->m_moveInfo = new UIItemMoveInfo(*this->m_context, g_windowMgr,
-                                          *reinterpret_cast<WindowVisibility*>(nullptr));
+    this->m_moveInfo = new UIItemMoveInfo(*this->m_context);
     this->m_moveInfo->Configure(LookupMessage(2796), 0, 0, 12, 0, 1);
     this->m_moveInfo->SetId(487);
     UIItemMoveInfo* moveInfo = this->m_moveInfo;

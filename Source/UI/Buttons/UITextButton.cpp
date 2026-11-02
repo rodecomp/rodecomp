@@ -440,7 +440,7 @@ void UIINT64BarGraph::Slot28(int, int) {
 // OFFSET: 0x00891A40
 // FUNCTION: fn_11454
 void UIItemMoveInfo::Slot28(int, int) {
-  this->m_windows->EnsureWindow(276)->SendMsg(nullptr, 147, this->m_moveIndex, 0, 0, 0);
+  g_windowMgr.EnsureWindow(276)->SendMsg(nullptr, 147, this->m_moveIndex, 0, 0, 0);
 }
 
 // OFFSET: 0x00891A10
@@ -662,7 +662,7 @@ void UIStaticItem::Slot28(int, int) {
 // OFFSET: 0x00892040
 // FUNCTION: fn_11462
 void UIItemMoveInfo::Slot48() {
-  this->m_visibility->Show(276, 0);
+  g_windowMgr.ShowWindowById(276, 0);
   this->Invalidate();
 }
 

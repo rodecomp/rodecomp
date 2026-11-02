@@ -1117,7 +1117,7 @@ void UINewSkillListWnd::Slot33(int x, int y) {
   }
 
   window->Move(left, top);
-  reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(46, 1);
+  g_windowMgr.ShowWindowById(46, 1);
 }
 
 // OFFSET: 0x009B2CD0

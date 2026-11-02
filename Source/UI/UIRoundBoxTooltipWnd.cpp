@@ -188,7 +188,7 @@ int UIRoundBoxTooltipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       }
 
       if (text.empty()) {
-        reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(276, 0);
+        g_windowMgr.ShowWindowById(276, 0);
         return 0;
       }
 

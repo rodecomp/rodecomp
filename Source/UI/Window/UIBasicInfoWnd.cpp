@@ -307,7 +307,7 @@ int UIBasicInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       g_windowMgr.CloseWindow(87);
       g_windowMgr.CloseWindow(40);
       g_windowMgr.CloseWindow(59);
-      reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(36, 0);
+      g_windowMgr.ShowWindowById(36, 0);
       this->SetHeight(this->collapsedHeight);
       g_windowMgr.StoreSnapRectangle(this);
       break;

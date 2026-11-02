@@ -130,7 +130,7 @@ void UIParaItemPurchaseWnd::Slot10(int x, int y, std::intptr_t value) {
     this->SendMsg(nullptr, 38, 0, 0, 0, 0);
     return;
   default:
-    reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+    g_windowMgr.ShowWindowById(15, 1);
     dynamic_cast<UIItemDropCntWnd*>(g_windowMgr.LookupWindow(15))->SendMsg(nullptr, 13, 21, 0, 0, 0);
     return;
   }
@@ -155,7 +155,7 @@ void UIParaItemShopWnd::Slot10(int x, int y, std::intptr_t value) {
     return;
   }
 
-  reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+  g_windowMgr.ShowWindowById(15, 1);
   dynamic_cast<UIItemDropCntWnd*>(g_windowMgr.LookupWindow(15))->SendMsg(nullptr, 13, 22, 0, 0, 0);
 }
 

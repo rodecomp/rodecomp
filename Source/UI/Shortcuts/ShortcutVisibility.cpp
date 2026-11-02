@@ -1,95 +1,99 @@
-#include "UI/Shortcuts/ShortcutVisibility.h"
+#include "Client/Replay.h"
+#include "Contents/Configuration/ServiceOptions.h"
+#include "UI/Window/UIWindow.h"
+#include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowOrdering.h"
 
 // OFFSET: 0x00AAA310
 // FUNCTION: fn_17269
-bool WindowVisibility::Show(int id, int visible) {
+bool UIWindowMgr::ShowWindowById(int id, int visible) {
   switch (id) {
   case 1: {
-    if (this->restricted && !this->replayAllowsBasicInfo) {
+    if (g_replayAnimationScaling && !Replay::Instance().header.options.recordRestricted) {
       return false;
     }
 
-    this->basicInfoVisible = visible;
+    this->unknown_003C = visible;
 
-    if (!this->basicInfo) {
-      this->windows.EnsureWindow(1);
+    if (!this->window_01C8) {
+      g_windowMgr.EnsureWindow(1);
     }
 
-    this->basicInfo->Show(visible);
-    UIWindow* window = this->basicInfo;
+    this->window_01C8->Show(visible);
+    UIWindow* window = this->window_01C8;
 
     if (visible == 0) {
       window->Slot11();
       return true;
     }
 
-    this->ordering.Promote(window);
+    reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(window);
     return true;
   }
 
   case 15:
-    this->windows.EnsureWindow(15);
+    g_windowMgr.EnsureWindow(15);
 
-    if (this->window15->geometry.visible != visible) {
-      this->window15->Show(visible);
+    if (this->window_01EC->geometry.visible != visible) {
+      this->window_01EC->Show(visible);
     }
 
     if (visible != 0) {
-      this->ordering.Promote(this->window15);
+      reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(this->window_01EC);
     }
 
     return false;
 
   case 36:
-    return this->shortcut.Show(visible);
+    return this->ShowShortcutWindow(visible);
 
   case 46: {
-    this->window46Visible = visible;
+    this->unknown_0048 = visible;
 
-    if (!this->window46) {
+    if (!this->window_0230) {
       if (visible == 0) {
         return true;
       }
 
-      this->windows.EnsureWindow(46);
+      g_windowMgr.EnsureWindow(46);
 
-      if (!this->window46) {
+      if (!this->window_0230) {
         return true;
       }
     }
 
-    this->window46->Show(visible);
-    UIWindow* window = this->window46;
+    this->window_0230->Show(visible);
+    UIWindow* window = this->window_0230;
 
     if (visible == 0) {
       window->Slot11();
       return true;
     }
 
-    this->ordering.Promote(window);
+    reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(window);
     return true;
   }
 
   case 273:
-    this->windows.LookupWindow(273)->Show(visible);
+    g_windowMgr.LookupWindow(273)->Show(visible);
     return true;
 
   case 276:
-    this->window276Visible = visible;
+    this->visible_276 = visible;
 
-    if (!this->window276) {
+    if (!this->window_4F1E4) {
       if (visible == 0) {
         return true;
       }
 
-      this->windows.EnsureWindow(276);
+      g_windowMgr.EnsureWindow(276);
 
-      if (!this->window276) {
+      if (!this->window_4F1E4) {
         return true;
       }
     }
 
-    this->window276->Show(visible);
+    this->window_4F1E4->Show(visible);
     return true;
   }
 

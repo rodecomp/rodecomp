@@ -295,7 +295,7 @@ void UIRodexComposeWnd::Slot10(int x, int y, std::intptr_t value) {
     return;
   }
 
-  reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+  g_windowMgr.ShowWindowById(15, 1);
   g_windowMgr.window_01EC->SendMsg(nullptr, 13, 13, 0, 0, 0);
 }
 

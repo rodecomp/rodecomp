@@ -172,7 +172,7 @@ void UICashShopWnd::Slot10(int x, int y, std::intptr_t value) {
     return;
   }
 
-  reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+  g_windowMgr.ShowWindowById(15, 1);
   if (g_windowMgr.window_01EC != nullptr) {
     g_windowMgr.window_01EC->SendMsg(nullptr, 13, 20, drag->quantity, 0, 0);
   }
@@ -197,7 +197,7 @@ void UICashShopWnd_Cart::Slot10(int x, int y, std::intptr_t value) {
     return;
   }
 
-  reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+  g_windowMgr.ShowWindowById(15, 1);
   if (g_windowMgr.window_01EC != nullptr) {
     g_windowMgr.window_01EC->SendMsg(nullptr, 13, 19, 0, 0, 0);
   }

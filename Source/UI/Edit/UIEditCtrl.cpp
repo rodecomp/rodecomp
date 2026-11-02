@@ -958,7 +958,7 @@ void UIItemStoreSubWnd::Slot10(int x, int y, std::intptr_t value) {
     return;
   }
 
-  reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+  g_windowMgr.ShowWindowById(15, 1);
   g_windowMgr.window_01EC->SendMsg(nullptr, 13, 7, 0, 0, 0);
 }
 
@@ -1003,7 +1003,7 @@ void UIItemStoreWnd::Slot10(int x, int y, std::intptr_t value) {
     return;
   }
 
-  reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+  g_windowMgr.ShowWindowById(15, 1);
   g_windowMgr.window_01EC->SendMsg(nullptr, 13, 7, 0, 0, 0);
 }
 
@@ -1040,7 +1040,7 @@ void UIItemWnd::Slot10(int x, int y, std::intptr_t value) {
       return;
     }
 
-    reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+    g_windowMgr.ShowWindowById(15, 1);
     g_windowMgr.window_01EC->SendMsg(nullptr, 13, 6, 0, 0, 0);
     return;
   case 14: {
@@ -2972,7 +2972,7 @@ void UIItemPurchaseWnd::Slot10(int x, int y, std::intptr_t value) {
     this->SendMsg(nullptr, 38, 0, 0, 0, 0);
     return;
   default:
-    reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+    g_windowMgr.ShowWindowById(15, 1);
     g_windowMgr.window_01EC->SendMsg(nullptr, 13, 1, 0, 0, 0);
     return;
   }
@@ -2998,7 +2998,7 @@ void UIItemSellWnd2::Slot10(int x, int y, std::intptr_t value) {
     return;
   }
 
-  reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+  g_windowMgr.ShowWindowById(15, 1);
   g_windowMgr.window_01EC->SendMsg(nullptr, 13, 16, 0, 0, 0);
 }
 
@@ -3022,7 +3022,7 @@ void UIItemSellWnd::Slot10(int x, int y, std::intptr_t value) {
     return;
   }
 
-  reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+  g_windowMgr.ShowWindowById(15, 1);
   g_windowMgr.window_01EC->SendMsg(nullptr, 13, 2, 0, 0, 0);
 }
 
@@ -3045,7 +3045,7 @@ void UIMerchantItemShopWnd::Slot10(int x, int y, std::intptr_t value) {
     return;
   }
 
-  reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+  g_windowMgr.ShowWindowById(15, 1);
   g_windowMgr.window_01EC->SendMsg(nullptr, 13, 11, 0, 0, 0);
 }
 
@@ -3073,7 +3073,7 @@ void UIMerchantItemWnd::Slot10(int x, int y, std::intptr_t value) {
     return;
   }
 
-  reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+  g_windowMgr.ShowWindowById(15, 1);
   g_windowMgr.window_01EC->SendMsg(nullptr, 13, 8, 0, 0, 0);
 }
 
@@ -3844,7 +3844,7 @@ void UIItemShopWnd2::Slot10(int x, int y, std::intptr_t value) {
       return;
     }
 
-    reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+    g_windowMgr.ShowWindowById(15, 1);
     g_windowMgr.window_01EC->SendMsg(nullptr, 13, 15, 0, 0, 0);
     return;
   default:
@@ -3873,7 +3873,7 @@ void UIItemShopWnd::Slot10(int x, int y, std::intptr_t value) {
       return;
     }
 
-    reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+    g_windowMgr.ShowWindowById(15, 1);
     g_windowMgr.window_01EC->SendMsg(nullptr, 13, 3, 0, 0, 0);
     return;
   case 5:
@@ -3886,7 +3886,7 @@ void UIItemShopWnd::Slot10(int x, int y, std::intptr_t value) {
       return;
     }
 
-    reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+    g_windowMgr.ShowWindowById(15, 1);
     g_windowMgr.window_01EC->SendMsg(nullptr, 13, 4, 0, 0, 0);
     return;
   default:
@@ -3926,7 +3926,7 @@ void UIMerchantItemPurchaseWnd::Slot10(int x, int y, std::intptr_t value) {
       this->SendMsg(nullptr, 38, 0, 0, 0, 0);
       return;
     default:
-      reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+      g_windowMgr.ShowWindowById(15, 1);
       g_windowMgr.window_01EC->SendMsg(nullptr, 13, 12, 0, 0, 0);
       return;
     }
@@ -3934,7 +3934,7 @@ void UIMerchantItemPurchaseWnd::Slot10(int x, int y, std::intptr_t value) {
 
   if (drag->source == 22) {
     if (drag->quantity > 1) {
-      reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+      g_windowMgr.ShowWindowById(15, 1);
       g_windowMgr.window_01EC->SendMsg(nullptr, 13, 17, 0, 0, 0);
       return;
     }
@@ -3964,7 +3964,7 @@ void UIMerchantMirrorItemWnd::Slot10(int x, int y, std::intptr_t value) {
       return;
     }
 
-    reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+    g_windowMgr.ShowWindowById(15, 1);
     if (this->unknown_00F4 == 2) {
       g_windowMgr.window_01EC->SendMsg(nullptr, 13, 18, 0, 0, 0);
       return;
@@ -3997,7 +3997,7 @@ void UIMerchantShopMakeWnd::Slot10(int x, int y, std::intptr_t value) {
       return;
     }
 
-    reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+    g_windowMgr.ShowWindowById(15, 1);
     g_windowMgr.window_01EC->SendMsg(nullptr, 13, 9, 0, 0, 0);
     return;
   case 20:

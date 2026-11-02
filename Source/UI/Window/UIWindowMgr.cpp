@@ -1680,7 +1680,7 @@ int UIWindowMgr::SendNotice(int selector, std::intptr_t a, std::intptr_t b, std:
     }
     break;
   case 3:
-    reinterpret_cast<WindowVisibility&>(*this).Show(1, 1);
+    this->ShowWindowById(1, 1);
     if (this->window_01C8 != nullptr) {
       this->window_01C8->SendMsg(nullptr, 16, 0, 0, 0, 0);
     }

@@ -93,7 +93,7 @@ void ModeDragState::BeginSkill(
 // OFFSET: 0x00CFDF90
 // FUNCTION: fn_21427
 void ModeDragState::BeginBarterItem(int sourceValue, const BarterMarketItem& item, int quantityValue, int slotValue) {
-  reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 0);
+  g_windowMgr.ShowWindowById(15, 0);
   this->Clear();
   this->source = sourceValue;
   this->quantity = quantityValue;
@@ -111,7 +111,7 @@ void ModeDragState::BeginBarterItem(int sourceValue, const BarterMarketItem& ite
 // OFFSET: 0x00CFE060
 // FUNCTION: fn_21428
 void ModeDragState::BeginBarterEntry(int sourceValue, const BarterMarketEntry& entry, int quantityValue, int slotValue) {
-  reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 0);
+  g_windowMgr.ShowWindowById(15, 0);
   this->Clear();
   this->source = sourceValue;
   this->quantity = quantityValue;

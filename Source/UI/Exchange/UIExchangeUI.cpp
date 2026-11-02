@@ -295,7 +295,7 @@ void CUIExchangeUI::Slot10(int x, int y, std::intptr_t value) {
     if (drag->quantity == 1) {
       this->SendMsg(nullptr, 38, 0, 0, 0, 0);
     } else {
-      reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+      g_windowMgr.ShowWindowById(15, 1);
       if (g_windowMgr.window_01EC != nullptr) {
         g_windowMgr.window_01EC->SendMsg(nullptr, 13, 5, 0, 0, 0);
       }

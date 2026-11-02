@@ -70,7 +70,7 @@ void UIBarterItemPurchaseWnd::Slot10(int x, int y, std::intptr_t value) {
       return;
     }
 
-    reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+    g_windowMgr.ShowWindowById(15, 1);
     if (UIWindow* window = g_windowMgr.LookupWindow(15)) {
       window->SendMsg(nullptr, 13, 24, 0, 0, 0);
     }
@@ -100,7 +100,7 @@ void UIBartermarketWnd::Slot10(int x, int y, std::intptr_t value) {
     return;
   }
 
-  reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+  g_windowMgr.ShowWindowById(15, 1);
   if (UIWindow* window = g_windowMgr.LookupWindow(15)) {
     window->SendMsg(nullptr, 13, 23, 0, 0, 0);
   }
@@ -244,7 +244,7 @@ void UIExpandedBarterItemPurchaseWnd::Slot10(int x, int y, std::intptr_t value) 
     this->SendMsg(0, 38, 0, 0, 0, 0);
     return;
   }
-  reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+  g_windowMgr.ShowWindowById(15, 1);
   g_windowMgr.LookupWindow(15)->SendMsg(0, 13, 26, 0, 0, 0);
 }
 
@@ -260,7 +260,7 @@ void UIExpandedBartermarketWnd::Slot10(int x, int y, std::intptr_t value) {
     this->SendMsg(0, 38, 0, 0, 0, 0);
     return;
   }
-  reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+  g_windowMgr.ShowWindowById(15, 1);
   g_windowMgr.LookupWindow(15)->SendMsg(0, 13, 25, 0, 0, 0);
 }
 
