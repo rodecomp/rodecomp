@@ -29,6 +29,9 @@ public:
   void AddTextWrapped(const char* text, int color, const char* style);
   void sub_89DC30(const char* text, int& color, int& mode);
   void sub_89E0F0(const char* text, int& color, int& mode);
+  std::string RenderItemLinks(const char* lineText, std::string& source);
+  std::string RenderNavigationLinks(const char* text, std::string& source);
+  void RewrapLinkLines(std::vector<std::string>& wrapped, int& mode);
   const char* HistoryText(unsigned int index);
   bool SaveChatLog(const char* path);
   void PlaceNaviLinks(int line);

@@ -1703,40 +1703,6 @@ bool UIGage::CanHitTest() {
   return false;
 }
 
-// OFFSET: 0x0086DBD0
-// FUNCTION: fn_11057
-UIListBoxID::UIListBoxID()
-    : UIWindow(*reinterpret_cast<UIWindowContext*>(nullptr), 0), lines(), selected(0), topLine(0), horizontalOffset(0), contentWidth(0), verticalOverflow(0),
-      bottomMargin(0), verticalBar(nullptr), horizontalBar(nullptr), transparent(0), lineHeight(16) {
-  int* background = reinterpret_cast<int*>(this->unknown_007C);
-  background[0] = 255;
-  background[1] = 255;
-  background[2] = 255;
-  const SkinPaletteCell cell = {3, 2};
-  this->selectionColor = SkinPaletteColor(ResourceMgr::Instance(), cell, g_skinInfo.Selected());
-}
-
-// OFFSET: 0x0087C2A0
-// FUNCTION: fn_11252
-void UIString::SetText(int width, int height, std::string text) {
-  this->SetSize(width, height);
-  if (text.size() == 1 && text[0] == '\n') {
-    this->Resize(5, 5);
-    this->unknown_00DC = text;
-    return;
-  }
-
-  this->ParseTags(text);
-  if (this->unknown_00AC.size() != 0) {
-    this->Resize(this->TextWidth(this->m_context->fonts, this->m_context->locale, this->unknown_00DC.c_str(), static_cast<unsigned>(this->unknown_00DC.size()), 0, 12, 0, 0) + 24, 24);
-  } else {
-    this->Resize(
-      this->TextWidth(this->m_context->fonts, this->m_context->locale, this->unknown_00DC.c_str(), static_cast<unsigned>(this->unknown_00DC.size()), 0, 12, 0, 0),
-      this->TextHeight(this->m_context->fonts, this->m_context->locale, this->unknown_00DC.c_str(), static_cast<unsigned>(this->unknown_00DC.size()), 0, 12, 0, 0)
-    );
-  }
-}
-
 // OFFSET: 0x0087C3F0
 // FUNCTION: fn_11253
 void UITabControl::Configure(
@@ -1845,3 +1811,369 @@ bool UIItemTagCtrl::RemoveInvalidTag(std::list<ItemTagRecord>::iterator& entry) 
 
   return false;
 }
+
+#include "Contents/Items/ItemInfo.h"
+#include "Contents/Items/ItemLink.h"
+#include "Contents/Items/ItemNaming.h"
+#include "Contents/PlayerNameDictionary.h"
+#include "Contents/TipBoxTitles.h"
+#include "UI/Text/ItemLinkDisplay.h"
+#include "UI/Text/NavigationLink.h"
+
+#include <mbstring.h>
+
+// GLOBAL: gl_24662
+std::string g_itemLinkTagBegin = "<ITEML>";
+// GLOBAL: gl_24663
+std::string g_itemLinkTagEnd = "</ITEML>";
+// GLOBAL: gl_24658
+std::string g_naviLinkTagBegin = "<NAVIL>";
+// GLOBAL: gl_24659
+std::string g_naviLinkTagEnd = "</NAVIL>";
+
+// OFFSET: 0x00882460
+// FUNCTION: fn_11305
+std::string UIChatHisBox::RenderItemLinks(const char* lineText, std::string& source) {
+  if (source.find(g_itemLinkTagBegin) == std::string::npos) {
+    return lineText;
+  }
+
+  std::string remaining = source;
+  std::string result;
+  std::vector<UIItemTagButton*> buttons;
+  unsigned position = 0;
+  unsigned previous = 0;
+  ItemDescriptions descriptions{g_itemDescriptions};
+  const bool languagePrefix = false;
+  const WORD language = g_serverLanguage->language;
+  ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+  const TipBoxTitles titles{g_itemTagOwner->m_entries, g_itemTagOwner->m_missing, g_itemTagOwner->unknown_0118, this->m_listContext->codePage};
+  ItemLinkDisplay display{*this->geometry.surface, this->m_listContext->fonts, this->m_listContext->locale, naming, titles, this->geometry.width};
+
+  for (;;) {
+    std::string encoded;
+    if (!display.Next(remaining, encoded, position, source.c_str()) || result.size() >= std::strlen(lineText)) {
+      break;
+    }
+
+    const std::string prefix = source.substr(previous, position - previous);
+    if (result.size() + prefix.size() > std::strlen(lineText)) {
+      const int available = static_cast<int>(std::strlen(lineText) - result.size());
+      if (available > 0) {
+        result += prefix.substr(0, available);
+        previous += available;
+        break;
+      }
+    }
+    result += prefix;
+
+    int titleId = 0;
+    if (encoded.substr(0, 6) == "00000T" && (titleId = ItemLinkMessageId(encoded)) <= titles.maximumId) {
+      std::string label;
+      const std::string title = titles.Title(titleId, &label, 17);
+      if (!title.empty()) {
+        UIItemTagButton* button = this->CreateItemTagButton(title, label, titleId, this, 0x7F00E4);
+        if (button) {
+          buttons.push_back(button);
+          button->line = static_cast<int>(this->lines.size());
+          button->column = this->TextWidth(
+              this->m_listContext->fonts, this->m_listContext->locale, result.c_str(), 0, 0, 12, 0, 0) - this->horizontalOffset;
+          result += button->GetLine(0);
+        }
+      }
+      position += static_cast<unsigned>(encoded.size() + g_itemLinkTagEnd.size() + g_itemLinkTagBegin.size());
+    } else {
+      std::vector<std::int32_t> fields;
+      DecodeItemLinkFields(encoded, fields);
+      ITEM_INFO item;
+      if (ItemFromLinkFields(fields, item, descriptions)) {
+        const std::string label = display.BracketName(naming.DisplayName(item, 0));
+        if (result.size() + label.size() > std::strlen(lineText)) {
+          previous += static_cast<unsigned>(prefix.size());
+          break;
+        }
+
+        UIItemTagButton* button = new (std::nothrow) UIItemTagButton(*this->m_context, this->m_listContext->buttons);
+        if (button) {
+          std::memcpy(button->unknown_00F8, &item, sizeof(item));
+          button->Configure(label.c_str(), 0x82F2E1, 0, 12, 0, 0);
+          button->SetTooltip(naming.DisplayName(item, 0).c_str());
+          button->m_hoverColor = 0x82F2E1;
+          button->SetId(0x1D0);
+          button->ResizeToTextClipped(
+              this->TextWidth(this->m_listContext->fonts, this->m_listContext->locale, label.c_str(), 0, 0, 12, 0, 0) + 1,
+              button->geometry.height);
+
+          const std::string unknownName = LookupMessage(581);
+          if (label.find(unknownName) != std::string::npos) {
+            std::uint32_t creator[2];
+            std::memcpy(creator, item.unknown_001C + 8, sizeof(creator));
+            button->unknown_01F8 = creator[0] + (creator[1] << 16);
+            g_session.AddUnknown7F94(button->unknown_01F8);
+          }
+
+          this->AddChild(button);
+          buttons.push_back(button);
+          button->line = static_cast<int>(this->lines.size());
+          button->column = this->TextWidth(
+              this->m_listContext->fonts, this->m_listContext->locale, result.c_str(), 0, 0, 12, 0, 0) - this->horizontalOffset;
+          result += label;
+          position += static_cast<unsigned>(encoded.size() + g_itemLinkTagEnd.size() + g_itemLinkTagBegin.size());
+        }
+      }
+    }
+
+    previous = position;
+  }
+
+  if (result.size() < std::strlen(lineText)) {
+    const int available = static_cast<int>(std::strlen(lineText) - result.size());
+    if (available > 0 && static_cast<unsigned>(available) <= remaining.size()) {
+      result += remaining.substr(0, available);
+      previous += available;
+    }
+  }
+
+  source = source.substr(previous);
+  this->ItemTags().push_back(buttons);
+  return result;
+}
+
+// OFFSET: 0x00883460
+// FUNCTION: fn_11306
+std::string UIChatHisBox::RenderNavigationLinks(const char* text, std::string& source) {
+  if (_mbsstr(reinterpret_cast<const unsigned char*>(text), reinterpret_cast<const unsigned char*>("<")) == nullptr &&
+      _mbsstr(reinterpret_cast<const unsigned char*>(text), reinterpret_cast<const unsigned char*>(">")) == nullptr) {
+    const std::size_t position = source.find(text);
+    if (position != std::string::npos) {
+      source = source.substr(position + std::strlen(text));
+    }
+    return std::string(text);
+  }
+
+  std::vector<UINaviLinkButton*> buttons;
+  std::string remaining = source;
+  std::string result;
+  std::string link;
+
+  for (;;) {
+    const std::size_t begin = remaining.find(g_naviLinkTagBegin);
+    if (begin == std::string::npos) {
+      break;
+    }
+
+    result.clear();
+    result += remaining.substr(0, begin);
+    source = source.substr(begin);
+    link = remaining.substr(begin);
+    const std::size_t end = link.find(g_naviLinkTagEnd);
+    if (end == std::string::npos) {
+      break;
+    }
+    link = link.substr(0, end + g_naviLinkTagEnd.size());
+
+    const std::string name = FormatNavigationLink(link, false);
+    std::string label = "<";
+    const int width = this->geometry.width / 2;
+    if (this->geometry.surface == nullptr) {
+      this->Resize(width, 15);
+    }
+    label += FitText(*this->geometry.surface, name, width);
+    label += ">";
+
+    std::string tail;
+    const std::string line(text);
+    const std::size_t position = line.find(label);
+    if (position != std::string::npos) {
+      tail = line.substr(position + label.size());
+    }
+
+    UINaviLinkButton* button = new (std::nothrow) UINaviLinkButton(*this->m_context, this->m_listContext->buttons, this->m_listContext->navigation);
+    if (button) {
+      button->link = link;
+      button->Configure(label.c_str(), 0x82F2E1, 0, 12, 0, 0);
+      if (label.size() - 2 < name.size()) {
+        button->SetTooltip(name.c_str());
+      }
+      button->m_hoverColor = 0x82F2E1;
+      button->SetId(438);
+      const int height = button->geometry.height;
+      button->ResizeToTextClipped(
+          this->TextWidth(this->m_listContext->fonts, this->m_listContext->locale, label.c_str(), 0, 0, 12, 0, 0) + 1, height);
+      this->AddChild(button);
+      buttons.push_back(button);
+      button->line = static_cast<int>(this->lines.size());
+      button->column = this->TextWidth(
+          this->m_listContext->fonts, this->m_listContext->locale, result.c_str(), 0, 0, 12, 0, 0) - this->horizontalOffset;
+
+      result += label;
+      result += tail;
+      source = source.substr(tail.size() + label.size());
+      remaining = source;
+    }
+  }
+
+  if (!buttons.empty()) {
+    this->naviLinks.push_back(buttons);
+  }
+  return result;
+}
+
+// OFFSET: 0x00894090
+// FUNCTION: fn_11508
+void UIChatHisBox::RewrapLinkLines(std::vector<std::string>& wrapped, int& mode) {
+  std::string remaining;
+  for (unsigned int line = 0; line < wrapped.size(); ++line) {
+    if (wrapped.size() > 23) {
+      break;
+    }
+
+    std::vector<std::string> split;
+    this->sub_8932D0(&mode, &split, wrapped[line]);
+    if (split.size() > 1) {
+      for (unsigned int part = 0; part < split.size(); ++part) {
+        if (part == 0) {
+          wrapped[line] = split[part];
+        }
+        if (line + part < wrapped.size() && part == split.size() - 1) {
+          split[part].append(wrapped[line + part]);
+          wrapped[line + part].swap(split[part]);
+        } else if (part != 0) {
+          std::vector<std::string> rebuilt;
+          for (const std::string& text : wrapped) {
+            if (!text.empty()) {
+              rebuilt.push_back(text);
+            }
+          }
+          if (!split[part].empty()) {
+            rebuilt.push_back(split[part]);
+          }
+          for (unsigned int next = line + 1; next < wrapped.size(); ++next) {
+            if (!wrapped[next].empty()) {
+              rebuilt.push_back(wrapped[next]);
+            }
+          }
+          wrapped.swap(rebuilt);
+        }
+      }
+    }
+
+    remaining = wrapped[line];
+    unsigned int offset = 0;
+    std::size_t position = remaining.find('>');
+    while (position != std::string::npos) {
+      offset += static_cast<unsigned int>(position + 1);
+      remaining = remaining.substr(position + 1);
+      position = remaining.find('>');
+    }
+
+    position = remaining.find('<');
+    if (position != std::string::npos) {
+      offset += static_cast<unsigned int>(position);
+      remaining = remaining.substr(position);
+      std::string tail = remaining.substr(1);
+      position = tail.find('<');
+      while (position != std::string::npos) {
+        offset += static_cast<unsigned int>(position);
+        remaining = tail;
+        tail = remaining.substr(1);
+        position = tail.find('<');
+      }
+
+      if (line + 1 < wrapped.size() && wrapped[line + 1].find('>') != std::string::npos) {
+        remaining.append(wrapped[line + 1]);
+        wrapped[line + 1].swap(remaining);
+        wrapped[line] = wrapped[line].substr(0, offset);
+      }
+    }
+  }
+}
+
+// OFFSET: 0x0089DC30
+// FUNCTION: fn_11598
+void UIChatHisBox::sub_89DC30(const char* text, int& color, int& mode) {
+  if (!_mbsstr(reinterpret_cast<const unsigned char*>(text), reinterpret_cast<const unsigned char*>(g_itemLinkTagBegin.c_str())) ||
+      !_mbsstr(reinterpret_cast<const unsigned char*>(text), reinterpret_cast<const unsigned char*>(g_itemLinkTagEnd.c_str()))) {
+    this->UIListBox::AddLine(text);
+    return;
+  }
+
+  std::vector<std::string> wrapped;
+  ItemDescriptions descriptions{g_itemDescriptions};
+  bool languagePrefix = false;
+  WORD language = g_serverLanguage->language;
+  ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+  const TipBoxTitles titles{g_itemTagOwner->m_entries, g_itemTagOwner->m_missing, g_itemTagOwner->unknown_0118, this->m_listContext->codePage};
+  ItemLinkDisplay display{*this->geometry.surface, this->m_listContext->fonts, this->m_listContext->locale, naming, titles, this->geometry.width};
+  const std::string converted = display.Convert(text);
+  this->sub_8932D0(&mode, &wrapped, converted);
+  this->RewrapLinkLines(wrapped, mode);
+  std::string source = text;
+  for (unsigned int line = 0; line < wrapped.size(); ++line) {
+    wrapped[line] = this->RenderItemLinks(wrapped[line].c_str(), source);
+    if (line != 0) {
+      this->unknown_00E4.push_back(color);
+      this->history.push_back(std::string());
+    }
+    this->UIListBox::AddLine(wrapped[line].c_str());
+  }
+}
+
+// OFFSET: 0x0089E0F0
+// FUNCTION: fn_11599
+void UIChatHisBox::sub_89E0F0(const char* text, int& color, int& mode) {
+  if (!g_navigationLinkParser->HasLink(text)) {
+    this->UIListBox::AddLine(text);
+    return;
+  }
+
+  std::vector<std::string> wrapped;
+  std::string display;
+  DisplayNavigationLink(display, text);
+  this->sub_8932D0(&mode, &wrapped, display);
+  this->RewrapLinkLines(wrapped, mode);
+  std::string source = text;
+  for (unsigned int line = 0; line < wrapped.size(); ++line) {
+    wrapped[line] = this->RenderNavigationLinks(wrapped[line].c_str(), source);
+    if (line != 0) {
+      this->unknown_00E4.push_back(color);
+    }
+    this->UIListBox::AddLine(wrapped[line].c_str());
+  }
+}
+
+// OFFSET: 0x0086DBD0
+// FUNCTION: fn_11057
+UIListBoxID::UIListBoxID()
+    : UIWindow(*reinterpret_cast<UIWindowContext*>(nullptr), 0), lines(), selected(0), topLine(0), horizontalOffset(0), contentWidth(0), verticalOverflow(0),
+      bottomMargin(0), verticalBar(nullptr), horizontalBar(nullptr), transparent(0), lineHeight(16) {
+  int* background = reinterpret_cast<int*>(this->unknown_007C);
+  background[0] = 255;
+  background[1] = 255;
+  background[2] = 255;
+  const SkinPaletteCell cell = {3, 2};
+  this->selectionColor = SkinPaletteColor(ResourceMgr::Instance(), cell, g_skinInfo.Selected());
+}
+
+// OFFSET: 0x0087C2A0
+// FUNCTION: fn_11252
+void UIString::SetText(int width, int height, std::string text) {
+  this->SetSize(width, height);
+  if (text.size() == 1 && text[0] == '\n') {
+    this->Resize(5, 5);
+    this->unknown_00DC = text;
+    return;
+  }
+
+  this->ParseTags(text);
+  if (this->unknown_00AC.size() != 0) {
+    this->Resize(this->TextWidth(this->m_context->fonts, this->m_context->locale, this->unknown_00DC.c_str(), static_cast<unsigned>(this->unknown_00DC.size()), 0, 12, 0, 0) + 24, 24);
+  } else {
+    this->Resize(
+      this->TextWidth(this->m_context->fonts, this->m_context->locale, this->unknown_00DC.c_str(), static_cast<unsigned>(this->unknown_00DC.size()), 0, 12, 0, 0),
+      this->TextHeight(this->m_context->fonts, this->m_context->locale, this->unknown_00DC.c_str(), static_cast<unsigned>(this->unknown_00DC.size()), 0, 12, 0, 0)
+    );
+  }
+}
+
+

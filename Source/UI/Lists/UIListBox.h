@@ -10,6 +10,7 @@ struct FrameFocus;
 class ResourceMgr;
 class UIScrollBar;
 class WindowManagerWindows;
+class NavigationDestination;
 struct UIButtonContext;
 
 struct UIListBoxContext {
@@ -20,6 +21,7 @@ struct UIListBoxContext {
   const unsigned short& codePage;
   WindowManagerWindows& windows;
   UIButtonContext& buttons;
+  NavigationDestination& navigation;
 };
 
 class UIListBox : public UIWindow {

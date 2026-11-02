@@ -21,6 +21,7 @@ class UITextButton : public UIButton {
   friend class UISerachStoreInfoWnd;
   friend class UISeekPartyListWnd;
   friend class UIRodexInboxWnd;
+  friend class UIChatHisBox;
 
 public:
   friend void OpenTextButtonLink(UITextButton* button);
