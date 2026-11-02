@@ -5,7 +5,7 @@
 
 // OFFSET: 0x008D2CE0
 // FUNCTION: fn_12098
-int UIWindow::DrawTitleBar(FontCache& fonts, const TextLocale& locale, bool closeButton, const char* title, int width) {
+int UIWindow::DrawTitleBar(bool closeButton, const char* title, int width) {
   if (width == 0) {
     width = this->geometry.width;
   }
@@ -37,8 +37,8 @@ int UIWindow::DrawTitleBar(FontCache& fonts, const TextLocale& locale, bool clos
     }
   }
 
-  this->DrawTextAt(fonts, locale, 19, titleHeight - 13, title, 0, 0, 12, 0xFFFFFF, 0, 0);
-  this->DrawTextAt(fonts, locale, 18, titleHeight - 14, title, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(19, titleHeight - 13, title, 0, 0, 12, 0xFFFFFF, 0, 0);
+  this->DrawTextAt(18, titleHeight - 14, title, 0, 0, 12, 0, 0, 0);
 
   if (closeButton) {
     auto* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sys_base_off.bmp")));
@@ -50,7 +50,7 @@ int UIWindow::DrawTitleBar(FontCache& fonts, const TextLocale& locale, bool clos
 
 // OFFSET: 0x008D2E50
 // FUNCTION: fn_12099
-int UIWindow::DrawTitleBarAt(FontCache& fonts, const TextLocale& locale, int x, int width, bool closeButton, const char* title) {
+int UIWindow::DrawTitleBarAt(int x, int width, bool closeButton, const char* title) {
   if (width <= 0) {
     width = this->geometry.width - x;
   }
@@ -81,8 +81,8 @@ int UIWindow::DrawTitleBarAt(FontCache& fonts, const TextLocale& locale, int x, 
     }
   }
 
-  this->DrawTextAt(fonts, locale, x + 19, titleHeight - 13, title, 0, 0, 12, 0xFFFFFF, 0, 0);
-  this->DrawTextAt(fonts, locale, x + 18, titleHeight - 14, title, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(x + 19, titleHeight - 13, title, 0, 0, 12, 0xFFFFFF, 0, 0);
+  this->DrawTextAt(x + 18, titleHeight - 14, title, 0, 0, 12, 0, 0, 0);
 
   if (closeButton) {
     auto* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sys_base_off.bmp")));

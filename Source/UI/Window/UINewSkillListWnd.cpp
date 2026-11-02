@@ -334,7 +334,7 @@ void UINewSkillListWnd::sub_9AF300() {
         std::sprintf(text, g_serviceType == 12 ? "Nv :" : "Lv :");
         const int labelX = this->m_locked != 0 || !usesLevel ? textX + 1 : textX + 12;
         const std::uint32_t gray = RGB(shade, shade, shade);
-        this->DrawTextAt(controls.fonts, controls.locale, labelX, textY, text, 0, 0, 12, gray, 0, 0);
+        this->DrawTextAt(labelX, textY, text, 0, 0, 12, gray, 0, 0);
 
         int levelX;
         if (usesLevel) {
@@ -344,16 +344,16 @@ void UINewSkillListWnd::sub_9AF300() {
           }
           levelX = (this->m_locked == 0 ? 37 : 25) + textX;
           std::sprintf(text, "%2d", useLevel);
-          this->DrawTextAt(controls.fonts, controls.locale, levelX, textY, text, 0, 0, 12, useLevel == skill.level ? gray : 255, 0, 0);
-          levelX += 7 + this->TextWidth(controls.fonts, controls.locale, text, 0, 0, 12, 0, 0);
-          this->DrawTextAt(controls.fonts, controls.locale, levelX, textY, "/ ", 0, 0, 12, gray, 0, 0);
-          levelX += this->TextWidth(controls.fonts, controls.locale, "/ ", 0, 0, 12, 0, 0);
+          this->DrawTextAt(levelX, textY, text, 0, 0, 12, useLevel == skill.level ? gray : 255, 0, 0);
+          levelX += 7 + this->TextWidth(text, 0, 0, 12, 0, 0);
+          this->DrawTextAt(levelX, textY, "/ ", 0, 0, 12, gray, 0, 0);
+          levelX += this->TextWidth("/ ", 0, 0, 12, 0, 0);
           std::sprintf(text, "%2d", skill.level);
         } else {
           std::sprintf(text, "%d", skill.level);
           levelX = textX + 25;
         }
-        this->DrawTextAt(controls.fonts, controls.locale, levelX, textY, text, 0, 0, 12, RGB(green, green, red), 0, 0);
+        this->DrawTextAt(levelX, textY, text, 0, 0, 12, RGB(green, green, red), 0, 0);
 
         if (skill.unknown_000C == 0) {
           std::sprintf(text, LookupMessage(286));
@@ -391,10 +391,10 @@ void UINewSkillListWnd::sub_9AF300() {
             std::sprintf(text, "Sp : %d", sp);
           }
         }
-        this->DrawTextAt(controls.fonts, controls.locale, textX + 100, textY, text, 0, 0, 12, gray, 0, 0);
+        this->DrawTextAt(textX + 100, textY, text, 0, 0, 12, gray, 0, 0);
       }
 
-      this->DrawTextAt(controls.fonts, controls.locale, textX, y + 35, skill.DisplayName(script), 0, 0, 12, RGB(shade, shade, shade), 0, 0);
+      this->DrawTextAt(textX, y + 35, skill.DisplayName(script), 0, 0, 12, RGB(shade, shade, shade), 0, 0);
       if (++drawn == this->m_visibleRows * this->m_columns) {
         break;
       }
@@ -918,8 +918,8 @@ void UINewSkillListWnd::Paint() {
     this->DrawBitmap(x, this->geometry.height - bitmap->image.height, &bitmap->image, false);
   }
 
-  this->DrawTextAt(controls.fonts, controls.locale, 41, 6, LookupMessage(283), 0, 0, 12, 0xFFFFFF, 0, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 40, 5, LookupMessage(283), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(41, 6, LookupMessage(283), 0, 0, 12, 0xFFFFFF, 0, 0);
+  this->DrawTextAt(40, 5, LookupMessage(283), 0, 0, 12, 0, 0, 0);
 
   const int points = this->m_skillPoints;
   char text[80];
@@ -937,8 +937,8 @@ void UINewSkillListWnd::Paint() {
     this->sub_9AE930();
   } else {
     std::sprintf(text, LookupMessage(284), points);
-    this->TextWidth(controls.fonts, controls.locale, text, 0, 0, 12, 0, 0);
-    this->DrawTextAt(controls.fonts, controls.locale, 30, this->geometry.height - 23, text, 0, 0, 12, 0, 0, 0);
+    this->TextWidth(text, 0, 0, 12, 0, 0);
+    this->DrawTextAt(30, this->geometry.height - 23, text, 0, 0, 12, 0, 0, 0);
     this->sub_9AF300();
   }
 
@@ -1673,7 +1673,7 @@ void UINewSkillListWnd::sub_9AF960() {
           added = 0;
         }
         if (added > 0) {
-          this->DrawTextAt(controls.fonts, controls.locale, x + 30, y + 44, FormatString("+%d", added), 0, 0, 11, 0xFF, 0, 0);
+          this->DrawTextAt(x + 30, y + 44, FormatString("+%d", added), 0, 0, 11, 0xFF, 0, 0);
         }
       }
     }
@@ -1694,7 +1694,7 @@ void UINewSkillListWnd::sub_9AF960() {
     if (level != 0) {
       if (!usesLevel) {
         std::sprintf(text, "%d", skill.level);
-        const int width = this->TextWidth(controls.fonts, controls.locale, text, 0, 0, 11, 1, 0);
+        const int width = this->TextWidth(text, 0, 0, 11, 1, 0);
         DrawOutlinedText(*this, (24 - width) / 2 + x + 4, textY, text, 0, (blue << 8 | green) << 8 | red, 0xFFFFFF, 0, 11, 1, 0);
       } else {
         int useLevel = reinterpret_cast<const CharacterConfigSave*>(&g_session)->UseLevel(static_cast<int>(skill.id));
@@ -1702,12 +1702,12 @@ void UINewSkillListWnd::sub_9AF960() {
           useLevel = skill.level;
         }
         std::sprintf(text, "%d / %d", useLevel, skill.level);
-        int textX = (24 - this->TextWidth(controls.fonts, controls.locale, text, 0, 0, 11, 1, 0)) / 2 + x + 4;
+        int textX = (24 - this->TextWidth(text, 0, 0, 11, 1, 0)) / 2 + x + 4;
         std::sprintf(text, "%d", useLevel);
         DrawOutlinedText(*this, textX, textY, text, 0, useLevel == skill.level ? gray : 0x7F3CFF, 0xFFFFFF, 0, 11, 1, 0);
-        textX += this->TextWidth(controls.fonts, controls.locale, text, 0, 0, 11, 1, 0);
+        textX += this->TextWidth(text, 0, 0, 11, 1, 0);
         DrawOutlinedText(*this, textX, textY, " / ", 0, gray, 0xFFFFFF, 0, 11, 1, 0);
-        textX += this->TextWidth(controls.fonts, controls.locale, " / ", 0, 0, 11, 1, 0);
+        textX += this->TextWidth(" / ", 0, 0, 11, 1, 0);
 
         const std::uint32_t id = skill.id;
         int target = SkillValueOf(this->m_unknown_02A0, static_cast<int>(id));
@@ -1724,13 +1724,12 @@ void UINewSkillListWnd::sub_9AF960() {
       }
     }
 
-    const int nameWidth = this->TextWidth(controls.fonts, controls.locale, skill.DisplayName(script), 0, 0, 11, 0, 0);
+    const int nameWidth = this->TextWidth(skill.DisplayName(script), 0, 0, 11, 0, 0);
     int nameOffset = 0;
     if (nameWidth < 48) {
       nameOffset = (48 - nameWidth) / 2;
     }
-    this->DrawTextAt(
-      controls.fonts, controls.locale, x - 8 + nameOffset, y + 30, this->ClipTextToWidth(skill.DisplayName(script), 48, 0, 11, 0), 0, 0, 11, gray, 0, 0
+    this->DrawTextAt(x - 8 + nameOffset, y + 30, this->ClipTextToWidth(skill.DisplayName(script), 48, 0, 11, 0), 0, 0, 11, gray, 0, 0
     );
 
     if (g_session.m_skillBundle.HasHigherLevel(skill.id) == true) {

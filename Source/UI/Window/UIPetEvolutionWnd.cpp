@@ -60,7 +60,7 @@ void UIPetEvolutionWnd::Slot15(int width, int height) {
 // FUNCTION: fn_13764
 void UIPetEvolutionWnd::Paint() {
   this->ClearSurface(0xFFFFFFFF);
-  this->DrawTitleBar(this->m_controls->fonts, this->m_controls->locale, true, LookupMessage(2567), 0);
+  this->DrawTitleBar(true, LookupMessage(2567), 0);
 
   char text[260];
   std::memset(text, 0, sizeof(text));
@@ -104,19 +104,18 @@ void UIPetEvolutionWnd::Paint() {
     }
   }
 
-  this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 10, 200, LookupMessage(2569), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(10, 200, LookupMessage(2569), 0, 0, 12, 0, 0, 0);
 
   int index = 0;
   for (auto it = this->m_materials.begin(); it != this->m_materials.end(); ++it, ++index) {
     std::memset(text, 0, sizeof(text));
     std::sprintf(text, "%dea", it->second);
     UITextButton* button = this->m_materialButtons[index];
-    this->DrawTextAt(
-      this->m_controls->fonts, this->m_controls->locale, button->geometry.width + button->geometry.x + 10, button->geometry.y + 1, text, 0, 0, 12, 0, 1, 0
+    this->DrawTextAt(button->geometry.width + button->geometry.x + 10, button->geometry.y + 1, text, 0, 0, 12, 0, 1, 0
     );
   }
 
-  this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 10, this->geometry.height - 52, LookupMessage(2570), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(10, this->geometry.height - 52, LookupMessage(2570), 0, 0, 12, 0, 0, 0);
 }
 
 namespace {

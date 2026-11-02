@@ -44,7 +44,7 @@ void UIBmpTextButton::Paint() {
 
     if (!this->text.empty()) {
       const auto draw = [&](int x, int y, int height, unsigned color, unsigned char bold) {
-        this->DrawTextAt(this->m_buttonContext->fonts, this->m_buttonContext->locale, x, y, this->text.c_str(), 0, 0, height, color, bold, 0);
+        this->DrawTextAt(x, y, this->text.c_str(), 0, 0, height, color, bold, 0);
       };
 
       if (style) {
@@ -58,7 +58,7 @@ void UIBmpTextButton::Paint() {
         const int pressedOffset = disabled || state == 2 ? 1 : 0;
         draw((style->x + pressedOffset), (style->y + pressedOffset), style->height, style->color, style->bold);
       } else {
-        const int width = this->TextWidth(this->m_buttonContext->fonts, this->m_buttonContext->locale, this->text.c_str(), 0, 0, 12, 0, 0);
+        const int width = this->TextWidth(this->text.c_str(), 0, 0, 12, 0, 0);
         int height;
 
         {

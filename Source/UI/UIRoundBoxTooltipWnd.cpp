@@ -193,9 +193,9 @@ int UIRoundBoxTooltipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
         return 0;
       }
 
-      const int width = this->TextWidth(this->m_context->fonts, this->m_context->locale, longest.c_str(), 0, 0, 12, 0, 0);
+      const int width = this->TextWidth(longest.c_str(), 0, 0, 12, 0, 0);
       this->viewer->lineLimit = lines;
-      const int height = this->TextHeight(this->m_context->fonts, this->m_context->locale, text.c_str(), 0, 0, 12, 0, 0);
+      const int height = this->TextHeight(text.c_str(), 0, 0, 12, 0, 0);
       this->viewer->Resize(width + 15, static_cast<int>(static_cast<float>(height * lines + 10) + static_cast<float>(lines - 1) * 4.8f + 1.0f));
       this->Resize(this->viewer->geometry.width + 2, this->viewer->geometry.height + 2);
       this->Move(g_screenWidth + 26, g_screenHeight);

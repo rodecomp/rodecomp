@@ -247,7 +247,7 @@ void UILapineBoxWnd::Paint() {
   this->DrawBitmap(0, 0, &background->image, true);
 
   if (this->title.size() != 0) {
-    this->DrawTitleBar(controls.fonts, controls.locale, false, this->title.c_str(), 0);
+    this->DrawTitleBar(false, this->title.c_str(), 0);
   }
 
   this->DrawCenteredText(33, 47, LookupMessage(2896), 160, 0, 11, 0xCD7A51, 0);
@@ -285,7 +285,7 @@ void UILapineBoxWnd::Paint() {
   if (timeGetTime() < this->noticeTick + this->noticeDuration) {
     CBitmapRes* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\lapine\\icon_notify.bmp")));
     this->DrawBitmap(6, 229, &icon->image, true);
-    this->DrawTextAt(controls.fonts, controls.locale, 25, 230, this->notice.c_str(), 0, 0, 12, 0xFF0000, 0, 0);
+    this->DrawTextAt(25, 230, this->notice.c_str(), 0, 0, 12, 0xFF0000, 0, 0);
   }
 }
 

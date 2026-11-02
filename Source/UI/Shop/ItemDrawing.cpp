@@ -25,14 +25,14 @@ void DrawItemWithQuantityAuxiliary(
 
   std::sprintf(text, "%d", item.quantity);
   if (plain != 0) {
-    window.DrawTextAt(fonts, locale, x + 16, y + 20, text, 0, 0, 11, 0, 0, 0);
+    window.DrawTextAt(x + 16, y + 20, text, 0, 0, 11, 0, 0, 0);
   } else {
     const int left = x + (item.quantity < 1000 ? 14 : 0);
-    window.DrawTextAt(fonts, locale, left + 1, y + 15, text, 0, 0, 11, 0xFFFFFF, 0, 0);
-    window.DrawTextAt(fonts, locale, left - 1, y + 15, text, 0, 0, 11, 0xFFFFFF, 0, 0);
-    window.DrawTextAt(fonts, locale, left, y + 16, text, 0, 0, 11, 0xFFFFFF, 0, 0);
-    window.DrawTextAt(fonts, locale, left, y + 14, text, 0, 0, 11, 0xFFFFFF, 0, 0);
-    window.DrawTextAt(fonts, locale, left, y + 15, text, 0, 0, 11, 0, 0, 0);
+    window.DrawTextAt(left + 1, y + 15, text, 0, 0, 11, 0xFFFFFF, 0, 0);
+    window.DrawTextAt(left - 1, y + 15, text, 0, 0, 11, 0xFFFFFF, 0, 0);
+    window.DrawTextAt(left, y + 16, text, 0, 0, 11, 0xFFFFFF, 0, 0);
+    window.DrawTextAt(left, y + 14, text, 0, 0, 11, 0xFFFFFF, 0, 0);
+    window.DrawTextAt(left, y + 15, text, 0, 0, 11, 0, 0, 0);
   }
 }
 
@@ -81,13 +81,13 @@ void DrawItemWithQuantity(
   char text[16];
   std::sprintf(text, "%d", item.quantity);
   if (plain != 0) {
-    window.DrawTextAt(fonts, locale, x + 16, y + 20, text, 0, 0, 11, 0, 0, 0);
+    window.DrawTextAt(x + 16, y + 20, text, 0, 0, 11, 0, 0, 0);
   } else {
     const int left = x + (item.quantity < 1000 ? 14 : 0);
-    window.DrawTextAt(fonts, locale, left + 1, y + 15, text, 0, 0, 11, 0xFFFFFF, 0, 0);
-    window.DrawTextAt(fonts, locale, left - 1, y + 15, text, 0, 0, 11, 0xFFFFFF, 0, 0);
-    window.DrawTextAt(fonts, locale, left, y + 16, text, 0, 0, 11, 0xFFFFFF, 0, 0);
-    window.DrawTextAt(fonts, locale, left, y + 14, text, 0, 0, 11, 0xFFFFFF, 0, 0);
-    window.DrawTextAt(fonts, locale, left, y + 15, text, 0, 0, 11, 0, 0, 0);
+    window.DrawTextAt(left + 1, y + 15, text, 0, 0, 11, 0xFFFFFF, 0, 0);
+    window.DrawTextAt(left - 1, y + 15, text, 0, 0, 11, 0xFFFFFF, 0, 0);
+    window.DrawTextAt(left, y + 16, text, 0, 0, 11, 0xFFFFFF, 0, 0);
+    window.DrawTextAt(left, y + 14, text, 0, 0, 11, 0xFFFFFF, 0, 0);
+    window.DrawTextAt(left, y + 15, text, 0, 0, 11, 0, 0, 0);
   }
 }

@@ -162,7 +162,7 @@ void ShortcutPainting::Paint(UIWindow& window, const ShortcutGrid& grid, const N
   for (int row = 0; row < grid.rows; ++row) {
     char text[24];
     std::sprintf(text, "%d", (row + 1));
-    window.DrawTextAt(this->fonts, this->locale, 6, ((row * 33) + 13), text, 0, 0, 11, 0x2F4A4A, 0, 0);
+    window.DrawTextAt(6, ((row * 33) + 13), text, 0, 0, 11, 0x2F4A4A, 0, 0);
   }
 
   this->cooldowns.PaintMain(this->icons, grid.rows, window.geometry.x, window.geometry.y, this->drawing, this->clock, this->commands, this->system);

@@ -48,8 +48,8 @@ void UIStaticText::SetTextFitted(const char* value) {
     return;
   }
 
-  int width = this->TextWidth(this->m_controls->fonts, this->m_controls->locale, value, 0, this->fontFamily, this->fontHeight, this->bold, 0);
-  this->TextWidth(this->m_controls->fonts, this->m_controls->locale, "...", 0, this->fontFamily, this->fontHeight, this->bold, 0);
+  int width = this->TextWidth(value, 0, this->fontFamily, this->fontHeight, this->bold, 0);
+  this->TextWidth("...", 0, this->fontFamily, this->fontHeight, this->bold, 0);
 
   if (this->geometry.width >= width) {
     this->text = value;
@@ -72,7 +72,7 @@ void UIStaticText::SetTextFitted(const char* value) {
     }
 
     this->text = truncated + "...";
-    width = this->TextWidth(this->m_controls->fonts, this->m_controls->locale, this->text.c_str(), 0, this->fontFamily, this->fontHeight, this->bold, 0);
+    width = this->TextWidth(this->text.c_str(), 0, this->fontFamily, this->fontHeight, this->bold, 0);
   }
 
   this->Invalidate();
@@ -90,8 +90,8 @@ void UIStaticText::SetTextFittedCodePage(const char* value) {
     return;
   }
 
-  int width = this->TextWidth(this->m_controls->fonts, this->m_controls->locale, value, 0, this->fontFamily, this->fontHeight, 0, 0);
-  this->TextWidth(this->m_controls->fonts, this->m_controls->locale, "...", 0, this->fontFamily, this->fontHeight, 0, 0);
+  int width = this->TextWidth(value, 0, this->fontFamily, this->fontHeight, 0, 0);
+  this->TextWidth("...", 0, this->fontFamily, this->fontHeight, 0, 0);
   if (this->geometry.width >= width) {
     this->text = value;
     this->Invalidate();
@@ -133,8 +133,7 @@ void UIStaticText::SetTextFittedCodePage(const char* value) {
       fitted.resize(byteLength - 1);
     }
     this->text = fitted + "...";
-    width = this->TextWidth(
-      this->m_controls->fonts, this->m_controls->locale, this->text.c_str(), 0, this->fontFamily, this->fontHeight, 0, 0
+    width = this->TextWidth(this->text.c_str(), 0, this->fontFamily, this->fontHeight, 0, 0
     );
   }
 
@@ -145,8 +144,7 @@ void UIStaticText::SetTextFittedCodePage(const char* value) {
 void UIStaticText::Paint() {
   this->FillRegion(0, 0, this->geometry.width, this->geometry.height, this->background);
   const auto draw = [&](int x, int y, std::uint32_t color, unsigned char boldValue, unsigned char italicValue) {
-    this->DrawTextAt(
-      this->m_controls->fonts, this->m_controls->locale, x, y, this->text.c_str(), 0, this->fontFamily, this->fontHeight, color, boldValue, italicValue
+    this->DrawTextAt(x, y, this->text.c_str(), 0, this->fontFamily, this->fontHeight, color, boldValue, italicValue
     );
   };
 
@@ -239,19 +237,19 @@ void UIStaticText2::Paint() {
   this->ClearSurface(this->background);
 
   if (this->shadow != 0) {
-    this->DrawTextAt(controls.fonts, controls.locale, 2, 2, this->text.c_str(), 0, this->fontFamily, this->fontHeight, 0xFFFFFF, this->bold, this->italic);
+    this->DrawTextAt(2, 2, this->text.c_str(), 0, this->fontFamily, this->fontHeight, 0xFFFFFF, this->bold, this->italic);
   }
 
   if (this->outline != 0) {
-    this->DrawTextAt(controls.fonts, controls.locale, 0, 1, this->text.c_str(), 0, this->fontFamily, this->fontHeight, this->outlineColor, this->bold, this->italic);
-    this->DrawTextAt(controls.fonts, controls.locale, 1, 0, this->text.c_str(), 0, this->fontFamily, this->fontHeight, this->outlineColor, this->bold, this->italic);
-    this->DrawTextAt(controls.fonts, controls.locale, 2, 1, this->text.c_str(), 0, this->fontFamily, this->fontHeight, this->outlineColor, this->bold, this->italic);
-    this->DrawTextAt(controls.fonts, controls.locale, 1, 2, this->text.c_str(), 0, this->fontFamily, this->fontHeight, this->outlineColor, this->bold, this->italic);
+    this->DrawTextAt(0, 1, this->text.c_str(), 0, this->fontFamily, this->fontHeight, this->outlineColor, this->bold, this->italic);
+    this->DrawTextAt(1, 0, this->text.c_str(), 0, this->fontFamily, this->fontHeight, this->outlineColor, this->bold, this->italic);
+    this->DrawTextAt(2, 1, this->text.c_str(), 0, this->fontFamily, this->fontHeight, this->outlineColor, this->bold, this->italic);
+    this->DrawTextAt(1, 2, this->text.c_str(), 0, this->fontFamily, this->fontHeight, this->outlineColor, this->bold, this->italic);
   }
 
   const std::uint32_t color =
     static_cast<unsigned char>(this->red) | (static_cast<unsigned char>(this->green) << 8) | (static_cast<unsigned char>(this->blue) << 16);
-  this->DrawTextAt(controls.fonts, controls.locale, 1, 1, this->text.c_str(), 0, this->fontFamily, this->fontHeight, color, this->bold, this->italic);
+  this->DrawTextAt(1, 1, this->text.c_str(), 0, this->fontFamily, this->fontHeight, color, this->bold, this->italic);
 }
 
 // OFFSET: 0x0085DCA0
@@ -261,32 +259,27 @@ void UIStaticText3::Paint() {
   this->ClearSurface(this->background);
 
   if (this->shadow != 0) {
-    this->DrawTextAt(
-      controls.fonts, controls.locale, this->textX + 2, 2, this->text.c_str(), 0, this->fontFamily, this->fontHeight, 0xFFFFFF, this->bold, this->italic
+    this->DrawTextAt(this->textX + 2, 2, this->text.c_str(), 0, this->fontFamily, this->fontHeight, 0xFFFFFF, this->bold, this->italic
     );
   }
 
   if (this->outline != 0) {
-    this->DrawTextAt(
-      controls.fonts, controls.locale, this->textX, 1, this->text.c_str(), 0, this->fontFamily, this->fontHeight, this->outlineColor, this->bold, this->italic
+    this->DrawTextAt(this->textX, 1, this->text.c_str(), 0, this->fontFamily, this->fontHeight, this->outlineColor, this->bold, this->italic
     );
-    this->DrawTextAt(
-      controls.fonts, controls.locale, this->textX + 1, 0, this->text.c_str(), 0, this->fontFamily, this->fontHeight, this->outlineColor, this->bold,
+    this->DrawTextAt(this->textX + 1, 0, this->text.c_str(), 0, this->fontFamily, this->fontHeight, this->outlineColor, this->bold,
       this->italic
     );
-    this->DrawTextAt(
-      controls.fonts, controls.locale, this->textX + 2, 1, this->text.c_str(), 0, this->fontFamily, this->fontHeight, this->outlineColor, this->bold,
+    this->DrawTextAt(this->textX + 2, 1, this->text.c_str(), 0, this->fontFamily, this->fontHeight, this->outlineColor, this->bold,
       this->italic
     );
-    this->DrawTextAt(
-      controls.fonts, controls.locale, this->textX + 1, 2, this->text.c_str(), 0, this->fontFamily, this->fontHeight, this->outlineColor, this->bold,
+    this->DrawTextAt(this->textX + 1, 2, this->text.c_str(), 0, this->fontFamily, this->fontHeight, this->outlineColor, this->bold,
       this->italic
     );
   }
 
   const std::uint32_t color =
     static_cast<unsigned char>(this->red) | (static_cast<unsigned char>(this->green) << 8) | (static_cast<unsigned char>(this->blue) << 16);
-  this->DrawTextAt(controls.fonts, controls.locale, this->textX + 1, 1, this->text.c_str(), 0, this->fontFamily, this->fontHeight, color, this->bold, this->italic);
+  this->DrawTextAt(this->textX + 1, 1, this->text.c_str(), 0, this->fontFamily, this->fontHeight, color, this->bold, this->italic);
 }
 
 // OFFSET: 0x00865CE0
@@ -302,15 +295,13 @@ void UIStaticText::SetFont(int family, int height, unsigned char bold, unsigned 
 // FUNCTION: fn_10962
 void UIBmpTextButton::AddTextStyle(int state, int height, std::uint32_t color, unsigned char bold, unsigned char shadow, int x, int y) {
   if (x == -1000) {
-    const int width = this->TextWidth(
-      this->m_buttonContext->fonts, this->m_buttonContext->locale, this->text.c_str(), this->text.size(), 0, height, bold, 0
+    const int width = this->TextWidth(this->text.c_str(), this->text.size(), 0, height, bold, 0
     );
     x = static_cast<int>((this->geometry.width - width) * 0.5);
   }
 
   if (y == -1000) {
-    const int textHeight = this->TextHeight(
-      this->m_buttonContext->fonts, this->m_buttonContext->locale, this->text.c_str(), this->text.size(), 0, height, bold, 0
+    const int textHeight = this->TextHeight(this->text.c_str(), this->text.size(), 0, height, bold, 0
     );
     y = static_cast<int>((this->geometry.height - textHeight) * 0.5);
   }
@@ -333,7 +324,7 @@ void UIStaticText::SetTextAutoWidth(const char* value) {
   this->Invalidate();
 
   const int height = this->geometry.height;
-  const int width = this->TextWidth(this->m_controls->fonts, this->m_controls->locale, value, 0, this->fontFamily, this->fontHeight, this->bold, 0);
+  const int width = this->TextWidth(value, 0, this->fontFamily, this->fontHeight, this->bold, 0);
   this->Resize(width + 2, height);
 }
 
@@ -356,12 +347,12 @@ void UIStaticText::SetTextWithinWidth(const char* value, int outlineValue) {
   this->outline = outlineValue;
   this->tooltipEnabled = 0;
 
-  const int width = this->TextWidth(this->m_controls->fonts, this->m_controls->locale, value, 0, 0, this->fontHeight, this->bold, 0);
+  const int width = this->TextWidth(value, 0, 0, this->fontHeight, this->bold, 0);
   if (this->geometry.width < width) {
     this->SetTextFitted(value);
   } else {
     const int height = this->geometry.height;
-    const int textWidth = this->TextWidth(this->m_controls->fonts, this->m_controls->locale, value, 0, 0, this->fontHeight, this->bold, 0);
+    const int textWidth = this->TextWidth(value, 0, 0, this->fontHeight, this->bold, 0);
     this->Resize(textWidth, height);
   }
   this->Invalidate();

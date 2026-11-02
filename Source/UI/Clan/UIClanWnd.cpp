@@ -55,18 +55,18 @@ void UIClanInfoManageWnd::Paint() {
   char text[1024];
   std::memset(text, 0, sizeof(text));
   std::sprintf(text, "%s : %s", LookupMessage(2357), g_clanInfo->m_clanName.c_str());
-  this->DrawTextAt(controls.fonts, controls.locale, 8, 49, text, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(8, 49, text, 0, 0, 12, 0, 0, 0);
   std::sprintf(text, "%s : %d", LookupMessage(2356), g_clanInfo->unknown_0034);
-  this->DrawTextAt(controls.fonts, controls.locale, 8, 65, text, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(8, 65, text, 0, 0, 12, 0, 0, 0);
   std::sprintf(text, "%s : %s", LookupMessage(2362), g_clanInfo->m_masterName.c_str());
-  this->DrawTextAt(controls.fonts, controls.locale, 8, 81, text, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(8, 81, text, 0, 0, 12, 0, 0, 0);
   std::sprintf(text, "%s : ", LookupMessage(2363));
-  this->DrawTextAt(controls.fonts, controls.locale, 8, 97, text, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(8, 97, text, 0, 0, 12, 0, 0, 0);
   std::sprintf(text, "%s", "유저인터페이스\\basic_interface\\grp_online.bmp");
   CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(text)));
   this->DrawBitmap(128, 95, bitmap ? &bitmap->image : nullptr, true);
   std::sprintf(text, "   %d", g_clanInfo->m_connectedMembers);
-  this->DrawTextAt(controls.fonts, controls.locale, 138, 97, text, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(138, 97, text, 0, 0, 12, 0, 0, 0);
 
   {
     std::string map = g_clanInfo->m_mapName;
@@ -75,7 +75,7 @@ void UIClanInfoManageWnd::Paint() {
     }
     map = g_mapInfoMgr->GetDisplayName(std::string(map.c_str()));
     std::sprintf(text, "%s : %s", LookupMessage(2364), map.c_str());
-    this->DrawTextAt(controls.fonts, controls.locale, 8, 113, text, 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(8, 113, text, 0, 0, 12, 0, 0, 0);
   }
 
   if (g_clanInfo->m_clanId != 0) {
@@ -93,7 +93,7 @@ void UIClanInfoManageWnd::Paint() {
   }
 
   std::sprintf(text, "%s", LookupMessage(2358));
-  this->DrawTextAt(controls.fonts, controls.locale, 200, 65, text, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(200, 65, text, 0, 0, 12, 0, 0, 0);
   unsigned red, green, blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
   this->FillRegion(279, 64, 26, 26, RGB(red, green, blue));
@@ -101,9 +101,9 @@ void UIClanInfoManageWnd::Paint() {
     this->DrawBitmap(280, 65, this->m_emblem ? &this->m_emblem->image : nullptr, true);
   }
   std::sprintf(text, "%s", LookupMessage(2359));
-  this->DrawTextAt(controls.fonts, controls.locale, 200, 139, text, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(200, 139, text, 0, 0, 12, 0, 0, 0);
   std::sprintf(text, "%s", LookupMessage(2360));
-  this->DrawTextAt(controls.fonts, controls.locale, 200, 213, text, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(200, 213, text, 0, 0, 12, 0, 0, 0);
 
   SkinPaletteChannels(ResourceMgr::Instance(), 14, 6, red, green, blue);
   this->FillRegion(200, 155, 168, 48, RGB(red, green, blue));
@@ -118,7 +118,7 @@ void UIClanInfoManageWnd::Paint() {
         SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
         this->FillRegion(204, y, 80, 16, RGB(red, green, blue));
       }
-      this->DrawTextAt(controls.fonts, controls.locale, 204, y, relation.second.c_str(), 0, 0, 12, 0, 0, 0);
+      this->DrawTextAt(204, y, relation.second.c_str(), 0, 0, 12, 0, 0, 0);
       ++row;
       y += 16;
     }
@@ -137,7 +137,7 @@ void UIClanInfoManageWnd::Paint() {
         SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
         this->FillRegion(204, y, 80, 16, RGB(red, green, blue));
       }
-      this->DrawTextAt(controls.fonts, controls.locale, 204, y, relation.second.c_str(), 0, 0, 12, 0, 0, 0);
+      this->DrawTextAt(204, y, relation.second.c_str(), 0, 0, 12, 0, 0, 0);
       ++row;
       y += 16;
     }
@@ -153,7 +153,7 @@ void UIClanWnd::Paint() {
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
   this->FillRegion(1, 18, 64, 23, RGB(red, green, blue));
   auto& controls = *this->m_controls;
-  this->DrawTitleBar(controls.fonts, controls.locale, false, "", 0);
+  this->DrawTitleBar(false, "", 0);
   SkinPaletteChannels(ResourceMgr::Instance(), 14, 6, red, green, blue);
   this->FillRegion(0, 41, this->geometry.width, this->geometry.height - 41, RGB(red, green, blue));
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);

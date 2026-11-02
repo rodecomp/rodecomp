@@ -154,9 +154,9 @@ void UIRodexContentsWnd::Paint() {
     ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\bg_rodex_read.bmp"))
   );
   this->DrawBitmap(0, 0, &background->image, false);
-  this->DrawTitleBar(controls.fonts, controls.locale, true, LookupMessage(2727), 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 8, 29, this->m_title.c_str(), 0, 0, 12, 0x95330F, 1, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 9, 52, this->m_sender.c_str(), 0, 0, 12, 0x313131, 0, 0);
+  this->DrawTitleBar(true, LookupMessage(2727), 0);
+  this->DrawTextAt(8, 29, this->m_title.c_str(), 0, 0, 12, 0x95330F, 1, 0);
+  this->DrawTextAt(9, 52, this->m_sender.c_str(), 0, 0, 12, 0x313131, 0, 0);
 
   const auto* zenyIcon = static_cast<CBitmapRes*>(
     ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\icon_zeny.bmp"))
@@ -168,7 +168,7 @@ void UIRodexContentsWnd::Paint() {
     std::memset(amount, 0, sizeof(amount));
     FormatGroupedInteger(this->m_zeny, amount, sizeof(amount));
     const std::string text = FormatOwnedString("%s Zeny", amount);
-    this->DrawTextAt(controls.fonts, controls.locale, 50, 350, text.c_str(), 0, 0, 11, 0x737373, 1, 0);
+    this->DrawTextAt(50, 350, text.c_str(), 0, 0, 11, 0x737373, 1, 0);
   }
 
   for (int x = 26; x < 196; x += 34) {

@@ -44,7 +44,7 @@ void UIEntryQueueHelpWnd::Slot18() {
 // FUNCTION: fn_19681
 void UIEntryQueueHelpWnd::Paint() {
   auto& controls = this->m_entryQueue->text.buttons;
-  this->DrawTitleBar(controls.fonts, controls.locale, true, LookupMessage(2125), 0);
+  this->DrawTitleBar(true, LookupMessage(2125), 0);
   this->DrawPanelBackground(17, 0, "");
 }
 
@@ -179,7 +179,7 @@ void UIEntryQueueRequestWnd::Slot18() {
 // FUNCTION: fn_19693
 void UIEntryQueueRequestWnd::Paint() {
   auto& controls = this->m_entryQueue->text.buttons;
-  this->DrawTitleBar(controls.fonts, controls.locale, true, LookupMessage(2133), 0);
+  this->DrawTitleBar(true, LookupMessage(2133), 0);
   this->DrawPanelBackground(17, 0, "");
 
   char text[100];
@@ -290,7 +290,7 @@ void UIEntryQueueStandByWnd::Slot18() {
 // FUNCTION: fn_19700
 void UIEntryQueueStandByWnd::Paint() {
   auto& controls = this->m_entryQueue->text.buttons;
-  this->DrawTitleBar(controls.fonts, controls.locale, true, LookupMessage(2135), 0);
+  this->DrawTitleBar(true, LookupMessage(2135), 0);
   this->DrawPanelBackground(17, 0, "");
 }
 
@@ -384,7 +384,7 @@ void UIEntryQueueWnd::Slot15(int width, int height) {
     if (this->m_labels[index]) {
       const char* label = labels[index];
       const TextLocale locale = {};
-      this->m_labels[index]->SetSize(this->TextWidth(g_fontCache, locale, label, 0, 0, 12, 0, 0), 25);
+      this->m_labels[index]->SetSize(this->TextWidth(label, 0, 0, 12, 0, 0), 25);
       this->m_labels[index]->SetText(label, 0);
       this->m_labels[index]->Move(157, y);
       this->AddChild(this->m_labels[index]);
@@ -434,7 +434,7 @@ void UIEntryQueueWnd::Slot15(int width, int height) {
 // FUNCTION: fn_19708
 void UIEntryQueueWnd::Paint() {
   const TextLocale locale = {};
-  this->DrawTitleBar(g_fontCache, locale, true, LookupMessage(0x603), 0);
+  this->DrawTitleBar(true, LookupMessage(0x603), 0);
   this->DrawPanelBackground(17, 0, "");
   this->DrawButtonBar(2, 0, 1);
 
@@ -606,7 +606,7 @@ void UIEntryQueueWnd::SelectQueue(EntryQueueInfo* info) {
     const int width = label->geometry.width;
     const int y = label->geometry.y;
     const TextLocale locale = {};
-    this->m_values[index]->Resize(this->TextWidth(g_fontCache, locale, text, 0, 0, 12, 0, 0), 25);
+    this->m_values[index]->Resize(this->TextWidth(text, 0, 0, 12, 0, 0), 25);
     this->m_values[index]->SetText(text, 0);
     this->m_values[index]->Move(x + width + 5, y);
     this->m_values[index]->Invalidate();

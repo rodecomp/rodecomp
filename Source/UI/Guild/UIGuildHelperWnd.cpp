@@ -54,10 +54,10 @@ UIGuildBanReasonDescWnd::UIGuildBanReasonDescWnd() {
 // FUNCTION: fn_13071
 void UIGuildHelperWnd::Paint() {
   auto& controls = *this->m_controls;
-  this->DrawTitleBar(controls.fonts, controls.locale, true, LookupMessage(2074), 0);
+  this->DrawTitleBar(true, LookupMessage(2074), 0);
   this->DrawPanelBackground(17, 0, "");
   this->DrawButtonBar(2, 0, 1);
-  this->DrawTextAt(controls.fonts, controls.locale, 15, 32, LookupMessage(2075), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(15, 32, LookupMessage(2075), 0, 0, 12, 0, 0, 0);
 }
 
 // OFFSET: 0x0095FCB0
@@ -109,8 +109,8 @@ void UICreateGuildWnd::Paint() {
     text = 2089;
     title = 2088;
   }
-  this->DrawTitleBar(controls.fonts, controls.locale, true, LookupMessage(title), 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 16, 23, LookupMessage(text), 0, 0, 12, 0, 0, 0);
+  this->DrawTitleBar(true, LookupMessage(title), 0);
+  this->DrawTextAt(16, 23, LookupMessage(text), 0, 0, 12, 0, 0, 0);
 }
 
 // OFFSET: 0x0095FBE0
@@ -132,7 +132,7 @@ void UICreateGuildWnd::Slot31(int, int) {
 // FUNCTION: fn_13078
 void UIGuildTipWnd::Paint() {
   auto& controls = *this->m_controls;
-  this->DrawTitleBar(controls.fonts, controls.locale, true, LookupMessage(2078), 0);
+  this->DrawTitleBar(true, LookupMessage(2078), 0);
   this->DrawPanelBackground(17, 0, "");
   this->DrawButtonBar(2, 0, 1);
 }

@@ -58,8 +58,7 @@ void UIBarGraph2::Paint() {
     }
     char text[16];
     sprintf_s(text, sizeof(text), "%3ld", static_cast<long>(this->m_value));
-    this->DrawTextAt(
-      this->m_context->fonts, this->m_context->locale, (this->geometry.width >> 1) - 20, (this->geometry.height >> 1) - 7,
+    this->DrawTextAt((this->geometry.width >> 1) - 20, (this->geometry.height >> 1) - 7,
       text, 0, 1, 16, 0xFFFF, 0, 0
     );
     return;

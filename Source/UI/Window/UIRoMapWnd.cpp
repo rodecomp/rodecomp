@@ -120,7 +120,7 @@ void UIRoMapWnd::DrawHoverTooltip() {
   const TextLocale locale = {};
   bool leftSide = false;
   int maxWidth = 0;
-  const int lineHeight = this->TextHeight(g_fontCache, locale, " ", 0, 0, 12, 1, 0) + 3;
+  const int lineHeight = this->TextHeight(" ", 0, 0, 12, 1, 0) + 3;
   const WorldViewRecord* record = this->unknown_00BC;
   const int* anchor = this->unknown_00C8;
   const int recordLeft = record->left;
@@ -135,7 +135,7 @@ void UIRoMapWnd::DrawHoverTooltip() {
   int y = anchor[1];
   int count = 0;
   for (std::list<std::string>::const_iterator it = record->unknown_004C.begin(); it != this->unknown_00BC->unknown_004C.end(); ++it) {
-    const int width = this->TextWidth(g_fontCache, locale, it->c_str(), 0, 0, 12, 1, 0);
+    const int width = this->TextWidth(it->c_str(), 0, 0, 12, 1, 0);
     if (maxWidth < width) {
       maxWidth = width;
     }
@@ -188,11 +188,11 @@ void UIRoMapWnd::DrawMapNames() {
       continue;
     }
 
-    const int textWidth = this->TextWidth(g_fontCache, locale, std::string(name).c_str(), 0, 0, fontHeight, 0, 0);
+    const int textWidth = this->TextWidth(std::string(name).c_str(), 0, 0, fontHeight, 0, 0);
     const int x = std::abs(static_cast<int>(static_cast<float>(textWidth - area[2] - area[0]) * g_depthAverageHalf));
     const int y = area[1] + 2;
-    this->DrawTextAt(g_fontCache, locale, x + 1, y + 1, name.c_str(), 0, 0, fontHeight, outline, 0, 0);
-    this->DrawTextAt(g_fontCache, locale, x, y, name.c_str(), 0, 0, fontHeight, color, 0, 0);
+    this->DrawTextAt(x + 1, y + 1, name.c_str(), 0, 0, fontHeight, outline, 0, 0);
+    this->DrawTextAt(x, y, name.c_str(), 0, 0, fontHeight, color, 0, 0);
   }
 }
 
@@ -231,11 +231,11 @@ void UIRoMapWnd::DrawFieldLabels() {
         continue;
       }
 
-      const int textWidth = this->TextWidth(g_fontCache, locale, std::string(name).c_str(), 0, 0, townHeight, 0, 0);
+      const int textWidth = this->TextWidth(std::string(name).c_str(), 0, 0, townHeight, 0, 0);
       const int x = std::abs(static_cast<int>(static_cast<float>(textWidth - area[2] - area[0]) * g_depthAverageHalf));
       const int y = townHeight + 2 + area[1];
-      this->DrawTextAt(g_fontCache, locale, x + 1, y + 1, name.c_str(), 0, 0, townHeight, townOutline, 0, 0);
-      this->DrawTextAt(g_fontCache, locale, x, y, name.c_str(), 0, 0, townHeight, townColor, 0, 0);
+      this->DrawTextAt(x + 1, y + 1, name.c_str(), 0, 0, townHeight, townOutline, 0, 0);
+      this->DrawTextAt(x, y, name.c_str(), 0, 0, townHeight, townColor, 0, 0);
       continue;
     }
 
@@ -259,17 +259,17 @@ void UIRoMapWnd::DrawFieldLabels() {
         levelY = y - levelHeight - 3;
       }
 
-      const int textWidth = this->TextWidth(g_fontCache, locale, std::string(name).c_str(), 0, 0, fieldHeight, 0, 0);
+      const int textWidth = this->TextWidth(std::string(name).c_str(), 0, 0, fieldHeight, 0, 0);
       const int x = std::abs(static_cast<int>(static_cast<float>(textWidth - field->right - field->left) * g_depthAverageHalf));
-      this->DrawTextAt(g_fontCache, locale, x + 1, y + 1, name.c_str(), 0, 0, fieldHeight, fieldShadow, 0, 0);
-      this->DrawTextAt(g_fontCache, locale, x - 1, y - 1, name.c_str(), 0, 0, fieldHeight, fieldShadow, 0, 0);
-      this->DrawTextAt(g_fontCache, locale, x, y, name.c_str(), 0, 0, fieldHeight, fieldColor, 0, 0);
+      this->DrawTextAt(x + 1, y + 1, name.c_str(), 0, 0, fieldHeight, fieldShadow, 0, 0);
+      this->DrawTextAt(x - 1, y - 1, name.c_str(), 0, 0, fieldHeight, fieldShadow, 0, 0);
+      this->DrawTextAt(x, y, name.c_str(), 0, 0, fieldHeight, fieldColor, 0, 0);
       name = (*fieldIt)->unknown_0044;
       if (name.empty()) {
         continue;
       }
 
-      const int levelWidth = this->TextWidth(g_fontCache, locale, std::string(name).c_str(), 0, 0, levelHeight, 1, 0);
+      const int levelWidth = this->TextWidth(std::string(name).c_str(), 0, 0, levelHeight, 1, 0);
       const int levelX = std::abs(static_cast<int>(static_cast<float>(levelWidth - field->right - field->left) * g_depthAverageHalf));
       DrawOutlinedText(*this, levelX, levelY, name.c_str(), 0, levelColor, levelOutline, 0, levelHeight, 1, 0);
     }

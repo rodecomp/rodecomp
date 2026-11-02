@@ -18,7 +18,7 @@ struct DebuffRemovePacket {
 // FUNCTION: fn_12903
 void UIDebuffRemoveWnd::Paint() {
   const TextLocale locale = {};
-  this->DrawTitleBar(g_fontCache, locale, false, "", 0);
+  this->DrawTitleBar(false, "", 0);
   this->DrawPanelBackground(17, 0, "");
 }
 

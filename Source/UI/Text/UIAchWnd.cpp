@@ -111,7 +111,7 @@ void UIAchTab::DrawGroup(int group) {
   UIButtonContext& controls = *this->m_controls;
   int y = this->groupHeight * group;
   std::string name = this->groups[group].name;
-  int textY = (this->groupHeight - this->TextHeight(controls.fonts, controls.locale, name.c_str(), 0, 0, this->fontHeight, 0, 0)) / 2 + y;
+  int textY = (this->groupHeight - this->TextHeight(name.c_str(), 0, 0, this->fontHeight, 0, 0)) / 2 + y;
 
   if (group > this->unknown_007C) {
     y += std::min(static_cast<int>(this->groups[this->unknown_007C].subs.size()), this->visibleSubs) * this->subHeight;
@@ -120,7 +120,7 @@ void UIAchTab::DrawGroup(int group) {
 
   if (group == this->unknown_007C) {
     this->DrawBitmap(0, y, AchievementBitmap("유저인터페이스\\achievement_re\\tab_press.bmp"), false);
-    this->DrawTextAt(controls.fonts, controls.locale, 11, textY, name.c_str(), 0, 0, this->fontHeight, this->selectedGroupColor, 1, 0);
+    this->DrawTextAt(11, textY, name.c_str(), 0, 0, this->fontHeight, this->selectedGroupColor, 1, 0);
 
     int index = 0;
     std::map<int, std::string>& subs = this->groups[group].subs;
@@ -134,7 +134,7 @@ void UIAchTab::DrawGroup(int group) {
         const int rowY = (group + 1) * this->groupHeight + this->subHeight * row;
         ++row;
         name = this->groups[group].subs[it->first];
-        const int height = this->TextHeight(controls.fonts, controls.locale, name.c_str(), 0, 0, this->fontHeight, 0, 0);
+        const int height = this->TextHeight(name.c_str(), 0, 0, this->fontHeight, 0, 0);
         const int rowHeight = this->subHeight;
         std::uint32_t color;
 
@@ -148,13 +148,13 @@ void UIAchTab::DrawGroup(int group) {
           color = this->subColor;
         }
 
-        this->DrawTextAt(controls.fonts, controls.locale, 26, (rowHeight - height) / 2 + rowY, name.c_str(), 0, 0, this->fontHeight, color, 0, 0);
+        this->DrawTextAt(26, (rowHeight - height) / 2 + rowY, name.c_str(), 0, 0, this->fontHeight, color, 0, 0);
       }
     }
   } else {
     const char* bitmap = group == this->hoverGroup ? "유저인터페이스\\achievement_re\\tab_over.bmp" : "유저인터페이스\\achievement_re\\tab_out.bmp";
     this->DrawBitmap(0, y, AchievementBitmap(bitmap), false);
-    this->DrawTextAt(controls.fonts, controls.locale, 11, textY, name.c_str(), 0, 0, this->fontHeight, this->groupColor, 1, 0);
+    this->DrawTextAt(11, textY, name.c_str(), 0, 0, this->fontHeight, this->groupColor, 1, 0);
   }
 }
 
@@ -373,9 +373,9 @@ void UIAchListWnd::Paint() {
       this->DrawBitmap(8, top + 3, AchievementBitmap("유저인터페이스\\achievement_re\\list_pin.bmp"), true);
     }
 
-    this->DrawTextAt(controls.fonts, controls.locale, 53, top + 14, info.title.c_str(), 0, 0, 12, 0xA55239, 1, 0);
+    this->DrawTextAt(53, top + 14, info.title.c_str(), 0, 0, 12, 0xA55239, 1, 0);
     this->DrawCenteredText(258, top + 14, FormatOwnedString("%3d", info.unknown_0048).c_str(), 40, 0, 12, 0xA55239, 1);
-    this->DrawTextAt(controls.fonts, controls.locale, 10, top + 54, info.unknown_0018.c_str(), 0, 0, 12, 0xA55239, 0, 0);
+    this->DrawTextAt(10, top + 54, info.unknown_0018.c_str(), 0, 0, 12, 0xA55239, 0, 0);
     if (completed) {
       this->DrawBitmap(250, top + 5, AchievementBitmap("유저인터페이스\\achievement_re\\badge_complete.bmp"), true);
     }
@@ -393,7 +393,7 @@ void UIAchListWnd::Paint() {
 
     if (completed) {
       const std::string date = FormatOwnedString("%4d.%2d.%2d", record.year, record.month, record.day);
-      const int width = this->TextWidth(controls.fonts, controls.locale, date.c_str(), 0, 0, 10, 0, 0);
+      const int width = this->TextWidth(date.c_str(), 0, 0, 10, 0, 0);
       DrawOutlinedText(*this, static_cast<int>(276.0 - width * 0.5), top + 55, date.c_str(), 0, 0x635AA5, 0xFFFFFF, 0, 10, 0, 0);
     }
   }
@@ -477,14 +477,14 @@ void UIAchTV::Paint() {
   for (int index = this->topLine; index < static_cast<int>(end); ++index, ++row) {
     const std::string& line = this->lines[index];
     if (this->outlineColor == 0) {
-      this->DrawTextAt(owner.fonts, owner.locale, 3, this->lineHeight * row + 4, line.c_str(), line.size(), 0, 12, this->textColor, 0, 0);
+      this->DrawTextAt(3, this->lineHeight * row + 4, line.c_str(), line.size(), 0, 12, this->textColor, 0, 0);
     } else {
       DrawOutlinedText(*this, 3, this->lineHeight * row + 4, line.c_str(), line.size(), this->textColor, this->outlineColor, 0, 12, 0, 0);
     }
 
     if (this->underline == 1) {
       const std::uint32_t color = this->textColor;
-      const int width = this->TextWidth(owner.fonts, owner.locale, this->lines[index].c_str(), 0, 0, 12, 0, 0);
+      const int width = this->TextWidth(this->lines[index].c_str(), 0, 0, 12, 0, 0);
       this->FillRegion(2, this->lineHeight * row + 10, width + 1, 1, color);
     }
   }
@@ -495,27 +495,27 @@ void UIAchTV::Paint() {
 void UIAchSummaryWnd::Paint() {
   UIButtonContext& controls = *this->m_controls;
   this->DrawBitmap(0, 0, AchievementBitmap("유저인터페이스\\achievement_re\\bg_summary.bmp"), false);
-  this->DrawTextAt(controls.fonts, controls.locale, 82, 27, LookupMessage(2679), 0, 0, 12, 0xA55239, 1, 0);
+  this->DrawTextAt(82, 27, LookupMessage(2679), 0, 0, 12, 0xA55239, 1, 0);
   this->DrawRightAlignedText(600, 28, FormatOwnedString("%d/%d", this->gauges[0]->value, this->gauges[0]->maximum).c_str(), 0, 0, 11, 0x635AA5, 0);
 
   const int categories[6] = {2657, 2661, 2668, 2671, 2674, 2678};
   for (int index = 0; index < 6; ++index) {
     const int row = index / 2 * 50;
     const int column = index % 2;
-    this->DrawTextAt(controls.fonts, controls.locale, column * 302 + 82, row + 107, LookupMessage(categories[index]), 0, 0, 12, 0xA55239, 1, 0);
+    this->DrawTextAt(column * 302 + 82, row + 107, LookupMessage(categories[index]), 0, 0, 12, 0xA55239, 1, 0);
     UICustomGageBar* gauge = this->gauges[index + 1];
     this->DrawRightAlignedText(column * 304 + 296, row + 108, FormatOwnedString("%d/%d", gauge->value, gauge->maximum).c_str(), 0, 0, 11, 0x635AA5, 0);
   }
 
-  this->DrawTextAt(controls.fonts, controls.locale, 9, 292, LookupMessage(2651), 0, 0, 12, 0x9C6B5A, 1, 0);
+  this->DrawTextAt(9, 292, LookupMessage(2651), 0, 0, 12, 0x9C6B5A, 1, 0);
 
   int x = 260;
   for (auto it = this->recent.rbegin(); it != this->recent.rend(); ++it) {
     std::string icon = "유저인터페이스\\achievement_re\\icon_" + g_achievementMgr->GetUnknown0068(it->first) + ".bmp";
     this->DrawBitmap(x - 242, 314, AchievementBitmap(icon.c_str()), true);
     this->DrawBitmap(x, 316, AchievementBitmap("유저인터페이스\\achievement_re\\badge_complete.bmp"), true);
-    this->DrawTextAt(controls.fonts, controls.locale, x + 23, 325, FormatOwnedString("%d", g_achievementMgr->GetUnknown0048(it->first)).c_str(), 0, 0, 12, 0xA55239, 1, 0);
-    this->DrawTextAt(controls.fonts, controls.locale, x - 241, 365, g_achievementMgr->GetUnknown0018(it->first).c_str(), 0, 0, 12, 0xC9977D, 0, 0);
+    this->DrawTextAt(x + 23, 325, FormatOwnedString("%d", g_achievementMgr->GetUnknown0048(it->first)).c_str(), 0, 0, 12, 0xA55239, 1, 0);
+    this->DrawTextAt(x - 241, 365, g_achievementMgr->GetUnknown0018(it->first).c_str(), 0, 0, 12, 0xC9977D, 0, 0);
 
     SessionRecord6144 record = g_session.FindRecord6144(it->first);
     if (g_achievementMgr->HasReward(it->first) == 1 && record.unknown_0030 == 0) {
@@ -560,9 +560,9 @@ void UIAchUpperWnd::Paint() {
   } else {
     this->DrawBitmap(0, 0, AchievementBitmap("유저인터페이스\\achievement_re\\bg_upper.bmp"), false);
     this->DrawBitmap(575, 3, AchievementBitmap("유저인터페이스\\achievement_re\\upper_trophy.bmp"), true);
-    this->DrawTextAt(controls.fonts, controls.locale, 169, 11, LookupMessage(3106), 0, 0, 12, 0, 0, 0);
-    this->DrawTextAt(controls.fonts, controls.locale, 169, 26, LookupMessage(3107), 0, 0, 12, 0, 0, 0);
-    this->DrawTextAt(controls.fonts, controls.locale, 614, 15, this->title.c_str(), 0, 0, 11, 0x582708, 0, 0);
+    this->DrawTextAt(169, 11, LookupMessage(3106), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(169, 26, LookupMessage(3107), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(614, 15, this->title.c_str(), 0, 0, 11, 0x582708, 0, 0);
     this->DrawRightAlignedText(130, 13, FormatOwnedString("%d/%d", this->unknown_0094, this->unknown_0098).c_str(), 0, 0, 11, 0, 0);
     this->DrawRightAlignedText(737, 15, FormatOwnedString("(%d/%d)", this->unknown_009C, this->unknown_00A0).c_str(), 0, 0, 11, 0x582708, 0);
     this->DrawCenteredText(353, 6, FormatOwnedString("%d", g_session.unknown_614C).c_str(), 46, 0, 12, 0x582708, 1);
@@ -590,7 +590,7 @@ void UIAchViewWnd::Paint() {
     this->DrawBitmap(264, 3, AchievementBitmap("유저인터페이스\\achievement_re\\detail_stamp.bmp"), true);
   }
 
-  this->DrawTextAt(controls.fonts, controls.locale, 15, 14, this->info->title.c_str(), 0, 0, 12, 0xA55239, 1, 0);
+  this->DrawTextAt(15, 14, this->info->title.c_str(), 0, 0, 12, 0xA55239, 1, 0);
 
   for (unsigned index = 0; index < this->info->rewards.size(); ++index) {
     if (this->info->unknown_0064 == 0) {
@@ -624,7 +624,7 @@ void UIAchViewWnd::Paint() {
 // FUNCTION: fn_09224
 void UIAchievementWnd::Paint() {
   this->ClearSurface(0xFFFFFFFF);
-  this->DrawTitleBar(this->m_controls->fonts, this->m_controls->locale, true, LookupMessage(2646), 0);
+  this->DrawTitleBar(true, LookupMessage(2646), 0);
 }
 
 // OFFSET: 0x007B7680
@@ -1101,12 +1101,10 @@ void UIAchTracingWnd::Paint() {
       buttons[3]->m_value = g_achievementTracking[index].id;
 
       if (!g_achievementTracking[index].expanded) {
-        this->DrawTextAt(
-          controls.fonts, controls.locale, buttons[0]->geometry.width + 16, y + 1,
+        this->DrawTextAt(buttons[0]->geometry.width + 16, y + 1,
           FormatOwnedString("(+%d)", g_achievementTracking[index].conditions.size()).c_str(), 0, 0, 12, 0xFFFFFF, 1, 0
         );
-        this->DrawTextAt(
-          controls.fonts, controls.locale, buttons[0]->geometry.width + 15, y,
+        this->DrawTextAt(buttons[0]->geometry.width + 15, y,
           FormatOwnedString("(+%d)", g_achievementTracking[index].conditions.size()).c_str(), 0, 0, 12, 0, 1, 0
         );
       }
@@ -1115,12 +1113,12 @@ void UIAchTracingWnd::Paint() {
       y += 15;
       if (entry.expanded == 1) {
         for (const AchTracingCondition& condition : entry.conditions) {
-          this->DrawTextAt(controls.fonts, controls.locale, 21, y + 1, condition.text.c_str(), 0, 0, 12, 0, 0, 0);
+          this->DrawTextAt(21, y + 1, condition.text.c_str(), 0, 0, 12, 0, 0, 0);
           std::uint32_t color = 0xFFFFFF;
           if (condition.completed) {
             color = 0xDFF6F;
           }
-          this->DrawTextAt(controls.fonts, controls.locale, 20, y, condition.text.c_str(), 0, 0, 12, color, 0, 0);
+          this->DrawTextAt(20, y, condition.text.c_str(), 0, 0, 12, color, 0, 0);
           y += 15;
         }
       }

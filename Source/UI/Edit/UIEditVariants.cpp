@@ -126,7 +126,7 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
           current = reinterpret_cast<NextCharHandler>((*reinterpret_cast<void***>(g_serverLanguage))[5])(g_serverLanguage, start, static_cast<int>(end - start));
           const int length = static_cast<int>(current - start);
           const TextLocale locale = {};
-          width += this->TextWidth(g_fontCache, locale, start, length, 0, 12, 0, 0);
+          width += this->TextWidth(start, length, 0, 12, 0, 0);
           bytes += length;
 
           if (length == 1 && *start == '\n') {
@@ -177,7 +177,7 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
           current = reinterpret_cast<NextCharHandler>((*reinterpret_cast<void***>(g_serverLanguage))[5])(g_serverLanguage, start, static_cast<int>(end - start));
           const int length = static_cast<int>(current - start);
           const TextLocale locale = {};
-          width += this->TextWidth(g_fontCache, locale, start, length, 0, 12, 0, 0);
+          width += this->TextWidth(start, length, 0, 12, 0, 0);
           bytes += length;
 
           if (length == 1 && *start == '\n') {
@@ -447,7 +447,7 @@ void UIEditCtrl3::PaintText() {
 
   int x = 3;
   if (this->invalidatesParent == 0 && this->firstVisible != 0) {
-    x = 3 - this->TextWidth(fonts, locale, this->text.c_str(), this->firstVisible, 0, 12, 0, 0);
+    x = 3 - this->TextWidth(this->text.c_str(), this->firstVisible, 0, 12, 0, 0);
   }
 
   std::string display;
@@ -513,13 +513,13 @@ void UIEditCtrl3::PaintText() {
           begin = 0;
         }
 
-        startX = begin != 0 ? this->TextWidth(fonts, locale, lines[line].c_str(), begin, 0, 12, 0, 0) : 0;
+        startX = begin != 0 ? this->TextWidth(lines[line].c_str(), begin, 0, 12, 0, 0) : 0;
 
         int length = static_cast<int>(std::strlen(lines[line].c_str()));
         if (breaks[line]) {
           length -= 2;
         }
-        endX = this->TextWidth(fonts, locale, lines[line].c_str(), length, 0, 12, 0, 0);
+        endX = this->TextWidth(lines[line].c_str(), length, 0, 12, 0, 0);
       }
 
       if (selectionEnd <= offset) {
@@ -532,7 +532,7 @@ void UIEditCtrl3::PaintText() {
         if (static_cast<int>(std::strlen(lines[line].c_str())) == end && breaks[line]) {
           length = end - 2;
         }
-        endX = length != 0 ? this->TextWidth(fonts, locale, lines[line].c_str(), length, 0, 12, 0, 0) : 0;
+        endX = length != 0 ? this->TextWidth(lines[line].c_str(), length, 0, 12, 0, 0) : 0;
       }
 
       int left = x + startX;
@@ -571,7 +571,7 @@ void UIEditCtrl3::PaintText() {
       buffer[length - 2] = '\0';
     }
 
-    this->DrawTextAt(fonts, locale, x, tagOffset + y, buffer, 0, 0, 12, color, 0, 0);
+    this->DrawTextAt(x, tagOffset + y, buffer, 0, 0, 12, color, 0, 0);
 
     for (std::vector<UIItemTagButton*>& entry : this->entries) {
       for (std::size_t index = 0; index < entry.size(); ++index) {
@@ -635,7 +635,7 @@ void UIEditCtrl3::PaintText() {
 
     int caretX = 0;
     if (column != 0) {
-      caretX = this->TextWidth(fonts, locale, lines[caretLine].c_str(), column, 0, 12, 0, 0);
+      caretX = this->TextWidth(lines[caretLine].c_str(), column, 0, 12, 0, 0);
       caretLine = this->textY;
     }
 
@@ -648,7 +648,7 @@ void UIEditCtrl3::PaintText() {
       readingLength = reading - 2;
     }
 
-    const int readingX = readingLength != 0 ? this->TextWidth(fonts, locale, lines[caretLine].c_str(), readingLength, 0, 12, 0, 0) : 0;
+    const int readingX = readingLength != 0 ? this->TextWidth(lines[caretLine].c_str(), readingLength, 0, 12, 0, 0) : 0;
 
     if (this->m_edit->candidateCursor != 0) {
       int gap = readingX - caretX;
@@ -666,7 +666,7 @@ void UIEditCtrl3::PaintText() {
     }
 
     if ((timeGetTime() / 500 & 1) == 0 && (!g_windowMgr.IsHoverOnWindow01C8Button() || g_inputSuggestionsEnabled)) {
-      this->DrawTextAt(fonts, locale, x - 2 + caretX, (wrapped + this->textY - first) * this->unknown_0138, "|", 0, 0, 12, color, 0, 0);
+      this->DrawTextAt(x - 2 + caretX, (wrapped + this->textY - first) * this->unknown_0138, "|", 0, 0, 12, color, 0, 0);
 
       const unsigned char* scroll = reinterpret_cast<const unsigned char*>(&this->unknown_015C);
       if (scroll[0] == 0) {
@@ -752,7 +752,7 @@ void UIEditCtrl3::PaintText() {
 // FUNCTION: fn_10742
 int UIEditCtrl::MeasureText(const std::string& text, const int& bytes) {
   const TextLocale locale = {};
-  return this->TextWidth(g_fontCache, locale, text.c_str(), bytes, 0, 12, 0, 0);
+  return this->TextWidth(text.c_str(), bytes, 0, 12, 0, 0);
 }
 
 // OFFSET: 0x0084F7B0

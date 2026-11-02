@@ -752,7 +752,7 @@ void UIEditCtrl3::DrawBlinkingCaret(const std::uint32_t& color) {
     return;
   }
 
-  this->DrawTextAt(this->m_edit->buttons.fonts, this->m_edit->buttons.locale, 1, 0, "|", 0, 0, 12, color, 0, 0);
+  this->DrawTextAt(1, 0, "|", 0, 0, 12, color, 0, 0);
 }
 
 // OFFSET: 0x00854130
@@ -968,12 +968,12 @@ void UIBmpTextButton2::DrawLabels() {
     int shadowY = 0;
 
     if (x == -1000) {
-      const int width = this->TextWidth(this->m_buttonContext->fonts, this->m_buttonContext->locale, label.text.c_str(), label.text.size(), 0, label.height, label.bold, 0);
+      const int width = this->TextWidth(label.text.c_str(), label.text.size(), 0, label.height, label.bold, 0);
       x = static_cast<int>((this->geometry.width - width) * 0.5);
     }
 
     if (y == -1000) {
-      const int height = this->TextHeight(this->m_buttonContext->fonts, this->m_buttonContext->locale, label.text.c_str(), label.text.size(), 0, label.height, label.bold, 0);
+      const int height = this->TextHeight(label.text.c_str(), label.text.size(), 0, label.height, label.bold, 0);
       y = static_cast<int>((this->geometry.height - height) * 0.5);
     }
 
@@ -1007,10 +1007,10 @@ void UIBmpTextButton2::DrawLabels() {
     }
 
     if (label.shadow == 1) {
-      this->DrawTextAt(this->m_buttonContext->fonts, this->m_buttonContext->locale, shadowX, shadowY, label.text.c_str(), 0, 0, label.height, shadowColor, label.bold, 0);
+      this->DrawTextAt(shadowX, shadowY, label.text.c_str(), 0, 0, label.height, shadowColor, label.bold, 0);
     }
 
-    this->DrawTextAt(this->m_buttonContext->fonts, this->m_buttonContext->locale, x, y, label.text.c_str(), 0, 0, label.height, color, label.bold, 0);
+    this->DrawTextAt(x, y, label.text.c_str(), 0, 0, label.height, color, label.bold, 0);
   }
 }
 
@@ -1122,16 +1122,16 @@ void UIEditCtrl_Custom::Synchronize() {
     int before = 0;
 
     if (this->firstVisible != 0) {
-      before = this->TextWidth(fonts, locale, this->text.c_str(), this->firstVisible, 0, 12, this->unknown_011C, 0);
+      before = this->TextWidth(this->text.c_str(), this->firstVisible, 0, 12, this->unknown_011C, 0);
     }
 
-    const int position = this->TextWidth(fonts, locale, this->text.c_str(), this->cursor, 0, 12, this->unknown_011C, 0);
+    const int position = this->TextWidth(this->text.c_str(), this->cursor, 0, 12, this->unknown_011C, 0);
 
     if (position + 3 - before > available) {
       const char* end = this->text.c_str() + this->text.size();
       const char* next = CharNextExA(static_cast<WORD>(g_textCodePage), this->text.c_str(), 0);
 
-      while (this->TextWidth(fonts, locale, next, 0, 0, 12, this->unknown_011C, 0) + 3 > available && next < end) {
+      while (this->TextWidth(next, 0, 0, 12, this->unknown_011C, 0) + 3 > available && next < end) {
         next = CharNextExA(static_cast<WORD>(g_textCodePage), next, 0);
       }
 
@@ -1140,7 +1140,7 @@ void UIEditCtrl_Custom::Synchronize() {
       this->firstVisible = std::min<unsigned>(this->cursor - tail, scrolled);
     }
   } else if (this->cursor < previousCursor) {
-    if (this->TextWidth(fonts, locale, this->text.c_str(), this->cursor, 0, 12, this->unknown_011C, 0) + 3 < available && this->firstVisible > this->cursor) {
+    if (this->TextWidth(this->text.c_str(), this->cursor, 0, 12, this->unknown_011C, 0) + 3 < available && this->firstVisible > this->cursor) {
       this->firstVisible += this->cursor - previousCursor;
     }
 
@@ -1590,7 +1590,7 @@ void UIItemDropCntWnd::Paint() {
 // FUNCTION: fn_13328
 void UIItemBaseWnd::Paint() {
   UIButtonContext& controls = *this->m_controls;
-  this->DrawTitleBar(controls.fonts, controls.locale, false, "", 0);
+  this->DrawTitleBar(false, "", 0);
 
   if (this->geometry.height == 17) {
     return;
@@ -1681,24 +1681,20 @@ void UIMerchantItemMyShopWnd::Paint() {
 
       if (this->unknown_0100 == 1) {
         if (remaining <= 60000) {
-          this->DrawTextAt(
-            controls.fonts, controls.locale, 12, this->geometry.height - 42, FormatOwnedString(LookupMessage(2927), days, hours, minutes, seconds).c_str(), 0,
+          this->DrawTextAt(12, this->geometry.height - 42, FormatOwnedString(LookupMessage(2927), days, hours, minutes, seconds).c_str(), 0,
             0, 11, 0xFF, 1, 0
           );
         } else {
-          this->DrawTextAt(
-            controls.fonts, controls.locale, 12, this->geometry.height - 42, FormatOwnedString(LookupMessage(2927), days, hours, minutes, seconds).c_str(), 0,
+          this->DrawTextAt(12, this->geometry.height - 42, FormatOwnedString(LookupMessage(2927), days, hours, minutes, seconds).c_str(), 0,
             0, 11, 0, 1, 0
           );
         }
       } else if (remaining <= 60000) {
-        this->DrawTextAt(
-          controls.fonts, controls.locale, 20, this->geometry.height - 50, FormatOwnedString(LookupMessage(2927), days, hours, minutes, seconds).c_str(), 0, 0,
+        this->DrawTextAt(20, this->geometry.height - 50, FormatOwnedString(LookupMessage(2927), days, hours, minutes, seconds).c_str(), 0, 0,
           12, 0xFF, 1, 0
         );
       } else {
-        this->DrawTextAt(
-          controls.fonts, controls.locale, 20, this->geometry.height - 50, FormatOwnedString(LookupMessage(2927), days, hours, minutes, seconds).c_str(), 0, 0,
+        this->DrawTextAt(20, this->geometry.height - 50, FormatOwnedString(LookupMessage(2927), days, hours, minutes, seconds).c_str(), 0, 0,
           12, 0, 1, 0
         );
       }
@@ -1756,7 +1752,7 @@ void UIMerchantItemPurchaseMSGWnd::Slot15(int, int) {
 // FUNCTION: fn_13340
 void UIMerchantItemPurchaseMSGWnd::Paint() {
   this->ClearSurface(0xFFFFFFFF);
-  this->DrawTitleBar(this->m_controls->fonts, this->m_controls->locale, false, "", 0);
+  this->DrawTitleBar(false, "", 0);
   this->DrawButtonBar(2, 0, 1);
 }
 
@@ -1770,24 +1766,20 @@ void UIMerchantItemWnd::Paint() {
   this->DrawBitmap(10, this->geometry.height - 22, &count->image, true);
 
   const std::uint32_t countColor = g_session.cartCount >= g_session.cartMaxCount ? 0xFF : 0x232323;
-  this->DrawTextAt(
-    controls.fonts, controls.locale, 23, this->geometry.height - 19, FormatOwnedString("%d", g_session.cartCount).c_str(), 0, 0, 11, countColor, 0, 0
+  this->DrawTextAt(23, this->geometry.height - 19, FormatOwnedString("%d", g_session.cartCount).c_str(), 0, 0, 11, countColor, 0, 0
   );
-  const int countWidth = this->TextWidth(controls.fonts, controls.locale, FormatOwnedString("%d", g_session.cartCount).c_str(), 0, 0, 11, 0, 0);
-  this->DrawTextAt(
-    controls.fonts, controls.locale, countWidth + 24, this->geometry.height - 19, FormatOwnedString("/%d", g_session.cartMaxCount).c_str(), 0, 0, 11, 0, 0, 0
+  const int countWidth = this->TextWidth(FormatOwnedString("%d", g_session.cartCount).c_str(), 0, 0, 11, 0, 0);
+  this->DrawTextAt(countWidth + 24, this->geometry.height - 19, FormatOwnedString("/%d", g_session.cartMaxCount).c_str(), 0, 0, 11, 0, 0, 0
   );
 
   const auto* weight = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\inventory\\icon_weight.bmp")));
   this->DrawBitmap(75, this->geometry.height - 20, &weight->image, true);
 
   const std::uint32_t weightColor = g_session.cartWeight >= g_session.cartMaxWeight ? 0xFF : 0x232323;
-  this->DrawTextAt(
-    controls.fonts, controls.locale, 90, this->geometry.height - 19, FormatOwnedString("%d", g_session.cartWeight).c_str(), 0, 0, 11, weightColor, 0, 0
+  this->DrawTextAt(90, this->geometry.height - 19, FormatOwnedString("%d", g_session.cartWeight).c_str(), 0, 0, 11, weightColor, 0, 0
   );
-  const int weightWidth = this->TextWidth(controls.fonts, controls.locale, FormatOwnedString("%d", g_session.cartWeight).c_str(), 0, 0, 11, 0, 0);
-  this->DrawTextAt(
-    controls.fonts, controls.locale, weightWidth + 91, this->geometry.height - 19, FormatOwnedString("/%d", g_session.cartMaxWeight).c_str(), 0, 0, 11, 0, 0, 0
+  const int weightWidth = this->TextWidth(FormatOwnedString("%d", g_session.cartWeight).c_str(), 0, 0, 11, 0, 0);
+  this->DrawTextAt(weightWidth + 91, this->geometry.height - 19, FormatOwnedString("/%d", g_session.cartMaxWeight).c_str(), 0, 0, 11, 0, 0, 0
   );
 }
 
@@ -1855,16 +1847,16 @@ void UISkillListWnd::Paint() {
   this->FillRegion(72, 17, slotColumns * 32 - 32, slotRows * 32, RGB(red, green, fillBlue));
 
   if (this->skillTab == 0) {
-    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 17, 4, LookupMessage(0x3A9), 0, 0, 12, 0xFFFFFF, 0, 0);
-    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 16, 3, LookupMessage(0x3A9), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(17, 4, LookupMessage(0x3A9), 0, 0, 12, 0xFFFFFF, 0, 0);
+    this->DrawTextAt(16, 3, LookupMessage(0x3A9), 0, 0, 12, 0, 0, 0);
     std::sprintf(text, LookupMessage(0x11C), *reinterpret_cast<const int*>(g_session.unknown_1664));
   } else if (this->skillTab == 1) {
-    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 17, 4, LookupMessage(0x4EE), 0, 0, 12, 0xFFFFFF, 0, 0);
-    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 16, 3, LookupMessage(0x4EE), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(17, 4, LookupMessage(0x4EE), 0, 0, 12, 0xFFFFFF, 0, 0);
+    this->DrawTextAt(16, 3, LookupMessage(0x4EE), 0, 0, 12, 0, 0, 0);
   }
 
   if (this->skillTab != 1) {
-    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 16, this->geometry.height - 20, text, 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(16, this->geometry.height - 20, text, 0, 0, 12, 0, 0, 0);
   }
 
   int drawn = 0;
@@ -1902,7 +1894,7 @@ void UISkillListWnd::Paint() {
       int levelX;
       if (CSkillInfo::UsesLevel(*g_session.m_hotkeyScript, static_cast<int>(it->id))) {
         std::sprintf(text, g_serviceType != 12 ? "Lv :" : "Nv :");
-        this->DrawTextAt(this->m_context->fonts, this->m_context->locale, x + 124, top + 34, text, 0, 0, 12, 0, 0, 0);
+        this->DrawTextAt(x + 124, top + 34, text, 0, 0, 12, 0, 0, 0);
         if (this->skillTab == 0) {
           skillLevel = g_session.HomunSkillLevel(static_cast<int>(it->id));
         } else if (this->skillTab == 1) {
@@ -1912,7 +1904,7 @@ void UISkillListWnd::Paint() {
           skillLevel = it->level;
         }
         std::sprintf(text, "%2d", skillLevel);
-        this->DrawTextAt(this->m_context->fonts, this->m_context->locale, x + 149, top + 34, text, 0, 0, 12, skillLevel != it->level ? 0xFF : 0, 0, 0);
+        this->DrawTextAt(x + 149, top + 34, text, 0, 0, 12, skillLevel != it->level ? 0xFF : 0, 0, 0);
         format = "/ %2d";
         levelX = 168;
       } else {
@@ -1920,7 +1912,7 @@ void UISkillListWnd::Paint() {
         levelX = 113;
       }
       std::sprintf(text, format, it->level);
-      this->DrawTextAt(this->m_context->fonts, this->m_context->locale, levelX + x, top + 34, text, 0, 0, 12, 0, 0, 0);
+      this->DrawTextAt(levelX + x, top + 34, text, 0, 0, 12, 0, 0, 0);
 
       if (it->unknown_000C == 0) {
         std::sprintf(text, LookupMessage(0x11E));
@@ -1944,13 +1936,13 @@ void UISkillListWnd::Paint() {
           std::sprintf(text, "Sp : %d", sp);
         }
       }
-      this->DrawTextAt(this->m_context->fonts, this->m_context->locale, x + 212, top + 34, text, 0, 0, 12, 0, 0, 0);
+      this->DrawTextAt(x + 212, top + 34, text, 0, 0, 12, 0, 0, 0);
       shade = 0;
     }
 
     x += 112;
     std::string name = this->FitDisplayText(this->geometry.width - x - 20, it->DisplayName(*g_session.m_hotkeyScript), 0, 12, 0);
-    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, x, top + 22, name.c_str(), 0, 0, 12, RGB(shade, shade, shade), 0, 0);
+    this->DrawTextAt(x, top + 22, name.c_str(), 0, 0, 12, RGB(shade, shade, shade), 0, 0);
     if (++drawn == this->visibleRows * this->columns) {
       break;
     }
@@ -3513,7 +3505,7 @@ std::string UIEditCtrl3::PlaceLineLinks(const char* line, std::string& text, con
           if (button) {
             buttons.push_back(button);
             button->line = *lineIndex;
-            button->column = this->TextWidth(this->m_edit->buttons.fonts, this->m_edit->buttons.locale, result.c_str(), 0, 0, 12, 0, 0) - this->textY;
+            button->column = this->TextWidth(result.c_str(), 0, 0, 12, 0, 0) - this->textY;
             result += button->label;
           }
         }
@@ -3539,11 +3531,11 @@ std::string UIEditCtrl3::PlaceLineLinks(const char* line, std::string& text, con
       button->SetTooltip(item.DisplayName(0).c_str());
       button->m_hoverColor = 0x82F2E1;
       button->SetId(0x1D0);
-      button->ResizeToTextClipped(this->TextWidth(this->m_edit->buttons.fonts, this->m_edit->buttons.locale, name.c_str(), 0, 0, 12, 0, 0) + 1, button->geometry.height);
+      button->ResizeToTextClipped(this->TextWidth(name.c_str(), 0, 0, 12, 0, 0) + 1, button->geometry.height);
       this->AddChild(button);
       buttons.push_back(button);
       button->line = *lineIndex;
-      button->column = this->TextWidth(this->m_edit->buttons.fonts, this->m_edit->buttons.locale, result.c_str(), 0, 0, 12, 0, 0) - this->textY;
+      button->column = this->TextWidth(result.c_str(), 0, 0, 12, 0, 0) - this->textY;
       result += name;
       position += static_cast<int>(link.size() + g_itemLinkClose.size() + g_itemLinkOpen.size());
     }
@@ -7142,7 +7134,7 @@ void UIChatEditCtrl::InsertItemLink(const ITEM_INFO& item) {
 // FUNCTION: fn_13335
 void UIItemStoreFindWnd::Paint() {
   UIButtonContext& controls = *this->m_controls;
-  this->DrawTitleBar(controls.fonts, controls.locale, true, "", 0);
+  this->DrawTitleBar(true, "", 0);
 
   unsigned red, green, blue;
   SkinPaletteChannels(controls.resources, 2, 2, red, green, blue);
@@ -7195,14 +7187,14 @@ void UIItemStoreFindWnd::Paint() {
     }
   }
 
-  this->DrawTextAt(controls.fonts, controls.locale, 16, this->geometry.height - 20, this->unknown_0124.c_str(), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(16, this->geometry.height - 20, this->unknown_0124.c_str(), 0, 0, 12, 0, 0, 0);
 }
 
 // OFFSET: 0x00980610
 // FUNCTION: fn_13336
 void UIItemStoreSubWnd::Paint() {
   UIButtonContext& controls = *this->m_controls;
-  this->DrawTitleBar(controls.fonts, controls.locale, true, "", 0);
+  this->DrawTitleBar(true, "", 0);
 
   unsigned red, green, blue;
   SkinPaletteChannels(controls.resources, 2, 2, red, green, blue);
@@ -7255,14 +7247,14 @@ void UIItemStoreSubWnd::Paint() {
     }
   }
 
-  this->DrawTextAt(controls.fonts, controls.locale, 16, this->geometry.height - 20, this->unknown_0120.c_str(), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(16, this->geometry.height - 20, this->unknown_0120.c_str(), 0, 0, 12, 0, 0, 0);
 }
 
 // OFFSET: 0x0097E7A0
 // FUNCTION: fn_13330
 void UIItemPurchaseWnd::Paint() {
   UIButtonContext& controls = *this->m_controls;
-  this->DrawTitleBar(controls.fonts, controls.locale, false, "", 0);
+  this->DrawTitleBar(false, "", 0);
 
   if (this->geometry.height == 17) {
     return;
@@ -7378,8 +7370,8 @@ void UIItemPurchaseWnd::Paint() {
   }
 
   if (this->unknown_00FC != 0) {
-    this->DrawTextAt(controls.fonts, controls.locale, 12, this->geometry.height - 48, LookupMessage(1306), 0, 0, 12, 0, 0, 0);
-    this->DrawTextAt(controls.fonts, controls.locale, 179, this->geometry.height - 48, LookupMessage(1307), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(12, this->geometry.height - 48, LookupMessage(1306), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(179, this->geometry.height - 48, LookupMessage(1307), 0, 0, 12, 0, 0, 0);
     this->FillRegion(109, this->geometry.height - 51, 66, 18, 0x8E8E8E);
   }
 }
@@ -7390,7 +7382,7 @@ void UIItemSellWnd::Paint() {
   UIButtonContext& controls = *this->m_controls;
   char price[64];
   char text[64];
-  this->DrawTitleBar(controls.fonts, controls.locale, false, "", 0);
+  this->DrawTitleBar(false, "", 0);
 
   if (this->geometry.height == 17) {
     return;
@@ -7492,7 +7484,7 @@ void UIItemSellWnd::Paint() {
 // FUNCTION: fn_13334
 void UIItemShopWnd::Paint() {
   UIButtonContext& controls = *this->m_controls;
-  this->DrawTitleBar(controls.fonts, controls.locale, false, "", 0);
+  this->DrawTitleBar(false, "", 0);
 
   if (this->geometry.height == 17) {
     return;
@@ -7625,12 +7617,12 @@ void UIItemShopWnd::Paint() {
     const int aid = *reinterpret_cast<const int*>(&g_session.unknown_5913[0x1D]);
     const char* name = this->ClipTextToWidth(g_session.DecodePlayerName(), 100, 0, 12, 0);
     int length = sprintf(text, LookupMessage(message), name, aid);
-    this->DrawTextAt(controls.fonts, controls.locale, 12, this->geometry.height - 21, text, length, 0, 12, 0, 0, 0);
+    this->DrawTextAt(12, this->geometry.height - 21, text, length, 0, 12, 0, 0, 0);
 
     const int gid = *reinterpret_cast<const int*>(&g_session.unknown_5913[0x21]);
     name = this->ClipTextToWidth(g_session.DecodePlayerName(), 100, 0, 12, 0);
     length = sprintf(text, LookupMessage(1305), name, gid);
-    this->DrawTextAt(controls.fonts, controls.locale, 12, this->geometry.height - this->unknown_0104 - 21, text, length, 0, 12, 0, 0, 0);
+    this->DrawTextAt(12, this->geometry.height - this->unknown_0104 - 21, text, length, 0, 12, 0, 0, 0);
   }
 }
 
@@ -7638,7 +7630,7 @@ void UIItemShopWnd::Paint() {
 // FUNCTION: fn_13337
 void UIItemStoreWnd::Paint() {
   UIButtonContext& controls = *this->m_controls;
-  this->DrawTitleBar(controls.fonts, controls.locale, false, "", 0);
+  this->DrawTitleBar(false, "", 0);
 
   if (this->geometry.height == 17) {
     return;
@@ -7727,16 +7719,16 @@ void UIItemStoreWnd::Paint() {
   const auto* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\inventory\\icon_num.bmp")));
   this->DrawBitmap(6, this->geometry.height - 21, &icon->image, true);
   const std::uint32_t color = this->unknown_0188 >= this->unknown_018C ? 0xFF : 0x232323;
-  this->DrawTextAt(controls.fonts, controls.locale, 22, this->geometry.height - 19, FormatOwnedString("%d", this->unknown_0188).c_str(), 0, 0, 11, color, 0, 0);
-  const int width = this->TextWidth(controls.fonts, controls.locale, FormatOwnedString("%d", this->unknown_0188).c_str(), 0, 0, 11, 0, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, width + 23, this->geometry.height - 19, FormatOwnedString("/%d", this->unknown_018C).c_str(), 0, 0, 11, 0, 0, 0);
+  this->DrawTextAt(22, this->geometry.height - 19, FormatOwnedString("%d", this->unknown_0188).c_str(), 0, 0, 11, color, 0, 0);
+  const int width = this->TextWidth(FormatOwnedString("%d", this->unknown_0188).c_str(), 0, 0, 11, 0, 0);
+  this->DrawTextAt(width + 23, this->geometry.height - 19, FormatOwnedString("/%d", this->unknown_018C).c_str(), 0, 0, 11, 0, 0, 0);
 }
 
 // OFFSET: 0x009819C0
 // FUNCTION: fn_13341
 void UIMerchantItemPurchaseWnd::Paint() {
   UIButtonContext& controls = *this->m_controls;
-  this->DrawTitleBar(controls.fonts, controls.locale, false, "", 0);
+  this->DrawTitleBar(false, "", 0);
 
   if (this->geometry.height == 17) {
     return;
@@ -7822,7 +7814,7 @@ void UIMerchantItemPurchaseWnd::Paint() {
 void UIMerchantShopMakeWnd::Paint() {
   UIButtonContext& controls = *this->m_controls;
   this->ClearSurface(0xFF);
-  this->DrawTitleBar(controls.fonts, controls.locale, false, "", 0);
+  this->DrawTitleBar(false, "", 0);
 
   unsigned red, green, blue;
   SkinPaletteChannels(controls.resources, 2, 2, red, green, blue);
@@ -7868,8 +7860,8 @@ void UIMerchantShopMakeWnd::Paint() {
     }
 
     for (int i = 0, y = 72; i < count; ++i, y += 42) {
-      this->DrawTextAt(controls.fonts, controls.locale, this->geometry.width - 155, y - 15, LookupMessage(1721), 0, 0, 12, 0, 0, 0);
-      this->DrawTextAt(controls.fonts, controls.locale, this->geometry.width - 176, y - 15, LookupMessage(588), 0, 0, 12, 0, 0, 0);
+      this->DrawTextAt(this->geometry.width - 155, y - 15, LookupMessage(1721), 0, 0, 12, 0, 0, 0);
+      this->DrawTextAt(this->geometry.width - 176, y - 15, LookupMessage(588), 0, 0, 12, 0, 0, 0);
       DrawItemSlotBackground(*this, 3, y - 18);
       if (i >= this->unknown_012C) {
         continue;
@@ -7887,28 +7879,27 @@ void UIMerchantShopMakeWnd::Paint() {
       }
 
       const int x = this->geometry.width - 155;
-      this->DrawTextAt(controls.fonts, controls.locale, x, y, LookupMessage(3222), 0, 0, 12, 0, 0, 0);
-      const int width = this->TextWidth(controls.fonts, controls.locale, LookupMessage(3222), 0, 0, 12, 0, 0);
+      this->DrawTextAt(x, y, LookupMessage(3222), 0, 0, 12, 0, 0, 0);
+      const int width = this->TextWidth(LookupMessage(3222), 0, 0, 12, 0, 0);
       const double rate = PriceCommission(price) * 0.01;
       price += static_cast<std::int64_t>(price * rate);
       FormatGroupedInteger(price, text, 24);
       const PriceColors colors = PriceColor(price);
       if (colors.secondary == 0xFFFFFFFF) {
-        this->DrawTextAt(controls.fonts, controls.locale, width + x, y, text, 0, 0, 12, colors.primary, 0, 0);
+        this->DrawTextAt(width + x, y, text, 0, 0, 12, colors.primary, 0, 0);
       } else {
         this->DrawEmboldenedText(width + x, y, text, colors.primary, colors.secondary, 0, 0, 12);
       }
     }
 
-    this->DrawTextAt(controls.fonts, controls.locale, 17, 4, LookupMessage(1720), 0, 0, 12, 0xFFFFFF, 0, 0);
-    this->DrawTextAt(controls.fonts, controls.locale, 16, 3, LookupMessage(1720), 0, 0, 12, 0, 0, 0);
-    this->DrawTextAt(controls.fonts, controls.locale, 2, 25, LookupMessage(282), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(17, 4, LookupMessage(1720), 0, 0, 12, 0xFFFFFF, 0, 0);
+    this->DrawTextAt(16, 3, LookupMessage(1720), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(2, 25, LookupMessage(282), 0, 0, 12, 0, 0, 0);
 
-    const int labelWidth = this->TextWidth(controls.fonts, controls.locale, LookupMessage(1723), 0, 0, 12, 0, 0) + 10;
+    const int labelWidth = this->TextWidth(LookupMessage(1723), 0, 0, 12, 0, 0) + 10;
     this->unknown_0128->Move(labelWidth, this->geometry.height - barHeight + 5);
-    this->DrawTextAt(controls.fonts, controls.locale, 5, this->geometry.height - barHeight + 5, LookupMessage(1723), 0, 0, 12, 0, 0, 0);
-    this->DrawTextAt(
-      controls.fonts, controls.locale, this->unknown_0128->geometry.width + this->unknown_0128->geometry.x + 5, this->geometry.height - barHeight + 5,
+    this->DrawTextAt(5, this->geometry.height - barHeight + 5, LookupMessage(1723), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(this->unknown_0128->geometry.width + this->unknown_0128->geometry.x + 5, this->geometry.height - barHeight + 5,
       "Zeny", 0, 0, 12, 0, 0, 0
     );
 
@@ -7916,7 +7907,7 @@ void UIMerchantShopMakeWnd::Paint() {
     char text[32] = {};
     FormatGroupedInteger(g_session.m_zeny, grouped, 16);
     sprintf(text, "%s Zeny", grouped);
-    this->DrawTextAt(controls.fonts, controls.locale, 5, this->geometry.height - barHeight * 2 + 5, LookupMessage(1722), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(5, this->geometry.height - barHeight * 2 + 5, LookupMessage(1722), 0, 0, 12, 0, 0, 0);
     this->DrawRightAlignedText(155, this->geometry.height - barHeight * 2 + 5, text, 0, 0, 12, 0, 0);
 
     std::uint32_t color;
@@ -7933,7 +7924,7 @@ void UIMerchantShopMakeWnd::Paint() {
     messageY = this->geometry.height - 72;
   } else {
     for (int i = 0, y = 72; i < this->visibleRows; ++i, y += 42) {
-      this->DrawTextAt(controls.fonts, controls.locale, this->geometry.width - 165, y - 15, LookupMessage(369), 0, 0, 12, 0, 0, 0);
+      this->DrawTextAt(this->geometry.width - 165, y - 15, LookupMessage(369), 0, 0, 12, 0, 0, 0);
       DrawItemSlotBackground(*this, 3, y - 18);
       if (i >= this->unknown_012C) {
         continue;
@@ -7951,27 +7942,27 @@ void UIMerchantShopMakeWnd::Paint() {
       }
 
       const int x = this->geometry.width - 165;
-      this->DrawTextAt(controls.fonts, controls.locale, x, y, LookupMessage(3222), 0, 0, 12, 0, 0, 0);
-      const int width = this->TextWidth(controls.fonts, controls.locale, LookupMessage(3222), 0, 0, 12, 0, 0);
+      this->DrawTextAt(x, y, LookupMessage(3222), 0, 0, 12, 0, 0, 0);
+      const int width = this->TextWidth(LookupMessage(3222), 0, 0, 12, 0, 0);
       const double rate = PriceCommission(price) * -0.01;
       price += static_cast<std::int64_t>(price * rate);
       FormatGroupedInteger(price, text, 24);
       const PriceColors colors = PriceColor(price);
       if (colors.secondary == 0xFFFFFFFF) {
-        this->DrawTextAt(controls.fonts, controls.locale, width + x, y, text, 0, 0, 12, colors.primary, 0, 0);
+        this->DrawTextAt(width + x, y, text, 0, 0, 12, colors.primary, 0, 0);
       } else {
         this->DrawEmboldenedText(width + x, y, text, colors.primary, colors.secondary, 0, 0, 12);
       }
     }
 
-    this->DrawTextAt(controls.fonts, controls.locale, 17, 4, LookupMessage(224), 0, 0, 12, 0xFFFFFF, 0, 0);
-    this->DrawTextAt(controls.fonts, controls.locale, 16, 3, LookupMessage(224), 0, 0, 12, 0, 0, 0);
-    this->DrawTextAt(controls.fonts, controls.locale, 2, 25, LookupMessage(282), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(17, 4, LookupMessage(224), 0, 0, 12, 0xFFFFFF, 0, 0);
+    this->DrawTextAt(16, 3, LookupMessage(224), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(2, 25, LookupMessage(282), 0, 0, 12, 0, 0, 0);
 
     message = LookupMessage(3223);
     messageY = this->geometry.height - 43;
   }
-  this->DrawTextAt(controls.fonts, controls.locale, 5, messageY, message, 0, 0, 12, 0xFF, 0, 0);
+  this->DrawTextAt(5, messageY, message, 0, 0, 12, 0xFF, 0, 0);
 
   ItemDescriptions descriptions{g_itemDescriptions};
   int visible = 0;
@@ -8567,7 +8558,7 @@ bool UIEditCtrl3::LinkDisplayName(const std::string& encoded, std::string& outpu
 // FUNCTION: fn_13342
 void UIMerchantItemShopWnd::Paint() {
   UIButtonContext& controls = *this->m_controls;
-  this->DrawTitleBar(controls.fonts, controls.locale, false, "", 0);
+  this->DrawTitleBar(false, "", 0);
 
   if (this->geometry.height == 17) {
     return;
@@ -8617,8 +8608,8 @@ void UIMerchantItemShopWnd::Paint() {
       this->m_context->registration.Add(this);
       sprintf(title, "%s", label);
     }
-    this->DrawTextAt(controls.fonts, controls.locale, 17, 3, title, 0, 0, 12, 0xFFFFFF, 0, 0);
-    this->DrawTextAt(controls.fonts, controls.locale, 16, 2, title, 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(17, 3, title, 0, 0, 12, 0xFFFFFF, 0, 0);
+    this->DrawTextAt(16, 2, title, 0, 0, 12, 0, 0, 0);
   }
 
   ItemDescriptions descriptions{g_itemDescriptions};
@@ -8643,9 +8634,9 @@ void UIMerchantItemShopWnd::Paint() {
     int x;
     if (this->unknown_010C != 0) {
       sprintf(price, LookupMessage(182), it->quantity);
-      const int quantityX = this->geometry.width - this->TextWidth(controls.fonts, controls.locale, "  100,000,000Z", 0, 0, 12, 0, 0) -
-                            this->TextWidth(controls.fonts, controls.locale, price, 0, 0, 12, 0, 0) - 18;
-      this->DrawTextAt(controls.fonts, controls.locale, quantityX, top + 29, price, 0, 0, 12, 0xFF, 0, 0);
+      const int quantityX = this->geometry.width - this->TextWidth("  100,000,000Z", 0, 0, 12, 0, 0) -
+                            this->TextWidth(price, 0, 0, 12, 0, 0) - 18;
+      this->DrawTextAt(quantityX, top + 29, price, 0, 0, 12, 0xFF, 0, 0);
       x = left + 4;
       DrawItemIcon(*this, controls.resources, descriptions, x, top + 21, *it, 0);
     } else {
@@ -8663,8 +8654,8 @@ void UIMerchantItemShopWnd::Paint() {
       );
     }
 
-    int width = this->TextWidth(controls.fonts, controls.locale, "Z", 0, 0, 12, 0, 0);
-    this->DrawTextAt(controls.fonts, controls.locale, this->geometry.width - width - 18, top + 29, "Z", 0, 0, 12, 0, 0, 0);
+    int width = this->TextWidth("Z", 0, 0, 12, 0, 0);
+    this->DrawTextAt(this->geometry.width - width - 18, top + 29, "Z", 0, 0, 12, 0, 0, 0);
 
     char text[128];
     if (it->unknown_0014[0] != it->unknown_0014[1]) {
@@ -8672,8 +8663,8 @@ void UIMerchantItemShopWnd::Paint() {
     } else {
       sprintf(text, " %s ", FormatGroupedInteger(static_cast<int>(it->unknown_0014[0]), price, 128));
     }
-    width += this->TextWidth(controls.fonts, controls.locale, text, 0, 0, 12, 0, 0);
-    this->DrawAmount(controls.fonts, controls.locale, static_cast<int>(it->unknown_0014[0]), text, this->geometry.width - width - 18, top + 29);
+    width += this->TextWidth(text, 0, 0, 12, 0, 0);
+    this->DrawAmount(static_cast<int>(it->unknown_0014[0]), text, this->geometry.width - width - 18, top + 29);
 
     int nameWidth = this->geometry.width - width - left - 66;
     if (nameWidth > 130) {
@@ -8695,13 +8686,11 @@ void UIMerchantItemShopWnd::Paint() {
       const int minutes = remaining / 60000 % 60;
       const int seconds = remaining / 1000 % 60;
       if (remaining <= 60000) {
-        this->DrawTextAt(
-          controls.fonts, controls.locale, 20, this->geometry.height - 50,
+        this->DrawTextAt(20, this->geometry.height - 50,
           FormatOwnedString(LookupMessage(2927), days, hours, minutes, seconds).c_str(), 0, 0, 12, 0xFF, 1, 0
         );
       } else {
-        this->DrawTextAt(
-          controls.fonts, controls.locale, 20, this->geometry.height - 50,
+        this->DrawTextAt(20, this->geometry.height - 50,
           FormatOwnedString(LookupMessage(2927), days, hours, minutes, seconds).c_str(), 0, 0, 12, 0, 1, 0
         );
       }
@@ -8921,7 +8910,7 @@ void UISkillListWnd::Slot28(int x, int y) {
   if (std::strlen(name) != 0) {
     int tooltipY = (index - this->scroll) * 32 + 17;
     int tooltipX = 112;
-    if (this->TextWidth(this->m_context->fonts, this->m_context->locale, name, 0, 0, 12, 0, 0) > this->geometry.width - 132 && x > tooltipX) {
+    if (this->TextWidth(name, 0, 0, 12, 0, 0) > this->geometry.width - 132 && x > tooltipX) {
       this->ToScreen(tooltipX, tooltipY);
       reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(name, tooltipX - 8, tooltipY, 0xFFFFFFFF, 0, 1);
     }
@@ -8932,7 +8921,7 @@ void UISkillListWnd::Slot28(int x, int y) {
 // FUNCTION: fn_13331
 void UIItemSellWnd2::Paint() {
   UIButtonContext& controls = *this->m_controls;
-  this->DrawTitleBar(controls.fonts, controls.locale, false, "", 0);
+  this->DrawTitleBar(false, "", 0);
 
   if (this->geometry.height == 17) {
     return;
@@ -9012,7 +9001,7 @@ void UIItemSellWnd2::Paint() {
 // FUNCTION: fn_13333
 void UIItemShopWnd2::Paint() {
   UIButtonContext& controls = *this->m_controls;
-  this->DrawTitleBar(controls.fonts, controls.locale, false, "", 0);
+  this->DrawTitleBar(false, "", 0);
 
   if (this->geometry.height == 17) {
     return;
@@ -9228,7 +9217,7 @@ int UIItemSellWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 // FUNCTION: fn_13338
 void UIItemWnd::Paint() {
   UIButtonContext& controls = *this->m_controls;
-  this->DrawTitleBar(controls.fonts, controls.locale, true, LookupMessage(106), 0);
+  this->DrawTitleBar(true, LookupMessage(106), 0);
 
   if (this->geometry.height == 17) {
     return;
@@ -9364,10 +9353,9 @@ void UIItemWnd::Paint() {
 
   const int count = reinterpret_cast<const SessionMessengerContext*>(&g_session)->GetList0Size() + g_session.CountItems17F0() + g_session.CountItems2B50();
   const std::uint32_t color = count >= g_extraInventorySlots + 100 ? 0xFF : 0x232323;
-  this->DrawTextAt(controls.fonts, controls.locale, 35, this->geometry.height - 15, FormatOwnedString("%d", count).c_str(), 0, 0, 11, color, 0, 0);
-  const int width = this->TextWidth(controls.fonts, controls.locale, FormatOwnedString("%d", count).c_str(), 0, 0, 11, 0, 0);
-  this->DrawTextAt(
-    controls.fonts, controls.locale, width + 36, this->geometry.height - 15, FormatOwnedString("/%d", g_extraInventorySlots + 100).c_str(), 0, 0, 11, 0, 0, 0
+  this->DrawTextAt(35, this->geometry.height - 15, FormatOwnedString("%d", count).c_str(), 0, 0, 11, color, 0, 0);
+  const int width = this->TextWidth(FormatOwnedString("%d", count).c_str(), 0, 0, 11, 0, 0);
+  this->DrawTextAt(width + 36, this->geometry.height - 15, FormatOwnedString("/%d", g_extraInventorySlots + 100).c_str(), 0, 0, 11, 0, 0, 0
   );
 }
 

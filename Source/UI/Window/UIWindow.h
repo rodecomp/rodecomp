@@ -148,10 +148,9 @@ public:
   void sub_8A8EE0(int x, int y, const ITEM_INFO* item, unsigned char identified);
   void sub_A85850(int x, int y, std::string text, int width, int align, std::uint32_t color, int arg7, int arg8, int arg9, int arg10, unsigned char bold);
   void FillRegion(int x, int y, int width, int height, std::uint32_t color);
-  int TextWidth(FontCache& fonts, const TextLocale& locale, const char* text, unsigned bytes, int family, int height, unsigned char bold, unsigned char italic);
+  int TextWidth(const char* text, unsigned bytes, int family, int height, unsigned char bold, unsigned char italic);
   int ColoredTextWidth(const char* text, unsigned bytes, int family, int height, unsigned char bold);
-  void DrawTextAt(
-    FontCache& fonts, const TextLocale& locale, int x, int y, const char* text, int bytes, int family, int height, std::uint32_t color, unsigned char bold,
+  void DrawTextAt(int x, int y, const char* text, int bytes, int family, int height, std::uint32_t color, unsigned char bold,
     unsigned char italic
   );
   void DrawVerticalText(int x, int y, const char* text, unsigned bytes, int family, int height, std::uint32_t color, unsigned char bold);
@@ -188,12 +187,11 @@ public:
   void DrawBitmapRegion(int x, int y, const BitmapImage* image, bool transparent, bool whole, int left, int top, int right, int bottom);
   void DrawAuxiliaryScaled(int mode, int x, int y, int width, int height, BitmapImage* image, int option, bool rebuild);
   void DrawAuxiliary(int mode, int x, int y, BitmapImage* image, bool transparent, bool rebuild);
-  void DrawAmount(FontCache& fonts, const TextLocale& locale, int amount, std::string text, int x, int y);
-  int TextHeight(FontCache& fonts, const TextLocale& locale, const char* text, unsigned bytes, int family, int height, unsigned char bold, unsigned char italic);
-  int VerticalTextHeight(FontCache& fonts, const TextLocale& locale, const char* text, unsigned bytes, int family, int height, unsigned char bold);
-  tagSIZE TextSize(FontCache& fonts, const TextLocale& locale, const char* text, unsigned bytes, int family, int height, unsigned char bold, unsigned char italic);
-  tagSIZE VerticalTextSize(
-    FontCache& fonts, const TextLocale& locale, const char* text, unsigned bytes, int family, int height, unsigned char bold, unsigned char italic
+  void DrawAmount(int amount, std::string text, int x, int y);
+  int TextHeight(const char* text, unsigned bytes, int family, int height, unsigned char bold, unsigned char italic);
+  int VerticalTextHeight(const char* text, unsigned bytes, int family, int height, unsigned char bold);
+  tagSIZE TextSize(const char* text, unsigned bytes, int family, int height, unsigned char bold, unsigned char italic);
+  tagSIZE VerticalTextSize(const char* text, unsigned bytes, int family, int height, unsigned char bold, unsigned char italic
   );
   int FormattedTextWidth(std::string text, int family, int height, unsigned char bold);
   std::string FitDisplayText(int width, const char* text, int family, int height, unsigned char bold);
@@ -214,8 +212,8 @@ public:
     const std::uint32_t* palette, float extentScale
   );
   void AddRotatedSpriteCellOverlay(int x, int y, int width, int height, const SpriteRleImage* image, const SpriteFrameCell* cell, const std::uint32_t* palette);
-  int DrawTitleBar(FontCache& fonts, const TextLocale& locale, bool closeButton, const char* title, int width);
-  int DrawTitleBarAt(FontCache& fonts, const TextLocale& locale, int x, int width, bool closeButton, const char* title);
+  int DrawTitleBar(bool closeButton, const char* title, int width);
+  int DrawTitleBarAt(int x, int width, bool closeButton, const char* title);
   void DrawPanelBackground(int y, int width, const char* bitmapName);
   void DrawPanelBackgroundAt(int x, int y, int width, const char* bitmapName);
   void DrawRobeSprite(int job, int sex, int robe, int x, int y, bool overlay, int animation, int frame);

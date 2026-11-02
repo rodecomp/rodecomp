@@ -147,8 +147,8 @@ void UIMacroReporterWnd::sub_7EF430(int aid, std::string name) {
 // FUNCTION: fn_09842
 std::string UIMacroReporterWnd::sub_7EF680(int maxWidth, const char* text, int font, int height, unsigned char bold) {
   std::string source(text);
-  const int width = this->TextWidth(this->m_controls->fonts, this->m_controls->locale, text, 0, font, height, bold, 0);
-  this->TextWidth(this->m_controls->fonts, this->m_controls->locale, "...", 0, font, height, bold, 0);
+  const int width = this->TextWidth(text, 0, font, height, bold, 0);
+  this->TextWidth("...", 0, font, height, bold, 0);
   if (maxWidth >= width) {
     return text;
   }
@@ -164,7 +164,7 @@ std::string UIMacroReporterWnd::sub_7EF680(int maxWidth, const char* text, int f
 
     fitted = ATL::CW2AEX<128>(wide.c_str(), CP_THREAD_ACP);
     fitted += "...";
-    if (this->TextWidth(this->m_controls->fonts, this->m_controls->locale, fitted.c_str(), 0, font, height, bold, 0) <= maxWidth) {
+    if (this->TextWidth(fitted.c_str(), 0, font, height, bold, 0) <= maxWidth) {
       return fitted;
     }
   }
@@ -198,7 +198,7 @@ void UIMacroReporterWnd::Paint() {
   }
 
   DrawFilledRoundedBorder(*this, 0, 0, this->geometry.width, this->geometry.height, 0xFFFFFFFF);
-  this->DrawTitleBar(this->m_controls->fonts, this->m_controls->locale, true, "", 0);
+  this->DrawTitleBar(true, "", 0);
   this->DrawButtonBar(1, 0, 1);
 
   if (this->m_mode != 0 && this->m_mode != 1) {
@@ -231,8 +231,8 @@ void UIMacroReporterWnd::Paint() {
 // FUNCTION: fn_09849
 void UIMacroUserInfoWnd::Paint() {
   this->ClearSurface(0xFAFAFA);
-  this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 5, 5, this->m_name.c_str(), 0, 0, 12, 0, 1, 0);
-  this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 5, 20, this->m_message.c_str(), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(5, 5, this->m_name.c_str(), 0, 0, 12, 0, 1, 0);
+  this->DrawTextAt(5, 20, this->m_message.c_str(), 0, 0, 12, 0, 0, 0);
 }
 
 // OFFSET: 0x007F1160
@@ -529,7 +529,7 @@ void UIMacroReporterWnd::Slot15(int, int) {
   UIEditCtrl* target = new UIEditCtrl();
   this->m_edit = target;
   target->SetSize(15, 14);
-  target->Move(this->TextWidth(this->m_controls->fonts, this->m_controls->locale, labels[1].c_str(), 0, 0, 12, 0, 0) + 83, 30);
+  target->Move(this->TextWidth(labels[1].c_str(), 0, 0, 12, 0, 0) + 83, 30);
   target->flat = 0;
   target->Border(125, 125, 125);
   target->maximum = 1;

@@ -128,7 +128,7 @@ void UIReputeWnd::Slot15(int width, int height) {
 void UIReputeWnd::Paint() {
   auto& controls = *this->m_controls;
   this->ClearSurface(0xFFFFFFFF);
-  const int titleHeight = this->DrawTitleBar(controls.fonts, controls.locale, false, LookupMessage(3827), 0);
+  const int titleHeight = this->DrawTitleBar(false, LookupMessage(3827), 0);
   const int barHeight = this->DrawButtonBar(2, 0, 1);
   DrawRectangleBorder(*this, 0, titleHeight - 1, this->geometry.width, this->geometry.height - barHeight - titleHeight + 2, 0xC6C6C6);
   DrawRectangleBorder(*this, 0, titleHeight, this->geometry.width, 1, 0);
@@ -160,7 +160,7 @@ void UIReputeWnd::Paint() {
     const char* background = info->updated ? "유저인터페이스\\Reputation\\bg_highlight.bmp" : "유저인터페이스\\Reputation\\bg_info.bmp";
     CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background)));
     this->DrawBitmap(left + 7, top + 50, &bitmap->image, false);
-    this->DrawTextAt(controls.fonts, controls.locale, left + 12, top + 56, info->name.c_str(), 0, 0, 12, 0, 1, 0);
+    this->DrawTextAt(left + 12, top + 56, info->name.c_str(), 0, 0, 12, 0, 1, 0);
 
     const std::int64_t point = info->point;
     if (point < 0) {
@@ -198,7 +198,7 @@ void UIReputeWnd::Paint() {
   if (this->m_groupSelected) {
     this->FillRegion(375, 26, 256, 16, 0xEFEFEF);
     DrawRectangleBorder(*this, 374, 25, 258, 18, 0x636363);
-    this->DrawTextAt(controls.fonts, controls.locale, 377, 29, "GROUP :", 0, 0, 12, 0, 1, 0);
+    this->DrawTextAt(377, 29, "GROUP :", 0, 0, 12, 0, 1, 0);
     this->DrawRightAlignedText(627, 29, FormatOwnedString("%I64d P", this->m_totalPoints).c_str(), 0, 0, 12, 0, 1);
 
     const char* light;
@@ -215,11 +215,10 @@ void UIReputeWnd::Paint() {
   }
 
   const std::string separator = " / ";
-  const unsigned int separatorWidth = this->TextWidth(controls.fonts, controls.locale, separator.c_str(), 0, 0, 12, 0, 0);
+  const unsigned int separatorWidth = this->TextWidth(separator.c_str(), 0, 0, 12, 0, 0);
   this->DrawCenteredText(574, 402, separator.c_str(), 49, 0, 12, 0, 1);
   this->DrawRightAlignedText(static_cast<int>((49 - separatorWidth) * 0.5 + 574.0), 402, std::to_string(this->m_page).c_str(), 0, 0, 12, 0, 1);
-  this->DrawTextAt(
-    controls.fonts, controls.locale, static_cast<int>((separatorWidth + 49) * 0.5 + 574.0), 402, std::to_string(this->m_pageCount).c_str(), 0, 0, 12, 0, 1, 0
+  this->DrawTextAt(static_cast<int>((separatorWidth + 49) * 0.5 + 574.0), 402, std::to_string(this->m_pageCount).c_str(), 0, 0, 12, 0, 1, 0
   );
 }
 

@@ -136,7 +136,7 @@ void UIRegisterPartyWnd::Slot15(int, int) {
   auto* submit = new UIBasicButton(*this->m_context, controls);
   const bool registered = g_adventurerAgencyMgr->registered;
   const char* title = controls.services.MessageText(registered ? 3376 : 3371);
-  submit->Configure(this->TextWidth(controls.fonts, controls.locale, title, 0, 0, 12, 0, 0) + 10, title);
+  submit->Configure(this->TextWidth(title, 0, 0, 12, 0, 0) + 10, title);
   submit->Move(108, 165);
   submit->SetId(registered ? 564 : 565);
 
@@ -247,7 +247,7 @@ void UIRegisterPartyWnd::Paint() {
   const auto load = [&](const char* name) { return static_cast<CBitmapRes*>(controls.resources.Load((std::string(prefix) + name).c_str())); };
   const auto* background = load("UIadventurerAgency\\bg_agency_register.bmp");
   this->DrawBitmap(0, 0, background ? &background->image : nullptr, false);
-  this->DrawTextAt(controls.fonts, controls.locale, 86, 50, "~", 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(86, 50, "~", 0, 0, 12, 0, 0, 0);
   int leftWidth = 0;
   int rightWidth = 0;
   int titleHeight = 0;
@@ -274,8 +274,8 @@ void UIRegisterPartyWnd::Paint() {
   }
 
   const char* caption = controls.services.MessageText(3356);
-  this->DrawTextAt(controls.fonts, controls.locale, 19, titleHeight - 13, caption, 0, 0, 12, 0xFFFFFF, 0, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 18, titleHeight - 14, caption, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(19, titleHeight - 13, caption, 0, 0, 12, 0xFFFFFF, 0, 0);
+  this->DrawTextAt(18, titleHeight - 14, caption, 0, 0, 12, 0, 0, 0);
   const auto* base = load("basic_interface\\sys_base_off.bmp");
   this->DrawBitmap(3, 3, base ? &base->image : nullptr, true);
 }

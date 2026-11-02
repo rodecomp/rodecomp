@@ -30,7 +30,7 @@ UIAgitMessageBox::UIAgitMessageBox()
 // FUNCTION: fn_13068
 void UIAgitMessageBox::Paint() {
   auto& controls = this->m_dialog->buttons;
-  this->DrawTitleBar(controls.fonts, controls.locale, true, LookupMessage(3640), 0);
+  this->DrawTitleBar(true, LookupMessage(3640), 0);
   this->DrawPanelBackground(17, 0, "");
   this->DrawButtonBar(2, 0, 1);
 }
@@ -104,7 +104,7 @@ void UIListBoxAgitMenu::Paint() {
     if (index == this->selected) {
       this->FillRegion(3, this->lineHeight * index + 1, this->geometry.width - 6, this->lineHeight - 2, RGB(red, green, blue));
     }
-    this->DrawTextAt(owner.fonts, owner.locale, 3, this->lineHeight * index + 1, this->lines[index].c_str(), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(3, this->lineHeight * index + 1, this->lines[index].c_str(), 0, 0, 12, 0, 0, 0);
   }
 }
 

@@ -473,7 +473,7 @@ void UICashShopWnd::Paint() {
     );
   }
 
-  this->DrawTitleBar(this->m_context->fonts, this->m_context->locale, false, LookupMessage(0xCD8), 0);
+  this->DrawTitleBar(false, LookupMessage(0xCD8), 0);
   if (this->m_pageCount == 0) {
     this->sub_A84400(0xF7, 0x1EE, std::string("0 / 0"), 0x2B, 0, 6, 0, 0xC, 0x6B2921, 0);
   } else {
@@ -484,11 +484,11 @@ void UICashShopWnd::Paint() {
     this->DrawCenteredText(0x21A, 0x1B, LookupMessage(0xCD9), 0xB9, 0, 0xE, 0, 1);
     this->DrawCenteredText(0x219, 0x1A, LookupMessage(0xCD9), 0xB9, 0, 0xE, 0xFFFFFF, 1);
     this->DrawRightAlignedText(0x273, 0x33, IntToString(this->unknown_00E8, 0).c_str(), 0, 0, 0xC, 0xFFFFFF, 1);
-    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 0x226, 0x1B2, LookupMessage(0xCE7), 0, 0, 0xC, 0, 0, 0);
+    this->DrawTextAt(0x226, 0x1B2, LookupMessage(0xCE7), 0, 0, 0xC, 0, 0, 0);
     this->DrawRightAlignedText(0x2C4, 0x1B2, FormatOwnedString("%d C", this->unknown_00EC).c_str(), 0, 0, 0xC, 0, 0);
-    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 0x226, 0x1C2, LookupMessage(0xCE8), 0, 0, 0xC, 0, 0, 0);
+    this->DrawTextAt(0x226, 0x1C2, LookupMessage(0xCE8), 0, 0, 0xC, 0, 0, 0);
     this->DrawRightAlignedText(0x2C4, 0x1C2, "C", 0, 0, 0xC, 0, 0);
-    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 0x226, 0x1D2, LookupMessage(0xCE9), 0, 0, 0xC, 0, 0, 0);
+    this->DrawTextAt(0x226, 0x1D2, LookupMessage(0xCE9), 0, 0, 0xC, 0, 0, 0);
     this->DrawRightAlignedText(0x2C4, 0x1D2, FormatOwnedString("%d C", 0).c_str(), 0, 0, 0xC, 0, 0);
   } else {
     {
@@ -545,7 +545,7 @@ void UICashShopWnd_CartItem::Paint() {
   );
 
   std::string name = this->FitDisplayText(0x70, this->m_item.unknown_0044.c_str(), 0, 0xB, 0);
-  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 0x30, 0xC, name.c_str(), 0, 0, 0xB, 0x902418, 0, 0);
+  this->DrawTextAt(0x30, 0xC, name.c_str(), 0, 0, 0xB, 0x902418, 0, 0);
 
   CBitmapRes* icon = static_cast<CBitmapRes*>(
     ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\collection\\%s.bmp", ItemResourcePath(this->m_item)).c_str()))
@@ -588,7 +588,7 @@ void UICashShopWnd_Item::Paint() {
     }
 
     if (this->m_item.unknown_0014[0] == 0) {
-      this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 0x53, 0x4C, LookupMessage(0xF4E), 0, 0, 0xB, 0xFF, 0, 0);
+      this->DrawTextAt(0x53, 0x4C, LookupMessage(0xF4E), 0, 0, 0xB, 0xFF, 0, 0);
     } else {
       std::string count;
       if (static_cast<int>(this->m_item.unknown_0078[3]) < 0) {
@@ -596,7 +596,7 @@ void UICashShopWnd_Item::Paint() {
       } else {
         count = FormatOwnedString("%d/%d", this->m_item.unknown_0078[3], this->m_item.quantity);
       }
-      this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 0x53, 0x4C, LookupMessage(0xE4A), 0, 0, 0xB, 0x6E4B41, 0, 0);
+      this->DrawTextAt(0x53, 0x4C, LookupMessage(0xE4A), 0, 0, 0xB, 0x6E4B41, 0, 0);
       this->DrawCenteredOutlinedText(0x53, 0x5B, count.c_str(), 0x51, 0, 0xFFFFFF, 0xD29374, 0, 0x10, 1);
     }
 
@@ -615,10 +615,10 @@ void UICashShopWnd_Item::Paint() {
 
     const char* text = startText.c_str();
     const int center = this->geometry.width / 2;
-    const int startWidth = this->TextWidth(this->m_context->fonts, this->m_context->locale, text, 0, 0, 0xC, 0, 0);
-    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, static_cast<int>(center - startWidth * 0.5), 0xA0, text, 0, 0, 0xB, 0, 0, 0);
-    const int endWidth = this->TextWidth(this->m_context->fonts, this->m_context->locale, endText.c_str(), 0, 0, 0xC, 0, 0);
-    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 0x9E - endWidth, 0xAD, endText.c_str(), 0, 0, 0xB, 0, 0, 0);
+    const int startWidth = this->TextWidth(text, 0, 0, 0xC, 0, 0);
+    this->DrawTextAt(static_cast<int>(center - startWidth * 0.5), 0xA0, text, 0, 0, 0xB, 0, 0, 0);
+    const int endWidth = this->TextWidth(endText.c_str(), 0, 0, 0xC, 0, 0);
+    this->DrawTextAt(0x9E - endWidth, 0xAD, endText.c_str(), 0, 0, 0xB, 0, 0, 0);
   } else {
     this->DrawBitmap(
       0, 0, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\cashshop\\img_shop_itemBg.bmp"))), false

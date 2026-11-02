@@ -220,11 +220,11 @@ void UIComboBoxEx::DrawRows(bool centered) {
     int x = (3 - this->horizontalOffset);
 
     if (centered) {
-      const int width = this->TextWidth(owner.fonts, owner.locale, row.text.c_str(), 0, 0, 12, 0, 0);
+      const int width = this->TextWidth(row.text.c_str(), 0, 0, 12, 0, 0);
       x = static_cast<int>(static_cast<float>(this->geometry.width) * 0.5f - static_cast<float>(width) * 0.5f);
     }
 
-    this->DrawTextAt(owner.fonts, owner.locale, x, ((this->lineHeight * (index - this->topLine)) + 2), row.text.c_str(), 0, 0, 12, row.color, 0, 0);
+    this->DrawTextAt(x, ((this->lineHeight * (index - this->topLine)) + 2), row.text.c_str(), 0, 0, 12, row.color, 0, 0);
   }
 }
 

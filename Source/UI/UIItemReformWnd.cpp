@@ -157,24 +157,24 @@ void UIItemReformWnd::Paint() {
   WORD language = g_serverLanguage->language;
   ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
   if (std::atoi(this->reformItem.itemId.c_str()) > 0) {
-    this->DrawTitleBar(context.fonts, context.locale, false, naming.DisplayName(this->reformItem, 0).c_str(), 0);
+    this->DrawTitleBar(false, naming.DisplayName(this->reformItem, 0).c_str(), 0);
   }
   if (std::atoi(this->resultItem.itemId.c_str()) != 0) {
     this->DrawCenteredText(6, 104, this->FitDisplayText(200, naming.DisplayName(this->resultItem, 0).c_str(), 0, 14, 1).c_str(), 209, 0, 14, 0, 1);
   }
   for (unsigned int index = 0; index < this->materials.size(); ++index) {
-    const unsigned int half = this->TextWidth(context.fonts, context.locale, "/", 0, 0, 12, 0, 0) * 0.5;
+    const unsigned int half = this->TextWidth("/", 0, 0, 12, 0, 0) * 0.5;
     const int x = index % 3 * 69 + 42;
     const int y = index / 3 * 50 + 167;
     const int owned = g_session.GetInventoryItemCount(std::atoi(this->materials[index].itemId.c_str()));
     const int required = this->materials[index].quantity;
     const std::uint32_t color = owned < required ? 0x321EC8 : 0x3C3C3C;
-    this->DrawTextAt(context.fonts, context.locale, x - half, y, "/", 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(x - half, y, "/", 0, 0, 12, 0, 0, 0);
     this->DrawRightAlignedText(x - half, y, FormatOwnedString("%d", owned).c_str(), 0, 0, 12, color, 0);
-    this->DrawTextAt(context.fonts, context.locale, x + half, y, FormatOwnedString("%d", required).c_str(), 0, 0, 12, color, 0, 0);
+    this->DrawTextAt(x + half, y, FormatOwnedString("%d", required).c_str(), 0, 0, 12, color, 0, 0);
   }
   if (this->warning.size() != 0) {
-    this->DrawTextAt(context.fonts, context.locale, 8, 240, this->FitDisplayText(280, this->warning.c_str(), 0, 12, 0).c_str(), 0, 0, 12, 0xA0AFF, 0, 0);
+    this->DrawTextAt(8, 240, this->FitDisplayText(280, this->warning.c_str(), 0, 12, 0).c_str(), 0, 0, 12, 0xA0AFF, 0, 0);
   }
 }
 
@@ -184,7 +184,7 @@ void UIItemReformWnd_DetailBtn::Paint() {
   this->ClearSurface(0xFFFF00FF);
   std::string text = LookupMessage(3854);
   UIButtonContext& controls = *this->m_buttonContext;
-  const unsigned int textWidth = this->TextWidth(controls.fonts, controls.locale, text.c_str(), 0, 0, 12, 0, 0);
+  const unsigned int textWidth = this->TextWidth(text.c_str(), 0, 0, 12, 0, 0);
   this->DrawCenteredText(0, 0, text.c_str(), this->geometry.width, 0, 12, 0, 0);
   this->FillRegion((this->geometry.width - textWidth) * 0.5, 12, textWidth, 1, 0);
 }
@@ -231,8 +231,7 @@ void UIItemReformWnd_List::Paint() {
       bool languagePrefix = false;
       WORD language = g_serverLanguage->language;
       ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
-      this->DrawTextAt(
-        context.fonts, context.locale, 42, this->itemHeight * row + 10, this->FitDisplayText(160, naming.DisplayName(item, 0).c_str(), 0, 12, 0).c_str(), 0, 0,
+      this->DrawTextAt(42, this->itemHeight * row + 10, this->FitDisplayText(160, naming.DisplayName(item, 0).c_str(), 0, 12, 0).c_str(), 0, 0,
         12, 0, 0, 0
       );
     }

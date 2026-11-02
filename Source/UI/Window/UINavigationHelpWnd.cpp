@@ -52,7 +52,7 @@ void UINavigationHelpWnd::Slot15(int width, int height) {
 // OFFSET: 0x0092CEC0
 // FUNCTION: fn_12667
 void UINavigationHelpWnd::Paint() {
-  this->DrawTitleBar(this->m_controls->fonts, this->m_controls->locale, true, LookupMessage(2240), 0);
+  this->DrawTitleBar(true, LookupMessage(2240), 0);
   this->DrawPanelBackground(17, 0, "");
 }
 

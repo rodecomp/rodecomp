@@ -158,7 +158,7 @@ int UIFrameWnd::DrawFittedItemName(int x, int y, const ITEM_INFO* item, std::uin
       color = (card >> 16 & 0xFF) | ((card & 0xFF) << 16) | (card & 0x0000FF00);
       this->DrawShadowedText(offset + x, y, text, bytes, color, 0xFFFFFF, 0, 12, 0);
     }
-    offset += this->TextWidth(this->m_context->fonts, this->m_context->locale, text, bytes, 0, 12, 0, 0);
+    offset += this->TextWidth(text, bytes, 0, 12, 0, 0);
     text = end;
     if (truncated) {
       break;

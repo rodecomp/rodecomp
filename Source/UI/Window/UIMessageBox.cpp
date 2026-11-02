@@ -295,8 +295,8 @@ void UIMessageBox::Paint() {
     }
   }
 
-  this->DrawTextAt(controls.fonts, controls.locale, 19, titleHeight - 13, this->caption.c_str(), 0, 0, 12, 0xFFFFFF, 0, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 18, titleHeight - 14, this->caption.c_str(), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(19, titleHeight - 13, this->caption.c_str(), 0, 0, 12, 0xFFFFFF, 0, 0);
+  this->DrawTextAt(18, titleHeight - 14, this->caption.c_str(), 0, 0, 12, 0, 0, 0);
   const auto* base = load("basic_interface\\sys_base_off.bmp");
   this->DrawBitmap(3, 3, base ? &base->image : nullptr, true);
 
@@ -357,7 +357,7 @@ void UILoginWnd::Paint() {
 void UIMakeCharWnd::Paint() {
   CBitmapRes* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\login_interface\\win_make2.bmp")));
   this->DrawBitmap(0, 17, &background->image, false);
-  this->DrawTitleBar(this->m_context->fonts, this->m_context->locale, true, LookupMessage(0x940), 0);
+  this->DrawTitleBar(true, LookupMessage(0x940), 0);
   this->DrawButtonBar(2, 0, 1);
 
   SpriteAtlasRecord record{};
@@ -424,38 +424,38 @@ void UIMerInfoWnd::Paint() {
   const unsigned kind = g_session.m_mercenaryClass;
   const int titleId = kind - 6017 <= 9 ? 1181 : kind - 6037 <= 9 ? 1182 : kind - 6027 <= 9 ? 1183 : 1367;
   std::sprintf(title, controls.services.MessageText(titleId));
-  this->DrawTextAt(controls.fonts, controls.locale, 5, 2, title, 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 100, 24, controls.services.MessageText(407), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 100, 47, controls.services.MessageText(408), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 100, 111, controls.services.MessageText(1184), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 100, 135, controls.services.MessageText(1185), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 100, 159, controls.services.MessageText(1186), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 230, 133, controls.services.MessageText(1187), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(5, 2, title, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(100, 24, controls.services.MessageText(407), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(100, 47, controls.services.MessageText(408), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(100, 111, controls.services.MessageText(1184), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(100, 135, controls.services.MessageText(1185), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(100, 159, controls.services.MessageText(1186), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(230, 133, controls.services.MessageText(1187), 0, 0, 12, 0, 0, 0);
   char number[24] = {};
   for (int i = 0; i < 8; ++i) {
     const int value = i == 7 ? (2000 - g_session.m_mercenaryStats[i]) / 10 : g_session.m_mercenaryStats[i];
     const int bytes = std::sprintf(number, "%d", value);
     DrawTextRight(*this, controls.fonts, controls.locale, 79, 24 + 18 * i, number, bytes, 1, 14, 0, 0);
   }
-  this->DrawTextAt(controls.fonts, controls.locale, 136, 24, g_session.m_mercenaryName, 0, 0, 12, 0x646464, 0, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 135, 24, g_session.m_mercenaryName, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(136, 24, g_session.m_mercenaryName, 0, 0, 12, 0x646464, 0, 0);
+  this->DrawTextAt(135, 24, g_session.m_mercenaryName, 0, 0, 12, 0, 0, 0);
   char level[12] = {};
   _itoa(g_session.m_mercenaryLevel, level, 10);
-  this->DrawTextAt(controls.fonts, controls.locale, 135, 47, level, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(135, 47, level, 0, 0, 12, 0, 0, 0);
   if (g_session.m_mercenaryClass != -1) {
     char text[128] = {};
     int bytes = std::sprintf(text, "%d / %d", g_session.m_mercenaryHp, g_session.m_mercenaryMaxHp);
-    this->DrawTextAt(controls.fonts, controls.locale, 218, 70, text, bytes, 1, 14, 0, 0, 0);
+    this->DrawTextAt(218, 70, text, bytes, 1, 14, 0, 0, 0);
     bytes = std::sprintf(text, "%d / %d", g_session.m_mercenarySp, g_session.m_mercenaryMaxSp);
-    this->DrawTextAt(controls.fonts, controls.locale, 218, 85, text, bytes, 1, 14, 0, 0, 0);
+    this->DrawTextAt(218, 85, text, bytes, 1, 14, 0, 0, 0);
     std::strftime(text, 128, controls.services.MessageText(1260), _localtime32(&g_session.m_mercenaryExpiration));
-    this->DrawTextAt(controls.fonts, controls.locale, 155, 111, text, static_cast<int>(std::strlen(text)), 0, 12, 255, 0, 0);
+    this->DrawTextAt(155, 111, text, static_cast<int>(std::strlen(text)), 0, 12, 255, 0, 0);
     bytes = std::sprintf(text, "%d", g_session.m_mercenaryLoyalty);
-    this->DrawTextAt(controls.fonts, controls.locale, 170, 133, text, bytes, 1, 14, 0, 0, 0);
+    this->DrawTextAt(170, 133, text, bytes, 1, 14, 0, 0, 0);
     bytes = std::sprintf(text, "%d", g_session.m_mercenarySummons);
-    this->DrawTextAt(controls.fonts, controls.locale, 170, 157, text, bytes, 1, 14, 0, 0, 0);
+    this->DrawTextAt(170, 157, text, bytes, 1, 14, 0, 0, 0);
     bytes = std::sprintf(text, "%d", g_session.m_mercenaryKills);
-    this->DrawTextAt(controls.fonts, controls.locale, 245, 157, text, bytes, 1, 14, 0, 0, 0);
+    this->DrawTextAt(245, 157, text, bytes, 1, 14, 0, 0, 0);
   }
 }
 
@@ -547,23 +547,23 @@ bool UIBank_NewWnd::IsNumeric(std::string text) {
 void UIBank_NewWnd::Paint() {
   auto& controls = *this->m_controls;
   const auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\bank\\bg_bank.bmp")));
-  const int titleHeight = this->DrawTitleBar(controls.fonts, controls.locale, true, controls.services.MessageText(2771), 0);
+  const int titleHeight = this->DrawTitleBar(true, controls.services.MessageText(2771), 0);
   this->DrawBitmap(0, titleHeight, &background->image, false);
   char number[260] = {};
   char text[260] = {};
-  this->DrawTextAt(controls.fonts, controls.locale, 30, 29, controls.services.MessageText(2772), 0, 0, 12, 0, 0, 0);
-  const int x = this->TextWidth(controls.fonts, controls.locale, controls.services.MessageText(2772), 0, 0, 12, 0, 0) + 43;
+  this->DrawTextAt(30, 29, controls.services.MessageText(2772), 0, 0, 12, 0, 0, 0);
+  const int x = this->TextWidth(controls.services.MessageText(2772), 0, 0, 12, 0, 0) + 43;
   FormatGroupedInteger(g_session.m_bankBalance, number, 260);
   std::sprintf(text, "%s z", number);
-  this->DrawTextAt(controls.fonts, controls.locale, x, 29, text, 0, 0, 11, 0, 0, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 30, 46, controls.services.MessageText(2773), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(x, 29, text, 0, 0, 11, 0, 0, 0);
+  this->DrawTextAt(30, 46, controls.services.MessageText(2773), 0, 0, 12, 0, 0, 0);
   FormatGroupedInteger(g_session.m_zeny, number, 260);
   std::sprintf(text, "%s z", number);
-  this->DrawTextAt(controls.fonts, controls.locale, x, 46, text, 0, 0, 11, 0, 0, 0);
+  this->DrawTextAt(x, 46, text, 0, 0, 11, 0, 0, 0);
   if (!this->m_status.empty()) {
-    const int textWidth = this->TextWidth(controls.fonts, controls.locale, this->m_status.c_str(), 0, 0, 12, 0, 0);
+    const int textWidth = this->TextWidth(this->m_status.c_str(), 0, 0, 12, 0, 0);
     const int statusX = static_cast<int>(this->geometry.width * 0.5f - textWidth * 0.5f);
-    this->DrawTextAt(controls.fonts, controls.locale, statusX, 112, this->m_status.c_str(), 0, 0, 11, 255, 0, 0);
+    this->DrawTextAt(statusX, 112, this->m_status.c_str(), 0, 0, 11, 255, 0, 0);
   }
 }
 
@@ -571,7 +571,7 @@ void UIBank_NewWnd::Paint() {
 // FUNCTION: fn_11761
 void UIChatRoomWnd::Paint() {
   auto& controls = *this->m_controls;
-  const int titleHeight = this->DrawTitleBar(controls.fonts, controls.locale, false, "", 0);
+  const int titleHeight = this->DrawTitleBar(false, "", 0);
   this->DrawPanelBackground(titleHeight, 0, "");
   unsigned red, green, blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 20, 6, red, green, blue);
@@ -1043,7 +1043,7 @@ void UILoginOTPWnd::Slot15(int, int) {
 
   UIStaticText* label = new UIStaticText(*this->m_context, controls);
   label->SetSize(80, 20);
-  label->Move(141 - this->TextWidth(controls.fonts, controls.locale, LookupMessage(3410), 0, 0, 12, 0, 0), 67);
+  label->Move(141 - this->TextWidth(LookupMessage(3410), 0, 0, 12, 0, 0), 67);
   label->SetText(LookupMessage(3410), 0);
   this->AddChild(label);
 
@@ -1058,18 +1058,18 @@ void UILoginOTPWnd::Slot15(int, int) {
   label = new UIStaticText(*this->m_context, controls);
   label->SetSize(200, 40);
   label->SetText(LookupMessage(3385), 0);
-  label->Move(static_cast<int>(141.0f - this->TextWidth(controls.fonts, controls.locale, LookupMessage(3385), 0, 0, 12, 0, 0) * 0.5f), 28);
+  label->Move(static_cast<int>(141.0f - this->TextWidth(LookupMessage(3385), 0, 0, 12, 0, 0) * 0.5f), 28);
   this->AddChild(label);
 
   label = new UIStaticText(*this->m_context, controls);
   label->SetSize(200, 40);
   label->SetText(LookupMessage(3386), 0);
-  label->Move(static_cast<int>(141.0f - this->TextWidth(controls.fonts, controls.locale, LookupMessage(3386), 0, 0, 12, 0, 0) * 0.5f), 42);
+  label->Move(static_cast<int>(141.0f - this->TextWidth(LookupMessage(3386), 0, 0, 12, 0, 0) * 0.5f), 42);
   this->AddChild(label);
 
   label = new UIStaticText(*this->m_context, controls);
   label->SetSize(80, 20);
-  label->Move(74 - this->TextWidth(controls.fonts, controls.locale, LookupMessage(3255), 0, 0, 12, 0, 0), 98);
+  label->Move(74 - this->TextWidth(LookupMessage(3255), 0, 0, 12, 0, 0), 98);
   label->SetText(LookupMessage(3255), 0);
   label->SetFont(0, 12, 1, 0);
   label->SetColor(64, 64, 64);
@@ -1117,7 +1117,7 @@ void UILoginOTPWnd::Paint() {
   thread_local EncryptedName<sizeof(source), 0x2FEB8739E5975BD1ULL> name(source);
   const auto* background = static_cast<CBitmapRes*>(resources.Load(Resolve(name.Text())));
   this->DrawBitmap(0, 0, &background->image, false);
-  this->DrawTitleBar(controls.fonts, controls.locale, true, controls.services.MessageText(3254), 280);
+  this->DrawTitleBar(true, controls.services.MessageText(3254), 280);
 }
 
 // OFFSET: 0x008C3620
@@ -1286,7 +1286,7 @@ void UIReplayRECControlWnd::ApplyMode() {
 // FUNCTION: fn_11771
 void UINoticeWnd::Paint() {
   auto& controls = *this->m_controls;
-  this->DrawTitleBar(controls.fonts, controls.locale, false, "", 0);
+  this->DrawTitleBar(false, "", 0);
 
   if (this->geometry.height == 17) {
     return;
@@ -1447,7 +1447,7 @@ void UIPayConfirmWnd::Configure(const std::string& text, int itemId) {
 // FUNCTION: fn_11772
 void UIPayConfirmWnd::Paint() {
   auto& controls = *this->m_controls;
-  this->DrawTitleBar(controls.fonts, controls.locale, true, this->m_title.c_str(), 0);
+  this->DrawTitleBar(true, this->m_title.c_str(), 0);
   this->DrawPanelBackground(17, 0, "");
   this->DrawButtonBar(2, 0, 1);
 
@@ -1486,12 +1486,12 @@ void UIReplayRECControlWnd::Paint() {
 // FUNCTION: fn_11776
 void UISelectReplayDataWnd::Paint() {
   auto& controls = *this->m_controls;
-  this->DrawTitleBar(controls.fonts, controls.locale, true, LookupMessage(2084), 0);
+  this->DrawTitleBar(true, LookupMessage(2084), 0);
   this->DrawPanelBackground(17, 0, "");
   this->DrawButtonBar(2, 0, 1);
   this->FillRegion(6, 32, 268, 77, 0xFFE7E7E7);
-  this->DrawTextAt(controls.fonts, controls.locale, 6, 19, LookupMessage(2085), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 6, 112, LookupMessage(2086), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(6, 19, LookupMessage(2085), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(6, 112, LookupMessage(2086), 0, 0, 12, 0, 0, 0);
 }
 
 // OFFSET: 0x008BA0B0
@@ -1504,7 +1504,7 @@ void UISelectServerWnd::Paint() {
     title = LookupMessage(2083);
   }
 
-  this->DrawTitleBar(controls.fonts, controls.locale, true, title, 0);
+  this->DrawTitleBar(true, title, 0);
   this->DrawPanelBackground(17, 0, "");
   this->DrawButtonBar(2, 0, 1);
 }
@@ -1513,13 +1513,13 @@ void UISelectServerWnd::Paint() {
 // FUNCTION: fn_11778
 void UITalkboxTrapInputWnd::Paint() {
   auto& controls = *this->m_controls;
-  const int titleHeight = this->DrawTitleBar(controls.fonts, controls.locale, false, "", 0);
+  const int titleHeight = this->DrawTitleBar(false, "", 0);
   this->DrawPanelBackground(titleHeight, 0, "");
   this->DrawButtonBar(2, 0, 1);
-  this->DrawTextAt(controls.fonts, controls.locale, 17, 3, LookupMessage(435), 0, 0, 12, 0xFFFFFF, 0, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 16, 2, LookupMessage(435), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 17, 23, LookupMessage(436), 0, 0, 12, 0xFFFFFF, 0, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 16, 22, LookupMessage(436), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(17, 3, LookupMessage(435), 0, 0, 12, 0xFFFFFF, 0, 0);
+  this->DrawTextAt(16, 2, LookupMessage(435), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(17, 23, LookupMessage(436), 0, 0, 12, 0xFFFFFF, 0, 0);
+  this->DrawTextAt(16, 22, LookupMessage(436), 0, 0, 12, 0, 0, 0);
 }
 
 // OFFSET: 0x008BA660
@@ -2104,8 +2104,8 @@ void UIMonsterInfoWnd::DrawResistance(int x, int y, const char* label, int value
   SkinPaletteChannels(ResourceMgr::Instance(), 22, 2, red, green, blue);
   this->FillRegion(x, y, 70, 16, border);
   this->FillRegion(x + 1, y + 1, 68, 14, fill);
-  const int width = this->TextWidth(controls.fonts, controls.locale, text, 0, 0, 12, 0, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, (70 - width) / 2 + x, y + 2, text, 0, 0, 12, RGB(red, blue, green), 0, 0);
+  const int width = this->TextWidth(text, 0, 0, 12, 0, 0);
+  this->DrawTextAt((70 - width) / 2 + x, y + 2, text, 0, 0, 12, RGB(red, blue, green), 0, 0);
 }
 
 // OFFSET: 0x008B8ED0
@@ -2118,28 +2118,28 @@ void UIMonsterInfoWnd::Paint() {
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
   const std::uint32_t fill = RGB(red, green, blue);
   this->ClearSurface(fill);
-  this->DrawPanelBackground(this->DrawTitleBar(controls.fonts, controls.locale, false, "", 0), 0, "");
+  this->DrawPanelBackground(this->DrawTitleBar(false, "", 0), 0, "");
   this->DrawButtonBar(2, 0, 1);
   SkinPaletteChannels(ResourceMgr::Instance(), 22, 2, red, green, blue);
   const std::uint32_t border = RGB(red, green, blue);
 
-  this->DrawTextAt(controls.fonts, controls.locale, 17, 3, LookupMessage(406), 0, 0, 12, 0xFFFFFF, 0, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 16, 2, LookupMessage(406), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 120, 30, LookupMessage(407), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 160, 30, this->name.c_str(), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(17, 3, LookupMessage(406), 0, 0, 12, 0xFFFFFF, 0, 0);
+  this->DrawTextAt(16, 2, LookupMessage(406), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(120, 30, LookupMessage(407), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(160, 30, this->name.c_str(), 0, 0, 12, 0, 0, 0);
 
   char text[256];
   StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%d", this->info.level);
-  this->DrawTextAt(controls.fonts, controls.locale, 120, 50, LookupMessage(408), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 160, 50, text, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(120, 50, LookupMessage(408), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(160, 50, text, 0, 0, 12, 0, 0, 0);
   StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%d", this->info.hp);
-  this->DrawTextAt(controls.fonts, controls.locale, 120, 70, LookupMessage(409), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 160, 70, text, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(120, 70, LookupMessage(409), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(160, 70, text, 0, 0, 12, 0, 0, 0);
   StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%d", this->info.defense);
-  this->DrawTextAt(controls.fonts, controls.locale, 120, 90, LookupMessage(3910), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 160, 90, text, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(120, 90, LookupMessage(3910), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(160, 90, text, 0, 0, 12, 0, 0, 0);
 
-  this->DrawTextAt(controls.fonts, controls.locale, 260, 30, LookupMessage(410), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(260, 30, LookupMessage(410), 0, 0, 12, 0, 0, 0);
   int message;
   switch (this->info.size) {
   case 0:
@@ -2156,23 +2156,23 @@ void UIMonsterInfoWnd::Paint() {
     break;
   }
   if (message != 0) {
-    this->DrawTextAt(controls.fonts, controls.locale, 300, 30, LookupMessage(message), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(300, 30, LookupMessage(message), 0, 0, 12, 0, 0, 0);
   }
 
   StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%d", this->info.race);
-  this->DrawTextAt(controls.fonts, controls.locale, 260, 50, LookupMessage(411), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(260, 50, LookupMessage(411), 0, 0, 12, 0, 0, 0);
   if (static_cast<unsigned short>(this->info.race) <= 9) {
-    this->DrawTextAt(controls.fonts, controls.locale, 300, 50, LookupMessage(3887 + static_cast<unsigned short>(this->info.race)), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(300, 50, LookupMessage(3887 + static_cast<unsigned short>(this->info.race)), 0, 0, 12, 0, 0, 0);
   }
 
   StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%d", this->info.magicDefense);
-  this->DrawTextAt(controls.fonts, controls.locale, 260, 90, LookupMessage(412), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 300, 90, text, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(260, 90, LookupMessage(412), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(300, 90, text, 0, 0, 12, 0, 0, 0);
 
-  this->DrawTextAt(controls.fonts, controls.locale, 260, 70, LookupMessage(413), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(260, 70, LookupMessage(413), 0, 0, 12, 0, 0, 0);
   const int element = this->info.element % 20;
   if (element >= 0 && element <= 9) {
-    this->DrawTextAt(controls.fonts, controls.locale, 300, 70, LookupMessage(3897 + element), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(300, 70, LookupMessage(3897 + element), 0, 0, 12, 0, 0, 0);
   }
 
   this->DrawResistance(120, 110, LookupMessage(3898), this->info.resistances[0], border, fill);
@@ -3021,7 +3021,7 @@ void UIPetInfoWnd::Paint() {
   unsigned blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
   this->ClearSurface(RGB(red, green, blue));
-  this->DrawPanelBackground(this->DrawTitleBar(controls.fonts, controls.locale, false, "", 0), 0, "");
+  this->DrawPanelBackground(this->DrawTitleBar(false, "", 0), 0, "");
 
   const auto* leftCorner = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\sysboxs_ld.bmp")));
   this->DrawBitmap(0, this->geometry.height - leftCorner->image.height, &leftCorner->image, false);
@@ -3032,11 +3032,11 @@ void UIPetInfoWnd::Paint() {
 
   char title[32];
   StringFormat(title, 32, static_cast<std::size_t>(-1), "%s", LookupMessage(584));
-  this->DrawTextAt(controls.fonts, controls.locale, 5, 2, title, 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 100, 24, LookupMessage(407), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 100, 44, LookupMessage(408), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 100, 69, LookupMessage(585), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 100, 89, LookupMessage(586), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(5, 2, title, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(100, 24, LookupMessage(407), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(100, 44, LookupMessage(408), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(100, 69, LookupMessage(585), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(100, 89, LookupMessage(586), 0, 0, 12, 0, 0, 0);
 
   char level[8];
   char hunger[24];
@@ -3057,9 +3057,9 @@ void UIPetInfoWnd::Paint() {
   }
 
   _itoa(g_session.unknown_1040, level, 10);
-  this->DrawTextAt(controls.fonts, controls.locale, 135, 44, level, 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 145, 69, hunger, 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 145, 89, this->friendlyText.c_str(), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(135, 44, level, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(145, 69, hunger, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(145, 89, this->friendlyText.c_str(), 0, 0, 12, 0, 0, 0);
 
   const int job = g_session.unknown_103C;
 
@@ -3074,13 +3074,13 @@ void UIPetInfoWnd::Paint() {
 
     char command[] = "< Command >";
     this->FillRegion(160, 44, 110, 18, 0xFAE6E6);
-    const int width = this->TextWidth(controls.fonts, controls.locale, command, 0, 0, 12, 0, 0);
-    this->DrawTextAt(controls.fonts, controls.locale, 206 - width / 2, 48, command, 0, 0, 12, 0, 0, 0);
-    this->DrawTextAt(controls.fonts, controls.locale, 100, 119, LookupMessage(597), 0, 0, 12, 0, 0, 0);
-    this->DrawTextAt(controls.fonts, controls.locale, 100, 139, LookupMessage(g_session.unknown_1038 == 0 ? 600 : 598), 0, 0, 12, 0, 0, 0);
+    const int width = this->TextWidth(command, 0, 0, 12, 0, 0);
+    this->DrawTextAt(206 - width / 2, 48, command, 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(100, 119, LookupMessage(597), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(100, 139, LookupMessage(g_session.unknown_1038 == 0 ? 600 : 598), 0, 0, 12, 0, 0, 0);
 
     if (this->unknown_00E4 == 1) {
-      this->DrawTextAt(controls.fonts, controls.locale, 100, 159, LookupMessage(2577), 0, 0, 12, 0, 0, 0);
+      this->DrawTextAt(100, 159, LookupMessage(2577), 0, 0, 12, 0, 0, 0);
     }
   }
 }
@@ -3505,13 +3505,13 @@ void UIHomunInfoWnd::Paint() {
   DrawFilledRoundedBorder(*this, 0, this->geometry.height - 40, this->geometry.width, 40, 0xFFFFFF);
   char title[32];
   std::sprintf(title, LookupMessage(936));
-  this->DrawTextAt(controls.fonts, controls.locale, 5, 2, title, 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 100, 24, LookupMessage(407), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 100, 47, LookupMessage(408), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 100, 105, LookupMessage(1019), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 100, 131, LookupMessage(585), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 100, 159, LookupMessage(586), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 140, 159, ":", 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(5, 2, title, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(100, 24, LookupMessage(407), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(100, 47, LookupMessage(408), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(100, 105, LookupMessage(1019), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(100, 131, LookupMessage(585), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(100, 159, LookupMessage(586), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(140, 159, ":", 0, 0, 12, 0, 0, 0);
   const int* const stats = reinterpret_cast<const int*>(&g_session.unknown_5570[0x2C]);
   char number[12];
   int bytes = std::sprintf(number, "%d", stats[0]);
@@ -3532,7 +3532,7 @@ void UIHomunInfoWnd::Paint() {
   this->DrawRightAlignedText(79, 150, number, bytes, 1, 14, 0, 0);
   char level[12];
   _itoa(*reinterpret_cast<const int*>(g_session.unknown_55C0), level, 10);
-  this->DrawTextAt(controls.fonts, controls.locale, 135, 47, level, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(135, 47, level, 0, 0, 12, 0, 0, 0);
   if (g_session.m_homunJob == -1) {
     return;
   }
@@ -3560,7 +3560,7 @@ void UIHomunInfoWnd::Paint() {
   } else {
     std::strcpy(text, LookupMessage(676));
   }
-  this->DrawTextAt(controls.fonts, controls.locale, 150, 159, text, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(150, 159, text, 0, 0, 12, 0, 0, 0);
   this->sub_A84400(225, 136, std::string(LookupMessage(3279)), 0, 0, 0, 0, 12, 0, 0);
   this->sub_A84400(8, 180, std::string(LookupMessage(3284)), 0, 0, 0, 0, 12, 0xFF, 0);
 }
@@ -3726,7 +3726,7 @@ void UIPetInfoWnd::Slot15(int, int) {
   if (this->unknown_00E4 == true) {
     this->unknown_00E8 = new UICheckBox(*this->m_context, controls);
     this->unknown_00E8->SetSize(12, 12);
-    this->unknown_00E8->Move(this->TextWidth(controls.fonts, controls.locale, LookupMessage(2577), 0, 0, 12, 0, 0) + 110, 159);
+    this->unknown_00E8->Move(this->TextWidth(LookupMessage(2577), 0, 0, 12, 0, 0) + 110, 159);
     this->unknown_00E8->SetBitmaps("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp");
     this->unknown_00E8->SetChecked(g_petAutoFeed);
     this->AddChild(this->unknown_00E8);

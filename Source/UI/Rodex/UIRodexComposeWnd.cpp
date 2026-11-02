@@ -263,7 +263,7 @@ UIRodexComposeWnd::~UIRodexComposeWnd() {
 // OFFSET: 0x007FF260
 // FUNCTION: fn_09998
 int UIRodexComposeWnd::MeasureText(const std::string& text, const unsigned& bytes) {
-  return this->TextWidth(this->m_context->fonts, this->m_context->locale, text.c_str(), bytes, 0, 12, 0, 0);
+  return this->TextWidth(text.c_str(), bytes, 0, 12, 0, 0);
 }
 
 // OFFSET: 0x007FF290
@@ -463,7 +463,7 @@ void UIRodexComposeWnd::Paint() {
   }
 
   std::string countStr = FormatOwnedString("/ %d", 1000);
-  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 261, 276, countStr.c_str(), 0, 0, 10, 0xD66E44, 0, 0);
+  this->DrawTextAt(261, 276, countStr.c_str(), 0, 0, 10, 0xD66E44, 0, 0);
 
   int length = this->m_contents->Length() + this->m_contents->unknown_00F0;
   std::string lengthStr = FormatOwnedString("%d", length);
@@ -473,7 +473,7 @@ void UIRodexComposeWnd::Paint() {
   this->DrawBitmap(199, 305, weightBg, true);
 
   const char* weightMsg = LookupMessage(3035);
-  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 245, 316, weightMsg, 0, 0, 11, 0x737373, 0, 0);
+  this->DrawTextAt(245, 316, weightMsg, 0, 0, 11, 0x737373, 0, 0);
 
   std::string weightStr = FormatOwnedString("%d", static_cast<int>(g_session.unknown_6140));
   this->DrawRightAlignedText(244, 316, weightStr.c_str(), 0, 0, 11, 0x737373, 0);
@@ -484,12 +484,12 @@ void UIRodexComposeWnd::Paint() {
   const auto* zenyIcon = &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\icon_zeny.bmp")))->image;
   this->DrawBitmap(19, 342, zenyIcon, true);
 
-  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 135, 350, "Zeny", 0, 0, 11, 0x737373, 0, 0);
+  this->DrawTextAt(135, 350, "Zeny", 0, 0, 11, 0x737373, 0, 0);
 
   char zenyBuf[260] = {};
   FormatGroupedInteger(static_cast<std::int64_t>(g_session.m_zeny), zenyBuf, sizeof(zenyBuf));
   std::string zenyStr = FormatOwnedString("%s Zeny", zenyBuf);
-  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 144, 350, zenyStr.c_str(), 0, 0, 11, 0x737373, 1, 0);
+  this->DrawTextAt(144, 350, zenyStr.c_str(), 0, 0, 11, 0x737373, 1, 0);
 
   const auto* taxBg = &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\bg_tax.bmp")))->image;
   this->DrawBitmap(9, 377, taxBg, true);
@@ -593,12 +593,12 @@ void UIRodexComposeWnd::Slot15(int, int) {
   this->unknown_00BC->SetSize(this->unknown_00BC->BitmapWidth(), this->unknown_00BC->BitmapHeight());
   {
     const int textX = static_cast<int>(
-      static_cast<float>(this->unknown_00BC->geometry.width - this->TextWidth(this->m_context->fonts, this->m_context->locale, LookupMessage(0xDD9), 0, 0, 12, 0, 0)) *
+      static_cast<float>(this->unknown_00BC->geometry.width - this->TextWidth(LookupMessage(0xDD9), 0, 0, 12, 0, 0)) *
       g_depthAverageHalf
     );
     UIBmpTextButton* button = this->unknown_00BC;
     const int textY = static_cast<int>(
-      static_cast<float>(button->geometry.height - this->TextHeight(this->m_context->fonts, this->m_context->locale, LookupMessage(0xDD9), 0, 0, 12, 0, 0)) *
+      static_cast<float>(button->geometry.height - this->TextHeight(LookupMessage(0xDD9), 0, 0, 12, 0, 0)) *
       g_depthAverageHalf
     );
     button->AddTextStyle(0, 12, 0x313131, 0, 0, textX, textY);

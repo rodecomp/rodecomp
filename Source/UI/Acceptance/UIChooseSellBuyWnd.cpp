@@ -500,7 +500,7 @@ void UIDisconnectedServerMsgWnd::Paint() {
 void UIEmailAddressWnd::Paint() {
   auto& controls = *this->m_controls;
   this->DrawBorder(0, 0, 0, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 15, 6, controls.services.MessageText(g_serviceType == 0 ? 1815 : 299), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(15, 6, controls.services.MessageText(g_serviceType == 0 ? 1815 : 299), 0, 0, 12, 0, 0, 0);
 }
 
 // OFFSET: 0x008ED240
@@ -515,11 +515,11 @@ void UIEquipWnd::Paint() {
   if (this->m_viewOther == 1) {
     char title[100];
     std::sprintf(title, LookupMessage(1361), reinterpret_cast<const char*>(&g_session.unknown_5974[0x2C]));
-    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 17, 4, title, 0, 0, 12, 0xFFFFFF, 0, 0);
-    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 16, 3, title, 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(17, 4, title, 0, 0, 12, 0xFFFFFF, 0, 0);
+    this->DrawTextAt(16, 3, title, 0, 0, 12, 0, 0, 0);
   } else {
-    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 17, 4, LookupMessage(104), 0, 0, 12, 0xFFFFFF, 0, 0);
-    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 16, 3, LookupMessage(104), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(17, 4, LookupMessage(104), 0, 0, 12, 0xFFFFFF, 0, 0);
+    this->DrawTextAt(16, 3, LookupMessage(104), 0, 0, 12, 0, 0, 0);
   }
 
   if (this->geometry.height == 17) {
@@ -604,11 +604,11 @@ void UIEquipWnd::Paint() {
 // FUNCTION: fn_12223
 void UIGraffiStrboxWnd::Paint() {
   auto& controls = *this->m_controls;
-  const int titleHeight = this->DrawTitleBar(controls.fonts, controls.locale, false, "", 0);
+  const int titleHeight = this->DrawTitleBar(false, "", 0);
   this->DrawPanelBackground(titleHeight, 0, "");
   this->DrawButtonBar(2, 0, 1);
-  this->DrawTextAt(controls.fonts, controls.locale, 17, 23, controls.services.MessageText(436), 0, 0, 12, 0xFFFFFF, 0, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 16, 22, controls.services.MessageText(436), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(17, 23, controls.services.MessageText(436), 0, 0, 12, 0xFFFFFF, 0, 0);
+  this->DrawTextAt(16, 22, controls.services.MessageText(436), 0, 0, 12, 0, 0, 0);
 }
 
 // OFFSET: 0x008EE9D0
@@ -629,20 +629,20 @@ void UIItemParamChangeDisplayWnd::Paint() {
 
   this->DrawBorder(0, 0, 0, 0);
   std::sprintf(text, controls.services.MessageText(269));
-  this->DrawTextAt(controls.fonts, controls.locale, 20, 10, text, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(20, 10, text, 0, 0, 12, 0, 0, 0);
   std::sprintf(text, "%d", this->m_before);
-  this->DrawTextAt(controls.fonts, controls.locale, 70, 10, text, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(70, 10, text, 0, 0, 12, 0, 0, 0);
   drawArrow(90, this->m_before, this->m_after);
   std::sprintf(text, "%d", this->m_after);
-  this->DrawTextAt(controls.fonts, controls.locale, 110, 10, text, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(110, 10, text, 0, 0, 12, 0, 0, 0);
 
   std::sprintf(text, controls.services.MessageText(270));
-  this->DrawTextAt(controls.fonts, controls.locale, 152, 10, text, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(152, 10, text, 0, 0, 12, 0, 0, 0);
   std::sprintf(text, "%d", this->m_beforeSecond);
-  this->DrawTextAt(controls.fonts, controls.locale, 202, 10, text, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(202, 10, text, 0, 0, 12, 0, 0, 0);
   drawArrow(222, this->m_beforeSecond, this->m_afterSecond);
   std::sprintf(text, "%d", this->m_afterSecond);
-  this->DrawTextAt(controls.fonts, controls.locale, 242, 10, text, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(242, 10, text, 0, 0, 12, 0, 0, 0);
 }
 
 // OFFSET: 0x008EECD0
@@ -687,7 +687,7 @@ void UIMenuWnd::Paint() {
     if (index == this->m_selected) {
       this->FillRegion(3, this->m_itemHeight / 2 * row + 1, this->geometry.width - 6, this->m_itemHeight - 2, RGB(red, green, blue));
     }
-    this->DrawTextAt(controls.fonts, controls.locale, 3, this->m_itemHeight * row / 2 + 1, item.c_str(), 0, 0, 12, this->m_colors[index], 0, 0);
+    this->DrawTextAt(3, this->m_itemHeight * row / 2 + 1, item.c_str(), 0, 0, 12, this->m_colors[index], 0, 0);
   }
 }
 
@@ -700,8 +700,8 @@ void UIMinimapZoomWnd::Paint() {
   int row = 0;
   static_cast<CGameMode*>(g_modeMgr.GetGameMode())->PlayerCell(&column, &row);
   const std::string text = FormatOwnedString(" %d  %d", column, row);
-  this->DrawTextAt(controls.fonts, controls.locale, 19, 128, text.c_str(), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 20, 128, text.c_str(), 0, 0, 12, 0xFFFFFF, 0, 0);
+  this->DrawTextAt(19, 128, text.c_str(), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(20, 128, text.c_str(), 0, 0, 12, 0xFFFFFF, 0, 0);
 }
 
 // OFFSET: 0x008E3340
@@ -832,7 +832,7 @@ void UIMinimapZoomWnd::AddTownButton(int index, TownInfo town) {
 // FUNCTION: fn_12232
 void UIMonsterDisplayWnd::Paint() {
   auto& controls = *this->m_controls;
-  this->DrawTitleBar(controls.fonts, controls.locale, true, "", 0);
+  this->DrawTitleBar(true, "", 0);
   unsigned red, green, blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
   this->FillRegion(0, 17, this->geometry.width, this->geometry.height - 38, RGB(red, green, blue));
@@ -932,7 +932,7 @@ void UINotifyQuestWnd::Paint() {
 void UINpcEditDialogWnd::Paint() {
   auto& controls = *this->m_controls;
   this->DrawBorder(0, 0, 0, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 15, 6, g_serviceType == 12 ? "Insira o Numero" : "Input number ", 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(15, 6, g_serviceType == 12 ? "Insira o Numero" : "Input number ", 0, 0, 12, 0, 0, 0);
 }
 
 // OFFSET: 0x008EF850
@@ -1077,28 +1077,28 @@ int UINpcTextEditDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
 // FUNCTION: fn_12239
 void UIPartyInvitationToWnd::Paint() {
   auto& controls = *this->m_controls;
-  const int titleHeight = this->DrawTitleBar(controls.fonts, controls.locale, true, controls.services.MessageText(2056), 0);
+  const int titleHeight = this->DrawTitleBar(true, controls.services.MessageText(2056), 0);
   this->DrawPanelBackground(titleHeight, 0, "");
   this->DrawButtonBar(2, 0, 1);
-  this->DrawTextAt(controls.fonts, controls.locale, 10, 22, controls.services.MessageText(2058), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(10, 22, controls.services.MessageText(2058), 0, 0, 12, 0, 0, 0);
 }
 
 // OFFSET: 0x008EFA00
 // FUNCTION: fn_12240
 void UIPartySettingWnd::Paint() {
   auto& controls = *this->m_controls;
-  const int titleHeight = this->DrawTitleBar(controls.fonts, controls.locale, true, controls.services.MessageText(this->m_mode == 50 ? 2054 : 291), 0);
+  const int titleHeight = this->DrawTitleBar(true, controls.services.MessageText(this->m_mode == 50 ? 2054 : 291), 0);
   this->DrawPanelBackground(titleHeight, 0, "");
   this->DrawButtonBar(2, 0, 1);
 
   if (this->m_mode == 70) {
-    this->DrawTextAt(controls.fonts, controls.locale, 10, 22, controls.services.MessageText(292), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(10, 22, controls.services.MessageText(292), 0, 0, 12, 0, 0, 0);
   } else if (this->m_mode == 50) {
-    this->DrawTextAt(controls.fonts, controls.locale, 10, 22, controls.services.MessageText(2057), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(10, 22, controls.services.MessageText(2057), 0, 0, 12, 0, 0, 0);
   }
 
-  this->DrawTextAt(controls.fonts, controls.locale, 10, this->m_mode + 82, controls.services.MessageText(738), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 10, this->m_mode + 17, controls.services.MessageText(293), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(10, this->m_mode + 82, controls.services.MessageText(738), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(10, this->m_mode + 17, controls.services.MessageText(293), 0, 0, 12, 0, 0, 0);
 }
 
 // OFFSET: 0x008EFAF0
@@ -1262,7 +1262,7 @@ void UIProhibitListWnd::Paint() {
   auto& controls = *this->m_controls;
   char text[256];
 
-  const int titleHeight = this->DrawTitleBar(controls.fonts, controls.locale, true, controls.services.MessageText(714), 0);
+  const int titleHeight = this->DrawTitleBar(true, controls.services.MessageText(714), 0);
   this->DrawPanelBackground(titleHeight, 0, "");
   const auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\sysboxs_ld.bmp")));
   this->DrawBitmap(0, this->geometry.height - left->image.height, &left->image, false);
@@ -1279,9 +1279,9 @@ void UIProhibitListWnd::Paint() {
 
     if (y == 0) {
       std::sprintf(text, "AID : %d        CharacterName : %s", entry.aid, entry.name);
-      this->DrawTextAt(controls.fonts, controls.locale, 10, 25, text, 0, 0, 12, 0, 0, 0);
+      this->DrawTextAt(10, 25, text, 0, 0, 12, 0, 0, 0);
       std::sprintf(text, "ServerName : %s", g_session.m_prohibitionLog[index].ownerName);
-      this->DrawTextAt(controls.fonts, controls.locale, 10, 41, text, 0, 0, 12, 0, 0, 0);
+      this->DrawTextAt(10, 41, text, 0, 0, 12, 0, 0, 0);
     }
 
     const ProhibitionLogEntry& record = g_session.m_prohibitionLog[index];
@@ -1291,7 +1291,7 @@ void UIProhibitListWnd::Paint() {
       text, "ProhibitTime : %d분   LogTime : %d년 %d월 %d일   %d시 %d분 %d초", record.minutes, date >> 16 & 0xFFFF, date >> 8 & 0xFF, date & 0xFF, time >> 16 & 0xFF,
       time >> 8 & 0xFF, time & 0xFF
     );
-    this->DrawTextAt(controls.fonts, controls.locale, 10, y + 65, text, 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(10, y + 65, text, 0, 0, 12, 0, 0, 0);
     y += 18;
   }
 }
@@ -1320,7 +1320,7 @@ void UISayDialogWnd::Paint() {
 // FUNCTION: fn_12249
 void UISelectCartWnd::Paint() {
   auto& controls = *this->m_controls;
-  const int titleHeight = this->DrawTitleBar(controls.fonts, controls.locale, true, controls.services.MessageText(659), 0);
+  const int titleHeight = this->DrawTitleBar(true, controls.services.MessageText(659), 0);
   this->DrawPanelBackground(titleHeight, 0, "");
   const auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\sysboxs_ld.bmp")));
   this->DrawBitmap(0, this->geometry.height - left->image.height, &left->image, false);
@@ -1348,7 +1348,7 @@ void UISkillDescribeWnd::Paint() {
 void UISkillNameChangeWnd::Paint() {
   auto& controls = *this->m_controls;
   this->DrawBorder(0, 0, 0, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 15, 6, this->m_name.c_str(), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(15, 6, this->m_name.c_str(), 0, 0, 12, 0, 0, 0);
 }
 
 // OFFSET: 0x00905320
@@ -1443,7 +1443,7 @@ UISpellListWnd::~UISpellListWnd() {
 
 void UISpellListWnd::Paint() {
   auto& controls = *this->m_controls;
-  const int titleHeight = this->DrawTitleBar(controls.fonts, controls.locale, true, controls.services.MessageText(697), 0);
+  const int titleHeight = this->DrawTitleBar(true, controls.services.MessageText(697), 0);
   this->DrawPanelBackground(titleHeight, 0, "");
   this->DrawButtonBar(2, 0, 1);
 
@@ -1468,7 +1468,7 @@ void UISpellListWnd::Paint() {
     char path[256];
     g_session.ItemBitmapPath(skill.IdName(*g_session.m_hotkeyScript), path);
     this->DrawBitmap(8, y, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)))->image, true);
-    this->DrawTextAt(controls.fonts, controls.locale, 40, y + 4, name, 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(40, y + 4, name, 0, 0, 12, 0, 0, 0);
 
     ++row;
     if (row == this->m_rows * this->m_columns) {
@@ -1487,7 +1487,7 @@ void CSession::ItemBitmapPath(const char* name, char* output) {
 // FUNCTION: fn_12255
 void UITipOfTheDayWnd::Paint() {
   auto& controls = *this->m_controls;
-  this->DrawTitleBar(controls.fonts, controls.locale, true, controls.services.MessageText(174), 0);
+  this->DrawTitleBar(true, controls.services.MessageText(174), 0);
 
   if (this->geometry.height == 17) {
     return;
@@ -1548,7 +1548,7 @@ void UIWhisperWnd::Paint() {
 
   DrawRoundedBorder(*this, 0, 0, this->geometry.width, this->geometry.height, 0xC0C0C0);
   this->FillRegion(1, this->geometry.height - 20, this->geometry.width - 2, 1, 0xC0C0C0);
-  this->DrawTextAt(controls.fonts, controls.locale, 10, 3, title, 0, 0, 12, 0xFFFFFF, 0, 0);
+  this->DrawTextAt(10, 3, title, 0, 0, 12, 0xFFFFFF, 0, 0);
 }
 
 // OFFSET: 0x008F2DE0
@@ -1566,7 +1566,7 @@ void UIItemIdentifyWnd::Slot26(int x, int y) {
 // OFFSET: 0x008F0750
 // FUNCTION: fn_12253
 void UIStatusWnd::Paint() {
-  this->DrawTitleBar(this->m_context->fonts, this->m_context->locale, true, LookupMessage(105), 0);
+  this->DrawTitleBar(true, LookupMessage(105), 0);
   if (this->geometry.height == this->m_titleHeight || this->geometry.unknown_0030 != 0) {
     return;
   }
@@ -1587,19 +1587,19 @@ void UIStatusWnd::Paint() {
   const int* entry = stats[0];
   for (int y = 23; y < 119; y += 16, entry += 2) {
     const int value = entry[0];
-    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 36, y, FormatOwnedString("%d", value).c_str(), 0, 1, 14, 0, 0, 0);
+    this->DrawTextAt(36, y, FormatOwnedString("%d", value).c_str(), 0, 1, 14, 0, 0, 0);
     const int bonus = entry[1];
     if (bonus > 0) {
       if (value < 100) {
-        this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 49, y, FormatOwnedString("+%d", bonus).c_str(), 0, 1, 14, 0, 0, 0);
+        this->DrawTextAt(49, y, FormatOwnedString("+%d", bonus).c_str(), 0, 1, 14, 0, 0, 0);
       } else {
-        this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 54, y + 2, FormatOwnedString("+%d", bonus).c_str(), 0, 1, 12, 0, 0, 0);
+        this->DrawTextAt(54, y + 2, FormatOwnedString("+%d", bonus).c_str(), 0, 1, 12, 0, 0, 0);
       }
     } else if (bonus < 0) {
       if (value < 100) {
-        this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 49, y, FormatOwnedString("%d", bonus).c_str(), 0, 1, 14, 0, 0, 0);
+        this->DrawTextAt(49, y, FormatOwnedString("%d", bonus).c_str(), 0, 1, 14, 0, 0, 0);
       } else {
-        this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 54, y + 2, FormatOwnedString("%d", bonus).c_str(), 0, 1, 12, 0, 0, 0);
+        this->DrawTextAt(54, y + 2, FormatOwnedString("%d", bonus).c_str(), 0, 1, 12, 0, 0, 0);
       }
     }
   }
@@ -1637,14 +1637,14 @@ void UIStatusWnd::Paint() {
   int index = 0;
   for (int y = 144; y < 240; y += 16, point += 1, ++index) {
     const int value = g_session.GetTraitStat(types[index]);
-    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 36, y, FormatOwnedString("%d", value).c_str(), 0, 1, 14, 0, 0, 0);
+    this->DrawTextAt(36, y, FormatOwnedString("%d", value).c_str(), 0, 1, 14, 0, 0, 0);
     this->DrawRightAlignedText(101, y, FormatOwnedString("%lld", *point).c_str(), 0, 1, 14, 0, 0);
     const int bonus = bonuses[index];
     if (bonus > 0) {
       if (value < 100) {
-        this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 49, y, FormatOwnedString("+%d", bonus).c_str(), 0, 1, 14, 0, 0, 0);
+        this->DrawTextAt(49, y, FormatOwnedString("+%d", bonus).c_str(), 0, 1, 14, 0, 0, 0);
       } else {
-        this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 54, y + 2, FormatOwnedString("+%d", bonus).c_str(), 0, 1, 12, 0, 0, 0);
+        this->DrawTextAt(54, y + 2, FormatOwnedString("+%d", bonus).c_str(), 0, 1, 12, 0, 0, 0);
       }
     }
   }
@@ -2174,7 +2174,7 @@ int UIMenuWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
     int width = 20;
     const int count = static_cast<int>(this->m_items.end() - this->m_items.begin());
     for (int index = 0; index < count; ++index) {
-      const int textWidth = this->TextWidth(this->m_context->fonts, this->m_context->locale, this->m_items[index].c_str(), 0, 0, 12, 0, 0);
+      const int textWidth = this->TextWidth(this->m_items[index].c_str(), 0, 0, 12, 0, 0);
       if (width < textWidth) {
         width = textWidth;
       }
@@ -3781,8 +3781,8 @@ void UIItemCollectionWnd::Slot15(int width, int height) {
     this->m_moveInfo->Configure(LookupMessage(2796), 0, 0, 12, 0, 1);
     this->m_moveInfo->SetId(487);
     UIItemMoveInfo* moveInfo = this->m_moveInfo;
-    int textHeight = this->TextHeight(this->m_context->fonts, this->m_context->locale, LookupMessage(2796), 0, 0, 12, 0, 0);
-    moveInfo->ResizeToTextClipped(this->TextWidth(this->m_context->fonts, this->m_context->locale, LookupMessage(2796), 0, 0, 12, 0, 0) + 1, textHeight);
+    int textHeight = this->TextHeight(LookupMessage(2796), 0, 0, 12, 0, 0);
+    moveInfo->ResizeToTextClipped(this->TextWidth(LookupMessage(2796), 0, 0, 12, 0, 0) + 1, textHeight);
     this->AddChild(this->m_moveInfo);
   }
 
@@ -4086,7 +4086,7 @@ void UIProhibitListWnd::Slot15(int, int) {
 // OFFSET: 0x008EE7F0
 // FUNCTION: fn_12226
 void UIItemIdentifyWnd::Paint() {
-  const int titleHeight = this->DrawTitleBar(this->m_context->fonts, this->m_context->locale, false, this->m_title.c_str(), 0);
+  const int titleHeight = this->DrawTitleBar(false, this->m_title.c_str(), 0);
   this->DrawPanelBackground(titleHeight, 0, "");
   this->DrawButtonBar(2, 0, 1);
 
@@ -4165,7 +4165,7 @@ void UInCashWnd::DrawItems() {
     const int width = this->DrawFittedItemName(x, -30, &*it, 0, 0, 12, 0);
     this->DrawWrappedItemName(x - width / 2 + 90, y + 4, width, &*it, 0, 0, 12);
     int length = std::sprintf(text, LookupMessage(1854));
-    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, x + 112, y + 64, text, length, 0, 12, 0, 0, 0);
+    this->DrawTextAt(x + 112, y + 64, text, length, 0, 12, 0, 0, 0);
     length = std::sprintf(text, " %s C", FormatGroupedInteger(static_cast<int>(it->unknown_0014[0]), number, 64));
     this->DrawRightAlignedText(x + 152, y + 84, text, length, 0, 12, 0, 0);
 
@@ -4195,11 +4195,11 @@ void UInCashWnd::DrawItems() {
     const int width = this->DrawFittedItemName(453, -30, &*it, 0, 0, 12, 0);
     this->DrawWrappedItemName(535 - width / 2, y + 4, width, &*it, 0, 0, 12);
     int length = std::sprintf(text, LookupMessage(1854));
-    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 565, y + 24, text, length, 0, 12, 0, 0, 0);
+    this->DrawTextAt(565, y + 24, text, length, 0, 12, 0, 0, 0);
     length = std::sprintf(text, " %s C", FormatGroupedInteger(static_cast<int>(it->unknown_0014[0]), number, 64));
-    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 550, y + 42, text, length, 0, 12, 0, 0, 0);
+    this->DrawTextAt(550, y + 42, text, length, 0, 12, 0, 0, 0);
     length = std::sprintf(text, LookupMessage(1855));
-    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 565, y + 66, text, length, 0, 12, 0, 0, 0);
+    this->DrawTextAt(565, y + 66, text, length, 0, 12, 0, 0, 0);
     length = std::sprintf(text, " %d %s", it->quantity, LookupMessage(1856));
     this->DrawRightAlignedText(590, y + 84, text, length, 0, 12, 0, 0);
 
@@ -4247,7 +4247,7 @@ void UIFrameWnd::FitLastTextLine(int width, unsigned lineCount, int family, int 
 
   int total = 0;
   for (auto it = last.begin(); it != last.end(); ++it) {
-    int segment = this->TextWidth(this->m_context->fonts, this->m_context->locale, it->second.c_str(), it->second.size(), 0, 12, 0, 0);
+    int segment = this->TextWidth(it->second.c_str(), it->second.size(), 0, 12, 0, 0);
     total += segment;
     if (total >= width) {
       it->second = this->FitDisplayText(width - total + segment, it->second.c_str(), family, height, 0);
@@ -4265,7 +4265,7 @@ void UIFrameWnd::DrawTextLines(int x, int y, int family, int lineHeight, const F
     int left = x;
     for (auto it = line->begin(); it != line->end(); ++it) {
       this->DrawShadowedText(left, y, it->second.c_str(), it->second.size(), it->first, 0xE0E0E0, family, 12, 0);
-      left += this->TextWidth(this->m_context->fonts, this->m_context->locale, it->second.c_str(), it->second.size(), 0, 12, 0, 0);
+      left += this->TextWidth(it->second.c_str(), it->second.size(), 0, 12, 0, 0);
     }
     y += lineHeight;
   }
@@ -4322,13 +4322,13 @@ int UIWindow::DrawItemNameSegments(
 ) {
   auto it = breaks.begin();
   int offset = 0;
-  if (this->TextWidth(this->m_context->fonts, this->m_context->locale, text, 0, 0, 12, 0, 0) < width) {
+  if (this->TextWidth(text, 0, 0, 12, 0, 0) < width) {
     for (; it != breaks.end(); ++it) {
       const char* end = *it;
       int bytes = static_cast<int>(end - text);
       if (bytes) {
         this->DrawShadowedText(offset + x, y, text, bytes, text == highlight ? highlightColor : color, 0xE0E0E0, 0, 12, 0);
-        offset += this->TextWidth(this->m_context->fonts, this->m_context->locale, text, bytes, 0, 12, 0, 0);
+        offset += this->TextWidth(text, bytes, 0, 12, 0, 0);
         text = end;
       }
     }
@@ -4349,8 +4349,8 @@ int UIWindow::DrawItemNameSegments(
       }
 
       int bytes = static_cast<int>(next - cursor);
-      int nextWidth = this->TextWidth(this->m_context->fonts, this->m_context->locale, next, static_cast<unsigned>(std::strlen(next)), 0, 12, 0, 0);
-      int reach = this->TextWidth(this->m_context->fonts, this->m_context->locale, cursor, bytes, 0, 12, 0, 0) + offset;
+      int nextWidth = this->TextWidth(next, static_cast<unsigned>(std::strlen(next)), 0, 12, 0, 0);
+      int reach = this->TextWidth(cursor, bytes, 0, 12, 0, 0) + offset;
       if (line == 2 && reach >= width - 15 && reach + nextWidth > width) {
         if (segment == highlight) {
           this->DrawShadowedText(bytes + offset + x, y, "...", 3, highlightColor, 0xE0E0E0, 0, 12, 0);
@@ -4361,7 +4361,7 @@ int UIWindow::DrawItemNameSegments(
       }
 
       this->DrawShadowedText(x + offset, y, cursor, bytes, segment == highlight ? highlightColor : color, 0xE0E0E0, 0, 12, 0);
-      offset += this->TextWidth(this->m_context->fonts, this->m_context->locale, cursor, bytes, 0, 12, 0, 0);
+      offset += this->TextWidth(cursor, bytes, 0, 12, 0, 0);
       if (offset > width) {
         offset = 0;
         y += lineHeight + 1;
@@ -5156,7 +5156,7 @@ int UILoadingWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::
 // OFFSET: 0x008CED00
 // FUNCTION: fn_12071
 int UIItemTagCtrl::MeasureText(const std::string& text, const unsigned& bytes) {
-  return this->TextWidth(this->m_context->fonts, this->m_context->locale, text.c_str(), bytes, 0, 12, 0, 0);
+  return this->TextWidth(text.c_str(), bytes, 0, 12, 0, 0);
 }
 
 // OFFSET: 0x008E8390
@@ -5291,8 +5291,8 @@ void UIChatRoomMakeWnd::Paint() {
   this->DrawBitmap(0, 0, titleBar ? &titleBar->image : nullptr, false);
   auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\chatwin0_bg.bmp")));
   this->DrawBitmap(0, 17, background ? &background->image : nullptr, false);
-  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 9, 4, this->m_title.c_str(), 0, 0, 12, 0xFFFFFF, 0, 0);
-  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 8, 3, this->m_title.c_str(), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(9, 4, this->m_title.c_str(), 0, 0, 12, 0xFFFFFF, 0, 0);
+  this->DrawTextAt(8, 3, this->m_title.c_str(), 0, 0, 12, 0, 0, 0);
 }
 
 // OFFSET: 0x008F64B0
@@ -5497,7 +5497,7 @@ public:
 // FUNCTION: fn_12210
 void UIAutoMessageWnd::Paint() {
   this->DrawBorder(0, 0, 0, 0);
-  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 15, 6, LookupMessage(0x3B0), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(15, 6, LookupMessage(0x3B0), 0, 0, 12, 0, 0, 0);
 }
 
 // OFFSET: 0x008FFC40
@@ -6791,7 +6791,7 @@ int UINotifyItemObtainWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       this->m_message = text;
     }
 
-    int width = this->TextWidth(this->m_context->fonts, this->m_context->locale, this->m_message.c_str(), 0, 0, 12, 0, 0) + 54;
+    int width = this->TextWidth(this->m_message.c_str(), 0, 0, 12, 0, 0) + 54;
     width += width % 28 != 0 ? 28 : 0;
     if (width < 34) {
       width = 34;
@@ -7405,7 +7405,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         std::strcat(this->unknown_00E2, "0");
         break;
       }
-      this->DrawTextAt(g_fontCache, locale, this->unknown_00F0 + 112, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
+      this->DrawTextAt(this->unknown_00F0 + 112, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
       this->unknown_00F0 += 5;
       break;
 
@@ -7426,7 +7426,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         std::strcat(this->unknown_00E2, "1");
         break;
       }
-      this->DrawTextAt(g_fontCache, locale, this->unknown_00F0 + 112, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
+      this->DrawTextAt(this->unknown_00F0 + 112, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
       this->unknown_00F0 += 5;
       break;
 
@@ -7447,7 +7447,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         std::strcat(this->unknown_00E2, "2");
         break;
       }
-      this->DrawTextAt(g_fontCache, locale, this->unknown_00F0 + 112, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
+      this->DrawTextAt(this->unknown_00F0 + 112, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
       this->unknown_00F0 += 5;
       break;
 
@@ -7468,7 +7468,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         std::strcat(this->unknown_00E2, "3");
         break;
       }
-      this->DrawTextAt(g_fontCache, locale, this->unknown_00F0 + 112, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
+      this->DrawTextAt(this->unknown_00F0 + 112, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
       this->unknown_00F0 += 5;
       break;
 
@@ -7489,7 +7489,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         std::strcat(this->unknown_00E2, "4");
         break;
       }
-      this->DrawTextAt(g_fontCache, locale, this->unknown_00F0 + 112, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
+      this->DrawTextAt(this->unknown_00F0 + 112, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
       this->unknown_00F0 += 5;
       break;
 
@@ -7510,7 +7510,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         std::strcat(this->unknown_00E2, "5");
         break;
       }
-      this->DrawTextAt(g_fontCache, locale, this->unknown_00F0 + 112, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
+      this->DrawTextAt(this->unknown_00F0 + 112, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
       this->unknown_00F0 += 5;
       break;
 
@@ -7531,7 +7531,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         std::strcat(this->unknown_00E2, "6");
         break;
       }
-      this->DrawTextAt(g_fontCache, locale, this->unknown_00F0 + 112, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
+      this->DrawTextAt(this->unknown_00F0 + 112, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
       this->unknown_00F0 += 5;
       break;
 
@@ -7552,7 +7552,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         std::strcat(this->unknown_00E2, "7");
         break;
       }
-      this->DrawTextAt(g_fontCache, locale, this->unknown_00F0 + 112, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
+      this->DrawTextAt(this->unknown_00F0 + 112, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
       this->unknown_00F0 += 5;
       break;
 
@@ -7573,7 +7573,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         std::strcat(this->unknown_00E2, "8");
         break;
       }
-      this->DrawTextAt(g_fontCache, locale, this->unknown_00F0 + 112, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
+      this->DrawTextAt(this->unknown_00F0 + 112, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
       this->unknown_00F0 += 5;
       break;
 
@@ -7594,7 +7594,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         std::strcat(this->unknown_00E2, "9");
         break;
       }
-      this->DrawTextAt(g_fontCache, locale, this->unknown_00F0 + 112, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
+      this->DrawTextAt(this->unknown_00F0 + 112, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
       this->unknown_00F0 += 5;
       break;
 
@@ -7629,12 +7629,12 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 // OFFSET: 0x008ECE60
 // FUNCTION: fn_12211
 void UIBookWnd::Paint() {
-  const int titleHeight = this->DrawTitleBar(this->m_context->fonts, this->m_context->locale, false, "", 0);
+  const int titleHeight = this->DrawTitleBar(false, "", 0);
   this->DrawPanelBackground(titleHeight, 0, "");
 
   char* title = new char[110];
   std::sprintf(title, "%s ( %d / %d )", this->m_bookName, this->m_page, this->m_pageCount);
-  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, this->geometry.width / 2 - 72, 2, title, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(this->geometry.width / 2 - 72, 2, title, 0, 0, 12, 0, 0, 0);
 
   this->FillRegion(1, titleHeight, this->geometry.width - 2, this->geometry.height - 18, RGB(this->m_red, this->m_green, this->m_blue));
   this->m_viewer->backgroundColor = 0xFF000000u | RGB(this->m_red, this->m_green, this->m_blue);
@@ -7645,7 +7645,7 @@ void UIBookWnd::Paint() {
 // FUNCTION: fn_12212
 void UICardItemIllustWnd::Paint() {
   auto& controls = *this->m_controls;
-  this->DrawTitleBar(controls.fonts, controls.locale, false, "", 0);
+  this->DrawTitleBar(false, "", 0);
   if (this->m_bitmapPath.size() != 0) {
     this->DrawBitmap(0, 17, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve(this->m_bitmapPath.c_str()))), false);
   }
@@ -8034,7 +8034,7 @@ int UICardItemIllustWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
 // OFFSET: 0x008EFFF0
 // FUNCTION: fn_12248
 void UISecondPasswordInputWnd::Paint() {
-  const int titleHeight = this->DrawTitleBar(this->m_context->fonts, this->m_context->locale, true, LookupMessage(1899), 0);
+  const int titleHeight = this->DrawTitleBar(true, LookupMessage(1899), 0);
   this->DrawPanelBackground(titleHeight, 540, "유저인터페이스\\basic_interface\\2ndpassword_bg.bmp");
   this->DrawButtonBar(2, 0, 1);
 
@@ -8077,13 +8077,13 @@ void UISecondPasswordInputWnd::Paint() {
   }
 
   for (std::size_t index = 0, x = 416; index < std::strlen(this->unknown_00D0); ++index, x += 5) {
-    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, static_cast<int>(x), this->unknown_00FC, "*", 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(static_cast<int>(x), this->unknown_00FC, "*", 0, 0, 12, 0, 0, 0);
   }
   for (std::size_t index = 0, x = 416; index < std::strlen(this->unknown_00D9); ++index, x += 5) {
-    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, static_cast<int>(x), this->unknown_0100, "*", 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(static_cast<int>(x), this->unknown_0100, "*", 0, 0, 12, 0, 0, 0);
   }
   for (std::size_t index = 0, x = 416; index < std::strlen(this->unknown_00E2); ++index, x += 5) {
-    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, static_cast<int>(x), this->unknown_0104, "*", 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(static_cast<int>(x), this->unknown_0104, "*", 0, 0, 12, 0, 0, 0);
   }
 }
 
@@ -8109,11 +8109,11 @@ void UInCashWnd::Paint() {
   length = std::sprintf(text, LookupMessage(1858), FormatGroupedInteger(this->m_pointBalance, number, sizeof(number)));
   this->DrawShadowedText(74, this->geometry.height - 17, text, length, 0, 0xFFFFFF, 0, 12, 0);
 
-  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 260, this->geometry.height - 36, LookupMessage(1306), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 427, this->geometry.height - 36, "C", 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(260, this->geometry.height - 36, LookupMessage(1306), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(427, this->geometry.height - 36, "C", 0, 0, 12, 0, 0, 0);
   length = std::sprintf(text, "Total              :      %s", FormatGroupedInteger(this->m_totalPrice, number, sizeof(number)));
   this->DrawShadowedText(260, this->geometry.height - 17, text, length, 0, 0xFFFFFF, 0, 12, 0);
-  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 427, this->geometry.height - 17, "C", 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(427, this->geometry.height - 17, "C", 0, 0, 12, 0, 0, 0);
 
   this->DrawItems();
 }
@@ -8214,7 +8214,7 @@ void UIItemCollectionWnd::Paint() {
             this->DrawCenteredText(0, bottom + offset, line->c_str(), this->geometry.width, 0, 12, 0xFF, 0);
             break;
           }
-          this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 12, bottom + offset, line->c_str(), 0, 0, 12, 0, 0, 0);
+          this->DrawTextAt(12, bottom + offset, line->c_str(), 0, 0, 12, 0, 0, 0);
           ++line;
           if (line == card->second.end()) {
             break;
@@ -9011,7 +9011,7 @@ int UIChooseWarpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
 // FUNCTION: fn_12256
 void UITipboxWnd::Paint() {
   this->ClearSurface(0xFFFF00FF);
-  this->DrawTitleBar(this->m_context->fonts, this->m_context->locale, true, LookupMessage(0xCA6), 0);
+  this->DrawTitleBar(true, LookupMessage(0xCA6), 0);
 
   const auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\tipbox\\TipboxBG.bmp")));
   this->DrawBitmap(0, 17, background ? &background->image : nullptr, false);
@@ -9106,7 +9106,7 @@ void UITipOfTheDayWnd::Slot15(int width, int height) {
 
   this->m_showTipsAtStartup = g_window315Enabled;
   UICheckBox* checkBox = new UICheckBox(*this->m_context, *this->m_controls);
-  checkBox->SetSize(this->TextWidth(this->m_context->fonts, this->m_context->locale, LookupMessage(176), 0, 0, 12, 0, 0) + 12, 12);
+  checkBox->SetSize(this->TextWidth(LookupMessage(176), 0, 0, 12, 0, 0) + 12, 12);
   checkBox->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(176));
   checkBox->Move(10, height - 20);
   checkBox->SetChecked(this->m_showTipsAtStartup);
@@ -9129,7 +9129,7 @@ void UITipOfTheDayWnd::Slot15(int width, int height) {
 // OFFSET: 0x008F1430
 // FUNCTION: fn_12254
 void UIStorePasswordInputWnd::Paint() {
-  const int titleHeight = this->DrawTitleBar(this->m_context->fonts, this->m_context->locale, true, LookupMessage(1017), 0);
+  const int titleHeight = this->DrawTitleBar(true, LookupMessage(1017), 0);
   this->DrawPanelBackground(titleHeight, 0, "");
   this->DrawButtonBar(2, 0, 1);
 
@@ -9572,7 +9572,7 @@ int UIFrameWnd::BuildItemName(
 // OFFSET: 0x008D9420
 // FUNCTION: fn_12133
 bool UIItemCollectionWnd::WrapText(std::string text, int width, std::list<std::string>& lines) {
-  if (this->TextWidth(this->m_context->fonts, this->m_context->locale, text.c_str(), 0, 0, 12, 0, 0) <= width) {
+  if (this->TextWidth(text.c_str(), 0, 0, 12, 0, 0) <= width) {
     lines.push_back(text);
     return false;
   }
@@ -9586,14 +9586,14 @@ bool UIItemCollectionWnd::WrapText(std::string text, int width, std::list<std::s
       start = cursor;
     } else if (cursor[0] < 0 && cursor[1] < 0) {
       const std::string candidate(start, cursor + 2);
-      if (this->TextWidth(this->m_context->fonts, this->m_context->locale, candidate.c_str(), 0, 0, 12, 0, 0) > width) {
+      if (this->TextWidth(candidate.c_str(), 0, 0, 12, 0, 0) > width) {
         lines.emplace_back(start, cursor);
         start = cursor;
       }
       cursor += 2;
     } else {
       const std::string candidate(start, cursor + 1);
-      if (this->TextWidth(this->m_context->fonts, this->m_context->locale, candidate.c_str(), 0, 0, 12, 0, 0) > width) {
+      if (this->TextWidth(candidate.c_str(), 0, 0, 12, 0, 0) > width) {
         lines.emplace_back(start, cursor);
         start = cursor;
       }
@@ -9979,7 +9979,7 @@ void UIFrameWnd::DrawItemNameText(
     do {
       next = CharNextExA(static_cast<WORD>(g_textCodePage), next, 0);
       length = static_cast<int>(next - lineStart);
-      measured = this->TextWidth(this->m_context->fonts, this->m_context->locale, begin, length, 0, 12, 0, 0);
+      measured = this->TextWidth(begin, length, 0, 12, 0, 0);
       if (measured + lineWidth > width) {
         line->push_back(std::make_pair(segment->first, segment->second.substr(offset, length)));
         ++line;
@@ -9999,7 +9999,7 @@ void UIFrameWnd::DrawItemNameText(
     }
   }
 
-  if (this->TextWidth(this->m_context->fonts, this->m_context->locale, text, std::strlen(text), position->family, position->height, 0, 0) > width * 2) {
+  if (this->TextWidth(text, std::strlen(text), position->family, position->height, 0, 0) > width * 2) {
     this->FitLastTextLine(width, 2, position->family, position->height, lines);
   }
 
@@ -10087,8 +10087,8 @@ void UIExchangeWnd::Paint() {
 
   char title[128];
   std::sprintf(title, "%s : ", LookupMessage(0xCE));
-  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 13, 4, title, 0, 0, 12, 0xFFFFFF, 0, 0);
-  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 12, 3, title, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(13, 4, title, 0, 0, 12, 0xFFFFFF, 0, 0);
+  this->DrawTextAt(12, 3, title, 0, 0, 12, 0, 0, 0);
   char partner[128];
   if (this->unknown_0108 < 1) {
     std::sprintf(partner, "%s", this->unknown_00F0.c_str());
@@ -10098,8 +10098,8 @@ void UIExchangeWnd::Paint() {
     const std::string identifier = ShortcutFilename(this->unknown_0108);
     std::sprintf(partner, "%s  Lv%d (%s)", this->unknown_00F0.c_str(), this->unknown_010C, identifier.c_str());
   }
-  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 63, 4, partner, 0, 0, 12, 0xB4B4B4, 0, 0);
-  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 62, 3, partner, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(63, 4, partner, 0, 0, 12, 0xB4B4B4, 0, 0);
+  this->DrawTextAt(62, 3, partner, 0, 0, 12, 0, 0, 0);
 
   const std::string prefix = "유저인터페이스\\btn_";
   const char* buttons[2] = {"ok", "exchange"};

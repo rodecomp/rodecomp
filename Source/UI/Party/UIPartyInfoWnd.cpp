@@ -88,7 +88,7 @@ void UIPartyInfoWnd::Paint() {
     this->DrawBitmap(0, 0, &background->image, false);
   }
 
-  const auto text = [&](int x, const char* value, int bytes = 0) { this->DrawTextAt(controls.fonts, controls.locale, x, 5, value, bytes, 0, 12, 0, 0, 0); };
+  const auto text = [&](int x, const char* value, int bytes = 0) { this->DrawTextAt(x, 5, value, bytes, 0, 12, 0, 0, 0); };
   text(11, this->levels.c_str());
   text(64, TypeName(this->type, controls.services));
   constexpr char prefix[] = "유저인터페이스\\UIadventurerAgency\\";

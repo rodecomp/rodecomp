@@ -441,7 +441,7 @@ void UIMonsterInfoWnd::Slot28(int x, int y) {
     name.erase(mark, name.size());
   }
 
-  if (this->TextWidth(this->m_controls->fonts, this->m_controls->locale, name.c_str(), 0, 0, 12, 0, 0) > 100) {
+  if (this->TextWidth(name.c_str(), 0, 0, 12, 0, 0) > 100) {
     this->m_controls->services.Tooltip(name.c_str(), screenX + x, screenY + y, -1, false, true);
   }
 }

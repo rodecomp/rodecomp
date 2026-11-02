@@ -953,8 +953,7 @@ void UIWindow::FillRegion(int x, int y, int width, int height, std::uint32_t col
 
 // OFFSET: 0x00A80580
 // FUNCTION: fn_16975
-int UIWindow::TextWidth(
-  FontCache& fonts, const TextLocale& locale, const char* text, unsigned bytes, int family, int height, unsigned char bold, unsigned char italic
+int UIWindow::TextWidth(const char* text, unsigned bytes, int family, int height, unsigned char bold, unsigned char italic
 ) {
   if (!text) {
     return 0;
@@ -986,7 +985,7 @@ int UIWindow::ColoredTextWidth(const char* text, unsigned bytes, int family, int
     }
   }
 
-  int width = this->TextWidth(this->m_context->fonts, this->m_context->locale, text, bytes, family, height, bold, 0);
+  int width = this->TextWidth(text, bytes, family, height, bold, 0);
   std::uint32_t color = 0;
   if (ParseColorCode(FindColorCode(text, text + bytes), color) && color) {
     TextContext context(*this->geometry.surface);
@@ -1000,8 +999,7 @@ int UIWindow::ColoredTextWidth(const char* text, unsigned bytes, int family, int
 
 // OFFSET: 0x00A84360
 // FUNCTION: fn_17009
-void UIWindow::DrawTextAt(
-  FontCache& fonts, const TextLocale& locale, int x, int y, const char* text, int bytes, int family, int height, std::uint32_t color, unsigned char bold,
+void UIWindow::DrawTextAt(int x, int y, const char* text, int bytes, int family, int height, std::uint32_t color, unsigned char bold,
   unsigned char italic
 ) {
   if (!bytes) {
@@ -1314,7 +1312,7 @@ void UIWindow::DrawAuxiliary(int mode, int x, int y, BitmapImage* image, bool tr
 
 // OFFSET: 0x00A7BE90
 // FUNCTION: fn_16941
-void UIWindow::DrawAmount(FontCache& fonts, const TextLocale& locale, int amount, std::string text, int x, int y) {
+void UIWindow::DrawAmount(int amount, std::string text, int x, int y) {
   COLORREF color = 0;
   COLORREF shadow = 0;
   bool outlined = true;
@@ -1364,8 +1362,7 @@ void UIWindow::DrawAmount(FontCache& fonts, const TextLocale& locale, int amount
 
 // OFFSET: 0x00A80170
 // FUNCTION: fn_16971
-int UIWindow::TextHeight(
-  FontCache& fonts, const TextLocale& locale, const char* text, unsigned bytes, int family, int height, unsigned char bold, unsigned char italic
+int UIWindow::TextHeight(const char* text, unsigned bytes, int family, int height, unsigned char bold, unsigned char italic
 ) {
   if (!text) {
     return 0;
@@ -1385,7 +1382,7 @@ int UIWindow::TextHeight(
 
 // OFFSET: 0x00A80230
 // FUNCTION: fn_16972
-int UIWindow::VerticalTextHeight(FontCache& fonts, const TextLocale& locale, const char* text, unsigned bytes, int family, int height, unsigned char bold) {
+int UIWindow::VerticalTextHeight(const char* text, unsigned bytes, int family, int height, unsigned char bold) {
   if (!text) {
     return 0;
   }
@@ -1417,8 +1414,7 @@ int UIWindow::VerticalTextHeight(FontCache& fonts, const TextLocale& locale, con
 
 // OFFSET: 0x00A80340
 // FUNCTION: fn_16973
-SIZE UIWindow::TextSize(
-  FontCache& fonts, const TextLocale& locale, const char* text, unsigned bytes, int family, int height, unsigned char bold, unsigned char italic
+SIZE UIWindow::TextSize(const char* text, unsigned bytes, int family, int height, unsigned char bold, unsigned char italic
 ) {
   SIZE size = {};
   if (!text) {
@@ -1440,8 +1436,7 @@ SIZE UIWindow::TextSize(
 
 // OFFSET: 0x00A80430
 // FUNCTION: fn_16974
-SIZE UIWindow::VerticalTextSize(
-  FontCache& fonts, const TextLocale& locale, const char* text, unsigned bytes, int family, int height, unsigned char bold, unsigned char italic
+SIZE UIWindow::VerticalTextSize(const char* text, unsigned bytes, int family, int height, unsigned char bold, unsigned char italic
 ) {
   SIZE size = {};
   if (!text) {
@@ -1620,7 +1615,7 @@ std::string UIWindow::FitVerticalDisplayText(int height, const char* text, int f
   display = std::move(navigation);
   display = DisplayTextTag(std::move(display), "<QUEST>", "</QUEST>");
 
-  if (this->VerticalTextHeight(this->m_context->fonts, this->m_context->locale, display.c_str(), display.size(), family, fontHeight, bold) <= height) {
+  if (this->VerticalTextHeight(display.c_str(), display.size(), family, fontHeight, bold) <= height) {
     return display;
   }
 
@@ -1637,7 +1632,7 @@ std::string UIWindow::FitVerticalDisplayText(int height, const char* text, int f
       break;
     }
 
-    extent = this->VerticalTextHeight(this->m_context->fonts, this->m_context->locale, fitted.c_str(), fitted.size(), family, fontHeight, bold);
+    extent = this->VerticalTextHeight(fitted.c_str(), fitted.size(), family, fontHeight, bold);
     length = CharPrevExA(static_cast<WORD>(g_textCodePage), begin, begin + length, 0) - begin;
   } while (height < extent);
 
@@ -1689,7 +1684,7 @@ void UIWindow::WrapTextWithBreaks(const char* text, std::vector<std::string>* li
     return;
   }
 
-  const int totalWidth = this->TextWidth(this->m_context->fonts, this->m_context->locale, text, 0, 0, 12, 0, 0);
+  const int totalWidth = this->TextWidth(text, 0, 0, 12, 0, 0);
   const int length = static_cast<int>(std::strlen(text));
   if (totalWidth <= 0) {
     return;
@@ -1711,7 +1706,7 @@ void UIWindow::WrapTextWithBreaks(const char* text, std::vector<std::string>* li
       const char* next = (*reinterpret_cast<NextCharacter**>(g_serverLanguage))[5](g_serverLanguage, current, static_cast<int>(end - current));
       const int characterBytes = static_cast<int>(next - current);
       bytes += characterBytes;
-      lineWidth += this->TextWidth(this->m_context->fonts, this->m_context->locale, current, characterBytes, 0, 12, 0, 0);
+      lineWidth += this->TextWidth(current, characterBytes, 0, 12, 0, 0);
       if (characterBytes == 1 && *current == '\r') {
         newline = true;
         ++bytes;
@@ -2179,8 +2174,8 @@ void UIPrivateAirplaneWnd::Paint() {
   this->DrawBitmap(
     0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\private_airplane\\bg_pay.bmp")))->image, false
   );
-  this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 19, 4, LookupMessage(0xd02), 0, 0, 12, 0xffffff, 0, 0);
-  this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 18, 3, LookupMessage(0xd02), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(19, 4, LookupMessage(0xd02), 0, 0, 12, 0xffffff, 0, 0);
+  this->DrawTextAt(18, 3, LookupMessage(0xd02), 0, 0, 12, 0, 0, 0);
 
   if (this->m_text.size() == 0) {
     return;
@@ -2196,7 +2191,7 @@ void UIPrivateAirplaneWnd::Paint() {
   int offset = 0;
   for (auto it = lines.begin(); it != lines.end(); ++it, offset += 12) {
     const int y = static_cast<int>(static_cast<unsigned>(32 - lines.size() * 12) * 0.5 + 78.0 + offset);
-    this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 26, y, it->c_str(), 0, 0, 12, 0x3512b5, 0, 0);
+    this->DrawTextAt(26, y, it->c_str(), 0, 0, 12, 0x3512b5, 0, 0);
   }
 }
 
@@ -2546,18 +2541,18 @@ void UINavigationV4Wnd::Paint() {
   if (g_navigationMinimized) {
     DrawFilledRoundedBorder(*this, 0, 0, 0x86, 0x3d, 0xffffff);
     DrawFilledRoundedBorder(*this, 1, 0x11, 0x84, 0x2b, 0);
-    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 3, 3, LookupMessage(0x8ad), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(3, 3, LookupMessage(0x8ad), 0, 0, 12, 0, 0, 0);
     if (g_navigationText1.size() != 0) {
       this->DrawBitmap(
         2, 0x12, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\navigation_interface3\\ico_destination.bmp")))->image, true
       );
-      this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 5, 0x15, g_navigationText3.c_str(), 0, 0, 12, 0xffffff, 1, 0);
-      this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 5, 0x28, g_navigationText4.c_str(), 0, 0, 12, 0xffffff, 1, 0);
+      this->DrawTextAt(5, 0x15, g_navigationText3.c_str(), 0, 0, 12, 0xffffff, 1, 0);
+      this->DrawTextAt(5, 0x28, g_navigationText4.c_str(), 0, 0, 12, 0xffffff, 1, 0);
     }
     return;
   }
 
-  this->DrawPanelBackground(this->DrawTitleBar(this->m_context->fonts, this->m_context->locale, true, LookupMessage(0x8ad), 0), 0, "");
+  this->DrawPanelBackground(this->DrawTitleBar(true, LookupMessage(0x8ad), 0), 0, "");
   this->DrawButtonBar(0, 0, 1);
   this->FillRegion(0, 0x2b, 0x110, 1, 0xcccccc);
   this->DrawBitmap(
@@ -2568,10 +2563,9 @@ void UINavigationV4Wnd::Paint() {
   if (g_navigationMode == 2 && g_navigationTab == 1) {
     this->FillRegion(1, 0x2c, 0x10e, 0x10e, 0xcccccc);
     this->DrawMapTexture(3, 0x2e, 0x10a);
-    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 10, 0x30, g_navigationText0.c_str(), 0, 0, 12, 0xffffff, 1, 0);
-    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 10, 0x44, g_navigationText1.c_str(), 0, 0, 12, 0xffffff, 1, 0);
-    this->DrawTextAt(
-      this->m_context->fonts, this->m_context->locale, 10, this->geometry.height - 0x2a, g_navigationText2.c_str(), 0, 0, 12, 0xffffff, 1, 0
+    this->DrawTextAt(10, 0x30, g_navigationText0.c_str(), 0, 0, 12, 0xffffff, 1, 0);
+    this->DrawTextAt(10, 0x44, g_navigationText1.c_str(), 0, 0, 12, 0xffffff, 1, 0);
+    this->DrawTextAt(10, this->geometry.height - 0x2a, g_navigationText2.c_str(), 0, 0, 12, 0xffffff, 1, 0
     );
 
     if (g_navigationPoints.begin() != g_navigationPoints.end()) {
@@ -2682,12 +2676,10 @@ void UINavigationV4Wnd::Paint() {
     if (g_navigationLabels[index].kind == active) {
       const int labelX = g_navigationLabels[index].x;
       const int labelY = g_navigationLabels[index].y;
-      this->DrawTextAt(
-        this->m_context->fonts, this->m_context->locale, labelX + 1, labelY + 1, g_navigationLabels[index].text.c_str(), 0, 0, 12,
+      this->DrawTextAt(labelX + 1, labelY + 1, g_navigationLabels[index].text.c_str(), 0, 0, 12,
         g_navigationLabels[index].color, 0, 0
       );
-      this->DrawTextAt(
-        this->m_context->fonts, this->m_context->locale, labelX, labelY, g_navigationLabels[index].text.c_str(), 0, 0, 12,
+      this->DrawTextAt(labelX, labelY, g_navigationLabels[index].text.c_str(), 0, 0, 12,
         g_navigationLabels[index].shadowColor, 0, 0
       );
     }
@@ -2698,7 +2690,7 @@ void UINavigationV4Wnd::Paint() {
 // FUNCTION: fn_03589
 void UINavigationroadiconWnd::Paint() {
   CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\navigation_interface3\\bg_roadIocn_select.bmp")));
-  const int titleHeight = this->DrawTitleBar(this->m_controls->fonts, this->m_controls->locale, true, LookupMessage(3203), 0);
+  const int titleHeight = this->DrawTitleBar(true, LookupMessage(3203), 0);
   this->DrawBitmap(0, titleHeight, bitmap ? &bitmap->image : nullptr, false);
 }
 
@@ -3044,7 +3036,7 @@ void UINavigationRuideWnd::Slot15(int width, int) {
 // FUNCTION: fn_03587
 void UINavigationRuideWnd::Paint() {
   this->FillRegion(0, 0, 272, 338, 0xCCCCCC);
-  const int titleHeight = this->DrawTitleBar(this->m_controls->fonts, this->m_controls->locale, true, LookupMessage(3204), 0);
+  const int titleHeight = this->DrawTitleBar(true, LookupMessage(3204), 0);
   this->DrawPanelBackground(titleHeight, 0, "");
   this->DrawButtonBar(0, 0, 1);
 }

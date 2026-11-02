@@ -60,7 +60,7 @@ void UIRequestJoinPartyWnd::Slot15(int, int) {
   for (int index = 0; index < 2; ++index) {
     auto* button = new UIBasicButton(*this->m_context, controls);
     const char* label = controls.services.MessageText(messages[index]);
-    button->Configure(this->TextWidth(controls.fonts, controls.locale, label, 0, 0, 12, 0, 0) + 10, label);
+    button->Configure(this->TextWidth(label, 0, 0, 12, 0, 0) + 10, label);
     button->Move(x[index], 136);
     button->SetId(ids[index]);
     this->AddChild(button);
@@ -139,8 +139,8 @@ void UIRequestJoinPartyWnd::Paint() {
   }
 
   const char* caption = controls.services.MessageText(3505);
-  this->DrawTextAt(controls.fonts, controls.locale, 19, titleHeight - 13, caption, 0, 0, 12, 0xFFFFFF, 0, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 18, titleHeight - 14, caption, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(19, titleHeight - 13, caption, 0, 0, 12, 0xFFFFFF, 0, 0);
+  this->DrawTextAt(18, titleHeight - 14, caption, 0, 0, 12, 0, 0, 0);
   const auto* base = load("basic_interface\\sys_base_off.bmp");
   this->DrawBitmap(3, 3, base ? &base->image : nullptr, true);
 }
@@ -192,7 +192,7 @@ int UIRequestJoinPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
   _snprintf_s(level, sizeof(level), _TRUNCATE, "%d", this->level);
   this->levelText->SetText(level, 0);
   auto& controls = this->m_request->text.buttons;
-  const int width = this->TextWidth(controls.fonts, controls.locale, level, 0, 0, 12, 0, 0);
+  const int width = this->TextWidth(level, 0, 0, 12, 0, 0);
   this->levelText->Move(25 - width / 2, 56);
   this->details->Clear();
   char messageText[1024] = {};

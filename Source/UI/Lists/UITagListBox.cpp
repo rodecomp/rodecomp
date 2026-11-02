@@ -670,7 +670,7 @@ void UITagListBox::AddTagButton(STagInfoV2 tag, int lineCount) {
   button->Configure(tag.unknown_0010.c_str(), 0x00F4934A, 0, 12, 0, 1);
   const int height = button->geometry.height;
   button->ResizeToTextClipped(
-    this->TextWidth(this->m_listContext->fonts, this->m_listContext->locale, tag.unknown_0010.c_str(), 0, 0, 12, 0, 0) + 1, height
+    this->TextWidth(tag.unknown_0010.c_str(), 0, 0, 12, 0, 0) + 1, height
   );
   button->m_hoverColor = 0x00FF7864;
   button->SetId(tag.unknown_0004);
@@ -720,7 +720,7 @@ void UITagListBox::AddTagButton(STagInfoV2 tag, int lineCount) {
       const int prefixLength = static_cast<int>(this->lines[index].size()) - bytes + tag.unknown_0008;
       const std::string stripped = StripColorTokens(this->lines[index].c_str(), prefixLength);
       const std::string prefix = stripped.substr(0, prefixLength);
-      x = this->TextWidth(this->m_listContext->fonts, this->m_listContext->locale, prefix.c_str(), 0, 0, 12, 0, 0) + 2;
+      x = this->TextWidth(prefix.c_str(), 0, 0, 12, 0, 0) + 2;
       line = index;
       break;
     }

@@ -663,7 +663,7 @@ void UIRuneSetList::Select(int index) {
 // FUNCTION: fn_10163
 void UIRuneSetinfoList::AddLine(std::string text, std::uint32_t color, bool bold) {
   const float centered =
-    static_cast<float>(this->geometry.width - this->TextWidth(this->m_context->fonts, this->m_context->locale, text.c_str(), text.size(), 0, 12, bold, 0)) *
+    static_cast<float>(this->geometry.width - this->TextWidth(text.c_str(), text.size(), 0, 12, bold, 0)) *
     0.5f;
   const int x = static_cast<int>(std::max(0.0f, centered));
   RuneSetInfoLine line(text, color, bold, x);
@@ -684,8 +684,7 @@ void UIRuneSetinfoList::Paint() {
     const int index = this->position + row;
     if (index >= 0 && static_cast<unsigned int>(index) < this->m_lines.size()) {
       const RuneSetInfoLine& line = this->m_lines[index];
-      this->DrawTextAt(
-        this->m_context->fonts, this->m_context->locale, line.x, this->m_itemHeight * row + 30, line.text.c_str(), 0, 0, 12, line.color, line.bold, 0
+      this->DrawTextAt(line.x, this->m_itemHeight * row + 30, line.text.c_str(), 0, 0, 12, line.color, line.bold, 0
       );
     }
   }
@@ -846,9 +845,8 @@ void UIRuneSet_Info::Refresh() {
 // FUNCTION: fn_10234
 void UIRuneSystem_ActiveWnd::DrawCount(int x, int y, int count, int total, std::uint32_t color, int fontHeight) {
   const std::string text = FormatOwnedString("%d / %d", count, total);
-  const int width = this->TextWidth(this->m_context->fonts, this->m_context->locale, text.c_str(), text.size(), 0, fontHeight, 0, 0);
-  this->DrawTextAt(
-    this->m_context->fonts, this->m_context->locale, static_cast<int>(static_cast<float>(x) - static_cast<float>(width) * 0.5f), y, text.c_str(), 0, 0,
+  const int width = this->TextWidth(text.c_str(), text.size(), 0, fontHeight, 0, 0);
+  this->DrawTextAt(static_cast<int>(static_cast<float>(x) - static_cast<float>(width) * 0.5f), y, text.c_str(), 0, 0,
     fontHeight, color, 0, 0
   );
 }
@@ -1004,9 +1002,8 @@ void UIRuneSystem_Decom_RadioBtn::Paint() {
     this->DrawBitmap(0, static_cast<int>((this->geometry.height - bitmap->image.height) * 0.5f), &bitmap->image, true);
   }
   if (!this->text.empty()) {
-    const int textHeight = this->TextHeight(controls.fonts, controls.locale, this->text.c_str(), 0, 0, this->fontHeight, 0, 0);
-    this->DrawTextAt(
-      controls.fonts, controls.locale, bitmap->image.width + 3, static_cast<int>((this->geometry.height - textHeight) * 0.5f), this->text.c_str(), 0, 0,
+    const int textHeight = this->TextHeight(this->text.c_str(), 0, 0, this->fontHeight, 0, 0);
+    this->DrawTextAt(bitmap->image.width + 3, static_cast<int>((this->geometry.height - textHeight) * 0.5f), this->text.c_str(), 0, 0,
       this->fontHeight, color, 0, 0
     );
   }
@@ -1023,7 +1020,7 @@ void UIRuneSystemWnd::Paint() {
     0, this->geometry.height - 36,
     &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\runesystem\\bg_left_down.bmp").c_str())))->image, false
   );
-  this->DrawTitleBar(this->m_context->fonts, this->m_context->locale, true, LookupMessage(4050), 0);
+  this->DrawTitleBar(true, LookupMessage(4050), 0);
 }
 
 // OFFSET: 0x0081E3F0
@@ -1080,8 +1077,8 @@ void UIDecomlist::Paint() {
     std::memset(text, 0, sizeof(text));
     int capacity = sizeof(text);
     descriptions.Name(item, text, capacity, 0);
-    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 57, y + 8, text, 0, 0, 13, 0, 0, 0);
-    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 58, y + 28, FormatOwnedString("%d", item.quantity).c_str(), 0, 0, 13, 0, 0, 0);
+    this->DrawTextAt(57, y + 8, text, 0, 0, 13, 0, 0, 0);
+    this->DrawTextAt(58, y + 28, FormatOwnedString("%d", item.quantity).c_str(), 0, 0, 13, 0, 0, 0);
   }
   this->DrawScrollBar(false);
 }
@@ -1117,15 +1114,15 @@ void UIEquipRuneSetWnd::Paint() {
   int titleX = 37;
   if (runeSet->m_grade) {
     const std::string grade = FormatOwnedString("+%d", runeSet->m_grade);
-    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 37, 12, grade.c_str(), 0, 0, 13, 0xFCDDE5, 1, 0);
-    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 37, 11, grade.c_str(), 0, 0, 13, 0xFF7E00, 1, 0);
+    this->DrawTextAt(37, 12, grade.c_str(), 0, 0, 13, 0xFCDDE5, 1, 0);
+    this->DrawTextAt(37, 11, grade.c_str(), 0, 0, 13, 0xFF7E00, 1, 0);
     titleX = runeSet->m_grade > 9 ? 62 : 55;
   }
 
   titleX += 2;
   const std::string title = FormatOwnedString(LookupMessage(4042), runeSet->GetName());
-  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, titleX, 12, title.c_str(), 0, 0, 13, 0xFCDEE6, 1, 0);
-  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, titleX, 11, title.c_str(), 0, 0, 13, 0x864D43, 1, 0);
+  this->DrawTextAt(titleX, 12, title.c_str(), 0, 0, 13, 0xFCDEE6, 1, 0);
+  this->DrawTextAt(titleX, 11, title.c_str(), 0, 0, 13, 0x864D43, 1, 0);
   const std::string tag = FormatOwnedString("유저인터페이스\\runesystem\\tag\\bt_tag_%d_equip.bmp", runeSet->GetTagId());
   this->DrawBitmap(9, 6, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(tag.c_str())))->image, false);
 }
@@ -1146,9 +1143,8 @@ void UIGage_Circle::Paint() {
   );
 
   const std::string text = FormatOwnedString("%.2f%%", static_cast<double>(static_cast<float>(this->m_value) * 0.001f));
-  const int width = this->TextWidth(this->m_context->fonts, this->m_context->locale, text.c_str(), text.size(), 0, 12, 0, 0);
-  this->DrawTextAt(
-    this->m_context->fonts, this->m_context->locale, static_cast<int>(static_cast<float>(this->geometry.width - width) * 0.5f), this->m_textY, text.c_str(), 0,
+  const int width = this->TextWidth(text.c_str(), text.size(), 0, 12, 0, 0);
+  this->DrawTextAt(static_cast<int>(static_cast<float>(this->geometry.width - width) * 0.5f), this->m_textY, text.c_str(), 0,
     0, 12, 0xFFFFFF, 1, 0
   );
 }
@@ -1170,7 +1166,7 @@ void UIRuneList::Paint() {
     this->DrawBitmap(0, y, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background.c_str())))->image, true);
     this->DrawRuneIcon(18, y + 6, rune->GetResName(), active);
     const std::string name = FormatOwnedString(LookupMessage(4043), rune->GetName());
-    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 62, y + 9, name.c_str(), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(62, y + 9, name.c_str(), 0, 0, 12, 0, 0, 0);
   }
   this->DrawScrollBar(true);
 }
@@ -1202,20 +1198,20 @@ void UIRuneSetList::Paint() {
     }
 
     const std::string title = FormatOwnedString(LookupMessage(4042), runeSet->GetName());
-    const int titleWidth = this->TextWidth(this->m_context->fonts, this->m_context->locale, title.c_str(), title.size(), 0, 12, 0, 0);
+    const int titleWidth = this->TextWidth(title.c_str(), title.size(), 0, 12, 0, 0);
     std::string grade;
     int gradeWidth = 0;
     if (runeSet->m_grade) {
       grade = FormatOwnedString("+%d", runeSet->m_grade);
-      gradeWidth = this->TextWidth(this->m_context->fonts, this->m_context->locale, grade.c_str(), grade.size(), 0, 12, 0, 0);
+      gradeWidth = this->TextWidth(grade.c_str(), grade.size(), 0, 12, 0, 0);
     }
 
     int x = static_cast<int>(static_cast<float>(this->geometry.width - gradeWidth - titleWidth) * 0.5f);
     if (runeSet->m_grade) {
-      this->DrawTextAt(this->m_context->fonts, this->m_context->locale, x, y + 7, grade.c_str(), 0, 0, 12, 0xFF7E00, 0, 0);
+      this->DrawTextAt(x, y + 7, grade.c_str(), 0, 0, 12, 0xFF7E00, 0, 0);
       x += gradeWidth + 5;
     }
-    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, x, y + 7, title.c_str(), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(x, y + 7, title.c_str(), 0, 0, 12, 0, 0, 0);
   }
   this->DrawScrollBar(true);
 }
@@ -1432,8 +1428,8 @@ void UIRuneSystem_DecomResultWnd::Paint() {
       }
 
       const std::string count = FormatOwnedString("%d", this->m_counts[index]);
-      const int width = this->TextWidth(this->m_context->fonts, this->m_context->locale, count.c_str(), count.size(), 0, 12, 0, 0);
-      this->DrawTextAt(this->m_context->fonts, this->m_context->locale, x - static_cast<int>(width * 0.5f) + 19, y, count.c_str(), 0, 0, 12, 0, 0, 0);
+      const int width = this->TextWidth(count.c_str(), count.size(), 0, 12, 0, 0);
+      this->DrawTextAt(x - static_cast<int>(width * 0.5f) + 19, y, count.c_str(), 0, 0, 12, 0, 0, 0);
     }
   }
 }
@@ -1478,10 +1474,10 @@ void UIRune_Info::Paint() {
   }
 
   const std::string name = FormatOwnedString("Rune of %s", this->m_rune->GetName());
-  const int width = this->TextWidth(this->m_context->fonts, this->m_context->locale, name.c_str(), name.size(), 0, 13, 1, 0);
+  const int width = this->TextWidth(name.c_str(), name.size(), 0, 13, 1, 0);
   const int x = static_cast<int>(static_cast<float>(this->geometry.width - width) * 0.5f + 2.0f);
-  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, x, 25, name.c_str(), 0, 0, 13, 0xFFF0E1, 1, 0);
-  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, x - 1, 26, name.c_str(), 0, 0, 13, 0x864D43, 1, 0);
+  this->DrawTextAt(x, 25, name.c_str(), 0, 0, 13, 0xFFF0E1, 1, 0);
+  this->DrawTextAt(x - 1, 26, name.c_str(), 0, 0, 13, 0x864D43, 1, 0);
 }
 
 // OFFSET: 0x0081BA00
@@ -1493,22 +1489,20 @@ void UIRune_ViewInfo::Paint() {
   const int center = static_cast<int>(static_cast<float>(this->m_gauge->geometry.width) * 0.5f + static_cast<float>(this->m_gauge->geometry.x));
 
   const std::string activeText = FormatOwnedString("%d", active);
-  const int activeWidth = this->TextWidth(this->m_context->fonts, this->m_context->locale, activeText.c_str(), activeText.size(), 0, 12, 0, 0);
-  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, center - activeWidth - 7, 406, activeText.c_str(), 0, 0, 12, 0xFF7E00, 0, 0);
+  const int activeWidth = this->TextWidth(activeText.c_str(), activeText.size(), 0, 12, 0, 0);
+  this->DrawTextAt(center - activeWidth - 7, 406, activeText.c_str(), 0, 0, 12, 0xFF7E00, 0, 0);
   const std::string totalText = FormatOwnedString("/ %d", active, total);
-  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, center - 3, 406, totalText.c_str(), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(center - 3, 406, totalText.c_str(), 0, 0, 12, 0, 0, 0);
 
   const std::string title = "수집 현황";
-  const int titleWidth = this->TextWidth(this->m_context->fonts, this->m_context->locale, title.c_str(), title.size(), 0, 13, 0, 0);
-  this->DrawTextAt(
-    this->m_context->fonts, this->m_context->locale, static_cast<int>(261.0f - static_cast<float>(titleWidth) * 0.5f), 27, title.c_str(), 0, 0, 13, 0x864D43,
+  const int titleWidth = this->TextWidth(title.c_str(), title.size(), 0, 13, 0, 0);
+  this->DrawTextAt(static_cast<int>(261.0f - static_cast<float>(titleWidth) * 0.5f), 27, title.c_str(), 0, 0, 13, 0x864D43,
     1, 0
   );
 
   const std::string tagName = g_runeSystemMgr->GetTag(-1)->m_name;
-  const int tagWidth = this->TextWidth(this->m_context->fonts, this->m_context->locale, tagName.c_str(), tagName.size(), 0, 13, 0, 0);
-  this->DrawTextAt(
-    this->m_context->fonts, this->m_context->locale, static_cast<int>(261.0f - static_cast<float>(tagWidth) * 0.5f), 74, tagName.c_str(), 0, 0, 13, 0xDB632A,
+  const int tagWidth = this->TextWidth(tagName.c_str(), tagName.size(), 0, 13, 0, 0);
+  this->DrawTextAt(static_cast<int>(261.0f - static_cast<float>(tagWidth) * 0.5f), 74, tagName.c_str(), 0, 0, 13, 0xDB632A,
     1, 0
   );
 }
@@ -1736,7 +1730,7 @@ void UIRune_ViewInfo::Slot15(int, int) {
   UIStaticText* title = new UIStaticText(*this->m_context, *reinterpret_cast<UIButtonContext*>(nullptr));
   this->AddChild(title);
   std::string text = "룬타블렛-룬도감";
-  int width = this->TextWidth(this->m_context->fonts, this->m_context->locale, text.c_str(), text.size(), 0, 12, 0, 0);
+  int width = this->TextWidth(text.c_str(), text.size(), 0, 12, 0, 0);
   int x = static_cast<int>(261.0f - static_cast<float>(width) * 0.5f);
   title->SetSize(width + 10, 20);
   title->Move(x, 0x12A);
@@ -1746,7 +1740,7 @@ void UIRune_ViewInfo::Slot15(int, int) {
   UIStaticText* rate = new UIStaticText(*this->m_context, *reinterpret_cast<UIButtonContext*>(nullptr));
   this->AddChild(rate);
   text = "수집률";
-  width = this->TextWidth(this->m_context->fonts, this->m_context->locale, text.c_str(), text.size(), 0, 12, 0, 0);
+  width = this->TextWidth(text.c_str(), text.size(), 0, 12, 0, 0);
   x = static_cast<int>(261.0f - static_cast<float>(width) * 0.5f);
   rate->SetSize(width + 10, 20);
   rate->Move(x, 0x13B);
@@ -1945,7 +1939,7 @@ void UIRuneSet_Info::Slot15(int, int) {
   const std::string gradeTitle = LookupMessage(4044);
   this->m_gradeText->SetText(gradeTitle.c_str(), 1);
   this->m_gradeText->SetColor(0xFF, 0xFF, 0xFF);
-  const int titleWidth = this->TextWidth(this->m_context->fonts, this->m_context->locale, gradeTitle.c_str(), 0, 0, 12, 0, 0);
+  const int titleWidth = this->TextWidth(gradeTitle.c_str(), 0, 0, 12, 0, 0);
   this->m_gradeText->Move(static_cast<int>(500.0f - static_cast<float>(titleWidth) * 0.5f), 0x82);
 
   this->m_gradeItems = new UIRuneSystem_ActiveWnd(*this->m_context);
@@ -2098,8 +2092,8 @@ void UIRuneSet_Info::Paint() {
       const std::string collection = std::format("유저인터페이스\\collection\\{}.bmp", resource);
       this->DrawBitmap(0x188, 0xE1, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve(collection.c_str()))), true);
       if (this->m_runeSet->m_reward.values[0] != 0) {
-        this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 0x1BC, 0x30, LookupMessage(4203), 0, 0, 13, 0xFFF0E1, 1, 0);
-        this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 0x1BC, 0x31, LookupMessage(4203), 0, 0, 13, 0x864D43, 1, 0);
+        this->DrawTextAt(0x1BC, 0x30, LookupMessage(4203), 0, 0, 13, 0xFFF0E1, 1, 0);
+        this->DrawTextAt(0x1BC, 0x31, LookupMessage(4203), 0, 0, 13, 0x864D43, 1, 0);
       }
     }
   } else {
@@ -2111,27 +2105,24 @@ void UIRuneSet_Info::Paint() {
     } else {
       path = LookupMessage(4046);
     }
-    const int width = this->TextWidth(this->m_context->fonts, this->m_context->locale, path.c_str(), path.size(), 0, 12, 0, 0);
-    this->DrawTextAt(
-      this->m_context->fonts, this->m_context->locale, 0x1F5 - static_cast<int>(static_cast<float>(width) * 0.5f), 0x103, path.c_str(), 0, 0, 12, 0, 0, 0
+    const int width = this->TextWidth(path.c_str(), path.size(), 0, 12, 0, 0);
+    this->DrawTextAt(0x1F5 - static_cast<int>(static_cast<float>(width) * 0.5f), 0x103, path.c_str(), 0, 0, 12, 0, 0, 0
     );
   }
 
   const std::string title = FormatOwnedString(LookupMessage(4042), this->m_runeSet->GetName());
-  const int titleWidth = this->TextWidth(this->m_context->fonts, this->m_context->locale, title.c_str(), title.size(), 0, 13, 1, 0);
+  const int titleWidth = this->TextWidth(title.c_str(), title.size(), 0, 13, 1, 0);
   int x = static_cast<int>(186.0f - static_cast<float>(titleWidth) * 0.5f);
   if (this->m_runeSet->m_grade) {
     x += this->m_runeSet->m_grade > 9 ? 13 : 10;
   }
-  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, x, 0x19, title.c_str(), 0, 0, 13, 0xFFF0E1, 1, 0);
-  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, x, 0x1A, title.c_str(), 0, 0, 13, 0x864D43, 1, 0);
+  this->DrawTextAt(x, 0x19, title.c_str(), 0, 0, 13, 0xFFF0E1, 1, 0);
+  this->DrawTextAt(x, 0x1A, title.c_str(), 0, 0, 13, 0x864D43, 1, 0);
   if (this->m_runeSet->m_grade) {
     const std::string grade = FormatOwnedString("+%d", this->m_runeSet->m_grade);
-    this->DrawTextAt(
-      this->m_context->fonts, this->m_context->locale, x - (this->m_runeSet->m_grade > 9 ? 5 : 0) - 20, 0x1A, grade.c_str(), 0, 0, 12, 0xFFF0E1, 1, 0
+    this->DrawTextAt(x - (this->m_runeSet->m_grade > 9 ? 5 : 0) - 20, 0x1A, grade.c_str(), 0, 0, 12, 0xFFF0E1, 1, 0
     );
-    this->DrawTextAt(
-      this->m_context->fonts, this->m_context->locale, x - (this->m_runeSet->m_grade > 9 ? 5 : 0) - 20, 0x1B, grade.c_str(), 0, 0, 12, 0xEC720F, 1, 0
+    this->DrawTextAt(x - (this->m_runeSet->m_grade > 9 ? 5 : 0) - 20, 0x1B, grade.c_str(), 0, 0, 12, 0xEC720F, 1, 0
     );
   }
 }
@@ -2154,10 +2145,10 @@ void UIRune_Decom::Paint() {
   }
 
   if (this->unknown_007C.size()) {
-    const int nameWidth = this->TextWidth(this->m_context->fonts, this->m_context->locale, this->unknown_007C.c_str(), this->unknown_007C.size(), 0, 13, 0, 0);
+    const int nameWidth = this->TextWidth(this->unknown_007C.c_str(), this->unknown_007C.size(), 0, 13, 0, 0);
     const int nameX = static_cast<int>(static_cast<float>(this->geometry.width - nameWidth) * 0.5f);
-    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, nameX, 0x19, this->unknown_007C.c_str(), 0, 0, 13, 0xFFF0E1, 1, 0);
-    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, nameX - 1, 0x1A, this->unknown_007C.c_str(), 0, 0, 13, 0x864D43, 1, 0);
+    this->DrawTextAt(nameX, 0x19, this->unknown_007C.c_str(), 0, 0, 13, 0xFFF0E1, 1, 0);
+    this->DrawTextAt(nameX - 1, 0x1A, this->unknown_007C.c_str(), 0, 0, 13, 0x864D43, 1, 0);
   }
 
   this->DrawBitmap(200, 0x149, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_radio2.bmp"))), true);
@@ -2213,14 +2204,13 @@ void UIRune_Decom::Paint() {
       }
       text += "%";
 
-      int width = this->TextWidth(this->m_context->fonts, this->m_context->locale, text.c_str(), text.size(), 0, 12, 0, 0);
-      this->DrawTextAt(this->m_context->fonts, this->m_context->locale, x - width + 0x23, y + 0x13, text.c_str(), 0, 0, 12, 0xFFF7E7, 0, 0);
-      this->DrawTextAt(this->m_context->fonts, this->m_context->locale, x - width + 0x22, y + 0x12, text.c_str(), 0, 0, 12, 0x875F51, 0, 0);
+      int width = this->TextWidth(text.c_str(), text.size(), 0, 12, 0, 0);
+      this->DrawTextAt(x - width + 0x23, y + 0x13, text.c_str(), 0, 0, 12, 0xFFF7E7, 0, 0);
+      this->DrawTextAt(x - width + 0x22, y + 0x12, text.c_str(), 0, 0, 12, 0x875F51, 0, 0);
 
       text = FormatOwnedString("%d ~ %d", (*this->m_decomList)[index].m_minCount, (*this->m_decomList)[index].m_maxCount);
-      width = this->TextWidth(this->m_context->fonts, this->m_context->locale, text.c_str(), text.size(), 0, 12, 0, 0);
-      this->DrawTextAt(
-        this->m_context->fonts, this->m_context->locale, x - static_cast<int>(static_cast<float>(width) * 0.5f) + 0x13, y + 0x23, text.c_str(), 0, 0, 11,
+      width = this->TextWidth(text.c_str(), text.size(), 0, 12, 0, 0);
+      this->DrawTextAt(x - static_cast<int>(static_cast<float>(width) * 0.5f) + 0x13, y + 0x23, text.c_str(), 0, 0, 11,
         0x875F51, 0, 0
       );
     }

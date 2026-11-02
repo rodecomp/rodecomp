@@ -79,7 +79,7 @@ void UIListBoxEx::Resize(int width, int height) {
 void UIListBoxEx::AddLine(const char* text, std::uint32_t color) {
   this->lines.emplace(static_cast<int>(this->lines.size()), ExtendedListLine{text, color});
   auto& owner = *this->m_listContext;
-  const int width = this->TextWidth(owner.fonts, owner.locale, text, 0, 0, 12, 0, 0);
+  const int width = this->TextWidth(text, 0, 0, 12, 0, 0);
   this->contentWidth = std::max(this->contentWidth, width);
   this->Refresh();
 }

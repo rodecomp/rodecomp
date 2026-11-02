@@ -218,7 +218,7 @@ void UIMiniMapWnd::Slot15(int width, int height) {
 void UIEditctrlWnd::Paint() {
   UIButtonContext& controls = *this->m_controls;
   this->ClearSurface(0xFFFFFFFF);
-  this->DrawTitleBar(controls.fonts, controls.locale, true, LookupMessage(2755), 0);
+  this->DrawTitleBar(true, LookupMessage(2755), 0);
 }
 
 // OFFSET: 0x0099C820
@@ -329,7 +329,7 @@ void UIMiniMapWnd::Paint() {
   const std::string title =
     FormatOwnedString("%s ( %s ) %d %d", g_session.GetPlayerMapDisplayName(), g_session.m_navigationPlayerMap, column, row);
   UIButtonContext& controls = *this->m_controls;
-  this->DrawPanelBackground(this->DrawTitleBar(controls.fonts, controls.locale, true, title.c_str(), 0), 0, "");
+  this->DrawPanelBackground(this->DrawTitleBar(true, title.c_str(), 0), 0, "");
   this->DrawButtonBar(1, 0, 1);
   this->FillRegion(2, 19, 512, 512, 0xFFAAAAAA);
 

@@ -612,10 +612,10 @@ void UIRenewDetailQuestInfoWnd::Paint() {
       this->geometry.width >> 1, 39, g_renewQuestMgr->GetOngoingQuest(this->m_questId).m_title.c_str(),
       static_cast<int>(g_renewQuestMgr->GetOngoingQuest(this->m_questId).m_title.size()), 0, 12, 0x55321D, 1
     );
-    this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 12, 393, this->m_timeText.c_str(), 0, 0, 12, 0x161BD2, 0, 0);
+    this->DrawTextAt(12, 393, this->m_timeText.c_str(), 0, 0, 12, 0x161BD2, 0, 0);
   }
 
-  this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 16, 2, LookupMessage(0xD48), 0, 0, 13, 0, 0, 0);
+  this->DrawTextAt(16, 2, LookupMessage(0xD48), 0, 0, 13, 0, 0, 0);
 }
 
 // OFFSET: 0x007FBAD0
@@ -801,7 +801,7 @@ void UIRenewQuestScrollBar::Paint() {
 void UIRenewQuestWnd::Paint() {
   this->ClearSurface(0xFFFF00FF);
   this->DrawPanelBackground(0, 0, FormatOwnedString("유저인터페이스\\renew_questui\\bg_quest%d.bmp", this->m_tab + 1).c_str());
-  this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 45, 2, LookupMessage(3400), 0, 0, 13, 0, 0, 0);
+  this->DrawTextAt(45, 2, LookupMessage(3400), 0, 0, 13, 0, 0, 0);
 
   for (int index = 0; index < 9; ++index) {
     const int y = index * 46;
@@ -828,8 +828,7 @@ void UIRenewQuestWnd::Paint() {
       CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background)));
       this->DrawBitmap(38, this->m_pressed + 24 + y, bitmap ? &bitmap->image : nullptr, true);
       this->m_rows.icons[index]->Move(46, this->m_pressed + 31 + y);
-      this->DrawTextAt(
-        this->m_controls->fonts, this->m_controls->locale, 80, this->m_pressed + 30 + y, quest->m_title.empty() ? "" : quest->m_title.c_str(), 0, 0, 12,
+      this->DrawTextAt(80, this->m_pressed + 30 + y, quest->m_title.empty() ? "" : quest->m_title.c_str(), 0, 0, 12,
         0xE47B2E, 1, 0
       );
       summary = quest->unknown_004C.empty() ? "" : quest->unknown_004C.c_str();
@@ -838,14 +837,13 @@ void UIRenewQuestWnd::Paint() {
       CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\renew_questui\\bg_questList.bmp")));
       this->DrawBitmap(38, y + 24, bitmap ? &bitmap->image : nullptr, true);
       this->m_rows.icons[index]->Move(46, y + 31);
-      this->DrawTextAt(
-        this->m_controls->fonts, this->m_controls->locale, 80, y + 30, quest->m_title.empty() ? "" : quest->m_title.c_str(), 0, 0, 12, 0x955322, 1, 0
+      this->DrawTextAt(80, y + 30, quest->m_title.empty() ? "" : quest->m_title.c_str(), 0, 0, 12, 0x955322, 1, 0
       );
       summary = quest->unknown_004C.empty() ? "" : quest->unknown_004C.c_str();
       summaryY = y;
     }
 
-    this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 80, summaryY + 48, summary, 0, 0, 12, 0x38302E, 0, 0);
+    this->DrawTextAt(80, summaryY + 48, summary, 0, 0, 12, 0x38302E, 0, 0);
   }
 }
 

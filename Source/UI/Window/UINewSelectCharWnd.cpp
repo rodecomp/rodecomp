@@ -365,8 +365,8 @@ void UINewSelectCharWnd::Slot15(int width, int height) {
   this->AddChild(this->m_nextPageButton);
 
   UIStaticText* pageTitle = new UIStaticText();
-  const int titleWidth = this->TextWidth(this->m_context->fonts, this->m_context->locale, LookupMessage(0xD0F), 0, 0, 0xC, 1, 0);
-  pageTitle->SetSize(titleWidth, this->TextHeight(this->m_context->fonts, this->m_context->locale, LookupMessage(0xD0F), 0, 0, 0xC, 1, 0));
+  const int titleWidth = this->TextWidth(LookupMessage(0xD0F), 0, 0, 0xC, 1, 0);
+  pageTitle->SetSize(titleWidth, this->TextHeight(LookupMessage(0xD0F), 0, 0, 0xC, 1, 0));
   pageTitle->SetText(LookupMessage(0xD0F), 0);
   pageTitle->SetColor(0x57, 0x66, 0x91);
   pageTitle->Move(0x380 - titleWidth / 2, 0x21A);
@@ -375,8 +375,8 @@ void UINewSelectCharWnd::Slot15(int width, int height) {
   char pageText[16] = {};
   std::sprintf(pageText, "%d / %d", this->m_page + 1, this->m_pageCount);
   this->m_pageText = new UIStaticText();
-  const int pageWidth = this->TextWidth(this->m_context->fonts, this->m_context->locale, pageText, 0, 0, 0x12, 1, 0);
-  this->m_pageText->SetSize(pageWidth, this->TextHeight(this->m_context->fonts, this->m_context->locale, pageText, 0, 0, 0x12, 1, 0));
+  const int pageWidth = this->TextWidth(pageText, 0, 0, 0x12, 1, 0);
+  this->m_pageText->SetSize(pageWidth, this->TextHeight(pageText, 0, 0, 0x12, 1, 0));
   this->m_pageText->SetText(pageText, 0);
   this->m_pageText->SetFont(0, 0x12, 1, 0);
   this->m_pageText->SetColor(0xFF, 0xFF, 0xFF);
@@ -483,7 +483,7 @@ void UINewSelectCharWnd::Slot15(int width, int height) {
     const CharacterInfo* character = reinterpret_cast<const CharacterInfo*>(static_cast<CMode*>(g_charViewMode)->SendMsg(8, index, 0, 0, 0));
     if (character != nullptr) {
       name->SetTextFitted(character->name);
-      name->Move(x + 0x58 - this->TextWidth(this->m_context->fonts, this->m_context->locale, name->GetText().c_str(), 0, 0, 0xC, 0, 0) / 2, y + 0xBD);
+      name->Move(x + 0x58 - this->TextWidth(name->GetText().c_str(), 0, 0, 0xC, 0, 0) / 2, y + 0xBD);
     }
   }
 
@@ -512,8 +512,8 @@ void UINewSelectCharWnd::Paint() {
     }
 
     if (label) {
-      this->DrawTextAt(this->m_context->fonts, this->m_context->locale, column * 163 + 136, 50, label, 0, 1, 15, 0xFF, 0, 0);
-      this->DrawTextAt(this->m_context->fonts, this->m_context->locale, column * 163 + 142, 63, "Service", 0, 1, 15, 0xFF, 0, 0);
+      this->DrawTextAt(column * 163 + 136, 50, label, 0, 1, 15, 0xFF, 0, 0);
+      this->DrawTextAt(column * 163 + 142, 63, "Service", 0, 1, 15, 0xFF, 0, 0);
     }
 
     if (this->m_slotStatus[slot] == 0 && info) {
@@ -820,7 +820,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
           this->m_characterWindows[column]->SetTextFitted(info->name);
           UIStaticText* name = this->m_characterWindows[column];
           name->Move(
-            (column % 5) * 0x9D - this->TextWidth(this->m_context->fonts, this->m_context->locale, name->GetText().c_str(), 0, 0, 0xC, 0, 0) / 2 + 0x58,
+            (column % 5) * 0x9D - this->TextWidth(name->GetText().c_str(), 0, 0, 0xC, 0, 0) / 2 + 0x58,
             (column / 5) * 0xC3 + 0xBD
           );
         }
@@ -886,7 +886,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
           this->m_characterWindows[column]->SetTextFitted(info->name);
           UIStaticText* name = this->m_characterWindows[column];
           name->Move(
-            (column % 5) * 0x9D - this->TextWidth(this->m_context->fonts, this->m_context->locale, name->GetText().c_str(), 0, 0, 0xC, 0, 0) / 2 + 0x58,
+            (column % 5) * 0x9D - this->TextWidth(name->GetText().c_str(), 0, 0, 0xC, 0, 0) / 2 + 0x58,
             (column / 5) * 0xC3 + 0xBD
           );
         }
@@ -919,7 +919,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       this->m_characterWindows[column]->SetTextFitted(info->name);
       UIStaticText* name = this->m_characterWindows[column];
       name->Move(
-        (column % 5) * 0x9D - this->TextWidth(this->m_context->fonts, this->m_context->locale, name->GetText().c_str(), 0, 0, 0xC, 0, 0) / 2 + 0x58,
+        (column % 5) * 0x9D - this->TextWidth(name->GetText().c_str(), 0, 0, 0xC, 0, 0) / 2 + 0x58,
         (column / 5) * 0xC3 + 0xBD
       );
       break;

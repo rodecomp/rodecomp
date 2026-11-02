@@ -42,7 +42,7 @@ std::vector<unsigned char> UIMakeTargetListWnd::BuildReplayRecords() {
 // FUNCTION: fn_13610
 void UIMakeTargetListWnd::Paint() {
   auto& controls = *this->m_controls;
-  const int titleHeight = this->DrawTitleBar(controls.fonts, controls.locale, true, LookupMessage(425), 0);
+  const int titleHeight = this->DrawTitleBar(true, LookupMessage(425), 0);
   this->DrawPanelBackground(titleHeight, 0, "");
   this->DrawButtonBar(2, 0, 1);
 }

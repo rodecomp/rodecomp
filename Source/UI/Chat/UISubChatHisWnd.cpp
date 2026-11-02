@@ -94,7 +94,7 @@ void UISubChatHisWnd::Paint() {
   this->ClearSurface(0xFFFF00FF);
   std::uint32_t color = 0xFFFFFF;
   const TextLocale locale = {};
-  this->DrawTextAt(g_fontCache, locale, 5, 4, this->m_name.c_str(), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(5, 4, this->m_name.c_str(), 0, 0, 12, 0, 0, 0);
   DrawColoredText(*this, static_cast<unsigned short>(g_textCodePage), 4, 3, this->m_name.c_str(), 0, color, 0, 12, false);
   this->FillRegion(2, 0, this->m_inputWidth - 5, 1, color);
   this->FillRegion(1, 1, 1, 1, color);
@@ -191,7 +191,7 @@ void UISubChatHisWnd::Slot15(int width, int height) {
   const auto found = g_session.m_subChatWnds.find(this->m_index);
   if (found != g_session.m_subChatWnds.end()) {
     this->m_name = found->second.name;
-    this->m_inputWidth = this->TextWidth(this->m_controls->fonts, this->m_controls->locale, this->m_name.c_str(), 0, 0, 12, 0, 0) + 10;
+    this->m_inputWidth = this->TextWidth(this->m_name.c_str(), 0, 0, 12, 0, 0) + 10;
     std::memcpy(this->m_options, found->second.options, sizeof(this->m_options));
     if (this->m_inputWidth < 25) {
       this->m_inputWidth = 25;

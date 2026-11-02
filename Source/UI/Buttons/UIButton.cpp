@@ -48,7 +48,7 @@ void UIButton::Paint() {
   }
 
   this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
-  this->DrawTextAt(this->m_buttonContext->fonts, this->m_buttonContext->locale, 0, 0, this->label.c_str(), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(0, 0, this->label.c_str(), 0, 0, 12, 0, 0, 0);
 }
 
 // OFFSET: 0x0085EB20

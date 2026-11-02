@@ -1646,7 +1646,7 @@ void UIExpandedBartermarketWnd::Slot15(int width, int height) {
 // OFFSET: 0x008426E0
 // FUNCTION: fn_10554
 void UIBarterItemPurchaseWnd::Paint() {
-  this->DrawTitleBar(this->m_controls->fonts, this->m_controls->locale, false, LookupMessage(0xE69), 0);
+  this->DrawTitleBar(false, LookupMessage(0xE69), 0);
   if (this->geometry.height == 17) {
     return;
   }
@@ -1724,7 +1724,7 @@ void UIBarterItemPurchaseWnd::Paint() {
 // OFFSET: 0x00842BF0
 // FUNCTION: fn_10555
 void UIBartermarketWnd::Paint() {
-  this->DrawTitleBar(this->m_controls->fonts, this->m_controls->locale, false, LookupMessage(0xBA), 0);
+  this->DrawTitleBar(false, LookupMessage(0xBA), 0);
   if (this->geometry.height == 17) {
     return;
   }
@@ -1809,7 +1809,7 @@ void UIBartermarketWnd::Paint() {
 // OFFSET: 0x008473F0
 // FUNCTION: fn_10585
 void UIExpandedBartermarketWnd::Paint() {
-  this->DrawTitleBar(this->m_context->fonts, this->m_context->locale, false, LookupMessage(0xE69), 0);
+  this->DrawTitleBar(false, LookupMessage(0xE69), 0);
 
   const int borderTiles = (this->geometry.height - 46 + 7) / 8;
   for (int tile = 0, y = 17; tile < borderTiles; ++tile, y += 8) {
@@ -1891,7 +1891,7 @@ void UIExpandedBartermarketWnd::Paint() {
 // OFFSET: 0x00847AA0
 // FUNCTION: fn_10586
 void UIExpandedBarterItemPurchaseWnd::Paint() {
-  this->DrawTitleBar(this->m_context->fonts, this->m_context->locale, false, LookupMessage(0xBA), 0);
+  this->DrawTitleBar(false, LookupMessage(0xBA), 0);
 
   const int borderHeight = this->geometry.height - 46;
   const int borderTiles = borderHeight / 8 + (borderHeight % 8 != 0);

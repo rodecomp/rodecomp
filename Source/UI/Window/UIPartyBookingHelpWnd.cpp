@@ -36,7 +36,7 @@ void UIPartyBookingHelpWnd::Slot15(int width, int height) {
 // OFFSET: 0x0092D630
 // FUNCTION: fn_12670
 void UIPartyBookingHelpWnd::Paint() {
-  this->DrawTitleBar(this->m_controls->fonts, this->m_controls->locale, true, LookupMessage(1716), 0);
+  this->DrawTitleBar(true, LookupMessage(1716), 0);
   this->DrawPanelBackground(17, 0, "");
 }
 

@@ -21,7 +21,7 @@ void UITransMenuWnd::Paint() {
 
     auto& controls = *this->m_controls;
     const int margin = this->m_margin;
-    this->DrawTextAt(controls.fonts, controls.locale, margin, (margin / 2 + cellHeight) * i + margin, this->m_items[i].text, 0, 0, this->m_lineHeight, color, 0, 0);
+    this->DrawTextAt(margin, (margin / 2 + cellHeight) * i + margin, this->m_items[i].text, 0, 0, this->m_lineHeight, color, 0, 0);
   }
 }
 

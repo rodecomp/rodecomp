@@ -60,7 +60,7 @@ void UIJobListWnd::Slot15(int width, int height) {
 // OFFSET: 0x0092C640
 // FUNCTION: fn_12664
 void UIJobListWnd::Paint() {
-  this->DrawTitleBar(this->m_controls->fonts, this->m_controls->locale, true, "", 0);
+  this->DrawTitleBar(true, "", 0);
   unsigned red, green, blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
   this->FillRegion(0, 17, this->geometry.width, this->geometry.height - 38, RGB(red, green, blue));

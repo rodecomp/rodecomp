@@ -35,11 +35,11 @@ void UIViewCameraInfoWnd::Paint() {
   }
 
   auto& controls = *this->m_controls;
-  this->DrawTextAt(controls.fonts, controls.locale, 10, 10,
+  this->DrawTextAt(10, 10,
                    FormatOwnedString("range : %4.3f", mode->camera->camera.distance).c_str(), 0, 0, 12, 0xFF, 1, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 10, 25,
+  this->DrawTextAt(10, 25,
                    FormatOwnedString("rotation : %4.3f", mode->camera->camera.yaw).c_str(), 0, 0, 12, 0xFF, 1, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 10, 40,
+  this->DrawTextAt(10, 40,
                    FormatOwnedString("latitude : %4.3f", mode->camera->camera.pitch).c_str(), 0, 0, 12, 0xFF, 1, 0);
 }
 

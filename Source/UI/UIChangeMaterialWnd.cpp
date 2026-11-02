@@ -556,11 +556,11 @@ void UIChangeMaterialWnd::Paint() {
   DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, controls.fonts, controls.locale, this->m_resultX, this->m_resultY, this->m_resultItem, 1, 0);
 
   const std::string amount = FormatOwnedString(LookupMessage(0xE8C), this->m_resultAmount / 10);
-  const int width = this->TextWidth(controls.fonts, controls.locale, amount.c_str(), 0, 0x1D, 0x17, 1, 0);
+  const int width = this->TextWidth(amount.c_str(), 0, 0x1D, 0x17, 1, 0);
   DrawOutlinedText(*this, 0x4F + (0xC8 - width) / 2, 0x64, amount.c_str(), 0, 0x5082DC, 0x643C00, 0x1D, 0x17, 1, 0);
 
   if (!this->m_resultText.empty()) {
-    this->DrawTextAt(controls.fonts, controls.locale, 0x50, 0x103, this->m_resultText.c_str(), 0, 0, 0xC, 0x1E00E6, 0, 0);
+    this->DrawTextAt(0x50, 0x103, this->m_resultText.c_str(), 0, 0, 0xC, 0x1E00E6, 0, 0);
   }
 }
 
@@ -609,18 +609,18 @@ void UIChangeMaterialWnd_List::Paint() {
     WORD language = g_serverLanguage->language;
     ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
     std::string name = naming.DisplayName(item, 0);
-    if (this->TextWidth(context.fonts, context.locale, name.c_str(), 0, 0, 12, 0, 0) > 100) {
+    if (this->TextWidth(name.c_str(), 0, 0, 12, 0, 0) > 100) {
       name = this->FitDisplayText(100, name.c_str(), 0, 12, 0);
     }
 
     const int y = rowHeight * row;
     if (entry->state == 1) {
       DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, context.fonts, context.locale, 0, y, item, 1, 0);
-      this->DrawTextAt(context.fonts, context.locale, 30, y + 6, name.c_str(), 0, 0, 12, 0, 0, 0);
+      this->DrawTextAt(30, y + 6, name.c_str(), 0, 0, 12, 0, 0, 0);
       this->DrawRightAlignedText(163, y + 6, FormatOwnedString(LookupMessage(182), item.quantity).c_str(), 0, 0, 12, 0, 0);
     } else {
       DrawItemWithQuantityAuxiliary(*this, descriptions, context.fonts, context.locale, 1, 0, y, item, 1, 0);
-      this->DrawTextAt(context.fonts, context.locale, 30, y + 6, name.c_str(), 0, 0, 12, 0xAAAAAA, 0, 0);
+      this->DrawTextAt(30, y + 6, name.c_str(), 0, 0, 12, 0xAAAAAA, 0, 0);
       this->DrawRightAlignedText(163, y + 6, FormatOwnedString(LookupMessage(182), item.quantity).c_str(), 0, 0, 12, 0xAAAAAA, 0);
     }
   }
@@ -796,13 +796,13 @@ void UIChangeMaterialWnd_CheckBox::Paint() {
     auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_unchecked.c_str())));
     this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
     if (!this->ascendingText.empty()) {
-      this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 0xc, 1, this->ascendingText.c_str(), 0, 0, 0xc, 0, 0, 0);
+      this->DrawTextAt(0xc, 1, this->ascendingText.c_str(), 0, 0, 0xc, 0, 0, 0);
     }
   } else if (this->geometry.unknown_0030 == 1) {
     auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_checked.c_str())));
     this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
     if (!this->descendingText.empty()) {
-      this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 0xc, 1, this->descendingText.c_str(), 0, 0, 0xc, 0, 0, 0);
+      this->DrawTextAt(0xc, 1, this->descendingText.c_str(), 0, 0, 0xc, 0, 0, 0);
     }
   }
 }

@@ -2886,7 +2886,7 @@ void CUIStaticText::UpdateText() {
   }
 
   const SIZE size =
-    this->TextSize(this->m_context->fonts, this->m_context->locale, this->unknown_0098.c_str(), 0, this->fontIndex, this->fontHeight, this->bold, 0);
+    this->TextSize(this->unknown_0098.c_str(), 0, this->fontIndex, this->fontHeight, this->bold, 0);
 
   if (this->horizontalAlign == 0) {
     this->textX = 0;
@@ -2982,11 +2982,9 @@ void CUITextButton::UpdateText() {
   }
 
   const SIZE size = this->orientation == 1
-                      ? this->VerticalTextSize(
-                          this->m_context->fonts, this->m_context->locale, this->displayText.c_str(), 0, this->fontIndex, this->fontHeight, this->bold, 0
+                      ? this->VerticalTextSize(this->displayText.c_str(), 0, this->fontIndex, this->fontHeight, this->bold, 0
                         )
-                      : this->TextSize(
-                          this->m_context->fonts, this->m_context->locale, this->displayText.c_str(), 0, this->fontIndex, this->fontHeight, this->bold, 0
+                      : this->TextSize(this->displayText.c_str(), 0, this->fontIndex, this->fontHeight, this->bold, 0
                         );
 
   if (this->horizontalAlign == 0) {
@@ -3062,8 +3060,7 @@ void CUITextButton::SetText(const std::string& value) {
 // FUNCTION: fn_14561
 void CUITextButton::Slot54(int) {
   if (this->orientation == 1) {
-    const int height = this->VerticalTextHeight(
-      this->m_context->fonts, this->m_context->locale, this->displayText.c_str(), 0, this->fontIndex, this->fontHeight, this->bold
+    const int height = this->VerticalTextHeight(this->displayText.c_str(), 0, this->fontIndex, this->fontHeight, this->bold
     );
     this->Resize(this->geometry.width, height);
     if (this->verticalAlign == 0) {
@@ -3074,8 +3071,7 @@ void CUITextButton::Slot54(int) {
       this->textY = this->geometry.height - height;
     }
   } else {
-    const int width = this->TextWidth(
-      this->m_context->fonts, this->m_context->locale, this->displayText.c_str(), 0, this->fontIndex, this->fontHeight, this->bold, 0
+    const int width = this->TextWidth(this->displayText.c_str(), 0, this->fontIndex, this->fontHeight, this->bold, 0
     );
     this->Resize(width, this->geometry.height);
     if (this->horizontalAlign == 0) {
@@ -3092,8 +3088,7 @@ void CUITextButton::Slot54(int) {
 // FUNCTION: fn_14688
 void CUITabButton::Slot54(int padding) {
   if (this->orientation == 1) {
-    const int height = this->VerticalTextHeight(
-      this->m_context->fonts, this->m_context->locale, this->displayText.c_str(), 0, this->fontIndex, this->fontHeight, this->bold
+    const int height = this->VerticalTextHeight(this->displayText.c_str(), 0, this->fontIndex, this->fontHeight, this->bold
     );
     this->Resize(this->geometry.width, padding + height);
     if (this->verticalAlign == 0) {
@@ -3104,8 +3099,7 @@ void CUITabButton::Slot54(int padding) {
       this->textY = this->geometry.height - height;
     }
   } else {
-    const int width = this->TextWidth(
-      this->m_context->fonts, this->m_context->locale, this->displayText.c_str(), 0, this->fontIndex, this->fontHeight, this->bold, 0
+    const int width = this->TextWidth(this->displayText.c_str(), 0, this->fontIndex, this->fontHeight, this->bold, 0
     );
     this->Resize(width + 2, this->geometry.height);
     if (this->horizontalAlign == 0) {
@@ -3131,8 +3125,7 @@ void CUITextButton::Slot55() {
   }
 
   if (this->disabled) {
-    this->DrawTextAt(
-      this->m_context->fonts, this->m_context->locale, this->textX, this->textY, this->displayText.c_str(), 0, this->fontIndex, this->fontHeight,
+    this->DrawTextAt(this->textX, this->textY, this->displayText.c_str(), 0, this->fontIndex, this->fontHeight,
       this->disabledTextColor, this->bold, 0
     );
     return;
@@ -3140,14 +3133,12 @@ void CUITextButton::Slot55() {
 
   if (this->state == 1) {
     if (this->shadow) {
-      this->DrawTextAt(
-        this->m_context->fonts, this->m_context->locale, this->textX, this->textY, this->displayText.c_str(), 0, this->fontIndex, this->fontHeight,
+      this->DrawTextAt(this->textX, this->textY, this->displayText.c_str(), 0, this->fontIndex, this->fontHeight,
         this->shadowColor, this->bold, 0
       );
     }
     if (!this->outline) {
-      this->DrawTextAt(
-        this->m_context->fonts, this->m_context->locale, this->textX + 1, this->textY + 1, this->displayText.c_str(), 0, this->fontIndex,
+      this->DrawTextAt(this->textX + 1, this->textY + 1, this->displayText.c_str(), 0, this->fontIndex,
         this->fontHeight, this->textColors[this->state], this->bold, 0
       );
       return;
@@ -3160,8 +3151,7 @@ void CUITextButton::Slot55() {
   }
 
   if (this->shadow) {
-    this->DrawTextAt(
-      this->m_context->fonts, this->m_context->locale, this->textX + 1, this->textY + 1, this->displayText.c_str(), 0, this->fontIndex,
+    this->DrawTextAt(this->textX + 1, this->textY + 1, this->displayText.c_str(), 0, this->fontIndex,
       this->fontHeight, this->shadowColor, this->bold, 0
     );
   }
@@ -3172,8 +3162,7 @@ void CUITextButton::Slot55() {
     );
     return;
   }
-  this->DrawTextAt(
-    this->m_context->fonts, this->m_context->locale, this->textX, this->textY, this->displayText.c_str(), 0, this->fontIndex, this->fontHeight,
+  this->DrawTextAt(this->textX, this->textY, this->displayText.c_str(), 0, this->fontIndex, this->fontHeight,
     this->textColors[this->state], this->bold, 0
   );
 }
@@ -3188,23 +3177,23 @@ void CUIBasicButton::Slot55() {
   FontCache& fonts = this->m_context->fonts;
   const TextLocale& locale = this->m_context->locale;
   if (this->disabled) {
-    this->DrawTextAt(fonts, locale, this->textX + 1, this->textY + 1, this->displayText.c_str(), 0, 0, 12, 0xE2E2E2, 0, 0);
-    this->DrawTextAt(fonts, locale, this->textX, this->textY, this->displayText.c_str(), 0, 0, 12, 0x6F6F6F, 0, 0);
+    this->DrawTextAt(this->textX + 1, this->textY + 1, this->displayText.c_str(), 0, 0, 12, 0xE2E2E2, 0, 0);
+    this->DrawTextAt(this->textX, this->textY, this->displayText.c_str(), 0, 0, 12, 0x6F6F6F, 0, 0);
     return;
   }
 
   switch (this->state) {
   case 0:
-    this->DrawTextAt(fonts, locale, this->textX + 1, this->textY + 1, this->displayText.c_str(), 0, 0, 12, 0xD7D7D7, 0, 0);
-    this->DrawTextAt(fonts, locale, this->textX, this->textY, this->displayText.c_str(), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(this->textX + 1, this->textY + 1, this->displayText.c_str(), 0, 0, 12, 0xD7D7D7, 0, 0);
+    this->DrawTextAt(this->textX, this->textY, this->displayText.c_str(), 0, 0, 12, 0, 0, 0);
     break;
   case 1:
-    this->DrawTextAt(fonts, locale, this->textX, this->textY, this->displayText.c_str(), 0, 0, 12, 0xFFFFFF, 0, 0);
-    this->DrawTextAt(fonts, locale, this->textX + 1, this->textY + 1, this->displayText.c_str(), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(this->textX, this->textY, this->displayText.c_str(), 0, 0, 12, 0xFFFFFF, 0, 0);
+    this->DrawTextAt(this->textX + 1, this->textY + 1, this->displayText.c_str(), 0, 0, 12, 0, 0, 0);
     break;
   case 2:
-    this->DrawTextAt(fonts, locale, this->textX + 1, this->textY + 1, this->displayText.c_str(), 0, 0, 12, 0xC7A796, 0, 0);
-    this->DrawTextAt(fonts, locale, this->textX, this->textY, this->displayText.c_str(), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(this->textX + 1, this->textY + 1, this->displayText.c_str(), 0, 0, 12, 0xC7A796, 0, 0);
+    this->DrawTextAt(this->textX, this->textY, this->displayText.c_str(), 0, 0, 12, 0, 0, 0);
     break;
   }
 }
@@ -3218,8 +3207,7 @@ void CUIStaticText::Paint() {
   }
 
   if (this->shadow) {
-    this->DrawTextAt(
-      this->m_context->fonts, this->m_context->locale, this->textX + 1, this->textY + 1, this->unknown_0098.c_str(), 0, this->fontIndex,
+    this->DrawTextAt(this->textX + 1, this->textY + 1, this->unknown_0098.c_str(), 0, this->fontIndex,
       this->fontHeight, this->shadowColor, this->bold, 0
     );
   }
@@ -3230,8 +3218,7 @@ void CUIStaticText::Paint() {
     );
     return;
   }
-  this->DrawTextAt(
-    this->m_context->fonts, this->m_context->locale, this->textX, this->textY, this->unknown_0098.c_str(), 0, this->fontIndex, this->fontHeight,
+  this->DrawTextAt(this->textX, this->textY, this->unknown_0098.c_str(), 0, this->fontIndex, this->fontHeight,
     this->color, this->bold, 0
   );
 }
@@ -3363,7 +3350,7 @@ void CUIBasicButton::SetAutoWidth(bool enabled) {
   if (!enabled) {
     this->Resize(this->defaultWidth, this->geometry.height);
   } else {
-    const int width = this->TextWidth(this->m_context->fonts, this->m_context->locale, this->text.c_str(), 0, 0, 12, 0, 0);
+    const int width = this->TextWidth(this->text.c_str(), 0, 0, 12, 0, 0);
     if (this->geometry.width < width + 8) {
       this->Resize(width + 8, this->geometry.height);
     }
@@ -3398,7 +3385,7 @@ const char* UIWindow::ClipTextToWidth(const char* text, int maxWidth, int family
     return nullptr;
   }
 
-  const int width = this->TextWidth(this->m_context->fonts, this->m_context->locale, text, static_cast<unsigned>(std::strlen(text)), family, height, bold, 0);
+  const int width = this->TextWidth(text, static_cast<unsigned>(std::strlen(text)), family, height, bold, 0);
   int ellipsisWidth;
   {
     TextContext context(*this->geometry.surface);
@@ -3419,7 +3406,7 @@ const char* UIWindow::ClipTextToWidth(const char* text, int maxWidth, int family
         const char* start = current;
         current = (*reinterpret_cast<NextCharacter**>(g_serverLanguage))[5](g_serverLanguage, start, static_cast<int>(end - start));
         const int step = static_cast<int>(current - start);
-        total += this->TextWidth(this->m_context->fonts, this->m_context->locale, start, step, family, height, bold, 0);
+        total += this->TextWidth(start, step, family, height, bold, 0);
         bytes += step;
         if (total > maxWidth) {
           bytes = previous;

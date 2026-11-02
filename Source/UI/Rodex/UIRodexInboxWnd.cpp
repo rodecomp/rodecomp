@@ -148,9 +148,9 @@ void UIRodexInboxWnd::Slot15(int width, int height) {
     tab->Invalidate();
   }
   {
-    const int textX = static_cast<int>(static_cast<float>(this->unknown_0138->geometry.width - this->TextWidth(this->m_context->fonts, this->m_context->locale, LookupMessage(0xDDC), 0, 0, 12, 0, 0)) * g_depthAverageHalf);
+    const int textX = static_cast<int>(static_cast<float>(this->unknown_0138->geometry.width - this->TextWidth(LookupMessage(0xDDC), 0, 0, 12, 0, 0)) * g_depthAverageHalf);
     UIBmpRadioBtn* tab = this->unknown_0138;
-    const int textY = static_cast<int>(static_cast<float>(tab->geometry.height - this->TextHeight(this->m_context->fonts, this->m_context->locale, LookupMessage(0xDDC), 0, 0, 12, 0, 0) - 3) * g_depthAverageHalf);
+    const int textY = static_cast<int>(static_cast<float>(tab->geometry.height - this->TextHeight(LookupMessage(0xDDC), 0, 0, 12, 0, 0) - 3) * g_depthAverageHalf);
     tab->AddText(0, 12, 0xCCB5AD, true, false, textX, textY);
     this->unknown_0138->AddText(1, 12, 0x9C3E1F, true, false, textX, textY);
     this->unknown_0138->AddText(2, 12, 0x9C3E1F, true, false, textX, textY);
@@ -170,9 +170,9 @@ void UIRodexInboxWnd::Slot15(int width, int height) {
     tab->Invalidate();
   }
   {
-    const int textX = static_cast<int>(static_cast<float>(this->unknown_0134->geometry.width - this->TextWidth(this->m_context->fonts, this->m_context->locale, LookupMessage(0xDDA), 0, 0, 12, 0, 0)) * g_depthAverageHalf);
+    const int textX = static_cast<int>(static_cast<float>(this->unknown_0134->geometry.width - this->TextWidth(LookupMessage(0xDDA), 0, 0, 12, 0, 0)) * g_depthAverageHalf);
     UIBmpRadioBtn* tab = this->unknown_0134;
-    const int textY = static_cast<int>(static_cast<float>(tab->geometry.height - this->TextHeight(this->m_context->fonts, this->m_context->locale, LookupMessage(0xDDA), 0, 0, 12, 0, 0) - 3) * g_depthAverageHalf);
+    const int textY = static_cast<int>(static_cast<float>(tab->geometry.height - this->TextHeight(LookupMessage(0xDDA), 0, 0, 12, 0, 0) - 3) * g_depthAverageHalf);
     tab->AddText(0, 12, 0xCCB5AD, true, false, textX, textY);
     this->unknown_0134->AddText(1, 12, 0x9C3E1F, true, false, textX, textY);
     this->unknown_0134->AddText(2, 12, 0x9C3E1F, true, false, textX, textY);
@@ -192,9 +192,9 @@ void UIRodexInboxWnd::Slot15(int width, int height) {
     tab->Invalidate();
   }
   {
-    const int textX = static_cast<int>(static_cast<float>(this->unknown_0130->geometry.width - this->TextWidth(this->m_context->fonts, this->m_context->locale, LookupMessage(0xDDB), 0, 0, 12, 0, 0)) * g_depthAverageHalf);
+    const int textX = static_cast<int>(static_cast<float>(this->unknown_0130->geometry.width - this->TextWidth(LookupMessage(0xDDB), 0, 0, 12, 0, 0)) * g_depthAverageHalf);
     UIBmpRadioBtn* tab = this->unknown_0130;
-    const int textY = static_cast<int>(static_cast<float>(tab->geometry.height - this->TextHeight(this->m_context->fonts, this->m_context->locale, LookupMessage(0xDDB), 0, 0, 12, 0, 0) - 3) * g_depthAverageHalf);
+    const int textY = static_cast<int>(static_cast<float>(tab->geometry.height - this->TextHeight(LookupMessage(0xDDB), 0, 0, 12, 0, 0) - 3) * g_depthAverageHalf);
     tab->AddText(0, 12, 0xCCB5AD, true, false, textX, textY);
     this->unknown_0130->AddText(1, 12, 0x9C3E1F, true, false, textX, textY);
     this->unknown_0130->AddText(2, 12, 0x9C3E1F, true, false, textX, textY);
@@ -358,9 +358,9 @@ void UIRodexInboxWnd::Slot15(int width, int height) {
     tab->Invalidate();
   }
   {
-    const int textX = static_cast<int>(static_cast<float>(this->unknown_01D0->geometry.width - this->TextWidth(this->m_context->fonts, this->m_context->locale, LookupMessage(0xDDD), 0, 0, 12, 0, 0)) * g_depthAverageHalf);
+    const int textX = static_cast<int>(static_cast<float>(this->unknown_01D0->geometry.width - this->TextWidth(LookupMessage(0xDDD), 0, 0, 12, 0, 0)) * g_depthAverageHalf);
     UIBmpRadioBtn* tab = this->unknown_01D0;
-    const int textY = static_cast<int>(static_cast<float>(tab->geometry.height - this->TextHeight(this->m_context->fonts, this->m_context->locale, LookupMessage(0xDDD), 0, 0, 12, 0, 0) - 3) * g_depthAverageHalf);
+    const int textY = static_cast<int>(static_cast<float>(tab->geometry.height - this->TextHeight(LookupMessage(0xDDD), 0, 0, 12, 0, 0) - 3) * g_depthAverageHalf);
     tab->AddText(0, 12, 0xCCB5AD, true, false, textX, textY);
     this->unknown_01D0->AddText(1, 12, 0x9C3E1F, true, false, textX, textY);
     this->unknown_01D0->AddText(2, 12, 0x9C3E1F, true, false, textX, textY);
@@ -493,7 +493,7 @@ void UIRodexInboxWnd::Paint() {
   }
 
   this->DrawRightAlignedText(0x111, 0x2E, FormatOwnedString("%d", g_rodexMailStore->unknown_0014).c_str(), 0, 0, 11, 0xC89482, 1);
-  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 0x111, 0x2E, LookupMessage(0xBDA), 0, 0, 11, 0xC89482, 1, 0);
+  this->DrawTextAt(0x111, 0x2E, LookupMessage(0xBDA), 0, 0, 11, 0xC89482, 1, 0);
 }
 
 // OFFSET: 0x00808FD0

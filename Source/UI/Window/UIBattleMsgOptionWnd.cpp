@@ -186,7 +186,7 @@ void UIBattleMsgOptionWnd::UpdateScrollBar() {
 void UIBattleMsgOptionWnd::Paint() {
   auto& controls = *this->m_controls;
 
-  const int titleHeight = this->DrawTitleBar(controls.fonts, controls.locale, true, this->text.c_str(), 0);
+  const int titleHeight = this->DrawTitleBar(true, this->text.c_str(), 0);
   this->DrawPanelBackground(titleHeight, 0, "");
 
   const int leftHeight = this->geometry.height - 42;
@@ -223,7 +223,7 @@ void UIBattleMsgOptionWnd::Paint() {
       this->FillRegion(26, y - 2, this->geometry.width - 42, 18, 0xFFFFFF);
     }
 
-    this->DrawTextAt(controls.fonts, controls.locale, 50, y, *it, 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(50, y, *it, 0, 0, 12, 0, 0, 0);
     const bool online = this->unknown_00EC[index] != 0;
     auto* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
       Resolve(online ? "유저인터페이스\\basic_interface\\grp_online.bmp" : "유저인터페이스\\basic_interface\\grp_offline.bmp")

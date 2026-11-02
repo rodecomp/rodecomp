@@ -714,7 +714,7 @@ void UIRoMapWnd::Slot31(int x, int y) {
     const TextLocale locale = {};
     int width = 0;
     for (const std::string& name : this->unknown_01FC) {
-      const int textWidth = this->TextWidth(g_fontCache, locale, name.c_str(), 0, 0, 14, 0, 0);
+      const int textWidth = this->TextWidth(name.c_str(), 0, 0, 14, 0, 0);
       if (width < textWidth) {
         width = textWidth;
       }
@@ -786,7 +786,7 @@ void UIMemorialDunWnd::ResetDungeonInfo() {
 // OFFSET: 0x0092C6B0
 // FUNCTION: fn_12665
 void UIMemorialDunWnd::Paint() {
-  this->DrawTitleBar(this->m_context->fonts, this->m_context->locale, true, LookupMessage(0x538), 0);
+  this->DrawTitleBar(true, LookupMessage(0x538), 0);
   if (this->geometry.height == 17) {
     return;
   }
@@ -836,7 +836,7 @@ void UIMemorialDunWnd::Paint() {
     }
   } else if (g_session.unknown_5948 == 2) {
     if (g_session.unknown_596C) {
-      this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 10, 55, LookupMessage(0x540), 0, 0, 12, 0, 0, 0);
+      this->DrawTextAt(10, 55, LookupMessage(0x540), 0, 0, 12, 0, 0, 0);
       strftime(timeText, 128, LookupMessage(0x4EC), _localtime32(reinterpret_cast<const __time32_t*>(&g_session.unknown_596C)));
       sprintf(text, "^ff0000%s^ffffff", timeText);
       const int width = this->ColoredTextWidth(text, 0, 0, 12, 0);
@@ -1237,18 +1237,18 @@ int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       local.sub_4EE2E0(text);
       const int previousWidth = this->m_inputWidth;
       if (text != nullptr && text[0] != '\0') {
-        const int measured = this->TextWidth(this->m_controls->fonts, this->m_controls->locale, text, 0, 0, 12, 0, 0);
+        const int measured = this->TextWidth(text, 0, 0, 12, 0, 0);
         if (measured + 10 < this->geometry.width - 0x32) {
           reinterpret_cast<MsvcString*>(&this->m_name)->sub_696770(&local);
           reinterpret_cast<ChatIndexMap*>(&g_session.m_subChatWnds)->sub_914D30(&this->m_index)->sub_696770(reinterpret_cast<MsvcString*>(&this->m_name));
-          const int renamed = this->TextWidth(this->m_controls->fonts, this->m_controls->locale, text, 0, 0, 12, 0, 0);
+          const int renamed = this->TextWidth(text, 0, 0, 12, 0, 0);
           this->m_inputWidth = renamed + 10;
           if (this->m_inputWidth < 0x19) {
             this->m_inputWidth = 0x19;
           }
         }
       }
-      const int measured = this->TextWidth(this->m_controls->fonts, this->m_controls->locale, text, 0, 0, 12, 0, 0);
+      const int measured = this->TextWidth(text, 0, 0, 12, 0, 0);
       if (this->geometry.width - 0x32 <= measured + 10) {
         reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x629), 0, true, false, 0, "Message", 0x118, 0x78, 0);
       }

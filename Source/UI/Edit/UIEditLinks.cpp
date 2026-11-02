@@ -145,7 +145,7 @@ void UIEditCtrl::UpdateLinks() {
       if (this->firstVisible != 0 && prefix.size() <= static_cast<unsigned>(this->firstVisible)) {
         button->Move(1000, this->textY - 1);
       } else {
-        button->Move(this->TextWidth(this->m_edit->buttons.fonts, this->m_edit->buttons.locale, visible.c_str(), 0, 0, 12, 0, 0) + 2, this->textY - 1);
+        button->Move(this->TextWidth(visible.c_str(), 0, 0, 12, 0, 0) + 2, this->textY - 1);
       }
 
       this->SnapLinkSelection(prefix.size(), fitted.size());

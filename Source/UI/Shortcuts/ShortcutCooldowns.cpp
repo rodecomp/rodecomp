@@ -279,7 +279,7 @@ void UIRoMapWnd::Paint() {
   this->DrawHoverTooltip();
   this->DrawSelectedMapPreview();
   this->FillSurface(0xFFFF00FF, reinterpret_cast<const RECT*>(&this->m_kafraLeft));
-  this->DrawTitleBar(this->m_context->fonts, this->m_context->locale, true, "", 0);
+  this->DrawTitleBar(true, "", 0);
   this->FillRegion(0, 16, this->geometry.width, 2, 0xF7DFC6);
 }
 
@@ -287,7 +287,7 @@ void UIRoMapWnd::Paint() {
 // FUNCTION: fn_12675
 void UISeekPartyListWnd::Paint() {
   const TextLocale locale = {};
-  this->DrawTitleBar(g_fontCache, locale, true, "", 0);
+  this->DrawTitleBar(true, "", 0);
   if (this->m_minimized) {
     return;
   }
@@ -324,13 +324,13 @@ void UISeekPartyListWnd::Paint() {
         }
 
         const int textY = y + 3;
-        this->DrawTextAt(g_fontCache, locale, 22, textY, entry.time.c_str(), 0, 0, 12, 0, 0, 0);
+        this->DrawTextAt(22, textY, entry.time.c_str(), 0, 0, 12, 0, 0, 0);
         const char* charName =
           this->ClipTextToWidth(entry.charName.c_str(), 130, 0, 12, 0);
-        this->DrawTextAt(g_fontCache, locale, 76, textY, charName, 0, 0, 12, 0, 0, 0);
-        this->DrawTextAt(g_fontCache, locale, 215, textY, entry.level.c_str(), 0, 0, 12, 0, 0, 0);
-        this->DrawTextAt(g_fontCache, locale, 280, textY, entry.location.c_str(), 0, 0, 12, 0, 0, 0);
-        this->DrawTextAt(g_fontCache, locale, 22, y + 23, entry.jobs.c_str(), 0, 0, 12, 0, 0, 0);
+        this->DrawTextAt(76, textY, charName, 0, 0, 12, 0, 0, 0);
+        this->DrawTextAt(215, textY, entry.level.c_str(), 0, 0, 12, 0, 0, 0);
+        this->DrawTextAt(280, textY, entry.location.c_str(), 0, 0, 12, 0, 0, 0);
+        this->DrawTextAt(22, y + 23, entry.jobs.c_str(), 0, 0, 12, 0, 0, 0);
       }
 
       y += 40;
@@ -347,7 +347,7 @@ void UISeekPartyListWnd::Paint() {
 // FUNCTION: fn_12676
 void UISeekPartyMBWnd::Paint() {
   auto& controls = *this->m_controls;
-  this->DrawTitleBar(controls.fonts, controls.locale, true, "", 0);
+  this->DrawTitleBar(true, "", 0);
   if (this->m_minimized) {
     return;
   }
@@ -369,7 +369,7 @@ void UISeekPartyMBWnd::Paint() {
 // FUNCTION: fn_12677
 void UISeekPartyWnd::Paint() {
   auto& controls = *this->m_controls;
-  this->DrawTitleBar(controls.fonts, controls.locale, true, "", 0);
+  this->DrawTitleBar(true, "", 0);
 
   unsigned red;
   unsigned green;
@@ -394,7 +394,7 @@ void UISeekPartyWnd::Paint() {
   char text[10] = {};
   const unsigned seconds = this->m_elapsed / 1000;
   std::sprintf(text, "%02d:%02d:%02d", seconds / 60 / 60 % 60, seconds / 60 % 60, seconds % 60);
-  this->DrawTextAt(controls.fonts, controls.locale, 10, this->geometry.height - 20, text, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(10, this->geometry.height - 20, text, 0, 0, 12, 0, 0, 0);
 }
 
 // OFFSET: 0x0092D660
@@ -429,11 +429,11 @@ void UIQuickSlotWnd::Paint() {
       this->DrawBitmap(x, 5, &image->image, true);
       if (entry.count != 0) {
         std::sprintf(text, "%d", entry.count);
-        this->DrawTextAt(painting.fonts, painting.locale, x + 15, 20, text, 0, 0, 11, 0xFFFFFF, 0, 0);
-        this->DrawTextAt(painting.fonts, painting.locale, x + 13, 20, text, 0, 0, 11, 0xFFFFFF, 0, 0);
-        this->DrawTextAt(painting.fonts, painting.locale, x + 14, 21, text, 0, 0, 11, 0xFFFFFF, 0, 0);
-        this->DrawTextAt(painting.fonts, painting.locale, x + 14, 19, text, 0, 0, 11, 0xFFFFFF, 0, 0);
-        this->DrawTextAt(painting.fonts, painting.locale, x + 14, 20, text, 0, 0, 11, 0, 0, 0);
+        this->DrawTextAt(x + 15, 20, text, 0, 0, 11, 0xFFFFFF, 0, 0);
+        this->DrawTextAt(x + 13, 20, text, 0, 0, 11, 0xFFFFFF, 0, 0);
+        this->DrawTextAt(x + 14, 21, text, 0, 0, 11, 0xFFFFFF, 0, 0);
+        this->DrawTextAt(x + 14, 19, text, 0, 0, 11, 0xFFFFFF, 0, 0);
+        this->DrawTextAt(x + 14, 20, text, 0, 0, 11, 0, 0, 0);
       }
     } else {
       ITEM_INFO item = LookupClientItem(painting.inventory, static_cast<int>(entry.id), 1);
@@ -798,12 +798,12 @@ void UISerachStoreInfoWnd::Paint() {
   this->m_edits[3]->Invalidate();
 
   this->DrawPanelBackground(0, 0, "");
-  this->DrawTitleBar(controls.fonts, controls.locale, true, LookupMessage(0x6F4), 0);
+  this->DrawTitleBar(true, LookupMessage(0x6F4), 0);
   DrawOutlinedText(*this, 5, 20, "Type", 0, 0x7F3CFF, 0xFFFFFF, 0, 11, 1, 0);
   DrawOutlinedText(*this, 98, 20, "Item", 0, 0x7F3CFF, 0xFFFFFF, 0, 11, 1, 0);
   DrawOutlinedText(*this, 185, 20, "Card", 0, 0x7F3CFF, 0xFFFFFF, 0, 11, 1, 0);
   DrawOutlinedText(*this, 273, 20, "Zeny", 0, 0x7F3CFF, 0xFFFFFF, 0, 11, 1, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 353, 38, "~", 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(353, 38, "~", 0, 0, 12, 0, 0, 0);
 
   const std::string count = FormatOwnedString(LookupMessage(0x70A), g_session.unknown_5BE0);
   this->DrawRightAlignedText(this->geometry.width - 60, 60, count.c_str(), 0, 0, 12, 0, 0);
@@ -814,25 +814,21 @@ void UISerachStoreInfoWnd::Paint() {
   DrawRectangleBorder(*this, 330, 80, 30, 21, 0xC0C0C0);
   this->FillRegion(5, 100, this->geometry.width - 10, 1, 0xC0C0C0);
 
-  this->DrawTextAt(
-    controls.fonts, controls.locale, (110 - this->TextWidth(controls.fonts, controls.locale, LookupMessage(0x6F5), 0, 0, 12, 0, 0)) / 2 + 50, 85,
+  this->DrawTextAt((110 - this->TextWidth(LookupMessage(0x6F5), 0, 0, 12, 0, 0)) / 2 + 50, 85,
     LookupMessage(0x6F5), 0, 0, 12, 0, 0, 0
   );
-  this->DrawTextAt(
-    controls.fonts, controls.locale, (170 - this->TextWidth(controls.fonts, controls.locale, LookupMessage(0x424), 0, 0, 12, 0, 0)) / 2 + 160, 85,
+  this->DrawTextAt((170 - this->TextWidth(LookupMessage(0x424), 0, 0, 12, 0, 0)) / 2 + 160, 85,
     LookupMessage(0x424), 0, 0, 12, 0, 0, 0
   );
-  this->DrawTextAt(
-    controls.fonts, controls.locale, (30 - this->TextWidth(controls.fonts, controls.locale, LookupMessage(0x6F6), 0, 0, 12, 0, 0)) / 2 + 330, 85,
+  this->DrawTextAt((30 - this->TextWidth(LookupMessage(0x6F6), 0, 0, 12, 0, 0)) / 2 + 330, 85,
     LookupMessage(0x6F6), 0, 0, 12, 0, 0, 0
   );
-  this->DrawTextAt(
-    controls.fonts, controls.locale, (75 - this->TextWidth(controls.fonts, controls.locale, LookupMessage(0x6F7), 0, 0, 12, 0, 0)) / 2 + 360, 85,
+  this->DrawTextAt((75 - this->TextWidth(LookupMessage(0x6F7), 0, 0, 12, 0, 0)) / 2 + 360, 85,
     LookupMessage(0x6F7), 0, 0, 12, 0, 0, 0
   );
 
   if (this->unknown_00F0.size() != 0) {
-    this->DrawTextAt(controls.fonts, controls.locale, 5, this->geometry.height - 20, this->unknown_00F0.c_str(), 0, 0, 12, 0xFF, 0, 0);
+    this->DrawTextAt(5, this->geometry.height - 20, this->unknown_00F0.c_str(), 0, 0, 12, 0xFF, 0, 0);
   }
 
   if (static_cast<unsigned int>(this->unknown_00DC * 10 - 10) >= g_session.unknown_5BD4.size()) {
@@ -876,25 +872,23 @@ void UISerachStoreInfoWnd::Paint() {
     if (lineEnd != std::string::npos) {
       storeName = storeName.substr(0, lineEnd);
     }
-    this->DrawTextAt(controls.fonts, controls.locale, 55, y, this->ClipTextToWidth(storeName.c_str(), 100, 0, 12, 0), 0, 0, 12, 0, 0, 0);
-    this->DrawTextAt(controls.fonts, controls.locale, 165, y, this->ClipTextToWidth(entry->item.DisplayName(0).c_str(), 160, 0, 12, 0), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(55, y, this->ClipTextToWidth(storeName.c_str(), 100, 0, 12, 0), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(165, y, this->ClipTextToWidth(entry->item.DisplayName(0).c_str(), 160, 0, 12, 0), 0, 0, 12, 0, 0, 0);
 
     char text[100];
     std::sprintf(text, "%d", entry->quantity);
-    this->DrawTextAt(
-      controls.fonts, controls.locale, (30 - this->TextWidth(controls.fonts, controls.locale, text, 0, 0, 12, 0, 0)) / 2 + 330, y, text, 0, 0, 12, 0, 0, 0
+    this->DrawTextAt((30 - this->TextWidth(text, 0, 0, 12, 0, 0)) / 2 + 330, y, text, 0, 0, 12, 0, 0, 0
     );
 
     const std::string price = FormatGroupedInteger(entry->price, text, 100) + std::string(" Z");
-    this->DrawAmount(controls.fonts, controls.locale, entry->price, price, 435 - this->TextWidth(controls.fonts, controls.locale, price.c_str(), 0, 0, 12, 0, 0), y);
+    this->DrawAmount(entry->price, price, 435 - this->TextWidth(price.c_str(), 0, 0, 12, 0, 0), y);
 
     row = next;
   }
 
   char page[12];
   std::sprintf(page, " %d ", this->unknown_00DC);
-  this->DrawTextAt(
-    controls.fonts, controls.locale, (this->geometry.width - this->TextWidth(controls.fonts, controls.locale, page, 0, 0, 12, 0, 0)) / 2,
+  this->DrawTextAt((this->geometry.width - this->TextWidth(page, 0, 0, 12, 0, 0)) / 2,
     this->geometry.height - 20, page, 0, 0, 12, 0, 0, 0
   );
 }

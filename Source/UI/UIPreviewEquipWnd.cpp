@@ -79,8 +79,8 @@ void UIPreviewEquipWnd::Slot15(int width, int height) {
 
   UIStaticText* shadow = new UIStaticText(*this->m_context, controls);
   shadow->SetSize(
-    this->TextWidth(this->m_context->fonts, this->m_context->locale, LookupMessage(0xB90), 0, 0, 12, 0, 0),
-    this->TextHeight(this->m_context->fonts, this->m_context->locale, LookupMessage(0xB90), 0, 0, 12, 0, 0)
+    this->TextWidth(LookupMessage(0xB90), 0, 0, 12, 0, 0),
+    this->TextHeight(LookupMessage(0xB90), 0, 0, 12, 0, 0)
   );
   shadow->SetText(LookupMessage(0xB90), 0);
   shadow->SetColor(255, 255, 255);
@@ -89,8 +89,8 @@ void UIPreviewEquipWnd::Slot15(int width, int height) {
 
   UIStaticText* title = new UIStaticText(*this->m_context, controls);
   title->SetSize(
-    this->TextWidth(this->m_context->fonts, this->m_context->locale, LookupMessage(0xB90), 0, 0, 12, 0, 0),
-    this->TextHeight(this->m_context->fonts, this->m_context->locale, LookupMessage(0xB90), 0, 0, 12, 0, 0)
+    this->TextWidth(LookupMessage(0xB90), 0, 0, 12, 0, 0),
+    this->TextHeight(LookupMessage(0xB90), 0, 0, 12, 0, 0)
   );
   title->SetText(LookupMessage(0xB90), 0);
   title->Move(18, 3);

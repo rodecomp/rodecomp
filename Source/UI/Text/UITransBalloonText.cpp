@@ -196,16 +196,14 @@ void UIAchBalloonText::Paint() {
   const int count = static_cast<int>(this->m_lines.size());
   const std::string& first = this->m_lines.front();
   const int lineHeight =
-    this->TextHeight(
-      this->m_textContext->fonts, this->m_textContext->locale, first.c_str(), static_cast<unsigned>(first.size()), this->m_fontFamily, this->m_fontHeight, 1, 0
+    this->TextHeight(first.c_str(), static_cast<unsigned>(first.size()), this->m_fontFamily, this->m_fontHeight, 1, 0
     ) +
     4;
   const int top = (this->geometry.height - lineHeight * count + 4) / 2;
 
   for (int index = 0; index < count; ++index) {
     const std::string& line = this->m_lines[index];
-    const int width = this->TextWidth(
-      this->m_textContext->fonts, this->m_textContext->locale, line.c_str(), static_cast<unsigned>(line.size()), this->m_fontFamily, this->m_fontHeight, 1, 0
+    const int width = this->TextWidth(line.c_str(), static_cast<unsigned>(line.size()), this->m_fontFamily, this->m_fontHeight, 1, 0
     );
     int y = top;
     if (index != 0) {

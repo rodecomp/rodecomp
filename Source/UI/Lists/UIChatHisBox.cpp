@@ -44,7 +44,7 @@ std::string UIChatHisBox::ResolvePlayerTags(const char* name) {
         const std::size_t found = tail.find(bracket);
         const std::string head = result.substr(0, position + found);
         position += found + std::strlen(bracket.c_str());
-        tag->column = this->TextWidth(this->m_listContext->fonts, this->m_listContext->locale, head.c_str(), 0, 0, 12, 0, 0) - this->horizontalOffset;
+        tag->column = this->TextWidth(head.c_str(), 0, 0, 12, 0, 0) - this->horizontalOffset;
       } else {
         const std::size_t found = result.find(LookupMessage(581));
         const std::string player = LookupPlayerName(tag->unknown_01F8);
@@ -57,13 +57,13 @@ std::string UIChatHisBox::ResolvePlayerTags(const char* name) {
           const std::size_t start = tail.find(opening);
           const std::string head = result.substr(0, position + start);
           position += start + std::strlen(opening.c_str()) + 1;
-          tag->column = this->TextWidth(this->m_listContext->fonts, this->m_listContext->locale, head.c_str(), 0, 0, 12, 0, 0) - this->horizontalOffset;
+          tag->column = this->TextWidth(head.c_str(), 0, 0, 12, 0, 0) - this->horizontalOffset;
 
           const std::string bracket = display.BracketName(naming.DisplayName(reinterpret_cast<const ITEM_INFO&>(tag->unknown_00F8), 0));
           tag->SetTooltip(bracket.c_str());
           const std::string text = bracket.c_str();
           tag->label = text;
-          tag->ResizeToTextClipped(this->TextWidth(this->m_listContext->fonts, this->m_listContext->locale, bracket.c_str(), 0, 0, 12, 0, 0) + 1, tag->geometry.height);
+          tag->ResizeToTextClipped(this->TextWidth(bracket.c_str(), 0, 0, 12, 0, 0) + 1, tag->geometry.height);
           this->lines[line] = result;
         }
       }

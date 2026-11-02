@@ -340,32 +340,28 @@ void UIRefining_BtnAgain::Paint() {
   UIBitmapButton::Paint();
   auto& controls = *this->m_buttonContext;
   if (this->m_disabled == 1) {
-    int width = this->TextWidth(controls.fonts, controls.locale, LookupMessage(3241), 0, 0, 12, 1, 0);
+    int width = this->TextWidth(LookupMessage(3241), 0, 0, 12, 1, 0);
     std::uint32_t color = this->success == 1 ? 0xE1C1F : (this->m_disabled == 1 ? 0x6F4333 : 0x3E1B12);
-    this->DrawTextAt(
-      controls.fonts, controls.locale, static_cast<int>(static_cast<float>(this->geometry.width - width) * 0.5f),
+    this->DrawTextAt(static_cast<int>(static_cast<float>(this->geometry.width - width) * 0.5f),
       (this->geometry.unknown_0030 == 2) + 14, LookupMessage(3241), 0, 0, 12, color, 1, 0
     );
     return;
   }
 
-  int width = this->TextWidth(controls.fonts, controls.locale, LookupMessage(3241), 0, 0, 12, 1, 0);
+  int width = this->TextWidth(LookupMessage(3241), 0, 0, 12, 1, 0);
   std::uint32_t color = this->success == 1 ? 0xE1C1F : (this->m_disabled == 1 ? 0x6F4333 : 0x3E1B12);
-  this->DrawTextAt(
-    controls.fonts, controls.locale, static_cast<int>(static_cast<float>(this->geometry.width - width) * 0.5f),
+  this->DrawTextAt(static_cast<int>(static_cast<float>(this->geometry.width - width) * 0.5f),
     (this->geometry.unknown_0030 == 2) + 9, LookupMessage(3241), 0, 0, 12, color, 1, 0
   );
 
   std::string count = FormatOwnedString(LookupMessage(3285), this->unknown_0125);
-  width = this->TextWidth(controls.fonts, controls.locale, count.c_str(), 0, 0, 11, 0, 0);
-  this->DrawTextAt(
-    controls.fonts, controls.locale, static_cast<int>(static_cast<float>(this->geometry.width - width) * 0.5f),
+  width = this->TextWidth(count.c_str(), 0, 0, 11, 0, 0);
+  this->DrawTextAt(static_cast<int>(static_cast<float>(this->geometry.width - width) * 0.5f),
     (this->geometry.unknown_0030 == 2) + 22, count.c_str(), 0, 0, 11, 0, 0, 0
   );
 
-  width = this->TextWidth(controls.fonts, controls.locale, IntToString(this->cost, 0).c_str(), 0, 0, 11, 1, 0);
-  this->DrawTextAt(
-    controls.fonts, controls.locale, static_cast<int>(static_cast<float>(this->geometry.width - width) * 0.5f),
+  width = this->TextWidth(IntToString(this->cost, 0).c_str(), 0, 0, 11, 1, 0);
+  this->DrawTextAt(static_cast<int>(static_cast<float>(this->geometry.width - width) * 0.5f),
     (this->geometry.unknown_0030 == 2) + 38, IntToString(this->cost, 0).c_str(), 0, 0, 11, 0xFFFFFF, 1, 0
   );
 }
@@ -375,17 +371,15 @@ void UIRefining_BtnAgain::Paint() {
 void UIRefining_BtnRefining::Paint() {
   UIBitmapButton::Paint();
   auto& controls = *this->m_buttonContext;
-  int width = this->TextWidth(controls.fonts, controls.locale, LookupMessage(2966), 0, 0, 13, 1, 0);
+  int width = this->TextWidth(LookupMessage(2966), 0, 0, 13, 1, 0);
   std::uint32_t color = this->m_disabled == 1 ? 0x94644A : 0x3E1B12;
-  this->DrawTextAt(
-    controls.fonts, controls.locale, static_cast<int>(static_cast<float>(this->geometry.width - width) * 0.5f),
+  this->DrawTextAt(static_cast<int>(static_cast<float>(this->geometry.width - width) * 0.5f),
     (this->geometry.unknown_0030 == 2) + 11, LookupMessage(2966), 0, 0, 12, color, 1, 0
   );
 
   if (this->m_disabled == 0) {
-    width = this->TextWidth(controls.fonts, controls.locale, IntToString(this->cost, 0).c_str(), 0, 0, 12, 1, 0);
-    this->DrawTextAt(
-      controls.fonts, controls.locale, 83 - width, (this->geometry.unknown_0030 == 2) + 28, IntToString(this->cost, 0).c_str(), 0, 0, 12, 0xFFFFFF, 1, 0
+    width = this->TextWidth(IntToString(this->cost, 0).c_str(), 0, 0, 12, 1, 0);
+    this->DrawTextAt(83 - width, (this->geometry.unknown_0030 == 2) + 28, IntToString(this->cost, 0).c_str(), 0, 0, 12, 0xFFFFFF, 1, 0
     );
   }
 }
@@ -395,10 +389,9 @@ void UIRefining_BtnRefining::Paint() {
 void UIRefining_BtnReturn::Paint() {
   UIBitmapButton::Paint();
   auto& controls = *this->m_buttonContext;
-  int width = this->TextWidth(controls.fonts, controls.locale, LookupMessage(2973), 0, 0, 12, 1, 0);
+  int width = this->TextWidth(LookupMessage(2973), 0, 0, 12, 1, 0);
   std::uint32_t color = this->highlighted == 1 ? 0xE1C1F : 0x3E1B12;
-  this->DrawTextAt(
-    controls.fonts, controls.locale, static_cast<int>(static_cast<float>(this->geometry.width - width) * 0.5f),
+  this->DrawTextAt(static_cast<int>(static_cast<float>(this->geometry.width - width) * 0.5f),
     (this->geometry.unknown_0030 == 2) + 14, LookupMessage(2973), 0, 0, 12, color, 1, 0
   );
 }
@@ -418,8 +411,7 @@ void UIRefining_Notice::Paint() {
     auto& controls = *this->m_controls;
     int offset = 0;
     for (const std::string& line : lines) {
-      this->DrawTextAt(
-        controls.fonts, controls.locale, 18, static_cast<int>((this->geometry.height - lines.size() * 11) * 0.5 + offset), line.c_str(), 0, 0, 11, color, 0, 0
+      this->DrawTextAt(18, static_cast<int>((this->geometry.height - lines.size() * 11) * 0.5 + offset), line.c_str(), 0, 0, 11, color, 0, 0
       );
       offset += 11;
     }
@@ -1166,7 +1158,7 @@ void UIRefiningWnd::Paint() {
       rate = this->materials[this->selectedMaterial].unknown_0004;
     }
     const std::string label = FormatOwnedString("%s %d%%", LookupMessage(2974), rate);
-    const int labelWidth = this->TextWidth(controls.fonts, controls.locale, label.c_str(), 0, 0, 12, 1, 0);
+    const int labelWidth = this->TextWidth(label.c_str(), 0, 0, 12, 1, 0);
 
     rate = 0;
     if (this->item.unknown_0000[1] != 0 && !this->materials.empty() && this->selectedMaterial >= 0 &&
@@ -1174,31 +1166,29 @@ void UIRefiningWnd::Paint() {
       rate = this->materials[this->selectedMaterial].unknown_0004;
     }
     const std::string percent = FormatOwnedString("%d%%", rate);
-    const int percentWidth = this->TextWidth(controls.fonts, controls.locale, percent.c_str(), 0, 0, 12, 1, 0);
+    const int percentWidth = this->TextWidth(percent.c_str(), 0, 0, 12, 1, 0);
 
     const int x = static_cast<int>((this->geometry.width - labelWidth) * 0.5);
-    this->DrawTextAt(controls.fonts, controls.locale, x, 31, LookupMessage(2974), 0, 0, 12, 0x422B1F, 1, 0);
-    this->DrawTextAt(controls.fonts, controls.locale, x - percentWidth + labelWidth, 31, percent.c_str(), 0, 0, 12, 0xDE612A, 1, 0);
+    this->DrawTextAt(x, 31, LookupMessage(2974), 0, 0, 12, 0x422B1F, 1, 0);
+    this->DrawTextAt(x - percentWidth + labelWidth, 31, percent.c_str(), 0, 0, 12, 0xDE612A, 1, 0);
     break;
   }
   case 3: {
-    const int width = this->TextWidth(controls.fonts, controls.locale, LookupMessage(2971), 0, 0, 12, 1, 0);
-    this->DrawTextAt(
-      controls.fonts, controls.locale, static_cast<int>((this->geometry.width - width) * 0.5), 31, LookupMessage(2971), 0, 0, 12, 0x422B1F, 1, 0
+    const int width = this->TextWidth(LookupMessage(2971), 0, 0, 12, 1, 0);
+    this->DrawTextAt(static_cast<int>((this->geometry.width - width) * 0.5), 31, LookupMessage(2971), 0, 0, 12, 0x422B1F, 1, 0
     );
     break;
   }
   case 4:
   case 5:
   case 6: {
-    const int width = this->TextWidth(controls.fonts, controls.locale, LookupMessage(2972), 0, 0, 12, 1, 0);
-    this->DrawTextAt(
-      controls.fonts, controls.locale, static_cast<int>((this->geometry.width - width) * 0.5), 31, LookupMessage(2972), 0, 0, 12, 0x422B1F, 1, 0
+    const int width = this->TextWidth(LookupMessage(2972), 0, 0, 12, 1, 0);
+    this->DrawTextAt(static_cast<int>((this->geometry.width - width) * 0.5), 31, LookupMessage(2972), 0, 0, 12, 0x422B1F, 1, 0
     );
     break;
   }
   }
 
   this->DrawButtonBar(2, 0, 1);
-  this->DrawTitleBar(controls.fonts, controls.locale, false, LookupMessage(2966), 0);
+  this->DrawTitleBar(false, LookupMessage(2966), 0);
 }

@@ -30,7 +30,7 @@ void UIBroadcastBalloon::AddMessage(int category, const BroadcastBalloonMessage&
   int width = 0;
   int height = 0;
   for (const BroadcastBalloonLine& line : last.lines) {
-    const SIZE size = this->TextSize(this->m_controls->fonts, this->m_controls->locale, line.text.c_str(), 0, 0, last.fontHeight, 0, 0);
+    const SIZE size = this->TextSize(line.text.c_str(), 0, 0, last.fontHeight, 0, 0);
     if (width < size.cx) {
       width = size.cx;
     }
@@ -96,7 +96,7 @@ void UIBroadcastBalloon::Paint() {
         y += 4;
         for (const BroadcastBalloonLine& line : message.lines) {
           this->sub_A86510(x + 6, y, line.text.c_str(), 0, line.color, line.outlineColor, 0, message.fontHeight, 0);
-          int lineHeight = this->TextHeight(this->m_controls->fonts, this->m_controls->locale, line.text.c_str(), 0, 0, message.fontHeight, 0, 0);
+          int lineHeight = this->TextHeight(line.text.c_str(), 0, 0, message.fontHeight, 0, 0);
           y += 4 + lineHeight;
         }
         y += 10;

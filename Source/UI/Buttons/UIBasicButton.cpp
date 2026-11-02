@@ -31,7 +31,7 @@ bool UIBasicButton::Configure(int width, const char* value) {
   this->Resize(width, this->geometry.height);
   this->text = value;
 
-  if (width < this->TextWidth(this->m_buttonContext->fonts, this->m_buttonContext->locale, value, 0, 0, 12, 0, 0)) {
+  if (width < this->TextWidth(value, 0, 0, 12, 0, 0)) {
     return false;
   }
 
@@ -60,7 +60,7 @@ void UIBasicButton::Paint() {
     }
 
     drawBitmap("_right.bmp", (this->geometry.width - 6));
-    const int width = this->TextWidth(this->m_buttonContext->fonts, this->m_buttonContext->locale, this->text.c_str(), 0, 0, 12, 0, 0);
+    const int width = this->TextWidth(this->text.c_str(), 0, 0, 12, 0, 0);
     int height;
 
     {
@@ -73,11 +73,9 @@ void UIBasicButton::Paint() {
     const int y = (this->geometry.height - height) / 2;
     const bool pressed = state == 2 || state == 3;
     const unsigned shadow = state == 0 ? 0xD7D7D7u : state == 1 ? 0xC7A796u : state == 2 ? 0xFFFFFFu : 0xE2E2E2u;
-    this->DrawTextAt(
-      this->m_buttonContext->fonts, this->m_buttonContext->locale, (x + (pressed ? 0 : 1)), (y + (pressed ? 0 : 1)), this->text.c_str(), 0, 0, 12, shadow, 0, 0
+    this->DrawTextAt((x + (pressed ? 0 : 1)), (y + (pressed ? 0 : 1)), this->text.c_str(), 0, 0, 12, shadow, 0, 0
     );
-    this->DrawTextAt(
-      this->m_buttonContext->fonts, this->m_buttonContext->locale, (x + (pressed ? 1 : 0)), (y + (pressed ? 1 : 0)), this->text.c_str(), 0, 0, 12,
+    this->DrawTextAt((x + (pressed ? 1 : 0)), (y + (pressed ? 1 : 0)), this->text.c_str(), 0, 0, 12,
       state == 3 ? 0x6F6F6Fu : 0, 0, 0
     );
   }

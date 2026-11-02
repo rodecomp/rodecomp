@@ -573,7 +573,6 @@ void UIMiniPartyInfoWnd::Paint() {
     fitted = this->FitDisplayText(static_cast<int>(static_cast<float>(this->geometry.width) * 0.6f), text, 0, 12, 1);
   }
 
-  this->DrawTextAt(
-    this->m_context->fonts, this->m_context->locale, 35, 9, fitted.c_str(), 0, 0, 12, this->m_owner->GetMember().offline == 1 ? 0xAAAAAA : 0xFFFFFF, 1, 0
+  this->DrawTextAt(35, 9, fitted.c_str(), 0, 0, 12, this->m_owner->GetMember().offline == 1 ? 0xAAAAAA : 0xFFFFFF, 1, 0
   );
 }

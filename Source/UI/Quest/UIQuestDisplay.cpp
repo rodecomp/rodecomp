@@ -131,8 +131,8 @@ void UIQuestDisplay::Paint() {
           }
 
           const int y = index * 13 + top;
-          this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 11, y + 29, hunt.c_str(), 0, 0, 12, 0, 0, 0);
-          this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 10, y + 28, hunt.c_str(), 0, 0, 12, 0xFFFFFF, 0, 0);
+          this->DrawTextAt(11, y + 29, hunt.c_str(), 0, 0, 12, 0, 0, 0);
+          this->DrawTextAt(10, y + 28, hunt.c_str(), 0, 0, 12, 0xFFFFFF, 0, 0);
         }
       }
 

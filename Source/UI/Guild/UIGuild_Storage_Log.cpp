@@ -138,7 +138,7 @@ void UIGuild_Storage_Log::FillRows() {
       std::sprintf(pages, "%02d / %02d", page, this->m_pageCounts[index]);
     }
   }
-  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 175, 228, pages, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(175, 228, pages, 0, 0, 12, 0, 0, 0);
 
   const std::vector<GuildStorageLogEntry>& logs = g_guildStorageLogs[index];
   char number[256];
@@ -180,7 +180,7 @@ void UIGuild_Storage_Log::FillRows() {
 // OFFSET: 0x0094D290
 // FUNCTION: fn_12904
 void UIGuild_Storage_Log::Paint() {
-  this->DrawTitleBar(this->m_context->fonts, this->m_context->locale, true, LookupMessage(0x9F3), 0);
+  this->DrawTitleBar(true, LookupMessage(0x9F3), 0);
   this->DrawPanelBackground(17, 0, "");
   this->DrawButtonBar(2, 0, 1);
   const BitmapImage* out = reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\out.bmp")));
@@ -193,12 +193,12 @@ void UIGuild_Storage_Log::Paint() {
   this->unknown_0158->colors[this->m_category] = 0xC89623;
   this->unknown_0158->Invalidate();
 
-  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 234, 23, LookupMessage(0x9F4), 0, 0, 11, 0xFF, 0, 0);
-  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 6, 47, LookupMessage(0x9EE), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 70, 47, LookupMessage(0x9EA), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 150, 47, LookupMessage(0x9EB), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 200, 47, LookupMessage(0x9EC), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 320, 47, LookupMessage(0x9ED), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(234, 23, LookupMessage(0x9F4), 0, 0, 11, 0xFF, 0, 0);
+  this->DrawTextAt(6, 47, LookupMessage(0x9EE), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(70, 47, LookupMessage(0x9EA), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(150, 47, LookupMessage(0x9EB), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(200, 47, LookupMessage(0x9EC), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(320, 47, LookupMessage(0x9ED), 0, 0, 12, 0, 0, 0);
   this->FillRows();
 
   int y = 60;

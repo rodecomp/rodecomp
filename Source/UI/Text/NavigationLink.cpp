@@ -609,8 +609,7 @@ void LineCutter::UIText::Paint() {
   const TextLocale locale = {};
 
   if (this->m_shadowed) {
-    this->DrawTextAt(
-      g_fontCache, locale, 1, 1, this->m_text.c_str(), this->m_text.size(), 0, this->m_fontHeight, this->m_shadowColor, this->m_bold,
+    this->DrawTextAt(1, 1, this->m_text.c_str(), this->m_text.size(), 0, this->m_fontHeight, this->m_shadowColor, this->m_bold,
       this->m_italic
     );
   }
@@ -620,8 +619,7 @@ void LineCutter::UIText::Paint() {
       *this, 1, 1, this->m_text.c_str(), this->m_text.size(), this->m_color, this->m_outlineColor, 0, this->m_fontHeight, this->m_bold, this->m_italic
     );
   } else {
-    this->DrawTextAt(
-      g_fontCache, locale, 0, 0, this->m_text.c_str(), this->m_text.size(), 0, this->m_fontHeight, this->m_color, this->m_bold, this->m_italic
+    this->DrawTextAt(0, 0, this->m_text.c_str(), this->m_text.size(), 0, this->m_fontHeight, this->m_color, this->m_bold, this->m_italic
     );
   }
 }
@@ -1047,7 +1045,7 @@ tagSIZE CCreateLineInfo::MeasureText(UIWindow* window, std::string text, const L
   }
 
   const TextLocale locale = {};
-  return window->TextSize(g_fontCache, locale, text.c_str(), text.size(), 0, style.fontHeight, style.bold, style.italic);
+  return window->TextSize(text.c_str(), text.size(), 0, style.fontHeight, style.bold, style.italic);
 }
 
 // OFFSET: 0x0083A180
@@ -1142,7 +1140,7 @@ UIWindow* CCreateLineInfo::CreateTextWindow(std::string text, const LineTextStyl
   window->m_shadowColor = this->unknown_0034;
   if (window->m_outlined == 1) {
     const TextLocale locale = {};
-    const int textWidth = window->TextWidth(g_fontCache, locale, window->m_text.c_str(), 0, 0, style.fontHeight, style.bold, style.italic);
+    const int textWidth = window->TextWidth(window->m_text.c_str(), 0, 0, style.fontHeight, style.bold, style.italic);
     window->Resize(textWidth + 2, style.fontHeight + 2);
   }
 

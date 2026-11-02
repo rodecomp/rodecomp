@@ -188,7 +188,7 @@ void UINavigationWnd::Slot15(int width, int height) {
 
   UICheckBox* box = new UICheckBox(*this->m_context, *this->m_controls);
   this->unknown_0118 = box;
-  box->SetSize(this->TextWidth(this->m_context->fonts, this->m_context->locale, LookupMessage(0x8A3), 10, 0, 12, 0, 0), 12);
+  box->SetSize(this->TextWidth(LookupMessage(0x8A3), 10, 0, 12, 0, 0), 12);
   path = base;
   this->unknown_0118->SetImages((path + "checkbox_1.bmp").c_str(), (path + "checkbox_0.bmp").c_str(), LookupMessage(0x8A3));
   this->unknown_0118->Move(-1000, -1000);
@@ -198,7 +198,7 @@ void UINavigationWnd::Slot15(int width, int height) {
 
   box = new UICheckBox(*this->m_context, *this->m_controls);
   this->unknown_0114 = box;
-  box->SetSize(this->TextWidth(this->m_context->fonts, this->m_context->locale, LookupMessage(0x8A5), 10, 0, 12, 0, 0), 12);
+  box->SetSize(this->TextWidth(LookupMessage(0x8A5), 10, 0, 12, 0, 0), 12);
   path = base;
   this->unknown_0114->SetImages((path + "checkbox_1.bmp").c_str(), (path + "checkbox_0.bmp").c_str(), LookupMessage(0x8A5));
   this->unknown_0114->Move(-1000, -1000);
@@ -208,7 +208,7 @@ void UINavigationWnd::Slot15(int width, int height) {
 
   box = new UICheckBox(*this->m_context, *this->m_controls);
   this->unknown_011C = box;
-  box->SetSize(this->TextWidth(this->m_context->fonts, this->m_context->locale, LookupMessage(0x8A7), 10, 0, 12, 0, 0), 12);
+  box->SetSize(this->TextWidth(LookupMessage(0x8A7), 10, 0, 12, 0, 0), 12);
   path = base;
   this->unknown_011C->SetImages((path + "checkbox_1.bmp").c_str(), (path + "checkbox_0.bmp").c_str(), LookupMessage(0x8A7));
   this->unknown_011C->Move(-1000, -1000);
@@ -574,10 +574,10 @@ void UINavigationWnd::Slot11() {
 // OFFSET: 0x0092CEF0
 // FUNCTION: fn_12668
 void UINavigationWnd::Paint() {
-  this->DrawTitleBar(this->m_context->fonts, this->m_context->locale, true, this->m_title.c_str(), 0);
+  this->DrawTitleBar(true, this->m_title.c_str(), 0);
   this->DrawPanelBackground(0x11, 0, "");
   if (g_navigationMinimized) {
-    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 6, 20, this->m_subtitle.c_str(), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(6, 20, this->m_subtitle.c_str(), 0, 0, 12, 0, 0, 0);
     return;
   }
 
@@ -657,8 +657,8 @@ void UINavigationWnd::Paint() {
 
   for (const NaviRouteLine& label : g_navigationLabels) {
     if (label.kind == g_navigationActiveLabel) {
-      this->DrawTextAt(this->m_context->fonts, this->m_context->locale, label.x + 1, label.y + 1, label.text.c_str(), 0, 0, 12, 0x1E1E1E, 0, 0);
-      this->DrawTextAt(this->m_context->fonts, this->m_context->locale, label.x, label.y, label.text.c_str(), 0, 0, 12, 0xE6E6E6, 0, 0);
+      this->DrawTextAt(label.x + 1, label.y + 1, label.text.c_str(), 0, 0, 12, 0x1E1E1E, 0, 0);
+      this->DrawTextAt(label.x, label.y, label.text.c_str(), 0, 0, 12, 0xE6E6E6, 0, 0);
     }
   }
 }

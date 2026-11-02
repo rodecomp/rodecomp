@@ -27,7 +27,7 @@
 // FUNCTION: fn_13609
 void UIItemRepairWnd::Paint() {
   auto& controls = *this->m_controls;
-  const int titleHeight = this->DrawTitleBar(controls.fonts, controls.locale, true, LookupMessage(812), 0);
+  const int titleHeight = this->DrawTitleBar(true, LookupMessage(812), 0);
   this->DrawPanelBackground(titleHeight, 0, "");
   this->DrawButtonBar(2, 0, 1);
 }
@@ -36,7 +36,7 @@ void UIItemRepairWnd::Paint() {
 // FUNCTION: fn_13612
 void UIMakeTargetResultWnd::Paint() {
   auto& controls = *this->m_controls;
-  const int titleHeight = this->DrawTitleBar(controls.fonts, controls.locale, false, "", 0);
+  const int titleHeight = this->DrawTitleBar(false, "", 0);
   this->DrawPanelBackground(titleHeight, 0, "");
   this->DrawButtonBar(2, 0, 1);
 

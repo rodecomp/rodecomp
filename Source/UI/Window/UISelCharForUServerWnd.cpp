@@ -211,7 +211,7 @@ void UISelCharForUServerWnd::UpdateCharInfoBalloon(int x, int y, std::uint32_t c
       char name[25];
       std::memcpy(name, info->name, sizeof(info->name));
       name[24] = '\0';
-      int width = this->TextWidth(this->m_context->fonts, this->m_context->locale, name, 0, 0, 12, 0, 0) + 60;
+      int width = this->TextWidth(name, 0, 0, 12, 0, 0) + 60;
 
       char text[100];
       this->unknown_19EC.push_back("Name");

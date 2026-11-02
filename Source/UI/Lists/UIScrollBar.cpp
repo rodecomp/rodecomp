@@ -518,7 +518,7 @@ void UITabControl::AddTab(const char* label, const char* tooltip) {
     const int tabWidth = this->parent->geometry.width / this->labels.size() - this->tabPadding;
 
     for (std::size_t index = 0; index < this->labels.size(); ++index) {
-      if (this->TextWidth(this->m_controls->fonts, this->m_controls->locale, this->labels[index].c_str(), 0, 0, this->unknown_00E8, 0, 0) > tabWidth) {
+      if (this->TextWidth(this->labels[index].c_str(), 0, 0, this->unknown_00E8, 0, 0) > tabWidth) {
         if (index != this->labels.size() - 1) {
           if (this->tooltips[index].empty()) {
             this->tooltips[index] = this->labels[index];
@@ -541,9 +541,9 @@ void UITabControl::AddTab(const char* label, const char* tooltip) {
 
   int width;
   if (this->layout == 0 || this->layout == 2) {
-    width = this->VerticalTextHeight(this->m_controls->fonts, this->m_controls->locale, label, 0, 0, this->unknown_00E8, 0);
+    width = this->VerticalTextHeight(label, 0, 0, this->unknown_00E8, 0);
   } else {
-    width = this->TextWidth(this->m_controls->fonts, this->m_controls->locale, label, 0, 0, this->unknown_00E8, 0, 0);
+    width = this->TextWidth(label, 0, 0, this->unknown_00E8, 0, 0);
   }
   this->widths.push_back(width + this->tabPadding);
 
@@ -635,7 +635,7 @@ void UIEditCtrl_Custom::DrawLabel(int x, int y, const char* text) {
   const unsigned char bold = this->unknown_011C;
   const std::uint32_t color = this->textColor;
   if (outline == 0xFFFFFFFF) {
-    this->DrawTextAt(this->m_edit->buttons.fonts, this->m_edit->buttons.locale, x, y, text, 0, 0, 12, color, bold, 0);
+    this->DrawTextAt(x, y, text, 0, 0, 12, color, bold, 0);
     return;
   }
 
@@ -657,10 +657,10 @@ void UIEditCtrl_Custom::PaintText() {
   const TextLocale& locale = this->m_edit->buttons.locale;
   const auto align = [&]() {
     if (this->unknown_0128 == 1) {
-      x = this->geometry.width - x - this->TextWidth(fonts, locale, display.c_str(), 0, 0, 12, this->unknown_011C, 0);
+      x = this->geometry.width - x - this->TextWidth(display.c_str(), 0, 0, 12, this->unknown_011C, 0);
     } else if (this->unknown_0128 == 2) {
       const float center = this->geometry.width * g_depthAverageHalf;
-      x = static_cast<int>(center - this->TextWidth(fonts, locale, display.c_str(), 0, 0, 12, this->unknown_011C, 0) * g_depthAverageHalf);
+      x = static_cast<int>(center - this->TextWidth(display.c_str(), 0, 0, 12, this->unknown_011C, 0) * g_depthAverageHalf);
     }
   };
 
@@ -680,8 +680,8 @@ void UIEditCtrl_Custom::PaintText() {
     }
 
     align();
-    const int left = begin ? this->TextWidth(fonts, locale, display.c_str(), begin, 0, 12, 0, 0) : 0;
-    const int right = end ? this->TextWidth(fonts, locale, display.c_str(), end, 0, 12, 0, 0) : 0;
+    const int left = begin ? this->TextWidth(display.c_str(), begin, 0, 12, 0, 0) : 0;
+    const int right = end ? this->TextWidth(display.c_str(), end, 0, 12, 0, 0) : 0;
 
     if (std::abs(this->m_edit->input.cursor - this->m_edit->input.anchor) != 0) {
       this->DrawSelection(x + left, right - left);
@@ -696,7 +696,7 @@ void UIEditCtrl_Custom::PaintText() {
     } else {
       this->DrawLabel(x, y, display.c_str());
       if (IsInputSuggestionAllowed() == true && (timeGetTime() / 500 & 1) == 0) {
-        this->DrawTextAt(fonts, locale, x + left - 2, y, "|", 0, 0, 12, this->textColor, 0, 0);
+        this->DrawTextAt(x + left - 2, y, "|", 0, 0, 12, this->textColor, 0, 0);
       }
     }
   } else {
@@ -745,13 +745,13 @@ void UIBasicItemCtrl::DrawItemIcon(int x, int y, int, bool compact) {
   } else {
     textY = y + 15;
     x += this->m_item.quantity < 1000 ? 14 : 0;
-    this->DrawTextAt(fonts, locale, x + 1, textY, count.c_str(), 0, 0, 11, 0xFFFFFF, 0, 0);
-    this->DrawTextAt(fonts, locale, x - 1, textY, count.c_str(), 0, 0, 11, 0xFFFFFF, 0, 0);
-    this->DrawTextAt(fonts, locale, x, y + 16, count.c_str(), 0, 0, 11, 0xFFFFFF, 0, 0);
-    this->DrawTextAt(fonts, locale, x, y + 14, count.c_str(), 0, 0, 11, 0xFFFFFF, 0, 0);
+    this->DrawTextAt(x + 1, textY, count.c_str(), 0, 0, 11, 0xFFFFFF, 0, 0);
+    this->DrawTextAt(x - 1, textY, count.c_str(), 0, 0, 11, 0xFFFFFF, 0, 0);
+    this->DrawTextAt(x, y + 16, count.c_str(), 0, 0, 11, 0xFFFFFF, 0, 0);
+    this->DrawTextAt(x, y + 14, count.c_str(), 0, 0, 11, 0xFFFFFF, 0, 0);
   }
 
-  this->DrawTextAt(fonts, locale, x, textY, count.c_str(), 0, 0, 11, 0, 0, 0);
+  this->DrawTextAt(x, textY, count.c_str(), 0, 0, 11, 0, 0, 0);
 }
 
 // OFFSET: 0x008900D0
@@ -916,7 +916,7 @@ void UITabControl::Slot10(int argument1, int argument2, std::intptr_t argument3)
 void UITabControl::DrawVerticalTab(int index) {
   const int width = this->widths[index];
   const int textHeight =
-    this->VerticalTextHeight(this->m_controls->fonts, this->m_controls->locale, this->labels[index].c_str(), 0, 0, this->unknown_00E8, 0);
+    this->VerticalTextHeight(this->labels[index].c_str(), 0, 0, this->unknown_00E8, 0);
   int y = 0;
   for (int previous = 0; previous < index; ++previous) {
     y += this->widths[previous] - 1;
@@ -981,7 +981,7 @@ void UITabControl::DrawTabBorder(int x, int y, int width, int height, std::uint3
 void UITabControl::DrawHorizontalTab(int index) {
   const int width = this->widths[index];
   const int textWidth =
-    this->TextWidth(this->m_controls->fonts, this->m_controls->locale, this->labels[index].c_str(), 0, 0, this->unknown_00E8, 0, 0);
+    this->TextWidth(this->labels[index].c_str(), 0, 0, this->unknown_00E8, 0, 0);
   int x = 0;
   for (int previous = 0; previous < index; ++previous) {
     x += this->widths[previous] - 1;
@@ -1008,8 +1008,7 @@ void UITabControl::DrawHorizontalTab(int index) {
     color = this->inactiveTextColor;
   }
 
-  this->DrawTextAt(
-    this->m_controls->fonts, this->m_controls->locale, (width - textWidth) / 2 + (width - textWidth) % 2 + x, y, this->labels[index].c_str(), 0, 0,
+  this->DrawTextAt((width - textWidth) / 2 + (width - textWidth) % 2 + x, y, this->labels[index].c_str(), 0, 0,
     this->unknown_00E8, color, 0, 0
   );
 }
@@ -1045,7 +1044,7 @@ int UITabControl::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
       return 0;
     }
 
-    const int width = this->TextWidth(this->m_controls->fonts, this->m_controls->locale, text.c_str(), 0, 0, this->unknown_00E8, 0, 0);
+    const int width = this->TextWidth(text.c_str(), 0, 0, this->unknown_00E8, 0, 0);
     if ((this->tabPadding + width) * this->TabCount() >= this->parent->geometry.width - 90) {
       reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(1577), 0, true, false, 0, "Message", 280, 120, 0);
     } else {
@@ -1266,8 +1265,7 @@ int UITreeView::LayoutNodes(std::list<UITreeNode*>& nodes, int x, int y) {
           label->unknown_00DC = fitted;
           width = label->m_border ? maxWidth + 2 : maxWidth;
         } else {
-          width = label->TextWidth(
-                    label->m_buttonContext->fonts, label->m_buttonContext->locale, label->label.c_str(), 0, label->m_fontFamily, label->m_fontHeight,
+          width = label->TextWidth(label->label.c_str(), 0, label->m_fontFamily, label->m_fontHeight,
                     label->m_outlined, 0
                   ) +
                   2;
@@ -1365,14 +1363,14 @@ void UIChatHisBox::Paint() {
     const int index = top + row;
     int x;
     if (g_serviceType == 19 && g_tipOfTheDayEnglish) {
-      const int width = this->TextWidth(fonts, locale, this->lines[index].c_str(), 0, 0, 12, 0, 0);
-      this->DrawTextAt(fonts, locale, this->geometry.width - width - 18, this->lineHeight * row + 4, this->lines[index].c_str(), 0, 0, 12, 0, 0, 0);
+      const int width = this->TextWidth(this->lines[index].c_str(), 0, 0, 12, 0, 0);
+      this->DrawTextAt(this->geometry.width - width - 18, this->lineHeight * row + 4, this->lines[index].c_str(), 0, 0, 12, 0, 0, 0);
       x = this->geometry.width - width - 19;
     } else {
-      this->DrawTextAt(fonts, locale, 3, this->lineHeight * row + 4, this->lines[index].c_str(), 0, 0, 12, 0, 0, 0);
+      this->DrawTextAt(3, this->lineHeight * row + 4, this->lines[index].c_str(), 0, 0, 12, 0, 0, 0);
       x = 2;
     }
-    this->DrawTextAt(fonts, locale, x, this->lineHeight * row + 3, this->lines[index].c_str(), 0, 0, 12, this->unknown_00E4[index], 0, 0);
+    this->DrawTextAt(x, this->lineHeight * row + 3, this->lines[index].c_str(), 0, 0, 12, this->unknown_00E4[index], 0, 0);
     this->PlaceNaviLinks(index);
     this->PlaceItemTags(index);
   }
@@ -1854,8 +1852,7 @@ std::string UIChatHisBox::RenderItemLinks(const char* lineText, std::string& sou
         if (button) {
           buttons.push_back(button);
           button->line = static_cast<int>(this->lines.size());
-          button->column = this->TextWidth(
-              this->m_listContext->fonts, this->m_listContext->locale, result.c_str(), 0, 0, 12, 0, 0) - this->horizontalOffset;
+          button->column = this->TextWidth(result.c_str(), 0, 0, 12, 0, 0) - this->horizontalOffset;
           result += button->GetLine(0);
         }
       }
@@ -1879,7 +1876,7 @@ std::string UIChatHisBox::RenderItemLinks(const char* lineText, std::string& sou
           button->m_hoverColor = 0x82F2E1;
           button->SetId(0x1D0);
           button->ResizeToTextClipped(
-              this->TextWidth(this->m_listContext->fonts, this->m_listContext->locale, label.c_str(), 0, 0, 12, 0, 0) + 1,
+              this->TextWidth(label.c_str(), 0, 0, 12, 0, 0) + 1,
               button->geometry.height);
 
           const std::string unknownName = LookupMessage(581);
@@ -1893,8 +1890,7 @@ std::string UIChatHisBox::RenderItemLinks(const char* lineText, std::string& sou
           this->AddChild(button);
           buttons.push_back(button);
           button->line = static_cast<int>(this->lines.size());
-          button->column = this->TextWidth(
-              this->m_listContext->fonts, this->m_listContext->locale, result.c_str(), 0, 0, 12, 0, 0) - this->horizontalOffset;
+          button->column = this->TextWidth(result.c_str(), 0, 0, 12, 0, 0) - this->horizontalOffset;
           result += label;
           position += static_cast<unsigned>(encoded.size() + g_itemLinkTagEnd.size() + g_itemLinkTagBegin.size());
         }
@@ -1977,12 +1973,11 @@ std::string UIChatHisBox::RenderNavigationLinks(const char* text, std::string& s
       button->SetId(438);
       const int height = button->geometry.height;
       button->ResizeToTextClipped(
-          this->TextWidth(this->m_listContext->fonts, this->m_listContext->locale, label.c_str(), 0, 0, 12, 0, 0) + 1, height);
+          this->TextWidth(label.c_str(), 0, 0, 12, 0, 0) + 1, height);
       this->AddChild(button);
       buttons.push_back(button);
       button->line = static_cast<int>(this->lines.size());
-      button->column = this->TextWidth(
-          this->m_listContext->fonts, this->m_listContext->locale, result.c_str(), 0, 0, 12, 0, 0) - this->horizontalOffset;
+      button->column = this->TextWidth(result.c_str(), 0, 0, 12, 0, 0) - this->horizontalOffset;
 
       result += label;
       result += tail;
@@ -2145,11 +2140,11 @@ void UIString::SetText(int width, int height, std::string text) {
 
   this->ParseTags(text);
   if (this->unknown_00AC.size() != 0) {
-    this->Resize(this->TextWidth(this->m_context->fonts, this->m_context->locale, this->unknown_00DC.c_str(), static_cast<unsigned>(this->unknown_00DC.size()), 0, 12, 0, 0) + 24, 24);
+    this->Resize(this->TextWidth(this->unknown_00DC.c_str(), static_cast<unsigned>(this->unknown_00DC.size()), 0, 12, 0, 0) + 24, 24);
   } else {
     this->Resize(
-      this->TextWidth(this->m_context->fonts, this->m_context->locale, this->unknown_00DC.c_str(), static_cast<unsigned>(this->unknown_00DC.size()), 0, 12, 0, 0),
-      this->TextHeight(this->m_context->fonts, this->m_context->locale, this->unknown_00DC.c_str(), static_cast<unsigned>(this->unknown_00DC.size()), 0, 12, 0, 0)
+      this->TextWidth(this->unknown_00DC.c_str(), static_cast<unsigned>(this->unknown_00DC.size()), 0, 12, 0, 0),
+      this->TextHeight(this->unknown_00DC.c_str(), static_cast<unsigned>(this->unknown_00DC.size()), 0, 12, 0, 0)
     );
   }
 }

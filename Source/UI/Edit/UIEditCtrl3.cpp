@@ -86,11 +86,11 @@ void UIEditCtrl3::PlaceLinks(const std::string& value, int y, int line, int firs
       int x = 3;
 
       if (this->invalidatesParent == 0 && this->firstVisible != 0) {
-        x = 3 - this->TextWidth(this->m_edit->buttons.fonts, this->m_edit->buttons.locale, this->text.c_str(), this->firstVisible, 0, 12, 0, 0);
+        x = 3 - this->TextWidth(this->text.c_str(), this->firstVisible, 0, 12, 0, 0);
       }
 
       button->line = line;
-      button->Move(x - 1 + this->TextWidth(this->m_edit->buttons.fonts, this->m_edit->buttons.locale, prefix.c_str(), 0, 0, 12, 0, 0), y);
+      button->Move(x - 1 + this->TextWidth(prefix.c_str(), 0, 0, 12, 0, 0), y);
     }
 
     this->SnapLinkSelection(prefix.size(), fitted.size());

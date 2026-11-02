@@ -120,7 +120,7 @@ void UIGuildWnd::Paint() {
   }
 
   auto& controls = *this->m_controls;
-  this->DrawTitleBar(controls.fonts, controls.locale, false, "", 0);
+  this->DrawTitleBar(false, "", 0);
   unsigned borderRed, borderGreen, borderBlue;
   SkinPaletteChannels(ResourceMgr::Instance(), 14, 6, borderRed, borderGreen, borderBlue);
   this->FillRegion(0, 41, this->geometry.width, this->geometry.height - 41, RGB(borderRed, borderGreen, borderBlue));
@@ -1030,7 +1030,7 @@ void UIGuildInfoManageWnd::Slot15(int, int) {
 
   this->m_agitList = new UIListBoxAgit(*this->m_context, *this->m_listContext);
   this->m_agitList->SetSize(95, 158);
-  this->m_agitList->Move(this->TextWidth(this->m_controls->fonts, this->m_controls->locale, LookupMessage(333), 0, 0, 12, 0, 0) + 19, 129);
+  this->m_agitList->Move(this->TextWidth(LookupMessage(333), 0, 0, 12, 0, 0) + 19, 129);
   this->m_agitList->lineHeight = 13;
   this->m_agitList->SetId(558);
   this->AddChild(this->m_agitList);
@@ -1156,8 +1156,8 @@ void UIGuildNoticeWnd::Paint() {
   char label[64];
   std::sprintf(label, "%s:", LookupMessage(515));
   auto& controls = *this->m_controls;
-  this->DrawTextAt(controls.fonts, controls.locale, 5, 67, label, 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 5, 86, LookupMessage(516), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(5, 67, label, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(5, 86, LookupMessage(516), 0, 0, 12, 0, 0, 0);
   this->DrawRightAlignedText(this->geometry.width - 7, 266, FormatOwnedString("[%d/%d]", this->m_bodyEdit->Length(), 119).c_str(), 0, 0, 12, 0, 0);
 }
 
@@ -1343,17 +1343,17 @@ void UIGuildSkillWnd::Paint() {
       gray = 120;
     } else {
       std::sprintf(text, g_serviceType == 12 ? "Nv : %d" : "Lv : %d", skill->level);
-      this->DrawTextAt(controls.fonts, controls.locale, x + 113, y + 58, text, 0, 0, 12, 0, 0, 0);
+      this->DrawTextAt(x + 113, y + 58, text, 0, 0, 12, 0, 0, 0);
       if (skill->unknown_000C == 0) {
         std::sprintf(text, LookupMessage(286));
       } else {
         std::sprintf(text, "Sp : %d", skill->unknown_0014);
       }
-      this->DrawTextAt(controls.fonts, controls.locale, x + 212, y + 58, text, 0, 0, 12, 0, 0, 0);
+      this->DrawTextAt(x + 212, y + 58, text, 0, 0, 12, 0, 0, 0);
       gray = 0;
     }
 
-    this->DrawTextAt(controls.fonts, controls.locale, x + 112, y + 46, skill->DisplayName(*g_session.m_hotkeyScript), 0, 0, 12, RGB(gray, gray, gray), 0, 0);
+    this->DrawTextAt(x + 112, y + 46, skill->DisplayName(*g_session.m_hotkeyScript), 0, 0, 12, RGB(gray, gray, gray), 0, 0);
     if (++drawn == this->m_visibleRows * this->m_columns) {
       break;
     }
@@ -1361,7 +1361,7 @@ void UIGuildSkillWnd::Paint() {
 
   char points[64];
   std::sprintf(points, "SkillPoint : %d", g_session.m_guildSkillPoint);
-  this->DrawTextAt(controls.fonts, controls.locale, this->geometry.width - 100, this->geometry.height - 20, points, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(this->geometry.width - 100, this->geometry.height - 20, points, 0, 0, 12, 0, 0, 0);
 }
 
 // OFFSET: 0x0095E9B0
@@ -1424,7 +1424,7 @@ void UIGuildPositionManageWnd::Paint() {
   auto& controls = *this->m_controls;
   int x = 0;
   for (int column = 0; column < 6; ++column) {
-    this->DrawTextAt(controls.fonts, controls.locale, x + 8, 49, headers[column], 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(x + 8, 49, headers[column], 0, 0, 12, 0, 0, 0);
     x += widths[column] + 1;
   }
 
@@ -1445,7 +1445,7 @@ void UIGuildPositionManageWnd::Paint() {
     char buffer[512];
     char path[128];
     std::sprintf(buffer, "%d", position->id);
-    this->DrawTextAt(controls.fonts, controls.locale, 8, y, buffer, 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(8, y, buffer, 0, 0, 12, 0, 0, 0);
     if (this->unknown_0180[drawn]) {
       this->unknown_0180[drawn]->SetText(position->name.c_str());
       this->unknown_0180[drawn]->Move(g_guildPositionColumnWidths[0] + 9, y - 2);
@@ -1495,9 +1495,7 @@ void UIGuildPositionManageWnd::Paint() {
       std::sprintf(buffer, "%d", position->tax);
       this->unknown_0154[drawn]->SetText(buffer);
       this->unknown_0154[drawn]->Move(taxX, y - 2);
-      this->DrawTextAt(
-        controls.fonts, controls.locale,
-        g_guildPositionColumnWidths[5] / 2 + g_guildPositionColumnWidths[4] + g_guildPositionColumnWidths[3] + g_guildPositionColumnWidths[2] +
+      this->DrawTextAt(g_guildPositionColumnWidths[5] / 2 + g_guildPositionColumnWidths[4] + g_guildPositionColumnWidths[3] + g_guildPositionColumnWidths[2] +
           g_guildPositionColumnWidths[1] + g_guildPositionColumnWidths[0] + 13,
         y, "%", 0, 0, 12, 0, 0, 0
       );
@@ -1521,16 +1519,16 @@ void UIGuildInfoManageWnd::Paint() {
   GuildInfo& guild = g_guildInfo;
   char text[1024];
   std::sprintf(text, "%s : %s", LookupMessage(328), guild.unknown_0000.c_str());
-  this->DrawTextAt(controls.fonts, controls.locale, 8, 49, text, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(8, 49, text, 0, 0, 12, 0, 0, 0);
   std::sprintf(text, "%s : %d", LookupMessage(329), guild.unknown_0060);
-  this->DrawTextAt(controls.fonts, controls.locale, 8, 65, text, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(8, 65, text, 0, 0, 12, 0, 0, 0);
   const std::string master = this->StripNamelessTag(g_guildInfo.unknown_0018);
   std::sprintf(text, "%s : %s", LookupMessage(330), master.c_str());
-  this->DrawTextAt(controls.fonts, controls.locale, 8, 81, text, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(8, 81, text, 0, 0, 12, 0, 0, 0);
   std::sprintf(text, "%s : %d / %d", LookupMessage(331), guild.unknown_0064, guild.unknown_006C);
-  this->DrawTextAt(controls.fonts, controls.locale, 8, 97, text, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(8, 97, text, 0, 0, 12, 0, 0, 0);
 
-  const int width = this->TextWidth(controls.fonts, controls.locale, text, 0, 0, 12, 0, 0);
+  const int width = this->TextWidth(text, 0, 0, 12, 0, 0);
   std::sprintf(text, "%s", "유저인터페이스\\basic_interface\\grp_online.bmp");
   CBitmapRes* online = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(text)));
   int x;
@@ -1541,23 +1539,23 @@ void UIGuildInfoManageWnd::Paint() {
   } else {
     this->DrawBitmap(width + 16, 95, &online->image, true);
     std::sprintf(text, " %d", guild.unknown_0068);
-    this->TextWidth(controls.fonts, controls.locale, LookupMessage(330), 0, 0, 12, 0, 0);
+    this->TextWidth(LookupMessage(330), 0, 0, 12, 0, 0);
     x = online->image.width + 16 + width;
   }
-  this->DrawTextAt(controls.fonts, controls.locale, x, 97, text, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(x, 97, text, 0, 0, 12, 0, 0, 0);
 
   std::sprintf(text, "%s : %d", LookupMessage(332), guild.unknown_0070);
-  this->DrawTextAt(controls.fonts, controls.locale, 8, 113, text, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(8, 113, text, 0, 0, 12, 0, 0, 0);
   std::sprintf(text, "%s : %s", LookupMessage(333), guild.unknown_0074.c_str());
-  this->DrawTextAt(controls.fonts, controls.locale, 8, 129, text, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(8, 129, text, 0, 0, 12, 0, 0, 0);
   std::sprintf(text, "%s : %d", LookupMessage(335), guild.unknown_008C);
-  this->DrawTextAt(controls.fonts, controls.locale, 200, 49, text, 0, 0, 12, guild.unknown_0060 >= 50 ? 0xFF : 0, 0, 0);
+  this->DrawTextAt(200, 49, text, 0, 0, 12, guild.unknown_0060 >= 50 ? 0xFF : 0, 0, 0);
   std::sprintf(text, "%s", LookupMessage(336));
-  this->DrawTextAt(controls.fonts, controls.locale, 200, 73, text, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(200, 73, text, 0, 0, 12, 0, 0, 0);
   std::sprintf(text, "%s", LookupMessage(338));
-  this->DrawTextAt(controls.fonts, controls.locale, 200, 139, text, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(200, 139, text, 0, 0, 12, 0, 0, 0);
   std::sprintf(text, "%s", LookupMessage(339));
-  this->DrawTextAt(controls.fonts, controls.locale, 200, 213, text, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(200, 213, text, 0, 0, 12, 0, 0, 0);
 
   unsigned red, green, blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
@@ -1585,7 +1583,7 @@ void UIGuildInfoManageWnd::Paint() {
         SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, hoverRed, hoverGreen, hoverBlue);
         this->FillRegion(204, y, 80, 16, RGB(hoverRed, hoverGreen, hoverBlue));
       }
-      this->DrawTextAt(controls.fonts, controls.locale, 204, y, related->unknown_0008.c_str(), 0, 0, 12, 0, 0, 0);
+      this->DrawTextAt(204, y, related->unknown_0008.c_str(), 0, 0, 12, 0, 0, 0);
       ++row;
       y += 16;
     }
@@ -1605,7 +1603,7 @@ void UIGuildInfoManageWnd::Paint() {
         SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, hoverRed, hoverGreen, hoverBlue);
         this->FillRegion(204, y, 80, 16, RGB(hoverRed, hoverGreen, hoverBlue));
       }
-      this->DrawTextAt(controls.fonts, controls.locale, 204, y, related->unknown_0008.c_str(), 0, 0, 12, 0, 0, 0);
+      this->DrawTextAt(204, y, related->unknown_0008.c_str(), 0, 0, 12, 0, 0, 0);
       ++row;
       y += 16;
     }
@@ -1677,7 +1675,7 @@ void UIGuildTotalInfoWnd::Paint() {
   auto& controls = *this->m_controls;
   int x = 0;
   for (int column = 0; column < 4; ++column) {
-    this->DrawTextAt(controls.fonts, controls.locale, x + 8, 49, headers[column], 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(x + 8, 49, headers[column], 0, 0, 12, 0, 0, 0);
     x += widths[column] + 1;
   }
 
@@ -1700,15 +1698,12 @@ void UIGuildTotalInfoWnd::Paint() {
     this->m_rows[drawn]->SetTextFitted(entry->name.c_str());
     this->m_rows[drawn]->Move(8, y);
     std::sprintf(buffer, "%d", entry->unknown_001C);
-    this->DrawTextAt(controls.fonts, controls.locale, g_guildTotalInfoColumnWidths[0] + 9, y, buffer, 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(g_guildTotalInfoColumnWidths[0] + 9, y, buffer, 0, 0, 12, 0, 0, 0);
     std::sprintf(buffer, "%d/%d", entry->unknown_0020, entry->unknown_0024);
-    this->DrawTextAt(
-      controls.fonts, controls.locale, g_guildTotalInfoColumnWidths[0] + g_guildTotalInfoColumnWidths[1] + 10, y, buffer, 0, 0, 12, 0, 0, 0
+    this->DrawTextAt(g_guildTotalInfoColumnWidths[0] + g_guildTotalInfoColumnWidths[1] + 10, y, buffer, 0, 0, 12, 0, 0, 0
     );
     std::sprintf(buffer, "%d", entry->unknown_0028);
-    this->DrawTextAt(
-      controls.fonts, controls.locale,
-      g_guildTotalInfoColumnWidths[0] + g_guildTotalInfoColumnWidths[1] + g_guildTotalInfoColumnWidths[2] + 11, y, buffer, 0, 0, 12, 0, 0, 0
+    this->DrawTextAt(g_guildTotalInfoColumnWidths[0] + g_guildTotalInfoColumnWidths[1] + g_guildTotalInfoColumnWidths[2] + 11, y, buffer, 0, 0, 12, 0, 0, 0
     );
     if (++drawn == this->m_visibleRows * this->m_columns) {
       return;
@@ -1872,7 +1867,7 @@ void UIGuildBanishedMemberWnd::Paint() {
   auto& controls = *this->m_controls;
   int x = 0;
   for (int column = 0; column < 2; ++column) {
-    this->DrawTextAt(controls.fonts, controls.locale, x + 8, 49, headers[column], 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(x + 8, 49, headers[column], 0, 0, 12, 0, 0, 0);
     x += widths[column] + 1;
   }
 
@@ -2007,7 +2002,7 @@ bool UIGuildMemberManageWnd::DrawMember(GuildInfo::Member& member, int& index, i
     lastLogin[0] = '\0';
   }
   auto& controls = *this->m_controls;
-  this->DrawTextAt(controls.fonts, controls.locale, 8, y + 17, FormatOwnedString(LookupMessage(3012), lastLogin).c_str(), 0, 0, 11, 0x404040, 0, 0);
+  this->DrawTextAt(8, y + 17, FormatOwnedString(LookupMessage(3012), lastLogin).c_str(), 0, 0, 11, 0x404040, 0, 0);
   return true;
 }
 
@@ -2565,9 +2560,9 @@ void UIGuildMemberManageWnd::Paint() {
   int textX = 10;
   for (int column = 0; column < 6; ++column) {
     const char* header = headers[column];
-    this->DrawTextAt(controls.fonts, controls.locale, textX, 51, header, 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(textX, 51, header, 0, 0, 12, 0, 0, 0);
     if (column == this->m_sortColumn) {
-      const int arrowX = this->TextWidth(controls.fonts, controls.locale, header, 0, 0, 12, 0, 0) + textX;
+      const int arrowX = this->TextWidth(header, 0, 0, 12, 0, 0) + textX;
       if (this->m_sortOrders[this->m_sortColumn] == 1) {
         const auto* arrow = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\guild\\guild_arrow_up.bmp")));
         this->DrawBitmap(arrowX, 53, arrow ? &arrow->image : nullptr, true);

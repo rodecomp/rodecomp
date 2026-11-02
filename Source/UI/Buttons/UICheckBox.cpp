@@ -46,7 +46,7 @@ void UICheckBox::Paint() {
   }
 
   if (!this->m_text.empty()) {
-    this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, (width + 3), 0, this->m_text.c_str(), 0, 0, this->m_fontHeight, this->m_color, 0, 0);
+    this->DrawTextAt((width + 3), 0, this->m_text.c_str(), 0, 0, this->m_fontHeight, this->m_color, 0, 0);
   }
 }
 
@@ -138,7 +138,7 @@ void UICheckBox::SetImages(const char* checked, const char* unchecked, const cha
   this->m_text = text ? text : "";
 
   if (!this->m_text.empty()) {
-    const int width = this->TextWidth(this->m_controls->fonts, this->m_controls->locale, this->m_text.c_str(), 0, 0, 12, 0, 0);
+    const int width = this->TextWidth(this->m_text.c_str(), 0, 0, 12, 0, 0);
     CBitmapRes* bitmap = nullptr;
     if (this->geometry.unknown_0030 == 0) {
       bitmap = static_cast<CBitmapRes*>(this->m_controls->resources.Load(this->m_unchecked.c_str()));
@@ -180,7 +180,7 @@ void UICheckBox::FitToText() {
     return;
   }
 
-  const int width = this->TextWidth(this->m_controls->fonts, this->m_controls->locale, this->m_text.c_str(), 0, 0, 12, 0, 0);
+  const int width = this->TextWidth(this->m_text.c_str(), 0, 0, 12, 0, 0);
   CBitmapRes* bitmap = nullptr;
   switch (this->geometry.unknown_0030) {
   case 0:

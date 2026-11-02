@@ -326,13 +326,13 @@ void UIBmpRadioBtn::AddText(int id, int height, std::uint32_t color, bool bold, 
 
   if (x == -1000) {
     const int textWidth =
-      this->TextWidth(this->m_controls->fonts, this->m_controls->locale, this->m_label.c_str(), static_cast<unsigned>(this->m_label.size()), 0, height, bold, 0);
+      this->TextWidth(this->m_label.c_str(), static_cast<unsigned>(this->m_label.size()), 0, height, bold, 0);
     text.x = static_cast<int>((this->geometry.width - textWidth) * 0.5);
   }
 
   if (y == -1000) {
     const int textHeight =
-      this->TextHeight(this->m_controls->fonts, this->m_controls->locale, this->m_label.c_str(), static_cast<unsigned>(this->m_label.size()), 0, height, bold, 0);
+      this->TextHeight(this->m_label.c_str(), static_cast<unsigned>(this->m_label.size()), 0, height, bold, 0);
     text.y = static_cast<int>((this->geometry.height - textHeight) * 0.5);
   }
 
@@ -615,7 +615,7 @@ void UIMemberListBox::Slot28(int, int y) {
   }
 
   const char* text = this->lines[line].c_str();
-  const int width = this->TextWidth(this->m_controls->fonts, this->m_controls->locale, text, 0, 0, 12, 0, 0);
+  const int width = this->TextWidth(text, 0, 0, 12, 0, 0);
   if (width <= this->geometry.width - this->verticalOverflow * 15) {
     return;
   }
@@ -745,9 +745,9 @@ void UITabControl::RecalculateWidths() {
       int width;
 
       if (this->layout == 0 || this->layout == 2) {
-        width = this->VerticalTextHeight(this->m_controls->fonts, this->m_controls->locale, this->labels[index].c_str(), 0, 0, this->unknown_00E8, 0);
+        width = this->VerticalTextHeight(this->labels[index].c_str(), 0, 0, this->unknown_00E8, 0);
       } else {
-        width = this->TextWidth(this->m_controls->fonts, this->m_controls->locale, this->labels[index].c_str(), 0, 0, this->unknown_00E8, 0, 0);
+        width = this->TextWidth(this->labels[index].c_str(), 0, 0, this->unknown_00E8, 0, 0);
       }
 
       widest = std::max(width + this->tabPadding, widest);
@@ -791,7 +791,7 @@ void UITVTextButton::ResizeToText() {
 
   this->unknown_00DC = this->label;
   const int width =
-    this->TextWidth(this->m_buttonContext->fonts, this->m_buttonContext->locale, this->label.c_str(), 0, this->m_fontFamily, this->m_fontHeight, this->m_outlined, 0);
+    this->TextWidth(this->label.c_str(), 0, this->m_fontFamily, this->m_fontHeight, this->m_outlined, 0);
   const int border = this->m_border ? 2 : 0;
   UIWindow::Resize(width + 2 + border, this->m_fontHeight + 2 + border);
 }
@@ -804,7 +804,7 @@ void UITextButton::ResizeToText() {
   }
 
   this->m_text = this->label;
-  const int width = this->TextWidth(this->m_buttonContext->fonts, this->m_buttonContext->locale, this->label.c_str(), 0, this->m_family, this->m_height, this->m_outline, 0);
+  const int width = this->TextWidth(this->label.c_str(), 0, this->m_family, this->m_height, this->m_outline, 0);
   UIWindow::Resize(width + 2, this->m_height + 2);
 }
 
@@ -1540,7 +1540,7 @@ void UITVTextButton::Paint() {
   if (this->m_outlined != 0) {
     DrawOutlinedText(*this, inset + 1, 2, this->unknown_00DC.c_str(), 0, color, this->m_outlineColor, this->m_fontFamily, this->m_fontHeight, 1, 0);
   } else {
-    this->DrawTextAt(this->m_buttonContext->fonts, this->m_buttonContext->locale, inset + 1, 2, this->unknown_00DC.c_str(), 0, this->m_fontFamily, this->m_fontHeight, color, 0, 0);
+    this->DrawTextAt(inset + 1, 2, this->unknown_00DC.c_str(), 0, this->m_fontFamily, this->m_fontHeight, color, 0, 0);
   }
 }
 
@@ -1867,7 +1867,7 @@ void UIItemMoveInfo::Paint() {
     DrawOutlinedText(*this, 1, 1, this->m_text.c_str(), 0, this->m_color, this->m_outlineColor, this->m_family, this->m_height, 1, 0);
   } else {
     auto& controls = *this->m_buttonContext;
-    this->DrawTextAt(controls.fonts, controls.locale, 1, 1, this->m_text.c_str(), 0, this->m_family, this->m_height, this->m_color, 0, 0);
+    this->DrawTextAt(1, 1, this->m_text.c_str(), 0, this->m_family, this->m_height, this->m_color, 0, 0);
   }
 
   if (this->m_underline != 0) {
@@ -1888,7 +1888,7 @@ void UIItemTagButton::Paint() {
     DrawOutlinedText(*this, 1, this->textY, this->m_text.c_str(), 0, this->m_color, this->m_outlineColor, this->m_family, this->m_height, 1, 0);
   } else {
     auto& controls = *this->m_buttonContext;
-    this->DrawTextAt(controls.fonts, controls.locale, 1, this->textY, this->m_text.c_str(), 0, this->m_family, this->m_height, this->m_color, 0, 0);
+    this->DrawTextAt(1, this->textY, this->m_text.c_str(), 0, this->m_family, this->m_height, this->m_color, 0, 0);
   }
 
   if (this->m_underline != 0) {
@@ -2258,8 +2258,7 @@ void UIMemberListBox::Paint() {
       this->FillRegion(0, row * this->lineHeight + 1, this->geometry.width, this->lineHeight, 0xC8C832);
     }
 
-    this->DrawTextAt(
-      this->m_controls->fonts, this->m_controls->locale, 2, this->lineHeight * row + 3, this->lines[index].c_str(), 0, 0, 12, this->unknown_00E4[index], 0, 0
+    this->DrawTextAt(2, this->lineHeight * row + 3, this->lines[index].c_str(), 0, 0, 12, this->unknown_00E4[index], 0, 0
     );
   }
 }
@@ -2297,12 +2296,12 @@ void UIBasicSkillCtrl::Paint() {
         std::sprintf(text, "%d", skill.level);
         FontCache& fonts = this->m_controls->fonts;
         const TextLocale& locale = this->m_controls->locale;
-        const int x = this->geometry.width - this->TextWidth(fonts, locale, text, 0, 0, 11, 0, 0);
-        this->DrawTextAt(fonts, locale, x, 15, text, 0, 0, 11, 0xFFFFFF, 0, 0);
-        this->DrawTextAt(fonts, locale, x - 2, 15, text, 0, 0, 11, 0xFFFFFF, 0, 0);
-        this->DrawTextAt(fonts, locale, x - 1, 16, text, 0, 0, 11, 0xFFFFFF, 0, 0);
-        this->DrawTextAt(fonts, locale, x - 1, 14, text, 0, 0, 11, 0xFFFFFF, 0, 0);
-        this->DrawTextAt(fonts, locale, x - 1, 15, text, 0, 0, 11, 0, 0, 0);
+        const int x = this->geometry.width - this->TextWidth(text, 0, 0, 11, 0, 0);
+        this->DrawTextAt(x, 15, text, 0, 0, 11, 0xFFFFFF, 0, 0);
+        this->DrawTextAt(x - 2, 15, text, 0, 0, 11, 0xFFFFFF, 0, 0);
+        this->DrawTextAt(x - 1, 16, text, 0, 0, 11, 0xFFFFFF, 0, 0);
+        this->DrawTextAt(x - 1, 14, text, 0, 0, 11, 0xFFFFFF, 0, 0);
+        this->DrawTextAt(x - 1, 15, text, 0, 0, 11, 0, 0, 0);
       }
     }
   }
@@ -2338,17 +2337,17 @@ void UIBmpRadioBtn::Paint() {
     for (auto it = this->m_texts.begin(); it != this->m_texts.end(); ++it) {
       if (it->id == 3) {
         if (it->unknown_0018 == true) {
-          this->DrawTextAt(fonts, locale, it->x, it->y, this->m_label.c_str(), 0, 0, it->height, 0xE2E2E2, 0, 0);
+          this->DrawTextAt(it->x, it->y, this->m_label.c_str(), 0, 0, it->height, 0xE2E2E2, 0, 0);
         }
-        this->DrawTextAt(fonts, locale, it->x + 1, it->y + 1, this->m_label.c_str(), 0, 0, it->height, it->color, it->bold, 0);
+        this->DrawTextAt(it->x + 1, it->y + 1, this->m_label.c_str(), 0, 0, it->height, it->color, it->bold, 0);
         return;
       }
     }
 
-    const int x = static_cast<int>((this->geometry.width - this->TextWidth(fonts, locale, this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
-    const int y = static_cast<int>((this->geometry.height - this->TextHeight(fonts, locale, this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
-    this->DrawTextAt(fonts, locale, x, y, this->m_label.c_str(), 0, 0, 12, 0xE2E2E2, 0, 0);
-    this->DrawTextAt(fonts, locale, x + 1, y + 1, this->m_label.c_str(), 0, 0, 12, 0x6F6F6F, 0, 0);
+    const int x = static_cast<int>((this->geometry.width - this->TextWidth(this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
+    const int y = static_cast<int>((this->geometry.height - this->TextHeight(this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
+    this->DrawTextAt(x, y, this->m_label.c_str(), 0, 0, 12, 0xE2E2E2, 0, 0);
+    this->DrawTextAt(x + 1, y + 1, this->m_label.c_str(), 0, 0, 12, 0x6F6F6F, 0, 0);
     return;
   }
 
@@ -2356,17 +2355,17 @@ void UIBmpRadioBtn::Paint() {
     for (auto it = this->m_texts.begin(); it != this->m_texts.end(); ++it) {
       if (it->id == 2) {
         if (it->unknown_0018 == true) {
-          this->DrawTextAt(fonts, locale, it->x, it->y, this->m_label.c_str(), 0, 0, it->height, 0xFFFFFF, it->bold, 0);
+          this->DrawTextAt(it->x, it->y, this->m_label.c_str(), 0, 0, it->height, 0xFFFFFF, it->bold, 0);
         }
-        this->DrawTextAt(fonts, locale, it->x + 1, it->y + 1, this->m_label.c_str(), 0, 0, it->height, it->color, it->bold, 0);
+        this->DrawTextAt(it->x + 1, it->y + 1, this->m_label.c_str(), 0, 0, it->height, it->color, it->bold, 0);
         return;
       }
     }
 
-    const int x = static_cast<int>((this->geometry.width - this->TextWidth(fonts, locale, this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
-    const int y = static_cast<int>((this->geometry.height - this->TextHeight(fonts, locale, this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
-    this->DrawTextAt(fonts, locale, x, y, this->m_label.c_str(), 0, 0, 12, 0xFFFFFF, 0, 0);
-    this->DrawTextAt(fonts, locale, x + 1, y + 1, this->m_label.c_str(), 0, 0, 12, 0, 0, 0);
+    const int x = static_cast<int>((this->geometry.width - this->TextWidth(this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
+    const int y = static_cast<int>((this->geometry.height - this->TextHeight(this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
+    this->DrawTextAt(x, y, this->m_label.c_str(), 0, 0, 12, 0xFFFFFF, 0, 0);
+    this->DrawTextAt(x + 1, y + 1, this->m_label.c_str(), 0, 0, 12, 0, 0, 0);
     return;
   }
 
@@ -2374,34 +2373,34 @@ void UIBmpRadioBtn::Paint() {
     for (auto it = this->m_texts.begin(); it != this->m_texts.end(); ++it) {
       if (it->id == 1) {
         if (it->unknown_0018 == true) {
-          this->DrawTextAt(fonts, locale, it->x + 1, it->y + 1, this->m_label.c_str(), 0, 0, it->height, 0xC7A796, it->bold, 0);
+          this->DrawTextAt(it->x + 1, it->y + 1, this->m_label.c_str(), 0, 0, it->height, 0xC7A796, it->bold, 0);
         }
-        this->DrawTextAt(fonts, locale, it->x, it->y, this->m_label.c_str(), 0, 0, it->height, it->color, it->bold, 0);
+        this->DrawTextAt(it->x, it->y, this->m_label.c_str(), 0, 0, it->height, it->color, it->bold, 0);
         return;
       }
     }
 
-    const int x = static_cast<int>((this->geometry.width - this->TextWidth(fonts, locale, this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
-    const int y = static_cast<int>((this->geometry.height - this->TextHeight(fonts, locale, this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
-    this->DrawTextAt(fonts, locale, x + 1, y + 1, this->m_label.c_str(), 0, 0, 12, 0xC7A796, 0, 0);
-    this->DrawTextAt(fonts, locale, x, y, this->m_label.c_str(), 0, 0, 12, 0, 0, 0);
+    const int x = static_cast<int>((this->geometry.width - this->TextWidth(this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
+    const int y = static_cast<int>((this->geometry.height - this->TextHeight(this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
+    this->DrawTextAt(x + 1, y + 1, this->m_label.c_str(), 0, 0, 12, 0xC7A796, 0, 0);
+    this->DrawTextAt(x, y, this->m_label.c_str(), 0, 0, 12, 0, 0, 0);
     return;
   }
 
   for (auto it = this->m_texts.begin(); it != this->m_texts.end(); ++it) {
     if (it->id == 0) {
       if (it->unknown_0018 == true) {
-        this->DrawTextAt(fonts, locale, it->x + 1, it->y + 1, this->m_label.c_str(), 0, 0, it->height, 0xD7D7D7, it->bold, 0);
+        this->DrawTextAt(it->x + 1, it->y + 1, this->m_label.c_str(), 0, 0, it->height, 0xD7D7D7, it->bold, 0);
       }
-      this->DrawTextAt(fonts, locale, it->x, it->y, this->m_label.c_str(), 0, 0, it->height, it->color, it->bold, 0);
+      this->DrawTextAt(it->x, it->y, this->m_label.c_str(), 0, 0, it->height, it->color, it->bold, 0);
       return;
     }
   }
 
-  const int x = static_cast<int>((this->geometry.width - this->TextWidth(fonts, locale, this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
-  const int y = static_cast<int>((this->geometry.height - this->TextHeight(fonts, locale, this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
-  this->DrawTextAt(fonts, locale, x + 1, y + 1, this->m_label.c_str(), 0, 0, 12, 0xD7D7D7, 0, 0);
-  this->DrawTextAt(fonts, locale, x, y, this->m_label.c_str(), 0, 0, 12, 0, 0, 0);
+  const int x = static_cast<int>((this->geometry.width - this->TextWidth(this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
+  const int y = static_cast<int>((this->geometry.height - this->TextHeight(this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
+  this->DrawTextAt(x + 1, y + 1, this->m_label.c_str(), 0, 0, 12, 0xD7D7D7, 0, 0);
+  this->DrawTextAt(x, y, this->m_label.c_str(), 0, 0, 12, 0, 0, 0);
 }
 
 // OFFSET: 0x008894A0
@@ -2439,8 +2438,7 @@ void UIComboBox::Paint() {
       this->FillRegion(3, row * this->lineHeight + 1, this->geometry.width - 6, this->lineHeight - 2, RGB(red, green, blue));
     }
 
-    this->DrawTextAt(
-      this->m_listContext->fonts, this->m_listContext->locale, 3 - this->horizontalOffset, this->lineHeight * row + 2, this->lines[index].c_str(), 0, 0, 12, 0, 0, 0
+    this->DrawTextAt(3 - this->horizontalOffset, this->lineHeight * row + 2, this->lines[index].c_str(), 0, 0, 12, 0, 0, 0
     );
   }
 
@@ -2582,7 +2580,7 @@ void UIComboBoxV2Wnd::Paint() {
   }
 
   const std::string selected = this->SelectedText();
-  this->DrawTextAt(context.fonts, context.locale, 2, 3, selected.c_str(), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(2, 3, selected.c_str(), 0, 0, 12, 0, 0, 0);
 }
 
 // OFFSET: 0x00880CC0
@@ -2750,8 +2748,8 @@ void UINewComboBoxCtrl::Paint() {
 void UIShowAndEditTimeCtrl::Paint() {
   UIWindowContext& context = *this->m_context;
   this->ClearSurface(0xFFFF00FF);
-  this->DrawTextAt(context.fonts, context.locale, 22, 3, "m", 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(context.fonts, context.locale, 60, 3, "s", 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(22, 3, "m", 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(60, 3, "s", 0, 0, 12, 0, 0, 0);
 }
 
 #include "UI/Buttons/UINaviLinkButton.h"
@@ -3133,8 +3131,7 @@ void UIComboBoxID::Paint() {
       this->FillRegion(3, (index - first) * this->lineHeight + 1, this->geometry.width - 6, this->lineHeight - 2, RGB(red, green, blue));
     }
 
-    this->DrawTextAt(
-      this->m_context->fonts, this->m_context->locale, 3 - this->horizontalOffset, (index - first) * this->lineHeight + 2, this->lines[index].text.c_str(), 0, 0, 12,
+    this->DrawTextAt(3 - this->horizontalOffset, (index - first) * this->lineHeight + 2, this->lines[index].text.c_str(), 0, 0, 12,
       0, 0, 0
     );
   }
@@ -3171,8 +3168,7 @@ void UIItemStoreComboBox::Paint() {
     }
 
     for (int index = first; index < static_cast<int>(end); ++index) {
-      this->DrawTextAt(
-        this->m_listContext->fonts, this->m_listContext->locale, 3 - this->horizontalOffset, (index - first) * this->lineHeight + 2, this->lines[index].text.c_str(), 0,
+      this->DrawTextAt(3 - this->horizontalOffset, (index - first) * this->lineHeight + 2, this->lines[index].text.c_str(), 0,
         0, 12, this->lines[index].color, 0, 0
       );
     }
@@ -3212,7 +3208,7 @@ void UIListBox2::Paint() {
     int y = this->lineHeight * row;
     if (this->centerVertically == 1) {
       const int lineHeight = this->lineHeight;
-      const int height = this->TextHeight(owner.fonts, owner.locale, this->lines[index].c_str(), 0, 0, 12, 0, 0);
+      const int height = this->TextHeight(this->lines[index].c_str(), 0, 0, 12, 0, 0);
       y = static_cast<int>(static_cast<float>(lineHeight - height) * 0.5f + static_cast<float>(row * lineHeight));
     }
 
@@ -3462,12 +3458,12 @@ void UIChatHisBox2::Paint() {
     const int index = top + row;
     int x;
     if (g_serviceType == 19 && g_tipOfTheDayEnglish) {
-      const int width = this->TextWidth(fonts, locale, this->lines[index].c_str(), 0, 0, 12, 0, 0);
+      const int width = this->TextWidth(this->lines[index].c_str(), 0, 0, 12, 0, 0);
       x = this->geometry.width - width - 19;
     } else {
       x = 2;
     }
-    this->DrawTextAt(fonts, locale, x, this->lineHeight * row + 3, this->lines[index].c_str(), 0, 0, 12, this->unknown_00E4[index], 0, 0);
+    this->DrawTextAt(x, this->lineHeight * row + 3, this->lines[index].c_str(), 0, 0, 12, this->unknown_00E4[index], 0, 0);
     this->PlaceNaviLinks(index);
     this->PlaceItemTags(index);
   }
@@ -3495,7 +3491,7 @@ void UIChatHisBox3::Paint() {
   const TextLocale& locale = this->m_listContext->locale;
   for (int row = 0; top + row < static_cast<int>(end); ++row) {
     const int index = top + row;
-    this->DrawTextAt(fonts, locale, 2, this->lineHeight * row + 3, this->lines[index].c_str(), 0, 0, this->unknown_0134, this->unknown_00E4[index], 0, 0);
+    this->DrawTextAt(2, this->lineHeight * row + 3, this->lines[index].c_str(), 0, 0, this->unknown_0134, this->unknown_00E4[index], 0, 0);
     this->PlaceNaviLinks(index);
     this->PlaceItemTags(index);
   }
@@ -3638,10 +3634,10 @@ void UISlotBmpButton::Paint() {
         const TIMESTAMP_STRUCT date = expiry.ToSqlTimestamp();
         const std::string period = FormatOwnedString(LookupMessage(0xc20), date.month, date.day);
         const std::string time = FormatOwnedString(LookupMessage(0xd15), date.hour, date.minute, date.second);
-        const int periodWidth = this->TextWidth(this->m_context->fonts, this->m_context->locale, period.c_str(), 0, 0, 0xb, 0, 0);
-        this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 0x4f - periodWidth / 2, 0x28, period.c_str(), 0, 0, 0xb, color, 0, 0);
-        const int timeWidth = this->TextWidth(this->m_context->fonts, this->m_context->locale, time.c_str(), 0, 0, 0xb, 0, 0);
-        this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 0x4f - timeWidth / 2, 0x34, time.c_str(), 0, 0, 0xb, color, 0, 0);
+        const int periodWidth = this->TextWidth(period.c_str(), 0, 0, 0xb, 0, 0);
+        this->DrawTextAt(0x4f - periodWidth / 2, 0x28, period.c_str(), 0, 0, 0xb, color, 0, 0);
+        const int timeWidth = this->TextWidth(time.c_str(), 0, 0, 0xb, 0, 0);
+        this->DrawTextAt(0x4f - timeWidth / 2, 0x34, time.c_str(), 0, 0, 0xb, color, 0, 0);
       }
     }
   }

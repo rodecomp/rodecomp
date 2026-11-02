@@ -198,7 +198,7 @@ void UIAdvenPartyBoardWnd::Slot15(int, int) {
   this->types->Select(0);
   this->pageText = new UIStaticText(*this->m_context, controls);
   this->pageText->SetSize(this->geometry.width, 18);
-  const int textWidth = this->TextWidth(controls.fonts, controls.locale, "1/1", 0, 0, 12, 0, 0);
+  const int textWidth = this->TextWidth("1/1", 0, 0, 12, 0, 0);
   this->pageText->Resize((textWidth + 1), 16);
   this->pageText->SetText("1/1", 0);
   this->pageText->Move(this->geometry.width / 2 - textWidth / 2, 319);
@@ -214,7 +214,7 @@ void UIAdvenPartyBoardWnd::Slot15(int, int) {
 
   this->stop = new UIBasicButton(*this->m_context, controls);
   const char* stopText = controls.services.MessageText(3375);
-  this->stop->Configure((this->TextWidth(controls.fonts, controls.locale, stopText, 0, 0, 12, 0, 0) + 10), stopText);
+  this->stop->Configure((this->TextWidth(stopText, 0, 0, 12, 0, 0) + 10), stopText);
   this->stop->Move(close->geometry.x - this->stop->geometry.width - 5, 317);
   this->stop->SetId(410);
   this->AddChild(this->stop);
@@ -305,7 +305,7 @@ void UIAdvenPartyBoardWnd::RefreshRows() {
   char text[1024] = {};
   _snprintf_s(text, sizeof(text), _TRUNCATE, "%d / %d", this->page, this->totalPages);
   auto& controls = this->m_board->buttons;
-  const int width = this->TextWidth(controls.fonts, controls.locale, text, 0, 0, 12, 0, 0);
+  const int width = this->TextWidth(text, 0, 0, 12, 0, 0);
   this->pageText->Resize((width + 1), 16);
   this->pageText->SetText(text, 0);
   this->pageText->Move(this->geometry.width / 2 - width / 2, 319);
@@ -588,8 +588,8 @@ void UIAdvenPartyBoardWnd::Paint() {
   }
 
   const char* title = controls.services.MessageText(3504);
-  this->DrawTextAt(controls.fonts, controls.locale, 19, titleHeight - 13, title, 0, 0, 12, 0xFFFFFF, 0, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 18, titleHeight - 14, title, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(19, titleHeight - 13, title, 0, 0, 12, 0xFFFFFF, 0, 0);
+  this->DrawTextAt(18, titleHeight - 14, title, 0, 0, 12, 0, 0, 0);
   auto* icon = skin("sys_base_off.bmp");
   this->DrawBitmap(3, 3, icon ? &icon->image : nullptr, true);
   auto* barLeft = skin("btnbar_left2.bmp");
@@ -610,5 +610,5 @@ void UIAdvenPartyBoardWnd::Paint() {
     }
   }
 
-  this->DrawTextAt(controls.fonts, controls.locale, 36, 25, "~", 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(36, 25, "~", 0, 0, 12, 0, 0, 0);
 }

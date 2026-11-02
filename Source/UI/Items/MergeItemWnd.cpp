@@ -133,7 +133,7 @@ void CMergeItemWnd::Paint() {
   auto& controls = *this->m_controls;
   unsigned red, green, blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
-  this->DrawTitleBar(controls.fonts, controls.locale, true, LookupMessage(2169), 0);
+  this->DrawTitleBar(true, LookupMessage(2169), 0);
   this->FillRegion(0, 17, this->geometry.width, this->geometry.height, RGB(red, green, blue));
 
   for (int index = 0; index < this->m_visibleCount; ++index) {

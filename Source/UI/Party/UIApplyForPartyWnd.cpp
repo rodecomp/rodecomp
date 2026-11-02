@@ -50,7 +50,7 @@ void UIApplyForPartyWnd::Slot15(int, int) {
   for (int index = 0; index < 3; ++index) {
     auto* button = new UIBasicButton(*this->m_context, controls);
     const char* label = controls.services.MessageText(messages[index]);
-    const int width = this->TextWidth(controls.fonts, controls.locale, label, 0, 0, 12, 0, 0);
+    const int width = this->TextWidth(label, 0, 0, 12, 0, 0);
     button->Configure(width + 10, label);
     button->Move(positions[index], 165);
     button->SetId(ids[index]);
@@ -128,11 +128,11 @@ void UIApplyForPartyWnd::Paint() {
   }
 
   const char* caption = controls.services.MessageText(3368);
-  this->DrawTextAt(controls.fonts, controls.locale, 19, titleHeight - 13, caption, 0, 0, 12, 0xFFFFFF, 0, 0);
-  this->DrawTextAt(controls.fonts, controls.locale, 18, titleHeight - 14, caption, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(19, titleHeight - 13, caption, 0, 0, 12, 0xFFFFFF, 0, 0);
+  this->DrawTextAt(18, titleHeight - 14, caption, 0, 0, 12, 0, 0, 0);
   const auto* base = load("basic_interface\\sys_base_off.bmp");
   this->DrawBitmap(3, 3, base ? &base->image : nullptr, true);
-  const auto text = [&](int x, int y, const char* value) { this->DrawTextAt(controls.fonts, controls.locale, x, y, value, 0, 0, 12, 0, 0, 0); };
+  const auto text = [&](int x, int y, const char* value) { this->DrawTextAt(x, y, value, 0, 0, 12, 0, 0, 0); };
   text(10, 25, controls.services.MessageText(3415));
   const std::string fitted = FitText(*this->geometry.surface, this->info.characterName, 119);
   text(60, 25, fitted.c_str());

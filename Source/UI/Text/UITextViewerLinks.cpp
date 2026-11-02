@@ -47,7 +47,7 @@ std::pair<int, int> UITextViewer::LinkPosition(unsigned position, unsigned added
     if (accumulated > position) {
       const unsigned bytes = position + static_cast<unsigned>(plain.size()) - accumulated;
       const std::string prefix = plain.substr(0, bytes);
-      return {static_cast<int>(index), this->TextWidth(owner.fonts, owner.locale, prefix.c_str(), 0, 0, 12, 0, 0) + 2};
+      return {static_cast<int>(index), this->TextWidth(prefix.c_str(), 0, 0, 12, 0, 0) + 2};
     }
   }
 
@@ -82,7 +82,7 @@ bool UITextViewer::AddItemLinks(std::string text, unsigned addedLines) {
     auto* button = new UITextButton(*this->m_context, this->m_text->buttons);
     button->Configure(link.display.c_str(), 0x00F4934A, 0, 12, 0, 1);
     const int height = button->geometry.height;
-    const int width = this->TextWidth(owner.fonts, owner.locale, link.display.c_str(), 0, 0, 12, 0, 0);
+    const int width = this->TextWidth(link.display.c_str(), 0, 0, 12, 0, 0);
     button->Resize(width + 1, height);
     button->m_hoverColor = 0x00FF7864;
     button->SetId(464);
@@ -127,7 +127,7 @@ bool UITextViewer::AddNaviLinks(std::string text, unsigned addedLines) {
     auto* button = new UITextButton(*this->m_context, this->m_text->buttons);
     button->Configure(link.display.c_str(), 0x00F4934A, 0, 12, 0, 1);
     const int height = button->geometry.height;
-    const int width = this->TextWidth(owner.fonts, owner.locale, link.display.c_str(), 0, 0, 12, 0, 0);
+    const int width = this->TextWidth(link.display.c_str(), 0, 0, 12, 0, 0);
     button->Resize(width + 1, height);
     button->m_hoverColor = 0x00FF7864;
     button->SetId(438);
@@ -227,7 +227,7 @@ bool UITextViewer::AddQuestLinks(std::string text, unsigned addedLines) {
     auto* button = new UITextButton(*this->m_context, this->m_text->buttons);
     button->Configure(link.display.c_str(), 0x00F4934A, 0, 12, 0, 1);
     const int height = button->geometry.height;
-    const int width = this->TextWidth(owner.fonts, owner.locale, link.display.c_str(), 0, 0, 12, 0, 0);
+    const int width = this->TextWidth(link.display.c_str(), 0, 0, 12, 0, 0);
     button->Resize(width + 1, height);
     button->m_hoverColor = 0x00FF7864;
     button->SetId(539);
@@ -311,7 +311,7 @@ void UITextViewer::AddTipLinks(std::string text, unsigned addedLines) {
         auto* button = new UITextButton(*this->m_context, this->m_text->buttons);
         button->Configure(labels[fragment].c_str(), 0x00F4934A, 0, 12, 0, 1);
         const int height = button->geometry.height;
-        const int width = this->TextWidth(owner.fonts, owner.locale, labels[fragment].c_str(), 0, 0, 12, 0, 0);
+        const int width = this->TextWidth(labels[fragment].c_str(), 0, 0, 12, 0, 0);
         button->Resize(width + 1, height);
         button->m_hoverColor = 0x00FF7864;
         button->SetId(517);
@@ -326,7 +326,7 @@ void UITextViewer::AddTipLinks(std::string text, unsigned addedLines) {
       auto* button = new UITextButton(*this->m_context, this->m_text->buttons);
       button->Configure(link.display.c_str(), 0x00F4934A, 0, 12, 0, 1);
       const int height = button->geometry.height;
-      const int width = this->TextWidth(owner.fonts, owner.locale, link.display.c_str(), 0, 0, 12, 0, 0);
+      const int width = this->TextWidth(link.display.c_str(), 0, 0, 12, 0, 0);
       button->Resize(width + 1, height);
       button->m_hoverColor = 0x00FF7864;
       button->SetId(517);
@@ -374,7 +374,7 @@ bool UITextViewer::AddUrlLinks(std::string text, unsigned addedLines) {
     button->m_hoverColor = 0x00EFB700;
     button->SetId(437);
     const int height = button->geometry.height;
-    const int width = this->TextWidth(owner.fonts, owner.locale, link.display.c_str(), 0, 0, 12, 0, 0);
+    const int width = this->TextWidth(link.display.c_str(), 0, 0, 12, 0, 0);
     button->Resize(width + 1, height);
     parsed = RemoveTextLinkInfo(parsed);
     const auto position = this->LinkPosition(link.position, addedLines);

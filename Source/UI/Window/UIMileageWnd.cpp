@@ -53,11 +53,11 @@ void UIMileageWnd::Paint() {
     text = remaining;
   }
 
-  int textWidth = this->TextWidth(this->m_controls->fonts, this->m_controls->locale, text.c_str(), 0, 0, 12, 0, 0);
+  int textWidth = this->TextWidth(text.c_str(), 0, 0, 12, 0, 0);
   DrawOutlinedText(*this, (this->geometry.width - textWidth) >> 1, 15, text.c_str(), 0, 0xFFFFFF, 0, 0, 12, 0, 0);
 
   text = FormatOwnedString("%d", this->m_point).c_str();
-  textWidth = this->TextWidth(this->m_controls->fonts, this->m_controls->locale, text.c_str(), 0, 0, 12, 0, 0);
+  textWidth = this->TextWidth(text.c_str(), 0, 0, 12, 0, 0);
   DrawOutlinedText(*this, this->geometry.width - textWidth - 9, this->geometry.height - 16, text.c_str(), 0, 0xFFFFFF, 0, 0, 12, 0, 0);
 }
 

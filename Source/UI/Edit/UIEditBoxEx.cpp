@@ -65,7 +65,7 @@ int CUIEditCtrlEx::LeadingBytesFitting(const std::string& text, int width) {
     const char* start = current;
     current = CharNextExA(static_cast<WORD>(g_textCodePage), current, 0);
     const int count = static_cast<int>(current - start);
-    const int extent = this->TextWidth(this->m_edit->buttons.fonts, this->m_edit->buttons.locale, start, count, 0, 12, 0, 0);
+    const int extent = this->TextWidth(start, count, 0, 12, 0, 0);
 
     if (width <= total + extent) {
       if (std::abs(total + extent - width) < std::abs(total - width)) {
@@ -88,7 +88,7 @@ int CUIEditCtrlEx::TrailingOffsetFitting(const std::string& text, int width) {
     return static_cast<int>(text.size());
   }
 
-  this->TextWidth(this->m_edit->buttons.fonts, this->m_edit->buttons.locale, text.c_str(), 0, 0, 12, 0, 0);
+  this->TextWidth(text.c_str(), 0, 0, 12, 0, 0);
 
   int bytes = 0;
   int total = 0;
@@ -99,7 +99,7 @@ int CUIEditCtrlEx::TrailingOffsetFitting(const std::string& text, int width) {
     const char* next = current;
     current = CharPrevExA(static_cast<WORD>(g_textCodePage), begin, current, 0);
     const int count = static_cast<int>(next - current);
-    const int extent = this->TextWidth(this->m_edit->buttons.fonts, this->m_edit->buttons.locale, current, count, 0, 12, 0, 0);
+    const int extent = this->TextWidth(current, count, 0, 12, 0, 0);
 
     if (width <= total + extent) {
       if (std::abs(total + extent - width) < std::abs(total - width)) {
@@ -309,14 +309,14 @@ void CUIEditCtrlEx::Synchronize() {
     this->column += candidateCursor;
     int cursorX = 0;
     if (this->column > 0) {
-      cursorX = this->TextWidth(this->m_edit->buttons.fonts, this->m_edit->buttons.locale, this->lines[this->line].text.c_str(), this->column, 0, 12, 0, 0);
+      cursorX = this->TextWidth(this->lines[this->line].text.c_str(), this->column, 0, 12, 0, 0);
     }
 
     int end = std::max(anchor, cursor) + candidateCursor + static_cast<int>(prefix.size());
     int readingOffset = end - currentOffset;
     int readingX = 0;
     if (readingOffset > 0) {
-      readingX = this->TextWidth(this->m_edit->buttons.fonts, this->m_edit->buttons.locale, this->lines[this->line].text.c_str(), readingOffset, 0, 12, 0, 0);
+      readingX = this->TextWidth(this->lines[this->line].text.c_str(), readingOffset, 0, 12, 0, 0);
     }
     int delta = std::max(cursorX - readingX, 2);
     this->MoveCandidateWindow(cursorX + 2 + delta);
@@ -484,13 +484,13 @@ int CUIEditCtrlEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         const std::string& current = this->lines[this->line].text;
         int offset;
         if (this->alignment == 2) {
-          const int width = this->TextWidth(this->m_edit->buttons.fonts, this->m_edit->buttons.locale, current.c_str(), 0, 0, 12, 0, 0);
+          const int width = this->TextWidth(current.c_str(), 0, 0, 12, 0, 0);
           const int columnWidth =
-            this->column > 0 ? this->TextWidth(this->m_edit->buttons.fonts, this->m_edit->buttons.locale, current.c_str(), this->column, 0, 12, 0, 0) : 0;
+            this->column > 0 ? this->TextWidth(current.c_str(), this->column, 0, 12, 0, 0) : 0;
           offset = this->TrailingOffsetFitting(previous.text, width - columnWidth);
         } else {
           const int columnWidth =
-            this->column > 0 ? this->TextWidth(this->m_edit->buttons.fonts, this->m_edit->buttons.locale, current.c_str(), this->column, 0, 12, 0, 0) : 0;
+            this->column > 0 ? this->TextWidth(current.c_str(), this->column, 0, 12, 0, 0) : 0;
           offset = this->LeadingBytesFitting(previous.text, columnWidth);
         }
 
@@ -512,13 +512,13 @@ int CUIEditCtrlEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         const std::string& current = this->lines[this->line].text;
         int offset;
         if (this->alignment == 2) {
-          const int width = this->TextWidth(this->m_edit->buttons.fonts, this->m_edit->buttons.locale, current.c_str(), 0, 0, 12, 0, 0);
+          const int width = this->TextWidth(current.c_str(), 0, 0, 12, 0, 0);
           const int columnWidth =
-            this->column > 0 ? this->TextWidth(this->m_edit->buttons.fonts, this->m_edit->buttons.locale, current.c_str(), this->column, 0, 12, 0, 0) : 0;
+            this->column > 0 ? this->TextWidth(current.c_str(), this->column, 0, 12, 0, 0) : 0;
           offset = this->TrailingOffsetFitting(next.text, width - columnWidth);
         } else {
           const int columnWidth =
-            this->column > 0 ? this->TextWidth(this->m_edit->buttons.fonts, this->m_edit->buttons.locale, current.c_str(), this->column, 0, 12, 0, 0) : 0;
+            this->column > 0 ? this->TextWidth(current.c_str(), this->column, 0, 12, 0, 0) : 0;
           offset = this->LeadingBytesFitting(next.text, columnWidth);
         }
 
@@ -695,7 +695,7 @@ void CUIEditCtrlEx::PaintTextLines() {
   if (this->lines.empty()) {
     int x = this->unknown_01B4;
     if (this->alignment == 2) {
-      const int caretWidth = this->TextWidth(this->m_edit->buttons.fonts, this->m_edit->buttons.locale, "|", 0, 0, 12, 0, 0);
+      const int caretWidth = this->TextWidth("|", 0, 0, 12, 0, 0);
       x = width - this->unknown_01B4 - caretWidth;
     } else if (this->alignment == 6) {
       x = width / 2;
@@ -719,7 +719,7 @@ void CUIEditCtrlEx::PaintTextLines() {
   for (int lineIndex = this->scrollPosition; lineIndex < endLine; ++lineIndex) {
     EditLine& line = this->lines[lineIndex];
     const char* text = line.text.c_str();
-    const int textWidth = this->TextWidth(this->m_edit->buttons.fonts, this->m_edit->buttons.locale, text, 0, 0, 12, 0, 0);
+    const int textWidth = this->TextWidth(text, 0, 0, 12, 0, 0);
 
     int x = this->unknown_01B4;
     if (this->alignment == 2) {
@@ -733,15 +733,13 @@ void CUIEditCtrlEx::PaintTextLines() {
       if (g_windowMgr.GetHoverWindow() == this && line.selectionEnd > line.selectionBegin) {
         int selectionBeginWidth = 0;
         if (line.selectionBegin >= 1) {
-          selectionBeginWidth = this->TextWidth(
-            this->m_edit->buttons.fonts, this->m_edit->buttons.locale, text, static_cast<unsigned>(line.selectionBegin), 0, 12, 0, 0
+          selectionBeginWidth = this->TextWidth(text, static_cast<unsigned>(line.selectionBegin), 0, 12, 0, 0
           );
         }
 
         int selectionEndWidth = 0;
         if (line.selectionEnd >= 1) {
-          selectionEndWidth = this->TextWidth(
-            this->m_edit->buttons.fonts, this->m_edit->buttons.locale, text, static_cast<unsigned>(line.selectionEnd), 0, 12, 0, 0
+          selectionEndWidth = this->TextWidth(text, static_cast<unsigned>(line.selectionEnd), 0, 12, 0, 0
           );
         }
 
@@ -751,8 +749,7 @@ void CUIEditCtrlEx::PaintTextLines() {
       this->PlaceLinks(line.text, y, lineIndex, this->scrollPosition, endLine);
 
       if (this->unknown_0190 == 0) {
-        this->DrawTextAt(
-          this->m_edit->buttons.fonts, this->m_edit->buttons.locale, x, this->verticalPadding + y, text, 0, 0, 12, this->textColor, 0, 0
+        this->DrawTextAt(x, this->verticalPadding + y, text, 0, 0, 12, this->textColor, 0, 0
         );
       } else {
         this->DrawEmboldenedText(x, this->verticalPadding + y, text, this->textColor, this->secondColor, 0, 0, 12);
@@ -764,8 +761,7 @@ void CUIEditCtrlEx::PaintTextLines() {
     if (g_windowMgr.GetHoverWindow() == this && lineIndex == this->line) {
       int caretOffset = 0;
       if (this->column >= 1) {
-        caretOffset = this->TextWidth(
-          this->m_edit->buttons.fonts, this->m_edit->buttons.locale, text, static_cast<unsigned>(this->column), 0, 12, 0, 0
+        caretOffset = this->TextWidth(text, static_cast<unsigned>(this->column), 0, 12, 0, 0
         );
       }
       this->DrawCaret(x - 2 + caretOffset, y);
@@ -800,6 +796,6 @@ CUIEditCtrlEx::CUIEditCtrlEx(UIWindowContext& windows, UIEditContext& edit) : UI
 void CUIEditCtrlEx::DrawCaret(int x, int y) {
   const int elapsed = static_cast<int>(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - this->caretStart).count());
   if (((elapsed / 500) & 1) == 0 && IsInputSuggestionAllowed()) {
-    this->DrawTextAt(this->m_edit->buttons.fonts, this->m_edit->buttons.locale, x, y, "|", 0, 0, 12, this->textColor, 0, 0);
+    this->DrawTextAt(x, y, "|", 0, 0, 12, this->textColor, 0, 0);
   }
 }

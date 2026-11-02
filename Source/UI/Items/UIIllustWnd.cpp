@@ -58,7 +58,7 @@ void UIIllustWnd::Paint() {
   int top = 0;
   CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_bitmapName.c_str())));
   if (this->m_titled != 0) {
-    top = this->DrawTitleBar(this->m_controls->fonts, this->m_controls->locale, false, "", 0);
+    top = this->DrawTitleBar(false, "", 0);
   }
   this->DrawBitmap(0, top, &bitmap->image, true);
 }
@@ -70,7 +70,7 @@ void UIMultiIllustWnd::Paint() {
   int top = 0;
   CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_bitmapName.c_str())));
   if (this->m_titled != 0) {
-    top = this->DrawTitleBar(this->m_controls->fonts, this->m_controls->locale, false, "", 0);
+    top = this->DrawTitleBar(false, "", 0);
   }
   this->DrawBitmap(0, top, &bitmap->image, true);
 }

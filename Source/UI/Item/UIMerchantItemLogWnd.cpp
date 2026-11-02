@@ -76,7 +76,7 @@ void UIMerchantItemLogWnd::Slot15(int width, int height) {
 // FUNCTION: fn_13576
 void UIMerchantItemLogWnd::Paint() {
   UIButtonContext& controls = *this->m_controls;
-  this->DrawTitleBar(controls.fonts, controls.locale, false, "", 0);
+  this->DrawTitleBar(false, "", 0);
 
   if (this->geometry.height == 17) {
     return;
@@ -139,7 +139,7 @@ void UIMerchantItemLogWnd::Paint() {
 
     char name[26] = {};
     StringFormat(name, sizeof(name), static_cast<std::size_t>(-1), "%s", log->name.c_str());
-    this->DrawTextAt(controls.fonts, controls.locale, textX, textY, name, static_cast<int>(std::strlen(name)), 0, 12, 0, 0, 0);
+    this->DrawTextAt(textX, textY, name, static_cast<int>(std::strlen(name)), 0, 12, 0, 0, 0);
     textX += 150;
 
     char price[64];
@@ -147,13 +147,13 @@ void UIMerchantItemLogWnd::Paint() {
     std::memset(price, 0, sizeof(price));
     std::memset(grouped, 0, sizeof(grouped));
     const int length = std::sprintf(price, " %10s Zeny", FormatGroupedInteger(static_cast<int>(it->unknown_0014[0]), grouped, sizeof(grouped)));
-    this->DrawTextAt(controls.fonts, controls.locale, textX, textY, price, length, 0, 12, 0, 0, 0);
+    this->DrawTextAt(textX, textY, price, length, 0, 12, 0, 0, 0);
     textX += 110;
 
     char date[20] = {};
     Timestamp stamp(log->time);
     StringFormat(date, sizeof(date), static_cast<std::size_t>(-1), "%02d/%02d - %02d:%02d:%02d", stamp.Month(), stamp.Day(), stamp.Hour(), stamp.Minute(), stamp.Second());
-    this->DrawTextAt(controls.fonts, controls.locale, textX, textY, date, static_cast<int>(std::strlen(date)), 0, 12, 0, 0, 0);
+    this->DrawTextAt(textX, textY, date, static_cast<int>(std::strlen(date)), 0, 12, 0, 0, 0);
     ++visible;
   }
 

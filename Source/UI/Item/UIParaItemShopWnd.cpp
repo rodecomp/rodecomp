@@ -676,7 +676,7 @@ int UIParaResultWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
 // FUNCTION: fn_13751
 void UIParaItemShopWnd::Paint() {
   UIButtonContext& controls = *this->m_controls;
-  const int titleHeight = this->DrawTitleBar(controls.fonts, controls.locale, false, "", 0);
+  const int titleHeight = this->DrawTitleBar(false, "", 0);
   if (titleHeight == this->geometry.height) {
     return;
   }
@@ -788,10 +788,10 @@ void UIParaItemShopWnd::Paint() {
     } else {
       text = FormatOwnedString(LookupMessage(1210), this->ClipTextToWidth(g_session.DecodePlayerName(), 100, 0, 12, 0), g_pendingAid);
     }
-    this->DrawTextAt(controls.fonts, controls.locale, 12, this->geometry.height - 21, text.c_str(), text.size(), 0, 12, 0, 0, 0);
+    this->DrawTextAt(12, this->geometry.height - 21, text.c_str(), text.size(), 0, 12, 0, 0, 0);
 
     text = FormatOwnedString(LookupMessage(1305), this->ClipTextToWidth(g_session.DecodePlayerName(), 100, 0, 12, 0), g_pendingGid);
-    this->DrawTextAt(controls.fonts, controls.locale, 12, this->geometry.height - barHeight - 21, text.c_str(), text.size(), 0, 12, 0, 0, 0);
+    this->DrawTextAt(12, this->geometry.height - barHeight - 21, text.c_str(), text.size(), 0, 12, 0, 0, 0);
   }
 }
 
@@ -799,7 +799,7 @@ void UIParaItemShopWnd::Paint() {
 // FUNCTION: fn_13752
 void UIParaResultWnd::Paint() {
   UIButtonContext& controls = *this->m_controls;
-  this->DrawTitleBar(controls.fonts, controls.locale, false, "", 0);
+  this->DrawTitleBar(false, "", 0);
 
   if (this->geometry.height == 17) {
     return;

@@ -429,7 +429,7 @@ void UIHotKeyWnd::Paint() {
   FontCache& fonts = this->m_context->fonts;
   const TextLocale& locale = this->m_context->locale;
 
-  this->unknown_00BC = this->DrawTitleBar(fonts, locale, true, LookupMessage(1494), 0);
+  this->unknown_00BC = this->DrawTitleBar(true, LookupMessage(1494), 0);
   this->unknown_00C0 = this->DrawButtonBar(2, 0, 1);
   this->DrawPanelBackground(this->unknown_00BC, 0, "");
 
@@ -459,7 +459,7 @@ void UIHotKeyWnd::Paint() {
     const int rowY = this->unknown_00BC + this->unknown_00C4 + this->unknown_00CC +
                      (visibleRow % this->m_rowsPerPage) * this->unknown_00D0;
 
-    const int textWidth = this->TextWidth(fonts, locale, text.c_str(), 0, 0, 12, 0, 0);
+    const int textWidth = this->TextWidth(text.c_str(), 0, 0, 12, 0, 0);
     const int textX = (this->unknown_00D4 - textWidth) / 2;
 
     const int backgroundX = column ? this->geometry.width - this->unknown_00D4 - this->unknown_00C8
@@ -488,25 +488,25 @@ void UIHotKeyWnd::Paint() {
     this->FillRegion(backgroundX, rowY, 1, this->unknown_00D0, 0xC0C0C0);
 
     const std::string fitted = this->FitDisplayText(130, entry.info.description.c_str(), 0, 12, 0);
-    const int fittedWidth = this->TextWidth(fonts, locale, fitted.c_str(), 0, 0, 12, 0, 0);
+    const int fittedWidth = this->TextWidth(fitted.c_str(), 0, 0, 12, 0, 0);
     const int descriptionX = keyX + (halfWidth - this->unknown_00C8 - this->unknown_00D4 - fittedWidth) / 2;
 
-    this->DrawTextAt(fonts, locale, descriptionX, rowY + 5, fitted.c_str(), 0, 0, 12, 0, 0, 0);
-    this->DrawTextAt(fonts, locale, textX + backgroundX, rowY + 5, text.c_str(), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(descriptionX, rowY + 5, fitted.c_str(), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(textX + backgroundX, rowY + 5, text.c_str(), 0, 0, 12, 0, 0, 0);
 
     ++visibleRow;
   }
 
   if (this->unknown_0114) {
     const std::string pages = FormatOwnedString("%d / %d", this->m_page, this->m_pageCount);
-    const int pagesWidth = this->TextWidth(fonts, locale, pages.c_str(), 0, 0, 12, 0, 0);
+    const int pagesWidth = this->TextWidth(pages.c_str(), 0, 0, 12, 0, 0);
     const int pageX =
       (this->m_prevButton->geometry.width - pagesWidth + 60) / 2 + this->m_prevButton->geometry.x;
 
     const std::string current = FormatOwnedString("%d", this->m_page);
     DrawOutlinedText(*this, pageX, 25, current.c_str(), 0, 0x7F3CFF, 0xFFFFFF, 0, 11, 1, 0);
 
-    const int currentWidth = this->TextWidth(fonts, locale, current.c_str(), 0, 0, 12, 0, 0);
+    const int currentWidth = this->TextWidth(current.c_str(), 0, 0, 12, 0, 0);
     const std::string total = FormatOwnedString(" / %d", this->m_pageCount);
     DrawOutlinedText(*this, pageX + currentWidth, 25, total.c_str(), 0, 0x666666, 0xFFFFFF, 0, 11, 1, 0);
   }

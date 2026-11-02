@@ -705,7 +705,7 @@ void UIStylingShopWnd::SetBuyEnabled(bool enabled) {
 void UIStylingShopWnd::Paint() {
   this->RefreshFavoriteButton();
   this->ClearSurface(0xFFFFFFFF);
-  this->DrawTitleBar(this->m_controls->fonts, this->m_controls->locale, true, LookupMessage(2813), 0);
+  this->DrawTitleBar(true, LookupMessage(2813), 0);
   CBitmapRes* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\styleshop\\bg_styling.bmp")));
   if (background) {
     this->DrawBitmap(0, 0, &background->image, false);
@@ -1708,10 +1708,10 @@ void UIShowInfoWnd::DrawPayments() {
       char text[16] = {};
       std::sprintf(text, "%d\tZeny", zeny);
       if (!payable) {
-        const int width = this->TextWidth(this->m_context->fonts, this->m_context->locale, text, this->unknown_00A8, 0, 12, 0, 0);
+        const int width = this->TextWidth(text, this->unknown_00A8, 0, 12, 0, 0);
         this->FillRegion(x - 2, y + 5, width + 2, 1, color);
       }
-      this->DrawTextAt(this->m_context->fonts, this->m_context->locale, x, y, text, 0, 0, this->unknown_00A8, color, 0, 0);
+      this->DrawTextAt(x, y, text, 0, 0, this->unknown_00A8, color, 0, 0);
     } else if (itemId) {
       this->DrawPaymentItem(*it, zeny, itemId, payable, row);
       if (!payable) {
@@ -1724,20 +1724,20 @@ void UIShowInfoWnd::DrawPayments() {
             this->DrawPaymentItem(*it, zeny, itemId, true, row);
             this->m_checks[row]->SetTooltip(LookupMessage(2815));
             ITEM_DESC description = FindItemDescription(costumeItemId);
-            this->DrawTextAt(this->m_context->fonts, this->m_context->locale, x, y, description.identifiedName, 0, 0, this->unknown_00A8, color, 0, 0);
+            this->DrawTextAt(x, y, description.identifiedName, 0, 0, this->unknown_00A8, color, 0, 0);
           } else {
             ITEM_DESC description = FindItemDescription(itemId);
             if (!costumePayable) {
               const int width =
-                  this->TextWidth(this->m_context->fonts, this->m_context->locale, description.identifiedName, this->unknown_00A8, 0, 12, 0, 0);
+                  this->TextWidth(description.identifiedName, this->unknown_00A8, 0, 12, 0, 0);
               this->FillRegion(x - 2, y + 5, width + 2, 1, color);
             }
-            this->DrawTextAt(this->m_context->fonts, this->m_context->locale, x, y, description.identifiedName, 0, 0, this->unknown_00A8, color, 0, 0);
+            this->DrawTextAt(x, y, description.identifiedName, 0, 0, this->unknown_00A8, color, 0, 0);
           }
         }
       } else {
         ITEM_DESC description = FindItemDescription(itemId);
-        this->DrawTextAt(this->m_context->fonts, this->m_context->locale, x, y, description.identifiedName, 0, 0, this->unknown_00A8, color, 0, 0);
+        this->DrawTextAt(x, y, description.identifiedName, 0, 0, this->unknown_00A8, color, 0, 0);
       }
     } else {
       char text[260];
@@ -1754,7 +1754,7 @@ void UIShowInfoWnd::DrawPayments() {
       if (this->unknown_00A1 == 1) {
         this->DrawBitmap(this->unknown_00C0, this->geometry.height / 8 * row + this->unknown_00C4, icon ? &icon->image : nullptr, false);
       }
-      this->DrawTextAt(this->m_context->fonts, this->m_context->locale, x, y, text, 0, 0, this->unknown_00A8, 0x5A5A84, 0, 0);
+      this->DrawTextAt(x, y, text, 0, 0, this->unknown_00A8, 0x5A5A84, 0, 0);
     }
   }
 
@@ -1775,7 +1775,7 @@ void UIShowInfoWnd::DrawPayments() {
       std::vector<std::string> lines;
       WrapPixelText(*this->geometry.surface, *this->m_context->locale.serverLanguage, LookupMessage(2835), lines, this->geometry.width - 20);
       for (unsigned int i = 0; i < lines.size(); ++i) {
-        this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 20, positions[i][1], lines[i].c_str(), 0, 0, 11, 0, 0, 0);
+        this->DrawTextAt(20, positions[i][1], lines[i].c_str(), 0, 0, 11, 0, 0, 0);
       }
     }
   }

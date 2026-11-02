@@ -202,7 +202,7 @@ void UIHotkeyGuideWnd::Paint() {
   UIButtonContext& controls = *this->m_controls;
   auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\hotkey_guide\\bg_shortcuts.bmp")));
   this->DrawBitmap(0, 0, &background->image, false);
-  this->DrawTitleBar(controls.fonts, controls.locale, false, LookupMessage(3128), 0);
+  this->DrawTitleBar(false, LookupMessage(3128), 0);
 
   for (auto key = this->m_keys.begin(); key != this->m_keys.end(); ++key) {
     HotkeyGuideLabel& label = this->m_labels[*key];
@@ -235,9 +235,9 @@ void UIHotkeyGuideWnd::Paint() {
     } else {
       text = "Non";
     }
-    int width = this->TextWidth(controls.fonts, controls.locale, text.c_str(), 0, 0, 12, 1, 0);
+    int width = this->TextWidth(text.c_str(), 0, 0, 12, 1, 0);
     int x = static_cast<int>((100 - width) * 0.5 + (index / 6 * 246 + 156));
-    this->DrawTextAt(controls.fonts, controls.locale, x, index % 6 * 30 + 315, text.c_str(), 0, 0, 12, 0xA55139, 1, 0);
+    this->DrawTextAt(x, index % 6 * 30 + 315, text.c_str(), 0, 0, 12, 0xA55139, 1, 0);
     ++index;
   }
 
@@ -335,14 +335,14 @@ void UIHotkeyGuideWnd::DrawKeyLabel(std::string text, const HotkeyGuideKey* key)
   UIButtonContext& controls = *this->m_controls;
   int x = key->x;
   if (key->align == 6) {
-    int textWidth = this->TextWidth(controls.fonts, controls.locale, text.c_str(), 0, 0, 12, 0, 0);
+    int textWidth = this->TextWidth(text.c_str(), 0, 0, 12, 0, 0);
     x = static_cast<int>(static_cast<float>(key->width - textWidth) * g_depthAverageHalf + static_cast<float>(x));
   } else if (key->align == 0) {
     x += key->padding;
   } else if (key->align == 2) {
-    int textWidth = this->TextWidth(controls.fonts, controls.locale, text.c_str(), 0, 0, 12, 0, 0);
+    int textWidth = this->TextWidth(text.c_str(), 0, 0, 12, 0, 0);
     x += key->width - key->padding - textWidth;
   }
   int y = static_cast<int>(static_cast<double>(key->height - 12) * 0.5 + static_cast<double>(key->y));
-  this->DrawTextAt(controls.fonts, controls.locale, x, y, text.c_str(), 0, 0, 12, 0x2B2625, 0, 0);
+  this->DrawTextAt(x, y, text.c_str(), 0, 0, 12, 0x2B2625, 0, 0);
 }

@@ -319,7 +319,7 @@ void UIComboBoxDef2Wnd::Paint() {
   }
 
   auto& controls = this->m_controls->buttons;
-  const int width = this->TextWidth(controls.fonts, controls.locale, this->label->text.c_str(), 0, 0, 12, 0, 0);
+  const int width = this->TextWidth(this->label->text.c_str(), 0, 0, 12, 0, 0);
   const int x = static_cast<int>(static_cast<float>(this->geometry.width) * 0.5f - static_cast<float>(width) * 0.5f);
 
   if (x != this->previousTextX) {
@@ -513,23 +513,23 @@ void UIDescriptRace::sub_8A0B10() {
       return;
     }
 
-    this->DrawTextAt(context.fonts, context.locale, 50, 23, LookupMessage(3018), 0, 0, 12, 0x99634C, 1, 0);
-    this->DrawTextAt(context.fonts, context.locale, 49, 22, LookupMessage(3018), 0, 0, 12, 0xFFFFFF, 1, 0);
+    this->DrawTextAt(50, 23, LookupMessage(3018), 0, 0, 12, 0x99634C, 1, 0);
+    this->DrawTextAt(49, 22, LookupMessage(3018), 0, 0, 12, 0xFFFFFF, 1, 0);
     std::vector<std::string> lines;
     WrapPlainText(LookupMessage(3021), lines, 40, g_serverLanguage->language);
     int y = 22;
     for (unsigned index = 0; index < lines.size(); ++index) {
-      this->DrawTextAt(context.fonts, context.locale, 112, y, lines[index].c_str(), 0, 0, 12, 0, 0, 0);
+      this->DrawTextAt(112, y, lines[index].c_str(), 0, 0, 12, 0, 0, 0);
       y += 20;
     }
   } else if (this->m_race == 0) {
-    this->DrawTextAt(context.fonts, context.locale, 50, 23, LookupMessage(3016), 0, 0, 12, 0x99634C, 1, 0);
-    this->DrawTextAt(context.fonts, context.locale, 49, 22, LookupMessage(3016), 0, 0, 12, 0xFFFFFF, 1, 0);
+    this->DrawTextAt(50, 23, LookupMessage(3016), 0, 0, 12, 0x99634C, 1, 0);
+    this->DrawTextAt(49, 22, LookupMessage(3016), 0, 0, 12, 0xFFFFFF, 1, 0);
     std::vector<std::string> lines;
     WrapPlainText(LookupMessage(3020), lines, 40, g_serverLanguage->language);
     int y = 22;
     for (unsigned index = 0; index < lines.size(); ++index) {
-      this->DrawTextAt(context.fonts, context.locale, 112, y, lines[index].c_str(), 0, 0, 12, 0, 0, 0);
+      this->DrawTextAt(112, y, lines[index].c_str(), 0, 0, 12, 0, 0, 0);
       y += 20;
     }
   }

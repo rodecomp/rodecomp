@@ -188,7 +188,7 @@ void UIRoulletteWnd::Slot15(int, int) {
 // FUNCTION: fn_10087
 void UIRoulletteWnd::Paint() {
   const TextLocale locale = {};
-  this->DrawTitleBar(g_fontCache, locale, true, LookupMessage(2641), 0);
+  this->DrawTitleBar(true, LookupMessage(2641), 0);
   this->DrawPanelBackground(17, 0, "유저인터페이스\\basic_interface\\roullette\\roulletteBG.bmp");
 
   char buffer[40] = {};

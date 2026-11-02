@@ -380,20 +380,19 @@ void UIBasicInfoWnd::DrawExpanded() {
   );
   this->DrawBitmap(0, 0, &background->image, false);
 
-  this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 18, 3, LookupMessage(238), 0, 0, 12, 0xFFFFFF, 0, 0);
-  this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 17, 2, LookupMessage(238), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(18, 3, LookupMessage(238), 0, 0, 12, 0xFFFFFF, 0, 0);
+  this->DrawTextAt(17, 2, LookupMessage(238), 0, 0, 12, 0, 0, 0);
 
-  this->DrawTextAt(
-    this->m_controls->fonts, this->m_controls->locale, 9, 36, g_session.GetJobName(job, -1), 0, family, fontHeight, 0, 0, 0
+  this->DrawTextAt(9, 36, g_session.GetJobName(job, -1), 0, family, fontHeight, 0, 0, 0
   );
-  this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 9, 51, LookupMessage(3068), 0, 1, 14, 0, 0, 0);
-  this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 9, 65, LookupMessage(3069), 0, 1, 14, 0, 0, 0);
-  this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 9, 80, LookupMessage(3628), 0, 1, 14, 0, 0, 0);
+  this->DrawTextAt(9, 51, LookupMessage(3068), 0, 1, 14, 0, 0, 0);
+  this->DrawTextAt(9, 65, LookupMessage(3069), 0, 1, 14, 0, 0, 0);
+  this->DrawTextAt(9, 80, LookupMessage(3628), 0, 1, 14, 0, 0, 0);
 
   if (g_session.unknown_556C > 0) {
     const std::int64_t percent = static_cast<std::int64_t>(g_session.unknown_5568) * 100 / g_session.unknown_556C;
     std::string text = FormatOwnedString("%d%%", percent);
-    this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 173, 51, text.c_str(), 0, 1, 14, 0, 0, 0);
+    this->DrawTextAt(173, 51, text.c_str(), 0, 1, 14, 0, 0, 0);
   }
 
   const int sp = *reinterpret_cast<const int*>(&g_session.unknown_5570[0]);
@@ -401,26 +400,24 @@ void UIBasicInfoWnd::DrawExpanded() {
   if (spMax > 0) {
     const std::int64_t percent = static_cast<std::int64_t>(sp) * 100 / spMax;
     std::string text = FormatOwnedString("%d%%", percent);
-    this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 173, 65, text.c_str(), 0, 1, 14, 0, 0, 0);
+    this->DrawTextAt(173, 65, text.c_str(), 0, 1, 14, 0, 0, 0);
   }
 
   const int apMax = g_session.GetTraitStat(233);
   if (apMax > 0) {
     std::string text = FormatOwnedString("%d%%", 100 * g_session.GetTraitStat(232) / apMax);
-    this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 173, 80, text.c_str(), 0, 1, 14, 0, 0, 0);
+    this->DrawTextAt(173, 80, text.c_str(), 0, 1, 14, 0, 0, 0);
   }
 
   std::string baseLevel = FormatOwnedString(LookupMessage(1995), g_session.m_level);
-  this->DrawTextAt(
-    this->m_controls->fonts, this->m_controls->locale, 17, this->layoutOffset + 71, baseLevel.c_str(), 0, 1, 14, 0, 0, 0
+  this->DrawTextAt(17, this->layoutOffset + 71, baseLevel.c_str(), 0, 1, 14, 0, 0, 0
   );
 
   std::string jobLevel = FormatOwnedString(LookupMessage(1996), g_session.m_jobLevel);
   if (g_serviceType == 12) {
     jobLevel = FormatOwnedString("Classe. %d", g_session.m_jobLevel);
   }
-  this->DrawTextAt(
-    this->m_controls->fonts, this->m_controls->locale, 17, this->layoutOffset + 83, jobLevel.c_str(), 0, 1, 14, 0, 0, 0
+  this->DrawTextAt(17, this->layoutOffset + 83, jobLevel.c_str(), 0, 1, 14, 0, 0, 0
   );
 
   char zenyBuffer[64];
@@ -429,8 +426,7 @@ void UIBasicInfoWnd::DrawExpanded() {
   std::string zenyText = FormatOwnedString(LookupMessage(1997), zenyBuffer);
   zenyText = " | " + zenyText;
   this->DrawRightAlignedText(width - 5, this->layoutOffset + 103, zenyText.c_str(), 0, 1, 14, 0, 0);
-  const int zenyWidth = this->TextWidth(
-    this->m_controls->fonts, this->m_controls->locale, zenyText.c_str(), 0, 1, 14, 0, 0
+  const int zenyWidth = this->TextWidth(zenyText.c_str(), 0, 1, 14, 0, 0
   );
 
   const int denominator = g_session.m_maxWeight < 1 ? 1 : g_session.m_maxWeight;
@@ -456,7 +452,7 @@ void UIBasicInfoWnd::DrawCollapsed() {
   this->FillRegion(1, 17, width - 2, height - 18, RGB(red, green, blue));
   SkinPaletteChannels(ResourceMgr::Instance(), 14, 6, red, green, blue);
   DrawRoundedBorder(*this, 0, 14, width, height - 14, RGB(red, green, blue));
-  this->DrawTitleBar(this->m_controls->fonts, this->m_controls->locale, false, "", 0);
+  this->DrawTitleBar(false, "", 0);
 
   int family = 1;
   int fontHeight = 14;
@@ -485,14 +481,14 @@ void UIBasicInfoWnd::DrawCollapsed() {
     "%s %d / %s / %s %d", LookupMessage(3070), g_session.m_level, g_session.GetJobName(g_session.GetDisplayJob(), -1), LookupMessage(3627),
     g_session.m_jobLevel
   );
-  this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 8, 20, title.c_str(), 0, family, fontHeight, 0, 0, 0);
+  this->DrawTextAt(8, 20, title.c_str(), 0, family, fontHeight, 0, 0, 0);
 
   std::uint32_t hpColor = 0;
   if (g_session.unknown_556C > 0) {
     hpColor = 0.25f > static_cast<float>(g_session.unknown_5568) / static_cast<float>(g_session.unknown_556C) ? 255 : 0;
   }
   std::string hpText = FormatOwnedString("%s %d / %d", LookupMessage(3068), g_session.unknown_5568, g_session.unknown_556C);
-  this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 8, 36, hpText.c_str(), 0, family, fontHeight, hpColor, 0, 0);
+  this->DrawTextAt(8, 36, hpText.c_str(), 0, family, fontHeight, hpColor, 0, 0);
 
   std::int64_t current = BaseExpCurrent();
   std::int64_t maximum = BaseExpMaximum();
@@ -512,7 +508,7 @@ void UIBasicInfoWnd::DrawCollapsed() {
               0.1;
   }
   std::string expText = FormatOwnedString("| %s %.1lf%%", LookupMessage(3072), percent);
-  this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 136, 36, expText.c_str(), 0, family, fontHeight, 0, 0, 0);
+  this->DrawTextAt(136, 36, expText.c_str(), 0, family, fontHeight, 0, 0, 0);
 
   const int sp = *reinterpret_cast<const int*>(&g_session.unknown_5570[0]);
   const int spMax = *reinterpret_cast<const int*>(&g_session.unknown_5570[4]);
@@ -521,10 +517,10 @@ void UIBasicInfoWnd::DrawCollapsed() {
     spColor = 0.25f > static_cast<float>(sp) / static_cast<float>(spMax) ? 255 : 0;
   }
   std::string spText = FormatOwnedString("%s %d / %d", LookupMessage(3069), sp, spMax);
-  this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 8, 52, spText.c_str(), 0, family, fontHeight, spColor, 0, 0);
+  this->DrawTextAt(8, 52, spText.c_str(), 0, family, fontHeight, spColor, 0, 0);
 
   std::string apText = FormatOwnedString("| %s %d / %d", LookupMessage(3628), g_session.GetTraitStat(232), g_session.GetTraitStat(233));
-  this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 136, 52, apText.c_str(), 0, family, fontHeight, 0, 0, 0);
+  this->DrawTextAt(136, 52, apText.c_str(), 0, family, fontHeight, 0, 0, 0);
 }
 
 // OFFSET: 0x009983C0
@@ -616,7 +612,7 @@ void UIBasicInfoWnd::Paint() {
     SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
     this->FillRegion(1, 17, this->geometry.width - 2, this->geometry.height - 19, RGB(red, green, blue));
     this->FillRegion(2, this->geometry.height - 2, this->geometry.width - 4, 1, RGB(red, green, blue));
-    this->DrawTitleBar(this->m_controls->fonts, this->m_controls->locale, false, "", 0);
+    this->DrawTitleBar(false, "", 0);
 
     std::int64_t current = BaseExpCurrent();
     std::int64_t maximum = BaseExpMaximum();
@@ -678,10 +674,10 @@ void UIBasicInfoWnd::Paint() {
 
       length = std::sprintf(text, "Lv.%2d / %s / Lv.%2d / Exp. %.1lf %%", g_session.m_level, g_session.GetJobName(g_session.GetDisplayJob(), -1),
                             g_session.m_jobLevel, percent);
-      if (this->TextWidth(this->m_controls->fonts, this->m_controls->locale, text, length, family, fontHeight, 0, 0) + 9 > this->geometry.width) {
+      if (this->TextWidth(text, length, family, fontHeight, 0, 0) + 9 > this->geometry.width) {
         length = std::sprintf(text, "Lv%2d / %s / Lv%2d / Exp%.1lf%%", g_session.m_level, g_session.GetJobName(g_session.GetDisplayJob(), -1),
                               g_session.m_jobLevel, percent);
-        const int remaining = this->geometry.width - this->TextWidth(this->m_controls->fonts, this->m_controls->locale, text, length, family, fontHeight, 0, 0);
+        const int remaining = this->geometry.width - this->TextWidth(text, length, family, fontHeight, 0, 0);
         if (remaining < 0) {
           x = 3;
         } else {
@@ -689,7 +685,7 @@ void UIBasicInfoWnd::Paint() {
         }
       }
     }
-    this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, x, 20, text, length, family, fontHeight, 0, 0, 0);
+    this->DrawTextAt(x, 20, text, length, family, fontHeight, 0, 0, 0);
 
     FormatGroupedInteger(g_session.m_zeny, zenyText, 64);
 
@@ -697,10 +693,10 @@ void UIBasicInfoWnd::Paint() {
     if (g_session.unknown_556C != 0) {
       const std::uint32_t color = static_cast<float>(g_session.unknown_5568) * 100.0f / static_cast<float>(g_session.unknown_556C) < 25.0f ? 255 : 0;
       const int hpLength = std::sprintf(text, x == 9 ? "HP. %d / %d" : "HP %d / %d", g_session.unknown_5568, g_session.unknown_556C);
-      this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, x, 36, text, hpLength, 1, 14, color, 0, 0);
-      offset = this->TextWidth(this->m_controls->fonts, this->m_controls->locale, text, hpLength, 1, 14, 0, 0);
+      this->DrawTextAt(x, 36, text, hpLength, 1, 14, color, 0, 0);
+      offset = this->TextWidth(text, hpLength, 1, 14, 0, 0);
       length = std::sprintf(text, " | ");
-      this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, offset + x, 36, text, length, 1, 14, 0, 0, 0);
+      this->DrawTextAt(offset + x, 36, text, length, 1, 14, 0, 0, 0);
     }
 
     const int sp = *reinterpret_cast<const int*>(&g_session.unknown_5570[0]);
@@ -710,12 +706,12 @@ void UIBasicInfoWnd::Paint() {
     }
 
     const std::uint32_t color = static_cast<float>(sp) * 100.0f / static_cast<float>(spMax) < 25.0f ? 255 : 0;
-    offset += this->TextWidth(this->m_controls->fonts, this->m_controls->locale, text, length, 1, 14, 0, 0);
+    offset += this->TextWidth(text, length, 1, 14, 0, 0);
     const int spLength = std::sprintf(text, x == 9 ? "SP. %d / %d" : "SP %d / %d", sp, spMax);
-    this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, offset + x, 36, text, spLength, 1, 14, color, 0, 0);
+    this->DrawTextAt(offset + x, 36, text, spLength, 1, 14, color, 0, 0);
   } else if (this->geometry.height == this->expandedHeight) {
     CBitmapRes* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\basewin_bg2.bmp")));
-    this->DrawTitleBar(this->m_controls->fonts, this->m_controls->locale, false, "", 0);
+    this->DrawTitleBar(false, "", 0);
     this->DrawBitmap(0, 0, background ? &background->image : nullptr, false);
 
     int family;
@@ -727,40 +723,40 @@ void UIBasicInfoWnd::Paint() {
       family = 1;
       fontHeight = 14;
     }
-    this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 9, 36, g_session.GetJobName(g_session.GetDisplayJob(), -1), 0, family, fontHeight, 0, 0, 0);
+    this->DrawTextAt(9, 36, g_session.GetJobName(g_session.GetDisplayJob(), -1), 0, family, fontHeight, 0, 0, 0);
 
     std::memset(text, 0, sizeof(text));
     if (g_serviceType == 1) {
-      this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 18, 3, "Basic Info", 0, 0, 12, 0xFFFFFF, 0, 0);
-      this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 17, 2, "Basic Info", 0, 0, 12, 0, 0, 0);
+      this->DrawTextAt(18, 3, "Basic Info", 0, 0, 12, 0xFFFFFF, 0, 0);
+      this->DrawTextAt(17, 2, "Basic Info", 0, 0, 12, 0, 0, 0);
     } else {
-      this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 18, 3, LookupMessage(238), 0, 0, 12, 0xFFFFFF, 0, 0);
-      this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 17, 2, LookupMessage(238), 0, 0, 12, 0, 0, 0);
+      this->DrawTextAt(18, 3, LookupMessage(238), 0, 0, 12, 0xFFFFFF, 0, 0);
+      this->DrawTextAt(17, 2, LookupMessage(238), 0, 0, 12, 0, 0, 0);
     }
 
-    this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 17, 51, "HP", 0, 1, 14, 0, 0, 0);
-    this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 17, 65, "SP", 0, 1, 14, 0, 0, 0);
+    this->DrawTextAt(17, 51, "HP", 0, 1, 14, 0, 0, 0);
+    this->DrawTextAt(17, 65, "SP", 0, 1, 14, 0, 0, 0);
 
     if (g_session.unknown_556C != 0) {
       std::sprintf(text, "%d%%", g_session.unknown_5568 * 100 / g_session.unknown_556C);
-      this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 173, 51, text, 0, 1, 14, 0, 0, 0);
+      this->DrawTextAt(173, 51, text, 0, 1, 14, 0, 0, 0);
     }
 
     const int spMax = *reinterpret_cast<const int*>(&g_session.unknown_5570[4]);
     if (spMax != 0) {
       std::sprintf(text, "%d%%", *reinterpret_cast<const int*>(&g_session.unknown_5570[0]) * 100 / spMax);
-      this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 173, 65, text, 0, 1, 14, 0, 0, 0);
+      this->DrawTextAt(173, 65, text, 0, 1, 14, 0, 0, 0);
     }
 
     std::sprintf(text, g_serviceType == 12 ? "Base. %d" : "Base Lv. %d", g_session.m_level);
-    this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 17, this->layoutOffset + 71, text, 0, 1, 14, 0, 0, 0);
+    this->DrawTextAt(17, this->layoutOffset + 71, text, 0, 1, 14, 0, 0, 0);
     std::sprintf(text, g_serviceType == 12 ? "Classe. %d" : "Job Lv. %d", g_session.m_jobLevel);
-    this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 17, this->layoutOffset + 83, text, 0, 1, 14, 0, 0, 0);
+    this->DrawTextAt(17, this->layoutOffset + 83, text, 0, 1, 14, 0, 0, 0);
 
     std::memset(zenyText, 0, sizeof(zenyText));
     FormatGroupedInteger(g_session.m_zeny, zenyText, 64);
     std::sprintf(text, "Zeny : %s", zenyText);
-    const int zenyWidth = this->TextWidth(this->m_controls->fonts, this->m_controls->locale, text, std::strlen(text), 1, 14, 0, 0);
+    const int zenyWidth = this->TextWidth(text, std::strlen(text), 1, 14, 0, 0);
     this->DrawRightAlignedText(this->geometry.width - 5, this->layoutOffset + 103, text, std::strlen(text), 1, 14, 0, 0);
 
     std::sprintf(text, g_serviceType == 12 ? "Peso : %3d / %3d" : "Weight : %3d / %3d", g_session.m_weight, g_session.m_maxWeight);

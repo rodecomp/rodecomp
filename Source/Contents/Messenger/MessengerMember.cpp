@@ -524,7 +524,7 @@ void UIFriendOptionWnd::Slot15(int, int) {
   auto& controls = this->m_options->buttons;
 
   const char* label = controls.services.MessageText(361);
-  int width = std::min(this->TextWidth(controls.fonts, controls.locale, label, 0, 0, 12, 0, 0) + 12, this->geometry.width - 15);
+  int width = std::min(this->TextWidth(label, 0, 0, 12, 0, 0) + 12, this->geometry.width - 15);
   this->option0Box = new UICheckBox(*this->m_context, controls);
   this->option0Box->SetSize(width, 12);
   this->option0Box->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", controls.services.MessageText(361));
@@ -533,7 +533,7 @@ void UIFriendOptionWnd::Slot15(int, int) {
   this->AddChild(this->option0Box);
 
   label = controls.services.MessageText(359);
-  width = std::min(this->TextWidth(controls.fonts, controls.locale, label, 0, 0, 12, 0, 0) + 12, this->geometry.width - 15);
+  width = std::min(this->TextWidth(label, 0, 0, 12, 0, 0) + 12, this->geometry.width - 15);
   this->option2Box = new UICheckBox(*this->m_context, controls);
   this->option2Box->SetSize(width, 12);
   this->option2Box->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", controls.services.MessageText(359));
@@ -542,7 +542,7 @@ void UIFriendOptionWnd::Slot15(int, int) {
   this->AddChild(this->option2Box);
 
   label = controls.services.MessageText(362);
-  width = std::min(this->TextWidth(controls.fonts, controls.locale, label, 0, 0, 12, 0, 0) + 12, this->geometry.width - 15);
+  width = std::min(this->TextWidth(label, 0, 0, 12, 0, 0) + 12, this->geometry.width - 15);
   this->option1Box = new UICheckBox(*this->m_context, controls);
   this->option1Box->SetSize(width, 12);
   this->option1Box->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", controls.services.MessageText(362));
@@ -558,7 +558,7 @@ void UIFriendOptionWnd::Slot15(int, int) {
 void UIFriendOptionWnd::Paint() {
   auto& controls = this->m_options->buttons;
 
-  const int titleHeight = this->DrawTitleBar(controls.fonts, controls.locale, true, LookupMessage(355), 0);
+  const int titleHeight = this->DrawTitleBar(true, LookupMessage(355), 0);
   this->DrawPanelBackground(titleHeight, 0, "");
   const int barHeight = this->DrawButtonBar(0, 0, 1);
   this->FillRegion(0, this->geometry.height - barHeight, this->geometry.width, 1, 0xC0C0C0);
@@ -839,7 +839,7 @@ void UIMessengerGroupWnd::Slot15(int, int) {
   this->mode = 1;
 
   const char* tabLabels[2] = {LookupMessage(0x66), LookupMessage(0x67)};
-  int tabWidths[2] = {48, this->TextWidth(this->m_context->fonts, this->m_context->locale, LookupMessage(0x67), 0, 0, 12, 0, 0) + 13};
+  int tabWidths[2] = {48, this->TextWidth(LookupMessage(0x67), 0, 0, 12, 0, 0) + 13};
   int tabValues[2] = {0, 1};
   for (int index = 0; index < 2; ++index) {
     UIRadioBtn* tab = new UIRadioBtn(*this->m_context, *this->m_controls);
@@ -946,7 +946,7 @@ void UIMessengerGroupWnd::Slot15(int, int) {
 // OFFSET: 0x0073B9D0
 // FUNCTION: fn_07707
 void UIMessengerGroupWnd::Paint() {
-  this->DrawTitleBar(this->m_context->fonts, this->m_context->locale, true, "", 0);
+  this->DrawTitleBar(true, "", 0);
   unsigned red, green, blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
   this->FillRegion(0, 17, this->geometry.width, this->geometry.height - 38, RGB(red, green, blue));
@@ -1036,14 +1036,12 @@ void UIMessengerGroupWnd::Paint() {
       } else {
         levelColor = 0x493A37;
       }
-      this->DrawTextAt(
-        this->m_context->fonts, this->m_context->locale, x + 28, this->iconPositions[this->iconIndex].y + top + 3, level,
+      this->DrawTextAt(x + 28, this->iconPositions[this->iconIndex].y + top + 3, level,
         static_cast<int>(strlen(level)), 0, 12, levelColor, 1, 0
       );
       const int textY = this->iconPositions[this->iconIndex].y + top + 3;
-      const int levelWidth = this->TextWidth(this->m_context->fonts, this->m_context->locale, level, static_cast<unsigned>(strlen(level)), 0, 12, 1, 0);
-      this->DrawTextAt(
-        this->m_context->fonts, this->m_context->locale, levelWidth + x + 33, textY, clipped.c_str(), static_cast<int>(clipped.size()), 0, 12, color,
+      const int levelWidth = this->TextWidth(level, static_cast<unsigned>(strlen(level)), 0, 12, 1, 0);
+      this->DrawTextAt(levelWidth + x + 33, textY, clipped.c_str(), static_cast<int>(clipped.size()), 0, 12, color,
         1, 0
       );
 
@@ -1052,8 +1050,7 @@ void UIMessengerGroupWnd::Paint() {
         if (gauge->geometry.x != -100) {
           char hpText[128];
           sprintf(hpText, "%d/%d", gauge->current, gauge->maximum);
-          this->DrawTextAt(
-            this->m_context->fonts, this->m_context->locale, this->gauges[index]->geometry.x + 66, this->gauges[index]->geometry.y - 2, hpText,
+          this->DrawTextAt(this->gauges[index]->geometry.x + 66, this->gauges[index]->geometry.y - 2, hpText,
             static_cast<int>(strlen(hpText)), 0, 10, 0, 0, 0
           );
         }
@@ -1078,15 +1075,13 @@ void UIMessengerGroupWnd::Paint() {
       memset(path, 0, sizeof(path));
       sprintf(path, "%sbg_partymember.bmp", prefix.c_str());
       const auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
-      this->DrawTextAt(
-        this->m_context->fonts, this->m_context->locale, this->geometry.width - 96, this->geometry.height - 16, LookupMessage(3231), 0, 0, 12, 0, 0, 0
+      this->DrawTextAt(this->geometry.width - 96, this->geometry.height - 16, LookupMessage(3231), 0, 0, 12, 0, 0, 0
       );
       this->DrawBitmap(this->geometry.width - 58, this->geometry.height - 18, &background->image, true);
 
       memset(path, 0, sizeof(path));
       sprintf(path, "%d/%d", ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyCount(), 12);
-      this->DrawTextAt(
-        this->m_context->fonts, this->m_context->locale, this->geometry.width - 51, this->geometry.height - 16, path,
+      this->DrawTextAt(this->geometry.width - 51, this->geometry.height - 16, path,
         static_cast<int>(strlen(path)), 0, 12, 0xFFFFFF, 0, 0
       );
     } else {
@@ -1115,13 +1110,12 @@ void UIMessengerGroupWnd::Paint() {
         unsigned selectRed, selectGreen, selectBlue;
         SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, selectRed, selectGreen, selectBlue);
         this->FillRegion(
-          x + 17, top + 4, this->TextWidth(this->m_context->fonts, this->m_context->locale, nameText, 0, 0, 12, 0, 0) + 3, 16,
+          x + 17, top + 4, this->TextWidth(nameText, 0, 0, 12, 0, 0) + 3, 16,
           RGB(selectRed, selectGreen, selectBlue)
         );
       }
 
-      this->DrawTextAt(
-        this->m_context->fonts, this->m_context->locale, x + 19, top + 6, nameText, static_cast<int>(strlen(nameText)), 0, 12, color, 0, 0
+      this->DrawTextAt(x + 19, top + 6, nameText, static_cast<int>(strlen(nameText)), 0, 12, color, 0, 0
       );
 
       if (it->offline == 0) {
@@ -1294,7 +1288,7 @@ void UIMessengerGroupWnd::Slot28(int x, int y) {
   if (fitted.find(text, 0, std::strlen(text)) == std::string::npos) {
     char level[64];
     std::sprintf(level, "Lv.%d", member.level);
-    int tipX = this->TextWidth(this->m_context->fonts, this->m_context->locale, level, std::strlen(level), 0, 12, 1, 0) +
+    int tipX = this->TextWidth(level, std::strlen(level), 0, 12, 1, 0) +
                this->iconPositions[this->iconIndex].x + 33;
     int tipY = this->selected / this->columns * this->rowHeight + 22;
     this->ToScreen(tipX, tipY);

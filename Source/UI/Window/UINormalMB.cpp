@@ -20,7 +20,7 @@ UINormalMB::UINormalMB(UIWindowContext& windows, UIFrameContext& frames) : UIFra
 // FUNCTION: fn_12906
 void UINormalMB::Paint() {
   UIButtonContext& controls = this->m_textContext->buttons;
-  this->DrawTitleBar(controls.fonts, controls.locale, true, this->m_title.c_str(), 0);
+  this->DrawTitleBar(true, this->m_title.c_str(), 0);
   this->DrawPanelBackground(17, 0, "");
 }
 

@@ -120,7 +120,7 @@ ITEM_INFO UIMakeTargetProcessWnd::GetItemAt(int x, int y) {
 // FUNCTION: fn_13611
 void UIMakeTargetProcessWnd::Paint() {
   UIButtonContext& controls = *this->m_controls;
-  const int titleHeight = this->DrawTitleBar(controls.fonts, controls.locale, false, "", 0);
+  const int titleHeight = this->DrawTitleBar(false, "", 0);
   this->DrawPanelBackground(titleHeight, 0, "");
   this->DrawButtonBar(2, 0, 1);
 
@@ -159,7 +159,7 @@ void UIMakeTargetProcessWnd::Paint() {
   const std::vector<const char*>& lines = FindMetalProcessItems(this->makeType);
   int y = 42;
   for (unsigned int index = 0; index < lines.size(); ++index, y += 20) {
-    this->DrawTextAt(controls.fonts, controls.locale, 16, y, lines[index], 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(16, y, lines[index], 0, 0, 12, 0, 0, 0);
   }
 }
 

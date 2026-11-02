@@ -150,7 +150,7 @@ void UIBalloonText::Paint() {
   int y = 4;
 
   for (const std::string& line : this->m_lines) {
-    this->DrawTextAt(this->m_textContext->fonts, this->m_textContext->locale, 6, y, line.c_str(), 0, 0, this->m_fontHeight, this->m_textColor, 0, 0);
+    this->DrawTextAt(6, y, line.c_str(), 0, 0, this->m_fontHeight, this->m_textColor, 0, 0);
 
     const int height = Measure(*this, *this->m_textContext, line, 0, this->m_fontHeight).cy;
     y = (y + (height + 4));
@@ -409,8 +409,7 @@ void UINameBalloonText::SetName(const CActorNameCard& info, bool stripHash, unsi
 
   int width = 32;
   for (const std::string& line : this->m_lines) {
-    const int lineWidth = this->TextWidth(
-        this->m_textContext->fonts, this->m_textContext->locale, line.c_str(), 0, 0, g_nameBalloonFontHeight, g_serviceFlag06, 0) + 8;
+    const int lineWidth = this->TextWidth(line.c_str(), 0, 0, g_nameBalloonFontHeight, g_serviceFlag06, 0) + 8;
     width = std::max(lineWidth, width);
   }
 
@@ -454,7 +453,7 @@ void UINameBalloonText::AddNameLine(const char* text) {
   this->m_lines.push_back(std::string(text));
   const std::string& last = this->m_lines.back();
   this->unknown_00B8 =
-    std::max(this->TextWidth(this->m_textContext->fonts, this->m_textContext->locale, last.c_str(), last.size(), 0, g_nameBalloonFontHeight, g_serviceFlag06, 0) + 8, 32);
+    std::max(this->TextWidth(last.c_str(), last.size(), 0, g_nameBalloonFontHeight, g_serviceFlag06, 0) + 8, 32);
   this->Resize(this->unknown_00B8, g_nameBalloonFontHeight + 8);
   this->Invalidate();
 }
@@ -470,8 +469,7 @@ void UIVerticalNameBalloonText::AddNameLine(const char* text) {
   std::string line;
   line.assign(text);
   this->m_lines.push_back(std::move(line));
-  const int textHeight = this->VerticalTextHeight(
-      this->m_textContext->fonts, this->m_textContext->locale, this->m_lines.back().c_str(), 0, 0, g_nameBalloonFontHeight, g_serviceFlag06);
+  const int textHeight = this->VerticalTextHeight(this->m_lines.back().c_str(), 0, 0, g_nameBalloonFontHeight, g_serviceFlag06);
   this->textHeight = std::max(textHeight + 8, 32);
   this->Resize(g_nameBalloonFontHeight + 8, this->textHeight);
   this->Invalidate();

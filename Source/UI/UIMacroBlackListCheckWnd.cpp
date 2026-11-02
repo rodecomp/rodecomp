@@ -97,7 +97,7 @@ void UIMacroBlackListCheckWnd::Slot15(int width, int height) {
 // FUNCTION: fn_09795
 void UIMacroBlackListCheckWnd::Paint() {
   const TextLocale locale = {};
-  const int titleHeight = this->UIWindow::DrawTitleBar(g_fontCache, locale, true, LookupMessage(0x92F), this->geometry.width + 1);
+  const int titleHeight = this->UIWindow::DrawTitleBar(true, LookupMessage(0x92F), this->geometry.width + 1);
   this->DrawPanelBackground(titleHeight, 0x21C, "유저인터페이스\\basic_interface\\blacklist_check_bg.bmp");
   this->DrawButtonBar(2, this->geometry.width + 1, 1);
 

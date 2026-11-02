@@ -49,8 +49,8 @@ void UICandidateWnd::Paint() {
     for (int i = 0; i < this->m_count;) {
       ++i;
       StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%d %s", i, this->m_candidates[i - 1].c_str());
-      this->DrawTextAt(controls.fonts, controls.locale, x, 12, text, 0, 0, 12, 0, 0, 0);
-      x += 8 + this->TextWidth(controls.fonts, controls.locale, text, static_cast<unsigned>(std::strlen(text)), 0, 12, 0, 0);
+      this->DrawTextAt(x, 12, text, 0, 0, 12, 0, 0, 0);
+      x += 8 + this->TextWidth(text, static_cast<unsigned>(std::strlen(text)), 0, 12, 0, 0);
     }
     break;
   }
@@ -63,14 +63,14 @@ void UICandidateWnd::Paint() {
       if (this->m_selection == i) {
         unsigned red, green, blue;
         SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
-        this->FillRegion(8, y - 2, this->TextWidth(controls.fonts, controls.locale, text, 0, 0, 12, 0, 0) + 4, 16, RGB(red, green, blue));
+        this->FillRegion(8, y - 2, this->TextWidth(text, 0, 0, 12, 0, 0) + 4, 16, RGB(red, green, blue));
       }
-      this->DrawTextAt(controls.fonts, controls.locale, 10, y, text, 0, 0, 12, 0, 0, 0);
+      this->DrawTextAt(10, y, text, 0, 0, 12, 0, 0, 0);
       y += 20;
       i = number;
     }
     std::sprintf(text, "%d / %d", this->m_page + 1, this->m_lastPage + 1);
-    this->DrawTextAt(controls.fonts, controls.locale, 110 - this->TextWidth(controls.fonts, controls.locale, text, 0, 0, 12, 0, 0), 192, text, 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(110 - this->TextWidth(text, 0, 0, 12, 0, 0), 192, text, 0, 0, 12, 0, 0, 0);
     return;
   }
   case 3:
@@ -81,11 +81,11 @@ void UICandidateWnd::Paint() {
       int number = i + 1;
       StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%d %s", number, this->m_candidates[i].c_str());
       if (i == this->m_selection) {
-        this->DrawTextAt(controls.fonts, controls.locale, x, 12, text, static_cast<int>(std::strlen(text)), 0, 12, 0xFF, 0, 0);
+        this->DrawTextAt(x, 12, text, static_cast<int>(std::strlen(text)), 0, 12, 0xFF, 0, 0);
       } else {
-        this->DrawTextAt(controls.fonts, controls.locale, x, 12, text, 0, 0, 12, 0, 0, 0);
+        this->DrawTextAt(x, 12, text, 0, 0, 12, 0, 0, 0);
       }
-      x += this->TextWidth(controls.fonts, controls.locale, text, static_cast<unsigned>(std::strlen(text)), 0, 12, 0, 0) + 8;
+      x += this->TextWidth(text, static_cast<unsigned>(std::strlen(text)), 0, 12, 0, 0) + 8;
       i = number;
     }
     break;
@@ -102,7 +102,7 @@ void UICandidateWnd::Paint() {
 // FUNCTION: fn_13204
 void UICompositionWnd::Paint() {
   this->DrawBorder(0, 0, 0, 0);
-  this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 10, 12, this->m_text.c_str(), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(10, 12, this->m_text.c_str(), 0, 0, 12, 0, 0, 0);
 }
 
 // OFFSET: 0x0096DB60
@@ -127,7 +127,7 @@ void UIKeyStrokeWnd::Paint() {
     auto table = *reinterpret_cast<IndicatorText**>(g_serverLanguage);
     const char* source = table[1](g_serverLanguage) + index * 2;
     char text[3] = {source[0], source[1], 0};
-    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 2 + index * 14, 2, text, 2, 0, 12, 0, 0, 0);
+    this->DrawTextAt(2 + index * 14, 2, text, 2, 0, 12, 0, 0, 0);
   }
 }
 
@@ -154,13 +154,13 @@ int UICandidateWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     ++i;
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%d %s", i, this->m_candidates[i - 1].c_str());
     if (g_language == 2) {
-      int textWidth = this->TextWidth(controls.fonts, controls.locale, text, 0, 0, 12, 0, 0) + 8;
+      int textWidth = this->TextWidth(text, 0, 0, 12, 0, 0) + 8;
       if (textWidth < width) {
         textWidth = width;
       }
       width = textWidth;
     } else {
-      width += 8 + this->TextWidth(controls.fonts, controls.locale, text, 0, 0, 12, 0, 0);
+      width += 8 + this->TextWidth(text, 0, 0, 12, 0, 0);
     }
   }
   int height;
@@ -183,7 +183,7 @@ int UICompositionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
   const char* text = reinterpret_cast<const char*>(argument1);
   if (text != nullptr) {
     this->m_text = text;
-    int padded = this->TextWidth(this->m_controls->fonts, this->m_controls->locale, text, 0, 0, 12, 0, 0) + 20;
+    int padded = this->TextWidth(text, 0, 0, 12, 0, 0) + 20;
     int width = padded / 28 * 28;
     width += padded != width ? 28 : 0;
     if (width < 34) {

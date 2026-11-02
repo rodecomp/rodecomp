@@ -10,7 +10,7 @@ void UICharInfoBalloonText::Paint() {
     const bool rightColumn = (i & 1) != 0;
     this->DrawShadowedText(rightColumn ? 50 : 6, y, this->m_lines[i].c_str(), 0, this->m_textColor, this->m_outlineColor, 0, this->m_fontHeight, 0);
     if (rightColumn) {
-      y += this->TextHeight(this->m_textContext->fonts, this->m_textContext->locale, this->m_lines[i].c_str(), 0, 0, this->m_fontHeight, 0, 0) + 4;
+      y += this->TextHeight(this->m_lines[i].c_str(), 0, 0, this->m_fontHeight, 0, 0) + 4;
     }
   }
 }

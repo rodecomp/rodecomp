@@ -167,7 +167,7 @@ void UISerachStoreInfoWnd::Slot15(int width, int height) {
   this->m_prevButton->Configure(LookupMessage(0x41D), 0x8E8E8E, 0, 0xC, 0, 0);
   this->m_prevButton->m_hoverColor = 0xEFB700;
   this->m_prevButton->Move(
-      this->geometry.width / 2 - this->TextWidth(this->m_context->fonts, this->m_context->locale, LookupMessage(0x41D), 0, 0, 0xC, 0, 0) - 0x14,
+      this->geometry.width / 2 - this->TextWidth(LookupMessage(0x41D), 0, 0, 0xC, 0, 0) - 0x14,
       this->geometry.height - 0x15);
   this->m_prevButton->SetTooltip(LookupMessage(0x41D));
   this->m_prevButton->SetId(0x13C);
