@@ -8368,3 +8368,86 @@ int UITipboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
   }
   return 0;
 }
+
+// OFFSET: 0x0090A2E0
+// FUNCTION: fn_12415
+void UIFrameWnd::DrawItemNameText(
+  const void* info, const char* text, const char* highlight, std::uint32_t color, std::uint32_t highlightColor, int width,
+  const std::vector<char*>* breaks
+) {
+  struct ItemNameTextInfo {
+    int x;
+    int y;
+    int height;
+    int family;
+  };
+  const ItemNameTextInfo* position = static_cast<const ItemNameTextInfo*>(info);
+
+  FrameTextCache::iterator cached;
+  {
+    const FrameTextKey key{color, static_cast<std::uint32_t>(width), std::string(text, std::strlen(text))};
+    cached = this->m_textCache.find(key);
+  }
+  if (cached != this->m_textCache.end()) {
+    this->DrawTextLines(position->x, position->y, position->family, position->height, cached->second);
+    return;
+  }
+
+  std::vector<std::pair<int, std::string>> segments;
+  const int highlightValue = static_cast<int>(highlightColor);
+  const int colorValue = static_cast<int>(color);
+  this->SplitHighlightText(text, highlight, highlightValue, colorValue, *breaks, segments);
+
+  FrameTextLines lines(2);
+  std::vector<std::pair<int, std::string>>* line = &lines[0];
+  int lineCount = 1;
+  int lineWidth = 0;
+  for (auto segment = segments.begin(); segment != segments.end(); ++segment) {
+    const char* begin = segment->second.c_str();
+    const char* end = begin + segment->second.size();
+    const char* lineStart = begin;
+    const char* next = begin;
+    std::size_t offset = 0;
+    int length;
+    int measured;
+    do {
+      next = CharNextExA(static_cast<WORD>(g_textCodePage), next, 0);
+      length = static_cast<int>(next - lineStart);
+      measured = this->TextWidth(this->m_context->fonts, this->m_context->locale, begin, length, 0, 12, 0, 0);
+      if (measured + lineWidth > width) {
+        line->push_back(std::make_pair(segment->first, segment->second.substr(offset, length)));
+        ++line;
+        ++lineCount;
+        lineStart = next;
+        offset = length;
+        lineWidth = 0;
+      }
+    } while (next < end && lineCount < 3);
+
+    lineWidth += measured;
+    if (lineCount > 2) {
+      break;
+    }
+    if (next >= end) {
+      line->push_back(std::make_pair(segment->first, segment->second.substr(offset, length)));
+    }
+  }
+
+  if (this->TextWidth(this->m_context->fonts, this->m_context->locale, text, std::strlen(text), position->family, position->height, 0, 0) > width * 2) {
+    this->FitLastTextLine(width, 2, position->family, position->height, lines);
+  }
+
+  {
+    FrameTextKey key{color, static_cast<std::uint32_t>(width), std::string(text, std::strlen(text))};
+    FrameTextLines& stored = this->m_textCache[std::move(key)];
+    if (&stored != &lines) {
+      for (const auto& source : lines) {
+        stored.emplace_back();
+        for (const auto& piece : source) {
+          stored.back().emplace_back(piece.first, std::string(piece.second.c_str(), piece.second.size()));
+        }
+      }
+    }
+  }
+  this->DrawTextLines(position->x, position->y, position->family, position->height, lines);
+}
