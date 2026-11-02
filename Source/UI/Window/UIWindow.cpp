@@ -61,7 +61,6 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowManagerWindows.h"
 #include "UI/Window/WindowPolicy.h"
-#include "UI/Window/WindowRegistration.h"
 #include "Utility/Text/FormatString.h"
 #include "Utility/Text/StringUtil.h"
 #include "Contents/Items/ItemDescription.h"
@@ -233,11 +232,12 @@ UIWindow::UIWindow(UIWindowContext& context, unsigned char cached)
 // OFFSET: 0x00A7A050
 // FUNCTION: fn_16917
 UIWindow::~UIWindow() {
+  this->Slot18();
   delete this->geometry.surface;
   this->geometry.surface = nullptr;
   this->DeleteChildren();
-  this->m_context->registration.Remove(this);
-  this->m_context->windowMgr.ForgetWindowReferences(this);
+  g_windowMgr.UnregisterWindow(this);
+  g_windowMgr.ForgetWindowReferences(this);
 }
 
 // OFFSET: 0x00A79F80

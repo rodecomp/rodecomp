@@ -9,9 +9,6 @@ struct WindowRegistration {
   /* 018C */ std::list<UIWindow*> windows;
 
   void Add(UIWindow* window);
-  void Remove(UIWindow* window);
-
-  void InvalidateAll();
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

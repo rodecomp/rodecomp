@@ -1,4 +1,5 @@
 #include "UI/Window/UIWindow.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowRegistration.h"
 
 // OFFSET: 0x00A8B060
@@ -15,10 +16,10 @@ void WindowRegistration::Add(UIWindow* window) {
 
 // OFFSET: 0x00AA7200
 // FUNCTION: fn_17236
-void WindowRegistration::Remove(UIWindow* window) {
-  for (auto entry = this->windows.begin(); entry != this->windows.end(); ++entry) {
+void UIWindowMgr::UnregisterWindow(UIWindow* window) {
+  for (auto entry = this->registeredWindows.begin(); entry != this->registeredWindows.end(); ++entry) {
     if (*entry == window) {
-      this->windows.erase(entry);
+      this->registeredWindows.erase(entry);
       return;
     }
   }
@@ -26,10 +27,10 @@ void WindowRegistration::Remove(UIWindow* window) {
 
 // OFFSET: 0x00AA6650
 // FUNCTION: fn_17231
-void WindowRegistration::InvalidateAll() {
-  for (UIWindow* window : this->windows) {
+void UIWindowMgr::InvalidateRegisteredWindows() {
+  for (UIWindow* window : this->registeredWindows) {
     window->Invalidate();
   }
 
-  this->windows.clear();
+  this->registeredWindows.clear();
 }

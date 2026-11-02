@@ -472,6 +472,8 @@ public:
   UIWindow* FindSnapExcludedWindow(int cell);
   void Schedule(UIWindow* window);
   void AddRendered(UIWindow* window);
+  void UnregisterWindow(UIWindow* window);
+  void InvalidateRegisteredWindows();
   void SetUnknown04DC(const char* text);
   void Destroy(UIWindow* window);
   void ForgetWindowReferences(UIWindow* removed);
