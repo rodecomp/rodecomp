@@ -6843,6 +6843,12 @@ UIItemCompositionWnd::UIItemCompositionWnd(UIWindowContext& windows, UIFrameCont
     : UIItemIdentifyWnd(windows, frames), m_compositionPlacement(nullptr) {
 }
 
+// OFFSET: 0x008C90E0
+// FUNCTION: fn_11976
+UISpellListWnd::UISpellListWnd(UIWindowContext& windows, UIFrameContext& frames) : UIItemIdentifyWnd(windows, frames) {
+  this->unknown_00FC = 0;
+}
+
 // OFFSET: 0x008C8330
 // FUNCTION: fn_11952
 UIMakingArrowListWnd::UIMakingArrowListWnd(UIWindowContext& windows, UIFrameContext& frames)
