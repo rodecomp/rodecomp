@@ -688,7 +688,7 @@ std::string UIEditCtrl3::TakePendingText() {
   for (std::size_t i = 0; i < this->pendingText.size(); ++i) {
     result.append(this->pendingText[i]);
   }
-  this->pendingText.clear();
+  this->pendingText.erase(this->pendingText.begin(), this->pendingText.end());
   return result;
 }
 
@@ -823,6 +823,31 @@ UIEditCtrlWheel::~UIEditCtrlWheel() = default;
 void UIEditCtrlWheel::Slot35(int value) {
   if (this->parent) {
     this->parent->Slot35(value);
+  }
+}
+
+// OFFSET: 0x00869E30
+void UIChatEditCtrl::PushHistory() {
+  if (this->Length() == 0) {
+    return;
+  }
+
+  if (this->unknown_0140 == static_cast<int>(this->history.size())) {
+    if (this->history.size() >= static_cast<unsigned>(this->historyLimit)) {
+      --this->unknown_0140;
+      std::move(this->history.begin() + 1, this->history.end(), this->history.begin());
+      this->history.pop_back();
+    }
+    this->history.push_back(std::string(this->Text()));
+  } else {
+    this->history[this->unknown_0140] = this->Text();
+  }
+
+  ++this->unknown_0140;
+  if (this->unknown_0140 == static_cast<int>(this->history.size())) {
+    this->SetText("");
+  } else {
+    this->SetText(this->history[this->unknown_0140].c_str());
   }
 }
 
