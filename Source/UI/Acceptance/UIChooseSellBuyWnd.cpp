@@ -272,6 +272,8 @@ void UIChooseSellBuyWnd::CreateViewer(int width, int height) {
   this->AddChild(this->viewer);
 }
 
+// OFFSET: 0x008C7420
+
 // OFFSET: 0x008DD290
 // FUNCTION: fn_12162
 void UIChooseSellBuyWnd::Slot15(int width, int height) {
@@ -1119,6 +1121,12 @@ void UISkillNameChangeWnd::Paint() {
 
 // OFFSET: 0x008F04F0
 // FUNCTION: fn_12252
+// OFFSET: 0x008CBA50
+// FUNCTION: fn_11998
+UISpellListWnd::~UISpellListWnd() {
+  this->m_skills.clear();
+}
+
 void UISpellListWnd::Paint() {
   auto& controls = *this->m_controls;
   const int titleHeight = this->DrawTitleBar(controls.fonts, controls.locale, true, controls.services.MessageText(697), 0);

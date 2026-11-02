@@ -10,6 +10,7 @@ struct UIButtonContext;
 
 class UISpellListWnd : public UIItemIdentifyWnd {
 public:
+  ~UISpellListWnd() override;
   /* 00F0 */ std::vector<std::uint32_t> m_skills;
 
   void Paint() override;
