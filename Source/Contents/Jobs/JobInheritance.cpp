@@ -1761,23 +1761,23 @@ bool LaunchLuaSkillEffect(int skillId, int level, CGameActor* source, CGameActor
   const std::uint32_t targetId = target != nullptr ? target->render.accountId : 0;
 
   bool hasInfo = false;
-  if (!g_luaScript->Call("HaveSkillEffectInfo", "d>b", skillId, &hasInfo) || !hasInfo) {
+  if (!g_session.m_hotkeyScript->Call("HaveSkillEffectInfo", "d>b", skillId, &hasInfo) || !hasInfo) {
     return false;
   }
 
   const char* waveName = nullptr;
-  if (g_luaScript->Call("GetEffectWaveFileName", "d>s", skillId, &waveName) && std::strcmp(waveName, "") != 0) {
+  if (g_session.m_hotkeyScript->Call("GetEffectWaveFileName", "d>s", skillId, &waveName) && std::strcmp(waveName, "") != 0) {
     g_soundMgr->PlayWave(waveName, 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
   }
 
   int count = 0;
-  if (!g_luaScript->Call("GetEffectNum", "d>d", skillId, &count)) {
+  if (!g_session.m_hotkeyScript->Call("GetEffectNum", "d>d", skillId, &count)) {
     return false;
   }
 
   for (int index = 0; index < count; ++index) {
     int effectId = -1;
-    if (!g_luaScript->Call("GetEffectID", "dd>d", skillId, index + 1, &effectId) || effectId == -1) {
+    if (!g_session.m_hotkeyScript->Call("GetEffectID", "dd>d", skillId, index + 1, &effectId) || effectId == -1) {
       continue;
     }
 
@@ -1787,7 +1787,7 @@ bool LaunchLuaSkillEffect(int skillId, int level, CGameActor* source, CGameActor
       CRagEffect* effect = source->LaunchEffect(effectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (effect != nullptr) {
         bool onTarget = false;
-        g_luaScript->Call("IsOnTarget", "d>b", skillId, &onTarget);
+        g_session.m_hotkeyScript->Call("IsOnTarget", "d>b", skillId, &onTarget);
         if (onTarget && target != nullptr) {
           effect->SendMsg(nullptr, 14, 0, reinterpret_cast<std::intptr_t>(&target->render.position), 0, 0, 0, 0);
         }
