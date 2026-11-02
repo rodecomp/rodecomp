@@ -805,28 +805,28 @@ void UIMemorialDunWnd::Paint() {
     sprintf(name, "%s[%s]%s", nameColor, g_session.unknown_5950.c_str(), endColor);
     sprintf(title, LookupMessage(g_session.unknown_5948 + 0x539), name);
     const int width = this->ColoredTextWidth(title, 0, 0, 12, 0);
-    DrawColoredText(*this, codePage, (this->geometry.width - width) / 2, 30, title, 0, color, 0, 12, false);
+    DrawColoredText(*this, (this->geometry.width - width) / 2, 30, title, 0, color, 0, 12, false);
   }
 
   if (g_session.unknown_5948 == 0) {
     sprintf(text, LookupMessage(0x53E), g_session.unknown_5968);
     const int width = this->ColoredTextWidth(text, 0, 0, 12, 0);
-    DrawColoredText(*this, codePage, (this->geometry.width - width) / 2, (this->geometry.height - 17) / 2, text, 0, color, 0, 12, false);
+    DrawColoredText(*this, (this->geometry.width - width) / 2, (this->geometry.height - 17) / 2, text, 0, color, 0, 12, false);
   } else if (g_session.unknown_5948 == 1) {
     if (g_session.unknown_5970) {
       strftime(timeText, 128, LookupMessage(0x4EC), _localtime32(reinterpret_cast<const __time32_t*>(&g_session.unknown_5970)));
       sprintf(text, LookupMessage(0x53F), timeText);
       std::vector<std::string> lines;
-      WrapPixelText(*this->geometry.surface, codePage, text, lines, this->geometry.width - 20);
+      this->WrapPixelText(text, lines, this->geometry.width - 20);
       if (lines.size() > 1) {
         int y = static_cast<int>((this->geometry.height - lines.size() * 17 - 72) / 2) + 40;
         for (unsigned int index = 0; index < lines.size(); ++index) {
-          DrawColoredText(*this, codePage, 10, y, lines[index].c_str(), 0, color, 0, 12, false);
+          DrawColoredText(*this, 10, y, lines[index].c_str(), 0, color, 0, 12, false);
           y += 17;
         }
       } else {
         const int width = this->ColoredTextWidth(text, 0, 0, 12, 0);
-        DrawColoredText(*this, codePage, (this->geometry.width - width) / 2, 55, lines[0].c_str(), 0, color, 0, 12, false);
+        DrawColoredText(*this, (this->geometry.width - width) / 2, 55, lines[0].c_str(), 0, color, 0, 12, false);
       }
     }
   } else if (g_session.unknown_5948 == 2) {
@@ -835,21 +835,21 @@ void UIMemorialDunWnd::Paint() {
       strftime(timeText, 128, LookupMessage(0x4EC), _localtime32(reinterpret_cast<const __time32_t*>(&g_session.unknown_596C)));
       sprintf(text, "^ff0000%s^ffffff", timeText);
       const int width = this->ColoredTextWidth(text, 0, 0, 12, 0);
-      DrawColoredText(*this, codePage, (this->geometry.width - width) / 2, 75, text, 0, color, 0, 12, false);
+      DrawColoredText(*this, (this->geometry.width - width) / 2, 75, text, 0, color, 0, 12, false);
     }
   } else if (g_session.unknown_5948 == 3) {
     std::vector<std::string> lines;
-    WrapPixelText(*this->geometry.surface, codePage, LookupMessage(0x53C), lines, this->geometry.width - 20);
+    this->WrapPixelText(LookupMessage(0x53C), lines, this->geometry.width - 20);
     int y = 55;
     for (unsigned int index = 0; index < lines.size(); ++index) {
-      DrawColoredText(*this, codePage, 5, y, lines[index].c_str(), 0, color, 0, 12, false);
+      DrawColoredText(*this, 5, y, lines[index].c_str(), 0, color, 0, 12, false);
       y += 15;
     }
 
-    WrapPixelText(*this->geometry.surface, codePage, LookupMessage(0x53D), lines, this->geometry.width - 20);
+    this->WrapPixelText(LookupMessage(0x53D), lines, this->geometry.width - 20);
     y = 70;
     for (unsigned int index = 0; index < lines.size(); ++index) {
-      DrawColoredText(*this, codePage, 10, y, lines[index].c_str(), 0, color, 0, 12, false);
+      DrawColoredText(*this, 10, y, lines[index].c_str(), 0, color, 0, 12, false);
       y += 15;
     }
   }

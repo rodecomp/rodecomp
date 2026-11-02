@@ -1,3 +1,4 @@
+#include "Client/Input/InputCharset.h"
 #include "Render/Text/TextContext.h"
 #include "UI/Text/PixelTextWrapping.h"
 #include "UI/Window/UIWindow.h"
@@ -27,9 +28,7 @@ namespace {
 
 // OFFSET: 0x00A82310
 // FUNCTION: fn_16993
-void WrapPixelText(
-  CDC& surface, unsigned short codePage, const char* text, std::vector<std::string>& lines, int width
-) {
+void UIWindow::WrapPixelText(const char* text, std::vector<std::string>& lines, int width) {
   if (!text || *text == '\0') {
     return;
   }
@@ -43,7 +42,7 @@ void WrapPixelText(
       return 0;
     }
 
-    TextContext context(surface);
+    TextContext context(*this->geometry.surface);
     context.SetFont(0, 12, 0, 0);
     return static_cast<int>(context.Measure(part, bytes).cx);
   };
@@ -74,7 +73,7 @@ void WrapPixelText(
       }
 
       const int previous = count;
-      const char* next = CharNextExA(codePage, current, 0);
+      const char* next = g_serverLanguage->NextChar(current, static_cast<int>(end - current));
       const int length = static_cast<int>(next - current);
 
       extent = (extent + measure(current, length));
@@ -146,7 +145,7 @@ void WrapPixelText(
 void UIWindow::sub_8932D0(int* kind, std::vector<std::string>* lines, const std::string& text) {
   const char* characters = text.c_str();
   if (*kind != 3) {
-    WrapPixelText(*this->geometry.surface, static_cast<unsigned short>(g_textCodePage), characters, *lines, this->geometry.width - 16);
+    this->WrapPixelText(characters, *lines, this->geometry.width - 16);
     return;
   }
 

@@ -2329,7 +2329,7 @@ void UIListBox_NaviSearch::Paint() {
     }
 
     const std::string& line = this->lines[index];
-    DrawColoredText(*this, this->m_listContext->codePage, x, y, line.c_str(), static_cast<unsigned>(line.size()), color, 0, 12, false);
+    DrawColoredText(*this, x, y, line.c_str(), static_cast<unsigned>(line.size()), color, 0, 12, false);
   }
 }
 

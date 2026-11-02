@@ -154,7 +154,7 @@ void UITransBalloonText::Paint() {
 
     if (this->m_richText != 0) {
       DrawColoredText(
-        *this, this->m_textContext->codePage, 6, y, line.c_str(), 0, color, family, height, true
+        *this, 6, y, line.c_str(), 0, color, family, height, true
       );
     } else {
       TextContext context(*this->geometry.surface);
@@ -182,7 +182,7 @@ void UITransBalloonText::Paint() {
 void UIColorTransBalloonText::Paint() {
   this->ClearSurface(0xFFFF00FF);
   std::uint32_t color = 0xFFFFFF;
-  DrawColoredText(*this, this->m_textContext->codePage, 6, 4, this->m_lines[0].c_str(), 0, color, 0, 12, false);
+  DrawColoredText(*this, 6, 4, this->m_lines[0].c_str(), 0, color, 0, 12, false);
 }
 
 // OFFSET: 0x0085B010

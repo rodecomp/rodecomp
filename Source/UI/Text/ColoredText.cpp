@@ -45,32 +45,33 @@ namespace {
     return 0;
   }
 
-  // OFFSET: 0x00A7CA20
-  // FUNCTION: fn_16948
-  const char* SegmentEnd(const char* text, const char* end, unsigned short codePage) {
-    const char* current = text;
+}
 
-    while (current < end) {
-      if (*current == '^' && end - current >= 6) {
-        bool color = true;
+// OFFSET: 0x00A7CA20
+// FUNCTION: fn_16948
+const char* SegmentEnd(const char* text, const char* end) {
+  const char* current = text;
 
-        for (unsigned index = 1; index <= 6; ++index) {
-          if (!Hex(static_cast<unsigned char>(current[index]))) {
-            color = false;
-            break;
-          }
-        }
+  while (current < end) {
+    if (*current == '^' && end - current >= 6) {
+      bool color = true;
 
-        if (color) {
-          return current;
+      for (unsigned index = 1; index <= 6; ++index) {
+        if (!Hex(static_cast<unsigned char>(current[index]))) {
+          color = false;
+          break;
         }
       }
 
-      current = CharNextExA(codePage, current, 0);
+      if (color) {
+        return current;
+      }
     }
 
-    return current;
+    current = CharNextExA(static_cast<WORD>(g_textCodePage), current, 0);
   }
+
+  return current;
 }
 
 // OFFSET: 0x00A81BA0
@@ -94,7 +95,7 @@ const char* ParseColorCode(const char* text, std::uint32_t& color) {
 // OFFSET: 0x00A84E30
 // FUNCTION: fn_17015
 void DrawColoredText(
-  UIWindow& window, unsigned short codePage, int x, int y, const char* text, unsigned bytes, std::uint32_t& color,
+  UIWindow& window, int x, int y, const char* text, unsigned bytes, std::uint32_t& color,
   int family, int height, bool shadow
 ) {
   if (bytes == 0) {
@@ -118,7 +119,7 @@ void DrawColoredText(
       current += 7;
     }
 
-    const char* next = SegmentEnd(current, end, codePage);
+    const char* next = SegmentEnd(current, end);
     std::string segment(current, next);
 
     if (*marker != '\0') {
@@ -147,7 +148,7 @@ void DrawColoredText(
 // OFFSET: 0x00A84B80
 // FUNCTION: fn_17014
 void DrawStyledColoredText(
-  UIWindow& window, unsigned short codePage, int x, int y, const char* text, unsigned bytes, std::uint32_t& color,
+  UIWindow& window, int x, int y, const char* text, unsigned bytes, std::uint32_t& color,
   int family, int height, unsigned char bold, unsigned char italic, bool shadow
 ) {
   if (bytes == 0) {
@@ -171,7 +172,7 @@ void DrawStyledColoredText(
       current += 7;
     }
 
-    const char* next = SegmentEnd(current, end, codePage);
+    const char* next = SegmentEnd(current, end);
     std::string segment(current, next);
 
     if (marker && *marker != '\0') {
@@ -230,7 +231,7 @@ void DrawOutlinedText(
 // OFFSET: 0x00A848B0
 // FUNCTION: fn_17013
 void DrawOutlinedColoredText(
-  UIWindow& window, unsigned short codePage, int x, int y, const char* text, unsigned bytes, std::uint32_t& color,
+  UIWindow& window, int x, int y, const char* text, unsigned bytes, std::uint32_t& color,
   std::uint32_t outline, int family, int height, unsigned char bold
 ) {
   if (bytes == 0) {
@@ -250,7 +251,7 @@ void DrawOutlinedColoredText(
       current += 7;
     }
 
-    const char* next = SegmentEnd(current, end, codePage);
+    const char* next = SegmentEnd(current, end);
     std::string segment(current, next);
 
     if (*marker != '\0') {
@@ -285,7 +286,7 @@ std::string StripColorCodes(const char* text, unsigned bytes) {
       text += 7;
     }
 
-    const char* const next = SegmentEnd(text, end, static_cast<unsigned short>(g_textCodePage));
+    const char* const next = SegmentEnd(text, end);
     std::string segment(text, next);
 
     if (marker != nullptr && *marker != '\0') {

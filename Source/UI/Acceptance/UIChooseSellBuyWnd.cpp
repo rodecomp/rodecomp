@@ -3580,7 +3580,7 @@ int UIBookWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
       file.Close();
 
       this->m_lines.clear();
-      WrapPixelText(*this->geometry.surface, this->m_book->text.list.codePage, text, this->m_lines, this->m_viewer->geometry.width - 10);
+      this->WrapPixelText(text, this->m_lines, this->m_viewer->geometry.width - 10);
       this->m_lineCount = static_cast<int>(this->m_lines.size());
       if (text[0] == '%') {
         this->m_red = g_hexDigits[text[1]] * 16 + g_hexDigits[text[2]];

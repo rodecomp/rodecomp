@@ -1927,7 +1927,7 @@ void UIListBoxNavi::Paint() {
     }
 
     const auto& line = this->lines[index];
-    DrawColoredText(*this, owner.codePage, 3 - this->horizontalOffset, this->lineHeight * row, line.c_str(), static_cast<unsigned>(line.size()), color, 0, 12, false);
+    DrawColoredText(*this, 3 - this->horizontalOffset, this->lineHeight * row, line.c_str(), static_cast<unsigned>(line.size()), color, 0, 12, false);
 
     if (this->lineColors[index] == 1) {
       color = 0;
@@ -3061,7 +3061,7 @@ void UIListBoxID::Paint() {
     }
 
     DrawColoredText(
-      *this, static_cast<unsigned short>(g_textCodePage), 3 - this->horizontalOffset, (index - first) * this->lineHeight, this->lines[index].text.c_str(),
+      *this, 3 - this->horizontalOffset, (index - first) * this->lineHeight, this->lines[index].text.c_str(),
       static_cast<unsigned>(this->lines[index].text.size()), color, 0, 12, false
     );
   }
@@ -3098,7 +3098,7 @@ void UIListBoxTitle::Paint() {
     }
 
     DrawColoredText(
-      *this, static_cast<unsigned short>(g_textCodePage), 3 - this->horizontalOffset, (index - first) * this->lineHeight, this->lines[index].text.c_str(),
+      *this, 3 - this->horizontalOffset, (index - first) * this->lineHeight, this->lines[index].text.c_str(),
       static_cast<unsigned>(this->lines[index].text.size()), color, 0, 12, false
     );
   }
@@ -3216,7 +3216,7 @@ void UIListBox2::Paint() {
 
     const std::string& line = this->lines[index];
     DrawStyledColoredText(
-      *this, owner.codePage, x, y, line.c_str(), static_cast<unsigned>(line.size()), color, this->fontFamily, this->fontHeight, this->bold, this->italic, false
+      *this, x, y, line.c_str(), static_cast<unsigned>(line.size()), color, this->fontFamily, this->fontHeight, this->bold, this->italic, false
     );
   }
 }
@@ -3539,9 +3539,9 @@ void UIString::Paint() {
     while (cur < end) {
       cur = ParseColorCode(SegmentEnd(cur, end), color);
     }
-    DrawColoredText(*this, 0, 24, 7, this->unknown_00DC.c_str(), static_cast<unsigned>(this->unknown_00DC.size()), color, 0, 12, false);
+    DrawColoredText(*this, 24, 7, this->unknown_00DC.c_str(), static_cast<unsigned>(this->unknown_00DC.size()), color, 0, 12, false);
   } else {
-    DrawColoredText(*this, 0, 0, 0, this->unknown_00DC.c_str(), static_cast<unsigned>(this->unknown_00DC.size()), color, 0, 12, false);
+    DrawColoredText(*this, 0, 0, this->unknown_00DC.c_str(), static_cast<unsigned>(this->unknown_00DC.size()), color, 0, 12, false);
   }
 }
 

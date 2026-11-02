@@ -148,7 +148,7 @@ void UIChatHisBox::AddTextWrapped(const char* text, int color, const char* style
   }
 
   std::vector<std::string> lines;
-  WrapPixelText(*this->geometry.surface, this->m_listContext->codePage, text, lines, width);
+  this->WrapPixelText(text, lines, width);
 
   for (const std::string& line : lines) {
     char* copy = static_cast<char*>(std::malloc(line.size() + 1));
@@ -355,7 +355,7 @@ void UIListBox::Paint() {
       y = static_cast<int>(static_cast<float>((this->lineHeight - height)) * 0.5f + static_cast<float>(y));
     }
 
-    DrawColoredText(*this, owner.codePage, x, y, line.c_str(), static_cast<unsigned>(line.size()), color, 0, 12, false);
+    DrawColoredText(*this, x, y, line.c_str(), static_cast<unsigned>(line.size()), color, 0, 12, false);
   }
 }
 

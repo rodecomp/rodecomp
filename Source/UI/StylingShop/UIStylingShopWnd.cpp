@@ -1777,7 +1777,7 @@ void UIShowInfoWnd::DrawPayments() {
 
     if (this->unknown_00A0 == 1) {
       std::vector<std::string> lines;
-      WrapPixelText(*this->geometry.surface, *this->m_context->locale.serverLanguage, LookupMessage(2835), lines, this->geometry.width - 20);
+      this->WrapPixelText(LookupMessage(2835), lines, this->geometry.width - 20);
       for (unsigned int i = 0; i < lines.size(); ++i) {
         this->DrawTextAt(20, positions[i][1], lines[i].c_str(), 0, 0, 11, 0, 0, 0);
       }

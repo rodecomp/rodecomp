@@ -19,35 +19,6 @@
 #include <cstring>
 #include <windows.h>
 
-namespace {
-// INLINED
-const char* SegmentEnd(const char* text, const char* end, unsigned short codePage) {
-  const char* current = text;
-
-  while (current < end) {
-    if (*current == '^' && end - current >= 6) {
-      bool color = true;
-
-      for (int index = 1; index <= 6; ++index) {
-        const unsigned char digit = static_cast<unsigned char>(current[index]);
-        if (!((digit >= '0' && digit <= '9') || (digit >= 'a' && digit <= 'f') || (digit >= 'A' && digit <= 'F'))) {
-          color = false;
-          break;
-        }
-      }
-
-      if (color) {
-        return current;
-      }
-    }
-
-    current = CharNextExA(codePage, current, 0);
-  }
-
-  return current;
-}
-}
-
 // OFFSET: 0x009B7A10
 // FUNCTION: fn_13869
 void UITagListBox::AddLine(const char* text) {
@@ -102,7 +73,7 @@ void UITagListBox::Paint() {
     const char* endText = text + line.size();
 
     while (text < endText) {
-      text = ParseColorCode(SegmentEnd(text, endText, owner.codePage), color);
+      text = ParseColorCode(SegmentEnd(text, endText), color);
     }
   }
 
@@ -112,7 +83,7 @@ void UITagListBox::Paint() {
         const std::string& line = this->lines[index];
         const int y = (index - first) * this->lineHeight + 4;
         DrawColoredText(
-          *this, owner.codePage, 3, y, line.c_str(), static_cast<unsigned>(line.size()), color, 0, 12, false
+          *this, 3, y, line.c_str(), static_cast<unsigned>(line.size()), color, 0, 12, false
         );
       }
     } else {
@@ -414,7 +385,7 @@ void UITagListBox::sub_9B9EA0(std::intptr_t argument1, std::intptr_t argument2, 
       if (argument3 != 0) {
         extra = this->verticalBar->geometry.width + 2;
       }
-      WrapPixelText(*this->geometry.surface, owner.codePage, text, lines, this->geometry.width - extra - 4);
+      this->WrapPixelText(text, lines, this->geometry.width - extra - 4);
 
       for (std::size_t index = 0; index < lines.size(); ++index) {
         this->AddLine(lines[index].c_str());
