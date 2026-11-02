@@ -53,7 +53,7 @@ struct CLanguageBase {
   unsigned CodePage(unsigned fallback) const;
   void SetServicePrefix(std::string prefix);
   void DeleteSelection();
-  void Insert(const char* value);
+  __declspec(noinline) void Insert(const char* value);
   void ResetInput();
   void Select(int anchor, int cursor);
   void Selection(int& anchor, int& cursor) const;
