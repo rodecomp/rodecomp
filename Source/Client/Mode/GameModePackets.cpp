@@ -1,3 +1,4 @@
+#include "Resource/World/TerrainResource.h"
 #include "Client/Application/Launcher.h"
 #include "File/ShortcutFilename.h"
 #include "Client/Input/InputCharset.h"
@@ -15996,4 +15997,789 @@ void CGameMode::sub_D5EEF0(
   messenger.AddPartyMember(member);
   g_windowMgr.NotifyMemberWindows(&member);
   this->SetActorUnknown02E4(accountId, 1);
+}
+
+// OFFSET: 0x00D5B940
+// FUNCTION: fn_21965
+void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t skillId, int delay, int effectId) {
+  if (skillId == 0x3E || skillId == 0x39) {
+    return;
+  }
+
+  if (g_effectMgr->HasAllocator(effectId)) {
+    g_effectMgr->Spawn(actor->render.accountId, effectId, actor->render.position.x, actor->render.position.y, actor->render.position.z, 0, -1, 0, 0);
+  } else {
+    const int delayFrames = delay / 16;
+    actor->SendMsg(nullptr, 0x55, 0, effectId, effectId >> 31, delayFrames, delayFrames >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+  }
+
+  const vector3d origin{0.0f, 0.0f, 0.0f};
+  CEffect* effect;
+
+  switch (skillId) {
+  default: {
+    if (CSkillActionMgr::GetInstance()->ActionSlot08(skillId, delay, actor) == true) {
+      return;
+    }
+
+    std::map<std::int64_t, std::int64_t> primaryEffects;
+    std::map<std::int64_t, std::int64_t> secondaryEffects;
+    primaryEffects[0x14F9] = 0x7EC;
+    secondaryEffects[0x14F9] = 0x7ED;
+    primaryEffects[0x14FB] = 0x7F0;
+    secondaryEffects[0x14FB] = 0x7F1;
+    primaryEffects[0x14FF] = 0x7F5;
+    secondaryEffects[0x14FF] = 0x7F6;
+    primaryEffects[0x14FA] = 0x7FB;
+    secondaryEffects[0x14FA] = 0x7FC;
+    primaryEffects[0x14FC] = 0x809;
+    secondaryEffects[0x14FC] = 0x80A;
+    primaryEffects[0x14ED] = 0x80D;
+    secondaryEffects[0x14ED] = 0x80E;
+    primaryEffects[0x1501] = 0x834;
+    secondaryEffects[0x1501] = 0x835;
+    primaryEffects[0x1502] = 0x839;
+    secondaryEffects[0x1502] = 0x83A;
+    primaryEffects[0x14C7] = 0x829;
+    secondaryEffects[0x14C7] = 0x82A;
+    primaryEffects[0x14FD] = 0x857;
+    secondaryEffects[0x14FD] = 0x858;
+    primaryEffects[0x1504] = 0x85A;
+    primaryEffects[0x14C3] = 0x86B;
+    primaryEffects[0x14C9] = 0x86B;
+    primaryEffects[0x14DB] = 0x873;
+    secondaryEffects[0x14DB] = 0x874;
+    primaryEffects[0x14DA] = 0x88B;
+    primaryEffects[0x14E4] = 0x8BC;
+    secondaryEffects[0x14E4] = 0x8BD;
+    primaryEffects[0x14DF] = 0x89C;
+    secondaryEffects[0x14DF] = 0x89D;
+    primaryEffects[0x14DC] = 0x8A4;
+    secondaryEffects[0x14DC] = 0x8A5;
+    primaryEffects[0x14DE] = 0x8AC;
+    secondaryEffects[0x14DE] = 0x8AD;
+    primaryEffects[0x14DD] = 0x8B4;
+    secondaryEffects[0x14DD] = 0x8B5;
+    primaryEffects[0x14E3] = 0x8C2;
+    secondaryEffects[0x14E3] = 0x8C3;
+    primaryEffects[0x14E0] = 0x8C7;
+    secondaryEffects[0x14E0] = 0x8C8;
+    primaryEffects[0x14E1] = 0x8CE;
+    secondaryEffects[0x14E1] = 0x8D0;
+    primaryEffects[0x14E2] = 0x8C7;
+    secondaryEffects[0x14E2] = 0x8C8;
+
+    const std::int64_t key = skillId;
+    const vector3d position{0.0f, 0.0f, 0.0f};
+    if (primaryEffects.find(key) != primaryEffects.end()) {
+      effect = g_effectMgr->Spawn(actor->render.accountId, static_cast<int>(primaryEffects[key]), position.x, position.y, position.z, 0, -1, 0, 0);
+      if (effect) {
+        effect->Slot14(delay);
+      }
+    }
+    if (secondaryEffects.find(key) != secondaryEffects.end()) {
+      effect = g_effectMgr->Spawn(actor->render.accountId, static_cast<int>(secondaryEffects[key]), position.x, position.y, position.z, 0, -1, 0, 0);
+      if (effect) {
+        effect->Slot14(delay);
+      }
+    }
+    return;
+  }
+  case 0x7D6:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x65A, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x7F0:
+    actor->LaunchEffect(0x300, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    return;
+  case 0x89E:
+    actor->LaunchEffect(0x323, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    return;
+  case 0x8A9:
+    if (g_serviceOptions.Get(0xE5)) {
+      effect = g_effectMgr->Spawn(actor->render.accountId, 0x5A0, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      if (effect) {
+        effect->Slot14(delay);
+      }
+      effect = g_effectMgr->Spawn(actor->render.accountId, 0x597, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    } else {
+      effect = g_effectMgr->Spawn(actor->render.accountId, 0x4FD, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      if (effect) {
+        effect->Slot14(delay);
+      }
+      effect = g_effectMgr->Spawn(actor->render.accountId, 0x4ED, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    }
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x8A5:
+    if (g_serviceOptions.Get(0xE5)) {
+      effect = g_effectMgr->Spawn(actor->render.accountId, 0x600, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      if (effect) {
+        effect->Slot14(delay);
+      }
+      effect = g_effectMgr->Spawn(actor->render.accountId, 0x603, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    } else {
+      effect = g_effectMgr->Spawn(actor->render.accountId, 0x587, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      if (effect) {
+        effect->Slot14(delay);
+      }
+      effect = g_effectMgr->Spawn(actor->render.accountId, 0x58D, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    }
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x89C:
+    effect = g_effectMgr->Spawn(actor->render.accountId, g_serviceOptions.Get(0xE5) ? 0x607 : 0x5A6, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x8A4:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x610, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x804:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x617, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x89A:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x633, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x634, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x7F6:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x65D, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x65E, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x8A6:
+    g_effectMgr->Spawn(actor->render.accountId, 0x663, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x664, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x8BC:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x671, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x8D5: {
+    float angle = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->CameraDesiredYaw() + actor->render.angle;
+    if (angle >= 360.0f) {
+      angle -= 360.0f;
+    }
+
+    int id;
+    if (angle > 0.0f && angle < 90.0f) {
+      id = 0x545;
+    } else if (angle >= 90.0f && angle < 180.0f) {
+      id = 0x543;
+    } else if (angle >= 180.0f && angle < 270.0f) {
+      id = 0x549;
+    } else {
+      id = 0x547;
+    }
+
+    if (g_serviceOptions.Get(0xE5)) {
+      if (id == 0x545) {
+        id = 0x5CF;
+      } else if (id == 0x543) {
+        id = 0x5CE;
+      } else if (id == 0x549) {
+        id = 0x5D1;
+      } else if (id == 0x547) {
+        id = 0x5D0;
+      }
+      g_effectMgr->Spawn(actor->render.accountId, id, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(actor->render.accountId, 0x5D4, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(actor->render.accountId, 0x5D5, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    } else {
+      g_effectMgr->Spawn(actor->render.accountId, id, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(actor->render.accountId, id + 1, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(actor->render.accountId, 0x568, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(actor->render.accountId, 0x569, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    }
+    return;
+  }
+  case 0x9A0: {
+    g_soundMgr->PlayWave("_heal_effect.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    CRagEffect* ragEffect = actor->LaunchEffect(0xD8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    if (ragEffect) {
+      vector3d position = actor->render.position;
+      ragEffect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
+    }
+    return;
+  }
+  case 0x98F: {
+    vector3d position{0.0f, 0.0f, 0.0f};
+    const TerrainHeight terrain = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Grid();
+    terrain.CellCenter(x, y, position.x, position.z);
+    position.y = terrain.Height(position.x, position.z);
+    effect = g_effectMgr->Spawn(0, g_serviceOptions.Get(0xE5) ? 0x5AC : 0x504, position.x, position.y, position.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  }
+  case 0x2E0:
+  case 0x991: {
+    vector3d position{0.0f, 0.0f, 0.0f};
+    const TerrainHeight terrain = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Grid();
+    terrain.CellCenter(x, y, position.x, position.z);
+    position.y = terrain.Height(position.x, position.z);
+    effect = g_effectMgr->Spawn(0, g_serviceOptions.Get(0xE5) ? 0x5B0 : 0x50A, position.x, position.y, position.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  }
+  case 0x9AD:
+    if (g_serviceOptions.Get(0xE5)) {
+      effect = g_effectMgr->Spawn(actor->render.accountId, 0x5DB, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      if (effect) {
+        effect->Slot14(delay);
+      }
+      effect = g_effectMgr->Spawn(actor->render.accountId, 0x5DC, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    } else {
+      effect = g_effectMgr->Spawn(actor->render.accountId, 0x58E, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      if (effect) {
+        effect->Slot14(delay);
+      }
+      effect = g_effectMgr->Spawn(actor->render.accountId, 0x58F, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    }
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x2E1:
+  case 0x911:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x591, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x592, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x996:
+    if (!g_serviceOptions.Get(0xE5)) {
+      effect = g_effectMgr->Spawn(actor->render.accountId, 0x61B, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      if (effect) {
+        effect->Slot14(delay);
+      }
+    }
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x61C, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x8FE:
+    actor->LaunchEffect(0x10, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    return;
+  case 0x927:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x625, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x9D5:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x62A, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x62B, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x96D:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x62D, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x62E, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x9B2:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x654, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    if (g_serviceOptions.Get(0xE5)) {
+      return;
+    }
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x655, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x9BC:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x669, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x97D:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x66A, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x66B, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x90D:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x697, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    if (g_serviceOptions.Get(0xE5)) {
+      return;
+    }
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x698, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x145E:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6CA, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6CB, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x145F:
+  case 0x1472:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6C6, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6C7, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+      effect->AddEvent(0, "effect\\EF_BeginSpell.wav", 0, 0);
+    }
+    return;
+  case 0x1464:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6CE, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6CF, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x1471:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6D3, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6D4, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x1460:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6D9, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6DA, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x1473:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6DD, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6DE, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x1462:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6E1, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6E2, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x146E:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6E9, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6EA, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x1461:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6ED, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6EE, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x146B:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6F2, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6F3, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x1475:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6F6, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6F7, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x1470:
+    g_effectMgr->Spawn(actor->render.accountId, 0x70A, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x70B, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot16(200);
+      effect->Slot14(delay - 200);
+    }
+    return;
+  case 0x146D:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x70D, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x70E, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x1466:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x704, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x705, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x147E:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7B8, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x147F:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7BB, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x1486:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7BF, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x1495:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x711, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x1497:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x714, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x1498:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x716, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x149B:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x718, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x1499:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x71F, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    if (g_serviceOptions.Get(0xE5)) {
+      return;
+    }
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x71E, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x149E: {
+    if (!g_serviceOptions.Get(0xE5)) {
+      effect = g_effectMgr->Spawn(actor->render.accountId, 0x73B, actor->render.position.x, actor->render.position.y, actor->render.position.z, 0, -1, 0, 0);
+      if (effect) {
+        effect->Slot14(delay);
+      }
+    }
+
+    CGroundScope* scope = new (std::nothrow) CGroundScope;
+    if (!scope) {
+      return;
+    }
+
+    int column;
+    int row;
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->WorldCell(actor->render.position.x, actor->render.position.z, column, row);
+    scope->SendMsg(nullptr, 0x16, 0, actor->render.accountId, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    scope->SendMsg(nullptr, 0xE, 0, column, column >> 31, row, row >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+    scope->SendMsg(nullptr, 0x73, 0, timeGetTime() + delay, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    const int id = skillId;
+    scope->SendMsg(nullptr, 0x75, 0, id, id >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->objects.push_back(scope);
+    return;
+  }
+  case 0x1469:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x740, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x741, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x14B8:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x76D, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x14A1:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x745, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x14D7:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x781, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x14D3:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x751, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x14D5:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x755, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x14D4:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x758, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x759, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x14C6:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x84F, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x850, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x14A2:
+    if (!g_serviceOptions.Get(0xE5)) {
+      effect = g_effectMgr->Spawn(actor->render.accountId, 0x760, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      if (effect) {
+        effect->Slot14(delay);
+      }
+    }
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x761, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x149F:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7A6, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x14A0:
+    if (!g_serviceOptions.Get(0xE5)) {
+      effect = g_effectMgr->Spawn(actor->render.accountId, 0x785, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      if (effect) {
+        effect->Slot14(delay);
+      }
+    }
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x786, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x1465:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x762, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x763, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x14B9:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x774, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x14B6:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x78F, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x14B7:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x77C, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x14D1:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7B1, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x14F8:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7C9, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7CA, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x14F7:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7D4, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7D5, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x1503:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7DA, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7DB, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x14C4:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7DE, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7DF, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x1500:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7E5, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7E6, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    return;
+  case 0x14F3:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x81C, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay);
+    }
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x81D, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->unknown_002C = delay;
+    }
+    return;
+  case 0x14F1:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x84B, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay + 50);
+    }
+    return;
+  case 0x1F79:
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x91D, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot14(delay + 50);
+    }
+    return;
+  }
 }
