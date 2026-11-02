@@ -96,9 +96,15 @@
 #include <timeapi.h>
 #include <utility>
 
+// GLOBAL: gl_24398
+RECT Rect;
+
 // STATIC: 0x0173ad64
 // GLOBAL: gl_24472
 std::uint32_t g_clientVersion;
+
+// GLOBAL: gl_24752
+HINSTANCE g_instance;
 
 // GLOBAL: gl_24584
 char g_applicationDirectory[0x80];
@@ -922,12 +928,117 @@ bool CreateCooldownOwner();
 CMapSkyMgr* GetMapSkyMgr();
 void sub_E198F0();
 void __fastcall sub_81FE50(CSignBoardMgr* manager);
-int sub_E58100(HINSTANCE instance, int showCommand);
+LRESULT CALLBACK sub_E5C430(HWND window, UINT message, WPARAM wParam, LPARAM lParam);
 int sub_E59030();
 void sub_AEA780();
 void sub_3DE90E0(char* buffer);
 void IgnoreNull();
 LSTATUS SaveDisplayDeviceSettings();
+
+#include "Render/DX7/RenderSystemDX7.h"
+#include "Contents/Configuration/ScriptOptions.h"
+
+// OFFSET: 0x00E58100
+// FUNCTION: fn_24362
+int sub_E58100(HINSTANCE instance, int showCommand) {
+  g_instance = instance;
+
+  WNDCLASSA windowClass;
+  windowClass.style = 0;
+  windowClass.lpfnWndProc = sub_E5C430;
+  windowClass.cbClsExtra = 0;
+  windowClass.cbWndExtra = 0;
+  windowClass.hInstance = instance;
+  windowClass.hIcon = LoadIconA(instance, MAKEINTRESOURCEA(123));
+  windowClass.hCursor = LoadCursorA(nullptr, IDC_ARROW);
+  windowClass.hbrBackground = static_cast<HBRUSH>(GetStockObject(BLACK_BRUSH));
+  windowClass.lpszMenuName = nullptr;
+  windowClass.lpszClassName = g_windowName;
+  RegisterClassA(&windowClass);
+
+  DWORD style = g_configuredFullscreen ? WS_POPUP : WS_CLIPCHILDREN | WS_CAPTION | WS_MINIMIZEBOX;
+  RECT rect;
+  rect.left = 0;
+  rect.top = 0;
+  rect.right = g_viewportWidth;
+  rect.bottom = g_viewportHeight;
+  AdjustWindowRect(&rect, style, FALSE);
+
+  int x = 0;
+  int y = 0;
+  if (!g_configuredFullscreen) {
+    GetSystemMetrics(SM_CXSCREEN);
+    if (g_configuredOldWidth == g_viewportWidth && g_configuredOldHeight == g_viewportHeight) {
+      int defaultX = (GetSystemMetrics(SM_CXSCREEN) - g_viewportWidth) / 2;
+      const std::uint8_t xSource[] = {0x78, 0xF6, 0xDD, 0xBF, 0x80, 0xBE, 0x48, 0xC3, 0x7F, 0xF0, 0xC0, 0xDB};
+      thread_local EncryptedName<sizeof(xSource), 0x9B17C9EFDBB39F2FULL> xName(xSource);
+      x = ScriptOptions{*g_session.m_hotkeyScript}.Integer(xName.Text(), defaultX);
+
+      int defaultY = (GetSystemMetrics(SM_CYSCREEN) - g_viewportHeight) / 2;
+      const std::uint8_t ySource[] = {0x3A, 0x5A, 0x61, 0xF1, 0xB4, 0x32, 0x8C, 0x30, 0x3D, 0x5C, 0x7C, 0x95};
+      thread_local EncryptedName<sizeof(ySource), 0x69D345DB950F336DULL> yName(ySource);
+      y = ScriptOptions{*g_session.m_hotkeyScript}.Integer(yName.Text(), defaultY);
+    } else {
+      x = (GetSystemMetrics(SM_CXSCREEN) - g_viewportWidth) / 2;
+      y = (GetSystemMetrics(SM_CYSCREEN) - g_viewportHeight) / 2;
+    }
+
+    if (x > GetSystemMetrics(SM_CXSCREEN) - g_viewportWidth) {
+      x = (GetSystemMetrics(SM_CXSCREEN) - g_viewportWidth) / 2;
+    }
+    x = x < 0 ? 0 : x;
+    if (y > GetSystemMetrics(SM_CYSCREEN) - g_viewportHeight) {
+      y = (GetSystemMetrics(SM_CYSCREEN) - g_viewportHeight) / 2;
+    }
+    if (y < 0) {
+      y = 0;
+    }
+  }
+
+  const __int64 width = rect.right - rect.left;
+  const __int64 height = rect.bottom - rect.top;
+  int windowWidth = static_cast<int>(width);
+  int windowHeight = static_cast<int>(height);
+  if (!g_configuredFullscreen) {
+    const std::uint8_t traySource[] = {0x22, 0x73, 0x96, 0x93, 0xEB, 0x7A, 0xC5, 0xB5, 0x10, 0x62, 0xA4, 0x91, 0xE3, 0x25};
+    thread_local EncryptedName<sizeof(traySource), 0xC7912587FFF31B71ULL> trayName(traySource);
+    RECT trayRect;
+    HWND tray = FindWindowA(trayName.Text(), nullptr);
+    if (tray) {
+      GetWindowRect(tray, &trayRect);
+    }
+
+    const __int64 screenWidth = GetSystemMetrics(SM_CXSCREEN);
+    const __int64 screenHeight = GetSystemMetrics(SM_CYSCREEN);
+    if (screenWidth <= width && screenHeight <= height) {
+      const __int64 trayWidth = trayRect.right - trayRect.left;
+      const __int64 trayHeight = trayRect.bottom - trayRect.top;
+      if (trayWidth < trayHeight) {
+        windowWidth = static_cast<int>(screenWidth - trayWidth);
+      } else if (trayHeight < trayWidth) {
+        windowHeight = static_cast<int>(screenHeight - trayHeight);
+      }
+    }
+  }
+
+  hWnd = CreateApplicationWindow(0, windowClass.lpszClassName, g_windowName, style, x, y, windowWidth, windowHeight, nullptr, nullptr, instance, nullptr);
+  if (!hWnd) {
+    const std::uint8_t titleSource[] = {0x8C, 0xE5, 0x77, 0xD8, 0xE9, 0x33};
+    thread_local EncryptedName<sizeof(titleSource), 0x078333BB9725B7C9ULL> title(titleSource);
+    const char* caption = title.Text();
+    const std::uint8_t messageSource[] = {0xE2, 0x1C, 0x0F, 0x3B, 0x92, 0x2C, 0x3B, 0xCC, 0xC7, 0x10, 0x00, 0x2B,
+                                          0x94, 0x34, 0x75, 0xAF, 0xF3, 0x14, 0x08, 0x33, 0x98, 0x3F, 0x1B};
+    thread_local EncryptedName<sizeof(messageSource), 0x8F1B5BFD5F6175B5ULL> message(messageSource);
+    MessageBoxA(nullptr, message.Text(), caption, MB_OK);
+    return 0;
+  }
+
+  ShowWindow(hWnd, SW_SHOW);
+  UpdateWindow(hWnd);
+  GetWindowRect(hWnd, &Rect);
+  GetCurrentDirectoryA(sizeof(g_applicationDirectory), g_applicationDirectory);
+  return 1;
+}
 
 struct SessionMessengerContext {
   void sub_DD9D50();
