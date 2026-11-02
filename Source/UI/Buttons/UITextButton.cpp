@@ -3568,3 +3568,22 @@ int UISlotBmpButton::SendMsg(UIWindow* sender, int message, std::intptr_t argume
   return 0;
 }
 
+#include "UI/Text/TextWrapping.h"
+#include "Utility/Timestamp.h"
+#include "Client/Mode/CMode.h"
+#include "Client/Mode/CLoginMode.h"
+
+// GLOBAL: gl_25382
+int g_slotButtonInfo;
+
+// OFFSET: 0x0088EBC0
+
+// OFFSET: 0x0086D5F0
+// FUNCTION: fn_11049
+UIItemTagButton::UIItemTagButton() {
+  new (reinterpret_cast<ITEM_INFO*>(reinterpret_cast<unsigned char*>(this) + 0xF8)) ITEM_INFO();
+  this->textY = 1;
+  this->unknown_01F8 = 0;
+}
+
+
