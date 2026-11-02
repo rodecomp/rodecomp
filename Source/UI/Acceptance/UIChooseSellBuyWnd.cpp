@@ -3732,6 +3732,140 @@ void UInCashWnd::Slot11() {
   }
 }
 
+// OFFSET: 0x00901520
+// FUNCTION: fn_12375
+int UISayDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  if (g_windowMgr.unknown_0458) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2730)), 0x64FFFF, 0, 0, 0);
+    return 0;
+  }
+
+  UITagTextViewer* viewer = static_cast<UITagTextViewer*>(this->m_viewer);
+  switch (message) {
+  case 6: {
+    Replay& replay = Replay::Instance();
+    ReplayPacketRecorder packets{g_packetLengths, replay.baseFrame, replay.started, replay.frame, replay.header.key0, replay.header.key1,
+                                 replay.header.options.recordRestricted, replay.file, replay.fileOffset, replay.records, replay.cipherIndex,
+                                 replay.cipherBase, replay.cipherKey};
+    WindowResponseRecorder{replay.state, packets}.Record(this->geometry.id, static_cast<int>(a), b, c, this->unknown_00C8);
+    if (g_replayAnimationScaling != 0) {
+      this->unknown_00C8 = static_cast<int>(d);
+    }
+    if (a == 218) {
+      const DWORD tick = GetTickCount();
+      if (tick - *reinterpret_cast<const DWORD*>(&g_session.unknown_5490[0x04]) < 300) {
+        return 0;
+      }
+      *reinterpret_cast<DWORD*>(&g_session.unknown_5490[0x04]) = tick;
+      static_cast<CMode*>(g_charViewMode)->SendMsg(this->unknown_00C8, this->unknown_00CC, 218, 0, 0);
+      this->unknown_00D4 = 1;
+      this->SendMsg(nullptr, 32, 0, 0, 0, 0);
+    } else if (a != 600) {
+      static_cast<CMode*>(g_charViewMode)->SendMsg(this->unknown_00C8, this->unknown_00CC, static_cast<int>(a), 0, 0);
+    }
+    return 0;
+  }
+  case 18:
+    viewer->SendMsg(nullptr, 18, 0, 0, 0, 0);
+    return 0;
+  case 19:
+    viewer->SendMsg(nullptr, 19, 0, 0, 0, 0);
+    return 0;
+  case 25:
+    this->m_message0 = 218;
+    this->unknown_00C8 = 22;
+    this->SendMsg(nullptr, 85, 218, reinterpret_cast<std::intptr_t>("btn_next"), 0, 0);
+    this->Invalidate();
+    return 0;
+  case 26:
+    if (a != 0) {
+      if (this->unknown_00D4 != 0) {
+        viewer->Clear();
+        this->unknown_00D4 = 0;
+      }
+      viewer->SendMsg(nullptr, 29, a, c, 1, 0);
+    }
+    this->unknown_00CC = static_cast<int>(b);
+    return 0;
+  case 32:
+    this->m_message0 = 600;
+    this->SendMsg(nullptr, 86, 218, 0, 0, 0);
+    this->Invalidate();
+    return 0;
+  case 34:
+    this->m_placement = reinterpret_cast<WindowPlacement*>(a);
+    static_cast<SayDialogWndInfo*>(this->m_placement)->IsValid();
+    this->Move(this->m_placement->x, this->m_placement->y);
+    return 0;
+  case 63:
+    this->m_message0 = 201;
+    this->unknown_00C8 = 89;
+    this->SendMsg(nullptr, 85, 218, reinterpret_cast<std::intptr_t>("btn_close"), 0, 0);
+    this->Invalidate();
+    return 0;
+  case 75:
+    viewer->Clear();
+    return 0;
+  case 80:
+    this->unknown_00C8 = static_cast<int>(a);
+    return 0;
+  case 85: {
+    const std::string prefix("유저인터페이스\\");
+    UIBitmapButton* button = new UIBitmapButton();
+    const char* name = reinterpret_cast<const char*>(b);
+    button->SetBitmap((prefix + name + ".bmp").c_str(), 0, 0);
+    button->SetBitmap((prefix + name + "_a.bmp").c_str(), 1, 0);
+    button->SetBitmap((prefix + name + "_b.bmp").c_str(), 2, 0);
+    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    button->Move(this->ButtonX(button), this->geometry.height - 24);
+    button->SetId(static_cast<int>(a));
+    this->AddChild(button);
+    this->m_buttons.push_back(button);
+    return 0;
+  }
+  case 86:
+    for (auto it = this->m_buttons.begin(); it != this->m_buttons.end(); ++it) {
+      if ((*it)->geometry.id == a) {
+        (*it)->Move(-100, -100);
+        g_windowMgr.Schedule(*it);
+        this->m_buttons.erase(it);
+        break;
+      }
+    }
+    return 0;
+  case 123: {
+    const unsigned char* records = reinterpret_cast<const unsigned char*>(a);
+    FramedMessageHeader header;
+    std::memcpy(&header, records, sizeof(header));
+    if (header.type == 22500) {
+      unsigned int position = sizeof(header);
+      while (position < static_cast<unsigned int>(b)) {
+        std::memcpy(&header, records + position, sizeof(header));
+        position += sizeof(header);
+        if (header.type == 22501) {
+          break;
+        }
+        if (header.type == 22503) {
+          char text[260];
+          std::memset(text, 0, sizeof(text));
+          std::memcpy(text, records + position, header.length);
+          position += header.length;
+          this->SendMsg(nullptr, 26, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
+        } else if (header.type == 22504) {
+          std::memcpy(&this->unknown_00D4, records + position, header.length);
+          position += header.length;
+        } else {
+          position += header.length;
+        }
+      }
+    }
+    return 0;
+  }
+  default:
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
+}
+
 // OFFSET: 0x008FB850
 // FUNCTION: fn_12345
 int UIGraffiStrboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
