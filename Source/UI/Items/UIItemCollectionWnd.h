@@ -67,6 +67,7 @@ public:
   int CardSlotAt(int x, int y, int* slotX, int* slotY);
   void Slot28(int x, int y) override;
   void Slot32(int x, int y) override;
+  bool WrapText(std::string text, int width, std::list<std::string>& lines);
 };
 
 class UICombinedCardItemCollectionWnd : public UIItemCollectionWnd {

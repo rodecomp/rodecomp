@@ -42,6 +42,8 @@
 #include "Resource/TextureNames.h"
 #include "Resource/Sprites/ActionResource.h"
 #include "Resource/Sprites/SpriteResource.h"
+#include "UI/Text/TextWrapping.h"
+#include "Render/Textures/TextureCache.h"
 #include "UI/Acceptance/UIJoinPartyAcceptWnd.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UIBmpTextButton.h"
@@ -8304,6 +8306,283 @@ void UInCashWnd::Slot26(int x, int y) {
   }
 }
 
+// OFFSET: 0x008FEB00
+// FUNCTION: fn_12355
+int UIMakingArrowListWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  switch (message) {
+  case 6: {
+    Replay& replay = Replay::Instance();
+    ReplayPacketRecorder packets{g_packetLengths, replay.baseFrame, replay.started, replay.frame, replay.header.key0, replay.header.key1,
+                                 replay.header.options.recordRestricted, replay.file, replay.fileOffset, replay.records, replay.cipherIndex,
+                                 replay.cipherBase, replay.cipherKey};
+    WindowResponseRecorder{replay.state, packets}.Record(this->geometry.id, static_cast<int>(a), b, c, this->m_selected);
+    if (g_replayAnimationScaling != 0) {
+      this->m_selected = static_cast<int>(d);
+      this->Invalidate();
+    }
+    if (a == 184) {
+      int found;
+      ITEM_INFO item = this->GetItem(this->m_selected, &found);
+      if (found != 0) {
+        if (this->unknown_00F0 == 2) {
+          static_cast<CMode*>(g_charViewMode)->SendMsg(0x99, item.GetItemId(), 0, 0, 0);
+        } else {
+          static_cast<CMode*>(g_charViewMode)->SendMsg(0xCF, item.GetItemId(), this->unknown_00F0, 0, 0);
+        }
+        g_windowMgr.CloseWindow(0x5E);
+      }
+    } else if (a == 185) {
+      if (this->unknown_00F0 == 2) {
+        static_cast<CMode*>(g_charViewMode)->SendMsg(0x99, -1, 0, 0, 0);
+      } else {
+        static_cast<CMode*>(g_charViewMode)->SendMsg(0xCF, -1, this->unknown_00F0, 0, 0);
+      }
+      g_windowMgr.CloseWindow(0x5E);
+    }
+    break;
+  }
+  case 7:
+  case 9:
+  case 10: {
+    const int previous = this->m_scroll;
+    if (message == 9) {
+      this->m_scroll = previous - this->m_rows + 1;
+    } else if (message == 10) {
+      this->m_scroll = previous + this->m_rows - 1;
+    } else {
+      this->m_scroll = previous + static_cast<int>(a);
+    }
+    if (this->m_scroll != previous) {
+      this->UpdateScroll();
+      this->Invalidate();
+    }
+    return this->m_scroll - previous;
+  }
+  case 0x1F: {
+    ITEM_INFO item;
+    item.SetItemId(*reinterpret_cast<const int*>(a));
+    item.identified = 1;
+    this->m_items.push_back(item);
+    this->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
+    break;
+  }
+  case 0x22:
+    this->unknown_00F0 = static_cast<std::int16_t>(a);
+    break;
+  case 0x3C:
+    this->UpdateScroll();
+    this->Invalidate();
+    break;
+  case 0x4B:
+    this->m_items.clear();
+    break;
+  case 0x7B: {
+    const unsigned char* records = reinterpret_cast<const unsigned char*>(a);
+    FramedMessageHeader header;
+    std::memcpy(&header, records, sizeof(header));
+    if (header.type == 0x5654) {
+      unsigned int position = sizeof(header);
+      while (position < static_cast<unsigned int>(b)) {
+        std::memcpy(&header, records + position, sizeof(header));
+        position += sizeof(header);
+        if (header.type == 0x5655) {
+          break;
+        }
+        if (header.type == 0x5656) {
+          int value = 0;
+          std::memcpy(&value, records + position, header.length);
+          position += header.length;
+          this->SendMsg(nullptr, 0x22, static_cast<std::int16_t>(value), 0, 0, 0);
+        } else if (header.type == 0x5657) {
+          int value = 0;
+          std::memcpy(&value, records + position, header.length);
+          position += header.length;
+          this->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(&value), 0, 0, 0);
+        } else {
+          position += header.length;
+        }
+      }
+    }
+    break;
+  }
+  }
+  return 0;
+}
+
+// OFFSET: 0x008F50E0
+// FUNCTION: fn_12301
+void UITipboxWnd::Slot19() {
+  if (this->unknown_00FC == true) {
+    this->unknown_00FC = false;
+    const int index = (std::max)(0, g_itemTagOwner->unknown_00B4);
+    const std::string text = g_itemTagOwner->m_currentEntry.paragraphs[index];
+    std::vector<std::string> lines;
+    WrapPlainText(text.c_str(), lines, 1000, static_cast<unsigned short>(g_textCodePage));
+    this->unknown_00BC->Clear();
+    for (const std::string& line : lines) {
+      this->unknown_00BC->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(line.c_str()), 32, 0, 0);
+    }
+    this->Invalidate();
+  }
+  if (g_itemTagOwner->HasImages() == true) {
+    this->Invalidate();
+  }
+  if (this->m_frameTime - this->m_buildTime > 299) {
+    this->m_buildTime = timeGetTime();
+    for (std::size_t index = 0; index < this->m_dots.size(); ++index) {
+      if (!this->m_dots[index].visible) {
+        this->m_dots[index].visible = true;
+        break;
+      }
+      if (index + 1 == this->m_dots.size()) {
+        for (TipBoxDot& dot : this->m_dots) {
+          dot.visible = false;
+        }
+      }
+    }
+  }
+  this->UpdateAnimations();
+  this->m_frameTime = timeGetTime();
+}
+
+// OFFSET: 0x008F8A40
+// FUNCTION: fn_12333
+int UIChooseWarpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  switch (message) {
+  case 6: {
+    Replay& replay = Replay::Instance();
+    ReplayPacketRecorder packets{g_packetLengths, replay.baseFrame, replay.started, replay.frame, replay.header.key0, replay.header.key1,
+                                 replay.header.options.recordRestricted, replay.file, replay.fileOffset, replay.records, replay.cipherIndex,
+                                 replay.cipherBase, replay.cipherKey};
+    WindowResponseRecorder{replay.state, packets}.Record(this->geometry.id, static_cast<int>(a), b, c, d);
+    if (a == 184) {
+      const int selected = this->m_list->selected;
+      if (selected != -1) {
+        g_modeMgr.GetGameMode()->SendMsg(0x4A, reinterpret_cast<std::intptr_t>(this->m_choices[selected].c_str()), this->unknown_00B8, 0, 0);
+        g_windowMgr.CloseWindow(0x27);
+      }
+    } else if (a == 185) {
+      g_modeMgr.GetGameMode()->SendMsg(0x4A, reinterpret_cast<std::intptr_t>("cancel"), this->unknown_00B8, 0, 0);
+      g_windowMgr.CloseWindow(0x27);
+    }
+    return 0;
+  }
+  case 0x12:
+  case 0x13:
+    this->m_list->SendMsg(nullptr, message, 0, 0, 0, 0);
+    return 0;
+  case 0x1B:
+    if (a != 0) {
+      const char* choice = reinterpret_cast<const char*>(a);
+      if (std::string(choice) == "Random") {
+        this->m_list->AddLine(LookupMessage(0xD4));
+      } else if (std::string(choice) == "cancel") {
+        this->m_list->AddLine(LookupMessage(0xDA));
+      } else {
+        this->m_list->AddLine(g_session.GetMapDisplayName(g_session.GatName2RswName(choice)));
+      }
+      this->m_choices.emplace_back(choice);
+    }
+    return 0;
+  case 0x3B:
+    this->unknown_00B8 = static_cast<int>(a);
+    return 0;
+  case 0x7B: {
+    const unsigned char* records = reinterpret_cast<const unsigned char*>(a);
+    FramedMessageHeader header;
+    std::memcpy(&header, records, sizeof(header));
+    if (header.type == 0x55BE) {
+      unsigned int position = sizeof(header);
+      while (position < static_cast<unsigned int>(b)) {
+        std::memcpy(&header, records + position, sizeof(header));
+        position += sizeof(header);
+        if (header.type == 0x55BF) {
+          this->SendMsg(nullptr, 0x1B, reinterpret_cast<std::intptr_t>("cancel"), 0, 0, 0);
+          break;
+        }
+        if (header.type == 0x55C1) {
+          char text[260] = {};
+          std::memcpy(text, records + position, header.length);
+          position += header.length;
+          this->SendMsg(nullptr, 0x1B, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
+        } else {
+          position += header.length;
+        }
+      }
+    }
+    return 0;
+  }
+  default:
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
+}
+
+// OFFSET: 0x008F26B0
+// FUNCTION: fn_12256
+void UITipboxWnd::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+  this->DrawTitleBar(this->m_context->fonts, this->m_context->locale, true, LookupMessage(0xCA6), 0);
+
+  const auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\tipbox\\TipboxBG.bmp")));
+  this->DrawBitmap(0, 17, background ? &background->image : nullptr, false);
+
+  if (this->unknown_00B8->geometry.visible == 1) {
+    const char* path = g_itemTagOwner->HasSearchResults() ? "유저인터페이스\\tipbox\\img_loading.bmp"
+                                                       : "유저인터페이스\\tipbox\\img_NoSearchResults.bmp";
+    const auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
+    this->DrawBitmap(1, 17, bitmap ? &bitmap->image : nullptr, false);
+  } else {
+    CTipBoxMgr* manager = g_itemTagOwner;
+    switch (manager->m_image.kind) {
+    case 0:
+      if (manager->m_currentEntry.unknown_0044 == 5 && manager->m_currentEntry.unknown_0048 == 100) {
+        const std::string path = manager->m_currentEntry.unknown_001C + ".bmp";
+        const auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str())));
+        this->DrawBitmap(1, 17, bitmap ? &bitmap->image : nullptr, false);
+      } else {
+        CTexture* texture = g_texMgr.Load(manager->m_imagePath.c_str(), 0, false, true, false);
+        const int sourceHeight = texture->Height();
+        const int sourceWidth = texture->Width();
+        this->geometry.surface->DrawScaledSurface(
+          static_cast<int>(manager->m_image.x), static_cast<int>(manager->m_image.y), static_cast<int>(manager->m_image.width),
+          static_cast<int>(manager->m_image.height), texture, sourceWidth, sourceHeight, manager->m_image.scale, manager->m_image.scale, 0xFFFFFFFF,
+          false, 0, 0, manager->m_image.clipX, manager->m_image.clipY
+        );
+      }
+      break;
+    case 1: {
+      auto* action = static_cast<CActRes*>(ResourceMgr::Instance().Load(manager->m_imagePath + ".act"));
+      auto* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(manager->m_imagePath + ".spr"));
+      if (!action || !sprite) {
+        return;
+      }
+
+      SpriteFrameCell& cell = const_cast<SpriteFrameCell&>(action->Frame(0, 0).Cell(0));
+      cell.x = 0;
+      cell.y = 0;
+      cell.scaleX = 1.0f;
+      cell.scaleY = 1.0f;
+      this->AddSpriteCellOverlay(
+        static_cast<int>(manager->m_image.x), static_cast<int>(manager->m_image.y), 0, 0, sprite->images[0][0], &cell, 1.0f, 0.0f, 0xFFFFFFFF,
+        sprite->palette, manager->m_image.scale
+      );
+      break;
+    }
+    case 2: {
+      const auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\tipbox\\img_noImage.bmp")));
+      this->DrawBitmap(1, 17, bitmap ? &bitmap->image : nullptr, false);
+      break;
+    }
+    }
+  }
+
+  this->PaintAnimations();
+  const auto* border = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\tipbox\\bg_tipbox.bmp")));
+  this->DrawBitmap(241, 17, border ? &border->image : nullptr, false);
+  const auto* bottom = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\tipbox\\btnbar_bottom.bmp")));
+  this->DrawBitmap(0, 337, bottom ? &bottom->image : nullptr, false);
+}
+
 // OFFSET: 0x008E9370
 // FUNCTION: fn_12203
 void UITipOfTheDayWnd::Slot15(int width, int height) {
@@ -8599,6 +8878,351 @@ void UITipboxWnd::PaintAnimations() {
       const auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\tipbox\\ico_effect6.bmp")));
       this->DrawBitmap(static_cast<int>(this->m_dots[i].x), static_cast<int>(this->m_dots[i].y), bitmap ? &bitmap->image : nullptr, true);
     }
+  }
+}
+
+// OFFSET: 0x008DA690
+// FUNCTION: fn_12148
+int UIFrameWnd::BuildItemName(
+  const ITEM_INFO* item, int* creatorColor, std::vector<char*>* breaks, char** cursor, std::size_t* remaining, char** creator,
+  char splitCreator, char withSlots
+) {
+  if (breaks->capacity() < 5) {
+    breaks->reserve(5);
+  }
+
+  int& capacity = reinterpret_cast<int&>(*remaining);
+  ItemDescriptions descriptions{g_itemDescriptions};
+  bool languagePrefix = false;
+  WORD language = g_serverLanguage->language;
+  ItemNamingContext naming{{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language}};
+
+  const auto unknownCreator = [&]() {
+    this->m_context->registration.Add(this);
+    const int error = strncpy_s(*cursor, *remaining, LookupMessage(581), _TRUNCATE);
+    if (error == 0 || error == STRUNCATE) {
+      const std::size_t bytes = *cursor ? strnlen(*cursor, *remaining) : 0;
+      *cursor += bytes;
+      *remaining -= bytes;
+    }
+  };
+  const auto isEquipment = [&]() {
+    switch (item->unknown_0000[0]) {
+    case 4:
+    case 5:
+    case 8:
+    case 9:
+    case 11:
+    case 12:
+    case 13:
+    case 14:
+    case 15:
+    case 21:
+      return true;
+    default:
+      return false;
+    }
+  };
+
+  if (!item->identified) {
+    *cursor += ItemUnidentifiedName(*item, *cursor, capacity, 1);
+    breaks->push_back(*cursor);
+    return 1;
+  }
+
+  int cards[4];
+  std::memcpy(cards, item->unknown_001C, sizeof(cards));
+  if (item->unknown_0000[0] == 4 && item->IsApprenticeItem() == true && cards[3] == 1) {
+    *cursor += naming.Apprentice(*item, *cursor, capacity, 1);
+    breaks->push_back(*cursor);
+  }
+
+  if (cards[0] == 254 && cards[1] == 0) {
+    if (item->unknown_0060 > 0) {
+      *cursor += item->Refine(*cursor, capacity, 1);
+      breaks->push_back(*cursor);
+    }
+    if (item->unknown_0088 > 0) {
+      *cursor += naming.Grade(*item, *cursor, capacity, 1);
+      breaks->push_back(*cursor);
+    }
+
+    if (g_serviceType == 12 || g_serviceType == 14) {
+      *cursor += descriptions.Name(*item, *cursor, capacity, 1);
+      breaks->push_back(*cursor);
+      *cursor += naming.Element(*item, *cursor, capacity, 1);
+      breaks->push_back(*cursor);
+      const int bytes = naming.Creator(*item, *cursor, capacity, 1);
+      if (bytes) {
+        *creator = *cursor;
+        *cursor += bytes;
+        *creatorColor = 0xE04040;
+      } else {
+        unknownCreator();
+        *creatorColor = 0x4040E0;
+      }
+      breaks->push_back(*cursor);
+      return 1;
+    }
+
+    const int bytes = naming.Creator(*item, *cursor, capacity, 1);
+    if (bytes) {
+      *creator = *cursor;
+      *cursor += bytes;
+      *creatorColor = 0xE04040;
+    } else {
+      unknownCreator();
+      *creatorColor = 0x4040E0;
+    }
+  } else {
+    if (!isEquipment()) {
+      *cursor += descriptions.Name(*item, *cursor, capacity, 1);
+      breaks->push_back(*cursor);
+      if (withSlots == 1) {
+        *cursor += naming.Slots(*item, *cursor, capacity, 1);
+        breaks->push_back(*cursor);
+      }
+      return 1;
+    }
+
+    if (item->unknown_0060 > 0) {
+      *cursor += item->Refine(*cursor, capacity, 1);
+      breaks->push_back(*cursor);
+    }
+    if (item->unknown_0088 > 0) {
+      *cursor += naming.Grade(*item, *cursor, capacity, 1);
+      breaks->push_back(*cursor);
+    }
+
+    if (naming.HasCards(*item)) {
+      *cursor += naming.Prefixes(*item, *cursor, capacity, 1);
+      breaks->push_back(*cursor);
+      *cursor += descriptions.Name(*item, *cursor, capacity, 1);
+      breaks->push_back(*cursor);
+      *cursor += naming.Suffixes(*item, *cursor, capacity, 1);
+      breaks->push_back(*cursor);
+      if (withSlots == 1) {
+        *cursor += naming.Slots(*item, *cursor, capacity, 1);
+        breaks->push_back(*cursor);
+      }
+      return 1;
+    }
+
+    if (!item->HasSpecialCard()) {
+      *cursor += descriptions.Name(*item, *cursor, capacity, 1);
+      breaks->push_back(*cursor);
+      if (withSlots == 1) {
+        *cursor += naming.Slots(*item, *cursor, capacity, 1);
+        breaks->push_back(*cursor);
+      }
+      return 1;
+    }
+
+    if (g_serviceType == 12 || g_serviceType == 14) {
+      if (g_serviceType == 12) {
+        *cursor += descriptions.Name(*item, *cursor, capacity, 1);
+        breaks->push_back(*cursor);
+        *cursor += naming.Element(*item, *cursor, capacity, 1);
+        breaks->push_back(*cursor);
+        *cursor += naming.Star(*item, *cursor, capacity, 1);
+      } else {
+        *cursor += naming.Star(*item, *cursor, capacity, 1);
+        breaks->push_back(*cursor);
+        *cursor += descriptions.Name(*item, *cursor, capacity, 1);
+        breaks->push_back(*cursor);
+        *cursor += naming.Element(*item, *cursor, capacity, 1);
+      }
+      breaks->push_back(*cursor);
+      *creator = *cursor;
+      const int bytes = naming.Creator(*item, *cursor, capacity, 1);
+      if (bytes) {
+        *creator = *cursor;
+        *cursor += bytes;
+        *creatorColor = 0xE04040;
+      } else {
+        unknownCreator();
+        *creatorColor = 0x4040E0;
+      }
+      breaks->push_back(*cursor);
+      if (splitCreator) {
+        breaks->push_back(*cursor);
+      }
+      return 1;
+    }
+
+    *cursor += naming.Star(*item, *cursor, capacity, 1);
+    breaks->push_back(*cursor);
+    *creator = *cursor;
+    const int bytes = naming.Creator(*item, *cursor, capacity, 1);
+    if (bytes) {
+      *creator = *cursor;
+      *cursor += bytes;
+      *creatorColor = 0xE04040;
+    } else {
+      unknownCreator();
+    }
+    breaks->push_back(*cursor);
+    if (!splitCreator) {
+      *cursor += naming.Element(*item, *cursor, capacity, 1);
+      breaks->push_back(*cursor);
+      *cursor += descriptions.Name(*item, *cursor, capacity, 1);
+      breaks->push_back(*cursor);
+      return 1;
+    }
+  }
+
+  breaks->push_back(*cursor);
+  *cursor += naming.Element(*item, *cursor, capacity, 1);
+  breaks->push_back(*cursor);
+  *cursor += descriptions.Name(*item, *cursor, capacity, 1);
+  breaks->push_back(*cursor);
+  return 1;
+}
+
+// OFFSET: 0x008D9420
+// FUNCTION: fn_12133
+bool UIItemCollectionWnd::WrapText(std::string text, int width, std::list<std::string>& lines) {
+  if (this->TextWidth(this->m_context->fonts, this->m_context->locale, text.c_str(), 0, 0, 12, 0, 0) <= width) {
+    lines.push_back(text);
+    return false;
+  }
+
+  const char* start = text.c_str();
+  const char* cursor = start;
+  while (cursor != text.c_str() + text.size()) {
+    if (*cursor == '\n') {
+      lines.emplace_back(start, cursor);
+      ++cursor;
+      start = cursor;
+    } else if (cursor[0] < 0 && cursor[1] < 0) {
+      const std::string candidate(start, cursor + 2);
+      if (this->TextWidth(this->m_context->fonts, this->m_context->locale, candidate.c_str(), 0, 0, 12, 0, 0) > width) {
+        lines.emplace_back(start, cursor);
+        start = cursor;
+      }
+      cursor += 2;
+    } else {
+      const std::string candidate(start, cursor + 1);
+      if (this->TextWidth(this->m_context->fonts, this->m_context->locale, candidate.c_str(), 0, 0, 12, 0, 0) > width) {
+        lines.emplace_back(start, cursor);
+        start = cursor;
+      }
+      ++cursor;
+    }
+  }
+
+  const std::string rest(start, text.c_str() + text.size());
+  if (!rest.empty()) {
+    lines.push_back(rest);
+  }
+  return true;
+}
+
+// OFFSET: 0x008F8ED0
+// FUNCTION: fn_12334
+int UIChooseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  if (g_linkInputOwner != nullptr) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xAAA)), 0x64FFFF, 0, 0, 0);
+    return 0;
+  }
+
+  switch (message) {
+  case 6: {
+    Replay& replay = Replay::Instance();
+    ReplayPacketRecorder packets{g_packetLengths, replay.baseFrame, replay.started, replay.frame, replay.header.key0, replay.header.key1,
+                                 replay.header.options.recordRestricted, replay.file, replay.fileOffset, replay.records, replay.cipherIndex,
+                                 replay.cipherBase, replay.cipherKey};
+    WindowResponseRecorder{replay.state, packets}.Record(this->geometry.id, static_cast<int>(a), b, c, d);
+    if (a == 184) {
+      const std::uint32_t tick = GetTickCount();
+      if (tick - *reinterpret_cast<const DWORD*>(&g_session.unknown_5490[0x04]) >= 300) {
+        *reinterpret_cast<DWORD*>(&g_session.unknown_5490[0x04]) = tick;
+        if (this->m_items.empty()) {
+          this->SendMsg(nullptr, 6, 185, 0, 0, 0);
+          return 0;
+        }
+        const int selected = this->m_list->selected;
+        if (selected != -1) {
+          g_modeMgr.GetGameMode()->SendMsg(0x17, this->m_items[selected] + 1, this->unknown_00C8, 0, 0);
+          g_windowMgr.CloseWindow(0x11);
+        }
+      }
+    } else if (a == 185) {
+      g_modeMgr.GetGameMode()->SendMsg(0x28, 0, 0, 0, 0);
+    }
+    return 0;
+  }
+  case 0x12:
+  case 0x13:
+    this->m_list->SendMsg(nullptr, message, 0, 0, 0, 0);
+    return 0;
+  case 0x1B:
+    if (a != 0) {
+      const char* value = reinterpret_cast<const char*>(a);
+      if (std::strstr(value, LookupMessage(0x29A)) == nullptr) {
+        std::string text(value);
+        int length = 0;
+        int itemId = 0;
+        if (ParseItemIdTag(value, value + std::strlen(value), length, itemId) == 1 && itemId > 0) {
+          text = FindItemDescription(itemId).identifiedName;
+        }
+        this->m_list->AddLine(text.c_str());
+        ++this->unknown_00B4;
+        this->m_items.push_back(this->unknown_00B4);
+        const int previousWidth = this->m_list->geometry.width;
+        if (previousWidth < this->m_list->contentWidth + 15) {
+          this->m_list->Resize(this->m_list->contentWidth + 15, this->m_list->geometry.height);
+          this->Resize(this->geometry.width + this->m_list->geometry.width - previousWidth, this->geometry.height);
+          this->m_okButton->Move(this->geometry.width - 92, this->geometry.height - 24);
+          this->m_cancelButton->Move(this->geometry.width - 46, this->geometry.height - 24);
+        }
+      }
+    }
+    return 0;
+  case 0x1C:
+    this->unknown_00C8 = static_cast<int>(a);
+    return 0;
+  case 0x22: {
+    ChooseWndInfo* placement = reinterpret_cast<ChooseWndInfo*>(a);
+    this->m_placement = placement;
+    placement->IsValid();
+    this->Move(placement->x, placement->y);
+    return 0;
+  }
+  case 0x7B: {
+    const unsigned char* records = reinterpret_cast<const unsigned char*>(a);
+    FramedMessageHeader header;
+    std::memcpy(&header, records, sizeof(header));
+    if (header.type == 0x558C) {
+      unsigned int position = sizeof(header);
+      while (position < static_cast<unsigned int>(b)) {
+        std::memcpy(&header, records + position, sizeof(header));
+        position += sizeof(header);
+        if (header.type == 0x558D) {
+          break;
+        }
+        if (header.type == 0x558F) {
+          char text[260] = {};
+          std::memcpy(text, records + position, header.length);
+          position += header.length;
+          this->SendMsg(nullptr, 0x1B, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
+        } else {
+          position += header.length;
+        }
+      }
+      if (g_windowMgr.unknown_01F0 != nullptr) {
+        g_windowMgr.unknown_01F0->SendMsg(nullptr, 0x20, 0, 0, 0, 0);
+      }
+    }
+    return 0;
+  }
+  case 0xA6:
+    if (CMode* mode = g_modeMgr.GetGameMode()) {
+      mode->SendMsg(0x17, -1, this->unknown_00C8, 0, 0);
+    }
+    return 0;
+  default:
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
 }
 

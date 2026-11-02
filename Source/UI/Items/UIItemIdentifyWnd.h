@@ -41,6 +41,7 @@ public:
   UIMakingArrowListWnd(UIWindowContext& windows, UIFrameContext& frames);
   void Paint() override;
   std::vector<unsigned char> Slot44() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
   /* 00F0 */ std::int16_t unknown_00F0;
 };
