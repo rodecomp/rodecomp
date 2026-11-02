@@ -1544,9 +1544,9 @@ std::string GetHotkeyText(int tab, int index) {
   HotkeyInfo info;
   const char* keyText = nullptr;
   const char* description = nullptr;
-  g_luaScript->Call("GetUserHotKeyInfo", "dd>ddss", tab + 1, index, &info.key1, &info.key2, &keyText, &description);
+  g_session.m_hotkeyScript->Call("GetUserHotKeyInfo", "dd>ddss", tab + 1, index, &info.key1, &info.key2, &keyText, &description);
   if (IsNullOrEmpty(keyText)) {
-    g_luaScript->Call("GetOriginalHotKeyInfo", "dd>ddss", tab + 1, index, &info.key1, &info.key2, &keyText, &description);
+    g_session.m_hotkeyScript->Call("GetOriginalHotKeyInfo", "dd>ddss", tab + 1, index, &info.key1, &info.key2, &keyText, &description);
   }
 
   std::string text;
