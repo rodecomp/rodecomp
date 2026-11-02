@@ -19,13 +19,14 @@ public:
   void Slot28(int x, int y) override;
   void Slot32(int x, int y) override;
   void Paint() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
   /* 00F0 */ int unknown_00F0;
   /* 00F4 */ UIStaticText* total;
   /* 00F8 */ int unknown_00F8;
   /* 00FC */ MerchantItemPurchaseWndInfo* saved;
   /* 0100 */ int hovered;
-  /* 0104 */ unsigned char unknown_0104[0x4];
+  /* 0104 */ int unknown_0104;
   /* 0108 */ int unknown_0108;
 };
 
