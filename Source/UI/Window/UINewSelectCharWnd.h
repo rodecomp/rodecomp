@@ -16,6 +16,7 @@ struct UIButtonContext;
 extern void* g_charViewMode;
 extern char g_selectedSlotIndex;
 extern int g_doramSex;
+extern int g_sub_1319eb4;
 
 struct CharSlotInfo {
   CharSlotInfo();

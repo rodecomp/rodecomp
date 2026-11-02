@@ -3249,6 +3249,8 @@ void CGameMode::PlayItemUseEffect(int itemId, std::uint32_t aid) {
 #include "Contents/UserData/AccountLinkedUserDataMgr.h"
 #include "Network/GameTickPacket.h"
 #include "UI/Buttons/UITextButton.h"
+#include "UI/UIMacroUserInfoWnd.h"
+#include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Layout/SnapMgr.h"
 #include "UI/Window/UIMileageWnd.h"
 #include "UI/Window/UIWindowFactory.h"
@@ -4162,6 +4164,104 @@ __forceinline void CGameMode::ShowHoverActorName(CGameActor* actor) {
     balloon->m_outlineColor = 0;
   }
   this->PlaceWindowAtActor(this->itemNameBalloon, actor);
+}
+
+// OFFSET: 0x00CDFE10
+// FUNCTION: fn_21328
+int CGameMode::ProcessMousePick(int result, ActorPickInfo* pick) {
+  if (g_sub_1319eb4 == 1 && pick) {
+    UIMacroReporterWnd* reporter = static_cast<UIMacroReporterWnd*>(g_windowMgr.LookupWindow(286));
+    if (reporter && reporter->unknown_010C == true && reporter->m_mode == 0) {
+      reporter->sub_7EF2C0(reinterpret_cast<MacroReporterEntry*>(pick));
+      return -1;
+    }
+  }
+
+  if (g_windowMgr.LookupWindow(196) || reinterpret_cast<std::intptr_t>(this->unknown_0408) == 1) {
+    return result;
+  }
+
+  ModeCursor& cursor = *reinterpret_cast<ModeCursor*>(&this->cursorAction);
+  int& lockedPick = *reinterpret_cast<int*>(&this->unknown_04F4[0xBC]);
+  int& pickTarget = *reinterpret_cast<int*>(&this->unknown_00EC[0x00]);
+  int& clickTarget = *reinterpret_cast<int*>(&this->unknown_00EC[0x04]);
+
+  if (this->unknown_0028 == 0) {
+    if (!pick) {
+      if (lockedPick != 0 || g_sub_1319eb4 == 1) {
+        return result;
+      }
+      if (this->unknown_00DC == g_screenWidth && this->unknown_00E0 == g_screenHeight) {
+        return result;
+      }
+      pickTarget = 0;
+      clickTarget = 0;
+      return result;
+    }
+  } else {
+    cursor.Set(5, this->cursorTick);
+    if (lockedPick != 0) {
+      if (g_sub_1319eb4 == 1) {
+        this->SendMsg(26, 0, 0, 0, 0);
+      } else {
+        cursor.Set(0, this->cursorTick);
+        if (!pick) {
+          return result;
+        }
+        result = 0;
+      }
+    } else {
+      if (g_sub_1319eb4 == 2) {
+        return 1;
+      }
+      if (!pick && clickTarget == 0 && pickTarget == 0) {
+        this->unknown_0028 = 0;
+      }
+    }
+  }
+
+  if (lockedPick == 0) {
+    if (clickTarget != 0) {
+      if (pick) {
+        if (pick->kind == 3) {
+          cursor.Set(0, this->cursorTick);
+          return 0;
+        }
+        if (pick->kind == 4) {
+          cursor.Set(0, this->cursorTick);
+          this->ShowActorNameBalloon(pick->accountId);
+          return this->HandleActorPick(pick, result);
+        }
+      }
+
+      CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(clickTarget));
+      if (!actor) {
+        clickTarget = 0;
+        return result;
+      }
+      this->ProcessActorClick(result, pick, actor);
+      return result;
+    }
+
+    if (pickTarget != 0) {
+      CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(pickTarget));
+      if (!actor) {
+        pickTarget = 0;
+        return result;
+      }
+      if (lockedPick != 0 && *reinterpret_cast<const int*>(&actor->render.unknown_0060) == 3) {
+        lockedPick = 0;
+      }
+      this->ProcessActorPick(result, pick, actor);
+      return result;
+    }
+  }
+
+  if (pick && result == 0) {
+    this->ShowActorNameBalloon(pick->accountId);
+    result = this->HandleActorPick(pick, 0);
+  }
+  return result;
 }
 
 // OFFSET: 0x00CE1010
