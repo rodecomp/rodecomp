@@ -4304,3 +4304,179 @@ void CGameMode::UpdateHoverNameBalloon() {
 }
 
 // OFFSET: 0x00CE3D30
+
+// OFFSET: 0x00CFE510
+// FUNCTION: fn_21434
+void CGameMode::ProcessStatusIconTooltip(int x, int y) {
+  auto firstLine = [](UIWindow* window) -> std::string {
+    const std::vector<std::string>& lines = static_cast<UIBalloonText*>(window)->m_lines;
+    if (!lines.empty()) {
+      return lines[0];
+    }
+    return std::string();
+  };
+
+  if (this->unknown_05D0) {
+    this->unknown_05D0->Show(0);
+  }
+
+  if (g_activeSkillEffects.begin() == g_activeSkillEffects.end()) {
+    return;
+  }
+
+  int& hoveredId = *reinterpret_cast<int*>(this->unknown_01F8);
+  const int count = static_cast<int>(g_activeSkillEffects.end() - g_activeSkillEffects.begin());
+  const int rows = (g_renderer->viewport.height - 169) / 35;
+  const int right = g_renderer->viewport.width - 18;
+  const int columns = count / rows + (count % rows != 0 ? 1 : 0);
+  if (right - columns * 45 + 15 > x || x > right || y < 168 || y > rows * 35 + 168) {
+    hoveredId = -1;
+    return;
+  }
+
+  const int dx = right - x;
+  const int column = dx / 45;
+  const int columnEdge = (column + (dx != column * 45 ? 1 : 0)) * 45;
+  if (columnEdge - 15 < dx && dx < columnEdge) {
+    return;
+  }
+
+  const int dy = y - 168;
+  const int row = dy / 35;
+  const int rowEdge = (row + (dy != row * 35 ? 1 : 0)) * 35;
+  if (rowEdge - 5 < dy && dy < rowEdge) {
+    return;
+  }
+
+  const int slot = column * rows + row;
+  if (slot >= count) {
+    return;
+  }
+
+  const int id = g_statusIconIds[slot];
+  if (id == -1) {
+    hoveredId = -1;
+    if (this->unknown_05D0) {
+      static_cast<UIBalloonText*>(this->unknown_05D0)->SetText(" ", 35);
+    }
+    return;
+  }
+
+  int hasLimit = 0;
+  int limitLine = -1;
+  g_luaScript->Call("GetTimeLimitInfo", "d>dd", id, &hasLimit, &limitLine);
+
+  std::string timeText;
+  int activeId = id;
+  if (hasLimit != 0) {
+    timeText = this->GetActiveSkillEffectTimeText(id, &activeId);
+  }
+
+  if (hoveredId == id && this->unknown_05D0 && id != 0x175 && id != 0x2B7) {
+    if (firstLine(this->unknown_05D0).size() != 0) {
+      this->unknown_05D0->Show(1);
+    }
+  } else {
+    if (!this->unknown_05D0) {
+      this->unknown_05D0 = new UITransBalloonText();
+      this->unknown_05D0->SetSize(50, 50);
+      g_windowMgr.AddRendered(this->unknown_05D0);
+      static_cast<UITransBalloonText*>(this->unknown_05D0)->SetFontHeight(11);
+      static_cast<UITransBalloonText*>(this->unknown_05D0)->m_borderColor = 0xC0C0C0;
+    } else {
+      static_cast<UIBalloonText*>(this->unknown_05D0)->SetText(" ", 35);
+    }
+
+    UITransBalloonText* balloon = static_cast<UITransBalloonText*>(this->unknown_05D0);
+    std::string extra;
+    int line = 1;
+    std::uint32_t color = 0;
+    if (id != 0x2B7) {
+      for (;;) {
+        const char* text;
+        int red;
+        int green;
+        int blue;
+        do {
+          text = nullptr;
+          red = 0;
+          green = 0;
+          blue = 0;
+        } while (!g_luaScript->Call("GetStateIconDescript", "dd>sddd", activeId, line, &text, &red, &green, &blue));
+
+        std::string description(text);
+        if (description.size() == 0) {
+          break;
+        }
+
+        if (line == limitLine) {
+          description = FormatOwnedString(description.c_str(), timeText.c_str());
+        }
+
+        const std::uint32_t lineColor = RGB(red, green, blue);
+        bool replace;
+        if (line == 1) {
+          replace = true;
+        } else {
+          const std::string first = firstLine(balloon);
+          replace = first.size() == 1 && first[0] == ' ';
+        }
+
+        if (replace) {
+          balloon->SetLine(description.c_str(), lineColor);
+        } else {
+          balloon->AddLine(description.c_str(), lineColor);
+        }
+        ++line;
+      }
+
+      if (id == 0x175) {
+        if (timeGetTime() - g_session.unknown_7ED4 > 10000) {
+          g_session.unknown_7ED0 = 0;
+        } else if (g_session.unknown_7ED0 != 0) {
+          extra = FormatOwnedString(LookupMessage(0xBD2), g_session.unknown_7ED0);
+        }
+
+        if (extra.size() != 0) {
+          balloon->AddLine(extra.c_str(), 0);
+        }
+      }
+    } else {
+      {
+        ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, g_session.unknown_16EC);
+        if (item.unknown_0000[1] != 0) {
+          extra = FormatOwnedString("%s : %d", item.DisplayName(0).c_str(), item.quantity);
+          color = 0xFABEBE;
+        }
+      }
+
+      if (extra.size() != 0) {
+        balloon->SetLine(extra.c_str(), color);
+      }
+    }
+
+    const std::string first = firstLine(this->unknown_05D0);
+    if (!(first.size() == 1 && first[0] == ' ')) {
+      this->unknown_05D0->Show(1);
+      const int windowHeight = this->unknown_05D0->geometry.height;
+      const int left = right - 30 + (slot / rows) * -45 - this->unknown_05D0->geometry.width;
+      const int top = (slot % rows) * 35;
+      int windowY = g_renderer->viewport.height - windowHeight;
+      if (windowHeight + 171 + top <= g_renderer->viewport.height) {
+        windowY = top + 171;
+      }
+      this->unknown_05D0->Move(left, windowY);
+    }
+
+    hoveredId = id;
+  }
+
+  if (hasLimit != 0 && timeText.size() != 0 && limitLine != -1 && this->unknown_05D0) {
+    const char* text = nullptr;
+    if (g_luaScript->Call("GetStateIconDescript", "dd>s", activeId, limitLine, &text)) {
+      std::string description(text);
+      description = FormatOwnedString(description.c_str(), timeText.c_str());
+      static_cast<UITransBalloonText*>(this->unknown_05D0)->ChangeText(description.c_str(), limitLine - 1);
+    }
+  }
+}

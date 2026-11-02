@@ -371,6 +371,7 @@ public:
   bool IsOverWeight(bool notify);
   void CompleteUnknown0194(std::uint32_t id, const std::string& text);
   std::string GetActiveSkillEffectTimeText(int skillId, int* activeSkillId);
+  void ProcessStatusIconTooltip(int x, int y);
   bool IsActiveSkillEffectId(std::uint32_t id);
   bool IsExcludedSkillEffectId(std::uint32_t id);
   int SubD07740(int id, int defaultResult);

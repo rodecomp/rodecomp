@@ -147,7 +147,7 @@ static void SendAfterimageColor(CGameObject& target, CRagEffect& sender, const v
 
 
 // GLOBAL: gl_25089
-static int g_statusIconIds[100];
+int g_statusIconIds[100];
 
 // OFFSET: 0x00C11C60
 

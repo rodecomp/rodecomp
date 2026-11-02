@@ -16,6 +16,8 @@ struct BalloonRectangle {
 };
 
 class UITransBalloonText : public UIBalloonText {
+  friend class CGameMode;
+
 public:
   UITransBalloonText();
   UITransBalloonText(UIWindowContext& windows, BalloonTextContext& text);
