@@ -1428,6 +1428,49 @@ static void ShowNoticeType6() {
 }
 
 // OFFSET: 0x006C4950
+// FUNCTION: fn_06361
+void CGameSettingsMgr::Init_Func() {
+  this->actions[0x6B] = &ApplyServiceOptionActorRefresh;
+  this->actions[0x6A] = &ApplyServiceOptionWithNotice;
+  this->actions[0x08] = &ApplyServiceOptionXmasWeather;
+  this->actions[0x77] = &ApplyServiceOptionWeatherFlag;
+  this->actions[0x3C] = &ApplyServiceOptionMapFog;
+  this->actions[0xF1] = &ApplyServiceOptionJitterScale;
+  this->actions[0x10F] = &ApplyServiceOptionCursorClip;
+  this->actions[0x10E] = &ApplyServiceOptionWindow159;
+  this->actions[0x108] = &ApplyItemWndServiceOption;
+  this->actions[0x128] = &ApplyServiceOptionAskOnDisable;
+  this->actions[0x6C] = &ApplyServiceOptionFlags;
+  this->actions[0x8D] = &ApplyServiceOptionAndSnap;
+  this->actions[0xC9] = &ApplyServiceOptionHideWindow;
+  this->actions[0xDA] = &ApplyServiceOptionWindow190;
+  this->actions[0xDB] = &ApplyServiceOptionWindow267;
+  this->actions[0xDC] = &ApplyServiceOptionWindow268;
+  this->actions[0xDF] = &ApplyServiceOptionNotifyWindow;
+  this->actions[0xE5] = &ApplyServiceOptionSessionFlag;
+  this->actions[0xE7] = &SendConfigServiceOption;
+  this->actions[0xFA] = &ApplyServiceOptionWindows189;
+
+  this->functions[0xEF] = &SendServiceOptionPacket;
+  this->functions[0x97] = &GreetFriends;
+  this->functions[0x0E] = &ShowHelpMessages;
+  this->functions[0x16] = &RequestPlayerAction31;
+  this->functions[0x17] = &ApplyServiceOptionWindow27;
+  this->functions[0x18] = &RequestModeAction48;
+  this->functions[0x1B] = &RequestModeAction61;
+  this->functions[0x09] = &ShowPlayerLocation;
+  this->functions[0x2B] = &NotifyGameModeMenu;
+  this->functions[0x33] = &ShowNoticeType6;
+  this->functions[0x6E] = &ToggleSitStand;
+  this->functions[0x6F] = []() { RotatePlayerDirection(false); };
+  this->functions[0x70] = []() { RotatePlayerDirection(true); };
+  this->functions[0x0F] = &SendWhisperBlockPacket;
+  this->functions[0x11] = &EnableWhisperBlock;
+  this->functions[0x10] = &DisableWhisperBlock;
+  this->functions[0x92] = &NotifyGameModeOption;
+  this->functions[0x93] = &NotifyGameModeOptionFirst;
+  this->functions[0x98] = &NotifyGameModeOptionAlt;
+}
 
 // GLOBAL: gl_25208
 bool g_showBattleFieldIcon;
