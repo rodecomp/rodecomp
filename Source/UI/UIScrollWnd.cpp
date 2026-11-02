@@ -11,6 +11,15 @@
 #include <list>
 #include <utility>
 
+// OFFSET: 0x009AC040
+// FUNCTION: fn_13770
+UIScrollWnd::UIScrollWnd(UIWindowContext& windows, int width, int height, unsigned char cached)
+    : UIWindow(windows, cached), viewHeight(0), contentWidth(0), contentHeight(0), horizontalBar(nullptr), scrollBar(nullptr),
+      scrollBarWidth(13), scrollBarHeight(13), unknown_009C(0), scrollPosition(0), unknown_00A4(0), wheelScroll(0) {
+  this->UIWindow::Resize(width, height);
+  this->Slot15(width, height);
+}
+
 // OFFSET: 0x009AC2B0
 // FUNCTION: fn_13772
 UIScrollWnd::~UIScrollWnd() {
@@ -257,7 +266,7 @@ RenderPrimitive* UIScrollWnd::BuildPrimitive(int x, int y, int sourceX, int sour
 
 // OFFSET: 0x009AD3A0
 // FUNCTION: fn_13783
-void UIScrollWnd::Slot15(int width, int height) {
+__declspec(noinline) void UIScrollWnd::Slot15(int width, int height) {
   this->horizontalBar = new UIScrollBar(*this->m_context);
   this->horizontalBar->Configure(0, height - this->scrollBarHeight, 0, width - this->scrollBarWidth);
   this->AddChild(this->horizontalBar);

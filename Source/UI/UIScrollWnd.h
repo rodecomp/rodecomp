@@ -11,13 +11,7 @@ class UIScrollBar;
 
 class UIScrollWnd : public UIWindow {
 public:
-  // INLINED
-  UIScrollWnd(UIWindowContext& windows, int width, int height, unsigned char cached)
-      : UIWindow(windows, cached), viewHeight(0), contentWidth(0), contentHeight(0), horizontalBar(nullptr), scrollBar(nullptr),
-        scrollBarWidth(13), scrollBarHeight(13), unknown_009C(0), scrollPosition(0), unknown_00A4(0), wheelScroll(0) {
-    this->UIWindow::Resize(width, height);
-    this->Slot15(width, height);
-  }
+  UIScrollWnd(UIWindowContext& windows, int width, int height, unsigned char cached);
   ~UIScrollWnd() override;
   void Resize(int width, int height) override;
   void Slot15(int width, int height) override;
