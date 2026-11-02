@@ -75,6 +75,7 @@ struct CRagEffect : CRenderObject {
   void TexturedOrbitDust(const char* name, char rise, char kind);
   void WeddingBurst(const char* name, char silent);
   void ThunderFreeze(int unused);
+  void RenderEZ2STR(const matrix& view);
   void RenderAniClip(EZeffectClip* clip, const EZeffectTransform* transform, int count, const matrix& view);
   void LineStreakTextured(std::int16_t kind, const char* name);
   void TexturedTumble(const char* name, char unused);

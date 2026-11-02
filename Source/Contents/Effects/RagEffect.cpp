@@ -31,6 +31,8 @@
 #include "Contents/Effects/EffectLists.h"
 #include "Contents/Effects/EffectTypes.h"
 #include "Contents/Effects/EffectTypes.h"
+#include "Contents/Effects/EffectVisibility.h"
+#include "Contents/Effects/Particle.h"
 #include "Client/Application/ErrorDialog.h"
 #include "Render/DeviceContext/DCSurface.h"
 #include <algorithm>
@@ -14970,6 +14972,28 @@ static __forceinline void SetAniClipCorners(RenderVertex* vertices, const EZeffe
     vertices[1].v = transform.v + transform.vs;
     vertices[0].y = transform.ay[0];
     vertices[0].v = transform.v;
+  }
+}
+
+// OFFSET: 0x00C37D10
+// FUNCTION: fn_20097
+void CRagEffect::RenderEZ2STR(const matrix& view) {
+  const bool partyVisible = g_session.IsPvpMap();
+  const EffectVisibilityContext visibility{g_serviceOptions, g_session.m_aid, partyVisible, g_session.m_partyMembers};
+  if (!g_session.IsEffectRenderEnabled() || !PartyEffectVisible(this->state, visibility)) {
+    return;
+  }
+
+  if (!this->state.resourceData || !this->state.parent) {
+    return;
+  }
+
+  int index = 0;
+  for (int layer = 1; layer < static_cast<EZeffectData*>(this->state.resourceData)->clipCount; ++layer) {
+    if (this->state.layerDrawn[layer]) {
+      this->RenderAniClip(&static_cast<EZeffectData*>(this->state.resourceData)->clips[layer], &this->state.transforms[layer], index, view);
+      index += 2;
+    }
   }
 }
 
