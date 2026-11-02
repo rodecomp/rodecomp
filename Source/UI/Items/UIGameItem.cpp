@@ -133,11 +133,7 @@ void CUIGameItem::SetItem(const ITEM_INFO& item) {
   }
 
   this->itemInfo = item;
-  ItemDescriptions descriptions{g_itemDescriptions};
-  bool languagePrefix = false;
-  WORD language = g_serverLanguage->language;
-  ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
-  this->name = naming.DisplayName(this->itemInfo, 0);
+  this->name = this->itemInfo.DisplayName(0);
 
   std::string path;
   if (this->mode == 0) {

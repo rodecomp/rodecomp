@@ -257,16 +257,12 @@ void UIRoulletteWnd::Slot28(int x, int y) {
 
   if (item.quantity != 0) {
     this->ToScreen(tooltipX, tooltipY);
-    ItemDescriptions descriptions{g_itemDescriptions};
-    bool languagePrefix = false;
-    WORD language = g_serverLanguage->language;
-    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
     ModeTooltip* tooltip = reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode);
     if (item.identified == 1 && item.unknown_0098 != 0) {
-      tooltip->Show(FormatOwnedString(LookupMessage(2600), naming.DisplayName(item, 0).c_str(), item.unknown_0098).c_str(), tooltipX, tooltipY,
+      tooltip->Show(FormatOwnedString(LookupMessage(2600), item.DisplayName(0).c_str(), item.unknown_0098).c_str(), tooltipX, tooltipY,
                     g_session.GetItemNameColor(item), 0, 1);
     } else {
-      tooltip->Show(naming.DisplayName(item, 0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+      tooltip->Show(item.DisplayName(0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
     }
   }
 }

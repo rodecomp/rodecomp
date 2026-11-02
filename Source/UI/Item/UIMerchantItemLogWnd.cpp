@@ -168,17 +168,13 @@ void UIMerchantItemLogWnd::Slot28(int x, int y) {
     int tooltipY = (y - 17) / 32 * 32 + 1;
     this->ToScreen(tooltipX, tooltipY);
 
-    ItemDescriptions descriptions{g_itemDescriptions};
-    bool languagePrefix = false;
-    WORD language = g_serverLanguage->language;
-    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
     if (item.identified == 1 && item.unknown_0098 != 0) {
       reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)
-          ->Show(FormatOwnedString(LookupMessage(2551), naming.DisplayName(item, 0).c_str(), item.unknown_0098, item.quantity).c_str(), tooltipX, tooltipY,
+          ->Show(FormatOwnedString(LookupMessage(2551), item.DisplayName(0).c_str(), item.unknown_0098, item.quantity).c_str(), tooltipX, tooltipY,
                  g_session.GetItemNameColor(item), 0, 1);
     } else {
       reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)
-          ->Show(FormatOwnedString(LookupMessage(183), naming.DisplayName(item, 0).c_str(), item.quantity).c_str(), tooltipX, tooltipY,
+          ->Show(FormatOwnedString(LookupMessage(183), item.DisplayName(0).c_str(), item.quantity).c_str(), tooltipX, tooltipY,
                  g_session.GetItemNameColor(item), 0, 1);
     }
   }
@@ -248,11 +244,7 @@ int UIMerchantItemLogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
 
     lcData data;
     data.name = LookupPlayerName(b);
-    ItemDescriptions descriptions{g_itemDescriptions};
-    bool languagePrefix = false;
-    WORD language = g_serverLanguage->language;
-    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
-    data.unknown_001C = naming.DisplayName(item, 0);
+    data.unknown_001C = item.DisplayName(0);
     data.time = c;
     data.characterId = b;
     this->logs.push_back(data);

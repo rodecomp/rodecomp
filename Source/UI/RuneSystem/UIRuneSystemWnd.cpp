@@ -1225,11 +1225,7 @@ void UIRuneSetReWard::Slot28(int, int) {
 
   ITEM_INFO item;
   item.SetItemId(this->m_itemId);
-  ItemDescriptions descriptions{g_itemDescriptions};
-  bool languagePrefix = false;
-  WORD language = g_serverLanguage->language;
-  ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
-  if (std::string("Unknown Item") == naming.DisplayName(item, 0)) {
+  if (std::string("Unknown Item") == item.DisplayName(0)) {
     return;
   }
 
@@ -1239,7 +1235,7 @@ void UIRuneSetReWard::Slot28(int, int) {
   this->ToScreen(x, y);
   ModeTooltip* tooltip = reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode);
   if (tooltip) {
-    tooltip->Show(naming.DisplayName(item, 0).c_str(), x, y - 10, 0xFFFFFF, 0, 1);
+    tooltip->Show(item.DisplayName(0).c_str(), x, y - 10, 0xFFFFFF, 0, 1);
   }
 }
 
@@ -1268,11 +1264,7 @@ void UIRuneSystem_ActiveWnd::Slot28(int x, int y) {
   this->ToScreen(tipX, tipY);
   ModeTooltip* tooltip = reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode);
   if (tooltip) {
-    ItemDescriptions descriptions{g_itemDescriptions};
-    bool languagePrefix = false;
-    WORD language = g_serverLanguage->language;
-    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
-    tooltip->Show(naming.DisplayName(item, 0).c_str(), tipX, tipY, 0xFFFFFF, 0, 1);
+    tooltip->Show(item.DisplayName(0).c_str(), tipX, tipY, 0xFFFFFF, 0, 1);
   }
 }
 
@@ -1296,11 +1288,7 @@ void UIRune_Decom::Slot28(int x, int y) {
   this->ToScreen(tipX, tipY);
   ModeTooltip* tooltip = reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode);
   if (tooltip) {
-    ItemDescriptions descriptions{g_itemDescriptions};
-    bool languagePrefix = false;
-    WORD language = g_serverLanguage->language;
-    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
-    tooltip->Show(naming.DisplayName(item, 0).c_str(), tipX, tipY, 0xFFFFFF, 0, 1);
+    tooltip->Show(item.DisplayName(0).c_str(), tipX, tipY, 0xFFFFFF, 0, 1);
   }
 }
 
@@ -1673,11 +1661,7 @@ void UIRune_Decom::SetItem(int itemId) {
   item.identified = 1;
   if (this->m_itemId != itemId) {
     this->m_itemId = itemId;
-    ItemDescriptions descriptions{g_itemDescriptions};
-    bool languagePrefix = false;
-    WORD language = g_serverLanguage->language;
-    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
-    this->unknown_007C = naming.DisplayName(item, 0);
+    this->unknown_007C = item.DisplayName(0);
 
     std::string resource;
     if (IsItemCard(std::atoi(item.itemId.c_str()))) {

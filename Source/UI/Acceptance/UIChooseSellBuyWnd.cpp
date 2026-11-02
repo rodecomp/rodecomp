@@ -2012,11 +2012,7 @@ void UIItemCollectionWnd::Slot28(int x, int y) {
     color = ItemCardColor(&this->m_item);
   }
 
-  ItemDescriptions descriptions{g_itemDescriptions};
-  bool languagePrefix = false;
-  WORD language = g_serverLanguage->language;
-  ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
-  tooltip->Show(naming.DisplayName(card, 0).c_str(), slotX, slotY, color, 0, 1);
+  tooltip->Show(card.DisplayName(0).c_str(), slotX, slotY, color, 0, 1);
 }
 
 // OFFSET: 0x008F46C0
@@ -2379,12 +2375,7 @@ void UINpcTextEditDialogWnd::InsertItemTag(const ITEM_INFO& item) {
     }
   }
 
-  ItemDescriptions descriptions{g_itemDescriptions};
-  bool languagePrefix = false;
-  WORD language = g_serverLanguage->language;
-  ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
-
-  if (!this->m_tagCtrl->CanInsertTag(naming.DisplayName(item, 0), this->edit->geometry.width)) {
+  if (!this->m_tagCtrl->CanInsertTag(item.DisplayName(0), this->edit->geometry.width)) {
     return;
   }
 
@@ -2392,7 +2383,7 @@ void UINpcTextEditDialogWnd::InsertItemTag(const ITEM_INFO& item) {
     std::string text = this->edit->Text();
     this->m_tagCtrl->taggedText = text;
   }
-  this->edit->SetText(this->m_tagCtrl->AppendTag(naming.DisplayName(item, 0)).c_str());
+  this->edit->SetText(this->m_tagCtrl->AppendTag(item.DisplayName(0)).c_str());
   this->edit->MoveCursorToEnd();
   this->m_tagCtrl->sub_89CFE0(item, 0x12B8A4);
 }
@@ -9557,9 +9548,6 @@ int UIFrameWnd::BuildItemName(
 
   int& capacity = reinterpret_cast<int&>(*remaining);
   ItemDescriptions descriptions{g_itemDescriptions};
-  bool languagePrefix = false;
-  WORD language = g_serverLanguage->language;
-  ItemNamingContext naming{{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language}};
 
   const auto unknownCreator = [&]() {
     this->m_context->registration.Add(this);
@@ -9597,7 +9585,7 @@ int UIFrameWnd::BuildItemName(
   int cards[4];
   std::memcpy(cards, item->unknown_001C, sizeof(cards));
   if (item->unknown_0000[0] == 4 && item->IsApprenticeItem() == true && cards[3] == 1) {
-    *cursor += naming.Apprentice(*item, *cursor, capacity, 1);
+    *cursor += item->Apprentice(*cursor, capacity, 1);
     breaks->push_back(*cursor);
   }
 
@@ -9607,16 +9595,16 @@ int UIFrameWnd::BuildItemName(
       breaks->push_back(*cursor);
     }
     if (item->unknown_0088 > 0) {
-      *cursor += naming.Grade(*item, *cursor, capacity, 1);
+      *cursor += item->Grade(*cursor, capacity, 1);
       breaks->push_back(*cursor);
     }
 
     if (g_serviceType == 12 || g_serviceType == 14) {
       *cursor += descriptions.Name(*item, *cursor, capacity, 1);
       breaks->push_back(*cursor);
-      *cursor += naming.Element(*item, *cursor, capacity, 1);
+      *cursor += item->Element(*cursor, capacity, 1);
       breaks->push_back(*cursor);
-      const int bytes = naming.Creator(*item, *cursor, capacity, 1);
+      const int bytes = item->Creator(*cursor, capacity, 1);
       if (bytes) {
         *creator = *cursor;
         *cursor += bytes;
@@ -9629,7 +9617,7 @@ int UIFrameWnd::BuildItemName(
       return 1;
     }
 
-    const int bytes = naming.Creator(*item, *cursor, capacity, 1);
+    const int bytes = item->Creator(*cursor, capacity, 1);
     if (bytes) {
       *creator = *cursor;
       *cursor += bytes;
@@ -9643,7 +9631,7 @@ int UIFrameWnd::BuildItemName(
       *cursor += descriptions.Name(*item, *cursor, capacity, 1);
       breaks->push_back(*cursor);
       if (withSlots == 1) {
-        *cursor += naming.Slots(*item, *cursor, capacity, 1);
+        *cursor += item->Slots(*cursor, capacity, 1);
         breaks->push_back(*cursor);
       }
       return 1;
@@ -9654,19 +9642,19 @@ int UIFrameWnd::BuildItemName(
       breaks->push_back(*cursor);
     }
     if (item->unknown_0088 > 0) {
-      *cursor += naming.Grade(*item, *cursor, capacity, 1);
+      *cursor += item->Grade(*cursor, capacity, 1);
       breaks->push_back(*cursor);
     }
 
-    if (naming.HasCards(*item)) {
-      *cursor += naming.Prefixes(*item, *cursor, capacity, 1);
+    if (item->HasCards()) {
+      *cursor += item->Prefixes(*cursor, capacity, 1);
       breaks->push_back(*cursor);
       *cursor += descriptions.Name(*item, *cursor, capacity, 1);
       breaks->push_back(*cursor);
-      *cursor += naming.Suffixes(*item, *cursor, capacity, 1);
+      *cursor += item->Suffixes(*cursor, capacity, 1);
       breaks->push_back(*cursor);
       if (withSlots == 1) {
-        *cursor += naming.Slots(*item, *cursor, capacity, 1);
+        *cursor += item->Slots(*cursor, capacity, 1);
         breaks->push_back(*cursor);
       }
       return 1;
@@ -9676,7 +9664,7 @@ int UIFrameWnd::BuildItemName(
       *cursor += descriptions.Name(*item, *cursor, capacity, 1);
       breaks->push_back(*cursor);
       if (withSlots == 1) {
-        *cursor += naming.Slots(*item, *cursor, capacity, 1);
+        *cursor += item->Slots(*cursor, capacity, 1);
         breaks->push_back(*cursor);
       }
       return 1;
@@ -9686,19 +9674,19 @@ int UIFrameWnd::BuildItemName(
       if (g_serviceType == 12) {
         *cursor += descriptions.Name(*item, *cursor, capacity, 1);
         breaks->push_back(*cursor);
-        *cursor += naming.Element(*item, *cursor, capacity, 1);
+        *cursor += item->Element(*cursor, capacity, 1);
         breaks->push_back(*cursor);
-        *cursor += naming.Star(*item, *cursor, capacity, 1);
+        *cursor += item->Star(*cursor, capacity, 1);
       } else {
-        *cursor += naming.Star(*item, *cursor, capacity, 1);
+        *cursor += item->Star(*cursor, capacity, 1);
         breaks->push_back(*cursor);
         *cursor += descriptions.Name(*item, *cursor, capacity, 1);
         breaks->push_back(*cursor);
-        *cursor += naming.Element(*item, *cursor, capacity, 1);
+        *cursor += item->Element(*cursor, capacity, 1);
       }
       breaks->push_back(*cursor);
       *creator = *cursor;
-      const int bytes = naming.Creator(*item, *cursor, capacity, 1);
+      const int bytes = item->Creator(*cursor, capacity, 1);
       if (bytes) {
         *creator = *cursor;
         *cursor += bytes;
@@ -9714,10 +9702,10 @@ int UIFrameWnd::BuildItemName(
       return 1;
     }
 
-    *cursor += naming.Star(*item, *cursor, capacity, 1);
+    *cursor += item->Star(*cursor, capacity, 1);
     breaks->push_back(*cursor);
     *creator = *cursor;
-    const int bytes = naming.Creator(*item, *cursor, capacity, 1);
+    const int bytes = item->Creator(*cursor, capacity, 1);
     if (bytes) {
       *creator = *cursor;
       *cursor += bytes;
@@ -9727,7 +9715,7 @@ int UIFrameWnd::BuildItemName(
     }
     breaks->push_back(*cursor);
     if (!splitCreator) {
-      *cursor += naming.Element(*item, *cursor, capacity, 1);
+      *cursor += item->Element(*cursor, capacity, 1);
       breaks->push_back(*cursor);
       *cursor += descriptions.Name(*item, *cursor, capacity, 1);
       breaks->push_back(*cursor);
@@ -9736,7 +9724,7 @@ int UIFrameWnd::BuildItemName(
   }
 
   breaks->push_back(*cursor);
-  *cursor += naming.Element(*item, *cursor, capacity, 1);
+  *cursor += item->Element(*cursor, capacity, 1);
   breaks->push_back(*cursor);
   *cursor += descriptions.Name(*item, *cursor, capacity, 1);
   breaks->push_back(*cursor);

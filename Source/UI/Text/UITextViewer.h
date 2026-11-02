@@ -6,7 +6,6 @@
 #include <windows.h>
 
 class UITextButton;
-struct ItemNaming;
 struct ItemLinkDisplay;
 
 class TextViewerActions {
@@ -21,7 +20,6 @@ protected:
 };
 
 struct UITextViewerContext {
-  ItemNaming& items;
   TextViewerActions& actions;
   HWND& applicationWindow;
 

@@ -30,8 +30,9 @@ bool ItemLinkDisplay::Name(const std::string& encoded, std::string& output) {
   DecodeItemLinkFields(encoded, fields);
   ITEM_INFO item;
 
-  if (ItemFromLinkFields(fields, item, this->items.descriptions)) {
-    output = this->items.DisplayName(item, 0);
+  ItemDescriptions descriptions{g_itemDescriptions};
+  if (ItemFromLinkFields(fields, item, descriptions)) {
+    output = item.DisplayName(0);
     return true;
   }
 

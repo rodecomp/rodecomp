@@ -71,6 +71,15 @@ struct alignas(8) ITEM_INFO {
   bool operator<(const ITEM_INFO& other) const;
   bool SetName(const char* name);
   std::string DisplayName(unsigned char detailed) const;
+  bool HasCards() const;
+  int Grade(char* output, int& capacity, unsigned char consume) const;
+  int Creator(char* output, int& capacity, unsigned char consume) const;
+  int Prefixes(char* output, int& capacity, unsigned char consume) const;
+  int Suffixes(char* output, int& capacity, unsigned char consume) const;
+  int Slots(char* output, int& capacity, unsigned char consume) const;
+  int Element(char* output, int& capacity, unsigned char consume) const;
+  int Star(char* output, int& capacity, unsigned char consume) const;
+  int Apprentice(char* output, int& capacity, unsigned char consume) const;
   void SetItemId(int value);
   void SetOption(ItemOption option, const int& index);
   void SetCard(const int& card, const int& index);

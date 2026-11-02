@@ -511,11 +511,11 @@ void UIBasicItemCtrl::Slot28(int, int) {
   if (std::atoi(this->m_item.itemId.c_str()) < 1) {
     text = this->m_tooltip;
   } else if (this->m_item.unknown_0000[1] == 0) {
-    text = this->m_naming->DisplayName(this->m_item, 0);
+    text = this->m_item.DisplayName(0);
   } else if (this->m_item.unknown_0098 != 0) {
-    text = FormatOwnedString(LookupMessage(2551), this->m_naming->DisplayName(this->m_item, 0).c_str(), this->m_item.unknown_0098, this->m_item.quantity);
+    text = FormatOwnedString(LookupMessage(2551), this->m_item.DisplayName(0).c_str(), this->m_item.unknown_0098, this->m_item.quantity);
   } else {
-    text = FormatOwnedString(LookupMessage(183), this->m_naming->DisplayName(this->m_item, 0).c_str(), this->m_item.quantity);
+    text = FormatOwnedString(LookupMessage(183), this->m_item.DisplayName(0).c_str(), this->m_item.quantity);
   }
 
   int screenX = 0, screenY = 0;

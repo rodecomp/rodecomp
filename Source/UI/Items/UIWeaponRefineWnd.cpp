@@ -102,11 +102,7 @@ int UIWeaponRefineWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     item.SetItemId(itemId);
     item.unknown_0060 = 0;
     item.identified = 1;
-    ItemDescriptions descriptions{g_itemDescriptions};
-    bool languagePrefix = false;
-    WORD language = g_serverLanguage->language;
-    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
-    this->m_list->AddLine(naming.DisplayName(item, 0).c_str());
+    this->m_list->AddLine(item.DisplayName(0).c_str());
     return 0;
   }
 

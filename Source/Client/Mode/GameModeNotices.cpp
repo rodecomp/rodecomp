@@ -1091,11 +1091,7 @@ void CGameMode::ReceivePartyItemPickup(const unsigned char* data) {
     item.unknown_0060 = packet->refine;
     item.unknown_0088 = packet->grade;
 
-    ItemDescriptions descriptions{g_itemDescriptions};
-    bool languagePrefix = false;
-    WORD language = g_serverLanguage->language;
-    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
-    std::string name = naming.DisplayName(item, 0);
+    std::string name = item.DisplayName(0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(1276), member.name.c_str(), name.c_str()).c_str()), 0xFFFF00, 9, 0, 0);
   }
 }
@@ -1496,54 +1492,49 @@ void CGameMode::ReceiveItemEffectResult(const unsigned char* data) {
   item.identified = 1;
   std::string text;
 
-  ItemDescriptions descriptions{g_itemDescriptions};
-  bool languagePrefix = false;
-  WORD language = g_serverLanguage->language;
-  ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
-
   switch (packet->type) {
   case 0:
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(154, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(431), naming.DisplayName(item, 0).c_str()));
+    text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(431), item.DisplayName(0).c_str()));
     break;
   case 1:
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(155, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(430), naming.DisplayName(item, 0).c_str()));
+    text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(430), item.DisplayName(0).c_str()));
     break;
   case 2:
     if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->state.Attachments().HasId(305)) {
       static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, 109, 0, 305, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(305, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    text = FormatOwnedString(LookupMessage(431), naming.DisplayName(item, 0).c_str()).c_str();
+    text = FormatOwnedString(LookupMessage(431), item.DisplayName(0).c_str()).c_str();
     break;
   case 3:
     if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->state.Attachments().HasId(306)) {
       static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, 109, 0, 306, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(306, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    text = FormatOwnedString(LookupMessage(430), naming.DisplayName(item, 0).c_str()).c_str();
+    text = FormatOwnedString(LookupMessage(430), item.DisplayName(0).c_str()).c_str();
     break;
   case 4:
     if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->state.Attachments().HasId(1015)) {
       static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, 109, 0, 1015, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(1015, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    text = FormatOwnedString(LookupMessage(431), naming.DisplayName(item, 0).c_str()).c_str();
+    text = FormatOwnedString(LookupMessage(431), item.DisplayName(0).c_str()).c_str();
     break;
   case 5:
     if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->state.Attachments().HasId(1016)) {
       static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, 109, 0, 1016, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(1016, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    text = FormatOwnedString(LookupMessage(430), naming.DisplayName(item, 0).c_str()).c_str();
+    text = FormatOwnedString(LookupMessage(430), item.DisplayName(0).c_str()).c_str();
     break;
   case 6: {
     if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->state.Attachments().HasId(1017)) {
       static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, 109, 0, 1017, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(1017, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    text = FormatOwnedString(LookupMessage(430), naming.DisplayName(item, 0).c_str()).c_str();
+    text = FormatOwnedString(LookupMessage(430), item.DisplayName(0).c_str()).c_str();
     UIWindow* window = g_windowMgr.LookupWindow(344);
     if (window) {
       window->SendMsg(nullptr, 6, 415, 0, 0, 0);
@@ -1555,7 +1546,7 @@ void CGameMode::ReceiveItemEffectResult(const unsigned char* data) {
       static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, 109, 0, 1018, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(1018, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    text = FormatOwnedString(LookupMessage(430), naming.DisplayName(item, 0).c_str()).c_str();
+    text = FormatOwnedString(LookupMessage(430), item.DisplayName(0).c_str()).c_str();
     UIWindow* window = g_windowMgr.LookupWindow(344);
     if (window) {
       window->SendMsg(nullptr, 6, 415, 0, 0, 0);
@@ -5200,11 +5191,7 @@ void CGameMode::ReceiveRefineStatus(const char* playerName, int itemId, unsigned
   item.SetItemId(itemId);
   item.identified = 1;
   {
-    ItemDescriptions descriptions{g_itemDescriptions};
-    bool languagePrefix = false;
-    WORD language = g_serverLanguage->language;
-    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
-    itemName = naming.DisplayName(item, 0);
+    itemName = item.DisplayName(0);
   }
 
   std::string text = FormatOwnedString(LookupMessage(!success + 3271), name.c_str(), refine, itemName.c_str());
@@ -5227,11 +5214,7 @@ void CGameMode::ReceiveGradeEnchantBroadcast(const unsigned char* data) {
   item.SetItemId(packet->itemId);
   item.identified = 1;
   {
-    ItemDescriptions descriptions{g_itemDescriptions};
-    bool languagePrefix = false;
-    WORD language = g_serverLanguage->language;
-    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
-    itemName = naming.DisplayName(item, 0);
+    itemName = item.DisplayName(0);
   }
 
   std::string grade;

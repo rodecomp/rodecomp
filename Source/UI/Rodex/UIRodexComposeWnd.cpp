@@ -97,19 +97,14 @@ void UIRodexComposeWnd::sub_7FF710(const ITEM_INFO& item) {
     }
   }
 
-  ItemDescriptions descriptions{g_itemDescriptions};
-  bool languagePrefix = false;
-  WORD language = g_serverLanguage->language;
-  ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
-
-  std::string name = naming.DisplayName(item, 0);
+  std::string name = item.DisplayName(0);
   auto* tagCtrl = static_cast<UIItemTagOnMail*>(this->unknown_0100);
   if (!tagCtrl->CanInsertTag(name, this->m_contents->geometry.width)) {
     return;
   }
 
   tagCtrl->taggedText = this->m_contents->Text();
-  std::string appendResult = tagCtrl->AppendTag(naming.DisplayName(item, 0));
+  std::string appendResult = tagCtrl->AppendTag(item.DisplayName(0));
   this->m_contents->SetText(appendResult.c_str());
   this->m_contents->sub_855150();
   tagCtrl->sub_89CFE0(item, 0xd630a9);
@@ -209,19 +204,15 @@ void UIRodexComposeWnd::Slot28(int x, int y) {
     int tooltipX = this->m_itemIndex * 34 + 30;
     int tooltipY = 290;
     this->ToScreen(tooltipX, tooltipY);
-    ItemDescriptions descriptions{g_itemDescriptions};
-    bool languagePrefix = false;
-    WORD language = g_serverLanguage->language;
-    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
     ModeTooltip* tooltip = reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode);
     if (item.identified == 1 && item.unknown_0098 != 0) {
       std::uint32_t color = g_session.GetItemNameColor(item);
       tooltip->Show(
-        FormatOwnedString(LookupMessage(2600), naming.DisplayName(item, 0).c_str(), item.unknown_0098).c_str(), tooltipX, tooltipY, color, 0, 1
+        FormatOwnedString(LookupMessage(2600), item.DisplayName(0).c_str(), item.unknown_0098).c_str(), tooltipX, tooltipY, color, 0, 1
       );
     } else {
       std::uint32_t color = g_session.GetItemNameColor(item);
-      tooltip->Show(naming.DisplayName(item, 0).c_str(), tooltipX, tooltipY, color, 0, 1);
+      tooltip->Show(item.DisplayName(0).c_str(), tooltipX, tooltipY, color, 0, 1);
     }
   }
 }

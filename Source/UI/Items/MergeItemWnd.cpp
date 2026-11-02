@@ -197,11 +197,7 @@ void CMergeItemWnd::Slot28(int x, int y) {
   ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, id);
   if (item.unknown_0000[1] != 0) {
     this->ToScreen(screenX, screenY);
-    ItemDescriptions descriptions{g_itemDescriptions};
-    bool languagePrefix = false;
-    WORD language = g_serverLanguage->language;
-    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
-    std::string text = FormatOwnedString(LookupMessage(183), naming.DisplayName(item, 0).c_str(), item.quantity);
+    std::string text = FormatOwnedString(LookupMessage(183), item.DisplayName(0).c_str(), item.quantity);
     reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(text.c_str(), screenX, screenY, g_session.GetItemNameColor(item), 0, 1);
   }
 }

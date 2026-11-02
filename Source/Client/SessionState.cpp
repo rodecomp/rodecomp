@@ -258,11 +258,7 @@ void CSession::UnequipItem61B8(const ITEM_INFO& item) {
     ITEM_INFO equipped = g_session.FindItemByIdentity(item.unknown_0000[1], location);
     if (equipped.unknown_0000[1] != 0) {
       const char* message = LookupMessage(0xAB);
-      ItemDescriptions descriptions{g_itemDescriptions};
-      bool languagePrefix = false;
-      WORD language = g_serverLanguage->language;
-      ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
-      const std::string name = naming.DisplayName(equipped, 0);
+      const std::string name = equipped.DisplayName(0);
       const std::string text = FormatOwnedString("%s%s", name.c_str(), message);
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFF, 7, 0, 0);
     }

@@ -370,7 +370,7 @@ inline void ShortcutUse::Use(const NormalItemSlot& slot) {
   case 0:
   case 1:
   case 2:
-    if (item.GetItemId() != 12802 || this->dialogs.Confirm(this->naming.Message(2373), 2, 0, 0, "Message", 280, 120) != 188) {
+    if (item.GetItemId() != 12802 || this->dialogs.Confirm(LookupMessage(2373), 2, 0, 0, "Message", 280, 120) != 188) {
       use();
     }
 
@@ -388,10 +388,10 @@ inline void ShortcutUse::Use(const NormalItemSlot& slot) {
 
   case 18:
     if (this->itemConfirmationState >= 0) {
-      const std::string name = this->naming.DisplayName(item, 0);
+      const std::string name = item.DisplayName(0);
       char text[4096];
 
-      _snprintf_s(text, sizeof(text), _TRUNCATE, this->naming.Message(1226), name.c_str());
+      _snprintf_s(text, sizeof(text), _TRUNCATE, LookupMessage(1226), name.c_str());
 
       if (this->dialogs.Confirm(text, 2, 0, 0, "Message", 280, 120) == 187) {
         use();

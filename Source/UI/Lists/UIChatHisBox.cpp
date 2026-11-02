@@ -21,11 +21,7 @@
 std::string UIChatHisBox::ResolvePlayerTags(const char* name) {
   std::string result = "";
 
-  ItemDescriptions descriptions{g_itemDescriptions};
-  bool languagePrefix = false;
-  WORD language = g_serverLanguage->language;
-  ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
-  ItemLinkDisplay display{*this->geometry.surface, g_fontCache, this->m_context->locale, naming, this->geometry.width};
+  ItemLinkDisplay display{*this->geometry.surface, g_fontCache, this->m_context->locale, this->geometry.width};
 
   for (std::vector<UIItemTagButton*>& row : this->ItemTags()) {
     const int count = static_cast<int>(row.size());
@@ -38,7 +34,7 @@ std::string UIChatHisBox::ResolvePlayerTags(const char* name) {
       const std::string label = tag->label;
 
       if (label.find(LookupMessage(581)) == std::string::npos) {
-        const std::string bracket = display.BracketName(naming.DisplayName(reinterpret_cast<const ITEM_INFO&>(tag->unknown_00F8), 0));
+        const std::string bracket = display.BracketName(reinterpret_cast<const ITEM_INFO&>(tag->unknown_00F8).DisplayName(0));
         const std::string tail = result.substr(position);
         const std::size_t found = tail.find(bracket);
         const std::string head = result.substr(0, position + found);
@@ -58,7 +54,7 @@ std::string UIChatHisBox::ResolvePlayerTags(const char* name) {
           position += start + std::strlen(opening.c_str()) + 1;
           tag->column = this->TextWidth(head.c_str(), 0, 0, 12, 0, 0) - this->horizontalOffset;
 
-          const std::string bracket = display.BracketName(naming.DisplayName(reinterpret_cast<const ITEM_INFO&>(tag->unknown_00F8), 0));
+          const std::string bracket = display.BracketName(reinterpret_cast<const ITEM_INFO&>(tag->unknown_00F8).DisplayName(0));
           tag->SetTooltip(bracket.c_str());
           const std::string text = bracket.c_str();
           tag->label = text;

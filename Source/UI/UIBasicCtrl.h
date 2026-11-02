@@ -6,13 +6,12 @@
 
 #include <string>
 
-struct ItemNaming;
 struct ClientSkills;
 #include "UI/Window/WindowManagerWindows.h"
 
 class UIBasicItemCtrl : public UIWindow {
 public:
-  UIBasicItemCtrl(UIWindowContext& windows, ItemNaming& naming, WindowManagerWindows& windowList);
+  UIBasicItemCtrl(UIWindowContext& windows, WindowManagerWindows& windowList);
   void Slot10(int argument1, int argument2, std::intptr_t argument3) override;
   void Paint() override;
   void Slot26(int x, int y) override;
@@ -26,7 +25,7 @@ protected:
   /* 0084 */ unsigned char m_identified;
   /* 0088 */ std::string m_tooltip;
   /* 00A0 */ ITEM_INFO m_item;
-  ItemNaming* m_naming;
+  void* unknown_naming;
   void* unknown_controls;
   WindowManagerWindows* m_windows;
 };

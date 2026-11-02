@@ -153,9 +153,8 @@ void UITextViewer::AppendText(char* text, int width, bool carriageReturns, bool 
     const int scrollWidth = carriageReturns ? this->verticalBar->geometry.width + 2 : 0;
     this->WrapPixelText(display.c_str(), wrapped, this->geometry.width - scrollWidth - 4);
   } else {
-    WrapRichText(
-      display.c_str(), wrapped, width == 0 ? 35 : width, carriageReturns, this->m_text->items.descriptions
-    );
+    ItemDescriptions descriptions{g_itemDescriptions};
+    WrapRichText(display.c_str(), wrapped, width == 0 ? 35 : width, carriageReturns, descriptions);
   }
 
   for (const auto& line : wrapped) {

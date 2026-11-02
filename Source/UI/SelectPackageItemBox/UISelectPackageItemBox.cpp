@@ -738,11 +738,7 @@ void CUISelectPackageItemBox::BindItem(SelectPackageItemBox::CUIItemInfo* item, 
 
   item->image->SetImage(image);
   item->gameItem->SetItem(data);
-  ItemDescriptions descriptions{g_itemDescriptions};
-  bool languagePrefix = false;
-  WORD language = g_serverLanguage->language;
-  ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
-  const std::string name = naming.DisplayName(data, 0);
+  const std::string name = data.DisplayName(0);
   item->nameText->SetText(name.c_str(), name.size());
 }
 

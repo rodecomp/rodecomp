@@ -1,5 +1,6 @@
 #include "Client/Session.h"
 #include "Contents/Hotkeys/HotkeyInfo.h"
+#include "Contents/MessageTable.h"
 #include "UI/Shortcuts/ShortcutTooltip.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Window/UIWindow.h"
@@ -51,9 +52,9 @@ void ShortcutTooltip::Hover(UIWindow& window, ShortcutGrid& grid, int x, int y, 
       return;
     }
 
-    const std::string name = this->naming.DisplayName(item, 0);
+    const std::string name = item.DisplayName(0);
     char text[4096];
-    _snprintf_s(text, sizeof(text), _TRUNCATE, this->naming.Message(183), name.c_str(), item.unknown_0000[1]);
+    _snprintf_s(text, sizeof(text), _TRUNCATE, LookupMessage(183), name.c_str(), item.unknown_0000[1]);
     ToScreen(window, tooltipX, tooltipY);
 
     if (this->services) {
@@ -101,9 +102,9 @@ void ShortcutTooltip::Hover(UIWindow& window, ShortcutGrid& grid, int x, int y, 
     if (item.unknown_0000[1] == 0) {
       text = shortcut;
     } else {
-      const std::string name = this->naming.DisplayName(item, 0);
+      const std::string name = item.DisplayName(0);
       char formatted[4096];
-      _snprintf_s(formatted, sizeof(formatted), _TRUNCATE, this->naming.Message(184), shortcut.c_str(), name.c_str(), item.unknown_0000[1]);
+      _snprintf_s(formatted, sizeof(formatted), _TRUNCATE, LookupMessage(184), shortcut.c_str(), name.c_str(), item.unknown_0000[1]);
       text = formatted;
     }
   }

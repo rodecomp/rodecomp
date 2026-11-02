@@ -439,20 +439,16 @@ void UISwapEquipmentWnd::Slot28(int x, int y) {
       this->ToScreen(tooltipX, tooltipY);
 
       std::string text;
-      ItemDescriptions descriptions{g_itemDescriptions};
-      bool languagePrefix = false;
-      WORD language = g_serverLanguage->language;
-      ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
       if (item.quantity > 1) {
         if (item.unknown_0098 != 0) {
-          text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(0x9F7), naming.DisplayName(item, 0)));
+          text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(0x9F7), item.DisplayName(0)));
         } else {
-          text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(0xB7), naming.DisplayName(item, 0).c_str(), item.quantity));
+          text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(0xB7), item.DisplayName(0).c_str(), item.quantity));
         }
       } else if (item.unknown_0098 != 0) {
-        text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(0xA28), naming.DisplayName(item, 0).c_str(), item.unknown_0098));
+        text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(0xA28), item.DisplayName(0).c_str(), item.unknown_0098));
       } else {
-        text = naming.DisplayName(item, 0);
+        text = item.DisplayName(0);
       }
 
       reinterpret_cast<ModeTooltip*>(g_modeMgr.GetGameMode())->Show(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);

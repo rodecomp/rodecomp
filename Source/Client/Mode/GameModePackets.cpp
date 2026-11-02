@@ -1135,12 +1135,8 @@ void CGameMode::ReceiveRandomUpgradeSimulation(const unsigned char* packet) {
     result.SetItemId(record->resultItemId);
     result.identified = 1;
     result.unknown_0000[0] = 0x15;
-    ItemDescriptions descriptions{g_itemDescriptions};
-    bool languagePrefix = false;
-    WORD language = g_serverLanguage->language;
-    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
-    std::fprintf(file, "\t\t%s\t%s\t%d\t\t%.5f%%\n", ToUtf8(naming.DisplayName(item, 0), g_textCodePage).c_str(),
-                 ToUtf8(naming.DisplayName(result, 0), g_textCodePage).c_str(), record->count, static_cast<float>(record->rate) / 1000.0f);
+    std::fprintf(file, "\t\t%s\t%s\t%d\t\t%.5f%%\n", ToUtf8(item.DisplayName(0), g_textCodePage).c_str(),
+                 ToUtf8(result.DisplayName(0), g_textCodePage).c_str(), record->count, static_cast<float>(record->rate) / 1000.0f);
     total += record->count;
     ++record;
   }
@@ -1174,11 +1170,7 @@ void CGameMode::ReceiveEnchantSimulation(const unsigned char* packet) {
     item.SetItemId(record->itemId);
     item.identified = 1;
     item.unknown_0000[0] = 6;
-    ItemDescriptions descriptions{g_itemDescriptions};
-    bool languagePrefix = false;
-    WORD language = g_serverLanguage->language;
-    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
-    std::fprintf(file, "\t\t%s\t%d\t%.5f%%\n", ToUtf8(naming.DisplayName(item, 0), g_textCodePage).c_str(), record->count,
+    std::fprintf(file, "\t\t%s\t%d\t%.5f%%\n", ToUtf8(item.DisplayName(0), g_textCodePage).c_str(), record->count,
                  static_cast<float>(record->rate) / 1000.0f);
     total += record->count;
     ++record;
@@ -1230,11 +1222,7 @@ void CGameMode::ReceivePackageSimulation(const unsigned char* packet) {
       if (package->refine != 0 || package->unknown_0006 != 0) {
         item.unknown_0000[0] = 0x15;
       }
-      ItemDescriptions descriptions{g_itemDescriptions};
-      bool languagePrefix = false;
-      WORD language = g_serverLanguage->language;
-      ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
-      std::fprintf(file, "\t%-24s\t\t\t\t\t\t\t%d\t(%d)\t%d/%d\t%s\n", ToUtf8(naming.DisplayName(item, 0), g_textCodePage).c_str(), package->count,
+      std::fprintf(file, "\t%-24s\t\t\t\t\t\t\t%d\t(%d)\t%d/%d\t%s\n", ToUtf8(item.DisplayName(0), g_textCodePage).c_str(), package->count,
                    package->unknown_000A, package->unknown_0026, package->unknown_002A, ToUtf8(std::string(package->text), g_textCodePage).c_str());
       unpacked += package->count;
     }
@@ -1911,12 +1899,8 @@ void __stdcall sub_D08110(int field8, int itemIdWord, int quantityWord, int fiel
   window->SendMsg(nullptr, 0x17, reinterpret_cast<std::intptr_t>(&item), field18, field8, 0);
   reinterpret_cast<ClientItemLists*>(&g_session)->RemoveItem1758(item);
   g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-  ItemDescriptions descriptions{g_itemDescriptions};
-  bool languagePrefix = false;
-  WORD language = g_serverLanguage->language;
-  ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
   g_windowMgr.SendNotice(
-    1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0xE7), naming.DisplayName(item, 0).c_str(), quantity).c_str()), 0xFFFF64, 0, 0, 0
+    1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0xE7), item.DisplayName(0).c_str(), quantity).c_str()), 0xFFFF64, 0, 0, 0
   );
   if (g_vendingOpenWindow != nullptr) {
     g_vendingOpenWindow->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
@@ -6912,13 +6896,9 @@ void CGameMode::ReceiveItemSellResult(const unsigned char* packet) {
   const int count = *reinterpret_cast<const std::int16_t*>(packet + 4);
   const int price = *reinterpret_cast<const int*>(packet + 6);
   ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *reinterpret_cast<const std::int16_t*>(packet + 2));
-  ItemDescriptions descriptions{g_itemDescriptions};
-  bool languagePrefix = false;
-  WORD language = g_serverLanguage->language;
-  ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
   g_windowMgr.SendNotice(
     1,
-    reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(1746), naming.DisplayName(item, 0).c_str(), count, price * count).c_str()),
+    reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(1746), item.DisplayName(0).c_str(), count, price * count).c_str()),
     0xFFFF64, 0, 0, 0
   );
   reinterpret_cast<ClientItemLists*>(&g_session)->RemoveItem1710(
@@ -7069,29 +7049,25 @@ void CGameMode::ReceiveItemObtainNotice(const unsigned char* packet) {
   item.SetItemId(*reinterpret_cast<const int*>(packet + 6));
   item.unknown_0060 = 0;
   item.identified = 1;
-  ItemDescriptions descriptions{g_itemDescriptions};
-  bool languagePrefix = false;
-  WORD language = g_serverLanguage->language;
-  ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
   switch (*reinterpret_cast<const int*>(packet + 2)) {
   case 0:
     g_windowMgr.SendNotice(
-      1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(911), naming.DisplayName(item, 0).c_str()).c_str()), 0xFFFF00, 0, 0, 0
+      1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(911), item.DisplayName(0).c_str()).c_str()), 0xFFFF00, 0, 0, 0
     );
     break;
   case 1:
     g_windowMgr.SendNotice(
-      1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(912), naming.DisplayName(item, 0).c_str()).c_str()), 0xCDCD00, 0, 0, 0
+      1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(912), item.DisplayName(0).c_str()).c_str()), 0xCDCD00, 0, 0, 0
     );
     break;
   case 2:
     g_windowMgr.SendNotice(
-      1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(913), naming.DisplayName(item, 0).c_str()).c_str()), 0xC8C8FF, 0, 0, 0
+      1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(913), item.DisplayName(0).c_str()).c_str()), 0xC8C8FF, 0, 0, 0
     );
     break;
   case 3:
     g_windowMgr.SendNotice(
-      1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(914), naming.DisplayName(item, 0).c_str()).c_str()), 0xC8C8FF, 0, 0, 0
+      1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(914), item.DisplayName(0).c_str()).c_str()), 0xC8C8FF, 0, 0, 0
     );
     break;
   }
@@ -7109,13 +7085,9 @@ void CGameMode::ReceiveTakeOffEquipItemResult(const unsigned char* packet) {
     } else {
       g_session.UnequipItem61B8(item);
     }
-    ItemDescriptions descriptions{g_itemDescriptions};
-    bool languagePrefix = false;
-    WORD language = g_serverLanguage->language;
-    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
     const char* suffix = LookupMessage(3144);
     g_windowMgr.SendNotice(
-      1, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s%s", naming.DisplayName(item, 0).c_str(), suffix).c_str()), 0xC8FF00, 7, 0, 0
+      1, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s%s", item.DisplayName(0).c_str(), suffix).c_str()), 0xC8FF00, 7, 0, 0
     );
     break;
   }
@@ -7141,12 +7113,8 @@ void CGameMode::ReceiveBuyingStoreSellResult(const unsigned char* packet) {
   case 6: {
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, *reinterpret_cast<const int*>(packet + 4), 0);
-    ItemDescriptions descriptions{g_itemDescriptions};
-    bool languagePrefix = false;
-    WORD language = g_serverLanguage->language;
-    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
     g_windowMgr.SendNotice(
-      1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(1747), naming.DisplayName(item, 0).c_str()).c_str()), 0xFF, 0, 0, 0
+      1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(1747), item.DisplayName(0).c_str()).c_str()), 0xFF, 0, 0, 0
     );
     break;
   }
@@ -7266,12 +7234,8 @@ void CGameMode::ReceivePartyItemPickupNotice(const unsigned char* packet) {
     item.unknown_005D = packet[0x0B];
     item.unknown_0060 = packet[0x0C];
 
-    ItemDescriptions descriptions{g_itemDescriptions};
-    bool languagePrefix = false;
-    WORD language = g_serverLanguage->language;
-    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
     g_windowMgr.SendNotice(
-      1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(1276), member.name.c_str(), naming.DisplayName(item, 0).c_str()).c_str()),
+      1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(1276), member.name.c_str(), item.DisplayName(0).c_str()).c_str()),
       0xFFFF00, 9, 0, 0
     );
   }
@@ -9439,11 +9403,7 @@ void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
   case 71: {
     ITEM_INFO item;
     item.SetItemId(packet->itemId);
-    ItemDescriptions descriptions{g_itemDescriptions};
-    bool languagePrefix = false;
-    WORD language = g_serverLanguage->language;
-    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
-    const std::string message = FormatOwnedString(LookupMessage(0x600), naming.DisplayName(item, 0).c_str(), packet->value);
+    const std::string message = FormatOwnedString(LookupMessage(0x600), item.DisplayName(0).c_str(), packet->value);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFF, 0xB, 0, 0);
     return;
   }
@@ -9451,11 +9411,7 @@ void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
     ITEM_INFO item;
     item.SetItemId(packet->itemId);
     item.identified = 1;
-    ItemDescriptions descriptions{g_itemDescriptions};
-    bool languagePrefix = false;
-    WORD language = g_serverLanguage->language;
-    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
-    const std::string message = FormatOwnedString(LookupMessage(0x602), naming.DisplayName(item, 0).c_str());
+    const std::string message = FormatOwnedString(LookupMessage(0x602), item.DisplayName(0).c_str());
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFF, 0xB, 0, 0);
     return;
   }
@@ -11775,13 +11731,9 @@ void CGameMode::ReceiveEquipItemResult(const unsigned char* packet) {
     g_session.EquipItem61B8(item);
   }
 
-  ItemDescriptions descriptions{g_itemDescriptions};
-  bool languagePrefix = false;
-  WORD language = g_serverLanguage->language;
-  ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
   const char* suffix = LookupMessage(3143);
   g_windowMgr.SendNotice(
-    1, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s%s", naming.DisplayName(item, 0).c_str(), suffix).c_str()), 0xC8FF00, 7, 0, 0
+    1, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s%s", item.DisplayName(0).c_str(), suffix).c_str()), 0xC8FF00, 7, 0, 0
   );
 }
 

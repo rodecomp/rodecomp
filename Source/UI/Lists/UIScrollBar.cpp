@@ -1821,10 +1821,7 @@ std::string UIChatHisBox::RenderItemLinks(const char* lineText, std::string& sou
   unsigned position = 0;
   unsigned previous = 0;
   ItemDescriptions descriptions{g_itemDescriptions};
-  const bool languagePrefix = false;
-  const WORD language = g_serverLanguage->language;
-  ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
-  ItemLinkDisplay display{*this->geometry.surface, g_fontCache, this->m_context->locale, naming, this->geometry.width};
+  ItemLinkDisplay display{*this->geometry.surface, g_fontCache, this->m_context->locale, this->geometry.width};
 
   for (;;) {
     std::string encoded;
@@ -1862,7 +1859,7 @@ std::string UIChatHisBox::RenderItemLinks(const char* lineText, std::string& sou
       DecodeItemLinkFields(encoded, fields);
       ITEM_INFO item;
       if (ItemFromLinkFields(fields, item, descriptions)) {
-        const std::string label = display.BracketName(naming.DisplayName(item, 0));
+        const std::string label = display.BracketName(item.DisplayName(0));
         if (result.size() + label.size() > std::strlen(lineText)) {
           previous += static_cast<unsigned>(prefix.size());
           break;
@@ -1872,7 +1869,7 @@ std::string UIChatHisBox::RenderItemLinks(const char* lineText, std::string& sou
         if (button) {
           std::memcpy(button->unknown_00F8, &item, sizeof(item));
           button->Configure(label.c_str(), 0x82F2E1, 0, 12, 0, 0);
-          button->SetTooltip(naming.DisplayName(item, 0).c_str());
+          button->SetTooltip(item.DisplayName(0).c_str());
           button->m_hoverColor = 0x82F2E1;
           button->SetId(0x1D0);
           button->ResizeToTextClipped(
@@ -2072,11 +2069,7 @@ void UIChatHisBox::sub_89DC30(const char* text, int& color, int& mode) {
   }
 
   std::vector<std::string> wrapped;
-  ItemDescriptions descriptions{g_itemDescriptions};
-  bool languagePrefix = false;
-  WORD language = g_serverLanguage->language;
-  ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
-  ItemLinkDisplay display{*this->geometry.surface, g_fontCache, this->m_context->locale, naming, this->geometry.width};
+  ItemLinkDisplay display{*this->geometry.surface, g_fontCache, this->m_context->locale, this->geometry.width};
   const std::string converted = display.Convert(text);
   this->sub_8932D0(&mode, &wrapped, converted);
   this->RewrapLinkLines(wrapped, mode);

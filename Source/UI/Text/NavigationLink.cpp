@@ -1673,11 +1673,7 @@ void UIItemImage::Slot28(int, int) {
   if (g_charViewMode) {
     ModeTooltip* tooltip = reinterpret_cast<ModeTooltip*>(g_charViewMode);
     const std::uint32_t color = g_session.GetItemNameColor(item);
-    ItemDescriptions descriptions{g_itemDescriptions};
-    bool languagePrefix = false;
-    WORD language = g_serverLanguage->language;
-    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
-    tooltip->Show(naming.DisplayName(item, 0).c_str(), x, y, color, 0, 1);
+    tooltip->Show(item.DisplayName(0).c_str(), x, y, color, 0, 1);
   }
 }
 

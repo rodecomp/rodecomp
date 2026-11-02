@@ -8,7 +8,6 @@
 #include <string>
 #include <windows.h>
 
-class CPlayerNameDictionary;
 struct ITEM_INFO;
 
 struct ItemCardName {
@@ -27,30 +26,6 @@ struct ItemMoveInfo {
   /* 0009 */ bool mail;
   /* 000A */ bool auction;
   /* 000B */ bool guildStorage;
-};
-
-struct ItemNaming {
-  ItemDescriptions& descriptions;
-  const std::map<int, ItemCardName>& cards;
-  CPlayerNameDictionary& players;
-  const bool& languagePrefix;
-  const int& service;
-  const WORD& language;
-
-  std::string DisplayName(const ITEM_INFO& item, unsigned char detailed);
-  bool HasCards(const ITEM_INFO& item) const;
-  int Grade(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) const;
-  int Creator(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume);
-  int Prefixes(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) const;
-  int Suffixes(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) const;
-  int Slots(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume);
-  const char* Message(int id) const;
-};
-
-struct ItemNamingContext : public ItemNaming {
-  int Element(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) const;
-  int Star(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) const;
-  int Apprentice(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) const;
 };
 
 extern std::map<int, ItemCardName> g_itemCardNames;

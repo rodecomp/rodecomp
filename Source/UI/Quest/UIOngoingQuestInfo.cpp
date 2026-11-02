@@ -289,11 +289,7 @@ void CUIRewards::OnBindItem(CUIRewardItem* item, const CRewardItemData& data) {
   info.identified = 1;
   item->gameItem->SetItem(info);
 
-  ItemDescriptions descriptions{g_itemDescriptions};
-  bool languagePrefix = false;
-  WORD language = g_serverLanguage->language;
-  ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
-  std::string name = naming.DisplayName(info, 0);
+  std::string name = info.DisplayName(0);
   item->nameText->SetText(name.c_str(), name.size());
   std::string count = FormatOwnedString(LookupMessage(0xB6), data.count);
   item->countText->SetText(count.c_str(), count.size());

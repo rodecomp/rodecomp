@@ -605,10 +605,7 @@ void UIChangeMaterialWnd_List::Paint() {
 
     UIWindowContext& context = *this->m_context;
     ItemDescriptions descriptions{g_itemDescriptions};
-    bool languagePrefix = false;
-    WORD language = g_serverLanguage->language;
-    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
-    std::string name = naming.DisplayName(item, 0);
+    std::string name = item.DisplayName(0);
     if (this->TextWidth(name.c_str(), 0, 0, 12, 0, 0) > 100) {
       name = this->FitDisplayText(100, name.c_str(), 0, 12, 0);
     }

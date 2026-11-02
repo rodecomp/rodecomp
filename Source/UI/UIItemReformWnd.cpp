@@ -152,15 +152,11 @@ void UIItemReformWnd_List::Slot15(int width, int height) {
 void UIItemReformWnd::Paint() {
   this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\ItemReform\\bg_reform.bmp")))->image, true);
   UIWindowContext& context = *this->m_context;
-  ItemDescriptions descriptions{g_itemDescriptions};
-  bool languagePrefix = false;
-  WORD language = g_serverLanguage->language;
-  ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
   if (std::atoi(this->reformItem.itemId.c_str()) > 0) {
-    this->DrawTitleBar(false, naming.DisplayName(this->reformItem, 0).c_str(), 0);
+    this->DrawTitleBar(false, this->reformItem.DisplayName(0).c_str(), 0);
   }
   if (std::atoi(this->resultItem.itemId.c_str()) != 0) {
-    this->DrawCenteredText(6, 104, this->FitDisplayText(200, naming.DisplayName(this->resultItem, 0).c_str(), 0, 14, 1).c_str(), 209, 0, 14, 0, 1);
+    this->DrawCenteredText(6, 104, this->FitDisplayText(200, this->resultItem.DisplayName(0).c_str(), 0, 14, 1).c_str(), 209, 0, 14, 0, 1);
   }
   for (unsigned int index = 0; index < this->materials.size(); ++index) {
     const unsigned int half = this->TextWidth("/", 0, 0, 12, 0, 0) * 0.5;
@@ -227,10 +223,7 @@ void UIItemReformWnd_List::Paint() {
       const ITEM_INFO& item = this->items[this->scrollPosition + row];
       ItemDescriptions descriptions{g_itemDescriptions};
       DrawItemIcon(*this, ResourceMgr::Instance(), descriptions, 15, this->itemHeight * row + 4, item, 1);
-      bool languagePrefix = false;
-      WORD language = g_serverLanguage->language;
-      ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
-      this->DrawTextAt(42, this->itemHeight * row + 10, this->FitDisplayText(160, naming.DisplayName(item, 0).c_str(), 0, 12, 0).c_str(), 0, 0,
+      this->DrawTextAt(42, this->itemHeight * row + 10, this->FitDisplayText(160, item.DisplayName(0).c_str(), 0, 12, 0).c_str(), 0, 0,
         12, 0, 0, 0
       );
     }
@@ -268,11 +261,7 @@ void UIItemReformWnd_Item::Slot28(int x, int y) {
     this->ToScreen(screenX, screenY);
     const int tipX = screenX + 5;
     const int tipY = screenY - 5;
-    ItemDescriptions descriptions{g_itemDescriptions};
-    bool languagePrefix = false;
-    WORD language = g_serverLanguage->language;
-    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
-    reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(naming.DisplayName(*this->item, 0).c_str(), tipX, tipY, 0xFFFFFFFFu, 0, 1);
+    reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(this->item->DisplayName(0).c_str(), tipX, tipY, 0xFFFFFFFFu, 0, 1);
   }
 }
 

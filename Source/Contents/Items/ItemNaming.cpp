@@ -1,6 +1,7 @@
 #include "Client/Replay.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Items/ItemNaming.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
 #include "Utility/Text/FormatString.h"
 #include "Contents/MessageTable.h"
 #include "Contents/PlayerNameDictionary.h"
@@ -54,30 +55,25 @@ namespace {
   }
 }
 
-// INLINED
-const char* ItemNaming::Message(int id) const {
-  return LookupMessage(id);
-}
-
 // OFFSET: 0x006D77E0
 // FUNCTION: fn_06595
-bool ItemNaming::HasCards(const ITEM_INFO& item) const {
+bool ITEM_INFO::HasCards() const {
   int ids[4];
-  CardIds(item, ids);
-  const bool first = this->cards.contains(ids[0]);
-  const unsigned id = static_cast<unsigned>(std::atoi(item.itemId.c_str()));
+  CardIds(*this, ids);
+  const bool first = g_itemCardNames.contains(ids[0]);
+  const unsigned id = static_cast<unsigned>(std::atoi(this->itemId.c_str()));
 
-  if (id - 9001u <= 498 || id - 10000u <= 999 || ids[0] == 254 || ids[0] == 255 || !Equipment(item)) {
+  if (id - 9001u <= 498 || id - 10000u <= 999 || ids[0] == 254 || ids[0] == 255 || !Equipment(*this)) {
     return first;
   }
 
-  return first || this->cards.contains(ids[1]) || this->cards.contains(ids[2]) || this->cards.contains(ids[3]);
+  return first || g_itemCardNames.contains(ids[1]) || g_itemCardNames.contains(ids[2]) || g_itemCardNames.contains(ids[3]);
 }
 
 // OFFSET: 0x006D5780
 // FUNCTION: fn_06577
-int ItemNaming::Grade(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) const {
-  const char grade[2] = {item.unknown_0088 >= 1 && item.unknown_0088 <= 4 ? "DCBA"[item.unknown_0088 - 1] : '\0', '\0'};
+int ITEM_INFO::Grade(char* output, int& capacity, unsigned char consume) const {
+  const char grade[2] = {this->unknown_0088 >= 1 && this->unknown_0088 <= 4 ? "DCBA"[this->unknown_0088 - 1] : '\0', '\0'};
   const int bytes = _snprintf_s(output, capacity, _TRUNCATE, "[%s] ", grade);
   if (bytes <= 0) {
     return 0;
@@ -92,13 +88,13 @@ int ItemNaming::Grade(const ITEM_INFO& item, char* output, int& capacity, unsign
 
 // OFFSET: 0x006D6C10
 // FUNCTION: fn_06585
-int ItemNaming::Creator(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) {
+int ITEM_INFO::Creator(char* output, int& capacity, unsigned char consume) const {
   int ids[4];
-  CardIds(item, ids);
-  std::string name = this->players.Lookup(static_cast<unsigned>(ids[2]) + (static_cast<unsigned>(ids[3]) << 16));
+  CardIds(*this, ids);
+  std::string name = g_playerNameDictionary->Lookup(static_cast<unsigned>(ids[2]) + (static_cast<unsigned>(ids[3]) << 16));
 
   if (name.empty()) {
-    name = this->Message(581);
+    name = LookupMessage(581);
   }
 
   const int bytes = Copy(output, capacity, name.c_str());
@@ -111,9 +107,9 @@ int ItemNaming::Creator(const ITEM_INFO& item, char* output, int& capacity, unsi
 
 // OFFSET: 0x006D6F50
 // FUNCTION: fn_06588
-int ItemNaming::Prefixes(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) const {
+int ITEM_INFO::Prefixes(char* output, int& capacity, unsigned char consume) const {
   int ids[4];
-  CardIds(item, ids);
+  CardIds(*this, ids);
   int remaining = capacity;
   char* cursor = output;
 
@@ -122,8 +118,8 @@ int ItemNaming::Prefixes(const ITEM_INFO& item, char* output, int& capacity, uns
       continue;
     }
 
-    const auto card = this->cards.find(ids[index]);
-    if (card == this->cards.end() || !card->second.prefix || !*card->second.prefix) {
+    const auto card = g_itemCardNames.find(ids[index]);
+    if (card == g_itemCardNames.end() || !card->second.prefix || !*card->second.prefix) {
       continue;
     }
 
@@ -137,7 +133,7 @@ int ItemNaming::Prefixes(const ITEM_INFO& item, char* output, int& capacity, uns
     }
 
     if (count >= 2) {
-      const int bytes = _snprintf_s(cursor, remaining, _TRUNCATE, "%s ", this->Message(444 + count));
+      const int bytes = _snprintf_s(cursor, remaining, _TRUNCATE, "%s ", LookupMessage(444 + count));
       if (bytes > 0) {
         cursor += bytes;
         remaining -= bytes;
@@ -161,9 +157,9 @@ int ItemNaming::Prefixes(const ITEM_INFO& item, char* output, int& capacity, uns
 
 // OFFSET: 0x006D6DB0
 // FUNCTION: fn_06587
-int ItemNaming::Suffixes(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) const {
+int ITEM_INFO::Suffixes(char* output, int& capacity, unsigned char consume) const {
   int ids[4];
-  CardIds(item, ids);
+  CardIds(*this, ids);
   int remaining = capacity;
   char* cursor = output;
 
@@ -172,8 +168,8 @@ int ItemNaming::Suffixes(const ITEM_INFO& item, char* output, int& capacity, uns
       continue;
     }
 
-    const auto card = this->cards.find(ids[index]);
-    if (card == this->cards.end() || !card->second.suffix || !*card->second.suffix) {
+    const auto card = g_itemCardNames.find(ids[index]);
+    if (card == g_itemCardNames.end() || !card->second.suffix || !*card->second.suffix) {
       continue;
     }
 
@@ -193,7 +189,7 @@ int ItemNaming::Suffixes(const ITEM_INFO& item, char* output, int& capacity, uns
     }
 
     if (count >= 2) {
-      bytes = _snprintf_s(cursor, remaining, _TRUNCATE, " %s", this->Message(444 + count));
+      bytes = _snprintf_s(cursor, remaining, _TRUNCATE, " %s", LookupMessage(444 + count));
       if (bytes > 0) {
         cursor += bytes;
         remaining -= bytes;
@@ -211,8 +207,8 @@ int ItemNaming::Suffixes(const ITEM_INFO& item, char* output, int& capacity, uns
 
 // OFFSET: 0x006D76E0
 // FUNCTION: fn_06593
-int ItemNaming::Slots(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) {
-  const int slots = this->descriptions.Find(std::atoi(item.itemId.c_str())).slots;
+int ITEM_INFO::Slots(char* output, int& capacity, unsigned char consume) const {
+  const int slots = ItemDescriptions{g_itemDescriptions}.Find(std::atoi(this->itemId.c_str())).slots;
   if (slots == 0) {
     return 0;
   }
@@ -231,7 +227,7 @@ int ItemNaming::Slots(const ITEM_INFO& item, char* output, int& capacity, unsign
 
 // OFFSET: 0x006D59A0
 // FUNCTION: fn_06581
-std::string ItemNaming::DisplayName(const ITEM_INFO& item, unsigned char detailed) {
+std::string ITEM_INFO::DisplayName(unsigned char detailed) const {
   char text[128] = {};
   int capacity = 128;
   std::string result;
@@ -241,35 +237,35 @@ std::string ItemNaming::DisplayName(const ITEM_INFO& item, unsigned char detaile
       result += text;
     }
   };
-  const int id = std::atoi(item.itemId.c_str());
-  ITEM_DESC& descriptor = this->descriptions.Find(id);
+  const int id = std::atoi(this->itemId.c_str());
+  ITEM_DESC& descriptor = ItemDescriptions{g_itemDescriptions}.Find(id);
 
-  if (item.identified != 1) {
+  if (this->identified != 1) {
     append(Copy(text, capacity, descriptor.unidentifiedName));
     return result;
   }
 
   int cards[4];
-  CardIds(item, cards);
+  CardIds(*this, cards);
   if ((static_cast<unsigned>(id) - 9001u <= 498 || static_cast<unsigned>(id) - 10000u <= 999) && cards[3] == 1) {
-    append(Copy(text, capacity, this->Message(756)));
+    append(Copy(text, capacity, LookupMessage(756)));
     append(Copy(text, capacity, descriptor.identifiedName));
     return result;
   }
 
   const auto refine = [&]() {
-    const int value = item.unknown_0060;
+    const int value = this->unknown_0060;
     if (value > 0) {
       append(_snprintf_s(text, sizeof(text), _TRUNCATE, "+%d ", value));
     }
 
-    if (item.unknown_0088 > 0) {
-      append(this->Grade(item, text, capacity, 0));
+    if (this->unknown_0088 > 0) {
+      append(this->Grade(text, capacity, 0));
     }
   };
   const auto name = [&]() { append(Copy(text, capacity, descriptor.identifiedName)); };
   const auto element = [&]() {
-    const unsigned value = item.unknown_001C[4];
+    const unsigned value = this->unknown_001C[4];
     int message = 0;
 
     switch (value) {
@@ -291,13 +287,13 @@ std::string ItemNaming::DisplayName(const ITEM_INFO& item, unsigned char detaile
     }
 
     if (message) {
-      append(Copy(text, capacity, this->Message(message)));
+      append(Copy(text, capacity, LookupMessage(message)));
     }
   };
   const auto star = [&]() {
     int message = 0;
 
-    switch (item.unknown_001C[5]) {
+    switch (this->unknown_001C[5]) {
     case 5:
       message = 459;
       break;
@@ -310,59 +306,59 @@ std::string ItemNaming::DisplayName(const ITEM_INFO& item, unsigned char detaile
     }
 
     if (message) {
-      append(Copy(text, capacity, this->Message(message)));
+      append(Copy(text, capacity, LookupMessage(message)));
     }
   };
 
   if (cards[0] == 254 && cards[1] == 0) {
     refine();
-    if (this->service != 12 && this->service != 14) {
-      append(this->Creator(item, text, capacity, 0));
+    if (g_serviceType != 12 && g_serviceType != 14) {
+      append(this->Creator(text, capacity, 0));
       element();
       name();
     } else {
       name();
       element();
-      append(this->Creator(item, text, capacity, 0));
+      append(this->Creator(text, capacity, 0));
     }
 
     return result;
   }
 
-  if (!Equipment(item) && detailed == 0) {
+  if (!Equipment(*this) && detailed == 0) {
     name();
     return result;
   }
 
   refine();
-  if (this->HasCards(item)) {
-    append(this->Prefixes(item, text, capacity, 0));
+  if (this->HasCards()) {
+    append(this->Prefixes(text, capacity, 0));
     name();
-    append(this->Suffixes(item, text, capacity, 0));
-    append(this->Slots(item, text, capacity, 0));
+    append(this->Suffixes(text, capacity, 0));
+    append(this->Slots(text, capacity, 0));
 
     return result;
   }
 
   if (cards[0] != 254 && cards[0] != 255) {
     name();
-    append(this->Slots(item, text, capacity, 0));
+    append(this->Slots(text, capacity, 0));
     return result;
   }
 
-  if (this->service == 12) {
+  if (g_serviceType == 12) {
     name();
     element();
     star();
-    append(this->Creator(item, text, capacity, 0));
-  } else if (this->service == 14) {
+    append(this->Creator(text, capacity, 0));
+  } else if (g_serviceType == 14) {
     star();
     name();
     element();
-    append(this->Creator(item, text, capacity, 0));
+    append(this->Creator(text, capacity, 0));
   } else {
     star();
-    append(this->Creator(item, text, capacity, 0));
+    append(this->Creator(text, capacity, 0));
     element();
     name();
   }
@@ -396,11 +392,7 @@ std::string ItemDisplayName(int id) {
   ITEM_INFO item;
   item.SetItemId(id);
   item.identified = 1;
-  ItemDescriptions descriptions{g_itemDescriptions};
-  bool languagePrefix = false;
-  WORD language = g_serverLanguage->language;
-  ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
-  return naming.DisplayName(item, 0);
+  return item.DisplayName(0);
 }
 
 // OFFSET: 0x006D69C0
@@ -462,7 +454,7 @@ bool IsItemCard(int id) {
 // FUNCTION: fn_06591
 const char* ItemResourcePath(const ITEM_INFO& item) {
   int id = std::atoi(item.itemId.c_str());
-  ITEM_DESC& desc = FindItemDescription(id);
+  ITEM_DESC& desc = ItemDescriptions{g_itemDescriptions}.Find(id);
   return item.identified == 1 ? desc.identifiedResource : desc.unidentifiedResource;
 }
 
@@ -470,14 +462,14 @@ const char* ItemResourcePath(const ITEM_INFO& item) {
 // FUNCTION: fn_06592
 int ItemSlotsCount(const ITEM_INFO& item) {
   int id = std::atoi(item.itemId.c_str());
-  return FindItemDescription(id).slots;
+  return ItemDescriptions{g_itemDescriptions}.Find(id).slots;
 }
 
 // OFFSET: 0x006D7760
 // FUNCTION: fn_06594
 int ItemUnidentifiedName(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) {
   int id = std::atoi(item.itemId.c_str());
-  int written = Copy(output, capacity, FindItemDescription(id).unidentifiedName);
+  int written = Copy(output, capacity, ItemDescriptions{g_itemDescriptions}.Find(id).unidentifiedName);
   if (written > 0 && consume) {
     capacity -= written;
   }
@@ -830,7 +822,7 @@ std::uint32_t __fastcall ItemCardColor(const ITEM_INFO* item) {
   }
 
   const std::uint32_t colors[5] = {0, 0x00ADFF2F, 0x0000BFFF, 0x00FFA500, 0x009400D3};
-  const int slots = FindItemDescription(std::atoi(item->itemId.c_str())).slots;
+  const int slots = ItemDescriptions{g_itemDescriptions}.Find(std::atoi(item->itemId.c_str())).slots;
   int count = 0;
   for (int index = 0; index < 4; ++index) {
     if (index >= slots && IsItemCard(ids[index])) {
@@ -842,10 +834,10 @@ std::uint32_t __fastcall ItemCardColor(const ITEM_INFO* item) {
 
 // OFFSET: 0x006D6AA0
 // FUNCTION: fn_06583
-int ItemNamingContext::Element(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) const {
-  const unsigned value = item.unknown_001C[4];
+int ITEM_INFO::Element(char* output, int& capacity, unsigned char consume) const {
+  const unsigned value = this->unknown_001C[4];
   int message = 0;
-  int id = std::atoi(item.itemId.c_str());
+  int id = std::atoi(this->itemId.c_str());
 
   switch (value) {
   case 0:
@@ -866,7 +858,7 @@ int ItemNamingContext::Element(const ITEM_INFO& item, char* output, int& capacit
   }
 
   if (message) {
-    const char* text = this->Message(message);
+    const char* text = LookupMessage(message);
     const int error = strncpy_s(output, capacity, text ? text : " ", _TRUNCATE);
     int written = (error == 0 || error == 80) && output ? static_cast<int>(strnlen(output, capacity)) : 0;
     if (written > 0 && consume) {
@@ -879,9 +871,9 @@ int ItemNamingContext::Element(const ITEM_INFO& item, char* output, int& capacit
 
 // OFFSET: 0x006D6B90
 // FUNCTION: fn_06584
-int ItemNamingContext::Star(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) const {
+int ITEM_INFO::Star(char* output, int& capacity, unsigned char consume) const {
   int message = 0;
-  switch (item.unknown_001C[5]) {
+  switch (this->unknown_001C[5]) {
   case 5:
     message = 459;
     break;
@@ -894,7 +886,7 @@ int ItemNamingContext::Star(const ITEM_INFO& item, char* output, int& capacity, 
   }
 
   if (message) {
-    const char* text = this->Message(message);
+    const char* text = LookupMessage(message);
     const int error = strncpy_s(output, capacity, text ? text : " ", _TRUNCATE);
     int written = (error == 0 || error == 80) && output ? static_cast<int>(strnlen(output, capacity)) : 0;
     if (written > 0 && consume) {
@@ -907,8 +899,8 @@ int ItemNamingContext::Star(const ITEM_INFO& item, char* output, int& capacity, 
 
 // OFFSET: 0x006D6D50
 // FUNCTION: fn_06586
-int ItemNamingContext::Apprentice(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) const {
-  const char* text = this->Message(756);
+int ITEM_INFO::Apprentice(char* output, int& capacity, unsigned char consume) const {
+  const char* text = LookupMessage(756);
   const int error = strncpy_s(output, capacity, text ? text : " ", _TRUNCATE);
   int written = (error == 0 || error == 80) && output ? static_cast<int>(strnlen(output, capacity)) : 0;
   if (written > 0 && consume) {

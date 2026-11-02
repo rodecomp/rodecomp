@@ -6,13 +6,11 @@
 class CDC;
 class FontCache;
 struct TextLocale;
-struct ItemNaming;
 
 struct ItemLinkDisplay {
   CDC& surface;
   FontCache& fonts;
   const TextLocale& locale;
-  ItemNaming& items;
   const int& width;
 
   bool Name(const std::string& encoded, std::string& output);

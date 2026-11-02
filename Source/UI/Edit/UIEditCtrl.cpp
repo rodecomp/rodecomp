@@ -1840,12 +1840,8 @@ void UIItemWnd::Slot26(int x, int y) {
     break;
   case 18:
     if (*reinterpret_cast<const int*>(&g_session.unknown_16F4[4]) >= 0) {
-      ItemDescriptions descriptions{g_itemDescriptions};
-      bool languagePrefix = false;
-      WORD language = g_serverLanguage->language;
-      ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
       if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)
-              ->Confirm(FormatOwnedString(LookupMessage(1226), naming.DisplayName(item, 0).c_str()).c_str(), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
+              ->Confirm(FormatOwnedString(LookupMessage(1226), item.DisplayName(0).c_str()).c_str(), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
         mode->SendMsg(27, static_cast<int>(item.unknown_0000[1]), 0, 0, 0);
       }
     }
@@ -2662,11 +2658,7 @@ bool ItemTypeNameLess::operator()(const ITEM_INFO& left, const ITEM_INFO& right)
     return leftRank < rightRank;
   }
 
-  ItemDescriptions descriptions{g_itemDescriptions};
-  bool languagePrefix = false;
-  WORD language = g_serverLanguage->language;
-  ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
-  return naming.DisplayName(left, 0) < naming.DisplayName(right, 0);
+  return left.DisplayName(0) < right.DisplayName(0);
 }
 
 extern "C" void sub_96E320(void* head, size_t size, ...);
@@ -5825,15 +5817,11 @@ void UIItemPurchaseWnd::Slot28(int x, int y) {
     }
 
     char price[64];
-    ItemDescriptions descriptions{g_itemDescriptions};
-    bool languagePrefix = false;
-    WORD language = g_serverLanguage->language;
-    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
     if (item.unknown_0014[0] != item.unknown_0014[1]) {
-      text = FormatOwnedString("%s %d %s %d -> %s %s", naming.DisplayName(item, 0).c_str(), item.quantity, LookupMessage(588), item.unknown_0014[0],
+      text = FormatOwnedString("%s %d %s %d -> %s %s", item.DisplayName(0).c_str(), item.quantity, LookupMessage(588), item.unknown_0014[0],
                                FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64), currency);
     } else {
-      text = FormatOwnedString("%s %d %s %s %s", naming.DisplayName(item, 0).c_str(), item.quantity, LookupMessage(588),
+      text = FormatOwnedString("%s %d %s %s %s", item.DisplayName(0).c_str(), item.quantity, LookupMessage(588),
                                FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64), currency);
     }
 
@@ -5852,15 +5840,11 @@ void UIItemSellWnd2::Slot28(int x, int y) {
 
     std::string text;
     char price[64];
-    ItemDescriptions descriptions{g_itemDescriptions};
-    bool languagePrefix = false;
-    WORD language = g_serverLanguage->language;
-    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
     if (item.unknown_0014[0] != item.unknown_0014[1]) {
-      text = FormatOwnedString("%s %d %s %d -> %s Zeny", naming.DisplayName(item, 0).c_str(), item.quantity, LookupMessage(588), item.unknown_0014[0],
+      text = FormatOwnedString("%s %d %s %d -> %s Zeny", item.DisplayName(0).c_str(), item.quantity, LookupMessage(588), item.unknown_0014[0],
                                FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64));
     } else {
-      text = FormatOwnedString("%s %d %s %s Zeny", naming.DisplayName(item, 0).c_str(), item.quantity, LookupMessage(588),
+      text = FormatOwnedString("%s %d %s %s Zeny", item.DisplayName(0).c_str(), item.quantity, LookupMessage(588),
                                FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64));
     }
 
@@ -5882,24 +5866,20 @@ void UIItemSellWnd::Slot28(int x, int y) {
 
   std::string text;
   char price[64];
-  ItemDescriptions descriptions{g_itemDescriptions};
-  bool languagePrefix = false;
-  WORD language = g_serverLanguage->language;
-  ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
   if (item.unknown_0014[0] != item.unknown_0014[1]) {
     if (item.identified == 1 && item.unknown_0098 != 0) {
-      text = FormatOwnedString(LookupMessage(2758), naming.DisplayName(item, 0).c_str(), item.unknown_0098, item.quantity, LookupMessage(588),
+      text = FormatOwnedString(LookupMessage(2758), item.DisplayName(0).c_str(), item.unknown_0098, item.quantity, LookupMessage(588),
                                item.unknown_0014[0], FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64), "Zeny");
     } else {
-      text = FormatOwnedString("%s %d %s %d -> %s Zeny", naming.DisplayName(item, 0).c_str(), item.quantity, LookupMessage(588), item.unknown_0014[0],
+      text = FormatOwnedString("%s %d %s %d -> %s Zeny", item.DisplayName(0).c_str(), item.quantity, LookupMessage(588), item.unknown_0014[0],
                                FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64));
     }
   } else {
     if (item.identified == 1 && item.unknown_0098 != 0) {
-      text = FormatOwnedString(LookupMessage(2759), naming.DisplayName(item, 0).c_str(), item.unknown_0098, item.quantity, LookupMessage(588),
+      text = FormatOwnedString(LookupMessage(2759), item.DisplayName(0).c_str(), item.unknown_0098, item.quantity, LookupMessage(588),
                                FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64), "Zeny");
     } else {
-      text = FormatOwnedString("%s %d %s %s Zeny", naming.DisplayName(item, 0).c_str(), item.quantity, LookupMessage(588),
+      text = FormatOwnedString("%s %d %s %s Zeny", item.DisplayName(0).c_str(), item.quantity, LookupMessage(588),
                                FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64));
     }
   }
@@ -5921,23 +5901,19 @@ void UIItemShopWnd2::Slot28(int x, int y) {
 
   std::string text;
   char price[64];
-  ItemDescriptions descriptions{g_itemDescriptions};
-  bool languagePrefix = false;
-  WORD language = g_serverLanguage->language;
-  ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
   if (this->unknown_00F8 == 0) {
     if (item.unknown_0014[0] == item.unknown_0014[1]) {
-      text = FormatOwnedString("%s %s Zeny", naming.DisplayName(item, 0).c_str(), FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64));
+      text = FormatOwnedString("%s %s Zeny", item.DisplayName(0).c_str(), FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64));
     } else {
-      text = FormatOwnedString("%s %d -> %s Zeny", naming.DisplayName(item, 0).c_str(), item.unknown_0014[0],
+      text = FormatOwnedString("%s %d -> %s Zeny", item.DisplayName(0).c_str(), item.unknown_0014[0],
                                FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64));
     }
   } else {
     if (item.unknown_0014[0] == item.unknown_0014[1]) {
-      text = FormatOwnedString("%s %d %s %s Zeny", naming.DisplayName(item, 0).c_str(), item.quantity, LookupMessage(588),
+      text = FormatOwnedString("%s %d %s %s Zeny", item.DisplayName(0).c_str(), item.quantity, LookupMessage(588),
                                FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64));
     } else {
-      text = FormatOwnedString("%s %d %s %d -> %s Zeny", naming.DisplayName(item, 0).c_str(), item.quantity, LookupMessage(588), item.unknown_0014[0],
+      text = FormatOwnedString("%s %d %s %d -> %s Zeny", item.DisplayName(0).c_str(), item.quantity, LookupMessage(588), item.unknown_0014[0],
                                FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64));
     }
   }
@@ -5972,43 +5948,39 @@ void UIItemShopWnd::Slot28(int x, int y) {
     }
 
     char price[64];
-    ItemDescriptions descriptions{g_itemDescriptions};
-    bool languagePrefix = false;
-    WORD language = g_serverLanguage->language;
-    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
     if (this->unknown_00F8) {
       if (item.unknown_0014[0] != item.unknown_0014[1]) {
         if (item.identified == 1 && item.unknown_0098 != 0) {
-          text = FormatOwnedString(LookupMessage(2758), naming.DisplayName(item, 0).c_str(), item.unknown_0098, item.quantity, LookupMessage(588),
+          text = FormatOwnedString(LookupMessage(2758), item.DisplayName(0).c_str(), item.unknown_0098, item.quantity, LookupMessage(588),
                                    item.unknown_0014[0], FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64), currency);
         } else {
-          text = FormatOwnedString("%s %d %s %d -> %s %s", naming.DisplayName(item, 0).c_str(), item.quantity, LookupMessage(588), item.unknown_0014[0],
+          text = FormatOwnedString("%s %d %s %d -> %s %s", item.DisplayName(0).c_str(), item.quantity, LookupMessage(588), item.unknown_0014[0],
                                    FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64), currency);
         }
       } else {
         if (item.identified == 1 && item.unknown_0098 != 0) {
-          text = FormatOwnedString(LookupMessage(2759), naming.DisplayName(item, 0).c_str(), item.unknown_0098, item.quantity, LookupMessage(588),
+          text = FormatOwnedString(LookupMessage(2759), item.DisplayName(0).c_str(), item.unknown_0098, item.quantity, LookupMessage(588),
                                    FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64), currency);
         } else {
-          text = FormatOwnedString("%s %d %s %s %s", naming.DisplayName(item, 0).c_str(), item.quantity, LookupMessage(588),
+          text = FormatOwnedString("%s %d %s %s %s", item.DisplayName(0).c_str(), item.quantity, LookupMessage(588),
                                    FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64), currency);
         }
       }
     } else {
       if (item.unknown_0014[0] != item.unknown_0014[1]) {
         if (item.identified == 1 && item.unknown_0098 != 0) {
-          text = FormatOwnedString(LookupMessage(2760), naming.DisplayName(item, 0).c_str(), item.unknown_0098, item.unknown_0014[0],
+          text = FormatOwnedString(LookupMessage(2760), item.DisplayName(0).c_str(), item.unknown_0098, item.unknown_0014[0],
                                    FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64), currency);
         } else {
-          text = FormatOwnedString("%s %d -> %s %s", naming.DisplayName(item, 0).c_str(), item.unknown_0014[0],
+          text = FormatOwnedString("%s %d -> %s %s", item.DisplayName(0).c_str(), item.unknown_0014[0],
                                    FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64), currency);
         }
       } else {
         if (item.identified == 1 && item.unknown_0098 != 0) {
-          text = FormatOwnedString(LookupMessage(2761), naming.DisplayName(item, 0).c_str(), item.unknown_0098,
+          text = FormatOwnedString(LookupMessage(2761), item.DisplayName(0).c_str(), item.unknown_0098,
                                    FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64), currency);
         } else {
-          text = FormatOwnedString("%s %s %s", naming.DisplayName(item, 0).c_str(), FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64),
+          text = FormatOwnedString("%s %s %s", item.DisplayName(0).c_str(), FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64),
                                    currency);
         }
       }
@@ -6027,16 +5999,12 @@ void UIItemStoreFindWnd::Slot28(int x, int y) {
     int tooltipY = (y - 17) / 32 * 32 + 1;
     this->ToScreen(tooltipX, tooltipY);
 
-    ItemDescriptions descriptions{g_itemDescriptions};
-    bool languagePrefix = false;
-    WORD language = g_serverLanguage->language;
-    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
     if (item.identified == 1 && item.unknown_0098 != 0) {
       reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)
-          ->Show(FormatOwnedString(LookupMessage(2600), naming.DisplayName(item, 0).c_str(), item.unknown_0098).c_str(), tooltipX, tooltipY,
+          ->Show(FormatOwnedString(LookupMessage(2600), item.DisplayName(0).c_str(), item.unknown_0098).c_str(), tooltipX, tooltipY,
                  g_session.GetItemNameColor(item), 0, 1);
     } else {
-      reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(naming.DisplayName(item, 0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+      reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(item.DisplayName(0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
     }
   }
 }
@@ -6050,16 +6018,12 @@ void UIItemStoreSubWnd::Slot28(int x, int y) {
     int tooltipY = (y - 17) / 32 * 32 + 1;
     this->ToScreen(tooltipX, tooltipY);
 
-    ItemDescriptions descriptions{g_itemDescriptions};
-    bool languagePrefix = false;
-    WORD language = g_serverLanguage->language;
-    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
     if (item.identified == 1 && item.unknown_0098 != 0) {
       reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)
-          ->Show(FormatOwnedString(LookupMessage(2600), naming.DisplayName(item, 0).c_str(), item.unknown_0098).c_str(), tooltipX, tooltipY,
+          ->Show(FormatOwnedString(LookupMessage(2600), item.DisplayName(0).c_str(), item.unknown_0098).c_str(), tooltipX, tooltipY,
                  g_session.GetItemNameColor(item), 0, 1);
     } else {
-      reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(naming.DisplayName(item, 0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+      reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(item.DisplayName(0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
     }
   }
 }
@@ -6073,16 +6037,12 @@ void UIItemStoreWnd::Slot28(int x, int y) {
     int tooltipY = (y - 17) / 32 * 32 + 1;
     this->ToScreen(tooltipX, tooltipY);
 
-    ItemDescriptions descriptions{g_itemDescriptions};
-    bool languagePrefix = false;
-    WORD language = g_serverLanguage->language;
-    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
     if (item.identified == 1 && item.unknown_0098 != 0) {
       reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)
-          ->Show(FormatOwnedString(LookupMessage(2600), naming.DisplayName(item, 0).c_str(), item.unknown_0098).c_str(), tooltipX, tooltipY,
+          ->Show(FormatOwnedString(LookupMessage(2600), item.DisplayName(0).c_str(), item.unknown_0098).c_str(), tooltipX, tooltipY,
                  g_session.GetItemNameColor(item), 0, 1);
     } else {
-      reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(naming.DisplayName(item, 0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+      reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(item.DisplayName(0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
     }
   }
 }
@@ -6096,17 +6056,13 @@ void UIItemWnd::Slot28(int x, int y) {
     int tooltipY = (y - 17) / 32 * 32 + 1;
     this->ToScreen(tooltipX, tooltipY);
 
-    ItemDescriptions descriptions{g_itemDescriptions};
-    bool languagePrefix = false;
-    WORD language = g_serverLanguage->language;
-    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
     if (item.identified == 1 && item.unknown_0098 != 0) {
       reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)
-          ->Show(FormatOwnedString(LookupMessage(2551), naming.DisplayName(item, 0).c_str(), item.unknown_0098, item.quantity).c_str(), tooltipX, tooltipY,
+          ->Show(FormatOwnedString(LookupMessage(2551), item.DisplayName(0).c_str(), item.unknown_0098, item.quantity).c_str(), tooltipX, tooltipY,
                  g_session.GetItemNameColor(item), 0, 1);
     } else {
       reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)
-          ->Show(FormatOwnedString(LookupMessage(183), naming.DisplayName(item, 0).c_str(), item.quantity).c_str(), tooltipX, tooltipY,
+          ->Show(FormatOwnedString(LookupMessage(183), item.DisplayName(0).c_str(), item.quantity).c_str(), tooltipX, tooltipY,
                  g_session.GetItemNameColor(item), 0, 1);
     }
   }
@@ -6123,19 +6079,15 @@ void UIMerchantItemMyShopWnd::Slot28(int x, int y) {
 
     std::string text;
     char price[64];
-    ItemDescriptions descriptions{g_itemDescriptions};
-    bool languagePrefix = false;
-    WORD language = g_serverLanguage->language;
-    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
     if (this->unknown_0100 == 0) {
       if (item.identified == 1 && item.unknown_0098 != 0) {
-        text = FormatOwnedString(LookupMessage(2757), naming.DisplayName(item, 0).c_str(), item.unknown_0098,
+        text = FormatOwnedString(LookupMessage(2757), item.DisplayName(0).c_str(), item.unknown_0098,
                                  FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64));
       } else {
-        text = FormatOwnedString("%s %s Zeny", naming.DisplayName(item, 0).c_str(), FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64));
+        text = FormatOwnedString("%s %s Zeny", item.DisplayName(0).c_str(), FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64));
       }
     } else {
-      text = FormatOwnedString(LookupMessage(1736), naming.DisplayName(item, 0).c_str(), FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64),
+      text = FormatOwnedString(LookupMessage(1736), item.DisplayName(0).c_str(), FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64),
                                item.quantity);
     }
 
@@ -6153,12 +6105,8 @@ void UIMerchantItemPurchaseWnd::Slot28(int x, int y) {
     this->ToScreen(tooltipX, tooltipY);
 
     char price[64];
-    ItemDescriptions descriptions{g_itemDescriptions};
-    bool languagePrefix = false;
-    WORD language = g_serverLanguage->language;
-    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
     reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)
-        ->Show(FormatOwnedString("%s %d %s %s Zeny", naming.DisplayName(item, 0).c_str(), item.quantity, LookupMessage(588),
+        ->Show(FormatOwnedString("%s %d %s %s Zeny", item.DisplayName(0).c_str(), item.quantity, LookupMessage(588),
                                  FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64))
                    .c_str(),
                tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
@@ -6169,10 +6117,6 @@ void UIMerchantItemPurchaseWnd::Slot28(int x, int y) {
 // FUNCTION: fn_13382
 void UIMerchantItemShopWnd::Slot28(int x, int y) {
   ITEM_INFO item = this->GetItemAt(x, y);
-  ItemDescriptions descriptions{g_itemDescriptions};
-  bool languagePrefix = false;
-  WORD language = g_serverLanguage->language;
-  ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
   if (item.unknown_0000[1] > 0) {
     int tooltipX = (x - 40) / 32 * 32 + 40;
     int tooltipY = (y - 17) / 32 * 32 + 1;
@@ -6180,10 +6124,10 @@ void UIMerchantItemShopWnd::Slot28(int x, int y) {
 
     if (item.identified == 1 && item.unknown_0098 != 0) {
       reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)
-          ->Show(FormatOwnedString(LookupMessage(2600), naming.DisplayName(item, 0).c_str(), item.unknown_0098).c_str(), tooltipX, tooltipY,
+          ->Show(FormatOwnedString(LookupMessage(2600), item.DisplayName(0).c_str(), item.unknown_0098).c_str(), tooltipX, tooltipY,
                  g_session.GetItemNameColor(item), 0, 1);
     } else {
-      reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(naming.DisplayName(item, 0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+      reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(item.DisplayName(0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
     }
     return;
   }
@@ -6199,10 +6143,10 @@ void UIMerchantItemShopWnd::Slot28(int x, int y) {
 
   if (item.identified == 1 && item.unknown_0098 != 0) {
     reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)
-        ->Show(FormatOwnedString(LookupMessage(2600), naming.DisplayName(item, 0).c_str(), item.unknown_0098).c_str(), tooltipX - 2, tooltipY + 24,
+        ->Show(FormatOwnedString(LookupMessage(2600), item.DisplayName(0).c_str(), item.unknown_0098).c_str(), tooltipX - 2, tooltipY + 24,
                g_session.GetItemNameColor(item), 0, 1);
   } else {
-    reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(naming.DisplayName(item, 0).c_str(), tooltipX - 2, tooltipY + 24, g_session.GetItemNameColor(item), 0, 1);
+    reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(item.DisplayName(0).c_str(), tooltipX - 2, tooltipY + 24, g_session.GetItemNameColor(item), 0, 1);
   }
 }
 
@@ -6215,17 +6159,13 @@ void UIMerchantItemWnd::Slot28(int x, int y) {
     int tooltipY = (y - 17) / 32 * 32 + 1;
     this->ToScreen(tooltipX, tooltipY);
 
-    ItemDescriptions descriptions{g_itemDescriptions};
-    bool languagePrefix = false;
-    WORD language = g_serverLanguage->language;
-    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
     if (item.identified == 1 && item.unknown_0098 != 0) {
       reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)
-          ->Show(FormatOwnedString(LookupMessage(2551), naming.DisplayName(item, 0).c_str(), item.unknown_0098, item.quantity).c_str(), tooltipX, tooltipY,
+          ->Show(FormatOwnedString(LookupMessage(2551), item.DisplayName(0).c_str(), item.unknown_0098, item.quantity).c_str(), tooltipX, tooltipY,
                  g_session.GetItemNameColor(item), 0, 1);
     } else {
       reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)
-          ->Show(FormatOwnedString("%s %d %s", naming.DisplayName(item, 0).c_str(), item.quantity, LookupMessage(588)).c_str(), tooltipX, tooltipY,
+          ->Show(FormatOwnedString("%s %d %s", item.DisplayName(0).c_str(), item.quantity, LookupMessage(588)).c_str(), tooltipX, tooltipY,
                  g_session.GetItemNameColor(item), 0, 1);
     }
   }
@@ -6240,17 +6180,13 @@ void UIMerchantMirrorItemWnd::Slot28(int x, int y) {
     int tooltipY = (y - 17) / 32 * 32 + 1;
     this->ToScreen(tooltipX, tooltipY);
 
-    ItemDescriptions descriptions{g_itemDescriptions};
-    bool languagePrefix = false;
-    WORD language = g_serverLanguage->language;
-    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
     if (item.identified == 1 && item.unknown_0098 != 0) {
       reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)
-          ->Show(FormatOwnedString(LookupMessage(2756), naming.DisplayName(item, 0).c_str(), item.unknown_0098, item.quantity).c_str(), tooltipX, tooltipY,
+          ->Show(FormatOwnedString(LookupMessage(2756), item.DisplayName(0).c_str(), item.unknown_0098, item.quantity).c_str(), tooltipX, tooltipY,
                  g_session.GetItemNameColor(item), 0, 1);
     } else {
       reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)
-          ->Show(FormatOwnedString("%s %d %s", naming.DisplayName(item, 0).c_str(), item.quantity, LookupMessage(588)).c_str(), tooltipX, tooltipY,
+          ->Show(FormatOwnedString("%s %d %s", item.DisplayName(0).c_str(), item.quantity, LookupMessage(588)).c_str(), tooltipX, tooltipY,
                  g_session.GetItemNameColor(item), 0, 1);
     }
   }
@@ -6878,16 +6814,12 @@ void UIChatEditCtrl::InsertItemLink(const ITEM_INFO& item) {
     }
   }
 
-  ItemDescriptions descriptions{g_itemDescriptions};
-  bool languagePrefix = false;
-  WORD language = g_serverLanguage->language;
-  ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
-  if (!this->unknown_0144->CanInsertTag(naming.DisplayName(item, 0), this->geometry.width)) {
+  if (!this->unknown_0144->CanInsertTag(item.DisplayName(0), this->geometry.width)) {
     return;
   }
 
   this->unknown_0144->taggedText = this->text;
-  const std::string name = naming.DisplayName(item, 0);
+  const std::string name = item.DisplayName(0);
   const std::string tag = this->unknown_0144->AppendTag(name);
   g_serverLanguage->ResetInput();
   g_serverLanguage->Insert(tag.c_str());
@@ -8522,27 +8454,24 @@ void UIMerchantShopMakeWnd::PrintSellList() {
     char* cursor = name;
     int capacity = 256;
     ItemDescriptions descriptions{g_itemDescriptions};
-    bool languagePrefix = false;
-    WORD language = g_serverLanguage->language;
-    ItemNamingContext naming{{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language}};
 
     if (item.unknown_0060 != 0) {
       cursor += item.Refine(cursor, capacity, 1);
     }
 
-    if (naming.HasCards(item)) {
-      cursor += naming.Prefixes(item, cursor, capacity, 1);
+    if (item.HasCards()) {
+      cursor += item.Prefixes(cursor, capacity, 1);
       cursor += descriptions.Name(item, cursor, capacity, 1);
-      cursor += naming.Suffixes(item, cursor, capacity, 1);
-      naming.Slots(item, cursor, capacity, 1);
+      cursor += item.Suffixes(cursor, capacity, 1);
+      item.Slots(cursor, capacity, 1);
     } else if (item.HasSpecialCard()) {
-      cursor += naming.Star(item, cursor, capacity, 1);
-      cursor += naming.Creator(item, cursor, capacity, 1);
-      cursor += naming.Element(item, cursor, capacity, 1);
+      cursor += item.Star(cursor, capacity, 1);
+      cursor += item.Creator(cursor, capacity, 1);
+      cursor += item.Element(cursor, capacity, 1);
       descriptions.Name(item, cursor, capacity, 1);
     } else {
       cursor += descriptions.Name(item, cursor, capacity, 1);
-      naming.Slots(item, cursor, capacity, 1);
+      item.Slots(cursor, capacity, 1);
     }
 
     std::sprintf(text, "%s ", this->priceEdits[index]->Text());

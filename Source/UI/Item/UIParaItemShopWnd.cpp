@@ -189,16 +189,12 @@ void UIParaResultWnd::Slot28(int x, int y) {
     std::string text;
     char price[64];
     std::memset(price, 0, sizeof(price));
-    ItemDescriptions descriptions{g_itemDescriptions};
-    bool languagePrefix = false;
-    WORD language = g_serverLanguage->language;
-    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
     if (item.unknown_0014[0] == item.unknown_0014[1]) {
       const char* amount = FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, sizeof(price));
-      text = FormatOwnedString("%s %s Zeny", naming.DisplayName(item, 0).c_str(), amount);
+      text = FormatOwnedString("%s %s Zeny", item.DisplayName(0).c_str(), amount);
     } else {
       const char* amount = FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, sizeof(price));
-      text = FormatOwnedString("%s %d -> %s Zeny", naming.DisplayName(item, 0).c_str(), item.unknown_0014[0], amount);
+      text = FormatOwnedString("%s %d -> %s Zeny", item.DisplayName(0).c_str(), item.unknown_0014[0], amount);
     }
 
     reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);

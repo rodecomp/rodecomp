@@ -3,7 +3,6 @@
 
 #include "Contents/Skills/ClientSkills.h"
 #include "Contents/Items/ItemInfo.h"
-#include "Contents/Items/ItemNaming.h"
 #include "Contents/UserData/NormalItemSlots.h"
 #include "UI/Shortcuts/ShortcutGrid.h"
 
@@ -14,7 +13,6 @@ class ButtonServices;
 struct ShortcutTooltip {
   ClientSkills& skills;
   const std::list<ITEM_INFO>& inventory;
-  ItemNaming& naming;
   LuaScript& script;
   ButtonServices* services;
   const bool& itemSlotActive;

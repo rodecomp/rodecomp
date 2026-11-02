@@ -167,10 +167,7 @@ void CItem::SendMsg(CGameObject* sender, int message, int a, int b, int c, int d
   item.itemId = itemName;
   item.identified = entry->identified;
   item.unknown_0060 = 0;
-  bool languagePrefix = false;
-  WORD language = g_serverLanguage->language;
-  ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
-  this->name = static_cast<const std::string&>(FormatOwnedString(LookupMessage(183), naming.DisplayName(item, 0).c_str(), entry->count));
+  this->name = static_cast<const std::string&>(FormatOwnedString(LookupMessage(183), item.DisplayName(0).c_str(), entry->count));
   this->GetActRes();
   this->render.unknown_008C = timeGetTime();
 
