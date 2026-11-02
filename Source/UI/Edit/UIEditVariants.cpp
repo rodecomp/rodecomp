@@ -8,6 +8,7 @@
 #include "Resource/SkinPalette.h"
 #include "Resource/TextureNames.h"
 #include "UI/Buttons/UIButton.h"
+#include "UI/Buttons/UIItemTagButton.h"
 #include "UI/Window/InputFocus.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Chat/ChatSuggestions.h"
@@ -18,6 +19,7 @@
 #include "Utility/Text/StringUtil.h"
 #include <cstring>
 #include <windows.h>
+#include <timeapi.h>
 
 // OFFSET: 0x0084F250
 // FUNCTION: fn_10657
@@ -435,6 +437,315 @@ void UIEditCtrl_OldList::RecallHistory(int step) {
   this->SetText(this->history[this->historyIndex].c_str());
   this->Slot23();
   this->Invalidate();
+}
+
+// OFFSET: 0x008551B0
+// FUNCTION: fn_10753
+void UIEditCtrl3::PaintText() {
+  FontCache& fonts = this->m_edit->buttons.fonts;
+  const TextLocale& locale = this->m_edit->buttons.locale;
+
+  int x = 3;
+  if (this->invalidatesParent == 0 && this->firstVisible != 0) {
+    x = 3 - this->TextWidth(fonts, locale, this->text.c_str(), this->firstVisible, 0, 12, 0, 0);
+  }
+
+  std::string display;
+  std::uint32_t color = this->textColor;
+  if (g_windowMgr.GetHoverWindow() == this) {
+    this->Synchronize();
+  }
+
+  const char* prefix = g_serverLanguage->Prefix(false);
+  display = prefix + this->text;
+
+  int width = this->geometry.width - 6;
+  if (this->unknown_0134 != 0) {
+    width += 3 - this->unknown_0130->geometry.width;
+  }
+
+  std::vector<std::string>& lines = this->unknown_0168;
+  std::vector<bool>& breaks = this->unknown_0174;
+  lines.clear();
+  breaks.clear();
+  this->WrapTextWithBreaks(display.c_str(), &lines, &breaks, width);
+  this->WrapLines(lines);
+
+  for (std::size_t index = 0; index < lines.size() - breaks.size(); ++index) {
+    breaks.push_back(false);
+  }
+
+  this->unknown_013C = static_cast<int>(lines.size());
+  if (reinterpret_cast<const unsigned char*>(&this->unknown_0184)[1] != 0) {
+    this->unknown_013C = static_cast<int>(lines.size()) + 1;
+  }
+
+  if (lines.size() == 0) {
+    this->DrawBlinkingCaret(color);
+    return;
+  }
+
+  const int rows = this->geometry.height / this->unknown_0138;
+  const int first = this->unknown_0158;
+  int last = rows + first;
+  if (lines.size() < static_cast<unsigned>(last)) {
+    last = static_cast<int>(lines.size());
+  }
+
+  int offset = 0;
+  for (int line = 0; line < first; ++line) {
+    offset += static_cast<int>(std::strlen(lines[line].c_str()));
+  }
+
+  for (int line = first; line < last; ++line) {
+    const int y = (line - first) * this->unknown_0138;
+    offset += static_cast<int>(std::strlen(lines[line].c_str()));
+
+    if (g_windowMgr.GetHoverWindow() == this && this->m_edit->input.cursor - this->m_edit->input.anchor != 0) {
+      const int selectionBegin = this->cursor < this->anchor ? this->cursor : this->anchor;
+      const int selectionEnd = this->anchor < this->cursor ? this->cursor : this->anchor;
+      int startX = 0;
+      int endX = 0;
+
+      if (selectionBegin < offset) {
+        int begin = selectionBegin + static_cast<int>(std::strlen(lines[line].c_str())) - offset;
+        if (begin < 0) {
+          begin = 0;
+        }
+
+        startX = begin != 0 ? this->TextWidth(fonts, locale, lines[line].c_str(), begin, 0, 12, 0, 0) : 0;
+
+        int length = static_cast<int>(std::strlen(lines[line].c_str()));
+        if (breaks[line]) {
+          length -= 2;
+        }
+        endX = this->TextWidth(fonts, locale, lines[line].c_str(), length, 0, 12, 0, 0);
+      }
+
+      if (selectionEnd <= offset) {
+        int end = selectionEnd + static_cast<int>(std::strlen(lines[line].c_str())) - offset;
+        if (end < 0) {
+          end = 0;
+        }
+
+        int length = end;
+        if (static_cast<int>(std::strlen(lines[line].c_str())) == end && breaks[line]) {
+          length = end - 2;
+        }
+        endX = length != 0 ? this->TextWidth(fonts, locale, lines[line].c_str(), length, 0, 12, 0, 0) : 0;
+      }
+
+      int left = x + startX;
+      int span = endX - startX;
+      if (left < 3) {
+        span += left - 3;
+        left = 3;
+      }
+
+      const int windowWidth = this->geometry.width;
+      if (left < windowWidth && span > 0) {
+        unsigned red, green, blue;
+        SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
+        this->FillRegion(left, y, left + span <= windowWidth ? span : windowWidth - left, 14, RGB(red, green, blue));
+      }
+    }
+
+    int tagOffset = 0;
+    if (this->geometry.id == 0x1F8 || this->geometry.id == 0x1EB) {
+      tagOffset = 1;
+    }
+
+    if (this->pendingText.size() < static_cast<unsigned>(line + 1)) {
+      this->pendingText.push_back(lines[line]);
+    } else if (&this->pendingText[line] != &lines[line]) {
+      this->pendingText[line] = lines[line];
+    }
+
+    this->PlaceLinks(lines[line], y, line, first, last);
+
+    const std::size_t length = std::strlen(lines[line].c_str());
+    char* buffer = new char[length + 1];
+    std::strcpy(buffer, lines[line].c_str());
+    buffer[length] = '\0';
+    if (buffer[length - 2] == '\r') {
+      buffer[length - 2] = '\0';
+    }
+
+    this->DrawTextAt(fonts, locale, x, tagOffset + y, buffer, 0, 0, 12, color, 0, 0);
+
+    for (std::vector<UIItemTagButton*>& entry : this->entries) {
+      for (std::size_t index = 0; index < entry.size(); ++index) {
+        UIItemTagButton* button = entry[index];
+        const int buttonLine = button->line;
+        if (buttonLine < first || last - 1 < buttonLine) {
+          button->Move(-100, -100);
+        } else if (line == buttonLine) {
+          button->Move(button->column + x - 1, y);
+        }
+      }
+    }
+
+    if (buffer) {
+      delete[] buffer;
+    }
+  }
+
+  const int prefixLength = static_cast<int>(std::strlen(prefix));
+  int column = prefixLength + this->cursor;
+  int reading = prefixLength + (this->anchor < this->cursor ? this->cursor : this->anchor) + this->m_edit->candidateCursor;
+
+  int remaining = column;
+  for (std::size_t index = 0; index < lines.size(); ++index) {
+    remaining -= static_cast<int>(std::strlen(lines[index].c_str()));
+    this->textY = static_cast<int>(index);
+    if (remaining < 0 || (static_cast<unsigned char>(this->unknown_0184) != 0 && remaining == 0)) {
+      break;
+    }
+  }
+
+  if (g_windowMgr.GetHoverWindow() == this) {
+    int caretLine = this->textY;
+    if (this->unknown_0140 != static_cast<int>(std::strlen(lines[caretLine].c_str()))) {
+      reinterpret_cast<unsigned char*>(&this->unknown_015C)[0] = 0;
+      this->unknown_0140 = static_cast<int>(std::strlen(lines[caretLine].c_str()));
+    }
+
+    int before = 0;
+    for (int index = 0; index < caretLine; ++index) {
+      before += static_cast<int>(std::strlen(lines[index].c_str()));
+    }
+
+    int wrapped = 0;
+    if (column - before >= 0) {
+      column -= before;
+    }
+
+    if (static_cast<int>(std::strlen(lines[caretLine].c_str())) == column && breaks[caretLine]) {
+      wrapped = 1;
+      column = 0;
+    }
+
+    if (this->unknown_0148 != static_cast<int>(std::strlen(lines[caretLine].c_str())) - column) {
+      this->unknown_0148 = static_cast<int>(std::strlen(lines[caretLine].c_str())) - column;
+    }
+
+    if (this->unknown_0144 != column) {
+      this->unknown_0144 = column;
+    }
+
+    int caretX = 0;
+    if (column != 0) {
+      caretX = this->TextWidth(fonts, locale, lines[caretLine].c_str(), column, 0, 12, 0, 0);
+      caretLine = this->textY;
+    }
+
+    if (reading - before >= 0) {
+      reading -= before;
+    }
+
+    int readingLength = reading;
+    if (static_cast<int>(std::strlen(lines[caretLine].c_str())) == reading && breaks[caretLine]) {
+      readingLength = reading - 2;
+    }
+
+    const int readingX = readingLength != 0 ? this->TextWidth(fonts, locale, lines[caretLine].c_str(), readingLength, 0, 12, 0, 0) : 0;
+
+    if (this->m_edit->candidateCursor != 0) {
+      int gap = readingX - caretX;
+      if (gap < 2) {
+        gap = 2;
+      }
+      caretX += gap + 2;
+      this->unknown_0144 += 2;
+      this->MoveCandidateWindow(caretX);
+      this->MoveReadingWindow(readingX);
+    }
+
+    if (this->unknown_014C != caretX) {
+      this->unknown_014C = caretX;
+    }
+
+    if ((timeGetTime() / 500 & 1) == 0 && (!g_windowMgr.IsHoverOnWindow01C8Button() || g_inputSuggestionsEnabled)) {
+      this->DrawTextAt(fonts, locale, x - 2 + caretX, (wrapped + this->textY - first) * this->unknown_0138, "|", 0, 0, 12, color, 0, 0);
+
+      const unsigned char* scroll = reinterpret_cast<const unsigned char*>(&this->unknown_015C);
+      if (scroll[0] == 0) {
+        if (scroll[1] == 0) {
+          if (this->unknown_015E == 0) {
+            const int top = rows < this->unknown_013C ? wrapped + (this->unknown_013C - rows) : this->textY;
+            this->unknown_0158 = top;
+            if (reinterpret_cast<const unsigned char*>(&this->unknown_0184)[1] != 0 && top > 0) {
+              this->unknown_0158 = top - 1;
+            }
+          } else {
+            const int current = this->textY;
+            if (this->unknown_0158 - 1 + rows < current) {
+              if (current < rows) {
+                this->unknown_0158 = 0;
+              } else {
+                this->unknown_0158 = current - rows + 1;
+              }
+            }
+          }
+        } else {
+          const int current = this->textY;
+          if (current - wrapped < this->unknown_0158) {
+            if (current < this->unknown_013C - rows) {
+              this->unknown_0158 = wrapped + current;
+            } else {
+              this->unknown_0158 = this->unknown_013C - rows;
+            }
+          }
+        }
+      }
+    }
+
+    if (wrapped != 0) {
+      ++this->textY;
+    }
+  }
+
+  std::size_t count = lines.size();
+  if (count < 2 || this->textY < 1) {
+    if ((count == 1 || (count > 1 && this->textY == 0)) && breaks[0]) {
+      if (this->unknown_0160) {
+        delete[] this->unknown_0160;
+        this->unknown_0160 = nullptr;
+      }
+      this->unknown_0160 = new char[std::strlen(lines[0].c_str()) + 1];
+      std::strcpy(this->unknown_0160, lines[0].c_str());
+    }
+  } else {
+    const std::string& previous = lines[this->textY - 1];
+    if (this->unknown_0160) {
+      delete[] this->unknown_0160;
+      this->unknown_0160 = nullptr;
+    }
+    this->unknown_0160 = new char[std::strlen(previous.c_str()) + 1];
+    std::strcpy(this->unknown_0160, lines[this->textY - 1].c_str());
+  }
+
+  count = lines.size();
+  if (count < 2 || count - 1 <= static_cast<unsigned>(this->textY)) {
+    if (count == 1 && breaks[0]) {
+      if (this->unknown_0164) {
+        delete[] this->unknown_0164;
+        this->unknown_0164 = nullptr;
+      }
+      this->unknown_0164 = new char[std::strlen(lines[0].c_str()) + 1];
+      std::strcpy(this->unknown_0164, lines[0].c_str());
+    }
+  } else {
+    const std::string& next = lines[this->textY + 1];
+    if (this->unknown_0164) {
+      delete[] this->unknown_0164;
+      this->unknown_0164 = nullptr;
+    }
+    this->unknown_0164 = new char[std::strlen(next.c_str()) + 1];
+    std::strcpy(this->unknown_0164, lines[this->textY + 1].c_str());
+  }
+
+  this->UpdateScrollBar();
 }
 
 // OFFSET: 0x00853810

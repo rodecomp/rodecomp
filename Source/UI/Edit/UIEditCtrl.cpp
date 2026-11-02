@@ -3414,6 +3414,8 @@ std::string UIEditCtrl3::ResolveItemLinks(const std::string& source) {
   return result;
 }
 
+// OFFSET: 0x00860C60
+
 // OFFSET: 0x00975CD0
 // FUNCTION: fn_13310
 void UIItemSellWnd2::Slot15(int width, int height) {

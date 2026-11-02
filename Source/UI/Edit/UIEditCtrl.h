@@ -137,6 +137,7 @@ public:
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   void SetText(const char* value) override;
+  void PaintText() override;
   void sub_869810(const char* value);
   void Slot35(int value) override;
   void Trim() override;
@@ -147,6 +148,7 @@ public:
   void PlaceTags(const int& x, const int& y, const int& firstLine, const int& endLine, const int& line, const int& unused);
   void PlaceLinks(const std::string& value, int y, int line, int firstLine, int endLine);
   std::string ResolveItemLinks(const std::string& source);
+  void WrapLines(std::vector<std::string>& lines);
   std::string TakePendingText();
   void SetTagColor(std::uint32_t color);
   void ClearLineState();
