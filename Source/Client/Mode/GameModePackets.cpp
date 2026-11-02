@@ -45,6 +45,8 @@
 #include "Render/DeviceContext/DCSurface.h"
 #include "Resource/ResourceMgr.h"
 #include "Network/TextEncoding.h"
+#include "Contents/SpecialPopupMgr.h"
+#include "UI/Text/TextMarkup.h"
 #include "UI/Item/UIItemStoreWnd.h"
 #include "UI/Text/UIStaticText.h"
 #include "UI/Cooldowns/CooldownOwner.h"
@@ -3755,6 +3757,45 @@ void ReceiveTradeItems(int count, const TradeItemRecord* records) {
   if (UIWindow* window = g_windowMgr.EnsureWindow(0xff)) {
     window->SendMsg(nullptr, 0x24, 0, 0, 0, 0);
     window->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00D7A2F0
+// FUNCTION: fn_22190
+void CGameMode::ShowSpecialPopup(int popupId) {
+  if (this->unknown_060C[0]) {
+    return;
+  }
+
+  PopupData* popup = g_specialPopupMgr->GetPopup(popupId);
+  if (!popup) {
+    this->SendMsg(1, reinterpret_cast<int>(FormatOwnedString("No GetPopupData : %d ", popupId).c_str()), 0xFFFF00FF, 0, 0);
+    return;
+  }
+
+  UIWindow window(*reinterpret_cast<UIWindowContext*>(nullptr), 0);
+  std::string text;
+  switch (popup->m_messageId) {
+  case 0:
+    for (const std::string& description : popup->m_descriptions) {
+      text = RemoveTextColors(description.c_str(), static_cast<unsigned short>(g_textCodePage));
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), popup->m_color, 0, 0, 0);
+    }
+    break;
+  case 1:
+    if (UIWindow* popupWindow = g_windowMgr.EnsureWindow(358)) {
+      popupWindow->SendMsg(nullptr, 6, 510, popupId, 0, 0);
+    }
+    [[fallthrough]];
+  case 2:
+    for (const std::string& description : popup->m_descriptions) {
+      text = RemoveTextColors(description.c_str(), static_cast<unsigned short>(g_textCodePage));
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), popup->m_color, 0, 0, 0);
+    }
+    if (UIWindow* popupWindow = g_windowMgr.EnsureWindow(358)) {
+      popupWindow->SendMsg(nullptr, 6, 510, popupId, 0, 0);
+    }
+    break;
   }
 }
 

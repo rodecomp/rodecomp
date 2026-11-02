@@ -234,6 +234,7 @@ public:
   bool HasInventoryItem(int id);
   bool HasResurrectionItem();
   void SendMousePointerState(int value);
+  void ShowSpecialPopup(int popupId);
   void ReceiveNpcAckMapmove(const unsigned char* packet);
   void ReceiveZoneServerChange(const unsigned char* packet);
   void ReceiveZoneServerChange(const char* mapName, std::int16_t x, std::int16_t y, int ip, std::int16_t port);
