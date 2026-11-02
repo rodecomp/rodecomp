@@ -575,7 +575,7 @@ void CGameMode::RequestAdminStatus() {
 void SetPlayerName(std::uint32_t id, std::string name) {
   g_playerNameDictionary->Set(id, name);
   static_cast<CGameMode*>(g_modeMgr.GetGameMode())->CompleteUnknown0194(id, name);
-  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  GuildInfo* guildInfo = &g_guildInfo;
   guildInfo->UpdateCharacterName(id, name.c_str());
   g_session.NotifyUnknown7F94Name(id, name.c_str());
   g_session.UpdateFriendName(id, name.c_str());
@@ -1636,7 +1636,7 @@ void CGameMode::TargetActorByAid(int aid) {
       if (scene->unknown_004C != 0) {
         CGameActor* actor = static_cast<CGameActor*>(scene->GetGameActorByAID(aid));
         if (actor != nullptr && !g_session.IsLocalPlayerAid(actor->Slot50())) {
-          GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+          GuildInfo* guildInfo = &g_guildInfo;
           if (!guildInfo->HasRelatedGuild(actor->Slot50())) {
             force = 1;
           }
@@ -1755,7 +1755,7 @@ unsigned CGameMode::sub_CEBBB0(const std::vector<unsigned char>& data) {
         std::memcpy(&emblemVersion, data.data() + offset, header.size);
         offset += header.size;
         this->scene->player->Slot49(guildId, emblemVersion);
-        g_guildId = guildId;
+        g_guildInfo.m_guildId = guildId;
         break;
       }
       default:
@@ -3441,7 +3441,7 @@ void CGameMode::InitializeState() {
 
   if (g_isStopByLogin) {
     g_isStopByLogin = 0;
-    reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId))->Init();
+    g_guildInfo.Init();
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(22)), 0xFFE6E6, 0, 0, 0);
     inet_ntoa(*reinterpret_cast<const in_addr*>(&g_session.unknown_0E9C[0x10]));
@@ -3540,7 +3540,7 @@ void CGameMode::InitializeState() {
     localMapMove = 0;
   }
 
-  reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId))->ClearUnknown0114();
+  g_guildInfo.ClearUnknown0114();
   this->unknown_02EC = "";
 }
 

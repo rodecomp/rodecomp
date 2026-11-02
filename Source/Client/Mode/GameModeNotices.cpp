@@ -1163,7 +1163,7 @@ void CGameMode::ReceiveActorEffect228(const unsigned char* data) {
 // FUNCTION: fn_22125
 void CGameMode::ReceiveGuildUnknown0114List(const unsigned char* packet) {
   const auto* header = reinterpret_cast<const VariablePacketHeader*>(packet);
-  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  GuildInfo* guildInfo = &g_guildInfo;
 
   guildInfo->ClearUnknown0114();
   const int count = header->length - 4;
@@ -2177,7 +2177,7 @@ void CGameMode::ReceiveItemSlotAddGrade(const unsigned char* data) {
 // OFFSET: 0x00D6D7E0
 // FUNCTION: fn_22090
 void CGameMode::ReceiveGuildUnknown0114Change(unsigned char value, std::uint32_t removeAid, std::uint32_t addAid) {
-  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  GuildInfo* guildInfo = &g_guildInfo;
   if (g_session.IsLocalPlayerAid(removeAid) == 1) {
     guildInfo->RemoveUnknown0114(value);
   } else if (g_session.IsLocalPlayerAid(addAid) == 0) {
@@ -7023,7 +7023,7 @@ struct GuildMemberRemovedPacket {
 // FUNCTION: fn_21855
 void CGameMode::ReceiveGuildMemberExpelled(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const GuildMemberRemovedPacket*>(data);
-  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  GuildInfo* guildInfo = &g_guildInfo;
   char reason[41];
   std::memcpy(reason, packet->reason, sizeof(packet->reason));
   reason[40] = '\0';
@@ -7032,7 +7032,7 @@ void CGameMode::ReceiveGuildMemberExpelled(const unsigned char* data) {
   name[24] = '\0';
 
   if (std::string(name) == g_session.DecodePlayerName()) {
-    g_guildId = 0;
+    g_guildInfo.m_guildId = 0;
     g_windowMgr.CloseWindow(59);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(490)), 0xFF, 4, 0, 0);
     this->SendMsg(172, 0, 0, 0, 0);
@@ -7081,7 +7081,7 @@ struct GuildPositionUpdatePacket {
 // FUNCTION: fn_21857
 void CGameMode::ReceiveGuildPositionUpdate(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const GuildPositionUpdatePacket*>(data);
-  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  GuildInfo* guildInfo = &g_guildInfo;
   if (!guildInfo->unknown_00C4) {
     return;
   }
@@ -7117,7 +7117,7 @@ void CGameMode::ReceiveGuildPositionUpdate(const unsigned char* data) {
 // FUNCTION: fn_21860
 void CGameMode::ReceiveGuildMemberLeft(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const GuildMemberRemovedPacket*>(data);
-  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  GuildInfo* guildInfo = &g_guildInfo;
   char reason[41];
   std::memcpy(reason, packet->reason, sizeof(packet->reason));
   reason[40] = '\0';
@@ -7174,7 +7174,7 @@ struct GuildMemberLeftPacket2 {
 // FUNCTION: fn_21856
 void CGameMode::sub_D48C60(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const GuildMemberKickedPacket*>(data);
-  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  GuildInfo* guildInfo = &g_guildInfo;
   char reason[41];
   std::memcpy(reason, packet->text, sizeof(packet->text));
   reason[40] = '\0';
@@ -7182,7 +7182,7 @@ void CGameMode::sub_D48C60(const unsigned char* data) {
   if (packet->characterId == g_session.m_gid) {
     g_session.ClearShortcutSlots();
     g_session.ClearSecondaryShortcutSlots();
-    g_guildId = 0;
+    g_guildInfo.m_guildId = 0;
     g_windowMgr.CloseWindow(59);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(490)), 0xFF, 4, 0, 0);
     this->SendMsg(172, 0, 0, 0, 0);
@@ -7224,7 +7224,7 @@ void CGameMode::sub_D48C60(const unsigned char* data) {
 // FUNCTION: fn_21861
 void CGameMode::sub_D4A060(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const GuildMemberLeftPacket2*>(data);
-  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  GuildInfo* guildInfo = &g_guildInfo;
   char reason[40];
   strcpy_s(reason, sizeof(reason), packet->name);
 

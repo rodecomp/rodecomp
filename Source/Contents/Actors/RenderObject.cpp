@@ -68,10 +68,8 @@
 #include <vector>
 #include <windows.h>
 #include <timeapi.h>
+#include "Contents/GuildInfo.h"
 
-
-// GLOBAL: gl_25002
-std::uint32_t g_proximityCompareId;
 
 // GLOBAL: gl_25173
 int g_playerPoisoned;
@@ -4546,12 +4544,12 @@ __declspec(noinline) void CWorld::PlayerMove(const float& x, const float& z) {
     reinterpret_cast<unsigned char&>(this->unknown_00F4),
     [this, position]() {
       return this->FindActorInCell(position, [](std::uint32_t id) {
-        return id == g_proximityCompareId;
+        return id == g_guildInfo.unknown_00D0;
       });
     },
     GetRagConnection(),
     g_packetLengths,
-    g_proximityCompareId
+    g_guildInfo.unknown_00D0
   );
 }
 
@@ -4573,7 +4571,7 @@ __declspec(noinline) void CWorld::PcApproachToPlayer(std::uint32_t accountId, co
     if (actor->render.accountId != accountId) {
       continue;
     }
-    if (actor->Slot42() == static_cast<int>(g_proximityCompareId)) {
+    if (actor->Slot42() == static_cast<int>(g_guildInfo.unknown_00D0)) {
       found = true;
       break;
     }
@@ -4596,7 +4594,7 @@ __declspec(noinline) void CWorld::PcApproachToPlayer(std::uint32_t accountId, co
     },
     GetRagConnection(),
     g_packetLengths,
-    g_proximityCompareId
+    g_guildInfo.unknown_00D0
   );
 }
 

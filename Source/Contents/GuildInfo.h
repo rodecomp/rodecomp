@@ -74,7 +74,7 @@ public:
   /* 009C */ int unknown_009C;
   /* 00A0 */ int unknown_00A0;
   /* 00A4 */ int unknown_00A4;
-  /* 00A8 */ int m_guildId;
+  /* 00A8 */ std::uint32_t m_guildId;
   /* 00AC */ int unknown_00AC;
   /* 00B0 */ int unknown_00B0;
   /* 00B4 */ int unknown_00B4;
@@ -84,7 +84,7 @@ public:
   /* 00C4 */ int unknown_00C4;
   /* 00C8 */ int unknown_00C8;
   /* 00CC */ int unknown_00CC;
-  /* 00D0 */ int unknown_00D0;
+  /* 00D0 */ std::uint32_t unknown_00D0;
   /* 00D4 */ std::list<Unknown00D4Entry> unknown_00D4;
   /* 00DC */ std::list<Member> m_members;
   /* 00E4 */ std::list<RelatedGuild> unknown_00E4;
@@ -120,8 +120,7 @@ public:
   void UpdateCharacterName(int characterId, const char* name);
 };
 
-extern std::list<GuildInfo::Member> g_guildMembers;
-extern std::string g_guildName;
+extern GuildInfo g_guildInfo;
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(GuildInfo::Member) == 0x78);

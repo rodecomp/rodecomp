@@ -1827,7 +1827,7 @@ void CLoginMode::Initialize(const char* name) {
   g_loginStartMode = 3;
   g_isStopByLogin = 1;
   g_session.ClearItemContainers();
-  reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId))->Init();
+  g_guildInfo.Init();
   PreloadCommonSprites();
   if (g_serviceOptions.Get(7)) {
     g_soundMgr->PlayStream("bgm\\01.mp3", 0, false);

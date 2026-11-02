@@ -14,9 +14,7 @@
 #include <cmath>
 #include <cstring>
 #include <functional>
-
-// GLOBAL: gl_25002
-std::uint32_t g_proximityCompareId;
+#include "Contents/GuildInfo.h"
 
 // OFFSET: 0x00AC93C0
 // FUNCTION: fn_17683
@@ -57,7 +55,7 @@ static void CallWorldProximityUpdate(CWorld* world, std::function<bool()> nearby
     const std::uint16_t id = 0x0BB0;
     const std::uint16_t enabled = 1;
     std::memcpy(packet, &id, sizeof(id));
-    std::memcpy(packet + 2, &g_proximityCompareId, sizeof(g_proximityCompareId));
+    std::memcpy(packet + 2, &g_guildInfo.unknown_00D0, sizeof(g_guildInfo.unknown_00D0));
     std::memcpy(packet + 6, &enabled, sizeof(enabled));
     packet[8] = 1;
     GetRagConnection().Send(g_packetLengths.FixedLength(id), packet);
@@ -75,7 +73,7 @@ static bool ProximityCompareAidMatches(CWorld* world, std::uint32_t aid) {
       return false;
     }
 
-    return static_cast<CGameActor*>(actor)->Slot42() == static_cast<int>(g_proximityCompareId);
+    return static_cast<CGameActor*>(actor)->Slot42() == static_cast<int>(g_guildInfo.unknown_00D0);
   }
 
   return false;
@@ -105,7 +103,7 @@ bool CWorld::IsGuildMaster(std::uint32_t aid) {
         return false;
       }
 
-      return gameActor->Slot42() == static_cast<int>(g_proximityCompareId);
+      return gameActor->Slot42() == static_cast<int>(g_guildInfo.unknown_00D0);
     }
   }
 
@@ -236,7 +234,7 @@ bool WorldProximityGuildMasterCallback::Invoke(const std::uint32_t& aidRef) {
       return false;
     }
 
-    return static_cast<CGameActor*>(actor)->Slot42() == static_cast<int>(g_proximityCompareId);
+    return static_cast<CGameActor*>(actor)->Slot42() == static_cast<int>(g_guildInfo.unknown_00D0);
   }
 
   return false;

@@ -73,6 +73,7 @@
 #include "UI/Chat/UINewChatWnd.h"
 #include "UI/Window/UIChatRoomWnd.h"
 #include "UI/Shortcuts/ShortcutVisibility.h"
+#include "Contents/GuildInfo.h"
 
 namespace {
 #pragma pack(push, 1)
@@ -1491,7 +1492,7 @@ void UIWindowMgr::SendEmotionHotkey(int index) {
   g_windowMgr.unknown_04DC = text;
   const int& chatTarget = *reinterpret_cast<const int*>(&g_session.unknown_5490[0x8]);
   if (chatTarget == 2) {
-    if (g_guildId != 0) {
+    if (g_guildInfo.m_guildId != 0) {
       mode->SendMsg(0x81, 0, 0, 0, 0);
       return;
     }

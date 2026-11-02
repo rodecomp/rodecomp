@@ -2000,7 +2000,7 @@ void ClientItemLists::SetItems1750(int count, const short* ids) {
 // OFFSET: 0x00DF9560
 // FUNCTION: fn_23520
 int ClientItemLists::IsGuildMemberName(const char* name) {
-  std::list<GuildInfo::Member> members = g_guildMembers;
+  std::list<GuildInfo::Member> members = g_guildInfo.m_members;
   for (auto it = members.begin(); it != members.end(); ++it) {
     if (this->IsDifferentName(name, it->name.c_str()) == 0) {
       return 1;

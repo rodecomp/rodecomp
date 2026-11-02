@@ -494,7 +494,7 @@ int UIEntryQueueWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
       }
       break;
     case 2: {
-      GuildInfo* guild = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+      GuildInfo* guild = &g_guildInfo;
       if (g_session.GetMapProperty13() == 1) {
         error = 0x86B;
       } else if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->IsActiveSkillEffectId(0x29C)) {

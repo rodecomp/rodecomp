@@ -154,7 +154,7 @@ int UIListBoxAgitMenu::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       return 0;
     }
 
-    GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+    GuildInfo* guildInfo = &g_guildInfo;
     uint16_t agitId = static_cast<uint16_t>(guildInfo->GetUnknown0114(this->m_agitIndex));
 
     LuaScript* luaScript = g_luaScript;
@@ -178,7 +178,7 @@ int UIListBoxAgitMenu::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     }
   } else if (a == 1) {
     CMode* mode = g_modeMgr.GetGameMode();
-    GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+    GuildInfo* guildInfo = &g_guildInfo;
     uint16_t agitId = static_cast<uint16_t>(guildInfo->GetUnknown0114(this->m_agitIndex));
     mode->SendMsg(316, agitId, 0, 0, 0);
   }

@@ -73,12 +73,6 @@
 // GLOBAL: gl_24474
 CSession g_session;
 
-// GLOBAL: gl_24673
-std::list<GuildInfo::Member> g_guildMembers;
-
-// GLOBAL: gl_24864
-std::string g_guildName;
-
 // GLOBAL: gl_25140
 static std::string s_messageEndTag = "</MSG>";
 
@@ -1782,7 +1776,7 @@ bool CSession::RemoveFriendByCharacterId(std::uint32_t characterId) {
 // OFFSET: 0x00DF9F10
 // FUNCTION: fn_23568
 bool CSession::IsGuildMemberAccount(std::uint32_t accountId) const {
-  std::list<GuildInfo::Member> members(g_guildMembers.begin(), g_guildMembers.end());
+  std::list<GuildInfo::Member> members(g_guildInfo.m_members.begin(), g_guildInfo.m_members.end());
   for (const GuildInfo::Member& member : members) {
     if (static_cast<std::uint32_t>(member.accountId) == accountId) {
       return true;
@@ -1795,7 +1789,7 @@ bool CSession::IsGuildMemberAccount(std::uint32_t accountId) const {
 // OFFSET: 0x00DFA030
 // FUNCTION: fn_23569
 bool CSession::IsGuildMemberCharacter(std::uint32_t characterId) const {
-  std::list<GuildInfo::Member> members(g_guildMembers.begin(), g_guildMembers.end());
+  std::list<GuildInfo::Member> members(g_guildInfo.m_members.begin(), g_guildInfo.m_members.end());
   for (const GuildInfo::Member& member : members) {
     if (static_cast<std::uint32_t>(member.characterId) == characterId) {
       return true;
@@ -1814,14 +1808,14 @@ bool CSession::IsGuildMemberCharacter(int characterId, char* name) const {
 // OFFSET: 0x00DF9D90
 // FUNCTION: fn_23567
 bool CSession::IsGuildMemberName(const char* name) const {
-  std::list<GuildInfo::Member> members(g_guildMembers.begin(), g_guildMembers.end());
+  std::list<GuildInfo::Member> members(g_guildInfo.m_members.begin(), g_guildInfo.m_members.end());
   for (const GuildInfo::Member& member : members) {
     if (member.name == name) {
       return true;
     }
   }
 
-  return std::strcmp(g_guildName.c_str(), name) == 0;
+  return std::strcmp(g_guildInfo.unknown_0018.c_str(), name) == 0;
 }
 
 // OFFSET: 0x00DFA160
@@ -2444,7 +2438,7 @@ bool CSession::IsKnownName(std::string name) const {
     }
   }
 
-  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  GuildInfo* guildInfo = &g_guildInfo;
   if (guildInfo->GetMemberAccountId(name.c_str()) != -1) {
     return true;
   }

@@ -64,6 +64,7 @@
 #include <cstring>
 #include <windows.h>
 #include <timeapi.h>
+#include "Contents/GuildInfo.h"
 
 // GLOBAL: gl_24753
 extern const int g_maxMoveSpeed = 432;
@@ -4221,7 +4222,7 @@ void CPlayer::Initialize() {
   this->unknown_0538 = 0;
   this->render.angle = static_cast<float>((g_session.m_playerDir + 4) * 45);
   this->render.accountId = g_session.m_aid;
-  this->guildId = g_guildId;
+  this->guildId = g_guildInfo.m_guildId;
   this->unknown_023C = -1;
   this->unknown_0504 = 0;
   this->unknown_050C = 0;

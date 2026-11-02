@@ -25,6 +25,7 @@
 #include <cstdint>
 #include <cstring>
 #include <string>
+#include "Contents/GuildInfo.h"
 
 #pragma pack(push, 1)
 struct MenuIconBankingCheckPacket {
@@ -398,7 +399,7 @@ int UIMenuIconWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
         this->ToggleWindow(69);
         break;
       case 373:
-        this->ToggleWindow(static_cast<int>(g_guildId) < 1 ? 212 : 59);
+        this->ToggleWindow(static_cast<int>(g_guildInfo.m_guildId) < 1 ? 212 : 59);
         break;
       case 361:
         this->ToggleWindow(10008);

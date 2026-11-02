@@ -9,9 +9,7 @@
 #include <list>
 #include <string>
 #include <sys/stat.h>
-
-// GLOBAL: gl_24748
-std::uint32_t g_guildId;
+#include "Contents/GuildInfo.h"
 
 // OFFSET: 0x00DFF600
 // FUNCTION: fn_23620
@@ -20,7 +18,7 @@ void CSession::StoreEmblem(const void* data, std::size_t size, std::uint32_t gui
   char path[256];
   char filename[256];
 
-  if (guildId == g_guildId) {
+  if (guildId == g_guildInfo.m_guildId) {
     g_guildMgr->SetEmblemVersion(guildId, version);
   }
 

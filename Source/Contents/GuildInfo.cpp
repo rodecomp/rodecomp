@@ -9,6 +9,9 @@
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 
+// GLOBAL: gl_25465
+GuildInfo g_guildInfo;
+
 // OFFSET: 0x00AE38C0
 // FUNCTION: fn_18026
 GuildInfo::GuildInfo() {

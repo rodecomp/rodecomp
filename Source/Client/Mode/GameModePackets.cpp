@@ -4351,7 +4351,7 @@ namespace {
 // OFFSET: 0x00D89F20
 // FUNCTION: fn_22215
 void CGameMode::ReceiveGuildMemberList(const unsigned char* data) {
-  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  GuildInfo* guildInfo = &g_guildInfo;
   const PacketLengthHeader* packet = reinterpret_cast<const PacketLengthHeader*>(data);
   const int count = (packet->length - sizeof(PacketLengthHeader)) / sizeof(GuildMemberRecord);
   guildInfo->unknown_0064 = count;
@@ -4408,7 +4408,7 @@ namespace {
 // OFFSET: 0x00D4EE00
 // FUNCTION: fn_21880
 void CGameMode::ReceiveGuildMemberMemoList(const unsigned char* data) {
-  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  GuildInfo* guildInfo = &g_guildInfo;
   const PacketLengthHeader* packet = reinterpret_cast<const PacketLengthHeader*>(data);
   const int count = (packet->length - sizeof(PacketLengthHeader)) / sizeof(GuildMemberMemoRecord);
   guildInfo->unknown_0064 = count;
@@ -7402,7 +7402,7 @@ void CGameMode::ReceiveEquipWindowMicroscope3(const unsigned char* packet) {
 // OFFSET: 0x00D4E5A0
 // FUNCTION: fn_21877
 void CGameMode::ReceiveGuildMemberAdd(const unsigned char* packet) {
-  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  GuildInfo* guildInfo = &g_guildInfo;
   if (guildInfo->unknown_00C0 == 0) {
     return;
   }
@@ -7438,7 +7438,7 @@ void CGameMode::ReceiveGuildMemberAdd(const unsigned char* packet) {
 // OFFSET: 0x00D510C0
 // FUNCTION: fn_21889
 void CGameMode::ReceiveGuildPositionInfo(const unsigned char* packet) {
-  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  GuildInfo* guildInfo = &g_guildInfo;
   const int count = static_cast<unsigned>(*reinterpret_cast<const std::int16_t*>(packet + 2) - 4) >> 4;
   guildInfo->unknown_00D4.clear();
 
@@ -9164,7 +9164,7 @@ namespace {
 // FUNCTION: fn_21709
 void CGameMode::ReceiveGuildInfo(const unsigned char* data) {
   const GuildInfoPacket* packet = reinterpret_cast<const GuildInfoPacket*>(data);
-  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  GuildInfo* guildInfo = &g_guildInfo;
 
   char guildName[25];
   guildName[24] = '\0';
@@ -9181,10 +9181,10 @@ void CGameMode::ReceiveGuildInfo(const unsigned char* data) {
   }
 
   guildInfo->unknown_0000 = guildName;
-  g_guildName = masterName;
-  g_guildIsMaster = g_guildName == g_session.DecodePlayerName();
+  g_guildInfo.unknown_0018 = masterName;
+  g_guildInfo.unknown_00B4 = g_guildInfo.unknown_0018 == g_session.DecodePlayerName();
   guildInfo->unknown_0074 = manageLand;
-  g_guildId = packet->guildId;
+  g_guildInfo.m_guildId = packet->guildId;
   guildInfo->unknown_0060 = packet->level;
   guildInfo->unknown_0064 = packet->userCount;
   guildInfo->unknown_0068 = packet->userCount;
@@ -10155,7 +10155,7 @@ static_assert(sizeof(GuildBanNamedRecord) == 0x44);
 // OFFSET: 0x00D4B860
 // FUNCTION: fn_21866
 void CGameMode::ReceiveGuildBanList(const unsigned char* data) {
-  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  GuildInfo* guildInfo = &g_guildInfo;
   const PacketLengthHeader* packet = reinterpret_cast<const PacketLengthHeader*>(data);
   const int count = (packet->length - sizeof(PacketLengthHeader)) / sizeof(GuildBanRecord);
   guildInfo->unknown_00EC.clear();
@@ -10181,7 +10181,7 @@ void CGameMode::ReceiveGuildBanList(const unsigned char* data) {
 // OFFSET: 0x00D4BDD0
 // FUNCTION: fn_21867
 void CGameMode::ReceiveGuildBanList2(const unsigned char* data) {
-  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  GuildInfo* guildInfo = &g_guildInfo;
   const PacketLengthHeader* packet = reinterpret_cast<const PacketLengthHeader*>(data);
   const int count = (packet->length - sizeof(PacketLengthHeader)) / sizeof(GuildBanCharacterRecord);
   guildInfo->unknown_00EC.clear();
@@ -10210,7 +10210,7 @@ void CGameMode::ReceiveGuildBanList2(const unsigned char* data) {
 // OFFSET: 0x00D4C3D0
 // FUNCTION: fn_21868
 void CGameMode::ReceiveGuildBanList3(const unsigned char* data) {
-  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  GuildInfo* guildInfo = &g_guildInfo;
   const PacketLengthHeader* packet = reinterpret_cast<const PacketLengthHeader*>(data);
   const std::int64_t count = (packet->length - static_cast<std::int64_t>(sizeof(PacketLengthHeader))) / static_cast<std::int64_t>(sizeof(GuildBanNamedRecord));
   guildInfo->unknown_00EC.clear();
@@ -10528,7 +10528,7 @@ static_assert(sizeof(GuildInfoV4Packet) == 0x76);
 // FUNCTION: fn_21871
 void CGameMode::ReceiveGuildInfo2(const unsigned char* data) {
   const GuildInfoV2Packet* packet = reinterpret_cast<const GuildInfoV2Packet*>(data);
-  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  GuildInfo* guildInfo = &g_guildInfo;
 
   char guildName[25];
   guildName[24] = '\0';
@@ -10545,10 +10545,10 @@ void CGameMode::ReceiveGuildInfo2(const unsigned char* data) {
   }
 
   guildInfo->unknown_0000 = guildName;
-  g_guildName = masterName;
-  g_guildIsMaster = g_guildName == g_session.DecodePlayerName();
+  g_guildInfo.unknown_0018 = masterName;
+  g_guildInfo.unknown_00B4 = g_guildInfo.unknown_0018 == g_session.DecodePlayerName();
   guildInfo->unknown_0074 = manageLand;
-  g_guildId = packet->guildId;
+  g_guildInfo.m_guildId = packet->guildId;
   guildInfo->unknown_0060 = packet->level;
   guildInfo->unknown_0064 = packet->userCount;
   guildInfo->unknown_006C = packet->maxUserCount;
@@ -10566,7 +10566,7 @@ void CGameMode::ReceiveGuildInfo2(const unsigned char* data) {
 // FUNCTION: fn_21872
 void CGameMode::ReceiveGuildInfo3(const unsigned char* data) {
   const GuildInfoV3Packet* packet = reinterpret_cast<const GuildInfoV3Packet*>(data);
-  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  GuildInfo* guildInfo = &g_guildInfo;
 
   std::string masterName = LookupPlayerName(packet->masterCharacterId);
   if (masterName.size() == 0) {
@@ -10585,13 +10585,13 @@ void CGameMode::ReceiveGuildInfo3(const unsigned char* data) {
   }
 
   if (masterName == g_session.DecodePlayerName()) {
-    g_guildIsMaster = 1;
+    g_guildInfo.unknown_00B4 = 1;
   }
   guildInfo->unknown_0000 = guildName;
-  g_guildName = masterName;
-  g_proximityCompareId = packet->masterCharacterId;
+  g_guildInfo.unknown_0018 = masterName;
+  g_guildInfo.unknown_00D0 = packet->masterCharacterId;
   guildInfo->unknown_0074 = manageLand;
-  g_guildId = packet->guildId;
+  g_guildInfo.m_guildId = packet->guildId;
   guildInfo->unknown_0060 = packet->level;
   guildInfo->unknown_0068 = packet->userCount;
   guildInfo->unknown_006C = packet->maxUserCount;
@@ -10609,24 +10609,24 @@ void CGameMode::ReceiveGuildInfo3(const unsigned char* data) {
 // FUNCTION: fn_21873
 void CGameMode::ReceiveGuildInfo4(const unsigned char* data) {
   const GuildInfoV4Packet* packet = reinterpret_cast<const GuildInfoV4Packet*>(data);
-  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  GuildInfo* guildInfo = &g_guildInfo;
 
   if (!g_playerNameDictionary->Contains(packet->masterCharacterId)) {
     const std::uint32_t characterId = packet->masterCharacterId;
     std::string name(packet->masterName, packet->masterName + sizeof(packet->masterName));
     SetPlayerName(characterId, name.c_str());
   }
-  g_guildName = LookupPlayerName(packet->masterCharacterId);
-  if (g_guildName.size() == 0) {
-    g_guildName = LookupMessage(0x245) + g_gameModeNamelessTag;
+  g_guildInfo.unknown_0018 = LookupPlayerName(packet->masterCharacterId);
+  if (g_guildInfo.unknown_0018.size() == 0) {
+    g_guildInfo.unknown_0018 = LookupMessage(0x245) + g_gameModeNamelessTag;
   }
 
   char guildName[25];
   guildName[24] = '\0';
   char manageLand[25];
   manageLand[24] = '\0';
-  if (g_guildName == g_session.DecodePlayerName()) {
-    g_guildIsMaster = 1;
+  if (g_guildInfo.unknown_0018 == g_session.DecodePlayerName()) {
+    g_guildInfo.unknown_00B4 = 1;
   }
   std::memcpy(guildName, packet->guildName, sizeof(packet->guildName));
   std::memcpy(manageLand, packet->manageLand, sizeof(manageLand) - 1);
@@ -10636,9 +10636,9 @@ void CGameMode::ReceiveGuildInfo4(const unsigned char* data) {
   }
 
   guildInfo->unknown_0000 = guildName;
-  g_proximityCompareId = packet->masterCharacterId;
+  g_guildInfo.unknown_00D0 = packet->masterCharacterId;
   guildInfo->unknown_0074 = manageLand;
-  g_guildId = packet->guildId;
+  g_guildInfo.m_guildId = packet->guildId;
   guildInfo->unknown_0060 = packet->level;
   guildInfo->unknown_0068 = packet->userCount;
   guildInfo->unknown_006C = packet->maxUserCount;
@@ -10666,7 +10666,7 @@ static_assert(sizeof(GuildNoticePacket) == 0xB6);
 // FUNCTION: fn_21874
 void CGameMode::ReceiveGuildNotice(unsigned char* data) {
   GuildNoticePacket* packet = reinterpret_cast<GuildNoticePacket*>(data);
-  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  GuildInfo* guildInfo = &g_guildInfo;
   packet->notice[119] = '\0';
   packet->subject[59] = '\0';
   guildInfo->unknown_0030 = packet->subject;
@@ -10747,7 +10747,7 @@ static_assert(sizeof(GuildMemberAddV3Packet) == 0x52);
 // FUNCTION: fn_21878
 void CGameMode::ReceiveGuildMemberAdd2(const unsigned char* data) {
   const GuildMemberAddV2Packet* packet = reinterpret_cast<const GuildMemberAddV2Packet*>(data);
-  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  GuildInfo* guildInfo = &g_guildInfo;
   if (guildInfo->unknown_00C0 == 0) {
     return;
   }
@@ -10783,7 +10783,7 @@ void CGameMode::ReceiveGuildMemberAdd2(const unsigned char* data) {
 // FUNCTION: fn_21879
 void CGameMode::ReceiveGuildMemberAdd3(const unsigned char* data) {
   const GuildMemberAddV3Packet* packet = reinterpret_cast<const GuildMemberAddV3Packet*>(data);
-  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  GuildInfo* guildInfo = &g_guildInfo;
   if (guildInfo->unknown_00C0 == 0) {
     return;
   }
@@ -10860,7 +10860,7 @@ namespace {
 // OFFSET: 0x00D4F180
 // FUNCTION: fn_21881
 void CGameMode::ReceiveGuildMemberList2(const unsigned char* data) {
-  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  GuildInfo* guildInfo = &g_guildInfo;
   const PacketLengthHeader* packet = reinterpret_cast<const PacketLengthHeader*>(data);
   const std::int64_t count =
     (packet->length - static_cast<std::int64_t>(sizeof(PacketLengthHeader))) / static_cast<std::int64_t>(sizeof(GuildMemberNamedRecord));
@@ -10907,7 +10907,7 @@ void CGameMode::ReceiveGuildMemberList2(const unsigned char* data) {
 // OFFSET: 0x00D4F7A0
 // FUNCTION: fn_21882
 void CGameMode::ReceiveGuildMemberList3(const unsigned char* data) {
-  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  GuildInfo* guildInfo = &g_guildInfo;
   const PacketLengthHeader* packet = reinterpret_cast<const PacketLengthHeader*>(data);
   const int count = (packet->length - sizeof(PacketLengthHeader)) / sizeof(GuildMemberMemoOnlyRecord);
   guildInfo->unknown_0064 = count;
@@ -10951,7 +10951,7 @@ void CGameMode::ReceiveGuildMemberList3(const unsigned char* data) {
 // OFFSET: 0x00D4FD50
 // FUNCTION: fn_21883
 void CGameMode::ReceiveGuildRelationList(const unsigned char* data) {
-  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  GuildInfo* guildInfo = &g_guildInfo;
   const PacketLengthHeader* packet = reinterpret_cast<const PacketLengthHeader*>(data);
   const int count = (packet->length - sizeof(PacketLengthHeader)) / sizeof(GuildRelationRecord);
   guildInfo->unknown_00E4.clear();
@@ -11076,7 +11076,7 @@ void CGameMode::ReceiveMapMove(const unsigned char* data) {
 // FUNCTION: fn_21888
 void CGameMode::ReceiveGuildPositionNames(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const GuildPositionNamePacket*>(data);
-  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  GuildInfo* guildInfo = &g_guildInfo;
   const int count = (packet->length - 4) / sizeof(GuildPositionNameEntry);
   for (int i = 0; i < count; ++i) {
     const GuildPositionNameEntry& position = packet->entries[i];
@@ -11735,7 +11735,7 @@ void CGameMode::ApplyRefiningMaterial(short itemId, unsigned char count, const u
 // OFFSET: 0x00D4B4D0
 // FUNCTION: fn_21865
 void CGameMode::ReceiveAddRelatedGuild(const unsigned char* data) {
-  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  GuildInfo* guildInfo = &g_guildInfo;
   if (guildInfo->unknown_00BC == 0) {
     return;
   }
@@ -11808,7 +11808,7 @@ static_assert(sizeof(GuildMemberAddV4Packet) == 0x24);
 // FUNCTION: fn_22214
 void CGameMode::ReceiveGuildMemberAdd4(const unsigned char* data) {
   const GuildMemberAddV4Packet* packet = reinterpret_cast<const GuildMemberAddV4Packet*>(data);
-  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  GuildInfo* guildInfo = &g_guildInfo;
   if (guildInfo->unknown_00C0 == 0) {
     return;
   }

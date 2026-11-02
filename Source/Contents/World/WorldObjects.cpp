@@ -52,16 +52,12 @@
 #include <new>
 #include <string>
 #include <vector>
+#include "Contents/GuildInfo.h"
 
 // GLOBAL: gl_24371
 HANDLE hObject;
 // GLOBAL: gl_24757
 std::vector<DeferredWorldModel> g_deferredWorldModels;
-// GLOBAL: gl_25238
-int g_guildCanInvite;
-// GLOBAL: gl_25239
-int g_guildIsMaster;
-
 // OFFSET: 0x00AC8220
 // FUNCTION: fn_17667
 CRenderObject* CWorld::GetGameActorByAidIncludeMe(std::uint32_t aid) const {
@@ -800,15 +796,15 @@ void CGameMode::OpenActorMenu(const ActorPickInfo* pick, int handled) {
         menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(line), 0, 0, 0);
       }
 
-      if (g_guildId != 0) {
+      if (g_guildInfo.m_guildId != 0) {
         CGameActor* member = static_cast<CGameActor*>(this->scene->GetGameActorByAID(pick->accountId));
         const std::uint32_t guildId = member != nullptr ? member->Slot50() : 0;
-        if (g_guildCanInvite != 0 && guildId == 0) {
+        if (g_guildInfo.unknown_00AC != 0 && guildId == 0) {
           this->actorMenuIds.push_back(0x16);
           sprintf(line, LookupMessage(0x17E), name.c_str());
           menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(line), 0, 0, 0);
         }
-        if (g_guildIsMaster != 0 && guildId != g_guildId) {
+        if (g_guildInfo.unknown_00B4 != 0 && guildId != g_guildInfo.m_guildId) {
           menu->SendMsg(nullptr, 0x48, 0, 0, 0, 0);
           this->actorMenuIds.push_back(0x19);
           menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(LookupMessage(0x18F)), 0, 0, 0);
