@@ -3415,6 +3415,148 @@ std::string UIEditCtrl3::ResolveItemLinks(const std::string& source) {
   return result;
 }
 
+// OFFSET: 0x008595F0
+// FUNCTION: fn_10777
+std::string UIEditCtrl3::PlaceLineLinks(const char* line, std::string& text, const int* lineIndex) {
+  if (text.find(g_itemLinkOpen) == std::string::npos) {
+    return std::string(line, std::strlen(line));
+  }
+
+  std::string remaining(text.c_str(), text.size());
+  std::string result;
+  std::vector<UIItemTagButton*> buttons;
+  int position = 0;
+  int start;
+
+  for (;;) {
+    std::string link;
+    const int previous = position;
+    start = previous;
+    if (!this->ExtractItemLink(remaining, link, position, text.c_str())) {
+      break;
+    }
+
+    if (result.size() >= std::strlen(line)) {
+      break;
+    }
+
+    std::string chunk = text.substr(previous, position - previous);
+    if (result.size() + chunk.size() > std::strlen(line)) {
+      const int room = static_cast<int>(std::strlen(line) - result.size());
+      if (room > 0) {
+        result += chunk.substr(0, room);
+        start = previous + room;
+        break;
+      }
+    }
+
+    result += chunk;
+
+    if (std::strncmp(link.c_str(), "00000T", 6) == 0) {
+      const int id = ItemLinkMessageId(link);
+      if (g_itemTagOwner->unknown_0118 >= id) {
+        std::string name;
+        const unsigned short codePage = static_cast<unsigned short>(g_textCodePage);
+        const TipBoxTitles titles{g_itemTagOwner->m_entries, g_itemTagOwner->m_missing, g_itemTagOwner->m_maximumId, codePage};
+        const std::string title = titles.Title(id, &name, 17);
+        if (name.size() + 2 + result.size() > std::strlen(line)) {
+          start = previous + static_cast<int>(chunk.size());
+          break;
+        }
+
+        if (title.size() != 0) {
+          UIItemTagButton* button = this->CreateItemTagButton(title, name, id, this, 0x7F00E4);
+          if (button) {
+            buttons.push_back(button);
+            button->line = *lineIndex;
+            button->column = this->TextWidth(this->m_edit->buttons.fonts, this->m_edit->buttons.locale, result.c_str(), 0, 0, 12, 0, 0) - this->textY;
+            result += button->label;
+          }
+        }
+
+        position += static_cast<int>(link.size() + g_itemLinkClose.size() + g_itemLinkOpen.size());
+        continue;
+      }
+    }
+
+    std::vector<int> fields;
+    this->DecodeLinkFields(link, fields);
+    ITEM_INFO item;
+    if (this->DecodeItemLink(fields, item)) {
+      const std::string name = this->BracketFittedText(item.DisplayName(0));
+      if (name.size() + result.size() > std::strlen(line)) {
+        start = previous + static_cast<int>(chunk.size());
+        break;
+      }
+
+      UIItemTagButton* button = new (std::nothrow) UIItemTagButton(*this->m_context, this->m_edit->buttons);
+      reinterpret_cast<ITEM_INFO&>(button->unknown_00F8) = item;
+      button->Configure(name.c_str(), 0x82F2E1, 0, 12, 0, 0);
+      button->SetTooltip(item.DisplayName(0).c_str());
+      button->m_hoverColor = 0x82F2E1;
+      button->SetId(0x1D0);
+      button->ResizeToTextClipped(this->TextWidth(this->m_edit->buttons.fonts, this->m_edit->buttons.locale, name.c_str(), 0, 0, 12, 0, 0) + 1, button->geometry.height);
+      this->AddChild(button);
+      buttons.push_back(button);
+      button->line = *lineIndex;
+      button->column = this->TextWidth(this->m_edit->buttons.fonts, this->m_edit->buttons.locale, result.c_str(), 0, 0, 12, 0, 0) - this->textY;
+      result += name;
+      position += static_cast<int>(link.size() + g_itemLinkClose.size() + g_itemLinkOpen.size());
+    }
+  }
+
+  if (result.size() < std::strlen(line)) {
+    const int room = static_cast<int>(std::strlen(line) - result.size());
+    if (room > 0 && remaining.size() >= static_cast<unsigned>(room)) {
+      result += remaining.substr(0, room);
+      start += room;
+    }
+  }
+
+  text = text.substr(start);
+  this->entries.push_back(buttons);
+  return result;
+}
+
+// OFFSET: 0x00869810
+// FUNCTION: fn_10973
+void UIEditCtrl3::sub_869810(const char* value) {
+  std::string resolved = this->ResolveItemLinks(std::string(value, std::strlen(value)));
+
+  std::vector<std::string> lines;
+  int width = this->geometry.width - 6;
+  if (this->unknown_0134 != 0) {
+    width += 3 - this->unknown_0130->geometry.width;
+  }
+  this->WrapTextWithBreaks(resolved.c_str(), &lines, &this->unknown_0174, width);
+  this->WrapLines(lines);
+
+  this->unknown_013C = static_cast<int>(lines.size());
+  if (reinterpret_cast<const unsigned char*>(&this->unknown_0184)[1] != 0) {
+    this->unknown_013C = static_cast<int>(lines.size()) + 1;
+  }
+  this->UpdateScrollBar();
+
+  if (this->unknown_0134 != 0) {
+    lines.clear();
+    resolved = this->ResolveItemLinks(std::string(value, std::strlen(value)));
+    width = this->geometry.width - 6;
+    if (this->unknown_0134 != 0) {
+      width += 3 - this->unknown_0130->geometry.width;
+    }
+    this->WrapTextWithBreaks(resolved.c_str(), &lines, &this->unknown_0174, width);
+    this->WrapLines(lines);
+  }
+
+  std::string text(value, std::strlen(value));
+  for (std::size_t index = 0; index < lines.size(); ++index) {
+    const int lineIndex = static_cast<int>(index);
+    lines[index] = this->PlaceLineLinks(lines[index].c_str(), text, &lineIndex);
+  }
+
+  this->SetText(resolved.c_str());
+}
+
 // OFFSET: 0x00860C60
 // FUNCTION: fn_10901
 void UIEditCtrl3::WrapLines(std::vector<std::string>& lines) {
