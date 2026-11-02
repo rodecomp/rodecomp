@@ -7,13 +7,10 @@
 
 class UICashEmotionSprBtn;
 
-struct UICashEmotionPieceContext {
-};
-
 class UICashEmotionPiece : public UIWindow {
 public:
   UICashEmotionPiece();
-  __declspec(noinline) UICashEmotionPiece(UIWindowContext& windows, UICashEmotionPieceContext& controls);
+  __declspec(noinline) UICashEmotionPiece(UIWindowContext& windows);
   void Slot15(int width, int height) override;
   void Slot19() override;
   void Paint() override;
@@ -31,7 +28,6 @@ protected:
   /* 0084 */ UICashEmotionSprBtn* m_button;
   /* 0088 */ bool m_hoverable;
   /* 0089 */ bool m_hovered;
-  UICashEmotionPieceContext* m_controls;
 };
 
 #endif

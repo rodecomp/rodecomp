@@ -338,7 +338,6 @@ protected:
   /* 0094 */ ICashEmotionAction* m_action;
   /* 0098 */ int m_page;
   /* 009C */ int m_selectedIndex;
-  UICashEmotionPieceContext* m_controls;
 };
 
 // OFFSET: 0x00591CA0
@@ -2762,7 +2761,7 @@ void UICashEmotionMiniWnd::Refresh(int first) {
 void UICashEmotionMiniWnd::Slot15(int width, int height) {
   int x = 24;
   for (UICashEmotionPiece*& piece : this->m_pieces) {
-    piece = new (std::nothrow) UICashEmotionPiece(*this->m_context, *this->m_controls);
+    piece = new (std::nothrow) UICashEmotionPiece(*this->m_context);
     if (piece) {
       piece->SetSize(42, 42);
       piece->Move(x, 1);
@@ -3021,7 +3020,7 @@ int UICashEmotionPack::Slot53(int packId, bool showTooltip, bool hoverable) {
           continue;
         }
 
-        UICashEmotionPiece* piece = new (std::nothrow) UICashEmotionPiece(*this->m_context, *reinterpret_cast<UICashEmotionPieceContext*>(nullptr));
+        UICashEmotionPiece* piece = new (std::nothrow) UICashEmotionPiece(*this->m_context);
         if (!piece) {
           continue;
         }
@@ -3278,7 +3277,7 @@ int UICashEmotionPack_Search::SetResults(const char* title, const std::vector<st
   int x = 8;
   int index = 0;
   for (const std::pair<int, int>& result : results) {
-    UICashEmotionPiece* piece = new (std::nothrow) UICashEmotionPiece(*this->m_context, *reinterpret_cast<UICashEmotionPieceContext*>(nullptr));
+    UICashEmotionPiece* piece = new (std::nothrow) UICashEmotionPiece(*this->m_context);
     if (!piece) {
       continue;
     }
@@ -3445,8 +3444,8 @@ int UICashEmotionPack_Unpurchase::SendMsg(
 
 // OFFSET: 0x007CB9F0
 // FUNCTION: fn_09479
-UICashEmotionPiece::UICashEmotionPiece(UIWindowContext& windows, UICashEmotionPieceContext& controls)
-    : UIWindow(windows, 0), m_packId(0), m_emotionId(0), m_button(nullptr), m_hoverable(false), m_hovered(false), m_controls(&controls) {
+UICashEmotionPiece::UICashEmotionPiece(UIWindowContext& windows)
+    : UIWindow(windows, 0), m_packId(0), m_emotionId(0), m_button(nullptr), m_hoverable(false), m_hovered(false) {
 }
 
 // OFFSET: 0x007CBB30
