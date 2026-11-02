@@ -3385,7 +3385,7 @@ void CGameMode::InitializeState() {
   *reinterpret_cast<int*>(this->unknown_00EC) = 0;
   *reinterpret_cast<int*>(&this->unknown_00EC[4]) = 0;
   *reinterpret_cast<int*>(&this->unknown_00EC[8]) = 0;
-  *reinterpret_cast<int*>(&this->unknown_00EC[0x0C]) = 1;
+  this->unknown_00F8 = 1;
   this->unknown_00FC = 0;
   *reinterpret_cast<int*>(this->unknown_0100) = 0;
   *reinterpret_cast<std::uint32_t*>(&this->unknown_0100[0x04]) = timeGetTime() - 2000;
@@ -4124,7 +4124,7 @@ void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor*
   if (g_mouse.buttons[0] == 1 && attack != 0 && !HIBYTE(GetAsyncKeyState(VK_MENU))) {
     this->SendMsg(0x1A, 1, 0, 0, 0);
     *reinterpret_cast<int*>(&this->unknown_00EC[0x08]) = targetAid;
-    *reinterpret_cast<int*>(&this->unknown_00EC[0x0C]) = 0;
+    this->unknown_00F8 = 0;
     if (g_session.GetSceneUnknown004C() == 0 && (HIBYTE(GetAsyncKeyState(VK_CONTROL)) || forceOption != 0)) {
       this->RequestPlayerAction(targetAid, 0);
       forced = 1;
@@ -4311,6 +4311,288 @@ int CGameMode::ProcessMousePick(int result, ActorPickInfo* pick) {
   if (pick && result == 0) {
     this->ShowActorNameBalloon(pick->accountId);
     result = this->HandleActorPick(pick, 0);
+  }
+  return result;
+}
+
+#include "Contents/World/WorldModelView.h"
+#include "Contents/World/WorldTerrainPicking.h"
+#include "UI/Shop/UIMerchantShopMakeWnd.h"
+
+void __stdcall SendMacroUserInfoPacket(std::uint16_t first, std::uint16_t second, std::uint8_t third);
+
+// OFFSET: 0x00CE0210
+// FUNCTION: fn_21329
+int CGameMode::ProcessGroundClick(int result) {
+  const RenderProjection projection = g_renderer->viewport.Projection();
+  const auto drawCell = [](GroundGeometry* ground, const float* matrix, int column, int row, std::uint32_t color) {
+    void** groundVtable = *reinterpret_cast<void***>(ground);
+    reinterpret_cast<void(__thiscall*)(GroundGeometry*, const float*, int, int, std::uint32_t)>(groundVtable[14])(ground, matrix, column, row, color);
+  };
+
+  UIWindow* macroArea = g_windowMgr.LookupWindow(0x11E);
+  if (macroArea) {
+    const unsigned char* macroFields = reinterpret_cast<const unsigned char*>(macroArea);
+    if (macroFields[0x10C] == 1 && *reinterpret_cast<const int*>(macroFields + 0xEC) == 1) {
+      int column = -1;
+      int row = -1;
+      PickScreenTerrain(projection, g_screenWidth, g_screenHeight, this->camera->frame.eye, this->camera->frame.inverse.values, this->scene->spatial, column, row);
+      const int radius = *reinterpret_cast<const int*>(macroFields + 0xF4);
+      for (int dx = -radius; dx <= radius; ++dx) {
+        for (int dy = -radius; dy <= radius; ++dy) {
+          drawCell(this->scene->ground, this->camera->frame.view.values, column + dx, row + dy, 0x660000FF);
+        }
+      }
+
+      if (g_mouse.buttons[1] == 1) {
+        SendMacroUserInfoPacket(static_cast<std::uint16_t>(column), static_cast<std::uint16_t>(row), static_cast<std::uint8_t>(radius));
+        return -1;
+      }
+    }
+  }
+
+  UIMerchantShopMakeWnd* shop = reinterpret_cast<UIMerchantShopMakeWnd*>(g_windowMgr.unknown_02FC);
+  if (!shop && g_windowMgr.unknown_040C) {
+    shop = reinterpret_cast<UIMerchantShopMakeWnd*>(g_windowMgr.unknown_040C);
+  }
+
+  bool shopSuspended = false;
+  if (shop) {
+    if (shop->suspended == 1) {
+      shopSuspended = true;
+      int column = -1;
+      int row = -1;
+      PickScreenTerrain(projection, g_screenWidth, g_screenHeight, this->camera->frame.eye, this->camera->frame.inverse.values, this->scene->spatial, column, row);
+      drawCell(this->scene->ground, this->camera->frame.view.values, column, row, 0x66FF0000);
+      if (g_mouse.buttons[0] == 1) {
+        shop->SetSuspended(0);
+        shop->SetSelection(static_cast<short>(column), static_cast<short>(row));
+        if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0xB63), 2, true, false, 0, "Message", 280, 120, 0) == 0xBB) {
+          shop->SendShopRequest();
+          return -1;
+        }
+        shop->SetSuspended(1);
+      }
+    } else if (shop->HasSelection() == true) {
+      drawCell(this->scene->ground, this->camera->frame.view.values, shop->unknown_018A, shop->unknown_018C, 0x66FF0000);
+    }
+  }
+
+  const std::intptr_t mode = reinterpret_cast<std::intptr_t>(this->unknown_0408);
+  if (mode == 2 || mode == 3 || mode == 4) {
+    return result;
+  }
+
+  int column = -1;
+  int row = -1;
+  if (!PickScreenTerrain(projection, g_screenWidth, g_screenHeight, this->camera->frame.eye, this->camera->frame.inverse.values, this->scene->spatial, column, row)) {
+    return result;
+  }
+
+  const std::uint32_t homunAid = *reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5570[8]);
+  const std::uint32_t mercenaryAid = *reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5620[8]);
+  if (g_groundMarkEnabled != 0) {
+    if (HIBYTE(GetAsyncKeyState(VK_MENU)) && g_mouse.buttons[1] == 1) {
+      if (g_session.unknown_560C != 0) {
+        g_session.unknown_560C = 0;
+        return result;
+      }
+
+      CGameActor* homun = static_cast<CGameActor*>(this->scene->GetGameActorByAID(homunAid));
+      if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
+        if (homun && homun->HasUnknown030CEntry()) {
+          AiMessage message = {};
+          message.type = 1;
+          message.x = column;
+          message.y = row;
+          homun->SetUnknown0330(reinterpret_cast<const float*>(&message), 0);
+        }
+        return result;
+      }
+
+      g_groundMarkA = column;
+      g_groundMarkB = row;
+      g_groundMarkAid = 0;
+      g_session.unknown_5610 = 0;
+      if (homun && homun->HasUnknown030CEntry()) {
+        AiMessage message = {};
+        message.type = 1;
+        message.x = column;
+        message.y = row;
+        homun->SetUnknown0318(reinterpret_cast<const float*>(&message), 0);
+      }
+      g_groundMarkSet = 1;
+      return result;
+    }
+
+    if (g_groundMarkEnabled != 0 && g_mouse.buttons[1] == 1) {
+      g_session.ClearHomunStatus();
+    }
+  }
+
+  if (g_groundMarkAltEnabled != 0) {
+    if (HIBYTE(GetAsyncKeyState(VK_MENU)) && g_mouse.buttons[0] == 1) {
+      if (g_session.unknown_56A8 != 0) {
+        g_session.unknown_56A8 = 0;
+        return result;
+      }
+
+      CGameActor* mercenary = static_cast<CGameActor*>(this->scene->GetGameActorByAID(mercenaryAid));
+      if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
+        if (mercenary && mercenary->HasUnknown0310Entry()) {
+          AiMessage message = {};
+          message.type = 1;
+          message.x = column;
+          message.y = row;
+          mercenary->SetUnknown0330(reinterpret_cast<const float*>(&message), 1);
+        }
+        return result;
+      }
+
+      g_groundMarkAltA = column;
+      g_groundMarkAltB = row;
+      g_groundMarkAltAid = 0;
+      g_session.unknown_56AC = 0;
+      if (mercenary && mercenary->HasUnknown0310Entry()) {
+        AiMessage message = {};
+        message.type = 1;
+        message.x = column;
+        message.y = row;
+        mercenary->SetUnknown0318(reinterpret_cast<const float*>(&message), 1);
+      }
+      g_groundMarkAltSet = 1;
+      return result;
+    }
+
+    if (g_groundMarkAltEnabled != 0 && g_mouse.buttons[0] == 1) {
+      g_session.ResetMercenaryStats();
+      if (reinterpret_cast<std::intptr_t>(this->unknown_0408) == 1 && g_session.IsMercenarySkill(this->unknown_040C)) {
+        CGameActor* mercenary = static_cast<CGameActor*>(this->scene->GetGameActorByAID(mercenaryAid));
+        if (mercenary && mercenary->HasUnknown0310Entry()) {
+          const std::uint32_t state = mercenary->render.unknown_0070;
+          if (state == 1 || state == 0 || state == 4) {
+            AiMessage message;
+            message.type = 8;
+            message.x = column;
+            message.y = row;
+            message.level = this->unknown_0414;
+            message.skill = this->unknown_040C;
+            message.target = 0;
+            mercenary->SetUnknown0318(reinterpret_cast<const float*>(&message), 1);
+            return 1;
+          }
+        }
+      }
+    }
+  }
+
+  if (reinterpret_cast<std::intptr_t>(this->unknown_0408) == 1 && g_mouse.buttons[0] == 1 && (result == 0 || result == 2)) {
+    result = 1;
+    if (g_session.IsHomunculusSkill(this->unknown_040C) == 1 && g_groundMarkEnabled == 1) {
+      CGameActor* homun = static_cast<CGameActor*>(this->scene->GetGameActorByAID(homunAid));
+      if (homun && homun->HasUnknown030CEntry() == true) {
+        const std::uint32_t state = homun->render.unknown_0070;
+        if (state == 0 || state == 1 || state == 4) {
+          AiMessage message;
+          message.type = 8;
+          message.x = column;
+          message.y = row;
+          message.level = this->unknown_0414;
+          message.skill = this->unknown_040C;
+          message.target = 0;
+          homun->SetUnknown0318(reinterpret_cast<const float*>(&message), 0);
+          return 1;
+        }
+      }
+    }
+
+    if (this->scene->player) {
+      const int skill = this->unknown_040C;
+      this->scene->player->SendMsg(nullptr, 0x41, 0, skill, skill >> 31, column, column >> 31, row, row >> 31, 0, 0, 0, 0, 0, 0);
+      const int level = this->unknown_0414;
+      this->scene->player->SendMsg(nullptr, 0x5A, 0, level, level >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+  }
+
+  if (HIBYTE(GetAsyncKeyState(VK_CONTROL))) {
+    return result;
+  }
+  if (this->unknown_0244 != 0) {
+    return result;
+  }
+  if (result != 0 && result != 2) {
+    return result;
+  }
+  if (this->drag.source != 0) {
+    return result;
+  }
+
+  if (*reinterpret_cast<const int*>(g_session.unknown_546C) != 0) {
+    g_groundOverlayA = column;
+    g_groundOverlayB = row;
+    g_groundOverlaySkip = 0;
+    int skip = 1;
+    const TerrainHeightCell* cell = this->scene->terrain->Grid().CellAt(column, row);
+    if (!cell || cell->type == 1) {
+      g_groundOverlayC = 0xFEFF0000;
+    } else if (cell->type == 5) {
+      g_groundOverlayC = 0xFEFFFF00;
+    } else {
+      g_groundOverlayC = 0x6600FFAA;
+      skip = 0;
+    }
+    g_groundOverlaySkip = shopSuspended == true ? 1 : skip;
+  }
+
+  std::uint32_t& clickTick = *reinterpret_cast<std::uint32_t*>(&this->unknown_00D8[0]);
+  const bool elapsed = timeGetTime() > clickTick + 600;
+  if (this->scene->player->unknown_0508 == 0 && g_mouse.buttons[0] == 2) {
+    if (!elapsed) {
+      return result;
+    }
+    if (this->unknown_00F8 == 0) {
+      return result;
+    }
+  } else {
+    if (g_mouse.buttons[0] != 1) {
+      return result;
+    }
+    if (g_mouse.buttons[1] == 2) {
+      return result;
+    }
+  }
+
+  g_windowMgr.UpdateNavigationList();
+  clickTick = timeGetTime();
+  if (HIBYTE(GetAsyncKeyState(VK_SHIFT)) || g_windowMgr.window_027C || this->scene->player->render.unknown_0070 == 6) {
+    this->scene->player->SendMsg(nullptr, 0x10, 0, column, column >> 31, row, row >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+    return result;
+  }
+
+  bool findClosest = true;
+  CPlayer* player = this->scene->player;
+  const TerrainHeightCell* cell = this->scene->terrain->Grid().CellAt(column, row);
+  if (cell && cell->type != 1 && cell->type != 5 &&
+      (column != *reinterpret_cast<const int*>(&player->unknown_04F8) || row != player->unknown_04FC)) {
+    int startColumn;
+    int startRow;
+    int startSubColumn;
+    int startSubRow;
+    this->scene->terrain->Grid().WorldSubcell(player->render.position.x, player->render.position.z, startColumn, startRow, startSubColumn, startSubRow);
+    if (this->CanFindPath(startColumn, startRow, startSubColumn, startSubRow, column, row) && !this->IsRegisterCell(column, row)) {
+      findClosest = false;
+    }
+  }
+
+  if (findClosest && !this->GetClosestValidCell(&column, &row)) {
+    return result;
+  }
+
+  if (g_windowMgr.unknown_0210) {
+    g_windowMgr.CloseWindow(0x12);
+  }
+  if (this->scene->player) {
+    this->scene->player->SendMsg(nullptr, 0x11, 0, column, column >> 31, row, row >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
   }
   return result;
 }

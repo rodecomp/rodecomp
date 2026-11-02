@@ -111,7 +111,8 @@ public:
   /* 00E0 */ int unknown_00E0;
   /* 00E4 */ int unknown_00E4;
   /* 00E8 */ int unknown_00E8;
-  /* 00EC */ unsigned char unknown_00EC[0x10];
+  /* 00EC */ unsigned char unknown_00EC[0x0C];
+  /* 00F8 */ int unknown_00F8;
   /* 00FC */ int unknown_00FC;
   /* 0100 */ unsigned char unknown_0100[0x18];
   /* 0118 */ std::string unknown_0118;
@@ -368,6 +369,7 @@ public:
   int ProcessMousePick(int result, ActorPickInfo* pick);
   void ReceiveSkillList(int packetType, const std::vector<SkillListEntry>& skills);
   void ShowActorNameBalloon(std::uint32_t id);
+  int ProcessGroundClick(int result);
   void ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor* actor);
   void ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* actor);
   void ReceiveSkillUpdate(

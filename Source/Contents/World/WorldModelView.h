@@ -50,4 +50,9 @@ void DrawWorldModelLeaves(
   GroundGeometry& ground, ModelRenderContext& models, GroundLightingContext& lighting, int* visibleRectangle
 );
 
+extern int g_groundOverlayA;
+extern int g_groundOverlayB;
+extern int g_groundOverlaySkip;
+extern int g_groundOverlayC;
+
 #endif
