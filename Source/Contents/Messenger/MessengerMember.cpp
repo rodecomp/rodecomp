@@ -135,6 +135,7 @@ public:
   void Slot27(int x, int y) override;
   void Slot28(int x, int y) override;
   void Slot31(int x, int y) override;
+  void Slot33(int x, int y) override;
   void Slot35(int delta) override;
   MessengerMember MemberAt(int x, int y);
   void OpenMiniPartyWnd(int cell, const MessengerMember& member);
@@ -1001,6 +1002,68 @@ void UIMessengerGroupWnd::Slot25(int x, int y) {
 
   if (this->selected != -1) {
     this->SendMsg(nullptr, 49, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x0073CD60
+// FUNCTION: fn_07709
+void UIMessengerGroupWnd::Slot33(int x, int y) {
+  if (y < 17) {
+    UIFrameWnd::Slot33(x, y);
+    if (UIWindow* window = this->CompanionWindow()) {
+      window->geometry.targetAlpha = 128;
+      window->geometry.alphaStart = timeGetTime();
+    }
+    return;
+  }
+
+  const int previous = this->selected;
+  MessengerMember member = this->MemberAt(x, y);
+  if (previous != this->selected) {
+    this->Invalidate();
+  }
+  if (!member.valid || member.offline != 0) {
+    return;
+  }
+
+  CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  if (!gameMode) {
+    return;
+  }
+
+  gameMode->TargetActorByAid(member.accountId);
+  MessengerMember selectedMember = this->MemberAtIndex(this->selected);
+  if (this->mode == 1 && !g_messengerGroupCollapsed && !g_windowMgr.HasMiniPartyMember(selectedMember.accountId)) {
+    gameMode->SetDragIds(29, this->selected);
+    if (!g_windowMgr.window_4F250) {
+      UIDragMiniPartyWnd* window = new (std::nothrow) UIDragMiniPartyWnd(*this->m_context, *this->m_frameContext, selectedMember);
+      {
+        window->SetSize(this->geometry.width, this->rowHeight);
+        window->Move(-1000, -1000);
+        g_windowMgr.ShowTransient(window);
+        window->unknown_0108 = this->selected;
+        window->iconIndex = this->iconIndex;
+        window->MoveGauge(47, static_cast<int>(this->rowHeight * 0.76f));
+        const int itemY = ((this->selected - this->scrollTop * this->columns) / this->columns) * this->rowHeight + 17;
+        window->SetUnknown010C(x, y - itemY);
+
+        int index = 0;
+        for (const MessengerMember& entry : this->members) {
+          if (this->scrollTop * this->columns <= index && entry.valid && entry.accountId == selectedMember.accountId) {
+            CGameActor* actor = entry.accountId == g_session.m_aid
+                                  ? gameMode->scene->player
+                                  : static_cast<CGameActor*>(gameMode->scene->GetGameActorByAID(entry.accountId));
+            if (actor) {
+              window->SetGaugeValues(this->gauges[index]->current, this->gauges[index]->maximum);
+            } else {
+              window->RemoveGauge();
+            }
+            break;
+          }
+          ++index;
+        }
+      }
+    }
   }
 }
 
