@@ -372,8 +372,8 @@ public:
   /* 0934 */ unsigned char unknown_0934[0x10];
   /* 0944 */ unsigned char unknown_0944[0x80];
   /* 09C4 */ std::map<HWND, CWebBrowser*> browsers;
-  /* 09CC */ int unknown_09CC;
-  /* 09D0 */ CWebBrowser* browser_09D0;
+  /* 09CC */ CWebBrowser* activeBrowser;
+  /* 09D0 */ CWebBrowser* specialBrowser;
   /* 09D4 */ unsigned char unknown_09D4[0x10];
   /* 09E4 */ std::vector<UIWindow*> messageBoxes;
   /* 09F0 */ unsigned char unknown_09F0[0x40];
@@ -484,6 +484,10 @@ public:
   void ClearUnknown04DC();
   int ProcessMouse();
   void UpdateFrameWindows();
+  CWebBrowser* CreateBrowser(int width, int height);
+  CWebBrowser* EnsureSpecialBrowser(int width, int height);
+  CWebBrowser* FindBrowser(HWND window);
+  void RemoveBrowser(HWND window);
   bool CloseWindow(int id);
   void CloseWindowExcept251(int id);
   void RecordWindowPacket(int argument);

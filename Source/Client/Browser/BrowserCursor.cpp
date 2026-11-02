@@ -1,40 +1,39 @@
-#include "Client/Browser/BrowserCursor.h"
+#include "Client/Application/ApplicationWindow.h"
+#include "Client/Browser/WebBrowser.h"
 #include "Client/Input/Mouse.h"
-#include "Render/RenderSystemBase.h"
 
 // OFFSET: 0x00AB32E0
 // FUNCTION: fn_45439
-void BrowserCursor::Set(int value) {
-  if (this->state == value) {
+void CWebBrowser::SetCursorState(int value) {
+  if (this->cursorState == value) {
     return;
   }
 
   if (value != 0) {
     SetCursor(LoadCursorA(nullptr, reinterpret_cast<LPCSTR>(IDC_ARROW)));
 
-    this->mouse.SetX(static_cast<int>(this->renderSystem.Width()) / 2);
-    this->mouse.SetY(static_cast<int>(this->renderSystem.Height()) / 2);
-    this->mouse.SetX(-100);
-    this->mouse.SetY(-100);
+    g_mouse.Center();
+    g_mouse.SetX(-100);
+    g_mouse.SetY(-100);
   } else {
     SetCursor(nullptr);
   }
 
-  this->mouse.Reset();
+  g_mouse.Reset();
   ShowCursor(value);
-  this->state = value;
+  this->cursorState = value;
 }
 
 // OFFSET: 0x00AB3230
 // FUNCTION: fn_45438
-void BrowserCursor::Poll() {
+void CWebBrowser::PollCursor() {
   POINT point;
   GetCursorPos(&point);
-  if (WindowFromPoint(point) != this->applicationWindow) {
-    if (this->state != 1) {
-      this->Set(1);
+  if (WindowFromPoint(point) != hWnd) {
+    if (this->cursorState != 1) {
+      this->SetCursorState(1);
     }
-  } else if (this->state != 0) {
-    this->Set(0);
+  } else if (this->cursorState != 0) {
+    this->SetCursorState(0);
   }
 }

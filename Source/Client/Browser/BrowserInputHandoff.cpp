@@ -1,37 +1,38 @@
 #include "Client/Application/ApplicationActivation.h"
-#include "Client/Browser/BrowserInputHandoff.h"
+#include "Client/Application/ApplicationWindow.h"
+#include "Client/Browser/WebBrowser.h"
 #include "Client/Input/Mouse.h"
 #include "Contents/Configuration/ServiceOptions.h"
 
 // OFFSET: 0x00AB2720
 // FUNCTION: fn_45433
-void BrowserInputHandoff::Enter() {
-  if (this->service.Get(ServiceOption::ConfineCursor) == 0) {
+void CWebBrowser::EnterInput() {
+  if (g_serviceOptions.Get(ServiceOption::ConfineCursor) == 0) {
     return;
   }
 
-  POINT position{this->mouse.x, this->mouse.y};
-  this->service.Set(ServiceOption::ConfineCursor, 0);
-  this->mouse.SetX(position.x);
-  this->mouse.SetY(position.y);
+  POINT position{g_mouse.x, g_mouse.y};
+  g_serviceOptions.Set(ServiceOption::ConfineCursor, 0);
+  g_mouse.SetX(position.x);
+  g_mouse.SetY(position.y);
   this->restoreOption = 1;
-  ClientToScreen(this->applicationWindow, &position);
+  ClientToScreen(hWnd, &position);
   SetCursorPos(position.x, position.y);
 }
 
 // OFFSET: 0x00AB3350
 // FUNCTION: fn_45440
-void BrowserInputHandoff::Restore() {
+void CWebBrowser::RestoreInput() {
   if (this->restoreOption == 0) {
     return;
   }
 
   POINT position;
   GetCursorPos(&position);
-  ScreenToClient(this->applicationWindow, &position);
-  this->service.Set(ServiceOption::ConfineCursor, 1);
-  this->mouse.SetX(position.x);
-  this->mouse.SetY(position.y);
-  SetActiveWindow(this->applicationWindow);
-  this->activation.Set(1);
+  ScreenToClient(hWnd, &position);
+  g_serviceOptions.Set(ServiceOption::ConfineCursor, 1);
+  g_mouse.SetX(position.x);
+  g_mouse.SetY(position.y);
+  SetActiveWindow(hWnd);
+  SetApplicationActive(1);
 }

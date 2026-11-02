@@ -1,5 +1,6 @@
 #include "Client/Browser/WebBrowser.h"
-#include "Client/Browser/BrowserFactory.h"
+#include "Render/Renderer.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "Client/Browser/BrowserPopupDispatch.h"
 
 #include "Utility/Math/ScalarConversion.h"
@@ -57,9 +58,9 @@ HRESULT STDMETHODCALLTYPE BrowserPopupDispatch::Invoke(DISPID id, REFIID, LCID, 
   // STATIC: 0x01115448
   // GLOBAL: gl_13426
   const float scale = 0.7f;
-  const int height = TruncateToInt(static_cast<float>(this->m_height) * scale);
-  const int width = TruncateToInt(static_cast<float>(this->m_width) * scale);
-  CWebBrowser* browser = this->m_factory.Create(width, height);
+  const int height = TruncateToInt(static_cast<float>(g_renderer->viewport.height) * scale);
+  const int width = TruncateToInt(static_cast<float>(g_renderer->viewport.width) * scale);
+  CWebBrowser* browser = g_windowMgr.CreateBrowser(width, height);
 
   if (!browser) {
     return S_OK;

@@ -722,8 +722,8 @@ UIWindowMgr::UIWindowMgr()
   this->window_4F16C = nullptr;
   this->InitializeWindowPolicy();
   this->window_4F174 = nullptr;
-  this->unknown_09CC = 0;
-  this->browser_09D0 = nullptr;
+  this->activeBrowser = nullptr;
+  this->specialBrowser = nullptr;
   this->currentHitUid = 0;
   this->previousHitUid = 0;
   this->visible_276 = 0;
@@ -769,9 +769,9 @@ void UIWindowMgr::Shutdown() {
     entry.second = nullptr;
   }
   this->browsers.clear();
-  if (this->browser_09D0) {
-    delete this->browser_09D0;
-    this->browser_09D0 = nullptr;
+  if (this->specialBrowser) {
+    delete this->specialBrowser;
+    this->specialBrowser = nullptr;
   }
 
   for (auto entry = this->overlays.begin(); entry != this->overlays.end();) {

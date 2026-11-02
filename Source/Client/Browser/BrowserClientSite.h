@@ -8,7 +8,7 @@
 
 class BrowserClientSite final : public IOleClientSite {
 public:
-  BrowserClientSite(HWND window, IUnknown& browser, BrowserFactory& factory, const int& width, const int& height);
+  BrowserClientSite(HWND window, IUnknown* browser);
   ~BrowserClientSite();
   BrowserClientSite(const BrowserClientSite&) = delete;
   BrowserClientSite& operator=(const BrowserClientSite&) = delete;

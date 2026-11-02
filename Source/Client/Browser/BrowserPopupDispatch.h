@@ -4,13 +4,10 @@
 #include <windows.h>
 #include <ole2.h>
 
-struct BrowserFactory;
-
 class BrowserPopupDispatch final : public IDispatch {
 public:
   // INLINED
-  BrowserPopupDispatch(IUnknown& site, BrowserFactory& factory, const int& width, const int& height)
-      : m_site(site), m_factory(factory), m_width(width), m_height(height) {
+  explicit BrowserPopupDispatch(IUnknown& site) : m_site(site) {
   }
 
   HRESULT STDMETHODCALLTYPE QueryInterface(REFIID iid, void** output) override;
@@ -24,9 +21,6 @@ public:
 
 private:
   IUnknown& m_site;
-  BrowserFactory& m_factory;
-  const int& m_width;
-  const int& m_height;
 };
 
 #endif

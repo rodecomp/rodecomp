@@ -1,18 +1,19 @@
-#include "Client/Browser/BrowserClose.h"
+#include "Client/Application/ApplicationWindow.h"
+#include "Client/Browser/WebBrowser.h"
 #include "Client/Input/Mouse.h"
 
 // OFFSET: 0x00AB24D0
 // FUNCTION: fn_45432
-bool BrowserClose::Close() {
+bool CWebBrowser::Close() {
   if (this->cursorState != 0) {
     SetCursor(nullptr);
-    this->mouse.Reset();
+    g_mouse.Reset();
     ShowCursor(FALSE);
     this->cursorState = 0;
   }
 
-  if (this->attachment.site) {
-    this->attachment.Detach();
+  if (this->site) {
+    this->DetachSite();
   }
 
   if (this->externalEvents) {
@@ -23,7 +24,7 @@ bool BrowserClose::Close() {
   if (this->browser) {
     this->browser->Stop();
     SetWindowLongA(this->browserWindow, GWL_STYLE, WS_CHILD);
-    SetParent(this->browserWindow, this->applicationWindow);
+    SetParent(this->browserWindow, hWnd);
     this->browser->Quit();
     this->browser->Release();
     this->browser = nullptr;

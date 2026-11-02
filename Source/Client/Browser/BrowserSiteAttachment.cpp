@@ -1,15 +1,14 @@
-#include "Client/Browser/BrowserInterface.h"
-#include "Client/Browser/BrowserSiteAttachment.h"
+#include "Client/Browser/BrowserClientSite.h"
+#include "Client/Browser/WebBrowser.h"
 
 #include <new>
 
 // OFFSET: 0x00AB2AB0
 // FUNCTION: fn_17417
-bool BrowserSiteAttachment::Attach() {
-  this->site = new (std::nothrow) BrowserClientSite(this->host, *this->sizing.browser, this->factory, this->renderWidth, this->renderHeight);
-
+bool CWebBrowser::AttachSite() {
+  this->site = new (std::nothrow) BrowserClientSite(this->host, this->browser);
   IOleObject* object;
-  HRESULT result = this->sizing.browser->QueryInterface(IID_IOleObject, reinterpret_cast<void**>(&object));
+  HRESULT result = this->browser->QueryInterface(IID_IOleObject, reinterpret_cast<void**>(&object));
   if (FAILED(result)) {
     return false;
   }
@@ -20,11 +19,10 @@ bool BrowserSiteAttachment::Attach() {
     RECT rectangle;
     GetClientRect(this->host, &rectangle);
     result = object->DoVerb(OLEIVERB_INPLACEACTIVATE, nullptr, this->site, 0, this->host, &rectangle);
-
     if (SUCCEEDED(result)) {
       const int width = rectangle.right - rectangle.left;
       const int height = rectangle.bottom - rectangle.top;
-      this->sizing.Resize(width, height);
+      this->Resize(width, height);
       result = AdviseBrowserEvents(object, this->site, DIID_DWebBrowserEvents2, &this->cookie);
     }
   }
@@ -35,9 +33,9 @@ bool BrowserSiteAttachment::Attach() {
 
 // OFFSET: 0x00AB2430
 // FUNCTION: fn_45431
-void BrowserSiteAttachment::Detach() {
+void CWebBrowser::DetachSite() {
   IOleObject* object;
-  if (SUCCEEDED(this->sizing.browser->QueryInterface(IID_IOleObject, reinterpret_cast<void**>(&object)))) {
+  if (SUCCEEDED(this->browser->QueryInterface(IID_IOleObject, reinterpret_cast<void**>(&object)))) {
     UnadviseBrowserEvents(object, DIID_DWebBrowserEvents2, this->cookie);
     object->Release();
   }

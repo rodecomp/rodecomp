@@ -8,41 +8,31 @@
 #include <cstddef>
 
 class BrowserClientSite;
-class CMouse;
-class CRenderSystemBase;
-struct ServiceOptions;
-struct BrowserRegistry;
-struct BrowserFactory;
-struct ApplicationActivation;
-
-struct WebBrowserContext {
-  HWND const& applicationWindow;
-  HINSTANCE const& instance;
-  const char* const& title;
-  CMouse& mouse;
-  CRenderSystemBase& renderSystem;
-  ServiceOptions& service;
-  ApplicationActivation& activation;
-  BrowserFactory& popupFactory;
-  const int& renderWidth;
-  const int& renderHeight;
-  WNDPROC hostProcedure;
-  WNDPROC editProcedure;
-  WNDPROC& previousEditProcedure;
-};
 
 class CWebBrowser {
 public:
-  explicit CWebBrowser(WebBrowserContext& context);
+  CWebBrowser();
   ~CWebBrowser();
   CWebBrowser(const CWebBrowser&) = delete;
   CWebBrowser& operator=(const CWebBrowser&) = delete;
 
-  bool Create(int width, int height);
+  bool Create(HWND parent, HINSTANCE instance, int width, int height);
   bool Close();
-  bool AttachExternalEvents(BrowserRegistry& registry);
+  bool CreateInterface();
+  bool CreateExternalInterface();
+  bool AttachExternalEvents();
+  bool CreateHostWindow(HWND parent, HINSTANCE instance, int width, int height);
+  bool AttachSite();
+  void DetachSite();
+  bool CreateAddressBar(int width, int height);
   void Resize(int width, int height);
+  void RefreshSize();
+  void Normalize();
   void Poll();
+  void SetCursorState(int value);
+  void PollCursor();
+  void EnterInput();
+  void RestoreInput();
   bool Navigate(std::string address);
   void ShowAuxiliary(unsigned char value);
   bool MatchesWindow(HWND window) const;
@@ -66,16 +56,23 @@ public:
   /* 0038 */ int height;
   /* 003C */ unsigned char restoreOption;
   /* 003D */ unsigned char unknown_003D[3];
-  WebBrowserContext* context;
 };
+
+extern WNDPROC lpPrevWndFunc;
+
+LRESULT CALLBACK BrowserHostProc(HWND window, UINT message, WPARAM value, LPARAM flags);
+LRESULT CALLBACK BrowserAddressEditProc(HWND window, UINT message, WPARAM value, LPARAM flags);
+HRESULT AdviseBrowserEvents(IUnknown* source, IUnknown* sink, REFIID events, DWORD* cookie);
+HRESULT UnadviseBrowserEvents(IUnknown* source, REFIID events, DWORD cookie);
+
+enum class BrowserCommand : WORD { Navigate = 1000 };
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(CWebBrowser, host) == 0xC);
 static_assert(offsetof(CWebBrowser, unknown_0019) == 0x19);
 static_assert(offsetof(CWebBrowser, cookie) == 0x24);
 static_assert(offsetof(CWebBrowser, restoreOption) == 0x3C);
-static_assert(offsetof(CWebBrowser, unknown_003D) == 0x3D);
-static_assert(offsetof(CWebBrowser, context) == 0x40);
+static_assert(sizeof(CWebBrowser) == 0x40);
 #endif
 
 #endif

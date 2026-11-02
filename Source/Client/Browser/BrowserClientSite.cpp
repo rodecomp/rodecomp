@@ -2,8 +2,8 @@
 
 // OFFSET: 0x00AB1310
 // FUNCTION: fn_17334
-BrowserClientSite::BrowserClientSite(HWND window, IUnknown& browser, BrowserFactory& factory, const int& width, const int& height)
-    : m_window(window), m_browser(&browser), m_events(*this, factory, width, height), m_inPlace(*this, this->m_window, this->m_browser), m_documentUI(*this),
+BrowserClientSite::BrowserClientSite(HWND window, IUnknown* browser)
+    : m_window(window), m_browser(browser), m_events(*this), m_inPlace(*this, this->m_window, this->m_browser), m_documentUI(*this),
       m_commands(*this) {
   this->m_browser->AddRef();
 }

@@ -181,6 +181,8 @@ extern char g_zoneServerHost[129];
 extern int g_hangameLogin;
 extern CharacterInfo g_charInfo;
 extern bool g_replayMode;
+extern int g_restoreSurfaces;
+extern int g_isAppActive;
 
 int GetClientType();
 std::string GetMacAddress();

@@ -40,6 +40,7 @@ public:
 
   CMode();
   std::uint32_t ClearTooltip();
+  void ExpireTooltip();
   void TakeScreenshot();
   void DrawCursor();
   void DrawFadeIn();

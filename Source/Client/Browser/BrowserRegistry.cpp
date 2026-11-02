@@ -1,24 +1,26 @@
-#include "Client/Browser/BrowserRegistry.h"
+#include "Client/Application/ApplicationWindow.h"
+#include "Client/Application/Launcher.h"
 #include "Client/Browser/WebBrowser.h"
+#include "UI/Window/UIWindowMgr.h"
 
 #include <new>
 
 // OFFSET: 0x00A91990
 // FUNCTION: fn_17167
-CWebBrowser* BrowserRegistry::Find(HWND window) const {
+CWebBrowser* UIWindowMgr::FindBrowser(HWND window) {
   const auto found = this->browsers.find(window);
   return found == this->browsers.end() ? nullptr : found->second;
 }
 
 // OFFSET: 0x00A8F860
 // FUNCTION: fn_17146
-void BrowserRegistry::Remove(HWND window) {
+void UIWindowMgr::RemoveBrowser(HWND window) {
   const auto found = this->browsers.find(window);
   if (found != this->browsers.end()) {
     CWebBrowser* browser = found->second;
     if (browser) {
-      if (browser == this->special) {
-        this->special = nullptr;
+      if (browser == this->specialBrowser) {
+        this->specialBrowser = nullptr;
       }
 
       delete browser;
@@ -28,23 +30,23 @@ void BrowserRegistry::Remove(HWND window) {
     return;
   }
 
-  if (window == this->special->host) {
-    delete this->special;
-    this->special = nullptr;
+  if (window == this->specialBrowser->host) {
+    delete this->specialBrowser;
+    this->specialBrowser = nullptr;
   }
 }
 
 // OFFSET: 0x00A8C960
 // FUNCTION: fn_17138
-CWebBrowser* BrowserRegistry::EnsureSpecial(WebBrowserContext& context, int width, int height) {
-  if (this->special) {
-    return this->special;
+CWebBrowser* UIWindowMgr::EnsureSpecialBrowser(int width, int height) {
+  if (this->specialBrowser) {
+    return this->specialBrowser;
   }
 
-  this->special = new (std::nothrow) CWebBrowser(context);
-  if (this->special && this->special->Create(width, height)) {
-    this->browsers.emplace(this->special->host, this->special);
+  this->specialBrowser = new (std::nothrow) CWebBrowser();
+  if (this->specialBrowser && this->specialBrowser->Create(hWnd, g_instance, width, height)) {
+    this->browsers.emplace(this->specialBrowser->host, this->specialBrowser);
   }
 
-  return this->special;
+  return this->specialBrowser;
 }

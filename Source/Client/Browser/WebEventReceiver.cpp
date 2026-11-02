@@ -1,6 +1,6 @@
-#include "Client/Browser/BrowserInterface.h"
-#include "Client/Browser/BrowserRegistry.h"
+#include "Client/Browser/WebBrowser.h"
 #include "Client/Browser/WebEventReceiver.h"
+#include "UI/Window/UIWindowMgr.h"
 
 #include <exdispid.h>
 #include <mshtmdid.h>
@@ -9,8 +9,8 @@
 
 // OFFSET: 0x00AB3710
 // FUNCTION: fn_17424
-CWebEventReceiver::CWebEventReceiver(BrowserRegistry& registry)
-    : m_references(0), m_browser(nullptr), m_browserCookie(0), m_document(nullptr), m_documentCookie(0), m_host(nullptr), m_registry(registry) {
+CWebEventReceiver::CWebEventReceiver()
+    : m_references(0), m_browser(nullptr), m_browserCookie(0), m_document(nullptr), m_documentCookie(0), m_host(nullptr) {
   OutputDebugStringA("CWebEventReceiver() \n");
 }
 
@@ -98,7 +98,7 @@ HRESULT CWebEventReceiver::Disconnect() {
     this->m_browser = nullptr;
   }
 
-  this->m_registry.Remove(this->m_host);
+  g_windowMgr.RemoveBrowser(this->m_host);
   return S_OK;
 }
 

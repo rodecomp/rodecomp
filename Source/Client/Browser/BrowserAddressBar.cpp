@@ -1,10 +1,10 @@
-#include "Client/Browser/BrowserAddressBar.h"
+#include "Client/Browser/WebBrowser.h"
 
 #include <commctrl.h>
 
 // OFFSET: 0x00AB27A0
 // FUNCTION: fn_17416
-bool BrowserAddressBar::Create(int width, int requestedHeight) {
+bool CWebBrowser::CreateAddressBar(int width, int requestedHeight) {
   this->rebar = CreateWindowExA(
     WS_EX_TOOLWINDOW, REBARCLASSNAMEA, "rebar",
     WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_BORDER | RBS_VARHEIGHT | RBS_BANDBORDERS | RBS_REGISTERDROP | RBS_DBLCLKTOGGLE |
@@ -42,18 +42,14 @@ bool BrowserAddressBar::Create(int width, int requestedHeight) {
 
   this->combo = combo;
   HWND edit = GetWindow(combo, GW_CHILD);
-  this->previous = reinterpret_cast<WNDPROC>(SetWindowLongPtrA(edit, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(this->procedure)));
+  lpPrevWndFunc = reinterpret_cast<WNDPROC>(SetWindowLongPtrA(edit, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(BrowserAddressEditProc)));
 
   RECT rectangle;
   GetClientRect(this->host, &rectangle);
   SetWindowPos(this->rebar, nullptr, 0, 0, rectangle.right - rectangle.left, rectangle.bottom - rectangle.top, SWP_NOMOVE);
   ShowWindow(this->rebar, SW_HIDE);
 
-  this->height = 0;
-  if (this->rebar && this->visible != 0) {
-    GetClientRect(this->rebar, &rectangle);
-    this->height = rectangle.bottom - rectangle.top + 4;
-  }
+  this->barHeight = this->AddressBarHeight();
 
   return true;
 }

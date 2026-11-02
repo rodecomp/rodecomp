@@ -991,7 +991,7 @@ void CLoginMode::Slot5(int value) {
   g_windowMgr.ProcessMouse();
   if (this->running != 0) {
     this->SubD97780(this->cursorType);
-    reinterpret_cast<ModeTooltip*>(this)->Expire(g_windowMgr);
+    this->ExpireTooltip();
   }
 
   if (g_restoreSurfaces != 0) {
@@ -1134,7 +1134,7 @@ void CLoginMode::Update() {
   g_windowMgr.ProcessMouse();
   if (this->running != 0) {
     this->SubD97780(this->cursorType);
-    reinterpret_cast<ModeTooltip*>(this)->Expire(g_windowMgr);
+    this->ExpireTooltip();
   }
 
   reinterpret_cast<CTimeScheduler*>(g_timeScheduler)->Process();

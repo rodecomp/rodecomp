@@ -61,17 +61,17 @@ void ModeTooltip::Show(const char* value, int x, int y, std::uint32_t color, uns
 
 // OFFSET: 0x00AD67A0
 // FUNCTION: fn_17843
-void ModeTooltip::Expire(UIWindowMgr& retirement) {
-  if (!this->window) {
+void CMode::ExpireTooltip() {
+  if (!this->tooltip) {
     return;
   }
 
-  if (timeGetTime() < this->tick + 100u) {
+  if (timeGetTime() < this->tooltipTick + 100u) {
     return;
   }
 
-  retirement.Schedule(this->window);
-  this->window = nullptr;
+  g_windowMgr.Schedule(this->tooltip);
+  this->tooltip = nullptr;
 }
 
 // OFFSET: 0x00AD64B0

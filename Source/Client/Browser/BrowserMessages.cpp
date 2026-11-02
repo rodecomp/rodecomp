@@ -1,23 +1,23 @@
-#include "Client/Browser/BrowserMessages.h"
-#include "Client/Browser/BrowserRegistry.h"
+#include "Client/Application/ApplicationWindow.h"
 #include "Client/Browser/WebBrowser.h"
+#include "UI/Window/UIWindowMgr.h"
 
 #include <cstdint>
 
 // OFFSET: 0x00AB33C0
 // FUNCTION: fn_17423
-LRESULT BrowserMessages::Message(HWND window, UINT message, WPARAM value, LPARAM flags) {
-  CWebBrowser* browser = this->registry.Find(window);
+LRESULT CALLBACK BrowserHostProc(HWND window, UINT message, WPARAM value, LPARAM flags) {
+  CWebBrowser* browser = g_windowMgr.FindBrowser(window);
 
   switch (message) {
   case WM_CREATE:
   case WM_NCHITTEST:
   case WM_NCLBUTTONDOWN:
   case WM_PARENTNOTIFY:
-    this->active = this->registry.Find(window);
+    g_windowMgr.activeBrowser = g_windowMgr.FindBrowser(window);
     break;
   case WM_DESTROY:
-    SetFocus(this->applicationWindow);
+    SetFocus(hWnd);
     break;
   case WM_SIZE:
     if (browser) {
@@ -26,7 +26,7 @@ LRESULT BrowserMessages::Message(HWND window, UINT message, WPARAM value, LPARAM
     }
     break;
   case WM_CLOSE:
-    this->registry.Remove(window);
+    g_windowMgr.RemoveBrowser(window);
     break;
   case WM_HELP:
     return 1;

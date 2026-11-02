@@ -22,8 +22,6 @@ struct ModeTooltip {
   const int& screenHeight;
 
   void Show(const char* value, int x, int y, std::uint32_t color, unsigned char option, unsigned char convert);
-
-  void Expire(UIWindowMgr& retirement);
 };
 
 #endif

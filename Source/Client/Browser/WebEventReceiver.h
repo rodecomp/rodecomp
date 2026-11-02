@@ -5,11 +5,9 @@
 #include <ole2.h>
 #include <exdisp.h>
 
-struct BrowserRegistry;
-
 class CWebEventReceiver final : public IDispatch {
 public:
-  explicit CWebEventReceiver(BrowserRegistry& registry);
+  CWebEventReceiver();
   bool Register(IWebBrowser2* browser, HWND host);
   HRESULT Disconnect();
 
@@ -30,7 +28,6 @@ private:
   /* 0010 */ IDispatch* m_document;
   /* 0014 */ DWORD m_documentCookie;
   /* 0018 */ HWND m_host;
-  BrowserRegistry& m_registry;
   void ReleaseDocument();
 };
 
