@@ -3261,9 +3261,7 @@ std::string UIEditCtrl3::PlaceLineLinks(const char* line, std::string& text, con
       const int id = ItemLinkMessageId(link);
       if (g_itemTagOwner->unknown_0118 >= id) {
         std::string name;
-        const unsigned short codePage = static_cast<unsigned short>(g_textCodePage);
-        const TipBoxTitles titles{g_itemTagOwner->m_entries, g_itemTagOwner->m_missing, g_itemTagOwner->m_maximumId, codePage};
-        const std::string title = titles.Title(id, &name, 17);
+        const std::string title = g_itemTagOwner->Title(id, &name, 17);
         if (name.size() + 2 + result.size() > std::strlen(line)) {
           start = previous + static_cast<int>(chunk.size());
           break;
@@ -8291,9 +8289,7 @@ bool UIEditCtrl3::LinkDisplayName(const std::string& encoded, std::string& outpu
   if (isTag) {
     const int id = ItemLinkMessageId(encoded);
     if (g_itemTagOwner->unknown_0118 >= id) {
-      const unsigned short codePage = static_cast<unsigned short>(g_textCodePage);
-      const TipBoxTitles titles{g_itemTagOwner->m_entries, g_itemTagOwner->m_missing, g_itemTagOwner->m_maximumId, codePage};
-      titles.Title(id, &output, 17);
+      g_itemTagOwner->Title(id, &output, 17);
       return true;
     }
 

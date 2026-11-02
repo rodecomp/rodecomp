@@ -7,14 +7,12 @@ class CDC;
 class FontCache;
 struct TextLocale;
 struct ItemNaming;
-struct TipBoxTitles;
 
 struct ItemLinkDisplay {
   CDC& surface;
   FontCache& fonts;
   const TextLocale& locale;
   ItemNaming& items;
-  const TipBoxTitles& tips;
   const int& width;
 
   bool Name(const std::string& encoded, std::string& output);

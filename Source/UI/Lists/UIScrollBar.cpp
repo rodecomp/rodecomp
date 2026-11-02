@@ -1824,8 +1824,7 @@ std::string UIChatHisBox::RenderItemLinks(const char* lineText, std::string& sou
   const bool languagePrefix = false;
   const WORD language = g_serverLanguage->language;
   ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
-  const TipBoxTitles titles{g_itemTagOwner->m_entries, g_itemTagOwner->m_missing, g_itemTagOwner->unknown_0118, static_cast<unsigned short>(g_textCodePage)};
-  ItemLinkDisplay display{*this->geometry.surface, g_fontCache, this->m_context->locale, naming, titles, this->geometry.width};
+  ItemLinkDisplay display{*this->geometry.surface, g_fontCache, this->m_context->locale, naming, this->geometry.width};
 
   for (;;) {
     std::string encoded;
@@ -1845,9 +1844,9 @@ std::string UIChatHisBox::RenderItemLinks(const char* lineText, std::string& sou
     result += prefix;
 
     int titleId = 0;
-    if (encoded.substr(0, 6) == "00000T" && (titleId = ItemLinkMessageId(encoded)) <= titles.maximumId) {
+    if (encoded.substr(0, 6) == "00000T" && (titleId = ItemLinkMessageId(encoded)) <= g_itemTagOwner->unknown_0118) {
       std::string label;
-      const std::string title = titles.Title(titleId, &label, 17);
+      const std::string title = g_itemTagOwner->Title(titleId, &label, 17);
       if (!title.empty()) {
         UIItemTagButton* button = this->CreateItemTagButton(title, label, titleId, this, 0x7F00E4);
         if (button) {
@@ -2077,8 +2076,7 @@ void UIChatHisBox::sub_89DC30(const char* text, int& color, int& mode) {
   bool languagePrefix = false;
   WORD language = g_serverLanguage->language;
   ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
-  const TipBoxTitles titles{g_itemTagOwner->m_entries, g_itemTagOwner->m_missing, g_itemTagOwner->unknown_0118, static_cast<unsigned short>(g_textCodePage)};
-  ItemLinkDisplay display{*this->geometry.surface, g_fontCache, this->m_context->locale, naming, titles, this->geometry.width};
+  ItemLinkDisplay display{*this->geometry.surface, g_fontCache, this->m_context->locale, naming, this->geometry.width};
   const std::string converted = display.Convert(text);
   this->sub_8932D0(&mode, &wrapped, converted);
   this->RewrapLinkLines(wrapped, mode);

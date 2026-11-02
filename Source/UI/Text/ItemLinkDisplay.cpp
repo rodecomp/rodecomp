@@ -13,9 +13,9 @@ bool ItemLinkDisplay::Name(const std::string& encoded, std::string& output) {
   if (encoded.substr(0, 6) == "00000T") {
     const int id = ItemLinkMessageId(encoded);
 
-    if (this->tips.maximumId >= id) {
+    if (g_itemTagOwner->unknown_0118 >= id) {
       std::string abbreviated;
-      output = this->tips.Title(id, &abbreviated, 17);
+      output = g_itemTagOwner->Title(id, &abbreviated, 17);
 
       if (!abbreviated.empty()) {
         output = abbreviated;

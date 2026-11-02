@@ -25,9 +25,7 @@ std::string UIChatHisBox::ResolvePlayerTags(const char* name) {
   bool languagePrefix = false;
   WORD language = g_serverLanguage->language;
   ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
-  const unsigned short codePage = static_cast<unsigned short>(g_textCodePage);
-  const TipBoxTitles titles{g_itemTagOwner->m_entries, g_itemTagOwner->m_missing, g_itemTagOwner->m_maximumId, codePage};
-  ItemLinkDisplay display{*this->geometry.surface, g_fontCache, this->m_context->locale, naming, titles, this->geometry.width};
+  ItemLinkDisplay display{*this->geometry.surface, g_fontCache, this->m_context->locale, naming, this->geometry.width};
 
   for (std::vector<UIItemTagButton*>& row : this->ItemTags()) {
     const int count = static_cast<int>(row.size());

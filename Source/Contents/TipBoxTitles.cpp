@@ -1,4 +1,5 @@
 #include "Contents/TipBoxTitles.h"
+#include "Client/Input/InputCharset.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/Sprites/SpriteResource.h"
@@ -56,7 +57,7 @@ namespace {
 
   // OFFSET: 0x009B45D0
   // FUNCTION: fn_13832
-  void SplitTitle(const char* text, std::vector<std::string>& lines, int width, unsigned short codePage) {
+  void SplitTitle(const char* text, std::vector<std::string>& lines, int width) {
     const char* begin = text;
     const char* current = text;
     const char* end = text + std::char_traits<char>::length(text);
@@ -69,7 +70,7 @@ namespace {
         limit = current + width;
       }
 
-      current = CharNextExA(codePage, current, 0);
+      current = g_serverLanguage->NextChar(current, 0);
     }
   }
 }
@@ -172,9 +173,9 @@ const TipBoxEntry& CTipBoxMgr::GetTip(int id) const {
 
 // OFFSET: 0x007ACC70
 // FUNCTION: fn_09127
-std::string TipBoxTitles::Title(int id, std::string* abbreviated, int width) const {
-  const auto entry = this->entries.find(id);
-  const auto& title = entry == this->entries.end() ? this->missing.title : entry->second.title;
+std::string CTipBoxMgr::Title(int id, std::string* abbreviated, int width) const {
+  const auto entry = this->m_entries.find(id);
+  const auto& title = entry == this->m_entries.end() ? this->m_missing.title : entry->second.title;
 
   if (title.empty()) {
     return title;
@@ -187,7 +188,7 @@ std::string TipBoxTitles::Title(int id, std::string* abbreviated, int width) con
       *abbreviated = result;
     } else {
       std::vector<std::string> lines;
-      SplitTitle(result.c_str(), lines, width, this->codePage);
+      SplitTitle(result.c_str(), lines, width);
       abbreviated->clear();
 
       for (const auto& line : lines) {

@@ -7,7 +7,6 @@
 
 class UITextButton;
 struct ItemNaming;
-struct TipBoxTitles;
 struct ItemLinkDisplay;
 
 class TextViewerActions {
@@ -23,7 +22,6 @@ protected:
 
 struct UITextViewerContext {
   ItemNaming& items;
-  const TipBoxTitles& tips;
   TextViewerActions& actions;
   HWND& applicationWindow;
 

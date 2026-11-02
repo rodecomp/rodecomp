@@ -366,9 +366,7 @@ UIItemTagButton::UIItemTagButton(UIWindowContext& windows) : UITextButton(window
 // FUNCTION: fn_11193
 std::string UIItemTagCtrl::sub_874A40(int tagId, unsigned int color) {
   std::string label;
-  const unsigned short codePage = static_cast<unsigned short>(g_textCodePage);
-  const TipBoxTitles titles{g_itemTagOwner->m_entries, g_itemTagOwner->m_missing, g_itemTagOwner->m_maximumId, codePage};
-  const std::string title = titles.Title(tagId, &label, 17);
+  const std::string title = g_itemTagOwner->Title(tagId, &label, 17);
 
   UIItemTagButton* button;
   {

@@ -40,15 +40,6 @@ struct TipBoxLayout {
   /* 001C */ float scale;
 };
 
-struct TipBoxTitles {
-  const std::map<int, TipBoxEntry>& entries;
-  const TipBoxEntry& missing;
-  const int& maximumId;
-  const unsigned short& codePage;
-
-  std::string Title(int id, std::string* abbreviated, int width) const;
-};
-
 class CTipBoxMgr {
 public:
   CTipBoxMgr();
@@ -60,6 +51,7 @@ public:
   void Sub7ACF50();
   bool RegisterLuaFunctions();
   bool IsLastTip() const;
+  std::string Title(int id, std::string* abbreviated, int width) const;
   bool HasImages() const;
   bool HasSearchResults() const;
   std::vector<int>& Search(std::string& keyword);
