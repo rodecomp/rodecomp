@@ -523,6 +523,20 @@ bool CGameMode::ShowRestrictedNotice(int grade) {
   return true;
 }
 
+// OFFSET: 0x00CCD880
+// FUNCTION: fn_21217
+CGameMode::CGameMode()
+    : scene(nullptr), unknown_0408(nullptr), unknown_040C(0), unknown_0410(0), unknown_0414(0), unknown_0418(0), unknown_05C4(0), unknown_05C8(0),
+      broadcastBalloon(nullptr), noticeBalloon(nullptr), unknown_0648(0) {
+  this->unknown_0624[0] = 0;
+  this->camera = nullptr;
+  this->mousePointer = nullptr;
+  this->replayPauseTick = 0;
+  this->unknown_05EC[0] = 0;
+  this->itemWindow = nullptr;
+  this->unknown_060C[0] = 0;
+}
+
 // OFFSET: 0x00CEFE70
 // FUNCTION: fn_21408
 void CGameMode::RemoveUnknown0604(int window) {
