@@ -3084,3 +3084,7 @@ public:
 };
 
 // OFFSET: 0x00786450
+// FUNCTION: fn_08576
+CSkillObjectActionRegistration::CSkillObjectActionRegistration(int skillId, std::function<CSkillObjectAction*()> factory) {
+  CSkillActionMgr::GetInstance()->RegisterSkillObjectAction(skillId, factory);
+}
