@@ -87,12 +87,6 @@ public:
   /* 0118 */ std::vector<MiniPartyIconPosition> iconPositions;
 };
 
-struct UIFriendOptionContext {
-  int& option0;
-  int& option1;
-  int& option2;
-};
-
 class UIFriendOptionWnd : public UIFrameWnd {
 public:
   UIFriendOptionWnd(UIWindowContext& windows);
@@ -107,9 +101,6 @@ public:
   /* 00BC */ UICheckBox* option2Box;
   /* 00C0 */ UICheckBox* option0Box;
   /* 00C4 */ UIBitmapButton* closeButton;
-
-private:
-  UIFriendOptionContext* m_options;
 };
 
 class UIJobIconButton : public UIBitmapButton {
@@ -526,7 +517,7 @@ void UIFriendOptionWnd::Slot15(int, int) {
   this->option0Box->SetSize(width, 12);
   this->option0Box->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(361));
   this->option0Box->Move(6, 21);
-  this->option0Box->SetChecked(this->m_options->option0);
+  this->option0Box->SetChecked(g_session.m_autoOpenWhisperWindow);
   this->AddChild(this->option0Box);
 
   label = LookupMessage(359);
@@ -535,7 +526,7 @@ void UIFriendOptionWnd::Slot15(int, int) {
   this->option2Box->SetSize(width, 12);
   this->option2Box->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(359));
   this->option2Box->Move(6, 37);
-  this->option2Box->SetChecked(this->m_options->option2);
+  this->option2Box->SetChecked(g_session.m_autoOpenFriendWhisperWindow);
   this->AddChild(this->option2Box);
 
   label = LookupMessage(362);
@@ -544,7 +535,7 @@ void UIFriendOptionWnd::Slot15(int, int) {
   this->option1Box->SetSize(width, 12);
   this->option1Box->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(362));
   this->option1Box->Move(6, 53);
-  this->option1Box->SetChecked(this->m_options->option1);
+  this->option1Box->SetChecked(g_session.m_whisperOpenSound);
   this->AddChild(this->option1Box);
 
   this->closeButton = this->AddCloseButton("Alt+I", 0);
@@ -568,11 +559,11 @@ int UIFriendOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       g_windowMgr.CloseWindow(68);
     } else if (a == 213) {
       if (sender == this->option0Box) {
-        this->m_options->option0 = static_cast<int>(b);
+        g_session.m_autoOpenWhisperWindow = static_cast<int>(b);
       } else if (sender == this->option2Box) {
-        this->m_options->option2 = static_cast<int>(b);
+        g_session.m_autoOpenFriendWhisperWindow = static_cast<int>(b);
       } else if (sender == this->option1Box) {
-        this->m_options->option1 = static_cast<int>(b);
+        g_session.m_whisperOpenSound = static_cast<int>(b);
       }
     }
     return 0;
