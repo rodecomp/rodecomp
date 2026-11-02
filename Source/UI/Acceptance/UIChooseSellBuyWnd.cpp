@@ -102,6 +102,7 @@
 #include "UI/Status/UIStatusWnd.h"
 #include "UI/Text/ColoredText.h"
 #include "UI/Text/PixelTextWrapping.h"
+#include "UI/Text/TextWrapping.h"
 #include "UI/Text/UIStaticText.h"
 #include "UI/Text/UITagTextViewer.h"
 #include "UI/Text/UITextViewer.h"
@@ -8183,6 +8184,187 @@ int UIChoose3Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     this->Resize(this->geometry.width + growWidth, this->geometry.height + growHeight);
     this->m_okButton->Move(this->geometry.width - okX, this->geometry.height - okY);
     this->m_cancelButton->Move(this->geometry.width - cancelX, this->geometry.height - cancelY);
+  }
+  return 0;
+}
+
+// OFFSET: 0x008D3720
+// FUNCTION: fn_12103
+void UITipboxWnd::Search(std::string& keyword) {
+  const std::vector<int>& results = g_itemTagOwner->Search(keyword);
+  this->unknown_00B8->Clear();
+  for (const int id : results) {
+    const std::string& source = g_itemTagOwner->GetTip(id).title;
+    std::string title(source.c_str(), source.size());
+    const std::size_t separator = title.find('#');
+    if (separator != std::string::npos) {
+      title = title.substr(0, separator);
+    }
+    if (title.size() != 0) {
+      this->unknown_00B8->AddLine(title.c_str(), id);
+    }
+  }
+  this->unknown_00B8->Invalidate();
+}
+
+// OFFSET: 0x008D9FE0
+// FUNCTION: fn_12140
+void UITipboxWnd::RefreshTip() {
+  this->UpdatePageText();
+  this->BuildAnimations();
+  this->unknown_00B8->Show(0);
+
+  std::string title(g_itemTagOwner->m_currentEntry.title.c_str(), g_itemTagOwner->m_currentEntry.title.size());
+  this->TrimAt(title, "#");
+  this->unknown_00D8->Enable(g_itemTagOwner->m_currentEntry.searchable);
+
+  std::vector<std::string> lines;
+  WrapPlainText(title.c_str(), lines, 30, static_cast<unsigned short>(g_textCodePage));
+
+  UIStaticText* const texts[2] = {this->unknown_00C0, this->unknown_00C4};
+  for (int index = 0; index < 2; ++index) {
+    texts[index]->SetText("", 0);
+    texts[index]->Show(0);
+  }
+
+  const unsigned count = static_cast<unsigned>(lines.size());
+  if (count != 0) {
+    const int shown = (count > 1 ? 1 : 0) + 1;
+    for (int index = 0; index < shown; ++index) {
+      texts[index]->SetText(lines[index].c_str(), 0);
+      texts[index]->Show(1);
+    }
+
+    int height;
+    if (count < 2) {
+      this->unknown_00BC->Move(250, 70);
+      height = 245;
+    } else {
+      this->unknown_00BC->Move(250, 90);
+      height = 225;
+    }
+    this->unknown_00BC->Resize(226, height);
+    this->unknown_00FC = true;
+  }
+}
+
+// OFFSET: 0x00907050
+// FUNCTION: fn_12386
+int UITipboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  if (message != 6) {
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
+
+  if (a > 0xF6) {
+    if (a == 0x16D) {
+      std::string keyword(this->unknown_00B4->Text());
+      if (keyword.size() != 0) {
+        this->unknown_00B8->Show(1);
+        this->unknown_00B8->Clear();
+        this->unknown_00BC->Clear();
+        UIStaticText* const texts[2] = {this->unknown_00C0, this->unknown_00C4};
+        for (int index = 0; index < 2; ++index) {
+          texts[index]->SetText("", 0);
+        }
+        this->m_pageText->SetText("", 0);
+        this->m_pageTotalText->SetText("", 0);
+        this->unknown_00D0->Enable(0);
+        this->unknown_00D4->Enable(0);
+        this->unknown_00B4->SetText("");
+        this->m_animations.clear();
+        this->m_dots.clear();
+        this->Search(keyword);
+        this->unknown_00D8->Enable(0);
+      }
+    } else if (a == 0x205) {
+      if (!g_windowMgr.GetHoverWindow()) {
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x1062)), 0xFF, 0, 0, 0);
+      } else {
+        const int id = g_itemTagOwner->unknown_0114;
+        switch (g_windowMgr.GetHoverWindow()->geometry.id) {
+        case 0x1EA:
+        case 0x1ED:
+        case 0x1EE:
+          static_cast<UIChatEditCtrl*>(g_windowMgr.GetHoverWindow())->InsertItemTag(id);
+          break;
+        case 0x1EB:
+          static_cast<UIRodexComposeWnd*>(g_linkInputOwner)->sub_7FF940(id);
+          break;
+        case 0x1EC:
+          static_cast<UINpcTextEditDialogWnd*>(g_windowMgr.unknown_0318)->InsertSkillTag(id);
+          break;
+        }
+      }
+    } else if (a == 0x21F) {
+      this->unknown_00D4->SetDisabled(g_itemTagOwner->IsLastTip() == true ? 1 : 0);
+      this->unknown_00D4->Invalidate();
+      this->unknown_00D4->Invalidate();
+      this->unknown_00D0->SetDisabled(1);
+      this->unknown_00D0->Invalidate();
+      this->unknown_00D0->Invalidate();
+      this->RefreshTip();
+      this->BuildAnimations();
+    }
+    return 0;
+  }
+
+  if (a == 0xF6) {
+    const int page = (std::max)(0, g_itemTagOwner->unknown_00B4);
+    g_itemTagOwner->unknown_00B4 = page - 1;
+    this->unknown_00D4->SetDisabled(0);
+    this->unknown_00D4->Invalidate();
+    this->unknown_00D4->Invalidate();
+    if (page == 1) {
+      this->unknown_00D0->SetDisabled(1);
+      this->unknown_00D0->Invalidate();
+      this->unknown_00D0->Invalidate();
+    }
+    this->RefreshTip();
+    return 0;
+  }
+
+  switch (a) {
+  case 0xB8:
+    this->unknown_00D0->Enable(1);
+    this->unknown_00D4->Enable(1);
+    g_itemTagOwner->SelectTip(this->unknown_00B8->lines[this->unknown_00B8->selected].id);
+    this->unknown_00D4->SetDisabled(g_itemTagOwner->IsLastTip() == true ? 1 : 0);
+    this->unknown_00D4->Invalidate();
+    this->unknown_00D4->Invalidate();
+    this->unknown_00D0->SetDisabled(1);
+    this->unknown_00D0->Invalidate();
+    this->unknown_00D0->Invalidate();
+    this->RefreshTip();
+    this->BuildAnimations();
+    break;
+  case 0xC9:
+    g_windowMgr.CloseWindow(0x13B);
+    break;
+  case 0xD5: {
+    DWORD disposition = 0;
+    this->unknown_0100 = static_cast<int>(b);
+    g_window315Enabled = static_cast<int>(b);
+    HKEY key;
+    if (RegCreateKeyExA(HKEY_LOCAL_MACHINE, g_subKey, 0, nullptr, 0, KEY_ALL_ACCESS, nullptr, &key, &disposition) == ERROR_SUCCESS) {
+      RegSetValueExA(key, "SHOWTIPSATSTARTUP", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->unknown_0100), 4);
+      RegCloseKey(key);
+    }
+    break;
+  }
+  case 0xDA: {
+    const int page = (std::max)(0, g_itemTagOwner->unknown_00B4);
+    g_itemTagOwner->unknown_00B4 = page + 1;
+    if (g_itemTagOwner->IsLastTip() == true) {
+      this->unknown_00D4->SetDisabled(1);
+      this->unknown_00D4->Invalidate();
+      this->unknown_00D4->Invalidate();
+    }
+    this->unknown_00D0->SetDisabled(0);
+    this->unknown_00D0->Invalidate();
+    this->unknown_00D0->Invalidate();
+    this->RefreshTip();
+    break;
+  }
   }
   return 0;
 }

@@ -8,6 +8,10 @@
 #include <vector>
 
 class UIStaticText;
+class UIEditCtrl;
+class UIListBoxID;
+class UITagTextViewer;
+class UIButton;
 
 struct TipBoxAnimation {
   /* 0000 */ std::uint32_t moveStart;
@@ -39,17 +43,20 @@ public:
   void UpdatePageText();
   bool BuildAnimations();
   void PaintAnimations();
+  void Search(std::string& keyword);
+  void RefreshTip();
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
-  /* 00B4 */ int unknown_00B4;
-  /* 00B8 */ int unknown_00B8;
-  /* 00BC */ int unknown_00BC;
-  /* 00C0 */ int unknown_00C0;
-  /* 00C4 */ int unknown_00C4;
+  /* 00B4 */ UIEditCtrl* unknown_00B4;
+  /* 00B8 */ UIListBoxID* unknown_00B8;
+  /* 00BC */ UITagTextViewer* unknown_00BC;
+  /* 00C0 */ UIStaticText* unknown_00C0;
+  /* 00C4 */ UIStaticText* unknown_00C4;
   /* 00C8 */ UIStaticText* m_pageText;
   /* 00CC */ UIStaticText* m_pageTotalText;
-  /* 00D0 */ int unknown_00D0;
-  /* 00D4 */ int unknown_00D4;
-  /* 00D8 */ int unknown_00D8;
+  /* 00D0 */ UIButton* unknown_00D0;
+  /* 00D4 */ UIButton* unknown_00D4;
+  /* 00D8 */ UIButton* unknown_00D8;
   /* 00DC */ std::vector<TipBoxAnimation> m_animations;
   /* 00E8 */ std::vector<TipBoxDot> m_dots;
   /* 00F4 */ std::uint32_t m_buildTime;
