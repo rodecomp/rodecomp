@@ -5,6 +5,8 @@
 #include "Contents/Actors/ActorStateFlags.h"
 #include "Contents/Skills/SkillInfo.h"
 #include "File/File.h"
+#include "File/ShortcutFilename.h"
+#include "UI/Exchange/UIExchangeUI.h"
 #include "UI/Items/UISpellListWnd.h"
 #include "Client/Registry.h"
 #include "Client/Session.h"
@@ -9584,4 +9586,103 @@ int UIProhibitListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     counter->SendMsg(nullptr, 0x51, 1, 0, 0, 0);
   }
   return 0;
+}
+
+// OFFSET: 0x008ED760
+// FUNCTION: fn_12222
+void UIExchangeWnd::Paint() {
+  auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\titlebar_fix2.bmp")));
+  this->DrawBitmap(0, 0, &bitmap->image, false);
+  bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\exchange_bg2.bmp")));
+  this->DrawBitmap(0, 17, &bitmap->image, false);
+  DrawOutlinedText(*this, 123, this->geometry.height - 20, LookupMessage(0x727), 0, 0xFF, 0xFFFFFF, 0, 12, 1, 0);
+
+  char title[128];
+  std::sprintf(title, "%s : ", LookupMessage(0xCE));
+  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 13, 4, title, 0, 0, 12, 0xFFFFFF, 0, 0);
+  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 12, 3, title, 0, 0, 12, 0, 0, 0);
+  char partner[128];
+  if (this->unknown_0108 < 1) {
+    std::sprintf(partner, "%s", this->unknown_00F0.c_str());
+  } else if (g_serviceType == 6) {
+    std::sprintf(partner, "%s  Lv%d", this->unknown_00F0.c_str(), this->unknown_010C);
+  } else {
+    const std::string identifier = ShortcutFilename(this->unknown_0108);
+    std::sprintf(partner, "%s  Lv%d (%s)", this->unknown_00F0.c_str(), this->unknown_010C, identifier.c_str());
+  }
+  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 63, 4, partner, 0, 0, 12, 0xB4B4B4, 0, 0);
+  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 62, 3, partner, 0, 0, 12, 0, 0, 0);
+
+  const std::string prefix = "유저인터페이스\\btn_";
+  const char* buttons[2] = {"ok", "exchange"};
+  const int buttonX[2] = {3, 260};
+  for (int index = 0; index < 2; ++index) {
+    const std::string path = prefix + buttons[index] + "_dis.bmp";
+    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str())));
+    this->DrawBitmap(buttonX[index], this->geometry.height - 23, &bitmap->image, false);
+  }
+  for (int row = 0; row < 10; ++row) {
+    DrawItemSlotBackground(*this, 12, this->m_rowHeight * row + 20);
+    DrawItemSlotBackground(*this, 291, this->m_rowHeight * row + 20);
+  }
+  unsigned red;
+  unsigned green;
+  unsigned blue;
+  if (this->unknown_00CC != 0) {
+    SkinPaletteChannels(ResourceMgr::Instance(), 10, 6, red, green, blue);
+    this->FillRegion(4, 21, 272, 310, RGB(red, green, blue));
+  }
+  if (this->unknown_00D0 != 0) {
+    SkinPaletteChannels(ResourceMgr::Instance(), 10, 6, red, green, blue);
+    this->FillRegion(283, 21, 272, 310, RGB(red, green, blue));
+  }
+  ItemDescriptions descriptions{g_itemDescriptions};
+  int row = 0;
+  for (const ITEM_INFO& item : this->m_myItems) {
+    if (g_session.IsPetEgg(std::atoi(item.itemId.c_str())) != 0 && item.unknown_005D != 0) {
+      continue;
+    }
+    const int y = this->m_rowHeight * row;
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, this->m_context->fonts, this->m_context->locale, 16, y + 21, item, 0, 0);
+    this->DrawFittedItemName(48, y + 29, &item, 0, 0, 12, 1);
+    if (item.unknown_0088 > 0) {
+      const std::string path = FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.unknown_0088);
+      bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str())));
+      this->DrawBitmap(16, y + 33, &bitmap->image, true);
+    }
+    if (row == 9) {
+      break;
+    }
+    ++row;
+  }
+  row = 0;
+  for (const ITEM_INFO& item : this->m_otherItems) {
+    if (g_session.IsPetEgg(std::atoi(item.itemId.c_str())) != 0 && item.unknown_005D != 0) {
+      continue;
+    }
+    const int y = this->m_rowHeight * row;
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, this->m_context->fonts, this->m_context->locale, 295, y + 21, item, 0, 0);
+    this->DrawFittedItemName(327, y + 29, &item, 0, 0, 12, 1);
+    if (item.unknown_0088 > 0) {
+      const std::string path = FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.unknown_0088);
+      bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str())));
+      this->DrawBitmap(295, y + 33, &bitmap->image, true);
+    }
+    if (row == 9) {
+      break;
+    }
+    ++row;
+  }
+  char grouped[32];
+  char amount[128];
+  int length = std::sprintf(amount, "%s", FormatGroupedInteger(g_exchangeMyZeny, grouped, sizeof(grouped)));
+  PriceColors colors = PriceColor(g_exchangeMyZeny);
+  this->DrawRightAlignedText(219, 331, amount, length, 1, 16, colors.primary & 0xFFFFFF, 0);
+  this->DrawRightAlignedText(220, 331, amount, length, 1, 16, colors.primary & 0xFFFFFF, 0);
+  this->DrawRightAlignedText(220, 332, amount, length, 1, 16, 0x323232, 0);
+  length = std::sprintf(amount, "%s", FormatGroupedInteger(g_exchangeOtherZeny, grouped, sizeof(grouped)));
+  colors = PriceColor(g_exchangeOtherZeny);
+  this->DrawRightAlignedText(499, 331, amount, length, 1, 16, colors.primary & 0xFFFFFF, 0);
+  this->DrawRightAlignedText(500, 331, amount, length, 1, 16, colors.primary & 0xFFFFFF, 0);
+  this->DrawRightAlignedText(500, 332, amount, length, 1, 16, 0x323232, 0);
 }

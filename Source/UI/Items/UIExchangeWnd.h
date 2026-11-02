@@ -36,6 +36,7 @@ public:
   /* 0124 */ std::string m_moneyText;
 
   void Slot15(int width, int height) override;
+  void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot28(int x, int y) override;
