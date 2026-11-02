@@ -14,11 +14,10 @@ class UIBitmapButton;
 class UIStaticText;
 struct EntryQueueInfo;
 class UITextViewer;
-struct UITextViewerContext;
 struct WindowResponseRecorder;
 
 struct UIEntryQueueContext {
-  UITextViewerContext& text;
+  void* unknown_text;
   WindowResponseRecorder& recorder;
 };
 

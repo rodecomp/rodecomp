@@ -284,8 +284,7 @@ void UIChooseSellBuyWnd::AddChoice(const char* name, int id, int x, int y) {
 
 // INLINED
 void UIChooseSellBuyWnd::CreateViewer(int width, int height) {
-  auto& text = this->m_acceptance->text;
-  this->viewer = new UITextViewer(*this->m_context, text);
+  this->viewer = new UITextViewer(*this->m_context);
   this->viewer->Configure(10, 22, width - 20, height - 55, 0);
   const std::string chip = std::string(prefix) + "colorchip.bmp";
   const auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(chip.c_str()));
@@ -401,7 +400,6 @@ void UIChooseWnd::Slot15(int width, int height) {
 // OFFSET: 0x008DE520
 // FUNCTION: fn_12169
 void UIDisconnectedServerMsgWnd::Slot15(int width, int height) {
-  auto& text = *this->m_textContext;
   auto* button = new UIBitmapButton(*this->m_context);
   button->SetBitmap("유저인터페이스\\btn_ok.bmp", 0, 0);
   button->SetBitmap("유저인터페이스\\btn_ok_a.bmp", 1, 0);
@@ -412,7 +410,7 @@ void UIDisconnectedServerMsgWnd::Slot15(int width, int height) {
   this->AddChild(button);
   this->m_message0 = 184;
 
-  this->m_viewer = new UITextViewer(*this->m_context, text);
+  this->m_viewer = new UITextViewer(*this->m_context);
   this->m_viewer->Configure(10, 22, width - 20, height - 55, 0);
   unsigned red, green, blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
@@ -3677,7 +3675,7 @@ bool UInCashWnd::Slot03() {
 // OFFSET: 0x008DB750
 // FUNCTION: fn_12159
 void UIBookWnd::Slot15(int width, int height) {
-  this->m_viewer = new UITextViewer(*this->m_context, this->m_book->text);
+  this->m_viewer = new UITextViewer(*this->m_context);
   this->m_viewer->Configure(30, 45, width - 60, height - 60, 0);
   this->AddChild(this->m_viewer);
 
@@ -3706,7 +3704,7 @@ void UIBookWnd::Slot15(int width, int height) {
 // FUNCTION: fn_12175
 void UIItemCollectionWnd::Slot15(int width, int height) {
   this->m_kind = 12;
-  this->m_viewer = new UITextViewer(*this->m_context, *reinterpret_cast<UITextViewerContext*>(nullptr));
+  this->m_viewer = new UITextViewer(*this->m_context);
   this->m_viewer->Configure(91, 31, width - 98, height - 40, 0);
   unsigned red, green, blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
@@ -6175,8 +6173,8 @@ UIComboBoxWnd::UIComboBoxWnd(UIWindowContext& windows)
 
 // OFFSET: 0x008C77A0
 // FUNCTION: fn_11938
-UIDisconnectedServerMsgWnd::UIDisconnectedServerMsgWnd(UIWindowContext& windows, UITextViewerContext& text)
-    : UIFrameWnd(windows, 0), m_viewer(nullptr), m_textContext(&text) {
+UIDisconnectedServerMsgWnd::UIDisconnectedServerMsgWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0), m_viewer(nullptr) {
 }
 
 // OFFSET: 0x008C82D0
@@ -6540,7 +6538,7 @@ void UINoticeConfirmWnd::Slot15(int width, int height) {
   }
 
   this->m_message0 = 184;
-  this->m_viewer = new UITextViewer(*this->m_context, *this->m_textContext);
+  this->m_viewer = new UITextViewer(*this->m_context);
   this->m_viewer->Configure(10, 22, width - 20, height - 55, 0);
   unsigned red, green, blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
@@ -6704,7 +6702,7 @@ void UIWaitWnd::Slot15(int width, int height) {
   this->m_button->SetTooltip("");
   this->AddChild(this->m_button);
 
-  this->m_textViewer = new UITextViewer(*this->m_context, *this->m_textContext);
+  this->m_textViewer = new UITextViewer(*this->m_context);
   this->m_textViewer->Configure(10, 22, width - 20, height - 55, 0);
   unsigned red, green, blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);

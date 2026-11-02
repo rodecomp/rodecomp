@@ -5,12 +5,11 @@
 #include "UI/Window/UIFrameWnd.h"
 
 class UITextViewer;
-struct UITextViewerContext;
 struct WindowResponseRecorder;
 struct NormalItemSlotWindow;
 
 struct UIAcceptanceContext {
-  UITextViewerContext& text;
+  void* unknown_text;
   WindowResponseRecorder& recorder;
   const int& screenWidth;
   const int& screenHeight;

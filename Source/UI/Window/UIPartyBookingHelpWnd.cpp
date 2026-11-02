@@ -16,7 +16,7 @@ void UIPartyBookingHelpWnd::Slot15(int width, int height) {
   this->AddBaseButton();
   this->AddCloseButton("", 0);
 
-  this->m_viewer = new UITextViewer(*this->m_context, *this->m_text);
+  this->m_viewer = new UITextViewer(*this->m_context);
   this->m_viewer->Configure(10, 25, width - 20, height - 35, 1);
   this->AddChild(this->m_viewer);
 
@@ -53,6 +53,6 @@ int UIPartyBookingHelpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
 
 // OFFSET: 0x00911860
 // FUNCTION: fn_12519
-UIPartyBookingHelpWnd::UIPartyBookingHelpWnd(UIWindowContext& windows, UITextViewerContext& text)
-    : UIFrameWnd(windows, 0), m_text(&text) {
+UIPartyBookingHelpWnd::UIPartyBookingHelpWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0) {
 }

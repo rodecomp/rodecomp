@@ -1,4 +1,9 @@
 #include "UI/Chat/UINewChatWnd.h"
+#include "Client/Application/ApplicationWindow.h"
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Contents/NavigationManager.h"
+#include "UI/Dialogs/UITipboxWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Contents/Items/ItemInfo.h"
 #include "UI/Lists/UIScrollBar.h"
@@ -30,7 +35,7 @@ void UITextViewer::Activate(UITextButton* button, int id) {
   switch (id) {
   case 437:
     if (!arguments.at(0).empty()) {
-      ShellExecuteA(this->m_text->applicationWindow, "open", arguments[0].c_str(), nullptr, nullptr, SW_SHOWNORMAL);
+      ShellExecuteA(hWnd, "open", arguments[0].c_str(), nullptr, nullptr, SW_SHOWNORMAL);
     }
 
     break;
@@ -44,7 +49,7 @@ void UITextViewer::Activate(UITextButton* button, int id) {
     const int y = number(2);
 
     if (arguments.size() <= 3) {
-      this->m_text->actions.Navigate(map, 2, 5, false, x, y, 1002);
+      g_navigationManager.sub_B99030(map, 2, 5, false, x, y, 1002);
       break;
     }
 
@@ -52,7 +57,7 @@ void UITextViewer::Activate(UITextButton* button, int id) {
     int policy = number(4);
 
     if (policy == -222) {
-      this->m_text->actions.NavigateNamed((type == 3 ? "$$DB " : "") + map, type, 0);
+      g_navigationManager.sub_B995D0((type == 3 ? "$$DB " : "") + map, type, 0);
       break;
     }
 
@@ -74,7 +79,7 @@ void UITextViewer::Activate(UITextButton* button, int id) {
       flag += 4;
     }
 
-    this->m_text->actions.Navigate(map, type, flag, option == 0, x, y, target);
+    g_navigationManager.sub_B99030(map, type, flag, option == 0, x, y, target);
     break;
   }
   case 464: {
@@ -98,13 +103,13 @@ void UITextViewer::Activate(UITextButton* button, int id) {
   case 517:
     if (!arguments.empty()) {
       if (UIWindow* window = g_windowMgr.EnsureWindow(315)) {
-        this->m_text->actions.OpenTip(*window, number(0));
+        static_cast<UITipboxWnd*>(window)->ShowTip(number(0));
       }
     }
 
     break;
   case 539:
-    this->m_text->actions.OpenQuest(number(0));
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ReceiveServiceRequest(6, number(0));
     break;
   default:
     break;

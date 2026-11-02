@@ -7,23 +7,6 @@
 
 class UITextButton;
 
-class TextViewerActions {
-public:
-  virtual void Navigate(std::string map, int type, unsigned char flags, bool option, int x, int y, int target) = 0;
-  virtual void NavigateNamed(std::string map, int type, int option) = 0;
-  virtual void OpenTip(UIWindow& window, int id) = 0;
-  virtual void OpenQuest(int id) = 0;
-
-protected:
-  ~TextViewerActions() = default;
-};
-
-struct UITextViewerContext {
-  TextViewerActions& actions;
-  HWND& applicationWindow;
-
-};
-
 class UITextViewer : public UIListBox {
   friend class UIWindow;
   friend class UIQuestDisplay;
@@ -31,7 +14,7 @@ class UITextViewer : public UIListBox {
 
 public:
   UITextViewer();
-  UITextViewer(UIWindowContext& windows, UITextViewerContext& text);
+  UITextViewer(UIWindowContext& windows);
   ~UITextViewer() override;
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -51,8 +34,9 @@ public:
   /* 00E9 */ unsigned char outline;
   /* 00EA */ unsigned char bold;
 
+  /* 00EC */ void* unknown_00EC;
+
 private:
-  UITextViewerContext* m_text;
   std::pair<int, int> LinkPosition(unsigned position, unsigned addedLines);
   void AddLinks(const char* text, unsigned addedLines, int kind);
   bool AddItemLinks(std::string text, unsigned addedLines);

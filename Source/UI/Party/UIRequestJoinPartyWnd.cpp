@@ -32,8 +32,6 @@ UIRequestJoinPartyWnd::~UIRequestJoinPartyWnd() = default;
 // OFFSET: 0x007BEFD0
 // FUNCTION: fn_09301
 void UIRequestJoinPartyWnd::Slot15(int, int) {
-  auto& text = this->m_request->text;
-
   this->icon = new UIBitmapButton(*this->m_context);
   this->icon->SetSize(25, 25);
   const std::string initial = std::string(prefix) + "renewalparty\\icon_jobs_4046.bmp";
@@ -67,7 +65,7 @@ void UIRequestJoinPartyWnd::Slot15(int, int) {
   }
 
   this->m_message0 = 541;
-  this->details = new UITextViewer(*this->m_context, text);
+  this->details = new UITextViewer(*this->m_context);
   this->details->Configure(43, 20, 167, 60, 0);
   this->details->textColor = 0xFFFFFFFFu;
   this->details->Invalidate();
@@ -85,7 +83,7 @@ void UIRequestJoinPartyWnd::Slot15(int, int) {
   std::vector<std::string> unused;
   WrapPlainText(LookupMessage(3518), unused, 30);
 
-  this->blockText = new UITextViewer(*this->m_context, text);
+  this->blockText = new UITextViewer(*this->m_context);
   this->blockText->Configure(31, 81, 182, 47, 0);
   this->blockText->textColor = 0xFFD7C53Cu;
   this->blockText->Invalidate();

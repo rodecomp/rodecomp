@@ -3,12 +3,11 @@
 
 #include "UI/Window/UIFrameWnd.h"
 
-struct UITextViewerContext;
 class UITextViewer;
 
 class UIDisconnectedServerMsgWnd : public UIFrameWnd {
 public:
-  UIDisconnectedServerMsgWnd(UIWindowContext& windows, UITextViewerContext& text);
+  UIDisconnectedServerMsgWnd(UIWindowContext& windows);
   void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
@@ -16,7 +15,7 @@ public:
   /* 00B4 */ UITextViewer* m_viewer;
 
 protected:
-  UITextViewerContext* m_textContext;
+  void* unknown_textContext;
 };
 
 #endif

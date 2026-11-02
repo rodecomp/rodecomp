@@ -108,8 +108,6 @@ UIEntryQueueRequestWnd::UIEntryQueueRequestWnd(UIWindowContext& windows, UIEntry
 // OFFSET: 0x00BA48E0
 // FUNCTION: fn_19691
 bool UIEntryQueueRequestWnd::Create() {
-  auto& text = this->m_entryQueue->text;
-
   this->Resize(300, 250);
   this->AddBaseButton();
   this->AddCloseButton("", 0);
@@ -118,7 +116,7 @@ bool UIEntryQueueRequestWnd::Create() {
   this->Slot22(300, 250);
   this->Move((g_renderer->viewport.width - 640) / 2 + 185, (g_renderer->viewport.height - 480) / 2 + 180);
 
-  this->m_viewer = new UITextViewer(*this->m_context, text);
+  this->m_viewer = new UITextViewer(*this->m_context);
   this->m_viewer->Configure(10, 22, 280, 305, 0);
   unsigned red, green, blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
@@ -238,8 +236,6 @@ UIEntryQueueStandByWnd::UIEntryQueueStandByWnd(UIWindowContext& windows, UIEntry
 // OFFSET: 0x00BA5700
 // FUNCTION: fn_19698
 bool UIEntryQueueStandByWnd::Create() {
-  auto& text = this->m_entryQueue->text;
-
   this->Resize(280, 120);
   this->AddBaseButton();
   this->SetSize(280, 120);
@@ -247,7 +243,7 @@ bool UIEntryQueueStandByWnd::Create() {
   this->Slot22(280, 120);
   this->Move((g_renderer->viewport.width - 640) / 2 + 185, (g_renderer->viewport.height - 480) / 2 + 180);
 
-  this->m_viewer = new UITextViewer(*this->m_context, text);
+  this->m_viewer = new UITextViewer(*this->m_context);
   this->m_viewer->Configure(10, 22, 260, 65, 0);
   unsigned red, green, blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
@@ -636,11 +632,9 @@ void UIEntryQueueWnd::Slot11() {
 // OFFSET: 0x00BA3A50
 // FUNCTION: fn_19679
 void UIEntryQueueHelpWnd::Slot15(int width, int height) {
-  auto& text = this->m_entryQueue->text;
-
   this->Resize(280, 280);
 
-  this->m_viewer = new UITextViewer(*this->m_context, text);
+  this->m_viewer = new UITextViewer(*this->m_context);
   this->m_viewer->Configure(10, 22, 270, 225, 0);
   unsigned red, green, blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);

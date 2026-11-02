@@ -684,7 +684,7 @@ void UIMessageBox::Configure(
     inset = image->geometry.width + image->geometry.x;
   }
 
-  this->viewer = new UITextViewer(*this->m_context, this->m_dialog->text);
+  this->viewer = new UITextViewer(*this->m_context);
   this->viewer->Configure(inset + 10, 22, width - inset - 20, height - 55, 0);
   this->viewer->backgroundColor = Palette(ResourceMgr::Instance(), 2, 2) | 0xFF000000u;
   this->viewer->Invalidate();
@@ -773,7 +773,7 @@ int UIMessageBox::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     return 0;
   case 98:
     if (a == 426) {
-      ShellExecuteA(this->m_dialog->text.applicationWindow, "open", LookupMessage(3445), nullptr, nullptr, SW_SHOWNORMAL);
+      ShellExecuteA(hWnd, "open", LookupMessage(3445), nullptr, nullptr, SW_SHOWNORMAL);
     }
 
     return 0;

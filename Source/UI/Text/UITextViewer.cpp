@@ -63,8 +63,7 @@ namespace {
 
 // OFFSET: 0x0086F0A0
 // FUNCTION: fn_11086
-UITextViewer::UITextViewer(UIWindowContext& windows, UITextViewerContext& text)
-    : UIListBox(windows), splitTipLinks(0), outline(0), bold(0), m_text(&text) {
+UITextViewer::UITextViewer(UIWindowContext& windows) : UIListBox(windows), splitTipLinks(0), outline(0), bold(0) {
   this->lineHeight = 18;
   constexpr char path[] = "유저인터페이스\\colorchip.bmp";
   const auto* chip = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(path));

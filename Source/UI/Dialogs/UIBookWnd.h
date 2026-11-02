@@ -9,11 +9,10 @@
 
 class UISpriteButton;
 class UITextViewer;
-struct UITextViewerContext;
 struct WindowOrdering;
 
 struct UIBookContext {
-  UITextViewerContext& text;
+  void* unknown_text;
   WindowOrdering& ordering;
 };
 

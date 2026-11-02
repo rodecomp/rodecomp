@@ -6,13 +6,12 @@
 #include <string>
 
 class UITextViewer;
-struct UITextViewerContext;
 class UIWindowMgr;
 
 struct WindowResponseRecorder;
 
 struct UIMessageBoxContext {
-  UITextViewerContext& text;
+  void* unknown_text;
   UIWindowMgr& retirement;
   WindowResponseRecorder& recorder;
   int& response;

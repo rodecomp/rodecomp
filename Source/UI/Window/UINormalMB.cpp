@@ -93,7 +93,7 @@ void UINormalMB::Create(UIWindow* owner, const char* text, int type, bool defaul
     inset = image->geometry.width + image->geometry.x;
   }
 
-  this->m_viewer = new UITextViewer(*this->m_context, *this->m_textContext);
+  this->m_viewer = new UITextViewer(*this->m_context);
   this->m_viewer->Configure(inset + 10, 22, width - inset - 20, height - 55, 0);
   unsigned red, green, blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);

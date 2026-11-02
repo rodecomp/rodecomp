@@ -131,7 +131,7 @@ void UIAccountLimitedToolWnd::Slot15(int, int) {
     this->m_buttons[i]->Invalidate();
   }
 
-  this->m_viewer = new UITextViewer(*this->m_context, *this->m_textContext);
+  this->m_viewer = new UITextViewer(*this->m_context);
   const int buttonHeight = this->m_buttons[1]->geometry.height;
   this->m_viewer->Configure(10, buttonHeight + 189, this->geometry.width - 20, this->geometry.height - buttonHeight - 199, 0);
   this->m_viewer->backgroundColor = 0xFF969696;
@@ -366,8 +366,8 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 
 // OFFSET: 0x00946800
 // FUNCTION: fn_12846
-UIAccountLimitedToolWnd::UIAccountLimitedToolWnd(UIWindowContext& windows, UITextViewerContext& texts)
-    : UIFrameWnd(windows, 0), m_accountIdText(nullptr), m_viewer(nullptr), m_textContext(&texts) {
+UIAccountLimitedToolWnd::UIAccountLimitedToolWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0), m_accountIdText(nullptr), m_viewer(nullptr) {
   SecureZeroMemory(this->m_edits, sizeof(this->m_edits));
   SecureZeroMemory(this->m_buttons, sizeof(this->m_buttons));
 }

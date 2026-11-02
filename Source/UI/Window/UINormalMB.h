@@ -7,7 +7,6 @@
 #include <string>
 
 class UITextViewer;
-struct UITextViewerContext;
 
 class UINormalMB : public UIFrameWnd {
   friend class UICashEmotionListWnd;
@@ -28,7 +27,7 @@ protected:
   /* 00F0 */ std::map<int, void (*)()> m_actions;
 
 private:
-  UITextViewerContext* m_textContext;
+  void* unknown_textContext;
   void AddButton(const char* normal, const char* hover, const char* pressed, int x, int y, int id);
 };
 

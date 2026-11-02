@@ -5,7 +5,6 @@
 
 class UIBitmapButton;
 class UITextViewer;
-struct UITextViewerContext;
 
 class UIWaitWnd : public UIFrameWnd {
 public:
@@ -20,7 +19,7 @@ public:
   void Slot15(int width, int height) override;
 
 protected:
-  UITextViewerContext* m_textContext;
+  void* unknown_textContext;
 };
 
 #endif
