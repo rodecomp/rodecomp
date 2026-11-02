@@ -2328,8 +2328,8 @@ bool CLoginMode::ShowNotice(int notice, bool append) {
   }
 
   if (UIWindow* notices = g_windowMgr.unknown_0210) {
-    int x = g_screenWidth + 1;
-    int y = g_screenHeight + 1;
+    int x = g_mouse.x + 1;
+    int y = g_mouse.y + 1;
     if (x < 1) {
       x = 1;
     }
