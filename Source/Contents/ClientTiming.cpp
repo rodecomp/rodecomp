@@ -808,7 +808,7 @@ std::uint32_t CSession::SyncServerTime(std::uint32_t serverTime) {
 // OFFSET: 0x00DE4D80
 // FUNCTION: fn_23490
 void CSession::LoadDamageSkinSettings() {
-  g_luaScript->Call("GetDamageSkinSize", ">d", &this->unknown_80C8);
+  g_session.m_hotkeyScript->Call("GetDamageSkinSize", ">d", &this->unknown_80C8);
   if (this->m_damageSkinIndex < 0 || this->m_damageSkinIndex >= this->unknown_80C8) {
     this->m_damageSkinIndex = 0;
   }
@@ -819,7 +819,7 @@ void CSession::LoadDamageSkinSettings() {
   const char* resourceName = nullptr;
   const char* name80EC = nullptr;
   const char* name8104 = nullptr;
-  g_luaScript->Call("GetDamageResourceName", "d>sss", this->m_damageSkinIndex, &resourceName, &name80EC, &name8104);
+  g_session.m_hotkeyScript->Call("GetDamageResourceName", "d>sss", this->m_damageSkinIndex, &resourceName, &name80EC, &name8104);
   if (resourceName) {
     this->m_damageResourceName = resourceName;
   }
@@ -829,7 +829,7 @@ void CSession::LoadDamageSkinSettings() {
   if (name8104) {
     this->unknown_8104 = name8104;
   }
-  g_luaScript->Call("GetDamageMillionUnit", "d>d", this->m_damageSkinIndex, &this->m_damageMillionUnit);
+  g_session.m_hotkeyScript->Call("GetDamageMillionUnit", "d>d", this->m_damageSkinIndex, &this->m_damageMillionUnit);
 }
 
 // OFFSET: 0x00DE53C0
