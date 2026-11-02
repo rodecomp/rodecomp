@@ -8967,7 +8967,7 @@ void UIBookWnd::Slot19() {
   g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(this->StripColorCodes(this->m_lines[this->m_autoLine].c_str())), 0xE1E4FF, 0, 0, 0);
   UIWindow* balloon = this->unknown_00B8;
   if (balloon == nullptr) {
-    balloon = new UITransBalloonText(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<BalloonTextContext*>(nullptr));
+    balloon = new UITransBalloonText();
     this->unknown_00B8 = balloon;
     balloon->SetSize(8, 8);
     g_windowMgr.AddRenderedFront(this->unknown_00B8);
