@@ -102,7 +102,7 @@ float GetHatEffectOffsetX(int id, const char* name) {
 int GetHatEffectOffsetY(int id, CGameActor* actor) {
   bool ignored = false;
   if (id >= 0x9B5) {
-    g_luaScript->Call("IsIgnoredRidingState_Include_AttachedToHead", "d>b", id - 0x9B5, &ignored);
+    g_session.m_hotkeyScript->Call("IsIgnoredRidingState_Include_AttachedToHead", "d>b", id - 0x9B5, &ignored);
   } else {
     ignored = id == 0x719;
   }
@@ -672,7 +672,7 @@ int GetHatEffectOffsetY(int id, CGameActor* actor) {
 
   if (id >= 0x9B5) {
     int position = 0;
-    g_luaScript->Call("GetHatEfPos", "d>d", id - 0x9B5, &position);
+    g_session.m_hotkeyScript->Call("GetHatEfPos", "d>d", id - 0x9B5, &position);
     offset += position;
   }
 
@@ -5169,7 +5169,7 @@ void CEZ2STRScreenEffect::Slot34(CEZ2STRParticle* particle, int id) {
 
   if (id >= 0x9B5) {
     const char* name = nullptr;
-    g_luaScript->Call("GetHatEfResName", "d>s", id - 0x9B5, &name);
+    g_session.m_hotkeyScript->Call("GetHatEfResName", "d>s", id - 0x9B5, &name);
     if (name != nullptr) {
       particle->Open(name);
     }
@@ -5424,10 +5424,10 @@ void CEZ2STRScreenEffect::Slot01() {
     this->retained = 1;
     particle->m_loop = true;
     bool adjustSize = false;
-    g_luaScript->Call("IsAdjustSizeWhenShrinkState", "d>b", this->id - 0x9B5, &adjustSize);
+    g_session.m_hotkeyScript->Call("IsAdjustSizeWhenShrinkState", "d>b", this->id - 0x9B5, &adjustSize);
     particle->m_followActor = adjustSize;
     bool adjustPosition = false;
-    g_luaScript->Call("IsAdjustPositionWhenShrinkState", "d>b", this->id - 0x9B5, &adjustPosition);
+    g_session.m_hotkeyScript->Call("IsAdjustPositionWhenShrinkState", "d>b", this->id - 0x9B5, &adjustPosition);
     this->fadePulse = adjustPosition;
   }
 
@@ -5577,7 +5577,7 @@ void CEZ2STRScreenEffect::Slot01() {
   this->cameraAngle = static_cast<double>(mode->camera->camera.yaw);
 
   if (this->id >= 0x9B5) {
-    g_luaScript->Call("IsAttachedToHead", "d>b", this->id - 0x9B5, &this->jobScaled);
+    g_session.m_hotkeyScript->Call("IsAttachedToHead", "d>b", this->id - 0x9B5, &this->jobScaled);
   }
 }
 
@@ -6749,7 +6749,7 @@ void CEZ2STRScreenEffect::Slot12() {
   default:
     if (this->id >= 0x9B5) {
       bool renderBefore = false;
-      g_luaScript->Call("IsRenderBeforeCharacter", "d>b", this->id - 0x9B5, &renderBefore);
+      g_session.m_hotkeyScript->Call("IsRenderBeforeCharacter", "d>b", this->id - 0x9B5, &renderBefore);
       if (renderBefore) {
         this->particle->flags = 13;
       }
