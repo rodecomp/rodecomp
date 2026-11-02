@@ -1,20 +1,12 @@
 #ifndef RAGNAROK_SOURCE_CONTENTS_SKILLS_AUTOMATICSKILLS_H
 #define RAGNAROK_SOURCE_CONTENTS_SKILLS_AUTOMATICSKILLS_H
 
-#include "Network/Connection/Connection.h"
-
 #include <cstdint>
 #include <set>
 
-struct AutomaticSkillContext {
-  CConnection& connection;
-  int& activeKey;
-  const int& currentKey;
-};
-
 class AutomaticSkills {
 public:
-  explicit AutomaticSkills(AutomaticSkillContext& context);
+  AutomaticSkills();
   ~AutomaticSkills();
   bool Contains(int id) const;
   static int CancelOption(std::int16_t id);
@@ -24,13 +16,12 @@ public:
 
 private:
   /* 0000 */ std::set<int> m_ids;
-  AutomaticSkillContext* m_context;
   AutomaticSkills(const AutomaticSkills&) = delete;
   AutomaticSkills& operator=(const AutomaticSkills&) = delete;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(AutomaticSkills) == 12);
+static_assert(sizeof(AutomaticSkills) == 8);
 #endif
 
 #endif

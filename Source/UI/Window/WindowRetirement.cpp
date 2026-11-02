@@ -2,7 +2,6 @@
 #include "UI/Layout/SnapMgr.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
-#include "UI/Window/WindowRetirement.h"
 
 #include <algorithm>
 
@@ -76,37 +75,6 @@ void UIWindowMgr::DismissTransient() {
     this->Schedule(this->window_4F250);
     this->window_4F250 = nullptr;
   }
-}
-
-// INLINED
-void WindowRetirement::DrainPending(
-  const std::deque<UIWindow*>& modal, UIWindow*& reference_4F16C, UIWindow*& capture, UIWindow*& input, UIWindow*& hover
-) {
-  if (!modal.empty() && modal.back()) {
-    return;
-  }
-
-  for (UIWindow* window : this->windows.retired) {
-    if (reference_4F16C == window) {
-      reference_4F16C = nullptr;
-    }
-
-    if (capture && (capture == window || capture->IsDescendantOf(window))) {
-      capture = nullptr;
-    }
-
-    if (input && (input == window || input->IsDescendantOf(window))) {
-      input = nullptr;
-    }
-
-    if (hover && (hover == window || hover->IsDescendantOf(window))) {
-      hover = nullptr;
-    }
-
-    this->windows.Destroy(window);
-  }
-
-  this->windows.retired.clear();
 }
 
 // OFFSET: 0x00A8F840

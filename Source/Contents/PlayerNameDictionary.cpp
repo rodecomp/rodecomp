@@ -8,11 +8,7 @@
 #include <timeapi.h>
 
 // INLINED
-CPlayerNameDictionary::CPlayerNameDictionary(PlayerNameContext& context) : m_enabled(true), m_context(&context) {
-}
-
-// INLINED
-CPlayerNameDictionary::CPlayerNameDictionary() : m_enabled(true), m_context(nullptr) {
+CPlayerNameDictionary::CPlayerNameDictionary() : m_enabled(true) {
 }
 
 // OFFSET: 0x0060A9D0
@@ -87,7 +83,7 @@ void CPlayerNameDictionary::Update() {
       const std::uint16_t header = 873;
       std::memcpy(packet, &header, sizeof(header));
       std::memcpy(packet + 2, &id, sizeof(id));
-      this->m_context->connection.Send(sizeof(packet), packet);
+      GetRagConnection().Send(sizeof(packet), packet);
       this->m_requests.push_back({id, timeGetTime()});
     }
 

@@ -8,19 +8,9 @@
 #include <string>
 #include <windows.h>
 
-class CConnection;
-
-struct PlayerNameContext {
-  CConnection& connection;
-  const bool& languagePrefix;
-  const int& service;
-  const WORD& language;
-};
-
 class CPlayerNameDictionary {
 public:
   CPlayerNameDictionary();
-  explicit CPlayerNameDictionary(PlayerNameContext& context);
   virtual ~CPlayerNameDictionary();
   std::string Lookup(std::uint32_t id);
   void Set(std::uint32_t id, std::string name);
@@ -49,11 +39,10 @@ private:
   /* 0008 */ std::map<std::uint32_t, Entry> m_names;
   /* 0010 */ std::deque<std::uint32_t> m_pending;
   /* 0024 */ std::deque<Request> m_requests;
-  PlayerNameContext* m_context;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(CPlayerNameDictionary) == 60);
+static_assert(sizeof(CPlayerNameDictionary) == 0x38);
 #endif
 
 extern CPlayerNameDictionary* g_playerNameDictionary;
