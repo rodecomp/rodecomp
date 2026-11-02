@@ -3948,6 +3948,57 @@ void CGameMode::ReceiveSkillUpdate(
 }
 
 // OFFSET: 0x00CDB910
+// FUNCTION: fn_21310
+void CGameMode::ShowActorNameBalloon(std::uint32_t id) {
+  if (!id) {
+    return;
+  }
+
+  int& placed = *reinterpret_cast<int*>(&this->unknown_02B8[0x0C]);
+  if (this->balloonActorId != id && this->balloonActorId != 0) {
+    this->balloonActorId = id;
+    placed = 1;
+    return;
+  }
+
+  this->balloonActorId = id;
+  CRenderObject* actor = this->scene->GetGameActorByAID(id);
+  if (actor) {
+    CGameActor* gameActor = static_cast<CGameActor*>(actor);
+    if (gameActor->GetEffectiveJob(-1) == 45) {
+      return;
+    }
+
+    placed = 0;
+    this->UpdateNameBalloon(gameActor);
+    if (this->unknown_05CC[1] && g_session.IsPlayerJobId(gameActor->GetEffectiveJob(-1)) && IsAdminAccount(g_session.m_aid)) {
+      g_windowMgr.SelectWhisperName(this->ActorName(id).c_str());
+    }
+    return;
+  }
+
+  if (id == g_session.m_aid) {
+    placed = 0;
+    this->UpdateNameBalloon(reinterpret_cast<CGameActor*>(this->scene->player));
+    return;
+  }
+
+  CItem* item = this->scene->GetItemByAID(id);
+  if (!item) {
+    return;
+  }
+
+  std::string name(item->name.c_str());
+  placed = 0;
+  this->EnsureNameBalloon(this->nameBalloon);
+  this->nameBalloon->AddNameLine(name.c_str());
+  this->nameBalloon->SetIcon("", 0);
+  this->nameBalloon->m_textColor = 0x95EFFF;
+  this->nameBalloon->m_outlineColor = 0;
+  *reinterpret_cast<int*>(&this->unknown_02E4[0]) = this->nameBalloon->geometry.width;
+  *reinterpret_cast<int*>(&this->unknown_02E4[4]) = this->nameBalloon->geometry.height;
+  this->PlaceWindowAtActor(this->nameBalloon, reinterpret_cast<CGameActor*>(item));
+}
 
 
 // OFFSET: 0x00CE18A0
