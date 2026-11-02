@@ -38,6 +38,7 @@ public:
   void UpdateAnimations();
   void UpdatePageText();
   bool BuildAnimations();
+  void PaintAnimations();
 
   /* 00B4 */ int unknown_00B4;
   /* 00B8 */ int unknown_00B8;

@@ -56,6 +56,7 @@ public:
   void Slot11() override;
   void Slot15(int width, int height) override;
   std::vector<unsigned char> Slot44() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
   /* 00F0 */ WindowPlacement* m_compositionPlacement;
   /* 00F4 */ int m_compositionState;

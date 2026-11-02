@@ -7961,6 +7961,30 @@ int ParseItemIdTag(const char* text, const char* end, int& length, int& itemId);
 
 // OFFSET: 0x008F8ED0
 
+// OFFSET: 0x008F2DF0
+// FUNCTION: fn_12262
+void UITipboxWnd::PaintAnimations() {
+  std::string path;
+  for (unsigned int i = 0; i < this->m_animations.size(); ++i) {
+    path = "유저인터페이스\\tipbox\\ico_effect" + IntToString(this->m_animations[i].kind, 0) + ".bmp";
+    if (this->m_animations[i].visible) {
+      const auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str())));
+      this->DrawBitmap(
+        static_cast<int>(this->m_animations[i].x), static_cast<int>(this->m_animations[i].y), bitmap ? &bitmap->image : nullptr, true
+      );
+    }
+  }
+
+  for (unsigned int i = 0; i < this->m_dots.size(); ++i) {
+    if (this->m_dots[i].visible) {
+      const auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\tipbox\\ico_effect6.bmp")));
+      this->DrawBitmap(static_cast<int>(this->m_dots[i].x), static_cast<int>(this->m_dots[i].y), bitmap ? &bitmap->image : nullptr, true);
+    }
+  }
+}
+
+// OFFSET: 0x008FD640
+
 // OFFSET: 0x008F8640
 // FUNCTION: fn_12331
 int UIChoose3Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
