@@ -773,7 +773,7 @@ void UIEditCtrl4::Slot23() {
 // OFFSET: 0x008563D0
 // FUNCTION: fn_10754
 void UIEditCtrl4::PaintText() {
-  this->PaintTextWithPolicy(true, &this->placeholder, this->placeholderColor, this->placeholderEnabled == 1);
+  this->PaintTextWithPolicy(&this->placeholder, this->placeholderColor, this->placeholderEnabled == 1);
 }
 
 // OFFSET: 0x00869800
@@ -1121,6 +1121,7 @@ UIShowAndEditTimeCtrl::UIShowAndEditTimeCtrl(UIWindowContext& windows) : UIWindo
 }
 
 #include "UI/Edit/UIItemTagCtrl.h"
+#include "UI/Edit/UIEditPaint.inl"
 
 // OFFSET: 0x0085C4F0
 // FUNCTION: fn_10801

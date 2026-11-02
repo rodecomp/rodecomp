@@ -97,7 +97,7 @@ public:
 
 protected:
   UIEditContext* m_edit;
-  void PaintTextWithPolicy(bool alternate, const std::string* placeholder, std::uint32_t placeholderColor, bool placeholderEnabled);
+  void PaintTextWithPolicy(const std::string* placeholder, std::uint32_t placeholderColor, bool placeholderEnabled);
   bool RemoveInvalidLink(std::list<UIWindow*>::iterator& entry);
   void SnapLinkSelection(std::size_t prefix, std::size_t bytes);
   std::string BracketFittedText(const std::string& name);
