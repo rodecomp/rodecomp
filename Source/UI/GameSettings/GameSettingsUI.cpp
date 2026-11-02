@@ -288,7 +288,83 @@ template int CUIComboBox<GameSettingsUI::CUIComboItem, std::string>::AddItem(con
 // OFFSET: 0x00A1CC90
 // OFFSET: 0x00A1D770
 // OFFSET: 0x00A1E250
+// FUNCTION: fn_15379
+// FUNCTION: fn_15380
+template <class T, class D> void CUIComboBox<T, D>::Create(int width, int itemHeight, int visibleItems) {
+  this->visibleItems = visibleItems;
+  this->width = width;
+  this->itemHeight = itemHeight;
+  this->SetSize(width + 2, itemHeight + 2);
 
+  T*& display = *reinterpret_cast<T**>(reinterpret_cast<char*>(this) + 0x80);
+  display = new T();
+  display->SetSize(this->width, this->itemHeight);
+  display->Move(1, 1);
+  this->AddChild(display);
+
+  this->button = new CUIButton(*this->m_context);
+  this->button->SetSize(display->geometry.width, display->geometry.height);
+  this->button->Move(display->geometry.x, display->geometry.y);
+  this->button->SetOnClick([this]() {
+    WindowOrdering ordering{g_windowMgr.rendered, *reinterpret_cast<WindowManagerWindows*>(&g_windowMgr), reinterpret_cast<const int&>(g_windowMgr.modal), g_windowMgr.window_4F174};
+    WindowDropDown dropDown{*this->m_context, ordering, reinterpret_cast<CUIDropDownBox*&>(g_windowMgr.window_0A30)};
+    if (!dropDown.Close()) {
+      int x = 0;
+      int y = this->geometry.height - 1;
+      this->ToScreen(x, y);
+      dropDown.Show(this, this->listBox, x, y);
+    }
+  });
+  this->AddChild(this->button);
+
+  this->listBox = new CUIListBoxEx<T, D>(*this->m_context);
+  this->listBox->itemWidth = this->width;
+  this->listBox->rowHeight = this->itemHeight;
+  this->listBox->SetSize(this->width + 13, this->itemHeight);
+  this->listBox->Move(1, 1);
+  this->listBox->SetOnSelect([this, display](T* item, const D& value) {
+    WindowOrdering ordering{g_windowMgr.rendered, *reinterpret_cast<WindowManagerWindows*>(&g_windowMgr), reinterpret_cast<const int&>(g_windowMgr.modal), g_windowMgr.window_4F174};
+    WindowDropDown dropDown{*this->m_context, ordering, reinterpret_cast<CUIDropDownBox*&>(g_windowMgr.window_0A30)};
+    dropDown.Close();
+    if (this->onChange) {
+      this->onChange(display, value);
+    }
+    if (this->onSelect) {
+      this->onSelect(item, value);
+    }
+  });
+
+  this->listBox->scrollBar->SetSize(13, this->itemHeight);
+  this->listBox->scrollBar->Move(this->width, 0);
+  this->listBox->scrollBar->step = this->itemHeight;
+
+  CUIVScrollBar* scrollBar = this->listBox->scrollBar;
+  const std::uint8_t downSource[] = {0x21, 0x2C, 0x11, 0x17, 0xD1, 0x4F, 0x7E, 0x0C, 0x27, 0x67, 0x11, 0x21, 0xAC, 0x3B, 0xE7, 0xB2,
+                                     0x82, 0xF1, 0xBE, 0x81, 0x7D, 0xB1, 0xDF, 0xAE, 0x96, 0xED, 0xFF, 0x8F, 0x7C, 0xF1, 0xBB};
+  thread_local EncryptedName<sizeof(downSource), 0xC1BB8111EDD183E1ULL> downImage(downSource);
+  const std::uint8_t upSource[] = {0x57, 0x66, 0x09, 0x61, 0x0D, 0x75, 0x74, 0x08, 0x51, 0x2D, 0x09, 0x57, 0x70, 0x01, 0xED,
+                                   0xB6, 0xF4, 0xBB, 0xA6, 0xF7, 0xA1, 0x8B, 0xC4, 0xB5, 0xB9, 0xAB, 0xA4, 0xEB, 0xCD};
+  thread_local EncryptedName<sizeof(upSource), 0xC5B1BBCD9BC9C997ULL> upImage(upSource);
+  scrollBar->SetButtonImages(std::string(upImage.Text()), std::string(downImage.Text()));
+
+  const std::uint8_t backgroundSource[] = {0x4B, 0x32, 0xB7, 0x77, 0x21, 0x13, 0xA2, 0xDA, 0x4D, 0x79, 0xB7, 0x41, 0x5C, 0x67, 0x3B,
+                                           0x64, 0xE8, 0xEF, 0x18, 0xE1, 0x8D, 0xED, 0x0A, 0x7E, 0xEF, 0xB3, 0x15, 0xE0, 0x91, 0xDD};
+  thread_local EncryptedName<sizeof(backgroundSource), 0x1767DDE18D779D8BULL> backgroundImage(backgroundSource);
+  scrollBar->SetBackground(std::string(backgroundImage.Text()));
+
+  const std::uint8_t barDownSource[] = {0x75, 0x20, 0x81, 0xDF, 0xD3, 0x33, 0xEA, 0xB4, 0x73, 0x6B, 0x81, 0xE9, 0xAE, 0x47, 0x73, 0x0A, 0xD6, 0xFD,
+                                        0x2E, 0x49, 0x7F, 0xCD, 0x4D, 0x18, 0xC7, 0xD0, 0x25, 0x4A, 0x64, 0x93, 0x01, 0x1B, 0xD8, 0xFF, 0x41};
+  thread_local EncryptedName<sizeof(barDownSource), 0x792FFD1325418FB5ULL> barDownImage(barDownSource);
+  const std::uint8_t barMidSource[] = {0x7F, 0xC6, 0x23, 0x37, 0x45, 0x49, 0x9A, 0x3C, 0x79, 0x8D, 0x23, 0x01, 0x38, 0x3D, 0x03, 0x82, 0xDC,
+                                       0x1B, 0x8C, 0xA1, 0xE9, 0xB7, 0x3D, 0x90, 0xCD, 0x36, 0x8E, 0xA4, 0xE1, 0xA9, 0x3D, 0x9C, 0xCF, 0x69};
+  thread_local EncryptedName<sizeof(barMidSource), 0xF15F8785CDE369BFULL> barMidImage(barMidSource);
+  const std::uint8_t barUpSource[] = {0x99, 0x2A, 0x47, 0x83, 0x37, 0xE1, 0xFA, 0x2E, 0x9F, 0x61, 0x47, 0xB5, 0x4A, 0x95, 0x63, 0x90, 0x3A,
+                                      0xF7, 0xE8, 0x15, 0x9B, 0x1F, 0x5D, 0x82, 0x2B, 0xDA, 0xF2, 0x09, 0xD9, 0x4D, 0x52, 0x93, 0x59};
+  thread_local EncryptedName<sizeof(barUpSource), 0xE33F2FF779878559ULL> barUpImage(barUpSource);
+  scrollBar->SetThumbImages(std::string(barUpImage.Text()), std::string(barMidImage.Text()), std::string(barDownImage.Text()));
+
+  this->listBox->AddNewItem();
+}
 template void CUIComboBox<GameSettingsUI::CUIComboItem, RenderAdapter>::Create(int width, int itemHeight, int visibleItems);
 template void CUIComboBox<GameSettingsUI::CUIComboItem, DisplayMode>::Create(int width, int itemHeight, int visibleItems);
 template void CUIComboBox<GameSettingsUI::CUIComboItem, RenderBackend>::Create(int width, int itemHeight, int visibleItems);
@@ -3805,7 +3881,7 @@ void GameSettingsUI::CUIGraphicsPage::ApplySettings() {
   }
 }
 
-// OFFSET: 0x00A40C40
+ // OFFSET: 0x00A40C40
 // FUNCTION: fn_15986
 void CUIGameSettingsUI::Slot16() {
   this->Move((g_renderer->viewport.width - this->geometry.width) / 2, (g_renderer->viewport.height - this->geometry.height) / 2);
