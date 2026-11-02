@@ -18,6 +18,24 @@
 #include "Script/LuaScript.h"
 #include "UI/Window/UIWindow.h"
 
+// OFFSET: 0x007E3860
+// FUNCTION: fn_09724
+FuncDrawWNDChar::FuncDrawWNDChar(
+  UIWindow* window, int x, int y, unsigned char sex, short job, int hairColor, short body, short head, short bottomAccessory, short topAccessory,
+  short midAccessory, int robe, unsigned char flags, int shield, int bodyStyle, int headPalette, int action, int motion, int time
+)
+    : m_window(window), m_x(x), m_y(y), m_sex(sex), m_job(job), m_hairColor(hairColor), m_body(body), m_head(head), m_bottomAccessory(bottomAccessory),
+      m_topAccessory(topAccessory), m_midAccessory(midAccessory), m_robe(robe), m_flags(flags), m_shield(shield), m_bodyStyle(bodyStyle),
+      m_headPalette(headPalette), m_action(action), m_motion(motion), m_time(time), m_helmRobe(false), m_drawOnTop(false), m_resources(), unknown_0050(),
+      unknown_0068(), m_layers(), unknown_0088(0), unknown_008C(0), unknown_0090(0), unknown_0094(0) {
+  g_luaScript->CallTable(std::string("TB_Layer_Priority", 17), std::string("IsHelmRobe", 10), "d>b", this->m_robe, &this->m_helmRobe);
+  this->m_drawOnTop = this->DrawOnTop();
+  this->m_layers[5] = this->m_bottomAccessory;
+  this->m_layers[4] = this->m_topAccessory;
+  this->m_layers[3] = this->m_midAccessory;
+  this->m_layers[6] = this->m_robe;
+}
+
 // OFFSET: 0x007D4840
 // FUNCTION: fn_09582
 FuncDrawWNDChar::~FuncDrawWNDChar() = default;
