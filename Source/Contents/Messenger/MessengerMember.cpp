@@ -31,6 +31,8 @@
 #include "File/ShortcutFilename.h"
 #include "UI/Layout/WindowSnapping.h"
 #include "UI/Buttons/UITextButton.h"
+#include "UI/Buttons/UIRadioBtn.h"
+#include "UI/Window/UIResizer.h"
 #include "UI/Window/WindowBorder.h"
 #include "Contents/PlayerNameDictionary.h"
 #include "Utility/Text/FormatString.h"
@@ -129,6 +131,7 @@ public:
   UIMessengerGroupWnd();
   ~UIMessengerGroupWnd() override;
   void Slot11() override;
+  void Slot15(int width, int height) override;
   void Paint() override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
@@ -180,6 +183,7 @@ public:
   /* 0278 */ UIButton* iconModeButtons[2];
   /* 0280 */ unsigned char hiddenButtons[11];
   /* 028C */ int mode;
+  UIButtonContext* m_controls;
 };
 
 // GLOBAL: gl_24961
@@ -770,6 +774,156 @@ __declspec(noinline) MessengerMember UIMessengerGroupWnd::MemberAtIndex(int inde
     }
   }
   return MessengerMember(0);
+}
+
+// OFFSET: 0x0073A630
+// FUNCTION: fn_07706
+void UIMessengerGroupWnd::Slot15(int, int) {
+  this->iconPositions.resize(2, MiniPartyIconPosition());
+  this->iconPositions[0].x = 5;
+  this->iconPositions[0].y = 5;
+  this->iconPositions[0].size = 34;
+  this->iconPositions[1].x = 4;
+  this->iconPositions[1].y = 1;
+  this->iconPositions[1].size = 27;
+
+  this->iconModeButtons[0] = this->AddMinimizeButton(*this->m_controls, "", 0);
+  this->iconModeButtons[1] = new UIBitmapButton(*this->m_context, *this->m_controls);
+  static_cast<UIBitmapButton*>(this->iconModeButtons[1])->SetBitmap("유저인터페이스\\renewalparty\\btn_titlebar_maximum_out.bmp", 0, 0);
+  static_cast<UIBitmapButton*>(this->iconModeButtons[1])->SetBitmap("유저인터페이스\\renewalparty\\btn_titlebar_maximum_over.bmp", 1, 0);
+  static_cast<UIBitmapButton*>(this->iconModeButtons[1])->SetBitmap("유저인터페이스\\renewalparty\\btn_titlebar_maximum_press.bmp", 2, 0);
+  {
+    UIBitmapButton* maximize = static_cast<UIBitmapButton*>(this->iconModeButtons[1]);
+    maximize->SetSize(maximize->BitmapWidth(), maximize->BitmapHeight());
+  }
+  this->iconModeButtons[1]->Move(this->geometry.width - 28, 3);
+  this->iconModeButtons[1]->SetId(523);
+  this->AddChild(this->iconModeButtons[1]);
+
+  for (int index = 0; index < 40; ++index) {
+    this->gauges[index] = new UIPcGage();
+    this->gauges[index]->SetSize(60, 5);
+    this->gauges[index]->Move(-100, -100);
+    this->AddChild(this->gauges[index]);
+  }
+
+  for (int index = 0; index < 40; ++index) {
+    this->jobIcons[index] = new UIJobIconButton(*this->m_context, *this->m_controls);
+    this->jobIcons[index]->SetSize(50, 50);
+    this->jobIcons[index]->SetBitmap("유저인터페이스\\renewalparty\\icon_jobs_4046.bmp", 0, 0);
+    this->jobIcons[index]->SetBitmap("유저인터페이스\\renewalparty\\icon_jobs_4046.bmp", 1, 0);
+    this->jobIcons[index]->SetBitmap("유저인터페이스\\renewalparty\\icon_jobs_4046.bmp", 2, 0);
+    this->AddChild(this->jobIcons[index]);
+  }
+
+  this->scrollBar = new UIScrollBar(*this->m_context);
+  this->scrollBar->Configure(this->geometry.width - 15, 17, 1, this->geometry.height - 58);
+  this->AddChild(this->scrollBar);
+  this->mode = 1;
+
+  const char* tabLabels[2] = {LookupMessage(0x66), LookupMessage(0x67)};
+  int tabWidths[2] = {48, this->TextWidth(this->m_context->fonts, this->m_context->locale, LookupMessage(0x67), 0, 0, 12, 0, 0) + 13};
+  int tabValues[2] = {0, 1};
+  for (int index = 0; index < 2; ++index) {
+    UIRadioBtn* tab = new UIRadioBtn(*this->m_context, *this->m_controls);
+    this->tabs[index] = tab;
+    tab->SetSize(tabWidths[index], 12);
+    tab->Move(index * 60 + 4, this->geometry.height - 16);
+    tab->SetText(tabLabels[index]);
+    tab->SendMsg(this, 0xD, tabValues[index], 0, 0, 0);
+    this->AddChild(tab);
+  }
+
+  char title[64];
+  const char* titles[2] = {LookupMessage(0x66), LookupMessage(0x67)};
+  if (this->mode == 1) {
+    if (g_session.unknown_54C4.size()) {
+      sprintf(title, "%s(%s)", titles[1], g_session.unknown_54C4.c_str());
+    } else {
+      sprintf(title, "%s", titles[1]);
+    }
+  } else {
+    sprintf(title, "%s(%d/%d)", titles[this->mode], this->members.size(), 40);
+  }
+
+  this->titleText = new UIStaticText(*this->m_context, *this->m_controls);
+  this->titleText->SetSize(this->geometry.width - 57, 15);
+  this->titleText->SetTextFitted(title);
+  this->titleText->Move(16, 2);
+  this->titleText->shadow = 1;
+  this->AddChild(this->titleText);
+  this->closeButton = this->AddCloseButton(*this->m_controls, "Alt+Z", 0);
+
+  {
+    std::string prefix = "유저인터페이스\\basic_interface\\mesbtn_0";
+    int ids[11] = {544, 232, 233, 234, 235, 377, 377, 445, 446, 447, 364};
+    const char* friendTooltips[10] = {
+      LookupMessage(0x62),  LookupMessage(0x63),  LookupMessage(0x64),  LookupMessage(0x163), LookupMessage(0x15F),
+      LookupMessage(0x65A), LookupMessage(0x65B), LookupMessage(0x806), LookupMessage(0x807), LookupMessage(0x808),
+    };
+    const char* partyTooltips[11] = {
+      LookupMessage(0xDBA), LookupMessage(0x63),  LookupMessage(0x64),  LookupMessage(0x65),  LookupMessage(0x61),  LookupMessage(0x65A),
+      LookupMessage(0x65B), LookupMessage(0x806), LookupMessage(0x807), LookupMessage(0x808), LookupMessage(0xF8F),
+    };
+    unsigned char disabled[11] = {1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0};
+    this->hiddenButtons[0] = 0;
+    this->hiddenButtons[1] = 1;
+    this->hiddenButtons[2] = 1;
+    this->hiddenButtons[3] = 0;
+    this->hiddenButtons[4] = 1;
+    this->hiddenButtons[5] = 0;
+    this->hiddenButtons[6] = 0;
+    this->hiddenButtons[7] = 0;
+    this->hiddenButtons[8] = 0;
+    this->hiddenButtons[9] = 0;
+    this->hiddenButtons[10] = 0;
+    int disabledIndices[2] = {0, 2};
+
+    int x = 5;
+    for (int index = 0; index < 11; ++index) {
+      char number[8];
+      _itoa(index + 1, number, 10);
+      UIBitmapButton* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+      this->buttons[index] = button;
+
+      bool useDisabledImage = false;
+      for (int entry = 0; entry < 2; ++entry) {
+        if (index == disabledIndices[entry]) {
+          useDisabledImage = true;
+          break;
+        }
+      }
+
+      if (useDisabledImage == true) {
+        button->SetBitmap((prefix + number + "_disable.bmp").c_str(), 0, 0);
+        button->SetBitmap((prefix + number + "_disable.bmp").c_str(), 1, 0);
+        button->SetBitmap((prefix + number + "_disable.bmp").c_str(), 2, 0);
+      } else {
+        button->SetBitmap((prefix + number + ".bmp").c_str(), 0, 0);
+        button->SetBitmap((prefix + number + "_a.bmp").c_str(), 1, 0);
+        button->SetBitmap((prefix + number + "_b.bmp").c_str(), 2, 0);
+      }
+
+      button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+      button->Move(x, this->geometry.height - 40);
+      button->SetId(ids[index]);
+      button->SetTooltip(this->mode == 0 ? friendTooltips[index] : partyTooltips[index]);
+      button->SetDisabled(disabled[index]);
+      button->Invalidate();
+      this->AddChild(this->buttons[index]);
+      x += 26;
+    }
+  }
+
+  UIResizer* resizer = new UIResizer(*this->m_context);
+  this->resizeButton = resizer;
+  resizer->SetSize(16, 16);
+  resizer->SetDirection(7);
+  resizer->SetBitmapName("유저인터페이스\\btn_resize.bmp");
+  resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
+  resizer->SetColors(0xFFFF00FF, 0xFFFF00FF);
+  this->AddChild(this->resizeButton);
+  this->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x0073B9D0
