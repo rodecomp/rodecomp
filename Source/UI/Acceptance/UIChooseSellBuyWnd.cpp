@@ -7573,6 +7573,55 @@ void UInCashWnd::Slot26(int x, int y) {
 }
 
 // OFFSET: 0x008E9370
+// FUNCTION: fn_12203
+void UITipOfTheDayWnd::Slot15(int width, int height) {
+  const std::string prefix("유저인터페이스\\");
+  const char* names[3][3] = {{"btn_back", "btn_back_a", "btn_back_b"}, {"btn_next", "btn_next_a", "btn_next_b"}, {"btn_close", "btn_close_a", "btn_close_b"}};
+  int positions[3][2] = {{144, this->geometry.height - 24}, {189, this->geometry.height - 24}, {234, this->geometry.height - 24}};
+  int ids[3] = {246, 218, 201};
+  const char* tooltips[3] = {"", "", "/tip"};
+
+  for (int index = 0; index < 3; ++index) {
+    UIBitmapButton* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
+    button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
+    button->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
+    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    button->Move(positions[index][0], positions[index][1]);
+    button->SetId(ids[index]);
+    button->SetTooltip(tooltips[index]);
+    this->AddChild(button);
+  }
+
+  this->m_message0 = 246;
+
+  this->m_textViewer = new UITextViewer();
+  this->m_textViewer->Configure(10, 22, width - 20, height - 55, 0);
+  unsigned red, green, blue;
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  this->m_textViewer->backgroundColor = 0xFF000000u | RGB(red, green, blue);
+  this->m_textViewer->Invalidate();
+  this->AddChild(this->m_textViewer);
+
+  this->m_showTipsAtStartup = g_window315Enabled;
+  UICheckBox* checkBox = new UICheckBox(*this->m_context, *this->m_controls);
+  checkBox->SetSize(this->TextWidth(this->m_context->fonts, this->m_context->locale, LookupMessage(176), 0, 0, 12, 0, 0) + 12, 12);
+  checkBox->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(176));
+  checkBox->Move(10, height - 20);
+  checkBox->SetChecked(this->m_showTipsAtStartup);
+  this->AddChild(checkBox);
+
+  if (g_tipOfTheDay.Size() != 0) {
+    const int random = std::rand();
+    const int index = random % g_tipOfTheDay.Size();
+    this->m_tipIndex = index;
+    const StringList& tip = g_tipOfTheDay.GetTip(index);
+    this->m_textViewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(175)), 38, 0, 0);
+    for (unsigned line = 0; line < tip.size(); ++line) {
+      this->m_textViewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(tip[line].c_str()), 38, 0, 0);
+    }
+  }
+}
 
 // OFFSET: 0x008E60A0
 
