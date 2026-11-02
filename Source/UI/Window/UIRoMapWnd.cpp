@@ -675,6 +675,31 @@ void UIRoMapWnd::DrawMapMarker(const RoMapMarker& marker, unsigned char skipSele
   DrawOutlinedText(*this, marker.area.left + 2, marker.area.top + 5, name.c_str(), 0, 0xD2FF, 0, 0, 12, 1, 0);
 }
 
+// OFFSET: 0x009119B0
+// FUNCTION: fn_12522
+UIRoMapWnd::UIRoMapWnd(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0), unknown_00D0(0) {
+  g_luaScript->Call("ReadKafraMoveMapServiceInfo", "");
+  g_luaScript->Call("ReadKafraMiniMapPosInfo", "");
+  this->unknown_01FC.clear();
+  this->ClearRecords();
+  this->m_showLabels = 0;
+  this->m_lastTime = 0;
+  this->m_resetTime = 1;
+  this->m_flyingShipRoute.unknown_0038.assign("유저인터페이스\\worldview_interface\\wv_Airf3.bmp", 0x2F);
+  this->m_flyingShipRoute.unknown_0030 = 0xAAFFFFFF;
+  this->m_flyingShipRoute.unknown_002C = 1;
+  this->m_flyingShipRoute2.unknown_0038.assign("유저인터페이스\\worldview_interface\\wv_Airf3.bmp", 0x2F);
+  this->m_flyingShipRoute2.unknown_0030 = 0xAAFFFFFF;
+  this->m_flyingShipRoute2.unknown_002C = 0;
+  this->m_comboHeight = 0x12;
+  this->m_mouseX = 0;
+  this->m_mouseY = 0;
+  this->m_kafraTop = 0;
+  this->m_kafraBottom = 0;
+  this->m_kafraLeft = 0;
+  this->m_kafraRight = 0;
+}
+
 // OFFSET: 0x009144B0
 // FUNCTION: fn_12541
 UIRoMapWnd::~UIRoMapWnd() {
