@@ -1619,18 +1619,9 @@ bool AdventureGuideEntry::IsAvailable(int itemId) const {
   }
 
   int code = 0;
-  g_luaScript->Call("GetEquipJob", "d>d", itemId, &code);
+  g_session.m_hotkeyScript->Call("GetEquipJob", "d>d", itemId, &code);
   if (!CJobCodeForItem::s_instance) {
     CJobCodeForItem::s_instance = new (std::nothrow) CJobCodeForItem;
   }
-  CJobCodeForItem* jobs = CJobCodeForItem::s_instance;
-  if (code == 0xFFFFE) {
-    const auto group = jobs->m_jobGroups.find(0);
-    return group != jobs->m_jobGroups.end() && group->second.find(g_session.m_job) == group->second.end();
-  }
-  if (code == 0xFFFFF) {
-    return true;
-  }
-  const auto found = jobs->m_jobCodes.find(code);
-  return found != jobs->m_jobCodes.end() && found->second.find(g_session.m_job) != found->second.end();
+  return CJobCodeForItem::s_instance->IsJobAllowed(g_session.m_job, code);
 }
