@@ -26,6 +26,9 @@ class UIVerticalNameBalloonText : public UINameBalloonText {
 public:
   UIVerticalNameBalloonText(UIWindowContext& windows, BalloonTextContext& text);
   void Paint() override;
+  void AddNameLine(const char* text);
+
+  /* 00C0 */ int textHeight;
 };
 
 #endif

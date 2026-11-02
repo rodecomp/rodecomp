@@ -1,5 +1,7 @@
 #include "Client/Mode/ModeMgr.h"
+#include "Contents/ActorNameCard.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/ForbiddenWords.h"
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Render/Text/TextContext.h"
 #include "Resource/EmblemResource.h"
@@ -9,10 +11,13 @@
 #include "UI/Text/TextWrapping.h"
 #include "UI/Text/UIBalloonText.h"
 #include "UI/Text/UINameBalloonText.h"
+#include "Utility/Text/FormatString.h"
 
 #include <algorithm>
+#include <cstdio>
 #include <cstring>
 #include <string>
+#include <utility>
 
 // GLOBAL: gl_24926
 int g_nameBalloonFontHeight = 12;
@@ -306,7 +311,6 @@ void UINameBalloonText::SetIcon(const char* name, unsigned char framed) {
 
   this->Invalidate();
 }
-
 // OFFSET: 0x0084FED0
 // FUNCTION: fn_10668
 UINameBalloonText::UINameBalloonText(UIWindowContext& windows, BalloonTextContext& text) : UIBalloonText(windows, text), monsterType(0), framed(0) {
@@ -319,4 +323,139 @@ UINameBalloonText::UINameBalloonText(UIWindowContext& windows, BalloonTextContex
 // OFFSET: 0x00CCDFF0
 // FUNCTION: fn_21219
 UIVerticalNameBalloonText::UIVerticalNameBalloonText(UIWindowContext& windows, BalloonTextContext& text) : UINameBalloonText(windows, text) {
+}
+
+// OFFSET: 0x00865EB0
+// FUNCTION: fn_10940
+void UINameBalloonText::SetName(const CActorNameCard& info, bool stripHash, unsigned char monsterType) {
+  this->m_lines.clear();
+
+  std::string name = info.name;
+  if (stripHash) {
+    const std::size_t hash = name.find('#');
+    if (hash != std::string::npos) {
+      name.resize(hash);
+    }
+  }
+
+  if (g_serviceFlag05) {
+    if (!info.unknown_007C.empty()) {
+      this->m_lines.push_back(info.unknown_007C);
+    }
+
+    if (info.unknown_004C.empty()) {
+      this->unknown_00B8 = 0;
+    } else {
+      char position[260];
+      std::memset(position, 0, sizeof(position));
+      strncpy_s(position, sizeof(position), info.unknown_004C.c_str(), info.unknown_004C.size());
+      if (g_forbiddenWords.Contains(position)) {
+        std::string masked;
+        g_forbiddenWords.Mask(position, &masked);
+      }
+      this->m_lines.push_back(position);
+    }
+
+    this->m_lines.push_back(name);
+  } else {
+    if (!info.unknown_007C.empty()) {
+      this->m_lines.push_back(info.unknown_007C);
+    }
+
+    if (!info.unknown_0064.empty()) {
+      name = FormatOwnedString("[%s] %s", info.unknown_0064.c_str(), name.c_str());
+    }
+
+    if (info.unknown_001C.empty()) {
+      this->m_lines.push_back(name);
+    } else {
+      char party[260];
+      std::memset(party, 0, sizeof(party));
+      strncpy_s(party, sizeof(party), info.unknown_001C.c_str(), info.unknown_001C.size());
+      if (g_forbiddenWords.Contains(party)) {
+        std::string masked;
+        g_forbiddenWords.Mask(party, &masked);
+      }
+
+      char line[260];
+      std::memset(line, 0, sizeof(line));
+      StringFormat(line, sizeof(line), sizeof(line), g_serviceType != 0 ? "%s (%s)" : "%s (%s) ", name.c_str(), party);
+      this->m_lines.push_back(line);
+    }
+
+    if (!info.unknown_0034.empty()) {
+      char guild[260];
+      std::memset(guild, 0, sizeof(guild));
+      strncpy_s(guild, sizeof(guild), info.unknown_0034.c_str(), info.unknown_0034.size());
+      if (g_forbiddenWords.Contains(guild)) {
+        std::string masked;
+        g_forbiddenWords.Mask(guild, &masked);
+      }
+
+      char position[260];
+      std::memset(position, 0, sizeof(position));
+      strncpy_s(position, sizeof(position), info.unknown_004C.c_str(), info.unknown_004C.size());
+      if (g_forbiddenWords.Contains(position)) {
+        std::string masked;
+        g_forbiddenWords.Mask(position, &masked);
+      }
+
+      char line[260];
+      std::memset(line, 0, sizeof(line));
+      StringFormat(line, sizeof(line), sizeof(line), g_serviceType != 0 ? "%s [%s]" : "%s (%s) ", guild, position);
+      this->m_lines.push_back(line);
+    }
+  }
+
+  int width = 32;
+  for (const std::string& line : this->m_lines) {
+    const int lineWidth = this->TextWidth(
+        this->m_textContext->fonts, this->m_textContext->locale, line.c_str(), 0, 0, g_nameBalloonFontHeight, g_serviceFlag06, 0) + 8;
+    width = std::max(lineWidth, width);
+  }
+
+  this->unknown_00B8 = width;
+  this->monsterType = monsterType;
+  if (monsterType == 0 || info.unknown_0094 != 0) {
+    this->Resize(width, static_cast<int>(this->m_lines.size()) * (g_nameBalloonFontHeight + 2) + 6);
+  } else {
+    const char* path;
+    if (monsterType == 1) {
+      path = "유저인터페이스\\montype_boss.bmp";
+    } else if (monsterType == 2) {
+      path = "유저인터페이스\\montype_mvp.bmp";
+    } else {
+      this->Invalidate();
+      return;
+    }
+
+    CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
+    if (bitmap) {
+      std::size_t height = this->m_lines.size() * (g_nameBalloonFontHeight + 2) + 6;
+      if (height < static_cast<std::size_t>(bitmap->image.height)) {
+        height = bitmap->image.height;
+      }
+      this->Resize(bitmap->image.width + this->unknown_00B8, static_cast<int>(height));
+    }
+  }
+
+  this->Invalidate();
+}
+
+// OFFSET: 0x00867740
+// FUNCTION: fn_10942
+void UIVerticalNameBalloonText::AddNameLine(const char* text) {
+  if (!this->m_lines.empty() && this->m_lines.front() == text) {
+    return;
+  }
+
+  this->m_lines.clear();
+  std::string line;
+  line.assign(text);
+  this->m_lines.push_back(std::move(line));
+  const int textHeight = this->VerticalTextHeight(
+      this->m_textContext->fonts, this->m_textContext->locale, this->m_lines.back().c_str(), 0, 0, g_nameBalloonFontHeight, g_serviceFlag06);
+  this->textHeight = std::max(textHeight + 8, 32);
+  this->Resize(g_nameBalloonFontHeight + 8, this->textHeight);
+  this->Invalidate();
 }
