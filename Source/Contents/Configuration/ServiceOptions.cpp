@@ -1078,10 +1078,10 @@ void ApplyServiceOptionActorRefresh(int id, unsigned char value, bool notify, in
 void ShowHelpMessages() {
   g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
   int count = 0;
-  g_luaScript->Call("GetTableSizeForC", "s>d", "HelpMsgStr", &count);
+  g_session.m_hotkeyScript->Call("GetTableSizeForC", "s>d", "HelpMsgStr", &count);
   for (int index = 1; index <= count; ++index) {
     const char* text = nullptr;
-    if (g_luaScript->Call("getHelpMsg", "d>s", index, &text) && std::strlen(text) != 0) {
+    if (g_session.m_hotkeyScript->Call("getHelpMsg", "d>s", index, &text) && std::strlen(text) != 0) {
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF64, 0, 0, 0);
     }
   }
