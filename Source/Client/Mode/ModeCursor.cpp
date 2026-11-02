@@ -1,5 +1,6 @@
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeCursor.h"
+#include "UI/Window/UIWindowMgr.h"
 
 #include <windows.h>
 #include <timeapi.h>
@@ -33,4 +34,5 @@ void ModeCursor::Set(std::int32_t value, std::uint32_t& changeTick) {
   this->type = value;
   this->frame = 0;
   changeTick = timeGetTime();
+  g_windowMgr.SendNotice(15, this->type, 0, 0, 0, 0);
 }
