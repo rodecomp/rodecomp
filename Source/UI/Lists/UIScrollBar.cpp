@@ -1,3 +1,4 @@
+#include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/ModeCursor.h"
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Resource/Bitmap/BitmapResource.h"
@@ -868,7 +869,7 @@ void UIBasicItemCtrl::Slot10(int, int, std::intptr_t argument3) {
       }
     }
   }
-  static_cast<CMode*>(g_charViewMode)->SendMsg(18, 0, 0, 0, 0);
+  g_modeMgr.gameMode->SendMsg(18, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x0087E080
