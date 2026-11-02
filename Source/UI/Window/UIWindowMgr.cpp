@@ -1440,7 +1440,7 @@ bool UIWindowMgr::ProcessKeyDown(int key, int keyData, int pressed) {
     }
   }
 
-  int& lastKey = *reinterpret_cast<int*>(g_session.unknown_61A8_0000);
+  int& lastKey = g_session.m_currentHotkey;
   if (lastKey != key) {
     if (pressed == 0) {
       return this->ProcessHotkeyAction(key, pressed);

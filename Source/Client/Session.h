@@ -543,7 +543,8 @@ public:
   union {
     /* 61A8 */ unsigned char unknown_61A8[0x10];
     struct {
-      /* 61A8 */ unsigned char unknown_61A8_0000[0x08];
+      /* 61A8 */ int m_currentHotkey;
+      /* 61AC */ int m_localMapMove;
       /* 61B0 */ bool m_guildMemberListSort;
       /* 61B1 */ unsigned char unknown_61B1;
       /* 61B2 */ bool m_blockPrivateTab;

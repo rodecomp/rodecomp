@@ -89,7 +89,7 @@ void AutomaticSkills::Use(std::int16_t id, std::int16_t level, std::uint32_t tar
     Cancel(id);
     g_session.SetOption(cancel, 0, 0);
   } else {
-    g_session.unknown_61A4 = *reinterpret_cast<int*>(g_session.unknown_61A8_0000);
+    g_session.unknown_61A4 = g_session.m_currentHotkey;
     g_session.SetOption(ActiveOption(id), 1, 0);
   }
 }

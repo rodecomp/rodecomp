@@ -3549,7 +3549,7 @@ void CGameMode::InitializeState() {
   *reinterpret_cast<int*>(this->unknown_0600) = 0;
   s_signBoardMgr->Initialize();
   g_statusRefreshSuppressed = 0;
-  int& localMapMove = *reinterpret_cast<int*>(&g_session.unknown_61A8[4]);
+  int& localMapMove = g_session.m_localMapMove;
   if (localMapMove == 1) {
     localMapMove = 0;
   }

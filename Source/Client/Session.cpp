@@ -3063,7 +3063,7 @@ void CSession::Init() {
   this->m_lastIntervalTime = timeGetTime();
 
   this->unknown_61A4 = 0;
-  *reinterpret_cast<int*>(this->unknown_61A8_0000) = 0;
+  this->m_currentHotkey = 0;
   this->unknown_1010 = 0xFFFFFFFF;
   *reinterpret_cast<int*>(&this->unknown_5570[0x08]) = -1;
   *reinterpret_cast<int*>(&this->unknown_5620[0x08]) = -1;
@@ -4752,7 +4752,7 @@ CSession::CSession() {
   }
 
   this->m_newRobeDrawOnTop = false;
-  *reinterpret_cast<int*>(&this->unknown_61A8_0000[4]) = 0;
+  this->m_localMapMove = 0;
   this->m_swapEquipmentMode = 0;
   this->unknown_7F74[0] = 1;
   *reinterpret_cast<int*>(&this->unknown_7F74[4]) = 0;
