@@ -4,9 +4,23 @@
 #include <cstddef>
 #include <cstdint>
 #include <string>
+#include <windows.h>
 
 struct InputCharset {
-  /* 0000 */ unsigned char unknown_0000[0x8E];
+  virtual void Slot00();
+  virtual const char* DisplayText() const;
+  virtual int DisplayLength() const;
+  virtual void ProcessKey(unsigned virtualKey);
+  virtual void Slot04();
+  virtual const char* NextChar(const char* current, int remaining);
+  virtual void Slot06();
+  virtual void ResetState();
+  virtual void EndComposition();
+  virtual void ResetCandidate();
+
+  /* 0004 */ unsigned char unknown_0004[0x54];
+  /* 0058 */ std::string composition;
+  /* 0070 */ unsigned char unknown_0070[0x1E];
   /* 008E */ std::uint16_t language;
   /* 0090 */ unsigned char unknown_0090[0xC];
   /* 009C */ std::string servicePrefix;

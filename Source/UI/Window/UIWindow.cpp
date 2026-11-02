@@ -1647,13 +1647,12 @@ const char* UIWindow::TruncateText(const char* text, int maxBytes) {
   }
 
   if (static_cast<int>(std::strlen(text)) > maxBytes) {
-    using NextCharacter = const char* (__thiscall*)(InputCharset*, const char*, int);
     int bytes = 0;
     const char* current = text;
     const char* end = text + std::strlen(text);
     while (current < end) {
       const int previous = bytes;
-      const char* next = (*reinterpret_cast<NextCharacter**>(g_serverLanguage))[5](g_serverLanguage, current, static_cast<int>(end - current));
+      const char* next = g_serverLanguage->NextChar(current, static_cast<int>(end - current));
       bytes += static_cast<int>(next - current);
       if (bytes > maxBytes) {
         bytes = previous;
@@ -1679,7 +1678,6 @@ const char* UIWindow::TruncateText(const char* text, int maxBytes) {
 // OFFSET: 0x00A81FD0
 // FUNCTION: fn_16992
 void UIWindow::WrapTextWithBreaks(const char* text, std::vector<std::string>* lines, std::vector<bool>* breaks, int width) {
-  using NextCharacter = const char* (__thiscall*)(InputCharset*, const char*, int);
   if (!text) {
     return;
   }
@@ -1703,7 +1701,7 @@ void UIWindow::WrapTextWithBreaks(const char* text, std::vector<std::string>* li
     const char* current = start;
     do {
       const int previous = bytes;
-      const char* next = (*reinterpret_cast<NextCharacter**>(g_serverLanguage))[5](g_serverLanguage, current, static_cast<int>(end - current));
+      const char* next = g_serverLanguage->NextChar(current, static_cast<int>(end - current));
       const int characterBytes = static_cast<int>(next - current);
       bytes += characterBytes;
       lineWidth += this->TextWidth(current, characterBytes, 0, 12, 0, 0);

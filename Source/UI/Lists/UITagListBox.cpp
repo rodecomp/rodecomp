@@ -608,7 +608,6 @@ int WrappedLineLength(const char* text, int length, int width) {
     return -1;
   }
 
-  using NextCharacter = const char*(__thiscall*)(InputCharset*, const char*, int);
   const char* end = text + length;
   const char* current = text;
   const char* limit = text + width;
@@ -624,7 +623,7 @@ int WrappedLineLength(const char* text, int length, int width) {
       current += 3;
       limit += 3;
     } else {
-      current = (*reinterpret_cast<NextCharacter**>(g_serverLanguage))[5](g_serverLanguage, current, static_cast<int>(limit - current));
+      current = g_serverLanguage->NextChar(current, static_cast<int>(limit - current));
     }
   }
 

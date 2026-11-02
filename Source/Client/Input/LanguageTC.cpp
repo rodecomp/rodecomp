@@ -1,3 +1,4 @@
+#include "Client/Input/InputCharset.h"
 #include "Client/Input/LanguageTC.h"
 #include "Network/TextEncoding.h"
 #include <windows.h>
@@ -40,7 +41,7 @@ void CLanguageTC::InitializeMappings() {
 
 // OFFSET: 0x00ACF330
 // FUNCTION: fn_17795
-void CLanguageTC::DefaultKey(int) {
+void InputCharset::ProcessKey(unsigned) {
 }
 
 // OFFSET: 0x00ACF340
@@ -67,8 +68,8 @@ void CLanguageTC::Key(int virtualKey) {
 
 // OFFSET: 0x00ACE270
 // FUNCTION: fn_17777
-const char* CLanguageTC::DisplayText() const {
-  return this->display.c_str();
+const char* InputCharset::DisplayText() const {
+  return this->composition.c_str();
 }
 
 // OFFSET: 0x00ACE280
@@ -90,8 +91,8 @@ const char* CLanguageTC::Display() {
 
 // OFFSET: 0x00ACE320
 // FUNCTION: fn_17779
-int CLanguageTC::DisplayLength() const {
-  return static_cast<int>(this->display.size());
+int InputCharset::DisplayLength() const {
+  return static_cast<int>(this->composition.size());
 }
 
 // OFFSET: 0x00ACE330
@@ -106,7 +107,7 @@ int CLanguageTC::GetKeyStrokeSize() const {
 
 // OFFSET: 0x00ACE470
 // FUNCTION: fn_17784
-const char* CLanguageTC::NextChar(const char* current, int) {
+const char* InputCharset::NextChar(const char* current, int) {
   return CharNextExA(static_cast<WORD>(g_textCodePage), current, 0);
 }
 
@@ -118,7 +119,7 @@ const char* CLanguageTC::NextCharArabic(const char* current, int) {
 
 // OFFSET: 0x00ACD7D0
 // FUNCTION: fn_17768
-void TraditionalKeyInputNoop() {}
+void InputCharset::EndComposition() {}
 
 // OFFSET: 0x00ACD7E0
 // FUNCTION: fn_17769
@@ -128,12 +129,12 @@ void CLanguageTC::ClearKeys() {
 
 // OFFSET: 0x00ACD4A0
 // FUNCTION: fn_17761
-void CLanguageTC::ResetState() {
+void InputCharset::ResetState() {
 }
 
 // OFFSET: 0x00ACD4E0
 // FUNCTION: fn_17762
-void CLanguageTC::ResetCandidate() {
+void InputCharset::ResetCandidate() {
 }
 
 // OFFSET: 0x00ACD4F0

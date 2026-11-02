@@ -1805,8 +1805,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
   MSG message;
   while (PeekMessageA(&message, nullptr, 0, 0, PM_REMOVE)) {
     if (message.message == WM_KEYDOWN && message.wParam == VK_PROCESSKEY) {
-      typedef void(__thiscall * KeyHandler)(InputCharset*, UINT);
-      (*reinterpret_cast<KeyHandler**>(g_serverLanguage))[3](g_serverLanguage, ImmGetVirtualKey(message.hwnd));
+      g_serverLanguage->ProcessKey(ImmGetVirtualKey(message.hwnd));
     }
 
     TranslateMessage(&message);

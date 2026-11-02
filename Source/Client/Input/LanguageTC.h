@@ -19,7 +19,6 @@ struct CLanguageTC {
 
   void InitializeMappings();
   void Key(int virtualKey);
-  void DefaultKey(int virtualKey);
   const char* Display();
   const char* DisplayText() const;
   int DisplayLength() const;

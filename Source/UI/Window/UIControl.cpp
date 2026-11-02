@@ -3394,7 +3394,6 @@ const char* UIWindow::ClipTextToWidth(const char* text, int maxWidth, int family
   }
 
   if (width > maxWidth) {
-    using NextCharacter = const char* (__thiscall*)(InputCharset*, const char*, int);
     const char* current = text;
     const char* end = text + std::strlen(text);
     if (current < end) {
@@ -3404,7 +3403,7 @@ const char* UIWindow::ClipTextToWidth(const char* text, int maxWidth, int family
       do {
         const int previous = bytes;
         const char* start = current;
-        current = (*reinterpret_cast<NextCharacter**>(g_serverLanguage))[5](g_serverLanguage, start, static_cast<int>(end - start));
+        current = g_serverLanguage->NextChar(start, static_cast<int>(end - start));
         const int step = static_cast<int>(current - start);
         total += this->TextWidth(start, step, family, height, bold, 0);
         bytes += step;
