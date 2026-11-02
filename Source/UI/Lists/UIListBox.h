@@ -26,7 +26,7 @@ struct UIListBoxContext {
 
 class UIListBox : public UIWindow {
 public:
-  UIListBox();
+  __declspec(noinline) UIListBox();
   __declspec(noinline) UIListBox(UIWindowContext& windows, UIListBoxContext& list);
   ~UIListBox() override;
   void Resize(int width, int height) override;

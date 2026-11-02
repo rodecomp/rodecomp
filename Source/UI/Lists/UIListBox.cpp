@@ -2,6 +2,8 @@
 #include "Render/Text/TextContext.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
+#include "Resource/SkinPalette.h"
+#include "Contents/SkinMgr.h"
 #include "UI/Text/ColoredText.h"
 #include "UI/Lists/UIChatHisBox.h"
 #include "UI/Lists/UIListBox.h"
@@ -21,10 +23,27 @@
 
 namespace {}
 
-// OFFSET: 0x0086E750
-
 // OFFSET: 0x0086D940
 // FUNCTION: fn_11055
+UIListBox::UIListBox()
+    : UIWindow(*reinterpret_cast<UIWindowContext*>(nullptr), 0), backgroundRed(255), backgroundGreen(255), backgroundBlue(255), selected(0), topLine(0),
+      horizontalOffset(0), contentWidth(0), verticalOverflow(0), bottomMargin(0), verticalBar(nullptr), horizontalBar(nullptr), transparent(0), lineHeight(16),
+      textColor(0), textInset(3), m_listContext(nullptr) {
+  const SkinPaletteCell cell = {3, 2};
+  this->selectionColor = SkinPaletteColor(ResourceMgr::Instance(), cell, g_skinInfo.Selected());
+  this->selectable = 1;
+  this->centerVertically = 0;
+}
+
+// OFFSET: 0x0086E750
+// FUNCTION: fn_11076
+UIServerListBox::UIServerListBox() : UIListBox() {
+  this->m_listContext = nullptr;
+  *reinterpret_cast<int*>(reinterpret_cast<char*>(this) + 0xD8) = 0;
+  this->unknown_00DC = 0;
+  this->unknown_00E0 = 0;
+}
+
 UIListBox::UIListBox(UIWindowContext& windows, UIListBoxContext& list)
     : UIWindow(windows, 0), backgroundRed(255), backgroundGreen(255), backgroundBlue(255), selected(0), topLine(0), horizontalOffset(0), contentWidth(0),
       verticalOverflow(0), bottomMargin(0), verticalBar(nullptr), horizontalBar(nullptr), transparent(0), lineHeight(16), selectable(1), textColor(0),
