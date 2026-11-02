@@ -8,7 +8,6 @@ struct ModeCursor {
   /* 0050 */ std::int32_t type;
   /* 0054 */ std::uint32_t frame;
 
-  ModeCursor();
   void Set(std::int32_t value, std::uint32_t& changeTick);
 };
 
