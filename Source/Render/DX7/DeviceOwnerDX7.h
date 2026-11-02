@@ -6,13 +6,6 @@
 #include <d3d.h>
 #include <ddraw.h>
 
-struct DeviceOptionsDX7 {
-  const int& fullscreen;
-  const int& width;
-  const int& height;
-  const int& bitsPerPixel;
-};
-
 struct TextureDX7Context;
 struct TextureAllocationDX7;
 class CRenderSystemBase;
