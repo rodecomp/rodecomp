@@ -1030,23 +1030,23 @@ int CCashEmotionMgr::GetPackUnknown24(int packId) {
 // OFFSET: 0x0059AD80
 // FUNCTION: fn_02966
 void CCashEmotionMgr::LoadScripts() {
-  g_luaScript->Register("c_InsertPackInfo", InsertPackInfo);
-  g_luaScript->Register("c_InsertEmotionEnum", InsertEmotionEnum);
-  g_luaScript->Register("c_InsertEmotionListTable", InsertEmotionListTable);
-  g_luaScript->Register("c_InsertEmotionMsgListTable", InsertEmotionMsgListTable);
-  g_luaScript->Register("c_InsertEmotionMsgListTableForCustom", InsertEmotionMsgListTableForCustom);
-  g_luaScript->Register("c_InsertEmotionVarientListTable", InsertEmotionVarientListTable);
-  g_luaScript->Register("c_InsertEmotionGroup", InsertEmotionGroup);
-  g_luaScript->Register("c_InsertOrderList", InsertOrderList);
+  g_session.m_hotkeyScript->Register("c_InsertPackInfo", InsertPackInfo);
+  g_session.m_hotkeyScript->Register("c_InsertEmotionEnum", InsertEmotionEnum);
+  g_session.m_hotkeyScript->Register("c_InsertEmotionListTable", InsertEmotionListTable);
+  g_session.m_hotkeyScript->Register("c_InsertEmotionMsgListTable", InsertEmotionMsgListTable);
+  g_session.m_hotkeyScript->Register("c_InsertEmotionMsgListTableForCustom", InsertEmotionMsgListTableForCustom);
+  g_session.m_hotkeyScript->Register("c_InsertEmotionVarientListTable", InsertEmotionVarientListTable);
+  g_session.m_hotkeyScript->Register("c_InsertEmotionGroup", InsertEmotionGroup);
+  g_session.m_hotkeyScript->Register("c_InsertOrderList", InsertOrderList);
 
-  g_luaScript->Load("Lua Files\\CashEmotion\\CashEmotionClientSetting", true, false);
-  g_luaScript->Call("getEmotionClientSetting", "s>d", "IntendedDelay", &this->unknown_01CC);
+  g_session.m_hotkeyScript->Load("Lua Files\\CashEmotion\\CashEmotionClientSetting", true, false);
+  g_session.m_hotkeyScript->Call("getEmotionClientSetting", "s>d", "IntendedDelay", &this->unknown_01CC);
 
-  g_luaScript->Load("Lua Files\\CashEmotion\\CashEmotionListDefine_F", true, false);
-  g_luaScript->Load("Lua Files\\CashEmotion\\CashEmotionListDefine", true, false);
-  g_luaScript->Load("Lua Files\\CashEmotion\\CashEmotionList_F", true, false);
-  g_luaScript->Load("Lua Files\\CashEmotion\\CashEmotionList", true, false);
-  g_luaScript->Call("main_emotion", "");
+  g_session.m_hotkeyScript->Load("Lua Files\\CashEmotion\\CashEmotionListDefine_F", true, false);
+  g_session.m_hotkeyScript->Load("Lua Files\\CashEmotion\\CashEmotionListDefine", true, false);
+  g_session.m_hotkeyScript->Load("Lua Files\\CashEmotion\\CashEmotionList_F", true, false);
+  g_session.m_hotkeyScript->Load("Lua Files\\CashEmotion\\CashEmotionList", true, false);
+  g_session.m_hotkeyScript->Call("main_emotion", "");
 
   this->m_action = new (std::nothrow) CCashEmotionAction_Play;
 }
