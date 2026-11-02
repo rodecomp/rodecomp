@@ -2669,7 +2669,7 @@ void CSession::sub_DE3D90(char* text) {
 
   for (const MessengerMember& member : this->m_friends) {
     g_windowMgr.unknown_04DC = greeting.c_str();
-    static_cast<CMode*>(g_charViewMode)->SendMsg(0xB, reinterpret_cast<int>(member.name.c_str()), 0, 0, 0);
+    g_modeMgr.gameMode->SendMsg(0xB, reinterpret_cast<int>(member.name.c_str()), 0, 0, 0);
     if (++g_pendingWhisperCount > 40) {
       g_pendingWhisperCount = 40;
     }
