@@ -19553,6 +19553,3603 @@ void CRagEffect::TexturedClassChange(char kind) {
 }
 
 // OFFSET: 0x00C213C0
+// FUNCTION: fn_20087
+bool CRagEffect::Slot15() {
+  switch (this->state.type) {
+  case 1003:
+    if ((this->state.parent->render.flags & 0x4000) == 0) {
+      this->state.parent->render.flags += 0x4000;
+      this->state.parent->render.unknown_00F6 = 20;
+    }
+    break;
+  case 947:
+    this->TexturedClassChange(70);
+    break;
+  case 963:
+    this->state.parent->SetColor(-1, 105, 105, 105);
+    break;
+  case 961:
+    this->TexturedClassChange(82);
+    break;
+  case 962:
+    this->TexturedClassChange(83);
+    break;
+  case 948:
+    this->TexturedClassChange(71);
+    break;
+  case 949:
+    this->TexturedClassChange(72);
+    break;
+  case 950:
+    this->TexturedClassChange(73);
+    break;
+  case 951:
+    this->TexturedClassChange(74);
+    break;
+  case 952:
+    this->TexturedClassChange(75);
+    break;
+  case 953:
+    this->TexturedClassChange(76);
+    break;
+  case 954:
+    this->TexturedClassChange(77);
+    break;
+  case 955:
+    this->TexturedClassChange(78);
+    break;
+  case 956:
+    this->TexturedClassChange(79);
+    break;
+  case 957:
+    this->TexturedClassChange(80);
+    break;
+  case 958:
+    this->TexturedClassChange(81);
+    break;
+  case 945:
+    for (int index = 0; index < 65; ++index) {
+      this->SkyCloud(9);
+    }
+    break;
+  case 942:
+    this->WaterBallBurst();
+    break;
+  case 941:
+    this->SpriteRing(20);
+    break;
+  case 939:
+    this->TexturedGroundRing("effect\\ring_blue.tga", 0, 0, 0);
+    break;
+  case 902:
+    this->TexturedAura("pe_fur1_01.bmp", 1);
+    break;
+  case 926:
+    if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+      this->InitEZ2STRFrame();
+    }
+    break;
+  case 920:
+    if (!this->ShieldCharge()) {
+      return false;
+    }
+    break;
+  case 914:
+    this->ThrowItem("유저인터페이스\\item\\폭탄버섯포자.bmp", 1);
+    break;
+  case 911:
+    this->WhiteSpellRings();
+    break;
+  case 907:
+    if (this->state.stateCnt == 26) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\LG_PINPOINTATTACK.wav");
+    }
+    if (this->state.stateCnt % 4 <= 1) {
+      if ((this->state.parent->render.flags & 2) == 0) {
+        this->state.parent->render.flags += 2;
+      }
+    }
+    for (int index = 0; index < 4; ++index) {
+      this->TexturedSprayKind("effect\\shield.bmp", 5.0f, 7);
+      this->TexturedSprayKind("effect\\sword.bmp", 9.0f, 7);
+    }
+    break;
+  case 906:
+    if (this->state.stateCnt == 3) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\프레셔.wav");
+    }
+    if (this->state.stateCnt == 25) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\LG_SHIELDPRESS.wav");
+    }
+    this->TexturedRain("effect\\shield.bmp", 0);
+    this->TexturedLevelRing("effect\\explosive_1_128.bmp", -28, 0);
+    break;
+  case 930:
+    if (this->state.stateCnt == 3) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\프레셔.wav");
+    }
+    if (this->state.stateCnt == 22) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\S바레티르스피어.wav");
+    }
+    this->TexturedRain("유저인터페이스\\item\\스피어.bmp", 4);
+    this->TexturedRain("유저인터페이스\\item\\파이크.bmp", 4);
+    this->TexturedRain("유저인터페이스\\item\\궁그닐.bmp", 4);
+    this->TexturedLevelRing("effect\\explosive_1_128.bmp", -28, 0);
+    break;
+  case 904:
+    for (int index = 0; index < 4; ++index) {
+      this->LineStreakTextured(10, "effect\\throw.bmp");
+      this->LineStreakTextured(11, "effect\\throw.bmp");
+    }
+    break;
+  case 903:
+    this->BeginSpellSwirl(45, "", 10);
+    break;
+  case 729:
+    this->TexturedClassChange(38);
+    break;
+  case 901:
+    this->SpriteRing(9);
+    break;
+  case 923:
+    this->SpriteRing(10);
+    break;
+  case 894:
+    if (this->state.stateCnt == 3) {
+      this->render.position = this->state.parent->render.position;
+    }
+    this->TexturedLevelRing("effect\\explosive_1_128.bmp", 0, 4);
+    break;
+  case 905:
+    if (this->state.stateCnt == 3) {
+      this->render.position = this->state.parent->render.position;
+    }
+    this->TexturedLevelRing("effect\\explosive_1_128.bmp", 0, 10);
+    break;
+  case 893:
+    for (int index = 0; index < 4; ++index) {
+      this->LineStreakKind(0);
+      this->LineStreakKind(1);
+    }
+    break;
+  case 892:
+    this->CloudBurst();
+    break;
+  case 1030:
+    this->CloudSpread();
+    break;
+  case 891:
+    this->BlueFireballVolley();
+    break;
+  case 913:
+    this->PaleFireballVolley();
+    break;
+  case 890:
+    if (this->state.stateCnt <= 7) {
+      this->state.parent->render.angle += 12.0f;
+    } else if (this->state.stateCnt <= 15) {
+      this->state.parent->render.angle += 18.0f;
+    } else if (this->state.stateCnt <= 20) {
+      this->state.parent->render.angle += 24.0f;
+    } else if (this->state.stateCnt <= 25) {
+      this->state.parent->render.angle += 48.0f;
+    } else if (this->state.stateCnt <= 32) {
+      this->state.parent->render.angle += 24.0f;
+    } else if (this->state.stateCnt <= 37) {
+      this->state.parent->render.angle += 18.0f;
+    } else if (this->state.stateCnt <= 45) {
+      this->state.parent->render.angle += 12.0f;
+    }
+    if (this->state.parent->render.angle > 360.0f) {
+      this->state.parent->render.angle -= 360.0f;
+    }
+    break;
+  case 889:
+    if (this->state.stateCnt == 5) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\mon_맹룡과강.wav");
+    }
+    {
+      const int count = g_serviceOptions.Get(229) ? 6 : 20;
+      for (int index = 0; index < count; ++index) {
+        this->TexturedScatter("effect\\alpha_center.tga", 2);
+      }
+    }
+    break;
+  case 888:
+    this->ElectricRing(0, 0);
+    this->ElectricRing(0, 180);
+    break;
+  case 887:
+    this->WhiteSparks(8);
+    break;
+  case 886:
+    if (this->state.stateCnt >= 0) {
+      this->state.parent->render.flags |= 0x1000;
+      this->state.parent->render.unknown_00F4 = static_cast<short>(this->state.stateCnt);
+    }
+    this->TexturedCrossKind("effect\\ring_blue.tga", 3);
+    if (this->state.stateCnt <= 30) {
+      if ((this->state.parent->render.flags & 1) == 0) {
+        this->state.parent->render.flags += 1;
+      }
+      if ((this->state.parent->render.flags & 8) == 0) {
+        this->state.parent->render.flags += 8;
+      }
+      this->state.parent->SetColor(-1, 0, 0, 255);
+    }
+    break;
+  case 938:
+    if (this->state.stateCnt >= 0) {
+      this->state.parent->render.flags |= 0x1000;
+      this->state.parent->render.unknown_00F4 = static_cast<short>(this->state.stateCnt);
+    }
+    this->TexturedCrossKind("effect\\ring_brown.tga", 4);
+    if (this->state.stateCnt <= 30) {
+      if ((this->state.parent->render.flags & 1) == 0) {
+        this->state.parent->render.flags += 1;
+      }
+      if ((this->state.parent->render.flags & 8) == 0) {
+        this->state.parent->render.flags += 8;
+      }
+      this->state.parent->SetColor(-1, 80, 40, 0);
+    }
+    break;
+  case 937:
+    if (this->state.stateCnt >= 0) {
+      this->state.parent->render.flags |= 0x1000;
+      this->state.parent->render.unknown_00F4 = static_cast<short>(this->state.stateCnt);
+    }
+    this->TexturedCrossKind("effect\\ring_yellow.tga", 4);
+    if (this->state.stateCnt <= 30) {
+      if ((this->state.parent->render.flags & 1) == 0) {
+        this->state.parent->render.flags += 1;
+      }
+      if ((this->state.parent->render.flags & 8) == 0) {
+        this->state.parent->render.flags += 8;
+      }
+      this->state.parent->SetColor(-1, 255, 255, 0);
+    }
+    break;
+  case 936:
+    if (this->state.stateCnt >= 0) {
+      this->state.parent->render.flags |= 0x1000;
+      this->state.parent->render.unknown_00F4 = static_cast<short>(this->state.stateCnt);
+    }
+    this->TexturedCrossKind("effect\\ring_red.tga", 4);
+    if (this->state.stateCnt <= 30) {
+      if ((this->state.parent->render.flags & 1) == 0) {
+        this->state.parent->render.flags += 1;
+      }
+      if ((this->state.parent->render.flags & 8) == 0) {
+        this->state.parent->render.flags += 8;
+      }
+      this->state.parent->SetColor(-1, 255, 0, 0);
+    }
+    break;
+  case 934:
+    this->TexturedCrossKind("effect\\ring_white.tga", 4);
+    if (this->state.stateCnt >= 10 && this->state.stateCnt <= 34 && this->state.stateCnt % 4 < 2) {
+      if ((this->state.parent->render.flags & 1) == 0) {
+        this->state.parent->render.flags += 1;
+      }
+      if ((this->state.parent->render.flags & 8) == 0) {
+        this->state.parent->render.flags += 8;
+      }
+    }
+    break;
+  case 885:
+    if (this->state.stateCnt == 5) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\mon_맹룡과강.wav");
+    }
+    for (int index = 0; index < 8; ++index) {
+      this->TexturedQuadSpin("effect\\alpha_center.tga", index, 6);
+    }
+    break;
+  case 882:
+    if (this->state.stateCnt == 10) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\LG_EXEEDBREAK.wav");
+    }
+    for (int index = 0; index < 40; ++index) {
+      this->TexturedScatterSphere("effect\\alpha_center.tga", 0, 0);
+    }
+    break;
+  case 908:
+    if (this->state.stateCnt == 0) {
+      this->render.position = this->state.parent->render.position;
+    }
+    for (int index = 0; index < 40; ++index) {
+      this->TexturedScatterSphere("effect\\alpha_center.tga", 1, 0);
+    }
+    break;
+  case 909:
+    if (this->state.stateCnt == 10) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\LG_BANDING.wav");
+    }
+    for (int index = 0; index < 40; ++index) {
+      this->TexturedScatterSphere("effect\\alpha_center.tga", 2, 0);
+    }
+    break;
+  case 910:
+    if (this->state.stateCnt == 10) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\LG_INSPIRATION.wav");
+    }
+    for (int index = 0; index < 40; ++index) {
+      this->TexturedScatterSphere("effect\\alpha_center.tga", 3, 0);
+    }
+    break;
+  case 895:
+    this->TexturedSpiral("effect\\alpha_center.tga", 0, 0);
+    break;
+  case 896:
+    this->TexturedSpiralSmall("effect\\shockwave_c.bmp", 0, 0);
+    break;
+  case 897:
+    this->TexturedSpiralTall("effect\\shockwave_c.bmp", 0, 0);
+    break;
+  case 898:
+    this->TexturedSpiralFade("effect\\shockwave_c.bmp", 0, 0);
+    break;
+  case 900:
+    this->TexturedDoubleSpiral("effect\\shockwave_c.bmp", 0, 0);
+    break;
+  case 881:
+    this->TexturedDoubleRing("effect\\emp shock.tga", 2);
+    this->TexturedDoubleRing("effect\\cir0002.bmp", 3);
+    break;
+  case 861:
+    this->TexturedTwinkleRing("effect\\freeze_a.bmp", 2);
+    break;
+  case 865:
+    this->TexturedTwinkleRing("effect\\freeze_a.bmp", 3);
+    break;
+  case 867:
+    this->TexturedTwinkleRing("effect\\freeze_a.bmp", 4);
+    break;
+  case 871:
+    this->TexturedTwinkleRing("effect\\freeze_a.bmp", 5);
+    break;
+  case 873:
+    this->TexturedTwinkleRing("effect\\freeze_a.bmp", 6);
+    break;
+  case 875:
+    this->TexturedTwinkleRing("effect\\freeze_a.bmp", 7);
+    break;
+  case 877:
+    this->TexturedTwinkleRing("effect\\freeze_a.bmp", 8);
+    break;
+  case 856:
+    this->TexturedDrop("effect\\melody_a.bmp", 0);
+    break;
+  case 860:
+    this->TexturedDrop("effect\\melody_a.bmp", 1);
+    break;
+  case 857:
+    this->TexturedFloatingDust("effect\\번개1.bmp", 0);
+    break;
+  case 944:
+    if (this->state.stateCnt == 1) {
+      g_soundMgr->PlayWave("effect\\매직 크래쉬.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    }
+    this->TexturedFloatingDust("effect\\stone_part.bmp", 0);
+    break;
+  case 854:
+    this->TexturedBeam(0, "effect\\line3.tga");
+    this->TexturedForkBolt("effect\\melody_a.bmp", 0);
+    this->TexturedForkBolt("effect\\melody_b.bmp", 0);
+    break;
+  case 858:
+    this->TexturedBeam(1, "effect\\line3.tga");
+    this->TexturedForkBolt("effect\\melody_a.bmp", 1);
+    this->TexturedForkBolt("effect\\melody_b.bmp", 1);
+    break;
+  case 969:
+    this->TexturedSpinShards("effect\\melody_a.bmp", 1);
+    this->TexturedSpinShards("effect\\melody_b.bmp", 1);
+    this->TexturedSpinShards("effect\\melody_a.bmp", 1);
+    this->TexturedSpinShards("effect\\melody_b.bmp", 1);
+    break;
+  case 863:
+    this->TexturedBeam(2, "effect\\line3.tga");
+    break;
+  case 859:
+    this->TexturedSlam("effect\\priest_spell.bmp", 1, 0);
+    break;
+  case 862:
+    this->TexturedSlam("effect\\priest_spell.bmp", 2, 0);
+    break;
+  case 851:
+    this->Mavka(0);
+    break;
+  case 852:
+    this->Mavka(2);
+    break;
+  case 853:
+    this->MonsterSpriteBurst(0);
+    break;
+  case 866:
+    this->MonsterSpriteBurst(2);
+    break;
+  case 868:
+    this->MonsterSpriteBurst(3);
+    break;
+  case 870:
+    this->MonsterSpriteBurst(4);
+    break;
+  case 872:
+    this->MonsterSpriteBurst(5);
+    break;
+  case 874:
+    this->MonsterSpriteBurst(6);
+    break;
+  case 876:
+    this->MonsterSpriteBurst(7);
+    break;
+  case 878:
+    this->MonsterSpriteBurst(8);
+    break;
+  case 915:
+    this->MonsterSpriteBurst(9);
+    break;
+  case 922:
+    this->MonsterSpriteBurst(13);
+    break;
+  case 927:
+    this->MonsterSpriteBurst(14);
+    break;
+  case 849:
+    this->TexturedTumbleOrb("effect\\whitelight.tga", 0);
+    break;
+  case 931:
+    this->TexturedTumbleOrb("effect\\whitelight.tga", 2);
+    this->TexturedTumbleOrb("effect\\whitelight.tga", 1);
+    break;
+  case 850:
+    this->TexturedStorm2("effect\\whitelight.tga", 2);
+    break;
+  case 932:
+    this->TexturedStorm2("effect\\whitelight.tga", 3);
+    break;
+  case 836:
+    for (int index = 0; index < 4; ++index) {
+      this->LineStreakTextured(10, "effect\\throw.bmp");
+      this->LineStreakTextured(11, "effect\\throw.bmp");
+    }
+    break;
+  case 835:
+    for (int index = 0; index < 4; ++index) {
+      this->LineStreakLayered(10);
+      this->LineStreakLayered(11);
+    }
+    if (this->state.stateCnt == 44) {
+      g_modeMgr.GetGameMode()->SendMsg(122, 0, 0, 0, 0);
+    }
+    if (this->state.stateCnt >= 20 && this->state.stateCnt <= 100) {
+      if ((this->state.parent->render.flags & 8) == 0) {
+        this->state.parent->render.flags += 8;
+      }
+      this->state.parent->SetColor(-1, 255, 255, 150);
+    }
+    break;
+  case 834:
+    this->JobLvUp50(0);
+    this->JobLvUp50(45);
+    break;
+  case 833:
+    this->ThunderFreeze(3);
+    break;
+  case 832:
+    if (this->state.stateCnt >= 4 && this->state.stateCnt <= 52) {
+      if (this->state.stateCnt % 2 == 0) {
+        if ((this->state.parent->render.flags & 8) == 0) {
+          this->state.parent->render.flags += 8;
+        }
+        if ((this->state.parent->render.flags & 1) == 0) {
+          this->state.parent->render.flags += 1;
+        }
+        this->state.parent->SetColor(-1, 5, 5, 255);
+      } else {
+        this->state.parent->SetColor(-1, 255, 255, 255);
+      }
+    }
+    this->BubbleFanSweep("effect\\ring_white.tga", 0);
+    break;
+  case 943:
+    if (this->state.stateCnt >= 4 && this->state.stateCnt <= 52) {
+      if (this->state.stateCnt % 2 == 0) {
+        if ((this->state.parent->render.flags & 8) == 0) {
+          this->state.parent->render.flags += 8;
+        }
+        if ((this->state.parent->render.flags & 1) == 0) {
+          this->state.parent->render.flags += 1;
+        }
+        this->state.parent->SetColor(-1, 55, 255, 55);
+      } else {
+        this->state.parent->SetColor(-1, 255, 255, 255);
+      }
+    }
+    this->BubbleFanSweep("effect\\ring_white.tga", 1);
+    break;
+  case 830:
+    if (this->state.stateCnt == 1) {
+      g_soundMgr->PlayWave("effect\\EF_BeginSpell.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    }
+    this->BubbleSpiralKind(45, "", 1);
+    this->BubbleSpiralKind(25, "", 0);
+    break;
+  case 880:
+    this->BubbleSpiral(45, "", 1);
+    this->BubbleSpiral(25, "", 1);
+    break;
+  case 831:
+    this->BeginSpellSwirl(45, "", 0);
+    this->TexturedTwinSpin("effect\\cir0002.bmp", 3);
+    break;
+  case 840:
+    this->BeginSpellSwirl(45, "", 3);
+    break;
+  case 841:
+    this->BeginSpellSwirl(45, "", 4);
+    break;
+  case 842:
+    this->BeginSpellSwirl(45, "", 5);
+    break;
+  case 843:
+    this->BeginSpellSwirl(45, "", 6);
+    break;
+  case 844:
+    this->BeginSpellSwirl(45, "", 7);
+    break;
+  case 845:
+    this->BeginSpellSwirl(45, "", 8);
+    break;
+  case 1656:
+    this->BeginSpellSwirl(45, "", 9);
+    break;
+  case 826:
+    this->BlackSpellRings(2);
+    break;
+  case 825:
+    if (this->state.stateCnt == 1) {
+      g_soundMgr->PlayWave("effect\\dimension.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    }
+    this->sub_C51740("effect\\cloud11.tga", 13);
+    this->TexturedHalo("effect\\구체15.bmp", 4);
+    this->WhiteRingRipple(0);
+    break;
+  case 823:
+    if ((this->state.parent->render.flags & 0x100000) == 0) {
+      this->state.parent->render.flags += 0x100000;
+    }
+    break;
+  case 822:
+    this->TexturedHalo("effect\\twirl.bmp", 4);
+    this->WhiteRingRipple(0);
+    break;
+  case 828:
+    {
+      const char* flare;
+      const char* ring0;
+      const char* ring1;
+      if (g_serviceOptions.Get(229)) {
+        flare = "effect\\mineffect\\new_maelstrom\\new_maelstrom\\mae_flare_00.bmp";
+        ring0 = "effect\\mineffect\\new_maelstrom\\new_maelstrom\\mae_ring_00.tga";
+        ring1 = "effect\\mineffect\\new_maelstrom\\new_maelstrom\\mae_ring_01.tga";
+      } else {
+        flare = "effect\\new_maelstrom\\new_maelstrom\\mae_flare_00.bmp";
+        ring0 = "effect\\new_maelstrom\\new_maelstrom\\mae_ring_00.tga";
+        ring1 = "effect\\new_maelstrom\\new_maelstrom\\mae_ring_01.tga";
+      }
+      this->TexturedHalo(flare, 10);
+      this->TexturedHalo(ring0, 11);
+      this->TexturedHalo(ring1, 12);
+    }
+    break;
+  case 829:
+    this->TorchDustRing("", 1, 0);
+    this->TorchDustRing("", 1, 120);
+    this->TorchDustRing("", 1, 240);
+    this->WhiteRingRipple(2);
+    break;
+  case 827:
+    this->TorchDustRing("", 0, 0);
+    this->WhiteRingRipple(1);
+    break;
+  case 821:
+    this->WaterBubble(0);
+    break;
+  case 838:
+    this->TorchDustRing("", 2, 0);
+    break;
+  case 839:
+    this->TexturedDualSpin("effect\\W_Comp_00.tga", "effect\\W_Comp_24.tga", 0);
+    break;
+  case 846:
+    for (int index = 0; index < 40; ++index) {
+      this->FrostSplash(0, 0);
+    }
+    break;
+  case 820:
+    if (this->state.stateCnt != 1) {
+      if (this->state.stateCnt != 11) {
+        if (this->state.stateCnt != 21) {
+          if (this->state.stateCnt == 31) {
+            this->render.position = this->state.parent->render.position;
+            PlayEffectWave(*this, "effect\\복호격.wav");
+          }
+        } else {
+          this->render.position = this->state.parent->render.position;
+          PlayEffectWave(*this, "effect\\복호격.wav");
+        }
+      } else {
+        this->render.position = this->state.parent->render.position;
+        PlayEffectWave(*this, "effect\\복호격.wav");
+      }
+    } else {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\복호격.wav");
+    }
+    this->TexturedSprayKind("유저인터페이스\\item\\갈색반지.bmp", 5.0f, 1);
+    this->TexturedSprayKind("유저인터페이스\\item\\금반지.bmp", 5.0f, 1);
+    this->TexturedSprayKind("유저인터페이스\\item\\금방울.bmp", 5.0f, 1);
+    this->TexturedSprayKind("유저인터페이스\\item\\꽃반지.bmp", 5.0f, 1);
+    this->TexturedSprayKind("유저인터페이스\\item\\낡은펜던트.bmp", 5.0f, 1);
+    this->TexturedSprayKind("유저인터페이스\\item\\눈구슬반지.bmp", 5.0f, 1);
+    this->TexturedSprayKind("유저인터페이스\\item\\상자.bmp", 4.0f, 1);
+    this->TexturedSprayKind("유저인터페이스\\item\\수제초콜렛.bmp", 5.0f, 1);
+    break;
+  case 869:
+    if (this->state.stateCnt != 1) {
+      if (this->state.stateCnt != 11) {
+        if (this->state.stateCnt != 21) {
+          if (this->state.stateCnt == 31) {
+            this->render.position = this->state.parent->render.position;
+            PlayEffectWave(*this, "effect\\복호격.wav");
+          }
+        } else {
+          this->render.position = this->state.parent->render.position;
+          PlayEffectWave(*this, "effect\\복호격.wav");
+        }
+      } else {
+        this->render.position = this->state.parent->render.position;
+        PlayEffectWave(*this, "effect\\복호격.wav");
+      }
+    } else {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\복호격.wav");
+    }
+    for (int index = 0; index < 2; ++index) {
+      this->TexturedSprayKind("effect\\melody_a.bmp", 6.0f, 1);
+      this->TexturedSprayKind("effect\\melody_b.bmp", 6.0f, 1);
+    }
+    break;
+  case 819:
+    this->TrackCloud(2);
+    break;
+  case 813:
+    this->TintedRisingSparkles(0);
+    this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
+    break;
+  case 814:
+    this->TintedRisingSparkles(1);
+    this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
+    break;
+  case 815:
+    this->TintedRisingSparkles(2);
+    this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
+    break;
+  case 816:
+    this->TintedRisingSparkles(3);
+    this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
+    break;
+  case 817:
+    this->TintedRisingSparkles(4);
+    this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
+    break;
+  case 818:
+    this->TintedRisingSparkles(5);
+    this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
+    break;
+  case 864:
+    if (this->state.stateCnt >= 4 && this->state.stateCnt <= 90) {
+      if (this->state.stateCnt % 2 == 0) {
+        if ((this->state.parent->render.flags & 1) == 0) {
+          this->state.parent->render.flags += 1;
+        }
+        this->state.parent->SetColor(-1, 182, 89, 255);
+      } else {
+        this->state.parent->SetColor(-1, 255, 255, 255);
+      }
+    }
+    this->RisingSparkles(2);
+    this->TintedRisingSparkles(6);
+    break;
+  case 847:
+    if (this->state.stateCnt >= 4 && this->state.stateCnt <= 90) {
+      if (this->state.stateCnt % 2 == 0) {
+        if ((this->state.parent->render.flags & 1) == 0) {
+          this->state.parent->render.flags += 1;
+        }
+        this->state.parent->SetColor(-1, 255, 89, 182);
+      } else {
+        this->state.parent->SetColor(-1, 255, 255, 255);
+      }
+    }
+    this->RisingSparkles(1);
+    break;
+  case 848:
+    if (this->state.stateCnt >= 4 && this->state.stateCnt <= 90) {
+      if (this->state.stateCnt % 2 == 0) {
+        if ((this->state.parent->render.flags & 1) == 0) {
+          this->state.parent->render.flags += 1;
+        }
+        this->state.parent->SetColor(-1, 182, 89, 255);
+      } else {
+        this->state.parent->SetColor(-1, 255, 255, 255);
+      }
+    }
+    this->RisingSparkles(2);
+    break;
+  case 812:
+    if (this->state.stateCnt >= 6 && this->state.stateCnt <= 60) {
+      const int value = (this->state.stateCnt & 1) != 0 ? 255 : 0;
+      this->state.parent->SetColor(-1, value, value, value);
+    } else if (this->state.stateCnt >= 61) {
+      CGameActor* actor = reinterpret_cast<CGameActor*>(this->state.parent);
+      if (actor->render.unknown_00A8 != 0 && (actor->unknown_02C4 & 1) != 0) {
+        actor->render.unknown_00A3 = 1;
+        this->state.parent->SetColor(-1, 255, 128, 255);
+      }
+    }
+    this->TexturedSkillAura(6);
+    break;
+  case 811:
+    this->TexturedDescendingRings("effect\\freezing_stick.bmp", 0);
+    break;
+  case 809:
+    this->AssassinCloakingClear();
+    break;
+  case 808:
+    for (int index = 0; index < 5; ++index) {
+      this->TexturedSkillIcon("", index * 30 + 1, 2);
+    }
+    break;
+  case 810:
+    if (this->state.stateCnt == 25) {
+      PlayEffectWave(*this, "effect\\triangle.wav");
+    }
+    for (int index = 0; index < 10; ++index) {
+      this->WhiteSpray(4);
+    }
+    break;
+  case 807:
+    if (this->state.stateCnt == 0) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\EF_Bash.wav");
+    }
+    if (this->state.stateCnt == 35) {
+      PlayEffectWave(*this, "effect\\rog_intimidate.wav");
+    }
+    for (int index = 0; index < 20; ++index) {
+      this->WhiteSpray(3);
+    }
+    break;
+  case 806:
+    this->RocketPunch();
+    break;
+  case 935:
+    this->GreenRocketPunch();
+    break;
+  case 805:
+    if (this->state.stateCnt == 0) {
+      g_soundMgr->PlayWave("effect\\EF_BeginSpell.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    }
+    if (this->state.stateCnt % 5 <= 1) {
+      if ((this->state.parent->render.flags & 1) == 0) {
+        this->state.parent->render.flags += 1;
+      }
+      this->state.parent->SetColor(-1, rand() % 256, rand() % 256, rand() % 256);
+    } else {
+      this->state.parent->SetColor(-1, rand() % 256, rand() % 256, rand() % 256);
+    }
+    this->TexturedQuadRing(25, "effect\\ring_white.tga", 0);
+    this->TexturedQuadRing(45, "effect\\ring_white.tga", 0);
+    break;
+  case 804:
+  case 970:
+  case 971:
+  case 972:
+  case 973:
+    if (this->state.stateCnt != 0) {
+      if (this->state.stateCnt != 40) {
+        if (this->state.stateCnt == 80) {
+          g_modeMgr.GetGameMode()->SendMsg(122, 0, 0, 0, 0);
+        }
+      } else {
+        g_modeMgr.GetGameMode()->SendMsg(122, 0, 0, 0, 0);
+      }
+    } else {
+      g_modeMgr.GetGameMode()->SendMsg(122, 0, 0, 0, 0);
+    }
+    this->TetraVortexPillar(4);
+    for (int index = 0; index < 7; ++index) {
+      this->TexturedSpread("effect\\ring_red.tga", 10);
+    }
+    break;
+  case 803:
+    for (int index = 0; index < 10; ++index) {
+      this->TexturedSkillIcon("", index * 30 + 1, 0);
+    }
+    break;
+  case 802:
+    if (this->state.stateCnt == 6) {
+      g_soundMgr->PlayWave("effect\\wl_whiteimprison.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    }
+    this->TexturedFourRing("effect\\alpha_down.tga", 20);
+    this->TexturedFourRing("effect\\alpha_down.tga", 21);
+    break;
+  case 801:
+    this->FrostDiver(3);
+    break;
+  case 800:
+    for (int index = 0; index < 3; ++index) {
+      this->TexturedSpreadFlat("effect\\ring_red.tga", 3);
+    }
+    break;
+  case 899:
+    for (int index = 0; index < 6; ++index) {
+      this->TexturedSpreadFlat("effect\\ring_blue.tga", 12);
+    }
+    break;
+  case 799:
+    if (this->state.stateCnt == 6) {
+      g_soundMgr->PlayWave("effect\\wl_stasis.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    }
+    if (this->state.stateCnt >= 6 && this->state.stateCnt <= 40) {
+      if (this->state.stateCnt % 2 == 0) {
+        if ((this->state.parent->render.flags & 1) == 0) {
+          this->state.parent->render.flags += 1;
+        }
+        this->state.parent->SetColor(-1, 0, 0, 255);
+      } else {
+        this->state.parent->SetColor(-1, 255, 255, 255);
+      }
+    }
+    this->TexturedLevelRing("effect\\thunder_ball_0001.bmp", -10, 3);
+    this->TexturedLevelRing("effect\\thunder_ball_0002.bmp", -14, 3);
+    this->TexturedLevelRing("effect\\thunder_ball_0003.bmp", -18, 3);
+    this->TexturedLevelRing("effect\\thunder_ball_0004.bmp", -22, 3);
+    this->TexturedLevelRing("effect\\thunder_ball_0005.bmp", -26, 3);
+    this->TexturedLevelRing("effect\\thunder_ball_0006.bmp", -30, 3);
+    break;
+  case 798:
+    for (int index = 0; index < 16; ++index) {
+      this->WhiteSpray(2);
+    }
+    break;
+  case 797:
+    if (this->state.stateCnt == 0) {
+      g_soundMgr->PlayWave("effect\\wl_siennaexecrate.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    }
+    this->TexturedClassChange(60);
+    break;
+  case 796:
+    this->TexturedMark("effect\\storm2.tga", 10);
+    this->TexturedRisingPillar("effect\\white01.bmp", 0);
+    break;
+  case 795:
+    if (!this->FirePillarBomb()) {
+      return false;
+    }
+    break;
+  case 794:
+    if (this->state.stateCnt == 0) {
+      g_soundMgr->PlayWave("effect\\INFRAREDSCAN.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    }
+    this->ElectricFan(nullptr, 0);
+    this->ElectricFan(nullptr, 1);
+    break;
+  case 793:
+    this->TexturedRisingOrbs("effect\\white02.bmp", 3);
+    break;
+  case 792:
+    this->SpawnActorHallucination();
+    break;
+  case 925:
+    this->SpawnHallucinationTrail();
+    break;
+  case 824:
+    this->SpawnHallucinationOnce();
+    break;
+  case 1004:
+    {
+      CHalluPC2* hallu = new CHalluPC2(reinterpret_cast<CPc*>(this->state.parent));
+      hallu->render.position = this->state.parent->render.position;
+      hallu->render.position.x -= ClientSine(static_cast<int>(this->state.parent->render.angle)) * 5.0f;
+      hallu->render.position.z += ClientCosine(static_cast<int>(this->state.parent->render.angle)) * 5.0f;
+      hallu->SetColor(100, 192, 192, 192);
+      WorldObjects().push_back(hallu);
+    }
+    break;
+  case 791:
+    if (this->state.stateCnt == 0) {
+      g_soundMgr->PlayWave("ice_titan_attack.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    }
+    if (this->state.stateCnt >= 6 && this->state.stateCnt <= 40) {
+      if ((this->state.parent->render.flags & 8) == 0) {
+        this->state.parent->render.flags += 8;
+      }
+      if (this->state.stateCnt % 2 == 0) {
+        if ((this->state.parent->render.flags & 1) == 0) {
+          this->state.parent->render.flags += 1;
+        }
+        this->state.parent->SetColor(-1, 0, 0, 255);
+      } else {
+        this->state.parent->SetColor(-1, 255, 255, 255);
+      }
+    }
+    this->SnowDrift(0);
+    this->SnowDrift(0);
+    this->SnowDrift(0);
+    break;
+  case 928:
+    if (this->state.stateCnt >= 6 && this->state.stateCnt <= 40) {
+      if ((this->state.parent->render.flags & 8) == 0) {
+        this->state.parent->render.flags += 8;
+      }
+      if (this->state.stateCnt % 2 == 0) {
+        if ((this->state.parent->render.flags & 1) == 0) {
+          this->state.parent->render.flags += 1;
+        }
+        this->state.parent->SetColor(-1, 0, 0, 255);
+      } else {
+        this->state.parent->SetColor(-1, 255, 255, 255);
+      }
+    }
+    this->SnowDrift(0);
+    this->SnowDrift(0);
+    this->SnowDrift(0);
+    break;
+  case 787:
+    this->TorchRedRing(0);
+    break;
+  case 786:
+    if (this->state.stateCnt >= 10 && this->state.stateCnt <= 90) {
+      if (this->state.stateCnt % 2 == 0) {
+        if ((this->state.parent->render.flags & 1) == 0) {
+          this->state.parent->render.flags += 1;
+        }
+        this->state.parent->SetColor(-1, 250, 250, 250);
+      } else {
+        this->state.parent->SetColor(-1, 255, 255, 255);
+      }
+    }
+    this->TexturedSkillAura(5);
+    this->TexturedAura("effect\\target3.bmp", 21);
+    break;
+  case 785:
+    this->TexturedRisingOrbs("유저인터페이스\\item\\스패너.bmp", 2);
+    break;
+  case 784:
+    this->TexturedGlow("effect\\썬더스톰파티클.tga", 8);
+    break;
+  case 783:
+    this->TexturedGlow("effect\\slash01.tga", 8);
+    break;
+  case 782:
+    this->BlackMaximize("effect\\성체강복.tga");
+    if (this->state.stateCnt >= 10 && this->state.stateCnt <= 30) {
+      if (this->state.stateCnt % 2 == 0) {
+        if ((this->state.parent->render.flags & 1) == 0) {
+          this->state.parent->render.flags += 1;
+        }
+        this->state.parent->SetColor(-1, 250, 250, 0);
+      } else {
+        this->state.parent->SetColor(-1, 255, 255, 255);
+      }
+    }
+    break;
+  case 781:
+    if (this->state.stateCnt == 5) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\MAGNETICFIELD.wav");
+    }
+    this->ElectricRingEarly(0, 0);
+    this->ElectricRingEarly(0, 180);
+    break;
+  case 780:
+    this->TexturedSkillAura(4);
+    break;
+  case 778:
+    this->TexturedSkillAura(3);
+    break;
+  case 779:
+    if (this->state.stateCnt < 61) {
+      if ((this->state.parent->render.flags & 8) == 0) {
+        this->state.parent->render.flags += 8;
+      }
+      if (this->state.stateCnt % 2 == 0) {
+        if ((this->state.parent->render.flags & 1) == 0) {
+          this->state.parent->render.flags += 1;
+        }
+        this->state.parent->SetColor(-1, 155, 155, 255);
+      } else {
+        this->state.parent->SetColor(-1, 255, 255, 255);
+      }
+    }
+    this->IncAgilityCenter(3);
+    break;
+  case 777:
+    if (this->state.stateCnt < 61) {
+      if ((this->state.parent->render.flags & 8) == 0) {
+        this->state.parent->render.flags += 8;
+      }
+      if (this->state.stateCnt % 2 == 0) {
+        if ((this->state.parent->render.flags & 1) == 0) {
+          this->state.parent->render.flags += 1;
+        }
+        this->state.parent->SetColor(-1, 155, 155, 255);
+      } else {
+        this->state.parent->SetColor(-1, 255, 255, 255);
+      }
+    }
+    this->IncAgilityCenter(2);
+    break;
+  case 775:
+    if (this->state.stateCnt == 0) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+    }
+    if (this->state.parent->render.unknown_0070 == 0 || this->state.parent->render.unknown_0070 == 2) {
+      if (this->state.stateCnt <= 15) {
+        this->state.parent->render.angle += 12.0f;
+      } else if (this->state.stateCnt <= 30) {
+        this->state.parent->render.angle += 18.0f;
+      } else if (this->state.stateCnt <= 40) {
+        this->state.parent->render.angle += 24.0f;
+      } else {
+        this->state.parent->render.angle += 48.0f;
+      }
+      if (this->state.parent->render.angle > 360.0f) {
+        this->state.parent->render.angle -= 360.0f;
+      }
+    }
+    break;
+  case 774:
+    this->TexturedShieldThrow("유저인터페이스\\item\\배틀액스.bmp");
+    break;
+  case 773:
+    this->TexturedCrossKind("effect\\ring_purple.tga", 1);
+    break;
+  case 771:
+    if (this->state.stateCnt == 1) {
+      g_soundMgr->PlayWave("effect\\assasin_enchantpoison.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      g_soundMgr->PlayWave("effect\\EF_PoisonAttack.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    }
+    break;
+  case 776:
+    if (this->state.stateCnt == 45) {
+      g_soundMgr->PlayWave("effect\\데스페라도.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    }
+    break;
+  case 772:
+  case 924:
+    this->PoisonAttack(1);
+    break;
+  case 770:
+    if (this->state.stateCnt != 1) {
+      if (this->state.stateCnt != 11) {
+        if (this->state.stateCnt != 21) {
+          if (this->state.stateCnt == 31) {
+            this->render.position = this->state.parent->render.position;
+            PlayEffectWave(*this, "effect\\복호격.wav");
+          }
+        } else {
+          this->render.position = this->state.parent->render.position;
+          PlayEffectWave(*this, "effect\\복호격.wav");
+        }
+      } else {
+        this->render.position = this->state.parent->render.position;
+        PlayEffectWave(*this, "effect\\복호격.wav");
+      }
+    } else {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\복호격.wav");
+    }
+    this->TexturedSprayKind("유저인터페이스\\item\\루드라의활.bmp", 5.0f, 0);
+    this->TexturedSprayKind("유저인터페이스\\item\\아트로스의흉기.bmp", 5.0f, 0);
+    this->TexturedSprayKind("유저인터페이스\\item\\모닝스타.bmp", 5.0f, 0);
+    this->TexturedSprayKind("유저인터페이스\\item\\바스타드소드.bmp", 5.0f, 0);
+    this->TexturedSprayKind("유저인터페이스\\item\\글레이브.bmp", 5.0f, 0);
+    this->TexturedSprayKind("유저인터페이스\\item\\블레이드휩.bmp", 5.0f, 0);
+    this->TexturedSprayKind("유저인터페이스\\item\\드래곤슬레이어.bmp", 5.0f, 0);
+    this->TexturedSprayKind("유저인터페이스\\item\\배틀액스.bmp", 5.0f, 0);
+    break;
+  case 758:
+    this->TexturedSlam("effect\\회전카운터1.tga", 0, 0);
+    break;
+  case 759:
+    this->TexturedSlam("effect\\회전카운터2.tga", 0, 0);
+    break;
+  case 760:
+    this->TexturedSlam("effect\\회전카운터3.tga", 0, 0);
+    break;
+  case 761:
+    this->TexturedSlam("effect\\회전카운터4.tga", 0, 0);
+    break;
+  case 762:
+    this->TexturedSlam("effect\\회전카운터5.tga", 0, 0);
+    break;
+  case 763:
+    this->TexturedSlam("effect\\회전카운터6.tga", 0, 0);
+    break;
+  case 764:
+    this->TexturedSlam("effect\\회전카운터7.tga", 0, 0);
+    break;
+  case 765:
+    this->TexturedSlam("effect\\회전카운터8.tga", 0, 0);
+    break;
+  case 766:
+    this->TexturedSlam("effect\\회전카운터9.tga", 0, 0);
+    break;
+  case 767:
+    this->TexturedSlam("effect\\회전카운터10.tga", 0, 0);
+    break;
+  case 879:
+    this->TexturedSlam("effect\\kiss2.bmp", 2, 0);
+    break;
+  case 769:
+    if (this->state.stateCnt == 5 || this->state.stateCnt == 20 || this->state.stateCnt == 35 || this->state.stateCnt == 50 || this->state.stateCnt == 65) {
+      this->render.position = this->state.parent->render.position;
+      g_modeMgr.GetGameMode();
+      g_soundMgr->PlayWave(
+        "effect\\T_날라차기.wav", 0.0f, this->state.stateCnt <= 50 ? static_cast<float>(5 - this->state.stateCnt) : -50.0f, 0.0f, 250, 40, 1.0f, 0
+      );
+    }
+    break;
+  case 756:
+    if (!this->Potion_Awakening()) {
+      return false;
+    }
+    break;
+  case 755:
+    this->TexturedAura("effect\\마법진1-3.bmp", 19);
+    break;
+  case 788:
+    this->TexturedAura("effect\\베놈_상태.bmp", 22);
+    break;
+  case 789:
+    this->TexturedAura("effect\\빙결_상태.bmp", 22);
+    break;
+  case 940:
+    this->TexturedAura("effect\\얼음결정체1.tga", 22);
+    break;
+  case 790:
+    this->TexturedAura("effect\\발화_상태.bmp", 22);
+    break;
+  case 754:
+    this->WhiteRingWave();
+    if (!this->TexturedRisingRingStages("effect\\alpha_down.tga", 0)) {
+      return false;
+    }
+    break;
+  case 883:
+    this->TexturedColumn("effect\\ef_epitree.tga", 30);
+    this->WhiteRingWave();
+    this->TexturedRisingRingStages("effect\\alpha_down.tga", 1);
+    break;
+  case 884:
+    this->TexturedTripleOrbit("effect\\white02.bmp");
+    break;
+  case 753:
+    if (this->state.stateCnt == 1) {
+      PlayEffectWave(*this, "effect\\샤프슈팅.wav");
+    }
+    this->TexturedRisingOrbs("effect\\white02.bmp", 1);
+    this->TexturedMark("effect\\storm2.tga", 8);
+    break;
+  case 751:
+    this->ShadedFireballVolley();
+    break;
+  case 750:
+    if (this->state.stateCnt >= 10 && this->state.stateCnt <= 40) {
+      if (this->state.stateCnt % 2 == 0) {
+        if ((this->state.parent->render.flags & 1) == 0) {
+          this->state.parent->render.flags += 1;
+        }
+      }
+      this->state.parent->SetColor(-1, 155, 155, 255);
+    }
+    if (!this->Concentration()) {
+      return false;
+    }
+    break;
+  case 745:
+    this->render.position = this->state.parent->render.position;
+    if (this->state.stateCnt == 1) {
+      PlayEffectWave(*this, "aimed.wav");
+    }
+    this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
+    break;
+  case 746:
+    this->render.position = this->state.parent->render.position;
+    if (this->state.stateCnt == 1) {
+      PlayEffectWave(*this, "arrowstorm.wav");
+    }
+    this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
+    break;
+  case 747:
+  case 748:
+    this->render.position = this->state.parent->render.position;
+    if (this->state.stateCnt == 1) {
+      PlayEffectWave(*this, "lauagnus.wav");
+    }
+    this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
+    break;
+  case 749:
+    this->render.position = this->state.parent->render.position;
+    this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
+    break;
+  case 744:
+    this->AssassinCloaking();
+    break;
+  case 739:
+    this->TexturedClassChange(53);
+    break;
+  case 740:
+    this->TexturedClassChange(52);
+    break;
+  case 741:
+    this->TexturedClassChange(51);
+    break;
+  case 742:
+    this->TexturedClassChange(54);
+    break;
+  case 743:
+    this->TexturedClassChange(50);
+    break;
+  case 732:
+    this->StoneWall();
+    break;
+  case 730:
+    this->TexturedClassChange(39);
+    break;
+  case 735:
+    this->ElementalOrbit(10);
+    break;
+  case 736:
+    this->ElementalOrbit(11);
+    break;
+  case 737:
+    this->ElementalOrbit(12);
+    break;
+  case 738:
+    this->ElementalOrbit(13);
+    break;
+  case 733:
+    if (this->state.stateCnt == 20) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\기공포.wav");
+    }
+    if (this->state.stateCnt >= 0 && this->state.stateCnt <= 10) {
+      if ((this->state.parent->render.flags & 1) == 0) {
+        this->state.parent->render.flags += 1;
+      }
+      this->state.parent->SetColor(-1, 155, 155, 255);
+    }
+    this->SonicWave(1);
+    break;
+  case 723:
+    {
+      this->render.position = this->state.parent->render.position;
+      const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+      if (this->state.stateCnt == 0) {
+        g_soundMgr->PlayWave(
+          "hundred.wav", this->render.position.x - player->render.position.x, 0.0f, this->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
+        );
+      }
+    }
+    this->sub_C47F70(12);
+    break;
+  case 726:
+    if (this->state.stateCnt == 10) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\t_에너지방출.wav");
+    }
+    this->SaintWing("effect\\freeze_a.bmp");
+    this->SnowFall("", 1);
+    break;
+  case 725:
+    this->TexturedSkillAura(2);
+    break;
+  case 724:
+    if (this->state.stateCnt == 1) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\wl_siennaexecrate.wav");
+    }
+    this->TexturedSkillAura(8);
+    break;
+  case 722:
+    this->TexturedSkillAura(7);
+    this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
+    break;
+  case 727:
+    this->render.position = this->state.parent->render.position;
+    if (this->state.stateCnt == 1) {
+      PlayEffectWave(*this, "crimson_r.wav");
+    }
+    this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
+    break;
+  case 728:
+    this->render.position = this->state.parent->render.position;
+    if (this->state.stateCnt == 1) {
+      PlayEffectWave(*this, "hell_in.wav");
+    }
+    this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
+    break;
+  case 734:
+    this->render.position = this->state.parent->render.position;
+    if (this->state.stateCnt == 1) {
+      PlayEffectWave(*this, "chainlight.wav");
+    }
+    this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
+    break;
+  case 720:
+    if (this->state.stateCnt == 20) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\기공포.wav");
+    }
+    if (this->state.stateCnt >= 0 && this->state.stateCnt <= 10) {
+      if ((this->state.parent->render.flags & 1) == 0) {
+        this->state.parent->render.flags += 1;
+      }
+      this->state.parent->SetColor(-1, 205, 205, 0);
+    }
+    this->SonicWave(1);
+    break;
+  case 719:
+    this->sub_C51740("effect\\cloud11.tga", 12);
+    break;
+  case 718:
+    this->RingStack(1);
+    for (int index = 0; index < 3; ++index) {
+      this->TexturedSpreadFlat("effect\\ring_white.tga", 11);
+    }
+    break;
+  case 715:
+  case 716:
+    this->TexturedFourRing("effect\\ring_blue.tga", 10);
+    this->TexturedFourRing("effect\\ring_blue.tga", 11);
+    break;
+  case 713:
+    this->WhiteLightSparkle(0);
+    break;
+  case 714:
+    this->WhiteLightSparkle(1);
+    break;
+  case 946:
+    this->WhiteLightSparkle(2);
+    break;
+  case 711:
+    this->WaterfallSheets(0, 10, 10);
+    for (int index = 0; index < 2; ++index) {
+      this->FreezingCircle(6);
+    }
+    break;
+  case 710:
+    this->TexturedAura("effect\\b.bmp", 18);
+    this->TexturedAura("effect\\glow02.bmp", 16);
+    this->TexturedAura("effect\\glow02.bmp", 17);
+    this->FreezingCircle(5);
+    break;
+  case 712:
+    this->TexturedAura("effect\\b.bmp", 18);
+    this->TexturedAura("effect\\glow03.bmp", 16);
+    this->TexturedAura("effect\\glow03.bmp", 17);
+    this->FreezingCircle(7);
+    break;
+  case 708:
+    if (this->state.stateCnt == 0) {
+      PlayEffectWave(*this, "effect\\wizard_stormgust.wav");
+    }
+    this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
+    break;
+  case 703:
+    this->TexturedBeams("effect\\alpha_upper.tga", 0);
+    this->FreezingCircle(4);
+    break;
+  case 707:
+    this->TexturedClassChange(37);
+    break;
+  case 697:
+    for (int index = 0; index < 80; ++index) {
+      this->SkyCloud(7);
+    }
+    break;
+  case 698:
+    for (int index = 0; index < 80; ++index) {
+      this->SkyCloud(8);
+    }
+    break;
+  case 693:
+    this->TexturedAura("effect\\glow01.bmp", 14);
+    break;
+  case 694:
+    this->TexturedAura("effect\\glow02.bmp", 14);
+    break;
+  case 701:
+    this->TexturedAura("effect\\glow11.bmp", 15);
+    break;
+  case 702:
+    this->TexturedAura("effect\\glow12b .bmp", 14);
+    break;
+  case 695:
+    this->Map_MagicZone("effect\\glow04.bmp", 5);
+    for (int index = 2; index < 21; index += 2) {
+      this->TexturedOrbitDust("effect\\mpa3.tga", index, 2);
+    }
+    break;
+  case 692:
+    this->FreezingCircle(3);
+    break;
+  case 689:
+    this->TorchDust(0);
+    break;
+  case 690:
+    this->TorchDust(1);
+    break;
+  case 691:
+    this->TorchDust(2);
+    break;
+  case 696:
+    this->TorchDust(3);
+    break;
+  case 650:
+    this->Map_MagicZone("effect\\mjin2.tga", 0);
+    this->Map_MagicZone("effect\\mjin.tga", 1);
+    this->Map_Pika("effect\\pikapika2.bmp");
+    this->WideTripleRingStack("effect\\ring_blue.tga");
+    break;
+  case 651:
+    this->Map_MagicZone("effect\\mjin2.tga", 2);
+    this->Map_MagicZone("effect\\mjin.tga", 3);
+    for (int index = 2; index < 21; index += 2) {
+      this->TexturedOrbitDust("effect\\mpa3.tga", index, 0);
+    }
+    break;
+  case 687:
+    this->Map_MagicZone("effect\\마법진1-1.bmp", 4);
+    this->Map_MagicZone("effect\\마법진1-2.bmp", 14);
+    this->Map_MagicZone("effect\\마법진1-3.bmp", 4);
+    break;
+  case 688:
+    this->Map_MagicZone("effect\\마법진2-1.bmp", 4);
+    this->Map_MagicZone("effect\\마법진2-2.bmp", 14);
+    this->Map_MagicZone("effect\\마법진2-3.bmp", 4);
+    break;
+  case 682:
+    this->TexturedClassChange(32);
+    break;
+  case 683:
+    this->TexturedClassChange(33);
+    break;
+  case 684:
+    this->TexturedClassChange(34);
+    break;
+  case 685:
+    this->TexturedClassChange(35);
+    break;
+  case 686:
+    this->TexturedClassChange(36);
+    break;
+  case 681:
+    this->TexturedAura("effect\\구체2.bmp", 12);
+    this->TexturedAura("effect\\구체3.bmp", 13);
+    this->TexturedAura("effect\\구체4.bmp", 11);
+    this->TexturedAura("effect\\구체5.bmp", 10);
+    break;
+  case 700:
+    this->TexturedAura("effect\\구체12.bmp", 12);
+    this->TexturedAura("effect\\구체3.bmp", 13);
+    this->TexturedAura("effect\\구체14.bmp", 11);
+    this->TexturedAura("effect\\구체15.bmp", 10);
+    break;
+  case 678:
+    this->FreezingCircle(2);
+    break;
+  case 679:
+    this->TripleRingStack("effect\\ring_white.tga", 1);
+    break;
+  case 680:
+    this->TexturedDoubleRing("effect\\pikapika2.bmp", 1);
+    break;
+  case 677:
+    if (this->state.stateCnt == 1) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\wideb.wav");
+    }
+    this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
+    break;
+  case 676:
+    this->TexturedAura("effect\\blast_mine##clock.bmp", 4);
+    if (this->state.stateCnt == 10) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\EF_DecAgility.wav");
+    }
+    break;
+  case 675:
+    this->KyrieGuard("effect\\guardK.tga", 2);
+    break;
+  case 674:
+    this->Bottom_Music("effect\\curse.bmp", 6);
+    break;
+  case 671:
+    this->TexturedHalo("effect\\hanmoon1.tga", 3);
+    break;
+  case 672:
+    this->TexturedHalo("effect\\hanmoon2.tga", 3);
+    break;
+  case 667:
+    if ((this->state.parent->render.flags & 2) == 0) {
+      this->state.parent->render.flags += 2;
+      if (this->state.stateCnt < 25) {
+        this->state.parent->render.unknown_00F2 = static_cast<unsigned char>(this->state.stateCnt * 8);
+      } else {
+        this->state.parent->render.unknown_00F2 = 200;
+      }
+    }
+    break;
+  case 666:
+    if (this->state.stateCnt == 0) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\earth_quake.wav");
+    }
+    this->TexturedClassChange(31);
+    if (this->state.stateCnt != 0) {
+      if (this->state.stateCnt != 35) {
+        if (this->state.stateCnt == 70) {
+          g_modeMgr.GetGameMode()->SendMsg(122, 0, 0, 0, 0);
+        }
+      } else {
+        g_modeMgr.GetGameMode()->SendMsg(122, 0, 0, 0, 0);
+      }
+    } else {
+      g_modeMgr.GetGameMode()->SendMsg(122, 0, 0, 0, 0);
+    }
+    break;
+  case 665:
+    this->Bubble_Drop();
+    break;
+  case 655:
+    if ((this->state.parent->render.flags & 0x80000) == 0) {
+      this->state.parent->render.flags += 0x80000;
+      this->state.parent->render.unknown_00F2 = static_cast<unsigned char>(std::min(this->state.stateCnt, 200));
+    }
+    break;
+  case 656:
+    if (this->state.stateCnt < 40) {
+      if ((this->state.parent->render.flags & 0x80000) == 0) {
+        this->state.parent->render.flags += 0x80000;
+        this->state.parent->render.unknown_00F2 = static_cast<unsigned char>(200 - this->state.stateCnt * 5);
+      }
+    }
+    break;
+  case 633:
+    if (this->state.stateCnt == 0) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\일섬.wav");
+    }
+    this->TexturedClassChange(18);
+    break;
+  case 632:
+    if (this->state.stateCnt == 0) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\안개베기.wav");
+    }
+    this->TexturedClassChange(17);
+    break;
+  case 630:
+    if (this->state.stateCnt == 0) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\그림자베기.wav");
+    }
+    this->TexturedClassChange(15);
+    break;
+  case 652:
+    if (this->state.stateCnt == 0) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\EF_hit2.wav");
+      this->state.parent->SendMsg(nullptr, 88, 0, 1, 0, 0xFFFF0000, 0, 114, 0, 0, 0, 0, 0, 0, 0);
+    }
+    break;
+  case 653:
+    if (this->state.stateCnt == 0) {
+      this->state.parent->SendMsg(nullptr, 88, 0, 1, 0, 0xFFFF0000, 0, 114, 0, 0, 0, 0, 0, 0, 0);
+    }
+    break;
+  case 654:
+    if (this->state.stateCnt == 0) {
+      this->state.parent->SendMsg(nullptr, 88, 0, 1, 0, 0xFFFF00FF, 0, 114, 0, 0, 0, 0, 0, 0, 0);
+    }
+    break;
+  case 645:
+    this->TexturedClassChange(28);
+    break;
+  case 643:
+    if (this->state.stateCnt == 20) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\래피드샤워.wav");
+    }
+    this->TexturedClassChange(26);
+    break;
+  case 644:
+    if (this->state.stateCnt == 0) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\매지컬블릿.wav");
+    }
+    this->TexturedClassChange(27);
+    break;
+  case 648:
+    if (this->state.stateCnt == 25) {
+      this->render.position = this->state.parent->render.position;
+      g_modeMgr.GetGameMode();
+      g_soundMgr->PlayWave("effect\\트리플액션.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    }
+    this->TexturedClassChange(30);
+    break;
+  case 647:
+    this->TexturedClassChange(29);
+    break;
+  case 638:
+    this->TexturedClassChange(21);
+    break;
+  case 912:
+    this->TexturedClassChange(61);
+    break;
+  case 921:
+    this->TexturedClassChange(64);
+    this->TexturedClassChange(65);
+    break;
+  case 916:
+    this->MonsterSpriteBurst(10);
+    break;
+  case 917:
+    this->MonsterSpriteBurst(11);
+    break;
+  case 918:
+    this->MonsterSpriteBurst(12);
+    break;
+  case 929:
+    this->MonsterSpriteBurst(15);
+    break;
+  case 639:
+    this->TexturedClassChange(22);
+    break;
+  case 640:
+    this->TexturedClassChange(23);
+    break;
+  case 641:
+    this->TexturedClassChange(24);
+    break;
+  case 642:
+    this->TexturedClassChange(25);
+    break;
+  case 1120:
+    this->TexturedClassChange(90);
+    break;
+  case 631:
+    this->TexturedClassChange(16);
+    break;
+  case 635:
+    if (this->state.stateCnt == 0) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\폭염룡.wav");
+    }
+    this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
+    break;
+  case 636:
+    if (this->state.stateCnt == 0) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\빙정락.wav");
+    }
+    this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
+    break;
+  case 634:
+    this->TexturedClassChange(19);
+    break;
+  case 637:
+    if (this->state.stateCnt == 10) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\데스페라도.wav");
+    }
+    this->TexturedClassChange(20);
+    break;
+  case 629:
+    this->ElementalOrbit(3);
+    break;
+  case 628:
+    if (this->state.stateCnt == 0) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\더스트샷.wav");
+    }
+    for (int index = 0; index < 6; ++index) {
+      this->TexturedQuadSpin("effect\\alpha_center.tga", index, 5);
+    }
+    break;
+  case 627:
+    if (this->state.stateCnt == 21) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\디스암.wav");
+    }
+    this->TexturedSprayKind("유저인터페이스\\item\\골드룩스.bmp", 5.0f, 0);
+    this->TexturedSprayKind("유저인터페이스\\item\\더개리슨.bmp", 5.0f, 0);
+    this->TexturedSprayKind("유저인터페이스\\item\\더블샷건.bmp", 5.0f, 0);
+    this->TexturedSprayKind("유저인터페이스\\item\\더스크.bmp", 5.0f, 0);
+    break;
+  case 624:
+    if (this->state.stateCnt == 1) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\t_바람방출.wav");
+    }
+    this->TexturedSlashCross("effect\\270바람.tga");
+    break;
+  case 623:
+    if (this->state.stateCnt == 28) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\피어싱샷.wav");
+    }
+    for (int index = 0; index < 4; ++index) {
+      this->LineStreakLayered(20);
+      this->LineStreakLayered(21);
+    }
+    break;
+  case 622:
+    this->render.position = this->state.parent->render.position;
+    if (this->state.stateCnt == 0) {
+      PlayEffectWave(*this, "effect\\EF_ThunderStorm.wav");
+      this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 5, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+      this->state.unknown_11C84->duration = this->state.duration;
+      this->state.unknown_11C84->renderFlag |= 0x200;
+      this->state.unknown_11C84->pattern |= 0x200;
+      this->state.unknown_11C84->deltaPos2.y = -4.5f;
+      this->state.unknown_11C84->animSpeed = 2;
+      this->state.unknown_11C84->size = 2.5f;
+      Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\썬더스톰.spr");
+      Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\썬더스톰.act");
+      Owner(this->state.unknown_11C84).InitSegment();
+    }
+    break;
+  case 621:
+    if (this->state.stateCnt == 0) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\풍인.wav");
+    }
+    for (int index = 0; index < static_cast<int>(this->state.count); ++index) {
+      this->TexturedSlashWave("effect\\270바람.tga", index % 2);
+    }
+    break;
+  case 600:
+    this->ThrowItem("유저인터페이스\\item\\베넘나이프.bmp", 3);
+    break;
+  case 613:
+    this->ThrowItem("유저인터페이스\\item\\수리검.bmp", 3);
+    break;
+  case 614:
+    this->ThrowItem("유저인터페이스\\item\\쿠나이_독.bmp", 3);
+    break;
+  case 615:
+    this->ThrowItem("유저인터페이스\\item\\풍마_열화.bmp", 3);
+    break;
+  case 616:
+    this->ThrowItem("effect\\coin_a.bmp", 3);
+    break;
+  case 620:
+    this->TexturedFlare("effect\\ring_blue.tga", 14, 0, 0);
+    break;
+  case 619:
+    this->EarthSpike(2);
+    break;
+  case 618:
+    this->SakuraFireArrow();
+    for (int index = 0; index < 2; ++index) {
+      this->TexturedQuadSpin("effect\\alpha_center.tga", index, 2);
+    }
+    break;
+  case 617:
+    this->SpawnPaleBlur();
+    break;
+  case 752:
+    this->SpawnLightBlur();
+    break;
+  case 608:
+    if (this->state.stateCnt == 45) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "_heal_effect.wav");
+    }
+    if (!this->ProcessEZ2STRC10830()) {
+      return false;
+    }
+    break;
+  case 569:
+  case 603:
+  case 717:
+  case 959:
+  case 960:
+  case 964:
+  case 965:
+  case 966:
+  case 967:
+  case 975:
+  case 1019:
+  case 1020:
+  case 1021:
+  case 1029:
+  case 1031:
+  case 1033:
+  case 1055:
+    if (!this->ProcessEZ2STRC10830()) {
+      return false;
+    }
+    break;
+  case 609:
+    if (this->state.stateCnt == 50) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "caramel_die.wav");
+    }
+    if (!this->ProcessEZ2STRC10830()) {
+      return false;
+    }
+    break;
+  case 610:
+    if (this->state.stateCnt == 0) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "_heal_effect.wav");
+    }
+    this->TexturedAura("effect\\success.bmp", 3);
+    break;
+  case 611:
+    if (this->state.stateCnt == 0) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "caramel_die.wav");
+    }
+    this->TexturedAura("effect\\failed.bmp", 3);
+    break;
+  case 606:
+    this->sub_C47F70(2);
+    break;
+  case 607:
+    this->sub_C47F70(1);
+    break;
+  case 604:
+    this->NpcStop(2);
+    break;
+  case 605:
+    if (this->state.stateCnt == 0) {
+      this->state.parent->SendMsg(nullptr, 109, 0, 604, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+    break;
+  case 601:
+    {
+      this->render.position = this->state.parent->render.position;
+      const RenderVertex vertex = TransformVert(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view, this->state.parent->render.position);
+      this->state.tlvertX = vertex.x;
+      this->state.tlvertY = vertex.y;
+      if (this->state.stateCnt % 2 == 0) {
+        const int angle = static_cast<int>(static_cast<float>(this->state.stateCnt) * -5.0f);
+        const float sine = ClientSine(angle);
+        const float cosine = ClientCosine(angle);
+        GetRadian(angle);
+        this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 5, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+        this->state.unknown_11C84->duration = 20;
+        this->state.unknown_11C84->deltaPos2.x = sine * 15.0f;
+        this->state.unknown_11C84->deltaPos2.y = -20.0f;
+        this->state.unknown_11C84->deltaPos2.z = cosine * -15.0f;
+        this->state.unknown_11C84->deltaPosAccel.y = 0.1f;
+        this->state.unknown_11C84->animSpeed = 3;
+        this->state.unknown_11C84->size = 2.5f;
+        this->state.unknown_11C84->sizeSpeed = -0.1f;
+        this->state.unknown_11C84->alpha = 50.0f;
+        this->state.unknown_11C84->alphaSpeed = -3.0f;
+        Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\Sight.spr");
+        Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\Sight.act");
+        Owner(this->state.unknown_11C84).InitSegment();
+      }
+    }
+    break;
+  case 590:
+    if (this->state.stateCnt == 15) {
+      this->JobLvUp50_2(0);
+      this->JobLvUp50_2(45);
+    }
+    break;
+  case 582:
+    this->SuperAngel(11, 0);
+    this->SuperAngel(10, 0);
+    break;
+  case 573:
+    for (int index = 0; index < 80; ++index) {
+      this->ScatterItemIcons(0);
+    }
+    break;
+  case 574:
+    for (int index = 0; index < 80; ++index) {
+      this->ScatterItemIcons(1);
+    }
+    break;
+  case 575:
+    for (int index = 0; index < 80; ++index) {
+      this->ScatterItemIcons(2);
+    }
+    break;
+  case 542:
+    if ((this->state.parent->render.flags & 0x4000) == 0 && this->state.stateCnt <= 150) {
+      this->state.parent->render.flags += 0x4000;
+      this->state.parent->render.unknown_00F6 = static_cast<unsigned char>(this->state.stateCnt / 3);
+    }
+    break;
+  case 625:
+    if (this->state.stateCnt % 4 == 0) {
+      if ((this->state.parent->render.flags & 0x4000) == 0) {
+        this->state.parent->render.flags += 0x4000;
+        this->state.parent->render.unknown_00F6 = 20;
+      }
+    }
+    break;
+  case 626:
+    if (this->state.stateCnt % 4 == 0) {
+      if ((this->state.parent->render.flags & 0x40000) == 0) {
+        this->state.parent->render.flags += 0x40000;
+        this->state.parent->render.unknown_00F6 = 20;
+      }
+    }
+    break;
+  case 543:
+    if (this->state.stateCnt < 200 && (this->state.parent->render.flags & 0x4000) == 0) {
+      this->state.parent->render.flags += 0x4000;
+      if (this->state.stateCnt <= 25) {
+        this->state.parent->render.unknown_00F6 = static_cast<unsigned char>(this->state.stateCnt);
+      }
+      if (this->state.stateCnt >= 151 && this->state.stateCnt <= 175) {
+        this->state.parent->render.unknown_00F6 = static_cast<unsigned char>(175 - this->state.stateCnt);
+      }
+    }
+    this->ParticleTime("effect\\white02.bmp", 1);
+    break;
+  case 572:
+    if (this->state.stateCnt == 10) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\T_따듯한마법.wav");
+    }
+    this->ParticleTime("effect\\white02.bmp", 3);
+    break;
+  case 540:
+    if (this->state.stateCnt <= 15 && (this->state.parent->render.flags & 16) == 0) {
+      this->state.parent->render.flags += 16;
+      this->state.parent->render.pulsePhases[0] = static_cast<unsigned char>(45 - this->state.stateCnt * 3);
+    }
+    break;
+  case 539:
+    this->ThrowItem("유저인터페이스\\item\\화염병.bmp", 10);
+    this->ThrowItem("유저인터페이스\\item\\염산병.bmp", 11);
+    break;
+  case 541:
+    this->ThrowItem("유저인터페이스\\item\\버서크포션.bmp", 1);
+    break;
+  case 538:
+    if (this->state.stateCnt < 31) {
+      if ((this->state.parent->render.flags & 8) == 0) {
+        this->state.parent->render.flags += 8;
+      }
+      if (this->state.stateCnt % 2 == 0) {
+        if ((this->state.parent->render.flags & 1) == 0) {
+          this->state.parent->render.flags += 1;
+        }
+        this->state.parent->SetColor(-1, 0, 255, 0);
+      } else {
+        this->state.parent->SetColor(-1, 255, 255, 255);
+      }
+    }
+    break;
+  case 768:
+    if (this->state.stateCnt < 31) {
+      if ((this->state.parent->render.flags & 8) == 0) {
+        this->state.parent->render.flags += 8;
+      }
+      if (this->state.stateCnt % 2 == 0) {
+        if ((this->state.parent->render.flags & 1) == 0) {
+          this->state.parent->render.flags += 1;
+        }
+        this->state.parent->SetColor(-1, 255, 0, 255);
+      } else {
+        this->state.parent->SetColor(-1, 255, 255, 255);
+      }
+    }
+    break;
+  case 537:
+    if (this->state.stateCnt == 5) {
+      g_modeMgr.GetGameMode()->SendMsg(122, 0, 0, 0, 0);
+    }
+    this->TexturedFireWall("effect\\ring_black.tga", 33);
+    break;
+  case 515:
+    for (int index = 0; index < 80; ++index) {
+      this->SkyCloud(3);
+    }
+    break;
+  case 516:
+    for (int index = 0; index < 80; ++index) {
+      this->SkyCloud(4);
+    }
+    break;
+  case 592:
+    for (int index = 0; index < 80; ++index) {
+      this->SkyCloud(5);
+    }
+    break;
+  case 523:
+    this->TexturedAura("effect\\Tarot01.tga", 1);
+    break;
+  case 524:
+    this->TexturedAura("effect\\Tarot02.tga", 1);
+    break;
+  case 525:
+    this->TexturedAura("effect\\Tarot03.tga", 1);
+    break;
+  case 526:
+    this->TexturedAura("effect\\Tarot04.tga", 1);
+    break;
+  case 527:
+    this->TexturedAura("effect\\Tarot05.tga", 1);
+    break;
+  case 528:
+    this->TexturedAura("effect\\Tarot06.tga", 1);
+    break;
+  case 529:
+    this->TexturedAura("effect\\Tarot07.tga", 1);
+    break;
+  case 530:
+    this->TexturedAura("effect\\Tarot08.tga", 1);
+    break;
+  case 531:
+    this->TexturedAura("effect\\Tarot09.tga", 1);
+    break;
+  case 532:
+    this->TexturedAura("effect\\Tarot10.tga", 1);
+    break;
+  case 533:
+    this->TexturedAura("effect\\Tarot11.tga", 1);
+    break;
+  case 534:
+    this->TexturedAura("effect\\Tarot12.tga", 1);
+    break;
+  case 535:
+    this->TexturedAura("effect\\Tarot13.tga", 1);
+    break;
+  case 536:
+    this->TexturedAura("effect\\Tarot14.tga", 1);
+    break;
+  case 522:
+    this->sub_C54420();
+    break;
+  case 521:
+    if (this->state.stateCnt >= 10 && this->state.stateCnt <= 50) {
+      if ((this->state.parent->render.flags & 8) == 0) {
+        this->state.parent->render.flags += 8;
+      }
+      if (this->state.stateCnt % 2 == 0) {
+        if ((this->state.parent->render.flags & 1) == 0) {
+          this->state.parent->render.flags += 1;
+        }
+        this->state.parent->SetColor(-1, 255, 0, 0);
+      } else {
+        this->state.parent->SetColor(-1, 255, 255, 255);
+      }
+    }
+    break;
+  case 518:
+    if (this->state.stateCnt == 30) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\wizard_fire_pillar_b.wav");
+    }
+    for (int index = 0; index < 4; ++index) {
+      this->TexturedTumble("effect\\whitelight.tga", 0);
+    }
+    break;
+  case 517:
+    this->TexturedSpin("effect\\white02.bmp");
+    break;
+  case 512:
+    for (int index = 0; index < 4; ++index) {
+      this->LineStreakLayered(10);
+      this->LineStreakLayered(11);
+    }
+    if (this->state.stateCnt == 44) {
+      g_modeMgr.GetGameMode()->SendMsg(122, 0, 0, 0, 0);
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\연주붕격.wav");
+    }
+    if (this->state.stateCnt >= 20 && this->state.stateCnt <= 100) {
+      if ((this->state.parent->render.flags & 8) == 0) {
+        this->state.parent->render.flags += 8;
+      }
+      this->state.parent->SetColor(-1, 255, 255, 150);
+    }
+    break;
+  case 513:
+    this->GROUNDSAMPLE();
+    break;
+  case 514:
+    this->TexturedCrossFade("effect\\ring_blue.tga");
+    break;
+  case 510:
+    this->AsuraStrike(1);
+    break;
+  case 509:
+    this->Vallentine(2);
+    break;
+  case 519:
+    this->Vallentine(3);
+    break;
+  case 505:
+    if (this->state.stateCnt == 0) {
+      PlayEffectWave(*this, "effect\\priest_suffragium.wav");
+    }
+    if (this->state.stateCnt >= 10 && this->state.stateCnt <= 35) {
+      if (this->state.stateCnt % 2 == 0) {
+        if ((this->state.parent->render.flags & 1) == 0) {
+          this->state.parent->render.flags += 1;
+        }
+        this->state.parent->SetColor(-1, 250, 250, 100);
+      } else {
+        this->state.parent->SetColor(-1, 255, 255, 255);
+      }
+    }
+    break;
+  case 599:
+    if (this->state.stateCnt == 5) {
+      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+    }
+    if (this->state.stateCnt >= 5 && this->state.stateCnt <= 25) {
+      if (this->state.stateCnt % 2 == 0) {
+        if ((this->state.parent->render.flags & 1) == 0) {
+          this->state.parent->render.flags += 1;
+        }
+        this->state.parent->SetColor(-1, 250, 250, 100);
+      } else {
+        this->state.parent->SetColor(-1, 255, 255, 255);
+      }
+    }
+    break;
+  case 504:
+    this->ElementalOrbit(1);
+    break;
+  case 497:
+    this->TexturedRain("유저인터페이스\\item\\레드슬림포션.bmp", 1);
+    this->TexturedLevelRing("effect\\bbbb.bmp", -16, 1);
+    break;
+  case 498:
+    this->TexturedRain("유저인터페이스\\item\\옐로우슬림포션.bmp", 2);
+    this->TexturedLevelRing("effect\\bbbb.bmp", -16, 2);
+    break;
+  case 499:
+    this->TexturedRain("유저인터페이스\\item\\화이트슬림포션.bmp", 3);
+    this->TexturedLevelRing("effect\\bbbb.bmp", -16, 0);
+    break;
+  case 503:
+    {
+      this->render.position = this->state.parent->render.position;
+      const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+      if (this->state.stateCnt == 0) {
+        g_soundMgr->PlayWave(
+          "effect\\T_캐스팅.wav", this->render.position.x - player->render.position.x, 0.0f, this->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
+        );
+      }
+      if (this->state.stateCnt == 145) {
+        g_soundMgr->PlayWave(
+          "effect\\T_영혼.wav", this->render.position.x - player->render.position.x, -50.0f, this->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
+        );
+      }
+    }
+    this->TexturedOrbit("effect\\whitelight.tga");
+    this->SoulLink(0);
+    break;
+  case 506:
+    this->TexturedStorm2("effect\\whitelight.tga", 0);
+    break;
+  case 1195:
+    if (this->state.stateCnt == 0) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+    }
+    if (this->state.parent->render.enabled != 0 && this->state.parent->render.unknown_0070 == 0) {
+      if (this->state.stateCnt <= 15) {
+        this->state.parent->render.angle += 12.0f;
+      } else if (this->state.stateCnt <= 30) {
+        this->state.parent->render.angle += 18.0f;
+      } else if (this->state.stateCnt <= 40) {
+        this->state.parent->render.angle += 24.0f;
+      } else {
+        this->state.parent->render.angle += 48.0f;
+      }
+      if (this->state.parent->render.angle > 360.0f) {
+        this->state.parent->render.angle -= 360.0f;
+      }
+    }
+    break;
+  case 501:
+    if (this->state.stateCnt == 0) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+    }
+    if (this->state.parent->render.unknown_0070 == 0) {
+      if (this->state.stateCnt <= 15) {
+        this->state.parent->render.angle += 12.0f;
+      } else if (this->state.stateCnt <= 30) {
+        this->state.parent->render.angle += 18.0f;
+      } else if (this->state.stateCnt <= 40) {
+        this->state.parent->render.angle += 24.0f;
+      } else {
+        this->state.parent->render.angle += 48.0f;
+      }
+      if (this->state.parent->render.angle > 360.0f) {
+        this->state.parent->render.angle -= 360.0f;
+      }
+    }
+    break;
+  case 502:
+    if (this->state.stateCnt == 0) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+    }
+    if (this->state.stateCnt >= 0 && this->state.stateCnt <= 140) {
+      if ((this->state.parent->render.flags & 8) == 0) {
+        this->state.parent->render.flags += 8;
+      }
+      if (this->state.stateCnt % 2 == 0) {
+        if ((this->state.parent->render.flags & 1) == 0) {
+          this->state.parent->render.flags += 1;
+        }
+        this->state.parent->SetColor(-1, 250, 250, 100);
+      } else {
+        this->state.parent->SetColor(-1, 255, 255, 255);
+      }
+    }
+    break;
+  case 496:
+    this->BlackMaximize("effect\\a01.bmp");
+    if (this->state.stateCnt >= 10 && this->state.stateCnt <= 30) {
+      if (this->state.stateCnt % 2 == 0) {
+        if ((this->state.parent->render.flags & 1) == 0) {
+          this->state.parent->render.flags += 1;
+        }
+        this->state.parent->SetColor(-1, 250, 250, 250);
+      } else {
+        this->state.parent->SetColor(-1, 255, 255, 255);
+      }
+    }
+    break;
+  case 495:
+    if (this->state.stateCnt != 1) {
+      if (this->state.stateCnt != 11) {
+        if (this->state.stateCnt != 21) {
+          if (this->state.stateCnt == 31) {
+            this->render.position = this->state.parent->render.position;
+            PlayEffectWave(*this, "effect\\복호격.wav");
+          }
+        } else {
+          this->render.position = this->state.parent->render.position;
+          PlayEffectWave(*this, "effect\\복호격.wav");
+        }
+      } else {
+        this->render.position = this->state.parent->render.position;
+        PlayEffectWave(*this, "effect\\복호격.wav");
+      }
+    } else {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\복호격.wav");
+    }
+    for (int index = 0; index < 4; ++index) {
+      this->TexturedSprayKind("effect\\shield.bmp", 5.0f, 0);
+      this->TexturedSprayKind("effect\\sword.bmp", 9.0f, 0);
+    }
+    break;
+  case 494:
+    this->TexturedShieldThrow("effect\\토마.bmp");
+    break;
+  case 520:
+    this->ShieldBoomerang3("effect\\shield_boomerang.bmp");
+    break;
+  case 493:
+    this->EnchantPoison2();
+    if (this->state.stateCnt < 81) {
+      if (this->state.stateCnt % 2 == 0) {
+        if ((this->state.parent->render.flags & 1) == 0) {
+          this->state.parent->render.flags += 1;
+        }
+        this->state.parent->SetColor(-1, 255, 0, 255);
+      } else {
+        this->state.parent->SetColor(-1, 255, 255, 255);
+      }
+    }
+    break;
+  case 500:
+    if (this->state.stateCnt < 31) {
+      if ((this->state.parent->render.flags & 8) == 0) {
+        this->state.parent->render.flags += 8;
+      }
+      if (this->state.stateCnt % 2 == 0) {
+        if ((this->state.parent->render.flags & 1) == 0) {
+          this->state.parent->render.flags += 1;
+        }
+        this->state.parent->SetColor(-1, 0, 0, 255);
+      } else {
+        this->state.parent->SetColor(-1, 255, 255, 255);
+      }
+    }
+    break;
+  case 557:
+    this->WaterfallSheets(0, 0, 0);
+    break;
+  case 558:
+    this->WaterfallSheets(1, 0, 0);
+    break;
+  case 559:
+    this->WaterfallSheets(0, 1, 0);
+    break;
+  case 560:
+    this->WaterfallSheets(1, 1, 0);
+    break;
+  case 561:
+    this->TexturedMagicRing(0);
+    break;
+  case 562:
+    this->TexturedMagicRing(1);
+    break;
+  case 563:
+    if (this->state.stateCnt < 100 && this->state.stateCnt % 5 == 0) {
+      g_modeMgr.GetGameMode()->SendMsg(122, 0, 0, 0, 0);
+    }
+    break;
+  case 554:
+    this->TexturedAura("effect\\freeze_a.bmp", 2);
+    break;
+  case 555:
+    if (this->state.stateCnt == 0) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\T_에너지방출.wav");
+    }
+    this->SMA(1);
+    break;
+  case 551:
+    this->SMA(0);
+    break;
+  case 552:
+    this->TexturedBlueRing("effect\\ring_blue.tga");
+    break;
+  case 556:
+    this->TexturedComet("effect\\thunder_ball_0001.bmp", 1);
+    break;
+  case 550:
+    if (this->state.stateCnt >= 31 && this->state.stateCnt <= 50) {
+      this->state.parent->render.flags |= 0x2000;
+      this->state.parent->render.unknown_00F4 = static_cast<short>(this->state.stateCnt);
+    }
+    break;
+  case 602:
+    if (this->state.stateCnt == 20) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\ef_hit6.wav");
+    }
+    if (this->state.stateCnt > 20) {
+      this->state.parent->render.flags |= 0x2000;
+      this->state.parent->render.unknown_00F4 = static_cast<short>(this->state.stateCnt);
+      if (this->state.stateCnt % 2 == 0) {
+        this->state.parent->SetColor(-1, 250, 50, 50);
+      } else {
+        this->state.parent->SetColor(-1, 255, 255, 255);
+      }
+    }
+    break;
+  case 548:
+    if (this->state.stateCnt <= 16) {
+      this->state.parent->render.flags |= 0x40000;
+      this->state.parent->render.unknown_00F6 = static_cast<unsigned char>(this->state.stateCnt * 3);
+    }
+    break;
+  case 549:
+    if (this->state.stateCnt <= 16) {
+      this->state.parent->render.flags |= 0x4000;
+      this->state.parent->render.unknown_00F6 = static_cast<unsigned char>(this->state.stateCnt * 3);
+    }
+    break;
+  case 544:
+  case 1398:
+    if ((this->state.parent->render.flags & 0x40000) == 0) {
+      this->state.parent->render.flags += 0x40000;
+      if (this->state.stateCnt <= 200) {
+        this->state.parent->render.unknown_00F6 = static_cast<unsigned char>(static_cast<float>(this->state.stateCnt) * 0.125f);
+      } else {
+        this->state.parent->render.unknown_00F6 = 25;
+      }
+    }
+    break;
+  case 545:
+    this->Vallentine(4);
+    break;
+  case 546:
+    this->ParticleTime("effect\\white02.bmp", 2);
+    break;
+  case 547:
+    if (this->state.stateCnt == 10) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\T_바람마법.wav");
+    }
+    this->TexturedSlashFan("effect\\270바람.tga");
+    break;
+  case 553:
+    if (this->state.stateCnt == 5 || this->state.stateCnt == 20 || this->state.stateCnt == 35 || this->state.stateCnt == 50 || this->state.stateCnt == 65) {
+      this->render.position = this->state.parent->render.position;
+      g_modeMgr.GetGameMode();
+      g_soundMgr->PlayWave(
+        "effect\\T_날라차기.wav", 0.0f, this->state.stateCnt <= 50 ? static_cast<float>(5 - this->state.stateCnt) : -50.0f, 0.0f, 250, 40, 1.0f, 0
+      );
+    }
+    this->TexturedSlashLevel("effect\\270바람.tga", 0);
+    this->TexturedSlashLevel("effect\\270바람.tga", 1);
+    break;
+  case 564:
+    this->TexturedSpellRings("effect\\ring_red.tga");
+    break;
+  case 565:
+    if (this->state.stateCnt == 0) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\h_moonlight_1.wav");
+    }
+    if (!this->ProcessEZ2STRC10830()) {
+      return false;
+    }
+    break;
+  case 566:
+    if (this->state.stateCnt == 0) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\h_moonlight_2.wav");
+    }
+    if (!this->ProcessEZ2STRC10830()) {
+      return false;
+    }
+    break;
+  case 567:
+    if (this->state.stateCnt == 0) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\h_moonlight_3.wav");
+    }
+    if (!this->ProcessEZ2STRC10830()) {
+      return false;
+    }
+    break;
+  case 568:
+    if (this->state.stateCnt == 0) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "levelup.wav");
+    }
+    if (!this->ProcessEZ2STRC10830()) {
+      return false;
+    }
+    break;
+  case 673:
+    this->ColoredFlash(2, 0, 0, 255);
+    break;
+  case 593:
+  case 594:
+  case 595:
+  case 596:
+  case 597:
+  case 598:
+    if (this->state.stateCnt == 0) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "_heal_effect.wav");
+    }
+    if (!this->ProcessEZ2STRC10830()) {
+      return false;
+    }
+    break;
+  case 570:
+    this->TexturedClassChange(0);
+    break;
+  case 571:
+    this->TexturedClassChange(1);
+    break;
+  case 576:
+    this->TexturedClassChange(2);
+    break;
+  case 577:
+    this->TexturedClassChange(3);
+    break;
+  case 578:
+    this->TexturedClassChange(4);
+    break;
+  case 579:
+    this->TexturedClassChange(5);
+    break;
+  case 580:
+    this->TexturedClassChange(6);
+    break;
+  case 581:
+    this->sub_C51740("effect\\cloud11.tga", 11);
+    break;
+  case 583:
+    this->TexturedClassChange(7);
+    break;
+  case 584:
+    if (this->state.stateCnt == 5) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\풀버스터.wav");
+    }
+    this->TexturedClassChange(8);
+    break;
+  case 585:
+    this->TexturedClassChange(9);
+    break;
+  case 586:
+    this->TexturedClassChange(10);
+    break;
+  case 587:
+    this->TexturedClassChange(11);
+    break;
+  case 588:
+    this->TexturedClassChange(12);
+    break;
+  case 589:
+    this->TexturedClassChange(13);
+    break;
+  case 612:
+    this->TexturedClassChange(14);
+    this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
+    break;
+  case 668:
+    if (this->state.stateCnt == 1) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\dragonfear.wav");
+      g_modeMgr.GetGameMode()->SendMsg(122, 0, 0, 0, 0);
+    }
+    this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
+    break;
+  case 491:
+  case 492:
+  case 507:
+  case 508:
+  case 646:
+  case 649:
+  case 670:
+  case 699:
+  case 704:
+  case 705:
+  case 706:
+  case 709:
+  case 721:
+  case 731:
+  case 987:
+  case 988:
+  case 1006:
+    this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
+    break;
+  case 669:
+    if (this->state.stateCnt == 1) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\wideb.wav");
+    }
+    this->ColoredFlash(1, 255, 0, 0);
+    this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
+    break;
+  case 1015:
+  case 1017:
+    if (this->state.stateCnt == 0) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\p_success.wav");
+    }
+    if (!this->ProcessEZ2STRC10830()) {
+      return false;
+    }
+    break;
+  case 1016:
+  case 1018:
+    if (this->state.stateCnt == 0) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\p_failed.wav");
+    }
+    if (!this->ProcessEZ2STRC10830()) {
+      return false;
+    }
+    break;
+  case 1026:
+    this->TexturedClassChange(84);
+    break;
+  case 1028:
+    this->TexturedClassChange(85);
+    break;
+  case 1032:
+    this->KyrieGuard("effect\\guardK.tga", 3);
+    break;
+  case 1037:
+    this->state.parent->SetColor(-1, 251, 200, 4);
+    break;
+  case 1038:
+    for (int index = 0; index < 50; ++index) {
+      this->WeddingBurst("effect\\white02.bmp", 1);
+    }
+    break;
+  case 1040:
+    if (!this->ProcessEZ2STR(0.0f, 40.0f, 0.0f)) {
+      return false;
+    }
+    break;
+  case 1041:
+    this->TexturedClassChange(86);
+    break;
+  case 1042:
+    if (this->state.stateCnt == 0) {
+      PlayEffectWave(*this, "effect\\all_full_throttle.wav");
+    }
+    if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+      return false;
+    }
+    break;
+  case 1043:
+    if (this->state.stateCnt == 0) {
+      PlayEffectWave(*this, "effect\\sr_flashcombo.wav");
+    }
+    if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+      return false;
+    }
+    break;
+  case 1044:
+    if (this->state.stateCnt == 0) {
+      PlayEffectWave(*this, "effect\\rk_luxanima.wav");
+    }
+    if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+      return false;
+    }
+    break;
+  case 1046:
+    if (this->state.stateCnt == 0) {
+      PlayEffectWave(*this, "effect\\so_elemental_shield.wav");
+    }
+    if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+      return false;
+    }
+    break;
+  case 1047:
+    if (this->state.stateCnt == 0) {
+      PlayEffectWave(*this, "effect\\ab_offertorium.wav");
+    }
+    if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+      return false;
+    }
+    break;
+  case 1057:
+    if (!this->ProcessEZ2STR(0.0f, -5.0f - static_cast<float>(reinterpret_cast<CGameActor*>(this->state.parent)->MountHeightOffset()), 0.0f)) {
+      return false;
+    }
+    break;
+  case 1048:
+    if (!this->ProcessEZ2STR(0.0f, 0.0f, 0.0f)) {
+      return false;
+    }
+    break;
+  case 1049:
+    if (this->state.stateCnt == 0) {
+      PlayEffectWave(*this, "effect\\gn_illusiondoping.wav");
+    }
+    if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+      return false;
+    }
+    break;
+  case 1050:
+    if (!this->ProcessEZ2STR(0.0f, -25.0f, 0.0f)) {
+      return false;
+    }
+    break;
+  case 1051:
+    this->render.position = this->state.parent->render.position;
+    if (this->state.stateCnt == 0) {
+      const vector3d offset = {0.0f, 0.0f, 0.0f};
+      for (int angle = 0; angle < 1440; angle += 360) {
+        this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 171, offset.x, offset.y, offset.z, WorldObjects())->state;
+        this->state.unknown_11C84->renderFlag = 5;
+        this->state.unknown_11C84->duration = this->state.duration;
+        this->state.unknown_11C84->slots[0].life = 1;
+        this->state.unknown_11C84->slots[0].height[0] = 0.0f;
+        this->state.unknown_11C84->slots[0].height[1] = 0.0f;
+        this->state.unknown_11C84->slots[0].height[2] = 0.0f;
+        this->state.unknown_11C84->slots[0].height[3] = 0.0f;
+        this->state.unknown_11C84->slots[0].height[4] = 0.0f;
+        this->state.unknown_11C84->slots[0].height[5] = 0.0f;
+        this->state.unknown_11C84->slots[0].height[6] = static_cast<float>(angle / 4);
+        this->state.unknown_11C84->slots[0].height[7] = -8.0f;
+        this->state.unknown_11C84->slots[0].height[8] = 0.0f;
+        this->state.unknown_11C84->slots[0].height[9] = 0.0f;
+        this->state.unknown_11C84->slots[0].height[10] = 0.0f;
+        this->state.unknown_11C84->slots[0].distance = 8.0f;
+        this->state.unknown_11C84->slots[0].flag1[0] = 1;
+        this->state.unknown_11C84->slots[0].alphaB = 0;
+        this->state.unknown_11C84->slots[0].process = 0;
+        this->state.unknown_11C84->totalTexture = 1;
+        this->state.unknown_11C84->textures = new CTexture*[this->state.unknown_11C84->totalTexture];
+        this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\lg_kings_grace.tga", 0, false, true, false);
+      }
+    }
+    break;
+  case 1045:
+    for (int index = 0; index < 30; ++index) {
+      this->SkyCloud(5);
+    }
+    break;
+  case 1052:
+    this->RedParticleSpray(1);
+    break;
+  case 1053:
+    this->TexturedClassChange(87);
+    break;
+  case 1054:
+    this->TexturedClassChange(88);
+    break;
+  case 1065:
+    if ((this->state.parent->render.flags & 1) == 0) {
+      this->state.parent->render.flags += 1;
+    }
+    this->state.parent->SetColor(-1, 255, 255, 255);
+    break;
+  case 1072:
+    if (this->state.stateCnt == 0) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\T_회피2.wav");
+    }
+    if ((this->state.parent->render.flags & 0x10000) == 0 && this->state.stateCnt > 10) {
+      this->state.parent->render.flags += 0x10000;
+      this->state.parent->render.unknown_00F4 = static_cast<short>(this->state.stateCnt - 10);
+    }
+    break;
+  case 1081:
+    {
+      float x = this->state.parent->render.position.x - this->state.deltaPos[0];
+      float y = this->state.parent->render.position.y - this->state.deltaPos[1];
+      float z = this->state.parent->render.position.z - this->state.deltaPos[2];
+      const float step = SquareRoot(x * x + y * y + z * z) * 0.5f;
+      const float inverse = 1.0f / SquareRoot(x * x + y * y + z * z);
+      x *= inverse;
+      y *= inverse;
+      z *= inverse;
+      this->state.parent->SetColor(-1, 200, 200, 0);
+      if (this->state.stateCnt % 5 == 0) {
+        CHalluPC* hallu = new CHalluPC(reinterpret_cast<CPc*>(this->state.parent));
+        hallu->render.position.x = this->state.deltaPos[0];
+        hallu->render.position.y = this->state.deltaPos[1];
+        hallu->render.position.z = this->state.deltaPos[2];
+        hallu->SendMsg(this, 0, 0, 200, 0, 200, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        WorldObjects().push_back(hallu);
+        this->state.deltaPos[0] += x * step;
+        this->state.deltaPos[1] += y * step;
+        this->state.deltaPos[2] += z * step;
+      }
+    }
+    break;
+  case 1082:
+    if (this->state.stateCnt == 20) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\기공포.wav");
+    }
+    if (this->state.stateCnt >= 0 && this->state.stateCnt <= 10) {
+      if ((this->state.parent->render.flags & 1) == 0) {
+        this->state.parent->render.flags += 1;
+      }
+      this->state.parent->SetColor(-1, 0, 255, 0);
+    }
+    this->SonicWave(2);
+    break;
+  case 1088:
+    this->TexturedPulseKind("effect\\ring_yellow.tga", 4);
+    break;
+  case 1115:
+    for (int index = 0; index < 40; ++index) {
+      this->SkyCloud(11);
+      this->SkyCloud(12);
+      this->SkyCloud(13);
+      this->SkyCloud(14);
+    }
+    break;
+  case 1122:
+    if (this->state.stateCnt >= EffectLifetime(1122) - 1) {
+      this->state.stateCnt = 0;
+    }
+  case 757:
+    this->EmpShockBurst("effect\\emp shock.tga", 0);
+    break;
+  case 1131:
+    if (EffectLifetime(1131) - 1 <= this->state.stateCnt) {
+      this->state.stateCnt = 0;
+    }
+    if ((this->state.parent->render.flags & 1) == 0) {
+      this->state.parent->render.flags += 1;
+    }
+    this->state.parent->SetColor(-1, 255, 255, 255);
+    break;
+  case 1132:
+    if (this->state.stateCnt == 0) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\mon_금강불괴.wav");
+    }
+    break;
+  case 1135:
+    this->ElementalOrbit(4);
+    break;
+  case 1145:
+    for (int index = 0; index < 65; ++index) {
+      this->SkyCloud(15);
+    }
+    break;
+  case 1148:
+    this->state.parent->SetColor(-1, 220, 150, 0);
+    break;
+  case 1149:
+    this->KyrieGuard("effect\\guardK.tga", 4);
+    break;
+  case 1150:
+    for (int index = 0; index < 30; ++index) {
+      this->WhiteLightTrail("effect\\whitelight.tga", 1);
+    }
+    for (int index = 0; index < 4; ++index) {
+      const int angle = index * 90;
+      this->TexturedScatterArc("effect\\peong1.tga", angle, 1);
+      this->TexturedScatterArc("effect\\peong2.tga", angle, 1);
+      this->TexturedScatterArc("effect\\peong3.tga", angle, 1);
+      this->TexturedScatterArc("effect\\peong2.tga", angle, 1);
+    }
+    break;
+  case 1185:
+    this->AlphaDownRipples("effect\\ring_red.tga", 1);
+    break;
+  case 1204:
+    this->SMA(99);
+    break;
+  case 1205:
+    this->BlueRingStack();
+    break;
+  case 1206:
+    if (this->state.stateCnt == 5 || this->state.stateCnt == 20 || this->state.stateCnt == 35 || this->state.stateCnt == 50 || this->state.stateCnt == 65) {
+      this->render.position = this->state.parent->render.position;
+      g_modeMgr.GetGameMode();
+      g_soundMgr->PlayWave(
+        "effect\\T_날라차기.wav", 0.0f, this->state.stateCnt <= 50 ? static_cast<float>(5 - this->state.stateCnt) : -50.0f, 0.0f, 250, 40, 1.0f, 0
+      );
+    }
+    this->TexturedSlashLevel("effect\\270바람.tga", 4);
+    this->TexturedSlashLevel("effect\\270바람.tga", 5);
+    break;
+  case 1207:
+    this->SonicSlashFan(1);
+    if (this->state.stateCnt >= 50 && this->state.stateCnt <= 80) {
+      if ((this->state.parent->render.flags & 8) == 0) {
+        this->state.parent->render.flags += 8;
+      }
+      this->state.parent->SetColor(-1, (125 - this->state.stateCnt) * 2, (125 - this->state.stateCnt) * 2, 250);
+    }
+    break;
+  case 1208:
+    this->SonicSlashFan(2);
+    if (this->state.stateCnt >= 50 && this->state.stateCnt <= 80) {
+      if ((this->state.parent->render.flags & 8) == 0) {
+        this->state.parent->render.flags += 8;
+      }
+      this->state.parent->SetColor(-1, (125 - this->state.stateCnt) * 2, (125 - this->state.stateCnt) * 2, 250);
+    }
+    break;
+  case 1209:
+    if (this->state.stateCnt < 61) {
+      if ((this->state.parent->render.flags & 8) != 0) {
+        this->state.parent->render.flags += 8;
+      }
+      if (this->state.stateCnt % 2 == 0) {
+        if ((this->state.parent->render.flags & 1) != 0) {
+          this->state.parent->render.flags += 1;
+        }
+        this->state.parent->SetColor(-1, 155, 155, 255);
+      } else {
+        this->state.parent->SetColor(-1, 50, 50, 50);
+      }
+    }
+    break;
+  case 1210:
+    this->TrackCloud(0);
+    break;
+  case 1224:
+    if (this->state.stateCnt == 5) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\mon_침투경.wav");
+    }
+    if ((this->state.parent->render.flags & 0x40) == 0 && this->state.stateCnt >= 14 && this->GetDuration() > this->state.stateCnt) {
+      this->state.parent->render.flags += 0x40;
+      this->state.parent->render.unknown_00F4 = static_cast<short>(this->state.stateCnt - 14);
+    }
+    break;
+  case 1240:
+    this->DigitalSpace(1240);
+    break;
+  case 1286:
+    if (this->state.stateCnt % 30 == 0) {
+      const vector3d& position = this->state.parent->render.position;
+      g_effectMgr->Spawn(0, g_serviceOptions.Get(229) ? 1533 : 1285, position.x, position.y, position.z, 0, -1, 0, 0);
+    }
+    this->SevereRainstormCylinder(45, "", 3, 3.0f);
+    this->SevereRainstormCylinder(45, "", 3, 3.0f);
+    this->SevereRainstormCylinder(45, "", 3, 8.0f);
+    this->SevereRainstormCylinder(45, "", 3, 8.0f);
+    break;
+  case 1365:
+    if (this->state.stateCnt == 5) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\T_회오리차기.wav");
+    }
+    if (this->state.stateCnt <= 47) {
+      this->state.parent->render.angle += 30.0f;
+      if (this->state.parent->render.angle > 360.0f) {
+        this->state.parent->render.angle -= 360.0f;
+      }
+    }
+    break;
+  case 1399:
+    this->StoneSpike();
+    break;
+  case 1409:
+    for (int index = 0; index < 4; ++index) {
+      this->LineStreak(0);
+      this->LineStreak(1);
+    }
+    break;
+  case 1418:
+    this->render.position = this->state.parent->render.position;
+    if (this->state.stateCnt == 0) {
+      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+      this->TexturedQuadRingSized(45, "effect\\new_comet\\new_comet_cast_ring\\ring_rainbow.tga", 20);
+    }
+    break;
+  case 1420:
+    if ((this->state.parent->render.flags & 0x4000) == 0) {
+      this->state.parent->render.flags += 0x4000;
+      if (this->state.stateCnt <= 150) {
+        this->state.parent->render.unknown_00F6 = static_cast<unsigned char>(this->state.stateCnt / 8);
+      } else {
+        this->state.parent->render.unknown_00F6 = 15;
+      }
+    }
+    break;
+  case 1449:
+    this->render.position = this->state.parent->render.position;
+    if (this->state.stateCnt == 0) {
+      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+      this->QuadRingStackSized("effect\\new_jackfrost\\ring_ice.tga", 2);
+    }
+    break;
+  case 1448:
+    {
+      const vector3d offset = {0.0f, 0.0f, 0.0f};
+      this->render.position = this->state.parent->render.position;
+      if (this->state.stateCnt % 40 == 0) {
+        for (int index = 1; index < 4; ++index) {
+          const int distance = std::max(rand() % 17, 5);
+          matrix rotation;
+          rotation.MakeYRotation(static_cast<float>(index) * 5.0f * 20.0f / 180.0f * 3.141592f);
+          const float* m = rotation.values;
+          const float x = m[0] * static_cast<float>(distance) + m[3] * offset.x + m[6] * offset.x + m[9] + this->render.position.x;
+          const float y = m[1] * static_cast<float>(distance) + m[4] * offset.x + m[7] * offset.x + m[10] + this->render.position.y;
+          const float z = m[2] * static_cast<float>(distance) + m[5] * offset.x + m[8] * offset.x + m[11] + this->render.position.z;
+          g_effectMgr->Spawn(0, g_serviceOptions.Get(229) ? 1544 : 1447, x, y, z, 0, -1, 0, 0);
+        }
+      }
+      if (this->state.stateCnt == 0) {
+        this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 15, offset.x, offset.y, offset.z, WorldObjects())->state;
+        this->state.unknown_11C84->duration = this->state.duration;
+        this->state.unknown_11C84->pattern |= 0x800;
+        this->state.unknown_11C84->longitude = 0.0f;
+        this->state.unknown_11C84->longSpeed = 2.5f;
+        this->state.unknown_11C84->roll = 90.0f;
+        this->state.unknown_11C84->changeWidthAccel = 0.0f;
+        this->state.unknown_11C84->changeHeightAccel = 0.0f;
+        this->state.unknown_11C84->widthSize = 40.0f;
+        this->state.unknown_11C84->heightSize = 40.0f;
+        this->state.unknown_11C84->widthSpeed = -1.0f;
+        this->state.unknown_11C84->heightSpeed = -1.0f;
+        this->state.unknown_11C84->changePoint = 20;
+        this->state.unknown_11C84->changeWidthSpeed = 0.0f;
+        this->state.unknown_11C84->changeHeightSpeed = 0.0f;
+        this->state.unknown_11C84->textures = new CTexture*[this->state.unknown_11C84->totalTexture];
+        this->state.unknown_11C84->red = 254;
+        this->state.unknown_11C84->blue = 254;
+        this->state.unknown_11C84->green = 254;
+        this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\new_jackfrost\\new_jackfrost_magicrune\\jack_magic_rune.tga", 0, false, true, false);
+      }
+    }
+    break;
+  case 1525:
+    this->TexturedAura("effect\\Buff_Prison.bmp", 31);
+    break;
+  case 1531:
+    this->TexturedClassChange(91);
+    break;
+  case 1545:
+    if (this->state.stateCnt >= 0) {
+      this->state.parent->render.flags |= 0x1000;
+      this->state.parent->render.unknown_00F4 = static_cast<short>(this->state.stateCnt);
+    }
+    if (this->state.stateCnt <= 30) {
+      if ((this->state.parent->render.flags & 1) == 0) {
+        this->state.parent->render.flags += 1;
+      }
+      if ((this->state.parent->render.flags & 8) == 0) {
+        this->state.parent->render.flags += 8;
+      }
+      this->state.parent->SetColor(-1, 0, 0, 255);
+    }
+    break;
+  case 1556:
+    this->render.position = this->state.parent->render.position;
+    if (this->state.stateCnt == 0) {
+      {
+        const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+        g_soundMgr->PlayWave(
+          "effect\\EF_BeginSpell.wav", this->render.position.x - player->render.position.x, -100.0f, this->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
+        );
+      }
+      this->TexturedQuadRingSized(45, "effect\\ring_blue.tga", 20);
+      this->TexturedQuadRingSized(25, "effect\\ring_blue.tga", 21);
+    }
+    break;
+  case 1923:
+    this->render.position = this->state.parent->render.position;
+    if (this->state.stateCnt == 0) {
+      {
+        const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+        g_soundMgr->PlayWave(
+          "effect\\EF_BeginSpell.wav", this->render.position.x - player->render.position.x, -100.0f, this->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
+        );
+      }
+      this->TexturedQuadRingSized(45, "effect\\ring_red.tga", 44);
+      this->TexturedQuadRingSized(25, "effect\\ring_red.tga", 44);
+    }
+    break;
+  case 1932:
+    this->render.position = this->state.parent->render.position;
+    if (this->state.stateCnt == 0) {
+      {
+        const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+        g_soundMgr->PlayWave(
+          "effect\\EF_BeginSpell.wav", this->render.position.x - player->render.position.x, -100.0f, this->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
+        );
+      }
+      this->TexturedQuadRingSized(90, "effect\\new_pramen\\ring_blue.tga", 5);
+    }
+    break;
+  case 1560:
+    this->render.position = this->state.parent->render.position;
+    if (this->state.stateCnt == 0) {
+      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+      this->TexturedQuadRingSized(45, "effect\\ring_white.tga", 22);
+      this->TexturedQuadRingSized(25, "effect\\ring_white.tga", 22);
+    }
+    break;
+  case 1565:
+    this->render.position = this->state.parent->render.position;
+    if (this->state.stateCnt == 0) {
+      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+      this->TexturedQuadRingSized(45, "effect\\ring_yellow.tga", 23);
+      this->TexturedQuadRingSized(25, "effect\\ring_yellow.tga", 23);
+    }
+    break;
+  case 1568:
+    for (int index = 0; index < 2; ++index) {
+      if (g_serviceOptions.Get(229)) {
+        this->LineStreakTextured(10, "effect\\mineffect\\new_crossimpact\\new_crossimpact_line\\line_pitch.tga");
+        this->LineStreakTextured(11, "effect\\mineffect\\new_crossimpact\\new_crossimpact_line\\line_pitch.tga");
+        this->LineStreakTextured(10, "effect\\mineffect\\new_crossimpact\\new_crossimpact_line\\line_red.tga");
+        this->LineStreakTextured(11, "effect\\mineffect\\new_crossimpact\\new_crossimpact_line\\line_red.tga");
+      } else {
+        this->LineStreakTextured(10, "effect\\new_crossimpact\\new_crossimpact_line\\line_pitch.tga");
+        this->LineStreakTextured(11, "effect\\new_crossimpact\\new_crossimpact_line\\line_pitch.tga");
+        this->LineStreakTextured(10, "effect\\new_crossimpact\\new_crossimpact_line\\line_red.tga");
+        this->LineStreakTextured(11, "effect\\new_crossimpact\\new_crossimpact_line\\line_red.tga");
+      }
+    }
+    break;
+  case 2416:
+    {
+      std::string path("effect\\ABYSS_CHASER\\ABC_CHASING_BREAK\\chasing_line\\");
+      for (int index = 0; index < 2; ++index) {
+        if (g_serviceOptions.Get(229)) {
+          this->LineStreakTextured(20, (path + "min_line_pitch2.tga").c_str());
+          this->LineStreakTextured(21, (path + "min_line_pitch2.tga").c_str());
+          this->LineStreakTextured(20, (path + "min_line_pur.tga").c_str());
+          this->LineStreakTextured(21, (path + "min_line_pur.tga").c_str());
+        } else {
+          this->LineStreakTextured(20, (path + "line_pitch2.tga").c_str());
+          this->LineStreakTextured(21, (path + "line_pitch2.tga").c_str());
+          this->LineStreakTextured(20, (path + "line_pur.tga").c_str());
+          this->LineStreakTextured(21, (path + "line_pur.tga").c_str());
+        }
+      }
+    }
+    break;
+  case 2417:
+    for (int index = 0; index < 2; ++index) {
+      if (g_serviceOptions.Get(229)) {
+        this->LineStreakTextured(30, "effect\\mineffect\\new_crossimpact\\new_crossimpact_line\\line_pitch.tga");
+        this->LineStreakTextured(31, "effect\\mineffect\\new_crossimpact\\new_crossimpact_line\\line_pitch.tga");
+        this->LineStreakTextured(30, "effect\\mineffect\\new_crossimpact\\new_crossimpact_line\\line_red.tga");
+        this->LineStreakTextured(31, "effect\\mineffect\\new_crossimpact\\new_crossimpact_line\\line_red.tga");
+      } else {
+        this->LineStreakTextured(30, "effect\\new_crossimpact\\new_crossimpact_line\\line_pitch.tga");
+        this->LineStreakTextured(31, "effect\\new_crossimpact\\new_crossimpact_line\\line_pitch.tga");
+        this->LineStreakTextured(30, "effect\\new_crossimpact\\new_crossimpact_line\\line_red.tga");
+        this->LineStreakTextured(31, "effect\\new_crossimpact\\new_crossimpact_line\\line_red.tga");
+      }
+    }
+    break;
+  case 1575:
+    for (int index = 0; index < 4; ++index) {
+      if (g_serviceOptions.Get(229)) {
+        this->LineStreakTextured(10, "effect\\mineffect\\new_gateofhell\\line_hell.tga");
+        this->LineStreakTextured(11, "effect\\mineffect\\new_gateofhell\\line_hell.tga");
+      } else {
+        this->LineStreakTextured(10, "effect\\new_gateofhell\\line_hell.tga");
+        this->LineStreakTextured(11, "effect\\new_gateofhell\\line_hell.tga");
+      }
+    }
+    break;
+  case 1584:
+    if (g_serviceOptions.Get(229)) {
+      this->TexturedBeam(2, "effect\\mineffect\\new_metalicsound\\new_metalicsound_line\\met_damege_line_1.tga");
+      this->TexturedForkBolt("effect\\mineffect\\new_metalicsound\\new_metalicsound_icon\\met_particle_1.tga", 2);
+      this->TexturedForkBolt("effect\\mineffect\\new_metalicsound\\new_metalicsound_icon\\met_particle_2.tga", 2);
+      this->TexturedForkBolt("effect\\mineffect\\new_metalicsound\\new_metalicsound_icon\\met_particle_3.tga", 2);
+    } else {
+      this->TexturedBeam(2, "effect\\new_metalicsound\\new_metalicsound_line\\met_damege_line_1.tga");
+      this->TexturedForkBolt("effect\\new_metalicsound\\new_metalicsound_icon\\met_particle_1.tga", 2);
+      this->TexturedForkBolt("effect\\new_metalicsound\\new_metalicsound_icon\\met_particle_2.tga", 2);
+      this->TexturedForkBolt("effect\\new_metalicsound\\new_metalicsound_icon\\met_particle_3.tga", 2);
+    }
+    break;
+  case 1569:
+    if (g_serviceOptions.Get(229)) {
+      this->TexturedDrop("effect\\mineffect\\new_reverberation\\melody_a.bmp", 2);
+    } else {
+      this->TexturedDrop("effect\\new_reverberation\\melody_a.bmp", 2);
+    }
+    this->WhiteRingRippleSized(28);
+    break;
+  case 1594:
+    if (g_serviceOptions.Get(229)) {
+      this->TexturedSpinShards("effect\\mineffect\\new_reverberation\\rev_note_01.tga", 3);
+      this->TexturedSpinShards("effect\\mineffect\\new_reverberation\\rev_note_02.tga", 3);
+    } else {
+      this->TexturedSpinShards("effect\\new_reverberation\\rev_note_01.tga", 3);
+      this->TexturedSpinShards("effect\\new_reverberation\\rev_note_02.tga", 3);
+    }
+    break;
+  case 1600:
+    this->KyrieGuard("effect\\guardK.tga", 5);
+    break;
+  case 1601:
+    this->TexturedAura("effect\\마법진1-3.bmp", 32);
+    break;
+  case 1602:
+  case 1603:
+  case 1604:
+  case 1605:
+  case 1606:
+    if (this->state.stateCnt == 0) {
+      CHalluPlant* plant = new CHalluPlant();
+      plant->render.position = this->render.position;
+      if (this->state.type == 1602) {
+        plant->SetActionName(ResourceMgr::Instance(), "sprite\\몬스터\\green_plant.act");
+        plant->SetActorJob(1080);
+      } else if (this->state.type == 1603) {
+        plant->SetActionName(ResourceMgr::Instance(), "sprite\\몬스터\\blue_plant.act");
+        plant->SetActorJob(1079);
+      } else if (this->state.type == 1604) {
+        plant->SetActionName(ResourceMgr::Instance(), "sprite\\몬스터\\yellow_plant.act");
+        plant->SetActorJob(1081);
+      } else if (this->state.type == 1605) {
+        plant->SetActionName(ResourceMgr::Instance(), "sprite\\몬스터\\white_plant.act");
+        plant->SetActorJob(1082);
+      } else if (this->state.type == 1606) {
+        plant->SetActionName(ResourceMgr::Instance(), "sprite\\몬스터\\red_plant.act");
+        plant->SetActorJob(1078);
+      }
+      plant->Slot18(plant->GetEffectiveJob(-1), plant->unknown_0260, 0);
+      WorldObjects().push_back(plant);
+    }
+    break;
+  case 919:
+  case 1610:
+    this->TexturedClassChange(63);
+    break;
+  case 1655:
+    this->WhiteRingRippleSized(29);
+    break;
+  case 1664:
+    this->render.position = this->state.parent->render.position;
+    if (this->state.stateCnt == 0) {
+      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+      this->QuadRingStackSized("effect\\ring_yellow.tga", 33);
+    }
+    break;
+  case 1677:
+    this->render.position = this->state.parent->render.position;
+    if (this->state.stateCnt == 0) {
+      {
+        const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+        g_soundMgr->PlayWave(
+          "effect\\EF_BeginSpell.wav", this->render.position.x - player->render.position.x, -100.0f, this->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
+        );
+      }
+      this->TexturedQuadRingSized(45, "effect\\ring_white.tga", 31);
+      this->TexturedQuadRingSized(25, "effect\\ring_white.tga", 31);
+    }
+    break;
+  case 1678:
+    this->TexturedFanSweep("effect\\new_sonicwave\\new_sonicwave\\son_wave_01.tga", 1);
+    this->TexturedFanSweep("effect\\new_sonicwave\\new_sonicwave\\son_wave_00.tga", 0);
+    break;
+  case 1709:
+    this->render.position = this->state.parent->render.position;
+    if (this->state.stateCnt == 0) {
+      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+      if (g_serviceOptions.Get(229)) {
+        this->QuadRingStackSized("effect\\mineffect\\new_earthdrive\\ring_brown.tga", 33);
+      } else {
+        this->QuadRingStackSized("effect\\new_earthdrive\\ring_brown.tga", 33);
+      }
+    }
+    break;
+  case 1872:
+    this->render.position = this->state.parent->render.position;
+    if (this->state.stateCnt == 0) {
+      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+      this->TexturedQuadRingSized(45, "effect\\ring_white.tga", 42);
+      this->TexturedQuadRingSized(25, "effect\\ring_white.tga", 42);
+    }
+    break;
+  case 1876:
+    this->render.position = this->state.parent->render.position;
+    if (this->state.stateCnt == 0) {
+      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+      this->TexturedQuadRingSized(45, "effect\\ring_white.tga", 43);
+      this->TexturedQuadRingSized(25, "effect\\ring_white.tga", 43);
+    }
+    break;
+  case 1910:
+    if (this->state.parent != nullptr) {
+      this->render.position = this->state.parent->render.position;
+      if (this->state.stateCnt == 0) {
+        PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+        this->TexturedQuadRingSized(45, "effect\\new_abr_infinity\\ring_infinty.tga", 0);
+        this->TexturedQuadRingSized(25, "effect\\new_abr_infinity\\ring_infinty.tga", 0);
+      }
+    }
+    break;
+  case 1938:
+    this->render.position = this->state.parent->render.position;
+    if (this->state.stateCnt == 0) {
+      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+      this->TexturedQuadRingSized(45, "effect\\new_battle_w\\ABR_BATTLE_WARIOR.tga", 0);
+      this->TexturedQuadRingSized(25, "effect\\new_battle_w\\ABR_BATTLE_WARIOR.tga", 0);
+    }
+    break;
+  case 1918:
+    this->render.position = this->state.parent->render.position;
+    if (this->state.stateCnt == 0) {
+      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+      this->TexturedQuadRingSized(45, "effect\\new_d_cannon\\ABR_DUAL_CANNON.tga", 0);
+      this->TexturedQuadRingSized(25, "effect\\new_d_cannon\\ABR_DUAL_CANNON.tga", 0);
+    }
+    break;
+  case 1959:
+    this->render.position = this->state.parent->render.position;
+    if (this->state.stateCnt == 0) {
+      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+      this->TexturedQuadRingSized(45, "effect\\pneumaticusprocella\\pneumaticusprocella_cast\\ring_yellow.tga", 0);
+      this->TexturedQuadRingSized(25, "effect\\pneumaticusprocella\\pneumaticusprocella_cast\\ring_yellow.tga", 0);
+    }
+    break;
+  case 1902:
+    this->render.position = this->state.parent->render.position;
+    if (this->state.stateCnt == 0) {
+      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+      this->TexturedQuadRingSized(45, "effect\\new_abr_mother\\abr_mother.tga", 0);
+      this->TexturedQuadRingSized(25, "effect\\new_abr_mother\\abr_mother.tga", 0);
+    }
+    break;
+  case 1963:
+    this->render.position = this->state.parent->render.position;
+    if (this->state.stateCnt == 0) {
+      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+      this->TexturedQuadRingSized(45, "effect\\ring_white.tga", 45);
+      this->TexturedQuadRingSized(25, "effect\\ring_white.tga", 45);
+    }
+    break;
+  case 1986:
+    this->render.position = this->state.parent->render.position;
+    if (this->state.stateCnt == 0) {
+      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+      this->TexturedQuadRingSized(45, "effect\\ring_white.tga", 46);
+      this->TexturedQuadRingSized(25, "effect\\ring_white.tga", 46);
+    }
+    break;
+  case 1998:
+    this->render.position = this->state.parent->render.position;
+    if (this->state.stateCnt == 0) {
+      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+      this->TexturedQuadRingSized(45, "effect\\ring_white.tga", 47);
+      this->TexturedQuadRingSized(25, "effect\\ring_white.tga", 47);
+    }
+    break;
+  case 2240:
+    this->render.position = this->state.parent->render.position;
+    if (this->state.stateCnt == 0) {
+      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+      this->TexturedQuadRingSized(45, "effect\\ring_white.tga", 48);
+      this->TexturedQuadRingSized(25, "effect\\ring_white.tga", 48);
+    }
+    break;
+  case 2249:
+    this->render.position = this->state.parent->render.position;
+    if (this->state.stateCnt == 0) {
+      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+      this->TexturedQuadRingSized(45, "effect\\ring_white.tga", 49);
+      this->TexturedQuadRingSized(25, "effect\\ring_white.tga", 49);
+    }
+    break;
+  case 2255:
+    this->render.position = this->state.parent->render.position;
+    if (this->state.stateCnt == 0) {
+      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+      this->TexturedQuadRingSized(45, "effect\\ring_white.tga", 50);
+      this->TexturedQuadRingSized(25, "effect\\ring_white.tga", 50);
+    }
+    break;
+  case 2277:
+    this->state.parent->SetColor(-1, 105, 105, 105);
+    break;
+  case 2278:
+    this->state.parent->SetColor(-1, 251, 200, 4);
+    break;
+  case 2288:
+    return this->AgilityChange(1, "effect\\status_effect\\C_rate_Up.bmp");
+  case 2289:
+    return this->AgilityChange(0, "effect\\status_effect\\C_rate_Down.bmp");
+  case 2290:
+    return this->AgilityChange(1, "effect\\status_effect\\H_plus_Up.bmp");
+  case 2291:
+    return this->AgilityChange(0, "effect\\status_effect\\H_plus_Down.bmp");
+  case 2292:
+    return this->AgilityChange(1, "effect\\status_effect\\Mres_Up.bmp");
+  case 2293:
+    return this->AgilityChange(0, "effect\\status_effect\\Mres_Down.bmp");
+  case 2294:
+    return this->AgilityChange(1, "effect\\status_effect\\P_atk_Up.bmp");
+  case 2295:
+    return this->AgilityChange(0, "effect\\status_effect\\P_atk_Down.bmp");
+  case 2296:
+    return this->AgilityChange(1, "effect\\status_effect\\Res_Up.bmp");
+  case 2297:
+    return this->AgilityChange(0, "effect\\status_effect\\Res_Down.bmp");
+  case 2298:
+    return this->AgilityChange(1, "effect\\status_effect\\S_matk_Up.bmp");
+  case 2299:
+    return this->AgilityChange(0, "effect\\status_effect\\S_matk_Down.bmp");
+  case 2300:
+    return this->AgilityChange(1, "effect\\status_effect\\P_atk_S_matk_Up.bmp");
+  case 2338:
+    this->render.position = this->state.parent->render.position;
+    if (this->state.stateCnt == 0) {
+      this->TexturedQuadSpiral("effect\\the_one_fighter_rises\\the_one_fighter_rises\\the_ring_00.tga");
+    }
+    break;
+  case 2346:
+    this->TexturedClassChange(94);
+    break;
+  case 2347:
+    this->TexturedClassChange(95);
+    break;
+  case 2356:
+    this->TexturedClassChange(96);
+    break;
+  case 2357:
+    this->TexturedClassChange(97);
+    break;
+  case 2358:
+    this->TexturedClassChange(98);
+    break;
+  case 2359:
+    this->TexturedClassChange(99);
+    break;
+  case 2360:
+    this->TexturedClassChange(100);
+    break;
+  case 2361:
+    this->TexturedClassChange(101);
+    break;
+  case 2362:
+    this->TexturedClassChange(102);
+    break;
+  case 2363:
+    this->TexturedClassChange(103);
+    break;
+  case 2364:
+    this->TexturedClassChange(104);
+    break;
+  case 2365:
+    this->TexturedClassChange(105);
+    break;
+  case 2367:
+    this->render.position = this->state.parent->render.position;
+    if (this->state.stateCnt == 0) {
+      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+      this->TexturedQuadRingSized(45, "effect\\ring_yellow.tga", 0);
+      this->TexturedQuadRingSized(25, "effect\\ring_yellow.tga", 0);
+    }
+    break;
+  case 2368:
+    this->BeginSpellSwirl(45, "", 11);
+    break;
+  case 2369:
+    if (this->state.stateCnt == 0) {
+      g_soundMgr->PlayWave("effect\\EF_BeginSpell.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    }
+    this->TexturedQuadRing(25, "effect\\ring_white.tga", 0);
+    this->TexturedQuadRing(45, "effect\\ring_white.tga", 0);
+    break;
+  case 2373:
+    if (this->state.stateCnt >= 0) {
+      this->state.parent->render.flags |= 0x1000;
+      this->state.parent->render.unknown_00F4 = static_cast<short>(this->state.stateCnt);
+    }
+    this->TexturedCrossKind("effect\\ring_black.tga", 4);
+    if (this->state.stateCnt <= 30) {
+      if ((this->state.parent->render.flags & 1) == 0) {
+        this->state.parent->render.flags += 1;
+      }
+      if ((this->state.parent->render.flags & 8) == 0) {
+        this->state.parent->render.flags += 8;
+      }
+      this->state.parent->SetColor(-1, 255, 0, 0);
+    }
+    break;
+  case 2401:
+    if (this->state.stateCnt >= this->state.duration - 1) {
+      this->state.stateCnt = 0;
+    }
+    this->TexturedFourRing("effect\\alpha_down.tga", 0);
+    this->TexturedFourRing("effect\\alpha_down.tga", 1);
+    this->SendMsg(this, 127, 0, 255, 115, 0, 0, 0);
+    break;
+  case 2402:
+    this->Map_MagicZone("effect\\glow04_bk.bmp", 5);
+    for (int index = 2; index < 21; index += 2) {
+      this->TexturedOrbitDust("effect\\mpa3.tga", index, 2);
+    }
+    this->SendMsg(this, 127, 0, 255, 115, 0, 0, 0);
+    break;
+  case 2425:
+    if (this->state.stateCnt == 0) {
+      this->render.position = this->state.parent->render.position;
+    }
+    for (int index = 0; index < 12; ++index) {
+      this->TexturedQuadSpin("effect\\WINDHAWK\\WH_WILD_WALK\\alpha_center_green.tga", index, 3);
+    }
+    break;
+  case 2426:
+    if (this->state.stateCnt == 5) {
+      this->render.position = this->state.parent->render.position;
+      this->state.parent->render.unknown_0070 = 27;
+      this->state.parent->SetFrameSequence(96, 5, 5, 96, 5, 1, 25, 0);
+    } else if (this->state.stateCnt == 35) {
+      if (this->state.parent->render.unknown_0070 == 27) {
+        this->state.parent->render.unknown_0070 = 2;
+      }
+    }
+    break;
+  case 2427:
+    if (this->state.stateCnt == 0) {
+      this->render.position = this->state.parent->render.position;
+    }
+    this->HealRingSparkle("effect\\ring_blue.tga", 2);
+    break;
+  case 2439:
+    {
+      const char* line = g_serviceOptions.Get(229) ? "effect\\DRUID\\DR_CRUEL_BITE\\min_cruel_bite_line\\line_red.tga" : "effect\\DRUID\\DR_CRUEL_BITE\\cruel_bite_line\\line_red.tga";
+      const char* black = g_serviceOptions.Get(229) ? "effect\\DRUID\\DR_CRUEL_BITE\\min_cruel_bite_line\\line_black.tga" : "effect\\DRUID\\DR_CRUEL_BITE\\cruel_bite_line\\line_black.tga";
+      for (int index = 0; index < 2; ++index) {
+        this->TexturedSwirl(1, black);
+        this->TexturedSwirl(0, black);
+        this->TexturedSwirl(1, line);
+        this->TexturedSwirl(0, line);
+      }
+    }
+    break;
+  case 2442:
+    {
+      const char* line = g_serviceOptions.Get(229) ? "effect\\DRUID\\AT_QUILL_SPEAR\\min_quill_spear_line\\line_color.tga" : "effect\\DRUID\\AT_QUILL_SPEAR\\quill_spear_line\\line_color.tga";
+      const char* black = g_serviceOptions.Get(229) ? "effect\\DRUID\\AT_QUILL_SPEAR\\min_quill_spear_line\\line_black.tga" : "effect\\DRUID\\AT_QUILL_SPEAR\\quill_spear_line\\line_black.tga";
+      for (int index = 0; index < 2; ++index) {
+        this->TexturedSwirl(1, black);
+        this->TexturedSwirl(0, black);
+        this->TexturedSwirl(1, line);
+        this->TexturedSwirl(0, line);
+      }
+    }
+    break;
+  case 2436:
+    if (this->state.stateCnt != 1) {
+      if (this->state.stateCnt != 11) {
+        if (this->state.stateCnt != 21) {
+          if (this->state.stateCnt == 31) {
+            this->render.position = this->state.parent->render.position;
+            PlayEffectWave(*this, "effect\\복호격.wav");
+          }
+        } else {
+          this->render.position = this->state.parent->render.position;
+          PlayEffectWave(*this, "effect\\복호격.wav");
+        }
+      } else {
+        this->render.position = this->state.parent->render.position;
+        PlayEffectWave(*this, "effect\\복호격.wav");
+      }
+    } else {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\복호격.wav");
+    }
+    for (int index = 0; index < 4; ++index) {
+      this->TexturedSprayKind("effect\\shield.bmp", 5.0f, 8);
+      this->TexturedSprayKind("effect\\sword.bmp", 9.0f, 8);
+    }
+    break;
+  case 2437:
+    if (this->state.stateCnt != 1) {
+      if (this->state.stateCnt != 11) {
+        if (this->state.stateCnt != 21) {
+          if (this->state.stateCnt == 31) {
+            this->render.position = this->state.parent->render.position;
+            PlayEffectWave(*this, "effect\\복호격.wav");
+          }
+        } else {
+          this->render.position = this->state.parent->render.position;
+          PlayEffectWave(*this, "effect\\복호격.wav");
+        }
+      } else {
+        this->render.position = this->state.parent->render.position;
+        PlayEffectWave(*this, "effect\\복호격.wav");
+      }
+    } else {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWave(*this, "effect\\복호격.wav");
+    }
+    for (int index = 0; index < 4; ++index) {
+      this->TexturedSprayKind("effect\\shield.bmp", 5.0f, 9);
+      this->TexturedSprayKind("effect\\sword.bmp", 9.0f, 9);
+    }
+    break;
+  }
+
+  return true;
+}
 
 // INLINED
 static void PlayEffectWaveAt(const CRagEffect& effect, const char* name, float height) {
