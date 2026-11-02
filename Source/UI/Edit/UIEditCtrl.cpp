@@ -827,6 +827,7 @@ void UIEditCtrlWheel::Slot35(int value) {
 }
 
 // OFFSET: 0x00869E30
+// FUNCTION: fn_10975
 void UIChatEditCtrl::PushHistory() {
   if (this->Length() == 0) {
     return;
