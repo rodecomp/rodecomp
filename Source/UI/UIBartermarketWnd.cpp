@@ -1979,3 +1979,12 @@ void UIExpandedBarterItemPurchaseWnd::Paint() {
   }
 }
 
+// OFFSET: 0x00840100
+// FUNCTION: fn_10538
+UIBarterItemPurchaseWnd::UIBarterItemPurchaseWnd() : UIItemPurchaseWnd() {
+}
+
+// OFFSET: 0x00840160
+// FUNCTION: fn_10539
+UIBartermarketWnd::UIBartermarketWnd() : UIItemShopWnd() {
+}

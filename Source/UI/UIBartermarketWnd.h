@@ -72,6 +72,7 @@ public:
 
 class UIBarterItemPurchaseWnd : public UIItemPurchaseWnd {
 public:
+  UIBarterItemPurchaseWnd();
   void Paint() override;
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot15(int width, int height) override;
@@ -87,6 +88,7 @@ public:
 
 class UIBartermarketWnd : public UIItemShopWnd {
 public:
+  UIBartermarketWnd();
   void Paint() override;
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot15(int width, int height) override;
