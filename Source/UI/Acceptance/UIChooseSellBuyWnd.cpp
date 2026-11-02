@@ -21,6 +21,7 @@
 #include "UI/Rodex/UIRodexComposeWnd.h"
 #include "Contents/Items/ItemNaming.h"
 #include "UI/Window/WindowRegistration.h"
+#include "Contents/GuildInfo.h"
 #include "Contents/TipBoxTitles.h"
 #include "Contents/TipOfTheDay.h"
 #include "Contents/SkinMgr.h"
@@ -1558,6 +1559,109 @@ void UInCash_CallWnd::Paint() {
 void UIItemIdentifyWnd::Slot26(int x, int y) {
   this->Slot25(x, y);
   this->SendMsg(nullptr, 6, 184, 0, 0, 0);
+}
+
+// OFFSET: 0x008F0750
+// FUNCTION: fn_12253
+void UIStatusWnd::Paint() {
+  this->DrawTitleBar(this->m_context->fonts, this->m_context->locale, true, LookupMessage(105), 0);
+  if (this->geometry.height == this->m_titleHeight || this->geometry.unknown_0030 != 0) {
+    return;
+  }
+
+  const char* background = this->m_extended == 1 ? "유저인터페이스\\statuswnd\\w_ex_statwin_bg.bmp" : "유저인터페이스\\statuswnd\\w_statwin_bg.bmp";
+  if (CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background)))) {
+    this->DrawBitmap(0, this->m_titleHeight, &bitmap->image, true);
+  }
+
+  const int stats[6][2] = {
+    {g_session.m_standardStats[0], g_session.unknown_166C},
+    {g_session.m_standardStats[1], g_session.unknown_1670},
+    {g_session.m_standardStats[2], g_session.unknown_1674},
+    {g_session.m_standardStats[3], g_session.unknown_1678},
+    {g_session.m_standardStats[4], g_session.unknown_167C},
+    {g_session.m_standardStats[5], g_session.unknown_1680},
+  };
+  const int* entry = stats[0];
+  for (int y = 23; y < 119; y += 16, entry += 2) {
+    const int value = entry[0];
+    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 36, y, FormatOwnedString("%d", value).c_str(), 0, 1, 14, 0, 0, 0);
+    const int bonus = entry[1];
+    if (bonus > 0) {
+      if (value < 100) {
+        this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 49, y, FormatOwnedString("+%d", bonus).c_str(), 0, 1, 14, 0, 0, 0);
+      } else {
+        this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 54, y + 2, FormatOwnedString("+%d", bonus).c_str(), 0, 1, 12, 0, 0, 0);
+      }
+    } else if (bonus < 0) {
+      if (value < 100) {
+        this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 49, y, FormatOwnedString("%d", bonus).c_str(), 0, 1, 14, 0, 0, 0);
+      } else {
+        this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 54, y + 2, FormatOwnedString("%d", bonus).c_str(), 0, 1, 12, 0, 0, 0);
+      }
+    }
+  }
+
+  const int* derived = reinterpret_cast<const int*>(g_session.unknown_169C);
+  const int required[6] = {derived[0], derived[1], derived[2], derived[3], derived[4], derived[5]};
+  const int* cost = required;
+  for (int y = 23; y < 119; y += 16, ++cost) {
+    this->DrawRightAlignedText(101, y, FormatOwnedString("%d", *cost).c_str(), 0, 1, 14, 0, 0);
+  }
+
+  this->DrawRightAlignedText(189, 22, FormatOwnedString("%d + %d", derived[7], derived[12]).c_str(), 0, 1, 14, 0, 0);
+  this->DrawRightAlignedText(189, 38, FormatOwnedString("%d + %d", derived[14], derived[13]).c_str(), 0, 1, 14, 0, 0);
+  this->DrawRightAlignedText(189, 54, FormatOwnedString("%d", derived[16]).c_str(), 0, 1, 14, 0, 0);
+  this->DrawRightAlignedText(189, 70, FormatOwnedString("%d", derived[18]).c_str(), 0, 1, 14, 0, 0);
+  this->DrawRightAlignedText(275, 22, FormatOwnedString("%d + %d", derived[10], derived[11]).c_str(), 0, 1, 14, 0, 0);
+  this->DrawRightAlignedText(275, 38, FormatOwnedString("%d + %d", derived[8], derived[15]).c_str(), 0, 1, 14, 0, 0);
+  this->DrawRightAlignedText(275, 54, FormatOwnedString("%d + %d", derived[17], derived[19]).c_str(), 0, 1, 14, 0, 0);
+  this->DrawRightAlignedText(275, 70, FormatOwnedString("%d", (2000 - derived[6]) / 10).c_str(), 0, 1, 14, 0, 0);
+  this->DrawRightAlignedText(275, 86, FormatOwnedString("%d", *reinterpret_cast<const int*>(g_session.unknown_1654)).c_str(), 0, 1, 14, 0, 0);
+  if (g_guildInfo.unknown_0000.size() != 0) {
+    this->DrawRightAlignedText(275, 102, g_guildInfo.unknown_0000.c_str(), 0, 0, 12, 0, 0);
+  }
+
+  if (this->m_extended != 1) {
+    return;
+  }
+
+  const int* traitBonus = reinterpret_cast<const int*>(g_session.unknown_7FC0 + 8);
+  const std::int64_t* traitPoints = reinterpret_cast<const std::int64_t*>(&g_session.unknown_7FC0[0x20]);
+  const int bonuses[6] = {traitBonus[0], traitBonus[1], traitBonus[2], traitBonus[3], traitBonus[4], traitBonus[5]};
+  const std::int64_t points[6] = {traitPoints[0], traitPoints[1], traitPoints[2], traitPoints[3], traitPoints[4], traitPoints[5]};
+  const int types[6] = {219, 220, 221, 222, 223, 224};
+  const std::int64_t* point = points;
+  int index = 0;
+  for (int y = 144; y < 240; y += 16, point += 1, ++index) {
+    const int value = g_session.GetTraitStat(types[index]);
+    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 36, y, FormatOwnedString("%d", value).c_str(), 0, 1, 14, 0, 0, 0);
+    this->DrawRightAlignedText(101, y, FormatOwnedString("%lld", *point).c_str(), 0, 1, 14, 0, 0);
+    const int bonus = bonuses[index];
+    if (bonus > 0) {
+      if (value < 100) {
+        this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 49, y, FormatOwnedString("+%d", bonus).c_str(), 0, 1, 14, 0, 0, 0);
+      } else {
+        this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 54, y + 2, FormatOwnedString("+%d", bonus).c_str(), 0, 1, 12, 0, 0, 0);
+      }
+    }
+  }
+
+  this->DrawRightAlignedText(189, 143, FormatOwnedString("%d", g_session.GetTraitStat(225)).c_str(), 0, 1, 14, 0, 0);
+  this->DrawRightAlignedText(189, 159, FormatOwnedString("%d", g_session.GetTraitStat(226)).c_str(), 0, 1, 14, 0, 0);
+  this->DrawRightAlignedText(189, 175, FormatOwnedString("%d", g_session.GetTraitStat(229)).c_str(), 0, 1, 14, 0, 0);
+  this->DrawRightAlignedText(189, 191, FormatOwnedString("%d", g_session.GetTraitStat(230)).c_str(), 0, 1, 14, 0, 0);
+  int value = g_session.GetTraitStat(227);
+  if (value < 0) {
+    value = 0;
+  }
+  this->DrawRightAlignedText(275, 143, FormatOwnedString("%d", value).c_str(), 0, 1, 14, 0, 0);
+  value = g_session.GetTraitStat(228);
+  if (value < 0) {
+    value = 0;
+  }
+  this->DrawRightAlignedText(275, 159, FormatOwnedString("%d", value).c_str(), 0, 1, 14, 0, 0);
+  this->DrawRightAlignedText(275, 207, FormatOwnedString("%d", g_session.GetTraitStat(231)).c_str(), 0, 1, 14, 0, 0);
 }
 
 // OFFSET: 0x008F3300
