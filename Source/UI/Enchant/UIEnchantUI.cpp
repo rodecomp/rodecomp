@@ -325,6 +325,10 @@ CUITabButton::CUITabButton(UIWindowContext& context)
 }
 
 // OFFSET: 0x009F74E0
+// FUNCTION: fn_14773
+template <>
+CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::~CUIListBoxEx() {
+}
 
 namespace EnchantUI {
 // OFFSET: 0x009F9CE0
