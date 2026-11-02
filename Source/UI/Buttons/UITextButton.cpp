@@ -2827,6 +2827,8 @@ void UIScrollBar_Custom::SetThumbBitmaps(std::string top, std::string middle, st
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/CLoginMode.h"
 
+#include <format>
+
 // OFFSET: 0x00884720
 // FUNCTION: fn_11310
 void UIItemTagOnChat::PlaceTagButton(UIWindow* button, const std::string& name, const int& x, int) {
@@ -3577,6 +3579,73 @@ int UISlotBmpButton::SendMsg(UIWindow* sender, int message, std::intptr_t argume
 int g_slotButtonInfo;
 
 // OFFSET: 0x0088EBC0
+// FUNCTION: fn_11385
+void UISlotBmpButton::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+  this->UIBitmapButton::Paint();
+
+  if (this->m_disabled == 0) {
+    if (this->unknown_0128 == 0) {
+      if (this->unknown_0124 == 1) {
+        CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\select_character_ver3\\img_slot2_select.bmp")));
+        if (this->m_inRange) {
+          bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\select_character_ver3\\img_buyslot2_select.bmp")));
+        }
+        if (bitmap) {
+          this->DrawBitmap(0, 0, &bitmap->image, false);
+        }
+      }
+    } else if (this->unknown_0128 == 1 && this->unknown_0124 == 1) {
+      const int count = this->unknown_0134 / this->unknown_0136;
+      const char* base = this->m_inRange ? "buyslot" : "slot";
+      const std::string path = std::format("유저인터페이스\\select_character_ver3\\img_{}_select{}.bmp", base, count);
+      CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str())));
+      if (bitmap) {
+        this->DrawBitmap(0, 0, &bitmap->image, false);
+      }
+    }
+  }
+
+  if (this->m_index == 0 && g_slotButtonInfo == 0) {
+    CBitmapRes* balloon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\select_character_ver3\\balloon.bmp")));
+    this->DrawBitmap(this->geometry.width / 2 - 0x2e, 0x1a, balloon ? &balloon->image : nullptr, false);
+
+    std::vector<std::string> lines;
+    WrapPlainText(LookupMessage(0xaed), lines, 0x14, static_cast<unsigned short>(g_textCodePage));
+    int y = 0x22;
+    for (const std::string& line : lines) {
+      this->DrawCenteredText(0x21, y, line.c_str(), 0x5c, 0, 0xb, 0xffffff, 0);
+      y += 0xd;
+    }
+  }
+
+  if (this->m_slot >= 0) {
+    CharacterInfo* info = reinterpret_cast<CharacterInfo*>(static_cast<CMode*>(g_charViewMode)->SendMsg(8, this->m_slot, 0, 0, 0));
+    if (info) {
+      if (info->unknown_00AA > 0 || info->unknown_00A6 > 0) {
+        if (this->m_inRange) {
+          CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\select_character_ver3\\buyslot_add_ons.bmp")));
+          this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, true);
+        } else {
+          CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\Add_Ons.bmp")));
+          this->DrawBitmap(0x13, 0x19, bitmap ? &bitmap->image : nullptr, false);
+        }
+      }
+
+      if (info->deleteDate != 0) {
+        Timestamp expiry(info->deleteDate);
+        const std::uint32_t color = expiry.IsBeforeNow() ? 0xff0000 : 0xff;
+        const TIMESTAMP_STRUCT date = expiry.ToSqlTimestamp();
+        const std::string period = FormatOwnedString(LookupMessage(0xc20), date.month, date.day);
+        const std::string time = FormatOwnedString(LookupMessage(0xd15), date.hour, date.minute, date.second);
+        const int periodWidth = this->TextWidth(this->m_context->fonts, this->m_context->locale, period.c_str(), 0, 0, 0xb, 0, 0);
+        this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 0x4f - periodWidth / 2, 0x28, period.c_str(), 0, 0, 0xb, color, 0, 0);
+        const int timeWidth = this->TextWidth(this->m_context->fonts, this->m_context->locale, time.c_str(), 0, 0, 0xb, 0, 0);
+        this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 0x4f - timeWidth / 2, 0x34, time.c_str(), 0, 0, 0xb, color, 0, 0);
+      }
+    }
+  }
+}
 
 // OFFSET: 0x0086D5F0
 // FUNCTION: fn_11049
