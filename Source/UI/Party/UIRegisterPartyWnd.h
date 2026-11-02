@@ -12,11 +12,9 @@ class UIBasicButton;
 class ForbiddenWords;
 struct AgencyRequestContext;
 struct RegisterPartyContext;
-struct UIEditContext;
 struct UIComboBoxHeaderContext;
 
 struct UIRegisterPartyContext {
-  UIEditContext& edits;
   UIComboBoxHeaderContext& combos;
   ForbiddenWords& forbidden;
   AgencyRequestContext& requests;

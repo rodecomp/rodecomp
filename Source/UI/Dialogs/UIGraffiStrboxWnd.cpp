@@ -9,7 +9,7 @@
 // OFFSET: 0x008E1210
 // FUNCTION: fn_12174
 void UIGraffiStrboxWnd::Slot15(int, int) {
-  this->edit = new UIEditCtrl(*this->m_context, *this->m_editContext);
+  this->edit = new UIEditCtrl(*this->m_context);
   this->edit->SetSize(240, 16);
   this->edit->Move(22, 50);
   this->edit->maximum = 20;
@@ -38,6 +38,6 @@ void UIGraffiStrboxWnd::Slot15(int, int) {
 
 // OFFSET: 0x008C7C50
 // FUNCTION: fn_11942
-UIGraffiStrboxWnd::UIGraffiStrboxWnd(UIWindowContext& windows, UIEditContext& edits)
-    : UIFrameWnd(windows, 0), m_editContext(&edits) {
+UIGraffiStrboxWnd::UIGraffiStrboxWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0) {
 }

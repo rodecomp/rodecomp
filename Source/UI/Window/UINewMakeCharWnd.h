@@ -135,7 +135,6 @@ public:
   /* 0364 */ int unknown_0364;
   /* 0368 */ int unknown_0368;
   void* unknown_controls;
-  UIEditContext* m_editContext;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

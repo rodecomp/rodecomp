@@ -271,7 +271,7 @@ int UIGuildTipWnd::SendMsg(UIWindow*, int message, std::intptr_t a1, std::intptr
 // OFFSET: 0x00958070
 // FUNCTION: fn_13055
 void UICreateGuildWnd::Slot15(int, int) {
-  this->m_nameEdit = new UIEditCtrl(*this->m_context, *this->m_editContext);
+  this->m_nameEdit = new UIEditCtrl(*this->m_context);
   this->m_nameEdit->SetSize(124, 20);
   this->m_nameEdit->Move(13, 42);
   this->m_nameEdit->maximum = 23;

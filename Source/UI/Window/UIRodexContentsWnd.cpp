@@ -358,7 +358,7 @@ void UIRodexContentsWnd::SetMailContents(std::string title, std::string sender, 
   this->m_sender = g_navigationLinkParser->ExpandMessages(this->m_sender);
   text = g_navigationLinkParser->ExpandMessages(text);
 
-  this->m_contents = new UIRodexEditCtrl3(*this->m_context, *reinterpret_cast<UIEditContext*>(nullptr));
+  this->m_contents = new UIRodexEditCtrl3(*this->m_context);
   this->m_contents->SetSize(267, 192);
   this->m_contents->invalidatesParent = 1;
   this->m_contents->Move(15, 81);

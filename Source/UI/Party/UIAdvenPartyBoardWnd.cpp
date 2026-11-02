@@ -54,7 +54,7 @@ void UIAdvenPartyBoardWnd::Slot11() {
 void UIAdvenPartyBoardWnd::Slot15(int, int) {
   auto& owner = *this->m_board;
 
-  this->minimum = new UIEditCtrl2(*this->m_context, owner.edits);
+  this->minimum = new UIEditCtrl2(*this->m_context);
   this->minimum->SetSize(25, 14);
   this->minimum->invalidatesParent = 1;
   this->minimum->maximum = 3;
@@ -67,7 +67,7 @@ void UIAdvenPartyBoardWnd::Slot15(int, int) {
   this->minimum->Show(1);
   this->AddChild(this->minimum);
 
-  this->maximum = new UIEditCtrl2(*this->m_context, owner.edits);
+  this->maximum = new UIEditCtrl2(*this->m_context);
   this->maximum->SetSize(25, 14);
   this->maximum->invalidatesParent = 1;
   this->maximum->maximum = 3;
@@ -93,7 +93,7 @@ void UIAdvenPartyBoardWnd::Slot15(int, int) {
     this->AddChild(job);
   }
 
-  auto* memo = new UIEditCtrl5(*this->m_context, owner.edits);
+  auto* memo = new UIEditCtrl5(*this->m_context);
   this->memo = memo;
   memo->SetSize(116, 14);
   memo->maximum = 150;

@@ -251,10 +251,10 @@ UIEditCtrl::UIEditCtrl(const UIEditCtrl& other)
 
 // OFFSET: 0x0084FAE0
 // FUNCTION: fn_10663
-UIEditCtrl::UIEditCtrl(UIWindowContext& windows, UIEditContext& edit)
+UIEditCtrl::UIEditCtrl(UIWindowContext& windows)
     : UIWindow(windows, 0), anchor(0), cursor(0), mask(0), maximum(255), flat(1), red(255), green(255), blue(255), borderRed(0), borderGreen(0), borderBlue(0),
       textColor(0), secondColor(0xFFFFFFFF), firstVisible(0), textY(0), invalidatesParent(0), disabled(0), unknown_00F0(0), topPadding(0), preserveInput(0),
-      m_edit(&edit) {
+      unknown_011C(nullptr) {
   this->text.reserve(255);
 }
 
@@ -588,7 +588,7 @@ UISkillListWnd::UISkillListWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0
 }
 
 // INLINED
-UIEditCtrlWheel::UIEditCtrlWheel(UIWindowContext& windows, UIEditContext& edit) : UIEditCtrl(windows, edit) {
+UIEditCtrlWheel::UIEditCtrlWheel(UIWindowContext& windows) : UIEditCtrl(windows) {
 }
 
 // OFFSET: 0x009701B0

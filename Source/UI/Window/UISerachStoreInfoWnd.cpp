@@ -97,7 +97,7 @@ void UISerachStoreInfoWnd::Slot15(int width, int height) {
   this->m_radios[1]->SetText(LookupMessage(0x6F3));
   this->m_radios[this->unknown_00E4]->SendMsg(this, 0xD, 1, 0, 0, 0);
 
-  this->m_edits[1] = new UIEditCtrl(*this->m_context, *this->m_editContext);
+  this->m_edits[1] = new UIEditCtrl(*this->m_context);
   this->m_edits[1]->SetSize(0x4C, 0x10);
   this->m_edits[1]->Move(100, 0x24);
   this->m_edits[1]->maximum = 0x32;
@@ -106,7 +106,7 @@ void UISerachStoreInfoWnd::Slot15(int width, int height) {
   this->m_edits[1]->flat = 0;
   this->AddChild(this->m_edits[1]);
 
-  this->m_edits[0] = new UIEditCtrl(*this->m_context, *this->m_editContext);
+  this->m_edits[0] = new UIEditCtrl(*this->m_context);
   this->m_edits[0]->SetSize(0x4C, 0x10);
   this->m_edits[0]->Move(0xBB, 0x24);
   this->m_edits[0]->maximum = 0x32;
@@ -122,7 +122,7 @@ void UISerachStoreInfoWnd::Slot15(int width, int height) {
   this->m_edits[0]->invalidatesParent = 1;
   this->AddChild(this->m_edits[0]);
 
-  this->m_edits[2] = new UIEditCtrl(*this->m_context, *this->m_editContext);
+  this->m_edits[2] = new UIEditCtrl(*this->m_context);
   this->m_edits[2]->SetSize(0x4C, 0x10);
   this->m_edits[2]->Move(0x113, 0x24);
   this->m_edits[2]->maximum = 0x32;
@@ -133,7 +133,7 @@ void UISerachStoreInfoWnd::Slot15(int width, int height) {
   this->m_edits[2]->Invalidate();
   this->AddChild(this->m_edits[2]);
 
-  this->m_edits[3] = new UIEditCtrl(*this->m_context, *this->m_editContext);
+  this->m_edits[3] = new UIEditCtrl(*this->m_context);
   this->m_edits[3]->SetSize(0x4C, 0x10);
   this->m_edits[3]->Move(0x16C, 0x24);
   this->m_edits[3]->maximum = 0x32;

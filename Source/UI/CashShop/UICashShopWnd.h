@@ -16,7 +16,6 @@ class UIEditCtrl;
 class UIEditCtrl_Custom;
 class UIScrollBar_Custom;
 class UIStaticBitmap;
-struct UIEditContext;
 
 class UICashShopWnd_Banner : public UIWindow {
 public:
@@ -129,7 +128,6 @@ public:
   /* 00F8 */ std::vector<UICashShopWnd_Item*> m_itemWindows;
   /* 0104 */ UICashShopWnd_Cart* m_cart;
   void* unknown_controls;
-  UIEditContext* m_editContext;
 };
 
 void FormatMessageBuffer(char* buffer, const char* format, ...);

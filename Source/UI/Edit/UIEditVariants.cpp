@@ -23,7 +23,7 @@
 
 // OFFSET: 0x0084F250
 // FUNCTION: fn_10657
-UIEditCtrl2::UIEditCtrl2(UIWindowContext& windows, UIEditContext& edit) : UIEditCtrl(windows, edit) {
+UIEditCtrl2::UIEditCtrl2(UIWindowContext& windows) : UIEditCtrl(windows) {
 }
 
 // OFFSET: 0x008515E0
@@ -298,7 +298,7 @@ void UIEditCtrl3::HandleInputMessage(unsigned key, std::intptr_t data) {
 
 // OFFSET: 0x0084F570
 // FUNCTION: fn_10659
-UIEditCtrl3::UIEditCtrl3(UIWindowContext& windows, UIEditContext& edit) : UIEditCtrl2(windows, edit) {
+UIEditCtrl3::UIEditCtrl3(UIWindowContext& windows) : UIEditCtrl2(windows) {
   this->unknown_0130 = 0;
   this->unknown_0134 = 0;
   this->unknown_0138 = 14;
@@ -753,7 +753,7 @@ int UIEditCtrl::MeasureText(const std::string& text, const int& bytes) {
 
 // OFFSET: 0x0084F7B0
 // FUNCTION: fn_10660
-UIEditCtrl4::UIEditCtrl4(UIWindowContext& windows, UIEditContext& edit) : UIEditCtrl(windows, edit), placeholderColor(0xFFFFFFFFu), placeholderEnabled(0) {
+UIEditCtrl4::UIEditCtrl4(UIWindowContext& windows) : UIEditCtrl(windows), placeholderColor(0xFFFFFFFFu), placeholderEnabled(0) {
 }
 
 // OFFSET: 0x00852870
@@ -809,7 +809,7 @@ void UIEditCtrl4::SetPlaceholderColor(std::uint32_t color) {
 
 // OFFSET: 0x0084F7B0
 // FUNCTION: fn_10661
-UIEditCtrl5::UIEditCtrl5(UIWindowContext& windows, UIEditContext& edit) : UIEditCtrl4(windows, edit) {
+UIEditCtrl5::UIEditCtrl5(UIWindowContext& windows) : UIEditCtrl4(windows) {
 }
 
 // OFFSET: 0x008528F0
@@ -915,7 +915,7 @@ void UIBitmapEditCtrl::SetBitmapName(const char* name) {
 
 // OFFSET: 0x0084EE90
 // FUNCTION: fn_10654
-UIChatEditCtrl::UIChatEditCtrl(UIWindowContext& windows, UIEditContext& edit) : UIEditCtrl(windows, edit), unknown_0140(0), historyLimit(30) {
+UIChatEditCtrl::UIChatEditCtrl(UIWindowContext& windows) : UIEditCtrl(windows), unknown_0140(0), historyLimit(30) {
   this->history.reserve(this->historyLimit);
   this->unknown_0144 = 0;
 }
@@ -1058,7 +1058,7 @@ int UIEditCtrl_OldList::SendMsg(UIWindow* sender, int message, std::intptr_t arg
 void UIShowAndEditTimeCtrl::Slot15(int, int) {
   for (int i = 0; i < 2; ++i) {
     UIEditCtrlVarId*& field = this->fields[i];
-    field = new UIEditCtrlVarId(*this->m_context, *this->m_edit);
+    field = new UIEditCtrlVarId(*this->m_context);
     field->SetSize(20, 18);
     field->Background(232, 232, 232);
     field->Border(192, 192, 192);

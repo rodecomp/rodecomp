@@ -197,7 +197,7 @@ void UISubChatHisWnd::Slot15(int width, int height) {
     }
   }
 
-  this->m_edit = new UIEditCtrl2(*this->m_context, *this->m_editContext);
+  this->m_edit = new UIEditCtrl2(*this->m_context);
   this->m_edit->SetSize(100, 19);
   this->m_edit->Move(-100, -100);
   this->AddChild(this->m_edit);
@@ -207,8 +207,8 @@ void UISubChatHisWnd::Slot15(int width, int height) {
 
 // OFFSET: 0x00912340
 // FUNCTION: fn_12529
-UISubChatHisWnd::UISubChatHisWnd(UIWindowContext& windows, UIEditContext& edit)
-    : UIFrameWnd(windows, 0), m_editContext(&edit) {
+UISubChatHisWnd::UISubChatHisWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0) {
   this->m_saved = nullptr;
   this->m_resizer = nullptr;
   this->m_chatBox = nullptr;

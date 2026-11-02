@@ -58,7 +58,7 @@ void UIAccountLimitedToolWnd::Slot15(int, int) {
     {125, 121}, {160, 121}, {268, 121}, {305, 121}, {90, 151}, {240, 151}, {285, 151},
   };
   for (int i = 0; i < 15; ++i) {
-    this->m_edits[i] = new UIEditCtrl(*this->m_context, *this->m_editContext);
+    this->m_edits[i] = new UIEditCtrl(*this->m_context);
     this->m_edits[i]->flat = 1;
     this->m_edits[i]->disabled = 1;
     this->m_edits[i]->Invalidate();
@@ -366,8 +366,8 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 
 // OFFSET: 0x00946800
 // FUNCTION: fn_12846
-UIAccountLimitedToolWnd::UIAccountLimitedToolWnd(UIWindowContext& windows, UIEditContext& edits, UITextViewerContext& texts)
-    : UIFrameWnd(windows, 0), m_accountIdText(nullptr), m_viewer(nullptr), m_editContext(&edits), m_textContext(&texts) {
+UIAccountLimitedToolWnd::UIAccountLimitedToolWnd(UIWindowContext& windows, UITextViewerContext& texts)
+    : UIFrameWnd(windows, 0), m_accountIdText(nullptr), m_viewer(nullptr), m_textContext(&texts) {
   SecureZeroMemory(this->m_edits, sizeof(this->m_edits));
   SecureZeroMemory(this->m_buttons, sizeof(this->m_buttons));
 }

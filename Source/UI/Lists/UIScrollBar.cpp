@@ -1703,7 +1703,7 @@ void UITabControl::Configure(
   this->inactiveTextColor = inactiveTextColor;
   this->ClearTabs();
 
-  this->edit = new UIEditCtrl2(*this->m_context, *reinterpret_cast<UIEditContext*>(nullptr));
+  this->edit = new UIEditCtrl2(*this->m_context);
   this->edit->SetSize(100, 19);
   this->edit->Move(-100, -100);
   this->AddChild(this->edit);

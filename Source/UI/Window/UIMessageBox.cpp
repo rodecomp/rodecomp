@@ -1022,7 +1022,7 @@ void UILoginOTPWnd::Slot15(int, int) {
   thread_local EncryptedName<sizeof(prefixSource), 0x793F370985ED674FULL> prefixName(prefixSource);
   const std::string prefix(prefixName.Text());
 
-  this->unknown_00B4 = new UIEditCtrl(*this->m_context, *this->m_editContext);
+  this->unknown_00B4 = new UIEditCtrl(*this->m_context);
   this->unknown_00B4->SetSize(80, 16);
   this->unknown_00B4->maximum = 8;
   this->unknown_00B4->Move(99, 95);
@@ -1620,7 +1620,7 @@ void UIChatRoomWnd::Slot15(int, int) {
   this->resizer->SetColors(0xFFFF00FF, 0xFFFF00FF);
   this->AddChild(this->resizer);
 
-  this->edit = new UIChatEditCtrl(*this->m_context, *this->m_editContext);
+  this->edit = new UIChatEditCtrl(*this->m_context);
   this->edit->SetSize(this->geometry.width - 30, 16);
   this->edit->Move(3, this->geometry.height - 18);
   this->edit->maximum = 70;
@@ -1905,7 +1905,7 @@ void UIReplayRECControlWnd::Slot15(int, int) {
   this->fileOptions[1]->SetChecked(option119);
   this->replayOption119 = option119;
 
-  UIEditCtrl* edit = new UIEditCtrl(*this->m_context, *this->m_editContext);
+  UIEditCtrl* edit = new UIEditCtrl(*this->m_context);
   this->window_0134 = edit;
   edit->SetSize(151, 18);
   edit->Move(-100, -100);
@@ -1973,7 +1973,7 @@ void UISelectReplayDataWnd::Slot15(int width, int height) {
 // OFFSET: 0x008B7040
 // FUNCTION: fn_11752
 void UITalkboxTrapInputWnd::Slot15(int, int) {
-  this->edit = new UIEditCtrl(*this->m_context, *this->m_editContext);
+  this->edit = new UIEditCtrl(*this->m_context);
   this->edit->SetSize(240, 16);
   this->edit->Move(22, 50);
   this->edit->maximum = 78;
@@ -2624,7 +2624,7 @@ void UIBank_NewWnd::Slot15(int, int) {
   this->AddBitmapButton(390, 93, 132, "bank\\btn_1000mil", "+ 10,000,000");
   this->AddBitmapButton(389, 45, 132, "bank\\btn_max", LookupMessage(2778));
 
-  this->m_amountEdit = new UIEditCtrl(*this->m_context, *this->m_editContext);
+  this->m_amountEdit = new UIEditCtrl(*this->m_context);
   this->m_amountEdit->SetSize(99, 17);
   this->m_amountEdit->maximum = 10;
   this->m_amountEdit->Move(78, 90);
@@ -2639,7 +2639,7 @@ void UIBank_NewWnd::Slot15(int, int) {
 // OFFSET: 0x008AD770
 // FUNCTION: fn_11739
 void UICntWnd::Slot15(int, int) {
-  this->m_edit = new UIEditCtrl(*this->m_context, *this->m_editContext);
+  this->m_edit = new UIEditCtrl(*this->m_context);
   this->m_edit->SetSize(80, 16);
   this->m_edit->Move(15, 22);
   this->m_edit->maximum = 6;
@@ -3196,8 +3196,8 @@ UISelectServerWnd::UISelectServerWnd(UIWindowContext& windows)
 
 // OFFSET: 0x008A46E0
 // FUNCTION: fn_11673
-UITalkboxTrapInputWnd::UITalkboxTrapInputWnd(UIWindowContext& windows, UIEditContext& editContext)
-    : UIFrameWnd(windows, 0), m_editContext(&editContext) {
+UITalkboxTrapInputWnd::UITalkboxTrapInputWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0) {
 }
 
 // OFFSET: 0x008A4E00
@@ -3379,7 +3379,7 @@ int UILoginOTPWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 // FUNCTION: fn_11740
 void UIHomunInfoWnd::Slot15(int, int) {
   this->AddCloseButton("", 0);
-  this->nameEdit = new UIEditCtrl2(*this->m_context, *this->m_editContext);
+  this->nameEdit = new UIEditCtrl2(*this->m_context);
   this->nameEdit->SetSize(80, 16);
   char* const name = reinterpret_cast<char*>(&g_session.unknown_5570[0x0C]);
   if (std::strcmp(name, "") == 0) {
@@ -3646,7 +3646,7 @@ int UIHomunInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
 // FUNCTION: fn_11747
 void UIPetInfoWnd::Slot15(int, int) {
   this->AddCloseButton("", 0);
-  this->nameEdit = new UIEditCtrl2(*this->m_context, *this->m_editContext);
+  this->nameEdit = new UIEditCtrl2(*this->m_context);
   this->nameEdit->SetSize(80, 16);
   if (std::strcmp(g_session.unknown_1018, "") == 0) {
     std::sprintf(g_session.unknown_1018, g_session.GetJobName(g_session.unknown_103C, -1));

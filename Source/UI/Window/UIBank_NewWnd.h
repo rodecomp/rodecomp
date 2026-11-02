@@ -4,11 +4,10 @@
 #include "UI/Window/UIFrameWnd.h"
 
 class UIEditCtrl;
-struct UIEditContext;
 
 class UIBank_NewWnd : public UIFrameWnd {
 public:
-  UIBank_NewWnd(UIWindowContext& windows, UIEditContext& editContext);
+  UIBank_NewWnd(UIWindowContext& windows);
   bool Slot03() override;
   void Slot15(int width, int height) override;
   long long AdjustAmount(int amount);
@@ -24,7 +23,6 @@ protected:
   /* 00D0 */ int unknown_00D0;
   /* 00D4 */ UIWindow* m_loading[4];
   void* unknown_controls;
-  UIEditContext* m_editContext;
 };
 
 #endif

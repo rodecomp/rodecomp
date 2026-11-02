@@ -1168,7 +1168,7 @@ int WindowDialogs::RunEmailAddress() {
   }
 
   auto* window = new UIEmailAddressWnd(
-    this->windows, *reinterpret_cast<UIEditContext*>(nullptr)
+    this->windows
   );
   window->SetSize(280, 48);
   window->Move((g_renderer->viewport.width - 640) / 2 + 185, (g_renderer->viewport.height - 480) / 2 + 180);

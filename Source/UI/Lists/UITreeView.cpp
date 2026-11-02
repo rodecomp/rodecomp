@@ -2,7 +2,7 @@
 
 // OFFSET: 0x0086F180
 // FUNCTION: fn_11087
-UITreeView::UITreeView(UIWindowContext& windows, UIEditContext& edit) : UIWindow(windows, 0), m_edit(&edit) {
+UITreeView::UITreeView(UIWindowContext& windows) : UIWindow(windows, 0) {
   this->itemPadding = 5;
   this->itemHeight = 20;
   this->itemCount = 0;

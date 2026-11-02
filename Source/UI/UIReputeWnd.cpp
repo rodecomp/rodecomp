@@ -63,7 +63,7 @@ void UIReputeWnd::Slot15(int width, int height) {
   this->m_groupCombo->borderBlue = 99;
   this->AddChild(this->m_groupCombo);
 
-  this->m_searchEdit = new UIEditCtrl(*this->m_context, *this->m_editContext);
+  this->m_searchEdit = new UIEditCtrl(*this->m_context);
   this->m_searchEdit->SetSize(200, 18);
   this->m_searchEdit->Move(136, 25);
   this->m_searchEdit->maximum = 20;

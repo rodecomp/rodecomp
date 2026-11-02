@@ -2018,7 +2018,7 @@ void UIGuildNoticeWnd::Slot15(int, int) {
   g_windowMgr.SetFocus(this->m_titleEdit);
   this->m_titleEdit->SetText(g_guildInfo.unknown_0030.c_str());
 
-  this->m_bodyEdit = new UIEditCtrl3(*this->m_context, *reinterpret_cast<UIEditContext*>(nullptr));
+  this->m_bodyEdit = new UIEditCtrl3(*this->m_context);
   this->m_bodyEdit->SetSize(this->geometry.width - 10, 156);
   this->m_bodyEdit->invalidatesParent = 1;
   this->m_bodyEdit->Move(5, 104);

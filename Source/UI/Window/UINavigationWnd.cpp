@@ -168,7 +168,7 @@ void UINavigationWnd::Slot15(int width, int height) {
   this->unknown_00EC->AddOption(LookupMessage(0x8A0), 0);
   this->unknown_00EC->AddOption(LookupMessage(0x8A1), 0);
 
-  this->m_titleBar = new UIEditCtrl(*this->m_context, *this->m_editContext);
+  this->m_titleBar = new UIEditCtrl(*this->m_context);
   this->m_titleBar->SetSize(226, 18);
   this->m_titleBar->Move(-1000, -1000);
   this->m_titleBar->maximum = 60;

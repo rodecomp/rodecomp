@@ -659,9 +659,8 @@ void CUIEditCtrlEx::SetText(const char* value) {
 // OFFSET: 0x009E4410
 // FUNCTION: fn_14432
 void CUIEditBoxEx::Create(int width, int height, bool withScrollBar) {
-  UIEditContext& edits = this->edit->EditContext();
   this->RemoveChild(this->edit, 1);
-  CUIEditCtrlEx* edit = new CUIEditCtrlEx(*this->m_context, edits);
+  CUIEditCtrlEx* edit = new CUIEditCtrlEx(*this->m_context);
   this->edit = edit;
   edit->SetSize(width, height);
   if (withScrollBar) {
@@ -764,7 +763,7 @@ void CUIEditCtrlEx::PaintTextLines() {
   }
 }
 
-CUIEditCtrlEx::CUIEditCtrlEx(UIWindowContext& windows, UIEditContext& edit) : UIEditCtrl3(windows, edit) {
+CUIEditCtrlEx::CUIEditCtrlEx(UIWindowContext& windows) : UIEditCtrl3(windows) {
   this->normalColor = 0;
   this->unknown_018C = 0;
   this->unknown_0190 = 0;

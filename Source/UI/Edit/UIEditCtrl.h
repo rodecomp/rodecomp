@@ -17,28 +17,13 @@ class UIItemTagButton;
 struct ITEM_INFO;
 class UIItemTagOnChat;
 
-struct UIEditContext {
-  unsigned char& password;
-  const InputCharset& charset;
-  WindowManagerWindows& windows;
-  const BitmapImage& colorChip;
-  const int& candidateCursor;
-  UIWindow* const& candidateWindow;
-  UIWindow* const& readingWindow;
-  UIWindow* const& otherChatInput;
-  const bool& linkInputRestricted;
-  UIWindow* const& permittedLinkInput;
-  const int& screenWidth;
-  const int& screenHeight;
-};
-
 class UIEditCtrl : public UIWindow {
   friend class UIMacroDetectorWnd;
 
 public:
   UIEditCtrl();
   UIEditCtrl(const UIEditCtrl& other);
-  UIEditCtrl(UIWindowContext& windows, UIEditContext& edit);
+  UIEditCtrl(UIWindowContext& windows);
   ~UIEditCtrl() override;
   bool Slot05() override;
   void Paint() override;
@@ -96,7 +81,7 @@ public:
   /* 0104 */ std::string linkedText;
 
 protected:
-  UIEditContext* m_edit;
+  void* unknown_011C;
   void PaintTextWithPolicy(const std::string* placeholder, std::uint32_t placeholderColor, bool placeholderEnabled);
   bool RemoveInvalidLink(std::list<UIWindow*>::iterator& entry);
   void SnapLinkSelection(std::size_t prefix, std::size_t bytes);
@@ -108,14 +93,14 @@ private:
 
 class UIEditCtrlWheel : public UIEditCtrl {
 public:
-  UIEditCtrlWheel(UIWindowContext& windows, UIEditContext& edit);
+  UIEditCtrlWheel(UIWindowContext& windows);
   ~UIEditCtrlWheel() override;
   void Slot35(int value) override;
 };
 
 class UIEditCtrl2 : public UIEditCtrl {
 public:
-  UIEditCtrl2(UIWindowContext& windows, UIEditContext& edit);
+  UIEditCtrl2(UIWindowContext& windows);
   ~UIEditCtrl2() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 };
@@ -123,7 +108,7 @@ public:
 class UIEditCtrl3 : public UIEditCtrl2 {
 public:
   UIEditCtrl3();
-  UIEditCtrl3(UIWindowContext& windows, UIEditContext& edit);
+  UIEditCtrl3(UIWindowContext& windows);
   UIEditCtrl3(const UIEditCtrl3& other);
   ~UIEditCtrl3() override;
   void Slot15(int width, int height) override;
@@ -185,7 +170,7 @@ public:
 
 class UIEditCtrl4 : public UIEditCtrl {
 public:
-  UIEditCtrl4(UIWindowContext& windows, UIEditContext& edit);
+  UIEditCtrl4(UIWindowContext& windows);
   ~UIEditCtrl4() override;
   void Slot23() override;
   void PaintText() override;
@@ -200,7 +185,7 @@ public:
 
 class UIEditCtrl5 : public UIEditCtrl4 {
 public:
-  UIEditCtrl5(UIWindowContext& windows, UIEditContext& edit);
+  UIEditCtrl5(UIWindowContext& windows);
   ~UIEditCtrl5() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 };
@@ -216,7 +201,7 @@ public:
 class UIChatEditCtrl : public UIEditCtrl {
 public:
   UIChatEditCtrl();
-  UIChatEditCtrl(UIWindowContext& windows, UIEditContext& edit);
+  UIChatEditCtrl(UIWindowContext& windows);
   void Paint() override;
   void Slot25(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
@@ -233,7 +218,7 @@ public:
 
 class UIEditCtrl_OldList : public UIEditCtrl {
 public:
-  UIEditCtrl_OldList(UIWindowContext& windows, UIEditContext& edit);
+  UIEditCtrl_OldList(UIWindowContext& windows);
   void Paint() override;
   void Slot35(int value) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
@@ -245,7 +230,7 @@ public:
 
 class UIWhisperEditCtrl : public UIEditCtrl {
 public:
-  UIWhisperEditCtrl(UIWindowContext& windows, UIEditContext& edit);
+  UIWhisperEditCtrl(UIWindowContext& windows);
   void Slot23() override;
   void Slot24(int retained) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
@@ -258,7 +243,7 @@ public:
 class UIEditCtrlVarId : public UIEditCtrl {
 public:
   // INLINED
-  UIEditCtrlVarId(UIWindowContext& windows, UIEditContext& edit) : UIEditCtrl(windows, edit) {}
+  UIEditCtrlVarId(UIWindowContext& windows) : UIEditCtrl(windows) {}
   // INLINED
   UIEditCtrlVarId() {}
   void Slot24(int retained) override;
@@ -280,7 +265,7 @@ public:
   /* 007C */ UIEditCtrlVarId* fields[2];
 
 protected:
-  UIEditContext* m_edit;
+  void* unknown_slot;
 
 public:
   /* 0084 */ int unknown_0084;

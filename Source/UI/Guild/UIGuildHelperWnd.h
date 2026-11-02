@@ -3,7 +3,6 @@
 
 #include "UI/Window/UIFrameWnd.h"
 
-struct UIEditContext;
 struct GuildHelperWndInfo;
 class UIBitmapButton;
 class UIEditCtrl;
@@ -47,7 +46,6 @@ public:
 protected:
   /* 00BC */ UIEditCtrl* m_nameEdit;
   /* 00C0 */ int m_mode;
-  UIEditContext* m_editContext;
 };
 
 class UIGuildTipWnd : public UIFrameWnd {

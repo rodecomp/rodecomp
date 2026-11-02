@@ -377,7 +377,7 @@ void UINewMakeCharWnd::Slot15(int width, int height) {
   cancelButton->SetId(0xB9);
   this->AddChild(cancelButton);
 
-  this->m_nameEdit = new UIEditCtrl2(*this->m_context, *this->m_editContext);
+  this->m_nameEdit = new UIEditCtrl2(*this->m_context);
   this->m_nameEdit->SetSize(0x82, 0x14);
   this->m_nameEdit->Move(0x1B3, 0x10C);
   this->m_nameEdit->maximum = 0x17;

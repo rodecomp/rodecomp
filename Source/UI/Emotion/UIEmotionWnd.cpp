@@ -47,7 +47,7 @@ void UIEmotionWnd::Slot15(int, int) {
   auto* emotions = reinterpret_cast<EmotionHotkeys*>(&g_session.unknown_0FF8);
 
   for (int i = 0; i < 10; ++i) {
-    UIEditCtrl2* edit = new UIEditCtrl2(*this->m_context, *reinterpret_cast<UIEditContext*>(nullptr));
+    UIEditCtrl2* edit = new UIEditCtrl2(*this->m_context);
     this->m_edits[i] = edit;
     edit->SetSize(270, 16);
     edit->Move(83, y - 3);

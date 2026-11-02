@@ -37,9 +37,9 @@
 
 // OFFSET: 0x005E03B0
 // FUNCTION: fn_03861
-UIChangeMaterialWnd::UIChangeMaterialWnd(UIWindowContext& windows, UIEditContext& edits)
+UIChangeMaterialWnd::UIChangeMaterialWnd(UIWindowContext& windows)
     : UIFrameWnd(windows, 0), m_sortBox(nullptr), m_button(nullptr), m_resultX(168), m_resultY(131), m_resultItem(),
-      m_materialPos{{90, 86}, {246, 86}, {168, 222}, {168, 40}, {90, 176}, {246, 176}}, m_materials(), m_resultAmount(0), m_resultText(), m_editContext(&edits) {
+      m_materialPos{{90, 86}, {246, 86}, {168, 222}, {168, 40}, {90, 176}, {246, 176}}, m_materials(), m_resultAmount(0), m_resultText() {
   *reinterpret_cast<int*>(reinterpret_cast<char*>(this) + 0xB4) = 0;
   *reinterpret_cast<int*>(reinterpret_cast<char*>(this) + 0xB8) = 0;
 }
@@ -707,7 +707,7 @@ void UIChangeMaterialWnd::Slot15(int width, int height) {
   close->SetId(201);
   this->AddChild(close);
 
-  UIEditCtrl* edit = new UIEditCtrl(*this->m_context, *this->m_editContext);
+  UIEditCtrl* edit = new UIEditCtrl(*this->m_context);
   *reinterpret_cast<UIEditCtrl**>(reinterpret_cast<char*>(this) + 0xB8) = edit;
   edit->SetSize(118, 13);
   edit->Move(313, 262);

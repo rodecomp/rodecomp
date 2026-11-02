@@ -3,7 +3,6 @@
 
 #include "UI/Window/UIFrameWnd.h"
 
-struct UIEditContext;
 class UIEditCtrl;
 class UIStaticText;
 
@@ -23,7 +22,6 @@ public:
 
 protected:
   void* unknown_controls;
-  UIEditContext* m_editContext;
 };
 
 #endif

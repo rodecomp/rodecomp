@@ -330,7 +330,7 @@ void UISeekPartyMBWnd::Slot15(int width, int height) {
 
   this->CreateJobChecks();
 
-  this->m_levelEdit = new UIEditCtrl(*this->m_context, *this->m_editContext);
+  this->m_levelEdit = new UIEditCtrl(*this->m_context);
   this->m_levelEdit->SetSize(0x28, 0x10);
   this->m_levelEdit->Move(0x32, 0x14);
   this->m_levelEdit->maximum = 5;

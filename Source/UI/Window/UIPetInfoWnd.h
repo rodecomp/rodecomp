@@ -13,7 +13,6 @@ class UINormalMB;
 class ForbiddenWords;
 class UINoneVisibleButton;
 class UIPetInfoBarGraph;
-struct UIEditContext;
 struct WindowResponseRecorder;
 
 class UIPetInfoWnd : public UIFrameWnd {
@@ -39,7 +38,6 @@ public:
 
 protected:
   void* unknown_controls;
-  UIEditContext* m_editContext;
   WindowResponseRecorder* m_recorder;
   ForbiddenWords* m_forbiddenWords;
 };

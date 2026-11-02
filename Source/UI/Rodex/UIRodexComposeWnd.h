@@ -28,7 +28,7 @@ public:
   // INLINED
   UIRodexEditCtrl3() {
   }
-  UIRodexEditCtrl3(UIWindowContext& windows, UIEditContext& edit);
+  UIRodexEditCtrl3(UIWindowContext& windows);
   void Slot15(int width, int height) override;
   void sub_855150();
 };

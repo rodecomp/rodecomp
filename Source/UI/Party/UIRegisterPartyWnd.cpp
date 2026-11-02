@@ -93,7 +93,7 @@ void UIRegisterPartyWnd::Slot15(int, int) {
   const int level = owner.playerLevel;
 
   const auto edit = [&](int x, int value) {
-    auto* control = new UIEditCtrl(*this->m_context, owner.edits);
+    auto* control = new UIEditCtrl(*this->m_context);
     control->SetSize(25, 16);
     control->Move(x, 47);
     control->invalidatesParent = 1;
@@ -127,7 +127,7 @@ void UIRegisterPartyWnd::Slot15(int, int) {
   }
 
   label(LookupMessage(3359), 10, 121, this->geometry.width - 32);
-  this->memo = new UIEditCtrl(*this->m_context, owner.edits);
+  this->memo = new UIEditCtrl(*this->m_context);
   this->memo->SetSize(139, 14);
   this->memo->maximum = 24;
   this->memo->TextColor(0, 0xFFFFFFFFu);
@@ -220,7 +220,6 @@ void UIRegisterPartyWnd::SetInfo(CAdvenPartyInfo value) {
 
 // INLINED
 const char* UIRegisterPartyWnd::Text(UIEditCtrl& control) const {
-  const auto& edit = this->m_registration->edits;
   return g_windowMgr.hoverWindow == &control ? g_serverLanguage->text.c_str() : control.text.c_str();
 }
 

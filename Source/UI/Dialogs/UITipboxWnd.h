@@ -12,7 +12,6 @@ class UIEditCtrl;
 class UIListBoxID;
 class UITagTextViewer;
 class UIBitmapButton;
-struct UIEditContext;
 
 struct TipBoxAnimation {
   /* 0000 */ std::uint32_t moveStart;
@@ -70,7 +69,6 @@ public:
 
 protected:
   void* unknown_controls;
-  UIEditContext* m_editContext;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

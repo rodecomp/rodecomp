@@ -9,7 +9,6 @@
 #include <utility>
 #include <vector>
 
-struct UIEditContext;
 class UIBitmapButton;
 class UIChatEditCtrl;
 class UIChatHisBox;
@@ -51,7 +50,6 @@ public:
 
 protected:
   void* unknown_controls;
-  UIEditContext* m_editContext;
   void* unknown_listContext;
 };
 

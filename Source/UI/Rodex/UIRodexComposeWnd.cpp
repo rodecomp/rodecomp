@@ -60,7 +60,7 @@ struct RodexSendMailRequest {
 
 // OFFSET: 0x007FEF20
 // FUNCTION: fn_09993
-UIRodexEditCtrl3::UIRodexEditCtrl3(UIWindowContext& windows, UIEditContext& edit) : UIEditCtrl3(windows, edit) {
+UIRodexEditCtrl3::UIRodexEditCtrl3(UIWindowContext& windows) : UIEditCtrl3(windows) {
 }
 
 // OFFSET: 0x007FEF80

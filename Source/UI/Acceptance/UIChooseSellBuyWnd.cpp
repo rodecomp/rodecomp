@@ -426,7 +426,7 @@ void UIDisconnectedServerMsgWnd::Slot15(int width, int height) {
 // FUNCTION: fn_12170
 void UIEmailAddressWnd::Slot15(int, int) {
   g_modeMgr.gameMode->SendMsg(10013, 0, 0, 0, 0);
-  this->m_edit = new UIEditCtrl(*this->m_context, *this->m_editContext);
+  this->m_edit = new UIEditCtrl(*this->m_context);
   this->m_edit->SetSize(this->geometry.width - 77, 16);
   this->m_edit->Move(15, 22);
   this->m_edit->maximum = 49;
@@ -6226,8 +6226,8 @@ UINpcTextEditDialogWnd::UINpcTextEditDialogWnd(UIWindowContext& windows)
 
 // OFFSET: 0x008C8B50
 // FUNCTION: fn_11968
-UIProhibitListWnd::UIProhibitListWnd(UIWindowContext& windows, UIEditContext& edits)
-    : UIFrameWnd(windows, 0), m_count(0), m_edits(&edits) {
+UIProhibitListWnd::UIProhibitListWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0), m_count(0) {
 }
 
 // OFFSET: 0x008C8BB0
@@ -6602,7 +6602,7 @@ void UINotifyQuestWnd::Slot15(int, int) {
 // OFFSET: 0x008E4F50
 // FUNCTION: fn_12188
 void UINpcEditDialogWnd::Slot15(int, int) {
-  this->edit = new UIEditCtrl(*this->m_context, *this->m_editContext);
+  this->edit = new UIEditCtrl(*this->m_context);
   this->edit->SetSize(this->geometry.width - 77, 16);
   this->edit->Move(15, 22);
   this->edit->maximum = 12;
@@ -6630,7 +6630,7 @@ void UINpcEditDialogWnd::Slot15(int, int) {
 // OFFSET: 0x008E54B0
 // FUNCTION: fn_12189
 void UINpcTextEditDialogWnd::Slot15(int, int) {
-  this->edit = new UIEditCtrl(*this->m_context, *this->m_editContext);
+  this->edit = new UIEditCtrl(*this->m_context);
   this->edit->SetSize(this->geometry.width - 77, 16);
   this->edit->Move(15, 22);
   this->edit->maximum = 70;
@@ -6736,7 +6736,7 @@ namespace {
 // OFFSET: 0x008E5A20
 // FUNCTION: fn_12190
 void UIPartyInvitationToWnd::Slot15(int, int) {
-  this->m_edit = new UIEditCtrl(*this->m_context, *this->m_editContext);
+  this->m_edit = new UIEditCtrl(*this->m_context);
   this->m_edit->SetSize(120, 20);
   this->m_edit->Move(20, 42);
   this->m_edit->maximum = 23;
@@ -7210,7 +7210,7 @@ int UIYourItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 // OFFSET: 0x008E6B40
 // FUNCTION: fn_12192
 void UIPasswordWnd::Slot15(int, int) {
-  this->m_edit = new UIEditCtrl(*this->m_context, *this->m_editContext);
+  this->m_edit = new UIEditCtrl(*this->m_context);
   this->m_edit->SetSize(90, 16);
   this->m_edit->Move(15, 22);
   this->m_edit->maximum = 8;
@@ -8435,7 +8435,7 @@ void UIItemCollectionWnd::Paint() {
 // OFFSET: 0x008DB1F0
 // FUNCTION: fn_12158
 void UIAutoMessageWnd::Slot15(int, int) {
-  this->m_edit = new UIEditCtrl(*this->m_context, *reinterpret_cast<UIEditContext*>(nullptr));
+  this->m_edit = new UIEditCtrl(*this->m_context);
   this->m_edit->SetSize(this->geometry.width - 77, 16);
   this->m_edit->Move(15, 22);
   this->m_edit->maximum = 100;
@@ -10222,7 +10222,7 @@ int UIProhibitListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       if (!IsMonsterJob(g_session.m_aid)) {
         return 0;
       }
-      counter = new UICntWnd(*this->m_context, *this->m_edits);
+      counter = new UICntWnd(*this->m_context);
       counter->SetSize(0xB6, 0x2E);
       counter->Move((g_renderer->viewport.width - 640) / 2 + 200, ScaleByScreenHeight(200));
       g_windowMgr.AddRendered(counter);
@@ -10237,7 +10237,7 @@ int UIProhibitListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       if (a != 2 || !IsAdminAccount(g_session.m_aid)) {
         return 0;
       }
-      counter = new UICntWnd(*this->m_context, *this->m_edits);
+      counter = new UICntWnd(*this->m_context);
       counter->SetSize(0xB6, 0x2E);
       counter->Move((g_renderer->viewport.width - 640) / 2 + 200, ScaleByScreenHeight(200));
       g_windowMgr.AddRendered(counter);

@@ -65,7 +65,7 @@ void UISeekPartyListWnd::Slot15(int width, int height) {
   this->m_levelLabel->shadow = 1;
   this->AddChild(this->m_levelLabel);
 
-  this->m_searchEdit = new UIEditCtrl(*this->m_context, *this->m_editContext);
+  this->m_searchEdit = new UIEditCtrl(*this->m_context);
   this->m_searchEdit->SetSize(0x28, 0x10);
   this->m_searchEdit->Move(0x32, 0x14);
   this->m_searchEdit->maximum = 5;

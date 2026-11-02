@@ -42,8 +42,8 @@ const char* g_miniMapMemoLineFormat = "%d\t%d\t%s\r\n";
 
 // OFFSET: 0x0099B0C0
 // FUNCTION: fn_13549
-UIEditctrlWnd::UIEditctrlWnd(UIWindowContext& windows, UIEditContext& edit)
-    : UIFrameWnd(windows, 0), m_editContext(&edit) {
+UIEditctrlWnd::UIEditctrlWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0) {
 }
 
 // OFFSET: 0x0099B120
@@ -155,7 +155,7 @@ void UIEditctrlWnd::Slot15(int, int) {
   this->AddCloseButton(LookupMessage(2741), 0);
   this->AddNumberedButton(184, 205, 19, "minimap\\memo_ok", LookupMessage(2754), true);
 
-  this->edit = new UIEditCtrl(*this->m_context, *this->m_editContext);
+  this->edit = new UIEditCtrl(*this->m_context);
   this->edit->SetSize(200, 18);
   this->edit->Move(5, 19);
   this->edit->maximum = 20;

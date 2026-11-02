@@ -7,7 +7,6 @@ class UIEditCtrl;
 class UIItemTagOnMegaPhone;
 struct ITEM_INFO;
 
-struct UIEditContext;
 
 class UINpcEditDialogWnd : public UIFrameWnd {
 public:
@@ -24,7 +23,6 @@ public:
   /* 00B8 */ int unknown_00B8;
 
 protected:
-  UIEditContext* m_editContext;
 };
 
 class UINpcTextEditDialogWnd : public UINpcEditDialogWnd {

@@ -5,7 +5,6 @@
 #include "UI/Window/UIFrameWnd.h"
 
 class UIEditCtrl;
-struct UIEditContext;
 struct WindowPlacement;
 
 class UIPartySettingWnd : public UIFrameWnd {
@@ -34,7 +33,6 @@ public:
   /* 00E0 */ UIEditCtrl* m_edit;
 
 protected:
-  UIEditContext* m_editContext;
 };
 
 class UIPartyInvitationToWnd : public UIPartySettingWnd {

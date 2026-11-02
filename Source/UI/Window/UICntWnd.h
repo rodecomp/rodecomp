@@ -5,11 +5,10 @@
 
 class UIEditCtrl;
 class UIStaticText;
-struct UIEditContext;
 
 class UICntWnd : public UIFrameWnd {
 public:
-  UICntWnd(UIWindowContext& windows, UIEditContext& editContext);
+  UICntWnd(UIWindowContext& windows);
   ~UICntWnd() override;
 
   void Slot15(int width, int height) override;
@@ -21,7 +20,6 @@ protected:
   /* 00B8 */ UIEditCtrl* m_edit;
   /* 00BC */ UIStaticText* m_text;
   void* unknown_controls;
-  UIEditContext* m_editContext;
 };
 
 #endif

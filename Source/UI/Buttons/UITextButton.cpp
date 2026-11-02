@@ -2527,7 +2527,7 @@ void UITreeView::Slot15(int width, int height) {
   vertical->Slot22(verticalWidth, height);
   this->AddChild(this->verticalBar);
 
-  this->edit = new UIEditCtrl2(*this->m_context, *this->m_edit);
+  this->edit = new UIEditCtrl2(*this->m_context);
   this->edit->SetSize(100, 19);
   this->edit->Move(-100, -100);
   this->AddChild(this->edit);

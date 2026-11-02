@@ -12,7 +12,6 @@ class UICheckBox;
 class UIEditCtrl;
 class UIStaticBitmap;
 class UIStaticText;
-struct UIEditContext;
 
 class UIReplayRECControlWnd : public UIFrameWnd {
 public:
@@ -68,7 +67,6 @@ public:
 protected:
   void* unknown_focus;
   void* unknown_controls;
-  UIEditContext* m_editContext;
 };
 
 #endif

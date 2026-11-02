@@ -4,7 +4,6 @@
 #include "UI/Window/UIFrameWnd.h"
 
 class UIEditCtrl;
-struct UIEditContext;
 
 struct TalkboxTrapTarget {
   /* 0000 */ int unknown_0000;
@@ -20,7 +19,7 @@ struct TalkboxTrapRequest {
 
 class UITalkboxTrapInputWnd : public UIFrameWnd {
 public:
-  UITalkboxTrapInputWnd(UIWindowContext& windows, UIEditContext& editContext);
+  UITalkboxTrapInputWnd(UIWindowContext& windows);
 
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -31,7 +30,6 @@ public:
 
 protected:
   void* unknown_controls;
-  UIEditContext* m_editContext;
 };
 
 #endif

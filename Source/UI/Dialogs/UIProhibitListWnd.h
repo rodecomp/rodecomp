@@ -3,11 +3,10 @@
 
 #include "UI/Window/UIFrameWnd.h"
 
-struct UIEditContext;
 
 class UIProhibitListWnd : public UIFrameWnd {
 public:
-  UIProhibitListWnd(UIWindowContext& windows, UIEditContext& edits);
+  UIProhibitListWnd(UIWindowContext& windows);
   /* 00B4 */ int m_count;
   /* 00B8 */ std::uint32_t m_aid;
 
@@ -18,7 +17,6 @@ public:
 
 protected:
   void* unknown_controls;
-  UIEditContext* m_edits;
 };
 
 #endif

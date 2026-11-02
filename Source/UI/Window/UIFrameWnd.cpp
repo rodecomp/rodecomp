@@ -616,8 +616,8 @@ UIAllyGuildAcceptWnd::UIAllyGuildAcceptWnd(UIWindowContext& windows, UIAcceptanc
 
 // OFFSET: 0x008A3510
 // FUNCTION: fn_11654
-UIBank_NewWnd::UIBank_NewWnd(UIWindowContext& windows, UIEditContext& editContext)
-    : UIFrameWnd(windows, 0), m_amountEdit(nullptr), m_status(), m_editContext(&editContext) {
+UIBank_NewWnd::UIBank_NewWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0), m_amountEdit(nullptr), m_status() {
 }
 
 // OFFSET: 0x008A35A0
@@ -1091,8 +1091,8 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 
 // OFFSET: 0x008A36A0
 // FUNCTION: fn_11656
-UICntWnd::UICntWnd(UIWindowContext& windows, UIEditContext& editContext)
-    : UIFrameWnd(windows, 0), m_editContext(&editContext) {
+UICntWnd::UICntWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0) {
 }
 
 // OFFSET: 0x008A37F0

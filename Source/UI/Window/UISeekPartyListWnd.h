@@ -18,7 +18,6 @@ class UIStaticText;
 class UITextButton;
 struct SeekPartyListWndInfo;
 struct UIComboBoxHeaderContext;
-struct UIEditContext;
 
 extern std::map<int, PartyBookingEntry> g_friendRows;
 
@@ -92,7 +91,6 @@ protected:
   /* 01D0 */ SeekPartyListWndInfo* m_saved;
   UIStaticText* m_footerText;
   void* unknown_controls;
-  UIEditContext* m_editContext;
   UIComboBoxHeaderContext* m_comboContext;
 };
 

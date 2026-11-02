@@ -9,7 +9,7 @@
 class UIEditCtrl_Custom : public UIEditCtrl2 {
 public:
   UIEditCtrl_Custom();
-  UIEditCtrl_Custom(UIWindowContext& windows, UIEditContext& edit);
+  UIEditCtrl_Custom(UIWindowContext& windows);
   void PaintText() override;
   void Synchronize() override;
   void Trim() override;
@@ -24,7 +24,7 @@ public:
 class UIEditCtrl_Currency : public UIEditCtrl_Custom {
 public:
   UIEditCtrl_Currency();
-  UIEditCtrl_Currency(UIWindowContext& windows, UIEditContext& edit);
+  UIEditCtrl_Currency(UIWindowContext& windows);
   void Slot19() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 

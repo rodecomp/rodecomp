@@ -278,7 +278,7 @@ static_assert(sizeof(CashEmotionPurchasePacket) == 7);
 
 class UICashEmotionListWnd : public UIFrameWnd {
 public:
-  UICashEmotionListWnd(UIWindowContext& windows, UIEditContext& edits);
+  UICashEmotionListWnd(UIWindowContext& windows);
   void Slot11() override;
   void Slot15(int width, int height) override;
   void Slot19() override;
@@ -313,7 +313,6 @@ protected:
   /* 00E8 */ UICashEmotionListChildWnd_Abstract* m_currentList;
   /* 00EC */ UIStaticText* m_period;
   void* unknown_controls;
-  UIEditContext* m_edits;
 };
 
 class UICashEmotionMiniWnd : public UIWindow {
@@ -2160,10 +2159,10 @@ int UICashEmotionListChildWnd_UnPurchased::SendMsg(UIWindow* sender, int message
 
 // OFFSET: 0x007C6CB0
 // FUNCTION: fn_09401
-UICashEmotionListWnd::UICashEmotionListWnd(UIWindowContext& windows, UIEditContext& edits)
+UICashEmotionListWnd::UICashEmotionListWnd(UIWindowContext& windows)
     : UIFrameWnd(windows, 0), m_placement(nullptr), m_basicList(nullptr), m_purchaseList(nullptr), m_unpurchasedList(nullptr), m_searchList(nullptr),
       m_tab(0), unknown_00D4(nullptr), m_searchEdit(nullptr), unknown_00DC(nullptr), unknown_00E0(nullptr), unknown_00E4(nullptr), m_currentList(nullptr),
-      m_period(nullptr), m_edits(&edits) {
+      m_period(nullptr) {
 }
 
 // OFFSET: 0x007C7240
@@ -2233,7 +2232,7 @@ void UICashEmotionListWnd::Slot15(int width, int height) {
   this->unknown_00E0 = this->CreateButton(252, 22, 37, 18, 191, "유저인터페이스\\cashemotion\\btn_shortui_%s.bmp", false);
   this->unknown_00E4 = this->CreateButton(247, 355, 42, 20, 526, "유저인터페이스\\cashemotion\\btn_buy_%s.bmp", true);
 
-  this->m_searchEdit = new (std::nothrow) UIEditCtrl2(*this->m_context, *this->m_edits);
+  this->m_searchEdit = new (std::nothrow) UIEditCtrl2(*this->m_context);
   if (this->m_searchEdit) {
     this->m_searchEdit->SetSize(160, 16);
     this->m_searchEdit->Move(61, 23);

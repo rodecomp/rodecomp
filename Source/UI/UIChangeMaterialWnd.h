@@ -11,7 +11,6 @@
 #include <vector>
 
 class UIButton;
-struct UIEditContext;
 
 struct MaterialSlotPos {
   /* 0000 */ int x;
@@ -61,7 +60,7 @@ public:
 
 class UIChangeMaterialWnd : public UIFrameWnd {
 public:
-  UIChangeMaterialWnd(UIWindowContext& windows, UIEditContext& edits);
+  UIChangeMaterialWnd(UIWindowContext& windows);
   void Slot15(int width, int height) override;
   bool Slot02() override;
   void Paint() override;
@@ -85,7 +84,6 @@ public:
 
 protected:
   void* unknown_controls;
-  UIEditContext* m_editContext;
 };
 
 class UIChangeMaterialWnd_List : public UIFrameWnd {

@@ -13,7 +13,6 @@ class UIBitmapButton;
 class UIComboBoxDefWnd;
 class UIEditCtrl;
 struct UIComboBoxHeaderContext;
-struct UIEditContext;
 
 class UIReputeWnd : public UIFrameWnd {
 public:
@@ -39,7 +38,6 @@ public:
 
 protected:
   void* unknown_controls;
-  UIEditContext* m_editContext;
   UIComboBoxHeaderContext* m_comboContext;
 };
 

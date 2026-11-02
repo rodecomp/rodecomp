@@ -6,7 +6,6 @@
 class UIButton;
 class UIEditCtrl;
 class UIStaticText;
-struct UIEditContext;
 
 class UIItemDropCntWnd : public UIFrameWnd {
 public:
@@ -50,7 +49,6 @@ public:
 
 protected:
   void* unknown_controls;
-  UIEditContext* m_editContext;
 };
 
 class UIStorePasswordInputWnd : public UIFrameWnd {

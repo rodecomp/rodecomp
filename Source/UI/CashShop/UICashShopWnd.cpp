@@ -327,7 +327,7 @@ void UICashShopWnd::Slot15(int, int) {
   this->unknown_00E4->SetId(0x19F);
   this->AddChild(this->unknown_00E4);
 
-  this->unknown_00E0 = new UIEditCtrl(*this->m_context, *this->m_editContext);
+  this->unknown_00E0 = new UIEditCtrl(*this->m_context);
   this->unknown_00E0->SetSize(0x123, 0xE);
   this->unknown_00E0->Move(0x5E, 0x206);
   this->unknown_00E0->preserveInput = 1;
@@ -354,7 +354,7 @@ void UICashShopWnd::Slot15(int, int) {
   buy->SetId(0xE0);
   this->AddChild(buy);
 
-  this->unknown_00F4 = new UIEditCtrl_Custom(*this->m_context, *this->m_editContext);
+  this->unknown_00F4 = new UIEditCtrl_Custom(*this->m_context);
   this->unknown_00F4->SetSize(0x3E, 0xE);
   this->unknown_00F4->Move(0x27C, 0x1C0);
   this->unknown_00F4->unknown_0128 = 1;
