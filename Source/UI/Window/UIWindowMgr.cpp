@@ -3946,8 +3946,7 @@ void UIWindowMgr::ShowWaitDBSaveWindow() {
   }
 
   WindowDialogs& dialogs = *reinterpret_cast<WindowDialogs*>(this);
-  UIWaitDBSaveWndContext waitContext{*reinterpret_cast<WindowManagerWindows*>(this)};
-  this->window_4F2AC = new UIWaitDBSaveWnd(dialogs.windows, waitContext);
+  this->window_4F2AC = new UIWaitDBSaveWnd(dialogs.windows);
   this->window_4F2AC->SetSize(g_renderer->viewport.width, g_renderer->viewport.height);
   this->window_4F2AC->Move(0, 0);
   this->window_4F2AC->SetId(10024);

@@ -21,7 +21,6 @@ class CWebBrowser;
 struct MessengerMember;
 struct ReplayOptions;
 struct ModeDragState;
-struct UIWaitDBSaveWndContext;
 struct UIWindowContext;
 
 struct WindowTextEntry {

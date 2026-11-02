@@ -7,15 +7,10 @@
 
 class CActRes;
 class CSprRes;
-#include "UI/Window/WindowManagerWindows.h"
-
-struct UIWaitDBSaveWndContext {
-  WindowManagerWindows& windows;
-};
 
 class UIWaitDBSaveWnd : public UIWindow {
 public:
-  UIWaitDBSaveWnd(UIWindowContext& windowContext, UIWaitDBSaveWndContext& waitContext);
+  UIWaitDBSaveWnd(UIWindowContext& windowContext);
   void Slot15(int width, int height) override;
   void Slot18() override;
   void Slot19() override;
@@ -30,7 +25,6 @@ public:
   /* 0090 */ std::uint32_t m_startTime;
   /* 0094 */ unsigned int m_loop;
   /* 0098 */ std::uint32_t m_closeTime;
-  UIWaitDBSaveWndContext m_waitContext;
 };
 
 #endif
