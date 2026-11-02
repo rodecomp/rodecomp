@@ -3888,6 +3888,171 @@ int ScaleByScreenHeight(int value) {
   return g_renderer->viewport.height * value / 480;
 }
 
+// OFFSET: 0x009076C0
+// FUNCTION: fn_12389
+int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  switch (message) {
+  case 3:
+    if (this->m_chatHistory->verticalOverflow != 0) {
+      this->m_chatHistory->SendMsg(nullptr, 9, 0, 0, 0, 0);
+    }
+    return 0;
+  case 4:
+    if (this->m_chatHistory->verticalOverflow != 0) {
+      this->m_chatHistory->SendMsg(nullptr, 10, 0, 0, 0, 0);
+    }
+    return 0;
+  case 6: {
+    if (a != 184) {
+      if (a == 201) {
+        g_windowMgr.Schedule(this);
+      }
+      return 0;
+    }
+
+    if (HasItemLinkTag(std::string(this->m_edit->Text())) == true) {
+      this->m_edit->SetText("");
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3042)), 0xFF, 0, 0, 0);
+      return 0;
+    }
+
+    char text[256];
+    std::strcpy(text, this->m_edit->Text());
+    this->m_edit->PushHistory();
+    InputFocus{g_windowMgr.hoverWindow}.Set(this->m_edit);
+    if (std::strlen(text) == 0) {
+      return 0;
+    }
+
+    if (g_serviceType == 1 && !ValidateCharacterName(text)) {
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(190)), 0xFF, 0, 0, 0);
+      return 0;
+    }
+
+    if (this->m_name.size() == 0 || text[0] == '/') {
+      if (g_session.ProcessEmotionShortcut(text) != 0) {
+        return 0;
+      }
+
+      std::string parts[3];
+      int talkType;
+      const int offset = g_session.GetTalkType(text, &talkType, parts);
+      if (offset != -1) {
+        g_windowMgr.SetUnknown04DC(&text[offset]);
+      }
+
+      if (talkType == 24) {
+        g_windowMgr.Schedule(this);
+      } else if (talkType == 51) {
+        this->SaveChatLog();
+      } else {
+        static_cast<CMode*>(g_charViewMode)->SendMsg(42, talkType, reinterpret_cast<std::intptr_t>(parts), 0, 0);
+      }
+      return 0;
+    }
+
+    if (this->m_edit->links.size() != 0) {
+      g_windowMgr.SetUnknown04DC(this->m_edit->LinkedText().c_str());
+    } else if (this->m_edit->unknown_0144 != nullptr) {
+      g_windowMgr.SetUnknown04DC(this->m_edit->unknown_0144->unknown_0140.c_str());
+    } else {
+      g_windowMgr.unknown_04DC.assign(text, std::strlen(text));
+    }
+
+    static_cast<CMode*>(g_charViewMode)->SendMsg(11, reinterpret_cast<std::intptr_t>(this->m_target.c_str()), 0, 0, 0);
+    return 0;
+  }
+  case 14:
+    if (a == 7) {
+      int width = b <= 512 ? static_cast<int>(b) : 512;
+      int height = c <= 384 ? static_cast<int>(c) : 384;
+      if (width < 280) {
+        width = 280;
+      }
+      if (height < 120) {
+        height = 120;
+      }
+
+      width = (width - 280) / 32 * 32 + 280;
+      height = (height - 120) / 32 * 32 + 120;
+      if (width != this->geometry.width || height != this->geometry.height) {
+        this->Resize(width, height);
+        this->m_resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
+        this->m_edit->Resize(this->geometry.width - 30, 16);
+        this->m_edit->Move(3, this->geometry.height - 18);
+        this->m_chatHistory->Resize(this->geometry.width - 2, this->geometry.height - 38, true);
+        this->m_chatHistory->Move(1, 17);
+        this->m_closeButton->Move(this->geometry.width - 14, 3);
+      }
+      this->m_frameContext->snapping.Store(this);
+    }
+    return 0;
+  case 34: {
+    WhisperWndInfo* info = reinterpret_cast<WhisperWndInfo*>(a);
+    this->unknown_0100 = info;
+    if (info->IsValid() == 0) {
+      static_cast<WhisperWndInfo*>(this->unknown_0100)->Reset();
+    }
+    this->SendMsg(nullptr, 14, 7, this->unknown_0100->width, this->unknown_0100->height, 0);
+    this->Move(this->unknown_0100->x, this->unknown_0100->y);
+    return 0;
+  }
+  case 37: {
+    char* line = reinterpret_cast<char*>(a);
+    if (g_forbiddenWords.Contains(line)) {
+      std::string masked;
+      g_forbiddenWords.Mask(line, &masked);
+    }
+
+    const int color = b != 0x7800 ? 0xE8DDB6 : 0xFFFF;
+    if (_mbsstr(reinterpret_cast<const unsigned char*>(line), reinterpret_cast<const unsigned char*>(s_partyItemLinkOpen.c_str()))) {
+      this->m_chatHistory->AddText(line, color, nullptr);
+    } else {
+      this->m_chatHistory->AddTextWrapped(line, color, nullptr);
+    }
+    this->m_chatHistory->AddLinkRecord(line, color, "");
+    return 0;
+  }
+  case 48:
+    if (this->m_log[a].unknown_0018 == 11) {
+      this->SaveChatLog();
+    }
+    return 0;
+  case 49: {
+    this->m_log.clear();
+    if (g_windowMgr.unknown_0210 != nullptr) {
+      g_windowMgr.CloseWindow(0x12);
+    }
+
+    this->m_log.push_back(WhisperLogLine{std::string(LookupMessage(312)), 11});
+    if (!g_windowMgr.IsFriend(this->m_target.c_str()) && g_serviceMode != 3) {
+      this->m_log.push_back(WhisperLogLine{std::string(LookupMessage(358)), 21});
+    }
+
+    static_cast<CMode*>(g_charViewMode)->SendMsg(101, reinterpret_cast<std::intptr_t>(this->m_target.c_str()), 0, 0, 0);
+    if (this->m_log.empty()) {
+      return 0;
+    }
+
+    UIWindow* menu = g_windowMgr.EnsureWindow(0x12);
+    for (unsigned index = 0; index < this->m_log.size(); ++index) {
+      menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(this->m_log[index].text.c_str()), 0, 0, 0);
+    }
+    menu->SendMsg(nullptr, 0x1E, 0, 0, 0, 0);
+    menu->Move(
+      std::min(std::max(g_screenWidth + 1, 1), g_renderer->viewport.width - menu->geometry.width),
+      std::min(std::max(g_screenHeight + 1, 1), g_renderer->viewport.height - menu->geometry.height)
+    );
+    return 0;
+  }
+  case 154:
+    this->m_chatHistory->ResolvePlayerTags(reinterpret_cast<const char*>(a));
+    return 0;
+  default:
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
+}
+
 // OFFSET: 0x0090B080
 // FUNCTION: fn_12419
 void UIWhisperWnd::SaveChatLog() {
