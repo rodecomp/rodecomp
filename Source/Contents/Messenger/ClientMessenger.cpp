@@ -37,6 +37,7 @@
 #include <array>
 #include <cstddef>
 #include <cstdint>
+#include <cstring>
 #include <cstdlib>
 #include <ctime>
 #include <format>
@@ -47,7 +48,12 @@
 #include <string>
 #include <string_view>
 #include <unordered_map>
+#include <utility>
 #include <vector>
+
+extern "C" {
+#include <lualib.h>
+}
 
 void __fastcall RefreshItemWindows(UIWindowMgr* mgr);
 
@@ -319,7 +325,7 @@ namespace EquipmentProperties {
   struct CEquipmentInfo {
     /* 0000 */ int unknown_0000;
     /* 0004 */ std::unordered_map<int, int, CEquipmentValueHash> values;
-    /* 0024 */ std::unordered_map<int, int, CEquipmentValueHash> unknown_0024;
+    /* 0024 */ std::unordered_map<int, int> unknown_0024;
   };
 
   class CEquipmentPropertiesMgr {
@@ -390,6 +396,8 @@ namespace EquipmentProperties {
     void LoadIgnoreEquipmentProperties();
     void LoadSkillGroup();
     void LoadEquipmentPropertiesOrder();
+    bool InitializeLua();
+    void LoadItems();
   };
 }
 namespace EquipmentProperties {
@@ -400,6 +408,9 @@ namespace EquipmentProperties {
     /* 000C */ EquipmentPropertyStore m_properties;
     /* 0034 */ bool m_pretend;
 
+    // INLINED
+    CEquipment() : m_info(nullptr), m_pretend(false) {
+    }
     explicit CEquipment(const int& id) : m_id(id), m_info(nullptr), m_pretend(false) {
     }
     virtual ~CEquipment();
@@ -423,6 +434,10 @@ namespace EquipmentProperties {
     /* 0038 */ int unknown_0038;
     /* 003C */ CEquipment* m_owner;
 
+    // INLINED
+    CEquipmentAttachable(const int& id, int index, CEquipment* owner) : CEquipment(id), unknown_0038(index), m_owner(owner) {
+    }
+
     void Load(bool force) override;
     int GetType() override;
 
@@ -438,6 +453,13 @@ namespace EquipmentProperties {
     /* 0050 */ std::list<CEquipmentProperties*> m_children;
 
     explicit CEquipmentWearable(const ITEM_INFO* item);
+    // INLINED
+    ~CEquipmentWearable() override {
+      for (CEquipmentProperties* property : this->m_children) {
+        delete property;
+      }
+      this->m_children.clear();
+    }
     void Load(bool force) override;
     void Clear() override;
     int GetType() override;
@@ -6731,6 +6753,76 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
   }
 }
 
+#pragma pack(push, 1)
+struct EquipmentItemOption {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int16_t value;
+  /* 0004 */ unsigned char parameter;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(EquipmentItemOption) == 5);
+
+// OFFSET: 0x0068A420
+// FUNCTION: fn_05604
+EquipmentProperties::CEquipmentWearable::CEquipmentWearable(const ITEM_INFO* item) : CEquipment(), m_active(true) {
+  this->m_id = std::atoi(item->itemId.c_str());
+  this->m_type = item->unknown_0000[3];
+  this->m_info = CEquipmentPropertiesMgr::GetInstance()->FindUnknown0094(this->m_id);
+  this->unknown_0040 = g_session.GetEquipSlots(this->m_type).values[2];
+
+  for (int index = 0; index < 4; ++index) {
+    int card;
+    std::memcpy(&card, item->unknown_001C + index * sizeof(card), sizeof(card));
+    if (card != 0) {
+      const CEquipmentAttachable attachable(card, index, this);
+      this->m_attachables.push_back(attachable);
+    }
+  }
+
+  for (int index = 0; index < 5; ++index) {
+    EquipmentItemOption option;
+    std::memcpy(&option, item->unknown_009C + index * sizeof(option), sizeof(option));
+    const int optionId = option.id;
+    EquipmentPropertyDefinition* definition = CEquipmentPropertiesMgr::GetInstance()->GetUnknown0174(optionId);
+    if (definition == nullptr || definition->unknown_0020.front() == "SetWeaponAttr") {
+      continue;
+    }
+
+    int multiplier = 1;
+    const auto found = definition->unknown_005C.find(2);
+    if (found != definition->unknown_005C.end()) {
+      multiplier = found->second;
+    }
+    if (definition->IsTwoDimensional() == true) {
+      CEquipmentProperties2Dim* property = new CEquipmentProperties2Dim(definition);
+      const int parameter = option.parameter;
+      const int value = option.value * multiplier;
+      const unsigned int key = -1;
+      property->SetValue(parameter, value, key);
+      this->m_children.push_back(property);
+    } else if (definition->mode == 1) {
+      this->m_children.push_back(new CEquipmentProperties(definition));
+    } else {
+      CEquipmentProperties1Dim* property = new CEquipmentProperties1Dim(definition);
+      const int value = option.value * multiplier;
+      const unsigned int key = -1;
+      property->SetValue(value, key);
+      this->m_children.push_back(property);
+      if (optionId == 35) {
+        const int additionalId = 25;
+        definition = CEquipmentPropertiesMgr::GetInstance()->GetUnknown0174(additionalId);
+        if (definition != nullptr) {
+          CEquipmentProperties1Dim* additional = new CEquipmentProperties1Dim(definition);
+          const int negative = -option.value;
+          additional->SetValue(negative, key);
+          this->m_children.push_back(additional);
+        }
+      }
+    }
+  }
+}
+
 // OFFSET: 0x006B6C70
 // FUNCTION: fn_06201
 void EquipmentProperties::CEquipmentPropertiesMgr::EquipWearable(const ITEM_INFO* item, bool notify) {
@@ -6759,5 +6851,531 @@ void EquipmentProperties::CEquipmentPropertiesMgr::EquipWearable(const ITEM_INFO
   }
   if (this->unknown_0020 != nullptr) {
     this->unknown_0020->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x006AD910
+// FUNCTION: fn_06189
+bool EquipmentProperties::CEquipmentPropertiesMgr::InitializeLua() {
+  luaL_openlibs(this->script.GetState());
+
+  this->script.SetGlobal("C_Logger", ::C_Logger);
+  this->script.SetGlobal("get", ::GetPlayerValue);
+  this->script.SetGlobal("GetEquipArmorLv", ::GetEquipArmorLv);
+  this->script.SetGlobal("GetEquipGradeLevel", ::GetEquipGrade);
+  this->script.SetGlobal("GetEquipWeaponLv", ::GetEquipWeaponLv);
+  this->script.SetGlobal("GetItemIDLocation", ::GetEquipItemId);
+  this->script.SetGlobal("GetLocation", ::GetLocation);
+  this->script.SetGlobal("GetMapName", ::GetMapName);
+  this->script.SetGlobal("GetPetRelationship", ::GetPetRelationship);
+  this->script.SetGlobal("GetPureJob", ::GetPureJob);
+  this->script.SetGlobal("GetRefineLevel", ::GetEquipRefine);
+  this->script.SetGlobal("GetSkillLevel", ::GetSkillLevel);
+  this->script.SetGlobal("GetWeaponClass", ::GetWeaponClass);
+  this->script.SetGlobal("GetEquipTempValue", ::GetEquipTempValue);
+  this->script.SetGlobal("IsPremiumPcCafe", ::IsPremiumPcCafe);
+  this->script.SetGlobal("CheckJobGroup2", ::CheckJobGroup2);
+  this->script.SetGlobal("GetCategoryJob", ::GetCategoryJob);
+  this->script.SetGlobal("AddAttrTolerace", +[](lua_State* state) { return ::sub_6A7210(state); });
+  this->script.SetGlobal("addattrtolerace", +[](lua_State* state) { return ::sub_6A7A50(state); });
+  this->script.SetGlobal("AddBowAttackDamage", +[](lua_State* state) { return ::sub_6A8290(state); });
+  this->script.SetGlobal("AddCRIPercent_Race", +[](lua_State* state) { return ::sub_6A8AD0(state); });
+  this->script.SetGlobal("AddDamage_CRI", +[](lua_State* state) { return ::sub_6A9310(state); });
+  this->script.SetGlobal("AddDamage_HIT", +[](lua_State* state) { return ::sub_6A9B50(state); });
+  this->script.SetGlobal("AddDamage_Property", +[](lua_State* state) { return ::sub_6AA390(state); });
+  this->script.SetGlobal("AddDamage_SKID", +[](lua_State* state) { return ::sub_6AABD0(state); });
+  this->script.SetGlobal("AddDamage_Size", +[](lua_State* state) { return ::sub_6AB410(state); });
+  this->script.SetGlobal("AddEXPPercent_KillRace", +[](lua_State* state) { return ::sub_6A6A90(state); });
+  this->script.SetGlobal("AddExtParam", +[](lua_State* state) { return ::sub_6A6B50(state); });
+  this->script.SetGlobal("AddGuideAttack", +[](lua_State* state) { return ::sub_6A6C10(state); });
+  this->script.SetGlobal("AddHPdrain", +[](lua_State* state) { return ::sub_6A6CD0(state); });
+  this->script.SetGlobal("AddHealModifyPercent", +[](lua_State* state) { return ::sub_6A6D90(state); });
+  this->script.SetGlobal("AddHealValue", +[](lua_State* state) { return ::sub_6A6E50(state); });
+  this->script.SetGlobal("AddIgnore_MRES_RacePercent", +[](lua_State* state) { return ::sub_6A6F10(state); });
+  this->script.SetGlobal("AddIgnore_RES_RacePercent", +[](lua_State* state) { return ::sub_6A6FD0(state); });
+  this->script.SetGlobal("AddMDamage_Property", +[](lua_State* state) { return ::sub_6A7090(state); });
+  this->script.SetGlobal("AddMDamage_Size", +[](lua_State* state) { return ::sub_6A7150(state); });
+  this->script.SetGlobal("AddMdamage_Class", +[](lua_State* state) { return ::sub_6A72D0(state); });
+  this->script.SetGlobal("AddMdamage_Race", +[](lua_State* state) { return ::sub_6A7390(state); });
+  this->script.SetGlobal("AddMeleeAttackDamage", +[](lua_State* state) { return ::sub_6A7450(state); });
+  this->script.SetGlobal("AddMeleeAttackReflect", +[](lua_State* state) { return ::sub_6A7510(state); });
+  this->script.SetGlobal("AddNeverknockback", +[](lua_State* state) { return ::sub_6A75D0(state); });
+  this->script.SetGlobal("AddRaceTolerace", +[](lua_State* state) { return ::sub_6A7690(state); });
+  this->script.SetGlobal("AddRangeAttackDamage", +[](lua_State* state) { return ::sub_6A7750(state); });
+  this->script.SetGlobal("AddReceiveItem_Equip", +[](lua_State* state) { return ::sub_6A7810(state); });
+  this->script.SetGlobal("AddReflectMagic", +[](lua_State* state) { return ::sub_6A78D0(state); });
+  this->script.SetGlobal("AddReflectTolerace", +[](lua_State* state) { return ::sub_6A7990(state); });
+  this->script.SetGlobal("AddSFCTEquipAmount", +[](lua_State* state) { return ::sub_6A7B10(state); });
+  this->script.SetGlobal("AddSFCTEquipPermill", +[](lua_State* state) { return ::sub_6A7BD0(state); });
+  this->script.SetGlobal("AddSPconsumption", +[](lua_State* state) { return ::sub_6A7C90(state); });
+  this->script.SetGlobal("addspconsumption", +[](lua_State* state) { return ::sub_6A7D50(state); });
+  this->script.SetGlobal("AddSPdrain", +[](lua_State* state) { return ::sub_6A7E10(state); });
+  this->script.SetGlobal("AddSkillDelay", +[](lua_State* state) { return ::sub_6A7ED0(state); });
+  this->script.SetGlobal("AddSkillMDamage", +[](lua_State* state) { return ::sub_6A7F90(state); });
+  this->script.SetGlobal("AddSkillSP", +[](lua_State* state) { return ::sub_6A8050(state); });
+  this->script.SetGlobal("AddSpecificSpellCastTime", +[](lua_State* state) { return ::sub_6A8110(state); });
+  this->script.SetGlobal("AddSpellCastTime", +[](lua_State* state) { return ::sub_6A81D0(state); });
+  this->script.SetGlobal("AddSpellDelay", +[](lua_State* state) { return ::sub_6A8350(state); });
+  this->script.SetGlobal("BodyAttribute", +[](lua_State* state) { return ::sub_6A8410(state); });
+  this->script.SetGlobal("Clairvoyance", +[](lua_State* state) { return ::sub_6A84D0(state); });
+  this->script.SetGlobal("ClassAddDamage", +[](lua_State* state) { return ::sub_6A8590(state); });
+  this->script.SetGlobal("ClassSubDamage", +[](lua_State* state) { return ::sub_6A8650(state); });
+  this->script.SetGlobal("Condition", +[](lua_State* state) { return ::sub_6A8710(state); });
+  this->script.SetGlobal("DisableSkill", +[](lua_State* state) { return ::sub_6A87D0(state); });
+  this->script.SetGlobal("EnableSkill", +[](lua_State* state) { return ::sub_6A8890(state); });
+  this->script.SetGlobal("IndestructibleArmor", +[](lua_State* state) { return ::sub_6A8950(state); });
+  this->script.SetGlobal("IndestructibleWeapon", +[](lua_State* state) { return ::sub_6A8A10(state); });
+  this->script.SetGlobal("Magicimmune", +[](lua_State* state) { return ::sub_6A8B90(state); });
+  this->script.SetGlobal("NoDispell", +[](lua_State* state) { return ::sub_6A8C50(state); });
+  this->script.SetGlobal("NoJamstone", +[](lua_State* state) { return ::sub_6A8D10(state); });
+  this->script.SetGlobal("NoMadogearfuel", +[](lua_State* state) { return ::sub_6A8DD0(state); });
+  this->script.SetGlobal("PerfectDamage", +[](lua_State* state) { return ::sub_6A8E90(state); });
+  this->script.SetGlobal("RaceAddDamage", +[](lua_State* state) { return ::sub_6A8F50(state); });
+  this->script.SetGlobal("RaceAddDamageSelf", +[](lua_State* state) { return ::sub_6A9010(state); });
+  this->script.SetGlobal("RaceSubDamage", +[](lua_State* state) { return ::sub_6A90D0(state); });
+  this->script.SetGlobal("RaceSubDamageSelf", +[](lua_State* state) { return ::sub_6A9190(state); });
+  this->script.SetGlobal("Reincarnation", +[](lua_State* state) { return ::sub_6A9250(state); });
+  this->script.SetGlobal("SetIgnoreDEFClass", +[](lua_State* state) { return ::sub_6A93D0(state); });
+  this->script.SetGlobal("SetIgnoreDEFRace", +[](lua_State* state) { return ::sub_6A9490(state); });
+  this->script.SetGlobal("SetIgnoreDefClass_Percent", +[](lua_State* state) { return ::sub_6A9550(state); });
+  this->script.SetGlobal("SetIgnoreDefRace_Percent", +[](lua_State* state) { return ::sub_6A9610(state); });
+  this->script.SetGlobal("SetIgnoreMdefClass", +[](lua_State* state) { return ::sub_6A96D0(state); });
+  this->script.SetGlobal("SetIgnoreMdefRace", +[](lua_State* state) { return ::sub_6A9790(state); });
+  this->script.SetGlobal("SetInvestigate", +[](lua_State* state) { return ::sub_6A9850(state); });
+  this->script.SetGlobal("SplashAttack", +[](lua_State* state) { return ::sub_6A9910(state); });
+  this->script.SetGlobal("SubAttrTolerace", +[](lua_State* state) { return ::sub_6A99D0(state); });
+  this->script.SetGlobal("subattrtolerace", +[](lua_State* state) { return ::sub_6A9A90(state); });
+  this->script.SetGlobal("SubBowAttackDamage", +[](lua_State* state) { return ::sub_6A9C10(state); });
+  this->script.SetGlobal("SubCRIPercent_Race", +[](lua_State* state) { return ::sub_6A9CD0(state); });
+  this->script.SetGlobal("SubDamage_CRI", +[](lua_State* state) { return ::sub_6A9D90(state); });
+  this->script.SetGlobal("SubDamage_HIT", +[](lua_State* state) { return ::sub_6A9E50(state); });
+  this->script.SetGlobal("SubDamage_Property", +[](lua_State* state) { return ::sub_6A9F10(state); });
+  this->script.SetGlobal("SubDamage_SKID", +[](lua_State* state) { return ::sub_6A9FD0(state); });
+  this->script.SetGlobal("SubDamage_Size", +[](lua_State* state) { return ::sub_6AA090(state); });
+  this->script.SetGlobal("SubEXPPercent_KillRace", +[](lua_State* state) { return ::sub_6AA150(state); });
+  this->script.SetGlobal("SubExtParam", +[](lua_State* state) { return ::sub_6AA210(state); });
+  this->script.SetGlobal("SubGuideAttack", +[](lua_State* state) { return ::sub_6AA2D0(state); });
+  this->script.SetGlobal("SubHPdrain", +[](lua_State* state) { return ::sub_6AA450(state); });
+  this->script.SetGlobal("SubHealModifyPercent", +[](lua_State* state) { return ::sub_6AA510(state); });
+  this->script.SetGlobal("SubHealValue", +[](lua_State* state) { return ::sub_6AA5D0(state); });
+  this->script.SetGlobal("SubIgnore_MRES_RacePercent", +[](lua_State* state) { return ::sub_6AA690(state); });
+  this->script.SetGlobal("SubIgnore_RES_RacePercent", +[](lua_State* state) { return ::sub_6AA750(state); });
+  this->script.SetGlobal("SubMDamage_Property", +[](lua_State* state) { return ::sub_6AA810(state); });
+  this->script.SetGlobal("SubMDamage_Size", +[](lua_State* state) { return ::sub_6AA8D0(state); });
+  this->script.SetGlobal("SubMdamage_Class", +[](lua_State* state) { return ::sub_6AA990(state); });
+  this->script.SetGlobal("SubMdamage_Race", +[](lua_State* state) { return ::sub_6AAA50(state); });
+  this->script.SetGlobal("SubMeleeAttackDamage", +[](lua_State* state) { return ::sub_6AAB10(state); });
+  this->script.SetGlobal("SubMeleeAttackReflect", +[](lua_State* state) { return ::sub_6AAC90(state); });
+  this->script.SetGlobal("SubNeverknockback", +[](lua_State* state) { return ::sub_6AAD50(state); });
+  this->script.SetGlobal("SubRaceTolerace", +[](lua_State* state) { return ::sub_6AAE10(state); });
+  this->script.SetGlobal("SubRangeAttackDamage", +[](lua_State* state) { return ::sub_6AAED0(state); });
+  this->script.SetGlobal("SubReceiveItem_Equip", +[](lua_State* state) { return ::sub_6AAF90(state); });
+  this->script.SetGlobal("SubReflectMagic", +[](lua_State* state) { return ::sub_6AB050(state); });
+  this->script.SetGlobal("SubReflectTolerace", +[](lua_State* state) { return ::sub_6AB110(state); });
+  this->script.SetGlobal("SubSFCTEquipAmount", +[](lua_State* state) { return ::sub_6AB1D0(state); });
+  this->script.SetGlobal("SubSFCTEquipPermill", +[](lua_State* state) { return ::sub_6AB290(state); });
+  this->script.SetGlobal("SubSPconsumption", +[](lua_State* state) { return ::sub_6AB350(state); });
+  this->script.SetGlobal("subspconsumption", +[](lua_State* state) { return ::sub_6A6490(state); });
+  this->script.SetGlobal("SubSPdrain", +[](lua_State* state) { return ::sub_6A6550(state); });
+  this->script.SetGlobal("SubSkillDelay", +[](lua_State* state) { return ::sub_6A6610(state); });
+  this->script.SetGlobal("SubSkillMDamage", +[](lua_State* state) { return ::sub_6A66D0(state); });
+  this->script.SetGlobal("SubSkillSP", +[](lua_State* state) { return ::sub_6A6790(state); });
+  this->script.SetGlobal("SubSpecificSpellCastTime", +[](lua_State* state) { return ::sub_6A6850(state); });
+  this->script.SetGlobal("SubSpellCastTime", +[](lua_State* state) { return ::sub_6A6910(state); });
+  this->script.SetGlobal("SubSpellDelay", +[](lua_State* state) { return ::sub_6A69D0(state); });
+  this->script.SetGlobal("SetEquipTempValue", ::SetEquipTempValue);
+
+  if (!this->script.LoadFile("LuaFiles514\\Lua Files\\EquipmentProperties\\EquipmentProperties.lub")) {
+    return false;
+  }
+  if (!this->script.LoadFile("LuaFiles514\\Lua Files\\DataInfo\\EnumVar.lub")) {
+    return false;
+  }
+  if (!this->script.LoadFile("LuaFiles514\\Lua Files\\DataInfo\\AddRandomOptionNameTable.lub")) {
+    return false;
+  }
+  if (!this->script.LoadFile("LuaFiles514\\Lua Files\\EquipmentProperties\\EquipmentPropertiesOrder.lub")) {
+    return false;
+  }
+
+  this->LoadEnumVar();
+  this->LoadItems();
+  this->LoadCombiitem();
+  this->LoadSkillGroup();
+  this->LoadGradeBonus();
+  this->LoadADSkill();
+  this->LoadRefiningBonus();
+  this->LoadEquipmentPropertiesOrder();
+  this->LoadIgnoreEquipmentProperties();
+  return this->unknown_000C;
+}
+
+// OFFSET: 0x006B4600
+// FUNCTION: fn_06197
+void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
+  lua_State* state = this->script.GetState();
+  if (state == nullptr) {
+    return;
+  }
+
+  const char* name = "Item";
+  lua_getfield(state, LUA_GLOBALSINDEX, name);
+  if (lua_type(state, -1) == LUA_TTABLE) {
+    lua_pushnil(state);
+    while (lua_next(state, -2) != 0) {
+      {
+        CEquipmentInfo info{0};
+        do {
+          unsigned int key = 0;
+          int result;
+          int type = lua_type(this->script.GetState(), -2);
+          if (type == LUA_TNUMBER) {
+            key = static_cast<unsigned int>(lua_tonumber(this->script.GetState(), -2));
+            result = 0;
+          } else {
+            result = (type != LUA_TNIL) + 1;
+          }
+          this->unknown_000C &= result == 0;
+          if (result != 0) {
+            ShowErrorDialog(std::format("{0} table has invalid entry key({1})", name, result), 0);
+          }
+          if (!this->unknown_000C) {
+            break;
+          }
+
+          std::vector<int> stats;
+          if (lua_type(this->script.GetState(), -1) == LUA_TTABLE) {
+            lua_getfield(this->script.GetState(), -1, "Stat");
+            type = lua_type(this->script.GetState(), -1);
+            if (type == LUA_TTABLE) {
+              lua_pushnil(this->script.GetState());
+              result = 0;
+              while (lua_next(this->script.GetState(), -2) != 0) {
+                if (lua_type(this->script.GetState(), -1) != LUA_TNUMBER) {
+                  result = 2;
+                  break;
+                }
+                stats.push_back(static_cast<int>(lua_tonumber(this->script.GetState(), -1)));
+                lua_settop(this->script.GetState(), -2);
+              }
+            } else {
+              result = (type != LUA_TNIL) + 1;
+            }
+            lua_settop(this->script.GetState(), -2);
+          } else {
+            result = 3;
+          }
+          bool valid = result == 0 || result == 1;
+          this->unknown_000C &= valid;
+          if (!valid) {
+            ShowErrorDialog(std::format("Item[{0}] has invalid 'Stat' table({1})", key, result), 0);
+          }
+          if (!this->unknown_000C) {
+            break;
+          }
+
+          std::string itemType;
+          result = this->script.GetFieldString(itemType, "Type");
+          const bool hasType = result == 0;
+          this->unknown_000C &= hasType;
+          if (result != 0) {
+            ShowErrorDialog(std::format("Item[{0}] has invalid 'Type' field({1})", key, result), 0);
+          }
+          if (!this->unknown_000C) {
+            break;
+          }
+
+          int count = 0;
+          if (hasType) {
+            unsigned int hash = 5381;
+            for (const char* character = itemType.c_str(); *character != '\0'; ++character) {
+              hash = hash * 33 + *character;
+            }
+            switch (hash) {
+            case 0x0F1AAAA6:
+              info.unknown_0000 = 1;
+              count = 17;
+              break;
+            case 0x47F48D1C:
+              info.unknown_0000 = 2;
+              count = 17;
+              break;
+            case 0xC8D7BCE1:
+              info.unknown_0000 = 3;
+              count = 15;
+              break;
+            case 0x7C941E6F:
+              info.unknown_0000 = 4;
+              count = 2;
+              break;
+            case 0xA4C66E86:
+              info.unknown_0000 = 5;
+              break;
+            }
+          }
+          valid = count == stats.size();
+          this->unknown_000C &= valid;
+          if (!valid) {
+            ShowErrorDialog(std::format("Item[{0}] has invalid 'Stat' table(count: {1})", key, count), 0);
+          }
+          if (!this->unknown_000C) {
+            break;
+          }
+
+          unsigned int hash = 5381;
+          for (const char* character = itemType.c_str(); *character != '\0'; ++character) {
+            hash = hash * 33 + *character;
+          }
+          switch (hash) {
+          case 0x0F1AAAA6:
+            for (int index = 0; index < count; ++index) {
+              if (stats[index] == 0) {
+                continue;
+              }
+              int variable;
+              switch (index) {
+              case 0:
+                variable = 45;
+                break;
+              case 1:
+                variable = 13;
+                break;
+              case 2:
+                variable = 16;
+                break;
+              case 3:
+                variable = 15;
+                break;
+              case 4:
+                variable = 17;
+                break;
+              case 5:
+                variable = 14;
+                break;
+              case 6:
+                variable = 18;
+                break;
+              case 7:
+                variable = 6;
+                break;
+              case 8:
+                variable = 8;
+                break;
+              case 9:
+                variable = 47;
+                break;
+              case 10:
+                info.values.try_emplace(2, stats[index]);
+                continue;
+              case 11:
+                variable = 219;
+                break;
+              case 12:
+                variable = 222;
+                break;
+              case 13:
+                variable = 220;
+                break;
+              case 14:
+                variable = 221;
+                break;
+              case 15:
+                variable = 223;
+                break;
+              case 16:
+                variable = 224;
+                break;
+              default:
+                continue;
+              }
+              auto found = this->unknown_00B4.find(variable);
+              if (found == this->unknown_00B4.end()) {
+                ShowErrorDialog(std::format("Not available stat type: {0}", variable), 0);
+              } else {
+                info.unknown_0024.try_emplace(found->second.value, stats[index]);
+              }
+            }
+            break;
+          case 0x47F48D1C:
+            for (int index = 0; index < count; ++index) {
+              if (stats[index] == 0) {
+                continue;
+              }
+              int variable;
+              switch (index) {
+              case 0:
+                info.values.try_emplace(0, stats[index]);
+                continue;
+              case 1:
+                info.values.try_emplace(1, stats[index]);
+                continue;
+              case 2:
+                variable = 41;
+                break;
+              case 3:
+                variable = 200;
+                break;
+              case 4:
+                variable = 13;
+                break;
+              case 5:
+                variable = 16;
+                break;
+              case 6:
+                variable = 15;
+                break;
+              case 7:
+                variable = 17;
+                break;
+              case 8:
+                variable = 14;
+                break;
+              case 9:
+                variable = 18;
+                break;
+              case 10:
+                info.values.try_emplace(2, stats[index]);
+                continue;
+              case 11:
+                variable = 219;
+                break;
+              case 12:
+                variable = 222;
+                break;
+              case 13:
+                variable = 220;
+                break;
+              case 14:
+                variable = 221;
+                break;
+              case 15:
+                variable = 223;
+                break;
+              case 16:
+                variable = 224;
+                break;
+              default:
+                continue;
+              }
+              auto found = this->unknown_00B4.find(variable);
+              if (found == this->unknown_00B4.end()) {
+                ShowErrorDialog(std::format("Not available stat type: {0}", variable), 0);
+              } else {
+                info.unknown_0024.try_emplace(found->second.value, stats[index]);
+              }
+            }
+            break;
+          case 0x7C941E6F:
+            for (int index = 0; index < count; ++index) {
+              if (stats[index] == 0) {
+                continue;
+              }
+              if (index == 0) {
+                info.values.try_emplace(0, stats[index]);
+              } else if (index == 1) {
+                const int variable = 41;
+                auto found = this->unknown_00B4.find(variable);
+                if (found == this->unknown_00B4.end()) {
+                  ShowErrorDialog(std::format("Not available stat type: {0}", variable), 0);
+                } else {
+                  info.unknown_0024.try_emplace(found->second.value, stats[index]);
+                }
+              }
+            }
+            break;
+          case 0xC8D7BCE1:
+            for (int index = 0; index < count; ++index) {
+              if (stats[index] == 0) {
+                continue;
+              }
+              int variable;
+              switch (index) {
+              case 0:
+                info.values.try_emplace(1, stats[index]);
+                continue;
+              case 1:
+                variable = 41;
+                break;
+              case 2:
+                variable = 13;
+                break;
+              case 3:
+                variable = 16;
+                break;
+              case 4:
+                variable = 15;
+                break;
+              case 5:
+                variable = 17;
+                break;
+              case 6:
+                variable = 14;
+                break;
+              case 7:
+                variable = 18;
+                break;
+              case 8:
+                info.values.try_emplace(2, stats[index]);
+                continue;
+              case 9:
+                variable = 219;
+                break;
+              case 10:
+                variable = 222;
+                break;
+              case 11:
+                variable = 220;
+                break;
+              case 12:
+                variable = 221;
+                break;
+              case 13:
+                variable = 223;
+                break;
+              case 14:
+                variable = 224;
+                break;
+              default:
+                continue;
+              }
+              auto found = this->unknown_00B4.find(variable);
+              if (found == this->unknown_00B4.end()) {
+                ShowErrorDialog(std::format("Not available stat type: {0}", variable), 0);
+              } else {
+                info.unknown_0024.try_emplace(found->second.value, stats[index]);
+              }
+            }
+            break;
+          }
+
+          if (info.unknown_0000 != 0) {
+            this->unknown_0094.try_emplace(key, std::move(info));
+          }
+
+          std::vector<unsigned int> combinations;
+          result = this->script.GetFieldUIntArray(combinations, "Combiitem");
+          valid = result == 0 || result == 1;
+          this->unknown_000C &= valid;
+          if (!valid) {
+            ShowErrorDialog(std::format("Item[{0}] has invalid 'Combiitem' table({1})", key, result), 0);
+          }
+          if (!this->unknown_000C) {
+            break;
+          }
+          if (result == 0) {
+            for (const unsigned int& combination : combinations) {
+              this->m_itemCombinations[key].push_back(combination);
+            }
+          }
+        } while (false);
+      }
+      lua_settop(state, -2);
+    }
+  } else {
+    ShowErrorDialog(std::format("Can't find global table '{0}'", name), 0);
+  }
+  lua_settop(state, -2);
+  if (!this->unknown_000C) {
+    ShowErrorDialog(std::format("Check error in '{0}' table and restart game ", name), 0);
   }
 }
