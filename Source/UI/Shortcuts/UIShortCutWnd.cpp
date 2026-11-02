@@ -208,12 +208,12 @@ void UIShortCutWnd::Slot32(int x, int y) {
 inline void ShortcutControlEvents::Click(int id) {
   switch (id) {
   case 201:
-    this->visibility.Show(0);
+    g_windowMgr.ShowShortcutWindow(0);
     return;
 
   case 216:
     if (this->window.geometry.visible == 0) {
-      this->visibility.Show(1);
+      g_windowMgr.ShowShortcutWindow(1);
       return;
     }
 
@@ -221,7 +221,7 @@ inline void ShortcutControlEvents::Click(int id) {
 
     if (this->grid.rows > 4) {
       this->grid.rows = 1;
-      this->visibility.Show(0);
+      g_windowMgr.ShowShortcutWindow(0);
     }
 
     this->window.SendMsg(nullptr, 14, 0, 0, 0, 0);
@@ -416,7 +416,7 @@ int UIShortCutWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 
   switch (message) {
   case 6: {
-    ShortcutControlEvents events{*this, this->m_grid, this->m_controls, owner.visibility, owner.bindings.cooldowns, owner.itemSlotActive};
+    ShortcutControlEvents events{*this, this->m_grid, this->m_controls, owner.bindings.cooldowns, owner.itemSlotActive};
     events.Click(static_cast<int>(a));
     return 0;
   }

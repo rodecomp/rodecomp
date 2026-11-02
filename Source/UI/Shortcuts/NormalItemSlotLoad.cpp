@@ -9,7 +9,7 @@
 // OFFSET: 0x005E65E0
 // FUNCTION: fn_03929
 void LoadNormalItemSlots(
-  Json::Value& data, NormalItemSlot* slots, NormalItemSlotWindow& saved, bool& itemSlotActive, WindowManagerWindows& windows, ShortcutVisibility& visibility
+  Json::Value& data, NormalItemSlot* slots, NormalItemSlotWindow& saved, bool& itemSlotActive, WindowManagerWindows& windows
 ) {
   Json::Value& values = data["NormalItemSlot"];
 
@@ -63,7 +63,7 @@ void LoadNormalItemSlots(
   window->geometry.width = saved.width;
   window->geometry.height = saved.height;
 
-  visibility.Show(saved.show);
+  g_windowMgr.ShowShortcutWindow(saved.show);
   window->SendMsg(nullptr, 34, reinterpret_cast<std::intptr_t>(&saved), 0, 0, 0);
   window->SendMsg(nullptr, 6, itemSlotActive ? 588 : 589, 0, 0, 0);
 }

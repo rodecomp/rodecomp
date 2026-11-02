@@ -46,7 +46,7 @@ void CCharacterLinkedUserDataMgr::CompleteLoad(
     const Json::Value sorting = data["SortPrivateTab"];
     context.sortPrivate = sorting.isNull() ? false : sorting.asBool();
 
-    LoadNormalItemSlots(data, context.items, context.saved, context.itemSlotActive, context.windows, context.visibility);
+    LoadNormalItemSlots(data, context.items, context.saved, context.itemSlotActive, context.windows);
     this->m_loaded = true;
   }
 

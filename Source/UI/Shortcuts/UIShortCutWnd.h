@@ -12,7 +12,6 @@ struct ShortcutDrop;
 struct ShortcutTooltip;
 struct ShortcutDetails;
 struct ShortcutUse;
-struct ShortcutVisibility;
 struct CooldownClock;
 struct ModeDragState;
 struct NormalItemSlot;
@@ -27,7 +26,6 @@ struct ShortcutWindowContext {
   ShortcutTooltip& tooltip;
   ShortcutDetails& details;
   ShortcutUse& use;
-  ShortcutVisibility& visibility;
   AutomaticSkills& automatic;
   const CooldownClock& clock;
   bool& itemSlotActive;

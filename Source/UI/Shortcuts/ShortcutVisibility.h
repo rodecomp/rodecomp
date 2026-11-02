@@ -38,47 +38,4 @@ inline bool UIWindowMgr::ShowShortcutWindow(int value) {
   return true;
 }
 
-struct ShortcutVisibility {
-  WindowManagerWindows& windows;
-  WindowOrdering& ordering;
-  UIWindow*& shortcut;
-  int& visible;
-  const bool& restricted;
-  const bool& replayAllowsShortcut;
-  const bool& showCompanion;
-
-  bool Show(int value);
-};
-
-// INLINED
-inline bool ShortcutVisibility::Show(int value) {
-  if (this->restricted && !this->replayAllowsShortcut) {
-    return false;
-  }
-
-  this->visible = value;
-  this->windows.EnsureWindow(36);
-  this->shortcut->Show(value);
-
-  if (value != 0) {
-    this->ordering.Promote(this->shortcut);
-  }
-
-  if (this->showCompanion) {
-    this->windows.EnsureWindow(159);
-  }
-
-  UIWindow* companion = this->windows.LookupWindow(159);
-
-  if (companion) {
-    companion->Show(value);
-
-    if (value != 0) {
-      this->ordering.Promote(companion);
-    }
-  }
-
-  return true;
-}
-
 #endif

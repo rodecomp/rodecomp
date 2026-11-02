@@ -5,14 +5,12 @@
 #include "UI/Shortcuts/ShortcutGrid.h"
 
 class UIWindow;
-struct ShortcutVisibility;
 struct ShortcutCooldowns;
 
 struct ShortcutControlEvents {
   UIWindow& window;
   ShortcutGrid& grid;
   ShortcutControls& controls;
-  ShortcutVisibility& visibility;
   ShortcutCooldowns& cooldowns;
   bool& itemSlotActive;
 

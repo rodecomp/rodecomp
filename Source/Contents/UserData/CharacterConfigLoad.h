@@ -3,7 +3,6 @@
 
 struct NormalItemSlot;
 struct NormalItemSlotWindow;
-struct ShortcutVisibility;
 struct ServiceOptions;
 struct SkillLevelRegistry;
 #include "UI/Window/WindowManagerWindows.h"
@@ -18,7 +17,6 @@ struct CharacterConfigLoad {
   NormalItemSlotWindow& saved;
   bool& itemSlotActive;
   WindowManagerWindows& windows;
-  ShortcutVisibility& visibility;
 };
 
 #endif
