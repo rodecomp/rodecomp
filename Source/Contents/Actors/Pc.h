@@ -392,5 +392,6 @@ static_assert(offsetof(CPc, unknown_04E0) == 0x4E0);
 #endif
 
 extern unsigned char g_statusRefreshSuppressed;
+extern bool g_unknown173AD3F;
 
 #endif

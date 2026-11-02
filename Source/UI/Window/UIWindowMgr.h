@@ -585,6 +585,7 @@ extern int g_renderDiagnosticLine;
 extern const char* g_renderDiagnosticFile;
 extern int g_dragWindowId;
 extern bool g_windowToggleFlag;
+extern bool g_randomLoadingScreen;
 extern unsigned char g_windowCloseByte;
 extern int g_windowCloseValue;
 extern int g_savedWindowCloseValue;

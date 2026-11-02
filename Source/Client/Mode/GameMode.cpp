@@ -4609,6 +4609,195 @@ int CGameMode::ProcessGroundClick(int result) {
   return result;
 }
 
+#include "Client/Mode/ModeTooltip.h"
+#include "Contents/Actors/Pc.h"
+#include "Contents/Actors/RenderObject.h"
+#include "Contents/World/WorldOcclusion.h"
+#include "UI/Dialogs/UIMenuWnd.h"
+#include "UI/Window/InputFocus.h"
+
+#include "Client/Mode/ModeTooltip.h"
+#include "Contents/Actors/Pc.h"
+#include "Contents/Actors/RenderObject.h"
+#include "Contents/World/WorldOcclusion.h"
+#include "UI/Dialogs/UIMenuWnd.h"
+#include "UI/Window/InputFocus.h"
+
+#include "Client/Application/ApplicationMessages.h"
+#include "Client/ModeFade.h"
+#include "Contents/ActorNameCard.h"
+#include "Contents/Async/AsyncWorkMgr.h"
+#include "Contents/Effects/EffectLists.h"
+#include "Contents/Emblems/EmblemDataMgr.h"
+#include "Contents/GuildMgr.h"
+#include "Contents/MapInfoMgr.h"
+#include "Contents/MapSkyMgr.h"
+#include "Contents/PlayerNameDictionary.h"
+#include "Contents/Schedule/CheckGDISchedule.h"
+#include "Contents/Sound/SoundMgr.h"
+#include "Client/Mode/CLoginMode.h"
+#include "Client/Stove/StovePCSDK.h"
+#include "Client/Timer.h"
+#include "Network/GameTickPacket.h"
+#include "Render/ActionSpriteDrawing.h"
+#include "Render/DeviceContext/DCSurface.h"
+#include "Security/NProtectGameGuardMgr.h"
+#include "Utility/GGHashMgr.h"
+#include "Contents/Actors/GroundScope.h"
+#include "Contents/Ground/GroundGeometry.h"
+#include "Resource/Sprites/ActionResource.h"
+#include "Resource/Sprites/SpriteResource.h"
+
+#pragma pack(push, 1)
+struct StatusPointRequestPacket {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::uint16_t statusId;
+  /* 0004 */ std::uint8_t amount;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(StatusPointRequestPacket) == 5);
+
+int sub_C7F5A0();
+
+// OFFSET: 0x00CE0B80
+// FUNCTION: fn_21330
+void CGameMode::ProcessInput() {
+  g_mouse.Update();
+  int handled = g_windowMgr.ProcessMouse();
+  g_windowMgr.UpdateFrameWindows();
+  this->UpdateBalloons();
+  this->ExpireTooltip();
+  this->ProcessRightButtonDrag();
+  this->ProcessMouseWheel(handled);
+
+  if (timeGetTime() > *reinterpret_cast<std::uint32_t*>(this->unknown_01E0) + 1000) {
+    g_windowMgr.InvalidateRegisteredWindows();
+    *reinterpret_cast<std::uint32_t*>(this->unknown_01E0) = timeGetTime();
+  }
+
+  if (handled == 2) {
+    handled = 0;
+  }
+
+  if (this->unknown_0408 != nullptr) {
+    if (*reinterpret_cast<int*>(&g_session.unknown_544C[0x00]) == 0) {
+      if (g_mouse.wheel > 0) {
+        this->SendMsg(0x5D, 1, 0, 0, 0);
+      } else if (g_mouse.wheel < 0) {
+        this->SendMsg(0x5E, 1, 0, 0, 0);
+      }
+    }
+    *reinterpret_cast<int*>(&g_session.unknown_544C[0x00]) = 0;
+  }
+
+  if (g_mouse.buttons[0] == 3) {
+    if (this->scene->player) {
+      this->scene->player->SendMsg(nullptr, 0xF, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+    this->SendMsg(0x11, g_mouse.x, g_mouse.y, 0, 0);
+    UIMenuWnd* menu = static_cast<UIMenuWnd*>(g_windowMgr.unknown_0210);
+    if (menu) {
+      if (menu->unknown_00DC) {
+        menu->unknown_00DC = 0;
+      } else {
+        g_windowMgr.CloseWindow(0x12);
+      }
+    }
+    this->unknown_00F8 = 1;
+  }
+
+  g_pickModifierKey = HIBYTE(GetAsyncKeyState(VK_SHIFT));
+  ActorPickInfo* pick = g_actorPickNode.Pick(static_cast<float>(g_mouse.x), static_cast<float>(g_mouse.y));
+  UIWindow* blocker = g_windowMgr.LookupWindow(0x271B);
+  if (!blocker) {
+    this->OpenActorMenu(pick, handled);
+  }
+
+  this->cursorOffsetX = 0.0f;
+  this->cursorOffsetY = 0.0f;
+  if (handled == 0) {
+    const std::intptr_t mode = reinterpret_cast<std::intptr_t>(this->unknown_0408);
+    g_session.UpdateUnknown1708(mode == 2 || mode == 4);
+    if (pick) {
+      bool offset;
+      if (this->unknown_040C == 0xE7) {
+        offset = g_session.IsSkillIdInRange6001(pick->job) && pick->kind == 4;
+      } else {
+        int eligible;
+        if (g_session.unknown_1708 && reinterpret_cast<CGameActor*>(&g_session)->IsMonsterClass(pick->job)) {
+          eligible = 1;
+        } else if (g_serviceOptions.Get(0x2F)) {
+          eligible = pick->kind == 1;
+        } else {
+          eligible = 0;
+        }
+        offset = pick->kind != 3 && pick->kind != 4 && eligible;
+      }
+      if (offset) {
+        this->cursorOffsetX = (pick->left - pick->right) * g_depthAverageHalf + pick->right - static_cast<float>(g_mouse.x);
+        this->cursorOffsetY = (pick->top - pick->bottom) * g_depthAverageHalf + pick->bottom - static_cast<float>(g_mouse.y);
+      }
+    }
+  }
+
+  if (this->scene && this->scene->player && g_renderer) {
+    MarkScreenWorldOcclusion(
+      g_renderer->viewport.Projection(), this->scene->player->render.screenX, this->scene->player->render.screenY, g_renderer->viewport.uiScaleY, this->camera->frame.eye,
+      this->camera->frame.inverse.values, this->scene->player->render.position.y, this->camera->camera.distance, this->scene->spatial, *this->scene->ground,
+      this->unknown_0458 != 0
+    );
+  }
+
+  if (this->unknown_0250 == 0 && (this->unknown_024C == 0 || this->scene->player->unknown_0264[3] != 0) && !blocker && g_windowMgr.window_0288 == nullptr &&
+      !g_windowMgr.LookupWindow(0x169)) {
+    handled = this->ProcessGroundClick(this->ProcessMousePick(handled, pick));
+    this->UpdateHoverNameBalloon();
+    if (handled != 1 && g_mouse.buttons[0] == 1) {
+      InputFocus{g_windowMgr.hoverWindow}.Set(nullptr);
+    }
+  } else if (pick && handled == 0) {
+    this->ShowActorNameBalloon(pick->accountId);
+  }
+
+  if ((handled == 1 || g_mouse.buttons[0] == 1) && g_mouse.buttons[0] == 1) {
+    g_unknown173AD3F = false;
+    this->SendMsg(0x47, 0, 0, 0, 0);
+    if (timeGetTime() > this->unknown_0248 + 5000) {
+      this->unknown_0244 = 0;
+    }
+    *reinterpret_cast<std::uint32_t*>(this->unknown_00D8) = timeGetTime();
+  }
+
+  const bool statusIcons = g_serviceOptions.Get(0xC9) != 0;
+  if (Replay::Instance().state != 6 && statusIcons) {
+    this->ProcessStatusIconTooltip(g_mouse.x, g_mouse.y);
+  }
+
+  if (handled == 0) {
+    ModeCursor& cursor = *reinterpret_cast<ModeCursor*>(&this->cursorAction);
+    if (this->unknown_0408 != nullptr) {
+      cursor.Set(10, this->cursorTick);
+    } else if (g_mouse.buttons[1] != 2) {
+      int column = -1;
+      int row = -1;
+      PickScreenTerrain(
+        g_renderer->viewport.Projection(), g_mouse.x, g_mouse.y, this->camera->frame.eye, this->camera->frame.inverse.values, this->scene->spatial,
+        column, row
+      );
+      const TerrainHeightCell* cell = this->scene->terrain->Grid().CellAt(column, row);
+      if (cell && cell->type != 1 && cell->type != 5) {
+        cursor.Set(0, this->cursorTick);
+      } else {
+        cursor.Set(13, this->cursorTick);
+      }
+    }
+  }
+
+  this->unknown_00DC = g_mouse.x;
+  this->unknown_00E0 = g_mouse.y;
+}
+
 // OFFSET: 0x00CE1010
 // FUNCTION: fn_21331
 void CGameMode::UpdateHoverNameBalloon() {
@@ -4647,6 +4836,64 @@ void CGameMode::UpdateHoverNameBalloon() {
 
   this->SendMsg(5, 0, 0, 0, 0);
 }
+
+#include "Client/Browser/WebBrowser.h"
+#include "Client/Input/InputCharset.h"
+#include "Client/Timer.h"
+#include "Contents/ClanInfo.h"
+#include "Contents/Configuration/GameSettingsMgr.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Messenger/WhisperBlockMgr.h"
+#include "Contents/NavigationManager.h"
+#include "Network/TextEncoding.h"
+#include "UI/Chat/ChatSuggestions.h"
+#include <direct.h>
+#include <format>
+#include <io.h>
+
+#pragma pack(push, 1)
+struct TalkWhisperSettingPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ char name[0x18];
+  /* 001A */ unsigned char type;
+};
+
+struct TalkConfigPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ unsigned char value;
+};
+
+struct TalkIntPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ int value;
+};
+
+struct TalkSelectPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ unsigned char enabled;
+  /* 0003 */ int value;
+  /* 0007 */ unsigned char option;
+};
+
+struct TalkCameraPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ unsigned char action;
+  /* 0003 */ float range;
+  /* 0007 */ float rotation;
+  /* 000B */ float latitude;
+};
+
+struct TalkNamePacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ char name[0x10];
+};
+#pragma pack(pop)
+
+static_assert(sizeof(TalkWhisperSettingPacket) == 0x1B);
+static_assert(sizeof(TalkCameraPacket) == 0xF);
+static_assert(sizeof(TalkSelectPacket) == 8);
+
+// OFFSET: 0x00CE4B90
 
 // OFFSET: 0x00CE3D30
 // FUNCTION: fn_21335

@@ -106,6 +106,7 @@ public:
 
 extern int g_seasonalMonsterSprites;
 extern int g_pickInvert;
+extern int g_pickModifierKey;
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(RenderBounds) == 0x14);

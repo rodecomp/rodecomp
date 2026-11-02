@@ -366,6 +366,7 @@ public:
   void SpawnMandraAttack(std::uint32_t aid, int target, char flag);
   void OpenActorMenu(const ActorPickInfo* pick, int handled);
   int HandleActorPick(ActorPickInfo* pick, int result);
+  void ExecuteTalkType(int talkType, std::string* arguments);
   int ProcessMousePick(int result, ActorPickInfo* pick);
   void ReceiveSkillList(int packetType, const std::vector<SkillListEntry>& skills);
   void ShowActorNameBalloon(std::uint32_t id);
@@ -896,6 +897,7 @@ public:
   void ReceiveEquipItemListFlags(const unsigned char* packet);
   void ReceiveParaResultList(const unsigned char* packet);
   void ProcessRightButtonDrag();
+  void ProcessInput();
   void ProcessMouseWheel(int requireControl);
   void ReceiveEquipItemList34(const unsigned char* packet);
   void ReceiveEquipItemList38(const unsigned char* packet);
