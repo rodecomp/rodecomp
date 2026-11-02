@@ -1267,8 +1267,7 @@ void UIShowInfoWnd::DrawPaymentItem(const int& type, const int& zeny, const int&
 
       char number[32] = {};
       std::sprintf(number, "%d", id);
-      ItemDescriptions descriptions{g_itemDescriptions};
-      descriptions.IconPath(path, number, 1);
+      g_session.IconPath(path, number, 1);
     } else {
       strcpy_s(path, sizeof(path), "유저인터페이스\\styleshop\\icon_zeny.bmp");
     }
@@ -1287,8 +1286,7 @@ void UIShowInfoWnd::DrawPaymentItem(const int& type, const int& zeny, const int&
     memset(path, 0, sizeof(path));
     char number[32] = {};
     std::sprintf(number, "%d", id);
-    ItemDescriptions descriptions{g_itemDescriptions};
-    descriptions.IconPath(path, number, 1);
+    g_session.IconPath(path, number, 1);
     bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
   }
 
@@ -1961,8 +1959,7 @@ void UIAccessoryShowCase::AddAccessories(int& loaded, int& skipped, const char* 
     char path[128] = {};
     char id[32] = {};
     std::sprintf(id, "%d", itemId);
-    ItemDescriptions descriptions{g_itemDescriptions};
-    descriptions.IconPath(path, id, 1);
+    g_session.IconPath(path, id, 1);
 
     UIAccBitmapButton* button = new (std::nothrow) UIAccBitmapButton();
     button->SetBitmap(path, 0, 0);

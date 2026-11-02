@@ -208,25 +208,24 @@ void UIRoulletteWnd::Paint() {
 
   this->UpdateButtons();
 
-  ItemDescriptions descriptions{g_itemDescriptions};
   for (auto it = g_rouletteMgr->m_items.begin(); it != g_rouletteMgr->m_items.end(); ++it) {
     const int row = it->first.row;
     const int column = it->first.column;
     const int x = (row + column) * 36 + 159;
     const int y = 344 - row * 40;
     if (g_rouletteMgr->m_stage == row && (g_rouletteMgr->m_resultShown != 0 || g_rouletteMgr->m_spinning != 0)) {
-      DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, x, y, it->second, 0, 0);
+      DrawItemWithQuantity(*this, ResourceMgr::Instance(), x, y, it->second, 0, 0);
     } else {
-      DrawItemWithQuantityAuxiliary(*this, descriptions, 1, x, y, it->second, 0, 0);
+      DrawItemWithQuantityAuxiliary(*this, 1, x, y, it->second, 0, 0);
     }
   }
 
   if (g_rouletteMgr->m_resultShown == 1 && g_rouletteMgr->m_resultItem.quantity != 0) {
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, 189, 145, g_rouletteMgr->m_resultItem, 0, 0);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), 189, 145, g_rouletteMgr->m_resultItem, 0, 0);
   }
 
   if (g_rouletteMgr->m_additionItem.quantity != 0) {
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, 60, 135, g_rouletteMgr->m_additionItem, 0, 0);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), 60, 135, g_rouletteMgr->m_additionItem, 0, 0);
   }
 }
 

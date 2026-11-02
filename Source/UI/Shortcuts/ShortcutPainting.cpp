@@ -123,7 +123,7 @@ void ShortcutPainting::Paint(UIWindow& window, const ShortcutGrid& grid, const N
           continue;
         }
 
-        DrawItemIcon(window, this->resources, this->descriptions, x, y, item, static_cast<unsigned char>(item.unknown_0060));
+        DrawItemIcon(window, this->resources, x, y, item, static_cast<unsigned char>(item.unknown_0060));
         if (item.quantity != 0) {
           Count(window, x + 27, (y + 17), item.quantity);
         }
@@ -152,7 +152,7 @@ void ShortcutPainting::Paint(UIWindow& window, const ShortcutGrid& grid, const N
       }
 
       const int x = 16 + 29 * column;
-      DrawItemIcon(window, this->resources, this->descriptions, x, y, item, static_cast<unsigned char>(item.unknown_0060));
+      DrawItemIcon(window, this->resources, x, y, item, static_cast<unsigned char>(item.unknown_0060));
       if (item.quantity != 0) {
         Count(window, x + 27, (y + 17), item.quantity);
       }

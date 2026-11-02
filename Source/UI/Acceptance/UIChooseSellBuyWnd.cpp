@@ -6118,7 +6118,6 @@ void UInCashWnd::Slot25(int x, int y) {
   ITEM_INFO item = this->ItemAt(x, y);
   if (item.unknown_0000[1] != 0) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    ItemDescriptions descriptions{g_itemDescriptions};
     int source;
     if (this->m_selected < 0) {
       this->m_selected = ~this->m_selected;
@@ -6127,7 +6126,7 @@ void UInCashWnd::Slot25(int x, int y) {
       this->m_selectedIndex = item.unknown_0064;
       source = 6;
     }
-    mode->drag.BeginItem(g_windowMgr, descriptions, source, item, 1, -1);
+    mode->drag.BeginItem(g_windowMgr, source, item, 1, -1);
   }
 }
 
@@ -8086,8 +8085,7 @@ std::vector<unsigned char> UIMakingArrowListWnd::Slot44() {
 void UINotifyItemObtainWnd::Paint() {
   this->DrawBorder(0, 0, 0, 0);
   if (this->m_itemId.size() != 0) {
-    ItemDescriptions descriptions{g_itemDescriptions};
-    DrawItemIconById(*this, descriptions, 13, 5, this->m_itemId.c_str(), this->m_identified);
+    DrawItemIconById(*this, 13, 5, this->m_itemId.c_str(), this->m_identified);
   }
 
   const int kind = this->m_kind;
@@ -8405,8 +8403,7 @@ void UIItemCollectionWnd::Paint() {
           }
           this->DrawBitmap(x, y, bitmap, true);
         } else {
-          ItemDescriptions descriptions{g_itemDescriptions};
-          DrawItemIconById(*this, descriptions, x, y, FormatOwnedString("%d", card).c_str(), 0);
+          DrawItemIconById(*this, x, y, FormatOwnedString("%d", card).c_str(), 0);
         }
       }
     }
@@ -8755,13 +8752,12 @@ void UIEquipWnd::DrawEquipSlots() {
     }
 
     if (item.quantity == 1) {
-      ItemDescriptions descriptions{g_itemDescriptions};
       const unsigned row = slot & 3;
       if (slot < 8) {
-        DrawItemIcon(*this, ResourceMgr::Instance(), descriptions, iconX[slot / 4], this->m_contentTop + 44 + row * 26, item, 0);
+        DrawItemIcon(*this, ResourceMgr::Instance(), iconX[slot / 4], this->m_contentTop + 44 + row * 26, item, 0);
         this->DrawItemName(nameX[slot / 4] + 5, this->m_contentTop + rowOffsets[row] + 51, 70, &item, 0, 0, 12);
       } else {
-        DrawItemIcon(*this, ResourceMgr::Instance(), descriptions, iconX[row], this->m_contentTop + 18, item, 0);
+        DrawItemIcon(*this, ResourceMgr::Instance(), iconX[row], this->m_contentTop + 18, item, 0);
         this->DrawItemName(nameX[slot - 8] + 5, this->m_contentTop + 25, 70, &item, 0, 0, 12);
       }
     }
@@ -8879,8 +8875,7 @@ void UIEquipWnd::Slot25(int x, int y) {
   if (item.quantity > 0) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     const EquipSlots slots = g_session.GetEquipSlots(item.unknown_0000[3]);
-    ItemDescriptions descriptions{g_itemDescriptions};
-    mode->drag.BeginItem(g_windowMgr, descriptions, this->m_page == 1 ? 24 : 2, item, item.quantity, slots.values[2]);
+    mode->drag.BeginItem(g_windowMgr, this->m_page == 1 ? 24 : 2, item, item.quantity, slots.values[2]);
   }
 
   if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
@@ -9543,7 +9538,6 @@ int UIFrameWnd::BuildItemName(
   }
 
   int& capacity = reinterpret_cast<int&>(*remaining);
-  ItemDescriptions descriptions{g_itemDescriptions};
 
   const auto unknownCreator = [&]() {
     g_windowMgr.RegisterWindow(this);
@@ -9596,7 +9590,7 @@ int UIFrameWnd::BuildItemName(
     }
 
     if (g_serviceType == 12 || g_serviceType == 14) {
-      *cursor += descriptions.Name(*item, *cursor, capacity, 1);
+      *cursor += item->sub_6D5810(*cursor, capacity, 1);
       breaks->push_back(*cursor);
       *cursor += item->Element(*cursor, capacity, 1);
       breaks->push_back(*cursor);
@@ -9624,7 +9618,7 @@ int UIFrameWnd::BuildItemName(
     }
   } else {
     if (!isEquipment()) {
-      *cursor += descriptions.Name(*item, *cursor, capacity, 1);
+      *cursor += item->sub_6D5810(*cursor, capacity, 1);
       breaks->push_back(*cursor);
       if (withSlots == 1) {
         *cursor += item->Slots(*cursor, capacity, 1);
@@ -9645,7 +9639,7 @@ int UIFrameWnd::BuildItemName(
     if (item->HasCards()) {
       *cursor += item->Prefixes(*cursor, capacity, 1);
       breaks->push_back(*cursor);
-      *cursor += descriptions.Name(*item, *cursor, capacity, 1);
+      *cursor += item->sub_6D5810(*cursor, capacity, 1);
       breaks->push_back(*cursor);
       *cursor += item->Suffixes(*cursor, capacity, 1);
       breaks->push_back(*cursor);
@@ -9657,7 +9651,7 @@ int UIFrameWnd::BuildItemName(
     }
 
     if (!item->HasSpecialCard()) {
-      *cursor += descriptions.Name(*item, *cursor, capacity, 1);
+      *cursor += item->sub_6D5810(*cursor, capacity, 1);
       breaks->push_back(*cursor);
       if (withSlots == 1) {
         *cursor += item->Slots(*cursor, capacity, 1);
@@ -9668,7 +9662,7 @@ int UIFrameWnd::BuildItemName(
 
     if (g_serviceType == 12 || g_serviceType == 14) {
       if (g_serviceType == 12) {
-        *cursor += descriptions.Name(*item, *cursor, capacity, 1);
+        *cursor += item->sub_6D5810(*cursor, capacity, 1);
         breaks->push_back(*cursor);
         *cursor += item->Element(*cursor, capacity, 1);
         breaks->push_back(*cursor);
@@ -9676,7 +9670,7 @@ int UIFrameWnd::BuildItemName(
       } else {
         *cursor += item->Star(*cursor, capacity, 1);
         breaks->push_back(*cursor);
-        *cursor += descriptions.Name(*item, *cursor, capacity, 1);
+        *cursor += item->sub_6D5810(*cursor, capacity, 1);
         breaks->push_back(*cursor);
         *cursor += item->Element(*cursor, capacity, 1);
       }
@@ -9713,7 +9707,7 @@ int UIFrameWnd::BuildItemName(
     if (!splitCreator) {
       *cursor += item->Element(*cursor, capacity, 1);
       breaks->push_back(*cursor);
-      *cursor += descriptions.Name(*item, *cursor, capacity, 1);
+      *cursor += item->sub_6D5810(*cursor, capacity, 1);
       breaks->push_back(*cursor);
       return 1;
     }
@@ -9722,7 +9716,7 @@ int UIFrameWnd::BuildItemName(
   breaks->push_back(*cursor);
   *cursor += item->Element(*cursor, capacity, 1);
   breaks->push_back(*cursor);
-  *cursor += descriptions.Name(*item, *cursor, capacity, 1);
+  *cursor += item->sub_6D5810(*cursor, capacity, 1);
   breaks->push_back(*cursor);
   return 1;
 }
@@ -10282,14 +10276,13 @@ void UIExchangeWnd::Paint() {
     SkinPaletteChannels(ResourceMgr::Instance(), 10, 6, red, green, blue);
     this->FillRegion(283, 21, 272, 310, RGB(red, green, blue));
   }
-  ItemDescriptions descriptions{g_itemDescriptions};
   int row = 0;
   for (const ITEM_INFO& item : this->m_myItems) {
     if (g_session.IsPetEgg(std::atoi(item.itemId.c_str())) != 0 && item.unknown_005D != 0) {
       continue;
     }
     const int y = this->m_rowHeight * row;
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, 16, y + 21, item, 0, 0);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), 16, y + 21, item, 0, 0);
     this->DrawFittedItemName(48, y + 29, &item, 0, 0, 12, 1);
     if (item.unknown_0088 > 0) {
       const std::string path = FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.unknown_0088);
@@ -10307,7 +10300,7 @@ void UIExchangeWnd::Paint() {
       continue;
     }
     const int y = this->m_rowHeight * row;
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, 295, y + 21, item, 0, 0);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), 295, y + 21, item, 0, 0);
     this->DrawFittedItemName(327, y + 29, &item, 0, 0, 12, 1);
     if (item.unknown_0088 > 0) {
       const std::string path = FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.unknown_0088);

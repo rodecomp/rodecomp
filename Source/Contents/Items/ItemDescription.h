@@ -26,19 +26,12 @@ public:
   /* 0040 */ int unknown_0040;
 };
 
-struct ItemDescriptions {
-  std::map<int, ITEM_DESC>& values;
-  ITEM_DESC& Find(int id);
-  ITEM_DESC& Ensure(int id);
-  void IconPath(char* output, const char* id, int identified);
-  const std::vector<const char*>& Description(const ITEM_INFO& item);
-  int Name(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume);
-};
-
 extern std::map<int, ITEM_DESC> g_itemDescriptions;
 extern std::map<int, std::vector<const char*>> g_metalProcessItems;
 extern std::map<int, std::vector<const char*>> g_bookItemNames;
 
+ITEM_DESC& FindItemDescription(int id, std::map<int, ITEM_DESC>& values);
+ITEM_DESC& EnsureItemDescription(int id, std::map<int, ITEM_DESC>& values);
 ITEM_DESC& FindItemDescription(int id);
 ItemCardName& EnsureItemCardName(int id, std::map<int, ItemCardName>& values);
 std::vector<const char*>& EnsureItemDescriptionLines(int id, std::map<int, std::vector<const char*>>& values);

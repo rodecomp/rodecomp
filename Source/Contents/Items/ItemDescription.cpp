@@ -1,6 +1,7 @@
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Items/ItemNaming.h"
+#include "Client/Session.h"
 
 #include <cstdio>
 #include <cstdlib>
@@ -47,10 +48,10 @@ ITEM_DESC& ITEM_DESC::operator=(const ITEM_DESC& other) {
 
 // OFFSET: 0x006D3A00
 // FUNCTION: fn_06545
-ITEM_DESC& ItemDescriptions::Find(int id) {
+ITEM_DESC& FindItemDescription(int id, std::map<int, ITEM_DESC>& values) {
   static ITEM_DESC missing;
-  const auto entry = this->values.find(id);
-  return entry == this->values.end() ? missing : entry->second;
+  const auto entry = values.find(id);
+  return entry == values.end() ? missing : entry->second;
 }
 
 // OFFSET: 0x006D3AE0
@@ -78,35 +79,34 @@ std::vector<const char*>& EnsureItemDescriptionLines(int id, std::map<int, std::
 // OFFSET: 0x006D5890
 // FUNCTION: fn_06579
 ITEM_DESC& FindItemDescription(int id) {
-  ItemDescriptions descriptions{g_itemDescriptions};
-  return descriptions.Find(id);
+  return FindItemDescription(id, g_itemDescriptions);
 }
 
 // OFFSET: 0x006D3DC0
 // FUNCTION: fn_06548
-ITEM_DESC& ItemDescriptions::Ensure(int id) {
-  return this->values[id];
+ITEM_DESC& EnsureItemDescription(int id, std::map<int, ITEM_DESC>& values) {
+  return values[id];
 }
 
 // OFFSET: 0x00DDD280
 // FUNCTION: fn_23382
-void ItemDescriptions::IconPath(char* output, const char* id, int identified) {
-  const ITEM_DESC& value = this->Find(std::atoi(id));
+void CSession::IconPath(char* output, const char* id, int identified) {
+  const ITEM_DESC& value = FindItemDescription(std::atoi(id));
   const char* resource = identified != 0 ? value.identifiedResource : value.unidentifiedResource;
   std::sprintf(output, "유저인터페이스\\item\\%s.bmp", resource);
 }
 
 // OFFSET: 0x006D5730
 // FUNCTION: fn_06576
-const std::vector<const char*>& ItemDescriptions::Description(const ITEM_INFO& item) {
-  const ITEM_DESC& value = this->Find(std::atoi(item.itemId.c_str()));
-  return item.identified == 1 ? value.identifiedDescription : value.unidentifiedDescription;
+const std::vector<const char*>& ITEM_INFO::Description() const {
+  const ITEM_DESC& value = FindItemDescription(std::atoi(this->itemId.c_str()), g_itemDescriptions);
+  return this->identified == 1 ? value.identifiedDescription : value.unidentifiedDescription;
 }
 
 // OFFSET: 0x006D5810
 // FUNCTION: fn_06578
-int ItemDescriptions::Name(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) {
-  const char* name = this->Find(std::atoi(item.itemId.c_str())).identifiedName;
+int ITEM_INFO::sub_6D5810(char* output, int& capacity, unsigned char consume) const {
+  const char* name = FindItemDescription(std::atoi(this->itemId.c_str()), g_itemDescriptions).identifiedName;
   const int error = strncpy_s(output, capacity, name ? name : " ", _TRUNCATE);
 
   if (error != 0 && error != 80) {

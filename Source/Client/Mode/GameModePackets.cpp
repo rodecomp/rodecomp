@@ -6533,7 +6533,7 @@ void CGameMode::ReceiveFormattedMessage(const unsigned char* packet) {
     ITEM_INFO item;
     item.SetItemId(*reinterpret_cast<const int*>(packet + 4));
     int capacity = sizeof(name);
-    ItemDescriptions{g_itemDescriptions}.Name(item, name, capacity, 0);
+    item.sub_6D5810(name, capacity, 0);
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(3278), name);
   } else {
     std::sprintf(text, LookupMessage(messageId), *reinterpret_cast<const int*>(packet + 4));
@@ -8947,7 +8947,7 @@ void CGameMode::ReceiveFeedResult(const unsigned char* data) {
       ITEM_INFO item;
       item.SetItemId(packet->itemId);
       int capacity = sizeof(name);
-      ItemDescriptions{g_itemDescriptions}.Name(item, name, capacity, 0);
+      item.sub_6D5810(name, capacity, 0);
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0xA12), name, count).c_str()), 0xFFFF64, 0, 0, 0);
     } else {
       ITEM_INFO item;
@@ -8966,7 +8966,7 @@ void CGameMode::ReceiveFeedResult(const unsigned char* data) {
       ITEM_INFO item;
       item.SetItemId(packet->itemId);
       int capacity = sizeof(name);
-      ItemDescriptions{g_itemDescriptions}.Name(item, name, capacity, 0);
+      item.sub_6D5810(name, capacity, 0);
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0xCD1), name, count).c_str()), 0xFFFF64, 0, 0, 0);
     } else {
       ITEM_INFO item;

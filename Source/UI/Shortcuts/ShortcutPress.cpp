@@ -36,7 +36,7 @@ void ShortcutPress::Press(UIFrameWnd& window, ShortcutGrid& grid, int x, int y, 
     } else {
       ITEM_INFO item = LookupClientItem(this->inventory, static_cast<int>(slot.itemId), 1);
       if (item.unknown_0000[1] != 0) {
-        this->drag->BeginItem(this->windows, this->descriptions, 7, item, item.quantity, -1);
+        this->drag->BeginItem(this->windows, 7, item, item.quantity, -1);
       }
     }
   } else if (this->itemSlotActive) {
@@ -47,7 +47,7 @@ void ShortcutPress::Press(UIFrameWnd& window, ShortcutGrid& grid, int x, int y, 
 
     ITEM_INFO item = LookupClientItem(this->inventory, static_cast<int>(slot.itemId), 1);
     if (item.unknown_0000[1] != 0 && this->drag) {
-      this->drag->BeginItem(this->windows, this->descriptions, 7, item, item.quantity, -1);
+      this->drag->BeginItem(this->windows, 7, item, item.quantity, -1);
     }
   }
 }

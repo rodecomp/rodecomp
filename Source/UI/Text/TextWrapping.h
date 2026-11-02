@@ -4,12 +4,11 @@
 #include <string>
 #include <vector>
 
-struct ItemDescriptions;
 
 void WrapPlainText(const char* text, std::vector<std::string>& lines, int width);
 
 void WrapRichText(
-  const char* text, std::vector<std::string>& lines, int width, bool carriageReturns, ItemDescriptions& items
+  const char* text, std::vector<std::string>& lines, int width, bool carriageReturns
 );
 
 #endif

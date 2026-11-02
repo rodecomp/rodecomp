@@ -139,8 +139,7 @@ void UILapineUpgradeBox_IngredientInfoWnd::Paint() {
     this->DrawBitmap(32, 0, bitmap ? &bitmap->image : nullptr, false);
   }
 
-  ItemDescriptions descriptions{g_itemDescriptions};
-  DrawItemIcon(*this, ResourceMgr::Instance(), descriptions, 4, 3, this->item, 0);
+  DrawItemIcon(*this, ResourceMgr::Instance(), 4, 3, this->item, 0);
 
   const std::string name = this->FitDisplayText(100, this->item.unknown_0044.c_str(), 0, 12, 0);
   this->DrawShadowedText(36, 9, name.c_str(), 0, 0, 0xE0E0E0, 0, 12, 0);
@@ -160,8 +159,7 @@ void UILapineUpgradeBoxWnd::Paint() {
   this->DrawCenteredText(35, 63, this->description.c_str(), 156, 0, 11, 0x844A42, 0);
 
   if (this->item.unknown_0000[1] != 0) {
-    ItemDescriptions descriptions{g_itemDescriptions};
-    DrawItemIcon(*this, ResourceMgr::Instance(), descriptions, 101, 165, this->item, 0);
+    DrawItemIcon(*this, ResourceMgr::Instance(), 101, 165, this->item, 0);
   }
 
   if (timeGetTime() < this->noticeTick + this->noticeDuration) {
@@ -223,8 +221,7 @@ void UILapineUpgradeBoxWnd::Slot25(int x, int y) {
     UIFrameWnd::Slot25(x, y);
   }
   if (static_cast<unsigned>(x - 101) <= 24 && static_cast<unsigned>(y - 165) <= 24 && this->item.unknown_0000[1] != 0) {
-    ItemDescriptions descriptions{g_itemDescriptions};
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(g_windowMgr, descriptions, 26, this->item, 1, -1);
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(g_windowMgr, 26, this->item, 1, -1);
   }
 }
 
@@ -232,8 +229,7 @@ void UILapineUpgradeBoxWnd::Slot25(int x, int y) {
 // FUNCTION: fn_04206
 void UILapineUpgradeBox_IngredientInfoWnd::Slot25(int x, int y) {
   if (this->item.unknown_0000[1] != 0) {
-    ItemDescriptions descriptions{g_itemDescriptions};
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(g_windowMgr, descriptions, 27, this->item, this->quantity, -1);
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(g_windowMgr, 27, this->item, this->quantity, -1);
   }
 }
 
@@ -292,8 +288,7 @@ void UILapineUpgradeBoxWnd::SetIngredient(int id) {
   char name[0x104];
   std::memset(name, 0, sizeof(name));
   int capacity = sizeof(name);
-  ItemDescriptions descriptions{g_itemDescriptions};
-  descriptions.Name(item, name, capacity, 0);
+  item.sub_6D5810(name, capacity, 0);
   this->title.assign(name, std::strlen(name));
 
   int minimumRefine = 0;
@@ -541,8 +536,7 @@ __declspec(noinline) void UILapineUpgradeBox_IngredientInfoWnd::SetItem(std::uin
   char name[0x104];
   std::memset(name, 0, sizeof(name));
   int capacity = sizeof(name);
-  ItemDescriptions descriptions{g_itemDescriptions};
-  descriptions.Name(this->item, name, capacity, 0);
+  this->item.sub_6D5810(name, capacity, 0);
 
   if (this->item.identified == 1 && this->item.unknown_0098 != 0) {
     char formatted[0x104];

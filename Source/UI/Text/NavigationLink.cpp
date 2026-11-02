@@ -656,8 +656,7 @@ void UIItemImage::Paint() {
 
   this->ClearSurface(0xFFFF00FF);
   char path[128] = {};
-  ItemDescriptions descriptions{g_itemDescriptions};
-  descriptions.IconPath(path, this->m_itemId.c_str(), 1);
+  g_session.IconPath(path, this->m_itemId.c_str(), 1);
   CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
 
   if (bitmap) {
@@ -1402,8 +1401,7 @@ int CCreateLineInfo::ParseItemName(int index) {
       char name[260];
       std::memset(name, 0, sizeof(name));
       int capacity = sizeof(name);
-      ItemDescriptions descriptions{g_itemDescriptions};
-      descriptions.Name(item, name, capacity, 0);
+      item.sub_6D5810(name, capacity, 0);
       this->AddSegment(LINE_SEGMENT_TEXT);
       this->AppendText(std::string(name));
       index += static_cast<int>(digits.size()) + 9;

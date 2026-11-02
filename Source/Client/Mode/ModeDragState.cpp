@@ -1,4 +1,5 @@
 #include "Client/Mode/ModeDragState.h"
+#include "Client/Session.h"
 #include "Contents/Items/BarterMarketItemMgr.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
@@ -31,7 +32,7 @@ void ModeDragState::Clear() {
 // OFFSET: 0x00CFE140
 // FUNCTION: fn_21429
 void ModeDragState::BeginItem(
-  WindowManagerWindows& windows, ItemDescriptions& descriptions, int sourceValue, const ITEM_INFO& item, int quantityValue, int slotValue
+  WindowManagerWindows& windows, int sourceValue, const ITEM_INFO& item, int quantityValue, int slotValue
 ) {
   UIWindow* window = windows.EnsureWindow(15);
   if (window->geometry.visible != 0) {
@@ -47,7 +48,7 @@ void ModeDragState::BeginItem(
   this->skill = 0;
   this->id = item.unknown_0000[1];
   this->quantity = quantityValue;
-  this->resource = ItemDragResource(descriptions, item.itemId.c_str(), item.identified);
+  this->resource = g_session.ItemDragResource(item.itemId.c_str(), item.identified);
   this->name = item.itemId;
   this->unknown_0310 = item.unknown_0014[0];
   this->unknown_0314 = item.unknown_0014[1];
@@ -98,8 +99,7 @@ void ModeDragState::BeginBarterItem(int sourceValue, const BarterMarketItem& ite
   this->source = sourceValue;
   this->quantity = quantityValue;
   this->skill = 0;
-  ItemDescriptions descriptions{g_itemDescriptions};
-  this->resource = ItemDragResource(descriptions, item.name.c_str(), item.flag_24);
+  this->resource = g_session.ItemDragResource(item.name.c_str(), item.flag_24);
   this->name = item.name.c_str();
   this->unknown_0310 = item.field_20;
   this->type = item.field_1c;
@@ -116,8 +116,7 @@ void ModeDragState::BeginBarterEntry(int sourceValue, const BarterMarketEntry& e
   this->source = sourceValue;
   this->quantity = quantityValue;
   this->skill = 0;
-  ItemDescriptions descriptions{g_itemDescriptions};
-  this->resource = ItemDragResource(descriptions, entry.name.c_str(), entry.flag_24);
+  this->resource = g_session.ItemDragResource(entry.name.c_str(), entry.flag_24);
   this->name = entry.name.c_str();
   this->unknown_0310 = entry.field_8;
   this->type = entry.field_0;

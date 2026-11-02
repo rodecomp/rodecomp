@@ -148,7 +148,7 @@ void UISwapEquipmentWnd::sub_82FD90() {
           if (slot < 8) {
             const int iconX = xCoords[slot / 4 + 2];
             std::memset(path, 0, sizeof(path));
-            ItemDescriptions{g_itemDescriptions}.IconPath(path, item.itemId.c_str(), 1);
+            g_session.IconPath(path, item.itemId.c_str(), 1);
             CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
             const int row = slot & 3;
             if (bitmap) {
@@ -164,7 +164,7 @@ void UISwapEquipmentWnd::sub_82FD90() {
           } else {
             const int iconX = xCoords[(slot & 3) + 2];
             std::memset(path, 0, sizeof(path));
-            ItemDescriptions{g_itemDescriptions}.IconPath(path, item.itemId.c_str(), 1);
+            g_session.IconPath(path, item.itemId.c_str(), 1);
             CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
             if (bitmap) {
               this->DrawAuxiliary(1, iconX, 22, &bitmap->image, true, false);
@@ -403,8 +403,7 @@ void UISwapEquipmentWnd::Slot25(int x, int y) {
 
   const EquipSlots slots = g_session.GetEquipSlots(item.unknown_0000[3]);
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-  ItemDescriptions descriptions{g_itemDescriptions};
-  mode->drag.BeginItem(g_windowMgr, descriptions, this->unknown_00BC == 2 ? 18 : 17, item, item.quantity, slots.values[2]);
+  mode->drag.BeginItem(g_windowMgr, this->unknown_00BC == 2 ? 18 : 17, item, item.quantity, slots.values[2]);
 
   if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
     if (g_windowMgr.GetHoverWindow() && item.identified != 0) {

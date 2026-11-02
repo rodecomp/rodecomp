@@ -1164,8 +1164,7 @@ void UIItemWnd::Slot32(int x, int y) {
       }
 
       item = LookupClientItemByIdentity(g_session.m_inventoryItems, item.unknown_0000[1]);
-      ItemDescriptions descriptions{g_itemDescriptions};
-      mode->drag.BeginItem(g_windowMgr, descriptions, 1, item, item.quantity, -1);
+      mode->drag.BeginItem(g_windowMgr, 1, item, item.quantity, -1);
       if (mode->ConfirmDraggedItemUse()) {
         return;
       }
@@ -1230,8 +1229,7 @@ void UIMerchantItemPurchaseWnd::Slot32(int x, int y) {
     if (HIBYTE(GetAsyncKeyState(VK_MENU))) {
       if (g_windowMgr.unknown_0300) {
         item = g_session.FindItem1760ByItemId(item.itemId.c_str());
-        ItemDescriptions descriptions{g_itemDescriptions};
-        mode->drag.BeginItem(g_windowMgr, descriptions, 13, item, item.quantity, -1);
+        mode->drag.BeginItem(g_windowMgr, 13, item, item.quantity, -1);
         reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0300)->SendMsg(nullptr, 38, 0, 0, 0, 0);
       }
     } else {
@@ -1257,8 +1255,7 @@ void UIMerchantItemShopWnd::Slot32(int x, int y) {
 
     if (HIBYTE(GetAsyncKeyState(VK_MENU))) {
       if (g_windowMgr.unknown_0308) {
-        ItemDescriptions descriptions{g_itemDescriptions};
-        mode->drag.BeginItem(g_windowMgr, descriptions, 12, item, item.quantity, -1);
+        mode->drag.BeginItem(g_windowMgr, 12, item, item.quantity, -1);
         reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0308)->SendMsg(nullptr, 38, 0, 0, 0, 0);
       }
     } else {
@@ -1308,13 +1305,11 @@ void UIMerchantMirrorItemWnd::Slot32(int x, int y) {
     if (HIBYTE(GetAsyncKeyState(VK_MENU))) {
       if (g_windowMgr.unknown_02FC) {
         item = g_session.FindItem1750(item.unknown_0000[1]);
-        ItemDescriptions descriptions{g_itemDescriptions};
-        mode->drag.BeginItem(g_windowMgr, descriptions, 11, item, item.quantity, -1);
+        mode->drag.BeginItem(g_windowMgr, 11, item, item.quantity, -1);
         reinterpret_cast<UIWindow*>(g_windowMgr.unknown_02FC)->SendMsg(nullptr, 38, 0, 0, 0, 0);
       } else if (g_windowMgr.unknown_040C) {
         item = g_session.FindItem1750(item.unknown_0000[1]);
-        ItemDescriptions descriptions{g_itemDescriptions};
-        mode->drag.BeginItem(g_windowMgr, descriptions, 20, item, item.quantity, -1);
+        mode->drag.BeginItem(g_windowMgr, 20, item, item.quantity, -1);
         reinterpret_cast<UIWindow*>(g_windowMgr.unknown_040C)->SendMsg(nullptr, 38, 0, 0, 0, 0);
       }
     } else {
@@ -1334,14 +1329,12 @@ void UIMerchantShopMakeWnd::Slot32(int x, int y) {
     if (HIBYTE(GetAsyncKeyState(VK_MENU))) {
       if (g_windowMgr.unknown_02F8) {
         item = g_session.FindItem1768(item.unknown_0000[1]);
-        ItemDescriptions descriptions{g_itemDescriptions};
-        gameMode->drag.BeginItem(g_windowMgr, descriptions, 10, item, item.quantity, -1);
+        gameMode->drag.BeginItem(g_windowMgr, 10, item, item.quantity, -1);
         reinterpret_cast<UIWindow*>(g_windowMgr.unknown_02F8)->SendMsg(nullptr, 38, 0, 0, 0, 0);
         g_windowMgr.SetFocus(nullptr);
       } else if (g_windowMgr.unknown_0410) {
         item = g_session.FindItem1768(item.unknown_0000[1]);
-        ItemDescriptions descriptions{g_itemDescriptions};
-        gameMode->drag.BeginItem(g_windowMgr, descriptions, 19, item, item.quantity, -1);
+        gameMode->drag.BeginItem(g_windowMgr, 19, item, item.quantity, -1);
         reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0410)->SendMsg(nullptr, 38, 0, 0, 0, 0);
       }
     } else {
@@ -1391,7 +1384,6 @@ void UIItemBaseWnd::Paint() {
     }
   }
 
-  ItemDescriptions descriptions{g_itemDescriptions};
   int visible = 0;
   int index = 0;
 
@@ -1408,9 +1400,9 @@ void UIItemBaseWnd::Paint() {
     const int x = visible % this->columns * 32 + 44;
 
     if (this->showQuantity != 0) {
-      DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, x, top + 21, *it, 0, 0);
+      DrawItemWithQuantity(*this, ResourceMgr::Instance(), x, top + 21, *it, 0, 0);
     } else {
-      DrawItemIcon(*this, ResourceMgr::Instance(), descriptions, x, top + 21, *it, 0);
+      DrawItemIcon(*this, ResourceMgr::Instance(), x, top + 21, *it, 0);
     }
 
     if (it->unknown_0088 > 0) {
@@ -2841,8 +2833,7 @@ int UIMerchantShopMakeWnd::CommitPrice(int next) {
     ITEM_INFO item = g_session.GetItem1768At(this->editIndex);
     char name[128];
     int capacity = 128;
-    ItemDescriptions descriptions{g_itemDescriptions};
-    descriptions.Name(item, name, capacity, 0);
+    item.sub_6D5810(name, capacity, 0);
     std::string message = FormatOwnedString(LookupMessage(2473), name);
 
     const int high = static_cast<int>(price / std::atoi(LookupMessage(2474)));
@@ -2897,8 +2888,7 @@ void UIMerchantShopMakeWnd::PrintBuyList() {
 
   for (unsigned index = 0; index < this->items.size(); ++index, ++it) {
     int capacity = 256;
-    ItemDescriptions descriptions{g_itemDescriptions};
-    descriptions.Name(*it, name, capacity, 0);
+    it->sub_6D5810(name, capacity, 0);
 
     std::sprintf(text, "%s ", this->priceEdits[index]->Text());
     g_session.IsNumberWithCommas(text);
@@ -4305,8 +4295,7 @@ void UIMerchantItemShopWnd::Slot25(int x, int y) {
     ITEM_INFO item = this->GetItemByIndex(this->hovered);
 
     if (item.unknown_0000[1] > 0) {
-      ItemDescriptions descriptions{g_itemDescriptions};
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(g_windowMgr, descriptions, 12, item, 1, -1);
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(g_windowMgr, 12, item, 1, -1);
     }
   }
 }
@@ -5517,8 +5506,7 @@ void UIItemPurchaseWnd::Slot25(int x, int y) {
   if (item.unknown_0000[1] > 0) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     item = g_session.FindItem1720ByItemId(item.itemId.c_str());
-    ItemDescriptions descriptions{g_itemDescriptions};
-    mode->drag.BeginItem(g_windowMgr, descriptions, 4, item, item.quantity, -1);
+    mode->drag.BeginItem(g_windowMgr, 4, item, item.quantity, -1);
   }
 }
 
@@ -5553,8 +5541,7 @@ void UIItemSellWnd2::Slot25(int x, int y) {
   if (item.unknown_0000[1] > 0) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     item = g_session.FindItem1730(item.unknown_0000[1]);
-    ItemDescriptions descriptions{g_itemDescriptions};
-    mode->drag.BeginItem(g_windowMgr, descriptions, 5, item, item.quantity, -1);
+    mode->drag.BeginItem(g_windowMgr, 5, item, item.quantity, -1);
   }
 }
 
@@ -5589,8 +5576,7 @@ void UIItemSellWnd::Slot25(int x, int y) {
   if (item.unknown_0000[1] > 0) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     item = g_session.FindItem1730(item.unknown_0000[1]);
-    ItemDescriptions descriptions{g_itemDescriptions};
-    mode->drag.BeginItem(g_windowMgr, descriptions, 5, item, item.quantity, -1);
+    mode->drag.BeginItem(g_windowMgr, 5, item, item.quantity, -1);
   }
 }
 
@@ -5625,8 +5611,7 @@ void UIItemShopWnd2::Slot25(int x, int y) {
   if (item.unknown_0000[1] > 0) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     const ITEM_INFO owned = LookupClientItemByIdentity(g_session.m_inventoryItems, item.unknown_0000[1]);
-    ItemDescriptions descriptions{g_itemDescriptions};
-    mode->drag.BeginItem(g_windowMgr, descriptions, 3, item, owned.unknown_0000[1] > 0 ? item.quantity : 1, -1);
+    mode->drag.BeginItem(g_windowMgr, 3, item, owned.unknown_0000[1] > 0 ? item.quantity : 1, -1);
   }
 }
 
@@ -5653,8 +5638,7 @@ void UIItemShopWnd::Slot25(int x, int y) {
   if (item.unknown_0000[1] > 0) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     const ITEM_INFO owned = LookupClientItemByIdentity(g_session.m_inventoryItems, item.unknown_0000[1]);
-    ItemDescriptions descriptions{g_itemDescriptions};
-    mode->drag.BeginItem(g_windowMgr, descriptions, 3, item, owned.unknown_0000[1] > 0 ? item.quantity : 1, -1);
+    mode->drag.BeginItem(g_windowMgr, 3, item, owned.unknown_0000[1] > 0 ? item.quantity : 1, -1);
   }
 }
 
@@ -5670,8 +5654,7 @@ void UIItemStoreFindWnd::Slot25(int x, int y) {
   if (item.unknown_0000[1] > 0 && item.unknown_0074[2] == 0) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     item = g_session.FindItem1738(item.unknown_0000[1]);
-    ItemDescriptions descriptions{g_itemDescriptions};
-    mode->drag.BeginItem(g_windowMgr, descriptions, 6, item, item.quantity, -1);
+    mode->drag.BeginItem(g_windowMgr, 6, item, item.quantity, -1);
   }
 }
 
@@ -5687,8 +5670,7 @@ void UIItemStoreSubWnd::Slot25(int x, int y) {
   if (item.unknown_0000[1] > 0 && item.unknown_0074[2] == 0) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     item = g_session.FindItem1738(item.unknown_0000[1]);
-    ItemDescriptions descriptions{g_itemDescriptions};
-    mode->drag.BeginItem(g_windowMgr, descriptions, 6, item, item.quantity, -1);
+    mode->drag.BeginItem(g_windowMgr, 6, item, item.quantity, -1);
   }
 }
 
@@ -5708,8 +5690,7 @@ void UIItemStoreWnd::Slot25(int x, int y) {
   if (item.unknown_0000[1] > 0 && item.unknown_0074[2] == 0) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     item = g_session.FindItem1738(item.unknown_0000[1]);
-    ItemDescriptions descriptions{g_itemDescriptions};
-    mode->drag.BeginItem(g_windowMgr, descriptions, 6, item, item.quantity, -1);
+    mode->drag.BeginItem(g_windowMgr, 6, item, item.quantity, -1);
   }
 }
 
@@ -5736,8 +5717,7 @@ void UIMerchantItemPurchaseWnd::Slot25(int x, int y) {
   if (item.unknown_0000[1] > 0) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     item = g_session.FindItem1760ByItemId(item.itemId.c_str());
-    ItemDescriptions descriptions{g_itemDescriptions};
-    mode->drag.BeginItem(g_windowMgr, descriptions, this->unknown_0108 != 0 ? 21 : 13, item, item.quantity, -1);
+    mode->drag.BeginItem(g_windowMgr, this->unknown_0108 != 0 ? 21 : 13, item, item.quantity, -1);
   }
 }
 
@@ -5757,9 +5737,8 @@ void UIMerchantMirrorItemWnd::Slot25(int x, int y) {
   if (item.unknown_0000[1] > 0) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     item = g_session.FindItem1750(item.unknown_0000[1]);
-    ItemDescriptions descriptions{g_itemDescriptions};
     mode->drag.BeginItem(
-      g_windowMgr, descriptions, this->unknown_00F4 == 1 ? 20 : this->unknown_00F4 == 2 ? 22 : 11, item, item.quantity, -1
+      g_windowMgr, this->unknown_00F4 == 1 ? 20 : this->unknown_00F4 == 2 ? 22 : 11, item, item.quantity, -1
     );
   }
 }
@@ -5781,8 +5760,7 @@ void UIMerchantShopMakeWnd::Slot25(int x, int y) {
   if (item.unknown_0000[1] > 0) {
     CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     item = g_session.FindItem1768(item.unknown_0000[1]);
-    ItemDescriptions descriptions{g_itemDescriptions};
-    gameMode->drag.BeginItem(g_windowMgr, descriptions, this->mode != 0 ? 19 : 10, item, item.quantity, -1);
+    gameMode->drag.BeginItem(g_windowMgr, this->mode != 0 ? 19 : 10, item, item.quantity, -1);
   }
 }
 
@@ -6843,7 +6821,6 @@ void UIItemStoreFindWnd::Paint() {
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, fillRed, fillGreen, fillBlue);
   this->FillRegion(72, 17, columns * 32 - 32, rows * 32, RGB(fillRed, fillGreen, fillBlue));
 
-  ItemDescriptions descriptions{g_itemDescriptions};
   int visible = 0;
   int index = 0;
 
@@ -6860,7 +6837,7 @@ void UIItemStoreFindWnd::Paint() {
     const int left = visible % this->columns * 32 + 10;
     const int width = this->geometry.width - left - 66;
     const int x = left + 4;
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, x, top + 21, *it, 0, 0);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), x, top + 21, *it, 0, 0);
     this->DrawWrappedItemName(left + 40, top + 29, width, &*it, 0, 0, 12);
 
     if (it->unknown_0088 > 0) {
@@ -6902,7 +6879,6 @@ void UIItemStoreSubWnd::Paint() {
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, fillRed, fillGreen, fillBlue);
   this->FillRegion(72, 17, columns * 32 - 32, rows * 32, RGB(fillRed, fillGreen, fillBlue));
 
-  ItemDescriptions descriptions{g_itemDescriptions};
   int visible = 0;
   int index = 0;
 
@@ -6919,7 +6895,7 @@ void UIItemStoreSubWnd::Paint() {
     const int left = visible % this->columns * 32 + 10;
     const int width = this->geometry.width - left - 66;
     const int x = left + 4;
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, x, top + 21, *it, 0, 0);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), x, top + 21, *it, 0, 0);
     this->DrawWrappedItemName(left + 40, top + 29, width, &*it, 0, 0, 12);
 
     if (it->unknown_0088 > 0) {
@@ -6976,7 +6952,6 @@ void UIItemPurchaseWnd::Paint() {
     DrawItemSlotBackground(*this, 40, y);
   }
 
-  ItemDescriptions descriptions{g_itemDescriptions};
   int visible = 0;
   int index = 0;
 
@@ -6998,7 +6973,7 @@ void UIItemPurchaseWnd::Paint() {
     }
 
     const int x = column + 44;
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, x, top + 21, *it, 0, 0);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), x, top + 21, *it, 0, 0);
 
     int nameWidth = 110;
     const int amount = static_cast<int>(it->unknown_0014[0]);
@@ -7105,7 +7080,6 @@ void UIItemSellWnd::Paint() {
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, fillRed, fillGreen, fillBlue);
   this->FillRegion(72, 17, columns * 32 - 32, slotRows * 32, RGB(fillRed, fillGreen, fillBlue));
 
-  ItemDescriptions descriptions{g_itemDescriptions};
   int visible = 0;
   int index = 0;
 
@@ -7127,7 +7101,7 @@ void UIItemSellWnd::Paint() {
     }
 
     const int x = column + 44;
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, x, top + 21, *it, 0, 0);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), x, top + 21, *it, 0, 0);
 
     int nameWidth = 100;
     const int amount = static_cast<int>(it->unknown_0014[0]);
@@ -7214,7 +7188,6 @@ void UIItemShopWnd::Paint() {
     this->FillRegion(40, slotRows * 32 - 15, 32, 32, RGB(red, green, blue));
   }
 
-  ItemDescriptions descriptions{g_itemDescriptions};
   int visible = 0;
   int index = 0;
 
@@ -7236,7 +7209,7 @@ void UIItemShopWnd::Paint() {
     }
 
     const int x = column + 44;
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, x, top + 21, *it, 0, 0);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), x, top + 21, *it, 0, 0);
 
     int nameWidth = 100;
     const int amount = static_cast<int>(it->unknown_0014[0]);
@@ -7368,7 +7341,6 @@ void UIItemStoreWnd::Paint() {
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, fillRed, fillGreen, fillBlue);
   this->FillRegion(72, 17, columns * 32 - 32, slotRows * 32, RGB(fillRed, fillGreen, fillBlue));
 
-  ItemDescriptions descriptions{g_itemDescriptions};
   int visible = 0;
   int index = 0;
 
@@ -7384,7 +7356,7 @@ void UIItemStoreWnd::Paint() {
     const int top = visible / this->columns * 32;
     const int column = visible % this->columns * 32;
     const int x = column + 44;
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, x, top + 21, *it, 0, 0);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), x, top + 21, *it, 0, 0);
     this->DrawWrappedItemName(column + 80, top + 29, 180, &*it, 0, 0, 12);
 
     if (it->unknown_0088 > 0) {
@@ -7448,7 +7420,6 @@ void UIMerchantItemPurchaseWnd::Paint() {
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, fillRed, fillGreen, fillBlue);
   this->FillRegion(72, 17, columns * 32 - 32, slotRows * 32, RGB(fillRed, fillGreen, fillBlue));
 
-  ItemDescriptions descriptions{g_itemDescriptions};
   int visible = 0;
   int index = 0;
 
@@ -7466,7 +7437,7 @@ void UIMerchantItemPurchaseWnd::Paint() {
     }
 
     const int x = column + 44;
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, x, top + 21, *it, 0, 0);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), x, top + 21, *it, 0, 0);
     this->DrawWrappedItemName(column + 76, top + 29, 90, &*it, 0, 0, 12);
 
     if (it->unknown_0088 > 0) {
@@ -7648,7 +7619,6 @@ void UIMerchantShopMakeWnd::Paint() {
   }
   this->DrawTextAt(5, messageY, message, 0, 0, 12, 0xFF, 0, 0);
 
-  ItemDescriptions descriptions{g_itemDescriptions};
   int visible = 0;
   int index = 0;
 
@@ -7664,7 +7634,7 @@ void UIMerchantShopMakeWnd::Paint() {
     const int top = visible / this->columns * 42;
     const int column = visible % this->columns * 42;
     const int x = column + 7;
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, x, top + 48, *it, 0, 0);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), x, top + 48, *it, 0, 0);
     this->DrawWrappedItemName(column + 39, top + 57, 100, &*it, 0, 0, 12);
 
     if (it->unknown_0088 > 0) {
@@ -8293,7 +8263,6 @@ void UIMerchantItemShopWnd::Paint() {
     this->DrawTextAt(16, 2, title, 0, 0, 12, 0, 0, 0);
   }
 
-  ItemDescriptions descriptions{g_itemDescriptions};
   int visible = 0;
   int index = 0;
 
@@ -8319,10 +8288,10 @@ void UIMerchantItemShopWnd::Paint() {
                             this->TextWidth(price, 0, 0, 12, 0, 0) - 18;
       this->DrawTextAt(quantityX, top + 29, price, 0, 0, 12, 0xFF, 0, 0);
       x = left + 4;
-      DrawItemIcon(*this, ResourceMgr::Instance(), descriptions, x, top + 21, *it, 0);
+      DrawItemIcon(*this, ResourceMgr::Instance(), x, top + 21, *it, 0);
     } else {
       x = column + 44;
-      DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, x, top + 21, *it, 0, 0);
+      DrawItemWithQuantity(*this, ResourceMgr::Instance(), x, top + 21, *it, 0, 0);
     }
 
     if (it->unknown_0088 > 0) {
@@ -8449,7 +8418,6 @@ void UIMerchantShopMakeWnd::PrintSellList() {
     const ITEM_INFO& item = *it;
     char* cursor = name;
     int capacity = 256;
-    ItemDescriptions descriptions{g_itemDescriptions};
 
     if (item.unknown_0060 != 0) {
       cursor += item.Refine(cursor, capacity, 1);
@@ -8457,16 +8425,16 @@ void UIMerchantShopMakeWnd::PrintSellList() {
 
     if (item.HasCards()) {
       cursor += item.Prefixes(cursor, capacity, 1);
-      cursor += descriptions.Name(item, cursor, capacity, 1);
+      cursor += item.sub_6D5810(cursor, capacity, 1);
       cursor += item.Suffixes(cursor, capacity, 1);
       item.Slots(cursor, capacity, 1);
     } else if (item.HasSpecialCard()) {
       cursor += item.Star(cursor, capacity, 1);
       cursor += item.Creator(cursor, capacity, 1);
       cursor += item.Element(cursor, capacity, 1);
-      descriptions.Name(item, cursor, capacity, 1);
+      item.sub_6D5810(cursor, capacity, 1);
     } else {
-      cursor += descriptions.Name(item, cursor, capacity, 1);
+      cursor += item.sub_6D5810(cursor, capacity, 1);
       item.Slots(cursor, capacity, 1);
     }
 
@@ -8511,8 +8479,7 @@ void UIItemWnd::Slot25(int x, int y) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     if (item.unknown_0074[2] == 0) {
       item = LookupClientItemByIdentity(g_session.m_inventoryItems, item.unknown_0000[1]);
-      ItemDescriptions descriptions{g_itemDescriptions};
-      mode->drag.BeginItem(g_windowMgr, descriptions, 1, item, item.quantity, -1);
+      mode->drag.BeginItem(g_windowMgr, 1, item, item.quantity, -1);
 
       if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
         if (g_windowMgr.GetHoverWindow() && item.identified != 0) {
@@ -8549,8 +8516,7 @@ void UIMerchantItemWnd::Slot25(int x, int y) {
   if (item.unknown_0000[1] > 0 && !g_windowMgr.unknown_02FC && item.unknown_0074[2] == 0) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     item = g_session.FindItem1740(item.unknown_0000[1]);
-    ItemDescriptions descriptions{g_itemDescriptions};
-    mode->drag.BeginItem(g_windowMgr, descriptions, 9, item, item.quantity, -1);
+    mode->drag.BeginItem(g_windowMgr, 9, item, item.quantity, -1);
 
     if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
       if (g_windowMgr.GetHoverWindow() && item.identified != 0) {
@@ -8633,7 +8599,6 @@ void UIItemSellWnd2::Paint() {
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, fillRed, fillGreen, fillBlue);
   this->FillRegion(72, 17, columns * 32 - 32, slotRows * 32, RGB(fillRed, fillGreen, fillBlue));
 
-  ItemDescriptions descriptions{g_itemDescriptions};
   int visible = 0;
   int index = 0;
 
@@ -8655,7 +8620,7 @@ void UIItemSellWnd2::Paint() {
     }
 
     const int x = column + 44;
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, x, top + 21, *it, 0, 0);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), x, top + 21, *it, 0, 0);
     this->DrawFittedItemName(column + 76, top + 29, &*it, 0, 0, 12, 0);
 
     if (it->unknown_0088 > 0) {
@@ -8712,7 +8677,6 @@ void UIItemShopWnd2::Paint() {
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, fillRed, fillGreen, fillBlue);
   this->FillRegion(72, 17, columns * 32 - 32, slotRows * 32, RGB(fillRed, fillGreen, fillBlue));
 
-  ItemDescriptions descriptions{g_itemDescriptions};
   int visible = 0;
   int index = 0;
 
@@ -8734,7 +8698,7 @@ void UIItemShopWnd2::Paint() {
     }
 
     const int x = column + 44;
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, x, top + 21, *it, 0, 0);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), x, top + 21, *it, 0, 0);
     this->DrawFittedItemName(column + 76, top + 29, &*it, 0, 0, 12, 0);
 
     if (it->unknown_0088 > 0) {
@@ -8978,7 +8942,6 @@ void UIItemWnd::Paint() {
     }
   }
 
-  ItemDescriptions descriptions{g_itemDescriptions};
   visible = 0;
   index = 0;
   for (auto it = this->items.begin(); it != this->items.end(); ++it, ++index) {
@@ -8993,7 +8956,7 @@ void UIItemWnd::Paint() {
     const int top = visible / this->columns * 32;
     const int x = visible % this->columns * 32 + 44;
     const int y = top + 21;
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, x, y, *it, 0, 0);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), x, y, *it, 0, 0);
 
     if (it->unknown_0088 > 0) {
       this->DrawBitmap(

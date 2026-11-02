@@ -1686,7 +1686,6 @@ void UIBarterItemPurchaseWnd::Paint() {
     DrawItemSlotBackground(*this, 40, row * 32 + 17);
   }
 
-  ItemDescriptions descriptions{g_itemDescriptions};
   int visible = 0;
   int index = 0;
   std::list<BarterMarketItem>* items = g_barterMarketItemMgr->GetAllItems();
@@ -1705,10 +1704,10 @@ void UIBarterItemPurchaseWnd::Paint() {
     }
 
     const ITEM_INFO item = it->ToItemInfo();
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, x + 44, y + 21, item, 0, 0);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), x + 44, y + 21, item, 0, 0);
     this->DrawItemName(x + 76, y + 29, 100, &item, 0, 0, 12);
     const std::string iconId = std::to_string(it->field_2c);
-    DrawItemIconById(*this, descriptions, this->geometry.width - 70, y + 21, iconId.c_str(), 1);
+    DrawItemIconById(*this, this->geometry.width - 70, y + 21, iconId.c_str(), 1);
     if (it->field_28 > 0) {
       const std::string amount = std::to_string(it->value * it->field_28);
       this->DrawRightAlignedText(this->geometry.width - 25, y + 29, amount.c_str(), 0, 0, 12, 0, 0);
@@ -1767,7 +1766,6 @@ void UIBartermarketWnd::Paint() {
     DrawItemSlotBackground(*this, 40, row * 32 + 17);
   }
 
-  ItemDescriptions descriptions{g_itemDescriptions};
   int visible = 0;
   int index = 0;
   std::list<BarterMarketItem> items = *g_barterMarketItemMgr->GetItems();
@@ -1787,13 +1785,13 @@ void UIBartermarketWnd::Paint() {
 
     const ITEM_INFO item = it->ToItemInfo();
     if (it->flag_38) {
-      DrawItemIcon(*this, ResourceMgr::Instance(), descriptions, x + 44, y + 21, item, 0);
+      DrawItemIcon(*this, ResourceMgr::Instance(), x + 44, y + 21, item, 0);
     } else {
-      DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, x + 44, y + 21, item, 0, 0);
+      DrawItemWithQuantity(*this, ResourceMgr::Instance(), x + 44, y + 21, item, 0, 0);
     }
     this->DrawItemName(x + 76, y + 29, 120, &item, 0, 0, 12);
     const std::string iconId = std::to_string(it->field_2c);
-    DrawItemIconById(*this, descriptions, this->geometry.width - 70, y + 21, iconId.c_str(), 1);
+    DrawItemIconById(*this, this->geometry.width - 70, y + 21, iconId.c_str(), 1);
     if (it->field_28 > 0) {
       const std::string amount = std::to_string(it->field_28);
       this->DrawRightAlignedText(this->geometry.width - 25, y + 29, amount.c_str(), 0, 0, 12, 0, 0);
@@ -1828,7 +1826,6 @@ void UIExpandedBartermarketWnd::Paint() {
   this->FillRegion(20, 17, this->geometry.width - 40, this->geometry.height - 46, RGB(red, green, blue));
   this->DrawButtonBar(2, 0, 1);
 
-  ItemDescriptions descriptions{g_itemDescriptions};
   int visible = 0;
   int index = 0;
   for (std::list<BarterMarketEntry>::iterator it = this->Entries().begin(); it != this->Entries().end(); ++it, ++index) {
@@ -1847,7 +1844,7 @@ void UIExpandedBartermarketWnd::Paint() {
     }
 
     const ITEM_INFO item = it->ToItemInfo();
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, 44, y + 21, item, 0, 0);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), 44, y + 21, item, 0, 0);
     this->DrawItemName(76, y + 29, 100, &item, 0, 0, 12);
 
     if (it->field_28 > 0) {
@@ -1862,7 +1859,7 @@ void UIExpandedBartermarketWnd::Paint() {
       chunkItem.quantity = chunk->amount * it->value;
       chunkItem.unknown_0060 = chunk->field_4;
       const int chunkX = 84 + chunkIndex * 42;
-      DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, chunkX - 8, y + 49, chunkItem, 1, 0);
+      DrawItemWithQuantity(*this, ResourceMgr::Instance(), chunkX - 8, y + 49, chunkItem, 1, 0);
       if (chunk->field_4 > 0) {
         const std::string chunkAmount = FormatOwnedString("+%d", chunk->field_4);
         DrawOutlinedText(*this, chunkX, y + 49, chunkAmount.c_str(), 0, 0xFFFFFF, 200, 0, 12, 1, 0);
@@ -1910,7 +1907,6 @@ void UIExpandedBarterItemPurchaseWnd::Paint() {
   this->FillRegion(20, 17, this->geometry.width - 40, this->geometry.height - 46, RGB(red, green, blue));
   this->DrawButtonBar(2, 0, 1);
 
-  ItemDescriptions descriptions{g_itemDescriptions};
   int visible = 0;
   int index = 0;
   for (std::list<BarterMarketEntry>::iterator it = this->Entries().begin(); it != this->Entries().end(); ++it, ++index) {
@@ -1930,11 +1926,11 @@ void UIExpandedBarterItemPurchaseWnd::Paint() {
 
     const ITEM_INFO item = it->ToItemInfo();
     if (it->flag_30) {
-      DrawItemIcon(*this, ResourceMgr::Instance(), descriptions, 44, y + 21, item, 0);
+      DrawItemIcon(*this, ResourceMgr::Instance(), 44, y + 21, item, 0);
     } else if (it->value == 0) {
-      DrawItemWithQuantityAuxiliary(*this, descriptions, 1, 44, y + 21, item, 1, 0);
+      DrawItemWithQuantityAuxiliary(*this, 1, 44, y + 21, item, 1, 0);
     } else {
-      DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, 44, y + 21, item, 1, 0);
+      DrawItemWithQuantity(*this, ResourceMgr::Instance(), 44, y + 21, item, 1, 0);
     }
     this->DrawItemName(76, y + 29, 100, &item, 0, 0, 12);
     if (it->field_28 > 0) {
@@ -1950,9 +1946,9 @@ void UIExpandedBarterItemPurchaseWnd::Paint() {
       chunkItem.unknown_0060 = chunk->field_4;
       const int chunkX = 76 + chunkIndex * 42;
       if (it->value == 0) {
-        DrawItemWithQuantityAuxiliary(*this, descriptions, 1, chunkX, y + 49, chunkItem, 1, 0);
+        DrawItemWithQuantityAuxiliary(*this, 1, chunkX, y + 49, chunkItem, 1, 0);
       } else {
-        DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, chunkX, y + 49, chunkItem, 1, 0);
+        DrawItemWithQuantity(*this, ResourceMgr::Instance(), chunkX, y + 49, chunkItem, 1, 0);
       }
       if (chunk->field_4 != 0) {
         const std::string chunkAmount = FormatOwnedString("+%d", chunk->field_4);

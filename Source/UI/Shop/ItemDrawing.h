@@ -2,19 +2,18 @@
 #define RAGNAROK_SOURCE_UI_SHOP_ITEMDRAWING_H
 
 struct ITEM_INFO;
-struct ItemDescriptions;
 class UIWindow;
 class ResourceMgr;
 
-void DrawItemIcon(UIWindow& window, ResourceMgr& resources, ItemDescriptions& descriptions, int x, int y, const ITEM_INFO& item, unsigned char identified);
-void DrawItemIconById(UIWindow& window, ItemDescriptions& descriptions, int x, int y, const char* id, unsigned char identified);
+void DrawItemIcon(UIWindow& window, ResourceMgr& resources, int x, int y, const ITEM_INFO& item, unsigned char identified);
+void DrawItemIconById(UIWindow& window, int x, int y, const char* id, unsigned char identified);
 void DrawItemSlotBackground(UIWindow& window, int x, int y);
 void DrawItemWithQuantity(
-  UIWindow& window, ResourceMgr& resources, ItemDescriptions& descriptions, int x, int y, const ITEM_INFO& item,
+  UIWindow& window, ResourceMgr& resources, int x, int y, const ITEM_INFO& item,
   unsigned char identified, unsigned char plain
 );
 void DrawItemWithQuantityAuxiliary(
-  UIWindow& window, ItemDescriptions& descriptions, int mode, int x, int y, const ITEM_INFO& item,
+  UIWindow& window, int mode, int x, int y, const ITEM_INFO& item,
   unsigned char identified, unsigned char plain
 );
 

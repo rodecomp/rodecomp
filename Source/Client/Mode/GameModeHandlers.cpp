@@ -1508,7 +1508,7 @@ void CGameMode::ReceivePackageItemTest(const unsigned char* packet) {
   ITEM_INFO item;
   item.SetItemId(*reinterpret_cast<const int*>(packet + 4));
   int capacity = sizeof(packageName);
-  ItemDescriptions{g_itemDescriptions}.Name(item, packageName, capacity, 0);
+  item.sub_6D5810(packageName, capacity, 0);
 
   char path[2048];
   std::memset(path, 0, sizeof(path));
@@ -1540,7 +1540,7 @@ void CGameMode::ReceivePackageItemTest(const unsigned char* packet) {
     const PackageItemTestEntry current = *entry;
     item.SetItemId(current.itemId);
     int nameCapacity = sizeof(itemName);
-    ItemDescriptions{g_itemDescriptions}.Name(item, itemName, nameCapacity, 0);
+    item.sub_6D5810(itemName, nameCapacity, 0);
     std::fprintf(file, "%s\t\t\t%d\t%c%d%c\n", itemName, current.count, '(', current.unknown_0004, ')');
     total += current.count;
     ++entry;
@@ -2456,7 +2456,7 @@ void CGameMode::ReceiveDdukddakBoxTest(const unsigned char* packet) {
   ITEM_INFO box;
   box.SetItemId(*reinterpret_cast<const int*>(packet + 4));
   int capacity = sizeof(name);
-  ItemDescriptions{g_itemDescriptions}.Name(box, name, capacity, 0);
+  box.sub_6D5810(name, capacity, 0);
 
   SYSTEMTIME time;
   GetLocalTime(&time);
@@ -2470,7 +2470,7 @@ void CGameMode::ReceiveDdukddakBoxTest(const unsigned char* packet) {
   for (auto item = items.begin(); item != items.end(); ++item) {
     ITEM_INFO info;
     info.SetItemId(item->first);
-    ItemDescriptions{g_itemDescriptions}.Name(info, name, capacity, 0);
+    info.sub_6D5810(name, capacity, 0);
     std::string amount = FormatOwnedString("%d", item->second);
     std::string ratio = FormatOwnedString("%.5f%%", static_cast<float>(item->second) / static_cast<float>(total) * 100.0f);
     output << FormatOwnedString("%d\t%s\t%s\t%s\n", item->first, name, amount.c_str(), ratio.c_str());

@@ -439,7 +439,7 @@ void UIQuickSlotWnd::Paint() {
         continue;
       }
 
-      DrawItemWithQuantity(*this, ResourceMgr::Instance(), painting.descriptions, x, 5, item, item.identified, 1);
+      DrawItemWithQuantity(*this, ResourceMgr::Instance(), x, 5, item, item.identified, 1);
       if (item.unknown_0088 > 0) {
         const std::string name = FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.unknown_0088);
         auto* grade = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name.c_str())));
@@ -834,7 +834,6 @@ void UISerachStoreInfoWnd::Paint() {
 
   const SearchStoreEntry* end = reinterpret_cast<const SearchStoreEntry*>(g_session.unknown_5BD4.data() + g_session.unknown_5BD4.size());
   const SearchStoreEntry* entry = reinterpret_cast<const SearchStoreEntry*>(g_session.unknown_5BD4.data()) + (this->unknown_00DC - 1) * 10;
-  ItemDescriptions descriptions{g_itemDescriptions};
   for (int row = 0; entry != end; ++entry) {
     if (row == 10) {
       break;
@@ -853,7 +852,7 @@ void UISerachStoreInfoWnd::Paint() {
 
     const int top = this->unknown_00E8 * row + 100;
     const int y = top + 7;
-    DrawItemIcon(*this, ResourceMgr::Instance(), descriptions, 13, top, entry->item, 0);
+    DrawItemIcon(*this, ResourceMgr::Instance(), 13, top, entry->item, 0);
     if (entry->item.unknown_0088 > 0) {
       this->DrawBitmap(
         13, y + 5,

@@ -8,7 +8,6 @@
 
 class FontCache;
 struct TextLocale;
-struct ItemDescriptions;
 
 class UIBalloonText : public UIWindow {
   friend class UIBalloonOpenBtn;

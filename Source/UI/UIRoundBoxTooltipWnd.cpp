@@ -89,8 +89,7 @@ int UIColoringTextViewer::SendMsg(UIWindow* sender, int message, std::intptr_t a
   }
 
   std::vector<std::string> wrapped;
-  ItemDescriptions descriptions{g_itemDescriptions};
-  WrapRichText(reinterpret_cast<const char*>(argument1), wrapped, 35, argument3 != 0, descriptions);
+  WrapRichText(reinterpret_cast<const char*>(argument1), wrapped, 35, argument3 != 0);
   for (unsigned index = 0; index < wrapped.size(); ++index) {
     this->AddLine(wrapped[index].c_str());
   }

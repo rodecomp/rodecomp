@@ -643,7 +643,7 @@ void UIStaticItem::Slot28(int, int) {
   char text[260];
   std::memset(text, 0, sizeof(text));
   int capacity = sizeof(text);
-  this->m_descriptions->Name(this->m_item, text, capacity, 0);
+  this->m_item.sub_6D5810(text, capacity, 0);
 
   if (std::strlen(text) == 0) {
     return;
@@ -1502,7 +1502,7 @@ void UITabControl::FillTab(int index, int x, int y, int width, int height, std::
 void UIStaticItem::Paint() {
   char path[260];
   std::memset(path, 0, sizeof(path));
-  this->m_descriptions->IconPath(path, this->m_item.itemId.c_str(), this->m_item.identified);
+  g_session.IconPath(path, this->m_item.itemId.c_str(), this->m_item.identified);
 
   auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
   if (!bitmap) {
@@ -3524,7 +3524,7 @@ void UIString::Paint() {
   if (!this->unknown_00AC.empty()) {
     char path[128];
     std::memset(path, 0, sizeof(path));
-    reinterpret_cast<ItemDescriptions*>(&g_session)->IconPath(path, this->unknown_00AC.c_str(), 0);
+    g_session.IconPath(path, this->unknown_00AC.c_str(), 0);
     CRes* res = ResourceMgr::Instance().Load(Resolve(path));
     if (!res) {
       return;

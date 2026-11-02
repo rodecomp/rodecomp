@@ -68,8 +68,7 @@ void UIIngredientInfoWnd::Click(int, int) {
 // FUNCTION: fn_04162
 void UIIngredientInfoWnd::Slot25(int x, int y) {
   if (this->insufficient != 1 && this->item.unknown_0000[1] > 0) {
-    ItemDescriptions descriptions{g_itemDescriptions};
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(g_windowMgr, descriptions, 27, this->item, this->quantity, -1);
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(g_windowMgr, 27, this->item, this->quantity, -1);
   }
 }
 
@@ -127,8 +126,7 @@ void UILapineBoxWnd::DragIngredient(int x, int y) {
   this->ReadMaterial(&item, x, y);
 
   if (item.unknown_0000[1] != 0) {
-    ItemDescriptions descriptions{g_itemDescriptions};
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(g_windowMgr, descriptions, 0x1A, item, item.quantity, -1);
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(g_windowMgr, 0x1A, item, item.quantity, -1);
   }
 
   item.~ITEM_INFO();
@@ -532,8 +530,7 @@ void UILapineBoxWnd::SetIngredient(int id) {
     char name[0x104];
     std::memset(name, 0, sizeof(name));
     int capacity = 0x104;
-    ItemDescriptions descriptions{g_itemDescriptions};
-    descriptions.Name(item, name, capacity, 0);
+    item.sub_6D5810(name, capacity, 0);
     this->title.assign(name, std::strlen(name));
   }
 

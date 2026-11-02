@@ -221,8 +221,7 @@ void UIItemReformWnd_List::Paint() {
       }
       this->DrawBitmap(0, this->itemHeight * row, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(image)))->image, true);
       const ITEM_INFO& item = this->items[this->scrollPosition + row];
-      ItemDescriptions descriptions{g_itemDescriptions};
-      DrawItemIcon(*this, ResourceMgr::Instance(), descriptions, 15, this->itemHeight * row + 4, item, 1);
+      DrawItemIcon(*this, ResourceMgr::Instance(), 15, this->itemHeight * row + 4, item, 1);
       this->DrawTextAt(42, this->itemHeight * row + 10, this->FitDisplayText(160, item.DisplayName(0).c_str(), 0, 12, 0).c_str(), 0, 0,
         12, 0, 0, 0
       );

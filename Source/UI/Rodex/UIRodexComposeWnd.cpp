@@ -193,8 +193,7 @@ void UIRodexComposeWnd::Slot25(int x, int y) {
 
   ITEM_INFO item = this->GetItemAtPoint(x, y);
   if (item.unknown_0000[1] > 0) {
-    ItemDescriptions descriptions{g_itemDescriptions};
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(g_windowMgr, descriptions, 15, item, item.quantity, -1);
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(g_windowMgr, 15, item, item.quantity, -1);
   }
 }
 
@@ -444,7 +443,6 @@ int UIRodexComposeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
 // OFFSET: 0x00800530
 // FUNCTION: fn_10007
 void UIRodexComposeWnd::Paint() {
-  ItemDescriptions descriptions{g_itemDescriptions};
   this->ClearSurface(0x00FF00FF);
 
   const auto* bg = &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\bg_rodex_read.bmp")))->image;
@@ -517,9 +515,9 @@ void UIRodexComposeWnd::Paint() {
       const auto* shadowOn = &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\shadow_item_on.bmp")))->image;
       this->DrawBitmap(itemX - 4, 319, shadowOn, true);
       if (this->unknown_00F8 <= g_session.m_zeny) {
-        DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, itemX, 309, item, 0, 0);
+        DrawItemWithQuantity(*this, ResourceMgr::Instance(), itemX, 309, item, 0, 0);
       } else {
-        DrawItemWithQuantityAuxiliary(*this, descriptions, 2, itemX, 309, item, item.identified, 0);
+        DrawItemWithQuantityAuxiliary(*this, 2, itemX, 309, item, item.identified, 0);
       }
       if (item.unknown_0088 > 0) {
         std::string gradeStr = FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", static_cast<int>(item.unknown_0088));

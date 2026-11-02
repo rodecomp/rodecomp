@@ -81,7 +81,7 @@ namespace {
 // OFFSET: 0x009B4730
 // FUNCTION: fn_13833
 void WrapRichText(
-  const char* text, std::vector<std::string>& lines, int width, bool carriageReturns, ItemDescriptions& items
+  const char* text, std::vector<std::string>& lines, int width, bool carriageReturns
 ) {
   const char* begin = text;
   const char* current = text;
@@ -141,7 +141,7 @@ void WrapRichText(
 
           char name[260];
           int capacity = sizeof(name);
-          items.Name(item, name, capacity, 0);
+          item.sub_6D5810(name, capacity, 0);
           lines.emplace_back(name);
         }
       } else {

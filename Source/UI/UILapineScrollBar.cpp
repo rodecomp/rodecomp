@@ -228,12 +228,11 @@ void UIIngredientInfoWnd::Paint() {
   std::string name;
   name = this->FitDisplayText(100, this->item.unknown_0044.c_str(), 0, 12, 0).c_str();
 
-  ItemDescriptions descriptions{g_itemDescriptions};
   std::uint32_t color = 0;
   if (this->insufficient == 0) {
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, 4, 3, this->item, 0, 0);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), 4, 3, this->item, 0, 0);
   } else {
-    DrawItemWithQuantityAuxiliary(*this, descriptions, 2, 4, 3, this->item, this->item.identified, 0);
+    DrawItemWithQuantityAuxiliary(*this, 2, 4, 3, this->item, this->item.identified, 0);
     color = 0x969696;
   }
 
@@ -258,7 +257,6 @@ void UILapineBoxWnd::Paint() {
   const std::string maximum = FormatOwnedString("%d", this->maxItems);
   this->DrawCenteredText(115, 76, maximum.c_str(), 14, 0, 11, 0xFFFFFF, 0);
 
-  ItemDescriptions descriptions{g_itemDescriptions};
   const unsigned total = static_cast<unsigned>(this->items.size());
   for (unsigned index = 0; index < total; ++index) {
     int x = 0;
@@ -279,7 +277,7 @@ void UILapineBoxWnd::Paint() {
     }
     CBitmapRes* slot = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\lapine\\shadow_item_off.bmp")));
     this->DrawBitmap(x - 4, y + 11, &slot->image, true);
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, x, y, this->items[index], 0, 0);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), x, y, this->items[index], 0, 0);
   }
 
   if (timeGetTime() < this->noticeTick + this->noticeDuration) {
@@ -304,8 +302,7 @@ int UILapineBoxWnd::AddIngredient(std::uint32_t id, int quantity) {
     char name[260];
     std::memset(name, 0, sizeof(name));
     int capacity = 260;
-    ItemDescriptions descriptions{g_itemDescriptions};
-    descriptions.Name(item, name, capacity, 1);
+    item.sub_6D5810(name, capacity, 1);
     if (item.identified == 1 && item.unknown_0098 != 0) {
       char formatted[260];
       StringFormat(formatted, sizeof(formatted), sizeof(formatted), LookupMessage(2600), name, item.unknown_0098);

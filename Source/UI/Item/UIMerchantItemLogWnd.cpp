@@ -103,7 +103,6 @@ void UIMerchantItemLogWnd::Paint() {
     DrawItemSlotBackground(*this, 40, y);
   }
 
-  ItemDescriptions descriptions{g_itemDescriptions};
   auto it = this->items.begin();
   auto log = this->logs.begin();
 
@@ -122,7 +121,7 @@ void UIMerchantItemLogWnd::Paint() {
 
     const int top = visible / this->columns * 32;
     const int x = visible % this->columns * 32 + 44;
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, x, top + 21, *it, 0, 0);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), x, top + 21, *it, 0, 0);
 
     if (it->unknown_0088 > 0) {
       this->DrawBitmap(

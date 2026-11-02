@@ -4,12 +4,11 @@
 #include "Contents/Items/ItemInfo.h"
 #include "UI/Window/UIWindow.h"
 
-struct ItemDescriptions;
 #include "UI/Window/WindowManagerWindows.h"
 
 class UIStaticItem : public UIWindow {
 public:
-  UIStaticItem(UIWindowContext& windows, ItemDescriptions& descriptions, WindowManagerWindows& windowList);
+  UIStaticItem(UIWindowContext& windows, WindowManagerWindows& windowList);
   ~UIStaticItem() override;
   void Paint() override;
   void Slot28(int x, int y) override;
@@ -17,7 +16,7 @@ public:
 
 protected:
   /* 0080 */ ITEM_INFO m_item;
-  ItemDescriptions* m_descriptions;
+  void* unknown_descriptions;
   void* unknown_controls;
   WindowManagerWindows* m_windows;
 };

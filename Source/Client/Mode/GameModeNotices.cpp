@@ -1387,8 +1387,7 @@ void CGameMode::ReceiveItem1784List(const unsigned char* data) {
     item.unknown_0078[2] = entry.unknown_0014;
     item.unknown_0064 = 8;
     item.identified = 1;
-    ItemDescriptions descriptions{g_itemDescriptions};
-    descriptions.Name(item, name, capacity, 0);
+    item.sub_6D5810(name, capacity, 0);
     item.SetName(name);
     g_session.unknown_1784[9].push_back(item);
   }
@@ -3730,8 +3729,7 @@ void CGameMode::ReceiveTypedItemList(const unsigned char* data) {
     item.unknown_0064 = type;
     item.SetItemId(itemId);
     int capacity = sizeof(name);
-    ItemDescriptions descriptions{g_itemDescriptions};
-    descriptions.Name(item, name, capacity, 0);
+    item.sub_6D5810(name, capacity, 0);
     item.SetName(name);
     if (static_cast<unsigned int>(packet->type) <= 10) {
       g_session.unknown_1784[packet->type].push_back(item);
@@ -4898,7 +4896,7 @@ void CGameMode::ReceiveStovePurchaseResult(const unsigned char* data) {
     int capacity = sizeof(name);
     ITEM_INFO item;
     item.SetItemId(packet->itemId);
-    ItemDescriptions{g_itemDescriptions}.Name(item, name, capacity, 0);
+    item.sub_6D5810(name, capacity, 0);
     message = FormatOwnedString("%s아이템 %d개 지급 완료", name, packet->count);
   }
   case 2:
@@ -5470,7 +5468,7 @@ void CGameMode::ReceiveSpecialBroadcast(const unsigned char* data) {
     item.SetItemId(packet->value);
     char itemName[256];
     int capacity = sizeof(itemName);
-    ItemDescriptions{g_itemDescriptions}.Name(item, itemName, capacity, 0);
+    item.sub_6D5810(itemName, capacity, 0);
     text.assign(FormatOwnedString(LookupMessage(1265), itemName));
     player->LaunchEffect(543, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;

@@ -170,12 +170,12 @@ void DecodeItemLinkFields(const std::string& text, std::vector<std::int32_t>& fi
 
 // OFFSET: 0x008933E0
 // FUNCTION: fn_11505
-bool ItemFromLinkFields(const std::vector<std::int32_t>& fields, ITEM_INFO& item, ItemDescriptions& descriptions) {
+bool ItemFromLinkFields(const std::vector<std::int32_t>& fields, ITEM_INFO& item) {
   if (fields.empty()) {
     return false;
   }
 
-  const char* identified = descriptions.Find(fields[2]).identifiedName;
+  const char* identified = FindItemDescription(fields[2]).identifiedName;
   item.unknown_0044 = identified;
   std::string name = identified;
 

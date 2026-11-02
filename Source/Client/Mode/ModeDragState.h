@@ -6,7 +6,6 @@
 
 #include "UI/Window/WindowManagerWindows.h"
 class ResourceMgr;
-struct ItemDescriptions;
 struct ITEM_INFO;
 struct BarterMarketItem;
 struct BarterMarketEntry;
@@ -37,7 +36,7 @@ struct ModeDragState {
   /* 03C0 */ std::int64_t unknown_03C0;
 
   void Clear();
-  void BeginItem(WindowManagerWindows& windows, ItemDescriptions& descriptions, int source, const ITEM_INFO& item, int quantity, int slot);
+  void BeginItem(WindowManagerWindows& windows, int source, const ITEM_INFO& item, int quantity, int slot);
   void BeginSkill(WindowManagerWindows& windows, ResourceMgr& resources, int source, std::uint32_t id, const char* name, int level, int slot);
   void BeginBarterItem(int source, const BarterMarketItem& item, int quantity, int slot);
   void BeginBarterEntry(int source, const BarterMarketEntry& entry, int quantity, int slot);

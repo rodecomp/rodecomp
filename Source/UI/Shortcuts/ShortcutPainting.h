@@ -19,7 +19,6 @@ struct ShortcutPainting {
   const TextLocale& locale;
   ClientSkills& skills;
   const std::list<ITEM_INFO>& inventory;
-  ItemDescriptions& descriptions;
   std::list<ShortcutCooldownIcon>& icons;
   ShortcutCooldowns& cooldowns;
   CooldownDrawing& drawing;

@@ -98,8 +98,7 @@ void UIBalloonText::SetText(const char* text, int width) {
   this->m_lines.clear();
 
   if (this->m_richText != 0) {
-    ItemDescriptions descriptions{g_itemDescriptions};
-    WrapRichText(text, this->m_lines, width, false, descriptions);
+    WrapRichText(text, this->m_lines, width, false);
   } else {
     WrapPlainText(text, this->m_lines, width);
   }

@@ -1,3 +1,4 @@
+#include "Client/Session.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemResources.h"
 #include "Resource/ResourceMgr.h"
@@ -7,10 +8,10 @@
 
 // OFFSET: 0x00DDDA20
 // FUNCTION: fn_23391
-const char* ItemDragResource(ItemDescriptions& descriptions, const char* id, int identified) {
+const char* CSession::ItemDragResource(const char* id, int identified) {
   static std::string resource;
   resource = "아이템\\";
-  const ITEM_DESC& value = descriptions.Find(std::atoi(id));
+  const ITEM_DESC& value = FindItemDescription(std::atoi(id));
   const char* name = identified != 0 ? value.identifiedResource : value.unidentifiedResource;
   resource += name ? name : "사과";
 

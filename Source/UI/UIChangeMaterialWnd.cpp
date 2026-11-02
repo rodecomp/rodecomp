@@ -536,7 +536,6 @@ void UIChangeMaterialWnd_List::ShiftSelectedIndex(int value) {
 // FUNCTION: fn_03878
 void UIChangeMaterialWnd::Paint() {
   UIWindowContext& controls = *this->m_context;
-  ItemDescriptions descriptions{g_itemDescriptions};
 
   CBitmapRes* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\ChangeMaterial\\bg_ChangeMaterial.bmp")));
   this->DrawBitmap(0, 0, background ? &background->image : nullptr, true);
@@ -548,13 +547,13 @@ void UIChangeMaterialWnd::Paint() {
   const MaterialSlotPos* position = this->m_materialPos;
   for (auto it = this->m_materials.begin(); it != this->m_materials.end(); ++it, ++position) {
     if (it->identified == 1) {
-      DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, position->x, position->y, *it, 1, 0);
+      DrawItemWithQuantity(*this, ResourceMgr::Instance(), position->x, position->y, *it, 1, 0);
     } else {
-      DrawItemWithQuantityAuxiliary(*this, descriptions, 1, position->x, position->y, *it, 1, 0);
+      DrawItemWithQuantityAuxiliary(*this, 1, position->x, position->y, *it, 1, 0);
     }
   }
 
-  DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, this->m_resultX, this->m_resultY, this->m_resultItem, 1, 0);
+  DrawItemWithQuantity(*this, ResourceMgr::Instance(), this->m_resultX, this->m_resultY, this->m_resultItem, 1, 0);
 
   const std::string amount = FormatOwnedString(LookupMessage(0xE8C), this->m_resultAmount / 10);
   const int width = this->TextWidth(amount.c_str(), 0, 0x1D, 0x17, 1, 0);
@@ -604,7 +603,6 @@ void UIChangeMaterialWnd_List::Paint() {
     item.quantity = entry->results[0].quantity;
     item.identified = 1;
 
-    ItemDescriptions descriptions{g_itemDescriptions};
     std::string name = item.DisplayName(0);
     if (this->TextWidth(name.c_str(), 0, 0, 12, 0, 0) > 100) {
       name = this->FitDisplayText(100, name.c_str(), 0, 12, 0);
@@ -612,11 +610,11 @@ void UIChangeMaterialWnd_List::Paint() {
 
     const int y = rowHeight * row;
     if (entry->state == 1) {
-      DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, 0, y, item, 1, 0);
+      DrawItemWithQuantity(*this, ResourceMgr::Instance(), 0, y, item, 1, 0);
       this->DrawTextAt(30, y + 6, name.c_str(), 0, 0, 12, 0, 0, 0);
       this->DrawRightAlignedText(163, y + 6, FormatOwnedString(LookupMessage(182), item.quantity).c_str(), 0, 0, 12, 0, 0);
     } else {
-      DrawItemWithQuantityAuxiliary(*this, descriptions, 1, 0, y, item, 1, 0);
+      DrawItemWithQuantityAuxiliary(*this, 1, 0, y, item, 1, 0);
       this->DrawTextAt(30, y + 6, name.c_str(), 0, 0, 12, 0xAAAAAA, 0, 0);
       this->DrawRightAlignedText(163, y + 6, FormatOwnedString(LookupMessage(182), item.quantity).c_str(), 0, 0, 12, 0xAAAAAA, 0);
     }

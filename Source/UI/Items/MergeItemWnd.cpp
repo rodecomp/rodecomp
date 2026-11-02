@@ -160,9 +160,8 @@ void CMergeItemWnd::Paint() {
       if (item.unknown_0000[1] != 0) {
         box->SetHidden(false);
         box->Move(this->m_checkOffsetX + x, this->m_checkOffsetY + y);
-        ItemDescriptions descriptions{g_itemDescriptions};
         DrawItemWithQuantity(
-          *this, ResourceMgr::Instance(), descriptions, this->m_slotOffsetX + x, this->m_slotOffsetY + y, item, 0, 0
+          *this, ResourceMgr::Instance(), this->m_slotOffsetX + x, this->m_slotOffsetY + y, item, 0, 0
         );
       }
     }

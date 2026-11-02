@@ -208,7 +208,7 @@ int ITEM_INFO::Suffixes(char* output, int& capacity, unsigned char consume) cons
 // OFFSET: 0x006D76E0
 // FUNCTION: fn_06593
 int ITEM_INFO::Slots(char* output, int& capacity, unsigned char consume) const {
-  const int slots = ItemDescriptions{g_itemDescriptions}.Find(std::atoi(this->itemId.c_str())).slots;
+  const int slots = FindItemDescription(std::atoi(this->itemId.c_str())).slots;
   if (slots == 0) {
     return 0;
   }
@@ -238,7 +238,7 @@ std::string ITEM_INFO::DisplayName(unsigned char detailed) const {
     }
   };
   const int id = std::atoi(this->itemId.c_str());
-  ITEM_DESC& descriptor = ItemDescriptions{g_itemDescriptions}.Find(id);
+  ITEM_DESC& descriptor = FindItemDescription(id);
 
   if (this->identified != 1) {
     append(Copy(text, capacity, descriptor.unidentifiedName));
@@ -454,7 +454,7 @@ bool IsItemCard(int id) {
 // FUNCTION: fn_06591
 const char* ItemResourcePath(const ITEM_INFO& item) {
   int id = std::atoi(item.itemId.c_str());
-  ITEM_DESC& desc = ItemDescriptions{g_itemDescriptions}.Find(id);
+  ITEM_DESC& desc = FindItemDescription(id);
   return item.identified == 1 ? desc.identifiedResource : desc.unidentifiedResource;
 }
 
@@ -462,14 +462,14 @@ const char* ItemResourcePath(const ITEM_INFO& item) {
 // FUNCTION: fn_06592
 int ItemSlotsCount(const ITEM_INFO& item) {
   int id = std::atoi(item.itemId.c_str());
-  return ItemDescriptions{g_itemDescriptions}.Find(id).slots;
+  return FindItemDescription(id).slots;
 }
 
 // OFFSET: 0x006D7760
 // FUNCTION: fn_06594
 int ItemUnidentifiedName(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) {
   int id = std::atoi(item.itemId.c_str());
-  int written = Copy(output, capacity, ItemDescriptions{g_itemDescriptions}.Find(id).unidentifiedName);
+  int written = Copy(output, capacity, FindItemDescription(id).unidentifiedName);
   if (written > 0 && consume) {
     capacity -= written;
   }
@@ -822,7 +822,7 @@ std::uint32_t __fastcall ItemCardColor(const ITEM_INFO* item) {
   }
 
   const std::uint32_t colors[5] = {0, 0x00ADFF2F, 0x0000BFFF, 0x00FFA500, 0x009400D3};
-  const int slots = ItemDescriptions{g_itemDescriptions}.Find(std::atoi(item->itemId.c_str())).slots;
+  const int slots = FindItemDescription(std::atoi(item->itemId.c_str())).slots;
   int count = 0;
   for (int index = 0; index < 4; ++index) {
     if (index >= slots && IsItemCard(ids[index])) {

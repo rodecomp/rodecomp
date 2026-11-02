@@ -65,7 +65,7 @@ void UIQuickSlotWnd::Slot25(int x, int y) {
     ITEM_INFO item = LookupClientItem(painting.inventory, static_cast<int>(entry.id), 1);
     if (item.unknown_0000[1] > 0) {
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-      mode->drag.BeginItem(g_windowMgr, painting.descriptions, 16, item, item.quantity, -1);
+      mode->drag.BeginItem(g_windowMgr, 16, item, item.quantity, -1);
     }
   }
 }

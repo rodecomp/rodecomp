@@ -179,14 +179,13 @@ void UIRodexContentsWnd::Paint() {
     this->DrawBitmap(x, 319, &slot->image, true);
   }
 
-  ItemDescriptions descriptions{g_itemDescriptions};
   int x = 30;
   for (auto item = this->m_items.begin(); item != this->m_items.end(); ++item) {
     const auto* slot = static_cast<CBitmapRes*>(
       ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\shadow_item_on.bmp"))
     );
     this->DrawBitmap(x - 4, 319, &slot->image, true);
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, x, 309, *item, 0, 0);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), x, 309, *item, 0, 0);
     if (item->unknown_0088 > 0) {
       ResourceMgr& resources = ResourceMgr::Instance();
       const std::string name = FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item->unknown_0088);

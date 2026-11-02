@@ -309,8 +309,7 @@ void UIGradeEnchantWnd::Slot25(int x, int y) {
   }
 
   if (this->state == 1 && this->item.unknown_0000[1] > 0 && x >= 64 && x <= 110 && y >= 125 && y <= 171) {
-    ItemDescriptions descriptions{g_itemDescriptions};
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(g_windowMgr, descriptions, 33, this->item, 1, -1);
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(g_windowMgr, 33, this->item, 1, -1);
   }
 }
 

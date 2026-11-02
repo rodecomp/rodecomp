@@ -3677,8 +3677,7 @@ void UIPrivateAirplaneWnd::Slot15(int, int) {
     char name[260];
     std::memset(name, 0, sizeof(name));
     int capacity = 0x104;
-    ItemDescriptions descriptions{g_itemDescriptions};
-    descriptions.Name(item, name, capacity, 0);
+    item.sub_6D5810(name, capacity, 0);
     if (std::strlen(name) == 0) {
       continue;
     }

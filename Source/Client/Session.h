@@ -171,6 +171,8 @@ struct SessionEntry00A4 {
 
 class CSession {
 public:
+  void IconPath(char* output, const char* id, int identified);
+  const char* ItemDragResource(const char* id, int identified);
   /* 0000 */ std::uint32_t unknown_0000;
   /* 0004 */ std::list<CSkillInfo> m_additionalSkills;
   /* 000C */ CPlayerSkillBundle m_skillBundle;

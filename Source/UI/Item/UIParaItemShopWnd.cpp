@@ -709,7 +709,6 @@ void UIParaItemShopWnd::Paint() {
     DrawItemSlotBackground(*this, 30, y);
   }
 
-  ItemDescriptions descriptions{g_itemDescriptions};
   int index = 0;
   int visible = 0;
 
@@ -730,9 +729,9 @@ void UIParaItemShopWnd::Paint() {
     }
 
     if (this->unknown_00F8 == 1 || it->quantity != 0) {
-      DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, 34, top + 4, *it, 0, 0);
+      DrawItemWithQuantity(*this, ResourceMgr::Instance(), 34, top + 4, *it, 0, 0);
     } else {
-      DrawItemWithQuantityAuxiliary(*this, descriptions, 1, 34, top + 4, *it, 0, 0);
+      DrawItemWithQuantityAuxiliary(*this, 1, 34, top + 4, *it, 0, 0);
     }
 
     this->DrawWrappedItemName(70, top + 12, 120, &*it, 0, 0, 12);
@@ -833,7 +832,6 @@ void UIParaResultWnd::Paint() {
     this->FillRegion(72, 17, columns * 32 - 32, slots * 32, RGB(red, green, blue));
   }
 
-  ItemDescriptions descriptions{g_itemDescriptions};
   int index = 0;
   int visible = 0;
 
@@ -855,7 +853,7 @@ void UIParaResultWnd::Paint() {
     }
 
     const int x = column + 44;
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, x, top + 21, *it, 0, 0);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), x, top + 21, *it, 0, 0);
     this->DrawWrappedItemName(column + 76, top + 29, 110, &*it, 0, 0, 12);
 
     if (it->unknown_0088 > 0) {

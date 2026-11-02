@@ -650,9 +650,8 @@ void UICashShopWnd_CartItem::Slot26(int, int) {
 // FUNCTION: fn_09545
 void UICashShopWnd_CartItem::Slot25(int, int) {
   if (this->m_item.unknown_0000[1] != 0) {
-    ItemDescriptions descriptions{g_itemDescriptions};
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())
-      ->drag.BeginItem(g_windowMgr, descriptions, 4, this->m_item, this->m_item.quantity, -1);
+      ->drag.BeginItem(g_windowMgr, 4, this->m_item, this->m_item.quantity, -1);
   }
 }
 
@@ -660,8 +659,7 @@ void UICashShopWnd_CartItem::Slot25(int, int) {
 // FUNCTION: fn_09546
 void UICashShopWnd_Item::Slot25(int, int) {
   if (this->m_item.unknown_0000[1] != 0) {
-    ItemDescriptions descriptions{g_itemDescriptions};
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(g_windowMgr, descriptions, 6, this->m_item, 1, -1);
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(g_windowMgr, 6, this->m_item, 1, -1);
   }
 }
 

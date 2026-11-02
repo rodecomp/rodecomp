@@ -724,8 +724,7 @@ void UIBasicItemCtrl::DrawItemIcon(int x, int y, int, bool compact) {
   }
 
   char path[128];
-  ItemDescriptions descriptions{g_itemDescriptions};
-  descriptions.IconPath(path, FormatOwnedString("%d", id).c_str(), this->m_item.identified);
+  g_session.IconPath(path, FormatOwnedString("%d", id).c_str(), this->m_item.identified);
   auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
   if (bitmap) {
     this->DrawBitmap(x, y, &bitmap->image, true);
@@ -1815,7 +1814,6 @@ std::string UIChatHisBox::RenderItemLinks(const char* lineText, std::string& sou
   std::vector<UIItemTagButton*> buttons;
   unsigned position = 0;
   unsigned previous = 0;
-  ItemDescriptions descriptions{g_itemDescriptions};
 
   for (;;) {
     std::string encoded;
@@ -1852,7 +1850,7 @@ std::string UIChatHisBox::RenderItemLinks(const char* lineText, std::string& sou
       std::vector<std::int32_t> fields;
       DecodeItemLinkFields(encoded, fields);
       ITEM_INFO item;
-      if (ItemFromLinkFields(fields, item, descriptions)) {
+      if (ItemFromLinkFields(fields, item)) {
         const std::string label = this->BracketName(item.DisplayName(0));
         if (result.size() + label.size() > std::strlen(lineText)) {
           previous += static_cast<unsigned>(prefix.size());

@@ -1,3 +1,4 @@
+#include "Client/Session.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Resource/Bitmap/BitmapResource.h"
@@ -11,11 +12,11 @@
 // OFFSET: 0x008A8D30
 // FUNCTION: fn_11716
 void DrawItemWithQuantityAuxiliary(
-  UIWindow& window, ItemDescriptions& descriptions, int mode, int x, int y, const ITEM_INFO& item,
+  UIWindow& window, int mode, int x, int y, const ITEM_INFO& item,
   unsigned char identified, unsigned char plain
 ) {
   char text[128] = {};
-  descriptions.IconPath(text, item.itemId.c_str(), identified);
+  g_session.IconPath(text, item.itemId.c_str(), identified);
   CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(text)));
   window.DrawAuxiliary(mode, x, y, bitmap ? &bitmap->image : nullptr, true, false);
 
@@ -38,9 +39,9 @@ void DrawItemWithQuantityAuxiliary(
 
 // OFFSET: 0x008A8EE0
 // FUNCTION: fn_11717
-void DrawItemIcon(UIWindow& window, ResourceMgr& resources, ItemDescriptions& descriptions, int x, int y, const ITEM_INFO& item, unsigned char identified) {
+void DrawItemIcon(UIWindow& window, ResourceMgr& resources, int x, int y, const ITEM_INFO& item, unsigned char identified) {
   char path[128];
-  descriptions.IconPath(path, item.itemId.c_str(), item.identified != 0 || identified != 0);
+  g_session.IconPath(path, item.itemId.c_str(), item.identified != 0 || identified != 0);
   CBitmapRes* bitmap = static_cast<CBitmapRes*>(resources.Load(path));
 
   if (bitmap) {
@@ -50,9 +51,9 @@ void DrawItemIcon(UIWindow& window, ResourceMgr& resources, ItemDescriptions& de
 
 // OFFSET: 0x008A8F80
 // FUNCTION: fn_11718
-void DrawItemIconById(UIWindow& window, ItemDescriptions& descriptions, int x, int y, const char* id, unsigned char identified) {
+void DrawItemIconById(UIWindow& window, int x, int y, const char* id, unsigned char identified) {
   char path[128];
-  descriptions.IconPath(path, id, identified);
+  g_session.IconPath(path, id, identified);
   CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
 
   if (bitmap) {
@@ -70,10 +71,10 @@ void DrawItemSlotBackground(UIWindow& window, int x, int y) {
 // OFFSET: 0x008A9040
 // FUNCTION: fn_11720
 void DrawItemWithQuantity(
-  UIWindow& window, ResourceMgr& resources, ItemDescriptions& descriptions, int x, int y, const ITEM_INFO& item,
+  UIWindow& window, ResourceMgr& resources, int x, int y, const ITEM_INFO& item,
   unsigned char identified, unsigned char plain
 ) {
-  DrawItemIcon(window, resources, descriptions, x, y, item, identified);
+  DrawItemIcon(window, resources, x, y, item, identified);
   if (item.quantity == -1 || item.quantity == 0) {
     return;
   }

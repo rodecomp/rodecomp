@@ -313,8 +313,7 @@ void UIRefiningWnd::ApplyResult() {
         std::memset(name, 0, sizeof(name));
         info.SetItemId(itemId);
         int capacity = 260;
-        ItemDescriptions descriptions{g_itemDescriptions};
-        descriptions.Name(info, name, capacity, 0);
+        info.sub_6D5810(name, capacity, 0);
         this->againButton->SetTooltip(name);
 
         const ITEM_INFO owned = LookupClientItem(g_session.m_inventoryItems, itemId, 0);
@@ -433,8 +432,7 @@ void UIRefiningWnd::Slot25(int x, int y) {
   }
 
   if (this->state == 1 && this->item.unknown_0000[1] > 0 && static_cast<unsigned>(x - 109) <= 46 && static_cast<unsigned>(y - 201) <= 46) {
-    ItemDescriptions descriptions{g_itemDescriptions};
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(g_windowMgr, descriptions, 28, this->item, 1, -1);
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(g_windowMgr, 28, this->item, 1, -1);
   }
 }
 
@@ -540,8 +538,7 @@ void UIRefiningWnd::Slot28(int x, int y) {
     ITEM_INFO info;
     info.SetItemId(this->materials[this->selectedMaterial].itemId);
     int capacity = 260;
-    ItemDescriptions descriptions{g_itemDescriptions};
-    descriptions.Name(info, name, capacity, 0);
+    info.sub_6D5810(name, capacity, 0);
     int tipX = 81;
     int tipY = 150;
     this->ToScreen(tipX, tipY);
@@ -553,8 +550,7 @@ void UIRefiningWnd::Slot28(int x, int y) {
     ITEM_INFO info;
     info.SetItemId(this->catalystItemId);
     int capacity = 260;
-    ItemDescriptions descriptions{g_itemDescriptions};
-    descriptions.Name(info, name, capacity, 0);
+    info.sub_6D5810(name, capacity, 0);
     int tipX = 161;
     int tipY = 150;
     this->ToScreen(tipX, tipY);
@@ -575,14 +571,12 @@ void UIRefiningWnd::Slot28(int x, int y) {
     ITEM_INFO info;
     info.SetItemId(this->materials[slot].itemId);
     int capacity = 260;
-    ItemDescriptions descriptions{g_itemDescriptions};
-    descriptions.Name(info, name, capacity, 0);
+    info.sub_6D5810(name, capacity, 0);
   } else if (slot == 4 && this->catalystCount > 0) {
     ITEM_INFO info;
     info.SetItemId(this->catalystItemId);
     int capacity = 260;
-    ItemDescriptions descriptions{g_itemDescriptions};
-    descriptions.Name(info, name, capacity, 0);
+    info.sub_6D5810(name, capacity, 0);
   }
 
   if (std::strlen(name) != 0) {
@@ -1072,7 +1066,6 @@ void UIRefiningWnd::Paint() {
   CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background.c_str())));
   this->DrawBitmap(1, 17, bitmap ? &bitmap->image : nullptr, false);
 
-  ItemDescriptions descriptions{g_itemDescriptions};
 
   if (this->state == 1) {
     if (this->selectedMaterial >= 0) {
@@ -1094,11 +1087,11 @@ void UIRefiningWnd::Paint() {
       ITEM_INFO icon;
       icon.SetItemId(material->itemId);
       const int owned = LookupClientItem(g_session.m_inventoryItems, material->itemId, 0).quantity;
-      DrawItemIcon(*this, ResourceMgr::Instance(), descriptions, x + 12, 69, icon, 0);
+      DrawItemIcon(*this, ResourceMgr::Instance(), x + 12, 69, icon, 0);
       const std::string count = FormatOwnedString("%s%d^000000/1", owned != 0 ? "" : color, owned);
       this->DrawFormattedText(x, 107, count, 48, 6, 0, 12, 0, 0);
       if (index == this->selectedMaterial && (this->state == 1 || (this->state == 2 && this->frame == 0))) {
-        DrawItemIcon(*this, ResourceMgr::Instance(), descriptions, 81, 150, icon, 0);
+        DrawItemIcon(*this, ResourceMgr::Instance(), 81, 150, icon, 0);
       }
       ++index;
       x += 49;
@@ -1108,17 +1101,17 @@ void UIRefiningWnd::Paint() {
       ITEM_INFO icon;
       icon.SetItemId(this->catalystItemId);
       const int owned = LookupClientItem(g_session.m_inventoryItems, this->catalystItemId, 0).quantity;
-      DrawItemIcon(*this, ResourceMgr::Instance(), descriptions, 218, 69, icon, 0);
+      DrawItemIcon(*this, ResourceMgr::Instance(), 218, 69, icon, 0);
       const std::string count = FormatOwnedString("%s%d^000000/%d", this->catalystCount <= owned ? "" : color, owned, this->catalystCount);
       this->DrawFormattedText(206, 107, count, 48, 6, 0, 12, 0, 0);
       if (this->catalystEnabled == 1 && (this->state == 1 || (this->state == 2 && this->frame < 13))) {
-        DrawItemIcon(*this, ResourceMgr::Instance(), descriptions, 161, 150, icon, 0);
+        DrawItemIcon(*this, ResourceMgr::Instance(), 161, 150, icon, 0);
       }
     }
   }
 
   if (this->item.unknown_0000[1] != 0) {
-    DrawItemIcon(*this, ResourceMgr::Instance(), descriptions, 120, 212, this->item, 0);
+    DrawItemIcon(*this, ResourceMgr::Instance(), 120, 212, this->item, 0);
     if (this->item.unknown_0088 > 0) {
       bitmap = static_cast<CBitmapRes*>(
         ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", this->item.unknown_0088).c_str()))

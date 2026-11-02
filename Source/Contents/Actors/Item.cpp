@@ -4,6 +4,7 @@
 #include "Client/Mode/CGameMode.h"
 #include "Client/Input/InputCharset.h"
 #include "Client/Mode/ModeMgr.h"
+#include "Client/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Effects/EffectLists.h"
 #include "Contents/Effects/RagEffect.h"
@@ -151,10 +152,9 @@ void CItem::SendMsg(CGameObject* sender, int message, int a, int b, int c, int d
   }
   this->fallOrigin = this->render.position.y;
 
-  ItemDescriptions descriptions{g_itemDescriptions};
-  std::string spriteName = ItemDragResource(descriptions, this->name.c_str(), entry->identified);
+  std::string spriteName = g_session.ItemDragResource(this->name.c_str(), entry->identified);
   spriteName += ".spr";
-  std::string actionName = ItemDragResource(descriptions, this->name.c_str(), entry->identified);
+  std::string actionName = g_session.ItemDragResource(this->name.c_str(), entry->identified);
   actionName += ".act";
   this->SetSpriteName(ResourceMgr::Instance(), spriteName.c_str());
   this->SetActionName(ResourceMgr::Instance(), actionName.c_str());

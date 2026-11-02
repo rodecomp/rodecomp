@@ -139,8 +139,7 @@ void CItemInfoMgr::SetItemInfo(std::map<int, ITEM_DESC>& descriptions) const {
   };
 
   for (std::map<int, lcData>::const_iterator it = this->m_items.begin(); it != this->m_items.end(); ++it) {
-    ItemDescriptions table{descriptions};
-    ITEM_DESC& desc = table.Ensure(it->first);
+    ITEM_DESC& desc = EnsureItemDescription(it->first, descriptions);
     desc.identifiedName = it->second.identifiedDisplayName.c_str();
     desc.identifiedResource = it->second.identifiedResourceName.c_str();
     std::for_each(it->second.identifiedDescription.begin(), it->second.identifiedDescription.end(),

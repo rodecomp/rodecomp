@@ -90,7 +90,8 @@ struct alignas(8) ITEM_INFO {
   bool IsElementalStone() const;
   bool IsAboveItemId600() const;
   int Refine(char* output, int& capacity, unsigned char consume) const;
-  int sub_6D5810(char* output, int& capacity, unsigned char consume);
+  int sub_6D5810(char* output, int& capacity, unsigned char consume) const;
+  const std::vector<const char*>& Description() const;
   std::vector<unsigned char> Serialize() const;
   std::uint32_t Deserialize(const std::vector<unsigned char>& data);
   /* 0000 */ std::uint32_t unknown_0000[4];

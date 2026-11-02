@@ -143,7 +143,6 @@ void UICheckAttendanceWnd::Slot15(int, int) {
 // FUNCTION: fn_09640
 void UICheckAttendanceWnd::Paint() {
   UIWindowContext& controls = *this->m_context;
-  ItemDescriptions descriptions{g_itemDescriptions};
 
   const char* backgroundName = this->m_banner->m_entries.size() != 0 ? "유저인터페이스\\check_attendance\\attendance_bg_ad.bmp"
                                                                      : "유저인터페이스\\check_attendance\\attendance_bg.bmp";
@@ -209,7 +208,7 @@ void UICheckAttendanceWnd::Paint() {
 
     const int x = (day - 1) % 5 * 62;
     const int y = (day - 1) / 5 * 64;
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, x + 43, y + 109 + bannerHeight, item, 1, 0);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), x + 43, y + 109 + bannerHeight, item, 1, 0);
     this->DrawCenteredText(x + 26, y + 140 + bannerHeight, FormatOwnedString(LookupMessage(3467), day).c_str(), 58, 0, 12, 0xA44F3B, 1);
   }
 }
@@ -284,8 +283,7 @@ void UICheckAttendanceWnd::Slot28(int x, int y) {
   char name[260];
   std::memset(name, 0, sizeof(name));
   int capacity = sizeof(name);
-  ItemDescriptions descriptions{g_itemDescriptions};
-  descriptions.Name(item, name, capacity, 0);
+  item.sub_6D5810(name, capacity, 0);
   if (std::strlen(name) != 0) {
     int tipX = 0;
     int tipY = -20;

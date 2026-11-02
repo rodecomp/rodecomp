@@ -507,7 +507,7 @@ void CUIItem::BindItem(CUIItemInfo* item, const CItemData& data) {
   item->nameText->SetText(name.c_str(), name.size());
   item->image->SetImage(image);
   reinterpret_cast<CUIQuestInfo*>(item)->SetStatusLines(data.first, data.second, data.third);
-  item->SetDescription(data.type, ItemDescriptions{g_itemDescriptions}.Description(info));
+  item->SetDescription(data.type, info.Description());
   reinterpret_cast<CUITextViewer*>(item->unknown_00F8)->Clear();
   for (const std::string& value : data.values) {
     reinterpret_cast<CUITextViewer*>(item->unknown_00F8)->AddLine(value);
