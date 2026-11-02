@@ -852,6 +852,50 @@ void UIChatEditCtrl::PushHistory() {
   }
 }
 
+// OFFSET: 0x0086A060
+// FUNCTION: fn_10976
+void UIWhisperEditCtrl::sub_86A060() {
+  if (this->Length() == 0) {
+    this->historyIndex = static_cast<int>(this->history.size());
+    return;
+  }
+
+  for (std::size_t index = 0; index < this->history.size(); ++index) {
+    if (this->history[index] == this->Text()) {
+      return;
+    }
+  }
+
+  if (this->historyIndex == static_cast<int>(this->history.size())) {
+    if (this->history.size() >= 30) {
+      --this->historyIndex;
+      std::move(this->history.begin() + 1, this->history.end(), this->history.begin());
+      this->history.pop_back();
+    }
+    this->history.push_back(std::string(this->Text()));
+  } else {
+    bool found = false;
+    for (std::size_t index = 0; index < this->history.size(); ++index) {
+      if (this->history[index] == this->Text()) {
+        this->historyIndex = static_cast<int>(index);
+        found = true;
+        break;
+      }
+    }
+
+    if (!found) {
+      this->history.push_back(std::string(this->Text()));
+      this->historyIndex = static_cast<int>(this->history.size()) - 1;
+    }
+  }
+
+  if (this->historyIndex == static_cast<int>(this->history.size())) {
+    this->SetText("");
+  } else {
+    this->SetText(this->history[this->historyIndex].c_str());
+  }
+}
+
 // OFFSET: 0x0086A550
 // FUNCTION: fn_10977
 void UIEditCtrl::MoveCandidateWindow(int x) {
