@@ -11,7 +11,6 @@ class CMCStoreInfoBackup;
 #include "UI/Window/WindowManagerWindows.h"
 struct AccountConfigLoad;
 struct CharacterConfigLoad;
-struct EmblemUploadContext;
 struct StoreBackupContext;
 struct RegisterPartyContext;
 struct StopRecruitingContext;
@@ -36,10 +35,7 @@ public:
   void DownloadEmblem(
     std::string url, std::uint32_t accountId, std::string token, std::string world, std::uint32_t guildId, std::uint32_t version, CConnection& connection
   );
-  void UploadEmblem(
-    std::string url, std::uint32_t accountId, std::string token, std::string world, std::uint32_t guildId, std::string path, CEmblemDataMgr& owner,
-    EmblemUploadContext& context
-  );
+  void UploadEmblem(std::string url, std::uint32_t accountId, std::string token, std::string world, std::uint32_t guildId, std::string path);
   void LoadMyParty(std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, WindowManagerWindows& windows);
   void LoadPartyInfo(
     std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, std::uint32_t queryAccountId,

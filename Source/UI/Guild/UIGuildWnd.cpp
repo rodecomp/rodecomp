@@ -3018,3 +3018,191 @@ void UIGuildPositionManageWnd::Slot15(int, int) {
 
   this->UpdateScroll();
 }
+
+// OFFSET: 0x00961880
+// FUNCTION: fn_13127
+int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, std::intptr_t a2, std::intptr_t a3, std::intptr_t a4) {
+  switch (message) {
+  case 48: {
+    CMode* gameMode = g_modeMgr.GetGameMode();
+    if (this->unknown_00E0[a1].id != 27) {
+      break;
+    }
+
+    if (this->m_allyRow != -1) {
+      int row = 0;
+      for (std::list<GuildInfo::RelatedGuild>::iterator it = g_guildInfo.unknown_00E4.begin(); it != g_guildInfo.unknown_00E4.end(); ++it) {
+        if (row >= 3) {
+          break;
+        }
+        if (it->unknown_0004 == 0) {
+          if (row == this->m_allyRow) {
+            if (it->unknown_0000 != 0) {
+              gameMode->SendMsg(127, it->unknown_0000, 0, 0, 0);
+            }
+            return 0;
+          }
+          ++row;
+        }
+      }
+    } else if (this->m_hostileRow != -1) {
+      int row = 0;
+      for (std::list<GuildInfo::RelatedGuild>::iterator it = g_guildInfo.unknown_00E4.begin(); it != g_guildInfo.unknown_00E4.end(); ++it) {
+        if (row >= 3) {
+          break;
+        }
+        if (it->unknown_0004 == 1) {
+          if (row == this->m_hostileRow) {
+            if (it->unknown_0000 != 0) {
+              gameMode->SendMsg(127, it->unknown_0000, 1, 0, 0);
+            }
+            return 0;
+          }
+          ++row;
+        }
+      }
+    }
+    break;
+  }
+  case 49:
+    this->unknown_00E0.erase(this->unknown_00E0.begin(), this->unknown_00E0.end());
+    if (g_windowMgr.unknown_0210 != 0) {
+      this->m_frameContext->windows.CloseWindow(18);
+    }
+    if (g_guildInfo.unknown_00B4 != 0) {
+      this->unknown_00E0.push_back(GuildWndNameEntry{LookupMessage(351), 27});
+    }
+    if (!this->unknown_00E0.empty()) {
+      UIWindow* menu = this->m_frameContext->windows.EnsureWindow(18);
+      for (std::size_t index = 0; index < this->unknown_00E0.size(); ++index) {
+        menu->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(this->unknown_00E0[index].name.c_str()), 0, 0, 0);
+      }
+      menu->SendMsg(nullptr, 83, 60, 0, 0, 0);
+      menu->SendMsg(nullptr, 30, 0, 0, 0, 0);
+
+      int x = std::max(1, g_mouse.x + 1);
+      int maxX = g_renderer->viewport.width - menu->geometry.width;
+      if (x > maxX) {
+        x = maxX;
+      }
+      int y = std::max(1, g_mouse.y + 1);
+      int maxY = g_renderer->viewport.height - menu->geometry.height;
+      if (y > maxY) {
+        y = maxY;
+      }
+      menu->Move(x, y);
+      return 0;
+    }
+    break;
+  case 6:
+    switch (a1) {
+    case 201:
+      this->m_frameContext->windows.CloseWindow(59);
+      return 0;
+    case 278: {
+      if (g_windowMgr.unknown_0214 != 0) {
+        this->m_frameContext->windows.CloseWindow(26);
+      }
+      this->unknown_00D8.clear();
+      char directory[256];
+      std::sprintf(directory, "%s\\emblem\\", g_applicationDirectory);
+      EnumerateFileNames(this->unknown_00D8, directory, "*.bmp");
+      EnumerateFileNames(this->unknown_00D8, directory, "*.gif");
+      const int count = static_cast<int>(this->unknown_00D8.size());
+      if (count == 0) {
+        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(3037), 0, true, false, 0, "Caution", 280, 120, 0);
+        return 0;
+      }
+
+      UIWindow* menu = this->m_frameContext->windows.EnsureWindow(26);
+      for (std::list<std::string>::iterator it = this->unknown_00D8.begin(); it != this->unknown_00D8.end(); ++it) {
+        menu->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(it->c_str()), 0, 0, 0);
+      }
+      menu->SendMsg(nullptr, 40, 0, 0, 0, 0);
+      menu->Resize(160, std::min(count * 16, 160));
+      menu->SendMsg(nullptr, 83, 60, 0, 0, 0);
+      int x = this->geometry.width - 163;
+      int y = 86;
+      this->ToScreen(x, y);
+      menu->Move(x + 1, y + 1);
+      return 0;
+    }
+    case 449:
+      reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2564), 0, false, false, 0, "Message", 280, 120, 0);
+      this->m_frameContext->windows.EnsureWindow(215);
+      return 0;
+    }
+    break;
+  case 13:
+    break;
+  case 39: {
+    if (this->unknown_00D8.size() == 0) {
+      break;
+    }
+
+    std::string name;
+    int index = 0;
+    for (std::list<std::string>::iterator it = this->unknown_00D8.begin(); it != this->unknown_00D8.end(); ++it) {
+      if (a1 == index) {
+        name = it->c_str();
+        break;
+      }
+      ++index;
+    }
+
+    if (name.size() != 0) {
+      std::string path = FormatOwnedString("..\\..\\emblem\\%s", name.c_str());
+      CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str())));
+      if (!bitmap) {
+        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(3587), 0, true, false, 0, "Message", 280, 120, 0);
+        return 0;
+      }
+
+      if (bitmap->image.width == 24 && bitmap->image.height == 24) {
+        CFile file;
+        if (file.Open(FormatOwnedString("..\\emblem\\%s", name.c_str()).c_str(), 0, true, false) == true) {
+          if (g_guildMgr->m_timeout < file.GetSize()) {
+            reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(3587), 0, true, false, 0, "Message", 280, 120, 0);
+          } else {
+            std::string uploadPath = FormatOwnedString("emblem\\%s", name.c_str());
+            if (!g_emblemDataMgr->Upload(this->m_guildId, uploadPath)) {
+              reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(3586), 0, true, false, 0, "Message", 280, 120, 0);
+            }
+          }
+        }
+      } else {
+        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(3587), 0, true, false, 0, "Message", 280, 120, 0);
+      }
+    }
+    return 0;
+  }
+  case 60:
+    this->m_guildId = g_guildInfo.m_guildId;
+    if (g_guildInfo.unknown_00B4 != 0) {
+      this->m_editButton->Move(this->geometry.width - this->m_editButton->geometry.width - 8, 69);
+      this->m_disbandButton->Move(this->geometry.width - this->m_disbandButton->geometry.width - 15, this->geometry.height - this->m_disbandButton->geometry.height - 5);
+    } else {
+      this->m_editButton->Move(-200, -200);
+      this->m_disbandButton->Move(-200, -200);
+    }
+    this->RefreshAgitList();
+    this->InvalidateChildren();
+    return 0;
+  case 162:
+    if (this->m_agitMenu) {
+      this->m_agitMenu->Move(a1, a2);
+      this->m_agitMenu->Show(1);
+      this->m_agitMenu->m_agitIndex = this->m_agitList->selected;
+      this->Invalidate();
+      return 0;
+    }
+    break;
+  case 163:
+    this->HideAgitMenu();
+    break;
+  default:
+    return UIGuildWnd::SendMsg(sender, message, a1, a2, a3, a4);
+  }
+
+  return 0;
+}

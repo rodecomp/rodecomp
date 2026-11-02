@@ -8,7 +8,6 @@ class LuaScript;
 class CConnection;
 class CAsyncWorkMgr;
 struct AsyncDiagnostic;
-struct EmblemUploadContext;
 
 class CEmblemDataMgr {
 public:
@@ -21,11 +20,8 @@ public:
     std::uint32_t guildId, std::uint32_t version, std::uint32_t accountId, const std::string& accountName, const char* token16, CConnection& connection,
     CAsyncWorkMgr& manager
   );
-  bool Upload(
-    std::uint32_t guildId, std::string path, std::uint32_t accountId, const std::string& accountName, const char* token16, EmblemUploadContext& context,
-    CAsyncWorkMgr& manager
-  );
-  void CompleteUpload(AsyncDiagnostic diagnostic, std::string response, std::uint32_t guildId, EmblemUploadContext& context);
+  bool Upload(std::uint32_t guildId, std::string path);
+  void CompleteUpload(AsyncDiagnostic diagnostic, std::string response, std::uint32_t guildId);
 
 protected:
   /* 0004 */ bool m_enabled;

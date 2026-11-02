@@ -1,6 +1,7 @@
 #include "Contents/UserData/AccountService.h"
 #include "Contents/Async/AsyncWorkMgr.h"
 #include "Contents/Emblems/EmblemDataMgr.h"
+#include "Client/Session.h"
 
 #include <new>
 
@@ -69,16 +70,13 @@ void CEmblemDataMgr::Download(
 
 // OFFSET: 0x005EB410
 // FUNCTION: fn_03973
-bool CEmblemDataMgr::Upload(
-  std::uint32_t guildId, std::string path, std::uint32_t accountId, const std::string& accountName, const char* token16, EmblemUploadContext& context,
-  CAsyncWorkMgr& manager
-) {
+bool CEmblemDataMgr::Upload(std::uint32_t guildId, std::string path) {
   if (this->m_uploading) {
     return false;
   }
 
-  const std::string token(token16, 16);
-  manager.UploadEmblem(this->m_uploadUrl, accountId, token, accountName, guildId, path, *this, context);
+  const std::string token(reinterpret_cast<const char*>(&g_session.unknown_807C[0x08]), 16);
+  g_asyncWorkMgr->UploadEmblem(this->m_uploadUrl, g_session.m_aid, token, g_session.m_accountName, guildId, path);
 
   return true;
 }

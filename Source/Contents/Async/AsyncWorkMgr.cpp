@@ -148,14 +148,11 @@ void CAsyncWorkMgr::DownloadEmblem(
 
 // OFFSET: 0x00574570
 // FUNCTION: fn_02505
-void CAsyncWorkMgr::UploadEmblem(
-  std::string url, std::uint32_t accountId, std::string token, std::string world, std::uint32_t guildId, std::string path, CEmblemDataMgr& owner,
-  EmblemUploadContext& context
-) {
+void CAsyncWorkMgr::UploadEmblem(std::string url, std::uint32_t accountId, std::string token, std::string world, std::uint32_t guildId, std::string path) {
   NAsyncWorkPtr work(this->m_pools, "Emblem_Upload");
 
   if (work.Get()) {
-    static_cast<CEmblemDataUploadAsyncWork*>(work.Get())->Bind(url, accountId, token, world, guildId, path, owner, context);
+    static_cast<CEmblemDataUploadAsyncWork*>(work.Get())->Bind(url, accountId, token, world, guildId, path);
     this->Submit(work);
   }
 }

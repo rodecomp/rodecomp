@@ -1,9 +1,9 @@
 #include "Contents/Emblems/EmblemDataMgr.h"
-#include "Contents/Emblems/EmblemUpload.h"
 #include "Contents/MessageTable.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
 #include "UI/Window/WindowDialogs.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "Utility/Async/AsyncDiagnostic.h"
 
 #include <json/reader.h>
@@ -22,7 +22,7 @@ namespace {
 
 // OFFSET: 0x005EBAD0
 // FUNCTION: fn_03976
-void CEmblemDataMgr::CompleteUpload(AsyncDiagnostic diagnostic, std::string response, std::uint32_t guildId, EmblemUploadContext& context) {
+void CEmblemDataMgr::CompleteUpload(AsyncDiagnostic diagnostic, std::string response, std::uint32_t guildId) {
   if (!diagnostic.success) {
     return;
   }
@@ -38,14 +38,14 @@ void CEmblemDataMgr::CompleteUpload(AsyncDiagnostic diagnostic, std::string resp
   switch (root["Type"].asInt()) {
   case 1: {
     EmblemVersionPacket packet{0x0B46, guildId, root["version"].asInt()};
-    context.connection.Send(context.lengths.FixedLength(packet.id), &packet);
+    GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
     break;
   }
   case 2:
   case 3:
   case 4: {
     const char* message = LookupMessage(3586);
-    context.dialogs.Confirm(message, 0, true, false, 0, "Message", 280, 120, 0);
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(message, 0, true, false, 0, "Message", 280, 120, 0);
     break;
   }
   default:

@@ -20,7 +20,7 @@ namespace {
 // OFFSET: 0x005EBF50
 // FUNCTION: fn_03978
 CEmblemDataUploadAsyncWork::CEmblemDataUploadAsyncWork()
-    : NAsyncWork("Emblem_Upload"), m_accountId(0), m_guildId(0), m_diagnostic(Diagnostic(false, "unknwon", 27)), m_owner(nullptr), m_context(nullptr) {
+    : NAsyncWork("Emblem_Upload"), m_accountId(0), m_guildId(0), m_diagnostic(Diagnostic(false, "unknwon", 27)) {
 }
 
 // INLINED
@@ -33,10 +33,7 @@ void CEmblemDataUploadAsyncWork::Reset() {
 
 // OFFSET: 0x005EC450
 // FUNCTION: fn_03980
-void CEmblemDataUploadAsyncWork::Bind(
-  std::string url, std::uint32_t accountId, std::string token, std::string accountName, std::uint32_t guildId, std::string path, CEmblemDataMgr& owner,
-  EmblemUploadContext& context
-) {
+void CEmblemDataUploadAsyncWork::Bind(std::string url, std::uint32_t accountId, std::string token, std::string accountName, std::uint32_t guildId, std::string path) {
   this->m_group = timeGetTime();
   this->m_key = 0;
   this->m_url = url;
@@ -47,8 +44,6 @@ void CEmblemDataUploadAsyncWork::Bind(
   this->m_path = path;
   AsyncDiagnostic diagnostic = Diagnostic(false, "unknwon", 54);
   this->m_diagnostic.MoveFrom(diagnostic);
-  this->m_owner = &owner;
-  this->m_context = &context;
 }
 
 // OFFSET: 0x005EC7C0
@@ -89,5 +84,5 @@ bool CEmblemDataUploadAsyncWork::Execute() {
 // OFFSET: 0x005EC700
 // FUNCTION: fn_03982
 void CEmblemDataUploadAsyncWork::Complete() {
-  this->m_owner->CompleteUpload(this->m_diagnostic, this->m_response, this->m_guildId, *this->m_context);
+  g_emblemDataMgr->CompleteUpload(this->m_diagnostic, this->m_response, this->m_guildId);
 }
