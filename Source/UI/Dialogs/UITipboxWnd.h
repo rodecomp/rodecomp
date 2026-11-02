@@ -11,7 +11,9 @@ class UIStaticText;
 class UIEditCtrl;
 class UIListBoxID;
 class UITagTextViewer;
-class UIButton;
+class UIBitmapButton;
+struct UIButtonContext;
+struct UIEditContext;
 
 struct TipBoxAnimation {
   /* 0000 */ std::uint32_t moveStart;
@@ -46,6 +48,7 @@ public:
   void Search(std::string& keyword);
   void RefreshTip();
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
+  void Slot15(int width, int height) override;
   void Slot19() override;
   void Paint() override;
 
@@ -56,15 +59,19 @@ public:
   /* 00C4 */ UIStaticText* unknown_00C4;
   /* 00C8 */ UIStaticText* m_pageText;
   /* 00CC */ UIStaticText* m_pageTotalText;
-  /* 00D0 */ UIButton* unknown_00D0;
-  /* 00D4 */ UIButton* unknown_00D4;
-  /* 00D8 */ UIButton* unknown_00D8;
+  /* 00D0 */ UIBitmapButton* unknown_00D0;
+  /* 00D4 */ UIBitmapButton* unknown_00D4;
+  /* 00D8 */ UIBitmapButton* unknown_00D8;
   /* 00DC */ std::vector<TipBoxAnimation> m_animations;
   /* 00E8 */ std::vector<TipBoxDot> m_dots;
   /* 00F4 */ std::uint32_t m_buildTime;
   /* 00F8 */ std::uint32_t m_frameTime;
   /* 00FC */ bool unknown_00FC;
   /* 0100 */ int unknown_0100;
+
+protected:
+  UIButtonContext* m_controls;
+  UIEditContext* m_editContext;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

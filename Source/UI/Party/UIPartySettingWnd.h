@@ -30,6 +30,12 @@ public:
 
 protected:
   UIButtonContext* m_controls;
+
+public:
+  /* 00E0 */ UIEditCtrl* m_edit;
+
+protected:
+  UIEditContext* m_editContext;
 };
 
 class UIPartyInvitationToWnd : public UIPartySettingWnd {
@@ -39,11 +45,6 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
   void Slot15(int width, int height) override;
-
-  /* 00E0 */ UIEditCtrl* m_edit;
-
-protected:
-  UIEditContext* m_editContext;
 };
 
 #endif

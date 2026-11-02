@@ -139,6 +139,7 @@
 #include "Contents/NavigationManager.h"
 #include "UI/Text/NavigationLink.h"
 #include "Utility/Text/GroupedInteger.h"
+#include "Utility/Math/Int64Math.h"
 #include "Client/Mode/ModeTooltip.h"
 #include "Script/LuaScript.h"
 #include "Utility/Text/StringUtil.h"
@@ -4023,6 +4024,8 @@ void UISkillNameChangeWnd::Slot15(int, int) {
   this->m_message0 = 184;
 }
 
+// OFFSET: 0x008E9C90
+
 // OFFSET: 0x008EA780
 // FUNCTION: fn_12205
 void UIToolTipWnd::Slot15(int width, int height) {
@@ -4990,6 +4993,199 @@ int UISayDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
           position += header.length;
         } else {
           position += header.length;
+        }
+      }
+    }
+    return 0;
+  }
+  default:
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
+}
+
+// OFFSET: 0x008FAF50
+// FUNCTION: fn_12344
+int UIExchangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  switch (message) {
+  case 6: {
+    CMode* mode = g_modeMgr.GetGameMode();
+    switch (a) {
+    case 184:
+      if (this->unknown_00D4 != 0) {
+        return 0;
+      }
+      if (this->unknown_00C0) {
+        char text[24];
+        std::sprintf(text, "%s ", this->unknown_00C0->Text());
+        if (!g_session.IsNumberWithCommas(text)) {
+          reinterpret_cast<WindowDialogs&>(g_windowMgr).Confirm(LookupMessage(602), 0, true, false, 0, "Message", 280, 120, 0);
+          return 0;
+        }
+
+        std::int64_t money = _atoi64(text);
+        if (money > 0x7FFFFFFF) {
+          money = 0x7FFFFFFF;
+        }
+        int amount = static_cast<int>(MaxInt64(money, 0));
+        if (amount < 0) {
+          amount = 0;
+        }
+        if (amount > g_session.m_zeny) {
+          amount = g_session.m_zeny;
+        }
+        mode->SendMsg(51, 0, g_session.unknown_5210 + amount, 0, 0);
+        this->CancelInput();
+      }
+      mode->SendMsg(52, 0, 0, 0, 0);
+      this->unknown_00D4 = 1;
+      return 0;
+    case 185:
+      if (this->unknown_00DC != 0) {
+        return 0;
+      }
+      mode->SendMsg(53, 0, 0, 0, 0);
+      this->unknown_00DC = 1;
+      return 0;
+    case 213:
+      this->unknown_011C = b != 0;
+      return 0;
+    case 226: {
+      if (!this->unknown_00C0) {
+        return 0;
+      }
+      int amount = std::atoi(this->unknown_00C0->Text());
+      if (amount < 0) {
+        amount = 0;
+      }
+      if (amount > g_session.m_zeny) {
+        amount = g_session.m_zeny;
+      }
+      mode->SendMsg(51, 0, g_session.unknown_5210 + amount, 0, 0);
+      this->CancelInput();
+      return 0;
+    }
+    case 230:
+      if (this->unknown_00D8 != 0) {
+        return 0;
+      }
+      if (this->unknown_011C) {
+        const std::string text = FormatOwnedString(LookupMessage(1832), this->unknown_00F0.c_str());
+        g_modeMgr.gameMode->SendMsg(68, reinterpret_cast<int>(text.c_str()), 0, 0, 0);
+      }
+      mode->SendMsg(54, 0, 0, 0, 0);
+      this->unknown_00D8 = 1;
+      this->LayoutButtons();
+      return 0;
+    }
+    return 0;
+  }
+  case 7:
+    return 0;
+  case 23:
+    this->m_myItems.erase(this->m_myItems.begin(), this->m_myItems.end());
+    this->m_otherItems.erase(this->m_otherItems.begin(), this->m_otherItems.end());
+    for (int index = 0; index < 10; ++index) {
+      ITEM_INFO item = g_session.GetExchangeItem(index);
+      if (item.quantity != 0) {
+        this->m_myItems.push_back(item);
+      }
+      ITEM_INFO slot = g_session.GetItemSlot(index);
+      if (slot.quantity != 0) {
+        this->m_otherItems.push_back(slot);
+      }
+    }
+    this->Invalidate();
+    return 0;
+  case 38: {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    mode->SendMsg(51, mode->drag.id, mode->drag.quantity, 0, 0);
+    mode->SendMsg(18, 0, 0, 0, 0);
+    return 0;
+  }
+  case 50:
+    this->unknown_00F0 = reinterpret_cast<const char*>(a);
+    this->unknown_0108 = static_cast<int>(b);
+    this->unknown_010C = static_cast<short>(c);
+    return 0;
+  case 51:
+    this->unknown_00CC = 1;
+    this->CancelInput();
+    this->LayoutButtons();
+    return 0;
+  case 52:
+    this->unknown_00D0 = 1;
+    this->CancelInput();
+    this->LayoutButtons();
+    return 0;
+  case 123: {
+    const unsigned char* records = reinterpret_cast<const unsigned char*>(a);
+    FramedMessageHeader header{};
+    std::memcpy(&header, records, sizeof(header));
+    if (header.type == 20600) {
+      unsigned int position = sizeof(header);
+      int number = 0;
+      short level = 0;
+      while (position < static_cast<unsigned int>(b)) {
+        std::memcpy(&header, records + position, sizeof(header));
+        position += sizeof(header);
+        switch (header.type) {
+        case 20601:
+          this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+          return 0;
+        case 20602: {
+          char name[260];
+          std::memset(name, 0, sizeof(name));
+          std::memcpy(name, records + position, header.length);
+          position += header.length;
+          this->SendMsg(nullptr, 50, reinterpret_cast<std::intptr_t>(name), number, level, 0);
+          break;
+        }
+        case 20603:
+          std::memcpy(&number, records + position, header.length);
+          position += header.length;
+          break;
+        case 20604:
+          std::memcpy(&level, records + position, header.length);
+          position += header.length;
+          break;
+        case 20605:
+          std::memcpy(&this->unknown_00CC, records + position, header.length);
+          position += header.length;
+          if (this->unknown_00CC != 0) {
+            this->SendMsg(nullptr, 51, 0, 0, 0, 0);
+          }
+          break;
+        case 20606:
+          std::memcpy(&this->unknown_00D0, records + position, header.length);
+          position += header.length;
+          if (this->unknown_00D0 != 0) {
+            this->SendMsg(nullptr, 52, 0, 0, 0, 0);
+          }
+          break;
+        case 20607:
+          std::memcpy(&this->unknown_00D4, records + position, header.length);
+          position += header.length;
+          if (this->unknown_00D4 != 0) {
+            this->SendMsg(nullptr, 6, 184, 0, 0, 0);
+          }
+          break;
+        case 20608:
+          std::memcpy(&this->unknown_00D8, records + position, header.length);
+          position += header.length;
+          if (this->unknown_00D8 != 0) {
+            this->SendMsg(nullptr, 6, 230, 0, 0, 0);
+          }
+          break;
+        case 20609:
+          std::memcpy(&this->unknown_00DC, records + position, header.length);
+          position += header.length;
+          if (this->unknown_00DC != 0) {
+            this->SendMsg(nullptr, 6, 185, 0, 0, 0);
+          }
+          break;
+        default:
+          position += header.length;
+          break;
         }
       }
     }
@@ -6587,6 +6783,8 @@ void UIPartyInvitationToWnd::Slot15(int, int) {
   InputFocus focus{g_windowMgr.hoverWindow};
   focus.Set(this->m_edit);
 }
+
+// OFFSET: 0x008E60A0
 
 // OFFSET: 0x008F95F0
 // FUNCTION: fn_12339
