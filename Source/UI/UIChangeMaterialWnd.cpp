@@ -548,16 +548,13 @@ void UIChangeMaterialWnd::Paint() {
   const MaterialSlotPos* position = this->m_materialPos;
   for (auto it = this->m_materials.begin(); it != this->m_materials.end(); ++it, ++position) {
     if (it->identified == 1) {
-      const TextLocale locale = {};
-      DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, locale, position->x, position->y, *it, 1, 0);
+      DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, position->x, position->y, *it, 1, 0);
     } else {
-      const TextLocale locale = {};
-      DrawItemWithQuantityAuxiliary(*this, descriptions, g_fontCache, locale, 1, position->x, position->y, *it, 1, 0);
+      DrawItemWithQuantityAuxiliary(*this, descriptions, 1, position->x, position->y, *it, 1, 0);
     }
   }
 
-  const TextLocale locale = {};
-  DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, locale, this->m_resultX, this->m_resultY, this->m_resultItem, 1, 0);
+  DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, this->m_resultX, this->m_resultY, this->m_resultItem, 1, 0);
 
   const std::string amount = FormatOwnedString(LookupMessage(0xE8C), this->m_resultAmount / 10);
   const int width = this->TextWidth(amount.c_str(), 0, 0x1D, 0x17, 1, 0);
@@ -607,7 +604,6 @@ void UIChangeMaterialWnd_List::Paint() {
     item.quantity = entry->results[0].quantity;
     item.identified = 1;
 
-    const TextLocale locale = {};
     ItemDescriptions descriptions{g_itemDescriptions};
     std::string name = item.DisplayName(0);
     if (this->TextWidth(name.c_str(), 0, 0, 12, 0, 0) > 100) {
@@ -616,11 +612,11 @@ void UIChangeMaterialWnd_List::Paint() {
 
     const int y = rowHeight * row;
     if (entry->state == 1) {
-      DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, locale, 0, y, item, 1, 0);
+      DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, 0, y, item, 1, 0);
       this->DrawTextAt(30, y + 6, name.c_str(), 0, 0, 12, 0, 0, 0);
       this->DrawRightAlignedText(163, y + 6, FormatOwnedString(LookupMessage(182), item.quantity).c_str(), 0, 0, 12, 0, 0);
     } else {
-      DrawItemWithQuantityAuxiliary(*this, descriptions, g_fontCache, locale, 1, 0, y, item, 1, 0);
+      DrawItemWithQuantityAuxiliary(*this, descriptions, 1, 0, y, item, 1, 0);
       this->DrawTextAt(30, y + 6, name.c_str(), 0, 0, 12, 0xAAAAAA, 0, 0);
       this->DrawRightAlignedText(163, y + 6, FormatOwnedString(LookupMessage(182), item.quantity).c_str(), 0, 0, 12, 0xAAAAAA, 0);
     }

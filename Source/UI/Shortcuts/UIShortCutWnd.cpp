@@ -706,7 +706,6 @@ void UIRoMapWnd::Slot31(int x, int y) {
 
   if (!this->unknown_01FC.empty()) {
     UIWindow* menu = g_windowMgr.EnsureWindow(26);
-    const TextLocale locale = {};
     int width = 0;
     for (const std::string& name : this->unknown_01FC) {
       const int textWidth = this->TextWidth(name.c_str(), 0, 0, 14, 0, 0);

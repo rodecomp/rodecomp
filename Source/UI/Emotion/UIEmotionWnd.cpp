@@ -96,7 +96,6 @@ void UIEmotionWnd::Slot15(int, int) {
 // OFFSET: 0x008A3000
 // FUNCTION: fn_11645
 void UIEmotionWnd::Paint() {
-  const TextLocale locale = {};
   int titleHeight = this->UIWindow::DrawTitleBar(true, LookupMessage(574), 0);
   this->DrawPanelBackground(titleHeight, 0, "");
   this->DrawButtonBar(2, 0, 1);

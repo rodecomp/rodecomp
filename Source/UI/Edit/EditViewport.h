@@ -5,8 +5,6 @@
 #include <windows.h>
 
 class CDC;
-class FontCache;
-struct TextLocale;
 struct CLanguageBase;
 struct EditTextState;
 
@@ -19,8 +17,6 @@ struct EditViewport {
   const UINT& codePage;
   EditTextState& state;
   CDC& surface;
-  FontCache& fonts;
-  const TextLocale& locale;
 
   void Synchronize();
 };

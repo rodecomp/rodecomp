@@ -148,7 +148,7 @@ namespace {
   }
 
   // INLINED
-  void DrawTextRight(UIWindow& window, FontCache& fonts, const TextLocale& locale, int x, int y, const char* text, int bytes,
+  void DrawTextRight(UIWindow& window, int x, int y, const char* text, int bytes,
                      int family, int height, std::uint32_t color, unsigned char bold) {
     if (!bytes) {
       bytes = static_cast<int>(std::strlen(text));
@@ -435,8 +435,7 @@ void UIMerInfoWnd::Paint() {
   for (int i = 0; i < 8; ++i) {
     const int value = i == 7 ? (2000 - g_session.m_mercenaryStats[i]) / 10 : g_session.m_mercenaryStats[i];
     const int bytes = std::sprintf(number, "%d", value);
-    const TextLocale locale = {};
-    DrawTextRight(*this, g_fontCache, locale, 79, 24 + 18 * i, number, bytes, 1, 14, 0, 0);
+    DrawTextRight(*this, 79, 24 + 18 * i, number, bytes, 1, 14, 0, 0);
   }
   this->DrawTextAt(136, 24, g_session.m_mercenaryName, 0, 0, 12, 0x646464, 0, 0);
   this->DrawTextAt(135, 24, g_session.m_mercenaryName, 0, 0, 12, 0, 0, 0);

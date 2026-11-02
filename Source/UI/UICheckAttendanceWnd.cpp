@@ -209,8 +209,7 @@ void UICheckAttendanceWnd::Paint() {
 
     const int x = (day - 1) % 5 * 62;
     const int y = (day - 1) / 5 * 64;
-    const TextLocale locale = {};
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, locale, x + 43, y + 109 + bannerHeight, item, 1, 0);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, x + 43, y + 109 + bannerHeight, item, 1, 0);
     this->DrawCenteredText(x + 26, y + 140 + bannerHeight, FormatOwnedString(LookupMessage(3467), day).c_str(), 58, 0, 12, 0xA44F3B, 1);
   }
 }

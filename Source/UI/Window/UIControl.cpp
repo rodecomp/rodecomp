@@ -3175,8 +3175,6 @@ void CUIBasicButton::Slot55() {
     return;
   }
 
-  FontCache& fonts = g_fontCache;
-  const TextLocale locale = {};
   if (this->disabled) {
     this->DrawTextAt(this->textX + 1, this->textY + 1, this->displayText.c_str(), 0, 0, 12, 0xE2E2E2, 0, 0);
     this->DrawTextAt(this->textX, this->textY, this->displayText.c_str(), 0, 0, 12, 0x6F6F6F, 0, 0);

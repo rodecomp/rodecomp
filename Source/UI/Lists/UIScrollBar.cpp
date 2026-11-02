@@ -655,7 +655,6 @@ void UIEditCtrl_Custom::PaintText() {
   const int y = this->unknown_0124 + this->textY;
   std::string display;
   FontCache& fonts = g_fontCache;
-  const TextLocale locale = {};
   const auto align = [&]() {
     if (this->unknown_0128 == 1) {
       x = this->geometry.width - x - this->TextWidth(display.c_str(), 0, 0, 12, this->unknown_011C, 0);
@@ -738,7 +737,6 @@ void UIBasicItemCtrl::DrawItemIcon(int x, int y, int, bool compact) {
 
   const std::string count = FormatOwnedString("%d", this->m_item.quantity);
   FontCache& fonts = g_fontCache;
-  const TextLocale locale = {};
   int textY;
   if (compact) {
     textY = y + 20;
@@ -1359,7 +1357,6 @@ void UIChatHisBox::Paint() {
   }
 
   FontCache& fonts = g_fontCache;
-  const TextLocale locale = {};
   for (int row = 0; top + row < static_cast<int>(end); ++row) {
     const int index = top + row;
     int x;

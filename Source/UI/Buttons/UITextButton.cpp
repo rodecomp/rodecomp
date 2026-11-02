@@ -2297,7 +2297,6 @@ void UIBasicSkillCtrl::Paint() {
       if (skill.level != 0) {
         std::sprintf(text, "%d", skill.level);
         FontCache& fonts = g_fontCache;
-        const TextLocale locale = {};
         const int x = this->geometry.width - this->TextWidth(text, 0, 0, 11, 0, 0);
         this->DrawTextAt(x, 15, text, 0, 0, 11, 0xFFFFFF, 0, 0);
         this->DrawTextAt(x - 2, 15, text, 0, 0, 11, 0xFFFFFF, 0, 0);
@@ -2334,7 +2333,6 @@ void UIBmpRadioBtn::Paint() {
   }
 
   FontCache& fonts = g_fontCache;
-  const TextLocale locale = {};
   if (this->m_disabled == true) {
     for (auto it = this->m_texts.begin(); it != this->m_texts.end(); ++it) {
       if (it->id == 3) {
@@ -3453,7 +3451,6 @@ void UIChatHisBox2::Paint() {
   }
 
   FontCache& fonts = g_fontCache;
-  const TextLocale locale = {};
   for (int row = 0; top + row < static_cast<int>(end); ++row) {
     const int index = top + row;
     int x;
@@ -3488,7 +3485,6 @@ void UIChatHisBox3::Paint() {
   }
 
   FontCache& fonts = g_fontCache;
-  const TextLocale locale = {};
   for (int row = 0; top + row < static_cast<int>(end); ++row) {
     const int index = top + row;
     this->DrawTextAt(2, this->lineHeight * row + 3, this->lines[index].c_str(), 0, 0, this->unknown_0134, this->unknown_00E4[index], 0, 0);

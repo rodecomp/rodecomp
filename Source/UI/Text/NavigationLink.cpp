@@ -606,7 +606,6 @@ void LineCutter::UIText::Slot35(int value) {
 // FUNCTION: fn_10471
 void LineCutter::UIText::Paint() {
   this->ClearSurface(0xFFFF00FF);
-  const TextLocale locale = {};
 
   if (this->m_shadowed) {
     this->DrawTextAt(1, 1, this->m_text.c_str(), this->m_text.size(), 0, this->m_fontHeight, this->m_shadowColor, this->m_bold,
@@ -1044,7 +1043,6 @@ tagSIZE CCreateLineInfo::MeasureText(UIWindow* window, std::string text, const L
     return tagSIZE{0, 0};
   }
 
-  const TextLocale locale = {};
   return window->TextSize(text.c_str(), text.size(), 0, style.fontHeight, style.bold, style.italic);
 }
 
@@ -1139,7 +1137,6 @@ UIWindow* CCreateLineInfo::CreateTextWindow(std::string text, const LineTextStyl
   window->m_outlined = this->unknown_0028;
   window->m_shadowColor = this->unknown_0034;
   if (window->m_outlined == 1) {
-    const TextLocale locale = {};
     const int textWidth = window->TextWidth(window->m_text.c_str(), 0, 0, style.fontHeight, style.bold, style.italic);
     window->Resize(textWidth + 2, style.fontHeight + 2);
   }

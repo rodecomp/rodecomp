@@ -517,11 +517,9 @@ void UIRodexComposeWnd::Paint() {
       const auto* shadowOn = &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\shadow_item_on.bmp")))->image;
       this->DrawBitmap(itemX - 4, 319, shadowOn, true);
       if (this->unknown_00F8 <= g_session.m_zeny) {
-        const TextLocale locale = {};
-        DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, locale, itemX, 309, item, 0, 0);
+        DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, itemX, 309, item, 0, 0);
       } else {
-        const TextLocale locale = {};
-        DrawItemWithQuantityAuxiliary(*this, descriptions, g_fontCache, locale, 2, itemX, 309, item, item.identified, 0);
+        DrawItemWithQuantityAuxiliary(*this, descriptions, 2, itemX, 309, item, item.identified, 0);
       }
       if (item.unknown_0088 > 0) {
         std::string gradeStr = FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", static_cast<int>(item.unknown_0088));

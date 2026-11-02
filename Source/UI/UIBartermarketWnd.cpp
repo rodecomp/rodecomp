@@ -1705,8 +1705,7 @@ void UIBarterItemPurchaseWnd::Paint() {
     }
 
     const ITEM_INFO item = it->ToItemInfo();
-    const TextLocale locale = {};
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, locale, x + 44, y + 21, item, 0, 0);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, x + 44, y + 21, item, 0, 0);
     this->DrawItemName(x + 76, y + 29, 100, &item, 0, 0, 12);
     const std::string iconId = std::to_string(it->field_2c);
     DrawItemIconById(*this, descriptions, this->geometry.width - 70, y + 21, iconId.c_str(), 1);
@@ -1790,8 +1789,7 @@ void UIBartermarketWnd::Paint() {
     if (it->flag_38) {
       DrawItemIcon(*this, ResourceMgr::Instance(), descriptions, x + 44, y + 21, item, 0);
     } else {
-      const TextLocale locale = {};
-      DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, locale, x + 44, y + 21, item, 0, 0);
+      DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, x + 44, y + 21, item, 0, 0);
     }
     this->DrawItemName(x + 76, y + 29, 120, &item, 0, 0, 12);
     const std::string iconId = std::to_string(it->field_2c);
@@ -1849,8 +1847,7 @@ void UIExpandedBartermarketWnd::Paint() {
     }
 
     const ITEM_INFO item = it->ToItemInfo();
-    const TextLocale locale = {};
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, locale, 44, y + 21, item, 0, 0);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, 44, y + 21, item, 0, 0);
     this->DrawItemName(76, y + 29, 100, &item, 0, 0, 12);
 
     if (it->field_28 > 0) {
@@ -1865,7 +1862,7 @@ void UIExpandedBartermarketWnd::Paint() {
       chunkItem.quantity = chunk->amount * it->value;
       chunkItem.unknown_0060 = chunk->field_4;
       const int chunkX = 84 + chunkIndex * 42;
-      DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, locale, chunkX - 8, y + 49, chunkItem, 1, 0);
+      DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, chunkX - 8, y + 49, chunkItem, 1, 0);
       if (chunk->field_4 > 0) {
         const std::string chunkAmount = FormatOwnedString("+%d", chunk->field_4);
         DrawOutlinedText(*this, chunkX, y + 49, chunkAmount.c_str(), 0, 0xFFFFFF, 200, 0, 12, 1, 0);
@@ -1935,11 +1932,9 @@ void UIExpandedBarterItemPurchaseWnd::Paint() {
     if (it->flag_30) {
       DrawItemIcon(*this, ResourceMgr::Instance(), descriptions, 44, y + 21, item, 0);
     } else if (it->value == 0) {
-      const TextLocale locale = {};
-      DrawItemWithQuantityAuxiliary(*this, descriptions, g_fontCache, locale, 1, 44, y + 21, item, 1, 0);
+      DrawItemWithQuantityAuxiliary(*this, descriptions, 1, 44, y + 21, item, 1, 0);
     } else {
-      const TextLocale locale = {};
-      DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, locale, 44, y + 21, item, 1, 0);
+      DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, 44, y + 21, item, 1, 0);
     }
     this->DrawItemName(76, y + 29, 100, &item, 0, 0, 12);
     if (it->field_28 > 0) {
@@ -1955,11 +1950,9 @@ void UIExpandedBarterItemPurchaseWnd::Paint() {
       chunkItem.unknown_0060 = chunk->field_4;
       const int chunkX = 76 + chunkIndex * 42;
       if (it->value == 0) {
-        const TextLocale locale = {};
-        DrawItemWithQuantityAuxiliary(*this, descriptions, g_fontCache, locale, 1, chunkX, y + 49, chunkItem, 1, 0);
+        DrawItemWithQuantityAuxiliary(*this, descriptions, 1, chunkX, y + 49, chunkItem, 1, 0);
       } else {
-        const TextLocale locale = {};
-        DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, locale, chunkX, y + 49, chunkItem, 1, 0);
+        DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, chunkX, y + 49, chunkItem, 1, 0);
       }
       if (chunk->field_4 != 0) {
         const std::string chunkAmount = FormatOwnedString("+%d", chunk->field_4);

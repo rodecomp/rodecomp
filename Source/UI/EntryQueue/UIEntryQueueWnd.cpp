@@ -372,7 +372,6 @@ void UIEntryQueueWnd::Slot15(int width, int height) {
     this->m_labels[index] = new UIStaticText(*this->m_context);
     if (this->m_labels[index]) {
       const char* label = labels[index];
-      const TextLocale locale = {};
       this->m_labels[index]->SetSize(this->TextWidth(label, 0, 0, 12, 0, 0), 25);
       this->m_labels[index]->SetText(label, 0);
       this->m_labels[index]->Move(157, y);
@@ -422,7 +421,6 @@ void UIEntryQueueWnd::Slot15(int width, int height) {
 // OFFSET: 0x00BA7250
 // FUNCTION: fn_19708
 void UIEntryQueueWnd::Paint() {
-  const TextLocale locale = {};
   this->DrawTitleBar(true, LookupMessage(0x603), 0);
   this->DrawPanelBackground(17, 0, "");
   this->DrawButtonBar(2, 0, 1);
@@ -594,7 +592,6 @@ void UIEntryQueueWnd::SelectQueue(EntryQueueInfo* info) {
     const int x = label->geometry.x;
     const int width = label->geometry.width;
     const int y = label->geometry.y;
-    const TextLocale locale = {};
     this->m_values[index]->Resize(this->TextWidth(text, 0, 0, 12, 0, 0), 25);
     this->m_values[index]->SetText(text, 0);
     this->m_values[index]->Move(x + width + 5, y);

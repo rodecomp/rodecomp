@@ -7422,7 +7422,6 @@ int UIStatusWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
 int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   CMode* mode = static_cast<CMode*>(g_charViewMode);
   auto& dialogs = *reinterpret_cast<WindowDialogs*>(&g_windowMgr);
-  const TextLocale locale = {};
 
   if (message == 6) {
     switch (a) {
@@ -10290,8 +10289,7 @@ void UIExchangeWnd::Paint() {
       continue;
     }
     const int y = this->m_rowHeight * row;
-    const TextLocale locale = {};
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, locale, 16, y + 21, item, 0, 0);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, 16, y + 21, item, 0, 0);
     this->DrawFittedItemName(48, y + 29, &item, 0, 0, 12, 1);
     if (item.unknown_0088 > 0) {
       const std::string path = FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.unknown_0088);
@@ -10309,8 +10307,7 @@ void UIExchangeWnd::Paint() {
       continue;
     }
     const int y = this->m_rowHeight * row;
-    const TextLocale locale = {};
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, locale, 295, y + 21, item, 0, 0);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, 295, y + 21, item, 0, 0);
     this->DrawFittedItemName(327, y + 29, &item, 0, 0, 12, 1);
     if (item.unknown_0088 > 0) {
       const std::string path = FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.unknown_0088);

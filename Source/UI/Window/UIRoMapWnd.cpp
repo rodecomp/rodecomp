@@ -117,7 +117,6 @@ void UIRoMapWnd::DrawHoverTooltip() {
     return;
   }
 
-  const TextLocale locale = {};
   bool leftSide = false;
   int maxWidth = 0;
   const int lineHeight = this->TextHeight(" ", 0, 0, 12, 1, 0) + 3;
@@ -172,7 +171,6 @@ void UIRoMapWnd::DrawMapNames() {
   const int fontHeight = g_worldViewMgr.dungeonFontSize[g_worldViewMgr.screenScale];
   const std::uint32_t color = g_worldViewMgr.dungeonFontColor;
   const std::uint32_t outline = g_worldViewMgr.dungeonFontOutline;
-  const TextLocale locale = {};
   std::string name;
   std::vector<CWorldViewMap*>::iterator it = g_worldViewMgr.CurrentWorld()->maps.begin();
   const std::vector<CWorldViewMap*>::iterator end = g_worldViewMgr.CurrentWorld()->maps.end();
@@ -213,7 +211,6 @@ void UIRoMapWnd::DrawFieldLabels() {
   const std::uint32_t levelColor = g_worldViewMgr.mobLevelColor;
   const std::uint32_t levelOutline = g_worldViewMgr.mobLevelOutline;
   const std::uint32_t borderColor = g_worldViewMgr.boxLineColor;
-  const TextLocale locale = {};
   std::string name;
   bool atBottom = false;
   std::vector<CWorldViewMap*>::iterator it = g_worldViewMgr.CurrentWorld()->maps.begin();

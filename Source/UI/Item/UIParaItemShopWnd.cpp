@@ -730,11 +730,9 @@ void UIParaItemShopWnd::Paint() {
     }
 
     if (this->unknown_00F8 == 1 || it->quantity != 0) {
-      const TextLocale locale = {};
-      DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, locale, 34, top + 4, *it, 0, 0);
+      DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, 34, top + 4, *it, 0, 0);
     } else {
-      const TextLocale locale = {};
-      DrawItemWithQuantityAuxiliary(*this, descriptions, g_fontCache, locale, 1, 34, top + 4, *it, 0, 0);
+      DrawItemWithQuantityAuxiliary(*this, descriptions, 1, 34, top + 4, *it, 0, 0);
     }
 
     this->DrawWrappedItemName(70, top + 12, 120, &*it, 0, 0, 12);
@@ -857,8 +855,7 @@ void UIParaResultWnd::Paint() {
     }
 
     const int x = column + 44;
-    const TextLocale locale = {};
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, g_fontCache, locale, x, top + 21, *it, 0, 0);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, x, top + 21, *it, 0, 0);
     this->DrawWrappedItemName(column + 76, top + 29, 110, &*it, 0, 0, 12);
 
     if (it->unknown_0088 > 0) {

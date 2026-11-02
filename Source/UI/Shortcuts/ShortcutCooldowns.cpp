@@ -287,7 +287,6 @@ void UIRoMapWnd::Paint() {
 // OFFSET: 0x0092DE90
 // FUNCTION: fn_12675
 void UISeekPartyListWnd::Paint() {
-  const TextLocale locale = {};
   this->DrawTitleBar(true, "", 0);
   if (this->m_minimized) {
     return;
@@ -440,7 +439,7 @@ void UIQuickSlotWnd::Paint() {
         continue;
       }
 
-      DrawItemWithQuantity(*this, ResourceMgr::Instance(), painting.descriptions, painting.fonts, painting.locale, x, 5, item, item.identified, 1);
+      DrawItemWithQuantity(*this, ResourceMgr::Instance(), painting.descriptions, x, 5, item, item.identified, 1);
       if (item.unknown_0088 > 0) {
         const std::string name = FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.unknown_0088);
         auto* grade = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name.c_str())));

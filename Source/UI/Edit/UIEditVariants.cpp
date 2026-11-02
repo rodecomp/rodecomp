@@ -123,7 +123,6 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
           const char* const start = current;
           current = reinterpret_cast<NextCharHandler>((*reinterpret_cast<void***>(g_serverLanguage))[5])(g_serverLanguage, start, static_cast<int>(end - start));
           const int length = static_cast<int>(current - start);
-          const TextLocale locale = {};
           width += this->TextWidth(start, length, 0, 12, 0, 0);
           bytes += length;
 
@@ -174,7 +173,6 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
           const char* const start = current;
           current = reinterpret_cast<NextCharHandler>((*reinterpret_cast<void***>(g_serverLanguage))[5])(g_serverLanguage, start, static_cast<int>(end - start));
           const int length = static_cast<int>(current - start);
-          const TextLocale locale = {};
           width += this->TextWidth(start, length, 0, 12, 0, 0);
           bytes += length;
 
@@ -439,7 +437,6 @@ void UIEditCtrl_OldList::RecallHistory(int step) {
 // FUNCTION: fn_10753
 void UIEditCtrl3::PaintText() {
   FontCache& fonts = g_fontCache;
-  const TextLocale locale = {};
 
   int x = 3;
   if (this->invalidatesParent == 0 && this->firstVisible != 0) {
@@ -747,7 +744,6 @@ void UIEditCtrl3::PaintText() {
 // OFFSET: 0x00853810
 // FUNCTION: fn_10742
 int UIEditCtrl::MeasureText(const std::string& text, const int& bytes) {
-  const TextLocale locale = {};
   return this->TextWidth(text.c_str(), bytes, 0, 12, 0, 0);
 }
 

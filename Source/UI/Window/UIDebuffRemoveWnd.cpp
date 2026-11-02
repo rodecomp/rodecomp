@@ -17,7 +17,6 @@ struct DebuffRemovePacket {
 // OFFSET: 0x0094D260
 // FUNCTION: fn_12903
 void UIDebuffRemoveWnd::Paint() {
-  const TextLocale locale = {};
   this->DrawTitleBar(false, "", 0);
   this->DrawPanelBackground(17, 0, "");
 }

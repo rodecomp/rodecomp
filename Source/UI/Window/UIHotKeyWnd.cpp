@@ -427,8 +427,6 @@ void UIHotKeyWnd::Paint() {
     return;
   }
 
-  FontCache& fonts = g_fontCache;
-  const TextLocale locale = {};
 
   this->unknown_00BC = this->DrawTitleBar(true, LookupMessage(1494), 0);
   this->unknown_00C0 = this->DrawButtonBar(2, 0, 1);
