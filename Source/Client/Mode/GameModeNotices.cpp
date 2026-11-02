@@ -5541,7 +5541,101 @@ struct QuestHuntUpdatePacket2 {
 };
 #pragma pack(pop)
 
+// OFFSET: 0x00D47760
+// FUNCTION: fn_21851
+void CGameMode::ReceiveQuestHuntUpdate(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const QuestHuntUpdatePacket*>(data);
+  std::vector<std::string> notices;
+  const int count = (packet->length - 6) / sizeof(QuestHuntUpdateEntry);
+  for (int i = 0; i < count; ++i) {
+    const QuestHuntUpdateEntry& entry = packet->entries[i];
+    const RenewQuestOngoingInfo& quest = g_renewQuestMgr->GetOngoingQuest(entry.questId);
+    if (quest.m_title.empty()) {
+      continue;
+    }
+
+    RenewQuestOngoingInfo info = quest;
+    int index = 0;
+    for (; index < 3; ++index) {
+      if (info.m_huntId[index] == entry.huntId) {
+        break;
+      }
+    }
+    if (index >= 3) {
+      continue;
+    }
+
+    info.m_huntUnknown00E0[index] = entry.count;
+    info.m_huntUnknown0180[index] = entry.maxCount;
+    notices.push_back(this->HuntTargetText(info, index));
+
+    std::string name;
+    if (info.m_huntUnknown00D4[index] == 0x7CFF) {
+      name.assign(g_renewQuestMgr->GetMonsterConditionText(info.m_huntUnknown01A0[index], info.m_huntUnknown01AC[index], info.m_huntUnknown01B2[index]));
+    } else {
+      name.assign(info.m_huntName[index]);
+    }
+    name.assign(FormatOwnedString(LookupMessage(1610), info.m_title.c_str(), name.c_str(), info.m_huntUnknown00E0[index], entry.maxCount));
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(name.c_str()), 0xFFFF, 19, 0, 0);
+    g_renewQuestMgr->SetOngoingQuest(entry.questId, info);
+  }
+
+  if (!notices.empty()) {
+    this->ShowNoticeBalloon(&notices);
+  }
+  if (g_windowMgr.window_0428 != nullptr) {
+    g_windowMgr.window_0428->Invalidate();
+  }
+  g_renewQuestMgr->sub_67B690();
+}
+
 // OFFSET: 0x00D47C20
+// FUNCTION: fn_21852
+void CGameMode::ReceiveQuestHuntUpdate2(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const QuestHuntUpdatePacket2*>(data);
+  std::vector<std::string> notices;
+  const int count = (packet->length - 6) / sizeof(QuestHuntUpdateEntry2);
+  for (int i = 0; i < count; ++i) {
+    const QuestHuntUpdateEntry2& entry = packet->entries[i];
+    const RenewQuestOngoingInfo& quest = g_renewQuestMgr->GetOngoingQuest(entry.questId);
+    if (quest.m_title.empty()) {
+      continue;
+    }
+
+    RenewQuestOngoingInfo info = quest;
+    int index = 0;
+    for (; index < 3; ++index) {
+      if (info.m_huntId[index] == entry.huntId) {
+        break;
+      }
+    }
+    if (index >= 3) {
+      continue;
+    }
+
+    info.m_huntUnknown00E0[index] = entry.count;
+    info.m_huntUnknown0180[index] = entry.maxCount;
+    notices.push_back(this->HuntTargetText(info, index));
+
+    std::string name;
+    if (info.m_huntUnknown00D4[index] == 0x7CFF) {
+      name.assign(g_renewQuestMgr->GetMonsterConditionText(info.m_huntUnknown01A0[index], info.m_huntUnknown01AC[index], info.m_huntUnknown01B2[index]));
+    } else {
+      name.assign(info.m_huntName[index]);
+    }
+    name.assign(FormatOwnedString(LookupMessage(1610), info.m_title.c_str(), name.c_str(), info.m_huntUnknown00E0[index], entry.maxCount));
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(name.c_str()), 0xFFFF, 19, 0, 0);
+    g_renewQuestMgr->SetOngoingQuest(entry.questId, info);
+  }
+
+  if (!notices.empty()) {
+    this->ShowNoticeBalloon(&notices);
+  }
+  if (g_windowMgr.window_0428 != nullptr) {
+    g_windowMgr.window_0428->Invalidate();
+  }
+  g_renewQuestMgr->sub_67B690();
+}
 
 // OFFSET: 0x00D6A0D0
 // FUNCTION: fn_22058
