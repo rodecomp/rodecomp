@@ -7735,8 +7735,8 @@ char* UIBookWnd::StripColorCodes(const char* text) {
   const unsigned length = static_cast<unsigned>(std::strlen(text));
   const char* const end = text + length;
   const char* const marker = text + TextContext::Marker(text, static_cast<unsigned>(end - text));
-  char* segmentBuffer = static_cast<char*>(std::malloc(length + 1));
-  char* result = static_cast<char*>(std::malloc(length + 1));
+  char* segmentBuffer = new char[length + 1];
+  char* result = new char[length + 1];
   *result = '\0';
   std::uint32_t color = 0;
   while (text < end) {
