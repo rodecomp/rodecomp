@@ -167,7 +167,7 @@ public:
   /* 0404 */ int unknown_0404;
   /* 0408 */ void* unknown_0408;
   /* 040C */ int unknown_040C;
-  /* 0410 */ unsigned char unknown_0410[0x04];
+  /* 0410 */ int unknown_0410;
   /* 0414 */ int unknown_0414;
   /* 0418 */ unsigned char unknown_0418;
   /* 041C */ int miniMapTooltipId;
@@ -192,7 +192,8 @@ public:
   /* 05CE */ unsigned char unknown_05CE;
   /* 05CF */ unsigned char unknown_05CF;
   /* 05D0 */ UIWindow* unknown_05D0;
-  /* 05D4 */ unsigned char unknown_05D4[0x10];
+  /* 05D4 */ std::list<unsigned long> unknown_05D4;
+  /* 05DC */ std::map<int, std::string> miniMapTooltipWindows;
   /* 05E4 */ std::uint32_t wheelTick;
   /* 05E8 */ std::uint32_t replayPauseTick;
   /* 05EC */ unsigned char unknown_05EC[0x08];

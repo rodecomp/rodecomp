@@ -809,7 +809,7 @@ char g_miniMapTooltipText[256];
 void CGameMode::RefreshMiniMapTooltips() {
   int& tooltipId = this->miniMapTooltipId;
   std::string& tooltipText = this->miniMapTooltipText;
-  std::map<int, std::string>& tooltipWindows = *reinterpret_cast<std::map<int, std::string>*>(&this->unknown_05D4[0x08]);
+  std::map<int, std::string>& tooltipWindows = this->miniMapTooltipWindows;
 
   if (tooltipId == -1) {
     if (tooltipWindows.size() == 0) {

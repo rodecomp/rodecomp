@@ -992,7 +992,7 @@ void ToggleSitStand() {
   mode->SendMsg(0x8B, (static_cast<int>(player->render.angle) + 180) / 45 % 8, motion, 0, 0);
 
   if (player->render.unknown_0070 == 6) {
-    std::list<unsigned long>& times = *reinterpret_cast<std::list<unsigned long>*>(mode->unknown_05D4);
+    std::list<unsigned long>& times = mode->unknown_05D4;
     times.pop_front();
     times.push_back(timeGetTime());
     const unsigned long elapsed = times.back() - times.front();
