@@ -24,8 +24,8 @@ namespace {
 
 // OFFSET: 0x007BB030
 // FUNCTION: fn_09280
-UIRequestJoinPartyWnd::UIRequestJoinPartyWnd(UIWindowContext& windows, UIRequestJoinPartyContext& request)
-    : UIFrameWnd(windows, 0), m_request(&request) {
+UIRequestJoinPartyWnd::UIRequestJoinPartyWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0) {
 }
 
 // OFFSET: 0x007BB960
@@ -160,11 +160,11 @@ int UIRequestJoinPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     }
 
     if (value == 542 && this->block->geometry.unknown_0030 != 0) {
-      this->m_request->requests.Block(this->accountId);
+      g_requestJoinPartyMgr->Block(this->accountId);
     }
 
     static_cast<CMode*>(g_charViewMode)->SendMsg(264, this->characterId, value == 541, reinterpret_cast<std::intptr_t>(&this->accountId), 0);
-    this->m_request->requests.Advance();
+    g_requestJoinPartyMgr->Advance();
     this->block->SetChecked(0);
 
     return 0;

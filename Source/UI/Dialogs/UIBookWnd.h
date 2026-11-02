@@ -9,16 +9,10 @@
 
 class UISpriteButton;
 class UITextViewer;
-struct WindowOrdering;
-
-struct UIBookContext {
-  void* unknown_text;
-  WindowOrdering& ordering;
-};
 
 class UIBookWnd : public UIFrameWnd {
 public:
-  UIBookWnd(UIWindowContext& windows, UIBookContext& book);
+  UIBookWnd(UIWindowContext& windows);
   /* 00B4 */ UITextViewer* m_viewer;
   /* 00B8 */ UIWindow* unknown_00B8;
   /* 00BC */ char m_bookName[100];
@@ -42,9 +36,6 @@ public:
 
   int LoadBookmark(const char* name);
   char* StripColorCodes(const char* text);
-
-protected:
-  UIBookContext* m_book;
 };
 
 extern const char* g_bookmarkKeySuffix;

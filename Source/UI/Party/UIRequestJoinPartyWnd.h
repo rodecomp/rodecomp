@@ -10,16 +10,11 @@ class UICheckBox;
 class UIStaticText;
 class UIBitmapButton;
 struct PartyJoinRequest;
-class UIRequestJoinPartyMgr;
 
-struct UIRequestJoinPartyContext {
-  void* unknown_text;
-  UIRequestJoinPartyMgr& requests;
-};
 
 class UIRequestJoinPartyWnd : public UIFrameWnd {
 public:
-  UIRequestJoinPartyWnd(UIWindowContext& windows, UIRequestJoinPartyContext& request);
+  UIRequestJoinPartyWnd(UIWindowContext& windows);
   ~UIRequestJoinPartyWnd() override;
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -40,13 +35,10 @@ public:
   /* 00E2 */ std::int16_t level;
   /* 00E4 */ UIBitmapButton* icon;
   /* 00E8 */ UIStaticText* levelText;
-
-private:
-  UIRequestJoinPartyContext* m_request;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(UIRequestJoinPartyWnd) == 248);
+static_assert(sizeof(UIRequestJoinPartyWnd) == 244);
 #endif
 
 #endif

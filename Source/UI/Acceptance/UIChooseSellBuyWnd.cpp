@@ -216,8 +216,8 @@ UIChooseSellBuyWnd::UIChooseSellBuyWnd(UIWindowContext& windows, UIAcceptanceCon
 
 // OFFSET: 0x008C6FA0
 // FUNCTION: fn_11926
-UIBookWnd::UIBookWnd(UIWindowContext& windows, UIBookContext& book)
-    : UIFrameWnd(windows, 0), m_book(&book) {
+UIBookWnd::UIBookWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0) {
   this->m_lineCount = 0;
   this->m_pageCount = 0;
   this->m_page = 1;
@@ -3500,7 +3500,7 @@ int UIBookWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
       }
     }
     this->Invalidate();
-    this->m_book->ordering.Promote(this);
+    reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(this);
     break;
   }
 
