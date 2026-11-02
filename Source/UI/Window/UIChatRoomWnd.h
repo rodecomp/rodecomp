@@ -26,12 +26,21 @@ public:
   void Slot11() override;
   void Slot15(int width, int height) override;
   void Paint() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   void SaveChatLog();
   std::vector<unsigned char>& SerializeReplayData(std::vector<unsigned char>& records);
 
   /* 00B4 */ std::string title;
   /* 00CC */ std::string unknown_00CC;
-  /* 00E4 */ unsigned char unknown_00E4[0x10];
+  /* 00E4 */ union {
+    int unknown_00E4[4];
+    struct {
+      int roomType;
+      int memberCount;
+      int memberLimit;
+      int roomId;
+    } roomStatus;
+  };
   /* 00F4 */ UIResizer* resizer;
   /* 00F8 */ UIChatEditCtrl* edit;
   /* 00FC */ UIChatHisBox* history;

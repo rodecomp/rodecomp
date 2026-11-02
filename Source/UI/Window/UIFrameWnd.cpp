@@ -22,15 +22,37 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeEvents.h"
+#include "Client/Input/InputCharset.h"
+#include "Client/Input/Mouse.h"
 #include "UI/Lists/UIReplayListBox.h"
 #include "UI/Window/UINoticeWnd.h"
 #include "UI/Window/UIFrameWnd.h"
 #include "UI/Window/WindowManagerWindows.h"
 #include "UI/Layout/WindowSnapping.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceOptions.h"
+#include "Contents/ForbiddenWords.h"
+#include "Contents/Jobs/JobInheritance.h"
+#include "Contents/Sound/SoundMgr.h"
+#include "Contents/TipOfTheDay.h"
+#include "Network/TextEncoding.h"
+#include "Render/Renderer.h"
+#include "UI/Chat/UIChatRoomTitle.h"
+#include "UI/Edit/UIEditCtrl.h"
+#include "UI/Edit/UIItemTagCtrl.h"
+#include "UI/Lists/UIMemberListBox.h"
+#include "UI/Text/NavigationLink.h"
+#include "UI/Text/TextWrapping.h"
+#include "UI/Window/WindowDialogs.h"
+#include "UI/Window/UIResizer.h"
+#include "UI/Window/UINewSelectCharWnd.h"
 
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
+#include <cstdio>
+#include <intrin.h>
+#include <mbstring.h>
 #include <string>
 #include <windows.h>
 #include <timeapi.h>
@@ -603,6 +625,470 @@ UIBank_NewWnd::UIBank_NewWnd(UIWindowContext& windows, UIFrameContext& frames, U
 // FUNCTION: fn_11655
 UIChatRoomWnd::UIChatRoomWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
     : UIFrameWnd(windows, frames, 0), title(), unknown_00CC(), unknown_010C(), unknown_0114(), saved(nullptr), m_controls(&controls) {
+}
+
+// OFFSET: 0x008BB9E0
+// FUNCTION: fn_11800
+int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  switch (message) {
+  case 3:
+    if (this->history->verticalOverflow != 0) {
+      this->history->SendMsg(nullptr, 9, 0, 0, 0, 0);
+    }
+    return 0;
+  case 4:
+    if (this->history->verticalOverflow != 0) {
+      this->history->SendMsg(nullptr, 10, 0, 0, 0, 0);
+    }
+    return 0;
+  case 6:
+    switch (a) {
+    case 184: {
+      if (this->edit->Length() == 0) {
+        return 0;
+      }
+      if (g_navigationLinkParser->HasLink(std::string(this->edit->Text()))) {
+        this->edit->SetText("");
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3042)), 255, 0, 0, 0);
+        return 0;
+      }
+
+      std::string text = this->edit->Text();
+      if (!this->edit->links.empty()) {
+        text = this->edit->LinkedText();
+      } else if (_mbsstr(reinterpret_cast<const unsigned char*>(this->edit->Text()), reinterpret_cast<const unsigned char*>("<"))) {
+        UIItemTagOnChat* tags = this->edit->unknown_0144;
+        if (tags != nullptr && !tags->unknown_0140.empty()) {
+          text = tags->unknown_0140;
+        }
+      }
+
+      char buffer[256];
+      if (!text.empty()) {
+        std::strcpy(buffer, text.c_str());
+      } else {
+        std::strcpy(buffer, this->edit->Text());
+      }
+
+      if (g_serviceType == 1 && !ValidateCharacterName(buffer)) {
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(190)), 255, 0, 0, 0);
+        return 0;
+      }
+
+      bool self = false;
+      if (this->memberList->selected != -1) {
+        const std::string name = this->memberList->lines[this->memberList->selected];
+        self = name == g_session.DecodePlayerName();
+      }
+
+      if (this->memberList->selected == -1 || buffer[0] == '/' || self) {
+        if (g_session.ProcessEmotionShortcut(buffer) == 0) {
+          std::string parts[3];
+          int talkType;
+          const int offset = g_session.GetTalkType(buffer, &talkType, parts);
+          if (offset != -1) {
+            g_windowMgr.SetUnknown04DC(buffer + offset);
+          }
+          if (talkType == 0) {
+            talkType = 50;
+          } else if (talkType == 51) {
+            talkType = 52;
+          }
+          static_cast<CMode*>(g_charViewMode)->SendMsg(42, talkType, reinterpret_cast<int>(parts), 0, 0);
+        }
+      } else {
+        g_windowMgr.unknown_04DC = buffer;
+        const std::string name = this->memberList->lines[this->memberList->selected];
+        static_cast<CMode*>(g_charViewMode)->SendMsg(11, reinterpret_cast<int>(name.c_str()), 0, 0, 0);
+      }
+
+      this->edit->PushHistory();
+      this->edit->SetText("");
+      InputFocus focus{g_windowMgr.hoverWindow};
+      focus.Set(this->edit);
+      return 0;
+    }
+    case 201:
+      static_cast<CMode*>(g_charViewMode)->SendMsg(48, 0, 0, 0, 0);
+      return 0;
+    case 347:
+      g_windowMgr.SelectWhisperName(reinterpret_cast<const char*>(b));
+      return 0;
+    default:
+      return 0;
+    }
+  case 14: {
+    if (a != 7) {
+      return 0;
+    }
+    int width = b > 512 ? 512 : b;
+    int height = c > 384 ? 384 : c;
+    if (width < 280) {
+      width = 280;
+    }
+    if (height < 120) {
+      height = 120;
+    }
+    width = (width - 280) / 32 * 32 + 280;
+    height = (height - 120) / 32 * 32 + 120;
+    if (width != this->geometry.width || height != this->geometry.height) {
+      this->Resize(width, height);
+      this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
+      this->edit->Resize(this->geometry.width - 30, 16);
+      this->edit->Move(3, this->geometry.height - 18);
+      this->history->Resize(this->geometry.width - this->geometry.width * 56 / 280 - 3, this->geometry.height - 38);
+      this->history->Move(1, 17);
+      this->memberList->Resize(this->geometry.width * 56 / 280, this->geometry.height - 38, false);
+      this->memberList->Move(this->geometry.width - this->geometry.width * 56 / 280 - 1, 17);
+      this->closeButton->Move(this->geometry.width - 14, 3);
+      const std::string title = this->titleText->text;
+      this->titleText->Resize(this->geometry.width - 30, 12);
+      this->titleText->SetTextFitted(title.c_str());
+    }
+    this->m_frameContext->snapping.Store(this);
+    return 0;
+  }
+  case 34: {
+    const ChatRoomTitleInfo* settings = reinterpret_cast<const ChatRoomTitleInfo*>(a);
+    this->title = settings->title;
+    this->unknown_00CC = settings->unknown_0018;
+    this->roomStatus.roomType = settings->type;
+    this->roomStatus.memberCount = settings->memberCount;
+    this->roomStatus.memberLimit = settings->memberLimit;
+    this->roomStatus.roomId = settings->id;
+
+    const std::size_t end = this->title.find('\r');
+    if (end != std::string::npos) {
+      this->title = std::string(this->title.c_str(), end);
+    }
+
+    const std::string prefix = LookupMessage((this->roomStatus.roomType != 0) + 89);
+    char text[256];
+    std::sprintf(text, "%s%s (%d/%d)", prefix.c_str(), this->title.c_str(), this->roomStatus.memberCount, this->roomStatus.memberLimit);
+    if (g_forbiddenWords.Contains(text)) {
+      std::string masked;
+      g_forbiddenWords.Mask(text, &masked);
+    }
+    this->titleText->SetTextFitted(text);
+    this->Invalidate();
+    return 0;
+  }
+  case 37: {
+    char* text = reinterpret_cast<char*>(a);
+    if (g_forbiddenWords.Contains(text)) {
+      std::string masked("");
+      g_forbiddenWords.Mask(text, &masked);
+    }
+
+    std::vector<std::string> lines;
+    char name[25] = {};
+    const int wrapWidth = this->geometry.width * 80 / 640;
+    {
+      const std::string message(text);
+      const int length = static_cast<int>(std::strlen(text));
+      const int enter = static_cast<int>(message.find(")님이 입장 하였습니다.", 0));
+      const int leave = static_cast<int>(message.find(")님이 퇴장 하였습니다.", 0));
+      const int colon = static_cast<int>(message.find(" :", 0));
+      const bool english = g_serviceType == 19 && g_tipOfTheDayEnglish;
+      if (enter > 0 && enter < length) {
+        if (english) {
+          std::memcpy(name, text + enter + 1, length - enter);
+          name[length - enter] = '\0';
+        } else {
+          std::memcpy(name, text + 1, enter - 1);
+          name[enter - 1] = '\0';
+        }
+      } else if (leave > 0 && leave < length) {
+        if (english) {
+          std::memcpy(name, text + leave + 1, length - leave);
+          name[length - leave] = '\0';
+        } else {
+          std::memcpy(name, text + 1, leave - 1);
+          name[leave - 1] = '\0';
+        }
+      } else if (colon > 0 && colon < length && colon < 24) {
+        if (english) {
+          std::memcpy(name, text + colon, length - colon);
+          name[length - colon] = '\0';
+        } else {
+          std::memcpy(name, text, colon);
+          name[colon] = '\0';
+        }
+      }
+      if (std::strcmp(name, g_session.DecodePlayerName()) == 0) {
+        name[0] = '\0';
+      }
+    }
+
+    if (_mbsstr(reinterpret_cast<const unsigned char*>(text), reinterpret_cast<const unsigned char*>("<ITEML>")) ||
+        _mbsstr(reinterpret_cast<const unsigned char*>(text), reinterpret_cast<const unsigned char*>("</ITEML>"))) {
+      lines.push_back(std::string(text));
+    } else {
+      WrapPlainText(text, lines, wrapWidth, g_serverLanguage->language);
+    }
+
+    for (unsigned index = 0; index < lines.size(); ++index) {
+      this->history->AddText(lines[index].c_str(), static_cast<int>(b), name);
+    }
+    return 0;
+  }
+  case 43:
+    this->memberList->Clear();
+    this->unknown_010C.clear();
+    return 0;
+  case 44: {
+    this->unknown_010C[std::string(reinterpret_cast<const char*>(a))] = static_cast<int>(b);
+    int color = 0;
+    if (b != 0) {
+      if (g_serviceOptions.Get(11) && g_soundMgr->unknown != 0) {
+        g_soundMgr->PlayWave("버튼소리.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      }
+    } else {
+      color = 0x808000;
+    }
+    this->memberList->AddText(reinterpret_cast<const char*>(a), color, nullptr);
+    return 0;
+  }
+  case 45: {
+    const std::map<std::string, int>::iterator found = this->unknown_010C.find(std::string(reinterpret_cast<const char*>(a)));
+    if (found == this->unknown_010C.end()) {
+      return 0;
+    }
+    this->unknown_010C.erase(found);
+    this->memberList->Clear();
+    for (std::map<std::string, int>::iterator it = this->unknown_010C.begin(); it != this->unknown_010C.end(); ++it) {
+      this->memberList->AddText(it->first.c_str(), it->second != 0 ? 0 : 0x808000, nullptr);
+    }
+    return 0;
+  }
+  case 46: {
+    if (this->unknown_010C.find(std::string(reinterpret_cast<const char*>(a))) != this->unknown_010C.end()) {
+      this->unknown_010C[std::string(reinterpret_cast<const char*>(a))] = static_cast<int>(b);
+    }
+    this->memberList->Clear();
+    for (std::map<std::string, int>::iterator it = this->unknown_010C.begin(); it != this->unknown_010C.end(); ++it) {
+      this->memberList->AddText(it->first.c_str(), it->second != 0 ? 0 : 0x808000, nullptr);
+    }
+    return 0;
+  }
+  case 48: {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    switch (this->unknown_0114[a].second) {
+    case 0: {
+      if (this->memberList->selected == -1) {
+        return 0;
+      }
+      const std::string name = this->memberList->lines[this->memberList->selected];
+      mode->SendMsg(47, reinterpret_cast<int>(name.c_str()), 0, 0, 0);
+      return 0;
+    }
+    case 1: {
+      if (this->memberList->selected == -1) {
+        return 0;
+      }
+      const std::string name = this->memberList->lines[this->memberList->selected];
+      mode->SendMsg(46, reinterpret_cast<int>(name.c_str()), 0, 0, 0);
+      return 0;
+    }
+    case 2:
+      g_windowMgr.sub_A978D0(30)->SendMsg(nullptr, 34, reinterpret_cast<std::intptr_t>(&mode->unknown_03C8), 0, 0, 0);
+      return 0;
+    case 3:
+      reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(191), 0, true, false, 0, "Message", 280, 120, 0);
+      return 0;
+    case 11:
+      this->SaveChatLog();
+      return 0;
+    case 21: {
+      if (this->memberList->selected == -1) {
+        return 0;
+      }
+      const std::string name = this->memberList->lines[this->memberList->selected];
+      g_windowMgr.RequestAddFriend(name.c_str());
+      return 0;
+    }
+    default:
+      return 0;
+    }
+  }
+  case 49: {
+    this->unknown_0114.clear();
+    if (g_windowMgr.unknown_0210 != nullptr) {
+      g_windowMgr.CloseWindow(18);
+    }
+
+    const auto add = [this](int id, int value) {
+      const std::string text = LookupMessage(id);
+      this->unknown_0114.emplace_back(text, value);
+    };
+
+    {
+      const std::string self = g_session.DecodePlayerName();
+      if (this->unknown_010C.find(self) == this->unknown_010C.end()) {
+        return 0;
+      }
+      const int rank = this->unknown_010C[self];
+      if (rank == -1) {
+        return 0;
+      }
+
+      if (this->memberList->selected != -1) {
+        const std::string target = this->memberList->lines[this->memberList->selected];
+        if (this->unknown_010C.find(target) == this->unknown_010C.end() || this->unknown_010C[target] == -1) {
+          return 0;
+        }
+        if (rank == 0) {
+          if (!(target == self)) {
+            add(127, 0);
+            add(128, 1);
+          }
+          add(129, 3);
+          if (g_serviceMode != 3 && !g_windowMgr.IsFriend(target.c_str()) && !(target == self)) {
+            add(358, 21);
+          }
+          add(126, 2);
+        } else if (rank == 1) {
+          add(129, 3);
+          if (!g_windowMgr.IsFriend(target.c_str()) && !(target == self) && g_serviceMode != 3) {
+            add(358, 21);
+          }
+        }
+      } else {
+        if (rank == 0) {
+          add(126, 2);
+        }
+        add(312, 11);
+      }
+    }
+
+    if (!this->unknown_0114.empty()) {
+      UIWindow* menu = g_windowMgr.sub_A978D0(18);
+      for (unsigned index = 0; index < this->unknown_0114.size(); ++index) {
+        menu->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(this->unknown_0114[index].first.c_str()), 0, 0, 0);
+      }
+      menu->SendMsg(nullptr, 83, 28, 0, 0, 0);
+      menu->SendMsg(nullptr, 30, 0, 0, 0, 0);
+
+      int x = g_mouse.x + 1;
+      int y = g_mouse.y + 1;
+      if (x < 1) {
+        x = 1;
+      }
+      int maxX = g_renderer->viewport.width - menu->geometry.width;
+      if (x <= maxX) {
+        maxX = x;
+      }
+      if (y < 1) {
+        y = 1;
+      }
+      int maxY = g_renderer->viewport.height - menu->geometry.height;
+      if (y <= maxY) {
+        maxY = y;
+      }
+      menu->Move(maxX, maxY);
+    }
+    return 0;
+  }
+  case 53:
+    this->saved = reinterpret_cast<ChatRoomWndInfo*>(a);
+    if (this->saved->IsValid() == 0) {
+      this->saved->Reset();
+    }
+    this->SendMsg(nullptr, 14, 7, this->saved->width, this->saved->height, 0);
+    this->Move(this->saved->x, this->saved->y);
+    return 0;
+  case 123: {
+    const unsigned char* data = reinterpret_cast<const unsigned char*>(a);
+    const unsigned size = static_cast<unsigned>(b);
+    std::uint16_t tag = 0;
+    std::uint32_t recordSize = 0;
+    std::memcpy(&tag, data, sizeof(tag));
+    std::memcpy(&recordSize, data + 2, sizeof(recordSize));
+    if (tag == 0x5014) {
+      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(64)), 0xFFFF00, 0, 0, 0);
+      ChatRoomTitleInfo* settings = reinterpret_cast<ChatRoomTitleInfo*>(&static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_03C8);
+      unsigned offset = 6;
+      bool done = false;
+      while (!done && offset < size) {
+        std::memcpy(&tag, data + offset, sizeof(tag));
+        std::memcpy(&recordSize, data + offset + 2, sizeof(recordSize));
+        offset += 6;
+        switch (tag) {
+        case 0x5015:
+          done = true;
+          break;
+        case 0x5016:
+          std::memcpy(this->saved, data + offset, recordSize);
+          offset += recordSize;
+          break;
+        case 0x5017: {
+          char value[260];
+          std::memset(value, 0, sizeof(value));
+          std::memcpy(value, data + offset, recordSize);
+          offset += recordSize;
+          this->title = value;
+          settings->title = this->title;
+          break;
+        }
+        case 0x5018: {
+          char value[260];
+          std::memset(value, 0, sizeof(value));
+          std::memcpy(value, data + offset, recordSize);
+          offset += recordSize;
+          this->unknown_00CC = value;
+          settings->unknown_0018 = this->unknown_00CC;
+          break;
+        }
+        case 0x5019:
+        std::memcpy(&this->roomStatus.roomType, data + offset, recordSize);
+          offset += recordSize;
+        settings->type = this->roomStatus.roomType;
+          break;
+        case 0x501A:
+          std::memcpy(&this->roomStatus.memberCount, data + offset, recordSize);
+          offset += recordSize;
+          settings->memberCount = this->roomStatus.memberCount;
+          break;
+        case 0x501B:
+          std::memcpy(&this->roomStatus.memberLimit, data + offset, recordSize);
+          offset += recordSize;
+          settings->memberLimit = this->roomStatus.memberLimit;
+          break;
+        case 0x501C:
+          std::memcpy(&this->roomStatus.roomId, data + offset, recordSize);
+          offset += recordSize;
+          settings->id = this->roomStatus.roomId;
+          this->SendMsg(nullptr, 34, reinterpret_cast<std::intptr_t>(settings), 0, 0, 0);
+          break;
+        case 0x501E: {
+          char value[260];
+          std::memset(value, 0, sizeof(value));
+          std::memcpy(value, data + offset, recordSize);
+          offset += recordSize;
+          this->SendMsg(nullptr, 43, 0, 0, 0, 0);
+          this->SendMsg(nullptr, 44, reinterpret_cast<std::intptr_t>(value), 0, 0, 0);
+          break;
+        }
+        case 0x501F: {
+          char value[260];
+          std::memset(value, 0, sizeof(value));
+          std::memcpy(value, data + offset, recordSize);
+          offset += recordSize;
+          this->SendMsg(nullptr, 44, reinterpret_cast<std::intptr_t>(value), 1, 0, 0);
+          break;
+        }
+        default:
+          offset += recordSize;
+          break;
+        }
+      }
+    }
+    return 0;
+  }
+  default:
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
 }
 
 // OFFSET: 0x008A36A0
