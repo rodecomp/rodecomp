@@ -34,7 +34,7 @@ extern std::map<int, int> g_optionHotkeys;
 template <class T, class D> class CUIComboBox : public CUIControl {
 public:
   explicit CUIComboBox(UIWindowContext& context)
-      : CUIControl(context), unknown_0084(), unknown_0088(), listBox(nullptr), unknown_0090(), itemHeight(0), visibleItems(1), onSelect(), onChange() {
+      : CUIControl(context), button(), unknown_0088(), listBox(nullptr), width(), itemHeight(0), visibleItems(1), onSelect(), onChange() {
   }
 
   void Paint() override;
@@ -42,11 +42,12 @@ public:
   unsigned int Selected() const;
   __declspec(noinline) void UpdateListHeight();
   void Create(int width, int itemHeight, int visibleItems);
+  void SetButton(const std::string& normal, const std::string& hover, const std::string& pressed, const std::string& disabled);
 
-  /* 0084 */ int unknown_0084;
+  /* 0084 */ CUIButton* button;
   /* 0088 */ CUIImageButton* unknown_0088;
   /* 008C */ CUIListBoxEx<T, D>* listBox;
-  /* 0090 */ int unknown_0090;
+  /* 0090 */ int width;
   /* 0094 */ int itemHeight;
   /* 0098 */ int visibleItems;
   /* 009C */ int unknown_009C;
@@ -101,6 +102,8 @@ public:
 
 class CUIGroupGraphics : public CUIGroup {
 public:
+  __declspec(noinline) explicit CUIGroupGraphics(UIWindowContext& context);
+  void Slot15(int width, int height) override;
   void Refresh() override;
   int GetPendingBackend();
   void LoadAdapters();
@@ -120,6 +123,7 @@ public:
 class CUIGroupGraphicsAPI : public CUIGroup {
 public:
   __declspec(noinline) explicit CUIGroupGraphicsAPI(UIWindowContext& context);
+  void Slot15(int width, int height) override;
   void Slot16() override;
   void Apply() override;
   void Refresh() override;
@@ -279,6 +283,7 @@ public:
 class CUIGraphicsPage : public CUIPage {
 public:
   __declspec(noinline) explicit CUIGraphicsPage(UIWindowContext& context);
+  void Slot15(int width, int height) override;
   __declspec(noinline) bool IsModified();
   void ApplySettings();
   int GetPendingBackend();
@@ -338,6 +343,8 @@ std::string GetHotkeyText(int tab, int index);
 
 class CUIGameSettingsUI : public UIFrameWnd {
 public:
+  CUIGameSettingsUI();
+
   void Slot16() override;
   void Slot25(int x, int y) override;
 
@@ -367,6 +374,7 @@ public:
   /* 00F0 */ CUITab* m_tab;
   /* 00F4 */ CUIControl* m_pageContainer;
   /* 00F8 */ CUIControl* m_applyButton;
+  /* 00FC */ unsigned char unknown_00FC[0x04];
 };
 
 #endif
