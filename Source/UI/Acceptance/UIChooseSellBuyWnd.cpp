@@ -3387,7 +3387,7 @@ void UIPetEggListWnd::Paint() {
 void UInCashWnd::DrawItems() {
   int row = 0;
   int index = 0;
-  for (auto it = this->m_items.begin(); it != this->m_items.end(); ++it, ++index) {
+  for (auto it = this->items.begin(); it != this->items.end(); ++it, ++index) {
     if (index < this->m_page * 8 - 8) {
       continue;
     }
@@ -4951,13 +4951,13 @@ ITEM_INFO UInCashWnd::ItemAt(int x, int y) {
   const SessionMessengerContext& lists = reinterpret_cast<const SessionMessengerContext&>(g_session);
   int top = this->m_listTop;
   if (x < 252) {
-    std::list<ITEM_INFO>::iterator it = this->m_items.begin();
+    std::list<ITEM_INFO>::iterator it = this->items.begin();
     for (int row = 0; row < 4; ++row) {
       if (y >= top && y <= top + this->m_rowHeight) {
         int index = row + (this->m_page - 1) * 8;
         int count = lists.GetList1788(this->m_tab);
         if (this->m_tab == 8) {
-          count = static_cast<int>(this->m_items.size());
+          count = static_cast<int>(this->items.size());
         }
         if (count <= index) {
           return ITEM_INFO(0);
@@ -4970,17 +4970,17 @@ ITEM_INFO UInCashWnd::ItemAt(int x, int y) {
       }
       top += this->m_rowHeight;
     }
-    return it != this->m_items.end() ? *it : ITEM_INFO(0);
+    return it != this->items.end() ? *it : ITEM_INFO(0);
   }
 
   if (x < 444) {
-    std::list<ITEM_INFO>::iterator it = this->m_items.begin();
+    std::list<ITEM_INFO>::iterator it = this->items.begin();
     for (int row = 0; row < 4; ++row) {
       if (y >= top && y <= top + this->m_rowHeight) {
         int index = this->m_page * 8 - 4 + row;
         int count = lists.GetList1788(this->m_tab);
         if (this->m_tab == 8) {
-          count = static_cast<int>(this->m_items.size());
+          count = static_cast<int>(this->items.size());
         }
         if (count <= index) {
           return ITEM_INFO(0);
@@ -4993,7 +4993,7 @@ ITEM_INFO UInCashWnd::ItemAt(int x, int y) {
       }
       top += this->m_rowHeight;
     }
-    return it != this->m_items.end() ? *it : ITEM_INFO(0);
+    return it != this->items.end() ? *it : ITEM_INFO(0);
   }
 
   int index = 0;
@@ -7644,6 +7644,23 @@ void UIEquipWnd::Slot25(int x, int y) {
       }
     }
   }
+}
+
+// OFFSET: 0x008C9880
+UInCashWnd::UInCashWnd(UIWindowContext& windows, UIFrameContext& frames) : UIItemBaseWnd(windows, frames) {
+  this->m_placement = nullptr;
+  this->m_tab = 0;
+  this->m_selected = 0;
+  this->m_pageCount = 0;
+  this->m_page = 0;
+  this->m_selectedIndex = 0;
+  this->m_totalPrice = 0;
+  this->m_firstOther = 0;
+  this->m_pointBalance = 0;
+  this->m_cashBalance = 0;
+  this->m_rowHeight = 106;
+  this->m_listTop = 56;
+  this->m_listHeight = 32;
 }
 
 // OFFSET: 0x008F33F0

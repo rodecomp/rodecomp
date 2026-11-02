@@ -2,6 +2,7 @@
 #define RAGNAROK_SOURCE_UI_SHOP_UINCASH_CALLWND_H
 
 #include "Contents/Items/ItemInfo.h"
+#include "UI/Item/UIItemBaseWnd.h"
 #include "UI/Window/UIFrameWnd.h"
 
 #include <list>
@@ -9,8 +10,9 @@
 struct WindowPlacement;
 class UIScrollBar;
 
-class UInCashWnd : public UIFrameWnd {
+class UInCashWnd : public UIItemBaseWnd {
 public:
+  UInCashWnd(UIWindowContext& windows, UIFrameContext& frames);
   bool Slot03() override;
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot11() override;
@@ -22,8 +24,6 @@ public:
   ITEM_INFO ItemAt(int x, int y);
   void DrawItems();
 
-  /* 00B4 */ unsigned char unknown_00B4[0x34];
-  /* 00E8 */ std::list<ITEM_INFO> m_items;
   /* 00F0 */ unsigned char unknown_00F0[0x08];
   /* 00F8 */ std::list<ITEM_INFO> m_otherItems;
   /* 0100 */ WindowPlacement* m_placement;
