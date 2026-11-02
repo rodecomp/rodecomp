@@ -1,3 +1,4 @@
+#include "Client/Input/InputCharset.h"
 #include "Client/Input/Language.h"
 #include "Render/Text/TextContext.h"
 #include "UI/Edit/EditTextState.h"
@@ -11,8 +12,8 @@
 // FUNCTION: fn_10905
 void EditViewport::Synchronize() {
   const int previousCursor = this->cursor;
-  this->input.CopyDisplayText(this->text);
-  this->input.Selection(this->anchor, this->cursor);
+  g_serverLanguage->CopyDisplayText(this->text);
+  g_serverLanguage->Selection(this->anchor, this->cursor);
   this->state.Trim();
   const auto length = static_cast<std::uint32_t>(this->text.size());
   bool clamped = false;
@@ -20,7 +21,7 @@ void EditViewport::Synchronize() {
   if (static_cast<std::uint32_t>(this->cursor) > length || static_cast<std::uint32_t>(this->anchor) > length) {
     this->anchor = static_cast<int>(std::min(static_cast<std::uint32_t>(this->anchor), length));
     this->cursor = static_cast<int>(std::min(static_cast<std::uint32_t>(this->cursor), length));
-    this->input.Select(this->anchor, this->cursor);
+    g_serverLanguage->Select(this->anchor, this->cursor);
     clamped = true;
   }
 

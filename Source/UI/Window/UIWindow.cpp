@@ -2890,7 +2890,7 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
           static_cast<UINavigationWnd*>(g_windowMgr.window_0428)->RefreshWorldMapLevels();
         }
         this->LayoutWithDetails();
-        reinterpret_cast<CLanguage*>(g_serverLanguage)->ResetInput();
+        g_serverLanguage->ResetInput();
       }
       break;
     case 0x150:

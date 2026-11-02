@@ -451,8 +451,8 @@ void UIEditCtrl::Paint() {
 // OFFSET: 0x0085AAB0
 // FUNCTION: fn_10783
 void UIEditCtrl::Slot23() {
-  this->m_edit->input.ResetInput();
-  this->m_edit->input.ResetInput();
+  g_serverLanguage->ResetInput();
+  g_serverLanguage->ResetInput();
   this->m_edit->input.Insert(this->text.c_str());
   this->m_edit->password = this->mask != 0;
   this->SelectAll();
@@ -518,7 +518,7 @@ int UIEditCtrl::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
   UIWindow::SendMsg(sender, message, a, b, c, d);
 
   if (message == 0 && this->preserveInput == 0) {
-    this->m_edit->input.ResetInput();
+    g_serverLanguage->ResetInput();
   }
 
   return 0;
@@ -537,8 +537,8 @@ void UIEditCtrl::SetText(const char* value) {
   this->Trim();
 
   if (this->m_edit->focus.window == this) {
-    this->m_edit->input.ResetInput();
-    this->m_edit->input.ResetInput();
+    g_serverLanguage->ResetInput();
+    g_serverLanguage->ResetInput();
     this->m_edit->input.Insert(this->text.c_str());
   }
 
@@ -1089,8 +1089,8 @@ void UIItemWnd::Slot18() {
 void UIEditCtrl_Custom::Synchronize() {
   const int previousCursor = this->cursor;
   CLanguage& input = this->m_edit->input;
-  input.CopyDisplayText(this->text);
-  input.Selection(this->anchor, this->cursor);
+  g_serverLanguage->CopyDisplayText(this->text);
+  g_serverLanguage->Selection(this->anchor, this->cursor);
   this->Trim();
 
   const auto length = static_cast<unsigned>(this->text.size());
@@ -1099,7 +1099,7 @@ void UIEditCtrl_Custom::Synchronize() {
   if (static_cast<unsigned>(this->cursor) > length || static_cast<unsigned>(this->anchor) > length) {
     this->anchor = std::min<unsigned>(this->anchor, length);
     this->cursor = std::min<unsigned>(this->cursor, length);
-    input.Select(this->anchor, this->cursor);
+    g_serverLanguage->Select(this->anchor, this->cursor);
     clamped = true;
   }
 
@@ -4052,8 +4052,8 @@ void UIEditCtrl_Custom::Trim() {
   this->text.resize(length - std::strlen(previous));
 
   CLanguage& input = this->m_edit->input;
-  input.ResetInput();
-  input.ResetInput();
+  g_serverLanguage->ResetInput();
+  g_serverLanguage->ResetInput();
   input.Insert(this->text.c_str());
 
   while (this->text.size() < static_cast<unsigned>(this->maximum)) {
@@ -5706,29 +5706,29 @@ int UIEditCtrl_Currency::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     if (a == VK_BACK) {
       int anchor;
       int cursor;
-      this->m_edit->input.Selection(anchor, cursor);
+      g_serverLanguage->Selection(anchor, cursor);
 
       if (anchor == cursor) {
         if (cursor <= 2) {
           if (this->text[1] == ',') {
-            this->m_edit->input.Select(0, 2);
+            g_serverLanguage->Select(0, 2);
           }
         } else if (this->text[cursor - 1] == ',') {
-          this->m_edit->input.Select(cursor - 1, cursor - 1);
+          g_serverLanguage->Select(cursor - 1, cursor - 1);
         }
       }
     } else if (a == VK_DELETE) {
       int anchor;
       int cursor;
-      this->m_edit->input.Selection(anchor, cursor);
+      g_serverLanguage->Selection(anchor, cursor);
 
       if (anchor == cursor) {
         if (cursor == 0) {
           if (this->text[1] == ',') {
-            this->m_edit->input.Select(0, 2);
+            g_serverLanguage->Select(0, 2);
           }
         } else if (this->text[cursor] == ',') {
-          this->m_edit->input.Select(cursor + 1, cursor + 1);
+          g_serverLanguage->Select(cursor + 1, cursor + 1);
         }
       }
     }
@@ -7120,7 +7120,7 @@ void UIChatEditCtrl::InsertItemLink(const ITEM_INFO& item) {
   this->unknown_0144->taggedText = this->text;
   const std::string name = naming.DisplayName(item, 0);
   const std::string tag = this->unknown_0144->AppendTag(name);
-  this->m_edit->input.ResetInput();
+  g_serverLanguage->ResetInput();
   this->m_edit->input.Insert(tag.c_str());
   this->unknown_0144->sub_89CFE0(item, 0x12B8A4);
 }

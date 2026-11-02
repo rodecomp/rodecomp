@@ -109,7 +109,7 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
       return 0;
     }
 
-    input.Selection(this->anchor, this->cursor);
+    g_serverLanguage->Selection(this->anchor, this->cursor);
     if (this->unknown_0150 < 1 || this->unknown_0154 != this->cursor || scrolling[1] != 0) {
       const char* current = this->unknown_0160;
       this->unknown_015E = 0;
@@ -147,7 +147,7 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
       this->unknown_0150 = static_cast<int>(std::strlen(this->unknown_0160)) + this->unknown_0144 - column;
     }
 
-    input.RetreatCursor(this->unknown_0150);
+    g_serverLanguage->RetreatCursor(this->unknown_0150);
     scrolling[1] = 1;
     lineMove[0] = 1;
   } else if (message == 19) {
@@ -158,7 +158,7 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
       return 0;
     }
 
-    input.Selection(this->anchor, this->cursor);
+    g_serverLanguage->Selection(this->anchor, this->cursor);
     if (this->unknown_0150 < 1 || this->unknown_0154 != this->cursor || this->unknown_015E != 0) {
       scrolling[1] = 0;
       int bytes = 0;
@@ -198,7 +198,7 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
       this->unknown_0150 = this->unknown_0148 + column;
     }
 
-    input.AdvanceCursor(this->unknown_0150);
+    g_serverLanguage->AdvanceCursor(this->unknown_0150);
     this->unknown_015E = 1;
   } else if (message == 256) {
     scrolling[0] = 0;
@@ -209,7 +209,7 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     return 0;
   }
 
-  input.Selection(this->anchor, this->cursor);
+  g_serverLanguage->Selection(this->anchor, this->cursor);
   this->unknown_0154 = this->cursor;
   return 0;
 }
@@ -227,7 +227,7 @@ void UIEditCtrl3::HandleInputMessage(unsigned key, std::intptr_t data) {
   switch (key) {
   case VK_BACK:
     if (this->unknown_0168.size() != 0) {
-      input.Selection(this->anchor, this->cursor);
+      g_serverLanguage->Selection(this->anchor, this->cursor);
       int length = 0;
       for (int line = 0; line < this->textY; ++line) {
         length += static_cast<int>(std::strlen(this->unknown_0168[line].c_str()));
@@ -239,31 +239,31 @@ void UIEditCtrl3::HandleInputMessage(unsigned key, std::intptr_t data) {
     break;
   case VK_END:
     if (this->unknown_0168.size() != 0) {
-      input.Selection(this->anchor, this->cursor);
+      g_serverLanguage->Selection(this->anchor, this->cursor);
       int offset = this->cursor;
       for (int line = 0; line < this->textY; ++line) {
         offset -= static_cast<int>(std::strlen(this->unknown_0168[line].c_str()));
       }
       const int length = static_cast<int>(std::strlen(this->unknown_0168[this->textY].c_str()));
-      input.AdvanceCursor(this->unknown_0174[this->textY] ? length - offset - 2 : length - offset);
-      input.Selection(this->anchor, this->cursor);
+      g_serverLanguage->AdvanceCursor(this->unknown_0174[this->textY] ? length - offset - 2 : length - offset);
+      g_serverLanguage->Selection(this->anchor, this->cursor);
     }
     reinterpret_cast<unsigned char*>(&this->unknown_0184)[0] = 1;
     return;
   case VK_HOME:
     if (this->unknown_0168.size() != 0) {
-      input.Selection(this->anchor, this->cursor);
+      g_serverLanguage->Selection(this->anchor, this->cursor);
       int offset = this->cursor;
       for (int line = 0; line < this->textY; ++line) {
         offset -= static_cast<int>(std::strlen(this->unknown_0168[line].c_str()));
       }
-      input.RetreatCursor(offset);
-      input.Selection(this->anchor, this->cursor);
+      g_serverLanguage->RetreatCursor(offset);
+      g_serverLanguage->Selection(this->anchor, this->cursor);
     }
     break;
   case VK_LEFT:
     if (this->textY > 0) {
-      input.Selection(this->anchor, this->cursor);
+      g_serverLanguage->Selection(this->anchor, this->cursor);
       int length = 0;
       for (int line = 0; line < this->textY; ++line) {
         length += static_cast<int>(std::strlen(this->unknown_0168[line].c_str()));
@@ -275,7 +275,7 @@ void UIEditCtrl3::HandleInputMessage(unsigned key, std::intptr_t data) {
     input.KeyDown(key, data, g_textCodePage, password, g_windowMgr.window_4F1FC, this->m_edit->windows, chatWindow);
     break;
   case VK_RIGHT:
-    input.Selection(this->anchor, this->cursor);
+    g_serverLanguage->Selection(this->anchor, this->cursor);
     if (static_cast<unsigned>(this->textY) < this->unknown_0168.size()) {
       int length = 0;
       for (int line = 0; line <= this->textY; ++line) {
@@ -767,8 +767,8 @@ UIEditCtrl4::~UIEditCtrl4() = default;
 // FUNCTION: fn_10782
 void UIEditCtrl4::Slot23() {
   this->text.clear();
-  this->m_edit->input.ResetInput();
-  this->m_edit->input.ResetInput();
+  g_serverLanguage->ResetInput();
+  g_serverLanguage->ResetInput();
   this->m_edit->input.Insert(this->text.c_str());
   this->m_edit->password = this->mask != 0;
   this->SelectAll();
@@ -793,8 +793,8 @@ void UIEditCtrl4::SetPlaceholder(const char* value) {
   this->Trim();
 
   if (this->m_edit->focus.window == this) {
-    this->m_edit->input.ResetInput();
-    this->m_edit->input.ResetInput();
+    g_serverLanguage->ResetInput();
+    g_serverLanguage->ResetInput();
     this->m_edit->input.Insert(this->placeholder.c_str());
   }
 
@@ -889,8 +889,8 @@ void UIEditCtrl3::Trim() {
   const char* previous = CharPrevExA(static_cast<WORD>(g_textCodePage), this->text.c_str(), next, 0);
   this->text.resize(length - std::strlen(previous));
 
-  this->m_edit->input.ResetInput();
-  this->m_edit->input.ResetInput();
+  g_serverLanguage->ResetInput();
+  g_serverLanguage->ResetInput();
   this->m_edit->input.Insert(this->text.c_str());
 
   while (this->text.size() < static_cast<unsigned>(limit)) {
@@ -1025,8 +1025,8 @@ void UIEditCtrlVarId::SetText(const char* value) {
 // OFFSET: 0x0085AB10
 // FUNCTION: fn_10784
 void UIWhisperEditCtrl::Slot23() {
-  this->m_edit->input.ResetInput();
-  this->m_edit->input.ResetInput();
+  g_serverLanguage->ResetInput();
+  g_serverLanguage->ResetInput();
   this->m_edit->input.Insert(this->text.c_str());
   this->m_edit->password = this->mask != 0;
   this->SelectAll();
@@ -1170,8 +1170,8 @@ void UIEditCtrl3::SetText(const char* value) {
   this->Trim();
 
   if (g_windowMgr.GetHoverWindow() == this) {
-    this->m_edit->input.ResetInput();
-    this->m_edit->input.ResetInput();
+    g_serverLanguage->ResetInput();
+    g_serverLanguage->ResetInput();
     this->m_edit->input.Insert(this->text.c_str());
   }
 

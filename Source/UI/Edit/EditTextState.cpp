@@ -1,3 +1,4 @@
+#include "Client/Input/InputCharset.h"
 #include "Client/Input/Language.h"
 #include "UI/Edit/EditTextState.h"
 
@@ -9,8 +10,8 @@ void EditTextState::SetText(const char* value) {
   this->Trim();
 
   if (this->focused) {
-    this->input.ResetInput();
-    this->input.ResetInput();
+    g_serverLanguage->ResetInput();
+    g_serverLanguage->ResetInput();
     this->input.Insert(this->text.c_str());
   }
 
@@ -46,7 +47,7 @@ void EditTextState::Trim() {
 // FUNCTION: fn_10778
 void EditTextState::SelectAll() {
   if (this->focused) {
-    this->input.Select(0, static_cast<int>(this->input.text.size()));
+    g_serverLanguage->Select(0, static_cast<int>(this->input.text.size()));
   } else {
     this->anchor = 0;
     this->cursor = static_cast<int>(this->text.size());

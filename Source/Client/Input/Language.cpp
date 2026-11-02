@@ -24,12 +24,12 @@
 
 // OFFSET: 0x00ACF2A0
 // FUNCTION: fn_17794
-void CLanguage::ResetInput() {
-  HIMC context = ImmGetContext(this->window);
+void CLanguageBase::ResetInput() {
+  HIMC context = ImmGetContext(hWnd);
 
   if (context) {
     ImmNotifyIME(context, NI_COMPOSITIONSTR, CPS_CANCEL, 0);
-    ImmReleaseContext(this->window, context);
+    ImmReleaseContext(hWnd, context);
   }
 
   this->text.clear();
@@ -37,7 +37,7 @@ void CLanguage::ResetInput() {
   this->anchor = 0;
   this->composition.clear();
   this->candidate.clear();
-  this->compositionState = 0;
+  this->candidateCount = 0;
 }
 
 // OFFSET: 0x00ACD700
@@ -81,16 +81,30 @@ void CLanguage::Insert(const char* value) {
 
 // OFFSET: 0x00ACF590
 // FUNCTION: fn_17797
-void CLanguage::Select(int anchor, int cursor) {
+void CLanguageBase::Select(int anchor, int cursor) {
   this->anchor = anchor;
   this->cursor = cursor;
-  this->anchor = std::clamp(this->anchor, 0, static_cast<int>(this->text.size()));
-  this->cursor = std::clamp(this->cursor, 0, static_cast<int>(this->text.size()));
+
+  if (anchor < 0) {
+    this->anchor = 0;
+    anchor = 0;
+  }
+
+  if (static_cast<unsigned>(anchor) > this->text.size()) {
+    this->anchor = static_cast<int>(this->text.size());
+  }
+
+  if (cursor < 0) {
+    this->cursor = 0;
+    return;
+  }
+
+  this->cursor = static_cast<unsigned>(cursor) > this->text.size() ? static_cast<int>(this->text.size()) : cursor;
 }
 
 // OFFSET: 0x00ACE3C0
 // FUNCTION: fn_17782
-void CLanguage::CopyDisplayText(std::string& output) const {
+void CLanguageBase::CopyDisplayText(std::string& output) const {
   if (&output != &this->text) {
     output = this->text;
   }
@@ -102,7 +116,7 @@ void CLanguage::CopyDisplayText(std::string& output) const {
 
 // OFFSET: 0x00ACE420
 // FUNCTION: fn_17783
-void CLanguage::Selection(int& anchor, int& cursor) const {
+void CLanguageBase::Selection(int& anchor, int& cursor) const {
   anchor = this->anchor;
   cursor = this->cursor;
 }
@@ -177,7 +191,7 @@ void CLanguage::MoveBack(unsigned codePage) {
 
 // OFFSET: 0x00ACE440
 // FUNCTION: fn_45441
-void CLanguage::SelectionRange(int& begin, int& end) const {
+void CLanguageBase::SelectionRange(int& begin, int& end) const {
   if (this->anchor < this->cursor) {
     begin = this->anchor;
     end = this->cursor;
@@ -206,40 +220,37 @@ void CLanguage::IncreaseSelection(unsigned codePage) {
 }
 // OFFSET: 0x00ACE5E0
 // FUNCTION: fn_17789
-void CLanguage::AdvanceCursor(int delta) {
+void CLanguageBase::AdvanceCursor(int delta) {
   const unsigned length = static_cast<unsigned>(this->text.size());
-  unsigned cursor = static_cast<unsigned>(this->cursor);
-  if (cursor == length) {
+  if (static_cast<unsigned>(this->cursor) == length) {
     return;
   }
-  if (cursor > length) {
+
+  if (static_cast<unsigned>(this->cursor) > length) {
     this->cursor = static_cast<int>(length);
-  } else {
-    unsigned next = cursor + static_cast<unsigned>(delta);
-    if (next <= length) {
-      this->cursor = static_cast<int>(next);
-    }
+  } else if (static_cast<unsigned>(this->cursor) + delta <= length) {
+    this->cursor += delta;
   }
-  if ((static_cast<unsigned short>(GetKeyState(VK_SHIFT)) >> 8) == 0) {
+
+  if (!static_cast<unsigned char>(static_cast<unsigned short>(GetKeyState(VK_SHIFT)) >> 8)) {
     this->anchor = this->cursor;
   }
 }
 
 // OFFSET: 0x00ACE620
 // FUNCTION: fn_17790
-void CLanguage::RetreatCursor(int delta) {
+void CLanguageBase::RetreatCursor(int delta) {
   if (this->cursor == 0) {
     return;
   }
+
   if (this->cursor < 0) {
     this->cursor = 0;
-  } else {
-    int prev = this->cursor - delta;
-    if (prev >= 0) {
-      this->cursor = prev;
-    }
+  } else if (this->cursor - delta >= 0) {
+    this->cursor -= delta;
   }
-  if ((static_cast<unsigned short>(GetKeyState(VK_SHIFT)) >> 8) == 0) {
+
+  if (!static_cast<unsigned char>(static_cast<unsigned short>(GetKeyState(VK_SHIFT)) >> 8)) {
     this->anchor = this->cursor;
   }
 }

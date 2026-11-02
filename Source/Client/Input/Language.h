@@ -32,14 +32,9 @@ struct CLanguage {
   const bool& chatOpen;
   TextInputSuggestions& suggestions;
 
-  void ResetInput();
   void DeleteSelection();
   void Insert(const char* value);
-  void Select(int anchor, int cursor);
-  void CopyDisplayText(std::string& output) const;
-  void Selection(int& anchor, int& cursor) const;
 
-  void SelectionRange(int& begin, int& end) const;
 
   void RefreshComposition(unsigned codePage);
 
@@ -50,8 +45,6 @@ struct CLanguage {
 
   void IncreaseSelection(unsigned codePage);
   void SetFlag8C(unsigned char value);
-  void AdvanceCursor(int delta);
-  void RetreatCursor(int delta);
 
   void Character(unsigned value, LPARAM unused, unsigned codePage);
 
@@ -104,6 +97,13 @@ struct CLanguageBase {
   void SetServicePrefix(std::string prefix);
   void DeleteSelection();
   void Insert(const char* value);
+  void ResetInput();
+  void Select(int anchor, int cursor);
+  void Selection(int& anchor, int& cursor) const;
+  void SelectionRange(int& begin, int& end) const;
+  void CopyDisplayText(std::string& output) const;
+  void AdvanceCursor(int delta);
+  void RetreatCursor(int delta);
 };
 
 // VTABLE: vt_01607

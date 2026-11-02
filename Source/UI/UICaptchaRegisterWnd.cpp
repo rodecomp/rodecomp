@@ -155,7 +155,7 @@ int UICaptchaRegisterWnd::SendMsg(
           CRagConnection& connection = GetRagConnection();
           connection.Send(g_packetLengths.FixedLength(packet.id), &packet);
 
-          reinterpret_cast<CLanguage*>(g_serverLanguage)->ResetInput();
+          g_serverLanguage->ResetInput();
         }
       }
     }

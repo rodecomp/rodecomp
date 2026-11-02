@@ -1767,7 +1767,7 @@ bool UIItemTagCtrl::RemoveInvalidTag(std::list<ItemTagRecord>::iterator& entry) 
         ++end;
       }
       remaining += this->taggedText.substr(end + bytes);
-      this->m_edit->input.ResetInput();
+      g_serverLanguage->ResetInput();
       this->m_edit->input.Insert(remaining.c_str());
       this->RemoveTagChild(entry->child);
       entry = this->tags.erase(entry);

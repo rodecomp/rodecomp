@@ -1,3 +1,4 @@
+#include "Client/Input/InputCharset.h"
 #include "Client/Input/Language.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Items/ItemNaming.h"
@@ -396,7 +397,7 @@ void UIItemTagCtrl::sub_8962C0() {
           const int end = start + bytes + 2;
           if (cursor > start && cursor < end) {
             const int target = start + bytes / 2 + 1 > cursor ? end : start;
-            this->m_edit->input.Select(target, target);
+            g_serverLanguage->Select(target, target);
           }
         }
 

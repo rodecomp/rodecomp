@@ -1,3 +1,4 @@
+#include "Client/Input/InputCharset.h"
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "Client/Replay.h"
 #include "UI/Window/WindowPolicy.h"
@@ -1089,7 +1090,7 @@ void UIEditCtrl_Currency::Slot19() {
   CLanguage& input = this->m_edit->input;
   int anchor;
   int cursor;
-  input.Selection(anchor, cursor);
+  g_serverLanguage->Selection(anchor, cursor);
 
   std::string digits = this->text;
   int separators = 0;
@@ -1115,8 +1116,8 @@ void UIEditCtrl_Currency::Slot19() {
   this->text = formatted;
   this->Trim();
 
-  input.ResetInput();
-  input.ResetInput();
+  g_serverLanguage->ResetInput();
+  g_serverLanguage->ResetInput();
   input.Insert(this->text.c_str());
 
   const int length = static_cast<int>(this->text.size());
@@ -1128,7 +1129,7 @@ void UIEditCtrl_Currency::Slot19() {
     cursor = 1;
   }
 
-  input.Select(anchor, cursor);
+  g_serverLanguage->Select(anchor, cursor);
   this->formattedLength = this->text.size();
   this->Invalidate();
 }

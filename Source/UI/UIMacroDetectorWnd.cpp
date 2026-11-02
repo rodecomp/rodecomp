@@ -1,3 +1,4 @@
+#include "Client/Input/InputCharset.h"
 #include "UI/UIMacroDetectorWnd.h"
 #include "Client/Input/Language.h"
 #include "Contents/MessageTable.h"
@@ -113,7 +114,7 @@ int UIMacroDetectorWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
       CRagConnection& connection = GetRagConnection();
       connection.Send(g_packetLengths.FixedLength(packet.id), &packet);
       this->m_lastAnswer = this->m_editCtrl->Text();
-      this->m_editCtrl->m_edit->input.ResetInput();
+      g_serverLanguage->ResetInput();
     }
   }
   return UIWindow::SendMsg(sender, message, a, b, c, d);

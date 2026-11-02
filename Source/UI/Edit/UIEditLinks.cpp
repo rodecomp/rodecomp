@@ -1,3 +1,4 @@
+#include "Client/Input/InputCharset.h"
 #include "Client/Input/Language.h"
 #include "UI/Window/InputFocus.h"
 #include "UI/Text/NavigationLink.h"
@@ -51,7 +52,7 @@ bool UIEditCtrl::RemoveInvalidLink(std::list<UIWindow*>::iterator& entry) {
         const auto begin = left ? absolute - 1 : absolute;
         const auto end = absolute + bytes + (right ? 1 : 0);
         remaining = this->text.substr(0, begin) + this->text.substr(end);
-        this->m_edit->input.ResetInput();
+        g_serverLanguage->ResetInput();
         this->m_edit->input.Insert(remaining.c_str());
         this->RemoveChild(button, 1);
         entry = this->links.erase(entry);
@@ -77,14 +78,14 @@ bool UIEditCtrl::RemoveInvalidLink(std::list<UIWindow*>::iterator& entry) {
 void UIEditCtrl::SetCursor(std::size_t position) {
   position = std::min(position, this->text.size());
   this->anchor = this->cursor = static_cast<int>(position);
-  this->m_edit->input.Select(this->cursor, this->cursor);
+  g_serverLanguage->Select(this->cursor, this->cursor);
 }
 
 // OFFSET: 0x00855150
 // FUNCTION: fn_10751
 void UIEditCtrl::MoveCursorToEnd() {
   if (this->m_edit->focus.window == this) {
-    this->m_edit->input.Select(static_cast<int>(this->m_edit->input.text.size()), static_cast<int>(this->m_edit->input.text.size()));
+    g_serverLanguage->Select(static_cast<int>(this->m_edit->input.text.size()), static_cast<int>(this->m_edit->input.text.size()));
     return;
   }
   this->anchor = static_cast<int>(this->text.size());
@@ -103,7 +104,7 @@ void UIEditCtrl::SnapLinkSelection(std::size_t prefix, std::size_t bytes) {
 
   if (cursor > prefix && cursor < end) {
     const auto target = prefix + bytes / 2 + 1 <= cursor ? prefix : end;
-    this->m_edit->input.Select(static_cast<int>(target), static_cast<int>(target));
+    g_serverLanguage->Select(static_cast<int>(target), static_cast<int>(target));
   }
 }
 
@@ -187,7 +188,7 @@ void UIChatEditCtrl::InsertItemTag(int tagId) {
 
   const std::string tag = this->unknown_0144->sub_874A40(tagId, 0x7F00E4);
   const std::string combined = this->text + tag;
-  this->m_edit->input.ResetInput();
+  g_serverLanguage->ResetInput();
   this->m_edit->input.Insert(combined.c_str());
   this->unknown_0144->taggedText = this->text;
 }
@@ -251,7 +252,7 @@ void UIEditCtrl::InsertLink(const char* value) {
 
   this->SetText(this->text.c_str());
   this->anchor = this->cursor = static_cast<int>(this->text.size());
-  this->m_edit->input.Select(this->cursor, this->cursor);
+  g_serverLanguage->Select(this->cursor, this->cursor);
 
   auto* button = new UINaviLinkButton(*this->m_context, this->m_edit->navigation);
 

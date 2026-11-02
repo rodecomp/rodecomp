@@ -198,7 +198,7 @@ void CUIEditCtrlEx::UpdateScrollBar() {
 // FUNCTION: fn_14446
 void CUIEditCtrlEx::Synchronize() {
   if (this == g_windowMgr.GetHoverWindow()) {
-    this->m_edit->input.CopyDisplayText(this->text);
+    g_serverLanguage->CopyDisplayText(this->text);
     this->RefreshPlaceholder();
   }
   this->Trim();
@@ -225,7 +225,7 @@ void CUIEditCtrlEx::Synchronize() {
 
   int anchor = 0;
   int cursor = 0;
-  this->m_edit->input.Selection(anchor, cursor);
+  g_serverLanguage->Selection(anchor, cursor);
   int selStart = anchor;
   int selEnd = cursor;
   if (selStart > selEnd) {
@@ -391,17 +391,17 @@ void CUIEditCtrlEx::HandleKeyDown(int key, std::intptr_t lparam) {
     break;
   case VK_END:
     if ((static_cast<unsigned short>(GetKeyState(VK_CONTROL)) >> 8) != 0) {
-      input.AdvanceCursor(static_cast<int>(this->text.size()) - input.cursor);
+      g_serverLanguage->AdvanceCursor(static_cast<int>(this->text.size()) - input.cursor);
     } else {
-      input.AdvanceCursor(static_cast<int>(this->lines[this->line].text.size()) - this->column);
+      g_serverLanguage->AdvanceCursor(static_cast<int>(this->lines[this->line].text.size()) - this->column);
       this->unknown_01DC = 1;
     }
     return;
   case VK_HOME:
     if ((static_cast<unsigned short>(GetKeyState(VK_CONTROL)) >> 8) != 0) {
-      input.RetreatCursor(input.cursor);
+      g_serverLanguage->RetreatCursor(input.cursor);
     } else {
-      input.RetreatCursor(this->column);
+      g_serverLanguage->RetreatCursor(this->column);
     }
     break;
   case VK_LEFT:
@@ -445,7 +445,7 @@ void CUIEditCtrlEx::HandleKeyDown(int key, std::intptr_t lparam) {
     break;
   case 'A':
     if ((static_cast<unsigned short>(GetKeyState(VK_CONTROL)) >> 8) != 0) {
-      input.Select(0, static_cast<int>(this->text.size()));
+      g_serverLanguage->Select(0, static_cast<int>(this->text.size()));
     }
     break;
   }
@@ -478,7 +478,7 @@ int CUIEditCtrlEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
   case 18:
     if (this->line > 0) {
       if (this->unknown_01D4 == this->line - 1) {
-        input.RetreatCursor(this->unknown_01D8);
+        g_serverLanguage->RetreatCursor(this->unknown_01D8);
       } else {
         const EditLine& previous = this->lines[this->line - 1];
         const std::string& current = this->lines[this->line].text;
@@ -495,7 +495,7 @@ int CUIEditCtrlEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         }
 
         const int delta = (previous.unknown_0018 != 0 ? 2 : 0) + static_cast<int>(previous.text.size()) - offset + this->column;
-        input.RetreatCursor(delta);
+        g_serverLanguage->RetreatCursor(delta);
         this->unknown_01D8 = delta;
       }
       this->unknown_01D4 = this->line;
@@ -506,7 +506,7 @@ int CUIEditCtrlEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
   case 19:
     if (static_cast<unsigned>(this->line) < this->lines.size() - 1) {
       if (this->unknown_01D4 == this->line + 1) {
-        input.AdvanceCursor(this->unknown_01D8);
+        g_serverLanguage->AdvanceCursor(this->unknown_01D8);
       } else {
         const EditLine& next = this->lines[this->line + 1];
         const std::string& current = this->lines[this->line].text;
@@ -524,7 +524,7 @@ int CUIEditCtrlEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 
         const EditLine& line = this->lines[this->line];
         const int delta = (line.unknown_0018 != 0 ? 2 : 0) + static_cast<int>(line.text.size()) - this->column + offset;
-        input.AdvanceCursor(delta);
+        g_serverLanguage->AdvanceCursor(delta);
         this->unknown_01D8 = delta;
       }
       this->unknown_01D4 = this->line;
@@ -647,9 +647,9 @@ void CUIEditCtrlEx::SetText(const char* value) {
 
   if (this == g_windowMgr.GetHoverWindow()) {
     CLanguage& input = this->m_edit->input;
-    input.ResetInput();
+    g_serverLanguage->ResetInput();
     input.Insert(this->text.c_str());
-    input.Select(0, static_cast<int>(input.text.size()));
+    g_serverLanguage->Select(0, static_cast<int>(input.text.size()));
   }
 
   if (this->text.find("<ITEML>") != std::string::npos || this->text.find("</ITEML>") != std::string::npos) {
