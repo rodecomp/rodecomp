@@ -290,6 +290,8 @@ template int CUIComboBox<GameSettingsUI::CUIComboItem, std::string>::AddItem(con
 // OFFSET: 0x00A1E250
 // FUNCTION: fn_15379
 // FUNCTION: fn_15380
+// FUNCTION: fn_15381
+// FUNCTION: fn_15382
 template <class T, class D> void CUIComboBox<T, D>::Create(int width, int itemHeight, int visibleItems) {
   this->visibleItems = visibleItems;
   this->width = width;
