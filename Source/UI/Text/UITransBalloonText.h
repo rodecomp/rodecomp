@@ -20,7 +20,7 @@ class UITransBalloonText : public UIBalloonText {
 
 public:
   UITransBalloonText();
-  UITransBalloonText(UIWindowContext& windows, BalloonTextContext& text);
+  UITransBalloonText(UIWindowContext& windows);
   ~UITransBalloonText() override;
 
   void Resize(int width, int height) override;
@@ -50,13 +50,13 @@ private:
 class UIColorTransBalloonText : public UITransBalloonText {
 public:
   // INLINED
-  UIColorTransBalloonText(UIWindowContext& windows, BalloonTextContext& text) : UITransBalloonText(windows, text) {}
+  UIColorTransBalloonText(UIWindowContext& windows) : UITransBalloonText(windows) {}
   void Paint() override;
 };
 
 class UIAchBalloonText : public UITransBalloonText {
 public:
-  UIAchBalloonText(UIWindowContext& windows, BalloonTextContext& text);
+  UIAchBalloonText(UIWindowContext& windows);
   void Paint() override;
 
 protected:

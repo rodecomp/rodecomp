@@ -44,7 +44,7 @@ int UIBalloonOpenBtn::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     }
 
     if (this->m_balloon == nullptr) {
-      this->m_balloon = new UITransBalloonText(*this->m_context, *reinterpret_cast<BalloonTextContext*>(nullptr));
+      this->m_balloon = new UITransBalloonText(*this->m_context);
       this->m_balloon->SetSize(8, 8);
       g_windowMgr.AddRenderedFront(this->m_balloon);
       if (this->m_balloon == nullptr) {

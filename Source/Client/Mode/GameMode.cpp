@@ -2481,7 +2481,7 @@ void CGameMode::EnsureNameBalloon(UINameBalloonText*& balloon) {
   }
 
   g_serviceOptions.Get(0x5C);
-  balloon = new UINameBalloonText(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<BalloonTextContext*>(nullptr));
+  balloon = new UINameBalloonText(*reinterpret_cast<UIWindowContext*>(nullptr));
   balloon->SetSize(8, 8);
   g_windowMgr.AddRenderedFront(balloon);
 }

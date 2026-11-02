@@ -582,7 +582,7 @@ void UIListBox::Slot28(int x, int y) {
         hover = nullptr;
       }
 
-      UIColorTransBalloonText* balloon = new UIColorTransBalloonText(*this->m_context, *reinterpret_cast<BalloonTextContext*>(this->m_listContext));
+      UIColorTransBalloonText* balloon = new UIColorTransBalloonText(*this->m_context);
       hover = balloon;
       balloon->SetSize(8, 8);
 

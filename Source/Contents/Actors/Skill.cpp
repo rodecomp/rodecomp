@@ -355,7 +355,7 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
     this->unknown_0248 = timeGetTime();
     if (this->unknown_0264[0] == 0) {
       UITransBalloonText* balloon =
-        new UITransBalloonText(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<BalloonTextContext*>(nullptr));
+        new UITransBalloonText(*reinterpret_cast<UIWindowContext*>(nullptr));
       this->unknown_0264[0] = reinterpret_cast<int>(balloon);
       balloon->SetSize(8, 8);
       g_windowMgr.AddRenderedFront(reinterpret_cast<UIWindow*>(this->unknown_0264[0]));

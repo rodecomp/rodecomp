@@ -92,7 +92,7 @@ void UIHotKeyWnd::Slot15(int, int) {
   this->AddBaseButton();
   this->AddCloseButton("", 0);
 
-  this->m_balloon = new UITransBalloonText(*this->m_context, *reinterpret_cast<BalloonTextContext*>(nullptr));
+  this->m_balloon = new UITransBalloonText(*this->m_context);
   this->m_balloon->SetSize(this->geometry.width, 20);
   this->m_balloon->SetText(LookupMessage(1486), 60);
   this->m_balloon->Show(0);

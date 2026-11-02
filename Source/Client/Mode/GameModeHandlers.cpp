@@ -2179,7 +2179,7 @@ void CGameMode::ReceiveAchievementUpdate(
     this->unknown_0600 = timeGetTime();
     if (!this->unknown_05FC) {
       UIAchBalloonText* balloon =
-        new UIAchBalloonText(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<BalloonTextContext*>(nullptr));
+        new UIAchBalloonText(*reinterpret_cast<UIWindowContext*>(nullptr));
       this->unknown_05FC = balloon;
       balloon->SetSize(g_renderer->viewport.width, 50);
       g_windowMgr.AddRenderedFront(this->unknown_05FC);

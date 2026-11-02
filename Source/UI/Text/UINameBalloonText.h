@@ -9,7 +9,7 @@ class CActorNameCard;
 
 class UINameBalloonText : public UIBalloonText {
 public:
-  __declspec(noinline) UINameBalloonText(UIWindowContext& windows, BalloonTextContext& text);
+  __declspec(noinline) UINameBalloonText(UIWindowContext& windows);
   ~UINameBalloonText() override;
   void Slot19() override;
   void Paint() override;
@@ -25,7 +25,7 @@ public:
 
 class UIVerticalNameBalloonText : public UINameBalloonText {
 public:
-  UIVerticalNameBalloonText(UIWindowContext& windows, BalloonTextContext& text);
+  UIVerticalNameBalloonText(UIWindowContext& windows);
   void Paint() override;
   void AddNameLine(const char* text) override;
 

@@ -1,3 +1,4 @@
+#include "Contents/Items/ItemDescription.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/ActorNameCard.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
@@ -50,7 +51,7 @@ namespace {
   }
 
   // INLINED
-  SIZE Measure(UIBalloonText& window, BalloonTextContext& owner, const std::string& text, int family, int height) {
+  SIZE Measure(UIBalloonText& window, const std::string& text, int family, int height) {
     if (text.empty()) {
       return {0, 0};
     }
@@ -63,8 +64,8 @@ namespace {
 
 // OFFSET: 0x0084E970
 // FUNCTION: fn_10648
-__declspec(noinline) UIBalloonText::UIBalloonText(UIWindowContext& windows, BalloonTextContext& text)
-    : UIWindow(windows, 0), unknown_007C(0), m_fontHeight(12), m_textColor(0xFFFFFF), m_outlineColor(0), m_richText(0), m_textContext(&text) {
+__declspec(noinline) UIBalloonText::UIBalloonText(UIWindowContext& windows)
+    : UIWindow(windows, 0), unknown_007C(0), m_fontHeight(12), m_textColor(0xFFFFFF), m_outlineColor(0), m_richText(0) {
   this->geometry.unknown_0034 = 0;
 }
 
@@ -97,7 +98,8 @@ void UIBalloonText::SetText(const char* text, int width) {
   this->m_lines.clear();
 
   if (this->m_richText != 0) {
-    WrapRichText(text, this->m_lines, width, false, this->m_textContext->items);
+    ItemDescriptions descriptions{g_itemDescriptions};
+    WrapRichText(text, this->m_lines, width, false, descriptions);
   } else {
     WrapPlainText(text, this->m_lines, width);
   }
@@ -126,13 +128,13 @@ void UIBalloonText::FitText() {
   const int family = Family(this->m_fontMode);
 
   for (const std::string& line : this->m_lines) {
-    const SIZE extent = Measure(*this, *this->m_textContext, line, family, this->m_fontHeight);
+    const SIZE extent = Measure(*this, line, family, this->m_fontHeight);
 
     if (extent.cx > width) {
       width = extent.cx;
     }
 
-    const int lineHeight = this->m_fontMode == 3 ? extent.cy : Measure(*this, *this->m_textContext, line, 0, this->m_fontHeight).cy;
+    const int lineHeight = this->m_fontMode == 3 ? extent.cy : Measure(*this, line, 0, this->m_fontHeight).cy;
     height = (height + (lineHeight + 4));
   }
 
@@ -152,7 +154,7 @@ void UIBalloonText::Paint() {
   for (const std::string& line : this->m_lines) {
     this->DrawTextAt(6, y, line.c_str(), 0, 0, this->m_fontHeight, this->m_textColor, 0, 0);
 
-    const int height = Measure(*this, *this->m_textContext, line, 0, this->m_fontHeight).cy;
+    const int height = Measure(*this, line, 0, this->m_fontHeight).cy;
     y = (y + (height + 4));
   }
 }
@@ -313,7 +315,7 @@ void UINameBalloonText::SetIcon(const char* name, unsigned char framed) {
 }
 // OFFSET: 0x0084FED0
 // FUNCTION: fn_10668
-UINameBalloonText::UINameBalloonText(UIWindowContext& windows, BalloonTextContext& text) : UIBalloonText(windows, text), monsterType(0), framed(0) {
+UINameBalloonText::UINameBalloonText(UIWindowContext& windows) : UIBalloonText(windows), monsterType(0), framed(0) {
   this->m_textColor = 0xFFFFFF;
   this->m_outlineColor = 0;
   this->unknown_00B8 = 0;
@@ -322,7 +324,7 @@ UINameBalloonText::UINameBalloonText(UIWindowContext& windows, BalloonTextContex
 
 // OFFSET: 0x00CCDFF0
 // FUNCTION: fn_21219
-UIVerticalNameBalloonText::UIVerticalNameBalloonText(UIWindowContext& windows, BalloonTextContext& text) : UINameBalloonText(windows, text) {
+UIVerticalNameBalloonText::UIVerticalNameBalloonText(UIWindowContext& windows) : UINameBalloonText(windows) {
 }
 
 // OFFSET: 0x00865EB0

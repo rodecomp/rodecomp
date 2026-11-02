@@ -36,12 +36,12 @@ namespace {
 
 // OFFSET: 0x00850810
 // FUNCTION: fn_10680
-UITransBalloonText::UITransBalloonText(UIWindowContext& windows, BalloonTextContext& text) : UIBalloonText(windows, text), m_borderColor(6052956) {
+UITransBalloonText::UITransBalloonText(UIWindowContext& windows) : UIBalloonText(windows), m_borderColor(6052956) {
 }
 
 // OFFSET: 0x0084E8D0
 // FUNCTION: fn_10647
-UIAchBalloonText::UIAchBalloonText(UIWindowContext& windows, BalloonTextContext& text) : UITransBalloonText(windows, text), m_fontFamily(0) {
+UIAchBalloonText::UIAchBalloonText(UIWindowContext& windows) : UITransBalloonText(windows), m_fontFamily(0) {
 }
 
 // OFFSET: 0x00853210

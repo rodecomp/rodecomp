@@ -10,13 +10,6 @@ class FontCache;
 struct TextLocale;
 struct ItemDescriptions;
 
-struct BalloonTextContext {
-  FontCache& fonts;
-  const TextLocale& locale;
-  const unsigned short& codePage;
-  ItemDescriptions& items;
-};
-
 class UIBalloonText : public UIWindow {
   friend class UIBalloonOpenBtn;
   friend class UIHotKeyWnd;
@@ -25,7 +18,7 @@ class UIBalloonText : public UIWindow {
   friend class UISelCharForUServerWnd;
 
 public:
-  UIBalloonText(UIWindowContext& windows, BalloonTextContext& text);
+  UIBalloonText(UIWindowContext& windows);
   ~UIBalloonText() override;
 
   bool CanHitTest() override;
@@ -46,7 +39,7 @@ protected:
   /* 0098 */ std::uint16_t unknown_0098;
   /* 009A */ std::uint16_t m_fontMode;
   /* 009C */ unsigned char m_richText;
-  BalloonTextContext* m_textContext;
+  void* unknown_00A0;
 };
 
 extern int g_nameBalloonFontHeight;

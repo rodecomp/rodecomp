@@ -1,3 +1,4 @@
+#include "Client/Session.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeTooltip.h"
 #include "UI/Text/UITransBalloonText.h"
@@ -16,23 +17,12 @@ void ModeTooltip::Show(const char* value, int x, int y, std::uint32_t color, uns
     return;
   }
 
-  char copied[1024];
-  std::string converted;
-  const char* text;
+  char text[1024];
 
-  if (convert == 0) {
-    strncpy_s(copied, sizeof(copied), value, _TRUNCATE);
-    text = copied;
+  if (convert != 0) {
+    g_session.ConvertTooltipText(value, text);
   } else {
-    converted = value;
-
-    for (char* current = converted.data(); *current != '\0'; current = CharNextExA(this->text.codePage, current, 0)) {
-      if (*current == '_') {
-        *current = ' ';
-      }
-    }
-
-    text = converted.c_str();
+    strncpy_s(text, sizeof(text), value, _TRUNCATE);
   }
 
   this->tick = timeGetTime();
@@ -40,7 +30,7 @@ void ModeTooltip::Show(const char* value, int x, int y, std::uint32_t color, uns
   if (this->window) {
     this->ordering.Promote(this->window);
   } else {
-    this->window = new UITransBalloonText(this->windows, this->text);
+    this->window = new UITransBalloonText(this->windows);
     this->window->SetSize(8, 8);
     this->rendered.push_back(this->window);
   }
