@@ -1338,6 +1338,88 @@ void UISkillNameChangeWnd::Paint() {
   this->DrawTextAt(controls.fonts, controls.locale, 15, 6, this->m_name.c_str(), 0, 0, 12, 0, 0, 0);
 }
 
+// OFFSET: 0x00905320
+// FUNCTION: fn_12381
+int UISpellListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  switch (message) {
+  case 31: {
+    this->m_skills.push_back(static_cast<std::uint32_t>(argument1));
+    ITEM_INFO item;
+    this->m_items.push_back(item);
+    this->SendMsg(nullptr, 60, 0, 0, 0, 0);
+    return 0;
+  }
+  case 27:
+    this->unknown_00FC = static_cast<short>(argument1);
+    return 0;
+  case 60:
+    this->UpdateScroll();
+    this->Invalidate();
+    return 0;
+  case 7:
+  case 9:
+  case 10: {
+    const int previous = this->m_scroll;
+    if (message == 9) {
+      this->m_scroll = previous - this->m_rows + 1;
+    } else if (message == 10) {
+      this->m_scroll = previous + this->m_rows - 1;
+    } else {
+      this->m_scroll = previous + static_cast<int>(argument1);
+    }
+    if (previous != this->m_scroll) {
+      this->UpdateScroll();
+      this->Invalidate();
+    }
+    return this->m_scroll - previous;
+  }
+  case 6: {
+    Replay& replay = Replay::Instance();
+    ReplayPacketRecorder packets = {
+      g_packetLengths,
+      replay.baseFrame,
+      replay.started,
+      replay.frame,
+      replay.header.key0,
+      replay.header.key1,
+      replay.header.options.recordRestricted,
+      replay.file,
+      replay.fileOffset,
+      replay.records,
+      replay.cipherIndex,
+      replay.cipherBase,
+      replay.cipherKey,
+    };
+    WindowResponseRecorder recorder{replay.state, packets};
+    recorder.Record(this->geometry.id, static_cast<int>(argument1), argument2, argument3, argument4);
+    CMode* mode = static_cast<CMode*>(g_charViewMode);
+    if (argument1 == 184) {
+      const int selected = this->m_selected;
+      if (selected < 0 || static_cast<unsigned>(selected) >= this->m_skills.size()) {
+        return 0;
+      }
+      if (this->unknown_00FC != 0) {
+        mode->SendMsg(256, this->m_skills[selected], this->unknown_00FC, 0, 0);
+      } else {
+        mode->SendMsg(163, this->m_skills[selected], 0, 0, 0);
+      }
+    } else if (argument1 == 185) {
+      if (this->unknown_00FC != 0) {
+        mode->SendMsg(256, 0, this->unknown_00FC, 0, 0);
+      } else {
+        mode->SendMsg(163, 0, 0, 0, 0);
+      }
+    } else {
+      return 0;
+    }
+    g_windowMgr.CloseWindow(99);
+    return 0;
+  }
+  default:
+    return 0;
+  }
+}
+
 // OFFSET: 0x008F04F0
 // FUNCTION: fn_12252
 // OFFSET: 0x008CBA50
@@ -7322,6 +7404,73 @@ UIItemCompositionWnd::UIItemCompositionWnd(UIWindowContext& windows, UIFrameCont
 // FUNCTION: fn_11976
 UISpellListWnd::UISpellListWnd(UIWindowContext& windows, UIFrameContext& frames) : UIItemIdentifyWnd(windows, frames) {
   this->unknown_00FC = 0;
+}
+
+// OFFSET: 0x00900B10
+// FUNCTION: fn_12370
+int UIPetEggListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  switch (message) {
+  case 6: {
+    Replay& replay = Replay::Instance();
+    ReplayPacketRecorder packets = {
+      g_packetLengths,
+      replay.baseFrame,
+      replay.started,
+      replay.frame,
+      replay.header.key0,
+      replay.header.key1,
+      replay.header.options.recordRestricted,
+      replay.file,
+      replay.fileOffset,
+      replay.records,
+      replay.cipherIndex,
+      replay.cipherBase,
+      replay.cipherKey,
+    };
+    WindowResponseRecorder recorder{replay.state, packets};
+    recorder.Record(this->geometry.id, static_cast<int>(argument1), argument2, this->m_selected, argument4);
+    if (g_replayAnimationScaling != 0) {
+      this->m_selected = static_cast<int>(argument3);
+    }
+    if (argument1 == 184) {
+      int found = 0;
+      ITEM_INFO item = this->GetItem(this->m_selected, &found);
+      if (found) {
+        static_cast<CMode*>(g_charViewMode)->SendMsg(146, item.unknown_0000[1], 0, 0, 0);
+      }
+    } else if (argument1 == 185) {
+      g_windowMgr.CloseWindow(90);
+    }
+    return 0;
+  }
+  case 7:
+  case 9:
+  case 10: {
+    const int previous = this->m_scroll;
+    if (message == 9) {
+      this->m_scroll = previous - this->m_rows + 1;
+    } else if (message == 10) {
+      this->m_scroll = previous + this->m_rows - 1;
+    } else {
+      this->m_scroll = previous + static_cast<int>(argument1);
+    }
+    if (previous != this->m_scroll) {
+      this->UpdateScroll();
+      this->Invalidate();
+    }
+    return this->m_scroll - previous;
+  }
+  case 31:
+    this->m_items.push_back(LookupClientItemByIdentity(g_session.m_inventoryItems, static_cast<std::uint32_t>(argument2)));
+    this->SendMsg(nullptr, 60, 0, 0, 0, 0);
+    return 0;
+  case 60:
+    this->UpdateScroll();
+    this->Invalidate();
+    return 0;
+  default:
+    return 0;
+  }
 }
 
 // OFFSET: 0x008C8330
