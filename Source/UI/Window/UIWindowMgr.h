@@ -1,6 +1,7 @@
 #ifndef RAGNAROK_SOURCE_UI_WINDOW_UIWINDOWMGR_H
 #define RAGNAROK_SOURCE_UI_WINDOW_UIWINDOWMGR_H
 
+#include "Contents/UserData/NormalItemSlots.h"
 #include "UI/Layout/SnapRectangle.h"
 
 #include <windows.h>
@@ -151,7 +152,7 @@ public:
   /* 01A0 */ UIWindow* hoverWindow;
   /* 01A4 */ std::deque<UIWindow*> modalWindows;
   /* 01B8 */ UIWindow* window_01B8;
-  /* 01BC */ std::uint32_t unknown_01BC;
+  /* 01BC */ UIWindow* unknown_01BC;
   /* 01C0 */ UIWindow* unknown_01C0;
   /* 01C4 */ UIWindow* unknown_01C4;
   /* 01C8 */ UIWindow* window_01C8;
@@ -361,7 +362,9 @@ public:
   /* 077C */ int unknown_077C;
   /* 0780 */ unsigned char unknown_0780[0x10];
   /* 0790 */ int unknown_0790;
-  /* 0794 */ unsigned char unknown_0794[0x158];
+  /* 0794 */ unsigned char unknown_0794[0xB4];
+  /* 0848 */ WindowPlacement m_whisperPlacement;
+  /* 0858 */ unsigned char unknown_0858[0x94];
   /* 08EC */ int unknown_08EC;
   /* 08F0 */ unsigned char unknown_08F0[0x20];
   /* 0910 */ int unknown_0910;

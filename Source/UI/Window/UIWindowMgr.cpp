@@ -62,6 +62,11 @@
 #include "Render/Primitives/AlphaRectangle.h"
 #include "UI/Cooldowns/CooldownOwner.h"
 #include "UI/Text/UITransBalloonText.h"
+#include "UI/Text/TextWrapping.h"
+#include "UI/Chat/UIWhisperWnd.h"
+#include "UI/Chat/UINewChatWnd.h"
+#include "UI/Window/UIChatRoomWnd.h"
+#include "UI/Shortcuts/ShortcutVisibility.h"
 
 namespace {
 #pragma pack(push, 1)
@@ -1555,6 +1560,122 @@ int UIWindowMgr::LoadReplayWindows(const std::vector<unsigned char>& data) {
     }
   }
   return static_cast<int>(offset);
+}
+
+// OFFSET: 0x00AA9100
+// FUNCTION: fn_17253
+int UIWindowMgr::SendNotice(int selector, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d, std::intptr_t e) {
+  const char* text = reinterpret_cast<const char*>(a);
+  switch (selector) {
+  case 1:
+  case 19: {
+    if (g_replayAnimationScaling != 0 && !Replay::Instance().header.options.recordRestricted) {
+      break;
+    }
+    std::uint32_t color = static_cast<std::uint32_t>(b);
+    if (this->window_01C8 != nullptr) {
+      if (color == 0) {
+        color = 0xFFFFFF;
+      }
+      if (std::strcmp(text, "No Msg") != 0 && std::strcmp(text, "NO MSG") != 0) {
+        this->window_01C8->SendMsg(nullptr, selector == 19 ? 115 : 37, a, color, c, d);
+      }
+      break;
+    }
+    if (color == 0) {
+      color = 0xFFFFFF;
+    }
+    std::vector<std::string> lines;
+    WrapPlainText(text, lines, 94, 0);
+    for (unsigned int index = 0; index < lines.size(); ++index) {
+      std::string line;
+      line = lines[index];
+      this->unknown_04C4.push_back({line, color});
+    }
+    break;
+  }
+  case 2:
+    if (this->window_01C8 != nullptr) {
+      this->window_01C8->SendMsg(nullptr, 15, a, 0, 0, 0);
+    }
+    break;
+  case 3:
+    reinterpret_cast<WindowVisibility&>(*this).Show(1, 1);
+    if (this->window_01C8 != nullptr) {
+      this->window_01C8->SendMsg(nullptr, 16, 0, 0, 0, 0);
+    }
+    break;
+  case 4:
+    if (this->unknown_01BC != nullptr) {
+      this->unknown_01BC->SendMsg(nullptr, 17, a, 0, 0, 0);
+    }
+    break;
+  case 5:
+    if (this->window_027C != nullptr) {
+      this->window_027C->SendMsg(nullptr, 37, a, b, 0, 0);
+    }
+    break;
+  case 6:
+    if (this->window_01C8 != nullptr) {
+      static_cast<UINewChatWnd*>(this->window_01C8)->SaveChatLogs();
+    }
+    break;
+  case 7:
+    if (this->window_027C != nullptr) {
+      static_cast<UIChatRoomWnd*>(this->window_027C)->SaveChatLog();
+    }
+    break;
+  case 8:
+  case 9:
+    this->sub_A978D0(51)->SendMsg(nullptr, 65, a, b, 0, 0);
+    break;
+  case 10:
+    this->CloseWindow(51);
+    break;
+  case 14: {
+    std::string name(text);
+    if (this->namedWindows.find(name) != this->namedWindows.end()) {
+      return 0;
+    }
+    UIWhisperWnd* window = new UIWhisperWnd(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIFrameContext*>(nullptr));
+    window->SetSize(280, 120);
+    this->rendered.push_back(window);
+    window->SendMsg(nullptr, 34, reinterpret_cast<std::intptr_t>(&this->m_whisperPlacement), 0, 0, 0);
+    window->Show(1);
+    window->m_target = name;
+    window->SetId(67);
+    if (b == 0) {
+      window->m_name = name;
+    } else {
+      window->m_name = name + "  (" + reinterpret_cast<const char*>(b) + ")  *^_^*";
+    }
+    if (c != 0) {
+      window->m_code = std::string(reinterpret_cast<const char*>(c));
+    }
+    const int count = static_cast<int>(this->namedWindows.size());
+    if (count != 0) {
+      const int offset = count * 17;
+      const int x = this->m_whisperPlacement.x + offset;
+      const int y = this->m_whisperPlacement.y + offset;
+      if (x > 0 && this->m_whisperPlacement.width + x < g_renderer->viewport.width - 17 && y > 0 &&
+          this->m_whisperPlacement.height + y < g_renderer->viewport.height - 17) {
+        window->Move(x, y);
+      } else if (offset > 0 && this->m_whisperPlacement.width + offset < g_renderer->viewport.width - 17 &&
+                 this->m_whisperPlacement.height + offset < g_renderer->viewport.height - 17) {
+        window->Move(offset, offset);
+      }
+    }
+    this->RegisterNamedWindow(name, window);
+    this->AddWhisperName(name.c_str());
+    return 1;
+  }
+  case 154:
+    for (auto it = this->namedWindows.begin(); it != this->namedWindows.end(); ++it) {
+      it->second->SendMsg(nullptr, 154, a, 0, 0, 0);
+    }
+    break;
+  }
+  return 0;
 }
 
 // OFFSET: 0x00AA8F50
