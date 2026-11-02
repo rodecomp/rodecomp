@@ -442,6 +442,23 @@ void UINameBalloonText::SetName(const CActorNameCard& info, bool stripHash, unsi
   this->Invalidate();
 }
 
+// OFFSET: 0x00866DE0
+// FUNCTION: fn_10941
+void UINameBalloonText::AddNameLine(const char* text) {
+  for (const std::string& line : this->m_lines) {
+    if (line == text) {
+      return;
+    }
+  }
+  this->m_lines.clear();
+  this->m_lines.push_back(std::string(text));
+  const std::string& last = this->m_lines.back();
+  this->unknown_00B8 =
+    std::max(this->TextWidth(this->m_textContext->fonts, this->m_textContext->locale, last.c_str(), last.size(), 0, g_nameBalloonFontHeight, g_serviceFlag06, 0) + 8, 32);
+  this->Resize(this->unknown_00B8, g_nameBalloonFontHeight + 8);
+  this->Invalidate();
+}
+
 // OFFSET: 0x00867740
 // FUNCTION: fn_10942
 void UIVerticalNameBalloonText::AddNameLine(const char* text) {

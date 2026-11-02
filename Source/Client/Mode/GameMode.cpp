@@ -3949,6 +3949,7 @@ void CGameMode::ReceiveSkillUpdate(
 
 // OFFSET: 0x00CDB910
 
+
 // OFFSET: 0x00CE18A0
 // FUNCTION: fn_21332
 void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor* actor) {
