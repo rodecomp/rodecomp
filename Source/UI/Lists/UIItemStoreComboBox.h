@@ -7,7 +7,7 @@
 class UIItemStoreComboBox : public UIComboBoxEx {
 public:
   UIItemStoreComboBox();
-  UIItemStoreComboBox(UIWindowContext& windows, UIComboBoxContext& combo) : UIComboBoxEx(windows, combo), pink(false) {}
+  UIItemStoreComboBox(UIWindowContext& windows) : UIComboBoxEx(windows), pink(false) {}
   void Slot15(int width, int height) override;
   void Paint() override;
   void Slot27(int x, int y) override;
@@ -18,7 +18,7 @@ public:
 
 class UIItemStoreComboBoxWnd : public UIComboBoxDefWnd {
 public:
-  UIItemStoreComboBoxWnd(UIWindowContext& windows, UIComboBoxHeaderContext& controls);
+  UIItemStoreComboBoxWnd(UIWindowContext& windows);
   void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;

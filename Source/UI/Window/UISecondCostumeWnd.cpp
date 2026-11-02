@@ -170,7 +170,7 @@ void UISecondCostumeWnd::Slot15(int width, int height) {
   this->AddChild(this->m_list);
   this->RefreshList(this->m_tab);
 
-  this->m_typeCombo = new UIComboBoxDefWnd(*this->m_context, *this->m_comboContext);
+  this->m_typeCombo = new UIComboBoxDefWnd(*this->m_context);
   this->m_typeCombo->dropdownHeight = 67;
   this->m_typeCombo->SetSize(width - 212, 18);
   this->m_typeCombo->Move(4, 20);
@@ -287,10 +287,8 @@ bool UISecondCostumeWnd::Slot03() {
 
 // OFFSET: 0x00946FB0
 // FUNCTION: fn_12857
-UISecondCostumeWnd::UISecondCostumeWnd(
-  UIWindowContext& windows, UIComboBoxHeaderContext& combos
-)
-    : UIFrameWnd(windows, 0), m_comboContext(&combos) {
+UISecondCostumeWnd::UISecondCostumeWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0) {
   this->m_typeCombo = nullptr;
   this->m_list = nullptr;
   this->m_tab = 0;

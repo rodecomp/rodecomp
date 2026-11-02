@@ -9,7 +9,6 @@
 #include <utility>
 #include <vector>
 
-struct UIComboBoxHeaderContext;
 struct SeekPartyMBWndInfo;
 class UIBitmapButton;
 class UICheckBox;
@@ -59,7 +58,6 @@ protected:
   void* unknown_controls;
   UIStaticText* m_titleText;
   UIStaticText* m_levelText;
-  UIComboBoxHeaderContext* m_comboContext;
 };
 
 #endif

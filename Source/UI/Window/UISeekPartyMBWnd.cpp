@@ -343,7 +343,7 @@ void UISeekPartyMBWnd::Slot15(int width, int height) {
   }
   this->AddChild(this->m_levelEdit);
 
-  this->m_jobCategoryCombo = new UIComboBoxDefWnd(*this->m_context, *this->m_comboContext);
+  this->m_jobCategoryCombo = new UIComboBoxDefWnd(*this->m_context);
   this->m_jobCategoryCombo->dropdownHeight = 0x50;
   this->m_jobCategoryCombo->SetSize(0x96, 0x12);
   this->m_jobCategoryCombo->Move(0x32, 0x44);
@@ -355,7 +355,7 @@ void UISeekPartyMBWnd::Slot15(int width, int height) {
   this->m_jobCategoryCombo->blue = 0xE8;
   this->AddChild(this->m_jobCategoryCombo);
 
-  this->m_typeCombo = new UIComboBoxDefWnd(*this->m_context, *this->m_comboContext);
+  this->m_typeCombo = new UIComboBoxDefWnd(*this->m_context);
   this->m_typeCombo->dropdownHeight = 0x50;
   this->m_typeCombo->SetSize(0x64, 0x12);
   this->m_typeCombo->Move(0x32, 0x2B);
@@ -367,7 +367,7 @@ void UISeekPartyMBWnd::Slot15(int width, int height) {
   this->m_typeCombo->blue = 0xE8;
   this->AddChild(this->m_typeCombo);
 
-  this->m_subTypeCombo = new UIComboBoxDefWnd(*this->m_context, *this->m_comboContext);
+  this->m_subTypeCombo = new UIComboBoxDefWnd(*this->m_context);
   this->m_subTypeCombo->dropdownHeight = 0x50;
   this->m_subTypeCombo->SetSize(0xBE, 0x12);
   this->m_subTypeCombo->Move(0x9B, 0x2B);

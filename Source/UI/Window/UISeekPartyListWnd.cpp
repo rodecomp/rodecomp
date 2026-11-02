@@ -125,7 +125,7 @@ void UISeekPartyListWnd::Slot15(int width, int height) {
   this->m_scrollBar->Configure(0x203, 0x78, 1, 200);
   this->AddChild(this->m_scrollBar);
 
-  this->m_jobCategoryCombo = new UIComboBoxDefWnd(*this->m_context, *this->m_comboContext);
+  this->m_jobCategoryCombo = new UIComboBoxDefWnd(*this->m_context);
   this->m_jobCategoryCombo->dropdownHeight = 0x50;
   this->m_jobCategoryCombo->SetSize(0x96, 0x12);
   this->m_jobCategoryCombo->Move(0x32, 0x44);
@@ -137,7 +137,7 @@ void UISeekPartyListWnd::Slot15(int width, int height) {
   this->m_jobCategoryCombo->blue = 0xE8;
   this->AddChild(this->m_jobCategoryCombo);
 
-  this->m_jobCombo = new UIComboBoxDefWnd(*this->m_context, *this->m_comboContext);
+  this->m_jobCombo = new UIComboBoxDefWnd(*this->m_context);
   this->m_jobCombo->dropdownHeight = 0x50;
   this->m_jobCombo->SetSize(200, 0x12);
   this->m_jobCombo->Move(0xDC, 0x44);
@@ -149,7 +149,7 @@ void UISeekPartyListWnd::Slot15(int width, int height) {
   this->m_jobCombo->blue = 0xE8;
   this->AddChild(this->m_jobCombo);
 
-  this->m_regionCombo = new UIComboBoxDefWnd(*this->m_context, *this->m_comboContext);
+  this->m_regionCombo = new UIComboBoxDefWnd(*this->m_context);
   this->m_regionCombo->dropdownHeight = 0x50;
   this->m_regionCombo->SetSize(0x96, 0x12);
   this->m_regionCombo->Move(0x32, 0x2B);
@@ -161,7 +161,7 @@ void UISeekPartyListWnd::Slot15(int width, int height) {
   this->m_regionCombo->blue = 0xE8;
   this->AddChild(this->m_regionCombo);
 
-  this->m_mapCombo = new UIComboBoxDefWnd(*this->m_context, *this->m_comboContext);
+  this->m_mapCombo = new UIComboBoxDefWnd(*this->m_context);
   this->m_mapCombo->dropdownHeight = 0x50;
   this->m_mapCombo->SetSize(200, 0x12);
   this->m_mapCombo->Move(0xDC, 0x2B);

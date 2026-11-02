@@ -152,7 +152,7 @@ void UINavigationWnd::Slot15(int width, int height) {
   this->unknown_0120->SetTooltip(LookupMessage(0x89D));
   this->AddChild(this->unknown_0120);
 
-  this->unknown_00EC = new UIComboBoxDefWnd(*this->m_context, *this->m_comboContext);
+  this->unknown_00EC = new UIComboBoxDefWnd(*this->m_context);
   this->unknown_00EC->dropdownHeight = 67;
   this->unknown_00EC->SetSize(56, 18);
   this->unknown_00EC->Move(-1000, -1000);

@@ -3,14 +3,9 @@
 
 #include "UI/Lists/UIListBoxEx.h"
 
-struct UIComboBoxContext {
-
-  UIWindow* const& popup;
-};
-
 class UIComboBoxEx : public UIListBoxEx {
 public:
-  UIComboBoxEx(UIWindowContext& windows, UIComboBoxContext& combo);
+  UIComboBoxEx(UIWindowContext& windows);
   ~UIComboBoxEx() override;
   void Resize(int width, int height) override;
   void Slot15(int width, int height) override;
@@ -26,13 +21,12 @@ public:
   /* 00C0 */ int targetId;
 
 protected:
-  UIComboBoxContext* m_combo;
   void DrawRows(bool centered);
 };
 
 class UIComboBoxEx2 : public UIComboBoxEx {
 public:
-  UIComboBoxEx2(UIWindowContext& windows, UIComboBoxContext& combo);
+  UIComboBoxEx2(UIWindowContext& windows);
   ~UIComboBoxEx2() override;
   void Resize(int width, int height) override;
   void Slot15(int width, int height) override;
@@ -42,8 +36,8 @@ public:
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(UIComboBoxEx) == 208);
-static_assert(sizeof(UIComboBoxEx2) == 212);
+static_assert(sizeof(UIComboBoxEx) == 204);
+static_assert(sizeof(UIComboBoxEx2) == 208);
 #endif
 
 #endif

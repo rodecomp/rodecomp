@@ -17,7 +17,6 @@ class UIComboBoxDefWnd;
 class UIEditCtrl;
 class UIListBoxNavi;
 class UIResizer;
-struct UIComboBoxHeaderContext;
 struct WindowDialogs;
 struct WindowResponseRecorder;
 
@@ -92,7 +91,6 @@ protected:
 
   void* unknown_controls;
   void* unknown_listContext;
-  UIComboBoxHeaderContext* m_comboContext;
   WindowResponseRecorder* m_recorder;
   WindowDialogs* m_dialogs;
 };

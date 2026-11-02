@@ -35,9 +35,9 @@ namespace {
 
 // OFFSET: 0x0086CC20
 // FUNCTION: fn_11035
-UIComboBoxDefWnd::UIComboBoxDefWnd(UIWindowContext& windows, UIComboBoxHeaderContext& controls)
+UIComboBoxDefWnd::UIComboBoxDefWnd(UIWindowContext& windows)
     : UIWindow(windows, 0), button(nullptr), list(nullptr), label(nullptr), borderless(0), expanded(0), red(255), green(255), blue(255), borderRed(0),
-      borderGreen(0), borderBlue(0), dropdownHeight(40), m_controls(&controls) {
+      borderGreen(0), borderBlue(0), dropdownHeight(40) {
 }
 
 // OFFSET: 0x00872AE0
@@ -59,7 +59,7 @@ void UIComboBoxDefWnd::Slot15(int, int) {
   this->button->SetId(273);
   this->AddChild(this->button);
 
-  this->list = new UIComboBoxEx(*this->m_context, this->m_controls->combo);
+  this->list = new UIComboBoxEx(*this->m_context);
   this->list->SetSize(this->geometry.width, this->dropdownHeight);
   this->list->Move(0, this->button->BitmapHeight());
   this->AddChild(this->list);
@@ -88,7 +88,7 @@ void UIComboBox_BmpWnd::Create(int width, int height, const char* path, const ch
   this->button->SetId(273);
   this->AddChild(this->button);
 
-  this->list = new UIComboBoxEx(*this->m_context, this->m_controls->combo);
+  this->list = new UIComboBoxEx(*this->m_context);
   this->list->SetSize(this->geometry.width, this->dropdownHeight);
   this->list->Move(0, this->button->BitmapHeight());
   this->AddChild(this->list);
@@ -256,8 +256,8 @@ int UIItemStoreComboBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
 
 // OFFSET: 0x0086CBA0
 // FUNCTION: fn_11034
-UIComboBoxDef2Wnd::UIComboBoxDef2Wnd(UIWindowContext& windows, UIComboBoxHeaderContext& controls)
-    : UIComboBoxDefWnd(windows, controls), skin(0), alignment(0), textOffset(0), previousTextX(0) {
+UIComboBoxDef2Wnd::UIComboBoxDef2Wnd(UIWindowContext& windows)
+    : UIComboBoxDefWnd(windows), skin(0), alignment(0), textOffset(0), previousTextX(0) {
 }
 
 // OFFSET: 0x00872A70
@@ -281,7 +281,7 @@ void UIComboBoxDef2Wnd::Slot15(int width, int) {
   this->button->SetId(273);
   this->AddChild(this->button);
 
-  auto* list = new UIComboBoxEx2(*this->m_context, this->m_controls->combo);
+  auto* list = new UIComboBoxEx2(*this->m_context);
   this->list = list;
   list->alignment = this->alignment;
   list->SetSize(width, (this->dropdownHeight + 2));

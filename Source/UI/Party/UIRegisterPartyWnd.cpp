@@ -174,7 +174,7 @@ void UIRegisterPartyWnd::Slot15(int, int) {
   close->SetId(201);
   this->AddChild(close);
 
-  this->types = new UIComboBoxDef2Wnd(*this->m_context, owner.combos);
+  this->types = new UIComboBoxDef2Wnd(*this->m_context);
   this->types->dropdownHeight = 126;
   this->types->SetSize(63, 18);
   this->types->Move(60, 70);

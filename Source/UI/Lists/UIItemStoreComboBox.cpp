@@ -9,7 +9,7 @@
 // OFFSET: 0x0086D530
 // FUNCTION: fn_11047
 UIItemStoreComboBox::UIItemStoreComboBox()
-    : UIComboBoxEx(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIComboBoxContext*>(nullptr)), pink(false) {
+    : UIComboBoxEx(*reinterpret_cast<UIWindowContext*>(nullptr)), pink(false) {
 }
 
 // OFFSET: 0x00886200
@@ -28,7 +28,7 @@ void UIItemStoreComboBoxWnd::Slot15(int, int) {
   this->button->SetId(273);
   this->AddChild(this->button);
 
-  UIItemStoreComboBox* items = new UIItemStoreComboBox(*this->m_context, this->m_controls->combo);
+  UIItemStoreComboBox* items = new UIItemStoreComboBox(*this->m_context);
   this->list = items;
   items->pink = this->pink != 0;
   this->list->SetSize(62, 45);
@@ -48,5 +48,5 @@ void UIItemStoreComboBoxWnd::Slot15(int, int) {
 
 // OFFSET: 0x0086D590
 // FUNCTION: fn_11048
-UIItemStoreComboBoxWnd::UIItemStoreComboBoxWnd(UIWindowContext& windows, UIComboBoxHeaderContext& controls) : UIComboBoxDefWnd(windows, controls), pink(0) {
+UIItemStoreComboBoxWnd::UIItemStoreComboBoxWnd(UIWindowContext& windows) : UIComboBoxDefWnd(windows), pink(0) {
 }

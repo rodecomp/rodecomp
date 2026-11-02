@@ -51,7 +51,7 @@ void UIReputeWnd::Slot15(int width, int height) {
   this->AddBaseButton();
   this->AddCloseButton("", 0);
 
-  this->m_groupCombo = new UIComboBoxDefWnd(*this->m_context, *this->m_comboContext);
+  this->m_groupCombo = new UIComboBoxDefWnd(*this->m_context);
   this->m_groupCombo->dropdownHeight = 160;
   this->m_groupCombo->SetSize(122, 18);
   this->m_groupCombo->Move(8, 25);

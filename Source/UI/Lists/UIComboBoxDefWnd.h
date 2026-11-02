@@ -7,14 +7,10 @@
 class UIBitmapButton;
 class UIStaticText;
 
-struct UIComboBoxHeaderContext {
-  UIComboBoxContext& combo;
-};
-
 class UIComboBoxDefWnd : public UIWindow {
 public:
   UIComboBoxDefWnd();
-  UIComboBoxDefWnd(UIWindowContext& windows, UIComboBoxHeaderContext& controls);
+  UIComboBoxDefWnd(UIWindowContext& windows);
   ~UIComboBoxDefWnd() override;
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -37,9 +33,6 @@ public:
   /* 009C */ int borderGreen;
   /* 00A0 */ int borderBlue;
   /* 00A4 */ int dropdownHeight;
-
-protected:
-  UIComboBoxHeaderContext* m_controls;
 };
 
 class UINewComboBoxCtrl : public UIWindow {
@@ -72,7 +65,7 @@ public:
 class UIComboBoxDef2Wnd : public UIComboBoxDefWnd {
 public:
   UIComboBoxDef2Wnd();
-  UIComboBoxDef2Wnd(UIWindowContext& windows, UIComboBoxHeaderContext& controls);
+  UIComboBoxDef2Wnd(UIWindowContext& windows);
   ~UIComboBoxDef2Wnd() override;
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -93,8 +86,8 @@ public:
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(UIComboBoxDefWnd) == 176);
-static_assert(sizeof(UIComboBoxDef2Wnd) == 192);
+static_assert(sizeof(UIComboBoxDefWnd) == 172);
+static_assert(sizeof(UIComboBoxDef2Wnd) == 188);
 #endif
 
 #endif

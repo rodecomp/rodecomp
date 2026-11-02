@@ -14,7 +14,6 @@ class UIEditCtrl;
 class UIJobSlotButton;
 class UIComboBoxDef2Wnd;
 class UIPartyInfoWnd;
-struct UIComboBoxHeaderContext;
 struct PartyRowContext;
 struct ExtendedListLine;
 struct PartyBoardPlacement {
@@ -29,7 +28,6 @@ struct StopRecruitingContext;
 struct WindowOrdering;
 
 struct UIAdvenPartyBoardContext {
-  UIComboBoxHeaderContext& combos;
   PartyRowContext& rows;
   AgencyRequestContext& requests;
   StopRecruitingContext& stopCompletion;

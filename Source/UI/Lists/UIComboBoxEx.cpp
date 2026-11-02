@@ -26,7 +26,7 @@ namespace {
 
 // OFFSET: 0x0086CD40
 // FUNCTION: fn_11037
-UIComboBoxEx::UIComboBoxEx(UIWindowContext& windows, UIComboBoxContext& combo) : UIListBoxEx(windows), targetId(10041), m_combo(&combo) {
+UIComboBoxEx::UIComboBoxEx(UIWindowContext& windows) : UIListBoxEx(windows), targetId(10041) {
 }
 
 // OFFSET: 0x00872C00
@@ -148,7 +148,7 @@ int UIComboBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       target->SendMsg(nullptr, 39, this->selected, 0, 0, 0);
     }
 
-    if (this->m_combo->popup) {
+    if (g_windowMgr.unknown_0214) {
       g_windowMgr.CloseWindow(26);
     }
 
@@ -266,7 +266,7 @@ void UIComboBoxEx::Paint() {
 
 // OFFSET: 0x0086CCE0
 // FUNCTION: fn_11036
-UIComboBoxEx2::UIComboBoxEx2(UIWindowContext& windows, UIComboBoxContext& combo) : UIComboBoxEx(windows, combo), alignment(0) {
+UIComboBoxEx2::UIComboBoxEx2(UIWindowContext& windows) : UIComboBoxEx(windows), alignment(0) {
 }
 
 // OFFSET: 0x008706D0

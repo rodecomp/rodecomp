@@ -185,7 +185,7 @@ void UIAdvenPartyBoardWnd::Slot15(int, int) {
   recruit->Enable(0);
   this->AddChild(recruit);
 
-  this->types = new UIComboBoxDef2Wnd(*this->m_context, owner.combos);
+  this->types = new UIComboBoxDef2Wnd(*this->m_context);
   this->types->dropdownHeight = 126;
   this->types->SetSize(76, 18);
   this->types->Move(76, 22);

@@ -12,7 +12,6 @@ struct ReputeInfo;
 class UIBitmapButton;
 class UIComboBoxDefWnd;
 class UIEditCtrl;
-struct UIComboBoxHeaderContext;
 
 class UIReputeWnd : public UIFrameWnd {
 public:
@@ -38,7 +37,6 @@ public:
 
 protected:
   void* unknown_controls;
-  UIComboBoxHeaderContext* m_comboContext;
 };
 
 #include "Contents/ReputeMgrLoad.inl"
