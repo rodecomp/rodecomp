@@ -691,6 +691,7 @@ public:
   void ReceiveUnknownD25850(const unsigned char* packet);
   void ReceiveUnknownD31A40(const unsigned char* packet);
   void ReceiveNotifySkill(const unsigned char* packet);
+  void ProcessSkillUsePacket(const unsigned char* packet, int type);
   void ReceiveActorSkillAction(const unsigned char* packet);
   void ReceiveActorSkillMessage(const unsigned char* packet);
   void OpenWindow154();

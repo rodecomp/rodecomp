@@ -4244,6 +4244,48 @@ void CGameMode::ReceiveSwapEquipmentList(const unsigned char* data) {
   }
 }
 
+// OFFSET: 0x00D8A730
+// FUNCTION: fn_22221
+void CGameMode::ProcessSkillUsePacket(const unsigned char* packet, int type) {
+  std::uint32_t sourceAid;
+  std::uint32_t targetAid;
+  std::uint16_t x;
+  std::uint16_t y;
+  std::uint16_t skillId;
+  int property;
+  int delay;
+  unsigned char flag = 0;
+  if (type == 0) {
+    sourceAid = *reinterpret_cast<const std::uint32_t*>(packet + 2);
+    targetAid = *reinterpret_cast<const std::uint32_t*>(packet + 6);
+    x = *reinterpret_cast<const std::uint16_t*>(packet + 0xA);
+    y = *reinterpret_cast<const std::uint16_t*>(packet + 0xC);
+    skillId = *reinterpret_cast<const std::uint16_t*>(packet + 0xE);
+    property = *reinterpret_cast<const int*>(packet + 0x10);
+    delay = *reinterpret_cast<const int*>(packet + 0x14);
+  } else if (type == 1) {
+    sourceAid = *reinterpret_cast<const std::uint32_t*>(packet + 2);
+    targetAid = *reinterpret_cast<const std::uint32_t*>(packet + 6);
+    x = *reinterpret_cast<const std::uint16_t*>(packet + 0xA);
+    y = *reinterpret_cast<const std::uint16_t*>(packet + 0xC);
+    skillId = *reinterpret_cast<const std::uint16_t*>(packet + 0xE);
+    property = *reinterpret_cast<const int*>(packet + 0x10);
+    delay = *reinterpret_cast<const int*>(packet + 0x14);
+    flag = packet[0x18];
+  } else {
+    const std::uintptr_t value = reinterpret_cast<std::uintptr_t>(packet);
+    sourceAid = static_cast<std::uint32_t>(value);
+    targetAid = static_cast<std::uint32_t>(value);
+    x = static_cast<std::uint16_t>(value);
+    y = static_cast<std::uint16_t>(value);
+    skillId = static_cast<std::uint16_t>(value);
+    property = static_cast<int>(value);
+    delay = static_cast<int>(value);
+  }
+
+  this->sub_D5B030(sourceAid, targetAid, x, y, skillId, property, delay, flag, 0);
+}
+
 namespace {
 #pragma pack(push, 1)
   struct GuildMemberRecord {
@@ -15297,6 +15339,43 @@ void CGameMode::ReceiveRateInfo(const unsigned char* packet) {
 }
 
 // OFFSET: 0x00D21EB0
+// FUNCTION: fn_21658
+void CGameMode::ReceiveColorBroadcast(const unsigned char* data) {
+  char text[256];
+  std::memcpy(text, data + 16, *reinterpret_cast<const std::uint16_t*>(data + 2) - 16);
+  const int length = static_cast<int>(std::strlen(text));
+  if (g_forbiddenWords.Contains(text)) {
+    std::string masked;
+    g_forbiddenWords.Mask(text, &masked);
+  }
+
+  std::string message(text);
+  const int hashPosition = static_cast<int>(message.find('#'));
+  const int colonPosition = static_cast<int>(message.find(':'));
+  if (hashPosition > 0 && hashPosition < length) {
+    char part[256];
+    std::memcpy(part, text, hashPosition);
+    part[hashPosition] = '\0';
+    message = part;
+    if (colonPosition > 0 && colonPosition < length) {
+      std::memcpy(part, text + colonPosition, length - colonPosition + 1);
+      message += part;
+    }
+  }
+
+  if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
+    const int color = (data[4] << 16) | (data[5] << 8) | data[6];
+    BroadcastBalloonMessage balloonMessage{{}, {}, std::chrono::seconds(20), 12, 0x40000000, 0, 0};
+    balloonMessage.start = std::chrono::system_clock::now();
+    balloonMessage.fontHeight = *reinterpret_cast<const short*>(data + 10);
+    message = reinterpret_cast<UITextViewer*>(g_chatSuggestions)->ConvertChat(message);
+    balloonMessage.lines.emplace_back(message, color);
+    balloon->AddMessage(0, balloonMessage);
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message.c_str()), color, 0x19, 0, 0);
+    g_windowMgr.SendNotice(0x13, reinterpret_cast<std::intptr_t>(message.c_str()), color, 0x19, 0, 0);
+  }
+}
 
 // OFFSET: 0x00D223F0
 // FUNCTION: fn_21659
