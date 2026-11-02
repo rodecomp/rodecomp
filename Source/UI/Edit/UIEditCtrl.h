@@ -106,10 +106,10 @@ protected:
   void PaintTextWithPolicy(bool alternate, const std::string* placeholder, std::uint32_t placeholderColor, bool placeholderEnabled);
   bool RemoveInvalidLink(std::list<UIWindow*>::iterator& entry);
   void SnapLinkSelection(std::size_t prefix, std::size_t bytes);
+  std::string BracketFittedText(const std::string& name);
 
 private:
   void InsertLink(const char* value);
-  std::string BracketFittedText(const std::string& name);
 };
 
 class UIEditCtrlWheel : public UIEditCtrl {
@@ -146,6 +146,7 @@ public:
 
   void PlaceTags(const int& x, const int& y, const int& firstLine, const int& endLine, const int& line, const int& unused);
   void PlaceLinks(const std::string& value, int y, int line, int firstLine, int endLine);
+  std::string ResolveItemLinks(const std::string& source);
   std::string TakePendingText();
   void SetTagColor(std::uint32_t color);
   void ClearLineState();

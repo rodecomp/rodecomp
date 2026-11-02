@@ -3377,6 +3377,43 @@ int UIEditCtrl3::DecodeLinkCards(std::vector<int>& fields, const char* text, int
   return count;
 }
 
+// OFFSET: 0x00853840
+// FUNCTION: fn_10743
+std::string UIEditCtrl3::ResolveItemLinks(const std::string& source) {
+  if (!_mbsstr(reinterpret_cast<const unsigned char*>(source.c_str()), reinterpret_cast<const unsigned char*>(g_itemLinkOpen.c_str()))) {
+    return std::string(source.c_str(), source.size());
+  }
+
+  std::string remaining(source.c_str(), source.size());
+  std::string result;
+  int position = 0;
+  int previous = 0;
+  for (;;) {
+    std::string link;
+    if (!this->ExtractItemLink(remaining, link, position, source.c_str())) {
+      break;
+    }
+
+    result += source.substr(previous, position - previous);
+
+    std::string name;
+    if (this->LinkDisplayName(link, name)) {
+      name = this->BracketFittedText(name);
+      result += name;
+      position += static_cast<int>(link.size() + g_itemLinkClose.size() + g_itemLinkOpen.size());
+    }
+
+    previous = position;
+  }
+
+  result += remaining;
+  if (result.find(g_itemLinkOpen) != std::string::npos) {
+    result = result.substr(result.find(g_itemLinkOpen));
+  }
+
+  return result;
+}
+
 // OFFSET: 0x00975CD0
 // FUNCTION: fn_13310
 void UIItemSellWnd2::Slot15(int width, int height) {
