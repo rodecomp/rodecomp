@@ -27,6 +27,7 @@
 #include "Contents/SkinMgr.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CGameMode.h"
+#include "Client/Input/Mouse.h"
 #include "Client/Mode/EquipWindowLook.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/World/World.h"
@@ -84,6 +85,7 @@
 #include "UI/Dialogs/UIWaitWnd.h"
 #include "UI/Items/UICardItemIllustWnd.h"
 #include "UI/Items/UIEquipWnd.h"
+#include "UI/Items/UISwapEquipmentWnd.h"
 #include "UI/Items/UIExchangeWnd.h"
 #include "UI/Items/UIItemCollectionWnd.h"
 #include "UI/Items/UIItemIdentifyWnd.h"
@@ -244,8 +246,8 @@ UIEquipWnd::UIEquipWnd(UIWindowContext& windows, UIFrameContext& frames) : UIFra
   this->unknown_011C = 0;
   this->unknown_012C = 0;
   this->m_scrollBar = nullptr;
-  for (int& value : this->unknown_0138) {
-    value = 0;
+  for (UIWindow*& value : this->unknown_0138) {
+    value = nullptr;
   }
   this->m_firstSlot = 0;
   this->unknown_015C = g_session.m_damageSkinMode;
@@ -2931,6 +2933,24 @@ int UIDisconnectedServerMsgWnd::SendMsg(UIWindow* sender, int message, std::intp
   return 0;
 }
 
+namespace {
+#pragma pack(push, 1)
+  struct ChangeTitlePacket {
+    /* 0000 */ std::uint16_t packetType;
+    /* 0002 */ std::int32_t titleId;
+  };
+
+  struct TakeoffEquipAllPacket {
+    /* 0000 */ std::uint16_t packetType;
+    /* 0002 */ std::uint32_t location;
+  };
+#pragma pack(pop)
+}
+
+bool IsEquipViewHidden();
+
+// OFFSET: 0x008F9880
+
 // OFFSET: 0x008F6750
 // FUNCTION: fn_12322
 void UISayDialogWnd::Resize(int width, int height) {
@@ -3516,7 +3536,7 @@ void UIItemCompositionWnd::Slot15(int width, int height) {
 // OFFSET: 0x008DE490
 // FUNCTION: fn_12168
 void UIComboBoxWnd::Slot15(int width, int height) {
-  this->m_list = new UIComboBox(*this->m_context, *reinterpret_cast<UIListBoxContext*>(nullptr));
+  this->m_list = new UIComboBox();
   this->m_list->Configure(0, 0, width, height, 1);
   this->AddChild(this->m_list);
 }
@@ -3526,7 +3546,7 @@ void UIComboBoxWnd::Slot15(int width, int height) {
 void UISkillDescribeWnd::Slot15(int width, int height) {
   this->unknown_00D4 = LookupMessage(526);
   this->m_skillId = -1;
-  this->m_viewer = new UITextViewer(*this->m_context, *reinterpret_cast<UITextViewerContext*>(nullptr));
+  this->m_viewer = new UITextViewer();
   this->m_viewer->Configure(3, 3, width - 6, height - 6, 0);
   unsigned red, green, blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
@@ -3534,15 +3554,15 @@ void UISkillDescribeWnd::Slot15(int width, int height) {
   this->m_viewer->backgroundColor = color;
   this->m_viewer->Invalidate();
   this->AddChild(this->m_viewer);
-  this->m_closeButton = this->AddCloseButton(*reinterpret_cast<UIButtonContext*>(nullptr), "ESC", 0);
+  this->m_closeButton = this->AddCloseButton("ESC", 0);
 
-  this->m_text = new UITextViewer(*this->m_context, *reinterpret_cast<UITextViewerContext*>(nullptr));
+  this->m_text = new UITextViewer();
   this->m_text->backgroundColor = color;
   this->m_text->Invalidate();
   this->m_text->Configure(3, 3, width - 31, height - 6, 0);
   this->AddChild(this->m_text);
 
-  this->m_delayButton = new UIBitmapButton(*this->m_context, *reinterpret_cast<UIButtonContext*>(nullptr));
+  this->m_delayButton = new UIBitmapButton();
   this->m_delayButton->SetBitmap("유저인터페이스\\skilldelayinfo\\btn_sd_normal.bmp", 0, 0);
   this->m_delayButton->SetBitmap("유저인터페이스\\skilldelayinfo\\btn_sd_over.bmp", 1, 0);
   this->m_delayButton->SetBitmap("유저인터페이스\\skilldelayinfo\\btn_sd_pressed.bmp", 2, 0);
@@ -3552,7 +3572,7 @@ void UISkillDescribeWnd::Slot15(int width, int height) {
   this->m_delayButton->SetTooltip(LookupMessage(4254));
   this->m_delayButton->Enable(0);
   this->AddChild(this->m_delayButton);
-  this->AddCloseButton(*reinterpret_cast<UIButtonContext*>(nullptr), "", 0);
+  this->AddCloseButton("", 0);
 }
 
 // OFFSET: 0x008E8DC0
@@ -7578,7 +7598,7 @@ void UIWhisperWnd::Slot15(int, int) {
   this->m_resizer->SetColors(0xFFFF00FF, 0xFFFF00FF);
   this->AddChild(this->m_resizer);
 
-  this->m_edit = new UIChatEditCtrl(*this->m_context, *reinterpret_cast<UIEditContext*>(nullptr));
+  this->m_edit = new UIChatEditCtrl();
   this->m_edit->SetSize(this->geometry.width - 30, 16);
   this->m_edit->Move(3, this->geometry.height - 18);
   this->m_edit->maximum = 70;
@@ -7588,7 +7608,7 @@ void UIWhisperWnd::Slot15(int, int) {
   InputFocus{g_windowMgr.hoverWindow}.Set(this->m_edit);
   this->m_edit->SetId(490);
 
-  UIChatHisBox2* history = new UIChatHisBox2(*this->m_context, *reinterpret_cast<UIListBoxContext*>(nullptr));
+  UIChatHisBox2* history = new UIChatHisBox2();
   this->m_chatHistory = history;
   history->Configure(0, 0, this->geometry.width - 2, this->geometry.height - 38, 1);
   this->m_chatHistory->Move(1, 17);
@@ -7598,7 +7618,7 @@ void UIWhisperWnd::Slot15(int, int) {
   static_cast<UIChatHisBox2*>(this->m_chatHistory)->backgroundBlue = 255;
   this->AddChild(this->m_chatHistory);
 
-  this->m_closeButton = this->AddCloseButton(*this->m_controls, "/q", 0);
+  this->m_closeButton = this->AddCloseButton("/q", 0);
 }
 
 // OFFSET: 0x008F6A30

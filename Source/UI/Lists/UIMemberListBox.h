@@ -7,6 +7,7 @@ struct UIButtonContext;
 
 class UIChatHisBox2 : public UIChatHisBox {
 public:
+  UIChatHisBox2();
   UIChatHisBox2(UIWindowContext& windows, UIListBoxContext& list);
   bool Slot08() override;
   void Paint() override;

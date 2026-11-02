@@ -221,6 +221,7 @@ public:
 
 class UIChatEditCtrl : public UIEditCtrl {
 public:
+  UIChatEditCtrl();
   UIChatEditCtrl(UIWindowContext& windows, UIEditContext& edit);
   void Paint() override;
   void Slot25(int x, int y) override;

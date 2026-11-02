@@ -20,6 +20,8 @@ public:
 };
 
 class UISwapEquipmentWnd : public UIFrameWnd {
+  friend class UIEquipWnd;
+
 public:
   UISwapEquipmentWnd(UIWindowContext& windows, UIFrameContext& frames);
   void Slot10(int x, int y, std::intptr_t value) override;
