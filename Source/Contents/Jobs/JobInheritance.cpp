@@ -1426,20 +1426,20 @@ bool CSession::IsSuperNoviceClass(int job) const {
 // FUNCTION: fn_23896
 bool CSession::PlaySkillTargetEffect(int skillId, int level, CGameActor* source, CGameActor* target) {
   bool hasInfo = false;
-  if (!g_luaScript->Call("HaveSkillEffectInfo", "d>b", skillId, &hasInfo) || !hasInfo) {
+  if (!g_session.m_hotkeyScript->Call("HaveSkillEffectInfo", "d>b", skillId, &hasInfo) || !hasInfo) {
     return false;
   }
 
   const char* waveName = nullptr;
-  if (g_luaScript->Call("GetTargetEffectWaveFileName", "d>s", skillId, &waveName) && std::strcmp(waveName, "") != 0) {
+  if (g_session.m_hotkeyScript->Call("GetTargetEffectWaveFileName", "d>s", skillId, &waveName) && std::strcmp(waveName, "") != 0) {
     g_soundMgr->PlayWave(waveName, 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
   }
 
   int count = 0;
-  if (g_luaScript->Call("GetTargetEffectNum", "d>d", skillId, &count)) {
+  if (g_session.m_hotkeyScript->Call("GetTargetEffectNum", "d>d", skillId, &count)) {
     for (int index = 0; index < count; ++index) {
       int effectId = -1;
-      g_luaScript->Call("GetTargetEffectID", "dd>d", skillId, index + 1, &effectId);
+      g_session.m_hotkeyScript->Call("GetTargetEffectID", "dd>d", skillId, index + 1, &effectId);
       if (effectId == -1) {
         continue;
       }
