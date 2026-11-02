@@ -134,6 +134,10 @@
 #include "UI/Text/NavigationLink.h"
 #include "Utility/Text/GroupedInteger.h"
 #include "Client/Mode/ModeTooltip.h"
+#include "Script/LuaScript.h"
+#include "Utility/Text/StringUtil.h"
+#include "UI/SkillDelayInfo/SkillDelayInfo.h"
+#include "Contents/Skills/ClientSkills.h"
 #include <algorithm>
 #include <random>
 #include <cstdint>
@@ -6147,6 +6151,111 @@ int UINotifyItemObtainWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
   default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
+}
+
+// OFFSET: 0x00904960
+// FUNCTION: fn_12379
+int UISkillDescribeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  if (message == 6) {
+    if (a == 201) {
+      g_windowMgr.CloseWindow(46);
+    } else if (a == 343) {
+      UIWindow* window = g_windowMgr.EnsureWindow(10030);
+      if (window) {
+        static_cast<CUISkillDelayInfo*>(window)->SetSkill(this->m_skillId);
+        window->PlaceBeside(this);
+        WindowOrdering{g_windowMgr.rendered, *reinterpret_cast<WindowManagerWindows*>(&g_windowMgr), reinterpret_cast<const int&>(g_windowMgr.modal), g_windowMgr.window_4F174}.Promote(window);
+      }
+    }
+    return 0;
+  }
+  if (message != 61) {
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
+
+  if (d != 0) {
+    this->m_closeButton->Move(-100, -100);
+  } else {
+    this->m_closeButton->Move(this->geometry.width - 14, 3);
+  }
+
+  CSkillInfo skill;
+  skill.id = static_cast<std::uint32_t>(a);
+  if (this->m_skillId == static_cast<int>(a)) {
+    return -1;
+  }
+  if (g_windowMgr.LookupWindow(10030)) {
+    g_windowMgr.CloseWindow(10030);
+  }
+
+  this->unknown_00EC = this->unknown_00D4 = skill.DisplayName(*g_luaScript);
+  this->m_skillId = static_cast<int>(skill.id);
+  {
+    ClientSkills skills{
+      g_session.m_skillBundle,
+      g_session.m_homunSkills,
+      g_session.m_mercSkills,
+      g_session.m_additionalSkills,
+      reinterpret_cast<const int&>(g_session.m_jobFlags),
+      g_activeSkillEffects
+    };
+    CSkillInfo owned = skills.Lookup(static_cast<std::uint32_t>(a));
+    if (owned.available != 0 && owned.unknown_0014 != 0 && owned.level != 0) {
+      char cost[64];
+      if (skill.UseApAmount(*g_luaScript, owned.level) != 0) {
+        std::sprintf(cost, " (Sp : %d, Ap : %d)", owned.unknown_0014, owned.unknown_0034);
+      } else {
+        std::sprintf(cost, " (Sp : %d)", owned.unknown_0014);
+      }
+      this->unknown_00EC.append(cost, std::strlen(cost));
+    }
+    bool passive = false;
+    g_luaScript->Call("IsPassiveSkill", "d>b", static_cast<int>(a), &passive);
+    this->m_delayButton->Enable(!passive);
+    this->m_text->Clear();
+  }
+
+  this->unknown_00BC = std::string("유저인터페이스\\item\\") + std::string(skill.IdName(*g_luaScript)) + ".bmp";
+  this->m_viewer->Clear();
+
+  const char* description = nullptr;
+  if (g_luaScript->Call("GetSkillDescript", "ddd>s", g_session.m_job, static_cast<int>(a), b == 0 && c == 0 && d == 1, &description)) {
+    const std::string text = description;
+    if (!text.empty()) {
+      if (FindShopId(g_session, std::string()) != -1) {
+        const int delay = g_session.GetShopEntry(1, this->m_skillId).first;
+        if (delay != 0) {
+          const std::string line = FormatOwnedString(LookupMessage(4001), static_cast<int>(delay * 0.1), delay % 10);
+          this->m_text->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(line.c_str()), 0, 0, 1);
+        }
+      }
+      const std::vector<std::string> lines = Split(text, "\r\n");
+      std::vector<char> buffer;
+      for (std::size_t index = 0; index < lines.size(); ++index) {
+        buffer.resize(lines[index].size() + 4);
+        StringFormat(buffer.data(), buffer.size(), static_cast<std::size_t>(-1), "%s%s", g_serverLanguage->Prefix(true), lines[index].c_str());
+        UIWindow* target = this->m_text->lines.size() < 2 ? static_cast<UIWindow*>(this->m_text) : static_cast<UIWindow*>(this->m_viewer);
+        target->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(buffer.data()), 0, 1, 1);
+      }
+    }
+  } else {
+    this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>("Unknown Skill"), 33, 0, 0);
+  }
+
+  const int textHeight = 18 * static_cast<int>(this->m_text->lines.size());
+  this->m_text->Resize(this->m_text->geometry.width, textHeight);
+  this->m_viewer->Move(this->m_viewer->geometry.x, this->m_text->geometry.height + this->m_text->geometry.y);
+  int viewerHeight = 18 * static_cast<int>(this->m_viewer->lines.size()) + 4;
+  int total = viewerHeight + textHeight;
+  if (total > g_renderer->viewport.height - 50) {
+    total = g_renderer->viewport.height - 50;
+    viewerHeight = total - this->m_text->geometry.height;
+  }
+  this->m_viewer->Resize(this->m_viewer->geometry.width, viewerHeight);
+  this->Resize(this->geometry.width, total + 6);
+  this->Invalidate();
+  WindowOrdering{g_windowMgr.rendered, *reinterpret_cast<WindowManagerWindows*>(&g_windowMgr), reinterpret_cast<const int&>(g_windowMgr.modal), g_windowMgr.window_4F174}.Promote(this);
+  return 0;
 }
 
 // OFFSET: 0x00905210
