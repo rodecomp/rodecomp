@@ -112,6 +112,8 @@
 #include "UI/Window/WindowDialogs.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowBorder.h"
+#include "UI/Layout/WindowSnapping.h"
+#include "UI/Layout/SnapMgr.h"
 #include "UI/Window/WindowManagerWindows.h"
 #include "UI/Window/WindowOrdering.h"
 #include "Utility/Text/FormatString.h"
@@ -5890,6 +5892,128 @@ int UITipOfTheDayWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
   default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
+}
+
+// OFFSET: 0x00905830
+// FUNCTION: fn_12383
+int UIStatusWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  CMode* mode = static_cast<CMode*>(g_charViewMode);
+  const int* statCosts = reinterpret_cast<const int*>(g_session.unknown_169C);
+  const int statusPoint = *reinterpret_cast<const int*>(g_session.unknown_1654);
+  switch (message) {
+  case 6:
+    switch (a) {
+    case 201:
+      g_windowMgr.CloseWindow(11);
+      break;
+    case 202: {
+      const int height = this->geometry.height;
+      if (height == 17) {
+        this->Resize(this->geometry.width, this->m_expandedHeight);
+      } else {
+        this->m_expandedHeight = height;
+        this->Resize(this->geometry.width, 17);
+      }
+      this->m_frameContext->snapping.Store(this);
+      reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(this);
+      const int delta = this->geometry.height - height;
+      if (delta != 0) {
+        g_snapMgr.MoveEdge(this, 0, delta, 3, this->m_frameContext->snapping);
+      }
+      break;
+    }
+    case 205:
+    case 206:
+    case 207:
+    case 208:
+    case 209:
+    case 210:
+      if (statCosts[a - 205] <= statusPoint) {
+        mode->SendMsg(30, static_cast<int>(a) - 192, 1, 0, 0);
+        this->SendMsg(this, 35, 0, 0, 0, 0);
+      }
+      break;
+    case 550: {
+      const char* normal;
+      const char* pressed;
+      if (this->m_extended == 1) {
+        this->m_extended = 0;
+        this->Resize(280, 141);
+        normal = "유저인터페이스\\statuswnd\\expand_on_normal.bmp";
+        pressed = "유저인터페이스\\statuswnd\\expand_on_press.bmp";
+      } else {
+        this->m_extended = 1;
+        this->Resize(280, 241);
+        normal = "유저인터페이스\\statuswnd\\expand_off_normal.bmp";
+        pressed = "유저인터페이스\\statuswnd\\expand_off_press.bmp";
+      }
+      this->m_expandButton->SetBitmap(normal, 0, 0);
+      this->m_expandButton->SetBitmap(normal, 1, 0);
+      this->m_expandButton->SetBitmap(pressed, 2, 0);
+      this->m_expandedHeight = this->geometry.height;
+      break;
+    }
+    case 551:
+    case 552:
+    case 553:
+    case 554:
+    case 555:
+    case 556:
+      if (g_session.GetTraitStat(231) > 0 && reinterpret_cast<const std::int64_t*>(&g_session.unknown_7FC0[0x20])[a - 551] > 0) {
+        mode->SendMsg(314, static_cast<int>(a) - 332, 1, 0, 0);
+      }
+      break;
+    default:
+      return 0;
+    }
+    break;
+  case 34:
+    this->m_info = reinterpret_cast<StatusWndInfo*>(a);
+    if (!this->m_info->IsValid()) {
+      this->m_info->Reset();
+    }
+    this->SendMsg(nullptr, 14, 7, this->m_info->width, this->m_info->unknown_0010, 0);
+    if (this->m_info->height != this->m_info->unknown_0010) {
+      this->SendMsg(nullptr, 6, 202, 0, 0, 0);
+    }
+    this->SendMsg(nullptr, 35, 0, 0, 0, 0);
+    this->Move(this->m_info->x, this->m_info->y);
+    this->m_extended = this->m_info->unknown_0018 != 1;
+    this->SendMsg(nullptr, 6, 550, 0, 0, 0);
+    break;
+  case 35:
+    if (this->geometry.unknown_0030 == 0) {
+      int y = 24;
+      for (int i = 0; i < 6; ++i, y += 16) {
+        if (statCosts[i] != 0 && statusPoint >= statCosts[i]) {
+          this->m_statButtons[i]->Move(78, y);
+        } else {
+          this->m_statButtons[i]->Move(-100, -100);
+        }
+      }
+      if (g_session.GetTraitStat(231) < 1) {
+        for (int i = 0; i < 6; ++i) {
+          this->m_extendedButtons[i]->Move(-100, -100);
+        }
+      } else {
+        std::int64_t traitCosts[6];
+        std::memcpy(traitCosts, &g_session.unknown_7FC0[0x20], sizeof(traitCosts));
+        y = 145;
+        for (int i = 0; i < 6; ++i, y += 16) {
+          if (traitCosts[i] != 0) {
+            this->m_extendedButtons[i]->Move(78, y);
+          } else {
+            this->m_extendedButtons[i]->Move(-100, -100);
+          }
+        }
+      }
+      this->Invalidate();
+    }
+    break;
+  default:
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
+  return 0;
 }
 
 // OFFSET: 0x00905F40
