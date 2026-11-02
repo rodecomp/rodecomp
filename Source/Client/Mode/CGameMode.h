@@ -957,8 +957,10 @@ public:
     int guildId, short guildVersion, short honor, int virtue, unsigned char pkMode, unsigned char sex, const unsigned char* posDir, unsigned char xSize,
     unsigned char ySize, unsigned char state, short level, short font, int maxHp, int hp, unsigned char isBoss, std::string name, short body
   );
+  void ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t sourceAid, std::uint32_t targetAid, bool result);
 };
 
+bool LaunchLuaSkillEffect(int skillId, int level, CGameActor* source, CGameActor* target);
 void LaunchRollingCutterEffect(CGameActor* actor);
 void LaunchSkillCastEffect(CGameMode* mode, CGameActor* source, CGameActor* target, std::uint32_t targetAid, std::uint16_t skillId, short x, short y, int delay);
 void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t skillId, int delay, int effectId);
