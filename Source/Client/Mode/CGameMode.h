@@ -533,6 +533,7 @@ public:
   void ResendMinimapMarkers();
   void ReceiveJobTitle(unsigned char result, int job);
   void ReceiveQuestStates(int count, const unsigned char* entries);
+  void ReceiveStoreResult(unsigned char kind, unsigned char result);
   void ReceiveMessageBox(const unsigned char* packet);
   void NotifyCaptchaRegistered();
   void ReceiveItem1784List(const unsigned char* packet);

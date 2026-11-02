@@ -53,7 +53,7 @@ private:
 // FUNCTION: fn_17446
 UIWaitDBSaveWnd::UIWaitDBSaveWnd(UIWindowContext& windowContext, UIWaitDBSaveWndContext& waitContext)
     : UIWindow(windowContext, 0), m_animation(0), m_frame(0), m_loopLimit(0), m_sprite(nullptr), m_action(nullptr), m_startTime(0), m_loop(1),
-      m_closeTime(0), m_waitContext(&waitContext) {
+      m_closeTime(0), m_waitContext(waitContext) {
   const std::uint8_t actionSource[] = {0x36, 0xCE, 0xE6, 0x4D, 0xCF, 0x8B, 0xAC, 0x76, 0x17, 0xCA, 0xD3, 0x77, 0xE4,
                                        0xBE, 0xB3, 0x78, 0x00, 0xCB, 0xE6, 0x57, 0xEC, 0xE7, 0x9E, 0x74, 0x15, 0xAF};
   thread_local EncryptedName<sizeof(actionSource), 0x17FFC98B398FAF61ULL> actionName(actionSource);
@@ -73,7 +73,7 @@ UIWaitDBSaveWnd::UIWaitDBSaveWnd(UIWindowContext& windowContext, UIWaitDBSaveWnd
 // OFFSET: 0x00AB4CE0
 // FUNCTION: fn_17448
 void UIWaitDBSaveWnd::Slot15(int width, int height) {
-  UIButton* button = new UIButton(*this->m_context, this->m_waitContext->buttons);
+  UIButton* button = new UIButton(*this->m_context, this->m_waitContext.buttons);
   button->SetSize(width, height);
   button->Move(0, 0);
   button->SetId(0);
@@ -146,7 +146,7 @@ void UIWaitDBSaveWnd::Slot27(int, int) {
 void UIWaitDBSaveWnd::Slot19() {
   if (this->m_closeTime != 0 && timeGetTime() >= this->m_closeTime) {
     this->m_closeTime = 0;
-    this->m_waitContext->windows.CloseWindow(10024);
+    this->m_waitContext.windows.CloseWindow(10024);
     return;
   }
 

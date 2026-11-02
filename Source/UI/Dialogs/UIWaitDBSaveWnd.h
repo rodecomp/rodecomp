@@ -32,7 +32,7 @@ public:
   /* 0090 */ std::uint32_t m_startTime;
   /* 0094 */ unsigned int m_loop;
   /* 0098 */ std::uint32_t m_closeTime;
-  UIWaitDBSaveWndContext* m_waitContext;
+  UIWaitDBSaveWndContext m_waitContext;
 };
 
 #endif

@@ -7633,3 +7633,78 @@ void CGameMode::sub_D1A520(int unknown_0004, std::string name, std::string text,
     }
   }
 }
+
+// OFFSET: 0x00D69530
+// FUNCTION: fn_22050
+void CGameMode::ReceiveStoreResult(unsigned char kind, unsigned char result) {
+  if (kind == 100) {
+    switch (result) {
+      case 0:
+        g_windowMgr.CloseWindow(41);
+        reinterpret_cast<ClientItemLists*>(&g_session)->ClearItems1768();
+        break;
+      case 1:
+      case 2:
+      case 3: {
+        UIWindow* window = g_windowMgr.LookupWindow(41);
+        if (window) {
+          static_cast<UIMerchantShopMakeWnd*>(window)->SetSuspended(0);
+        }
+        break;
+      }
+      case 4:
+      case 6:
+      case 7:
+        reinterpret_cast<ClientItemLists*>(&g_session)->ClearItems1768();
+        g_windowMgr.CloseWindow(41);
+        break;
+    }
+  } else if (kind == 101) {
+    switch (result) {
+      case 0:
+        g_windowMgr.CloseWindow(174);
+        reinterpret_cast<ClientItemLists*>(&g_session)->ClearItems1768();
+        break;
+      case 1:
+      case 2:
+      case 3: {
+        UIWindow* window = g_windowMgr.LookupWindow(174);
+        if (window) {
+          static_cast<UIMerchantShopMakeWnd*>(window)->SetSuspended(0);
+        }
+        break;
+      }
+      case 4:
+      case 6:
+      case 7:
+      case 8:
+        reinterpret_cast<ClientItemLists*>(&g_session)->ClearItems1768();
+        g_windowMgr.CloseWindow(174);
+        g_windowMgr.CloseWindow(175);
+        break;
+    }
+  }
+
+  switch (result) {
+    case 2:
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2983)), 0xFF, 0, 0, 0);
+      break;
+    case 3:
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1954)), 0xFF, 0, 0, 0);
+      break;
+    case 8:
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(56)), 0xFF, 0, 0, 0);
+      break;
+  }
+
+  if (result == 200) {
+    reinterpret_cast<ClientItemLists*>(&g_session)->ClearItems1768();
+    g_windowMgr.CloseWindow(41);
+    g_windowMgr.CloseWindow(174);
+    g_windowMgr.CloseWindow(8);
+    g_windowMgr.ShowWaitDBSaveWindow();
+    return;
+  }
+
+  g_windowMgr.CloseWindow(10024);
+}

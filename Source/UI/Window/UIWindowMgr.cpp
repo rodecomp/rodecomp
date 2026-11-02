@@ -63,6 +63,8 @@
 #include "Contents/Messenger/ClientMessenger.h"
 #include "UI/Text/TextMarkup.h"
 #include "UI/Dialogs/UIWaitDBSaveWnd.h"
+#include "UI/Text/UITextViewer.h"
+#include "UI/Window/UIMessageBox.h"
 #include "Render/Primitives/AlphaRectangle.h"
 #include "UI/Cooldowns/CooldownOwner.h"
 #include "UI/Text/UITransBalloonText.h"
@@ -3945,12 +3947,14 @@ bool UIWindowMgr::CloseWindow(int id) {
 
 // OFFSET: 0x00AA2A00
 // FUNCTION: fn_17218
-void UIWindowMgr::ShowWaitDBSaveWindow(UIWindowContext& windows, UIWaitDBSaveWndContext& waitContext) {
+void UIWindowMgr::ShowWaitDBSaveWindow() {
   if (this->window_4F2AC != nullptr) {
     return;
   }
 
-  this->window_4F2AC = new UIWaitDBSaveWnd(windows, waitContext);
+  WindowDialogs& dialogs = *reinterpret_cast<WindowDialogs*>(this);
+  UIWaitDBSaveWndContext waitContext{*reinterpret_cast<WindowManagerWindows*>(this), dialogs.dialog.text.buttons};
+  this->window_4F2AC = new UIWaitDBSaveWnd(dialogs.windows, waitContext);
   this->window_4F2AC->SetSize(g_renderer->viewport.width, g_renderer->viewport.height);
   this->window_4F2AC->Move(0, 0);
   this->window_4F2AC->SetId(10024);
