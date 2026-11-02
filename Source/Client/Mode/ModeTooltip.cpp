@@ -1,3 +1,4 @@
+#include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeTooltip.h"
 #include "UI/Text/UITransBalloonText.h"
 #include "UI/Window/WindowOrdering.h"
@@ -75,13 +76,13 @@ void ModeTooltip::Expire(UIWindowMgr& retirement) {
 
 // OFFSET: 0x00AD64B0
 // FUNCTION: fn_17833
-std::uint32_t ModeTooltip::Clear() {
-  if (!this->window) {
+std::uint32_t CMode::ClearTooltip() {
+  if (!this->tooltip) {
     return 0;
   }
 
-  g_windowMgr.Schedule(this->window);
-  this->window = nullptr;
-  this->tick = timeGetTime();
-  return this->tick;
+  g_windowMgr.Schedule(this->tooltip);
+  this->tooltip = nullptr;
+  this->tooltipTick = timeGetTime();
+  return this->tooltipTick;
 }

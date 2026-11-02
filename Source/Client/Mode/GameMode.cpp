@@ -3237,7 +3237,6 @@ void CGameMode::PlayItemUseEffect(int itemId, std::uint32_t aid) {
 #include "ActorPickNode.h"
 #include "Client/Input/Mouse.h"
 #include "Client/Mode/CLoginMode.h"
-#include "Client/Mode/ModeTooltip.h"
 #include "Client/Registry.h"
 #include "Contents/ClientItemLists.h"
 #include "Contents/Effects/EffectPrim.h"
@@ -3288,7 +3287,7 @@ int g_window315Enabled = 1;
 // OFFSET: 0x00CD5E90
 // FUNCTION: fn_21288
 void CGameMode::InitializeState() {
-  reinterpret_cast<ModeTooltip*>(this)->Clear();
+  this->ClearTooltip();
   this->nameCard.Clear();
   this->unknown_019C.clear();
   this->unknown_01A4.clear();

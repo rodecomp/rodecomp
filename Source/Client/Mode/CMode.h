@@ -39,6 +39,7 @@ public:
   virtual void Slot7(int value);
 
   CMode();
+  std::uint32_t ClearTooltip();
   void TakeScreenshot();
   void DrawCursor();
   void DrawTexture(const tagRECT& rect, int angle, float rhw, std::uint32_t color, CTexture* texture, TextureRegion region);
@@ -46,6 +47,8 @@ public:
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(CMode, cursorType) == 0x4);
+static_assert(offsetof(CMode, tooltip) == 0x1C);
+static_assert(offsetof(CMode, tooltipTick) == 0x20);
 static_assert(offsetof(CMode, screenshotName) == 0x38);
 static_assert(sizeof(CMode) == 0x58);
 #endif
