@@ -309,6 +309,11 @@ int UIMakeTargetResultWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
 }
 
 // OFFSET: 0x0099F780
+// FUNCTION: fn_13587
+UIItemRepairWnd::UIItemRepairWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, UIListBoxContext& listContext,
+                                 WindowResponseRecorder& recorder)
+    : UIFrameWnd(windows, frames, 0), itemIds(), indices(), entries() {
+}
 
 // OFFSET: 0x0099F850
 // FUNCTION: fn_13588
