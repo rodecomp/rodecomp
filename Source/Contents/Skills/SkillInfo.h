@@ -138,6 +138,8 @@ public:
   /* 000C */ std::map<int, std::function<CEfstAction*()>> m_efstActions;
   /* 0014 */ std::map<int, std::function<CSkillObjectAction*()>> m_skillObjectActions;
 
+  // INLINED
+  __forceinline CSkillActionMgr() = default;
   virtual ~CSkillActionMgr();
 
   static CSkillActionMgr* GetInstance();

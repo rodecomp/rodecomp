@@ -347,7 +347,7 @@ CSkillActionMgr::~CSkillActionMgr() = default;
 
 // OFFSET: 0x005B06F0
 // FUNCTION: fn_03339
-CSkillActionMgr* CSkillActionMgr::GetInstance() {
+__forceinline CSkillActionMgr* CSkillActionMgr::GetInstance() {
   if (!g_skillActionMgr) {
     g_skillActionMgr = new (std::nothrow) CSkillActionMgr;
   }
@@ -3077,3 +3077,10 @@ void CSkillAction_HN_OVERCOMING_CRISIS::Slot11(int level, CGameActor* source, CG
   }
 }
 
+
+class CSkillObjectActionRegistration {
+public:
+  CSkillObjectActionRegistration(int skillId, std::function<CSkillObjectAction*()> factory);
+};
+
+// OFFSET: 0x00786450
