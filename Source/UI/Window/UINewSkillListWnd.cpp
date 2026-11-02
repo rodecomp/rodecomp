@@ -1346,8 +1346,7 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         this->sub_9AE730();
         this->SendMsg(nullptr, 23, 0, 0, 0, 0);
         if (g_chatSuggestions) {
-          InputFocus focus{g_windowMgr.hoverWindow};
-          focus.Set(g_chatSuggestions->window);
+          g_windowMgr.SetFocus(g_chatSuggestions->window);
           return 0;
         }
       }

@@ -1,3 +1,5 @@
+#include "UI/Rodex/UIRodexComposeWnd.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "Client/Input/InputCharset.h"
 #include "Client/Input/Language.h"
 #include "UI/Window/InputFocus.h"
@@ -45,7 +47,8 @@ bool UIEditCtrl::RemoveInvalidLink(std::list<UIWindow*>::iterator& entry) {
     }
 
     if (left != right) {
-      const bool allowed = !this->m_edit->linkInputRestricted || this->m_edit->permittedLinkInput == this->m_edit->focus.window;
+      const bool allowed = !g_windowMgr.unknown_0458 ||
+                           reinterpret_cast<UIRodexComposeWnd*>(g_windowMgr.unknown_0458)->m_contents == g_windowMgr.hoverWindow;
       const auto boundary = left ? absolute + bytes : absolute;
 
       if (allowed && boundary == static_cast<unsigned>(g_serverLanguage->cursor)) {
@@ -84,7 +87,7 @@ void UIEditCtrl::SetCursor(std::size_t position) {
 // OFFSET: 0x00855150
 // FUNCTION: fn_10751
 void UIEditCtrl::MoveCursorToEnd() {
-  if (this->m_edit->focus.window == this) {
+  if (g_windowMgr.hoverWindow == this) {
     g_serverLanguage->Select(static_cast<int>(g_serverLanguage->text.size()), static_cast<int>(g_serverLanguage->text.size()));
     return;
   }
@@ -95,7 +98,7 @@ void UIEditCtrl::MoveCursorToEnd() {
 // OFFSET: 0x008550E0
 // FUNCTION: fn_10750
 void UIEditCtrl::SnapLinkSelection(std::size_t prefix, std::size_t bytes) {
-  if (this->m_edit->linkInputRestricted && this->m_edit->permittedLinkInput != this->m_edit->focus.window) {
+  if (g_windowMgr.unknown_0458 && reinterpret_cast<UIRodexComposeWnd*>(g_windowMgr.unknown_0458)->m_contents != g_windowMgr.hoverWindow) {
     return;
   }
 

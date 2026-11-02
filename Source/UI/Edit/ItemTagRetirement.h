@@ -6,7 +6,6 @@
 #include <list>
 
 class UIWindow;
-struct InputFocus;
 
 struct ItemTagRecord {
   /* 0000 */ UIWindow* child;

@@ -7,7 +7,6 @@
 #include <string>
 #include <vector>
 
-struct InputFocus;
 struct CLanguageBase;
 struct CLanguageBase;
 using InputCharset = CLanguageBase;
@@ -19,7 +18,6 @@ struct ITEM_INFO;
 class UIItemTagOnChat;
 
 struct UIEditContext {
-  InputFocus& focus;
   unsigned char& password;
   const InputCharset& charset;
   WindowManagerWindows& windows;

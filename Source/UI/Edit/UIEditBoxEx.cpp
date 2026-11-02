@@ -304,7 +304,7 @@ void CUIEditCtrlEx::Synchronize() {
     }
   }
 
-  const int candidateCursor = this->m_edit->candidateCursor;
+  const int candidateCursor = g_serverLanguage->compositionCursor;
   if (candidateCursor != 0) {
     this->column += candidateCursor;
     int cursorX = 0;
@@ -375,7 +375,6 @@ void CUIEditBoxEx::SetBackgroundColor(std::uint32_t color) {
 // OFFSET: 0x009E4BF0
 // FUNCTION: fn_14444
 void CUIEditCtrlEx::HandleKeyDown(int key, std::intptr_t lparam) {
-  const bool password = this->m_edit->password != 0;
   UIWindow* const chatWindow = g_chatSuggestions ? g_chatSuggestions->window : nullptr;
 
   switch (key) {
@@ -573,8 +572,7 @@ int CUIEditCtrlEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 // OFFSET: 0x009E6300
 // FUNCTION: fn_14453
 void CUIEditBoxEx::SetFocus() {
-  InputFocus focus{g_windowMgr.hoverWindow};
-  focus.Set(this->edit);
+  g_windowMgr.SetFocus(this->edit);
 }
 
 // OFFSET: 0x009E6320

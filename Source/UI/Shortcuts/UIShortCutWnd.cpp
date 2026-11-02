@@ -588,7 +588,7 @@ void UINewChatWnd::Slot27(int x, int y) {
 // FUNCTION: fn_12695
 void UINewChatWnd::Slot25(int x, int y) {
   if (static_cast<unsigned int>(y - 1) > 19) {
-    InputFocus{g_windowMgr.hoverWindow}.Set(this->m_inputEdit);
+    g_windowMgr.SetFocus(this->m_inputEdit);
     this->UIFrameWnd::Slot25(x, y);
     return;
   }
@@ -1251,7 +1251,7 @@ int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       this->m_edit->SetText("");
       this->Invalidate();
       reinterpret_cast<ChatButtonLayout*>(this)->Apply();
-      reinterpret_cast<InputFocus*>(&g_windowMgr)->Set(reinterpret_cast<UIWindow*>(g_chatSuggestions));
+      g_windowMgr.SetFocus(reinterpret_cast<UIWindow*>(g_chatSuggestions));
       RECT rectangle;
       rectangle.left = 0;
       rectangle.top = 0;

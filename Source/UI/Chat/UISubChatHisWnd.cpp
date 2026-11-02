@@ -36,8 +36,7 @@ void UISubChatHisWnd::Slot26(int x, int y) {
     this->m_edit->SetText("");
     this->m_edit->Resize(this->m_inputWidth - 10, this->m_inputHeight - 2);
     this->m_edit->Move(5, 2);
-    InputFocus focus{g_windowMgr.hoverWindow};
-    focus.Set(this->m_edit);
+    g_windowMgr.SetFocus(this->m_edit);
   }
 }
 

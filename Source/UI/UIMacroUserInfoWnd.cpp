@@ -693,8 +693,7 @@ int UIMacroReporterWnd::SendMsg(
       edit->Invalidate();
 
       if (sender == this->m_tabs[0] || sender == this->m_tabs[1]) {
-        InputFocus focus{g_windowMgr.hoverWindow};
-        focus.Set(nullptr);
+        g_windowMgr.SetFocus(nullptr);
         for (int index = 0; index < this->m_visibleRows; ++index) {
           UIEditCtrl* field = static_cast<UIEditCtrl*>(this->m_fields[index]);
           field->disabled = 1;

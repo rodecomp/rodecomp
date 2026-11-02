@@ -434,8 +434,7 @@ void UIEmailAddressWnd::Slot15(int, int) {
   this->m_edit->SetText("");
   this->m_edit->mask = 42;
   this->AddChild(this->m_edit);
-  InputFocus focus{g_windowMgr.hoverWindow};
-  focus.Set(this->m_edit);
+  g_windowMgr.SetFocus(this->m_edit);
   this->m_edit->SelectAll();
 
   const std::string prefix("유저인터페이스\\");
@@ -2641,8 +2640,7 @@ void UIExchangeWnd::CancelInput() {
   }
 
   if (this->unknown_00C0) {
-    InputFocus focus{g_windowMgr.hoverWindow};
-    focus.Set(nullptr);
+    g_windowMgr.SetFocus(nullptr);
     this->unknown_00C0->Move(129, 500);
     this->unknown_00C0 = nullptr;
     if (g_windowMgr.window_01C8) {
@@ -3991,8 +3989,7 @@ void UISkillNameChangeWnd::Slot15(int, int) {
   this->m_edit->Background(232, 232, 232);
   this->m_edit->SetText("");
   this->AddChild(this->m_edit);
-  InputFocus focus{g_windowMgr.hoverWindow};
-  focus.Set(this->m_edit);
+  g_windowMgr.SetFocus(this->m_edit);
   this->m_edit->SelectAll();
 
   const std::string prefix("유저인터페이스\\");
@@ -4399,7 +4396,7 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     char text[256];
     std::strcpy(text, this->m_edit->Text());
     this->m_edit->PushHistory();
-    InputFocus{g_windowMgr.hoverWindow}.Set(this->m_edit);
+    g_windowMgr.SetFocus(this->m_edit);
     if (std::strlen(text) == 0) {
       return 0;
     }
@@ -5426,7 +5423,7 @@ void UIExchangeWnd::Slot15(int, int) {
   edit->Background(0xE8, 0xE8, 0xE8);
   edit->SetText("0");
   this->AddChild(edit);
-  InputFocus{g_windowMgr.hoverWindow}.Set(edit);
+  g_windowMgr.SetFocus(edit);
   edit->SelectAll();
 
   UICheckBox* checkBox = new UICheckBox();
@@ -6612,8 +6609,7 @@ void UINpcEditDialogWnd::Slot15(int, int) {
   this->edit->Background(232, 232, 232);
   this->edit->SetText("0");
   this->AddChild(this->edit);
-  InputFocus focus{g_windowMgr.hoverWindow};
-  focus.Set(this->edit);
+  g_windowMgr.SetFocus(this->edit);
   this->edit->SelectAll();
 
   const std::string prefix("유저인터페이스\\");
@@ -6642,8 +6638,7 @@ void UINpcTextEditDialogWnd::Slot15(int, int) {
   this->edit->SetText("");
   this->AddChild(this->edit);
   this->edit->SetId(492);
-  InputFocus focus{g_windowMgr.hoverWindow};
-  focus.Set(this->edit);
+  g_windowMgr.SetFocus(this->edit);
   this->edit->SelectAll();
 
   const std::string prefix("유저인터페이스\\");
@@ -6766,8 +6761,7 @@ void UIPartyInvitationToWnd::Slot15(int, int) {
     }
   }
 
-  InputFocus focus{g_windowMgr.hoverWindow};
-  focus.Set(this->m_edit);
+  g_windowMgr.SetFocus(this->m_edit);
 }
 
 // OFFSET: 0x008E60A0
@@ -7119,8 +7113,7 @@ int UISkillNameChangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
   this->m_skillId = static_cast<int>(a);
   this->m_name = CSkillInfo::DisplayName(*g_session.m_hotkeyScript, static_cast<int>(a));
   this->m_edit->SetText(this->m_name.c_str());
-  InputFocus focus{g_windowMgr.hoverWindow};
-  focus.Set(this->m_edit);
+  g_windowMgr.SetFocus(this->m_edit);
   this->m_edit->SelectAll();
   return 0;
 }
@@ -7225,8 +7218,7 @@ void UIPasswordWnd::Slot15(int, int) {
   this->m_edit->mask = 42;
   this->m_edit->SetText("");
   this->AddChild(this->m_edit);
-  InputFocus focus{g_windowMgr.hoverWindow};
-  focus.Set(this->m_edit);
+  g_windowMgr.SetFocus(this->m_edit);
 
   auto* title = new UIStaticText(*this->m_context);
   this->unknown_00B8 = reinterpret_cast<std::uintptr_t>(title);
@@ -8151,7 +8143,7 @@ void UIWhisperWnd::Slot15(int, int) {
   this->m_edit->Background(255, 0, 255);
   this->m_edit->TextColor(RGB(255, 255, 255), 0xFFFFFFFF);
   this->AddChild(this->m_edit);
-  InputFocus{g_windowMgr.hoverWindow}.Set(this->m_edit);
+  g_windowMgr.SetFocus(this->m_edit);
   this->m_edit->SetId(490);
 
   UIChatHisBox2* history = new UIChatHisBox2();
@@ -8322,7 +8314,7 @@ void UIExchangeWnd::Slot19() {
   if (!g_session.IsNumberWithCommas(text)) {
     reinterpret_cast<WindowDialogs&>(g_windowMgr).Confirm(LookupMessage(602), 0, true, false, 0, "Message", 280, 120, 0);
     edit->SetText(this->m_moneyText.c_str());
-    InputFocus{g_windowMgr.hoverWindow}.Set(edit);
+    g_windowMgr.SetFocus(edit);
     return;
   }
 

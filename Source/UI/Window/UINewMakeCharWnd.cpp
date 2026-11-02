@@ -508,8 +508,7 @@ void UINewMakeCharWnd::Slot15(int width, int height) {
     this->AddChild(button);
   }
 
-  InputFocus focus{g_windowMgr.hoverWindow};
-  focus.Set(this->m_nameEdit);
+  g_windowMgr.SetFocus(this->m_nameEdit);
   this->m_message0 = 0xB8;
 }
 

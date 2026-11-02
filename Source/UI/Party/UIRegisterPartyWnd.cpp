@@ -1,3 +1,4 @@
+#include "UI/Window/UIWindowMgr.h"
 #include "Client/Input/InputCharset.h"
 #include "Contents/MessageTable.h"
 #include "Client/Input/Language.h"
@@ -220,7 +221,7 @@ void UIRegisterPartyWnd::SetInfo(CAdvenPartyInfo value) {
 // INLINED
 const char* UIRegisterPartyWnd::Text(UIEditCtrl& control) const {
   const auto& edit = this->m_registration->edits;
-  return edit.focus.window == &control ? g_serverLanguage->text.c_str() : control.text.c_str();
+  return g_windowMgr.hoverWindow == &control ? g_serverLanguage->text.c_str() : control.text.c_str();
 }
 
 // OFFSET: 0x007BBA80

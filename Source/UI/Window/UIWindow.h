@@ -56,7 +56,6 @@ struct UIWindowContext {
 
 class UIWindow : public UIRPData {
   friend struct WindowDialogs;
-  friend struct InputFocus;
   friend class UIWindowMgr;
   friend class CUIDropDownBox;
   friend class CUIGameSettingsUI;

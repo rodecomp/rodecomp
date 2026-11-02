@@ -178,8 +178,7 @@ void UIGuildPositionManageWnd::Slot19() {
 // FUNCTION: fn_13054
 void UIGuildPositionManageWnd::Invalidate() {
   this->UIWindow::Invalidate();
-  InputFocus focus{g_windowMgr.hoverWindow};
-  focus.Set(nullptr);
+  g_windowMgr.SetFocus(nullptr);
 }
 
 // OFFSET: 0x009603C0
@@ -2016,8 +2015,7 @@ void UIGuildNoticeWnd::Slot15(int, int) {
   this->m_titleEdit->Background(242, 242, 242);
   this->m_titleEdit->SetId(281);
   this->AddChild(this->m_titleEdit);
-  InputFocus focus{g_windowMgr.hoverWindow};
-  focus.Set(this->m_titleEdit);
+  g_windowMgr.SetFocus(this->m_titleEdit);
   this->m_titleEdit->SetText(g_guildInfo.unknown_0030.c_str());
 
   this->m_bodyEdit = new UIEditCtrl3(*this->m_context, *reinterpret_cast<UIEditContext*>(nullptr));

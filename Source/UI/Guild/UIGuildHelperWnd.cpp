@@ -296,8 +296,7 @@ void UICreateGuildWnd::Slot15(int, int) {
     }
   }
 
-  InputFocus focus{g_windowMgr.hoverWindow};
-  focus.Set(this->m_nameEdit);
+  g_windowMgr.SetFocus(this->m_nameEdit);
   this->m_message0 = 184;
 }
 
@@ -343,8 +342,7 @@ void UIGuildLeaveReasonDescWnd::Slot15(int, int) {
   this->m_reasonEdit->SetText("");
   this->AddChild(this->m_reasonEdit);
 
-  InputFocus focus{g_windowMgr.hoverWindow};
-  focus.Set(this->m_reasonEdit);
+  g_windowMgr.SetFocus(this->m_reasonEdit);
 
   this->m_reasonText = new UIStaticText();
   this->m_reasonText->SetSize(this->geometry.width - 30, 15);

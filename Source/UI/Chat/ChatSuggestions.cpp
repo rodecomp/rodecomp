@@ -1,3 +1,4 @@
+#include "UI/Window/UIWindowMgr.h"
 #include "UI/Chat/ChatSuggestions.h"
 #include "UI/Window/InputFocus.h"
 #include "UI/Edit/ItemTagRetirement.h"
@@ -190,7 +191,7 @@ void ChatInputFocus::Toggle() {
   } else {
     this->open = 1;
     this->layout.Apply();
-    this->focus.Set(this->primary);
+    g_windowMgr.SetFocus(this->primary);
     this->primary->SetText("");
 
     if (this->alternate == 0) {

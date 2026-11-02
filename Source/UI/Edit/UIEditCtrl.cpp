@@ -453,7 +453,7 @@ void UIEditCtrl::Slot23() {
   g_serverLanguage->ResetInput();
   g_serverLanguage->ResetInput();
   g_serverLanguage->Insert(this->text.c_str());
-  this->m_edit->password = this->mask != 0;
+  g_serverLanguage->SetPassword(this->mask != 0);
   this->SelectAll();
 }
 
@@ -476,7 +476,7 @@ void UIWhisperEditCtrl::Slot24(int retained) {
 // FUNCTION: fn_10842
 void UIEditCtrl::Slot25(int, int) {
   if (this->disabled == 0) {
-    this->m_edit->focus.Set(this);
+    g_windowMgr.SetFocus(this);
   }
 }
 
@@ -507,7 +507,7 @@ int UIEditCtrl::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
   if (message == 153) {
     this->InsertLink(reinterpret_cast<const char*>(a));
   } else if (message == 98 && c > 0) {
-    UIWindow* window = this->m_edit->windows.EnsureWindow(12);
+    UIWindow* window = g_windowMgr.EnsureWindow(12);
 
     if (window) {
       window->SendMsg(nullptr, 24, c, 0, 0, 0);
@@ -550,7 +550,7 @@ void UIEditCtrl::SetText(const char* value) {
 
 // OFFSET: 0x0085A590
 void UIEditCtrl::SelectAll() {
-  const bool focused = this->m_edit->focus.window == this;
+  const bool focused = g_windowMgr.hoverWindow == this;
   EditTextState state{this->text, this->anchor, this->cursor, this->maximum, focused, g_textCodePage};
   state.SelectAll();
 }
@@ -563,7 +563,7 @@ void UIEditCtrl::PaintText() {
 
 // INLINED
 void UIEditCtrl::PaintTextWithPolicy(bool alternate, const std::string* placeholder, std::uint32_t placeholderColor, bool placeholderEnabled) {
-  const bool focused = this->m_edit->focus.window == this;
+  const bool focused = g_windowMgr.hoverWindow == this;
   EditTextState state{this->text, this->anchor, this->cursor, this->maximum, focused, g_textCodePage};
   EditViewport viewport{
     this->text,
@@ -602,11 +602,11 @@ void UIEditCtrl::PaintTextWithPolicy(bool alternate, const std::string* placehol
     chat,
     reinterpret_cast<const bool&>(g_windowMgr.unknown_0024),
     tick,
-    this->m_edit->candidateCursor,
+    g_serverLanguage->compositionCursor,
     this->geometry.width,
     this->geometry.height,
-    this->m_edit->screenWidth,
-    this->m_edit->screenHeight,
+    g_renderer->viewport.width,
+    g_renderer->viewport.height,
     this->m_edit->charset,
     viewport,
     *this->geometry.surface,
@@ -614,8 +614,8 @@ void UIEditCtrl::PaintTextWithPolicy(bool alternate, const std::string* placehol
     this->m_context->locale,
     this->m_edit->colorChip,
     parent,
-    this->m_edit->candidateWindow,
-    this->m_edit->readingWindow,
+    g_windowMgr.window_03A4,
+    g_windowMgr.window_03AC,
     left,
     top,
     this->links,
@@ -631,7 +631,7 @@ void UIEditCtrl::PaintTextWithPolicy(bool alternate, const std::string* placehol
 
 // OFFSET: 0x00862FB0
 void UIEditCtrl::Synchronize() {
-  const bool focused = this->m_edit->focus.window == this;
+  const bool focused = g_windowMgr.hoverWindow == this;
   EditTextState state{this->text, this->anchor, this->cursor, this->maximum, focused, g_textCodePage};
   EditViewport viewport{
     this->text,
@@ -650,7 +650,7 @@ void UIEditCtrl::Synchronize() {
 
 // OFFSET: 0x00868450
 void UIEditCtrl::Trim() {
-  const bool focused = this->m_edit->focus.window == this;
+  const bool focused = g_windowMgr.hoverWindow == this;
   EditTextState state{this->text, this->anchor, this->cursor, this->maximum, focused, g_textCodePage};
   state.Trim();
 }
@@ -658,13 +658,13 @@ void UIEditCtrl::Trim() {
 // OFFSET: 0x00858D50
 // FUNCTION: fn_10768
 int UIEditCtrl::Length() const {
-  return static_cast<int>(this->m_edit->focus.window == this ? g_serverLanguage->text.size() : this->text.size());
+  return static_cast<int>(g_windowMgr.hoverWindow == this ? g_serverLanguage->text.size() : this->text.size());
 }
 
 // OFFSET: 0x00858D20
 // FUNCTION: fn_10767
 const char* UIEditCtrl::Text() {
-  if (this->m_edit->focus.window == this) {
+  if (g_windowMgr.hoverWindow == this) {
     this->Synchronize();
   }
 
@@ -1561,8 +1561,7 @@ void UIMerchantShopMakeWnd::Slot32(int x, int y) {
         ItemDescriptions descriptions{g_itemDescriptions};
         gameMode->drag.BeginItem(g_windowMgr, descriptions, 10, item, item.quantity, -1);
         reinterpret_cast<UIWindow*>(g_windowMgr.unknown_02F8)->SendMsg(nullptr, 38, 0, 0, 0, 0);
-        InputFocus focus{g_windowMgr.hoverWindow};
-        focus.Set(nullptr);
+        g_windowMgr.SetFocus(nullptr);
       } else if (g_windowMgr.unknown_0410) {
         item = g_session.FindItem1768(item.unknown_0000[1]);
         ItemDescriptions descriptions{g_itemDescriptions};
@@ -2169,13 +2168,12 @@ void UIMerchantShopMakeWnd::Slot19() {
   }
 
   UIEditCtrl* edit = this->priceEdits[index];
-  InputFocus focus{g_windowMgr.hoverWindow};
   char text[24];
   std::sprintf(text, "%s ", edit->Text());
   if (!g_session.IsNumberWithCommas(text)) {
     reinterpret_cast<WindowDialogs&>(g_windowMgr).Confirm(LookupMessage(602), 0, true, false, 0, "Message", 280, 120, 0);
     edit->SetText(this->unknown_0170.c_str());
-    focus.Set(edit);
+    g_windowMgr.SetFocus(edit);
     return;
   }
 
@@ -2189,7 +2187,7 @@ void UIMerchantShopMakeWnd::Slot19() {
       edit->SetText(_itoa(1000000000, text, 10));
     } else {
       edit->SetText(_itoa(1000000000, text, 10));
-      focus.Set(edit);
+      g_windowMgr.SetFocus(edit);
     }
   }
 
@@ -3045,13 +3043,12 @@ int UIMerchantShopMakeWnd::CommitPrice(int next) {
 
   UIEditCtrl* edit = this->priceEdits[this->editIndex];
   WindowDialogs& dialogs = reinterpret_cast<WindowDialogs&>(g_windowMgr);
-  InputFocus focus{g_windowMgr.hoverWindow};
   char text[24];
   std::sprintf(text, "%s ", edit->Text());
   if (!g_session.IsNumberWithCommas(text)) {
     dialogs.Confirm(LookupMessage(602), 0, true, false, 0, "Message", 280, 120, 0);
     edit->SetText("0");
-    focus.Set(edit);
+    g_windowMgr.SetFocus(edit);
     edit->SelectAll();
     return 0;
   }
@@ -3062,7 +3059,7 @@ int UIMerchantShopMakeWnd::CommitPrice(int next) {
   } else if (price > 0x7FFFFFFF || price > 1000000000) {
     if (dialogs.Confirm(LookupMessage(2467), 2, true, false, 0, "Message", 280, 120, 0) != 187) {
       edit->SetText("0");
-      focus.Set(edit);
+      g_windowMgr.SetFocus(edit);
       edit->SelectAll();
       return 0;
     }
@@ -3093,7 +3090,7 @@ int UIMerchantShopMakeWnd::CommitPrice(int next) {
     message += std::string(LookupMessage(2478));
     if (dialogs.Confirm(message.c_str(), 2, true, false, 0, "Message", 280, 120, 0) != 187) {
       edit->SetText("0");
-      focus.Set(edit);
+      g_windowMgr.SetFocus(edit);
       edit->SelectAll();
       return 0;
     }
@@ -3106,12 +3103,12 @@ int UIMerchantShopMakeWnd::CommitPrice(int next) {
 
   this->editIndex = next;
   if (next == -1) {
-    focus.Set(nullptr);
+    g_windowMgr.SetFocus(nullptr);
     return 1;
   }
 
   this->priceEdits[next]->TextColor(0, 0xFFFFFFFF);
-  focus.Set(this->priceEdits[next]);
+  g_windowMgr.SetFocus(this->priceEdits[next]);
   this->priceEdits[next]->SelectAll();
   return 1;
 }
@@ -9350,8 +9347,7 @@ void UIItemDropCntWnd::Slot15(int, int) {
   char text[40];
   std::sprintf(text, "%d", gameMode->drag.quantity);
   this->m_edit->SetText(text);
-  InputFocus focus{g_windowMgr.hoverWindow};
-  focus.Set(this->m_edit);
+  g_windowMgr.SetFocus(this->m_edit);
   this->m_edit->SelectAll();
 
   const char* dragName = gameMode->DragItemName();
@@ -9396,8 +9392,7 @@ void UIItemPurchaseWnd::Slot15(int width, int height) {
   this->quantityEdit->Background(232, 232, 232);
   this->quantityEdit->SetText("0");
   this->AddChild(this->quantityEdit);
-  InputFocus focus{g_windowMgr.hoverWindow};
-  focus.Set(this->quantityEdit);
+  g_windowMgr.SetFocus(this->quantityEdit);
   this->m_message0 = 271;
 
   this->title = new UIStaticText();
@@ -9580,8 +9575,7 @@ void UIItemDropCntWnd::Show(int visible) {
     char text[40];
     std::sprintf(text, "%d", gameMode->drag.quantity);
     this->m_edit->SetText(text);
-    InputFocus focus{g_windowMgr.hoverWindow};
-    focus.Set(this->m_edit);
+    g_windowMgr.SetFocus(this->m_edit);
     this->m_edit->SelectAll();
 
     const char* dragName = gameMode->DragItemName();

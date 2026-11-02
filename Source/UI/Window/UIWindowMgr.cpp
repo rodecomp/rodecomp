@@ -2269,14 +2269,14 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
 
     if (GetAsyncKeyState(VK_SHIFT)) {
       if (this->hoverWindow && this->hoverWindow->parent->PreviousFocusable(this->hoverWindow) == nullptr) {
-        InputFocus{this->hoverWindow}.Last();
+        this->FocusLast();
       } else {
-        InputFocus{this->hoverWindow}.Previous();
+        this->FocusPrevious();
       }
     } else if (this->hoverWindow && this->hoverWindow->parent->NextFocusable(this->hoverWindow) == nullptr) {
-      InputFocus{this->hoverWindow}.First();
+      this->FocusFirst();
     } else {
-      InputFocus{this->hoverWindow}.Next();
+      this->FocusNext();
     }
     return false;
 

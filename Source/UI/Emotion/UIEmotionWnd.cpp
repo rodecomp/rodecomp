@@ -82,8 +82,7 @@ void UIEmotionWnd::Slot15(int, int) {
   this->viewButton->SetId(283);
   this->AddChild(this->viewButton);
 
-  InputFocus focus{g_windowMgr.hoverWindow};
-  focus.Set(this->m_edits[0]);
+  g_windowMgr.SetFocus(this->m_edits[0]);
   this->m_edits[0]->SetCursor(0xff);
 
   for (int i = 0; i < 10; ++i) {

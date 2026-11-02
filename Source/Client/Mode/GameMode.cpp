@@ -4754,7 +4754,7 @@ void CGameMode::ProcessInput() {
     handled = this->ProcessGroundClick(this->ProcessMousePick(handled, pick));
     this->UpdateHoverNameBalloon();
     if (handled != 1 && g_mouse.buttons[0] == 1) {
-      InputFocus{g_windowMgr.hoverWindow}.Set(nullptr);
+      g_windowMgr.SetFocus(nullptr);
     }
   } else if (pick && handled == 0) {
     this->ShowActorNameBalloon(pick->accountId);

@@ -1030,8 +1030,7 @@ void UILoginOTPWnd::Slot15(int, int) {
   this->unknown_00B4->Background(243, 243, 243);
   this->AddChild(this->unknown_00B4);
   this->unknown_00B4->SetText("");
-  InputFocus focus{g_windowMgr.hoverWindow};
-  focus.Set(this->unknown_00B4);
+  g_windowMgr.SetFocus(this->unknown_00B4);
 
   UIStaticText* label = new UIStaticText(*this->m_context);
   label->SetSize(80, 20);
@@ -1267,7 +1266,7 @@ void UIReplayRECControlWnd::ApplyMode() {
     this->window_012C->Move(-100, -100);
     this->window_00C4->Move(162, 5);
     this->window_0134->Move(7, 8);
-    this->m_focus->Set(this->window_0134);
+    g_windowMgr.SetFocus(this->window_0134);
   }
 
   this->SendMsg(nullptr, 60, 0, 0, 0, 0);
@@ -1597,8 +1596,7 @@ void UIMakeCharWnd::Slot15(int, int) {
   this->m_nameEdit->SetId(184);
   this->AddChild(this->m_nameEdit);
   this->InitHairControls();
-  InputFocus focus{g_windowMgr.hoverWindow};
-  focus.Set(this->m_nameEdit);
+  g_windowMgr.SetFocus(this->m_nameEdit);
   this->m_message0 = 184;
 }
 
@@ -1628,8 +1626,7 @@ void UIChatRoomWnd::Slot15(int, int) {
   this->edit->maximum = 70;
   this->edit->Background(242, 242, 242);
   this->AddChild(this->edit);
-  InputFocus focus{g_windowMgr.hoverWindow};
-  focus.Set(this->edit);
+  g_windowMgr.SetFocus(this->edit);
   this->edit->SetId(494);
 
   UIChatHisBox2* history = new UIChatHisBox2(*this->m_context);
@@ -1982,8 +1979,7 @@ void UITalkboxTrapInputWnd::Slot15(int, int) {
   this->edit->maximum = 78;
   this->edit->Background(242, 242, 242);
   this->AddChild(this->edit);
-  InputFocus focus{g_windowMgr.hoverWindow};
-  focus.Set(this->edit);
+  g_windowMgr.SetFocus(this->edit);
 
   const std::string prefix("유저인터페이스\\");
   const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
@@ -2295,7 +2291,7 @@ int UIReplayRECControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
         error = 2812;
       } else {
         ReplayFileList::Instance().SetPath(edit->Text());
-        this->m_focus->Set(nullptr);
+        g_windowMgr.SetFocus(nullptr);
         edit->SetText("");
         static_cast<CMode*>(g_charViewMode)->SendMsg(274, 0, 0, 0, 0);
 
@@ -2612,8 +2608,7 @@ UINoticeWnd::UINoticeWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0) {
   this->m_scrollPositions[0] = 0;
   this->m_bottomPositions[0] = 0;
   this->m_scroll = 0;
-  InputFocus focus{g_windowMgr.hoverWindow};
-  focus.Set(this);
+  g_windowMgr.SetFocus(this);
 }
 
 // OFFSET: 0x008AD190
@@ -2638,8 +2633,7 @@ void UIBank_NewWnd::Slot15(int, int) {
   this->m_amountEdit->flat = 0;
   this->m_amountEdit->topPadding = 1;
   this->AddChild(this->m_amountEdit);
-  InputFocus focus{g_windowMgr.hoverWindow};
-  focus.Set(this->m_amountEdit);
+  g_windowMgr.SetFocus(this->m_amountEdit);
 }
 
 // OFFSET: 0x008AD770
@@ -2651,8 +2645,7 @@ void UICntWnd::Slot15(int, int) {
   this->m_edit->maximum = 6;
   this->m_edit->Background(232, 232, 232);
   this->AddChild(this->m_edit);
-  InputFocus focus{g_windowMgr.hoverWindow};
-  focus.Set(this->m_edit);
+  g_windowMgr.SetFocus(this->m_edit);
   this->m_edit->SelectAll();
 
   this->m_text = new UIStaticText(*this->m_context);
@@ -3174,8 +3167,8 @@ UIReplayControlWnd::UIReplayControlWnd(UIWindowContext& windows) : UIFrameWnd(wi
 
 // OFFSET: 0x008A4500
 // FUNCTION: fn_11670
-UIReplayRECControlWnd::UIReplayRECControlWnd(UIWindowContext& windows, InputFocus& focus, int mode)
-    : UIFrameWnd(windows, 0), mode(mode), recordStart(0), m_focus(&focus) {
+UIReplayRECControlWnd::UIReplayRECControlWnd(UIWindowContext& windows, int mode)
+    : UIFrameWnd(windows, 0), mode(mode), recordStart(0) {
   for (int i = 0; i < 10; ++i) {
     this->options[i] = nullptr;
     this->recordOptions[i] = 0;
@@ -4480,10 +4473,9 @@ void UILoginWnd::Slot15(int, int) {
   this->idEdit->maximum = 24;
   this->passwordEdit->maximum = 24;
 
-  InputFocus focus{g_windowMgr.hoverWindow};
   if (std::strcmp(this->idEdit->Text(), "") != 0 && std::strcmp(this->idEdit->Text(), "ID") != 0) {
-    focus.Set(this->passwordEdit);
+    g_windowMgr.SetFocus(this->passwordEdit);
   } else {
-    focus.Set(this->idEdit);
+    g_windowMgr.SetFocus(this->idEdit);
   }
 }

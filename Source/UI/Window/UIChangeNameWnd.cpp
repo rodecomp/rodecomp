@@ -80,8 +80,7 @@ void UIChangeNameWnd::Slot15(int, int) {
   this->m_edit->maximum = 24;
   this->m_edit->SetId(184);
   this->AddChild(this->m_edit);
-  InputFocus focus{g_windowMgr.hoverWindow};
-  focus.Set(this->m_edit);
+  g_windowMgr.SetFocus(this->m_edit);
   this->m_message0 = 184;
 }
 

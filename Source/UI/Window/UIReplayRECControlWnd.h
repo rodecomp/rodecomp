@@ -12,12 +12,11 @@ class UICheckBox;
 class UIEditCtrl;
 class UIStaticBitmap;
 class UIStaticText;
-struct InputFocus;
 struct UIEditContext;
 
 class UIReplayRECControlWnd : public UIFrameWnd {
 public:
-  UIReplayRECControlWnd(UIWindowContext& windows, InputFocus& focus, int mode);
+  UIReplayRECControlWnd(UIWindowContext& windows, int mode);
   ~UIReplayRECControlWnd() override;
 
   bool Slot03() override;
@@ -67,7 +66,7 @@ public:
   /* 0138 */ ReplayRECControlWndInfo* saved;
 
 protected:
-  InputFocus* m_focus;
+  void* unknown_focus;
   void* unknown_controls;
   UIEditContext* m_editContext;
 };

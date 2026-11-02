@@ -15,8 +15,7 @@ void UIGraffiStrboxWnd::Slot15(int, int) {
   this->edit->maximum = 20;
   this->edit->Background(242, 242, 242);
   this->AddChild(this->edit);
-  InputFocus focus{g_windowMgr.hoverWindow};
-  focus.Set(this->edit);
+  g_windowMgr.SetFocus(this->edit);
 
   const std::string prefix("유저인터페이스\\");
   const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};

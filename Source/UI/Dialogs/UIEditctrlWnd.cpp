@@ -167,8 +167,7 @@ void UIEditctrlWnd::Slot15(int, int) {
     this->edit->tooltip = tooltip;
   }
   this->AddChild(this->edit);
-  InputFocus focus{g_windowMgr.hoverWindow};
-  focus.Set(this->edit);
+  g_windowMgr.SetFocus(this->edit);
 }
 
 // OFFSET: 0x0099C200

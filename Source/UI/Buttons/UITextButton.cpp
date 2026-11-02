@@ -2730,8 +2730,7 @@ void UITabControl::Slot26(int, int) {
   }
 
   this->edit->Move(x + 2, 2);
-  InputFocus focus{g_windowMgr.hoverWindow};
-  focus.Set(this->edit);
+  g_windowMgr.SetFocus(this->edit);
 }
 
 // OFFSET: 0x0088C6E0

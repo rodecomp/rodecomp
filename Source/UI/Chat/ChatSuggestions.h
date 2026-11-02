@@ -8,7 +8,6 @@
 class UIWindow;
 #include "UI/Window/WindowManagerWindows.h"
 class UIEditCtrl;
-struct InputFocus;
 struct ItemTagRetirement;
 
 struct ChatSuggestions {
@@ -74,7 +73,6 @@ struct ChatRowLayout {
 struct ChatInputFocus {
   ChatInputLayout& layout;
   ChatRowLayout& rows;
-  InputFocus& focus;
   std::uint8_t& open;
   const std::uint8_t& alternate;
   UIEditCtrl* const& primary;

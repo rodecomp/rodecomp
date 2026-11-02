@@ -653,8 +653,7 @@ void UIRodexComposeWnd::Slot15(int, int) {
   this->m_contents->Background(color & 0xFF, (color & 0xFFFF) >> 8, (color >> 16) & 0xFF);
   this->m_contents->TextColor(0x313131, 0xFFFFFFFF);
   this->AddChild(this->m_contents);
-  InputFocus focus{g_windowMgr.hoverWindow};
-  focus.Set(this->m_contents);
+  g_windowMgr.SetFocus(this->m_contents);
   this->m_contents->SetId(0x1EB);
 
   this->m_zeny = new UIEditCtrl_Currency();

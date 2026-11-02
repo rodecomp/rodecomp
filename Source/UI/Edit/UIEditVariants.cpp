@@ -37,11 +37,10 @@ int UIEditCtrl2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
   if (message != 0) {
     this->UIEditCtrl::SendMsg(sender, message, a, b, c, d);
   } else {
-    InputFocus& focus = this->m_edit->focus;
-    if (focus.IsLast(focus.window)) {
-      focus.First();
+    if (g_windowMgr.IsLastFocus(g_windowMgr.hoverWindow)) {
+      g_windowMgr.FocusFirst();
     } else {
-      focus.Next();
+      g_windowMgr.FocusNext();
     }
 
     this->UIWindow::SendMsg(sender, message, a, b, c, d);
@@ -216,7 +215,6 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
 // OFFSET: 0x0085E420
 // FUNCTION: fn_10829
 void UIEditCtrl3::HandleInputMessage(unsigned key, std::intptr_t data) {
-  const bool password = this->m_edit->password != 0;
   UIWindow* const chatWindow = g_chatSuggestions ? g_chatSuggestions->window : nullptr;
 
   this->unknown_0150 = 0;
@@ -590,7 +588,7 @@ void UIEditCtrl3::PaintText() {
 
   const int prefixLength = static_cast<int>(std::strlen(prefix));
   int column = prefixLength + this->cursor;
-  int reading = prefixLength + (this->anchor < this->cursor ? this->cursor : this->anchor) + this->m_edit->candidateCursor;
+  int reading = prefixLength + (this->anchor < this->cursor ? this->cursor : this->anchor) + g_serverLanguage->compositionCursor;
 
   int remaining = column;
   for (std::size_t index = 0; index < lines.size(); ++index) {
@@ -648,7 +646,7 @@ void UIEditCtrl3::PaintText() {
 
     const int readingX = readingLength != 0 ? this->TextWidth(lines[caretLine].c_str(), readingLength, 0, 12, 0, 0) : 0;
 
-    if (this->m_edit->candidateCursor != 0) {
+    if (g_serverLanguage->compositionCursor != 0) {
       int gap = readingX - caretX;
       if (gap < 2) {
         gap = 2;
@@ -768,7 +766,7 @@ void UIEditCtrl4::Slot23() {
   g_serverLanguage->ResetInput();
   g_serverLanguage->ResetInput();
   g_serverLanguage->Insert(this->text.c_str());
-  this->m_edit->password = this->mask != 0;
+  g_serverLanguage->SetPassword(this->mask != 0);
   this->SelectAll();
 }
 
@@ -790,7 +788,7 @@ void UIEditCtrl4::SetPlaceholder(const char* value) {
   this->placeholder.assign(value, std::strlen(value));
   this->Trim();
 
-  if (this->m_edit->focus.window == this) {
+  if (g_windowMgr.hoverWindow == this) {
     g_serverLanguage->ResetInput();
     g_serverLanguage->ResetInput();
     g_serverLanguage->Insert(this->placeholder.c_str());
@@ -823,11 +821,10 @@ int UIEditCtrl5::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
   if (message != 0) {
     this->UIEditCtrl::SendMsg(sender, message, a, b, c, d);
   } else {
-    InputFocus& focus = this->m_edit->focus;
-    if (focus.IsLast(focus.window)) {
-      focus.First();
+    if (g_windowMgr.IsLastFocus(g_windowMgr.hoverWindow)) {
+      g_windowMgr.FocusFirst();
     } else {
-      focus.Next();
+      g_windowMgr.FocusNext();
     }
 
     this->UIWindow::SendMsg(sender, message, a, b, c, d);
@@ -927,7 +924,7 @@ UIChatEditCtrl::UIChatEditCtrl(UIWindowContext& windows, UIEditContext& edit) : 
 // FUNCTION: fn_10840
 void UIChatEditCtrl::Slot25(int x, int y) {
   if (this->disabled == 0) {
-    this->m_edit->focus.Set(this);
+    g_windowMgr.SetFocus(this);
   }
 
   this->parent->Slot25(x + this->geometry.x, y + this->geometry.y);
@@ -1026,7 +1023,7 @@ void UIWhisperEditCtrl::Slot23() {
   g_serverLanguage->ResetInput();
   g_serverLanguage->ResetInput();
   g_serverLanguage->Insert(this->text.c_str());
-  this->m_edit->password = this->mask != 0;
+  g_serverLanguage->SetPassword(this->mask != 0);
   this->SelectAll();
   this->SelectAll();
 }

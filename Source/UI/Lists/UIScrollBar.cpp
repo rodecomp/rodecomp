@@ -678,7 +678,7 @@ void UIEditCtrl_Custom::PaintText() {
       const char* prefix = g_serverLanguage->Prefix(false);
       display = prefix + this->text;
       begin = std::min(this->anchor, this->cursor) + static_cast<int>(std::strlen(prefix));
-      end = std::max(this->anchor, this->cursor) + this->m_edit->candidateCursor + static_cast<int>(std::strlen(prefix));
+      end = std::max(this->anchor, this->cursor) + g_serverLanguage->compositionCursor + static_cast<int>(std::strlen(prefix));
     }
 
     align();
@@ -688,7 +688,7 @@ void UIEditCtrl_Custom::PaintText() {
     if (std::abs(g_serverLanguage->cursor - g_serverLanguage->anchor) != 0) {
       this->DrawSelection(x + left, right - left);
       this->DrawLabel(x, y, display.c_str());
-    } else if (this->m_edit->candidateCursor != 0) {
+    } else if (g_serverLanguage->compositionCursor != 0) {
       this->MoveCandidateWindow(left);
       this->MoveReadingWindow(right);
       if ((timeGetTime() / 500 & 1) == 0) {
@@ -1534,8 +1534,7 @@ int UITreeView::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       this->editNode = reinterpret_cast<UITreeNode*>(a);
       this->edit->maximum = c > 361 ? 361 : static_cast<int>(c);
       this->edit->SetText(this->editNode->name);
-      InputFocus focus{g_windowMgr.hoverWindow};
-      focus.Set(this->edit);
+      g_windowMgr.SetFocus(this->edit);
       this->Invalidate();
     } else if (b == 1) {
       if (g_windowMgr.GetHoverWindow() == this->edit) {

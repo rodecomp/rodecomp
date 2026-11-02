@@ -1,134 +1,134 @@
-#include "UI/Window/InputFocus.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UIWindow.h"
 
 // OFFSET: 0x00AA9B40
 // FUNCTION: fn_17256
-void InputFocus::Set(UIWindow* value) {
-  if (this->window) {
-    const bool retained = value && value->Slot06() == this->window;
-    this->window->Slot24(retained);
+void UIWindowMgr::SetFocus(UIWindow* value) {
+  if (this->hoverWindow) {
+    const bool retained = value && value->Slot06() == this->hoverWindow;
+    this->hoverWindow->Slot24(retained);
   }
 
   if (value) {
-    this->window = value->Slot06();
+    this->hoverWindow = value->Slot06();
 
-    if (this->window) {
-      this->window->Slot23();
+    if (this->hoverWindow) {
+      this->hoverWindow->Slot23();
     }
   } else {
-    this->window = nullptr;
+    this->hoverWindow = nullptr;
   }
 }
 
 // OFFSET: 0x00AA9BC0
 // FUNCTION: fn_17257
-void InputFocus::First() {
-  if (this->window) {
-    UIWindow* parent = this->window->parent;
+void UIWindowMgr::FocusFirst() {
+  if (this->hoverWindow) {
+    UIWindow* parent = this->hoverWindow->parent;
 
     for (UIWindow* child : parent->m_children) {
       if (!child->Slot05()) {
         continue;
       }
 
-      this->window->Slot24(child->Slot06() == this->window);
-      this->window = child->Slot06();
+      this->hoverWindow->Slot24(child->Slot06() == this->hoverWindow);
+      this->hoverWindow = child->Slot06();
 
-      if (this->window) {
-        this->window->Slot23();
+      if (this->hoverWindow) {
+        this->hoverWindow->Slot23();
       }
 
       return;
     }
 
-    this->window->Slot24(0);
+    this->hoverWindow->Slot24(0);
   }
 
-  this->window = nullptr;
+  this->hoverWindow = nullptr;
 }
 
 // OFFSET: 0x00AA9C70
 // FUNCTION: fn_17258
-void InputFocus::Last() {
-  if (this->window) {
-    UIWindow* parent = this->window->parent;
+void UIWindowMgr::FocusLast() {
+  if (this->hoverWindow) {
+    UIWindow* parent = this->hoverWindow->parent;
 
     for (auto it = parent->m_children.rbegin(); it != parent->m_children.rend(); ++it) {
       UIWindow* child = *it;
       if (child->Slot05()) {
-        this->Set(child);
+        this->SetFocus(child);
         return;
       }
     }
 
-    if (this->window) {
-      this->window->Slot24(0);
+    if (this->hoverWindow) {
+      this->hoverWindow->Slot24(0);
     }
   }
 
-  this->window = nullptr;
+  this->hoverWindow = nullptr;
 }
 
 // OFFSET: 0x00AA9D20
 // FUNCTION: fn_17259
-void InputFocus::Next() {
-  if (!this->window) {
+void UIWindowMgr::FocusNext() {
+  if (!this->hoverWindow) {
     return;
   }
 
-  UIWindow* parent = this->window->parent;
+  UIWindow* parent = this->hoverWindow->parent;
   bool found = false;
 
   for (UIWindow* child : parent->m_children) {
     if (found && child->Slot05()) {
-      this->window->Slot24(child->Slot06() == this->window);
-      this->window = child->Slot06();
+      this->hoverWindow->Slot24(child->Slot06() == this->hoverWindow);
+      this->hoverWindow = child->Slot06();
 
-      if (this->window) {
-        this->window->Slot23();
+      if (this->hoverWindow) {
+        this->hoverWindow->Slot23();
       }
 
       return;
     }
 
-    if (child == this->window && child->Slot05()) {
+    if (child == this->hoverWindow && child->Slot05()) {
       found = true;
     }
   }
 
-  this->window->Slot24(0);
-  this->window = nullptr;
+  this->hoverWindow->Slot24(0);
+  this->hoverWindow = nullptr;
 }
 
 // OFFSET: 0x00A96F60
 // FUNCTION: fn_17197
-bool InputFocus::IsLast(UIWindow* value) {
+bool UIWindowMgr::IsLastFocus(UIWindow* value) {
   return value && value->parent->NextFocusable(value) == nullptr;
 }
 
 // OFFSET: 0x00AA9DC0
 // FUNCTION: fn_17260
-void InputFocus::Previous() {
-  if (!this->window) {
+void UIWindowMgr::FocusPrevious() {
+  if (!this->hoverWindow) {
     return;
   }
 
-  UIWindow* previous = this->window->parent->PreviousFocusable(this->window);
+  UIWindow* previous = this->hoverWindow->parent->PreviousFocusable(this->hoverWindow);
   if (!previous) {
-    this->Set(nullptr);
+    this->SetFocus(nullptr);
     return;
   }
 
   if (previous->Slot05()) {
-    this->Set(previous);
+    this->SetFocus(previous);
   }
 }
 
 // INLINED
-void InputFocus::Refresh(UIWindow* const& excludedRoot) {
-  if (this->window) {
-    this->window->Invalidate();
-    UIWindow* root = this->window->Root();
+void UIWindowMgr::RefreshFocus(UIWindow* const& excludedRoot) {
+  if (this->hoverWindow) {
+    this->hoverWindow->Invalidate();
+    UIWindow* root = this->hoverWindow->Root();
     if (root && root != excludedRoot) {
       root->Invalidate();
     }

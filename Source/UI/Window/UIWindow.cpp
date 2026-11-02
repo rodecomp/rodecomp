@@ -3468,8 +3468,7 @@ void UINavigationV4Wnd::InsertNavigationLink(std::string name, int x, int y) {
   } else if (!g_windowMgr.unknown_0024) {
     reinterpret_cast<ChatInputFocus*>(g_chatSuggestions)->Toggle();
   } else {
-    InputFocus focus{g_windowMgr.hoverWindow};
-    focus.Set(g_chatSuggestions->window);
+    g_windowMgr.SetFocus(g_chatSuggestions->window);
   }
 
   g_windowMgr.GetHoverWindow()->SendMsg(nullptr, 153, reinterpret_cast<std::intptr_t>(link.c_str()), 0, 0, 0);

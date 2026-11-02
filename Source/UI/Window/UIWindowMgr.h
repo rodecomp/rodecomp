@@ -538,6 +538,13 @@ public:
   void HideWindow01C8();
   bool DropAt(int x, int y, ModeDragState* drag);
   void FocusWindow01C8Edit();
+  void SetFocus(UIWindow* value);
+  void FocusFirst();
+  void FocusLast();
+  void FocusNext();
+  bool IsLastFocus(UIWindow* value);
+  void FocusPrevious();
+  void RefreshFocus(UIWindow* const& excludedRoot);
   bool IsHoverOnWindow01C8Button();
   void SelectWhisperName(const char* name);
   void AddWhisperName(const char* name);

@@ -184,7 +184,7 @@ void UISerachStoreInfoWnd::Slot15(int width, int height) {
   this->AddBaseButton();
   this->AddCloseButton("", 0);
   this->SendMsg(this, 0x3C, 0, 0, 0, 0);
-  InputFocus{g_windowMgr.hoverWindow}.Set(this->m_edits[1]);
+  g_windowMgr.SetFocus(this->m_edits[1]);
   this->m_message0 = 0x16D;
 }
 

@@ -515,7 +515,7 @@ int UIBank_NewWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       return 0;
     }
     this->m_amountEdit->SetText(LookupMessage(0xADA));
-    InputFocus{g_windowMgr.hoverWindow}.Set(this->m_amountEdit);
+    g_windowMgr.SetFocus(this->m_amountEdit);
     return 0;
   case 0x186:
     step = 10000000;
@@ -576,7 +576,7 @@ int UIBank_NewWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
   _i64toa(amount, text, 10);
   if (this->m_amountEdit) {
     this->m_amountEdit->SetText(text);
-    InputFocus{g_windowMgr.hoverWindow}.Set(this->m_amountEdit);
+    g_windowMgr.SetFocus(this->m_amountEdit);
   }
   return 0;
 }
@@ -703,8 +703,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 
       this->edit->PushHistory();
       this->edit->SetText("");
-      InputFocus focus{g_windowMgr.hoverWindow};
-      focus.Set(this->edit);
+      g_windowMgr.SetFocus(this->edit);
       return 0;
     }
     case 201:

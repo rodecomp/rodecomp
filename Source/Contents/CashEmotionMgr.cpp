@@ -2601,8 +2601,7 @@ void UICashEmotionListWnd::SetTab(char tab) {
   const bool basic = this->m_currentList == this->m_basicList;
   if (this->m_searchEdit) {
     if (g_windowMgr.GetHoverWindow() == this->m_searchEdit) {
-      InputFocus focus{g_windowMgr.hoverWindow};
-      focus.Set(nullptr);
+      g_windowMgr.SetFocus(nullptr);
     }
 
     this->m_searchEdit->Slot24(0);

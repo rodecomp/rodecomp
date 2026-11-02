@@ -93,8 +93,7 @@ void UIMacroDetectorWnd::Slot15(int, int) {
   this->m_editCtrl->preserveInput = 1;
   this->AddChild(this->m_editCtrl);
 
-  InputFocus focus{g_windowMgr.hoverWindow};
-  focus.Set(this->m_editCtrl);
+  g_windowMgr.SetFocus(this->m_editCtrl);
 
   UIBitmapButton* button = new UIBitmapButton();
   this->m_button = button;
