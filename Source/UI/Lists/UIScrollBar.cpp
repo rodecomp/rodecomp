@@ -1794,7 +1794,6 @@ bool UIItemTagCtrl::RemoveInvalidTag(std::list<ItemTagRecord>::iterator& entry) 
 #include "Contents/Items/ItemNaming.h"
 #include "Contents/PlayerNameDictionary.h"
 #include "Contents/TipBoxTitles.h"
-#include "UI/Text/ItemLinkDisplay.h"
 #include "UI/Text/NavigationLink.h"
 
 #include <mbstring.h>
@@ -1821,11 +1820,10 @@ std::string UIChatHisBox::RenderItemLinks(const char* lineText, std::string& sou
   unsigned position = 0;
   unsigned previous = 0;
   ItemDescriptions descriptions{g_itemDescriptions};
-  ItemLinkDisplay display{*this->geometry.surface, g_fontCache, this->m_context->locale, this->geometry.width};
 
   for (;;) {
     std::string encoded;
-    if (!display.Next(remaining, encoded, position, source.c_str()) || result.size() >= std::strlen(lineText)) {
+    if (!this->Next(remaining, encoded, position, source.c_str()) || result.size() >= std::strlen(lineText)) {
       break;
     }
 
@@ -1859,7 +1857,7 @@ std::string UIChatHisBox::RenderItemLinks(const char* lineText, std::string& sou
       DecodeItemLinkFields(encoded, fields);
       ITEM_INFO item;
       if (ItemFromLinkFields(fields, item, descriptions)) {
-        const std::string label = display.BracketName(item.DisplayName(0));
+        const std::string label = this->BracketName(item.DisplayName(0));
         if (result.size() + label.size() > std::strlen(lineText)) {
           previous += static_cast<unsigned>(prefix.size());
           break;
@@ -2069,8 +2067,7 @@ void UIChatHisBox::sub_89DC30(const char* text, int& color, int& mode) {
   }
 
   std::vector<std::string> wrapped;
-  ItemLinkDisplay display{*this->geometry.surface, g_fontCache, this->m_context->locale, this->geometry.width};
-  const std::string converted = display.Convert(text);
+  const std::string converted = this->Convert(text);
   this->sub_8932D0(&mode, &wrapped, converted);
   this->RewrapLinkLines(wrapped, mode);
   std::string source = text;

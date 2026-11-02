@@ -3,7 +3,7 @@
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "UI/Text/ColoredText.h"
-#include "UI/Text/ItemLinkDisplay.h"
+#include "UI/Lists/UIChatHisBox.h"
 #include "UI/Text/TextMarkup.h"
 #include "Contents/TipBoxTitles.h"
 #include "Network/TextEncoding.h"

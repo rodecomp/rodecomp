@@ -5,7 +5,7 @@
 #include "UI/Text/UITextViewer.h"
 #include "UI/Window/WindowManagerWindows.h"
 #include "Contents/Items/ItemNaming.h"
-#include "UI/Text/ItemLinkDisplay.h"
+#include "UI/Lists/UIChatHisBox.h"
 #include "UI/Text/NavigationLink.h"
 #include "UI/Text/PixelTextWrapping.h"
 #include "UI/Text/TextMarkup.h"

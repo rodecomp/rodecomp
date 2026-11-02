@@ -2,14 +2,14 @@
 #include "Contents/Items/ItemLink.h"
 #include "Contents/Items/ItemNaming.h"
 #include "Contents/TipBoxTitles.h"
-#include "UI/Text/ItemLinkDisplay.h"
+#include "UI/Lists/UIChatHisBox.h"
 #include "UI/Text/TextFitting.h"
 
 #include <mbstring.h>
 
 // OFFSET: 0x008816E0
 // FUNCTION: fn_11299
-bool ItemLinkDisplay::Name(const std::string& encoded, std::string& output) {
+bool UIChatHisBox::Name(const std::string& encoded, std::string& output) {
   if (encoded.substr(0, 6) == "00000T") {
     const int id = ItemLinkMessageId(encoded);
 
@@ -41,7 +41,7 @@ bool ItemLinkDisplay::Name(const std::string& encoded, std::string& output) {
 
 // OFFSET: 0x0087FD70
 // FUNCTION: fn_11275
-bool ItemLinkDisplay::Next(std::string& remaining, std::string& encoded, unsigned& position, const char* original) {
+bool UIChatHisBox::Next(std::string& remaining, std::string& encoded, unsigned& position, const char* original) {
   constexpr std::size_t opening = 7;
   constexpr std::size_t closing = 8;
   auto close = remaining.find("</ITEML>");
@@ -92,7 +92,7 @@ bool ItemLinkDisplay::Next(std::string& remaining, std::string& encoded, unsigne
 
 // OFFSET: 0x00879390
 // FUNCTION: fn_11216
-std::string ItemLinkDisplay::Convert(const std::string& text) {
+std::string UIChatHisBox::Convert(const std::string& text) {
   if (!_mbsstr(reinterpret_cast<const unsigned char*>(text.c_str()), reinterpret_cast<const unsigned char*>("<ITEML>"))) {
     return text;
   }
@@ -114,7 +114,7 @@ std::string ItemLinkDisplay::Convert(const std::string& text) {
 
     if (this->Name(encoded, name)) {
       result += '<';
-      result += FitText(this->surface, name, this->width / 2);
+      result += FitText(*this->geometry.surface, name, this->geometry.width / 2);
       result += '>';
       position += static_cast<unsigned>(15 + encoded.size());
     }
@@ -128,10 +128,10 @@ std::string ItemLinkDisplay::Convert(const std::string& text) {
 
 // OFFSET: 0x00884460
 // FUNCTION: fn_11307
-std::string ItemLinkDisplay::BracketName(const std::string& name) {
+std::string UIChatHisBox::BracketName(const std::string& name) {
   std::string result;
   result += '<';
-  result += FitText(this->surface, name, this->width / 2);
+  result += FitText(*this->geometry.surface, name, this->geometry.width / 2);
   result += '>';
   return result;
 }

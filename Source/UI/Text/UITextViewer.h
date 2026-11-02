@@ -6,7 +6,7 @@
 #include <windows.h>
 
 class UITextButton;
-struct ItemLinkDisplay;
+class UIChatHisBox;
 
 class TextViewerActions {
 public:
@@ -23,7 +23,7 @@ struct UITextViewerContext {
   TextViewerActions& actions;
   HWND& applicationWindow;
 
-  const std::vector<ItemLinkDisplay*>* const& chatConversions;
+  const std::vector<UIChatHisBox*>* const& chatConversions;
 };
 
 class UITextViewer : public UIListBox {
