@@ -6832,8 +6832,16 @@ int CSession::GetTraitStat(int type) {
 }
 
 // OFFSET: 0x008C7F00
+// FUNCTION: fn_11946
+UIItemIdentifyWnd::UIItemIdentifyWnd(UIWindowContext& windows, UIFrameContext& frames)
+    : UIFrameWnd(windows, frames, 0), m_placement(nullptr) {
+}
 
 // OFFSET: 0x008C7EA0
+// FUNCTION: fn_11945
+UIItemCompositionWnd::UIItemCompositionWnd(UIWindowContext& windows, UIFrameContext& frames)
+    : UIItemIdentifyWnd(windows, frames), m_compositionPlacement(nullptr) {
+}
 
 // OFFSET: 0x008C8330
 // FUNCTION: fn_11952
