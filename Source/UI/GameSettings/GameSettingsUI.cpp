@@ -1733,6 +1733,16 @@ void CUIGameSettingsUI::Slot25(int x, int y) {
 void CUIGameSettingsUI::sub_A3F0F0() {
 }
 
+// OFFSET: 0x00A3F100
+// FUNCTION: fn_45480
+void CUIGameSettingsUI::OnApply() {
+  const bool modified = this->m_graphicsPage->IsModified();
+  if (reinterpret_cast<WindowDialogs&>(g_windowMgr).Confirm(LookupMessage(modified ? 3168 : 3167), 2, true, false, 0, "Message", 280, 120, 0) != 188) {
+    this->m_graphicsPage->ApplySettings();
+    this->sub_A421E0();
+  }
+}
+
 // OFFSET: 0x00A3F170
 // FUNCTION: fn_45481
 void CUIGameSettingsUI::OnCloseButton() {

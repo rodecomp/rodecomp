@@ -341,6 +341,7 @@ public:
   void Slot16() override;
   void Slot25(int x, int y) override;
 
+  void OnApply();
   void OnCloseButton();
   void OnTitleClose();
   void sub_A3F0F0();
