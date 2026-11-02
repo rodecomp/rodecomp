@@ -273,6 +273,11 @@ void UIChooseSellBuyWnd::CreateViewer(int width, int height) {
 }
 
 // OFFSET: 0x008C7420
+// FUNCTION: fn_11931
+UIChooseWarpWnd::UIChooseWarpWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, UIListBoxContext& listContext)
+    : UIFrameWnd(windows, frames, 0), m_list(nullptr), unknown_00B8(0), m_choices(), m_controls(&controls), m_listContext(&listContext) {
+  this->m_choices.reserve(6);
+}
 
 // OFFSET: 0x008DD290
 // FUNCTION: fn_12162
