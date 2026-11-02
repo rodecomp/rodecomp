@@ -3415,6 +3415,90 @@ std::string UIEditCtrl3::ResolveItemLinks(const std::string& source) {
 }
 
 // OFFSET: 0x00860C60
+// FUNCTION: fn_10901
+void UIEditCtrl3::WrapLines(std::vector<std::string>& lines) {
+  const std::string open = "<";
+  const std::string close = ">";
+  std::string remaining;
+
+  for (std::size_t index = 0; index < lines.size(); ++index) {
+    std::vector<std::string> pieces;
+    std::vector<bool> breaks;
+    this->WrapTextWithBreaks(lines[index].c_str(), &pieces, &breaks, this->geometry.width - 6);
+
+    if (pieces.size() > 1) {
+      for (std::size_t piece = 0; piece < pieces.size(); ++piece) {
+        if (piece == 0 && &lines[index] != &pieces[0]) {
+          lines[index] = pieces[0];
+        }
+
+        if (index + piece < lines.size() && piece == pieces.size() - 1) {
+          lines[index + piece].swap(pieces[piece].append(lines[index + piece]));
+        } else if (piece != 0) {
+          std::vector<std::string> merged;
+          for (std::size_t line = 0; line < lines.size(); ++line) {
+            if (lines[line].size() != 0) {
+              merged.emplace_back(lines[line].c_str(), lines[line].size());
+            }
+          }
+
+          if (pieces[piece].size() != 0) {
+            merged.emplace_back(pieces[piece].c_str(), pieces[piece].size());
+          }
+
+          for (std::size_t line = index + 1; line < lines.size(); ++line) {
+            if (lines[line].size() != 0) {
+              merged.emplace_back(lines[line].c_str(), lines[line].size());
+            }
+          }
+
+          if (merged.size() != 0) {
+            lines.swap(merged);
+          }
+        }
+
+        if (index > 40) {
+          break;
+        }
+      }
+    }
+
+    if (index >= lines.size()) {
+      continue;
+    }
+
+    remaining = lines[index];
+    std::size_t position = 0;
+    std::size_t found = remaining.find(close);
+    while (found != std::string::npos) {
+      ++found;
+      position += found;
+      remaining = remaining.substr(found);
+      found = remaining.find(close);
+    }
+
+    found = remaining.find(open);
+    if (found == std::string::npos) {
+      continue;
+    }
+
+    position += found;
+    remaining = remaining.substr(found);
+    std::string tail = remaining.substr(1);
+    found = tail.find(open);
+    while (found != std::string::npos) {
+      position += found;
+      remaining = tail;
+      tail = remaining.substr(1);
+      found = tail.find(open);
+    }
+
+    if (index + 1 < lines.size() && lines[index + 1].find(close) != std::string::npos) {
+      lines[index + 1].swap(remaining.append(lines[index + 1]));
+      lines[index] = lines[index].substr(0, position);
+    }
+  }
+}
 
 // OFFSET: 0x00975CD0
 // FUNCTION: fn_13310
