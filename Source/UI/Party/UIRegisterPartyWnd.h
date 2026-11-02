@@ -9,25 +9,10 @@ class UIEditCtrl;
 class UIJobSlotButton;
 class UIStaticText;
 class UIBasicButton;
-class ForbiddenWords;
-struct AgencyRequestContext;
-struct RegisterPartyContext;
-
-struct UIRegisterPartyContext {
-  ForbiddenWords& forbidden;
-  AgencyRequestContext& requests;
-  RegisterPartyContext& completion;
-  const int& playerLevel;
-  const int& partyMember;
-  const int& screenWidth;
-  const int& screenHeight;
-  const std::string& characterName;
-  const unsigned short& codePage;
-};
 
 class UIRegisterPartyWnd : public UIFrameWnd {
 public:
-  UIRegisterPartyWnd(UIWindowContext& windows, UIRegisterPartyContext& registration);
+  UIRegisterPartyWnd(UIWindowContext& windows);
   ~UIRegisterPartyWnd() override;
   void Slot11() override;
   void Slot15(int width, int height) override;
@@ -47,13 +32,12 @@ public:
   /* 00E4 */ PartyBoardPlacement* saved;
 
 private:
-  UIRegisterPartyContext* m_registration;
   const char* Text(UIEditCtrl& control) const;
   void NormalizeLevels();
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(UIRegisterPartyWnd) == 244);
+static_assert(sizeof(UIRegisterPartyWnd) == 240);
 #endif
 
 #endif

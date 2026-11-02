@@ -1,5 +1,8 @@
+#include "Client/Session.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/UserData/AccountService.h"
 #include "Contents/Party/AdventurerAgencyMgr.h"
+#include "Script/LuaScript.h"
 
 #include <json/value.h>
 #include <new>
@@ -66,9 +69,8 @@ const std::vector<CAdvenPartyInfo>& CAdventurerAgencyMgr::Entries() const {
 
 // OFFSET: 0x005CAA50
 // FUNCTION: fn_03655
-std::string
-CAdventurerAgencyMgr::ServiceUrl(int operation, LuaScript& settings, LuaScript& tables, const char* host, const char* port, const char* overrideKey) const {
-  std::string url = ResolveAccountServiceBase(settings, tables, host, port, overrideKey);
+std::string CAdventurerAgencyMgr::ServiceUrl(int operation) const {
+  std::string url = ResolveAccountServiceBase(*g_luaScript, *g_session.m_hotkeyScript, g_serviceHost, g_servicePort, g_serviceOverrideKey);
 
   if (url.empty()) {
     return url;

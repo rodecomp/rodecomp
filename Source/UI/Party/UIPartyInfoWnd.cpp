@@ -1,16 +1,19 @@
+#include "Client/Session.h"
 #include "Contents/MessageTable.h"
+#include "File/ShortcutFilename.h"
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "UI/Text/TextFitting.h"
 #include "UI/Party/UIPartyInfoWnd.h"
+#include "UI/Window/UIWindowMgr.h"
 
 #include <cstdio>
 
 // OFFSET: 0x007BAE20
 // FUNCTION: fn_09277
-UIPartyInfoWnd::UIPartyInfoWnd(UIWindowContext& windows, PartyRowContext& row)
-    : UIBitmapButton(windows), tanker(0), dealer(0), healer(0), assist(0), m_row(&row) {
+UIPartyInfoWnd::UIPartyInfoWnd(UIWindowContext& windows)
+    : UIBitmapButton(windows), tanker(0), dealer(0), healer(0), assist(0) {
   this->m_drawLabel = 0;
 }
 
@@ -121,17 +124,17 @@ void UIPartyInfoWnd::Slot31(int x, int y) {
 // OFFSET: 0x007BFE90
 // FUNCTION: fn_09310
 void UIPartyInfoWnd::Slot33(int, int) {
-  if (this->m_disabled != 0 || this->info.accountId == this->m_row->accountId || this->info.characterId == this->m_row->characterId) {
+  if (this->m_disabled != 0 || this->info.accountId == g_session.m_aid || this->info.characterId == g_session.m_gid) {
     return;
   }
 
   const std::string name = this->info.characterName;
-  const char* relationship = this->m_row->services.IsFriend(name) ? LookupMessage(102) : nullptr;
+  const char* relationship = g_windowMgr.IsFriend(name.c_str()) ? LookupMessage(102) : nullptr;
 
-  if (this->m_row->services.IsGuildMember(this->info.accountId)) {
+  if (g_session.IsGuildMemberAccount(this->info.accountId)) {
     relationship = "GuildMember";
   }
 
-  const std::string code = this->m_row->services.CharacterCode(this->info.characterId);
-  this->m_row->services.ShowCharacter(name.c_str(), relationship, code.c_str());
+  const std::string code = ShortcutFilename(this->info.characterId);
+  g_windowMgr.SendNotice(14, reinterpret_cast<std::intptr_t>(name.c_str()), reinterpret_cast<std::intptr_t>(relationship), reinterpret_cast<std::intptr_t>(code.c_str()), 0, 0);
 }

@@ -4,23 +4,9 @@
 #include "UI/Party/UIAdvenPartyBoardWnd.h"
 #include "UI/Window/UIFrameWnd.h"
 
-struct PartyRowContext;
-
-struct AgencyRequestContext;
-struct PartyInfoContext;
-
-struct UIApplyForPartyContext {
-  PartyRowContext& rows;
-  AgencyRequestContext& requests;
-  PartyInfoContext& completion;
-  const unsigned short& codePage;
-  const int& screenWidth;
-  const int& screenHeight;
-};
-
 class UIApplyForPartyWnd : public UIFrameWnd {
 public:
-  UIApplyForPartyWnd(UIWindowContext& windows, UIApplyForPartyContext& application);
+  UIApplyForPartyWnd(UIWindowContext& windows);
   ~UIApplyForPartyWnd() override;
   void Slot11() override;
   void Slot15(int width, int height) override;
@@ -31,13 +17,10 @@ public:
 
   /* 00B4 */ CAdvenPartyInfo info;
   /* 0100 */ PartyBoardPlacement* saved;
-
-private:
-  UIApplyForPartyContext* m_application;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(UIApplyForPartyWnd) == 272);
+static_assert(sizeof(UIApplyForPartyWnd) == 268);
 #endif
 
 #endif

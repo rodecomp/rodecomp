@@ -173,13 +173,12 @@ void CAsyncWorkMgr::LoadMyParty(
 // OFFSET: 0x00574810
 // FUNCTION: fn_02507
 void CAsyncWorkMgr::LoadPartyInfo(
-  std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, std::uint32_t queryAccountId,
-  PartyInfoContext& context
+  std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, std::uint32_t queryAccountId
 ) {
   NAsyncWorkPtr work(this->m_pools, "PartyInfo_Load");
 
   if (work.Get()) {
-    static_cast<CLoadPartyInfoAsyncWork*>(work.Get())->Bind(accountId, characterId, world, url, token, queryAccountId, context);
+    static_cast<CLoadPartyInfoAsyncWork*>(work.Get())->Bind(accountId, characterId, world, url, token, queryAccountId);
     this->Submit(work);
   }
 }
@@ -228,25 +227,23 @@ void CAsyncWorkMgr::SaveStore(
 // OFFSET: 0x00574DD0
 // FUNCTION: fn_02511
 void CAsyncWorkMgr::RegisterParty(
-  std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, CAdvenPartyInfo info, RegisterPartyContext& context
+  std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, CAdvenPartyInfo info
 ) {
   NAsyncWorkPtr work(this->m_pools, "Register_Party");
 
   if (work.Get()) {
-    static_cast<CRegisterPartyAsyncWork*>(work.Get())->Bind(accountId, characterId, world, url, token, info, context);
+    static_cast<CRegisterPartyAsyncWork*>(work.Get())->Bind(accountId, characterId, world, url, token, info);
     this->Submit(work);
   }
 }
 
 // OFFSET: 0x00574F40
 // FUNCTION: fn_02512
-void CAsyncWorkMgr::StopRecruiting(
-  std::uint32_t accountId, std::string world, std::string url, std::string token, std::uint32_t masterAccountId, StopRecruitingContext& context
-) {
+void CAsyncWorkMgr::StopRecruiting(std::uint32_t accountId, std::string world, std::string url, std::string token, std::uint32_t masterAccountId) {
   NAsyncWorkPtr work(this->m_pools, "Stop_Recruiting");
 
   if (work.Get()) {
-    static_cast<CStopRecruitingAsyncWork*>(work.Get())->Bind(accountId, world, url, token, masterAccountId, context);
+    static_cast<CStopRecruitingAsyncWork*>(work.Get())->Bind(accountId, world, url, token, masterAccountId);
     this->Submit(work);
   }
 }

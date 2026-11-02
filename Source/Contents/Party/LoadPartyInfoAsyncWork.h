@@ -4,23 +4,6 @@
 #include "Utility/Async/AsyncDiagnostic.h"
 #include "Utility/Async/NAsyncWork.h"
 
-#include "UI/Window/WindowManagerWindows.h"
-class ResourceMessages;
-class ModeEvents;
-struct WindowOrdering;
-
-struct PartyInfoContext {
-  WindowManagerWindows& windows;
-  WindowOrdering& ordering;
-  ResourceMessages& messages;
-  ModeEvents*& mode;
-  const int& playerLevel;
-  const int& partyCount;
-  const bool& languagePrefix;
-  const int& service;
-  const unsigned short& language;
-};
-
 class alignas(8) CLoadPartyInfoAsyncWork : public NAsyncWork {
 public:
   CLoadPartyInfoAsyncWork();
@@ -28,10 +11,7 @@ public:
   void Reset() override;
   bool Execute() override;
   void Complete() override;
-  void Bind(
-    std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, std::uint32_t queryAccountId,
-    PartyInfoContext& context
-  );
+  void Bind(std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, std::uint32_t queryAccountId);
 
 protected:
   /* 0028 */ std::uint32_t m_accountId;
@@ -42,7 +22,6 @@ protected:
   /* 0078 */ std::string m_token;
   /* 0090 */ std::uint32_t m_queryAccountId;
   /* 0094 */ AsyncDiagnostic m_diagnostic;
-  PartyInfoContext* m_context;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

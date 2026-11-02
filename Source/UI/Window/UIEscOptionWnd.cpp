@@ -130,11 +130,11 @@ int UIEscOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     saveSlot.member = &CCharacterLinkedUserDataMgr::Save;
     saveSlot.function(g_characterLinkedUserDataMgr);
     union StopSlot {
-      void (CAdventurerAgencyMgr::*member)(AgencyRequestContext&, StopRecruitingContext&);
+      void (CAdventurerAgencyMgr::*member)();
       void (__thiscall* function)(CAdventurerAgencyMgr*);
     };
     StopSlot stopSlot;
-    stopSlot.member = static_cast<void (CAdventurerAgencyMgr::*)(AgencyRequestContext&, StopRecruitingContext&)>(&CAdventurerAgencyMgr::RequestStop);
+    stopSlot.member = static_cast<void (CAdventurerAgencyMgr::*)()>(&CAdventurerAgencyMgr::RequestStop);
     stopSlot.function(g_adventurerAgencyMgr);
     mode->SendMsg(0x19, 1, 0, 0, 0);
     g_windowMgr.CloseWindow(0x9B);

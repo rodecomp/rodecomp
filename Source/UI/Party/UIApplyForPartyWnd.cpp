@@ -1,9 +1,11 @@
+#include "Client/Session.h"
 #include "Client/Mode/ModeTooltip.h"
+#include "File/ShortcutFilename.h"
+#include "Render/Renderer.h"
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "Contents/MessageTable.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Contents/Party/AdventurerAgencyMgr.h"
-#include "Contents/Party/AgencyRequestContext.h"
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Render/Text/TextContext.h"
 #include "Resource/Bitmap/BitmapResource.h"
@@ -25,8 +27,8 @@ namespace {
 
 // OFFSET: 0x007BAD00
 // FUNCTION: fn_09275
-UIApplyForPartyWnd::UIApplyForPartyWnd(UIWindowContext& windows, UIApplyForPartyContext& application)
-    : UIFrameWnd(windows, 0), m_application(&application) {
+UIApplyForPartyWnd::UIApplyForPartyWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0) {
 }
 
 // OFFSET: 0x007BB610
@@ -188,25 +190,23 @@ void UIApplyForPartyWnd::Slot28(int x, int y) {
 // FUNCTION: fn_09313
 int UIApplyForPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   if (message == 6) {
-    auto& owner = *this->m_application;
-
     switch (static_cast<int>(a)) {
     case 201:
       g_windowMgr.CloseWindow(345);
       break;
     case 271:
-      g_adventurerAgencyMgr->RequestInfo(this->info.accountId, owner.requests, owner.completion);
+      g_adventurerAgencyMgr->RequestInfo(this->info.accountId);
       break;
     case 381: {
       const std::string name = this->info.characterName;
-      const char* relationship = owner.rows.services.IsFriend(name) ? LookupMessage(102) : nullptr;
+      const char* relationship = g_windowMgr.IsFriend(name.c_str()) ? LookupMessage(102) : nullptr;
 
-      if (owner.rows.services.IsGuildMember(this->info.accountId)) {
+      if (g_session.IsGuildMemberAccount(this->info.accountId)) {
         relationship = "GuildMember";
       }
 
-      const std::string code = owner.rows.services.CharacterCode(this->info.characterId);
-      owner.rows.services.ShowCharacter(name.c_str(), relationship, code.c_str());
+      const std::string code = ShortcutFilename(this->info.characterId);
+      g_windowMgr.SendNotice(14, reinterpret_cast<std::intptr_t>(name.c_str()), reinterpret_cast<std::intptr_t>(relationship), reinterpret_cast<std::intptr_t>(code.c_str()), 0, 0);
       break;
     }
     default:
@@ -218,10 +218,9 @@ int UIApplyForPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
 
   if (message == 34) {
     this->saved = reinterpret_cast<PartyBoardPlacement*>(a);
-    const auto& owner = *this->m_application;
 
-    if (this->saved->width <= 0 || this->saved->height <= 0 || this->saved->x < 0 || this->saved->x > owner.screenWidth - this->saved->width ||
-        this->saved->y < 0 || this->saved->y > owner.screenHeight - this->saved->height) {
+    if (this->saved->width <= 0 || this->saved->height <= 0 || this->saved->x < 0 || this->saved->x > g_renderer->viewport.width - this->saved->width ||
+        this->saved->y < 0 || this->saved->y > g_renderer->viewport.height - this->saved->height) {
       *this->saved = {200, 200, 220, 190};
     }
 

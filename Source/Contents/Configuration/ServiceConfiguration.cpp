@@ -59,6 +59,15 @@ const char* g_runPatcherMessage = "";
 // GLOBAL: gl_21921
 const char* g_windowName = "";
 
+// GLOBAL: gl_24669
+const char* g_serviceHost = "";
+
+// GLOBAL: gl_24670
+const char* g_servicePort = "";
+
+// GLOBAL: gl_24671
+const char* g_serviceOverrideKey = "";
+
 // GLOBAL: gl_24974
 char g_launchServerName[24];
 

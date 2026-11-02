@@ -1,7 +1,7 @@
 #include "Contents/MessageTable.h"
 #include "Client/Input/Language.h"
 #include "Contents/Party/AdventurerAgencyMgr.h"
-#include "Contents/Party/AgencyRequestContext.h"
+#include "Client/Session.h"
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
@@ -16,7 +16,8 @@
 #include "UI/Party/UIPartyInfoWnd.h"
 #include "UI/Party/UIRegisterPartyWnd.h"
 #include "UI/Text/UIStaticText.h"
-#include "UI/Window/WindowManagerWindows.h"
+#include "Render/Renderer.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowOrdering.h"
 
 #include <algorithm>
@@ -30,9 +31,8 @@ namespace {
 
 // OFFSET: 0x007BAC40
 // FUNCTION: fn_09274
-UIAdvenPartyBoardWnd::UIAdvenPartyBoardWnd(UIWindowContext& windows, UIAdvenPartyBoardContext& board)
-    : UIFrameWnd(windows, 0), unknown_0104(0), unknown_0108(0), page(1), totalPages(1), unknown_0114(1), unknown_0118(0), selectedType(0),
-      m_board(&board) {
+UIAdvenPartyBoardWnd::UIAdvenPartyBoardWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0), unknown_0104(0), unknown_0108(0), page(1), totalPages(1), unknown_0114(1), unknown_0118(0), selectedType(0) {
 }
 
 // OFFSET: 0x007BB590
@@ -52,15 +52,13 @@ void UIAdvenPartyBoardWnd::Slot11() {
 // OFFSET: 0x007BC220
 // FUNCTION: fn_09298
 void UIAdvenPartyBoardWnd::Slot15(int, int) {
-  auto& owner = *this->m_board;
-
   this->minimum = new UIEditCtrl2(*this->m_context);
   this->minimum->SetSize(25, 14);
   this->minimum->invalidatesParent = 1;
   this->minimum->maximum = 3;
   this->minimum->TextColor(0, 0xFFFFFFFFu);
   char number[10] = {};
-  _snprintf_s(number, sizeof(number), _TRUNCATE, "%d", std::max((owner.playerLevel - 5), 1));
+  _snprintf_s(number, sizeof(number), _TRUNCATE, "%d", std::max((g_session.m_level - 5), 1));
   this->minimum->SetText(number);
   this->minimum->Move(10, 24);
   this->minimum->Background(242, 242, 242);
@@ -72,7 +70,7 @@ void UIAdvenPartyBoardWnd::Slot15(int, int) {
   this->maximum->invalidatesParent = 1;
   this->maximum->maximum = 3;
   this->maximum->TextColor(0, 0xFFFFFFFFu);
-  _snprintf_s(number, sizeof(number), _TRUNCATE, "%d", (owner.playerLevel + 5));
+  _snprintf_s(number, sizeof(number), _TRUNCATE, "%d", (g_session.m_level + 5));
   this->maximum->SetText(number);
   this->maximum->Move(46, 24);
   this->maximum->Background(242, 242, 242);
@@ -152,7 +150,7 @@ void UIAdvenPartyBoardWnd::Slot15(int, int) {
   this->next = arrow("btn_list_right", 218, 265);
 
   for (int index = 0; index < 10; ++index) {
-    auto* row = new UIPartyInfoWnd(*this->m_context, owner.rows);
+    auto* row = new UIPartyInfoWnd(*this->m_context);
     this->rows[index] = row;
     artwork(row, "btn_list");
     row->Move(1, 73 + index * 24);
@@ -164,7 +162,7 @@ void UIAdvenPartyBoardWnd::Slot15(int, int) {
     this->AddChild(row);
   }
 
-  this->ownParty = new UIPartyInfoWnd(*this->m_context, owner.rows);
+  this->ownParty = new UIPartyInfoWnd(*this->m_context);
   const char* ownImages[] = {"btn_recruit_on.bmp", "btn_recruit_on.bmp", "btn_recruiting_press.bmp", "btn_recruiting_disable.bmp"};
 
   for (int state = 0; state < 4; ++state) {
@@ -244,10 +242,10 @@ void UIAdvenPartyBoardWnd::LoadPage(int pageValue) {
   this->refresh->SetDisabled(1);
   this->refresh->Invalidate();
   this->refresh->Invalidate();
-  g_adventurerAgencyMgr->RequestList(pageValue, this->m_board->requests);
+  g_adventurerAgencyMgr->RequestList(pageValue);
 
-  if (this->m_board->partyMember == 1) {
-    g_adventurerAgencyMgr->RequestMyParty(this->m_board->requests);
+  if (g_session.unknown_5464 == 1) {
+    g_adventurerAgencyMgr->RequestMyParty();
   }
 }
 
@@ -255,7 +253,7 @@ void UIAdvenPartyBoardWnd::LoadPage(int pageValue) {
 // FUNCTION: fn_09322
 void UIAdvenPartyBoardWnd::Registration(bool value) {
 
-  if (this->m_board->partyMember != 0) {
+  if (g_session.unknown_5464 != 0) {
     this->recruit->SetTooltip("");
     this->ownParty->Enable(value ? 1 : 0);
     this->ownParty->SetDisabled(value ? 0 : 1);
@@ -332,7 +330,7 @@ void UIAdvenPartyBoardWnd::UpdatePagination() {
   this->previous->Invalidate();
   this->Invalidate();
 
-  if (this->m_board->partyMember == 0) {
+  if (g_session.unknown_5464 == 0) {
     this->recruit->geometry.unknown_0030 = 3;
     this->recruit->Invalidate();
   }
@@ -345,9 +343,9 @@ void UIAdvenPartyBoardWnd::UpdatePagination() {
 // INLINED
 void UIAdvenPartyBoardWnd::ResetSearch() {
   char number[10] = {};
-  _snprintf_s(number, sizeof(number), _TRUNCATE, "%d", std::max((this->m_board->playerLevel - 5), 1));
+  _snprintf_s(number, sizeof(number), _TRUNCATE, "%d", std::max((g_session.m_level - 5), 1));
   this->minimum->SetText(number);
-  _snprintf_s(number, sizeof(number), _TRUNCATE, "%d", (this->m_board->playerLevel + 5));
+  _snprintf_s(number, sizeof(number), _TRUNCATE, "%d", (g_session.m_level + 5));
   this->maximum->SetText(number);
   this->types->Select(0);
 
@@ -381,12 +379,12 @@ void UIAdvenPartyBoardWnd::Search(int trigger) {
   char number[10] = {};
 
   if (!digits(this->minimum->Text())) {
-    _snprintf_s(number, sizeof(number), _TRUNCATE, "%d", std::max((this->m_board->playerLevel - 5), 1));
+    _snprintf_s(number, sizeof(number), _TRUNCATE, "%d", std::max((g_session.m_level - 5), 1));
     this->minimum->SetText(number);
   }
 
   if (!digits(this->maximum->Text())) {
-    _snprintf_s(number, sizeof(number), _TRUNCATE, "%d", (this->m_board->playerLevel + 5));
+    _snprintf_s(number, sizeof(number), _TRUNCATE, "%d", (g_session.m_level + 5));
     this->maximum->SetText(number);
   }
 
@@ -409,7 +407,7 @@ void UIAdvenPartyBoardWnd::Search(int trigger) {
   }
 
   filter.memo = this->memo->Text();
-  filter.characterName = this->m_board->characterName;
+  filter.characterName = g_session.DecodePlayerName();
 
   for (auto* button : {this->previous, this->next, this->refresh}) {
     button->SetDisabled(1);
@@ -421,7 +419,7 @@ void UIAdvenPartyBoardWnd::Search(int trigger) {
     this->page = 1;
   }
 
-  g_adventurerAgencyMgr->RequestSearch(filter, this->page, this->m_board->requests);
+  g_adventurerAgencyMgr->RequestSearch(filter, this->page);
 }
 
 // OFFSET: 0x007C0420
@@ -433,7 +431,7 @@ int UIAdvenPartyBoardWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
   case 6:
     switch (value) {
     case 201:
-      this->m_board->requests.windows.CloseWindow(324);
+      g_windowMgr.CloseWindow(324);
       break;
     case 218:
       this->page = (this->page + 1);
@@ -470,28 +468,28 @@ int UIAdvenPartyBoardWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     case 379: {
       const auto& info = this->rows[static_cast<int>(b)]->info;
 
-      if (info.accountId == this->m_board->rows.accountId) {
-        this->m_board->requests.windows.CloseWindow(345);
-        auto* window = static_cast<UIRegisterPartyWnd*>(this->m_board->requests.windows.EnsureWindow(323));
+      if (info.accountId == g_session.m_aid) {
+        g_windowMgr.CloseWindow(345);
+        auto* window = static_cast<UIRegisterPartyWnd*>(g_windowMgr.EnsureWindow(323));
 
         if (window) {
           window->SetInfo(info);
-          this->m_board->ordering.Promote(window);
+          reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(window);
         }
       } else {
-        this->m_board->requests.windows.CloseWindow(323);
-        auto* window = static_cast<UIApplyForPartyWnd*>(this->m_board->requests.windows.EnsureWindow(345));
+        g_windowMgr.CloseWindow(323);
+        auto* window = static_cast<UIApplyForPartyWnd*>(g_windowMgr.EnsureWindow(345));
 
         if (window) {
           window->SetInfo(info);
-          this->m_board->ordering.Promote(window);
+          reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(window);
         }
       }
 
       break;
     }
     case 410:
-      g_adventurerAgencyMgr->RequestStop(this->m_board->requests, this->m_board->stopCompletion);
+      g_adventurerAgencyMgr->RequestStop();
       break;
     case 415:
       this->page = 1;
@@ -499,22 +497,22 @@ int UIAdvenPartyBoardWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       this->LoadPage(1);
       break;
     case 564: {
-      this->m_board->requests.windows.CloseWindow(345);
-      auto* window = static_cast<UIRegisterPartyWnd*>(this->m_board->requests.windows.EnsureWindow(323));
+      g_windowMgr.CloseWindow(345);
+      auto* window = static_cast<UIRegisterPartyWnd*>(g_windowMgr.EnsureWindow(323));
 
       if (window) {
         window->SetInfo(this->ownParty->info);
-        this->m_board->ordering.Promote(window);
+        reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(window);
       }
 
       break;
     }
     case 565: {
-      this->m_board->requests.windows.CloseWindow(345);
-      UIWindow* window = this->m_board->requests.windows.EnsureWindow(323);
+      g_windowMgr.CloseWindow(345);
+      UIWindow* window = g_windowMgr.EnsureWindow(323);
 
       if (window) {
-        this->m_board->ordering.Promote(window);
+        reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(window);
       }
 
       break;
@@ -527,8 +525,8 @@ int UIAdvenPartyBoardWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
   case 34:
     this->saved = reinterpret_cast<PartyBoardPlacement*>(a);
 
-    if (this->saved->width <= 0 || this->saved->height <= 0 || this->saved->x < 0 || this->saved->x > this->m_board->screenWidth - this->saved->width ||
-        this->saved->y < 0 || this->saved->y > this->m_board->screenHeight - this->saved->height) {
+    if (this->saved->width <= 0 || this->saved->height <= 0 || this->saved->x < 0 || this->saved->x > g_renderer->viewport.width - this->saved->width ||
+        this->saved->y < 0 || this->saved->y > g_renderer->viewport.height - this->saved->height) {
       *this->saved = {200, 200, 480, 340};
     }
 

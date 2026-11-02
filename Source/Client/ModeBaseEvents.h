@@ -10,8 +10,6 @@ class CRenderSystemBase;
 class LuaScript;
 struct EmotionHotkeys;
 struct CharacterConfigSave;
-struct AgencyRequestContext;
-struct StopRecruitingContext;
 
 struct ModeBaseEvents {
   int& transitionRequested;
@@ -23,8 +21,6 @@ struct ModeBaseEvents {
   const char* token16;
   CAsyncWorkMgr& work;
   CharacterConfigSave& characterSave;
-  AgencyRequestContext& agency;
-  StopRecruitingContext& stopRecruiting;
   HWND& window;
 
   int Send(int event, const char* text, int argument2, int argument3, int argument4);

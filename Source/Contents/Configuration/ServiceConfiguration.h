@@ -17,6 +17,9 @@ extern const char* g_clientExeName;
 extern const char* g_patcherExeName;
 extern const char* g_runPatcherMessage;
 extern const char* g_windowName;
+extern const char* g_serviceHost;
+extern const char* g_servicePort;
+extern const char* g_serviceOverrideKey;
 extern char g_launchServerName[24];
 extern std::vector<std::string> g_loadingScreens;
 

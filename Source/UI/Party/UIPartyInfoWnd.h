@@ -4,26 +4,9 @@
 #include "Contents/Party/AdvenPartyInfo.h"
 #include "UI/Buttons/UIBitmapButton.h"
 
-class PartyRowServices {
-public:
-  virtual bool IsFriend(const std::string& name) = 0;
-  virtual bool IsGuildMember(std::uint32_t accountId) = 0;
-  virtual std::string CharacterCode(std::uint32_t characterId) = 0;
-  virtual void ShowCharacter(const char* name, const char* relationship, const char* code) = 0;
-
-protected:
-  ~PartyRowServices() = default;
-};
-
-struct PartyRowContext {
-  const std::uint32_t& accountId;
-  const std::uint32_t& characterId;
-  PartyRowServices& services;
-};
-
 class UIPartyInfoWnd : public UIBitmapButton {
 public:
-  UIPartyInfoWnd(UIWindowContext& windows, PartyRowContext& row);
+  UIPartyInfoWnd(UIWindowContext& windows);
   ~UIPartyInfoWnd() override;
   void Paint() override;
   void Slot31(int x, int y) override;
@@ -42,13 +25,10 @@ public:
   /* 0160 */ int assist;
   /* 0164 */ std::string name;
   /* 017C */ CAdvenPartyInfo info;
-
-private:
-  PartyRowContext* m_row;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(UIPartyInfoWnd) == 468);
+static_assert(sizeof(UIPartyInfoWnd) == 464);
 #endif
 
 #endif

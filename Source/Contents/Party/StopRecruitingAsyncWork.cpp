@@ -20,7 +20,7 @@ namespace {
 // OFFSET: 0x005D5D70
 // FUNCTION: fn_03711
 CStopRecruitingAsyncWork::CStopRecruitingAsyncWork()
-    : NAsyncWork("Stop_Recruiting"), m_accountId(0), m_masterAccountId(0), m_diagnostic(Diagnostic(false, "unknwon", 28)), m_context(nullptr) {
+    : NAsyncWork("Stop_Recruiting"), m_accountId(0), m_masterAccountId(0), m_diagnostic(Diagnostic(false, "unknwon", 28)) {
 }
 
 // INLINED
@@ -33,9 +33,7 @@ void CStopRecruitingAsyncWork::Reset() {
 
 // OFFSET: 0x005D6230
 // FUNCTION: fn_03713
-void CStopRecruitingAsyncWork::Bind(
-  std::uint32_t accountId, std::string world, std::string url, std::string token, std::uint32_t masterAccountId, StopRecruitingContext& context
-) {
+void CStopRecruitingAsyncWork::Bind(std::uint32_t accountId, std::string world, std::string url, std::string token, std::uint32_t masterAccountId) {
   this->m_group = timeGetTime();
   this->m_accountId = accountId;
   this->m_masterAccountId = masterAccountId;
@@ -45,7 +43,6 @@ void CStopRecruitingAsyncWork::Bind(
   this->m_token = token;
   AsyncDiagnostic diagnostic = Diagnostic(false, "unknwon", 50);
   this->m_diagnostic.MoveFrom(diagnostic);
-  this->m_context = &context;
 }
 
 // OFFSET: 0x005D6570
@@ -77,5 +74,5 @@ bool CStopRecruitingAsyncWork::Execute() {
 // OFFSET: 0x005D64B0
 // FUNCTION: fn_03715
 void CStopRecruitingAsyncWork::Complete() {
-  g_adventurerAgencyMgr->CompleteStopRecruiting(this->m_diagnostic, this->m_response, *this->m_context);
+  g_adventurerAgencyMgr->CompleteStopRecruiting(this->m_diagnostic, this->m_response);
 }

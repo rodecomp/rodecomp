@@ -1,11 +1,13 @@
-#include "Client/Mode/ModeEvents.h"
+#include "Client/Session.h"
+#include "Client/Mode/CMode.h"
+#include "Contents/Messenger/ClientMessenger.h"
 #include "Contents/Party/AdventurerAgencyMgr.h"
-#include "Contents/Party/LoadPartyInfoAsyncWork.h"
+#include "Utility/Async/AsyncDiagnostic.h"
 #include "Contents/MessageTable.h"
-#include "Resource/ResourceFailures.h"
 #include "UI/Party/UIAdvenPartyBoardWnd.h"
 #include "UI/Party/UIApplyForPartyWnd.h"
-#include "UI/Window/WindowManagerWindows.h"
+#include "UI/Window/UINewSelectCharWnd.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowOrdering.h"
 
 #include <json/reader.h>
@@ -13,7 +15,7 @@
 
 // OFFSET: 0x005CC3A0
 // FUNCTION: fn_03664
-void CAdventurerAgencyMgr::CompletePartyInfo(AsyncDiagnostic diagnostic, std::string response, PartyInfoContext& context) {
+void CAdventurerAgencyMgr::CompletePartyInfo(AsyncDiagnostic diagnostic, std::string response) {
   --this->pending;
 
   if (!diagnostic.success) {
@@ -32,12 +34,12 @@ void CAdventurerAgencyMgr::CompletePartyInfo(AsyncDiagnostic diagnostic, std::st
     return;
   }
 
-  const auto notify = [&](int id) { context.messages.Message(LookupMessage(id), 0xFF); };
+  const auto notify = [&](int id) { g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(id)), 0xFF, 0, 0, 0); };
   auto entry = root["data"].begin();
 
   if (entry == root["data"].end()) {
     notify(3443);
-    context.windows.CloseWindow(345);
+    g_windowMgr.CloseWindow(345);
     return;
   }
 
@@ -53,7 +55,7 @@ void CAdventurerAgencyMgr::CompletePartyInfo(AsyncDiagnostic diagnostic, std::st
   info.maximumLevel = (*entry).get("MaxLV", 999).asInt();
   info.type = (*entry).get("Type", 1).asInt();
   info.memo = (*entry).get("Memo", "").asString();
-  UIWindow* board = context.windows.LookupWindow(324);
+  UIWindow* board = g_windowMgr.LookupWindow(324);
 
   if (board) {
     for (auto& value : this->entries) {
@@ -66,19 +68,19 @@ void CAdventurerAgencyMgr::CompletePartyInfo(AsyncDiagnostic diagnostic, std::st
     board->SendMsg(nullptr, 60, 0, 0, 0, 0);
   }
 
-  auto* application = static_cast<UIApplyForPartyWnd*>(context.windows.LookupWindow(345));
+  auto* application = static_cast<UIApplyForPartyWnd*>(g_windowMgr.LookupWindow(345));
 
   if (application) {
     application->SetInfo(info);
-    context.ordering.Promote(application);
+    reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(application);
   }
 
-  if (info.minimumLevel > context.playerLevel || info.maximumLevel < context.playerLevel) {
+  if (info.minimumLevel > g_session.m_level || info.maximumLevel < g_session.m_level) {
     notify(3416);
-  } else if (context.partyCount > 0) {
+  } else if (ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyCount() > 0) {
     notify(79);
   } else {
-    context.mode->SendModeMessage(265, reinterpret_cast<std::intptr_t>(&info.accountId), reinterpret_cast<std::intptr_t>(&info.characterId), 0, 0);
-    context.windows.CloseWindow(345);
+    static_cast<CMode*>(g_charViewMode)->SendMsg(265, reinterpret_cast<int>(&info.accountId), reinterpret_cast<int>(&info.characterId), 0, 0);
+    g_windowMgr.CloseWindow(345);
   }
 }

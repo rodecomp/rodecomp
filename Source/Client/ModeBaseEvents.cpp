@@ -23,7 +23,7 @@ int ModeBaseEvents::Send(int event, const char* text, int, int, int) {
           g_modeMgr.gameMode->running = 0;
         }
       } else if (g_modeMgr.gameMode) {
-        g_adventurerAgencyMgr->RequestStop(this->agency, this->stopRecruiting);
+        g_adventurerAgencyMgr->RequestStop();
         if (g_modeMgr.gameMode) {
           g_modeMgr.gameMode->running = 0;
         }

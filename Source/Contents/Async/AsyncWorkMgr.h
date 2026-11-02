@@ -12,9 +12,6 @@ class CMCStoreInfoBackup;
 struct AccountConfigLoad;
 struct CharacterConfigLoad;
 struct StoreBackupContext;
-struct RegisterPartyContext;
-struct StopRecruitingContext;
-struct PartyInfoContext;
 
 class CAsyncWorkMgr : public NAsyncWorkMgr {
 public:
@@ -38,8 +35,7 @@ public:
   void UploadEmblem(std::string url, std::uint32_t accountId, std::string token, std::string world, std::uint32_t guildId, std::string path);
   void LoadMyParty(std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, WindowManagerWindows& windows);
   void LoadPartyInfo(
-    std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, std::uint32_t queryAccountId,
-    PartyInfoContext& context
+    std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, std::uint32_t queryAccountId
   );
   void LoadPartyList(
     std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, int search, CAdvenPartyInfo filter, int page,
@@ -50,12 +46,8 @@ public:
     StoreBackupContext& context
   );
   void SaveStore(std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, std::string data, int type);
-  void RegisterParty(
-    std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, CAdvenPartyInfo info,
-    RegisterPartyContext& context
-  );
-  void
-  StopRecruiting(std::uint32_t accountId, std::string world, std::string url, std::string token, std::uint32_t masterAccountId, StopRecruitingContext& context);
+  void RegisterParty(std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, CAdvenPartyInfo info);
+  void StopRecruiting(std::uint32_t accountId, std::string world, std::string url, std::string token, std::uint32_t masterAccountId);
 
   // INLINED
   CAsyncWorkRecycleObjectPoolMgr& Pools() {

@@ -14,7 +14,6 @@ class UIEditCtrl;
 class UIJobSlotButton;
 class UIComboBoxDef2Wnd;
 class UIPartyInfoWnd;
-struct PartyRowContext;
 struct ExtendedListLine;
 struct PartyBoardPlacement {
   /* 0000 */ int x;
@@ -23,25 +22,9 @@ struct PartyBoardPlacement {
   /* 000C */ int height;
 };
 
-struct AgencyRequestContext;
-struct StopRecruitingContext;
-struct WindowOrdering;
-
-struct UIAdvenPartyBoardContext {
-  PartyRowContext& rows;
-  AgencyRequestContext& requests;
-  StopRecruitingContext& stopCompletion;
-  WindowOrdering& ordering;
-  const int& playerLevel;
-  const int& partyMember;
-  const int& screenWidth;
-  const int& screenHeight;
-  const std::string& characterName;
-};
-
 class UIAdvenPartyBoardWnd : public UIFrameWnd {
 public:
-  UIAdvenPartyBoardWnd(UIWindowContext& windows, UIAdvenPartyBoardContext& board);
+  UIAdvenPartyBoardWnd(UIWindowContext& windows);
   ~UIAdvenPartyBoardWnd() override;
   void Slot11() override;
   void Slot15(int width, int height) override;
@@ -79,7 +62,6 @@ public:
   /* 0150 */ unsigned char searching;
 
 private:
-  UIAdvenPartyBoardContext* m_board;
   void RefreshRows();
   void UpdatePagination();
   void ResetSearch();
@@ -90,7 +72,7 @@ private:
 static_assert(offsetof(PartyBoardPlacement, y) == 0x04);
 static_assert(offsetof(PartyBoardPlacement, width) == 0x08);
 static_assert(offsetof(PartyBoardPlacement, height) == 0x0C);
-static_assert(sizeof(UIAdvenPartyBoardWnd) == 352);
+static_assert(sizeof(UIAdvenPartyBoardWnd) == 348);
 #endif
 
 #endif

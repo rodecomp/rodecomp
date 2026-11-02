@@ -1,34 +1,33 @@
+#include "Client/Session.h"
 #include "Contents/Party/AdventurerAgencyMgr.h"
-#include "Contents/Party/AgencyRequestContext.h"
 #include "Contents/MessageTable.h"
 #include "Contents/Party/PartyJoinResult.h"
-#include "Contents/Party/StopRecruitingAsyncWork.h"
-#include "UI/Window/WindowNotifications.h"
+#include "UI/Window/UIWindowMgr.h"
 
 #include <cstdio>
 #include <cstring>
 
 // OFFSET: 0x00D3B9E0
 // FUNCTION: fn_21788
-void ReceivePartyJoinResult(const void* packet, PartyJoinResultContext& context) {
+void ReceivePartyJoinResult(const void* packet) {
   const auto* bytes = static_cast<const unsigned char*>(packet);
-  context.notifications.Notify(3, nullptr, 0);
+  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
   std::uint32_t status;
   std::memcpy(&status, bytes + 54, sizeof(status));
   const auto message = [&](int id) { return LookupMessage(id); };
-  const auto notify = [&](int id) { context.notifications.Notify(1, message(id), 0xFF); };
+  const auto notify = [&](int id) { g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message(id)), 0xFF, 0, 0, 0); };
   const auto format = [&](int id, unsigned offset, unsigned color) {
     char text[500] = {};
     _snprintf_s(text, sizeof(text), _TRUNCATE, message(id), reinterpret_cast<const char*>(bytes + offset));
-    context.notifications.Notify(1, text, color);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), color, 0, 0, 0);
   };
 
   switch (status) {
   case 0:
-    format(context.partyMember == 1 ? 3501 : 3498, context.partyMember == 1 ? 2 : 26, 0xFFFF64);
+    format(g_session.unknown_5464 == 1 ? 3501 : 3498, g_session.unknown_5464 == 1 ? 2 : 26, 0xFFFF64);
     break;
   case 1:
-    format(context.partyMember == 1 ? 3502 : 3499, context.partyMember == 1 ? 2 : 26, 0xFF);
+    format(g_session.unknown_5464 == 1 ? 3502 : 3499, g_session.unknown_5464 == 1 ? 2 : 26, 0xFF);
     break;
   case 2:
     notify(3497);
@@ -53,7 +52,7 @@ void ReceivePartyJoinResult(const void* packet, PartyJoinResultContext& context)
     notify(3494);
     std::uint32_t master;
     std::memcpy(&master, bytes + 50, sizeof(master));
-    g_adventurerAgencyMgr->RequestStop(master, context.requests, context.stop);
+    g_adventurerAgencyMgr->RequestStop(master);
     break;
   }
   case 10:

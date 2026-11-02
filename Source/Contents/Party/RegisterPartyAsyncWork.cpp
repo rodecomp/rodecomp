@@ -1,3 +1,4 @@
+#include "Client/Session.h"
 #include "Contents/Party/AdventurerAgencyMgr.h"
 #include "Contents/Party/RegisterPartyAsyncWork.h"
 #include "Network/Http/CURLPostHander.h"
@@ -20,7 +21,7 @@ namespace {
 // OFFSET: 0x005D3600
 // FUNCTION: fn_03704
 CRegisterPartyAsyncWork::CRegisterPartyAsyncWork()
-    : NAsyncWork("Register_Party"), m_accountId(0), m_characterId(0), m_diagnostic(Diagnostic(false, "unknwon", 26)), m_context(nullptr) {
+    : NAsyncWork("Register_Party"), m_accountId(0), m_characterId(0), m_diagnostic(Diagnostic(false, "unknwon", 26)) {
 }
 
 // INLINED
@@ -34,8 +35,7 @@ void CRegisterPartyAsyncWork::Reset() {
 // OFFSET: 0x005D3B80
 // FUNCTION: fn_03706
 void CRegisterPartyAsyncWork::Bind(
-  std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, const CAdvenPartyInfo& info,
-  RegisterPartyContext& context
+  std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, const CAdvenPartyInfo& info
 ) {
   this->m_group = timeGetTime();
   this->m_accountId = accountId;
@@ -47,7 +47,6 @@ void CRegisterPartyAsyncWork::Bind(
   this->m_info = info;
   AsyncDiagnostic diagnostic = Diagnostic(false, "unknwon", 50);
   this->m_diagnostic.MoveFrom(diagnostic);
-  this->m_context = &context;
 }
 
 // OFFSET: 0x005D3F50
@@ -64,7 +63,7 @@ bool CRegisterPartyAsyncWork::Execute() {
   _snprintf_s(maximum, sizeof(maximum), _TRUNCATE, "%d", this->m_info.maximumLevel);
   _snprintf_s(type, sizeof(type), _TRUNCATE, "%d", this->m_info.type);
   const std::string world = ToUtf8(this->m_world);
-  const std::string name = ToUtf8(this->m_context->characterName);
+  const std::string name = ToUtf8(std::string(g_session.DecodePlayerName()));
   const std::string memo = ToUtf8(this->m_info.memo);
   CCURLPostHander handler(this->m_url);
   handler.AddField("AID", account, 4);
@@ -96,5 +95,5 @@ bool CRegisterPartyAsyncWork::Execute() {
 // OFFSET: 0x005D3E90
 // FUNCTION: fn_03708
 void CRegisterPartyAsyncWork::Complete() {
-  g_adventurerAgencyMgr->CompleteRegistration(this->m_diagnostic, this->m_response, *this->m_context);
+  g_adventurerAgencyMgr->CompleteRegistration(this->m_diagnostic, this->m_response);
 }

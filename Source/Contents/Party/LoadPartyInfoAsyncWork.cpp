@@ -20,7 +20,7 @@ namespace {
 // OFFSET: 0x005D0470
 // FUNCTION: fn_03692
 CLoadPartyInfoAsyncWork::CLoadPartyInfoAsyncWork()
-    : NAsyncWork("PartyInfo_Load"), m_accountId(0), m_characterId(0), m_diagnostic(Diagnostic(false, "unknwon", 25)), m_context(nullptr) {
+    : NAsyncWork("PartyInfo_Load"), m_accountId(0), m_characterId(0), m_diagnostic(Diagnostic(false, "unknwon", 25)) {
 }
 
 // INLINED
@@ -34,8 +34,7 @@ void CLoadPartyInfoAsyncWork::Reset() {
 // OFFSET: 0x005D0930
 // FUNCTION: fn_03694
 void CLoadPartyInfoAsyncWork::Bind(
-  std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, std::uint32_t queryAccountId,
-  PartyInfoContext& context
+  std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, std::uint32_t queryAccountId
 ) {
   this->m_group = timeGetTime();
   this->m_accountId = accountId;
@@ -47,7 +46,6 @@ void CLoadPartyInfoAsyncWork::Bind(
   this->m_queryAccountId = queryAccountId;
   AsyncDiagnostic diagnostic = Diagnostic(false, "unknwon", 52);
   this->m_diagnostic.MoveFrom(diagnostic);
-  this->m_context = &context;
 }
 
 // OFFSET: 0x005D0C80
@@ -79,5 +77,5 @@ bool CLoadPartyInfoAsyncWork::Execute() {
 // OFFSET: 0x005D0BC0
 // FUNCTION: fn_03696
 void CLoadPartyInfoAsyncWork::Complete() {
-  g_adventurerAgencyMgr->CompletePartyInfo(this->m_diagnostic, this->m_response, *this->m_context);
+  g_adventurerAgencyMgr->CompletePartyInfo(this->m_diagnostic, this->m_response);
 }

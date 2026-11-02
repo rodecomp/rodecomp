@@ -3,13 +3,11 @@
 #include "Contents/MessageTable.h"
 #include "Client/Input/Language.h"
 #include "Contents/Party/AdventurerAgencyMgr.h"
-#include "Contents/Party/AgencyRequestContext.h"
+#include "Client/Session.h"
 #include "Contents/ForbiddenWords.h"
-#include "Contents/Party/RegisterPartyAsyncWork.h"
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Render/Text/TextContext.h"
 #include "Resource/Bitmap/BitmapResource.h"
-#include "Resource/ResourceFailures.h"
 #include "Resource/ResourceMgr.h"
 #include "UI/Window/InputFocus.h"
 #include "UI/Text/TextFitting.h"
@@ -21,7 +19,7 @@
 #include "UI/Buttons/UIJobSlotButton.h"
 #include "UI/Party/UIRegisterPartyWnd.h"
 #include "UI/Text/UIStaticText.h"
-#include "UI/Window/WindowManagerWindows.h"
+#include "Render/Renderer.h"
 
 #include <algorithm>
 #include <cctype>
@@ -50,8 +48,8 @@ namespace {
 
 // OFFSET: 0x007BAF30
 // FUNCTION: fn_09278
-UIRegisterPartyWnd::UIRegisterPartyWnd(UIWindowContext& windows, UIRegisterPartyContext& registration)
-    : UIFrameWnd(windows, 0), selectedType(0), m_registration(&registration) {
+UIRegisterPartyWnd::UIRegisterPartyWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0), selectedType(0) {
 }
 
 // OFFSET: 0x007BB810
@@ -71,8 +69,6 @@ void UIRegisterPartyWnd::Slot11() {
 // OFFSET: 0x007BDD10
 // FUNCTION: fn_09300
 void UIRegisterPartyWnd::Slot15(int, int) {
-  auto& owner = *this->m_registration;
-
   const auto label = [&](const char* text, int x, int y, int width) {
     auto* value = new UIStaticText(*this->m_context);
     value->SetSize(width, 15);
@@ -86,11 +82,11 @@ void UIRegisterPartyWnd::Slot15(int, int) {
     return value;
   };
   label(LookupMessage(3415), 10, 23, 40);
-  this->character = label(owner.characterName.c_str(), 60, 23, 119);
-  this->character->text = FitText(*this->character->geometry.surface, owner.characterName, 119);
-  this->character->tooltipEnabled = this->character->text != owner.characterName;
+  this->character = label(g_session.DecodePlayerName(), 60, 23, 119);
+  this->character->text = FitText(*this->character->geometry.surface, std::string(g_session.DecodePlayerName()), 119);
+  this->character->tooltipEnabled = this->character->text != g_session.DecodePlayerName();
   label(LookupMessage(408), 10, 49, 40);
-  const int level = owner.playerLevel;
+  const int level = g_session.m_level;
 
   const auto edit = [&](int x, int value) {
     auto* control = new UIEditCtrl(*this->m_context);
@@ -226,7 +222,7 @@ const char* UIRegisterPartyWnd::Text(UIEditCtrl& control) const {
 // OFFSET: 0x007BBA80
 // FUNCTION: fn_09290
 void UIRegisterPartyWnd::NormalizeLevels() {
-  const int level = this->m_registration->playerLevel;
+  const int level = g_session.m_level;
   char number[10] = {};
 
   if (!Digits(this->Text(*this->minimum))) {
@@ -283,8 +279,6 @@ void UIRegisterPartyWnd::Paint() {
 // OFFSET: 0x007C1410
 // FUNCTION: fn_09314
 int UIRegisterPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  auto& owner = *this->m_registration;
-
   if (message == 6) {
     const int value = static_cast<int>(a);
 
@@ -296,10 +290,10 @@ int UIRegisterPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
       const auto notify = [&](int id) {
         char text[256] = {};
         _snprintf_s(text, sizeof(text), _TRUNCATE, LookupMessage(id));
-        owner.completion.messages.Message(text, 0xFF);
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
       };
 
-      if (owner.partyMember != 0) {
+      if (g_session.unknown_5464 != 0) {
         if (g_forbiddenWords.Contains(this->Text(*this->memo))) {
           notify(3372);
           return 0;
@@ -321,22 +315,22 @@ int UIRegisterPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
         info.maximumLevel = std::atoi(this->Text(*this->maximum));
         info.type = this->selectedType;
         info.memo = this->Text(*this->memo);
-        info.characterName = owner.characterName;
-        g_adventurerAgencyMgr->RequestRegistration(info, owner.requests, owner.completion);
+        info.characterName = g_session.DecodePlayerName();
+        g_adventurerAgencyMgr->RequestRegistration(info);
       } else {
         notify(3506);
       }
     }
 
-    owner.requests.windows.CloseWindow(323);
+    g_windowMgr.CloseWindow(323);
     return 0;
   }
 
   if (message == 34) {
     this->saved = reinterpret_cast<PartyBoardPlacement*>(a);
 
-    if (this->saved->width <= 0 || this->saved->height <= 0 || this->saved->x < 0 || this->saved->x > owner.screenWidth - this->saved->width ||
-        this->saved->y < 0 || this->saved->y > owner.screenHeight - this->saved->height) {
+    if (this->saved->width <= 0 || this->saved->height <= 0 || this->saved->x < 0 || this->saved->x > g_renderer->viewport.width - this->saved->width ||
+        this->saved->y < 0 || this->saved->y > g_renderer->viewport.height - this->saved->height) {
       *this->saved = {200, 200, 220, 197};
     }
 
