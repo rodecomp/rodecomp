@@ -485,7 +485,7 @@ unsigned CGameMode::sub_CEC6A0(const std::vector<unsigned char>& data) {
 
 // OFFSET: 0x00CEFE50
 // FUNCTION: fn_21407
-void CGameMode::ClearUnknown04DC() {
+void UIWindowMgr::ClearUnknown04DC() {
   this->unknown_04DC.assign("", 0);
 }
 
@@ -1652,11 +1652,11 @@ void CGameMode::TargetActorByAid(int aid) {
     *reinterpret_cast<int*>(&this->unknown_00D8[0x20]) = 0;
     if (g_session.GetSceneUnknown004C() == 0 && (HIBYTE(GetAsyncKeyState(VK_CONTROL)) || forceOption != 0)) {
       this->RequestPlayerAction(aid, 0);
-      *reinterpret_cast<int*>(&this->unknown_04F4[0xBC]) = 1;
+      this->forcedAttack = 1;
       return;
     }
     this->RequestPlayerAction(aid, 1);
-    *reinterpret_cast<int*>(&this->unknown_04F4[0xBC]) = 0;
+    this->forcedAttack = 0;
   }
 }
 
@@ -2253,8 +2253,8 @@ void CGameMode::ProcessUiMessage(unsigned char* message) {
     break;
   case 906: {
     const GameModeUiWhisperMessage* whisper = reinterpret_cast<const GameModeUiWhisperMessage*>(message);
-    *reinterpret_cast<std::string*>(this->unknown_01F8 + 0x34) = whisper->target;
-    *reinterpret_cast<std::string*>(this->unknown_01F8 + 0x1C) = whisper->text;
+    this->unknown_022C = whisper->target;
+    this->unknown_0214 = whisper->text;
     break;
   }
   case 907: {
@@ -2562,8 +2562,8 @@ void CGameMode::ChangeZoneServer(std::string mapName, int x, int y, int ip, int 
   GetRagConnection().Close();
   g_activeSkillEffects.clear();
 
-  *reinterpret_cast<int*>(this->unknown_01F8 + 0x4C) = 1;
-  *reinterpret_cast<std::uint32_t*>(this->unknown_01F8 + 0x50) = timeGetTime();
+  this->unknown_0244 = 1;
+  this->unknown_0248 = timeGetTime();
   this->scene->player->SendMsg(nullptr, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   if (g_screenShakeDuration > 0) {
     g_screenShakeDuration = g_screenShakeMode == 2 ? 10001 : g_screenShakeDuration;
@@ -3360,7 +3360,7 @@ void CGameMode::InitializeState() {
   *reinterpret_cast<int*>(&this->unknown_00D8[8]) = g_screenHeight;
   this->unknown_00E4 = g_screenWidth;
   this->unknown_00E8 = g_screenHeight;
-  *reinterpret_cast<int*>(&this->unknown_01F8[0x4C]) = 0;
+  this->unknown_0244 = 0;
   this->unknown_024C = 0;
   this->unknown_0250 = 0;
   *reinterpret_cast<int*>(&this->unknown_0294[0x18]) = 0;
@@ -3370,7 +3370,7 @@ void CGameMode::InitializeState() {
   *reinterpret_cast<int*>(&this->unknown_02B8[8]) = 0;
   this->itemWindow = nullptr;
   this->unknown_05D0 = nullptr;
-  *reinterpret_cast<int*>(this->unknown_01F8) = -1;
+  this->unknown_01F8 = -1;
   this->balloonActorId = 0;
   *reinterpret_cast<int*>(this->unknown_02E4) = 0;
   *reinterpret_cast<int*>(&this->unknown_02E4[4]) = 0;
@@ -3393,14 +3393,14 @@ void CGameMode::InitializeState() {
   *reinterpret_cast<int*>(&this->unknown_0100[0x0C]) = 0;
   *reinterpret_cast<int*>(&this->unknown_0100[0x10]) = 0;
   *reinterpret_cast<int*>(&this->unknown_0100[0x14]) = 0;
-  *reinterpret_cast<int*>(&this->unknown_0418[0x38]) = 0;
-  *reinterpret_cast<int*>(&this->unknown_0418[0x3C]) = 0;
-  *reinterpret_cast<std::string*>(&this->unknown_0418[0x20]) = "";
+  this->unknown_0450 = 0;
+  this->unknown_0454 = 0;
+  this->unknown_0438 = "";
   this->unknown_0408 = nullptr;
   this->unknown_040C = 0;
   g_pickInvert = 0;
   *reinterpret_cast<int*>(this->unknown_045C) = 0;
-  *reinterpret_cast<int*>(&this->unknown_0418[4]) = -1;
+  this->miniMapTooltipId = -1;
   *reinterpret_cast<int*>(&this->unknown_045C[4]) = -1;
 
   char subKey[512];
@@ -3427,7 +3427,7 @@ void CGameMode::InitializeState() {
   this->unknown_026E[0x16] = 0;
   *reinterpret_cast<std::uint32_t*>(&this->unknown_026E[0x06]) = timeGetTime();
   *reinterpret_cast<std::uint32_t*>(&this->unknown_026E[0x0A]) = timeGetTime();
-  *reinterpret_cast<std::uint32_t*>(&this->unknown_01F8[0x50]) = timeGetTime();
+  this->unknown_0248 = timeGetTime();
   *reinterpret_cast<std::uint32_t*>(this->unknown_01E0) = timeGetTime();
   this->broadcastBalloon = nullptr;
   *reinterpret_cast<std::uint32_t*>(&this->unknown_026E[0x0E]) = timeGetTime();
@@ -4055,7 +4055,7 @@ void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor*
   }
 
   int& targetAid = *reinterpret_cast<int*>(&this->unknown_00EC[0x04]);
-  int& forced = *reinterpret_cast<int*>(&this->unknown_04F4[0xBC]);
+  int& forced = this->forcedAttack;
   if (attack != 0 && g_groundMarkAltEnabled != 0 && g_mouse.buttons[0] == 1 && g_session.IsMercenarySkill(this->unknown_040C)) {
     CGameActor* mercenary = static_cast<CGameActor*>(this->scene->GetGameActorByAID(mercenaryAid));
     if (mercenary && mercenary->HasUnknown0310Entry()) {
@@ -4181,7 +4181,7 @@ int CGameMode::ProcessMousePick(int result, ActorPickInfo* pick) {
   }
 
   ModeCursor& cursor = *reinterpret_cast<ModeCursor*>(&this->cursorAction);
-  int& lockedPick = *reinterpret_cast<int*>(&this->unknown_04F4[0xBC]);
+  int& lockedPick = this->forcedAttack;
   int& pickTarget = *reinterpret_cast<int*>(&this->unknown_00EC[0x00]);
   int& clickTarget = *reinterpret_cast<int*>(&this->unknown_00EC[0x04]);
 
@@ -4323,7 +4323,7 @@ void CGameMode::ProcessStatusIconTooltip(int x, int y) {
     return;
   }
 
-  int& hoveredId = *reinterpret_cast<int*>(this->unknown_01F8);
+  int& hoveredId = this->unknown_01F8;
   const int count = static_cast<int>(g_activeSkillEffects.end() - g_activeSkillEffects.begin());
   const int rows = (g_renderer->viewport.height - 169) / 35;
   const int right = g_renderer->viewport.width - 18;

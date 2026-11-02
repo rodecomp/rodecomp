@@ -3038,7 +3038,7 @@ void CGameMode::ReceiveExchangeItemAddAck(const unsigned char* data) {
 // FUNCTION: fn_21625
 void CGameMode::ReceiveExchangeRequestAck2(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const ExchangeRequestAckPacket*>(data);
-  const std::string& exchangeName = *reinterpret_cast<const std::string*>(&this->unknown_0130[0x18]);
+  const std::string& exchangeName = this->exchangeName;
   switch (packet->result) {
   case 3: {
     this->SendMsg(40, 0, 0, 0, 0);
@@ -3090,7 +3090,7 @@ void CGameMode::ReceiveExchangeRequestAck(const unsigned char* data) {
     g_windowMgr.CloseWindow(10011);
     UIWindow* window = g_windowMgr.EnsureWindow(10011);
     if (window) {
-      const std::string& exchangeName = *reinterpret_cast<const std::string*>(&this->unknown_0130[0x18]);
+      const std::string& exchangeName = this->exchangeName;
       window->SendMsg(nullptr, 50, reinterpret_cast<std::intptr_t>(exchangeName.c_str()), 0, 0, 0);
     }
     break;

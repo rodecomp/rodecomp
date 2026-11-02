@@ -1555,7 +1555,7 @@ void CGameMode::IgnorePacket478(const unsigned char*) {
 // OFFSET: 0x00D3A1D0
 // FUNCTION: fn_21775
 void CGameMode::ClearUnknown0244(const unsigned char*) {
-  *reinterpret_cast<int*>(this->unknown_01F8 + 0x4C) = 0;
+  this->unknown_0244 = 0;
 }
 
 #pragma pack(push, 1)
@@ -1831,8 +1831,8 @@ void CGameMode::ReceiveDynamicNpcNotice(const unsigned char* packet) {
 // OFFSET: 0x00D079A0
 // FUNCTION: fn_21584
 void CGameMode::sub_D079A0(unsigned char kind, int argument) {
-  std::string& speaker = *reinterpret_cast<std::string*>(this->unknown_01F8 + 0x1C);
-  std::string& target = *reinterpret_cast<std::string*>(this->unknown_01F8 + 0x34);
+  std::string& speaker = this->unknown_0214;
+  std::string& target = this->unknown_022C;
 
   switch (kind) {
   case 0: {
@@ -8286,7 +8286,7 @@ void CGameMode::ReceiveItemPickupAck2(const unsigned char* data) {
     item.unknown_0060 = packet->refine;
     item.unknown_0068 = packet->expireTime;
     if (std::atoi(item.itemId.c_str()) == 607) {
-      *reinterpret_cast<int*>(&this->unknown_04F4[0xC4]) = 0;
+      this->unknown_05B8 = 0;
     }
     if (packet->type == 10 || packet->type == 16 || packet->type == 17 || packet->type == 19) {
       item.unknown_0000[3] = 0x8000;
@@ -8315,7 +8315,7 @@ void CGameMode::ReceiveItemPickupAck2(const unsigned char* data) {
     item.unknown_0060 = packet->refine;
     item.unknown_0068 = packet->expireTime;
     if (std::atoi(item.itemId.c_str()) == 607) {
-      *reinterpret_cast<int*>(&this->unknown_04F4[0xC4]) = 0;
+      this->unknown_05B8 = 0;
     }
     if (packet->type == 10 || packet->type == 16 || packet->type == 17 || packet->type == 19) {
       item.unknown_0000[3] = 0x8000;
@@ -8379,7 +8379,7 @@ void CGameMode::ReceiveItemPickupAck3(const unsigned char* data) {
     item.unknown_0064 = packet->bindOnEquip;
     item.unknown_0074[1] = 1;
     if (std::atoi(item.itemId.c_str()) == 607) {
-      *reinterpret_cast<int*>(&this->unknown_04F4[0xC4]) = 0;
+      this->unknown_05B8 = 0;
     }
     if (packet->type == 10 || packet->type == 16 || packet->type == 17 || packet->type == 19) {
       item.unknown_0000[3] = 0x8000;
@@ -8412,7 +8412,7 @@ void CGameMode::ReceiveItemPickupAck3(const unsigned char* data) {
     item.unknown_0068 = packet->expireTime;
     item.unknown_0064 = packet->bindOnEquip;
     if (std::atoi(item.itemId.c_str()) == 607) {
-      *reinterpret_cast<int*>(&this->unknown_04F4[0xC4]) = 0;
+      this->unknown_05B8 = 0;
     }
     if (packet->type == 10 || packet->type == 16 || packet->type == 17 || packet->type == 19) {
       item.unknown_0000[3] = 0x8000;
@@ -8476,7 +8476,7 @@ void CGameMode::ReceiveItemPickupAck(const unsigned char* data) {
     item.unknown_005D = packet->damaged;
     item.unknown_0060 = packet->refine;
     if (std::atoi(item.itemId.c_str()) == 607) {
-      *reinterpret_cast<int*>(&this->unknown_04F4[0xC4]) = 0;
+      this->unknown_05B8 = 0;
     }
     if (packet->type == 10 || packet->type == 16 || packet->type == 17 || packet->type == 19) {
       item.unknown_0000[3] = 0x8000;
@@ -8504,7 +8504,7 @@ void CGameMode::ReceiveItemPickupAck(const unsigned char* data) {
     item.unknown_005D = packet->damaged;
     item.unknown_0060 = packet->refine;
     if (std::atoi(item.itemId.c_str()) == 607) {
-      *reinterpret_cast<int*>(&this->unknown_04F4[0xC4]) = 0;
+      this->unknown_05B8 = 0;
     }
     if (packet->type == 10 || packet->type == 16 || packet->type == 17 || packet->type == 19) {
       item.unknown_0000[3] = 0x8000;
@@ -8581,7 +8581,7 @@ void CGameMode::ReceiveItemPickupAck5(
         reinterpret_cast<StoreItemOption*>(item.unknown_009C)[option] = options[option];
       }
       if (std::atoi(item.itemId.c_str()) == 607) {
-        *reinterpret_cast<int*>(&static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_04F4[0xC4]) = 0;
+        static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_05B8 = 0;
       }
       if (type == 10 || type == 16 || type == 17 || type == 19) {
         item.unknown_0000[3] = 0x8000;
@@ -8622,7 +8622,7 @@ void CGameMode::ReceiveItemPickupAck5(
       reinterpret_cast<StoreItemOption*>(item.unknown_009C)[option] = options[option];
     }
     if (std::atoi(item.itemId.c_str()) == 607) {
-      *reinterpret_cast<int*>(&static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_04F4[0xC4]) = 0;
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_05B8 = 0;
     }
     if (type == 10 || type == 16 || type == 17 || type == 19) {
       item.unknown_0000[3] = 0x8000;
@@ -8695,7 +8695,7 @@ void CGameMode::ReceiveItemPickupAck7(const unsigned char* data) {
       reinterpret_cast<StoreItemOption*>(item.unknown_009C)[option] = options[option];
     }
     if (std::atoi(item.itemId.c_str()) == 607) {
-      *reinterpret_cast<int*>(&static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_04F4[0xC4]) = 0;
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_05B8 = 0;
     }
     if (packet->type == 10 || packet->type == 16 || packet->type == 17 || packet->type == 19) {
       item.unknown_0000[3] = 0x8000;
@@ -8735,7 +8735,7 @@ void CGameMode::ReceiveItemPickupAck7(const unsigned char* data) {
       reinterpret_cast<StoreItemOption*>(item.unknown_009C)[option] = options[option];
     }
     if (std::atoi(item.itemId.c_str()) == 607) {
-      *reinterpret_cast<int*>(&static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_04F4[0xC4]) = 0;
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_05B8 = 0;
     }
     if (packet->type == 10 || packet->type == 16 || packet->type == 17 || packet->type == 19) {
       item.unknown_0000[3] = 0x8000;
@@ -9771,7 +9771,7 @@ void CGameMode::ReceiveItemPickupAck8(const unsigned char* data) {
       reinterpret_cast<StoreItemOption*>(item.unknown_009C)[option] = options[option];
     }
     if (std::atoi(item.itemId.c_str()) == 607) {
-      *reinterpret_cast<int*>(&static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_04F4[0xC4]) = 0;
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_05B8 = 0;
     }
     if (packet->type == 10 || packet->type == 16 || packet->type == 17 || packet->type == 19) {
       item.unknown_0000[3] = 0x8000;
@@ -9814,7 +9814,7 @@ void CGameMode::ReceiveItemPickupAck8(const unsigned char* data) {
       reinterpret_cast<StoreItemOption*>(item.unknown_009C)[option] = options[option];
     }
     if (std::atoi(item.itemId.c_str()) == 607) {
-      *reinterpret_cast<int*>(&static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_04F4[0xC4]) = 0;
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_05B8 = 0;
     }
     if (packet->type == 10 || packet->type == 16 || packet->type == 17 || packet->type == 19) {
       item.unknown_0000[3] = 0x8000;
@@ -9891,7 +9891,7 @@ void CGameMode::ReceiveItemPickupAck9(const unsigned char* data) {
       }
       item.unknown_0074[0] = packet->favorite;
       if (std::atoi(item.itemId.c_str()) == 607) {
-        *reinterpret_cast<int*>(&static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_04F4[0xC4]) = 0;
+        static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_05B8 = 0;
       }
       if (packet->type == 10 || packet->type == 16 || packet->type == 17 || packet->type == 19) {
         item.unknown_0000[3] = 0x8000;
@@ -9944,7 +9944,7 @@ void CGameMode::ReceiveItemPickupAck9(const unsigned char* data) {
     }
     item.unknown_0074[0] = packet->favorite;
     if (std::atoi(item.itemId.c_str()) == 607) {
-      *reinterpret_cast<int*>(&static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_04F4[0xC4]) = 0;
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_05B8 = 0;
     }
     if (packet->type == 10 || packet->type == 16 || packet->type == 17 || packet->type == 19) {
       item.unknown_0000[3] = 0x8000;

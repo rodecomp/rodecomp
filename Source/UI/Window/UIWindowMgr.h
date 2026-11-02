@@ -476,6 +476,7 @@ public:
   void MoveTransient(int x, int y);
   void RetireTransientWindow();
   void ClearWindow01B8();
+  void ClearUnknown04DC();
   int ProcessMouse();
   bool CloseWindow(int id);
   void CloseWindowExcept251(int id);

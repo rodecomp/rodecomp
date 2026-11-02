@@ -807,8 +807,8 @@ char g_miniMapTooltipText[256];
 // OFFSET: 0x00CD1690
 // FUNCTION: fn_21257
 void CGameMode::RefreshMiniMapTooltips() {
-  int& tooltipId = *reinterpret_cast<int*>(&this->unknown_0418[0x04]);
-  std::string& tooltipText = *reinterpret_cast<std::string*>(&this->unknown_0418[0x08]);
+  int& tooltipId = this->miniMapTooltipId;
+  std::string& tooltipText = this->miniMapTooltipText;
   std::map<int, std::string>& tooltipWindows = *reinterpret_cast<std::map<int, std::string>*>(&this->unknown_05D4[0x08]);
 
   if (tooltipId == -1) {
@@ -893,8 +893,8 @@ void CGameMode::RefreshMiniMapTooltips() {
 // OFFSET: 0x00CD0B30
 // FUNCTION: fn_21254
 int CGameMode::UpdateMiniMapTooltip() {
-  int& tooltipId = *reinterpret_cast<int*>(&this->unknown_0418[0x04]);
-  std::string& tooltipText = *reinterpret_cast<std::string*>(&this->unknown_0418[0x08]);
+  int& tooltipId = this->miniMapTooltipId;
+  std::string& tooltipText = this->miniMapTooltipText;
   int id = tooltipId;
   if (id > 9 || id == -1) {
     this->RefreshMiniMapTooltips();
