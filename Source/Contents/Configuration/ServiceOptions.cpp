@@ -32,6 +32,7 @@
 #include "UI/Window/WindowManagerWindows.h"
 #include "Script/LuaInstance.h"
 #include "Script/LuaScript.h"
+#include "Utility/Cipher/XorBytes.h"
 #include "Utility/Singleton.h"
 #include "Utility/Text/StringUtil.h"
 
@@ -73,10 +74,10 @@ public:
   ~CGameSettingsMgr() override;
 
   /* 000C */ std::vector<GameSettingsOption> options;
-  /* 0018 */ std::unordered_map<std::uint32_t, std::function<void(int, unsigned char, bool, int, int)>, SkillIdHash> actions;
-  /* 0038 */ std::unordered_map<std::uint32_t, std::function<void()>, SkillIdHash> functions;
+  /* 0018 */ std::unordered_map<std::uint32_t, std::function<void(int, unsigned char, bool, int, int)>> actions;
+  /* 0038 */ std::unordered_map<std::uint32_t, std::function<void()>> functions;
 
-  bool Load();
+  bool LoadSettings();
   bool ReadOptionTable();
   void ResetToDefaults();
   void ToggleOption(int id);
@@ -85,6 +86,9 @@ public:
   bool RunFunction(int id);
   std::optional<GameSettingsOption*> FindOption(int id);
   std::list<int> GetOptionIds(int tab);
+
+private:
+  void Init_Func();
 };
 
 using GameSettings = CGameSettingsMgr;
@@ -107,6 +111,339 @@ const float g_jitterDistanceScale = 400.0f;
 
 // GLOBAL: gl_25022
 float g_serviceOptionJitterScale = 400.0f;
+
+// GLOBAL: gl_25051
+const char* const g_serviceOptionNames[300] = {
+    "TT_NORMAL",
+    "TT_BROADCAST",
+    "TT_STAT",
+    "TT_UNKNOWN",
+    "TT_DISCONNECT_CHARACTER",
+    "TT_DISCONNECT_ALL_CHARACTER",
+    "TT_REQ_NUM_USER",
+    "TT_MUSIC_ON_OFF",
+    "TT_EFFECT_ON_OFF",
+    "TT_EX_MAP_POS",
+    "TT_FRAMESKIP_ON_OFF",
+    "TT_EFFECT_SOUND_ON_OFF",
+    "TT_VOLUME",
+    "TT_BVOLUME",
+    "TT_EX_HELP",
+    "TT_EX_WHISPER_BLOCK_LIST",
+    "TT_EX_WHISPER_ALL_BLOCK",
+    "TT_EX_WHISPER_ALL_ACCEPT",
+    "TT_REQ_WHISPER_PC_EX",
+    "TT_REQ_WHISPER_PC_IN",
+    "TT_IS_REDCELL",
+    "TT_UNUSED_EX_STAND",
+    "TT_EX_SIT",
+    "TT_EX_MAKE_CHAT_ROOM",
+    "TT_EX_EXIT_CHAT_ROOM",
+    "TT_REQ_EXCHANGE_ITEM",
+    "TT_REQ_MAKE_GROUP",
+    "TT_EX_LEAVE_GROUP",
+    "TT_REQ_EXPEL_GROUP_MEMBER",
+    "TT_REQ_EMOTION_SURPRISE",
+    "TT_REQ_EMOTION_QUESTION",
+    "TT_REQ_EMOTION_DELIGHT",
+    "TT_REQ_EMOTION_THROB",
+    "TT_REQ_EMOTION_SWEAT",
+    "TT_REQ_EMOTION_AHA",
+    "TT_REQ_EMOTION_FRET",
+    "TT_REQ_EMOTION_ANGER",
+    "TT_REQ_EMOTION_MONEY",
+    "TT_REQ_EMOTION_THINK",
+    "TT_REQ_EMOTION_SCISSOR",
+    "TT_REQ_EMOTION_ROCK",
+    "TT_REQ_EMOTION_WRAP",
+    "TT_OPEN_TIP",
+    "TT_EX_REMEMBER_WARPPOINT",
+    "TT_REQ_PK",
+    "TT_SKILL_SNAP_ON_OFF",
+    "TT_ATTACK_SNAP_ON_OFF",
+    "TT_ITEM_SNAP_ON_OFF",
+    "TT_REQ_ITEM_CREATE",
+    "TT_REQ_MOVETO_MAP",
+    "TT_NORMAL_FROM_CHATROOM",
+    "TT_EX_SAVE_CHAT",
+    "TT_REQ_SAVE_CHAT_FROM_CHATROOM",
+    "TT_MISS_EFFECT_ON_OFF",
+    "TT_FIXED_CAMERA_ON_OFF",
+    "TT_REQ_MAKE_GUILD",
+    "TT_REQ_BREAK_GUILD",
+    "TT_GUILD_CHAT",
+    "TT_TEST_SHOW_IMAGE",
+    "TT_TESTPACKET",
+    "TT_FOG_ON_OFF",
+    "TT_REQ_RESETSTATE",
+    "TT_REQ_RESETSKILL",
+    "TT_CHANGE_MAPTYPE",
+    "TT_SHOW_EMBLEM_ON_OFF",
+    "TT_TOGGLE_OBJLIGHT",
+    "TT_REQ_EMOTION_THANKS",
+    "TT_REQ_EMOTION_KEK",
+    "TT_REQ_EMOTION_SORRY",
+    "TT_REQ_EMOTION_SMILE",
+    "TT_REQ_EMOTION_PROFUSELY_SWEAT",
+    "TT_REQ_EMOTION_SCRATCH",
+    "TT_REQ_EMOTION_BEST",
+    "TT_REQ_EMOTION_STARE_ABOUT",
+    "TT_REQ_EMOTION_HUK",
+    "TT_REQ_EMOTION_O",
+    "TT_REQ_EMOTION_X",
+    "TT_REQ_EMOTION_HELP",
+    "TT_REQ_EMOTION_GO",
+    "TT_REQ_EMOTION_BIGTHROB",
+    "TT_REQ_EMOTION_CRY",
+    "TT_REQ_EMOTION_KIK",
+    "TT_REQ_EMOTION_CHUP",
+    "TT_REQ_EMOTION_CHUPCHUP",
+    "TT_REQ_EMOTION_HNG",
+    "TT_REQ_EMOTION_OK",
+    "TT_SHOW_EMOTIONLIST",
+    "TT_LOCALBROADCAST",
+    "TT_HIDE",
+    "TT_UNUSED_NAME_BALLOON",
+    "TT_NAMELESS_BROADCAST",
+    "TT_NAMELESS_LOCALBROADCAST",
+    "TT_NAME_ABOVE_HEAD_ON_OFF",
+    "TT_SAVEMONEY",
+    "TT_LOADMONEY",
+    "TT_REMOVE",
+    "TT_SHIFT",
+    "TT_RECALL_AID",
+    "TT_RECALL_GID",
+    "TT_FORCING_MOVE_AID",
+    "TT_FORCING_MOVE_GID",
+    "TT_BILLING_INFO",
+    "TT_NAMELESS_BLUEBROADCAST",
+    "TT_NAMELESS_BLUELOCALBROADCAST",
+    "TT_REQ_AUTO_SAVE_CHAT",
+    "TT_NOSHIFT_ON_OFF",
+    "TT_FULL_AURA_ON_OFF",
+    "TT_HIDE_AURA_ON_OFF",
+    "TT_BOLD_NAME_TYPE_ON_OFF",
+    "TT_NOCTRL_ON_OFF",
+    "TT_EX_DORIDORI",
+    "TT_EX_BINGBING",
+    "TT_EX_BANGBANG",
+    "TT_SKILLFAIL_ON_OFF",
+    "TT_NOTALKMSG_ON_OFF",
+    "TT_SET1_ON_OFF",
+    "TT_REQ_REPORT_CHAT",
+    "TT_REQ_REPORT_CHAT_FROM_CHATROOM",
+    "UNUSED_TT_CLIPMOUSE",
+    "TT_LIGHTMAP_ON_OFF",
+    "TT_QUICKSPELL_ON_OFF",
+    "TT_QUICKSPELL2_ON_OFF",
+    "TT_QUICKSPELL3_ON_OFF",
+    "TT_REQ_EMOTION_STARE",
+    "TT_REQ_EMOTION_HUNGRY",
+    "TT_REQ_EMOTION_COOL",
+    "TT_REQ_EMOTION_MERONG",
+    "TT_REQ_EMOTION_SHY",
+    "TT_REQ_EMOTION_GOODBOY",
+    "TT_REQ_EMOTION_SPTIME",
+    "TT_REQ_EMOTION_SEXY",
+    "TT_REQ_EMOTION_COMEON",
+    "TT_REQ_EMOTION_SLEEPY",
+    "TT_REQ_EMOTION_CONGRATULATION",
+    "TT_REQ_EMOTION_HPTIME",
+    "TT_BATTLE_ON_OFF",
+    "TT_NOTRADE_ON_OFF",
+    "TT_SIYEON_STATUS",
+    "TT_SET2_ON_OFF",
+    "TT_SYSTEM_CHECK_ON_OFF",
+    "UNUSED_TT_FRAME_ON_OFF",
+    "TT_WINDOW_SNAP_ON_OFF",
+    "TT_SHOW_PVP_INFO",
+    "TT_CHECK_ID",
+    "TT_RC_ID",
+    "TT_RANDOM_LOADING_SCREEN_ON_OFF",
+    "TT_EX_RANK_BLACKSMITH",
+    "TT_EX_RANK_ALCHEMIST",
+    "TT_NOTALKMSG2_ON_OFF",
+    "TT_LEVEL",
+    "TT_SP",
+    "TT_EX_HI",
+    "TT_EX_RANK_TAEKWON",
+    "TT_AUTO_MSG_ON_OFF",
+    "TT_REQ_EMOTION_SPARK",
+    "TT_REQ_EMOTION_CONFUSE",
+    "TT_REQ_EMOTION_OHNO",
+    "TT_REQ_EMOTION_HUM",
+    "TT_REQ_EMOTION_BLABLA",
+    "TT_REQ_EMOTION_OTL",
+    "TT_REQ_EMOTION_DICE",
+    "TT_REQ_KILLER_RANK",
+    "TT_TRACEAI_ON_OFF",
+    "TT_HOMUN_WAIT",
+    "TT_HOMUN_USERAI_ON_OFF",
+    "TT_LOGINOUT_ON_OFF",
+    "TT_SET3_ON_OFF",
+    "TT_SHOPPING_ON_OFF",
+    "TT_REQ_MUNAK",
+    "TT_REQ_HUNTING",
+    "TT_REQ_DEATHKNIGHT",
+    "TT_REQ_EMOTION_LUV",
+    "TT_REQ_COLLECTOR",
+    "TT_MINIGAME_ON_OFF",
+    "TT_MER_USERAI_ON_OFF",
+    "TT_REQ_EMOTION_MOBILE",
+    "TT_REQ_EMOTION_MAIL",
+    "TT_REQ_EMOTION_ANTENNA0",
+    "TT_REQ_EMOTION_ANTENNA1",
+    "TT_REQ_EMOTION_ANTENNA2",
+    "TT_REQ_EMOTION_ANTENNA3",
+    "TT_COPY_NAME",
+    "TT_REQ_ACCEPT_INVITE_PARTY",
+    "TT_REQ_REFUSE_INVITE_PARTY",
+    "TT_REQ_INVITE_PARTY",
+    "TT_REQ_OPEN_EQUIPEDITEM_ONOFF",
+    "TT_BATTLECHAT_ON_OFF",
+    "TT_REQ_EMOTION_HUM2",
+    "TT_REQ_EMOTION_ABS",
+    "TT_REQ_EMOTION_OOPS",
+    "TT_REQ_EMOTION_SPIT",
+    "TT_REQ_EMOTION_ENE",
+    "TT_REQ_EMOTION_PANIC",
+    "TT_REQ_EMOTION_WHISP",
+    "TT_PROCESS_AFFINITY",
+    "TT_TINGONLY_ON_OFF",
+    "TT_SEEK_PARTY",
+    "TT_BATTLEFIELD_ICON_ON_OFF",
+    "TT_BATTLEFIELD_WND_ON_OFF",
+    "TT_OPEN_SIMPLE_CASH",
+    "TT_REQ_RECRUIT",
+    "TT_STATEINFO_ON_OFF",
+    "TT_SHOW_INFO_TESTLAYER",
+    "TT_GPK_DYNCODE_RELOAD",
+    "UNUSED_TT_MAKE_DBGINTERFACE",
+    "TT_SHOW_WEB_ADDRESSBAR",
+    "TT_STOPWATCH",
+    "TT_SHOW_BUILD_INFO",
+    "TT_WEB_BROWSER",
+    "TT_NAVIGATION",
+    "TT_NAVIGATION2",
+    "TT_REQ_INVITE_GUILD",
+    "TT_TEST_MONSTERHP",
+    "TT_MONSTERHP_ON_OFF",
+    "TT_CLAN_CHAT",
+    "TT_REQ_EFST",
+    "TT_REQ_BARGAINSALE",
+    "TT_NAVIGATION3",
+    "TT_SHOW_CASHSHOP_BTN_ON_OFF",
+    "TT_SHOW_GOLDPCCAFE_ON_OFF",
+    "TT_SHOW_ROULETTE_BTN_ON_OFF",
+    "TT_QUAKE_ON_OFF",
+    "TT_UNUSED_CONNECT_TWITTER",
+    "TT_SHOW_MINIMAP_BUTTON_ONOFF",
+    "TT_MACRO_REGISTER",
+    "TT_MACRO_PREVIEW",
+    "TT_MACRO_DETECTOR",
+    "TT_VIEW_CAMERAINFO_ON_OFF",
+    "TT_SET_CAMERA",
+    "TT_MIN_EFFECT_ON_OFF",
+    "TT_RESET_COOLTIME",
+    "TT_BLOCK_CALL_ON_OFF",
+    "TT_RODEX_ON_OFF",
+    "TT_ACHIEVEMENT_ON_OFF",
+    "TT_SHOW_EFFECT",
+    "TT_STYLINGSHOP",
+    "TT_ADVENTURER_AGENCY_SETUP",
+    "TT_ADVEN_PARTY_BOARD",
+    "TT_INDOOR_DISPLAY_ON_OFF",
+    "TT_EX_NO_COS_PLAY",
+    "TT_SPRITEMABLE_ON_OFF",
+    "TT_EXPAND_SIGHT_ON_OFF",
+    "TT_HALFALPHAOBJ_ON_OFF",
+    "TT_EMBLEM_FRAME_ON_OFF",
+    "TT_INDOOR_MEMO",
+    "TT_SKIPCOUNT_TEST",
+    "TT_RECORD_TEST",
+    "TT_CLASSNAME_POPUP_ON_OFF",
+    "TT_TOGGLE_PACKET_LOG",
+    "TT_ACCOUNT_LINKED_USER_DATA_TEST_LOG",
+    "TT_SHOW_MERCHANT_SHOP_ON_OFF",
+    "TT_PRISON_USER",
+    "TT_OPEN_ACCOUNT_LIMITED_TOOL",
+    "TT_REQ_RESET_PERIOD_EFFECT",
+    "TT_REMOVE_ON",
+    "TT_REMOVE_OFF",
+    "TT_CHANGE_COSTUME_JOB",
+    "TT_WEAPON_EFFECT_OUT",
+    "TT_WEAPON_EFFECT_IN",
+    "TT_ROS_COUNTDOWN",
+    "TT_MACRO_CHECKER_MAP",
+    "TT_ROS_OPENUI",
+    "TT_ROS_OBSERVER",
+    "TT_ROS_QUIT",
+    "TT_ITEM_COMPARE_ON_OFF",
+    "TT_HIDE_PLAYER_ON_OFF",
+    "TT_HIDE_SUMMON_ON_OFF",
+    "TT_EXTEND_DAMAGE_ON_OFF",
+    "TT_SHOW_MAP_NAME_ON_OFF",
+    "TT_HIDE_FOOTPRINT_ON_OFF",
+    "TT_QUICK_SLOT_ON_OFF",
+    "TT_MOUSE_EXCLUSIVE_ON_OFF",
+    "TT_TOGGLE_AUTO_HUNT",
+    "TT_AUTO_HUNT_MOB_ADD",
+    "TT_AUTO_HUNT_MOB_DEL",
+    "TT_AUTO_HUNT_MOB_SHOW",
+    "TT_TOGGLE_AUTO_HUNT_LOG",
+    "TT_AUTO_HUNT_ITEMPICK_WEIGHT",
+    "TT_UI_SOUND_ON_OFF",
+    "TT_PROBABILITY_TEST",
+    "TT_AUTO_HUNT_WINGOFFLY_ADD",
+    "TT_AUTO_HUNT_WINGOFFLY_DEL",
+    "TT_AUTO_HUNT_WINGOFFLY_CLEAR",
+    "TT_AUTO_HUNT_WINGOFFLY_SHOW",
+    "TT_CHANGE_LANGUAGE",
+    "TT_TRANSLATE_SERVER_ON_OFF",
+    "TT_AUTO_MOVE_START",
+    "TT_AUTO_MOVE_STOP",
+    "TT_AUTO_HUNT_WINGOFBUTTERFLY_ADD",
+    "TT_AUTO_HUNT_WINGOFBUTTERFLY_DEL",
+    "TT_AUTO_HUNT_WINGOFBUTTERFLY_CLEAR",
+    "TT_AUTO_HUNT_WINGOFBUTTERFLY_SHOW",
+    "TT_AUTO_HUNT_COMMAND_ONOFF",
+    "TT_AUTO_HUNT_COMMAND_VALUE",
+    "TT_AUTO_HUNT_COMMAND_ONOFF_SHOW",
+    "TT_AUTO_HUNT_COMMAND_VALUE_SHOW",
+    "TT_PETINFO_ALERT_ONOFF",
+    "TT_SHOW_CARD_ILLUST_ONOFF",
+    "TT_NO_CHECK_VALID_CELL_FOR_MOVE",
+    "TT_3D_SOUND_ON_OFF"
+};
+
+template <std::size_t Length, std::uint64_t Key>
+class EncryptedName {
+public:
+  explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+    for (std::uint64_t index = 0; index < Length; ++index) {
+      this->m_text[index] = source[index];
+    }
+  }
+
+  ~EncryptedName() {
+    for (std::uint64_t index = 0; index < Length; ++index) {
+      this->m_text[index] = 0;
+    }
+  }
+
+  const char* Text() {
+    if (this->m_encrypted) {
+      utility::XorBytes(this->m_text, Length, Key);
+      this->m_encrypted = false;
+    }
+
+    return reinterpret_cast<const char*>(this->m_text);
+  }
+
+private:
+  std::uint8_t m_text[Length];
+  bool m_encrypted;
+};
 
 void ApplyServiceOption(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage);
 
@@ -209,6 +546,32 @@ std::list<int> GameSettings::GetOptionIds(int tab) {
     }
   }
   return ids;
+}
+
+// OFFSET: 0x006C1180
+// FUNCTION: fn_06317
+bool CGameSettingsMgr::LoadSettings() {
+  this->SetGlobal("EFFECT", 1.0);
+  this->SetGlobal("CONTROL", 2.0);
+  this->SetGlobal("ETC", 4.0);
+  this->SetGlobal("ONOFF", 0.0);
+  this->SetGlobal("EXE", 1.0);
+  for (int i = 0; i < 300; ++i) {
+    this->SetGlobal(g_serviceOptionNames[i], static_cast<double>(i));
+  }
+
+  this->Init_Func();
+
+  const std::uint8_t source[] = {
+      0x5B, 0x6E, 0x4C, 0xE5, 0xD4, 0x87, 0x24, 0x7C, 0x22, 0x2A, 0x19, 0xFF, 0xF1, 0x9E, 0x20, 0x2F,
+      0x51, 0x72, 0x41, 0xC6, 0xCE, 0xB7, 0x0E, 0x7F, 0x63, 0x72, 0x42, 0xCD, 0xF4, 0x85, 0x27, 0x60,
+      0x4B, 0x5C, 0x4C, 0xCE, 0xD8, 0xB8, 0x24, 0x7B, 0x63, 0x72, 0x43, 0xC4, 0xCE, 0xC5, 0x2D, 0x7A,
+      0x75, 0x1B};
+  thread_local EncryptedName<sizeof(source), 0x0F41EBBDA32D1B17ULL> name(source);
+  if (!this->LoadFile(name.Text())) {
+    return false;
+  }
+  return this->ReadOptionTable();
 }
 
 // OFFSET: 0x006C17A0
@@ -933,7 +1296,7 @@ void ApplyServiceOptionWeatherFlag(int id, unsigned char value, bool notify, int
 
 // OFFSET: 0x006C5AD0
 // FUNCTION: fn_06364
-void ApplyServiceOptionWindow27(int, unsigned char, bool, int, int) {
+void ApplyServiceOptionWindow27() {
   if (g_windowMgr.unknown_0304 != 0) {
     reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x24B), 0, true, false, 0, "Message", 0x118, 0x78, 0);
     return;
@@ -1060,6 +1423,11 @@ void ShowPlayerLocation() {
   }
 }
 
+static void ShowNoticeType6() {
+  g_windowMgr.SendNotice(6, 0, 0, 0, 0, 0);
+}
+
+// OFFSET: 0x006C4950
 
 // GLOBAL: gl_25208
 bool g_showBattleFieldIcon;
