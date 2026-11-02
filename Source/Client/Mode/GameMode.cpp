@@ -5052,3 +5052,595 @@ void CGameMode::ProcessStatusIconTooltip(int x, int y) {
     }
   }
 }
+
+// OFFSET: 0x00CE2880
+// FUNCTION: fn_21334
+int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
+  const unsigned char selfTargetOption = g_serviceOptions.Get(0x69);
+  const unsigned char forceOption = g_serviceOptions.Get(0x6D);
+  ModeCursor& cursor = *reinterpret_cast<ModeCursor*>(&this->cursorAction);
+  const int& siegeMode = *reinterpret_cast<const int*>(&g_session.unknown_5454[4]);
+  const std::uint32_t& homunAid = *reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5570[8]);
+  const std::uint32_t& mercenaryAid = *reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5620[8]);
+  GuildInfo* guildInfo = &g_guildInfo;
+
+  if (pick->accountId != g_session.m_aid) {
+    switch (pick->kind) {
+    case 0:
+      if (pick->job != 45 && g_session.IsAllyActor(pick->accountId, pick->job) == 1) {
+        cursor.Set(1, this->cursorTick);
+        if (g_mouse.buttons[0] == 2) {
+          result = 2;
+        } else {
+          result = 1;
+        }
+      } else if (pick->job == 45) {
+        cursor.Set(7, this->cursorTick);
+        result = 2;
+      } else {
+        result = 1;
+        if (IsPlayerJob(pick->job)) {
+          const std::intptr_t mode = reinterpret_cast<std::intptr_t>(this->unknown_0408);
+          int skillMode;
+          int shift;
+          int support;
+          int attack;
+          if (mode == 2 || mode == 4) {
+            skillMode = 1;
+            shift = HIBYTE(GetAsyncKeyState(VK_SHIFT));
+            support = IsSupportSkill(this->unknown_040C);
+            attack = shift;
+            if (support) {
+              skillMode = 1;
+              attack = shift == 0;
+            }
+          } else {
+            skillMode = 0;
+            shift = HIBYTE(GetAsyncKeyState(VK_SHIFT));
+            attack = shift;
+            support = 0;
+          }
+
+          CWorld* scene = this->scene;
+          CGameActor* actor = static_cast<CGameActor*>(scene->GetGameActorByAID(pick->accountId));
+          if (scene->unknown_0050 == 0) {
+            if (g_session.GetMapProperty07()) {
+              if (!g_session.IsPartyMember(pick->accountId, true)) {
+                attack = 1;
+              }
+            } else if (g_session.GetMapProperty08() && actor != nullptr) {
+              if (!g_session.IsLocalPlayerAid(actor->Slot50())) {
+                attack = 1;
+              }
+            }
+
+            if (this->scene->unknown_004C != 0) {
+              if (actor != nullptr) {
+                if (!g_session.IsLocalPlayerAid(actor->Slot50()) && !guildInfo->HasRelatedGuild(actor->Slot50())) {
+                  attack = 1;
+                } else {
+                  attack = 0;
+                  if (skillMode) {
+                    const bool optionalSelf = IsOptionalSelfTargetSkill(this->unknown_040C);
+                    attack = support;
+                    if ((selfTargetOption != 0 || shift != 0) && optionalSelf == true) {
+                      attack = 1;
+                    }
+                  }
+                }
+              }
+            } else if (pick->unknown_0024 != 0 || this->scene->unknown_0048 != 0 || this->scene->unknown_0054 != 0 || siegeMode != 0) {
+              if (!g_session.IsPartyMember(pick->accountId, true)) {
+                attack = 1;
+              }
+            }
+          } else if (actor != nullptr && g_session.unknown_0F24[0] != actor->render.unknown_00FB) {
+            attack = 1;
+          }
+
+          const int state = actor != nullptr ? actor->render.unknown_0070 : 3;
+          if (attack && state != 3) {
+            cursor.Set(skillMode ? 11 : 5, this->cursorTick);
+            result = 1;
+            *reinterpret_cast<int*>(&this->unknown_00EC[0]) = pick->accountId;
+          } else {
+            cursor.Set(skillMode && state != 3 ? 10 : 0, this->cursorTick);
+            result = 0;
+            if (g_mouse.buttons[0] == 0 && this->unknown_0028 == 0 && *reinterpret_cast<int*>(&this->unknown_00EC[4]) == 0) {
+              *reinterpret_cast<int*>(&this->unknown_00EC[0]) = pick->accountId;
+            }
+          }
+        } else if (g_session.IsNpcJob(pick->job) == true) {
+          cursor.Set(1, this->cursorTick);
+          if (g_mouse.buttons[0] == 2) {
+            result = 2;
+          }
+        } else if (reinterpret_cast<CGameActor*>(&g_session)->IsMonsterClass(pick->job)) {
+          const std::intptr_t mode = reinterpret_cast<std::intptr_t>(this->unknown_0408);
+          int skillMode;
+          int attack;
+          if (mode == 2 || mode == 4) {
+            skillMode = 1;
+            const int shift = HIBYTE(GetAsyncKeyState(VK_SHIFT));
+            attack = shift == 0;
+            if (IsSupportSkill(this->unknown_040C)) {
+              attack = shift;
+              skillMode = 1;
+            }
+          } else {
+            skillMode = 0;
+            attack = HIBYTE(GetAsyncKeyState(VK_SHIFT)) == 0;
+          }
+          if (selfTargetOption != 0) {
+            attack = 1;
+          }
+
+          CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(pick->accountId));
+          if (g_session.GetMapProperty08() && actor != nullptr && g_session.IsLocalPlayerAid(actor->Slot50())) {
+            attack = 0;
+          }
+          if (this->scene->unknown_004C != 0 && actor != nullptr && g_session.IsLocalPlayerAid(actor->Slot50())) {
+            attack = 0;
+          }
+
+          if (this->unknown_00F8 != 0) {
+            if (attack) {
+              if (skillMode) {
+                cursor.Set(11, this->cursorTick);
+              } else if (actor != nullptr && actor->unknown_0314 == 7) {
+                cursor.Set(0, this->cursorTick);
+              } else {
+                cursor.Set(5, this->cursorTick);
+              }
+            } else {
+              cursor.Set(skillMode ? 10 : 0, this->cursorTick);
+            }
+          }
+
+          if (g_mouse.buttons[0] == 0 && this->unknown_0028 == 0) {
+            *reinterpret_cast<int*>(&this->unknown_00EC[4]) = pick->accountId;
+          }
+          if (g_mouse.buttons[0] == 2 || g_mouse.buttons[1] == 2) {
+            result = 2;
+          }
+        }
+      }
+      break;
+    case 2: {
+      result = 1;
+      int action;
+      if (g_session.GetSceneUnknown004C()) {
+        switch (pick->job) {
+        case 0x8D:
+        case 0x8F:
+        case 0x90:
+        case 0x91:
+        case 0x93:
+        case 0x94:
+        case 0x95:
+        case 0x96:
+        case 0x97:
+        case 0x98:
+        case 0x99:
+        case 0xBE:
+        case 0xBF:
+        case 0xC0:
+        case 0xC1:
+        case 0xC2:
+        case 0xCB:
+        case 0xD2:
+        case 0xD3:
+        case 0xD4:
+        case 0xD5:
+        case 0xD6:
+        case 0xD7:
+        case 0xD8:
+        case 0xD9:
+        case 0xDA:
+        case 0xDE:
+        case 0xE5:
+        case 0xE6:
+        case 0xE7:
+        case 0xE8:
+        case 0xE9:
+        case 0xF0:
+        case 0x108:
+        case 0x5174:
+        case 0x5175:
+        case 0x5176:
+        case 0x5177:
+          action = reinterpret_cast<std::intptr_t>(this->unknown_0408) == 5 ? 10 : 5;
+          break;
+        default:
+          action = reinterpret_cast<std::intptr_t>(this->unknown_0408) == 5 ? 10 : 0;
+          break;
+        }
+      } else {
+        switch (pick->job) {
+        case 0x8D:
+        case 0x8F:
+        case 0x98:
+        case 0xDA:
+        case 0xDE:
+        case 0xE6:
+        case 0x5174:
+        case 0x5175:
+        case 0x5176:
+        case 0x5177:
+          action = reinterpret_cast<std::intptr_t>(this->unknown_0408) == 5 ? 10 : 5;
+          break;
+        default:
+          action = reinterpret_cast<std::intptr_t>(this->unknown_0408) == 5 ? 10 : 0;
+          break;
+        }
+      }
+      cursor.Set(action, this->cursorTick);
+      if (g_mouse.buttons[0] == 2) {
+        result = 2;
+      }
+      break;
+    }
+    case 1:
+      result = 1;
+      cursor.Set(9, this->cursorTick);
+      if (g_mouse.buttons[0] == 2) {
+        result = 2;
+      }
+      break;
+    case 3:
+      result = 0;
+      cursor.Set(0, this->cursorTick);
+      break;
+    case 4: {
+      result = 0;
+      cursor.Set(0, this->cursorTick);
+      CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(pick->accountId));
+      if (actor != nullptr && actor->render.unknown_0070 != 3) {
+        if (g_session.m_aid == static_cast<std::uint32_t>(actor->unknown_02EC)) {
+          if (actor->unknown_0314 == 8 && this->unknown_040C == 0xE7) {
+            result = 1;
+            cursor.Set(11, this->cursorTick);
+            *reinterpret_cast<int*>(&this->unknown_00EC[4]) = pick->accountId;
+          }
+        } else {
+          CWorld* scene = this->scene;
+          if (scene->unknown_0048 == 1 || siegeMode == 1 || scene->unknown_004C == 1) {
+            if (scene->unknown_004C == 1) {
+              CGameActor* owner = static_cast<CGameActor*>(scene->GetGameActorByAID(actor->unknown_02EC));
+              if (owner == nullptr || g_session.IsLocalPlayerAid(owner->Slot50()) == 1 || guildInfo->HasRelatedGuild(owner->Slot50()) == true) {
+                break;
+              }
+            }
+            result = 1;
+            cursor.Set(5, this->cursorTick);
+            *reinterpret_cast<int*>(&this->unknown_00EC[4]) = pick->accountId;
+          }
+        }
+      }
+      break;
+    }
+    }
+  }
+
+  if (g_mouse.buttons[0] != 1 && g_mouse.buttons[1] != 1) {
+    return result;
+  }
+
+  switch (pick->kind) {
+  case 0: {
+    if (pick->job == 45) {
+      return result;
+    }
+
+    if (g_session.IsAllyActor(pick->accountId, pick->job) == 1) {
+      const int state = this->scene->player->render.unknown_0070;
+      if (state != 0 && state != 6) {
+        return result;
+      }
+      if (this->IsMenuWindowOpen() == true) {
+        return result;
+      }
+
+      CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(pick->accountId));
+      int column;
+      int row;
+      this->WorldCell(actor->render.position.x, actor->render.position.z, column, row);
+      this->scene->player->SendMsg(nullptr, 16, 0, column, column >> 31, row, row >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+      if (g_windowMgr.HasPendingDialog() == true) {
+        g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xFBB)), 255, 25, 0, 0);
+        return result;
+      }
+
+      ContactNpcPacket packet;
+      packet.packetType = ID_CZ_CONTACTNPC;
+      packet.npcId = pick->accountId;
+      packet.type = 1;
+      GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
+      return result;
+    }
+
+    const int job = pick->job;
+    if (reinterpret_cast<CGameActor*>(&g_session)->IsMonsterClass(job)) {
+      const std::intptr_t mode = reinterpret_cast<std::intptr_t>(this->unknown_0408);
+      int attack;
+      if (mode == 2 || mode == 4) {
+        const int shift = HIBYTE(GetAsyncKeyState(VK_SHIFT));
+        const bool support = IsSupportSkill(this->unknown_040C);
+        attack = shift == 0;
+        if (support) {
+          attack = shift;
+        }
+      } else {
+        attack = HIBYTE(GetAsyncKeyState(VK_SHIFT)) == 0;
+      }
+      if (selfTargetOption != 0) {
+        attack = 1;
+      }
+
+      if (g_groundMarkEnabled && g_mouse.buttons[1] == 1 && HIBYTE(GetAsyncKeyState(VK_MENU))) {
+        if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
+          CGameActor* homun = static_cast<CGameActor*>(this->scene->GetGameActorByAID(homunAid));
+          if (homun != nullptr && homun->HasUnknown030CEntry()) {
+            AiMessage message = {};
+            message.type = 3;
+            message.target = pick->accountId;
+            homun->SetUnknown0330(reinterpret_cast<const float*>(&message), 0);
+          }
+        } else if (g_session.unknown_5610 != 0 && g_groundMarkAid == pick->accountId) {
+          CGameActor* homun = static_cast<CGameActor*>(this->scene->GetGameActorByAID(homunAid));
+          if (homun != nullptr && homun->HasUnknown030CEntry()) {
+            AiMessage message = {};
+            message.type = 3;
+            message.target = g_groundMarkAid;
+            homun->SetUnknown0318(reinterpret_cast<const float*>(&message), 0);
+          }
+          g_session.unknown_5610 = 0;
+        } else {
+          cursor.Set(11, this->cursorTick);
+          g_groundMarkAid = pick->accountId;
+          g_groundMarkA = 0;
+          g_groundMarkB = 0;
+          g_groundMarkSet = 0;
+          g_session.unknown_5610 = 1;
+        }
+        g_session.unknown_560C = 1;
+      }
+
+      if (g_groundMarkEnabled && g_mouse.buttons[0] == 1 && g_session.IsHomunculusSkill(this->unknown_040C)) {
+        CGameActor* homun = static_cast<CGameActor*>(this->scene->GetGameActorByAID(homunAid));
+        if (homun != nullptr && homun->HasUnknown030CEntry()) {
+          AiMessage message;
+          message.type = 7;
+          message.x = 0;
+          message.y = 0;
+          message.level = this->unknown_0414;
+          message.skill = this->unknown_040C;
+          message.target = pick->accountId;
+          homun->SetUnknown0318(reinterpret_cast<const float*>(&message), 0);
+        }
+        return result;
+      }
+
+      if (g_groundMarkAltEnabled && g_mouse.buttons[0] == 1 && HIBYTE(GetAsyncKeyState(VK_MENU))) {
+        if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
+          CGameActor* mercenary = static_cast<CGameActor*>(this->scene->GetGameActorByAID(mercenaryAid));
+          if (mercenary != nullptr && mercenary->HasUnknown0310Entry()) {
+            AiMessage message = {};
+            message.type = 3;
+            message.target = pick->accountId;
+            mercenary->SetUnknown0330(reinterpret_cast<const float*>(&message), 1);
+          }
+        } else if (g_session.unknown_56AC != 0 && g_groundMarkAltAid == pick->accountId) {
+          CGameActor* mercenary = static_cast<CGameActor*>(this->scene->GetGameActorByAID(mercenaryAid));
+          if (mercenary != nullptr && mercenary->HasUnknown0310Entry()) {
+            AiMessage message = {};
+            message.type = 3;
+            message.target = g_groundMarkAltAid;
+            mercenary->SetUnknown0318(reinterpret_cast<const float*>(&message), 1);
+          }
+          g_session.unknown_56AC = 0;
+        } else {
+          cursor.Set(11, this->cursorTick);
+          g_groundMarkAltAid = pick->accountId;
+          g_groundMarkAltA = 0;
+          g_groundMarkAltB = 0;
+          g_groundMarkAltSet = 0;
+          g_session.unknown_56AC = 1;
+        }
+        g_session.unknown_56A8 = 1;
+      }
+
+      if (attack && g_groundMarkAltEnabled && g_mouse.buttons[0] == 1 && g_session.IsMercenarySkill(this->unknown_040C)) {
+        CGameActor* mercenary = static_cast<CGameActor*>(this->scene->GetGameActorByAID(mercenaryAid));
+        if (mercenary != nullptr && mercenary->HasUnknown0310Entry()) {
+          AiMessage message;
+          message.type = 7;
+          message.x = 0;
+          message.y = 0;
+          message.level = this->unknown_0414;
+          message.skill = this->unknown_040C;
+          message.target = pick->accountId;
+          mercenary->SetUnknown0318(reinterpret_cast<const float*>(&message), 1);
+        }
+        return result;
+      }
+
+      if (g_mouse.buttons[0] == 1 && attack && !HIBYTE(GetAsyncKeyState(VK_MENU))) {
+        this->SendMsg(0x1A, 1, 0, 0, 0);
+        *reinterpret_cast<int*>(&this->unknown_00EC[8]) = pick->accountId;
+        *reinterpret_cast<int*>(&this->unknown_00EC[4]) = pick->accountId;
+        this->unknown_00F8 = 0;
+        if (g_session.GetSceneUnknown004C() == 0 && (HIBYTE(GetAsyncKeyState(VK_CONTROL)) || forceOption != 0)) {
+          this->RequestPlayerAction(pick->accountId, 0);
+          this->forcedAttack = 1;
+        } else {
+          this->RequestPlayerAction(pick->accountId, 1);
+          this->forcedAttack = 0;
+        }
+        return result;
+      }
+
+      if (this->forcedAttack == 0 && g_mouse.buttons[0] == 3) {
+        *reinterpret_cast<int*>(&this->unknown_00EC[4]) = 0;
+      }
+      return result;
+    }
+
+    if (!IsPlayerJob(job)) {
+      break;
+    }
+
+    const std::intptr_t mode = reinterpret_cast<std::intptr_t>(this->unknown_0408);
+    int attack;
+    if (mode == 2 || mode == 4) {
+      const int shift = HIBYTE(GetAsyncKeyState(VK_SHIFT));
+      attack = shift;
+      if (IsSupportSkill(this->unknown_040C)) {
+        attack = shift == 0;
+      }
+    } else {
+      attack = HIBYTE(GetAsyncKeyState(VK_SHIFT));
+    }
+    if (pick->unknown_0024 != 0 || this->scene->unknown_0048 != 0 || siegeMode != 0) {
+      attack = 1;
+    }
+    if (selfTargetOption != 0) {
+      attack = 1;
+    }
+
+    if (attack && g_mouse.buttons[0] == 1) {
+      int index = 0;
+      CGameActor* companion;
+      if (g_session.IsHomunculusSkill(this->unknown_040C) && g_groundMarkEnabled) {
+        companion = static_cast<CGameActor*>(this->scene->GetGameActorByAID(homunAid));
+        if (companion != nullptr && companion->HasUnknown030CEntry()) {
+          AiMessage message;
+          message.type = 7;
+          message.x = 0;
+          message.y = 0;
+          message.level = this->unknown_0414;
+          message.skill = this->unknown_040C;
+          message.target = pick->accountId;
+          companion->SetUnknown0318(reinterpret_cast<const float*>(&message), index);
+          return result;
+        }
+      } else if (g_session.IsMercenarySkill(this->unknown_040C) && g_groundMarkAltEnabled) {
+        companion = static_cast<CGameActor*>(this->scene->GetGameActorByAID(mercenaryAid));
+        if (companion != nullptr && companion->HasUnknown0310Entry()) {
+          index = 1;
+          AiMessage message;
+          message.type = 7;
+          message.x = 0;
+          message.y = 0;
+          message.level = this->unknown_0414;
+          message.skill = this->unknown_040C;
+          message.target = pick->accountId;
+          companion->SetUnknown0318(reinterpret_cast<const float*>(&message), index);
+          return result;
+        }
+      }
+    }
+
+    const bool allowed = pick->accountId != g_session.m_aid || mode == 4;
+    if (!allowed || !attack) {
+      return result;
+    }
+
+    this->SendMsg(0x1A, 1, 0, 0, 0);
+    *reinterpret_cast<int*>(&this->unknown_00EC[8]) = pick->accountId;
+    *reinterpret_cast<int*>(&this->unknown_00EC[4]) = pick->accountId;
+    this->unknown_00F8 = 0;
+    if (g_session.GetSceneUnknown004C() == 0 && (HIBYTE(GetAsyncKeyState(VK_CONTROL)) || forceOption != 0)) {
+      this->RequestPlayerAction(pick->accountId, 0);
+      this->forcedAttack = 1;
+      return result;
+    }
+    this->RequestPlayerAction(pick->accountId, 1);
+    this->forcedAttack = 0;
+    return result;
+  }
+  case 2:
+    switch (pick->job) {
+    case 0x8D:
+    case 0x8F:
+    case 0x98:
+    case 0xDA:
+    case 0xDE:
+    case 0xE6:
+    case 0x5174:
+    case 0x5175:
+    case 0x5176:
+    case 0x5177: {
+      const int skill = this->unknown_040C;
+      if (skill == 0xD7 || skill == 0xD8 || skill == 0xD9 || skill == 0xDA) {
+        return result;
+      }
+
+      this->SendMsg(0x1A, 1, 0, 0, 0);
+      this->unknown_00F8 = 0;
+      const int skillUse = reinterpret_cast<int>(&this->unknown_0408);
+      if (!HIBYTE(GetAsyncKeyState(VK_CONTROL)) && forceOption == 0) {
+        this->scene->player->SendMsg(nullptr, 103, 0, pick->accountId, 0, skillUse, skillUse >> 31, 1, 0, 0, 0, 0, 0, 0, 0);
+        this->forcedAttack = 0;
+      } else {
+        this->scene->player->SendMsg(nullptr, 103, 0, pick->accountId, 0, skillUse, skillUse >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+        this->forcedAttack = 1;
+      }
+      return result;
+    }
+    default:
+      if (reinterpret_cast<std::intptr_t>(this->unknown_0408) == 5) {
+        const long long skillUse = static_cast<long long>(reinterpret_cast<int>(this)) + offsetof(CGameMode, unknown_0408);
+        this->scene->player->SendMsg(nullptr, 103, 0, pick->accountId, 0, static_cast<int>(skillUse), static_cast<int>(skillUse >> 32), 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      return result;
+    }
+  case 3:
+    cursor.Set(0, this->cursorTick);
+    return 0;
+  case 1:
+    if (g_mouse.buttons[0] == 1 && reinterpret_cast<std::intptr_t>(this->unknown_0408) == 0) {
+      this->scene->player->SendMsg(nullptr, 18, 0, pick->accountId, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+    break;
+  case 4: {
+    cursor.Set(0, this->cursorTick);
+    if (g_session.IsMercenaryJob(pick->job)) {
+      CWorld* scene = this->scene;
+      if (this->unknown_040C == 0xE7 || ((scene->unknown_0048 != 0 || scene->unknown_004C != 0 || siegeMode != 0) && !g_session.IsHomunAid(pick->accountId))) {
+        if ((this->scene->unknown_0048 != 0 || this->scene->unknown_004C != 0 || siegeMode != 0) && !g_session.IsHomunAid(pick->accountId)) {
+          cursor.Set(5, this->cursorTick);
+        }
+        this->RequestPlayerAction(pick->accountId, 1);
+        this->forcedAttack = 0;
+        return 0;
+      }
+      break;
+    }
+
+    const std::intptr_t mode = reinterpret_cast<std::intptr_t>(this->unknown_0408);
+    int attack;
+    if (mode == 2 || mode == 4) {
+      const int shift = HIBYTE(GetAsyncKeyState(VK_SHIFT));
+      attack = shift;
+      if (IsSupportSkill(this->unknown_040C)) {
+        attack = shift == 0;
+      }
+    } else {
+      attack = HIBYTE(GetAsyncKeyState(VK_SHIFT));
+    }
+    if (pick->unknown_0024 != 0 || this->scene->unknown_0048 != 0 || this->scene->unknown_004C != 0 || siegeMode != 0) {
+      attack = 1;
+    }
+
+    const bool allowed = pick->accountId != mercenaryAid || mode == 4;
+    if (allowed && attack) {
+      this->RequestPlayerAction(pick->accountId, 1);
+    }
+    return 0;
+  }
+  }
+
+  return result;
+}
