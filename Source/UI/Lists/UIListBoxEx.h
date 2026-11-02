@@ -6,7 +6,6 @@
 #include <map>
 #include <string>
 
-struct UIListBoxContext;
 class UIScrollBar;
 
 struct ExtendedListLine {
@@ -16,7 +15,7 @@ struct ExtendedListLine {
 
 class UIListBoxEx : public UIWindow {
 public:
-  UIListBoxEx(UIWindowContext& windows, UIListBoxContext& list);
+  UIListBoxEx(UIWindowContext& windows);
   ~UIListBoxEx() override;
   void Resize(int width, int height) override;
   void Slot15(int width, int height) override;
@@ -49,7 +48,7 @@ public:
   /* 00BC */ std::uint32_t selectionColor;
 
 protected:
-  UIListBoxContext* m_listContext;
+  void* unknown_listContext;
   int LineAt(int x, int y) const;
 };
 

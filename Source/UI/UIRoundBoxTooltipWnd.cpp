@@ -20,7 +20,7 @@
 #include <vector>
 
 // INLINED
-UIColoringTextViewer::UIColoringTextViewer(UIWindowContext& windows, UIListBoxContext& list) : UIListBox(windows, list), color(0), lineLimit(0) {
+UIColoringTextViewer::UIColoringTextViewer(UIWindowContext& windows) : UIListBox(windows), color(0), lineLimit(0) {
 }
 
 // OFFSET: 0x0099A1F0
@@ -30,7 +30,7 @@ void UIRoundBoxTooltipWnd::Slot15(int width, int height) {
     return;
   }
 
-  this->viewer = new UIColoringTextViewer(*this->m_context, *this->m_listContext);
+  this->viewer = new UIColoringTextViewer(*this->m_context);
   this->viewer->Configure(4, 4, width - 6, height - 6, 0);
 
   unsigned red;
@@ -68,7 +68,6 @@ void UIColoringTextViewer::Paint() {
     end = this->lineLimit;
   }
 
-  auto& owner = *this->m_listContext;
   for (int index = first; index < end; ++index) {
     const auto& line = this->lines[index];
     DrawColoredText(*this, 3, this->lineHeight * (index - first) + 4, line.c_str(), static_cast<unsigned>(line.size()), this->color, 0, 12, false);

@@ -88,7 +88,7 @@ std::vector<NaviRouteLine> g_navigationLabels;
 // OFFSET: 0x00921A70
 // FUNCTION: fn_12643
 void UINavigationWnd::Slot15(int width, int height) {
-  this->m_routePanel = new UIListBoxNavi(*this->m_context, *this->m_listContext);
+  this->m_routePanel = new UIListBoxNavi(*this->m_context);
   this->m_routePanel->SetSize(215, 96);
   this->m_routePanel->backgroundRed = 210;
   this->m_routePanel->backgroundGreen = 210;
@@ -97,7 +97,7 @@ void UINavigationWnd::Slot15(int width, int height) {
   this->m_routePanel->Move(-1000, -1000);
   this->AddChild(this->m_routePanel);
 
-  this->m_searchPanel = new UIListBoxNavi(*this->m_context, *this->m_listContext);
+  this->m_searchPanel = new UIListBoxNavi(*this->m_context);
   this->m_searchPanel->SetSize(215, 96);
   this->m_searchPanel->backgroundRed = 210;
   this->m_searchPanel->backgroundGreen = 210;

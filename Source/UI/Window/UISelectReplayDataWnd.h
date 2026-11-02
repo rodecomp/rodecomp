@@ -6,7 +6,6 @@
 class UIBitmapButton;
 class UIReplayListBox;
 class UIStaticText;
-struct UIListBoxContext;
 
 class UISelectReplayDataWnd : public UIFrameWnd {
 public:
@@ -24,7 +23,7 @@ public:
 
 protected:
   void* unknown_controls;
-  UIListBoxContext* m_listContext;
+  void* unknown_listContext;
 };
 
 #endif

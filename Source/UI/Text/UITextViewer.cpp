@@ -38,7 +38,7 @@ namespace {
   }
 
   // INLINED
-  void ScanColors(const std::string& line, unsigned short codePage, std::uint32_t& color) {
+  void ScanColors(const std::string& line, std::uint32_t& color) {
     const char* current = line.c_str();
     const char* end = current + line.size();
 
@@ -55,7 +55,7 @@ namespace {
                 ((Digit(current[6]) + 16 * Digit(current[5])) << 16);
         current += 7;
       } else {
-        current = CharNextExA(codePage, current, 0);
+        current = CharNextExA(static_cast<WORD>(g_textCodePage), current, 0);
       }
     }
   }
@@ -64,10 +64,10 @@ namespace {
 // OFFSET: 0x0086F0A0
 // FUNCTION: fn_11086
 UITextViewer::UITextViewer(UIWindowContext& windows, UITextViewerContext& text)
-    : UIListBox(windows, text.list), splitTipLinks(0), outline(0), bold(0), m_text(&text) {
+    : UIListBox(windows), splitTipLinks(0), outline(0), bold(0), m_text(&text) {
   this->lineHeight = 18;
   constexpr char path[] = "유저인터페이스\\colorchip.bmp";
-  const auto* chip = static_cast<CBitmapRes*>(text.list.resources.Load(path));
+  const auto* chip = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(path));
   const auto& image = chip->image;
   const std::uint32_t pixel = image.width > 18 && image.height > 2 ? image.pixels[18 + 2 * image.width] : 0x00FF0000u;
   this->backgroundColor = 0xFF000000u | ((pixel & 255) << 16) | (pixel & 0xFF00) | ((pixel >> 16) & 255);
@@ -229,11 +229,10 @@ void UITextViewer::Paint() {
 
   const int limit = (this->geometry.height / divisor + this->topLine);
   const int end = static_cast<int>(std::min(static_cast<unsigned>(this->lines.size()), static_cast<unsigned>(limit)));
-  auto& owner = this->m_text->list;
   std::uint32_t color = 0;
 
   for (int index = 0; index < this->topLine; ++index) {
-    ScanColors(this->lines[index], owner.codePage, color);
+    ScanColors(this->lines[index], color);
   }
 
   for (int index = this->topLine; index < end; ++index) {

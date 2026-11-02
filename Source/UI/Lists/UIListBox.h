@@ -10,22 +10,11 @@ struct FrameFocus;
 class ResourceMgr;
 class UIScrollBar;
 #include "UI/Window/WindowManagerWindows.h"
-class NavigationDestination;
-
-struct UIListBoxContext {
-  FrameFocus& capture;
-  ResourceMgr& resources;
-  FontCache& fonts;
-  const TextLocale& locale;
-  const unsigned short& codePage;
-  WindowManagerWindows& windows;
-  NavigationDestination& navigation;
-};
 
 class UIListBox : public UIWindow {
 public:
   __declspec(noinline) UIListBox();
-  __declspec(noinline) UIListBox(UIWindowContext& windows, UIListBoxContext& list);
+  __declspec(noinline) UIListBox(UIWindowContext& windows);
   ~UIListBox() override;
   void Resize(int width, int height) override;
   void Slot15(int width, int height) override;
@@ -68,7 +57,7 @@ public:
   /* 00D0 */ int textInset;
 
 protected:
-  UIListBoxContext* m_listContext;
+  void* unknown_listContext;
 };
 
 class UIServerListBox : public UIListBox {
@@ -81,7 +70,7 @@ public:
 
 class UIListBox2 : public UIListBox {
 public:
-  UIListBox2(UIWindowContext& windows, UIListBoxContext& list);
+  UIListBox2(UIWindowContext& windows);
   void Paint() override;
 
   /* 00D4 */ int fontFamily;

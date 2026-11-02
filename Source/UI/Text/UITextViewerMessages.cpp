@@ -1,3 +1,4 @@
+#include "UI/Window/UIWindowMgr.h"
 #include "Contents/Items/ItemInfo.h"
 #include "UI/Lists/UIScrollBar.h"
 #include "UI/Buttons/UITextButton.h"
@@ -87,7 +88,7 @@ void UITextViewer::Activate(UITextButton* button, int id) {
     item.unknown_0070 = 0;
     item.itemId = arguments.at(0);
 
-    if (UIWindow* window = this->m_text->list.windows.LookupWindow(12)) {
+    if (UIWindow* window = g_windowMgr.LookupWindow(12)) {
       window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     }
 
@@ -95,7 +96,7 @@ void UITextViewer::Activate(UITextButton* button, int id) {
   }
   case 517:
     if (!arguments.empty()) {
-      if (UIWindow* window = this->m_text->list.windows.EnsureWindow(315)) {
+      if (UIWindow* window = g_windowMgr.EnsureWindow(315)) {
         this->m_text->actions.OpenTip(*window, number(0));
       }
     }
@@ -111,7 +112,6 @@ void UITextViewer::Activate(UITextButton* button, int id) {
 
 // INLINED
 void UITextViewer::AppendText(char* text, int width, bool carriageReturns, bool pixels) {
-  auto& owner = this->m_text->list;
   std::vector<std::string> wrapped;
 
   if (width == 138) {

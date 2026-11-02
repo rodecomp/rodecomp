@@ -804,7 +804,7 @@ int CCreateLineInfo::LayoutLink(int x, std::string text, int type, LineTextStyle
   if (std::get<0>(info)) {
     std::string display = std::get<1>(info);
     if (this->m_parent) {
-      display = RemoveTextColors(display.c_str(), 0);
+      display = RemoveTextColors(display.c_str());
     }
 
     const std::vector<std::string> parts = SplitString(std::get<2>(info), ",");

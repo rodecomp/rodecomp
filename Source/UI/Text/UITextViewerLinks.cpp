@@ -1,3 +1,4 @@
+#include "Client/Input/InputCharset.h"
 #include "Contents/Items/ItemNaming.h"
 #include "Render/Text/TextContext.h"
 #include "UI/Text/ItemLinkDisplay.h"
@@ -38,10 +39,9 @@ std::pair<int, int> UITextViewer::LinkPosition(unsigned position, unsigned added
   unsigned accumulated = 0;
   const auto count = static_cast<unsigned>(this->lines.size());
   const unsigned first = count - addedLines;
-  auto& owner = this->m_text->list;
 
   for (unsigned index = first; index < count; ++index) {
-    const std::string plain = RemoveTextColors(this->lines[index].c_str(), owner.codePage);
+    const std::string plain = RemoveTextColors(this->lines[index].c_str());
     accumulated += static_cast<unsigned>(plain.size());
 
     if (accumulated > position) {
@@ -57,8 +57,7 @@ std::pair<int, int> UITextViewer::LinkPosition(unsigned position, unsigned added
 // OFFSET: 0x008760D0
 // FUNCTION: fn_11205
 bool UITextViewer::AddItemLinks(std::string text, unsigned addedLines) {
-  auto& owner = this->m_text->list;
-  std::string parsed = RemoveTextColors(text.c_str(), owner.codePage);
+  std::string parsed = RemoveTextColors(text.c_str());
   parsed = DisplayTextTag(std::move(parsed), "<URL>", "</URL>");
   parsed = DisplayTextTag(std::move(parsed), "<NAVI>", "</NAVI>");
 
@@ -101,8 +100,7 @@ bool UITextViewer::AddItemLinks(std::string text, unsigned addedLines) {
 // OFFSET: 0x00876700
 // FUNCTION: fn_11206
 bool UITextViewer::AddNaviLinks(std::string text, unsigned addedLines) {
-  auto& owner = this->m_text->list;
-  std::string parsed = RemoveTextColors(text.c_str(), owner.codePage);
+  std::string parsed = RemoveTextColors(text.c_str());
   parsed = DisplayTextTag(std::move(parsed), "<URL>", "</URL>");
   parsed = DisplayTextTag(std::move(parsed), "<ITEM>", "</ITEM>");
 
@@ -202,8 +200,7 @@ void UIListBoxNavi::ResetLineColors() {
 // OFFSET: 0x00877020
 // FUNCTION: fn_11209
 bool UITextViewer::AddQuestLinks(std::string text, unsigned addedLines) {
-  auto& owner = this->m_text->list;
-  std::string parsed = RemoveTextColors(text.c_str(), owner.codePage);
+  std::string parsed = RemoveTextColors(text.c_str());
   parsed = DisplayTextTag(std::move(parsed), "<URL>", "</URL>");
   parsed = DisplayTextTag(std::move(parsed), "<NAVI>", "</NAVI>");
 
@@ -246,8 +243,7 @@ bool UITextViewer::AddQuestLinks(std::string text, unsigned addedLines) {
 // OFFSET: 0x00877B00
 // FUNCTION: fn_11211
 void UITextViewer::AddTipLinks(std::string text, unsigned addedLines) {
-  auto& owner = this->m_text->list;
-  std::string parsed = RemoveTextColors(text.c_str(), owner.codePage);
+  std::string parsed = RemoveTextColors(text.c_str());
   parsed = DisplayTextTag(std::move(parsed), "<URL>", "</URL>");
   parsed = DisplayTextTag(std::move(parsed), "<NAVI>", "</NAVI>");
   parsed = DisplayTextTag(std::move(parsed), "<ITEM>", "</ITEM>");
@@ -280,7 +276,7 @@ void UITextViewer::AddTipLinks(std::string text, unsigned addedLines) {
       const char* breakAt = begin;
 
       while (current < end) {
-        current = CharNextExA(owner.codePage, current, 0);
+        current = g_serverLanguage->NextChar(current, static_cast<int>(end - current));
 
         while (*current == ' ') {
           breakAt = ++current;
@@ -346,8 +342,7 @@ void UITextViewer::AddTipLinks(std::string text, unsigned addedLines) {
 // OFFSET: 0x00878750
 // FUNCTION: fn_11212
 bool UITextViewer::AddUrlLinks(std::string text, unsigned addedLines) {
-  auto& owner = this->m_text->list;
-  std::string parsed = RemoveTextColors(text.c_str(), owner.codePage);
+  std::string parsed = RemoveTextColors(text.c_str());
   parsed = DisplayTextTag(std::move(parsed), "<NAVI>", "</NAVI>");
   parsed = DisplayTextTag(std::move(parsed), "<ITEM>", "</ITEM>");
 

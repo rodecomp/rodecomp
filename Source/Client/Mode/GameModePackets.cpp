@@ -3779,7 +3779,7 @@ void CGameMode::ShowSpecialPopup(int popupId) {
   switch (popup->m_messageId) {
   case 0:
     for (const std::string& description : popup->m_descriptions) {
-      text = RemoveTextColors(description.c_str(), static_cast<unsigned short>(g_textCodePage));
+      text = RemoveTextColors(description.c_str());
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), popup->m_color, 0, 0, 0);
     }
     break;
@@ -3790,7 +3790,7 @@ void CGameMode::ShowSpecialPopup(int popupId) {
     [[fallthrough]];
   case 2:
     for (const std::string& description : popup->m_descriptions) {
-      text = RemoveTextColors(description.c_str(), static_cast<unsigned short>(g_textCodePage));
+      text = RemoveTextColors(description.c_str());
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), popup->m_color, 0, 0, 0);
     }
     if (UIWindow* popupWindow = g_windowMgr.EnsureWindow(358)) {

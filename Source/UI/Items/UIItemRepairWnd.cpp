@@ -54,7 +54,7 @@ void UIMakeTargetResultWnd::Paint() {
 // OFFSET: 0x009A0B00
 // FUNCTION: fn_13604
 void UIItemRepairWnd::Slot15(int width, int height) {
-  this->m_list = new UIListBox(*this->m_context, *this->m_listContext);
+  this->m_list = new UIListBox(*this->m_context);
   this->m_list->Configure(12, 22, width - 24, height - 55, 0);
   this->m_list->backgroundRed = 240;
   this->m_list->backgroundGreen = 240;
@@ -84,7 +84,7 @@ void UIItemRepairWnd::Slot15(int width, int height) {
 // OFFSET: 0x009A1590
 // FUNCTION: fn_13605
 void UIMakeTargetListWnd::Slot15(int width, int height) {
-  this->m_list = new UIListBox(*this->m_context, *this->m_listContext);
+  this->m_list = new UIListBox(*this->m_context);
   this->m_list->Configure(12, 22, width - 24, height - 55, 0);
   this->m_list->backgroundRed = 240;
   this->m_list->backgroundGreen = 240;
@@ -153,7 +153,7 @@ void UIMakeTargetResultWnd::Slot15(int width, int height) {
 // OFFSET: 0x009A2DD0
 // FUNCTION: fn_13608
 void UIWeaponRefineWnd::Slot15(int width, int height) {
-  this->m_list = new UIListBox(*this->m_context, *this->m_listContext);
+  this->m_list = new UIListBox(*this->m_context);
   this->m_list->Configure(12, 22, width - 24, height - 55, 0);
   this->m_list->backgroundRed = 240;
   this->m_list->backgroundGreen = 240;
@@ -309,7 +309,7 @@ int UIMakeTargetResultWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
 
 // OFFSET: 0x0099F780
 // FUNCTION: fn_13587
-UIItemRepairWnd::UIItemRepairWnd(UIWindowContext& windows, UIListBoxContext& listContext,
+UIItemRepairWnd::UIItemRepairWnd(UIWindowContext& windows,
                                  WindowResponseRecorder& recorder)
     : UIFrameWnd(windows, 0), itemIds(), indices(), entries() {
 }
@@ -317,7 +317,7 @@ UIItemRepairWnd::UIItemRepairWnd(UIWindowContext& windows, UIListBoxContext& lis
 // OFFSET: 0x0099F850
 // FUNCTION: fn_13588
 UIMakeTargetListWnd::UIMakeTargetListWnd(
-  UIWindowContext& windows, UIListBoxContext& listContext, WindowResponseRecorder& recorder
+  UIWindowContext& windows, WindowResponseRecorder& recorder
 )
     : UIFrameWnd(windows, 0), itemIds() {
 }
@@ -341,7 +341,7 @@ UIMakeTargetResultWnd::UIMakeTargetResultWnd(UIWindowContext& windows)
 // OFFSET: 0x0099F9C0
 // FUNCTION: fn_13591
 UIWeaponRefineWnd::UIWeaponRefineWnd(
-  UIWindowContext& windows, UIListBoxContext& listContext, WindowResponseRecorder& recorder
+  UIWindowContext& windows, WindowResponseRecorder& recorder
 )
     : UIFrameWnd(windows, 0), itemIds(), indices() {
 }

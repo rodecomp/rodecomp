@@ -12,7 +12,7 @@
 // OFFSET: 0x0094CA20
 // FUNCTION: fn_12899
 void UIShowWarpWnd::Slot15(int width, int height) {
-  auto* list = new UIListBox(*this->m_context, *this->m_listContext);
+  auto* list = new UIListBox(*this->m_context);
   this->m_list = list;
   width -= 0x18;
   height -= 0x32;
@@ -83,6 +83,6 @@ int UIShowWarpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
 
 // OFFSET: 0x009470C0
 // FUNCTION: fn_12858
-UIShowWarpWnd::UIShowWarpWnd(UIWindowContext& windows, UIListBoxContext& lists, WindowResponseRecorder& recorder)
-    : UIFrameWnd(windows, 0), m_listContext(&lists), m_recorder(&recorder) {
+UIShowWarpWnd::UIShowWarpWnd(UIWindowContext& windows, WindowResponseRecorder& recorder)
+    : UIFrameWnd(windows, 0), m_recorder(&recorder) {
 }

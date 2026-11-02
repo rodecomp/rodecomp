@@ -4,7 +4,6 @@
 #include "UI/Lists/UIListBoxEx.h"
 
 struct UIComboBoxContext {
-  UIListBoxContext& list;
 
   UIWindow* const& popup;
 };

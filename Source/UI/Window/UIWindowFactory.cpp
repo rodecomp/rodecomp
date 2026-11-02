@@ -16,7 +16,6 @@
 struct LayoutWindowContexts {
   UIWindowContext& windows;
   UIEntryQueueContext& entryQueue;
-  UIListBoxContext& listBox;
   QuickSlotPainting& quickSlots;
 };
 
@@ -48,7 +47,7 @@ UIWindow* UIWindowMgr::CreateLayoutWindow(int id) {
       this->unknown_0404 = window;
       break;
     case 0x9D:
-      window = new UIEntryQueueWnd(contexts.windows, contexts.entryQueue, contexts.listBox);
+      window = new UIEntryQueueWnd(contexts.windows, contexts.entryQueue);
       break;
     case 0x9F:
       window = new UIQuickSlotWnd(contexts.windows, contexts.quickSlots);

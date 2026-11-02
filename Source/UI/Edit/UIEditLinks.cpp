@@ -254,7 +254,7 @@ void UIEditCtrl::InsertLink(const char* value) {
   this->anchor = this->cursor = static_cast<int>(this->text.size());
   g_serverLanguage->Select(this->cursor, this->cursor);
 
-  auto* button = new UINaviLinkButton(*this->m_context, this->m_edit->navigation);
+  auto* button = new UINaviLinkButton(*this->m_context);
 
   button->Configure(display.c_str(), 0x009E68F0, 0, 12, 0, 0);
   button->SetId(438);

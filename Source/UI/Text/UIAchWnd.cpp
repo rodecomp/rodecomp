@@ -470,7 +470,6 @@ void UIAchTV::Paint() {
 
   const int rows = this->lineHeight - this->bottomMargin == 0 ? this->geometry.height : this->geometry.height / this->lineHeight - this->bottomMargin;
   const unsigned end = std::min(static_cast<unsigned>(this->lines.size()), static_cast<unsigned>(rows + this->topLine));
-  UIListBoxContext& owner = *this->m_listContext;
 
   int row = 0;
   for (int index = this->topLine; index < static_cast<int>(end); ++index, ++row) {

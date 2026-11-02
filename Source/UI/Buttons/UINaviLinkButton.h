@@ -3,17 +3,9 @@
 
 #include "UI/Buttons/UITextButton.h"
 
-class NavigationDestination {
-public:
-  virtual void Navigate(std::string map, int x, int y) = 0;
-
-protected:
-  ~NavigationDestination() = default;
-};
-
 class UINaviLinkButton : public UITextButton {
 public:
-  UINaviLinkButton(UIWindowContext& windows, NavigationDestination& navigation);
+  UINaviLinkButton(UIWindowContext& windows);
   ~UINaviLinkButton() override;
   void Slot25(int x, int y) override;
   std::string Link();
@@ -21,8 +13,7 @@ public:
   /* 0110 */ int column;
   /* 0114 */ int line;
 
-private:
-  NavigationDestination* m_navigation;
+  void* unknown_0118;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

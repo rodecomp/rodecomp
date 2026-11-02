@@ -1959,7 +1959,7 @@ bool UIWindow::FitSprite(const ActionFrame* frame, const CSprRes* sprite, int wi
 
 // OFFSET: 0x005C27E0
 // FUNCTION: fn_03535
-UIListBox_NaviSearch::UIListBox_NaviSearch(UIWindowContext& windows, UIListBoxContext& list) : UIListBox(windows, list) {
+UIListBox_NaviSearch::UIListBox_NaviSearch(UIWindowContext& windows) : UIListBox(windows) {
 }
 
 // OFFSET: 0x005C3340
@@ -2382,7 +2382,7 @@ void UINavigationV4Wnd::Slot15(int, int) {
   roadListButton->SetTooltip(LookupMessage(0x0C85));
   this->AddChild(roadListButton);
 
-  UIListBox_NaviSearch* roadList = new UIListBox_NaviSearch(*this->m_context, *this->m_listContext);
+  UIListBox_NaviSearch* roadList = new UIListBox_NaviSearch(*this->m_context);
   this->unknown_00EC = roadList;
   roadList->SetSize(138, 244);
   roadList->backgroundRed = 255;
@@ -2391,7 +2391,7 @@ void UINavigationV4Wnd::Slot15(int, int) {
   roadList->SetId(336);
   this->AddChild(roadList);
 
-  UIListBox_NaviSearch* searchList = new UIListBox_NaviSearch(*this->m_context, *this->m_listContext);
+  UIListBox_NaviSearch* searchList = new UIListBox_NaviSearch(*this->m_context);
   this->unknown_00F0 = searchList;
   searchList->SetSize(132, 80);
   searchList->backgroundRed = 240;
@@ -3019,7 +3019,7 @@ int UINavigationroadiconWnd::SendMsg(UIWindow*, int message, std::intptr_t a, st
 // FUNCTION: fn_03580
 void UINavigationRuideWnd::Slot15(int width, int) {
   this->AddCloseButton(LookupMessage(3045), 0);
-  this->routeList = new UIListBox_NaviSearch(*this->m_context, *this->m_listContext);
+  this->routeList = new UIListBox_NaviSearch(*this->m_context);
   this->routeList->SetSize(width - 4, 293);
   this->routeList->backgroundRed = 255;
   this->routeList->backgroundGreen = 255;

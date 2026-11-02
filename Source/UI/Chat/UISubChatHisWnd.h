@@ -12,7 +12,6 @@ class UIResizer;
 class UIWindowMgr;
 struct SubChatHisWndInfo;
 struct UIEditContext;
-struct UIListBoxContext;
 
 struct SubChatHistoryState {
   /* 0000 */ int unknown_0000;
@@ -29,7 +28,7 @@ class UISubChatHisWnd : public UIFrameWnd {
 
 public:
   UISubChatHisWnd();
-  UISubChatHisWnd(UIWindowContext& windows, UIEditContext& edit, UIListBoxContext& list);
+  UISubChatHisWnd(UIWindowContext& windows, UIEditContext& edit);
   void Resize(int width, int height) override;
   void Move(int x, int y) override;
   void Slot11() override;
@@ -63,7 +62,7 @@ private:
   /* 012C */ UIEditCtrl* m_edit;
   void* unknown_controls;
   UIEditContext* m_editContext;
-  UIListBoxContext* m_listContext;
+  void* unknown_listContext;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

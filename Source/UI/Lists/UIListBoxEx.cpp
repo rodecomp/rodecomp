@@ -10,12 +10,11 @@
 
 // OFFSET: 0x0086DA90
 // FUNCTION: fn_11056
-UIListBoxEx::UIListBoxEx(UIWindowContext& windows, UIListBoxContext& list)
+UIListBoxEx::UIListBoxEx(UIWindowContext& windows)
     : UIWindow(windows, 0), backgroundRed(255), backgroundGreen(255), backgroundBlue(255), selected(0), topLine(0), horizontalOffset(0), contentWidth(0),
-      verticalOverflow(0), bottomMargin(0), verticalBar(nullptr), horizontalBar(nullptr), transparent(0), lineHeight(16), selectionColor(0),
-      m_listContext(&list) {
+      verticalOverflow(0), bottomMargin(0), verticalBar(nullptr), horizontalBar(nullptr), transparent(0), lineHeight(16), selectionColor(0) {
   constexpr char path[] = "유저인터페이스\\colorchip.bmp";
-  const auto* chip = static_cast<CBitmapRes*>(list.resources.Load(path));
+  const auto* chip = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(path));
 
   if (chip) {
     const auto& image = chip->image;
@@ -41,7 +40,6 @@ void UIListBoxEx::Configure(int x, int y, int width, int height, unsigned char v
 // OFFSET: 0x00886990
 // FUNCTION: fn_11327
 void UIListBoxEx::Slot15(int width, int height) {
-  auto& owner = *this->m_listContext;
   auto* vertical = new UIScrollBar(*this->m_context);
   this->verticalBar = vertical;
   const int thickness = vertical->thickness;
@@ -78,7 +76,6 @@ void UIListBoxEx::Resize(int width, int height) {
 // FUNCTION: fn_11202
 void UIListBoxEx::AddLine(const char* text, std::uint32_t color) {
   this->lines.emplace(static_cast<int>(this->lines.size()), ExtendedListLine{text, color});
-  auto& owner = *this->m_listContext;
   const int width = this->TextWidth(text, 0, 0, 12, 0, 0);
   this->contentWidth = std::max(this->contentWidth, width);
   this->Refresh();
@@ -167,7 +164,6 @@ void UIListBoxEx::Paint() {
   const unsigned end = std::min(
     static_cast<unsigned>(this->lines.size()), static_cast<unsigned>((this->topLine + (this->geometry.height / this->lineHeight - this->bottomMargin)))
   );
-  auto& owner = *this->m_listContext;
 
   for (int index = this->topLine; index < static_cast<int>(end); index = (index + 1)) {
     const int y = (this->lineHeight * (index - this->topLine));

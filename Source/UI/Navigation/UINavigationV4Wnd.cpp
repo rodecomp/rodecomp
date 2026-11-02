@@ -2,8 +2,8 @@
 
 // OFFSET: 0x005C2860
 // FUNCTION: fn_03536
-UINavigationRuideWnd::UINavigationRuideWnd(UIWindowContext& windows, UIListBoxContext& lists)
-    : UIFrameWnd(windows, 0), m_listContext(&lists) {
+UINavigationRuideWnd::UINavigationRuideWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0) {
 }
 
 // OFFSET: 0x005C28C0

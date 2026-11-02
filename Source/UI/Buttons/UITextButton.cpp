@@ -1915,7 +1915,6 @@ void UIListBoxNavi::Paint() {
   const int limit = this->geometry.height / this->lineHeight - this->bottomMargin + first;
   const int end = static_cast<int>(std::min(static_cast<unsigned>(this->lines.size()), static_cast<unsigned>(limit)));
   std::uint32_t color = 0;
-  auto& owner = *this->m_listContext;
 
   for (int index = first, row = 0; index < end; ++index, ++row) {
     if (this->lineColors[index] == 1) {
@@ -3199,7 +3198,6 @@ void UIListBox2::Paint() {
     end = count;
   }
 
-  auto& owner = *this->m_listContext;
   for (int row = 0; row + first < static_cast<int>(end); ++row) {
     const int index = row + first;
     if (index == this->selected) {
@@ -3437,7 +3435,7 @@ UITVTextButton::UITVTextButton() : UIButton() {
 
 // OFFSET: 0x0086DE10
 // FUNCTION: fn_11060
-UIMemberListBox::UIMemberListBox(UIWindowContext& windows, UIListBoxContext& list) : UIChatHisBox2(windows, list) {
+UIMemberListBox::UIMemberListBox(UIWindowContext& windows) : UIChatHisBox2(windows) {
   this->backgroundRed = 255;
   this->backgroundGreen = 255;
   this->backgroundBlue = 255;
@@ -3454,8 +3452,8 @@ void UIChatHisBox2::Paint() {
     end = static_cast<unsigned int>(this->lines.size());
   }
 
-  FontCache& fonts = this->m_listContext->fonts;
-  const TextLocale& locale = this->m_listContext->locale;
+  FontCache& fonts = g_fontCache;
+  const TextLocale& locale = this->m_context->locale;
   for (int row = 0; top + row < static_cast<int>(end); ++row) {
     const int index = top + row;
     int x;
@@ -3489,8 +3487,8 @@ void UIChatHisBox3::Paint() {
     end = static_cast<unsigned int>(this->lines.size());
   }
 
-  FontCache& fonts = this->m_listContext->fonts;
-  const TextLocale& locale = this->m_listContext->locale;
+  FontCache& fonts = g_fontCache;
+  const TextLocale& locale = this->m_context->locale;
   for (int row = 0; top + row < static_cast<int>(end); ++row) {
     const int index = top + row;
     this->DrawTextAt(2, this->lineHeight * row + 3, this->lines[index].c_str(), 0, 0, this->unknown_0134, this->unknown_00E4[index], 0, 0);

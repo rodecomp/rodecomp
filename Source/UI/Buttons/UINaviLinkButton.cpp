@@ -1,10 +1,10 @@
+#include "Contents/NavigationManager.h"
 #include "UI/Text/NavigationLink.h"
 #include "UI/Buttons/UINaviLinkButton.h"
 
 // OFFSET: 0x0086DF60
 // FUNCTION: fn_11062
-UINaviLinkButton::UINaviLinkButton(UIWindowContext& windows, NavigationDestination& navigation)
-    : UITextButton(windows), m_navigation(&navigation) {
+UINaviLinkButton::UINaviLinkButton(UIWindowContext& windows) : UITextButton(windows) {
 }
 
 // OFFSET: 0x00873A90
@@ -30,6 +30,6 @@ void UINaviLinkButton::Slot25(int, int) {
   }
 
   if (!map.empty()) {
-    this->m_navigation->Navigate(map, x, y);
+    g_navigationManager.SetDestinationMap(map, x, y);
   }
 }

@@ -15,7 +15,7 @@ struct TextLink {
 
 bool HasTextLinks(const std::string& text);
 std::string ExpandTextEscapes(std::string text);
-std::string RemoveTextColors(const char* text, unsigned short codePage);
+std::string RemoveTextColors(const char* text);
 std::string DisplayTextTag(std::string text, const std::string& begin, const std::string& end);
 std::string DisplayItemTextTag(const std::string& text);
 std::string DisplayNavigationTextTag(const std::string& text);

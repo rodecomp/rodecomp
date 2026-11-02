@@ -298,8 +298,8 @@ void UIChooseSellBuyWnd::CreateViewer(int width, int height) {
 
 // OFFSET: 0x008C7420
 // FUNCTION: fn_11931
-UIChooseWarpWnd::UIChooseWarpWnd(UIWindowContext& windows, UIListBoxContext& listContext)
-    : UIFrameWnd(windows, 0), m_list(nullptr), unknown_00B8(0), m_choices(), m_listContext(&listContext) {
+UIChooseWarpWnd::UIChooseWarpWnd(UIWindowContext& windows)
+    : UIFrameWnd(windows, 0), m_list(nullptr), unknown_00B8(0), m_choices() {
   this->m_choices.reserve(6);
 }
 
@@ -324,7 +324,7 @@ void UIChooseWarpWnd::Slot15(int width, int height) {
   title->SetFont(0, 12, 0, 0);
   this->AddChild(title);
 
-  this->m_list = new UIListBox(*this->m_context, *this->m_listContext);
+  this->m_list = new UIListBox(*this->m_context);
   int listWidth = width - 24;
   int listHeight = height - 55;
   if (listWidth < 20) {
@@ -362,7 +362,7 @@ void UIChooseWarpWnd::Slot15(int width, int height) {
 // OFFSET: 0x008DE0E0
 // FUNCTION: fn_12164
 void UIChooseWnd::Slot15(int width, int height) {
-  this->m_list = new UIListBox(*this->m_context, *this->m_listContext);
+  this->m_list = new UIListBox(*this->m_context);
   int listHeight = height - 55;
   if (listHeight < 30) {
     listHeight = 30;

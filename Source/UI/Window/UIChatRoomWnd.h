@@ -10,7 +10,6 @@
 #include <vector>
 
 struct UIEditContext;
-struct UIListBoxContext;
 class UIBitmapButton;
 class UIChatEditCtrl;
 class UIChatHisBox;
@@ -53,7 +52,7 @@ public:
 protected:
   void* unknown_controls;
   UIEditContext* m_editContext;
-  UIListBoxContext* m_listContext;
+  void* unknown_listContext;
 };
 
 #endif

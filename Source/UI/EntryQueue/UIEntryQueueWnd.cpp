@@ -64,7 +64,7 @@ int UIEntryQueueHelpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
 
 // OFFSET: 0x00BA42E0
 // FUNCTION: fn_19684
-UIEntryQueueListBox::UIEntryQueueListBox(UIWindowContext& windows, UIListBoxContext& list) : UIListBox(windows, list) {
+UIEntryQueueListBox::UIEntryQueueListBox(UIWindowContext& windows) : UIListBox(windows) {
 }
 
 // OFFSET: 0x00BA43F0
@@ -332,9 +332,8 @@ void UIEntryQueueStandByWnd::SetInfo(const char* queueName, int waiting, int ran
 
 // OFFSET: 0x00BA6000
 // FUNCTION: fn_19704
-UIEntryQueueWnd::UIEntryQueueWnd(UIWindowContext& windows, UIEntryQueueContext& entryQueue, UIListBoxContext& list)
-    : UIFrameWnd(windows, 0), unknown_00BC(), m_labels(), m_values(), m_list(nullptr), saved(nullptr), m_entryQueue(&entryQueue),
-      m_listContext(&list), m_applyButtons(), m_helpButton(nullptr) {
+UIEntryQueueWnd::UIEntryQueueWnd(UIWindowContext& windows, UIEntryQueueContext& entryQueue)
+    : UIFrameWnd(windows, 0), unknown_00BC(), m_labels(), m_values(), m_list(nullptr), saved(nullptr), m_entryQueue(&entryQueue), m_applyButtons(), m_helpButton(nullptr) {
 }
 
 // OFFSET: 0x00BA6110
@@ -353,7 +352,7 @@ void UIEntryQueueWnd::Slot15(int width, int height) {
   this->AddBaseButton();
   this->AddCloseButton("", 0);
 
-  this->m_list = new UIEntryQueueListBox(*this->m_context, *this->m_listContext);
+  this->m_list = new UIEntryQueueListBox(*this->m_context);
   this->m_list->SetSize(130, 270);
   this->m_list->Move(10, 40);
   this->m_list->backgroundRed = 240;

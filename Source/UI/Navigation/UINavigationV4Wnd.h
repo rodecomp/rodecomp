@@ -10,7 +10,6 @@ class CBitmapRes;
 class CNavi_Object;
 class CTexture;
 class UIListBox_NaviSearch;
-struct UIListBoxContext;
 class UIStaticText;
 
 struct NavigationWindowInfo {
@@ -75,7 +74,7 @@ public:
   /* 0118 */ int unknown_0118;
   /* 011C */ int unknown_011C;
   void* unknown_controls;
-  UIListBoxContext* m_listContext;
+  void* unknown_listContext;
 };
 
 class UIStaticBitmap;
@@ -96,7 +95,7 @@ protected:
 
 class UINavigationRuideWnd : public UIFrameWnd {
 public:
-  UINavigationRuideWnd(UIWindowContext& windows, UIListBoxContext& lists);
+  UINavigationRuideWnd(UIWindowContext& windows);
   void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
@@ -109,7 +108,7 @@ public:
   /* 00B4 */ UIListBox_NaviSearch* routeList;
 
 protected:
-  UIListBoxContext* m_listContext;
+  void* unknown_listContext;
 };
 
 extern int g_navigationTab;

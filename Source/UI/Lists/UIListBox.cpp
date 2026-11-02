@@ -1,3 +1,4 @@
+#include "UI/Window/UIWindowMgr.h"
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Render/Text/TextContext.h"
 #include "Resource/Bitmap/BitmapResource.h"
@@ -28,7 +29,7 @@ namespace {}
 UIListBox::UIListBox()
     : UIWindow(*reinterpret_cast<UIWindowContext*>(nullptr), 0), backgroundRed(255), backgroundGreen(255), backgroundBlue(255), selected(0), topLine(0),
       horizontalOffset(0), contentWidth(0), verticalOverflow(0), bottomMargin(0), verticalBar(nullptr), horizontalBar(nullptr), transparent(0), lineHeight(16),
-      textColor(0), textInset(3), m_listContext(nullptr) {
+      textColor(0), textInset(3) {
   const SkinPaletteCell cell = {3, 2};
   this->selectionColor = SkinPaletteColor(ResourceMgr::Instance(), cell, g_skinInfo.Selected());
   this->selectable = 1;
@@ -38,18 +39,17 @@ UIListBox::UIListBox()
 // OFFSET: 0x0086E750
 // FUNCTION: fn_11076
 UIServerListBox::UIServerListBox() : UIListBox() {
-  this->m_listContext = nullptr;
   *reinterpret_cast<int*>(reinterpret_cast<char*>(this) + 0xD8) = 0;
   this->unknown_00DC = 0;
   this->unknown_00E0 = 0;
 }
 
-UIListBox::UIListBox(UIWindowContext& windows, UIListBoxContext& list)
+UIListBox::UIListBox(UIWindowContext& windows)
     : UIWindow(windows, 0), backgroundRed(255), backgroundGreen(255), backgroundBlue(255), selected(0), topLine(0), horizontalOffset(0), contentWidth(0),
       verticalOverflow(0), bottomMargin(0), verticalBar(nullptr), horizontalBar(nullptr), transparent(0), lineHeight(16), selectable(1), textColor(0),
-      centerVertically(0), textInset(3), m_listContext(&list) {
+      centerVertically(0), textInset(3) {
   constexpr char path[] = "유저인터페이스\\colorchip.bmp";
-  const auto* chip = static_cast<CBitmapRes*>(list.resources.Load(path));
+  const auto* chip = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(path));
   this->selectionColor = 0;
 
   if (chip) {
@@ -231,7 +231,6 @@ void UIChatHisBox::AddText(const char* text, int color, const char* style) {
 // FUNCTION: fn_11201
 void UIListBox::AddLine(const char* text) {
   this->lines.emplace_back(text);
-  auto& owner = *this->m_listContext;
   const int width = this->TextWidth(text, 0, 0, 12, 0, 0);
   this->contentWidth = std::max(this->contentWidth, width);
   this->Refresh();
@@ -330,7 +329,6 @@ void UIListBox::Paint() {
   const int limit = ((this->geometry.height / this->lineHeight - this->bottomMargin) + first);
   const int end = static_cast<int>(std::min(static_cast<unsigned>(this->lines.size()), static_cast<unsigned>(limit)));
   std::uint32_t color = this->textColor;
-  auto& owner = *this->m_listContext;
 
   for (int index = first; index < end; ++index) {
     const int row = (index - first);
@@ -465,7 +463,7 @@ int UIListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, s
   }
   case 98:
     if (argument3 > 0) {
-      if (UIWindow* window = this->m_listContext->windows.LookupWindow(12)) {
+      if (UIWindow* window = g_windowMgr.LookupWindow(12)) {
         window->SendMsg(nullptr, 24, argument3, 0, 0, 0);
       }
     }
@@ -560,5 +558,5 @@ void UIListBoxID::AddLine(const char* text, int id) {
 
 // OFFSET: 0x0086D8C0
 // FUNCTION: fn_11054
-UIListBox2::UIListBox2(UIWindowContext& windows, UIListBoxContext& list) : UIListBox(windows, list), fontFamily(0), fontHeight(12), bold(0), italic(0) {
+UIListBox2::UIListBox2(UIWindowContext& windows) : UIListBox(windows), fontFamily(0), fontHeight(12), bold(0), italic(0) {
 }

@@ -41,7 +41,7 @@ public:
 
 class UIEntryQueueListBox : public UIListBox {
 public:
-  UIEntryQueueListBox(UIWindowContext& windows, UIListBoxContext& list);
+  UIEntryQueueListBox(UIWindowContext& windows);
   ~UIEntryQueueListBox() override;
   void Slot31(int x, int y) override;
   virtual void AddEntry(const char* name, int value);
@@ -102,7 +102,7 @@ public:
 
 class UIEntryQueueWnd : public UIFrameWnd {
 public:
-  UIEntryQueueWnd(UIWindowContext& windows, UIEntryQueueContext& entryQueue, UIListBoxContext& list);
+  UIEntryQueueWnd(UIWindowContext& windows, UIEntryQueueContext& entryQueue);
   ~UIEntryQueueWnd() override;
   void Slot11() override;
   void Slot15(int width, int height) override;
@@ -120,7 +120,7 @@ public:
 
 protected:
   UIEntryQueueContext* m_entryQueue;
-  UIListBoxContext* m_listContext;
+  void* unknown_listContext;
   UIBitmapButton* m_applyButtons[3];
   UIBitmapButton* m_helpButton;
 };

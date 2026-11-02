@@ -407,13 +407,13 @@ UICaptchaPreviewWnd::UICaptchaPreviewWnd(UIWindowContext& windows)
 
 // OFFSET: 0x0086C7B0
 // FUNCTION: fn_11030
-UIChatHisBox2::UIChatHisBox2(UIWindowContext& windows, UIListBoxContext& list)
-    : UIChatHisBox(windows, list), backgroundRed(255), backgroundGreen(255), backgroundBlue(255) {
+UIChatHisBox2::UIChatHisBox2(UIWindowContext& windows)
+    : UIChatHisBox(windows), backgroundRed(255), backgroundGreen(255), backgroundBlue(255) {
 }
 
 // OFFSET: 0x0086C830
 // FUNCTION: fn_11031
-UIChatHisBox3::UIChatHisBox3(UIWindowContext& windows, UIListBoxContext& list) : UIChatHisBox2(windows, list), unknown_0130(1), unknown_0134(12) {
+UIChatHisBox3::UIChatHisBox3(UIWindowContext& windows) : UIChatHisBox2(windows), unknown_0130(1), unknown_0134(12) {
 }
 
 // OFFSET: 0x00999FF0

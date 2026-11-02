@@ -98,7 +98,6 @@ void UIListBoxAgitMenu::Paint() {
   this->DrawBitmap(this->geometry.width - rightDown->image.width, this->geometry.height - rightDown->image.height, &rightDown->image, false);
 
   SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
-  auto& owner = *this->m_listContext;
   for (int index = 0; index < 2; ++index) {
     if (index == this->selected) {
       this->FillRegion(3, this->lineHeight * index + 1, this->geometry.width - 6, this->lineHeight - 2, RGB(red, green, blue));

@@ -6,13 +6,12 @@
 #include <vector>
 
 struct ChooseWndInfo;
-struct UIListBoxContext;
 class UIBitmapButton;
 class UIListBox;
 
 class UIChooseWnd : public UIFrameWnd {
 public:
-  UIChooseWnd(UIWindowContext& windows, UIListBoxContext& lists);
+  UIChooseWnd(UIWindowContext& windows);
   ~UIChooseWnd() override;
   void Slot11() override;
   void Slot15(int width, int height) override;
@@ -30,7 +29,7 @@ public:
 
 protected:
   void* unknown_controls;
-  UIListBoxContext* m_listContext;
+  void* unknown_listContext;
 };
 
 class UIChoose3Wnd : public UIChooseWnd {

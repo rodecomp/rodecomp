@@ -1,3 +1,4 @@
+#include "UI/Text/ColoredText.h"
 #include "UI/Text/TextMarkup.h"
 
 #include <windows.h>
@@ -10,19 +11,6 @@ namespace {
   }
 
   // INLINED
-  bool Color(const char* text, const char* end) {
-    if (*text != '^' || end - text < 6) {
-      return false;
-    }
-
-    for (int index = 1; index <= 6; ++index) {
-      if (!Hex(static_cast<unsigned char>(text[index]))) {
-        return false;
-      }
-    }
-
-    return true;
-  }
 }
 
 // GLOBAL: gl_24593
@@ -102,18 +90,13 @@ std::string ExpandTextEscapes(std::string text) {
 
 // OFFSET: 0x00A7EDC0
 // FUNCTION: fn_16961
-std::string RemoveTextColors(const char* text, unsigned short codePage) {
+std::string RemoveTextColors(const char* text) {
   const char* end = text + std::char_traits<char>::length(text);
   const char* current = text;
   std::string result;
 
   while (current < end) {
-    const char* next = current;
-
-    while (next < end && !Color(next, end)) {
-      next = CharNextExA(codePage, next, 0);
-    }
-
+    const char* next = SegmentEnd(current, end);
     result.append(current, next);
 
     if (next >= end) {

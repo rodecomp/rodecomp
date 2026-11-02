@@ -65,7 +65,6 @@ void UITagListBox::Paint() {
   const int end =
     static_cast<int>(std::min(static_cast<unsigned>(this->lines.size()), static_cast<unsigned>(limit)));
   std::uint32_t color = 0;
-  auto& owner = *this->m_listContext;
 
   for (int index = 0; index < first; ++index) {
     const std::string& line = this->lines[index];
@@ -368,7 +367,6 @@ int UITagListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
 void UITagListBox::sub_9B9EA0(std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   char* text = reinterpret_cast<char*>(argument1);
   const int width = static_cast<int>(argument2);
-  auto& owner = *this->m_listContext;
   std::vector<std::string> lines;
 
   if (width == 138) {

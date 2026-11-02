@@ -1,3 +1,4 @@
+#include "Render/Text/FontCache.h"
 #include "Client/Input/InputCharset.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Items/ItemDescription.h"
@@ -26,7 +27,7 @@ std::string UIChatHisBox::ResolvePlayerTags(const char* name) {
   ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
   const unsigned short codePage = static_cast<unsigned short>(g_textCodePage);
   const TipBoxTitles titles{g_itemTagOwner->m_entries, g_itemTagOwner->m_missing, g_itemTagOwner->m_maximumId, codePage};
-  ItemLinkDisplay display{*this->geometry.surface, this->m_listContext->fonts, this->m_listContext->locale, naming, titles, this->geometry.width};
+  ItemLinkDisplay display{*this->geometry.surface, g_fontCache, this->m_context->locale, naming, titles, this->geometry.width};
 
   for (std::vector<UIItemTagButton*>& row : this->ItemTags()) {
     const int count = static_cast<int>(row.size());
@@ -93,7 +94,7 @@ void UIChatHisBox::sub_89C080() {
 
 // OFFSET: 0x0086C8D0
 // FUNCTION: fn_11032
-UIChatHisBox::UIChatHisBox(UIWindowContext& windows, UIListBoxContext& list) : UIListBox(windows, list) {
+UIChatHisBox::UIChatHisBox(UIWindowContext& windows) : UIListBox(windows) {
   new (&this->ItemTags()) std::list<std::vector<UIItemTagButton*>>();
   this->maxLines = 240;
   this->lineHeight = 14;

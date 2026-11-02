@@ -1,3 +1,4 @@
+#include "Network/TextEncoding.h"
 #include "Render/Text/FontCache.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/ModeCursor.h"
@@ -1358,8 +1359,8 @@ void UIChatHisBox::Paint() {
     end = static_cast<unsigned int>(this->lines.size());
   }
 
-  FontCache& fonts = this->m_listContext->fonts;
-  const TextLocale& locale = this->m_listContext->locale;
+  FontCache& fonts = g_fontCache;
+  const TextLocale& locale = this->m_context->locale;
   for (int row = 0; top + row < static_cast<int>(end); ++row) {
     const int index = top + row;
     int x;
@@ -1824,8 +1825,8 @@ std::string UIChatHisBox::RenderItemLinks(const char* lineText, std::string& sou
   const bool languagePrefix = false;
   const WORD language = g_serverLanguage->language;
   ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
-  const TipBoxTitles titles{g_itemTagOwner->m_entries, g_itemTagOwner->m_missing, g_itemTagOwner->unknown_0118, this->m_listContext->codePage};
-  ItemLinkDisplay display{*this->geometry.surface, this->m_listContext->fonts, this->m_listContext->locale, naming, titles, this->geometry.width};
+  const TipBoxTitles titles{g_itemTagOwner->m_entries, g_itemTagOwner->m_missing, g_itemTagOwner->unknown_0118, static_cast<unsigned short>(g_textCodePage)};
+  ItemLinkDisplay display{*this->geometry.surface, g_fontCache, this->m_context->locale, naming, titles, this->geometry.width};
 
   for (;;) {
     std::string encoded;
@@ -1963,7 +1964,7 @@ std::string UIChatHisBox::RenderNavigationLinks(const char* text, std::string& s
       tail = line.substr(position + label.size());
     }
 
-    UINaviLinkButton* button = new (std::nothrow) UINaviLinkButton(*this->m_context, this->m_listContext->navigation);
+    UINaviLinkButton* button = new (std::nothrow) UINaviLinkButton(*this->m_context);
     if (button) {
       button->link = link;
       button->Configure(label.c_str(), 0x82F2E1, 0, 12, 0, 0);
@@ -2077,8 +2078,8 @@ void UIChatHisBox::sub_89DC30(const char* text, int& color, int& mode) {
   bool languagePrefix = false;
   WORD language = g_serverLanguage->language;
   ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
-  const TipBoxTitles titles{g_itemTagOwner->m_entries, g_itemTagOwner->m_missing, g_itemTagOwner->unknown_0118, this->m_listContext->codePage};
-  ItemLinkDisplay display{*this->geometry.surface, this->m_listContext->fonts, this->m_listContext->locale, naming, titles, this->geometry.width};
+  const TipBoxTitles titles{g_itemTagOwner->m_entries, g_itemTagOwner->m_missing, g_itemTagOwner->unknown_0118, static_cast<unsigned short>(g_textCodePage)};
+  ItemLinkDisplay display{*this->geometry.surface, g_fontCache, this->m_context->locale, naming, titles, this->geometry.width};
   const std::string converted = display.Convert(text);
   this->sub_8932D0(&mode, &wrapped, converted);
   this->RewrapLinkLines(wrapped, mode);

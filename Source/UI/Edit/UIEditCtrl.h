@@ -13,7 +13,6 @@ struct CLanguageBase;
 using InputCharset = CLanguageBase;
 struct BitmapImage;
 #include "UI/Window/WindowManagerWindows.h"
-class NavigationDestination;
 class UINaviLinkButton;
 class UIItemTagButton;
 struct ITEM_INFO;
@@ -24,7 +23,6 @@ struct UIEditContext {
   unsigned char& password;
   const InputCharset& charset;
   WindowManagerWindows& windows;
-  NavigationDestination& navigation;
   const BitmapImage& colorChip;
   const int& candidateCursor;
   UIWindow* const& candidateWindow;

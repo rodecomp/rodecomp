@@ -22,7 +22,6 @@ protected:
 };
 
 struct UITextViewerContext {
-  UIListBoxContext& list;
   ItemNaming& items;
   const TipBoxTitles& tips;
   TextViewerActions& actions;

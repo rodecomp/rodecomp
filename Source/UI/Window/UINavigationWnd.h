@@ -19,7 +19,6 @@ class UIListBoxNavi;
 class UIResizer;
 struct UIComboBoxHeaderContext;
 struct UIEditContext;
-struct UIListBoxContext;
 struct WindowDialogs;
 struct WindowResponseRecorder;
 
@@ -93,7 +92,7 @@ protected:
   /* 012C */ std::vector<std::string> m_history;
 
   void* unknown_controls;
-  UIListBoxContext* m_listContext;
+  void* unknown_listContext;
   UIComboBoxHeaderContext* m_comboContext;
   UIEditContext* m_editContext;
   WindowResponseRecorder* m_recorder;

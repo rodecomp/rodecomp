@@ -1,3 +1,4 @@
+#include "UI/Window/UIWindowMgr.h"
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
@@ -25,7 +26,7 @@ namespace {
 
 // OFFSET: 0x0086CD40
 // FUNCTION: fn_11037
-UIComboBoxEx::UIComboBoxEx(UIWindowContext& windows, UIComboBoxContext& combo) : UIListBoxEx(windows, combo.list), targetId(10041), m_combo(&combo) {
+UIComboBoxEx::UIComboBoxEx(UIWindowContext& windows, UIComboBoxContext& combo) : UIListBoxEx(windows), targetId(10041), m_combo(&combo) {
 }
 
 // OFFSET: 0x00872C00
@@ -86,7 +87,7 @@ void UIComboBoxEx::Slot27(int x, int y) {
 // FUNCTION: fn_11435
 void UIComboBoxEx::Slot31(int x, int y) {
   this->selected = this->LineAt(x, y);
-  auto& windows = this->m_listContext->windows;
+  auto& windows = g_windowMgr;
 
   if (UIWindow* target = windows.LookupWindow(this->targetId)) {
     target->SendMsg(nullptr, 39, this->selected, 0, 0, 0);
@@ -143,12 +144,12 @@ int UIComboBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
 
   switch (message) {
   case 0:
-    if (UIWindow* target = this->m_listContext->windows.LookupWindow(this->targetId)) {
+    if (UIWindow* target = g_windowMgr.LookupWindow(this->targetId)) {
       target->SendMsg(nullptr, 39, this->selected, 0, 0, 0);
     }
 
     if (this->m_combo->popup) {
-      this->m_listContext->windows.CloseWindow(26);
+      g_windowMgr.CloseWindow(26);
     }
 
     return 0;
@@ -213,7 +214,6 @@ void UIComboBoxEx::DrawRows(bool centered) {
   const unsigned end = std::min(
     static_cast<unsigned>(this->lines.size()), static_cast<unsigned>((this->topLine + (this->geometry.height / this->lineHeight - this->bottomMargin)))
   );
-  auto& owner = *this->m_listContext;
 
   for (int index = this->topLine; index < static_cast<int>(end); index = (index + 1)) {
     auto& row = this->lines[index];
@@ -231,7 +231,7 @@ void UIComboBoxEx::DrawRows(bool centered) {
 // OFFSET: 0x0088A360
 // FUNCTION: fn_11354
 void UIComboBoxEx::Paint() {
-  auto& resources = this->m_listContext->resources;
+  auto& resources = ResourceMgr::Instance();
   this->geometry.surface->Fill(nullptr, Palette(resources, 6, 6));
   this->FillRegion(1, 1, (this->geometry.width - 2), (this->geometry.height - 2), Palette(resources, 2, 2));
   constexpr char prefix[] = "유저인터페이스\\basic_interface\\";
@@ -276,7 +276,6 @@ UIComboBoxEx2::~UIComboBoxEx2() = default;
 // OFFSET: 0x00885EE0
 // FUNCTION: fn_11320
 void UIComboBoxEx2::Slot15(int width, int height) {
-  auto& list = *this->m_listContext;
   auto* vertical = new UIScrollBar_Navi(*this->m_context);
   this->verticalBar = vertical;
   vertical->vertical = 1;

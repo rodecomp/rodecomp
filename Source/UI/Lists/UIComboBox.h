@@ -8,7 +8,7 @@
 class UIComboBox : public UIListBox {
 public:
   UIComboBox();
-  UIComboBox(UIWindowContext& windows, UIListBoxContext& list);
+  UIComboBox(UIWindowContext& windows);
   void Resize(int width, int height) override;
   void Slot15(int width, int height) override;
   void Paint() override;

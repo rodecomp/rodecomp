@@ -160,7 +160,7 @@ void UISecondCostumeWnd::Slot15(int width, int height) {
   this->LoadLists();
   this->AddCloseButton("Close", 0);
 
-  this->m_list = new UIListBoxNavi(*this->m_context, *this->m_listContext);
+  this->m_list = new UIListBoxNavi(*this->m_context);
   this->m_list->SetSize(width - 212, 160);
   this->m_list->backgroundRed = 210;
   this->m_list->backgroundGreen = 210;
@@ -288,9 +288,9 @@ bool UISecondCostumeWnd::Slot03() {
 // OFFSET: 0x00946FB0
 // FUNCTION: fn_12857
 UISecondCostumeWnd::UISecondCostumeWnd(
-  UIWindowContext& windows, UIListBoxContext& lists, UIComboBoxHeaderContext& combos
+  UIWindowContext& windows, UIComboBoxHeaderContext& combos
 )
-    : UIFrameWnd(windows, 0), m_listContext(&lists), m_comboContext(&combos) {
+    : UIFrameWnd(windows, 0), m_comboContext(&combos) {
   this->m_typeCombo = nullptr;
   this->m_list = nullptr;
   this->m_tab = 0;

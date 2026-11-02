@@ -164,7 +164,7 @@ void UISubChatHisWnd::Slot15(int width, int height) {
     this->AddChild(button);
   }
 
-  this->m_chatBox = new UIChatHisBox(*this->m_context, *this->m_listContext);
+  this->m_chatBox = new UIChatHisBox(*this->m_context);
   this->m_chatBox->Configure(0, 0, this->geometry.width - 8, this->geometry.height - this->unknown_00F0 - this->m_inputHeight - 4, 0);
   this->m_chatBox->Move(5, this->m_inputHeight + 4);
   this->AddChild(this->m_chatBox);
@@ -208,8 +208,8 @@ void UISubChatHisWnd::Slot15(int width, int height) {
 
 // OFFSET: 0x00912340
 // FUNCTION: fn_12529
-UISubChatHisWnd::UISubChatHisWnd(UIWindowContext& windows, UIEditContext& edit, UIListBoxContext& list)
-    : UIFrameWnd(windows, 0), m_editContext(&edit), m_listContext(&list) {
+UISubChatHisWnd::UISubChatHisWnd(UIWindowContext& windows, UIEditContext& edit)
+    : UIFrameWnd(windows, 0), m_editContext(&edit) {
   this->m_saved = nullptr;
   this->m_resizer = nullptr;
   this->m_chatBox = nullptr;

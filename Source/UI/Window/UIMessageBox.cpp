@@ -1632,14 +1632,14 @@ void UIChatRoomWnd::Slot15(int, int) {
   focus.Set(this->edit);
   this->edit->SetId(494);
 
-  UIChatHisBox2* history = new UIChatHisBox2(*this->m_context, *this->m_listContext);
+  UIChatHisBox2* history = new UIChatHisBox2(*this->m_context);
   this->history = history;
   history->Configure(0, 0, this->geometry.width - this->geometry.width * 56 / 280 - 3, this->geometry.height - 38, 0);
   this->history->Move(1, 17);
   this->history->SetId(184);
   this->AddChild(this->history);
 
-  this->memberList = new UIMemberListBox(*this->m_context, *this->m_listContext);
+  this->memberList = new UIMemberListBox(*this->m_context);
   this->memberList->Configure(0, 0, this->geometry.width * 56 / 280, this->geometry.height - 38, 0);
   this->memberList->Move(this->geometry.width - this->geometry.width * 56 / 280 - 1, 17);
   this->memberList->SetId(184);
@@ -1927,7 +1927,7 @@ void UIReplayRECControlWnd::Slot15(int, int) {
 // OFFSET: 0x008B5A50
 // FUNCTION: fn_11750
 void UISelectReplayDataWnd::Slot15(int width, int height) {
-  this->m_list = new UIReplayListBox(*this->m_context, *this->m_listContext);
+  this->m_list = new UIReplayListBox(*this->m_context);
   this->m_list->Configure(6, 127, width - 12, height - 170, 0);
   this->m_list->backgroundRed = 240;
   this->m_list->backgroundGreen = 240;

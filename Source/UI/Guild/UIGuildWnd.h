@@ -41,7 +41,6 @@ class UIListBoxAgit;
 class UIListBoxAgitMenu;
 class UIScrollBar;
 class UIStaticText;
-struct UIListBoxContext;
 struct GuildWndInfo;
 class ForbiddenWords;
 
@@ -130,7 +129,7 @@ protected:
   /* 00FC */ int m_hostileRow;
   /* 0100 */ UIListBoxAgit* m_agitList;
   /* 0104 */ UIListBoxAgitMenu* m_agitMenu;
-  UIListBoxContext* m_listContext;
+  void* unknown_listContext;
 };
 
 class UIGuildMemberManageWnd : public UIGuildWnd {

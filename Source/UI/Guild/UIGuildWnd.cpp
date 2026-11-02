@@ -1027,14 +1027,14 @@ void UIGuildInfoManageWnd::Slot15(int, int) {
     this->AddChild(this->m_disbandButton);
   }
 
-  this->m_agitList = new UIListBoxAgit(*this->m_context, *this->m_listContext);
+  this->m_agitList = new UIListBoxAgit(*this->m_context);
   this->m_agitList->SetSize(95, 158);
   this->m_agitList->Move(this->TextWidth(LookupMessage(333), 0, 0, 12, 0, 0) + 19, 129);
   this->m_agitList->lineHeight = 13;
   this->m_agitList->SetId(558);
   this->AddChild(this->m_agitList);
 
-  this->m_agitMenu = new UIListBoxAgitMenu(*this->m_context, *this->m_listContext);
+  this->m_agitMenu = new UIListBoxAgitMenu(*this->m_context);
   this->m_agitMenu->SetSize(120, 35);
   this->m_agitMenu->SetId(559);
   this->m_agitMenu->Show(0);
@@ -2257,7 +2257,7 @@ UIGuildTotalInfoWnd::UIGuildTotalInfoWnd(UIWindowContext& windows)
 
 // OFFSET: 0x00954120
 // FUNCTION: fn_13006
-UIListBoxAgitMenu::UIListBoxAgitMenu(UIWindowContext& windows, UIListBoxContext& list) : UIListBox(windows, list) {
+UIListBoxAgitMenu::UIListBoxAgitMenu(UIWindowContext& windows) : UIListBox(windows) {
 }
 
 // OFFSET: 0x0095BF90
