@@ -42,6 +42,17 @@
 #include "Contents/MapInfoMgr.h"
 #include <timeapi.h>
 #include "File/File.h"
+#include "Client/Stove/StoveMgr.h"
+#include "Contents/ShowRankingScheduler.h"
+#include "Render/TextureQuad.h"
+#include "UI/Cooldowns/CooldownOwner.h"
+#include "Utility/Text/HexString.h"
+#include "Client/Timer.h"
+#include "Contents/MapSkyMgr.h"
+#include "Contents/Messenger/WhisperBlockMgr.h"
+
+extern "C" long long _Xtime_get_ticks();
+
 #pragma pack(push, 1)
 struct GameModeTextRecord {
   /* 0000 */ std::uint32_t header;
@@ -1451,6 +1462,11 @@ void CGameMode::InitializeCamera() {
 
 class CPingLiveSchedule : public CSchedule {
 public:
+  // INLINED
+  CPingLiveSchedule(const std::uint64_t& timestamp, const std::int64_t& interval)
+      : CSchedule(timestamp, interval, 1, ++g_schedulerSerial, 0) {
+  }
+
   void Process(const std::uint64_t& now) override;
 };
 
@@ -3780,12 +3796,232 @@ public:
 
   CEquipmentPropertiesMgr();
   void RefreshPretend();
+  void RefreshShop();
 };
 }
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(EquipmentProperties::CEquipmentPropertiesMgr) == 0x1FC);
 #endif
+
+// OFFSET: 0x00CDDA50
+// FUNCTION: fn_21320
+void CGameMode::Initialize(const char* name) {
+  this->unknown_0624[0] = 1;
+  this->unknown_0468 = 0;
+  this->nameCard.SetName(g_session.m_aid, g_session.DecodePlayerName());
+  g_playerNameDictionary->Set(g_session.m_gid, g_session.DecodePlayerName());
+  this->unknown_05C4 = -1;
+  this->unknown_05C8 = -1;
+  *reinterpret_cast<std::uint16_t*>(this->unknown_05CC) = 0;
+
+  if (Replay::Instance().state == 6) {
+    const std::vector<unsigned char> data = Replay::Instance().ReadSection(0x12);
+    if (data.begin() != data.end()) {
+      GameModeChunkHeader header = {};
+      g_activeSkillEffects.clear();
+      unsigned offset = 6;
+      header = *reinterpret_cast<const GameModeChunkHeader*>(data.data());
+      if (header.type == 19000) {
+        while (offset < data.size()) {
+          header = {};
+          header = *reinterpret_cast<const GameModeChunkHeader*>(data.data() + offset);
+          offset += 6;
+          if (header.type == 19001) {
+            break;
+          }
+
+          if (header.type == 19011) {
+            ActiveSkillEffect effect;
+            std::memcpy(&effect, data.data() + offset, header.size);
+            offset += header.size;
+            if (effect.unknown_0004 != 999999) {
+              g_cooldownOwner->Register(effect.id, effect.unknown_0014, effect.unknown_0004 - effect.unknown_0018, effect.unknown_0014 - effect.unknown_0018);
+            }
+            g_activeSkillEffects.push_back(effect);
+          } else {
+            offset += header.size;
+          }
+        }
+        g_statusRefreshSuppressed = 1;
+      }
+    }
+  }
+
+  g_session.ClearPairValues(1, 0, 0);
+  this->scene = new CWorld();
+  this->scene->gameMode = this;
+  this->camera = new CView();
+  this->camera->scene = this->scene;
+  std::strcpy(this->mapName, name);
+
+  std::string miniMap = "유저인터페이스\\map\\";
+  miniMap.append(name, std::strlen(name));
+  miniMap.resize(miniMap.size() - 4);
+  miniMap.append(".bmp", 4);
+  std::strcpy(reinterpret_cast<char*>(this->unknown_0090), miniMap.c_str());
+
+  g_renderer->SetFog(1);
+  g_session.m_weight = 0;
+  g_session.RefreshHpSpWindows();
+  g_session.InvalidateWindowFrames();
+  g_session.m_maxWeight = 0;
+  g_session.RefreshHpSpWindows();
+  g_session.InvalidateWindowFrames();
+  g_windowMgr.SetSurface0478(nullptr);
+  g_windowMgr.sub_AA6B80();
+  this->broadcastBalloon = nullptr;
+  this->noticeBalloon = nullptr;
+  g_windowMgr.HideWindow01C8();
+  g_windowMgr.ShowWindowsWithId(0x43, 0);
+  g_windowMgr.sub_A978D0(7);
+  g_windowMgr.SendNotice(4, 0, 0, 0, 0, 0);
+  g_windowMgr.CenterSurface0478();
+  g_windowMgr.DrawWindows();
+  if (g_renderer->CaptureBackBuffer()) {
+    g_renderer->Present(1);
+  }
+
+  this->camera->Reset();
+  this->scene->InitWorld();
+  this->unknown_0458 = 0;
+  this->InitializeCamera();
+  this->mousePointer = new CMousePointer();
+  this->scene->objects.push_back(this->mousePointer);
+  g_soundMgr->SetDefaultName(g_session.GetBgmFileName(std::string(this->mapName).c_str()));
+
+  g_weatherEffect.unknown_0001 = g_serviceOptions.Get(0x77) == 0;
+  if (g_serviceOptions.Get(0x3C)) {
+    int found = 0;
+    const std::vector<std::string>* fog = g_session.GetFogParameters(this->mapName, &found);
+    if (found) {
+      g_depthStart = static_cast<float>(std::atof((*fog)[0].c_str()));
+      g_depthEnd = static_cast<float>(std::atof((*fog)[1].c_str()));
+      g_worldOverlayColor = ParseHexString((*fog)[2].c_str());
+      g_fogDensity = static_cast<float>(std::atof((*fog)[3].c_str()));
+      g_renderer->SetClearColor(1);
+    } else {
+      g_renderer->SetClearColor(0);
+    }
+  } else {
+    g_renderer->SetClearColor(0);
+  }
+
+  Replay::Instance().ResetPlayback();
+  g_session.RestoreItems5C68();
+  g_session.ClearItemQuantities();
+  this->InitializeState();
+  ShowCurrentMapName();
+  ResetTimer();
+  this->forcedAttack = 0;
+  this->unknown_0464 = 0;
+  this->chatLogLines = 0;
+  this->unknown_05A0 = 0;
+  this->unknown_05D4.resize(6);
+
+  if (*reinterpret_cast<const int*>(g_session.unknown_5554) && g_session.IsAdminSubMode(7)) {
+    char message[256];
+    std::sprintf(message, "Now Auto chat Save System is ENABLED.");
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0xFFFF, 0, 0, 0);
+  }
+
+  if (g_replayAnimationScaling == 0) {
+    std::uint64_t now = _Xtime_get_ticks();
+    std::int64_t interval = 60000;
+    g_timeScheduler->AddSchedule(new CCheckGDISchedule(now, interval, 2));
+    interval = 5000;
+    CPingLiveSchedule* ping = new CPingLiveSchedule(now, interval);
+    g_session.m_pingLiveSchedule = ping->serial;
+    g_timeScheduler->AddSchedule(ping);
+  }
+
+  if (g_session.HasNoUnknown1784Items()) {
+    if (g_launchPassCommandLine) {
+      this->SendMsg(0x14B, 1, 0, 0, 0);
+      g_stoveMgr->FetchAllProducts();
+    } else {
+      std::int16_t packet = 0x8C9;
+      GetRagConnection().Send(g_packetLengths.FixedLength(packet), &packet);
+    }
+  }
+
+  if (Replay::Instance().state == 6) {
+    Replay::Instance().speed = 1.0f;
+    g_session.ReadReplayQuests(Replay::Instance().ReadSection(6));
+    g_session.ReadReplayStats(Replay::Instance().ReadSection(4));
+    g_session.ReadReplayItems(Replay::Instance().ReadSection(8));
+    g_session.ReadReplayCompanions(Replay::Instance().ReadSection(9));
+    g_session.ReadReplayMessenger(Replay::Instance().ReadSection(7));
+    g_session.ReadReplayExtra(Replay::Instance().ReadSection(10));
+    g_session.ReadReplayReserved(Replay::Instance().ReadSection(11));
+    g_session.ReadReplayEntryQueue(Replay::Instance().ReadSection(12));
+    g_session.ReadReplayShortcuts(Replay::Instance().ReadSection(13));
+    g_session.ReadReplayShops(Replay::Instance().ReadSection(14));
+    this->sub_CEBBB0(Replay::Instance().ReadSection(0x16));
+    this->sub_CEC100(Replay::Instance().ReadSection(0xF));
+    this->sub_CEBF30(Replay::Instance().ReadSection(0x10));
+    this->sub_CEC6A0(Replay::Instance().ReadSection(0x11));
+
+    const std::vector<unsigned char> data = Replay::Instance().ReadSection(0x17);
+    if (data.begin() != data.end()) {
+      GameModeChunkHeader header = {};
+      unsigned offset = 6;
+      header = *reinterpret_cast<const GameModeChunkHeader*>(data.data());
+      if (header.type == 14000) {
+        while (offset < data.size()) {
+          header = {};
+          header = *reinterpret_cast<const GameModeChunkHeader*>(data.data() + offset);
+          offset += 6;
+          if (header.type == 14001) {
+            break;
+          }
+
+          if (header.type == 14011) {
+            std::memcpy(&this->unknown_024C, data.data() + offset, header.size);
+          }
+          offset += header.size;
+        }
+      }
+    }
+
+    g_navigationManager.LoadReplayState(Replay::Instance().ReadSection(0x18));
+    g_windowMgr.LoadReplaySettings(Replay::Instance().ReadSection(0x14));
+    g_windowMgr.LoadReplayWindows(Replay::Instance().ReadSection(0x13));
+    g_windowMgr.LoadReplayReserved(Replay::Instance().ReadSection(0x15));
+    Replay::Instance().Rewind();
+    this->replayPauseTick = 0;
+    g_windowMgr.ShowWindowById(1, Replay::Instance().header.options.recordRestricted);
+  }
+
+  if (g_screenShakeMode == 2) {
+    this->scene->player->SendMsg(nullptr, 0x6E, 0, 0x22, 0, g_screenShakeDuration <= 10000 && g_screenShakeDuration != 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  }
+
+  if (g_session.GetOption(6) > 0) {
+    g_session.SetOption(6, 0, 0);
+    char message[256];
+    std::memset(message, 0, sizeof(message));
+    StringFormat(message, sizeof(message), static_cast<std::size_t>(-1), LookupMessage(0xDFA), g_serviceOptions.Get(0xFA) ? "ON" : "OFF");
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0xFF, 0, 0, 0);
+  }
+
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  g_equipmentPropertiesMgr->RefreshShop();
+
+  if (g_session.GetOption(0xB) == 1) {
+    for (const std::string& blocked : g_whisperBlockMgr->Names()) {
+      std::string arguments[1] = {blocked};
+      this->ExecuteTalkType(0x12, arguments);
+    }
+    g_session.SetOption(0xB, 0, 0);
+  }
+
+  g_session.SetOption(0x14, 0, 0);
+  this->unknown_0624[0] = 0;
+}
+
 
 // OFFSET: 0x00D07030
 // FUNCTION: fn_21580

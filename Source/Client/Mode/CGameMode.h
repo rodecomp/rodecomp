@@ -186,9 +186,11 @@ public:
   /* 0458 */ int unknown_0458;
   /* 045C */ unsigned char unknown_045C[0x08];
   /* 0464 */ int unknown_0464;
-  /* 0468 */ unsigned char unknown_0468[0x04];
+  /* 0468 */ int unknown_0468;
   /* 046C */ std::string unknown_046C[11];
-  /* 0574 */ unsigned char unknown_0574[0x3C];
+  /* 0574 */ unsigned char unknown_0574[0x2C];
+  /* 05A0 */ int unknown_05A0;
+  /* 05A4 */ unsigned char unknown_05A4[0x0C];
   /* 05B0 */ int forcedAttack;
   /* 05B4 */ int unknown_05B4;
   /* 05B8 */ int unknown_05B8;
@@ -616,6 +618,7 @@ public:
     int eleventh, int twelfth, int thirteenth, int fourteenth, std::string text, int fifteenth
   );
   int Run() override;
+  void Initialize(const char* name) override;
   void End() override;
   void TargetActorByAid(int aid);
   void Slot7(int value) override;
