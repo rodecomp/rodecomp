@@ -90,7 +90,7 @@ float GetHatEffectOffsetX(int id, const char* name) {
 
   if (id >= 0x9B5) {
     double position = 0.0;
-    g_luaScript->Call("GetHatEfPosX", "d>l", id - 0x9B5, &position);
+    g_session.m_hotkeyScript->Call("GetHatEfPosX", "d>l", id - 0x9B5, &position);
     result = static_cast<float>(offset + position);
   }
 

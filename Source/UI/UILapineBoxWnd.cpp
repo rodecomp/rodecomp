@@ -533,22 +533,22 @@ void UILapineBoxWnd::SetIngredient(int id) {
     this->title.assign(name, std::strlen(name));
   }
 
-  g_luaScript->CallTable("tblLapineDdukddakBox", "set_resource_item_list", "d", id);
+  g_session.m_hotkeyScript->CallTable("tblLapineDdukddakBox", "set_resource_item_list", "d", id);
 
   int minRefine = 0;
-  g_luaScript->CallTable("tblLapineDdukddakBox", "get_min_need_refine", "d>d", id, &minRefine);
+  g_session.m_hotkeyScript->CallTable("tblLapineDdukddakBox", "get_min_need_refine", "d>d", id, &minRefine);
   this->ingredientList->minRefine = minRefine;
 
   int maxRefine = 0;
-  g_luaScript->CallTable("tblLapineDdukddakBox", "get_max_need_refine", "d>d", id, &maxRefine);
+  g_session.m_hotkeyScript->CallTable("tblLapineDdukddakBox", "get_max_need_refine", "d>d", id, &maxRefine);
   this->ingredientList->maxRefine = maxRefine;
 
   this->ingredientList->SendMsg(this, 0x17, 0, 0, 0, 0);
 
-  g_luaScript->CallTable("tblLapineDdukddakBox", "get_need_item_count", "d>d", id, &this->maxItems);
+  g_session.m_hotkeyScript->CallTable("tblLapineDdukddakBox", "get_need_item_count", "d>d", id, &this->maxItems);
 
   const char* source = nullptr;
-  g_luaScript->CallTable("tblLapineDdukddakBox", "get_need_source_string", "d>s", id, &source);
+  g_session.m_hotkeyScript->CallTable("tblLapineDdukddakBox", "get_need_source_string", "d>s", id, &source);
   this->description.assign(source, std::strlen(source));
 }
 

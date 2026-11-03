@@ -1,4 +1,5 @@
 #include "UI/Window/UIPartyBookingHelpWnd.h"
+#include "Client/Session.h"
 
 #include "Client/Input/InputCharset.h"
 #include "Contents/MessageTable.h"
@@ -22,7 +23,7 @@ void UIPartyBookingHelpWnd::Slot15(int width, int height) {
 
   std::string help;
   const char* result = nullptr;
-  if (g_luaScript->Call("GetPartyBookingHelp", "d>s", -1, &result)) {
+  if (g_session.m_hotkeyScript->Call("GetPartyBookingHelp", "d>s", -1, &result)) {
     help = result;
     if (help.size()) {
       char* text = new char[help.size() + 4];

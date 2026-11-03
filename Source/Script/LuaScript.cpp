@@ -1256,7 +1256,7 @@ void LuaScript::Register(std::string name, int (*function)(lua_State*)) {
 int UIWindowMgr::GetHotkeyBehavior() {
   int behavior = -1;
   const int mode = static_cast<int>(g_session.m_options.Get(10));
-  g_luaScript->Call("GetBehaviorOfHotKey2", "ddd>d", mode, this->keyCode, this->modifierKey, &behavior);
+  g_session.m_hotkeyScript->Call("GetBehaviorOfHotKey2", "ddd>d", mode, this->keyCode, this->modifierKey, &behavior);
   if (behavior != -1) {
     return behavior;
   }
@@ -1264,9 +1264,9 @@ int UIWindowMgr::GetHotkeyBehavior() {
   if (this->modifierKey == VK_SHIFT && !g_inputSuggestionsEnabled) {
     UIWindow* parent = this->hoverWindow ? this->hoverWindow->parent : nullptr;
     if (!parent || parent == this->window_01C8 || parent->geometry.visible == 0) {
-      const int count = HotkeyCount(*g_luaScript, 0);
+      const int count = HotkeyCount(*g_session.m_hotkeyScript, 0);
       for (int index = 0; index < count; ++index) {
-        const HotkeyInfo hotkey = GetHotkeyInfo(*g_luaScript, 0, index);
+        const HotkeyInfo hotkey = GetHotkeyInfo(*g_session.m_hotkeyScript, 0, index);
         if (hotkey.key1 == this->keyCode && g_session.m_shortcutSlots[index].unknown_0000 != 0) {
           return index;
         }

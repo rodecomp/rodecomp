@@ -413,7 +413,7 @@ void CGrannyPc::Slot15(int state, int resetPosition) {
     CGameActor::Slot15(weaponAllowed ? 9 : 2, resetPosition);
     this->unknown_0378 = AttackMotionLength(this->GetEffectiveJob(-1), this->unknown_0260, this->unknown_0440, weaponAllowed);
     bool usesArrow = false;
-    g_luaScript->Call("IsItemUsingArrow", "d>b", this->unknown_0440, &usesArrow);
+    g_session.m_hotkeyScript->Call("IsItemUsingArrow", "d>b", this->unknown_0440, &usesArrow);
     if (usesArrow == true) {
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
       (mode->*spawnArrow)(&this->render.position, this->hitTargetAid, this->unknown_0378 * this->render.speed, 0);
@@ -4422,7 +4422,7 @@ void CPc::ChangeState(int state, int resetPosition) {
       weaponView = GetWeaponViewValue(weaponView);
     }
     bool usesArrow = false;
-    g_luaScript->Call("IsItemUsingArrow", "d>b", weaponView, &usesArrow);
+    g_session.m_hotkeyScript->Call("IsItemUsingArrow", "d>b", weaponView, &usesArrow);
     if (usesArrow == true) {
       if (this->Slot58() == true) {
         this->Slot59(false);

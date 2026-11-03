@@ -675,8 +675,8 @@ void UIRoMapWnd::DrawMapMarker(const RoMapMarker& marker, unsigned char skipSele
 // OFFSET: 0x009119B0
 // FUNCTION: fn_12522
 UIRoMapWnd::UIRoMapWnd() : UIFrameWnd(0), unknown_00D0(0) {
-  g_luaScript->Call("ReadKafraMoveMapServiceInfo", "");
-  g_luaScript->Call("ReadKafraMiniMapPosInfo", "");
+  g_session.m_hotkeyScript->Call("ReadKafraMoveMapServiceInfo", "");
+  g_session.m_hotkeyScript->Call("ReadKafraMiniMapPosInfo", "");
   this->unknown_01FC.clear();
   this->ClearRecords();
   this->m_showLabels = 0;

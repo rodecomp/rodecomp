@@ -28,7 +28,7 @@ FuncDrawWNDChar::FuncDrawWNDChar(
       m_topAccessory(topAccessory), m_midAccessory(midAccessory), m_robe(robe), m_flags(flags), m_shield(shield), m_bodyStyle(bodyStyle),
       m_headPalette(headPalette), m_action(action), m_motion(motion), m_time(time), m_helmRobe(false), m_drawOnTop(false), m_resources(), unknown_0050(),
       unknown_0068(), m_layers(), unknown_0088(0), unknown_008C(0), unknown_0090(0), unknown_0094(0) {
-  g_luaScript->CallTable(std::string("TB_Layer_Priority", 17), std::string("IsHelmRobe", 10), "d>b", this->m_robe, &this->m_helmRobe);
+  g_session.m_hotkeyScript->CallTable(std::string("TB_Layer_Priority", 17), std::string("IsHelmRobe", 10), "d>b", this->m_robe, &this->m_helmRobe);
   this->m_drawOnTop = this->DrawOnTop();
   this->m_layers[5] = this->m_bottomAccessory;
   this->m_layers[4] = this->m_topAccessory;
@@ -77,7 +77,7 @@ void FuncDrawWNDChar::Draw(bool option) {
         direction = 0;
       }
 
-      g_luaScript->Call("OffsetItemPos_GetOffsetForDoram", "ddd>dd", this->m_layers[key], direction, g_session.SyncUnknown0E98(), &x, &y);
+      g_session.m_hotkeyScript->Call("OffsetItemPos_GetOffsetForDoram", "ddd>dd", this->m_layers[key], direction, g_session.SyncUnknown0E98(), &x, &y);
       offset.x = x;
       offset.y = y;
     }

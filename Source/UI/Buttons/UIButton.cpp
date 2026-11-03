@@ -1,4 +1,5 @@
 #include "Client/Replay.h"
+#include "Client/Session.h"
 #include "UI/Window/WindowPolicy.h"
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "Contents/MessageTable.h"
@@ -104,7 +105,7 @@ void UIButton::Slot28(int x, int y) {
       this->m_tooltip.clear();
     } else {
       const char* text = nullptr;
-      if (g_luaScript->Call("GetBeHaviorOfWindow", "d>s", parent->geometry.id, &text)) {
+      if (g_session.m_hotkeyScript->Call("GetBeHaviorOfWindow", "d>s", parent->geometry.id, &text)) {
         this->m_tooltip.assign(text, std::strlen(text));
       }
     }

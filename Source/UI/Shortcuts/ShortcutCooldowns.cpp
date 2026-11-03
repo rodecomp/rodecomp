@@ -699,7 +699,7 @@ void UISelCharForUServerWnd::Paint() {
           direction = 0;
         }
 
-        g_luaScript->Call("OffsetItemPos_GetOffsetForDoram", "ddd>dd", item, direction, g_session.SyncUnknown0E98(), &x, &y);
+        g_session.m_hotkeyScript->Call("OffsetItemPos_GetOffsetForDoram", "ddd>dd", item, direction, g_session.SyncUnknown0E98(), &x, &y);
         offsetX = x;
         offsetY = y;
       }

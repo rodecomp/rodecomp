@@ -127,7 +127,7 @@ int CGameMode::GetSkillAttackRange(int id, int level) {
   }
 
   int reduction = 0;
-  g_luaScript->Call("GetSkillAttackRange", "ddd>dd", id, level, skill.level, &range, &reduction);
+  g_session.m_hotkeyScript->Call("GetSkillAttackRange", "ddd>dd", id, level, skill.level, &range, &reduction);
   range += skill.unknown_001C - reduction;
   return range;
 }
@@ -2651,7 +2651,7 @@ void CGameMode::UpdateBalloons() {
           thread_local GameModeEncryptedName<sizeof(source), 0xB7AFBD2FD9FD7501ULL> name(source);
           text = name.Text();
         } else {
-          text = CSkillInfo::DisplayName(*g_luaScript, shownSkill);
+          text = CSkillInfo::DisplayName(*g_session.m_hotkeyScript, shownSkill);
         }
         break;
       }
@@ -5089,7 +5089,7 @@ void CGameMode::ProcessStatusIconTooltip(int x, int y) {
 
   int hasLimit = 0;
   int limitLine = -1;
-  g_luaScript->Call("GetTimeLimitInfo", "d>dd", id, &hasLimit, &limitLine);
+  g_session.m_hotkeyScript->Call("GetTimeLimitInfo", "d>dd", id, &hasLimit, &limitLine);
 
   std::string timeText;
   int activeId = id;
@@ -5127,7 +5127,7 @@ void CGameMode::ProcessStatusIconTooltip(int x, int y) {
           red = 0;
           green = 0;
           blue = 0;
-        } while (!g_luaScript->Call("GetStateIconDescript", "dd>sddd", activeId, line, &text, &red, &green, &blue));
+        } while (!g_session.m_hotkeyScript->Call("GetStateIconDescript", "dd>sddd", activeId, line, &text, &red, &green, &blue));
 
         std::string description(text);
         if (description.size() == 0) {
@@ -5198,7 +5198,7 @@ void CGameMode::ProcessStatusIconTooltip(int x, int y) {
 
   if (hasLimit != 0 && timeText.size() != 0 && limitLine != -1 && this->unknown_05D0) {
     const char* text = nullptr;
-    if (g_luaScript->Call("GetStateIconDescript", "dd>s", activeId, limitLine, &text)) {
+    if (g_session.m_hotkeyScript->Call("GetStateIconDescript", "dd>s", activeId, limitLine, &text)) {
       std::string description(text);
       description = FormatOwnedString(description.c_str(), timeText.c_str());
       static_cast<UITransBalloonText*>(this->unknown_05D0)->ChangeText(description.c_str(), limitLine - 1);

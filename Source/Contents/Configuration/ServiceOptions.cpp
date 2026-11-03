@@ -100,9 +100,6 @@ static_assert(sizeof(GameSettings) == 0x58);
 // GLOBAL: gl_24579
 ServiceOptions g_serviceOptions;
 
-// GLOBAL: gl_24791
-LuaScript* g_luaScript;
-
 // GLOBAL: gl_24569
 const float g_jitterDistanceScale = 400.0f;
 
@@ -1505,7 +1502,7 @@ extern const GUID g_defaultDrawGuidDX7 = {};
 // OFFSET: 0x00DFE4E0
 // FUNCTION: fn_23604
 void CSession::LoadOptionInfo() {
-  g_luaScript->Call("SetCmdOnOffList", "");
+  g_session.m_hotkeyScript->Call("SetCmdOnOffList", "");
   ResourceExists("OptionInfo.lua", 1);
   g_textureFiltering = this->GetOptionInteger("Trilinear", 0);
 

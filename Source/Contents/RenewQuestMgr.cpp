@@ -531,7 +531,7 @@ void CRenewQuestMgr::AddOngoingQuest(unsigned int id, RenewQuestOngoingInfo& inf
   const char* icon = nullptr;
   const char* title = nullptr;
   bool simpleView = true;
-  if (g_luaScript->Call("GetOngoingQuestInfoByID", "d>bsssssssddd", id, &simpleView, &title, &icon, &text3, &text4, &text5, &text6,
+  if (g_session.m_hotkeyScript->Call("GetOngoingQuestInfoByID", "d>bsssssssddd", id, &simpleView, &title, &icon, &text3, &text4, &text5, &text6,
                         &text7, &unknown1, &unknown2, &type)) {
     info.m_title = title ? title : "";
     info.m_icon = icon ? icon : "";
@@ -558,8 +558,8 @@ void CRenewQuestMgr::AddOngoingQuest(unsigned int id, RenewQuestOngoingInfo& inf
   }
 
   this->m_ongoingQuests[id] = info;
-  g_luaScript->Call("GetOngoingDescription", "d", id);
-  g_luaScript->Call("GetOngoingRewardInfo", "d", id);
+  g_session.m_hotkeyScript->Call("GetOngoingDescription", "d", id);
+  g_session.m_hotkeyScript->Call("GetOngoingRewardInfo", "d", id);
 }
 
 // OFFSET: 0x0067ACE0

@@ -370,7 +370,7 @@ int UICheckAttendanceWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       g_windowMgr.CloseWindow(328);
     }
   } else if (message == 34) {
-    if (g_luaScript->Call("set_checkAttendance_banner", "") == true) {
+    if (g_session.m_hotkeyScript->Call("set_checkAttendance_banner", "") == true) {
       this->m_banner->CreateButtons();
     }
     if (this->m_banner->m_entries.size() == 0) {

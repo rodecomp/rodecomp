@@ -227,7 +227,7 @@ void UINewSkillListWnd::sub_9AE930() {
       }
       int x = 0;
       int y = 0;
-      g_luaScript->Call("OffsetItemPos_GetOffsetForDoram", "ddd>dd", view, 23, g_session.SyncUnknown0E98(), &x, &y);
+      g_session.m_hotkeyScript->Call("OffsetItemPos_GetOffsetForDoram", "ddd>dd", view, 23, g_session.SyncUnknown0E98(), &x, &y);
       offsetX = x;
       offsetY = y;
     }
@@ -502,7 +502,7 @@ void UINewSkillListWnd::InitTabs() {
 
   const char* defaultTabs[4] = {};
   const char* jobTabs[4] = {};
-  g_luaScript->Call(func, "d>ssss", 0, &defaultTabs[0], &defaultTabs[1], &defaultTabs[2], &defaultTabs[3]);
+  g_session.m_hotkeyScript->Call(func, "d>ssss", 0, &defaultTabs[0], &defaultTabs[1], &defaultTabs[2], &defaultTabs[3]);
 
   const unsigned baseJob = JobNames::BaseJob(g_session.GetDisplayJob());
   int jobKey = baseJob;
@@ -717,7 +717,7 @@ void UINewSkillListWnd::InitTabs() {
     break;
   }
 
-  g_luaScript->Call(func, "d>ssss", jobKey, &jobTabs[0], &jobTabs[1], &jobTabs[2], &jobTabs[3]);
+  g_session.m_hotkeyScript->Call(func, "d>ssss", jobKey, &jobTabs[0], &jobTabs[1], &jobTabs[2], &jobTabs[3]);
 
   for (size_t i = this->m_tabs->labels.size(); i < 4; ++i) {
     if (g_session.m_skillBundle.GroupSize(i) > 0) {
@@ -1040,7 +1040,7 @@ void UINewSkillListWnd::Slot28(int x, int y) {
       int tooltipX = -10;
       int tooltipY = -20;
       this->ToScreen(tooltipX, tooltipY);
-      const char* name = skill.first->DisplayName(*g_luaScript);
+      const char* name = skill.first->DisplayName(*g_session.m_hotkeyScript);
       g_modeMgr.gameMode->ShowTooltip(name, tooltipX + x, tooltipY + y, -1, 0, 1);
     }
   }
@@ -1254,7 +1254,7 @@ void UINewSkillListWnd::LayoutButtons() {
       for (const CSkillInfo& skill : list) {
         const unsigned int slot = skill.unknown_0024 - this->m_columns * this->m_firstRow;
         if (slot < 42 && skill.available != 0 && skill.unknown_0024 != 0xFFFFFFFF && skill.level != 0 &&
-            CSkillInfo::UsesLevel(*g_luaScript, skill.id)) {
+            CSkillInfo::UsesLevel(*g_session.m_hotkeyScript, skill.id)) {
           const int y = static_cast<int>(slot) / this->m_columns * 56 + 70;
           const int x = static_cast<int>(slot) % this->m_columns * 68;
           this->m_btnSkillUps[slot]->Move(x + 111, y);
@@ -1274,7 +1274,7 @@ void UINewSkillListWnd::LayoutButtons() {
       this->m_btnLevelUp[row]->Move(78, y - 14);
     }
     if (!this->m_locked && row < this->m_visibleRows && static_cast<unsigned int>(this->m_firstRow + row) < list.size() &&
-        skill.available != 0 && skill.level != 0 && CSkillInfo::UsesLevel(*g_luaScript, skill.id)) {
+        skill.available != 0 && skill.level != 0 && CSkillInfo::UsesLevel(*g_session.m_hotkeyScript, skill.id)) {
       this->m_btnSkills[row]->Move(112, y);
       this->m_btnSkillUps[row]->Move(192, y);
     }
@@ -1550,7 +1550,7 @@ bool UINewSkillListWnd::sub_9B3EB0(int skillId) {
     }
 
     if (static_cast<int>(info->unknown_002C) <= 0) {
-      const char* name = info->DisplayName(*g_luaScript);
+      const char* name = info->DisplayName(*g_session.m_hotkeyScript);
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatString(LookupMessage(0xDCB), name)), 0xFF, 0, 0, 0);
       return false;
     }

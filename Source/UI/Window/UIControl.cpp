@@ -1,4 +1,5 @@
 #include "Client/Mode/CMode.h"
+#include "Client/Session.h"
 #include "UI/Window/UIControl.h"
 #include "UI/Buttons/UIRadioButton.h"
 #include "UI/Buttons/UITextButton.h"
@@ -1370,7 +1371,7 @@ void CUITitleBar::SetSecondButton(CUIButton* button) {
   this->AddChild(button);
 
   const char* behavior = nullptr;
-  if (g_luaScript->Call("GetBeHaviorOfWindow", "d>s", this->parent->geometry.id, &behavior) && behavior) {
+  if (g_session.m_hotkeyScript->Call("GetBeHaviorOfWindow", "d>s", this->parent->geometry.id, &behavior) && behavior) {
     const std::string text = behavior;
     static_cast<CUIButton*>(this->secondButton)->tooltip = text;
   }

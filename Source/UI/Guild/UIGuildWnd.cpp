@@ -1107,7 +1107,7 @@ void UIGuildInfoManageWnd::RefreshAgitList() {
     for (int index = 0; index < count; ++index) {
       const int agitId = g_guildInfo.GetUnknown0114(index);
       char* agitName = nullptr;
-      g_luaScript->Call("get_agit_name", "d>s", agitId, &agitName);
+      g_session.m_hotkeyScript->Call("get_agit_name", "d>s", agitId, &agitName);
       if (strnlen(agitName, 256) != 0) {
         this->m_agitList->AddLine(agitName);
       }

@@ -6677,7 +6677,7 @@ void CGameMode::ReceiveAgitNotice(unsigned char agitId, int first, int second) {
 
   char text[256] = {};
   const char* agitName = nullptr;
-  g_luaScript->Call("get_agit_name", "d>s", agitId, &agitName);
+  g_session.m_hotkeyScript->Call("get_agit_name", "d>s", agitId, &agitName);
   sprintf_s(text, LookupMessage(3632), agitName, second, 100, first, 100);
   g_windowMgr.Confirm(text, 0, true, false, 0, "Message", 250, 130, 0);
 }
@@ -6978,7 +6978,7 @@ void CGameMode::ReceiveRandomOptionSimulation(const unsigned char* packet) {
     std::fprintf(file, "\n%s\n", typeNames[type]);
     for (const RandomOptionSimulationRecord* option : options[type]) {
       const char* optionName = nullptr;
-      if (g_luaScript->Call("GetVarOptionName", "d>s", option->optionId, &optionName)) {
+      if (g_session.m_hotkeyScript->Call("GetVarOptionName", "d>s", option->optionId, &optionName)) {
         std::fprintf(file, "\t%s", ToUtf8(std::string(optionName), g_textCodePage).c_str());
         if (type == 5) {
           std::fprintf(
@@ -9259,7 +9259,7 @@ void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
     if (HidesUseFailureMessage(packet->skillId) || !showMessage) {
       return;
     }
-    std::sprintf(text, LookupMessage(0x5B4), CSkillInfo::DisplayName(*g_luaScript, packet->skillId));
+    std::sprintf(text, LookupMessage(0x5B4), CSkillInfo::DisplayName(*g_session.m_hotkeyScript, packet->skillId));
     notice = text;
     break;
   case 5:
@@ -9416,7 +9416,7 @@ void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
     if (packet->value == 0) {
       std::sprintf(text, LookupMessage(0x618));
     } else {
-      std::sprintf(text, LookupMessage(0x617), CSkillInfo::DisplayName(*g_luaScript, packet->value));
+      std::sprintf(text, LookupMessage(0x617), CSkillInfo::DisplayName(*g_session.m_hotkeyScript, packet->value));
     }
     notice = text;
     break;
@@ -11289,7 +11289,7 @@ void NoticeSkillUse(CGameActor* target, CGameActor* source, std::uint16_t skillI
     message += text;
   }
 
-  const std::string skillName = CSkillInfo::DisplayName(*g_luaScript, skillId);
+  const std::string skillName = CSkillInfo::DisplayName(*g_session.m_hotkeyScript, skillId);
   StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(1625), skillName.c_str());
   message += text;
   if (!message.empty()) {
@@ -15537,7 +15537,7 @@ void CGameMode::ReceiveRefineStatusGraded(const char* playerName, int itemId, un
   const char* signatureText = signature.Text();
   const std::uint8_t functionSource[] = {0xB6, 0xA2, 0x4D, 0x4C, 0x66, 0x0C, 0x26, 0x81, 0xBB, 0xA8, 0x5B, 0x09};
   thread_local EncryptedText<sizeof(functionSource), 0xF14F79170939C7F1ULL> function(functionSource);
-  g_luaScript->Call(function.Text(), signatureText, itemId, &job);
+  g_session.m_hotkeyScript->Call(function.Text(), signatureText, itemId, &job);
   if (job != 0) {
     item.unknown_0000[0] = 0x15;
   }

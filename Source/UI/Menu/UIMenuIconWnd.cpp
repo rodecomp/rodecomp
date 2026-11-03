@@ -340,7 +340,7 @@ void UIMenuIcon::Slot27(int x, int y) {
 
   if (known) {
     const char* behavior = nullptr;
-    g_luaScript->Call("GetBeHaviorOfWindow", "d>s", behaviorId, &behavior);
+    g_session.m_hotkeyScript->Call("GetBeHaviorOfWindow", "d>s", behaviorId, &behavior);
     if (std::strlen(behavior) == 0) {
       this->m_tooltip = LookupMessage(message);
     } else {

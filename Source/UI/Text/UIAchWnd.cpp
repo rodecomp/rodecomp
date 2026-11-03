@@ -1453,7 +1453,7 @@ void UIAchViewWnd::UpdateInfo() {
       if (this->info->unknown_0054 > 0) {
         const std::string bitmap = "유저인터페이스\\achievement_re\\reward_buff.bmp";
         const char* description = nullptr;
-        g_luaScript->Call("GetStateIconDescript", "dd>s", this->info->unknown_0054, 1, &description);
+        g_session.m_hotkeyScript->Call("GetStateIconDescript", "dd>s", this->info->unknown_0054, 1, &description);
         this->rewards[1]->Set(bitmap.c_str(), description, 0);
         this->rewards[1]->Show(1);
       }

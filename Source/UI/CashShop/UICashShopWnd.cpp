@@ -992,13 +992,13 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
     return 0;
   case 0x22:
     if (g_session.unknown_5912) {
-      if (g_luaScript->Call("set_stoveshop_banner", "") == true) {
+      if (g_session.m_hotkeyScript->Call("set_stoveshop_banner", "") == true) {
         this->m_banner->CreateButtons();
         this->m_secondBanner->CreateButtons();
         this->Invalidate();
         return 0;
       }
-    } else if (g_luaScript->Call("set_cashshop_banner", "") == true) {
+    } else if (g_session.m_hotkeyScript->Call("set_cashshop_banner", "") == true) {
       this->m_banner->CreateButtons();
       this->Invalidate();
       return 0;

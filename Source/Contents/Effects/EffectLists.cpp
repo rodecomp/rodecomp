@@ -1848,7 +1848,7 @@ bool EffectLists::RegisterAllocators() {
     return false;
   }
 
-  std::list<int> hatEffects = g_luaScript->TableKeys("hatEffectTable", 14);
+  std::list<int> hatEffects = g_session.m_hotkeyScript->TableKeys("hatEffectTable", 14);
   for (int hatEffect : hatEffects) {
     if (!this->RegisterAllocator(hatEffect + 2485, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
       return false;
@@ -5288,32 +5288,32 @@ void EffectLists::Update() {
 bool HasEffectScript(std::string path, std::string name) {
   bool exists = false;
   std::string versionKey = EmitterKey(name.substr(), "effect_version");
-  g_luaScript->Call("IsExistValue", "s>b", versionKey.c_str(), &exists);
+  g_session.m_hotkeyScript->Call("IsExistValue", "s>b", versionKey.c_str(), &exists);
   if (exists) {
     return true;
   }
 
   std::string emitterKey = EmitterKey(name.substr(), "emitterInfo");
-  g_luaScript->Call("IsExistValue", "s>b", emitterKey.c_str(), &exists);
+  g_session.m_hotkeyScript->Call("IsExistValue", "s>b", emitterKey.c_str(), &exists);
   return exists;
 }
 
 // OFFSET: 0x00B3B0A0
 // FUNCTION: fn_18795
 void ReadEffectScriptV1(std::string name) {
-  g_luaScript->Call("ReadEmitterInfoz_ver_1_0", "s", EmitterInfoKey(name.substr()).c_str());
-  g_luaScript->Call("ReadEffectInfoz", "s", EffectFunctionName(name.substr()).c_str());
+  g_session.m_hotkeyScript->Call("ReadEmitterInfoz_ver_1_0", "s", EmitterInfoKey(name.substr()).c_str());
+  g_session.m_hotkeyScript->Call("ReadEffectInfoz", "s", EffectFunctionName(name.substr()).c_str());
 }
 
 // OFFSET: 0x00B3B240
 // FUNCTION: fn_18796
 void ReadEffectScriptV2(std::string name) {
-  g_luaScript->Call("ReadEmitterInfoz", "s", EmitterKey(name.substr(), "emitterInfo").c_str());
-  g_luaScript->Call("ReadMagicFloorInfoz", "s", EmitterKey(name.substr(), "magicfloorInfo").c_str());
-  g_luaScript->Call("ReadEvilsPawInfoz", "s", EmitterKey(name.substr(), "evilsPawInfo").c_str());
-  g_luaScript->Call("ReadAnimatedEmitterInfoz", "s", EmitterKey(name.substr(), "animatedEmitterInfo").c_str());
-  g_luaScript->Call("ReadEZ2STRInfoz", "s", EmitterKey(name.substr(), "ez2strInfo").c_str());
-  g_luaScript->Call("ReadWindEffectInfoz", "s", EmitterKey(name.substr(), "windEffectInfo").c_str());
+  g_session.m_hotkeyScript->Call("ReadEmitterInfoz", "s", EmitterKey(name.substr(), "emitterInfo").c_str());
+  g_session.m_hotkeyScript->Call("ReadMagicFloorInfoz", "s", EmitterKey(name.substr(), "magicfloorInfo").c_str());
+  g_session.m_hotkeyScript->Call("ReadEvilsPawInfoz", "s", EmitterKey(name.substr(), "evilsPawInfo").c_str());
+  g_session.m_hotkeyScript->Call("ReadAnimatedEmitterInfoz", "s", EmitterKey(name.substr(), "animatedEmitterInfo").c_str());
+  g_session.m_hotkeyScript->Call("ReadEZ2STRInfoz", "s", EmitterKey(name.substr(), "ez2strInfo").c_str());
+  g_session.m_hotkeyScript->Call("ReadWindEffectInfoz", "s", EmitterKey(name.substr(), "windEffectInfo").c_str());
 }
 
 // OFFSET: 0x00B3AC30
@@ -5326,10 +5326,10 @@ void EffectLists::LoadMapEffectScript(bool reload) {
   std::string directory = "Lua Files\\EffectTool\\";
   std::string name = CurrentMapScriptName();
   std::string path = directory + name;
-  if (HasEffectScript(path.c_str(), name.substr()) || g_luaScript->Load(path.c_str(), true, false)) {
+  if (HasEffectScript(path.c_str(), name.substr()) || g_session.m_hotkeyScript->Load(path.c_str(), true, false)) {
     int version = 0;
     std::string versionKey = EmitterKey(name.substr(), "effect_version");
-    g_luaScript->Call("GetValue", "s>d", versionKey.c_str(), &version);
+    g_session.m_hotkeyScript->Call("GetValue", "s>d", versionKey.c_str(), &version);
     switch (version) {
     case 0:
     case 1:

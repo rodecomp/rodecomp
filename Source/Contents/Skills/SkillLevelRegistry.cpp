@@ -33,10 +33,10 @@ void LoadSkillUseLevelRegistry() {
     int value;
     char name[100] = {};
     const int character = g_session.unknown_0F50;
-    const char* skill = CSkillInfo::IdName(*g_luaScript, id);
+    const char* skill = CSkillInfo::IdName(*g_session.m_hotkeyScript, id);
     std::sprintf(name, "%s%d", skill, character);
 
-    if (RegQueryValueExA(handle, name, nullptr, &type, reinterpret_cast<BYTE*>(&value), &size) != ERROR_SUCCESS || !CSkillInfo::UsesLevel(*g_luaScript, id)) {
+    if (RegQueryValueExA(handle, name, nullptr, &type, reinterpret_cast<BYTE*>(&value), &size) != ERROR_SUCCESS || !CSkillInfo::UsesLevel(*g_session.m_hotkeyScript, id)) {
       return 0;
     }
 

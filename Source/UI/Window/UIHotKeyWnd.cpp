@@ -200,7 +200,7 @@ void UIHotKeyWnd::SetHotkey(int tab, int index, HotkeyInfo info) {
 void UIHotKeyWnd::SaveHotkeys() {
   for (int tab = 0; tab < 4; ++tab) {
     for (const auto& entry : this->hotkeys[tab]) {
-      g_luaScript->Call("ChangeUserHotKey", "ddsdd", tab + 1, entry.first, entry.second.description.c_str(), entry.second.key1, entry.second.key2);
+      g_session.m_hotkeyScript->Call("ChangeUserHotKey", "ddsdd", tab + 1, entry.first, entry.second.description.c_str(), entry.second.key1, entry.second.key2);
       if (tab == 1) {
         g_windowMgr.sub_AAB0B0();
       }
@@ -210,7 +210,7 @@ void UIHotKeyWnd::SaveHotkeys() {
   std::string path = "SaveData\\UserKeys";
   path = path + ".lua";
   if (!path.empty()) {
-    g_luaScript->Call("SaveUserHotKeys2", "s", path.c_str());
+    g_session.m_hotkeyScript->Call("SaveUserHotKeys2", "s", path.c_str());
     char message[500];
     std::memset(message, 0, sizeof(message));
     StringFormat(message, sizeof(message), static_cast<std::size_t>(-1), "%s", LookupMessage(3572));
@@ -340,14 +340,14 @@ void UIHotKeyWnd::Slot25(int x, int y) {
 // FUNCTION: fn_12617
 UIHotKeyWnd::HotkeyEntry UIHotKeyWnd::GetHotkey(int tab, int index, bool resolve) {
   HotkeyEntry entry;
-  entry.index = resolve ? MapHotkeyIndex(*g_luaScript, tab, index) : index;
+  entry.index = resolve ? MapHotkeyIndex(*g_session.m_hotkeyScript, tab, index) : index;
 
   if (entry.index != -1) {
     const auto it = this->hotkeys[tab].find(entry.index);
     if (it != this->hotkeys[tab].end() && !it->second.description.empty()) {
       entry.info = it->second;
     } else {
-      entry.info = GetHotkeyInfo(*g_luaScript, tab, entry.index);
+      entry.info = GetHotkeyInfo(*g_session.m_hotkeyScript, tab, entry.index);
     }
   }
 
@@ -429,7 +429,7 @@ void UIHotKeyWnd::Paint() {
   this->unknown_00C0 = this->DrawButtonBar(2, 0, 1);
   this->DrawPanelBackground(this->unknown_00BC, 0, "");
 
-  const int count = CountHotkeys(*g_luaScript, this->m_tab);
+  const int count = CountHotkeys(*g_session.m_hotkeyScript, this->m_tab);
   int visibleRow = 0;
 
   for (int row = 0; row < count; ++row) {
@@ -562,9 +562,9 @@ void UIHotKeyWnd::ReloadHotkeys() {
 
   for (int position = 0; position < 4; ++position) {
     const int tab = g_userHotkeyMgr->TabAt(position);
-    const int count = CountAllHotkeys(reinterpret_cast<LuaScript&>(g_session), tab);
+    const int count = CountAllHotkeys(*g_session.m_hotkeyScript, tab);
     for (int row = 0; row < count; ++row) {
-      const int index = ResolveHotkeyIndex(reinterpret_cast<LuaScript&>(g_session), tab, row);
+      const int index = ResolveHotkeyIndex(*g_session.m_hotkeyScript, tab, row);
       if (index == -1) {
         continue;
       }
@@ -575,7 +575,7 @@ void UIHotKeyWnd::ReloadHotkeys() {
       int key2 = 0;
       const char* textValue = nullptr;
       const char* descriptionValue = nullptr;
-      if (!g_luaScript->Call("GetUserHotKeyInfo", "dd>ddss", tab + 1, index, &key1, &key2, &textValue, &descriptionValue)) {
+      if (!g_session.m_hotkeyScript->Call("GetUserHotKeyInfo", "dd>ddss", tab + 1, index, &key1, &key2, &textValue, &descriptionValue)) {
         continue;
       }
 
@@ -584,7 +584,7 @@ void UIHotKeyWnd::ReloadHotkeys() {
         continue;
       }
 
-      if (!g_luaScript->Call("GetOriginalHotKeyInfo", "dd>ddss", tab + 1, index, &key1, &key2, &textValue, &descriptionValue)) {
+      if (!g_session.m_hotkeyScript->Call("GetOriginalHotKeyInfo", "dd>ddss", tab + 1, index, &key1, &key2, &textValue, &descriptionValue)) {
         continue;
       }
 
@@ -626,7 +626,7 @@ bool UIHotKeyWnd::AssignSelectedHotkey(int mode) {
 
   int rejection = 0;
   bool checkConflict = false;
-  if (this->m_tab == 1 && ResolveHotkeyIndex(reinterpret_cast<LuaScript&>(g_session), 1, this->m_selectedRow) == 31) {
+  if (this->m_tab == 1 && ResolveHotkeyIndex(*g_session.m_hotkeyScript, 1, this->m_selectedRow) == 31) {
     const int key = g_windowMgr.keyCode;
     const int modifier = g_windowMgr.modifierKey;
     if (key == 0x12 || modifier == 0x12 || key == 0x11 || modifier == 0x11 || key == 0x10 || modifier == 0x10) {
@@ -677,7 +677,7 @@ bool UIHotKeyWnd::AssignSelectedHotkey(int mode) {
       info.key1 = g_windowMgr.keyCode;
       info.key2 = g_windowMgr.modifierKey;
       const char* text = nullptr;
-      if (g_luaScript->Call("GetKeyDes", "dd>s", g_windowMgr.keyCode, g_windowMgr.modifierKey, &text) && text) {
+      if (g_session.m_hotkeyScript->Call("GetKeyDes", "dd>s", g_windowMgr.keyCode, g_windowMgr.modifierKey, &text) && text) {
         info.text = text;
       }
     }
@@ -706,7 +706,7 @@ int UIHotKeyWnd::CheckHotkeyConflict() {
       continue;
     }
 
-    const int count = CountAllHotkeys(reinterpret_cast<LuaScript&>(g_session), tab);
+    const int count = CountAllHotkeys(*g_session.m_hotkeyScript, tab);
     for (int index = 0; index < count; ++index) {
       const HotkeyEntry entry = this->GetHotkey(tab, index, true);
       HotkeyInfo info = entry.info;
@@ -729,7 +729,7 @@ int UIHotKeyWnd::CheckHotkeyConflict() {
       this->SetHotkey(tab, entry.index, info);
 
       if (tab == 0 && this->m_tab != 0) {
-        const int shortcutCount = CountAllHotkeys(reinterpret_cast<LuaScript&>(g_session), 3);
+        const int shortcutCount = CountAllHotkeys(*g_session.m_hotkeyScript, 3);
         for (int shortcut = 0; shortcut < shortcutCount; ++shortcut) {
           const HotkeyEntry other = this->GetHotkey(3, shortcut, true);
           HotkeyInfo otherInfo = other.info;
@@ -827,7 +827,7 @@ int UIHotKeyWnd::SendMsg(
     this->unknown_0114 = 0;
     this->m_page = 1;
 
-    const int count = CountAllHotkeys(reinterpret_cast<LuaScript&>(g_session), tab);
+    const int count = CountAllHotkeys(*g_session.m_hotkeyScript, tab);
     if (count > 36) {
       this->unknown_0114 = 1;
       this->m_pageCount = count / 36;

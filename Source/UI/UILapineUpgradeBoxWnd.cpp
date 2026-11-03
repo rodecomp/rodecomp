@@ -292,17 +292,17 @@ void UILapineUpgradeBoxWnd::SetIngredient(int id) {
 
   int minimumRefine = 0;
   int maximumRefine = 0;
-  g_luaScript->CallTable("tblLapineUpgradeBox", "get_min_need_refine", "d>d", id, &minimumRefine);
+  g_session.m_hotkeyScript->CallTable("tblLapineUpgradeBox", "get_min_need_refine", "d>d", id, &minimumRefine);
   this->ingredientList->minRefine = minimumRefine;
-  g_luaScript->CallTable("tblLapineUpgradeBox", "get_max_need_refine", "d>d", id, &maximumRefine);
+  g_session.m_hotkeyScript->CallTable("tblLapineUpgradeBox", "get_max_need_refine", "d>d", id, &maximumRefine);
   this->ingredientList->maxRefine = maximumRefine;
-  g_luaScript->CallTable("tblLapineUpgradeBox", "get_min_need_option", "d>d", id, &this->minOptionCount);
+  g_session.m_hotkeyScript->CallTable("tblLapineUpgradeBox", "get_min_need_option", "d>d", id, &this->minOptionCount);
   this->ingredientList->minOptionCount = this->minOptionCount;
-  g_luaScript->CallTable("tblLapineUpgradeBox", "set_resource_item_list", "d", id);
+  g_session.m_hotkeyScript->CallTable("tblLapineUpgradeBox", "set_resource_item_list", "d", id);
   this->ingredientList->SendMsg(this, 0x17, 0, 0, 0, 0);
 
   const char* source = nullptr;
-  g_luaScript->CallTable("tblLapineUpgradeBox", "get_need_source_string", "d>s", id, &source);
+  g_session.m_hotkeyScript->CallTable("tblLapineUpgradeBox", "get_need_source_string", "d>s", id, &source);
   this->description.assign(source, std::strlen(source));
 }
 

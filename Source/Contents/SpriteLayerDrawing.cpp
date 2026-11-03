@@ -195,7 +195,7 @@ void SpriteLayerRenderer::QueueQuad(int layer, const SpriteQuad* quad, const std
   const int direction = this->pc->render.previousAnimation - this->pc->render.animation;
   if (this->layerViews[layer] > 0) {
     int priority = -1;
-    g_luaScript->Call("GetLayerPriority", "ddd>d", direction, layer, this->layerViews[layer], &priority);
+    g_session.m_hotkeyScript->Call("GetLayerPriority", "ddd>d", direction, layer, this->layerViews[layer], &priority);
     if (priority == -1) {
       return;
     }
@@ -536,7 +536,7 @@ std::pair<int, int> SpriteLayerRenderer::GetItemOffset(int layer) {
 
     int x = 0;
     int y = 0;
-    g_luaScript->Call("OffsetItemPos_GetOffsetForDoram", "ddd>dd", this->layerViews[layer], direction, pc->unknown_0260, &x, &y);
+    g_session.m_hotkeyScript->Call("OffsetItemPos_GetOffsetForDoram", "ddd>dd", this->layerViews[layer], direction, pc->unknown_0260, &x, &y);
     return std::make_pair(x, y);
   }
 

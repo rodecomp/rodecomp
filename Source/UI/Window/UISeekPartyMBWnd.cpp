@@ -1,4 +1,5 @@
 #include "UI/Window/UISeekPartyMBWnd.h"
+#include "Client/Session.h"
 #include "Contents/MessageTable.h"
 #include "Contents/UserData/NormalItemSlots.h"
 #include "Network/Connection/Connection.h"
@@ -384,14 +385,14 @@ void UISeekPartyMBWnd::Slot15(int width, int height) {
 // OFFSET: 0x009458B0
 // FUNCTION: fn_12835
 void UISeekPartyMBWnd::LoadRegionMaps() {
-  g_luaScript->HasTable("map_list");
+  g_session.m_hotkeyScript->HasTable("map_list");
   std::string unused;
 
   int regionCount = 2;
   for (;; ++regionCount) {
     int regionId = 0;
     const char* regionName = nullptr;
-    if (g_luaScript->Call("queryRegionInfo", "d>ds", regionCount, &regionId, &regionName)) {
+    if (g_session.m_hotkeyScript->Call("queryRegionInfo", "d>ds", regionCount, &regionId, &regionName)) {
       if (!regionName) {
         break;
       }
@@ -399,7 +400,7 @@ void UISeekPartyMBWnd::LoadRegionMaps() {
     }
   }
 
-  g_luaScript->HasTable("map_list");
+  g_session.m_hotkeyScript->HasTable("map_list");
   for (int region = 2; region < regionCount; ++region) {
     std::vector<std::pair<std::string, int>> maps;
     for (int index = 1;; ++index) {
@@ -409,7 +410,7 @@ void UISeekPartyMBWnd::LoadRegionMaps() {
       int red = 0;
       int green = 0;
       int blue = 0;
-      if (g_luaScript->Call("queryMapInfo", "dd>ddsddd", region, index, &mapId, &level, &mapName, &red, &green, &blue)) {
+      if (g_session.m_hotkeyScript->Call("queryMapInfo", "dd>ddsddd", region, index, &mapId, &level, &mapName, &red, &green, &blue)) {
         if (!mapName) {
           break;
         }

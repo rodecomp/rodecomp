@@ -3951,12 +3951,12 @@ void UIReplayControlWnd::Slot15(int, int) {
   this->AddChild(this->m_pauseButton);
 
   HotkeyInfo hotkey;
-  hotkey = GetHotkeyInfo(reinterpret_cast<LuaScript&>(g_session), 1, 39);
+  hotkey = GetHotkeyInfo(*g_session.m_hotkeyScript, 1, 39);
   this->m_playButton->SetTooltip(hotkey.text.c_str());
   this->m_pauseButton->SetTooltip(hotkey.text.c_str());
-  hotkey = GetHotkeyInfo(reinterpret_cast<LuaScript&>(g_session), 1, 40);
+  hotkey = GetHotkeyInfo(*g_session.m_hotkeyScript, 1, 40);
   static_cast<UIButton*>(this->m_buttons[2])->SetTooltip(hotkey.text.c_str());
-  hotkey = GetHotkeyInfo(reinterpret_cast<LuaScript&>(g_session), 1, 41);
+  hotkey = GetHotkeyInfo(*g_session.m_hotkeyScript, 1, 41);
   static_cast<UIButton*>(this->m_buttons[3])->SetTooltip(hotkey.text.c_str());
 
   this->m_progress = new UIBarGraph4();

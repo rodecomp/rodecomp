@@ -1,4 +1,5 @@
 #include "Contents/EntryQueueMgr.h"
+#include "Client/Session.h"
 
 #include "Contents/MessageTable.h"
 #include "Contents/Sound/SoundMgr.h"
@@ -282,7 +283,7 @@ void CEntryQueueMgr::OnNotify(const EntryQueueNotice* notice) {
 // INLINED
 CEntryQueueMgr::CEntryQueueMgr() : current(nullptr), ready(0) {
   std::memset(&this->queueName, 0, sizeof(this->queueName) + sizeof(this->characterName));
-  g_luaScript->Call("ReadEntryQueueList", "");
+  g_session.m_hotkeyScript->Call("ReadEntryQueueList", "");
 }
 
 // OFFSET: 0x00BA1DF0

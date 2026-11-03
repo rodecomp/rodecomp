@@ -293,7 +293,7 @@ int UIBasicStylingWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
 
   if (argument1 == 495) {
     int count = 0;
-    g_luaScript->Call("StylingShop_GetSizeInTable", "s>d", "HeadPalette", &count);
+    g_session.m_hotkeyScript->Call("StylingShop_GetSizeInTable", "s>d", "HeadPalette", &count);
 
     bool unselected = true;
     for (int i = 0; i < count; ++i) {
@@ -301,7 +301,7 @@ int UIBasicStylingWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
         unselected = false;
         bool coloring = true;
         if (g_session.IsDoramJob(g_session.GetDisplayJob()) == true) {
-          g_luaScript->Call("StylingShop_GetIsColoring_by_goods", "d>b", this->m_display->unknown_008C, &coloring);
+          g_session.m_hotkeyScript->Call("StylingShop_GetIsColoring_by_goods", "d>b", this->m_display->unknown_008C, &coloring);
         }
 
         if (coloring == true) {
@@ -718,7 +718,7 @@ void UIStylingShopWnd::Paint() {
 // FUNCTION: fn_10320
 void UIShowInfoWnd::CheckColoringGoods(bool* coloring) {
   if (g_session.IsDoramJob(g_session.GetDisplayJob()) == true) {
-    g_luaScript->Call("StylingShop_GetIsColoring_by_goods", "d>b", this->m_display->unknown_008C, coloring);
+    g_session.m_hotkeyScript->Call("StylingShop_GetIsColoring_by_goods", "d>b", this->m_display->unknown_008C, coloring);
   }
 
   const unsigned char* flags = this->unknown_00AD;
@@ -758,11 +758,11 @@ void UIDisplayCharacter::LoadCostumes() {
 
   this->job = g_session.m_bodyCostume;
   int count = 0;
-  if (g_luaScript->Call("StylingShop_GetCostumeSize", "d>d", job, &count) == true) {
+  if (g_session.m_hotkeyScript->Call("StylingShop_GetCostumeSize", "d>d", job, &count) == true) {
     int value = 0;
     int key = 0;
     for (int i = 0; i < count; ++i) {
-      if (g_luaScript->Call("StylingShop_GetChangeCostume", "dd>dd", job, value, &key, &value) == true) {
+      if (g_session.m_hotkeyScript->Call("StylingShop_GetChangeCostume", "dd>dd", job, value, &key, &value) == true) {
         this->m_jobs.emplace(key, value);
       }
     }
@@ -869,7 +869,7 @@ void ToggleStylingAccessory(int itemId, int slot) {
 // FUNCTION: fn_10379
 void UIDisplayCharacter::SelectNextStyle(const char* table, int* goods) {
   int size = 0;
-  g_luaScript->Call("StylingShop_GetSizeInTable", "s>d", table, &size);
+  g_session.m_hotkeyScript->Call("StylingShop_GetSizeInTable", "s>d", table, &size);
   if (size == 0) {
     return;
   }
@@ -884,12 +884,12 @@ void UIDisplayCharacter::SelectNextStyle(const char* table, int* goods) {
   }
 
   int sequence = 0;
-  g_luaScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", table, *goods, &sequence);
+  g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", table, *goods, &sequence);
   ++sequence;
   if (sequence > size) {
     sequence = 1;
   }
-  g_luaScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", table, sequence, goods);
+  g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", table, sequence, goods);
 
   if (g_session.GetDisplayJob() > JT_2004_JOB_BEGIN && g_session.GetDisplayJob() <= JT_THIEF_H && *goods == 0 && g_session.m_bodyStyle == 1) {
     *goods = 1;
@@ -900,7 +900,7 @@ void UIDisplayCharacter::SelectNextStyle(const char* table, int* goods) {
 // FUNCTION: fn_10380
 void UIDisplayCharacter::SelectPreviousStyle(const char* table, int* goods) {
   int size = 0;
-  g_luaScript->Call("StylingShop_GetSizeInTable", "s>d", table, &size);
+  g_session.m_hotkeyScript->Call("StylingShop_GetSizeInTable", "s>d", table, &size);
   if (size == 0) {
     return;
   }
@@ -914,7 +914,7 @@ void UIDisplayCharacter::SelectPreviousStyle(const char* table, int* goods) {
   }
 
   int sequence = 0;
-  g_luaScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", table, *goods, &sequence);
+  g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", table, *goods, &sequence);
   --sequence;
   if (sequence < 1) {
     sequence = size;
@@ -922,7 +922,7 @@ void UIDisplayCharacter::SelectPreviousStyle(const char* table, int* goods) {
   if (sequence <= 0) {
     sequence = 1;
   }
-  g_luaScript->Call("StylingShop_GetGoods", "sd>d", table, sequence, goods);
+  g_session.m_hotkeyScript->Call("StylingShop_GetGoods", "sd>d", table, sequence, goods);
 
   if (g_session.GetDisplayJob() > JT_2004_JOB_BEGIN && g_session.GetDisplayJob() <= JT_THIEF_H && *goods == 0 && g_session.m_bodyStyle == 1) {
     *goods = 1;
@@ -1004,25 +1004,25 @@ bool UIShowInfoWnd::CheckPayment(const int& index, const int& zeny, const int& i
 void UIShowInfoWnd::GetPayment(const int& type, int* zeny, int* itemId, int* costumeItemId) {
   switch (type) {
   case 1:
-    g_luaScript->Call("StylingShop_GetPayment_by_goods", "sd>ddd", this->m_display->GetStyleTable(type).c_str(), this->m_display->unknown_0094, zeny, itemId, costumeItemId);
+    g_session.m_hotkeyScript->Call("StylingShop_GetPayment_by_goods", "sd>ddd", this->m_display->GetStyleTable(type).c_str(), this->m_display->unknown_0094, zeny, itemId, costumeItemId);
     break;
   case 2:
-    g_luaScript->Call("StylingShop_GetPayment_by_goods", "sd>ddd", this->m_display->GetStyleTable(type).c_str(), this->m_display->unknown_008C, zeny, itemId, costumeItemId);
+    g_session.m_hotkeyScript->Call("StylingShop_GetPayment_by_goods", "sd>ddd", this->m_display->GetStyleTable(type).c_str(), this->m_display->unknown_008C, zeny, itemId, costumeItemId);
     break;
   case 3:
-    g_luaScript->Call("StylingShop_GetPayment_by_goods", "sd>ddd", this->m_display->GetStyleTable(type).c_str(), this->m_display->unknown_0098, zeny, itemId, costumeItemId);
+    g_session.m_hotkeyScript->Call("StylingShop_GetPayment_by_goods", "sd>ddd", this->m_display->GetStyleTable(type).c_str(), this->m_display->unknown_0098, zeny, itemId, costumeItemId);
     break;
   case 4:
-    g_luaScript->Call("StylingShop_GetPayment_by_goods", "sd>ddd", this->m_display->GetStyleTable(type).c_str(), this->m_display->unknown_00BC, zeny, itemId, costumeItemId);
+    g_session.m_hotkeyScript->Call("StylingShop_GetPayment_by_goods", "sd>ddd", this->m_display->GetStyleTable(type).c_str(), this->m_display->unknown_00BC, zeny, itemId, costumeItemId);
     break;
   case 5:
-    g_luaScript->Call("StylingShop_GetPayment_by_goods", "sd>ddd", this->m_display->GetStyleTable(type).c_str(), this->m_display->unknown_00C0, zeny, itemId, costumeItemId);
+    g_session.m_hotkeyScript->Call("StylingShop_GetPayment_by_goods", "sd>ddd", this->m_display->GetStyleTable(type).c_str(), this->m_display->unknown_00C0, zeny, itemId, costumeItemId);
     break;
   case 6:
-    g_luaScript->Call("StylingShop_GetPayment_by_goods", "sd>ddd", this->m_display->GetStyleTable(type).c_str(), this->m_display->unknown_00C4, zeny, itemId, costumeItemId);
+    g_session.m_hotkeyScript->Call("StylingShop_GetPayment_by_goods", "sd>ddd", this->m_display->GetStyleTable(type).c_str(), this->m_display->unknown_00C4, zeny, itemId, costumeItemId);
     break;
   case 7:
-    g_luaScript->Call("StylingShop_GetPaymentChangeCostume", "dd>ddd", g_session.m_job, this->m_display->job, zeny, itemId, costumeItemId);
+    g_session.m_hotkeyScript->Call("StylingShop_GetPaymentChangeCostume", "dd>ddd", g_session.m_job, this->m_display->job, zeny, itemId, costumeItemId);
     break;
   }
 }
@@ -1051,7 +1051,7 @@ void UIShowInfoWnd::UpdateChangedStyles() {
   }
 
   int sequence = 0;
-  g_luaScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", "TopAccessory", this->m_display->unknown_00BC, &sequence);
+  g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", "TopAccessory", this->m_display->unknown_00BC, &sequence);
   if (!this->unknown_00AD[3] && this->m_display->unknown_009C != *reinterpret_cast<const int*>(&g_session.unknown_0EF4[4]) && this->m_display->unknown_009C != 0 &&
       sequence != 0) {
     this->m_checks[this->m_list.size()]->SetChecked(1);
@@ -1060,7 +1060,7 @@ void UIShowInfoWnd::UpdateChangedStyles() {
   }
 
   unsigned char* accessoryChanged = reinterpret_cast<unsigned char*>(&this->unknown_00B1);
-  g_luaScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", "MidAccessory", this->m_display->unknown_00C0, &sequence);
+  g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", "MidAccessory", this->m_display->unknown_00C0, &sequence);
   if (!accessoryChanged[0] && this->m_display->unknown_00A0 != *reinterpret_cast<const int*>(&g_session.unknown_0EF4[8]) && this->m_display->unknown_00A0 != 0 &&
       sequence != 0) {
     this->m_checks[this->m_list.size()]->SetChecked(1);
@@ -1068,7 +1068,7 @@ void UIShowInfoWnd::UpdateChangedStyles() {
     accessoryChanged[0] = 1;
   }
 
-  g_luaScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", "BottomAccessory", this->m_display->unknown_00C4, &sequence);
+  g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", "BottomAccessory", this->m_display->unknown_00C4, &sequence);
   if (!accessoryChanged[1] && this->m_display->unknown_00A4 != *reinterpret_cast<const int*>(&g_session.unknown_0EF4[0]) && this->m_display->unknown_00A4 != 0 &&
       sequence != 0) {
     this->m_checks[this->m_list.size()]->SetChecked(1);
@@ -1356,7 +1356,7 @@ int UIAccessoryShowCase::SendMsg(UIWindow* sender, int message, std::intptr_t ar
 
       bool apply = true;
       if (g_session.IsDoramJob(g_session.GetDisplayJob()) == true) {
-        g_luaScript->Call("StylingShop_GetIsDoram_by_goods", "sd>b", table, button->m_itemId, &apply);
+        g_session.m_hotkeyScript->Call("StylingShop_GetIsDoram_by_goods", "sd>b", table, button->m_itemId, &apply);
       }
 
       if (apply == true) {
@@ -1857,41 +1857,41 @@ bool UIShowInfoWnd::SendStyleChange() {
       if (this->m_checks[index]->geometry.unknown_0030 != 0) {
         changed = true;
         int table = 1;
-        g_luaScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", display->GetStyleTable(table).c_str(), display->unknown_0094, &item.value);
+        g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", display->GetStyleTable(table).c_str(), display->unknown_0094, &item.value);
       }
     } else if (type == 2) {
       if (this->m_checks[index]->geometry.unknown_0030 != 0) {
         changed = true;
         int table = 2;
-        g_luaScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", display->GetStyleTable(table).c_str(), display->unknown_008C, &item.value);
+        g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", display->GetStyleTable(table).c_str(), display->unknown_008C, &item.value);
         item.kind = g_session.IsDoramJob(g_session.GetDisplayJob()) == true ? 6 : 1;
       }
     } else if (type == 3) {
       if (this->m_checks[index]->geometry.unknown_0030 != 0) {
         changed = true;
         int table = 3;
-        g_luaScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", display->GetStyleTable(table).c_str(), display->unknown_0098, &item.value);
+        g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", display->GetStyleTable(table).c_str(), display->unknown_0098, &item.value);
         item.kind = g_session.IsDoramJob(g_session.GetDisplayJob()) == true ? 8 : 2;
       }
     } else if (type == 4) {
       if (this->m_checks[index]->geometry.unknown_0030 != 0) {
         changed = true;
         int table = 4;
-        g_luaScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", display->GetStyleTable(table).c_str(), display->unknown_00BC, &item.value);
+        g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", display->GetStyleTable(table).c_str(), display->unknown_00BC, &item.value);
         item.kind = 3;
       }
     } else if (type == 5) {
       if (this->m_checks[index]->geometry.unknown_0030 != 0) {
         changed = true;
         int table = 5;
-        g_luaScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", display->GetStyleTable(table).c_str(), display->unknown_00C0, &item.value);
+        g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", display->GetStyleTable(table).c_str(), display->unknown_00C0, &item.value);
         item.kind = 4;
       }
     } else if (type == 6) {
       if (this->m_checks[index]->geometry.unknown_0030 != 0) {
         changed = true;
         int table = 6;
-        g_luaScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", display->GetStyleTable(table).c_str(), display->unknown_00C4, &item.value);
+        g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", display->GetStyleTable(table).c_str(), display->unknown_00C4, &item.value);
         item.kind = 5;
       }
     } else if (type == 7) {
@@ -1924,15 +1924,15 @@ void UIAccessoryShowCase::Slot15(int, int) {
   int skipped = 0;
   int count = 0;
 
-  g_luaScript->Call("StylingShop_GetSizeInTable", "s>d", "TopAccessory", &count);
+  g_session.m_hotkeyScript->Call("StylingShop_GetSizeInTable", "s>d", "TopAccessory", &count);
   int slot = 0;
   this->AddAccessories(loaded, skipped, "TopAccessory", count, slot);
 
-  g_luaScript->Call("StylingShop_GetSizeInTable", "s>d", "MidAccessory", &count);
+  g_session.m_hotkeyScript->Call("StylingShop_GetSizeInTable", "s>d", "MidAccessory", &count);
   slot = 1;
   this->AddAccessories(loaded, skipped, "MidAccessory", count, slot);
 
-  g_luaScript->Call("StylingShop_GetSizeInTable", "s>d", "BottomAccessory", &count);
+  g_session.m_hotkeyScript->Call("StylingShop_GetSizeInTable", "s>d", "BottomAccessory", &count);
   slot = 2;
   this->AddAccessories(loaded, skipped, "BottomAccessory", count, slot);
 }
@@ -1944,10 +1944,10 @@ void UIAccessoryShowCase::AddAccessories(int& loaded, int& skipped, const char* 
   int order = 1;
   for (unsigned int index = first + 1; index < static_cast<unsigned int>(count + first + 1); ++index, ++order) {
     int itemId = 0;
-    g_luaScript->Call("StylingShop_GetGoods", "sd>d", table, order, &itemId);
+    g_session.m_hotkeyScript->Call("StylingShop_GetGoods", "sd>d", table, order, &itemId);
     if (g_session.IsDoramJob(g_session.GetDisplayJob()) == true) {
       bool available = false;
-      g_luaScript->Call("StylingShop_GetIsDoram_by_goods", "sd>b", table, itemId, &available);
+      g_session.m_hotkeyScript->Call("StylingShop_GetIsDoram_by_goods", "sd>b", table, itemId, &available);
       if (!available) {
         ++skipped;
         continue;
@@ -2039,9 +2039,9 @@ void UIMyStyleWnd::LoadLikeList() {
         int goods = 0;
         int count = 0;
         if (style.topAccNum != 0) {
-          g_luaScript->Call("StylingShop_GetSizeInTable", "s>d", "TopAccessory", &count);
+          g_session.m_hotkeyScript->Call("StylingShop_GetSizeInTable", "s>d", "TopAccessory", &count);
           for (int index = 1; index < count + 1; ++index) {
-            g_luaScript->Call("StylingShop_GetGoods", "sd>d", "TopAccessory", index, &goods);
+            g_session.m_hotkeyScript->Call("StylingShop_GetGoods", "sd>d", "TopAccessory", index, &goods);
             ITEM_DESC description = FindItemDescription(goods);
             if (style.topAccNum == description.unknown_0040) {
               display->unknown_00BC = goods;
@@ -2050,9 +2050,9 @@ void UIMyStyleWnd::LoadLikeList() {
           }
         }
         if (style.midAccNum != 0) {
-          g_luaScript->Call("StylingShop_GetSizeInTable", "s>d", "MidAccessory", &count);
+          g_session.m_hotkeyScript->Call("StylingShop_GetSizeInTable", "s>d", "MidAccessory", &count);
           for (int index = 1; index < count + 1; ++index) {
-            g_luaScript->Call("StylingShop_GetGoods", "sd>d", "MidAccessory", index, &goods);
+            g_session.m_hotkeyScript->Call("StylingShop_GetGoods", "sd>d", "MidAccessory", index, &goods);
             ITEM_DESC description = FindItemDescription(goods);
             if (style.midAccNum == description.unknown_0040) {
               display->unknown_00C0 = goods;
@@ -2061,9 +2061,9 @@ void UIMyStyleWnd::LoadLikeList() {
           }
         }
         if (style.bottomAccNum != 0) {
-          g_luaScript->Call("StylingShop_GetSizeInTable", "s>d", "BottomAccessory", &count);
+          g_session.m_hotkeyScript->Call("StylingShop_GetSizeInTable", "s>d", "BottomAccessory", &count);
           for (int index = 1; index < count + 1; ++index) {
-            g_luaScript->Call("StylingShop_GetGoods", "sd>d", "BottomAccessory", index, &goods);
+            g_session.m_hotkeyScript->Call("StylingShop_GetGoods", "sd>d", "BottomAccessory", index, &goods);
             ITEM_DESC description = FindItemDescription(goods);
             if (style.bottomAccNum == description.unknown_0040) {
               display->unknown_00C4 = goods;
@@ -2387,7 +2387,7 @@ void UIBasicStylingWnd::Slot15(int, int) {
 
   int count = 0;
   const int type = 1;
-  g_luaScript->Call("StylingShop_GetSizeInTable", "s>d", this->m_display->GetStyleTable(type).c_str(), &count);
+  g_session.m_hotkeyScript->Call("StylingShop_GetSizeInTable", "s>d", this->m_display->GetStyleTable(type).c_str(), &count);
   for (int i = 0; i < count; ++i) {
     char normal[64];
     char hover[64];

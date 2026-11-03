@@ -1053,7 +1053,7 @@ bool CFootprintEffect::Slot33() {
 void CFootprintEffect::Slot01() {
   char* leftFile = nullptr;
   char* rightFile = nullptr;
-  g_luaScript->Call("GetFootprintPngFile", "d>ss", this->unknown_00C4, &leftFile, &rightFile);
+  g_session.m_hotkeyScript->Call("GetFootprintPngFile", "d>ss", this->unknown_00C4, &leftFile, &rightFile);
   if (!leftFile || std::strlen(leftFile) == 0 || !rightFile || std::strlen(rightFile) == 0) {
     return;
   }
@@ -1062,18 +1062,18 @@ void CFootprintEffect::Slot01() {
   this->unknown_00EC = rightFile;
 
   double scale = 5.0;
-  g_luaScript->Call("GetFootprintPngScale", "d>l", this->unknown_00C4, &scale);
+  g_session.m_hotkeyScript->Call("GetFootprintPngScale", "d>l", this->unknown_00C4, &scale);
   *reinterpret_cast<float*>(&this->unknown_0048) = static_cast<float>(scale);
 
   int alpha = 250;
-  g_luaScript->Call("GetFootprintPngAplha", "d>d", this->unknown_00C4, &alpha);
+  g_session.m_hotkeyScript->Call("GetFootprintPngAplha", "d>d", this->unknown_00C4, &alpha);
   *reinterpret_cast<int*>(this->unknown_0054) = alpha;
 
   int duration = 10;
-  g_luaScript->Call("GetFootprintPngDuration", "d>d", this->unknown_00C4, &duration);
+  g_session.m_hotkeyScript->Call("GetFootprintPngDuration", "d>d", this->unknown_00C4, &duration);
   this->unknown_002C = duration;
 
-  g_luaScript->Call("GetFootprintStride", "d>l", this->unknown_00C4, &this->stepDistance);
+  g_session.m_hotkeyScript->Call("GetFootprintStride", "d>l", this->unknown_00C4, &this->stepDistance);
   this->unknown_0120 = 0.0f;
 }
 
@@ -1210,13 +1210,13 @@ bool CFootprintStrEffect::Slot33() {
 void CFootprintStrEffect::Slot01() {
   char* leftFile = nullptr;
   char* rightFile = nullptr;
-  g_luaScript->Call("GetFootprintStrFileBottom", "d>ss", this->unknown_00C4, &leftFile, &rightFile);
+  g_session.m_hotkeyScript->Call("GetFootprintStrFileBottom", "d>ss", this->unknown_00C4, &leftFile, &rightFile);
   if (!IsNullOrEmpty(leftFile) && !IsNullOrEmpty(rightFile)) {
     this->unknown_00DC = leftFile;
     this->unknown_00F4 = rightFile;
   }
 
-  g_luaScript->Call("GetFootprintStrFileTop", "d>ss", this->unknown_00C4, &leftFile, &rightFile);
+  g_session.m_hotkeyScript->Call("GetFootprintStrFileTop", "d>ss", this->unknown_00C4, &leftFile, &rightFile);
   if (!IsNullOrEmpty(leftFile) && !IsNullOrEmpty(rightFile)) {
     this->unknown_010C = leftFile;
     this->unknown_0124 = rightFile;
@@ -1227,11 +1227,11 @@ void CFootprintStrEffect::Slot01() {
     return;
   }
 
-  g_luaScript->Call("GetFootprintStrScale", "d>ll", this->unknown_00C4, &this->unknown_0140, &this->unknown_0148);
-  g_luaScript->Call("GetFootprintStrTopHeight", "d>l", this->unknown_00C4, &this->unknown_0150);
-  g_luaScript->Call("GetFootprintStride", "d>l", this->unknown_00C4, &this->unknown_0158);
-  g_luaScript->Call("GetFootprintStrGap", "d>l", this->unknown_00C4, &this->unknown_0160);
-  g_luaScript->Call("IsFootprintStrAdjustAngle", "d>b", this->unknown_00C4, &this->unknown_0168);
+  g_session.m_hotkeyScript->Call("GetFootprintStrScale", "d>ll", this->unknown_00C4, &this->unknown_0140, &this->unknown_0148);
+  g_session.m_hotkeyScript->Call("GetFootprintStrTopHeight", "d>l", this->unknown_00C4, &this->unknown_0150);
+  g_session.m_hotkeyScript->Call("GetFootprintStride", "d>l", this->unknown_00C4, &this->unknown_0158);
+  g_session.m_hotkeyScript->Call("GetFootprintStrGap", "d>l", this->unknown_00C4, &this->unknown_0160);
+  g_session.m_hotkeyScript->Call("IsFootprintStrAdjustAngle", "d>b", this->unknown_00C4, &this->unknown_0168);
 }
 
 // OFFSET: 0x00713830

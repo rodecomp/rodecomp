@@ -6942,13 +6942,13 @@ int UISkillDescribeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
     g_windowMgr.CloseWindow(10030);
   }
 
-  this->unknown_00EC = this->unknown_00D4 = skill.DisplayName(*g_luaScript);
+  this->unknown_00EC = this->unknown_00D4 = skill.DisplayName(*g_session.m_hotkeyScript);
   this->m_skillId = static_cast<int>(skill.id);
   {
     CSkillInfo owned = g_session.LookupSkill(static_cast<std::uint32_t>(a));
     if (owned.available != 0 && owned.unknown_0014 != 0 && owned.level != 0) {
       char cost[64];
-      if (skill.UseApAmount(*g_luaScript, owned.level) != 0) {
+      if (skill.UseApAmount(*g_session.m_hotkeyScript, owned.level) != 0) {
         std::sprintf(cost, " (Sp : %d, Ap : %d)", owned.unknown_0014, owned.unknown_0034);
       } else {
         std::sprintf(cost, " (Sp : %d)", owned.unknown_0014);
@@ -6956,16 +6956,16 @@ int UISkillDescribeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
       this->unknown_00EC.append(cost, std::strlen(cost));
     }
     bool passive = false;
-    g_luaScript->Call("IsPassiveSkill", "d>b", static_cast<int>(a), &passive);
+    g_session.m_hotkeyScript->Call("IsPassiveSkill", "d>b", static_cast<int>(a), &passive);
     this->m_delayButton->Enable(!passive);
     this->m_text->Clear();
   }
 
-  this->unknown_00BC = std::string("유저인터페이스\\item\\") + std::string(skill.IdName(*g_luaScript)) + ".bmp";
+  this->unknown_00BC = std::string("유저인터페이스\\item\\") + std::string(skill.IdName(*g_session.m_hotkeyScript)) + ".bmp";
   this->m_viewer->Clear();
 
   const char* description = nullptr;
-  if (g_luaScript->Call("GetSkillDescript", "ddd>s", g_session.m_job, static_cast<int>(a), b == 0 && c == 0 && d == 1, &description)) {
+  if (g_session.m_hotkeyScript->Call("GetSkillDescript", "ddd>s", g_session.m_job, static_cast<int>(a), b == 0 && c == 0 && d == 1, &description)) {
     const std::string text = description;
     if (!text.empty()) {
       if (FindShopId(g_session, std::string()) != -1) {

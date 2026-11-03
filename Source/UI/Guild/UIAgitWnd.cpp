@@ -155,7 +155,7 @@ int UIListBoxAgitMenu::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     GuildInfo* guildInfo = &g_guildInfo;
     uint16_t agitId = static_cast<uint16_t>(guildInfo->GetUnknown0114(this->m_agitIndex));
 
-    LuaScript* luaScript = g_luaScript;
+    LuaScript* luaScript = g_session.m_hotkeyScript;
     char* agitName = nullptr;
     luaScript->Call("get_agit_name", "d>s", agitId, &agitName);
     if (agitName != nullptr && strnlen(agitName, 256) != 0) {

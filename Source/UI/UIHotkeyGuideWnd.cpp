@@ -1,4 +1,5 @@
 #include "Script/LuaScript.h"
+#include "Client/Session.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/UIHotkeyGuideWnd.h"
 
@@ -167,7 +168,7 @@ void UIHotkeyGuideWnd::Slot15(int, int) {
   int messages[18] = {105, 104, 283, 106, 103, 3134, 1317, 2859, 2353, 265, 3135, 2350, 3136, 2646, 3225, 3137, 574, 3138};
   int hotkeys[18] = {47, 1, 2, 9, 5, 10, 3, 8, 42, -1, 46, 38, 51, 49, 6, 37, 17, 12};
   for (int i = 0; i < 18; ++i) {
-    HotkeyInfo hotkey = GetHotkeyInfo(*g_luaScript, 1, hotkeys[i]);
+    HotkeyInfo hotkey = GetHotkeyInfo(*g_session.m_hotkeyScript, 1, hotkeys[i]);
     if (messages[i] == 265) {
       this->m_entries.push_back(HotkeyGuideEntry(messages[i], 27, 0));
     } else {

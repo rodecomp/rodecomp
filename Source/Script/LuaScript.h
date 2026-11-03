@@ -41,7 +41,6 @@ private:
   void Register();
 };
 
-extern LuaScript* g_luaScript;
 extern std::map<std::string, std::vector<std::string>> g_kafraServiceMapList;
 
 struct MiniMapPosition;

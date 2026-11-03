@@ -226,7 +226,7 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
       if (direction > 7) {
         direction = 0;
       }
-      g_luaScript->Call("OffsetItemPos_GetOffsetForDoram", "ddd>dd", views[type], direction, this->unknown_0018[0], &doramX, &doramY);
+      g_session.m_hotkeyScript->Call("OffsetItemPos_GetOffsetForDoram", "ddd>dd", views[type], direction, this->unknown_0018[0], &doramX, &doramY);
       offsetX = doramX;
       offsetY = doramY;
     }
@@ -369,7 +369,7 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
         const int direction = this->unknown_0040 % 8;
         if (views[type] > 0) {
           int priority = -1;
-          g_luaScript->Call("GetLayerPriority", "ddd>d", direction, type, views[type], &priority);
+          g_session.m_hotkeyScript->Call("GetLayerPriority", "ddd>d", direction, type, views[type], &priority);
           if (priority != -1) {
             SpriteLayerQuad entry;
             entry.quad = quad;

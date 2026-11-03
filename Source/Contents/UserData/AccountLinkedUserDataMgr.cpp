@@ -80,7 +80,7 @@ void CAccountLinkedUserDataMgr::CompleteLoad(
       if (type == 1) {
         LoadWhisperBlockList(root["data"]);
         g_session.m_emotionHotkeys.Load(root["data"]);
-        g_userHotkeyMgr->LoadV2(*g_luaScript, root["data"]);
+        g_userHotkeyMgr->LoadV2(*g_session.m_hotkeyScript, root["data"]);
       }
 
       if (type == 1 || type == 2) {
@@ -144,8 +144,8 @@ void CAccountLinkedUserDataMgr::Save() {
     emotions.Export(data);
   }
 
-  if (g_userHotkeyMgr->HasChanges(*g_luaScript)) {
-    g_userHotkeyMgr->Export(*g_luaScript, data);
+  if (g_userHotkeyMgr->HasChanges(*g_session.m_hotkeyScript)) {
+    g_userHotkeyMgr->Export(*g_session.m_hotkeyScript, data);
   }
 
   if (!data.isNull()) {

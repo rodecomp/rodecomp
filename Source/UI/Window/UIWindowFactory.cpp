@@ -22,7 +22,7 @@ UIWindow* UIWindowMgr::CreateLayoutWindow(int id) {
   int height = 0;
   int x = 0;
   int y = 0;
-  if (!g_luaScript->Call("GetWindowInfo", "d>dddd", id, &width, &height, &x, &y)) {
+  if (!g_session.m_hotkeyScript->Call("GetWindowInfo", "d>dddd", id, &width, &height, &x, &y)) {
     return nullptr;
   }
 

@@ -9,12 +9,12 @@ bool CCharacterRender::DrawOnTop() const {
 
   if (g_session.m_newRobeDrawOnTop == 1) {
     int unusedPriority = 1;
-    g_luaScript->Call(
+    g_session.m_hotkeyScript->Call(
       "_New_DrawOnTop", "ddddd>bd", this->unknown_00BC, this->unknown_0018[0], this->unknown_0010, this->unknown_0040, this->unknown_0044, &drawOnTop,
       &unusedPriority
     );
   } else {
-    g_luaScript->Call("DrawOnTop", "ddddd>b", this->unknown_00BC, this->unknown_0018[0], this->unknown_0010, this->unknown_0040, this->unknown_0044, &drawOnTop);
+    g_session.m_hotkeyScript->Call("DrawOnTop", "ddddd>b", this->unknown_00BC, this->unknown_0018[0], this->unknown_0010, this->unknown_0040, this->unknown_0044, &drawOnTop);
   }
 
   return drawOnTop;
@@ -24,5 +24,5 @@ bool CCharacterRender::DrawOnTop() const {
 // FUNCTION: fn_10111
 bool CCharacterRender::SetRobe(int robe) {
   this->unknown_00BC = robe;
-  return g_luaScript->CallTable("TB_Layer_Priority", "IsHelmRobe", "d>b", robe, &this->unknown_00C0);
+  return g_session.m_hotkeyScript->CallTable("TB_Layer_Priority", "IsHelmRobe", "d>b", robe, &this->unknown_00C0);
 }

@@ -1680,7 +1680,7 @@ void CGameMode::SpawnSkillWarningPlanes(std::uint32_t aid, std::uint16_t skillId
 
   int width = 0;
   int height = 0;
-  if (!g_luaScript->Call("GetSkillScale", "dd>dd", skillId, level, &width, &height)) {
+  if (!g_session.m_hotkeyScript->Call("GetSkillScale", "dd>dd", skillId, level, &width, &height)) {
     return;
   }
 

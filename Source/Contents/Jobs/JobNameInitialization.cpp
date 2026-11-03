@@ -33,7 +33,7 @@ void CSession::InitJobNameTable() {
 
   const auto other = [&](int first, int end) {
     for (int id = first; id < end; ++id) {
-      g_luaScript->Call("ReqJobName", "d>s", id, &this->m_jobNameTable[id]);
+      g_session.m_hotkeyScript->Call("ReqJobName", "d>s", id, &this->m_jobNameTable[id]);
     }
   };
 

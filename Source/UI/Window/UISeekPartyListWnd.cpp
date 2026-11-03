@@ -586,14 +586,14 @@ void UISeekPartyListWnd::UpdateScrollBar() {
 // OFFSET: 0x00943F40
 // FUNCTION: fn_12830
 void UISeekPartyListWnd::InitRegionFilter() {
-  g_luaScript->HasTable("map_list");
+  g_session.m_hotkeyScript->HasTable("map_list");
   std::string regionName;
 
   int region = 1;
   for (;; ++region) {
     int id = 0;
     const char* name = nullptr;
-    if (g_luaScript->Call("queryRegionInfo", "d>ds", region, &id, &name)) {
+    if (g_session.m_hotkeyScript->Call("queryRegionInfo", "d>ds", region, &id, &name)) {
       if (!name) {
         break;
       }
@@ -602,7 +602,7 @@ void UISeekPartyListWnd::InitRegionFilter() {
     }
   }
 
-  g_luaScript->HasTable("map_list");
+  g_session.m_hotkeyScript->HasTable("map_list");
   for (int current = 1; current < region; ++current) {
     std::vector<SeekPartyMapEntry> maps;
     int x = 0;
@@ -612,7 +612,7 @@ void UISeekPartyListWnd::InitRegionFilter() {
     int green = 0;
     int blue = 0;
     for (int index = 1;; ++index) {
-      if (g_luaScript->Call("queryMapInfo", "dd>ddsddd", current, index, &x, &y, &name, &red, &green, &blue)) {
+      if (g_session.m_hotkeyScript->Call("queryMapInfo", "dd>ddsddd", current, index, &x, &y, &name, &red, &green, &blue)) {
         if (!name) {
           break;
         }

@@ -518,7 +518,7 @@ void CUISkillDelayInfo::SetSkill(int skillId) {
   this->delayList->UpdateScrollBar();
 
   const char* skillDescription = nullptr;
-  g_luaScript->Call("GetSkillDescript", "ddd>s", g_session.m_job, skillId, 0, &skillDescription);
+  g_session.m_hotkeyScript->Call("GetSkillDescript", "ddd>s", g_session.m_job, skillId, 0, &skillDescription);
   if (!IsNullOrEmpty(skillDescription)) {
     std::vector<std::string> lines = Split(skillDescription, "\r\n");
     if (!lines.empty()) {
