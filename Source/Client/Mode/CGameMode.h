@@ -620,6 +620,8 @@ public:
   int Run() override;
   void Initialize(const char* name) override;
   void End() override;
+  void Update() override;
+  void sub_D08910();
   void TargetActorByAid(int aid);
   void Slot7(int value) override;
   void PlaceWindowAtActor(UIWindow* window, CGameActor* actor);

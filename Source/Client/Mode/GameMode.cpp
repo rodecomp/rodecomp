@@ -4796,6 +4796,202 @@ static_assert(sizeof(StatusPointRequestPacket) == 5);
 
 int sub_C7F5A0();
 
+// GLOBAL: gl_25463
+std::uint32_t g_spriteAtlasClearTick;
+
+// OFFSET: 0x00CDF1E0
+// FUNCTION: fn_21323
+void CGameMode::Update() {
+  PumpApplicationMessages();
+  this->sub_D08910();
+  if (Replay::Instance().AdvanceFrame() == 0) {
+    g_windowMgr.window_4F168->SendMsg(nullptr, 35, 0, 0, 0, 0);
+  }
+
+  if (this->running != 0) {
+    g_timeScheduler->Process();
+    g_playerNameDictionary->Update();
+    this->nameCard.ProcessRequests();
+    g_guildMgr->UpdateEmblemRequests(
+      *g_emblemDataMgr, g_session.m_aid, g_session.m_accountName, reinterpret_cast<const char*>(&g_session.unknown_807C[0x08]), GetRagConnection(),
+      *g_asyncWorkMgr
+    );
+    g_asyncWorkMgr->Update(1000);
+    this->ProcessInput();
+
+    if (g_hoverActorGid != 0) {
+      if (g_mouse.buttons[0] != 0) {
+        g_hoverActorGid = 0;
+        g_followLostTick = 0;
+        g_followUpdateTick = 0;
+      } else {
+        CGameActor* actor = static_cast<CGameActor*>(this->scene->GetActorByGID(g_hoverActorGid));
+        if (actor == nullptr) {
+          if (g_followLostTick == 0) {
+            g_followLostTick = timeGetTime();
+          }
+          if (timeGetTime() - g_followLostTick > 10000) {
+            g_hoverActorGid = 0;
+            g_followUpdateTick = 0;
+            g_followLostTick = 0;
+          }
+        } else {
+          g_followLostTick = 0;
+          if (timeGetTime() - g_followUpdateTick > 1000) {
+            g_followUpdateTick = timeGetTime();
+            int x = actor->unknown_0158[5];
+            int y = *reinterpret_cast<const int*>(actor->unknown_0170);
+            int cellX = x;
+            int cellY = y;
+            if (g_windowMgr.window_027C == nullptr && this->scene->player->render.unknown_0070 != 6) {
+              bool reachable = true;
+              if (!this->IsValidCell(x, y)) {
+                reachable = this->GetClosestValidCell(&cellX, &cellY);
+                x = cellX;
+                y = cellY;
+              }
+              if (reachable) {
+                if (g_windowMgr.unknown_0210 != nullptr) {
+                  g_windowMgr.CloseWindow(0x12);
+                }
+                this->scene->player->SendMsg(nullptr, 0x11, 0, x, x >> 31, y, y >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+              }
+            } else {
+              this->scene->player->SendMsg(nullptr, 0x10, 0, x, x >> 31, y, y >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+            }
+          }
+        }
+      }
+    }
+
+    this->UpdateLoopSounds();
+
+    g_soundMgr->Update();
+    if (g_soundMgr->IsComplete() && g_soundMgr->secondaryEnabled != 0) {
+      g_soundMgr->secondaryEnabled = 0;
+      if (g_soundMgr->IsStopped()) {
+        CSoundMgr::Pause(g_soundMgr, 0);
+      } else {
+        g_soundMgr->SetDefaultName(g_session.GetBgmFileName(this->MapName().c_str()));
+      }
+    }
+
+    g_nProtectGameGuardMgr->Stop();
+    g_ggHashMgr->VerifyPendingFiles();
+    if (g_session.unknown_5912) {
+      Base_RunCallback();
+    }
+
+    if (g_updateTick > 0) {
+      SendGameTick(
+        false, *reinterpret_cast<std::uint32_t*>(&this->unknown_026E[0x02]), *reinterpret_cast<std::uint32_t*>(&this->unknown_026E[0x06]), g_gameTickInterval,
+        GetRagConnection(), g_packetLengths, g_pingLogEnabled, g_pingLogFirstTick, g_pingLogTicks
+      );
+      if (timeGetTime() > g_spriteAtlasClearTick) {
+        g_spriteAtlasClearTick = timeGetTime() + 15000;
+        g_renderer->atlas.ClearExpired(g_resourceReuseDelay);
+      }
+    }
+
+    const int frames = GetSkipFrameCount();
+    g_updateTick = frames;
+    this->ProcessInput();
+    ResourceMgr::Instance().UpdateTransient();
+    if (frames > 0) {
+      for (int frame = frames; frame != 0; --frame) {
+        g_effectMgr->Update();
+        this->scene->OnProcess();
+        this->scene->ground->Slot19();
+        this->camera->Update();
+      }
+    } else if (frames == 0) {
+      this->scene->OnProcess();
+      this->camera->Update();
+    }
+  }
+
+  if (g_restoreSurfaces != 0) {
+    g_restoreSurfaces = 0;
+    GetRenderSystemHolder()->TestDevice();
+    g_windowMgr.InvalidateAll();
+  }
+
+  g_weatherEffect.Process();
+  if (g_isAppActive == 0 && GetRenderSystemHolder()->IsWindowed()) {
+    return;
+  }
+
+  if (sub_C7F5A0()) {
+    g_renderer->ClearWorld();
+    g_actorPickNode.Clear();
+    this->camera->Render();
+    this->DrawMiniMap();
+    g_windowMgr.CenterSurface0478();
+    g_windowMgr.DrawWindows();
+    g_mapInfoMgr->DrawMapName(*GetRenderSystemHolder()->system);
+    if (this->scene->unknown_0048 != 0 || *reinterpret_cast<const int*>(&g_session.unknown_5454[0x08]) != 0) {
+      this->DrawMiniMapCoordinates();
+      this->DrawTimeAttackTimer();
+    }
+    if (*reinterpret_cast<const int*>(&g_session.unknown_07A4[0x08]) != 0) {
+      this->DrawTimeAttackCountdown(*reinterpret_cast<const std::uint32_t*>(&g_session.unknown_07A4[0x00]), *reinterpret_cast<const int*>(g_session.unknown_079C));
+    }
+
+    if (this->drag.source != 0 && (g_windowMgr.window_01EC == nullptr || g_windowMgr.window_01EC->geometry.visible == 0)) {
+      if (this->drag.source == 0x1D) {
+        if (g_windowMgr.Window4F250Ready()) {
+          g_windowMgr.MoveTransient(g_mouse.x, g_mouse.y);
+        }
+      } else if (this->drag.resource.empty()) {
+        this->drag.Clear();
+      } else {
+        const std::string resource = this->drag.resource;
+        CSprRes* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load((resource + ".spr").c_str()));
+        CActRes* action = static_cast<CActRes*>(ResourceMgr::Instance().Load((resource + ".act").c_str()));
+        DrawActionSprite(*GetRenderSystemHolder()->system, g_mouse.x, g_mouse.y, action, sprite, 0, 0, 1.0f, 0.0f, 0xFAFFFFFF, 0x201);
+      }
+    }
+
+    this->DrawCursor();
+    this->DrawMiniMapNumber();
+    this->DrawFadeIn();
+    if (g_renderer->Draw()) {
+      g_renderer->DrawOverlays(*GetRenderSystemHolder()->system);
+    }
+    g_renderer->Present(1);
+  }
+
+  this->TakeScreenshot();
+
+  for (int index = 0; index < 6; ++index) {
+    unsigned char& pending = this->unknown_05EC[1 + index];
+    if (pending == 0) {
+      continue;
+    }
+
+    StatusPointRequestPacket packet;
+    packet.packetType = 0xBB;
+    if (index == 0) {
+      packet.statusId = 13;
+    } else if (index == 1) {
+      packet.statusId = 14;
+    } else if (index == 2) {
+      packet.statusId = 18;
+    } else if (index == 3) {
+      packet.statusId = 16;
+    } else if (index == 4) {
+      packet.statusId = 15;
+    } else if (index == 5) {
+      packet.statusId = 17;
+    }
+    packet.amount = 1;
+    if (this->unknown_0250 == 0) {
+      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
+      --pending;
+    }
+  }
+}
+
 // OFFSET: 0x00CE0B80
 // FUNCTION: fn_21330
 void CGameMode::ProcessInput() {
