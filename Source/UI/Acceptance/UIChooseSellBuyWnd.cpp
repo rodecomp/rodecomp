@@ -10610,8 +10610,804 @@ public:
 };
 
 // OFFSET: 0x00903230
+// FUNCTION: fn_12377
+int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  if (message == 6) {
+    switch (a) {
+    case 184:
+    case 218:
+      switch (this->unknown_00F4) {
+      case 0:
+        if (std::strlen(this->unknown_00D0) == static_cast<std::size_t>(this->unknown_010C)) {
+        std::atoi(this->unknown_00D0);
+        SecondPasswordPacket packet;
+        packet.packetType = 0x8B8;
+        packet.accountId = g_passwordWndAccountId;
+        std::memcpy(packet.password, this->unknown_00D0, sizeof(packet.password));
+        GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
+        this->sub_90C380();
+          break;
+        }
+        g_windowMgr.Confirm(LookupMessage(1887), 0, true, false, 0, "Message", 280, 120, 0);
+        this->unknown_00F4 = 0;
+        this->unknown_00F8 = this->unknown_00FC;
+        this->unknown_00EC = 0;
+        this->unknown_00F0 = 0;
+        std::memset(this->unknown_00D0, 0, sizeof(this->unknown_00D0));
+        std::memset(this->unknown_00D9, 0, sizeof(this->unknown_00D9));
+        std::memset(this->unknown_00E2, 0, sizeof(this->unknown_00E2));
+        this->unknown_0150[0]->Enable(0);
+        this->unknown_0150[3]->Enable(1);
+        this->Invalidate();
+        break;
+
+      case 1:
+        if (std::strlen(this->unknown_00D0) == static_cast<std::size_t>(this->unknown_010C)) {
+          this->unknown_00F4 = 2;
+          this->unknown_00F8 = this->unknown_0100;
+          this->unknown_00EC = 0;
+          this->unknown_00F0 = 0;
+          std::memset(this->unknown_00D9, 0, sizeof(this->unknown_00D9));
+          std::memset(this->unknown_00E2, 0, sizeof(this->unknown_00E2));
+          this->FillRegion(415, 128, 98, 14, 0xFFFFFF);
+          break;
+        }
+        g_windowMgr.Confirm(LookupMessage(1887), 0, true, false, 0, "Message", 280, 120, 0);
+        this->unknown_00F8 = this->unknown_00FC;
+        this->unknown_00F4 = 1;
+        this->unknown_00EC = 0;
+        this->unknown_00F0 = 0;
+        std::memset(this->unknown_00D0, 0, sizeof(this->unknown_00D0));
+        std::memset(this->unknown_00D9, 0, sizeof(this->unknown_00D9));
+        std::memset(this->unknown_00E2, 0, sizeof(this->unknown_00E2));
+        this->Invalidate();
+        break;
+
+      case 2:
+        if (std::strlen(this->unknown_00D9) == static_cast<std::size_t>(this->unknown_010C)) {
+          this->unknown_00F4 = 3;
+          this->unknown_00F8 = this->unknown_0104;
+          this->unknown_00EC = 0;
+          this->unknown_00F0 = 0;
+          std::memset(this->unknown_00E2, 0, sizeof(this->unknown_00E2));
+          this->FillRegion(415, 167, 98, 14, 0xFFFFFF);
+          this->unknown_0150[0]->Enable(1);
+          this->unknown_0150[3]->Enable(0);
+          break;
+        }
+        g_windowMgr.Confirm(LookupMessage(1887), 0, true, false, 0, "Message", 280, 120, 0);
+        this->unknown_00F4 = 2;
+        this->unknown_00F8 = this->unknown_0100;
+        this->unknown_00EC = 0;
+        this->unknown_00F0 = 0;
+        std::memset(this->unknown_00D9, 0, sizeof(this->unknown_00D9));
+        std::memset(this->unknown_00E2, 0, sizeof(this->unknown_00E2));
+        this->FillRegion(415, 128, 98, 14, 0xFFFFFF);
+        this->Invalidate();
+        break;
+
+      case 3:
+        if (std::strlen(this->unknown_00E2) == static_cast<std::size_t>(this->unknown_010C)) {
+          if (std::strcmp(this->unknown_00D9, this->unknown_00E2) == 0) {
+            std::atoi(this->unknown_00D0);
+            std::atoi(this->unknown_00E2);
+            SecondPasswordChangePacket packet;
+            packet.packetType = 0x8BE;
+            packet.accountId = g_passwordWndAccountId;
+            std::memcpy(packet.password, this->unknown_00D0, sizeof(packet.password));
+            std::memcpy(packet.newPassword, this->unknown_00E2, sizeof(packet.newPassword));
+            GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
+            this->sub_90C380();
+          } else {
+            g_windowMgr.Confirm(LookupMessage(1016), 0, true, false, 0, "Message", 280, 120, 0);
+            this->unknown_00F4 = 2;
+            this->unknown_00F8 = this->unknown_0100;
+            this->unknown_00EC = 0;
+            this->unknown_00F0 = 0;
+            std::memset(this->unknown_00D9, 0, sizeof(this->unknown_00D9));
+            std::memset(this->unknown_00E2, 0, sizeof(this->unknown_00E2));
+            this->FillRegion(415, 128, 98, 14, 0xFFFFFF);
+            this->FillRegion(414, 166, 100, 16, 0xFAE6C8);
+            this->unknown_0150[0]->Enable(0);
+            this->unknown_0150[3]->Enable(1);
+          }
+          break;
+        }
+        g_windowMgr.Confirm(LookupMessage(1887), 0, true, false, 0, "Message", 280, 120, 0);
+        this->unknown_00F4 = 3;
+        this->unknown_00F8 = this->unknown_0104;
+        this->unknown_00EC = 0;
+        this->unknown_00F0 = 0;
+        std::memset(this->unknown_00E2, 0, sizeof(this->unknown_00E2));
+        this->FillRegion(415, 167, 98, 14, 0xFFFFFF);
+        this->Invalidate();
+        break;
+      }
+      break;
+
+    case 185:
+      if (g_windowMgr.Confirm(LookupMessage(17), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+        g_modeMgr.gameMode->SendMsg(2, 0, 0, 0, 0);
+        g_windowMgr.Schedule(this);
+      }
+      break;
+
+    case 292:
+      g_session.m_storePasswordMode = 2;
+      this->unknown_0108 = 1;
+      this->unknown_00F4 = 1;
+      this->unknown_00F8 = this->unknown_00FC;
+      this->unknown_00EC = 0;
+      this->unknown_00F0 = 0;
+      std::memset(this->unknown_00D0, 0, sizeof(this->unknown_00D0));
+      std::memset(this->unknown_00D9, 0, sizeof(this->unknown_00D9));
+      std::memset(this->unknown_00E2, 0, sizeof(this->unknown_00E2));
+      this->unknown_0150[0]->Enable(0);
+      this->unknown_0150[3]->Enable(1);
+      this->unknown_0150[1]->SetDisabled(1);
+      this->unknown_0150[1]->Invalidate();
+      this->unknown_0150[2]->SetDisabled(1);
+      this->unknown_0150[2]->Invalidate();
+      this->Invalidate();
+      break;
+
+    case 293:
+      if (++this->unknown_00EC > this->unknown_010C) {
+        g_windowMgr.Confirm(LookupMessage(1887), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      }
+      switch (this->unknown_00F4) {
+      case 0:
+      case 1:
+        std::strcat(this->unknown_00D0, IntToString(this->sub_90C350(0), 0).c_str());
+        break;
+      case 2:
+        std::strcat(this->unknown_00D9, IntToString(this->sub_90C350(0), 0).c_str());
+        break;
+      case 3:
+        std::strcat(this->unknown_00E2, IntToString(this->sub_90C350(0), 0).c_str());
+        break;
+      }
+      this->DrawTextAt(this->unknown_00F0 + 416, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
+      this->unknown_00F0 += 5;
+      break;
+    case 294:
+      if (++this->unknown_00EC > this->unknown_010C) {
+        g_windowMgr.Confirm(LookupMessage(1887), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      }
+      switch (this->unknown_00F4) {
+      case 0:
+      case 1:
+        std::strcat(this->unknown_00D0, IntToString(this->sub_90C350(1), 0).c_str());
+        break;
+      case 2:
+        std::strcat(this->unknown_00D9, IntToString(this->sub_90C350(1), 0).c_str());
+        break;
+      case 3:
+        std::strcat(this->unknown_00E2, IntToString(this->sub_90C350(1), 0).c_str());
+        break;
+      }
+      this->DrawTextAt(this->unknown_00F0 + 416, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
+      this->unknown_00F0 += 5;
+      break;
+    case 295:
+      if (++this->unknown_00EC > this->unknown_010C) {
+        g_windowMgr.Confirm(LookupMessage(1887), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      }
+      switch (this->unknown_00F4) {
+      case 0:
+      case 1:
+        std::strcat(this->unknown_00D0, IntToString(this->sub_90C350(2), 0).c_str());
+        break;
+      case 2:
+        std::strcat(this->unknown_00D9, IntToString(this->sub_90C350(2), 0).c_str());
+        break;
+      case 3:
+        std::strcat(this->unknown_00E2, IntToString(this->sub_90C350(2), 0).c_str());
+        break;
+      }
+      this->DrawTextAt(this->unknown_00F0 + 416, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
+      this->unknown_00F0 += 5;
+      break;
+    case 296:
+      if (++this->unknown_00EC > this->unknown_010C) {
+        g_windowMgr.Confirm(LookupMessage(1887), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      }
+      switch (this->unknown_00F4) {
+      case 0:
+      case 1:
+        std::strcat(this->unknown_00D0, IntToString(this->sub_90C350(3), 0).c_str());
+        break;
+      case 2:
+        std::strcat(this->unknown_00D9, IntToString(this->sub_90C350(3), 0).c_str());
+        break;
+      case 3:
+        std::strcat(this->unknown_00E2, IntToString(this->sub_90C350(3), 0).c_str());
+        break;
+      }
+      this->DrawTextAt(this->unknown_00F0 + 416, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
+      this->unknown_00F0 += 5;
+      break;
+    case 297:
+      if (++this->unknown_00EC > this->unknown_010C) {
+        g_windowMgr.Confirm(LookupMessage(1887), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      }
+      switch (this->unknown_00F4) {
+      case 0:
+      case 1:
+        std::strcat(this->unknown_00D0, IntToString(this->sub_90C350(4), 0).c_str());
+        break;
+      case 2:
+        std::strcat(this->unknown_00D9, IntToString(this->sub_90C350(4), 0).c_str());
+        break;
+      case 3:
+        std::strcat(this->unknown_00E2, IntToString(this->sub_90C350(4), 0).c_str());
+        break;
+      }
+      this->DrawTextAt(this->unknown_00F0 + 416, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
+      this->unknown_00F0 += 5;
+      break;
+    case 298:
+      if (++this->unknown_00EC > this->unknown_010C) {
+        g_windowMgr.Confirm(LookupMessage(1887), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      }
+      switch (this->unknown_00F4) {
+      case 0:
+      case 1:
+        std::strcat(this->unknown_00D0, IntToString(this->sub_90C350(5), 0).c_str());
+        break;
+      case 2:
+        std::strcat(this->unknown_00D9, IntToString(this->sub_90C350(5), 0).c_str());
+        break;
+      case 3:
+        std::strcat(this->unknown_00E2, IntToString(this->sub_90C350(5), 0).c_str());
+        break;
+      }
+      this->DrawTextAt(this->unknown_00F0 + 416, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
+      this->unknown_00F0 += 5;
+      break;
+    case 299:
+      if (++this->unknown_00EC > this->unknown_010C) {
+        g_windowMgr.Confirm(LookupMessage(1887), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      }
+      switch (this->unknown_00F4) {
+      case 0:
+      case 1:
+        std::strcat(this->unknown_00D0, IntToString(this->sub_90C350(6), 0).c_str());
+        break;
+      case 2:
+        std::strcat(this->unknown_00D9, IntToString(this->sub_90C350(6), 0).c_str());
+        break;
+      case 3:
+        std::strcat(this->unknown_00E2, IntToString(this->sub_90C350(6), 0).c_str());
+        break;
+      }
+      this->DrawTextAt(this->unknown_00F0 + 416, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
+      this->unknown_00F0 += 5;
+      break;
+    case 300:
+      if (++this->unknown_00EC > this->unknown_010C) {
+        g_windowMgr.Confirm(LookupMessage(1887), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      }
+      switch (this->unknown_00F4) {
+      case 0:
+      case 1:
+        std::strcat(this->unknown_00D0, IntToString(this->sub_90C350(7), 0).c_str());
+        break;
+      case 2:
+        std::strcat(this->unknown_00D9, IntToString(this->sub_90C350(7), 0).c_str());
+        break;
+      case 3:
+        std::strcat(this->unknown_00E2, IntToString(this->sub_90C350(7), 0).c_str());
+        break;
+      }
+      this->DrawTextAt(this->unknown_00F0 + 416, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
+      this->unknown_00F0 += 5;
+      break;
+    case 301:
+      if (++this->unknown_00EC > this->unknown_010C) {
+        g_windowMgr.Confirm(LookupMessage(1887), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      }
+      switch (this->unknown_00F4) {
+      case 0:
+      case 1:
+        std::strcat(this->unknown_00D0, IntToString(this->sub_90C350(8), 0).c_str());
+        break;
+      case 2:
+        std::strcat(this->unknown_00D9, IntToString(this->sub_90C350(8), 0).c_str());
+        break;
+      case 3:
+        std::strcat(this->unknown_00E2, IntToString(this->sub_90C350(8), 0).c_str());
+        break;
+      }
+      this->DrawTextAt(this->unknown_00F0 + 416, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
+      this->unknown_00F0 += 5;
+      break;
+    case 302:
+      if (++this->unknown_00EC > this->unknown_010C) {
+        g_windowMgr.Confirm(LookupMessage(1887), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      }
+      switch (this->unknown_00F4) {
+      case 0:
+      case 1:
+        std::strcat(this->unknown_00D0, IntToString(this->sub_90C350(9), 0).c_str());
+        break;
+      case 2:
+        std::strcat(this->unknown_00D9, IntToString(this->sub_90C350(9), 0).c_str());
+        break;
+      case 3:
+        std::strcat(this->unknown_00E2, IntToString(this->sub_90C350(9), 0).c_str());
+        break;
+      }
+      this->DrawTextAt(this->unknown_00F0 + 416, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
+      this->unknown_00F0 += 5;
+      break;
+
+    case 303:
+      if (this->unknown_00F4 == 0) {
+        this->unknown_00F4 = 0;
+        this->unknown_00EC = 0;
+        this->unknown_00F0 = 0;
+        this->unknown_00F8 = this->unknown_00FC;
+        std::memset(this->unknown_00D0, 0, sizeof(this->unknown_00D0));
+        std::memset(this->unknown_00D9, 0, sizeof(this->unknown_00D9));
+        std::memset(this->unknown_00E2, 0, sizeof(this->unknown_00E2));
+        this->unknown_0150[0]->Enable(1);
+        this->unknown_0150[3]->Enable(0);
+      } else {
+        this->unknown_00EC = 0;
+        this->unknown_00F0 = 0;
+        if (g_session.m_passwordInputAlternate) {
+          this->unknown_00F4 = 2;
+          this->unknown_00F8 = this->unknown_0100;
+          std::memset(this->unknown_00D0, 0, sizeof(this->unknown_00D0));
+          std::memset(this->unknown_00D9, 0, sizeof(this->unknown_00D9));
+          std::memset(this->unknown_00E2, 0, sizeof(this->unknown_00E2));
+          this->unknown_0150[0]->Enable(1);
+          this->unknown_0150[3]->Enable(0);
+        } else {
+          this->unknown_00F4 = 1;
+          this->unknown_00F8 = this->unknown_00FC;
+          std::memset(this->unknown_00D0, 0, sizeof(this->unknown_00D0));
+          std::memset(this->unknown_00D9, 0, sizeof(this->unknown_00D9));
+          std::memset(this->unknown_00E2, 0, sizeof(this->unknown_00E2));
+          this->unknown_0150[0]->Enable(0);
+          this->unknown_0150[3]->Enable(1);
+        }
+      }
+      this->ShuffleKeypad();
+      break;
+
+    case 304:
+      this->SendMsg(this, 6, 184, 0, 0, 0);
+      break;
+
+    case 419:
+      if (std::strlen(this->unknown_00D0) == static_cast<std::size_t>(this->unknown_010C)) {
+        std::atoi(this->unknown_00D0);
+        SecondPasswordPacket packet;
+        packet.packetType = 0x8C3;
+        packet.accountId = g_passwordWndAccountId;
+        std::memcpy(packet.password, this->unknown_00D0, sizeof(packet.password));
+        GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
+        this->sub_90C380();
+        break;
+      }
+      g_windowMgr.Confirm(LookupMessage(1887), 0, true, false, 0, "Message", 280, 120, 0);
+      this->unknown_00F4 = 0;
+      this->unknown_00F8 = this->unknown_00FC;
+      this->unknown_00EC = 0;
+      this->unknown_00F0 = 0;
+      std::memset(this->unknown_00D0, 0, sizeof(this->unknown_00D0));
+      std::memset(this->unknown_00D9, 0, sizeof(this->unknown_00D9));
+      std::memset(this->unknown_00E2, 0, sizeof(this->unknown_00E2));
+      break;
+    }
+  }
+
+  return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+}
 
 // OFFSET: 0x00901D40
+// FUNCTION: fn_12376
+int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  if (message == 6) {
+    switch (a) {
+    case 184:
+    case 218:
+      switch (this->unknown_00F4) {
+      case 0:
+        if (std::strlen(this->unknown_00D0) == static_cast<std::size_t>(this->unknown_010C)) {
+        std::atoi(this->unknown_00D0);
+        SecondPasswordPacket packet;
+        packet.packetType = 0x8BC;
+        packet.accountId = g_passwordWndAccountId;
+        std::memcpy(packet.password, this->unknown_00D0, sizeof(packet.password));
+        GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
+        this->sub_90C380();
+          break;
+        }
+        g_windowMgr.Confirm(LookupMessage(1887), 0, true, false, 0, "Message", 280, 120, 0);
+        this->unknown_00F4 = 0;
+        this->unknown_00F8 = this->unknown_00FC;
+        this->unknown_00EC = 0;
+        this->unknown_00F0 = 0;
+        std::memset(this->unknown_00D0, 0, sizeof(this->unknown_00D0));
+        std::memset(this->unknown_00D9, 0, sizeof(this->unknown_00D9));
+        std::memset(this->unknown_00E2, 0, sizeof(this->unknown_00E2));
+        this->unknown_0150[0]->Enable(0);
+        this->unknown_0150[3]->Enable(1);
+        break;
+
+      case 1:
+        this->unknown_00F4 = 2;
+        this->unknown_00F8 = this->unknown_0100;
+        this->unknown_00EC = 0;
+        this->unknown_00F0 = 0;
+        std::memset(this->unknown_00D9, 0, sizeof(this->unknown_00D9));
+        std::memset(this->unknown_00E2, 0, sizeof(this->unknown_00E2));
+        this->FillRegion(415, 128, 98, 14, 0xFFFFFF);
+        break;
+
+      case 2:
+        if (std::strlen(this->unknown_00D9) == static_cast<std::size_t>(this->unknown_010C)) {
+          this->unknown_00F4 = 3;
+          this->unknown_00F8 = this->unknown_0104;
+          this->unknown_00EC = 0;
+          this->unknown_00F0 = 0;
+          std::memset(this->unknown_00E2, 0, sizeof(this->unknown_00E2));
+          this->FillRegion(415, 167, 98, 14, 0xFFFFFF);
+          this->unknown_0150[0]->Enable(1);
+          this->unknown_0150[3]->Enable(0);
+          break;
+        }
+        g_windowMgr.Confirm(LookupMessage(1887), 0, true, false, 0, "Message", 280, 120, 0);
+        this->unknown_00F4 = 2;
+        this->unknown_00F8 = this->unknown_0100;
+        this->unknown_00EC = 0;
+        this->unknown_00F0 = 0;
+        std::memset(this->unknown_00D9, 0, sizeof(this->unknown_00D9));
+        std::memset(this->unknown_00E2, 0, sizeof(this->unknown_00E2));
+        this->FillRegion(415, 128, 98, 14, 0xFFFFFF);
+        break;
+
+      case 3:
+        if (std::strlen(this->unknown_00E2) != static_cast<std::size_t>(this->unknown_010C)) {
+          g_windowMgr.Confirm(LookupMessage(1887), 0, true, false, 0, "Message", 280, 120, 0);
+          this->unknown_00F4 = 3;
+          this->unknown_00F8 = this->unknown_0104;
+          this->unknown_00EC = 0;
+          this->unknown_00F0 = 0;
+          std::memset(this->unknown_00E2, 0, sizeof(this->unknown_00E2));
+          this->FillRegion(415, 167, 98, 14, 0xFFFFFF);
+          break;
+        }
+        if (std::strcmp(this->unknown_00D9, this->unknown_00E2) == 0) {
+          std::atoi(this->unknown_00D0);
+          std::atoi(this->unknown_00E2);
+          SecondPasswordPacket packet;
+          packet.packetType = 0x8BA;
+          packet.accountId = g_passwordWndAccountId;
+          std::memcpy(packet.password, this->unknown_00E2, sizeof(packet.password));
+          GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
+          this->sub_90C380();
+          break;
+        }
+        g_windowMgr.Confirm(LookupMessage(1016), 0, true, false, 0, "Message", 280, 120, 0);
+        this->unknown_00F4 = 2;
+        this->unknown_00F8 = this->unknown_0100;
+        this->unknown_00EC = 0;
+        this->unknown_00F0 = 0;
+        std::memset(this->unknown_00D9, 0, sizeof(this->unknown_00D9));
+        std::memset(this->unknown_00E2, 0, sizeof(this->unknown_00E2));
+        this->FillRegion(415, 128, 98, 14, 0xFFFFFF);
+        this->FillRegion(414, 166, 100, 16, 0xFAE6C8);
+        this->unknown_0150[0]->Enable(0);
+        this->unknown_0150[3]->Enable(1);
+        break;
+      }
+      break;
+
+    case 185:
+      if (g_windowMgr.Confirm(LookupMessage(17), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+        g_modeMgr.gameMode->SendMsg(2, 0, 0, 0, 0);
+        g_windowMgr.Schedule(this);
+      }
+      break;
+
+    case 292:
+      g_session.m_storePasswordMode = 2;
+      this->unknown_0108 = 1;
+      this->unknown_00F4 = 1;
+      this->unknown_00F8 = this->unknown_00FC;
+      this->unknown_00EC = 0;
+      this->unknown_00F0 = 0;
+      std::memset(this->unknown_00D0, 0, sizeof(this->unknown_00D0));
+      std::memset(this->unknown_00D9, 0, sizeof(this->unknown_00D9));
+      std::memset(this->unknown_00E2, 0, sizeof(this->unknown_00E2));
+      this->unknown_0150[0]->Enable(0);
+      this->unknown_0150[3]->Enable(1);
+      this->unknown_0150[1]->SetDisabled(1);
+      this->unknown_0150[1]->Invalidate();
+      this->unknown_0150[2]->SetDisabled(1);
+      this->unknown_0150[2]->Invalidate();
+      this->Invalidate();
+      break;
+
+    case 293:
+      if (++this->unknown_00EC > this->unknown_010C) {
+        g_windowMgr.Confirm(LookupMessage(1887), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      }
+      switch (this->unknown_00F4) {
+      case 0:
+      case 1:
+        std::strcat(this->unknown_00D0, IntToString(this->sub_90C350(0), 0).c_str());
+        break;
+      case 2:
+        std::strcat(this->unknown_00D9, IntToString(this->sub_90C350(0), 0).c_str());
+        break;
+      case 3:
+        std::strcat(this->unknown_00E2, IntToString(this->sub_90C350(0), 0).c_str());
+        break;
+      }
+      this->DrawTextAt(this->unknown_00F0 + 416, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
+      this->unknown_00F0 += 5;
+      break;
+    case 294:
+      if (++this->unknown_00EC > this->unknown_010C) {
+        g_windowMgr.Confirm(LookupMessage(1887), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      }
+      switch (this->unknown_00F4) {
+      case 0:
+      case 1:
+        std::strcat(this->unknown_00D0, IntToString(this->sub_90C350(1), 0).c_str());
+        break;
+      case 2:
+        std::strcat(this->unknown_00D9, IntToString(this->sub_90C350(1), 0).c_str());
+        break;
+      case 3:
+        std::strcat(this->unknown_00E2, IntToString(this->sub_90C350(1), 0).c_str());
+        break;
+      }
+      this->DrawTextAt(this->unknown_00F0 + 416, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
+      this->unknown_00F0 += 5;
+      break;
+    case 295:
+      if (++this->unknown_00EC > this->unknown_010C) {
+        g_windowMgr.Confirm(LookupMessage(1887), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      }
+      switch (this->unknown_00F4) {
+      case 0:
+      case 1:
+        std::strcat(this->unknown_00D0, IntToString(this->sub_90C350(2), 0).c_str());
+        break;
+      case 2:
+        std::strcat(this->unknown_00D9, IntToString(this->sub_90C350(2), 0).c_str());
+        break;
+      case 3:
+        std::strcat(this->unknown_00E2, IntToString(this->sub_90C350(2), 0).c_str());
+        break;
+      }
+      this->DrawTextAt(this->unknown_00F0 + 416, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
+      this->unknown_00F0 += 5;
+      break;
+    case 296:
+      if (++this->unknown_00EC > this->unknown_010C) {
+        g_windowMgr.Confirm(LookupMessage(1887), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      }
+      switch (this->unknown_00F4) {
+      case 0:
+      case 1:
+        std::strcat(this->unknown_00D0, IntToString(this->sub_90C350(3), 0).c_str());
+        break;
+      case 2:
+        std::strcat(this->unknown_00D9, IntToString(this->sub_90C350(3), 0).c_str());
+        break;
+      case 3:
+        std::strcat(this->unknown_00E2, IntToString(this->sub_90C350(3), 0).c_str());
+        break;
+      }
+      this->DrawTextAt(this->unknown_00F0 + 416, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
+      this->unknown_00F0 += 5;
+      break;
+    case 297:
+      if (++this->unknown_00EC > this->unknown_010C) {
+        g_windowMgr.Confirm(LookupMessage(1887), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      }
+      switch (this->unknown_00F4) {
+      case 0:
+      case 1:
+        std::strcat(this->unknown_00D0, IntToString(this->sub_90C350(4), 0).c_str());
+        break;
+      case 2:
+        std::strcat(this->unknown_00D9, IntToString(this->sub_90C350(4), 0).c_str());
+        break;
+      case 3:
+        std::strcat(this->unknown_00E2, IntToString(this->sub_90C350(4), 0).c_str());
+        break;
+      }
+      this->DrawTextAt(this->unknown_00F0 + 416, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
+      this->unknown_00F0 += 5;
+      break;
+    case 298:
+      if (++this->unknown_00EC > this->unknown_010C) {
+        g_windowMgr.Confirm(LookupMessage(1887), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      }
+      switch (this->unknown_00F4) {
+      case 0:
+      case 1:
+        std::strcat(this->unknown_00D0, IntToString(this->sub_90C350(5), 0).c_str());
+        break;
+      case 2:
+        std::strcat(this->unknown_00D9, IntToString(this->sub_90C350(5), 0).c_str());
+        break;
+      case 3:
+        std::strcat(this->unknown_00E2, IntToString(this->sub_90C350(5), 0).c_str());
+        break;
+      }
+      this->DrawTextAt(this->unknown_00F0 + 416, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
+      this->unknown_00F0 += 5;
+      break;
+    case 299:
+      if (++this->unknown_00EC > this->unknown_010C) {
+        g_windowMgr.Confirm(LookupMessage(1887), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      }
+      switch (this->unknown_00F4) {
+      case 0:
+      case 1:
+        std::strcat(this->unknown_00D0, IntToString(this->sub_90C350(6), 0).c_str());
+        break;
+      case 2:
+        std::strcat(this->unknown_00D9, IntToString(this->sub_90C350(6), 0).c_str());
+        break;
+      case 3:
+        std::strcat(this->unknown_00E2, IntToString(this->sub_90C350(6), 0).c_str());
+        break;
+      }
+      this->DrawTextAt(this->unknown_00F0 + 416, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
+      this->unknown_00F0 += 5;
+      break;
+    case 300:
+      if (++this->unknown_00EC > this->unknown_010C) {
+        g_windowMgr.Confirm(LookupMessage(1887), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      }
+      switch (this->unknown_00F4) {
+      case 0:
+      case 1:
+        std::strcat(this->unknown_00D0, IntToString(this->sub_90C350(7), 0).c_str());
+        break;
+      case 2:
+        std::strcat(this->unknown_00D9, IntToString(this->sub_90C350(7), 0).c_str());
+        break;
+      case 3:
+        std::strcat(this->unknown_00E2, IntToString(this->sub_90C350(7), 0).c_str());
+        break;
+      }
+      this->DrawTextAt(this->unknown_00F0 + 416, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
+      this->unknown_00F0 += 5;
+      break;
+    case 301:
+      if (++this->unknown_00EC > this->unknown_010C) {
+        g_windowMgr.Confirm(LookupMessage(1887), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      }
+      switch (this->unknown_00F4) {
+      case 0:
+      case 1:
+        std::strcat(this->unknown_00D0, IntToString(this->sub_90C350(8), 0).c_str());
+        break;
+      case 2:
+        std::strcat(this->unknown_00D9, IntToString(this->sub_90C350(8), 0).c_str());
+        break;
+      case 3:
+        std::strcat(this->unknown_00E2, IntToString(this->sub_90C350(8), 0).c_str());
+        break;
+      }
+      this->DrawTextAt(this->unknown_00F0 + 416, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
+      this->unknown_00F0 += 5;
+      break;
+    case 302:
+      if (++this->unknown_00EC > this->unknown_010C) {
+        g_windowMgr.Confirm(LookupMessage(1887), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      }
+      switch (this->unknown_00F4) {
+      case 0:
+      case 1:
+        std::strcat(this->unknown_00D0, IntToString(this->sub_90C350(9), 0).c_str());
+        break;
+      case 2:
+        std::strcat(this->unknown_00D9, IntToString(this->sub_90C350(9), 0).c_str());
+        break;
+      case 3:
+        std::strcat(this->unknown_00E2, IntToString(this->sub_90C350(9), 0).c_str());
+        break;
+      }
+      this->DrawTextAt(this->unknown_00F0 + 416, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
+      this->unknown_00F0 += 5;
+      break;
+
+    case 303:
+      if (this->unknown_00F4 == 0) {
+        this->unknown_00F4 = 0;
+        this->unknown_00EC = 0;
+        this->unknown_00F0 = 0;
+        this->unknown_00F8 = this->unknown_00FC;
+        std::memset(this->unknown_00D0, 0, sizeof(this->unknown_00D0));
+        std::memset(this->unknown_00D9, 0, sizeof(this->unknown_00D9));
+        std::memset(this->unknown_00E2, 0, sizeof(this->unknown_00E2));
+        this->unknown_0150[0]->Enable(1);
+        this->unknown_0150[3]->Enable(0);
+      } else {
+        this->unknown_00EC = 0;
+        this->unknown_00F0 = 0;
+        if (g_session.m_passwordInputAlternate) {
+          this->unknown_00F4 = 2;
+          this->unknown_00F8 = this->unknown_0100;
+          std::memset(this->unknown_00D0, 0, sizeof(this->unknown_00D0));
+          std::memset(this->unknown_00D9, 0, sizeof(this->unknown_00D9));
+          std::memset(this->unknown_00E2, 0, sizeof(this->unknown_00E2));
+          this->unknown_0150[0]->Enable(1);
+          this->unknown_0150[3]->Enable(0);
+        } else {
+          this->unknown_00F4 = 1;
+          this->unknown_00F8 = this->unknown_00FC;
+          std::memset(this->unknown_00D0, 0, sizeof(this->unknown_00D0));
+          std::memset(this->unknown_00D9, 0, sizeof(this->unknown_00D9));
+          std::memset(this->unknown_00E2, 0, sizeof(this->unknown_00E2));
+          this->unknown_0150[0]->Enable(0);
+          this->unknown_0150[3]->Enable(1);
+        }
+      }
+      this->ShuffleKeypad();
+      break;
+
+    case 304:
+      this->SendMsg(this, 6, 184, 0, 0, 0);
+      break;
+
+    case 419:
+      if (std::strlen(this->unknown_00D0) == static_cast<std::size_t>(this->unknown_010C)) {
+        std::atoi(this->unknown_00D0);
+        SecondPasswordPacket packet;
+        packet.packetType = 0x8C3;
+        packet.accountId = g_passwordWndAccountId;
+        std::memcpy(packet.password, this->unknown_00D0, sizeof(packet.password));
+        GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
+        this->sub_90C380();
+        break;
+      }
+      g_windowMgr.Confirm(LookupMessage(1887), 0, true, false, 0, "Message", 280, 120, 0);
+      this->unknown_00F4 = 0;
+      this->unknown_00F8 = this->unknown_00FC;
+      this->unknown_00EC = 0;
+      this->unknown_00F0 = 0;
+      std::memset(this->unknown_00D0, 0, sizeof(this->unknown_00D0));
+      std::memset(this->unknown_00D9, 0, sizeof(this->unknown_00D9));
+      std::memset(this->unknown_00E2, 0, sizeof(this->unknown_00E2));
+      break;
+    }
+  }
+
+  return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+}
 
 // OFFSET: 0x009099E0
 // FUNCTION: fn_12395
