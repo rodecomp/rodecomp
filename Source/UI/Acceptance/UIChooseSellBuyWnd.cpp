@@ -15,6 +15,10 @@
 #include "Client/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Items/ItemDescription.h"
+#include "Contents/Items/NeoPackageItemMgr.h"
+#include "Contents/Items/SelectPackageItemMgr.h"
+#include "UI/ProbabilityTable/UIProbabilityTable.h"
+#include "UI/Buttons/UIBasicButton.h"
 #include "Contents/MessageTable.h"
 #include "Contents/ForbiddenWords.h"
 #include "Contents/Messenger/ClientMessenger.h"
@@ -169,6 +173,14 @@ namespace {
   };
 #pragma pack(pop)
   static_assert(sizeof(FramedMessageHeader) == 6);
+#pragma pack(push, 1)
+  struct PackedItemOption {
+    /* 0000 */ std::int16_t id;
+    /* 0002 */ std::int16_t value;
+    /* 0004 */ unsigned char parameter;
+  };
+#pragma pack(pop)
+  static_assert(sizeof(PackedItemOption) == 5);
 }
 
 // STRING: st_16833
@@ -11526,4 +11538,331 @@ void UIExchangeWnd::Paint() {
   this->DrawRightAlignedText(499, 331, amount, length, 1, 16, colors.primary & 0xFFFFFF, 0);
   this->DrawRightAlignedText(500, 331, amount, length, 1, 16, colors.primary & 0xFFFFFF, 0);
   this->DrawRightAlignedText(500, 332, amount, length, 1, 16, 0x323232, 0);
+}
+
+// OFFSET: 0x008FB960
+// FUNCTION: fn_12346
+int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  switch (message) {
+  case 6:
+    switch (argument1) {
+    case 201:
+      g_windowMgr.CloseWindow(this->m_kind);
+      return 0;
+    case 250: {
+      UIWindow* window = g_windowMgr.sub_A978D0(47);
+      window->SendMsg(nullptr, 62, reinterpret_cast<std::intptr_t>(this->m_item.itemId.c_str()), this->m_item.identified, 0, 0);
+      return 0;
+    }
+    case 287:
+    case 288: {
+      char path[260];
+      if (g_serviceType == 10) {
+        std::sprintf(path, "%sbook\\%s.txt", g_serverLanguage->servicePrefix.c_str(), this->m_item.itemId.c_str());
+      } else {
+        std::sprintf(path, "book\\%s.txt", this->m_item.itemId.c_str());
+      }
+      CFile file;
+      if (!file.Open(path, 0, true, false)) {
+        g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>("책이 없습니다"), 0xFF, 0, 0, 0);
+        return 0;
+      }
+      UIWindow* window = g_windowMgr.sub_A978D0(106);
+      window->SendMsg(nullptr, 94, reinterpret_cast<std::intptr_t>(this->m_item.itemId.c_str()), argument1, 0, 0);
+      file.Close();
+      return 0;
+    }
+    case 343: {
+      UIWindow* window = g_windowMgr.sub_A978D0(10012);
+      if (window) {
+        static_cast<CUIProbabilityTable*>(window)->SetItem(this->m_item.GetItemId());
+        window->PlaceBeside(this);
+        return 0;
+      }
+      break;
+    }
+    case 354: {
+      UIWindow* window = g_windowMgr.sub_A978D0(294);
+      if (window) {
+        window->SendMsg(this, 23, reinterpret_cast<std::intptr_t>(&this->m_item), 0, 0, 0);
+        return 0;
+      }
+      break;
+    }
+    }
+    return 0;
+  case 14:
+    if (argument1 == 7) {
+      this->SetHeight(argument3);
+    }
+    return 0;
+  case 24: {
+    const ITEM_INFO* item = reinterpret_cast<const ITEM_INFO*>(argument1);
+    if (item->itemId == this->m_item.itemId && item->unknown_0060 == this->m_item.unknown_0060 &&
+        std::memcmp(item->unknown_001C, this->m_item.unknown_001C, sizeof(item->unknown_001C)) == 0 && argument2 == 0) {
+      g_windowMgr.CloseWindow(this->m_kind);
+      return 0;
+    }
+    this->unknown_0218 = -1;
+    g_session.IsPetEgg(std::atoi(item->itemId.c_str()));
+    this->m_item = *item;
+    this->m_helpButton->Enable(NEO_PACKAGEITEM::CPaidPackageItemMgr::GetInstance()->IsPaidItem(std::atoi(this->m_item.itemId.c_str())));
+    CUIProbabilityTable* table = static_cast<CUIProbabilityTable*>(g_windowMgr.LookupWindow(10012));
+    if (table && table->m_itemId != this->m_item.GetItemId()) {
+      g_windowMgr.CloseWindow(10012);
+    }
+    this->m_cardTexts.clear();
+    this->m_extraHeight = 0;
+    if (this->m_item.identified == 1) {
+      const PackedItemOption* options = reinterpret_cast<const PackedItemOption*>(this->m_item.unknown_009C);
+      for (int index = 0; index < this->m_item.unknown_0098; ++index) {
+        const PackedItemOption& option = options[index];
+        if (option.id == 0) {
+          continue;
+        }
+        if (option.id == g_itemOptionPlaceholderId) {
+          std::list<std::string> lines = {LookupMessage(3886)};
+          this->m_cardTexts.insert(std::make_pair(index, lines));
+        } else {
+          const char* name = nullptr;
+          if (g_session.m_hotkeyScript->Call("GetVarOptionName", "d>s", static_cast<int>(option.id), &name) && name) {
+            std::list<std::string> lines;
+            std::string text = FormatOwnedString(name, static_cast<int>(option.value), option.parameter);
+            this->WrapText(text, 254, lines);
+            this->m_cardTexts.insert(std::make_pair(index, lines));
+          }
+        }
+      }
+      for (std::map<int, std::list<std::string>>::iterator card = this->m_cardTexts.begin(); card != this->m_cardTexts.end(); ++card) {
+        this->m_extraHeight += static_cast<int>(card->second.size()) * 15 + 14;
+      }
+    }
+    this->m_item.unknown_0068 = item->unknown_0068;
+    this->m_compare = this->m_item.identified == 1 && !this->m_item.IsApprenticeItem() && Equipment(this->m_item);
+    this->unknown_01FC = this->m_item.unknown_0098;
+    if (this->m_compare) {
+      if (this->geometry.height != 144) {
+        this->SetHeight(this->m_extraHeight + 149);
+        this->Slot36();
+      }
+    } else if (this->geometry.height != 120) {
+      this->SetHeight(this->m_extraHeight + 120);
+      this->Slot36();
+    }
+    this->unknown_01C4 = "유저인터페이스\\collection\\" + std::string(ItemResourcePath(this->m_item)) + ".bmp";
+    const std::vector<const char*>& descriptions = this->m_item.Description();
+    this->m_viewButton->Move(6, argument2 != 0 ? -100 : IsItemCard(std::atoi(this->m_item.itemId.c_str())) * 100 - 94);
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    if (mode->HasInventoryItem(std::atoi(this->m_item.itemId.c_str()))) {
+      const int y = IsBookItem(std::atoi(this->m_item.itemId.c_str())) * 100 - 94;
+      for (int index = 0; index < 2; ++index) {
+        this->m_readButtons[index]->Move(this->m_readButtons[index]->FrameWidth(0, 0) * index + 6, y);
+      }
+      if (IsBookItem(std::atoi(this->m_item.itemId.c_str()))) {
+        this->m_readButtons[1]->unknown_00C4 = 1;
+        this->m_previewTick = timeGetTime();
+      } else {
+        this->m_readButtons[1]->unknown_00C4 = 0;
+        this->m_previewTick = 0;
+      }
+    }
+    this->m_viewer->Clear();
+    char text[260];
+    if (this->m_item.unknown_0068 != 0) {
+      char date[128];
+      std::strftime(date, sizeof(date), LookupMessage(1260), _localtime32(reinterpret_cast<const __time32_t*>(&this->m_item.unknown_0068)));
+      int color = 32;
+      std::memset(text, 0, sizeof(text));
+      if (g_inlineCharset) {
+        StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%s%s", g_serverLanguage->Prefix(true), date);
+        StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(1255), text);
+      } else {
+        std::sprintf(text, LookupMessage(1255), date);
+        if (g_serviceType == 6) {
+          color = 24;
+        }
+      }
+      if (this->m_item.unknown_0066) {
+        const int hours = static_cast<int>(this->m_item.unknown_0068);
+        StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(3974), hours / 24, hours % 24);
+      }
+      this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text), color, 0, 0);
+    }
+    for (unsigned index = 0; index < descriptions.size(); ++index) {
+      if (g_inlineCharset) {
+        std::sprintf(text, "%s%s", g_serverLanguage->Prefix(true), descriptions[index]);
+        this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text), 26, 0, 0);
+      } else {
+        this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(descriptions[index]), g_serviceType == 6 ? 24 : 26, 0, 0);
+      }
+    }
+    if (g_session.IsPetEgg(std::atoi(item->itemId.c_str())) == 1) {
+      std::string state;
+      const int* cards = reinterpret_cast<const int*>(item->unknown_001C);
+      switch (cards[2]) {
+      case 1:
+        state = FormatOwnedString(LookupMessage(2865), LookupMessage(672));
+        break;
+      case 2:
+        state = FormatOwnedString(LookupMessage(2865), LookupMessage(673));
+        break;
+      case 3:
+        state = FormatOwnedString(LookupMessage(2865), LookupMessage(669));
+        break;
+      case 4:
+        state = FormatOwnedString(LookupMessage(2865), LookupMessage(674));
+        break;
+      case 5:
+        state = FormatOwnedString(LookupMessage(2865), LookupMessage(675));
+        break;
+      default:
+        state = FormatOwnedString(LookupMessage(2865), LookupMessage(2866));
+        break;
+      }
+      if (g_inlineCharset == 1) {
+        std::memset(text, 0, sizeof(text));
+        std::sprintf(text, "%s%s", g_serverLanguage->Prefix(true), state.c_str());
+        this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text), 26, 0, 0);
+      } else {
+        this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(state.c_str()), g_serviceType == 6 ? 24 : 26, 0, 0);
+      }
+    }
+    this->Invalidate();
+    g_windowMgr.Promote(this);
+    if (argument2 != 0 && g_windowMgr.unknown_022C) {
+      g_windowMgr.unknown_022C->SendMsg(nullptr, 64, reinterpret_cast<std::intptr_t>(this->m_item.itemId.c_str()), this->m_item.identified, 0, 0);
+    }
+    if (this->m_kind == 12) {
+      ITEM_INFO* equipped = g_session.GetEquippedItem(&this->m_item);
+      if (g_serviceOptions.Get(264) && equipped && argument4 == 0) {
+        UIWindow* window = g_windowMgr.sub_A978D0(234);
+        if (window) {
+          window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(equipped), 1, 0, 0);
+        }
+      } else {
+        g_windowMgr.CloseWindow(234);
+      }
+    }
+    const int lineCount = static_cast<int>(this->m_viewer->lines.size());
+    const ItemMoveInfo& moveInfo = FindItemMoveInfo(std::atoi(this->m_item.itemId.c_str()));
+    const int moveHeight = this->m_moveInfo->geometry.height + 3;
+    if (lineCount > 4) {
+      if (moveInfo.itemId != 0 && this->geometry.height != 120) {
+        this->SetHeight((lineCount * 9 - 36) * 2 - moveHeight + this->geometry.height);
+      } else {
+        this->SetHeight(this->geometry.height + (lineCount - 4) * 18);
+      }
+    } else if (moveInfo.itemId != 0) {
+      if (this->geometry.height == 120) {
+        this->Resize(this->geometry.width, moveHeight + 120);
+        this->m_moveInfo->m_moveIndex = std::atoi(this->m_item.itemId.c_str());
+        this->m_resizer->Move(this->m_resizer->geometry.x, this->m_resizer->geometry.y + moveHeight);
+      } else {
+        this->SetHeight(this->geometry.height + (lineCount * 9 - 36) * 2);
+      }
+    }
+    if (this->unknown_023C) {
+      this->RemoveChild(this->unknown_023C, 1);
+      this->unknown_023C = nullptr;
+    }
+    switch (item->unknown_0000[2]) {
+    case 1:
+    case 4:
+    case 0x100:
+    case 0x101:
+    case 0x200:
+    case 0x201:
+    case 0x300:
+    case 0x301:
+    case 0x400:
+    case 0x800:
+    case 0xC00:
+    case 0x1000:
+    case 0x1400:
+    case 0x1800:
+    case 0x1C00:
+    case 0x2000:
+      break;
+    default:
+      return 0;
+    }
+    if (item->identified == 0 || item->unknown_0070 == 0) {
+      return 0;
+    }
+    bool effectHat = false;
+    g_session.m_hotkeyScript->Call(std::string("IsEffectHatItem", 15), "d>b", std::atoi(item->itemId.c_str()), &effectHat);
+    if (effectHat == true) {
+      return 0;
+    }
+    this->unknown_023C = new UIBasicButton();
+    this->unknown_023C->Configure(77, LookupMessage(2922));
+    this->unknown_023C->Move(9, 117);
+    this->unknown_023C->SetId(354);
+    this->unknown_023C->invalidateParent = 1;
+    this->AddChild(this->unknown_023C);
+    if (this->geometry.height < 172) {
+      this->SetHeight(172);
+    }
+    this->Invalidate();
+    return 0;
+  }
+  case 29: {
+    const std::vector<const char*>& descriptions = this->m_item.Description();
+    std::vector<std::string> lines;
+    std::string text;
+    if (this->unknown_0218 != -1) {
+      text = reinterpret_cast<const char*>(this->unknown_021E);
+      lines.push_back(text);
+      text = this->unknown_0238 != 0 ? "이름 변경됨" : "이름 변경되지않음";
+      lines.push_back(text);
+      char buffer[64];
+      _itoa(this->unknown_0218, buffer, 10);
+      text = "레벨 : ";
+      text += buffer;
+      lines.push_back(text);
+      g_session.GetPetHungryStateString(this->unknown_021A, buffer);
+      text = "만복도 : ";
+      text += buffer;
+      lines.push_back(text);
+      g_session.GetPetFriendlyStateString(this->unknown_021C, buffer);
+      text = "친밀도 : ";
+      text += buffer;
+      lines.push_back(text);
+      text = this->unknown_0236 != 0 ? "악세사리 : 장착됨" : "악세사리 : 장착안됨";
+      lines.push_back(text);
+    }
+    for (unsigned index = 0; index < descriptions.size(); ++index) {
+      lines.emplace_back(descriptions[index]);
+    }
+    this->m_viewButton->Move(6, IsItemCard(std::atoi(this->m_item.itemId.c_str())) * 100 - 94);
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    if (mode->HasInventoryItem(std::atoi(this->m_item.itemId.c_str()))) {
+      const int y = IsBookItem(std::atoi(this->m_item.itemId.c_str())) * 100 - 94;
+      for (int index = 0; index < 2; ++index) {
+        this->m_readButtons[index]->Move(this->m_readButtons[index]->FrameWidth(0, 0) * index + 6, y);
+      }
+    }
+    this->m_viewer->Clear();
+    for (unsigned index = 0; index < lines.size(); ++index) {
+      this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(lines[index].c_str()), 26, 0, 0);
+    }
+    this->Invalidate();
+    g_windowMgr.Promote(this);
+    return 0;
+  }
+  case 34: {
+    this->m_placement = reinterpret_cast<WindowPlacement*>(argument1);
+    ItemCollectionWndInfo* placement = static_cast<ItemCollectionWndInfo*>(this->m_placement);
+    if (!placement->IsValid()) {
+      placement->Reset();
+      this->Move((g_renderer->viewport.width - 640) / 2 + this->m_placement->x, this->m_placement->y * g_renderer->viewport.height / 480);
+      return 0;
+    }
+    this->Move(placement->x, placement->y);
+    return 0;
+  }
+  default:
+    return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
 }

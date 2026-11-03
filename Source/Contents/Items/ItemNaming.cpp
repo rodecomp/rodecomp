@@ -22,8 +22,7 @@ std::map<int, ItemCardName> g_itemCardNames;
 // GLOBAL: gl_24727
 std::map<int, std::vector<const char*>> g_bookItemNames;
 
-namespace {
-  // OFFSET: 0x006D8810
+// OFFSET: 0x006D8810
   // FUNCTION: fn_06597
   bool Equipment(const ITEM_INFO& item) {
     switch (item.unknown_0000[0]) {
@@ -43,6 +42,7 @@ namespace {
     }
   }
 
+namespace {
   // INLINED
   void CardIds(const ITEM_INFO& item, int (&ids)[4]) {
     std::memcpy(ids, item.unknown_001C, sizeof(ids));

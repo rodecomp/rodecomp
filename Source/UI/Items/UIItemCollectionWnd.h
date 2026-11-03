@@ -11,6 +11,7 @@
 #include <string>
 
 class UIBitmapButton;
+class UIBasicButton;
 class UISpriteButton;
 struct WindowPlacement;
 struct CombinedCardItemCollectionWndInfo;
@@ -52,7 +53,7 @@ public:
   /* 021E */ unsigned char unknown_021E[0x18];
   /* 0236 */ std::uint16_t unknown_0236;
   /* 0238 */ int unknown_0238;
-  /* 023C */ int unknown_023C;
+  /* 023C */ UIBasicButton* unknown_023C;
   /* 0240 */ std::map<int, std::list<std::string>> m_cardTexts;
   /* 0248 */ int m_extraHeight;
   /* 024C */ unsigned char unknown_024C[0x4];
