@@ -18,6 +18,7 @@ public:
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot11() override;
   void Paint() override;
+  void Slot15(int width, int height) override;
   /* 00B4 */ int m_viewOther;
   /* 00B8 */ int m_highlight[3];
   /* 00C4 */ int m_show;

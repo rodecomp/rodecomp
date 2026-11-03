@@ -1,4 +1,5 @@
 #include "Client/Mode/CMode.h"
+#include "Client/Mode/CLoginMode.h"
 #include "Contents/UserData/NormalItemSlots.h"
 #include "Client/Application/ApplicationWindow.h"
 #include "Client/Application/Launcher.h"
@@ -194,6 +195,9 @@ static const std::string s_partyItemLinkOpen = "<ITEML>";
 
 // GLOBAL: gl_25460
 static const std::string s_partyItemLinkClose = "</ITEML>";
+
+// GLOBAL: gl_25473
+int g_equipAbilityButtonPosition[2] = {167, 167};
 
 // OFFSET: 0x0087B500
 // FUNCTION: fn_11241
@@ -3226,6 +3230,8 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
   }
 }
 
+// OFFSET: 0x008DEC50
+
 // OFFSET: 0x008F6750
 // FUNCTION: fn_12322
 void UISayDialogWnd::Resize(int width, int height) {
@@ -4485,22 +4491,11 @@ void UIWhisperWnd::SaveChatLog() {
   }
 }
 
-struct WhisperWndEx {
-  unsigned char unknown_0000[0x110];
-  unsigned char unknown_0110[10];
-  unsigned char unknown_011A[10];
-  UIWindow* unknown_0124[11];
-  UIWindow* unknown_0150[5];
-
-  int sub_90C350(unsigned int target);
-  void sub_90C380();
-};
-
 // OFFSET: 0x0090C350
 // FUNCTION: fn_12443
-int WhisperWndEx::sub_90C350(unsigned int target) {
+int UISecondPasswordInputWnd::sub_90C350(unsigned int target) {
   for (int i = 0; i < 10; ++i) {
-    if (this->unknown_0110[i] == target) {
+    if (this->m_digits[i] == target) {
       return i;
     }
   }
@@ -4509,16 +4504,16 @@ int WhisperWndEx::sub_90C350(unsigned int target) {
 
 // OFFSET: 0x0090C380
 // FUNCTION: fn_12444
-void WhisperWndEx::sub_90C380() {
+void UISecondPasswordInputWnd::sub_90C380() {
   for (int i = 0; i < 11; ++i) {
-    UIWindow* window = this->unknown_0124[i];
-    *reinterpret_cast<unsigned char*>(reinterpret_cast<char*>(window) + 0xac) = 1;
-    window->Invalidate();
+    UIButton* button = this->unknown_0124[i];
+    button->SetDisabled(1);
+    button->Invalidate();
   }
   for (int i = 0; i < 5; ++i) {
-    UIWindow* window = this->unknown_0150[i];
-    *reinterpret_cast<unsigned char*>(reinterpret_cast<char*>(window) + 0xac) = 1;
-    window->Invalidate();
+    UIButton* button = this->unknown_0150[i];
+    button->SetDisabled(1);
+    button->Invalidate();
   }
 }
 
@@ -5526,6 +5521,95 @@ void UIChatRoomMakeWnd::Slot15(int width, int height) {
 // OFFSET: 0x008F80B0
 
 // OFFSET: 0x008F7B10
+// FUNCTION: fn_12329
+int UIChatRoomChangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  if (message == 6) {
+    switch (a) {
+    case 184: {
+      int error;
+      if (this->m_titleEdit->Length() == 0) {
+        error = 13;
+      } else if (g_forbiddenWords.Contains(this->m_titleEdit->Text())) {
+        error = 14;
+      } else if (g_serviceType == 1 && !ValidateCharacterName(this->m_titleEdit->Text())) {
+        error = 190;
+      } else if (this->m_passwordEdit->Length() < 4 && this->m_public == 1) {
+        error = this->m_passwordEdit->Length() != 0 ? 16 : 15;
+      } else {
+        ChatRoomSetting setting;
+        setting.limit = this->m_limit;
+        setting.unknown_0034 = 0;
+        setting.isPublic = this->m_public != 1;
+        setting.roomId = -1;
+        setting.title = this->m_titleEdit->Text();
+        setting.password = this->m_passwordEdit->Text();
+        g_modeMgr.gameMode->SendMsg(44, reinterpret_cast<int>(&setting), 0, 0, 0);
+        g_windowMgr.CloseWindow(30);
+        return 0;
+      }
+      g_windowMgr.Confirm(LookupMessage(error), 0, true, false, 0, "Message", 280, 120, 0);
+      return 0;
+    }
+    case 185:
+    case 201:
+      g_windowMgr.CloseWindow(30);
+      return 0;
+    case 228:
+    case 229: {
+      if (g_windowMgr.unknown_0214) {
+        g_windowMgr.CloseWindow(26);
+      }
+      UIWindow* list = g_windowMgr.sub_A978D0(26);
+      int count = 1;
+      if (a == 228) {
+        this->m_listKind = 0;
+        count = static_cast<int>(this->m_limitLabels.size());
+        for (unsigned int i = 0; i < this->m_limitLabels.size(); ++i) {
+          list->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(this->m_limitLabels[i].c_str()), 0, 0, 0);
+        }
+      } else if (a == 229) {
+        this->m_listKind = 1;
+        count = static_cast<int>(this->m_typeLabels.size());
+        for (unsigned int i = 0; i < this->m_typeLabels.size(); ++i) {
+          list->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(this->m_typeLabels[i].c_str()), 0, 0, 0);
+        }
+      }
+
+      const int height = count * 16;
+      list->SendMsg(nullptr, 40, 0, 0, 0, 0);
+      list->Resize(74, height > 48 ? 48 : height);
+      list->SendMsg(nullptr, 83, 30, 0, 0, 0);
+      int x = this->m_listKind * 137 + 44;
+      int y = 64;
+      this->ToScreen(x, y);
+      list->Move(x + 1, y);
+      return 0;
+    }
+    }
+    return UIChatRoomMakeWnd::SendMsg(sender, 6, a, b, c, d);
+  }
+
+  if (message != 34) {
+    return UIChatRoomMakeWnd::SendMsg(sender, message, a, b, c, d);
+  }
+
+  const ChatRoomSetting* setting = reinterpret_cast<const ChatRoomSetting*>(a);
+  this->m_limit = setting->limit;
+  this->m_limitText->SetText(this->m_limitLabels[this->m_limitLabels.size() - 1].c_str(), 0);
+  this->m_limitText->Invalidate();
+  this->m_passwordEdit->SetText(setting->password.c_str());
+  this->m_titleEdit->SetText(setting->title.c_str());
+  g_windowMgr.SetFocus(this->m_titleEdit);
+  this->m_titleEdit->SelectAll();
+  this->m_public = setting->isPublic == 0;
+  for (int i = 0; i < 2; ++i) {
+    this->m_publicButtons[i]->Invalidate();
+    this->m_publicButtons[i]->SendMsg(this, 13, i == this->m_public ? 1 : 0, 0, 0, 0);
+  }
+  this->m_closeButton->SetTooltip("");
+  this->Invalidate();
+  return 0;
+}
 
 // OFFSET: 0x008F64B0
 // FUNCTION: fn_12317
@@ -10046,6 +10130,32 @@ void UISecondPasswordInputWnd::ShuffleKeypad()
     unknown_0124[index]->Move(positions[digits[index]][0], positions[digits[index]][1]);
   Invalidate();
 }
+
+namespace {
+#pragma pack(push, 1)
+struct SecondPasswordPacket {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::int32_t accountId;
+  /* 0006 */ char password[4];
+};
+
+struct SecondPasswordChangePacket {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::int32_t accountId;
+  /* 0006 */ char password[4];
+  /* 000A */ char newPassword[4];
+};
+#pragma pack(pop)
+}
+
+class UISecondPasswordEditWnd : public UISecondPasswordInputWnd {
+public:
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
+};
+
+// OFFSET: 0x00903230
+
+// OFFSET: 0x00901D40
 
 // OFFSET: 0x009099E0
 // FUNCTION: fn_12395
