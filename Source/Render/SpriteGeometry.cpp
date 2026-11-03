@@ -1,4 +1,4 @@
-#include "Contents/Actors/SpriteDrawingPolicy.h"
+#include "Contents/Actors/CharacterRender.h"
 #include "Render/Renderer.h"
 #include "Render/SpriteGeometry.h"
 #include "Render/Textures/SpritePixels.h"
@@ -16,7 +16,7 @@ float g_heightScale = 1.34f;
 
 // OFFSET: 0x0080D7B0
 // FUNCTION: fn_10102
-bool SpriteDrawingPolicy::ProjectCell(
+bool CCharacterRender::ProjectCell(
   int unused, int layer, float scale, const SpriteFrameCell& cell, float x, float y, const float* position, float shift, float& bottomDepth,
   float& topDepth, const SpriteRleImage& image, SpriteCellQuad& quad, tagRECT& bounds, SpriteColor& color, int offsetX, int offsetY, int flags
 ) const {

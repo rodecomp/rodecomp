@@ -231,16 +231,3 @@ void CView::Reset() {
 // FUNCTION: fn_17929
 void CView::Slot2() {
 }
-
-// OFFSET: 0x00ADBF60
-// FUNCTION: fn_17927
-void CView::Update() {
-  const vector3d& position = this->scene->player->render.position;
-  this->camera.desiredTarget[0] = position.x;
-  this->camera.desiredTarget[1] = position.y;
-  this->camera.desiredTarget[2] = position.z;
-  this->camera.Smooth();
-  this->shake.Apply(this->camera, g_worldViewDrawn);
-  const TerrainHeight terrain = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Grid();
-  this->frame.Refresh(this->camera, terrain, *g_renderer);
-}

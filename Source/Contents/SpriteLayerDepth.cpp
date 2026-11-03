@@ -1,4 +1,4 @@
-#include "Contents/Actors/SpriteDrawingPolicy.h"
+#include "Contents/Actors/CharacterRender.h"
 #include "Client/Session.h"
 #include "Contents/Camera/Camera.h"
 #include "Render/SpriteGeometry.h"
@@ -11,7 +11,7 @@ float g_cameraDistance = 300.0f;
 
 // OFFSET: 0x0080DAA0
 // FUNCTION: fn_10103
-void SpriteDrawingPolicy::OffsetLayerDepth(int layer, SpriteCellQuad& quad, float bottomDepth, float topDepth) const {
+void CCharacterRender::OffsetLayerDepth(int layer, SpriteCellQuad& quad, float bottomDepth, float topDepth) const {
   switch (layer) {
   case 2:
     if (g_cameraDistance < robeTopLayerThreshold) {
@@ -44,13 +44,13 @@ void SpriteDrawingPolicy::OffsetLayerDepth(int layer, SpriteCellQuad& quad, floa
 
 // OFFSET: 0x0080E4D0
 // FUNCTION: fn_10107
-void AccessoryLayerDepth::OffsetLayerDepth(int layer, SpriteCellQuad& quad, float bottomDepth, float topDepth) const {
+void CCharacterRender::OffsetAccessoryLayerDepth(int layer, SpriteCellQuad& quad, float bottomDepth, float topDepth) const {
   float bottom = bottomDepth;
   float top = topDepth;
 
   switch (layer) {
   case 1:
-    if (this->topAccessory == 1095) {
+    if (this->unknown_002C == 1095) {
       if (g_cameraDistance < 32.0f) {
         bottom = bottomDepth - 0.000008f;
         top = topDepth - 0.000008f;
@@ -64,7 +64,7 @@ void AccessoryLayerDepth::OffsetLayerDepth(int layer, SpriteCellQuad& quad, floa
     }
     break;
   case 2:
-    switch (this->bottomAccessory) {
+    switch (this->unknown_0028) {
     case 1041:
     case 1358:
     case 1478:
@@ -112,7 +112,7 @@ void AccessoryLayerDepth::OffsetLayerDepth(int layer, SpriteCellQuad& quad, floa
     }
     break;
   case 4:
-    if (this->topAccessory == 1485) {
+    if (this->unknown_002C == 1485) {
       if (g_cameraDistance < robeTopLayerThreshold) {
         bottom = 0.00035f + bottomDepth;
         top = 0.0006f + topDepth;
@@ -121,7 +121,7 @@ void AccessoryLayerDepth::OffsetLayerDepth(int layer, SpriteCellQuad& quad, floa
         top = 0.00015f + topDepth;
       }
     } else {
-      switch (this->middleAccessory) {
+      switch (this->unknown_0030) {
       case 1318:
         if (g_cameraDistance < robeTopLayerThreshold) {
           bottom = 0.00025f + bottomDepth;
@@ -172,7 +172,7 @@ void AccessoryLayerDepth::OffsetLayerDepth(int layer, SpriteCellQuad& quad, floa
   bool enabled = false;
   double nearOffset = 0.0;
   double farOffset = 0.0;
-  g_session.m_hotkeyScript->Call("OffsetItemPos_GetUppingBottomItem", "d>bll", this->bottomAccessory, &enabled, &nearOffset, &farOffset);
+  g_session.m_hotkeyScript->Call("OffsetItemPos_GetUppingBottomItem", "d>bll", this->unknown_0028, &enabled, &nearOffset, &farOffset);
 
   if (layer == 2 && enabled) {
     if (nearOffset == 0.0) {

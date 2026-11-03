@@ -5,7 +5,6 @@
 #include "Client/Session.h"
 #include "Contents/Actors/CharacterRender.h"
 #include "Contents/Actors/Pc.h"
-#include "Contents/Actors/SpriteDrawingPolicy.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/MessageTable.h"
 #include "Contents/UserData/NormalItemSlots.h"
@@ -157,7 +156,7 @@ void UIPreviewEquipWnd::SyncFromPlayer() {
   this->m_render->unknown_0028 = player->unknown_0450;
   this->m_render->unknown_002C = player->unknown_0454;
   this->m_render->unknown_0030 = player->unknown_0458;
-  reinterpret_cast<SpriteDrawingPolicy*>(this->m_render)->SetRobe(player->unknown_049C);
+  this->m_render->SetRobe(player->unknown_049C);
   this->m_render->unknown_0048 = player->Slot56();
   this->m_render->unknown_004C = player->unknown_02CC;
   this->m_render->unknown_0050 = player->Slot46();
@@ -287,7 +286,7 @@ int UIPreviewEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       break;
     case 4:
     case 0x2000:
-      reinterpret_cast<SpriteDrawingPolicy*>(render)->SetRobe(value);
+      render->SetRobe(value);
       break;
     }
   }

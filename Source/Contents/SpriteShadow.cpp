@@ -1,4 +1,4 @@
-#include "Contents/Actors/SpriteDrawingPolicy.h"
+#include "Contents/Actors/CharacterRender.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
@@ -16,26 +16,27 @@
 
 // OFFSET: 0x00811C10
 // FUNCTION: fn_10109
-RenderPrimitive* SpriteDrawingPolicy::DrawShadow(const float* matrix, float scale) const {
+RenderPrimitive* CCharacterRender::DrawShadow(const float* matrix, float scale) const {
   if (scale == 0.0f || !g_modeMgr.GetGameMode() || !static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene) {
     return nullptr;
   }
 
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  const float* origin = reinterpret_cast<const float*>(&this->unknown_0004);
   float position[3];
-  position[0] = this->position.x;
-  position[1] = mode->scene->terrain->Grid().Height(this->position.x, this->position.z);
-  position[2] = this->position.z;
+  position[0] = origin[0];
+  position[1] = mode->scene->terrain->Grid().Height(origin[0], origin[2]);
+  position[2] = origin[2];
   const float depth = position[0] * matrix[2] + position[1] * matrix[5] + position[2] * matrix[8] + matrix[11];
 
   float screenX;
   float screenY;
   float reciprocalDepth;
-  if (this->shiftX == 0 && this->shiftY == 0) {
+  if (this->unknown_0068 == 0 && this->unknown_006C == 0) {
     g_renderer->ProjectViewport(position, matrix, &screenX, &screenY, &reciprocalDepth);
   } else {
     g_renderer->ProjectViewportCentered(
-      position, matrix, &screenX, &screenY, &reciprocalDepth, static_cast<float>(this->shiftX) + this->offsetX, static_cast<float>(this->shiftY) + this->offsetY
+      position, matrix, &screenX, &screenY, &reciprocalDepth, static_cast<float>(this->unknown_0068) + this->unknown_0054, static_cast<float>(this->unknown_006C) + this->unknown_0058
     );
   }
   const float distanceScale = g_renderer->ScaleDistance(reciprocalDepth);
@@ -48,7 +49,7 @@ RenderPrimitive* SpriteDrawingPolicy::DrawShadow(const float* matrix, float scal
   }
 
   const SpriteRleImage* image = sprite->images[cell.imageType][0];
-  const float size = g_session.GetNpcLocationRadius(this->argument0010, this->riding) * scale;
+  const float size = g_session.GetNpcLocationRadius(this->unknown_0010, this->unknown_004C) * scale;
   const double factor = distanceScale;
 
   SpriteQuad quad;

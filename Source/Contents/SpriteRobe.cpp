@@ -2,7 +2,6 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
 #include "Contents/Actors/CharacterRender.h"
-#include "Contents/Actors/SpriteDrawingPolicy.h"
 #include "Contents/Camera/Camera.h"
 #include "Render/DeviceContext/DCSurface.h"
 #include "Render/SpriteGeometry.h"
@@ -27,7 +26,7 @@ void CCharacterRender::RenderRobe(
     return;
   }
 
-  if (reinterpret_cast<const SpriteDrawingPolicy*>(this)->DrawOnTop() == drawOnTop) {
+  if (this->DrawOnTop() == drawOnTop) {
     std::string sprName = g_session.GetRobeSprName(
       this->unknown_0010, this->unknown_0014, this->unknown_0018[0], this->unknown_00BC, this->unknown_004C, this->unknown_0050
     );
@@ -65,7 +64,7 @@ void CCharacterRender::RenderRobe(
       SpriteColor color;
       float bottomDepth;
       float topDepth;
-      reinterpret_cast<const SpriteDrawingPolicy*>(this)->ProjectCell(
+      this->ProjectCell(
         layer, layer, scale, cell, x, y, position, shift, bottomDepth, topDepth, *image, reinterpret_cast<SpriteCellQuad&>(quad), bounds, color, 0, 0,
         !drawOnTop
       );

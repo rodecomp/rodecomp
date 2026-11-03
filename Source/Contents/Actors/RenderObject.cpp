@@ -10,7 +10,6 @@
 #include "Contents/Camera/Camera.h"
 #include "Contents/Actors/ActorStateFlags.h"
 #include "Contents/Actors/CharacterRender.h"
-#include "Contents/Actors/SpriteDrawingPolicy.h"
 #include "Render/DX9/RendererDX9.h"
 #include "Contents/Actors/GameActor.h"
 #include "Contents/Actors/GroundScope.h"
@@ -2695,7 +2694,7 @@ __declspec(noinline) static void FillCharacterNpcRenderPrimary(
   characterRender->unknown_0028 = info->unknown_0030;
   characterRender->unknown_002C = info->unknown_004C;
   characterRender->unknown_0030 = info->unknown_0050;
-  reinterpret_cast<SpriteDrawingPolicy*>(characterRender)->SetRobe(info->robe);
+  characterRender->SetRobe(info->robe);
   characterRender->unknown_0050 = info->unknown_0078;
 }
 
@@ -2713,7 +2712,7 @@ __declspec(noinline) static void FillCharacterNpcRenderSecondary(
   characterRender->unknown_0028 = info->unknown_0038;
   characterRender->unknown_002C = info->unknown_0050;
   characterRender->unknown_0030 = info->unknown_0054;
-  reinterpret_cast<SpriteDrawingPolicy*>(characterRender)->SetRobe(info->robeAlt);
+  characterRender->SetRobe(info->robeAlt);
   characterRender->unknown_0050 = info->unknown_007C;
 }
 

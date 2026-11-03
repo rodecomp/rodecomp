@@ -5,7 +5,6 @@
 #include "Client/Session.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Actors/RenderObject.h"
-#include "Contents/Actors/SpriteDrawingPolicy.h"
 #include "Contents/Camera/Camera.h"
 #include "Contents/Skills/ClientSkills.h"
 #include "Contents/SpriteLayerDrawing.h"
@@ -93,7 +92,7 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
 
   std::list<CharacterRenderDrawItem> commands;
   if (this->unknown_00B0 == 1) {
-    if (RenderPrimitive* shadow = reinterpret_cast<const SpriteDrawingPolicy*>(this)->DrawShadow(view, 1.0f)) {
+    if (RenderPrimitive* shadow = this->DrawShadow(view, 1.0f)) {
       CharacterRenderDrawItem item;
       item.flags = 0x101;
       item.command = shadow;
@@ -303,7 +302,7 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
     std::memset(&quad, 0, sizeof(quad));
     SpriteColor color = {};
     tagRECT rect;
-    if (!reinterpret_cast<const SpriteDrawingPolicy*>(this)->ProjectCell(
+    if (!this->ProjectCell(
           index, layer, distanceScale, *cell, screenX, screenY, position, 0.0f, bottomDepth, topDepth, *image,
           reinterpret_cast<SpriteCellQuad&>(quad), rect, color, offsetX, offsetY, 0
         )) {
@@ -317,10 +316,10 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
       case 3:
       case 4:
       case 8:
-        reinterpret_cast<const SpriteDrawingPolicy*>(this)->OffsetLayerDepth(type, reinterpret_cast<SpriteCellQuad&>(quad), bottomDepth, topDepth);
+        this->OffsetLayerDepth(type, reinterpret_cast<SpriteCellQuad&>(quad), bottomDepth, topDepth);
         break;
       default:
-        reinterpret_cast<const AccessoryLayerDepth*>(this)->OffsetLayerDepth(type, reinterpret_cast<SpriteCellQuad&>(quad), bottomDepth, topDepth);
+        this->OffsetAccessoryLayerDepth(type, reinterpret_cast<SpriteCellQuad&>(quad), bottomDepth, topDepth);
         break;
     }
 

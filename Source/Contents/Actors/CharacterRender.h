@@ -9,6 +9,11 @@
 class CActRes;
 struct CharacterRenderDrawItem;
 struct RenderPrimitive;
+struct SpriteCellQuad;
+struct SpriteColor;
+struct SpriteFrameCell;
+struct SpriteRleImage;
+struct tagRECT;
 
 class CCharacterRender {
 public:
@@ -24,6 +29,15 @@ public:
     float shift, float
   );
   std::list<CharacterRenderDrawItem> BuildDrawList(unsigned char trackBounds, char* boundsUpdated);
+  bool DrawOnTop() const;
+  bool SetRobe(int robe);
+  bool ProjectCell(
+    int unused, int layer, float scale, const SpriteFrameCell& cell, float x, float y, const float* position, float shift, float& bottomDepth,
+    float& topDepth, const SpriteRleImage& image, SpriteCellQuad& quad, tagRECT& bounds, SpriteColor& color, int offsetX, int offsetY, int flags
+  ) const;
+  void OffsetLayerDepth(int layer, SpriteCellQuad& quad, float bottomDepth, float topDepth) const;
+  void OffsetAccessoryLayerDepth(int layer, SpriteCellQuad& quad, float bottomDepth, float topDepth) const;
+  RenderPrimitive* DrawShadow(const float* matrix, float scale) const;
 
   /* 0004 */ int unknown_0004;
   /* 0008 */ int unknown_0008;
@@ -42,7 +56,7 @@ public:
   /* 0048 */ int unknown_0048;
   /* 004C */ unsigned char unknown_004C;
   /* 0050 */ int unknown_0050;
-  /* 0054 */ int unknown_0054;
+  /* 0054 */ float unknown_0054;
   /* 0058 */ float unknown_0058;
   /* 005C */ int unknown_005C;
   /* 0060 */ int unknown_0060;
@@ -64,7 +78,7 @@ public:
   /* 00B0 */ unsigned char unknown_00B0;
   /* 00B4 */ std::map<int, int> unknown_00B4;
   /* 00BC */ int unknown_00BC;
-  /* 00C0 */ unsigned char unknown_00C0;
+  /* 00C0 */ bool unknown_00C0;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

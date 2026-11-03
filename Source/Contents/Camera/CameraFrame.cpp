@@ -1,9 +1,15 @@
 #include "Contents/Camera/CameraFrame.h"
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Contents/Actors/Pc.h"
+#include "Contents/Camera/Camera.h"
 #include "Contents/Ground/TerrainHeight.h"
+#include "Contents/World/World.h"
 #include "Render/Renderer.h"
+#include "Resource/World/TerrainResource.h"
 
 // INLINED
-void CameraFrame::Build(const CameraState& camera, const TerrainHeight& terrain) {
+__forceinline void CameraFrame::Build(const CameraState& camera, const TerrainHeight& terrain) {
   constexpr float pi = 3.141592f;
   matrix orbit;
   orbit.MakeXRotation((camera.pitch / 180.0f) * pi);
@@ -29,4 +35,18 @@ void CameraFrame::Build(const CameraState& camera, const TerrainHeight& terrain)
 void CameraFrame::Refresh(const CameraState& camera, const TerrainHeight& terrain, CRenderer& renderer) {
   this->Build(camera, terrain);
   renderer.SetCamera(this->eye, camera.target, this->up);
+}
+
+// OFFSET: 0x00ADBF60
+// FUNCTION: fn_17927
+void CView::Update() {
+  const vector3d& position = this->scene->player->render.position;
+  this->camera.desiredTarget[0] = position.x;
+  this->camera.desiredTarget[1] = position.y;
+  this->camera.desiredTarget[2] = position.z;
+  this->camera.Smooth();
+  this->shake.Apply(this->camera, g_worldViewDrawn);
+  const TerrainHeight terrain = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Grid();
+  this->frame.Build(this->camera, terrain);
+  g_renderer->SetCamera(this->frame.eye, this->camera.target, this->frame.up);
 }
