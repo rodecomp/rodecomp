@@ -7,11 +7,9 @@
 class CAsyncWorkRecycleObjectPoolMgr;
 class CConnection;
 class CEmblemDataMgr;
-class CMCStoreInfoBackup;
 #include "UI/Window/WindowManagerWindows.h"
 struct AccountConfigLoad;
 struct CharacterConfigLoad;
-struct StoreBackupContext;
 
 class CAsyncWorkMgr : public NAsyncWorkMgr {
 public:
@@ -42,8 +40,7 @@ public:
     WindowManagerWindows& windows
   );
   void LoadStore(
-    std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, int type, CMCStoreInfoBackup& owner,
-    StoreBackupContext& context
+    std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, int type
   );
   void SaveStore(std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, std::string data, int type);
   void RegisterParty(std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, CAdvenPartyInfo info);

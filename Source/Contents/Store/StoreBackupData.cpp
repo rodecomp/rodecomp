@@ -1,6 +1,8 @@
 #include "Contents/Store/MCStoreInfoBackup.h"
 #include "Client/Session.h"
 #include "Network/TextEncoding.h"
+#include "UI/Shop/UIMerchantShopMakeWnd.h"
+#include "UI/Window/UIWindowMgr.h"
 
 #include <cstddef>
 #include <cstdlib>
@@ -13,6 +15,10 @@ void CMCStoreInfoBackup::ImportData(Json::Value& data) {
   this->items.clear();
   this->title = FromUtf8(data.get("Title", "").asString(), g_textCodePage);
   Json::Value values = data["Item"];
+
+  if (values.isNull() && this->title.empty()) {
+    return;
+  }
 
   for (auto entry = values.begin(); entry != values.end(); ++entry) {
     Json::Value& value = *entry;
@@ -52,6 +58,12 @@ void CMCStoreInfoBackup::ImportData(Json::Value& data) {
 
     item.unknown_0014[0] = static_cast<std::uint32_t>(value.get("Price", 0).asInt());
     this->items.push_back(item);
+  }
+
+  UIWindow* window = g_windowMgr.unknown_02FC ? g_windowMgr.unknown_02FC : g_windowMgr.unknown_040C;
+
+  if (window) {
+    static_cast<UIMerchantShopMakeWnd*>(window)->Refresh();
   }
 }
 

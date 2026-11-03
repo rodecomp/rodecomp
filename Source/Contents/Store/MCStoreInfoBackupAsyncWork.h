@@ -4,9 +4,6 @@
 #include "Utility/Async/AsyncDiagnostic.h"
 #include "Utility/Async/NAsyncWork.h"
 
-class CMCStoreInfoBackup;
-struct StoreBackupContext;
-
 class CMCStoreInfoBackupLoadAsyncWork : public NAsyncWork {
 public:
   CMCStoreInfoBackupLoadAsyncWork();
@@ -15,8 +12,7 @@ public:
   bool Execute() override;
   void Complete() override;
   void Bind(
-    std::string url, std::uint32_t accountId, std::uint32_t characterId, std::string accountName, std::string token, int type, CMCStoreInfoBackup& owner,
-    StoreBackupContext& context
+    std::string url, std::uint32_t accountId, std::uint32_t characterId, std::string accountName, std::string token, int type
   );
 
 protected:
@@ -29,8 +25,7 @@ protected:
   /* 0090 */ AsyncDiagnostic m_diagnostic;
   /* 00C8 */ int m_type;
 
-  CMCStoreInfoBackup* m_owner;
-  StoreBackupContext* m_context;
+  /* 00CC */ int unknown_00CC;
 };
 
 class CMCStoreInfoBackupSaveAsyncWork : public NAsyncWork {
@@ -58,7 +53,7 @@ protected:
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(CMCStoreInfoBackupLoadAsyncWork) == 212);
+static_assert(sizeof(CMCStoreInfoBackupLoadAsyncWork) == 208);
 static_assert(sizeof(CMCStoreInfoBackupSaveAsyncWork) == 232);
 #endif
 

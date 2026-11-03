@@ -3,6 +3,7 @@
 #include "Contents/Store/MCStoreInfoBackup.h"
 #include "Contents/MessageTable.h"
 #include "Client/Session.h"
+#include "Contents/ClientItemLists.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Async/AsyncDiagnostic.h"
 
@@ -30,55 +31,24 @@ void CMCStoreInfoBackup::Clear() {
 
 // OFFSET: 0x00606BB0
 // FUNCTION: fn_04234
-int CMCStoreInfoBackup::Restore(unsigned char wholeItem, int maximum, std::list<ITEM_INFO>& inventory, std::list<ITEM_INFO>& storeItems) {
-  auto saved = this->items.begin();
+int CMCStoreInfoBackup::Restore(unsigned char wholeItem, int maximum) {
+  ClientItemLists& lists = *reinterpret_cast<ClientItemLists*>(&g_session);
   int examined = 0;
+  auto saved = this->items.begin();
 
   while (saved != this->items.end() && examined < maximum) {
-    const auto found = std::find_if(inventory.begin(), inventory.end(), [&](const ITEM_INFO& item) {
-      if (item.itemId != saved->itemId || std::memcmp(item.unknown_001C, saved->unknown_001C, sizeof(item.unknown_001C)) != 0 ||
-          item.identified != saved->identified || item.unknown_0060 != saved->unknown_0060 || item.unknown_0088 != saved->unknown_0088 ||
-          item.unknown_0098 != saved->unknown_0098) {
-        return false;
-      }
+    std::pair<bool, ITEM_INFO> found = lists.FindItem1750(*saved, wholeItem);
 
-      const int count = item.unknown_0098;
-
-      if (count >= 5) {
-        return false;
-      }
-
-      return count <= 0 || std::memcmp(item.unknown_009C, saved->unknown_009C, static_cast<std::size_t>(count) * 5) == 0;
-    });
-
-    if (found == inventory.end()) {
+    if (!found.first) {
       saved = this->items.erase(saved);
     } else {
-      ITEM_INFO item(*found);
-
       if (wholeItem == 0) {
-        item.quantity = std::min(item.quantity, saved->quantity);
+        found.second.quantity = std::min(found.second.quantity, saved->quantity);
       }
 
-      if (item.unknown_0000[0] != 0) {
-        const auto offered =
-          std::find_if(storeItems.begin(), storeItems.end(), [&](const ITEM_INFO& value) { return value.unknown_0000[1] == item.unknown_0000[1]; });
-
-        if (offered == storeItems.end()) {
-          storeItems.push_back(item);
-        } else if (wholeItem == 0) {
-          offered->quantity += item.quantity;
-        }
-
-        if (wholeItem != 0) {
-          inventory.erase(found);
-        } else {
-          found->quantity -= item.quantity;
-
-          if (found->quantity <= 0) {
-            inventory.erase(found);
-          }
-        }
+      if (found.second.unknown_0000[1] != 0) {
+        lists.AddItem1768(found.second, wholeItem, 0);
+        lists.RemoveItem1750(found.second, wholeItem, 0);
       }
 
       ++saved;
@@ -119,7 +89,7 @@ void CMCStoreInfoBackup::Reset(LuaScript& settings, LuaScript& tables, const cha
 // OFFSET: 0x00605FA0
 // FUNCTION: fn_04232
 void CMCStoreInfoBackup::CompleteLoad(
-  AsyncDiagnostic diagnostic, std::uint32_t, std::uint32_t, std::string, std::string response, StoreBackupContext& context
+  AsyncDiagnostic diagnostic, std::uint32_t, std::uint32_t, std::string, std::string response
 ) {
   if (!diagnostic.success) {
     return;
@@ -136,15 +106,9 @@ void CMCStoreInfoBackup::CompleteLoad(
   const int type = root["Type"].asInt();
 
   if (type == 1) {
-    Json::Value& data = root["data"];
-    this->ImportData(data);
-
-    if (!data["Item"].isNull() || !this->title.empty()) {
-      context.RefreshShop();
-    }
-  }
-
-  if (type == 1 || type == 4) {
+    this->ImportData(root["data"]);
+    this->loaded = true;
+  } else if (type == 4) {
     this->loaded = true;
   }
 }
@@ -177,16 +141,15 @@ void CMCStoreInfoBackup::CompleteSave(AsyncDiagnostic diagnostic, std::string re
 // OFFSET: 0x00606DE0
 // FUNCTION: fn_04235
 void CMCStoreInfoBackup::Load(
-  std::uint32_t accountId, std::uint32_t characterId, std::string accountName, const char* token16, int type, CAsyncWorkMgr& workManager,
-  StoreBackupContext& context
+  std::uint32_t accountId, std::uint32_t characterId, std::string accountName, int type
 ) {
   if (accountId == 0 || characterId == 0) {
     return;
   }
 
-  const std::string token(token16, 16);
+  const std::string token(reinterpret_cast<const char*>(&g_session.unknown_807C[0x08]), 16);
   const std::string url = this->LoadUrl();
-  workManager.LoadStore(accountId, characterId, accountName, url, token, type, *this, context);
+  g_asyncWorkMgr->LoadStore(accountId, characterId, accountName, url, token, type);
 }
 
 // OFFSET: 0x00606EB0

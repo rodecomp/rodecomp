@@ -34,6 +34,7 @@ public:
   int CommitPrice(int next);
   void PrintBuyList();
   void PrintSellList();
+  void Refresh();
   void Slot32(int x, int y) override;
   void Paint() override;
 

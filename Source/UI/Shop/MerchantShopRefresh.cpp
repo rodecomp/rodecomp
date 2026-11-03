@@ -1,108 +1,100 @@
+#include "Client/Session.h"
+#include "Contents/ClientItemLists.h"
 #include "Contents/Store/MCStoreInfoBackup.h"
-#include "UI/Shop/MerchantShopRefresh.h"
 #include "UI/Shop/PriceColor.h"
+#include "UI/Shop/UIMerchantShopMakeWnd.h"
+#include "UI/Buttons/UIBasicButton.h"
 #include "UI/Edit/UIEditCtrl.h"
-#include "UI/Window/UIWindow.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/GroupedInteger.h"
 
-#include <algorithm>
-#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+
+struct SessionMessengerContext {
+  int GetList11Size() const;
+};
 
 // OFFSET: 0x00970E60
 // FUNCTION: fn_13262
-void MerchantShopRefresh::Refresh() {
-  if (this->backup.title.empty()) {
-    this->buttonDisabled = 0;
-    this->button.Invalidate();
+void UIMerchantShopMakeWnd::Refresh() {
+  CMCStoreInfoBackup& backup = g_session.m_storeInfoBackup;
+
+  if (std::string(backup.title).empty()) {
+    this->unknown_0168->SetDisabled(0);
+    this->unknown_0168->Invalidate();
     return;
   }
 
-  this->titleEdit.SetText(this->backup.title.c_str());
-  this->titleEdit.Invalidate();
+  this->unknown_00CC->SetText(std::string(backup.title).c_str());
+  this->unknown_00CC->Invalidate();
 
-  for (int index = 0; index < this->maximum; ++index) {
-    UIEditCtrl& edit = *this->priceEdits[index];
-    edit.SetText("");
+  for (int index = 0; index < this->unknown_012C; ++index) {
+    UIEditCtrl* edit = this->priceEdits[index];
+    edit->SetText("");
 
-    if (this->mode == 0) {
-      edit.disabled = 1;
-      edit.Invalidate();
-    }
+    int background;
 
-    const int background = this->mode != 0 ? 232 : 182;
-    edit.Background(background, background, background);
-  }
-
-  for (const ITEM_INFO& item : this->offered) {
-    const auto found =
-      std::find_if(this->inventory.begin(), this->inventory.end(), [&](const ITEM_INFO& value) { return value.unknown_0000[1] == item.unknown_0000[1]; });
-
-    if (found == this->inventory.end()) {
-      this->inventory.push_back(item);
+    if (this->mode != 0) {
+      background = 232;
     } else {
-      found->quantity = (found->quantity + item.quantity);
+      edit->disabled = 1;
+      edit->Invalidate();
+      background = 182;
     }
+
+    edit->Background(background, background, background);
   }
 
-  this->offered.clear();
-  this->backup.Restore(this->mode != 0, this->maximum, this->inventory, this->offered);
+  const int count = reinterpret_cast<const SessionMessengerContext*>(&g_session)->GetList11Size();
 
-  const std::vector<ITEM_INFO> displayed(this->backup.items);
+  for (int index = 0; index < count; ++index) {
+    const ITEM_INFO item = g_session.GetItem1768At(index);
+    reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1750(item, this->mode, 0);
+  }
+
+  reinterpret_cast<ClientItemLists*>(&g_session)->ClearItems1768();
+  backup.Restore(this->mode != 0, this->unknown_012C);
+
+  const std::vector<ITEM_INFO> displayed(backup.items);
   int index = 0;
+  UIEditCtrl** edit = this->priceEdits;
 
   for (const ITEM_INFO& item : displayed) {
-    if (index >= this->maximum) {
+    if (index >= this->unknown_012C) {
       break;
     }
 
-    UIEditCtrl& edit = *this->priceEdits[index];
     const int price = static_cast<int>(item.unknown_0014[0]);
     char value[24] = {};
-    std::snprintf(value, sizeof(value), "%d", price);
-    edit.disabled = 0;
-    edit.Invalidate();
-    edit.Background(232, 232, 232);
-    edit.SelectAll();
-    edit.SetText(value);
+    _itoa(price, value, 10);
+    (*edit)->disabled = 0;
+    (*edit)->Invalidate();
+    (*edit)->Background(232, 232, 232);
+    (*edit)->SelectAll();
+    (*edit)->SetText(value);
 
     if (this->mode != 0 && index < 5) {
-      std::snprintf(value, sizeof(value), "%d", item.quantity);
-      UIEditCtrl& count = *this->countEdits[index];
-      count.SetText(value);
-      count.Invalidate();
+      char quantity[24] = {};
+      _itoa(item.quantity, quantity, 10);
+      this->quantityEdits[index]->SetText(quantity);
+      this->quantityEdits[index]->Invalidate();
     } else {
       const PriceColors colors = PriceColor(price);
-      edit.TextColor(colors.primary, colors.secondary);
-      FormatGroupedInteger(price, value, sizeof(value));
-      edit.SetText(value);
-      this->titleLength = edit.Length();
+      (*edit)->TextColor(colors.primary, colors.secondary);
+      char grouped[24] = {};
+      FormatGroupedInteger(price, grouped, sizeof(grouped));
+      (*edit)->SetText(grouped);
+      this->unknown_016C = (*edit)->Length();
     }
 
+    ++edit;
     ++index;
   }
 
-  UIWindow* store = this->mode != 0 ? this->otherStoreWindow : this->storeWindow;
-
-  if (store) {
-    store->SendMsg(nullptr, 23, 0, 0, 0, 0);
-  }
-
-  UIWindow* inventory = this->mode == 1 ? this->otherInventoryWindow : this->mode == 2 ? this->extraInventoryWindow : this->inventoryWindow;
-
-  if (inventory) {
-    inventory->SendMsg(nullptr, 23, 0, 0, 0, 0);
-  }
-
-  this->buttonDisabled = 0;
-  this->button.Invalidate();
-  this->backup.Clear();
-}
-
-// INLINED
-void StoreBackupContext::RefreshShop() {
-  MerchantShopRefresh* window = this->shop ? this->shop : this->otherShop;
-
-  if (window) {
-    window->Refresh();
-  }
+  g_session.RefreshItem1768Window(this->mode != 0, 0);
+  g_session.RefreshItem1750Window(this->mode);
+  this->unknown_0168->SetDisabled(0);
+  this->unknown_0168->Invalidate();
+  backup.Clear();
 }

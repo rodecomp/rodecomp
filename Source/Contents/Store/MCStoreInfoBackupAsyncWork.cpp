@@ -24,8 +24,7 @@ namespace {
 // OFFSET: 0x00607B10
 // FUNCTION: fn_04241
 CMCStoreInfoBackupLoadAsyncWork::CMCStoreInfoBackupLoadAsyncWork()
-    : NAsyncWork("MerchantStoreInformation_Load"), m_accountId(0), m_characterId(0), m_diagnostic(Diagnostic(false, "unknwon", loadSource, 28)), m_type(0),
-      m_owner(nullptr), m_context(nullptr) {
+    : NAsyncWork("MerchantStoreInformation_Load"), m_accountId(0), m_characterId(0), m_diagnostic(Diagnostic(false, "unknwon", loadSource, 28)), m_type(0) {
 }
 
 // INLINED
@@ -39,8 +38,7 @@ void CMCStoreInfoBackupLoadAsyncWork::Reset() {
 // OFFSET: 0x00607FE0
 // FUNCTION: fn_04243
 void CMCStoreInfoBackupLoadAsyncWork::Bind(
-  std::string url, std::uint32_t accountId, std::uint32_t characterId, std::string accountName, std::string token, int type, CMCStoreInfoBackup& owner,
-  StoreBackupContext& context
+  std::string url, std::uint32_t accountId, std::uint32_t characterId, std::string accountName, std::string token, int type
 ) {
   this->m_group = timeGetTime();
   this->m_accountId = accountId;
@@ -53,8 +51,6 @@ void CMCStoreInfoBackupLoadAsyncWork::Bind(
   AsyncDiagnostic diagnostic = Diagnostic(false, "unknwon", loadSource, 55);
   this->m_diagnostic.MoveFrom(diagnostic);
   this->m_type = type;
-  this->m_owner = &owner;
-  this->m_context = &context;
 }
 
 // OFFSET: 0x00608350
@@ -85,7 +81,7 @@ bool CMCStoreInfoBackupLoadAsyncWork::Execute() {
 // OFFSET: 0x00608280
 // FUNCTION: fn_04245
 void CMCStoreInfoBackupLoadAsyncWork::Complete() {
-  this->m_owner->CompleteLoad(this->m_diagnostic, this->m_accountId, this->m_characterId, this->m_accountName, this->m_response, *this->m_context);
+  g_session.m_storeInfoBackup.CompleteLoad(this->m_diagnostic, this->m_accountId, this->m_characterId, this->m_accountName, this->m_response);
 }
 
 // OFFSET: 0x00608D60

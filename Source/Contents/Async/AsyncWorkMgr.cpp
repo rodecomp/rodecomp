@@ -200,13 +200,12 @@ void CAsyncWorkMgr::LoadPartyList(
 // OFFSET: 0x00574B30
 // FUNCTION: fn_02509
 void CAsyncWorkMgr::LoadStore(
-  std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, int type, CMCStoreInfoBackup& owner,
-  StoreBackupContext& context
+  std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, int type
 ) {
   NAsyncWorkPtr work(this->m_pools, "MerchantStoreInformation_Load");
 
   if (work.Get()) {
-    static_cast<CMCStoreInfoBackupLoadAsyncWork*>(work.Get())->Bind(url, accountId, characterId, world, token, type, owner, context);
+    static_cast<CMCStoreInfoBackupLoadAsyncWork*>(work.Get())->Bind(url, accountId, characterId, world, token, type);
     this->Submit(work);
   }
 }

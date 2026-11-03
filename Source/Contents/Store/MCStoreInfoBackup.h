@@ -2,7 +2,6 @@
 #define RAGNAROK_SOURCE_CONTENTS_STORE_MCSTOREINFOBACKUP_H
 
 #include "Contents/Items/ItemInfo.h"
-#include "UI/Window/WindowNotifications.h"
 
 #include <vector>
 
@@ -12,36 +11,21 @@ struct AsyncDiagnostic;
 namespace Json {
   class Value;
 }
-struct MerchantShopRefresh;
-
-struct StoreBackupContext {
-  WindowNotifications& ui;
-  MerchantShopRefresh* const& shop;
-  MerchantShopRefresh* const& otherShop;
-  const bool& languagePrefix;
-  const int& serviceType;
-  const std::uint16_t& language;
-
-  void RefreshShop();
-};
-
 class CMCStoreInfoBackup {
 public:
   CMCStoreInfoBackup();
   virtual ~CMCStoreInfoBackup();
   void Clear();
-  int Restore(unsigned char wholeItem, int maximum, std::list<ITEM_INFO>& inventory, std::list<ITEM_INFO>& storeItems);
+  int Restore(unsigned char wholeItem, int maximum);
   std::string LoadUrl() const;
   std::string SaveUrl() const;
   void Reset(LuaScript& settings, LuaScript& tables, const char* host, const char* port, const char* overrideKey);
   void CompleteLoad(
-    AsyncDiagnostic diagnostic, std::uint32_t accountId, std::uint32_t characterId, std::string accountName, std::string response, StoreBackupContext& context
+    AsyncDiagnostic diagnostic, std::uint32_t accountId, std::uint32_t characterId, std::string accountName, std::string response
   );
   void CompleteSave(AsyncDiagnostic diagnostic, std::string response);
   void Load(
-    std::uint32_t accountId, std::uint32_t characterId, std::string accountName, const char* token16, int type, CAsyncWorkMgr& workManager,
-    StoreBackupContext& context
-  );
+    std::uint32_t accountId, std::uint32_t characterId, std::string accountName, int type);
   void Save(int type);
   void ImportData(Json::Value& data);
   void ExportData(Json::Value& data) const;
