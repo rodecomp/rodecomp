@@ -1748,7 +1748,7 @@ void __stdcall nullsub_468(int) {
 
 // OFFSET: 0x00D6AD60
 // FUNCTION: fn_22063
-void __stdcall sub_D6AD60(int count, const int* aids) {
+void CGameMode::sub_D6AD60(int count, const int* aids) {
   if (count <= 0) {
     return;
   }
@@ -1786,7 +1786,7 @@ int g_achievementTotal;
 
 // OFFSET: 0x00D1C050
 // FUNCTION: fn_21624
-void __stdcall sub_D1C050(const AchievementStatePacket* packet) {
+void CGameMode::sub_D1C050(const AchievementStatePacket* packet) {
   UIWindow* window = nullptr;
   bool notify = true;
 
@@ -1811,7 +1811,7 @@ void __stdcall sub_D1C050(const AchievementStatePacket* packet) {
 
 // OFFSET: 0x00D6C460
 // FUNCTION: fn_22081
-void __stdcall sub_D6C460(int count, int unknown01738784, short unknown01738788, int completed, int total, const AchievementRecordPacket* packets) {
+void CGameMode::sub_D6C460(int count, int unknown01738784, short unknown01738788, int completed, int total, const AchievementRecordPacket* packets) {
   g_unknown_01738784 = unknown01738784;
   g_unknown_01738788 = unknown01738788;
   g_achievementCompleted = completed;
@@ -2026,7 +2026,7 @@ struct BuyingStoreResultPacket {
 
 // OFFSET: 0x00D1D460
 // FUNCTION: fn_21629
-void __stdcall ReceiveBuyingStoreResult(const BuyingStoreResultPacket* packet) {
+void CGameMode::ReceiveBuyingStoreResult(const BuyingStoreResultPacket* packet) {
   char text[256];
   int message;
   const std::int16_t result = packet->result;

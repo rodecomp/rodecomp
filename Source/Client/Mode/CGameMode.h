@@ -27,6 +27,9 @@ class CRenderObject;
 struct ActorNameAllPacket;
 struct ActorNameTitlePacket;
 struct PlayerNameUpdatePacket;
+struct AchievementStatePacket;
+struct AchievementRecordPacket;
+struct BuyingStoreResultPacket;
 struct GameOptionEntry;
 struct CWorld;
 struct RenewQuestOngoingInfo;
@@ -98,6 +101,10 @@ struct MinimapMarker {
 class CGameMode : public CMode {
 public:
   CGameMode();
+  void sub_D1C050(const AchievementStatePacket* packet);
+  void ReceiveBuyingStoreResult(const BuyingStoreResultPacket* packet);
+  void sub_D6C460(int count, int unknown01738784, short unknown01738788, int completed, int total, const AchievementRecordPacket* packets);
+  void sub_D6AD60(int count, const int* aids);
   /* 0058 */ unsigned char unknown_0058[0x10];
   /* 0068 */ char mapName[16];
   /* 0078 */ unsigned char unknown_0078[0xC];
