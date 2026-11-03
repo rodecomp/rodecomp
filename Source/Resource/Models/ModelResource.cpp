@@ -80,7 +80,7 @@ ModelNodeV2::~ModelNodeV2() = default;
 
 // OFFSET: 0x007553E0
 // FUNCTION: fn_07982
-C3dModelRes::C3dModelRes(ModelResourceContext& context) : major(0), shade(0), alpha(255), m_context(&context) {
+C3dModelRes::C3dModelRes() : major(0), shade(0), alpha(255) {
 }
 
 // OFFSET: 0x007567B0
@@ -89,7 +89,7 @@ C3dModelRes::~C3dModelRes() = default;
 
 // OFFSET: 0x00755560
 // FUNCTION: fn_07983
-C3dModelResV1::C3dModelResV1(ModelResourceContext& context) : C3dModelRes(context), animationLength(0) {
+C3dModelResV1::C3dModelResV1() : animationLength(0) {
 }
 
 // INLINED
@@ -98,7 +98,7 @@ C3dModelResV1::~C3dModelResV1() = default;
 // OFFSET: 0x00750A70
 // FUNCTION: fn_07949
 C3dModelResV1* C3dModelResV1::Create() {
-  return new C3dModelResV1(*this->m_context);
+  return new C3dModelResV1;
 }
 
 // OFFSET: 0x007593C0
@@ -231,20 +231,20 @@ inline void C3dModelResV1::ReadNode(ResourceByteReader& input, unsigned minor, c
 // OFFSET: 0x00750B10
 // FUNCTION: fn_07950
 bool C3dModelResV1::Load(const char* name) {
-  auto& file = this->m_context->file;
+  CFile file;
 
-  if (!file.Open(name)) {
+  if (!file.Open(name, 0, true, false)) {
     file.Close();
     return false;
   }
 
-  ResourceByteReader input{static_cast<const unsigned char*>(file.Data()), static_cast<unsigned>(file.Size())};
+  ResourceByteReader input{static_cast<const unsigned char*>(file.GetData()), static_cast<unsigned>(file.GetSize())};
   char magic[5]{};
   input.Read(magic, 4);
 
   if (std::strcmp(magic, "GRSM") != 0) {
     constexpr char message[] = "모델파일이 아닙니다. 형식을 다시한번 확인해주세요.";
-    ShowErrorDialog(this->m_context->renderSystem, message, 0);
+    ShowErrorDialog(GetRenderSystemHolder()->system, message, 0);
     file.Close();
 
     return false;
@@ -258,7 +258,7 @@ bool C3dModelResV1::Load(const char* name) {
 
   if (major != 1 || minor > 5) {
     constexpr char message[] = "지원되지 않는 버젼입니다. 내용물이 깨져있을 수 있습니다";
-    ShowErrorDialog(this->m_context->renderSystem, message, 0);
+    ShowErrorDialog(GetRenderSystemHolder()->system, message, 0);
     file.Close();
 
     return false;
@@ -383,7 +383,7 @@ void C3dGrannyModelRes::InstantiateModel(GrannyModelInstance* target, const gran
 
       entry.deformer = GrannyNewMeshDeformer(GrannyGetMeshVertexType(mesh), GrannyPNT332VertexType, 2);
       if (!entry.deformer) {
-        ShowErrorDialog(this->m_context->renderSystem, "Granny didn't find a matching deformer for the vertex format used by mesh", 0);
+        ShowErrorDialog(GetRenderSystemHolder()->system, "Granny didn't find a matching deformer for the vertex format used by mesh", 0);
       }
     } else {
       entry.vertices = new unsigned char[vertexBytes];

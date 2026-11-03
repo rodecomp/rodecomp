@@ -3,7 +3,6 @@
 
 #include <cstdint>
 
-class IJL15Runtime;
 
 struct BitmapImage {
   /* 0110 */ int alpha;
@@ -20,7 +19,7 @@ struct BitmapImage {
   bool DecodeBitmap(const void* data, int bytes, bool iconOnly);
   bool DecodeTga(const void* data, int bytes);
   bool DecodePng(const void* data, int bytes, const char* name);
-  bool DecodeJpeg(const void* data, int bytes, IJL15Runtime& runtime);
+  bool DecodeJpeg(const void* data, int bytes);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

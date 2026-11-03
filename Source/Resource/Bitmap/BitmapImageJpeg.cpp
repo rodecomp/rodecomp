@@ -5,9 +5,9 @@
 
 // OFFSET: 0x0074BCC0
 // FUNCTION: fn_07871
-bool BitmapImage::DecodeJpeg(const void* data, int bytes, IJL15Runtime& runtime) {
+bool BitmapImage::DecodeJpeg(const void* data, int bytes) {
   IJL15Properties properties = {};
-  if (runtime.initialize(&properties) != 0) {
+  if (ijlInit(&properties) != 0) {
     return false;
   }
 
@@ -15,7 +15,7 @@ bool BitmapImage::DecodeJpeg(const void* data, int bytes, IJL15Runtime& runtime)
   properties.jpegSize = bytes;
   unsigned char* source;
 
-  if (runtime.read(&properties, 1) == 0) {
+  if (ijlRead(&properties, 1) == 0) {
     this->width = properties.jpegWidth;
     this->height = properties.jpegHeight;
     const std::uint32_t count = static_cast<std::uint32_t>(this->width) * static_cast<std::uint32_t>(this->height);
@@ -28,7 +28,7 @@ bool BitmapImage::DecodeJpeg(const void* data, int bytes, IJL15Runtime& runtime)
     properties.dibChannels = 3;
     properties.dibPadding = 0;
 
-    if (runtime.read(&properties, 3) != 0) {
+    if (ijlRead(&properties, 3) != 0) {
       std::free(source);
       std::free(this->pixels);
       this->pixels = nullptr;
@@ -39,7 +39,7 @@ bool BitmapImage::DecodeJpeg(const void* data, int bytes, IJL15Runtime& runtime)
     source = reinterpret_cast<unsigned char*>(this);
   }
 
-  runtime.release(&properties);
+  ijlFree(&properties);
 
   for (int y = 0; y < this->height; ++y) {
     const unsigned char* input = source + 3u * (static_cast<std::uint32_t>(y) * this->width);

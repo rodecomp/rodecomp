@@ -28,15 +28,9 @@ struct ActionFrame {
   const SpriteFrameCell& Cell(unsigned index) const;
 };
 
-struct ActionResourceContext {
-  ResourceBytes& file;
-  ResourceMgr& resources;
-  CRenderSystemBase*& renderSystem;
-};
-
 class CActRes : public CRes {
 public:
-  explicit CActRes(ActionResourceContext& context);
+  CActRes();
   ~CActRes() override;
   CActRes* Create() override;
   bool Load(const char* name) override;
@@ -52,14 +46,12 @@ public:
   /* 0120 */ std::vector<std::string> sounds;
   /* 012C */ std::vector<float> speeds;
 
-private:
-  ActionResourceContext* m_context;
 };
 
 static_assert(sizeof(ActionAnchor) == 12);
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(ActionFrame) == 68);
-static_assert(sizeof(CActRes) == 316);
+static_assert(sizeof(CActRes) == 312);
 static_assert(offsetof(ActionAnchor, y) == 0x0004);
 static_assert(offsetof(ActionAnchor, unknown_0008) == 0x0008);
 static_assert(offsetof(ActionFrame, cells) == 0x0020);

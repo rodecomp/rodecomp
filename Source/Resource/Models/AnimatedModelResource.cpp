@@ -54,9 +54,9 @@ AnimatedModelNode::~AnimatedModelNode() {
 
 // OFFSET: 0x007550E0
 // FUNCTION: fn_07979
-C3dAnimModelRes::C3dAnimModelRes(ModelResourceContext& context)
+C3dAnimModelRes::C3dAnimModelRes()
     : unknown_0110(0), unknown_0114(nullptr), shade(2), frameCount(0), animationLength(0), speed(1.0f), unknown_0150(0), unknown_0154(0.0f), unknown_0158(0.0f),
-      unknown_015C(0.0f), alpha(255), m_context(&context) {
+      unknown_015C(0.0f), alpha(255) {
 }
 
 // OFFSET: 0x00756480
@@ -68,7 +68,7 @@ C3dAnimModelRes::~C3dAnimModelRes() {
 // OFFSET: 0x007521F0
 // FUNCTION: fn_07956
 C3dAnimModelRes* C3dAnimModelRes::Create() {
-  return new C3dAnimModelRes(*this->m_context);
+  return new C3dAnimModelRes;
 }
 
 // OFFSET: 0x00752380
@@ -91,14 +91,14 @@ void C3dAnimModelRes::Unload() {
 // OFFSET: 0x00752390
 // FUNCTION: fn_07958
 bool C3dAnimModelRes::Load(const char* name) {
-  auto& file = this->m_context->file;
+  CFile file;
 
-  if (!file.Open(name)) {
+  if (!file.Open(name, 0, true, false)) {
     file.Close();
     return false;
   }
 
-  ResourceByteReader input{static_cast<const unsigned char*>(file.Data()), static_cast<unsigned>(file.Size())};
+  ResourceByteReader input{static_cast<const unsigned char*>(file.GetData()), static_cast<unsigned>(file.GetSize())};
   char magic[5];
   unsigned char major;
   unsigned char minor;
@@ -144,7 +144,7 @@ bool C3dAnimModelRes::Load(const char* name) {
     input.Read(&marker, 4);
 
     if (marker != 0x12345678u) {
-      ShowErrorDialog(this->m_context->renderSystem, "data corrupt", 0);
+      ShowErrorDialog(GetRenderSystemHolder()->system, "data corrupt", 0);
       file.Close();
       return false;
     }
@@ -194,7 +194,7 @@ bool C3dAnimModelRes::Load(const char* name) {
     input.Read(&marker, 4);
 
     if (marker != 0x12345678u) {
-      ShowErrorDialog(this->m_context->renderSystem, "data corrupt", 0);
+      ShowErrorDialog(GetRenderSystemHolder()->system, "data corrupt", 0);
       file.Close();
       return false;
     }
@@ -253,21 +253,10 @@ C3dGrannyModelRes::C3dGrannyModelRes() {
   this->unknown_03B0 = 0;
 }
 
-// INLINED
-C3dGrannyModelRes::C3dGrannyModelRes(ModelResourceContext& context) : m_context(&context) {
-  this->position[0] = 0.0f;
-  this->position[1] = 0.0f;
-  this->position[2] = 0.0f;
-  this->instance = nullptr;
-  this->model = nullptr;
-  this->job = 0;
-  this->unknown_03B0 = 0;
-}
-
 // OFFSET: 0x00753540
 // FUNCTION: fn_07961
 C3dGrannyModelRes* C3dGrannyModelRes::Create() {
-  return new C3dGrannyModelRes(*this->m_context);
+  return new C3dGrannyModelRes;
 }
 
 // OFFSET: 0x00753620

@@ -8,16 +8,9 @@
 
 class ResourceBytes;
 
-struct SpriteResourceContext {
-  ResourceBytes& file;
-  CRenderSystemBase*& renderSystem;
-  const int& halfWidth;
-  const int& halfHeight;
-};
-
 class CSprRes : public CRes {
 public:
-  explicit CSprRes(SpriteResourceContext& context);
+  CSprRes();
   ~CSprRes() override;
   CSprRes* Create() override;
   bool Load(const char* name) override;
@@ -27,8 +20,6 @@ public:
   /* 0510 */ std::vector<SpriteRleImage*> images[2];
   /* 0528 */ int indexedCount;
 
-private:
-  SpriteResourceContext* m_context;
 };
 
 std::uint8_t* EncodeSpriteRuns(const std::uint8_t* pixels, int width, int height, std::uint16_t& bytes);
@@ -36,7 +27,7 @@ std::uint8_t* ReduceSprite(const std::uint8_t* pixels, int width, int height, in
 void ConvertSpritePalette(std::uint32_t* output, const std::uint8_t* input, int count);
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(CSprRes) == 1328);
+static_assert(sizeof(CSprRes) == 1324);
 static_assert(sizeof(SpriteRleImage) == 16);
 #endif
 

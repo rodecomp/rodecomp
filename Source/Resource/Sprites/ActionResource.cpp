@@ -1,4 +1,6 @@
 #include "Client/Application/ErrorDialog.h"
+#include "File/File.h"
+#include "Render/DeviceContext/DCSurface.h"
 #include "Resource/Sprites/ActionResource.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceByteReader.h"
@@ -20,40 +22,31 @@ namespace {
   }
 }
 
-// OFFSET: 0x007436B0
-// FUNCTION: fn_07767
-CActRes::CActRes(ActionResourceContext& context) : maximumCells(0), m_context(&context) {
+// INLINED
+CActRes::CActRes() : maximumCells(0) {
 }
 
-// INLINED
+// OFFSET: 0x00745FB0
+// FUNCTION: fn_07767
 CActRes::~CActRes() = default;
 
 // OFFSET: 0x007436B0
 // FUNCTION: fn_07749
 CActRes* CActRes::Create() {
-  return new CActRes(*this->m_context);
+  return new CActRes;
 }
 
 // OFFSET: 0x007437B0
 // FUNCTION: fn_07750
 bool CActRes::Load(const char* name) {
-  auto& context = *this->m_context;
-  auto& file = context.file;
-  struct CloseFile {
-    ResourceBytes& file;
-
-    ~CloseFile() {
-      file.Close();
-    }
-  } close{file};
-
-  if (!file.Open(name)) {
+  CFile file;
+  if (!file.Open(name, 0, true, false)) {
     const std::string message = std::string("Cannot find File : ") + name;
-    ShowErrorDialog(context.renderSystem, message.c_str(), 0);
+    ShowErrorDialog(GetRenderSystemHolder()->system, message.c_str(), 0);
     return false;
   }
 
-  ResourceByteReader input{static_cast<const unsigned char*>(file.Data()), static_cast<unsigned>(file.Size())};
+  ResourceByteReader input{static_cast<const unsigned char*>(file.GetData()), static_cast<unsigned>(file.GetSize())};
   struct Header {
     std::uint16_t magic;
     std::uint16_t version;
@@ -63,8 +56,8 @@ bool CActRes::Load(const char* name) {
   input.Read(&header, sizeof(header));
 
   if (header.magic != 0x4341) {
-    ShowErrorDialog(context.renderSystem, "Illegal file format", 0);
-    ShowErrorDialog(context.renderSystem, name, 0);
+    ShowErrorDialog(GetRenderSystemHolder()->system, "Illegal file format", 0);
+    ShowErrorDialog(GetRenderSystemHolder()->system, name, 0);
     file.Close();
 
     return false;
@@ -75,7 +68,7 @@ bool CActRes::Load(const char* name) {
   spriteName.append(".spr", 4);
 
   if (header.version > 0x0205) {
-    ShowErrorDialog(context.renderSystem, "Unsupported Version. Content may be corrupted", 0);
+    ShowErrorDialog(GetRenderSystemHolder()->system, "Unsupported Version. Content may be corrupted", 0);
     file.Close();
     return false;
   }
@@ -141,7 +134,7 @@ bool CActRes::Load(const char* name) {
             cell.y = RelativeCoordinate(cell.y, height, cell.scaleY);
           }
         } else if (cell.image != -1) {
-          auto* sprite = static_cast<CSprRes*>(context.resources.Load(spriteName.c_str()));
+          auto* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(spriteName.c_str()));
 
           if (sprite) {
             const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];

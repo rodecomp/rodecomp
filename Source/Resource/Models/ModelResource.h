@@ -91,15 +91,10 @@ public:
   /* 00AC */ std::map<int, ModelTextureChannels> textureKeys;
 };
 
-struct ModelResourceContext {
-  ResourceBytes& file;
-  CRenderSystemBase*& renderSystem;
-};
-
 class C3dModelRes : public CRes {
   friend class ModelNode;
 public:
-  explicit C3dModelRes(ModelResourceContext& context);
+  C3dModelRes();
   ~C3dModelRes() override;
   bool Load(const char* name) override;
   void Unload() override;
@@ -117,13 +112,11 @@ public:
   /* 0150 */ unsigned char alpha;
   /* 0154 */ std::list<std::string> movieNames;
 
-protected:
-  ModelResourceContext* m_context;
 };
 
 class C3dModelResV1 : public C3dModelRes {
 public:
-  explicit C3dModelResV1(ModelResourceContext& context);
+  C3dModelResV1();
   ~C3dModelResV1() override;
   C3dModelResV1* Create() override;
   bool Load(const char* name) override;
@@ -135,7 +128,7 @@ private:
 
 class C3dModelResV2 : public C3dModelRes {
 public:
-  explicit C3dModelResV2(ModelResourceContext& context);
+  C3dModelResV2();
   ~C3dModelResV2() override;
   C3dModelResV2* Create() override;
   bool Load(const char* name) override;

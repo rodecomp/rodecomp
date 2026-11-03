@@ -52,7 +52,8 @@ namespace {
   }
 }
 
-// INLINED
+// OFFSET: 0x0074A1D0
+// FUNCTION: fn_07861
 CBitmapRes::CBitmapRes() {
 }
 
@@ -62,17 +63,12 @@ CGifRes::CGifRes() : loopCount(0), unknown_0132(0), currentFrame(0), lastFrameTi
 }
 
 // INLINED
-CGifRes::CGifRes(BitmapResourceContext& context)
-    : CBitmapRes(context), loopCount(0), unknown_0132(0), currentFrame(0), lastFrameTime(0), animated(false), frameChanged(false) {
-}
-
-// INLINED
 CGifRes::~CGifRes() = default;
 
 // OFFSET: 0x00749910
 // FUNCTION: fn_07852
 CGifRes* CGifRes::Create() {
-  return new CGifRes(*this->m_context);
+  return new CGifRes;
 }
 
 // OFFSET: 0x00749A10

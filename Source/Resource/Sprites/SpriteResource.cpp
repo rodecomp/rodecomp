@@ -1,48 +1,43 @@
 #include "Client/Application/ErrorDialog.h"
+#include "File/File.h"
 #include "Render/RenderSystemBase.h"
 #include "Render/Textures/Texture.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceByteReader.h"
 #include "Resource/Sprites/SpriteResource.h"
+#include "Render/DeviceContext/DCSurface.h"
+#include "Render/Textures/TextureCache.h"
+#include "Resource/ResourcePreload.h"
 
 #include <cstdlib>
 #include <cstring>
 #include <string>
 
-// OFFSET: 0x0075FE90
-// FUNCTION: fn_08060
-CSprRes::CSprRes(SpriteResourceContext& context) : indexedCount(0), m_context(&context) {
+// INLINED
+CSprRes::CSprRes() : indexedCount(0) {
 }
 
-// INLINED
+// OFFSET: 0x00760F50
+// FUNCTION: fn_08060
 CSprRes::~CSprRes() = default;
 
 // OFFSET: 0x0075FE90
 // FUNCTION: fn_08053
 CSprRes* CSprRes::Create() {
-  return new CSprRes(*this->m_context);
+  return new CSprRes;
 }
 
 // OFFSET: 0x0075FF40
 // FUNCTION: fn_08054
 bool CSprRes::Load(const char* name) {
-  auto& context = *this->m_context;
-  auto& file = context.file;
-  struct CloseFile {
-    ResourceBytes& file;
-
-    ~CloseFile() {
-      file.Close();
-    }
-  } close{file};
-
-  if (!file.Open(name)) {
+  CFile file;
+  if (!file.Open(name, 0, true, false)) {
     const std::string message = std::string("Spr :: Cannot find File : ") + name;
-    ShowErrorDialog(context.renderSystem, message.c_str(), 0);
+    ShowErrorDialog(GetRenderSystemHolder()->system, message.c_str(), 0);
     return false;
   }
 
-  ResourceByteReader input{static_cast<const unsigned char*>(file.Data()), static_cast<unsigned>(file.Size())};
+  ResourceByteReader input{static_cast<const unsigned char*>(file.GetData()), static_cast<unsigned>(file.GetSize())};
   struct Header {
     std::uint16_t magic;
     std::uint16_t version;
@@ -51,13 +46,13 @@ bool CSprRes::Load(const char* name) {
   input.Read(&header, sizeof(header));
 
   if (header.magic != 0x5053) {
-    ShowErrorDialog(context.renderSystem, "Illegal File Format", 0);
-    ShowErrorDialog(context.renderSystem, name, 0);
+    ShowErrorDialog(GetRenderSystemHolder()->system, "Illegal File Format", 0);
+    ShowErrorDialog(GetRenderSystemHolder()->system, name, 0);
     return false;
   }
 
   if (header.version > 0x0201) {
-    ShowErrorDialog(context.renderSystem, "Unsupported Version. Content may be corrupted", 0);
+    ShowErrorDialog(GetRenderSystemHolder()->system, "Unsupported Version. Content may be corrupted", 0);
     return false;
   }
 
@@ -85,7 +80,7 @@ bool CSprRes::Load(const char* name) {
     image->height = static_cast<std::int16_t>(dimensions[1]);
     std::uint16_t encodedBytes;
 
-    if (context.halfWidth == 0 && context.halfHeight == 0) {
+    if (g_spriteHalfWidth == 0 && g_spriteHalfHeight == 0) {
       if (header.version < 0x0201) {
         const int count = image->width * image->height;
         auto* pixels = static_cast<std::uint8_t*>(::operator new(count));
@@ -133,17 +128,17 @@ bool CSprRes::Load(const char* name) {
         input.Read(pixels, count);
       }
 
-      auto* reduced = ReduceSprite(pixels, dimensions[0], dimensions[1], context.halfWidth, context.halfHeight);
+      auto* reduced = ReduceSprite(pixels, dimensions[0], dimensions[1], g_spriteHalfWidth, g_spriteHalfHeight);
       std::free(pixels);
-      image->runs = EncodeSpriteRuns(reduced, dimensions[0] / (context.halfWidth + 1), dimensions[1] / (context.halfHeight + 1), encodedBytes);
+      image->runs = EncodeSpriteRuns(reduced, dimensions[0] / (g_spriteHalfWidth + 1), dimensions[1] / (g_spriteHalfHeight + 1), encodedBytes);
       std::free(reduced);
 
-      if (context.halfWidth != 0) {
+      if (g_spriteHalfWidth != 0) {
         image->width /= 2;
         image->unknown_0004 = 1;
       }
 
-      if (context.halfHeight != 0) {
+      if (g_spriteHalfHeight != 0) {
         image->height /= 2;
         image->unknown_0006 = 1;
       }
@@ -169,19 +164,19 @@ bool CSprRes::Load(const char* name) {
         }
       }
 
-      const int width = context.halfWidth != 0 ? image->width / 2 : image->width;
-      const int height = context.halfHeight != 0 ? image->height / 2 : image->height;
-      CTexture* texture = context.renderSystem ? context.renderSystem->CreateTexture(width, height, TextureFormat::A4R4G4B4, false, false) : nullptr;
+      const int width = g_spriteHalfWidth != 0 ? image->width / 2 : image->width;
+      const int height = g_spriteHalfHeight != 0 ? image->height / 2 : image->height;
+      CTexture* texture = CreateTexture(width, height, TextureFormat::A4R4G4B4, false, false);
       image->unknown_0008 = texture;
       texture->Upload(0, 0, image->width, image->height, pixels, 0, 0);
       std::free(pixels);
 
-      if (context.halfWidth != 0) {
+      if (g_spriteHalfWidth != 0) {
         image->width /= 2;
         image->unknown_0004 = 1;
       }
 
-      if (context.halfHeight != 0) {
+      if (g_spriteHalfHeight != 0) {
         image->height /= 2;
         image->unknown_0006 = 1;
       }

@@ -1,3 +1,5 @@
+#include "Render/DeviceContext/DCSurface.h"
+#include "File/File.h"
 #include "Client/Application/ErrorDialog.h"
 #include "Render/Textures/Texture.h"
 #include "Render/Textures/TextureCache.h"
@@ -29,7 +31,7 @@ namespace {
 
 // OFFSET: 0x007555C0
 // FUNCTION: fn_07984
-C3dModelResV2::C3dModelResV2(ModelResourceContext& context) : C3dModelRes(context), framesPerSecond(0.0f), animationLength(0) {
+C3dModelResV2::C3dModelResV2() : framesPerSecond(0.0f), animationLength(0) {
 }
 
 // INLINED
@@ -38,7 +40,7 @@ C3dModelResV2::~C3dModelResV2() = default;
 // OFFSET: 0x00751ED0
 // FUNCTION: fn_07953
 C3dModelResV2* C3dModelResV2::Create() {
-  return new C3dModelResV2(*this->m_context);
+  return new C3dModelResV2;
 }
 
 // INLINED
@@ -55,20 +57,20 @@ inline void C3dModelResV2::ReadVersion(ResourceByteReader& input, unsigned minor
 // OFFSET: 0x00751F70
 // FUNCTION: fn_07954
 bool C3dModelResV2::Load(const char* name) {
-  auto& file = this->m_context->file;
+  CFile file;
 
-  if (!file.Open(name)) {
+  if (!file.Open(name, 0, true, false)) {
     file.Close();
     return false;
   }
 
-  ResourceByteReader input{static_cast<const unsigned char*>(file.Data()), static_cast<unsigned>(file.Size())};
+  ResourceByteReader input{static_cast<const unsigned char*>(file.GetData()), static_cast<unsigned>(file.GetSize())};
   char magic[5]{};
   input.Read(magic, 4);
 
   if (std::strcmp(magic, "GRSM") != 0) {
     constexpr char message[] = "모델파일이 아닙니다. 형식을 다시한번 확인해주세요.";
-    ShowErrorDialog(this->m_context->renderSystem, message, 0);
+    ShowErrorDialog(GetRenderSystemHolder()->system, message, 0);
     file.Close();
 
     return false;

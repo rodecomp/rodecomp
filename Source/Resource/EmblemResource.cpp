@@ -17,16 +17,12 @@ namespace {
 }
 
 // INLINED
-CEmblemRes::CEmblemRes(BitmapResourceContext& context) : gif(context) {
-}
-
-// INLINED
 CEmblemRes::~CEmblemRes() = default;
 
 // OFFSET: 0x0074C9F0
 // FUNCTION: fn_07880
 CEmblemRes* CEmblemRes::Create() {
-  return new CEmblemRes(this->gif.Context());
+  return new CEmblemRes;
 }
 
 // OFFSET: 0x0074CA90

@@ -57,7 +57,7 @@ private:
 
 class C3dAnimModelRes : public CRes {
 public:
-  explicit C3dAnimModelRes(ModelResourceContext& context);
+  C3dAnimModelRes();
   ~C3dAnimModelRes() override;
   C3dAnimModelRes* Create() override;
   bool Load(const char* name) override;
@@ -77,9 +77,6 @@ public:
   /* 0158 */ float unknown_0158;
   /* 015C */ float unknown_015C;
   /* 0160 */ std::uint32_t alpha;
-
-private:
-  ModelResourceContext* m_context;
 };
 
 static_assert(sizeof(AnimatedModelFace) == 24);

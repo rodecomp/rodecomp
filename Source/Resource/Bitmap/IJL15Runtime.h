@@ -30,6 +30,12 @@ struct IJL15Properties {
   alignas(8) unsigned char privateProperties[19984];
 };
 
+extern "C" {
+__declspec(dllimport) int __stdcall ijlInit(IJL15Properties* properties);
+__declspec(dllimport) int __stdcall ijlRead(IJL15Properties* properties, int operation);
+__declspec(dllimport) int __stdcall ijlFree(IJL15Properties* properties);
+}
+
 class IJL15Runtime {
 public:
   IJL15Runtime();

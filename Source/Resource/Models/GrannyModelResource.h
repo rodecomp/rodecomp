@@ -221,7 +221,6 @@ struct GrannyHairPivot {
 class C3dGrannyModelRes : public CRes {
 public:
   C3dGrannyModelRes();
-  explicit C3dGrannyModelRes(ModelResourceContext& context);
   C3dGrannyModelRes* Create() override;
   bool Load(const char* name) override;
   void RebindMeshes(const C3dGrannyModelRes& target);
@@ -265,9 +264,6 @@ public:
   /* 03AC */ unsigned job;
   /* 03B0 */ GrannyHairPivot* unknown_03B0;
   /* 03B4 */ granny_skeleton* skeleton;
-
-private:
-  ModelResourceContext* m_context;
 };
 
 extern GrannyAnimationLibrary g_grannyAnimationLibrary;

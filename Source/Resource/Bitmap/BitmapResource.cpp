@@ -1,13 +1,10 @@
 #include "Client/Application/ErrorDialog.h"
+#include "File/File.h"
+#include "Render/DeviceContext/DCSurface.h"
 #include "Resource/Bitmap/BitmapResource.h"
 
 #include <cstring>
 #include <windows.h>
-
-// OFFSET: 0x00749580
-// FUNCTION: fn_07861
-CBitmapRes::CBitmapRes(BitmapResourceContext& context) : m_context(&context) {
-}
 
 // INLINED
 CBitmapRes::~CBitmapRes() = default;
@@ -15,23 +12,24 @@ CBitmapRes::~CBitmapRes() = default;
 // OFFSET: 0x00749580
 // FUNCTION: fn_07847
 CBitmapRes* CBitmapRes::Create() {
-  return new CBitmapRes(*this->m_context);
+  return new CBitmapRes;
 }
 
 // OFFSET: 0x00749630
 // FUNCTION: fn_07848
 bool CBitmapRes::Load(const char* name) {
+  CFile file;
   bool result = false;
-  if (name && this->m_context->file.Open(name)) {
-    if (this->Decode(name, this->m_context->file.Data(), this->m_context->file.Size(), false)) {
-      this->m_context->file.Close();
+  if (name && file.Open(name, 0, true, false)) {
+    if (this->Decode(name, file.GetData(), file.GetSize(), false)) {
+      file.Close();
       result = true;
     } else {
-      this->m_context->file.Close();
+      file.Close();
     }
   }
 
-  this->m_context->file.Close();
+  file.Close();
   return result;
 }
 
@@ -58,13 +56,13 @@ bool CBitmapRes::Decode(const char* name, const void* data, int bytes, bool icon
   }
 
   if (lstrcmpiA(extension, ".jpg") == 0) {
-    return this->image.DecodeJpeg(data, bytes, this->m_context->jpeg);
+    return this->image.DecodeJpeg(data, bytes);
   }
 
   if (lstrcmpiA(extension, ".png") == 0) {
     return this->image.DecodePng(data, bytes, name);
   }
 
-  ShowErrorDialog(this->m_context->renderSystem, "Unsupport fileformat!", 0);
+  ShowErrorDialog(GetRenderSystemHolder()->system, "Unsupport fileformat!", 0);
   return false;
 }

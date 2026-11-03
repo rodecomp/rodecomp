@@ -12,8 +12,7 @@ UIBmpRadioBtn::UIBmpRadioBtn() : UIWindow(0) {
 
 // OFFSET: 0x0086C720
 // FUNCTION: fn_11029
-UICaptchaImage::UICaptchaImage(BitmapResourceContext& bitmaps)
-    : UIWindow(0), m_bitmap(bitmaps) {
+UICaptchaImage::UICaptchaImage() : UIWindow(0) {
 }
 
 // OFFSET: 0x00870390
