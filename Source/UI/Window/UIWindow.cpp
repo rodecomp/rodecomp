@@ -2758,7 +2758,7 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
           }
 
           g_windowMgr.window_4F258 = window;
-          if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->RunModal(window) == 0xBC) {
+          if (g_windowMgr.RunModal(window) == 0xBC) {
             g_windowMgr.window_4F258 = nullptr;
           }
         }
@@ -2809,7 +2809,7 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
       break;
     case 0xC9:
       if (g_navigationMode == 2) {
-        if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x8BF), 2, true, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
+        if (g_windowMgr.Confirm(LookupMessage(0x8BF), 2, true, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
           g_navigationManager.SetViewMode(1);
           g_navigationTab = 0;
           g_navigationManager.ClearSavedTarget();
@@ -2949,7 +2949,7 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
           }
         }
       }
-      g_navigationManager.ShowRouteResult(result, 1, *reinterpret_cast<WindowDialogs*>(&g_windowMgr));
+      g_navigationManager.ShowRouteResult(result, 1);
       this->RefreshLayout();
       if (UIWindow* window = g_windowMgr.LookupWindow(0x13A)) {
         window->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);

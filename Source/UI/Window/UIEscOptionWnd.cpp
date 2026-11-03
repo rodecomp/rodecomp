@@ -96,7 +96,7 @@ int UIEscOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
   const int id = static_cast<int>(argument1);
   if (id > 0x173) {
     if (id == 0x174) {
-      const int result = reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(
+      const int result = g_windowMgr.Confirm(
         LookupMessage(0x60C), 2, false, false, 0, "Message", 0x118, 0x78, 0
       );
       if (result != 0xBB) {

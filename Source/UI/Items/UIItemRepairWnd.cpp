@@ -188,7 +188,7 @@ int UIItemRepairWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
   switch (message) {
   case 6: {
     const int response = static_cast<int>(a);
-    this->m_recorder->Record(this->geometry.id, response, b, c, this->m_list->selected);
+    this->RecordResponse(response, b, c, this->m_list->selected);
 
     if (response == 184) {
       if (g_replayAnimationScaling) {
@@ -305,21 +305,19 @@ int UIMakeTargetResultWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
 
 // OFFSET: 0x0099F780
 // FUNCTION: fn_13587
-UIItemRepairWnd::UIItemRepairWnd(WindowResponseRecorder& recorder)
+UIItemRepairWnd::UIItemRepairWnd()
     : UIFrameWnd(0), itemIds(), indices(), entries() {
 }
 
 // OFFSET: 0x0099F850
 // FUNCTION: fn_13588
-UIMakeTargetListWnd::UIMakeTargetListWnd(WindowResponseRecorder& recorder
-)
+UIMakeTargetListWnd::UIMakeTargetListWnd()
     : UIFrameWnd(0), itemIds() {
 }
 
 // OFFSET: 0x0099F8D0
 // FUNCTION: fn_13589
-UIMakeTargetProcessWnd::UIMakeTargetProcessWnd(WindowResponseRecorder& recorder
-)
+UIMakeTargetProcessWnd::UIMakeTargetProcessWnd()
     : UIFrameWnd(0), materials() {
 }
 
@@ -333,8 +331,7 @@ UIMakeTargetResultWnd::UIMakeTargetResultWnd()
 
 // OFFSET: 0x0099F9C0
 // FUNCTION: fn_13591
-UIWeaponRefineWnd::UIWeaponRefineWnd(WindowResponseRecorder& recorder
-)
+UIWeaponRefineWnd::UIWeaponRefineWnd()
     : UIFrameWnd(0), itemIds(), indices() {
 }
 

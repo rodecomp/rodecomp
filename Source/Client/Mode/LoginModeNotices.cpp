@@ -122,7 +122,7 @@ void CLoginMode::ReceiveBillingInfo(const unsigned char* data) {
   }
 
   this->otpStarted = timeGetTime() + 90000;
-  reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text, 0, true, true, 0, "Message", 280, 120, 0);
+  g_windowMgr.Confirm(text, 0, true, true, 0, "Message", 280, 120, 0);
 }
 
 // OFFSET: 0x00D9A9F0
@@ -155,7 +155,7 @@ void CLoginMode::ReceiveNotifyBan(const unsigned char* data) {
     break;
   case 6:
     strcpy(text, LookupMessage(438));
-    if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text, 2, true, true, 0, "Message", 280, 120, 0) == 187) {
+    if (g_windowMgr.Confirm(text, 2, true, true, 0, "Message", 280, 120, 0) == 187) {
       g_modeMgr.Quit();
       OpenAccountRegistration();
     }
@@ -248,7 +248,7 @@ void CLoginMode::ReceiveNotifyBan(const unsigned char* data) {
     thread_local EncryptedName<sizeof(source), 0xBD2BA1C11B01E73BULL> format(source);
     char message[256];
     sprintf(message, format.Text(), text, packet->errorCode);
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(message, 0, true, true, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(message, 0, true, true, 0, "Message", 280, 120, 0);
   }
 
   if (g_loginModeFlag == true) {

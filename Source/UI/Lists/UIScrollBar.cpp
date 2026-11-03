@@ -1044,7 +1044,7 @@ int UITabControl::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
 
     const int width = this->TextWidth(text.c_str(), 0, 0, this->unknown_00E8, 0, 0);
     if ((this->tabPadding + width) * this->TabCount() >= this->parent->geometry.width - 90) {
-      reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(1577), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(1577), 0, true, false, 0, "Message", 280, 120, 0);
     } else {
       this->labels[this->unknown_007C] = text;
       const int previousWidth = this->geometry.width;

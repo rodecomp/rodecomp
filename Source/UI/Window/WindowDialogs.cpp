@@ -1,7 +1,12 @@
 #include "Client/Application/ApplicationWindow.h"
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/CLoginMode.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Client/Session.h"
 #include "UI/Window/UIMessageBox.h"
-#include "UI/Window/WindowDialogs.h"
+#include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowDialogs.h"
 
 // GLOBAL: gl_24604
 int g_dialogKeyboardEnabled;
@@ -109,14 +114,14 @@ bool UIWindowMgr::ProcessDialogKey(int, int key) {
 
 // OFFSET: 0x00A91450
 // FUNCTION: fn_17160
-UIWindow* WindowDialogs::Top() const {
-  return this->modal.empty() ? nullptr : this->modal.back();
+UIWindow* UIWindowMgr::Top() const {
+  return this->modalWindows.empty() ? nullptr : this->modalWindows.back();
 }
 
 // OFFSET: 0x00A91120
 // FUNCTION: fn_17155
-void WindowDialogs::RestoreInput() {
-  for (UIWindow* window : this->dialog.retirement.rendered) {
+void UIWindowMgr::RestoreInput() {
+  for (UIWindow* window : this->rendered) {
     if (window->geometry.visible == 0) {
       continue;
     }
@@ -126,14 +131,14 @@ void WindowDialogs::RestoreInput() {
         continue;
       }
 
-      if (this->input) {
-        this->input->Slot24(child->Slot06() == this->input);
+      if (this->hoverWindow) {
+        this->hoverWindow->Slot24(child->Slot06() == this->hoverWindow);
       }
 
-      this->input = child->Slot06();
+      this->hoverWindow = child->Slot06();
 
-      if (this->input) {
-        this->input->Slot23();
+      if (this->hoverWindow) {
+        this->hoverWindow->Slot23();
       }
 
       return;
@@ -143,10 +148,11 @@ void WindowDialogs::RestoreInput() {
 
 // OFFSET: 0x00A901E0
 // FUNCTION: fn_17153
-int WindowDialogs::Confirm(
+int UIWindowMgr::Confirm(
   const char* text, int type, bool defaultAccept, bool replace, int timeout, const char* caption, int width, int height, unsigned char protect
 ) {
-  if (this->suppressed) {
+  CMode* gameMode = g_modeMgr.GetGameMode();
+  if (gameMode && static_cast<CGameMode*>(gameMode)->unknown_0624[0] == 1) {
     return 185;
   }
 
@@ -158,83 +164,81 @@ int WindowDialogs::Confirm(
     return 185;
   }
 
-  auto* box = new UIMessageBox(this->dialog);
-  this->latest = box;
+  auto* box = new UIMessageBox();
+  this->window_4F16C = box;
   box->Configure(text, type, defaultAccept, timeout, caption, width, height, 1, nullptr);
 
   if (protect == 1) {
     box->SendMsg(nullptr, 157, 1, 0, 0, 0);
   }
 
-  this->dialog.retirement.rendered.push_front(box);
+  this->rendered.push_front(box);
 
-  if (this->capture) {
-    this->suspendedRoots.insert(this->capture->Root());
+  if (this->inputWindow) {
+    this->persistentWindows.insert(this->inputWindow->Root());
   }
 
-  this->capture = nullptr;
+  this->inputWindow = nullptr;
 
-  if (this->input) {
-    this->input->Slot24(0);
+  if (this->hoverWindow) {
+    this->hoverWindow->Slot24(0);
   }
 
-  this->input = nullptr;
-  this->alternateResult = 0;
-  this->modal.push_back(box);
+  this->hoverWindow = nullptr;
+  this->unknown_0474 = 0;
+  this->modalWindows.push_back(box);
   int response = 184;
 
-  if (this->immediate == 0) {
-    ModalFramePump* pump = this->mode;
+  if (g_modalImmediate == 0) {
+    CMode* pump = static_cast<CMode*>(g_charViewMode);
 
     for (;;) {
-      if (this->result != 0) {
+      if (this->activeWindowId != 0) {
         if (UIWindow* active = this->Top()) {
           active->Show(0);
-          this->dialog.retirement.Schedule(active);
-          this->modal.pop_back();
+          this->Schedule(active);
+          this->modalWindows.pop_back();
         }
 
-        response = this->result;
+        response = this->activeWindowId;
 
-        if (this->modal.empty()) {
-          this->result = 0;
+        if (this->modalWindows.empty()) {
+          this->activeWindowId = 0;
         }
 
         break;
       }
 
-      if (this->alternateResult != 0) {
+      if (this->unknown_0474 != 0) {
         if (UIWindow* active = this->Top()) {
           active->Show(0);
-          this->dialog.retirement.Schedule(active);
-          this->modal.pop_back();
+          this->Schedule(active);
+          this->modalWindows.pop_back();
         }
 
-        response = this->alternateResult;
-        this->alternateResult = 0;
+        response = this->unknown_0474;
+        this->unknown_0474 = 0;
         break;
       }
 
       if (pump) {
-        pump->Frame();
-        pump = this->mode;
+        pump->Update();
+        pump = static_cast<CMode*>(g_charViewMode);
       }
 
-      const auto option = this->frameOptions.find(20);
+      if (g_session.GetOption(20) > 0) {
+        this->activeWindowId = 0;
+        this->unknown_0474 = 0;
 
-      if (option != this->frameOptions.end() && option->second > 0) {
-        this->result = 0;
-        this->alternateResult = 0;
-
-        while (!this->modal.empty()) {
-          this->dialog.retirement.Schedule(this->modal.back());
-          this->modal.pop_back();
+        while (!this->modalWindows.empty()) {
+          this->Schedule(this->modalWindows.back());
+          this->modalWindows.pop_back();
         }
 
         break;
       }
 
-      if (this->immediate != 0) {
+      if (g_modalImmediate != 0) {
         break;
       }
     }
@@ -246,107 +250,105 @@ int WindowDialogs::Confirm(
 
 // OFFSET: 0x00AA20F0
 // FUNCTION: fn_17211
-void WindowDialogs::AddMessageBox(
+void UIWindowMgr::AddMessageBox(
   const char* text, int type, bool defaultAccept, int, int timeout, const char* caption, int width, int height, const char* icon, bool track
 ) {
-  std::vector<UIWindow*>& boxes = this->dialog.retirement.messageBoxes;
+  std::vector<UIWindow*>& boxes = this->messageBoxes;
 
   if (boxes.size() > 5) {
     MessageBoxA(hWnd, "Max MessageBox Count", "ERROR", 0);
     return;
   }
 
-  auto* box = new UIMessageBox(this->dialog);
+  auto* box = new UIMessageBox();
   box->Configure(text, type, defaultAccept, timeout, caption, width, height, 0, icon);
-  this->dialog.retirement.rendered.push_back(box);
+  this->rendered.push_back(box);
 
   if (track) {
     boxes.push_back(box);
   }
 
-  this->capture = nullptr;
+  this->inputWindow = nullptr;
 
-  if (this->input) {
-    this->input->Slot24(0);
+  if (this->hoverWindow) {
+    this->hoverWindow->Slot24(0);
   }
 
-  this->input = nullptr;
+  this->hoverWindow = nullptr;
 }
 
 // OFFSET: 0x00AA2230
 // FUNCTION: fn_17212
-int WindowDialogs::RunModal(UIWindow* window) {
+int UIWindowMgr::RunModal(UIWindow* window) {
   if (!window) {
     return 185;
   }
 
-  if (this->capture) {
-    this->suspendedRoots.insert(this->capture->Root());
+  if (this->inputWindow) {
+    this->persistentWindows.insert(this->inputWindow->Root());
   }
 
-  this->capture = nullptr;
+  this->inputWindow = nullptr;
 
-  if (this->input) {
-    this->input->Slot24(0);
+  if (this->hoverWindow) {
+    this->hoverWindow->Slot24(0);
   }
 
-  this->input = nullptr;
-  this->alternateResult = 0;
-  this->modal.push_back(window);
+  this->hoverWindow = nullptr;
+  this->unknown_0474 = 0;
+  this->modalWindows.push_back(window);
   int response = 184;
 
-  if (this->immediate == 0) {
-    ModalFramePump* pump = this->mode;
+  if (g_modalImmediate == 0) {
+    CMode* pump = static_cast<CMode*>(g_charViewMode);
 
     for (;;) {
-      if (this->result != 0) {
+      if (this->activeWindowId != 0) {
         if (UIWindow* active = this->Top()) {
           active->Show(0);
-          this->dialog.retirement.Schedule(active);
-          this->modal.pop_back();
+          this->Schedule(active);
+          this->modalWindows.pop_back();
         }
 
-        response = this->result;
+        response = this->activeWindowId;
 
-        if (this->modal.empty()) {
-          this->result = 0;
+        if (this->modalWindows.empty()) {
+          this->activeWindowId = 0;
         }
 
         break;
       }
 
-      if (this->alternateResult != 0) {
+      if (this->unknown_0474 != 0) {
         if (UIWindow* active = this->Top()) {
           active->Show(0);
-          this->dialog.retirement.Schedule(active);
-          this->modal.pop_back();
+          this->Schedule(active);
+          this->modalWindows.pop_back();
         }
 
-        response = this->alternateResult;
-        this->alternateResult = 0;
+        response = this->unknown_0474;
+        this->unknown_0474 = 0;
         break;
       }
 
       if (pump) {
-        pump->Frame();
-        pump = this->mode;
+        pump->Update();
+        pump = static_cast<CMode*>(g_charViewMode);
       }
 
-      const auto option = this->frameOptions.find(20);
+      if (g_session.GetOption(20) > 0) {
+        this->activeWindowId = 0;
+        this->unknown_0474 = 0;
 
-      if (option != this->frameOptions.end() && option->second > 0) {
-        this->result = 0;
-        this->alternateResult = 0;
-
-        while (!this->modal.empty()) {
-          this->dialog.retirement.Schedule(this->modal.back());
-          this->modal.pop_back();
+        while (!this->modalWindows.empty()) {
+          this->Schedule(this->modalWindows.back());
+          this->modalWindows.pop_back();
         }
 
         break;
       }
 
-      if (this->immediate != 0) {
+      if (g_modalImmediate != 0) {
         break;
       }
     }

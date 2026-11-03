@@ -1776,7 +1776,7 @@ void UIItemWnd::Slot26(int x, int y) {
   case 1:
   case 2:
     if (item.GetItemId() == 12802 &&
-        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2373), 2, false, false, 0, "Message", 280, 120, 0) == 188) {
+        g_windowMgr.Confirm(LookupMessage(2373), 2, false, false, 0, "Message", 280, 120, 0) == 188) {
       break;
     }
     mode->SendMsg(27, static_cast<int>(item.unknown_0000[1]), 0, 0, 0);
@@ -1826,8 +1826,8 @@ void UIItemWnd::Slot26(int x, int y) {
     break;
   case 18:
     if (*reinterpret_cast<const int*>(&g_session.unknown_16F4[4]) >= 0) {
-      if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)
-              ->Confirm(FormatOwnedString(LookupMessage(1226), item.DisplayName(0).c_str()).c_str(), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
+      if (g_windowMgr
+              .Confirm(FormatOwnedString(LookupMessage(1226), item.DisplayName(0).c_str()).c_str(), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
         mode->SendMsg(27, static_cast<int>(item.unknown_0000[1]), 0, 0, 0);
       }
     }
@@ -1933,7 +1933,7 @@ void UIMerchantShopMakeWnd::Slot19() {
   char text[24];
   std::sprintf(text, "%s ", edit->Text());
   if (!g_session.IsNumberWithCommas(text)) {
-    reinterpret_cast<WindowDialogs&>(g_windowMgr).Confirm(LookupMessage(602), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(602), 0, true, false, 0, "Message", 280, 120, 0);
     edit->SetText(this->unknown_0170.c_str());
     g_windowMgr.SetFocus(edit);
     return;
@@ -1943,7 +1943,7 @@ void UIMerchantShopMakeWnd::Slot19() {
   if (price < 0) {
     price = 0;
   } else if (price > 1000000000) {
-    const int result = reinterpret_cast<WindowDialogs&>(g_windowMgr).Confirm(LookupMessage(2467), 2, true, false, 0, "Message", 280, 120, 0);
+    const int result = g_windowMgr.Confirm(LookupMessage(2467), 2, true, false, 0, "Message", 280, 120, 0);
     price = 1000000000;
     if (result == 187) {
       edit->SetText(_itoa(1000000000, text, 10));
@@ -2800,11 +2800,10 @@ int UIMerchantShopMakeWnd::CommitPrice(int next) {
   }
 
   UIEditCtrl* edit = this->priceEdits[this->editIndex];
-  WindowDialogs& dialogs = reinterpret_cast<WindowDialogs&>(g_windowMgr);
   char text[24];
   std::sprintf(text, "%s ", edit->Text());
   if (!g_session.IsNumberWithCommas(text)) {
-    dialogs.Confirm(LookupMessage(602), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(602), 0, true, false, 0, "Message", 280, 120, 0);
     edit->SetText("0");
     g_windowMgr.SetFocus(edit);
     edit->SelectAll();
@@ -2815,7 +2814,7 @@ int UIMerchantShopMakeWnd::CommitPrice(int next) {
   if (price <= 0x7FFFFFFF && price < 0) {
     price = 0;
   } else if (price > 0x7FFFFFFF || price > 1000000000) {
-    if (dialogs.Confirm(LookupMessage(2467), 2, true, false, 0, "Message", 280, 120, 0) != 187) {
+    if (g_windowMgr.Confirm(LookupMessage(2467), 2, true, false, 0, "Message", 280, 120, 0) != 187) {
       edit->SetText("0");
       g_windowMgr.SetFocus(edit);
       edit->SelectAll();
@@ -2845,7 +2844,7 @@ int UIMerchantShopMakeWnd::CommitPrice(int next) {
     }
 
     message += std::string(LookupMessage(2478));
-    if (dialogs.Confirm(message.c_str(), 2, true, false, 0, "Message", 280, 120, 0) != 187) {
+    if (g_windowMgr.Confirm(message.c_str(), 2, true, false, 0, "Message", 280, 120, 0) != 187) {
       edit->SetText("0");
       g_windowMgr.SetFocus(edit);
       edit->SelectAll();
@@ -4824,8 +4823,7 @@ int UIItemSellWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     CMode* mode = g_modeMgr.gameMode;
     if (a == 184) {
       if (count > 0) {
-        WindowDialogs& dialogs = reinterpret_cast<WindowDialogs&>(g_windowMgr);
-        const int result = dialogs.Confirm(LookupMessage(1584), 2, true, false, 0, "Message", 280, 120, 0);
+        const int result = g_windowMgr.Confirm(LookupMessage(1584), 2, true, false, 0, "Message", 280, 120, 0);
         mode->SendMsg(result == 187 ? 266 : 267, this->unknown_00FC, 0, 0, 0);
         g_windowMgr.CloseWindow(160);
         g_windowMgr.CloseWindow(161);
@@ -5053,24 +5051,7 @@ int UIMerchantItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intpt
     return 0;
   }
   case 6: {
-    Replay& replay = Replay::Instance();
-    ReplayPacketRecorder packets = {
-      g_packetLengths,
-      replay.baseFrame,
-      replay.started,
-      replay.frame,
-      replay.header.key0,
-      replay.header.key1,
-      replay.header.options.recordRestricted,
-      replay.file,
-      replay.fileOffset,
-      replay.records,
-      replay.cipherIndex,
-      replay.cipherBase,
-      replay.cipherKey,
-    };
-    WindowResponseRecorder recorder{replay.state, packets};
-    recorder.Record(this->geometry.id, static_cast<int>(a), b, c, d);
+    this->RecordResponse(static_cast<int>(a), b, c, d);
     CMode* mode = static_cast<CMode*>(g_charViewMode);
     if (a == 184) {
       if (this->unknown_0108) {
@@ -5081,7 +5062,7 @@ int UIMerchantItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intpt
           }
         }
         if (sum > static_cast<UIMerchantItemShopWnd*>(g_windowMgr.unknown_0418)->unknown_0108) {
-          reinterpret_cast<WindowDialogs&>(g_windowMgr).Confirm(LookupMessage(1740), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(1740), 0, true, false, 0, "Message", 280, 120, 0);
           return 0;
         }
         mode->SendMsg(273, this->unknown_00F8, this->unknown_0104, 0, 0);
@@ -6646,24 +6627,7 @@ int UIItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     this->Move(this->saved->x, this->saved->y);
     return 0;
   case 6: {
-    Replay& replay = Replay::Instance();
-    ReplayPacketRecorder packets = {
-      g_packetLengths,
-      replay.baseFrame,
-      replay.started,
-      replay.frame,
-      replay.header.key0,
-      replay.header.key1,
-      replay.header.options.recordRestricted,
-      replay.file,
-      replay.fileOffset,
-      replay.records,
-      replay.cipherIndex,
-      replay.cipherBase,
-      replay.cipherKey,
-    };
-    WindowResponseRecorder recorder{replay.state, packets};
-    recorder.Record(this->geometry.id, static_cast<int>(a), b, c, d);
+    this->RecordResponse(static_cast<int>(a), b, c, d);
     if (a == 213) {
       if (g_replayAnimationScaling != 0) {
         this->checkBox->geometry.unknown_0030 = b;
@@ -8720,7 +8684,7 @@ void UIItemShopWnd2::Paint() {
 int UIItemSellWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
   case 6: {
-    reinterpret_cast<WindowResponseRecorder*>(this)->Record(this->geometry.id, static_cast<int>(a), b, c, d);
+    this->RecordResponse(static_cast<int>(a), b, c, d);
     CMode* mode = g_modeMgr.gameMode;
     if (a == 184) {
       if (g_session.HasRequiredItems()) {

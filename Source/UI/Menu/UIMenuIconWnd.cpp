@@ -421,7 +421,7 @@ int UIMenuIconWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
         if (Replay::Instance().state == 1) {
           this->ToggleWindow(198);
         } else {
-          reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm("REC End please", 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm("REC End please", 0, true, false, 0, "Message", 280, 120, 0);
         }
         break;
       case 370:
@@ -478,7 +478,7 @@ int UIMenuIconWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
         this->ToggleWindow(10002);
         break;
       case 587:
-        if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(4129), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+        if (g_windowMgr.Confirm(LookupMessage(4129), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
           ShellExecuteA(hWnd, "open", LookupMessage(4128), nullptr, nullptr, SW_SHOWNORMAL);
         }
         break;

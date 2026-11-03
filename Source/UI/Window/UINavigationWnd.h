@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 
+class UIWindowMgr;
 class CActRes;
 class CSprRes;
 struct NaviCell;
@@ -17,8 +18,6 @@ class UIComboBoxDefWnd;
 class UIEditCtrl;
 class UIListBoxNavi;
 class UIResizer;
-struct WindowDialogs;
-struct WindowResponseRecorder;
 
 struct NavigationWndInfo {
   /* 0000 */ int x;
@@ -91,8 +90,8 @@ protected:
 
   void* unknown_controls;
   void* unknown_listContext;
-  WindowResponseRecorder* m_recorder;
-  WindowDialogs* m_dialogs;
+  void* unknown_recorder;
+  void* unknown_dialogs;
 };
 
 #endif

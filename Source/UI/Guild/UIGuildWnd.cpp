@@ -2051,7 +2051,7 @@ int UIGuildNoticeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, s
     } else if (a1 == 277) {
       std::string body(this->m_bodyEdit->Text());
       if (g_forbiddenWords.Contains(this->m_titleEdit->Text()) == true || g_forbiddenWords.Contains(body.c_str()) == true) {
-        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(14), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(14), 0, true, false, 0, "Message", 280, 120, 0);
       } else {
         if (g_guildInfo.unknown_00B4) {
           g_modeMgr.gameMode->SendMsg(118, g_guildInfo.m_guildId, reinterpret_cast<int>(this->m_titleEdit->Text()), reinterpret_cast<int>(body.c_str()), 0);
@@ -2749,8 +2749,7 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
       GuildInfo::Member target;
       if (this->GetMember(this->m_hoverRow, target) == true) {
         const std::string text = FormatOwnedString(LookupMessage(2924), target.name.c_str(), target.name.c_str());
-        WindowDialogs& dialogs = *reinterpret_cast<WindowDialogs*>(&g_windowMgr);
-        if (dialogs.Confirm(text.c_str(), 2, false, false, 0, "Message", 280, 120, 0) != 188) {
+        if (g_windowMgr.Confirm(text.c_str(), 2, false, false, 0, "Message", 280, 120, 0) != 188) {
           target.positionId = 0;
           target.positionName = g_guildInfo.m_positions[target.positionId];
           this->unknown_0180[target.characterId].accountId = target.accountId;
@@ -3094,7 +3093,7 @@ int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       EnumerateFileNames(this->unknown_00D8, directory, "*.gif");
       const int count = static_cast<int>(this->unknown_00D8.size());
       if (count == 0) {
-        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(3037), 0, true, false, 0, "Caution", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(3037), 0, true, false, 0, "Caution", 280, 120, 0);
         return 0;
       }
 
@@ -3112,7 +3111,7 @@ int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       return 0;
     }
     case 449:
-      reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2564), 0, false, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(2564), 0, false, false, 0, "Message", 280, 120, 0);
       g_windowMgr.EnsureWindow(215);
       return 0;
     }
@@ -3138,7 +3137,7 @@ int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       std::string path = FormatOwnedString("..\\..\\emblem\\%s", name.c_str());
       CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str())));
       if (!bitmap) {
-        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(3587), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(3587), 0, true, false, 0, "Message", 280, 120, 0);
         return 0;
       }
 
@@ -3146,16 +3145,16 @@ int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
         CFile file;
         if (file.Open(FormatOwnedString("..\\emblem\\%s", name.c_str()).c_str(), 0, true, false) == true) {
           if (g_guildMgr->m_timeout < file.GetSize()) {
-            reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(3587), 0, true, false, 0, "Message", 280, 120, 0);
+            g_windowMgr.Confirm(LookupMessage(3587), 0, true, false, 0, "Message", 280, 120, 0);
           } else {
             std::string uploadPath = FormatOwnedString("emblem\\%s", name.c_str());
             if (!g_emblemDataMgr->Upload(this->m_guildId, uploadPath)) {
-              reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(3586), 0, true, false, 0, "Message", 280, 120, 0);
+              g_windowMgr.Confirm(LookupMessage(3586), 0, true, false, 0, "Message", 280, 120, 0);
             }
           }
         }
       } else {
-        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(3587), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(3587), 0, true, false, 0, "Message", 280, 120, 0);
       }
     }
     return 0;

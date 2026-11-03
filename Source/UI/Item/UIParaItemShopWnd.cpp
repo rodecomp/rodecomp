@@ -378,7 +378,7 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     return 0;
   }
   case 6: {
-    reinterpret_cast<WindowResponseRecorder*>(this)->Record(this->geometry.id, static_cast<int>(a), b, c, d);
+    this->RecordResponse(static_cast<int>(a), b, c, d);
     CMode* mode = g_modeMgr.gameMode;
     if (a == 184) {
       ITEM_INFO item = g_session.GetItem1720At(0);
@@ -499,7 +499,7 @@ int UIParaItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     this->Move(this->saved->x, this->saved->y);
     return 0;
   case 6:
-    reinterpret_cast<WindowResponseRecorder*>(this)->Record(this->geometry.id, static_cast<int>(a), b, c, d);
+    this->RecordResponse(static_cast<int>(a), b, c, d);
     if (a == 213) {
       if (g_replayAnimationScaling != 0) {
         this->checkBox->geometry.unknown_0030 = b;
@@ -597,7 +597,7 @@ int UIParaItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
 int UIParaResultWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
   case 6: {
-    this->m_recorder->Record(this->geometry.id, static_cast<int>(a), b, c, d);
+    this->RecordResponse(static_cast<int>(a), b, c, d);
     CMode* mode = g_modeMgr.gameMode;
     if (a == 184) {
       mode->SendMsg(292, 0, 0, 0, 0);

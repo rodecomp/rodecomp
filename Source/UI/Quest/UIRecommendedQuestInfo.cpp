@@ -293,7 +293,7 @@ void CUIScrollWindow::SetQuest(unsigned int questId) {
     }
   } else {
     std::string text = std::format("Not found Quest Info = %lu", questId);
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text.c_str(), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+    g_windowMgr.Confirm(text.c_str(), 0, true, false, 0, "Message", 0x118, 0x78, 0);
   }
 }
 

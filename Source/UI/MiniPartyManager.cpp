@@ -129,7 +129,6 @@ void UIWindowMgr::RebuildMiniPartyWindows() {
 
   reinterpret_cast<ClientItemLists&>(g_session).ClearRecords0734();
 
-  WindowDialogs& dialogs = *reinterpret_cast<WindowDialogs*>(this);
   for (const SessionRecord0734& record : records) {
     MessengerMember member = g_session.PartyByAccount(record.id);
     if (member.valid == 0) {

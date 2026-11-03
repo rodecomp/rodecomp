@@ -27,13 +27,6 @@ struct ReplayPacketRecorder {
   bool Record(std::uint16_t bytes, const void* packet, int event, std::uint32_t delay);
 };
 
-struct WindowResponseRecorder {
-  const int& mode;
-  ReplayPacketRecorder& packets;
-
-  void Record(int windowId, int response, std::intptr_t b, std::intptr_t c, std::intptr_t d);
-};
-
 struct WindowReplayRecorder {
   const int& windowId;
   const int* policy;

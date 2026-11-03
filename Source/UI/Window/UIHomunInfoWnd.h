@@ -12,7 +12,6 @@ class UIEditCtrl2;
 class UIINT64BarGraph;
 class UINormalMB;
 class ForbiddenWords;
-struct WindowResponseRecorder;
 
 class UIHomunInfoWnd : public UIFrameWnd {
 public:
@@ -34,7 +33,7 @@ public:
 
 protected:
   void* unknown_controls;
-  WindowResponseRecorder* m_recorder;
+  void* unknown_recorder;
   ForbiddenWords* m_forbiddenWords;
 };
 

@@ -101,26 +101,26 @@ int UIChangeNameWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::intpt
     switch (a) {
     case 184: {
       if (g_navigationLinkParser->HasLink(this->m_edit->Text()) == true) {
-        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2812), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(2812), 0, true, false, 0, "Message", 280, 120, 0);
         this->m_edit->SetText("");
         return 0;
       }
 
       std::string name(this->m_edit->Text());
       if (name.find('\n', 0) != std::string::npos) {
-        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(3334), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(3334), 0, true, false, 0, "Message", 280, 120, 0);
         this->m_edit->SetText("");
         return 0;
       }
 
       if (g_serviceType == 1 && !ValidateCharacterName(this->m_edit->Text())) {
-        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2018), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(2018), 0, true, false, 0, "Message", 280, 120, 0);
         this->m_edit->SetText("");
         return 0;
       }
 
       if (this->m_edit->Length() < 4) {
-        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(21), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(21), 0, true, false, 0, "Message", 280, 120, 0);
         return 0;
       }
 
@@ -128,16 +128,16 @@ int UIChangeNameWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::intpt
       const bool blank = g_session.IsBlankString(this->m_edit->Text());
       if (!allowed || blank) {
         if (!allowed) {
-          reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(20), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(20), 0, true, false, 0, "Message", 280, 120, 0);
         }
         if (blank) {
-          reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(199), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(199), 0, true, false, 0, "Message", 280, 120, 0);
         }
         return 0;
       }
 
       if (this->m_edit->Length() >= 24 || !this->IsNameWithinLimit(this->m_edit->Text(), 24)) {
-        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(531), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(531), 0, true, false, 0, "Message", 280, 120, 0);
         this->m_edit->SetText("");
         return 0;
       }
@@ -162,7 +162,7 @@ int UIChangeNameWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::intpt
 
       char text[300];
       std::sprintf(text, LookupMessage(1213), this->m_info.name);
-      if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) == 187) {
+      if (g_windowMgr.Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) == 187) {
         CharacterRenamePacket packet;
         packet.id = 0x8FC;
         packet.gid = this->m_character->gid;

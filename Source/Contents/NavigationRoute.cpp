@@ -270,13 +270,12 @@ void CNavigationManager::RequestPrivateAirship(std::string mapName, int itemId) 
   }
 
   if (itemId == 0x1AFD) {
-    WindowDialogs& dialogs = *reinterpret_cast<WindowDialogs*>(&g_windowMgr);
-    UIPayConfirmWnd* window = new UIPayConfirmWnd(dialogs.dialog);
+    UIPayConfirmWnd* window = new UIPayConfirmWnd();
     window->Configure(LookupMessage(0xFC1), 0x1AFD);
     window->SendMsg(nullptr, 0x9C, 1, 0, 0, 0);
     window->SetId(0x16B);
     g_windowMgr.AddRendered(window);
-    if (dialogs.RunModal(window) != 187) {
+    if (g_windowMgr.RunModal(window) != 187) {
       return;
     }
   }
@@ -337,7 +336,7 @@ std::string CNavigationManager::RouteText() {
 
 // OFFSET: 0x00B98780
 // FUNCTION: fn_19609
-void CNavigationManager::ShowRouteResult(int result, int mode, WindowDialogs& dialogs) {
+void CNavigationManager::ShowRouteResult(int result, int mode) {
   std::string message;
   switch (result) {
   case -100:
@@ -442,14 +441,14 @@ void CNavigationManager::ShowRouteResult(int result, int mode, WindowDialogs& di
   }
 
   if (mode == 0 || mode == 2) {
-    dialogs.Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
     if (mode == 4) {
       CNavi_Object* node = g_navigationManager.nodes.size() == 0 ? nullptr : g_navigationManager.nodes[0];
       std::string text(LookupMessage(2321));
       text += node->GetName();
       text += " ";
       text += static_cast<CNavi_Link*>(node)->GetLinkedName();
-      dialogs.Confirm(text.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(text.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
     }
   }
 }
@@ -619,7 +618,7 @@ bool CNavigationManager::sub_B99030(std::string name, int type, unsigned char mo
       same = player == target;
     }
     if (!same) {
-      this->ShowRouteResult(-90, 1, *reinterpret_cast<WindowDialogs*>(&g_windowMgr));
+      this->ShowRouteResult(-90, 1);
       return false;
     }
   }
@@ -640,7 +639,7 @@ bool CNavigationManager::sub_B99030(std::string name, int type, unsigned char mo
     if (type == 2) {
       CNavi_Object* npc = info->FindNpcAt(x, y);
       if (!npc) {
-        this->ShowRouteResult(-94, 1, *reinterpret_cast<WindowDialogs*>(&g_windowMgr));
+        this->ShowRouteResult(-94, 1);
         return false;
       }
       text += ' ';
@@ -649,7 +648,7 @@ bool CNavigationManager::sub_B99030(std::string name, int type, unsigned char mo
     } else if (type == 3) {
       CNavi_Object* mob = info->FindMobByIndex(id);
       if (!mob) {
-        this->ShowRouteResult(-94, 1, *reinterpret_cast<WindowDialogs*>(&g_windowMgr));
+        this->ShowRouteResult(-94, 1);
         return false;
       }
       text += ' ';
@@ -673,7 +672,7 @@ bool CNavigationManager::sub_B99030(std::string name, int type, unsigned char mo
   }
 
   const int result = this->Navigate(x, y);
-  this->ShowRouteResult(result, 1, *reinterpret_cast<WindowDialogs*>(&g_windowMgr));
+  this->ShowRouteResult(result, 1);
   if (result < 0) {
     return false;
   }
@@ -2002,7 +2001,7 @@ void CNavigationManager::ResumeRoute() {
     this->LoadTargetPreview();
     g_windowMgr.EnsureWindow(203);
   } else if (this->unknown_1258 == 2) {
-    this->ShowRouteResult(this->RouteFromPlayer(), 1, *reinterpret_cast<WindowDialogs*>(&g_windowMgr));
+    this->ShowRouteResult(this->RouteFromPlayer(), 1);
     if (!this->unknown_1248) {
       g_windowMgr.EnsureWindow(203);
     }

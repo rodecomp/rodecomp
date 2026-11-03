@@ -39,7 +39,7 @@ void UITextureButton::Slot31(int x, int y) {
         int id = this->geometry.id;
         if (id == 185 && g_charViewMode && static_cast<CMode*>(g_charViewMode)->cursorType == 2) {
           const char* text = LookupMessage(17);
-          if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text, 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+          if (g_windowMgr.Confirm(text, 2, true, false, 0, "Message", 280, 120, 0) == 187) {
             static_cast<CMode*>(g_charViewMode)->SendMsg(2, 0, 0, 0, 0);
           }
         } else {

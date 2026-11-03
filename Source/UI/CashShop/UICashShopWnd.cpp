@@ -796,7 +796,6 @@ void UICashShopWnd_Banner::CreateButtons() {
 // OFFSET: 0x007D17A0
 // FUNCTION: fn_09558
 int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  WindowDialogs& dialogs = *reinterpret_cast<WindowDialogs*>(&g_windowMgr);
   ClientItemLists& itemLists = reinterpret_cast<ClientItemLists&>(g_session);
   const SessionMessengerContext& lists = reinterpret_cast<const SessionMessengerContext&>(g_session);
   switch (message) {
@@ -850,7 +849,7 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
       if (g_session.unknown_5912) {
         const int owned = lists.GetList0Size() + g_session.CountItems17F0() + g_session.CountItems2B50();
         if (g_session.m_weight > g_session.m_maxWeight * 0.7f || cartItems.front().quantity + owned > g_session.unknown_7FBC + 100) {
-          dialogs.Confirm(LookupMessage(0xBCE), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+          g_windowMgr.Confirm(LookupMessage(0xBCE), 0, true, false, 0, "Message", 0x118, 0x78, 0);
           return 0;
         }
 
@@ -861,7 +860,7 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
       const int points = atoi(this->unknown_00F4->Text());
       const int price = this->unknown_00F0;
       if (price < points) {
-        dialogs.Confirm(LookupMessage(0x744), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+        g_windowMgr.Confirm(LookupMessage(0x744), 0, true, false, 0, "Message", 0x118, 0x78, 0);
         return 0;
       }
 
@@ -874,11 +873,11 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
       }
 
       if (this->unknown_00F0 > available) {
-        dialogs.Confirm(LookupMessage(0x4E6), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+        g_windowMgr.Confirm(LookupMessage(0x4E6), 0, true, false, 0, "Message", 0x118, 0x78, 0);
         return 0;
       }
 
-      if (dialogs.Confirm(text, 2, true, true, 0, "Message", 0x118, 0x78, 0) != 0xBB) {
+      if (g_windowMgr.Confirm(text, 2, true, true, 0, "Message", 0x118, 0x78, 0) != 0xBB) {
         return 0;
       }
 
@@ -950,7 +949,7 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
           return 0;
         }
 
-        dialogs.Confirm(LookupMessage(0x42D), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+        g_windowMgr.Confirm(LookupMessage(0x42D), 0, true, false, 0, "Message", 0x118, 0x78, 0);
       }
       return 0;
     }
@@ -1046,7 +1045,7 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
         if (product != this->m_items.end()) {
           const int stock = product->unknown_0078[3];
           if (stock <= 0) {
-            dialogs.Confirm(LookupMessage(0xE50), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+            g_windowMgr.Confirm(LookupMessage(0xE50), 0, true, false, 0, "Message", 0x118, 0x78, 0);
             mode->SendMsg(0x12, 0, 0, 0, 0);
             mode->SendMsg(0x12, 0, 0, 0, 0);
             return 0;
@@ -1141,7 +1140,6 @@ int UICashShopWnd_Banner::SendMsg(UIWindow* sender, int message, std::intptr_t a
 // OFFSET: 0x007D2CB0
 // FUNCTION: fn_09560
 int UICashShopWnd_Cart::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  WindowDialogs& dialogs = *reinterpret_cast<WindowDialogs*>(&g_windowMgr);
   switch (message) {
   case 7:
   case 9:
@@ -1192,7 +1190,7 @@ int UICashShopWnd_Cart::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     const ITEM_INFO& item = *reinterpret_cast<const ITEM_INFO*>(argument1);
     int quantity = argument2;
     if (quantity == 0) {
-      dialogs.Confirm(LookupMessage(0xE50), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+      g_windowMgr.Confirm(LookupMessage(0xE50), 0, true, false, 0, "Message", 0x118, 0x78, 0);
       return -1;
     }
 
@@ -1206,7 +1204,7 @@ int UICashShopWnd_Cart::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     if (it == this->m_cartItems.end()) {
       if (g_session.unknown_5912 && !this->m_cartItems.empty()) {
         const int result =
-          dialogs.Confirm(FormatOwnedString(CashShopReplaceCartItemText()().Text(), item.unknown_0044.c_str()).c_str(), 2, true, false, 0, "Message", 0x118, 0x78, 0);
+          g_windowMgr.Confirm(FormatOwnedString(CashShopReplaceCartItemText()().Text(), item.unknown_0044.c_str()).c_str(), 2, true, false, 0, "Message", 0x118, 0x78, 0);
         if (result != 0xBB) {
           break;
         }
@@ -1214,7 +1212,7 @@ int UICashShopWnd_Cart::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       }
 
       if (this->m_cartItems.size() >= 8) {
-        dialogs.Confirm(FormatOwnedString(LookupMessage(0xCF0), 8).c_str(), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+        g_windowMgr.Confirm(FormatOwnedString(LookupMessage(0xCF0), 8).c_str(), 0, true, false, 0, "Message", 0x118, 0x78, 0);
         return -1;
       }
 
@@ -1222,7 +1220,7 @@ int UICashShopWnd_Cart::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       const int limit = entry.unknown_0078[3];
       if (limit != 0) {
         if (quantity > limit) {
-          dialogs.Confirm(FormatOwnedString(LookupMessage(0x9DC), limit).c_str(), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+          g_windowMgr.Confirm(FormatOwnedString(LookupMessage(0x9DC), limit).c_str(), 0, true, false, 0, "Message", 0x118, 0x78, 0);
         }
         if (quantity > limit) {
           quantity = limit;
@@ -1234,7 +1232,7 @@ int UICashShopWnd_Cart::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     } else {
       const int limit = it->unknown_0078[3];
       if (limit != 0 && it->quantity + quantity > limit) {
-        dialogs.Confirm(FormatOwnedString(LookupMessage(0x9DC), limit).c_str(), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+        g_windowMgr.Confirm(FormatOwnedString(LookupMessage(0x9DC), limit).c_str(), 0, true, false, 0, "Message", 0x118, 0x78, 0);
         quantity = it->unknown_0078[3] - it->quantity;
         if (quantity == 0) {
           return -1;
@@ -1243,7 +1241,7 @@ int UICashShopWnd_Cart::SendMsg(UIWindow* sender, int message, std::intptr_t arg
 
       const int total = it->quantity + quantity;
       if (total > 100) {
-        dialogs.Confirm(FormatOwnedString(LookupMessage(0x6A8), 100).c_str(), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+        g_windowMgr.Confirm(FormatOwnedString(LookupMessage(0x6A8), 100).c_str(), 0, true, false, 0, "Message", 0x118, 0x78, 0);
         it->quantity = 100;
       } else {
         it->quantity = total > 0 ? total : 1;

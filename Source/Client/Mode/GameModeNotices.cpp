@@ -1346,7 +1346,7 @@ void CGameMode::ReceiveMessageBox(const unsigned char* data) {
     text = formatted;
   }
 
-  reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text.c_str(), 0, true, false, 0, caption.c_str(), 280, 120, 0);
+  g_windowMgr.Confirm(text.c_str(), 0, true, false, 0, caption.c_str(), 280, 120, 0);
 }
 
 // OFFSET: 0x00D6E5F0
@@ -1355,7 +1355,7 @@ void CGameMode::NotifyCaptchaRegistered() {
   UIWindow* window = g_windowMgr.LookupWindow(284);
   if (window) {
     static_cast<UICaptchaRegisterWnd*>(window)->SetRegisterDisabled(0);
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2880), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(2880), 0, true, false, 0, "Message", 280, 120, 0);
   }
 }
 
@@ -1564,13 +1564,13 @@ void CGameMode::ReceiveCharacterRenameResult(const unsigned char* packet) {
     PacketIdOnly request;
     request.id = 0xA48;
     GetRagConnection().Send(g_packetLengths.FixedLength(request.id), &request);
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2836), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(2836), 0, true, false, 0, "Message", 280, 120, 0);
     g_windowMgr.CloseWindow(281);
     break;
   }
   case 1:
   case 2:
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(1575), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(1575), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   }
 }
@@ -1702,14 +1702,14 @@ void sub_D6E440() {
 void CGameMode::ReceiveMacroBlackListResult(int result) {
   switch (result) {
   case 0:
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2869), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(2869), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 1:
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2870), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(2870), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 2:
     g_windowMgr.CloseWindow(359);
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2871), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(2871), 0, true, false, 0, "Message", 280, 120, 0);
     return;
   default:
     return;
@@ -1724,14 +1724,14 @@ void CGameMode::ReceiveMacroBlackListResult(int result) {
 void CGameMode::ReceiveMacroDetectorResult(int result) {
   switch (result) {
   case 0:
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2869), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(2869), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 1:
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2870), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(2870), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 2:
     g_windowMgr.CloseWindow(285);
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2871), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(2871), 0, true, false, 0, "Message", 280, 120, 0);
     return;
   default:
     return;
@@ -1809,7 +1809,7 @@ void __stdcall sub_D1C050(const AchievementStatePacket* packet) {
   bool notify = true;
 
   if (packet->type == 2) {
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x9F5), 0, true, true, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(0x9F5), 0, true, true, 0, "Message", 280, 120, 0);
     window = g_windowMgr.LookupWindow(0x21);
   } else {
     window = g_windowMgr.LookupWindow(0x21);
@@ -2559,7 +2559,7 @@ void CGameMode::ReceiveExtraInventoryResult(const unsigned char* data) {
     const int nextSlots = g_session.unknown_7FBC + 110;
     const int slots = g_session.unknown_7FBC + 100;
     const char* name = FindItemDescription(packet->itemId).identifiedName;
-    const int answer = reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(
+    const int answer = g_windowMgr.Confirm(
       FormatOwnedString(LookupMessage(3561), name, slots, nextSlots).c_str(), 2, false, false, 0, "Message", 280, 120, 0);
     if (answer == 187) {
       this->SendMsg(311, 0, 0, 0, 0);
@@ -3960,8 +3960,7 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
   if (g_session.IsMonsterActor(actor) != 0) {
     int action;
     int loopType;
-    g_session.GetMonsterSkillInfo(g_session.GetJobName(job, -1), *reinterpret_cast<const std::uint16_t*>(packet + 2), &action, &loopType,
-                                  *reinterpret_cast<WindowDialogs*>(&g_windowMgr));
+    g_session.GetMonsterSkillInfo(g_session.GetJobName(job, -1), *reinterpret_cast<const std::uint16_t*>(packet + 2), &action, &loopType);
     if (*reinterpret_cast<const std::uint16_t*>(packet + 2) == 0x2C8) {
       actor->LaunchEffect(0x199, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
@@ -4927,7 +4926,7 @@ void CGameMode::ReceiveStovePurchaseResult(const unsigned char* data) {
 
   g_stoveMgr->unknown_0008 = 0;
   if (message.size() != 0) {
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
   }
 }
 

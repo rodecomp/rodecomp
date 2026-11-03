@@ -1589,14 +1589,14 @@ int UIRuneSet_Info::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       switch (argument1) {
       case 0x1FD:
         if (!this->m_runeSet) {
-          reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(4048), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(4048), 0, true, false, 0, "Message", 280, 120, 0);
         } else if (!this->parent || this->parent->SendMsg(this, 0x6A, 100, 0, 0, 0) != 0) {
           g_runeSystemMgr->SendRequest(0xBD2, this->m_runeSet, -1);
         }
         break;
       case 0x23C:
         if (!this->m_runeSet) {
-          reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(4048), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(4048), 0, true, false, 0, "Message", 280, 120, 0);
         } else if (!this->parent || this->parent->SendMsg(this, 0x6A, 100, 0, 0, 0) != 0) {
           g_runeSystemMgr->SendRequest(0xBD0, this->m_runeSet, -1);
         }
@@ -1638,7 +1638,7 @@ int UIRuneSet_Info::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     if (!this->m_runeSet->IsActive()) {
       this->m_tab->geometry.unknown_0030 = 0;
       this->m_tab->Invalidate();
-      reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(4047), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(4047), 0, true, false, 0, "Message", 280, 120, 0);
     }
     this->Refresh();
     break;
@@ -1740,7 +1740,7 @@ int UIRune_Decom::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
         if (static_cast<float>(g_session.m_weight) > static_cast<float>(g_session.m_maxWeight) * 0.7f ||
             reinterpret_cast<const SessionMessengerContext*>(&g_session)->GetList0Size() + g_session.CountItems17F0() + g_session.CountItems2B50() + 8 >=
               g_session.unknown_7FBC + 100) {
-          reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(4064), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(4064), 0, true, false, 0, "Message", 280, 120, 0);
         } else {
           ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, this->m_itemId, 0);
           RuneDecomRequestPacket packet;
@@ -2259,7 +2259,7 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
   }
   case 0x61:
     if (g_runeSystemMgr->GetCurrentRune(0, argument2)) {
-      reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm("보상을 지급 받으시겠습니까?", 2, false, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm("보상을 지급 받으시겠습니까?", 2, false, false, 0, "Message", 280, 120, 0);
     }
     break;
   case 0x69:
@@ -2354,9 +2354,9 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       this->Invalidate();
     } else if (argument1 == 0xC3) {
       if (g_runeSystemMgr->GetCurRuneSet()) {
-        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(4052), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(4052), 0, true, false, 0, "Message", 280, 120, 0);
       } else if (!argument2) {
-        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(4041), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(4041), 0, true, false, 0, "Message", 280, 120, 0);
       } else {
         RuneData* rune = reinterpret_cast<RuneData*>(argument2);
         RuneSetEquipPacket packet;
@@ -2368,8 +2368,8 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     } else if (argument1 == 0x158) {
       RuneSetData* runeSet = g_runeSystemMgr->GetCurRuneSet();
       if (!runeSet) {
-        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(4051), 0, true, false, 0, "Message", 280, 120, 0);
-      } else if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(4040), 2, true, false, 0, "Message", 280, 120, 0) != 0xBC) {
+        g_windowMgr.Confirm(LookupMessage(4051), 0, true, false, 0, "Message", 280, 120, 0);
+      } else if (g_windowMgr.Confirm(LookupMessage(4040), 2, true, false, 0, "Message", 280, 120, 0) != 0xBC) {
         RuneSetEquipPacket packet;
         packet.id = 0x0BD6;
         packet.tagId = static_cast<std::uint16_t>(runeSet->GetTagId());

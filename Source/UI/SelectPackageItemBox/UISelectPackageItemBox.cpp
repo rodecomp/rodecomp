@@ -549,8 +549,8 @@ void CUISelectPackageItemBox::OnOk() {
 
   auto it = this->tabList->data.begin();
   std::advance(it, index);
-  const int result = reinterpret_cast<WindowDialogs*>(&g_windowMgr)
-                       ->Confirm(FormatOwnedString(LookupMessage(3975), it->name.c_str()).c_str(), 2, true, false, 0, "Message", 280, 120, 0);
+  const int result = g_windowMgr
+                       .Confirm(FormatOwnedString(LookupMessage(3975), it->name.c_str()).c_str(), 2, true, false, 0, "Message", 280, 120, 0);
   if (result == 187) {
     g_modeMgr.GetGameMode()->SendMsg(325, this->sourceIndex, this->packageId, index, 0);
   }

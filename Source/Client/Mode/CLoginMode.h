@@ -9,6 +9,7 @@
 #include <string>
 #include <vector>
 
+class UIWindowMgr;
 class UIWindow;
 
 struct CharacterListPacket;
@@ -17,7 +18,6 @@ struct CharacterResultPacket;
 struct CharacterDeletePacket;
 struct AcceptEnterPacket;
 struct MapStatePacket;
-struct WindowDialogs;
 struct LoginErrorPacket;
 struct LoginErrorDetailPacket;
 struct CharacterPagePacket;
@@ -137,16 +137,16 @@ public:
   void SubD911C0(const PasswordModePacket* packet);
   int GetMaxCharacterSlot();
   void ReceiveCharacterSlots(const CharacterSlotsPacket* packet);
-  void ReceiveAcceptEnter(const AcceptEnterPacket* packet, WindowDialogs& dialogs);
+  void ReceiveAcceptEnter(const AcceptEnterPacket* packet);
   void SubD8EDC0(int);
-  void ReceiveCharacterResult(const CharacterResultPacket* packet, WindowDialogs& dialogs);
+  void ReceiveCharacterResult(const CharacterResultPacket* packet);
   void SubD8F560(int);
   void ReceiveCharacterPage(const CharacterPagePacket* packet);
   void ReceiveCharacterList(const CharacterListPacket* packet);
-  void ReceiveDeleteCharacter(const CharacterDeletePacket* packet, WindowDialogs& dialogs);
-  void ReceiveDeleteCancel(const CharacterDeletePacket* packet, WindowDialogs& dialogs);
-  void ReceiveDeleteReservation(const CharacterDeletePacket* packet, WindowDialogs& dialogs);
-  void ReceiveMapStates(const MapStatePacket* packet, WindowDialogs& dialogs);
+  void ReceiveDeleteCharacter(const CharacterDeletePacket* packet);
+  void ReceiveDeleteCancel(const CharacterDeletePacket* packet);
+  void ReceiveDeleteReservation(const CharacterDeletePacket* packet);
+  void ReceiveMapStates(const MapStatePacket* packet);
   void SubD91780(int);
   bool ShowNotice(int notice, bool append);
   void ReceiveRefuseLogin(const RefuseLoginPacket* packet);

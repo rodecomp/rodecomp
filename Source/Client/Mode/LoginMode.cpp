@@ -399,11 +399,10 @@ void CLoginMode::SubD8D4F0(int) {
 // FUNCTION: fn_22266
 void CLoginMode::SubD8D500(const char* packet) {
   UIWindow* window = g_windowMgr.window_03D4;
-  WindowDialogs& dialogs = *reinterpret_cast<WindowDialogs*>(&g_windowMgr);
   int message;
   switch (*reinterpret_cast<const int*>(packet + 2)) {
   case 0:
-    dialogs.Confirm(LookupMessage(0x4BE), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(0x4BE), 0, true, false, 0, "Message", 280, 120, 0);
     if (window) {
       window->SendMsg(nullptr, 6, 0x160, 0, 0, 0);
     }
@@ -412,7 +411,7 @@ void CLoginMode::SubD8D500(const char* packet) {
     message = 0x4C2;
     break;
   case 2:
-    if (dialogs.Confirm(LookupMessage(0x4C3), 0, true, true, 0, "Message", 280, 120, 0) != 0xB8) {
+    if (g_windowMgr.Confirm(LookupMessage(0x4C3), 0, true, true, 0, "Message", 280, 120, 0) != 0xB8) {
       return;
     }
     if (window) {
@@ -440,7 +439,7 @@ void CLoginMode::SubD8D500(const char* packet) {
   case 9:
     message = 0x7ED;
   retry:
-    if (dialogs.Confirm(LookupMessage(message), 0, true, true, 0, "Message", 280, 120, 0) != 0xB8) {
+    if (g_windowMgr.Confirm(LookupMessage(message), 0, true, true, 0, "Message", 280, 120, 0) != 0xB8) {
       return;
     }
     if (window) {
@@ -454,7 +453,7 @@ void CLoginMode::SubD8D500(const char* packet) {
     return;
   }
 
-  if (dialogs.Confirm(LookupMessage(message), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8 && g_windowMgr.window_03DC) {
+  if (g_windowMgr.Confirm(LookupMessage(message), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8 && g_windowMgr.window_03DC) {
     g_windowMgr.CloseWindow(0x80);
   }
 }
@@ -655,7 +654,7 @@ void CLoginMode::ReceiveCharacterSlots(const CharacterSlotsPacket* packet) {
 
 // OFFSET: 0x00D8EAC0
 // FUNCTION: fn_22275
-void CLoginMode::ReceiveAcceptEnter(const AcceptEnterPacket* packet, WindowDialogs& dialogs) {
+void CLoginMode::ReceiveAcceptEnter(const AcceptEnterPacket* packet) {
   this->slotExtension = packet->extension;
   this->slotExtension.unknown_0001 = htonl(this->slotExtension.unknown_0001);
   this->slotExtension.unknown_0005 = htonl(this->slotExtension.unknown_0005);
@@ -669,7 +668,7 @@ void CLoginMode::ReceiveAcceptEnter(const AcceptEnterPacket* packet, WindowDialo
     memset(text, 0, sizeof(text));
     const int count = this->characterCount;
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), CharacterInfo2SizeErrorFormat{}().Text(), count, sizeof(CharacterInfo));
-    dialogs.Confirm(text, 0, true, true, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(text, 0, true, true, 0, "Message", 280, 120, 0);
   }
 
   g_session.unknown_59BC = this->characterCount;
@@ -686,12 +685,12 @@ void CLoginMode::SubD8EDC0(int) {
 
 // OFFSET: 0x00D8EDD0
 // FUNCTION: fn_22277
-void CLoginMode::ReceiveCharacterResult(const CharacterResultPacket* packet, WindowDialogs& dialogs) {
+void CLoginMode::ReceiveCharacterResult(const CharacterResultPacket* packet) {
   UIWindow* window = g_windowMgr.window_03D4;
   int message;
   switch (packet->result) {
   case 0:
-    dialogs.Confirm(LookupMessage(1214), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(1214), 0, true, false, 0, "Message", 280, 120, 0);
     if (window) {
       window->SendMsg(nullptr, 6, 352, 0, 0, 0);
     }
@@ -703,12 +702,12 @@ void CLoginMode::ReceiveCharacterResult(const CharacterResultPacket* packet, Win
     message = 1219;
     break;
   case 3:
-    if (dialogs.Confirm(LookupMessage(1215), 0, true, true, 0, "Message", 280, 120, 0) == 184 && window) {
+    if (g_windowMgr.Confirm(LookupMessage(1215), 0, true, true, 0, "Message", 280, 120, 0) == 184 && window) {
       window->SendMsg(nullptr, 6, 351, 0, 0, 0);
     }
     return;
   case 4:
-    if (dialogs.Confirm(LookupMessage(1220), 0, true, true, 0, "Message", 280, 120, 0) == 184 && window) {
+    if (g_windowMgr.Confirm(LookupMessage(1220), 0, true, true, 0, "Message", 280, 120, 0) == 184 && window) {
       window->SendMsg(nullptr, 6, 351, 0, 0, 0);
     }
     return;
@@ -725,7 +724,7 @@ void CLoginMode::ReceiveCharacterResult(const CharacterResultPacket* packet, Win
     return;
   }
 
-  if (dialogs.Confirm(LookupMessage(message), 0, true, true, 0, "Message", 280, 120, 0) == 184 && window) {
+  if (g_windowMgr.Confirm(LookupMessage(message), 0, true, true, 0, "Message", 280, 120, 0) == 184 && window) {
     window->SendMsg(nullptr, 6, 185, 0, 0, 0);
   }
 }
@@ -743,7 +742,7 @@ void CLoginMode::ReceiveCharacterPage(const CharacterPagePacket* packet) {
                                    0x6A, 0x6F, 0x7F, 0x8F, 0xB8, 0x21, 0x99};
     thread_local EncryptedName<sizeof(source), 0x0399459DAF454F0FULL> format(source);
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), format.Text(), sizeof(CharacterInfo));
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text, 0, true, true, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(text, 0, true, true, 0, "Message", 280, 120, 0);
     return;
   }
 
@@ -756,7 +755,7 @@ void CLoginMode::ReceiveCharacterPage(const CharacterPagePacket* packet) {
                                    0xAB};
     thread_local EncryptedName<sizeof(source), 0xD5A78DB38D8DAFABULL> format(source);
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), format.Text(), total, 68);
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text, 0, true, true, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(text, 0, true, true, 0, "Message", 280, 120, 0);
     return;
   }
 
@@ -806,7 +805,7 @@ void CLoginMode::ReceiveCharacterList(const CharacterListPacket* packet) {
 
 // OFFSET: 0x00D8FA00
 // FUNCTION: fn_22281
-void CLoginMode::ReceiveDeleteCharacter(const CharacterDeletePacket* packet, WindowDialogs& dialogs) {
+void CLoginMode::ReceiveDeleteCharacter(const CharacterDeletePacket* packet) {
   std::string message;
   switch (packet->result) {
   case 0:
@@ -842,7 +841,7 @@ void CLoginMode::ReceiveDeleteCharacter(const CharacterDeletePacket* packet, Win
   }
 
   if (!message.empty()) {
-    dialogs.Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
   }
   if (this->characterDeleted != true) {
     this->pendingCursorType = 7;
@@ -851,7 +850,7 @@ void CLoginMode::ReceiveDeleteCharacter(const CharacterDeletePacket* packet, Win
 
 // OFFSET: 0x00D8FC80
 // FUNCTION: fn_22282
-void CLoginMode::ReceiveDeleteCancel(const CharacterDeletePacket* packet, WindowDialogs& dialogs) {
+void CLoginMode::ReceiveDeleteCancel(const CharacterDeletePacket* packet) {
   std::string message;
   if (packet->result == 0) {
     message = LookupMessage(1816);
@@ -870,13 +869,13 @@ void CLoginMode::ReceiveDeleteCancel(const CharacterDeletePacket* packet, Window
   }
 
   if (!message.empty()) {
-    dialogs.Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
   }
 }
 
 // OFFSET: 0x00D8FE40
 // FUNCTION: fn_22283
-void CLoginMode::ReceiveDeleteReservation(const CharacterDeletePacket* packet, WindowDialogs& dialogs) {
+void CLoginMode::ReceiveDeleteReservation(const CharacterDeletePacket* packet) {
   std::string message;
   switch (packet->result) {
   case 0:
@@ -916,13 +915,13 @@ void CLoginMode::ReceiveDeleteReservation(const CharacterDeletePacket* packet, W
   }
 
   if (!message.empty()) {
-    dialogs.Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
   }
 }
 
 // OFFSET: 0x00D904B0
 // FUNCTION: fn_22284
-void CLoginMode::ReceiveMapStates(const MapStatePacket* packet, WindowDialogs& dialogs) {
+void CLoginMode::ReceiveMapStates(const MapStatePacket* packet) {
   const unsigned int count = (packet->length - 4) / sizeof(MapStateInfo);
   if ((packet->length - 4) % sizeof(MapStateInfo) != 0) {
     const std::uint8_t source[] = {0xD8, 0xE6, 0x32, 0x48, 0x72, 0x89, 0x4C, 0x11, 0x95, 0xC2, 0x20, 0x55, 0x40, 0x89, 0x4E, 0x0D,
@@ -931,7 +930,7 @@ void CLoginMode::ReceiveMapStates(const MapStatePacket* packet, WindowDialogs& d
     thread_local EncryptedName<sizeof(source), 0x792FFD1325418FB5ULL> format(source);
     char text[256];
     sprintf(text, format.Text(), sizeof(MapStateInfo));
-    dialogs.Confirm(text, 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(text, 0, true, false, 0, "Message", 280, 120, 0);
     this->pendingCursorType = 7;
     return;
   }
@@ -948,7 +947,7 @@ void CLoginMode::ReceiveMapStates(const MapStatePacket* packet, WindowDialogs& d
   }
 
   if (this->mapStates.size() == 0) {
-    dialogs.Confirm(LookupMessage(1811), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(1811), 0, true, false, 0, "Message", 280, 120, 0);
     this->pendingCursorType = 7;
     return;
   }
@@ -1059,7 +1058,7 @@ void CLoginMode::SubD97780(int value) {
   case 5:
     if (static_cast<int>(timeGetTime()) > this->otpStarted + 0x13880) {
       GetRagConnection().Close();
-      if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(1), 0, true, false, 0, "Message", 280, 120, 0) != 0x10D) {
+      if (g_windowMgr.Confirm(LookupMessage(1), 0, true, false, 0, "Message", 280, 120, 0) != 0x10D) {
         this->otpStarted = timeGetTime();
         g_charServerAccountIdPending = 0;
         this->pendingCursorType = 3;
@@ -1069,7 +1068,7 @@ void CLoginMode::SubD97780(int value) {
   case 6:
     if (static_cast<int>(timeGetTime()) > this->otpStarted + 0x3A98) {
       GetRagConnection().Close();
-      if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(1), 0, true, false, 0, "Message", 280, 120, 0) != 0x10D) {
+      if (g_windowMgr.Confirm(LookupMessage(1), 0, true, false, 0, "Message", 280, 120, 0) != 0x10D) {
         g_modeMgr.Quit();
       }
     }
@@ -1077,7 +1076,7 @@ void CLoginMode::SubD97780(int value) {
   case 12:
     if (static_cast<int>(timeGetTime()) > this->otpStarted + 0x3A98) {
       GetRagConnection().Close();
-      if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(1), 0, true, false, 0, "Message", 280, 120, 0) != 0x10D) {
+      if (g_windowMgr.Confirm(LookupMessage(1), 0, true, false, 0, "Message", 280, 120, 0) != 0x10D) {
         this->otpStarted = timeGetTime();
         g_charServerAccountIdPending = 0;
         this->pendingCursorType = 3;
@@ -1091,7 +1090,7 @@ void CLoginMode::SubD97780(int value) {
         if (this->unknown_6F74 == true && this->unknown_6F75 == true) {
           this->unknown_6F76 = true;
           if (!g_windowMgr.HasModalWindow()) {
-            if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0xD16), 0, true, false, 0, "Message", 280, 120, 0) == 0xB8) {
+            if (g_windowMgr.Confirm(LookupMessage(0xD16), 0, true, false, 0, "Message", 280, 120, 0) == 0xB8) {
               this->unknown_6F75 = false;
               this->unknown_6F76 = false;
               this->unknown_6F74 = false;
@@ -1105,7 +1104,7 @@ void CLoginMode::SubD97780(int value) {
       if (static_cast<int>(timeGetTime()) > this->otpStarted + 0x13880) {
         GetRagConnection().Close();
         if (this->unknown_6F74 == false) {
-          if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0xD70), 0, true, false, 0, "Message", 280, 120, 0) == 0xB8) {
+          if (g_windowMgr.Confirm(LookupMessage(0xD70), 0, true, false, 0, "Message", 280, 120, 0) == 0xB8) {
             this->unknown_6F74 = false;
             this->otpStarted = timeGetTime();
             this->pendingCursorType = 3;
@@ -1345,7 +1344,7 @@ void CLoginMode::ReceiveRefuseLogin(const RefuseLoginPacket* packet) {
   const int result = packet->result;
   const std::uint8_t source[] = {0xBE, 0x24, 0x2B, 0xBC, 0x03, 0x2C, 0x05};
   thread_local EncryptedName<sizeof(source), 0x050505679903579BULL> format(source);
-  reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(FormatString(format.Text(), text, result), 0, true, false, 0, "Message", 280, 120, 0);
+  g_windowMgr.Confirm(FormatString(format.Text(), text, result), 0, true, false, 0, "Message", 280, 120, 0);
   g_charServerAccountIdPending = 0;
   this->pendingCursorType = 3;
 }
@@ -1429,7 +1428,7 @@ void CLoginMode::ReceiveLoginErrorDetail(const LoginErrorDetailPacket* packet) {
     const std::uint8_t detailSource[] = {0xAF, 0x02, 0x44, 0x98, 0xE8, 0x19};
     thread_local EncryptedName<sizeof(detailSource), 0xC70319B5EB61598FULL> detailFormat(detailSource);
     message += FormatOwnedString(detailFormat.Text(), packet->detail);
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(message.c_str(), 5, true, true, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(message.c_str(), 5, true, true, 0, "Message", 280, 120, 0);
     if (this->unknown_6F76 != true) {
       if (error == 500) {
         this->otpStarted = timeGetTime();
@@ -1505,7 +1504,7 @@ void CLoginMode::ReceiveLoginError(const LoginErrorPacket* packet) {
       caption = "Message";
       protect = false;
     }
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(message.c_str(), 5, true, true, 0, caption, 280, 120, protect);
+    g_windowMgr.Confirm(message.c_str(), 5, true, true, 0, caption, 280, 120, protect);
     if (this->unknown_6F76 != true) {
       if (error == 500) {
         this->otpStarted = timeGetTime();
@@ -1686,12 +1685,12 @@ void CLoginMode::SubD90C90(const PasswordModePacket* packet) {
   case 5:
     g_windowMgr.CloseWindow(199);
     this->pendingCursorType = 7;
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x768), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(0x768), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 6:
     g_windowMgr.CloseWindow(199);
     this->pendingCursorType = 7;
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x769), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(0x769), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 7:
     g_passwordWndMode = 1;
@@ -1702,9 +1701,9 @@ void CLoginMode::SubD90C90(const PasswordModePacket* packet) {
     if (packet->count != 0) {
       this->pendingCursorType = 7;
       std::string message = FormatOwnedString(LookupMessage(0x764), packet->count);
-      reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
     } else {
-      reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0xD7E), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(0xD7E), 0, true, false, 0, "Message", 280, 120, 0);
       this->SendMsg(2, 0, 0, 0, 0);
     }
     break;
@@ -1712,7 +1711,7 @@ void CLoginMode::SubD90C90(const PasswordModePacket* packet) {
     const char* text = LookupMessage(0xC81);
     const std::uint8_t source[] = {0xF2, 0xE6, 0x37, 0xBE, 0x35, 0x6C, 0x87};
     thread_local EncryptedName<sizeof(source), 0x0B8745519B1F95D7ULL> format(source);
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(FormatString(format.Text(), text, 9), 0, true, false, 0, "Message",
+    g_windowMgr.Confirm(FormatString(format.Text(), text, 9), 0, true, false, 0, "Message",
                                                           280, 120, 0);
     break;
   }
@@ -1720,7 +1719,7 @@ void CLoginMode::SubD90C90(const PasswordModePacket* packet) {
     const char* text = LookupMessage(0xC81);
     const std::uint8_t source[] = {0xF0, 0x4A, 0x03, 0x6C, 0x83, 0x8E, 0x97};
     thread_local EncryptedName<sizeof(source), 0xA597A7E7492B39D5ULL> format(source);
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(FormatString(format.Text(), text, 10), 0, true, false, 0, "Message",
+    g_windowMgr.Confirm(FormatString(format.Text(), text, 10), 0, true, false, 0, "Message",
                                                           280, 120, 0);
     break;
   }
@@ -1728,7 +1727,7 @@ void CLoginMode::SubD90C90(const PasswordModePacket* packet) {
     const char* text = LookupMessage(0xC81);
     const std::uint8_t source[] = {0x56, 0x9C, 0x93, 0xF4, 0xB1, 0xCA, 0xAB};
     thread_local EncryptedName<sizeof(source), 0xFFABE3D5D1BBEF73ULL> format(source);
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(FormatString(format.Text(), text, 11), 0, true, false, 0, "Message",
+    g_windowMgr.Confirm(FormatString(format.Text(), text, 11), 0, true, false, 0, "Message",
                                                           280, 120, 0);
     break;
   }
@@ -1769,12 +1768,12 @@ void CLoginMode::SubD911C0(const PasswordModePacket* packet) {
   case 5:
     g_windowMgr.CloseWindow(199);
     this->pendingCursorType = 7;
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x768), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(0x768), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 6:
     g_windowMgr.CloseWindow(199);
     this->pendingCursorType = 7;
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x769), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(0x769), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 7:
     g_passwordWndMode = 1;
@@ -1787,9 +1786,9 @@ void CLoginMode::SubD911C0(const PasswordModePacket* packet) {
     this->pendingCursorType = 7;
     if (remaining > 0) {
       std::string message = FormatOwnedString(LookupMessage(0x764), remaining);
-      reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
     } else {
-      reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x773), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(0x773), 0, true, false, 0, "Message", 280, 120, 0);
       this->SendMsg(2, 0, 0, 0, 0);
     }
     break;
@@ -1798,7 +1797,7 @@ void CLoginMode::SubD911C0(const PasswordModePacket* packet) {
     const char* text = LookupMessage(0xC81);
     const std::uint8_t source[] = {0x16, 0x10, 0x7D, 0xD4, 0x4D, 0x1C, 0xD3};
     thread_local EncryptedName<sizeof(source), 0x49D33529F1556333ULL> format(source);
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(FormatString(format.Text(), text, 9), 0, true, false, 0, "Message",
+    g_windowMgr.Confirm(FormatString(format.Text(), text, 9), 0, true, false, 0, "Message",
                                                           280, 120, 0);
     break;
   }
@@ -1806,7 +1805,7 @@ void CLoginMode::SubD911C0(const PasswordModePacket* packet) {
     const char* text = LookupMessage(0xC81);
     const std::uint8_t source[] = {0x14, 0x8A, 0xFB, 0xDC, 0x79, 0x66, 0xCB};
     thread_local EncryptedName<sizeof(source), 0x01CB4F1DF9D3F931ULL> format(source);
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(FormatString(format.Text(), text, 10), 0, true, false, 0, "Message",
+    g_windowMgr.Confirm(FormatString(format.Text(), text, 10), 0, true, false, 0, "Message",
                                                           280, 120, 0);
     break;
   }
@@ -1814,7 +1813,7 @@ void CLoginMode::SubD911C0(const PasswordModePacket* packet) {
     const char* text = LookupMessage(0xC81);
     const std::uint8_t source[] = {0xB2, 0xBA, 0xE1, 0xBE, 0xA9, 0x92, 0xB1};
     thread_local EncryptedName<sizeof(source), 0xC5B1BBCD9BC9C997ULL> format(source);
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(FormatString(format.Text(), text, 11), 0, true, false, 0, "Message",
+    g_windowMgr.Confirm(FormatString(format.Text(), text, 11), 0, true, false, 0, "Message",
                                                           280, 120, 0);
     break;
   }
@@ -2058,7 +2057,7 @@ void CLoginMode::ShowLoginError(int code, int argument) {
   case 1:
     if (g_serviceType == 0 && ++g_loginFailCount >= 3) {
       message = std::string(PasswordRetryExceededMessage{}().Text());
-      if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(message.c_str(), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8) {
+      if (g_windowMgr.Confirm(message.c_str(), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8) {
         if (g_hangameLogin == 1) {
           const std::uint8_t urlSource[] = {0x17, 0x67, 0xAB, 0xA1, 0xBF, 0x48, 0x56, 0x9A, 0x08, 0x64, 0xF1, 0xB9,
                                             0xE4, 0x09, 0x1E, 0x8C, 0x12, 0x76, 0xF1, 0xB2, 0xEA, 0x0A, 0x79};
@@ -2154,7 +2153,7 @@ void CLoginMode::ShowLoginError(int code, int argument) {
                                          0x27, 0x7A, 0xFA, 0xB8, 0xF5, 0x59, 0xF6, 0x28, 0x47, 0x3F, 0x8D, 0xC6, 0xA3, 0xA0, 0x61, 0xF1};
       thread_local EncryptedName<sizeof(textSource), 0xF14F79170939C7F1ULL> text(textSource);
       message = std::string(text.Text());
-      if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(message.c_str(), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8) {
+      if (g_windowMgr.Confirm(message.c_str(), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8) {
         const std::uint8_t urlSource[] = {0x43, 0x6B, 0x9D, 0xDB, 0xFB, 0xD0, 0x02, 0x08, 0x5C, 0x68, 0xC7, 0xD9, 0xA0, 0x98, 0x43, 0x1E,
                                           0x59, 0x70, 0x82, 0x85, 0xA2, 0x90, 0x03, 0x14, 0x59, 0x30, 0x9A, 0xCE, 0xB5, 0xB1, 0x48, 0x08,
                                           0x7B, 0x48, 0xC6, 0xDB, 0xA0, 0x8C, 0x5E, 0x08, 0x44, 0x6D, 0x8D, 0xF4, 0xA2, 0x97, 0x4C, 0x11,
@@ -2179,7 +2178,7 @@ void CLoginMode::ShowLoginError(int code, int argument) {
   case 17: {
     const std::string text = FormatOwnedString(LookupMessage(0x564), argument);
     message = text;
-    if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(message.c_str(), 2, true, true, 0, "Message", 280, 120, 0) == 0xBB) {
+    if (g_windowMgr.Confirm(message.c_str(), 2, true, true, 0, "Message", 280, 120, 0) == 0xBB) {
       g_modeMgr.Quit();
     }
     message.clear();
@@ -2220,7 +2219,7 @@ void CLoginMode::ShowLoginError(int code, int argument) {
     message = LookupMessage(0x6FA);
     break;
   case 110:
-    if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x929), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8) {
+    if (g_windowMgr.Confirm(LookupMessage(0x929), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8) {
       const char* file = LookupMessage(0x92A);
       const std::uint8_t source[] = {0xFC, 0x05, 0xBA, 0x81, 0x4D};
       thread_local EncryptedName<sizeof(source), 0x9B0F234DEFDF7593ULL> operation(source);
@@ -2258,7 +2257,7 @@ void CLoginMode::ShowLoginError(int code, int argument) {
   }
 
   if (!message.empty()) {
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
     if (code == 5 || code == 99) {
       this->SendMsg(2, 0, 0, 0, 0);
     }
@@ -2459,7 +2458,6 @@ void CLoginMode::PollNetworkStatus() {
     return;
   }
 
-  WindowDialogs& dialogs = *reinterpret_cast<WindowDialogs*>(&g_windowMgr);
   while (GetRagConnection().ReadPacket(g_gameModePacketBuffer, nullptr, g_packetLengths)) {
     switch (GetRagConnection().GetPacketType(reinterpret_cast<const char*>(g_gameModePacketBuffer))) {
     case 0x69:
@@ -2484,31 +2482,31 @@ void CLoginMode::PollNetworkStatus() {
       break;
     }
     case 0x6B:
-      this->ReceiveAcceptEnter(reinterpret_cast<const AcceptEnterPacket*>(g_gameModePacketBuffer), dialogs);
+      this->ReceiveAcceptEnter(reinterpret_cast<const AcceptEnterPacket*>(g_gameModePacketBuffer));
       break;
     case 0x6C:
       GetRagConnection().Close();
       switch (reinterpret_cast<const ResultPacket*>(g_gameModePacketBuffer)->result) {
       case 1:
-        dialogs.Confirm(LookupMessage(0xD0), 0, true, true, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(0xD0), 0, true, true, 0, "Message", 280, 120, 0);
         g_charServerAccountIdPending = 0;
         this->pendingCursorType = 3;
         break;
       case 0x6F:
-        dialogs.Confirm(LookupMessage(0x749), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(0x749), 0, true, false, 0, "Message", 280, 120, 0);
         g_charServerAccountIdPending = 0;
         this->pendingCursorType = 3;
         break;
       case 0x76:
-        dialogs.Confirm(LookupMessage(0xEEA), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(0xEEA), 0, true, false, 0, "Message", 280, 120, 0);
         this->pendingCursorType = 6;
         break;
       case 0x77:
-        dialogs.Confirm(LookupMessage(0xB71), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(0xB71), 0, true, false, 0, "Message", 280, 120, 0);
         this->pendingCursorType = 6;
         break;
       default:
-        dialogs.Confirm(LookupMessage(9), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(9), 0, true, false, 0, "Message", 280, 120, 0);
         g_charServerAccountIdPending = 0;
         this->pendingCursorType = 3;
         break;
@@ -2539,7 +2537,7 @@ void CLoginMode::PollNetworkStatus() {
         message = 11;
         break;
       }
-      dialogs.Confirm(LookupMessage(message), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(message), 0, true, false, 0, "Message", 280, 120, 0);
       this->pendingCursorType = 7;
       break;
     }
@@ -2575,7 +2573,7 @@ void CLoginMode::PollNetworkStatus() {
         message = 12;
         break;
       }
-      dialogs.Confirm(LookupMessage(message), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(message), 0, true, false, 0, "Message", 280, 120, 0);
       this->pendingCursorType = 7;
       break;
     }
@@ -2586,7 +2584,7 @@ void CLoginMode::PollNetworkStatus() {
       this->Zc_Accept_Enter2(reinterpret_cast<const AcceptEnterPositionPacket*>(g_gameModePacketBuffer));
       return;
     case 0x74:
-      dialogs.Confirm(LookupMessage(9), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(9), 0, true, false, 0, "Message", 280, 120, 0);
       GetRagConnection().Close();
       g_charServerAccountIdPending = 0;
       this->pendingCursorType = 3;
@@ -2598,7 +2596,7 @@ void CLoginMode::PollNetworkStatus() {
       this->ReceiveBillingInfo(g_gameModePacketBuffer);
       break;
     case 0x1BE:
-      if (dialogs.Confirm(LookupMessage(0x2B3), 2, true, false, 0, "Message", 280, 120, 0) == 0xBB) {
+      if (g_windowMgr.Confirm(LookupMessage(0x2B3), 2, true, false, 0, "Message", 280, 120, 0) == 0xBB) {
         GameRoomReplyPacket reply;
         reply.id = 0x1BF;
         reply.permission = 1;
@@ -2619,7 +2617,7 @@ void CLoginMode::PollNetworkStatus() {
     case 0x1F1: {
       const LoginMessagePacket* packet = reinterpret_cast<const LoginMessagePacket*>(g_gameModePacketBuffer);
       const std::string message(packet->text, packet->length - offsetof(LoginMessagePacket, text));
-      dialogs.Confirm(message.c_str(), 0, true, true, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(message.c_str(), 0, true, true, 0, "Message", 280, 120, 0);
       g_charServerAccountIdPending = 0;
       this->pendingCursorType = 3;
       break;
@@ -2633,7 +2631,7 @@ void CLoginMode::PollNetworkStatus() {
       break;
     }
     case 0x23D:
-      dialogs.Confirm(LookupMessage(0x3FC), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(0x3FC), 0, true, false, 0, "Message", 280, 120, 0);
       break;
     case 0x28B: {
       const AcceptEnterNeoUnionPacket* packet = reinterpret_cast<const AcceptEnterNeoUnionPacket*>(g_gameModePacketBuffer);
@@ -2655,14 +2653,14 @@ void CLoginMode::PollNetworkStatus() {
       if (packet->result != 0) {
         char text[300];
         sprintf(text, LookupMessage(0x4BD), reinterpret_cast<const char*>(&g_session.unknown_5913[5]));
-        if (dialogs.Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) == 0xBB) {
+        if (g_windowMgr.Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) == 0xBB) {
           ChangeCharacterNamePacket request;
           request.id = 0x28F;
           request.gid = *reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5913[1]);
           GetRagConnection().Send(g_packetLengths.FixedLength(request.id), &request);
           break;
         }
-      } else if (dialogs.Confirm(LookupMessage(10), 0, true, true, 0, "Message", 280, 120, 0) != 0xB8) {
+      } else if (g_windowMgr.Confirm(LookupMessage(10), 0, true, true, 0, "Message", 280, 120, 0) != 0xB8) {
         break;
       }
 
@@ -2672,27 +2670,27 @@ void CLoginMode::PollNetworkStatus() {
       break;
     }
     case 0x290:
-      this->ReceiveCharacterResult(reinterpret_cast<const CharacterResultPacket*>(g_gameModePacketBuffer), dialogs);
+      this->ReceiveCharacterResult(reinterpret_cast<const CharacterResultPacket*>(g_gameModePacketBuffer));
       break;
     case 0x2CA:
       switch (reinterpret_cast<const ResultPacket*>(g_gameModePacketBuffer)->result) {
       case 0:
-        dialogs.Confirm(LookupMessage(0x546), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(0x546), 0, true, false, 0, "Message", 280, 120, 0);
         break;
       case 1:
-        dialogs.Confirm(LookupMessage(0x547), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(0x547), 0, true, false, 0, "Message", 280, 120, 0);
         break;
       case 2:
-        dialogs.Confirm(LookupMessage(0x548), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(0x548), 0, true, false, 0, "Message", 280, 120, 0);
         break;
       case 3:
-        dialogs.Confirm(LookupMessage(0x549), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(0x549), 0, true, false, 0, "Message", 280, 120, 0);
         break;
       case 4:
-        dialogs.Confirm(LookupMessage(0x54A), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(0x54A), 0, true, false, 0, "Message", 280, 120, 0);
         break;
       case 5:
-        dialogs.Confirm(LookupMessage(0x554), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(0x554), 0, true, false, 0, "Message", 280, 120, 0);
         break;
       }
       this->pendingCursorType = GetRagConnection().NativeSocket() != INVALID_SOCKET ? 7 : 3;
@@ -2704,13 +2702,13 @@ void CLoginMode::PollNetworkStatus() {
       this->ReceiveCharacterList(reinterpret_cast<const CharacterListPacket*>(g_gameModePacketBuffer));
       break;
     case 0x828:
-      this->ReceiveDeleteReservation(reinterpret_cast<const CharacterDeletePacket*>(g_gameModePacketBuffer), dialogs);
+      this->ReceiveDeleteReservation(reinterpret_cast<const CharacterDeletePacket*>(g_gameModePacketBuffer));
       break;
     case 0x82A:
-      this->ReceiveDeleteCharacter(reinterpret_cast<const CharacterDeletePacket*>(g_gameModePacketBuffer), dialogs);
+      this->ReceiveDeleteCharacter(reinterpret_cast<const CharacterDeletePacket*>(g_gameModePacketBuffer));
       break;
     case 0x82C:
-      this->ReceiveDeleteCancel(reinterpret_cast<const CharacterDeletePacket*>(g_gameModePacketBuffer), dialogs);
+      this->ReceiveDeleteCancel(reinterpret_cast<const CharacterDeletePacket*>(g_gameModePacketBuffer));
       break;
     case 0x82D:
       this->ReceiveCharacterSlots(reinterpret_cast<const CharacterSlotsPacket*>(g_gameModePacketBuffer));
@@ -2722,7 +2720,7 @@ void CLoginMode::PollNetworkStatus() {
       break;
     }
     case 0x840:
-      this->ReceiveMapStates(reinterpret_cast<const MapStatePacket*>(g_gameModePacketBuffer), dialogs);
+      this->ReceiveMapStates(reinterpret_cast<const MapStatePacket*>(g_gameModePacketBuffer));
       break;
     case 0x851:
       IgnoreRemovedPacket(g_gameModePacketBuffer);
@@ -2736,26 +2734,26 @@ void CLoginMode::PollNetworkStatus() {
       switch (packet->result) {
       case 0:
         g_windowMgr.CloseWindow(200);
-        dialogs.Confirm(LookupMessage(0x761), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(0x761), 0, true, false, 0, "Message", 280, 120, 0);
         break;
       case 1:
         g_windowMgr.CloseWindow(200);
-        dialogs.Confirm(LookupMessage(0x76A), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(0x76A), 0, true, false, 0, "Message", 280, 120, 0);
         this->pendingCursorType = 7;
         break;
       case 2:
         g_windowMgr.CloseWindow(200);
-        dialogs.Confirm(LookupMessage(0x768), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(0x768), 0, true, false, 0, "Message", 280, 120, 0);
         this->pendingCursorType = 7;
         break;
       case 3:
         g_windowMgr.CloseWindow(200);
-        dialogs.Confirm(LookupMessage(0x769), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(0x769), 0, true, false, 0, "Message", 280, 120, 0);
         this->pendingCursorType = 7;
         break;
       case 4:
         g_windowMgr.CloseWindow(200);
-        dialogs.Confirm(LookupMessage(0x765), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(0x765), 0, true, false, 0, "Message", 280, 120, 0);
         this->pendingCursorType = 7;
         break;
       }
@@ -2767,11 +2765,11 @@ void CLoginMode::PollNetworkStatus() {
       switch (packet->result) {
       case 0:
         g_windowMgr.CloseWindow(200);
-        dialogs.Confirm(LookupMessage(0x762), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(0x762), 0, true, false, 0, "Message", 280, 120, 0);
         break;
       case 1:
         g_windowMgr.CloseWindow(200);
-        dialogs.Confirm(LookupMessage(0x766), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(0x766), 0, true, false, 0, "Message", 280, 120, 0);
         this->pendingCursorType = 7;
         break;
       }
@@ -2783,21 +2781,21 @@ void CLoginMode::PollNetworkStatus() {
       switch (packet->result) {
       case 0:
         g_windowMgr.CloseWindow(199);
-        dialogs.Confirm(LookupMessage(0x763), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(0x763), 0, true, false, 0, "Message", 280, 120, 0);
         break;
       case 1:
         g_windowMgr.CloseWindow(199);
-        dialogs.Confirm(LookupMessage(0x767), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(0x767), 0, true, false, 0, "Message", 280, 120, 0);
         this->pendingCursorType = 7;
         break;
       case 2:
         g_windowMgr.CloseWindow(199);
-        dialogs.Confirm(LookupMessage(0x768), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(0x768), 0, true, false, 0, "Message", 280, 120, 0);
         this->pendingCursorType = 7;
         break;
       case 3:
         g_windowMgr.CloseWindow(199);
-        dialogs.Confirm(LookupMessage(0x769), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(0x769), 0, true, false, 0, "Message", 280, 120, 0);
         this->pendingCursorType = 7;
         break;
       }
@@ -2809,13 +2807,13 @@ void CLoginMode::PollNetworkStatus() {
       switch (packet->result) {
       case 0:
         g_windowMgr.CloseWindow(199);
-        dialogs.Confirm(LookupMessage(0x76D), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(0x76D), 0, true, false, 0, "Message", 280, 120, 0);
         static_cast<UINewSelectCharWnd*>(g_windowMgr.window_03D4)->EnableButtonById(0x1A2);
         g_passwordWndMode = 1;
         break;
       case 1:
         g_windowMgr.CloseWindow(199);
-        dialogs.Confirm(LookupMessage(0x76E), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(0x76E), 0, true, false, 0, "Message", 280, 120, 0);
         this->pendingCursorType = 7;
         break;
       }
@@ -2825,12 +2823,12 @@ void CLoginMode::PollNetworkStatus() {
       switch (reinterpret_cast<const SecondPasswordResultPacket*>(g_gameModePacketBuffer)->result) {
       case 0:
         g_windowMgr.CloseWindow(199);
-        dialogs.Confirm(LookupMessage(0x76F), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(0x76F), 0, true, false, 0, "Message", 280, 120, 0);
         static_cast<UINewSelectCharWnd*>(g_windowMgr.window_03D4)->DisableButtonById(0x1A2);
         break;
       case 1:
         g_windowMgr.CloseWindow(199);
-        dialogs.Confirm(LookupMessage(0x770), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(0x770), 0, true, false, 0, "Message", 280, 120, 0);
         this->pendingCursorType = 7;
         break;
       }
@@ -2838,7 +2836,7 @@ void CLoginMode::PollNetworkStatus() {
     case 0x8D5:
     case 0xB70:
       if (reinterpret_cast<const SecondPasswordStatePacket*>(g_gameModePacketBuffer)->result == 1) {
-        dialogs.Confirm(LookupMessage(0x7E1), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(0x7E1), 0, true, false, 0, "Message", 280, 120, 0);
       }
       break;
     case 0x8FD:
@@ -2852,7 +2850,7 @@ void CLoginMode::PollNetworkStatus() {
       char text[0x400];
       memset(text, 0, sizeof(text));
       _snprintf(text, sizeof(text), LookupMessage(0x92C), when.tm_year + 1900, when.tm_mon + 1, when.tm_mday, when.tm_hour, when.tm_min, when.tm_sec);
-      dialogs.Confirm(text, 0, true, true, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(text, 0, true, true, 0, "Message", 280, 120, 0);
       const std::uint64_t timestamp = static_cast<std::int64_t>(startTime) * 10000000;
       const std::int64_t interval = 3600000;
       CPartialShutDownSchedule* schedule = new CPartialShutDownSchedule(timestamp, interval, 1);
@@ -2922,7 +2920,7 @@ void CLoginMode::PollNetworkStatus() {
       const char* text = LookupMessage(message);
       const std::uint8_t source[] = {0xC4, 0x08, 0xD1, 0xF2, 0xB1, 0x3A, 0x39};
       thread_local EncryptedName<sizeof(source), 0xDD3913D5D7F97BE1ULL> format(source);
-      dialogs.Confirm(FormatString(format.Text(), text, code), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(FormatString(format.Text(), text, code), 0, true, false, 0, "Message", 280, 120, 0);
       g_charServerAccountIdPending = 0;
       this->pendingCursorType = 3;
       break;
@@ -3041,7 +3039,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     }
   case 1:
     GetRagConnection().Close();
-    if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2), 0, true, true, 0, "Message", 280, 120, 0) != 0x10D) {
+    if (g_windowMgr.Confirm(LookupMessage(2), 0, true, true, 0, "Message", 280, 120, 0) != 0x10D) {
       g_charServerAccountIdPending = 0;
       this->pendingCursorType = 3;
     }
@@ -3126,7 +3124,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
 
     ServerAddress2* servers = reinterpret_cast<ServerAddress2*>(this->serverList);
     if (servers[argument1].address.state == 3) {
-      reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x2FC), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(0x2FC), 0, true, false, 0, "Message", 280, 120, 0);
       this->pendingCursorType = 6;
       return 0;
     }
@@ -3360,7 +3358,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
   }
   case 10021:
     GetRagConnection().Close();
-    if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(1), 0, true, false, 0, "Message", 280, 120, 0) != 0x10D) {
+    if (g_windowMgr.Confirm(LookupMessage(1), 0, true, false, 0, "Message", 280, 120, 0) != 0x10D) {
       this->otpStarted = timeGetTime();
       g_charServerAccountIdPending = 0;
       this->pendingCursorType = 3;

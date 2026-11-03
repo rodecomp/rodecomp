@@ -280,7 +280,7 @@ int UIBasicInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
         if (!g_windowMgr.unknown_02FC && !g_windowMgr.unknown_0304) {
           g_windowMgr.EnsureWindow(27);
         } else {
-          reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(587), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(587), 0, true, false, 0, "Message", 280, 120, 0);
         }
       }
       break;

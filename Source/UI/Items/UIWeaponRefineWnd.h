@@ -5,12 +5,11 @@
 
 #include <vector>
 
-struct WindowResponseRecorder;
 class UIListBox;
 
 class UIWeaponRefineWnd : public UIFrameWnd {
 public:
-  UIWeaponRefineWnd(WindowResponseRecorder& recorder);
+  UIWeaponRefineWnd();
   std::vector<unsigned char> BuildReplayRecords();
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -27,7 +26,7 @@ public:
   /* 00C4 */ std::vector<int> indices;
 
 protected:
-  WindowResponseRecorder* m_recorder;
+  void* unknown_recorder;
 };
 
 #endif

@@ -13,7 +13,6 @@
 #include <string>
 
 struct LayoutWindowContexts {
-  UIEntryQueueContext& entryQueue;
   QuickSlotPainting& quickSlots;
 };
 
@@ -45,7 +44,7 @@ UIWindow* UIWindowMgr::CreateLayoutWindow(int id) {
       this->unknown_0404 = window;
       break;
     case 0x9D:
-      window = new UIEntryQueueWnd(contexts.entryQueue);
+      window = new UIEntryQueueWnd();
       break;
     case 0x9F:
       window = new UIQuickSlotWnd(contexts.quickSlots);
@@ -55,7 +54,7 @@ UIWindow* UIWindowMgr::CreateLayoutWindow(int id) {
       g_searchStoreInfoCreated = true;
       break;
     case 0xD1:
-      window = new UIEntryQueueStandByWnd(contexts.entryQueue);
+      window = new UIEntryQueueStandByWnd();
       break;
     }
 

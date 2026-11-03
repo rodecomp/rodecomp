@@ -237,8 +237,8 @@ UIMerInfoWnd::UIMerInfoWnd() : UIFrameWnd(0) {
 
 // OFFSET: 0x008A3FC0
 // FUNCTION: fn_11663
-UIMessageBox::UIMessageBox(UIMessageBoxContext& dialog)
-    : UIFrameWnd(0), counting(0), protectedMessage(0), m_dialog(&dialog) {
+UIMessageBox::UIMessageBox()
+    : UIFrameWnd(0), counting(0), protectedMessage(0) {
 }
 
 // OFFSET: 0x008A40B0
@@ -673,7 +673,7 @@ void UIMessageBox::Configure(
   this->SetSize(width, height);
   this->Slot15(width, height);
   this->Slot22(width, height);
-  this->Move((this->m_dialog->screenWidth - 640) / 2 + 185, (this->m_dialog->screenHeight - 480) / 2 + 180);
+  this->Move((g_renderer->viewport.width - 640) / 2 + 185, (g_renderer->viewport.height - 480) / 2 + 180);
   int inset = 0;
 
   if (icon) {
@@ -735,7 +735,7 @@ void UIMessageBox::Slot19() {
   }
 
   if (timeGetTime() > this->deadline) {
-    this->m_dialog->response = 187;
+    g_windowMgr.unknown_0474 = 187;
     this->counting = 0;
     return;
   }
@@ -756,12 +756,12 @@ void UIMessageBox::Slot19() {
 int UIMessageBox::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
   case 6:
-    this->m_dialog->recorder.Record(this->geometry.id, static_cast<int>(a), b, c, d);
+    this->RecordResponse(static_cast<int>(a), b, c, d);
 
     if (this->modal != 0) {
-      this->m_dialog->response = static_cast<int>(a);
+      g_windowMgr.unknown_0474 = static_cast<int>(a);
     } else if (a == 184 || a == 187 || a == 188) {
-      this->m_dialog->retirement.Schedule(this);
+      g_windowMgr.Schedule(this);
     }
 
     return 0;
@@ -937,7 +937,7 @@ int UIMerInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
   case 0:
     return 0;
   case 6:
-    this->m_recorder->Record(this->geometry.id, static_cast<int>(a), b, c, d);
+    this->RecordResponse(static_cast<int>(a), b, c, d);
 
     switch (a) {
     case 184:
@@ -956,7 +956,7 @@ int UIMerInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     case 350: {
       CMode* mode = g_modeMgr.GetGameMode();
 
-      if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(1370), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
+      if (g_windowMgr.Confirm(LookupMessage(1370), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
         mode->SendMsg(186, 2, 0, 0, 0);
         g_windowMgr.CloseWindow(125);
         g_windowMgr.CloseWindow(126);
@@ -2305,7 +2305,7 @@ int UIReplayRECControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
         return 0;
       }
 
-      reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(error), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(error), 0, true, false, 0, "Message", 280, 120, 0);
       return 0;
     }
     case 423:
@@ -2782,9 +2782,9 @@ int UISelectReplayDataWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
             return 0;
           }
           Replay::Instance().CloseFile();
-          reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(1970), 0, true, true, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(1970), 0, true, true, 0, "Message", 280, 120, 0);
         } else {
-          reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(1969), 0, true, true, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(1969), 0, true, true, 0, "Message", 280, 120, 0);
         }
       }
       break;
@@ -2795,7 +2795,7 @@ int UISelectReplayDataWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       static_cast<CMode*>(g_charViewMode)->SendMsg(10025, 0, 0, 0, 0);
       return 0;
     case 221:
-      if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(17), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+      if (g_windowMgr.Confirm(LookupMessage(17), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
         static_cast<CMode*>(g_charViewMode)->SendMsg(2, 0, 0, 0, 0);
         g_windowMgr.Schedule(this);
         return 0;
@@ -2938,7 +2938,7 @@ int UISelectServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       static_cast<CMode*>(g_charViewMode)->SendMsg(10006, 0, 0, 0, 0);
       return 0;
     case 221:
-      if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(17), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+      if (g_windowMgr.Confirm(LookupMessage(17), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
         static_cast<CMode*>(g_charViewMode)->SendMsg(2, 0, 0, 0, 0);
         g_windowMgr.Schedule(this);
         return 0;
@@ -3250,9 +3250,9 @@ int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
         g_windowMgr.CloseWindow(3);
         this->SaveLogin();
       } else if (this->idEdit->Length() < 4) {
-        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(FormatOwnedString(LookupMessage(3029), 4).c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(FormatOwnedString(LookupMessage(3029), 4).c_str(), 0, true, false, 0, "Message", 280, 120, 0);
       } else {
-        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(FormatOwnedString(LookupMessage(3030), 6).c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(FormatOwnedString(LookupMessage(3030), 6).c_str(), 0, true, false, 0, "Message", 280, 120, 0);
       }
       break;
     }
@@ -3262,7 +3262,7 @@ int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       break;
     case 221:
       this->SaveLogin();
-      if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(17), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+      if (g_windowMgr.Confirm(LookupMessage(17), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
         goto quit;
       }
       break;
@@ -3299,7 +3299,7 @@ int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
           ShellExecuteA(hWnd, verbName.Text(), url, nullptr, nullptr, SW_SHOWNORMAL);
           break;
         }
-        if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(3336), 2, true, false, 0, "Message", 280, 120, 0) != 187) {
+        if (g_windowMgr.Confirm(LookupMessage(3336), 2, true, false, 0, "Message", 280, 120, 0) != 187) {
           break;
         }
       }
@@ -3330,7 +3330,7 @@ int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
         const std::uint8_t source[] = {0x10, 0x9D, 0xBC, 0x33, 0xE2, 0x64, 0x01, 0x37, 0x04, 0x90, 0xB4, 0x32, 0xF8, 0x7D, 0x1B,
                                        0x37, 0x06, 0x9F, 0xB6, 0x2E, 0xFE, 0x33, 0x09, 0x78, 0x10, 0x9D, 0xB3, 0x7C, 0x8D};
         thread_local EncryptedName<sizeof(source), 0x176F138D5DD7F365ULL> name(source);
-        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(name.Text(), 0, false, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(name.Text(), 0, false, false, 0, "Message", 280, 120, 0);
         goto quit;
       }
     }
@@ -3352,7 +3352,7 @@ quit:
 int UILoginOTPWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   if (message == 6) {
     if (a == 185) {
-      if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(17), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+      if (g_windowMgr.Confirm(LookupMessage(17), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
         static_cast<CMode*>(g_charViewMode)->SendMsg(2, 0, 0, 0, 0);
         g_windowMgr.Schedule(this);
       }
@@ -3365,7 +3365,7 @@ int UILoginOTPWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         static_cast<CMode*>(g_charViewMode)->SendMsg(39, 0, 0, 0, 0);
         g_windowMgr.CloseWindow(180);
       } else {
-        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(3249), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(3249), 0, true, false, 0, "Message", 280, 120, 0);
       }
     }
   } else if (message == 60) {
@@ -3552,20 +3552,20 @@ int UIHomunInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
   case 0:
     return 0;
   case 6:
-    this->m_recorder->Record(this->geometry.id, static_cast<int>(a), b, c, d);
+    this->RecordResponse(static_cast<int>(a), b, c, d);
 
     switch (a) {
     case 184: {
       char* const name = reinterpret_cast<char*>(&g_session.unknown_5570[0x0C]);
       if (std::strlen(this->nameEdit->Text()) >= 24) {
-        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(938), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(938), 0, true, false, 0, "Message", 280, 120, 0);
       } else if (_mbsstr(reinterpret_cast<const unsigned char*>(this->nameEdit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkOpening.c_str())) ||
                  _mbsstr(reinterpret_cast<const unsigned char*>(this->nameEdit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkClosing.c_str()))) {
-        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2812), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(2812), 0, true, false, 0, "Message", 280, 120, 0);
       } else {
         char text[512];
         std::sprintf(text, LookupMessage(2977), this->nameEdit->Text());
-        if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) != 188) {
+        if (g_windowMgr.Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) != 188) {
           if (g_forbiddenWords.Contains(this->nameEdit->Text()) != true) {
             g_modeMgr.GetGameMode()->SendMsg(185, reinterpret_cast<int>(this->nameEdit->Text()), 0, 0, 0);
             std::sprintf(name, this->nameEdit->Text());
@@ -3573,7 +3573,7 @@ int UIHomunInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
             return 0;
           }
 
-          reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2948), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(2948), 0, true, false, 0, "Message", 280, 120, 0);
         }
 
         this->nameEdit->SetText(name);
@@ -3605,7 +3605,7 @@ int UIHomunInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       return 0;
     case 291: {
       CMode* mode = g_modeMgr.GetGameMode();
-      if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(955), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
+      if (g_windowMgr.Confirm(LookupMessage(955), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
         mode->SendMsg(184, 2, 0, 0, 0);
         g_windowMgr.CloseWindow(113);
         g_windowMgr.CloseWindow(114);
@@ -3761,20 +3761,20 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
   }
   case 6:
     if (a == 184 || a == 201) {
-      this->m_recorder->Record(this->geometry.id, static_cast<int>(a), b, c, d);
+      this->RecordResponse(static_cast<int>(a), b, c, d);
     }
 
     switch (a) {
     case 184:
       if (std::strlen(this->nameEdit->Text()) >= 24) {
-        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(682), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(682), 0, true, false, 0, "Message", 280, 120, 0);
       } else if (_mbsstr(reinterpret_cast<const unsigned char*>(this->nameEdit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkOpening.c_str())) ||
                  _mbsstr(reinterpret_cast<const unsigned char*>(this->nameEdit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkClosing.c_str()))) {
-        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2812), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(2812), 0, true, false, 0, "Message", 280, 120, 0);
       } else {
         char text[512];
         std::sprintf(text, LookupMessage(2931), this->nameEdit->Text());
-        if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) != 188) {
+        if (g_windowMgr.Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) != 188) {
           if (g_forbiddenWords.Contains(this->nameEdit->Text()) != true) {
             g_modeMgr.GetGameMode()->SendMsg(145, reinterpret_cast<int>(this->nameEdit->Text()), 0, 0, 0);
             std::sprintf(g_session.unknown_1018, this->nameEdit->Text());
@@ -3782,7 +3782,7 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
             return 0;
           }
 
-          reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2948), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(2948), 0, true, false, 0, "Message", 280, 120, 0);
         }
 
         this->nameEdit->SetText(g_session.unknown_1018);
@@ -4135,7 +4135,7 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         error = 2812;
       } else {
         if (this->m_nameEdit->Length() < 4) {
-          reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(21), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(21), 0, true, false, 0, "Message", 280, 120, 0);
           goto create;
         }
 
@@ -4149,13 +4149,13 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         const bool blank = g_session.IsBlankString(this->m_nameEdit->Text());
         if (control || !allowed || !valid || blank) {
           if (control || !allowed) {
-            reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(20), 0, true, false, 0, "Message", 280, 120, 0);
+            g_windowMgr.Confirm(LookupMessage(20), 0, true, false, 0, "Message", 280, 120, 0);
           }
           if (!valid) {
-            reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(190), 0, true, false, 0, "Message", 280, 120, 0);
+            g_windowMgr.Confirm(LookupMessage(190), 0, true, false, 0, "Message", 280, 120, 0);
           }
           if (blank) {
-            reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(199), 0, true, false, 0, "Message", 280, 120, 0);
+            g_windowMgr.Confirm(LookupMessage(199), 0, true, false, 0, "Message", 280, 120, 0);
           }
           goto create;
         }
@@ -4186,7 +4186,7 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         error = 531;
       }
 
-      reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(error), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(error), 0, true, false, 0, "Message", 280, 120, 0);
       this->m_nameEdit->SetText("");
       return 0;
 

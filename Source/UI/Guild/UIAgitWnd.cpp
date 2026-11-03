@@ -39,7 +39,7 @@ void UIAgitMessageBox::Paint() {
 int UIAgitMessageBox::SendMsg(UIWindow*, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   if (message == 6) {
     const int response = static_cast<int>(a);
-    this->m_dialog->recorder.Record(this->geometry.id, response, b, c, d);
+    this->RecordResponse(response, b, c, d);
     if (response == 187) {
       g_modeMgr.GetGameMode()->SendMsg(315, this->m_agitId, 0, 0, 0);
       g_windowMgr.Schedule(this);

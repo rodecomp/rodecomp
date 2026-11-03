@@ -32,7 +32,6 @@ struct PACKET_CZ_PARTY_BOOKING_REQ_REGISTER {
 // OFFSET: 0x00939EE0
 // FUNCTION: fn_12756
 int UISeekPartyMBWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  WindowDialogs& dialogs = *reinterpret_cast<WindowDialogs*>(&g_windowMgr);
 
   switch (message) {
   case 6:
@@ -56,7 +55,7 @@ int UISeekPartyMBWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       }
 
       if (count == 0) {
-        dialogs.Confirm(LookupMessage(1768), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(1768), 0, true, false, 0, "Message", 280, 120, 0);
         break;
       }
 
@@ -64,14 +63,14 @@ int UISeekPartyMBWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
         char text[100];
         std::memset(text, 0, sizeof(text));
         std::sprintf(text, LookupMessage(1769), count);
-        dialogs.Confirm(text, 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(text, 0, true, false, 0, "Message", 280, 120, 0);
         break;
       }
 
       std::string level(this->m_levelEdit->Text());
       for (unsigned int i = 0; i < level.size(); ++i) {
         if (level[i] < '/' || level[i] > '9') {
-          dialogs.Confirm(LookupMessage(1770), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(1770), 0, true, false, 0, "Message", 280, 120, 0);
           return 0;
         }
       }
@@ -91,7 +90,7 @@ int UISeekPartyMBWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
         char text[260];
         std::memset(text, 0, sizeof(text));
         StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(2601), maximum);
-        dialogs.Confirm(text, 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(text, 0, true, false, 0, "Message", 280, 120, 0);
       }
       break;
     }

@@ -171,7 +171,7 @@ void UIStylingShopButton::Slot31(int, int) {
       int id = this->geometry.id;
       if (id == 185 && g_charViewMode && static_cast<CMode*>(g_charViewMode)->cursorType == 2) {
         const char* text = LookupMessage(17);
-        if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text, 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+        if (g_windowMgr.Confirm(text, 2, true, false, 0, "Message", 280, 120, 0) == 187) {
           static_cast<CMode*>(g_charViewMode)->SendMsg(2, 0, 0, 0, 0);
         }
       } else {
@@ -310,7 +310,7 @@ int UIBasicStylingWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
           this->m_display->unknown_0094 = i + 1;
           this->m_display->Invalidate();
         } else {
-          reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2834), 0, false, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(2834), 0, false, false, 0, "Message", 280, 120, 0);
         }
       } else {
         this->m_paletteButtons[i]->SetState(0);
@@ -402,7 +402,7 @@ int UIMyStyleWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
   } else {
     switch (argument1) {
     case 201:
-      if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2816), 2, false, false, 0, "Message", 280, 120, 0) != 188) {
+      if (g_windowMgr.Confirm(LookupMessage(2816), 2, false, false, 0, "Message", 280, 120, 0) != 188) {
         for (int i = 0; i < 2; ++i) {
           if (sender == this->unknown_0094[i]) {
             this->RemoveChild(this->m_slots[i], 1);
@@ -1116,7 +1116,7 @@ int UIDisplayCharacter::SendMsg(UIWindow* sender, int message, std::intptr_t arg
   case 356:
     if (this->m_favoriteButton->m_argument == 0) {
       if (shop->AddToMyStyle() == true) {
-        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2819), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(2819), 0, true, false, 0, "Message", 280, 120, 0);
       } else {
         this->m_favoriteButton->SetTooltip(LookupMessage(2817));
       }
@@ -1449,7 +1449,7 @@ int UIStylingShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     break;
   case 224:
     if (this->m_buyButton->Argument() == 0 &&
-        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2818), 2, false, false, 0, "Message", 280, 120, 0) != 188) {
+        g_windowMgr.Confirm(LookupMessage(2818), 2, false, false, 0, "Message", 280, 120, 0) != 188) {
       for (std::map<UIWindow*, UIStylingshopTabParentWnd*>::iterator it = this->m_tabs.begin(); it != this->m_tabs.end(); ++it) {
         UIStylingshopTabParentWnd* tab = it->second;
         if (tab->geometry.visible == 0) {

@@ -98,8 +98,8 @@ void UIEntryQueueListBox::Slot31(int x, int y) {
 
 // OFFSET: 0x00BA47A0
 // FUNCTION: fn_19689
-UIEntryQueueRequestWnd::UIEntryQueueRequestWnd(UIEntryQueueContext& entryQueue)
-    : UIFrameWnd(0), m_entryQueue(&entryQueue), m_interval(1000), m_elapsed(0), m_delta(0), m_lastTick(0) {
+UIEntryQueueRequestWnd::UIEntryQueueRequestWnd()
+    : UIFrameWnd(0), m_interval(1000), m_elapsed(0), m_delta(0), m_lastTick(0) {
 }
 
 // OFFSET: 0x00BA4870
@@ -205,7 +205,7 @@ void UIEntryQueueRequestWnd::Slot19() {
 int UIEntryQueueRequestWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   if (message == 6) {
     const int response = static_cast<int>(a);
-    this->m_entryQueue->recorder.Record(this->geometry.id, response, b, c, d);
+    this->RecordResponse(response, b, c, d);
 
     if (response == 0) {
       g_entryQueueMgr->SendAdmissionReply(1);
@@ -225,8 +225,8 @@ int UIEntryQueueRequestWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
 
 // OFFSET: 0x00BA5560
 // FUNCTION: fn_19696
-UIEntryQueueStandByWnd::UIEntryQueueStandByWnd(UIEntryQueueContext& entryQueue)
-    : UIFrameWnd(0), m_entryQueue(&entryQueue), m_waiting(0), m_ranking(0), m_viewer(nullptr), m_queueText(), m_waitingText(),
+UIEntryQueueStandByWnd::UIEntryQueueStandByWnd()
+    : UIFrameWnd(0), m_waiting(0), m_ranking(0), m_viewer(nullptr), m_queueText(), m_waitingText(),
       m_rankingText() {
 }
 
@@ -294,7 +294,7 @@ void UIEntryQueueStandByWnd::Slot19() {
 int UIEntryQueueStandByWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   if (message == 6) {
     const int response = static_cast<int>(a);
-    this->m_entryQueue->recorder.Record(this->geometry.id, response, b, c, d);
+    this->RecordResponse(response, b, c, d);
 
     if (response == 0) {
       g_entryQueueMgr->SendCancel();
@@ -327,8 +327,8 @@ void UIEntryQueueStandByWnd::SetInfo(const char* queueName, int waiting, int ran
 
 // OFFSET: 0x00BA6000
 // FUNCTION: fn_19704
-UIEntryQueueWnd::UIEntryQueueWnd(UIEntryQueueContext& entryQueue)
-    : UIFrameWnd(0), unknown_00BC(), m_labels(), m_values(), m_list(nullptr), saved(nullptr), m_entryQueue(&entryQueue), m_applyButtons(), m_helpButton(nullptr) {
+UIEntryQueueWnd::UIEntryQueueWnd()
+    : UIFrameWnd(0), unknown_00BC(), m_labels(), m_values(), m_list(nullptr), saved(nullptr), m_applyButtons(), m_helpButton(nullptr) {
 }
 
 // OFFSET: 0x00BA6110
@@ -506,14 +506,14 @@ int UIEntryQueueWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
       return 0;
     case 4:
     case 201:
-      this->m_entryQueue->recorder.Record(this->geometry.id, static_cast<int>(a), b, c, d);
+      this->RecordResponse(static_cast<int>(a), b, c, d);
       g_windowMgr.CloseWindow(157);
       return 0;
     default:
       return 0;
     }
 
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(error), 0, false, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(error), 0, false, false, 0, "Message", 280, 120, 0);
     return 0;
   }
 
@@ -611,7 +611,7 @@ bool UIEntryQueueWnd::ConfirmApply(const char* type) {
   char text[0x104];
   std::memset(text, 0, sizeof(text));
   sprintf_s(text, sizeof(text), "%s %s", info->displayName, type);
-  return reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) == 187;
+  return g_windowMgr.Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) == 187;
 }
 
 // OFFSET: 0x00BA7B90

@@ -27,13 +27,13 @@
 #include <utility>
 #include <vector>
 
+class UIWindowMgr;
 class CActRes;
 class CGameActor;
 class CRenderObject;
 class LuaScript;
 struct JobNameInitialization;
 struct ActionFrame;
-struct WindowDialogs;
 struct vector3d;
 
 struct EquipSlots {
@@ -833,13 +833,13 @@ public:
   CSkillInfo HomunSkillAt(int index) const;
   CSkillInfo MercSkillAt(int index) const;
   int CountProhibitionLog(std::uint32_t aid);
-  void DeleteProhibitionLog(std::uint32_t aid, std::uint32_t minutes, WindowDialogs& dialogs);
+  void DeleteProhibitionLog(std::uint32_t aid, std::uint32_t minutes);
   void AddProhibitionLog(std::uint32_t aid, std::uint32_t minutes);
   void LoadProhibitionLog();
   void ResetUnknown1050();
   int ProcessEmotionShortcut(const char* text);
   int IsAdminSubMode(int subMode);
-  void GetMonsterSkillInfo(const char* monster, int skill, int* action, int* loopType, WindowDialogs& dialogs);
+  void GetMonsterSkillInfo(const char* monster, int skill, int* action, int* loopType);
   const char* DecodePlayerName() const;
   bool HasSkillEffect(std::uint32_t id) const;
   CSkillInfo LookupHomunSkill(std::uint32_t id) const;

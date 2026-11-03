@@ -197,7 +197,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       break;
     case 233:
       if (!g_messengerGroupCollapsed && this->m_owner->GetMember().valid) {
-        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(191), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(191), 0, true, false, 0, "Message", 280, 120, 0);
         return 0;
       }
       break;
@@ -223,7 +223,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     case 235:
       if (!g_messengerGroupCollapsed && this->m_owner->GetMember().valid) {
         if (!(this->m_owner->GetMember().name == g_session.DecodePlayerName())) {
-          if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(363), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
+          if (g_windowMgr.Confirm(LookupMessage(363), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
             g_modeMgr.gameMode->SendMsg(62, reinterpret_cast<int>(this->m_owner->GetMember().name.c_str()), 0, 0, 0);
             return 0;
           }
@@ -233,7 +233,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     case 236:
       if (!g_messengerGroupCollapsed) {
         if (this->m_owner->GetMember().valid && this->m_owner->GetMember().name == g_session.DecodePlayerName()) {
-          if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(357), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
+          if (g_windowMgr.Confirm(LookupMessage(357), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
             g_modeMgr.gameMode->SendMsg(61, 0, 0, 0, 0);
             return 0;
           }
@@ -287,7 +287,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       return 0;
     }
     if (this->m_entries.empty()) {
-      reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(3236), 0, false, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(3236), 0, false, false, 0, "Message", 280, 120, 0);
       return 0;
     }
     switch (this->m_entries[argument1].value) {
@@ -319,7 +319,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     case 43:
       if (this->m_owner->m_cell != -1) {
         if (this->m_owner->GetMember().valid && this->m_owner->GetMember().offline == 0) {
-          if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(1533), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
+          if (g_windowMgr.Confirm(LookupMessage(1533), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
             g_modeMgr.gameMode->SendMsg(260, this->m_owner->GetMember().accountId, 0, 0, 0);
             return 0;
           }
@@ -410,7 +410,7 @@ void UIMiniPartyWnd::Slot31(int x, int y) {
         this->m_cell = cell;
         g_session.SetRecord0734Value(this->m_member.accountId, cell);
       } else {
-        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(3145), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(3145), 0, true, false, 0, "Message", 280, 120, 0);
       }
     }
   }

@@ -24,7 +24,7 @@ UIJoinPartyAcceptWnd::~UIJoinPartyAcceptWnd() = default;
 int UIJoinPartyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   if (message == 6) {
     const int response = static_cast<int>(a);
-    this->m_acceptance->recorder.Record(this->geometry.id, response, b, c, d);
+    this->RecordResponse(response, b, c, d);
 
     if (response == 184 || response == 185) {
       g_windowMgr.CloseWindow(35);

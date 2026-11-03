@@ -4,6 +4,7 @@
 #include "Client/Session.h"
 #include "Network/Packets/PacketLengths.h"
 #include "Network/Packets/PacketId.h"
+#include "UI/Window/UIWindow.h"
 #include "UI/Window/WindowPolicy.h"
 
 #include <algorithm>
@@ -77,8 +78,8 @@ bool ReplayPacketRecorder::Record(std::uint16_t bytes, const void* packet, int e
 
 // OFFSET: 0x00A82F00
 // FUNCTION: fn_16999
-void WindowResponseRecorder::Record(int windowId, int response, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (this->mode != 2) {
+void UIWindow::RecordResponse(int response, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  if (Replay::Instance().state != 2) {
     return;
   }
 
@@ -92,8 +93,8 @@ void WindowResponseRecorder::Record(int windowId, int response, std::intptr_t b,
   };
 #pragma pack(pop)
   static_assert(sizeof(Response) == 26);
-  const Response packet{0x038408AEu, 26, windowId, response, {static_cast<std::uint32_t>(b), static_cast<std::uint32_t>(c), static_cast<std::uint32_t>(d)}};
-  this->packets.Record(sizeof(packet), &packet, 42, 0);
+  const Response packet{0x038408AEu, 26, this->geometry.id, response, {static_cast<std::uint32_t>(b), static_cast<std::uint32_t>(c), static_cast<std::uint32_t>(d)}};
+  reinterpret_cast<ReplayPacketRecorder*>(&Replay::Instance())->Record(sizeof(packet), &packet, 42, 0);
 }
 
 // OFFSET: 0x00B86AB0

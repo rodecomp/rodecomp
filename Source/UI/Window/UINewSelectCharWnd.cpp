@@ -410,7 +410,7 @@ void UINewSelectCharWnd::Slot15(int width, int height) {
       char message[260];
       std::memset(message, 0, sizeof(message));
       std::sprintf(message, LookupMessage(0x974), index, 0x9C41);
-      reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(message, 0, true, false, 0, "Message", 0x118, 0x78, 0);
+      g_windowMgr.Confirm(message, 0, true, false, 0, "Message", 0x118, 0x78, 0);
       static_cast<CMode*>(g_charViewMode)->SendMsg(2, 0, 0, 0, 0);
       break;
     }
@@ -638,7 +638,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
           char text[260];
           std::memset(text, 0, sizeof(text));
           std::sprintf(text, LookupMessage(0x337), blocked[index].expireDate);
-          reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text, 0, true, true, 0, "Message", 0x118, 0x78, 0);
+          g_windowMgr.Confirm(text, 0, true, true, 0, "Message", 0x118, 0x78, 0);
           this->m_unknown118 = false;
           return 0;
         }
@@ -661,10 +661,10 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         reinterpret_cast<const char*>(&g_session.unknown_807C[8]), *g_asyncWorkMgr
       );
       if (g_loginModeFlag == 1) {
-        if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0xD68), 2, true, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
+        if (g_windowMgr.Confirm(LookupMessage(0xD68), 2, true, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
           static_cast<CMode*>(g_charViewMode)->SendMsg(0x271B, 0, 0, 0, 0);
         }
-      } else if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x11), 2, true, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
+      } else if (g_windowMgr.Confirm(LookupMessage(0x11), 2, true, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
         static_cast<CMode*>(g_charViewMode)->SendMsg(2, 0, 0, 0, 0);
         g_windowMgr.Schedule(this);
       }
@@ -742,14 +742,14 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
           char text[260];
           std::memset(text, 0, sizeof(text));
           std::sprintf(text, LookupMessage(0x337), blocked[index].expireDate);
-          reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text, 0, true, true, 0, "Message", 0x118, 0x78, 0);
+          g_windowMgr.Confirm(text, 0, true, true, 0, "Message", 0x118, 0x78, 0);
           return 0;
         }
       }
 
-      if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x13), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
+      if (g_windowMgr.Confirm(LookupMessage(0x13), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
         this->m_unknown118 = true;
-        if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->RunEmailAddress() == 0xB8) {
+        if (g_windowMgr.RunEmailAddress() == 0xB8) {
           static_cast<CMode*>(g_charViewMode)->SendMsg(0, 0x271A, 0, 0, 0);
           g_windowMgr.Schedule(this);
         }
@@ -762,7 +762,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       char text[260];
       std::memset(text, 0, sizeof(text));
       static_cast<CMode*>(g_charViewMode)->SendMsg(0x2724, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
-      reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text, 0, true, false, 0, "Message", 0x118, 0x78, 0);
+      g_windowMgr.Confirm(text, 0, true, false, 0, "Message", 0x118, 0x78, 0);
       break;
     }
     case 0x13C: {
@@ -965,7 +965,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       break;
     case 0x1B1: {
       const unsigned char selected = static_cast<unsigned char>(g_selectedSlotIndex);
-      if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x7E0), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
+      if (g_windowMgr.Confirm(LookupMessage(0x7E0), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
         const CharacterInfo* info = reinterpret_cast<const CharacterInfo*>(static_cast<CMode*>(g_charViewMode)->SendMsg(8, this->m_unknown138, 0, 0, 0));
         if (info != nullptr) {
           CharacterMovePacket packet;

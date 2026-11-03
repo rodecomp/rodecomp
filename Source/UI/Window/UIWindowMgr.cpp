@@ -1471,7 +1471,7 @@ void UIWindowMgr::SendEmotionHotkey(int index) {
   if (g_windowMgr.unknown_01DC != nullptr) {
     const bool linked = HasTextLinks(std::string(text));
     if (linked) {
-      reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0xE53), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(0xE53), 0, true, false, 0, "Message", 280, 120, 0);
       return;
     }
   }
@@ -1967,7 +1967,7 @@ bool UIWindowMgr::sub_A8CA20() {
 
   bool handled = true;
   if (!this->modalWindows.empty() && this->modalWindows.back() != nullptr) {
-    reinterpret_cast<const WindowDialogs*>(this)->Top()->SendMsg(nullptr, 0, 0, 0, 0, 0);
+    this->Top()->SendMsg(nullptr, 0, 0, 0, 0, 0);
     return true;
   }
 
@@ -2263,7 +2263,7 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
     }
 
     if (!this->hoverWindow) {
-      reinterpret_cast<WindowDialogs*>(this)->RestoreInput();
+      this->RestoreInput();
       return false;
     }
 
@@ -2381,7 +2381,7 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
         return false;
       }
     } else if (g_navigationMode == 2) {
-      if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x8BF), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+      if (g_windowMgr.Confirm(LookupMessage(0x8BF), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
         g_navigationTab = 0;
         g_navigationMinimized = false;
         g_navigationManager.Reset(true);
@@ -2416,13 +2416,13 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
     }
 
     if (this->LookupWindow(277) && g_loginModeFlag == 1) {
-      if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0xD68), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+      if (g_windowMgr.Confirm(LookupMessage(0xD68), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
         g_modeMgr.gameMode->SendMsg(10011, 0, 0, 0, 0);
       }
       return false;
     }
 
-    if (reinterpret_cast<WindowDialogs*>(this)->Confirm(LookupMessage(0x11), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+    if (this->Confirm(LookupMessage(0x11), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
       GetRagConnection().Close();
       g_modeMgr.gameMode->SendMsg(2, 0, 0, 0, 0);
     }
@@ -3945,7 +3945,6 @@ void UIWindowMgr::ShowWaitDBSaveWindow() {
     return;
   }
 
-  WindowDialogs& dialogs = *reinterpret_cast<WindowDialogs*>(this);
   this->window_4F2AC = new UIWaitDBSaveWnd();
   this->window_4F2AC->SetSize(g_renderer->viewport.width, g_renderer->viewport.height);
   this->window_4F2AC->Move(0, 0);

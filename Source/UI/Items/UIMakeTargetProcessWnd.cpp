@@ -178,7 +178,7 @@ int UIMakeTargetProcessWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
   switch (message) {
   case 6: {
     const int response = static_cast<int>(a);
-    this->m_recorder->Record(this->geometry.id, response, b, c, d);
+    this->RecordResponse(response, b, c, d);
 
     if (response == 184) {
       g_modeMgr.GetGameMode()->SendMsg(130, this->makeType, reinterpret_cast<int>(this->materials), 0, 0);

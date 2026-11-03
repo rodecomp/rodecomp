@@ -2798,7 +2798,7 @@ void CGameMode::ReceiveUnknownD2D990(const unsigned char*) {
   if (g_windowMgr.unknown_03F8) {
     g_windowMgr.CloseWindow(137);
     GetRagConnection().Close();
-    if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(1349), 0, true, true, 0, "Message", 280, 120, 0) != 269) {
+    if (g_windowMgr.Confirm(LookupMessage(1349), 0, true, true, 0, "Message", 280, 120, 0) != 269) {
       this->SendMsg(141, 0, 0, 0, 0);
     }
   }
@@ -3334,7 +3334,7 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
 
   int action;
   int loopType;
-  g_session.GetMonsterSkillInfo(g_session.GetJobName(job, -1), message.unknown_0000, &action, &loopType, *reinterpret_cast<WindowDialogs*>(&g_windowMgr));
+  g_session.GetMonsterSkillInfo(g_session.GetJobName(job, -1), message.unknown_0000, &action, &loopType);
   if (action != -1 && gameActor != nullptr) {
     gameActor->SetAction(action * 8 - 8, 1, loopType == 0);
   }
@@ -3385,7 +3385,7 @@ void CGameMode::ReceiveActorSkillAction(const unsigned char* packet) {
 
   int action;
   int loopType;
-  g_session.GetMonsterSkillInfo(g_session.GetJobName(job, -1), message.unknown_0000, &action, &loopType, *reinterpret_cast<WindowDialogs*>(&g_windowMgr));
+  g_session.GetMonsterSkillInfo(g_session.GetJobName(job, -1), message.unknown_0000, &action, &loopType);
   if (action != -1 && gameActor != nullptr) {
     gameActor->SetAction(action * 8 - 8, 1, loopType == 0);
   }
@@ -3435,7 +3435,7 @@ void CGameMode::ReceiveActorSkillMessage(const unsigned char* packet) {
 
   int action;
   int loopType;
-  g_session.GetMonsterSkillInfo(g_session.GetJobName(job, -1), message.unknown_0000, &action, &loopType, *reinterpret_cast<WindowDialogs*>(&g_windowMgr));
+  g_session.GetMonsterSkillInfo(g_session.GetJobName(job, -1), message.unknown_0000, &action, &loopType);
 }
 
 // OFFSET: 0x00D25310
@@ -4455,7 +4455,7 @@ void CGameMode::ReceiveOpenStore(const unsigned char* packet) {
     return;
   }
 
-  reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(587), 0, true, false, 0, "Message", 280, 120, 0);
+  g_windowMgr.Confirm(LookupMessage(587), 0, true, false, 0, "Message", 280, 120, 0);
   this->SendMsg(270, 0, 0, 0, 0);
 }
 
@@ -6462,7 +6462,7 @@ void CGameMode::ReceiveObjectsDisappear(int count, const std::uint32_t* aids) {
 void CGameMode::ReceiveWindow107List(const unsigned char* packet) {
   const std::int64_t count = (*reinterpret_cast<const std::int16_t*>(packet + 2) - 4) / sizeof(Window107Entry);
   if (count == 0) {
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(424), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(424), 0, true, false, 0, "Message", 280, 120, 0);
     return;
   }
 
@@ -6632,7 +6632,7 @@ void CGameMode::OpenBuyingStoreMake(unsigned char slotCount) {
     return;
   }
 
-  reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(587), 0, true, false, 0, "Message", 280, 120, 0);
+  g_windowMgr.Confirm(LookupMessage(587), 0, true, false, 0, "Message", 280, 120, 0);
   this->SendMsg(299, 0, 0, 0, 0);
 }
 
@@ -6663,7 +6663,7 @@ void CGameMode::OpenVendingMake(unsigned char slotCount, int itemCount, const sh
     return;
   }
 
-  reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(587), 0, true, false, 0, "Message", 280, 120, 0);
+  g_windowMgr.Confirm(LookupMessage(587), 0, true, false, 0, "Message", 280, 120, 0);
   this->SendMsg(297, 0, 0, 0, 0);
 }
 
@@ -6680,7 +6680,7 @@ void CGameMode::ReceiveAgitNotice(unsigned char agitId, int first, int second) {
   const char* agitName = nullptr;
   g_luaScript->Call("get_agit_name", "d>s", agitId, &agitName);
   sprintf_s(text, LookupMessage(3632), agitName, second, 100, first, 100);
-  reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text, 0, true, false, 0, "Message", 250, 130, 0);
+  g_windowMgr.Confirm(text, 0, true, false, 0, "Message", 250, 130, 0);
 }
 
 #include "Contents/Actors/Item.h"
@@ -7022,7 +7022,7 @@ void CGameMode::ReceiveBuyingStoreOpenResult(const unsigned char* packet) {
         static_cast<float>(*reinterpret_cast<const int*>(packet + 4) / 10 + g_session.m_weight) - static_cast<float>(g_session.m_maxWeight) * 0.9f
       )
     );
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text, 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(text, 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 9:
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
@@ -7758,7 +7758,7 @@ void CGameMode::ReceiveNotifyBan(const unsigned char* packet) {
   if (text.size() == 0) {
     text = LookupMessage(0x718);
   }
-  reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text.c_str(), 0, true, true, 0, "Message", 280, 120, 0);
+  g_windowMgr.Confirm(text.c_str(), 0, true, true, 0, "Message", 280, 120, 0);
   this->SendMsg(2, 0, 0, 0, 0);
 }
 
@@ -9092,7 +9092,7 @@ void CGameMode::ReceivePetChangeState(const unsigned char* data) {
     break;
   case 7:
     if (g_serviceOptions.Get(0x128) == 1) {
-      reinterpret_cast<WindowDialogs*>(&g_windowMgr)->AddMessageBox(LookupMessage(0x10F8), 0, true, 0, 0, LookupMessage(0xDF6), 0x118, 0x78, nullptr, false);
+      g_windowMgr.AddMessageBox(LookupMessage(0x10F8), 0, true, 0, 0, LookupMessage(0xDF6), 0x118, 0x78, nullptr, false);
     }
     break;
   }
@@ -10376,7 +10376,7 @@ void CGameMode::ReceiveActorDisappear(const unsigned char* data) {
       this->SendMsg(148, action, 0, 0, 0);
     }
     if (g_serviceType == 4) {
-      reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x2B7), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(0x2B7), 0, true, false, 0, "Message", 280, 120, 0);
     } else if (!g_windowMgr.CloseWindow(0x9B)) {
       g_windowMgr.EnsureWindow(0x9B);
     }
@@ -11390,7 +11390,7 @@ void CGameMode::sub_D5B030(
   if (skillId != 0x3E && skillId != 0x39 && g_session.IsMonsterActor(source)) {
     int action = 0;
     int loopType = 0;
-    g_session.GetMonsterSkillInfo(g_session.GetJobName(source->GetEffectiveJob(-1), -1), skillId, &action, &loopType, *reinterpret_cast<WindowDialogs*>(&g_windowMgr));
+    g_session.GetMonsterSkillInfo(g_session.GetJobName(source->GetEffectiveJob(-1), -1), skillId, &action, &loopType);
     if (action != -1) {
       source->SetAction(action * 8 - 8, 1, loopType == 0);
       if (skillId == 0xC1) {
@@ -16754,7 +16754,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
       }
     } else {
       int loopType;
-      g_session.GetMonsterSkillInfo(g_session.GetJobName(source->GetEffectiveJob(-1), -1), skillId, &action, &loopType, *reinterpret_cast<WindowDialogs*>(&g_windowMgr));
+      g_session.GetMonsterSkillInfo(g_session.GetJobName(source->GetEffectiveJob(-1), -1), skillId, &action, &loopType);
       if (action != -1) {
         source->SetAction(action * 8 - 8, 1, loopType == 0);
       }

@@ -721,7 +721,7 @@ int UIHotKeyWnd::CheckHotkeyConflict() {
       }
 
       StringFormat(message, sizeof(message), static_cast<std::size_t>(-1), LookupMessage(0x5D1), info.description.c_str());
-      if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(message, 2, true, false, 0, "Message", 280, 120, 0) != 187) {
+      if (g_windowMgr.Confirm(message, 2, true, false, 0, "Message", 280, 120, 0) != 187) {
         return 1;
       }
 

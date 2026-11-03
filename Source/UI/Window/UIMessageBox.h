@@ -8,20 +8,10 @@
 class UITextViewer;
 class UIWindowMgr;
 
-struct WindowResponseRecorder;
-
-struct UIMessageBoxContext {
-  void* unknown_text;
-  UIWindowMgr& retirement;
-  WindowResponseRecorder& recorder;
-  int& response;
-  const int& screenWidth;
-  const int& screenHeight;
-};
 
 class UIMessageBox : public UIFrameWnd {
 public:
-  UIMessageBox(UIMessageBoxContext& dialog);
+  UIMessageBox();
   ~UIMessageBox() override;
   void Slot18() override;
   void Slot19() override;
@@ -43,7 +33,7 @@ public:
   /* 011C */ unsigned char protectedMessage;
 
 private:
-  UIMessageBoxContext* m_dialog;
+  void* unknown_dialog;
   void AddButton(const char* name, int id, int x, int y);
   void FormatCountdown();
 };

@@ -332,7 +332,7 @@ void UIGradeEnchantWnd::Slot31(int x, int y) {
 
   if (this->selectedMaterial != row) {
     if (this->unknown_0114 > 0) {
-      reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(3831), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(3831), 0, true, false, 0, "Message", 280, 120, 0);
     }
 
     this->selectedMaterial = row;
@@ -495,7 +495,7 @@ int UIGradeEnchantWnd::SendMsg(
         const int quantity = LookupClientItem(g_session.m_inventoryItems, this->materials[this->selectedMaterial].itemId, 0).quantity;
         if (quantity >= this->materials[this->selectedMaterial].amount && g_session.m_zeny >= this->SelectedMaterialZeny()) {
           if (this->unknown_0110 != 0 || this->unknown_0114 != 0 ||
-              reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(3823), 2, true, false, 0, "Message", 280, 120, 0) != 188) {
+              g_windowMgr.Confirm(LookupMessage(3823), 2, true, false, 0, "Message", 280, 120, 0) != 188) {
             this->unknown_0220 = 1;
 
             GradeEnchantRequestPacket packet;

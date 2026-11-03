@@ -10,7 +10,6 @@
 #include <vector>
 
 class UIStaticText;
-struct WindowResponseRecorder;
 
 extern int g_pendingAid;
 extern int g_pendingGid;
@@ -52,7 +51,7 @@ public:
   /* 0100 */ int unknown_0100;
 
 protected:
-  WindowResponseRecorder* m_recorder;
+  void* unknown_recorder;
 };
 
 #endif

@@ -676,7 +676,7 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     return 0;
   case 6:
     if (argument1 != 0x150 && argument1 != 0x1B9) {
-      this->m_recorder->Record(this->geometry.id, static_cast<int>(argument1), argument2, argument3, argument4);
+      this->RecordResponse(static_cast<int>(argument1), argument2, argument3, argument4);
     }
 
     switch (argument1) {
@@ -696,7 +696,7 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
           }
         }
       }
-      g_navigationManager.ShowRouteResult(result, 1, *this->m_dialogs);
+      g_navigationManager.ShowRouteResult(result, 1);
       return 0;
     }
     case 0xBD:
@@ -749,7 +749,7 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     }
     case 0xC9:
       if (g_navigationMode == 2) {
-        const int response = this->m_dialogs->Confirm(LookupMessage(0x8BF), 2, true, false, 0, "Message", 280, 120, 0);
+        const int response = g_windowMgr.Confirm(LookupMessage(0x8BF), 2, true, false, 0, "Message", 280, 120, 0);
         if (response != 0xBB) {
           break;
         }
@@ -813,7 +813,7 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         argument2 = this->m_routePanel->selected;
       }
       if (argument2 != -1) {
-        this->m_recorder->Record(this->geometry.id, static_cast<int>(argument1), argument2, argument3, argument4);
+        this->RecordResponse(static_cast<int>(argument1), argument2, argument3, argument4);
         const int index = static_cast<int>(argument2) - this->m_routePanel->LineOffset();
         if (index >= 0 && g_navigationManager.SelectState(index)) {
           if (g_windowMgr.window_0428) {
@@ -852,7 +852,7 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         argument2 = this->m_searchPanel->selected;
       }
       if (argument2 != -1) {
-        this->m_recorder->Record(this->geometry.id, 0x1B9, argument2, argument3, argument4);
+        this->RecordResponse(0x1B9, argument2, argument3, argument4);
         using SelectTargetFn = bool (CNavigationManager::*)(int);
         if ((g_navigationManager.*reinterpret_cast<SelectTargetFn>(&CNavigationManager::SelectTarget))(
                 static_cast<int>(argument2) - this->m_searchPanel->LineOffset())) {

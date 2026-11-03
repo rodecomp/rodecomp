@@ -55,7 +55,7 @@ int UIWeaponRefineWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   switch (message) {
   case 6: {
     const int response = static_cast<int>(a);
-    this->m_recorder->Record(this->geometry.id, response, b, c, this->m_list->selected);
+    this->RecordResponse(response, b, c, this->m_list->selected);
 
     if (response == 184) {
       if (g_replayAnimationScaling) {

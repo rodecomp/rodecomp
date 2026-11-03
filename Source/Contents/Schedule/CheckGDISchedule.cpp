@@ -53,9 +53,9 @@ perform_check:
   g_timeScheduler[13] = 1;
 
   if (roll == 2) {
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(857), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(857), 0, true, false, 0, "Message", 280, 120, 0);
   } else if (roll == 4) {
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(800), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(800), 0, true, false, 0, "Message", 280, 120, 0);
   }
 
   GetRagConnection().Close();

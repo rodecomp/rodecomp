@@ -344,13 +344,13 @@ int UISerachStoreInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
           this->unknown_00F0 = LookupMessage(1798);
           break;
         case 3:
-          reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(1800), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(1800), 0, true, false, 0, "Message", 280, 120, 0);
           return 0;
         case 4:
           g_session.unknown_5BE8 = -1;
           g_session.unknown_5BEC = -1;
           g_session.unknown_5BF0 = 0xFFFFFFFF;
-          reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(1797), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(1797), 0, true, false, 0, "Message", 280, 120, 0);
           return 0;
         }
       }
@@ -421,7 +421,7 @@ void UISerachStoreInfoWnd::Slot26(int x, int y) {
   }
 
   if (reinterpret_cast<std::int16_t*>(&g_session.unknown_5BE4)[1] != 0 &&
-      reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x6F9), 2, true, false, 0, "Message", 0x118, 0x78, 0) != 0xBB) {
+      g_windowMgr.Confirm(LookupMessage(0x6F9), 2, true, false, 0, "Message", 0x118, 0x78, 0) != 0xBB) {
     return;
   }
 

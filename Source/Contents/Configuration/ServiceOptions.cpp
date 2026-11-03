@@ -1124,7 +1124,7 @@ void ApplyServiceOptionAskOnDisable(int id, unsigned char value, bool notify, in
   }
 
   if (!value &&
-      reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x1104), 2, true, false, 0, "Message", 0x118, 0x78, 0) == 0xBC) {
+      g_windowMgr.Confirm(LookupMessage(0x1104), 2, true, false, 0, "Message", 0x118, 0x78, 0) == 0xBC) {
     g_serviceOptions.Set(0x128, 1);
     sub_AAB070(0x128);
     return;
@@ -1297,7 +1297,7 @@ void ApplyServiceOptionWeatherFlag(int id, unsigned char value, bool notify, int
 // FUNCTION: fn_06364
 void ApplyServiceOptionWindow27() {
   if (g_windowMgr.unknown_0304 != 0) {
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x24B), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+    g_windowMgr.Confirm(LookupMessage(0x24B), 0, true, false, 0, "Message", 0x118, 0x78, 0);
     return;
   }
 

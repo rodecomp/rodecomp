@@ -5,12 +5,11 @@
 
 #include <vector>
 
-struct WindowResponseRecorder;
 class UIListBox;
 
 class UIMakeTargetListWnd : public UIFrameWnd {
 public:
-  UIMakeTargetListWnd(WindowResponseRecorder& recorder);
+  UIMakeTargetListWnd();
   std::vector<unsigned char> BuildReplayRecords();
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -26,7 +25,7 @@ public:
   /* 00B8 */ std::vector<int> itemIds;
 
 protected:
-  WindowResponseRecorder* m_recorder;
+  void* unknown_recorder;
 };
 
 #endif

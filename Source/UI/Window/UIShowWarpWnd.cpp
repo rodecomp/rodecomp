@@ -54,7 +54,7 @@ void UIShowWarpWnd::Paint() {
 int UIShowWarpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
   case 6:
-    this->m_recorder->Record(this->geometry.id, static_cast<int>(argument1), argument2, argument3, argument4);
+    this->RecordResponse(static_cast<int>(argument1), argument2, argument3, argument4);
     if (argument1 == 201) {
       g_windowMgr.CloseWindow(0x134);
     }
@@ -83,6 +83,6 @@ int UIShowWarpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
 
 // OFFSET: 0x009470C0
 // FUNCTION: fn_12858
-UIShowWarpWnd::UIShowWarpWnd(WindowResponseRecorder& recorder)
-    : UIFrameWnd(0), m_recorder(&recorder) {
+UIShowWarpWnd::UIShowWarpWnd()
+    : UIFrameWnd(0) {
 }

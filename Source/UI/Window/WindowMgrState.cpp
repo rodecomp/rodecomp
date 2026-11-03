@@ -1,33 +1,35 @@
-#include "UI/Window/UIWindowMgr.h"
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/CLoginMode.h"
+#include "Client/Mode/ModeDragState.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Client/Registry.h"
+#include "Client/ReplayPacketRecorder.h"
+#include "Client/Session.h"
+#include "Contents/Actors/Pc.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Messenger/ClientMessenger.h"
 #include "Contents/Messenger/MessengerMember.h"
-#include "UI/Party/UIMiniPartyWnd.h"
-#include "UI/Window/WindowDialogs.h"
-#include "Client/Registry.h"
-#include "Client/Session.h"
-#include "Contents/Configuration/ServiceConfiguration.h"
-#include "UI/Dialogs/UIEmailAddressWnd.h"
-#include "UI/Dialogs/UIMemorialDunWnd.h"
-#include "UI/Window/UIMessageBox.h"
-#include "UI/GameSettings/GameSettingsUI.h"
-#include "UI/Navigation/UINavigationV4Wnd.h"
-#include "UI/Window/UINavigationWnd.h"
-#include "UI/Window/UIRoulletteWnd.h"
-#include "UI/Window/UIWindow.h"
-#include "UI/Window/MiniPartyWndAreaMgr.h"
-#include "Render/Renderer.h"
-#include "Client/Mode/ModeMgr.h"
-#include "Client/Mode/CGameMode.h"
+#include "Contents/UserData/NormalItemSlots.h"
 #include "Contents/World/World.h"
-#include "Contents/Actors/Pc.h"
 #include "Render/DeviceContext/DCSurface.h"
+#include "Render/Renderer.h"
 #include "Render/Textures/Surface.h"
 #include "Resource/Bitmap/BitmapResource.h"
+#include "UI/Dialogs/UIEmailAddressWnd.h"
+#include "UI/Dialogs/UIMemorialDunWnd.h"
 #include "UI/Edit/UIEditCtrl.h"
+#include "UI/GameSettings/GameSettingsUI.h"
+#include "UI/Navigation/UINavigationV4Wnd.h"
+#include "UI/Party/UIMiniPartyWnd.h"
+#include "UI/Window/MiniPartyWndAreaMgr.h"
+#include "UI/Window/UIMessageBox.h"
+#include "UI/Window/UINavigationWnd.h"
+#include "UI/Window/UINewSelectCharWnd.h"
+#include "UI/Window/UIRoulletteWnd.h"
+#include "UI/Window/UIWindow.h"
+#include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowDialogs.h"
 #include "UI/Window/WindowMouseHit.h"
-#include "Client/ReplayPacketRecorder.h"
-#include "Client/Mode/ModeDragState.h"
-#include "Contents/UserData/NormalItemSlots.h"
 #include <algorithm>
 #include <cstddef>
 #include <cstdint>
@@ -126,7 +128,6 @@ bool CGameActor::HasUnknown030CEntry() {
 // FUNCTION: fn_17175
 void UIWindowMgr::RestoreMiniPartyWindows() {
   const int count = static_cast<int>(g_session.unknown_0734.size());
-  WindowDialogs& dialogs = *reinterpret_cast<WindowDialogs*>(this);
   for (int index = 0; index < count; ++index) {
     MessengerMember member = g_session.PartyAt(index);
     if (member.valid == 0) {
@@ -1162,7 +1163,7 @@ void UIWindowMgr::CycleWindowVisibilityTwice() {
 
 // OFFSET: 0x00A8FDB0
 // FUNCTION: fn_17151
-int WindowDialogs::RunEmailAddress() {
+int UIWindowMgr::RunEmailAddress() {
   if (this->Top()) {
     return 185;
   }
@@ -1170,69 +1171,67 @@ int WindowDialogs::RunEmailAddress() {
   auto* window = new UIEmailAddressWnd();
   window->SetSize(280, 48);
   window->Move((g_renderer->viewport.width - 640) / 2 + 185, (g_renderer->viewport.height - 480) / 2 + 180);
-  this->dialog.retirement.rendered.push_front(window);
+  this->rendered.push_front(window);
 
-  if (this->capture) {
-    this->suspendedRoots.insert(this->capture->Root());
+  if (this->inputWindow) {
+    this->persistentWindows.insert(this->inputWindow->Root());
   }
 
-  this->capture = nullptr;
-  this->alternateResult = 0;
-  this->modal.push_back(window);
+  this->inputWindow = nullptr;
+  this->unknown_0474 = 0;
+  this->modalWindows.push_back(window);
   int response = 184;
 
-  if (this->immediate == 0) {
-    ModalFramePump* pump = this->mode;
+  if (g_modalImmediate == 0) {
+    CMode* pump = static_cast<CMode*>(g_charViewMode);
 
     for (;;) {
-      if (this->result != 0) {
+      if (this->activeWindowId != 0) {
         if (UIWindow* active = this->Top()) {
           active->Show(0);
-          this->dialog.retirement.Schedule(active);
-          this->modal.pop_back();
+          this->Schedule(active);
+          this->modalWindows.pop_back();
         }
 
-        response = this->result;
+        response = this->activeWindowId;
 
-        if (this->modal.empty()) {
-          this->result = 0;
+        if (this->modalWindows.empty()) {
+          this->activeWindowId = 0;
         }
 
         break;
       }
 
-      if (this->alternateResult != 0) {
+      if (this->unknown_0474 != 0) {
         if (UIWindow* active = this->Top()) {
           active->Show(0);
-          this->dialog.retirement.Schedule(active);
-          this->modal.pop_back();
+          this->Schedule(active);
+          this->modalWindows.pop_back();
         }
 
-        response = this->alternateResult;
-        this->alternateResult = 0;
+        response = this->unknown_0474;
+        this->unknown_0474 = 0;
         break;
       }
 
       if (pump) {
-        pump->Frame();
-        pump = this->mode;
+        pump->Update();
+        pump = static_cast<CMode*>(g_charViewMode);
       }
 
-      const auto option = this->frameOptions.find(20);
+      if (g_session.GetOption(20) > 0) {
+        this->activeWindowId = 0;
+        this->unknown_0474 = 0;
 
-      if (option != this->frameOptions.end() && option->second > 0) {
-        this->result = 0;
-        this->alternateResult = 0;
-
-        while (!this->modal.empty()) {
-          this->dialog.retirement.Schedule(this->modal.back());
-          this->modal.pop_back();
+        while (!this->modalWindows.empty()) {
+          this->Schedule(this->modalWindows.back());
+          this->modalWindows.pop_back();
         }
 
         break;
       }
 
-      if (this->immediate != 0) {
+      if (g_modalImmediate != 0) {
         break;
       }
     }

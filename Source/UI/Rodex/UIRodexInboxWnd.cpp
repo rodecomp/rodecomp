@@ -902,7 +902,7 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         }
 
         if (selected.size() != 0) {
-          if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0xB26), 2, false, false, 0, "Message", 280, 120, 0) == 0xBB) {
+          if (g_windowMgr.Confirm(LookupMessage(0xB26), 2, false, false, 0, "Message", 280, 120, 0) == 0xBB) {
             for (int i = 0; i < 6; ++i) {
               this->checks[i]->SetChecked(0);
               this->checks[i]->m_message = 0;
@@ -927,7 +927,7 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         }
 
         if (selected.size() != 0) {
-          if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0xB26), 2, false, false, 0, "Message", 280, 120, 0) == 0xBB) {
+          if (g_windowMgr.Confirm(LookupMessage(0xB26), 2, false, false, 0, "Message", 280, 120, 0) == 0xBB) {
             for (int i = 0; i < 6; ++i) {
               this->checks[i]->SetChecked(0);
               this->checks[i]->m_message = 0;
@@ -1096,7 +1096,7 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       }
 
       const std::string text = FormatOwnedString(LookupMessage(0xE06), type.c_str());
-      if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text.c_str(), 2, false, false, 0, "Message", 280, 120, 0) == 0xBB) {
+      if (g_windowMgr.Confirm(text.c_str(), 2, false, false, 0, "Message", 280, 120, 0) == 0xBB) {
         this->RequestAllMailActions();
       }
       break;
@@ -1113,7 +1113,7 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         }
 
         if (selected.size() != 0 &&
-            reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0xE09), 2, false, false, 0, "Message", 280, 120, 0) == 0xBB) {
+            g_windowMgr.Confirm(LookupMessage(0xE09), 2, false, false, 0, "Message", 280, 120, 0) == 0xBB) {
           for (std::vector<RodexMailEntry>::iterator entry = selected.begin(); entry != selected.end(); ++entry) {
             RequestRodexMailAttachments(entry->first, entry->second);
           }
@@ -1132,7 +1132,7 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         }
 
         if (selected.size() != 0 &&
-            reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0xE09), 2, false, false, 0, "Message", 280, 120, 0) == 0xBB) {
+            g_windowMgr.Confirm(LookupMessage(0xE09), 2, false, false, 0, "Message", 280, 120, 0) == 0xBB) {
           for (std::vector<int>::iterator id = selected.begin(); id != selected.end(); ++id) {
             RequestRodexMailAttachments(g_rodexMailStore->unknown_0010, *id);
           }
@@ -1164,7 +1164,7 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       }
 
       const std::string text = FormatOwnedString(LookupMessage(0xE0A), type.c_str());
-      if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text.c_str(), 2, false, false, 0, "Message", 280, 120, 0) == 0xBB) {
+      if (g_windowMgr.Confirm(text.c_str(), 2, false, false, 0, "Message", 280, 120, 0) == 0xBB) {
         if (this->unknown_01D4 == 1) {
           for (std::vector<RodexMailEntry>::iterator entry = this->searchResults.begin(); entry != this->searchResults.end(); ++entry) {
             if (entry->first == 0) {
@@ -1218,7 +1218,7 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       std::map<std::int64_t, RodexMail>::iterator mail = g_rodexMailStore->m_mails0.find(argument2);
       if (mail != g_rodexMailStore->m_mails0.end() && mail->second.unknown_0194 == 0) {
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xF1B)), 0xFF, 0, 0, 0);
-        if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0xF1B), 2, false, false, 0, "Message", 280, 120, 0) == 0xBC) {
+        if (g_windowMgr.Confirm(LookupMessage(0xF1B), 2, false, false, 0, "Message", 280, 120, 0) == 0xBC) {
           break;
         }
       }

@@ -6,11 +6,10 @@
 
 #include <vector>
 
-struct WindowResponseRecorder;
 
 class UIMakeTargetProcessWnd : public UIFrameWnd {
 public:
-  UIMakeTargetProcessWnd(WindowResponseRecorder& recorder);
+  UIMakeTargetProcessWnd();
   void Paint() override;
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot15(int width, int height) override;
@@ -24,7 +23,7 @@ public:
 
 protected:
   void* unknown_controls;
-  WindowResponseRecorder* m_recorder;
+  void* unknown_recorder;
 };
 
 #endif

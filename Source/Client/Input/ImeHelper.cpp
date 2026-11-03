@@ -46,7 +46,7 @@ void HandleImeError(const int* error) {
   default:
     goto quit;
   }
-  reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(message), 0, true, false, 0, "Message", 280, 120, 0);
+  g_windowMgr.Confirm(LookupMessage(message), 0, true, false, 0, "Message", 280, 120, 0);
 
 quit:
   NotifyImeHelper();

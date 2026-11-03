@@ -366,7 +366,7 @@ inline void UseShortcutSlot(const NormalItemSlot& slot) {
   case 0:
   case 1:
   case 2:
-    if (item.GetItemId() != 12802 || reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2373), 2, false, false, 0, "Message", 280, 120, 0) != 188) {
+    if (item.GetItemId() != 12802 || g_windowMgr.Confirm(LookupMessage(2373), 2, false, false, 0, "Message", 280, 120, 0) != 188) {
       use();
     }
 
@@ -389,7 +389,7 @@ inline void UseShortcutSlot(const NormalItemSlot& slot) {
 
       _snprintf_s(text, sizeof(text), _TRUNCATE, LookupMessage(1226), name.c_str());
 
-      if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) == 187) {
+      if (g_windowMgr.Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) == 187) {
         use();
       }
     }
@@ -1282,7 +1282,7 @@ int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       }
       const int measured = this->TextWidth(text, 0, 0, 12, 0, 0);
       if (this->geometry.width - 0x32 <= measured + 10) {
-        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x629), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+        g_windowMgr.Confirm(LookupMessage(0x629), 0, true, false, 0, "Message", 0x118, 0x78, 0);
       }
       this->m_edit->Move(-100, -100);
       this->m_edit->SetText("");

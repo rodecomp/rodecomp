@@ -283,7 +283,7 @@ int UIQuickSlotWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
         case 18:
           if (*reinterpret_cast<int*>(&g_session.unknown_16F4[4]) >= 0) {
             const std::string text = FormatOwnedString(LookupMessage(0x4CA), item.DisplayName(0).c_str());
-            if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text.c_str(), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
+            if (g_windowMgr.Confirm(text.c_str(), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
               mode->SendMsg(0x1B, item.unknown_0000[1], 0, 0, 0);
             }
           }

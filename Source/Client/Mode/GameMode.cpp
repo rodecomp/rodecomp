@@ -814,7 +814,7 @@ bool CGameMode::ConfirmDraggedItemUse() {
       this->unknown_05EC[0] = 0;
     }
     g_modeMgr.GetGameMode()->SendMsg(18, 0, 0, 0, 0);
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(657), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(657), 0, true, false, 0, "Message", 280, 120, 0);
     return true;
   }
 
@@ -2586,7 +2586,7 @@ void CGameMode::ChangeZoneServer(std::string mapName, int x, int y, int ip, int 
     this->unknown_0018 = GetRagConnection().Connect(*reinterpret_cast<const ConnectionEndpoint*>(g_zoneServerIp));
     if (!this->unknown_0018) {
       GetRagConnection().Close();
-      if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(1), 1, true, true, 0, "Message", 280, 120, 0) != 269) {
+      if (g_windowMgr.Confirm(LookupMessage(1), 1, true, true, 0, "Message", 280, 120, 0) != 269) {
         this->SendMsg(141, 0, 0, 0, 0);
       }
       return;
@@ -4344,7 +4344,7 @@ int CGameMode::ProcessGroundClick(int result) {
       if (g_mouse.buttons[0] == 1) {
         shop->SetSuspended(0);
         shop->SetSelection(static_cast<short>(column), static_cast<short>(row));
-        if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0xB63), 2, true, false, 0, "Message", 280, 120, 0) == 0xBB) {
+        if (g_windowMgr.Confirm(LookupMessage(0xB63), 2, true, false, 0, "Message", 280, 120, 0) == 0xBB) {
           shop->SendShopRequest();
           return -1;
         }

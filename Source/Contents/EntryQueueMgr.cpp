@@ -171,7 +171,7 @@ void CEntryQueueMgr::OnApplyResult(const EntryQueueApplyResult* packet) {
     return;
   }
 
-  reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(message), 0, false, false, 0, "Message", 0x118, 0x78, 0);
+  g_windowMgr.Confirm(LookupMessage(message), 0, false, false, 0, "Message", 0x118, 0x78, 0);
 }
 
 // OFFSET: 0x00BA2660
@@ -179,18 +179,18 @@ void CEntryQueueMgr::OnApplyResult(const EntryQueueApplyResult* packet) {
 void CEntryQueueMgr::OnCancelResult(const EntryQueueNotice* notice) {
   switch (notice->result) {
   case 1:
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x83E), 0, false, false, 0, "Message", 0x118, 0x78, 0);
+    g_windowMgr.Confirm(LookupMessage(0x83E), 0, false, false, 0, "Message", 0x118, 0x78, 0);
     g_windowMgr.CloseWindow(209);
     this->ready = 0;
     break;
   case 3:
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x83F), 0, false, false, 0, "Message", 0x118, 0x78, 0);
+    g_windowMgr.Confirm(LookupMessage(0x83F), 0, false, false, 0, "Message", 0x118, 0x78, 0);
     break;
   case 11:
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x840), 0, false, false, 0, "Message", 0x118, 0x78, 0);
+    g_windowMgr.Confirm(LookupMessage(0x840), 0, false, false, 0, "Message", 0x118, 0x78, 0);
     break;
   case 14:
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x841), 0, false, false, 0, "Message", 0x118, 0x78, 0);
+    g_windowMgr.Confirm(LookupMessage(0x841), 0, false, false, 0, "Message", 0x118, 0x78, 0);
     g_windowMgr.CloseWindow(209);
     this->ready = 0;
     break;
@@ -266,9 +266,9 @@ void CEntryQueueMgr::OnReady(const EntryQueueReady* packet) {
 // FUNCTION: fn_19673
 void CEntryQueueMgr::OnResultNotice(const EntryQueueNotice* notice) {
   if (notice->result == 3) {
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x83F), 0, false, false, 0, "Message", 0x118, 0x78, 0);
+    g_windowMgr.Confirm(LookupMessage(0x83F), 0, false, false, 0, "Message", 0x118, 0x78, 0);
   } else if (notice->result == 11) {
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x840), 0, false, false, 0, "Message", 0x118, 0x78, 0);
+    g_windowMgr.Confirm(LookupMessage(0x840), 0, false, false, 0, "Message", 0x118, 0x78, 0);
   }
 }
 

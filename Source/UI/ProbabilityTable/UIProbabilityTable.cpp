@@ -494,7 +494,7 @@ void CUIProbabilityTable::Search() {
   }
 
   if (found == list->data.end()) {
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x1012), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(0x1012), 0, true, false, 0, "Message", 280, 120, 0);
   } else {
     HighlightKeyword(found->name, keyword, g_probabilityHighlightBegin, g_probabilityHighlightEnd);
 

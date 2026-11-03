@@ -1529,7 +1529,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       if (!g_messengerGroupCollapsed && this->selected != -1) {
         MessengerMember member = this->MemberAtIndex(this->selected);
         if (member.valid) {
-          reinterpret_cast<WindowDialogs&>(g_windowMgr).Confirm(LookupMessage(0xBF), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+          g_windowMgr.Confirm(LookupMessage(0xBF), 0, true, false, 0, "Message", 0x118, 0x78, 0);
         }
       }
       return 0;
@@ -1567,11 +1567,11 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
         MessengerMember member = this->MemberAtIndex(this->selected);
         if (member.valid) {
           if (this->mode == 0) {
-            if (reinterpret_cast<WindowDialogs&>(g_windowMgr).Confirm(LookupMessage(0x164), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
+            if (g_windowMgr.Confirm(LookupMessage(0x164), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
               g_modeMgr.gameMode->SendMsg(0xB0, member.accountId, member.characterId, 0, 0);
             }
           } else if (!(member.name == g_session.DecodePlayerName())) {
-            if (reinterpret_cast<WindowDialogs&>(g_windowMgr).Confirm(LookupMessage(0x16B), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
+            if (g_windowMgr.Confirm(LookupMessage(0x16B), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
               g_modeMgr.gameMode->SendMsg(0x3E, reinterpret_cast<int>(member.name.c_str()), 0, 0, 0);
             }
           }
@@ -1582,7 +1582,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       if (!g_messengerGroupCollapsed && this->selected != -1) {
         MessengerMember member = this->MemberAtIndex(this->selected);
         if (member.valid && member.name == g_session.DecodePlayerName()) {
-          if (reinterpret_cast<WindowDialogs&>(g_windowMgr).Confirm(LookupMessage(0x165), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
+          if (g_windowMgr.Confirm(LookupMessage(0x165), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
             g_modeMgr.gameMode->SendMsg(0x3D, 0, 0, 0, 0);
           }
         }
@@ -1628,7 +1628,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       return 0;
     case 0x1BE:
       if (!g_messengerGroupCollapsed) {
-        if (reinterpret_cast<WindowDialogs&>(g_windowMgr).Confirm(LookupMessage(0x165), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
+        if (g_windowMgr.Confirm(LookupMessage(0x165), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
           g_modeMgr.gameMode->SendMsg(0x3D, 0, 0, 0, 0);
           if (g_windowMgr.unknown_042C) {
             g_windowMgr.CloseWindow(0xD0);
@@ -1648,7 +1648,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
           if (g_session.unknown_5464) {
             g_windowMgr.EnsureWindow(0xD0);
           } else {
-            reinterpret_cast<WindowDialogs&>(g_windowMgr).Confirm(LookupMessage(0x816), 4, true, false, 0, "Message", 0x118, 0x78, 0);
+            g_windowMgr.Confirm(LookupMessage(0x816), 4, true, false, 0, "Message", 0x118, 0x78, 0);
           }
         }
         if (this->mode == 1) {
@@ -1900,7 +1900,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     }
     MessengerMember member = this->MemberAtIndex(this->selected);
     if (member.name.find(g_messengerNamelessTag, 0) != std::string::npos) {
-      reinterpret_cast<WindowDialogs&>(g_windowMgr).Confirm(LookupMessage(0xBE1), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+      g_windowMgr.Confirm(LookupMessage(0xBE1), 0, true, false, 0, "Message", 0x118, 0x78, 0);
       return 0;
     }
     if (!member.valid) {
@@ -1938,7 +1938,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       if (this->selected != -1) {
         MessengerMember target = this->MemberAtIndex(this->selected);
         if (target.valid && !target.offline) {
-          if (reinterpret_cast<WindowDialogs&>(g_windowMgr).Confirm(LookupMessage(0x5FD), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
+          if (g_windowMgr.Confirm(LookupMessage(0x5FD), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
             g_modeMgr.gameMode->SendMsg(0x104, target.accountId, 0, 0, 0);
           }
         } else {

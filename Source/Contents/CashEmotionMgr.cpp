@@ -2513,8 +2513,7 @@ int UICashEmotionListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       box->Create(nullptr, text.c_str(), 2, true, nullptr, 280, 128, nullptr);
       box->m_keepOpen = 1;
       g_windowMgr.AddRendered(box);
-      WindowDialogs& dialogs = *reinterpret_cast<WindowDialogs*>(&g_windowMgr);
-      if (dialogs.RunModal(box) == 187) {
+      if (g_windowMgr.RunModal(box) == 187) {
         CashEmotionPurchasePacket packet;
         packet.id = 0xBEC;
         packet.packId = g_cashEmotionMgr->unknown_01C4;

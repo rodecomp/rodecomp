@@ -6,11 +6,6 @@
 
 #include <cstdint>
 
-struct WindowResponseRecorder;
-
-struct UIAgitMessageBoxContext {
-  WindowResponseRecorder& recorder;
-};
 
 class UIAgitMessageBox : public UIFrameWnd {
 public:
@@ -21,7 +16,7 @@ public:
   void sub_956130(const char* text, int width, int height);
 
   /* 00B4 */ std::uint16_t m_agitId;
-  UIAgitMessageBoxContext* m_dialog;
+  void* unknown_dialog;
 };
 
 class UIListBoxAgit : public UIListBox {

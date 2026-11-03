@@ -1847,7 +1847,7 @@ void CUIGameSettingsUI::sub_A3F0F0() {
 // FUNCTION: fn_45480
 void CUIGameSettingsUI::OnApply() {
   const bool modified = this->m_graphicsPage->IsModified();
-  if (reinterpret_cast<WindowDialogs&>(g_windowMgr).Confirm(LookupMessage(modified ? 3168 : 3167), 2, true, false, 0, "Message", 280, 120, 0) != 188) {
+  if (g_windowMgr.Confirm(LookupMessage(modified ? 3168 : 3167), 2, true, false, 0, "Message", 280, 120, 0) != 188) {
     this->m_graphicsPage->ApplySettings();
     this->sub_A421E0();
   }
@@ -3749,7 +3749,7 @@ void CUIGameSettingsUI::sub_A43C70() {
 // OFFSET: 0x00A3F180
 // FUNCTION: fn_15940
 void CUIGameSettingsUI::ResetToDefaults() {
-  if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(3166), 2, true, false, 0, "Message", 280, 120, 0) == 0xBC) {
+  if (g_windowMgr.Confirm(LookupMessage(3166), 2, true, false, 0, "Message", 280, 120, 0) == 0xBC) {
     return;
   }
 

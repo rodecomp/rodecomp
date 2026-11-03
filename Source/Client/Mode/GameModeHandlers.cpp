@@ -524,10 +524,10 @@ bool g_playerMessage82Pending;
 void CGameMode::ReceivePartyBookingRegisterResult(const unsigned char* packet) {
   switch (*reinterpret_cast<const std::int16_t*>(packet + 2)) {
   case 2:
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(1828), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(1828), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 3:
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(1829), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(1829), 0, true, false, 0, "Message", 280, 120, 0);
     [[fallthrough]];
   case 0:
   case 1:
@@ -541,7 +541,7 @@ void CGameMode::ReceivePartyBookingRegisterResult(const unsigned char* packet) {
 void CGameMode::ReceivePartyBookingUpdateResult(const unsigned char* packet) {
   const std::int16_t result = *reinterpret_cast<const std::int16_t*>(packet + 2);
   if (result != 0) {
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(result == 2 ? 1941 : 1826), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(result == 2 ? 1941 : 1826), 0, true, false, 0, "Message", 280, 120, 0);
     return;
   }
 
@@ -575,7 +575,7 @@ void CGameMode::ReceivePartyBookingSearchResult(const unsigned char* packet) {
   }
 
   if (size == 0) {
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(1827), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(1827), 0, true, false, 0, "Message", 280, 120, 0);
     g_session.m_partyBooking.m_lastPage = false;
     window->Invalidate();
     return;
@@ -1363,11 +1363,11 @@ void CGameMode::ReceiveRequestResult(const unsigned char* packet) {
     break;
   case 303:
     text = "- " + IntToString(303, 0) + " : " + LookupMessage(3940);
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text.c_str(), 0, false, false, 0, "Error", 280, 120, 0);
+    g_windowMgr.Confirm(text.c_str(), 0, false, false, 0, "Error", 280, 120, 0);
     break;
   case 304:
     text = "- " + IntToString(304, 0) + " : " + LookupMessage(3941);
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text.c_str(), 0, false, false, 0, "Error", 280, 120, 0);
+    g_windowMgr.Confirm(text.c_str(), 0, false, false, 0, "Error", 280, 120, 0);
     break;
   default:
     text = LookupMessage(57);
@@ -1747,31 +1747,31 @@ void CGameMode::ReceiveRuneRewardPacket(const unsigned char* packet) {
     break;
   case 2:
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4076)), 0xFF, 0, 0, 0);
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(4076), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(4076), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 3:
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4077)), 0xFF, 0, 0, 0);
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(4077), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(4077), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 4:
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4078)), 0xFF, 0, 0, 0);
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(4078), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(4078), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 5:
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4079)), 0xFF, 0, 0, 0);
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(4079), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(4079), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 6:
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4080)), 0xFF, 0, 0, 0);
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(4080), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(4080), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 7:
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4081)), 0xFF, 0, 0, 0);
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(4081), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(4081), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 8:
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4082)), 0xFF, 0, 0, 0);
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(4082), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(4082), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   }
 
@@ -1948,7 +1948,7 @@ void CGameMode::ReceiveRodexMailDeleteResult(int mailId, int result) {
     message = 3866;
   }
 
-  reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(message), 0, true, false, 0, "Message", 280, 120, false);
+  g_windowMgr.Confirm(LookupMessage(message), 0, true, false, 0, "Message", 280, 120, false);
   g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(message)), 0x64FFFF, 0, 0, 0);
 }
 
@@ -2008,48 +2008,48 @@ int CGameMode::HandleRuneResult(int result) {
     return 0;
   case 1:
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xFF4)), 0xFF, 0, 0, 0);
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0xFF4), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(0xFF4), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 2:
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xFF5)), 0xFF, 0, 0, 0);
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0xFF5), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(0xFF5), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 3:
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xFF6)), 0xFF, 0, 0, 0);
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0xFF6), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(0xFF6), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 4:
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xFF7)), 0xFF, 0, 0, 0);
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0xFF7), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(0xFF7), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 5:
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xFF8)), 0xFF, 0, 0, 0);
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0xFF8), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(0xFF8), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 6:
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xFF9)), 0xFF, 0, 0, 0);
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0xFF9), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(0xFF9), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 7:
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xFFA)), 0xFF, 0, 0, 0);
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0xFFA), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(0xFFA), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 8:
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xFFB)), 0xFF, 0, 0, 0);
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0xFFB), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(0xFFB), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 10:
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xFFD)), 0xFF, 0, 0, 0);
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0xFFC), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(0xFFC), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 11:
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xFFD)), 0xFF, 0, 0, 0);
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0xFFD), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(0xFFD), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 12:
   case 13:
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xFFE)), 0xFF, 0, 0, 0);
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0xFFE), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(0xFFE), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   default:
     return result;

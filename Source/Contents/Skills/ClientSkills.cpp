@@ -510,7 +510,7 @@ int CSession::CountProhibitionLog(std::uint32_t aid) {
 
 // OFFSET: 0x00E085A0
 // FUNCTION: fn_23763
-void CSession::DeleteProhibitionLog(std::uint32_t aid, std::uint32_t minutes, WindowDialogs& dialogs) {
+void CSession::DeleteProhibitionLog(std::uint32_t aid, std::uint32_t minutes) {
   const char* message;
   auto found = this->m_prohibitionLog.end();
   for (auto entry = this->m_prohibitionLog.begin(); entry != this->m_prohibitionLog.end(); ++entry) {
@@ -528,7 +528,7 @@ void CSession::DeleteProhibitionLog(std::uint32_t aid, std::uint32_t minutes, Wi
     message = "채팅 로그 삭제 성공";
   }
 
-  dialogs.Confirm(message, 0, true, false, 0, "Message", 280, 120, 0);
+  g_windowMgr.Confirm(message, 0, true, false, 0, "Message", 280, 120, 0);
 }
 
 // OFFSET: 0x00E08690

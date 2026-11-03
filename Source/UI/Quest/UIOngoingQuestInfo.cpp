@@ -423,7 +423,7 @@ void CUIScrollWindow::SetQuest(unsigned int id) {
       rewards->npcSprite->Show(1);
     }
   } else {
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(std::format("Not found Quest Info = %lu", id).c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(std::format("Not found Quest Info = %lu", id).c_str(), 0, true, false, 0, "Message", 280, 120, 0);
   }
 
   this->firstContents->UpdateHeight();

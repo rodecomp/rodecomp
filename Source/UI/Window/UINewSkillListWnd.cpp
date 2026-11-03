@@ -1342,7 +1342,7 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       }
       break;
     case 271:
-      if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(1377), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
+      if (g_windowMgr.Confirm(LookupMessage(1377), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
         this->sub_9AE730();
         this->SendMsg(nullptr, 23, 0, 0, 0, 0);
         if (ChatWindow()) {

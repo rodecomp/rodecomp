@@ -29,7 +29,7 @@ int CSession::IsAdminSubMode(int subMode) {
 
 // OFFSET: 0x00E09B50
 // FUNCTION: fn_23789
-void CSession::GetMonsterSkillInfo(const char* monster, int skill, int* action, int* loopType, WindowDialogs& dialogs) {
+void CSession::GetMonsterSkillInfo(const char* monster, int skill, int* action, int* loopType) {
   *action = -1;
 
   char tableName[21];
@@ -66,8 +66,8 @@ void CSession::GetMonsterSkillInfo(const char* monster, int skill, int* action, 
   if (this->IsAdminSubMode(1) && (!actionNode || !loopNode)) {
     *action = 0;
     *loopType = 0;
-    dialogs.Confirm("에러발생. 클라이언트 담당자 에게 에러 사실을 통보 하세요. 위치 - CPlayer :: GetMonsterSkillInfo", 0, true, false, 0, "Message", 280, 120, 0);
-    dialogs.Confirm("action 또는 loopType 이 존재하지 않음.", 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm("에러발생. 클라이언트 담당자 에게 에러 사실을 통보 하세요. 위치 - CPlayer :: GetMonsterSkillInfo", 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm("action 또는 loopType 이 존재하지 않음.", 0, true, false, 0, "Message", 280, 120, 0);
     return;
   }
 

@@ -251,7 +251,6 @@ void UISeekPartyListWnd::Slot15(int width, int height) {
 // OFFSET: 0x009393E0
 // FUNCTION: fn_12755
 int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  WindowDialogs& dialogs = *reinterpret_cast<WindowDialogs*>(&g_windowMgr);
 
   switch (message) {
   case 6:
@@ -282,7 +281,7 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       const short level = static_cast<short>(std::atoi(text.c_str()));
       for (std::size_t i = 0; i < text.size(); ++i) {
         if (text[i] < '/' || text[i] > '9') {
-          dialogs.Confirm(LookupMessage(1770), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(1770), 0, true, false, 0, "Message", 280, 120, 0);
           return 0;
         }
       }
@@ -291,7 +290,7 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         char buffer[260];
         std::memset(buffer, 0, sizeof(buffer));
         StringFormat(buffer, sizeof(buffer), static_cast<std::size_t>(-1), LookupMessage(2601), g_partyBookingLevelMax);
-        dialogs.Confirm(buffer, 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(buffer, 0, true, false, 0, "Message", 280, 120, 0);
         return 0;
       }
 

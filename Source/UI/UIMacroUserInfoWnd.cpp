@@ -769,8 +769,8 @@ int UIMacroReporterWnd::SendMsg(
             accounts.push_back(it->id);
           }
         }
-        const int result = reinterpret_cast<WindowDialogs*>(&g_windowMgr)
-                             ->Confirm(FormatOwnedString(LookupMessage(2876), accounts.size()).c_str(), 2, false, false, 0, "Message", 280, 120, 0);
+        const int result = g_windowMgr
+                             .Confirm(FormatOwnedString(LookupMessage(2876), accounts.size()).c_str(), 2, false, false, 0, "Message", 280, 120, 0);
         if (result != 188) {
           for (auto it = accounts.begin(); it != accounts.end(); ++it) {
             PACKET_CZ_MACRO_REPORT_ACCOUNT packet;

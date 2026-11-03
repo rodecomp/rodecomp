@@ -734,7 +734,7 @@ int UIMinimapZoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
   switch (argument1) {
   case 189:
     if (!g_session.IsNavigationAllowed()) {
-      reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2767), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(2767), 0, true, false, 0, "Message", 280, 120, 0);
     } else if (!g_windowMgr.CloseWindow(273)) {
       g_windowMgr.sub_A978D0(273);
     }
@@ -949,24 +949,7 @@ int UINpcEditDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
   }
 
   if (message == 6) {
-    Replay& replay = Replay::Instance();
-    ReplayPacketRecorder packets = {
-      g_packetLengths,
-      replay.baseFrame,
-      replay.started,
-      replay.frame,
-      replay.header.key0,
-      replay.header.key1,
-      replay.header.options.recordRestricted,
-      replay.file,
-      replay.fileOffset,
-      replay.records,
-      replay.cipherIndex,
-      replay.cipherBase,
-      replay.cipherKey,
-    };
-    WindowResponseRecorder recorder{replay.state, packets};
-    recorder.Record(this->geometry.id, static_cast<int>(argument1), argument2, argument3, argument4);
+    this->RecordResponse(static_cast<int>(argument1), argument2, argument3, argument4);
     if (argument1 == 184 && this->edit->Length()) {
       static_cast<CMode*>(g_charViewMode)->SendMsg(99, this->unknown_00B8, std::atoi(this->edit->Text()), 0, 0);
       g_windowMgr.CloseWindow(56);
@@ -999,24 +982,7 @@ int UINpcTextEditDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
     return this->UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
-  Replay& replay = Replay::Instance();
-  ReplayPacketRecorder packets = {
-    g_packetLengths,
-    replay.baseFrame,
-    replay.started,
-    replay.frame,
-    replay.header.key0,
-    replay.header.key1,
-    replay.header.options.recordRestricted,
-    replay.file,
-    replay.fileOffset,
-    replay.records,
-    replay.cipherIndex,
-    replay.cipherBase,
-    replay.cipherKey,
-  };
-  WindowResponseRecorder recorder{replay.state, packets};
-  recorder.Record(this->geometry.id, static_cast<int>(argument1), argument2, argument3, argument4);
+  this->RecordResponse(static_cast<int>(argument1), argument2, argument3, argument4);
   if (Replay::Instance().state == 7) {
     this->edit->SetText("임시");
   }
@@ -1371,24 +1337,7 @@ int UISpellListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     return this->m_scroll - previous;
   }
   case 6: {
-    Replay& replay = Replay::Instance();
-    ReplayPacketRecorder packets = {
-      g_packetLengths,
-      replay.baseFrame,
-      replay.started,
-      replay.frame,
-      replay.header.key0,
-      replay.header.key1,
-      replay.header.options.recordRestricted,
-      replay.file,
-      replay.fileOffset,
-      replay.records,
-      replay.cipherIndex,
-      replay.cipherBase,
-      replay.cipherKey,
-    };
-    WindowResponseRecorder recorder{replay.state, packets};
-    recorder.Record(this->geometry.id, static_cast<int>(argument1), argument2, argument3, argument4);
+    this->RecordResponse(static_cast<int>(argument1), argument2, argument3, argument4);
     CMode* mode = static_cast<CMode*>(g_charViewMode);
     if (argument1 == 184) {
       const int selected = this->m_selected;
@@ -2691,11 +2640,7 @@ int UICombinedCardItemCollectionWnd::SendMsg(UIWindow* sender, int message, std:
 int UIItemCompositionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
   case 6: {
-    Replay& replay = Replay::Instance();
-    ReplayPacketRecorder packets{g_packetLengths, replay.baseFrame, replay.started, replay.frame, replay.header.key0, replay.header.key1,
-                                 replay.header.options.recordRestricted, replay.file, replay.fileOffset, replay.records, replay.cipherIndex,
-                                 replay.cipherBase, replay.cipherKey};
-    WindowResponseRecorder{replay.state, packets}.Record(this->geometry.id, static_cast<int>(a), b, this->m_selected, d);
+    this->RecordResponse(static_cast<int>(a), b, this->m_selected, d);
     if (g_replayAnimationScaling != 0) {
       this->m_selected = static_cast<int>(c);
     }
@@ -2769,11 +2714,7 @@ int UIItemCompositionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
 int UIItemIdentifyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
   case 6: {
-    Replay& replay = Replay::Instance();
-    ReplayPacketRecorder packets{g_packetLengths, replay.baseFrame, replay.started, replay.frame, replay.header.key0, replay.header.key1,
-                                 replay.header.options.recordRestricted, replay.file, replay.fileOffset, replay.records, replay.cipherIndex,
-                                 replay.cipherBase, replay.cipherKey};
-    WindowResponseRecorder{replay.state, packets}.Record(this->geometry.id, static_cast<int>(a), b, this->m_selected, d);
+    this->RecordResponse(static_cast<int>(a), b, this->m_selected, d);
     if (g_replayAnimationScaling != 0) {
       this->m_selected = static_cast<int>(c);
     }
@@ -3312,7 +3253,7 @@ void UISayDialogWnd::Resize(int width, int height) {
 // FUNCTION: fn_12325
 int UIBabyAcceptWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   if (message == 6) {
-    this->m_acceptance->recorder.Record(this->geometry.id, static_cast<int>(a), b, c, d);
+    this->RecordResponse(static_cast<int>(a), b, c, d);
     if (a == 184) {
       g_windowMgr.CloseWindow(110);
       static_cast<CMode*>(g_charViewMode)->SendMsg(173, this->identity, 1, 0, 0);
@@ -3362,7 +3303,7 @@ int UIBabyAcceptWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
 // FUNCTION: fn_12326
 int UIBabyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   if (message == 6) {
-    this->m_acceptance->recorder.Record(this->geometry.id, static_cast<int>(a), b, c, d);
+    this->RecordResponse(static_cast<int>(a), b, c, d);
     if (a == 184) {
       g_windowMgr.CloseWindow(105);
       g_windowMgr.EnsureWindow(110)->SendMsg(nullptr, 91, 184, b, 0, 0);
@@ -3600,7 +3541,7 @@ struct SessionItemLists {
 int UIChooseSellBuyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   if (message == 6) {
     const int response = static_cast<int>(a);
-    this->m_acceptance->recorder.Record(this->geometry.id, response, b, c, d);
+    this->RecordResponse(response, b, c, d);
 
     if (this->geometry.visible != 0) {
       if (response == 185) {
@@ -4849,11 +4790,7 @@ int UISayDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
   UITagTextViewer* viewer = static_cast<UITagTextViewer*>(this->m_viewer);
   switch (message) {
   case 6: {
-    Replay& replay = Replay::Instance();
-    ReplayPacketRecorder packets{g_packetLengths, replay.baseFrame, replay.started, replay.frame, replay.header.key0, replay.header.key1,
-                                 replay.header.options.recordRestricted, replay.file, replay.fileOffset, replay.records, replay.cipherIndex,
-                                 replay.cipherBase, replay.cipherKey};
-    WindowResponseRecorder{replay.state, packets}.Record(this->geometry.id, static_cast<int>(a), b, c, this->unknown_00C8);
+    this->RecordResponse(static_cast<int>(a), b, c, this->unknown_00C8);
     if (g_replayAnimationScaling != 0) {
       this->unknown_00C8 = static_cast<int>(d);
     }
@@ -4987,7 +4924,7 @@ int UIExchangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         char text[24];
         std::sprintf(text, "%s ", this->unknown_00C0->Text());
         if (!g_session.IsNumberWithCommas(text)) {
-          reinterpret_cast<WindowDialogs&>(g_windowMgr).Confirm(LookupMessage(602), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(602), 0, true, false, 0, "Message", 280, 120, 0);
           return 0;
         }
 
@@ -6421,7 +6358,7 @@ UIJoinGuildAcceptWnd::UIJoinGuildAcceptWnd(UIAcceptanceContext& acceptance)
 // FUNCTION: fn_12352
 int UIJoinGuildAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   if (message == 6) {
-    this->m_acceptance->recorder.Record(this->geometry.id, static_cast<int>(a), b, c, d);
+    this->RecordResponse(static_cast<int>(a), b, c, d);
     if (a == 184) {
       g_windowMgr.CloseWindow(70);
       g_windowMgr.CloseWindow(214);
@@ -6843,7 +6780,7 @@ int UIItemParamChangeDisplayWnd::SendMsg(UIWindow* sender, int message, std::int
 // FUNCTION: fn_12351
 int UIJoinFriendAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   if (message == 6) {
-    this->m_acceptance->recorder.Record(this->geometry.id, static_cast<int>(a), b, c, d);
+    this->RecordResponse(static_cast<int>(a), b, c, d);
     int accepted;
     if (a == 184) {
       g_windowMgr.CloseWindow(109);
@@ -7099,7 +7036,7 @@ int UISkillNameChangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
 // FUNCTION: fn_12382
 int UIStarPlaceAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   if (message == 6) {
-    this->m_acceptance->recorder.Record(this->geometry.id, static_cast<int>(a), b, c, d);
+    this->RecordResponse(static_cast<int>(a), b, c, d);
     if (a == 184) {
       CMode* mode = g_modeMgr.GetGameMode();
       g_windowMgr.CloseWindow(119);
@@ -7410,7 +7347,6 @@ int UIStatusWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
 // FUNCTION: fn_12384
 int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   CMode* mode = static_cast<CMode*>(g_charViewMode);
-  auto& dialogs = *reinterpret_cast<WindowDialogs*>(&g_windowMgr);
 
   if (message == 6) {
     switch (a) {
@@ -7426,7 +7362,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
           g_windowMgr.CloseWindow(115);
           break;
         }
-        dialogs.Confirm(LookupMessage(1011), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(1011), 0, true, false, 0, "Message", 280, 120, 0);
         this->unknown_00F4 = 0;
         this->unknown_00F8 = this->unknown_00FC;
         this->unknown_00EC = 0;
@@ -7448,7 +7384,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
           this->FillRegion(111, 79, 98, 14, 0xFFFFFF);
           break;
         }
-        dialogs.Confirm(LookupMessage(1011), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(1011), 0, true, false, 0, "Message", 280, 120, 0);
         this->unknown_00F4 = 1;
         this->unknown_00F8 = this->unknown_00FC;
         this->unknown_00EC = 0;
@@ -7469,7 +7405,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
           this->FillRegion(111, 118, 98, 14, 0xFFFFFF);
           break;
         }
-        dialogs.Confirm(LookupMessage(1011), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(1011), 0, true, false, 0, "Message", 280, 120, 0);
         this->unknown_00F8 = this->unknown_0100;
         this->unknown_00F4 = 2;
         this->unknown_00EC = 0;
@@ -7494,7 +7430,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
             mode->SendMsg(188, password, g_session.m_storePasswordMode, newPassword, 0);
             g_windowMgr.CloseWindow(115);
           } else {
-            dialogs.Confirm(LookupMessage(1016), 0, true, false, 0, "Message", 280, 120, 0);
+            g_windowMgr.Confirm(LookupMessage(1016), 0, true, false, 0, "Message", 280, 120, 0);
             this->unknown_00F4 = 2;
             this->unknown_00F8 = this->unknown_0100;
             this->unknown_00EC = 0;
@@ -7506,7 +7442,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
           }
           break;
         }
-        dialogs.Confirm(LookupMessage(1011), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(1011), 0, true, false, 0, "Message", 280, 120, 0);
         this->unknown_00F4 = 3;
         this->unknown_00F8 = this->unknown_0104;
         this->unknown_00EC = 0;
@@ -7541,7 +7477,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 
     case 293:
       if (++this->unknown_00EC > 8) {
-        dialogs.Confirm(LookupMessage(1011), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(1011), 0, true, false, 0, "Message", 280, 120, 0);
         break;
       }
       switch (this->unknown_00F4) {
@@ -7562,7 +7498,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 
     case 294:
       if (++this->unknown_00EC > 8) {
-        dialogs.Confirm(LookupMessage(1011), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(1011), 0, true, false, 0, "Message", 280, 120, 0);
         break;
       }
       switch (this->unknown_00F4) {
@@ -7583,7 +7519,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 
     case 295:
       if (++this->unknown_00EC > 8) {
-        dialogs.Confirm(LookupMessage(1011), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(1011), 0, true, false, 0, "Message", 280, 120, 0);
         break;
       }
       switch (this->unknown_00F4) {
@@ -7604,7 +7540,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 
     case 296:
       if (++this->unknown_00EC > 8) {
-        dialogs.Confirm(LookupMessage(1011), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(1011), 0, true, false, 0, "Message", 280, 120, 0);
         break;
       }
       switch (this->unknown_00F4) {
@@ -7625,7 +7561,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 
     case 297:
       if (++this->unknown_00EC > 8) {
-        dialogs.Confirm(LookupMessage(1011), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(1011), 0, true, false, 0, "Message", 280, 120, 0);
         break;
       }
       switch (this->unknown_00F4) {
@@ -7646,7 +7582,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 
     case 298:
       if (++this->unknown_00EC > 8) {
-        dialogs.Confirm(LookupMessage(1011), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(1011), 0, true, false, 0, "Message", 280, 120, 0);
         break;
       }
       switch (this->unknown_00F4) {
@@ -7667,7 +7603,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 
     case 299:
       if (++this->unknown_00EC > 8) {
-        dialogs.Confirm(LookupMessage(1011), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(1011), 0, true, false, 0, "Message", 280, 120, 0);
         break;
       }
       switch (this->unknown_00F4) {
@@ -7688,7 +7624,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 
     case 300:
       if (++this->unknown_00EC > 8) {
-        dialogs.Confirm(LookupMessage(1011), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(1011), 0, true, false, 0, "Message", 280, 120, 0);
         break;
       }
       switch (this->unknown_00F4) {
@@ -7709,7 +7645,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 
     case 301:
       if (++this->unknown_00EC > 8) {
-        dialogs.Confirm(LookupMessage(1011), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(1011), 0, true, false, 0, "Message", 280, 120, 0);
         break;
       }
       switch (this->unknown_00F4) {
@@ -7730,7 +7666,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 
     case 302:
       if (++this->unknown_00EC > 8) {
-        dialogs.Confirm(LookupMessage(1011), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(1011), 0, true, false, 0, "Message", 280, 120, 0);
         break;
       }
       switch (this->unknown_00F4) {
@@ -8144,7 +8080,7 @@ int UIAutoMessageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
   if (a == 184) {
     reinterpret_cast<std::string&>(g_session.unknown_56B8[4]) = this->m_edit->Text();
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(942)), 0x64FFFF, 0, 0, 0);
-    reinterpret_cast<WindowDialogs&>(g_windowMgr).RestoreInput();
+    g_windowMgr.RestoreInput();
     g_windowMgr.CloseWindow(116);
   }
   return 0;
@@ -8287,7 +8223,7 @@ void UIExchangeWnd::Slot19() {
   char text[24];
   std::sprintf(text, "%s", edit->Text());
   if (!g_session.IsNumberWithCommas(text)) {
-    reinterpret_cast<WindowDialogs&>(g_windowMgr).Confirm(LookupMessage(602), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(602), 0, true, false, 0, "Message", 280, 120, 0);
     edit->SetText(this->m_moneyText.c_str());
     g_windowMgr.SetFocus(edit);
     return;
@@ -8295,7 +8231,7 @@ void UIExchangeWnd::Slot19() {
 
   std::int64_t money = _atoi64(text);
   if (money > 1000000000) {
-    reinterpret_cast<WindowDialogs&>(g_windowMgr).Confirm(LookupMessage(2467), 2, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(2467), 2, true, false, 0, "Message", 280, 120, 0);
     FormatGroupedInteger(1000000000, text, sizeof(text));
     edit->SetText(text);
     money = 1000000000;
@@ -8503,24 +8439,7 @@ UISpellListWnd::UISpellListWnd() : UIItemIdentifyWnd() {
 int UIPetEggListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
   case 6: {
-    Replay& replay = Replay::Instance();
-    ReplayPacketRecorder packets = {
-      g_packetLengths,
-      replay.baseFrame,
-      replay.started,
-      replay.frame,
-      replay.header.key0,
-      replay.header.key1,
-      replay.header.options.recordRestricted,
-      replay.file,
-      replay.fileOffset,
-      replay.records,
-      replay.cipherIndex,
-      replay.cipherBase,
-      replay.cipherKey,
-    };
-    WindowResponseRecorder recorder{replay.state, packets};
-    recorder.Record(this->geometry.id, static_cast<int>(argument1), argument2, this->m_selected, argument4);
+    this->RecordResponse(static_cast<int>(argument1), argument2, this->m_selected, argument4);
     if (g_replayAnimationScaling != 0) {
       this->m_selected = static_cast<int>(argument3);
     }
@@ -8947,11 +8866,7 @@ void UInCashWnd::Slot26(int x, int y) {
 int UIMakingArrowListWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
   case 6: {
-    Replay& replay = Replay::Instance();
-    ReplayPacketRecorder packets{g_packetLengths, replay.baseFrame, replay.started, replay.frame, replay.header.key0, replay.header.key1,
-                                 replay.header.options.recordRestricted, replay.file, replay.fileOffset, replay.records, replay.cipherIndex,
-                                 replay.cipherBase, replay.cipherKey};
-    WindowResponseRecorder{replay.state, packets}.Record(this->geometry.id, static_cast<int>(a), b, c, this->m_selected);
+    this->RecordResponse(static_cast<int>(a), b, c, this->m_selected);
     if (g_replayAnimationScaling != 0) {
       this->m_selected = static_cast<int>(d);
       this->Invalidate();
@@ -9086,11 +9001,7 @@ void UITipboxWnd::Slot19() {
 int UIChooseWarpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
   case 6: {
-    Replay& replay = Replay::Instance();
-    ReplayPacketRecorder packets{g_packetLengths, replay.baseFrame, replay.started, replay.frame, replay.header.key0, replay.header.key1,
-                                 replay.header.options.recordRestricted, replay.file, replay.fileOffset, replay.records, replay.cipherIndex,
-                                 replay.cipherBase, replay.cipherKey};
-    WindowResponseRecorder{replay.state, packets}.Record(this->geometry.id, static_cast<int>(a), b, c, d);
+    this->RecordResponse(static_cast<int>(a), b, c, d);
     if (a == 184) {
       const int selected = this->m_list->selected;
       if (selected != -1) {
@@ -9760,11 +9671,7 @@ int UIChooseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
 
   switch (message) {
   case 6: {
-    Replay& replay = Replay::Instance();
-    ReplayPacketRecorder packets{g_packetLengths, replay.baseFrame, replay.started, replay.frame, replay.header.key0, replay.header.key1,
-                                 replay.header.options.recordRestricted, replay.file, replay.fileOffset, replay.records, replay.cipherIndex,
-                                 replay.cipherBase, replay.cipherKey};
-    WindowResponseRecorder{replay.state, packets}.Record(this->geometry.id, static_cast<int>(a), b, c, d);
+    this->RecordResponse(static_cast<int>(a), b, c, d);
     if (a == 184) {
       const std::uint32_t tick = GetTickCount();
       if (tick - *reinterpret_cast<const DWORD*>(&g_session.unknown_5490[0x04]) >= 300) {

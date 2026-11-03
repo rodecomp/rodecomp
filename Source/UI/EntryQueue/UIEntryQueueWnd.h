@@ -14,12 +14,6 @@ class UIBitmapButton;
 class UIStaticText;
 struct EntryQueueInfo;
 class UITextViewer;
-struct WindowResponseRecorder;
-
-struct UIEntryQueueContext {
-  void* unknown_text;
-  WindowResponseRecorder& recorder;
-};
 
 class UIEntryQueueHelpWnd : public UIFrameWnd {
 public:
@@ -31,7 +25,7 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
 protected:
-  UIEntryQueueContext* m_entryQueue;
+  void* unknown_entryQueue;
 
 public:
   /* 00B4 */ UITextViewer* m_viewer;
@@ -51,7 +45,7 @@ public:
 
 class UIEntryQueueRequestWnd : public UIFrameWnd {
 public:
-  UIEntryQueueRequestWnd(UIEntryQueueContext& entryQueue);
+  UIEntryQueueRequestWnd();
   ~UIEntryQueueRequestWnd() override;
   void Slot18() override;
   void Slot19() override;
@@ -60,7 +54,7 @@ public:
   bool Create();
 
 protected:
-  UIEntryQueueContext* m_entryQueue;
+  void* unknown_entryQueue;
 
 public:
   /* 00B4 */ UITextViewer* m_viewer;
@@ -75,7 +69,7 @@ public:
 
 class UIEntryQueueStandByWnd : public UIFrameWnd {
 public:
-  UIEntryQueueStandByWnd(UIEntryQueueContext& entryQueue);
+  UIEntryQueueStandByWnd();
   ~UIEntryQueueStandByWnd() override;
   void Slot18() override;
   void Slot19() override;
@@ -85,7 +79,7 @@ public:
   void SetInfo(const char* queueName, int waiting, int ranking);
 
 protected:
-  UIEntryQueueContext* m_entryQueue;
+  void* unknown_entryQueue;
 
 public:
   /* 00B4 */ std::string m_queueName;
@@ -101,7 +95,7 @@ public:
 
 class UIEntryQueueWnd : public UIFrameWnd {
 public:
-  UIEntryQueueWnd(UIEntryQueueContext& entryQueue);
+  UIEntryQueueWnd();
   ~UIEntryQueueWnd() override;
   void Slot11() override;
   void Slot15(int width, int height) override;
@@ -118,7 +112,7 @@ public:
   /* 0100 */ EntryQueueWndInfo* saved;
 
 protected:
-  UIEntryQueueContext* m_entryQueue;
+  void* unknown_entryQueue;
   void* unknown_listContext;
   UIBitmapButton* m_applyButtons[3];
   UIBitmapButton* m_helpButton;

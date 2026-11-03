@@ -9,6 +9,7 @@
 #include <string>
 #include <vector>
 
+class UIWindowMgr;
 class CActRes;
 class CNaviInfo;
 class CNavi_Link;
@@ -18,7 +19,6 @@ class CTexture;
 class GroundGeometry;
 class LuaScript;
 struct NavigationTarget;
-struct WindowDialogs;
 
 struct NaviCell {
   /* 0000 */ int x;
@@ -320,7 +320,7 @@ public:
   int RequestRoute(int cellX, int cellY);
   NaviCell* MapCellToView(NaviCell* out, const char* mapName, int cellX, int cellY, float size);
   std::string RouteText();
-  __declspec(noinline) void ShowRouteResult(int result, int mode, WindowDialogs& dialogs);
+  __declspec(noinline) void ShowRouteResult(int result, int mode);
   void Reset(bool clearAll);
   void ClearRouteNodes();
   void ClearNodePaths();

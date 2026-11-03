@@ -206,7 +206,7 @@ void ShutdownCallback::operator()(Stove::PCSDK::CallbackResult callbackResult, S
       MessageBoxA(hWnd, message.c_str(), caption, MB_OK);
       g_modeMgr.gameMode->SendMsg(2, 0, 0, 0, 0);
     } else if (g_alternateDoubleClickGate == 0) {
-      reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(message.c_str(), 0, true, true, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(message.c_str(), 0, true, true, 0, "Message", 280, 120, 0);
     } else {
       UIBroadcastBalloon* balloonWindow = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->EnsureBroadcastBalloon();
       if (balloonWindow != nullptr) {
@@ -687,7 +687,7 @@ void CStoveMgr::StartPurchase(const std::vector<ITEM_INFO>& items) {
     thread_local EncryptedName<sizeof(verbSource), 0x9B17C9EFDBB39F2FULL> verbName(verbSource);
     const char* verb = verbName.Text();
     ShellExecuteA(nullptr, verb, url, url, nullptr, SW_SHOWNORMAL);
-    if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(PurchaseCheckingMessage()().Text(), 2, true, false, 0, "Message", 250, 170, 0) == 187) {
+    if (g_windowMgr.Confirm(PurchaseCheckingMessage()().Text(), 2, true, false, 0, "Message", 250, 170, 0) == 187) {
       IAP_ConfirmPurchase((static_cast<std::int64_t>(this->unknown_0014) << 32) | static_cast<std::uint32_t>(this->unknown_0010), sub_63A9D0);
       g_stoveWaitingCallback = true;
       do {

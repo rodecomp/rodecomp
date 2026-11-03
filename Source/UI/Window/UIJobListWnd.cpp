@@ -122,7 +122,7 @@ int UIJobListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
     }
 
     if (selected == 0) {
-      reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(1767), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(1767), 0, true, false, 0, "Message", 280, 120, 0);
       return 0;
     }
 

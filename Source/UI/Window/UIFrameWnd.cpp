@@ -892,7 +892,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       g_windowMgr.sub_A978D0(30)->SendMsg(nullptr, 34, reinterpret_cast<std::intptr_t>(&mode->unknown_03C8), 0, 0, 0);
       return 0;
     case 3:
-      reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(191), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(191), 0, true, false, 0, "Message", 280, 120, 0);
       return 0;
     case 11:
       this->SaveChatLog();

@@ -108,7 +108,7 @@ int UIVideoWnd::SendMsg(
     }
     break;
   case 5:
-    if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(3142), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+    if (g_windowMgr.Confirm(LookupMessage(3142), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
       g_windowMgr.CloseWindow(304);
     }
     break;

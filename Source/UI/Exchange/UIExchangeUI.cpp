@@ -258,7 +258,7 @@ void CUIExchangeUI::SubmitZeny() {
     this->lockButton->disabled = 1;
     this->lockButton->Invalidate();
   } else {
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x25A), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(0x25A), 0, true, false, 0, "Message", 280, 120, 0);
   }
 }
 
@@ -390,7 +390,7 @@ void CUIExchangeUI::Slot19() {
     }
 
     if (amount > 1000000000) {
-      reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x9A3), 2, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(0x9A3), 2, true, false, 0, "Message", 280, 120, 0);
       FormatGroupedInteger(1000000000, text, sizeof(text));
       this->zenyEdit->SetText(text);
       this->SetZeny(1000000000);
@@ -403,7 +403,7 @@ void CUIExchangeUI::Slot19() {
 
     this->zenyEdit->SetCursor(this->zenyEdit->Length());
   } else {
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x25A), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(0x25A), 0, true, false, 0, "Message", 280, 120, 0);
     this->zenyEdit->SetText(this->zenyText);
   }
 }

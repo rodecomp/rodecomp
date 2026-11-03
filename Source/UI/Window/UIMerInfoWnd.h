@@ -6,7 +6,6 @@
 
 class UIBitmapButton;
 class UIBarGraphPlayer;
-struct WindowResponseRecorder;
 
 class UIMerInfoWnd : public UIFrameWnd {
 public:
@@ -25,7 +24,7 @@ public:
 
 protected:
   void* unknown_controls;
-  WindowResponseRecorder* m_recorder;
+  void* unknown_recorder;
 };
 
 #endif

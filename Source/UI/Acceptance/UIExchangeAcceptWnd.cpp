@@ -40,7 +40,7 @@ int UIExchangeAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
 
   if (message == 6) {
     const int response = static_cast<int>(a);
-    owner.recorder.Record(this->geometry.id, response, b, c, d);
+    this->RecordResponse(response, b, c, d);
 
     if (response == 184 || response == 185) {
       g_windowMgr.CloseWindow(32);

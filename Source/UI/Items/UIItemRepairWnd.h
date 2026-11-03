@@ -7,7 +7,6 @@
 #include <list>
 #include <vector>
 
-struct WindowResponseRecorder;
 class UIListBox;
 
 #pragma pack(push, 1)
@@ -22,7 +21,7 @@ static_assert(sizeof(UIItemRepairEntry) == 0x18);
 
 class UIItemRepairWnd : public UIFrameWnd {
 public:
-  UIItemRepairWnd(WindowResponseRecorder& recorder);
+  UIItemRepairWnd();
   ~UIItemRepairWnd() override;
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -40,7 +39,7 @@ public:
   /* 00D0 */ std::list<UIItemRepairEntry> entries;
 
 protected:
-  WindowResponseRecorder* m_recorder;
+  void* unknown_recorder;
 };
 
 #endif

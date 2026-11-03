@@ -556,7 +556,7 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
 
       if (!hasControlCharacter && allowed == 1 && valid == 1 && blank == 0) {
         if (this->m_nameEdit->Length() >= 24) {
-          reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x213), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(0x213), 0, true, false, 0, "Message", 280, 120, 0);
           this->m_nameEdit->SetText("");
           return 0;
         }
@@ -581,13 +581,13 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
         g_windowMgr.Schedule(this);
       } else {
         if (hasControlCharacter || allowed == 0) {
-          reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x14), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(0x14), 0, true, false, 0, "Message", 280, 120, 0);
         }
         if (valid == 0) {
-          reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0xBE), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(0xBE), 0, true, false, 0, "Message", 280, 120, 0);
         }
         if (blank == 1) {
-          reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(199), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(199), 0, true, false, 0, "Message", 280, 120, 0);
         }
       }
 
@@ -606,7 +606,7 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
       return 0;
     }
 
-    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(messageId), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(messageId), 0, true, false, 0, "Message", 280, 120, 0);
     return 0;
   }
 

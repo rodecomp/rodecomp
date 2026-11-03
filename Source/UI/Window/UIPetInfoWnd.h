@@ -13,7 +13,6 @@ class UINormalMB;
 class ForbiddenWords;
 class UINoneVisibleButton;
 class UIPetInfoBarGraph;
-struct WindowResponseRecorder;
 
 class UIPetInfoWnd : public UIFrameWnd {
 public:
@@ -38,7 +37,7 @@ public:
 
 protected:
   void* unknown_controls;
-  WindowResponseRecorder* m_recorder;
+  void* unknown_recorder;
   ForbiddenWords* m_forbiddenWords;
 };
 

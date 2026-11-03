@@ -31,7 +31,6 @@ struct ITEM_INFO;
 class UIItemTagButton;
 
 class UIWindow : public UIRPData {
-  friend struct WindowDialogs;
   friend class UIWindowMgr;
   friend class CUIDropDownBox;
   friend class CUIGameSettingsUI;
@@ -177,6 +176,7 @@ public:
   std::list<int> WrapText(std::string text, std::list<std::string>* lines, int maxWidth, int family, int height, unsigned char bold);
   const char* TruncateText(const char* text, int maxBytes);
   const char* ClipTextToWidth(const char* text, int maxWidth, int family, int height, unsigned char bold);
+  void RecordResponse(int response, std::intptr_t b, std::intptr_t c, std::intptr_t d);
   int RecordEditTexts(WindowReplayRecorder& recorder);
   int RestoreEditTexts(const unsigned char* data);
   void DrawActionSprite(
