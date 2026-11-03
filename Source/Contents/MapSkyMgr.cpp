@@ -1,6 +1,7 @@
 #include "Contents/MapSkyMgr.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
+#include "Client/Session.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Effects/EffectActor.h"
 #include "Contents/Effects/EffectLists.h"
@@ -42,8 +43,6 @@ CWeatherEffect g_weatherEffect;
 // GLOBAL: gl_24633
 float g_depthAverageHalf = 0.5f;
 
-// GLOBAL: gl_25254
-std::vector<std::string> g_registeredLowercaseNames;
 
 static_assert(sizeof(std::vector<std::string>) == 12);
 
@@ -488,11 +487,11 @@ void RegisterLowercaseName(const char* name) {
     character = static_cast<char>(std::tolower(static_cast<unsigned char>(character)));
   }
 
-  for (const std::string& entry : g_registeredLowercaseNames) {
+  for (const std::string& entry : g_session.unknown_80A8) {
     if (entry == lowered) {
       return;
     }
   }
 
-  g_registeredLowercaseNames.push_back(lowered.c_str());
+  g_session.unknown_80A8.push_back(lowered.c_str());
 }

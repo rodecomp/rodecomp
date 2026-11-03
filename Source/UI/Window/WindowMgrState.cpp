@@ -458,8 +458,8 @@ void UIWindowMgr::LoadUIRectInfo() {
   RegQueryValueExA(key, "CHATWNDSTICKON", nullptr, &type, reinterpret_cast<BYTE*>(&this->unknown_03F4), &size);
   RegQueryValueExA(key, "ONSTSUBCHAT", nullptr, &type, base + 0x3F5, &size);
   RegQueryValueExA(key, "ONBTSUBCHAT", nullptr, &type, reinterpret_cast<BYTE*>(&this->unknown_03F6), &size);
-  RegQueryValueExA(key, "MEMORIALDUNWND.X", nullptr, &type, reinterpret_cast<BYTE*>(&g_memorialDunWndX), &size);
-  RegQueryValueExA(key, "MEMORIALDUNWND.Y", nullptr, &type, reinterpret_cast<BYTE*>(&g_memorialDunWndY), &size);
+  RegQueryValueExA(key, "MEMORIALDUNWND.X", nullptr, &type, reinterpret_cast<BYTE*>(&g_session.unknown_5940), &size);
+  RegQueryValueExA(key, "MEMORIALDUNWND.Y", nullptr, &type, reinterpret_cast<BYTE*>(&g_session.unknown_5944), &size);
   RegQueryValueExA(key, "QUICKSLOTWNDINFO.X", nullptr, &type, base + 0x934, &size);
   RegQueryValueExA(key, "QUICKSLOTWNDINFO.Y", nullptr, &type, base + 0x938, &size);
   RegQueryValueExA(key, "QUICKSLOTWNDINFO.W", nullptr, &type, base + 0x93C, &size);
@@ -912,8 +912,8 @@ void UIWindowMgr::SaveUIRectInfo() {
     RegSetValueExA(key, "CHATWNDSTICKON", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->unknown_03F4), 4);
     RegSetValueExA(key, "ONSTSUBCHAT", 0, REG_DWORD, base + 0x3F5, 4);
     RegSetValueExA(key, "ONBTSUBCHAT", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->unknown_03F6), 4);
-    RegSetValueExA(key, "MEMORIALDUNWND.X", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&g_memorialDunWndX), 4);
-    RegSetValueExA(key, "MEMORIALDUNWND.Y", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&g_memorialDunWndY), 4);
+    RegSetValueExA(key, "MEMORIALDUNWND.X", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&g_session.unknown_5940), 4);
+    RegSetValueExA(key, "MEMORIALDUNWND.Y", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&g_session.unknown_5944), 4);
     RegSetValueExA(key, "QUICKSLOTWNDINFO.X", 0, REG_DWORD, base + 0x934, 4);
     RegSetValueExA(key, "QUICKSLOTWNDINFO.Y", 0, REG_DWORD, base + 0x938, 4);
     RegSetValueExA(key, "QUICKSLOTWNDINFO.W", 0, REG_DWORD, base + 0x93C, 4);

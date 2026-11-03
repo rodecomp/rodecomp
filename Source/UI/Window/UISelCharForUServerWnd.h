@@ -11,7 +11,6 @@
 class UIBitmapButton;
 class UICharInfoBalloonText;
 
-extern int g_charViewCount;
 
 class UISelCharForUServerWnd : public UIFrameWnd {
 public:

@@ -4834,7 +4834,7 @@ void CGameActor::SpawnDamageDigits(int, int damage, std::uint32_t color, int typ
     effect->SendMsg(nullptr, 22, 0, this->render.accountId, 0, type, type >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
     const std::intptr_t position = reinterpret_cast<std::intptr_t>(&this->render.position);
     const int count = static_cast<int>(digits.size());
-    if (value >= 100000000 && g_damageMillionUnit == 2) {
+    if (value >= 100000000 && g_session.m_damageMillionUnit == 2) {
       if (index == 0) {
         effect->SendMsg(nullptr, 64, 0, position, position >> 31, *it, *it >> 31, (count - 1) * 3 + 4, 0, 0, 0, 0, 0, 0, 0);
       } else {

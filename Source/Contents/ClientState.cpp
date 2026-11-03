@@ -44,8 +44,6 @@ namespace {
   };
 }
 
-// GLOBAL: gl_24492
-bool g_homunculusAutoFeed;
 
 // GLOBAL: gl_24493
 bool g_petAutoFeed;
@@ -972,7 +970,7 @@ void CSession::SetHomunculusAutoFeed(bool enabled) {
     this->m_homunculusAutoFeed = true;
     message = 3282;
   } else {
-    g_homunculusAutoFeed = false;
+    g_session.m_homunculusAutoFeed = false;
     message = 3283;
   }
 

@@ -26,10 +26,6 @@
 #include <timeapi.h>
 #include <windows.h>
 
-// GLOBAL: gl_24934
-int g_searchStoreX;
-// GLOBAL: gl_24935
-int g_searchStoreY;
 
 // GLOBAL: gl_25107
 CFile g_whisperFile;
@@ -160,10 +156,10 @@ void CGameMode::DrawMiniMapMembers(const TextureRegion& view) {
     }
   }
 
-  if (g_searchStoreX > -1) {
-    const int y = g_searchStoreY;
+  if (g_session.unknown_5BE8 > -1) {
+    const int y = g_session.unknown_5BEC;
     if (y > -1) {
-      this->DrawMiniMapMarker(view, g_searchStoreX, y, 4, "유저인터페이스\\basic_interface\\search_store.bmp", 0, 0, true);
+      this->DrawMiniMapMarker(view, g_session.unknown_5BE8, y, 4, "유저인터페이스\\basic_interface\\search_store.bmp", 0, 0, true);
     }
   }
 }

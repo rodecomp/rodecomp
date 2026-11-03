@@ -47,11 +47,7 @@ void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::AddNewItem();
 template <>
 void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::Slot53(int resolveSkin);
 
-// GLOBAL: gl_25004
-int g_exchangeMyZeny;
 
-// GLOBAL: gl_25005
-int g_exchangeOtherZeny;
 
 // OFFSET: 0x00A0F790
 // FUNCTION: fn_15176
@@ -553,12 +549,12 @@ void CUIExchangeUI::UpdateZeny(bool mine) {
     first = this->unknown_00E8;
     second = this->unknown_00EC;
     third = this->unknown_00F0;
-    zeny = g_exchangeMyZeny;
+    zeny = g_session.unknown_5210;
   } else {
     first = this->unknown_00FC;
     second = this->unknown_0100;
     third = this->unknown_0104;
-    zeny = g_exchangeOtherZeny;
+    zeny = g_session.unknown_5214;
   }
 
   char text[24];

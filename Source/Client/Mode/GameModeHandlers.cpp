@@ -2194,10 +2194,10 @@ void CGameMode::ReceiveAchievementUpdate(
     }
   }
 
-  g_unknown_01738784 = unknown01738784;
-  g_unknown_01738788 = unknown01738788;
-  g_achievementCompleted = completed;
-  g_achievementTotal = total;
+  g_session.unknown_614C = unknown01738784;
+  g_session.unknown_6150 = unknown01738788;
+  g_session.unknown_6154 = completed;
+  g_session.unknown_6158 = total;
 
   AchievementRecordPacket record;
   record.id = id;
@@ -2902,7 +2902,7 @@ void CGameMode::ReceivePendingItem1718List(const unsigned char* packet) {
   }
 
   g_session.ClearTradeItems();
-  if (g_hangameLogin == 1) {
+  if (g_session.m_channelCopId == 1) {
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>("한게임 유저는 12월 3일부로 유료아이템 구매가 불가능합니다."), 0xFF, 0, 0, 0);
     return;

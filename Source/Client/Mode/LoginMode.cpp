@@ -1965,8 +1965,6 @@ void CLoginMode::Zc_Accept_Enter2(const AcceptEnterPositionPacket* packet) {
 // GLOBAL: gl_25155
 char g_loginFailCount;
 
-// GLOBAL: gl_25156
-int g_hangameLogin;
 
 // OFFSET: 0x00D91790
 // FUNCTION: fn_22289
@@ -2053,7 +2051,7 @@ void CLoginMode::ShowLoginError(int code, int argument) {
     if (g_serviceType == 0 && ++g_loginFailCount >= 3) {
       message = std::string(PasswordRetryExceededMessage{}().Text());
       if (g_windowMgr.Confirm(message.c_str(), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8) {
-        if (g_hangameLogin == 1) {
+        if (g_session.m_channelCopId == 1) {
           const std::uint8_t urlSource[] = {0x17, 0x67, 0xAB, 0xA1, 0xBF, 0x48, 0x56, 0x9A, 0x08, 0x64, 0xF1, 0xB9,
                                             0xE4, 0x09, 0x1E, 0x8C, 0x12, 0x76, 0xF1, 0xB2, 0xEA, 0x0A, 0x79};
           thread_local EncryptedName<sizeof(urlSource), 0xED796785D1DF137FULL> url(urlSource);
@@ -2637,7 +2635,7 @@ void CLoginMode::PollNetworkStatus() {
 
       const unsigned int dataLength = packet->length - offsetof(AcceptEnterNeoUnionPacket, characters);
       this->characterCount = dataLength / sizeof(CharacterInfo);
-      g_charViewCount = this->characterCount;
+      g_session.unknown_0E94 = this->characterCount;
       const unsigned char* characters = reinterpret_cast<const unsigned char*>(packet->characters) + dataLength % sizeof(CharacterInfo);
       memcpy_s(this->characters, sizeof(this->characters), characters, this->characterCount * sizeof(CharacterInfo));
       this->pendingCursorType = 19;
@@ -2951,7 +2949,7 @@ void CLoginMode::PollNetworkStatus() {
     case 0xB18: {
       const std::int16_t slots = reinterpret_cast<const ShortResultPacket*>(g_gameModePacketBuffer)->result;
       if (slots <= 100) {
-        g_extraInventorySlots = slots;
+        g_session.unknown_7FBC = slots;
       }
       break;
     }

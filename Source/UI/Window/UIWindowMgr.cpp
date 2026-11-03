@@ -118,8 +118,6 @@ UIWindowMgr g_windowMgr;
 // GLOBAL: gl_25159
 bool g_windowToggleFlag;
 
-// GLOBAL: gl_24686
-int g_closeWindow137State;
 
 // GLOBAL: gl_24687
 int g_closeWindow164State;
@@ -842,9 +840,9 @@ void UIWindowMgr::sub_AA6B80() {
       continue;
     }
 
-    if (window == reinterpret_cast<UIWindow*>(this->unknown_03F8) && g_closeWindow137State != 0) {
-      g_memorialDunWndX = window->geometry.x;
-      g_memorialDunWndY = window->geometry.y;
+    if (window == reinterpret_cast<UIWindow*>(this->unknown_03F8) && g_session.unknown_593C != 0) {
+      g_session.unknown_5940 = window->geometry.x;
+      g_session.unknown_5944 = window->geometry.y;
     }
 
     if (!this->modalWindows.empty() && this->modalWindows.back()) {
@@ -3523,7 +3521,7 @@ bool UIWindowMgr::CloseWindow(int id) {
       this->Schedule(this->unknown_03F8);
       this->unknown_03F8 = nullptr;
       closed = true;
-      g_closeWindow137State = 0;
+      g_session.unknown_593C = 0;
     }
     break;
   case 139:

@@ -22,8 +22,6 @@
 
 extern const char* LookupMessage(int id);
 
-// GLOBAL: gl_24772
-int g_charViewCount;
 
 #pragma pack(push, 1)
 struct PACKET_CZ_SELECT_CHARACTERS {
@@ -38,7 +36,7 @@ struct PACKET_CZ_SELECT_CHARACTERS {
 // FUNCTION: fn_12526
 UISelCharForUServerWnd::UISelCharForUServerWnd()
     : UIFrameWnd(0), m_columns(6) {
-  if (g_charViewCount > 12) {
+  if (g_session.unknown_0E94 > 12) {
     this->m_columns = 9;
   }
 
@@ -46,7 +44,7 @@ UISelCharForUServerWnd::UISelCharForUServerWnd()
   this->m_checkedCount = 0;
   this->geometry.unknown_0034 = 0;
   this->unknown_19E4 = 0;
-  for (int index = 0; index < g_charViewCount; ++index) {
+  for (int index = 0; index < g_session.unknown_0E94; ++index) {
     this->m_slotEnabled[index] = 1;
   }
 
@@ -70,7 +68,7 @@ void UISelCharForUServerWnd::Slot15(int, int) {
 
   this->m_message0 = 184;
 
-  for (int index = 0; index < g_charViewCount; ++index) {
+  for (int index = 0; index < g_session.unknown_0E94; ++index) {
     UICheckBox* checkBox = new UICheckBox();
     this->m_checkBoxes[index] = checkBox;
     checkBox->SetSize(10, 10);
@@ -79,7 +77,7 @@ void UISelCharForUServerWnd::Slot15(int, int) {
     this->AddChild(this->m_checkBoxes[index]);
   }
 
-  for (int index = 0; index < g_charViewCount; ++index) {
+  for (int index = 0; index < g_session.unknown_0E94; ++index) {
     CharacterInfo* info = reinterpret_cast<CharacterInfo*>(static_cast<CMode*>(g_charViewMode)->SendMsg(8, index, 0, 0, 0));
     if (!info) {
       continue;
@@ -147,7 +145,7 @@ int UISelCharForUServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
 
     int characterIds[9] = {};
     int count = 0;
-    const int viewCount = g_charViewCount;
+    const int viewCount = g_session.unknown_0E94;
     for (int index = 0; index < viewCount; ++index) {
       if (this->m_checkBoxes[index]->geometry.unknown_0030 != 0) {
         CMode* mode = g_modeMgr.gameMode;

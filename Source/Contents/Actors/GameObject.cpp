@@ -231,8 +231,6 @@ void CRenderObject::Render(int argument) {
   }
 }
 
-// GLOBAL: gl_24732
-int g_seasonalMonsterSprites;
 
 // OFFSET: 0x00CB20F0
 // FUNCTION: fn_21103
@@ -241,7 +239,7 @@ void CRenderObject::DrawSprite(int argument, bool seasonal, float offset) {
   CSprRes* sprite = this->render.sprite;
   CActRes* action = this->render.action;
 
-  if (g_seasonalMonsterSprites == 1 && seasonal == true) {
+  if (g_session.unknown_5450 == 1 && seasonal == true) {
     SYSTEMTIME time;
     GetLocalTime(&time);
     int job;

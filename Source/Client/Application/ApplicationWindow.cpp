@@ -195,7 +195,7 @@ LRESULT CALLBACK sub_E5C430(HWND window, UINT message, WPARAM wParam, LPARAM lPa
     if (!g_windowMgr.GetHoverWindow() || g_windowMgr.GetHoverWindow()->SendMsg(nullptr, WM_KEYDOWN, wParam, lParam, 0, 0) != 3) {
       g_serverLanguage->KeyDown(wParam, lParam);
     }
-    if (g_dialogKeyboardEnabled && !g_dialogKeyboardBlocked) {
+    if (g_session.unknown_5480 && !g_session.unknown_5488) {
       g_windowMgr.RefreshWindow01C8Edits();
     }
     return 0;

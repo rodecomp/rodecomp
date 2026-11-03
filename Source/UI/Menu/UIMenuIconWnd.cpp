@@ -38,8 +38,6 @@ struct MenuIconOpenUiPacket {
 };
 #pragma pack(pop)
 
-// GLOBAL: gl_24966
-static bool s_menuIconExpanded;
 
 // OFFSET: 0x0084A1E0
 // FUNCTION: fn_10606
@@ -68,7 +66,7 @@ UIWindow* UIMenuIconWnd::HitTest(int x, int y) {
     return nullptr;
   }
 
-  if (!s_menuIconExpanded) {
+  if (!g_session.m_showMenuIcon) {
     if (x >= this->geometry.x + this->geometry.width || y < this->geometry.y || y >= this->geometry.y + this->unknown_00D0->geometry.height) {
       return nullptr;
     }
@@ -188,7 +186,7 @@ void UIMenuIconWnd::Slot15(int width, int height) {
   this->unknown_00D4->SetId(201);
   this->unknown_00D4->Enable(0);
   this->AddChild(this->unknown_00D4);
-  this->SendMsg(this, 6, s_menuIconExpanded == true ? 510 : 201, 0, 0, 0);
+  this->SendMsg(this, 6, g_session.m_showMenuIcon == true ? 510 : 201, 0, 0, 0);
   if (this->unknown_00B4.size() > 20) {
     this->Resize(220, 238);
   }
@@ -203,7 +201,7 @@ void UIMenuIconWnd::Paint() {
   this->unknown_00D4->Enable(0);
 
   UIButton* toggle;
-  if (s_menuIconExpanded) {
+  if (g_session.m_showMenuIcon) {
     toggle = this->unknown_00D4;
   } else if (this->unknown_00C4.size() == 0) {
     toggle = this->unknown_00CC;
@@ -213,7 +211,7 @@ void UIMenuIconWnd::Paint() {
   toggle->Enable(1);
 
   for (auto it = this->unknown_00B4.begin(); it != this->unknown_00B4.end(); ++it) {
-    if (!s_menuIconExpanded) {
+    if (!g_session.m_showMenuIcon) {
       it->second->Enable(0);
       if (this->unknown_00BC.find(it->first) != this->unknown_00BC.end()) {
         this->unknown_00BC[it->first]->Enable(0);
@@ -366,7 +364,7 @@ int UIMenuIconWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
     if (!Replay::Instance().AllowsEvent(argument1)) {
       switch (argument1) {
       case 201:
-        s_menuIconExpanded = false;
+        g_session.m_showMenuIcon = false;
         this->Invalidate();
         break;
       case 286: {
@@ -434,7 +432,7 @@ int UIMenuIconWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
         break;
       }
       case 510:
-        s_menuIconExpanded = true;
+        g_session.m_showMenuIcon = true;
         this->Invalidate();
         break;
       case 476:
@@ -484,7 +482,7 @@ int UIMenuIconWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
       }
     }
   } else if (message == 60) {
-    this->SendMsg(nullptr, 6, s_menuIconExpanded == true ? 201 : 510, 0, 0, 0);
+    this->SendMsg(nullptr, 6, g_session.m_showMenuIcon == true ? 201 : 510, 0, 0, 0);
   }
 
   if (message == 6 && argument1 == 376 && !Replay::Instance().AllowsEvent(argument1) && g_entryQueueMgr) {

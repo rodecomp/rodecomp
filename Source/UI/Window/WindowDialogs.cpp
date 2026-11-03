@@ -7,16 +7,12 @@
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 
-// GLOBAL: gl_24604
-int g_dialogKeyboardEnabled;
 
-// GLOBAL: gl_24605
-int g_dialogKeyboardBlocked;
 
 // OFFSET: 0x00A90950
 // FUNCTION: fn_17154
 bool UIWindowMgr::ProcessDialogKey(int, int key) {
-  if (g_dialogKeyboardEnabled == 0 || g_dialogKeyboardBlocked != 0) {
+  if (g_session.unknown_5480 == 0 || g_session.unknown_5488 != 0) {
     return false;
   }
 

@@ -79,9 +79,5 @@ public:
 static_assert(sizeof(CAchievementMgr) == 0x1C);
 
 extern CAchievementMgr* g_achievementMgr;
-extern int g_achievementCompleted;
-extern int g_achievementTotal;
-extern int g_unknown_01738784;
-extern short g_unknown_01738788;
 
 #endif

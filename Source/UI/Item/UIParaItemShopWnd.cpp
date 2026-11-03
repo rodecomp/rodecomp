@@ -741,7 +741,7 @@ void UIParaItemShopWnd::Paint() {
       if (g_serviceType == 6) {
         currency = "K";
       } else if (g_serviceType == 0) {
-        if (g_hangameLogin == 1) {
+        if (g_session.m_channelCopId == 1) {
           currency = "H";
         } else {
           currency = "C";
@@ -768,7 +768,7 @@ void UIParaItemShopWnd::Paint() {
 
   if (this->unknown_010C == 1) {
     std::string text;
-    if (g_serviceType == 0 && g_hangameLogin == 1) {
+    if (g_serviceType == 0 && g_session.m_channelCopId == 1) {
       text = FormatOwnedString(LookupMessage(1290), this->ClipTextToWidth(g_session.DecodePlayerName(), 100, 0, 12, 0), g_pendingAid);
     } else {
       text = FormatOwnedString(LookupMessage(1210), this->ClipTextToWidth(g_session.DecodePlayerName(), 100, 0, 12, 0), g_pendingAid);

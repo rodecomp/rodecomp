@@ -87,8 +87,6 @@ public:
   void OnSelectSecondListItem(ExchangeUI::CUIItem* item, const ExchangeUI::CItemData& data);
 };
 
-extern int g_exchangeMyZeny;
-extern int g_exchangeOtherZeny;
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(ExchangeUI::CItemData) == 0x100);

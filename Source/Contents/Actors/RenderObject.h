@@ -104,7 +104,6 @@ public:
   /* 0010 */ RenderObjectState render;
 };
 
-extern int g_seasonalMonsterSprites;
 extern int g_pickInvert;
 extern int g_pickModifierKey;
 

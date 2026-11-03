@@ -1526,7 +1526,7 @@ void CGameMode::ReceiveZoneServerChange(const unsigned char* packet) {
 // OFFSET: 0x00D79F00
 // FUNCTION: fn_22184
 void CGameMode::ReceiveZoneServerChange(const char* mapName, std::int16_t x, std::int16_t y, int ip, std::int16_t port) {
-  g_localMapMove = 1;
+  g_session.m_localMapMove = 1;
   this->ChangeZoneServer(mapName, x, y, ip, port, std::string());
 }
 
@@ -5495,7 +5495,7 @@ void CGameMode::ApplyStatusChange(
       break;
     case 260:
       if (aid == g_session.m_aid) {
-        g_seasonalMonsterSprites = 1;
+        g_session.unknown_5450 = 1;
       }
       std::sprintf(message, "");
       break;
@@ -6225,7 +6225,7 @@ void CGameMode::ApplyStatusChange(
       break;
     case 260:
       if (aid == g_session.m_aid) {
-        g_seasonalMonsterSprites = 0;
+        g_session.unknown_5450 = 0;
       }
       std::sprintf(message, "");
       break;
@@ -7862,7 +7862,7 @@ namespace {
   // INLINED
   __forceinline void EquipWindowItem(const ITEM_INFO& item) {
     if (g_session.IsPetEgg(std::atoi(item.itemId.c_str())) && item.unknown_005D) {
-      g_activePetEggIndex = item.unknown_0000[1];
+      g_session.unknown_1050 = item.unknown_0000[1];
     }
 
     if (item.unknown_0000[3] != 0) {
@@ -7874,7 +7874,7 @@ namespace {
     }
 
     if (g_session.IsPetEgg(std::atoi(item.itemId.c_str())) && item.unknown_005D) {
-      const int petEgg = std::atoi(LookupClientItemByIdentity(g_session.m_inventoryItems, g_activePetEggIndex).itemId.c_str());
+      const int petEgg = std::atoi(LookupClientItemByIdentity(g_session.m_inventoryItems, g_session.unknown_1050).itemId.c_str());
       if (!g_petEvolutionMgr->IsAutoFeeding(petEgg) && g_petAutoFeed == true) {
         g_session.SendPetAutoFeedOption(0);
       }
@@ -7998,7 +7998,7 @@ namespace {
   // INLINED
   __forceinline void AddInventoryEquipItem(const ITEM_INFO& item) {
     if (g_session.IsPetEgg(std::atoi(item.itemId.c_str())) && item.unknown_005D) {
-      g_activePetEggIndex = item.unknown_0000[1];
+      g_session.unknown_1050 = item.unknown_0000[1];
     }
 
     if (item.unknown_0000[3] == 0) {
@@ -8014,7 +8014,7 @@ namespace {
     }
 
     if (g_session.IsPetEgg(std::atoi(item.itemId.c_str())) && item.unknown_005D) {
-      const int petEgg = std::atoi(LookupClientItemByIdentity(g_session.m_inventoryItems, g_activePetEggIndex).itemId.c_str());
+      const int petEgg = std::atoi(LookupClientItemByIdentity(g_session.m_inventoryItems, g_session.unknown_1050).itemId.c_str());
       if (!g_petEvolutionMgr->IsAutoFeeding(petEgg) && g_petAutoFeed == true) {
         g_session.SendPetAutoFeedOption(0);
       }
@@ -9034,7 +9034,7 @@ void CGameMode::ReceivePetChangeState(const unsigned char* data) {
         if (found == 1) {
           item.unknown_005D = 1;
           g_session.UpdateInventoryItem(item, 1);
-          g_activePetEggIndex = item.unknown_0000[1];
+          g_session.unknown_1050 = item.unknown_0000[1];
           if (UIWindow* inventory = g_windowMgr.LookupWindow(8)) {
             inventory->Invalidate();
           }

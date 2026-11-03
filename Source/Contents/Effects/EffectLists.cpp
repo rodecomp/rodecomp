@@ -81,11 +81,7 @@
 #include <new>
 #include <string>
 
-// GLOBAL: gl_24787
-int g_levelEffectId1;
 
-// GLOBAL: gl_24788
-int g_levelEffectId2;
 
 void CRenderObject::ClearLevelEffects() {
   reinterpret_cast<unsigned char*>(this)[0x2B8] = 0;
@@ -108,8 +104,8 @@ void CRenderObject::ClearLevelEffects() {
   this->SendMsg(nullptr, 0x6D, 0, 0xC9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   this->SendMsg(nullptr, 0x6D, 0, 0xCA, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   this->SendMsg(nullptr, 0x6D, 0, 0xCA, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-  this->SendMsg(this, 0x6D, 0, g_levelEffectId1, g_levelEffectId1 >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-  this->SendMsg(this, 0x6D, 0, g_levelEffectId2, g_levelEffectId2 >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(this, 0x6D, 0, g_session.m_maxLevelEffect4th, g_session.m_maxLevelEffect4th >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(this, 0x6D, 0, g_session.m_maxLevelEffect4thSub, g_session.m_maxLevelEffect4thSub >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x00B25750

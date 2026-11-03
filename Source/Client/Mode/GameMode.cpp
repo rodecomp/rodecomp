@@ -3283,7 +3283,7 @@ void CGameMode::InitializeState() {
     g_windowMgr.EnsureWindow(190);
   }
 
-  if (g_closeWindow137State) {
+  if (g_session.unknown_593C) {
     g_windowMgr.EnsureWindow(137);
   }
 

@@ -3291,7 +3291,7 @@ int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
     }
     case 267:
       if (g_serviceType == 0) {
-        if (g_hangameLogin == 1) {
+        if (g_session.m_channelCopId == 1) {
           g_modeMgr.Quit();
           const char* url = HangameJoinUrl()().Text();
           const std::uint8_t verbSource[] = {0xDC, 0x17, 0x3C, 0xE1, 0xDF};
@@ -3307,11 +3307,11 @@ int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       this->OpenWebPage();
       break;
     case 359:
-      g_hangameLogin = 0;
+      g_session.m_channelCopId = 0;
       this->Invalidate();
       break;
     case 360:
-      g_hangameLogin = 2;
+      g_session.m_channelCopId = 2;
       this->Invalidate();
       break;
     }
@@ -3469,7 +3469,7 @@ void UIHomunInfoWnd::Slot15(int, int) {
   this->unknown_00D4->SetSize(12, 12);
   this->unknown_00D4->Move(210, 142);
   this->unknown_00D4->SetBitmaps("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp");
-  this->unknown_00D4->SetChecked(g_homunculusAutoFeed);
+  this->unknown_00D4->SetChecked(g_session.m_homunculusAutoFeed);
   this->AddChild(this->unknown_00D4);
 }
 
@@ -3696,7 +3696,7 @@ void UIPetInfoWnd::Slot15(int, int) {
   this->UpdateFriendlyGauge();
   this->m_message0 = 201;
 
-  const int petEgg = std::atoi(LookupClientItemByIdentity(g_session.m_inventoryItems, g_activePetEggIndex).itemId.c_str());
+  const int petEgg = std::atoi(LookupClientItemByIdentity(g_session.m_inventoryItems, g_session.unknown_1050).itemId.c_str());
   this->unknown_00E4 = g_petEvolutionMgr->IsAutoFeeding(petEgg);
   if (this->unknown_00E4 == true) {
     this->unknown_00E8 = new UICheckBox();
@@ -3747,7 +3747,7 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       if (g_session.m_petFriendly > 900) {
         g_windowMgr.CloseWindow(260);
         UIWindow* window = g_windowMgr.EnsureWindow(261);
-        const int petEgg = LookupClientItemByIdentity(g_session.m_inventoryItems, g_activePetEggIndex).GetItemId();
+        const int petEgg = LookupClientItemByIdentity(g_session.m_inventoryItems, g_session.unknown_1050).GetItemId();
         window->SendMsg(nullptr, 142, petEgg, b, 0, 0);
         this->SendMsg(nullptr, 6, 201, 0, 0, 0);
         g_windowMgr.CloseWindow(260);
@@ -3815,7 +3815,7 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       menu->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(performance.c_str()), 468, 0, 0);
       menu->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(unequip.c_str()), 469, 0, 0);
       menu->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(returnToEgg.c_str()), 470, 0, 0);
-      const int petEgg = LookupClientItemByIdentity(g_session.m_inventoryItems, g_activePetEggIndex).GetItemId();
+      const int petEgg = LookupClientItemByIdentity(g_session.m_inventoryItems, g_session.unknown_1050).GetItemId();
       const std::pair<bool, std::vector<int>> targets = g_petEvolutionMgr->GetEvolutionTargets(petEgg);
       if (targets.first == true) {
         for (auto it = targets.second.begin(); it != targets.second.end(); ++it) {

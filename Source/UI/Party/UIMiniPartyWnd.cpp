@@ -87,7 +87,7 @@ void UIMiniPartyWnd::Slot25(int x, int y) {
 // OFFSET: 0x00740B80
 // FUNCTION: fn_07731
 void UIMiniPartyInfoWnd::Slot25(int x, int y) {
-  if (!g_messengerGroupCollapsed) {
+  if (!g_session.m_lockMouse) {
     this->m_owner->Slot25(x, y);
   }
 
@@ -102,7 +102,7 @@ void UIMiniPartyInfoWnd::Slot25(int x, int y) {
 // OFFSET: 0x00740D10
 // FUNCTION: fn_07732
 void UIMiniPartyInfoWnd::Slot31(int x, int y) {
-  if (g_messengerGroupCollapsed != true && this == g_windowMgr.Capture()) {
+  if (g_session.m_lockMouse != true && this == g_windowMgr.Capture()) {
     this->m_owner->Slot31(x, y);
   }
 }
@@ -142,7 +142,7 @@ void UIMiniPartyInfoWnd::Slot28(int, int) {
 // OFFSET: 0x00741280
 // FUNCTION: fn_07734
 void UIMiniPartyInfoWnd::Slot33(int, int) {
-  if (!g_messengerGroupCollapsed) {
+  if (!g_session.m_lockMouse) {
     this->SendMsg(nullptr, 0x31, 0, 0, 0, 0);
   }
 }
@@ -172,13 +172,13 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       break;
     }
     case 231:
-      if (!g_messengerGroupCollapsed) {
+      if (!g_session.m_lockMouse) {
         this->m_owner->GetMember();
         return 0;
       }
       break;
     case 232:
-      if (!g_messengerGroupCollapsed) {
+      if (!g_session.m_lockMouse) {
         if (this->m_owner->GetMember().valid && !(this->m_owner->GetMember().name == g_session.DecodePlayerName())) {
           const char* group;
           if (g_windowMgr.IsFriend(this->m_owner->GetMember().name.c_str())) {
@@ -195,13 +195,13 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       }
       break;
     case 233:
-      if (!g_messengerGroupCollapsed && this->m_owner->GetMember().valid) {
+      if (!g_session.m_lockMouse && this->m_owner->GetMember().valid) {
         g_windowMgr.Confirm(LookupMessage(191), 0, true, false, 0, "Message", 280, 120, 0);
         return 0;
       }
       break;
     case 234:
-      if (!g_messengerGroupCollapsed) {
+      if (!g_session.m_lockMouse) {
         if (g_windowMgr.unknown_042C) {
           g_windowMgr.CloseWindow(208);
         }
@@ -220,7 +220,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       }
       break;
     case 235:
-      if (!g_messengerGroupCollapsed && this->m_owner->GetMember().valid) {
+      if (!g_session.m_lockMouse && this->m_owner->GetMember().valid) {
         if (!(this->m_owner->GetMember().name == g_session.DecodePlayerName())) {
           if (g_windowMgr.Confirm(LookupMessage(363), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
             g_modeMgr.gameMode->SendMsg(62, reinterpret_cast<int>(this->m_owner->GetMember().name.c_str()), 0, 0, 0);
@@ -230,7 +230,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       }
       break;
     case 236:
-      if (!g_messengerGroupCollapsed) {
+      if (!g_session.m_lockMouse) {
         if (this->m_owner->GetMember().valid && this->m_owner->GetMember().name == g_session.DecodePlayerName()) {
           if (g_windowMgr.Confirm(LookupMessage(357), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
             g_modeMgr.gameMode->SendMsg(61, 0, 0, 0, 0);

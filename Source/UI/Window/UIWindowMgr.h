@@ -610,10 +610,7 @@ extern bool g_windowToggleFlag;
 extern bool g_randomLoadingScreen;
 extern int g_windowCloseValue;
 extern int g_savedWindowCloseValue;
-extern int g_closeWindow137State;
 extern int g_closeWindow164State;
-extern int g_dialogKeyboardEnabled;
-extern int g_dialogKeyboardBlocked;
 
 void __fastcall RefreshItemWindows(UIWindowMgr* mgr);
 

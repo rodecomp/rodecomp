@@ -6,8 +6,6 @@
 class UIBitmapButton;
 class UIBasicButton;
 
-extern int g_memorialDunWndX;
-extern int g_memorialDunWndY;
 
 class UIMemorialDunWnd : public UIFrameWnd {
 public:

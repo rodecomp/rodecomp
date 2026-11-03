@@ -1134,8 +1134,6 @@ void UIExpandedBarterPurchaseButton::Slot28(int x, int y) {
   }
 }
 
-// GLOBAL: gl_25056
-int g_extraInventorySlots;
 
 // OFFSET: 0x00840530
 // FUNCTION: fn_10544
@@ -1162,7 +1160,7 @@ bool UIBarterItemPurchaseWnd::Purchase() {
     }
   }
 
-  if (count > g_extraInventorySlots + 100) {
+  if (count > g_session.unknown_7FBC + 100) {
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3568)), 255, 0, 0, 0);
     this->SendMsg(nullptr, 6, 185, 0, 0, 0);
@@ -1575,7 +1573,7 @@ bool UIExpandedBarterItemPurchaseWnd::Purchase() {
     }
   }
 
-  if (count > g_extraInventorySlots + 100) {
+  if (count > g_session.unknown_7FBC + 100) {
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3568)), 255, 0, 0, 0);
     this->SendMsg(nullptr, 6, 185, 0, 0, 0);

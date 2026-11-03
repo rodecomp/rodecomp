@@ -67,8 +67,6 @@ struct GuildTotalInfoEntry {
 // GLOBAL: gl_24994
 std::string g_guildNamelessTag = "<NAMELESS>";
 
-// GLOBAL: gl_25131
-bool g_guildOnlineFirst;
 
 // OFFSET: 0x00957D30
 // FUNCTION: fn_13044
@@ -1786,7 +1784,7 @@ void UIGuildMemberManageWnd::Slot15(int, int) {
   this->m_onlineCheck->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(2864));
   this->m_onlineCheck->FitToText();
   this->m_onlineCheck->Move(12, this->geometry.height - 18);
-  this->m_onlineCheck->SetChecked(g_guildOnlineFirst);
+  this->m_onlineCheck->SetChecked(g_session.m_guildMemberListSort);
   this->AddChild(this->m_onlineCheck);
   this->UpdateScroll();
 }
@@ -2509,7 +2507,7 @@ void UIGuildMemberManageWnd::Paint() {
     }
   }
 
-  if (g_guildOnlineFirst) {
+  if (g_session.m_guildMemberListSort) {
     this->m_members.sort([](const GuildInfo::Member& left, const GuildInfo::Member& right) {
       return left.online > right.online;
     });
@@ -2593,7 +2591,7 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
       g_windowMgr.CloseWindow(59);
       return 0;
     case 213:
-      g_guildOnlineFirst = !g_guildOnlineFirst;
+      g_session.m_guildMemberListSort = !g_session.m_guildMemberListSort;
       this->Invalidate();
       return 0;
     case 273:

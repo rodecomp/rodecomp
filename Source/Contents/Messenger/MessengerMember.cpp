@@ -169,12 +169,6 @@ public:
   /* 028C */ int mode;
 };
 
-// GLOBAL: gl_24961
-bool g_messengerGroupCollapsed;
-// GLOBAL: gl_25219
-int g_messengerDropColumnWidth;
-// GLOBAL: gl_25220
-int g_messengerDropRowHeight;
 // GLOBAL: gl_25250
 std::string g_messengerNamelessTag = "<NAMELESS>";
 
@@ -708,8 +702,8 @@ __declspec(noinline) void UIMessengerGroupWnd::DropMember(int x, int y, int inde
     }
 
     int cell;
-    if (x < g_messengerDropColumnWidth + 23 && y > top) {
-      int row = (y - top) / (g_messengerDropRowHeight + 3);
+    if (x < g_windowMgr.unknown_4F238 + 23 && y > top) {
+      int row = (y - top) / (g_windowMgr.unknown_4F23C + 3);
       if (g_windowMgr.FindSnapExcludedWindow(row)) {
         cell = g_windowMgr.FindMiniPartyCell();
       } else {
@@ -1115,7 +1109,7 @@ void UIMessengerGroupWnd::Paint() {
 // OFFSET: 0x0073CD30
 // FUNCTION: fn_07708
 void UIMessengerGroupWnd::Slot26(int, int) {
-  if (!g_messengerGroupCollapsed) {
+  if (!g_session.m_lockMouse) {
     this->SendMsg(nullptr, 6, 232, 0, 0, 0);
   }
 }
@@ -1123,7 +1117,7 @@ void UIMessengerGroupWnd::Slot26(int, int) {
 // OFFSET: 0x0073D460
 // FUNCTION: fn_07713
 void UIMessengerGroupWnd::Slot25(int x, int y) {
-  if (g_messengerGroupCollapsed) {
+  if (g_session.m_lockMouse) {
     return;
   }
 
@@ -1178,7 +1172,7 @@ void UIMessengerGroupWnd::Slot33(int x, int y) {
 
   gameMode->TargetActorByAid(member.accountId);
   MessengerMember selectedMember = this->MemberAtIndex(this->selected);
-  if (this->mode == 1 && !g_messengerGroupCollapsed && !g_windowMgr.HasMiniPartyMember(selectedMember.accountId)) {
+  if (this->mode == 1 && !g_session.m_lockMouse && !g_windowMgr.HasMiniPartyMember(selectedMember.accountId)) {
     gameMode->SetDragIds(29, this->selected);
     if (!g_windowMgr.window_4F250) {
       UIDragMiniPartyWnd* window = new (std::nothrow) UIDragMiniPartyWnd(selectedMember);
@@ -1371,7 +1365,7 @@ void UIMessengerGroupWnd::LayoutButtons() {
     x = 135;
   }
 
-  if (g_messengerGroupCollapsed) {
+  if (g_session.m_lockMouse) {
     this->buttons[5]->Move(x, this->geometry.height - 40);
     this->buttons[6]->Move(-100, -100);
   } else {
@@ -1498,12 +1492,12 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       return 0;
     }
     case 0xE7:
-      if (!g_messengerGroupCollapsed && this->selected != -1) {
+      if (!g_session.m_lockMouse && this->selected != -1) {
         MessengerMember member = this->MemberAtIndex(this->selected);
       }
       return 0;
     case 0xE8:
-      if (!g_messengerGroupCollapsed && this->selected != -1) {
+      if (!g_session.m_lockMouse && this->selected != -1) {
         MessengerMember member = this->MemberAtIndex(this->selected);
         if (member.valid && !(member.name == g_session.DecodePlayerName())) {
           const char* tag;
@@ -1520,7 +1514,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       }
       return 0;
     case 0xE9:
-      if (!g_messengerGroupCollapsed && this->selected != -1) {
+      if (!g_session.m_lockMouse && this->selected != -1) {
         MessengerMember member = this->MemberAtIndex(this->selected);
         if (member.valid) {
           g_windowMgr.Confirm(LookupMessage(0xBF), 0, true, false, 0, "Message", 0x118, 0x78, 0);
@@ -1528,7 +1522,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       }
       return 0;
     case 0xEA:
-      if (!g_messengerGroupCollapsed) {
+      if (!g_session.m_lockMouse) {
         if (g_windowMgr.unknown_042C) {
           g_windowMgr.CloseWindow(0xD0);
         }
@@ -1557,7 +1551,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       }
       return 0;
     case 0xEB:
-      if (!g_messengerGroupCollapsed && this->selected != -1) {
+      if (!g_session.m_lockMouse && this->selected != -1) {
         MessengerMember member = this->MemberAtIndex(this->selected);
         if (member.valid) {
           if (this->mode == 0) {
@@ -1573,7 +1567,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       }
       return 0;
     case 0xEC:
-      if (!g_messengerGroupCollapsed && this->selected != -1) {
+      if (!g_session.m_lockMouse && this->selected != -1) {
         MessengerMember member = this->MemberAtIndex(this->selected);
         if (member.valid && member.name == g_session.DecodePlayerName()) {
           if (g_windowMgr.Confirm(LookupMessage(0x165), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
@@ -1583,16 +1577,16 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       }
       return 0;
     case 0x16C:
-      if (g_messengerGroupCollapsed != true) {
+      if (g_session.m_lockMouse != true) {
         g_windowMgr.RearrangeMiniPartyWindows();
       }
       return 0;
     case 0x179:
       if (sender == this->buttons[5]) {
-        g_messengerGroupCollapsed = false;
+        g_session.m_lockMouse = false;
         this->buttons[6]->Move(sender->geometry.x, sender->geometry.y);
       } else if (sender == this->buttons[6]) {
-        g_messengerGroupCollapsed = true;
+        g_session.m_lockMouse = true;
         this->buttons[5]->Move(sender->geometry.x, sender->geometry.y);
       } else {
         return 0;
@@ -1600,7 +1594,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       sender->Move(-100, -100);
       return 0;
     case 0x1BD:
-      if (!g_messengerGroupCollapsed) {
+      if (!g_session.m_lockMouse) {
         if (g_windowMgr.unknown_033C) {
           g_windowMgr.CloseWindow(0x44);
         }
@@ -1621,7 +1615,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       }
       return 0;
     case 0x1BE:
-      if (!g_messengerGroupCollapsed) {
+      if (!g_session.m_lockMouse) {
         if (g_windowMgr.Confirm(LookupMessage(0x165), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
           g_modeMgr.gameMode->SendMsg(0x3D, 0, 0, 0, 0);
           if (g_windowMgr.unknown_042C) {
@@ -1631,7 +1625,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       }
       return 0;
     case 0x1BF:
-      if (!g_messengerGroupCollapsed) {
+      if (!g_session.m_lockMouse) {
         if (g_windowMgr.unknown_033C) {
           g_windowMgr.CloseWindow(0x44);
         }

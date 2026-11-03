@@ -76,11 +76,7 @@ struct MemorialDungeonCommandPacket {
 // GLOBAL: gl_24660
 std::uint8_t g_chatInputFlag;
 
-// GLOBAL: gl_24737
-int g_memorialDunWndX;
 
-// GLOBAL: gl_24738
-int g_memorialDunWndY;
 
 // GLOBAL: gl_24888
 static bool g_subChatMiniFirstCollapsed;
@@ -696,11 +692,11 @@ void UIMemorialDunWnd::Move(int x, int y) {
   const int top = y <= g_renderer->viewport.height - this->geometry.height ? y : 310;
   this->UIFrameWnd::Move(left, top);
 
-  if (g_memorialDunWndX != left) {
-    g_memorialDunWndX = left;
+  if (g_session.unknown_5940 != left) {
+    g_session.unknown_5940 = left;
   }
-  if (g_memorialDunWndY != top) {
-    g_memorialDunWndY = top;
+  if (g_session.unknown_5944 != top) {
+    g_session.unknown_5944 = top;
   }
 }
 

@@ -9750,7 +9750,7 @@ void UILoadingWnd::Slot15(int, int) {
 
   const int count = static_cast<int>(g_loadingScreens.size());
   char name[256];
-  if (g_localMapMove == 1) {
+  if (g_session.m_localMapMove == 1) {
     std::strcpy(name, "유저인터페이스\\loading_airplane.jpg");
   } else if (!g_randomLoadingScreen) {
     if (s_loadingScreenIndex < count) {
@@ -12321,13 +12321,13 @@ void UIExchangeWnd::Paint() {
   }
   char grouped[32];
   char amount[128];
-  int length = std::sprintf(amount, "%s", FormatGroupedInteger(g_exchangeMyZeny, grouped, sizeof(grouped)));
-  PriceColors colors = PriceColor(g_exchangeMyZeny);
+  int length = std::sprintf(amount, "%s", FormatGroupedInteger(g_session.unknown_5210, grouped, sizeof(grouped)));
+  PriceColors colors = PriceColor(g_session.unknown_5210);
   this->DrawRightAlignedText(219, 331, amount, length, 1, 16, colors.primary & 0xFFFFFF, 0);
   this->DrawRightAlignedText(220, 331, amount, length, 1, 16, colors.primary & 0xFFFFFF, 0);
   this->DrawRightAlignedText(220, 332, amount, length, 1, 16, 0x323232, 0);
-  length = std::sprintf(amount, "%s", FormatGroupedInteger(g_exchangeOtherZeny, grouped, sizeof(grouped)));
-  colors = PriceColor(g_exchangeOtherZeny);
+  length = std::sprintf(amount, "%s", FormatGroupedInteger(g_session.unknown_5214, grouped, sizeof(grouped)));
+  colors = PriceColor(g_session.unknown_5214);
   this->DrawRightAlignedText(499, 331, amount, length, 1, 16, colors.primary & 0xFFFFFF, 0);
   this->DrawRightAlignedText(500, 331, amount, length, 1, 16, colors.primary & 0xFFFFFF, 0);
   this->DrawRightAlignedText(500, 332, amount, length, 1, 16, 0x323232, 0);

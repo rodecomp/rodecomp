@@ -86,8 +86,6 @@ namespace {
   }
 }
 
-// GLOBAL: gl_24395
-int g_activePetEggIndex;
 
 // OFFSET: 0x00D42FB0
 // FUNCTION: fn_21831
@@ -118,7 +116,7 @@ void CGameMode::ReceiveEquipListPart(unsigned char listType, int count, const un
       FillEquipListItem(item, record, options);
 
       if (g_session.IsPetEgg(std::atoi(item.itemId.c_str())) && item.unknown_005D) {
-        g_activePetEggIndex = item.unknown_0000[1];
+        g_session.unknown_1050 = item.unknown_0000[1];
       }
 
       if (item.unknown_0000[3] == 0) {
@@ -134,7 +132,7 @@ void CGameMode::ReceiveEquipListPart(unsigned char listType, int count, const un
       }
 
       if (g_session.IsPetEgg(std::atoi(item.itemId.c_str())) && item.unknown_005D) {
-        const int petEgg = std::atoi(LookupClientItemByIdentity(g_session.m_inventoryItems, g_activePetEggIndex).itemId.c_str());
+        const int petEgg = std::atoi(LookupClientItemByIdentity(g_session.m_inventoryItems, g_session.unknown_1050).itemId.c_str());
         if (!g_petEvolutionMgr->IsAutoFeeding(petEgg) && g_petAutoFeed == true) {
           g_session.SendPetAutoFeedOption(0);
         }

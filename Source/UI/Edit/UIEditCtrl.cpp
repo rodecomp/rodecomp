@@ -1471,7 +1471,7 @@ int UIItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     } else if (g_serviceType == 6) {
       format = "Total : %d Koin";
     } else if (g_serviceType == 0) {
-      format = g_hangameLogin == 1 ? "Total : %d 한코인" : "Total : %d Cash";
+      format = g_session.m_channelCopId == 1 ? "Total : %d 한코인" : "Total : %d Cash";
     } else {
       format = "Total : %d Point";
     }
@@ -1697,7 +1697,7 @@ int UIItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     } else if (g_serviceType == 6) {
       format = "Total : %s Koin";
     } else if (g_serviceType == 0) {
-      format = g_hangameLogin == 1 ? "Total : %s 한코인" : "Total : %s 캐시";
+      format = g_session.m_channelCopId == 1 ? "Total : %s 한코인" : "Total : %s 캐시";
     } else {
       format = "Total : %s Point";
     }
@@ -7326,7 +7326,7 @@ void UIItemShopWnd::Slot28(int x, int y) {
       if (g_serviceType == 6) {
         sprintf(currency, "Koin");
       } else if (g_serviceType == 0) {
-        if (g_hangameLogin == 1) {
+        if (g_session.m_channelCopId == 1) {
           sprintf(currency, "한코인");
         } else {
           sprintf(currency, LookupMessage(1307));
@@ -10501,10 +10501,10 @@ void UIItemWnd::Paint() {
   }
 
   const int count = g_session.GetList0Size() + g_session.CountItems17F0() + g_session.CountItems2B50();
-  const std::uint32_t color = count >= g_extraInventorySlots + 100 ? 0xFF : 0x232323;
+  const std::uint32_t color = count >= g_session.unknown_7FBC + 100 ? 0xFF : 0x232323;
   this->DrawTextAt(35, this->geometry.height - 15, FormatOwnedString("%d", count).c_str(), 0, 0, 11, color, 0, 0);
   const int width = this->TextWidth(FormatOwnedString("%d", count).c_str(), 0, 0, 11, 0, 0);
-  this->DrawTextAt(width + 36, this->geometry.height - 15, FormatOwnedString("/%d", g_extraInventorySlots + 100).c_str(), 0, 0, 11, 0, 0, 0
+  this->DrawTextAt(width + 36, this->geometry.height - 15, FormatOwnedString("/%d", g_session.unknown_7FBC + 100).c_str(), 0, 0, 11, 0, 0, 0
   );
 }
 

@@ -27,11 +27,6 @@
 #include <windows.h>
 #include <timeapi.h>
 
-// GLOBAL: gl_25145
-int g_damageMillionUnit;
-
-// GLOBAL: gl_24976
-std::string g_damageResourceName;
 
 // GLOBAL: gl_24975
 bool g_msgEffectShowSpecial = true;
@@ -1699,8 +1694,8 @@ void CMsgEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         case 14:
         case 16:
         case 21:
-          this->SetSpriteName(ResourceMgr::Instance(), FormatOwnedString("%s.spr", g_damageResourceName.c_str()).c_str());
-          this->SetActionName(ResourceMgr::Instance(), FormatOwnedString("%s.act", g_damageResourceName.c_str()).c_str());
+          this->SetSpriteName(ResourceMgr::Instance(), FormatOwnedString("%s.spr", g_session.m_damageResourceName.c_str()).c_str());
+          this->SetActionName(ResourceMgr::Instance(), FormatOwnedString("%s.act", g_session.m_damageResourceName.c_str()).c_str());
           this->render.animation = 0;
           this->render.previousAnimation = 0;
           this->render.position = *position;
@@ -1720,8 +1715,8 @@ void CMsgEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
             return;
           }
 
-          this->SetSpriteName(ResourceMgr::Instance(), FormatOwnedString("%s.spr", g_damageResourceName.c_str()).c_str());
-          this->SetActionName(ResourceMgr::Instance(), FormatOwnedString("%s.act", g_damageResourceName.c_str()).c_str());
+          this->SetSpriteName(ResourceMgr::Instance(), FormatOwnedString("%s.spr", g_session.m_damageResourceName.c_str()).c_str());
+          this->SetActionName(ResourceMgr::Instance(), FormatOwnedString("%s.act", g_session.m_damageResourceName.c_str()).c_str());
           this->render.animation = 0;
           this->render.previousAnimation = 0;
           this->render.position = *position;

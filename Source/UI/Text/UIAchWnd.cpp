@@ -1287,10 +1287,10 @@ int UIAchievementWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     upper->unknown_00A8->Invalidate();
 
     upper = this->upper;
-    upper->unknown_0094 = g_achievementCompleted;
-    upper->unknown_00A4->value = g_achievementCompleted;
-    upper->unknown_0098 = g_achievementTotal;
-    upper->unknown_00A4->maximum = g_achievementTotal;
+    upper->unknown_0094 = g_session.unknown_6154;
+    upper->unknown_00A4->value = g_session.unknown_6154;
+    upper->unknown_0098 = g_session.unknown_6158;
+    upper->unknown_00A4->maximum = g_session.unknown_6158;
     upper->unknown_00A4->Invalidate();
 
     this->upper->Invalidate();

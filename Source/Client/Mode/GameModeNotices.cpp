@@ -85,8 +85,6 @@
 #include <vector>
 #include <xtimec.h>
 
-// GLOBAL: gl_25253
-int g_localMapMove;
 
 // GLOBAL: gl_25441
 static const std::string g_whisperItemLinkTag = "<ITEML>";
@@ -1772,17 +1770,8 @@ int g_unknown_0173826C;
 // GLOBAL: gl_25113
 int g_unknown_01738270;
 
-// GLOBAL: gl_25114
-int g_unknown_01738784;
 
-// GLOBAL: gl_25115
-short g_unknown_01738788;
 
-// GLOBAL: gl_24957
-int g_achievementCompleted;
-
-// GLOBAL: gl_24958
-int g_achievementTotal;
 
 // OFFSET: 0x00D1C050
 // FUNCTION: fn_21624
@@ -1812,10 +1801,10 @@ void CGameMode::sub_D1C050(const AchievementStatePacket* packet) {
 // OFFSET: 0x00D6C460
 // FUNCTION: fn_22081
 void CGameMode::sub_D6C460(int count, int unknown01738784, short unknown01738788, int completed, int total, const AchievementRecordPacket* packets) {
-  g_unknown_01738784 = unknown01738784;
-  g_unknown_01738788 = unknown01738788;
-  g_achievementCompleted = completed;
-  g_achievementTotal = total;
+  g_session.unknown_614C = unknown01738784;
+  g_session.unknown_6150 = unknown01738788;
+  g_session.unknown_6154 = completed;
+  g_session.unknown_6158 = total;
 
   for (int i = 0; i < count; ++i) {
     g_session.UpdateRecord6144(packets[i]);
@@ -5137,7 +5126,7 @@ void CGameMode::RequestLocalMapMove(const char* mapName, std::uint16_t x, std::u
     /* 0014 */ std::uint16_t y;
   } packet;
 
-  g_localMapMove = 1;
+  g_session.m_localMapMove = 1;
   packet.id = 0x91;
   strcpy_s(packet.mapName, sizeof(packet.mapName), mapName);
   packet.x = x;
@@ -6084,7 +6073,7 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
       break;
     case 260:
       if (packet->aid == g_session.m_aid) {
-        g_seasonalMonsterSprites = 1;
+        g_session.unknown_5450 = 1;
       }
       std::sprintf(message, "");
       break;
@@ -6725,7 +6714,7 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
       break;
     case 260:
       if (packet->aid == g_session.m_aid) {
-        g_seasonalMonsterSprites = 0;
+        g_session.unknown_5450 = 0;
       }
       std::sprintf(message, "");
       break;

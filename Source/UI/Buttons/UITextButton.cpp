@@ -3563,8 +3563,6 @@ int UISlotBmpButton::SendMsg(UIWindow* sender, int message, std::intptr_t argume
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/CLoginMode.h"
 
-// GLOBAL: gl_25382
-int g_slotButtonInfo;
 
 // OFFSET: 0x0088EBC0
 // FUNCTION: fn_11385
@@ -3594,7 +3592,7 @@ void UISlotBmpButton::Paint() {
     }
   }
 
-  if (this->m_index == 0 && g_slotButtonInfo == 0) {
+  if (this->m_index == 0 && g_session.unknown_59BC == 0) {
     CBitmapRes* balloon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\select_character_ver3\\balloon.bmp")));
     this->DrawBitmap(this->geometry.width / 2 - 0x2e, 0x1a, balloon ? &balloon->image : nullptr, false);
 

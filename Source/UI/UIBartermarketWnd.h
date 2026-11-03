@@ -117,6 +117,5 @@ public:
   std::string FormatChunkText(int refine, std::string name, int amount);
 };
 
-extern int g_extraInventorySlots;
 
 #endif
