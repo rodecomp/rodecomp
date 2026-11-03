@@ -3231,6 +3231,225 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
 }
 
 // OFFSET: 0x008DEC50
+// FUNCTION: fn_12171
+void UIEquipWnd::Slot15(int width, int height) {
+  const int top = this->m_viewOther != 0 ? 0 : 20;
+  this->unknown_00D8 = top;
+  if (height != top + this->geometry.height) {
+    this->Resize(this->geometry.width, top + this->geometry.height);
+  }
+
+  if (this->m_viewOther == 0) {
+    this->unknown_00DC = new UICheckBox();
+    this->unknown_00DC->SetSize(80, 12);
+    this->unknown_00DC->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(0x552));
+    this->unknown_00DC->Move(10, this->geometry.height - 15);
+    this->unknown_00DC->SetChecked(*reinterpret_cast<const int*>(g_session.unknown_5974));
+    this->AddChild(this->unknown_00DC);
+
+    this->unknown_00E0 = new UICheckBox();
+    this->unknown_00E0->SetSize(80, 12);
+    this->unknown_00E0->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(0x1007));
+    this->unknown_00E0->SetChecked(*reinterpret_cast<const int*>(g_session.unknown_8128) == 0);
+    this->unknown_00E0->Show(0);
+    this->unknown_00E0->Move(10, this->geometry.height - 15);
+    this->AddChild(this->unknown_00E0);
+  }
+
+  const std::string closeTooltip("Alt+Q");
+  const std::string minimizeTooltip("Ctrl+Q");
+  this->AddBaseButton();
+  this->AddCloseButton(closeTooltip.c_str(), 0);
+  this->AddMinimizeButton(minimizeTooltip.c_str(), 0);
+
+  if (this->m_viewOther == 0) {
+    {
+      std::string prefix("유저인터페이스\\basic_interface\\");
+      const int x = this->geometry.width / 2 - 18;
+      const int bottom = this->geometry.height - this->unknown_00D8;
+      this->m_viewButton = new UIBitmapButton();
+      this->m_viewButton->SetBitmap((prefix + "btn_off" + ".bmp").c_str(), 0, 0);
+      this->m_viewButton->SetBitmap((prefix + "btn_off" + ".bmp").c_str(), 1, 0);
+      this->m_viewButton->SetBitmap((prefix + "btn_off" + ".bmp").c_str(), 2, 0);
+      this->m_viewButton->SetSize(this->m_viewButton->BitmapWidth(), this->m_viewButton->BitmapHeight());
+      this->m_viewButton->Move(x, IsEquipViewHidden() * 230 + bottom - 40);
+      this->m_viewButton->SetId(248);
+
+      const char* tooltip = nullptr;
+      const std::uint32_t flags = g_session.m_jobFlags;
+      if (StateFlag04(flags)) {
+        tooltip = LookupMessage(0x1B9);
+      } else if (StateFlag05(flags)) {
+        switch (g_session.GetDisplayJob()) {
+        case 0xFF2:
+        case 0xFF3:
+        case 0x100E:
+        case 0x10B9:
+          tooltip = LookupMessage(0x830);
+          break;
+        default:
+          tooltip = LookupMessage(0x1BA);
+          break;
+        }
+      } else if (StateFlag22(flags)) {
+        tooltip = LookupMessage(0x5B8);
+      } else if (StateFlag19(flags) || StateFlag23(flags) || StateFlag24(flags) || StateFlag25(flags) || StateFlag26(flags)) {
+        tooltip = LookupMessage(0x5B7);
+      }
+      if (g_session.unknown_5C1C > 0) {
+        tooltip = LookupMessage(tooltip ? 0xE34 : 0xDF);
+      }
+      this->m_viewButton->SetTooltip(tooltip);
+      this->AddChild(this->m_viewButton);
+    }
+
+    if (this->m_viewOther == 0) {
+      std::string prefix("유저인터페이스\\basic_interface\\");
+      const int x = this->geometry.width / 2 - 14;
+      const int bottom = this->geometry.height - this->unknown_00D8;
+      this->m_otherButton = new UIBitmapButton();
+      this->m_otherButton->SetBitmap((prefix + "btn_items_off" + ".bmp").c_str(), 0, 0);
+      this->m_otherButton->SetBitmap((prefix + "btn_items_on" + ".bmp").c_str(), 1, 0);
+      this->m_otherButton->SetBitmap((prefix + "btn_items_on" + ".bmp").c_str(), 2, 0);
+      this->m_otherButton->SetSize(this->m_otherButton->BitmapWidth(), this->m_otherButton->BitmapHeight());
+      this->m_otherButton->Move(x, bottom + (g_session.unknown_5C1C > 0 ? -60 : 170));
+      this->m_otherButton->SetId(249);
+      this->m_otherButton->SetTooltip(g_session.unknown_5C1C > 0 ? LookupMessage(0xED) : "");
+      this->AddChild(this->m_otherButton);
+    }
+  }
+
+  this->m_show = this->geometry.height;
+  this->m_highlight[0] = -1;
+  this->m_highlight[1] = -1;
+  this->m_highlight[2] = -1;
+
+  this->m_tabs = new UITabControl();
+  this->m_tabs->Configure(1, 17, 15, 1, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->m_tabs->Move(0, 17);
+  this->AddChild(this->m_tabs);
+  this->m_tabs->AddTab(LookupMessage(0x70D), LookupMessage(0xC56));
+  this->m_tabs->AddTab(LookupMessage(0x973), LookupMessage(0xC57));
+  if (this->m_viewOther == 0) {
+    this->m_tabs->AddTab(LookupMessage(0xA7D), LookupMessage(0xC58));
+  }
+
+  this->m_titleList = new UIListBoxTitle();
+  this->m_titleList->Configure(3, this->m_contentTop + 39, this->geometry.width - 6, 105, 0);
+  reinterpret_cast<int*>(this->m_titleList->unknown_007C)[0] = 225;
+  reinterpret_cast<int*>(this->m_titleList->unknown_007C)[1] = 225;
+  reinterpret_cast<int*>(this->m_titleList->unknown_007C)[2] = 225;
+  this->m_titleList->SetId(480);
+  this->m_titleList->Show(0);
+  this->AddChild(this->m_titleList);
+
+  if (this->m_viewOther == 0 && this->unknown_012C == nullptr) {
+    this->unknown_012C = new UIBitmapButton();
+    this->unknown_012C->SetBitmap("유저인터페이스\\basic_interface\\btn_e_change_a.bmp", 0, 0);
+    this->unknown_012C->SetBitmap("유저인터페이스\\basic_interface\\btn_e_change_b.bmp", 1, 0);
+    this->unknown_012C->SetBitmap("유저인터페이스\\basic_interface\\btn_e_change_b.bmp", 2, 0);
+    this->unknown_012C->SetSize(this->unknown_012C->BitmapWidth(), this->unknown_012C->BitmapHeight());
+    this->unknown_012C->Move(193, 167);
+    this->unknown_012C->SetId(508);
+    this->unknown_012C->SetTooltip(LookupMessage(0xBAA));
+    this->AddChild(this->unknown_012C);
+  }
+
+  this->unknown_0130 = new UIBitmapButton();
+  this->unknown_0130->SetBitmap("유저인터페이스\\basic_interface\\btn_e_off_a.bmp", 0, 0);
+  this->unknown_0130->SetBitmap("유저인터페이스\\basic_interface\\btn_e_off_b.bmp", 1, 0);
+  this->unknown_0130->SetBitmap("유저인터페이스\\basic_interface\\btn_e_off_b.bmp", 2, 0);
+  this->unknown_0130->SetBitmap("유저인터페이스\\basic_interface\\btn_e_off_c.bmp", 3, 0);
+  this->unknown_0130->SetSize(this->unknown_0130->BitmapWidth(), this->unknown_0130->BitmapHeight());
+  this->unknown_0130->Move(235, 167);
+  this->unknown_0130->SetId(575);
+  this->unknown_0130->SetTooltip(LookupMessage(0xF73));
+  this->AddChild(this->unknown_0130);
+  this->SendMsg(this, 106, 575, 0, 0, 0);
+
+  if (this->m_viewOther == 0) {
+    this->m_tabs->AddTab(LookupMessage(0xF95), LookupMessage(0xF96));
+
+    UIBitmapButton* apply = new UIBitmapButton();
+    this->unknown_0138[0] = apply;
+    apply->SetBitmap("유저인터페이스\\btn_apply.bmp", 0, 0);
+    apply->SetBitmap("유저인터페이스\\btn_apply_a.bmp", 1, 0);
+    apply->SetBitmap("유저인터페이스\\btn_apply_b.bmp", 2, 0);
+    apply->SetSize(apply->BitmapWidth(), apply->BitmapHeight());
+    apply->Move(160, 167);
+    apply->SetId(271);
+    apply->Enable(0);
+    this->AddChild(apply);
+
+    UIBitmapButton* close = new UIBitmapButton();
+    this->unknown_0138[1] = close;
+    close->SetBitmap("유저인터페이스\\btn_close.bmp", 0, 0);
+    close->SetBitmap("유저인터페이스\\btn_close_a.bmp", 1, 0);
+    close->SetBitmap("유저인터페이스\\btn_close_b.bmp", 2, 0);
+    close->SetSize(close->BitmapWidth(), close->BitmapHeight());
+    close->Move(220, 167);
+    close->SetId(201);
+    close->Enable(0);
+    this->AddChild(close);
+
+    const int count = g_session.unknown_80C8;
+    for (int index = 0; index < count; ++index) {
+      const char* name = nullptr;
+      const char* icon = nullptr;
+      g_session.m_hotkeyScript->Call("GetDamageSkinName", "d>ss", index, &name, &icon);
+      if (name) {
+        this->m_damageSkinNames.insert(this->m_damageSkinNames.end(), std::string(name));
+      }
+      if (icon) {
+        this->m_damageSkinIcons.insert(this->m_damageSkinIcons.end(), std::string(icon));
+      }
+    }
+
+    UIScrollBar* scrollBar = new UIScrollBar();
+    this->m_scrollBar = scrollBar;
+    scrollBar->Configure(1, 153, 0, width);
+    scrollBar->Show(0);
+    scrollBar->SetRange(count - 4 > 0 ? count - 4 : 0, 4, count);
+    this->AddChild(this->m_scrollBar);
+
+    const char* labels[4] = {LookupMessage(0xF9A), LookupMessage(0xF99), LookupMessage(0xF98), LookupMessage(0xF97)};
+    for (int index = 0; index < 4; ++index) {
+      UIRadioBtn* radio = new UIRadioBtn();
+      this->unknown_0138[index + 2] = radio;
+      radio->SetSize(60, 12);
+      if (index == 0) {
+        radio->Move(8, this->m_contentTop + 20);
+      } else {
+        radio->Move(index * 60 + 28, this->m_contentTop + 20);
+      }
+      radio->SendMsg(this, 13, index == this->unknown_015C, 0, 0, 0);
+      radio->SetText(labels[index]);
+      const std::string unchecked("유저인터페이스\\tipbox\\checkBox.bmp");
+      const std::string checked("유저인터페이스\\tipbox\\checkBox_check.bmp");
+      radio->checkedBitmap = checked;
+      radio->uncheckedBitmap = unchecked;
+      radio->Invalidate();
+      radio->Show(0);
+      this->AddChild(radio);
+    }
+
+    if (this->m_viewOther == 0) {
+      this->unknown_0178 = new UIBitmapButton();
+      this->unknown_0178->SetBitmap("유저인터페이스\\basic_interface\\btn_e_ability_a.bmp", 0, 0);
+      this->unknown_0178->SetBitmap("유저인터페이스\\basic_interface\\btn_e_ability_b.bmp", 1, 0);
+      this->unknown_0178->SetBitmap("유저인터페이스\\basic_interface\\btn_e_ability_b.bmp", 2, 0);
+      this->unknown_0178->SetSize(this->unknown_0178->BitmapWidth(), this->unknown_0178->BitmapHeight());
+      this->unknown_0178->Move(g_equipAbilityButtonPosition[0], g_equipAbilityButtonPosition[1]);
+      this->unknown_0178->SetId(582);
+      this->unknown_0178->SetTooltip(LookupMessage(0xFBD));
+      this->AddChild(this->unknown_0178);
+    }
+  }
+
+  if (g_session.m_swapEquipmentMode == 1) {
+    this->SendMsg(nullptr, 6, 508, 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x008F6750
 // FUNCTION: fn_12322
