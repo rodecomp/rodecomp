@@ -51,7 +51,7 @@ private:
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(UIShortCutWnd) == 0x18C + 8);
+static_assert(sizeof(UIShortCutWnd) == 0x18C);
 #endif
 
 #endif

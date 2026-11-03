@@ -15,7 +15,7 @@
 // OFFSET: 0x009AC040
 // FUNCTION: fn_13770
 UIScrollWnd::UIScrollWnd(int width, int height, unsigned char cached)
-    : UIWindow(cached), viewHeight(0), contentWidth(0), contentHeight(0), horizontalBar(nullptr), scrollBar(nullptr),
+    : UIWindow(cached), viewWidth(0), viewHeight(0), contentWidth(0), contentHeight(0), horizontalBar(nullptr), scrollBar(nullptr),
       scrollBarWidth(13), scrollBarHeight(13), unknown_009C(0), scrollPosition(0), unknown_00A4(0), wheelScroll(0) {
   this->UIWindow::Resize(width, height);
   this->Slot15(width, height);
@@ -313,7 +313,7 @@ void UIScrollWnd::Slot53() {
 
   this->unknown_00A4 = 0;
   this->wheelScroll = 0;
-  this->ViewWidth() = this->geometry.width;
+  this->viewWidth = this->geometry.width;
   this->viewHeight = this->geometry.height;
 
   int visibleHeight;
@@ -329,7 +329,7 @@ void UIScrollWnd::Slot53() {
   if (bottom > this->geometry.height) {
     visibleWidth = this->geometry.width - this->scrollBarWidth;
     this->wheelScroll = 1;
-    this->ViewWidth() = visibleWidth;
+    this->viewWidth = visibleWidth;
   } else {
     visibleWidth = this->geometry.width;
   }
@@ -343,7 +343,7 @@ void UIScrollWnd::Slot53() {
   if (this->wheelScroll == 0 && bottom > visibleHeight) {
     visibleWidth = this->geometry.width - this->scrollBarWidth;
     this->wheelScroll = 1;
-    this->ViewWidth() = visibleWidth;
+    this->viewWidth = visibleWidth;
   }
 
   if (right < visibleWidth) {
@@ -357,8 +357,8 @@ void UIScrollWnd::Slot53() {
 
   if (this->unknown_00A4 == 1) {
     this->horizontalBar->Resize(visibleWidth, this->scrollBarHeight);
-    this->horizontalBar->SetRange(this->contentWidth - this->ViewWidth(), this->ViewWidth(), this->contentWidth);
-    const int maximum = this->contentWidth - this->ViewWidth();
+    this->horizontalBar->SetRange(this->contentWidth - this->viewWidth, this->viewWidth, this->contentWidth);
+    const int maximum = this->contentWidth - this->viewWidth;
     int position = this->unknown_009C;
     if (position > maximum) {
       this->unknown_009C = maximum;
@@ -472,8 +472,8 @@ int UIScrollWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1,
     if (this->unknown_009C < 0) {
       this->unknown_009C = 0;
     }
-    if (this->unknown_009C > this->contentWidth - this->ViewWidth()) {
-      this->unknown_009C = this->contentWidth - this->ViewWidth();
+    if (this->unknown_009C > this->contentWidth - this->viewWidth) {
+      this->unknown_009C = this->contentWidth - this->viewWidth;
     }
     this->horizontalBar->SetPosition(this->unknown_009C);
     this->horizontalBar->Invalidate();

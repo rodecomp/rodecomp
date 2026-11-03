@@ -10,7 +10,6 @@
 #include <map>
 #include <string>
 
-
 struct BroadcastBalloonLine {
   /* 0000 */ std::string text;
   /* 0018 */ std::uint32_t color;
@@ -44,7 +43,6 @@ public:
 
 protected:
   /* 007C */ std::map<int, std::list<BroadcastBalloonMessage>> m_messages;
-  void* unknown_controls;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

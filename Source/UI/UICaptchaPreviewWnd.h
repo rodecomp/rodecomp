@@ -21,7 +21,6 @@ public:
   /* 00BC */ unsigned char* m_imageData;
   /* 00C0 */ int m_imageSize;
   /* 00C4 */ int m_imageReceived;
-  void* unknown_controls;
 };
 
 #endif

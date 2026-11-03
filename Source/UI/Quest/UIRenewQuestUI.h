@@ -82,6 +82,9 @@ public:
   void sub_A67290(unsigned int flags);
   void sub_A66FF0(unsigned int questId);
 
+
+  /* 00D8 */ CUITitleBar* titleBar;
+  /* 00DC */ CUIStaticImage* background;
   /* 00E0 */ CUITab* tab;
   /* 00E4 */ CUICheckBox* checkBox;
   /* 00E8 */ CUIStaticText* filterLabel;
@@ -93,8 +96,6 @@ public:
   /* 0108 */ CUIImageButton* searchButton;
   /* 010C */ int filter;
   /* 0110 */ std::string searchText;
-  /* 00D8 */ CUITitleBar* titleBar;
-  /* 00DC */ CUIStaticImage* background;
 };
 
 template <>
@@ -106,7 +107,7 @@ void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::Slot53(int resolve
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(RenewQuestUI::CUIQuestItem) == 0x110);
-static_assert(sizeof(CUIRenewQuestUI) == 0x130);
+static_assert(sizeof(CUIRenewQuestUI) == 0x128);
 #endif
 
 #endif

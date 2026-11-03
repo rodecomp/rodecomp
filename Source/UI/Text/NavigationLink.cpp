@@ -75,6 +75,7 @@ namespace LineCutter {
     /* 0080 */ int m_fontHeight;
     /* 0084 */ unsigned char m_bold;
     /* 0085 */ unsigned char m_italic;
+    /* 0086 */ unsigned char unknown_0086[2];
     /* 0088 */ unsigned char m_outlined;
     /* 008C */ std::uint32_t m_outlineColor;
     /* 0090 */ unsigned char m_shadowed;

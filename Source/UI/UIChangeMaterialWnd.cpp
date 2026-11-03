@@ -39,19 +39,15 @@
 // OFFSET: 0x005E03B0
 // FUNCTION: fn_03861
 UIChangeMaterialWnd::UIChangeMaterialWnd()
-    : UIFrameWnd(0), m_sortBox(nullptr), m_button(nullptr), m_resultX(168), m_resultY(131), m_resultItem(),
+    : UIFrameWnd(0), unknown_00B4(nullptr), unknown_00B8(nullptr), m_sortBox(nullptr), m_button(nullptr), m_resultX(168), m_resultY(131), m_resultItem(),
       m_materialPos{{90, 86}, {246, 86}, {168, 222}, {168, 40}, {90, 176}, {246, 176}}, m_materials(), m_resultAmount(0), m_resultText() {
-  *reinterpret_cast<int*>(reinterpret_cast<char*>(this) + 0xB4) = 0;
-  *reinterpret_cast<int*>(reinterpret_cast<char*>(this) + 0xB8) = 0;
 }
 
 // OFFSET: 0x005E0560
 // FUNCTION: fn_03862
 UIChangeMaterialWnd_List::UIChangeMaterialWnd_List()
-    : UIFrameWnd(0), m_selectedIndex(0), m_hoverIndex(0), m_scrollOffset(0), m_previousScrollOffset(0), m_scrollBar(nullptr), m_items(),
+    : UIFrameWnd(0), unknown_00B4(27), unknown_00B8(16), m_selectedIndex(0), m_hoverIndex(0), m_scrollOffset(0), m_previousScrollOffset(0), m_scrollBar(nullptr), m_items(),
       m_entries() {
-  *reinterpret_cast<int*>(reinterpret_cast<char*>(this) + 0xB4) = 27;
-  *reinterpret_cast<int*>(reinterpret_cast<char*>(this) + 0xB8) = 16;
 }
 
 // OFFSET: 0x005E0650
@@ -66,10 +62,10 @@ void UIChangeMaterialWnd_List::CreateScrollBar(int width, int height) {
   auto* bar = new UIChangeMaterialWnd_ScrollBar();
   *reinterpret_cast<int*>(reinterpret_cast<char*>(bar) + 0xA4) = 0x10;
   this->m_scrollBar = bar;
-  bar->Configure(width - *reinterpret_cast<int*>(reinterpret_cast<char*>(this) + 0xB8), 0, 1, height);
+  bar->Configure(width - this->unknown_00B8, 0, 1, height);
   bar->Show(0);
   this->AddChild(bar);
-  this->m_pageSize = height / *reinterpret_cast<int*>(reinterpret_cast<char*>(this) + 0xB4);
+  this->m_pageSize = height / this->unknown_00B4;
   this->sub_5E2A70();
 }
 
@@ -132,7 +128,7 @@ void UIChangeMaterialWnd_List::Move(int x, int y) {
 // OFFSET: 0x005E2590
 // FUNCTION: fn_03883
 void UIChangeMaterialWnd_List::sub_5E2590(int, int position) {
-  const int rowHeight = *reinterpret_cast<int*>(reinterpret_cast<char*>(this) + 0xB4);
+  const int rowHeight = this->unknown_00B4;
   unsigned int index = static_cast<unsigned int>(position / rowHeight + this->m_scrollOffset);
   const unsigned int last = static_cast<unsigned int>(this->m_items.size() - 1);
   if (last < index) {
@@ -163,7 +159,7 @@ void UIChangeMaterialWnd_List::Slot27(int x, int y) {
 // OFFSET: 0x005E2850
 // FUNCTION: fn_03887
 void UIChangeMaterialWnd::UpdateSearchPlaceholder() {
-  auto* edit = *reinterpret_cast<UIEditCtrl**>(reinterpret_cast<char*>(this) + 0xB8);
+  auto* edit = this->unknown_00B8;
   const std::string text = edit->Text();
   const char* placeholder = LookupMessage(0xec0);
   if (text != placeholder) {
@@ -224,7 +220,7 @@ void UIChangeMaterialWnd_List::sub_5E2A70() {
 // OFFSET: 0x005E2B20
 // FUNCTION: fn_03891
 void UIChangeMaterialWnd_List::ApplyFilter(std::string text) {
-  const int rowHeight = *reinterpret_cast<int*>(reinterpret_cast<char*>(this) + 0xB4);
+  const int rowHeight = this->unknown_00B4;
   this->m_pageSize = this->geometry.height / rowHeight;
   this->m_selectedIndex = 0;
   this->m_scrollOffset = 0;
@@ -353,8 +349,8 @@ void UIChangeMaterialWnd_List::sub_5E3B80(int index) {
 int UIChangeMaterialWnd::SendMsg(
   UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
-  auto* list = *reinterpret_cast<UIChangeMaterialWnd_List**>(reinterpret_cast<char*>(this) + 0xB4);
-  auto* edit = *reinterpret_cast<UIEditCtrl**>(reinterpret_cast<char*>(this) + 0xB8);
+  auto* list = this->unknown_00B4;
+  auto* edit = this->unknown_00B8;
 
   switch (message) {
   case 0:
@@ -578,7 +574,7 @@ void UIChangeMaterialWnd_List::Paint() {
       }
     }
 
-    const int rowHeight = *reinterpret_cast<int*>(reinterpret_cast<char*>(this) + 0xB4);
+    const int rowHeight = this->unknown_00B4;
     if (!entry) {
       CRes* disabled = ResourceMgr::Instance().Load(Resolve("유저인터페이스\\ChangeMaterial\\btn_material_disable.bmp"));
       this->DrawBitmap(0, rowHeight * row, reinterpret_cast<const BitmapImage*>(disabled), true);
@@ -661,7 +657,7 @@ void UIChangeMaterialWnd_ScrollBar::Paint() {
 // OFFSET: 0x005E26B0
 // FUNCTION: fn_03885
 void UIChangeMaterialWnd_List::Slot28(int x, int y) {
-  const int rowHeight = *reinterpret_cast<int*>(reinterpret_cast<char*>(this) + 0xB4);
+  const int rowHeight = this->unknown_00B4;
   const int index = y / rowHeight + this->m_scrollOffset;
   if (static_cast<unsigned int>(index) >= this->m_items.size()) {
     return;
@@ -702,7 +698,7 @@ void UIChangeMaterialWnd::Slot15(int width, int height) {
   this->AddChild(close);
 
   UIEditCtrl* edit = new UIEditCtrl();
-  *reinterpret_cast<UIEditCtrl**>(reinterpret_cast<char*>(this) + 0xB8) = edit;
+  this->unknown_00B8 = edit;
   edit->SetSize(118, 13);
   edit->Move(313, 262);
   edit->maximum = 20;
@@ -763,7 +759,7 @@ void UIChangeMaterialWnd::Slot15(int width, int height) {
   this->AddChild(cancel);
 
   UIChangeMaterialWnd_List* list = new UIChangeMaterialWnd_List();
-  *reinterpret_cast<UIChangeMaterialWnd_List**>(reinterpret_cast<char*>(this) + 0xB4) = list;
+  this->unknown_00B4 = list;
   list->SetSize(186, 216);
   list->Move(310, 41);
   this->AddChild(list);

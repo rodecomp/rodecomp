@@ -29,9 +29,6 @@ public:
   /* 01B0 */ unsigned char selected;
   /* 01B4 */ std::string tooltip;
   /* 01CC */ int quantity;
-
-protected:
-  void* unknown_controls;
 };
 
 class UILapineUpgradeBoxWnd : public UIFrameWnd {
@@ -68,9 +65,6 @@ public:
   /* 020C */ std::uint32_t noticeTick;
   /* 0210 */ std::uint32_t noticeDuration;
   /* 0214 */ unsigned char waiting;
-
-protected:
-  void* unknown_controls;
 };
 
 #endif

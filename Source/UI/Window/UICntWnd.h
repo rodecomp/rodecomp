@@ -19,7 +19,6 @@ protected:
   /* 00B4 */ int m_event;
   /* 00B8 */ UIEditCtrl* m_edit;
   /* 00BC */ UIStaticText* m_text;
-  void* unknown_controls;
 };
 
 #endif

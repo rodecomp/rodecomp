@@ -13,7 +13,7 @@ public:
   bool CanHitTest() override;
   __declspec(noinline) void SetColor(std::uint32_t color);
 
-  /* 0080 */ std::uint32_t colors[7];
+  /* 007C */ std::uint32_t colors[8];
 };
 
 class UIPcGage : public UIGage {
@@ -70,7 +70,7 @@ public:
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(offsetof(UIGage, colors) == 0x80);
+static_assert(offsetof(UIGage, colors) == 0x7C);
 static_assert(offsetof(UIPcGage, current) == 0xA0);
 static_assert(sizeof(UIPcGage) == 0xB0);
 #endif

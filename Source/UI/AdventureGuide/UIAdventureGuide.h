@@ -54,23 +54,23 @@ class CUICharacterInfo : public CUIControl {
 public:
   // OFFSET: 0x009D8F50
   // FUNCTION: fn_14273
-  explicit CUICharacterInfo() : CUIControl(), level(nullptr), jobLevel(nullptr), name(nullptr), jobIcon(nullptr) {
+  explicit CUICharacterInfo() : CUIControl(), jobIcon(nullptr), level(nullptr), jobLevel(nullptr), name(nullptr) {
   }
 
   void Slot15(int width, int height) override;
   void Slot16() override;
 
+  /* 0080 */ CUIStaticImage* jobIcon;
   /* 0084 */ CUIStaticText* level;
   /* 0088 */ CUIStaticText* jobLevel;
   /* 008C */ CUIStaticText* name;
-  /* 0080 */ CUIStaticImage* jobIcon;
 };
 
 class CUIIntro : public CUIPage {
 public:
   // OFFSET: 0x009D8FE0
   // FUNCTION: fn_14274
-  explicit CUIIntro() : CUIPage(), image(nullptr), contents(nullptr), banner(nullptr) {
+  explicit CUIIntro() : CUIPage(), banner(nullptr), image(nullptr), contents(nullptr) {
   }
 
   void Slot15(int width, int height) override;
@@ -81,9 +81,9 @@ public:
   void OnSelectContents(CUITabInfo* item, const Guide_Intro::Contents& contents);
   void BindContents(CUITabInfo* item, const Guide_Intro::Contents& contents);
 
+  /* 0080 */ CUIStaticImage* banner;
   /* 0084 */ CUIStaticImage* image;
   /* 0088 */ CUIListBoxEx<CUITabInfo, Guide_Intro::Contents>* contents;
-  /* 0080 */ CUIStaticImage* banner;
 };
 
 class CUIItem : public CUIPage {
@@ -91,7 +91,7 @@ public:
   // OFFSET: 0x009D9080
   // FUNCTION: fn_14275
   explicit CUIItem()
-      : CUIPage(), unknown_0084(nullptr), unknown_0088(nullptr), unknown_008C(), location(-1), itemList(nullptr) {
+      : CUIPage(), itemList(nullptr), unknown_0084(nullptr), unknown_0088(nullptr), unknown_008C(), location(-1) {
   }
 
   void Slot15(int width, int height) override;
@@ -103,18 +103,18 @@ public:
   void RequestNavigation();
   void SearchNavigation();
 
+  /* 0080 */ CUIListBoxEx<CUIItemInfo, CItemData>* itemList;
   /* 0084 */ CUIImageButton* unknown_0084;
   /* 0088 */ CUIImageButton* unknown_0088;
   /* 008C */ std::string unknown_008C;
   /* 00A4 */ int location;
-  /* 0080 */ CUIListBoxEx<CUIItemInfo, CItemData>* itemList;
 };
 
 class CUIMonster : public CUIPage {
 public:
   // OFFSET: 0x009D9220
   // FUNCTION: fn_14277
-  explicit CUIMonster() : CUIPage(), unknown_0084(nullptr), unknown_0088(), monsterList(nullptr) {
+  explicit CUIMonster() : CUIPage(), monsterList(nullptr), unknown_0084(nullptr), unknown_0088() {
   }
 
   void Slot15(int width, int height) override;
@@ -126,16 +126,16 @@ public:
   void BindMonster(CUIMonsterInfo* item, const CMonsterData& data);
   void SearchNavigation();
 
+  /* 0080 */ CUIListBoxEx<CUIMonsterInfo, CMonsterData>* monsterList;
   /* 0084 */ CUIImageButton* unknown_0084;
   /* 0088 */ std::string unknown_0088;
-  /* 0080 */ CUIListBoxEx<CUIMonsterInfo, CMonsterData>* monsterList;
 };
 
 class CUIQuest : public CUIPage {
 public:
   // OFFSET: 0x009D9360
   // FUNCTION: fn_14279
-  explicit CUIQuest() : CUIPage(), unknown_0084(nullptr), unknown_0088(nullptr), unknown_008C(), questList(nullptr) {
+  explicit CUIQuest() : CUIPage(), questList(nullptr), unknown_0084(nullptr), unknown_0088(nullptr), unknown_008C() {
   }
 
   void Slot15(int width, int height) override;
@@ -147,18 +147,18 @@ public:
   void RequestNavigation();
   void SearchNavigation();
 
+  /* 0080 */ CUIListBoxEx<CUIQuestInfo, CQuestInfo>* questList;
   /* 0084 */ CUIImageButton* unknown_0084;
   /* 0088 */ CUIImageButton* unknown_0088;
   /* 008C */ std::string unknown_008C;
-  /* 0080 */ CUIListBoxEx<CUIQuestInfo, CQuestInfo>* questList;
 };
 
 }
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(AdventureGuide::CUIIntro) == 0x90);
-static_assert(sizeof(AdventureGuide::CUIMonster) == 0xA4);
-static_assert(sizeof(AdventureGuide::CUIQuest) == 0xA8);
+static_assert(sizeof(AdventureGuide::CUIIntro) == 0x8C);
+static_assert(sizeof(AdventureGuide::CUIMonster) == 0xA0);
+static_assert(sizeof(AdventureGuide::CUIQuest) == 0xA4);
 #endif
 
 #endif

@@ -89,7 +89,6 @@ public:
   /* 02D0 */ std::vector<ITEM_INFO> materials;
   /* 02DC */ std::string information;
   /* 02F4 */ std::string warning;
-  void* unknown_controls;
 };
 
 #endif

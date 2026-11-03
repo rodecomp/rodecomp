@@ -28,7 +28,7 @@ public:
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(UIPartyInfoWnd) == 464);
+static_assert(sizeof(UIPartyInfoWnd) == 0x1C8);
 #endif
 
 #endif

@@ -17,9 +17,6 @@ public:
 
   void SetMessage(const char* text, int, int);
   void Slot15(int width, int height) override;
-
-protected:
-  void* unknown_textContext;
 };
 
 #endif

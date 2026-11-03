@@ -8,7 +8,6 @@
 #include <string>
 #include <vector>
 
-
 struct UIBmpRadioBtnText {
   /* 0000 */ int id;
   /* 0004 */ int x;
@@ -38,11 +37,10 @@ protected:
   /* 00DC */ bool m_hovered;
   /* 00DD */ unsigned char unknown_00DD[3];
   /* 00E0 */ std::string m_tooltip;
-  void* unknown_controls;
+  /* 00F8 */ bool m_disabled;
   /* 00FC */ int m_value;
   /* 0100 */ std::vector<UIBmpRadioBtnText> m_texts;
   /* 010C */ std::string m_label;
-  bool m_disabled;
 };
 
 class UIBmpRadioBtn2 : public UIBmpRadioBtn {
@@ -66,7 +64,6 @@ public:
 
 protected:
   /* 01A0 */ std::string m_tooltip;
-  void* unknown_controls;
 };
 
 #endif

@@ -20,7 +20,7 @@ public:
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(UIApplyForPartyWnd) == 268);
+static_assert(sizeof(UIApplyForPartyWnd) == 0x104);
 #endif
 
 #endif

@@ -8,7 +8,6 @@
 class UITextViewer;
 class UIWindowMgr;
 
-
 class UIMessageBox : public UIFrameWnd {
 public:
   UIMessageBox();
@@ -33,13 +32,12 @@ public:
   /* 011C */ unsigned char protectedMessage;
 
 private:
-  void* unknown_dialog;
   void AddButton(const char* name, int id, int x, int y);
   void FormatCountdown();
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(UIMessageBox) == 300);
+static_assert(sizeof(UIMessageBox) == 0x120);
 #endif
 
 #endif

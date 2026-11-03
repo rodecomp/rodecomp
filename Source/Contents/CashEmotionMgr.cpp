@@ -308,7 +308,6 @@ protected:
   /* 00E4 */ UIBitmapButton* unknown_00E4;
   /* 00E8 */ UICashEmotionListChildWnd_Abstract* m_currentList;
   /* 00EC */ UIStaticText* m_period;
-  void* unknown_controls;
 };
 
 class UICashEmotionMiniWnd : public UIWindow {

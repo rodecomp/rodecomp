@@ -17,7 +17,6 @@ public:
 
 protected:
   /* 00B4 */ UIBasicButton* m_button;
-  void* unknown_controls;
 };
 
 #endif

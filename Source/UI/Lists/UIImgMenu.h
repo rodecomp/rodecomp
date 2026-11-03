@@ -16,6 +16,8 @@ public:
   void Slot31(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
+
+  /* 007C */ int hovered;
   /* 0080 */ int count;
   /* 0084 */ int itemWidth;
   /* 0088 */ int itemHeight;
@@ -25,7 +27,6 @@ public:
   /* 0098 */ std::string bitmapName;
   /* 00B0 */ std::string baseName;
   /* 00C8 */ int unknown_00C8;
-  /* 007C */ int hovered;
 };
 
 #endif

@@ -32,9 +32,6 @@ public:
   /* 0088 */ std::vector<UIWindow*> m_buttons;
   /* 0094 */ unsigned int m_current;
   /* 0098 */ std::uint32_t m_lastSwitch;
-
-protected:
-  void* unknown_controls;
 };
 
 class UICheckAttendanceWnd : public UIFrameWnd {
@@ -64,9 +61,6 @@ public:
   /* 00C4 */ int m_highlight;
   /* 00C8 */ UICheckAttendanceWnd_Banner* m_banner;
   /* 00CC */ UIBmpTextButton* m_notice;
-
-protected:
-  void* unknown_controls;
 };
 
 #endif

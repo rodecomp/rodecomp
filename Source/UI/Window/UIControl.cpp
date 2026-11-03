@@ -2757,14 +2757,12 @@ CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::CUIListBoxEx()
 // FUNCTION: fn_13949
 template <>
 CUIListBox<AdventureGuide::CUISubTab>::~CUIListBox() {
-  this->NormalImage().~CResPtr();
 }
 
 // OFFSET: 0x009BE750
 // FUNCTION: fn_13950
 template <>
 CUIListBox<AdventureGuide::CUITab>::~CUIListBox() {
-  this->NormalImage().~CResPtr();
 }
 
 // OFFSET: 0x009BE8B0
@@ -3611,7 +3609,7 @@ void CUIVScrollBar::Slot15(int, int) {
 // OFFSET: 0x009BE1A0
 // FUNCTION: fn_13946
 CUIStaticText::CUIStaticText()
-    : CUIControl(), unknown_0084(), unknown_0098(), unknown_00B0(), scrollBar(nullptr), unknown_00C4(), fitText(false), horizontalAlign(0),
+    : CUIControl(), unknown_0098(), unknown_00B0(), scrollBar(nullptr), unknown_00C4(), fitText(false), horizontalAlign(0),
       verticalAlign(0), fontIndex(0), fontHeight(12), bold(0), color(0), shadow(false), shadowColor(0xFFFFFF), outline(false), outlineColor(0xFFFFFF), textX(0),
       textY(0), text() {
   new (&this->Tooltip()) std::string();
@@ -3620,17 +3618,14 @@ CUIStaticText::CUIStaticText()
 // OFFSET: 0x009DA310
 // FUNCTION: fn_14285
 CUIListItem::~CUIListItem() {
-  using ImageMap = std::map<int, CBitmapRes*>;
-  this->Images().~ImageMap();
 }
 
 // OFFSET: 0x009EFC30
 // FUNCTION: fn_14653
-CUIListItem::CUIListItem() : CUIControl(), unknown_0084(), selected(0), disabledImage(nullptr), frozen(0), index(-1), onHover(), onPress() {
-  new (&this->Images()) std::map<int, CBitmapRes*>();
-  this->Images()[0] = nullptr;
-  this->Images()[1] = nullptr;
-  this->Images()[2] = nullptr;
+CUIListItem::CUIListItem() : CUIControl(), images(), selected(0), disabledImage(nullptr), frozen(0), index(-1), onHover(), onPress() {
+  this->images[0] = nullptr;
+  this->images[1] = nullptr;
+  this->images[2] = nullptr;
   this->m_clip = 1;
 }
 
@@ -3639,14 +3634,14 @@ CUIListItem::CUIListItem() : CUIControl(), unknown_0084(), selected(0), disabled
 void CUIListItem::Paint() {
   this->ClearSurface(0xFFFF00FF);
   if (!this->frozen) {
-    if (!this->Images()[this->selected]) {
+    if (!this->images[this->selected]) {
       if (this->selected == 1) {
         this->ClearSurface(0xFFDECE);
       } else if (this->selected == 2) {
         this->ClearSurface(0xEF9C73);
       }
     } else {
-      this->DrawBitmap(0, 0, &this->Images()[this->selected]->image, false);
+      this->DrawBitmap(0, 0, &this->images[this->selected]->image, false);
     }
   } else if (this->disabledImage) {
     this->DrawBitmap(0, 0, &this->disabledImage->image, false);
@@ -3656,10 +3651,10 @@ void CUIListItem::Paint() {
 // OFFSET: 0x009F02E0
 // FUNCTION: fn_14663
 void CUIListItem::SetImageResources(CBitmapRes* normal, CBitmapRes* hover, CBitmapRes* pressed, CBitmapRes* disabled) {
-  this->Images().clear();
-  this->Images()[0] = normal;
-  this->Images()[1] = hover;
-  this->Images()[2] = pressed;
+  this->images.clear();
+  this->images[0] = normal;
+  this->images[1] = hover;
+  this->images[2] = pressed;
   this->disabledImage = disabled;
   this->Invalidate();
 }

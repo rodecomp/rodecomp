@@ -46,7 +46,6 @@ public:
   /* 0080 */ UIStaticText* label;
 
 protected:
-  void* unknown_buttons;
 
 public:
   /* 0084 */ unsigned char borderless;
@@ -84,8 +83,8 @@ public:
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(UIComboBoxDefWnd) == 172);
-static_assert(sizeof(UIComboBoxDef2Wnd) == 188);
+static_assert(sizeof(UIComboBoxDefWnd) == 0xA8);
+static_assert(sizeof(UIComboBoxDef2Wnd) == 0xB8);
 #endif
 
 #endif

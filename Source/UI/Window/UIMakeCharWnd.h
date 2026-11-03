@@ -30,9 +30,6 @@ public:
   /* 02D0 */ UIScrollBar* unknown_02D0;
   /* 02D4 */ int unknown_02D4;
   /* 02D8 */ int unknown_02D8;
-
-protected:
-  void* unknown_controls;
 };
 
 #endif

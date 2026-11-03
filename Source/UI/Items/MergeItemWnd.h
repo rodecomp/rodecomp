@@ -54,9 +54,6 @@ public:
   /* 010C */ int m_visibleCount;
   /* 0110 */ int m_scrollRow;
   /* 0114 */ int m_scrollable;
-
-protected:
-  void* unknown_controls;
 };
 
 #endif

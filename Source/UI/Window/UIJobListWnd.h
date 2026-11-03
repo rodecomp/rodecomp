@@ -28,7 +28,6 @@ protected:
   /* 00D4 */ unsigned char unknown_00D4[0x14];
   /* 00E8 */ int unknown_00E8;
   /* 00EC */ JobListWndInfo* m_saved;
-  void* unknown_controls;
 };
 
 #endif

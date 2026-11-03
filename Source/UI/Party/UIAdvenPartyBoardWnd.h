@@ -72,7 +72,7 @@ private:
 static_assert(offsetof(PartyBoardPlacement, y) == 0x04);
 static_assert(offsetof(PartyBoardPlacement, width) == 0x08);
 static_assert(offsetof(PartyBoardPlacement, height) == 0x0C);
-static_assert(sizeof(UIAdvenPartyBoardWnd) == 348);
+static_assert(sizeof(UIAdvenPartyBoardWnd) == 0x154);
 #endif
 
 #endif

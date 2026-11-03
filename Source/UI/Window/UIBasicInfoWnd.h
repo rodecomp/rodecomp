@@ -44,9 +44,6 @@ public:
   /* 010C */ int extendedOffset;
   /* 0110 */ int extendedCollapsedHeight;
   /* 0114 */ int extendedExpandedHeight;
-
-protected:
-  void* unknown_controls;
 };
 
 #endif

@@ -74,9 +74,7 @@ public:
   /* 00A4 */ int m_checkTop;
   /* 00A8 */ int unknown_00A8;
   /* 00AC */ bool m_buyable;
-  /* 00AD */ unsigned char unknown_00AD[4];
-  /* 00B1 */ unsigned short unknown_00B1;
-  /* 00B3 */ unsigned char unknown_00B3;
+  /* 00AD */ bool m_changed[6];
   /* 00B4 */ std::list<int> m_list;
   /* 00BC */ unsigned char unknown_00BC;
   /* 00C0 */ int unknown_00C0;
@@ -124,7 +122,6 @@ public:
   /* 00B4 */ UIStylingShopButton* m_buyButton;
   /* 00B8 */ UIDisplayCharacter* m_preview;
   /* 00BC */ std::map<UIWindow*, UIStylingshopTabParentWnd*> m_tabs;
-  void* unknown_controls;
 
   void Slot15(int width, int height) override;
   void Slot19() override;

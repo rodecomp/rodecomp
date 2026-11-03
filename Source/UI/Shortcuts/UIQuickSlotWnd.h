@@ -40,7 +40,6 @@ protected:
   /* 00B4 */ int m_selected;
   /* 00B8 */ QuickSlotWndInfo* m_saved;
   /* 00BC */ QuickSlotEntry m_entries[2];
-  void* unknown_painting;
 };
 
 static_assert(sizeof(QuickSlotEntry) == 7);

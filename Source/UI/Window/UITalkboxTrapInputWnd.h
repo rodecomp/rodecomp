@@ -27,9 +27,6 @@ public:
 
   /* 00B4 */ TalkboxTrapTarget target;
   /* 00C4 */ UIEditCtrl* edit;
-
-protected:
-  void* unknown_controls;
 };
 
 #endif

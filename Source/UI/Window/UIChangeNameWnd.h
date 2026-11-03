@@ -18,7 +18,6 @@ public:
   int IsNameWithinLimit(std::string name, int limit);
 
 protected:
-  void* unknown_controls;
 
 public:
   /* 00B4 */ UIBitmapButton* m_okButton;

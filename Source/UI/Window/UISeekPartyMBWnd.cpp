@@ -253,8 +253,8 @@ void UISeekPartyMBWnd::ShowJobCategory(int category) {
 // OFFSET: 0x00911EE0
 // FUNCTION: fn_12524
 UISeekPartyMBWnd::UISeekPartyMBWnd()
-    : UIFrameWnd(0), unknown_00BC(nullptr), unknown_00C0(nullptr), m_levelEdit(nullptr), m_typeCombo(nullptr), m_subTypeCombo(nullptr), m_jobCategoryCombo(nullptr),
-      m_jobChecks(), m_subTypes(), unknown_0154(nullptr), unknown_0158(nullptr), m_jobCategory(-1), m_subType(0), m_restoreHeight(0), m_minimized(0), m_titleText(nullptr), m_levelText(nullptr) {
+    : UIFrameWnd(0), m_titleText(nullptr), m_levelText(nullptr), unknown_00BC(nullptr), unknown_00C0(nullptr), m_levelEdit(nullptr), m_typeCombo(nullptr), m_subTypeCombo(nullptr), m_jobCategoryCombo(nullptr),
+      m_jobChecks(), m_subTypes(), unknown_0154(nullptr), unknown_0158(nullptr), m_jobCategory(-1), m_subType(0), m_restoreHeight(0), m_minimized(0) {
 }
 
 // OFFSET: 0x009146D0

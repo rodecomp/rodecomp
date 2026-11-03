@@ -6,7 +6,6 @@
 #include <string>
 
 class UIStaticText;
-class ForbiddenWords;
 
 struct ChatRoomTitleInfo {
   /* 0000 */ std::string title;
@@ -39,8 +38,6 @@ public:
 protected:
   /* 00BC */ int roomId;
   /* 00C0 */ short unknown_00C0;
-  void* unknown_controls;
-  ForbiddenWords* m_forbiddenWords;
 };
 
 #endif

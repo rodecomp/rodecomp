@@ -327,7 +327,7 @@ void UIEntryQueueStandByWnd::SetInfo(const char* queueName, int waiting, int ran
 // OFFSET: 0x00BA6000
 // FUNCTION: fn_19704
 UIEntryQueueWnd::UIEntryQueueWnd()
-    : UIFrameWnd(0), unknown_00BC(), m_labels(), m_values(), m_list(nullptr), saved(nullptr), m_applyButtons(), m_helpButton(nullptr) {
+    : UIFrameWnd(0), m_applyButtons(), m_helpButton(nullptr), m_labels(), m_values(), m_list(nullptr), saved(nullptr) {
 }
 
 // OFFSET: 0x00BA6110

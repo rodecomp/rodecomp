@@ -26,9 +26,6 @@ public:
   /* 00BC */ UIBitmapButton* m_leftButton;
   /* 00C0 */ UIBitmapButton* m_rightButton;
   /* 00C4 */ UIBasicButton* unknown_00C4;
-
-protected:
-  void* unknown_controls;
 };
 
 #endif

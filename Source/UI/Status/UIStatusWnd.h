@@ -30,9 +30,6 @@ public:
   void Slot26(int x, int y) override;
   void Slot28(int x, int y) override;
   void ValidatePlacement();
-
-protected:
-  void* unknown_controls;
 };
 
 #endif

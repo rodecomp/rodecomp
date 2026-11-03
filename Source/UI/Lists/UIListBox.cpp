@@ -39,7 +39,8 @@ UIListBox::UIListBox()
 // OFFSET: 0x0086E750
 // FUNCTION: fn_11076
 UIServerListBox::UIServerListBox() : UIListBox() {
-  *reinterpret_cast<int*>(reinterpret_cast<char*>(this) + 0xD8) = 0;
+  this->unknown_00D4 = 0;
+  this->unknown_00D8 = 0;
   this->unknown_00DC = 0;
   this->unknown_00E0 = 0;
 }

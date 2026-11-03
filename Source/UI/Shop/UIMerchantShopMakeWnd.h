@@ -38,7 +38,7 @@ public:
   void Slot32(int x, int y) override;
   void Paint() override;
 
-  /* 00BC */ unsigned char unknown_00BC[0x10];
+  /* 00B4 */ std::string unknown_00B4;
   /* 00CC */ UIEditCtrl* unknown_00CC;
   /* 00D0 */ unsigned char unknown_00D0[0x8];
   /* 00D8 */ int editIndex;
@@ -66,9 +66,6 @@ public:
   /* 0189 */ unsigned char suspended;
   /* 018A */ short unknown_018A;
   /* 018C */ short unknown_018C;
-
-protected:
-  void* unknown_controls;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

@@ -18,14 +18,9 @@ public:
   /* 00B4 */ UIListBox* m_list;
 
 protected:
-  void* unknown_controls;
-  void* unknown_listContext;
 
 public:
   /* 00B8 */ std::vector<int> itemIds;
-
-protected:
-  void* unknown_recorder;
 };
 
 #endif

@@ -34,9 +34,6 @@ public:
   bool m_groupSelected;
   std::int64_t m_totalPoints;
   std::vector<const ReputeInfo*> m_reputes;
-
-protected:
-  void* unknown_controls;
 };
 
 #include "Contents/ReputeMgrLoad.inl"

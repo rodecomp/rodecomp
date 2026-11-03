@@ -29,6 +29,9 @@ public:
   void SetCountdown(unsigned char count, std::uint32_t duration);
   void InitImageData(unsigned short size);
 
+
+  /* 00B4 */ UICaptchaImage* m_image;
+  /* 00B8 */ UIEditCtrl* m_editCtrl;
   /* 00BC */ UIBitmapButton* m_button;
   /* 00C0 */ char m_captchaKey[4];
   /* 00C4 */ unsigned char* m_imageData;
@@ -44,8 +47,6 @@ public:
   /* 0110 */ std::uint32_t unknown_0110;
   /* 0114 */ std::uint32_t messageTick;
 
-  /* 00B4 */ UICaptchaImage* m_image;
-  /* 00B8 */ UIEditCtrl* m_editCtrl;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

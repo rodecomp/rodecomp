@@ -5,7 +5,6 @@
 
 #include <string>
 
-
 class UIStaticBitmap : public UIWindow {
 public:
   UIStaticBitmap();
@@ -28,13 +27,10 @@ public:
   /* 00AC */ int tooltipX;
   /* 00B0 */ int tooltipY;
   /* 00B4 */ int forwardHover;
-
-protected:
-  void* unknown_controls;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(UIStaticBitmap) == 192);
+static_assert(sizeof(UIStaticBitmap) == 0xB8);
 #endif
 
 #endif

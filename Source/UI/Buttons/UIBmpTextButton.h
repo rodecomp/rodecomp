@@ -36,7 +36,7 @@ static_assert(offsetof(BitmapButtonTextStyle, height) == 0x000C);
 static_assert(offsetof(BitmapButtonTextStyle, bold) == 0x0010);
 static_assert(offsetof(BitmapButtonTextStyle, color) == 0x0014);
 static_assert(offsetof(BitmapButtonTextStyle, shadow) == 0x0018);
-static_assert(sizeof(UIBmpTextButton) == 332);
+static_assert(sizeof(UIBmpTextButton) == 0x144);
 #endif
 
 #endif

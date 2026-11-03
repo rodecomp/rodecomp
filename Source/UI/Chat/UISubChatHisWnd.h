@@ -59,8 +59,6 @@ private:
   /* 0111 */ unsigned char unknown_0111[3];
   /* 0114 */ std::string m_name;
   /* 012C */ UIEditCtrl* m_edit;
-  void* unknown_controls;
-  void* unknown_listContext;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

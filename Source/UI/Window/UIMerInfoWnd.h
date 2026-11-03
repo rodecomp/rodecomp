@@ -21,10 +21,6 @@ public:
   /* 00BC */ UIBarGraphPlayer* hpBar;
   /* 00C0 */ UIBarGraphPlayer* spBar;
   /* 00C4 */ MerInfoWndInfo* saved;
-
-protected:
-  void* unknown_controls;
-  void* unknown_recorder;
 };
 
 #endif

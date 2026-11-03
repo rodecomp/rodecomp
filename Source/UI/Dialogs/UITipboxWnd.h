@@ -66,9 +66,6 @@ public:
   /* 00F8 */ std::uint32_t m_frameTime;
   /* 00FC */ bool unknown_00FC;
   /* 0100 */ int unknown_0100;
-
-protected:
-  void* unknown_controls;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

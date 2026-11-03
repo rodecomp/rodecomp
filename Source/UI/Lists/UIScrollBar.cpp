@@ -1163,8 +1163,8 @@ void UIChatHisBox::DropOldestRecords() {
 // FUNCTION: fn_11258
 void UIChatHisBox::ShiftItemTags() {
   const unsigned int half = static_cast<unsigned int>(this->lines.size()) / 2;
-  std::list<std::vector<UIItemTagButton*>>::iterator row = this->ItemTags().begin();
-  while (row != this->ItemTags().end()) {
+  std::list<std::vector<UIItemTagButton*>>::iterator row = this->itemTags.begin();
+  while (row != this->itemTags.end()) {
     bool removed = false;
     for (unsigned int index = 0; index < row->size(); ++index) {
       (*row)[index]->line -= half;
@@ -1181,7 +1181,7 @@ void UIChatHisBox::ShiftItemTags() {
 
     std::vector<UIItemTagButton*> buttons;
     buttons.swap(*row);
-    row = this->ItemTags().erase(row);
+    row = this->itemTags.erase(row);
   }
 }
 
@@ -1327,7 +1327,7 @@ void UIChatHisBox::PlaceItemTags(int line) {
     end = static_cast<unsigned int>(this->lines.size());
   }
 
-  for (std::vector<UIItemTagButton*>& row : this->ItemTags()) {
+  for (std::vector<UIItemTagButton*>& row : this->itemTags) {
     for (unsigned int index = 0; index < row.size(); ++index) {
       UIItemTagButton* button = row[index];
       const int buttonLine = button->line;
@@ -1897,7 +1897,7 @@ std::string UIChatHisBox::RenderItemLinks(const char* lineText, std::string& sou
   }
 
   source = source.substr(previous);
-  this->ItemTags().push_back(buttons);
+  this->itemTags.push_back(buttons);
   return result;
 }
 

@@ -6,7 +6,6 @@
 
 #include <cstdint>
 
-
 class UIAgitMessageBox : public UIFrameWnd {
 public:
   UIAgitMessageBox();
@@ -16,7 +15,6 @@ public:
   void sub_956130(const char* text, int width, int height);
 
   /* 00B4 */ std::uint16_t m_agitId;
-  void* unknown_dialog;
 };
 
 class UIListBoxAgit : public UIListBox {

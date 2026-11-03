@@ -11,7 +11,6 @@ class UICheckBox;
 class UIEditCtrl2;
 class UIINT64BarGraph;
 class UINormalMB;
-class ForbiddenWords;
 
 class UIHomunInfoWnd : public UIFrameWnd {
 public:
@@ -31,10 +30,6 @@ public:
   /* 00D0 */ UINormalMB* unknown_00D0;
   /* 00D4 */ UICheckBox* unknown_00D4;
 
-protected:
-  void* unknown_controls;
-  void* unknown_recorder;
-  ForbiddenWords* m_forbiddenWords;
 };
 
 #endif

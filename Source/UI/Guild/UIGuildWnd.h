@@ -76,7 +76,6 @@ protected:
 
   /* 00B4 */ GuildWndInfo* m_saved;
   /* 00B8 */ UIStaticText* m_tabs[6];
-  void* unknown_controls;
 };
 
 class UIGuildBanishedMemberWnd : public UIGuildWnd {
@@ -99,7 +98,6 @@ protected:
   /* 0134 */ int m_columns;
   /* 0138 */ int m_visibleRows;
   /* 013C */ int m_scrollable;
-  ForbiddenWords* m_forbiddenWords;
 };
 
 class UIGuildInfoManageWnd : public UIGuildWnd {
@@ -129,7 +127,6 @@ protected:
   /* 00FC */ int m_hostileRow;
   /* 0100 */ UIListBoxAgit* m_agitList;
   /* 0104 */ UIListBoxAgitMenu* m_agitMenu;
-  void* unknown_listContext;
 };
 
 class UIGuildMemberManageWnd : public UIGuildWnd {

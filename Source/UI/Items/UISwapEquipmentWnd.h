@@ -48,7 +48,6 @@ protected:
   /* 00D4 */ int unknown_00D4;
   /* 00D8 */ int unknown_00D8;
   /* 00DC */ int unknown_00DC;
-  void* unknown_controls;
 };
 
 #endif

@@ -52,10 +52,7 @@ public:
   std::string Convert(const std::string& text);
   std::string BracketName(const std::string& name);
 
-  // INLINED
-  std::list<std::vector<UIItemTagButton*>>& ItemTags() {
-    return *reinterpret_cast<std::list<std::vector<UIItemTagButton*>>*>(reinterpret_cast<unsigned char*>(this) + 0xD4);
-  }
+  /* 00D4 */ std::list<std::vector<UIItemTagButton*>> itemTags;
 
   /* 00DC */ std::list<std::vector<UINaviLinkButton*>> naviLinks;
   /* 00E4 */ std::vector<int> unknown_00E4;

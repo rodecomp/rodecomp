@@ -20,9 +20,6 @@ public:
   /* 00BC */ std::string m_valueName;
   /* 00D4 */ int m_selectedServer;
   /* 00D8 */ int m_event;
-
-protected:
-  void* unknown_controls;
 };
 
 #endif

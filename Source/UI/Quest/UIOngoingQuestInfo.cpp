@@ -675,7 +675,7 @@ void CUIScrollWindow::Slot15(int width, int height) {
 namespace OngoingQuestInfo {
 // OFFSET: 0x00A54D00
 // FUNCTION: fn_16289
-CUIContents::CUIContents() : CUIControl(), title(nullptr), textViewer(nullptr), icon(nullptr) {
+CUIContents::CUIContents() : CUIControl(), icon(nullptr), title(nullptr), textViewer(nullptr) {
 }
 }
 
@@ -689,14 +689,14 @@ namespace OngoingQuestInfo {
 // OFFSET: 0x00A54F20
 // FUNCTION: fn_16292
 CUIRewards::CUIRewards()
-    : CUIControl(), title(nullptr), firstLabel(nullptr), firstText(nullptr), secondLabel(nullptr), secondText(nullptr), thirdLabel(nullptr),
-      rewardList(nullptr), npcSprite(nullptr), icon(nullptr) {
+    : CUIControl(), icon(nullptr), title(nullptr), firstLabel(nullptr), firstText(nullptr), secondLabel(nullptr), secondText(nullptr), thirdLabel(nullptr),
+      rewardList(nullptr), npcSprite(nullptr) {
 }
 
 // OFFSET: 0x00A54FF0
 // FUNCTION: fn_16293
 CUIScrollWindow::CUIScrollWindow()
-    : CUIControl(), firstLine(nullptr), secondContents(nullptr), secondLine(nullptr), rewards(nullptr), scrollBar(nullptr), firstContents(nullptr) {
+    : CUIControl(), firstContents(nullptr), firstLine(nullptr), secondContents(nullptr), secondLine(nullptr), rewards(nullptr), scrollBar(nullptr) {
 }
 }
 

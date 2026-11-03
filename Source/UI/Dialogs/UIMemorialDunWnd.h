@@ -22,7 +22,6 @@ public:
 private:
   /* 00B4 */ UIBitmapButton* m_actionButton;
   /* 00B8 */ UIBasicButton* m_partyButton;
-  void* unknown_controls;
 };
 
 #endif

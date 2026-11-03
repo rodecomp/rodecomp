@@ -4,6 +4,7 @@
 #include "Render/DisplayMode.h"
 #include "Render/RenderAdapter.h"
 #include "Render/RenderBackends.h"
+#include "UI/FrameSkin.h"
 #include "UI/Lists/UIListBoxTemplate.h"
 #include "UI/Window/UIControl.h"
 #include "UI/Window/UIFrameWnd.h"
@@ -33,7 +34,7 @@ extern std::map<int, int> g_optionHotkeys;
 template <class T, class D> class CUIComboBox : public CUIControl {
 public:
   explicit CUIComboBox()
-      : CUIControl(), button(), unknown_0088(), listBox(nullptr), width(), itemHeight(0), visibleItems(1), onSelect(), onChange() {
+      : CUIControl(), display(), button(), unknown_0088(), listBox(nullptr), width(), itemHeight(0), visibleItems(1), onSelect(), onChange() {
   }
 
   void Paint() override;
@@ -43,6 +44,7 @@ public:
   void Create(int width, int itemHeight, int visibleItems);
   void SetButton(const std::string& normal, const std::string& hover, const std::string& pressed, const std::string& disabled);
 
+  /* 0080 */ T* display;
   /* 0084 */ CUIButton* button;
   /* 0088 */ CUIImageButton* unknown_0088;
   /* 008C */ CUIListBoxEx<T, D>* listBox;
@@ -341,13 +343,14 @@ public:
 std::string GetHotkeyText(int tab, int index);
 }
 
-class CUIGameSettingsUI : public UIFrameWnd {
+class CUIGameSettingsUI : public CUIFrameWnd {
 public:
-  CUIGameSettingsUI();
+  __declspec(noinline) CUIGameSettingsUI();
 
   void Slot15(int width, int height) override;
   void Slot16() override;
   void Slot25(int x, int y) override;
+  void Slot53() override;
 
   void OnApply();
   void OnCloseButton();
@@ -367,7 +370,6 @@ public:
   void sub_A43C70();
   void ResetToDefaults();
 
-  /* 00B8 */ unsigned char unknown_00B8[0x1C];
   /* 00D8 */ CUITitleBar* m_titleBar;
   /* 00DC */ GameSettingsUI::CUIPage* m_currentPage;
   /* 00E0 */ GameSettingsUI::CUIGraphicsPage* m_graphicsPage;

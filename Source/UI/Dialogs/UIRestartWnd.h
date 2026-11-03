@@ -3,7 +3,6 @@
 
 #include "UI/Window/UIFrameWnd.h"
 
-
 class UIRestartWnd : public UIFrameWnd {
 public:
   UIRestartWnd();
@@ -11,8 +10,7 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void Slot15(int width, int height) override;
 
-protected:
-  void* unknown_controls;
+  /* 00B4 */ unsigned char unknown_00B4[4];
 };
 
 #endif

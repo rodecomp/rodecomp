@@ -1146,7 +1146,7 @@ void UISlotBmpButton::Slot19() {
 // FUNCTION: fn_11479
 void UIBasicItemCtrl::Slot32(int, int) {
   if (std::atoi(this->m_item.itemId.c_str()) > 0) {
-    this->m_windows->EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&this->m_item), 0, 0, 0);
+    g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&this->m_item), 0, 0, 0);
   }
 }
 
@@ -1180,7 +1180,7 @@ void UISlotBmpButton::Slot32(int, int) {
 // OFFSET: 0x00892AB0
 // FUNCTION: fn_11484
 void UIStaticItem::Slot32(int, int) {
-  this->m_windows->EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&this->m_item), 0, 0, 0);
+  g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&this->m_item), 0, 0, 0);
 }
 
 // OFFSET: 0x00892AE0

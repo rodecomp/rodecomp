@@ -93,9 +93,6 @@ public:
   /* 00C4 */ std::string m_timeText;
   /* 00DC */ std::string m_imageName;
   /* 00F4 */ bool m_recommended;
-
-protected:
-  void* unknown_controls;
 };
 
 class UIRenewQuestScrollBar : public UIScrollBar {
@@ -135,9 +132,6 @@ public:
   /* 013C */ bool m_scrollable;
   /* 0140 */ int m_pressed;
   /* 0144 */ std::vector<unsigned int> m_questIds[4];
-
-protected:
-  void* unknown_controls;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

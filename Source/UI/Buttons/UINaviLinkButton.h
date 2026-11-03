@@ -12,12 +12,10 @@ public:
   /* 00F8 */ std::string link;
   /* 0110 */ int column;
   /* 0114 */ int line;
-
-  void* unknown_0118;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(UINaviLinkButton) == 292);
+static_assert(sizeof(UINaviLinkButton) == 0x118);
 #endif
 
 #endif

@@ -22,7 +22,6 @@ public:
 
   /* 00B4 */ std::string m_name;
   /* 00CC */ std::string m_message;
-  void* unknown_controls;
 };
 
 struct MacroReporterEntry {
@@ -89,7 +88,6 @@ public:
   /* 024C */ bool m_namesValid;
   /* 024D */ bool m_targetValid;
   /* 0250 */ int m_nameCount;
-  void* unknown_controls;
 };
 
 #endif

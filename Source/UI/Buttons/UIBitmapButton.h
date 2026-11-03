@@ -29,7 +29,7 @@ protected:
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(UIBitmapButton) == 296);
+static_assert(sizeof(UIBitmapButton) == 0x120);
 #endif
 
 #endif

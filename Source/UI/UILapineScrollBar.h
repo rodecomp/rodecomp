@@ -117,9 +117,6 @@ public:
   /* 0120 */ std::uint32_t noticeTick;
   /* 0124 */ std::uint32_t noticeDuration;
   /* 0128 */ unsigned char waiting;
-
-protected:
-  void* unknown_controls;
 };
 
 #endif

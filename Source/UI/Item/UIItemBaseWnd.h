@@ -7,7 +7,6 @@
 #include <cstddef>
 #include <list>
 
-
 class UIItemBaseWnd : public UIFrameWnd {
 public:
   UIItemBaseWnd();
@@ -27,12 +26,7 @@ public:
   /* 00B8 */ int unknown_00B8;
   /* 00BC */ UIWindow* resizer;
   /* 00C0 */ UIWindow* scrollBar;
-  /* 00C4 */ UIWindow* buttons[2];
-
-protected:
-  void* unknown_controls;
-
-public:
+  /* 00C4 */ UIWindow* buttons[5];
   /* 00D8 */ int scroll;
   /* 00DC */ int visibleRows;
   /* 00E0 */ int columns;

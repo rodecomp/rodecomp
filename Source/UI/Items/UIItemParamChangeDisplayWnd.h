@@ -32,9 +32,6 @@ public:
 
   ITEM_INFO FindEquippedItem(int location);
   void SumEquippedStats();
-
-protected:
-  void* unknown_controls;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

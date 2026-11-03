@@ -27,7 +27,6 @@ protected:
   /* 00F0 */ std::map<int, void (*)()> m_actions;
 
 private:
-  void* unknown_textContext;
   void AddButton(const char* normal, const char* hover, const char* pressed, int x, int y, int id);
 };
 

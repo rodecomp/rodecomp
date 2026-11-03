@@ -680,7 +680,7 @@ void UIToolTipBitmapWnd::Slot32(int x, int y) {
     ITEM_INFO item;
     item.SetItemId(this->itemId);
     item.identified = 1;
-    this->m_windows->EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
   }
 }
 
@@ -1518,6 +1518,6 @@ UICustomGageBar::UICustomGageBar()
 
 // OFFSET: 0x007B25B0
 // FUNCTION: fn_09188
-UIToolTipBitmapWnd::UIToolTipBitmapWnd(WindowManagerWindows& managed)
-    : UIWindow(0), bitmap(nullptr), itemId(0), unknown_00B4(0), unknown_00B8(0), m_windows(&managed) {
+UIToolTipBitmapWnd::UIToolTipBitmapWnd(WindowManagerWindows&)
+    : UIWindow(0), bitmap(nullptr), itemId(0), unknown_00B4(0), unknown_00B8(0) {
 }

@@ -27,11 +27,13 @@ public:
   ITEM_INFO ItemAt(int x, int y);
   void UpdateButtons();
 
+
+  /* 00B4 */ UIBitmapButton* m_startButton;
+  /* 00B8 */ UISpriteButton* m_startSprite;
   /* 00BC */ UIBitmapButton* m_prizeButton;
   /* 00C0 */ UISpriteButton* m_prizeSprite;
   /* 00C4 */ UISpriteButton* m_stageArrow;
   /* 00C8 */ unsigned char m_enabled;
-  /* 00B4 */ UIBitmapButton* m_startButton;
   /* 00D0 */ ITEM_INFO m_item;
   /* 01C8 */ std::list<ITEM_INFO> m_items;
   /* 01D0 */ int m_column;
@@ -39,7 +41,6 @@ public:
   /* 01D8 */ UIStaticText* m_goldText;
   /* 01DC */ UIStaticText* m_silverText;
   /* 01E0 */ UIStaticText* m_bronzeText;
-  /* 00B8 */ UISpriteButton* m_startSprite;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

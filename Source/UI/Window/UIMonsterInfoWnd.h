@@ -6,7 +6,6 @@
 #include <cstdint>
 #include <string>
 
-
 struct MonsterInfo {
   /* 0000 */ short unknown_0000;
   /* 0002 */ short job;
@@ -34,9 +33,6 @@ public:
   /* 00B4 */ MonsterInfo info;
   /* 00D4 */ int unknown_00D4;
   /* 00D8 */ std::string name;
-
-protected:
-  void* unknown_controls;
 };
 
 extern std::uint32_t g_monsterInfoActorId;

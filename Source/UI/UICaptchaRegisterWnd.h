@@ -30,9 +30,6 @@ public:
   /* 00C8 */ std::string m_selectedFile;
   /* 00E0 */ void* m_decompressedData;
   /* 00E4 */ unsigned int m_decompressedSize;
-
-protected:
-  /* 00E8 */ void* unknown_controls;
 };
 
 #endif

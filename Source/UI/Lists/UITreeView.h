@@ -69,7 +69,6 @@ protected:
   /* 00A8 */ int unknown_00A8;
   /* 00AC */ unsigned char unknown_00AC;
 
-  void* unknown_controls;
   /* 00B0 */ int unknown_00B0;
 };
 

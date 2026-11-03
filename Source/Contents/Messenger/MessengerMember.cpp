@@ -167,7 +167,6 @@ public:
   /* 0278 */ UIButton* iconModeButtons[2];
   /* 0280 */ unsigned char hiddenButtons[11];
   /* 028C */ int mode;
-  void* unknown_controls;
 };
 
 // GLOBAL: gl_24961
@@ -2023,7 +2022,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
 // OFFSET: 0x0089CFD0
 // FUNCTION: fn_11596
 void UIGage::SetColor(std::uint32_t color) {
-  this->colors[0] = color;
+  this->colors[1] = color;
 }
 
 // OFFSET: 0x0073FD90

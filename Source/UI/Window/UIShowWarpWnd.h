@@ -13,11 +13,6 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
   /* 00B4 */ UIListBox* m_list;
-
-protected:
-  void* unknown_controls;
-  void* unknown_listContext;
-  void* unknown_recorder;
 };
 
 #endif

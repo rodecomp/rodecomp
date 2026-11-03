@@ -47,10 +47,6 @@ public:
   /* 010C */ std::map<std::string, int> unknown_010C;
   /* 0114 */ std::vector<std::pair<std::string, int>> unknown_0114;
   /* 0120 */ ChatRoomWndInfo* saved;
-
-protected:
-  void* unknown_controls;
-  void* unknown_listContext;
 };
 
 #endif

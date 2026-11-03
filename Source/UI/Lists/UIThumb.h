@@ -18,12 +18,13 @@ public:
   __declspec(noinline) void SetImages(const std::string& top, const std::string& middle, const std::string& bottom);
   void SetImage(const std::string& name);
 
+
+  /* 0080 */ unsigned char resizable;
   /* 0084 */ CResPtr<CBitmapRes> top;
   /* 0088 */ CResPtr<CBitmapRes> middle;
   /* 008C */ CResPtr<CBitmapRes> bottom;
   /* 0090 */ int dragOrigin;
   /* 0094 */ unsigned char transparent;
-  /* 0080 */ unsigned char resizable;
   /* 0098 */ std::string tooltip;
   /* 00B0 */ std::string topName;
   /* 00C8 */ std::string middleName;

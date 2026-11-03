@@ -30,6 +30,8 @@ public:
   void UpdateScrollBar();
   void UpdateRowButtons();
 
+  /* 00B4 */ unsigned char unknown_00B4[0x8];
+
   /* 00BC */ UIWindow* scrollBar;
   /* 00C0 */ int unknown_00C0;
   /* 00C4 */ UIWindow* upgradeButtons[7];

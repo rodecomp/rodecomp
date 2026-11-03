@@ -18,7 +18,7 @@ public:
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(CUIDropDownBox) == 136);
+static_assert(sizeof(CUIDropDownBox) == 0x84);
 #endif
 
 #endif

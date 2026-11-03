@@ -39,6 +39,8 @@ public:
   void ResizeRows(int count);
   void ToggleInput();
 
+  /* 00B4 */ UIEditCtrl* m_inputEdit;
+  /* 00B8 */ UIWindow* unknown_00B8;
   /* 00BC */ UIEditCtrl* m_chatEdit;
   /* 00C0 */ UIWindow* unknown_00C0;
   /* 00C4 */ int m_inputX;
@@ -66,8 +68,6 @@ public:
   /* 0130 */ unsigned char unknown_0130[0x8];
   /* 0138 */ UITabControl* m_tabControl;
   /* 013C */ UIWindow* m_suggestions;
-  UIEditCtrl* m_inputEdit;
-  UIWindow* unknown_00B8;
 };
 
 // INLINED

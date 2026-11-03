@@ -37,7 +37,7 @@ private:
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(UIRegisterPartyWnd) == 240);
+static_assert(sizeof(UIRegisterPartyWnd) == 0xE8);
 #endif
 
 #endif

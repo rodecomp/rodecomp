@@ -36,7 +36,6 @@ protected:
   /* 00ED */ unsigned char unknown_00ED;
   /* 00F0 */ std::string unknown_00F0;
 
-  void* unknown_controls;
 };
 
 #endif

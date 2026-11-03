@@ -62,11 +62,10 @@ protected:
   /* 008C */ int m_message0;
   /* 0090 */ int m_message1;
   /* 0094 */ FrameTextCache m_textCache;
-  unsigned char unknown_00B8[4];
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(UIFrameWnd) == 188);
+static_assert(sizeof(UIFrameWnd) == 0xB4);
 #endif
 
 #endif

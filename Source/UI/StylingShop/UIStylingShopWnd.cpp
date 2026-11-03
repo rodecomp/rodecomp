@@ -104,8 +104,7 @@ void UIShowInfoWnd::ResetCheckBoxes() {
         "유저인터페이스\\styleshop\\check_able.bmp", "유저인터페이스\\styleshop\\Notcheck.bmp");
   }
 
-  *reinterpret_cast<int*>(this->unknown_00AD) = 0;
-  this->unknown_00B1 = 0;
+  std::memset(this->m_changed, 0, sizeof(this->m_changed));
   this->unknown_00BC = 0;
   this->m_list.clear();
 }
@@ -721,18 +720,16 @@ void UIShowInfoWnd::CheckColoringGoods(bool* coloring) {
     g_session.m_hotkeyScript->Call("StylingShop_GetIsColoring_by_goods", "d>b", this->m_display->unknown_008C, coloring);
   }
 
-  const unsigned char* flags = this->unknown_00AD;
-  const unsigned char wingFlag = reinterpret_cast<const unsigned char*>(&this->unknown_00B1)[0];
-  const unsigned char accessoryFlag = reinterpret_cast<const unsigned char*>(&this->unknown_00B1)[1];
+  const bool* flags = this->m_changed;
   const UIDisplayCharacter* display = this->m_display;
   if (*coloring) {
-    if (flags[0] == 1 && display->unknown_0094 == g_session.m_headPalette) {
-    } else if (flags[1] == 1 && display->unknown_008C == g_session.m_head) {
+    if (flags[0] && display->unknown_0094 == g_session.m_headPalette) {
+    } else if (flags[1] && display->unknown_008C == g_session.m_head) {
     } else if (this->unknown_00BC == 1 && display->job == g_session.m_bodyCostume) {
-    } else if (flags[2] == 1 && display->unknown_0098 == g_session.m_bodyStyle) {
-    } else if (flags[3] == 1 && (display->unknown_009C == *reinterpret_cast<const int*>(&g_session.unknown_0EF4[4]) || display->unknown_009C == 0)) {
-    } else if (wingFlag == 1 && (display->unknown_00A0 == *reinterpret_cast<const int*>(&g_session.unknown_0EF4[8]) || display->unknown_00A0 == 0)) {
-    } else if (accessoryFlag == 1 && (display->unknown_00A4 == *reinterpret_cast<const int*>(&g_session.unknown_0EF4[0]) || display->unknown_00A0 == 0)) {
+    } else if (flags[2] && display->unknown_0098 == g_session.m_bodyStyle) {
+    } else if (flags[3] && (display->unknown_009C == *reinterpret_cast<const int*>(&g_session.unknown_0EF4[4]) || display->unknown_009C == 0)) {
+    } else if (flags[4] && (display->unknown_00A0 == *reinterpret_cast<const int*>(&g_session.unknown_0EF4[8]) || display->unknown_00A0 == 0)) {
+    } else if (flags[5] && (display->unknown_00A4 == *reinterpret_cast<const int*>(&g_session.unknown_0EF4[0]) || display->unknown_00A0 == 0)) {
     } else {
       return;
     }
@@ -743,8 +740,7 @@ void UIShowInfoWnd::CheckColoringGoods(bool* coloring) {
     this->m_checks[i]->SetChecked(0);
   }
   this->m_list.clear();
-  *reinterpret_cast<int*>(this->unknown_00AD) = 0;
-  this->unknown_00B1 = 0;
+  std::memset(this->m_changed, 0, sizeof(this->m_changed));
   this->unknown_00BC = 0;
 }
 
@@ -1032,48 +1028,47 @@ void UIShowInfoWnd::GetPayment(const int& type, int* zeny, int* itemId, int* cos
 void UIShowInfoWnd::UpdateChangedStyles() {
   bool coloring = true;
   this->CheckColoringGoods(&coloring);
-  if (!this->unknown_00AD[0] && this->m_display->unknown_0094 != g_session.m_headPalette && coloring == true) {
+  if (!this->m_changed[0] && this->m_display->unknown_0094 != g_session.m_headPalette && coloring == true) {
     this->m_checks[this->m_list.size()]->SetChecked(1);
     this->m_list.push_back(1);
-    this->unknown_00AD[0] = 1;
+    this->m_changed[0] = 1;
   }
 
-  if (!this->unknown_00AD[1] && this->m_display->unknown_008C != g_session.m_head) {
+  if (!this->m_changed[1] && this->m_display->unknown_008C != g_session.m_head) {
     this->m_checks[this->m_list.size()]->SetChecked(1);
     this->m_list.push_back(2);
-    this->unknown_00AD[1] = 1;
+    this->m_changed[1] = 1;
   }
 
-  if (!this->unknown_00AD[2] && this->m_display->unknown_0098 != g_session.m_bodyStyle) {
+  if (!this->m_changed[2] && this->m_display->unknown_0098 != g_session.m_bodyStyle) {
     this->m_checks[this->m_list.size()]->SetChecked(1);
     this->m_list.push_back(3);
-    this->unknown_00AD[2] = 1;
+    this->m_changed[2] = 1;
   }
 
   int sequence = 0;
   g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", "TopAccessory", this->m_display->unknown_00BC, &sequence);
-  if (!this->unknown_00AD[3] && this->m_display->unknown_009C != *reinterpret_cast<const int*>(&g_session.unknown_0EF4[4]) && this->m_display->unknown_009C != 0 &&
+  if (!this->m_changed[3] && this->m_display->unknown_009C != *reinterpret_cast<const int*>(&g_session.unknown_0EF4[4]) && this->m_display->unknown_009C != 0 &&
       sequence != 0) {
     this->m_checks[this->m_list.size()]->SetChecked(1);
     this->m_list.push_back(4);
-    this->unknown_00AD[3] = 1;
+    this->m_changed[3] = 1;
   }
 
-  unsigned char* accessoryChanged = reinterpret_cast<unsigned char*>(&this->unknown_00B1);
   g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", "MidAccessory", this->m_display->unknown_00C0, &sequence);
-  if (!accessoryChanged[0] && this->m_display->unknown_00A0 != *reinterpret_cast<const int*>(&g_session.unknown_0EF4[8]) && this->m_display->unknown_00A0 != 0 &&
+  if (!this->m_changed[4] && this->m_display->unknown_00A0 != *reinterpret_cast<const int*>(&g_session.unknown_0EF4[8]) && this->m_display->unknown_00A0 != 0 &&
       sequence != 0) {
     this->m_checks[this->m_list.size()]->SetChecked(1);
     this->m_list.push_back(5);
-    accessoryChanged[0] = 1;
+    this->m_changed[4] = 1;
   }
 
   g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", "BottomAccessory", this->m_display->unknown_00C4, &sequence);
-  if (!accessoryChanged[1] && this->m_display->unknown_00A4 != *reinterpret_cast<const int*>(&g_session.unknown_0EF4[0]) && this->m_display->unknown_00A4 != 0 &&
+  if (!this->m_changed[5] && this->m_display->unknown_00A4 != *reinterpret_cast<const int*>(&g_session.unknown_0EF4[0]) && this->m_display->unknown_00A4 != 0 &&
       sequence != 0) {
     this->m_checks[this->m_list.size()]->SetChecked(1);
     this->m_list.push_back(6);
-    accessoryChanged[1] = 1;
+    this->m_changed[5] = 1;
   }
 
   if (!this->unknown_00BC && this->m_display->job != g_session.m_bodyCostume) {
@@ -1311,8 +1306,8 @@ UIMyStyleWnd::UIMyStyleWnd() : UIStylingshopTabParentWnd(), m_selectedSlot(0), m
 // OFFSET: 0x00823210
 // FUNCTION: fn_10291
 UIShowInfoWnd::UIShowInfoWnd()
-    : UIWindow(0), m_display(nullptr), unknown_00A0(0), unknown_00A1(0), unknown_00A2(0), m_checkTop(5), unknown_00A8(12), unknown_00AD{},
-      unknown_00B1(0), unknown_00BC(0), unknown_00C0(0), unknown_00C4(0), unknown_00C8(0), unknown_00CC(0), m_offBitmap(nullptr) {
+    : UIWindow(0), m_display(nullptr), unknown_00A0(0), unknown_00A1(0), unknown_00A2(0), m_checkTop(5), unknown_00A8(12), m_changed{},
+      unknown_00BC(0), unknown_00C0(0), unknown_00C4(0), unknown_00C8(0), unknown_00CC(0), m_offBitmap(nullptr) {
 }
 
 // OFFSET: 0x008232F0
@@ -2318,8 +2313,7 @@ void UIShowInfoWnd::Slot15(int, int) {
     this->m_checks[i]->SetBitmaps("유저인터페이스\\styleshop\\check_able.bmp", "유저인터페이스\\styleshop\\Notcheck.bmp");
   }
 
-  *reinterpret_cast<int*>(this->unknown_00AD) = 0;
-  this->unknown_00B1 = 0;
+  std::memset(this->m_changed, 0, sizeof(this->m_changed));
   this->unknown_00BC = 0;
   for (unsigned int i = 0; i < this->m_list.size(); ++i) {
     this->m_list.clear();

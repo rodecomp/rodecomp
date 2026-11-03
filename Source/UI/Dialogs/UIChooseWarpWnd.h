@@ -19,10 +19,6 @@ public:
   /* 00B4 */ UIListBox* m_list;
   /* 00B8 */ int unknown_00B8;
   /* 00BC */ std::vector<std::string> m_choices;
-
-protected:
-  void* unknown_controls;
-  void* unknown_listContext;
 };
 
 #endif

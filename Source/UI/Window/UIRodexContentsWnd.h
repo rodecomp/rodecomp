@@ -42,9 +42,6 @@ public:
   /* 0104 */ UIBasicButton* unknown_0104;
   /* 0108 */ UIBasicButton* unknown_0108;
   /* 010C */ bool unknown_010C;
-
-protected:
-  void* unknown_controls;
 };
 
 #endif

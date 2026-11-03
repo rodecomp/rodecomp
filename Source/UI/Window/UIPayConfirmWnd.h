@@ -24,9 +24,6 @@ public:
   __declspec(property(get = Title)) std::string& m_title;
 
   /* 0120 */ const BitmapImage* m_image;
-
-protected:
-  void* unknown_controls;
 };
 
 #endif

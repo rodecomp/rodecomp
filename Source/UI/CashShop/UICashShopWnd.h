@@ -35,7 +35,6 @@ public:
   /* 0088 */ std::vector<UIWindow*> m_buttons;
   /* 0094 */ unsigned int m_index;
   /* 0098 */ std::uint32_t m_lastTick;
-  void* unknown_controls;
 
   void CreateButtons();
 };
@@ -55,7 +54,6 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
   /* 0080 */ ITEM_INFO m_item;
-  void* unknown_controls;
 };
 
 class UICashShopWnd_Cart : public UIWindow {
@@ -73,7 +71,6 @@ public:
   /* 0094 */ UIScrollBar_Custom* m_scrollBar;
   /* 0098 */ int m_visibleCount;
   /* 009C */ unsigned int m_scrollIndex;
-  void* unknown_controls;
 };
 
 class UICashShopWnd_Item : public UIWindow {
@@ -95,7 +92,6 @@ public:
   /* 0080 */ ITEM_INFO m_item;
   /* 0178 */ bool m_largeLayout;
   /* 017C */ UIStaticBitmap* m_soldOut;
-  void* unknown_controls;
 };
 
 class UICashShopWnd : public UIFrameWnd {
@@ -127,7 +123,6 @@ public:
   /* 00F4 */ UIEditCtrl_Custom* unknown_00F4;
   /* 00F8 */ std::vector<UICashShopWnd_Item*> m_itemWindows;
   /* 0104 */ UICashShopWnd_Cart* m_cart;
-  void* unknown_controls;
 };
 
 void FormatMessageBuffer(char* buffer, const char* format, ...);

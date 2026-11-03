@@ -88,10 +88,6 @@ protected:
   /* 0128 */ UIResizer* unknown_0128;
   /* 012C */ std::vector<std::string> m_history;
 
-  void* unknown_controls;
-  void* unknown_listContext;
-  void* unknown_recorder;
-  void* unknown_dialogs;
 };
 
 #endif

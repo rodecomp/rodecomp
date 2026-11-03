@@ -6,7 +6,6 @@
 #include <cstdint>
 #include <string>
 
-
 class UIRadioBtn : public UIWindow {
 public:
   UIRadioBtn();
@@ -26,9 +25,6 @@ public:
   /* 00D0 */ std::string uncheckedBitmap;
   /* 00E8 */ int fontHeight;
   /* 00EC */ std::uint32_t textColor;
-
-protected:
-  void* unknown_controls;
 };
 
 #endif

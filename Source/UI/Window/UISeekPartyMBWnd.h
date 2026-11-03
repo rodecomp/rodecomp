@@ -36,6 +36,8 @@ public:
   void ShowJobCategory(int category);
 
 protected:
+  /* 00B4 */ UIStaticText* m_titleText;
+  /* 00B8 */ UIStaticText* m_levelText;
   /* 00BC */ UIStaticText* unknown_00BC;
   /* 00C0 */ UIStaticText* unknown_00C0;
   /* 00C4 */ UIEditCtrl* m_levelEdit;
@@ -55,9 +57,6 @@ protected:
   /* 0169 */ SeekPartyRegistration m_registration;
   /* 0179 */ unsigned char unknown_0179[3];
   /* 017C */ SeekPartyMBWndInfo* m_saved;
-  void* unknown_controls;
-  UIStaticText* m_titleText;
-  UIStaticText* m_levelText;
 };
 
 #endif

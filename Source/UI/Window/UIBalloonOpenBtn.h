@@ -23,7 +23,6 @@ protected:
   /* 00C8 */ int m_balloonId;
   /* 00CC */ UITransBalloonText* m_balloon;
   /* 00D0 */ UIBitmapButton* m_button;
-  void* unknown_controls;
 };
 
 #endif

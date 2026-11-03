@@ -1006,12 +1006,12 @@ void UIReplayRECControlWnd::Slot11() {
 
 // OFFSET: 0x008A6DC0
 // FUNCTION: fn_11711
-void UIBank_NewWnd::AnimateLoading() {
+void UIReplayRECControlWnd::AnimateLoading() {
   for (int index = 0; index < 4; ++index) {
-    this->m_loading[index]->Move(-100, -100);
+    this->tabs[index]->Move(-100, -100);
   }
 
-  this->m_loading[static_cast<int>(timeGetTime() % 1000) / 250]->Move(6, 5);
+  this->tabs[static_cast<int>(timeGetTime() % 1000) / 250]->Move(6, 5);
 }
 
 // OFFSET: 0x008AE8A0

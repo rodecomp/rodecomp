@@ -5,7 +5,6 @@
 
 #include <vector>
 
-
 struct TransMenuItem {
   /* 0000 */ char text[24];
   /* 0018 */ int command;
@@ -37,7 +36,6 @@ protected:
   /* 00DC */ int m_lineHeight;
   /* 00E0 */ int m_margin;
   /* 00E4 */ int m_selected;
-  void* unknown_controls;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

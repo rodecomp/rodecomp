@@ -49,9 +49,6 @@ public:
   /* 0148 */ std::vector<MiniMapMark> partyMarks;
   /* 0154 */ std::vector<MiniMapMark> guildMarks;
   /* 0160 */ std::vector<MiniMapMark> warpMarks;
-
-protected:
-  void* unknown_controls;
 };
 
 #endif

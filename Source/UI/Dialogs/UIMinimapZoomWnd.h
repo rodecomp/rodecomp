@@ -21,9 +21,6 @@ public:
   /* 00BC */ int unknown_00BC;
   /* 00C0 */ int unknown_00C0;
   /* 00C4 */ int unknown_00C4;
-
-protected:
-  void* unknown_controls;
 };
 
 #endif

@@ -53,15 +53,14 @@ public:
   /* 00C8 */ std::uint32_t textColor;
   /* 00CC */ unsigned char centerVertically;
   /* 00D0 */ int textInset;
-
-protected:
-  void* unknown_listContext;
 };
 
 class UIServerListBox : public UIListBox {
 public:
   UIServerListBox();
 
+  /* 00D4 */ int unknown_00D4;
+  /* 00D8 */ int unknown_00D8;
   /* 00DC */ int unknown_00DC;
   /* 00E0 */ int unknown_00E0;
 };
@@ -78,7 +77,7 @@ public:
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(UIListBox) == 220);
+static_assert(sizeof(UIListBox) == 0xD4);
 static_assert(offsetof(UIServerListBox, unknown_00DC) == 0xDC);
 static_assert(offsetof(UIServerListBox, unknown_00E0) == 0xE0);
 #endif

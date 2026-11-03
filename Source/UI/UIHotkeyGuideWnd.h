@@ -7,7 +7,6 @@
 #include <string>
 #include <vector>
 
-
 struct HotkeyGuideEntry {
   /* 0000 */ int id;
   /* 0004 */ int firstKey;
@@ -59,7 +58,6 @@ protected:
   /* 00C8 */ std::vector<UIWindow*> m_tabs;
   /* 00D4 */ int m_current;
   /* 00D8 */ std::vector<int> m_keys;
-  void* unknown_controls;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

@@ -24,5 +24,4 @@ UICaptchaImage::~UICaptchaImage() {
 // OFFSET: 0x008704D0
 // FUNCTION: fn_11101
 UIChatHisBox::~UIChatHisBox() {
-  this->ItemTags().~list();
 }

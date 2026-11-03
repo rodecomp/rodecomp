@@ -44,6 +44,7 @@ public:
   /* 00AC */ UIScrollBar* horizontalBar;
   /* 00B0 */ int transparent;
   /* 00B4 */ int lineHeight;
+  /* 00B8 */ unsigned char unknown_00B8[0x4];
   /* 00BC */ std::uint32_t selectionColor;
 };
 

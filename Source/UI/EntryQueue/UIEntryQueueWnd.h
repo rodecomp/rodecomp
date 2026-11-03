@@ -25,7 +25,6 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
 protected:
-  void* unknown_entryQueue;
 
 public:
   /* 00B4 */ UITextViewer* m_viewer;
@@ -54,7 +53,6 @@ public:
   bool Create();
 
 protected:
-  void* unknown_entryQueue;
 
 public:
   /* 00B4 */ UITextViewer* m_viewer;
@@ -79,7 +77,6 @@ public:
   void SetInfo(const char* queueName, int waiting, int ranking);
 
 protected:
-  void* unknown_entryQueue;
 
 public:
   /* 00B4 */ std::string m_queueName;
@@ -105,24 +102,21 @@ public:
   void SelectQueue(EntryQueueInfo* info);
   bool ConfirmApply(const char* type);
 
-  /* 00BC */ unsigned char unknown_00BC[0x8];
+  /* 00B4 */ UIBitmapButton* m_applyButtons[3];
+  /* 00C0 */ UIBitmapButton* m_helpButton;
   /* 00C4 */ UIStaticText* m_labels[7];
   /* 00E0 */ UIStaticText* m_values[7];
   /* 00FC */ UIEntryQueueListBox* m_list;
   /* 0100 */ EntryQueueWndInfo* saved;
-
-protected:
-  void* unknown_entryQueue;
-  void* unknown_listContext;
-  UIBitmapButton* m_applyButtons[3];
-  UIBitmapButton* m_helpButton;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
+static_assert(offsetof(UIEntryQueueWnd, m_helpButton) == 0xC0);
 static_assert(offsetof(UIEntryQueueWnd, m_labels) == 0xC4);
 static_assert(offsetof(UIEntryQueueWnd, m_values) == 0xE0);
 static_assert(offsetof(UIEntryQueueWnd, m_list) == 0xFC);
 static_assert(offsetof(UIEntryQueueWnd, saved) == 0x100);
+static_assert(sizeof(UIEntryQueueWnd) == 0x104);
 #endif
 
 #endif

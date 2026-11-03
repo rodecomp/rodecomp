@@ -6,7 +6,6 @@
 
 #include <vector>
 
-
 class UIMakeTargetProcessWnd : public UIFrameWnd {
 public:
   UIMakeTargetProcessWnd();
@@ -20,10 +19,6 @@ public:
 
   /* 00B4 */ int makeType;
   /* 00B8 */ ITEM_INFO materials[3];
-
-protected:
-  void* unknown_controls;
-  void* unknown_recorder;
 };
 
 #endif

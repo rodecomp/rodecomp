@@ -18,7 +18,6 @@ public:
   virtual int Slot53() = 0;
 
 protected:
-  void* unknown_controls;
   /* 00B4 */ ClanWndInfo* m_saved;
   /* 00B8 */ UIStaticText* m_title;
 };

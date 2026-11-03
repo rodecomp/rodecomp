@@ -6212,8 +6212,10 @@ UIStorePasswordInputWnd::UIStorePasswordInputWnd()
 // OFFSET: 0x008C8D40
 // FUNCTION: fn_11972
 UISecondPasswordInputWnd::UISecondPasswordInputWnd()
-    : UIStorePasswordInputWnd(), unknown_010C(4), unknown_011C(0), unknown_0120(0), unknown_0124(), unknown_014C(0),
-      unknown_0150(0), unknown_0154(0), unknown_0158(0), unknown_0164(0) {
+    : UIStorePasswordInputWnd(), unknown_010C(4), unknown_011C(0), unknown_0120(0), unknown_0124(), unknown_0164(nullptr) {
+  this->unknown_0150[0] = nullptr;
+  this->unknown_0150[1] = nullptr;
+  this->unknown_0150[2] = nullptr;
 }
 
 // OFFSET: 0x008C8F80

@@ -109,9 +109,6 @@ public:
   /* 01F4 */ std::vector<RefiningMaterial> nextMaterials;
   /* 0200 */ int nextCatalystCount;
   /* 0208 */ ITEM_INFO nextItem;
-
-protected:
-  void* unknown_controls;
 };
 
 #endif

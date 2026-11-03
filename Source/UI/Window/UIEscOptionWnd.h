@@ -19,9 +19,6 @@ public:
   /* 00B4 */ UIButton* m_buttons[7];
   /* 00D0 */ int m_mode;
   /* 00D4 */ int m_titleHeight;
-
-protected:
-  void* unknown_controls;
 };
 
 #endif

@@ -37,8 +37,6 @@ protected:
   /* 00D0 */ std::vector<SecondCostumeEntry> m_entries[4];
   /* 0100 */ std::uint32_t unknown_0100;
   /* 0104 */ int m_page;
-  void* unknown_controls;
-  void* unknown_listContext;
   /* 0108 */ std::string unknown_0108[7];
   /* 01B0 */ std::string unknown_01B0[7];
 };

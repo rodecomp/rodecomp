@@ -29,7 +29,6 @@ public:
 
 protected:
   /* 00B4 */ UINoteWnd_Scroll* m_scroll;
-  void* unknown_controls;
 };
 
 #endif

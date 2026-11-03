@@ -230,8 +230,6 @@ protected:
   /* 0078 */ unsigned char m_cached;
   /* 0079 */ unsigned char m_clip;
 
-  /* 007C */ std::uint32_t unknown_007C;
-
 private:
   UIWindow* Parent() const;
   UIWindow(const UIWindow&) = delete;
@@ -241,7 +239,7 @@ private:
 extern std::uint32_t g_windowUid;
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(UIWindow) == 128);
+static_assert(sizeof(UIWindow) == 0x7C);
 static_assert(offsetof(UIWindow, parent) == 0x10);
 #endif
 

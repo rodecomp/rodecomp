@@ -48,6 +48,8 @@ public:
   /* 0138 */ std::string unknown_0138;
   /* 0150 */ WindowPlacement* saved;
   /* 0154 */ int tabIndex;
+  /* 0158 */ unsigned char unknown_0158;
+  /* 0159 */ unsigned char unknown_0159[7];
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

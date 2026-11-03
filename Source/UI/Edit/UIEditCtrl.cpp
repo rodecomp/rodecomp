@@ -126,9 +126,6 @@ static const std::string g_editNaviTagBegin = "<NAVIL>";
 // GLOBAL: gl_24648
 static const std::string g_editNaviTagEnd = "</NAVIL>";
 
-
-
-
 namespace {
 #pragma pack(push, 1)
 struct PACKET_CZ_INVENTORY_TAB {
@@ -215,8 +212,7 @@ UIEditCtrl::UIEditCtrl(const UIEditCtrl& other)
 // FUNCTION: fn_10663
 UIEditCtrl::UIEditCtrl()
     : UIWindow(0), anchor(0), cursor(0), mask(0), maximum(255), flat(1), red(255), green(255), blue(255), borderRed(0), borderGreen(0), borderBlue(0),
-      textColor(0), secondColor(0xFFFFFFFF), firstVisible(0), textY(0), invalidatesParent(0), disabled(0), unknown_00F0(0), topPadding(0), preserveInput(0),
-      unknown_011C(nullptr) {
+      textColor(0), secondColor(0xFFFFFFFF), firstVisible(0), textY(0), invalidatesParent(0), disabled(0), unknown_00F0(0), topPadding(0), preserveInput(0) {
   this->text.reserve(255);
 }
 
@@ -356,15 +352,11 @@ void UIEditCtrl::SetText(const char* value) {
   }
 }
 
-
 // OFFSET: 0x00856980
 // FUNCTION: fn_10755
 void UIEditCtrl::PaintText() {
   this->PaintTextWithPolicy(nullptr, 0, false);
 }
-
-
-
 
 // OFFSET: 0x00858D50
 // FUNCTION: fn_10768
@@ -1896,7 +1888,6 @@ void UIMerchantShopMakeWnd::Slot19() {
   this->unknown_016C = this->priceEdits[index]->Length();
   edit->SetCursor(edit->Length());
 }
-
 
 // OFFSET: 0x00988C20
 // FUNCTION: fn_13390
@@ -6153,6 +6144,9 @@ UIItemBaseWnd::UIItemBaseWnd()
   this->unknown_00B8 = 0;
   this->buttons[0] = nullptr;
   this->buttons[1] = nullptr;
+  this->buttons[2] = nullptr;
+  this->buttons[3] = nullptr;
+  this->buttons[4] = nullptr;
   this->scroll = 0;
 }
 

@@ -24,9 +24,6 @@ public:
   /* 00C0 */ UIWindow* m_buttons[4];
   /* 00D0 */ UIBarGraph4* m_progress;
   /* 00D4 */ UIStaticText* m_texts[4];
-
-protected:
-  void* unknown_controls;
 };
 
 #endif

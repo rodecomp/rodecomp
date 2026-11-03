@@ -10,7 +10,6 @@ class UIBitmapButton;
 class UICheckBox;
 class UIEditCtrl;
 class UINormalMB;
-class ForbiddenWords;
 class UINoneVisibleButton;
 class UIPetInfoBarGraph;
 
@@ -35,10 +34,6 @@ public:
   /* 00E4 */ unsigned char unknown_00E4;
   /* 00E8 */ UICheckBox* unknown_00E8;
 
-protected:
-  void* unknown_controls;
-  void* unknown_recorder;
-  ForbiddenWords* m_forbiddenWords;
 };
 
 #endif

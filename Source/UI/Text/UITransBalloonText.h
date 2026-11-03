@@ -71,7 +71,7 @@ static_assert(offsetof(BalloonRectangle, height) + 0xA0 == 0xAC);
 static_assert(offsetof(BalloonRectangle, unknown_00B0) + 0xA0 == 0xB0);
 static_assert(offsetof(BalloonRectangle, color) + 0xA0 == 0xB4);
 static_assert(offsetof(BalloonRectangle, unknown_00B8) + 0xA0 == 0xB8);
-static_assert(sizeof(UITransBalloonText) == 212);
+static_assert(sizeof(UITransBalloonText) == 0xCC);
 #endif
 
 #endif

@@ -63,7 +63,7 @@ protected:
 extern std::string g_emptyString;
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(UITextButton) == 256);
+static_assert(sizeof(UITextButton) == 0xF8);
 #endif
 
 #endif

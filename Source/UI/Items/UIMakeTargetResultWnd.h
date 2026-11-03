@@ -3,7 +3,6 @@
 
 #include "UI/Window/UIFrameWnd.h"
 
-
 class UIMakeTargetResultWnd : public UIFrameWnd {
 public:
   UIMakeTargetResultWnd();
@@ -12,7 +11,6 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
 protected:
-  void* unknown_controls;
 
 public:
   /* 00B4 */ int makeType;

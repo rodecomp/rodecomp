@@ -64,11 +64,10 @@ protected:
   /* 00AC */ unsigned char m_disabled;
   /* 00AD */ unsigned char m_drawLabel;
   /* 00B0 */ int m_argument;
-  void* unknown_buttonContext;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(UIButton) == 188);
+static_assert(sizeof(UIButton) == 0xB4);
 #endif
 
 #endif

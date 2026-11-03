@@ -296,7 +296,7 @@ template <class T, class D> void CUIComboBox<T, D>::Create(int width, int itemHe
   this->itemHeight = itemHeight;
   this->SetSize(width + 2, itemHeight + 2);
 
-  T*& display = *reinterpret_cast<T**>(reinterpret_cast<char*>(this) + 0x80);
+  T*& display = this->display;
   display = new T();
   display->SetSize(this->width, this->itemHeight);
   display->Move(1, 1);
@@ -1828,6 +1828,26 @@ void CUIPage::Refresh() {
     static_cast<CUIGroup*>(child)->Refresh();
   }
 }
+}
+
+// OFFSET: 0x00A3C4A0
+// FUNCTION: fn_15888
+CUIGameSettingsUI::CUIGameSettingsUI()
+    : CUIFrameWnd(), m_titleBar(nullptr), m_currentPage(nullptr), m_graphicsPage(nullptr), m_pages(), m_tab(nullptr), m_pageContainer(nullptr),
+      m_applyButton(nullptr), m_closeButton(nullptr) {
+}
+
+// OFFSET: 0x00A1EE20
+// FUNCTION: fn_15383
+void CUIGameSettingsUI::Slot53() {
+  this->unknown_00B4 = 1;
+  this->m_resolveSkin = true;
+  this->Resize(400, 350);
+  this->Move(0, 0);
+  this->Slot15(this->geometry.width, this->geometry.height);
+  this->Slot16();
+  this->SetSkinColors(0, 0, 3, 1);
+  this->m_buttonBarStyle = 3;
 }
 
 // OFFSET: 0x00A41DE0

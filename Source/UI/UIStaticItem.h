@@ -16,9 +16,6 @@ public:
 
 protected:
   /* 0080 */ ITEM_INFO m_item;
-  void* unknown_descriptions;
-  void* unknown_controls;
-  WindowManagerWindows* m_windows;
 };
 
 class UIStaticItem_Illust : public UIStaticItem {

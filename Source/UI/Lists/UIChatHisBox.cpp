@@ -21,7 +21,7 @@ std::string UIChatHisBox::ResolvePlayerTags(const char* name) {
   std::string result = "";
 
 
-  for (std::vector<UIItemTagButton*>& row : this->ItemTags()) {
+  for (std::vector<UIItemTagButton*>& row : this->itemTags) {
     const int count = static_cast<int>(row.size());
     int position = 0;
 
@@ -87,7 +87,6 @@ void UIChatHisBox::sub_89C080() {
 // OFFSET: 0x0086C8D0
 // FUNCTION: fn_11032
 UIChatHisBox::UIChatHisBox() : UIListBox() {
-  new (&this->ItemTags()) std::list<std::vector<UIItemTagButton*>>();
   this->maxLines = 240;
   this->lineHeight = 14;
   this->lines.reserve(240);

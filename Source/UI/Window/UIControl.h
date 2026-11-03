@@ -231,6 +231,7 @@ public:
   /* 01D4 */ SkinPaletteCell normalCell;
   /* 01DC */ SkinPaletteCell selectedCell;
   /* 01E4 */ SkinPaletteCell borderCell;
+  /* 01EC */ unsigned char unknown_01EC[4];
 };
 
 class CUIImageButton : public CUIButton {
@@ -353,6 +354,8 @@ public:
     this->onResize = handler;
   }
 
+
+  /* 0080 */ CResPtr<CBitmapRes> image;
   /* 0084 */ int minWidth;
   /* 0088 */ int minHeight;
   /* 008C */ int maxWidth;
@@ -368,11 +371,10 @@ public:
   /* 00B4 */ std::string imageName;
   /* 00CC */ unsigned char unknown_00CC[0x04];
   /* 00D0 */ std::function<void(int, int)> onResize;
-  /* 0080 */ CResPtr<CBitmapRes> image;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(CUIControl) == 132);
+static_assert(sizeof(CUIControl) == 0x80);
 static_assert(offsetof(CUIResizer, minWidth) == 0x84);
 static_assert(offsetof(CUIResizer, imageName) == 0xB4);
 static_assert(offsetof(CUIResizer, onResize) == 0xD0);

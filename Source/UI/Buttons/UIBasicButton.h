@@ -16,7 +16,7 @@ public:
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(UIBasicButton) == 216);
+static_assert(sizeof(UIBasicButton) == 0xD0);
 #endif
 
 #endif

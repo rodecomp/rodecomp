@@ -21,9 +21,6 @@ public:
   /* 00C0 */ int m_petEggId;
   /* 00C4 */ int m_evolvedEggId;
   /* 00C8 */ std::vector<std::pair<int, int>> m_materials;
-
-protected:
-  void* unknown_controls;
 };
 
 #endif

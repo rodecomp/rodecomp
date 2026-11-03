@@ -88,9 +88,6 @@ public:
   /* 02A8 */ bool m_showDetail;
   /* 02A9 */ unsigned char unknown_02A9[3];
   /* 02AC */ int m_detailId;
-
-protected:
-  void* unknown_controls;
 };
 
 #endif

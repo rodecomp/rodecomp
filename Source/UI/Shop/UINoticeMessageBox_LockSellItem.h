@@ -5,7 +5,6 @@
 
 #include <cstdint>
 
-
 class UINoticeMessageBox_LockSellItem : public UIFrameWnd {
 public:
   UINoticeMessageBox_LockSellItem();
@@ -16,9 +15,6 @@ public:
 
   /* 00B4 */ std::uint32_t startTick;
   /* 00B8 */ std::uint32_t duration;
-
-protected:
-  void* unknown_controls;
 };
 
 #endif

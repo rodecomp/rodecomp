@@ -19,9 +19,6 @@ public:
   /* 00B8 */ int unknown_00B8;
   /* 00BC */ UIStaticText* timerText;
   /* 00C0 */ int unknown_00C0;
-
-protected:
-  void* unknown_controls;
 };
 
 #endif

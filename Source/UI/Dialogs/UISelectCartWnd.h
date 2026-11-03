@@ -3,7 +3,6 @@
 
 #include "UI/Window/UIFrameWnd.h"
 
-
 class UISelectCartWnd : public UIFrameWnd {
 public:
   UISelectCartWnd();
@@ -14,7 +13,6 @@ public:
   void AddCart(int index, int type);
 
 protected:
-  void* unknown_controls;
 
 public:
   /* 00B4 */ int unknown_00B4;

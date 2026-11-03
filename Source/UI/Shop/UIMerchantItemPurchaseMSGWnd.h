@@ -22,9 +22,6 @@ public:
   /* 00C8 */ UIBitmapButton* cancelButton;
   /* 00CC */ int purchaseIndex;
   /* 00D0 */ int unknown_00D0;
-
-protected:
-  void* unknown_controls;
 };
 
 #endif

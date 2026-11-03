@@ -15,14 +15,10 @@ public:
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   bool IsNumeric(std::string text);
-  void AnimateLoading();
 
 protected:
   /* 00B4 */ UIEditCtrl* m_amountEdit;
   /* 00B8 */ std::string m_status;
-  /* 00D0 */ int unknown_00D0;
-  /* 00D4 */ UIWindow* m_loading[4];
-  void* unknown_controls;
 };
 
 #endif

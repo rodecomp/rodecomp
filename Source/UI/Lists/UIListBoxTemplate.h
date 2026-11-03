@@ -28,11 +28,7 @@ public:
   virtual void SetFrozen(bool frozen);
   __declspec(noinline) void SetImageResources(CBitmapRes* normal, CBitmapRes* hover, CBitmapRes* pressed, CBitmapRes* disabled);
 
-  std::map<int, CBitmapRes*>& Images() {
-    return *reinterpret_cast<std::map<int, CBitmapRes*>*>(&this->hitEnabled);
-  }
-
-  /* 0084 */ unsigned char unknown_0084[0x04];
+  /* 0080 */ std::map<int, CBitmapRes*> images;
   /* 0088 */ int selected;
   /* 008C */ CBitmapRes* disabledImage;
   /* 0090 */ unsigned char frozen;
@@ -269,9 +265,10 @@ public:
   }
 
   CResPtr<CBitmapRes>& NormalImage() {
-    return *reinterpret_cast<CResPtr<CBitmapRes>*>(&this->hitEnabled);
+    return this->unknown_0080;
   }
 
+  /* 0080 */ CResPtr<CBitmapRes> unknown_0080;
   /* 0084 */ CResPtr<CBitmapRes> unknown_0084;
   /* 0088 */ CResPtr<CBitmapRes> unknown_0088;
   /* 008C */ CResPtr<CBitmapRes> unknown_008C;
@@ -469,9 +466,10 @@ public:
   }
 
   CResPtr<CBitmapRes>& NormalImage() {
-    return *reinterpret_cast<CResPtr<CBitmapRes>*>(&this->hitEnabled);
+    return this->unknown_0080;
   }
 
+  /* 0080 */ CResPtr<CBitmapRes> unknown_0080;
   /* 0084 */ CResPtr<CBitmapRes> unknown_0084;
   /* 0088 */ CResPtr<CBitmapRes> unknown_0088;
   /* 008C */ CResPtr<CBitmapRes> unknown_008C;

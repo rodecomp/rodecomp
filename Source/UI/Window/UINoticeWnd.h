@@ -26,9 +26,6 @@ public:
   /* 0144 */ int m_bottomPositions[10];
   /* 016C */ int m_scroll;
   /* 0170 */ UIWindow* m_scrollBar;
-
-protected:
-  void* unknown_controls;
 };
 
 #endif

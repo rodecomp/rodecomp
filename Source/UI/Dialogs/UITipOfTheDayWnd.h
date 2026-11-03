@@ -17,9 +17,6 @@ public:
   /* 00B4 */ UITextViewer* m_textViewer;
   /* 00B8 */ int m_tipIndex;
   /* 00BC */ int m_showTipsAtStartup;
-
-protected:
-  void* unknown_controls;
 };
 
 #endif

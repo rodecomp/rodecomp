@@ -11,6 +11,8 @@
 #include <vector>
 
 class UIButton;
+class UIEditCtrl;
+class UIChangeMaterialWnd_List;
 
 struct MaterialSlotPos {
   /* 0000 */ int x;
@@ -72,6 +74,8 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4)
     override;
 
+  /* 00B4 */ UIChangeMaterialWnd_List* unknown_00B4;
+  /* 00B8 */ UIEditCtrl* unknown_00B8;
   /* 00BC */ UIChangeMaterialWnd_CheckBox* m_sortBox;
   /* 00C0 */ UIButton* m_button;
   /* 00C4 */ int m_resultX;
@@ -81,9 +85,6 @@ public:
   /* 01F8 */ std::vector<ITEM_INFO> m_materials;
   /* 0204 */ int m_resultAmount;
   /* 0208 */ std::string m_resultText;
-
-protected:
-  void* unknown_controls;
 };
 
 class UIChangeMaterialWnd_List : public UIFrameWnd {
@@ -107,6 +108,9 @@ public:
   void sub_5E1080(int delta);
   void ShiftSelectedIndex(int value);
   void CreateScrollBar(int width, int height);
+
+  /* 00B4 */ int unknown_00B4;
+  /* 00B8 */ int unknown_00B8;
 
   /* 00BC */ int m_pageSize;
   /* 00C0 */ int64_t m_selectedIndex;

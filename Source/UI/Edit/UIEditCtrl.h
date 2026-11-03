@@ -80,7 +80,6 @@ public:
   /* 0104 */ std::string linkedText;
 
 protected:
-  void* unknown_011C;
   void PaintTextWithPolicy(const std::string* placeholder, std::uint32_t placeholderColor, bool placeholderEnabled);
   bool RemoveInvalidLink(std::list<UIWindow*>::iterator& entry);
   void SnapLinkSelection(std::size_t prefix, std::size_t bytes);
@@ -260,7 +259,6 @@ public:
   /* 007C */ UIEditCtrlVarId* fields[2];
 
 protected:
-  void* unknown_slot;
 
 public:
   /* 0084 */ int unknown_0084;
@@ -268,11 +266,11 @@ public:
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(UIEditCtrl) == 292);
-static_assert(sizeof(UIEditCtrlWheel) == 292);
-static_assert(sizeof(UIEditCtrl2) == 292);
-static_assert(sizeof(UIEditCtrl4) == 324);
-static_assert(sizeof(UIEditCtrl5) == 324);
+static_assert(sizeof(UIEditCtrl) == 0x11C);
+static_assert(sizeof(UIEditCtrlWheel) == 0x11C);
+static_assert(sizeof(UIEditCtrl2) == 0x11C);
+static_assert(sizeof(UIEditCtrl4) == 0x13C);
+static_assert(sizeof(UIEditCtrl5) == 0x13C);
 #endif
 
 extern bool g_inputSuggestionsEnabled;

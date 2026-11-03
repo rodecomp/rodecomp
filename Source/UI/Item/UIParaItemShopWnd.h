@@ -49,9 +49,6 @@ public:
   /* 00F8 */ int unknown_00F8;
   /* 00FC */ int unknown_00FC;
   /* 0100 */ int unknown_0100;
-
-protected:
-  void* unknown_recorder;
 };
 
 #endif

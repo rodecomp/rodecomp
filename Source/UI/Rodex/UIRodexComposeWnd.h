@@ -70,7 +70,7 @@ public:
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(UIRodexComposeWnd) == 272);
+static_assert(sizeof(UIRodexComposeWnd) == 0x108);
 #endif
 
 #endif

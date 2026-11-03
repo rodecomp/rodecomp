@@ -32,9 +32,6 @@ public:
   /* 0080 */ std::string unknown_0080;
   /* 0098 */ std::string iconPath;
   /* 00B0 */ std::string unknown_00B0;
-
-protected:
-  void* unknown_controls;
 };
 
 class CIcon : public CRenderObject {

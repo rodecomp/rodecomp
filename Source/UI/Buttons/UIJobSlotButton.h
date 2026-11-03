@@ -16,7 +16,7 @@ public:
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(UIJobSlotButton) == 348);
+static_assert(sizeof(UIJobSlotButton) == 0x154);
 #endif
 
 #endif

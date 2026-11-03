@@ -84,6 +84,7 @@ public:
   /* 01FC */ int unknown_01FC;
   /* 0200 */ int m_action;
   /* 0204 */ int m_frame;
+  /* 0208 */ unsigned char unknown_0208[0x8];
   /* 0210 */ unsigned char unknown_0210[0x04];
   /* 0214 */ MakeCharacterStatus m_status;
   /* 0264 */ short m_job;
@@ -129,7 +130,6 @@ public:
   /* 0360 */ unsigned long m_startTime;
   /* 0364 */ int unknown_0364;
   /* 0368 */ int unknown_0368;
-  void* unknown_controls;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

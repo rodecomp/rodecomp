@@ -6,7 +6,6 @@
 #include <cstdint>
 #include <functional>
 
-
 class UIBarGraph : public UIWindow {
 public:
   explicit UIBarGraph() : UIWindow(0), m_value(0) {
@@ -55,9 +54,6 @@ public:
   void SetValues(const int* current, const int* maximum);
 
   /* 0084 */ bool m_plainColor;
-
-protected:
-  void* unknown_controls;
 };
 
 class UIINT64BarGraph : public UIWindow {
@@ -75,7 +71,6 @@ public:
 protected:
   /* 0080 */ std::int64_t m_current;
   /* 0088 */ std::int64_t m_maximum;
-  void* unknown_controls;
 };
 
 class UIPetInfoBarGraph : public UIWindow {

@@ -39,14 +39,13 @@ protected:
   /* 00EC */ int m_message;
   /* 00F0 */ int m_notify;
   /* 00F4 */ std::string m_uncheckedTooltip;
-  void* unknown_controls;
 
 private:
   void Notify();
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(UICheckBox) == 276);
+static_assert(sizeof(UICheckBox) == 0x10C);
 #endif
 
 #endif

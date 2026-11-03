@@ -5,7 +5,6 @@
 
 #include <string>
 
-
 class UIStaticText : public UIWindow {
 public:
   UIStaticText();
@@ -44,9 +43,6 @@ public:
   /* 00A4 */ int tooltipEnabled;
   /* 00A8 */ std::string text;
   /* 00C0 */ std::string tooltip;
-
-protected:
-  void* unknown_controls;
 };
 
 class UIStaticText2 : public UIStaticText {
@@ -63,7 +59,7 @@ public:
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(UIStaticText) == 224);
+static_assert(sizeof(UIStaticText) == 0xD8);
 #endif
 
 #endif

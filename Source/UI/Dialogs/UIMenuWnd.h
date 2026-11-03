@@ -28,9 +28,6 @@ public:
 
   void AddItem(const char* text, const std::uint32_t& color);
   int ItemAt(int x, int y);
-
-protected:
-  void* unknown_controls;
 };
 
 extern const char* g_menuSeparator;

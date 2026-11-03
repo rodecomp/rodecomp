@@ -38,7 +38,7 @@ public:
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(UIRequestJoinPartyWnd) == 244);
+static_assert(sizeof(UIRequestJoinPartyWnd) == 0xEC);
 #endif
 
 #endif

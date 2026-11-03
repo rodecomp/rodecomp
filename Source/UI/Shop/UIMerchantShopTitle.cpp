@@ -90,8 +90,7 @@ void UIMerchantShopTitle::Slot32(int, int) {
 
 // OFFSET: 0x0084FE60
 // FUNCTION: fn_10667
-UIMerchantShopTitle::UIMerchantShopTitle(ForbiddenWords& forbiddenWords, int buyingShop)
-    : UIWindow(0), buyingShop(buyingShop), m_forbiddenWords(&forbiddenWords) {
+UIMerchantShopTitle::UIMerchantShopTitle(int buyingShop) : UIWindow(0), buyingShop(buyingShop) {
   this->geometry.id = 189;
 }
 
@@ -110,9 +109,9 @@ int UIMerchantShopTitle::SendMsg(UIWindow* sender, int message, std::intptr_t a,
   }
 
   char* text = reinterpret_cast<char*>(a);
-  if (this->m_forbiddenWords->Contains(text) == true) {
+  if (g_forbiddenWords.Contains(text) == true) {
     std::string masked;
-    this->m_forbiddenWords->Mask(text, &masked);
+    g_forbiddenWords.Mask(text, &masked);
   }
 
   std::string title(text);

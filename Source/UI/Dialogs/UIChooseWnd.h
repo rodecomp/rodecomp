@@ -26,10 +26,6 @@ public:
   /* 00CC */ ChooseWndInfo* m_placement;
   /* 00D0 */ UIBitmapButton* m_okButton;
   /* 00D4 */ UIBitmapButton* m_cancelButton;
-
-protected:
-  void* unknown_controls;
-  void* unknown_listContext;
 };
 
 class UIChoose3Wnd : public UIChooseWnd {

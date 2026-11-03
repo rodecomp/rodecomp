@@ -25,6 +25,7 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   void ApplyMode();
   void UpdateRecordTime();
+  void AnimateLoading();
 
   /* 00B4 */ int mode;
   /* 00B8 */ int unknown_00B8;
@@ -63,10 +64,6 @@ public:
   /* 0132 */ unsigned char unknown_0132[2];
   /* 0134 */ UIWindow* window_0134;
   /* 0138 */ ReplayRECControlWndInfo* saved;
-
-protected:
-  void* unknown_focus;
-  void* unknown_controls;
 };
 
 #endif

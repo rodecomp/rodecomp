@@ -6,11 +6,10 @@
 #include <cstdint>
 
 class UIStaticText;
-struct ForbiddenWords;
 
 class UIMerchantShopTitle : public UIWindow {
 public:
-  UIMerchantShopTitle(ForbiddenWords& forbiddenWords, int buyingShop);
+  explicit UIMerchantShopTitle(int buyingShop);
   void Slot15(int width, int height) override;
   void Paint() override;
   void Slot25(int x, int y) override;
@@ -25,9 +24,6 @@ public:
   /* 0086 */ unsigned char unknown_0086[2];
   /* 0088 */ int buyingShop;
 
-protected:
-  void* unknown_controls;
-  ForbiddenWords* m_forbiddenWords;
 };
 
 #endif

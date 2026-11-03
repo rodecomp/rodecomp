@@ -35,9 +35,6 @@ public:
   /* 0150 */ int codeLength;
   /* 0154 */ int duration;
   /* 0158 */ std::uint32_t startTick;
-
-protected:
-  void* unknown_controls;
 };
 
 #endif

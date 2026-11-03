@@ -5,7 +5,6 @@
 
 #include <string>
 
-
 class UIIllustWnd : public UIFrameWnd {
 public:
   UIIllustWnd();
@@ -20,7 +19,6 @@ protected:
   /* 00B4 */ int m_titled;
   /* 00B8 */ int m_closable;
   /* 00BC */ std::string m_bitmapName;
-  void* unknown_controls;
 };
 
 class UIMultiIllustWnd : public UIFrameWnd {
@@ -39,7 +37,6 @@ protected:
   /* 00B8 */ int m_closable;
   /* 00BC */ std::string m_bitmapName;
   /* 00D4 */ int m_state;
-  void* unknown_controls;
 };
 
 #endif

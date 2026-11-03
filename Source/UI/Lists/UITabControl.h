@@ -39,6 +39,7 @@ public:
   void Slot28(int x, int y) override;
   void Slot31(int x, int y) override;
 
+  /* 007C */ int unknown_007C;
   /* 0080 */ int layout;
   /* 0084 */ int tabHeight;
   /* 0088 */ int tabPadding;
@@ -59,12 +60,8 @@ public:
   /* 00CC */ std::vector<int> widths;
   /* 00D8 */ UIEditCtrl* edit;
   /* 00DC */ std::vector<std::string> tooltips;
-  /* 007C */ int unknown_007C;
   /* 00E8 */ int unknown_00E8;
   /* 00EC */ std::vector<bool> flags;
-
-private:
-  void* unknown_controls;
 };
 
 #endif

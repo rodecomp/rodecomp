@@ -33,8 +33,6 @@ public:
   /* 00E9 */ unsigned char outline;
   /* 00EA */ unsigned char bold;
 
-  /* 00EC */ void* unknown_00EC;
-
 private:
   std::pair<int, int> LinkPosition(unsigned position, unsigned addedLines);
   void AddLinks(const char* text, unsigned addedLines, int kind);
@@ -64,7 +62,7 @@ public:
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(UITextViewer) == 248);
+static_assert(sizeof(UITextViewer) == 0xEC);
 #endif
 
 #endif

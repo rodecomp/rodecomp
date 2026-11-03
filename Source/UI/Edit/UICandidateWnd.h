@@ -5,7 +5,6 @@
 
 #include <string>
 
-
 class UICandidateWnd : public UIFrameWnd {
 public:
   UICandidateWnd();
@@ -19,7 +18,6 @@ protected:
   /* 0190 */ int m_page;
   /* 0194 */ int m_lastPage;
   /* 0198 */ int m_count;
-  void* unknown_controls;
 };
 
 class UICompositionWnd : public UIFrameWnd {
@@ -31,7 +29,6 @@ public:
 
 protected:
   /* 00B4 */ std::string m_text;
-  void* unknown_controls;
 };
 
 class UIKeyStrokeWnd : public UIFrameWnd {

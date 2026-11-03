@@ -18,7 +18,7 @@ UIPasswordWnd::UIPasswordWnd() : UIItemDropCntWnd() {}
 
 // OFFSET: 0x0090C970
 // FUNCTION: fn_12451
-void UIPasswordWnd::sub_90C970(int value) {
+void UISecondPasswordInputWnd::sub_90C970(int value) {
   this->unknown_011C = value;
   if (value == 0) {
     this->unknown_0164->SetText(LookupMessage(0xa06), 0);
@@ -31,7 +31,7 @@ void UIPasswordWnd::sub_90C9B0(int) {}
 
 // OFFSET: 0x0090C9C0
 // FUNCTION: fn_12453
-void UIPasswordWnd::CreateKeypad(unsigned int seed) {
+void UISecondPasswordInputWnd::CreateKeypad(unsigned int seed) {
   this->unknown_00F8 = 91;
   this->unknown_00FC = 91;
   this->unknown_0100 = 130;
@@ -129,7 +129,7 @@ void UIPasswordWnd::CreateKeypad(unsigned int seed) {
 
 // OFFSET: 0x0090DE10
 // FUNCTION: fn_12454
-void UIPasswordWnd::sub_90DE10() {
+void UISecondPasswordInputWnd::sub_90DE10() {
   UIButton** slot = this->unknown_0124;
   for (int remaining = 11; remaining != 0; --remaining) {
     UIButton* button = *slot;

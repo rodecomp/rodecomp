@@ -24,9 +24,6 @@ protected:
   /* 0084 */ unsigned char m_identified;
   /* 0088 */ std::string m_tooltip;
   /* 00A0 */ ITEM_INFO m_item;
-  void* unknown_naming;
-  void* unknown_controls;
-  WindowManagerWindows* m_windows;
 };
 
 class UIBasicSkillCtrl : public UIWindow {

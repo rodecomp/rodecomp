@@ -20,10 +20,6 @@ public:
   /* 00B4 */ UIReplayListBox* m_list;
   /* 00B8 */ UIBitmapButton* m_serverButton;
   /* 00BC */ UIStaticText* m_texts[5];
-
-protected:
-  void* unknown_controls;
-  void* unknown_listContext;
 };
 
 #endif

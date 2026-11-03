@@ -78,7 +78,9 @@ public:
   );
   void SetResult(int state, int result);
 
+  /* 00B4 */ UIGradeEnchant_BtnStart* startButton;
   /* 00B8 */ UIGradeEnchant_BtnEnhancedUp* enhancedUpButton;
+  /* 00BC */ UIGradeEnchant_BtnEnhancedDown* enhancedDownButton;
   /* 00C0 */ int state;
   /* 00C4 */ int result;
   /* 00C8 */ std::uint32_t unknown_00C8;
@@ -100,11 +102,6 @@ public:
   /* 011C */ std::vector<int> unknown_011C;
   /* 0128 */ ITEM_INFO item;
   /* 0220 */ unsigned char unknown_0220;
-  /* 00B4 */ UIGradeEnchant_BtnStart* startButton;
-  /* 00BC */ UIGradeEnchant_BtnEnhancedDown* enhancedDownButton;
-
-protected:
-  void* unknown_controls;
 };
 
 #endif

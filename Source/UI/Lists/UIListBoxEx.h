@@ -48,13 +48,12 @@ public:
   /* 00BC */ std::uint32_t selectionColor;
 
 protected:
-  void* unknown_listContext;
   int LineAt(int x, int y) const;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(ExtendedListLine) == 28);
-static_assert(sizeof(UIListBoxEx) == 200);
+static_assert(sizeof(UIListBoxEx) == 0xC0);
 #endif
 
 #endif

@@ -73,8 +73,7 @@ public:
   /* 0114 */ int unknown_0114;
   /* 0118 */ int unknown_0118;
   /* 011C */ int unknown_011C;
-  void* unknown_controls;
-  void* unknown_listContext;
+  /* 0120 */ unsigned char unknown_0120[4];
 };
 
 class UIStaticBitmap;
@@ -88,9 +87,6 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
   /* 00B4 */ UIStaticBitmap* icon;
-
-protected:
-  void* unknown_controls;
 };
 
 class UINavigationRuideWnd : public UIFrameWnd {
@@ -102,13 +98,9 @@ public:
   void RefreshRoute();
 
 protected:
-  void* unknown_controls;
 
 public:
   /* 00B4 */ UIListBox_NaviSearch* routeList;
-
-protected:
-  void* unknown_listContext;
 };
 
 extern int g_navigationTab;

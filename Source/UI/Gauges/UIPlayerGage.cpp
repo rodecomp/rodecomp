@@ -3,14 +3,14 @@
 // OFFSET: 0x0086D2D0
 // FUNCTION: fn_11044
 UIGage::UIGage() : UIWindow(0) {
-  this->unknown_007C = 0x009B1914;
-  this->colors[0] = 0x00444444;
-  this->colors[1] = 0x0025EA16;
-  this->colors[2] = 0x00DB651D;
-  this->colors[3] = 0x001616EA;
-  this->colors[4] = 0x00E1E4FF;
-  this->colors[5] = 0x001616EA;
-  this->colors[6] = 0x0060C0FF;
+  this->colors[0] = 0x009B1914;
+  this->colors[1] = 0x00444444;
+  this->colors[2] = 0x0025EA16;
+  this->colors[3] = 0x00DB651D;
+  this->colors[4] = 0x001616EA;
+  this->colors[5] = 0x00E1E4FF;
+  this->colors[6] = 0x001616EA;
+  this->colors[7] = 0x0060C0FF;
 }
 
 // OFFSET: 0x0086E120
@@ -31,10 +31,10 @@ UIPlayerGage::UIPlayerGage() : unknown_009C(0) {
 // OFFSET: 0x0086DE90
 // FUNCTION: fn_11061
 UIMonsterGage::UIMonsterGage() : m_threshold(0x19) {
-  this->unknown_007C = 0x009C1810;
-  this->colors[0] = 0x00424142;
-  this->colors[1] = 0x00E700FF;
-  this->colors[3] = 0x0000FFFF;
+  this->colors[0] = 0x009C1810;
+  this->colors[1] = 0x00424142;
+  this->colors[2] = 0x00E700FF;
+  this->colors[4] = 0x0000FFFF;
   this->unknown_009C = 1;
 }
 

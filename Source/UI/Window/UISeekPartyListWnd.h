@@ -54,6 +54,8 @@ protected:
   /* 00C8 */ UIStaticText* m_filterLabel1;
   /* 00CC */ UIStaticText* m_filterLabel2;
   /* 00D0 */ UIStaticText* m_filterLabel3;
+  /* 00D4 */ UIWindow* unknown_00D4;
+  /* 00D8 */ UIStaticText* m_footerText;
   /* 00DC */ UIEditCtrl* m_searchEdit;
   /* 00E0 */ UIComboBoxDefWnd* m_regionCombo;
   /* 00E4 */ UIComboBoxDefWnd* m_mapCombo;
@@ -88,8 +90,6 @@ protected:
   /* 01C8 */ short m_filterJob;
   /* 01CA */ unsigned char unknown_01CA[6];
   /* 01D0 */ SeekPartyListWndInfo* m_saved;
-  UIStaticText* m_footerText;
-  void* unknown_controls;
 };
 
 #endif

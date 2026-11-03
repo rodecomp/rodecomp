@@ -6,7 +6,6 @@
 #include <cstdint>
 #include <string>
 
-
 class UIMileageWnd : public UIFrameWnd {
 public:
   UIMileageWnd();
@@ -25,7 +24,6 @@ protected:
   /* 00BC */ int m_remaining;
   /* 00C0 */ int m_bonus;
   /* 00C4 */ std::string m_tooltip;
-  void* unknown_controls;
 };
 
 extern int g_mileageWndActive;

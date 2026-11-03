@@ -36,8 +36,8 @@ public:
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(UIComboBoxEx) == 204);
-static_assert(sizeof(UIComboBoxEx2) == 208);
+static_assert(sizeof(UIComboBoxEx) == 0xC4);
+static_assert(sizeof(UIComboBoxEx2) == 0xC8);
 #endif
 
 #endif

@@ -114,9 +114,9 @@ public:
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(UIChooseSellBuyWnd) == 196);
-static_assert(sizeof(UIExchangeAcceptWnd) == 200);
-static_assert(sizeof(UIJoinPartyAcceptWnd) == 200);
+static_assert(sizeof(UIChooseSellBuyWnd) == 0xBC);
+static_assert(sizeof(UIExchangeAcceptWnd) == 0xC0);
+static_assert(sizeof(UIJoinPartyAcceptWnd) == 0xC0);
 #endif
 
 #endif

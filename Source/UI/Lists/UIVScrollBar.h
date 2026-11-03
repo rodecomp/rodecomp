@@ -37,6 +37,8 @@ public:
   __declspec(noinline) void SetBackground(const std::string& name);
   void SetOnChange(std::function<void(int)> handler);
 
+
+  /* 0080 */ CUIImageButton* upButton;
   /* 0084 */ CUIImageButton* downButton;
   /* 0088 */ CUIThumb* thumb;
   /* 008C */ CResPtr<CBitmapRes> background;
@@ -52,7 +54,6 @@ public:
   /* 00AC */ std::string backgroundName;
   /* 00C4 */ int unknown_00C4;
   /* 00C8 */ std::function<void(int)> onChange;
-  /* 0080 */ CUIImageButton* upButton;
 };
 
 class CUIHScrollBar : public CUIVScrollBar {

@@ -29,17 +29,12 @@ public:
   std::vector<unsigned char> BuildReplayRecords();
 
 protected:
-  void* unknown_controls;
-  void* unknown_listContext;
 
 public:
   /* 00B4 */ UIListBox* m_list;
   /* 00B8 */ std::vector<int> itemIds;
   /* 00C4 */ std::vector<int> indices;
   /* 00D0 */ std::list<UIItemRepairEntry> entries;
-
-protected:
-  void* unknown_recorder;
 };
 
 #endif

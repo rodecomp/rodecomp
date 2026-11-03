@@ -63,9 +63,9 @@ public:
     this->m_clip = 1;
   }
 
+  /* 0080 */ CUIStaticImage* icon;
   /* 0084 */ CUIStaticText* title;
   /* 0088 */ CUITextViewer* textViewer;
-  /* 0080 */ CUIStaticImage* icon;
 };
 
 class CUIRewardItem : public CUIListItem {
@@ -98,6 +98,7 @@ public:
     this->m_clip = 1;
   }
 
+  /* 0080 */ CUIStaticImage* icon;
   /* 0084 */ CUIStaticText* title;
   /* 0088 */ CUIStaticText* firstLabel;
   /* 008C */ CUIStaticText* firstText;
@@ -106,7 +107,6 @@ public:
   /* 0098 */ CUIStaticText* thirdLabel;
   /* 009C */ CUIListBoxEx<CUIRewardItem, CRewardItemData>* rewardList;
   /* 00A0 */ UINpcSprWnd* npcSprite;
-  /* 0080 */ CUIStaticImage* icon;
 };
 
 class CUIScrollWindow : public CUIControl {
@@ -132,20 +132,20 @@ public:
     return total;
   }
 
+  /* 0080 */ CUIContents* firstContents;
   /* 0084 */ CUIStaticImage* firstLine;
   /* 0088 */ CUIContents* secondContents;
   /* 008C */ CUIStaticImage* secondLine;
   /* 0090 */ CUIRewards* rewards;
   /* 0094 */ CUIVScrollBar* scrollBar;
-  /* 0080 */ CUIContents* firstContents;
 };
 
 }
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(OngoingQuestInfo::CUIContents) == 0x90);
-static_assert(sizeof(OngoingQuestInfo::CUIRewards) == 0xA8);
-static_assert(sizeof(OngoingQuestInfo::CUIScrollWindow) == 0x9C);
+static_assert(sizeof(OngoingQuestInfo::CUIContents) == 0x8C);
+static_assert(sizeof(OngoingQuestInfo::CUIRewards) == 0xA4);
+static_assert(sizeof(OngoingQuestInfo::CUIScrollWindow) == 0x98);
 static_assert(offsetof(OngoingQuestInfo::CUIRewardItem, gameItem) == 0xEC);
 #endif
 
