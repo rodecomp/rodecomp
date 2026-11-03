@@ -85,6 +85,7 @@
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Items/ItemNaming.h"
+#include "Contents/ForbiddenWords.h"
 #include "Contents/PlayerNameDictionary.h"
 #include "UI/Edit/UIItemTagCtrl.h"
 #include "UI/Window/WindowBorder.h"
@@ -10772,4 +10773,410 @@ void UIItemDropCntWnd::Show(int visible) {
     }
     g_windowMgr.RemoveSnapRectangle(this);
   }
+}
+
+// OFFSET: 0x00992130
+// FUNCTION: fn_13433
+int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  int error;
+  switch (message) {
+  case 34:
+    this->saved = reinterpret_cast<MerchantShopMakeWndInfo*>(a);
+    if (!this->saved->IsValid()) {
+      this->saved->Reset();
+    }
+    this->Move(this->saved->x, this->saved->y);
+    break;
+  case 38: {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    ITEM_INFO item;
+    item.Assign(reinterpret_cast<const RawItemData&>(mode->drag));
+    if (mode->drag.source == 20) {
+      if (g_session.GetList11Size() < this->unknown_012C) {
+        if (!g_session.AddItem1768(item, 1, 1)) {
+          g_windowMgr.Confirm(LookupMessage(1729), 0, true, false, 0, "Message", 280, 120, 0);
+        } else {
+          g_session.RemoveItem1750(item, 1, 1);
+        }
+      }
+      int index = std::min(std::max(g_session.GetList11Size() - 1, 0), 4);
+      UIEditCtrl* edit = this->priceEdits[index];
+      if (edit) {
+        if (edit->Length() == 0) {
+          edit->SetText("0");
+          g_windowMgr.SetFocus(edit);
+          edit->SelectAll();
+        } else if (this->quantityEdits[index]->Length() == 0) {
+          edit = this->quantityEdits[index];
+          edit->SetText("0");
+          g_windowMgr.SetFocus(edit);
+          edit->SelectAll();
+        }
+      }
+    } else if (mode->drag.source == 11) {
+      if (item.quantity + g_session.GetItem1768Quantity(mode->drag.id) > 30000) {
+        item.quantity = 30000 - g_session.GetItem1768Quantity(mode->drag.id);
+        char text[200];
+        std::sprintf(text, LookupMessage(1705), 30000);
+        g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
+      }
+      if (item.quantity != 0) {
+        const bool full = this->unknown_012C <= g_session.GetList11Size();
+        int quantity = g_session.GetItem1750Quantity(mode->drag.id);
+        if (full && quantity != 0) {
+          quantity = g_session.GetItem1768Quantity(mode->drag.id);
+        }
+        if (quantity != 0) {
+          g_session.AddItem1768(item, 0, 1);
+          g_session.RemoveItem1750(item, 0, 1);
+        }
+        int index = g_session.GetList11Size() - 1;
+        bool fresh = true;
+        std::string price;
+        ITEM_INFO owned = g_session.FindItem1768(mode->drag.id);
+        if (owned.unknown_0000[1] != 0) {
+          index = 0;
+          for (const ITEM_INFO& old : this->items) {
+            if (old.unknown_0000[1] == owned.unknown_0000[1]) {
+              fresh = false;
+              price = this->priceEdits[index]->Text();
+              break;
+            }
+            ++index;
+          }
+        }
+        index = std::min(std::max(index, 0), 12);
+        UIEditCtrl* edit = this->priceEdits[index];
+        if (edit) {
+          if (this->mode != 0) {
+            if (edit->Length() == 0) {
+              edit->SetText("0");
+              g_windowMgr.SetFocus(edit);
+              edit->SelectAll();
+            }
+          } else if (!full) {
+            edit->Background(232, 232, 232);
+            edit->disabled = 0;
+            edit->Invalidate();
+            edit->SetText(fresh ? "0" : price.c_str());
+            g_windowMgr.SetFocus(edit);
+            edit->SelectAll();
+          }
+        }
+      }
+    }
+    mode->SendMsg(18, 0, 0, 0, 0);
+    break;
+  }
+  case 23: {
+    this->items.clear();
+    const int count = g_session.GetList11Size();
+    for (int i = 0; i < count; ++i) {
+      ITEM_INFO item = g_session.GetItem1768At(i);
+      if (item.unknown_0000[1] > 0) {
+        this->items.push_back(item);
+      }
+    }
+    if (a > 0 && this->mode == 0) {
+      int index = static_cast<int>(a) - 1;
+      if (index <= this->editIndex) {
+        --this->editIndex;
+      }
+      if (index == static_cast<int>(this->items.size())) {
+        const PriceColors colors = PriceColor(0);
+        this->priceEdits[index]->TextColor(colors.primary, colors.secondary);
+        this->priceEdits[index]->SetText("0");
+        g_windowMgr.SetFocus(index == 0 ? this->unknown_00CC : this->priceEdits[index - 1]);
+      } else {
+        g_windowMgr.SetFocus(this->priceEdits[index]);
+      }
+      UIEditCtrl* edit = this->priceEdits[this->items.size()];
+      edit->Background(182, 182, 182);
+      edit->disabled = 1;
+      edit->Invalidate();
+      char text[24] = {};
+      for (; index < this->unknown_012C - 1; ++index) {
+        this->priceEdits[index]->SetText(this->priceEdits[index + 1]->Text());
+        this->priceEdits[index + 1]->SetText("0");
+        std::sprintf(text, "%s ", this->priceEdits[index]->Text());
+        g_session.IsNumberWithCommas(text);
+        PriceColors colors = PriceColor(_atoi64(text));
+        this->priceEdits[index]->TextColor(colors.primary, colors.secondary);
+        std::sprintf(text, "%s ", this->priceEdits[index + 1]->Text());
+        g_session.IsNumberWithCommas(text);
+        colors = PriceColor(_atoi64(text));
+        this->priceEdits[index + 1]->TextColor(colors.primary, colors.secondary);
+      }
+      this->InvalidateChildren();
+    }
+    this->UpdateLayout();
+    this->Invalidate();
+    break;
+  }
+  case 7:
+  case 9:
+  case 10: {
+    const int previous = this->scroll;
+    if (message == 9) {
+      this->scroll = previous - this->unknown_0140 + 1;
+    } else if (message == 10) {
+      this->scroll = previous + this->unknown_0140 - 1;
+    } else {
+      this->scroll = previous + static_cast<int>(a);
+    }
+    if (previous != this->scroll) {
+      if (this->scrollBar) {
+        const int count = static_cast<int>(this->items.size());
+        const int maximum = std::max(count - this->unknown_0158, 0);
+        this->unknown_0144 = maximum != 0;
+        UIScrollBar* bar = static_cast<UIScrollBar*>(this->scrollBar);
+        if (maximum == 0) {
+          this->scroll = 0;
+          bar->SetRange(0, this->unknown_0158, count);
+        } else {
+          bar->SetRange(maximum, this->unknown_0158, count);
+          if (this->scroll < 0) {
+            this->scroll = 0;
+          }
+          if (this->scroll > count - this->unknown_0158) {
+            this->scroll = count - this->unknown_0158;
+          }
+          bar->SetPosition(this->scroll);
+        }
+        bar->Invalidate();
+      }
+      this->Invalidate();
+    }
+    return this->scroll - previous;
+  }
+  case 123: {
+    const unsigned char* data = reinterpret_cast<const unsigned char*>(a);
+    ItemListChunkHeader header;
+    std::memcpy(&header, data, sizeof(header));
+    if (header.type == 21300 || header.type == 21350) {
+      unsigned offset = 6;
+      while (offset < static_cast<unsigned>(b)) {
+        std::memcpy(&header, data + offset, sizeof(header));
+        offset += 6;
+        if (header.type == 21301 || header.type == 21351) {
+          UIWindow* window = g_windowMgr.sub_A978D0(header.type == 21301 ? 42 : 175);
+          if (window) {
+            window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+          }
+          break;
+        }
+        offset += header.size;
+      }
+    }
+    break;
+  }
+  case 6:
+    if (a == 213) {
+      g_session.m_skipPriceWarning = !g_session.m_skipPriceWarning;
+    } else if (a == 343) {
+      if (!g_windowMgr.LookupWindow(333)) {
+        g_windowMgr.sub_A978D0(333);
+      }
+    } else if (a == 560) {
+      this->unknown_0168->SetDisabled(1);
+      this->unknown_0168->Invalidate();
+      g_session.m_storeInfoBackup.Load(g_session.m_aid, g_session.m_gid, std::string(g_session.m_accountName.c_str()), this->mode);
+    } else if (a == 185) {
+      CMode* mode = g_modeMgr.GetGameMode();
+      if (this->mode == 0) {
+        if (this->unknown_0188 != 1) {
+          mode->SendMsg(82, reinterpret_cast<std::intptr_t>(this->unknown_00CC->Text()), 0, 0, 0);
+          g_windowMgr.CloseWindow(41);
+        } else if (this->suspended == 1) {
+          this->SetSuspended(0);
+        } else {
+          mode->SendMsg(297, 0, 0, 0, 0);
+        }
+      } else if (this->unknown_0188 == 1) {
+        if (this->suspended == 1) {
+          this->SetSuspended(0);
+        } else {
+          mode->SendMsg(299, 0, 0, 0, 0);
+        }
+      } else {
+        mode->SendMsg(271, 0, 0, 0, 0);
+        g_windowMgr.CloseWindow(174);
+      }
+      this->RecordResponse(185, static_cast<int>(b), static_cast<int>(c), static_cast<int>(d));
+    } else if (a == 184) {
+      CMode* mode = g_modeMgr.GetGameMode();
+      if (g_windowMgr.HasTitleAtActorCell(g_session.m_aid)) {
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2983)), 0xFF, 0, 0, 0);
+        break;
+      }
+      if (g_windowMgr.window_027C || g_windowMgr.window_0274) {
+        g_windowMgr.Confirm(LookupMessage(587), 0, true, false, 0, "Message", 280, 120, 0);
+        if (this->unknown_0188 == 1) {
+          g_modeMgr.GetGameMode()->SendMsg(this->mode == 1 ? 299 : 297, 0, 0, 0, 0);
+        } else {
+          g_windowMgr.CloseWindow(41);
+        }
+        break;
+      }
+      if (this->mode == 0 && !this->CommitPrice(-1)) {
+        break;
+      }
+      bool freeItem = false;
+      bool highPrice = false;
+      if (this->mode != 0 && this->items.empty()) {
+        error = 1724;
+        goto showError;
+      }
+      auto current = this->items.begin();
+      for (int i = 0; i < this->unknown_012C; ++i) {
+        char text[24];
+        std::sprintf(text, "%s ", this->priceEdits[i]->Text());
+        if (!g_session.IsNumberWithCommas(text)) {
+          error = 602;
+          goto showError;
+        }
+        std::int64_t price = _atoi64(text);
+        if (price < 0) {
+          price = 0;
+        } else if (price > 0x7FFFFFFF) {
+          price = 0x7FFFFFFF;
+        }
+        if (this->mode == 0) {
+          if (this->items.empty()) {
+            error = 2494;
+            goto showError;
+          }
+          ITEM_INFO item = g_session.GetItem1768At(i);
+          if (static_cast<unsigned>(i) < this->items.size()) {
+            if (item.unknown_0000[1] == 0) {
+              return 0;
+            }
+            if (item.identified == 0) {
+              error = 603;
+              goto showError;
+            }
+            if (price == 0) {
+              freeItem = true;
+            }
+          }
+          if (!g_session.m_skipPriceWarning && static_cast<unsigned>(i) < this->items.size() && price > 1000000000) {
+            highPrice = true;
+          }
+        } else {
+          if (static_cast<unsigned>(i) >= this->items.size()) {
+            break;
+          }
+          if (price == 0 || price > 99990000) {
+            const std::string name = current->DisplayName(0);
+            const std::string text = FormatOwnedString(LookupMessage(price == 0 ? 1725 : 1726), name.c_str());
+            g_windowMgr.Confirm(text.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+            return 0;
+          }
+          ++current;
+        }
+      }
+      if (this->mode == 0) {
+        if (freeItem && g_windowMgr.Confirm(LookupMessage(604), 2, true, false, 0, "Message", 280, 120, 0) != 187) {
+          break;
+        }
+        if (!g_session.m_skipPriceWarning && highPrice &&
+            g_windowMgr.Confirm(LookupMessage(2467), 2, true, false, 0, "Message", 280, 120, 0) != 187) {
+          break;
+        }
+      } else {
+        current = this->items.begin();
+        for (int i = 0; i < this->unknown_012C; ++i) {
+          char text[24];
+          std::sprintf(text, "%s ", this->quantityEdits[i]->Text());
+          if (!g_session.IsNumberWithCommas(text)) {
+            error = 602;
+            goto showError;
+          }
+          if (static_cast<unsigned>(i) >= this->items.size()) {
+            break;
+          }
+          const int quantity = std::max(std::atoi(text), 0);
+          if (quantity == 0 || std::atoi(text) + current->quantity > 9999) {
+            const std::string name = current->DisplayName(0);
+            const std::string message = FormatOwnedString(LookupMessage(quantity == 0 ? 1727 : 1728), name.c_str());
+            g_windowMgr.Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+            return 0;
+          }
+          ++current;
+        }
+        const std::int64_t budget = _atoi64(this->unknown_0128->Text());
+        if (budget > g_session.m_zeny || budget > 0x7FFFFFFF) {
+          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(budget > g_session.m_zeny ? 3683 : 1870)), 0x6464FF, 0, 0, 0);
+          break;
+        }
+      }
+      if (this->unknown_00CC->Length() == 0) {
+        error = 225;
+        goto showError;
+      }
+      if (!g_forbiddenWords.Allows(this->unknown_00CC->Text())) {
+        error = 14;
+        goto showError;
+      }
+      for (int i = 0; i < this->unknown_012C; ++i) {
+        char text[24];
+        int price = 0;
+        std::sprintf(text, "%s ", this->priceEdits[i]->Text());
+        g_session.IsNumberWithCommas(text);
+        if (this->priceEdits[i]->Length() != 0) {
+          price = std::atoi(text);
+        }
+        if (g_serviceType == 2 && this->priceEdits[i]->Length() == 0 && this->priceEdits[i]->Text() != nullptr) {
+          error = 602;
+          goto showError;
+        }
+        g_session.SetItem1768Unknown0014(i, price);
+      }
+      if (this->mode != 0) {
+        for (int i = 0; i < this->unknown_012C; ++i) {
+          char text[24];
+          int quantity = 0;
+          std::sprintf(text, "%s ", this->quantityEdits[i]->Text());
+          g_session.IsNumberWithCommas(text);
+          if (this->quantityEdits[i]->Length() != 0) {
+            quantity = std::atoi(text);
+          }
+          if (g_serviceType == 2 && this->quantityEdits[i]->Length() == 0 && this->quantityEdits[i]->Text() != nullptr) {
+            error = 602;
+            goto showError;
+          }
+          g_session.SetItem1768Quantity(i, quantity);
+        }
+        if (this->unknown_0188 == 1) {
+          this->SetSuspended(1);
+        } else {
+          const int budget = static_cast<int>(_atoi64(this->unknown_0128->Text()));
+          mode->SendMsg(271, reinterpret_cast<std::intptr_t>(this->unknown_00CC->Text()), 1, budget, 0);
+        }
+      } else {
+        std::int64_t total = g_session.m_zeny;
+        for (std::int64_t i = 0; i < g_session.GetList11Size(); ++i) {
+          ITEM_INFO item = g_session.GetItem1768At(static_cast<int>(i));
+          total += static_cast<std::int64_t>(static_cast<int>(item.unknown_0014[1])) * item.quantity;
+        }
+        if (total > 0x7FFFFFFF) {
+          error = 3826;
+          goto showError;
+        }
+        if (this->unknown_0188 == 1) {
+          this->SetSuspended(1);
+        } else {
+          mode->SendMsg(82, reinterpret_cast<std::intptr_t>(this->unknown_00CC->Text()), 1, 0, 0);
+        }
+      }
+      this->RecordText(0, this->unknown_00CC->Text());
+      g_session.m_storeInfoBackup.title = std::string(this->unknown_00CC->Text());
+    }
+    break;
+  }
+  return 0;
+showError:
+  g_windowMgr.Confirm(LookupMessage(error), 0, true, false, 0, "Message", 280, 120, 0);
+  return 0;
 }

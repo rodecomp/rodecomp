@@ -39,6 +39,7 @@ public:
   void Refresh();
   void Slot32(int x, int y) override;
   void Paint() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
   /* 00B4 */ std::string unknown_00B4;
   /* 00CC */ UIEditCtrl* unknown_00CC;
