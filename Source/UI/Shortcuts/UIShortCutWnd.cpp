@@ -1383,3 +1383,181 @@ int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
 
 
 // OFFSET: 0x009230A0
+// FUNCTION: fn_12644
+void UINewChatWnd::Slot15(int width, int height) {
+  if (height > this->m_inputAreaHeight) {
+    int rows = (height - (static_cast<int>(this->geometry.unknown_0030) + this->m_inputOffsetY + 74)) / 42 + 1;
+    if (rows > 4) {
+      rows = 4;
+    }
+    this->geometry.unknown_0030 = rows;
+  } else {
+    this->geometry.unknown_0030 = 0;
+  }
+
+  this->m_tabWidth = 0;
+  this->m_lockButtonX = width - 20;
+
+  this->m_tabControl = new UITabControl();
+  this->m_tabControl->Configure(1, this->m_inputOffsetY, 10, 1, 1, 1, 0, 0, 0xFFFFFF, 0x8E8E8E, 0xFFFFFF, 0xFFFFFF);
+  this->m_tabControl->Move(3, 0);
+  this->AddChild(this->m_tabControl);
+  this->m_tabControl->unknown_007C = 0;
+
+  {
+    std::string name = "유저인터페이스\\basic_interface\\stickoff";
+    UIBitmapButton* button = new UIBitmapButton();
+    this->unknown_0128 = button;
+    button->SetBitmap((name + "_a.bmp").c_str(), 0, 0);
+    button->SetBitmap((name + "_b.bmp").c_str(), 1, 0);
+    button->SetBitmap((name + "_b.bmp").c_str(), 2, 0);
+    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    button->Move(this->m_tabWidth * 2 + 4, 4);
+    button->SetId(0x166);
+    this->AddChild(button);
+  }
+
+  {
+    std::string name = "유저인터페이스\\basic_interface\\battle_option";
+    name.append("2", 1);
+    UIBitmapButton* button = new UIBitmapButton();
+    this->m_chatModeButton = button;
+    button->SetBitmap((name + "_a.bmp").c_str(), 0, 0);
+    button->SetBitmap((name + "_b.bmp").c_str(), 1, 0);
+    button->SetBitmap((name + "_b.bmp").c_str(), 2, 0);
+    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    button->Move(this->m_tabWidth * 2 + 19, 5);
+    button->SetId(0xC1);
+    this->AddChild(button);
+  }
+
+  {
+    std::string name = "유저인터페이스\\basic_interface\\battle_option";
+    UIBitmapButton* button = new UIBitmapButton();
+    this->m_headerButtons[0] = button;
+    button->SetBitmap((name + "_a.bmp").c_str(), 0, 0);
+    button->SetBitmap((name + "_b.bmp").c_str(), 1, 0);
+    button->SetBitmap((name + "_b.bmp").c_str(), 2, 0);
+    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    button->Move(this->m_tabWidth * 2 + 34, 5);
+    button->SetId(0x176);
+    this->AddChild(button);
+  }
+
+  {
+    std::string name = "유저인터페이스\\basic_interface\\wnd_mini";
+    UIBitmapButton* button = new UIBitmapButton();
+    this->m_headerButtons[1] = button;
+    button->SetBitmap((name + "_a.bmp").c_str(), 0, 0);
+    button->SetBitmap((name + "_b.bmp").c_str(), 1, 0);
+    button->SetBitmap((name + "_b.bmp").c_str(), 2, 0);
+    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    button->SetId(0xCA);
+    this->AddChild(button);
+  }
+
+  for (std::map<int, SubChatWndInfo>::iterator it = g_session.m_noSubChatWnds.begin(); it != g_session.m_noSubChatWnds.end(); ++it) {
+    this->m_tabControl->AddTab(it->second.name.c_str(), "");
+    UIChatHisBox* chatBox = new UIChatHisBox();
+    chatBox->Configure(0, 0, this->geometry.width - 8, 70, 0);
+    chatBox->Move(-100 - this->geometry.width, -100);
+    chatBox->SetId(0x1ED);
+    this->AddChild(chatBox);
+    this->m_tabs.push_back(chatBox);
+  }
+
+  if (g_session.m_noSubChatWnds.size() != 0) {
+    this->m_tabWidth = static_cast<unsigned>(this->m_tabControl->geometry.width) / g_session.m_noSubChatWnds.size();
+  }
+
+  int subIndex = 0;
+  for (std::map<int, SubChatWndInfo>::iterator it = g_session.m_subChatWnds.begin(); it != g_session.m_subChatWnds.end(); ++it, ++subIndex) {
+    g_windowMgr.sub_A97580(subIndex, it->second.x, it->second.y, it->second.width, it->second.height);
+  }
+
+  this->m_chatEdit = new UIChatEditCtrl();
+  this->m_chatEdit->SetSize(460, 16);
+  this->m_chatEdit->Move(110, this->geometry.height - this->m_inputAreaHeight + 4);
+  this->m_chatEdit->maximum = 70;
+  this->m_chatEdit->Background(240, 240, 240);
+  this->AddChild(this->m_chatEdit);
+  this->m_inputEdit = this->m_chatEdit;
+  g_windowMgr.SetFocus(this->m_chatEdit);
+  this->m_chatEdit->SetId(0x1ED);
+
+  UIWhisperEditCtrl* whisperEdit = new UIWhisperEditCtrl();
+  this->unknown_00C0 = whisperEdit;
+  whisperEdit->SetSize(90, 16);
+  whisperEdit->Move(6, this->geometry.height - this->m_inputAreaHeight + 4);
+  whisperEdit->maximum = 24;
+  whisperEdit->Background(240, 240, 240);
+  this->AddChild(whisperEdit);
+  this->m_message0 = 0xB8;
+
+  UIResizer* resizer = new UIResizer();
+  this->unknown_00B8 = resizer;
+  resizer->SetBitmapName("유저인터페이스\\basic_interface\\dialog_mid.bmp");
+  resizer->SetSize(resizer->geometry.width, resizer->geometry.height);
+  resizer->SetDirection(0);
+  resizer->Move(2, this->geometry.height - resizer->geometry.height);
+  this->AddChild(resizer);
+
+  std::string basePath = "유저인터페이스\\basic_interface\\";
+  const int base = this->geometry.height - this->m_inputAreaHeight;
+  const char* const buttonNames[3][4] = {
+    {"dialog_btn0", "dialog_btn1", "dialog_btn2", nullptr},
+    {"sys_base_off", "sys_base_on", "sys_base_on", nullptr},
+    {"sys_base_off", "sys_base_on", "sys_base_on", nullptr},
+  };
+  const int buttonIds[3] = {0xE1, 0xD4, 0xEE};
+  const int buttonPositions[3][2] = {{0x61, base + 3}, {0x24A, base + 7}, {0x23C, base + 7}};
+  const char* const tooltips[3] = {LookupMessage(0xC73), LookupMessage(0xC75), LookupMessage(0xC74)};
+  for (int index = 0; index < 3; ++index) {
+    UIBitmapButton* button = new UIBitmapButton();
+    this->m_inputButtons[index] = button;
+    button->SetBitmap((basePath + buttonNames[index][0] + ".bmp").c_str(), 0, 0);
+    button->SetBitmap((basePath + buttonNames[index][1] + ".bmp").c_str(), 1, 0);
+    button->SetBitmap((basePath + buttonNames[index][2] + ".bmp").c_str(), 2, 0);
+    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    button->Move(buttonPositions[index][0], buttonPositions[index][1]);
+    button->SetId(buttonIds[index]);
+    button->SetTooltip(tooltips[index]);
+    this->AddChild(button);
+  }
+
+  UIResizer* splitter = new UIResizer();
+  splitter->SetSize(this->geometry.width - 26, 6);
+  splitter->SetDirection(2);
+  splitter->Move(3, this->m_inputOffsetY);
+  splitter->SetColors(0xFFFF00FF, 0xFFFF00FF);
+  this->AddChild(splitter);
+
+  int screenX = 0;
+  int screenY = 0;
+  this->ToScreen(screenX, screenY);
+  this->m_inputX = screenX + 3;
+  this->m_listColor = 0x66000000;
+  this->m_inputY = screenY + this->m_inputOffsetY;
+  std::memset(this->unknown_00DC, 0, sizeof(this->unknown_00DC));
+  this->m_listWidth = this->geometry.width - 6;
+  std::memset(this->unknown_00D4, 0, sizeof(this->unknown_00D4));
+  this->m_listHeight = this->geometry.height - this->m_inputOffsetY - this->m_inputAreaHeight;
+
+  if (!g_windowMgr.unknown_0026) {
+    g_windowMgr.unknown_0024 = 1;
+    this->ApplyInputLayout();
+    g_windowMgr.SetFocus(this->m_inputEdit);
+  }
+
+  if (this->m_chatEdit) {
+    this->m_suggestions = new (std::nothrow) UICashEmotionMiniWnd();
+    if (this->m_suggestions) {
+      this->m_suggestions->SetSize(192, 44);
+      this->m_suggestions->Move(this->m_chatEdit->geometry.x, this->m_chatEdit->geometry.y - this->m_suggestions->geometry.height);
+      this->AddChild(this->m_suggestions);
+      if (this->m_suggestions) {
+        this->m_suggestions->Show(0);
+      }
+    }
+  }
+}
