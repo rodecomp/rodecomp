@@ -239,9 +239,9 @@ void UIMacroReporterWnd::Slot25(int x, int y) {
     return;
   }
 
-  if (g_dragWindowId != this->geometry.id) {
+  if (g_windowMgr.lastWindowId != this->geometry.id) {
     g_windowMgr.BringToFront(this->geometry.id);
-    g_dragWindowId = this->geometry.id;
+    g_windowMgr.lastWindowId = this->geometry.id;
   }
 
   g_windowMgr.SetCapture(this);
@@ -260,7 +260,7 @@ void UIMacroReporterWnd::Slot31(int, int) {
     return;
   }
 
-  g_dragWindowId = -1;
+  g_windowMgr.lastWindowId = -1;
   g_windowMgr.ReleaseCapture();
   g_snapMgr.Refresh(this);
 }

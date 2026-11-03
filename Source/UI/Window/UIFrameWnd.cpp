@@ -115,9 +115,9 @@ void UIWindow::ToScreen(int& x, int& y) const {
 // OFFSET: 0x008BA1E0
 // FUNCTION: fn_11779
 void UIFrameWnd::Slot25(int x, int y) {
-  if (g_dragWindowId != this->geometry.id) {
+  if (g_windowMgr.lastWindowId != this->geometry.id) {
     g_windowMgr.BringToFront(this->geometry.id);
-    g_dragWindowId = this->geometry.id;
+    g_windowMgr.lastWindowId = this->geometry.id;
   }
 
   g_windowMgr.SetCapture(this);
@@ -178,7 +178,7 @@ void UIFrameWnd::Slot31(int, int) {
     return;
   }
 
-  g_dragWindowId = -1;
+  g_windowMgr.lastWindowId = -1;
   this->geometry.targetAlpha = 255;
   this->geometry.alphaStart = timeGetTime();
   g_windowMgr.ReleaseCapture();

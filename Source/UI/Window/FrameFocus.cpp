@@ -14,9 +14,6 @@
 #include <typeinfo>
 
 // STATIC: 0x014576A0
-// GLOBAL: gl_24367
-int g_dragWindowId = -1;
-
 // OFFSET: 0x00A96A60
 // FUNCTION: fn_17192
 bool UIWindowMgr::IsOrderFixed(int id) {

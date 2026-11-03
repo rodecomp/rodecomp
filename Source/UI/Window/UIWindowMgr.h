@@ -606,7 +606,6 @@ public:
 extern UIWindowMgr g_windowMgr;
 extern int g_renderDiagnosticLine;
 extern const char* g_renderDiagnosticFile;
-extern int g_dragWindowId;
 extern bool g_windowToggleFlag;
 extern bool g_randomLoadingScreen;
 extern int g_windowCloseValue;

@@ -69,9 +69,9 @@ void UIMiniPartyWnd::Paint() {
 // OFFSET: 0x00742D80
 // FUNCTION: fn_07742
 void UIMiniPartyWnd::Slot25(int x, int y) {
-  if (g_dragWindowId != this->geometry.id) {
+  if (g_windowMgr.lastWindowId != this->geometry.id) {
     g_windowMgr.BringToFront(this->geometry.id);
-    g_dragWindowId = this->geometry.id;
+    g_windowMgr.lastWindowId = this->geometry.id;
   }
 
   g_windowMgr.SetCapture(this);
