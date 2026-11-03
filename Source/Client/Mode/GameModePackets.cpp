@@ -137,11 +137,7 @@ char g_pendingWhisperCount;
 // GLOBAL: gl_25102
 int g_whisperRecord;
 
-// GLOBAL: gl_25098
-UIWindow* g_saleResultWindow;
 
-// GLOBAL: gl_25100
-UIWindow* g_vendingOpenResultWindow;
 
 namespace {
 #pragma pack(push, 1)
@@ -1869,14 +1865,14 @@ void __stdcall sub_D08110(int field8, int itemIdWord, int quantityWord, int fiel
   }
   if (g_session.GetList9Size() == 0) {
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x137)), 0xFF00, 0, 0, 0);
-    if (g_vendingOpenResultWindow != nullptr) {
-      g_vendingOpenResultWindow->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
-      g_vendingOpenResultWindow->SendMsg(nullptr, 6, 0xC9, 0, 0, 0);
+    if (g_windowMgr.unknown_0304 != nullptr) {
+      g_windowMgr.unknown_0304->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+      g_windowMgr.unknown_0304->SendMsg(nullptr, 6, 0xC9, 0, 0, 0);
     }
-  } else if (g_vendingOpenResultWindow != nullptr) {
-    g_vendingOpenResultWindow->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+  } else if (g_windowMgr.unknown_0304 != nullptr) {
+    g_windowMgr.unknown_0304->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
   }
-  if (g_vendingOpenResultWindow != nullptr && g_session.m_muteSellSound) {
+  if (g_windowMgr.unknown_0304 != nullptr && g_session.m_muteSellSound) {
     g_soundMgr->PlayWave("effect\\ef_steal.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
   }
 }
@@ -1894,14 +1890,14 @@ void __declspec(noinline) __stdcall sub_D08670(int field14, int itemId, int quan
   if (g_windowMgr.unknown_01D4 != nullptr) {
     g_windowMgr.unknown_01D4->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
   }
-  if (g_saleResultWindow != nullptr) {
-    g_saleResultWindow->SendMsg(nullptr, 0x77, fieldC, 0, 0, 0);
-    g_saleResultWindow->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+  if (g_windowMgr.unknown_0414 != nullptr) {
+    g_windowMgr.unknown_0414->SendMsg(nullptr, 0x77, fieldC, 0, 0, 0);
+    g_windowMgr.unknown_0414->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
     if (g_session.m_muteSellSound) {
       g_soundMgr->PlayWave("effect\\ef_steal.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     if (g_session.GetList9Size() == 0) {
-      g_saleResultWindow->SendMsg(nullptr, 6, 0xC9, 0, 0, 0);
+      g_windowMgr.unknown_0414->SendMsg(nullptr, 6, 0xC9, 0, 0, 0);
     }
   }
 }
@@ -6755,7 +6751,7 @@ void CGameMode::ReceiveHomunculusChange(const unsigned char* packet) {
   case 0:
     *reinterpret_cast<std::uint32_t*>(&g_session.unknown_5570[0x08]) = *reinterpret_cast<const std::uint32_t*>(packet + 4);
     if (actor) {
-      g_groundMarkEnabled = 1;
+      g_session.unknown_5614 = 1;
       g_session.m_homunJob = actor->GetEffectiveJob(-1);
     }
     break;
@@ -10318,11 +10314,11 @@ void CGameMode::ReceiveActorDisappear(const unsigned char* data) {
     if (g_windowMgr.unknown_040C) {
       g_windowMgr.unknown_040C->SendMsg(nullptr, 6, 185, 0, 0, 0);
     }
-    if (g_vendingOpenResultWindow) {
-      g_vendingOpenResultWindow->SendMsg(nullptr, 6, 201, 0, 0, 0);
+    if (g_windowMgr.unknown_0304) {
+      g_windowMgr.unknown_0304->SendMsg(nullptr, 6, 201, 0, 0, 0);
     }
-    if (g_saleResultWindow) {
-      g_saleResultWindow->SendMsg(nullptr, 6, 201, 0, 0, 0);
+    if (g_windowMgr.unknown_0414) {
+      g_windowMgr.unknown_0414->SendMsg(nullptr, 6, 201, 0, 0, 0);
     }
     if (g_windowMgr.unknown_0308) {
       g_windowMgr.unknown_0308->SendMsg(nullptr, 6, 185, 0, 0, 0);
@@ -12302,7 +12298,7 @@ void CGameMode::ReceiveActorStandEntry(const unsigned char* data) {
     if ((job >= JT_WARPNPC && job < 1000) || (job > 1000 && job < 3999) || static_cast<std::uint16_t>(job - 20021) <= 11978 ||
         g_session.IsSkillIdInRange6001(job)) {
       if (g_session.IsHomunAid(packet->aid)) {
-        g_groundMarkEnabled = 1;
+        g_session.unknown_5614 = 1;
       }
       if (g_session.IsMercenaryAid(packet->aid)) {
         g_session.unknown_56B0 = 1;
@@ -12394,7 +12390,7 @@ void CGameMode::ReceiveActorStandEntryFont(const unsigned char* data) {
     if ((job >= JT_WARPNPC && job < 1000) || (job > 1000 && job < 3999) || static_cast<std::uint16_t>(job - 20021) <= 11978 ||
         g_session.IsSkillIdInRange6001(job)) {
       if (g_session.IsHomunAid(packet->aid)) {
-        g_groundMarkEnabled = 1;
+        g_session.unknown_5614 = 1;
       }
       if (g_session.IsMercenaryAid(packet->aid)) {
         g_session.unknown_56B0 = 1;
@@ -12495,7 +12491,7 @@ void CGameMode::ReceiveActorTypedEntry(const unsigned char* data) {
     if ((job >= JT_WARPNPC && job < 1000) || (job > 1000 && job < 3999) || static_cast<std::uint16_t>(job - 20021) <= 11978 ||
         g_session.IsSkillIdInRange6001(job) || packet->objectType == 9) {
       if (g_session.IsHomunAid(packet->aid)) {
-        g_groundMarkEnabled = 1;
+        g_session.unknown_5614 = 1;
       }
       if (g_session.IsMercenaryAid(packet->aid)) {
         g_session.unknown_56B0 = 1;
@@ -12840,7 +12836,7 @@ void CGameMode::ReceiveActorMoveEntryLegacy(const unsigned char* data) {
       actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
     }
   } else if (packet->objectType == 8 && g_session.IsHomunAid(packet->aid)) {
-    g_groundMarkEnabled = 1;
+    g_session.unknown_5614 = 1;
   } else if (packet->objectType == 9 && g_session.IsMercenaryAid(packet->aid)) {
     g_session.unknown_56B0 = 1;
   } else if (g_session.GetSceneUnknown004C() && actor->unknown_0188 == 0 &&
@@ -12974,7 +12970,7 @@ void CGameMode::SpawnMovingActor(
       actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
     }
   } else if (objectType == 8 && g_session.IsHomunAid(aid)) {
-    g_groundMarkEnabled = 1;
+    g_session.unknown_5614 = 1;
   } else if (objectType == 9 && g_session.IsMercenaryAid(aid)) {
     g_session.unknown_56B0 = 1;
   } else if (g_session.GetSceneUnknown004C() && actor->unknown_0188 == 0 &&
@@ -13108,7 +13104,7 @@ void CGameMode::ReceiveActorMoveEntryOld(const unsigned char* data) {
       actor = new CPc;
     } else {
       if (g_session.IsHomunAid(packet->aid)) {
-        g_groundMarkEnabled = 1;
+        g_session.unknown_5614 = 1;
       }
       if (g_session.IsMercenaryAid(packet->aid)) {
         g_session.unknown_56B0 = 1;
@@ -13241,7 +13237,7 @@ void CGameMode::ReceiveActorMoveEntryOld2(const unsigned char* data) {
       actor = new CPc;
     } else {
       if (g_session.IsHomunAid(packet->aid)) {
-        g_groundMarkEnabled = 1;
+        g_session.unknown_5614 = 1;
       }
       if (g_session.IsMercenaryAid(packet->aid)) {
         g_session.unknown_56B0 = 1;
@@ -13387,7 +13383,7 @@ void CGameMode::ReceiveActorMoveEntryNamed(const unsigned char* data) {
       actor = new CPc;
     } else {
       if (g_session.IsHomunAid(packet->aid)) {
-        g_groundMarkEnabled = 1;
+        g_session.unknown_5614 = 1;
       }
       if (g_session.IsMercenaryAid(packet->aid)) {
         g_session.unknown_56B0 = 1;
@@ -13512,7 +13508,7 @@ void CGameMode::ReceiveActorMoveEntryOld0(const unsigned char* data) {
       actor = new CPc;
     } else {
       if (g_session.IsHomunAid(packet->aid)) {
-        g_groundMarkEnabled = 1;
+        g_session.unknown_5614 = 1;
       }
       if (g_session.IsMercenaryAid(packet->aid)) {
         g_session.unknown_56B0 = 1;
@@ -13835,7 +13831,7 @@ void CGameMode::ReceiveActorStandEntryLegacy(const unsigned char* data) {
       actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.unknown_0030));
     }
   } else if (packet->objectType == 8 && g_session.IsHomunAid(packet->aid)) {
-    g_groundMarkEnabled = 1;
+    g_session.unknown_5614 = 1;
   } else if (packet->objectType == 9 && g_session.IsMercenaryAid(packet->aid)) {
     g_session.unknown_56B0 = 1;
   } else if (g_session.GetSceneUnknown004C() && actor->unknown_0188 == 0 &&
@@ -13991,7 +13987,7 @@ void CGameMode::ReceiveActorStandEntryNamedOld(const unsigned char* data) {
         actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.unknown_0030));
       }
     } else if (packet->objectType == 8 && g_session.IsHomunAid(packet->aid)) {
-      g_groundMarkEnabled = 1;
+      g_session.unknown_5614 = 1;
     } else if (packet->objectType == 9 && g_session.IsMercenaryAid(packet->aid)) {
       g_session.unknown_56B0 = 1;
     }
@@ -14109,7 +14105,7 @@ void CGameMode::ReceiveActorStandEntryOld(const unsigned char* data) {
       actor = new CPc;
     } else {
       if (g_session.IsHomunAid(packet->aid)) {
-        g_groundMarkEnabled = 1;
+        g_session.unknown_5614 = 1;
       }
       if (g_session.IsMercenaryAid(packet->aid)) {
         g_session.unknown_56B0 = 1;
@@ -14234,7 +14230,7 @@ void CGameMode::ReceiveActorStandEntryOld2(const unsigned char* data) {
       actor = new CPc;
     } else {
       if (g_session.IsHomunAid(packet->aid)) {
-        g_groundMarkEnabled = 1;
+        g_session.unknown_5614 = 1;
       }
       if (g_session.IsMercenaryAid(packet->aid)) {
         g_session.unknown_56B0 = 1;
@@ -14362,7 +14358,7 @@ void CGameMode::ReceiveActorStandEntryOld3(const unsigned char* data) {
       actor = new CPc;
     } else {
       if (g_session.IsHomunAid(packet->aid)) {
-        g_groundMarkEnabled = 1;
+        g_session.unknown_5614 = 1;
       }
       if (g_session.IsMercenaryAid(packet->aid)) {
         g_session.unknown_56B0 = 1;
@@ -14493,7 +14489,7 @@ void CGameMode::ReceiveActorStandEntryOld0(const unsigned char* data) {
       actor = new CPc;
     } else {
       if (g_session.IsHomunAid(packet->aid)) {
-        g_groundMarkEnabled = 1;
+        g_session.unknown_5614 = 1;
       }
       if (g_session.IsMercenaryAid(packet->aid)) {
         g_session.unknown_56B0 = 1;
@@ -14650,7 +14646,7 @@ void CGameMode::ReceiveActorStateEntryNamedOld(const unsigned char* data) {
         actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.unknown_0030));
       }
     } else if (packet->objectType == 8 && g_session.IsHomunAid(packet->aid)) {
-      g_groundMarkEnabled = 1;
+      g_session.unknown_5614 = 1;
     } else if (packet->objectType == 9 && g_session.IsMercenaryAid(packet->aid)) {
       g_session.unknown_56B0 = 1;
     }
@@ -14769,7 +14765,7 @@ void CGameMode::ReceiveActorStateEntryOld(const unsigned char* data) {
       actor = new CPc;
     } else {
       if (g_session.IsHomunAid(packet->aid)) {
-        g_groundMarkEnabled = 1;
+        g_session.unknown_5614 = 1;
       }
       if (g_session.IsMercenaryAid(packet->aid)) {
         g_session.unknown_56B0 = 1;
@@ -14905,7 +14901,7 @@ void CGameMode::SpawnStandingActor(
       actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.unknown_0030));
     }
   } else if (objectType == 8 && g_session.IsHomunAid(aid)) {
-    g_groundMarkEnabled = 1;
+    g_session.unknown_5614 = 1;
   } else if (objectType == 9 && g_session.IsMercenaryAid(aid)) {
     g_session.unknown_56B0 = 1;
   } else if (g_session.GetSceneUnknown004C() && actor->unknown_0188 == 0 &&
@@ -15190,7 +15186,7 @@ void CGameMode::SpawnStateActor(
       actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.unknown_0030));
     }
   } else if (objectType == 8 && g_session.IsHomunAid(aid)) {
-    g_groundMarkEnabled = 1;
+    g_session.unknown_5614 = 1;
   } else if (objectType == 9 && g_session.IsMercenaryAid(aid)) {
     g_session.unknown_56B0 = 1;
   } else if (g_session.GetSceneUnknown004C() && actor->unknown_0188 == 0 &&
@@ -15652,7 +15648,7 @@ void CGameMode::ReceiveActorStateEntryLegacy(const unsigned char* data) {
       actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.unknown_0030));
     }
   } else if (packet->objectType == 8 && g_session.IsHomunAid(packet->aid)) {
-    g_groundMarkEnabled = 1;
+    g_session.unknown_5614 = 1;
   } else if (packet->objectType == 9 && g_session.IsMercenaryAid(packet->aid)) {
     g_session.unknown_56B0 = 1;
   } else if (g_session.GetSceneUnknown004C() && actor->unknown_0188 == 0 &&
@@ -16781,7 +16777,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
         g_windowMgr.CloseWindow(0x72);
       }
       g_session.ClearHomunStatus();
-      g_groundMarkEnabled = 0;
+      g_session.unknown_5614 = 0;
     }
     break;
   case 0x309:

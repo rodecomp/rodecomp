@@ -1,3 +1,4 @@
+#include "Client/Session.h"
 #include "Contents/Actors/GroundScope.h"
 #include "Contents/Camera/Camera.h"
 #include "Contents/Effects/EffectLists.h"
@@ -306,9 +307,9 @@ void CView::Render() {
       this->scene->ground, matrix, g_groundOverlayA, g_groundOverlayB, g_groundOverlayC);
   }
 
-  if (g_groundMarkEnabled != 0 && g_groundMarkA != 0 && g_groundMarkB != 0) {
+  if (g_session.unknown_5614 != 0 && g_session.unknown_5600 != 0 && g_session.unknown_5604 != 0) {
     reinterpret_cast<void(__thiscall*)(void*, const float*, int, int, int)>(sceneGroundVtable[14])(
-      this->scene->ground, matrix, g_groundMarkA, g_groundMarkB, 0xfeff0000);
+      this->scene->ground, matrix, g_session.unknown_5600, g_session.unknown_5604, 0xfeff0000);
   }
 
   for (CRenderObject* object : this->scene->objects) {

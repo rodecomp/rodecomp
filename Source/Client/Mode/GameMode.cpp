@@ -3465,7 +3465,7 @@ void CGameMode::InitializeState() {
   }
 
   *reinterpret_cast<int*>(&g_session.unknown_5570[0x08]) = -1;
-  g_groundMarkEnabled = 0;
+  g_session.unknown_5614 = 0;
   g_session.ClearHomunStatus();
   *reinterpret_cast<int*>(&g_session.unknown_5620[0x08]) = -1;
   g_session.unknown_56B0 = 0;
@@ -4187,7 +4187,7 @@ void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor*
 
   const std::uint32_t homunAid = *reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5570[8]);
   const std::uint32_t mercenaryAid = *reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5620[8]);
-  if (g_groundMarkEnabled != 0) {
+  if (g_session.unknown_5614 != 0) {
     if (g_mouse.buttons[1] == 1 && HIBYTE(GetAsyncKeyState(VK_MENU))) {
       if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
         CGameActor* homun = static_cast<CGameActor*>(this->scene->GetGameActorByAID(homunAid));
@@ -4209,15 +4209,15 @@ void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor*
       } else {
         this->SetCursorAction(11);
         g_groundMarkAid = actor->render.accountId;
-        g_groundMarkA = 0;
-        g_groundMarkB = 0;
+        g_session.unknown_5600 = 0;
+        g_session.unknown_5604 = 0;
         g_session.unknown_5608 = 0;
         g_session.unknown_5610 = 1;
       }
       g_session.unknown_560C = 1;
     }
 
-    if (g_groundMarkEnabled != 0 && g_mouse.buttons[0] == 1 && g_session.IsHomunculusSkill(this->unknown_040C)) {
+    if (g_session.unknown_5614 != 0 && g_mouse.buttons[0] == 1 && g_session.IsHomunculusSkill(this->unknown_040C)) {
       CGameActor* homun = static_cast<CGameActor*>(this->scene->GetGameActorByAID(homunAid));
       if (homun && homun->HasUnknown030CEntry()) {
         AiMessage message = {};
@@ -4252,9 +4252,9 @@ void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor*
     } else {
       this->SetCursorAction(11);
       g_groundMarkAltAid = actor->render.accountId;
-      g_groundMarkAltA = 0;
+      g_session.unknown_569C = 0;
       g_session.unknown_56A0 = 0;
-      g_groundMarkAltSet = 0;
+      g_session.unknown_56A4 = 0;
       g_session.unknown_56AC = 1;
     }
     g_session.unknown_56A8 = 1;
@@ -4541,7 +4541,7 @@ int CGameMode::ProcessGroundClick(int result) {
 
   const std::uint32_t homunAid = *reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5570[8]);
   const std::uint32_t mercenaryAid = *reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5620[8]);
-  if (g_groundMarkEnabled != 0) {
+  if (g_session.unknown_5614 != 0) {
     if (HIBYTE(GetAsyncKeyState(VK_MENU)) && g_mouse.buttons[1] == 1) {
       if (g_session.unknown_560C != 0) {
         g_session.unknown_560C = 0;
@@ -4560,8 +4560,8 @@ int CGameMode::ProcessGroundClick(int result) {
         return result;
       }
 
-      g_groundMarkA = column;
-      g_groundMarkB = row;
+      g_session.unknown_5600 = column;
+      g_session.unknown_5604 = row;
       g_groundMarkAid = 0;
       g_session.unknown_5610 = 0;
       if (homun && homun->HasUnknown030CEntry()) {
@@ -4575,7 +4575,7 @@ int CGameMode::ProcessGroundClick(int result) {
       return result;
     }
 
-    if (g_groundMarkEnabled != 0 && g_mouse.buttons[1] == 1) {
+    if (g_session.unknown_5614 != 0 && g_mouse.buttons[1] == 1) {
       g_session.ClearHomunStatus();
     }
   }
@@ -4599,7 +4599,7 @@ int CGameMode::ProcessGroundClick(int result) {
         return result;
       }
 
-      g_groundMarkAltA = column;
+      g_session.unknown_569C = column;
       g_session.unknown_56A0 = row;
       g_groundMarkAltAid = 0;
       g_session.unknown_56AC = 0;
@@ -4610,7 +4610,7 @@ int CGameMode::ProcessGroundClick(int result) {
         message.y = row;
         mercenary->SetUnknown0318(reinterpret_cast<const float*>(&message), 1);
       }
-      g_groundMarkAltSet = 1;
+      g_session.unknown_56A4 = 1;
       return result;
     }
 
@@ -4638,7 +4638,7 @@ int CGameMode::ProcessGroundClick(int result) {
 
   if (reinterpret_cast<std::intptr_t>(this->unknown_0408) == 1 && g_mouse.buttons[0] == 1 && (result == 0 || result == 2)) {
     result = 1;
-    if (g_session.IsHomunculusSkill(this->unknown_040C) == 1 && g_groundMarkEnabled == 1) {
+    if (g_session.IsHomunculusSkill(this->unknown_040C) == 1 && g_session.unknown_5614 == 1) {
       CGameActor* homun = static_cast<CGameActor*>(this->scene->GetGameActorByAID(homunAid));
       if (homun && homun->HasUnknown030CEntry() == true) {
         const std::uint32_t state = homun->render.unknown_0070;
@@ -6074,7 +6074,7 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
   const std::uint32_t homunAid = *reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5570[8]);
   const std::uint32_t mercenaryAid = *reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5620[8]);
   const bool engaged = (attack || this->scene->unknown_004C != 0) && actor->render.unknown_0070 != 3 && !skillMode;
-  if (engaged && g_groundMarkEnabled != 0 && g_mouse.buttons[1] == 1 && HIBYTE(GetAsyncKeyState(VK_MENU))) {
+  if (engaged && g_session.unknown_5614 != 0 && g_mouse.buttons[1] == 1 && HIBYTE(GetAsyncKeyState(VK_MENU))) {
     if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
       CGameActor* homun = static_cast<CGameActor*>(this->scene->GetGameActorByAID(homunAid));
       if (homun && homun->HasUnknown030CEntry()) {
@@ -6095,15 +6095,15 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
     } else {
       this->SetCursorAction(11);
       g_groundMarkAid = actor->render.accountId;
-      g_groundMarkA = 0;
-      g_groundMarkB = 0;
+      g_session.unknown_5600 = 0;
+      g_session.unknown_5604 = 0;
       g_session.unknown_5608 = 0;
       g_session.unknown_5610 = 1;
     }
     g_session.unknown_560C = 1;
   }
 
-  if (g_groundMarkEnabled != 0 && g_mouse.buttons[0] == 1 && g_session.IsHomunculusSkill(this->unknown_040C)) {
+  if (g_session.unknown_5614 != 0 && g_mouse.buttons[0] == 1 && g_session.IsHomunculusSkill(this->unknown_040C)) {
     CGameActor* homun = static_cast<CGameActor*>(this->scene->GetGameActorByAID(homunAid));
     if (homun && homun->HasUnknown030CEntry()) {
       AiMessage message = {};
@@ -6137,9 +6137,9 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
     } else {
       this->SetCursorAction(11);
       g_groundMarkAltAid = actor->render.accountId;
-      g_groundMarkAltA = 0;
+      g_session.unknown_569C = 0;
       g_session.unknown_56A0 = 0;
-      g_groundMarkAltSet = 0;
+      g_session.unknown_56A4 = 0;
       g_session.unknown_56AC = 1;
     }
     g_session.unknown_56A8 = 1;
@@ -6692,7 +6692,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
         attack = 1;
       }
 
-      if (g_groundMarkEnabled && g_mouse.buttons[1] == 1 && HIBYTE(GetAsyncKeyState(VK_MENU))) {
+      if (g_session.unknown_5614 && g_mouse.buttons[1] == 1 && HIBYTE(GetAsyncKeyState(VK_MENU))) {
         if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
           CGameActor* homun = static_cast<CGameActor*>(this->scene->GetGameActorByAID(homunAid));
           if (homun != nullptr && homun->HasUnknown030CEntry()) {
@@ -6713,15 +6713,15 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
         } else {
           this->SetCursorAction(11);
           g_groundMarkAid = pick->accountId;
-          g_groundMarkA = 0;
-          g_groundMarkB = 0;
+          g_session.unknown_5600 = 0;
+          g_session.unknown_5604 = 0;
           g_session.unknown_5608 = 0;
           g_session.unknown_5610 = 1;
         }
         g_session.unknown_560C = 1;
       }
 
-      if (g_groundMarkEnabled && g_mouse.buttons[0] == 1 && g_session.IsHomunculusSkill(this->unknown_040C)) {
+      if (g_session.unknown_5614 && g_mouse.buttons[0] == 1 && g_session.IsHomunculusSkill(this->unknown_040C)) {
         CGameActor* homun = static_cast<CGameActor*>(this->scene->GetGameActorByAID(homunAid));
         if (homun != nullptr && homun->HasUnknown030CEntry()) {
           AiMessage message;
@@ -6757,9 +6757,9 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
         } else {
           this->SetCursorAction(11);
           g_groundMarkAltAid = pick->accountId;
-          g_groundMarkAltA = 0;
+          g_session.unknown_569C = 0;
           g_session.unknown_56A0 = 0;
-          g_groundMarkAltSet = 0;
+          g_session.unknown_56A4 = 0;
           g_session.unknown_56AC = 1;
         }
         g_session.unknown_56A8 = 1;
@@ -6826,7 +6826,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
     if (attack && g_mouse.buttons[0] == 1) {
       int index = 0;
       CGameActor* companion;
-      if (g_session.IsHomunculusSkill(this->unknown_040C) && g_groundMarkEnabled) {
+      if (g_session.IsHomunculusSkill(this->unknown_040C) && g_session.unknown_5614) {
         companion = static_cast<CGameActor*>(this->scene->GetGameActorByAID(homunAid));
         if (companion != nullptr && companion->HasUnknown030CEntry()) {
           AiMessage message;

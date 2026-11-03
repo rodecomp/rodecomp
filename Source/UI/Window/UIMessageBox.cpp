@@ -3610,7 +3610,7 @@ int UIHomunInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
         g_windowMgr.CloseWindow(113);
         g_windowMgr.CloseWindow(114);
         g_session.ClearHomunStatus();
-        g_groundMarkEnabled = 0;
+        g_session.unknown_5614 = 0;
       }
       return 0;
     }

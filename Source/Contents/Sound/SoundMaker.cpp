@@ -34,9 +34,6 @@
 #include <windows.h>
 #include <timeapi.h>
 
-// GLOBAL: gl_24786
-int g_groundMarkEnabled;
-
 // GLOBAL: gl_25141
 std::uint32_t g_groundMarkAid;
 
@@ -1462,7 +1459,7 @@ bool CNpc::OnProcess() {
 
   this->UpdateBubblePositions();
 
-  if (g_groundMarkEnabled && g_groundMarkAid == this->render.accountId) {
+  if (g_session.unknown_5614 && g_groundMarkAid == this->render.accountId) {
     this->SendMsg(nullptr, 0x86, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   } else if (g_session.unknown_56B0 && g_groundMarkAltAid == this->render.accountId) {
     this->SendMsg(nullptr, 0x86, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -1605,17 +1602,7 @@ void CHalluPC::Render(int argument) {
   this->DrawLayers(matrix, 1, 0);
 }
 
-// GLOBAL: gl_24784
-int g_groundMarkA;
 
-// GLOBAL: gl_24785
-int g_groundMarkB;
-
-// GLOBAL: gl_25377
-int g_groundMarkAltA;
-
-// GLOBAL: gl_25379
-int g_groundMarkAltSet;
 
 // OFFSET: 0x00DA59B0
 // FUNCTION: fn_22433
@@ -1713,14 +1700,14 @@ void CNpc::Slot15(int state, int) {
               this->unknown_027C = timeGetTime();
             }
             if (g_session.unknown_5608) {
-              g_groundMarkA = 0;
-              g_groundMarkB = 0;
+              g_session.unknown_5600 = 0;
+              g_session.unknown_5604 = 0;
               g_session.unknown_5608 = 0;
             }
-            if (g_groundMarkAltSet) {
-              g_groundMarkAltA = 0;
+            if (g_session.unknown_56A4) {
+              g_session.unknown_569C = 0;
               g_session.unknown_56A0 = 0;
-              g_groundMarkAltSet = 0;
+              g_session.unknown_56A4 = 0;
             }
             this->Slot16();
           }

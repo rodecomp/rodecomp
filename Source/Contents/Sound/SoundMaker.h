@@ -36,12 +36,7 @@ static_assert(offsetof(CSoundMaker, lastTick) == 0x164);
 static_assert(offsetof(CSoundMaker, cycle) == 0x168);
 static_assert(sizeof(CSoundMaker) == 0x170);
 #endif
-extern int g_groundMarkEnabled;
 extern std::uint32_t g_groundMarkAid;
-extern int g_groundMarkA;
-extern int g_groundMarkB;
 extern std::uint32_t g_groundMarkAltAid;
-extern int g_groundMarkAltA;
-extern int g_groundMarkAltSet;
 
 #endif
