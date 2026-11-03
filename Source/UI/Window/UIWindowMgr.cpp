@@ -1443,7 +1443,7 @@ bool UIWindowMgr::ProcessKeyDown(int key, int keyData, int pressed) {
     if (pressed == 0) {
       return this->ProcessHotkeyAction(key, pressed);
     }
-    reinterpret_cast<AutomaticSkills*>(g_session.unknown_7FB4)->DisableAll();
+    g_session.m_automaticSkills.DisableAll();
   }
   lastKey = key;
 

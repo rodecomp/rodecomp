@@ -18,6 +18,6 @@ void SetApplicationActive(int value) {
   } else {
     SetPriorityClass(GetCurrentProcess(), IDLE_PRIORITY_CLASS);
     ClipCursor(nullptr);
-    reinterpret_cast<AutomaticSkills*>(g_session.unknown_7FB4)->DisableAll();
+    g_session.m_automaticSkills.DisableAll();
   }
 }

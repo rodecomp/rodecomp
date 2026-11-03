@@ -3524,7 +3524,7 @@ void CGameMode::ProcessRightButtonDrag() {
       return;
     }
 
-    AutomaticSkills* automatic = reinterpret_cast<AutomaticSkills*>(g_session.unknown_7FB4);
+    AutomaticSkills* automatic = &g_session.m_automaticSkills;
     if (shortcuts->m_slots[4]->unknown_0000 && automatic->Contains(static_cast<std::uint16_t>(shortcuts->m_slots[4]->itemId))) {
       g_session.SetOption(AutomaticSkills::CancelOption(static_cast<std::int16_t>(shortcuts->m_slots[4]->itemId)), 1, 0);
     } else {
@@ -3689,7 +3689,7 @@ void CGameMode::ProcessMouseWheel(int requireControl) {
   if (g_serviceOptions.Get(0x79)) {
     UIShortCutWnd* shortcuts = static_cast<UIShortCutWnd*>(g_windowMgr.window_01E8);
     *reinterpret_cast<int*>(&g_session.unknown_544C[0x00]) = 1;
-    AutomaticSkills* automatic = reinterpret_cast<AutomaticSkills*>(g_session.unknown_7FB4);
+    AutomaticSkills* automatic = &g_session.m_automaticSkills;
     if (g_mouse.wheel > 0) {
       if (!shortcuts) {
         return;

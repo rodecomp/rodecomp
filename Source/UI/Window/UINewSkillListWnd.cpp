@@ -957,7 +957,7 @@ void UINewSkillListWnd::Slot26(int x, int y) {
 
   CSkillInfo skill = this->SkillAt(this->m_selectedSkill, false);
   if (skill.available != 0 && skill.level != 0) {
-    AutomaticSkills& automatic = *reinterpret_cast<AutomaticSkills*>(g_session.unknown_7FB4);
+    AutomaticSkills& automatic = g_session.m_automaticSkills;
     if (automatic.Contains(skill.id)) {
       g_session.SetOption(AutomaticSkills::CancelOption(static_cast<std::int16_t>(skill.id)), 1, 0);
     } else {

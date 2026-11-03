@@ -468,7 +468,7 @@ void UIQuickSlotWnd::Slot26(int x, int y) {
     return;
   }
 
-  AutomaticSkills& automatic = *reinterpret_cast<AutomaticSkills*>(g_session.unknown_7FB4);
+  AutomaticSkills& automatic = g_session.m_automaticSkills;
   const QuickSlotEntry& entry = this->m_entries[slot];
   if (entry.skill && automatic.Contains(static_cast<std::uint16_t>(entry.id))) {
     g_session.SetOption(AutomaticSkills::CancelOption(static_cast<std::int16_t>(entry.id)), 1, 0);

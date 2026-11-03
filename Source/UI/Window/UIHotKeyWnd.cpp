@@ -87,7 +87,7 @@ namespace {
 // OFFSET: 0x0091FFD0
 // FUNCTION: fn_12639
 void UIHotKeyWnd::Slot15(int, int) {
-  reinterpret_cast<AutomaticSkills*>(g_session.unknown_7FB4)->DisableAll();
+  g_session.m_automaticSkills.DisableAll();
   this->AddBaseButton();
   this->AddCloseButton("", 0);
 
