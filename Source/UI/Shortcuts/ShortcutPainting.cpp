@@ -174,5 +174,5 @@ void UIShortCutWnd::Paint() {
   }
 
   reinterpret_cast<ShortcutCooldowns&>(g_session.m_requestTimers)
-    .PaintMain(g_session.m_mainCooldownIcons, grid.rows, window.geometry.x, window.geometry.y, g_cooldownOwner->Drawing(), this->m_painting->commands, this->m_painting->system);
+    .PaintMain(g_session.m_mainCooldownIcons, grid.rows, window.geometry.x, window.geometry.y, g_cooldownOwner->Drawing());
 }

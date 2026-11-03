@@ -6,7 +6,6 @@
 #include "UI/Window/UIFrameWnd.h"
 
 struct ModeDragState;
-struct ShortcutPainting;
 struct NormalItemSlot;
 struct NormalItemSlotWindow;
 
@@ -44,7 +43,7 @@ private:
   NormalItemSlot* m_slots[36];
   ShortcutGrid m_grid;
   NormalItemSlot* m_itemSlots[9];
-  ShortcutPainting* m_painting;
+  void* unknown_painting;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

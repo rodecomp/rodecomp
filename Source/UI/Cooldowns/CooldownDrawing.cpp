@@ -1,6 +1,7 @@
 #include "Render/Primitives/RenderCommandPool.h"
 #include "Render/Primitives/RenderQueues.h"
-#include "Render/RenderSystemBase.h"
+#include "Render/Renderer.h"
+#include "Render/Textures/TextureCache.h"
 #include "UI/Cooldowns/CooldownDrawing.h"
 
 namespace {
@@ -17,8 +18,7 @@ namespace {
 // OFFSET: 0x00CA66B0
 // FUNCTION: fn_20964
 void CooldownDrawing::Draw(
-  int centerX, int centerY, int radiusX, int radiusY, CooldownState& value, int limit, int offsetX, int offsetY,
-  RenderCommandPool& pool, CRenderSystemBase& system
+  int centerX, int centerY, int radiusX, int radiusY, CooldownState& value, int limit, int offsetX, int offsetY
 ) {
   if (value.x <= 0 || value.y <= 0 || (value.color & 0xFF000000u) == 0) {
     return;
@@ -71,7 +71,7 @@ void CooldownDrawing::Draw(
   value.AddEdge(7, vertices[reversed ? 22 : 2].x, radiusX, 1);
 
   if (reversed) {
-    this->DrawReverse(value, pool, system);
+    this->DrawReverse(value);
     return;
   }
 
@@ -94,8 +94,8 @@ void CooldownDrawing::Draw(
     return;
   }
 
-  RenderCommand* command = pool.Acquire();
-  command->texture = system.BackBufferTexture();
+  RenderCommand* command = g_renderer->commands.Acquire();
+  command->texture = g_texMgr.Default();
   command->vertices = vertices;
   command->vertexCount = value.vertexCount;
 
@@ -109,7 +109,7 @@ void CooldownDrawing::Draw(
 
 // OFFSET: 0x00CA6C00
 // FUNCTION: fn_20965
-void CooldownDrawing::DrawReverse(CooldownState& value, RenderCommandPool& pool, CRenderSystemBase& system) {
+void CooldownDrawing::DrawReverse(CooldownState& value) {
   if (value.duration == 0) {
     return;
   }
@@ -130,8 +130,8 @@ void CooldownDrawing::DrawReverse(CooldownState& value, RenderCommandPool& pool,
     }
   }
 
-  RenderCommand* command = pool.Acquire();
-  command->texture = system.BackBufferTexture();
+  RenderCommand* command = g_renderer->commands.Acquire();
+  command->texture = g_texMgr.Default();
   command->vertices = value.vertices;
   command->vertexCount = value.vertexCount;
 

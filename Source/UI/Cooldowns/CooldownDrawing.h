@@ -6,8 +6,6 @@
 #include <cstddef>
 #include <vector>
 
-class RenderCommandPool;
-class CRenderSystemBase;
 struct RenderQueues;
 
 struct CooldownDrawing {
@@ -15,14 +13,13 @@ struct CooldownDrawing {
   /* 0010 */ std::vector<RenderCommand*> reverse;
 
   void Draw(
-    int centerX, int centerY, int radiusX, int radiusY, CooldownState& value, int limit, int offsetX, int offsetY,
-    RenderCommandPool& pool, CRenderSystemBase& system
+    int centerX, int centerY, int radiusX, int radiusY, CooldownState& value, int limit, int offsetX, int offsetY
   );
   void SubmitNormal(RenderQueues& queues, bool depthAlpha, float depthStart, float depthEnd);
   void SubmitReverse(RenderQueues& queues, bool depthAlpha, float depthStart, float depthEnd);
 
 private:
-  void DrawReverse(CooldownState& value, RenderCommandPool& pool, CRenderSystemBase& system);
+  void DrawReverse(CooldownState& value);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

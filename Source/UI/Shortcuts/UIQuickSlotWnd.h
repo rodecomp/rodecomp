@@ -10,11 +10,6 @@
 struct ITEM_INFO;
 class AutomaticSkills;
 
-struct QuickSlotPainting {
-  RenderCommandPool& commands;
-  CRenderSystemBase& system;
-};
-
 #pragma pack(push, 1)
 struct QuickSlotEntry {
   /* 0000 */ unsigned char skill;
@@ -45,7 +40,7 @@ protected:
   /* 00B4 */ int m_selected;
   /* 00B8 */ QuickSlotWndInfo* m_saved;
   /* 00BC */ QuickSlotEntry m_entries[2];
-  QuickSlotPainting* m_painting;
+  void* unknown_painting;
 };
 
 static_assert(sizeof(QuickSlotEntry) == 7);

@@ -11,9 +11,4 @@
 class UIWindow;
 class ResourceMgr;
 
-struct ShortcutPainting {
-  RenderCommandPool& commands;
-  CRenderSystemBase& system;
-};
-
 #endif

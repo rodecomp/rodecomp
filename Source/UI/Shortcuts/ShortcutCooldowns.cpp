@@ -216,24 +216,22 @@ bool ShortcutCooldowns::RotateRows(int amount, int bank, int& rotation0, int& ro
 
 // INLINED
 void ShortcutCooldowns::PaintMain(
-  const std::list<ShortcutCooldownIcon>& icons, int rows, int x, int y, CooldownDrawing& drawing, RenderCommandPool& pool,
-  CRenderSystemBase& system
+  const std::list<ShortcutCooldownIcon>& icons, int rows, int x, int y, CooldownDrawing& drawing
 ) {
   const int limit = rows * 33 + 4;
-  this->Paint(icons, &ShortcutCooldownRecord::main, limit, x, y, drawing, pool, system);
+  this->Paint(icons, &ShortcutCooldownRecord::main, limit, x, y, drawing);
 }
 
 // INLINED
 void ShortcutCooldowns::PaintAlternate(
-  const std::list<ShortcutCooldownIcon>& icons, int x, int y, CooldownDrawing& drawing, RenderCommandPool& pool,
-  CRenderSystemBase& system
+  const std::list<ShortcutCooldownIcon>& icons, int x, int y, CooldownDrawing& drawing
 ) {
-  this->Paint(icons, &ShortcutCooldownRecord::alternate, 0, x, y, drawing, pool, system);
+  this->Paint(icons, &ShortcutCooldownRecord::alternate, 0, x, y, drawing);
 }
 
 // INLINED
 void ShortcutCooldowns::Paint(
-  const std::list<ShortcutCooldownIcon>& icons, std::list<CooldownState> ShortcutCooldownRecord::* values, int limit, int x, int y, CooldownDrawing& drawing, RenderCommandPool& pool, CRenderSystemBase& system
+  const std::list<ShortcutCooldownIcon>& icons, std::list<CooldownState> ShortcutCooldownRecord::* values, int limit, int x, int y, CooldownDrawing& drawing
 ) {
   const std::uint32_t now = CooldownNow();
 
@@ -256,7 +254,7 @@ void ShortcutCooldowns::Paint(
     }
 
     for (CooldownState& state : states) {
-      drawing.Draw(0, 0, 12, 12, state, limit, x, y, pool, system);
+      drawing.Draw(0, 0, 12, 12, state, limit, x, y);
     }
 
     ++entry;
@@ -447,7 +445,7 @@ void UIQuickSlotWnd::Paint() {
     }
   }
 
-  reinterpret_cast<ShortcutCooldowns&>(g_session.m_requestTimers).PaintAlternate(g_session.m_alternateCooldownIcons, this->geometry.x, this->geometry.y, g_cooldownOwner->Drawing(), this->m_painting->commands, this->m_painting->system);
+  reinterpret_cast<ShortcutCooldowns&>(g_session.m_requestTimers).PaintAlternate(g_session.m_alternateCooldownIcons, this->geometry.x, this->geometry.y, g_cooldownOwner->Drawing());
 }
 
 // OFFSET: 0x00924A50
