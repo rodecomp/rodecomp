@@ -109,8 +109,6 @@
 #include "UI/Rodex/UIRodexComposeWnd.h"
 #include "UI/UIBartermarketWnd.h"
 #include "UI/Edit/UIEditPaint.inl"
-// GLOBAL: gl_24862
-bool g_vendingSaleAlarm;
 
 // GLOBAL: gl_24653
 int g_skillTooltipActive;
@@ -3628,7 +3626,7 @@ void UIMerchantItemMyShopWnd::OpenShop() {
     this->AddChild(this->actionButton);
   }
 
-  g_vendingSaleAlarm = false;
+  g_session.m_muteSellSound = false;
   this->saleAlarm->Show(0);
 
   const int previousHeight = this->unknown_011C;
@@ -6823,7 +6821,7 @@ void UIMerchantItemMyShopWnd::Slot15(int width, int height) {
   this->saleAlarm->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(this->unknown_0100 ? 2698 : 2642));
   this->saleAlarm->FitToText();
   this->saleAlarm->Move(12, this->unknown_0100 ? this->geometry.height - 12 : this->geometry.height - 18);
-  this->saleAlarm->SetChecked(g_vendingSaleAlarm);
+  this->saleAlarm->SetChecked(g_session.m_muteSellSound);
   this->AddChild(this->saleAlarm);
 
   const std::string prefix("유저인터페이스\\");

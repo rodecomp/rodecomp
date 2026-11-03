@@ -1882,7 +1882,7 @@ void __stdcall sub_D08110(int field8, int itemIdWord, int quantityWord, int fiel
   } else if (g_vendingOpenResultWindow != nullptr) {
     g_vendingOpenResultWindow->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
   }
-  if (g_vendingOpenResultWindow != nullptr && g_vendingSaleAlarm) {
+  if (g_vendingOpenResultWindow != nullptr && g_session.m_muteSellSound) {
     g_soundMgr->PlayWave("effect\\ef_steal.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
   }
 }
@@ -1903,7 +1903,7 @@ void __declspec(noinline) __stdcall sub_D08670(int field14, int itemId, int quan
   if (g_saleResultWindow != nullptr) {
     g_saleResultWindow->SendMsg(nullptr, 0x77, fieldC, 0, 0, 0);
     g_saleResultWindow->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
-    if (g_vendingSaleAlarm) {
+    if (g_session.m_muteSellSound) {
       g_soundMgr->PlayWave("effect\\ef_steal.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     if (g_session.GetList9Size() == 0) {

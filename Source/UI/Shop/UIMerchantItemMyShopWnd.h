@@ -11,8 +11,6 @@ class UIBasicButton;
 class UICheckBox;
 class UIStaticText;
 
-extern bool g_vendingSaleAlarm;
-
 class UIMerchantItemMyShopWnd : public UIItemBaseWnd {
 public:
   UIMerchantItemMyShopWnd(int value);
