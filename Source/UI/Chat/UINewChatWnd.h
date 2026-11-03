@@ -30,6 +30,7 @@ public:
   void Slot31(int x, int y) override;
   bool Slot42(void* output) override;
   void Slot43() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   void SaveChatLogs();
   void RefreshTabs(bool arrange);
   std::string ConvertChat(std::string text);

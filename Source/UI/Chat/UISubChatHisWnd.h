@@ -24,6 +24,7 @@ struct SubChatHistoryState {
 
 class UISubChatHisWnd : public UIFrameWnd {
   friend class UIWindowMgr;
+  friend class UINewChatWnd;
 
 public:
   UISubChatHisWnd();
