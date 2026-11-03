@@ -7,7 +7,6 @@
 #include "UI/Text/UIStaticText.h"
 #include "UI/Window/UIControl.h"
 #include "UI/Window/UIWindowMgr.h"
-#include "UI/Window/WindowOrdering.h"
 #include "UI/Window/FuncDrawWNDChar.h"
 #include "Client/Registry.h"
 #include "Client/Mode/ModeMgr.h"
@@ -592,7 +591,7 @@ void UINewSelectCharWnd::Slot19() {
 
   UIWindow* wnd = g_windowMgr.LookupWindow(93);
   if (wnd) {
-    reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(wnd);
+    g_windowMgr.Promote(wnd);
   }
 
   if (this->m_pageSlot >= 0 && this->m_pageSlot < static_cast<int>(this->m_slotButtons2.size())) {

@@ -11,7 +11,6 @@
 #include "Script/LuaInstance.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
-#include "UI/Window/WindowOrdering.h"
 #include "Resource/World/TerrainResource.h"
 #include "Contents/Actors/Pc.h"
 #include "Client/Application/ErrorDialog.h"
@@ -5597,7 +5596,7 @@ void SessionMessengerContext::ResetEquipment() {
   }
   RequestBasicInfoRefresh();
   EquipmentProperties::CEquipmentPropertiesMgr::GetInstance()->Clear();
-  reinterpret_cast<WindowOrdering&>(g_windowMgr).InvalidateFrames(g_windowMgr.unknown_04FC);
+  g_windowMgr.InvalidateFrames();
 }
 
 // OFFSET: 0x00DD8660

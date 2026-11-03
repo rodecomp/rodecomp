@@ -17,7 +17,6 @@
 #include "UI/Navigation/UINavigationV4Wnd.h"
 #include "UI/Window/UINavigationWnd.h"
 #include "UI/Window/UIWindowMgr.h"
-#include "UI/Window/WindowOrdering.h"
 #include "UI/Window/UIPayConfirmWnd.h"
 #include "UI/Window/WindowDialogs.h"
 #include "Utility/RegistryKey.h"
@@ -756,7 +755,7 @@ bool CNavigationManager::sub_B995D0(std::string name, int type, bool flag) {
       }
     }
 
-    reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(g_navigationWindow);
+    g_windowMgr.Promote(g_navigationWindow);
   }
 
   return true;

@@ -20,7 +20,6 @@
 #include "UI/Layout/SnapMgr.h"
 #include "UI/Lists/UITabControl.h"
 #include "UI/Window/WindowDialogs.h"
-#include "UI/Window/WindowOrdering.h"
 #include "Utility/Text/FormatString.h"
 #include "Utility/Text/GroupedInteger.h"
 
@@ -269,7 +268,7 @@ int UIBasicInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       const int height = this->geometry.height;
       this->SetHeight(height == this->collapsedHeight ? this->expandedHeight : this->collapsedHeight);
       g_windowMgr.StoreSnapRectangle(this);
-      reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(this);
+      g_windowMgr.Promote(this);
       const int delta = this->geometry.height - height;
       if (delta != 0) {
         g_snapMgr.MoveEdge(this, 0, delta, 3);

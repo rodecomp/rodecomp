@@ -3,7 +3,6 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/WindowManagerWindows.h"
-#include "UI/Window/WindowOrdering.h"
 
 #include <algorithm>
 
@@ -101,12 +100,12 @@ char UIWindowMgr::UpdateSnapRectangles() {
 
 // OFFSET: 0x00A976C0
 // FUNCTION: fn_17206
-void WindowOrdering::Promote(UIWindow* window) {
-  if (!window || (this->modal != 0 && this->modalWindow != window)) {
+void UIWindowMgr::Promote(UIWindow* window) {
+  if (!window || (this->modal != nullptr && this->window_4F174 != window)) {
     return;
   }
 
-  if (this->windows.LookupWindow(278) || this->windows.LookupWindow(4) || this->windows.LookupWindow(199) || this->windows.LookupWindow(200)) {
+  if (this->LookupWindow(278) || this->LookupWindow(4) || this->LookupWindow(199) || this->LookupWindow(200)) {
     return;
   }
 
@@ -138,12 +137,12 @@ void WindowOrdering::Promote(UIWindow* window) {
 
 // OFFSET: 0x00A969D0
 // FUNCTION: fn_17190
-void WindowOrdering::InvalidateFrames(int& latch) {
-  if (latch != 0) {
+void UIWindowMgr::InvalidateFrames() {
+  if (this->unknown_04FC != 0) {
     return;
   }
 
-  latch = 1;
+  this->unknown_04FC = 1;
 
   for (UIWindow* window : this->rendered) {
     if (window->Slot03()) {

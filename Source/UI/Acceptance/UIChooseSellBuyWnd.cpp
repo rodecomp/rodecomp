@@ -124,7 +124,6 @@
 #include "UI/Window/FuncDrawWNDChar.h"
 #include "UI/Lists/UITabControl.h"
 #include "UI/Window/WindowManagerWindows.h"
-#include "UI/Window/WindowOrdering.h"
 #include "Utility/Text/FormatString.h"
 #include "Utility/Text/TextTokens.h"
 #include "Contents/PlayerNameDictionary.h"
@@ -2175,7 +2174,7 @@ int UIMenuWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
 void UITipboxWnd::ShowTip(int id) {
   g_itemTagOwner->SelectTip(id);
   this->SendMsg(this, 6, 543, 0, 0, 0);
-  reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(this);
+  g_windowMgr.Promote(this);
 }
 
 // OFFSET: 0x008F5AF0
@@ -3075,7 +3074,7 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
         this->Resize(this->geometry.width, 17);
       }
       g_windowMgr.StoreSnapRectangle(this);
-      WindowOrdering{g_windowMgr.rendered, g_windowMgr, reinterpret_cast<const int&>(g_windowMgr.modal), g_windowMgr.window_4F174}.Promote(this);
+      g_windowMgr.Promote(this);
       const int delta = this->geometry.height - height;
       if (delta != 0) {
         g_snapMgr.MoveEdge(this, 0, delta, 3);
@@ -3499,7 +3498,7 @@ int UIBookWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
       }
     }
     this->Invalidate();
-    reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(this);
+    g_windowMgr.Promote(this);
     break;
   }
 
@@ -5353,7 +5352,7 @@ int UIMonsterDisplayWnd::SendMsg(UIWindow* sender, int message, std::intptr_t ar
   if (message == 62) {
     this->m_name = reinterpret_cast<const char*>(argument1);
     this->Invalidate();
-    reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(this);
+    g_windowMgr.Promote(this);
     return 0;
   }
 
@@ -5367,7 +5366,7 @@ int UINotifyJobLevelUpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     return UIWindow::SendMsg(sender, message, a, b, c, d);
   }
   if (a == 192) {
-    reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(g_windowMgr.EnsureWindow(37));
+    g_windowMgr.Promote(g_windowMgr.EnsureWindow(37));
   }
   return 0;
 }
@@ -5673,7 +5672,7 @@ int UINotifyQuestWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
   }
   if (a == 192) {
     if (UIWindow* window = g_windowMgr.EnsureWindow(0x2718)) {
-      reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(window);
+      g_windowMgr.Promote(window);
     }
   }
   return 0;
@@ -5765,7 +5764,7 @@ int UINotifyLevelUpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
     if (window->geometry.height == 17) {
       window->SendMsg(nullptr, 6, 0xCA, 0, 0, 0);
     }
-    reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(window);
+    g_windowMgr.Promote(window);
   }
   return 0;
 }
@@ -6985,7 +6984,7 @@ int UISkillDescribeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
       if (window) {
         static_cast<CUISkillDelayInfo*>(window)->SetSkill(this->m_skillId);
         window->PlaceBeside(this);
-        WindowOrdering{g_windowMgr.rendered, *reinterpret_cast<WindowManagerWindows*>(&g_windowMgr), reinterpret_cast<const int&>(g_windowMgr.modal), g_windowMgr.window_4F174}.Promote(window);
+        g_windowMgr.Promote(window);
       }
     }
     return 0;
@@ -7067,7 +7066,7 @@ int UISkillDescribeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
   this->m_viewer->Resize(this->m_viewer->geometry.width, viewerHeight);
   this->Resize(this->geometry.width, total + 6);
   this->Invalidate();
-  WindowOrdering{g_windowMgr.rendered, *reinterpret_cast<WindowManagerWindows*>(&g_windowMgr), reinterpret_cast<const int&>(g_windowMgr.modal), g_windowMgr.window_4F174}.Promote(this);
+  g_windowMgr.Promote(this);
   return 0;
 }
 
@@ -7306,7 +7305,7 @@ int UIStatusWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
         this->Resize(this->geometry.width, 17);
       }
       g_windowMgr.StoreSnapRectangle(this);
-      reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(this);
+      g_windowMgr.Promote(this);
       const int delta = this->geometry.height - height;
       if (delta != 0) {
         g_snapMgr.MoveEdge(this, 0, delta, 3);
@@ -8172,7 +8171,7 @@ int UICardItemIllustWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       this->m_bitmapPath += name;
       this->m_bitmapPath += ".bmp";
       this->Invalidate();
-      reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(this);
+      g_windowMgr.Promote(this);
       return 0;
     }
   }

@@ -7,7 +7,6 @@
 #include "UI/Party/UIApplyForPartyWnd.h"
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Window/UIWindowMgr.h"
-#include "UI/Window/WindowOrdering.h"
 
 #include <json/reader.h>
 #include <json/value.h>
@@ -71,7 +70,7 @@ void CAdventurerAgencyMgr::CompletePartyInfo(AsyncDiagnostic diagnostic, std::st
 
   if (application) {
     application->SetInfo(info);
-    reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(application);
+    g_windowMgr.Promote(application);
   }
 
   if (info.minimumLevel > g_session.m_level || info.maximumLevel < g_session.m_level) {

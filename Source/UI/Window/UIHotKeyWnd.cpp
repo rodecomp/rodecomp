@@ -24,7 +24,6 @@
 #include "UI/Window/WindowBorder.h"
 #include "UI/Window/WindowDialogs.h"
 #include "UI/Window/WindowManagerWindows.h"
-#include "UI/Window/WindowOrdering.h"
 #include "Utility/Text/FormatString.h"
 
 #include <cstring>
@@ -328,7 +327,7 @@ void UIHotKeyWnd::Slot25(int x, int y) {
         (this->m_selectedRow % this->m_rowsPerPage - 1) * this->unknown_00D0 + this->unknown_00CC + this->unknown_00C4 + screenY + this->unknown_00BC
       );
       this->m_balloon->Show(1);
-      reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(this->m_balloon);
+      g_windowMgr.Promote(this->m_balloon);
     }
 
     if (previous == this->m_selectedRow) {

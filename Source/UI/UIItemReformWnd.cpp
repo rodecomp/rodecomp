@@ -24,7 +24,6 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowBorder.h"
 #include "UI/Window/WindowManagerWindows.h"
-#include "UI/Window/WindowOrdering.h"
 #include "Utility/Text/FormatString.h"
 
 #include <algorithm>
@@ -285,7 +284,7 @@ void UIItemReformWnd_DetailBtn::Slot48() {
 // FUNCTION: fn_04123
 void UIItemReformWnd::Slot19() {
   if (this->detailMsg) {
-    reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(this->detailMsg);
+    g_windowMgr.Promote(this->detailMsg);
     this->detailMsg->Move(g_mouse.x + 5, g_mouse.y + 5);
   }
 }

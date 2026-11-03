@@ -24,7 +24,6 @@
 #include "UI/Window/UIBasicInfoWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UIWindow.h"
-#include "UI/Window/WindowOrdering.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Client/Application/ErrorDialog.h"
@@ -2606,7 +2605,7 @@ void CSession::RefreshSkillTree() {
 // OFFSET: 0x00DF9500
 // FUNCTION: fn_23518
 void CSession::InvalidateWindowFrames() {
-  reinterpret_cast<WindowOrdering&>(g_windowMgr).InvalidateFrames(g_windowMgr.unknown_04FC);
+  g_windowMgr.InvalidateFrames();
 }
 
 // OFFSET: 0x00DE3670

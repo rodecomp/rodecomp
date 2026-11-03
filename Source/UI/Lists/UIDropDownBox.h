@@ -3,7 +3,6 @@
 
 #include "UI/Window/UIControl.h"
 
-struct WindowOrdering;
 
 class CUIDropDownBox : public CUIControl {
 public:
@@ -16,14 +15,6 @@ public:
   void Attach(UIWindow* owner, UIWindow* child);
 
   /* 0080 */ UIWindow* owner;
-};
-
-struct WindowDropDown {
-  WindowOrdering& ordering;
-  CUIDropDownBox*& popup;
-
-  void Show(UIWindow* owner, UIWindow* child, int x, int y);
-  bool Close();
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

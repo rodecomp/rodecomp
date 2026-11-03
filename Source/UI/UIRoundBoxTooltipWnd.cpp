@@ -11,7 +11,6 @@
 #include "UI/Window/WindowBorder.h"
 #include "UI/Window/WindowManagerWindows.h"
 #include "UI/Window/UIWindowMgr.h"
-#include "UI/Window/WindowOrdering.h"
 
 #include <algorithm>
 #include <cstring>
@@ -199,6 +198,6 @@ int UIRoundBoxTooltipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
   }
 
   this->Invalidate();
-  reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(this);
+  g_windowMgr.Promote(this);
   return 0;
 }

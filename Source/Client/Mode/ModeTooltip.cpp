@@ -2,7 +2,7 @@
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeTooltip.h"
 #include "UI/Text/UITransBalloonText.h"
-#include "UI/Window/WindowOrdering.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UIWindowMgr.h"
 
 #include <cstring>

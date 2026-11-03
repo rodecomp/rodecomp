@@ -18,7 +18,6 @@
 #include "UI/Text/UIStaticText.h"
 #include "Render/Renderer.h"
 #include "UI/Window/UIWindowMgr.h"
-#include "UI/Window/WindowOrdering.h"
 
 #include <algorithm>
 #include <cctype>
@@ -474,7 +473,7 @@ int UIAdvenPartyBoardWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
 
         if (window) {
           window->SetInfo(info);
-          reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(window);
+          g_windowMgr.Promote(window);
         }
       } else {
         g_windowMgr.CloseWindow(323);
@@ -482,7 +481,7 @@ int UIAdvenPartyBoardWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
 
         if (window) {
           window->SetInfo(info);
-          reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(window);
+          g_windowMgr.Promote(window);
         }
       }
 
@@ -502,7 +501,7 @@ int UIAdvenPartyBoardWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
 
       if (window) {
         window->SetInfo(this->ownParty->info);
-        reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(window);
+        g_windowMgr.Promote(window);
       }
 
       break;
@@ -512,7 +511,7 @@ int UIAdvenPartyBoardWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       UIWindow* window = g_windowMgr.EnsureWindow(323);
 
       if (window) {
-        reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(window);
+        g_windowMgr.Promote(window);
       }
 
       break;

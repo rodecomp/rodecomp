@@ -460,6 +460,12 @@ public:
   void SaveUIRectInfo();
   void ResetUIRectInfo();
   UIWindow* LookupWindow(int id);
+  void Promote(UIWindow* window);
+  void InvalidateFrames();
+  UIWindow* FindRenderedUid(std::uint32_t uid);
+  UIWindow* HitTestWindows(int x, int y);
+  void ShowDropDown(UIWindow* owner, UIWindow* child, int x, int y);
+  bool CloseDropDown();
   void sub_AAB070(int option);
   void sub_AAB090();
   void sub_AAB0B0();

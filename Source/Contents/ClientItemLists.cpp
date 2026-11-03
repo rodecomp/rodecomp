@@ -17,7 +17,6 @@
 #include "UI/Items/UIEquipWnd.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
-#include "UI/Window/WindowOrdering.h"
 #include "Utility/Text/FormatString.h"
 #include <cstddef>
 #include <cstdint>
@@ -1189,7 +1188,7 @@ bool CSession::EquipUnknown17F0(const ITEM_INFO& item, const char* name) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
   g_equipmentPropertiesMgr->EquipWearable(&item, *name == '\0');
-  reinterpret_cast<WindowOrdering&>(g_windowMgr).InvalidateFrames(g_windowMgr.unknown_04FC);
+  g_windowMgr.InvalidateFrames();
   return true;
 }
 
@@ -1222,7 +1221,7 @@ bool CSession::OnItemEquipped(ITEM_INFO& item) {
       g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
     }
     g_equipmentPropertiesMgr->EquipWearable(&item, true);
-    reinterpret_cast<WindowOrdering&>(g_windowMgr).InvalidateFrames(g_windowMgr.unknown_04FC);
+    g_windowMgr.InvalidateFrames();
   }
 
   if (item.unknown_0000[3] != 0x8000) {
@@ -1262,7 +1261,7 @@ bool CSession::UnequipItem(int location, std::uint32_t identity) {
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s%s", item.DisplayName(0).c_str(), LookupMessage(0xAB)).c_str()), 0xFF, 7, 0, 0);
     }
     this->unknown_16EC = 0;
-    reinterpret_cast<WindowOrdering&>(g_windowMgr).InvalidateFrames(g_windowMgr.unknown_04FC);
+    g_windowMgr.InvalidateFrames();
 
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     if (mode != nullptr) {
@@ -1319,7 +1318,7 @@ bool CSession::UnequipItem(int location, std::uint32_t identity) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
   g_equipmentPropertiesMgr->UnequipWearable(location);
-  reinterpret_cast<WindowOrdering&>(g_windowMgr).InvalidateFrames(g_windowMgr.unknown_04FC);
+  g_windowMgr.InvalidateFrames();
   if (UIWindow* window = g_windowMgr.unknown_022C) {
     window->SendMsg(nullptr, 60, 0, 0, 0, 0);
   }

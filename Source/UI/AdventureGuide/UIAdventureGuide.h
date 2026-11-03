@@ -6,7 +6,6 @@
 #include "UI/Navigation/UINavigationV4Wnd.h"
 #include "UI/Window/UIControl.h"
 #include "UI/Window/UINavigationWnd.h"
-#include "UI/Window/WindowOrdering.h"
 
 #include <string>
 

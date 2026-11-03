@@ -3,7 +3,6 @@
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UIWindowMgr.inl"
-#include "UI/Window/WindowOrdering.h"
 
 // OFFSET: 0x00AAA310
 // FUNCTION: fn_17269
@@ -28,7 +27,7 @@ bool UIWindowMgr::ShowWindowById(int id, int visible) {
       return true;
     }
 
-    reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(window);
+    g_windowMgr.Promote(window);
     return true;
   }
 
@@ -40,7 +39,7 @@ bool UIWindowMgr::ShowWindowById(int id, int visible) {
     }
 
     if (visible != 0) {
-      reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(this->window_01EC);
+      g_windowMgr.Promote(this->window_01EC);
     }
 
     return false;
@@ -71,7 +70,7 @@ bool UIWindowMgr::ShowWindowById(int id, int visible) {
       return true;
     }
 
-    reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(window);
+    g_windowMgr.Promote(window);
     return true;
   }
 

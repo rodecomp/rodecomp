@@ -1081,7 +1081,7 @@ void UIWindowMgr::SendFlagEffect(int message) {
 // OFFSET: 0x00A8FCA0
 // FUNCTION: fn_17149
 bool UIWindowMgr::DropAt(int x, int y, ModeDragState* drag) {
-  UIWindow* window = reinterpret_cast<WindowMouseHit*>(this)->HitTest(x, y);
+  UIWindow* window = this->HitTestWindows(x, y);
   if (!window) {
     return false;
   }

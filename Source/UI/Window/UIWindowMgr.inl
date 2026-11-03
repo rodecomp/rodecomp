@@ -5,7 +5,6 @@
 #include "Contents/Configuration/ServiceOptions.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
-#include "UI/Window/WindowOrdering.h"
 
 // INLINED
 inline bool UIWindowMgr::ShowShortcutWindow(int value) {
@@ -18,7 +17,7 @@ inline bool UIWindowMgr::ShowShortcutWindow(int value) {
   this->window_01E8->Show(value);
 
   if (value != 0) {
-    reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(this->window_01E8);
+    g_windowMgr.Promote(this->window_01E8);
   }
 
   if (g_serviceOptions.Get(0x10E)) {
@@ -31,7 +30,7 @@ inline bool UIWindowMgr::ShowShortcutWindow(int value) {
     companion->Show(value);
 
     if (value != 0) {
-      reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(companion);
+      g_windowMgr.Promote(companion);
     }
   }
 

@@ -10,7 +10,6 @@
 #include "Resource/SkinPalette.h"
 #include "Contents/Configuration/GameSettingsMgr.h"
 #include "UI/Layout/SnapMgr.h"
-#include "UI/Window/WindowOrdering.h"
 #include "Contents/SkinMgr.h"
 #include "Resource/TextureNames.h"
 #include "Resource/Bitmap/BitmapImage.h"
@@ -7727,7 +7726,7 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
         this->Resize(this->geometry.width, 17);
       }
       g_windowMgr.StoreSnapRectangle(this);
-      reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(this);
+      g_windowMgr.Promote(this);
       const int delta = this->geometry.height - height;
       if (delta != 0) {
         g_snapMgr.MoveEdge(this, 0, delta, 3);

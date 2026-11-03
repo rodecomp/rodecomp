@@ -1,7 +1,7 @@
 #include "Render/DeviceContext/DeviceContext.h"
 #include "UI/Lists/UIDropDownBox.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowBorder.h"
-#include "UI/Window/WindowOrdering.h"
 
 #include <algorithm>
 
@@ -63,37 +63,39 @@ void CUIDropDownBox::Paint() {
 
 // OFFSET: 0x00AA27B0
 // FUNCTION: fn_17217
-void WindowDropDown::Show(UIWindow* owner, UIWindow* child, int x, int y) {
-  if (this->popup && this->popup->geometry.visible != 0) {
-    this->popup->Detach();
-    this->popup->Show(0);
+void UIWindowMgr::ShowDropDown(UIWindow* owner, UIWindow* child, int x, int y) {
+  CUIDropDownBox*& popup = popup;
+  if (popup && popup->geometry.visible != 0) {
+    popup->Detach();
+    popup->Show(0);
   }
 
-  if (!this->popup) {
-    this->popup = new CUIDropDownBox();
+  if (!popup) {
+    popup = new CUIDropDownBox();
   }
 
-  this->popup->Attach(owner, child);
-  this->popup->Move(x, y);
+  popup->Attach(owner, child);
+  popup->Move(x, y);
 
-  auto& rendered = this->ordering.rendered;
-  if (std::find(rendered.begin(), rendered.end(), this->popup) == rendered.end()) {
-    rendered.push_back(this->popup);
+  auto& rendered = this->rendered;
+  if (std::find(rendered.begin(), rendered.end(), popup) == rendered.end()) {
+    rendered.push_back(popup);
   } else {
-    this->ordering.Promote(this->popup);
+    this->Promote(popup);
   }
 
-  this->popup->Show(1);
+  popup->Show(1);
 }
 
 // OFFSET: 0x00A8C750
 // FUNCTION: fn_17133
-bool WindowDropDown::Close() {
-  if (!this->popup || this->popup->geometry.visible == 0) {
+bool UIWindowMgr::CloseDropDown() {
+  CUIDropDownBox* popup = static_cast<CUIDropDownBox*>(this->window_0A30);
+  if (!popup || popup->geometry.visible == 0) {
     return false;
   }
 
-  this->popup->Detach();
-  this->popup->Show(0);
+  popup->Detach();
+  popup->Show(0);
   return true;
 }

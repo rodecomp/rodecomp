@@ -10,7 +10,6 @@
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/WindowDialogs.h"
 #include "UI/Window/WindowManagerWindows.h"
-#include "UI/Window/WindowOrdering.h"
 #include <new>
 
 // OFFSET: 0x007435C0
@@ -154,10 +153,9 @@ void UIWindowMgr::RebuildMiniPartyWindows() {
     }
   }
 
-  WindowOrdering ordering{this->rendered, *this, reinterpret_cast<const int&>(this->modal), this->window_4F174};
   if (this->Window4F250Ready()) {
-    ordering.Promote(this->window_4F250);
+    this->Promote(this->window_4F250);
   }
 
-  ordering.Promote(this->unknown_0210);
+  this->Promote(this->unknown_0210);
 }

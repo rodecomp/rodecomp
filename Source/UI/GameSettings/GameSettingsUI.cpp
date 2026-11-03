@@ -28,7 +28,6 @@
 #include "UI/Window/UIRoulletteWnd.h"
 #include "UI/Lists/UIDropDownBox.h"
 #include "UI/Window/UIWindowMgr.h"
-#include "UI/Window/WindowOrdering.h"
 #include "UI/Window/WindowBorder.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/StringUtil.h"
@@ -195,12 +194,11 @@ void GameSettingsUI::CUIGroupSkin::Slot15(int width, int height) {
     combo->unknown_0088->Move(combo->geometry.width - 18, 0);
     combo->unknown_0088->SetImages(normalName, hoverName, pressedName, disabledName);
     combo->unknown_0088->SetOnClick([combo]() {
-      WindowDropDown dropDown{reinterpret_cast<WindowOrdering&>(g_windowMgr), reinterpret_cast<CUIDropDownBox*&>(g_windowMgr.window_0A30)};
-      if (!dropDown.Close()) {
+      if (!g_windowMgr.CloseDropDown()) {
         int x = 0;
         int y = combo->geometry.height - 1;
         combo->ToScreen(x, y);
-        dropDown.Show(combo, combo->listBox, x, y);
+        g_windowMgr.ShowDropDown(combo, combo->listBox, x, y);
       }
     });
     combo->AddChild(combo->unknown_0088);
@@ -308,13 +306,11 @@ template <class T, class D> void CUIComboBox<T, D>::Create(int width, int itemHe
   this->button->SetSize(display->geometry.width, display->geometry.height);
   this->button->Move(display->geometry.x, display->geometry.y);
   this->button->SetOnClick([this]() {
-    WindowOrdering ordering{g_windowMgr.rendered, *reinterpret_cast<WindowManagerWindows*>(&g_windowMgr), reinterpret_cast<const int&>(g_windowMgr.modal), g_windowMgr.window_4F174};
-    WindowDropDown dropDown{ordering, reinterpret_cast<CUIDropDownBox*&>(g_windowMgr.window_0A30)};
-    if (!dropDown.Close()) {
+    if (!g_windowMgr.CloseDropDown()) {
       int x = 0;
       int y = this->geometry.height - 1;
       this->ToScreen(x, y);
-      dropDown.Show(this, this->listBox, x, y);
+      g_windowMgr.ShowDropDown(this, this->listBox, x, y);
     }
   });
   this->AddChild(this->button);
@@ -325,9 +321,7 @@ template <class T, class D> void CUIComboBox<T, D>::Create(int width, int itemHe
   this->listBox->SetSize(this->width + 13, this->itemHeight);
   this->listBox->Move(1, 1);
   this->listBox->SetOnSelect([this, display](T* item, const D& value) {
-    WindowOrdering ordering{g_windowMgr.rendered, *reinterpret_cast<WindowManagerWindows*>(&g_windowMgr), reinterpret_cast<const int&>(g_windowMgr.modal), g_windowMgr.window_4F174};
-    WindowDropDown dropDown{ordering, reinterpret_cast<CUIDropDownBox*&>(g_windowMgr.window_0A30)};
-    dropDown.Close();
+    g_windowMgr.CloseDropDown();
     if (this->onChange) {
       this->onChange(display, value);
     }
@@ -387,12 +381,11 @@ void CUIComboBox<T, D>::SetButton(const std::string& normal, const std::string& 
     this->unknown_0088->Move(this->geometry.width - 18, 0);
     this->unknown_0088->SetImages(normal, hover, pressed, disabled);
     this->unknown_0088->SetOnClick([this]() {
-      WindowDropDown dropDown{reinterpret_cast<WindowOrdering&>(g_windowMgr), reinterpret_cast<CUIDropDownBox*&>(g_windowMgr.window_0A30)};
-      if (!dropDown.Close()) {
+      if (!g_windowMgr.CloseDropDown()) {
         int x = 0;
         int y = this->geometry.height - 1;
         this->ToScreen(x, y);
-        dropDown.Show(this, this->listBox, x, y);
+        g_windowMgr.ShowDropDown(this, this->listBox, x, y);
       }
     });
     this->AddChild(this->unknown_0088);
