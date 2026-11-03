@@ -31,7 +31,6 @@
 #include "Contents/Effects/EffectLists.h"
 #include "Contents/Effects/EffectTypes.h"
 #include "Contents/Effects/EffectTypes.h"
-#include "Contents/Effects/EffectVisibility.h"
 #include "Contents/Effects/Particle.h"
 #include "Client/Application/ErrorDialog.h"
 #include "Render/DeviceContext/DCSurface.h"
@@ -14978,9 +14977,7 @@ static __forceinline void SetAniClipCorners(RenderVertex* vertices, const EZeffe
 // OFFSET: 0x00C37D10
 // FUNCTION: fn_20097
 void CRagEffect::RenderEZ2STR(const matrix& view) {
-  const bool partyVisible = g_session.IsPvpMap();
-  const EffectVisibilityContext visibility{g_serviceOptions, g_session.m_aid, partyVisible, g_session.m_partyMembers};
-  if (!g_session.IsEffectRenderEnabled() || !PartyEffectVisible(this->state, visibility)) {
+  if (!g_session.IsEffectRenderEnabled() || !this->PartyEffectVisible()) {
     return;
   }
 

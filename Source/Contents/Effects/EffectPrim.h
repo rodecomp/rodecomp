@@ -9,11 +9,12 @@
 
 class ResourceMgr;
 struct CRagEffect;
-struct EffectVisibilityContext;
 
 struct CEffectPrim : CRenderObject {
   CEffectPrim();
   bool OnProcess() override;
+  void Render(int argument) override;
+  void DrawEffectPrimitive15(matrix& wtm);
   void HandleMasterMessage(CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g);
 
   bool MoveEffectPrimitive();
@@ -153,7 +154,7 @@ struct CEffectPrim : CRenderObject {
   void Tei_TowardScreen(vector3d& vec1, vector3d& vec2, vector3d& vec3, vector3d& vec4, short rot0, short rot1);
 
   bool AnimMotion();
-  bool IsPartyVisible(const EffectVisibilityContext& context);
+  bool IsPartyVisible();
   bool FollowMasterAndAdvance();
   void FollowMasterAndTickSlots();
   void FollowMasterAndTickSlots2();
@@ -204,14 +205,14 @@ struct CEffectPrim : CRenderObject {
   void RenderRotatedPlate(matrix& wtm);
   void RenderColorPlane(matrix& wtm);
   void RenderSMA3(matrix& wtm);
-  void RenderBeam(matrix& wtm);
+  __declspec(noinline) void RenderBeam(matrix& wtm);
   void RenderCone(matrix& wtm);
-  void RenderPeong(matrix& wtm);
+  __declspec(noinline) void RenderPeong(matrix& wtm);
   void RenderFloorRect(matrix& wtm);
   void RenderRotatedRing(matrix& wtm);
   void RenderFloorSquare(matrix& wtm);
   void RenderFloorSquare2(matrix& wtm);
-  void RenderRing(matrix& wtm);
+  __declspec(noinline) void RenderRing(matrix& wtm);
   void RenderPentagon(matrix& wtm);
   void RenderGrid(matrix& wtm);
   void RenderRectUp2(matrix& wtm);

@@ -1,7 +1,6 @@
-#include "Contents/Effects/EffectPrimitiveRendering.h"
 #include "Contents/Effects/RagEffect.h"
+#include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Effects/EffectPrimitiveState.h"
-#include "Contents/Effects/EffectVisibility.h"
 #include "Contents/Actors/RenderObjectState.h"
 #include "Render/Projection/RenderProjection.h"
 #include "Render/Primitives/RenderQueues.h"
@@ -37,22 +36,22 @@ int g_overrideColor = 0;
 
 // OFFSET: 0x00BCD960
 // FUNCTION: fn_19865
-void DrawEffectPrimitive15(EffectPrimitiveState& particle, const RenderObjectState& render, EffectPrimitiveRenderContext& context) {
-  const float width = particle.widthSize;
+void CEffectPrim::DrawEffectPrimitive15(matrix& wtm) {
+  const float width = this->state.widthSize;
   const float left = -width;
-  float top = -particle.heightSize;
-  float bottom = particle.heightSize;
+  float top = -this->state.heightSize;
+  float bottom = this->state.heightSize;
 
-  if ((particle.pattern & 0x80u) != 0) {
+  if ((this->state.pattern & 0x80u) != 0) {
     top = top + top;
     bottom = 0.0f;
   }
 
-  if ((particle.pattern & 8u) != 0) {
+  if ((this->state.pattern & 8u) != 0) {
     bottom = 0.0f;
   }
 
-  const float* matrix = particle.rotTransform;
+  const float* matrix = this->state.rotTransform;
   const float zeroX = matrix[0] * 0.0f;
   const float zeroY = matrix[1] * 0.0f;
   const float zeroZ = matrix[2] * 0.0f;
@@ -78,34 +77,34 @@ void DrawEffectPrimitive15(EffectPrimitiveState& particle, const RenderObjectSta
 
   constexpr unsigned indices[2][3] = {{0, 1, 2}, {3, 2, 1}};
   constexpr float u[2][3] = {{0, 1, 0}, {1, 0, 1}};
-  const float vTop = particle.v1;
-  const float vBottom = particle.v2;
+  const float vTop = this->state.v1;
+  const float vBottom = this->state.v2;
   const float v[2][3] = {{vTop, vTop, vBottom}, {vBottom, vBottom, vTop}};
 
   for (unsigned triangleIndex = 0; triangleIndex < 2; ++triangleIndex) {
-    RenderTriangle& triangle = particle.triangles[triangleIndex];
+    RenderTriangle& triangle = this->state.triangles[triangleIndex];
 
     for (unsigned vertexIndex = 0; vertexIndex < 3; ++vertexIndex) {
       const vector3d& corner = corners[indices[triangleIndex][vertexIndex]];
-      const float position[3] = {corner.x + render.position.x, corner.y + render.position.y, corner.z + render.position.z};
+      const float position[3] = {corner.x + this->render.position.x, corner.y + this->render.position.y, corner.z + this->render.position.z};
       RenderVertex projected{0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-      context.projection.Project(position, context.cameraMatrix, projected);
+      g_renderer->viewport.Projection().Project(position, wtm.values, projected);
       RenderVertex& vertex = triangle.vertices[vertexIndex];
       vertex = projected;
-      vertex.diffuse = particle.argb;
+      vertex.diffuse = this->state.argb;
       vertex.u = u[triangleIndex][vertexIndex];
       vertex.v = v[triangleIndex][vertexIndex];
     }
 
-    triangle.texture = particle.textures[render.curMotion];
+    triangle.texture = this->state.textures[this->render.curMotion];
   }
 
   for (unsigned index = 0; index < 2; ++index) {
-    RenderTriangle& triangle = particle.triangles[index];
+    RenderTriangle& triangle = this->state.triangles[index];
 
     if (triangle.Visible()) {
-      context.queues.SubmitTriangle(
-        triangle, static_cast<std::uint16_t>(particle.renderFlag), context.commands, context.depthAlpha, context.depthStart, context.depthEnd
+      g_renderer->queues.SubmitTriangle(
+        triangle, static_cast<std::uint16_t>(this->state.renderFlag), g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
       );
     }
   }
@@ -113,11 +112,617 @@ void DrawEffectPrimitive15(EffectPrimitiveState& particle, const RenderObjectSta
 
 // OFFSET: 0x00BCE350
 // FUNCTION: fn_19866
-void RenderEffectPrimitive15(
-  EffectPrimitiveState& particle, const RenderObjectState& render, EffectPrimitiveRenderContext& context, const EffectVisibilityContext& visibility
-) {
-  if (particle.master && PartyEffectVisible(particle.master->state, visibility)) {
-    DrawEffectPrimitive15(particle, render, context);
+void CEffectPrim::Render(int argument) {
+  matrix& wtm = *reinterpret_cast<matrix*>(argument);
+  if (!g_session.IsEffectRenderEnabled() || !this->IsPartyVisible()) {
+    return;
+  }
+
+  switch (this->state.count) {
+    case 0:
+    case 1:
+      this->Render2DPrimitive();
+      break;
+    case 2:
+      this->Render2DDiamond();
+      break;
+    case 3: {
+      const float firstCos = ClientCosine(static_cast<int>(this->state.longitude - this->state.arcAngle));
+      const float firstSin = ClientSine(static_cast<int>(this->state.longitude - this->state.arcAngle));
+      const float secondCos = ClientCosine(static_cast<int>(this->state.longitude + this->state.arcAngle));
+      const float secondSin = ClientSine(static_cast<int>(this->state.longitude + this->state.arcAngle));
+      RenderTriangle& triangle = this->state.triangles[0];
+      const float x = this->render.position.x;
+      triangle.vertices[0].x = x;
+      const float y = this->render.position.y;
+      triangle.vertices[0].y = y;
+      triangle.vertices[0].z = 0.000001f;
+      triangle.vertices[0].rhw = 0.999999f;
+      triangle.vertices[0].diffuse = this->state.argb;
+      triangle.vertices[0].u = 0.5f;
+      triangle.vertices[0].v = 0.0f;
+      const float radius = this->state.heightSize;
+      triangle.vertices[1].x = radius * firstCos + x;
+      triangle.vertices[1].y = y - radius * firstSin;
+      triangle.vertices[2].x = radius * secondCos + x;
+      triangle.vertices[2].y = y - radius * secondSin;
+      triangle.vertices[1].v = 1.0f;
+      triangle.vertices[1].u = 1.0f;
+      triangle.vertices[1].diffuse = this->state.argb;
+      triangle.vertices[1].rhw = 0.999999f;
+      triangle.vertices[1].z = 0.000001f;
+      triangle.vertices[2].z = 0.000001f;
+      triangle.vertices[2].rhw = 0.999999f;
+      triangle.vertices[2].diffuse = this->state.argb;
+      triangle.vertices[2].u = 0.0f;
+      triangle.vertices[2].v = 1.0f;
+      triangle.texture = this->state.textures[0];
+      g_renderer->queues.SubmitTriangle(triangle, 1, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+      break;
+    }
+    case 4:
+      this->Render2DCircle();
+      break;
+    case 5:
+    case 6:
+    case 7:
+    case 8:
+    case 21:
+    case 40:
+    case 46:
+    case 51:
+    case 84:
+    case 85:
+    case 124:
+      this->RenderSegmentSprites2(wtm);
+      break;
+    case 167:
+      this->RenderSegmentSprites(wtm);
+      break;
+    case 152:
+      this->RenderSegmentSpriteTrail(wtm);
+      break;
+    case 153:
+      this->RenderSegmentSpriteGlow(wtm);
+      break;
+    case 168:
+      this->RenderGroundSprite(wtm);
+      break;
+    case 9:
+    case 117:
+      this->RenderPyramid(wtm);
+      break;
+    case 15:
+      this->DrawEffectPrimitive15(wtm);
+      break;
+    case 22: {
+      float x;
+      float y;
+      float reciprocalDepth;
+      g_renderer->ProjectViewport(&this->render.position.x, wtm.values, &x, &y, &reciprocalDepth);
+      const float scale = g_renderer->ScaleDistance(reciprocalDepth);
+      const float bottom = y - scale * this->state.heightSize;
+      const float right = scale * this->state.widthSize + x;
+      const std::uint32_t color = this->state.argb;
+      RenderTriangle& first = this->state.triangles[0];
+      first.vertices[0].x = x;
+      first.vertices[0].y = y;
+      first.vertices[0].z = 0.8f;
+      first.vertices[0].rhw = 1.0f;
+      first.vertices[0].diffuse = color;
+      first.vertices[0].u = 0.0f;
+      first.vertices[0].v = 0.0f;
+      first.vertices[1].x = right;
+      first.vertices[1].y = y;
+      first.vertices[1].z = 0.8f;
+      first.vertices[1].rhw = 1.0f;
+      first.vertices[1].diffuse = color;
+      first.vertices[1].u = 1.0f;
+      first.vertices[1].v = 0.0f;
+      first.vertices[2].x = x;
+      first.vertices[2].y = bottom;
+      first.vertices[2].z = 0.8f;
+      first.vertices[2].rhw = 1.0f;
+      first.vertices[2].diffuse = color;
+      first.vertices[2].u = 0.0f;
+      first.vertices[2].v = 1.0f;
+      first.texture = this->state.textures[this->render.curMotion];
+      RenderTriangle& second = this->state.triangles[1];
+      second.vertices[0].x = right;
+      second.vertices[0].y = y;
+      second.vertices[0].z = 0.8f;
+      second.vertices[0].rhw = 1.0f;
+      second.vertices[0].diffuse = color;
+      second.vertices[0].u = 1.0f;
+      second.vertices[0].v = 0.0f;
+      second.vertices[1].x = x;
+      second.vertices[1].y = bottom;
+      second.vertices[1].z = 0.8f;
+      second.vertices[1].rhw = 1.0f;
+      second.vertices[1].diffuse = color;
+      second.vertices[1].u = 0.0f;
+      second.vertices[1].v = 1.0f;
+      second.vertices[2].x = right;
+      second.vertices[2].y = bottom;
+      second.vertices[2].z = 0.8f;
+      second.vertices[2].rhw = 1.0f;
+      second.vertices[2].diffuse = color;
+      second.vertices[2].u = 1.0f;
+      second.vertices[2].v = 1.0f;
+      second.texture = this->state.textures[this->render.curMotion];
+      g_renderer->queues.SubmitTriangle(first, static_cast<std::uint16_t>(this->state.renderFlag), g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+      g_renderer->queues.SubmitTriangle(second, static_cast<std::uint16_t>(this->state.renderFlag), g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+      break;
+    }
+    case 16:
+      this->RenderCrossPlanes(wtm);
+      break;
+    case 12:
+      this->RenderRecordRings(wtm);
+      break;
+    case 13:
+      this->RenderArcBand(wtm);
+      break;
+    case 104:
+      this->RenderHalfSphere(wtm);
+      break;
+    case 146:
+      this->RenderTrailingArc(wtm);
+      break;
+    case 144:
+      this->RenderGroundArcStep(wtm);
+      break;
+    case 149:
+      this->RenderGroundArcGlow(wtm);
+      break;
+    case 158:
+      this->RenderGroundArc(wtm);
+      break;
+    case 173:
+      this->RenderGroundArc2(wtm);
+      break;
+    case 137:
+      this->RenderArcWalls(wtm);
+      break;
+    case 121:
+      this->RenderSMA2(wtm);
+      break;
+    case 73:
+      this->RenderMagnum2(wtm);
+      break;
+    case 61:
+      this->RenderSphereCage(wtm);
+      break;
+    case 105:
+      this->RenderCone(wtm);
+      break;
+    case 106:
+      this->RenderAttackEnergy2(wtm);
+      break;
+    case 76:
+      this->RenderSaintWing(wtm);
+      break;
+    case 77:
+    case 91:
+      this->RenderSphereWind(wtm);
+      break;
+    case 78:
+      this->RenderColorPaper(wtm);
+      break;
+    case 62:
+      this->RenderRiseArc(wtm);
+      break;
+    case 26:
+    case 28:
+    case 39:
+    case 67:
+    case 88:
+    case 161:
+      this->RenderSizedSquare(wtm);
+      break;
+    case 143:
+      this->RenderGroundSquare(wtm);
+      break;
+    case 148:
+      this->RenderGroundSquareBlend(wtm);
+      break;
+    case 114:
+      this->RenderHermode(wtm);
+      break;
+    case 68:
+    case 147:
+      this->RenderHaloLayers(wtm);
+      break;
+    case 131:
+      this->RenderRipple(wtm);
+      break;
+    case 70:
+      this->RenderHitLine(wtm);
+      break;
+    case 100:
+      this->RenderHitLine3(wtm);
+      break;
+    case 103:
+      this->RenderStackedRings(wtm);
+      break;
+    case 101:
+      this->RenderLightningArc(wtm);
+      break;
+    case 135:
+      this->RenderJitterSweeps(wtm);
+      break;
+    case 102:
+      this->RenderLightningTube(wtm);
+      break;
+    case 27:
+      this->RenderGroundBubbles(wtm);
+      break;
+    case 29:
+    case 80:
+      this->RenderGroundFog(wtm);
+      break;
+    case 150:
+      this->RenderHoverSquares(wtm);
+      break;
+    case 130:
+      this->RenderFacingQuads(wtm);
+      break;
+    case 111:
+    case 115:
+      this->RenderSoulParticle(wtm);
+      break;
+    case 155:
+    case 170:
+      this->RenderTwinGlowSquares(wtm);
+      break;
+    case 157:
+      this->RenderGlowSquare(wtm);
+      break;
+    case 109:
+      this->RenderSoulLink(wtm);
+      break;
+    case 151:
+      this->RenderLaunchEffects(wtm);
+      break;
+    case 96:
+      this->RenderPeongUp(wtm);
+      break;
+    case 94:
+      this->RenderPeong(wtm);
+      break;
+    case 35: {
+      this->RenderOrbitIcons(wtm, 1.0f, 100, 100, 255);
+      break;
+    }
+    case 99:
+      this->RenderDoubleGumGang(wtm);
+      break;
+    case 23:
+    case 24:
+    case 25:
+    case 30:
+    case 31:
+    case 41:
+    case 50:
+    case 57:
+    case 60:
+    case 63:
+    case 65:
+    case 107:
+    case 108:
+    case 113:
+    case 118:
+    case 139:
+      this->Render3DCasting(wtm);
+      break;
+    case 36:
+    case 110:
+    case 169:
+      this->Render3DCasting_LowPolygon(wtm);
+      break;
+    case 34:
+      this->Render3DCasting2(wtm);
+      break;
+    case 37:
+      this->RenderGrandCross2(wtm);
+      break;
+    case 75:
+      this->RenderSlash1(wtm);
+      break;
+    case 64:
+      this->RenderRectUp(wtm);
+      break;
+    case 90:
+      this->RenderRectUp2(wtm);
+      break;
+    case 132:
+      this->RenderColorPanel(wtm);
+      break;
+    case 43:
+      this->RenderOrbitSquare(wtm);
+      break;
+    case 44:
+      this->RenderRotatedPlate(wtm);
+      break;
+    case 86:
+    case 92:
+      this->RenderFloorSquare(wtm);
+      break;
+    case 119:
+    case 122:
+    case 125:
+      this->RenderFloorSquare2(wtm);
+      break;
+    case 126:
+      this->RenderRotatedRing(wtm);
+      break;
+    case 120:
+      this->RenderSMA3(wtm);
+      break;
+    case 98:
+      this->RenderRing(wtm);
+      break;
+    case 32:
+      this->RenderLayeredGlow(wtm);
+      break;
+    case 145:
+      this->RenderPillarSquares(wtm);
+      break;
+    case 138:
+      this->RenderTwinFacingSquares(wtm);
+      break;
+    case 33:
+    case 42:
+    case 45:
+    case 47:
+    case 49:
+    case 53:
+    case 58:
+    case 59:
+    case 87:
+    case 97:
+    case 116:
+    case 123:
+    case 127:
+      this->RenderFieldPanel(wtm);
+      break;
+    case 156:
+      this->RenderJitterQuads(wtm);
+      break;
+    case 136:
+      this->RenderSpinSquares(wtm);
+      break;
+    case 82:
+    case 95:
+    case 128:
+    case 140:
+      this->RenderTeiFacingSlots(wtm);
+      break;
+    case 160:
+      this->RenderPolygonFrames(wtm);
+      break;
+    case 141:
+      this->RenderTaperedQuad(wtm);
+      break;
+    case 133:
+      this->RenderSpiralBlades(wtm);
+      break;
+    case 134:
+      this->RenderBladeTrail(wtm);
+      break;
+    case 54:
+      this->RenderChemical(wtm);
+      break;
+    case 89:
+      this->RenderFanBeam(wtm);
+      break;
+    case 159:
+      this->RenderBladeQuads(wtm);
+      break;
+    case 162:
+      this->RenderFanSlice(wtm);
+      break;
+    case 163:
+      this->RenderFanWedge(wtm);
+      break;
+    case 164:
+      this->RenderFanTrail(wtm);
+      break;
+    case 165:
+      this->RenderCurvedFanTrail(wtm);
+      break;
+    case 166:
+      this->RenderFoldingRibbon(wtm);
+      break;
+    case 55:
+      this->RenderFloorRect(wtm);
+      break;
+    case 56:
+      this->RenderGroundBar(wtm);
+      break;
+    case 154:
+      this->RenderBladeFins(wtm);
+      break;
+    case 112:
+      this->RenderMagicTarget(wtm);
+      break;
+    case 74:
+      this->RenderHalfSphere2(wtm);
+      break;
+    case 71:
+      this->RenderBlind(wtm);
+      break;
+    case 72:
+      this->RenderGrid(wtm);
+      break;
+    case 172: {
+      int rpCnt = 0;
+      EffectPrimitiveSlot& slot = this->state.slots[0];
+      if (slot.life == 1 && slot.alphaB > 0) {
+        const short alpha = slot.alphaB;
+        const unsigned char red = static_cast<unsigned char>(this->state.argb);
+        const unsigned char green = static_cast<unsigned char>(this->state.argb >> 8);
+        const unsigned char blue = static_cast<unsigned char>(this->state.argb >> 16);
+        vector3d corners[4];
+        for (int index = 0; index < 4; ++index) {
+          corners[index].x = 0.0f;
+          corners[index].y = 0.0f;
+          corners[index].z = 0.0f;
+        }
+        corners[0].x = -200.0f;
+        corners[0].y = -10.0f;
+        corners[0].z = -200.0f;
+        corners[1].x = 200.0f;
+        corners[1].y = -10.0f;
+        corners[1].z = -200.0f;
+        corners[2].x = 200.0f;
+        corners[2].y = -10.0f;
+        corners[2].z = 200.0f;
+        corners[3].x = -200.0f;
+        corners[3].y = -10.0f;
+        corners[3].z = 200.0f;
+        this->Tei_TowardScreen(corners[0], corners[1], corners[2], corners[3], slot.alphaT, this->state.slots[1].alphaT);
+        this->RenderTeiRect(&rpCnt, alpha, corners[0], corners[1], corners[2], corners[3], wtm, 1, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      }
+      break;
+    }
+    case 52:
+      this->RenderTrailSquares(wtm);
+      break;
+    case 38:
+      this->RenderTube(wtm);
+      break;
+    case 69:
+      this->RenderPentaRing(wtm);
+      break;
+    case 66:
+      this->RenderPentagon(wtm);
+      break;
+    case 129: {
+      vector3d prevB{};
+      vector3d curB{};
+      vector3d curT{};
+      vector3d prevT{};
+      int rpCnt = 0;
+      for (int ec = 0; ec < 4; ++ec) {
+        EffectPrimitiveSlot& slot = this->state.slots[ec];
+        if (slot.life != 1 || slot.alphaB <= 0) {
+          continue;
+        }
+        const float radius = slot.maxHeight;
+        const float outerRadius = radius * 4.0f;
+        for (int i = 0; i <= 10; ++i) {
+          std::int16_t angle = static_cast<std::int16_t>(slot.rotStart + 36 * i);
+          if (angle >= 360) {
+            angle -= 360;
+          }
+          curB.x = g_cosTable[angle] * outerRadius + slot.vecTNow.x;
+          curB.y = slot.vecTNow.y;
+          curB.z = outerRadius * g_sinTable[angle] + slot.vecTNow.z;
+          curT.x = g_cosTable[angle] * radius + slot.vecTPre.x;
+          curT.y = slot.vecTPre.y;
+          curT.z = radius * g_sinTable[angle] + slot.vecTPre.z;
+          if (i != 0) {
+            this->RenderTeiRect(&rpCnt, slot.alphaB, prevB, curB, curT, prevT, wtm, 0, 0, 1, 230, 255, 230, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          }
+          prevB = curB;
+          prevT = curT;
+        }
+      }
+      break;
+    }
+    case 79:
+      this->RenderScrollColumn(wtm);
+      break;
+    case 142:
+      this->RenderStandingPanels(wtm);
+      break;
+    case 93:
+      this->RenderRainbow(wtm);
+      break;
+    case 81:
+      this->RenderBeam(wtm);
+      break;
+    case 48:
+      this->RenderColorPlane(wtm);
+      break;
+    case 10:
+    case 11:
+      this->RenderRecordQuads(wtm);
+      break;
+    case 14:
+      this->RenderSphere(wtm);
+      break;
+    case 19: {
+      const float firstCos = ClientCosine(static_cast<int>(this->state.longitude - this->state.arcAngle));
+      const float firstSin = ClientSine(static_cast<int>(this->state.longitude - this->state.arcAngle));
+      const float secondCos = ClientCosine(static_cast<int>(this->state.longitude + this->state.arcAngle));
+      const float secondSin = ClientSine(static_cast<int>(this->state.longitude + this->state.arcAngle));
+      RenderTriangle& triangle = this->state.triangles[0];
+      const float x = this->render.position.x;
+      triangle.vertices[0].x = x;
+      const float y = this->render.position.y;
+      triangle.vertices[0].y = y;
+      triangle.vertices[0].z = 0.000001f;
+      triangle.vertices[0].rhw = 0.999999f;
+      triangle.vertices[0].diffuse = this->state.argb;
+      triangle.vertices[0].u = 0.5f;
+      triangle.vertices[0].v = 0.0f;
+      const float radius = this->state.heightSize;
+      triangle.vertices[1].x = radius * firstCos + x;
+      triangle.vertices[1].y = y - radius * firstSin;
+      triangle.vertices[2].x = radius * secondCos + x;
+      triangle.vertices[2].y = y - radius * secondSin;
+      triangle.vertices[1].v = 1.0f;
+      triangle.vertices[1].u = 1.0f;
+      triangle.vertices[1].diffuse = this->state.argb;
+      triangle.vertices[1].rhw = 0.999999f;
+      triangle.vertices[1].z = 0.000001f;
+      triangle.vertices[2].z = 0.000001f;
+      triangle.vertices[2].rhw = 0.999999f;
+      triangle.vertices[2].diffuse = this->state.argb;
+      triangle.vertices[2].u = 0.0f;
+      triangle.vertices[2].v = 1.0f;
+      triangle.texture = this->state.textures[0];
+      g_renderer->queues.SubmitTriangle(triangle, 1, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+      break;
+    }
+    case 20: {
+      float position[3] = {this->render.position.x, this->render.position.y, this->render.position.z};
+      RenderVertex top{0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
+      g_renderer->viewport.Projection().Project(position, wtm.values, top);
+      position[1] -= 10.0f;
+      RenderVertex bottom{0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
+      g_renderer->viewport.Projection().Project(position, wtm.values, bottom);
+      RenderTriangle& triangle = this->state.triangles[0];
+      triangle.vertices[0].x = top.x;
+      triangle.vertices[2].x = bottom.x;
+      triangle.vertices[2].y = bottom.y;
+      triangle.vertices[2].z = bottom.z;
+      triangle.vertices[0].y = top.y;
+      triangle.vertices[0].z = top.z;
+      triangle.vertices[0].rhw = 0.999999f;
+      triangle.vertices[0].diffuse = 0x9CFFFFFFu;
+      triangle.vertices[0].u = 0.0f;
+      triangle.vertices[0].v = 0.0f;
+      triangle.vertices[1].x = top.x + 1.0f;
+      triangle.vertices[1].y = top.y;
+      triangle.vertices[1].z = top.z;
+      triangle.vertices[1].rhw = 0.999999f;
+      triangle.vertices[1].diffuse = 0x9BFFFFFFu;
+      triangle.vertices[1].u = 0.0f;
+      triangle.vertices[1].v = 0.0f;
+      triangle.vertices[2].rhw = 0.999999f;
+      triangle.vertices[2].diffuse = 0x9BFFFFFFu;
+      triangle.vertices[2].u = 0.0f;
+      triangle.vertices[2].v = 0.0f;
+      triangle.texture = nullptr;
+      g_renderer->queues.SubmitTriangle(triangle, 5, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+      break;
+    }
+    case 171:
+      this->RenderGlowDisc(wtm);
+      break;
   }
 }
 

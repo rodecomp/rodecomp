@@ -12,7 +12,6 @@
 #include "Contents/Effects/EffectPrimitiveState.h"
 #include "Contents/Effects/RagEffect.h"
 #include "Contents/Effects/EffectActor.h"
-#include "Contents/Effects/EffectVisibility.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Skills/ClientSkills.h"
 #include "Contents/Effects/RagEffectState.h"
@@ -4968,9 +4967,9 @@ void CEffectPrim::PrimBobbing() {
 
 // OFFSET: 0x00BE7600
 // FUNCTION: fn_19935
-bool CEffectPrim::IsPartyVisible(const EffectVisibilityContext& context) {
+bool CEffectPrim::IsPartyVisible() {
   if (this->state.master) {
-    return PartyEffectVisible(this->state.master->state, context);
+    return this->state.master->PartyEffectVisible();
   }
 
   return false;

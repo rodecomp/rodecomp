@@ -1,16 +1,37 @@
 #include "Contents/Effects/EffectActor.h"
-#include "Contents/Effects/EffectVisibility.h"
+#include "Contents/Effects/RagEffect.h"
 #include "Contents/Effects/RagEffectState.h"
 #include "Contents/Configuration/ServiceOptions.h"
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Client/Session.h"
+#include "Contents/World/World.h"
 
 // OFFSET: 0x00C734B0
 // FUNCTION: fn_20327
-bool PartyEffectVisible(const RagEffectState& effect, const EffectVisibilityContext& context) {
-  if (context.options.Get(8) == 0 && effect.forceRender == 0) {
+bool CRagEffect::PartyEffectVisible() {
+  if (g_serviceOptions.Get(8) == 0 && this->state.forceRender == 0) {
     return false;
   }
 
-  const EffectActor* actor = effect.parent;
+  if (this->state.type == 232) {
+    CWorld* scene = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
+    const EffectActor* target = static_cast<const EffectActor*>(scene->GetGameActorByAidIncludeMe(static_cast<std::uint32_t>(this->state.deltaPos[1])));
+
+    if (!target) {
+      return false;
+    }
+
+    if (target->render.unknown_00A8 != 0 && target->render.accountId != g_session.m_aid) {
+      if (!g_session.IsPvpMap() || !g_session.IsPartyMember(target->render.accountId, true)) {
+        if (!target->EffectVisible()) {
+          return false;
+        }
+      }
+    }
+  }
+
+  const EffectActor* actor = this->state.parent;
 
   if (!actor) {
     return false;
@@ -20,23 +41,15 @@ bool PartyEffectVisible(const RagEffectState& effect, const EffectVisibilityCont
     return true;
   }
 
-  if (effect.unknown_11CA0 == 0) {
-    if (actor->render.accountId == context.localAccountId) {
+  if (this->state.unknown_11CA0 == 0) {
+    if (actor->render.accountId == g_session.m_aid) {
       return true;
     }
 
-    if (context.partyVisible) {
-      for (const MessengerMember& member : context.party) {
-        if (member.accountId == actor->render.accountId) {
-          if (member.offline == 0) {
-            return true;
-          }
-
-          break;
-        }
-      }
+    if (g_session.IsPvpMap() && g_session.IsPartyMember(actor->render.accountId, true)) {
+      return true;
     }
   }
 
-  return actor->render.visible != 0 && actor->render.enabled != 0;
+  return actor->EffectVisible();
 }
