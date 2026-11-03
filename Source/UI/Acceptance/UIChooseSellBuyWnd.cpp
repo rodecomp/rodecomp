@@ -48,7 +48,10 @@
 #include "UI/Text/TextWrapping.h"
 #include "Render/Textures/TextureCache.h"
 #include "UI/Acceptance/UIJoinPartyAcceptWnd.h"
+#include "UI/Buttons/UIButton.h"
 #include "UI/Buttons/UIBitmapButton.h"
+#include "UI/CashShop/UICashShopWnd.h"
+#include "UI/Buttons/UIRadioBtn.h"
 #include "UI/Buttons/UIBmpTextButton.h"
 #include "UI/Buttons/UINoneVisibleButton.h"
 #include "UI/Buttons/UICheckBox.h"
@@ -5389,6 +5392,141 @@ void UIChatRoomMakeWnd::Paint() {
   this->DrawTextAt(8, 3, this->m_title.c_str(), 0, 0, 12, 0, 0, 0);
 }
 
+// OFFSET: 0x008DBD50
+// FUNCTION: fn_12161
+void UIChatRoomMakeWnd::Slot15(int width, int height) {
+  if (g_session.IsTrickDeadActive()) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x295)), 0xFF, 0, 0, 0);
+    g_windowMgr.CloseWindow(0x1B);
+  }
+
+  this->m_limit = 20;
+  this->m_type = 0;
+  this->m_typeLabels.insert(this->m_typeLabels.end(), std::string(LookupMessage(0x82)));
+  {
+    const std::uint32_t value = 0;
+    this->m_types.push_back(value);
+  }
+
+  this->m_limitLabels.insert(this->m_limitLabels.end(), std::string(LookupMessage(0x83)).insert(0, "2 ", 2));
+  {
+    const std::uint32_t value = 2;
+    this->m_limits.push_back(value);
+  }
+  this->m_limitLabels.insert(this->m_limitLabels.end(), "3 " + std::string(LookupMessage(0x83)));
+  {
+    const std::uint32_t value = 3;
+    this->m_limits.push_back(value);
+  }
+  this->m_limitLabels.insert(this->m_limitLabels.end(), "5 " + std::string(LookupMessage(0x83)));
+  {
+    const std::uint32_t value = 5;
+    this->m_limits.push_back(value);
+  }
+  this->m_limitLabels.insert(this->m_limitLabels.end(), "10 " + std::string(LookupMessage(0x83)));
+  {
+    const std::uint32_t value = 10;
+    this->m_limits.push_back(value);
+  }
+  this->m_limitLabels.insert(this->m_limitLabels.end(), "15 " + std::string(LookupMessage(0x83)));
+  {
+    const std::uint32_t value = 15;
+    this->m_limits.push_back(value);
+  }
+  this->m_limitLabels.insert(this->m_limitLabels.end(), "20 " + std::string(LookupMessage(0x83)));
+  {
+    const std::uint32_t value = 20;
+    this->m_limits.push_back(value);
+  }
+
+  this->m_closeButton = this->AddCloseButton("Alt+C", 0);
+
+  {
+    const std::string prefix("유저인터페이스\\");
+    const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
+    int positions[2][2] = {{189, 96}, {234, 96}};
+    int ids[2] = {184, 185};
+    for (int index = 0; index < 2; ++index) {
+      UIBitmapButton* button = new UIBitmapButton();
+      button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
+      button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
+      button->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
+      button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+      button->Move(positions[index][0], positions[index][1]);
+      button->SetId(ids[index]);
+      this->AddChild(button);
+    }
+  }
+  this->m_message0 = 184;
+
+  {
+    const std::string prefix("유저인터페이스\\basic_interface\\");
+    const char* names[2][3] = {{"txtbox_btn_a", "txtbox_btn_b", "txtbox_btn_c"}, {"txtbox_btn_a", "txtbox_btn_b", "txtbox_btn_c"}};
+    int positions[2][2] = {{119, 46}, {256, 46}};
+    int ids[2] = {228, 229};
+    for (int index = 0; index < 2; ++index) {
+      UIBitmapButton* button = new UIBitmapButton();
+      button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
+      button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
+      button->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
+      button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+      button->Move(positions[index][0], positions[index][1]);
+      button->SetId(ids[index]);
+      this->AddChild(button);
+    }
+  }
+
+  this->m_titleEdit = new UIEditCtrl();
+  this->m_titleEdit->SetSize(228, 16);
+  this->m_titleEdit->Move(45, 24);
+  this->m_titleEdit->maximum = 36;
+  this->m_titleEdit->Background(242, 242, 242);
+  this->m_titleEdit->SetText("");
+  this->AddChild(this->m_titleEdit);
+  g_windowMgr.SetFocus(this->m_titleEdit);
+
+  this->m_passwordEdit = new UIEditCtrl();
+  this->m_passwordEdit->SetSize(90, 16);
+  this->m_passwordEdit->Move(182, 70);
+  this->m_passwordEdit->maximum = 8;
+  this->m_passwordEdit->mask = 42;
+  this->m_passwordEdit->Background(242, 242, 242);
+  this->m_passwordEdit->SetText("");
+  this->AddChild(this->m_passwordEdit);
+
+  this->m_public = 0;
+  const char* labels[2] = {LookupMessage(0xC9), LookupMessage(0xC8)};
+  const int states[2] = {1, 0};
+  for (int index = 0, width = 40, x = 44; width < 64; ++index, width += 12, x += 52) {
+    this->m_publicButtons[index] = new UIRadioBtn();
+    this->m_publicButtons[index]->SetSize(width, 12);
+    this->m_publicButtons[index]->Move(x, 70);
+    this->m_publicButtons[index]->SetText(labels[index]);
+    this->m_publicButtons[index]->SendMsg(this, 13, states[index], 0, 0, 0);
+    this->AddChild(this->m_publicButtons[index]);
+  }
+
+  this->m_limitText = new UIStaticText();
+  this->m_limitText->SetSize(68, 14);
+  this->m_limitText->Move(48, 49);
+  this->m_limitText->SetText(this->m_limitLabels.back().c_str(), 0);
+  this->m_limitText->background = 0xFFF2F2F2;
+  this->m_limitText->Invalidate();
+  this->AddChild(this->m_limitText);
+
+  this->m_typeText = new UIStaticText();
+  this->m_typeText->SetSize(68, 14);
+  this->m_typeText->Move(187, 49);
+  this->m_typeText->SetText(this->m_typeLabels.front().c_str(), 0);
+  this->m_typeText->background = 0xFFF2F2F2;
+  this->m_typeText->Invalidate();
+  this->AddChild(this->m_typeText);
+}
+
+// OFFSET: 0x008F80B0
+
+// OFFSET: 0x008F7B10
+
 // OFFSET: 0x008F64B0
 // FUNCTION: fn_12317
 void UIItemIdentifyWnd::UpdateScroll() {
@@ -5604,6 +5742,398 @@ int UINotifyQuestWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
     if (UIWindow* window = g_windowMgr.EnsureWindow(0x2718)) {
       g_windowMgr.Promote(window);
     }
+  }
+  return 0;
+}
+
+namespace {
+#pragma pack(push, 1)
+struct NCashClosePacket {
+  /* 0000 */ std::uint16_t packetType;
+};
+
+struct NCashBuyHeader {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::uint16_t packetLength;
+  /* 0004 */ std::uint16_t count;
+  /* 0006 */ std::int32_t points;
+};
+
+struct NCashBuyItem {
+  /* 0000 */ std::int32_t itemId;
+  /* 0004 */ std::int32_t quantity;
+  /* 0008 */ std::uint16_t tab;
+};
+
+struct NCashRentalPacket {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::uint32_t accountId;
+  /* 0006 */ std::int32_t itemId;
+};
+#pragma pack(pop)
+}
+
+// OFFSET: 0x008EB280
+
+// OFFSET: 0x00908260
+// FUNCTION: fn_12391
+int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  char key[512];
+
+  switch (message) {
+  case 6:
+    switch (argument1) {
+    case 201: {
+      NCashClosePacket packet;
+      packet.packetType = 0x84A;
+      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
+      g_windowMgr.CloseWindow(184);
+      return 0;
+    }
+
+    case 224: {
+      if (this->m_totalPrice <= 0) {
+        break;
+      }
+      int notice;
+      if (this->m_cashBalance < std::atoi(this->m_pointEdit->Text()) || std::atoi(this->m_pointEdit->Text()) + this->m_pointBalance < this->m_totalPrice) {
+        notice = 1254;
+      } else if (std::atoi(this->m_pointEdit->Text()) <= this->m_totalPrice) {
+        NCashBuyHeader header = {};
+        header.packetType = 0x848;
+        const int points = std::atoi(this->m_pointEdit->Text());
+        const int total = this->m_totalPrice;
+        header.points = points;
+        char text[0x800];
+        if (points == 0) {
+          FormatMessageBuffer(text, LookupMessage(3771), total);
+        } else {
+          FormatMessageBuffer(text, LookupMessage(3772), total - points, points);
+        }
+        if (g_windowMgr.Confirm(text, 2, true, true, 0, "Message", 280, 120, 0) != 187) {
+          break;
+        }
+
+        const int count = g_session.GetList2Size();
+        const unsigned int length = (count + 1) * 10;
+        if (length > 0x800) {
+          break;
+        }
+        header.packetLength = static_cast<std::uint16_t>(length);
+        header.count = static_cast<std::uint16_t>(count);
+        char buffer[0x800];
+        std::memcpy(buffer, &header, sizeof(header));
+        if (count == 0) {
+          break;
+        }
+        for (int index = 0; index < count; ++index) {
+          ITEM_INFO item = g_session.GetItem1720At(index);
+          NCashBuyItem entry;
+          entry.itemId = std::atoi(item.itemId.c_str());
+          entry.quantity = item.quantity;
+          entry.tab = item.unknown_0064;
+          std::memcpy(buffer + sizeof(header) + index * sizeof(entry), &entry, sizeof(entry));
+        }
+        GetRagConnection().Send(static_cast<short>(length), buffer);
+        return 0;
+      } else {
+        notice = 1860;
+      }
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(notice)), 0xFF, 0, 0, 0);
+      return 0;
+    }
+
+    case 316:
+      if (this->m_page > 1) {
+        --this->m_page;
+        return 0;
+      }
+      break;
+
+    case 317:
+      if (this->m_page < this->m_pageCount) {
+        ++this->m_page;
+        return 0;
+      }
+      break;
+
+    case 365: {
+      std::string query(this->m_searchEdit->Text());
+      if (query.size() != 0) {
+        g_session.ClearItems1784(10);
+        for (int list = 0; list < 9; ++list) {
+          const int count = g_session.GetList1788(list);
+          for (int index = 0; index < count; ++index) {
+            ITEM_INFO item = g_session.GetItem1784At(list, index);
+            std::string name(item.unknown_0044);
+            if (name.find(query) != std::string::npos && !g_session.HasItem17D4(std::atoi(item.itemId.c_str()))) {
+              g_session.unknown_1784[10].push_back(item);
+            }
+          }
+        }
+        if (g_session.GetList1788(10) == 0) {
+          g_windowMgr.Confirm(LookupMessage(1069), 0, true, false, 0, "Message", 280, 120, 0);
+        }
+        this->m_searchEdit->SetText("");
+        this->SendMsg(this, 6, 398, 0, 0, 0);
+      }
+      return 0;
+    }
+
+    case 386:
+      this->m_totalPrice = 0;
+      g_session.ClearItems1720();
+      this->m_otherItems.clear();
+      this->m_firstOther = 0;
+      this->m_otherScroll->SetPosition(0);
+      this->m_otherScroll->Invalidate();
+      this->m_otherScroll->Show(0);
+      this->Invalidate();
+      return 0;
+
+    case 387:
+      this->m_page = 1;
+      return 0;
+
+    case 388:
+      this->m_page = this->m_pageCount;
+      return 0;
+
+    case 389:
+    case 390:
+    case 391:
+    case 392:
+    case 393:
+    case 394:
+    case 395:
+    case 396:
+    case 397:
+    case 398:
+    case 477: {
+      if (static_cast<unsigned int>(this->m_tab) < 11 && this->m_buttons[this->m_tab] != nullptr) {
+        this->m_buttons[this->m_tab]->SetDisabled(0);
+        this->m_buttons[this->m_tab]->Invalidate();
+        this->m_buttons[this->m_tab]->SetState(0);
+      }
+      this->m_tab = argument1 - 389;
+      this->m_buttons[argument1 - 389]->SetDisabled(1);
+      this->m_buttons[argument1 - 389]->Invalidate();
+      if (this->m_tab == 8) {
+        this->m_otherScroll->Move(this->geometry.width - this->m_otherScroll->geometry.width - 10, 22);
+      } else {
+        this->m_otherScroll->Move(-100, -100);
+      }
+
+      std::strcpy(key, g_subKey);
+      std::strcat(key, "\\NeoCash");
+      HKEY handle;
+      DWORD disposition = 0;
+      if (RegCreateKeyExA(HKEY_LOCAL_MACHINE, key, 0, nullptr, 0, KEY_ALL_ACCESS, nullptr, &handle, &disposition) == ERROR_SUCCESS) {
+        RegSetValueExA(handle, "CASH_CATEGORY", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->m_tab), 4);
+        RegCloseKey(handle);
+      }
+      this->SendMsg(this, 121, 0, 0, 0, 0);
+      return 0;
+    }
+
+    case 415:
+      if (this->items.begin() != this->items.end()) {
+        for (ITEM_INFO& item : this->items) {
+          NCashRentalPacket packet;
+          packet.packetType = 0x9C3;
+          packet.accountId = g_session.m_aid;
+          packet.itemId = std::atoi(item.itemId.c_str());
+          GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
+        }
+        return 0;
+      }
+      break;
+    }
+    return 0;
+
+  case 7:
+    if (g_session.GetList2Size() < 4) {
+      return 0;
+    }
+    if (argument1 < 0) {
+      --this->m_firstOther;
+    } else if (argument1 > 0) {
+      ++this->m_firstOther;
+    }
+    if (this->m_firstOther < 0) {
+      this->m_firstOther = 0;
+    }
+    if (this->m_firstOther > g_session.GetList2Size() - 3) {
+      this->m_firstOther = g_session.GetList2Size() - 3;
+    }
+    this->m_otherScroll->SetPosition(this->m_firstOther);
+    this->m_otherScroll->Invalidate();
+    return 0;
+
+  case 9:
+    if (--this->m_firstOther < 0) {
+      this->m_firstOther = 0;
+    }
+    this->m_otherScroll->SetPosition(this->m_firstOther);
+    this->m_otherScroll->Invalidate();
+    return 0;
+
+  case 10:
+    ++this->m_firstOther;
+    if (this->m_firstOther > std::min(g_session.GetList2Size() - 3, 4)) {
+      this->m_firstOther = std::min(g_session.GetList2Size() - 3, 4);
+    }
+    this->m_otherScroll->SetPosition(this->m_firstOther);
+    this->m_otherScroll->Invalidate();
+    return 0;
+
+  case 34:
+    this->m_placement = reinterpret_cast<WindowPlacement*>(argument1);
+    if (!static_cast<NCashWndInfo*>(this->m_placement)->IsValid()) {
+      static_cast<NCashWndInfo*>(this->m_placement)->Reset();
+    }
+    this->Move(this->m_placement->x, this->m_placement->y);
+    return 0;
+
+  case 38: {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    if (mode->drag.source == 4) {
+      ITEM_INFO item;
+      item.Assign(reinterpret_cast<const RawItemData&>(mode->drag));
+      g_session.RemoveItem1720ByName(item);
+      this->m_totalPrice -= item.quantity * item.unknown_0014[1];
+      if (g_session.GetList2Size() == 3) {
+        this->m_firstOther = 0;
+        this->m_otherScroll->SetPosition(0);
+        this->m_otherScroll->SetRange(4, 4, 4);
+        this->m_otherScroll->Invalidate();
+        this->m_otherScroll->Show(0);
+      } else if (g_session.GetList2Size() > 3 && g_session.GetList2Size() < 7) {
+        this->m_otherScroll->SetRange(4, 4, g_session.GetList2Size() + 1);
+        if (this->m_firstOther > g_session.GetList2Size() - 3) {
+          this->m_firstOther = g_session.GetList2Size() - 3;
+          this->m_otherScroll->SetPosition(this->m_firstOther);
+        }
+        this->m_otherScroll->Invalidate();
+      }
+    } else if (mode->drag.source == 6) {
+      if (g_session.GetList2Size() >= 8) {
+        mode->SendMsg(18, 0, 0, 0, 0);
+        return 0;
+      }
+      if (this->m_tab == 8) {
+        const int owned = g_session.GetItem1720QuantityByItemId(mode->drag.name.c_str());
+        for (ITEM_INFO& entry : this->items) {
+          if (std::atoi(entry.itemId.c_str()) == std::atoi(mode->drag.name.c_str())) {
+            if (entry.quantity <= 0) {
+              g_windowMgr.Confirm(LookupMessage(2523), 0, true, false, 0, "Message", 280, 120, 0);
+              mode->SendMsg(18, 0, 0, 0, 0);
+              return 0;
+            }
+            if (mode->drag.quantity + owned > entry.quantity) {
+              ModeDragState saved = mode->drag;
+              g_windowMgr.Confirm(FormatOwnedString(LookupMessage(2524), entry.quantity).c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+              mode->drag = saved;
+              mode->drag.quantity = entry.quantity - owned;
+              break;
+            }
+          }
+        }
+      }
+      ITEM_INFO item;
+      item.Assign(reinterpret_cast<const RawItemData&>(mode->drag));
+      item.unknown_0064 = static_cast<std::uint16_t>(this->m_selectedIndex);
+      g_session.MergeItem1720ByName(item);
+      this->m_totalPrice += item.quantity * item.unknown_0014[1];
+      if (g_session.GetList2Size() >= 4 && g_session.GetList2Size() < 8) {
+        int total;
+        if (g_session.GetList2Size() == 4) {
+          this->m_firstOther = 1;
+          this->m_otherScroll->Show(1);
+          total = 5;
+        } else {
+          this->m_firstOther = g_session.GetList2Size() - 3;
+          total = g_session.GetList2Size() + 1;
+        }
+        this->m_otherScroll->SetRange(4, 4, total);
+        this->m_otherScroll->SetPosition(this->m_firstOther);
+        this->m_otherScroll->Invalidate();
+      }
+    }
+
+    this->m_otherItems.clear();
+    const int count = g_session.GetList2Size();
+    for (int index = 0; index < count; ++index) {
+      ITEM_INFO other = g_session.GetItem1720At(index);
+      if (other.unknown_0000[1] != 0) {
+        this->m_otherItems.push_back(other);
+      }
+    }
+    mode->SendMsg(18, 0, 0, 0, 0);
+    return 0;
+  }
+
+  case 60: {
+    this->items.clear();
+    const int count = g_session.GetList1788(this->m_tab);
+    for (int index = 0; index < count; ++index) {
+      ITEM_INFO item = g_session.GetItem1784At(this->m_tab, index);
+      if (item.unknown_0000[1] != 0 && (this->m_tab != 8 || item.unknown_0064 != 0xFFFF)) {
+        this->items.push_back(item);
+      }
+    }
+    this->Invalidate();
+    return 0;
+  }
+
+  case 120: {
+    std::strcpy(key, g_subKey);
+    std::strcat(key, "\\NeoCash");
+    HKEY handle;
+    const LSTATUS status = RegOpenKeyExA(HKEY_LOCAL_MACHINE, key, 0, KEY_QUERY_VALUE, &handle);
+    DWORD type = REG_DWORD;
+    DWORD size = 4;
+    this->m_tab = 0;
+    if (status == ERROR_SUCCESS) {
+      RegQueryValueExA(handle, "CASH_CATEGORY", nullptr, &type, reinterpret_cast<BYTE*>(&this->m_tab), &size);
+    }
+    RegCloseKey(handle);
+    if (this->m_tab > 10) {
+      this->m_tab = 10;
+    } else if (this->m_tab < 0) {
+      this->m_tab = 0;
+    }
+    this->m_buttons[this->m_tab]->SetDisabled(1);
+    this->m_buttons[this->m_tab]->Invalidate();
+    if (this->m_tab == 8) {
+      this->m_otherScroll->Move(this->geometry.width - this->m_otherScroll->geometry.width - 10, 22);
+    } else {
+      this->m_otherScroll->Move(-100, -100);
+    }
+    this->m_pointBalance = argument1;
+    this->m_cashBalance = argument2;
+    this->SendMsg(this, 121, 0, 0, 0, 0);
+    return 0;
+  }
+
+  case 121:
+    this->m_pageCount = (g_session.GetList1788(this->m_tab) + 7) / 8;
+    if (this->m_pageCount < 1) {
+      this->m_pageCount = 1;
+    }
+    this->m_page = 1;
+    this->SendMsg(this, 60, 0, 0, 0, 0);
+    return 0;
+
+  case 122:
+    this->m_pointBalance = argument1;
+    this->m_cashBalance = argument2;
+    this->m_pointEdit->SetText("0");
+    this->SendMsg(this, 6, 386, 0, 0, 0);
+    return 0;
+
+  default:
+    return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
   return 0;
 }
@@ -6302,6 +6832,97 @@ UIMonsterDisplayWnd::UIMonsterDisplayWnd()
 // FUNCTION: fn_11963
 UIPartyInvitationToWnd::UIPartyInvitationToWnd()
     : UIPartySettingWnd() {
+}
+
+// OFFSET: 0x008E60A0
+// FUNCTION: fn_12191
+void UIPartySettingWnd::Slot15(int width, int height) {
+  this->m_expShare = g_session.unknown_54A0 == 2 ? 0 : g_session.unknown_54A0;
+  this->m_itemShare = g_session.unknown_54A4;
+  this->m_itemDistribute = 0;
+  g_session.unknown_54A8 = 0;
+
+  if (height == 245) {
+    this->m_mode = 70;
+  } else if (height == 180) {
+    this->m_mode = 5;
+  } else if (height == 220) {
+    this->m_mode = 50;
+  }
+
+  if (this->m_mode == 70) {
+    const char* texts[2] = {LookupMessage(287), LookupMessage(288)};
+    for (int i = 0, y = 42; y < 82; ++i, y += 20) {
+      this->m_expShareButtons[i] = new UIRadioBtn();
+      this->m_expShareButtons[i]->SetSize(160, g_serviceType == 12 ? 17 : 12);
+      this->m_expShareButtons[i]->Move(20, y);
+      this->m_expShareButtons[i]->SetText(texts[i]);
+      this->m_expShareButtons[i]->SendMsg(this, 13, this->m_expShare == i, 0, 0, 0);
+      this->AddChild(this->m_expShareButtons[i]);
+      if (g_session.unknown_5464 == 0) {
+        this->m_expShareButtons[i]->enabled = 0;
+      }
+    }
+  } else if (this->m_mode == 50) {
+    this->m_nameEdit = new UIEditCtrl();
+    this->m_nameEdit->SetSize(100, 20);
+    this->m_nameEdit->Move(20, 38);
+    this->m_nameEdit->maximum = 23;
+    this->m_nameEdit->Background(230, 230, 230);
+    this->AddChild(this->m_nameEdit);
+  }
+
+  {
+    const char* texts[2] = {LookupMessage(289), LookupMessage(290)};
+    for (int i = 0, offset = 0; offset < 40; ++i, offset += 20) {
+      this->m_itemShareButtons[i] = new UIRadioBtn();
+      this->m_itemShareButtons[i]->SetSize(160, g_serviceType == 12 ? 17 : 12);
+      this->m_itemShareButtons[i]->SetText(texts[i]);
+      this->m_itemShareButtons[i]->Move(20, this->m_mode + offset + 37);
+      this->m_itemShareButtons[i]->SendMsg(this, 13, this->m_itemShare == i, 0, 0, 0);
+      this->m_itemShareButtons[i]->enabled = g_session.PartyCount() == 0;
+      if (g_session.unknown_5464 != 0) {
+        this->m_itemShareButtons[i]->enabled = 1;
+      }
+      this->AddChild(this->m_itemShareButtons[i]);
+    }
+  }
+
+  this->m_itemDistributeButton = new UIRadioBtn();
+  this->m_itemDistributeButton->SetSize(160, g_serviceType == 12 ? 17 : 12);
+  this->m_itemDistributeButton->Move(20, this->m_mode + 102);
+  this->m_itemDistributeButton->SetText(LookupMessage(739));
+  this->m_itemDistributeButton->SendMsg(this, 13, 1, 0, 0, 0);
+  this->m_itemDistributeButton->enabled = g_session.PartyCount() == 0;
+  if (g_session.unknown_5464 != 0) {
+    this->m_itemDistributeButton->enabled = 1;
+  }
+  this->AddChild(this->m_itemDistributeButton);
+
+  this->m_message0 = 184;
+
+  {
+    const std::string prefix("유저인터페이스\\");
+    int positions[2][2] = {{this->geometry.width - 92, this->geometry.height - 24}, {this->geometry.width - 46, this->geometry.height - 24}};
+    const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
+    int ids[2] = {184, 185};
+
+    for (int i = 0; i < 2; ++i) {
+      auto* button = new UIBitmapButton();
+      button->SetBitmap((prefix + names[i][0] + ".bmp").c_str(), 0, 0);
+      button->SetBitmap((prefix + names[i][1] + ".bmp").c_str(), 1, 0);
+      button->SetBitmap((prefix + names[i][2] + ".bmp").c_str(), 2, 0);
+      button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+      button->Move(positions[i][0], positions[i][1]);
+      button->SetId(ids[i]);
+      this->AddChild(button);
+    }
+  }
+
+  this->AddCloseButton("Alt+P", 0);
+  if (this->m_mode == 50) {
+    g_windowMgr.SetFocus(this->m_nameEdit);
+  }
 }
 
 // OFFSET: 0x008C8980
@@ -9170,6 +9791,145 @@ void UITipOfTheDayWnd::Slot15(int width, int height) {
       this->m_textViewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(tip[line].c_str()), 38, 0, 0);
     }
   }
+}
+
+// OFFSET: 0x008E9C90
+// FUNCTION: fn_12204
+void UITipboxWnd::Slot15(int width, int) {
+  this->unknown_0100 = g_window315Enabled;
+  this->m_message0 = 365;
+
+  unsigned red, green, blue;
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+
+  this->unknown_00BC = new UITagTextViewer();
+  this->unknown_00BC->SetSize(226, 245);
+  this->unknown_00BC->m_backgroundColor = 0xFF000000u | RGB(red, green, blue);
+  this->unknown_00BC->Invalidate();
+  this->unknown_00BC->m_textWidth = 188;
+  this->unknown_00BC->Move(250, 70);
+  this->AddChild(this->unknown_00BC);
+  this->unknown_00BC->Show(1);
+
+  UIStaticText** titles = &this->unknown_00C0;
+  for (int y = 50; y < 90; y += 20) {
+    *titles = new UIStaticText();
+    (*titles)->SetSize(220, 18);
+    (*titles)->SetText("", 0);
+    (*titles)->SetFont(0, 13, 1, 0);
+    (*titles)->SetColor(44, 77, 160);
+    (*titles)->Move(254, y);
+    this->AddChild(*titles);
+    ++titles;
+  }
+
+  TipBoxEntry& entry = g_itemTagOwner->SelectRandomTip();
+
+  this->m_pageText = new UIStaticText();
+  this->m_pageText->SetSize(150, 20);
+  this->m_pageText->SetText("1", 0);
+  this->m_pageText->SetFont(0, 12, 1, 0);
+  this->m_pageText->SetColor(44, 77, 160);
+  this->AddChild(this->m_pageText);
+
+  const std::string separator = "/";
+  this->m_pageTotalText = new UIStaticText();
+  this->m_pageTotalText->SetSize(90, 15);
+  this->m_pageTotalText->SetText((separator + IntToString(static_cast<int>(entry.paragraphs.size()), 0)).c_str(), 0);
+  this->m_pageTotalText->SetFont(0, 12, 0, 0);
+  this->m_pageTotalText->SetColor(44, 77, 160);
+  this->AddChild(this->m_pageTotalText);
+
+  UIBitmapButton* searchButton = new UIBitmapButton();
+  searchButton->SetBitmap("유저인터페이스\\tipbox\\btn_searchbar_normal.bmp", 0, 0);
+  searchButton->SetBitmap("유저인터페이스\\tipbox\\btn_searchbar_over.bmp", 1, 0);
+  searchButton->SetBitmap("유저인터페이스\\tipbox\\btn_searchbar_press.bmp", 2, 0);
+  searchButton->SetSize(searchButton->BitmapWidth(), searchButton->BitmapHeight());
+  searchButton->Move(448, 21);
+  searchButton->SetId(365);
+  this->AddChild(searchButton);
+
+  UICheckBox* checkBox = new UICheckBox();
+  checkBox->SetSize(this->TextWidth(LookupMessage(3939), 0, 0, 12, 0, 0) + 12, 14);
+  checkBox->SetImages("유저인터페이스\\tipbox\\checkBox_check.bmp", "유저인터페이스\\tipbox\\checkBox.bmp", LookupMessage(3939));
+  checkBox->Move(9, 347);
+  checkBox->SetChecked(this->unknown_0100);
+  checkBox->SetId(213);
+  this->AddChild(checkBox);
+
+  UIBmpTextButton* closeButton = new UIBmpTextButton();
+  closeButton->SetBitmap("유저인터페이스\\tipbox\\btn_close_normal.bmp", 0, 0);
+  closeButton->SetBitmap("유저인터페이스\\tipbox\\btn_close_over.bmp", 1, 0);
+  closeButton->SetBitmap("유저인터페이스\\tipbox\\btn_close_press.bmp", 2, 0);
+  closeButton->SetSize(closeButton->BitmapWidth(), closeButton->BitmapHeight());
+  closeButton->SetText(LookupMessage(1299));
+  closeButton->Move(415, 341);
+  closeButton->SetId(201);
+  this->AddChild(closeButton);
+
+  UIEditCtrl4* search = new UIEditCtrl4();
+  this->unknown_00B4 = search;
+  search->SetSize(193, 15);
+  search->maximum = 150;
+  search->TextColor(RGB(0, 0, 0), 0xFFFFFFFF);
+  search->SetPlaceholderEnabled(true);
+  search->SetPlaceholder(LookupMessage(3253));
+  search->SetPlaceholderColor(0xB1B1B1);
+  search->Move(253, 22);
+  search->Background(255, 255, 255);
+  this->AddChild(this->unknown_00B4);
+
+  this->unknown_00D0 = new UIBitmapButton();
+  this->unknown_00D0->SetBitmap("유저인터페이스\\tipbox\\bt_arrowL_on.bmp", 0, 0);
+  this->unknown_00D0->SetBitmap("유저인터페이스\\tipbox\\bt_arrowL_on.bmp", 1, 0);
+  this->unknown_00D0->SetBitmap("유저인터페이스\\tipbox\\bt_arrowL_on.bmp", 2, 0);
+  this->unknown_00D0->SetBitmap("유저인터페이스\\tipbox\\bt_arrowL_off.bmp", 3, 0);
+  this->unknown_00D0->SetSize(this->unknown_00D0->BitmapWidth(), this->unknown_00D0->BitmapHeight());
+  this->unknown_00D0->Move(415, 319);
+  this->unknown_00D0->SetId(246);
+  this->AddChild(this->unknown_00D0);
+
+  this->unknown_00D4 = new UIBitmapButton();
+  this->unknown_00D4->SetBitmap("유저인터페이스\\tipbox\\bt_arrowR_on.bmp", 0, 0);
+  this->unknown_00D4->SetBitmap("유저인터페이스\\tipbox\\bt_arrowR_on.bmp", 1, 0);
+  this->unknown_00D4->SetBitmap("유저인터페이스\\tipbox\\bt_arrowR_on.bmp", 2, 0);
+  this->unknown_00D4->SetBitmap("유저인터페이스\\tipbox\\bt_arrowR_off.bmp", 3, 0);
+  this->unknown_00D4->SetSize(this->unknown_00D4->BitmapWidth(), this->unknown_00D4->BitmapHeight());
+  this->unknown_00D4->Move(462, 319);
+  this->unknown_00D4->SetId(218);
+  this->AddChild(this->unknown_00D4);
+
+  this->unknown_00B8 = new UIListBoxID();
+  this->unknown_00B8->Configure(250, 50, 216, 266, 0);
+  int* background = reinterpret_cast<int*>(this->unknown_00B8->unknown_007C);
+  background[0] = 240;
+  background[1] = 240;
+  background[2] = 240;
+  this->unknown_00B8->SetId(184);
+  this->AddChild(this->unknown_00B8);
+  this->unknown_00B8->Show(0);
+
+  this->unknown_00D8 = new UIBitmapButton();
+  this->unknown_00D8->SetBitmap("유저인터페이스\\tipbox\\bt_tagcatch_normal.bmp", 0, 0);
+  this->unknown_00D8->SetBitmap("유저인터페이스\\tipbox\\bt_tagcatch_mouseon.bmp", 1, 0);
+  this->unknown_00D8->SetBitmap("유저인터페이스\\tipbox\\bt_tagcatch_pressed.bmp", 2, 0);
+  this->unknown_00D8->SetBitmap("유저인터페이스\\tipbox\\bt_tagcatch_disabled.bmp", 3, 0);
+  this->unknown_00D8->SetSize(this->unknown_00D8->BitmapWidth(), this->unknown_00D8->BitmapHeight());
+  this->unknown_00D8->Move(450, 47);
+  this->unknown_00D8->SetId(517);
+  this->AddChild(this->unknown_00D8);
+
+  this->AddCloseButton("", 0)->Move(width - 15, 3);
+  this->RefreshTip();
+
+  if (entry.paragraphs.size() == 1) {
+    this->unknown_00D4->SetDisabled(1);
+    this->unknown_00D4->Invalidate();
+    this->unknown_00D4->Invalidate();
+  }
+  this->unknown_00D0->SetDisabled(1);
+  this->unknown_00D0->Invalidate();
+  this->unknown_00D0->Invalidate();
 }
 
 // OFFSET: 0x008E60A0

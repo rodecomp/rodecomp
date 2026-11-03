@@ -9,27 +9,33 @@
 
 struct WindowPlacement;
 class UIScrollBar;
+class UIButton;
+class UIEditCtrl;
+class UIStaticText;
 
 class UInCashWnd : public UIItemBaseWnd {
 public:
   UInCashWnd();
   bool Slot03() override;
   void Slot10(int x, int y, std::intptr_t value) override;
+  void Slot15(int width, int height) override;
   void Slot11() override;
   void Paint() override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
   void Slot32(int x, int y) override;
   void Slot35(int delta) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   ITEM_INFO ItemAt(int x, int y);
   void DrawItems();
 
-  /* 00F0 */ unsigned char unknown_00F0[0x08];
+  /* 00F0 */ UIEditCtrl* m_pointEdit;
+  /* 00F4 */ UIEditCtrl* m_searchEdit;
   /* 00F8 */ std::list<ITEM_INFO> m_otherItems;
   /* 0100 */ WindowPlacement* m_placement;
-  /* 0104 */ unsigned char unknown_0104[0x4C];
+  /* 0104 */ UIButton* m_buttons[19];
   /* 0150 */ UIScrollBar* m_otherScroll;
-  /* 0154 */ unsigned char unknown_0154[0x04];
+  /* 0154 */ UIStaticText* m_title;
   /* 0158 */ int m_firstOther;
   /* 015C */ int m_selected;
   /* 0160 */ int m_pageCount;
