@@ -199,9 +199,6 @@ int g_window315Enabled = 1;
 // GLOBAL: gl_25391
 bool g_randomLoadingScreen;
 
-// GLOBAL: gl_24646
-UIWindow* g_linkInputOwner;
-
 // GLOBAL: gl_25459
 static const std::string s_partyItemLinkOpen = "<ITEML>";
 
@@ -958,7 +955,7 @@ void UINpcTextEditDialogWnd::Paint() {
 // OFFSET: 0x008FFC90
 // FUNCTION: fn_12365
 int UINpcEditDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (g_linkInputOwner) {
+  if (g_windowMgr.unknown_0458) {
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2730)), 0x64FFFF, 0, 0, 0);
     return 0;
   }
@@ -984,7 +981,7 @@ int UINpcEditDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
 // FUNCTION: fn_12366
 int UINpcTextEditDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   if (message != 6) {
-    if (g_linkInputOwner) {
+    if (g_windowMgr.unknown_0458) {
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2730)), 0x64FFFF, 0, 0, 0);
       return 0;
     }
@@ -11777,7 +11774,7 @@ bool UIItemCollectionWnd::WrapText(std::string text, int width, std::list<std::s
 // OFFSET: 0x008F8ED0
 // FUNCTION: fn_12334
 int UIChooseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (g_linkInputOwner != nullptr) {
+  if (g_windowMgr.unknown_0458 != nullptr) {
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xAAA)), 0x64FFFF, 0, 0, 0);
     return 0;
   }
@@ -12016,7 +12013,7 @@ int UITipboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
           static_cast<UIChatEditCtrl*>(g_windowMgr.GetHoverWindow())->InsertItemTag(id);
           break;
         case 0x1EB:
-          static_cast<UIRodexComposeWnd*>(g_linkInputOwner)->sub_7FF940(id);
+          static_cast<UIRodexComposeWnd*>(g_windowMgr.unknown_0458)->sub_7FF940(id);
           break;
         case 0x1EC:
           static_cast<UINpcTextEditDialogWnd*>(g_windowMgr.unknown_0318)->InsertSkillTag(id);
