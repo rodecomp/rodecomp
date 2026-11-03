@@ -2417,7 +2417,7 @@ void CGameMode::ReceiveLapineBoxIngredient(const unsigned char* packet) {
     return;
   }
 
-  if (UIWindow* window = g_windowMgr.EnsureWindow(0x122)) {
+  if (UIWindow* window = g_windowMgr.sub_A978D0(0x122)) {
     static_cast<UILapineBoxWnd*>(window)->SetIngredient(static_cast<int>(reinterpret_cast<std::intptr_t>(packet)));
   }
 }
