@@ -4,7 +4,6 @@
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeDragState.h"
 #include "Client/Mode/ModeMgr.h"
-#include "Client/Mode/ModeTooltip.h"
 #include "Client/Session.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
@@ -965,10 +964,10 @@ void UIBarterItemPurchaseWnd::Slot28(int x, int y) {
     BarterMarketItem item = found.second;
     ITEM_DESC description = FindItemDescription(item.field_2c);
     text = FormatOwnedString(LookupMessage(3553), description.identifiedName, item.field_28 * item.value);
-    ModeTooltip* tooltip = reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode);
+    CMode* tooltip = g_modeMgr.gameMode;
     ITEM_INFO info = item.ToItemInfo();
     if (tooltip) {
-      tooltip->Show(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(info), 0, 1);
+      tooltip->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(info), 0, 1);
     }
   }
 }
@@ -984,10 +983,10 @@ void UIBartermarketWnd::Slot28(int x, int y) {
     std::string text;
     ITEM_DESC description = FindItemDescription(found.second.field_2c);
     text = FormatOwnedString(LookupMessage(3553), description.identifiedName, found.second.field_28);
-    ModeTooltip* tooltip = reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode);
+    CMode* tooltip = g_modeMgr.gameMode;
     ITEM_INFO info = found.second.ToItemInfo();
     if (tooltip) {
-      tooltip->Show(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(info), 0, 1);
+      tooltip->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(info), 0, 1);
     }
   }
 }
@@ -1017,10 +1016,10 @@ void UIExpandedBarterItemPurchaseWnd::Slot28(int x, int y) {
         text += "\n";
       }
     }
-    ModeTooltip* tooltip = reinterpret_cast<ModeTooltip*>(g_modeMgr.GetGameMode());
+    CMode* tooltip = g_modeMgr.GetGameMode();
     ITEM_INFO info = found.second.ToItemInfo();
     if (tooltip) {
-      tooltip->Show(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(info), 0, 1);
+      tooltip->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(info), 0, 1);
     }
   }
 }
@@ -1050,10 +1049,10 @@ void UIExpandedBartermarketWnd::Slot28(int x, int y) {
         text += "\n";
       }
     }
-    ModeTooltip* tooltip = reinterpret_cast<ModeTooltip*>(g_modeMgr.GetGameMode());
+    CMode* tooltip = g_modeMgr.GetGameMode();
     ITEM_INFO info = found.second.ToItemInfo();
     if (tooltip) {
-      tooltip->Show(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(info), 0, 1);
+      tooltip->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(info), 0, 1);
     }
   }
 }
@@ -1083,9 +1082,9 @@ void UIPurchaseButton::Slot28(int x, int y) {
   int tooltipX = 0;
   int tooltipY = -4 - count * 16;
   this->ToScreen(tooltipX, tooltipY);
-  ModeTooltip* tooltip = reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode);
+  CMode* tooltip = g_modeMgr.gameMode;
   if (tooltip) {
-    tooltip->Show(text.c_str(), tooltipX, tooltipY, 0xFFFFFFFF, 0, 1);
+    tooltip->ShowTooltip(text.c_str(), tooltipX, tooltipY, 0xFFFFFFFF, 0, 1);
   }
 }
 
@@ -1131,9 +1130,9 @@ void UIExpandedBarterPurchaseButton::Slot28(int x, int y) {
     int tooltipX = 0;
     int tooltipY = -4 - index * 16;
     this->ToScreen(tooltipX, tooltipY);
-    ModeTooltip* tooltip = reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode);
+    CMode* tooltip = g_modeMgr.gameMode;
     if (tooltip) {
-      tooltip->Show(text.c_str(), tooltipX, tooltipY, 0xFFFFFFFF, 0, 1);
+      tooltip->ShowTooltip(text.c_str(), tooltipX, tooltipY, 0xFFFFFFFF, 0, 1);
     }
   }
 }

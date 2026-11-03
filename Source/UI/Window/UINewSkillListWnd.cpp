@@ -2,7 +2,6 @@
 #include "UI/Window/UINewSkillListWnd.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
-#include "Client/Mode/ModeTooltip.h"
 #include "Client/Replay.h"
 #include "Client/Session.h"
 #include "Contents/Jobs/JobNames.h"
@@ -42,6 +41,7 @@
 #include "Resource/PaletteResource.h"
 #include "Resource/Sprites/ActionResource.h"
 #include "Resource/Sprites/SpriteResource.h"
+#include "Client/Mode/CMode.h"
 
 #include <cstdio>
 #include <cstdlib>
@@ -1044,7 +1044,7 @@ void UINewSkillListWnd::Slot28(int x, int y) {
       int tooltipY = -20;
       this->ToScreen(tooltipX, tooltipY);
       const char* name = skill.first->DisplayName(*g_luaScript);
-      reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(name, tooltipX + x, tooltipY + y, -1, 0, 1);
+      g_modeMgr.gameMode->ShowTooltip(name, tooltipX + x, tooltipY + y, -1, 0, 1);
     }
   }
 

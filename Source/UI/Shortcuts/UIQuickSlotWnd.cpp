@@ -12,7 +12,6 @@
 #include "Resource/ResourceMgr.h"
 #include "UI/Window/WindowManagerWindows.h"
 #include "Client/Input/InputCharset.h"
-#include "Client/Mode/ModeTooltip.h"
 #include "Client/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Hotkeys/HotkeyInfo.h"
@@ -117,7 +116,7 @@ void UIQuickSlotWnd::Slot28(int x, int y) {
   }
 
   if (!text.empty()) {
-    reinterpret_cast<ModeTooltip*>(g_charViewMode)->Show(text.c_str(), screenX, screenY, -1, 0, 1);
+    static_cast<CMode*>(g_charViewMode)->ShowTooltip(text.c_str(), screenX, screenY, -1, 0, 1);
   }
 }
 

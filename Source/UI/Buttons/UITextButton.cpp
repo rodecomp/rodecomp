@@ -5,7 +5,6 @@
 #include "Client/Replay.h"
 #include "UI/Window/WindowPolicy.h"
 #include "Render/Text/FontCache.h"
-#include "Client/Mode/ModeTooltip.h"
 #include "Render/DeviceContext/DeviceContext.h"
 #include "UI/UIBarGraph.h"
 #include "UI/Buttons/UIBmpRadioBtn.h"
@@ -262,7 +261,7 @@ void UIBmpRadioBtn::Slot28(int, int) {
       screenY = (screenY + window->geometry.y);
     }
 
-    static_cast<ModeTooltip*>(g_charViewMode)->Show(this->m_tooltip.c_str(), screenX, screenY, -1, false, true);
+    static_cast<CMode*>(g_charViewMode)->ShowTooltip(this->m_tooltip.c_str(), screenX, screenY, -1, false, true);
   }
 }
 
@@ -390,7 +389,7 @@ void UICaptchaImage::Slot28(int, int) {
       screenY = (screenY + window->geometry.y);
     }
 
-    static_cast<ModeTooltip*>(g_charViewMode)->Show(this->m_tooltip.c_str(), screenX, screenY, -1, false, true);
+    static_cast<CMode*>(g_charViewMode)->ShowTooltip(this->m_tooltip.c_str(), screenX, screenY, -1, false, true);
   }
 }
 
@@ -412,7 +411,7 @@ void UIBarGraph4::Slot28(int, int) {
   std::memset(text, 0, sizeof(text));
   const int permille = static_cast<int>(static_cast<float>(*this->m_current) / static_cast<float>(*this->m_maximum) * 1000.0f);
   std::sprintf(text, "%.1f %%", static_cast<float>(permille) * 0.1f);
-  static_cast<ModeTooltip*>(g_charViewMode)->Show(text, screenX, screenY, -1, false, true);
+  static_cast<CMode*>(g_charViewMode)->ShowTooltip(text, screenX, screenY, -1, false, true);
 }
 
 // OFFSET: 0x008918D0
@@ -433,7 +432,7 @@ void UIINT64BarGraph::Slot28(int, int) {
   std::memset(text, 0, sizeof(text));
   const int permille = static_cast<int>(static_cast<double>(this->m_current) / static_cast<double>(this->m_maximum) * 1000.0);
   std::sprintf(text, "%.1f %%", static_cast<float>(permille) * 0.1f);
-  static_cast<ModeTooltip*>(g_charViewMode)->Show(text, screenX, screenY, -1, false, true);
+  static_cast<CMode*>(g_charViewMode)->ShowTooltip(text, screenX, screenY, -1, false, true);
 }
 
 // OFFSET: 0x00891A40
@@ -480,7 +479,7 @@ void UITabControl::Slot28(int x, int y) {
     screenY = (screenY + window->geometry.y);
   }
 
-  static_cast<ModeTooltip*>(g_charViewMode)->Show(this->tooltips[index].c_str(), screenX, screenY, -1, false, true);
+  static_cast<CMode*>(g_charViewMode)->ShowTooltip(this->tooltips[index].c_str(), screenX, screenY, -1, false, true);
 }
 
 // OFFSET: 0x00822660
@@ -526,7 +525,7 @@ void UIBasicItemCtrl::Slot28(int, int) {
   }
 
   if (!text.empty()) {
-    static_cast<ModeTooltip*>(g_charViewMode)->Show(text.c_str(), screenX, screenY, -1, false, true);
+    static_cast<CMode*>(g_charViewMode)->ShowTooltip(text.c_str(), screenX, screenY, -1, false, true);
   }
 }
 
@@ -557,7 +556,7 @@ void UIBasicSkillCtrl::Slot28(int, int) {
   }
 
   if (!text.empty()) {
-    static_cast<ModeTooltip*>(g_charViewMode)->Show(text.c_str(), screenX, screenY, -1, false, true);
+    static_cast<CMode*>(g_charViewMode)->ShowTooltip(text.c_str(), screenX, screenY, -1, false, true);
   }
 }
 
@@ -633,7 +632,7 @@ void UIMemberListBox::Slot28(int, int y) {
     screenY = (screenY + window->geometry.y);
   }
 
-  static_cast<ModeTooltip*>(g_charViewMode)->Show(this->lines[line].c_str(), screenX, screenY, -1, false, true);
+  static_cast<CMode*>(g_charViewMode)->ShowTooltip(this->lines[line].c_str(), screenX, screenY, -1, false, true);
 }
 
 // OFFSET: 0x00891E40
@@ -655,7 +654,7 @@ void UIStaticItem::Slot28(int, int) {
     screenY = (screenY + window->geometry.y);
   }
 
-  static_cast<ModeTooltip*>(g_charViewMode)->Show(text, screenX, screenY, -1, false, true);
+  static_cast<CMode*>(g_charViewMode)->ShowTooltip(text, screenX, screenY, -1, false, true);
 }
 
 // OFFSET: 0x00892040

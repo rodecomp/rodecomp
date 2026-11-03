@@ -9,7 +9,6 @@
 #include "Client/ModeFadeOut.h"
 #include "Client/Application/ErrorDialog.h"
 #include "Client/Mode/ModeMgr.h"
-#include "Client/Mode/ModeTooltip.h"
 #include "Client/Session.h"
 #include "Client/Replay.h"
 #include "Client/Input/InputCharset.h"
@@ -53,6 +52,7 @@
 #include "Utility/GGHashMgr.h"
 #include "Utility/Text/FormatString.h"
 #include "Utility/Text/TextTokens.h"
+#include "Client/Mode/CMode.h"
 
 #include <algorithm>
 #include <chrono>

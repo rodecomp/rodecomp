@@ -18,7 +18,6 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowManagerWindows.h"
 #include "Client/Mode/ModeMgr.h"
-#include "Client/Mode/ModeTooltip.h"
 #include "Client/Session.h"
 #include "Render/Text/TextContext.h"
 #include "UI/Party/UIMiniPartyWnd.h"
@@ -36,6 +35,7 @@
 #include "Contents/PlayerNameDictionary.h"
 #include "Utility/Text/FormatString.h"
 #include "Resource/SkinPalette.h"
+#include "Client/Mode/CMode.h"
 
 #include <algorithm>
 #include <cstdio>
@@ -1278,7 +1278,7 @@ void UIMessengerGroupWnd::Slot28(int x, int y) {
                this->iconPositions[this->iconIndex].x + 33;
     int tipY = this->selected / this->columns * this->rowHeight + 22;
     this->ToScreen(tipX, tipY);
-    reinterpret_cast<ModeTooltip*>(mode)->Show(text, tipX, tipY, 0xFFFFFFFFu, 0, 1);
+    mode->ShowTooltip(text, tipX, tipY, 0xFFFFFFFFu, 0, 1);
   }
 }
 

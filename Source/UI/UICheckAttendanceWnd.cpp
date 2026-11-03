@@ -4,7 +4,6 @@
 
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMgr.h"
-#include "Client/Mode/ModeTooltip.h"
 #include "Client/Session.h"
 #include "Contents/CheckAttendanceMgr.h"
 #include "Contents/Items/ItemDescription.h"
@@ -287,7 +286,7 @@ void UICheckAttendanceWnd::Slot28(int x, int y) {
     int tipX = 0;
     int tipY = -20;
     this->ToScreen(tipX, tipY);
-    reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(name, tipX + x, tipY + y, 0xFFFFFFFFu, 0, 1);
+    g_modeMgr.gameMode->ShowTooltip(name, tipX + x, tipY + y, 0xFFFFFFFFu, 0, 1);
   }
 }
 

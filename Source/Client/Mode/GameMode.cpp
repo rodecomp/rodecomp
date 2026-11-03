@@ -4574,14 +4574,12 @@ int CGameMode::ProcessGroundClick(int result) {
   return result;
 }
 
-#include "Client/Mode/ModeTooltip.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/World/WorldOcclusion.h"
 #include "UI/Dialogs/UIMenuWnd.h"
 #include "UI/Window/InputFocus.h"
 
-#include "Client/Mode/ModeTooltip.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/World/WorldOcclusion.h"

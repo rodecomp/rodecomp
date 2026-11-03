@@ -1,5 +1,4 @@
 #include "Client/Session.h"
-#include "Client/Mode/ModeTooltip.h"
 #include "File/ShortcutFilename.h"
 #include "Render/Renderer.h"
 #include "UI/Window/UINewSelectCharWnd.h"
@@ -18,6 +17,7 @@
 #include "UI/Party/UIPartyInfoWnd.h"
 #include "UI/Text/UIStaticText.h"
 #include "UI/Window/WindowManagerWindows.h"
+#include "Client/Mode/CMode.h"
 
 #include <cstdio>
 
@@ -178,7 +178,7 @@ void UIApplyForPartyWnd::Slot28(int x, int y) {
         int screenX = positions[index];
         int screenY = 75;
         this->ToScreen(screenX, screenY);
-        static_cast<ModeTooltip*>(g_charViewMode)->Show(label, screenX, screenY, -1, false, true);
+        static_cast<CMode*>(g_charViewMode)->ShowTooltip(label, screenX, screenY, -1, false, true);
       }
 
       break;

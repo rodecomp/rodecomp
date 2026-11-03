@@ -4,7 +4,6 @@
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeDragState.h"
 #include "Client/Mode/ModeMgr.h"
-#include "Client/Mode/ModeTooltip.h"
 #include "Client/Registry.h"
 #include "Client/Session.h"
 #include "Contents/Items/ItemDescription.h"
@@ -680,7 +679,7 @@ void UICashShopWnd_CartItem::Slot28(int x, int y) {
     x = 0;
     y = -10;
     this->ToScreen(x, y);
-    reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(this->m_item.unknown_0044.c_str(), x, y, 0xFFFFFFFFu, 0, 1);
+    g_modeMgr.gameMode->ShowTooltip(this->m_item.unknown_0044.c_str(), x, y, 0xFFFFFFFFu, 0, 1);
   }
 }
 
@@ -691,7 +690,7 @@ void UICashShopWnd_Item::Slot28(int x, int y) {
     x = 0;
     y = -20;
     this->ToScreen(x, y);
-    reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(this->m_item.unknown_0044.c_str(), x, y, 0xFFFFFFFFu, 0, 1);
+    g_modeMgr.gameMode->ShowTooltip(this->m_item.unknown_0044.c_str(), x, y, 0xFFFFFFFFu, 0, 1);
   }
 }
 

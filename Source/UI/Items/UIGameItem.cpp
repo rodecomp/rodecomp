@@ -1,7 +1,6 @@
 #include "UI/Items/UIGameItem.h"
 #include "UI/Text/ColoredText.h"
 #include "Client/Input/InputCharset.h"
-#include "Client/Mode/ModeTooltip.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
@@ -14,6 +13,7 @@
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Window/WindowManagerWindows.h"
 #include "Utility/Text/FormatString.h"
+#include "Client/Mode/CMode.h"
 
 #include <cstdlib>
 #include <format>
@@ -102,12 +102,12 @@ void CUIGameItem::Slot28(int x, int y) {
   int screenY = y - 20;
   this->ToScreen(screenX, screenY);
   const std::uint32_t color = g_session.GetItemNameColor(this->itemInfo);
-  ModeTooltip* tooltip = reinterpret_cast<ModeTooltip*>(g_charViewMode);
+  CMode* tooltip = static_cast<CMode*>(g_charViewMode);
   if (this->itemInfo.unknown_0098 > 0) {
     const std::string text = FormatOwnedString(LookupMessage(0xA28), this->name.c_str(), this->itemInfo.unknown_0098);
-    tooltip->Show(text.c_str(), screenX, screenY, color, 0, 1);
+    tooltip->ShowTooltip(text.c_str(), screenX, screenY, color, 0, 1);
   } else {
-    tooltip->Show(this->name.c_str(), screenX, screenY, color, 0, 1);
+    tooltip->ShowTooltip(this->name.c_str(), screenX, screenY, color, 0, 1);
   }
 }
 

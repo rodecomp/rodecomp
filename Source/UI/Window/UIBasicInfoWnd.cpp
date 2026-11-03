@@ -1,6 +1,6 @@
 #include "UI/Window/UINewSelectCharWnd.h"
-#include "Client/Mode/ModeTooltip.h"
 #include "UI/Window/UIBasicInfoWnd.h"
+#include "Client/Mode/CMode.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Session.h"
@@ -213,7 +213,7 @@ void UIBasicInfoWnd::Slot28(int x, int y) {
   int screenX = 0;
   int screenY = top - 19;
   this->ToScreen(screenX, screenY);
-  static_cast<ModeTooltip*>(g_charViewMode)->Show(text, screenX, screenY, -1, false, true);
+  static_cast<CMode*>(g_charViewMode)->ShowTooltip(text, screenX, screenY, -1, false, true);
 }
 
 // OFFSET: 0x009995A0

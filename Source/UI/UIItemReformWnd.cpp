@@ -3,7 +3,6 @@
 #include "Client/Input/InputCharset.h"
 #include "Client/Input/Mouse.h"
 #include "Client/Mode/ModeMgr.h"
-#include "Client/Mode/ModeTooltip.h"
 #include "Client/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Items/ItemDescription.h"
@@ -257,7 +256,7 @@ void UIItemReformWnd_Item::Slot28(int x, int y) {
     this->ToScreen(screenX, screenY);
     const int tipX = screenX + 5;
     const int tipY = screenY - 5;
-    reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(this->item->DisplayName(0).c_str(), tipX, tipY, 0xFFFFFFFFu, 0, 1);
+    g_modeMgr.gameMode->ShowTooltip(this->item->DisplayName(0).c_str(), tipX, tipY, 0xFFFFFFFFu, 0, 1);
   }
 }
 

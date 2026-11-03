@@ -5,7 +5,6 @@
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeDragState.h"
 #include "Client/Mode/ModeMgr.h"
-#include "Client/Mode/ModeTooltip.h"
 #include "Client/Session.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
@@ -450,7 +449,7 @@ void UISwapEquipmentWnd::Slot28(int x, int y) {
         text = item.DisplayName(0);
       }
 
-      reinterpret_cast<ModeTooltip*>(g_modeMgr.GetGameMode())->Show(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+      g_modeMgr.GetGameMode()->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
     }
   }
 

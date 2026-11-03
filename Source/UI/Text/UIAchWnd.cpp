@@ -19,7 +19,6 @@
 #include "UI/Window/WindowBorder.h"
 #include "Utility/Text/FormatString.h"
 #include "Client/Mode/ModeMgr.h"
-#include "Client/Mode/ModeTooltip.h"
 #include <algorithm>
 #include <cstring>
 #include <new>
@@ -1162,7 +1161,7 @@ void UICustomGageBar::Slot28(int x, int y) {
   int tipX = 0;
   int tipY = -20;
   this->ToScreen(tipX, tipY);
-  reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(label.c_str(), tipX, tipY, 0xFFFFFFFFu, 0, 1);
+  g_modeMgr.gameMode->ShowTooltip(label.c_str(), tipX, tipY, 0xFFFFFFFFu, 0, 1);
 }
 
 // OFFSET: 0x007B7AF0
@@ -1173,7 +1172,7 @@ void UIToolTipBitmapWnd::Slot28(int x, int y) {
     x = 0;
     y = -20;
     this->ToScreen(x, y);
-    reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(this->tooltip.c_str(), x, y, 0xFFFFFFFFu, 0, 1);
+    g_modeMgr.gameMode->ShowTooltip(this->tooltip.c_str(), x, y, 0xFFFFFFFFu, 0, 1);
   }
 }
 

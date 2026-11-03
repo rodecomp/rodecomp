@@ -1,6 +1,5 @@
 #include "Client/Mode/CMode.h"
 #include "UI/Window/UINewSelectCharWnd.h"
-#include "Client/Mode/ModeTooltip.h"
 #include "UI/UILapineUpgradeBoxWnd.h"
 
 #include "Client/Mode/ModeMgr.h"
@@ -461,7 +460,7 @@ void UILapineUpgradeBox_IngredientInfoWnd::Slot28(int x, int y) {
     int tipX = 0;
     int tipY = -20;
     this->ToScreen(tipX, tipY);
-    static_cast<ModeTooltip*>(g_charViewMode)->Show(this->tooltip.c_str(), tipX, tipY, -1, false, true);
+    static_cast<CMode*>(g_charViewMode)->ShowTooltip(this->tooltip.c_str(), tipX, tipY, -1, false, true);
   }
 }
 
@@ -474,7 +473,7 @@ void UILapineUpgradeBoxWnd::Slot28(int x, int y) {
     int tipX = 101;
     int tipY = 145;
     this->ToScreen(tipX, tipY);
-    static_cast<ModeTooltip*>(g_charViewMode)->Show(this->item.unknown_0044.c_str(), tipX, tipY, -1, false, true);
+    static_cast<CMode*>(g_charViewMode)->ShowTooltip(this->item.unknown_0044.c_str(), tipX, tipY, -1, false, true);
   }
 }
 

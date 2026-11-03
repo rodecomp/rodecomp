@@ -7,7 +7,6 @@
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeDragState.h"
 #include "Client/Mode/ModeMgr.h"
-#include "Client/Mode/ModeTooltip.h"
 #include "Client/Replay.h"
 #include "Client/ReplayPacketRecorder.h"
 #include "Client/Session.h"
@@ -30,6 +29,7 @@
 #include "UI/Dialogs/UIPasswordWnd.h"
 #include "UI/Lists/UIScrollBar.h"
 #include "UI/Text/UIStaticText.h"
+#include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Window/UIResizer.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
@@ -197,7 +197,7 @@ void UIParaResultWnd::Slot28(int x, int y) {
       text = FormatOwnedString("%s %d -> %s Zeny", item.DisplayName(0).c_str(), item.unknown_0014[0], amount);
     }
 
-    reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+    g_modeMgr.gameMode->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
   }
 }
 
@@ -598,7 +598,7 @@ int UIParaResultWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
   switch (message) {
   case 6: {
     this->RecordResponse(static_cast<int>(a), b, c, d);
-    CMode* mode = g_modeMgr.gameMode;
+    CMode* mode = static_cast<CMode*>(g_charViewMode);
     if (a == 184) {
       mode->SendMsg(292, 0, 0, 0, 0);
       mode->SendMsg(40, 0, 0, 0, 0);

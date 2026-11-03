@@ -41,6 +41,7 @@ public:
   CMode();
   std::uint32_t ClearTooltip();
   void ExpireTooltip();
+  void ShowTooltip(const char* value, int x, int y, std::uint32_t color, unsigned char option, unsigned char convert);
   void SetCursorAction(int action);
   void TakeScreenshot();
   void DrawCursor();

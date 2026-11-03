@@ -1,4 +1,3 @@
-#include "Client/Mode/ModeTooltip.h"
 #include "Client/Mode/CMode.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Client/Session.h"
@@ -441,7 +440,7 @@ void UIMonsterInfoWnd::Slot28(int x, int y) {
   }
 
   if (this->TextWidth(name.c_str(), 0, 0, 12, 0, 0) > 100) {
-    static_cast<ModeTooltip*>(g_charViewMode)->Show(name.c_str(), screenX + x, screenY + y, -1, false, true);
+    static_cast<CMode*>(g_charViewMode)->ShowTooltip(name.c_str(), screenX + x, screenY + y, -1, false, true);
   }
 }
 

@@ -1,12 +1,12 @@
 #include "Client/Session.h"
 #include "Contents/Hotkeys/HotkeyInfo.h"
 #include "Contents/MessageTable.h"
-#include "Client/Mode/ModeTooltip.h"
 #include "Contents/Skills/ClientSkills.h"
 #include "UI/Shortcuts/UIShortCutWnd.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UINewSelectCharWnd.h"
+#include "Client/Mode/CMode.h"
 
 #include <stdio.h>
 
@@ -64,7 +64,7 @@ void UIShortCutWnd::Slot28(int x, int y) {
     ScreenPosition(window, tooltipX, tooltipY);
 
     if (g_charViewMode) {
-      reinterpret_cast<ModeTooltip*>(g_charViewMode)->Show(text, tooltipX, tooltipY, -1, 0, 1);
+      static_cast<CMode*>(g_charViewMode)->ShowTooltip(text, tooltipX, tooltipY, -1, 0, 1);
     }
 
     return;
@@ -115,5 +115,5 @@ void UIShortCutWnd::Slot28(int x, int y) {
     }
   }
 
-  reinterpret_cast<ModeTooltip*>(g_charViewMode)->Show(text.c_str(), tooltipX, tooltipY, -1, 0, 1);
+  static_cast<CMode*>(g_charViewMode)->ShowTooltip(text.c_str(), tooltipX, tooltipY, -1, 0, 1);
 }

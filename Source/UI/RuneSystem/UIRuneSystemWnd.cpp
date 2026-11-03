@@ -1,6 +1,5 @@
 #include "UI/Window/WindowDialogs.h"
 #include "Client/Mode/ModeMgr.h"
-#include "Client/Mode/ModeTooltip.h"
 #include "Contents/Items/RuneSystem.h"
 #include "Contents/MessageTable.h"
 #include "Resource/Bitmap/BitmapResource.h"
@@ -9,6 +8,7 @@
 #include "UI/RuneSystem/UIRuneSystemWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
+#include "Client/Mode/CMode.h"
 
 // GLOBAL: gl_24886
 extern const int g_runeSetSlotX[6] = {87, 201, 19, 269, 87, 201};
@@ -342,7 +342,7 @@ void UIEquipRuneSetWnd::Slot28(int x, int y) {
     }
 
     CTagData* tag = g_runeSystemMgr->GetTag(runeSet->GetTagId());
-    reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(tag->m_name.c_str(), screenX, screenY, 0xFFFFFF, 0, 1);
+    g_modeMgr.gameMode->ShowTooltip(tag->m_name.c_str(), screenX, screenY, 0xFFFFFF, 0, 1);
     return;
   }
 
@@ -374,7 +374,7 @@ void UIEquipRuneSetWnd::Slot28(int x, int y) {
   if (!rune) {
     return;
   }
-  reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(rune->GetName(), screenX, screenY, 0xFFFFFF, 0, 1);
+  g_modeMgr.gameMode->ShowTooltip(rune->GetName(), screenX, screenY, 0xFFFFFF, 0, 1);
 }
 
 // OFFSET: 0x0081C3D0
@@ -419,7 +419,7 @@ void UIRuneSetList::Slot28(int x, int y) {
   if (!rune) {
     return;
   }
-  reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(rune->GetName(), screenX, screenY, 0xFFFFFF, 0, 1);
+  g_modeMgr.gameMode->ShowTooltip(rune->GetName(), screenX, screenY, 0xFFFFFF, 0, 1);
 }
 
 // OFFSET: 0x0081C6F0
@@ -440,7 +440,7 @@ void UIRuneSet_Info::Slot28(int x, int y) {
       int screenY = g_runeSetSlotY[index] - 24;
       this->ToScreen(screenX, screenY);
       if (g_modeMgr.gameMode) {
-        reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(runeSet->m_slots[index]->GetName(), screenX, screenY, 0xFFFFFF, 0, 1);
+        g_modeMgr.gameMode->ShowTooltip(runeSet->m_slots[index]->GetName(), screenX, screenY, 0xFFFFFF, 0, 1);
       }
     }
   }
@@ -461,7 +461,7 @@ void UIRuneSystem_tagListWnd::Slot28(int x, int) {
       int screenY = -18;
       this->ToScreen(screenX, screenY);
       if (g_modeMgr.gameMode) {
-        reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(name.c_str(), screenX, screenY, 0xFFFFFF, 0, 1);
+        g_modeMgr.gameMode->ShowTooltip(name.c_str(), screenX, screenY, 0xFFFFFF, 0, 1);
       }
     }
   }
@@ -1232,9 +1232,9 @@ void UIRuneSetReWard::Slot28(int, int) {
   int x = 0;
   int y = 0;
   this->ToScreen(x, y);
-  ModeTooltip* tooltip = reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode);
+  CMode* tooltip = g_modeMgr.gameMode;
   if (tooltip) {
-    tooltip->Show(item.DisplayName(0).c_str(), x, y - 10, 0xFFFFFF, 0, 1);
+    tooltip->ShowTooltip(item.DisplayName(0).c_str(), x, y - 10, 0xFFFFFF, 0, 1);
   }
 }
 
@@ -1261,9 +1261,9 @@ void UIRuneSystem_ActiveWnd::Slot28(int x, int y) {
   int tipX = index % 4 * 54 + 14;
   int tipY = index > 3 ? 44 : -10;
   this->ToScreen(tipX, tipY);
-  ModeTooltip* tooltip = reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode);
+  CMode* tooltip = g_modeMgr.gameMode;
   if (tooltip) {
-    tooltip->Show(item.DisplayName(0).c_str(), tipX, tipY, 0xFFFFFF, 0, 1);
+    tooltip->ShowTooltip(item.DisplayName(0).c_str(), tipX, tipY, 0xFFFFFF, 0, 1);
   }
 }
 
@@ -1285,9 +1285,9 @@ void UIRune_Decom::Slot28(int x, int y) {
   int tipX = index % 4 * 54 + 211;
   int tipY = index > 3 ? 387 : 333;
   this->ToScreen(tipX, tipY);
-  ModeTooltip* tooltip = reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode);
+  CMode* tooltip = g_modeMgr.gameMode;
   if (tooltip) {
-    tooltip->Show(item.DisplayName(0).c_str(), tipX, tipY, 0xFFFFFF, 0, 1);
+    tooltip->ShowTooltip(item.DisplayName(0).c_str(), tipX, tipY, 0xFFFFFF, 0, 1);
   }
 }
 

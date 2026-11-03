@@ -4,7 +4,6 @@
 #include "UI/Window/UIHotKeyWnd.h"
 #include "UI/Chat/UINewChatWnd.h"
 #include "Client/Session.h"
-#include "Client/Mode/ModeTooltip.h"
 #include "Contents/Hotkeys/UserHotkeyMgr.h"
 #include "Contents/Skills/AutomaticSkills.h"
 #include "Contents/MessageTable.h"
@@ -372,7 +371,7 @@ void UIHotKeyWnd::ShowHotkeyTooltip(int x, int y) {
 
   const HotkeyEntry entry = this->GetHotkey(this->m_tab, index + (this->m_page * 9 - 9) * 4, true);
   if (!entry.info.text.empty()) {
-    reinterpret_cast<ModeTooltip*>(g_charViewMode)->Show(entry.info.text.c_str(), screenX, screenY, 0xFFFFFFFF, 0, 1);
+    static_cast<CMode*>(g_charViewMode)->ShowTooltip(entry.info.text.c_str(), screenX, screenY, 0xFFFFFFFF, 0, 1);
   }
 }
 
@@ -406,7 +405,7 @@ void UISerachStoreInfoWnd::Slot28(int x, int y) {
     }
 
     if (text.size() != 0) {
-      reinterpret_cast<ModeTooltip*>(g_charViewMode)->Show(text.c_str(), screenX, screenY, g_session.GetItemNameColor(item), 0, 1);
+      static_cast<CMode*>(g_charViewMode)->ShowTooltip(text.c_str(), screenX, screenY, g_session.GetItemNameColor(item), 0, 1);
     }
   }
 

@@ -1,7 +1,7 @@
 #include "UI/Window/WindowDialogs.h"
 #include "UI/Window/UINewSelectCharWnd.h"
-#include "Client/Mode/ModeTooltip.h"
 #include "UI/UIGradeEnchantWnd.h"
+#include "Client/Mode/CMode.h"
 
 #include "Client/Application/ApplicationWindow.h"
 #include "Client/Mode/CGameMode.h"
@@ -377,7 +377,7 @@ void UIGradeEnchant_BtnEnhancedUp::Slot28(int x, int y) {
     screenY += window->geometry.y;
   }
 
-  static_cast<ModeTooltip*>(g_charViewMode)->Show(this->m_tooltip.c_str(), screenX, screenY, -1, false, true);
+  static_cast<CMode*>(g_charViewMode)->ShowTooltip(this->m_tooltip.c_str(), screenX, screenY, -1, false, true);
 }
 
 // OFFSET: 0x007E8CC0

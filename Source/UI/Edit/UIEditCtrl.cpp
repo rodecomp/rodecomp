@@ -83,7 +83,6 @@
 #include "UI/Shop/PriceColor.h"
 #include "UI/Window/WindowDialogs.h"
 #include "Utility/Text/GroupedInteger.h"
-#include "Client/Mode/ModeTooltip.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Items/ItemNaming.h"
@@ -340,7 +339,7 @@ void UIEditCtrl::Slot28(int x, int y) {
       top += window->geometry.y;
     }
 
-    static_cast<ModeTooltip*>(g_charViewMode)->Show(this->tooltip.c_str(), left, top, -1, false, true);
+    static_cast<CMode*>(g_charViewMode)->ShowTooltip(this->tooltip.c_str(), left, top, -1, false, true);
   }
 }
 
@@ -5778,7 +5777,7 @@ void UIItemPurchaseWnd::Slot28(int x, int y) {
                                FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64), currency);
     }
 
-    reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+    g_modeMgr.gameMode->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
   }
 }
 
@@ -5801,7 +5800,7 @@ void UIItemSellWnd2::Slot28(int x, int y) {
                                FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64));
     }
 
-    reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+    g_modeMgr.gameMode->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
   }
 }
 
@@ -5837,7 +5836,7 @@ void UIItemSellWnd::Slot28(int x, int y) {
     }
   }
 
-  reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+  g_modeMgr.gameMode->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
 }
 
 // OFFSET: 0x009865C0
@@ -5871,7 +5870,7 @@ void UIItemShopWnd2::Slot28(int x, int y) {
     }
   }
 
-  reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+  g_modeMgr.gameMode->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
 }
 
 // OFFSET: 0x00986970
@@ -5939,7 +5938,7 @@ void UIItemShopWnd::Slot28(int x, int y) {
       }
     }
 
-    reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+    g_modeMgr.gameMode->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
   }
 }
 
@@ -5953,11 +5952,11 @@ void UIItemStoreFindWnd::Slot28(int x, int y) {
     this->ToScreen(tooltipX, tooltipY);
 
     if (item.identified == 1 && item.unknown_0098 != 0) {
-      reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)
-          ->Show(FormatOwnedString(LookupMessage(2600), item.DisplayName(0).c_str(), item.unknown_0098).c_str(), tooltipX, tooltipY,
+      g_modeMgr.gameMode
+          ->ShowTooltip(FormatOwnedString(LookupMessage(2600), item.DisplayName(0).c_str(), item.unknown_0098).c_str(), tooltipX, tooltipY,
                  g_session.GetItemNameColor(item), 0, 1);
     } else {
-      reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(item.DisplayName(0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+      g_modeMgr.gameMode->ShowTooltip(item.DisplayName(0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
     }
   }
 }
@@ -5972,11 +5971,11 @@ void UIItemStoreSubWnd::Slot28(int x, int y) {
     this->ToScreen(tooltipX, tooltipY);
 
     if (item.identified == 1 && item.unknown_0098 != 0) {
-      reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)
-          ->Show(FormatOwnedString(LookupMessage(2600), item.DisplayName(0).c_str(), item.unknown_0098).c_str(), tooltipX, tooltipY,
+      g_modeMgr.gameMode
+          ->ShowTooltip(FormatOwnedString(LookupMessage(2600), item.DisplayName(0).c_str(), item.unknown_0098).c_str(), tooltipX, tooltipY,
                  g_session.GetItemNameColor(item), 0, 1);
     } else {
-      reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(item.DisplayName(0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+      g_modeMgr.gameMode->ShowTooltip(item.DisplayName(0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
     }
   }
 }
@@ -5991,11 +5990,11 @@ void UIItemStoreWnd::Slot28(int x, int y) {
     this->ToScreen(tooltipX, tooltipY);
 
     if (item.identified == 1 && item.unknown_0098 != 0) {
-      reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)
-          ->Show(FormatOwnedString(LookupMessage(2600), item.DisplayName(0).c_str(), item.unknown_0098).c_str(), tooltipX, tooltipY,
+      g_modeMgr.gameMode
+          ->ShowTooltip(FormatOwnedString(LookupMessage(2600), item.DisplayName(0).c_str(), item.unknown_0098).c_str(), tooltipX, tooltipY,
                  g_session.GetItemNameColor(item), 0, 1);
     } else {
-      reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(item.DisplayName(0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+      g_modeMgr.gameMode->ShowTooltip(item.DisplayName(0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
     }
   }
 }
@@ -6010,12 +6009,12 @@ void UIItemWnd::Slot28(int x, int y) {
     this->ToScreen(tooltipX, tooltipY);
 
     if (item.identified == 1 && item.unknown_0098 != 0) {
-      reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)
-          ->Show(FormatOwnedString(LookupMessage(2551), item.DisplayName(0).c_str(), item.unknown_0098, item.quantity).c_str(), tooltipX, tooltipY,
+      g_modeMgr.gameMode
+          ->ShowTooltip(FormatOwnedString(LookupMessage(2551), item.DisplayName(0).c_str(), item.unknown_0098, item.quantity).c_str(), tooltipX, tooltipY,
                  g_session.GetItemNameColor(item), 0, 1);
     } else {
-      reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)
-          ->Show(FormatOwnedString(LookupMessage(183), item.DisplayName(0).c_str(), item.quantity).c_str(), tooltipX, tooltipY,
+      g_modeMgr.gameMode
+          ->ShowTooltip(FormatOwnedString(LookupMessage(183), item.DisplayName(0).c_str(), item.quantity).c_str(), tooltipX, tooltipY,
                  g_session.GetItemNameColor(item), 0, 1);
     }
   }
@@ -6044,7 +6043,7 @@ void UIMerchantItemMyShopWnd::Slot28(int x, int y) {
                                item.quantity);
     }
 
-    reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+    g_modeMgr.gameMode->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
   }
 }
 
@@ -6058,8 +6057,8 @@ void UIMerchantItemPurchaseWnd::Slot28(int x, int y) {
     this->ToScreen(tooltipX, tooltipY);
 
     char price[64];
-    reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)
-        ->Show(FormatOwnedString("%s %d %s %s Zeny", item.DisplayName(0).c_str(), item.quantity, LookupMessage(588),
+    g_modeMgr.gameMode
+        ->ShowTooltip(FormatOwnedString("%s %d %s %s Zeny", item.DisplayName(0).c_str(), item.quantity, LookupMessage(588),
                                  FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64))
                    .c_str(),
                tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
@@ -6076,11 +6075,11 @@ void UIMerchantItemShopWnd::Slot28(int x, int y) {
     this->ToScreen(tooltipX, tooltipY);
 
     if (item.identified == 1 && item.unknown_0098 != 0) {
-      reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)
-          ->Show(FormatOwnedString(LookupMessage(2600), item.DisplayName(0).c_str(), item.unknown_0098).c_str(), tooltipX, tooltipY,
+      g_modeMgr.gameMode
+          ->ShowTooltip(FormatOwnedString(LookupMessage(2600), item.DisplayName(0).c_str(), item.unknown_0098).c_str(), tooltipX, tooltipY,
                  g_session.GetItemNameColor(item), 0, 1);
     } else {
-      reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(item.DisplayName(0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+      g_modeMgr.gameMode->ShowTooltip(item.DisplayName(0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
     }
     return;
   }
@@ -6095,11 +6094,11 @@ void UIMerchantItemShopWnd::Slot28(int x, int y) {
   this->ToScreen(tooltipX, tooltipY);
 
   if (item.identified == 1 && item.unknown_0098 != 0) {
-    reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)
-        ->Show(FormatOwnedString(LookupMessage(2600), item.DisplayName(0).c_str(), item.unknown_0098).c_str(), tooltipX - 2, tooltipY + 24,
+    g_modeMgr.gameMode
+        ->ShowTooltip(FormatOwnedString(LookupMessage(2600), item.DisplayName(0).c_str(), item.unknown_0098).c_str(), tooltipX - 2, tooltipY + 24,
                g_session.GetItemNameColor(item), 0, 1);
   } else {
-    reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(item.DisplayName(0).c_str(), tooltipX - 2, tooltipY + 24, g_session.GetItemNameColor(item), 0, 1);
+    g_modeMgr.gameMode->ShowTooltip(item.DisplayName(0).c_str(), tooltipX - 2, tooltipY + 24, g_session.GetItemNameColor(item), 0, 1);
   }
 }
 
@@ -6113,12 +6112,12 @@ void UIMerchantItemWnd::Slot28(int x, int y) {
     this->ToScreen(tooltipX, tooltipY);
 
     if (item.identified == 1 && item.unknown_0098 != 0) {
-      reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)
-          ->Show(FormatOwnedString(LookupMessage(2551), item.DisplayName(0).c_str(), item.unknown_0098, item.quantity).c_str(), tooltipX, tooltipY,
+      g_modeMgr.gameMode
+          ->ShowTooltip(FormatOwnedString(LookupMessage(2551), item.DisplayName(0).c_str(), item.unknown_0098, item.quantity).c_str(), tooltipX, tooltipY,
                  g_session.GetItemNameColor(item), 0, 1);
     } else {
-      reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)
-          ->Show(FormatOwnedString("%s %d %s", item.DisplayName(0).c_str(), item.quantity, LookupMessage(588)).c_str(), tooltipX, tooltipY,
+      g_modeMgr.gameMode
+          ->ShowTooltip(FormatOwnedString("%s %d %s", item.DisplayName(0).c_str(), item.quantity, LookupMessage(588)).c_str(), tooltipX, tooltipY,
                  g_session.GetItemNameColor(item), 0, 1);
     }
   }
@@ -6134,12 +6133,12 @@ void UIMerchantMirrorItemWnd::Slot28(int x, int y) {
     this->ToScreen(tooltipX, tooltipY);
 
     if (item.identified == 1 && item.unknown_0098 != 0) {
-      reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)
-          ->Show(FormatOwnedString(LookupMessage(2756), item.DisplayName(0).c_str(), item.unknown_0098, item.quantity).c_str(), tooltipX, tooltipY,
+      g_modeMgr.gameMode
+          ->ShowTooltip(FormatOwnedString(LookupMessage(2756), item.DisplayName(0).c_str(), item.unknown_0098, item.quantity).c_str(), tooltipX, tooltipY,
                  g_session.GetItemNameColor(item), 0, 1);
     } else {
-      reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)
-          ->Show(FormatOwnedString("%s %d %s", item.DisplayName(0).c_str(), item.quantity, LookupMessage(588)).c_str(), tooltipX, tooltipY,
+      g_modeMgr.gameMode
+          ->ShowTooltip(FormatOwnedString("%s %d %s", item.DisplayName(0).c_str(), item.quantity, LookupMessage(588)).c_str(), tooltipX, tooltipY,
                  g_session.GetItemNameColor(item), 0, 1);
     }
   }
@@ -8518,7 +8517,7 @@ void UISkillListWnd::Slot28(int x, int y) {
     int tooltipX = 112;
     if (this->TextWidth(name, 0, 0, 12, 0, 0) > this->geometry.width - 132 && x > tooltipX) {
       this->ToScreen(tooltipX, tooltipY);
-      reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(name, tooltipX - 8, tooltipY, 0xFFFFFFFF, 0, 1);
+      g_modeMgr.gameMode->ShowTooltip(name, tooltipX - 8, tooltipY, 0xFFFFFFFF, 0, 1);
     }
   }
 }

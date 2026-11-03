@@ -1,6 +1,5 @@
 #include "Client/Mode/CMode.h"
 #include "UI/Window/UINewSelectCharWnd.h"
-#include "Client/Mode/ModeTooltip.h"
 #include "Client/Replay.h"
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Resource/Bitmap/BitmapResource.h"
@@ -121,7 +120,7 @@ void UICheckBox::Slot28(int x, int y) {
   }
 
   const std::string& tooltip = this->geometry.unknown_0030 != 0 || this->m_uncheckedTooltip.empty() ? this->m_tooltip : this->m_uncheckedTooltip;
-  static_cast<ModeTooltip*>(g_charViewMode)->Show(tooltip.c_str(), screenX, screenY, -1, false, true);
+  static_cast<CMode*>(g_charViewMode)->ShowTooltip(tooltip.c_str(), screenX, screenY, -1, false, true);
 }
 
 // OFFSET: 0x0085F9C0

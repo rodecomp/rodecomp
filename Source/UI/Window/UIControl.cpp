@@ -6,7 +6,6 @@
 #include "UI/Lists/UIThumb.h"
 #include "UI/Edit/UIEditCtrl.h"
 #include "Client/Mode/ModeMgr.h"
-#include "Client/Mode/ModeTooltip.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
@@ -551,7 +550,7 @@ void CUIThumb::Slot28(int, int) {
       screenX += node->geometry.x;
       screenY += node->geometry.y;
     }
-    reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(this->tooltip.c_str(), screenX, screenY, 0xFFFFFFFFu, 0, 1);
+    g_modeMgr.gameMode->ShowTooltip(this->tooltip.c_str(), screenX, screenY, 0xFFFFFFFFu, 0, 1);
   }
 }
 
@@ -848,7 +847,7 @@ void CUIButton::Slot28(int, int) {
     screenY = (screenY + node->geometry.y);
   }
 
-  reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(this->tooltip.c_str(), screenX, screenY, 0xFFFFFFFFu, 0, 1);
+  g_modeMgr.gameMode->ShowTooltip(this->tooltip.c_str(), screenX, screenY, 0xFFFFFFFFu, 0, 1);
 }
 
 // OFFSET: 0x009EEA70
@@ -915,7 +914,7 @@ void CUITextButton::Slot28(int, int) {
       screenX += node->geometry.x;
       screenY += node->geometry.y;
     }
-    reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(this->tooltipText.c_str(), screenX, screenY, 0xFFFFFFFFu, 0, 1);
+    g_modeMgr.gameMode->ShowTooltip(this->tooltipText.c_str(), screenX, screenY, 0xFFFFFFFFu, 0, 1);
     return;
   }
 
@@ -925,7 +924,7 @@ void CUITextButton::Slot28(int, int) {
     screenX += node->geometry.x;
     screenY += node->geometry.y;
   }
-  reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(this->fullText.c_str(), screenX, screenY, 0xFFFFFFFFu, 0, 1);
+  g_modeMgr.gameMode->ShowTooltip(this->fullText.c_str(), screenX, screenY, 0xFFFFFFFFu, 0, 1);
 }
 
 // OFFSET: 0x009ED360
@@ -1263,7 +1262,7 @@ void CUIStaticImage::Slot28(int, int) {
   int x = 0;
   int y = -8;
   this->ToScreen(x, y);
-  reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(this->tooltip.c_str(), x, y, 0xFFFFFFFFu, 0, 1);
+  g_modeMgr.gameMode->ShowTooltip(this->tooltip.c_str(), x, y, 0xFFFFFFFFu, 0, 1);
 }
 
 // OFFSET: 0x009F08A0
@@ -2870,7 +2869,7 @@ void CUIStaticText::Slot28(int x, int y) {
   x = -6;
   y = -4;
   this->ToScreen(x, y);
-  reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(this->Tooltip().c_str(), x, y, 0xFFFFFFFFu, 0, 1);
+  g_modeMgr.gameMode->ShowTooltip(this->Tooltip().c_str(), x, y, 0xFFFFFFFFu, 0, 1);
 }
 
 // OFFSET: 0x009F0AE0

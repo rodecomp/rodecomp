@@ -1,10 +1,10 @@
 #include "UI/Window/UINewSelectCharWnd.h"
-#include "Client/Mode/ModeTooltip.h"
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/UIStaticBitmap.h"
+#include "Client/Mode/CMode.h"
 
 // OFFSET: 0x00850430
 // FUNCTION: fn_10676
@@ -81,7 +81,7 @@ void UIStaticBitmap::Slot28(int x, int y) {
       screenY = (screenY + window->geometry.y);
     }
 
-    static_cast<ModeTooltip*>(g_charViewMode)->Show(this->tooltip.c_str(), screenX, screenY, -1, false, true);
+    static_cast<CMode*>(g_charViewMode)->ShowTooltip(this->tooltip.c_str(), screenX, screenY, -1, false, true);
   }
 }
 

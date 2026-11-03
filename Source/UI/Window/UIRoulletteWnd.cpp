@@ -2,7 +2,6 @@
 #include "Client/Input/InputCharset.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMgr.h"
-#include "Client/Mode/ModeTooltip.h"
 #include "Client/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Items/ItemDescription.h"
@@ -255,12 +254,12 @@ void UIRoulletteWnd::Slot28(int x, int y) {
 
   if (item.quantity != 0) {
     this->ToScreen(tooltipX, tooltipY);
-    ModeTooltip* tooltip = reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode);
+    CMode* tooltip = g_modeMgr.gameMode;
     if (item.identified == 1 && item.unknown_0098 != 0) {
-      tooltip->Show(FormatOwnedString(LookupMessage(2600), item.DisplayName(0).c_str(), item.unknown_0098).c_str(), tooltipX, tooltipY,
+      tooltip->ShowTooltip(FormatOwnedString(LookupMessage(2600), item.DisplayName(0).c_str(), item.unknown_0098).c_str(), tooltipX, tooltipY,
                     g_session.GetItemNameColor(item), 0, 1);
     } else {
-      tooltip->Show(item.DisplayName(0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+      tooltip->ShowTooltip(item.DisplayName(0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
     }
   }
 }

@@ -1,7 +1,6 @@
 #include "UI/Party/UIMiniPartyWnd.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
-#include "Client/Mode/ModeTooltip.h"
 #include "Contents/MapInfoMgr.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/World/World.h"
@@ -19,6 +18,7 @@
 #include "UI/Window/MiniPartyWndAreaMgr.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowDialogs.h"
+#include "Client/Mode/CMode.h"
 
 #include <windows.h>
 #include <timeapi.h>
@@ -111,7 +111,7 @@ void UIMiniPartyInfoWnd::Slot31(int x, int y) {
 // OFFSET: 0x00740D40
 // FUNCTION: fn_07733
 void UIMiniPartyInfoWnd::Slot28(int, int) {
-  ModeTooltip* mode = reinterpret_cast<ModeTooltip*>(g_modeMgr.GetGameMode());
+  CMode* mode = g_modeMgr.GetGameMode();
   if (!mode) {
     return;
   }
@@ -136,7 +136,7 @@ void UIMiniPartyInfoWnd::Slot28(int, int) {
     int x = this->geometry.x + 15;
     int y = this->geometry.y - 12;
     this->ToScreen(x, y);
-    mode->Show(text, x, y, 0xFFFFFFFF, 0, 1);
+    mode->ShowTooltip(text, x, y, 0xFFFFFFFF, 0, 1);
   }
 }
 

@@ -1,9 +1,9 @@
 #include "UI/Window/UINewSelectCharWnd.h"
-#include "Client/Mode/ModeTooltip.h"
 #include "Render/DeviceContext/DeviceContext.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Buttons/UIBmpTextButton.h"
 #include "UI/Text/UIStaticText.h"
+#include "Client/Mode/CMode.h"
 
 #include <cstdio>
 
@@ -199,7 +199,7 @@ void UIStaticText::Slot28(int, int) {
     y = (y + node->geometry.y);
   }
 
-  static_cast<ModeTooltip*>(g_charViewMode)->Show(this->tooltip.c_str(), x, y, -1, false, true);
+  static_cast<CMode*>(g_charViewMode)->ShowTooltip(this->tooltip.c_str(), x, y, -1, false, true);
 }
 
 // OFFSET: 0x0085FAB0

@@ -1,7 +1,6 @@
 #include "Client/Replay.h"
 #include "UI/Window/WindowPolicy.h"
 #include "UI/Window/UINewSelectCharWnd.h"
-#include "Client/Mode/ModeTooltip.h"
 #include "Client/Mode/CMode.h"
 #include "UI/StylingShop/UIStylingShopWnd.h"
 #include "Client/Mode/ModeEvents.h"
@@ -206,7 +205,7 @@ void UIStylingShopButton::Slot28(int, int) {
     screenY += window->geometry.y;
   }
 
-  static_cast<ModeTooltip*>(g_charViewMode)->Show("No Color", screenX, screenY, -1, false, true);
+  static_cast<CMode*>(g_charViewMode)->ShowTooltip("No Color", screenX, screenY, -1, false, true);
 }
 
 // OFFSET: 0x0082A210

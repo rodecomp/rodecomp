@@ -1,9 +1,9 @@
 #include "Render/Text/FontCache.h"
 #include "Render/Text/TextContext.h"
 #include "UI/UIChangeMaterialWnd.h"
+#include "Client/Mode/CMode.h"
 
 #include "Client/Input/InputCharset.h"
-#include "Client/Mode/ModeTooltip.h"
 #include "Client/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Items/ChangeMaterialMgr.h"
@@ -152,7 +152,7 @@ void UIChangeMaterialWnd::Slot28(int x, int y) {
   this->ToScreen(x, y);
   const int itemId = std::atoi(item->itemId.c_str());
   const std::string name = ItemDisplayName(itemId);
-  reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(name.c_str(), x + 5, y - 5, -1, 0, 1);
+  g_modeMgr.gameMode->ShowTooltip(name.c_str(), x + 5, y - 5, -1, 0, 1);
 }
 
 // OFFSET: 0x005E2840
@@ -686,7 +686,7 @@ void UIChangeMaterialWnd_List::Slot28(int x, int y) {
 
   const std::string name = ItemDisplayName(entry->results.front().id);
   const std::string text = FormatOwnedString(LookupMessage(0xB7), name.c_str(), entry->results.front().quantity);
-  reinterpret_cast<ModeTooltip*>(g_charViewMode)->Show(text.c_str(), screenX + 5, screenY - 5, -1, 0, 1);
+  static_cast<CMode*>(g_charViewMode)->ShowTooltip(text.c_str(), screenX + 5, screenY - 5, -1, 0, 1);
 }
 
 // OFFSET: 0x005E1320

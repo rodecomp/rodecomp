@@ -1,5 +1,4 @@
 #include "Client/Mode/ModeMgr.h"
-#include "Client/Mode/ModeTooltip.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
@@ -63,7 +62,7 @@ void UIRadioBtn::Slot28(int x, int y) {
     x = 10;
     y = -20;
     this->ToScreen(x, y);
-    reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(this->tooltip.c_str(), x, y, 0xFFFFFFFFu, 0, 1);
+    g_modeMgr.gameMode->ShowTooltip(this->tooltip.c_str(), x, y, 0xFFFFFFFFu, 0, 1);
   }
 }
 

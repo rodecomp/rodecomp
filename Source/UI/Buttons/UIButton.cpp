@@ -2,7 +2,6 @@
 #include "UI/Window/WindowPolicy.h"
 #include "UI/Window/WindowDialogs.h"
 #include "UI/Window/UINewSelectCharWnd.h"
-#include "Client/Mode/ModeTooltip.h"
 #include "Contents/MessageTable.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeEvents.h"
@@ -120,7 +119,7 @@ void UIButton::Slot28(int x, int y) {
       screenY = (screenY + window->geometry.y);
     }
 
-    static_cast<ModeTooltip*>(g_charViewMode)->Show(this->m_tooltip.c_str(), screenX, screenY, -1, false, true);
+    static_cast<CMode*>(g_charViewMode)->ShowTooltip(this->m_tooltip.c_str(), screenX, screenY, -1, false, true);
   }
 
   if (this->m_disabled == 0) {

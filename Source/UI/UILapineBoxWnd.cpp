@@ -2,7 +2,6 @@
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
-#include "Client/Mode/ModeTooltip.h"
 #include "Client/Session.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
@@ -94,7 +93,7 @@ void UIIngredientInfoWnd::Slot28(int x, int y) {
     int tipX = 0;
     int tipY = -20;
     this->ToScreen(tipX, tipY);
-    reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(this->tooltip.c_str(), tipX, tipY, -1, 0, 1);
+    g_modeMgr.gameMode->ShowTooltip(this->tooltip.c_str(), tipX, tipY, -1, 0, 1);
   }
 }
 
@@ -156,7 +155,7 @@ void UILapineBoxWnd::Slot28(int x, int y) {
     }
 
     this->ToScreen(tipX, tipY);
-    reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(item.unknown_0044.c_str(), tipX, tipY, -1, 0, 1);
+    g_modeMgr.gameMode->ShowTooltip(item.unknown_0044.c_str(), tipX, tipY, -1, 0, 1);
   }
 
   item.~ITEM_INFO();

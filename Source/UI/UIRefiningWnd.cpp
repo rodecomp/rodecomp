@@ -1,5 +1,4 @@
 #include "UI/Window/UINewSelectCharWnd.h"
-#include "Client/Mode/ModeTooltip.h"
 #include "UI/UIRefiningWnd.h"
 
 #include "Client/Application/ApplicationWindow.h"
@@ -542,7 +541,7 @@ void UIRefiningWnd::Slot28(int x, int y) {
     int tipX = 81;
     int tipY = 150;
     this->ToScreen(tipX, tipY);
-    static_cast<ModeTooltip*>(g_charViewMode)->Show(name, tipX, tipY - 20, -1, false, true);
+    static_cast<CMode*>(g_charViewMode)->ShowTooltip(name, tipX, tipY - 20, -1, false, true);
     return;
   }
 
@@ -554,7 +553,7 @@ void UIRefiningWnd::Slot28(int x, int y) {
     int tipX = 161;
     int tipY = 150;
     this->ToScreen(tipX, tipY);
-    static_cast<ModeTooltip*>(g_charViewMode)->Show(name, tipX, tipY - 20, -1, false, true);
+    static_cast<CMode*>(g_charViewMode)->ShowTooltip(name, tipX, tipY - 20, -1, false, true);
     return;
   }
 
@@ -583,7 +582,7 @@ void UIRefiningWnd::Slot28(int x, int y) {
     int tipX = slot * 49 + 11;
     int tipY = 35;
     this->ToScreen(tipX, tipY);
-    static_cast<ModeTooltip*>(g_charViewMode)->Show(name, tipX, tipY, -1, false, true);
+    static_cast<CMode*>(g_charViewMode)->ShowTooltip(name, tipX, tipY, -1, false, true);
   }
 }
 

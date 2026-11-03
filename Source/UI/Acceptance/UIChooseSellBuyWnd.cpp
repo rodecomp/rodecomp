@@ -139,7 +139,6 @@
 #include "UI/Text/NavigationLink.h"
 #include "Utility/Text/GroupedInteger.h"
 #include "Utility/Math/Int64Math.h"
-#include "Client/Mode/ModeTooltip.h"
 #include "Script/LuaScript.h"
 #include "Utility/Text/StringUtil.h"
 #include "UI/SkillDelayInfo/SkillDelayInfo.h"
@@ -1951,13 +1950,13 @@ void UIItemCollectionWnd::Slot28(int x, int y) {
   card.unknown_0060 = 0;
   card.SetItemId(cardId);
 
-  ModeTooltip* tooltip = reinterpret_cast<ModeTooltip*>(g_charViewMode);
+  CMode* tooltip = static_cast<CMode*>(g_charViewMode);
   std::uint32_t color = 0xFFFFFFFF;
   if (index >= ItemSlotsCount(this->m_item)) {
     color = ItemCardColor(&this->m_item);
   }
 
-  tooltip->Show(card.DisplayName(0).c_str(), slotX, slotY, color, 0, 1);
+  tooltip->ShowTooltip(card.DisplayName(0).c_str(), slotX, slotY, color, 0, 1);
 }
 
 // OFFSET: 0x008F46C0
@@ -1986,7 +1985,7 @@ void UIStatusWnd::Slot28(int x, int y) {
       int tipX = point.x - this->m_offsetX;
       int tipY = this->m_titleHeight - this->m_offsetY - 19 + point.y;
       this->ToScreen(tipX, tipY);
-      static_cast<ModeTooltip*>(g_charViewMode)->Show(statTexts[index], tipX, tipY, -1, true, true);
+      static_cast<CMode*>(g_charViewMode)->ShowTooltip(statTexts[index], tipX, tipY, -1, true, true);
       break;
     }
   }
@@ -2009,7 +2008,7 @@ void UIStatusWnd::Slot28(int x, int y) {
       int tipX = point.x - 16;
       int tipY = point.y - 13;
       this->ToScreen(tipX, tipY);
-      static_cast<ModeTooltip*>(g_charViewMode)->Show(traitTexts[index], tipX, tipY, -1, true, true);
+      static_cast<CMode*>(g_charViewMode)->ShowTooltip(traitTexts[index], tipX, tipY, -1, true, true);
       return;
     }
   }
@@ -5813,19 +5812,19 @@ void UIEquipWnd::Slot28(int x, int y) {
     }
     this->ToScreen(tooltipX, tooltipY);
 
-    ModeTooltip* tooltip = reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode);
+    CMode* tooltip = g_modeMgr.gameMode;
     if (item.quantity < 2) {
       if (item.identified == 1 && item.unknown_0098 != 0) {
-        tooltip->Show(FormatOwnedString(LookupMessage(0xA28), item.DisplayName(0).c_str(), item.unknown_0098).c_str(), tooltipX, tooltipY,
+        tooltip->ShowTooltip(FormatOwnedString(LookupMessage(0xA28), item.DisplayName(0).c_str(), item.unknown_0098).c_str(), tooltipX, tooltipY,
                       g_session.GetItemNameColor(item), 0, 1);
       } else {
-        tooltip->Show(item.DisplayName(0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+        tooltip->ShowTooltip(item.DisplayName(0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
       }
     } else if (item.identified == 1 && item.unknown_0098 != 0) {
-      tooltip->Show(FormatOwnedString(LookupMessage(0x9F7), item.DisplayName(0).c_str(), item.unknown_0098, item.quantity).c_str(), tooltipX,
+      tooltip->ShowTooltip(FormatOwnedString(LookupMessage(0x9F7), item.DisplayName(0).c_str(), item.unknown_0098, item.quantity).c_str(), tooltipX,
                     tooltipY, g_session.GetItemNameColor(item), 0, 1);
     } else {
-      tooltip->Show(FormatOwnedString(LookupMessage(0xB7), item.DisplayName(0).c_str(), item.quantity).c_str(), tooltipX, tooltipY,
+      tooltip->ShowTooltip(FormatOwnedString(LookupMessage(0xB7), item.DisplayName(0).c_str(), item.quantity).c_str(), tooltipX, tooltipY,
                     g_session.GetItemNameColor(item), 0, 1);
     }
   }
@@ -5903,13 +5902,13 @@ void UIExchangeWnd::Slot28(int x, int y) {
   tooltipY = (tooltipY - 17) / this->m_rowHeight * this->m_rowHeight + 4;
   this->ToScreen(tooltipX, tooltipY);
 
-  ModeTooltip* tooltip = reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode);
+  CMode* tooltip = g_modeMgr.gameMode;
   item.unknown_0000[0] = 21;
   if (item.identified == 1 && item.unknown_0098 != 0) {
-    tooltip->Show(FormatOwnedString(LookupMessage(0xA28), item.DisplayName(0).c_str(), item.unknown_0098).c_str(), tooltipX, tooltipY,
+    tooltip->ShowTooltip(FormatOwnedString(LookupMessage(0xA28), item.DisplayName(0).c_str(), item.unknown_0098).c_str(), tooltipX, tooltipY,
                   g_session.GetItemNameColor(item), 0, 1);
   } else {
-    tooltip->Show(item.DisplayName(0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+    tooltip->ShowTooltip(item.DisplayName(0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
   }
 }
 

@@ -1,5 +1,4 @@
 #include "UI/Window/UINewSelectCharWnd.h"
-#include "Client/Mode/ModeTooltip.h"
 #include "UI/Window/UIMileageWnd.h"
 #include "Client/Session.h"
 #include "Contents/MessageTable.h"
@@ -11,6 +10,7 @@
 #include "UI/Buttons/UIButton.h"
 #include "UI/Text/ColoredText.h"
 #include "Utility/Text/FormatString.h"
+#include "Client/Mode/CMode.h"
 
 #include <cstddef>
 #include <cstdint>
@@ -90,7 +90,7 @@ void UIMileageWnd::Slot28(int x, int y) {
   int tipX = 10;
   int tipY = -20;
   this->ToScreen(tipX, tipY);
-  static_cast<ModeTooltip*>(g_charViewMode)->Show(this->m_tooltip.c_str(), tipX, tipY, -1, false, true);
+  static_cast<CMode*>(g_charViewMode)->ShowTooltip(this->m_tooltip.c_str(), tipX, tipY, -1, false, true);
 }
 
 // OFFSET: 0x0094F040

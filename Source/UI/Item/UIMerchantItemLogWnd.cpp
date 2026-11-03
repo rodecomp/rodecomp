@@ -2,7 +2,6 @@
 #include "Render/Text/TextContext.h"
 #include "UI/Item/UIMerchantItemLogWnd.h"
 
-#include "Client/Mode/ModeTooltip.h"
 #include "Client/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Items/ItemNaming.h"
@@ -169,12 +168,12 @@ void UIMerchantItemLogWnd::Slot28(int x, int y) {
     this->ToScreen(tooltipX, tooltipY);
 
     if (item.identified == 1 && item.unknown_0098 != 0) {
-      reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)
-          ->Show(FormatOwnedString(LookupMessage(2551), item.DisplayName(0).c_str(), item.unknown_0098, item.quantity).c_str(), tooltipX, tooltipY,
+      g_modeMgr.gameMode
+          ->ShowTooltip(FormatOwnedString(LookupMessage(2551), item.DisplayName(0).c_str(), item.unknown_0098, item.quantity).c_str(), tooltipX, tooltipY,
                  g_session.GetItemNameColor(item), 0, 1);
     } else {
-      reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)
-          ->Show(FormatOwnedString(LookupMessage(183), item.DisplayName(0).c_str(), item.quantity).c_str(), tooltipX, tooltipY,
+      g_modeMgr.gameMode
+          ->ShowTooltip(FormatOwnedString(LookupMessage(183), item.DisplayName(0).c_str(), item.quantity).c_str(), tooltipX, tooltipY,
                  g_session.GetItemNameColor(item), 0, 1);
     }
   }

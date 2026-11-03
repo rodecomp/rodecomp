@@ -1,4 +1,5 @@
 #include "UI/Text/NavigationLink.h"
+#include "Client/Mode/CMode.h"
 
 #include <algorithm>
 #include <cctype>
@@ -19,7 +20,6 @@
 #include "Client/Input/InputCharset.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
-#include "Client/Mode/ModeTooltip.h"
 #include "Client/Session.h"
 #include "Contents/CashEmotionMgr.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
@@ -1666,9 +1666,9 @@ void UIItemImage::Slot28(int, int) {
   this->ToScreen(x, y);
 
   if (g_charViewMode) {
-    ModeTooltip* tooltip = reinterpret_cast<ModeTooltip*>(g_charViewMode);
+    CMode* tooltip = static_cast<CMode*>(g_charViewMode);
     const std::uint32_t color = g_session.GetItemNameColor(item);
-    tooltip->Show(item.DisplayName(0).c_str(), x, y, color, 0, 1);
+    tooltip->ShowTooltip(item.DisplayName(0).c_str(), x, y, color, 0, 1);
   }
 }
 

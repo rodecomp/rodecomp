@@ -4,7 +4,6 @@
 
 #include "Client/Input/InputCharset.h"
 #include "Client/Mode/ModeMgr.h"
-#include "Client/Mode/ModeTooltip.h"
 #include "Client/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Items/ItemDescription.h"
@@ -198,7 +197,7 @@ void CMergeItemWnd::Slot28(int x, int y) {
   if (item.unknown_0000[1] != 0) {
     this->ToScreen(screenX, screenY);
     std::string text = FormatOwnedString(LookupMessage(183), item.DisplayName(0).c_str(), item.quantity);
-    reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(text.c_str(), screenX, screenY, g_session.GetItemNameColor(item), 0, 1);
+    g_modeMgr.gameMode->ShowTooltip(text.c_str(), screenX, screenY, g_session.GetItemNameColor(item), 0, 1);
   }
 }
 

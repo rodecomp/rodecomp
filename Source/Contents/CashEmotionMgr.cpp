@@ -1,6 +1,5 @@
 #include "Render/DeviceContext/DCSurface.h"
 #include "UI/Window/UINewSelectCharWnd.h"
-#include "Client/Mode/ModeTooltip.h"
 #include "Contents/CashEmotionMgr.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Render/DeviceContext/DeviceContext.h"
@@ -46,6 +45,7 @@
 #include "Contents/Schedule/EmotionSchedule.h"
 #include "Contents/Schedule/TimeScheduler.h"
 #include "UI/Emotion/UIEmotionWnd.h"
+#include "Client/Mode/CMode.h"
 
 extern "C" {
 #include <lauxlib.h>
@@ -3839,7 +3839,7 @@ void UICashEmotionSprBtn::Slot28(int x, int y) {
     int screenY = -20;
     this->ToScreen(screenX, screenY);
 
-    static_cast<ModeTooltip*>(g_charViewMode)->Show(this->m_tooltip.c_str(), screenX, screenY, -1, false, false);
+    static_cast<CMode*>(g_charViewMode)->ShowTooltip(this->m_tooltip.c_str(), screenX, screenY, -1, false, false);
   }
 
   if (!this->m_disabled) {
