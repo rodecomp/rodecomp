@@ -140,9 +140,6 @@ int g_whisperRecord;
 // GLOBAL: gl_25098
 UIWindow* g_saleResultWindow;
 
-// GLOBAL: gl_25099
-UIWindow* g_vendingOpenWindow;
-
 // GLOBAL: gl_25100
 UIWindow* g_vendingOpenResultWindow;
 
@@ -1867,8 +1864,8 @@ void __stdcall sub_D08110(int field8, int itemIdWord, int quantityWord, int fiel
   g_windowMgr.SendNotice(
     1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0xE7), item.DisplayName(0).c_str(), quantity).c_str()), 0xFFFF64, 0, 0, 0
   );
-  if (g_vendingOpenWindow != nullptr) {
-    g_vendingOpenWindow->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+  if (g_windowMgr.unknown_02F4 != nullptr) {
+    g_windowMgr.unknown_02F4->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
   }
   if (g_session.GetList9Size() == 0) {
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x137)), 0xFF00, 0, 0, 0);
