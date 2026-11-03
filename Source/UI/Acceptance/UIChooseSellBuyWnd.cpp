@@ -6174,6 +6174,134 @@ struct NCashRentalPacket {
 }
 
 // OFFSET: 0x008EB280
+// FUNCTION: fn_12208
+void UInCashWnd::Slot15(int width, int height) {
+  g_session.ClearTradeItems();
+  this->m_otherItems.clear();
+  this->m_pageCount = 1;
+  this->m_page = 1;
+  g_session.ClearItems1784(10);
+  this->SendMsg(this, 60, 0, 0, 0, 0);
+  this->AddCloseButton("Alt+X", 0);
+
+  const int titleWidth = this->TextWidth(LookupMessage(0x817), 0, 0, 12, 1, 0);
+  this->m_title = new UIStaticText();
+  this->m_title->SetSize(titleWidth, 12);
+  this->m_title->SetText(LookupMessage(0x817), 1);
+  this->m_title->Move(20, 26);
+  this->AddChild(this->m_title);
+
+  this->m_searchEdit = new UIEditCtrl2();
+  this->m_searchEdit->SetSize(64, 18);
+  this->m_searchEdit->invalidatesParent = 1;
+  this->m_searchEdit->flat = 0;
+  this->m_searchEdit->Move(this->m_title->geometry.x + titleWidth, 22);
+  this->m_searchEdit->maximum = 20;
+  this->m_searchEdit->Background(215, 215, 215);
+  this->AddChild(this->m_searchEdit);
+
+  const char* names[19][3] = {
+    {"신규b", "신규a", "신규a"}, {"인기b", "인기a", "인기a"}, {"한정b", "한정a", "한정a"}, {"임대장비b", "임대장비a", "임대장비a"},
+    {"영구장비b", "영구장비a", "영구장비a"}, {"버프b", "버프a", "버프a"}, {"회복b", "회복a", "회복a"}, {"기타b", "기타a", "기타a"},
+    {"특가b", "특가a", "특가a"}, {"검색b", "검색a", "검색a"}, {"NC_FirstPage", "NC_FirstPage", "NC_FirstPage"},
+    {"NC_PrevPage", "NC_PrevPage", "NC_PrevPage"}, {"NC_NextPage", "NC_NextPage", "NC_NextPage"}, {"NC_LastPage", "NC_LastPage", "NC_LastPage"},
+    {"btn_buy", "btn_buy_a", "btn_buy_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}, {"btn_close", "btn_close_a", "btn_close_b"},
+    {"btn_find", "btn_find_a", "btn_find_b"}, {"btn_refresh", "btn_refresh_a", "btn_refresh_b"}};
+  const int top = this->m_listHeight;
+  const int bottom = this->geometry.height;
+  const int right = this->geometry.width;
+  int positions[19][2] = {
+    {4, top + 42}, {4, top + 87}, {4, top + 132}, {4, top + 177}, {4, top + 222}, {4, top + 267}, {4, top + 312}, {4, top + 357},
+    {4, top + 402}, {4, top + 447}, {203, bottom - 55}, {216, bottom - 55}, {276, bottom - 55}, {290, bottom - 55},
+    {right - 150, bottom - 40}, {right - 100, bottom - 40}, {right - 50, bottom - 40},
+    {this->m_searchEdit->geometry.x + this->m_searchEdit->geometry.width + 10, 22}, {-100, -100}};
+  const int ids[19] = {389, 390, 391, 392, 393, 394, 395, 396, 397, 398, 387, 316, 317, 388, 224, 386, 201, 365, 415};
+
+  const std::string interfacePrefix("유저인터페이스\\basic_interface\\");
+  const std::string prefix("유저인터페이스\\");
+  for (int index = 0; index < 20; ++index) {
+    UIBitmapButton* button = new UIBitmapButton();
+    this->m_buttons[index] = button;
+    if (index < 15) {
+      button->SetBitmap((interfacePrefix + names[index][0] + ".bmp").c_str(), 0, 0);
+      button->SetBitmap((interfacePrefix + names[index][1] + ".bmp").c_str(), 1, 0);
+      button->SetBitmap((interfacePrefix + names[index][2] + ".bmp").c_str(), 2, 0);
+      button->SetBitmap((interfacePrefix + names[index][1] + ".bmp").c_str(), 3, 0);
+    } else {
+      button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
+      button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
+      button->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
+      button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 3, 0);
+    }
+    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    button->Move(positions[index][0], positions[index][1]);
+    button->SetId(ids[index]);
+
+    switch (index) {
+    case 0:
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+    case 6:
+    case 7:
+      this->m_buttons[index]->SetTooltip(LookupMessage(index + 0x736));
+      break;
+    case 8:
+      this->m_buttons[index]->SetTooltip(LookupMessage(0x9D8));
+      break;
+    case 10:
+    case 18:
+      this->m_buttons[index]->SetTooltip(LookupMessage(0x447));
+      break;
+    case 11:
+      this->m_buttons[index]->SetTooltip(LookupMessage(0x734));
+      break;
+    case 12:
+      this->m_buttons[index]->SetTooltip("<=");
+      break;
+    case 13:
+      this->m_buttons[index]->SetTooltip("=>");
+      break;
+    case 14:
+      this->m_buttons[index]->SetTooltip(LookupMessage(0x735));
+      break;
+    case 15:
+      this->m_buttons[index]->SetTooltip(LookupMessage(0x732));
+      break;
+    case 16:
+      this->m_buttons[index]->SetTooltip(LookupMessage(0x733));
+      break;
+    case 17:
+      this->m_buttons[index]->SetTooltip(LookupMessage(0x513));
+      break;
+    case 19:
+      this->m_buttons[index]->SetTooltip(LookupMessage(0x9D9));
+      break;
+    default:
+      break;
+    }
+    this->AddChild(this->m_buttons[index]);
+  }
+
+  this->m_pointEdit = new UIEditCtrl2();
+  this->m_pointEdit->SetSize(64, 14);
+  this->m_pointEdit->invalidatesParent = 1;
+  this->m_pointEdit->flat = 0;
+  this->m_pointEdit->Move(358, this->geometry.height - 38);
+  this->m_pointEdit->maximum = 64;
+  this->m_pointEdit->Background(215, 215, 215);
+  this->AddChild(this->m_pointEdit);
+
+  this->m_otherScroll = new UIScrollBar();
+  this->m_otherScroll->Configure(this->geometry.width - 15, 17, 1, this->m_listHeight + 431);
+  this->m_otherScroll->SetRange(4, 4, 8);
+  this->m_firstOther = 0;
+  this->m_otherScroll->SetPosition(0);
+  this->AddChild(this->m_otherScroll);
+  this->m_otherScroll->Show(0);
+}
 
 // OFFSET: 0x00908260
 // FUNCTION: fn_12391
