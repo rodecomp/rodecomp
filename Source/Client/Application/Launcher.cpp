@@ -936,7 +936,6 @@ void IgnoreNull();
 LSTATUS SaveDisplayDeviceSettings();
 
 #include "Render/DX7/RenderSystemDX7.h"
-#include "Contents/Configuration/ScriptOptions.h"
 
 // OFFSET: 0x00E58100
 // FUNCTION: fn_24362
@@ -972,12 +971,12 @@ int sub_E58100(HINSTANCE instance, int showCommand) {
       int defaultX = (GetSystemMetrics(SM_CXSCREEN) - g_viewportWidth) / 2;
       const std::uint8_t xSource[] = {0x78, 0xF6, 0xDD, 0xBF, 0x80, 0xBE, 0x48, 0xC3, 0x7F, 0xF0, 0xC0, 0xDB};
       thread_local EncryptedName<sizeof(xSource), 0x9B17C9EFDBB39F2FULL> xName(xSource);
-      x = ScriptOptions{*g_session.m_hotkeyScript}.Integer(xName.Text(), defaultX);
+      x = g_session.GetOptionInteger(xName.Text(), defaultX);
 
       int defaultY = (GetSystemMetrics(SM_CYSCREEN) - g_viewportHeight) / 2;
       const std::uint8_t ySource[] = {0x3A, 0x5A, 0x61, 0xF1, 0xB4, 0x32, 0x8C, 0x30, 0x3D, 0x5C, 0x7C, 0x95};
       thread_local EncryptedName<sizeof(ySource), 0x69D345DB950F336DULL> yName(ySource);
-      y = ScriptOptions{*g_session.m_hotkeyScript}.Integer(yName.Text(), defaultY);
+      y = g_session.GetOptionInteger(yName.Text(), defaultY);
     } else {
       x = (GetSystemMetrics(SM_CXSCREEN) - g_viewportWidth) / 2;
       y = (GetSystemMetrics(SM_CYSCREEN) - g_viewportHeight) / 2;

@@ -1,7 +1,6 @@
 #include "UI/Window/UIWindowFactory.h"
 
 #include "Client/Session.h"
-#include "Contents/Configuration/ScriptOptions.h"
 #include "Render/Renderer.h"
 #include "Script/LuaScript.h"
 #include "UI/EntryQueue/UIEntryQueueWnd.h"
@@ -67,8 +66,8 @@ UIWindow* UIWindowMgr::CreateLayoutWindow(int id) {
       savedX = saved->second->x;
       savedY = saved->second->y;
     } else {
-      savedX = reinterpret_cast<ScriptOptions&>(g_session).Integer(xKey.c_str(), x);
-      savedY = reinterpret_cast<ScriptOptions&>(g_session).Integer(yKey.c_str(), y);
+      savedX = g_session.GetOptionInteger(xKey.c_str(), x);
+      savedY = g_session.GetOptionInteger(yKey.c_str(), y);
     }
 
     window->SetId(id);

@@ -14,8 +14,6 @@
 #include <unordered_map>
 #include <vector>
 
-struct ScriptOptions;
-
 struct GameSettingsOption {
   /* 0000 */ int id = 300;
   /* 0004 */ int tab;
@@ -45,7 +43,7 @@ public:
   void ResetToDefaults();
   void ToggleOption(int id);
   void sub_6C0C40(int id, unsigned char value, bool notify);
-  void ApplyScriptOption(int id, const char* key, ScriptOptions& script);
+  void ApplyScriptOption(int id, const char* key);
   bool RunFunction(int id);
   std::optional<GameSettingsOption*> FindOption(int id);
   std::list<int> GetOptionIds(int tab);

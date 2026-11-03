@@ -13,6 +13,8 @@
 #include "UI/Cooldowns/CooldownState.h"
 #include "UI/Shortcuts/ShortcutCooldowns.h"
 
+#include <windows.h>
+
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
@@ -860,6 +862,9 @@ public:
   void LoadExternalSettings();
   void ReloadLanguageTables();
   float GetOptionFloat(const char* key, float fallback);
+  int GetOptionInteger(const char* key, int fallback);
+  std::string GetOptionString(const char* key, const char* fallback);
+  GUID GetOptionGuid(const char* key, const GUID& fallback);
   std::string GetAccessoryName(int id);
   std::string GetWeaponName(int weapon);
   const char* GetWeaponClassName(int item);

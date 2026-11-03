@@ -1,5 +1,4 @@
 #include "Contents/Configuration/ServiceOptions.h"
-#include "Contents/Configuration/ScriptOptions.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Camera/Camera.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
@@ -82,7 +81,7 @@ public:
   void ResetToDefaults();
   void ToggleOption(int id);
   void sub_6C0C40(int id, unsigned char value, bool notify);
-  void ApplyScriptOption(int id, const char* key, ScriptOptions& script);
+  void ApplyScriptOption(int id, const char* key);
   bool RunFunction(int id);
   std::optional<GameSettingsOption*> FindOption(int id);
   std::list<int> GetOptionIds(int tab);
@@ -801,13 +800,13 @@ bool ServiceOptions::Set(int id, unsigned char value) {
 
 // OFFSET: 0x006C1900
 // FUNCTION: fn_06320
-void GameSettings::ApplyScriptOption(int id, const char* key, ScriptOptions& script) {
+void GameSettings::ApplyScriptOption(int id, const char* key) {
   for (const GameSettingsOption& option : this->options) {
     if (option.id != id) {
       continue;
     }
 
-    g_serviceOptions.Set(id, script.Integer(key, option.defaultValue) != 0);
+    g_serviceOptions.Set(id, g_session.GetOptionInteger(key, option.defaultValue) != 0);
     return;
   }
 }
@@ -1508,26 +1507,24 @@ extern const GUID g_defaultDrawGuidDX7 = {};
 // OFFSET: 0x00DFE4E0
 // FUNCTION: fn_23604
 void CSession::LoadOptionInfo() {
-  ScriptOptions& options = reinterpret_cast<ScriptOptions&>(*this);
-
   g_luaScript->Call("SetCmdOnOffList", "");
   ResourceExists("OptionInfo.lua", 1);
-  g_textureFiltering = options.Integer("Trilinear", 0);
+  g_textureFiltering = this->GetOptionInteger("Trilinear", 0);
 
-  const int effectVolume = options.Integer("Effect_Volume", 100);
-  CSoundMgr::SetVolume(g_soundMgr, options.Integer("Bgm_Volume", 100));
+  const int effectVolume = this->GetOptionInteger("Effect_Volume", 100);
+  CSoundMgr::SetVolume(g_soundMgr, this->GetOptionInteger("Bgm_Volume", 100));
   g_soundMgr->SetTargetVolume(CSoundMgr::Volume(g_soundMgr));
   g_soundMgr->SetSampleVolume(effectVolume);
   g_soundMgr->Set3DVolume(effectVolume);
 
-  this->m_autoOpenWhisperWindow = options.Integer("AutoOpen1to1Window", 1);
-  this->m_autoOpenFriendWhisperWindow = options.Integer("AutoOpen1to1Window_Friend", 1);
-  this->m_whisperOpenSound = options.Integer("PlaySound_Open1to1Window", 1);
-  this->m_simplifiedSkillList = options.Integer("Simplicity_SkillList", 0);
-  this->m_showSkillDescription = options.Integer("Show_SkillDescript", 0);
-  g_windowCloseByte = options.Integer("ChangeChatMode", 1) != 0;
-  this->m_lockMouse = options.Integer("LockMouse", 0) != 0;
-  this->m_channelCopId = options.Integer("ChannelCopID", 0);
+  this->m_autoOpenWhisperWindow = this->GetOptionInteger("AutoOpen1to1Window", 1);
+  this->m_autoOpenFriendWhisperWindow = this->GetOptionInteger("AutoOpen1to1Window_Friend", 1);
+  this->m_whisperOpenSound = this->GetOptionInteger("PlaySound_Open1to1Window", 1);
+  this->m_simplifiedSkillList = this->GetOptionInteger("Simplicity_SkillList", 0);
+  this->m_showSkillDescription = this->GetOptionInteger("Show_SkillDescript", 0);
+  g_windowCloseByte = this->GetOptionInteger("ChangeChatMode", 1) != 0;
+  this->m_lockMouse = this->GetOptionInteger("LockMouse", 0) != 0;
+  this->m_channelCopId = this->GetOptionInteger("ChannelCopID", 0);
 
   g_outdoorCameraPitch = this->GetOptionFloat("Outdoor_ViewLatitude", -45.0f);
   g_outdoorCameraDistance = this->GetOptionFloat("Outdoor_ViewDistance", 300.0f);
@@ -1549,7 +1546,7 @@ void CSession::LoadOptionInfo() {
   }
 
   Singleton<CGameSettingsMgr>::GetInstance();
-  ::SetOption(LookupMessage(0xDB9), options.Integer(LookupMessage(0xDB9), 0) != 0);
+  ::SetOption(LookupMessage(0xDB9), this->GetOptionInteger(LookupMessage(0xDB9), 0) != 0);
   g_serviceOptionJitterScale = g_serviceOptions.Get(0xF1) ? 730.0f : g_jitterDistanceScale;
 
   if (g_outdoorCameraPitch < -65.0f) {
@@ -1566,30 +1563,30 @@ void CSession::LoadOptionInfo() {
     g_outdoorCameraDistance = g_serviceOptionJitterScale;
   }
 
-  g_skinInfo.m_name = options.String("SkinName", "<Basic Skin>");
+  g_skinInfo.m_name = this->GetOptionString("SkinName", "<Basic Skin>");
   this->unknown_1708 = g_serviceOptions.Get(0x2E);
-  g_showBattleFieldIcon = options.Integer("ShowBattleFieldIcon", 1) != 0;
-  Singleton<CGameSettingsMgr>::GetInstance()->ApplyScriptOption(ConfineCursor, "MouseExclusive", options);
+  g_showBattleFieldIcon = this->GetOptionInteger("ShowBattleFieldIcon", 1) != 0;
+  Singleton<CGameSettingsMgr>::GetInstance()->ApplyScriptOption(ConfineCursor, "MouseExclusive");
 
   const int resetPolicy = this->RenderSystemResetPolicy();
   const int defaultBackend = this->DefaultRenderBackend();
-  g_renderSystemReset = options.Integer("RenderSystemReset", 1);
+  g_renderSystemReset = this->GetOptionInteger("RenderSystemReset", 1);
 
   if (resetPolicy != g_renderSystemReset) {
     g_configuredRenderBackend = defaultBackend;
     g_renderSystemReset = resetPolicy;
   } else {
-    g_configuredRenderBackend = options.Integer("RENDERSYSTEM", defaultBackend);
+    g_configuredRenderBackend = this->GetOptionInteger("RENDERSYSTEM", defaultBackend);
   }
 
-  g_configuredDeviceGuid = options.Guid("DX9DEVICEID", g_defaultDrawGuidDX7);
-  strncpy_s(g_configuredDeviceName, sizeof(g_configuredDeviceName), options.String("DX9DEVICENAME", "").c_str(), _TRUNCATE);
+  g_configuredDeviceGuid = this->GetOptionGuid("DX9DEVICEID", g_defaultDrawGuidDX7);
+  strncpy_s(g_configuredDeviceName, sizeof(g_configuredDeviceName), this->GetOptionString("DX9DEVICENAME", "").c_str(), _TRUNCATE);
 
-  g_configuredFullscreen = options.Integer("ISFULLSCREENMODE", 0);
-  g_configuredScreenWidth = options.Integer("WIDTH", 1024);
-  g_configuredScreenHeight = options.Integer("HEIGHT", 768);
-  g_configuredOldWidth = options.Integer("OLD_WIDTH", 0);
-  g_configuredOldHeight = options.Integer("OLD_HEIGHT", 0);
+  g_configuredFullscreen = this->GetOptionInteger("ISFULLSCREENMODE", 0);
+  g_configuredScreenWidth = this->GetOptionInteger("WIDTH", 1024);
+  g_configuredScreenHeight = this->GetOptionInteger("HEIGHT", 768);
+  g_configuredOldWidth = this->GetOptionInteger("OLD_WIDTH", 0);
+  g_configuredOldHeight = this->GetOptionInteger("OLD_HEIGHT", 0);
 
   if (static_cast<unsigned int>(g_configuredScreenHeight) < 664) {
     g_configuredScreenWidth = 1024;
@@ -1598,7 +1595,7 @@ void CSession::LoadOptionInfo() {
 
   g_viewportWidth = g_configuredScreenWidth;
   g_viewportHeight = g_configuredScreenHeight;
-  g_configuredBitsPerPixel = options.Integer("BITPERPIXEL", 16);
+  g_configuredBitsPerPixel = this->GetOptionInteger("BITPERPIXEL", 16);
 
   OSVERSIONINFOA version = {sizeof(version)};
   GetVersionExA(&version);
@@ -1607,10 +1604,10 @@ void CSession::LoadOptionInfo() {
     g_configuredBitsPerPixel = 32;
   }
 
-  g_configuredDeviceCount = options.Integer("DEVICECNT", 0);
-  g_configuredModeCount = options.Integer("MODECNT", 0);
+  g_configuredDeviceCount = this->GetOptionInteger("DEVICECNT", 0);
+  g_configuredModeCount = this->GetOptionInteger("MODECNT", 0);
 
-  g_effectDetailLevel = options.Integer("SPRITEMODE", 2);
+  g_effectDetailLevel = this->GetOptionInteger("SPRITEMODE", 2);
   switch (g_effectDetailLevel) {
   case 0:
     g_spriteHalfWidth = 1;
@@ -1624,7 +1621,7 @@ void CSession::LoadOptionInfo() {
     break;
   }
 
-  g_textureDetailLevel = options.Integer("TEXTUREMODE", 2);
+  g_textureDetailLevel = this->GetOptionInteger("TEXTUREMODE", 2);
   switch (g_textureDetailLevel) {
   case 0:
     g_textureReduction = 4;
@@ -1637,28 +1634,28 @@ void CSession::LoadOptionInfo() {
     break;
   }
 
-  this->m_lockItemDrop = options.Integer("bLockItemDropFromItemWnd", 0) != 0;
-  this->m_skipPriceWarning = options.Integer("bWarningPriceCheck", 0) == 0;
-  this->m_muteSellSound = options.Integer("bSoundEffectInItemSellWnd", 0) == 0;
-  this->m_guildMemberListSort = options.Integer("bGuildMemberListSort", 1) != 0;
-  this->m_blockPrivateTab = options.Integer("bBlockPrivateTab", 0) != 0;
-  this->m_itemDefaultSort = options.Integer("bItemDefaultSort", 0) != 0;
-  this->m_itemAscendingOrder = options.Integer("bItemAscendingOrder", 0) != 0;
-  this->m_itemDescendingOrder = options.Integer("bItemDescendingOrder", 0) != 0;
-  this->m_showMenuIcon = options.Integer("bShowMenuIcon", 1) != 0;
+  this->m_lockItemDrop = this->GetOptionInteger("bLockItemDropFromItemWnd", 0) != 0;
+  this->m_skipPriceWarning = this->GetOptionInteger("bWarningPriceCheck", 0) == 0;
+  this->m_muteSellSound = this->GetOptionInteger("bSoundEffectInItemSellWnd", 0) == 0;
+  this->m_guildMemberListSort = this->GetOptionInteger("bGuildMemberListSort", 1) != 0;
+  this->m_blockPrivateTab = this->GetOptionInteger("bBlockPrivateTab", 0) != 0;
+  this->m_itemDefaultSort = this->GetOptionInteger("bItemDefaultSort", 0) != 0;
+  this->m_itemAscendingOrder = this->GetOptionInteger("bItemAscendingOrder", 0) != 0;
+  this->m_itemDescendingOrder = this->GetOptionInteger("bItemDescendingOrder", 0) != 0;
+  this->m_showMenuIcon = this->GetOptionInteger("bShowMenuIcon", 1) != 0;
 
-  Singleton<CGameSettingsMgr>::GetInstance()->ApplyScriptOption(0xF3, LookupMessage(0xDC6), options);
-  Singleton<CGameSettingsMgr>::GetInstance()->ApplyScriptOption(0x10B, "bExtendDamage", options);
-  Singleton<CGameSettingsMgr>::GetInstance()->ApplyScriptOption(0x10C, "bShowMapName", options);
-  Singleton<CGameSettingsMgr>::GetInstance()->ApplyScriptOption(0x10D, "bShowOnlyMineFootprint", options);
+  Singleton<CGameSettingsMgr>::GetInstance()->ApplyScriptOption(0xF3, LookupMessage(0xDC6));
+  Singleton<CGameSettingsMgr>::GetInstance()->ApplyScriptOption(0x10B, "bExtendDamage");
+  Singleton<CGameSettingsMgr>::GetInstance()->ApplyScriptOption(0x10C, "bShowMapName");
+  Singleton<CGameSettingsMgr>::GetInstance()->ApplyScriptOption(0x10D, "bShowOnlyMineFootprint");
 
-  this->m_damageSkinIndex = options.Integer("DamageSkin", 0);
-  this->m_damageSkinMode = options.Integer("DamageDir", 0);
-  this->m_priorityClass = options.Integer("PriorityClass", 32);
+  this->m_damageSkinIndex = this->GetOptionInteger("DamageSkin", 0);
+  this->m_damageSkinMode = this->GetOptionInteger("DamageDir", 0);
+  this->m_priorityClass = this->GetOptionInteger("PriorityClass", 32);
 
-  Singleton<CGameSettingsMgr>::GetInstance()->ApplyScriptOption(0x10A, "bSummonTranslucent", options);
-  Singleton<CGameSettingsMgr>::GetInstance()->ApplyScriptOption(0x109, "bHidePlayer", options);
-  Singleton<CGameSettingsMgr>::GetInstance()->ApplyScriptOption(0x10E, "bQuickSlot", options);
+  Singleton<CGameSettingsMgr>::GetInstance()->ApplyScriptOption(0x10A, "bSummonTranslucent");
+  Singleton<CGameSettingsMgr>::GetInstance()->ApplyScriptOption(0x109, "bHidePlayer");
+  Singleton<CGameSettingsMgr>::GetInstance()->ApplyScriptOption(0x10E, "bQuickSlot");
 }
 
 // OFFSET: 0x00E01770
