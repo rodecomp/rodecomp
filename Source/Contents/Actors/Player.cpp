@@ -2813,7 +2813,7 @@ bool CPlayer::OnProcess() {
 
   this->UpdateMsgEffect(this->Slot55() > 0);
 
-  if (g_refreshWindow289) {
+  if (g_session.unknown_61B1) {
     UIWindow* window = g_windowMgr.LookupWindow(289);
     if (window != nullptr) {
       window->Invalidate();
