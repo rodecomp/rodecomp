@@ -5,7 +5,6 @@
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
-#include "UI/Window/FrameFocus.h"
 #include "UI/Buttons/UICheckBox.h"
 
 // OFFSET: 0x0084F010

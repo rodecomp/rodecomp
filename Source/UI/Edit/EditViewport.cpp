@@ -1,8 +1,7 @@
 #include "Client/Input/InputCharset.h"
 #include "Client/Input/Language.h"
-#include "Render/Text/TextContext.h"
-#include "UI/Edit/EditTextState.h"
-#include "UI/Edit/EditViewport.h"
+#include "Network/TextEncoding.h"
+#include "UI/Edit/UIEditCtrl.h"
 
 #include <algorithm>
 #include <cstdint>
@@ -10,11 +9,11 @@
 
 // OFFSET: 0x00862FB0
 // FUNCTION: fn_10905
-void EditViewport::Synchronize() {
+void UIEditCtrl::Synchronize() {
   const int previousCursor = this->cursor;
   g_serverLanguage->CopyDisplayText(this->text);
   g_serverLanguage->Selection(this->anchor, this->cursor);
-  this->state.Trim();
+  this->Trim();
   const auto length = static_cast<std::uint32_t>(this->text.size());
   bool clamped = false;
 
@@ -37,10 +36,8 @@ void EditViewport::Synchronize() {
     this->firstVisible = 0;
   }
 
-  TextContext context(this->surface);
-  context.SetFont(0, 12, 0, 0);
-  const auto measure = [&](const char* text, unsigned bytes) { return context.Measure(text, static_cast<int>(bytes ? bytes : std::strlen(text))).cx; };
-  const int available = this->width - 7;
+  const auto measure = [&](const char* text, unsigned bytes) { return this->TextWidth(text, bytes, 0, 12, 0, 0); };
+  const int available = this->geometry.width - 7;
 
   if (this->cursor > previousCursor || clamped) {
     const int before = this->firstVisible == 0 ? 0 : measure(this->text.c_str(), static_cast<unsigned>(this->firstVisible));
@@ -48,10 +45,10 @@ void EditViewport::Synchronize() {
 
     if (position > available) {
       const char* end = this->text.c_str() + this->text.size();
-      const char* next = CharNextExA(static_cast<WORD>(this->codePage), this->text.c_str(), 0);
+      const char* next = CharNextExA(static_cast<WORD>(g_textCodePage), this->text.c_str(), 0);
 
       while (measure(next, 0) + 3 > available && next < end) {
-        next = CharNextExA(static_cast<WORD>(this->codePage), next, 0);
+        next = CharNextExA(static_cast<WORD>(g_textCodePage), next, 0);
       }
 
       const auto tail = static_cast<std::uint32_t>(std::strlen(next));

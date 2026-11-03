@@ -1,33 +1,22 @@
 #include "Client/Input/InputCharset.h"
 #include "Client/Input/Language.h"
-#include "UI/Edit/EditTextState.h"
+#include "Network/TextEncoding.h"
+#include "UI/Edit/UIEditCtrl.h"
+#include "UI/Window/UIWindowMgr.h"
 
 #include <cstring>
 
-// INLINED
-void EditTextState::SetText(const char* value) {
-  this->text.assign(value, std::strlen(value));
-  this->Trim();
-
-  if (this->focused) {
-    g_serverLanguage->ResetInput();
-    g_serverLanguage->ResetInput();
-    g_serverLanguage->Insert(this->text.c_str());
-  }
-
-  this->SelectAll();
-}
 
 // OFFSET: 0x00868450
 // FUNCTION: fn_10959
-void EditTextState::Trim() {
+void UIEditCtrl::Trim() {
   const auto length = this->text.size();
 
   if (static_cast<int>(length) <= this->maximum) {
     return;
   }
 
-  const auto codePage = static_cast<WORD>(this->codePage);
+  const auto codePage = static_cast<WORD>(g_textCodePage);
   const char* start = this->text.c_str();
   const char* next = CharNextExA(codePage, start, 0);
 
@@ -45,8 +34,8 @@ void EditTextState::Trim() {
 
 // OFFSET: 0x0085A590
 // FUNCTION: fn_10778
-void EditTextState::SelectAll() {
-  if (this->focused) {
+void UIEditCtrl::SelectAll() {
+  if (g_windowMgr.GetHoverWindow() == this) {
     g_serverLanguage->Select(0, static_cast<int>(g_serverLanguage->text.size()));
   } else {
     this->anchor = 0;
@@ -54,7 +43,3 @@ void EditTextState::SelectAll() {
   }
 }
 
-// OFFSET: 0x00858D50
-int EditTextState::Length() const {
-  return static_cast<int>(this->focused ? g_serverLanguage->text.size() : this->text.size());
-}

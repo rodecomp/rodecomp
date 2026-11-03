@@ -6,7 +6,6 @@
 #include <string>
 #include <vector>
 
-struct FrameFocus;
 class ResourceMgr;
 class UIScrollBar;
 #include "UI/Window/WindowManagerWindows.h"

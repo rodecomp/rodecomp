@@ -18,8 +18,6 @@
 #include "Contents/MessageTable.h"
 #include "UI/Shop/ItemDrawing.h"
 #include "Utility/Text/FormatString.h"
-#include "UI/Edit/EditTextState.h"
-#include "UI/Edit/EditViewport.h"
 #include "UI/Window/InputFocus.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Edit/UIEditCtrl.h"
@@ -389,12 +387,6 @@ void UIEditCtrl::SetText(const char* value) {
   }
 }
 
-// OFFSET: 0x0085A590
-void UIEditCtrl::SelectAll() {
-  const bool focused = g_windowMgr.hoverWindow == this;
-  EditTextState state{this->text, this->anchor, this->cursor, this->maximum, focused, g_textCodePage};
-  state.SelectAll();
-}
 
 // OFFSET: 0x00856980
 // FUNCTION: fn_10755
@@ -404,29 +396,6 @@ void UIEditCtrl::PaintText() {
 
 
 
-// OFFSET: 0x00862FB0
-void UIEditCtrl::Synchronize() {
-  const bool focused = g_windowMgr.hoverWindow == this;
-  EditTextState state{this->text, this->anchor, this->cursor, this->maximum, focused, g_textCodePage};
-  EditViewport viewport{
-    this->text,
-    this->anchor,
-    this->cursor,
-    this->firstVisible,
-    this->geometry.width,
-    g_textCodePage,
-    state,
-    *this->geometry.surface
-  };
-  viewport.Synchronize();
-}
-
-// OFFSET: 0x00868450
-void UIEditCtrl::Trim() {
-  const bool focused = g_windowMgr.hoverWindow == this;
-  EditTextState state{this->text, this->anchor, this->cursor, this->maximum, focused, g_textCodePage};
-  state.Trim();
-}
 
 // OFFSET: 0x00858D50
 // FUNCTION: fn_10768

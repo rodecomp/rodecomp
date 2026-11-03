@@ -25,7 +25,6 @@
 #include "UI/Layout/SnapMgr.h"
 #include "Contents/UserData/NormalItemSlots.h"
 #include "UI/Lists/UIScrollBar.h"
-#include "UI/Window/FrameFocus.h"
 #include "UI/Window/InputFocus.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowBorder.h"
