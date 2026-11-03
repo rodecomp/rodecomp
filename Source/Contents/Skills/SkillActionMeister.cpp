@@ -223,7 +223,7 @@ void CEfstAction_GRADUAL_GRAVITY::Slot00(int efstId, int value, int argument3, i
 // FUNCTION: fn_08673
 void CEfstAction_GRADUAL_GRAVITY::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    while (static_cast<EffectActor*>(actor)->state.Attachments().HasId(779)) {
+    while (static_cast<EffectActor*>(actor)->HasId(779)) {
       actor->SendMsg(nullptr, 109, 0, 779, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
   }

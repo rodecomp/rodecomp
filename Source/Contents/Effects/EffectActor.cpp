@@ -9,11 +9,6 @@ EffectActorState::EffectActorState() : unknown_0138(-1), unknown_013C(0), unknow
 EffectActorState::~EffectActorState() {
 }
 
-// INLINED
-EffectAttachments EffectActorState::Attachments() {
-  return {this->effects, this->first, this->second};
-}
-
 // OFFSET: 0x00CA82E0
 // FUNCTION: fn_20987
 EffectActor::EffectActor() {

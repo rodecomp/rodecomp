@@ -896,7 +896,7 @@ void CEfstAction_SHADOW_EXCEED::Slot01(int efstId, int argument2, int argument3,
   }
 
   auto* effectActor = static_cast<EffectActor*>(actor);
-  while (effectActor->state.Attachments().HasId(1004)) {
+  while (effectActor->HasId(1004)) {
     actor->SendMsg(nullptr, 109, 0, 1004, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
 }
@@ -1444,7 +1444,7 @@ void CEfstAction_SHADOW_EXCEED::Slot00(int efstId, int value, int argument3, int
   }
 
   auto* effectActor = static_cast<EffectActor*>(actor);
-  if (!effectActor->state.Attachments().HasId(1004)) {
+  if (!effectActor->HasId(1004)) {
     effectActor->LaunchEffect(1004, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   }
 }

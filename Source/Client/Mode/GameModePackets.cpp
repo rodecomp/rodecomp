@@ -2235,68 +2235,68 @@ void CGameMode::sub_D591A0(std::uint32_t aid, int state, int flag, int options) 
     }
 
     if (options & 0x1) {
-      if (!actor->state.Attachments().HasId(166)) {
+      if (!actor->HasId(166)) {
         CRagEffect* effect = actor->LaunchEffect(166, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         if (effect) {
           effect->SendMsg(nullptr, 44, 0, 0xFFFF, 130, 0, 0, 0);
         }
       }
     } else if (options & 0x2) {
-      if (!actor->state.Attachments().HasId(166)) {
+      if (!actor->HasId(166)) {
         CRagEffect* effect = actor->LaunchEffect(166, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         if (effect) {
           effect->SendMsg(nullptr, 44, 0, 0xFFFF, 128, 0, 0, 0);
         }
       }
     } else if (options & 0x4) {
-      if (!actor->state.Attachments().HasId(166)) {
+      if (!actor->HasId(166)) {
         CRagEffect* effect = actor->LaunchEffect(166, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         if (effect) {
           effect->SendMsg(nullptr, 44, 0, 0xFFFF, 169, 0, 0, 0);
         }
       }
     } else if (options & 0x4000) {
-      if (!actor->state.Attachments().HasId(617)) {
+      if (!actor->HasId(617)) {
         actor->LaunchEffect(617, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
     }
 
-    if ((options & 0x8) && !actor->state.Attachments().HasId(203)) {
+    if ((options & 0x8) && !actor->HasId(203)) {
       actor->LaunchEffect(203, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
-    if ((options & 0x10) && !actor->state.Attachments().HasId(254)) {
+    if ((options & 0x10) && !actor->HasId(254)) {
       actor->LaunchEffect(254, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       actor->LaunchEffect(1132, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
-    if ((options & 0x1000) && !actor->state.Attachments().HasId(418)) {
+    if ((options & 0x1000) && !actor->HasId(418)) {
       actor->LaunchEffect(418, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       actor->LaunchEffect(544, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
-    if ((options & 0x2000) && !actor->state.Attachments().HasId(419)) {
+    if ((options & 0x2000) && !actor->HasId(419)) {
       actor->LaunchEffect(419, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
-    if ((options & 0x8000) && !actor->state.Attachments().HasId(424)) {
+    if ((options & 0x8000) && !actor->HasId(424)) {
       actor->LaunchEffect(424, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
-    if ((options & 0x20000) && !actor->state.Attachments().HasId(586)) {
+    if ((options & 0x20000) && !actor->HasId(586)) {
       actor->LaunchEffect(586, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
-    if ((options & 0x10000) && !actor->state.Attachments().HasId(655)) {
+    if ((options & 0x10000) && !actor->HasId(655)) {
       actor->LaunchEffect(655, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
-    if ((options & 0x40) && !actor->state.Attachments().HasId(474)) {
+    if ((options & 0x40) && !actor->HasId(474)) {
       actor->LaunchEffect(474, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
-    if ((options & 0x100) && !actor->state.Attachments().HasId(382)) {
+    if ((options & 0x100) && !actor->HasId(382)) {
       actor->LaunchEffect(382, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
-    if ((options & 0x80) && !actor->state.Attachments().HasId(368)) {
+    if ((options & 0x80) && !actor->HasId(368)) {
       actor->LaunchEffect(368, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
-    if ((options & 0x200) && !actor->state.Attachments().HasId(394)) {
+    if ((options & 0x200) && !actor->HasId(394)) {
       actor->LaunchEffect(394, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
-    if ((options & 0x400) && !actor->state.Attachments().HasId(396)) {
+    if ((options & 0x400) && !actor->HasId(396)) {
       actor->LaunchEffect(396, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
 
@@ -2319,10 +2319,10 @@ void CGameMode::sub_D591A0(std::uint32_t aid, int state, int flag, int options) 
       actor->SetColor(-1, 64, 64, 64);
     }
 
-    if ((options & 0x800) && !actor->state.Attachments().HasId(375)) {
+    if ((options & 0x800) && !actor->HasId(375)) {
       actor->LaunchEffect(375, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
-    if ((options & 0x40000) && !actor->state.Attachments().HasId(744)) {
+    if ((options & 0x40000) && !actor->HasId(744)) {
       actor->LaunchEffect(744, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     return;
@@ -2343,75 +2343,75 @@ void CGameMode::sub_D591A0(std::uint32_t aid, int state, int flag, int options) 
   }
 
   if (options & 0x2) {
-    if (!actor->state.Attachments().HasId(420)) {
+    if (!actor->HasId(420)) {
       actor->LaunchEffect(420, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
   } else {
-    while (actor->state.Attachments().HasId(420)) {
+    while (actor->HasId(420)) {
       actor->SendMsg(nullptr, 109, 0, 420, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       actor->LaunchEffect(540, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
   }
 
   if (options & 0x4) {
-    if (!actor->state.Attachments().HasId(427)) {
+    if (!actor->HasId(427)) {
       actor->LaunchEffect(427, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
   } else {
-    while (actor->state.Attachments().HasId(427)) {
+    while (actor->HasId(427)) {
       actor->SendMsg(nullptr, 109, 0, 427, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
   }
 
   if (options & 0x10) {
-    if (!actor->state.Attachments().HasId(254)) {
+    if (!actor->HasId(254)) {
       actor->LaunchEffect(254, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       actor->LaunchEffect(1132, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
   } else {
-    while (actor->state.Attachments().HasId(254)) {
+    while (actor->HasId(254)) {
       actor->SendMsg(nullptr, 109, 0, 254, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       actor->SendMsg(nullptr, 109, 0, 1132, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
   }
 
   if (options & 0x10000) {
-    if (!actor->state.Attachments().HasId(655)) {
+    if (!actor->HasId(655)) {
       actor->LaunchEffect(655, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
   } else {
-    while (actor->state.Attachments().HasId(655)) {
+    while (actor->HasId(655)) {
       actor->SendMsg(nullptr, 109, 0, 655, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       actor->LaunchEffect(656, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
   }
 
   if (options & 0x8000) {
-    if (!actor->state.Attachments().HasId(667)) {
+    if (!actor->HasId(667)) {
       actor->LaunchEffect(667, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
   } else {
-    while (actor->state.Attachments().HasId(667)) {
+    while (actor->HasId(667)) {
       actor->SendMsg(nullptr, 109, 0, 667, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
   }
 
   if (options & 0x800) {
-    if (!actor->state.Attachments().HasId(375)) {
+    if (!actor->HasId(375)) {
       actor->LaunchEffect(375, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
   } else {
-    while (actor->state.Attachments().HasId(375)) {
+    while (actor->HasId(375)) {
       actor->SendMsg(nullptr, 109, 0, 375, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
   }
 
   if (options & 0x40000) {
-    if (!actor->state.Attachments().HasId(744)) {
+    if (!actor->HasId(744)) {
       actor->LaunchEffect(744, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
   } else {
-    while (actor->state.Attachments().HasId(744)) {
+    while (actor->HasId(744)) {
       actor->SendMsg(nullptr, 109, 0, 744, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
   }
@@ -3826,20 +3826,20 @@ void CGameMode::Zc_Spirits2(const unsigned char* data) {
 
   CRagEffect* effect;
   if (actor->GetEffectiveJob(-1) == 4038) {
-    if (actor->state.Attachments().HasId(504) || packet->accountId == 0) {
+    if (actor->HasId(504) || packet->accountId == 0) {
       return;
     }
 
     effect = actor->LaunchEffect(504, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   } else if (actor->GetEffectiveJob(-1) == 24 || actor->GetEffectiveJob(-1) == 4215 || actor->GetEffectiveJob(-1) == 4228 ||
              actor->GetEffectiveJob(-1) == 4229 || actor->GetEffectiveJob(-1) == 4306) {
-    if (actor->state.Attachments().HasId(629) || packet->accountId == 0) {
+    if (actor->HasId(629) || packet->accountId == 0) {
       return;
     }
 
     effect = actor->LaunchEffect(629, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   } else {
-    if (actor->state.Attachments().HasId(228) || packet->accountId == 0) {
+    if (actor->HasId(228) || packet->accountId == 0) {
       return;
     }
 
@@ -6259,7 +6259,7 @@ void CGameMode::ApplyStatusChange(
     case 358:
       if (aid == g_session.m_aid) {
         CPlayer* player = this->scene->player;
-        while (player->state.Attachments().HasId(752)) {
+        while (player->HasId(752)) {
           player->SendMsg(nullptr, 109, 0, 752, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         }
         std::sprintf(message, "");
@@ -17506,7 +17506,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     }
     break;
   case 0x18B:
-    if (source != nullptr && !source->state.Attachments().HasId(0x18A)) {
+    if (source != nullptr && !source->HasId(0x18A)) {
       source->LaunchEffect(0x18A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     g_soundMgr->PlayWave("effect\\달빛.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
@@ -17539,9 +17539,9 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case 0x19B:
     if (source != nullptr) {
-      if (source->state.Attachments().HasId(0x1BB)) {
+      if (source->HasId(0x1BB)) {
         source->LaunchEffect(0x1BC, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      } else if (!source->state.Attachments().HasId(0x1BA)) {
+      } else if (!source->HasId(0x1BA)) {
         source->LaunchEffect(0x1BA, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
     }
@@ -17557,12 +17557,12 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case 0x1A9:
     if (source != nullptr) {
       g_soundMgr->PlayWave("effect\\T_바람방출.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      while (source->state.Attachments().HasId(0x1CD)) {
+      while (source->HasId(0x1CD)) {
         source->SendMsg(nullptr, 0x6D, 0, 0x1CD, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       source->LaunchEffect(0x1CD, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       const int effectId = effectLevel + 0x1D2;
-      while (source->state.Attachments().HasId(effectId)) {
+      while (source->HasId(effectId)) {
         source->SendMsg(nullptr, 0x6D, 0, effectId, effectId >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       source->LaunchEffect(effectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -17570,11 +17570,11 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case 0x1AA:
     if (source != nullptr) {
-      if (source->state.Attachments().HasId(0x1BE)) {
+      if (source->HasId(0x1BE)) {
         source->SendMsg(nullptr, 0x6D, 0, 0x1BE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       source->LaunchEffect(0x1BE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      while (source->state.Attachments().HasId(0x1BD)) {
+      while (source->HasId(0x1BD)) {
         source->SendMsg(nullptr, 0x6D, 0, 0x1BD, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
     }
@@ -18327,7 +18327,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case 0x806:
     if (target != nullptr) {
       g_soundMgr->PlayWave("effect\\AB_duplelight.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      if (!target->state.Attachments().HasId(0x341)) {
+      if (!target->HasId(0x341)) {
         CRagEffect* effect = target->LaunchEffect(0x341, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         vector3d scale{2.0f, 0.0f, 0.0f};
         if (effect) {
@@ -18897,7 +18897,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case 0xA04:
     if (source != nullptr) {
       source->LaunchEffect(0x1BE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      while (source->state.Attachments().HasId(0x430)) {
+      while (source->HasId(0x430)) {
         source->SendMsg(nullptr, 0x6D, 0, 0x430, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
     }
@@ -18922,7 +18922,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     if (source != nullptr) {
       source->LaunchEffect(0x1BE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_effectMgr->Spawn(source->render.accountId, 0x4B3, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      while (source->state.Attachments().HasId(0x1BD)) {
+      while (source->HasId(0x1BD)) {
         source->SendMsg(nullptr, 0x6D, 0, 0x1BD, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
     }
@@ -19025,7 +19025,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     }
     break;
   case 0x1392:
-    if (source != nullptr && !source->state.Attachments().HasId(0x439)) {
+    if (source != nullptr && !source->HasId(0x439)) {
       vector3d position = source->render.position;
       if (CRagEffect* effect = source->LaunchEffect(0x439, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
         const std::int64_t value = reinterpret_cast<std::intptr_t>(&position);
@@ -19108,7 +19108,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case 0x139F:
     if (source != nullptr) {
       source->LaunchEffect(0x1BE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      while (source->state.Attachments().HasId(0x1BD)) {
+      while (source->HasId(0x1BD)) {
         source->SendMsg(nullptr, 0x6D, 0, 0x1BD, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       source->LaunchEffect(0x19B, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);

@@ -1422,7 +1422,7 @@ void CPc::Slot26(int value) {
     3, g_session.GetAccessorySprName(this->GetEffectiveJob(-1), this->unknown_0260, this->unknown_0440, this->unknown_0454).c_str()
   );
 
-  if (this->state.Attachments().HasId(678)) {
+  if (this->HasId(678)) {
     this->SendMsg(nullptr, 109, 0, 678, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     this->SendMsg(nullptr, 109, 0, 679, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     this->SendMsg(nullptr, 109, 0, 680, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -3219,12 +3219,12 @@ void CPlayer::ReapplySkillEffects() {
           effectId = 5;
         }
         effectId += 0x1DA;
-        if (!this->state.Attachments().HasId(effectId)) {
+        if (!this->HasId(effectId)) {
           this->LaunchEffect(0x1E7, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
           g_soundMgr->PlayWave("effect\\_blind.wav", 0.0f, -100.0f, 0.0f, 250, 40, 1.0f, 0);
         }
         for (int id = 0x1DB; id < 0x1E5; ++id) {
-          if (this->state.Attachments().HasId(id) == true) {
+          if (this->HasId(id) == true) {
             this->SendMsg(nullptr, 109, 0, id, id >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
           }
         }
@@ -3256,7 +3256,7 @@ void CPlayer::ReapplySkillEffects() {
       this->LaunchEffect(0x24A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
     case 0x15E: {
-      while (this->state.Attachments().HasId(0x341)) {
+      while (this->HasId(0x341)) {
         this->SendMsg(nullptr, 109, 0, 0x341, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       CRagEffect* effect = this->LaunchEffect(0x341, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -3273,7 +3273,7 @@ void CPlayer::ReapplySkillEffects() {
       this->LaunchEffect(0x170, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
     case 0x1BD: {
-      while (this->state.Attachments().HasId(0x39D)) {
+      while (this->HasId(0x39D)) {
         this->SendMsg(nullptr, 109, 0, 0x39D, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       CRagEffect* effect = this->LaunchEffect(0x39D, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -3367,19 +3367,19 @@ void CPlayer::ReapplySkillEffects() {
       }
       break;
     case 0x1C4:
-      if (this->state.Attachments().HasId(0x57) == true) {
+      if (this->HasId(0x57) == true) {
         this->SendMsg(nullptr, 109, 0, 0x57, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       this->LaunchEffect(0x57, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
     case 0x1C5:
-      if (this->state.Attachments().HasId(0x31F) == true) {
+      if (this->HasId(0x31F) == true) {
         this->SendMsg(nullptr, 109, 0, 0x31F, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       this->LaunchEffect(0x31F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
     case 0x1C0:
-      if (this->state.Attachments().HasId(0x360) == true) {
+      if (this->HasId(0x360) == true) {
         this->SendMsg(nullptr, 109, 0, 0x360, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       this->LaunchEffect(0x360, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -3396,37 +3396,37 @@ void CPlayer::ReapplySkillEffects() {
       this->SendMsg(nullptr, 110, 0, type, type >> 31, 1, 0, g_session.unknown_5C1C, g_session.unknown_5C1C >> 31, 0, 0, 0, 0, 0, 0);
       break;
     case 0x2CD:
-      while (this->state.Attachments().HasId(0x418)) {
+      while (this->HasId(0x418)) {
         this->SendMsg(this, 109, 0, 0x418, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       this->LaunchEffect(0x418, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
     case 0x2DF:
-      while (this->state.Attachments().HasId(0x194)) {
+      while (this->HasId(0x194)) {
         this->SendMsg(this, 109, 0, 0x194, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       this->LaunchEffect(0x194, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
     case 0x2E1:
-      while (this->state.Attachments().HasId(0x41E)) {
+      while (this->HasId(0x41E)) {
         this->SendMsg(this, 109, 0, 0x41E, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       this->LaunchEffect(0x41E, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
     case 0x2E0:
-      while (this->state.Attachments().HasId(0x41F)) {
+      while (this->HasId(0x41F)) {
         this->SendMsg(this, 109, 0, 0x41F, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       this->LaunchEffect(0x41F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
     case 0x2CC:
-      while (this->state.Attachments().HasId(0x421)) {
+      while (this->HasId(0x421)) {
         this->SendMsg(this, 109, 0, 0x421, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       this->LaunchEffect(0x421, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
     case 0x291:
-      while (this->state.Attachments().HasId(0x3EB)) {
+      while (this->HasId(0x3EB)) {
         this->SendMsg(this, 109, 0, 0x3EB, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       this->LaunchEffect(0x3EB, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -3439,13 +3439,13 @@ void CPlayer::ReapplySkillEffects() {
           static_cast<CEnergyOrbEffect*>(orb)->SetCount(10);
         }
       }
-      while (this->state.Attachments().HasId(0x3C3)) {
+      while (this->HasId(0x3C3)) {
         this->SendMsg(nullptr, 109, 0, 0x3C3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       this->LaunchEffect(0x3C3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
     case 0x290:
-      while (this->state.Attachments().HasId(0x3EC)) {
+      while (this->HasId(0x3EC)) {
         this->SendMsg(nullptr, 109, 0, 0x3EC, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       this->LaunchEffect(0x3EC, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -3463,7 +3463,7 @@ void CPlayer::ReapplySkillEffects() {
       }
       break;
     case 0x2DA:
-      while (this->state.Attachments().HasId(0x410)) {
+      while (this->HasId(0x410)) {
         this->SendMsg(nullptr, 109, 0, 0x410, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       this->LaunchEffect(0x410, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -3472,7 +3472,7 @@ void CPlayer::ReapplySkillEffects() {
       break;
     case 0x14E:
     case 0x365: {
-      while (this->state.Attachments().HasId(0x318)) {
+      while (this->HasId(0x318)) {
         this->SendMsg(nullptr, 109, 0, 0x318, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       CRagEffect* effect = this->LaunchEffect(0x318, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -3590,7 +3590,7 @@ void CPlayer::ReapplySkillEffects() {
       }
       break;
     case 0x4B5:
-      if (this->state.Attachments().HasId(0x14E) == true) {
+      if (this->HasId(0x14E) == true) {
         this->SendMsg(nullptr, 109, 0, 0x14E, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       this->LaunchEffect(0x14E, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -3692,7 +3692,7 @@ void CPlayer::ReapplySkillEffects() {
       }
       break;
     case 0x48D:
-      if (!this->state.Attachments().HasId(0x64A)) {
+      if (!this->HasId(0x64A)) {
         this->LaunchEffect(0x64A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
@@ -3710,12 +3710,12 @@ void CPlayer::ReapplySkillEffects() {
       }
       break;
     case 0x526:
-      if (!this->state.Attachments().HasId(0x8E5)) {
+      if (!this->HasId(0x8E5)) {
         this->LaunchEffect(0x8E5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
     case 0x527:
-      if (!this->state.Attachments().HasId(0x8E6)) {
+      if (!this->HasId(0x8E6)) {
         this->LaunchEffect(0x8E6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;

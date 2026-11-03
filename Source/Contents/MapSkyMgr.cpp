@@ -223,7 +223,7 @@ void CWeatherEffect::Process() {
     }
   }
 
-  if (this->effect && !static_cast<EffectActor*>(this->actor)->state.Attachments().Contains(reinterpret_cast<const RagEffectState*>(this->effect))) {
+  if (this->effect && !static_cast<EffectActor*>(this->actor)->Contains(reinterpret_cast<const RagEffectState*>(this->effect))) {
     this->effect = nullptr;
   }
 

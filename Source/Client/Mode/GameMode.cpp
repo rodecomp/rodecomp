@@ -3219,7 +3219,7 @@ void CGameMode::PlayItemUseEffect(int itemId, std::uint32_t aid) {
   }
 
   if (effectId > 0) {
-    while (static_cast<EffectActor*>(actor)->state.Attachments().HasId(effectId)) {
+    while (static_cast<EffectActor*>(actor)->HasId(effectId)) {
       actor->SendMsg(nullptr, 109, 0, effectId, effectId >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     if (g_effectMgr->HasAllocator(effectId)) {
@@ -3230,7 +3230,7 @@ void CGameMode::PlayItemUseEffect(int itemId, std::uint32_t aid) {
   }
 
   if (secondEffectId > 0) {
-    while (static_cast<EffectActor*>(actor)->state.Attachments().HasId(secondEffectId)) {
+    while (static_cast<EffectActor*>(actor)->HasId(secondEffectId)) {
       actor->SendMsg(nullptr, 109, 0, secondEffectId, secondEffectId >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     if (g_effectMgr->HasAllocator(secondEffectId)) {
@@ -3777,7 +3777,7 @@ void CGameMode::ProcessMouseWheel(int requireControl) {
       g_cameraDistance = static_cast<float>(this->viewParameters[0]);
     }
     maxDistance = static_cast<float>(this->viewParameters[1] + this->viewParameters[0]);
-  } else if (zoomSkill.level <= 0 && this->scene->player->render.unknown_0070 == 6 && !this->scene->player->state.Attachments().HasId(0x14E)) {
+  } else if (zoomSkill.level <= 0 && this->scene->player->render.unknown_0070 == 6 && !this->scene->player->HasId(0x14E)) {
     switch (g_session.m_job) {
     case 0xFCF:
     case 0x1082:

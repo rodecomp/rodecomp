@@ -543,7 +543,7 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
     case 0x94:
       this->render.unknown_00A4Bytes[1] = 1;
       this->sub_E55320(this->GetTrapModelName());
-      if (this->render.enabled && !this->state.Attachments().HasId(0x91)) {
+      if (this->render.enabled && !this->HasId(0x91)) {
         this->LaunchEffect(0x91, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       return;
@@ -636,7 +636,7 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
       this->m_effectId = 0x6B;
       this->render.unknown_00A4Bytes[1] = 0;
       this->sub_E55320(this->GetTrapModelName());
-      if (!this->state.Attachments().HasId(0x91)) {
+      if (!this->HasId(0x91)) {
         this->LaunchEffect(0x91, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       return;
@@ -940,7 +940,7 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
 
     this->render.enabled = 1;
     this->sub_E55320(this->GetTrapModelName());
-    if (this->GetEffectiveJob(-1) == 0x94 && !this->state.Attachments().HasId(0x91)) {
+    if (this->GetEffectiveJob(-1) == 0x94 && !this->HasId(0x91)) {
       this->LaunchEffect(0x91, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
 

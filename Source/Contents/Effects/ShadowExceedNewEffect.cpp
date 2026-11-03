@@ -5,7 +5,6 @@
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/Camera/Camera.h"
 #include "Contents/Effects/EffectActor.h"
-#include "Contents/Effects/EffectAttachments.h"
 #include "Contents/Effects/EffectMemoryMgr.h"
 #include "Contents/Effects/Particle.h"
 #include "Contents/World/World.h"
@@ -85,7 +84,7 @@ bool CShadowExceedNew::Slot06() {
     if (this->frontEmitters.size() != 0 && this->backEmitters.size() != 0) {
       return true;
     }
-    if (!static_cast<EffectActor*>(actor)->state.Attachments().HasId(1004)) {
+    if (!static_cast<EffectActor*>(actor)->HasId(1004)) {
       static_cast<EffectActor*>(actor)->LaunchEffect(1004, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
   }

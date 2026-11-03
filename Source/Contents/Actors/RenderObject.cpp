@@ -5132,7 +5132,7 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
       this->SendMsg(nullptr, 140, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       break;
     case 8:
-      while (this->state.Attachments().HasId(802)) {
+      while (this->HasId(802)) {
         this->SendMsg(nullptr, 109, 0, 802, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       break;
@@ -5186,7 +5186,7 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
       this->SendMsg(nullptr, 139, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       break;
     case 8:
-      if (!this->state.Attachments().HasId(802)) {
+      if (!this->HasId(802)) {
         this->LaunchEffect(802, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
@@ -5209,7 +5209,7 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
     if (this->render.accountId == g_session.m_aid) {
       g_playerPoisoned = 1;
     }
-    if (!this->state.Attachments().HasId(812)) {
+    if (!this->HasId(812)) {
       this->render.unknown_00A3 = 1;
       color[1] = 0x80;
       color[2] = 0xFF;
@@ -5229,7 +5229,7 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
     g_soundMgr->PlayWave(
       "_poison.wav", this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0
     );
-    if (this->render.accountId == g_session.m_aid && !mode->scene->player->state.Attachments().HasId(335)) {
+    if (this->render.accountId == g_session.m_aid && !mode->scene->player->HasId(335)) {
       this->LaunchEffect(335, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
   }
@@ -5281,7 +5281,7 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
       g_soundMgr->PlayWave(
         "_blind.wav", this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0
       );
-      if (this->render.accountId == g_session.m_aid && !mode->scene->player->state.Attachments().HasId(334)) {
+      if (this->render.accountId == g_session.m_aid && !mode->scene->player->HasId(334)) {
         this->LaunchEffect(334, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
     }
@@ -5840,7 +5840,7 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
   case 2328:
     this->SetSequenceInterval(6);
     this->SetFrameSequence(0x60, 1, 2, 0x60, 2, 1, g_session.FindUnknown0778(this->render.accountId), 0);
-    if (!this->state.Attachments().HasId(0x378)) {
+    if (!this->HasId(0x378)) {
       static_cast<CMode*>(g_modeMgr.GetGameMode())->SendMsg(122, 0, 0, 0, 0);
       g_soundMgr->PlayWave("effect\\SR_EARTHSHAKER.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       this->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);

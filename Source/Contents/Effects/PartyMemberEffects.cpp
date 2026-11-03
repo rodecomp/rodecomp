@@ -186,7 +186,7 @@ bool PartyMemberEffects::Enabled() const {
 // INLINED
 void PartyMemberEffects::EnsurePartyEffect(std::uint32_t accountId) {
   EffectActor* actor = static_cast<EffectActor*>(this->mode->scene->GetGameActorByAID(accountId));
-  if (actor && !actor->state.Attachments().HasId(160)) {
+  if (actor && !actor->HasId(160)) {
     actor->LaunchEffect(160, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   }
 }

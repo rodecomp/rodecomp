@@ -2931,7 +2931,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     g_soundMgr->PlayWave("effect\\LG_RAGEBURST.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   case 0x910:
-    if (!source->state.Attachments().HasId(0x37A)) {
+    if (!source->HasId(0x37A)) {
       source->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       source->LaunchEffect(0x37A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\LG_MOONSLASHER.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
@@ -2959,7 +2959,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     g_soundMgr->PlayWave("effect\\SR_DRAGONCOMBO.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   case 0x917:
-    if (!source->state.Attachments().HasId(0x37A)) {
+    if (!source->HasId(0x37A)) {
       source->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       source->LaunchEffect(0x37A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\SR_SKYNETBLOW.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
@@ -3248,7 +3248,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     break;
   case 0x20F3:
     target->LaunchEffect(0x1D2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    if (!target->state.Attachments().HasId(0x1CC)) {
+    if (!target->HasId(0x1CC)) {
       target->LaunchEffect(0x1CC, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;

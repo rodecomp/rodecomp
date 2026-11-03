@@ -878,7 +878,7 @@ void CGameMode::ReceiveEffectRemove(const unsigned char* data) {
 
   CRenderObject* actor = this->scene->GetGameActorByAidIncludeMe(packet->aid);
   if (actor) {
-    while (static_cast<EffectActor*>(actor)->state.Attachments().HasId(packet->effectId)) {
+    while (static_cast<EffectActor*>(actor)->HasId(packet->effectId)) {
       actor->SendMsg(nullptr, 109, 0, packet->effectId, packet->effectId >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
   }
@@ -1145,7 +1145,7 @@ void CGameMode::ReceiveActorEffect228(const unsigned char* data) {
 
   if (packet->state == 0) {
     actor->SendMsg(nullptr, 109, 0, 228, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-  } else if (packet->state != 1 || static_cast<EffectActor*>(actor)->state.Attachments().HasId(228)) {
+  } else if (packet->state != 1 || static_cast<EffectActor*>(actor)->HasId(228)) {
     return;
   }
 
@@ -1501,35 +1501,35 @@ void CGameMode::ReceiveItemEffectResult(const unsigned char* data) {
     text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(430), item.DisplayName(0).c_str()));
     break;
   case 2:
-    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->state.Attachments().HasId(305)) {
+    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->HasId(305)) {
       static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, 109, 0, 305, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(305, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     text = FormatOwnedString(LookupMessage(431), item.DisplayName(0).c_str()).c_str();
     break;
   case 3:
-    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->state.Attachments().HasId(306)) {
+    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->HasId(306)) {
       static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, 109, 0, 306, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(306, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     text = FormatOwnedString(LookupMessage(430), item.DisplayName(0).c_str()).c_str();
     break;
   case 4:
-    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->state.Attachments().HasId(1015)) {
+    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->HasId(1015)) {
       static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, 109, 0, 1015, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(1015, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     text = FormatOwnedString(LookupMessage(431), item.DisplayName(0).c_str()).c_str();
     break;
   case 5:
-    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->state.Attachments().HasId(1016)) {
+    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->HasId(1016)) {
       static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, 109, 0, 1016, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(1016, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     text = FormatOwnedString(LookupMessage(430), item.DisplayName(0).c_str()).c_str();
     break;
   case 6: {
-    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->state.Attachments().HasId(1017)) {
+    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->HasId(1017)) {
       static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, 109, 0, 1017, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(1017, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -1541,7 +1541,7 @@ void CGameMode::ReceiveItemEffectResult(const unsigned char* data) {
     break;
   }
   case 7: {
-    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->state.Attachments().HasId(1018)) {
+    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->HasId(1018)) {
       static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, 109, 0, 1018, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(1018, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -6741,7 +6741,7 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
     case 358:
       if (packet->aid == g_session.m_aid) {
         CPlayer* player = this->scene->player;
-        while (player->state.Attachments().HasId(752)) {
+        while (player->HasId(752)) {
           player->SendMsg(nullptr, 109, 0, 752, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         }
       }
@@ -6804,7 +6804,7 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
     case 730:
       if (packet->aid == g_session.m_aid) {
         CPlayer* player = this->scene->player;
-        while (player->state.Attachments().HasId(1040)) {
+        while (player->HasId(1040)) {
           player->SendMsg(nullptr, 109, 0, 1040, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         }
       }
@@ -6812,7 +6812,7 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
     case 755:
       if (packet->aid == g_session.m_aid) {
         CPlayer* player = this->scene->player;
-        while (player->state.Attachments().HasId(1061)) {
+        while (player->HasId(1061)) {
           player->SendMsg(nullptr, 109, 0, 1061, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         }
       }

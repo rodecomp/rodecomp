@@ -965,7 +965,7 @@ void CEfstAction_CHOP_CHOP::Slot01(int efstId, int argument2, int argument3, int
 // OFFSET: 0x005B6A70
 // FUNCTION: fn_03403
 void CWhirlwindEffect::Init(EffectActor* parent, int id, vector3d deltaPos) {
-  if (parent && !parent->state.Attachments().HasId(0x98C)) {
+  if (parent && !parent->HasId(0x98C)) {
     parent->render.instant.Set(25, static_cast<std::int64_t>(parent->render.angle * 1000.0f));
   }
 

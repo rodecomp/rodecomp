@@ -5,7 +5,6 @@
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/Camera/Camera.h"
 #include "Contents/Effects/EffectActor.h"
-#include "Contents/Effects/EffectAttachments.h"
 #include "Contents/Effects/EffectMemoryMgr.h"
 #include "Contents/Effects/Particle.h"
 #include "Contents/World/World.h"
@@ -28,7 +27,7 @@ void CShadowExceed::Close() {
 
   CRenderObject* actor = FindRenderObject(this->actor);
   if (actor) {
-    while (static_cast<EffectActor*>(actor)->state.Attachments().HasId(1004) == true) {
+    while (static_cast<EffectActor*>(actor)->HasId(1004) == true) {
       actor->SendMsg(nullptr, 109, 0, 1004, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
   }
@@ -119,7 +118,7 @@ void CShadowExceed::Slot03() {
     this->unknown_00D8 = 1;
     CRenderObject* actor = FindRenderObject(this->actor);
     if (actor) {
-      while (static_cast<EffectActor*>(actor)->state.Attachments().HasId(1004) == true) {
+      while (static_cast<EffectActor*>(actor)->HasId(1004) == true) {
         actor->SendMsg(nullptr, 109, 0, 1004, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       static_cast<EffectActor*>(actor)->LaunchEffect(1004, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);

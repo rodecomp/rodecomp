@@ -526,7 +526,7 @@ void CEfstAction_SHADOW_CLOCK::Slot00(int efstId, int value, int argument3, int 
 // FUNCTION: fn_08742
 void CEfstAction_SHADOW_CLOCK::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    while (static_cast<EffectActor*>(actor)->state.Attachments().HasId(963)) {
+    while (static_cast<EffectActor*>(actor)->HasId(963)) {
       actor->SendMsg(nullptr, 109, 0, 963, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
   }
