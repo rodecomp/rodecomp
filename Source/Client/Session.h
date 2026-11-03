@@ -617,6 +617,10 @@ public:
   void SetHotkeyDescription(const char* description, int index);
   void SetHotkeyDescription(const char* description, std::uint32_t skillLevel, int index);
   void SetHotkeySkillLevel(std::uint32_t skillLevel, int index);
+  int RotateShortcut(int index, int bank) const;
+  void AssignShortcut(unsigned char type, std::uint32_t id, int level, int slot, int bank);
+  void AssignItemShortcut(std::uint32_t id, int slot);
+  void ClearAdditionalShortcutSkills();
   bool IsPetAccessory(int itemId);
   void AddItemSlot(ITEM_INFO item);
   SessionShop* GetShop(int shopId);

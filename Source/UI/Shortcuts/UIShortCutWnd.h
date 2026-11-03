@@ -5,13 +5,10 @@
 #include "UI/Shortcuts/ShortcutGrid.h"
 #include "UI/Window/UIFrameWnd.h"
 
-struct ShortcutBindings;
 struct ShortcutPainting;
 struct ShortcutPress;
 struct ShortcutDrop;
-struct ShortcutTooltip;
 struct ShortcutDetails;
-struct ShortcutUse;
 struct CooldownClock;
 struct ModeDragState;
 struct NormalItemSlot;
@@ -19,13 +16,10 @@ struct NormalItemSlotWindow;
 class AutomaticSkills;
 
 struct ShortcutWindowContext {
-  ShortcutBindings& bindings;
   ShortcutPainting& painting;
   ShortcutPress& press;
   ShortcutDrop& drop;
-  ShortcutTooltip& tooltip;
   ShortcutDetails& details;
-  ShortcutUse& use;
   AutomaticSkills& automatic;
   const CooldownClock& clock;
   bool& itemSlotActive;

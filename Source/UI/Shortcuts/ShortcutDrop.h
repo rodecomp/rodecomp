@@ -2,14 +2,14 @@
 #define RAGNAROK_SOURCE_UI_SHORTCUTS_SHORTCUTDROP_H
 
 #include "Contents/Items/ItemInfo.h"
-#include "UI/Shortcuts/ShortcutBindings.h"
+#include "Script/LuaScript.h"
+#include "Client/Mode/ModeEvents.h"
 #include "UI/Shortcuts/ShortcutGrid.h"
 
 class UIWindow;
 struct ModeDragState;
 
 struct ShortcutDrop {
-  ShortcutBindings& bindings;
   LuaScript& script;
   ModeEvents*& mode;
   const std::list<ITEM_INFO>& inventory;

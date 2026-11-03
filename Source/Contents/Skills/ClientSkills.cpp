@@ -15,7 +15,6 @@
 #include "File/File.h"
 #include "Network/TextEncoding.h"
 #include "Script/LuaScript.h"
-#include "UI/Shortcuts/ShortcutBindings.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowDialogs.h"
@@ -824,18 +823,18 @@ float GetSkillFactor(int job) {
 
 // OFFSET: 0x00E084B0
 // FUNCTION: fn_23761
-void ShortcutBindings::ClearAdditionalSkills(const unsigned char& currentRow, LuaScript& script, ModeEvents& modeEvents) {
+void CSession::ClearAdditionalShortcutSkills() {
   for (int slot = 0; slot < 36; ++slot) {
-    const NormalItemSlot& value = this->banks[0][slot];
+    const NormalItemSlot& value = this->m_shortcutSlots[slot];
     if (value.itemId != 0 && value.unknown_0000 != 0 && value.itemId >= 10000 && value.itemId < 10020) {
-      this->Assign(1, 0, 0, slot, 0, currentRow, script, modeEvents);
+      this->AssignShortcut(1, 0, 0, slot, 0);
     }
   }
 
   for (int slot = 0; slot < 36; ++slot) {
-    const NormalItemSlot& value = this->banks[1][slot];
+    const NormalItemSlot& value = this->m_secondaryShortcutSlots[slot];
     if (value.itemId != 0 && value.unknown_0000 != 0 && value.itemId >= 10000 && value.itemId < 10020) {
-      this->Assign(1, 0, 0, slot, 1, currentRow, script, modeEvents);
+      this->AssignShortcut(1, 0, 0, slot, 1);
     }
   }
 }

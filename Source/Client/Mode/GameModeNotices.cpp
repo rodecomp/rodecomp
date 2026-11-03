@@ -7153,44 +7153,9 @@ struct GuildMemberLeftPacket2 {
 };
 #pragma pack(pop)
 
-#include "Script/LuaScript.h"
-#include "UI/Shortcuts/ShortcutBindings.h"
-
-class GameModeEvents final : public ModeEvents {
-public:
-  // INLINED
-  std::intptr_t SendModeMessage(int event, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override {
-    return g_modeMgr.GetGameMode()->SendMsg(
-      event, static_cast<int>(argument1), static_cast<int>(argument2), static_cast<int>(argument3), static_cast<int>(argument4)
-    );
-  }
-};
-
 // INLINED
 void ClearGuildShortcutSkills() {
-  ClientSkills skills{
-    g_session.m_skillBundle,
-    g_session.m_homunSkills,
-    g_session.m_mercSkills,
-    g_session.m_additionalSkills,
-    reinterpret_cast<const int&>(g_session.m_jobFlags),
-    g_activeSkillEffects
-  };
-  const SkillUseLevels levels{
-    g_session.m_skillBundle.unknown_0064, *reinterpret_cast<const std::vector<int>*>(g_session.unknown_0710), g_session.m_homunSkillLevels
-  };
-  ShortcutBindings bindings{
-    {g_session.m_shortcutSlots, g_session.m_secondaryShortcutSlots},
-    g_session.m_normalItemSlots,
-    g_session.unknown_06FC,
-    g_session.unknown_06FC,
-    g_session.unknown_06A8,
-    skills,
-    reinterpret_cast<ShortcutCooldowns&>(g_session.m_requestTimers),
-    levels
-  };
-  GameModeEvents events;
-  bindings.ClearAdditionalSkills(g_session.m_hotkeyPage, *g_session.m_hotkeyScript, events);
+  g_session.ClearAdditionalShortcutSkills();
 }
 
 // OFFSET: 0x00D48C60

@@ -4,7 +4,7 @@
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "UI/Shortcuts/ShortcutActivation.h"
-#include "UI/Shortcuts/ShortcutBindings.h"
+#include "Contents/Skills/ClientSkills.h"
 #include "UI/Shortcuts/ShortcutControlEvents.h"
 #include "UI/Shortcuts/ShortcutCooldowns.h"
 #include "UI/Shortcuts/ShortcutDetails.h"
@@ -12,8 +12,6 @@
 #include "UI/Shortcuts/ShortcutLayout.h"
 #include "UI/Shortcuts/ShortcutPainting.h"
 #include "UI/Shortcuts/ShortcutPress.h"
-#include "UI/Shortcuts/ShortcutTooltip.h"
-#include "UI/Shortcuts/ShortcutUse.h"
 #include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/Shortcuts/UIShortCutWnd.h"
 #include "UI/Chat/ChatSuggestions.h"
@@ -30,6 +28,8 @@
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/InputFocus.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowDialogs.h"
+#include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Window/UIWindowCallBtnWnd.h"
 #include "UI/Window/UIRoMapWnd.h"
 #include "UI/Window/UINavigationWnd.h"
@@ -187,11 +187,6 @@ void UIShortCutWnd::Slot26(int x, int y) {
   );
 }
 
-// OFFSET: 0x00932050
-void UIShortCutWnd::Slot28(int x, int y) {
-  this->m_shortcuts->tooltip.Hover(*this, this->m_grid, x, y, this->m_slots, this->m_itemSlots);
-}
-
 // OFFSET: 0x009316F0
 // FUNCTION: fn_12705
 void UIShortCutWnd::Slot31(int x, int y) {
@@ -338,39 +333,46 @@ inline void ShortcutLayout::Persist() {
 }
 
 // INLINED
-inline void ShortcutUse::Use(const NormalItemSlot& slot) {
+inline void UseShortcutSlot(const NormalItemSlot& slot) {
   if (g_session.GetOption(5) > 0 || slot.itemId == 0) {
     return;
   }
 
   if (slot.unknown_0000 != 0) {
-    CSkillInfo skill = this->skills.Lookup(slot.itemId);
+    CSkillInfo skill = ClientSkills{
+        g_session.m_skillBundle,
+        g_session.m_homunSkills,
+        g_session.m_mercSkills,
+        g_session.m_additionalSkills,
+        reinterpret_cast<const int&>(g_session.m_jobFlags),
+        g_activeSkillEffects
+      }.Lookup(slot.itemId);
     if (skill.MatchesShortcut(&slot)) {
       int level = slot.unknown_0005;
       if ((skill.id == 6579 || skill.id == 6580) && skill.level < level) {
         level = skill.level;
       }
 
-      this->mode->SendModeMessage(113, reinterpret_cast<std::intptr_t>(&skill), level, 0, 0);
+      static_cast<CMode*>(g_charViewMode)->SendMsg(113, reinterpret_cast<int>(&skill), level, 0, 0);
     }
 
     return;
   }
 
-  ITEM_INFO item = LookupClientItem(this->inventory, static_cast<int>(slot.itemId), 1);
+  ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(slot.itemId), 1);
   if (item.unknown_0000[1] == 0) {
     return;
   }
 
-  ModeEvents* mode = this->mode;
+  CMode* mode = g_modeMgr.GetGameMode();
 
-  const auto use = [&]() { mode->SendModeMessage(27, item.unknown_0000[1], 0, 0, 0); };
+  const auto use = [&]() { mode->SendMsg(27, item.unknown_0000[1], 0, 0, 0); };
 
   switch (item.unknown_0000[0]) {
   case 0:
   case 1:
   case 2:
-    if (item.GetItemId() != 12802 || this->dialogs.Confirm(LookupMessage(2373), 2, 0, 0, "Message", 280, 120) != 188) {
+    if (item.GetItemId() != 12802 || reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2373), 2, false, false, 0, "Message", 280, 120, 0) != 188) {
       use();
     }
 
@@ -381,19 +383,19 @@ inline void ShortcutUse::Use(const NormalItemSlot& slot) {
   case 17:
   case 19:
     if (item.unknown_0000[3] == 0x8000) {
-      mode->SendModeMessage(87, item.unknown_0000[1], item.unknown_0000[2], 0, 0);
+      mode->SendMsg(87, item.unknown_0000[1], item.unknown_0000[2], 0, 0);
     }
 
     break;
 
   case 18:
-    if (this->itemConfirmationState >= 0) {
+    if (*reinterpret_cast<const int*>(&g_session.unknown_16F4[4]) >= 0) {
       const std::string name = item.DisplayName(0);
       char text[4096];
 
       _snprintf_s(text, sizeof(text), _TRUNCATE, LookupMessage(1226), name.c_str());
 
-      if (this->dialogs.Confirm(text, 2, 0, 0, "Message", 280, 120) == 187) {
+      if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) == 187) {
         use();
       }
     }
@@ -402,7 +404,7 @@ inline void ShortcutUse::Use(const NormalItemSlot& slot) {
 
   default:
     if (item.unknown_0000[2] != 0 && item.unknown_0000[3] == 0 && item.identified != 0) {
-      mode->SendModeMessage(19, item.unknown_0000[1], item.unknown_0000[2], 0, 0);
+      mode->SendMsg(19, item.unknown_0000[1], item.unknown_0000[2], 0, 0);
     }
 
     break;
@@ -416,7 +418,7 @@ int UIShortCutWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 
   switch (message) {
   case 6: {
-    ShortcutControlEvents events{*this, this->m_grid, this->m_controls, owner.bindings.cooldowns, owner.itemSlotActive};
+    ShortcutControlEvents events{*this, this->m_grid, this->m_controls, reinterpret_cast<ShortcutCooldowns&>(g_session.m_requestTimers), owner.itemSlotActive};
     events.Click(static_cast<int>(a));
     return 0;
   }
@@ -438,10 +440,63 @@ int UIShortCutWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     return 0;
   }
 
-  case 23:
-    owner.bindings.Refresh(this->m_slots, this->m_itemSlots);
+  case 23: {
+    ShortcutCooldowns& cooldowns = reinterpret_cast<ShortcutCooldowns&>(g_session.m_requestTimers);
+    ClientSkills skills{
+      g_session.m_skillBundle,
+      g_session.m_homunSkills,
+      g_session.m_mercSkills,
+      g_session.m_additionalSkills,
+      reinterpret_cast<const int&>(g_session.m_jobFlags),
+      g_activeSkillEffects
+    };
+    const SkillUseLevels levels{
+      g_session.m_skillBundle.unknown_0064, *reinterpret_cast<const std::vector<int>*>(g_session.unknown_0710), g_session.m_homunSkillLevels
+    };
+    for (int index = 0; index < 36; ++index) {
+      const int source = g_session.RotateShortcut(index, g_session.unknown_06FC);
+      if (g_session.unknown_06FC == 0 || g_session.unknown_06FC == 1) {
+        this->m_slots[index] = &(g_session.unknown_06FC == 0 ? g_session.m_shortcutSlots : g_session.m_secondaryShortcutSlots)[source];
+      }
+
+      NormalItemSlot& slot = *this->m_slots[index];
+      if (slot.itemId == 0 || slot.unknown_0000 == 0) {
+        continue;
+      }
+
+      CSkillInfo skill = skills.bundle.Lookup(slot.itemId, skills.classMode, skills.HasEffect(1717), skills.HasEffect(1716));
+      if (skill.available == 0) {
+        const auto record = std::find_if(cooldowns.records.begin(), cooldowns.records.end(), [&](const ShortcutCooldownRecord& value) {
+          return value.id == slot.itemId;
+        });
+        if (record != cooldowns.records.end()) {
+          const auto value = std::find_if(record->main.begin(), record->main.end(), [&](const CooldownState& state) { return state.slot == index; });
+          if (value != record->main.end()) {
+            record->main.erase(value);
+          }
+        }
+
+        skill = skills.LookupFirst(slot.itemId);
+        if (skill.available == 0) {
+          skill = skills.LookupOther(slot.itemId);
+        }
+
+        if (skill.available == 0) {
+          skill = skills.LookupAdditional(slot.itemId);
+        }
+      }
+
+      if (skill.available != 0 && skill.level != 0 && levels.Lookup(static_cast<int>(skill.id)) == 0) {
+        slot.unknown_0005 = static_cast<std::int16_t>(skill.level);
+      }
+    }
+
+    for (int index = 0; index < 9; ++index) {
+      this->m_itemSlots[index] = &g_session.m_normalItemSlots[index];
+    }
     this->Invalidate();
     return 0;
+  }
 
   case 34: {
     ShortcutLayout layout{
@@ -462,12 +517,12 @@ int UIShortCutWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 
   case 41: {
     const int index = 9 * static_cast<int>(b) + static_cast<int>(a);
-    owner.use.Use(*this->m_slots[index]);
+    UseShortcutSlot(*this->m_slots[index]);
     return 0;
   }
 
   case 143:
-    if (owner.bindings.cooldowns.RotateRows(static_cast<int>(a), static_cast<int>(b), owner.rotation0, owner.rotation1, owner.clock)) {
+    if (reinterpret_cast<ShortcutCooldowns&>(g_session.m_requestTimers).RotateRows(static_cast<int>(a), static_cast<int>(b), g_session.unknown_06FC, g_session.unknown_06A8, owner.clock)) {
       this->SendMsg(nullptr, 23, 0, 0, 0, 0);
     }
 

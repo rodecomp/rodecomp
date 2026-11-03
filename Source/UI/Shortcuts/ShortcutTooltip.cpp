@@ -1,15 +1,18 @@
 #include "Client/Session.h"
 #include "Contents/Hotkeys/HotkeyInfo.h"
 #include "Contents/MessageTable.h"
-#include "UI/Shortcuts/ShortcutTooltip.h"
+#include "Client/Mode/ModeTooltip.h"
+#include "Contents/Skills/ClientSkills.h"
+#include "UI/Shortcuts/UIShortCutWnd.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Window/UIWindow.h"
+#include "UI/Window/UINewSelectCharWnd.h"
 
 #include <stdio.h>
 
 namespace {
   // INLINED
-  void ToScreen(const UIWindow& window, int& x, int& y) {
+  void ScreenPosition(const UIWindow& window, int& x, int& y) {
     x = (x + window.geometry.x);
     y = (y + window.geometry.y);
 
@@ -22,8 +25,11 @@ namespace {
 
 // OFFSET: 0x00932050
 // FUNCTION: fn_12711
-void ShortcutTooltip::Hover(UIWindow& window, ShortcutGrid& grid, int x, int y, const NormalItemSlot* const* slots, const NormalItemSlot* const* itemSlots) {
-  const int column = grid.HitTest(x, y, this->itemSlotActive, this->currentRow);
+void UIShortCutWnd::Slot28(int x, int y) {
+  UIWindow& window = *this;
+  ShortcutGrid& grid = this->m_grid;
+  const bool itemSlotActive = this->m_shortcuts->itemSlotActive;
+  const int column = grid.HitTest(x, y, itemSlotActive, g_session.m_hotkeyPage);
   if (column != grid.hovered) {
     grid.hovered = column;
     window.Invalidate();
@@ -38,16 +44,16 @@ void ShortcutTooltip::Hover(UIWindow& window, ShortcutGrid& grid, int x, int y, 
   int tooltipY = -17;
 
   if (9 * grid.rows <= index) {
-    if (!this->itemSlotActive) {
+    if (!itemSlotActive) {
       return;
     }
 
-    const NormalItemSlot& slot = *itemSlots[grid.hovered];
+    const NormalItemSlot& slot = *this->m_itemSlots[grid.hovered];
     if (slot.itemId == 0) {
       return;
     }
 
-    ITEM_INFO item = LookupClientItem(this->inventory, static_cast<int>(slot.itemId), 1);
+    ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(slot.itemId), 1);
     if (item.unknown_0000[1] == 0) {
       return;
     }
@@ -55,10 +61,10 @@ void ShortcutTooltip::Hover(UIWindow& window, ShortcutGrid& grid, int x, int y, 
     const std::string name = item.DisplayName(0);
     char text[4096];
     _snprintf_s(text, sizeof(text), _TRUNCATE, LookupMessage(183), name.c_str(), item.unknown_0000[1]);
-    ToScreen(window, tooltipX, tooltipY);
+    ScreenPosition(window, tooltipX, tooltipY);
 
-    if (this->services) {
-      this->services->Tooltip(text, tooltipX, tooltipY, -1, false, true);
+    if (g_charViewMode) {
+      reinterpret_cast<ModeTooltip*>(g_charViewMode)->Show(text, tooltipX, tooltipY, -1, 0, 1);
     }
 
     return;
@@ -67,9 +73,9 @@ void ShortcutTooltip::Hover(UIWindow& window, ShortcutGrid& grid, int x, int y, 
   HotkeyInfo hotkey;
   const int bank = g_session.GetOption(10);
   if (bank == 0) {
-    hotkey = GetHotkeyInfo(this->script, 0, index);
+    hotkey = GetHotkeyInfo(*g_session.m_hotkeyScript, 0, index);
   } else if (bank == 1) {
-    hotkey = GetHotkeyInfo(this->script, 3, index);
+    hotkey = GetHotkeyInfo(*g_session.m_hotkeyScript, 3, index);
   }
 
   std::string shortcut;
@@ -77,14 +83,21 @@ void ShortcutTooltip::Hover(UIWindow& window, ShortcutGrid& grid, int x, int y, 
     shortcut = std::move(hotkey.text);
   }
 
-  ToScreen(window, tooltipX, tooltipY);
+  ScreenPosition(window, tooltipX, tooltipY);
   std::string text;
-  const NormalItemSlot& slot = *slots[index];
+  const NormalItemSlot& slot = *this->m_slots[index];
 
   if (slot.itemId == 0) {
     text = shortcut;
   } else if (slot.unknown_0000 != 0) {
-    CSkillInfo skill = this->skills.Lookup(slot.itemId);
+    CSkillInfo skill = ClientSkills{
+        g_session.m_skillBundle,
+        g_session.m_homunSkills,
+        g_session.m_mercSkills,
+        g_session.m_additionalSkills,
+        reinterpret_cast<const int&>(g_session.m_jobFlags),
+        g_activeSkillEffects
+      }.Lookup(slot.itemId);
     if (!skill.MatchesShortcut(&slot)) {
       text = shortcut;
     } else {
@@ -93,12 +106,12 @@ void ShortcutTooltip::Hover(UIWindow& window, ShortcutGrid& grid, int x, int y, 
         level = skill.level;
       }
 
-      const int sp = skill.UseSpAmount(this->script, level);
-      const int ap = skill.UseApAmount(this->script, level);
-      text = SkillTooltip(shortcut.c_str(), skill.DisplayName(this->script), level, sp, ap, SkillUsesPercentSp(static_cast<int>(skill.id)));
+      const int sp = skill.UseSpAmount(*g_session.m_hotkeyScript, level);
+      const int ap = skill.UseApAmount(*g_session.m_hotkeyScript, level);
+      text = SkillTooltip(shortcut.c_str(), skill.DisplayName(*g_session.m_hotkeyScript), level, sp, ap, SkillUsesPercentSp(static_cast<int>(skill.id)));
     }
   } else {
-    ITEM_INFO item = LookupClientItem(this->inventory, static_cast<int>(slot.itemId), 1);
+    ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(slot.itemId), 1);
     if (item.unknown_0000[1] == 0) {
       text = shortcut;
     } else {
@@ -109,5 +122,5 @@ void ShortcutTooltip::Hover(UIWindow& window, ShortcutGrid& grid, int x, int y, 
     }
   }
 
-  this->services->Tooltip(text.c_str(), tooltipX, tooltipY, -1, false, true);
+  reinterpret_cast<ModeTooltip*>(g_charViewMode)->Show(text.c_str(), tooltipX, tooltipY, -1, 0, 1);
 }

@@ -39,7 +39,7 @@ namespace {
 // OFFSET: 0x00917640
 // FUNCTION: fn_12589
 void ShortcutDrop::Drop(UIWindow& window, ShortcutGrid& grid, int x, int y, const ModeDragState& value) {
-  const int bank = this->bindings.mode;
+  const int bank = g_session.unknown_06FC;
 
   if (value.skill != 0) {
     const std::string copiedName = value.skillName;
@@ -54,7 +54,14 @@ void ShortcutDrop::Drop(UIWindow& window, ShortcutGrid& grid, int x, int y, cons
         return;
       }
 
-      CSkillInfo skill = this->bindings.skills.Lookup(id);
+      CSkillInfo skill = ClientSkills{
+        g_session.m_skillBundle,
+        g_session.m_homunSkills,
+        g_session.m_mercSkills,
+        g_session.m_additionalSkills,
+        reinterpret_cast<const int&>(g_session.m_jobFlags),
+        g_activeSkillEffects
+      }.Lookup(id);
       if ((skill.level == 0 && skill.available == 0) || grid.rows <= this->currentRow) {
         if (this->mode) {
           this->mode->SendModeMessage(18, 0, 0, 0, 0);
@@ -63,20 +70,20 @@ void ShortcutDrop::Drop(UIWindow& window, ShortcutGrid& grid, int x, int y, cons
         return;
       }
 
-      this->bindings.Assign(1, skill.id, value.skillLevel, index, bank, this->currentRow, this->script, *this->mode);
+      g_session.AssignShortcut(1, skill.id, value.skillLevel, index, bank);
 
       if (originalSlot != index) {
-        RemoveFirst(this->bindings.cooldowns, index);
+        RemoveFirst(reinterpret_cast<ShortcutCooldowns&>(g_session.m_requestTimers), index);
       }
 
       const std::uint32_t key = Grouped(skill.id) ? 9999 : skill.id;
 
       const auto record =
-        std::find_if(this->bindings.cooldowns.records.begin(), this->bindings.cooldowns.records.end(), [&](const ShortcutCooldownRecord& entry) {
+        std::find_if(reinterpret_cast<ShortcutCooldowns&>(g_session.m_requestTimers).records.begin(), reinterpret_cast<ShortcutCooldowns&>(g_session.m_requestTimers).records.end(), [&](const ShortcutCooldownRecord& entry) {
           return entry.id == key;
         });
 
-      if (record != this->bindings.cooldowns.records.end() && record->end > timeGetTime()) {
+      if (record != reinterpret_cast<ShortcutCooldowns&>(g_session.m_requestTimers).records.end() && record->end > timeGetTime()) {
         const auto previous = std::find_if(record->main.begin(), record->main.end(), [&](const CooldownState& state) { return state.slot == originalSlot; });
         const int targetX = 29 * column + 16;
         const int targetY = 33 * this->currentRow + 4;
@@ -91,21 +98,28 @@ void ShortcutDrop::Drop(UIWindow& window, ShortcutGrid& grid, int x, int y, cons
 
       Refresh(window);
     } else if (originalSlot != -1) {
-      CSkillInfo skill = this->bindings.skills.Lookup(id);
+      CSkillInfo skill = ClientSkills{
+        g_session.m_skillBundle,
+        g_session.m_homunSkills,
+        g_session.m_mercSkills,
+        g_session.m_additionalSkills,
+        reinterpret_cast<const int&>(g_session.m_jobFlags),
+        g_activeSkillEffects
+      }.Lookup(id);
       const std::uint32_t key = Grouped(skill.id) ? 9999 : skill.id;
       const auto record =
-        std::find_if(this->bindings.cooldowns.records.begin(), this->bindings.cooldowns.records.end(), [&](const ShortcutCooldownRecord& entry) {
+        std::find_if(reinterpret_cast<ShortcutCooldowns&>(g_session.m_requestTimers).records.begin(), reinterpret_cast<ShortcutCooldowns&>(g_session.m_requestTimers).records.end(), [&](const ShortcutCooldownRecord& entry) {
           return entry.id == key;
         });
 
-      if (record != this->bindings.cooldowns.records.end()) {
+      if (record != reinterpret_cast<ShortcutCooldowns&>(g_session.m_requestTimers).records.end()) {
         const auto previous = std::find_if(record->main.begin(), record->main.end(), [&](const CooldownState& state) { return state.slot == originalSlot; });
         if (previous != record->main.end()) {
           record->main.erase(previous);
         }
       }
 
-      this->bindings.Assign(1, 0, 0, originalSlot, bank, this->currentRow, this->script, *this->mode);
+      g_session.AssignShortcut(1, 0, 0, originalSlot, bank);
       Refresh(window);
     }
 
@@ -131,7 +145,7 @@ void ShortcutDrop::Drop(UIWindow& window, ShortcutGrid& grid, int x, int y, cons
     const int column = grid.HitTest(x, y, this->itemSlotActive, this->currentRow);
     if (column != -1 && 9 * grid.rows <= 9 * this->currentRow + column) {
       if (this->itemSlotActive) {
-        this->bindings.AssignItem(static_cast<std::uint32_t>(item.GetItemId()), column);
+        g_session.AssignItemShortcut(static_cast<std::uint32_t>(item.GetItemId()), column);
         Refresh(window);
       }
 
@@ -149,9 +163,9 @@ void ShortcutDrop::Drop(UIWindow& window, ShortcutGrid& grid, int x, int y, cons
       const int column = grid.HitTest(x, y, this->itemSlotActive, this->currentRow);
       if (column != -1 && grid.rows > this->currentRow) {
         const int index = 9 * this->currentRow + column;
-        this->bindings.Assign(0, static_cast<std::uint32_t>(item.GetItemId()), 0, index, bank, this->currentRow, this->script, *this->mode);
+        g_session.AssignShortcut(0, static_cast<std::uint32_t>(item.GetItemId()), 0, index, bank);
         if (value.slot != index) {
-          RemoveFirst(this->bindings.cooldowns, index);
+          RemoveFirst(reinterpret_cast<ShortcutCooldowns&>(g_session.m_requestTimers), index);
         }
 
         Refresh(window);
