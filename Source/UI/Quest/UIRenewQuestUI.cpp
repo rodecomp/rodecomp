@@ -1,5 +1,5 @@
 #include "UI/Quest/UIRenewQuestUI.h"
-#include "Client/ReplayPacketRecorder.h"
+#include "Client/Replay.h"
 #include "Contents/MessageTable.h"
 #include "Contents/RenewQuestMgr.h"
 #include "Network/Connection/Connection.h"

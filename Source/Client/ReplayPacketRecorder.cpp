@@ -1,6 +1,5 @@
 #include "Client/Mode/ModeDragState.h"
 #include "Client/Replay.h"
-#include "Client/ReplayPacketRecorder.h"
 #include "Client/Session.h"
 #include "Network/Packets/PacketLengths.h"
 #include "Network/Packets/PacketId.h"
@@ -16,7 +15,7 @@
 
 // OFFSET: 0x00B86880
 // FUNCTION: fn_19332
-bool ReplayPacketRecorder::Record(std::uint16_t bytes, const void* packet, int event, std::uint32_t delay) {
+bool Replay::Record(std::uint16_t bytes, const void* packet, int event, std::uint32_t delay) {
   if (bytes == 0 || !packet) {
     return false;
   }
@@ -25,7 +24,7 @@ bool ReplayPacketRecorder::Record(std::uint16_t bytes, const void* packet, int e
   std::memcpy(&id, packet, sizeof(id));
 
   if (id != ID_REPLAY_WINDOW_RESPONSE) {
-    if (this->lengths.IsRecorded(id) == 0) {
+    if (g_packetLengths.IsRecorded(id) == 0) {
       return false;
     }
 
@@ -37,7 +36,7 @@ bool ReplayPacketRecorder::Record(std::uint16_t bytes, const void* packet, int e
     case ID_ZC_GUILD_CHAT:
     case ID_ZC_BATTLEFIELD_CHAT:
     case ID_ZC_ALLY_CHAT:
-      if (this->recordRestricted == 0) {
+      if (this->header.options.recordRestricted == 0) {
         return false;
       }
 
@@ -58,9 +57,9 @@ bool ReplayPacketRecorder::Record(std::uint16_t bytes, const void* packet, int e
   }
 
   std::memcpy(record.data() + 10, packet, bytes);
-  this->cipherKey = this->key1 >> 3;
+  this->cipherKey = this->header.key1 >> 3;
   this->cipherIndex = 0;
-  this->cipherBase = this->key0 >> 5;
+  this->cipherBase = this->header.key0 >> 5;
 
   for (unsigned index = 0; index < bytes / 4u; ++index) {
     std::uint32_t word;
@@ -95,7 +94,7 @@ void UIWindow::RecordResponse(int response, std::intptr_t b, std::intptr_t c, st
 #pragma pack(pop)
   static_assert(sizeof(Response) == 26);
   const Response packet{0x038408AEu, 26, this->geometry.id, response, {static_cast<std::uint32_t>(b), static_cast<std::uint32_t>(c), static_cast<std::uint32_t>(d)}};
-  reinterpret_cast<ReplayPacketRecorder*>(&Replay::Instance())->Record(sizeof(packet), &packet, 42, 0);
+  Replay::Instance().Record(sizeof(packet), &packet, 42, 0);
 }
 
 // OFFSET: 0x00B86AB0
@@ -306,7 +305,7 @@ void UIWindow::RecordDrop(int x, int y, const ModeDragState& drag, int target) {
   packet.optionCount = drag.optionCount;
   std::memcpy(packet.options, drag.options, sizeof(packet.options));
 
-  reinterpret_cast<ReplayPacketRecorder*>(&Replay::Instance())->Record(packet.bytes, &packet, 42, 0);
+  Replay::Instance().Record(packet.bytes, &packet, 42, 0);
 }
 
 // OFFSET: 0x00A83180
@@ -344,7 +343,7 @@ void UIWindow::RecordValues(int value, int argument1, int argument2, int argumen
   packet.arguments[1] = argument2;
   packet.arguments[2] = argument3;
   packet.arguments[3] = argument4;
-  reinterpret_cast<ReplayPacketRecorder*>(&Replay::Instance())->Record(packet.bytes, &packet, 42, 0);
+  Replay::Instance().Record(packet.bytes, &packet, 42, 0);
 }
 
 // OFFSET: 0x00A83440
@@ -361,5 +360,5 @@ void UIWindow::RecordText(int event, const char* text) {
   packet.windowId = this->geometry.id;
   packet.event = event;
   std::memcpy(packet.text, text, std::min(static_cast<int>(std::strlen(text)), 100));
-  reinterpret_cast<ReplayPacketRecorder*>(&Replay::Instance())->Record(packet.bytes, &packet, 42, 0);
+  Replay::Instance().Record(packet.bytes, &packet, 42, 0);
 }

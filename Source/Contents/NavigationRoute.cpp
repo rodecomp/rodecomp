@@ -4,7 +4,6 @@
 #include "Utility/Text/FormatString.h"
 #include "Client/Registry.h"
 #include "Client/Replay.h"
-#include "Client/ReplayPacketRecorder.h"
 #include "Client/Session.h"
 #include "Resource/ResourceMgr.h"
 #include "Network/Connection/Connection.h"
@@ -709,23 +708,7 @@ bool CNavigationManager::sub_B99030(std::string name, int type, unsigned char mo
       record.id = id;
       std::memcpy(packet, &record, sizeof(record));
 
-      Replay& replay = Replay::Instance();
-      ReplayPacketRecorder recorder = {
-        g_packetLengths,
-        replay.baseFrame,
-        replay.started,
-        replay.frame,
-        replay.header.key0,
-        replay.header.key1,
-        replay.header.options.recordRestricted,
-        replay.file,
-        replay.fileOffset,
-        replay.records,
-        replay.cipherIndex,
-        replay.cipherBase,
-        replay.cipherKey,
-      };
-      recorder.Record(static_cast<std::uint16_t>(record.length), packet, 0x29, 0);
+      Replay::Instance().Record(static_cast<std::uint16_t>(record.length), packet, 0x29, 0);
     }
   }
   return true;
@@ -1330,23 +1313,7 @@ bool CNavigationManager::SetDestinationMap(std::string mapName, int x, int y) {
       record.y = y;
       std::memcpy(packet, &record, sizeof(record));
 
-      Replay& replay = Replay::Instance();
-      ReplayPacketRecorder recorder = {
-        g_packetLengths,
-        replay.baseFrame,
-        replay.started,
-        replay.frame,
-        replay.header.key0,
-        replay.header.key1,
-        replay.header.options.recordRestricted,
-        replay.file,
-        replay.fileOffset,
-        replay.records,
-        replay.cipherIndex,
-        replay.cipherBase,
-        replay.cipherKey,
-      };
-      recorder.Record(static_cast<std::uint16_t>(record.length), packet, 0x29, 0);
+      Replay::Instance().Record(static_cast<std::uint16_t>(record.length), packet, 0x29, 0);
     }
   }
 

@@ -3,7 +3,6 @@
 #include "Client/Input/InputCharset.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Replay.h"
-#include "Client/ReplayPacketRecorder.h"
 #include "Client/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Items/ItemDescription.h"

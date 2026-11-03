@@ -1,6 +1,5 @@
 #include "Render/DeviceContext/DCSurface.h"
 #include "Render/Text/FontCache.h"
-#include "Client/ReplayPacketRecorder.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"

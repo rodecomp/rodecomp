@@ -1,5 +1,4 @@
 #include "Client/Replay.h"
-#include "Client/ReplayPacketRecorder.h"
 #include "Client/ReplayRecordOption.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
@@ -72,7 +71,7 @@ void UIWindowMgr::RecordWindowPacket(int argument) {
     packet.header = 0x038D08AE;
     packet.length = 10;
     packet.value = static_cast<std::uint32_t>(argument);
-    reinterpret_cast<ReplayPacketRecorder*>(&Replay::Instance())->Record(10, &packet, 42, 0);
+    Replay::Instance().Record(10, &packet, 42, 0);
   }
 }
 

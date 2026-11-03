@@ -35,7 +35,6 @@
 #include "Client/Mode/ModeEvents.h"
 #include "Client/Mode/ModeDragState.h"
 #include "Client/Replay.h"
-#include "Client/ReplayPacketRecorder.h"
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Render/Renderer.h"
 #include "Render/Textures/SpriteAtlas.h"

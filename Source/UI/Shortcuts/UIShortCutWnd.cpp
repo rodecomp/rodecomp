@@ -37,7 +37,7 @@
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
 #include "Client/Application/Launcher.h"
-#include "Client/ReplayPacketRecorder.h"
+#include "Client/Replay.h"
 #include "Contents/NavigationManager.h"
 #include "UI/Window/UINavigationWnd.h"
 #include "Utility/Text/FormatString.h"

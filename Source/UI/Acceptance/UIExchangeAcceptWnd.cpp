@@ -5,7 +5,7 @@
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/MessageTable.h"
 #include "Client/Mode/ModeEvents.h"
-#include "Client/ReplayPacketRecorder.h"
+#include "Client/Replay.h"
 #include "Contents/UserData/NormalItemSlots.h"
 #include "File/ShortcutFilename.h"
 #include "UI/Buttons/UIButton.h"

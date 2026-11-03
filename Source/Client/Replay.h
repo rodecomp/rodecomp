@@ -118,6 +118,7 @@ public:
     }
   }
 
+  bool Record(std::uint16_t bytes, const void* packet, int event, std::uint32_t delay);
   bool WriteSection(int id, std::vector<unsigned char>& bytes, int event);
   int WriteHeader(int event);
   std::vector<unsigned char> BuildMetadata();

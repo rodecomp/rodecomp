@@ -1,7 +1,6 @@
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Replay.h"
-#include "Client/ReplayPacketRecorder.h"
 #include "Client/Session.h"
 #include "Contents/Actors/Npc.h"
 #include "Contents/Actors/Pc.h"
@@ -419,23 +418,7 @@ void CGameMode::sub_CEB8E0() {
   std::memcpy(record.buffer + record.firstLength, this->unknown_03E0.data(), record.secondLength);
   record.length = static_cast<std::int16_t>(offsetof(GameModeTextRecord, buffer) + record.firstLength + record.secondLength);
 
-  Replay& replay = Replay::Instance();
-  ReplayPacketRecorder recorder = {
-    g_packetLengths,
-    replay.baseFrame,
-    replay.started,
-    replay.frame,
-    replay.header.key0,
-    replay.header.key1,
-    replay.header.options.recordRestricted,
-    replay.file,
-    replay.fileOffset,
-    replay.records,
-    replay.cipherIndex,
-    replay.cipherBase,
-    replay.cipherKey,
-  };
-  recorder.Record(static_cast<std::uint16_t>(record.length), &record, 0x2A, 0);
+  Replay::Instance().Record(static_cast<std::uint16_t>(record.length), &record, 0x2A, 0);
 }
 
 // OFFSET: 0x00CEBF30
@@ -861,23 +844,7 @@ void __stdcall sub_CE8F10(const void* info, const unsigned char* data) {
   std::memcpy(&packet.info, info, sizeof(packet.info));
   std::memcpy(packet.data, data, sizeof(packet.data));
 
-  Replay& replay = Replay::Instance();
-  ReplayPacketRecorder recorder = {
-    g_packetLengths,
-    replay.baseFrame,
-    replay.started,
-    replay.frame,
-    replay.header.key0,
-    replay.header.key1,
-    replay.header.options.recordRestricted,
-    replay.file,
-    replay.fileOffset,
-    replay.records,
-    replay.cipherIndex,
-    replay.cipherBase,
-    replay.cipherKey,
-  };
-  recorder.Record(packet.length, &packet, 0x2A, 0);
+  Replay::Instance().Record(packet.length, &packet, 0x2A, 0);
 }
 
 // OFFSET: 0x00CDFAF0
@@ -924,23 +891,7 @@ bool CGameMode::RecordReplayMessage(int message, int value, int first, int secon
   record.first = first;
   record.second = second;
 
-  Replay& replay = Replay::Instance();
-  ReplayPacketRecorder recorder = {
-    g_packetLengths,
-    replay.baseFrame,
-    replay.started,
-    replay.frame,
-    replay.header.key0,
-    replay.header.key1,
-    replay.header.options.recordRestricted,
-    replay.file,
-    replay.fileOffset,
-    replay.records,
-    replay.cipherIndex,
-    replay.cipherBase,
-    replay.cipherKey,
-  };
-  recorder.Record(record.length, &record, 0x2A, 0);
+  Replay::Instance().Record(record.length, &record, 0x2A, 0);
   return true;
 }
 

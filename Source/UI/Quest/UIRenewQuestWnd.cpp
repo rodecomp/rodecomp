@@ -3,7 +3,7 @@
 #include "UI/Quest/UIRenewQuestWnd.h"
 
 #include "Client/Application/ApplicationWindow.h"
-#include "Client/ReplayPacketRecorder.h"
+#include "Client/Replay.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/MessageTable.h"

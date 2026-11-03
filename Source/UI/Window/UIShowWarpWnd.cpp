@@ -1,6 +1,6 @@
 #include "UI/Window/UIShowWarpWnd.h"
 #include "UI/Buttons/UIBitmapButton.h"
-#include "Client/ReplayPacketRecorder.h"
+#include "Client/Replay.h"
 #include "Client/Session.h"
 #include "Contents/MessageTable.h"
 #include "UI/Lists/UIListBox.h"

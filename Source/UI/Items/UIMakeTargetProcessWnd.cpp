@@ -2,7 +2,6 @@
 
 #include "Client/Mode/ModeDragState.h"
 #include "Client/Mode/ModeMgr.h"
-#include "Client/ReplayPacketRecorder.h"
 #include "Client/Replay.h"
 #include "Client/Session.h"
 #include "Contents/Items/ItemDescription.h"

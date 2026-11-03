@@ -1,7 +1,7 @@
 #include "Client/Mode/CMode.h"
 #include "Contents/MessageTable.h"
 #include "Client/Mode/ModeEvents.h"
-#include "Client/ReplayPacketRecorder.h"
+#include "Client/Replay.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Acceptance/UIJoinPartyAcceptWnd.h"
 #include "UI/Text/UITextViewer.h"

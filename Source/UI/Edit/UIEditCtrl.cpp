@@ -2,7 +2,6 @@
 #include "Client/Input/InputCharset.h"
 #include "Client/Input/Language.h"
 #include "Client/Replay.h"
-#include "Client/ReplayPacketRecorder.h"
 #include "File/File.h"
 #include "Network/TextEncoding.h"
 #include "Render/DeviceContext/DeviceContext.h"

@@ -12,7 +12,6 @@
 #include "Client/Input/Language.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Replay.h"
-#include "Client/ReplayPacketRecorder.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/MessageTable.h"
 #include "Contents/NavigationManager.h"
@@ -2254,7 +2253,7 @@ int UIWindow::RecordEditTexts() {
   record.bytes = static_cast<std::uint16_t>(offset);
   record.marker = 0x038608AEu;
   record.windowId = this->geometry.id;
-  reinterpret_cast<ReplayPacketRecorder*>(&Replay::Instance())->Record(record.bytes, &record, 41, 0);
+  Replay::Instance().Record(record.bytes, &record, 41, 0);
   return offset;
 }
 

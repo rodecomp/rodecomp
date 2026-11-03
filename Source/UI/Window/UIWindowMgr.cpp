@@ -5,7 +5,6 @@
 #include "Client/Input/Mouse.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Replay.h"
-#include "Client/ReplayPacketRecorder.h"
 #include "Client/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Configuration/ServiceOptions.h"
@@ -2528,23 +2527,7 @@ bool UIWindowMgr::CloseWindow(int id) {
     static_assert(sizeof(WindowClosePacket) == 10);
     WindowClosePacket packet{0x039208AEu, 10, id};
 
-    Replay& replay = Replay::Instance();
-    ReplayPacketRecorder recorder = {
-      g_packetLengths,
-      replay.baseFrame,
-      replay.started,
-      replay.frame,
-      replay.header.key0,
-      replay.header.key1,
-      replay.header.options.recordRestricted,
-      replay.file,
-      replay.fileOffset,
-      replay.records,
-      replay.cipherIndex,
-      replay.cipherBase,
-      replay.cipherKey,
-    };
-    recorder.Record(packet.bytes, &packet, 42, 0);
+    Replay::Instance().Record(packet.bytes, &packet, 42, 0);
   }
 
   switch (id) {

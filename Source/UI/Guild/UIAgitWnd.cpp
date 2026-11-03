@@ -1,7 +1,7 @@
 #include "UI/Guild/UIAgitWnd.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMgr.h"
-#include "Client/ReplayPacketRecorder.h"
+#include "Client/Replay.h"
 #include "Client/Session.h"
 #include "Contents/GuildInfo.h"
 #include "Contents/GuildMgr.h"
