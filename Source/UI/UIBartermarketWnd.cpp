@@ -1136,8 +1136,6 @@ void UIExpandedBarterPurchaseButton::Slot28(int x, int y) {
 
 // GLOBAL: gl_25056
 int g_extraInventorySlots;
-// GLOBAL: gl_25087
-int g_barterValueA;
 // GLOBAL: gl_25088
 int g_barterValueB;
 
@@ -1379,7 +1377,7 @@ int UIBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     }
 
     if (amountById > 0) {
-      const int available = g_barterValueA - g_barterValueB;
+      const int available = g_session.m_maxWeight - g_barterValueB;
       const float remaining = static_cast<float>(available) - g_barterMarketItemMgr->GetTotalAmount();
       if (static_cast<int>(remaining) / amountById < mode->drag.quantity) {
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(56)), 255, 0, 0, 0);
