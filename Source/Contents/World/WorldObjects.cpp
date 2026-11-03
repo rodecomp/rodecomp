@@ -37,7 +37,6 @@
 #include "Contents/GuildMgr.h"
 #include "Contents/Jobs/JobInheritance.h"
 #include "Contents/MessageTable.h"
-#include "Contents/Messenger/ClientMessenger.h"
 #include "Contents/Messenger/WhisperBlockMgr.h"
 #include "File/ShortcutFilename.h"
 #include "Contents/ClanInfo.h"

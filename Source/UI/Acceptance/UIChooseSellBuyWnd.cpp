@@ -101,7 +101,6 @@
 #include "UI/Lists/UIScrollBar.h"
 #include "UI/Lists/UIListBox.h"
 #include "UI/Party/UIPartySettingWnd.h"
-#include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/Shop/ItemDrawing.h"
 #include "UI/Shop/PriceColor.h"
 #include "UI/Shop/UInCash_CallWnd.h"

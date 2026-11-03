@@ -62,7 +62,6 @@
 #include "Contents/ClanInfo.h"
 #include "Contents/GuildMgr.h"
 #include "Contents/Hotkeys/EmotionHotkeys.h"
-#include "Contents/Messenger/ClientMessenger.h"
 #include "UI/Text/TextMarkup.h"
 #include "UI/Dialogs/UIWaitDBSaveWnd.h"
 #include "UI/Text/UITextViewer.h"
@@ -75,7 +74,6 @@
 #include "UI/Chat/UINewChatWnd.h"
 #include "UI/Lists/UITabControl.h"
 #include "UI/Window/UIChatRoomWnd.h"
-#include "UI/Shortcuts/ShortcutVisibility.h"
 #include "Contents/GuildInfo.h"
 
 namespace {

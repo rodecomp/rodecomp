@@ -12,7 +12,7 @@
 #include "UI/Shortcuts/ShortcutLayout.h"
 #include "UI/Shortcuts/ShortcutPainting.h"
 #include "UI/Shortcuts/ShortcutPress.h"
-#include "UI/Shortcuts/ShortcutVisibility.h"
+#include "UI/Window/UIWindowMgr.inl"
 #include "UI/Shortcuts/UIShortCutWnd.h"
 #include "UI/Chat/UINewChatWnd.h"
 #include "UI/Chat/UINewChatWnd.h"

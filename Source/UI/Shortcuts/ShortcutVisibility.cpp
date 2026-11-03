@@ -2,6 +2,7 @@
 #include "Contents/Configuration/ServiceOptions.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/UIWindowMgr.inl"
 #include "UI/Window/WindowOrdering.h"
 
 // OFFSET: 0x00AAA310

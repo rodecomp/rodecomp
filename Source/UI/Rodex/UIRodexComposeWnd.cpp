@@ -10,7 +10,6 @@
 #include "UI/Buttons/UIBmpTextButton.h"
 #include "UI/Edit/ItemTagRetirement.h"
 #include "UI/Edit/UIItemTagCtrl.h"
-#include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/Text/UIStaticText.h"
 #include "Utility/Text/FormatString.h"
 #include "Contents/Items/ItemDescription.h"

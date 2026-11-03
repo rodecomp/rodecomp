@@ -6,7 +6,6 @@
 #include "Client/Session.h"
 #include "Contents/GuildInfo.h"
 #include "Contents/GuildMgr.h"
-#include "Contents/Messenger/ClientMessenger.h"
 #include "Contents/EntryQueueMgr.h"
 #include "Contents/MessageTable.h"
 #include "Render/Renderer.h"

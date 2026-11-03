@@ -23,7 +23,6 @@
 #include "UI/Edit/UIEditCtrl_Currency.h"
 #include "UI/Lists/UIScrollBar.h"
 #include "UI/Lists/UIScrollBarVariants.h"
-#include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/UIStaticBitmap.h"
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Window/UIWindowMgr.h"

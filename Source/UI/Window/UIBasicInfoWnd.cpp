@@ -19,7 +19,6 @@
 #include "UI/Items/UIEquipWnd.h"
 #include "UI/Layout/SnapMgr.h"
 #include "UI/Lists/UITabControl.h"
-#include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/Window/WindowDialogs.h"
 #include "UI/Window/WindowOrdering.h"
 #include "Utility/Text/FormatString.h"

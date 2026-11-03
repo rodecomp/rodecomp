@@ -40,7 +40,6 @@
 #include "UI/Lists/UIScrollBarVariants.h"
 #include "UI/Lists/TableBox.h"
 #include "UI/Text/UITransBalloonText.h"
-#include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/Text/UIString.h"
 #include "UI/Edit/UIEditCtrl_Currency.h"
 #include "Client/Input/Language.h"

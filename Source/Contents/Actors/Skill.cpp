@@ -14,7 +14,6 @@
 #include "Contents/Effects/EffectTypes.h"
 #include "Contents/Effects/RagEffect.h"
 #include "Contents/Ground/TerrainHeight.h"
-#include "Contents/Messenger/ClientMessenger.h"
 #include "Contents/Models/ModelActor.h"
 #include "Contents/Skills/SkillInfo.h"
 #include "Contents/Sound/SoundMgr.h"

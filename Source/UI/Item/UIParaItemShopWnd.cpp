@@ -29,7 +29,6 @@
 #include "UI/Buttons/UICheckBox.h"
 #include "UI/Dialogs/UIPasswordWnd.h"
 #include "UI/Lists/UIScrollBar.h"
-#include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/Text/UIStaticText.h"
 #include "UI/Window/UIResizer.h"
 #include "UI/Window/UIWindowMgr.h"

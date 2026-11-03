@@ -6,7 +6,6 @@
 #include "Resource/ResourceMgr.h"
 #include "Resource/SkinPalette.h"
 #include "UI/Buttons/UITextButton.h"
-#include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/Text/ColoredText.h"
 #include "UI/Text/TextWrapping.h"
 #include "UI/Window/WindowBorder.h"

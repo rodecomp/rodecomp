@@ -14,7 +14,6 @@
 #include "UI/Buttons/UIRadioButton.h"
 #include "UI/Lists/UIVScrollBar.h"
 #include "UI/Shop/PriceColor.h"
-#include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/Text/UIStaticTextControl.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowDialogs.h"

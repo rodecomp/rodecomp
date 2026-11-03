@@ -71,7 +71,6 @@
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/ModeDragState.h"
-#include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/Shop/UIMerchantItemPurchaseMSGWnd.h"
 #include "UI/Lists/UITabControl.h"
 #include "UI/UIGradeEnchantWnd.h"

@@ -495,7 +495,7 @@ void sub_D1FBA0(const unsigned char* data) {
   g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
 
   char buffer[128];
-  const char* format = nullptr;
+  int message;
   switch (packet->result) {
     case 0: {
       std::sprintf(buffer, LookupMessage(821), name);
@@ -511,31 +511,31 @@ void sub_D1FBA0(const unsigned char* data) {
       return;
     }
     case 1:
-      format = LookupMessage(822);
+      message = 822;
       break;
     case 2:
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(819)), 0xFF, 0, 0, 0);
       return;
     case 3:
-      format = LookupMessage(820);
+      message = 820;
       break;
     case 4:
-      format = LookupMessage(2737);
+      message = 2737;
       break;
     case 6:
-      format = LookupMessage(3448);
+      message = 3448;
       break;
     case 7:
-      format = LookupMessage(3449);
+      message = 3449;
       break;
     case 8:
-      format = LookupMessage(3450);
+      message = 3450;
       break;
     default:
       return;
   }
 
-  std::sprintf(buffer, format, name);
+  std::sprintf(buffer, LookupMessage(message), name);
   g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(buffer), 0xFF, 0, 0, 0);
 }
 

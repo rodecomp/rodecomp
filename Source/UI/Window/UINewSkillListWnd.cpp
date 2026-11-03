@@ -24,7 +24,6 @@
 #include "UI/Lists/UITabControl.h"
 #include "UI/Window/WindowMouseHit.h"
 #include "UI/Chat/UINewChatWnd.h"
-#include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/Window/InputFocus.h"
 #include "UI/Window/WindowDialogs.h"
 #include "UI/Skill/UISkillDescribeWnd.h"

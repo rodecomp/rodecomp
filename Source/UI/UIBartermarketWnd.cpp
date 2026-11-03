@@ -17,7 +17,6 @@
 #include "Resource/TextureNames.h"
 #include "UI/Shop/ItemDrawing.h"
 #include "UI/Text/ColoredText.h"
-#include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/Window/UIResizer.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"

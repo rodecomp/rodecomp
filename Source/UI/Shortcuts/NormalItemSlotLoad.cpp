@@ -1,5 +1,5 @@
 #include "UI/Shortcuts/NormalItemSlotLoad.h"
-#include "UI/Shortcuts/ShortcutVisibility.h"
+#include "UI/Window/UIWindowMgr.inl"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/WindowManagerWindows.h"
 

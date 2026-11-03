@@ -8,7 +8,6 @@
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/GuildMgr.h"
 #include "Contents/MessageTable.h"
-#include "Contents/Messenger/ClientMessenger.h"
 #include "Contents/UserData/CharacterConfigSave.h"
 #include "Contents/UserData/NormalItemSlots.h"
 #include "File/ShortcutFilename.h"
