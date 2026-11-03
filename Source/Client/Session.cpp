@@ -7070,14 +7070,7 @@ void SessionMessengerContext::sub_DF33B0() {
   session->LoadLuaDataFiles();
   session->InitWeaponHitWaveNames();
   session->InitResourceNameTables();
-  JobNameInitialization jobNames{*session->m_hotkeyScript,
-                                 *g_luaScript,
-                                 reinterpret_cast<std::vector<const char*>&>(session->unknown_0FC4[0x08]),
-                                 *reinterpret_cast<std::vector<int>*>(session->unknown_0710),
-                                 session->m_skillBundle.unknown_0064,
-                                 session->m_mercSkillLevels,
-                                 session->m_homunSkillLevels};
-  session->InitJobNameTable(jobNames);
+  session->InitJobNameTable();
   session->InitNpcLocationRadius();
   session->InitCommandTables();
   session->ResetCharacterState();

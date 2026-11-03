@@ -6,21 +6,21 @@
 
 // OFFSET: 0x00DE67E0
 // FUNCTION: fn_23495
-void CSession::InitJobNameTable(JobNameInitialization& context) {
+void CSession::InitJobNameTable() {
   this->m_jobNameTable.resize(32003, "Poring");
   const char* name = nullptr;
 
   const auto player = [&](int first, int end) {
     for (int id = first; id < end; ++id) {
-      if (context.playerScript.Call("ReqPCJobName", "d>s", id, &name) && *name != '\0') {
+      if (this->m_hotkeyScript->Call("ReqPCJobName", "d>s", id, &name) && *name != '\0') {
         this->m_jobNameTable[id] = name;
       }
 
-      if (context.playerScript.Call("ReqPCJobNameMan", "d>s", id, &name) && *name != '\0') {
+      if (this->m_hotkeyScript->Call("ReqPCJobNameMan", "d>s", id, &name) && *name != '\0') {
         this->m_jobNameTableMan[id] = name;
       }
 
-      if (context.playerScript.Call("ReqPCJobNameWoman", "d>s", id, &name) && *name != '\0') {
+      if (this->m_hotkeyScript->Call("ReqPCJobNameWoman", "d>s", id, &name) && *name != '\0') {
         this->m_jobNameTableWoman[id] = name;
       }
     }
@@ -33,7 +33,7 @@ void CSession::InitJobNameTable(JobNameInitialization& context) {
 
   const auto other = [&](int first, int end) {
     for (int id = first; id < end; ++id) {
-      context.otherScript.Call("ReqJobName", "d>s", id, &this->m_jobNameTable[id]);
+      g_luaScript->Call("ReqJobName", "d>s", id, &this->m_jobNameTable[id]);
     }
   };
 
@@ -68,11 +68,11 @@ void CSession::InitJobNameTable(JobNameInitialization& context) {
     this->m_jobNameTable[id] = "남\\검용병";
   }
 
-  context.sexLabels.resize(2, "F");
-  context.sexLabels[0] = "F";
-  context.sexLabels[1] = "M";
-  context.levels20.resize(20, 0);
-  context.useLevels.resize(7999, 0);
-  context.otherLevels.resize(258, 0);
-  context.homunculusLevels.resize(61, 0);
+  this->m_sexLabels.resize(2, "F");
+  this->m_sexLabels[0] = "F";
+  this->m_sexLabels[1] = "M";
+  this->unknown_0710.resize(20, 0);
+  this->m_skillBundle.unknown_0064.resize(7999, 0);
+  this->m_mercSkillLevels.resize(258, 0);
+  this->m_homunSkillLevels.resize(61, 0);
 }

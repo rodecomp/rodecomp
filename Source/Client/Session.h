@@ -33,7 +33,6 @@ class CFile;
 class CGameActor;
 class CRenderObject;
 class LuaScript;
-struct JobNameInitialization;
 struct ActionFrame;
 struct vector3d;
 
@@ -201,7 +200,7 @@ public:
   /* 06FC */ int unknown_06FC;
   /* 0700 */ std::map<int, int> unknown_0700;
   /* 0708 */ std::map<int, int> unknown_0708;
-  /* 0710 */ unsigned char unknown_0710[0x0C];
+  /* 0710 */ std::vector<int> unknown_0710;
   /* 071C */ std::vector<int> m_homunSkillLevels;
   /* 0728 */ std::vector<int> m_mercSkillLevels;
   /* 0734 */ std::list<SessionRecord0734> unknown_0734;
@@ -887,7 +886,7 @@ public:
   bool sub_E1DE30(std::uint32_t aid);
   int sub_DDD2C0(const ITEM_INFO& item);
   const char* GetJobName(unsigned job, int sex);
-  void InitJobNameTable(JobNameInitialization& context);
+  void InitJobNameTable();
   int SyncUnknown0E98();
   void LoadXmlTables();
   void LoadExternalSettings();
