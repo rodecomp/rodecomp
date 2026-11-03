@@ -4629,7 +4629,7 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
     break;
   }
   case 12:
-    *reinterpret_cast<int*>(&g_session.unknown_165C[0]) = packet->value;
+    g_session.m_skillPoint = packet->value;
     g_session.InvalidateWindowFrames();
     g_session.NotifySkillWindows();
     break;

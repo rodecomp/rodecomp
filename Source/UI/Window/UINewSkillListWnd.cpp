@@ -133,7 +133,7 @@ void UINewSkillListWnd::Slot35(int delta) {
 // OFFSET: 0x009AE730
 // FUNCTION: fn_13800
 void UINewSkillListWnd::sub_9AE730() {
-  if (*reinterpret_cast<const int*>(reinterpret_cast<const char*>(&g_session) + 0xB4) == 0) {
+  if (g_session.m_simplifiedSkillList == 0) {
     for (const NewSkillListValue& entry : this->m_unknown_02A0) {
       const int id = entry.id;
       const int value = entry.value;
@@ -421,7 +421,7 @@ std::string UINewSkillListWnd::ValueText(int id) {
 CSkillInfo UINewSkillListWnd::SkillAt(int index, bool live) {
   CSkillInfo result(0);
   int sequentialIndex = 0;
-  const int gate = *reinterpret_cast<const int*>(reinterpret_cast<const char*>(&g_session) + 0xB4);
+  const int gate = g_session.m_simplifiedSkillList;
   for (const CSkillInfo& skill : this->SkillList(this->m_tab, live)) {
     int key = skill.unknown_0024;
     if (gate != 0) {
@@ -455,7 +455,7 @@ CSkillInfo UINewSkillListWnd::VisibleSkill(int row) {
 // FUNCTION: fn_13808
 std::pair<CSkillInfo*, bool> UINewSkillListWnd::SkillPtr(int index, bool live) {
   std::list<CSkillInfo>& list = this->SkillList(this->m_tab, live);
-  if (*reinterpret_cast<const int*>(reinterpret_cast<const char*>(&g_session) + 0xB4) != 0) {
+  if (g_session.m_simplifiedSkillList != 0) {
     if (index >= 0 && static_cast<size_t>(index) < list.size()) {
       auto it = list.begin();
       for (int i = 0; i < index; ++i) {
@@ -740,7 +740,7 @@ void UINewSkillListWnd::InitTabs() {
 // FUNCTION: fn_13811
 void UINewSkillListWnd::ResetLists() {
   this->m_locked = 0;
-  this->m_skillPoints = *reinterpret_cast<const int*>(reinterpret_cast<const char*>(&g_session) + 0x165C);
+  this->m_skillPoints = g_session.m_skillPoint;
   for (int i = 0; i < 4; ++i) {
     this->m_lists[i] = g_session.m_skillBundle.Group(i);
   }
@@ -760,7 +760,7 @@ bool UINewSkillListWnd::IsSkillArea(int x, int y) {
   int minX = 76;
   int rowHeight = 56;
   int yOffset = 40;
-  const int gate = *reinterpret_cast<const int*>(reinterpret_cast<const char*>(&g_session) + 0xB4);
+  const int gate = g_session.m_simplifiedSkillList;
   if (gate != 0) {
     rowHeight = 32;
     minX = 40;
@@ -919,7 +919,7 @@ void UINewSkillListWnd::Paint() {
   char text[80];
   std::memset(text, 0, sizeof(text));
   if (g_session.m_simplifiedSkillList == 0) {
-    const int total = *reinterpret_cast<const int*>(g_session.unknown_165C);
+    const int total = g_session.m_skillPoint;
     if (points < total) {
       StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%s^0000ff%d^000000(^ff0000%d^000000) / %d", LookupMessage(2343), points, total - points,
                    total);
@@ -1010,7 +1010,7 @@ void UINewSkillListWnd::Slot31(int x, int y) {
     return;
   }
 
-  const int gate = *reinterpret_cast<const int*>(reinterpret_cast<const char*>(&g_session) + 0xB4);
+  const int gate = g_session.m_simplifiedSkillList;
   if (gate == 0 && this->IsSkillArea(x, y)) {
     CSkillInfo skill = this->SkillAt(this->m_selectedSkill, false);
     if (skill.unknown_002C != 0 && skill.available != 0) {
@@ -1157,7 +1157,7 @@ void UINewSkillListWnd::sub_9B2CD0() {
 // OFFSET: 0x009B3040
 // FUNCTION: fn_13823
 void UINewSkillListWnd::UpdateScrollBar() {
-  const int initialGate = *reinterpret_cast<const int*>(reinterpret_cast<const char*>(&g_session) + 0xB4);
+  const int initialGate = g_session.m_simplifiedSkillList;
   if (initialGate == 0) {
     this->m_columns = 7;
     this->m_visibleRows = 6;
@@ -1172,7 +1172,7 @@ void UINewSkillListWnd::UpdateScrollBar() {
 
   this->m_scrollBar->Move(this->geometry.width - 15, 20);
 
-  const int gate = *reinterpret_cast<const int*>(reinterpret_cast<const char*>(&g_session) + 0xB4);
+  const int gate = g_session.m_simplifiedSkillList;
   const std::list<CSkillInfo>& list = this->SkillList(this->m_tab, false);
   int total = 0;
   if (gate == 0) {
@@ -1218,7 +1218,7 @@ void UINewSkillListWnd::UpdateScrollBar() {
 // FUNCTION: fn_13824
 void UINewSkillListWnd::LayoutButtons() {
   int inset = 0;
-  const int gate = *reinterpret_cast<const int*>(reinterpret_cast<const char*>(&g_session) + 0xB4);
+  const int gate = g_session.m_simplifiedSkillList;
   if (gate == 0) {
     this->m_btnDetail->Move(-100, -100);
   } else {
@@ -1249,7 +1249,7 @@ void UINewSkillListWnd::LayoutButtons() {
   }
 
   std::list<CSkillInfo>& list = this->SkillList(this->m_tab, false);
-  if (*reinterpret_cast<const int*>(reinterpret_cast<const char*>(&g_session) + 0xB4) == 0) {
+  if (g_session.m_simplifiedSkillList == 0) {
     if (!this->m_locked) {
       for (const CSkillInfo& skill : list) {
         const unsigned int slot = skill.unknown_0024 - this->m_columns * this->m_firstRow;
@@ -1284,7 +1284,7 @@ void UINewSkillListWnd::LayoutButtons() {
 // OFFSET: 0x009B3580
 // FUNCTION: fn_13825
 int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  int& gate = *reinterpret_cast<int*>(reinterpret_cast<char*>(&g_session) + 0xB4);
+  int& gate = g_session.m_simplifiedSkillList;
   CMode* gameMode = g_modeMgr.gameMode;
 
   switch (message) {
@@ -1304,7 +1304,7 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       }
       return 0;
     case 213: {
-      int& flag = *reinterpret_cast<int*>(reinterpret_cast<char*>(&g_session) + 0xB8);
+      int& flag = g_session.m_showSkillDescription;
       flag = flag == 0;
       return 0;
     }
@@ -1489,7 +1489,7 @@ bool UINewSkillListWnd::sub_9B3EB0(int skillId) {
     return false;
   }
 
-  const int gate = *reinterpret_cast<const int*>(reinterpret_cast<const char*>(&g_session) + 0xB4);
+  const int gate = g_session.m_simplifiedSkillList;
   if (gate != 0) {
     std::list<CSkillInfo>& list = this->SkillList(this->m_tab, false);
     for (CSkillInfo& skill : list) {

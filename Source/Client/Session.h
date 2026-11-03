@@ -296,7 +296,7 @@ public:
   /* 1650 */ int m_level;
   /* 1654 */ unsigned char unknown_1654[0x04];
   /* 1658 */ int m_jobLevel;
-  /* 165C */ unsigned char unknown_165C[0x04];
+  /* 165C */ int m_skillPoint;
   /* 1660 */ int m_guildSkillPoint;
   /* 1664 */ unsigned char unknown_1664[8];
   /* 166C */ int unknown_166C;

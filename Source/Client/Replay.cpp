@@ -1523,7 +1523,7 @@ std::vector<unsigned char> CSession::BuildCharacterReplayRecords() {
     records.insert(records.end(), record.begin(), record.end());
   }
   {
-    const auto record = BuildReplayTaggedRecord(1020, this->unknown_165C, 4);
+    const auto record = BuildReplayTaggedRecord(1020, &this->m_skillPoint, 4);
     records.insert(records.end(), record.begin(), record.end());
   }
   {

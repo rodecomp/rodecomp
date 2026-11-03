@@ -3176,7 +3176,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
         g_session.InvalidateWindowFrames();
         g_session.m_level = this->characters[i].level;
         g_session.InvalidateWindowFrames();
-        *reinterpret_cast<int*>(g_session.unknown_165C) = this->characters[i].skillPoint;
+        g_session.m_skillPoint = this->characters[i].skillPoint;
         g_session.InvalidateWindowFrames();
         *reinterpret_cast<int*>(g_session.unknown_1654) = this->characters[i].jobPoint;
         g_session.InvalidateWindowFrames();

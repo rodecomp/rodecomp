@@ -1195,7 +1195,7 @@ std::uint32_t CSession::ReadReplayCharacter(const std::vector<unsigned char>& da
       offset += header.bytes;
       break;
     case 1020:
-      std::memcpy(this->unknown_165C, source, header.bytes);
+      std::memcpy(&this->m_skillPoint, source, header.bytes);
       offset += header.bytes;
       break;
     case 1021:
