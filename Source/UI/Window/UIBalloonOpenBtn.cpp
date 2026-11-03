@@ -1,13 +1,14 @@
 #include "UI/Window/UIBalloonOpenBtn.h"
 
+#include "Client/Session.h"
 #include "Contents/SpecialPopupMgr.h"
 #include "Render/Renderer.h"
 #include "UI/Text/UITransBalloonText.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
 
-#include <mmsystem.h>
 #include <windows.h>
+#include <timeapi.h>
 
 // GLOBAL: gl_24910
 std::int8_t g_balloonFontMode;
@@ -59,7 +60,7 @@ int UIBalloonOpenBtn::SendMsg(UIWindow* sender, int message, std::intptr_t argum
       return 0;
     }
 
-    this->m_balloon->m_fontMode = g_balloonFontMode;
+    this->m_balloon->m_fontMode = static_cast<std::int8_t>(g_session.unknown_0F30[0]);
     this->m_balloon->m_richText = 1;
     this->m_balloon->SetLine("", popup->m_color);
     for (const std::string& description : popup->m_descriptions) {
