@@ -13,6 +13,7 @@ class CSkyBox;
 extern float g_cameraDistance;
 extern float g_cameraMinDistance;
 extern float g_cameraBaseDistance;
+extern float g_projectionScale;
 extern float g_cameraPitch;
 extern float g_indoorCameraPitch;
 extern float g_indoorCameraDistance;

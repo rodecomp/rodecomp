@@ -26,16 +26,7 @@ struct CameraState {
   void AddDistance(float delta);
   void AddPitch(float delta);
   void AddYaw(float delta);
-  void Smooth(
-    const ServiceOptions& options, const float& rendererScale, const float& projectionScale, const float& baseDistance, struct CameraProjectionOutputs& output
-  );
-};
-
-struct CameraProjectionOutputs {
-  float& tangent;
-  float& cotangent;
-  float& scaleY;
-  float& scaleX;
+  void Smooth();
 };
 
 struct CameraShake {

@@ -1,5 +1,9 @@
+#include "Contents/Camera/Camera.h"
 #include "Contents/Camera/CameraState.h"
 #include "Contents/Configuration/ServiceOptions.h"
+#include "Render/Projection/RendererViewport.h"
+#include "Render/Renderer.h"
+#include "Render/SpriteGeometry.h"
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Math/ScalarConversion.h"
 
@@ -23,9 +27,7 @@ void CameraState::AddYaw(float delta) {
 
 // OFFSET: 0x00ADBCD0
 // FUNCTION: fn_17926
-void CameraState::Smooth(
-  const ServiceOptions& options, const float& rendererScale, const float& projectionScale, const float& baseDistance, CameraProjectionOutputs& output
-) {
+void CameraState::Smooth() {
   while (this->desiredYaw >= 360.0f) {
     this->desiredYaw = this->desiredYaw - 360.0f;
   }
@@ -56,7 +58,7 @@ void CameraState::Smooth(
 
   this->pitch = (this->desiredPitch - this->pitch) / 10.0f + this->pitch;
   this->distance = (this->desiredDistance - this->distance) / 10.0f + this->distance;
-  const bool immediate = options.Get(54) != 0;
+  const bool immediate = g_serviceOptions.Get(54) != 0;
   float next[3] = {this->desiredTarget[0], this->desiredTarget[1], this->desiredTarget[2]};
 
   if (!immediate) {
@@ -73,11 +75,11 @@ void CameraState::Smooth(
   const float cosine = ClientCosine(angle);
   const float tangent = static_cast<float>(static_cast<double>(sine) / cosine);
   const float cotangent = static_cast<float>(static_cast<double>(cosine) / sine);
-  const float scaledTangent = tangent * projectionScale;
-  output.tangent = static_cast<float>(static_cast<double>(scaledTangent) / rendererScale);
-  const float scaledCotangent = cotangent * projectionScale;
-  output.cotangent = static_cast<float>(static_cast<double>(scaledCotangent) / rendererScale);
+  const float scaledTangent = tangent * g_projectionScale;
+  g_tangent = static_cast<float>(static_cast<double>(scaledTangent) / g_renderer->UiScaleY());
+  const float scaledCotangent = cotangent * g_projectionScale;
+  g_cotangent = static_cast<float>(static_cast<double>(scaledCotangent) / g_renderer->UiScaleY());
   const float relativeSine = static_cast<float>((static_cast<double>(sine) / ClientSine(45)) * 0.000009f);
-  output.scaleY = (baseDistance / this->distance) * relativeSine;
-  output.scaleX = (baseDistance / this->distance) * 0.000036f;
+  g_cameraScaleY = (g_cameraBaseDistance / this->distance) * relativeSine;
+  g_cameraScaleX = (g_cameraBaseDistance / this->distance) * 0.000036f;
 }

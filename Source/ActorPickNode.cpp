@@ -239,9 +239,7 @@ void CView::Update() {
   this->camera.desiredTarget[0] = position.x;
   this->camera.desiredTarget[1] = position.y;
   this->camera.desiredTarget[2] = position.z;
-  const float rendererScale = g_renderer->UiScaleY();
-  CameraProjectionOutputs outputs{g_tangent, g_cotangent, g_cameraScaleY, g_cameraScaleX};
-  this->camera.Smooth(g_serviceOptions, rendererScale, g_projectionScale, g_cameraBaseDistance, outputs);
+  this->camera.Smooth();
   this->shake.Apply(this->camera, g_worldViewDrawn);
   const TerrainHeight terrain = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Grid();
   this->frame.Refresh(this->camera, terrain, *g_renderer);
