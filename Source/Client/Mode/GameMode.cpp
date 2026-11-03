@@ -4211,7 +4211,7 @@ void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor*
         g_groundMarkAid = actor->render.accountId;
         g_groundMarkA = 0;
         g_groundMarkB = 0;
-        g_groundMarkSet = 0;
+        g_session.unknown_5608 = 0;
         g_session.unknown_5610 = 1;
       }
       g_session.unknown_560C = 1;
@@ -4571,7 +4571,7 @@ int CGameMode::ProcessGroundClick(int result) {
         message.y = row;
         homun->SetUnknown0318(reinterpret_cast<const float*>(&message), 0);
       }
-      g_groundMarkSet = 1;
+      g_session.unknown_5608 = 1;
       return result;
     }
 
@@ -6097,7 +6097,7 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
       g_groundMarkAid = actor->render.accountId;
       g_groundMarkA = 0;
       g_groundMarkB = 0;
-      g_groundMarkSet = 0;
+      g_session.unknown_5608 = 0;
       g_session.unknown_5610 = 1;
     }
     g_session.unknown_560C = 1;
@@ -6715,7 +6715,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
           g_groundMarkAid = pick->accountId;
           g_groundMarkA = 0;
           g_groundMarkB = 0;
-          g_groundMarkSet = 0;
+          g_session.unknown_5608 = 0;
           g_session.unknown_5610 = 1;
         }
         g_session.unknown_560C = 1;

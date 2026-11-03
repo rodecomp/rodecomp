@@ -40,7 +40,6 @@ extern int g_groundMarkEnabled;
 extern std::uint32_t g_groundMarkAid;
 extern int g_groundMarkA;
 extern int g_groundMarkB;
-extern int g_groundMarkSet;
 extern std::uint32_t g_groundMarkAltAid;
 extern int g_groundMarkAltA;
 extern int g_groundMarkAltB;

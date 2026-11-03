@@ -1611,9 +1611,6 @@ int g_groundMarkA;
 // GLOBAL: gl_24785
 int g_groundMarkB;
 
-// GLOBAL: gl_25376
-int g_groundMarkSet;
-
 // GLOBAL: gl_25377
 int g_groundMarkAltA;
 
@@ -1718,10 +1715,10 @@ void CNpc::Slot15(int state, int) {
             if (this->render.unknown_0070 != 0) {
               this->unknown_027C = timeGetTime();
             }
-            if (g_groundMarkSet) {
+            if (g_session.unknown_5608) {
               g_groundMarkA = 0;
               g_groundMarkB = 0;
-              g_groundMarkSet = 0;
+              g_session.unknown_5608 = 0;
             }
             if (g_groundMarkAltSet) {
               g_groundMarkAltA = 0;
