@@ -1,7 +1,6 @@
 #include "Contents/Ground/GroundGeometry.h"
 #include "Contents/Ground/GroundRendering.h"
 #include "Render/Primitives/RenderPrimitivePool.h"
-#include "Render/Projection/RenderProjection.h"
 #include "Render/Primitives/RenderQueues.h"
 #include "Contents/Effects/EffectPrim.h"
 #include "Render/Renderer.h"
@@ -64,7 +63,7 @@ void GroundGeometry::DrawWaterCell(
 
   for (unsigned corner = 0; corner < 4; ++corner) {
     vertices[corner].specular = 0xFF000000u;
-    g_renderer->viewport.Projection().Project(cell.corners[corner], matrix, vertices[corner]);
+    g_renderer->viewport.Project(cell.corners[corner], matrix, vertices[corner]);
   }
 
   const float firstArea = (vertices[2].x - vertices[0].x) * (vertices[1].y - vertices[0].y);

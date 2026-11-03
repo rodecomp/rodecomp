@@ -23,7 +23,7 @@ public:
 
   virtual void Initialize(const ModelNode& resource);
   virtual void Animate(double frame);
-  virtual void Draw(const float* matrix, unsigned char reversed, bool clip, unsigned char commandMode, ModelRenderContext& context);
+  virtual void Draw(const float* matrix, unsigned char reversed, bool clip, unsigned char commandMode);
   C3dNode* Find(const char* name);
   void OverrideColors();
   void Prepare(const float* matrix, const float* direction, const float* diffuse, const float* ambient, int shade);
@@ -49,7 +49,7 @@ public:
   ~C3dNodeV1() override;
   void Initialize(const ModelNode& resource) override;
   void Animate(double frame) override;
-  void Draw(const float* matrix, unsigned char reversed, bool clip, unsigned char commandMode, ModelRenderContext& context) override;
+  void Draw(const float* matrix, unsigned char reversed, bool clip, unsigned char commandMode) override;
 
   /* 008C */ std::vector<ModelScaleKey> scaleKeys;
   /* 0098 */ std::vector<ModelRotationKey> rotationKeys;
@@ -62,7 +62,7 @@ public:
   ~C3dNodeV2() override;
   void Initialize(const ModelNode& resource) override;
   void Animate(double frame) override;
-  void Draw(const float* matrix, unsigned char reversed, bool clip, unsigned char commandMode, ModelRenderContext& context) override;
+  void Draw(const float* matrix, unsigned char reversed, bool clip, unsigned char commandMode) override;
 
   /* 008C */ matrix resourceTransform;
   /* 00BC */ matrix localTransform;

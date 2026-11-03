@@ -3,7 +3,7 @@
 #include "Contents/World/WorldOcclusion.h"
 #include "Contents/World/WorldRayQuery.h"
 #include "Contents/World/WorldSpatialTree.h"
-#include "Render/Projection/RenderProjection.h"
+#include "Render/Renderer.h"
 
 #include "Utility/Math/ScalarConversion.h"
 #include <cstring>
@@ -43,13 +43,13 @@ void MarkWorldOcclusionRay(const float* ray, float actorLimit, float groundLimit
 // OFFSET: 0x00CD5AD0
 // FUNCTION: fn_21286
 void MarkScreenWorldOcclusion(
-  const RenderProjection& projection, int screenX, int screenY, float rendererScale, const float* origin, const float* cameraMatrix, float playerHeight,
+  int screenX, int screenY, float rendererScale, const float* origin, const float* cameraMatrix, float playerHeight,
   float cameraHeight, WorldSpatialTree& root, GroundGeometry& ground, bool markGround
 ) {
   const float shifted = static_cast<float>(screenY) - rendererScale * 23.0f;
   const int y = TruncateToInt(shifted);
   float ray[6]{};
-  projection.Ray(screenX, y, origin, cameraMatrix, ray);
+  g_renderer->viewport.Ray(screenX, y, origin, cameraMatrix, ray);
   const float limit = (playerHeight + cameraHeight) - 16.0f;
   MarkWorldOcclusionRay(ray, limit, limit, root, ground, markGround);
 }

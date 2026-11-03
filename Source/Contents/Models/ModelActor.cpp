@@ -256,12 +256,12 @@ void C3dActor::Update() {
 
 // OFFSET: 0x00AB7B40
 // FUNCTION: fn_17495
-void C3dActor::Draw(const float*, bool, ModelRenderContext&) {
+void C3dActor::Draw(const float*, bool) {
 }
 
 // OFFSET: 0x00AB7B50
 // FUNCTION: fn_17496
-void C3dActorV1::Draw(const float* matrix, bool clip, ModelRenderContext& context) {
+void C3dActorV1::Draw(const float* matrix, bool clip) {
   if (this->dirty == 1) {
     this->UpdateMatrix();
   }
@@ -270,7 +270,7 @@ void C3dActorV1::Draw(const float* matrix, bool clip, ModelRenderContext& contex
   std::memcpy(camera.values, matrix, sizeof(camera.values));
   struct matrix combined;
   combined.Compose(this->transform, camera);
-  this->root->Draw(combined.values, this->Reversed(), clip, this->commandMode, context);
+  this->root->Draw(combined.values, this->Reversed(), clip, this->commandMode);
 
   if (this->occlusionEnabled == 1) {
     this->Fade();
@@ -279,7 +279,7 @@ void C3dActorV1::Draw(const float* matrix, bool clip, ModelRenderContext& contex
 
 // OFFSET: 0x00AB7C40
 // FUNCTION: fn_17497
-void C3dActorV2::Draw(const float* matrix, bool clip, ModelRenderContext& context) {
+void C3dActorV2::Draw(const float* matrix, bool clip) {
   if (this->dirty == 1) {
     this->UpdateMatrix();
   }
@@ -291,7 +291,7 @@ void C3dActorV2::Draw(const float* matrix, bool clip, ModelRenderContext& contex
   const bool reversed = this->Reversed();
 
   for (C3dNodeV2* root : this->roots) {
-    root->Draw(combined.values, reversed, clip, this->commandMode, context);
+    root->Draw(combined.values, reversed, clip, this->commandMode);
 
     if (this->occlusionEnabled == 1) {
       this->Fade();

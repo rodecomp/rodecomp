@@ -4246,7 +4246,6 @@ void __stdcall SendMacroUserInfoPacket(std::uint16_t first, std::uint16_t second
 // OFFSET: 0x00CE0210
 // FUNCTION: fn_21329
 int CGameMode::ProcessGroundClick(int result) {
-  const RenderProjection projection = g_renderer->viewport.Projection();
   const auto drawCell = [](GroundGeometry* ground, const float* matrix, int column, int row, std::uint32_t color) {
     void** groundVtable = *reinterpret_cast<void***>(ground);
     reinterpret_cast<void(__thiscall*)(GroundGeometry*, const float*, int, int, std::uint32_t)>(groundVtable[14])(ground, matrix, column, row, color);
@@ -4258,7 +4257,7 @@ int CGameMode::ProcessGroundClick(int result) {
     if (macroFields[0x10C] == 1 && *reinterpret_cast<const int*>(macroFields + 0xEC) == 1) {
       int column = -1;
       int row = -1;
-      PickScreenTerrain(projection, g_screenWidth, g_screenHeight, this->camera->frame.eye, this->camera->frame.inverse.values, this->scene->spatial, column, row);
+      PickScreenTerrain(g_screenWidth, g_screenHeight, this->camera->frame.eye, this->camera->frame.inverse.values, this->scene->spatial, column, row);
       const int radius = *reinterpret_cast<const int*>(macroFields + 0xF4);
       for (int dx = -radius; dx <= radius; ++dx) {
         for (int dy = -radius; dy <= radius; ++dy) {
@@ -4284,7 +4283,7 @@ int CGameMode::ProcessGroundClick(int result) {
       shopSuspended = true;
       int column = -1;
       int row = -1;
-      PickScreenTerrain(projection, g_screenWidth, g_screenHeight, this->camera->frame.eye, this->camera->frame.inverse.values, this->scene->spatial, column, row);
+      PickScreenTerrain(g_screenWidth, g_screenHeight, this->camera->frame.eye, this->camera->frame.inverse.values, this->scene->spatial, column, row);
       drawCell(this->scene->ground, this->camera->frame.view.values, column, row, 0x66FF0000);
       if (g_mouse.buttons[0] == 1) {
         shop->SetSuspended(0);
@@ -4307,7 +4306,7 @@ int CGameMode::ProcessGroundClick(int result) {
 
   int column = -1;
   int row = -1;
-  if (!PickScreenTerrain(projection, g_screenWidth, g_screenHeight, this->camera->frame.eye, this->camera->frame.inverse.values, this->scene->spatial, column, row)) {
+  if (!PickScreenTerrain(g_screenWidth, g_screenHeight, this->camera->frame.eye, this->camera->frame.inverse.values, this->scene->spatial, column, row)) {
     return result;
   }
 
@@ -4651,7 +4650,7 @@ void CGameMode::ProcessInput() {
 
   if (this->scene && this->scene->player && g_renderer) {
     MarkScreenWorldOcclusion(
-      g_renderer->viewport.Projection(), this->scene->player->render.screenX, this->scene->player->render.screenY, g_renderer->viewport.uiScaleY, this->camera->frame.eye,
+      this->scene->player->render.screenX, this->scene->player->render.screenY, g_renderer->viewport.uiScaleY, this->camera->frame.eye,
       this->camera->frame.inverse.values, this->scene->player->render.position.y, this->camera->camera.distance, this->scene->spatial, *this->scene->ground,
       this->unknown_0458 != 0
     );
@@ -4689,7 +4688,7 @@ void CGameMode::ProcessInput() {
       int column = -1;
       int row = -1;
       PickScreenTerrain(
-        g_renderer->viewport.Projection(), g_mouse.x, g_mouse.y, this->camera->frame.eye, this->camera->frame.inverse.values, this->scene->spatial,
+        g_mouse.x, g_mouse.y, this->camera->frame.eye, this->camera->frame.inverse.values, this->scene->spatial,
         column, row
       );
       const TerrainHeightCell* cell = this->scene->terrain->CellAt(column, row);

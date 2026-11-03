@@ -31,7 +31,6 @@
 #include "Contents/Ground/GroundGeometry.h"
 #include "Contents/World/World.h"
 #include "Render/Primitives/RenderQueues.h"
-#include "Render/Projection/RenderProjection.h"
 #include "Render/Renderer.h"
 #include "Render/TextureQuad.h"
 

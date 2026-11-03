@@ -2,9 +2,9 @@
 #include "Contents/Ground/GroundRendering.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Effects/EffectPrim.h"
+#include "Contents/MapSkyMgr.h"
 #include "Render/Primitives/LightmappedPrimitive.h"
 #include "Render/Primitives/RenderPrimitivePool.h"
-#include "Render/Projection/RenderProjection.h"
 #include "Render/Primitives/RenderQueues.h"
 #include "Render/Renderer.h"
 #include "Render/TextureQuad.h"
@@ -14,20 +14,17 @@
 #include <bit>
 #include <cstring>
 
-// GLOBAL: gl_24589
-float g_groundColorScale[3];
-
 // OFFSET: 0x00AC1D30
 // FUNCTION: fn_17592
 void GroundGeometry::DrawLightmapped(const float* matrix, const GroundQuad& quad, bool clip) {
   RenderVertex vertices[4]{};
   float lightUV[4][2];
   float scales[3];
-  std::memcpy(scales, g_groundColorScale, sizeof(scales));
+  std::memcpy(scales, g_weatherEffect.lightColor, sizeof(scales));
 
   for (unsigned corner = 0; corner < 4; ++corner) {
     vertices[corner].specular = 0xFF000000u;
-    g_renderer->viewport.Projection().Project(quad.vertices[corner], matrix, vertices[corner]);
+    g_renderer->viewport.Project(quad.vertices[corner], matrix, vertices[corner]);
   }
 
   if (clip && !GroundQuadVisible(vertices)) {

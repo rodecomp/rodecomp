@@ -2,7 +2,6 @@
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Effects/EffectPrimitiveState.h"
 #include "Contents/Actors/RenderObjectState.h"
-#include "Render/Projection/RenderProjection.h"
 #include "Render/Primitives/RenderQueues.h"
 #include "Contents/Effects/EffectPrim.h"
 #include "Contents/Effects/EffectPrimitiveMotion.h"
@@ -87,7 +86,7 @@ void CEffectPrim::DrawEffectPrimitive15(matrix& wtm) {
       const vector3d& corner = corners[indices[triangleIndex][vertexIndex]];
       const float position[3] = {corner.x + this->render.position.x, corner.y + this->render.position.y, corner.z + this->render.position.z};
       RenderVertex projected{0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-      g_renderer->viewport.Projection().Project(position, wtm.values, projected);
+      g_renderer->viewport.Project(position, wtm.values, projected);
       RenderVertex& vertex = triangle.vertices[vertexIndex];
       vertex = projected;
       vertex.diffuse = this->state.argb;
@@ -689,10 +688,10 @@ void CEffectPrim::Render(int argument) {
     case 20: {
       float position[3] = {this->render.position.x, this->render.position.y, this->render.position.z};
       RenderVertex top{0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-      g_renderer->viewport.Projection().Project(position, wtm.values, top);
+      g_renderer->viewport.Project(position, wtm.values, top);
       position[1] -= 10.0f;
       RenderVertex bottom{0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-      g_renderer->viewport.Projection().Project(position, wtm.values, bottom);
+      g_renderer->viewport.Project(position, wtm.values, bottom);
       RenderTriangle& triangle = this->state.triangles[0];
       triangle.vertices[0].x = top.x;
       triangle.vertices[2].x = bottom.x;
@@ -4911,22 +4910,21 @@ void CEffectPrim::RenderRecordQuads(matrix& wtm) {
 
   for (int index = 0; index < this->state.numSegment; ++index) {
     const EffectPrimitiveRecord& record = this->state.records[index];
-    const RenderProjection projection = g_renderer->viewport.Projection();
     RenderVertex projected{0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
 
-    projection.Project(&record.corners[0].x, wtm.values, projected);
+    g_renderer->viewport.Project(&record.corners[0].x, wtm.values, projected);
     triangle->vertices[0] = projected;
     triangle->vertices[0].diffuse = record.color;
     projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
     triangle->vertices[0].u = 0.0f;
     triangle->vertices[0].v = 1.0f;
-    projection.Project(&record.corners[1].x, wtm.values, projected);
+    g_renderer->viewport.Project(&record.corners[1].x, wtm.values, projected);
     triangle->vertices[1] = projected;
     triangle->vertices[1].diffuse = record.color;
     projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
     triangle->vertices[1].u = 1.0f;
     triangle->vertices[1].v = 1.0f;
-    projection.Project(&record.corners[2].x, wtm.values, projected);
+    g_renderer->viewport.Project(&record.corners[2].x, wtm.values, projected);
     triangle->vertices[2] = projected;
     triangle->vertices[2].diffuse = record.color;
     triangle->vertices[2].u = 0.0f;
@@ -4937,19 +4935,19 @@ void CEffectPrim::RenderRecordQuads(matrix& wtm) {
     }
 
     projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-    projection.Project(&record.corners[3].x, wtm.values, projected);
+    g_renderer->viewport.Project(&record.corners[3].x, wtm.values, projected);
     triangle->vertices[0] = projected;
     triangle->vertices[0].diffuse = record.color;
     projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
     triangle->vertices[0].u = 1.0f;
     triangle->vertices[0].v = 0.0f;
-    projection.Project(&record.corners[2].x, wtm.values, projected);
+    g_renderer->viewport.Project(&record.corners[2].x, wtm.values, projected);
     triangle->vertices[1] = projected;
     triangle->vertices[1].diffuse = record.color;
     projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
     triangle->vertices[1].u = 0.0f;
     triangle->vertices[1].v = 0.0f;
-    projection.Project(&record.corners[1].x, wtm.values, projected);
+    g_renderer->viewport.Project(&record.corners[1].x, wtm.values, projected);
     triangle->vertices[2] = projected;
     triangle->vertices[2].diffuse = record.color;
     triangle->vertices[2].u = 1.0f;
@@ -4992,23 +4990,22 @@ void CEffectPrim::RenderRecordRings(matrix& wtm) {
         world[corner][2] = x * tm[2] + y * tm[5] + tm[8] * 0.0f + tm[11] + record.position.z;
       }
 
-      const RenderProjection projection = g_renderer->viewport.Projection();
       const float uNext = uInc + 0.25f;
       RenderVertex projected{0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
 
-      projection.Project(world[0], wtm.values, projected);
+      g_renderer->viewport.Project(world[0], wtm.values, projected);
       triangle->vertices[0] = projected;
       triangle->vertices[0].diffuse = record.color;
       triangle->vertices[0].u = uInc;
       triangle->vertices[0].v = 1.0f;
       projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-      projection.Project(world[1], wtm.values, projected);
+      g_renderer->viewport.Project(world[1], wtm.values, projected);
       triangle->vertices[1] = projected;
       triangle->vertices[1].diffuse = record.color;
       triangle->vertices[1].u = uNext;
       triangle->vertices[1].v = 1.0f;
       projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-      projection.Project(world[2], wtm.values, projected);
+      g_renderer->viewport.Project(world[2], wtm.values, projected);
       triangle->vertices[2] = projected;
       triangle->vertices[2].diffuse = record.color;
       triangle->vertices[2].u = uInc;
@@ -5021,19 +5018,19 @@ void CEffectPrim::RenderRecordRings(matrix& wtm) {
       }
 
       projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-      projection.Project(world[3], wtm.values, projected);
+      g_renderer->viewport.Project(world[3], wtm.values, projected);
       triangle->vertices[0] = projected;
       triangle->vertices[0].diffuse = record.color;
       triangle->vertices[0].u = uNext;
       triangle->vertices[0].v = 0.0f;
       projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-      projection.Project(world[2], wtm.values, projected);
+      g_renderer->viewport.Project(world[2], wtm.values, projected);
       triangle->vertices[1] = projected;
       triangle->vertices[1].diffuse = record.color;
       triangle->vertices[1].u = uInc;
       triangle->vertices[1].v = 0.0f;
       projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-      projection.Project(world[1], wtm.values, projected);
+      g_renderer->viewport.Project(world[1], wtm.values, projected);
       triangle->vertices[2] = projected;
       triangle->vertices[2].diffuse = record.color;
       triangle->vertices[2].u = uNext;
@@ -5163,23 +5160,22 @@ void CEffectPrim::RenderArcBand(matrix& wtm) {
       world[corner][2] = x * tm[2] + y * tm[5] + z * tm[8] + tm[11] + position.z;
     }
 
-    const RenderProjection projection = g_renderer->viewport.Projection();
     const float uNext = uInc + 0.25f;
     RenderVertex projected{0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
 
-    projection.Project(world[0], wtm.values, projected);
+    g_renderer->viewport.Project(world[0], wtm.values, projected);
     triangle->vertices[0] = projected;
     triangle->vertices[0].diffuse = this->state.argb;
     triangle->vertices[0].u = uInc;
     triangle->vertices[0].v = 1.0f;
     projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-    projection.Project(world[1], wtm.values, projected);
+    g_renderer->viewport.Project(world[1], wtm.values, projected);
     triangle->vertices[2] = projected;
     triangle->vertices[2].diffuse = this->state.argb;
     triangle->vertices[2].u = uNext;
     triangle->vertices[2].v = 1.0f;
     projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-    projection.Project(world[2], wtm.values, projected);
+    g_renderer->viewport.Project(world[2], wtm.values, projected);
     triangle->vertices[1] = projected;
     triangle->vertices[1].diffuse = this->state.argb;
     triangle->vertices[1].u = uInc;
@@ -5190,19 +5186,19 @@ void CEffectPrim::RenderArcBand(matrix& wtm) {
     }
 
     projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-    projection.Project(world[3], wtm.values, projected);
+    g_renderer->viewport.Project(world[3], wtm.values, projected);
     triangle->vertices[2] = projected;
     triangle->vertices[2].diffuse = this->state.argb;
     triangle->vertices[2].u = uNext;
     triangle->vertices[2].v = 0.0f;
     projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-    projection.Project(world[2], wtm.values, projected);
+    g_renderer->viewport.Project(world[2], wtm.values, projected);
     triangle->vertices[1] = projected;
     triangle->vertices[1].diffuse = this->state.argb;
     triangle->vertices[1].u = uInc;
     triangle->vertices[1].v = 0.0f;
     projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-    projection.Project(world[1], wtm.values, projected);
+    g_renderer->viewport.Project(world[1], wtm.values, projected);
     triangle->vertices[0] = projected;
     triangle->vertices[0].diffuse = this->state.argb;
     triangle->vertices[0].u = uNext;
@@ -5250,24 +5246,23 @@ void CEffectPrim::RenderPyramid(matrix& wtm) {
       };
     }
 
-    const RenderProjection projection = g_renderer->viewport.Projection();
     RenderVertex projected{0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
     const float point0[3] = {corners[face][0].x + this->render.position.x, this->render.position.y + corners[face][0].y, this->render.position.z + corners[face][0].z};
-    projection.Project(point0, wtm.values, projected);
+    g_renderer->viewport.Project(point0, wtm.values, projected);
     triangle->vertices[0] = projected;
     triangle->vertices[0].diffuse = this->state.argb;
     triangle->vertices[0].u = uInc;
     triangle->vertices[0].v = 1.0f;
     const float point1[3] = {corners[face][1].x + this->render.position.x, corners[face][1].y + this->render.position.y, this->render.position.z + corners[face][1].z};
     projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-    projection.Project(point1, wtm.values, projected);
+    g_renderer->viewport.Project(point1, wtm.values, projected);
     triangle->vertices[1] = projected;
     triangle->vertices[1].diffuse = this->state.argb;
     triangle->vertices[1].u = uInc;
     triangle->vertices[1].v = 0.0f;
     const float point2[3] = {corners[face][2].x + this->render.position.x, corners[face][2].y + this->render.position.y, this->render.position.z + corners[face][2].z};
     projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-    projection.Project(point2, wtm.values, projected);
+    g_renderer->viewport.Project(point2, wtm.values, projected);
     triangle->vertices[2] = projected;
     triangle->vertices[2].diffuse = this->state.argb;
     uInc += 0.2f;
@@ -5310,21 +5305,20 @@ void CEffectPrim::RenderCrossPlanes(matrix& wtm) {
       world[corner][2] = local.x * tm[2] + local.y * tm[5] + local.z * tm[8] + tm[11] + position.z;
     }
 
-    const RenderProjection projection = g_renderer->viewport.Projection();
     RenderVertex projected{0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-    projection.Project(world[0], wtm.values, projected);
+    g_renderer->viewport.Project(world[0], wtm.values, projected);
     triangle->vertices[0] = projected;
     triangle->vertices[0].diffuse = this->state.argb;
     triangle->vertices[0].u = 0.0f;
     triangle->vertices[0].v = 1.0f;
     projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-    projection.Project(world[1], wtm.values, projected);
+    g_renderer->viewport.Project(world[1], wtm.values, projected);
     triangle->vertices[1] = projected;
     triangle->vertices[1].diffuse = this->state.argb;
     triangle->vertices[1].u = 1.0f;
     triangle->vertices[1].v = 1.0f;
     projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-    projection.Project(world[2], wtm.values, projected);
+    g_renderer->viewport.Project(world[2], wtm.values, projected);
     triangle->vertices[2] = projected;
     triangle->vertices[2].diffuse = this->state.argb;
     triangle->vertices[2].u = 0.0f;
@@ -5335,19 +5329,19 @@ void CEffectPrim::RenderCrossPlanes(matrix& wtm) {
     }
 
     projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-    projection.Project(world[3], wtm.values, projected);
+    g_renderer->viewport.Project(world[3], wtm.values, projected);
     triangle->vertices[0] = projected;
     triangle->vertices[0].diffuse = this->state.argb;
     triangle->vertices[0].u = 1.0f;
     triangle->vertices[0].v = 0.0f;
     projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-    projection.Project(world[2], wtm.values, projected);
+    g_renderer->viewport.Project(world[2], wtm.values, projected);
     triangle->vertices[1] = projected;
     triangle->vertices[1].diffuse = this->state.argb;
     triangle->vertices[1].u = 0.0f;
     triangle->vertices[1].v = 0.0f;
     projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-    projection.Project(world[1], wtm.values, projected);
+    g_renderer->viewport.Project(world[1], wtm.values, projected);
     triangle->vertices[2] = projected;
     triangle->vertices[2].diffuse = this->state.argb;
     triangle->vertices[2].u = 1.0f;
@@ -6483,7 +6477,7 @@ void CEffectPrim::RenderSphere(matrix& wtm) {
 
         for (int index = 0; index < 3; ++index) {
           RenderVertex projected{0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-          g_renderer->viewport.Projection().Project(&corners[half][index]->x, wtm.values, projected);
+          g_renderer->viewport.Project(&corners[half][index]->x, wtm.values, projected);
           triangle.vertices[index] = projected;
           triangle.vertices[index].diffuse = this->state.argb;
           triangle.vertices[index].u = us[half][index];

@@ -1,7 +1,6 @@
 #include "Contents/Ground/GroundGeometry.h"
 #include "Contents/Ground/GroundRendering.h"
 #include "Render/Primitives/RenderPrimitivePool.h"
-#include "Render/Projection/RenderProjection.h"
 #include "Render/Primitives/RenderQueues.h"
 #include "Render/Renderer.h"
 #include "Render/TextureQuad.h"
@@ -63,7 +62,7 @@ namespace {
     RenderPrimitive* primitive = g_renderer->primitives.Acquire();
 
     for (unsigned corner = 0; corner < 4; ++corner) {
-      g_renderer->viewport.Projection().Project(vertices[corner], matrix, primitive->vertices[corner]);
+      g_renderer->viewport.Project(vertices[corner], matrix, primitive->vertices[corner]);
       primitive->vertices[corner].z = primitive->vertices[corner].z - bias;
     }
 
@@ -155,7 +154,7 @@ void GroundGeometry::DrawTerrainOverlay(
   RenderPrimitive* primitive = g_renderer->primitives.Acquire();
 
   for (unsigned corner = 0; corner < 4; ++corner) {
-    g_renderer->viewport.Projection().Project(vertices[corner], matrix, primitive->vertices[corner]);
+    g_renderer->viewport.Project(vertices[corner], matrix, primitive->vertices[corner]);
     primitive->vertices[corner].u = static_cast<float>(corner & 1);
     primitive->vertices[corner].v = static_cast<float>(corner >> 1);
     primitive->vertices[corner].diffuse = color;

@@ -22,7 +22,6 @@
 #include "Utility/Math/ScalarConversion.h"
 #include "Render/Renderer.h"
 #include "Render/Primitives/RenderPrimitive.h"
-#include "Render/Projection/RenderProjection.h"
 
 #include <bit>
 #include <cmath>
@@ -4667,7 +4666,7 @@ RenderVertex TransformVert(const matrix& view, const vector3d& position) {
   vertex.specular = 0xFF000000;
   vertex.u = 0.0f;
   vertex.v = 0.0f;
-  g_renderer->viewport.Projection().Project(&position.x, view.values, vertex);
+  g_renderer->viewport.Project(&position.x, view.values, vertex);
   return vertex;
 }
 

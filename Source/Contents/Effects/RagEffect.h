@@ -11,7 +11,6 @@
 
 struct EffectActor;
 class TextureCache;
-struct RenderProjection;
 struct matrix;
 
 struct CRagEffect : CRenderObject {
@@ -61,7 +60,7 @@ struct CRagEffect : CRenderObject {
   void TexturedClassChange(char kind);
   void FrostDiver(char type);
   void GrimTooth();
-  void Hit4(const RenderProjection& projection);
+  void Hit4();
   void IceWall();
   void IncAgiDex();
   void IncAgility();

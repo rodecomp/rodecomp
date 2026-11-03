@@ -109,7 +109,7 @@ void CMultiTexParticle::Render(int column, int row) {
 
   for (int i = 0; i < 4; ++i) {
     LightmappedVertex& vertex = this->command.vertices[i];
-    reinterpret_cast<const RenderProjection*>(g_renderer)->Project(corners[i], cameraMatrix, vertex);
+    g_renderer->viewport.Project(corners[i], cameraMatrix, vertex);
     vertex.z -= 0.000030517578125f;
     vertex.diffuse = 0xFFFFFFFF;
     vertex.u = this->uv1[i][0] + this->offsetU;

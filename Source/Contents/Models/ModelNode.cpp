@@ -42,7 +42,7 @@ void C3dNode::Animate(double) {
 
 // OFFSET: 0x00AB7D30
 // FUNCTION: fn_17498
-void C3dNode::Draw(const float*, unsigned char, bool, unsigned char, ModelRenderContext&) {
+void C3dNode::Draw(const float*, unsigned char, bool, unsigned char) {
 }
 
 // OFFSET: 0x00AB7050

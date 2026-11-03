@@ -3897,7 +3897,7 @@ void CGrannyCorpse3d::Render(int argument) {
         position.x = vertex.position[0];
         position.y = vertex.position[1];
         position.z = vertex.position[2];
-        g_renderer->viewport.Projection().Project(&position.x, world.values, output);
+        g_renderer->viewport.Project(&position.x, world.values, output);
         output.u = vertex.uv[0];
         output.v = vertex.uv[1];
         const float shade = lightX * vertex.normal[0] + lightY * vertex.normal[1] + lightZ * vertex.normal[2];
@@ -4086,7 +4086,7 @@ void C3dGrannyGameActor::RenderLit(int argument, const GrannyActorLight& light) 
         position.x = vertex.position[0];
         position.y = vertex.position[1];
         position.z = vertex.position[2];
-        g_renderer->viewport.Projection().Project(&position.x, world.values, output);
+        g_renderer->viewport.Project(&position.x, world.values, output);
         output.u = vertex.uv[0];
         output.v = vertex.uv[1];
         const float shade = lightX * vertex.normal[0] + lightY * vertex.normal[1] + lightZ * vertex.normal[2];
@@ -4189,7 +4189,7 @@ void C3dGrannyGameActor::RenderShadowed(int argument) {
         position.x = vertex.position[0];
         position.y = vertex.position[1];
         position.z = vertex.position[2];
-        g_renderer->viewport.Projection().Project(&position.x, world.values, output);
+        g_renderer->viewport.Project(&position.x, world.values, output);
         output.u = vertex.uv[0];
         output.v = vertex.uv[1];
         const float shade = light.y * vertex.normal[1] + light.x * vertex.normal[0] + light.z * vertex.normal[2];

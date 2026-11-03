@@ -1,4 +1,4 @@
-#include "Render/Projection/RenderProjection.h"
+#include "Render/Projection/RendererViewport.h"
 
 #include <bit>
 #include <cmath>
@@ -14,7 +14,7 @@ namespace {
 
 // OFFSET: 0x0055A090
 // FUNCTION: fn_02076
-void RenderProjection::Ray(int x, int y, const float* origin, const float* matrix, float* output) const {
+void RendererViewport::Ray(int x, int y, const float* origin, const float* matrix, float* output) const {
   float transform[12];
   std::memcpy(transform, matrix, sizeof(transform));
   const float horizontal = static_cast<float>(x) / static_cast<float>(this->centerX);

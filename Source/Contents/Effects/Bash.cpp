@@ -7,7 +7,6 @@
 #include "Contents/Effects/EffectMemoryMgr.h"
 #include "Contents/Effects/Particle.h"
 #include "Render/Primitives/RenderPrimitive.h"
-#include "Render/Projection/RenderProjection.h"
 #include "Render/Renderer.h"
 #include "Render/TextureQuad.h"
 #include "Utility/Math/AffineMatrix.h"
@@ -45,7 +44,7 @@ void CBash::Slot01() {
   screen.specular = 0xFF000000;
   screen.u = 0.0f;
   screen.v = 0.0f;
-  g_renderer->viewport.Projection().Project(this->position, mode->camera->frame.view.values, screen);
+  g_renderer->viewport.Project(this->position, mode->camera->frame.view.values, screen);
   this->screenX = screen.x;
   this->screenY = screen.y - 40.0f;
 

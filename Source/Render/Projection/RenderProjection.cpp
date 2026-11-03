@@ -1,12 +1,12 @@
 #include "Render/Primitives/LightmappedPrimitive.h"
 #include "Render/Primitives/RenderPrimitive.h"
-#include "Render/Projection/RenderProjection.h"
+#include "Render/Projection/RendererViewport.h"
 
 #include <bit>
 
 // OFFSET: 0x0055D650
 // FUNCTION: fn_02106
-void RenderProjection::Project(const float* position, const float* matrix, RenderVertex& output) const {
+void RendererViewport::Project(const float* position, const float* matrix, RenderVertex& output) const {
   const float inverseDepth = 1.0f / (((matrix[5] * position[1] + matrix[2] * position[0]) + matrix[8] * position[2]) + matrix[11]);
   output.rhw = inverseDepth;
 
@@ -25,7 +25,7 @@ void RenderProjection::Project(const float* position, const float* matrix, Rende
 
 // OFFSET: 0x0055D750
 // FUNCTION: fn_02107
-void RenderProjection::Project(const float* position, const float* matrix, LightmappedVertex& output) const {
+void RendererViewport::Project(const float* position, const float* matrix, LightmappedVertex& output) const {
   const float inverseDepth = 1.0f / (((matrix[5] * position[1] + matrix[2] * position[0]) + matrix[8] * position[2]) + matrix[11]);
   output.rhw = inverseDepth;
 

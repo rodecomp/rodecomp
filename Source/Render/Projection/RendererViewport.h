@@ -2,7 +2,6 @@
 #define RAGNAROK_SOURCE_RENDER_PROJECTION_RENDERERVIEWPORT_H
 
 #include <cstddef>
-#include "Render/Projection/RenderProjection.h"
 
 struct RendererViewport {
   /* 0004 */ float scaleX;
@@ -20,7 +19,9 @@ struct RendererViewport {
   /* 0034 */ int centerY;
 
   void SetSize(int width, int height);
-  RenderProjection Projection() const;
+  void Project(const float* position, const float* matrix, struct RenderVertex& output) const;
+  void Project(const float* position, const float* matrix, struct LightmappedVertex& output) const;
+  void Ray(int x, int y, const float* origin, const float* matrix, float* output) const;
 };
 
 extern float g_cotangent;

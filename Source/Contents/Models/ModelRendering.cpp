@@ -2,38 +2,24 @@
 #include "Contents/Models/ModelNode.h"
 #include "Contents/Models/ModelRendering.h"
 #include "Render/Primitives/RenderCommandPool.h"
-#include "Render/Projection/RenderProjection.h"
 #include "Render/Primitives/RenderQueues.h"
 #include "Render/Primitives/RenderVertexPool.h"
+#include "Contents/Effects/EffectPrim.h"
+#include "Contents/MapSkyMgr.h"
+#include "Render/Renderer.h"
+#include "Render/TextureQuad.h"
+#include "Resource/World/WorldResource.h"
 #include "Render/Textures/Texture.h"
 
 #include "Utility/Math/ScalarConversion.h"
 #include <cstring>
 
 // INLINED
-ModelRenderContext::ModelRenderContext(
-  const RenderProjection& projection, RenderCommandPool& commands, RenderVertexPool& vertices, RenderQueues& queues, const int& width, const int& height,
-  const bool& depthAlpha, const float& depthStart, const float& depthEnd, const bool& overrideColor, const bool& integerColor, const float* overrideScale,
-  const float* colorScale
-)
-    : projection(projection), commands(commands), vertices(vertices), queues(queues), width(width), height(height), depthAlpha(depthAlpha),
-      depthStart(depthStart), depthEnd(depthEnd), overrideColor(overrideColor), integerColor(integerColor), overrideScale(overrideScale),
-      colorScale(colorScale) {
-  for (auto& vertex : this->legacyProjected) {
-    vertex.specular = 0xFF000000u;
-  }
-
-  for (auto& vertex : this->modernProjected) {
-    vertex.specular = 0xFF000000u;
-  }
-}
-
-// INLINED
-bool ModelTriangleVisible(const RenderVertex* a, const RenderVertex* b, const RenderVertex* c, const ModelRenderContext& context) {
+bool ModelTriangleVisible(const RenderVertex* a, const RenderVertex* b, const RenderVertex* c) {
   const float firstMinimumX = a->x > b->x ? b->x : a->x;
   const float minimumX = firstMinimumX > c->x ? c->x : firstMinimumX;
 
-  if (minimumX >= static_cast<float>(context.width)) {
+  if (minimumX >= static_cast<float>(g_renderer->viewport.width)) {
     return false;
   }
 
@@ -47,7 +33,7 @@ bool ModelTriangleVisible(const RenderVertex* a, const RenderVertex* b, const Re
   const float firstMinimumY = a->y > b->y ? b->y : a->y;
   const float minimumY = firstMinimumY > c->y ? c->y : firstMinimumY;
 
-  if (minimumY >= static_cast<float>(context.height)) {
+  if (minimumY >= static_cast<float>(g_renderer->viewport.height)) {
     return false;
   }
 
@@ -58,6 +44,12 @@ bool ModelTriangleVisible(const RenderVertex* a, const RenderVertex* b, const Re
 }
 
 namespace {
+  struct ProjectedVertex : RenderVertex {
+    // INLINED
+    ProjectedVertex() : RenderVertex{0, 0, 0, 0, 0, 0xFF000000u, 0, 0} {
+    }
+  };
+
   // INLINED
   unsigned Byte(float value) {
     return static_cast<unsigned>(TruncateToInt(value)) & 255u;
@@ -97,21 +89,22 @@ inline void TransformModelUV(float& u, float& v, const ModelTextureTransform& tr
 }
 
 // INLINED
-void DrawModelNode(C3dNode& node, const float* matrix, unsigned char reversed, bool clip, unsigned char commandMode, ModelRenderContext& context, bool modern) {
+void DrawModelNode(C3dNode& node, const float* matrix, unsigned char reversed, bool clip, unsigned char commandMode, RenderVertex* projected, bool modern) {
   struct matrix camera;
   std::memcpy(camera.values, matrix, sizeof(camera.values));
   struct matrix combined;
   combined.Compose(node.transform, camera);
-  const float overrideScale[3] = {context.overrideScale[0], context.overrideScale[1], context.overrideScale[2]};
-  const float colorScale[3] = {context.colorScale[0], context.colorScale[1], context.colorScale[2]};
+  float overrideScale[3];
+  std::memcpy(overrideScale, g_worldLighting.ambient, sizeof(overrideScale));
+  float colorScale[3];
+  std::memcpy(colorScale, g_weatherEffect.lightColor, sizeof(colorScale));
   const unsigned char alpha = node.model->alpha;
-  auto& projected = modern ? context.modernProjected : context.legacyProjected;
 
   for (int index = 0; index < node.mesh->vertexCount; ++index) {
-    context.projection.Project(node.mesh->vertices[index].data(), combined.values, projected[index]);
+    g_renderer->viewport.Project(node.mesh->vertices[index].data(), combined.values, projected[index]);
   }
 
-  RenderVertex* output = context.vertices.Acquire(static_cast<unsigned>(node.mesh->faceCount) * 3u);
+  RenderVertex* output = g_renderer->vertices.Acquire(static_cast<unsigned>(node.mesh->faceCount) * 3u);
   int index = 0;
 
   while (index < node.mesh->faceCount) {
@@ -125,7 +118,7 @@ void DrawModelNode(C3dNode& node, const float* matrix, unsigned char reversed, b
       const RenderVertex& a = projected[face.vertices[0]];
       const RenderVertex& b = projected[face.vertices[1]];
       const RenderVertex& c = projected[face.vertices[2]];
-      bool visible = !clip || ModelTriangleVisible(&a, &b, &c, context);
+      bool visible = !clip || ModelTriangleVisible(&a, &b, &c);
       const float left = (b.y - a.y) * (c.x - a.x);
       const float right = (c.y - a.y) * (b.x - a.x);
       const bool winding = modern ? right > left : left > right;
@@ -157,11 +150,11 @@ void DrawModelNode(C3dNode& node, const float* matrix, unsigned char reversed, b
         }
 
         for (unsigned corner = 0; corner < 3; ++corner) {
-          if (context.overrideColor) {
+          if (g_overrideColor) {
             output[corner].diffuse = Color(state.colors[corner], alpha, overrideScale);
           } else if (node.unknown_0088) {
             output[corner].diffuse = (state.colors[corner] & 0x00FFFFFFu) | 0x80000000u;
-          } else if (context.integerColor) {
+          } else if (g_weatherEffect.unknown_0001) {
             const int* values = node.faceValues.data() + index * 9u + corner * 3u;
             output[corner].diffuse = (static_cast<unsigned>(alpha) << 24) | (Byte(static_cast<float>(values[0]) * colorScale[0]) << 16) |
                                      (Byte(static_cast<float>(values[1]) * colorScale[1]) << 8) | Byte(static_cast<float>(values[2]) * colorScale[2]);
@@ -177,7 +170,7 @@ void DrawModelNode(C3dNode& node, const float* matrix, unsigned char reversed, b
     } while (index < node.mesh->faceCount && node.mesh->faces[index].texture == texture);
 
     if (output != first) {
-      RenderCommand* command = context.commands.Acquire();
+      RenderCommand* command = g_renderer->commands.Acquire();
       command->vertices = first;
       command->vertexCount = static_cast<unsigned>(output - first);
       command->texture = node.textures[texture % node.textures.size()];
@@ -187,25 +180,29 @@ void DrawModelNode(C3dNode& node, const float* matrix, unsigned char reversed, b
         flags |= 1;
       }
 
-      context.queues.Submit(command, flags, context.depthAlpha, context.depthStart, context.depthEnd);
+      g_renderer->queues.Submit(command, flags, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
     }
   }
 
   node.unknown_0088 = 0;
 
   for (C3dNode* child : node.children) {
-    child->Draw(combined.values, reversed, clip, commandMode, context);
+    child->Draw(combined.values, reversed, clip, commandMode);
   }
 }
 
 // OFFSET: 0x00AB7D40
 // FUNCTION: fn_17499
-void C3dNodeV1::Draw(const float* matrix, unsigned char reversed, bool clip, unsigned char commandMode, ModelRenderContext& context) {
-  DrawModelNode(*this, matrix, reversed, clip, commandMode, context, false);
+void C3dNodeV1::Draw(const float* matrix, unsigned char reversed, bool clip, unsigned char commandMode) {
+  // GLOBAL: gl_24586
+  static ProjectedVertex projected[30000];
+  DrawModelNode(*this, matrix, reversed, clip, commandMode, projected, false);
 }
 
 // OFFSET: 0x00AB84B0
 // FUNCTION: fn_17500
-void C3dNodeV2::Draw(const float* matrix, unsigned char reversed, bool clip, unsigned char commandMode, ModelRenderContext& context) {
-  DrawModelNode(*this, matrix, reversed, clip, commandMode, context, true);
+void C3dNodeV2::Draw(const float* matrix, unsigned char reversed, bool clip, unsigned char commandMode) {
+  // GLOBAL: gl_24587
+  static ProjectedVertex projected[30000];
+  DrawModelNode(*this, matrix, reversed, clip, commandMode, projected, true);
 }

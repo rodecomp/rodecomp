@@ -17,7 +17,7 @@ public:
   virtual void Prepare(const float* direction, const float* diffuse, const float* ambient);
   virtual void Animate(double frame);
   virtual void Update();
-  virtual void Draw(const float* matrix, bool clip, ModelRenderContext& context);
+  virtual void Draw(const float* matrix, bool clip);
   virtual C3dNode* Find(const char* name);
   virtual void MarkOccluded(const float* ray);
   virtual void SetSpeed(float speed);
@@ -63,7 +63,7 @@ public:
   void Prepare(const float* direction, const float* diffuse, const float* ambient) override;
   void Animate(double frame) override;
   void Update() override;
-  void Draw(const float* matrix, bool clip, ModelRenderContext& context) override;
+  void Draw(const float* matrix, bool clip) override;
   C3dNode* Find(const char* name) override;
 
   /* 0170 */ C3dNodeV1* root;
@@ -82,7 +82,7 @@ public:
   void Prepare(const float* direction, const float* diffuse, const float* ambient) override;
   void Animate(double frame) override;
   void Update() override;
-  void Draw(const float* matrix, bool clip, ModelRenderContext& context) override;
+  void Draw(const float* matrix, bool clip) override;
   C3dNode* Find(const char* name) override;
   void SetSpeed(float speed) override;
 

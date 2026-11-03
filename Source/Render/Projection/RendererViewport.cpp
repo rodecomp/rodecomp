@@ -30,8 +30,3 @@ void RendererViewport::SetSize(int columns, int rows) {
   g_tangent = g_projectionScale / this->uiScaleY;
   g_cotangent = g_projectionScale / this->uiScaleY;
 }
-
-// INLINED
-RenderProjection RendererViewport::Projection() const {
-  return {this->scaleX, this->scaleY, this->centerX, this->centerY};
-}

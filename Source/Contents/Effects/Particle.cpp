@@ -8,7 +8,6 @@
 #include "Contents/Jobs/JobInheritance.h"
 #include "Contents/World/World.h"
 #include "Render/Primitives/RenderPrimitive.h"
-#include "Render/Projection/RenderProjection.h"
 #include "Render/Projection/RendererViewport.h"
 #include "Render/Renderer.h"
 #include "Render/TextureQuad.h"
@@ -417,7 +416,7 @@ bool CEZ2STRParticle::Process(float x, float y, float z) {
 void CEZ2STRParticle::UpdatePosition(float x, float y, float z) {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   RenderVertex screen = {0, 0, 0, 0, 0, 0xFF000000, 0, 0};
-  g_renderer->viewport.Projection().Project(&this->position.x, mode->camera->frame.view.values, screen);
+  g_renderer->viewport.Project(&this->position.x, mode->camera->frame.view.values, screen);
   this->m_screen.x = screen.x + x;
   this->m_screen.y = screen.y + y;
   this->m_screen.z = screen.z + z;
@@ -499,7 +498,7 @@ void CEZ2STRParticle::RenderBillboard(EZeffectClip* clip, EZeffectTransform* tra
   combined.Compose(world, view);
   for (int i = 0; i < 4; ++i) {
     vector3d point = {vertices[i].x, vertices[i].y, vertices[i].z};
-    g_renderer->viewport.Projection().Project(&point.x, combined.values, vertices[i]);
+    g_renderer->viewport.Project(&point.x, combined.values, vertices[i]);
     vertices[i].rhw = this->depthOffset + vertices[i].rhw;
     vertices[i].z = RhwToDepth(vertices[i].rhw);
     vertices[i].u = scaleU * vertices[i].u;
@@ -669,7 +668,7 @@ void CEZ2STRParticle::RenderGround(EZeffectClip* clip, EZeffectTransform* transf
     }
     this->m_groundHeight = point.y;
 
-    g_renderer->viewport.Projection().Project(&point.x, view.values, vertices[i]);
+    g_renderer->viewport.Project(&point.x, view.values, vertices[i]);
     vertices[i].rhw = this->depthOffset + vertices[i].rhw;
     vertices[i].z = RhwToDepth(vertices[i].rhw);
     vertices[i].u = scaleU * vertices[i].u;
@@ -873,7 +872,7 @@ void CParticle::Render(bool billboard, float top, float bottom, float left, floa
   world.Compose(*local, view);
   for (int i = 0; i < 4; ++i) {
     vector3d point = {output[i].x, output[i].y, output[i].z};
-    g_renderer->viewport.Projection().Project(&point.x, world.values, output[i]);
+    g_renderer->viewport.Project(&point.x, world.values, output[i]);
     const float rhw = this->depthOffset + output[i].rhw;
     output[i].rhw = rhw;
     if (0.0f > rhw) {

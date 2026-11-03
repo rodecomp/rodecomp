@@ -1,7 +1,6 @@
 #include "Contents/Ground/GroundGeometry.h"
 #include "Contents/Ground/GroundRendering.h"
 #include "Render/Primitives/RenderPrimitivePool.h"
-#include "Render/Projection/RenderProjection.h"
 #include "Render/Primitives/RenderQueues.h"
 #include "Render/Renderer.h"
 #include "Render/TextureQuad.h"
@@ -67,7 +66,7 @@ namespace {
 
     for (unsigned corner = 0; corner < 4; ++corner) {
       vertices[corner].specular = 0xFF000000u;
-      g_renderer->viewport.Projection().Project(quad.vertices[corner], matrix, vertices[corner]);
+      g_renderer->viewport.Project(quad.vertices[corner], matrix, vertices[corner]);
     }
 
     if (clip && !GroundQuadVisible(vertices)) {

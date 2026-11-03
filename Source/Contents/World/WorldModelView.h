@@ -6,7 +6,6 @@
 
 struct OrientedBounds;
 struct WorldSpatialTree;
-struct ModelRenderContext;
 class GroundGeometry;
 
 struct ModelViewPlanes {
@@ -46,7 +45,7 @@ int ClassifyModelView(const OrientedBounds& bounds, const ModelViewPlanes& plane
 
 void DrawWorldModelLeaves(
   std::list<WorldSpatialTree*>& clipped, std::list<WorldSpatialTree*>& inside, const ModelViewPlanes& planes, const float* matrix, unsigned frame, int updates,
-  GroundGeometry& ground, ModelRenderContext& models, int* visibleRectangle
+  GroundGeometry& ground, int* visibleRectangle
 );
 
 extern int g_groundOverlayA;
