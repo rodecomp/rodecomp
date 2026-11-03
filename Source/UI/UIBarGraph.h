@@ -9,7 +9,7 @@
 
 class UIBarGraph : public UIWindow {
 public:
-  explicit UIBarGraph(UIWindowContext& context) : UIWindow(context, 0), m_value(0) {
+  explicit UIBarGraph() : UIWindow(0), m_value(0) {
   }
 
   void Paint() override;
@@ -21,7 +21,7 @@ public:
 
 class UIBarGraph2 : public UIBarGraph {
 public:
-  explicit UIBarGraph2(UIWindowContext& context);
+  UIBarGraph2();
 
   void Paint() override;
 
@@ -36,7 +36,7 @@ public:
 
 class UIBarGraph3 : public UIWindow {
 public:
-  explicit UIBarGraph3(UIWindowContext& context);
+  UIBarGraph3();
   ~UIBarGraph3() override;
 
 protected:
@@ -46,7 +46,7 @@ protected:
 
 class UIBarGraph4 : public UIBarGraph3 {
 public:
-  explicit UIBarGraph4(UIWindowContext& context) : UIBarGraph3(context) {
+  explicit UIBarGraph4() : UIBarGraph3() {
   }
 
   void Paint() override;
@@ -62,7 +62,7 @@ protected:
 
 class UIINT64BarGraph : public UIWindow {
 public:
-  explicit UIINT64BarGraph(UIWindowContext& context);
+  UIINT64BarGraph();
 
   void Paint() override;
   void Slot28(int x, int y) override;
@@ -80,7 +80,7 @@ protected:
 
 class UIPetInfoBarGraph : public UIWindow {
 public:
-  explicit UIPetInfoBarGraph(UIWindowContext& context);
+  UIPetInfoBarGraph();
 
   void Paint() override;
   void SetValue(int value);
@@ -90,7 +90,7 @@ public:
 
 class UIBarGraphHomun : public UIWindow {
 public:
-  explicit UIBarGraphHomun(UIWindowContext& context);
+  UIBarGraphHomun();
 
   void Paint() override;
 
@@ -103,7 +103,7 @@ protected:
 
 class UIBarGraphPlayer : public UIWindow {
 public:
-  explicit UIBarGraphPlayer(UIWindowContext& context);
+  UIBarGraphPlayer();
   ~UIBarGraphPlayer() override;
 
   void Paint() override;
@@ -117,7 +117,7 @@ protected:
 
 class UIBarGraphPlayerAP : public UIBarGraphPlayer {
 public:
-  explicit UIBarGraphPlayerAP(UIWindowContext& context) : UIBarGraphPlayer(context) {
+  explicit UIBarGraphPlayerAP() : UIBarGraphPlayer() {
   }
 
   void Paint() override;

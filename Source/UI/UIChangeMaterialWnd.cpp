@@ -38,8 +38,8 @@
 
 // OFFSET: 0x005E03B0
 // FUNCTION: fn_03861
-UIChangeMaterialWnd::UIChangeMaterialWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), m_sortBox(nullptr), m_button(nullptr), m_resultX(168), m_resultY(131), m_resultItem(),
+UIChangeMaterialWnd::UIChangeMaterialWnd()
+    : UIFrameWnd(0), m_sortBox(nullptr), m_button(nullptr), m_resultX(168), m_resultY(131), m_resultItem(),
       m_materialPos{{90, 86}, {246, 86}, {168, 222}, {168, 40}, {90, 176}, {246, 176}}, m_materials(), m_resultAmount(0), m_resultText() {
   *reinterpret_cast<int*>(reinterpret_cast<char*>(this) + 0xB4) = 0;
   *reinterpret_cast<int*>(reinterpret_cast<char*>(this) + 0xB8) = 0;
@@ -47,8 +47,8 @@ UIChangeMaterialWnd::UIChangeMaterialWnd(UIWindowContext& windows)
 
 // OFFSET: 0x005E0560
 // FUNCTION: fn_03862
-UIChangeMaterialWnd_List::UIChangeMaterialWnd_List(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), m_selectedIndex(0), m_hoverIndex(0), m_scrollOffset(0), m_previousScrollOffset(0), m_scrollBar(nullptr), m_items(),
+UIChangeMaterialWnd_List::UIChangeMaterialWnd_List()
+    : UIFrameWnd(0), m_selectedIndex(0), m_hoverIndex(0), m_scrollOffset(0), m_previousScrollOffset(0), m_scrollBar(nullptr), m_items(),
       m_entries() {
   *reinterpret_cast<int*>(reinterpret_cast<char*>(this) + 0xB4) = 27;
   *reinterpret_cast<int*>(reinterpret_cast<char*>(this) + 0xB8) = 16;
@@ -56,14 +56,14 @@ UIChangeMaterialWnd_List::UIChangeMaterialWnd_List(UIWindowContext& windows)
 
 // OFFSET: 0x005E0650
 // FUNCTION: fn_03863
-UIChangeMaterialWnd_ScrollBar::UIChangeMaterialWnd_ScrollBar(UIWindowContext& windows) : UIScrollBar(windows) {
+UIChangeMaterialWnd_ScrollBar::UIChangeMaterialWnd_ScrollBar() : UIScrollBar() {
   this->thickness = 16;
 }
 
 // OFFSET: 0x005E1B30
 // FUNCTION: fn_03877
 void UIChangeMaterialWnd_List::CreateScrollBar(int width, int height) {
-  auto* bar = new UIChangeMaterialWnd_ScrollBar(*this->m_context);
+  auto* bar = new UIChangeMaterialWnd_ScrollBar();
   *reinterpret_cast<int*>(reinterpret_cast<char*>(bar) + 0xA4) = 0x10;
   this->m_scrollBar = bar;
   bar->Configure(width - *reinterpret_cast<int*>(reinterpret_cast<char*>(this) + 0xB8), 0, 1, height);
@@ -535,7 +535,6 @@ void UIChangeMaterialWnd_List::ShiftSelectedIndex(int value) {
 // OFFSET: 0x005E1C00
 // FUNCTION: fn_03878
 void UIChangeMaterialWnd::Paint() {
-  UIWindowContext& controls = *this->m_context;
 
   CBitmapRes* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\ChangeMaterial\\bg_ChangeMaterial.bmp")));
   this->DrawBitmap(0, 0, background ? &background->image : nullptr, true);
@@ -693,7 +692,7 @@ void UIChangeMaterialWnd_List::Slot28(int x, int y) {
 // OFFSET: 0x005E1320
 // FUNCTION: fn_03876
 void UIChangeMaterialWnd::Slot15(int width, int height) {
-  UIBitmapButton* close = new UIBitmapButton(*this->m_context);
+  UIBitmapButton* close = new UIBitmapButton();
   close->SetBitmap("유저인터페이스\\basic_interface\\sys_close_off.bmp", 0, 0);
   close->SetBitmap("유저인터페이스\\basic_interface\\sys_close_on.bmp", 1, 0);
   close->SetBitmap("유저인터페이스\\basic_interface\\sys_close_on.bmp", 2, 0);
@@ -702,7 +701,7 @@ void UIChangeMaterialWnd::Slot15(int width, int height) {
   close->SetId(201);
   this->AddChild(close);
 
-  UIEditCtrl* edit = new UIEditCtrl(*this->m_context);
+  UIEditCtrl* edit = new UIEditCtrl();
   *reinterpret_cast<UIEditCtrl**>(reinterpret_cast<char*>(this) + 0xB8) = edit;
   edit->SetSize(118, 13);
   edit->Move(313, 262);
@@ -714,7 +713,7 @@ void UIChangeMaterialWnd::Slot15(int width, int height) {
   edit->topPadding = -1;
   this->AddChild(edit);
 
-  UIBmpTextButton* search = new UIBmpTextButton(*this->m_context);
+  UIBmpTextButton* search = new UIBmpTextButton();
   search->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_search.bmp", 0, 0);
   search->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_search_over.bmp", 1, 0);
   search->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_search_press.bmp", 2, 0);
@@ -725,7 +724,7 @@ void UIChangeMaterialWnd::Slot15(int width, int height) {
   search->SetId(321);
   this->AddChild(search);
 
-  UIBitmapButton* refresh = new UIBitmapButton(*this->m_context);
+  UIBitmapButton* refresh = new UIBitmapButton();
   refresh->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_refresh.bmp", 0, 0);
   refresh->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_refresh_over.bmp", 1, 0);
   refresh->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_refresh_press.bmp", 2, 0);
@@ -735,7 +734,7 @@ void UIChangeMaterialWnd::Slot15(int width, int height) {
   refresh->SetId(415);
   this->AddChild(refresh);
 
-  this->m_sortBox = new UIChangeMaterialWnd_CheckBox(*this->m_context);
+  this->m_sortBox = new UIChangeMaterialWnd_CheckBox();
   this->m_sortBox->SetSize(74, 14);
   this->m_sortBox->SetBitmaps("유저인터페이스\\ChangeMaterial\\btn_sort_up.bmp", "유저인터페이스\\ChangeMaterial\\btn_sort_down.bmp");
   this->m_sortBox->ascendingText = LookupMessage(3722);
@@ -746,7 +745,7 @@ void UIChangeMaterialWnd::Slot15(int width, int height) {
   this->m_sortBox->SetChecked(1);
   this->AddChild(this->m_sortBox);
 
-  UIBitmapButton* change = new UIBitmapButton(*this->m_context);
+  UIBitmapButton* change = new UIBitmapButton();
   this->m_button = change;
   change->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_change_start.bmp", 0, 0);
   change->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_change_over.bmp", 1, 0);
@@ -757,13 +756,13 @@ void UIChangeMaterialWnd::Slot15(int width, int height) {
   change->SetId(184);
   this->AddChild(change);
 
-  UIBasicButton* cancel = new UIBasicButton(*this->m_context);
+  UIBasicButton* cancel = new UIBasicButton();
   cancel->Configure(42, LookupMessage(3045));
   cancel->Move(width - cancel->geometry.width - 55, height - cancel->geometry.height - 12);
   cancel->SetId(201);
   this->AddChild(cancel);
 
-  UIChangeMaterialWnd_List* list = new UIChangeMaterialWnd_List(*this->m_context);
+  UIChangeMaterialWnd_List* list = new UIChangeMaterialWnd_List();
   *reinterpret_cast<UIChangeMaterialWnd_List**>(reinterpret_cast<char*>(this) + 0xB4) = list;
   list->SetSize(186, 216);
   list->Move(310, 41);

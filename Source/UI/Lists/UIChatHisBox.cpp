@@ -86,7 +86,7 @@ void UIChatHisBox::sub_89C080() {
 
 // OFFSET: 0x0086C8D0
 // FUNCTION: fn_11032
-UIChatHisBox::UIChatHisBox(UIWindowContext& windows) : UIListBox(windows) {
+UIChatHisBox::UIChatHisBox() : UIListBox() {
   new (&this->ItemTags()) std::list<std::vector<UIItemTagButton*>>();
   this->maxLines = 240;
   this->lineHeight = 14;

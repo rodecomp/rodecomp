@@ -8,7 +8,7 @@ class UIStaticText;
 
 class UIMerchantItemPurchaseMSGWnd : public UIFrameWnd {
 public:
-  UIMerchantItemPurchaseMSGWnd(UIWindowContext& windowContext);
+  UIMerchantItemPurchaseMSGWnd();
   void Slot15(int width, int height) override;
   void Paint() override;
   void SetPurchase(int value, int amount);

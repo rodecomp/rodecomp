@@ -23,7 +23,7 @@
 
 // OFFSET: 0x0084F250
 // FUNCTION: fn_10657
-UIEditCtrl2::UIEditCtrl2(UIWindowContext& windows) : UIEditCtrl(windows) {
+UIEditCtrl2::UIEditCtrl2() : UIEditCtrl() {
 }
 
 // OFFSET: 0x008515E0
@@ -296,7 +296,7 @@ void UIEditCtrl3::HandleInputMessage(unsigned key, std::intptr_t data) {
 
 // OFFSET: 0x0084F570
 // FUNCTION: fn_10659
-UIEditCtrl3::UIEditCtrl3(UIWindowContext& windows) : UIEditCtrl2(windows) {
+UIEditCtrl3::UIEditCtrl3() : UIEditCtrl2() {
   this->unknown_0130 = 0;
   this->unknown_0134 = 0;
   this->unknown_0138 = 14;
@@ -370,7 +370,7 @@ UIEditCtrl3::~UIEditCtrl3() {
 // OFFSET: 0x0085AC40
 // FUNCTION: fn_10786
 void UIEditCtrl3::Slot15(int width, int height) {
-  auto* scrollBar = new UIScrollBar(*this->m_context);
+  auto* scrollBar = new UIScrollBar();
   this->unknown_0130 = scrollBar;
   scrollBar->Configure(width - 10, 0, 1, height);
   this->AddChild(scrollBar);
@@ -749,7 +749,7 @@ int UIEditCtrl::MeasureText(const std::string& text, const int& bytes) {
 
 // OFFSET: 0x0084F7B0
 // FUNCTION: fn_10660
-UIEditCtrl4::UIEditCtrl4(UIWindowContext& windows) : UIEditCtrl(windows), placeholderColor(0xFFFFFFFFu), placeholderEnabled(0) {
+UIEditCtrl4::UIEditCtrl4() : UIEditCtrl(), placeholderColor(0xFFFFFFFFu), placeholderEnabled(0) {
 }
 
 // OFFSET: 0x00852870
@@ -805,7 +805,7 @@ void UIEditCtrl4::SetPlaceholderColor(std::uint32_t color) {
 
 // OFFSET: 0x0084F7B0
 // FUNCTION: fn_10661
-UIEditCtrl5::UIEditCtrl5(UIWindowContext& windows) : UIEditCtrl4(windows) {
+UIEditCtrl5::UIEditCtrl5() : UIEditCtrl4() {
 }
 
 // OFFSET: 0x008528F0
@@ -911,7 +911,7 @@ void UIBitmapEditCtrl::SetBitmapName(const char* name) {
 
 // OFFSET: 0x0084EE90
 // FUNCTION: fn_10654
-UIChatEditCtrl::UIChatEditCtrl(UIWindowContext& windows) : UIEditCtrl(windows), unknown_0140(0), historyLimit(30) {
+UIChatEditCtrl::UIChatEditCtrl() : UIEditCtrl(), unknown_0140(0), historyLimit(30) {
   this->history.reserve(this->historyLimit);
   this->unknown_0144 = 0;
 }
@@ -1054,7 +1054,7 @@ int UIEditCtrl_OldList::SendMsg(UIWindow* sender, int message, std::intptr_t arg
 void UIShowAndEditTimeCtrl::Slot15(int, int) {
   for (int i = 0; i < 2; ++i) {
     UIEditCtrlVarId*& field = this->fields[i];
-    field = new UIEditCtrlVarId(*this->m_context);
+    field = new UIEditCtrlVarId();
     field->SetSize(20, 18);
     field->Background(232, 232, 232);
     field->Border(192, 192, 192);
@@ -1111,7 +1111,7 @@ void UIEditCtrl3::ClearLineState() {
 
 // OFFSET: 0x0086E7D0
 // FUNCTION: fn_11077
-UIShowAndEditTimeCtrl::UIShowAndEditTimeCtrl(UIWindowContext& windows) : UIWindow(windows, 0) {
+UIShowAndEditTimeCtrl::UIShowAndEditTimeCtrl() : UIWindow(0) {
   this->unknown_0084 = 0;
   this->unknown_0088 = 0;
 }

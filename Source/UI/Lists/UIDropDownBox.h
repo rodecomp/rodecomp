@@ -7,7 +7,7 @@ struct WindowOrdering;
 
 class CUIDropDownBox : public CUIControl {
 public:
-  explicit CUIDropDownBox(UIWindowContext& context);
+  CUIDropDownBox();
   ~CUIDropDownBox() override;
   void Paint() override;
   void Detach();
@@ -19,7 +19,6 @@ public:
 };
 
 struct WindowDropDown {
-  UIWindowContext& windows;
   WindowOrdering& ordering;
   CUIDropDownBox*& popup;
 

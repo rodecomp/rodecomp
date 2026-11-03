@@ -18,7 +18,7 @@ class CUIStaticText;
 namespace RenewQuestUI {
 class CUIQuestItem : public CUIListItem {
 public:
-  __declspec(noinline) explicit CUIQuestItem(UIWindowContext& context);
+  __declspec(noinline) CUIQuestItem();
 
   void Slot15(int width, int height) override;
   void Move(int x, int y) override;
@@ -46,7 +46,7 @@ public:
 
 class CUIQuestList : public CUIControl {
 public:
-  __declspec(noinline) explicit CUIQuestList(UIWindowContext& context);
+  __declspec(noinline) CUIQuestList();
   void Slot15(int width, int height) override;
   void Paint() override;
   void Slot16() override;

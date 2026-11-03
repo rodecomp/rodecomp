@@ -86,8 +86,8 @@ void UIChangeNameWnd::Slot15(int, int) {
 
 // OFFSET: 0x00911190
 // FUNCTION: fn_12511
-UIChangeNameWnd::UIChangeNameWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0) {
+UIChangeNameWnd::UIChangeNameWnd()
+    : UIFrameWnd(0) {
 }
 
 // OFFSET: 0x00934A10

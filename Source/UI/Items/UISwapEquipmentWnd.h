@@ -22,7 +22,7 @@ class UISwapEquipmentWnd : public UIFrameWnd {
   friend class UIEquipWnd;
 
 public:
-  UISwapEquipmentWnd(UIWindowContext& windows);
+  UISwapEquipmentWnd();
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot15(int width, int height) override;
   void Paint() override;

@@ -18,7 +18,7 @@ class UIStaticText;
 
 class UIChatRoomWnd : public UIFrameWnd {
 public:
-  UIChatRoomWnd(UIWindowContext& windows);
+  UIChatRoomWnd();
   void Move(int x, int y) override;
   void Slot11() override;
   void Slot15(int width, int height) override;

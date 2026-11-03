@@ -43,7 +43,7 @@ struct MaterialNameLess {
 class UIChangeMaterialWnd_ScrollBar : public UIScrollBar {
 public:
   // VTABLE: vt_00211
-  explicit UIChangeMaterialWnd_ScrollBar(UIWindowContext& windows);
+  UIChangeMaterialWnd_ScrollBar();
 
   void Paint() override;
 };
@@ -51,7 +51,7 @@ public:
 class UIChangeMaterialWnd_CheckBox : public UICheckBox {
 public:
   // INLINED
-  UIChangeMaterialWnd_CheckBox(UIWindowContext& windows) : UICheckBox(windows) {}
+  UIChangeMaterialWnd_CheckBox() : UICheckBox() {}
   void Paint() override;
 
   /* 010C */ std::string ascendingText;
@@ -60,7 +60,7 @@ public:
 
 class UIChangeMaterialWnd : public UIFrameWnd {
 public:
-  UIChangeMaterialWnd(UIWindowContext& windows);
+  UIChangeMaterialWnd();
   void Slot15(int width, int height) override;
   bool Slot02() override;
   void Paint() override;
@@ -88,7 +88,7 @@ protected:
 
 class UIChangeMaterialWnd_List : public UIFrameWnd {
 public:
-  UIChangeMaterialWnd_List(UIWindowContext& windows);
+  UIChangeMaterialWnd_List();
 
   void Paint() override;
   void Move(int x, int y) override;

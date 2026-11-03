@@ -7,7 +7,6 @@
 class UIChatHisBox2 : public UIChatHisBox {
 public:
   UIChatHisBox2();
-  UIChatHisBox2(UIWindowContext& windows);
   bool Slot08() override;
   void Paint() override;
   void Slot15(int width, int height) override;
@@ -21,7 +20,7 @@ public:
 
 class UIChatHisBox3 : public UIChatHisBox2 {
 public:
-  UIChatHisBox3(UIWindowContext& windows);
+  UIChatHisBox3();
   void Paint() override;
   void Slot15(int width, int height) override;
   void Resize(int width, int height) override;
@@ -33,7 +32,7 @@ public:
 
 class UIMemberListBox : public UIChatHisBox2 {
 public:
-  UIMemberListBox(UIWindowContext& windows);
+  UIMemberListBox();
   void Paint() override;
   void Slot25(int x, int y) override;
   void Slot28(int x, int y) override;

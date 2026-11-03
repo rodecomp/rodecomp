@@ -9,8 +9,8 @@
 
 // OFFSET: 0x00850550
 // FUNCTION: fn_10678
-__declspec(noinline) UIStaticText::UIStaticText(UIWindowContext& windows)
-    : UIWindow(windows, 0), red(0), green(0), blue(0), shadow(0), outline(0), background(0xFFFF00FFu), outlineColor(0x969696), fontHeight(12), fontFamily(0),
+__declspec(noinline) UIStaticText::UIStaticText()
+    : UIWindow(0), red(0), green(0), blue(0), shadow(0), outline(0), background(0xFFFF00FFu), outlineColor(0x969696), fontHeight(12), fontFamily(0),
       bold(0), italic(0), tooltipEnabled(0) {
 }
 
@@ -360,5 +360,5 @@ void UIStaticText::SetTextWithinWidth(const char* value, int outlineValue) {
 
 // OFFSET: 0x008504F0
 // FUNCTION: fn_10677
-UIStaticText3::UIStaticText3(UIWindowContext& windows) : UIStaticText(windows), textX(0) {
+UIStaticText3::UIStaticText3() : UIStaticText(), textX(0) {
 }

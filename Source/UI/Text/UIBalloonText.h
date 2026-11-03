@@ -17,7 +17,7 @@ class UIBalloonText : public UIWindow {
   friend class UISelCharForUServerWnd;
 
 public:
-  UIBalloonText(UIWindowContext& windows);
+  UIBalloonText();
   ~UIBalloonText() override;
 
   bool CanHitTest() override;

@@ -1069,8 +1069,8 @@ bool sub_A59960() {
 // OFFSET: 0x00A599F0
 // FUNCTION: fn_16366
 template <>
-CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::CUIListBoxEx(UIWindowContext& context)
-    : CUIControl(context), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
+CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::CUIListBoxEx()
+    : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
       unknown_00E0(1), rebind(0) {
 }
 
@@ -1082,8 +1082,8 @@ CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::~CUIListBoxEx() {
 
 // OFFSET: 0x00A59BB0
 // FUNCTION: fn_16367
-CUIEditBoxEx::CUIEditBoxEx(UIWindowContext& context)
-    : CUIControl(context), backgroundColor(0xF7F7F7), borderColor(0xC6C6C6), borderWidth(1), editLeft(0), editTop(0), editRight(0), editBottom(0),
+CUIEditBoxEx::CUIEditBoxEx()
+    : CUIControl(), backgroundColor(0xF7F7F7), borderColor(0xC6C6C6), borderWidth(1), editLeft(0), editTop(0), editRight(0), editBottom(0),
       edit(nullptr), onSubmit() {
 }
 
@@ -1118,7 +1118,7 @@ int CUIRenewQuestUI::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
 // FUNCTION: fn_16433
 template <>
 void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::Slot15(int width, int height) {
-  this->scrollBar = new CUIVScrollBar(*this->m_context);
+  this->scrollBar = new CUIVScrollBar();
   this->scrollBar->Show(0);
   this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
   this->AddChild(this->scrollBar);
@@ -1316,13 +1316,13 @@ CUIFrameWnd* CreateRenewQuestUI() {
 // OFFSET: 0x00A5C590
 // FUNCTION: fn_16434
 void RenewQuestUI::CUIQuestItem::Slot15(int width, int height) {
-  this->icon = new CUIStaticImage(*this->m_context);
+  this->icon = new CUIStaticImage();
   this->icon->SetSize(26, 29);
   this->icon->Move(8, 7);
   this->icon->SetImage(std::string());
   this->AddChild(this->icon);
 
-  this->unknown_00EC = new CUIStaticText(*this->m_context);
+  this->unknown_00EC = new CUIStaticText();
   this->unknown_00EC->SetSize(260, 12);
   this->unknown_00EC->Move(42, 6);
   this->unknown_00EC->SetText("", 0);
@@ -1337,7 +1337,7 @@ void RenewQuestUI::CUIQuestItem::Slot15(int width, int height) {
   this->unknown_00EC->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->unknown_00EC);
 
-  this->unknown_00F0 = new CUIStaticText(*this->m_context);
+  this->unknown_00F0 = new CUIStaticText();
   this->unknown_00F0->SetSize(260, 12);
   this->unknown_00F0->Move(42, 24);
   this->unknown_00F0->SetText("", 0);
@@ -1352,7 +1352,7 @@ void RenewQuestUI::CUIQuestItem::Slot15(int width, int height) {
   this->unknown_00F0->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->unknown_00F0);
 
-  this->unknown_00F4 = new CUICheckBox(*this->m_context);
+  this->unknown_00F4 = new CUICheckBox();
   this->unknown_00F4->SetSize(14, 14);
   this->unknown_00F4->Move(312, 3);
   this->unknown_00F4->SetOnCheck([this](bool checked) { this->OnSimpleView(checked); });
@@ -1378,7 +1378,7 @@ void RenewQuestUI::CUIQuestItem::Slot15(int width, int height) {
   this->unknown_00F4->Invalidate();
   this->AddChild(this->unknown_00F4);
 
-  this->unknown_00F8 = new CUICheckBox(*this->m_context);
+  this->unknown_00F8 = new CUICheckBox();
   this->unknown_00F8->SetSize(20, 17);
   this->unknown_00F8->Move(306, 22);
   this->unknown_00F8->SetOnCheck([this](bool checked) { this->OnActiveStateChanged(checked); });
@@ -1408,7 +1408,7 @@ void RenewQuestUI::CUIQuestItem::Slot15(int width, int height) {
 // OFFSET: 0x00A5D850
 // FUNCTION: fn_16435
 void RenewQuestUI::CUIQuestList::Slot15(int width, int height) {
-  this->list = new CUIListBoxEx<CUIQuestItem, unsigned long>(*this->m_context);
+  this->list = new CUIListBoxEx<CUIQuestItem, unsigned long>();
   this->list->itemWidth = 330;
   this->list->rowHeight = 46;
   this->list->SetSize(343, 394);
@@ -1500,7 +1500,7 @@ void RenewQuestUI::CUIQuestList::Slot15(int width, int height) {
 // OFFSET: 0x00A5E8C0
 // FUNCTION: fn_16436
 void CUIRenewQuestUI::Slot15(int width, int height) {
-  this->titleBar = new CUITitleBar(*this->m_context);
+  this->titleBar = new CUITitleBar();
   this->titleBar->SetSize(352, 17);
   this->titleBar->Move(29, 0);
   const std::uint8_t titleRight[] = {
@@ -1523,7 +1523,7 @@ void CUIRenewQuestUI::Slot15(int width, int height) {
   this->titleBar->SetImages(std::string(DecryptName<0x75ADC57D87EFBD8FULL>(titleLeft)), std::string(DecryptName<0x2BAD156DE3E1F9D9ULL>(titleMiddle)), std::string(DecryptName<0x637B959D55771F69ULL>(titleRight)));
   this->AddChild(this->titleBar);
 
-  CUIStaticText* title = new CUIStaticText(*this->m_context);
+  CUIStaticText* title = new CUIStaticText();
   title->SetSize(100, 17);
   title->Move(18, 0);
   const std::uint8_t questTitle[] = {0x00, 0xDE, 0x88, 0x52, 0xEF, 0x3D};
@@ -1541,7 +1541,7 @@ void CUIRenewQuestUI::Slot15(int width, int height) {
   this->titleBar->titleText = title;
   this->titleBar->AddChild(title);
 
-  CUIImageButton* systemButton = new CUIImageButton(*this->m_context);
+  CUIImageButton* systemButton = new CUIImageButton();
   systemButton->SetSize(11, 11);
   systemButton->Move(3, 3);
   systemButton->SetOnClick([this]() { this->OnCallback6(); });
@@ -1573,7 +1573,7 @@ void CUIRenewQuestUI::Slot15(int width, int height) {
   );
   this->titleBar->AddChild(systemButton);
 
-  this->background = new CUIStaticImage(*this->m_context);
+  this->background = new CUIStaticImage();
   this->background->SetSize(352, 449);
   this->background->Move(29, 17);
   const std::uint8_t backgroundImage[] = {
@@ -1584,13 +1584,13 @@ void CUIRenewQuestUI::Slot15(int width, int height) {
   this->background->SetImage(std::string(DecryptName<0x39A39F87DD5F535BULL>(backgroundImage)));
   this->AddChild(this->background);
 
-  this->tab = new CUITab(*this->m_context);
+  this->tab = new CUITab();
   this->tab->SetSize(30, 403);
   this->tab->Move(0, 17);
   this->tab->SetOnChange([this](CUITabButton* button) { this->OnTabButton(button); });
   this->AddChild(this->tab);
 
-  CUITabButton* processButton = new CUITabButton(*this->m_context);
+  CUITabButton* processButton = new CUITabButton();
   processButton->SetSize(30, 100);
   processButton->Move(0, 0);
   processButton->SetOnClick([this]() {
@@ -1645,7 +1645,7 @@ void CUIRenewQuestUI::Slot15(int width, int height) {
   );
   this->tab->AddChild(processButton);
 
-  CUITabButton* recommendedButton = new CUITabButton(*this->m_context);
+  CUITabButton* recommendedButton = new CUITabButton();
   recommendedButton->SetSize(30, 100);
   recommendedButton->Move(0, 101);
   recommendedButton->SetOnClick([this]() {
@@ -1708,7 +1708,7 @@ void CUIRenewQuestUI::Slot15(int width, int height) {
   );
   this->tab->AddChild(recommendedButton);
 
-  CUITabButton* holdButton = new CUITabButton(*this->m_context);
+  CUITabButton* holdButton = new CUITabButton();
   holdButton->SetSize(30, 100);
   holdButton->Move(0, 202);
   holdButton->SetOnClick([this]() {
@@ -1760,7 +1760,7 @@ void CUIRenewQuestUI::Slot15(int width, int height) {
   );
   this->tab->AddChild(holdButton);
 
-  CUITabButton* waitButton = new CUITabButton(*this->m_context);
+  CUITabButton* waitButton = new CUITabButton();
   waitButton->SetSize(30, 100);
   waitButton->Move(0, 303);
   waitButton->SetOnClick([this]() {
@@ -1812,7 +1812,7 @@ void CUIRenewQuestUI::Slot15(int width, int height) {
   );
   this->tab->AddChild(waitButton);
 
-  this->checkBox = new CUICheckBox(*this->m_context);
+  this->checkBox = new CUICheckBox();
   this->checkBox->SetSize(10, 10);
   this->checkBox->Move(38, 448);
   this->checkBox->SetOnCheck([this](bool checked) { reinterpret_cast<WindowReplayRecorder*>(this)->RecordWindowFlag(checked); });
@@ -1846,7 +1846,7 @@ void CUIRenewQuestUI::Slot15(int width, int height) {
   this->checkBox->Invalidate();
   this->AddChild(this->checkBox);
 
-  this->filterLabel = new CUIStaticText(*this->m_context);
+  this->filterLabel = new CUIStaticText();
   this->filterLabel->SetSize(100, 12);
   this->filterLabel->Move(52, 447);
   this->filterLabel->SetText("", 0);
@@ -1861,7 +1861,7 @@ void CUIRenewQuestUI::Slot15(int width, int height) {
   this->filterLabel->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->filterLabel);
 
-  this->closeButton = new CUIImageButton(*this->m_context);
+  this->closeButton = new CUIImageButton();
   this->closeButton->SetSize(42, 20);
   this->closeButton->Move(327, 442);
   this->closeButton->SetOnClick([this]() { g_windowMgr.CloseWindow(0x2718); });
@@ -1894,7 +1894,7 @@ void CUIRenewQuestUI::Slot15(int width, int height) {
   this->AddChild(this->closeButton);
 
   for (int index = 0; index < 4; ++index) {
-    RenewQuestUI::CUIQuestList* list = new RenewQuestUI::CUIQuestList(*this->m_context);
+    RenewQuestUI::CUIQuestList* list = new RenewQuestUI::CUIQuestList();
     list->SetSize(343, 394);
     this->AddChild(list);
     this->questLists.push_back(list);
@@ -1904,7 +1904,7 @@ void CUIRenewQuestUI::Slot15(int width, int height) {
   this->questLists[2]->Move(38, 17);
   this->questLists[3]->Move(38, 17);
 
-  this->searchBackground = new CUIStaticImage(*this->m_context);
+  this->searchBackground = new CUIStaticImage();
   this->searchBackground->SetSize(352, 28);
   this->searchBackground->Move(29, 411);
   const std::uint8_t searchImage[] = {
@@ -1915,13 +1915,13 @@ void CUIRenewQuestUI::Slot15(int width, int height) {
   this->searchBackground->SetImage(std::string(DecryptName<0xDB27CB557D038759ULL>(searchImage)));
   this->AddChild(this->searchBackground);
 
-  this->filterPanel = new CUITab(*this->m_context);
+  this->filterPanel = new CUITab();
   this->filterPanel->SetSize(181, 22);
   this->filterPanel->Move(35, 414);
   this->filterPanel->SetOnChange([this](CUITabButton* button) { this->OnFilterButton(button); });
   this->AddChild(this->filterPanel);
 
-  CUITabButton* allButton = new CUITabButton(*this->m_context);
+  CUITabButton* allButton = new CUITabButton();
   allButton->SetSize(26, 22);
   allButton->Move(0, 0);
   allButton->SetOnClick([this]() { this->OnCallback50(); });
@@ -1964,7 +1964,7 @@ void CUIRenewQuestUI::Slot15(int width, int height) {
   );
   this->filterPanel->AddChild(allButton);
 
-  CUITabButton* normalButton = new CUITabButton(*this->m_context);
+  CUITabButton* normalButton = new CUITabButton();
   normalButton->SetSize(26, 22);
   normalButton->Move(31, 0);
   normalButton->SetOnClick([this]() { this->OnCallback56(); });
@@ -1986,7 +1986,7 @@ void CUIRenewQuestUI::Slot15(int width, int height) {
   );
   this->filterPanel->AddChild(normalButton);
 
-  CUITabButton* subButton = new CUITabButton(*this->m_context);
+  CUITabButton* subButton = new CUITabButton();
   subButton->SetSize(26, 22);
   subButton->Move(62, 0);
   subButton->SetOnClick([this]() { this->OnPanelButton(); });
@@ -2008,7 +2008,7 @@ void CUIRenewQuestUI::Slot15(int width, int height) {
   );
   this->filterPanel->AddChild(subButton);
 
-  CUITabButton* dailyButton = new CUITabButton(*this->m_context);
+  CUITabButton* dailyButton = new CUITabButton();
   dailyButton->SetSize(26, 22);
   dailyButton->Move(93, 0);
   dailyButton->SetOnClick([this]() { this->OnCallback43(); });
@@ -2030,7 +2030,7 @@ void CUIRenewQuestUI::Slot15(int width, int height) {
   );
   this->filterPanel->AddChild(dailyButton);
 
-  CUITabButton* eventButton = new CUITabButton(*this->m_context);
+  CUITabButton* eventButton = new CUITabButton();
   eventButton->SetSize(26, 22);
   eventButton->Move(124, 0);
   eventButton->SetOnClick([this]() { this->OnCallback74(); });
@@ -2052,7 +2052,7 @@ void CUIRenewQuestUI::Slot15(int width, int height) {
   );
   this->filterPanel->AddChild(eventButton);
 
-  CUITabButton* etcButton = new CUITabButton(*this->m_context);
+  CUITabButton* etcButton = new CUITabButton();
   etcButton->SetSize(26, 22);
   etcButton->Move(155, 0);
   etcButton->SetOnClick([this]() { this->OnCallback80(); });
@@ -2074,7 +2074,7 @@ void CUIRenewQuestUI::Slot15(int width, int height) {
   );
   this->filterPanel->AddChild(etcButton);
 
-  this->searchEdit = new CUIEditBoxEx(*this->m_context);
+  this->searchEdit = new CUIEditBoxEx();
   this->searchEdit->Create(119, 16, false);
   this->searchEdit->Move(223, 417);
   this->searchEdit->SetText(std::string(""));
@@ -2092,7 +2092,7 @@ void CUIRenewQuestUI::Slot15(int width, int height) {
   });
   this->AddChild(this->searchEdit);
 
-  this->searchButton = new CUIImageButton(*this->m_context);
+  this->searchButton = new CUIImageButton();
   this->searchButton->SetSize(23, 18);
   this->searchButton->Move(342, 416);
   this->searchButton->SetOnClick([this]() {
@@ -2136,7 +2136,7 @@ void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::AddNewItem() {
     }
     this->items.resize(count, nullptr);
     for (RenewQuestUI::CUIQuestItem*& slot : this->items) {
-      RenewQuestUI::CUIQuestItem* item = new RenewQuestUI::CUIQuestItem(*this->m_context);
+      RenewQuestUI::CUIQuestItem* item = new RenewQuestUI::CUIQuestItem();
       item->SetSize(this->itemWidth, this->rowHeight);
       item->Show(0);
       CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
@@ -2187,14 +2187,14 @@ void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::Resize(int width, 
 
 // OFFSET: 0x00A659B0
 // FUNCTION: fn_16597
-RenewQuestUI::CUIQuestItem::CUIQuestItem(UIWindowContext& context)
-    : CUIListItem(context), icon(nullptr), unknown_00EC(nullptr), unknown_00F0(nullptr), unknown_00F4(nullptr), unknown_00F8(nullptr), questType(1),
+RenewQuestUI::CUIQuestItem::CUIQuestItem()
+    : CUIListItem(), icon(nullptr), unknown_00EC(nullptr), unknown_00F0(nullptr), unknown_00F4(nullptr), unknown_00F8(nullptr), questType(1),
       questId(0), pressed(0), baseX(0), baseY(0) {
 }
 
 // OFFSET: 0x00A65A70
 // FUNCTION: fn_16598
-RenewQuestUI::CUIQuestList::CUIQuestList(UIWindowContext& context) : CUIControl(context), list(nullptr), type(1) {
+RenewQuestUI::CUIQuestList::CUIQuestList() : CUIControl(), list(nullptr), type(1) {
 }
 
 // OFFSET: 0x00A65AF0

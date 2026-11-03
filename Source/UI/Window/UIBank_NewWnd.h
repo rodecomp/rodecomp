@@ -7,7 +7,7 @@ class UIEditCtrl;
 
 class UIBank_NewWnd : public UIFrameWnd {
 public:
-  UIBank_NewWnd(UIWindowContext& windows);
+  UIBank_NewWnd();
   bool Slot03() override;
   void Slot15(int width, int height) override;
   long long AdjustAmount(int amount);

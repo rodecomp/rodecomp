@@ -210,14 +210,14 @@ void UIChatHisBox::Configure(int x, int y, int width, int height, unsigned char)
 
 // OFFSET: 0x008C73C0
 // FUNCTION: fn_11930
-UIChooseSellBuyWnd::UIChooseSellBuyWnd(UIWindowContext& windows, UIAcceptanceContext& acceptance)
-    : UIFrameWnd(windows, 0), identity(0), m_acceptance(&acceptance) {
+UIChooseSellBuyWnd::UIChooseSellBuyWnd(UIAcceptanceContext& acceptance)
+    : UIFrameWnd(0), identity(0), m_acceptance(&acceptance) {
 }
 
 // OFFSET: 0x008C6FA0
 // FUNCTION: fn_11926
-UIBookWnd::UIBookWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0) {
+UIBookWnd::UIBookWnd()
+    : UIFrameWnd(0) {
   this->m_lineCount = 0;
   this->m_pageCount = 0;
   this->m_page = 1;
@@ -230,7 +230,7 @@ UIBookWnd::UIBookWnd(UIWindowContext& windows)
 
 // OFFSET: 0x008C7860
 // FUNCTION: fn_11940
-UIEquipWnd::UIEquipWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0) {
+UIEquipWnd::UIEquipWnd() : UIFrameWnd(0) {
   this->unknown_0124 = nullptr;
   this->unknown_0128 = 0;
   this->unknown_012C = 0;
@@ -268,7 +268,7 @@ UIChooseSellBuyWnd::~UIChooseSellBuyWnd() = default;
 
 // INLINED
 void UIChooseSellBuyWnd::AddChoice(const char* name, int id, int x, int y) {
-  auto* button = new UIBitmapButton(*this->m_context);
+  auto* button = new UIBitmapButton();
   const char* suffixes[] = {"", "_a", "_b"};
 
   for (int state = 0; state < 3; ++state) {
@@ -284,7 +284,7 @@ void UIChooseSellBuyWnd::AddChoice(const char* name, int id, int x, int y) {
 
 // INLINED
 void UIChooseSellBuyWnd::CreateViewer(int width, int height) {
-  this->viewer = new UITextViewer(*this->m_context);
+  this->viewer = new UITextViewer();
   this->viewer->Configure(10, 22, width - 20, height - 55, 0);
   const std::string chip = std::string(prefix) + "colorchip.bmp";
   const auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(chip.c_str()));
@@ -297,8 +297,8 @@ void UIChooseSellBuyWnd::CreateViewer(int width, int height) {
 
 // OFFSET: 0x008C7420
 // FUNCTION: fn_11931
-UIChooseWarpWnd::UIChooseWarpWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), m_list(nullptr), unknown_00B8(0), m_choices() {
+UIChooseWarpWnd::UIChooseWarpWnd()
+    : UIFrameWnd(0), m_list(nullptr), unknown_00B8(0), m_choices() {
   this->m_choices.reserve(6);
 }
 
@@ -316,14 +316,14 @@ void UIChooseSellBuyWnd::Slot15(int width, int height) {
 // OFFSET: 0x008DD9A0
 // FUNCTION: fn_12163
 void UIChooseWarpWnd::Slot15(int width, int height) {
-  auto* title = new UIStaticText(*this->m_context);
+  auto* title = new UIStaticText();
   title->SetSize(this->geometry.width - 30, 15);
   title->Move(12, 9);
   title->SetText(LookupMessage(213), 0);
   title->SetFont(0, 12, 0, 0);
   this->AddChild(title);
 
-  this->m_list = new UIListBox(*this->m_context);
+  this->m_list = new UIListBox();
   int listWidth = width - 24;
   int listHeight = height - 55;
   if (listWidth < 20) {
@@ -345,7 +345,7 @@ void UIChooseWarpWnd::Slot15(int width, int height) {
   int ids[2] = {184, 185};
 
   for (int i = 0; i < 2; ++i) {
-    auto* button = new UIBitmapButton(*this->m_context);
+    auto* button = new UIBitmapButton();
     button->SetBitmap((prefix + names[i][0] + ".bmp").c_str(), 0, 0);
     button->SetBitmap((prefix + names[i][1] + ".bmp").c_str(), 1, 0);
     button->SetBitmap((prefix + names[i][2] + ".bmp").c_str(), 2, 0);
@@ -361,7 +361,7 @@ void UIChooseWarpWnd::Slot15(int width, int height) {
 // OFFSET: 0x008DE0E0
 // FUNCTION: fn_12164
 void UIChooseWnd::Slot15(int width, int height) {
-  this->m_list = new UIListBox(*this->m_context);
+  this->m_list = new UIListBox();
   int listHeight = height - 55;
   if (listHeight < 30) {
     listHeight = 30;
@@ -378,7 +378,7 @@ void UIChooseWnd::Slot15(int width, int height) {
   this->AddChild(this->m_list);
   this->m_message0 = 184;
 
-  this->m_okButton = new UIBitmapButton(*this->m_context);
+  this->m_okButton = new UIBitmapButton();
   this->m_okButton->SetBitmap("유저인터페이스\\btn_ok.bmp", 0, 0);
   this->m_okButton->SetBitmap("유저인터페이스\\btn_ok_a.bmp", 1, 0);
   this->m_okButton->SetBitmap("유저인터페이스\\btn_ok_b.bmp", 2, 0);
@@ -387,7 +387,7 @@ void UIChooseWnd::Slot15(int width, int height) {
   this->m_okButton->SetId(184);
   this->AddChild(this->m_okButton);
 
-  this->m_cancelButton = new UIBitmapButton(*this->m_context);
+  this->m_cancelButton = new UIBitmapButton();
   this->m_cancelButton->SetBitmap("유저인터페이스\\btn_cancel.bmp", 0, 0);
   this->m_cancelButton->SetBitmap("유저인터페이스\\btn_cancel_a.bmp", 1, 0);
   this->m_cancelButton->SetBitmap("유저인터페이스\\btn_cancel_b.bmp", 2, 0);
@@ -400,7 +400,7 @@ void UIChooseWnd::Slot15(int width, int height) {
 // OFFSET: 0x008DE520
 // FUNCTION: fn_12169
 void UIDisconnectedServerMsgWnd::Slot15(int width, int height) {
-  auto* button = new UIBitmapButton(*this->m_context);
+  auto* button = new UIBitmapButton();
   button->SetBitmap("유저인터페이스\\btn_ok.bmp", 0, 0);
   button->SetBitmap("유저인터페이스\\btn_ok_a.bmp", 1, 0);
   button->SetBitmap("유저인터페이스\\btn_ok_b.bmp", 2, 0);
@@ -410,7 +410,7 @@ void UIDisconnectedServerMsgWnd::Slot15(int width, int height) {
   this->AddChild(button);
   this->m_message0 = 184;
 
-  this->m_viewer = new UITextViewer(*this->m_context);
+  this->m_viewer = new UITextViewer();
   this->m_viewer->Configure(10, 22, width - 20, height - 55, 0);
   unsigned red, green, blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
@@ -424,7 +424,7 @@ void UIDisconnectedServerMsgWnd::Slot15(int width, int height) {
 // FUNCTION: fn_12170
 void UIEmailAddressWnd::Slot15(int, int) {
   g_modeMgr.gameMode->SendMsg(10013, 0, 0, 0, 0);
-  this->m_edit = new UIEditCtrl(*this->m_context);
+  this->m_edit = new UIEditCtrl();
   this->m_edit->SetSize(this->geometry.width - 77, 16);
   this->m_edit->Move(15, 22);
   this->m_edit->maximum = 49;
@@ -438,7 +438,7 @@ void UIEmailAddressWnd::Slot15(int, int) {
   const std::string prefix("유저인터페이스\\");
   const int x = this->geometry.width - 55;
   const int y = this->geometry.height - 28;
-  auto* button = new UIBitmapButton(*this->m_context);
+  auto* button = new UIBitmapButton();
   button->SetBitmap((prefix + "btn_ok" + ".bmp").c_str(), 0, 0);
   button->SetBitmap((prefix + "btn_ok_a" + ".bmp").c_str(), 1, 0);
   button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
@@ -808,7 +808,7 @@ int UIMinimapZoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
 // OFFSET: 0x0090C020
 // FUNCTION: fn_12437
 void UIMinimapZoomWnd::AddTownButton(int index, TownInfo town) {
-  UIBitmapButton* button = new UIBitmapButton(*this->m_context);
+  UIBitmapButton* button = new UIBitmapButton();
   button->SetBitmap(town.image.c_str(), 0, 0);
   button->SetBitmap(town.image.c_str(), 1, 0);
   button->SetBitmap(town.image.c_str(), 2, 0);
@@ -1858,7 +1858,7 @@ void UISelectCartWnd::AddCart(int index, int type) {
     y -= 10;
     break;
   }
-  UISpriteButton* button = new UISpriteButton(*this->m_context);
+  UISpriteButton* button = new UISpriteButton();
   const std::string prefix = "이팩트\\";
   button->SetSprite((prefix + name + ".spr").c_str());
   button->SetActName((prefix + name + ".act").c_str());
@@ -3201,7 +3201,7 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       const int height = this->unknown_00D8 + 167;
       this->Resize(this->geometry.width, height + 158);
       if (!this->unknown_0124) {
-        UISwapEquipmentWnd* created = new (std::nothrow) UISwapEquipmentWnd(*this->m_context);
+        UISwapEquipmentWnd* created = new (std::nothrow) UISwapEquipmentWnd();
         this->unknown_0124 = created;
         created->SetSize(280, 179);
         if (this->m_page == 0) {
@@ -3675,7 +3675,7 @@ bool UInCashWnd::Slot03() {
 // OFFSET: 0x008DB750
 // FUNCTION: fn_12159
 void UIBookWnd::Slot15(int width, int height) {
-  this->m_viewer = new UITextViewer(*this->m_context);
+  this->m_viewer = new UITextViewer();
   this->m_viewer->Configure(30, 45, width - 60, height - 60, 0);
   this->AddChild(this->m_viewer);
 
@@ -3689,7 +3689,7 @@ void UIBookWnd::Slot15(int width, int height) {
   const char* tooltips[4] = {LookupMessage(1296), LookupMessage(1297), LookupMessage(1298), LookupMessage(1299)};
 
   for (int index = 0; index < 4; ++index) {
-    this->m_buttons[index] = new UISpriteButton(*this->m_context);
+    this->m_buttons[index] = new UISpriteButton();
     this->m_buttons[index]->SetSprite((prefix + names[index] + ".spr").c_str());
     this->m_buttons[index]->SetActName((prefix + names[index] + ".act").c_str());
     this->m_buttons[index]->SetSize(this->m_buttons[index]->FrameWidth(0, 0), this->m_buttons[index]->FrameHeight(0, 0));
@@ -3704,7 +3704,7 @@ void UIBookWnd::Slot15(int width, int height) {
 // FUNCTION: fn_12175
 void UIItemCollectionWnd::Slot15(int width, int height) {
   this->m_kind = 12;
-  this->m_viewer = new UITextViewer(*this->m_context);
+  this->m_viewer = new UITextViewer();
   this->m_viewer->Configure(91, 31, width - 98, height - 40, 0);
   unsigned red, green, blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
@@ -3715,7 +3715,7 @@ void UIItemCollectionWnd::Slot15(int width, int height) {
   this->m_closeButton = this->AddCloseButton("ESC", 0);
 
   std::string path = "유저인터페이스\\";
-  this->m_viewButton = new UIBitmapButton(*this->m_context);
+  this->m_viewButton = new UIBitmapButton();
   this->m_viewButton->SetBitmap((path + "btn_view" + ".bmp").c_str(), 0, 0);
   this->m_viewButton->SetBitmap((path + "btn_view_a" + ".bmp").c_str(), 1, 0);
   this->m_viewButton->SetBitmap((path + "btn_view_b" + ".bmp").c_str(), 2, 0);
@@ -3729,7 +3729,7 @@ void UIItemCollectionWnd::Slot15(int width, int height) {
   const int ids[2] = {287, 288};
   const char* names[2] = {"책읽기", "책읽기"};
   for (int index = 0; index < 2; ++index) {
-    this->m_readButtons[index] = new UISpriteButton(*this->m_context);
+    this->m_readButtons[index] = new UISpriteButton();
     this->m_readButtons[index]->SetSprite((prefix + names[index] + ".spr").c_str());
     this->m_readButtons[index]->SetActName((prefix + names[index] + ".act").c_str());
     this->m_readButtons[index]->SetSize(this->m_readButtons[index]->FrameWidth(0, 0), this->m_readButtons[index]->FrameHeight(0, 0));
@@ -3739,7 +3739,7 @@ void UIItemCollectionWnd::Slot15(int width, int height) {
     this->AddChild(this->m_readButtons[index]);
   }
 
-  this->m_resizer = new UIResizer(*this->m_context);
+  this->m_resizer = new UIResizer();
   this->m_resizer->SetSize(16, 16);
   this->m_resizer->SetDirection(7);
   this->m_resizer->SetBitmapName(this->m_kind == 234 ? "유저인터페이스\\basic_interface\\btn_comparison_resize.bmp" : "유저인터페이스\\btn_resize.bmp");
@@ -3749,7 +3749,7 @@ void UIItemCollectionWnd::Slot15(int width, int height) {
 
   this->m_previewTick = 0;
   if (!this->m_moveInfo) {
-    this->m_moveInfo = new UIItemMoveInfo(*this->m_context);
+    this->m_moveInfo = new UIItemMoveInfo();
     this->m_moveInfo->Configure(LookupMessage(2796), 0, 0, 12, 0, 1);
     this->m_moveInfo->SetId(487);
     UIItemMoveInfo* moveInfo = this->m_moveInfo;
@@ -3758,7 +3758,7 @@ void UIItemCollectionWnd::Slot15(int width, int height) {
     this->AddChild(this->m_moveInfo);
   }
 
-  this->m_helpButton = new UIBitmapButton(*this->m_context);
+  this->m_helpButton = new UIBitmapButton();
   this->m_helpButton->SetBitmap("유저인터페이스\\basic_interface\\btn_help_normal.bmp", 0, 0);
   this->m_helpButton->SetBitmap("유저인터페이스\\basic_interface\\btn_help_over.bmp", 1, 0);
   this->m_helpButton->SetBitmap("유저인터페이스\\basic_interface\\btn_help_pressed.bmp", 2, 0);
@@ -3817,7 +3817,7 @@ void UIItemIdentifyWnd::Slot15(int, int) {
   this->m_columns = 1;
   this->m_rows = 4;
   this->m_scrollable = 0;
-  auto* scrollBar = new UIScrollBar(*this->m_context);
+  auto* scrollBar = new UIScrollBar();
   this->m_scrollBar = scrollBar;
   scrollBar->Configure(this->geometry.width - 15, 34, 1, this->geometry.height - 55);
   this->AddChild(this->m_scrollBar);
@@ -3922,7 +3922,7 @@ void UIStatusWnd::Slot15(int, int) {
     const int ids[6] = {205, 206, 207, 208, 209, 210};
     const std::string arrow = "유저인터페이스\\basic_interface\\arw_right.bmp";
     for (int i = 0; i < 6; ++i) {
-      this->m_statButtons[i] = new UIBitmapButton(*this->m_context);
+      this->m_statButtons[i] = new UIBitmapButton();
       this->m_statButtons[i]->SetBitmap(arrow.c_str(), 0, 0);
       this->m_statButtons[i]->SetBitmap(arrow.c_str(), 1, 0);
       this->m_statButtons[i]->SetBitmap(arrow.c_str(), 2, 0);
@@ -3937,7 +3937,7 @@ void UIStatusWnd::Slot15(int, int) {
     const int ids[6] = {551, 552, 553, 554, 555, 556};
     const std::string arrow = "유저인터페이스\\basic_interface\\arw_right.bmp";
     for (int i = 0; i < 6; ++i) {
-      this->m_extendedButtons[i] = new UIBitmapButton(*this->m_context);
+      this->m_extendedButtons[i] = new UIBitmapButton();
       this->m_extendedButtons[i]->SetBitmap(arrow.c_str(), 0, 0);
       this->m_extendedButtons[i]->SetBitmap(arrow.c_str(), 1, 0);
       this->m_extendedButtons[i]->SetBitmap(arrow.c_str(), 2, 0);
@@ -3948,7 +3948,7 @@ void UIStatusWnd::Slot15(int, int) {
     }
   }
 
-  this->m_expandButton = new UIBmpTextButton(*this->m_context);
+  this->m_expandButton = new UIBmpTextButton();
   this->m_expandButton->SetBitmap("유저인터페이스\\statuswnd\\expand_on_normal.bmp", 0, 0);
   this->m_expandButton->SetBitmap("유저인터페이스\\statuswnd\\expand_on_normal.bmp", 1, 0);
   this->m_expandButton->SetBitmap("유저인터페이스\\statuswnd\\expand_on_press.bmp", 2, 0);
@@ -3983,7 +3983,7 @@ void UISkillNameChangeWnd::Slot15(int, int) {
   const std::string prefix("유저인터페이스\\");
   const int x = this->geometry.width - 55;
   const int y = this->geometry.height - 32;
-  auto* button = new UIBitmapButton(*this->m_context);
+  auto* button = new UIBitmapButton();
   button->SetBitmap((prefix + "btn_ok" + ".bmp").c_str(), 0, 0);
   button->SetBitmap((prefix + "btn_ok_a" + ".bmp").c_str(), 1, 0);
   button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
@@ -4038,14 +4038,14 @@ void UIProhibitListWnd::Slot15(int, int) {
   this->AddCloseButton("", 0);
   char tooltip[] = "Command";
 
-  auto* area = new UINoneVisibleButton(*this->m_context);
+  auto* area = new UINoneVisibleButton();
   area->SetSize(120, 18);
   area->Move(350, 59);
   area->SetId(268);
   this->AddChild(area);
 
   const std::string prefix("유저인터페이스\\basic_interface\\");
-  auto* button = new UIBitmapButton(*this->m_context);
+  auto* button = new UIBitmapButton();
   button->SetBitmap((prefix + "txtbox_btn_a" + ".bmp").c_str(), 0, 0);
   button->SetBitmap((prefix + "txtbox_btn_b" + ".bmp").c_str(), 1, 0);
   button->SetBitmap((prefix + "txtbox_btn_c" + ".bmp").c_str(), 2, 0);
@@ -5328,7 +5328,7 @@ int UIItemTagCtrl::MeasureText(const std::string& text, const unsigned& bytes) {
 // OFFSET: 0x008E8390
 // FUNCTION: fn_12197
 void UISayDialogWnd::Slot15(int width, int height) {
-  auto* viewer = new UITagTextViewer(*this->m_context);
+  auto* viewer = new UITagTextViewer();
   this->m_viewer = viewer;
   viewer->SetSize(width - 20, height - 40);
   viewer->m_backgroundColor = 0xFFF2F2F2;
@@ -5651,7 +5651,7 @@ void UIItemCollectionWnd::SetHeight(int height) {
 
 class UIAutoMessageWnd : public UIFrameWnd {
 public:
-  UIAutoMessageWnd(UIWindowContext& windows);
+  UIAutoMessageWnd();
   void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
@@ -6141,128 +6141,128 @@ void UInCashWnd::Slot32(int x, int y) {
 
 // OFFSET: 0x008C6E20
 // FUNCTION: fn_11923
-UIAutoMessageWnd::UIAutoMessageWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0) {
+UIAutoMessageWnd::UIAutoMessageWnd()
+    : UIFrameWnd(0) {
 }
 
 // OFFSET: 0x008C6E80
 // FUNCTION: fn_11924
-UIBabyAcceptWnd2::UIBabyAcceptWnd2(UIWindowContext& windows, UIAcceptanceContext& acceptance)
-    : UIExchangeAcceptWnd(windows, acceptance) {
+UIBabyAcceptWnd2::UIBabyAcceptWnd2(UIAcceptanceContext& acceptance)
+    : UIExchangeAcceptWnd(acceptance) {
 }
 
 // OFFSET: 0x008C6F10
 // FUNCTION: fn_11925
-UIBabyAcceptWnd::UIBabyAcceptWnd(UIWindowContext& windows, UIAcceptanceContext& acceptance)
-    : UIExchangeAcceptWnd(windows, acceptance) {
+UIBabyAcceptWnd::UIBabyAcceptWnd(UIAcceptanceContext& acceptance)
+    : UIExchangeAcceptWnd(acceptance) {
 }
 
 // OFFSET: 0x008C7630
 // FUNCTION: fn_11935
-UIComboBoxIDWnd::UIComboBoxIDWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), m_list(nullptr), m_owner(nullptr) {
+UIComboBoxIDWnd::UIComboBoxIDWnd()
+    : UIFrameWnd(0), m_list(nullptr), m_owner(nullptr) {
 }
 
 // OFFSET: 0x008C76A0
 // FUNCTION: fn_11936
-UIComboBoxWnd::UIComboBoxWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), m_list(nullptr), m_owner(nullptr) {
+UIComboBoxWnd::UIComboBoxWnd()
+    : UIFrameWnd(0), m_list(nullptr), m_owner(nullptr) {
 }
 
 // OFFSET: 0x008C77A0
 // FUNCTION: fn_11938
-UIDisconnectedServerMsgWnd::UIDisconnectedServerMsgWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), m_viewer(nullptr) {
+UIDisconnectedServerMsgWnd::UIDisconnectedServerMsgWnd()
+    : UIFrameWnd(0), m_viewer(nullptr) {
 }
 
 // OFFSET: 0x008C82D0
 // FUNCTION: fn_11951
-UILoadingWnd::UILoadingWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), m_progressBar(nullptr) {
+UILoadingWnd::UILoadingWnd()
+    : UIFrameWnd(0), m_progressBar(nullptr) {
 }
 
 // OFFSET: 0x008C8650
 // FUNCTION: fn_11957
-UINoticeConfirmWnd::UINoticeConfirmWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), m_event(28) {
+UINoticeConfirmWnd::UINoticeConfirmWnd()
+    : UIFrameWnd(0), m_event(28) {
 }
 
 // OFFSET: 0x008C8770
 // FUNCTION: fn_11959
-UINotifyLevelUpWnd::UINotifyLevelUpWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0) {
+UINotifyLevelUpWnd::UINotifyLevelUpWnd()
+    : UIFrameWnd(0) {
 }
 
 // OFFSET: 0x008C87D0
 // FUNCTION: fn_11960
-UINotifyQuestWnd::UINotifyQuestWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0) {
+UINotifyQuestWnd::UINotifyQuestWnd()
+    : UIFrameWnd(0) {
 }
 
 // OFFSET: 0x008C8830
 // FUNCTION: fn_11961
-UINpcEditDialogWnd::UINpcEditDialogWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0) {
+UINpcEditDialogWnd::UINpcEditDialogWnd()
+    : UIFrameWnd(0) {
 }
 
 // OFFSET: 0x008C8890
 // FUNCTION: fn_11962
-UINpcTextEditDialogWnd::UINpcTextEditDialogWnd(UIWindowContext& windows)
-    : UINpcEditDialogWnd(windows), m_tagCtrl(nullptr) {
+UINpcTextEditDialogWnd::UINpcTextEditDialogWnd()
+    : UINpcEditDialogWnd(), m_tagCtrl(nullptr) {
 }
 
 // OFFSET: 0x008C8B50
 // FUNCTION: fn_11968
-UIProhibitListWnd::UIProhibitListWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), m_count(0) {
+UIProhibitListWnd::UIProhibitListWnd()
+    : UIFrameWnd(0), m_count(0) {
 }
 
 // OFFSET: 0x008C8BB0
 // FUNCTION: fn_11969
-UIQuitWnd::UIQuitWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0) {
+UIQuitWnd::UIQuitWnd()
+    : UIFrameWnd(0) {
 }
 
 // OFFSET: 0x008C8C10
 // FUNCTION: fn_11970
-UIRestartWnd::UIRestartWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0) {
+UIRestartWnd::UIRestartWnd()
+    : UIFrameWnd(0) {
 }
 
 // OFFSET: 0x008C93D0
 // FUNCTION: fn_11980
-UITipOfTheDayWnd::UITipOfTheDayWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0) {
+UITipOfTheDayWnd::UITipOfTheDayWnd()
+    : UIFrameWnd(0) {
 }
 
 // OFFSET: 0x008C9560
 // FUNCTION: fn_11982
-UIToolTipWnd::UIToolTipWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0) {
+UIToolTipWnd::UIToolTipWnd()
+    : UIFrameWnd(0) {
 }
 
 // OFFSET: 0x008C95C0
 // FUNCTION: fn_11983
-UIWaitWnd::UIWaitWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), m_button(nullptr) {
+UIWaitWnd::UIWaitWnd()
+    : UIFrameWnd(0), m_button(nullptr) {
 }
 
 // OFFSET: 0x008C9990
 // FUNCTION: fn_11987
-UInCash_CallWnd::UInCash_CallWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0) {
+UInCash_CallWnd::UInCash_CallWnd()
+    : UIFrameWnd(0) {
 }
 
 // OFFSET: 0x008C8F00
 // FUNCTION: fn_11973
-UISelectCartWnd::UISelectCartWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), unknown_00B4(0), unknown_00B8(0), unknown_00BC(0), unknown_00C0(0) {
+UISelectCartWnd::UISelectCartWnd()
+    : UIFrameWnd(0), unknown_00B4(0), unknown_00B8(0), unknown_00BC(0), unknown_00C0(0) {
 }
 
 // OFFSET: 0x008C9280
 // FUNCTION: fn_11979
-UIStorePasswordInputWnd::UIStorePasswordInputWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), unknown_00BC(-1), unknown_00C0(2) {
+UIStorePasswordInputWnd::UIStorePasswordInputWnd()
+    : UIFrameWnd(0), unknown_00BC(-1), unknown_00C0(2) {
   std::memset(this->unknown_00D0, 0, sizeof(this->unknown_00D0));
   std::memset(this->unknown_00D9, 0, sizeof(this->unknown_00D9));
   std::memset(this->unknown_00E2, 0, sizeof(this->unknown_00E2));
@@ -6287,21 +6287,21 @@ UIStorePasswordInputWnd::UIStorePasswordInputWnd(UIWindowContext& windows)
 
 // OFFSET: 0x008C8D40
 // FUNCTION: fn_11972
-UISecondPasswordInputWnd::UISecondPasswordInputWnd(UIWindowContext& windows)
-    : UIStorePasswordInputWnd(windows), unknown_010C(4), unknown_011C(0), unknown_0120(0), unknown_0124(), unknown_014C(0),
+UISecondPasswordInputWnd::UISecondPasswordInputWnd()
+    : UIStorePasswordInputWnd(), unknown_010C(4), unknown_011C(0), unknown_0120(0), unknown_0124(), unknown_014C(0),
       unknown_0150(0), unknown_0154(0), unknown_0158(0), unknown_0164(0) {
 }
 
 // OFFSET: 0x008C8F80
 // FUNCTION: fn_11974
-UISkillDescribeWnd::UISkillDescribeWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), m_text(nullptr) {
+UISkillDescribeWnd::UISkillDescribeWnd()
+    : UIFrameWnd(0), m_text(nullptr) {
 }
 
 // OFFSET: 0x008C9430
 // FUNCTION: fn_11981
-UITipboxWnd::UITipboxWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), unknown_00B4(0), unknown_00B8(0),
+UITipboxWnd::UITipboxWnd()
+    : UIFrameWnd(0), unknown_00B4(0), unknown_00B8(0),
       unknown_00BC(0), m_pageText(nullptr), m_pageTotalText(nullptr), unknown_00D0(0), unknown_00D4(0), unknown_00D8(0), m_buildTime(0), m_frameTime(0),
       unknown_00FC(false), unknown_0100(0) {
   this->unknown_00C0 = 0;
@@ -6310,14 +6310,14 @@ UITipboxWnd::UITipboxWnd(UIWindowContext& windows)
 
 // OFFSET: 0x008C86B0
 // FUNCTION: fn_11958
-UINotifyItemObtainWnd::UINotifyItemObtainWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), m_identified(false) {
+UINotifyItemObtainWnd::UINotifyItemObtainWnd()
+    : UIFrameWnd(0), m_identified(false) {
 }
 
 // OFFSET: 0x008C7CB0
 // FUNCTION: fn_11943
-UIItemCollectionWnd::UIItemCollectionWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), m_helpButton(nullptr) {
+UIItemCollectionWnd::UIItemCollectionWnd()
+    : UIFrameWnd(0), m_helpButton(nullptr) {
   this->m_placement = nullptr;
   this->m_item.Reset();
   this->unknown_0238 = 0;
@@ -6336,87 +6336,87 @@ UIItemCollectionWnd::UIItemCollectionWnd(UIWindowContext& windows)
 
 // OFFSET: 0x008C7570
 // FUNCTION: fn_11933
-UICombinedCardItemCollectionWnd::UICombinedCardItemCollectionWnd(UIWindowContext& windows)
-    : UIItemCollectionWnd(windows), m_cardPlacement(nullptr) {
+UICombinedCardItemCollectionWnd::UICombinedCardItemCollectionWnd()
+    : UIItemCollectionWnd(), m_cardPlacement(nullptr) {
 }
 
 // OFFSET: 0x008C75D0
 // FUNCTION: fn_11934
-UICombinedCardItemCollection_ComparisonWnd::UICombinedCardItemCollection_ComparisonWnd(UIWindowContext& windows)
-    : UIItemCollectionWnd(windows) {
+UICombinedCardItemCollection_ComparisonWnd::UICombinedCardItemCollection_ComparisonWnd()
+    : UIItemCollectionWnd() {
 }
 
 // OFFSET: 0x008C7E40
 // FUNCTION: fn_11944
-UIItemCollection_ComparisonWnd::UIItemCollection_ComparisonWnd(UIWindowContext& windows)
-    : UIItemCollectionWnd(windows) {
+UIItemCollection_ComparisonWnd::UIItemCollection_ComparisonWnd()
+    : UIItemCollectionWnd() {
 }
 
 // OFFSET: 0x008C6FA0
 
 // OFFSET: 0x008C7070
 // FUNCTION: fn_11927
-UICardItemIllustWnd::UICardItemIllustWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0) {
+UICardItemIllustWnd::UICardItemIllustWnd()
+    : UIFrameWnd(0) {
 }
 
 // OFFSET: 0x008C8390
 // FUNCTION: fn_11953
-UIMenuWnd::UIMenuWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), m_menuId(10041), m_selected(-1), m_itemHeight(14), unknown_00CC(0), unknown_00DC(0) {
+UIMenuWnd::UIMenuWnd()
+    : UIFrameWnd(0), m_menuId(10041), m_selected(-1), m_itemHeight(14), unknown_00CC(0), unknown_00DC(0) {
 }
 
 // OFFSET: 0x008C85A0
 // FUNCTION: fn_11956
-UIMonsterDisplayWnd::UIMonsterDisplayWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0) {
+UIMonsterDisplayWnd::UIMonsterDisplayWnd()
+    : UIFrameWnd(0) {
 }
 
 // OFFSET: 0x008C8900
 // FUNCTION: fn_11963
-UIPartyInvitationToWnd::UIPartyInvitationToWnd(UIWindowContext& windows)
-    : UIPartySettingWnd(windows) {
+UIPartyInvitationToWnd::UIPartyInvitationToWnd()
+    : UIPartySettingWnd() {
 }
 
 // OFFSET: 0x008C8980
 // FUNCTION: fn_11964
-UIPartySettingWnd::UIPartySettingWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0) {
+UIPartySettingWnd::UIPartySettingWnd()
+    : UIFrameWnd(0) {
   this->m_mode = 0;
   this->m_placement = nullptr;
 }
 
 // OFFSET: 0x008C8AB0
 // FUNCTION: fn_11967
-UIPetTamingDeceiveWnd::UIPetTamingDeceiveWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), m_delay(1), m_state(0), m_tick(0), m_frame(-1), m_maxDelay(10000), m_started(0) {
+UIPetTamingDeceiveWnd::UIPetTamingDeceiveWnd()
+    : UIFrameWnd(0), m_delay(1), m_state(0), m_tick(0), m_frame(-1), m_maxDelay(10000), m_started(0) {
   this->m_finishTime = 0xFFFFFFFF;
 }
 
 // OFFSET: 0x008C9060
 // FUNCTION: fn_11975
-UISkillNameChangeWnd::UISkillNameChangeWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0) {
+UISkillNameChangeWnd::UISkillNameChangeWnd()
+    : UIFrameWnd(0) {
 }
 
 // OFFSET: 0x008C91F0
 
 // OFFSET: 0x008C7710
 // FUNCTION: fn_11937
-UICoupleAcceptWnd::UICoupleAcceptWnd(UIWindowContext& windows, UIAcceptanceContext& acceptance)
-    : UIExchangeAcceptWnd(windows, acceptance) {
+UICoupleAcceptWnd::UICoupleAcceptWnd(UIAcceptanceContext& acceptance)
+    : UIExchangeAcceptWnd(acceptance) {
 }
 
 // OFFSET: 0x008C8120
 // FUNCTION: fn_11948
-UIJoinFriendAcceptWnd::UIJoinFriendAcceptWnd(UIWindowContext& windows, UIAcceptanceContext& acceptance)
-    : UIExchangeAcceptWnd(windows, acceptance) {
+UIJoinFriendAcceptWnd::UIJoinFriendAcceptWnd(UIAcceptanceContext& acceptance)
+    : UIExchangeAcceptWnd(acceptance) {
 }
 
 // OFFSET: 0x008C81B0
 // FUNCTION: fn_11949
-UIJoinGuildAcceptWnd::UIJoinGuildAcceptWnd(UIWindowContext& windows, UIAcceptanceContext& acceptance)
-    : UIExchangeAcceptWnd(windows, acceptance) {
+UIJoinGuildAcceptWnd::UIJoinGuildAcceptWnd(UIAcceptanceContext& acceptance)
+    : UIExchangeAcceptWnd(acceptance) {
 }
 
 // OFFSET: 0x008FE310
@@ -6492,26 +6492,26 @@ int UIJoinGuildAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
 
 // OFFSET: 0x008C8510
 // FUNCTION: fn_11955
-UIMixAcceptWnd::UIMixAcceptWnd(UIWindowContext& windows, UIAcceptanceContext& acceptance)
-    : UIExchangeAcceptWnd(windows, acceptance) {
+UIMixAcceptWnd::UIMixAcceptWnd(UIAcceptanceContext& acceptance)
+    : UIExchangeAcceptWnd(acceptance) {
 }
 
 // OFFSET: 0x008C9160
 // FUNCTION: fn_11977
-UIStarPlaceAcceptWnd::UIStarPlaceAcceptWnd(UIWindowContext& windows, UIAcceptanceContext& acceptance)
-    : UIExchangeAcceptWnd(windows, acceptance) {
+UIStarPlaceAcceptWnd::UIStarPlaceAcceptWnd(UIAcceptanceContext& acceptance)
+    : UIExchangeAcceptWnd(acceptance) {
 }
 
 // OFFSET: 0x008C97F0
 // FUNCTION: fn_11985
-UIYourItemWnd::UIYourItemWnd(UIWindowContext& windows, UIAcceptanceContext& acceptance)
-    : UIExchangeAcceptWnd(windows, acceptance) {
+UIYourItemWnd::UIYourItemWnd(UIAcceptanceContext& acceptance)
+    : UIExchangeAcceptWnd(acceptance) {
 }
 
 // OFFSET: 0x008C8C70
 // FUNCTION: fn_11971
-UISayDialogWnd::UISayDialogWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0) {
+UISayDialogWnd::UISayDialogWnd()
+    : UIFrameWnd(0) {
   this->m_viewer = nullptr;
   this->m_placement = nullptr;
 }
@@ -6525,7 +6525,7 @@ void UINoticeConfirmWnd::Slot15(int width, int height) {
   int positions[2][2] = {{189, 96}, {234, 96}};
 
   for (int i = 0; i < 2; ++i) {
-    auto* button = new UIBitmapButton(*this->m_context);
+    auto* button = new UIBitmapButton();
     button->SetBitmap((prefix + names[i][0] + ".bmp").c_str(), 0, 0);
     button->SetBitmap((prefix + names[i][1] + ".bmp").c_str(), 1, 0);
     button->SetBitmap((prefix + names[i][2] + ".bmp").c_str(), 2, 0);
@@ -6536,7 +6536,7 @@ void UINoticeConfirmWnd::Slot15(int width, int height) {
   }
 
   this->m_message0 = 184;
-  this->m_viewer = new UITextViewer(*this->m_context);
+  this->m_viewer = new UITextViewer();
   this->m_viewer->Configure(10, 22, width - 20, height - 55, 0);
   unsigned red, green, blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
@@ -6555,7 +6555,7 @@ void UINotifyLevelUpWnd::Slot15(int, int) {
   const std::string prefix("유저인터페이스\\basic_interface\\");
 
   for (int i = 0; i < 1; ++i) {
-    auto* button = new UIBitmapButton(*this->m_context);
+    auto* button = new UIBitmapButton();
     button->SetBitmap((prefix + names[i] + "_off.bmp").c_str(), 0, 0);
     button->SetBitmap((prefix + names[i] + "_off.bmp").c_str(), 1, 0);
     button->SetBitmap((prefix + names[i] + "_on.bmp").c_str(), 2, 0);
@@ -6575,7 +6575,7 @@ void UINotifyQuestWnd::Slot15(int, int) {
   const std::string prefix("유저인터페이스\\basic_interface\\");
 
   for (int i = 0; i < 1; ++i) {
-    auto* button = new UIBitmapButton(*this->m_context);
+    auto* button = new UIBitmapButton();
     button->SetBitmap((prefix + names[i] + "_off.bmp").c_str(), 0, 0);
     button->SetBitmap((prefix + names[i] + "_off.bmp").c_str(), 1, 0);
     button->SetBitmap((prefix + names[i] + "_on.bmp").c_str(), 2, 0);
@@ -6589,7 +6589,7 @@ void UINotifyQuestWnd::Slot15(int, int) {
 // OFFSET: 0x008E4F50
 // FUNCTION: fn_12188
 void UINpcEditDialogWnd::Slot15(int, int) {
-  this->edit = new UIEditCtrl(*this->m_context);
+  this->edit = new UIEditCtrl();
   this->edit->SetSize(this->geometry.width - 77, 16);
   this->edit->Move(15, 22);
   this->edit->maximum = 12;
@@ -6602,7 +6602,7 @@ void UINpcEditDialogWnd::Slot15(int, int) {
   const std::string prefix("유저인터페이스\\");
   const int x = this->geometry.width - 55;
   const int y = this->geometry.height - 32;
-  auto* button = new UIBitmapButton(*this->m_context);
+  auto* button = new UIBitmapButton();
   button->SetBitmap((prefix + "btn_ok" + ".bmp").c_str(), 0, 0);
   button->SetBitmap((prefix + "btn_ok_a" + ".bmp").c_str(), 1, 0);
   button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
@@ -6617,7 +6617,7 @@ void UINpcEditDialogWnd::Slot15(int, int) {
 // OFFSET: 0x008E54B0
 // FUNCTION: fn_12189
 void UINpcTextEditDialogWnd::Slot15(int, int) {
-  this->edit = new UIEditCtrl(*this->m_context);
+  this->edit = new UIEditCtrl();
   this->edit->SetSize(this->geometry.width - 77, 16);
   this->edit->Move(15, 22);
   this->edit->maximum = 70;
@@ -6631,7 +6631,7 @@ void UINpcTextEditDialogWnd::Slot15(int, int) {
   const std::string prefix("유저인터페이스\\");
   const int x = this->geometry.width - 55;
   const int y = this->geometry.height - 32;
-  auto* button = new UIBitmapButton(*this->m_context);
+  auto* button = new UIBitmapButton();
   button->SetBitmap((prefix + "btn_ok" + ".bmp").c_str(), 0, 0);
   button->SetBitmap((prefix + "btn_ok_a" + ".bmp").c_str(), 1, 0);
   button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
@@ -6651,7 +6651,7 @@ void UIQuitWnd::Slot15(int, int) {
   const char* names[3][3] = {{"esc_01a", "esc_01b", "esc_01c"}, {"esc_03a", "esc_03b", "esc_03c"}, {"esc_02a", "esc_02b", "esc_02c"}};
 
   for (int i = 0; i < 3; ++i) {
-    auto* button = new UIBitmapButton(*this->m_context);
+    auto* button = new UIBitmapButton();
     button->SetBitmap((prefix + names[i][0] + ".bmp").c_str(), 0, 0);
     button->SetBitmap((prefix + names[i][1] + ".bmp").c_str(), 1, 0);
     button->SetBitmap((prefix + names[i][2] + ".bmp").c_str(), 2, 0);
@@ -6674,7 +6674,7 @@ void UIRestartWnd::Slot15(int, int) {
   int positions[4][4] = {{29, 22, 0, 0}, {29, 45, 0, 0}, {29, 68, 0, 0}, {29, 96, 0, 0}};
 
   for (int i = 0; i < 4; ++i) {
-    auto* button = new UIBitmapButton(*this->m_context);
+    auto* button = new UIBitmapButton();
     button->SetBitmap((prefix + names[i][0] + ".bmp").c_str(), 0, 0);
     button->SetBitmap((prefix + names[i][1] + ".bmp").c_str(), 1, 0);
     button->SetBitmap((prefix + names[i][2] + ".bmp").c_str(), 2, 0);
@@ -6690,7 +6690,7 @@ void UIRestartWnd::Slot15(int, int) {
 // OFFSET: 0x008EAE30
 // FUNCTION: fn_12206
 void UIWaitWnd::Slot15(int width, int height) {
-  this->m_button = new UIBitmapButton(*this->m_context);
+  this->m_button = new UIBitmapButton();
   this->m_button->SetBitmap("유저인터페이스\\btn_cancel.bmp", 0, 0);
   this->m_button->SetBitmap("유저인터페이스\\btn_cancel_a.bmp", 1, 0);
   this->m_button->SetBitmap("유저인터페이스\\btn_cancel_b.bmp", 2, 0);
@@ -6700,7 +6700,7 @@ void UIWaitWnd::Slot15(int width, int height) {
   this->m_button->SetTooltip("");
   this->AddChild(this->m_button);
 
-  this->m_textViewer = new UITextViewer(*this->m_context);
+  this->m_textViewer = new UITextViewer();
   this->m_textViewer->Configure(10, 22, width - 20, height - 55, 0);
   unsigned red, green, blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
@@ -6723,7 +6723,7 @@ namespace {
 // OFFSET: 0x008E5A20
 // FUNCTION: fn_12190
 void UIPartyInvitationToWnd::Slot15(int, int) {
-  this->m_edit = new UIEditCtrl(*this->m_context);
+  this->m_edit = new UIEditCtrl();
   this->m_edit->SetSize(120, 20);
   this->m_edit->Move(20, 42);
   this->m_edit->maximum = 23;
@@ -6737,7 +6737,7 @@ void UIPartyInvitationToWnd::Slot15(int, int) {
     int ids[2] = {184, 185};
 
     for (int i = 0; i < 2; ++i) {
-      auto* button = new UIBitmapButton(*this->m_context);
+      auto* button = new UIBitmapButton();
       button->SetBitmap((prefix + names[i][0] + ".bmp").c_str(), 0, 0);
       button->SetBitmap((prefix + names[i][1] + ".bmp").c_str(), 1, 0);
       button->SetBitmap((prefix + names[i][2] + ".bmp").c_str(), 2, 0);
@@ -7197,7 +7197,7 @@ int UIYourItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 // OFFSET: 0x008E6B40
 // FUNCTION: fn_12192
 void UIPasswordWnd::Slot15(int, int) {
-  this->m_edit = new UIEditCtrl(*this->m_context);
+  this->m_edit = new UIEditCtrl();
   this->m_edit->SetSize(90, 16);
   this->m_edit->Move(15, 22);
   this->m_edit->maximum = 8;
@@ -7207,7 +7207,7 @@ void UIPasswordWnd::Slot15(int, int) {
   this->AddChild(this->m_edit);
   g_windowMgr.SetFocus(this->m_edit);
 
-  auto* title = new UIStaticText(*this->m_context);
+  auto* title = new UIStaticText();
   this->unknown_00B8 = reinterpret_cast<std::uintptr_t>(title);
   title->SetSize(this->geometry.width - 30, 15);
   title->Move(15, 6);
@@ -7217,7 +7217,7 @@ void UIPasswordWnd::Slot15(int, int) {
   const std::string prefix("유저인터페이스\\");
   const int x = this->geometry.width - 55;
   const int y = this->geometry.height - 32;
-  auto* button = new UIBitmapButton(*this->m_context);
+  auto* button = new UIBitmapButton();
   button->SetBitmap((prefix + "btn_ok" + ".bmp").c_str(), 0, 0);
   button->SetBitmap((prefix + "btn_ok_a" + ".bmp").c_str(), 1, 0);
   button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
@@ -7230,8 +7230,8 @@ void UIPasswordWnd::Slot15(int, int) {
   this->unknown_00BC = 0;
 }
 // FUNCTION: fn_11978
-UIStatusWnd::UIStatusWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0) {
+UIStatusWnd::UIStatusWnd()
+    : UIFrameWnd(0) {
   this->geometry.unknown_0030 = 0;
   this->m_info = nullptr;
   this->m_titleHeight = 17;
@@ -8113,7 +8113,7 @@ void UINotifyItemObtainWnd::Paint() {
 void UIWhisperWnd::Slot15(int, int) {
   this->m_message0 = 184;
 
-  this->m_resizer = new UIResizer(*this->m_context);
+  this->m_resizer = new UIResizer();
   this->m_resizer->SetSize(16, 16);
   this->m_resizer->SetDirection(7);
   this->m_resizer->SetBitmapName("유저인터페이스\\btn_resize.bmp");
@@ -8419,7 +8419,7 @@ void UIItemCollectionWnd::Paint() {
 // OFFSET: 0x008DB1F0
 // FUNCTION: fn_12158
 void UIAutoMessageWnd::Slot15(int, int) {
-  this->m_edit = new UIEditCtrl(*this->m_context);
+  this->m_edit = new UIEditCtrl();
   this->m_edit->SetSize(this->geometry.width - 77, 16);
   this->m_edit->Move(15, 22);
   this->m_edit->maximum = 100;
@@ -8431,7 +8431,7 @@ void UIAutoMessageWnd::Slot15(int, int) {
   const std::string prefix("유저인터페이스\\");
   const int x = this->geometry.width - 55;
   const int y = this->geometry.height - 32;
-  auto* button = new UIBitmapButton(*this->m_context);
+  auto* button = new UIBitmapButton();
   button->SetBitmap((prefix + "btn_ok" + ".bmp").c_str(), 0, 0);
   button->SetBitmap((prefix + "btn_ok_a" + ".bmp").c_str(), 1, 0);
   button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
@@ -8450,7 +8450,7 @@ void UInCash_CallWnd::Slot15(int, int) {
   const char* names[] = {"NC_CashShop"};
   const std::string prefix("유저인터페이스\\basic_interface\\");
   for (int index = 0; index < 1; ++index) {
-    auto* button = new UIBitmapButton(*this->m_context);
+    auto* button = new UIBitmapButton();
     button->SetBitmap((prefix + names[index] + ".bmp").c_str(), 0, 0);
     button->SetBitmap((prefix + names[index] + ".bmp").c_str(), 1, 0);
     button->SetBitmap((prefix + names[index] + ".bmp").c_str(), 2, 0);
@@ -8492,19 +8492,19 @@ int CSession::GetTraitStat(int type) {
 
 // OFFSET: 0x008C7F00
 // FUNCTION: fn_11946
-UIItemIdentifyWnd::UIItemIdentifyWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), m_placement(nullptr) {
+UIItemIdentifyWnd::UIItemIdentifyWnd()
+    : UIFrameWnd(0), m_placement(nullptr) {
 }
 
 // OFFSET: 0x008C7EA0
 // FUNCTION: fn_11945
-UIItemCompositionWnd::UIItemCompositionWnd(UIWindowContext& windows)
-    : UIItemIdentifyWnd(windows), m_compositionPlacement(nullptr) {
+UIItemCompositionWnd::UIItemCompositionWnd()
+    : UIItemIdentifyWnd(), m_compositionPlacement(nullptr) {
 }
 
 // OFFSET: 0x008C90E0
 // FUNCTION: fn_11976
-UISpellListWnd::UISpellListWnd(UIWindowContext& windows) : UIItemIdentifyWnd(windows) {
+UISpellListWnd::UISpellListWnd() : UIItemIdentifyWnd() {
   this->unknown_00FC = 0;
 }
 
@@ -8577,8 +8577,8 @@ int UIPetEggListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
 
 // OFFSET: 0x008C8330
 // FUNCTION: fn_11952
-UIMakingArrowListWnd::UIMakingArrowListWnd(UIWindowContext& windows)
-    : UIItemIdentifyWnd(windows) {
+UIMakingArrowListWnd::UIMakingArrowListWnd()
+    : UIItemIdentifyWnd() {
 }
 
 // OFFSET: 0x008C8A50
@@ -8679,7 +8679,7 @@ void UILoadingWnd::Slot15(int, int) {
   // GLOBAL: gl_25392
   static int s_loadingScreenIndex;
 
-  this->m_progressBar = new UIBarGraph2(*this->m_context);
+  this->m_progressBar = new UIBarGraph2();
   this->m_progressBar->SetSize(240, 15);
   this->m_progressBar->Move(0, 0);
   this->m_progressBar->SetValue(0.0f);
@@ -8711,8 +8711,8 @@ void UILoadingWnd::Slot15(int, int) {
   g_windowMgr.SetSurface0478(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name))));
 }
 // FUNCTION: fn_11966
-UIPetEggListWnd::UIPetEggListWnd(UIWindowContext& windows)
-    : UIItemIdentifyWnd(windows) {
+UIPetEggListWnd::UIPetEggListWnd()
+    : UIItemIdentifyWnd() {
 }
 
 // OFFSET: 0x008D1E80
@@ -8897,7 +8897,7 @@ void UIEquipWnd::Slot25(int x, int y) {
 
 // OFFSET: 0x008C9880
 // FUNCTION: fn_11986
-UInCashWnd::UInCashWnd(UIWindowContext& windows) : UIItemBaseWnd(windows) {
+UInCashWnd::UInCashWnd() : UIItemBaseWnd() {
   this->m_placement = nullptr;
   this->m_tab = 0;
   this->m_selected = 0;
@@ -9239,7 +9239,7 @@ void UITipOfTheDayWnd::Slot15(int width, int height) {
   const char* tooltips[3] = {"", "", "/tip"};
 
   for (int index = 0; index < 3; ++index) {
-    UIBitmapButton* button = new UIBitmapButton(*this->m_context);
+    UIBitmapButton* button = new UIBitmapButton();
     button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
     button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
     button->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
@@ -9261,7 +9261,7 @@ void UITipOfTheDayWnd::Slot15(int width, int height) {
   this->AddChild(this->m_textViewer);
 
   this->m_showTipsAtStartup = g_window315Enabled;
-  UICheckBox* checkBox = new UICheckBox(*this->m_context);
+  UICheckBox* checkBox = new UICheckBox();
   checkBox->SetSize(this->TextWidth(LookupMessage(176), 0, 0, 12, 0, 0) + 12, 12);
   checkBox->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(176));
   checkBox->Move(10, height - 20);
@@ -10200,7 +10200,7 @@ int UIProhibitListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       if (!IsMonsterJob(g_session.m_aid)) {
         return 0;
       }
-      counter = new UICntWnd(*this->m_context);
+      counter = new UICntWnd();
       counter->SetSize(0xB6, 0x2E);
       counter->Move((g_renderer->viewport.width - 640) / 2 + 200, ScaleByScreenHeight(200));
       g_windowMgr.AddRendered(counter);
@@ -10215,7 +10215,7 @@ int UIProhibitListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       if (a != 2 || !IsAdminAccount(g_session.m_aid)) {
         return 0;
       }
-      counter = new UICntWnd(*this->m_context);
+      counter = new UICntWnd();
       counter->SetSize(0xB6, 0x2E);
       counter->Move((g_renderer->viewport.width - 640) / 2 + 200, ScaleByScreenHeight(200));
       g_windowMgr.AddRendered(counter);

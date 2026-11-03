@@ -10,7 +10,7 @@ class UITransBalloonText;
 
 class UIBalloonOpenBtn : public UIFrameWnd {
 public:
-  UIBalloonOpenBtn(UIWindowContext& windows);
+  UIBalloonOpenBtn();
   void Paint() override;
   void Slot15(int width, int height) override;
   void Slot19() override;

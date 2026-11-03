@@ -10,7 +10,7 @@ class UIBmpTextButton;
 
 class UIStatusWnd : public UIFrameWnd {
 public:
-  UIStatusWnd(UIWindowContext& windows);
+  UIStatusWnd();
   /* 00B4 */ UIBitmapButton* m_statButtons[6];
   /* 00CC */ int m_expandedHeight;
   /* 00D0 */ StatusWndInfo* m_info;

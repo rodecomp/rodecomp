@@ -53,7 +53,7 @@ std::int64_t JobExpMaximum() {
 
 // OFFSET: 0x00997250
 // FUNCTION: fn_13484
-UIBasicInfoWnd::UIBasicInfoWnd(UIWindowContext& windowContext) : UIFrameWnd(windowContext, 0) {
+UIBasicInfoWnd::UIBasicInfoWnd() : UIFrameWnd(0) {
   this->saved = nullptr;
   this->mode = 0;
   this->layoutOffset = 13;
@@ -532,14 +532,14 @@ void UIBasicInfoWnd::Slot15(int width, int height) {
   UIBitmapButton* minimizeButton = this->AddMinimizeButton("Alt+V, Ctrl+V", 0);
   minimizeButton->Move(this->geometry.width - 14, 3);
 
-  this->nameText = new UIStaticText(*this->m_context);
+  this->nameText = new UIStaticText();
   this->nameText->SetSize(this->geometry.width - 20, 15);
   this->nameText->Move(9, 23);
   this->nameText->SetTextFitted(g_session.DecodePlayerName());
   this->nameText->SetFont(0, 12, 0, 0);
   this->AddChild(this->nameText);
 
-  UIBarGraphPlayer* hpBar = new UIBarGraphPlayer(*this->m_context);
+  UIBarGraphPlayer* hpBar = new UIBarGraphPlayer();
   hpBar->SetValues(
     []() -> std::int64_t { return g_session.unknown_5568; },
     []() -> std::int64_t { return g_session.unknown_556C; }
@@ -549,7 +549,7 @@ void UIBasicInfoWnd::Slot15(int width, int height) {
   this->AddChild(hpBar);
   this->hpBar = hpBar;
 
-  UIBarGraphPlayer* spBar = new UIBarGraphPlayer(*this->m_context);
+  UIBarGraphPlayer* spBar = new UIBarGraphPlayer();
   spBar->SetValues(
     []() -> std::int64_t { return *reinterpret_cast<const int*>(&g_session.unknown_5570[0]); },
     []() -> std::int64_t { return *reinterpret_cast<const int*>(&g_session.unknown_5570[4]); }
@@ -559,7 +559,7 @@ void UIBasicInfoWnd::Slot15(int width, int height) {
   this->AddChild(spBar);
   this->spBar = spBar;
 
-  UIBarGraphPlayerAP* apBar = new UIBarGraphPlayerAP(*this->m_context);
+  UIBarGraphPlayerAP* apBar = new UIBarGraphPlayerAP();
   apBar->SetValues(
     []() -> std::int64_t { return g_session.GetTraitStat(232); },
     []() -> std::int64_t { return g_session.GetTraitStat(233); }
@@ -569,7 +569,7 @@ void UIBasicInfoWnd::Slot15(int width, int height) {
   this->AddChild(apBar);
   this->apBar = apBar;
 
-  UIINT64BarGraph* baseExpBar = new UIINT64BarGraph(*this->m_context);
+  UIINT64BarGraph* baseExpBar = new UIINT64BarGraph();
   baseExpBar->m_plainColor = 1;
   baseExpBar->SetSize(112, 6);
   baseExpBar->Move(84, this->layoutOffset + 76);
@@ -577,7 +577,7 @@ void UIBasicInfoWnd::Slot15(int width, int height) {
   this->AddChild(baseExpBar);
   this->baseExpBar = baseExpBar;
 
-  UIINT64BarGraph* jobExpBar = new UIINT64BarGraph(*this->m_context);
+  UIINT64BarGraph* jobExpBar = new UIINT64BarGraph();
   jobExpBar->m_plainColor = 1;
   jobExpBar->SetSize(112, 6);
   jobExpBar->Move(84, this->layoutOffset + 86);

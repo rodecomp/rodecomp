@@ -32,7 +32,7 @@
 
 // OFFSET: 0x00BA3920
 // FUNCTION: fn_19677
-UIEntryQueueHelpWnd::UIEntryQueueHelpWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0), m_viewer(nullptr), m_close(nullptr) {
+UIEntryQueueHelpWnd::UIEntryQueueHelpWnd() : UIFrameWnd(0), m_viewer(nullptr), m_close(nullptr) {
 }
 
 // OFFSET: 0x00BA4260
@@ -64,7 +64,7 @@ int UIEntryQueueHelpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
 
 // OFFSET: 0x00BA42E0
 // FUNCTION: fn_19684
-UIEntryQueueListBox::UIEntryQueueListBox(UIWindowContext& windows) : UIListBox(windows) {
+UIEntryQueueListBox::UIEntryQueueListBox() : UIListBox() {
 }
 
 // OFFSET: 0x00BA43F0
@@ -99,8 +99,8 @@ void UIEntryQueueListBox::Slot31(int x, int y) {
 
 // OFFSET: 0x00BA47A0
 // FUNCTION: fn_19689
-UIEntryQueueRequestWnd::UIEntryQueueRequestWnd(UIWindowContext& windows, UIEntryQueueContext& entryQueue)
-    : UIFrameWnd(windows, 0), m_entryQueue(&entryQueue), m_interval(1000), m_elapsed(0), m_delta(0), m_lastTick(0) {
+UIEntryQueueRequestWnd::UIEntryQueueRequestWnd(UIEntryQueueContext& entryQueue)
+    : UIFrameWnd(0), m_entryQueue(&entryQueue), m_interval(1000), m_elapsed(0), m_delta(0), m_lastTick(0) {
 }
 
 // OFFSET: 0x00BA4870
@@ -116,7 +116,7 @@ bool UIEntryQueueRequestWnd::Create() {
   this->Slot22(300, 250);
   this->Move((g_renderer->viewport.width - 640) / 2 + 185, (g_renderer->viewport.height - 480) / 2 + 180);
 
-  this->m_viewer = new UITextViewer(*this->m_context);
+  this->m_viewer = new UITextViewer();
   this->m_viewer->Configure(10, 22, 280, 305, 0);
   unsigned red, green, blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
@@ -141,7 +141,7 @@ bool UIEntryQueueRequestWnd::Create() {
 
   const std::string path = "유저인터페이스\\";
 
-  this->m_ok = new UIBitmapButton(*this->m_context);
+  this->m_ok = new UIBitmapButton();
   this->m_ok->SetBitmap((path + "btn_ok" + ".bmp").c_str(), 0, 0);
   this->m_ok->SetBitmap((path + "btn_ok_a" + ".bmp").c_str(), 1, 0);
   this->m_ok->SetBitmap((path + "btn_ok_b" + ".bmp").c_str(), 2, 0);
@@ -150,7 +150,7 @@ bool UIEntryQueueRequestWnd::Create() {
   this->m_ok->SetId(0);
   this->AddChild(this->m_ok);
 
-  this->m_cancel = new UIBitmapButton(*this->m_context);
+  this->m_cancel = new UIBitmapButton();
   this->m_cancel->SetBitmap((path + "btn_cancel" + ".bmp").c_str(), 0, 0);
   this->m_cancel->SetBitmap((path + "btn_cancel_a" + ".bmp").c_str(), 1, 0);
   this->m_cancel->SetBitmap((path + "btn_cancel_b" + ".bmp").c_str(), 2, 0);
@@ -159,7 +159,7 @@ bool UIEntryQueueRequestWnd::Create() {
   this->m_cancel->SetId(1);
   this->AddChild(this->m_cancel);
 
-  this->m_countdown = new UIStaticText(*this->m_context);
+  this->m_countdown = new UIStaticText();
   this->m_countdown->SetSize(150, 20);
   this->m_countdown->Move(10, this->geometry.height - 20);
   this->AddChild(this->m_countdown);
@@ -226,8 +226,8 @@ int UIEntryQueueRequestWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
 
 // OFFSET: 0x00BA5560
 // FUNCTION: fn_19696
-UIEntryQueueStandByWnd::UIEntryQueueStandByWnd(UIWindowContext& windows, UIEntryQueueContext& entryQueue)
-    : UIFrameWnd(windows, 0), m_entryQueue(&entryQueue), m_waiting(0), m_ranking(0), m_viewer(nullptr), m_queueText(), m_waitingText(),
+UIEntryQueueStandByWnd::UIEntryQueueStandByWnd(UIEntryQueueContext& entryQueue)
+    : UIFrameWnd(0), m_entryQueue(&entryQueue), m_waiting(0), m_ranking(0), m_viewer(nullptr), m_queueText(), m_waitingText(),
       m_rankingText() {
 }
 
@@ -243,7 +243,7 @@ bool UIEntryQueueStandByWnd::Create() {
   this->Slot22(280, 120);
   this->Move((g_renderer->viewport.width - 640) / 2 + 185, (g_renderer->viewport.height - 480) / 2 + 180);
 
-  this->m_viewer = new UITextViewer(*this->m_context);
+  this->m_viewer = new UITextViewer();
   this->m_viewer->Configure(10, 22, 260, 65, 0);
   unsigned red, green, blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
@@ -253,7 +253,7 @@ bool UIEntryQueueStandByWnd::Create() {
 
   const std::string path = "유저인터페이스\\";
 
-  this->m_cancel = new UIBitmapButton(*this->m_context);
+  this->m_cancel = new UIBitmapButton();
   this->m_cancel->SetBitmap((path + "cancel_waiting" + ".bmp").c_str(), 0, 0);
   this->m_cancel->SetBitmap((path + "cancel_waiting_a" + ".bmp").c_str(), 1, 0);
   this->m_cancel->SetBitmap((path + "cancel_waiting_b" + ".bmp").c_str(), 2, 0);
@@ -262,7 +262,7 @@ bool UIEntryQueueStandByWnd::Create() {
   this->m_cancel->SetId(0);
   this->AddChild(this->m_cancel);
 
-  this->m_close = new UIBitmapButton(*this->m_context);
+  this->m_close = new UIBitmapButton();
   this->m_close->SetBitmap((path + "btn_close" + ".bmp").c_str(), 0, 0);
   this->m_close->SetBitmap((path + "btn_close_a" + ".bmp").c_str(), 1, 0);
   this->m_close->SetBitmap((path + "btn_close_b" + ".bmp").c_str(), 2, 0);
@@ -328,8 +328,8 @@ void UIEntryQueueStandByWnd::SetInfo(const char* queueName, int waiting, int ran
 
 // OFFSET: 0x00BA6000
 // FUNCTION: fn_19704
-UIEntryQueueWnd::UIEntryQueueWnd(UIWindowContext& windows, UIEntryQueueContext& entryQueue)
-    : UIFrameWnd(windows, 0), unknown_00BC(), m_labels(), m_values(), m_list(nullptr), saved(nullptr), m_entryQueue(&entryQueue), m_applyButtons(), m_helpButton(nullptr) {
+UIEntryQueueWnd::UIEntryQueueWnd(UIEntryQueueContext& entryQueue)
+    : UIFrameWnd(0), unknown_00BC(), m_labels(), m_values(), m_list(nullptr), saved(nullptr), m_entryQueue(&entryQueue), m_applyButtons(), m_helpButton(nullptr) {
 }
 
 // OFFSET: 0x00BA6110
@@ -348,7 +348,7 @@ void UIEntryQueueWnd::Slot15(int width, int height) {
   this->AddBaseButton();
   this->AddCloseButton("", 0);
 
-  this->m_list = new UIEntryQueueListBox(*this->m_context);
+  this->m_list = new UIEntryQueueListBox();
   this->m_list->SetSize(130, 270);
   this->m_list->Move(10, 40);
   this->m_list->backgroundRed = 240;
@@ -369,7 +369,7 @@ void UIEntryQueueWnd::Slot15(int width, int height) {
   };
   int index = 0;
   for (int y = 165; y < 305; y += 20, ++index) {
-    this->m_labels[index] = new UIStaticText(*this->m_context);
+    this->m_labels[index] = new UIStaticText();
     if (this->m_labels[index]) {
       const char* label = labels[index];
       this->m_labels[index]->SetSize(this->TextWidth(label, 0, 0, 12, 0, 0), 25);
@@ -380,7 +380,7 @@ void UIEntryQueueWnd::Slot15(int width, int height) {
   }
 
   for (int value = 0; value < 7; ++value) {
-    this->m_values[value] = new UIStaticText(*this->m_context);
+    this->m_values[value] = new UIStaticText();
     if (this->m_labels[value]) {
       this->m_values[value]->SetSize(157, 25);
       this->AddChild(this->m_values[value]);
@@ -397,7 +397,7 @@ void UIEntryQueueWnd::Slot15(int width, int height) {
   int id = 0;
   const char** name = names;
   for (int x = 8; x < 287; x += 93, name += 3) {
-    this->m_applyButtons[id] = new UIBitmapButton(*this->m_context);
+    this->m_applyButtons[id] = new UIBitmapButton();
     this->m_applyButtons[id]->SetBitmap((path + name[0] + ".bmp").c_str(), 0, 0);
     this->m_applyButtons[id]->SetBitmap((path + name[1] + ".bmp").c_str(), 1, 0);
     this->m_applyButtons[id]->SetBitmap((path + name[2] + ".bmp").c_str(), 2, 0);
@@ -408,7 +408,7 @@ void UIEntryQueueWnd::Slot15(int width, int height) {
     ++id;
   }
 
-  this->m_helpButton = new UIBitmapButton(*this->m_context);
+  this->m_helpButton = new UIBitmapButton();
   this->m_helpButton->SetBitmap((path + "btn_help" + ".bmp").c_str(), 0, 0);
   this->m_helpButton->SetBitmap((path + "btn_help" + "_a.bmp").c_str(), 1, 0);
   this->m_helpButton->SetBitmap((path + "btn_help" + "_b.bmp").c_str(), 2, 0);
@@ -631,7 +631,7 @@ void UIEntryQueueWnd::Slot11() {
 void UIEntryQueueHelpWnd::Slot15(int width, int height) {
   this->Resize(280, 280);
 
-  this->m_viewer = new UITextViewer(*this->m_context);
+  this->m_viewer = new UITextViewer();
   this->m_viewer->Configure(10, 22, 270, 225, 0);
   unsigned red, green, blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
@@ -662,7 +662,7 @@ void UIEntryQueueHelpWnd::Slot15(int width, int height) {
 
   const std::string path = "유저인터페이스\\";
 
-  this->m_close = new UIBitmapButton(*this->m_context);
+  this->m_close = new UIBitmapButton();
   this->m_close->SetBitmap((path + "btn_close" + ".bmp").c_str(), 0, 0);
   this->m_close->SetBitmap((path + "btn_close_a" + ".bmp").c_str(), 1, 0);
   this->m_close->SetBitmap((path + "btn_close_b" + ".bmp").c_str(), 2, 0);

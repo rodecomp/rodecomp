@@ -94,13 +94,13 @@ void UIHotKeyWnd::Slot15(int, int) {
   this->AddBaseButton();
   this->AddCloseButton("", 0);
 
-  this->m_balloon = new UITransBalloonText(*this->m_context);
+  this->m_balloon = new UITransBalloonText();
   this->m_balloon->SetSize(this->geometry.width, 20);
   this->m_balloon->SetText(LookupMessage(1486), 60);
   this->m_balloon->Show(0);
   g_windowMgr.AddRendered(this->m_balloon);
 
-  this->unknown_0100 = new UITabControl(*this->m_context);
+  this->unknown_0100 = new UITabControl();
   this->unknown_0100->Configure(1, this->unknown_00C4 - 3, 20, 1, 1, 0, 0, 0, 0, 0, 0, 0);
   this->unknown_0100->Move(this->unknown_00C8, this->unknown_00CC + this->unknown_00BC);
   this->AddChild(this->unknown_0100);
@@ -187,8 +187,8 @@ void UIHotKeyWnd::UpdatePageButtons() {
 
 // OFFSET: 0x00911300
 // FUNCTION: fn_12513
-UIHotKeyWnd::UIHotKeyWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), m_selectedRow(-1), m_rowsPerPage(18), unknown_00BC(17), unknown_00C0(0), unknown_00C4(20), unknown_00C8(3), unknown_00CC(3),
+UIHotKeyWnd::UIHotKeyWnd()
+    : UIFrameWnd(0), m_selectedRow(-1), m_rowsPerPage(18), unknown_00BC(17), unknown_00C0(0), unknown_00C4(20), unknown_00C8(3), unknown_00CC(3),
       unknown_00D0(20), unknown_00D4(80), unknown_00D8(135), m_balloon(nullptr), m_tab(0), m_page(1), m_pageCount(0), unknown_0114(0) {
 }
 

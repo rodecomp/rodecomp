@@ -12,7 +12,7 @@ class UILapineUpgradeBox_IngredientListWnd;
 
 class UILapineUpgradeBox_IngredientInfoWnd : public UIFrameWnd {
 public:
-  UILapineUpgradeBox_IngredientInfoWnd(UIWindowContext& windows);
+  UILapineUpgradeBox_IngredientInfoWnd();
 
   void Move(int x, int y) override;
   void Slot10(int x, int y, std::intptr_t value) override;
@@ -38,7 +38,7 @@ class UILapineUpgradeBoxWnd : public UIFrameWnd {
   friend class UILapineUpgradeBox_IngredientListWnd;
 
 public:
-  UILapineUpgradeBoxWnd(UIWindowContext& windows);
+  UILapineUpgradeBoxWnd();
   ~UILapineUpgradeBoxWnd() override;
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot15(int width, int height) override;

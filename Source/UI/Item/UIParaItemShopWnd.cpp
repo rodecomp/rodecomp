@@ -227,19 +227,19 @@ void __stdcall Nullsub344(int, int) {
 // OFFSET: 0x009A83C0
 // FUNCTION: fn_13750
 void UIParaResultWnd::Slot15(int width, int height) {
-  this->total = new UIStaticText(*this->m_context);
+  this->total = new UIStaticText();
   this->total->SetSize(160, 15);
   this->total->Move(12, this->geometry.height - 21);
   this->AddChild(this->total);
 
-  this->title = new UIStaticText(*this->m_context);
+  this->title = new UIStaticText();
   this->title->SetSize(70, 15);
   this->title->SetText(LookupMessage(2530), 0);
   this->title->Move(16, 2);
   this->title->shadow = 1;
   this->AddChild(this->title);
 
-  UIResizer* resizer = new UIResizer(*this->m_context);
+  UIResizer* resizer = new UIResizer();
   this->resizer = resizer;
   resizer->SetSize(16, 16);
   resizer->SetDirection(7);
@@ -248,7 +248,7 @@ void UIParaResultWnd::Slot15(int width, int height) {
   resizer->SetColors(0xFFFF00FF, 0xFFFF00FF);
   this->AddChild(resizer);
 
-  UIScrollBar* scrollBar = new UIScrollBar(*this->m_context);
+  UIScrollBar* scrollBar = new UIScrollBar();
   this->scrollBar = scrollBar;
   scrollBar->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - this->unknown_0100 - this->unknown_00FC - 17);
   this->AddChild(scrollBar);
@@ -257,7 +257,7 @@ void UIParaResultWnd::Slot15(int width, int height) {
     const std::string prefix = "유저인터페이스\\";
     const int x = this->geometry.width - 61;
     const int y = this->geometry.height - 24;
-    UIBitmapButton* button = new UIBitmapButton(*this->m_context);
+    UIBitmapButton* button = new UIBitmapButton();
     this->buttons[0] = button;
     button->SetBitmap((prefix + "btn_ok.bmp").c_str(), 0, 0);
     button->SetBitmap((prefix + "btn_ok_a.bmp").c_str(), 1, 0);

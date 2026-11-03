@@ -18,15 +18,15 @@ class UILapineBoxWnd;
 
 class UILapineScrollBar : public UIScrollBar {
 public:
-  explicit UILapineScrollBar(UIWindowContext& windows);
+  UILapineScrollBar();
   void Paint() override;
 };
 
 class UILapineUpgradeBox_IngredientListWnd : public UIScrollWnd {
 public:
   // INLINED
-  UILapineUpgradeBox_IngredientListWnd(UIWindowContext& windows, int width, int height)
-      : UIScrollWnd(windows, width, height, 0), minRefine(0), maxRefine(20) {
+  UILapineUpgradeBox_IngredientListWnd(int width, int height)
+      : UIScrollWnd(width, height, 0), minRefine(0), maxRefine(20) {
     this->UIWindow::Resize(width, height);
     this->Slot15(width, height);
   }
@@ -58,7 +58,7 @@ class UILapineBox_IngredientListWnd : public UIScrollWnd {
   friend class UILapineBoxWnd;
 
 public:
-  UILapineBox_IngredientListWnd(UIWindowContext& windows, int width, int height);
+  UILapineBox_IngredientListWnd(int width, int height);
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot15(int width, int height) override;
   void Slot35(int argument) override;

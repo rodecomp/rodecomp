@@ -15,7 +15,7 @@ class UIStaticText;
 
 class UIReplayRECControlWnd : public UIFrameWnd {
 public:
-  UIReplayRECControlWnd(UIWindowContext& windows, int mode);
+  UIReplayRECControlWnd(int mode);
   ~UIReplayRECControlWnd() override;
 
   bool Slot03() override;

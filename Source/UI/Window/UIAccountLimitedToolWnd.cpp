@@ -58,7 +58,7 @@ void UIAccountLimitedToolWnd::Slot15(int, int) {
     {125, 121}, {160, 121}, {268, 121}, {305, 121}, {90, 151}, {240, 151}, {285, 151},
   };
   for (int i = 0; i < 15; ++i) {
-    this->m_edits[i] = new UIEditCtrl(*this->m_context);
+    this->m_edits[i] = new UIEditCtrl();
     this->m_edits[i]->flat = 1;
     this->m_edits[i]->disabled = 1;
     this->m_edits[i]->Invalidate();
@@ -100,7 +100,7 @@ void UIAccountLimitedToolWnd::Slot15(int, int) {
     this->AddChild(this->m_edits[i]);
   }
 
-  this->m_accountIdText = new UIStaticText(*this->m_context);
+  this->m_accountIdText = new UIStaticText();
   this->m_accountIdText->SetSize(200, 17);
   this->m_accountIdText->Move(90, 47);
   this->m_accountIdText->background = 0xFF969696;
@@ -117,7 +117,7 @@ void UIAccountLimitedToolWnd::Slot15(int, int) {
     {"btn_deleteItem", "btn_deleteItem_a", "btn_deleteItem_b", "btn_deleteItem_c"},
   };
   for (int i = 0; i < 3; ++i) {
-    this->m_buttons[i] = new UIBitmapButton(*this->m_context);
+    this->m_buttons[i] = new UIBitmapButton();
     this->m_buttons[i]->SetBitmap((prefix + buttonNames[i][0] + ".bmp").c_str(), 0, 0);
     this->m_buttons[i]->SetBitmap((prefix + buttonNames[i][1] + ".bmp").c_str(), 1, 0);
     this->m_buttons[i]->SetBitmap((prefix + buttonNames[i][2] + ".bmp").c_str(), 2, 0);
@@ -131,7 +131,7 @@ void UIAccountLimitedToolWnd::Slot15(int, int) {
     this->m_buttons[i]->Invalidate();
   }
 
-  this->m_viewer = new UITextViewer(*this->m_context);
+  this->m_viewer = new UITextViewer();
   const int buttonHeight = this->m_buttons[1]->geometry.height;
   this->m_viewer->Configure(10, buttonHeight + 189, this->geometry.width - 20, this->geometry.height - buttonHeight - 199, 0);
   this->m_viewer->backgroundColor = 0xFF969696;
@@ -366,8 +366,8 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 
 // OFFSET: 0x00946800
 // FUNCTION: fn_12846
-UIAccountLimitedToolWnd::UIAccountLimitedToolWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), m_accountIdText(nullptr), m_viewer(nullptr) {
+UIAccountLimitedToolWnd::UIAccountLimitedToolWnd()
+    : UIFrameWnd(0), m_accountIdText(nullptr), m_viewer(nullptr) {
   SecureZeroMemory(this->m_edits, sizeof(this->m_edits));
   SecureZeroMemory(this->m_buttons, sizeof(this->m_buttons));
 }

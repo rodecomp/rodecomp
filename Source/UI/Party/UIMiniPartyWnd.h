@@ -19,7 +19,7 @@ struct MiniPartyInfoEntry {
 
 class UIMiniPartyInfoWnd : public UIFrameWnd {
 public:
-  UIMiniPartyInfoWnd(UIWindowContext& windowContext);
+  UIMiniPartyInfoWnd();
   void Slot15(int width, int height) override;
   void Paint() override;
   void Slot25(int x, int y) override;
@@ -35,7 +35,7 @@ public:
 
 class UIMiniPartyWnd : public UIFrameWnd {
 public:
-  UIMiniPartyWnd(UIWindowContext& windowContext);
+  UIMiniPartyWnd();
   void Slot15(int width, int height) override;
   void Move(int x, int y) override;
   void Paint() override;

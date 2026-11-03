@@ -24,7 +24,7 @@ class UIBmpRadioBtn : public UIWindow {
   friend class UIRodexInboxWnd;
 
 public:
-  UIBmpRadioBtn(UIWindowContext& windows);
+  UIBmpRadioBtn();
   void Paint() override;
   void Slot25(int x, int y) override;
   void Slot28(int x, int y) override;
@@ -48,7 +48,7 @@ protected:
 class UIBmpRadioBtn2 : public UIBmpRadioBtn {
 public:
   // INLINED
-  UIBmpRadioBtn2(UIWindowContext& windows) : UIBmpRadioBtn(windows) {
+  UIBmpRadioBtn2() : UIBmpRadioBtn() {
   }
   void Invalidate() override;
   void Slot47() override;
@@ -58,7 +58,7 @@ public:
 class UICaptchaImage : public UIWindow {
 public:
   UICaptchaImage();
-  UICaptchaImage(UIWindowContext& windows, BitmapResourceContext& bitmaps);
+  UICaptchaImage(BitmapResourceContext& bitmaps);
   ~UICaptchaImage() override;
   void Paint() override;
   void Slot28(int x, int y) override;

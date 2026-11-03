@@ -125,7 +125,7 @@ void UISubChatHisWnd::Slot11() {
 void UISubChatHisWnd::Slot15(int width, int height) {
   {
     const std::string name = "유저인터페이스\\basic_interface\\stickon";
-    auto* button = new UIBitmapButton(*this->m_context);
+    auto* button = new UIBitmapButton();
     this->m_stickButton = button;
     button->SetBitmap((name + "_a.bmp").c_str(), 0, 0);
     button->SetBitmap((name + "_b.bmp").c_str(), 1, 0);
@@ -139,7 +139,7 @@ void UISubChatHisWnd::Slot15(int width, int height) {
   {
     std::string name = "유저인터페이스\\basic_interface\\battle_option";
     name += "2";
-    auto* button = new UIBitmapButton(*this->m_context);
+    auto* button = new UIBitmapButton();
     this->m_optionButton = button;
     button->SetBitmap((name + "_a.bmp").c_str(), 0, 0);
     button->SetBitmap((name + "_b.bmp").c_str(), 1, 0);
@@ -152,7 +152,7 @@ void UISubChatHisWnd::Slot15(int width, int height) {
 
   {
     const std::string name = "유저인터페이스\\basic_interface\\wnd_mini";
-    auto* button = new UIBitmapButton(*this->m_context);
+    auto* button = new UIBitmapButton();
     this->m_miniButton = button;
     button->SetBitmap((name + "_a.bmp").c_str(), 0, 0);
     button->SetBitmap((name + "_b.bmp").c_str(), 1, 0);
@@ -162,12 +162,12 @@ void UISubChatHisWnd::Slot15(int width, int height) {
     this->AddChild(button);
   }
 
-  this->m_chatBox = new UIChatHisBox(*this->m_context);
+  this->m_chatBox = new UIChatHisBox();
   this->m_chatBox->Configure(0, 0, this->geometry.width - 8, this->geometry.height - this->unknown_00F0 - this->m_inputHeight - 4, 0);
   this->m_chatBox->Move(5, this->m_inputHeight + 4);
   this->AddChild(this->m_chatBox);
 
-  this->m_resizer = new UIResizer(*this->m_context);
+  this->m_resizer = new UIResizer();
   this->m_resizer->SetSize(14, 14);
   this->m_resizer->SetDirection(7);
   this->m_resizer->SetBitmapName("유저인터페이스\\btn_resize.bmp");
@@ -196,7 +196,7 @@ void UISubChatHisWnd::Slot15(int width, int height) {
     }
   }
 
-  this->m_edit = new UIEditCtrl2(*this->m_context);
+  this->m_edit = new UIEditCtrl2();
   this->m_edit->SetSize(100, 19);
   this->m_edit->Move(-100, -100);
   this->AddChild(this->m_edit);
@@ -206,8 +206,8 @@ void UISubChatHisWnd::Slot15(int width, int height) {
 
 // OFFSET: 0x00912340
 // FUNCTION: fn_12529
-UISubChatHisWnd::UISubChatHisWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0) {
+UISubChatHisWnd::UISubChatHisWnd()
+    : UIFrameWnd(0) {
   this->m_saved = nullptr;
   this->m_resizer = nullptr;
   this->m_chatBox = nullptr;

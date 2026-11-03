@@ -29,7 +29,7 @@ struct BroadcastBalloonMessage {
 
 class UIBroadcastBalloon : public UIWindow {
 public:
-  UIBroadcastBalloon(UIWindowContext& windows);
+  UIBroadcastBalloon();
   void Paint() override;
   bool CanHitTest() override;
   void Slot19() override;

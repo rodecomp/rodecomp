@@ -9,7 +9,7 @@ struct WindowPlacement;
 
 class UISayDialogWnd : public UIFrameWnd {
 public:
-  UISayDialogWnd(UIWindowContext& windows);
+  UISayDialogWnd();
   /* 00B4 */ UIWindow* m_viewer;
   /* 00B8 */ std::list<UIWindow*> m_buttons;
   /* 00C0 */ std::list<UIWindow*> unknown_00C0;

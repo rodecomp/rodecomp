@@ -9,7 +9,7 @@
 
 class UIChatRoomMakeWnd : public UIFrameWnd {
 public:
-  UIChatRoomMakeWnd(UIWindowContext& windows);
+  UIChatRoomMakeWnd();
   ~UIChatRoomMakeWnd() override;
   void Paint() override;
 
@@ -23,7 +23,7 @@ public:
 
 class UIChatRoomChangeWnd : public UIChatRoomMakeWnd {
 public:
-  UIChatRoomChangeWnd(UIWindowContext& windows);
+  UIChatRoomChangeWnd();
 };
 
 #endif

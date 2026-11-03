@@ -26,7 +26,7 @@ namespace {
 
 // OFFSET: 0x0086CD40
 // FUNCTION: fn_11037
-UIComboBoxEx::UIComboBoxEx(UIWindowContext& windows) : UIListBoxEx(windows), targetId(10041) {
+UIComboBoxEx::UIComboBoxEx() : UIListBoxEx(), targetId(10041) {
 }
 
 // OFFSET: 0x00872C00
@@ -266,7 +266,7 @@ void UIComboBoxEx::Paint() {
 
 // OFFSET: 0x0086CCE0
 // FUNCTION: fn_11036
-UIComboBoxEx2::UIComboBoxEx2(UIWindowContext& windows) : UIComboBoxEx(windows), alignment(0) {
+UIComboBoxEx2::UIComboBoxEx2() : UIComboBoxEx(), alignment(0) {
 }
 
 // OFFSET: 0x008706D0
@@ -276,7 +276,7 @@ UIComboBoxEx2::~UIComboBoxEx2() = default;
 // OFFSET: 0x00885EE0
 // FUNCTION: fn_11320
 void UIComboBoxEx2::Slot15(int width, int height) {
-  auto* vertical = new UIScrollBar_Navi(*this->m_context);
+  auto* vertical = new UIScrollBar_Navi();
   this->verticalBar = vertical;
   vertical->vertical = 1;
   vertical->UIWindow::Resize(vertical->thickness, height);
@@ -285,7 +285,7 @@ void UIComboBoxEx2::Slot15(int width, int height) {
   vertical->Slot22(vertical->thickness, height);
   this->AddChild(vertical);
 
-  auto* horizontal = new UIScrollBar(*this->m_context);
+  auto* horizontal = new UIScrollBar();
   this->horizontalBar = horizontal;
   horizontal->vertical = 0;
   horizontal->UIWindow::Resize((width - 7), horizontal->thickness);

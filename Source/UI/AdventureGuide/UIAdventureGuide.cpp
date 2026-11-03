@@ -70,7 +70,7 @@ template <> AdventureGuide::CUITab* CUIListBox<AdventureGuide::CUITab>::CreateIt
 // FUNCTION: fn_13993
 // FUNCTION: fn_13994
 template <class T> void CUIListBox<T>::Slot15(int width, int height) {
-  this->scrollBar = new CUIVScrollBar(*this->m_context);
+  this->scrollBar = new CUIVScrollBar();
   this->scrollBar->Show(0);
   this->scrollBar->SetOnChange([this](int position) {
     int y = 0;
@@ -99,7 +99,7 @@ template void CUIListBox<AdventureGuide::CUITab>::Slot15(int, int);
 // FUNCTION: fn_13997
 // FUNCTION: fn_13998
 template <class T, class D> void CUIListBoxEx<T, D>::Slot15(int width, int height) {
-  this->scrollBar = new CUIVScrollBar(*this->m_context);
+  this->scrollBar = new CUIVScrollBar();
   this->scrollBar->Show(0);
   this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
   this->AddChild(this->scrollBar);
@@ -161,7 +161,7 @@ void CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::ClearItems
 // OFFSET: 0x009C2D90
 // FUNCTION: fn_13999
 void CUIAdventureGuide::Slot15(int width, int height) {
-  this->background = new CUIStaticImage(*this->m_context);
+  this->background = new CUIStaticImage();
   this->background->SetSize(750, 468);
   this->background->Move(0, 0);
   {
@@ -175,7 +175,7 @@ void CUIAdventureGuide::Slot15(int width, int height) {
   }
   this->AddChild(this->background);
 
-  this->titleBar = new CUITitleBar(*this->m_context);
+  this->titleBar = new CUITitleBar();
   this->titleBar->SetSize(750, 17);
   this->titleBar->Move(0, 0);
   {
@@ -201,7 +201,7 @@ void CUIAdventureGuide::Slot15(int width, int height) {
   }
   this->AddChild(this->titleBar);
 
-  CUIStaticText* title = new CUIStaticText(*this->m_context);
+  CUIStaticText* title = new CUIStaticText();
   title->SetSize(100, 17);
   title->Move(18, 0);
   title->SetText("", 0);
@@ -222,7 +222,7 @@ void CUIAdventureGuide::Slot15(int width, int height) {
   this->titleBar->titleText = title;
   this->titleBar->AddChild(title);
 
-  CUIImageButton* menuButton = new CUIImageButton(*this->m_context);
+  CUIImageButton* menuButton = new CUIImageButton();
   menuButton->SetSize(11, 11);
   menuButton->Move(3, 3);
   menuButton->SetOnClick([this]() { this->OnButtonClick(); });
@@ -253,7 +253,7 @@ void CUIAdventureGuide::Slot15(int width, int height) {
   }
   this->titleBar->AddChild(menuButton);
 
-  CUIImageButton* closeButton = new CUIImageButton(*this->m_context);
+  CUIImageButton* closeButton = new CUIImageButton();
   closeButton->SetSize(11, 11);
   closeButton->Move(736, 3);
   closeButton->SetOnClick([this]() { this->OnClose(); });
@@ -286,12 +286,12 @@ void CUIAdventureGuide::Slot15(int width, int height) {
   }
   this->titleBar->SetSecondButton(closeButton);
 
-  this->characterInfo = new AdventureGuide::CUICharacterInfo(*this->m_context);
+  this->characterInfo = new AdventureGuide::CUICharacterInfo();
   this->characterInfo->SetSize(161, 41);
   this->characterInfo->Move(1, 19);
   this->AddChild(this->characterInfo);
 
-  this->titleText = new CUIStaticText(*this->m_context);
+  this->titleText = new CUIStaticText();
   this->titleText->SetSize(104, 20);
   this->titleText->Move(362, 28);
   this->titleText->SetText("", 0);
@@ -312,27 +312,27 @@ void CUIAdventureGuide::Slot15(int width, int height) {
   this->titleText->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->titleText);
 
-  this->intro = new AdventureGuide::CUIIntro(*this->m_context);
+  this->intro = new AdventureGuide::CUIIntro();
   this->intro->SetSize(637, 373);
   this->intro->Move(112, 63);
   this->AddChild(this->intro);
 
-  this->quest = new AdventureGuide::CUIQuest(*this->m_context);
+  this->quest = new AdventureGuide::CUIQuest();
   this->quest->SetSize(627, 387);
   this->quest->Move(122, 81);
   this->AddChild(this->quest);
 
-  this->monster = new AdventureGuide::CUIMonster(*this->m_context);
+  this->monster = new AdventureGuide::CUIMonster();
   this->monster->SetSize(627, 387);
   this->monster->Move(122, 81);
   this->AddChild(this->monster);
 
-  this->item = new AdventureGuide::CUIItem(*this->m_context);
+  this->item = new AdventureGuide::CUIItem();
   this->item->SetSize(627, 387);
   this->item->Move(122, 81);
   this->AddChild(this->item);
 
-  this->tabs = new CUIListBox<AdventureGuide::CUITab>(*this->m_context);
+  this->tabs = new CUIListBox<AdventureGuide::CUITab>();
   this->tabs->SetSize(106, 372);
   this->tabs->Move(1, 63);
   this->tabs->SetOnSelect([this](AdventureGuide::CUITab* tab) { this->OnSelectTab(tab); });
@@ -1081,13 +1081,13 @@ namespace AdventureGuide {
 // OFFSET: 0x009C5400
 // FUNCTION: fn_14000
 void CUICharacterInfo::Slot15(int width, int height) {
-  this->jobIcon = new CUIStaticImage(*this->m_context);
+  this->jobIcon = new CUIStaticImage();
   this->jobIcon->SetSize(25, 25);
   this->jobIcon->Move(10, 8);
   this->jobIcon->SetImage(std::string());
   this->AddChild(this->jobIcon);
 
-  this->level = new CUIStaticText(*this->m_context);
+  this->level = new CUIStaticText();
   this->level->SetSize(50, 12);
   this->level->Move(46, 6);
   this->level->SetText("", 0);
@@ -1104,7 +1104,7 @@ void CUICharacterInfo::Slot15(int width, int height) {
   this->level->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->level);
 
-  this->jobLevel = new CUIStaticText(*this->m_context);
+  this->jobLevel = new CUIStaticText();
   this->jobLevel->SetSize(50, 12);
   this->jobLevel->Move(97, 6);
   this->jobLevel->SetText("", 0);
@@ -1121,7 +1121,7 @@ void CUICharacterInfo::Slot15(int width, int height) {
   this->jobLevel->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->jobLevel);
 
-  this->name = new CUIStaticText(*this->m_context);
+  this->name = new CUIStaticText();
   this->name->SetSize(100, 12);
   this->name->Move(45, 22);
   this->name->SetText("", 0);
@@ -1142,13 +1142,13 @@ void CUICharacterInfo::Slot15(int width, int height) {
 // OFFSET: 0x009C8D00
 // FUNCTION: fn_14003
 void CUIItemInfo::Slot15(int width, int height) {
-  this->image = new CUIStaticImage(*this->m_context);
+  this->image = new CUIStaticImage();
   this->image->SetSize(75, 100);
   this->image->Move(45, 14);
   this->image->SetImage(std::string());
   this->AddChild(this->image);
 
-  this->nameText = new CUIStaticText(*this->m_context);
+  this->nameText = new CUIStaticText();
   this->nameText->SetSize(280, 12);
   this->nameText->Move(165, 13);
   this->nameText->SetText("", 0);
@@ -1169,7 +1169,7 @@ void CUIItemInfo::Slot15(int width, int height) {
   this->nameText->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->nameText);
 
-  CUITextViewer* description = new CUITextViewer(*this->m_context);
+  CUITextViewer* description = new CUITextViewer();
   this->unknown_00F0 = reinterpret_cast<CUIStaticText*>(description);
   description->SetSize(173, 97);
   description->Move(165, 26);
@@ -1236,7 +1236,7 @@ void CUIItemInfo::Slot15(int width, int height) {
   }
   this->AddChild(description);
 
-  CUITextViewer* options = new CUITextViewer(*this->m_context);
+  CUITextViewer* options = new CUITextViewer();
   this->unknown_00F4 = reinterpret_cast<CUIStaticText*>(options);
   options->SetSize(115, 90);
   options->Move(338, 26);
@@ -1303,7 +1303,7 @@ void CUIItemInfo::Slot15(int width, int height) {
   }
   this->AddChild(options);
 
-  CUITextViewer* sources = new CUITextViewer(*this->m_context);
+  CUITextViewer* sources = new CUITextViewer();
   this->unknown_00F8 = reinterpret_cast<CUIStaticText*>(sources);
   sources->SetSize(108, 118);
   sources->Move(480, 5);
@@ -1374,7 +1374,7 @@ void CUIItemInfo::Slot15(int width, int height) {
 // OFFSET: 0x009CC580
 // FUNCTION: fn_14005
 void CUIMonsterInfo::Slot15(int width, int height) {
-  this->unknown_00E8 = new CUIStaticText(*this->m_context);
+  this->unknown_00E8 = new CUIStaticText();
   this->unknown_00E8->SetSize(280, 12);
   this->unknown_00E8->Move(165, 19);
   this->unknown_00E8->SetText("", 0);
@@ -1395,7 +1395,7 @@ void CUIMonsterInfo::Slot15(int width, int height) {
   this->unknown_00E8->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->unknown_00E8);
 
-  this->unknown_00EC = reinterpret_cast<CUIStaticText*>(new CUITextViewer(*this->m_context));
+  this->unknown_00EC = reinterpret_cast<CUIStaticText*>(new CUITextViewer());
   reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->SetSize(288, 84);
   reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->Move(165, 39);
   reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->SetTextOffset(0, 6);
@@ -1465,7 +1465,7 @@ void CUIMonsterInfo::Slot15(int width, int height) {
   }
   this->AddChild(this->unknown_00EC);
 
-  this->unknown_00F0 = reinterpret_cast<CUIStaticText*>(new CUITextViewer(*this->m_context));
+  this->unknown_00F0 = reinterpret_cast<CUIStaticText*>(new CUITextViewer());
   reinterpret_cast<CUITextViewer*>(this->unknown_00F0)->SetSize(108, 118);
   reinterpret_cast<CUITextViewer*>(this->unknown_00F0)->Move(480, 5);
   reinterpret_cast<CUITextViewer*>(this->unknown_00F0)->SetTextOffset(0, 6);
@@ -1539,7 +1539,7 @@ void CUIMonsterInfo::Slot15(int width, int height) {
 // OFFSET: 0x009CFAF0
 // FUNCTION: fn_14007
 void CUIQuestInfo::Slot15(int width, int height) {
-  this->unknown_00E8 = new CUIStaticImage(*this->m_context);
+  this->unknown_00E8 = new CUIStaticImage();
   this->unknown_00E8->SetSize(85, 70);
   this->unknown_00E8->Move(250, 10);
   {
@@ -1554,7 +1554,7 @@ void CUIQuestInfo::Slot15(int width, int height) {
   }
   this->AddChild(this->unknown_00E8);
 
-  this->unknown_00EC = reinterpret_cast<CUIStaticText*>(new CUITextViewer(*this->m_context));
+  this->unknown_00EC = reinterpret_cast<CUIStaticText*>(new CUITextViewer());
   reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->SetSize(360, 57);
   reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->Move(25, 13);
   reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->SetTextOffset(0, 0);
@@ -1624,7 +1624,7 @@ void CUIQuestInfo::Slot15(int width, int height) {
   }
   this->AddChild(this->unknown_00EC);
 
-  this->unknown_00F0 = reinterpret_cast<CUIStaticText*>(new CUITextViewer(*this->m_context));
+  this->unknown_00F0 = reinterpret_cast<CUIStaticText*>(new CUITextViewer());
   reinterpret_cast<CUITextViewer*>(this->unknown_00F0)->SetSize(200, 87);
   reinterpret_cast<CUITextViewer*>(this->unknown_00F0)->Move(400, 5);
   reinterpret_cast<CUITextViewer*>(this->unknown_00F0)->SetTextOffset(0, 6);
@@ -1694,7 +1694,7 @@ void CUIQuestInfo::Slot15(int width, int height) {
   }
   this->AddChild(this->unknown_00F0);
 
-  this->unknown_00F4 = reinterpret_cast<CUIStaticText*>(new CUITextViewer(*this->m_context));
+  this->unknown_00F4 = reinterpret_cast<CUIStaticText*>(new CUITextViewer());
   reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->SetSize(360, 13);
   reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->Move(25, 73);
   reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->SetTextOffset(0, 0);
@@ -1893,7 +1893,7 @@ namespace AdventureGuide {
 // OFFSET: 0x009C1550
 // FUNCTION: fn_13992
 CUIListBox<CUISubTab>* CUITab::CreateSubTabList() {
-  this->subTabs = new CUIListBox<CUISubTab>(*this->m_context);
+  this->subTabs = new CUIListBox<CUISubTab>();
   this->subTabs->SetSize(98, 26);
   this->subTabs->Move(0, 40);
   this->subTabs->SetOnSelect([this](CUISubTab* subTab) { this->OnSelectSubTab(subTab); });
@@ -1999,7 +1999,7 @@ CUIAdventureGuide* CreateAdventureGuide() {
 // FUNCTION: fn_14306
 template <>
 AdventureGuide::CUISubTab* CUIListBox<AdventureGuide::CUISubTab>::CreateItem() {
-  AdventureGuide::CUISubTab* item = new AdventureGuide::CUISubTab(*this->m_context);
+  AdventureGuide::CUISubTab* item = new AdventureGuide::CUISubTab();
   item->SetSize(this->itemWidth, this->rowHeight);
   item->Show(0);
   CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
@@ -2023,7 +2023,7 @@ AdventureGuide::CUISubTab* CUIListBox<AdventureGuide::CUISubTab>::CreateItem() {
 // FUNCTION: fn_14307
 template <>
 AdventureGuide::CUITab* CUIListBox<AdventureGuide::CUITab>::CreateItem() {
-  AdventureGuide::CUITab* item = new AdventureGuide::CUITab(*this->m_context);
+  AdventureGuide::CUITab* item = new AdventureGuide::CUITab();
   item->SetSize(this->itemWidth, this->rowHeight);
   item->Show(0);
   CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
@@ -2141,7 +2141,7 @@ namespace AdventureGuide {
 // OFFSET: 0x009C5BB0
 // FUNCTION: fn_14001
 void CUIIntro::Slot15(int width, int height) {
-  this->banner = new CUIStaticImage(*this->m_context);
+  this->banner = new CUIStaticImage();
   this->banner->SetSize(630, 216);
   this->banner->Move(0, 0);
   {
@@ -2154,13 +2154,13 @@ void CUIIntro::Slot15(int width, int height) {
   }
   this->AddChild(this->banner);
 
-  this->image = new CUIStaticImage(*this->m_context);
+  this->image = new CUIStaticImage();
   this->image->SetSize(583, 162);
   this->image->Move(22, 27);
   this->image->SetImage(std::string());
   this->AddChild(this->image);
 
-  this->contents = new CUIListBoxEx<CUITabInfo, Guide_Intro::Contents>(*this->m_context);
+  this->contents = new CUIListBoxEx<CUITabInfo, Guide_Intro::Contents>();
   this->contents->itemWidth = 603;
   this->contents->rowHeight = 44;
   this->contents->SetSize(603, 166);
@@ -2247,7 +2247,7 @@ void CUIIntro::Slot15(int width, int height) {
 // OFFSET: 0x009C6F50
 // FUNCTION: fn_14002
 void CUIItem::Slot15(int width, int height) {
-  this->itemList = new CUIListBoxEx<CUIItemInfo, CItemData>(*this->m_context);
+  this->itemList = new CUIListBoxEx<CUIItemInfo, CItemData>();
   this->itemList->itemWidth = 603;
   this->itemList->rowHeight = 128;
   this->itemList->SetSize(627, 355);
@@ -2329,7 +2329,7 @@ void CUIItem::Slot15(int width, int height) {
   this->itemList->AddNewItem();
   this->AddChild(this->itemList);
 
-  this->unknown_0084 = new CUIImageButton(*this->m_context);
+  this->unknown_0084 = new CUIImageButton();
   this->unknown_0084->SetSize(62, 20);
   this->unknown_0084->Move(471, 363);
   this->unknown_0084->SetOnClick([this]() { this->RequestNavigation(); });
@@ -2363,7 +2363,7 @@ void CUIItem::Slot15(int width, int height) {
   }
   this->AddChild(this->unknown_0084);
 
-  this->unknown_0088 = new CUIImageButton(*this->m_context);
+  this->unknown_0088 = new CUIImageButton();
   this->unknown_0088->SetSize(62, 20);
   this->unknown_0088->Move(540, 363);
   this->unknown_0088->SetOnClick([this]() { this->SearchNavigation(); });
@@ -2402,7 +2402,7 @@ void CUIItem::Slot15(int width, int height) {
 // OFFSET: 0x009CDD40
 // FUNCTION: fn_14006
 void CUIQuest::Slot15(int width, int height) {
-  this->questList = new CUIListBoxEx<CUIQuestInfo, CQuestInfo>(*this->m_context);
+  this->questList = new CUIListBoxEx<CUIQuestInfo, CQuestInfo>();
   this->questList->itemWidth = 603;
   this->questList->rowHeight = 97;
   this->questList->SetSize(627, 355);
@@ -2484,7 +2484,7 @@ void CUIQuest::Slot15(int width, int height) {
   this->questList->AddNewItem();
   this->AddChild(this->questList);
 
-  this->unknown_0084 = new CUIImageButton(*this->m_context);
+  this->unknown_0084 = new CUIImageButton();
   this->unknown_0084->SetSize(62, 20);
   this->unknown_0084->Move(471, 363);
   this->unknown_0084->SetOnClick([this]() { this->RequestNavigation(); });
@@ -2518,7 +2518,7 @@ void CUIQuest::Slot15(int width, int height) {
   }
   this->AddChild(this->unknown_0084);
 
-  this->unknown_0088 = new CUIImageButton(*this->m_context);
+  this->unknown_0088 = new CUIImageButton();
   this->unknown_0088->SetSize(62, 20);
   this->unknown_0088->Move(540, 363);
   this->unknown_0088->SetOnClick([this]() { this->SearchNavigation(); });
@@ -2557,7 +2557,7 @@ void CUIQuest::Slot15(int width, int height) {
 // OFFSET: 0x009CAE30
 // FUNCTION: fn_14004
 void CUIMonster::Slot15(int width, int height) {
-  this->monsterList = new CUIListBoxEx<CUIMonsterInfo, CMonsterData>(*this->m_context);
+  this->monsterList = new CUIListBoxEx<CUIMonsterInfo, CMonsterData>();
   this->monsterList->itemWidth = 603;
   this->monsterList->rowHeight = 128;
   this->monsterList->SetSize(627, 355);
@@ -2639,7 +2639,7 @@ void CUIMonster::Slot15(int width, int height) {
   this->monsterList->AddNewItem();
   this->AddChild(this->monsterList);
 
-  this->unknown_0084 = new CUIImageButton(*this->m_context);
+  this->unknown_0084 = new CUIImageButton();
   this->unknown_0084->SetSize(62, 20);
   this->unknown_0084->Move(540, 363);
   this->unknown_0084->SetOnClick([this]() { this->SearchNavigation(); });

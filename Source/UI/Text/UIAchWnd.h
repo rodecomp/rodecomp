@@ -28,14 +28,14 @@ struct UIAchListInfo {
 
 class UIAchScrollBar : public UIScrollBar {
 public:
-  explicit UIAchScrollBar(UIWindowContext& windows);
+  UIAchScrollBar();
 
   void Paint() override;
 };
 
 class UICustomGageBar : public UIWindow {
 public:
-  __declspec(noinline) explicit UICustomGageBar(UIWindowContext& windows);
+  __declspec(noinline) UICustomGageBar();
 
   /* 007C */ int value;
   /* 0080 */ int maximum;
@@ -51,7 +51,7 @@ public:
 
 class UIAchListWnd : public UIWindow {
 public:
-  UIAchListWnd(UIWindowContext& windows);
+  UIAchListWnd();
   ~UIAchListWnd() override;
 
   /* 0080 */ UIButton** buttons;
@@ -89,8 +89,8 @@ struct UIAchTabGroup {
 class UIAchTab : public UIWindow {
 public:
   // INLINED
-  UIAchTab(UIWindowContext& windows)
-      : UIWindow(windows, 0), unknown_007C(-1), unknown_0080(-1), fontHeight(0), hoverGroup(0), hoverSub(0), scrollBar(nullptr), scrollable(0),
+  UIAchTab()
+      : UIWindow(0), unknown_007C(-1), unknown_0080(-1), fontHeight(0), hoverGroup(0), hoverSub(0), scrollBar(nullptr), scrollable(0),
         scrollBarX(13), visibleSubs(3) {
     this->fontHeight = 12;
     this->scrollPos = 0;
@@ -153,7 +153,7 @@ public:
 
 class UIToolTipBitmapWnd : public UIWindow {
 public:
-  UIToolTipBitmapWnd(UIWindowContext& windows, WindowManagerWindows& managed);
+  UIToolTipBitmapWnd(WindowManagerWindows& managed);
 
   /* 007C */ std::string tooltip;
   /* 0094 */ CBitmapRes* bitmap;
@@ -174,7 +174,7 @@ private:
 
 class UIAchViewWnd : public UIWindow {
 public:
-  UIAchViewWnd(UIWindowContext& windows);
+  UIAchViewWnd();
 
   /* 007C */ UIBitmapButton* receiveButton;
   /* 0080 */ UIAchTV* description;
@@ -196,7 +196,7 @@ private:
 
 class UIAchUpperWnd : public UIWindow {
 public:
-  UIAchUpperWnd(UIWindowContext& windows);
+  UIAchUpperWnd();
 
   /* 007C */ std::string title;
   /* 0094 */ int unknown_0094;
@@ -218,7 +218,7 @@ private:
 
 class UIAchSummaryWnd : public UIWindow {
 public:
-  UIAchSummaryWnd(UIWindowContext& windows);
+  UIAchSummaryWnd();
 
   /* 007C */ int unknown_007C;
   /* 0080 */ std::vector<UICustomGageBar*> gauges;
@@ -238,7 +238,7 @@ private:
 
 class UIAchievementWnd : public UIFrameWnd {
 public:
-  UIAchievementWnd(UIWindowContext& windows);
+  UIAchievementWnd();
   ~UIAchievementWnd() override;
 
   /* 00B4 */ UIAchUpperWnd* upper;
@@ -284,7 +284,7 @@ public:
   /* 00B8 */ UITextButton* toggleButtons[3];
   /* 00C4 */ UITextButton* openButtons[3];
 
-  UIAchTracingWnd(UIWindowContext& windows);
+  UIAchTracingWnd();
   bool Slot08() override;
   void Slot11() override;
   void Slot15(int width, int height) override;

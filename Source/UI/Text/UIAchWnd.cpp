@@ -43,8 +43,8 @@ namespace {
 
 // OFFSET: 0x007B2420
 // FUNCTION: fn_09186
-UIAchievementWnd::UIAchievementWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), upper(nullptr), tab(nullptr), list(nullptr), group(0), sub(-1) {
+UIAchievementWnd::UIAchievementWnd()
+    : UIFrameWnd(0), upper(nullptr), tab(nullptr), list(nullptr), group(0), sub(-1) {
 }
 
 // OFFSET: 0x007B2E80
@@ -88,13 +88,13 @@ void UIAchListWnd::Create(int width, int height, int rows) {
   this->unknown_0084 = height / rows;
   this->rowCount = rows;
 
-  this->scrollBar = new UIAchScrollBar(*this->m_context);
+  this->scrollBar = new UIAchScrollBar();
   this->scrollBar->Configure(width - this->unknown_0094, 0, 1, height);
   this->AddChild(this->scrollBar);
 
   this->buttons = new UIButton*[this->rowCount];
   for (int index = 0; index < this->rowCount; ++index) {
-    this->buttons[index] = new UIButton(*this->m_context);
+    this->buttons[index] = new UIButton();
     this->buttons[index]->SetSize(30, 30);
     this->buttons[index]->Move(5, this->unknown_0084 * index + 5);
     this->buttons[index]->SetId(index);
@@ -196,7 +196,7 @@ bool UIAchTab::sub_7B4370(int x, int y, int* a, int* b) {
 // OFFSET: 0x007B4470
 // FUNCTION: fn_09212
 void UIAchievementWnd::CreateTab() {
-  UIAchTab* tab = new (std::nothrow) UIAchTab(*this->m_context);
+  UIAchTab* tab = new (std::nothrow) UIAchTab();
   this->tab = tab;
   tab->Slot15(0, 0);
   tab->tabWidth = 102;
@@ -209,7 +209,7 @@ void UIAchievementWnd::CreateTab() {
   tab->subColor = 0x9B6A59;
   tab->ClearGroups();
 
-  tab->scrollBar = new UIAchScrollBar(*this->m_context);
+  tab->scrollBar = new UIAchScrollBar();
   tab->scrollBar->Configure(tab->scrollBarX, 0, 1, tab->visibleSubs * tab->subHeight);
   tab->AddChild(tab->scrollBar);
 
@@ -244,7 +244,7 @@ void UIAchievementWnd::CreateTab() {
 // OFFSET: 0x007B52E0
 // FUNCTION: fn_09214
 void UIAchUpperWnd::Slot15(int, int) {
-  UICustomGageBar* gauge = new (std::nothrow) UICustomGageBar(*this->m_context);
+  UICustomGageBar* gauge = new (std::nothrow) UICustomGageBar();
   this->unknown_00A4 = gauge;
   gauge->Slot15(84, 10);
   gauge->Resize(84, 10);
@@ -254,7 +254,7 @@ void UIAchUpperWnd::Slot15(int, int) {
   this->unknown_00A4->text = LookupMessage(3105);
   this->AddChild(this->unknown_00A4);
 
-  gauge = new (std::nothrow) UICustomGageBar(*this->m_context);
+  gauge = new (std::nothrow) UICustomGageBar();
   this->unknown_00A8 = gauge;
   gauge->Slot15(124, 8);
   gauge->Resize(124, 8);
@@ -266,7 +266,7 @@ void UIAchUpperWnd::Slot15(int, int) {
   int index = 0;
   UIWindow** slot = this->buttons;
   for (int y = 10; y < 40; y += 15) {
-    *slot = new UIRadioBtn(*this->m_context);
+    *slot = new UIRadioBtn();
     (*slot)->SetSize(12, 12);
     (*slot)->Move(150, y);
     (*slot)->SendMsg(this, 13, index == this->selected, 0, 0, 0);
@@ -280,7 +280,7 @@ void UIAchUpperWnd::Slot15(int, int) {
 // FUNCTION: fn_09215
 void UIAchViewWnd::Slot15(int, int) {
   const std::string name = "유저인터페이스\\achievement_re\\btn_receive";
-  this->receiveButton = new UIBitmapButton(*this->m_context);
+  this->receiveButton = new UIBitmapButton();
   this->receiveButton->SetBitmap((name + "_out.bmp").c_str(), 0, 0);
   this->receiveButton->SetBitmap((name + "_over.bmp").c_str(), 1, 0);
   this->receiveButton->SetBitmap((name + "_press.bmp").c_str(), 2, 0);
@@ -308,7 +308,7 @@ void UIAchViewWnd::Slot15(int, int) {
   }
 
   for (UICustomGageBar*& slot : this->gauges) {
-    UICustomGageBar* gauge = new (std::nothrow) UICustomGageBar(*this->m_context);
+    UICustomGageBar* gauge = new (std::nothrow) UICustomGageBar();
     slot = gauge;
     gauge->Slot15(254, 10);
     gauge->Resize(254, 10);
@@ -323,7 +323,7 @@ void UIAchViewWnd::Slot15(int, int) {
   }
 
   for (UIToolTipBitmapWnd*& reward : this->rewards) {
-    reward = new (std::nothrow) UIToolTipBitmapWnd(*this->m_context, g_windowMgr);
+    reward = new (std::nothrow) UIToolTipBitmapWnd(g_windowMgr);
     reward->Show(0);
     this->AddChild(reward);
   }
@@ -403,24 +403,24 @@ void UIAchListWnd::Paint() {
 void UIAchievementWnd::Slot15(int, int) {
   this->AddCloseButton("", 0);
 
-  this->upper = new (std::nothrow) UIAchUpperWnd(*this->m_context);
+  this->upper = new (std::nothrow) UIAchUpperWnd();
   this->upper->SetSize(this->geometry.width, 46);
   this->upper->Move(0, 17);
   this->AddChild(this->upper);
 
   this->CreateTab();
 
-  this->list = new (std::nothrow) UIAchListWnd(*this->m_context);
+  this->list = new (std::nothrow) UIAchListWnd();
   this->list->Create(320, 405, 5);
   this->list->Move(102, 63);
   this->AddChild(this->list);
 
-  this->view = new UIAchViewWnd(*this->m_context);
+  this->view = new UIAchViewWnd();
   this->view->SetSize(328, 405);
   this->view->Move(422, 63);
   this->AddChild(this->view);
 
-  this->summary = new UIAchSummaryWnd(*this->m_context);
+  this->summary = new UIAchSummaryWnd();
   this->summary->SetSize(648, 404);
   this->summary->Move(102, 63);
   this->AddChild(this->summary);
@@ -1029,7 +1029,7 @@ void UIAchTab::SetLabel(const char* text, int group, int sub) {
 
 // OFFSET: 0x007BA260
 // FUNCTION: fn_09264
-UIAchTracingWnd::UIAchTracingWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0) {
+UIAchTracingWnd::UIAchTracingWnd() : UIFrameWnd(0) {
   this->info = nullptr;
 }
 
@@ -1052,12 +1052,12 @@ void UIAchTracingWnd::Slot11() {
 // FUNCTION: fn_09268
 void UIAchTracingWnd::Slot15(int, int) {
   for (int index = 0; index < 3; ++index) {
-    this->toggleButtons[index] = new UITextButton(*this->m_context);
+    this->toggleButtons[index] = new UITextButton();
     this->toggleButtons[index]->Configure("", 0, 0, 12, 1, 0);
     this->toggleButtons[index]->SetId(478);
     this->AddChild(this->toggleButtons[index]);
 
-    this->openButtons[index] = new UITextButton(*this->m_context);
+    this->openButtons[index] = new UITextButton();
     this->openButtons[index]->Configure("▶", 0, 0, 12, 1, 0);
     this->openButtons[index]->SetId(479);
     this->AddChild(this->openButtons[index]);
@@ -1181,7 +1181,7 @@ void UIToolTipBitmapWnd::Slot28(int x, int y) {
 // FUNCTION: fn_09213
 void UIAchSummaryWnd::Slot15(int, int) {
   for (int index = 0; index < this->unknown_007C; ++index) {
-    UICustomGageBar* gauge = new (std::nothrow) UICustomGageBar(*this->m_context);
+    UICustomGageBar* gauge = new (std::nothrow) UICustomGageBar();
     if (index == 0) {
       gauge->Slot15(558, 10);
       gauge->Resize(558, 10);
@@ -1205,7 +1205,7 @@ void UIAchSummaryWnd::Slot15(int, int) {
 
   UIWindow** slot = this->buttons;
   for (int x = 62; x < 694; x += 316) {
-    UITextButton* button = new UITextButton(*this->m_context);
+    UITextButton* button = new UITextButton();
     *slot = button;
     button->Configure("", 0x997836, 0, 12, 1, 0);
     static_cast<UITextButton*>(*slot)->m_hoverColor = 0x635AA5;
@@ -1472,33 +1472,33 @@ void UIAchViewWnd::UpdateInfo() {
 
 // OFFSET: 0x007B1E60
 // FUNCTION: fn_09181
-UIAchListWnd::UIAchListWnd(UIWindowContext& windows)
-    : UIWindow(windows, 0), buttons(nullptr), unknown_0084(0), rowCount(0), unknown_008C(0), selectedIndex(0), unknown_0094(11), scrollable(0),
+UIAchListWnd::UIAchListWnd()
+    : UIWindow(0), buttons(nullptr), unknown_0084(0), rowCount(0), unknown_008C(0), selectedIndex(0), unknown_0094(11), scrollable(0),
       unknown_009C(0), unknown_00AC(nullptr), scrollBar(nullptr) {
 }
 
 // OFFSET: 0x007B1F40
 // FUNCTION: fn_09182
-UIAchScrollBar::UIAchScrollBar(UIWindowContext& windows) : UIScrollBar(windows) {
+UIAchScrollBar::UIAchScrollBar() : UIScrollBar() {
   this->arrowLength = 11;
   this->thickness = 11;
 }
 
 // OFFSET: 0x007B1FB0
 // FUNCTION: fn_09183
-UIAchSummaryWnd::UIAchSummaryWnd(UIWindowContext& windows) : UIWindow(windows, 0), unknown_007C(7) {
+UIAchSummaryWnd::UIAchSummaryWnd() : UIWindow(0), unknown_007C(7) {
 }
 
 // OFFSET: 0x007B21D0
 // FUNCTION: fn_09184
-UIAchUpperWnd::UIAchUpperWnd(UIWindowContext& windows)
-    : UIWindow(windows, 0), unknown_0094(0), unknown_0098(0), unknown_009C(0), unknown_00A0(0), unknown_00A4(nullptr), unknown_00A8(nullptr), buttons{},
+UIAchUpperWnd::UIAchUpperWnd()
+    : UIWindow(0), unknown_0094(0), unknown_0098(0), unknown_009C(0), unknown_00A0(0), unknown_00A4(nullptr), unknown_00A8(nullptr), buttons{},
       selected(0) {
 }
 
 // OFFSET: 0x007B22B0
 // FUNCTION: fn_09185
-UIAchViewWnd::UIAchViewWnd(UIWindowContext& windows) : UIWindow(windows, 0), achievementId(-1), info(nullptr) {
+UIAchViewWnd::UIAchViewWnd() : UIWindow(0), achievementId(-1), info(nullptr) {
   this->receiveButton = nullptr;
   this->description = nullptr;
   for (int index = 0; index < 10; ++index) {
@@ -1512,13 +1512,13 @@ UIAchViewWnd::UIAchViewWnd(UIWindowContext& windows) : UIWindow(windows, 0), ach
 
 // OFFSET: 0x007B24F0
 // FUNCTION: fn_09187
-UICustomGageBar::UICustomGageBar(UIWindowContext& windows)
-    : UIWindow(windows, 0), value(-1), maximum(-1), text(), barColor(0xCE7B52), backgroundColor(0xFFFFFF), outerBorderColor(0xEFE7E7),
+UICustomGageBar::UICustomGageBar()
+    : UIWindow(0), value(-1), maximum(-1), text(), barColor(0xCE7B52), backgroundColor(0xFFFFFF), outerBorderColor(0xEFE7E7),
       innerBorderColor(0xADADAD) {
 }
 
 // OFFSET: 0x007B25B0
 // FUNCTION: fn_09188
-UIToolTipBitmapWnd::UIToolTipBitmapWnd(UIWindowContext& windows, WindowManagerWindows& managed)
-    : UIWindow(windows, 0), bitmap(nullptr), itemId(0), unknown_00B4(0), unknown_00B8(0), m_windows(&managed) {
+UIToolTipBitmapWnd::UIToolTipBitmapWnd(WindowManagerWindows& managed)
+    : UIWindow(0), bitmap(nullptr), itemId(0), unknown_00B4(0), unknown_00B8(0), m_windows(&managed) {
 }

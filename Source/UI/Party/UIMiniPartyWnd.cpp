@@ -29,8 +29,8 @@
 
 // OFFSET: 0x007426F0
 // FUNCTION: fn_07737
-UIMiniPartyWnd::UIMiniPartyWnd(UIWindowContext& windowContext)
-    : UIFrameWnd(windowContext, 1), m_cell(-1), m_infoWnd(nullptr), m_background(nullptr), m_sizeMode(0) {
+UIMiniPartyWnd::UIMiniPartyWnd()
+    : UIFrameWnd(1), m_cell(-1), m_infoWnd(nullptr), m_background(nullptr), m_sizeMode(0) {
   this->m_imageName = "유저인터페이스\\renewalparty\\img_partymini_bg.tga";
   this->geometry.id = 301;
 }
@@ -45,7 +45,7 @@ void UIMiniPartyWnd::Move(int x, int y) {
 // OFFSET: 0x00742AC0
 // FUNCTION: fn_07740
 void UIMiniPartyWnd::Slot15(int, int) {
-  UIMiniPartyInfoWnd* info = new UIMiniPartyInfoWnd(*this->m_context);
+  UIMiniPartyInfoWnd* info = new UIMiniPartyInfoWnd();
   this->m_infoWnd = info;
   info->m_owner = this;
   info->SetSize(174, 52);

@@ -213,7 +213,7 @@ protected:
 // OFFSET: 0x0084F860
 // FUNCTION: fn_10662
 UIEditCtrl::UIEditCtrl(const UIEditCtrl& other)
-    : UIWindow(*other.m_context, 0), anchor(0), cursor(0), mask(0), maximum(0), flat(0), red(0), green(0), blue(0), borderRed(0), borderGreen(0), borderBlue(0), textColor(0),
+    : UIWindow(0), anchor(0), cursor(0), mask(0), maximum(0), flat(0), red(0), green(0), blue(0), borderRed(0), borderGreen(0), borderBlue(0), textColor(0),
       secondColor(0), firstVisible(0), textY(0), invalidatesParent(0), disabled(0), unknown_00F0(0), topPadding(0), preserveInput(0) {
   this->tooltip = other.tooltip;
   this->disabled = other.disabled;
@@ -250,8 +250,8 @@ UIEditCtrl::UIEditCtrl(const UIEditCtrl& other)
 
 // OFFSET: 0x0084FAE0
 // FUNCTION: fn_10663
-UIEditCtrl::UIEditCtrl(UIWindowContext& windows)
-    : UIWindow(windows, 0), anchor(0), cursor(0), mask(0), maximum(255), flat(1), red(255), green(255), blue(255), borderRed(0), borderGreen(0), borderBlue(0),
+UIEditCtrl::UIEditCtrl()
+    : UIWindow(0), anchor(0), cursor(0), mask(0), maximum(255), flat(1), red(255), green(255), blue(255), borderRed(0), borderGreen(0), borderBlue(0),
       textColor(0), secondColor(0xFFFFFFFF), firstVisible(0), textY(0), invalidatesParent(0), disabled(0), unknown_00F0(0), topPadding(0), preserveInput(0),
       unknown_011C(nullptr) {
   this->text.reserve(255);
@@ -576,7 +576,7 @@ void UIEditCtrl::DrawSelection(int x, int width) {
 
 // OFFSET: 0x0096F410
 // FUNCTION: fn_13233
-UISkillListWnd::UISkillListWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0) {
+UISkillListWnd::UISkillListWnd() : UIFrameWnd(0) {
   this->scrollBar = nullptr;
   this->unknown_00C0 = 0;
   this->hovered = -1;
@@ -585,7 +585,7 @@ UISkillListWnd::UISkillListWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0
 }
 
 // INLINED
-UIEditCtrlWheel::UIEditCtrlWheel(UIWindowContext& windows) : UIEditCtrl(windows) {
+UIEditCtrlWheel::UIEditCtrlWheel() : UIEditCtrl() {
 }
 
 // OFFSET: 0x009701B0
@@ -842,7 +842,7 @@ int UISpriteButton::FrameWidth(int action, int frame) {
 // OFFSET: 0x0097D220
 // FUNCTION: fn_13325
 void UINoticeMessageBox_LockSellItem::Slot15(int, int) {
-  auto* button = new UIBitmapButton(*this->m_context);
+  auto* button = new UIBitmapButton();
   button->SetBitmap("유저인터페이스\\inventory\\bt_close.bmp", 0, 0);
   button->SetBitmap("유저인터페이스\\inventory\\bt_close.bmp", 1, 0);
   button->SetBitmap("유저인터페이스\\inventory\\bt_close.bmp", 2, 0);
@@ -1465,14 +1465,14 @@ void UIMerchantItemMyShopWnd::Paint() {
 // OFFSET: 0x0097A670
 // FUNCTION: fn_13319
 void UIMerchantItemPurchaseMSGWnd::Slot15(int, int) {
-  this->title = new UIStaticText(*this->m_context);
+  this->title = new UIStaticText();
   this->title->SetSize(100, 15);
   this->title->SetTextFitted(LookupMessage(2326));
   this->title->Move(16, 2);
   this->title->shadow = 1;
   this->AddChild(this->title);
 
-  this->buyButton = new UIBitmapButton(*this->m_context);
+  this->buyButton = new UIBitmapButton();
   this->buyButton->SetBitmap("유저인터페이스\\btn_buy.bmp", 0, 0);
   this->buyButton->SetBitmap("유저인터페이스\\btn_buy_a.bmp", 1, 0);
   this->buyButton->SetBitmap("유저인터페이스\\btn_buy_b.bmp", 2, 0);
@@ -1481,7 +1481,7 @@ void UIMerchantItemPurchaseMSGWnd::Slot15(int, int) {
   this->buyButton->SetId(184);
   this->AddChild(this->buyButton);
 
-  this->cancelButton = new UIBitmapButton(*this->m_context);
+  this->cancelButton = new UIBitmapButton();
   this->cancelButton->SetBitmap("유저인터페이스\\btn_cancel.bmp", 0, 0);
   this->cancelButton->SetBitmap("유저인터페이스\\btn_cancel_a.bmp", 1, 0);
   this->cancelButton->SetBitmap("유저인터페이스\\btn_cancel_b.bmp", 2, 0);
@@ -1490,18 +1490,18 @@ void UIMerchantItemPurchaseMSGWnd::Slot15(int, int) {
   this->cancelButton->SetId(185);
   this->AddChild(this->cancelButton);
 
-  this->firstLine = new UIStaticText(*this->m_context);
+  this->firstLine = new UIStaticText();
   this->firstLine->SetSize(200, 15);
   this->firstLine->SetText(LookupMessage(2327), 0);
   this->firstLine->Move(10, 20);
   this->AddChild(this->firstLine);
 
-  this->secondLine = new UIStaticText(*this->m_context);
+  this->secondLine = new UIStaticText();
   this->secondLine->SetSize(200, 15);
   this->secondLine->Move(10, 40);
   this->AddChild(this->secondLine);
 
-  this->thirdLine = new UIStaticText(*this->m_context);
+  this->thirdLine = new UIStaticText();
   this->thirdLine->SetSize(200, 15);
   this->thirdLine->SetText(LookupMessage(2329), 0);
   this->thirdLine->Move(10, 60);
@@ -2316,7 +2316,7 @@ void UIMerchantShopMakeWnd::SendShopRequest() {
 // OFFSET: 0x00974820
 // FUNCTION: fn_13306
 void UIMerchantShopMakeWnd::AddActionButton() {
-  this->unknown_0168 = new UIBasicButton(*this->m_context);
+  this->unknown_0168 = new UIBasicButton();
   this->unknown_0168->Configure(60, LookupMessage(3637));
   this->unknown_0168->Move(this->geometry.width - 156, this->geometry.height - 24);
   this->unknown_0168->SetTooltip(LookupMessage(3638));
@@ -2563,7 +2563,7 @@ void UIMerchantShopMakeWnd::SetItems(int count, const short* ids) {
 void UIMerchantItemMyShopWnd::OpenShop() {
   this->shopOpen = 1;
   if (!this->actionButton) {
-    this->actionButton = new UIBasicButton(*this->m_context);
+    this->actionButton = new UIBasicButton();
     this->actionButton->Configure(42, LookupMessage(2925));
     this->actionButton->Move(this->geometry.width - this->actionButton->geometry.width - 66, this->geometry.height - 24);
     this->actionButton->SetId(506);
@@ -3066,7 +3066,7 @@ void UIMerchantItemWnd::Slot10(int x, int y, std::intptr_t value) {
 // FUNCTION: fn_13321
 void UIMerchantItemShopWnd::Slot15(int width, int height) {
   if (this->unknown_010C) {
-    this->notice = new UIStaticText(*this->m_context);
+    this->notice = new UIStaticText();
     this->notice->SetSize(160, 15);
     char text[80];
     std::sprintf(text, LookupMessage(1735), 0);
@@ -3270,7 +3270,7 @@ std::string UIEditCtrl3::PlaceLineLinks(const char* line, std::string& text, con
         break;
       }
 
-      UIItemTagButton* button = new (std::nothrow) UIItemTagButton(*this->m_context);
+      UIItemTagButton* button = new (std::nothrow) UIItemTagButton();
       reinterpret_cast<ITEM_INFO&>(button->unknown_00F8) = item;
       button->Configure(name.c_str(), 0x82F2E1, 0, 12, 0, 0);
       button->SetTooltip(item.DisplayName(0).c_str());
@@ -3427,20 +3427,20 @@ void UIEditCtrl3::WrapLines(std::vector<std::string>& lines) {
 // OFFSET: 0x00975CD0
 // FUNCTION: fn_13310
 void UIItemSellWnd2::Slot15(int width, int height) {
-  this->total = new UIStaticText(*this->m_context);
+  this->total = new UIStaticText();
   this->total->SetSize(160, 15);
   this->total->SetTextAutoWidth("");
   this->total->Move(12, this->geometry.height - 21);
   this->AddChild(this->total);
 
-  UIStaticText* title = new UIStaticText(*this->m_context);
+  UIStaticText* title = new UIStaticText();
   title->SetSize(90, 15);
   title->SetText(LookupMessage(1569), 0);
   title->Move(16, 2);
   title->shadow = 1;
   this->AddChild(title);
 
-  this->resizer = new UIResizer(*this->m_context);
+  this->resizer = new UIResizer();
   this->resizer->SetSize(16, 16);
   static_cast<UIResizer*>(this->resizer)->SetDirection(3);
   static_cast<UIResizer*>(this->resizer)->SetBitmapName("유저인터페이스\\btn_resize.bmp");
@@ -3448,7 +3448,7 @@ void UIItemSellWnd2::Slot15(int width, int height) {
   static_cast<UIResizer*>(this->resizer)->SetColors(0xFFFF00FF, 0xFFFF00FF);
   this->AddChild(this->resizer);
 
-  UIScrollBar* scrollBar = new UIScrollBar(*this->m_context);
+  UIScrollBar* scrollBar = new UIScrollBar();
   this->scrollBar = scrollBar;
   scrollBar->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - 38);
   this->AddChild(this->scrollBar);
@@ -3458,7 +3458,7 @@ void UIItemSellWnd2::Slot15(int width, int height) {
   int positions[2][2] = {{this->geometry.width - 106, this->geometry.height - 24}, {this->geometry.width - 61, this->geometry.height - 24}};
   int ids[2] = {184, 185};
   for (int index = 0; index < 2; ++index) {
-    this->buttons[index] = new UIBitmapButton(*this->m_context);
+    this->buttons[index] = new UIBitmapButton();
     UIBitmapButton* button = static_cast<UIBitmapButton*>(this->buttons[index]);
     button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
     button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
@@ -3477,7 +3477,7 @@ void UIItemSellWnd2::Slot15(int width, int height) {
 // OFFSET: 0x009768A0
 // FUNCTION: fn_13311
 void UIItemSellWnd::Slot15(int width, int height) {
-  this->total = new UIStaticText(*this->m_context);
+  this->total = new UIStaticText();
   this->total->SetSize(160, 15);
   char text[80];
   std::sprintf(text, "Total : %d Zeny", 0);
@@ -3485,14 +3485,14 @@ void UIItemSellWnd::Slot15(int width, int height) {
   this->total->Move(12, this->geometry.height - 21);
   this->AddChild(this->total);
 
-  UIStaticText* title = new UIStaticText(*this->m_context);
+  UIStaticText* title = new UIStaticText();
   title->SetSize(90, 15);
   title->SetText(LookupMessage(168), 0);
   title->Move(16, 2);
   title->shadow = 1;
   this->AddChild(title);
 
-  this->resizer = new UIResizer(*this->m_context);
+  this->resizer = new UIResizer();
   this->resizer->SetSize(16, 16);
   static_cast<UIResizer*>(this->resizer)->SetDirection(3);
   static_cast<UIResizer*>(this->resizer)->SetBitmapName("유저인터페이스\\btn_resize.bmp");
@@ -3500,7 +3500,7 @@ void UIItemSellWnd::Slot15(int width, int height) {
   static_cast<UIResizer*>(this->resizer)->SetColors(0xFFFF00FF, 0xFFFF00FF);
   this->AddChild(this->resizer);
 
-  UIScrollBar* scrollBar = new UIScrollBar(*this->m_context);
+  UIScrollBar* scrollBar = new UIScrollBar();
   this->scrollBar = scrollBar;
   scrollBar->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - 38);
   this->AddChild(this->scrollBar);
@@ -3510,7 +3510,7 @@ void UIItemSellWnd::Slot15(int width, int height) {
   int positions[2][2] = {{this->geometry.width - 106, this->geometry.height - 24}, {this->geometry.width - 61, this->geometry.height - 24}};
   int ids[2] = {184, 185};
   for (int index = 0; index < 2; ++index) {
-    this->buttons[index] = new UIBitmapButton(*this->m_context);
+    this->buttons[index] = new UIBitmapButton();
     UIBitmapButton* button = static_cast<UIBitmapButton*>(this->buttons[index]);
     button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
     button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
@@ -3529,14 +3529,14 @@ void UIItemSellWnd::Slot15(int width, int height) {
 // OFFSET: 0x00977510
 // FUNCTION: fn_13312
 void UIItemShopWnd2::Slot15(int width, int height) {
-  this->title = new UIStaticText(*this->m_context);
+  this->title = new UIStaticText();
   this->title->SetSize(70, 15);
   this->title->SetText(LookupMessage(167), 0);
   this->title->Move(16, 2);
   this->title->shadow = 1;
   this->AddChild(this->title);
 
-  this->resizer = new UIResizer(*this->m_context);
+  this->resizer = new UIResizer();
   this->resizer->SetSize(16, 16);
   static_cast<UIResizer*>(this->resizer)->SetDirection(7);
   static_cast<UIResizer*>(this->resizer)->SetBitmapName("유저인터페이스\\btn_resize.bmp");
@@ -3544,14 +3544,14 @@ void UIItemShopWnd2::Slot15(int width, int height) {
   static_cast<UIResizer*>(this->resizer)->SetColors(0xFFFF00FF, 0xFFFF00FF);
   this->AddChild(this->resizer);
 
-  this->checkBox = new UICheckBox(*this->m_context);
+  this->checkBox = new UICheckBox();
   this->checkBox->SetSize(200, 12);
   this->checkBox->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(295));
   this->checkBox->Move(12, this->geometry.height - 20);
   this->checkBox->SetChecked(g_windowMgr.unknown_0064);
   this->AddChild(this->checkBox);
 
-  UIScrollBar* scrollBar = new UIScrollBar(*this->m_context);
+  UIScrollBar* scrollBar = new UIScrollBar();
   this->scrollBar = scrollBar;
   scrollBar->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - this->unknown_0108 - this->unknown_0104 - 17);
   this->AddChild(this->scrollBar);
@@ -3564,14 +3564,14 @@ void UIItemShopWnd2::Slot15(int width, int height) {
 // OFFSET: 0x009777B0
 // FUNCTION: fn_13313
 void UIItemShopWnd::Slot15(int width, int height) {
-  this->title = new UIStaticText(*this->m_context);
+  this->title = new UIStaticText();
   this->title->SetSize(70, 15);
   this->title->SetText(LookupMessage(167), 0);
   this->title->Move(16, 2);
   this->title->shadow = 1;
   this->AddChild(this->title);
 
-  this->resizer = new UIResizer(*this->m_context);
+  this->resizer = new UIResizer();
   this->resizer->SetSize(16, 16);
   static_cast<UIResizer*>(this->resizer)->SetDirection(7);
   static_cast<UIResizer*>(this->resizer)->SetBitmapName("유저인터페이스\\btn_resize.bmp");
@@ -3579,14 +3579,14 @@ void UIItemShopWnd::Slot15(int width, int height) {
   static_cast<UIResizer*>(this->resizer)->SetColors(0xFFFF00FF, 0xFFFF00FF);
   this->AddChild(this->resizer);
 
-  this->checkBox = new UICheckBox(*this->m_context);
+  this->checkBox = new UICheckBox();
   this->checkBox->SetSize(200, 12);
   this->checkBox->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(295));
   this->checkBox->Move(12, this->geometry.height - 20);
   this->checkBox->SetChecked(g_windowMgr.unknown_0064);
   this->AddChild(this->checkBox);
 
-  UIScrollBar* scrollBar = new UIScrollBar(*this->m_context);
+  UIScrollBar* scrollBar = new UIScrollBar();
   this->scrollBar = scrollBar;
   scrollBar->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - this->unknown_0108 - this->unknown_0104 - 17);
   this->AddChild(this->scrollBar);
@@ -3599,20 +3599,20 @@ void UIItemShopWnd::Slot15(int width, int height) {
 // OFFSET: 0x00977A50
 // FUNCTION: fn_13314
 void UIItemStoreFindWnd::Slot15(int width, int height) {
-  this->scrollBar = new UIScrollBar(*this->m_context);
+  this->scrollBar = new UIScrollBar();
   static_cast<UIScrollBar*>(this->scrollBar)->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - 38);
   this->AddChild(this->scrollBar);
 
   char text[64];
   std::sprintf(text, "서브창고");
-  this->title = new UIStaticText(*this->m_context);
+  this->title = new UIStaticText();
   this->title->SetSize(this->geometry.width - 32, 15);
   this->title->SetTextFitted(text);
   this->title->Move(16, 2);
   this->title->shadow = 1;
   this->AddChild(this->title);
 
-  this->resizeHandle = new UIResizer(*this->m_context);
+  this->resizeHandle = new UIResizer();
   this->resizeHandle->SetSize(16, 16);
   this->resizeHandle->SetDirection(7);
   this->resizeHandle->SetBitmapName("유저인터페이스\\btn_resize.bmp");
@@ -3627,20 +3627,20 @@ void UIItemStoreFindWnd::Slot15(int width, int height) {
 // OFFSET: 0x00977C40
 // FUNCTION: fn_13315
 void UIItemStoreSubWnd::Slot15(int width, int height) {
-  this->scrollBar = new UIScrollBar(*this->m_context);
+  this->scrollBar = new UIScrollBar();
   static_cast<UIScrollBar*>(this->scrollBar)->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - 38);
   this->AddChild(this->scrollBar);
 
   char text[64];
   std::sprintf(text, "서브창고");
-  this->title = new UIStaticText(*this->m_context);
+  this->title = new UIStaticText();
   this->title->SetSize(this->geometry.width - 32, 15);
   this->title->SetTextFitted(text);
   this->title->Move(16, 2);
   this->title->shadow = 1;
   this->AddChild(this->title);
 
-  this->resizeHandle = new UIResizer(*this->m_context);
+  this->resizeHandle = new UIResizer();
   this->resizeHandle->SetSize(16, 16);
   this->resizeHandle->SetDirection(7);
   this->resizeHandle->SetBitmapName("유저인터페이스\\btn_resize.bmp");
@@ -3652,14 +3652,14 @@ void UIItemStoreSubWnd::Slot15(int width, int height) {
 // OFFSET: 0x0097BD30
 // FUNCTION: fn_13322
 void UIMerchantItemWnd::Slot15(int width, int height) {
-  UIStaticText* title = new UIStaticText(*this->m_context);
+  UIStaticText* title = new UIStaticText();
   title->SetSize(90, 15);
   title->SetText(LookupMessage(222), 0);
   title->Move(16, 2);
   title->shadow = 1;
   this->AddChild(title);
 
-  this->info = new UIStaticText(*this->m_context);
+  this->info = new UIStaticText();
   this->info->SetSize(220, 15);
   char text[128];
   std::sprintf(text, "Num: %d/%d Weight: %d/%d", g_session.cartCount, g_session.cartMaxCount, g_session.cartWeight, g_session.cartMaxWeight);
@@ -3667,7 +3667,7 @@ void UIMerchantItemWnd::Slot15(int width, int height) {
   this->info->Move(16, this->geometry.height - 19);
   this->AddChild(this->info);
 
-  this->resizer = new UIResizer(*this->m_context);
+  this->resizer = new UIResizer();
   this->resizer->SetSize(16, 16);
   static_cast<UIResizer*>(this->resizer)->SetDirection(7);
   static_cast<UIResizer*>(this->resizer)->SetBitmapName("유저인터페이스\\btn_resize.bmp");
@@ -3675,7 +3675,7 @@ void UIMerchantItemWnd::Slot15(int width, int height) {
   static_cast<UIResizer*>(this->resizer)->SetColors(0xFFFF00FF, 0xFFFF00FF);
   this->AddChild(this->resizer);
 
-  UIScrollBar* scrollBar = new UIScrollBar(*this->m_context);
+  UIScrollBar* scrollBar = new UIScrollBar();
   this->scrollBar = scrollBar;
   scrollBar->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - 38);
   this->AddChild(this->scrollBar);
@@ -3690,7 +3690,7 @@ void UIMerchantItemWnd::Slot15(int width, int height) {
 // OFFSET: 0x0097BFF0
 // FUNCTION: fn_13323
 void UIMerchantMirrorItemWnd::Slot15(int width, int height) {
-  UIStaticText* title = new UIStaticText(*this->m_context);
+  UIStaticText* title = new UIStaticText();
   title->SetSize(150, 15);
   int messageId;
   if (this->unknown_00F4 == 1) {
@@ -3705,7 +3705,7 @@ void UIMerchantMirrorItemWnd::Slot15(int width, int height) {
   title->shadow = 1;
   this->AddChild(title);
 
-  this->resizer = new UIResizer(*this->m_context);
+  this->resizer = new UIResizer();
   this->resizer->SetSize(16, 16);
   static_cast<UIResizer*>(this->resizer)->SetDirection(7);
   static_cast<UIResizer*>(this->resizer)->SetBitmapName("유저인터페이스\\btn_resize.bmp");
@@ -3713,7 +3713,7 @@ void UIMerchantMirrorItemWnd::Slot15(int width, int height) {
   static_cast<UIResizer*>(this->resizer)->SetColors(0xFFFF00FF, 0xFFFF00FF);
   this->AddChild(this->resizer);
 
-  UIScrollBar* scrollBar = new UIScrollBar(*this->m_context);
+  UIScrollBar* scrollBar = new UIScrollBar();
   this->scrollBar = scrollBar;
   scrollBar->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - 38);
   this->AddChild(this->scrollBar);
@@ -5316,7 +5316,7 @@ int UIMerchantItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
 // OFFSET: 0x0097AA00
 // FUNCTION: fn_13320
 void UIMerchantItemPurchaseWnd::Slot15(int width, int height) {
-  this->total = new UIStaticText(*this->m_context);
+  this->total = new UIStaticText();
   this->total->SetSize(160, 15);
   char text[80];
   std::sprintf(text, "Total : %d Zeny", 0);
@@ -5324,7 +5324,7 @@ void UIMerchantItemPurchaseWnd::Slot15(int width, int height) {
   this->total->Move(12, this->geometry.height - 21);
   this->AddChild(this->total);
 
-  UIStaticText* title = new UIStaticText(*this->m_context);
+  UIStaticText* title = new UIStaticText();
   title->SetSize(160, 15);
   title->SetText(LookupMessage(this->unknown_0108 ? 168 : 228), 0);
   title->Move(16, 2);
@@ -5337,7 +5337,7 @@ void UIMerchantItemPurchaseWnd::Slot15(int width, int height) {
   if (this->unknown_0108) {
     const char* names[2][3] = {{"btn_sell", "btn_sell_a", "btn_sell_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
     for (int index = 0; index < 2; ++index) {
-      this->buttons[index] = new UIBitmapButton(*this->m_context);
+      this->buttons[index] = new UIBitmapButton();
       UIBitmapButton* button = static_cast<UIBitmapButton*>(this->buttons[index]);
       button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
       button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
@@ -5350,7 +5350,7 @@ void UIMerchantItemPurchaseWnd::Slot15(int width, int height) {
   } else {
     const char* names[2][3] = {{"btn_buy", "btn_buy_a", "btn_buy_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
     for (int index = 0; index < 2; ++index) {
-      this->buttons[index] = new UIBitmapButton(*this->m_context);
+      this->buttons[index] = new UIBitmapButton();
       UIBitmapButton* button = static_cast<UIBitmapButton*>(this->buttons[index]);
       button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
       button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
@@ -5372,7 +5372,7 @@ void UIMerchantItemPurchaseWnd::Slot15(int width, int height) {
 // FUNCTION: fn_13318
 void UIMerchantItemMyShopWnd::Slot15(int width, int height) {
   if (this->unknown_0100) {
-    this->notice = new UIStaticText(*this->m_context);
+    this->notice = new UIStaticText();
     this->notice->SetSize(160, 15);
     char text[80];
     std::sprintf(text, LookupMessage(1735), 0);
@@ -5381,14 +5381,14 @@ void UIMerchantItemMyShopWnd::Slot15(int width, int height) {
     this->AddChild(this->notice);
   }
 
-  this->title = new UIStaticText(*this->m_context);
+  this->title = new UIStaticText();
   this->title->SetSize(240, 15);
   this->title->SetText(LookupMessage(this->unknown_0100 ? 1734 : 3237), 0);
   this->title->Move(16, 2);
   this->title->shadow = 1;
   this->AddChild(this->title);
 
-  this->resizer = new UIResizer(*this->m_context);
+  this->resizer = new UIResizer();
   this->resizer->SetSize(16, 16);
   static_cast<UIResizer*>(this->resizer)->SetDirection(7);
   static_cast<UIResizer*>(this->resizer)->SetBitmapName("유저인터페이스\\btn_resize.bmp");
@@ -5396,12 +5396,12 @@ void UIMerchantItemMyShopWnd::Slot15(int width, int height) {
   static_cast<UIResizer*>(this->resizer)->SetColors(0xFFFF00FF, 0xFFFF00FF);
   this->AddChild(this->resizer);
 
-  UIScrollBar* scrollBar = new UIScrollBar(*this->m_context);
+  UIScrollBar* scrollBar = new UIScrollBar();
   this->scrollBar = scrollBar;
   scrollBar->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - this->unknown_011C - 17);
   this->AddChild(this->scrollBar);
 
-  this->saleAlarm = new UICheckBox(*this->m_context);
+  this->saleAlarm = new UICheckBox();
   this->saleAlarm->SetSize(240, 12);
   this->saleAlarm->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(this->unknown_0100 ? 2698 : 2642));
   this->saleAlarm->FitToText();
@@ -5414,7 +5414,7 @@ void UIMerchantItemMyShopWnd::Slot15(int width, int height) {
   int positions[1][2] = {{this->geometry.width - 61, this->geometry.height - 24}};
   int ids[1] = {201};
   for (int index = 0; index < 1; ++index) {
-    this->buttons[index] = new UIBitmapButton(*this->m_context);
+    this->buttons[index] = new UIBitmapButton();
     UIBitmapButton* button = static_cast<UIBitmapButton*>(this->buttons[index]);
     button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
     button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
@@ -6232,8 +6232,8 @@ bool UIEditCtrl::DecodeItemLink(const std::vector<int>& values, ITEM_INFO& item)
 
 // OFFSET: 0x0096E650
 // FUNCTION: fn_13214
-UIItemBaseWnd::UIItemBaseWnd(UIWindowContext& windowContext)
-    : UIFrameWnd(windowContext, 0), resizer(nullptr), scrollBar(nullptr), scroll(0), unknown_00E4(0) {
+UIItemBaseWnd::UIItemBaseWnd()
+    : UIFrameWnd(0), resizer(nullptr), scrollBar(nullptr), scroll(0), unknown_00E4(0) {
   this->showQuantity = 1;
   this->unknown_00B8 = 0;
   this->buttons[0] = nullptr;
@@ -6243,12 +6243,12 @@ UIItemBaseWnd::UIItemBaseWnd(UIWindowContext& windowContext)
 
 // OFFSET: 0x0096E750
 // FUNCTION: fn_13215
-UIItemDropCntWnd::UIItemDropCntWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0) {
+UIItemDropCntWnd::UIItemDropCntWnd() : UIFrameWnd(0) {
 }
 
 // OFFSET: 0x0096E7B0
 // FUNCTION: fn_13216
-UIItemPurchaseWnd::UIItemPurchaseWnd(UIWindowContext& windows) : UIItemBaseWnd(windows) {
+UIItemPurchaseWnd::UIItemPurchaseWnd() : UIItemBaseWnd() {
   this->hovered = -1;
   this->unknown_00B8 = 1;
   this->unknown_00FC = 0;
@@ -6257,7 +6257,7 @@ UIItemPurchaseWnd::UIItemPurchaseWnd(UIWindowContext& windows) : UIItemBaseWnd(w
 
 // OFFSET: 0x0096E830
 // FUNCTION: fn_13217
-UIItemSellWnd2::UIItemSellWnd2(UIWindowContext& windows) : UIItemBaseWnd(windows) {
+UIItemSellWnd2::UIItemSellWnd2() : UIItemBaseWnd() {
   this->hovered = -1;
   this->unknown_00B8 = 1;
   this->saved = nullptr;
@@ -6266,7 +6266,7 @@ UIItemSellWnd2::UIItemSellWnd2(UIWindowContext& windows) : UIItemBaseWnd(windows
 
 // OFFSET: 0x0096E8B0
 // FUNCTION: fn_13218
-UIItemSellWnd::UIItemSellWnd(UIWindowContext& windows) : UIItemBaseWnd(windows) {
+UIItemSellWnd::UIItemSellWnd() : UIItemBaseWnd() {
   this->hovered = -1;
   this->unknown_00B8 = 1;
   this->saved = nullptr;
@@ -6274,7 +6274,7 @@ UIItemSellWnd::UIItemSellWnd(UIWindowContext& windows) : UIItemBaseWnd(windows) 
 
 // OFFSET: 0x0096E930
 // FUNCTION: fn_13219
-UIItemShopWnd2::UIItemShopWnd2(UIWindowContext& windows) : UIItemBaseWnd(windows) {
+UIItemShopWnd2::UIItemShopWnd2() : UIItemBaseWnd() {
   this->hovered = -1;
   this->showQuantity = 0;
   this->unknown_00F8 = 0;
@@ -6286,7 +6286,7 @@ UIItemShopWnd2::UIItemShopWnd2(UIWindowContext& windows) : UIItemBaseWnd(windows
 
 // OFFSET: 0x0096E9D0
 // FUNCTION: fn_13220
-UIItemShopWnd::UIItemShopWnd(UIWindowContext& windows) : UIItemBaseWnd(windows) {
+UIItemShopWnd::UIItemShopWnd() : UIItemBaseWnd() {
   this->hovered = -1;
   this->showQuantity = 0;
   this->unknown_00F8 = 0;
@@ -6299,7 +6299,7 @@ UIItemShopWnd::UIItemShopWnd(UIWindowContext& windows) : UIItemBaseWnd(windows) 
 
 // OFFSET: 0x0096EA80
 // FUNCTION: fn_13221
-UIItemStoreFindWnd::UIItemStoreFindWnd(UIWindowContext& windows) : UIItemBaseWnd(windows) {
+UIItemStoreFindWnd::UIItemStoreFindWnd() : UIItemBaseWnd() {
   this->saved = nullptr;
   this->scrollBar = nullptr;
   this->scroll = 0;
@@ -6311,7 +6311,7 @@ UIItemStoreFindWnd::UIItemStoreFindWnd(UIWindowContext& windows) : UIItemBaseWnd
 
 // OFFSET: 0x0096EB70
 // FUNCTION: fn_13222
-UIItemStoreSubWnd::UIItemStoreSubWnd(UIWindowContext& windows) : UIItemBaseWnd(windows) {
+UIItemStoreSubWnd::UIItemStoreSubWnd() : UIItemBaseWnd() {
   this->saved = nullptr;
   this->scrollBar = nullptr;
   this->scroll = 0;
@@ -6323,7 +6323,7 @@ UIItemStoreSubWnd::UIItemStoreSubWnd(UIWindowContext& windows) : UIItemBaseWnd(w
 
 // OFFSET: 0x0096EC60
 // FUNCTION: fn_13223
-UIItemStoreWnd::UIItemStoreWnd(UIWindowContext& windows) : UIItemBaseWnd(windows) {
+UIItemStoreWnd::UIItemStoreWnd() : UIItemBaseWnd() {
   this->unknown_016C = 0;
   this->unknown_0170 = 0;
   this->unknown_0174 = 0;
@@ -6348,7 +6348,7 @@ UIItemStoreWnd::UIItemStoreWnd(UIWindowContext& windows) : UIItemBaseWnd(windows
 // OFFSET: 0x009792B0
 // FUNCTION: fn_13317
 void UIItemWnd::Slot15(int width, int height) {
-  this->resizer = new UIResizer(*this->m_context);
+  this->resizer = new UIResizer();
   this->resizer->SetSize(16, 16);
   static_cast<UIResizer*>(this->resizer)->SetDirection(7);
   static_cast<UIResizer*>(this->resizer)->SetBitmapName("유저인터페이스\\btn_resize.bmp");
@@ -6356,7 +6356,7 @@ void UIItemWnd::Slot15(int width, int height) {
   static_cast<UIResizer*>(this->resizer)->SetColors(0xFFFF00FF, 0xFFFF00FF);
   this->AddChild(this->resizer);
 
-  UIScrollBar* scrollBar = new UIScrollBar(*this->m_context);
+  UIScrollBar* scrollBar = new UIScrollBar();
   this->scrollBar = scrollBar;
   scrollBar->Configure(this->geometry.width - 15, 17, 1, this->geometry.height - 38);
   this->AddChild(this->scrollBar);
@@ -6369,7 +6369,7 @@ void UIItemWnd::Slot15(int width, int height) {
   this->visibleRows = (height - 38) / 32;
   this->SendMsg(nullptr, 23, 0, 0, 0, 0);
 
-  this->tabs = new (std::nothrow) UITabControl(*this->m_context);
+  this->tabs = new (std::nothrow) UITabControl();
   this->tabs->Configure(0, 17, 10, 1, 0, 1, 0, 0, 0, 0, 0, 0);
   this->tabs->Move(3, 18);
   this->AddChild(this->tabs);
@@ -6381,7 +6381,7 @@ void UIItemWnd::Slot15(int width, int height) {
   this->tabs->colors[3] = SkinPaletteColor(ResourceMgr::Instance(), cell, g_skinInfo.Selected());
   this->tabs->Invalidate();
 
-  this->lockDropBox = new (std::nothrow) UICheckBox(*this->m_context);
+  this->lockDropBox = new (std::nothrow) UICheckBox();
   this->lockDropBox->SetSize(14, 11);
   this->lockDropBox->SetBitmaps("유저인터페이스\\inventory\\item_drop_lock_on.bmp", "유저인터페이스\\inventory\\item_drop_lock_off.bmp");
   this->lockDropBox->Move(79, height - 16);
@@ -6389,7 +6389,7 @@ void UIItemWnd::Slot15(int width, int height) {
   this->lockDropBox->SetTooltip(LookupMessage(2843));
   this->AddChild(this->lockDropBox);
 
-  UICheckBox* compare = new (std::nothrow) UICheckBox(*this->m_context);
+  UICheckBox* compare = new (std::nothrow) UICheckBox();
   this->optionBox = compare;
   compare->SetSize(12, 12);
   static_cast<UICheckBox*>(this->optionBox)->SetBitmaps("유저인터페이스\\inventory\\item_compare_on.bmp", "유저인터페이스\\inventory\\item_compare_off.bmp");
@@ -6399,7 +6399,7 @@ void UIItemWnd::Slot15(int width, int height) {
   static_cast<UICheckBox*>(this->optionBox)->SetTooltip(LookupMessage(2842));
   this->AddChild(this->optionBox);
 
-  this->countButton = new (std::nothrow) UIBitmapButton(*this->m_context);
+  this->countButton = new (std::nothrow) UIBitmapButton();
   this->countButton->SetBitmap("유저인터페이스\\inventory\\icon_num.bmp", 0, 0);
   this->countButton->SetBitmap("유저인터페이스\\inventory\\icon_num.bmp", 1, 0);
   this->countButton->SetBitmap("유저인터페이스\\inventory\\icon_num.bmp", 2, 0);
@@ -6409,7 +6409,7 @@ void UIItemWnd::Slot15(int width, int height) {
   this->countButton->SetTooltip(LookupMessage(3560));
   this->AddChild(this->countButton);
 
-  UIBitmapButton* lockDeal = new UIBitmapButton(*this->m_context);
+  UIBitmapButton* lockDeal = new UIBitmapButton();
   this->unknown_0124 = lockDeal;
   lockDeal->SetBitmap(g_session.m_blockPrivateTab != 1 ? "유저인터페이스\\inventory\\bt_itemDeal_lock_off.bmp" : "유저인터페이스\\inventory\\bt_itemdeal_lock_on.bmp", 0, 0);
   static_cast<UIBitmapButton*>(this->unknown_0124)->SetBitmap("유저인터페이스\\inventory\\bt_itemDeal_lock_over.bmp", 1, 0);
@@ -6420,7 +6420,7 @@ void UIItemWnd::Slot15(int width, int height) {
   this->unknown_0124->SetId(507);
   this->AddChild(this->unknown_0124);
 
-  this->unknown_012C = new UIBitmapButton(*this->m_context);
+  this->unknown_012C = new UIBitmapButton();
   this->RefreshSortButton();
   this->unknown_012C->SetSize(static_cast<UIBitmapButton*>(this->unknown_012C)->BitmapWidth(), static_cast<UIBitmapButton*>(this->unknown_012C)->BitmapHeight());
   this->unknown_012C->Move(157, this->geometry.height - 19);
@@ -6430,7 +6430,7 @@ void UIItemWnd::Slot15(int width, int height) {
 
 // OFFSET: 0x0096ED90
 // FUNCTION: fn_13224
-UIItemWnd::UIItemWnd(UIWindowContext& windows) : UIItemBaseWnd(windows) {
+UIItemWnd::UIItemWnd() : UIItemBaseWnd() {
   this->unknown_0124 = 0;
   this->unknown_0128 = nullptr;
   this->unknown_012C = 0;
@@ -6447,7 +6447,7 @@ UIItemWnd::UIItemWnd(UIWindowContext& windows) : UIItemBaseWnd(windows) {
 
 // OFFSET: 0x0096EE60
 // FUNCTION: fn_13225
-UIMerchantItemMyShopWnd::UIMerchantItemMyShopWnd(UIWindowContext& windows, int value) : UIItemBaseWnd(windows) {
+UIMerchantItemMyShopWnd::UIMerchantItemMyShopWnd(int value) : UIItemBaseWnd() {
   this->unknown_0100 = value;
   this->startTick = 0;
   this->duration = 0;
@@ -6461,8 +6461,8 @@ UIMerchantItemMyShopWnd::UIMerchantItemMyShopWnd(UIWindowContext& windows, int v
 
 // OFFSET: 0x0096EF10
 // FUNCTION: fn_13226
-UIMerchantItemPurchaseMSGWnd::UIMerchantItemPurchaseMSGWnd(UIWindowContext& windowContext)
-    : UIFrameWnd(windowContext, 0) {
+UIMerchantItemPurchaseMSGWnd::UIMerchantItemPurchaseMSGWnd()
+    : UIFrameWnd(0) {
   this->title = nullptr;
   this->firstLine = nullptr;
   this->thirdLine = nullptr;
@@ -6474,7 +6474,7 @@ UIMerchantItemPurchaseMSGWnd::UIMerchantItemPurchaseMSGWnd(UIWindowContext& wind
 
 // OFFSET: 0x0096EFC0
 // FUNCTION: fn_13227
-UIMerchantItemPurchaseWnd::UIMerchantItemPurchaseWnd(UIWindowContext& windows, int value) : UIItemBaseWnd(windows) {
+UIMerchantItemPurchaseWnd::UIMerchantItemPurchaseWnd(int value) : UIItemBaseWnd() {
   this->unknown_0108 = value;
   this->unknown_00B8 = 1;
   this->unknown_00F8 = 0;
@@ -6486,7 +6486,7 @@ UIMerchantItemPurchaseWnd::UIMerchantItemPurchaseWnd(UIWindowContext& windows, i
 
 // OFFSET: 0x0096F060
 // FUNCTION: fn_13228
-UIMerchantItemShopWnd::UIMerchantItemShopWnd(UIWindowContext& windows, int value) : UIItemBaseWnd(windows) {
+UIMerchantItemShopWnd::UIMerchantItemShopWnd(int value) : UIItemBaseWnd() {
   this->unknown_0108 = 0;
   this->unknown_010C = value;
   this->startTick = 0;
@@ -6500,14 +6500,14 @@ UIMerchantItemShopWnd::UIMerchantItemShopWnd(UIWindowContext& windows, int value
 
 // OFFSET: 0x0096F110
 // FUNCTION: fn_13229
-UIMerchantItemWnd::UIMerchantItemWnd(UIWindowContext& windows) : UIItemBaseWnd(windows) {
+UIMerchantItemWnd::UIMerchantItemWnd() : UIItemBaseWnd() {
   this->unknown_00B8 = 1;
   this->saved = nullptr;
 }
 
 // OFFSET: 0x0096F180
 // FUNCTION: fn_13230
-UIMerchantMirrorItemWnd::UIMerchantMirrorItemWnd(UIWindowContext& windows, int value) : UIItemBaseWnd(windows) {
+UIMerchantMirrorItemWnd::UIMerchantMirrorItemWnd(int value) : UIItemBaseWnd() {
   this->unknown_00F4 = value;
   this->unknown_00B8 = 1;
   this->saved = nullptr;
@@ -6515,7 +6515,7 @@ UIMerchantMirrorItemWnd::UIMerchantMirrorItemWnd(UIWindowContext& windows, int v
 
 // OFFSET: 0x0096F3A0
 // FUNCTION: fn_13232
-UINoticeMessageBox_LockSellItem::UINoticeMessageBox_LockSellItem(UIWindowContext& windows) : UIFrameWnd(windows, 0) {
+UINoticeMessageBox_LockSellItem::UINoticeMessageBox_LockSellItem() : UIFrameWnd(0) {
   this->startTick = timeGetTime();
   this->duration = 2000;
 }
@@ -7679,7 +7679,7 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
         normal = "유저인터페이스\\inventory\\bt_itemDeal_lock_off.bmp";
       } else {
         if (!this->unknown_0128) {
-          this->unknown_0128 = new UINoticeMessageBox_LockSellItem(*this->m_context);
+          this->unknown_0128 = new UINoticeMessageBox_LockSellItem();
           this->unknown_0128->SetSize(242, 26);
           this->unknown_0128->Move(30, this->geometry.height - 50);
           this->AddChild(this->unknown_0128);
@@ -9071,7 +9071,7 @@ void UIItemPurchaseWnd::Slot15(int width, int height) {
   caption->shadow = 1;
   this->AddChild(caption);
 
-  this->resizer = new UIResizer(*this->m_context);
+  this->resizer = new UIResizer();
   this->resizer->SetSize(16, 16);
   static_cast<UIResizer*>(this->resizer)->SetDirection(3);
   static_cast<UIResizer*>(this->resizer)->SetBitmapName("유저인터페이스\\btn_resize.bmp");
@@ -9079,7 +9079,7 @@ void UIItemPurchaseWnd::Slot15(int width, int height) {
   static_cast<UIResizer*>(this->resizer)->SetColors(0xFFFF00FF, 0xFFFF00FF);
   this->AddChild(this->resizer);
 
-  UIScrollBar* scrollBar = new UIScrollBar(*this->m_context);
+  UIScrollBar* scrollBar = new UIScrollBar();
   this->scrollBar = scrollBar;
   scrollBar->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - 38);
   this->AddChild(this->scrollBar);

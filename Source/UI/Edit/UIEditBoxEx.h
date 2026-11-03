@@ -20,7 +20,7 @@ struct EditLine {
 
 class CUIEditCtrlEx : public UIEditCtrl3 {
 public:
-  CUIEditCtrlEx(UIWindowContext& windows);
+  CUIEditCtrlEx();
   void Paint() override;
   void Invalidate() override;
   void SelectAll() override;
@@ -64,7 +64,7 @@ public:
 
 class CUIEditBoxEx : public CUIControl {
 public:
-  explicit CUIEditBoxEx(UIWindowContext& context);
+  CUIEditBoxEx();
   void Resize(int width, int height) override;
   bool Slot05() override;
   void Paint() override;

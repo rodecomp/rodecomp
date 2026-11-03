@@ -35,8 +35,8 @@ namespace {
 
 // OFFSET: 0x0086CC20
 // FUNCTION: fn_11035
-UIComboBoxDefWnd::UIComboBoxDefWnd(UIWindowContext& windows)
-    : UIWindow(windows, 0), button(nullptr), list(nullptr), label(nullptr), borderless(0), expanded(0), red(255), green(255), blue(255), borderRed(0),
+UIComboBoxDefWnd::UIComboBoxDefWnd()
+    : UIWindow(0), button(nullptr), list(nullptr), label(nullptr), borderless(0), expanded(0), red(255), green(255), blue(255), borderRed(0),
       borderGreen(0), borderBlue(0), dropdownHeight(40) {
 }
 
@@ -47,7 +47,7 @@ UIComboBoxDefWnd::~UIComboBoxDefWnd() = default;
 // OFFSET: 0x00885920
 // FUNCTION: fn_11319
 void UIComboBoxDefWnd::Slot15(int, int) {
-  this->button = new UIBitmapButton(*this->m_context);
+  this->button = new UIBitmapButton();
   const char* names[] = {"txtbox_btn_a.bmp", "txtbox_btn_b.bmp", "txtbox_btn_c.bmp"};
 
   for (int state = 0; state < 3; ++state) {
@@ -59,12 +59,12 @@ void UIComboBoxDefWnd::Slot15(int, int) {
   this->button->SetId(273);
   this->AddChild(this->button);
 
-  this->list = new UIComboBoxEx(*this->m_context);
+  this->list = new UIComboBoxEx();
   this->list->SetSize(this->geometry.width, this->dropdownHeight);
   this->list->Move(0, this->button->BitmapHeight());
   this->AddChild(this->list);
 
-  this->label = new UIStaticText(*this->m_context);
+  this->label = new UIStaticText();
   this->label->SetSize((this->geometry.width - this->button->BitmapWidth()), this->button->BitmapHeight());
   this->label->SetText("(NO SELECT)", 0);
   this->label->Move(2, 3);
@@ -79,7 +79,7 @@ void UIComboBox_BmpWnd::Create(int width, int height, const char* path, const ch
   this->name = name;
   const std::string base(path);
 
-  this->button = new UIBitmapButton(*this->m_context);
+  this->button = new UIBitmapButton();
   this->button->SetBitmap((base + "_out.bmp").c_str(), 0, 0);
   this->button->SetBitmap((base + "_over.bmp").c_str(), 1, 0);
   this->button->SetBitmap((base + "_press.bmp").c_str(), 2, 0);
@@ -88,14 +88,14 @@ void UIComboBox_BmpWnd::Create(int width, int height, const char* path, const ch
   this->button->SetId(273);
   this->AddChild(this->button);
 
-  this->list = new UIComboBoxEx(*this->m_context);
+  this->list = new UIComboBoxEx();
   this->list->SetSize(this->geometry.width, this->dropdownHeight);
   this->list->Move(0, this->button->BitmapHeight());
   this->AddChild(this->list);
 
   char text[12] = {};
   std::sprintf(text, "(NO SELECT)");
-  this->label = new UIStaticText(*this->m_context);
+  this->label = new UIStaticText();
   this->label->SetSize((this->geometry.width - this->button->BitmapWidth()), this->button->BitmapHeight());
   this->label->SetText(text, 0);
   this->label->Move(2, 3);
@@ -256,8 +256,8 @@ int UIItemStoreComboBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
 
 // OFFSET: 0x0086CBA0
 // FUNCTION: fn_11034
-UIComboBoxDef2Wnd::UIComboBoxDef2Wnd(UIWindowContext& windows)
-    : UIComboBoxDefWnd(windows), skin(0), alignment(0), textOffset(0), previousTextX(0) {
+UIComboBoxDef2Wnd::UIComboBoxDef2Wnd()
+    : UIComboBoxDefWnd(), skin(0), alignment(0), textOffset(0), previousTextX(0) {
 }
 
 // OFFSET: 0x00872A70
@@ -269,7 +269,7 @@ UIComboBoxDef2Wnd::~UIComboBoxDef2Wnd() = default;
 void UIComboBoxDef2Wnd::Slot15(int width, int) {
   const std::string path = std::string(prefix) + (this->skin == 1 ? "login_interface\\" : "UIadventurerAgency\\");
 
-  this->button = new UIBitmapButton(*this->m_context);
+  this->button = new UIBitmapButton();
   const char* names[] = {"btn_dropdown_out.bmp", "btn_dropdown_over.bmp", "btn_dropdown_press.bmp"};
 
   for (int state = 0; state < 3; ++state) {
@@ -281,14 +281,14 @@ void UIComboBoxDef2Wnd::Slot15(int width, int) {
   this->button->SetId(273);
   this->AddChild(this->button);
 
-  auto* list = new UIComboBoxEx2(*this->m_context);
+  auto* list = new UIComboBoxEx2();
   this->list = list;
   list->alignment = this->alignment;
   list->SetSize(width, (this->dropdownHeight + 2));
   list->Move(0, this->button->BitmapHeight());
   this->AddChild(list);
 
-  this->label = new UIStaticText(*this->m_context);
+  this->label = new UIStaticText();
   this->label->SetSize((this->geometry.width - this->button->BitmapWidth()), (this->button->BitmapHeight() - 6));
   this->label->SetText("", 0);
   int x = 0;
@@ -330,7 +330,7 @@ void UIComboBoxDef2Wnd::Paint() {
 // FUNCTION: fn_11329
 void UINewComboBoxCtrl::Slot15(int, int) {
   const std::string base = "유저인터페이스\\basic_interface\\txtbox_btn_";
-  this->button = new UIBitmapButton(*this->m_context);
+  this->button = new UIBitmapButton();
   this->button->SetBitmap((base + "a.bmp").c_str(), 0, 0);
   this->button->SetBitmap((base + "b.bmp").c_str(), 1, 0);
   this->button->SetBitmap((base + "c.bmp").c_str(), 2, 0);
@@ -339,7 +339,7 @@ void UINewComboBoxCtrl::Slot15(int, int) {
   this->button->SetId(273);
   this->AddChild(this->button);
 
-  this->label = new UIStaticText(*this->m_context);
+  this->label = new UIStaticText();
   this->label->SetSize((this->geometry.width - this->button->BitmapWidth()), this->button->BitmapHeight());
   this->label->SetText("(No Select)", 0);
   this->label->Move(2, 3);
@@ -504,7 +504,6 @@ void UIString::ParseTags(std::string text) {
 // OFFSET: 0x008A0B10
 // FUNCTION: fn_11630
 void UIDescriptRace::sub_8A0B10() {
-  UIWindowContext& context = *this->m_context;
   if (this->m_race == 1) {
     if (!g_doramCreationEnabled) {
       return;
@@ -667,7 +666,7 @@ void UITextViewEX::SetText(std::string text) {
 
     const std::size_t close = text.find("<\\end>", tag);
     segment = text.substr(tag, close - tag);
-    UIString* link = new UIString(*this->m_context);
+    UIString* link = new UIString();
     link->SetText(100, 100, segment);
     link->Show(0);
     this->AddChild(link);
@@ -719,7 +718,7 @@ int UITextViewEX::AddWords(std::string text, int attached, int red, int green, i
       break;
     }
 
-    UIString* label = new UIString(*this->m_context);
+    UIString* label = new UIString();
     label->SetText(100, 100, word);
     label->Show(0);
     label->unknown_0080 = attached;

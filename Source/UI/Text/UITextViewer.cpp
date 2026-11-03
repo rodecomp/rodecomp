@@ -63,7 +63,7 @@ namespace {
 
 // OFFSET: 0x0086F0A0
 // FUNCTION: fn_11086
-UITextViewer::UITextViewer(UIWindowContext& windows) : UIListBox(windows), splitTipLinks(0), outline(0), bold(0) {
+UITextViewer::UITextViewer() : UIListBox(), splitTipLinks(0), outline(0), bold(0) {
   this->lineHeight = 18;
   constexpr char path[] = "유저인터페이스\\colorchip.bmp";
   const auto* chip = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(path));
@@ -358,9 +358,6 @@ int UITextViewEX::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
   }
 }
 
-UIItemTagButton::UIItemTagButton(UIWindowContext& windows) : UITextButton(windows), unknown_01F8(0), textY(1) {
-}
-
 // OFFSET: 0x00874A40
 // FUNCTION: fn_11193
 std::string UIItemTagCtrl::sub_874A40(int tagId, unsigned int color) {
@@ -370,7 +367,7 @@ std::string UIItemTagCtrl::sub_874A40(int tagId, unsigned int color) {
   UIItemTagButton* button;
   {
     const std::string text = "<" + label + ">";
-    button = new (std::nothrow) UIItemTagButton(*this->m_context);
+    button = new (std::nothrow) UIItemTagButton();
     if (button) {
       button->Configure(text.c_str(), 0x7F00E4, 0, 12, 0, 0);
       if (title != label) {

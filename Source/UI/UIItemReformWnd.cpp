@@ -46,16 +46,16 @@ struct PACKET_CZ_ITEM_REFORM {
 
 // OFFSET: 0x005FC010
 // FUNCTION: fn_04095
-UIItemReformWnd::UIItemReformWnd(UIWindowContext& windowContext)
-    : UIFrameWnd(windowContext, 0), reformButton(nullptr), list(nullptr), baseIcon(nullptr), resultIcon(nullptr),
+UIItemReformWnd::UIItemReformWnd()
+    : UIFrameWnd(0), reformButton(nullptr), list(nullptr), baseIcon(nullptr), resultIcon(nullptr),
       materialIcons(), detailButton(nullptr), detailMsg(nullptr), reformItem(), selectedItem(nullptr), resultItem(), materials(),
       information(), warning() {
 }
 
 // OFFSET: 0x005FC160
 // FUNCTION: fn_04096
-UIItemReformWnd_List::UIItemReformWnd_List(UIWindowContext& windowContext)
-    : UIFrameWnd(windowContext, 0), itemHeight(32), selectedIndex(0xFFFFFFFF), hoverIndex(0), scrollPosition(0),
+UIItemReformWnd_List::UIItemReformWnd_List()
+    : UIFrameWnd(0), itemHeight(32), selectedIndex(0xFFFFFFFF), hoverIndex(0), scrollPosition(0),
       scrollBar(nullptr), items() {
 }
 
@@ -92,13 +92,13 @@ void UIItemReformWnd::Slot15(int width, int height) {
   this->AddBaseButton();
   this->AddCloseButton("", 0);
 
-  UIBasicButton* cancel = new UIBasicButton(*this->m_context);
+  UIBasicButton* cancel = new UIBasicButton();
   cancel->Configure(60, LookupMessage(218));
   cancel->Move(300, 236);
   cancel->SetId(201);
   this->AddChild(cancel);
 
-  this->reformButton = new UIBasicButton(*this->m_context);
+  this->reformButton = new UIBasicButton();
   this->reformButton->Configure(60, LookupMessage(3847));
   this->reformButton->Move(365, 236);
   this->reformButton->SetId(184);
@@ -106,30 +106,30 @@ void UIItemReformWnd::Slot15(int width, int height) {
   this->reformButton->Invalidate();
   this->AddChild(this->reformButton);
 
-  this->list = new UIItemReformWnd_List(*this->m_context);
+  this->list = new UIItemReformWnd_List();
   this->list->SetSize(222, 192);
   this->list->Move(215, 21);
   this->AddChild(this->list);
 
-  this->baseIcon = new UIItemReformWnd_Item(*this->m_context);
+  this->baseIcon = new UIItemReformWnd_Item();
   this->baseIcon->SetSize(24, 24);
   this->baseIcon->Move(144, 50);
   this->AddChild(this->baseIcon);
 
-  this->resultIcon = new UIItemReformWnd_Item(*this->m_context);
+  this->resultIcon = new UIItemReformWnd_Item();
   this->resultIcon->SetSize(24, 24);
   this->resultIcon->Move(54, 50);
   this->AddChild(this->resultIcon);
 
   for (unsigned int index = 0; index < CItemReformMgr::Instance()->m_maxMaterials; ++index) {
-    UIItemReformWnd_Item* icon = new UIItemReformWnd_Item(*this->m_context);
+    UIItemReformWnd_Item* icon = new UIItemReformWnd_Item();
     icon->SetSize(24, 24);
     icon->Move(index % 3 * 69 + 30, index / 3 * 50 + 140);
     this->AddChild(icon);
     this->materialIcons.push_back(icon);
   }
 
-  this->detailButton = new UIItemReformWnd_DetailBtn(*this->m_context);
+  this->detailButton = new UIItemReformWnd_DetailBtn();
   this->detailButton->SetSize(149, 14);
   this->detailButton->Move(36, 124);
   this->detailButton->Enable(0);
@@ -139,7 +139,7 @@ void UIItemReformWnd::Slot15(int width, int height) {
 // OFFSET: 0x005FD1B0
 // FUNCTION: fn_04109
 void UIItemReformWnd_List::Slot15(int width, int height) {
-  this->scrollBar = new UIScrollBar(*this->m_context);
+  this->scrollBar = new UIScrollBar();
   this->scrollBar->Configure(width - 13, 0, 1, height);
   this->scrollBar->Show(0);
   this->AddChild(this->scrollBar);
@@ -151,7 +151,6 @@ void UIItemReformWnd_List::Slot15(int width, int height) {
 // FUNCTION: fn_04110
 void UIItemReformWnd::Paint() {
   this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\ItemReform\\bg_reform.bmp")))->image, true);
-  UIWindowContext& context = *this->m_context;
   if (std::atoi(this->reformItem.itemId.c_str()) > 0) {
     this->DrawTitleBar(false, this->reformItem.DisplayName(0).c_str(), 0);
   }
@@ -209,7 +208,6 @@ void UIItemReformWnd_Item::Paint() {
 // FUNCTION: fn_04114
 void UIItemReformWnd_List::Paint() {
   this->ClearSurface(0xFFFFFFFF);
-  UIWindowContext& context = *this->m_context;
   for (unsigned int row = 0; row < this->visibleCount; ++row) {
     const unsigned int index = this->scrollPosition + row;
     if (index < this->items.size()) {
@@ -470,7 +468,7 @@ int UIItemReformWnd::SendMsg(
     break;
   case 167:
     if (sender == this->detailButton && !this->detailMsg) {
-      this->detailMsg = new UIItemReformWnd_DetailMsg(*this->m_context);
+      this->detailMsg = new UIItemReformWnd_DetailMsg();
       this->detailMsg->SetText(this->information);
       g_windowMgr.AddRendered(this->detailMsg);
     }

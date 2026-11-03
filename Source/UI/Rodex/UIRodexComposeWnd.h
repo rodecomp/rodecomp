@@ -18,24 +18,23 @@ class UIStaticText;
 
 class UIRodexScrollBar : public UIScrollBar {
 public:
-  explicit UIRodexScrollBar(UIWindowContext& windows);
+  UIRodexScrollBar();
 
   void Paint() override;
 };
 
 class UIRodexEditCtrl3 : public UIEditCtrl3 {
 public:
-  // INLINED
-  UIRodexEditCtrl3() {
+  UIRodexEditCtrl3();
+  UIRodexEditCtrl3(UIWindowContext&) : UIRodexEditCtrl3() {
   }
-  UIRodexEditCtrl3(UIWindowContext& windows);
   void Slot15(int width, int height) override;
   void sub_855150();
 };
 
 class UIRodexComposeWnd : public UIFrameWnd {
 public:
-  UIRodexComposeWnd(UIWindowContext& windows);
+  UIRodexComposeWnd();
   ~UIRodexComposeWnd() override;
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot15(int width, int height) override;

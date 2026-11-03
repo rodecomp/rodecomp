@@ -39,7 +39,7 @@ struct QuickSlotWndInfo;
 
 class UIQuickSlotWnd : public UIFrameWnd {
 public:
-  UIQuickSlotWnd(UIWindowContext& windows, QuickSlotPainting& painting);
+  UIQuickSlotWnd(QuickSlotPainting& painting);
   void Slot10(int x, int y, std::intptr_t argument) override;
   void Slot11() override;
   void Slot15(int width, int height) override;

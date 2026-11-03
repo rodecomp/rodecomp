@@ -14,8 +14,8 @@
 
 // OFFSET: 0x009AC040
 // FUNCTION: fn_13770
-UIScrollWnd::UIScrollWnd(UIWindowContext& windows, int width, int height, unsigned char cached)
-    : UIWindow(windows, cached), viewHeight(0), contentWidth(0), contentHeight(0), horizontalBar(nullptr), scrollBar(nullptr),
+UIScrollWnd::UIScrollWnd(int width, int height, unsigned char cached)
+    : UIWindow(cached), viewHeight(0), contentWidth(0), contentHeight(0), horizontalBar(nullptr), scrollBar(nullptr),
       scrollBarWidth(13), scrollBarHeight(13), unknown_009C(0), scrollPosition(0), unknown_00A4(0), wheelScroll(0) {
   this->UIWindow::Resize(width, height);
   this->Slot15(width, height);
@@ -268,10 +268,10 @@ RenderPrimitive* UIScrollWnd::BuildPrimitive(int x, int y, int sourceX, int sour
 // OFFSET: 0x009AD3A0
 // FUNCTION: fn_13783
 __declspec(noinline) void UIScrollWnd::Slot15(int width, int height) {
-  this->horizontalBar = new UIScrollBar(*this->m_context);
+  this->horizontalBar = new UIScrollBar();
   this->horizontalBar->Configure(0, height - this->scrollBarHeight, 0, width - this->scrollBarWidth);
   this->AddChild(this->horizontalBar);
-  this->scrollBar = new UIScrollBar(*this->m_context);
+  this->scrollBar = new UIScrollBar();
   this->scrollBar->Configure(width - this->scrollBarWidth, 0, 1, height - this->scrollBarHeight);
   this->AddChild(this->scrollBar);
 }

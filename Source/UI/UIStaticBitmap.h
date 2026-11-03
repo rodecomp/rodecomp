@@ -9,7 +9,6 @@
 class UIStaticBitmap : public UIWindow {
 public:
   UIStaticBitmap();
-  UIStaticBitmap(UIWindowContext& windows);
   ~UIStaticBitmap() override;
   void Paint() override;
   void Slot25(int x, int y) override;

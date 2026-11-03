@@ -38,8 +38,8 @@ void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabIn
 // OFFSET: 0x00A684E0
 // FUNCTION: fn_16646
 template <>
-CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::CUIListBoxEx(UIWindowContext& context)
-    : CUIControl(context), unknown_0084(), unknown_0088(), unknown_008C(), imageNames(), disabledName(), scrollBar(nullptr),
+CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::CUIListBoxEx()
+    : CUIControl(), unknown_0084(), unknown_0088(), unknown_008C(), imageNames(), disabledName(), scrollBar(nullptr),
       itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), unknown_00C5{}, items(), data(),
       selected(static_cast<unsigned int>(-1)), unknown_00E0(1), rebind(0), unknown_00E2{}, onSelect(), binder() {
 }
@@ -47,8 +47,8 @@ CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::CUIListBoxEx(UIWindo
 // OFFSET: 0x00A686A0
 // FUNCTION: fn_16647
 template <>
-CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>::CUIListBoxEx(UIWindowContext& context)
-    : CUIControl(context), unknown_0084(), unknown_0088(), unknown_008C(), imageNames(), disabledName(), scrollBar(nullptr),
+CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>::CUIListBoxEx()
+    : CUIControl(), unknown_0084(), unknown_0088(), unknown_008C(), imageNames(), disabledName(), scrollBar(nullptr),
       itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), unknown_00C5{}, items(), data(),
       selected(static_cast<unsigned int>(-1)), unknown_00E0(1), rebind(0), unknown_00E2{}, onSelect(), binder() {
 }
@@ -110,7 +110,7 @@ void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabIn
 // FUNCTION: fn_16662
 template <>
 void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::Slot15(int width, int height) {
-  this->scrollBar = new CUIVScrollBar(*this->m_context);
+  this->scrollBar = new CUIVScrollBar();
   this->scrollBar->Show(0);
   this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
   this->AddChild(this->scrollBar);
@@ -120,7 +120,7 @@ void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::Slot15(int widt
 // FUNCTION: fn_16663
 template <>
 void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>::Slot15(int width, int height) {
-  this->scrollBar = new CUIVScrollBar(*this->m_context);
+  this->scrollBar = new CUIVScrollBar();
   this->scrollBar->Show(0);
   this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
   this->AddChild(this->scrollBar);
@@ -646,7 +646,7 @@ private:
 // OFFSET: 0x00A69790
 // FUNCTION: fn_16664
 void SelectPackageItemBox::CUIItemInfo::Slot15(int width, int height) {
-  this->image = new CUIStaticImage(*this->m_context);
+  this->image = new CUIStaticImage();
   this->image->SetSize(200, 34);
   this->image->Move(0, 0);
   const std::uint8_t imageSource[] = {0xC9, 0x88, 0xEF, 0x41, 0x7D, 0x93, 0xB8, 0x14, 0xCF, 0xC3, 0xEF, 0x77, 0x00, 0xE7, 0x21,
@@ -658,7 +658,7 @@ void SelectPackageItemBox::CUIItemInfo::Slot15(int width, int height) {
   this->image->SetImage(background);
   this->AddChild(this->image);
 
-  this->gameItem = new CUIGameItem(*this->m_context);
+  this->gameItem = new CUIGameItem();
   this->gameItem->SetMode(0);
   this->gameItem->SetScale(100);
   this->gameItem->Move(6, 5);
@@ -666,7 +666,7 @@ void SelectPackageItemBox::CUIItemInfo::Slot15(int width, int height) {
   this->gameItem->unknown_0085 = 1;
   this->AddChild(this->gameItem);
 
-  this->nameText = new CUIStaticText(*this->m_context);
+  this->nameText = new CUIStaticText();
   this->nameText->SetSize(148, 24);
   this->nameText->Move(45, 5);
   this->nameText->SetText("", 0);
@@ -687,7 +687,7 @@ void SelectPackageItemBox::CUIItemInfo::Slot15(int width, int height) {
 // OFFSET: 0x00A6CDE0
 // FUNCTION: fn_16665
 void SelectPackageItemBox::CUITabInfo::Slot15(int width, int height) {
-  this->nameText = new CUIStaticText(*this->m_context);
+  this->nameText = new CUIStaticText();
   this->nameText->SetSize(148, 34);
   this->nameText->Move(11, 0);
   this->nameText->SetText("", 0);

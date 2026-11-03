@@ -23,7 +23,7 @@ struct UIAcceptanceContext {
 
 class UIChooseSellBuyWnd : public UIFrameWnd {
 public:
-  UIChooseSellBuyWnd(UIWindowContext& windows, UIAcceptanceContext& acceptance);
+  UIChooseSellBuyWnd(UIAcceptanceContext& acceptance);
   ~UIChooseSellBuyWnd() override;
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -41,7 +41,7 @@ protected:
 
 class UIExchangeAcceptWnd : public UIChooseSellBuyWnd {
 public:
-  UIExchangeAcceptWnd(UIWindowContext& windows, UIAcceptanceContext& acceptance);
+  UIExchangeAcceptWnd(UIAcceptanceContext& acceptance);
   ~UIExchangeAcceptWnd() override;
   void Slot15(int width, int height) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
@@ -53,7 +53,7 @@ public:
 
 class UIJoinPartyAcceptWnd : public UIExchangeAcceptWnd {
 public:
-  UIJoinPartyAcceptWnd(UIWindowContext& windows, UIAcceptanceContext& acceptance);
+  UIJoinPartyAcceptWnd(UIAcceptanceContext& acceptance);
   ~UIJoinPartyAcceptWnd() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   std::vector<unsigned char> Slot44() override;
@@ -61,33 +61,33 @@ public:
 
 class UIAllyGuildAcceptWnd : public UIExchangeAcceptWnd {
 public:
-  UIAllyGuildAcceptWnd(UIWindowContext& windows, UIAcceptanceContext& acceptance);
+  UIAllyGuildAcceptWnd(UIAcceptanceContext& acceptance);
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 };
 
 class UIBabyAcceptWnd2 : public UIExchangeAcceptWnd {
 public:
-  UIBabyAcceptWnd2(UIWindowContext& windows, UIAcceptanceContext& acceptance);
+  UIBabyAcceptWnd2(UIAcceptanceContext& acceptance);
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   std::vector<unsigned char> Slot44() override;
 };
 
 class UIBabyAcceptWnd : public UIExchangeAcceptWnd {
 public:
-  UIBabyAcceptWnd(UIWindowContext& windows, UIAcceptanceContext& acceptance);
+  UIBabyAcceptWnd(UIAcceptanceContext& acceptance);
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   std::vector<unsigned char> Slot44() override;
 };
 
 class UICoupleAcceptWnd : public UIExchangeAcceptWnd {
 public:
-  UICoupleAcceptWnd(UIWindowContext& windows, UIAcceptanceContext& acceptance);
+  UICoupleAcceptWnd(UIAcceptanceContext& acceptance);
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 };
 
 class UIJoinFriendAcceptWnd : public UIExchangeAcceptWnd {
 public:
-  UIJoinFriendAcceptWnd(UIWindowContext& windows, UIAcceptanceContext& acceptance);
+  UIJoinFriendAcceptWnd(UIAcceptanceContext& acceptance);
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   std::vector<unsigned char> Slot44() override;
 
@@ -97,14 +97,14 @@ public:
 
 class UIJoinGuildAcceptWnd : public UIExchangeAcceptWnd {
 public:
-  UIJoinGuildAcceptWnd(UIWindowContext& windows, UIAcceptanceContext& acceptance);
+  UIJoinGuildAcceptWnd(UIAcceptanceContext& acceptance);
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   std::vector<unsigned char> Slot44() override;
 };
 
 class UIMixAcceptWnd : public UIExchangeAcceptWnd {
 public:
-  UIMixAcceptWnd(UIWindowContext& windows, UIAcceptanceContext& acceptance);
+  UIMixAcceptWnd(UIAcceptanceContext& acceptance);
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
   /* 00C0 */ unsigned char m_kind;
@@ -112,7 +112,7 @@ public:
 
 class UIStarPlaceAcceptWnd : public UIExchangeAcceptWnd {
 public:
-  UIStarPlaceAcceptWnd(UIWindowContext& windows, UIAcceptanceContext& acceptance);
+  UIStarPlaceAcceptWnd(UIAcceptanceContext& acceptance);
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   std::vector<unsigned char> Slot44() override;
 
@@ -121,7 +121,7 @@ public:
 
 class UIYourItemWnd : public UIExchangeAcceptWnd {
 public:
-  UIYourItemWnd(UIWindowContext& windows, UIAcceptanceContext& acceptance);
+  UIYourItemWnd(UIAcceptanceContext& acceptance);
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
   /* 00C0 */ int m_index;

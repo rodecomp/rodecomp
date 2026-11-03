@@ -35,10 +35,6 @@ public:
 
 class UIHairStyleButton : public UIBitmapButton {
 public:
-  // INLINED
-  UIHairStyleButton(UIWindowContext& windows, int style, int sex)
-      : UIBitmapButton(windows), m_style(style), m_sex(sex), m_race(0), m_preview(nullptr), m_selected(false) {
-  }
   UIHairStyleButton(int style, int sex);
   void Slot15(int width, int height) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;

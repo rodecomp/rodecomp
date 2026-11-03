@@ -12,8 +12,8 @@
 
 // OFFSET: 0x007BAE20
 // FUNCTION: fn_09277
-UIPartyInfoWnd::UIPartyInfoWnd(UIWindowContext& windows)
-    : UIBitmapButton(windows), tanker(0), dealer(0), healer(0), assist(0) {
+UIPartyInfoWnd::UIPartyInfoWnd()
+    : UIBitmapButton(), tanker(0), dealer(0), healer(0), assist(0) {
   this->m_drawLabel = 0;
 }
 

@@ -6,7 +6,7 @@
 
 class UIProhibitListWnd : public UIFrameWnd {
 public:
-  UIProhibitListWnd(UIWindowContext& windows);
+  UIProhibitListWnd();
   /* 00B4 */ int m_count;
   /* 00B8 */ std::uint32_t m_aid;
 

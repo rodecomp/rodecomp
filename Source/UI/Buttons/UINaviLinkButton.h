@@ -5,7 +5,7 @@
 
 class UINaviLinkButton : public UITextButton {
 public:
-  UINaviLinkButton(UIWindowContext& windows);
+  UINaviLinkButton();
   ~UINaviLinkButton() override;
   void Slot25(int x, int y) override;
   std::string Link();

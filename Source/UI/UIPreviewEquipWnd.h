@@ -10,7 +10,7 @@ struct PreviewEquipWndInfo;
 
 class UIPreviewEquipWnd : public UIFrameWnd {
 public:
-  UIPreviewEquipWnd(UIWindowContext& windows);
+  UIPreviewEquipWnd();
   ~UIPreviewEquipWnd() override;
   void Slot11() override;
   void Paint() override;

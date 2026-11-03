@@ -10,7 +10,7 @@ class CSprRes;
 
 class UIWaitDBSaveWnd : public UIWindow {
 public:
-  UIWaitDBSaveWnd(UIWindowContext& windowContext);
+  UIWaitDBSaveWnd();
   void Slot15(int width, int height) override;
   void Slot18() override;
   void Slot19() override;

@@ -76,8 +76,8 @@ bool UnusedTrueA0F7B0() {
 // OFFSET: 0x00A0F840
 // FUNCTION: fn_15180
 template <>
-CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::CUIListBoxEx(UIWindowContext& context)
-    : CUIControl(context), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
+CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::CUIListBoxEx()
+    : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
       unknown_00E0(1), rebind(0) {
 }
 
@@ -114,7 +114,7 @@ void CUIExchangeUI::Slot53() {
 // FUNCTION: fn_15190
 template <>
 void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::Slot15(int width, int height) {
-  this->scrollBar = new CUIVScrollBar(*this->m_context);
+  this->scrollBar = new CUIVScrollBar();
   this->scrollBar->Show(0);
   this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
   this->AddChild(this->scrollBar);
@@ -622,7 +622,7 @@ private:
 // OFFSET: 0x00A149B0
 // FUNCTION: fn_15192
 void ExchangeUI::CUIItem::Slot15(int width, int height) {
-  this->unknown_00E8 = new CUIStaticImage(*this->m_context);
+  this->unknown_00E8 = new CUIStaticImage();
   this->unknown_00E8->SetSize(32, 32);
   this->unknown_00E8->Move(9, 0);
   const std::uint8_t backgroundSource[] = {0x4F, 0x12, 0x2F, 0x7D, 0xBD, 0x0B, 0x68, 0xB8, 0x49, 0x59, 0x2F, 0x4B, 0xC0, 0x7F, 0xF1, 0x17,
@@ -633,7 +633,7 @@ void ExchangeUI::CUIItem::Slot15(int width, int height) {
   this->unknown_00E8->SetImage(background);
   this->AddChild(this->unknown_00E8);
 
-  this->itemIcon = new CUIGameItem(*this->m_context);
+  this->itemIcon = new CUIGameItem();
   this->itemIcon->SetMode(0);
   this->itemIcon->SetScale(100);
   this->itemIcon->Move(13, 1);
@@ -641,7 +641,7 @@ void ExchangeUI::CUIItem::Slot15(int width, int height) {
   this->itemIcon->unknown_0085 = 1;
   this->AddChild(this->itemIcon);
 
-  this->unknown_00F0 = new CUIStaticText(*this->m_context);
+  this->unknown_00F0 = new CUIStaticText();
   this->unknown_00F0->SetSize(100, 13);
   this->unknown_00F0->Move(25, 15);
   this->unknown_00F0->SetText("", 0);
@@ -657,7 +657,7 @@ void ExchangeUI::CUIItem::Slot15(int width, int height) {
   this->unknown_00F0->SetOutline(1, 0xFFFFFF);
   this->AddChild(this->unknown_00F0);
 
-  this->unknown_00F4 = new CUIStaticText(*this->m_context);
+  this->unknown_00F4 = new CUIStaticText();
   this->unknown_00F4->SetSize(215, 30);
   this->unknown_00F4->Move(45, 0);
   this->unknown_00F4->SetText("", 0);
@@ -677,7 +677,7 @@ void ExchangeUI::CUIItem::Slot15(int width, int height) {
 // OFFSET: 0x00A103F0
 // FUNCTION: fn_15191
 void CUIExchangeUI::Slot15(int width, int height) {
-  this->titleBar = new CUITitleBar(*this->m_context);
+  this->titleBar = new CUITitleBar();
   this->titleBar->SetSize(560, 17);
   this->titleBar->Move(0, 0);
   {
@@ -712,7 +712,7 @@ void CUIExchangeUI::Slot15(int width, int height) {
   }
   this->AddChild(this->titleBar);
 
-  CUIStaticText* title = new CUIStaticText(*this->m_context);
+  CUIStaticText* title = new CUIStaticText();
   title->SetSize(100, 17);
   title->Move(12, 0);
   title->SetText("", 0);
@@ -734,7 +734,7 @@ void CUIExchangeUI::Slot15(int width, int height) {
   this->titleBar->titleText = title;
   this->titleBar->AddChild(title);
 
-  this->unknown_00DC = new CUIStaticText(*this->m_context);
+  this->unknown_00DC = new CUIStaticText();
   this->unknown_00DC->SetSize(495, 17);
   this->unknown_00DC->Move(62, 0);
   this->unknown_00DC->SetText("", 0);
@@ -756,7 +756,7 @@ void CUIExchangeUI::Slot15(int width, int height) {
   this->unknown_00DC->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->unknown_00DC);
 
-  this->unknown_00E0 = new CUIStaticImage(*this->m_context);
+  this->unknown_00E0 = new CUIStaticImage();
   this->unknown_00E0->SetSize(560, 360);
   this->unknown_00E0->Move(0, 17);
   {
@@ -772,7 +772,7 @@ void CUIExchangeUI::Slot15(int width, int height) {
   }
   this->AddChild(this->unknown_00E0);
 
-  this->firstList = new ExchangeUI::CItemListBox(*this->m_context);
+  this->firstList = new ExchangeUI::CItemListBox();
   this->firstList->itemWidth = 272;
   this->firstList->rowHeight = 30;
   this->firstList->SetSize(272, 300);
@@ -841,7 +841,7 @@ void CUIExchangeUI::Slot15(int width, int height) {
   this->firstList->AddNewItem();
   this->AddChild(this->firstList);
 
-  this->unknown_00E8 = new CUIStaticText(*this->m_context);
+  this->unknown_00E8 = new CUIStaticText();
   this->unknown_00E8->SetSize(150, 18);
   this->unknown_00E8->Move(69, 330);
   {
@@ -871,7 +871,7 @@ void CUIExchangeUI::Slot15(int width, int height) {
   this->unknown_00E8->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->unknown_00E8);
 
-  this->unknown_00EC = new CUIStaticText(*this->m_context);
+  this->unknown_00EC = new CUIStaticText();
   this->unknown_00EC->SetSize(150, 18);
   this->unknown_00EC->Move(70, 330);
   {
@@ -901,7 +901,7 @@ void CUIExchangeUI::Slot15(int width, int height) {
   this->unknown_00EC->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->unknown_00EC);
 
-  this->unknown_00F0 = new CUIStaticText(*this->m_context);
+  this->unknown_00F0 = new CUIStaticText();
   this->unknown_00F0->SetSize(150, 18);
   this->unknown_00F0->Move(70, 331);
   {
@@ -931,7 +931,7 @@ void CUIExchangeUI::Slot15(int width, int height) {
   this->unknown_00F0->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->unknown_00F0);
 
-  this->zenyEdit = new CUIEditBoxEx(*this->m_context);
+  this->zenyEdit = new CUIEditBoxEx();
   this->zenyEdit->Create(100, 16, false);
   this->zenyEdit->Move(140, 330);
   this->zenyEdit->SetText(std::string(""));
@@ -946,7 +946,7 @@ void CUIExchangeUI::Slot15(int width, int height) {
   this->zenyEdit->SetOnSubmit([this]() { this->OnEditSubmit(); });
   this->AddChild(this->zenyEdit);
 
-  this->secondList = new ExchangeUI::CItemListBox(*this->m_context);
+  this->secondList = new ExchangeUI::CItemListBox();
   this->secondList->itemWidth = 272;
   this->secondList->rowHeight = 30;
   this->secondList->SetSize(272, 300);
@@ -1015,7 +1015,7 @@ void CUIExchangeUI::Slot15(int width, int height) {
   this->secondList->AddNewItem();
   this->AddChild(this->secondList);
 
-  this->unknown_00FC = new CUIStaticText(*this->m_context);
+  this->unknown_00FC = new CUIStaticText();
   this->unknown_00FC->SetSize(150, 18);
   this->unknown_00FC->Move(349, 330);
   {
@@ -1045,7 +1045,7 @@ void CUIExchangeUI::Slot15(int width, int height) {
   this->unknown_00FC->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->unknown_00FC);
 
-  this->unknown_0100 = new CUIStaticText(*this->m_context);
+  this->unknown_0100 = new CUIStaticText();
   this->unknown_0100->SetSize(150, 18);
   this->unknown_0100->Move(350, 330);
   {
@@ -1075,7 +1075,7 @@ void CUIExchangeUI::Slot15(int width, int height) {
   this->unknown_0100->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->unknown_0100);
 
-  this->unknown_0104 = new CUIStaticText(*this->m_context);
+  this->unknown_0104 = new CUIStaticText();
   this->unknown_0104->SetSize(150, 18);
   this->unknown_0104->Move(350, 331);
   {
@@ -1105,7 +1105,7 @@ void CUIExchangeUI::Slot15(int width, int height) {
   this->unknown_0104->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->unknown_0104);
 
-  this->logCheckBox = new CUICheckBox(*this->m_context);
+  this->logCheckBox = new CUICheckBox();
   this->logCheckBox->SetSize(10, 10);
   this->logCheckBox->Move(105, 359);
   this->logCheckBox->SetOnCheck([this](bool checked) { this->OnCheckChanged(checked); });
@@ -1146,7 +1146,7 @@ void CUIExchangeUI::Slot15(int width, int height) {
   this->logCheckBox->Invalidate();
   this->AddChild(this->logCheckBox);
 
-  this->unknown_010C = new CUIStaticText(*this->m_context);
+  this->unknown_010C = new CUIStaticText();
   this->unknown_010C->SetSize(135, 14);
   this->unknown_010C->Move(123, 356);
   this->unknown_010C->SetText("", 0);
@@ -1168,7 +1168,7 @@ void CUIExchangeUI::Slot15(int width, int height) {
   this->unknown_010C->SetOutline(1, 0xFFFFFF);
   this->AddChild(this->unknown_010C);
 
-  this->lockButton = new CUIImageButton(*this->m_context);
+  this->lockButton = new CUIImageButton();
   this->lockButton->SetSize(42, 20);
   this->lockButton->Move(3, 354);
   this->lockButton->SetOnClick([this]() { this->SubmitZeny(); });
@@ -1207,7 +1207,7 @@ void CUIExchangeUI::Slot15(int width, int height) {
   }
   this->AddChild(this->lockButton);
 
-  this->tradeButton = new CUIImageButton(*this->m_context);
+  this->tradeButton = new CUIImageButton();
   this->tradeButton->SetSize(42, 20);
   this->tradeButton->Move(260, 354);
   this->tradeButton->SetOnClick([this]() { this->Conclude(); });
@@ -1249,7 +1249,7 @@ void CUIExchangeUI::Slot15(int width, int height) {
   }
   this->AddChild(this->tradeButton);
 
-  this->unknown_0118 = new CUIImageButton(*this->m_context);
+  this->unknown_0118 = new CUIImageButton();
   this->unknown_0118->SetSize(42, 20);
   this->unknown_0118->Move(510, 354);
   this->unknown_0118->SetOnClick([this]() { this->Cancel(); });

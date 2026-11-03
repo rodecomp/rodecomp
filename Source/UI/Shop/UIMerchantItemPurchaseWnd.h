@@ -11,7 +11,7 @@ class UIStaticText;
 
 class UIMerchantItemPurchaseWnd : public UIItemBaseWnd {
 public:
-  UIMerchantItemPurchaseWnd(UIWindowContext& windows, int value);
+  UIMerchantItemPurchaseWnd(int value);
   void Slot11() override;
   void Slot15(int width, int height) override;
   void Slot10(int x, int y, std::intptr_t value) override;

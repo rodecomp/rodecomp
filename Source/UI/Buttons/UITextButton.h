@@ -31,7 +31,8 @@ public:
   friend void OpenTextButtonNavigation(UITextButton* button);
 
   UITextButton();
-  UITextButton(UIWindowContext& windows);
+  UITextButton(UIWindowContext&) : UITextButton() {
+  }
   ~UITextButton() override;
   void Paint() override;
   void Slot27(int x, int y) override;

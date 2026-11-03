@@ -7,7 +7,7 @@
 
 class UIString : public UIWindow {
 public:
-  explicit UIString(UIWindowContext& windows);
+  UIString();
   void Paint() override;
   void ResetCursor(int x, int y) override;
   void Slot31(int x, int y) override;

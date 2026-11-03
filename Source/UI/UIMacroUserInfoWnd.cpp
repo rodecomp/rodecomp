@@ -46,8 +46,8 @@ MacroReporterEntry::MacroReporterEntry(std::string name, int id, short unknown_0
 
 // OFFSET: 0x007EEA00
 // FUNCTION: fn_09832
-UIMacroReporterWnd::UIMacroReporterWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), m_scrollBar(nullptr), m_scrollable(false), unknown_00C8(13), m_firstRow(0), m_visibleRows(10), unknown_00D4(nullptr),
+UIMacroReporterWnd::UIMacroReporterWnd()
+    : UIFrameWnd(0), m_scrollBar(nullptr), m_scrollable(false), unknown_00C8(13), m_firstRow(0), m_visibleRows(10), unknown_00D4(nullptr),
       m_reportButton(nullptr), m_mode(0), m_edit(nullptr), unknown_00F4(1), unknown_00F8(5), m_state(nullptr), unknown_010C(false) {
   this->m_tabs[0] = nullptr;
   this->m_tabs[1] = nullptr;
@@ -60,8 +60,8 @@ UIMacroReporterWnd::UIMacroReporterWnd(UIWindowContext& windows)
 
 // OFFSET: 0x007EEBC0
 // FUNCTION: fn_09833
-UIMacroUserInfoWnd::UIMacroUserInfoWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0) {
+UIMacroUserInfoWnd::UIMacroUserInfoWnd()
+    : UIFrameWnd(0) {
 }
 
 // OFFSET: 0x007EF2C0
@@ -129,7 +129,7 @@ void UIMacroReporterWnd::sub_7EF430(int aid, std::string name) {
   this->AddChild(btn1);
 
   std::string truncated = this->sub_7EF680(0x8E, name.c_str(), 0, 13, 0);
-  auto* btn2 = new UITextButton(*this->m_context);
+  auto* btn2 = new UITextButton();
   btn2->Configure("", 0, 0, 13, 0, 1);
   static_cast<AccessibleTextButton*>(btn2)->m_hoverColor = 0x2D2D2D;
   btn2->label = truncated;
@@ -448,11 +448,11 @@ void UIMacroReporterWnd::Slot15(int, int) {
   this->AddBaseButton();
   this->AddCloseButton("", 0);
 
-  this->m_scrollBar = new UIScrollBar(*this->m_context);
+  this->m_scrollBar = new UIScrollBar();
   this->m_scrollBar->Configure(186, 56, 1, 216);
   this->AddChild(this->m_scrollBar);
 
-  UICheckBox* check = new UICheckBox(*this->m_context);
+  UICheckBox* check = new UICheckBox();
   this->unknown_00D4 = check;
   check->SetSize(42, 20);
   check->SetBitmaps("유저인터페이스\\btn_q_active_a.bmp", "유저인터페이스\\btn_q_active.bmp");
@@ -460,7 +460,7 @@ void UIMacroReporterWnd::Slot15(int, int) {
   check->SetChecked(0);
   this->AddChild(check);
 
-  UIBitmapButton* report = new UIBitmapButton(*this->m_context);
+  UIBitmapButton* report = new UIBitmapButton();
   this->m_reportButton = report;
   report->SetBitmap("유저인터페이스\\btn_ok.bmp", 0, 0);
   report->SetBitmap("유저인터페이스\\btn_ok_a.bmp", 1, 0);
@@ -476,7 +476,7 @@ void UIMacroReporterWnd::Slot15(int, int) {
 
   int index = 0;
   for (; index < 2; ++index) {
-    UIRadioBtn* tab = new UIRadioBtn(*this->m_context);
+    UIRadioBtn* tab = new UIRadioBtn();
     this->m_tabs[index] = tab;
     tab->SetSize(50, 12);
     tab->Move(14 + index * 55, 31);
@@ -490,7 +490,7 @@ void UIMacroReporterWnd::Slot15(int, int) {
     this->AddChild(tab);
   }
   for (; index < 4; ++index) {
-    UIRadioBtn* tab = new UIRadioBtn(*this->m_context);
+    UIRadioBtn* tab = new UIRadioBtn();
     this->m_tabs[index] = tab;
     tab->SetSize(50, 12);
     tab->Move(70 + index * 30, 31);

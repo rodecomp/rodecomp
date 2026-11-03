@@ -45,7 +45,7 @@ namespace AdventureGuide {
 
 class CUIPage : public CUIControl {
 public:
-  explicit CUIPage(UIWindowContext& context) : CUIControl(context) {
+  explicit CUIPage() : CUIControl() {
   }
 
   virtual void Slot54(int first, int second) = 0;
@@ -55,7 +55,7 @@ class CUICharacterInfo : public CUIControl {
 public:
   // OFFSET: 0x009D8F50
   // FUNCTION: fn_14273
-  explicit CUICharacterInfo(UIWindowContext& context) : CUIControl(context), level(nullptr), jobLevel(nullptr), name(nullptr), jobIcon(nullptr) {
+  explicit CUICharacterInfo() : CUIControl(), level(nullptr), jobLevel(nullptr), name(nullptr), jobIcon(nullptr) {
   }
 
   void Slot15(int width, int height) override;
@@ -71,7 +71,7 @@ class CUIIntro : public CUIPage {
 public:
   // OFFSET: 0x009D8FE0
   // FUNCTION: fn_14274
-  explicit CUIIntro(UIWindowContext& context) : CUIPage(context), image(nullptr), contents(nullptr), banner(nullptr) {
+  explicit CUIIntro() : CUIPage(), image(nullptr), contents(nullptr), banner(nullptr) {
   }
 
   void Slot15(int width, int height) override;
@@ -91,8 +91,8 @@ class CUIItem : public CUIPage {
 public:
   // OFFSET: 0x009D9080
   // FUNCTION: fn_14275
-  explicit CUIItem(UIWindowContext& context)
-      : CUIPage(context), unknown_0084(nullptr), unknown_0088(nullptr), unknown_008C(), location(-1), itemList(nullptr) {
+  explicit CUIItem()
+      : CUIPage(), unknown_0084(nullptr), unknown_0088(nullptr), unknown_008C(), location(-1), itemList(nullptr) {
   }
 
   void Slot15(int width, int height) override;
@@ -115,7 +115,7 @@ class CUIMonster : public CUIPage {
 public:
   // OFFSET: 0x009D9220
   // FUNCTION: fn_14277
-  explicit CUIMonster(UIWindowContext& context) : CUIPage(context), unknown_0084(nullptr), unknown_0088(), monsterList(nullptr) {
+  explicit CUIMonster() : CUIPage(), unknown_0084(nullptr), unknown_0088(), monsterList(nullptr) {
   }
 
   void Slot15(int width, int height) override;
@@ -136,7 +136,7 @@ class CUIQuest : public CUIPage {
 public:
   // OFFSET: 0x009D9360
   // FUNCTION: fn_14279
-  explicit CUIQuest(UIWindowContext& context) : CUIPage(context), unknown_0084(nullptr), unknown_0088(nullptr), unknown_008C(), questList(nullptr) {
+  explicit CUIQuest() : CUIPage(), unknown_0084(nullptr), unknown_0088(nullptr), unknown_008C(), questList(nullptr) {
   }
 
   void Slot15(int width, int height) override;

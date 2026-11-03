@@ -6,7 +6,7 @@
 #include <algorithm>
 
 // INLINED
-CUIDropDownBox::CUIDropDownBox(UIWindowContext& context) : CUIControl(context), owner(nullptr) {
+CUIDropDownBox::CUIDropDownBox() : CUIControl(), owner(nullptr) {
 }
 
 // OFFSET: 0x009E3300
@@ -70,7 +70,7 @@ void WindowDropDown::Show(UIWindow* owner, UIWindow* child, int x, int y) {
   }
 
   if (!this->popup) {
-    this->popup = new CUIDropDownBox(this->windows);
+    this->popup = new CUIDropDownBox();
   }
 
   this->popup->Attach(owner, child);

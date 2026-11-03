@@ -31,7 +31,8 @@ class UIButton : public UIWindow {
 
 public:
   UIButton();
-  UIButton(UIWindowContext& windowContext);
+  UIButton(UIWindowContext&) : UIButton() {
+  }
   ~UIButton() override;
   void Paint() override;
   void Slot25(int x, int y) override;

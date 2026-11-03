@@ -17,8 +17,8 @@
 
 // OFFSET: 0x009663D0
 // FUNCTION: fn_13154
-UIHotkeyGuideWnd::UIHotkeyGuideWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0) {
+UIHotkeyGuideWnd::UIHotkeyGuideWnd()
+    : UIFrameWnd(0) {
   this->m_current = 4698;
 }
 
@@ -55,7 +55,7 @@ HotkeyGuideLabel::~HotkeyGuideLabel() {
 // OFFSET: 0x00966C70
 // FUNCTION: fn_13164
 void UIHotkeyGuideWnd::Slot15(int, int) {
-  UIBitmapButton* base = new UIBitmapButton(*this->m_context);
+  UIBitmapButton* base = new UIBitmapButton();
   base->SetBitmap("유저인터페이스\\basic_interface\\sys_base_off.bmp", 0, 0);
   base->SetBitmap("유저인터페이스\\basic_interface\\sys_base_on.bmp", 1, 0);
   base->SetBitmap("유저인터페이스\\basic_interface\\sys_base_on.bmp", 2, 0);
@@ -177,7 +177,7 @@ void UIHotkeyGuideWnd::Slot15(int, int) {
 
   int index = 0;
   for (auto entry = this->m_entries.begin(); entry != this->m_entries.end(); ++entry) {
-    UIBasicButton* tab = new UIBasicButton(*this->m_context);
+    UIBasicButton* tab = new UIBasicButton();
     tab->Configure(118, LookupMessage(entry->id));
     tab->Move(index / 6 * 246 + 26, index % 6 * 30 + 310);
     tab->SetId(entry->id);
@@ -186,7 +186,7 @@ void UIHotkeyGuideWnd::Slot15(int, int) {
     ++index;
   }
 
-  UIBmpTextButton* settings = new UIBmpTextButton(*this->m_context);
+  UIBmpTextButton* settings = new UIBmpTextButton();
   settings->SetBitmap("유저인터페이스\\hotkey_guide\\bt_keysettings_normal.bmp", 0, 0);
   settings->SetBitmap("유저인터페이스\\hotkey_guide\\bt_keysettings_over.bmp", 1, 0);
   settings->SetBitmap("유저인터페이스\\hotkey_guide\\bt_keysettings_press.bmp", 2, 0);

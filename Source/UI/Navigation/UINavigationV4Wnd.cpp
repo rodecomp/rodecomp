@@ -2,13 +2,13 @@
 
 // OFFSET: 0x005C2860
 // FUNCTION: fn_03536
-UINavigationRuideWnd::UINavigationRuideWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0) {
+UINavigationRuideWnd::UINavigationRuideWnd()
+    : UIFrameWnd(0) {
 }
 
 // OFFSET: 0x005C28C0
 // FUNCTION: fn_03537
-UINavigationV4Wnd::UINavigationV4Wnd(UIWindowContext& windows) : UIFrameWnd(windows, 0) {
+UINavigationV4Wnd::UINavigationV4Wnd() : UIFrameWnd(0) {
   this->unknown_0118 = 0;
   this->unknown_0100 = nullptr;
   this->unknown_011C = 2000;
@@ -16,6 +16,6 @@ UINavigationV4Wnd::UINavigationV4Wnd(UIWindowContext& windows) : UIFrameWnd(wind
 
 // OFFSET: 0x005C2960
 // FUNCTION: fn_03538
-UINavigationroadiconWnd::UINavigationroadiconWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0) {
+UINavigationroadiconWnd::UINavigationroadiconWnd()
+    : UIFrameWnd(0) {
 }

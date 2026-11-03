@@ -36,7 +36,7 @@ static_assert(offsetof(UITreeNode, children) == 0x180);
 
 class UITreeView : public UIWindow {
 public:
-  UITreeView(UIWindowContext& windows);
+  UITreeView();
   void Resize(int width, int height) override;
   void Slot15(int width, int height) override;
   void Paint() override;

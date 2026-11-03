@@ -1717,7 +1717,7 @@ int UIWindowMgr::SendNotice(int selector, std::intptr_t a, std::intptr_t b, std:
     if (this->namedWindows.find(name) != this->namedWindows.end()) {
       return 0;
     }
-    UIWhisperWnd* window = new UIWhisperWnd(*reinterpret_cast<UIWindowContext*>(nullptr));
+    UIWhisperWnd* window = new UIWhisperWnd();
     window->SetSize(280, 120);
     this->rendered.push_back(window);
     window->SendMsg(nullptr, 34, reinterpret_cast<std::intptr_t>(&this->m_whisperPlacement), 0, 0, 0);
@@ -3946,7 +3946,7 @@ void UIWindowMgr::ShowWaitDBSaveWindow() {
   }
 
   WindowDialogs& dialogs = *reinterpret_cast<WindowDialogs*>(this);
-  this->window_4F2AC = new UIWaitDBSaveWnd(dialogs.windows);
+  this->window_4F2AC = new UIWaitDBSaveWnd();
   this->window_4F2AC->SetSize(g_renderer->viewport.width, g_renderer->viewport.height);
   this->window_4F2AC->Move(0, 0);
   this->window_4F2AC->SetId(10024);

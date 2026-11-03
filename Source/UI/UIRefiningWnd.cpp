@@ -52,8 +52,8 @@ struct RefiningClosePacket {
 
 // OFFSET: 0x007F4920
 // FUNCTION: fn_09890
-UIRefiningWnd::UIRefiningWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), refiningButton(nullptr), returnButton(nullptr),
+UIRefiningWnd::UIRefiningWnd()
+    : UIFrameWnd(0), refiningButton(nullptr), returnButton(nullptr),
       unknown_00C0(nullptr), state(0), result(7), frameInterval(100), stateTick(0), frame(0), selectedMaterial(-1), materials(), catalystEnabled(0),
       catalystItemId(0), catalystCount(0), item(0), unknown_01F0(0), nextMaterials(), nextCatalystCount(0), nextItem(0) {
   this->catalystItemId = 6635;
@@ -61,17 +61,17 @@ UIRefiningWnd::UIRefiningWnd(UIWindowContext& windows)
 
 // OFFSET: 0x007F4A70
 // FUNCTION: fn_09891
-UIRefining_BtnAgain::UIRefining_BtnAgain(UIWindowContext& windows) : UIBitmapButton(windows), cost(0) {
+UIRefining_BtnAgain::UIRefining_BtnAgain() : UIBitmapButton(), cost(0) {
 }
 
 // OFFSET: 0x007F4AD0
 // FUNCTION: fn_09892
-UIRefining_BtnRefining::UIRefining_BtnRefining(UIWindowContext& windows) : UIBitmapButton(windows), cost(0) {
+UIRefining_BtnRefining::UIRefining_BtnRefining() : UIBitmapButton(), cost(0) {
 }
 
 // OFFSET: 0x007F4B30
 // FUNCTION: fn_09893
-UIRefining_BtnReturn::UIRefining_BtnReturn(UIWindowContext& windows) : UIBitmapButton(windows), highlighted(1) {
+UIRefining_BtnReturn::UIRefining_BtnReturn() : UIBitmapButton(), highlighted(1) {
 }
 
 // OFFSET: 0x007F5E30
@@ -80,14 +80,14 @@ void UIRefiningWnd::Slot15(int width, int height) {
   this->AddBaseButton();
   this->AddCloseButton("", 0);
 
-  UIBasicButton* basic = new UIBasicButton(*this->m_context);
+  UIBasicButton* basic = new UIBasicButton();
   basic->Configure(56, LookupMessage(218));
   basic->Move(204, 322);
   basic->SetId(185);
   this->AddChild(basic);
   this->unknown_00C0 = basic;
 
-  this->refiningButton = new UIRefining_BtnRefining(*this->m_context);
+  this->refiningButton = new UIRefining_BtnRefining();
   this->refiningButton->SetBitmap("유저인터페이스\\refining_renewal\\bt_refining_normal.bmp", 0, 0);
   this->refiningButton->SetBitmap("유저인터페이스\\refining_renewal\\bt_refining_normal.bmp", 1, 0);
   this->refiningButton->SetBitmap("유저인터페이스\\refining_renewal\\bt_refining_press.bmp", 2, 0);
@@ -99,26 +99,26 @@ void UIRefiningWnd::Slot15(int width, int height) {
   this->refiningButton->Invalidate();
   this->AddChild(this->refiningButton);
 
-  this->returnButton = new UIRefining_BtnReturn(*this->m_context);
+  this->returnButton = new UIRefining_BtnReturn();
   this->returnButton->UpdateBitmaps();
   this->returnButton->Move(20, 267);
   this->returnButton->SetId(519);
   this->returnButton->Enable(0);
   this->AddChild(this->returnButton);
 
-  this->againButton = new UIRefining_BtnAgain(*this->m_context);
+  this->againButton = new UIRefining_BtnAgain();
   this->againButton->UpdateBitmaps();
   this->againButton->Move(142, 267);
   this->againButton->SetId(520);
   this->againButton->Enable(0);
   this->AddChild(this->againButton);
 
-  this->notice = new UIRefining_Notice(*this->m_context);
+  this->notice = new UIRefining_Notice();
   this->notice->SetSize(194, 22);
   this->notice->Move(6, 322);
   this->AddChild(this->notice);
 
-  UIBitmapButton* help = new UIBitmapButton(*this->m_context);
+  UIBitmapButton* help = new UIBitmapButton();
   help->SetBitmap("유저인터페이스\\basic_interface\\btn_help_normal.bmp", 0, 0);
   help->SetBitmap("유저인터페이스\\basic_interface\\btn_help_over.bmp", 1, 0);
   help->SetBitmap("유저인터페이스\\basic_interface\\btn_help_pressed.bmp", 2, 0);

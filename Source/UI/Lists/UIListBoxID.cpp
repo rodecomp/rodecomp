@@ -36,7 +36,7 @@ void UIListBoxID::Configure(int x, int y, int width, int height, unsigned char t
 // OFFSET: 0x00886070
 // FUNCTION: fn_11322
 void UIComboBoxID::Slot15(int width, int height) {
-  auto* vertical = new UIScrollBar(*this->m_context);
+  auto* vertical = new UIScrollBar();
   this->verticalBar = vertical;
   const int verticalWidth = vertical->thickness;
   vertical->vertical = 1;
@@ -46,7 +46,7 @@ void UIComboBoxID::Slot15(int width, int height) {
   vertical->Slot22(verticalWidth, height);
   this->AddChild(this->verticalBar);
 
-  auto* horizontal = new UIScrollBar(*this->m_context);
+  auto* horizontal = new UIScrollBar();
   this->horizontalBar = horizontal;
   const int horizontalHeight = horizontal->thickness;
   horizontal->vertical = 0;

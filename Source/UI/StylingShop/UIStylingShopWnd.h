@@ -14,7 +14,7 @@
 
 class UIDisplayCharacter : public UIWindow {
 public:
-  UIDisplayCharacter(UIWindowContext& context);
+  UIDisplayCharacter();
   void LoadSessionStyle();
   void CopyStyle(const UIDisplayCharacter* other);
   void LoadCostumes();
@@ -50,7 +50,7 @@ public:
 
 class UIShowInfoWnd : public UIWindow {
 public:
-  explicit UIShowInfoWnd(UIWindowContext& context);
+  UIShowInfoWnd();
   ~UIShowInfoWnd() override;
   void ResetCheckBoxes();
   void ArrangeCheckBoxes(const int& layout);
@@ -89,7 +89,7 @@ public:
 class UIStylingshopTabParentWnd : public UIWindow {
 public:
   // INLINED
-  explicit UIStylingshopTabParentWnd(UIWindowContext& context) : UIWindow(context, 0), m_display(nullptr), m_showInfo(nullptr) {
+  explicit UIStylingshopTabParentWnd() : UIWindow(0), m_display(nullptr), m_showInfo(nullptr) {
   }
   void UpdateFavoriteButton(const bool& favorite);
   bool IsBuyable() const;
@@ -107,7 +107,7 @@ public:
 
 class UICostumeChangeWnd : public UIStylingshopTabParentWnd {
 public:
-  explicit UICostumeChangeWnd(UIWindowContext& context);
+  UICostumeChangeWnd();
   void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
@@ -119,7 +119,7 @@ void ToggleStylingAccessory(int itemId, int slot);
 
 class UIStylingShopWnd : public UIFrameWnd {
 public:
-  UIStylingShopWnd(UIWindowContext& windows);
+  UIStylingShopWnd();
 
   /* 00B4 */ UIStylingShopButton* m_buyButton;
   /* 00B8 */ UIDisplayCharacter* m_preview;
@@ -142,7 +142,7 @@ class UI2ndCostumeWnd : public UIStylingshopTabParentWnd {
   friend class UIStylingShopWnd;
 
 public:
-  explicit UI2ndCostumeWnd(UIWindowContext& context);
+  UI2ndCostumeWnd();
   void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
@@ -155,7 +155,7 @@ protected:
 class UIAccessoryCusWnd : public UIStylingshopTabParentWnd {
 public:
   // INLINED
-  explicit UIAccessoryCusWnd(UIWindowContext& context) : UIStylingshopTabParentWnd(context) {
+  explicit UIAccessoryCusWnd() : UIStylingshopTabParentWnd() {
   }
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -167,7 +167,7 @@ class UIStaticBitmap;
 class UIAccessoryShowCase : public UIScrollWnd {
 public:
   // INLINED
-  UIAccessoryShowCase(UIWindowContext& windows, int width, int height) : UIScrollWnd(windows, width, height, 0), m_itemFrames() {
+  UIAccessoryShowCase(int width, int height) : UIScrollWnd(width, height, 0), m_itemFrames() {
     this->Slot15(width, height);
   }
   void Slot15(int width, int height) override;
@@ -181,7 +181,7 @@ public:
 
 class UIBasicStylingWnd : public UIStylingshopTabParentWnd {
 public:
-  explicit UIBasicStylingWnd(UIWindowContext& context);
+  UIBasicStylingWnd();
   void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
@@ -194,7 +194,7 @@ class UISlotOfMyStyleWnd;
 
 class UIMyStyleWnd : public UIStylingshopTabParentWnd {
 public:
-  explicit UIMyStyleWnd(UIWindowContext& context);
+  UIMyStyleWnd();
   void LoadLikeList();
   void SaveLikeList();
   void Slot15(int width, int height) override;
@@ -210,7 +210,7 @@ public:
 
 class UISlotOfMyStyleWnd : public UIStylingshopTabParentWnd {
 public:
-  explicit UISlotOfMyStyleWnd(UIWindowContext& context);
+  UISlotOfMyStyleWnd();
   void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
@@ -219,7 +219,7 @@ public:
 class UISlotForSelectWnd : public UIWindow {
 public:
   // INLINED
-  explicit UISlotForSelectWnd(UIWindowContext& context) : UIWindow(context, 0) {
+  explicit UISlotForSelectWnd() : UIWindow(0) {
   }
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
@@ -230,9 +230,6 @@ public:
   // INLINED
   UI2ndCostumeCheckBox() : UICheckBox() {
   }
-  // INLINED
-  UI2ndCostumeCheckBox(UIWindowContext& windowContext) : UICheckBox(windowContext) {
-  }
   void Slot25(int x, int y) override;
 };
 
@@ -240,9 +237,6 @@ class UIStylingShopButton : public UIBitmapButton {
 public:
   // INLINED
   UIStylingShopButton() : UIBitmapButton() {
-  }
-  // INLINED
-  UIStylingShopButton(UIWindowContext& windowContext) : UIBitmapButton(windowContext) {
   }
   // INLINED
   void SetArgument(int argument) {

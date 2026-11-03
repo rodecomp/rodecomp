@@ -94,8 +94,8 @@ public:
 
 class CUIIngredient : public CUIControl {
 public:
-  explicit CUIIngredient(UIWindowContext& context)
-      : CUIControl(context), unknown_0080(nullptr), unknown_0084(nullptr), itemIcon(nullptr), ownedText(nullptr), requiredText(nullptr) {
+  explicit CUIIngredient()
+      : CUIControl(), unknown_0080(nullptr), unknown_0084(nullptr), itemIcon(nullptr), ownedText(nullptr), requiredText(nullptr) {
   }
 
   /* 0080 */ CUIStaticImage* unknown_0080;
@@ -111,7 +111,7 @@ public:
 #pragma pack(push, 4)
 class CUIEnchantPage : public CUIControl {
 public:
-  explicit CUIEnchantPage(UIWindowContext& context);
+  CUIEnchantPage();
 
   union {
     /* 0080 */ unsigned char unknown_0080[0x4];
@@ -220,7 +220,7 @@ public:
 
 class CUIMainPage : public CUIControl {
 public:
-  __declspec(noinline) explicit CUIMainPage(UIWindowContext& context);
+  __declspec(noinline) CUIMainPage();
 
   /* 0080 */ CUIEnchantPage* firstPage;
   /* 0084 */ CUIEnchantPage* secondPage;
@@ -258,7 +258,7 @@ public:
 class CUISlot : public CUIControl {
 public:
   // INLINED
-  explicit CUISlot(UIWindowContext& context) : CUIControl(context), radioButton(nullptr), itemIcon(nullptr), description(nullptr) {
+  explicit CUISlot() : CUIControl(), radioButton(nullptr), itemIcon(nullptr), description(nullptr) {
   }
 
   /* 0080 */ CUIRadioButton* radioButton;

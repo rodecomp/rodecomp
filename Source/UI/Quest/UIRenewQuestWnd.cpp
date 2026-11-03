@@ -51,8 +51,8 @@ bool g_renewQuestTitlesPending = true;
 
 // OFFSET: 0x007F9070
 // FUNCTION: fn_09931
-UINpcSprWnd::UINpcSprWnd(UIWindowContext& context)
-    : UIWindow(context, 0), m_mapName(), m_action(nullptr), m_sprite(nullptr), m_destinationX(0), m_destinationY(0) {
+UINpcSprWnd::UINpcSprWnd()
+    : UIWindow(0), m_mapName(), m_action(nullptr), m_sprite(nullptr), m_destinationX(0), m_destinationY(0) {
   this->m_mapName.clear();
 }
 
@@ -158,8 +158,8 @@ void UINpcSprWnd::SetDestination(std::string mapName, int x, int y) {
 
 // OFFSET: 0x007F9A70
 // FUNCTION: fn_09940
-UIOngoingQuestScrollWnd::UIOngoingQuestScrollWnd(UIWindowContext& windows, int width, int height)
-    : UIScrollWnd(windows, width, height, 0), m_questId(0), m_lineHeight(18) {
+UIOngoingQuestScrollWnd::UIOngoingQuestScrollWnd(int width, int height)
+    : UIScrollWnd(width, height, 0), m_questId(0), m_lineHeight(18) {
   this->m_huntTexts.clear();
   this->Slot15(width, height);
 }
@@ -287,7 +287,7 @@ void UIOngoingQuestScrollWnd::SetQuest(unsigned int questId) {
   label->Move(24, 9);
   this->AddScrollChild(label);
 
-  UITagTextViewer* viewer = new UITagTextViewer(*this->m_context);
+  UITagTextViewer* viewer = new UITagTextViewer();
   viewer->SetSize(290, 200);
   viewer->Move(32, 30);
   viewer->m_font = TagTextViewer::TextFont{0x38302E, 12, 0, 0};
@@ -344,7 +344,7 @@ void UIOngoingQuestScrollWnd::SetQuest(unsigned int questId) {
   y += bitmap->geometry.height + 8;
 
   if (!quest.unknown_007C.empty()) {
-    UINpcSprWnd* npc = new UINpcSprWnd(*this->m_context);
+    UINpcSprWnd* npc = new UINpcSprWnd();
     npc->SetSprite(75, 145, quest.unknown_007C);
     npc->Move(this->geometry.width - npc->geometry.width - 30, y);
     if (!quest.unknown_0094.empty()) {
@@ -443,10 +443,10 @@ void UIOngoingQuestScrollWnd::SetQuest(unsigned int questId) {
     }
   }
 
-  this->horizontalBar = new UIScrollBar(*this->m_context);
+  this->horizontalBar = new UIScrollBar();
   this->horizontalBar->Configure(0, this->geometry.height - this->scrollBarHeight, 0, this->geometry.width - this->scrollBarWidth);
   this->AddChild(this->horizontalBar);
-  this->scrollBar = new UIRenewQuestScrollBar(*this->m_context);
+  this->scrollBar = new UIRenewQuestScrollBar();
   this->scrollBar->Configure(this->geometry.width - this->scrollBarWidth, 0, 1, this->geometry.height - this->scrollBarHeight);
   this->AddChild(this->scrollBar);
   this->Slot53();
@@ -455,8 +455,8 @@ void UIOngoingQuestScrollWnd::SetQuest(unsigned int questId) {
 
 // OFFSET: 0x007FAF70
 // FUNCTION: fn_09949
-UIRecommededQuestScrollWnd::UIRecommededQuestScrollWnd(UIWindowContext& windows, int width, int height)
-    : UIScrollWnd(windows, width, height, 0), unknown_00B0(0), unknown_00B4(14) {
+UIRecommededQuestScrollWnd::UIRecommededQuestScrollWnd(int width, int height)
+    : UIScrollWnd(width, height, 0), unknown_00B0(0), unknown_00B4(14) {
   this->Slot15(width, height);
 }
 
@@ -512,14 +512,14 @@ void UIRecommededQuestScrollWnd::SetQuest(unsigned int questId) {
   this->unknown_00B0 = questId;
 
   UITagTextViewer* viewers[3];
-  viewers[0] = new UITagTextViewer(*this->m_context);
+  viewers[0] = new UITagTextViewer();
   viewers[0]->SetSize(306, 121);
   viewers[0]->Move(18, 12);
   viewers[0]->m_backgroundColor = 0xFFFF00FF;
   viewers[0]->Invalidate();
   this->AddScrollChild(viewers[0]);
 
-  viewers[1] = new UITagTextViewer(*this->m_context);
+  viewers[1] = new UITagTextViewer();
   viewers[1]->SetSize(213, 60);
   viewers[1]->Move(16, 157);
   viewers[1]->m_backgroundColor = 0xFFFF00FF;
@@ -530,7 +530,7 @@ void UIRecommededQuestScrollWnd::SetQuest(unsigned int questId) {
   viewers[1]->m_lineSpacing = 4;
   this->AddScrollChild(viewers[1]);
 
-  viewers[2] = new UITagTextViewer(*this->m_context);
+  viewers[2] = new UITagTextViewer();
   viewers[2]->SetSize(199, 83);
   viewers[2]->Move(18, 225);
   viewers[2]->m_backgroundColor = 0xFFFF00FF;
@@ -544,7 +544,7 @@ void UIRecommededQuestScrollWnd::SetQuest(unsigned int questId) {
   }
 
   if (!quest.unknown_007C.empty()) {
-    UINpcSprWnd* npc = new UINpcSprWnd(*this->m_context);
+    UINpcSprWnd* npc = new UINpcSprWnd();
     npc->SetSprite(75, 145, quest.unknown_007C);
     npc->Move(this->geometry.width - npc->geometry.width - 40, this->geometry.height - npc->geometry.height - 10);
     if (!quest.unknown_0094.empty()) {
@@ -558,23 +558,23 @@ void UIRecommededQuestScrollWnd::SetQuest(unsigned int questId) {
 
 // OFFSET: 0x007FB4D0
 // FUNCTION: fn_09957
-UIRenewDetailQuestInfoWnd::UIRenewDetailQuestInfoWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), m_ongoingWnd(nullptr), m_recommendedWnd(nullptr), m_questId(0), m_timeText(""), m_imageName(""),
+UIRenewDetailQuestInfoWnd::UIRenewDetailQuestInfoWnd()
+    : UIFrameWnd(0), m_ongoingWnd(nullptr), m_recommendedWnd(nullptr), m_questId(0), m_timeText(""), m_imageName(""),
       m_recommended(false) {
 }
 
 // OFFSET: 0x007FB6C0
 // FUNCTION: fn_09959
 void UIRenewDetailQuestInfoWnd::Slot15(int, int) {
-  this->m_ongoingWnd = new UIOngoingQuestScrollWnd(*this->m_context, 342, 322);
+  this->m_ongoingWnd = new UIOngoingQuestScrollWnd(342, 322);
   this->m_ongoingWnd->Move(0, 62);
   this->AddChild(this->m_ongoingWnd);
 
-  this->m_recommendedWnd = new UIRecommededQuestScrollWnd(*this->m_context, 342, 322);
+  this->m_recommendedWnd = new UIRecommededQuestScrollWnd(342, 322);
   this->m_recommendedWnd->Move(0, 62);
   this->AddChild(this->m_recommendedWnd);
 
-  this->m_closeButton = new UIBitmapButton(*this->m_context);
+  this->m_closeButton = new UIBitmapButton();
   this->m_closeButton->SetBitmap("유저인터페이스\\basic_interface\\btn_close.bmp", 0, 0);
   this->m_closeButton->SetBitmap("유저인터페이스\\basic_interface\\btn_close_a.bmp", 1, 0);
   this->m_closeButton->SetBitmap("유저인터페이스\\basic_interface\\btn_close_b.bmp", 2, 0);
@@ -693,15 +693,15 @@ void UIRenewDetailQuestInfoWnd::SetQuest(unsigned int questId, bool recommended)
 
 // OFFSET: 0x007FBF60
 // FUNCTION: fn_09966
-UIRenewQuestScrollBar::UIRenewQuestScrollBar(UIWindowContext& windows) : UIScrollBar(windows) {
+UIRenewQuestScrollBar::UIRenewQuestScrollBar() : UIScrollBar() {
   this->arrowLength = 3;
   this->thickness = 7;
 }
 
 // OFFSET: 0x007FBFD0
 // FUNCTION: fn_09967
-UIRenewQuestWnd::UIRenewQuestWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), m_tabs(nullptr), m_scrollBar(nullptr), m_optionCheckBox(nullptr), m_closeButton(nullptr), m_tab(0), m_scroll(0),
+UIRenewQuestWnd::UIRenewQuestWnd()
+    : UIFrameWnd(0), m_tabs(nullptr), m_scrollBar(nullptr), m_optionCheckBox(nullptr), m_closeButton(nullptr), m_tab(0), m_scroll(0),
       m_selected(0), m_scrollable(false), m_pressed(0) {
   std::memset(&this->m_rows, 0, sizeof(this->m_rows));
   this->m_questIds[0].clear();
@@ -712,7 +712,7 @@ UIRenewQuestWnd::UIRenewQuestWnd(UIWindowContext& windows)
 // OFFSET: 0x007FC4A0
 // FUNCTION: fn_09972
 void UIRenewQuestWnd::Slot15(int, int) {
-  this->m_tabs = new UITab(*this->m_context);
+  this->m_tabs = new UITab();
   this->m_tabs->SetSize(29, 404);
   this->m_tabs->tabCount = 4;
   this->m_tabs->Move(0, 17);
@@ -728,7 +728,7 @@ void UIRenewQuestWnd::Slot15(int, int) {
     "유저인터페이스\\renew_questui\\checkbox_off.bmp"
   );
 
-  this->m_closeButton = new UIBitmapButton(*this->m_context);
+  this->m_closeButton = new UIBitmapButton();
   this->m_closeButton->SetBitmap("유저인터페이스\\basic_interface\\btn_close.bmp", 0, 0);
   this->m_closeButton->SetBitmap("유저인터페이스\\basic_interface\\btn_close_a.bmp", 1, 0);
   this->m_closeButton->SetBitmap("유저인터페이스\\basic_interface\\btn_close_b.bmp", 2, 0);
@@ -737,7 +737,7 @@ void UIRenewQuestWnd::Slot15(int, int) {
   this->m_closeButton->SetId(201);
   this->AddChild(this->m_closeButton);
 
-  this->m_scrollBar = new UIRenewQuestScrollBar(*this->m_context);
+  this->m_scrollBar = new UIRenewQuestScrollBar();
   this->m_scrollBar->Configure(374, 17, 1, 422);
   this->m_scroll = 0;
   this->AddChild(this->m_scrollBar);
@@ -759,7 +759,7 @@ void UIRenewQuestWnd::Slot15(int, int) {
     lock->m_message = 1;
     this->m_rows.lockBoxes[index]->SetHidden(true);
 
-    this->m_rows.icons[index] = new UIStaticBitmap(*this->m_context);
+    this->m_rows.icons[index] = new UIStaticBitmap();
     this->m_rows.icons[index]->SetBitmap("유저인터페이스\\renew_questui\\ico_nq.bmp");
     this->m_rows.icons[index]->SetSize(this->m_rows.icons[index]->geometry.width, this->m_rows.icons[index]->geometry.height);
     this->m_rows.icons[index]->Move(46, y - 15);

@@ -9,7 +9,7 @@
 // OFFSET: 0x0086D530
 // FUNCTION: fn_11047
 UIItemStoreComboBox::UIItemStoreComboBox()
-    : UIComboBoxEx(*reinterpret_cast<UIWindowContext*>(nullptr)), pink(false) {
+    : UIComboBoxEx(), pink(false) {
 }
 
 // OFFSET: 0x00886200
@@ -19,7 +19,7 @@ void UIItemStoreComboBoxWnd::Slot15(int, int) {
   const char* pressed = this->pink == 1 ? "combo_btn_pink_b" : "combo_btn_b";
   const char* disabled = this->pink == 1 ? "combo_btn_pink_c" : "combo_btn_c";
 
-  this->button = new UIBitmapButton(*this->m_context);
+  this->button = new UIBitmapButton();
   this->button->SetBitmap((path + "combo_btn_a" + ".bmp").c_str(), 0, 0);
   this->button->SetBitmap((path + pressed + ".bmp").c_str(), 1, 0);
   this->button->SetBitmap((path + disabled + ".bmp").c_str(), 2, 0);
@@ -28,7 +28,7 @@ void UIItemStoreComboBoxWnd::Slot15(int, int) {
   this->button->SetId(273);
   this->AddChild(this->button);
 
-  UIItemStoreComboBox* items = new UIItemStoreComboBox(*this->m_context);
+  UIItemStoreComboBox* items = new UIItemStoreComboBox();
   this->list = items;
   items->pink = this->pink != 0;
   this->list->SetSize(62, 45);
@@ -38,7 +38,7 @@ void UIItemStoreComboBoxWnd::Slot15(int, int) {
 
   char text[12] = {};
   std::sprintf(text, "(NO SELECT)");
-  this->label = new UIStaticText(*this->m_context);
+  this->label = new UIStaticText();
   this->label->SetSize(this->geometry.width - this->button->BitmapWidth(), this->button->BitmapHeight());
   this->label->SetText(text, 0);
   this->label->Move(2, 3);
@@ -48,5 +48,5 @@ void UIItemStoreComboBoxWnd::Slot15(int, int) {
 
 // OFFSET: 0x0086D590
 // FUNCTION: fn_11048
-UIItemStoreComboBoxWnd::UIItemStoreComboBoxWnd(UIWindowContext& windows) : UIComboBoxDefWnd(windows), pink(0) {
+UIItemStoreComboBoxWnd::UIItemStoreComboBoxWnd() : UIComboBoxDefWnd(), pink(0) {
 }

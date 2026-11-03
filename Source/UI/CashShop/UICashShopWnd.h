@@ -24,7 +24,7 @@ public:
     /* 0018 */ std::string url;
   };
 
-  UICashShopWnd_Banner(UIWindowContext& windows);
+  UICashShopWnd_Banner();
   void Slot19() override;
   void Paint() override;
   void ResetCursor(int x, int y) override;
@@ -42,7 +42,7 @@ public:
 
 class UICashShopWnd_CartItem : public UIWindow {
 public:
-  UICashShopWnd_CartItem(UIWindowContext& windows);
+  UICashShopWnd_CartItem();
 
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot15(int width, int height) override;
@@ -60,7 +60,7 @@ public:
 
 class UICashShopWnd_Cart : public UIWindow {
 public:
-  UICashShopWnd_Cart(UIWindowContext& windows);
+  UICashShopWnd_Cart();
 
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot15(int width, int height) override;
@@ -79,8 +79,8 @@ public:
 class UICashShopWnd_Item : public UIWindow {
 public:
   // INLINED
-  UICashShopWnd_Item(UIWindowContext& windows)
-      : UIWindow(windows, 0), m_addButton(nullptr), m_largeLayout(false), m_soldOut(nullptr) {
+  UICashShopWnd_Item()
+      : UIWindow(0), m_addButton(nullptr), m_largeLayout(false), m_soldOut(nullptr) {
   }
 
   void Slot10(int x, int y, std::intptr_t value) override;
@@ -100,7 +100,7 @@ public:
 
 class UICashShopWnd : public UIFrameWnd {
 public:
-  UICashShopWnd(UIWindowContext& windows);
+  UICashShopWnd();
   ~UICashShopWnd() override;
   bool Slot03() override;
   void Slot10(int x, int y, std::intptr_t value) override;

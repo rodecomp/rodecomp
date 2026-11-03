@@ -24,8 +24,8 @@ namespace {
 
 // OFFSET: 0x007BB030
 // FUNCTION: fn_09280
-UIRequestJoinPartyWnd::UIRequestJoinPartyWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0) {
+UIRequestJoinPartyWnd::UIRequestJoinPartyWnd()
+    : UIFrameWnd(0) {
 }
 
 // OFFSET: 0x007BB960
@@ -34,7 +34,7 @@ UIRequestJoinPartyWnd::~UIRequestJoinPartyWnd() = default;
 // OFFSET: 0x007BEFD0
 // FUNCTION: fn_09301
 void UIRequestJoinPartyWnd::Slot15(int, int) {
-  this->icon = new UIBitmapButton(*this->m_context);
+  this->icon = new UIBitmapButton();
   this->icon->SetSize(25, 25);
   const std::string initial = std::string(prefix) + "renewalparty\\icon_jobs_4046.bmp";
 
@@ -45,7 +45,7 @@ void UIRequestJoinPartyWnd::Slot15(int, int) {
   this->icon->Move(12, 29);
   this->AddChild(this->icon);
 
-  this->levelText = new UIStaticText(*this->m_context);
+  this->levelText = new UIStaticText();
   this->levelText->SetSize(25, 14);
   this->levelText->Move(16, 56);
   this->levelText->SetText("1", 0);
@@ -58,7 +58,7 @@ void UIRequestJoinPartyWnd::Slot15(int, int) {
   const int x[] = {122, 169};
 
   for (int index = 0; index < 2; ++index) {
-    auto* button = new UIBasicButton(*this->m_context);
+    auto* button = new UIBasicButton();
     const char* label = LookupMessage(messages[index]);
     button->Configure(this->TextWidth(label, 0, 0, 12, 0, 0) + 10, label);
     button->Move(x[index], 136);
@@ -67,13 +67,13 @@ void UIRequestJoinPartyWnd::Slot15(int, int) {
   }
 
   this->m_message0 = 541;
-  this->details = new UITextViewer(*this->m_context);
+  this->details = new UITextViewer();
   this->details->Configure(43, 20, 167, 60, 0);
   this->details->textColor = 0xFFFFFFFFu;
   this->details->Invalidate();
   this->AddChild(this->details);
 
-  this->block = new UICheckBox(*this->m_context);
+  this->block = new UICheckBox();
   this->block->SetSize(24, 47);
   const std::string checked = std::string(prefix) + "uiadventureragency\\btn_block_on.bmp";
   const std::string unchecked = std::string(prefix) + "uiadventureragency\\btn_block_off.bmp";
@@ -85,7 +85,7 @@ void UIRequestJoinPartyWnd::Slot15(int, int) {
   std::vector<std::string> unused;
   WrapPlainText(LookupMessage(3518), unused, 30);
 
-  this->blockText = new UITextViewer(*this->m_context);
+  this->blockText = new UITextViewer();
   this->blockText->Configure(31, 81, 182, 47, 0);
   this->blockText->textColor = 0xFFD7C53Cu;
   this->blockText->Invalidate();
@@ -93,7 +93,7 @@ void UIRequestJoinPartyWnd::Slot15(int, int) {
   this->blockText->lineHeight = 15;
   this->blockText->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(3518)), 30, 0, 0);
 
-  auto* close = new UIBitmapButton(*this->m_context);
+  auto* close = new UIBitmapButton();
   const std::string off = std::string(prefix) + "basic_interface\\big_sys_close_off.bmp";
   const std::string on = std::string(prefix) + "basic_interface\\big_sys_close_on.bmp";
   close->SetBitmap(off.c_str(), 0, 0);

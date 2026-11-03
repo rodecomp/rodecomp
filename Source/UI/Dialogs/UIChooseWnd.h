@@ -11,7 +11,7 @@ class UIListBox;
 
 class UIChooseWnd : public UIFrameWnd {
 public:
-  UIChooseWnd(UIWindowContext& windows);
+  UIChooseWnd();
   ~UIChooseWnd() override;
   void Slot11() override;
   void Slot15(int width, int height) override;

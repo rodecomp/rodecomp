@@ -11,7 +11,7 @@
 
 // OFFSET: 0x0086C190
 // FUNCTION: fn_11022
-UIBarGraph2::UIBarGraph2(UIWindowContext& context) : UIBarGraph(context) {
+UIBarGraph2::UIBarGraph2() : UIBarGraph() {
   this->m_vertical = 0;
   this->m_backgroundRed = 0x8E;
   this->m_backgroundGreen = 0x8E;
@@ -23,17 +23,17 @@ UIBarGraph2::UIBarGraph2(UIWindowContext& context) : UIBarGraph(context) {
 
 // OFFSET: 0x0086C240
 // FUNCTION: fn_11023
-UIBarGraph3::UIBarGraph3(UIWindowContext& context) : UIWindow(context, 0), m_current(nullptr), m_maximum(nullptr) {
+UIBarGraph3::UIBarGraph3() : UIWindow(0), m_current(nullptr), m_maximum(nullptr) {
 }
 
 // OFFSET: 0x0086C310
 // FUNCTION: fn_11024
-UIBarGraphHomun::UIBarGraphHomun(UIWindowContext& context) : UIWindow(context, 0) {
+UIBarGraphHomun::UIBarGraphHomun() : UIWindow(0) {
 }
 
 // OFFSET: 0x0086C390
 // FUNCTION: fn_11025
-UIBarGraphPlayer::UIBarGraphPlayer(UIWindowContext& context) : UIWindow(context, 0) {
+UIBarGraphPlayer::UIBarGraphPlayer() : UIWindow(0) {
 }
 
 // OFFSET: 0x0086FFA0

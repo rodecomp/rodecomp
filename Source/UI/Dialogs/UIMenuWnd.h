@@ -9,7 +9,7 @@
 
 class UIMenuWnd : public UIFrameWnd {
 public:
-  UIMenuWnd(UIWindowContext& windows);
+  UIMenuWnd();
   /* 00B4 */ int m_menuId;
   /* 00B8 */ int m_selected;
   /* 00BC */ int m_itemHeight;

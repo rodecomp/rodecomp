@@ -401,19 +401,19 @@ UIHairBitmap::UIHairBitmap() : UIBitmapButton() {
 
 // OFFSET: 0x007ECEC0
 // FUNCTION: fn_09804
-UICaptchaPreviewWnd::UICaptchaPreviewWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), m_image(nullptr), m_captchaKey(), m_imageData(nullptr), m_imageSize(0), m_imageReceived(0) {
+UICaptchaPreviewWnd::UICaptchaPreviewWnd()
+    : UIFrameWnd(0), m_image(nullptr), m_captchaKey(), m_imageData(nullptr), m_imageSize(0), m_imageReceived(0) {
 }
 
 // OFFSET: 0x0086C7B0
 // FUNCTION: fn_11030
-UIChatHisBox2::UIChatHisBox2(UIWindowContext& windows)
-    : UIChatHisBox(windows), backgroundRed(255), backgroundGreen(255), backgroundBlue(255) {
+UIChatHisBox2::UIChatHisBox2()
+    : UIChatHisBox(), backgroundRed(255), backgroundGreen(255), backgroundBlue(255) {
 }
 
 // OFFSET: 0x0086C830
 // FUNCTION: fn_11031
-UIChatHisBox3::UIChatHisBox3(UIWindowContext& windows) : UIChatHisBox2(windows), unknown_0130(1), unknown_0134(12) {
+UIChatHisBox3::UIChatHisBox3() : UIChatHisBox2(), unknown_0130(1), unknown_0134(12) {
 }
 
 // OFFSET: 0x00999FF0
@@ -425,15 +425,15 @@ UIColoringTextViewer::UIColoringTextViewer() : UIListBox(), color(0), lineLimit(
 
 // OFFSET: 0x007ECF50
 // FUNCTION: fn_09805
-UIMacroDetectorWnd::UIMacroDetectorWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), m_button(nullptr), m_imageData(nullptr), m_imageSize(0), m_imageReceived(0), unknown_00D0(0), totalDuration(0),
+UIMacroDetectorWnd::UIMacroDetectorWnd()
+    : UIFrameWnd(0), m_button(nullptr), m_imageData(nullptr), m_imageSize(0), m_imageReceived(0), unknown_00D0(0), totalDuration(0),
       startTick(0), messageDuration(0), m_lastAnswer(), message(), unknown_0110(0), messageTick(3000), m_image(nullptr), m_editCtrl(nullptr) {
   std::memset(this->m_captchaKey, 0, sizeof(this->m_captchaKey));
   g_windowMgr.CloseWindow(155);
   g_windowMgr.CloseWindow(39);
 }
 // FUNCTION: fn_13537
-UIRoundBoxTooltipWnd::UIRoundBoxTooltipWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0), viewer(nullptr) {
+UIRoundBoxTooltipWnd::UIRoundBoxTooltipWnd() : UIFrameWnd(0), viewer(nullptr) {
 }
 
 // OFFSET: 0x00ACC7F0

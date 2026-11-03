@@ -26,7 +26,7 @@ void CUIRecommendedQuestInfo::Slot53() {
 // OFFSET: 0x00A570F0
 // FUNCTION: fn_16323
 void CUIRecommendedQuestInfo::Slot15(int width, int height) {
-  this->titleBar = new CUITitleBar(*this->m_context);
+  this->titleBar = new CUITitleBar();
   this->titleBar->SetSize(342, 17);
   this->titleBar->Move(0, 0);
   this->titleBar->SetImages(
@@ -35,7 +35,7 @@ void CUIRecommendedQuestInfo::Slot15(int width, int height) {
   );
   this->AddChild(this->titleBar);
 
-  CUIStaticText* title = new CUIStaticText(*this->m_context);
+  CUIStaticText* title = new CUIStaticText();
   title->SetSize(100, 17);
   title->Move(18, 0);
   title->SetText("QUEST", 5);
@@ -50,7 +50,7 @@ void CUIRecommendedQuestInfo::Slot15(int width, int height) {
   this->titleBar->titleText = title;
   this->titleBar->AddChild(title);
 
-  CUIImageButton* firstButton = new CUIImageButton(*this->m_context);
+  CUIImageButton* firstButton = new CUIImageButton();
   firstButton->SetSize(11, 11);
   firstButton->Move(3, 3);
   firstButton->SetOnClick([this]() { this->OnFirstAction(); });
@@ -62,13 +62,13 @@ void CUIRecommendedQuestInfo::Slot15(int width, int height) {
   );
   this->titleBar->AddChild(firstButton);
 
-  this->background = new CUIStaticImage(*this->m_context);
+  this->background = new CUIStaticImage();
   this->background->SetSize(342, 395);
   this->background->Move(0, 17);
   this->background->SetImage(std::string("유저인터페이스\\Renew_QuestUI\\bg_detail_recommended.bmp"));
   this->AddChild(this->background);
 
-  this->titleText = new CUIStaticText(*this->m_context);
+  this->titleText = new CUIStaticText();
   this->titleText->SetSize(342, 12);
   this->titleText->Move(0, 39);
   this->titleText->SetText("", 0);
@@ -82,12 +82,12 @@ void CUIRecommendedQuestInfo::Slot15(int width, int height) {
   this->titleText->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->titleText);
 
-  this->scrollWindow = new RecommendedQuestInfo::CUIScrollWindow(*this->m_context);
+  this->scrollWindow = new RecommendedQuestInfo::CUIScrollWindow();
   this->scrollWindow->SetSize(342, 322);
   this->scrollWindow->Move(0, 62);
   this->AddChild(this->scrollWindow);
 
-  this->closeButton = new CUIImageButton(*this->m_context);
+  this->closeButton = new CUIImageButton();
   this->closeButton->SetSize(42, 20);
   this->closeButton->Move(288, 388);
   this->closeButton->SetOnClick([this]() { this->OnClose(); });
@@ -140,7 +140,7 @@ void CUIQuestInfo::Slot16() {
 // OFFSET: 0x00A569F0
 // FUNCTION: fn_16322
 void CUIQuestInfo::Slot15(int width, int height) {
-  this->textViewer = new CUITextViewer(*this->m_context);
+  this->textViewer = new CUITextViewer();
   this->textViewer->SetSize(300, 150);
   this->textViewer->Move(0, 0);
   this->textViewer->SetTextOffset(0, 0);
@@ -168,26 +168,26 @@ void CUIQuestInfo::Slot15(int width, int height) {
 // OFFSET: 0x00A57EF0
 // FUNCTION: fn_16324
 void CUIScrollWindow::Slot15(int width, int height) {
-  this->background = new CUIStaticImage(*this->m_context);
+  this->background = new CUIStaticImage();
   this->background->SetSize(336, 318);
   this->background->Move(3, 2);
   this->background->SetImage(std::string());
   this->AddChild(this->background);
 
-  this->topImage = new CUIStaticImage(*this->m_context);
+  this->topImage = new CUIStaticImage();
   this->topImage->SetSize(324, 138);
   this->topImage->Move(9, 8);
   this->topImage->SetImage("유저인터페이스\\Renew_QuestUI\\bg_quest01.png");
   this->AddChild(this->topImage);
 
-  this->bottomImage = new CUIStaticImage(*this->m_context);
+  this->bottomImage = new CUIStaticImage();
   this->bottomImage->SetSize(208, 92);
   this->bottomImage->Move(9, 221);
   this->bottomImage->SetImage("유저인터페이스\\Renew_QuestUI\\bg_quest02.png");
   this->AddChild(this->bottomImage);
 
   for (int count = 3; count != 0; --count) {
-    CUIQuestInfo* info = new CUIQuestInfo(*this->m_context);
+    CUIQuestInfo* info = new CUIQuestInfo();
     info->SetSize(300, 150);
     this->AddChild(info);
     this->questInfos.push_back(info);
@@ -216,7 +216,7 @@ void CUIScrollWindow::Slot15(int width, int height) {
 // OFFSET: 0x00A58C70
 // FUNCTION: fn_16350
 void CUIScrollWindow::Slot16() {
-  this->npcSprite = new UINpcSprWnd(*this->m_context);
+  this->npcSprite = new UINpcSprWnd();
   this->npcSprite->SetSize(75, 145);
   this->npcSprite->Show(0);
   this->AddChild(this->npcSprite);
@@ -228,13 +228,13 @@ namespace RecommendedQuestInfo {
 
 // OFFSET: 0x00A58640
 // FUNCTION: fn_16339
-CUIQuestInfo::CUIQuestInfo(UIWindowContext& context) : CUIControl(context), textViewer(nullptr) {
+CUIQuestInfo::CUIQuestInfo() : CUIControl(), textViewer(nullptr) {
 }
 
 // OFFSET: 0x00A587C0
 // FUNCTION: fn_16341
-CUIScrollWindow::CUIScrollWindow(UIWindowContext& context)
-    : CUIControl(context), background(nullptr), topImage(nullptr), bottomImage(nullptr), questInfos(), npcSprite(nullptr) {
+CUIScrollWindow::CUIScrollWindow()
+    : CUIControl(), background(nullptr), topImage(nullptr), bottomImage(nullptr), questInfos(), npcSprite(nullptr) {
 }
 
 }

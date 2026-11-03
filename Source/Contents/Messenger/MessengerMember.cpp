@@ -66,7 +66,7 @@ namespace {
 
 class UIDragMiniPartyWnd : public UIFrameWnd {
 public:
-  UIDragMiniPartyWnd(UIWindowContext& windowContext, MessengerMember member);
+  UIDragMiniPartyWnd(MessengerMember member);
   ~UIDragMiniPartyWnd() override;
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -89,7 +89,7 @@ public:
 
 class UIFriendOptionWnd : public UIFrameWnd {
 public:
-  UIFriendOptionWnd(UIWindowContext& windows);
+  UIFriendOptionWnd();
   ~UIFriendOptionWnd() override;
   void Slot11() override;
   void Slot15(int width, int height) override;
@@ -105,7 +105,7 @@ public:
 
 class UIJobIconButton : public UIBitmapButton {
 public:
-  UIJobIconButton(UIWindowContext& windows);
+  UIJobIconButton();
   ~UIJobIconButton() override;
   void Paint() override;
   void Slot25(int x, int y) override;
@@ -117,7 +117,7 @@ public:
 
 class UIMessengerGroupWnd : public UIFrameWnd {
 public:
-  UIMessengerGroupWnd(UIWindowContext& windows);
+  UIMessengerGroupWnd();
   ~UIMessengerGroupWnd() override;
   void Slot11() override;
   void Slot15(int width, int height) override;
@@ -226,8 +226,8 @@ MessengerMember& MessengerMember::operator=(const MessengerMember& other) {
 
 // OFFSET: 0x007382E0
 // FUNCTION: fn_07664
-UIDragMiniPartyWnd::UIDragMiniPartyWnd(UIWindowContext& windowContext, MessengerMember member)
-    : UIFrameWnd(windowContext, 0), member(member), gauge(nullptr), iconIndex(0) {
+UIDragMiniPartyWnd::UIDragMiniPartyWnd(MessengerMember member)
+    : UIFrameWnd(0), member(member), gauge(nullptr), iconIndex(0) {
   this->geometry.unknown_0030 = 0;
 }
 
@@ -499,7 +499,7 @@ void UIPcGage::SetLimits(int first, int second) {
 
 // OFFSET: 0x00738E10
 // FUNCTION: fn_07679
-UIFriendOptionWnd::UIFriendOptionWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0) {
+UIFriendOptionWnd::UIFriendOptionWnd() : UIFrameWnd(0) {
   this->saved = nullptr;
 }
 
@@ -513,7 +513,7 @@ void UIFriendOptionWnd::Slot15(int, int) {
 
   const char* label = LookupMessage(361);
   int width = std::min(this->TextWidth(label, 0, 0, 12, 0, 0) + 12, this->geometry.width - 15);
-  this->option0Box = new UICheckBox(*this->m_context);
+  this->option0Box = new UICheckBox();
   this->option0Box->SetSize(width, 12);
   this->option0Box->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(361));
   this->option0Box->Move(6, 21);
@@ -522,7 +522,7 @@ void UIFriendOptionWnd::Slot15(int, int) {
 
   label = LookupMessage(359);
   width = std::min(this->TextWidth(label, 0, 0, 12, 0, 0) + 12, this->geometry.width - 15);
-  this->option2Box = new UICheckBox(*this->m_context);
+  this->option2Box = new UICheckBox();
   this->option2Box->SetSize(width, 12);
   this->option2Box->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(359));
   this->option2Box->Move(6, 37);
@@ -531,7 +531,7 @@ void UIFriendOptionWnd::Slot15(int, int) {
 
   label = LookupMessage(362);
   width = std::min(this->TextWidth(label, 0, 0, 12, 0, 0) + 12, this->geometry.width - 15);
-  this->option1Box = new UICheckBox(*this->m_context);
+  this->option1Box = new UICheckBox();
   this->option1Box->SetSize(width, 12);
   this->option1Box->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(362));
   this->option1Box->Move(6, 53);
@@ -601,7 +601,7 @@ void UIFriendOptionWnd::Slot11() {
 
 // OFFSET: 0x00739330
 // FUNCTION: fn_07685
-UIJobIconButton::UIJobIconButton(UIWindowContext& windows) : UIBitmapButton(windows) {
+UIJobIconButton::UIJobIconButton() : UIBitmapButton() {
   this->unknown_0120 = 0;
 }
 
@@ -676,7 +676,7 @@ MiniPartyInfoEntry::MiniPartyInfoEntry(const char* text, int value) : text(text)
 
 // OFFSET: 0x00739C80
 // FUNCTION: fn_07698
-UIMessengerGroupWnd::UIMessengerGroupWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0) {
+UIMessengerGroupWnd::UIMessengerGroupWnd() : UIFrameWnd(0) {
   this->saved = nullptr;
   this->scrollBar = nullptr;
   this->scrollTop = 0;
@@ -759,7 +759,7 @@ __declspec(noinline) MessengerMember UIMessengerGroupWnd::MemberAt(int x, int y)
 // OFFSET: 0x0073A330
 // FUNCTION: fn_07703
 __declspec(noinline) void UIMessengerGroupWnd::OpenMiniPartyWnd(int cell, const MessengerMember& member) {
-  UIMiniPartyWnd* window = new UIMiniPartyWnd(*this->m_context);
+  UIMiniPartyWnd* window = new UIMiniPartyWnd();
   window->SetSize(174, 52);
   window->m_cell = cell;
   g_windowMgr.AddMiniPartyWindow(window);
@@ -791,7 +791,7 @@ void UIMessengerGroupWnd::Slot15(int, int) {
   this->iconPositions[1].size = 27;
 
   this->iconModeButtons[0] = this->AddMinimizeButton("", 0);
-  this->iconModeButtons[1] = new UIBitmapButton(*this->m_context);
+  this->iconModeButtons[1] = new UIBitmapButton();
   static_cast<UIBitmapButton*>(this->iconModeButtons[1])->SetBitmap("유저인터페이스\\renewalparty\\btn_titlebar_maximum_out.bmp", 0, 0);
   static_cast<UIBitmapButton*>(this->iconModeButtons[1])->SetBitmap("유저인터페이스\\renewalparty\\btn_titlebar_maximum_over.bmp", 1, 0);
   static_cast<UIBitmapButton*>(this->iconModeButtons[1])->SetBitmap("유저인터페이스\\renewalparty\\btn_titlebar_maximum_press.bmp", 2, 0);
@@ -811,7 +811,7 @@ void UIMessengerGroupWnd::Slot15(int, int) {
   }
 
   for (int index = 0; index < 40; ++index) {
-    this->jobIcons[index] = new UIJobIconButton(*this->m_context);
+    this->jobIcons[index] = new UIJobIconButton();
     this->jobIcons[index]->SetSize(50, 50);
     this->jobIcons[index]->SetBitmap("유저인터페이스\\renewalparty\\icon_jobs_4046.bmp", 0, 0);
     this->jobIcons[index]->SetBitmap("유저인터페이스\\renewalparty\\icon_jobs_4046.bmp", 1, 0);
@@ -819,7 +819,7 @@ void UIMessengerGroupWnd::Slot15(int, int) {
     this->AddChild(this->jobIcons[index]);
   }
 
-  this->scrollBar = new UIScrollBar(*this->m_context);
+  this->scrollBar = new UIScrollBar();
   this->scrollBar->Configure(this->geometry.width - 15, 17, 1, this->geometry.height - 58);
   this->AddChild(this->scrollBar);
   this->mode = 1;
@@ -828,7 +828,7 @@ void UIMessengerGroupWnd::Slot15(int, int) {
   int tabWidths[2] = {48, this->TextWidth(LookupMessage(0x67), 0, 0, 12, 0, 0) + 13};
   int tabValues[2] = {0, 1};
   for (int index = 0; index < 2; ++index) {
-    UIRadioBtn* tab = new UIRadioBtn(*this->m_context);
+    UIRadioBtn* tab = new UIRadioBtn();
     this->tabs[index] = tab;
     tab->SetSize(tabWidths[index], 12);
     tab->Move(index * 60 + 4, this->geometry.height - 16);
@@ -849,7 +849,7 @@ void UIMessengerGroupWnd::Slot15(int, int) {
     sprintf(title, "%s(%d/%d)", titles[this->mode], this->members.size(), 40);
   }
 
-  this->titleText = new UIStaticText(*this->m_context);
+  this->titleText = new UIStaticText();
   this->titleText->SetSize(this->geometry.width - 57, 15);
   this->titleText->SetTextFitted(title);
   this->titleText->Move(16, 2);
@@ -886,7 +886,7 @@ void UIMessengerGroupWnd::Slot15(int, int) {
     for (int index = 0; index < 11; ++index) {
       char number[8];
       _itoa(index + 1, number, 10);
-      UIBitmapButton* button = new UIBitmapButton(*this->m_context);
+      UIBitmapButton* button = new UIBitmapButton();
       this->buttons[index] = button;
 
       bool useDisabledImage = false;
@@ -918,7 +918,7 @@ void UIMessengerGroupWnd::Slot15(int, int) {
     }
   }
 
-  UIResizer* resizer = new UIResizer(*this->m_context);
+  UIResizer* resizer = new UIResizer();
   this->resizeButton = resizer;
   resizer->SetSize(16, 16);
   resizer->SetDirection(7);
@@ -1187,7 +1187,7 @@ void UIMessengerGroupWnd::Slot33(int x, int y) {
   if (this->mode == 1 && !g_messengerGroupCollapsed && !g_windowMgr.HasMiniPartyMember(selectedMember.accountId)) {
     gameMode->SetDragIds(29, this->selected);
     if (!g_windowMgr.window_4F250) {
-      UIDragMiniPartyWnd* window = new (std::nothrow) UIDragMiniPartyWnd(*this->m_context, selectedMember);
+      UIDragMiniPartyWnd* window = new (std::nothrow) UIDragMiniPartyWnd(selectedMember);
       {
         window->SetSize(this->geometry.width, this->rowHeight);
         window->Move(-1000, -1000);
@@ -2046,8 +2046,8 @@ void UIMessengerGroupWnd::Slot11() {
 
 // OFFSET: 0x0073FFC0
 // FUNCTION: fn_07726
-UIMiniPartyInfoWnd::UIMiniPartyInfoWnd(UIWindowContext& windowContext)
-    : UIFrameWnd(windowContext, 0), m_gauge(nullptr), m_owner(nullptr) {
+UIMiniPartyInfoWnd::UIMiniPartyInfoWnd()
+    : UIFrameWnd(0), m_gauge(nullptr), m_owner(nullptr) {
   this->m_entries.clear();
 }
 

@@ -272,7 +272,7 @@ void CNavigationManager::RequestPrivateAirship(std::string mapName, int itemId) 
 
   if (itemId == 0x1AFD) {
     WindowDialogs& dialogs = *reinterpret_cast<WindowDialogs*>(&g_windowMgr);
-    UIPayConfirmWnd* window = new UIPayConfirmWnd(dialogs.windows, dialogs.dialog);
+    UIPayConfirmWnd* window = new UIPayConfirmWnd(dialogs.dialog);
     window->Configure(LookupMessage(0xFC1), 0x1AFD);
     window->SendMsg(nullptr, 0x9C, 1, 0, 0, 0);
     window->SetId(0x16B);

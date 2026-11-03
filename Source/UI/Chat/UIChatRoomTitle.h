@@ -22,7 +22,7 @@ class UIChatRoomTitle : public UIWindow {
   friend class CGameMode;
 
 public:
-  explicit UIChatRoomTitle(UIWindowContext& context);
+  UIChatRoomTitle();
   void Slot15(int width, int height) override;
   void Slot26(int x, int y) override;
   void Paint() override;

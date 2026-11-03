@@ -11,7 +11,7 @@ class CUIVScrollBar;
 
 class CUIStaticText : public CUIControl {
 public:
-  explicit CUIStaticText(UIWindowContext& context);
+  CUIStaticText();
 
   void Slot28(int x, int y) override;
   void Paint() override;

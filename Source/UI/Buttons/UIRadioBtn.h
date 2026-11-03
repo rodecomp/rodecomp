@@ -9,7 +9,7 @@
 
 class UIRadioBtn : public UIWindow {
 public:
-  UIRadioBtn(UIWindowContext& windows);
+  UIRadioBtn();
   ~UIRadioBtn() override;
   void Paint() override;
   void Slot25(int x, int y) override;

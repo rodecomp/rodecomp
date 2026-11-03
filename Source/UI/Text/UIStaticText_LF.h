@@ -8,8 +8,10 @@
 class UIStaticText_LF : public UIWindow {
 public:
   // INLINED
-  UIStaticText_LF(UIWindowContext& windows, unsigned char cached)
-      : UIWindow(windows, cached), m_lineSpacing(0), m_align(0), m_fontFamily(0), m_fontHeight(12), m_textColor(0), m_bold(0) {}
+  UIStaticText_LF(unsigned char cached)
+      : UIWindow(cached), m_lineSpacing(0), m_align(0), m_fontFamily(0), m_fontHeight(12), m_textColor(0), m_bold(0) {}
+  UIStaticText_LF(UIWindowContext&, unsigned char cached) : UIStaticText_LF(cached) {
+  }
 
   void Paint() override;
   void Slot25(int x, int y) override;

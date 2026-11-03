@@ -56,8 +56,8 @@ namespace LineCutter {
   class UIText : public UIWindow {
   public:
     // INLINED
-    explicit UIText(UIWindowContext& windows)
-        : UIWindow(windows, 0), m_color(0), m_fontHeight(12), m_bold(0), m_italic(0), m_outlined(0), m_outlineColor(0xFFFFFF), m_shadowed(0),
+    explicit UIText()
+        : UIWindow(0), m_color(0), m_fontHeight(12), m_bold(0), m_italic(0), m_outlined(0), m_outlineColor(0xFFFFFF), m_shadowed(0),
           m_shadowColor(0xFFFFFF) {
     }
 
@@ -85,11 +85,11 @@ namespace LineCutter {
 
 class UIEmotion : public UIWindow {
 public:
-  explicit UIEmotion(UIWindowContext& windows, const char* sprite, const char* action);
-  explicit UIEmotion(UIWindowContext& windows);
+  explicit UIEmotion(const char* sprite, const char* action);
+  explicit UIEmotion();
   // INLINED
-  UIEmotion(UIWindowContext& windows, const char* sprite, const char* action, unsigned animation, unsigned maxLoops)
-      : UIWindow(windows, 0), m_animation(animation), m_frame(0), m_maxLoops(maxLoops),
+  UIEmotion(const char* sprite, const char* action, unsigned animation, unsigned maxLoops)
+      : UIWindow(0), m_animation(animation), m_frame(0), m_maxLoops(maxLoops),
         m_sprite(static_cast<CSprRes*>(ResourceMgr::Instance().Load(sprite))), m_action(static_cast<CActRes*>(ResourceMgr::Instance().Load(action))),
         m_startTime(timeGetTime()), m_loops(1) {
   }
@@ -110,10 +110,10 @@ protected:
 class UIItemImage : public UIWindow {
 public:
   // INLINED
-  UIItemImage(UIWindowContext& windows, const std::string& itemId) : UIWindow(windows, 0), m_itemId(itemId) {
+  UIItemImage(const std::string& itemId) : UIWindow(0), m_itemId(itemId) {
     this->m_clip = 1;
   }
-  explicit UIItemImage(UIWindowContext& windows);
+  explicit UIItemImage();
 
   void Paint() override;
   void Slot28(int x, int y) override;
@@ -776,7 +776,7 @@ int CCreateLineInfo::LayoutEmotion(int x, const std::string& text) {
       if (sprite) {
         const char* action = g_cashEmotionMgr->GetPackName(data->sprId);
         if (action) {
-          UIEmotion* emotion = new UIEmotion(*reinterpret_cast<UIWindowContext*>(nullptr), sprite, action, data->unknown_0020, loops);
+          UIEmotion* emotion = new UIEmotion(sprite, action, data->unknown_0020, loops);
           emotion->SetSize(50, 50);
           emotion->Invalidate();
           if (this->m_width < emotion->geometry.width + x) {
@@ -842,7 +842,7 @@ int CCreateLineInfo::LayoutItemImage(int x, const std::string& text) {
 
   if (std::regex_search(text.c_str(), text.c_str() + text.size(), match, std::regex("^\\^i\\[(\\d{1,7})\\]*"))) {
     const std::string itemId = match[1].str();
-    UIItemImage* image = new (std::nothrow) UIItemImage(*reinterpret_cast<UIWindowContext*>(nullptr), itemId);
+    UIItemImage* image = new (std::nothrow) UIItemImage(itemId);
     if (image) {
       image->SetSize(25, 25);
       image->Invalidate();
@@ -1124,7 +1124,7 @@ UIWindow* CCreateLineInfo::CreateTextWindow(std::string text, const LineTextStyl
   }
 
   const tagSIZE size = MeasureText(this->m_parent, text, style);
-  LineCutter::UIText* window = new LineCutter::UIText(*reinterpret_cast<UIWindowContext*>(nullptr));
+  LineCutter::UIText* window = new LineCutter::UIText();
   window->SetSize(size.cx, size.cy);
   window->m_text = text;
   window->m_outlineColor = this->unknown_002C;
@@ -1720,7 +1720,7 @@ bool NavigationLinkParser::HasUnownedItemLink(std::string text) {
 
 // OFFSET: 0x00836D40
 // FUNCTION: fn_10435
-UIEmotion::UIEmotion(UIWindowContext& windows, const char* sprite, const char* action) : UIWindow(windows, 0), m_animation(0), m_frame(0), m_maxLoops(0) {
+UIEmotion::UIEmotion(const char* sprite, const char* action) : UIWindow(0), m_animation(0), m_frame(0), m_maxLoops(0) {
   this->m_sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(sprite));
   this->m_action = static_cast<CActRes*>(ResourceMgr::Instance().Load(action));
   this->m_startTime = timeGetTime();
@@ -1728,7 +1728,7 @@ UIEmotion::UIEmotion(UIWindowContext& windows, const char* sprite, const char* a
 
 // OFFSET: 0x00836DF0
 // FUNCTION: fn_10436
-UIEmotion::UIEmotion(UIWindowContext& windows) : UIWindow(windows, 0), m_animation(0), m_frame(0), m_maxLoops(0) {
+UIEmotion::UIEmotion() : UIWindow(0), m_animation(0), m_frame(0), m_maxLoops(0) {
   this->m_sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load("이팩트\\emotion.spr"));
   this->m_action = static_cast<CActRes*>(ResourceMgr::Instance().Load("이팩트\\emotion.act"));
   this->m_startTime = timeGetTime();
@@ -1736,7 +1736,7 @@ UIEmotion::UIEmotion(UIWindowContext& windows) : UIWindow(windows, 0), m_animati
 
 // OFFSET: 0x00836EA0
 // FUNCTION: fn_10437
-UIItemImage::UIItemImage(UIWindowContext& windows) : UIWindow(windows, 0), m_itemId("") {
+UIItemImage::UIItemImage() : UIWindow(0), m_itemId("") {
   this->m_clip = 1;
 }
 

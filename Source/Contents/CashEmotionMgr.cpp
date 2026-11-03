@@ -107,7 +107,7 @@ public:
 
 class UICashEmotionPack_Purchase : public UICashEmotionPack {
 public:
-  explicit UICashEmotionPack_Purchase(UIWindowContext& windows);
+  explicit UICashEmotionPack_Purchase();
   ~UICashEmotionPack_Purchase() override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
@@ -124,7 +124,7 @@ protected:
 class UICashEmotionPack_Search : public UICashEmotionPack {
 public:
   // INLINED
-  explicit UICashEmotionPack_Search(UIWindowContext& windows) : UICashEmotionPack(windows) {
+  explicit UICashEmotionPack_Search() : UICashEmotionPack() {
   }
   void Paint() override;
 
@@ -142,7 +142,7 @@ protected:
 
 class UICashEmotionPack_Search_UnPurchased : public UICashEmotionPack_Search {
 public:
-  explicit UICashEmotionPack_Search_UnPurchased(UIWindowContext& windows);
+  explicit UICashEmotionPack_Search_UnPurchased();
   ~UICashEmotionPack_Search_UnPurchased() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
@@ -154,7 +154,7 @@ class UICashEmotionPack_Unpurchase : public UICashEmotionPack {
   friend class UICashEmotionListChildWnd_UnPurchased;
 
 public:
-  explicit UICashEmotionPack_Unpurchase(UIWindowContext& windows);
+  explicit UICashEmotionPack_Unpurchase();
   void Paint() override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
@@ -171,7 +171,7 @@ protected:
 
 class UICashEmotionScrollBar : public UIScrollBar {
 public:
-  __declspec(noinline) explicit UICashEmotionScrollBar(UIWindowContext& windows);
+  __declspec(noinline) explicit UICashEmotionScrollBar();
 
   void Paint() override;
 
@@ -183,7 +183,7 @@ protected:
 
 class UICashEmotionScrollWnd : public UIScrollWnd {
 public:
-  UICashEmotionScrollWnd(UIWindowContext& windows, int width, int height, unsigned char cached);
+  UICashEmotionScrollWnd(int width, int height, unsigned char cached);
   void Slot15(int width, int height) override;
   void Slot53() override;
 
@@ -193,7 +193,7 @@ public:
 
 class UICashEmotionListChildWnd_Abstract : public UICashEmotionScrollWnd {
 public:
-  UICashEmotionListChildWnd_Abstract(UIWindowContext& windows, int width, int height, unsigned char cached);
+  UICashEmotionListChildWnd_Abstract(int width, int height, unsigned char cached);
   void Slot35(int delta) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   virtual void Refresh(const char* filter) = 0;
@@ -202,7 +202,7 @@ public:
 
 class UICashEmotionListChildWnd_Basic : public UICashEmotionListChildWnd_Abstract {
 public:
-  UICashEmotionListChildWnd_Basic(UIWindowContext& windows, int width, int height, unsigned char cached);
+  UICashEmotionListChildWnd_Basic(int width, int height, unsigned char cached);
   void Slot15(int width, int height) override;
   void Slot19() override;
   void Paint() override;
@@ -218,7 +218,7 @@ protected:
 
 class UICashEmotionListChildWnd_Purchase : public UICashEmotionListChildWnd_Abstract {
 public:
-  UICashEmotionListChildWnd_Purchase(UIWindowContext& windows, int width, int height);
+  UICashEmotionListChildWnd_Purchase(int width, int height);
   ~UICashEmotionListChildWnd_Purchase() override;
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -236,7 +236,7 @@ protected:
 
 class UICashEmotionListChildWnd_Search : public UICashEmotionListChildWnd_Abstract {
 public:
-  UICashEmotionListChildWnd_Search(UIWindowContext& windows, int width, int height);
+  UICashEmotionListChildWnd_Search(int width, int height);
   ~UICashEmotionListChildWnd_Search() override;
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -254,7 +254,7 @@ protected:
 
 class UICashEmotionListChildWnd_UnPurchased : public UICashEmotionListChildWnd_Abstract {
 public:
-  UICashEmotionListChildWnd_UnPurchased(UIWindowContext& windows, int width, int height);
+  UICashEmotionListChildWnd_UnPurchased(int width, int height);
   void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
@@ -279,7 +279,7 @@ static_assert(sizeof(CashEmotionPurchasePacket) == 7);
 
 class UICashEmotionListWnd : public UIFrameWnd {
 public:
-  UICashEmotionListWnd(UIWindowContext& windows);
+  UICashEmotionListWnd();
   void Slot11() override;
   void Slot15(int width, int height) override;
   void Slot19() override;
@@ -1645,15 +1645,15 @@ int CCashEmotionMgr::InsertPackInfo(lua_State* state) {
 
 // OFFSET: 0x007C37A0
 // FUNCTION: fn_09340
-UICashEmotionListChildWnd_Abstract::UICashEmotionListChildWnd_Abstract(UIWindowContext& windows, int width, int height, unsigned char cached)
-    : UICashEmotionScrollWnd(windows, width, height, cached) {
+UICashEmotionListChildWnd_Abstract::UICashEmotionListChildWnd_Abstract(int width, int height, unsigned char cached)
+    : UICashEmotionScrollWnd(width, height, cached) {
 }
 
 // OFFSET: 0x007C3990
 // FUNCTION: fn_09343
 __declspec(noinline) void UICashEmotionScrollWnd::UpdateScrollBars() {
   if (!this->horizontalBar) {
-    this->horizontalBar = new (std::nothrow) UICashEmotionScrollBar(*this->m_context);
+    this->horizontalBar = new (std::nothrow) UICashEmotionScrollBar();
     if (this->horizontalBar) {
       this->horizontalBar->Configure(0, this->geometry.height - this->scrollBarHeight - 2, 0, this->geometry.width);
     }
@@ -1666,7 +1666,7 @@ __declspec(noinline) void UICashEmotionScrollWnd::UpdateScrollBars() {
   }
 
   if (!this->scrollBar) {
-    this->scrollBar = new (std::nothrow) UICashEmotionScrollBar(*this->m_context);
+    this->scrollBar = new (std::nothrow) UICashEmotionScrollBar();
     if (this->scrollBar) {
       this->scrollBar->Configure(this->geometry.width - this->scrollBarWidth - 2, 0, 1, this->geometry.height);
     }
@@ -1724,8 +1724,8 @@ int UICashEmotionListChildWnd_Abstract::SendMsg(UIWindow* sender, int message, s
 
 // OFFSET: 0x007C3D60
 // FUNCTION: fn_09347
-UICashEmotionListChildWnd_Basic::UICashEmotionListChildWnd_Basic(UIWindowContext& windows, int width, int height, unsigned char cached)
-    : UICashEmotionListChildWnd_Abstract(windows, width, height, cached) {
+UICashEmotionListChildWnd_Basic::UICashEmotionListChildWnd_Basic(int width, int height, unsigned char cached)
+    : UICashEmotionListChildWnd_Abstract(width, height, cached) {
   this->m_selectAction = new (std::nothrow) CCashEmotionAction_Play();
   this->m_playAction = new (std::nothrow) CCashEmotionAction_Register();
   this->Slot15(width, height);
@@ -1835,8 +1835,8 @@ int UICashEmotionListChildWnd_Basic::SendMsg(UIWindow* sender, int message, std:
 
 // OFFSET: 0x007C4810
 // FUNCTION: fn_09362
-UICashEmotionListChildWnd_Purchase::UICashEmotionListChildWnd_Purchase(UIWindowContext& windows, int width, int height)
-    : UICashEmotionListChildWnd_Abstract(windows, width, height, 0) {
+UICashEmotionListChildWnd_Purchase::UICashEmotionListChildWnd_Purchase(int width, int height)
+    : UICashEmotionListChildWnd_Abstract(width, height, 0) {
   this->unknown_00BC = new (std::nothrow) CCashEmotionAction_Play();
   this->Slot15(width, height);
 }
@@ -1884,7 +1884,7 @@ __declspec(noinline) void UICashEmotionListChildWnd_Purchase::Refresh(const char
       unused.remove(pack);
       height = pack->geometry.height;
     } else {
-      pack = new (std::nothrow) UICashEmotionPack_Purchase(*this->m_context);
+      pack = new (std::nothrow) UICashEmotionPack_Purchase();
       if (!pack) {
         continue;
       }
@@ -1955,8 +1955,8 @@ void UICashEmotionListChildWnd_Purchase::UpdateExpiry(int packId, Timestamp* exp
 
 // OFFSET: 0x007C5590
 // FUNCTION: fn_09375
-UICashEmotionListChildWnd_Search::UICashEmotionListChildWnd_Search(UIWindowContext& windows, int width, int height)
-    : UICashEmotionListChildWnd_Abstract(windows, width, height, 0) {
+UICashEmotionListChildWnd_Search::UICashEmotionListChildWnd_Search(int width, int height)
+    : UICashEmotionListChildWnd_Abstract(width, height, 0) {
   this->m_action = new (std::nothrow) CCashEmotionAction_Play();
   this->Slot15(width, height);
 }
@@ -1980,9 +1980,9 @@ const char* UICashEmotionListChildWnd_Search::Filter() {
 __declspec(noinline) void UICashEmotionListChildWnd_Search::AddResults(char type, const std::vector<std::pair<int, int>>& results, int& y) {
   UICashEmotionPack_Search* pack;
   if (type == 3) {
-    pack = new (std::nothrow) UICashEmotionPack_Search_UnPurchased(*this->m_context);
+    pack = new (std::nothrow) UICashEmotionPack_Search_UnPurchased();
   } else {
-    pack = new (std::nothrow) UICashEmotionPack_Search(*this->m_context);
+    pack = new (std::nothrow) UICashEmotionPack_Search();
   }
   if (!pack) {
     return;
@@ -2059,8 +2059,8 @@ int UICashEmotionListChildWnd_Search::SendMsg(UIWindow* sender, int message, std
 
 // OFFSET: 0x007C6030
 // FUNCTION: fn_09389
-UICashEmotionListChildWnd_UnPurchased::UICashEmotionListChildWnd_UnPurchased(UIWindowContext& windows, int width, int height)
-    : UICashEmotionListChildWnd_Abstract(windows, width, height, 0) {
+UICashEmotionListChildWnd_UnPurchased::UICashEmotionListChildWnd_UnPurchased(int width, int height)
+    : UICashEmotionListChildWnd_Abstract(width, height, 0) {
   this->Slot15(width, height);
 }
 
@@ -2099,7 +2099,7 @@ __declspec(noinline) void UICashEmotionListChildWnd_UnPurchased::Refresh(const c
       unused.remove(pack);
       height = pack->geometry.height;
     } else {
-      pack = new (std::nothrow) UICashEmotionPack_Unpurchase(*this->m_context);
+      pack = new (std::nothrow) UICashEmotionPack_Unpurchase();
       if (!pack) {
         continue;
       }
@@ -2159,8 +2159,8 @@ int UICashEmotionListChildWnd_UnPurchased::SendMsg(UIWindow* sender, int message
 
 // OFFSET: 0x007C6CB0
 // FUNCTION: fn_09401
-UICashEmotionListWnd::UICashEmotionListWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), m_placement(nullptr), m_basicList(nullptr), m_purchaseList(nullptr), m_unpurchasedList(nullptr), m_searchList(nullptr),
+UICashEmotionListWnd::UICashEmotionListWnd()
+    : UIFrameWnd(0), m_placement(nullptr), m_basicList(nullptr), m_purchaseList(nullptr), m_unpurchasedList(nullptr), m_searchList(nullptr),
       m_tab(0), unknown_00D4(nullptr), m_searchEdit(nullptr), unknown_00DC(nullptr), unknown_00E0(nullptr), unknown_00E4(nullptr), m_currentList(nullptr),
       m_period(nullptr) {
 }
@@ -2168,7 +2168,7 @@ UICashEmotionListWnd::UICashEmotionListWnd(UIWindowContext& windows)
 // OFFSET: 0x007C7240
 // FUNCTION: fn_09405
 UIBitmapButton* UICashEmotionListWnd::CreateButton(int x, int y, int width, int height, int id, const char* format, bool hasDisabled) {
-  UIBitmapButton* button = new (std::nothrow) UIBitmapButton(*this->m_context);
+  UIBitmapButton* button = new (std::nothrow) UIBitmapButton();
   if (!button) {
     return nullptr;
   }
@@ -2204,7 +2204,7 @@ void UICashEmotionListWnd::Slot15(int width, int height) {
   };
   int x = 46;
   for (int index = 0; index < 4; ++index) {
-    UIBmpRadioBtn2* tab = new (std::nothrow) UIBmpRadioBtn2(*this->m_context);
+    UIBmpRadioBtn2* tab = new (std::nothrow) UIBmpRadioBtn2();
     if (!tab) {
       continue;
     }
@@ -2232,7 +2232,7 @@ void UICashEmotionListWnd::Slot15(int width, int height) {
   this->unknown_00E0 = this->CreateButton(252, 22, 37, 18, 191, "유저인터페이스\\cashemotion\\btn_shortui_%s.bmp", false);
   this->unknown_00E4 = this->CreateButton(247, 355, 42, 20, 526, "유저인터페이스\\cashemotion\\btn_buy_%s.bmp", true);
 
-  this->m_searchEdit = new (std::nothrow) UIEditCtrl2(*this->m_context);
+  this->m_searchEdit = new (std::nothrow) UIEditCtrl2();
   if (this->m_searchEdit) {
     this->m_searchEdit->SetSize(160, 16);
     this->m_searchEdit->Move(61, 23);
@@ -2240,25 +2240,25 @@ void UICashEmotionListWnd::Slot15(int width, int height) {
     this->AddChild(this->m_searchEdit);
   }
 
-  this->m_basicList = new (std::nothrow) UICashEmotionListChildWnd_Basic(*this->m_context, 271, 303, 0);
+  this->m_basicList = new (std::nothrow) UICashEmotionListChildWnd_Basic(271, 303, 0);
   if (this->m_basicList) {
     this->m_basicList->Move(28, 47);
     this->AddChild(this->m_basicList);
   }
 
-  this->m_purchaseList = new (std::nothrow) UICashEmotionListChildWnd_Purchase(*this->m_context, 271, 303);
+  this->m_purchaseList = new (std::nothrow) UICashEmotionListChildWnd_Purchase(271, 303);
   if (this->m_purchaseList) {
     this->m_purchaseList->Move(28, 47);
     this->AddChild(this->m_purchaseList);
   }
 
-  this->m_unpurchasedList = new (std::nothrow) UICashEmotionListChildWnd_UnPurchased(*this->m_context, 271, 303);
+  this->m_unpurchasedList = new (std::nothrow) UICashEmotionListChildWnd_UnPurchased(271, 303);
   if (this->m_unpurchasedList) {
     this->m_unpurchasedList->Move(28, 47);
     this->AddChild(this->m_unpurchasedList);
   }
 
-  this->m_searchList = new (std::nothrow) UICashEmotionListChildWnd_Search(*this->m_context, 271, 303);
+  this->m_searchList = new (std::nothrow) UICashEmotionListChildWnd_Search(271, 303);
   if (this->m_searchList) {
     this->m_searchList->Move(28, 47);
     this->AddChild(this->m_searchList);
@@ -2269,7 +2269,7 @@ void UICashEmotionListWnd::Slot15(int width, int height) {
     this->SendMsg(first->second, 6, 215, 0, 0, 0);
   }
 
-  this->m_period = new UIStaticText(*this->m_context);
+  this->m_period = new UIStaticText();
   this->m_period->SetSize(200, 14);
   this->m_period->Move(39, 359);
   this->m_period->SetColor(214, 24, 16);
@@ -2513,7 +2513,7 @@ int UICashEmotionListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       std::string text;
       text = free ? std::vformat(format, std::make_format_args(title)) : std::vformat(format, std::make_format_args(title, price));
 
-      UINormalMB* box = new UINormalMB(*this->m_context);
+      UINormalMB* box = new UINormalMB();
       box->Create(nullptr, text.c_str(), 2, true, nullptr, 280, 128, nullptr);
       box->m_keepOpen = 1;
       g_windowMgr.AddRendered(box);
@@ -2680,7 +2680,7 @@ void UICashEmotionListWnd::RefreshSelection() {
 // OFFSET: 0x007C8E70
 // FUNCTION: fn_09425
 UICashEmotionMiniWnd::UICashEmotionMiniWnd()
-    : UIWindow(*reinterpret_cast<UIWindowContext*>(nullptr), 0), m_selected(nullptr), m_previous(nullptr), m_next(nullptr), m_page(0), m_selectedIndex(0) {
+    : UIWindow(0), m_selected(nullptr), m_previous(nullptr), m_next(nullptr), m_page(0), m_selectedIndex(0) {
   this->m_pieces.fill(nullptr);
   this->m_action = new (std::nothrow) CCashEmotionAction_SelectedUnPurchasedPack;
 }
@@ -2762,7 +2762,7 @@ void UICashEmotionMiniWnd::Refresh(int first) {
 void UICashEmotionMiniWnd::Slot15(int width, int height) {
   int x = 24;
   for (UICashEmotionPiece*& piece : this->m_pieces) {
-    piece = new (std::nothrow) UICashEmotionPiece(*this->m_context);
+    piece = new (std::nothrow) UICashEmotionPiece();
     if (piece) {
       piece->SetSize(42, 42);
       piece->Move(x, 1);
@@ -2771,7 +2771,7 @@ void UICashEmotionMiniWnd::Slot15(int width, int height) {
     }
   }
 
-  this->m_previous = new (std::nothrow) UIBitmapButton(*this->m_context);
+  this->m_previous = new (std::nothrow) UIBitmapButton();
   if (this->m_previous) {
     this->m_previous->SetBitmap("유저인터페이스\\cashemotion\\btn_arrow_l_normal.bmp", 0, 0);
     this->m_previous->SetBitmap("유저인터페이스\\cashemotion\\btn_arrow_l_over.bmp", 1, 0);
@@ -2782,7 +2782,7 @@ void UICashEmotionMiniWnd::Slot15(int width, int height) {
     this->AddChild(this->m_previous);
   }
 
-  this->m_next = new (std::nothrow) UIBitmapButton(*this->m_context);
+  this->m_next = new (std::nothrow) UIBitmapButton();
   if (this->m_next) {
     this->m_next->SetBitmap("유저인터페이스\\cashemotion\\bth_arrow_r_normal.bmp", 0, 0);
     this->m_next->SetBitmap("유저인터페이스\\cashemotion\\bth_arrow_r_over.bmp", 1, 0);
@@ -2928,8 +2928,8 @@ int UICashEmotionMiniWnd::SendMsg(
 
 // OFFSET: 0x007C9C40
 // FUNCTION: fn_09438
-UICashEmotionPack::UICashEmotionPack(UIWindowContext& windows)
-    : UIWindow(windows, 0), unknown_0088(nullptr), m_titleText(nullptr), unknown_00A8(-1), m_limited(false) {
+UICashEmotionPack::UICashEmotionPack()
+    : UIWindow(0), unknown_0088(nullptr), m_titleText(nullptr), unknown_00A8(-1), m_limited(false) {
 }
 
 // OFFSET: 0x007C9D60
@@ -3021,7 +3021,7 @@ int UICashEmotionPack::Slot53(int packId, bool showTooltip, bool hoverable) {
           continue;
         }
 
-        UICashEmotionPiece* piece = new (std::nothrow) UICashEmotionPiece(*this->m_context);
+        UICashEmotionPiece* piece = new (std::nothrow) UICashEmotionPiece();
         if (!piece) {
           continue;
         }
@@ -3177,7 +3177,7 @@ void UICashEmotionPack::SetTitle(const char* title) {
 
 // OFFSET: 0x007CAAC0
 // FUNCTION: fn_09457
-UICashEmotionPack_Purchase::UICashEmotionPack_Purchase(UIWindowContext& windows) : UICashEmotionPack(windows) {
+UICashEmotionPack_Purchase::UICashEmotionPack_Purchase() : UICashEmotionPack() {
   this->m_selectAction = new (std::nothrow) CCashEmotionAction_Play;
   this->m_purchaseAction = new (std::nothrow) CCashEmotionAction_Register;
   this->m_background = Resolve("유저인터페이스\\cashemotion\\bg_list_bought.bmp");
@@ -3278,7 +3278,7 @@ int UICashEmotionPack_Search::SetResults(const char* title, const std::vector<st
   int x = 8;
   int index = 0;
   for (const std::pair<int, int>& result : results) {
-    UICashEmotionPiece* piece = new (std::nothrow) UICashEmotionPiece(*this->m_context);
+    UICashEmotionPiece* piece = new (std::nothrow) UICashEmotionPiece();
     if (!piece) {
       continue;
     }
@@ -3337,7 +3337,7 @@ int UICashEmotionPack_Search_Normal::SendMsg(
 
 // OFFSET: 0x007CB3A0
 // FUNCTION: fn_09468
-UICashEmotionPack_Search_UnPurchased::UICashEmotionPack_Search_UnPurchased(UIWindowContext& windows) : UICashEmotionPack_Search(windows) {
+UICashEmotionPack_Search_UnPurchased::UICashEmotionPack_Search_UnPurchased() : UICashEmotionPack_Search() {
   this->m_action = new (std::nothrow) CCashEmotionAction_SelectedUnPurchasedPack;
 }
 
@@ -3373,7 +3373,7 @@ int UICashEmotionPack_Search_UnPurchased::SendMsg(
 
 // OFFSET: 0x007CB5E0
 // FUNCTION: fn_09471
-UICashEmotionPack_Unpurchase::UICashEmotionPack_Unpurchase(UIWindowContext& windows) : UICashEmotionPack(windows), m_pressed(false) {
+UICashEmotionPack_Unpurchase::UICashEmotionPack_Unpurchase() : UICashEmotionPack(), m_pressed(false) {
   this->m_background = Resolve("유저인터페이스\\cashemotion\\bg_list_normal.bmp");
   this->m_pressed = false;
   this->Invalidate();
@@ -3445,8 +3445,8 @@ int UICashEmotionPack_Unpurchase::SendMsg(
 
 // OFFSET: 0x007CB9F0
 // FUNCTION: fn_09479
-UICashEmotionPiece::UICashEmotionPiece(UIWindowContext& windows)
-    : UIWindow(windows, 0), m_packId(0), m_emotionId(0), m_button(nullptr), m_hoverable(false), m_hovered(false) {
+UICashEmotionPiece::UICashEmotionPiece()
+    : UIWindow(0), m_packId(0), m_emotionId(0), m_button(nullptr), m_hoverable(false), m_hovered(false) {
 }
 
 // OFFSET: 0x007CBB30
@@ -3486,7 +3486,7 @@ void UICashEmotionPiece::Set(int packId, int emotionId, bool showTooltip, bool h
 // OFFSET: 0x007CBC70
 // FUNCTION: fn_09482
 void UICashEmotionPiece::Slot15(int width, int height) {
-  this->m_button = new (std::nothrow) UICashEmotionSprBtn(*this->m_context, this);
+  this->m_button = new (std::nothrow) UICashEmotionSprBtn(this);
   if (this->m_button) {
     this->m_button->SetSize(width, height);
     this->m_button->Move(0, 0);
@@ -3576,7 +3576,7 @@ int UICashEmotionPiece::SendMsg(
 
 // OFFSET: 0x007CBF20
 // FUNCTION: fn_09490
-UICashEmotionScrollBar::UICashEmotionScrollBar(UIWindowContext& windows) : UIScrollBar(windows) {
+UICashEmotionScrollBar::UICashEmotionScrollBar() : UIScrollBar() {
   this->m_disabled = false;
   this->horizontalStep = 135;
   this->verticalStep = 135;
@@ -3664,8 +3664,8 @@ void UICashEmotionScrollBar::SetDisabled(bool disabled) {
 
 // OFFSET: 0x007CC2B0
 // FUNCTION: fn_09494
-UICashEmotionScrollWnd::UICashEmotionScrollWnd(UIWindowContext& windows, int width, int height, unsigned char cached)
-    : UIScrollWnd(windows, width, height, cached) {
+UICashEmotionScrollWnd::UICashEmotionScrollWnd(int width, int height, unsigned char cached)
+    : UIScrollWnd(width, height, cached) {
   this->RemoveChild(this->horizontalBar, 1);
   this->RemoveChild(this->scrollBar, 1);
   this->horizontalBar = nullptr;
@@ -3710,8 +3710,8 @@ void UICashEmotionScrollWnd::Slot53() {
 
 // OFFSET: 0x007CC870
 // FUNCTION: fn_09499
-UICashEmotionSprBtn::UICashEmotionSprBtn(UIWindowContext& windowContext, UIWindow* target)
-    : UISpriteButton2(windowContext, target), m_selected(false) {
+UICashEmotionSprBtn::UICashEmotionSprBtn(UIWindow* target)
+    : UISpriteButton2(target), m_selected(false) {
 }
 
 // OFFSET: 0x007CC990
@@ -3854,13 +3854,13 @@ void UICashEmotionSprBtn::Slot28(int x, int y) {
 
 // OFFSET: 0x008502C0
 // FUNCTION: fn_10674
-UISpriteButton2::UISpriteButton2(UIWindowContext& windowContext, UIWindow* target)
-    : UISpriteButton(windowContext), m_target(target) {
+UISpriteButton2::UISpriteButton2(UIWindow* target)
+    : UISpriteButton(), m_target(target) {
 }
 
 // OFFSET: 0x00850320
 // FUNCTION: fn_10675
-UISpriteButton::UISpriteButton(UIWindowContext& windowContext) : UIButton(windowContext) {
+UISpriteButton::UISpriteButton() : UIButton() {
   this->unknown_00BC = 0;
   this->unknown_00C0 = 0;
   this->unknown_00B4 = 0;

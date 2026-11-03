@@ -13,7 +13,7 @@ class UIScrollBar;
 
 class CMergeItemWnd : public UIFrameWnd {
 public:
-  CMergeItemWnd(UIWindowContext& windows);
+  CMergeItemWnd();
   ~CMergeItemWnd() override;
   void Resize(int width, int height) override;
   void Slot15(int width, int height) override;

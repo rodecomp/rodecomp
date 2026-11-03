@@ -11,8 +11,8 @@
 
 // OFFSET: 0x0084F010
 // FUNCTION: fn_10656
-UICheckBox::UICheckBox(UIWindowContext& windowContext)
-    : UIWindow(windowContext, 0), m_disabled(0), m_hidden(0), m_color(0), m_fontHeight(12), m_message(-1), m_notify(0) {
+UICheckBox::UICheckBox()
+    : UIWindow(0), m_disabled(0), m_hidden(0), m_color(0), m_fontHeight(12), m_message(-1), m_notify(0) {
   this->geometry.unknown_0030 = 0;
   this->geometry.id = 213;
 }

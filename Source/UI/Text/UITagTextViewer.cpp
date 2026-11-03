@@ -9,8 +9,8 @@ void sub_83B7F0(UITextButton* button);
 
 // OFFSET: 0x0083E1B0
 // FUNCTION: fn_10515
-UITagTextViewer::UITagTextViewer(UIWindowContext& context)
-    : UIScroll(context), m_backgroundColor(0xFFFFFF), m_textWidth(0), m_lineSpacing(6), m_margin(3), m_topMargin(4), m_font{0, 12, 0, 0}, m_outlined(0),
+UITagTextViewer::UITagTextViewer()
+    : UIScroll(), m_backgroundColor(0xFFFFFF), m_textWidth(0), m_lineSpacing(6), m_margin(3), m_topMargin(4), m_font{0, 12, 0, 0}, m_outlined(0),
       m_outlineColor(0xFFFFFF), m_horizontalAlign(0), m_verticalAlign(3), m_cursorY(0) {
   m_offsetY = m_topMargin;
 }
@@ -55,7 +55,7 @@ int TagTextViewer::UIScroll::ContentHeight() {
 // OFFSET: 0x0083EE40
 // FUNCTION: fn_10524
 void TagTextViewer::UIScroll::Slot15(int width, int height) {
-  this->m_scrollBar = new UIScrollBar(*this->m_context);
+  this->m_scrollBar = new UIScrollBar();
   this->m_scrollBar->Configure(width - 13, 0, 1, height);
   this->AddChild(this->m_scrollBar);
   this->m_scrollBar->Show(0);

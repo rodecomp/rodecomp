@@ -7,7 +7,7 @@ class UITextViewer;
 
 class UINoticeConfirmWnd : public UIFrameWnd {
 public:
-  UINoticeConfirmWnd(UIWindowContext& windows);
+  UINoticeConfirmWnd();
   /* 00B4 */ UITextViewer* m_viewer;
   /* 00B8 */ int m_event;
 

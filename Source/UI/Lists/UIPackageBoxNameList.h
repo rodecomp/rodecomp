@@ -5,7 +5,7 @@
 
 class UIPackageBoxNameList : public UIListBox {
 public:
-  UIPackageBoxNameList(UIWindowContext& windows);
+  UIPackageBoxNameList();
   void Slot25(int x, int y) override;
 };
 

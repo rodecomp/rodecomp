@@ -10,7 +10,9 @@ class UIEditCtrl;
 
 class UITabControl : public UIWindow {
 public:
-  UITabControl(UIWindowContext& windows);
+  UITabControl();
+  UITabControl(UIWindowContext&) : UITabControl() {
+  }
   int TabCount();
   int TabAt(int x, int y);
   void FillTab(int index, int x, int y, int width, int height, std::uint32_t color);

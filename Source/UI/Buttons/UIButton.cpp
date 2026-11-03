@@ -16,8 +16,8 @@
 
 // OFFSET: 0x0084EDD0
 // FUNCTION: fn_10653
-UIButton::UIButton(UIWindowContext& windowContext)
-    : UIWindow(windowContext, 0), m_disabled(0), m_argument(0) {
+UIButton::UIButton()
+    : UIWindow(0), m_disabled(0), m_argument(0) {
   this->geometry.unknown_0030 = 0;
 }
 

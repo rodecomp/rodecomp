@@ -4,7 +4,7 @@
 
 // OFFSET: 0x0086DF60
 // FUNCTION: fn_11062
-UINaviLinkButton::UINaviLinkButton(UIWindowContext& windows) : UITextButton(windows) {
+UINaviLinkButton::UINaviLinkButton() : UITextButton() {
 }
 
 // OFFSET: 0x00873A90

@@ -44,7 +44,7 @@ namespace AdventureGuide {
 // OFFSET: 0x009D1830
 // FUNCTION: fn_14008
 void CUISubTab::Slot15(int width, int height) {
-  this->unknown_00E8 = new CUIStaticText(*this->m_context);
+  this->unknown_00E8 = new CUIStaticText();
   this->unknown_00E8->SetSize(98, 26);
   this->unknown_00E8->Move(0, 0);
   this->unknown_00E8->SetText("", 0);
@@ -63,7 +63,7 @@ void CUISubTab::Slot15(int width, int height) {
   this->unknown_00E8->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->unknown_00E8);
 
-  this->unknown_00EC = new CUIStaticImage(*this->m_context);
+  this->unknown_00EC = new CUIStaticImage();
   this->unknown_00EC->SetSize(40, 26);
   this->unknown_00EC->Move(58, 0);
   {
@@ -80,7 +80,7 @@ void CUISubTab::Slot15(int width, int height) {
 // OFFSET: 0x009D1C80
 // FUNCTION: fn_14009
 void CUITab::Slot15(int width, int height) {
-  this->unknown_00E8 = new CUIStaticText(*this->m_context);
+  this->unknown_00E8 = new CUIStaticText();
   this->unknown_00E8->SetSize(98, 40);
   this->unknown_00E8->Move(0, 0);
   this->unknown_00E8->SetText("", 0);
@@ -103,7 +103,7 @@ void CUITab::Slot15(int width, int height) {
 // OFFSET: 0x009D1F00
 // FUNCTION: fn_14010
 void CUITabInfo::Slot15(int width, int height) {
-  this->unknown_00E8 = new CUIStaticText(*this->m_context);
+  this->unknown_00E8 = new CUIStaticText();
   this->unknown_00E8->SetSize(90, 44);
   this->unknown_00E8->Move(32, 0);
   this->unknown_00E8->SetText("", 0);
@@ -122,7 +122,7 @@ void CUITabInfo::Slot15(int width, int height) {
   this->unknown_00E8->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->unknown_00E8);
 
-  this->unknown_00EC = new CUIStaticText(*this->m_context);
+  this->unknown_00EC = new CUIStaticText();
   this->unknown_00EC->SetSize(442, 44);
   this->unknown_00EC->Move(140, 0);
   this->unknown_00EC->SetText("", 0);

@@ -17,7 +17,7 @@
 
 // OFFSET: 0x0084CBD0
 // FUNCTION: fn_10625
-UIClanInfoManageWnd::UIClanInfoManageWnd(UIWindowContext& windows) : UIClanWnd(windows), m_emblem(nullptr) {}
+UIClanInfoManageWnd::UIClanInfoManageWnd() : UIClanWnd(), m_emblem(nullptr) {}
 
 // OFFSET: 0x0084CEF0
 // FUNCTION: fn_10628
@@ -30,7 +30,7 @@ int UIClanInfoManageWnd::Slot53() {
 void UIClanInfoManageWnd::Slot15(int width, int height) {
   if (!this->m_title) {
     const char* title = LookupMessage(2355);
-    this->m_title = new UIStaticText(*this->m_context);
+    this->m_title = new UIStaticText();
     this->m_title->SetSize(62, 15);
     this->m_title->SetTextFitted(title);
     this->m_title->Move(3, 22);

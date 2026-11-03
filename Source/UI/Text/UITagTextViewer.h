@@ -28,7 +28,7 @@ namespace TagTextViewer {
 
   class UIScroll : public UIWindow {
   public:
-    explicit UIScroll(UIWindowContext& context) : UIWindow(context, 0), m_scrollPos(0), m_scrollBar(nullptr) {
+    explicit UIScroll() : UIWindow(0), m_scrollPos(0), m_scrollBar(nullptr) {
     }
     void Slot15(int width, int height) override;
     void Slot35(int delta) override;
@@ -45,7 +45,7 @@ namespace TagTextViewer {
 
 class UITagTextViewer : public TagTextViewer::UIScroll {
 public:
-  explicit UITagTextViewer(UIWindowContext& context);
+  UITagTextViewer();
   void Resize(int width, int height) override;
   void Slot19() override;
   void Paint() override;

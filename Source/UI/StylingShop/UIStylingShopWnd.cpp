@@ -499,22 +499,22 @@ void UIDisplayCharacter::LoadSessionStyle() {
 
 // OFFSET: 0x00822C60
 // FUNCTION: fn_10286
-UI2ndCostumeWnd::UI2ndCostumeWnd(UIWindowContext& context) : UIStylingshopTabParentWnd(context), m_hideCheckBox(nullptr), m_showCheckBox(nullptr) {
+UI2ndCostumeWnd::UI2ndCostumeWnd() : UIStylingshopTabParentWnd(), m_hideCheckBox(nullptr), m_showCheckBox(nullptr) {
 }
 
 // OFFSET: 0x00822E00
 // FUNCTION: fn_10287
-UIBasicStylingWnd::UIBasicStylingWnd(UIWindowContext& context) : UIStylingshopTabParentWnd(context) {
+UIBasicStylingWnd::UIBasicStylingWnd() : UIStylingshopTabParentWnd() {
 }
 
 // OFFSET: 0x00822EA0
 // FUNCTION: fn_10288
-UICostumeChangeWnd::UICostumeChangeWnd(UIWindowContext& context) : UIStylingshopTabParentWnd(context) {
+UICostumeChangeWnd::UICostumeChangeWnd() : UIStylingshopTabParentWnd() {
 }
 
 // OFFSET: 0x00822F20
 // FUNCTION: fn_10289
-UIDisplayCharacter::UIDisplayCharacter(UIWindowContext& context) : UIWindow(context, 0) {
+UIDisplayCharacter::UIDisplayCharacter() : UIWindow(0) {
   this->unknown_0080 = 0;
   this->unknown_0084 = 0;
   this->unknown_0088 = 0;
@@ -657,7 +657,7 @@ bool UIStylingShopWnd::AddToMyStyle() {
         }
       }
 
-      UISlotOfMyStyleWnd* slot = new UISlotOfMyStyleWnd(*this->m_context);
+      UISlotOfMyStyleWnd* slot = new UISlotOfMyStyleWnd();
       slot->SetSize(static_cast<int>(myStyle->geometry.width * 0.5 - 3.0), myStyle->geometry.height + 25);
       slot->Move(static_cast<int>(myStyle->geometry.width * 0.5 * index), 0);
       display->unknown_0080 = index;
@@ -1307,25 +1307,25 @@ UIShowInfoWnd::~UIShowInfoWnd() {
 
 // OFFSET: 0x00823180
 // FUNCTION: fn_10290
-UIMyStyleWnd::UIMyStyleWnd(UIWindowContext& context) : UIStylingshopTabParentWnd(context), m_selectedSlot(0), m_slots{} {
+UIMyStyleWnd::UIMyStyleWnd() : UIStylingshopTabParentWnd(), m_selectedSlot(0), m_slots{} {
 }
 
 // OFFSET: 0x00823210
 // FUNCTION: fn_10291
-UIShowInfoWnd::UIShowInfoWnd(UIWindowContext& context)
-    : UIWindow(context, 0), m_display(nullptr), unknown_00A0(0), unknown_00A1(0), unknown_00A2(0), m_checkTop(5), unknown_00A8(12), unknown_00AD{},
+UIShowInfoWnd::UIShowInfoWnd()
+    : UIWindow(0), m_display(nullptr), unknown_00A0(0), unknown_00A1(0), unknown_00A2(0), m_checkTop(5), unknown_00A8(12), unknown_00AD{},
       unknown_00B1(0), unknown_00BC(0), unknown_00C0(0), unknown_00C4(0), unknown_00C8(0), unknown_00CC(0), m_offBitmap(nullptr) {
 }
 
 // OFFSET: 0x008232F0
 // FUNCTION: fn_10292
-UISlotOfMyStyleWnd::UISlotOfMyStyleWnd(UIWindowContext& context) : UIStylingshopTabParentWnd(context) {
+UISlotOfMyStyleWnd::UISlotOfMyStyleWnd() : UIStylingshopTabParentWnd() {
 }
 
 // OFFSET: 0x00823370
 // FUNCTION: fn_10293
-UIStylingShopWnd::UIStylingShopWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0) {
+UIStylingShopWnd::UIStylingShopWnd()
+    : UIFrameWnd(0) {
 }
 
 #include "Contents/Items/ItemInfo.h"
@@ -1511,7 +1511,7 @@ struct StyleChangePacket {
 // OFFSET: 0x00827AE0
 // FUNCTION: fn_10331
 void UIStylingShopWnd::AddTab(const char* normal, const char* hover, const char* pressed, const int& id, UIStylingshopTabParentWnd* tab, const char* tooltip) {
-  UIStylingShopButton* button = new (std::nothrow) UIStylingShopButton(*this->m_context);
+  UIStylingShopButton* button = new (std::nothrow) UIStylingShopButton();
   button->SetBitmap(normal, 0, 0);
   button->SetBitmap(hover, 1, 0);
   button->SetBitmap(pressed, 2, 0);
@@ -1531,7 +1531,7 @@ void UIStylingShopWnd::AddTab(const char* normal, const char* hover, const char*
 // OFFSET: 0x00829220
 // FUNCTION: fn_10339
 void UISlotOfMyStyleWnd::Slot15(int, int) {
-  UIDisplayCharacter* display = new (std::nothrow) UIDisplayCharacter(*this->m_context);
+  UIDisplayCharacter* display = new (std::nothrow) UIDisplayCharacter();
   if (display) {
     *reinterpret_cast<unsigned char*>(&display->unknown_00B0) = 1;
   }
@@ -1543,7 +1543,7 @@ void UISlotOfMyStyleWnd::Slot15(int, int) {
   this->m_display->LoadCostumes();
   this->AddChild(this->m_display);
 
-  this->m_showInfo = new (std::nothrow) UIShowInfoWnd(*this->m_context);
+  this->m_showInfo = new (std::nothrow) UIShowInfoWnd();
   this->m_showInfo->SetSize(this->geometry.width, static_cast<int>(roundf(static_cast<float>(this->geometry.height) * 0.36f)));
   const int layout = 496;
   this->m_showInfo->ArrangeCheckBoxes(layout);
@@ -1557,36 +1557,36 @@ void UISlotOfMyStyleWnd::Slot15(int, int) {
 void UIStylingShopWnd::Slot15(int, int) {
   this->AddCloseButton("", 0);
 
-  UIBasicStylingWnd* basic = new (std::nothrow) UIBasicStylingWnd(*this->m_context);
+  UIBasicStylingWnd* basic = new (std::nothrow) UIBasicStylingWnd();
   this->AddTab("유저인터페이스\\styleshop\\tab_hair_off.bmp", "유저인터페이스\\styleshop\\tab_hair_off.bmp", "유저인터페이스\\styleshop\\tab_hair_on.bmp", 200, basic,
                LookupMessage(2837));
   basic->Show(1);
   static_cast<UIButton*>(this->m_tabs.begin()->first)->SetState(2);
 
-  UIAccessoryCusWnd* accessory = new (std::nothrow) UIAccessoryCusWnd(*this->m_context);
+  UIAccessoryCusWnd* accessory = new (std::nothrow) UIAccessoryCusWnd();
   this->AddTab("유저인터페이스\\styleshop\\tab_accessories_off.bmp", "유저인터페이스\\styleshop\\tab_accessories_off_over.bmp",
                "유저인터페이스\\styleshop\\tab_accessories_on.bmp", 497, accessory, LookupMessage(2831));
 
   if (g_session.IsTreeGroupThree(g_session.GetDisplayJob()) != true && g_session.IsTreeGroupTwo(g_session.GetDisplayJob()) != 1) {
-    UICostumeChangeWnd* costume = new UICostumeChangeWnd(*this->m_context);
+    UICostumeChangeWnd* costume = new UICostumeChangeWnd();
     this->AddTab("유저인터페이스\\styleshop\\tab_2ndcostume_off.bmp", "유저인터페이스\\styleshop\\tab_2ndcostume_off.bmp", "유저인터페이스\\styleshop\\tab_2ndcostume_off.bmp", 583,
                  costume, LookupMessage(2832));
   } else {
-    UICostumeChangeWnd* costume = new UICostumeChangeWnd(*this->m_context);
+    UICostumeChangeWnd* costume = new UICostumeChangeWnd();
     this->AddTab("유저인터페이스\\styleshop\\tab_2ndcostume_off.bmp", "유저인터페이스\\styleshop\\tab_2ndcostume_on_over.bmp", "유저인터페이스\\styleshop\\tab_2ndcostume_on.bmp", 583,
                  costume, LookupMessage(2832));
   }
 
-  UIMyStyleWnd* myStyle = new (std::nothrow) UIMyStyleWnd(*this->m_context);
+  UIMyStyleWnd* myStyle = new (std::nothrow) UIMyStyleWnd();
   this->AddTab("유저인터페이스\\styleshop\\tab_favorite_off.bmp", "유저인터페이스\\styleshop\\tab_favorite_off_over.bmp", "유저인터페이스\\styleshop\\tab_favorite_on.bmp", 496,
                myStyle, LookupMessage(2833));
 
-  this->m_preview = new UIDisplayCharacter(*this->m_context);
+  this->m_preview = new UIDisplayCharacter();
   this->m_preview->SetSize(120, 120);
   this->m_preview->Show(0);
   this->AddChild(this->m_preview);
 
-  this->m_buyButton = static_cast<UIStylingShopButton*>(new (std::nothrow) UIBitmapButton(*this->m_context));
+  this->m_buyButton = static_cast<UIStylingShopButton*>(new (std::nothrow) UIBitmapButton());
   this->m_buyButton->SetBitmap("유저인터페이스\\styleshop\\btn_buy_out.bmp", 0, 0);
   this->m_buyButton->SetBitmap("유저인터페이스\\styleshop\\btn_buy_over.bmp", 1, 0);
   this->m_buyButton->SetBitmap("유저인터페이스\\styleshop\\btn_buy_down.bmp", 2, 0);
@@ -1601,7 +1601,7 @@ void UIStylingShopWnd::Slot15(int, int) {
   text += FormatGroupedInteger(g_session.m_zeny, zeny, 256);
   text += "\tz";
 
-  UIStaticText* label = new (std::nothrow) UIStaticText(*this->m_context);
+  UIStaticText* label = new (std::nothrow) UIStaticText();
   label->SetSize(200, 12);
   label->Move(9, 310);
   label->SetFont(0, 11, 0, 0);
@@ -2027,7 +2027,7 @@ void UIMyStyleWnd::LoadLikeList() {
           break;
         }
 
-        UIDisplayCharacter* display = new UIDisplayCharacter(*this->m_context);
+        UIDisplayCharacter* display = new UIDisplayCharacter();
         display->unknown_0080 = style.slotNum;
         display->unknown_0088 = style.robe;
         display->unknown_008C = style.headStyle;
@@ -2074,7 +2074,7 @@ void UIMyStyleWnd::LoadLikeList() {
           }
         }
 
-        UISlotOfMyStyleWnd* slot = new UISlotOfMyStyleWnd(*this->m_context);
+        UISlotOfMyStyleWnd* slot = new UISlotOfMyStyleWnd();
         int width = static_cast<int>(roundf(static_cast<float>(this->geometry.width) * 0.5f));
         slot->SetSize(width, this->geometry.height + 25);
         slot->Move(width * style.slotNum, 0);
@@ -2135,7 +2135,7 @@ void UIMyStyleWnd::LoadLikeList() {
 void UIMyStyleWnd::Slot15(int, int) {
   this->LoadLikeList();
 
-  UISlotForSelectWnd* select = new UISlotForSelectWnd(*this->m_context);
+  UISlotForSelectWnd* select = new UISlotForSelectWnd();
   select->SetSize(this->geometry.width, this->geometry.height);
   select->Move(0, 0);
   select->SetId(204);
@@ -2184,14 +2184,14 @@ void UIMyStyleWnd::Slot15(int, int) {
 }
 // FUNCTION: fn_10333
 void UIAccessoryCusWnd::Slot15(int, int) {
-  this->m_display = new (std::nothrow) UIDisplayCharacter(*this->m_context);
+  this->m_display = new (std::nothrow) UIDisplayCharacter();
   this->m_display->SetSize(static_cast<int>(roundf(static_cast<float>(this->geometry.width) * 0.552f)),
                            static_cast<int>(roundf(static_cast<float>(this->geometry.height) * 0.8f)));
   this->m_display->LoadCostumes();
   this->m_display->Move(0, 0);
   this->AddChild(this->m_display);
 
-  this->m_showInfo = new (std::nothrow) UIShowInfoWnd(*this->m_context);
+  this->m_showInfo = new (std::nothrow) UIShowInfoWnd();
   this->m_showInfo->SetSize(this->m_display->geometry.width, static_cast<int>(roundf(static_cast<float>(this->geometry.height) * 0.4f)));
   const int layout = 497;
   this->m_showInfo->ArrangeCheckBoxes(layout);
@@ -2200,7 +2200,7 @@ void UIAccessoryCusWnd::Slot15(int, int) {
   this->AddChild(this->m_showInfo);
 
   UIAccessoryShowCase* showCase =
-    new UIAccessoryShowCase(*this->m_context, static_cast<int>(roundf(static_cast<float>(this->geometry.width) * 0.46f)), this->geometry.height);
+    new UIAccessoryShowCase(static_cast<int>(roundf(static_cast<float>(this->geometry.width) * 0.46f)), this->geometry.height);
   showCase->Move(static_cast<int>(roundf(static_cast<float>(this->geometry.width) * 0.6f)), 13);
   this->AddChild(showCase);
 }
@@ -2331,7 +2331,7 @@ void UIShowInfoWnd::Slot15(int, int) {
 // OFFSET: 0x00827D00
 // FUNCTION: fn_10332
 void UI2ndCostumeWnd::Slot15(int, int) {
-  this->m_display = new (std::nothrow) UIDisplayCharacter(*this->m_context);
+  this->m_display = new (std::nothrow) UIDisplayCharacter();
   this->m_display->SetSize(static_cast<int>(roundf(static_cast<float>(this->geometry.width) * 0.552f)),
                            static_cast<int>(roundf(static_cast<float>(this->geometry.height) * 0.8f)));
   this->m_display->Move(0, 0);
@@ -2365,7 +2365,7 @@ void UI2ndCostumeWnd::Slot15(int, int) {
   showText->SetFont(0, 11, 0, 0);
   this->AddChild(showText);
 
-  this->m_showInfo = new (std::nothrow) UIShowInfoWnd(*this->m_context);
+  this->m_showInfo = new (std::nothrow) UIShowInfoWnd();
   this->m_showInfo->SetSize(this->geometry.width - this->m_display->geometry.width, this->geometry.height);
   const int layout = 498;
   this->m_showInfo->ArrangeCheckBoxes(layout);
@@ -2380,7 +2380,7 @@ void UI2ndCostumeWnd::Slot15(int, int) {
 // OFFSET: 0x00828380
 // FUNCTION: fn_10334
 void UIBasicStylingWnd::Slot15(int, int) {
-  this->m_display = new (std::nothrow) UIDisplayCharacter(*this->m_context);
+  this->m_display = new (std::nothrow) UIDisplayCharacter();
   this->m_display->SetSize(static_cast<int>(roundf(static_cast<float>(this->geometry.width) * 0.552f)),
                            static_cast<int>(roundf(static_cast<float>(this->geometry.height) * 0.8f)));
   this->m_display->LoadCostumes();
@@ -2422,7 +2422,7 @@ void UIBasicStylingWnd::Slot15(int, int) {
   this->m_defaultPaletteButton = defaultButton;
   g_windowMgr.LookupWindow(281);
 
-  this->m_showInfo = new (std::nothrow) UIShowInfoWnd(*this->m_context);
+  this->m_showInfo = new (std::nothrow) UIShowInfoWnd();
   this->m_showInfo->SetSize(this->geometry.width - this->m_display->geometry.width, this->geometry.height);
   const int layout = 200;
   this->m_showInfo->ArrangeCheckBoxes(layout);
@@ -2434,14 +2434,14 @@ void UIBasicStylingWnd::Slot15(int, int) {
 // OFFSET: 0x008288C0
 // FUNCTION: fn_10335
 void UICostumeChangeWnd::Slot15(int, int) {
-  this->m_display = new UIDisplayCharacter(*this->m_context);
+  this->m_display = new UIDisplayCharacter();
   this->m_display->SetSize(static_cast<int>(roundf(static_cast<float>(this->geometry.width) * 0.552f)),
                            static_cast<int>(roundf(static_cast<float>(this->geometry.height) * 0.8f)));
   this->m_display->LoadCostumes();
   this->m_display->Move(0, 0);
   this->AddChild(this->m_display);
 
-  this->m_showInfo = new UIShowInfoWnd(*this->m_context);
+  this->m_showInfo = new UIShowInfoWnd();
   this->m_showInfo->SetSize(this->geometry.width - this->m_display->geometry.width, this->geometry.height);
   const int layout = 583;
   this->m_showInfo->ArrangeCheckBoxes(layout);

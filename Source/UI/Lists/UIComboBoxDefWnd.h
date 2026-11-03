@@ -10,7 +10,8 @@ class UIStaticText;
 class UIComboBoxDefWnd : public UIWindow {
 public:
   UIComboBoxDefWnd();
-  UIComboBoxDefWnd(UIWindowContext& windows);
+  UIComboBoxDefWnd(UIWindowContext&) : UIComboBoxDefWnd() {
+  }
   ~UIComboBoxDefWnd() override;
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -65,7 +66,6 @@ public:
 class UIComboBoxDef2Wnd : public UIComboBoxDefWnd {
 public:
   UIComboBoxDef2Wnd();
-  UIComboBoxDef2Wnd(UIWindowContext& windows);
   ~UIComboBoxDef2Wnd() override;
   void Slot15(int width, int height) override;
   void Paint() override;

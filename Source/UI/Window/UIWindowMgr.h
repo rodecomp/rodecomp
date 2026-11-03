@@ -21,7 +21,6 @@ class CWebBrowser;
 struct MessengerMember;
 struct ReplayOptions;
 struct ModeDragState;
-struct UIWindowContext;
 
 struct WindowTextEntry {
   /* 0000 */ std::string text;

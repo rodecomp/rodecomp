@@ -8,7 +8,7 @@
 
 class UINotifyItemObtainWnd : public UIFrameWnd {
 public:
-  UINotifyItemObtainWnd(UIWindowContext& windows);
+  UINotifyItemObtainWnd();
 
   /* 00B4 */ std::string m_itemId;
   /* 00CC */ std::string m_message;

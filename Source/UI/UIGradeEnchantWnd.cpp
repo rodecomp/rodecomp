@@ -49,7 +49,7 @@ struct GradeEnchantClosePacket {
 // OFFSET: 0x007E68F0
 // FUNCTION: fn_09738
 UIGradeEnchantWnd::UIGradeEnchantWnd()
-    : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(nullptr), 0), enhancedUpButton(nullptr), state(0),
+    : UIFrameWnd(0), enhancedUpButton(nullptr), state(0),
       result(-1), unknown_00C8(200), unknown_00CC(100), stateTick(0), unknown_00D4(0), unknown_00D8(1), unknown_00DC(1), unknown_00E0(0),
       selectedMaterial(-1), hoverMaterial(-1), materials(), info{}, unknown_0108(0), unknown_010C(0), unknown_0110(0), unknown_0114(0), unknown_0118(0),
       unknown_011C(), item(0), unknown_0220(0), startButton(nullptr), enhancedDownButton(nullptr) {
@@ -57,18 +57,18 @@ UIGradeEnchantWnd::UIGradeEnchantWnd()
 
 // OFFSET: 0x007E6A60
 // FUNCTION: fn_09739
-UIGradeEnchant_BtnEnhancedDown::UIGradeEnchant_BtnEnhancedDown(UIWindowContext& windows) : UIBitmapButton(windows) {
+UIGradeEnchant_BtnEnhancedDown::UIGradeEnchant_BtnEnhancedDown() : UIBitmapButton() {
 }
 
 // OFFSET: 0x007E6AC0
 // FUNCTION: fn_09740
-UIGradeEnchant_BtnEnhancedUp::UIGradeEnchant_BtnEnhancedUp(UIWindowContext& windows)
-    : UIBitmapButton(windows), tooltipValue(0), tooltipEnabled(0) {
+UIGradeEnchant_BtnEnhancedUp::UIGradeEnchant_BtnEnhancedUp()
+    : UIBitmapButton(), tooltipValue(0), tooltipEnabled(0) {
 }
 
 // OFFSET: 0x007E6B30
 // FUNCTION: fn_09741
-UIGradeEnchant_BtnStart::UIGradeEnchant_BtnStart(UIWindowContext& windows) : UIBitmapButton(windows) {
+UIGradeEnchant_BtnStart::UIGradeEnchant_BtnStart() : UIBitmapButton() {
 }
 
 // OFFSET: 0x007E7500
@@ -137,13 +137,13 @@ void UIGradeEnchantWnd::Slot15(int, int) {
     close->Move(0x180, 0x14);
   }
 
-  auto* title = new UIBasicButton(*this->m_context);
+  auto* title = new UIBasicButton();
   title->Configure(0x2A, LookupMessage(0x513));
   title->Move(0x159, 299);
   title->SetId(0xB9);
   this->AddChild(title);
 
-  this->startButton = new UIGradeEnchant_BtnStart(*this->m_context);
+  this->startButton = new UIGradeEnchant_BtnStart();
   this->startButton->SetBitmap("유저인터페이스\\grade_enchant\\btn_start.bmp", 0, 0);
   this->startButton->SetBitmap("유저인터페이스\\grade_enchant\\btn_start_over.bmp", 1, 0);
   this->startButton->SetBitmap("유저인터페이스\\grade_enchant\\btn_start_press.bmp", 2, 0);
@@ -155,7 +155,7 @@ void UIGradeEnchantWnd::Slot15(int, int) {
   this->startButton->Invalidate();
   this->AddChild(this->startButton);
 
-  this->enhancedUpButton = new UIGradeEnchant_BtnEnhancedUp(*this->m_context);
+  this->enhancedUpButton = new UIGradeEnchant_BtnEnhancedUp();
   this->enhancedUpButton->SetBitmap("유저인터페이스\\grade_enchant\\btn_chance_up.bmp", 0, 0);
   this->enhancedUpButton->SetBitmap("유저인터페이스\\grade_enchant\\btn_chance_up_over.bmp", 1, 0);
   this->enhancedUpButton->SetBitmap("유저인터페이스\\grade_enchant\\btn_chance_up_pick.bmp", 2, 0);
@@ -166,7 +166,7 @@ void UIGradeEnchantWnd::Slot15(int, int) {
   this->enhancedUpButton->Invalidate();
   this->AddChild(this->enhancedUpButton);
 
-  this->enhancedDownButton = new UIGradeEnchant_BtnEnhancedDown(*this->m_context);
+  this->enhancedDownButton = new UIGradeEnchant_BtnEnhancedDown();
   this->enhancedDownButton->SetBitmap("유저인터페이스\\grade_enchant\\btn_chance_down.bmp", 0, 0);
   this->enhancedDownButton->SetBitmap("유저인터페이스\\grade_enchant\\btn_chance_down_over.bmp", 1, 0);
   this->enhancedDownButton->SetBitmap("유저인터페이스\\grade_enchant\\btn_chance_down_pick.bmp", 2, 0);
@@ -177,7 +177,7 @@ void UIGradeEnchantWnd::Slot15(int, int) {
   this->enhancedDownButton->Invalidate();
   this->AddChild(this->enhancedDownButton);
 
-  auto* help = new UIBitmapButton(*this->m_context);
+  auto* help = new UIBitmapButton();
   help->SetBitmap("유저인터페이스\\basic_interface\\btn_help_normal.bmp", 0, 0);
   help->SetBitmap("유저인터페이스\\basic_interface\\btn_help_over.bmp", 1, 0);
   help->SetBitmap("유저인터페이스\\basic_interface\\btn_help_pressed.bmp", 2, 0);

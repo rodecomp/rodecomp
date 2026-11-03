@@ -31,7 +31,7 @@ CGuildTip g_guildTip;
 
 // OFFSET: 0x00953960
 // FUNCTION: fn_12996
-UIGuildHelperWnd::UIGuildHelperWnd() : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(0), 0) {
+UIGuildHelperWnd::UIGuildHelperWnd() : UIFrameWnd(0) {
 }
 
 // OFFSET: 0x00953810
@@ -42,7 +42,7 @@ UICreateGuildWnd::UICreateGuildWnd(int mode) : m_mode(mode) {
 // OFFSET: 0x00953A90
 // FUNCTION: fn_12998
 UIGuildLeaveReasonDescWnd::UIGuildLeaveReasonDescWnd()
-    : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(0), 0), m_reasonEdit(nullptr), m_reasonText(nullptr) {
+    : UIFrameWnd(0), m_reasonEdit(nullptr), m_reasonText(nullptr) {
 }
 
 // OFFSET: 0x00953880
@@ -271,7 +271,7 @@ int UIGuildTipWnd::SendMsg(UIWindow*, int message, std::intptr_t a1, std::intptr
 // OFFSET: 0x00958070
 // FUNCTION: fn_13055
 void UICreateGuildWnd::Slot15(int, int) {
-  this->m_nameEdit = new UIEditCtrl(*this->m_context);
+  this->m_nameEdit = new UIEditCtrl();
   this->m_nameEdit->SetSize(124, 20);
   this->m_nameEdit->Move(13, 42);
   this->m_nameEdit->maximum = 23;
@@ -285,7 +285,7 @@ void UICreateGuildWnd::Slot15(int, int) {
     int ids[2] = {184, 185};
 
     for (unsigned int i = 0; i < 2; ++i) {
-      auto* button = new UIBitmapButton(*this->m_context);
+      auto* button = new UIBitmapButton();
       button->SetBitmap((prefix + names[i][0] + ".bmp").c_str(), 0, 0);
       button->SetBitmap((prefix + names[i][1] + ".bmp").c_str(), 1, 0);
       button->SetBitmap((prefix + names[i][2] + ".bmp").c_str(), 2, 0);
@@ -309,7 +309,7 @@ void UIGuildHelperWnd::Slot15(int width, int height) {
 
   int x = 8;
   for (int i = 0; i < 3; ++i) {
-    this->m_button = new UIBitmapButton(*this->m_context);
+    this->m_button = new UIBitmapButton();
     this->m_button->SetBitmap((prefix + names[i][0] + ".bmp").c_str(), 0, 0);
     this->m_button->SetBitmap((prefix + names[i][1] + ".bmp").c_str(), 1, 0);
     this->m_button->SetBitmap((prefix + names[i][2] + ".bmp").c_str(), 2, 0);

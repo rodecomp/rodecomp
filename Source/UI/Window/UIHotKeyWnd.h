@@ -19,7 +19,7 @@ public:
     HotkeyInfo info;
   };
 
-  UIHotKeyWnd(UIWindowContext& windows);
+  UIHotKeyWnd();
   void Slot15(int width, int height) override;
   void Slot25(int x, int y) override;
   void Slot32(int x, int y) override;

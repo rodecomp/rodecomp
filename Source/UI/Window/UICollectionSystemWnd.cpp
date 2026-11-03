@@ -18,8 +18,8 @@
 
 // OFFSET: 0x00910890
 // FUNCTION: fn_12504
-CUICollectionSystemWnd::CUICollectionSystemWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), m_frameDelay(15), unknown_00B8(-1), unknown_00BC(0),
+CUICollectionSystemWnd::CUICollectionSystemWnd()
+    : UIFrameWnd(0), m_frameDelay(15), unknown_00B8(-1), unknown_00BC(0),
       m_frame(0), m_lastFrame(-1), m_paused(false), m_lastTick(0) {
   this->m_action = static_cast<CActRes*>(ResourceMgr::Instance().Load("collection_slotmachine.act"));
   this->m_sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load("collection_slotmachine.spr"));

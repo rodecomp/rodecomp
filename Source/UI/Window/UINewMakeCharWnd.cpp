@@ -31,7 +31,7 @@
 // OFFSET: 0x007D9A50
 // FUNCTION: fn_09609
 UINewMakeCharWnd::UINewMakeCharWnd()
-    : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(nullptr), 0),
+    : UIFrameWnd(0),
       unknown_02C0(0),
       m_race(0),
       m_raceViews() {
@@ -300,7 +300,7 @@ int UIHairStyleButton::SendMsg(UIWindow* sender, int message, std::intptr_t argu
 // OFFSET: 0x007DA290
 // FUNCTION: fn_09613
 void UIHairStyleButton::Slot15(int width, int height) {
-  this->m_preview = new (std::nothrow) UIHairBitmap(*this->m_context);
+  this->m_preview = new (std::nothrow) UIHairBitmap();
   this->m_preview->SetSize(36, 37);
   this->AddChild(this->m_preview);
   this->SendMsg(nullptr, 40, 0, 0, 0, 0);
@@ -343,7 +343,7 @@ void UINewMakeCharWnd::sub_7DBFD0() {
 // OFFSET: 0x007DA340
 // FUNCTION: fn_09614
 void UINewMakeCharWnd::Slot15(int width, int height) {
-  UIBitmapButton* closeButton = new UIBitmapButton(*this->m_context);
+  UIBitmapButton* closeButton = new UIBitmapButton();
   closeButton->SetBitmap("유저인터페이스\\make_character_ver2\\bt_close_normal.bmp", 0, 0);
   closeButton->SetBitmap("유저인터페이스\\make_character_ver2\\bt_close_over.bmp", 1, 0);
   closeButton->SetBitmap("유저인터페이스\\make_character_ver2\\bt_close_press.bmp", 2, 0);
@@ -352,7 +352,7 @@ void UINewMakeCharWnd::Slot15(int width, int height) {
   closeButton->SetId(0xB9);
   this->AddChild(closeButton);
 
-  UIBmpTextButton* makeButton = new UIBmpTextButton(*this->m_context);
+  UIBmpTextButton* makeButton = new UIBmpTextButton();
   makeButton->SetBitmap("유저인터페이스\\make_character_ver2\\bt_make_normal.bmp", 0, 0);
   makeButton->SetBitmap("유저인터페이스\\make_character_ver2\\bt_make_over.bmp", 1, 0);
   makeButton->SetBitmap("유저인터페이스\\make_character_ver2\\bt_make_press.bmp", 2, 0);
@@ -365,7 +365,7 @@ void UINewMakeCharWnd::Slot15(int width, int height) {
   makeButton->SetId(0xB8);
   this->AddChild(makeButton);
 
-  UIBmpTextButton* cancelButton = new UIBmpTextButton(*this->m_context);
+  UIBmpTextButton* cancelButton = new UIBmpTextButton();
   cancelButton->SetBitmap("유저인터페이스\\make_character_ver2\\bt_make_normal.bmp", 0, 0);
   cancelButton->SetBitmap("유저인터페이스\\make_character_ver2\\bt_make_over.bmp", 1, 0);
   cancelButton->SetBitmap("유저인터페이스\\make_character_ver2\\bt_make_press.bmp", 2, 0);
@@ -378,7 +378,7 @@ void UINewMakeCharWnd::Slot15(int width, int height) {
   cancelButton->SetId(0xB9);
   this->AddChild(cancelButton);
 
-  this->m_nameEdit = new UIEditCtrl2(*this->m_context);
+  this->m_nameEdit = new UIEditCtrl2();
   this->m_nameEdit->SetSize(0x82, 0x14);
   this->m_nameEdit->Move(0x1B3, 0x10C);
   this->m_nameEdit->maximum = 0x17;
@@ -411,7 +411,7 @@ void UINewMakeCharWnd::Slot15(int width, int height) {
   this->m_raceViews[1] = doram;
   this->AddChild(doram);
 
-  this->m_genderButtons[1] = new UIBitmapButton(*this->m_context);
+  this->m_genderButtons[1] = new UIBitmapButton();
   this->m_genderButtons[1]->SetBitmap("유저인터페이스\\make_character_ver2\\bt_male_off.bmp", 0, 0);
   this->m_genderButtons[1]->SetBitmap("유저인터페이스\\make_character_ver2\\bt_male_over.bmp", 1, 0);
   this->m_genderButtons[1]->SetBitmap("유저인터페이스\\make_character_ver2\\bt_male_press.bmp", 2, 0);
@@ -420,7 +420,7 @@ void UINewMakeCharWnd::Slot15(int width, int height) {
   this->m_genderButtons[1]->SetId(0x20D);
   this->AddChild(this->m_genderButtons[1]);
 
-  this->m_genderButtons[0] = new UIBitmapButton(*this->m_context);
+  this->m_genderButtons[0] = new UIBitmapButton();
   this->m_genderButtons[0]->SetBitmap("유저인터페이스\\make_character_ver2\\bt_female_off.bmp", 0, 0);
   this->m_genderButtons[0]->SetBitmap("유저인터페이스\\make_character_ver2\\bt_female_over.bmp", 1, 0);
   this->m_genderButtons[0]->SetBitmap("유저인터페이스\\make_character_ver2\\bt_female_press.bmp", 2, 0);
@@ -435,7 +435,7 @@ void UINewMakeCharWnd::Slot15(int width, int height) {
     this->m_genderButtons[0]->SetBitmap("유저인터페이스\\make_character_ver2\\bt_female_on.bmp", 0, 0);
   }
 
-  UIBitmapButton* leftTurn = new UIBitmapButton(*this->m_context);
+  UIBitmapButton* leftTurn = new UIBitmapButton();
   leftTurn->SetBitmap("유저인터페이스\\make_character_ver2\\bt_leftTurn_normal.bmp", 0, 0);
   leftTurn->SetBitmap("유저인터페이스\\make_character_ver2\\bt_leftTurn_over.bmp", 1, 0);
   leftTurn->SetBitmap("유저인터페이스\\make_character_ver2\\bt_leftTurn_press.bmp", 2, 0);
@@ -446,7 +446,7 @@ void UINewMakeCharWnd::Slot15(int width, int height) {
   leftTurn->SetTooltip(LookupMessage(0x87E));
   this->AddChild(leftTurn);
 
-  UIBitmapButton* rightTurn = new UIBitmapButton(*this->m_context);
+  UIBitmapButton* rightTurn = new UIBitmapButton();
   rightTurn->SetBitmap("유저인터페이스\\make_character_ver2\\bt_rightTurn_normal.bmp", 0, 0);
   rightTurn->SetBitmap("유저인터페이스\\make_character_ver2\\bt_rightTurn_over.bmp", 1, 0);
   rightTurn->SetBitmap("유저인터페이스\\make_character_ver2\\bt_rightTurn_press.bmp", 2, 0);
@@ -457,7 +457,7 @@ void UINewMakeCharWnd::Slot15(int width, int height) {
   rightTurn->SetTooltip(LookupMessage(0x87F));
   this->AddChild(rightTurn);
 
-  UIStaticText* hairStyleTitle = new UIStaticText(*this->m_context);
+  UIStaticText* hairStyleTitle = new UIStaticText();
   hairStyleTitle->SetSize(100, 0xF);
   hairStyleTitle->SetText(LookupMessage(0xD12), 0);
   hairStyleTitle->SetColor(0x40, 0x40, 0x40);
@@ -466,7 +466,7 @@ void UINewMakeCharWnd::Slot15(int width, int height) {
   this->AddChild(hairStyleTitle);
 
   for (int index = 0; index < 24; ++index) {
-    this->m_hairStyleButtons[index] = new UIHairStyleButton(*this->m_context, index, this->m_sex);
+    this->m_hairStyleButtons[index] = new UIHairStyleButton(index, this->m_sex);
     this->m_hairStyleButtons[index]->SetBitmap("유저인터페이스\\make_character_ver2\\bt_hairStyle_normal.bmp", 0, 0);
     this->m_hairStyleButtons[index]->SetBitmap("유저인터페이스\\make_character_ver2\\bt_hairStyle_over.bmp", 1, 0);
     this->m_hairStyleButtons[index]->SetBitmap("유저인터페이스\\make_character_ver2\\bt_hairStyle_select.bmp", 2, 0);
@@ -479,7 +479,7 @@ void UINewMakeCharWnd::Slot15(int width, int height) {
     }
   }
 
-  UIStaticText* hairColorTitle = new UIStaticText(*this->m_context);
+  UIStaticText* hairColorTitle = new UIStaticText();
   hairColorTitle->SetSize(100, 0xF);
   hairColorTitle->SetText(LookupMessage(0xD13), 0);
   hairColorTitle->SetColor(0x40, 0x40, 0x40);
@@ -490,7 +490,7 @@ void UINewMakeCharWnd::Slot15(int width, int height) {
   char name[128];
   memset(name, 0, sizeof(name));
   for (int index = 0; index < 9; ++index) {
-    UIBmpRadioBtn* button = new UIBmpRadioBtn(*this->m_context);
+    UIBmpRadioBtn* button = new UIBmpRadioBtn();
     memset(name, 0, 0x40);
     sprintf(name, "유저인터페이스\\make_character_ver2\\color%02d_off.bmp", index + 1);
     button->SetBitmap(name, 0);

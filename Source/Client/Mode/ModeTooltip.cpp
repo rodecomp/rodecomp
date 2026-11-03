@@ -30,7 +30,7 @@ void ModeTooltip::Show(const char* value, int x, int y, std::uint32_t color, uns
   if (this->window) {
     this->ordering.Promote(this->window);
   } else {
-    this->window = new UITransBalloonText(this->windows);
+    this->window = new UITransBalloonText();
     this->window->SetSize(8, 8);
     this->rendered.push_back(this->window);
   }

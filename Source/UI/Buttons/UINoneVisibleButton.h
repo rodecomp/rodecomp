@@ -5,7 +5,7 @@
 
 class UINoneVisibleButton : public UIButton {
 public:
-  UINoneVisibleButton(UIWindowContext& windowContext);
+  UINoneVisibleButton();
   void Paint() override;
 };
 

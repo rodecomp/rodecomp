@@ -43,7 +43,9 @@ class UIWindow : public UIRPData {
   friend class UIScrollWnd;
 
 public:
-  explicit UIWindow(UIWindowContext& context, unsigned char cached);
+  explicit UIWindow(unsigned char cached);
+  UIWindow(UIWindowContext&, unsigned char cached) : UIWindow(cached) {
+  }
   ~UIWindow() override;
   virtual void Resize(int width, int height);
   virtual bool Slot02();

@@ -14,7 +14,7 @@ struct PartyJoinRequest;
 
 class UIRequestJoinPartyWnd : public UIFrameWnd {
 public:
-  UIRequestJoinPartyWnd(UIWindowContext& windows);
+  UIRequestJoinPartyWnd();
   ~UIRequestJoinPartyWnd() override;
   void Slot15(int width, int height) override;
   void Paint() override;

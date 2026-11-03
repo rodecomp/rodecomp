@@ -139,6 +139,6 @@ void UIResizer::SetDirection(int value) {
 
 // OFFSET: 0x00850120
 // FUNCTION: fn_10671
-UIResizer::UIResizer(UIWindowContext& windows)
-    : UIWindow(windows, 0), direction(0), parentWidth(0), parentHeight(0), lineColor(0xFFFF00FF), backgroundColor(0xFFFF00FF) {
+UIResizer::UIResizer()
+    : UIWindow(0), direction(0), parentWidth(0), parentHeight(0), lineColor(0xFFFF00FF), backgroundColor(0xFFFF00FF) {
 }

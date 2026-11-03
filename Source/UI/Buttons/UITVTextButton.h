@@ -11,11 +11,6 @@ class UITVTextButton : public UIButton {
 
 public:
   UITVTextButton();
-  // INLINED
-  UITVTextButton(UIWindowContext& windowContext)
-      : UIButton(windowContext), unknown_00B4(0), unknown_00B5(0), unknown_00B6(0), m_border(0), m_fill(0), m_fillColor(0xFFFFFF),
-        m_textColor(0), m_outlineColor(0xFFFFFF), m_highlightColor(0), m_outlined(0), m_fontHeight(12), m_fontFamily(0), m_value(0) {
-  }
   void Paint() override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;

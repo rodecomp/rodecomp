@@ -9,7 +9,7 @@ class UIStaticText;
 
 class UIItemDropCntWnd : public UIFrameWnd {
 public:
-  UIItemDropCntWnd(UIWindowContext& windows);
+  UIItemDropCntWnd();
 
   /* 00B4 */ UIEditCtrl* m_edit;
   /* 00B8 */ std::uint32_t unknown_00B8;
@@ -21,7 +21,7 @@ public:
 
 class UIPasswordWnd : public UIItemDropCntWnd {
 public:
-  UIPasswordWnd(UIWindowContext& windows);
+  UIPasswordWnd();
 
   /* 00BC */ int unknown_00BC;
   /* 00C0 */ unsigned char unknown_00C0[0x38];
@@ -53,7 +53,7 @@ protected:
 
 class UIStorePasswordInputWnd : public UIFrameWnd {
 public:
-  UIStorePasswordInputWnd(UIWindowContext& windows);
+  UIStorePasswordInputWnd();
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
@@ -76,7 +76,7 @@ public:
 
 class UISecondPasswordInputWnd : public UIStorePasswordInputWnd {
 public:
-  UISecondPasswordInputWnd(UIWindowContext& windows);
+  UISecondPasswordInputWnd();
   void Paint() override;
   void ShuffleKeypad();
 

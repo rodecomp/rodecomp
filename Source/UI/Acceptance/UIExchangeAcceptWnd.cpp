@@ -14,8 +14,8 @@
 
 // OFFSET: 0x008C7AA0
 // FUNCTION: fn_11941
-UIExchangeAcceptWnd::UIExchangeAcceptWnd(UIWindowContext& windows, UIAcceptanceContext& acceptance)
-    : UIChooseSellBuyWnd(windows, acceptance), saved(nullptr) {
+UIExchangeAcceptWnd::UIExchangeAcceptWnd(UIAcceptanceContext& acceptance)
+    : UIChooseSellBuyWnd(acceptance), saved(nullptr) {
 }
 
 // OFFSET: 0x008CC9C0

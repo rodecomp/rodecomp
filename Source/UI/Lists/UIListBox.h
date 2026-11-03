@@ -14,7 +14,8 @@ class UIScrollBar;
 class UIListBox : public UIWindow {
 public:
   __declspec(noinline) UIListBox();
-  __declspec(noinline) UIListBox(UIWindowContext& windows);
+  UIListBox(UIWindowContext&) : UIListBox() {
+  }
   ~UIListBox() override;
   void Resize(int width, int height) override;
   void Slot15(int width, int height) override;
@@ -70,7 +71,7 @@ public:
 
 class UIListBox2 : public UIListBox {
 public:
-  UIListBox2(UIWindowContext& windows);
+  UIListBox2();
   void Paint() override;
 
   /* 00D4 */ int fontFamily;

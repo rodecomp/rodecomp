@@ -31,8 +31,8 @@
 
 // OFFSET: 0x00844BE0
 // FUNCTION: fn_10567
-UIExpandedBarterItemPurchaseWnd::UIExpandedBarterItemPurchaseWnd(UIWindowContext& windowContext)
-    : UIFrameWnd(windowContext, 0) {
+UIExpandedBarterItemPurchaseWnd::UIExpandedBarterItemPurchaseWnd()
+    : UIFrameWnd(0) {
   new (&this->unknown_00B4) std::list<BarterMarketEntry>();
   this->resizer = nullptr;
   this->scrollBar = nullptr;
@@ -44,8 +44,8 @@ UIExpandedBarterItemPurchaseWnd::UIExpandedBarterItemPurchaseWnd(UIWindowContext
 
 // OFFSET: 0x00844D00
 // FUNCTION: fn_10569
-UIExpandedBartermarketWnd::UIExpandedBartermarketWnd(UIWindowContext& windowContext)
-    : UIFrameWnd(windowContext, 0) {
+UIExpandedBartermarketWnd::UIExpandedBartermarketWnd()
+    : UIFrameWnd(0) {
   new (&this->unknown_00B4) std::list<BarterMarketEntry>();
   this->unknown_00BC = nullptr;
   this->scrollBar = nullptr;
@@ -1204,7 +1204,7 @@ bool UIBarterItemPurchaseWnd::Purchase() {
 // OFFSET: 0x00841A10
 // FUNCTION: fn_10552
 void UIBarterItemPurchaseWnd::Slot15(int width, int height) {
-  UIResizer* resizer = new UIResizer(*this->m_context);
+  UIResizer* resizer = new UIResizer();
   this->resizer = resizer;
   resizer->SetSize(16, 16);
   resizer->SetDirection(3);
@@ -1213,7 +1213,7 @@ void UIBarterItemPurchaseWnd::Slot15(int width, int height) {
   resizer->SetColors(0xFFFF00FF, 0xFFFF00FF);
   this->AddChild(resizer);
 
-  UIScrollBar* scrollBar = new UIScrollBar(*this->m_context);
+  UIScrollBar* scrollBar = new UIScrollBar();
   this->scrollBar = scrollBar;
   scrollBar->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - 38);
   this->AddChild(scrollBar);
@@ -1412,7 +1412,7 @@ int UIBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 // OFFSET: 0x00846FB0
 // FUNCTION: fn_10583
 void UIExpandedBarterItemPurchaseWnd::Slot15(int width, int height) {
-  UIResizer* resizer = new UIResizer(*this->m_context);
+  UIResizer* resizer = new UIResizer();
   this->resizer = resizer;
   resizer->SetSize(16, 16);
   resizer->SetDirection(3);
@@ -1421,7 +1421,7 @@ void UIExpandedBarterItemPurchaseWnd::Slot15(int width, int height) {
   resizer->SetColors(0xFFFF00FF, 0xFFFF00FF);
   this->AddChild(resizer);
 
-  UIScrollBar* scrollBar = new UIScrollBar(*this->m_context);
+  UIScrollBar* scrollBar = new UIScrollBar();
   this->scrollBar = scrollBar;
   scrollBar->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - 46);
   this->AddChild(scrollBar);
@@ -1541,7 +1541,7 @@ int UIBartermarketWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
 // OFFSET: 0x00842570
 // FUNCTION: fn_10553
 void UIBartermarketWnd::Slot15(int width, int height) {
-  this->resizer = new UIResizer(*this->m_context);
+  this->resizer = new UIResizer();
   this->resizer->SetSize(16, 16);
   static_cast<UIResizer*>(this->resizer)->SetDirection(7);
   static_cast<UIResizer*>(this->resizer)->SetBitmapName("유저인터페이스\\btn_resize.bmp");
@@ -1549,7 +1549,7 @@ void UIBartermarketWnd::Slot15(int width, int height) {
   static_cast<UIResizer*>(this->resizer)->SetColors(0xFFFF00FF, 0xFFFF00FF);
   this->AddChild(this->resizer);
 
-  this->scrollBar = new UIScrollBar(*this->m_context);
+  this->scrollBar = new UIScrollBar();
   static_cast<UIScrollBar*>(this->scrollBar)->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - this->unknown_0104 - 17);
   this->AddChild(this->scrollBar);
 
@@ -1625,7 +1625,7 @@ bool UIExpandedBarterItemPurchaseWnd::Purchase() {
 // OFFSET: 0x00847290
 // FUNCTION: fn_10584
 void UIExpandedBartermarketWnd::Slot15(int width, int height) {
-  this->unknown_00BC = new UIResizer(*this->m_context);
+  this->unknown_00BC = new UIResizer();
   this->unknown_00BC->SetSize(16, 16);
   static_cast<UIResizer*>(this->unknown_00BC)->SetDirection(7);
   static_cast<UIResizer*>(this->unknown_00BC)->SetBitmapName("유저인터페이스\\btn_resize.bmp");
@@ -1633,7 +1633,7 @@ void UIExpandedBartermarketWnd::Slot15(int width, int height) {
   static_cast<UIResizer*>(this->unknown_00BC)->SetColors(0xFFFF00FF, 0xFFFF00FF);
   this->AddChild(this->unknown_00BC);
 
-  this->scrollBar = new UIScrollBar(*this->m_context);
+  this->scrollBar = new UIScrollBar();
   this->scrollBar->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - 46);
   this->AddChild(this->scrollBar);
 

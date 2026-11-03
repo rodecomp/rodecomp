@@ -38,7 +38,7 @@ struct PACKET_CZ_SELECT_CHARACTERS {
 // OFFSET: 0x009120E0
 // FUNCTION: fn_12526
 UISelCharForUServerWnd::UISelCharForUServerWnd()
-    : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(nullptr), 0), m_columns(6) {
+    : UIFrameWnd(0), m_columns(6) {
   if (g_charViewCount > 12) {
     this->m_columns = 9;
   }
@@ -197,7 +197,7 @@ void UISelCharForUServerWnd::Slot27(int x, int y) {
 void UISelCharForUServerWnd::UpdateCharInfoBalloon(int x, int y, std::uint32_t color) {
   const unsigned char red = (color >> 16) & 0xFF;
   if (!this->unknown_19E8) {
-    this->unknown_19E8 = new UICharInfoBalloonText(*this->m_context);
+    this->unknown_19E8 = new UICharInfoBalloonText();
     this->unknown_19E8->SetSize(140, 200);
     g_windowMgr.AddRendered(this->unknown_19E8);
   }

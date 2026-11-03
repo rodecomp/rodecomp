@@ -11,7 +11,7 @@ class UIStaticText;
 
 class UIItemSellWnd : public UIItemBaseWnd {
 public:
-  UIItemSellWnd(UIWindowContext& windows);
+  UIItemSellWnd();
   void Slot11() override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;

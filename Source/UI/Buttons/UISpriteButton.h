@@ -8,7 +8,8 @@
 class UISpriteButton : public UIButton {
 public:
   UISpriteButton();
-  UISpriteButton(UIWindowContext& windowContext);
+  UISpriteButton(UIWindowContext&) : UISpriteButton() {
+  }
   ~UISpriteButton() override;
   void Paint() override;
   void Slot25(int x, int y) override;
@@ -47,7 +48,7 @@ public:
 
 class UISpriteButton2 : public UISpriteButton {
 public:
-  UISpriteButton2(UIWindowContext& windowContext, UIWindow* target);
+  UISpriteButton2(UIWindow* target);
   ~UISpriteButton2() override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;

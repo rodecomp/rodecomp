@@ -37,7 +37,7 @@ class RuneSetData;
 
 class UIRuneSetReWard : public UIBitmapButton {
 public:
-  UIRuneSetReWard(UIWindowContext& windows);
+  UIRuneSetReWard();
 
   void Paint() override;
   void Slot28(int x, int y) override;
@@ -52,7 +52,7 @@ public:
 
 class UIRuneSystemTab : public UIWindow {
 public:
-  explicit UIRuneSystemTab(UIWindowContext& windows);
+  UIRuneSystemTab();
   void Paint() override;
   void Slot25(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
@@ -63,7 +63,7 @@ public:
 
 class UIEquipRuneSetWnd : public UIWindow {
 public:
-  explicit UIEquipRuneSetWnd(UIWindowContext& windows);
+  UIEquipRuneSetWnd();
 
   void Paint() override;
   void Slot25(int x, int y) override;
@@ -73,7 +73,7 @@ public:
 
 class UIRuneSystem_tagListWnd : public UIWindow {
 public:
-  UIRuneSystem_tagListWnd(UIWindowContext& windows);
+  UIRuneSystem_tagListWnd();
   void Paint() override;
   void Slot25(int x, int y) override;
   void Slot28(int x, int y) override;
@@ -87,7 +87,7 @@ public:
 
 class UIRuneSetList : public UIScrollBar {
 public:
-  explicit UIRuneSetList(UIWindowContext& windows);
+  UIRuneSetList();
 
   void Paint() override;
   void Slot25(int x, int y) override;
@@ -106,7 +106,7 @@ public:
 
 class UIRuneList : public UIRuneSetList {
 public:
-  explicit UIRuneList(UIWindowContext& windows);
+  UIRuneList();
 
   void Paint() override;
   void Slot28(int x, int y) override;
@@ -114,7 +114,7 @@ public:
 
 class UIDecomlist : public UIRuneSetList {
 public:
-  explicit UIDecomlist(UIWindowContext& windows);
+  UIDecomlist();
 
   void Paint() override;
   void Slot28(int x, int y) override;
@@ -137,7 +137,7 @@ struct RuneSetInfoLine {
 
 class UIRuneSetinfoList : public UIRuneSetList {
 public:
-  explicit UIRuneSetinfoList(UIWindowContext& windows);
+  UIRuneSetinfoList();
 
   void Paint() override;
   __declspec(noinline) void AddLine(std::string text, std::uint32_t color, bool bold);
@@ -148,7 +148,7 @@ public:
 
 class UIGage_Circle : public UIWindow {
 public:
-  __declspec(noinline) explicit UIGage_Circle(UIWindowContext& windows);
+  __declspec(noinline) UIGage_Circle();
 
   void Paint() override;
 
@@ -162,7 +162,7 @@ public:
 
 class UIRuneSystem_ActiveWnd : public UIWindow {
 public:
-  explicit UIRuneSystem_ActiveWnd(UIWindowContext& windows);
+  UIRuneSystem_ActiveWnd();
 
   void Paint() override;
   void Slot28(int x, int y) override;
@@ -182,7 +182,7 @@ public:
 
 class UIRuneSystem_Decom_RadioBtn : public UIRadioBtn {
 public:
-  UIRuneSystem_Decom_RadioBtn(UIWindowContext& windows);
+  UIRuneSystem_Decom_RadioBtn();
 
   void Paint() override;
 
@@ -204,7 +204,7 @@ public:
 
 class UIRuneSet_Info : public UIWindow {
 public:
-  explicit UIRuneSet_Info(UIWindowContext& windows);
+  UIRuneSet_Info();
 
   void Slot15(int width, int height) override;
   void Slot19() override;
@@ -233,7 +233,7 @@ public:
 
 class UIRune_Info : public UIWindow {
 public:
-  explicit UIRune_Info(UIWindowContext& windows);
+  UIRune_Info();
 
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -246,7 +246,7 @@ public:
 
 class UIRune_Decom : public UIWindow {
 public:
-  explicit UIRune_Decom(UIWindowContext& windows);
+  UIRune_Decom();
 
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -304,7 +304,7 @@ struct RuneDecomResultPacket {
 
 class UIRuneSystem_DecomResultWnd : public UIFrameWnd {
 public:
-  UIRuneSystem_DecomResultWnd(UIWindowContext& windows);
+  UIRuneSystem_DecomResultWnd();
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
@@ -315,7 +315,7 @@ public:
 
 class UIRuneSystemWnd : public UIFrameWnd {
 public:
-  UIRuneSystemWnd(UIWindowContext& windows);
+  UIRuneSystemWnd();
   void Slot15(int width, int height) override;
   void Slot19() override;
   void Paint() override;

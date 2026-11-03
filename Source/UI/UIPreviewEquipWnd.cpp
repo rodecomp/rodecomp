@@ -20,8 +20,8 @@
 
 // OFFSET: 0x007F2F90
 // FUNCTION: fn_09879
-UIPreviewEquipWnd::UIPreviewEquipWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 1), saved(nullptr), m_render(nullptr), m_leftButton(nullptr), m_rightButton(nullptr), unknown_00C4(0) {
+UIPreviewEquipWnd::UIPreviewEquipWnd()
+    : UIFrameWnd(1), saved(nullptr), m_render(nullptr), m_leftButton(nullptr), m_rightButton(nullptr), unknown_00C4(0) {
 }
 
 // OFFSET: 0x007F3090
@@ -76,7 +76,7 @@ void UIPreviewEquipWnd::Slot15(int width, int height) {
   this->AddBaseButton();
   this->AddCloseButton("", 0);
 
-  UIStaticText* shadow = new UIStaticText(*this->m_context);
+  UIStaticText* shadow = new UIStaticText();
   shadow->SetSize(
     this->TextWidth(LookupMessage(0xB90), 0, 0, 12, 0, 0),
     this->TextHeight(LookupMessage(0xB90), 0, 0, 12, 0, 0)
@@ -86,7 +86,7 @@ void UIPreviewEquipWnd::Slot15(int width, int height) {
   shadow->Move(19, 4);
   this->AddChild(shadow);
 
-  UIStaticText* title = new UIStaticText(*this->m_context);
+  UIStaticText* title = new UIStaticText();
   title->SetSize(
     this->TextWidth(LookupMessage(0xB90), 0, 0, 12, 0, 0),
     this->TextHeight(LookupMessage(0xB90), 0, 0, 12, 0, 0)
@@ -102,7 +102,7 @@ void UIPreviewEquipWnd::Slot15(int width, int height) {
   this->m_render = new CCharacterRender(width, height);
   this->SyncFromPlayer();
 
-  this->m_leftButton = new UIBitmapButton(*this->m_context);
+  this->m_leftButton = new UIBitmapButton();
   this->m_leftButton->SetBitmap("유저인터페이스\\equip_preview\\chr_arrow_rotate_l_out.bmp", 0, 0);
   this->m_leftButton->SetBitmap("유저인터페이스\\equip_preview\\chr_arrow_rotate_l_over.bmp", 1, 0);
   this->m_leftButton->SetBitmap("유저인터페이스\\equip_preview\\chr_arrow_rotate_l_press.bmp", 2, 0);
@@ -111,7 +111,7 @@ void UIPreviewEquipWnd::Slot15(int width, int height) {
   this->m_leftButton->SetId(0x180);
   this->AddChild(this->m_leftButton);
 
-  this->m_rightButton = new UIBitmapButton(*this->m_context);
+  this->m_rightButton = new UIBitmapButton();
   this->m_rightButton->SetBitmap("유저인터페이스\\equip_preview\\chr_arrow_rotate_r_out.bmp", 0, 0);
   this->m_rightButton->SetBitmap("유저인터페이스\\equip_preview\\chr_arrow_rotate_r_over.bmp", 1, 0);
   this->m_rightButton->SetBitmap("유저인터페이스\\equip_preview\\chr_arrow_rotate_r_press.bmp", 2, 0);
@@ -120,7 +120,7 @@ void UIPreviewEquipWnd::Slot15(int width, int height) {
   this->m_rightButton->SetId(0x181);
   this->AddChild(this->m_rightButton);
 
-  this->unknown_00C4 = new UIBasicButton(*this->m_context);
+  this->unknown_00C4 = new UIBasicButton();
   this->unknown_00C4->Configure(80, LookupMessage(0xB9F));
   this->unknown_00C4->Move(static_cast<int>((this->geometry.width - this->unknown_00C4->geometry.width) * 0.5), this->geometry.height - 30);
   this->unknown_00C4->SetId(0x16B);

@@ -15,8 +15,7 @@
 
 class CUIListItem : public CUIControl {
 public:
-  CUIListItem();
-  __declspec(noinline) explicit CUIListItem(UIWindowContext& context);
+  __declspec(noinline) CUIListItem();
   ~CUIListItem() override;
 
   void Slot25(int x, int y) override;
@@ -53,7 +52,7 @@ class CUIPage;
 
 class CUISubTab : public CUIListItem {
 public:
-  explicit CUISubTab(UIWindowContext& context);
+  CUISubTab();
   void Slot15(int width, int height) override;
   void Slot16() override;
 
@@ -65,10 +64,7 @@ public:
 
 class CUITab : public CUIListItem {
 public:
-  // INLINED
-  CUITab() : CUIListItem(), unknown_00E8(nullptr), subTabs(nullptr), unknown_00F0(), type(7), page(nullptr), unknown_0110(0) {
-  }
-  explicit CUITab(UIWindowContext& context);
+  CUITab();
   void Slot15(int width, int height) override;
   void Slot16() override;
   void SetSelected(bool selected) override;
@@ -86,7 +82,7 @@ public:
 
 class CUIItemInfo : public CUIListItem {
 public:
-  explicit CUIItemInfo(UIWindowContext& context);
+  CUIItemInfo();
   void Slot15(int width, int height) override;
   void Slot16() override;
   void Slot32(int x, int y) override;
@@ -111,7 +107,7 @@ public:
 
 class CUIMonsterInfo : public CUIListItem {
 public:
-  explicit CUIMonsterInfo(UIWindowContext& context);
+  CUIMonsterInfo();
   void Slot15(int width, int height) override;
   void Slot16() override;
   void Paint() override;
@@ -126,7 +122,7 @@ public:
 
 class CUIQuestInfo : public CUIListItem {
 public:
-  explicit CUIQuestInfo(UIWindowContext& context);
+  CUIQuestInfo();
   void Slot15(int width, int height) override;
   void Slot16() override;
   void SetTitle(int id);
@@ -144,7 +140,7 @@ public:
 
 class CUITabInfo : public CUIListItem {
 public:
-  explicit CUITabInfo(UIWindowContext& context);
+  CUITabInfo();
   void Slot15(int width, int height) override;
   void Slot16() override;
 
@@ -196,8 +192,8 @@ struct Contents {
 template <class T> class CUIListBox : public CUIControl {
 public:
   // INLINED
-  explicit CUIListBox(UIWindowContext& context)
-      : CUIControl(context), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), selected(nullptr), locked(0) {
+  explicit CUIListBox()
+      : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), selected(nullptr), locked(0) {
   }
   ~CUIListBox() override;
 
@@ -295,7 +291,7 @@ public:
 
 template <class T, class D> class CUIListBoxEx : public CUIControl {
 public:
-  explicit CUIListBoxEx(UIWindowContext& context);
+  CUIListBoxEx();
   ~CUIListBoxEx() override;
   void Slot15(int width, int height) override;
   // OFFSET: 0x00A01E70

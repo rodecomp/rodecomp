@@ -6,14 +6,12 @@
 
 class UITransBalloonText;
 class UIWindow;
-struct UIWindowContext;
 struct WindowOrdering;
 class UIWindowMgr;
 
 struct ModeTooltip {
   UITransBalloonText*& window;
   std::uint32_t& tick;
-  UIWindowContext& windows;
   std::list<UIWindow*>& rendered;
   WindowOrdering& ordering;
   const int& screenWidth;

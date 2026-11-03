@@ -10,8 +10,8 @@
 
 // OFFSET: 0x0086DA90
 // FUNCTION: fn_11056
-UIListBoxEx::UIListBoxEx(UIWindowContext& windows)
-    : UIWindow(windows, 0), backgroundRed(255), backgroundGreen(255), backgroundBlue(255), selected(0), topLine(0), horizontalOffset(0), contentWidth(0),
+UIListBoxEx::UIListBoxEx()
+    : UIWindow(0), backgroundRed(255), backgroundGreen(255), backgroundBlue(255), selected(0), topLine(0), horizontalOffset(0), contentWidth(0),
       verticalOverflow(0), bottomMargin(0), verticalBar(nullptr), horizontalBar(nullptr), transparent(0), lineHeight(16), selectionColor(0) {
   constexpr char path[] = "유저인터페이스\\colorchip.bmp";
   const auto* chip = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(path));
@@ -40,7 +40,7 @@ void UIListBoxEx::Configure(int x, int y, int width, int height, unsigned char v
 // OFFSET: 0x00886990
 // FUNCTION: fn_11327
 void UIListBoxEx::Slot15(int width, int height) {
-  auto* vertical = new UIScrollBar(*this->m_context);
+  auto* vertical = new UIScrollBar();
   this->verticalBar = vertical;
   const int thickness = vertical->thickness;
   vertical->vertical = 1;
@@ -50,7 +50,7 @@ void UIListBoxEx::Slot15(int width, int height) {
   vertical->Slot22(thickness, height);
   this->AddChild(vertical);
 
-  auto* horizontal = new UIScrollBar(*this->m_context);
+  auto* horizontal = new UIScrollBar();
   this->horizontalBar = horizontal;
   const int horizontalHeight = horizontal->thickness;
   horizontal->vertical = 0;

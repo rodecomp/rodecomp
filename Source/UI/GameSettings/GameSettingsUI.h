@@ -33,8 +33,8 @@ extern std::map<int, int> g_optionHotkeys;
 
 template <class T, class D> class CUIComboBox : public CUIControl {
 public:
-  explicit CUIComboBox(UIWindowContext& context)
-      : CUIControl(context), button(), unknown_0088(), listBox(nullptr), width(), itemHeight(0), visibleItems(1), onSelect(), onChange() {
+  explicit CUIComboBox()
+      : CUIControl(), button(), unknown_0088(), listBox(nullptr), width(), itemHeight(0), visibleItems(1), onSelect(), onChange() {
   }
 
   void Paint() override;
@@ -62,7 +62,7 @@ class CUIOptionItem;
 class CUIGroup : public CUIControl {
 public:
   // INLINED
-  explicit CUIGroup(UIWindowContext& context) : CUIControl(context), m_title(nullptr) {
+  explicit CUIGroup() : CUIControl(), m_title(nullptr) {
   }
 
   virtual void Apply();
@@ -73,7 +73,7 @@ public:
 
 class CUIGroupEmblem : public CUIGroup {
 public:
-  __declspec(noinline) explicit CUIGroupEmblem(UIWindowContext& context);
+  __declspec(noinline) CUIGroupEmblem();
   void Slot15(int width, int height) override;
   void Slot16() override;
   void Apply() override;
@@ -89,7 +89,7 @@ public:
 
 class CUIGroupFullscreen : public CUIGroup {
 public:
-  __declspec(noinline) explicit CUIGroupFullscreen(UIWindowContext& context);
+  __declspec(noinline) CUIGroupFullscreen();
   void Slot15(int width, int height) override;
   void Slot16() override;
   void Refresh() override;
@@ -102,7 +102,7 @@ public:
 
 class CUIGroupGraphics : public CUIGroup {
 public:
-  __declspec(noinline) explicit CUIGroupGraphics(UIWindowContext& context);
+  __declspec(noinline) CUIGroupGraphics();
   void Slot15(int width, int height) override;
   void Slot16() override;
   void Refresh() override;
@@ -123,7 +123,7 @@ public:
 
 class CUIGroupGraphicsAPI : public CUIGroup {
 public:
-  __declspec(noinline) explicit CUIGroupGraphicsAPI(UIWindowContext& context);
+  __declspec(noinline) CUIGroupGraphicsAPI();
   void Slot15(int width, int height) override;
   void Slot16() override;
   void Apply() override;
@@ -138,7 +138,7 @@ public:
 
 class CUIGroupLogInOut : public CUIGroup {
 public:
-  __declspec(noinline) explicit CUIGroupLogInOut(UIWindowContext& context);
+  __declspec(noinline) CUIGroupLogInOut();
   void Slot15(int width, int height) override;
   void Slot16() override;
   void Apply() override;
@@ -154,7 +154,7 @@ public:
 
 class CUIGroupProcessPriority : public CUIGroup {
 public:
-  __declspec(noinline) explicit CUIGroupProcessPriority(UIWindowContext& context);
+  __declspec(noinline) CUIGroupProcessPriority();
   void Slot15(int width, int height) override;
   void Slot16() override;
   void Refresh() override;
@@ -170,7 +170,7 @@ public:
 
 class CUIGroupRodexSpam : public CUIGroup {
 public:
-  __declspec(noinline) explicit CUIGroupRodexSpam(UIWindowContext& context);
+  __declspec(noinline) CUIGroupRodexSpam();
   void Slot15(int width, int height) override;
   void Slot16() override;
   void Apply() override;
@@ -185,7 +185,7 @@ public:
 
 class CUIGroupSkin : public CUIGroup {
 public:
-  __declspec(noinline) explicit CUIGroupSkin(UIWindowContext& context);
+  __declspec(noinline) CUIGroupSkin();
   void Slot15(int width, int height) override;
   void Slot16() override;
   void Apply() override;
@@ -197,7 +197,7 @@ public:
 
 class CUIGroupSound : public CUIGroup {
 public:
-  __declspec(noinline) explicit CUIGroupSound(UIWindowContext& context);
+  __declspec(noinline) CUIGroupSound();
   void Slot15(int width, int height) override;
   void Slot16() override;
   void Apply() override;
@@ -223,7 +223,7 @@ public:
 
 class CUIGroupSpriteDetailLevel : public CUIGroup {
 public:
-  __declspec(noinline) explicit CUIGroupSpriteDetailLevel(UIWindowContext& context);
+  __declspec(noinline) CUIGroupSpriteDetailLevel();
   void Slot15(int width, int height) override;
   void Slot16() override;
   void Paint() override;
@@ -234,7 +234,7 @@ public:
 
 class CUIGroupTextureDetailLevel : public CUIGroup {
 public:
-  __declspec(noinline) explicit CUIGroupTextureDetailLevel(UIWindowContext& context);
+  __declspec(noinline) CUIGroupTextureDetailLevel();
   void Slot15(int width, int height) override;
   void Slot16() override;
   void Paint() override;
@@ -245,7 +245,7 @@ public:
 
 class CUIGroupTrilinear : public CUIGroup {
 public:
-  __declspec(noinline) explicit CUIGroupTrilinear(UIWindowContext& context);
+  __declspec(noinline) CUIGroupTrilinear();
   void Slot15(int width, int height) override;
   void Slot16() override;
   void Refresh() override;
@@ -259,7 +259,7 @@ public:
 class CUIPage : public CUIControl {
 public:
   // INLINED
-  explicit CUIPage(UIWindowContext& context) : CUIControl(context) {
+  explicit CUIPage() : CUIControl() {
   }
 
   void Slot16() override;
@@ -270,7 +270,7 @@ public:
 
 class CUIBasicPage : public CUIPage {
 public:
-  __declspec(noinline) explicit CUIBasicPage(UIWindowContext& context);
+  __declspec(noinline) CUIBasicPage();
   void Slot15(int width, int height) override;
 
   /* 0080 */ CUIGroupSkin* m_skin;
@@ -283,7 +283,7 @@ public:
 
 class CUIGraphicsPage : public CUIPage {
 public:
-  __declspec(noinline) explicit CUIGraphicsPage(UIWindowContext& context);
+  __declspec(noinline) CUIGraphicsPage();
   void Slot15(int width, int height) override;
   __declspec(noinline) bool IsModified();
   void ApplySettings();
@@ -300,7 +300,7 @@ public:
 
 class CUIListPage : public CUIControl {
 public:
-  __declspec(noinline) explicit CUIListPage(UIWindowContext& context);
+  __declspec(noinline) CUIListPage();
   void Slot15(int width, int height) override;
   void Slot16() override;
   void Paint() override;

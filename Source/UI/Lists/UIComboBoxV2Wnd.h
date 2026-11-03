@@ -9,7 +9,7 @@ class UIListBoxEx;
 
 class UIComboBoxV2Wnd : public UIWindow {
 public:
-  explicit UIComboBoxV2Wnd(UIWindowContext& windows);
+  UIComboBoxV2Wnd();
   void Paint() override;
   void Slot31(int x, int y) override;
   void Slot35(int value) override;

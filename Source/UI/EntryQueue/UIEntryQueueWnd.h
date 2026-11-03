@@ -23,7 +23,7 @@ struct UIEntryQueueContext {
 
 class UIEntryQueueHelpWnd : public UIFrameWnd {
 public:
-  UIEntryQueueHelpWnd(UIWindowContext& windows);
+  UIEntryQueueHelpWnd();
   void Slot15(int width, int height) override;
   void Slot18() override;
   void Slot19() override;
@@ -40,7 +40,7 @@ public:
 
 class UIEntryQueueListBox : public UIListBox {
 public:
-  UIEntryQueueListBox(UIWindowContext& windows);
+  UIEntryQueueListBox();
   ~UIEntryQueueListBox() override;
   void Slot31(int x, int y) override;
   virtual void AddEntry(const char* name, int value);
@@ -51,7 +51,7 @@ public:
 
 class UIEntryQueueRequestWnd : public UIFrameWnd {
 public:
-  UIEntryQueueRequestWnd(UIWindowContext& windows, UIEntryQueueContext& entryQueue);
+  UIEntryQueueRequestWnd(UIEntryQueueContext& entryQueue);
   ~UIEntryQueueRequestWnd() override;
   void Slot18() override;
   void Slot19() override;
@@ -75,7 +75,7 @@ public:
 
 class UIEntryQueueStandByWnd : public UIFrameWnd {
 public:
-  UIEntryQueueStandByWnd(UIWindowContext& windows, UIEntryQueueContext& entryQueue);
+  UIEntryQueueStandByWnd(UIEntryQueueContext& entryQueue);
   ~UIEntryQueueStandByWnd() override;
   void Slot18() override;
   void Slot19() override;
@@ -101,7 +101,7 @@ public:
 
 class UIEntryQueueWnd : public UIFrameWnd {
 public:
-  UIEntryQueueWnd(UIWindowContext& windows, UIEntryQueueContext& entryQueue);
+  UIEntryQueueWnd(UIEntryQueueContext& entryQueue);
   ~UIEntryQueueWnd() override;
   void Slot11() override;
   void Slot15(int width, int height) override;

@@ -14,7 +14,7 @@ class CUIVScrollBar;
 
 class CUITextViewer : public CUIControl {
 public:
-  explicit CUITextViewer(UIWindowContext& context);
+  CUITextViewer();
   void Slot15(int width, int height) override;
   void Resize(int width, int height) override;
   void Slot19() override;

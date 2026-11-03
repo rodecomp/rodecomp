@@ -12,7 +12,7 @@ class UIScrollBar;
 
 class UInCashWnd : public UIItemBaseWnd {
 public:
-  UInCashWnd(UIWindowContext& windows);
+  UInCashWnd();
   bool Slot03() override;
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot11() override;
@@ -46,7 +46,7 @@ public:
 
 class UInCash_CallWnd : public UIFrameWnd {
 public:
-  UInCash_CallWnd(UIWindowContext& windows);
+  UInCash_CallWnd();
   void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;

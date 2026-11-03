@@ -93,7 +93,7 @@ static_assert(sizeof(CharacterMovePacket) == 8);
 
 // OFFSET: 0x007D4190
 // FUNCTION: fn_09577
-UINewSelectCharWnd::UINewSelectCharWnd() : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(nullptr), 0) {
+UINewSelectCharWnd::UINewSelectCharWnd() : UIFrameWnd(0) {
   this->m_slotsPerPage = 15;
   this->m_unknown13C = false;
   this->m_window100 = nullptr;
@@ -193,7 +193,7 @@ void UINewSelectCharWnd::Slot15(int width, int height) {
 
   for (int index = 0; index < this->m_slotsPerPage; ++index) {
     const int slot = this->m_page * this->m_slotsPerPage + index;
-    UISlotBmpButton* button = new UISlotBmpButton(*this->m_context, index, true);
+    UISlotBmpButton* button = new UISlotBmpButton(index, true);
     button->SetBitmap("유저인터페이스\\select_character_ver3\\img_slot2_normal.bmp", 0, 0);
     button->SetBitmap("유저인터페이스\\select_character_ver3\\img_slot2_over.bmp", 1, 0);
     button->SetBitmap("유저인터페이스\\select_character_ver3\\img_slot2_press.bmp", 2, 0);
@@ -222,7 +222,7 @@ void UINewSelectCharWnd::Slot15(int width, int height) {
   closeButton->SetId(0xB9);
   this->AddChild(closeButton);
 
-  this->m_textButton = new UIBmpTextButton(*this->m_context);
+  this->m_textButton = new UIBmpTextButton();
   this->m_textButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_info_normal.bmp", 0, 0);
   this->m_textButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_info_over.bmp", 1, 0);
   this->m_textButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_info_press.bmp", 2, 0);
@@ -236,7 +236,7 @@ void UINewSelectCharWnd::Slot15(int width, int height) {
   this->m_textButton->Enable(0);
   this->AddChild(this->m_textButton);
 
-  UIBmpTextButton* startButton = new UIBmpTextButton(*this->m_context);
+  UIBmpTextButton* startButton = new UIBmpTextButton();
   this->m_windowC0 = startButton;
   startButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_info_normal.bmp", 0, 0);
   startButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_info_over.bmp", 1, 0);
@@ -256,7 +256,7 @@ void UINewSelectCharWnd::Slot15(int width, int height) {
     startButton->Invalidate();
   }
 
-  UIBmpTextButton* cancelDeleteButton = new UIBmpTextButton(*this->m_context);
+  UIBmpTextButton* cancelDeleteButton = new UIBmpTextButton();
   this->m_windowC4 = cancelDeleteButton;
   cancelDeleteButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_info_normal.bmp", 0, 0);
   cancelDeleteButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_info_over.bmp", 1, 0);
@@ -271,7 +271,7 @@ void UINewSelectCharWnd::Slot15(int width, int height) {
   cancelDeleteButton->Enable(0);
   this->AddChild(cancelDeleteButton);
 
-  UIBmpTextButton* gameStartButton = new UIBmpTextButton(*this->m_context);
+  UIBmpTextButton* gameStartButton = new UIBmpTextButton();
   this->m_windowFC = gameStartButton;
   gameStartButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_gameStart_off.bmp", 0, 0);
   gameStartButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_gameStart_over.bmp", 1, 0);
@@ -287,7 +287,7 @@ void UINewSelectCharWnd::Slot15(int width, int height) {
   gameStartButton->AddTextStyle(3, 0x12, 0x7F74DC, 1, 0, -1000, 0x39);
   this->AddChild(gameStartButton);
 
-  UIBmpTextButton* deleteButton = new UIBmpTextButton(*this->m_context);
+  UIBmpTextButton* deleteButton = new UIBmpTextButton();
   this->m_window100 = deleteButton;
   deleteButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_info_normal.bmp", 0, 0);
   deleteButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_info_over.bmp", 1, 0);

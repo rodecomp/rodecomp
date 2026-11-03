@@ -22,8 +22,9 @@ class UIEditCtrl : public UIWindow {
 
 public:
   UIEditCtrl();
+  UIEditCtrl(UIWindowContext&) : UIEditCtrl() {
+  }
   UIEditCtrl(const UIEditCtrl& other);
-  UIEditCtrl(UIWindowContext& windows);
   ~UIEditCtrl() override;
   bool Slot05() override;
   void Paint() override;
@@ -93,14 +94,14 @@ private:
 
 class UIEditCtrlWheel : public UIEditCtrl {
 public:
-  UIEditCtrlWheel(UIWindowContext& windows);
+  UIEditCtrlWheel();
   ~UIEditCtrlWheel() override;
   void Slot35(int value) override;
 };
 
 class UIEditCtrl2 : public UIEditCtrl {
 public:
-  UIEditCtrl2(UIWindowContext& windows);
+  UIEditCtrl2();
   ~UIEditCtrl2() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 };
@@ -108,7 +109,8 @@ public:
 class UIEditCtrl3 : public UIEditCtrl2 {
 public:
   UIEditCtrl3();
-  UIEditCtrl3(UIWindowContext& windows);
+  UIEditCtrl3(UIWindowContext&) : UIEditCtrl3() {
+  }
   UIEditCtrl3(const UIEditCtrl3& other);
   ~UIEditCtrl3() override;
   void Slot15(int width, int height) override;
@@ -170,7 +172,7 @@ public:
 
 class UIEditCtrl4 : public UIEditCtrl {
 public:
-  UIEditCtrl4(UIWindowContext& windows);
+  UIEditCtrl4();
   ~UIEditCtrl4() override;
   void Slot23() override;
   void PaintText() override;
@@ -185,7 +187,7 @@ public:
 
 class UIEditCtrl5 : public UIEditCtrl4 {
 public:
-  UIEditCtrl5(UIWindowContext& windows);
+  UIEditCtrl5();
   ~UIEditCtrl5() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 };
@@ -201,7 +203,6 @@ public:
 class UIChatEditCtrl : public UIEditCtrl {
 public:
   UIChatEditCtrl();
-  UIChatEditCtrl(UIWindowContext& windows);
   void Paint() override;
   void Slot25(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
@@ -218,7 +219,7 @@ public:
 
 class UIEditCtrl_OldList : public UIEditCtrl {
 public:
-  UIEditCtrl_OldList(UIWindowContext& windows);
+  UIEditCtrl_OldList();
   void Paint() override;
   void Slot35(int value) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
@@ -230,7 +231,7 @@ public:
 
 class UIWhisperEditCtrl : public UIEditCtrl {
 public:
-  UIWhisperEditCtrl(UIWindowContext& windows);
+  UIWhisperEditCtrl();
   void Slot23() override;
   void Slot24(int retained) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
@@ -243,9 +244,7 @@ public:
 class UIEditCtrlVarId : public UIEditCtrl {
 public:
   // INLINED
-  UIEditCtrlVarId(UIWindowContext& windows) : UIEditCtrl(windows) {}
-  // INLINED
-  UIEditCtrlVarId() {}
+  UIEditCtrlVarId() : UIEditCtrl() {}
   void Slot24(int retained) override;
   void Slot35(int value) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
@@ -257,7 +256,7 @@ bool HasNaviLinkTag(const std::string& text);
 
 class UIShowAndEditTimeCtrl : public UIWindow {
 public:
-  explicit UIShowAndEditTimeCtrl(UIWindowContext& windows);
+  UIShowAndEditTimeCtrl();
   void Paint() override;
   void Slot15(int width, int height) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;

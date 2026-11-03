@@ -15,7 +15,7 @@ struct ExtendedListLine {
 
 class UIListBoxEx : public UIWindow {
 public:
-  UIListBoxEx(UIWindowContext& windows);
+  UIListBoxEx();
   ~UIListBoxEx() override;
   void Resize(int width, int height) override;
   void Slot15(int width, int height) override;

@@ -8,5 +8,5 @@ void UINoneVisibleButton::Paint() {
 
 // OFFSET: 0x0084FF80
 // FUNCTION: fn_10669
-UINoneVisibleButton::UINoneVisibleButton(UIWindowContext& windowContext) : UIButton(windowContext) {
+UINoneVisibleButton::UINoneVisibleButton() : UIButton() {
 }

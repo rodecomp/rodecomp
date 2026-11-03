@@ -64,8 +64,8 @@ namespace {
 
 // OFFSET: 0x0084E970
 // FUNCTION: fn_10648
-__declspec(noinline) UIBalloonText::UIBalloonText(UIWindowContext& windows)
-    : UIWindow(windows, 0), unknown_007C(0), m_fontHeight(12), m_textColor(0xFFFFFF), m_outlineColor(0), m_richText(0) {
+__declspec(noinline) UIBalloonText::UIBalloonText()
+    : UIWindow(0), unknown_007C(0), m_fontHeight(12), m_textColor(0xFFFFFF), m_outlineColor(0), m_richText(0) {
   this->geometry.unknown_0034 = 0;
 }
 
@@ -314,7 +314,7 @@ void UINameBalloonText::SetIcon(const char* name, unsigned char framed) {
 }
 // OFFSET: 0x0084FED0
 // FUNCTION: fn_10668
-UINameBalloonText::UINameBalloonText(UIWindowContext& windows) : UIBalloonText(windows), monsterType(0), framed(0) {
+UINameBalloonText::UINameBalloonText() : UIBalloonText(), monsterType(0), framed(0) {
   this->m_textColor = 0xFFFFFF;
   this->m_outlineColor = 0;
   this->unknown_00B8 = 0;
@@ -323,7 +323,7 @@ UINameBalloonText::UINameBalloonText(UIWindowContext& windows) : UIBalloonText(w
 
 // OFFSET: 0x00CCDFF0
 // FUNCTION: fn_21219
-UIVerticalNameBalloonText::UIVerticalNameBalloonText(UIWindowContext& windows) : UINameBalloonText(windows) {
+UIVerticalNameBalloonText::UIVerticalNameBalloonText() : UINameBalloonText() {
 }
 
 // OFFSET: 0x00865EB0

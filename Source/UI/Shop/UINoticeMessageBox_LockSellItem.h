@@ -8,7 +8,7 @@
 
 class UINoticeMessageBox_LockSellItem : public UIFrameWnd {
 public:
-  UINoticeMessageBox_LockSellItem(UIWindowContext& windows);
+  UINoticeMessageBox_LockSellItem();
   void Slot15(int width, int height) override;
   void Slot19() override;
   void Paint() override;

@@ -9,7 +9,7 @@
 
 class UISpellListWnd : public UIItemIdentifyWnd {
 public:
-  UISpellListWnd(UIWindowContext& windows);
+  UISpellListWnd();
   ~UISpellListWnd() override;
   /* 00F0 */ std::vector<std::uint32_t> m_skills;
   /* 00FC */ std::int16_t unknown_00FC;

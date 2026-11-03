@@ -99,12 +99,12 @@ int UIRune_Decom::HitTestItem(int x, int y) {
 // OFFSET: 0x00818300
 // FUNCTION: fn_10174
 void UIRune_Info::Slot15(int, int) {
-  this->m_activeWnd = new (std::nothrow) UIRuneSystem_ActiveWnd(*this->m_context);
+  this->m_activeWnd = new (std::nothrow) UIRuneSystem_ActiveWnd();
   this->AddChild(this->m_activeWnd);
   this->m_activeWnd->SetSize(0xEA, 0x78);
   this->m_activeWnd->Move(0xC5, 0x159);
 
-  this->m_activateButton = new (std::nothrow) UIBitmapButton(*this->m_context);
+  this->m_activateButton = new (std::nothrow) UIBitmapButton();
   this->AddChild(this->m_activateButton);
   this->m_activateButton->SetBitmap("유저인터페이스\\runesystem\\bt_active_nomal.bmp", 0, 0);
   this->m_activateButton->SetBitmap("유저인터페이스\\runesystem\\bt_active_mouseon.bmp", 1, 0);
@@ -1493,13 +1493,13 @@ void UIRune_ViewInfo::Paint() {
 
 // OFFSET: 0x00814BC0
 // FUNCTION: fn_10136
-UIRuneSystemTab::UIRuneSystemTab(UIWindowContext& windows) : UIWindow(windows, 0), m_count(4), m_label("유저인터페이스\\runesystem\\runesystam_tab_%d.bmp") {
+UIRuneSystemTab::UIRuneSystemTab() : UIWindow(0), m_count(4), m_label("유저인터페이스\\runesystem\\runesystam_tab_%d.bmp") {
   this->geometry.unknown_0030 = 0;
 }
 
 // OFFSET: 0x00814D40
 // FUNCTION: fn_10137
-UIRuneSystemWnd::UIRuneSystemWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0), m_nextTick(0) {
+UIRuneSystemWnd::UIRuneSystemWnd() : UIFrameWnd(0), m_nextTick(0) {
   RuneSystemOpenPacket packet;
   packet.id = 0x0BE0;
   packet.open = 1;
@@ -1508,14 +1508,14 @@ UIRuneSystemWnd::UIRuneSystemWnd(UIWindowContext& windows) : UIFrameWnd(windows,
 
 // OFFSET: 0x00814DE0
 // FUNCTION: fn_10138
-UIRuneSystem_ActiveWnd::UIRuneSystem_ActiveWnd(UIWindowContext& windows) : UIWindow(windows, 0), m_columns(4), m_rows(2), m_listId(-1) {
+UIRuneSystem_ActiveWnd::UIRuneSystem_ActiveWnd() : UIWindow(0), m_columns(4), m_rows(2), m_listId(-1) {
 }
 
 // OFFSET: 0x00814EE0
 // FUNCTION: fn_10139
-UIRuneSystem_DecomResultWnd::UIRuneSystem_DecomResultWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), m_total(0) {
-  UIBitmapButton* button = new UIBitmapButton(windows);
+UIRuneSystem_DecomResultWnd::UIRuneSystem_DecomResultWnd()
+    : UIFrameWnd(0), m_total(0) {
+  UIBitmapButton* button = new UIBitmapButton();
   this->AddChild(button);
   button->SetBitmap("유저인터페이스\\runesystem\\bt_ok_nomal.bmp", 0, 0);
   button->SetBitmap("유저인터페이스\\runesystem\\bt_ok_mouseon.bmp", 1, 0);
@@ -1529,14 +1529,14 @@ UIRuneSystem_DecomResultWnd::UIRuneSystem_DecomResultWnd(UIWindowContext& window
 
 // OFFSET: 0x00815020
 // FUNCTION: fn_10140
-UIRuneSystem_Decom_RadioBtn::UIRuneSystem_Decom_RadioBtn(UIWindowContext& windows) : UIRadioBtn(windows) {
+UIRuneSystem_Decom_RadioBtn::UIRuneSystem_Decom_RadioBtn() : UIRadioBtn() {
 }
 
 // OFFSET: 0x008150A0
 // FUNCTION: fn_10141
-UIRuneSystem_tagListWnd::UIRuneSystem_tagListWnd(UIWindowContext& windows)
-    : UIWindow(windows, 0), m_firstTag(0), m_visibleCount(9) {
-  this->m_rightButton = new UIBitmapButton(windows);
+UIRuneSystem_tagListWnd::UIRuneSystem_tagListWnd()
+    : UIWindow(0), m_firstTag(0), m_visibleCount(9) {
+  this->m_rightButton = new UIBitmapButton();
   this->AddChild(this->m_rightButton);
   this->m_rightButton->SetBitmap("유저인터페이스\\runesystem\\bt_tag_right_nomal.bmp", 0, 0);
   this->m_rightButton->SetBitmap("유저인터페이스\\runesystem\\bt_tag_right_mouseon.bmp", 1, 0);
@@ -1546,7 +1546,7 @@ UIRuneSystem_tagListWnd::UIRuneSystem_tagListWnd(UIWindowContext& windows)
   this->m_rightButton->Move(267, 9);
   this->m_rightButton->SetId(0x13D);
 
-  this->m_leftButton = new UIBitmapButton(windows);
+  this->m_leftButton = new UIBitmapButton();
   this->AddChild(this->m_leftButton);
   this->m_leftButton->SetBitmap("유저인터페이스\\runesystem\\bt_tag_left_nomal.bmp", 0, 0);
   this->m_leftButton->SetBitmap("유저인터페이스\\runesystem\\bt_tag_left_mouseon.bmp", 1, 0);
@@ -1566,7 +1566,7 @@ UIRuneSystem_tagListWnd::UIRuneSystem_tagListWnd(UIWindowContext& windows)
 
 // OFFSET: 0x008152B0
 // FUNCTION: fn_10142
-UIRune_Decom::UIRune_Decom(UIWindowContext& windows) : UIWindow(windows, 0) {
+UIRune_Decom::UIRune_Decom() : UIWindow(0) {
   this->unknown_007C.clear();
   this->unknown_0094.clear();
   this->m_ownedCount = 0;
@@ -1577,7 +1577,7 @@ UIRune_Decom::UIRune_Decom(UIWindowContext& windows) : UIWindow(windows, 0) {
 
 // OFFSET: 0x008153A0
 // FUNCTION: fn_10143
-UIRune_Info::UIRune_Info(UIWindowContext& windows) : UIWindow(windows, 0), m_rune(nullptr) {
+UIRune_Info::UIRune_Info() : UIWindow(0), m_rune(nullptr) {
 }
 
 // OFFSET: 0x0081D6B0
@@ -1697,7 +1697,7 @@ struct SessionMessengerContext {
 // OFFSET: 0x008184A0
 // FUNCTION: fn_10175
 void UIRune_ViewInfo::Slot15(int, int) {
-  this->m_gauge = new UIGage_Circle(*this->m_context);
+  this->m_gauge = new UIGage_Circle();
   this->AddChild(this->m_gauge);
   this->m_gauge->SetSize(0x89, 0x7F);
   this->m_gauge->Move(0xC0, 0xF7);
@@ -1707,7 +1707,7 @@ void UIRune_ViewInfo::Slot15(int, int) {
   this->m_gauge->m_fullBitmap = "유저인터페이스\\runesystem\\view_gage_full.bmp";
   this->m_gauge->m_maxBitmap = "유저인터페이스\\runesystem\\view_gage_max.bmp";
 
-  UIStaticText* title = new UIStaticText(*this->m_context);
+  UIStaticText* title = new UIStaticText();
   this->AddChild(title);
   std::string text = "룬타블렛-룬도감";
   int width = this->TextWidth(text.c_str(), text.size(), 0, 12, 0, 0);
@@ -1717,7 +1717,7 @@ void UIRune_ViewInfo::Slot15(int, int) {
   title->SetText(text.c_str(), 1);
   title->SetColor(0xFF, 0xFF, 0xFF);
 
-  UIStaticText* rate = new UIStaticText(*this->m_context);
+  UIStaticText* rate = new UIStaticText();
   this->AddChild(rate);
   text = "수집률";
   width = this->TextWidth(text.c_str(), text.size(), 0, 12, 0, 0);
@@ -1763,7 +1763,7 @@ int UIRune_Decom::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
 // OFFSET: 0x00817EA0
 // FUNCTION: fn_10173
 void UIRune_Decom::Slot15(int, int) {
-  this->m_decomButton = new UIBitmapButton(*this->m_context);
+  this->m_decomButton = new UIBitmapButton();
   this->AddChild(this->m_decomButton);
   this->m_decomButton->SetBitmap("유저인터페이스\\runesystem\\bt_decom_nomal.bmp", 0, 0);
   this->m_decomButton->SetBitmap("유저인터페이스\\runesystem\\bt_decom_mouseon.bmp", 1, 0);
@@ -1775,7 +1775,7 @@ void UIRune_Decom::Slot15(int, int) {
 
   int index = 0;
   for (int x = 0xDD; x < 0x1AF; x += 0x69) {
-    this->m_radioButtons[index] = new UIRuneSystem_Decom_RadioBtn(*this->m_context);
+    this->m_radioButtons[index] = new UIRuneSystem_Decom_RadioBtn();
     this->m_radioButtons[index]->SetSize(0x68, 0x0E);
     this->m_radioButtons[index]->Move(x, 0x153);
     const std::string text = FormatOwnedString(LookupMessage(4074), g_runeSystemMgr->GetDecomItem(index));
@@ -1795,24 +1795,24 @@ void UIRune_Decom::Slot15(int, int) {
 // OFFSET: 0x008177C0
 // FUNCTION: fn_10172
 void UIRuneSystemWnd::Slot15(int, int) {
-  this->m_tab = new UIRuneSystemTab(*this->m_context);
+  this->m_tab = new UIRuneSystemTab();
   this->AddChild(this->m_tab);
   this->m_tab->SetSize(0x109, 0x1A);
   this->m_tab->Move(9, 0x12);
   this->m_tab->Show(1);
   const int top = this->m_tab->geometry.height + this->m_tab->geometry.y;
 
-  this->m_equipRuneSet = new UIEquipRuneSetWnd(*this->m_context);
+  this->m_equipRuneSet = new UIEquipRuneSetWnd();
   this->AddChild(this->m_equipRuneSet);
   this->m_equipRuneSet->SetSize(0x11B, 0x52);
   this->m_equipRuneSet->Move(0, top);
 
-  this->m_tagList = new UIRuneSystem_tagListWnd(*this->m_context);
+  this->m_tagList = new UIRuneSystem_tagListWnd();
   this->AddChild(this->m_tagList);
   this->m_tagList->SetSize(0x11B, 0x20);
   this->m_tagList->m_firstTag = 0;
 
-  this->m_lists[0] = new UIRuneSetList(*this->m_context);
+  this->m_lists[0] = new UIRuneSetList();
   this->AddChild(this->m_lists[0]);
   UIRuneSetList* list = this->m_lists[0];
   list->vertical = 1;
@@ -1823,7 +1823,7 @@ void UIRuneSystemWnd::Slot15(int, int) {
   int count = g_runeSystemMgr->GetTag(-1)->GetRuneCount(0);
   this->m_lists[0]->SetRange(std::max(count - 5, 0), 5, count);
 
-  this->m_lists[1] = new UIRuneList(*this->m_context);
+  this->m_lists[1] = new UIRuneList();
   this->AddChild(this->m_lists[1]);
   list = this->m_lists[1];
   list->vertical = 1;
@@ -1834,7 +1834,7 @@ void UIRuneSystemWnd::Slot15(int, int) {
   count = g_runeSystemMgr->GetTag(-1)->GetRuneCount(1);
   this->m_lists[1]->SetRange(std::max(count - 9, 0), 9, count);
 
-  this->m_lists[2] = new UIDecomlist(*this->m_context);
+  this->m_lists[2] = new UIDecomlist();
   this->AddChild(this->m_lists[2]);
   list = this->m_lists[2];
   list->vertical = 1;
@@ -1843,17 +1843,17 @@ void UIRuneSystemWnd::Slot15(int, int) {
   list->Slot22(0x11B, 0x1CB);
   this->m_lists[2]->Move(0, top);
 
-  this->m_runeSetInfo = new UIRuneSet_Info(*this->m_context);
+  this->m_runeSetInfo = new UIRuneSet_Info();
   this->AddChild(this->m_runeSetInfo);
   this->m_runeSetInfo->SetSize(0x273, 0x20A);
   this->m_runeSetInfo->Move(0x11B, 0x11);
 
-  this->m_runeInfo = new UIRune_Info(*this->m_context);
+  this->m_runeInfo = new UIRune_Info();
   this->AddChild(this->m_runeInfo);
   this->m_runeInfo->SetSize(0x273, 0x20A);
   this->m_runeInfo->Move(0x11B, 0x11);
 
-  this->m_runeDecom = new UIRune_Decom(*this->m_context);
+  this->m_runeDecom = new UIRune_Decom();
   this->AddChild(this->m_runeDecom);
   this->m_runeDecom->SetSize(0x273, 0x20A);
   this->m_runeDecom->Move(0x11B, 0x11);
@@ -1866,12 +1866,12 @@ void UIRuneSystemWnd::Slot15(int, int) {
 // OFFSET: 0x00816CB0
 // FUNCTION: fn_10171
 void UIRuneSet_Info::Slot15(int, int) {
-  this->m_activeWnd = new UIRuneSystem_ActiveWnd(*this->m_context);
+  this->m_activeWnd = new UIRuneSystem_ActiveWnd();
   this->AddChild(this->m_activeWnd);
   this->m_activeWnd->SetSize(0xE6, 0x8C);
   this->m_activeWnd->Move(0x46, 0x156);
 
-  this->unknown_0084 = new UIBitmapButton(*this->m_context);
+  this->unknown_0084 = new UIBitmapButton();
   this->AddChild(this->unknown_0084);
   this->unknown_0084->SetBitmap("유저인터페이스\\runesystem\\bt_active_nomal.bmp", 0, 0);
   this->unknown_0084->SetBitmap("유저인터페이스\\runesystem\\bt_active_mouseon.bmp", 1, 0);
@@ -1881,7 +1881,7 @@ void UIRuneSet_Info::Slot15(int, int) {
   this->unknown_0084->Move(0x6F, 0x1EC);
   this->unknown_0084->SetId(0x23C);
 
-  this->unknown_0088 = new UIBitmapButton(*this->m_context);
+  this->unknown_0088 = new UIBitmapButton();
   this->AddChild(this->unknown_0088);
   this->unknown_0088->SetBitmap("유저인터페이스\\runesystem\\bt_equip_nomal.bmp", 0, 0);
   this->unknown_0088->SetBitmap("유저인터페이스\\runesystem\\bt_equip_mouseon.bmp", 1, 0);
@@ -1891,7 +1891,7 @@ void UIRuneSet_Info::Slot15(int, int) {
   this->unknown_0088->Move(0x6F, 0x1EC);
   this->unknown_0088->SetId(0xC3);
 
-  this->unknown_008C = new UIBitmapButton(*this->m_context);
+  this->unknown_008C = new UIBitmapButton();
   this->AddChild(this->unknown_008C);
   this->unknown_008C->SetBitmap("유저인터페이스\\runesystem\\bt_equiptakeoff_nomal.bmp", 0, 0);
   this->unknown_008C->SetBitmap("유저인터페이스\\runesystem\\bt_equiptakeoff_mouseon.bmp", 1, 0);
@@ -1901,19 +1901,19 @@ void UIRuneSet_Info::Slot15(int, int) {
   this->unknown_008C->Move(0x6F, 0x1EC);
   this->unknown_008C->SetId(0x158);
 
-  this->m_tab = new UIRuneSystemTab(*this->m_context);
+  this->m_tab = new UIRuneSystemTab();
   this->AddChild(this->m_tab);
   this->m_tab->SetSize(0xC4, 0x1A);
   this->m_tab->SendMsg(this->m_tab, 0x16, 3, 0, 0, 0);
   this->m_tab->Move(0x180, 1);
   this->m_tab->m_label = "유저인터페이스\\runesystem\\runeset_tab_%d.bmp";
 
-  this->m_gauge = new UIGage_Circle(*this->m_context);
+  this->m_gauge = new UIGage_Circle();
   this->AddChild(this->m_gauge);
   this->m_gauge->SetSize(0x89, 0x7F);
   this->m_gauge->Move(0x1B1, 0x51);
 
-  this->m_gradeText = new UIStaticText(*this->m_context);
+  this->m_gradeText = new UIStaticText();
   this->AddChild(this->m_gradeText);
   this->m_gradeText->SetSize(0x89, 0x7F);
   const std::string gradeTitle = LookupMessage(4044);
@@ -1922,12 +1922,12 @@ void UIRuneSet_Info::Slot15(int, int) {
   const int titleWidth = this->TextWidth(gradeTitle.c_str(), 0, 0, 12, 0, 0);
   this->m_gradeText->Move(static_cast<int>(500.0f - static_cast<float>(titleWidth) * 0.5f), 0x82);
 
-  this->m_gradeItems = new UIRuneSystem_ActiveWnd(*this->m_context);
+  this->m_gradeItems = new UIRuneSystem_ActiveWnd();
   this->AddChild(this->m_gradeItems);
   this->m_gradeItems->SetSize(0xE6, 0x8C);
   this->m_gradeItems->Move(0x17D, 0x130);
 
-  this->m_gradeButton = new UIBitmapButton(*this->m_context);
+  this->m_gradeButton = new UIBitmapButton();
   this->AddChild(this->m_gradeButton);
   this->m_gradeButton->SetBitmap("유저인터페이스\\runesystem\\bt_upgrade_nomal.bmp", 0, 0);
   this->m_gradeButton->SetBitmap("유저인터페이스\\runesystem\\bt_upgrade_mouseon.bmp", 1, 0);
@@ -1937,7 +1937,7 @@ void UIRuneSet_Info::Slot15(int, int) {
   this->m_gradeButton->Move(0x1BD, this->geometry.height - 0x41);
   this->m_gradeButton->SetId(0x1FD);
 
-  this->m_infoList = new UIRuneSetinfoList(*this->m_context);
+  this->m_infoList = new UIRuneSetinfoList();
   this->AddChild(this->m_infoList);
   UIRuneSetinfoList* infoList = this->m_infoList;
   infoList->vertical = 1;
@@ -1951,7 +1951,7 @@ void UIRuneSet_Info::Slot15(int, int) {
   const int rewardY[6] = {97, 122, 197, 290, 365, 391};
   const int rewardIds[6] = {0x24E, 0x24F, 0x250, 0x251, 0x252, 0x253};
   for (int index = 0; index < 6; ++index) {
-    this->m_rewards[index] = new UIRuneSetReWard(*this->m_context);
+    this->m_rewards[index] = new UIRuneSetReWard();
     this->AddChild(this->m_rewards[index]);
     this->m_rewards[index]->SetBitmap("유저인터페이스\\runesystem\\bt_reward_nomal.tga", 0, 0);
     this->m_rewards[index]->SetBitmap("유저인터페이스\\runesystem\\bt_reward_mouseon.tga", 1, 0);
@@ -1966,7 +1966,7 @@ void UIRuneSet_Info::Slot15(int, int) {
     this->m_rewards[index]->SendMsg(this, 0x66, 0, 0, 0, 0);
   }
 
-  this->m_rewards[6] = new UIRuneSetReWard(*this->m_context);
+  this->m_rewards[6] = new UIRuneSetReWard();
   this->AddChild(this->m_rewards[6]);
   this->m_rewards[6]->SetBitmap("유저인터페이스\\runesystem\\bt_reward_l_nomal.tga", 0, 0);
   this->m_rewards[6]->SetBitmap("유저인터페이스\\runesystem\\bt_reward_l_mouseon.tga", 1, 0);
@@ -2397,18 +2397,18 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
 
 // OFFSET: 0x00814440
 // FUNCTION: fn_10128
-UIDecomlist::UIDecomlist(UIWindowContext& windows) : UIRuneSetList(windows) {
+UIDecomlist::UIDecomlist() : UIRuneSetList() {
   this->m_itemHeight = 0x2D;
 }
 
 // OFFSET: 0x008144E0
 // FUNCTION: fn_10129
-UIEquipRuneSetWnd::UIEquipRuneSetWnd(UIWindowContext& windows) : UIWindow(windows, 0) {
+UIEquipRuneSetWnd::UIEquipRuneSetWnd() : UIWindow(0) {
 }
 
 // OFFSET: 0x00814540
 // FUNCTION: fn_10130
-UIGage_Circle::UIGage_Circle(UIWindowContext& windows) : UIWindow(windows, 0), m_textY(0x45), m_value(0), m_max(false) {
+UIGage_Circle::UIGage_Circle() : UIWindow(0), m_textY(0x45), m_value(0), m_max(false) {
   this->m_emptyBitmap = "유저인터페이스\\runesystem\\gage_empty.bmp";
   this->m_fullBitmap = "유저인터페이스\\runesystem\\gage_full.bmp";
   this->m_maxBitmap = "유저인터페이스\\runesystem\\gage_max.bmp";
@@ -2416,28 +2416,28 @@ UIGage_Circle::UIGage_Circle(UIWindowContext& windows) : UIWindow(windows, 0), m
 
 // OFFSET: 0x008148A0
 // FUNCTION: fn_10131
-UIRuneList::UIRuneList(UIWindowContext& windows) : UIRuneSetList(windows) {
+UIRuneList::UIRuneList() : UIRuneSetList() {
   this->m_itemHeight = 0x2F;
 }
 
 // OFFSET: 0x00814940
 // FUNCTION: fn_10132
-UIRuneSetList::UIRuneSetList(UIWindowContext& windows) : UIScrollBar(windows), m_itemHeight(0x44), unknown_00B8(0x28), m_selected(-1) {
+UIRuneSetList::UIRuneSetList() : UIScrollBar(), m_itemHeight(0x44), unknown_00B8(0x28), m_selected(-1) {
   this->arrowLength = 6;
 }
 
 // OFFSET: 0x008149C0
 // FUNCTION: fn_10133
-UIRuneSetReWard::UIRuneSetReWard(UIWindowContext& windows) : UIBitmapButton(windows), m_itemId(0), m_state(0) {
+UIRuneSetReWard::UIRuneSetReWard() : UIBitmapButton(), m_itemId(0), m_state(0) {
 }
 
 // OFFSET: 0x00814A50
 // FUNCTION: fn_10134
-UIRuneSet_Info::UIRuneSet_Info(UIWindowContext& windows) : UIWindow(windows, 0), m_runeSet(nullptr), m_rewards{} {
+UIRuneSet_Info::UIRuneSet_Info() : UIWindow(0), m_runeSet(nullptr), m_rewards{} {
 }
 
 // OFFSET: 0x00814B00
 // FUNCTION: fn_10135
-UIRuneSetinfoList::UIRuneSetinfoList(UIWindowContext& windows) : UIRuneSetList(windows) {
+UIRuneSetinfoList::UIRuneSetinfoList() : UIRuneSetList() {
   this->m_itemHeight = 0x0F;
 }

@@ -9,7 +9,7 @@
 
 // OFFSET: 0x007C27B0
 // FUNCTION: fn_09330
-UIBroadcastBalloon::UIBroadcastBalloon(UIWindowContext& windows) : UIWindow(windows, 0) {
+UIBroadcastBalloon::UIBroadcastBalloon() : UIWindow(0) {
 }
 
 // OFFSET: 0x007C2D70

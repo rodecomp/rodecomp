@@ -44,8 +44,8 @@ struct ClientItemLists {
 
 // OFFSET: 0x007DEC20
 // FUNCTION: fn_09659
-CMergeItemWnd::CMergeItemWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), m_cellSize(35), m_gridTop(20), m_gridLeft(10),
+CMergeItemWnd::CMergeItemWnd()
+    : UIFrameWnd(0), m_cellSize(35), m_gridTop(20), m_gridLeft(10),
       m_marginRight(10), m_marginBottom(30), m_slotOffsetX(5), m_slotOffsetY(2), m_checkOffsetX(0), m_checkOffsetY(20), m_slotRadius(10), m_minSelection(2),
       m_mergeButton(nullptr), m_cancelButton(nullptr), m_closeButton(nullptr), m_items(), m_resizer(nullptr), m_scrollBar(nullptr), m_itemCount(0), m_columns(0),
       m_rows(0), m_visibleCount(0), m_scrollRow(0), m_scrollable(0) {}
@@ -91,7 +91,7 @@ int CMergeItemWnd::ItemIdOf(int id) {
 // OFFSET: 0x007DF580
 // FUNCTION: fn_09664
 void CMergeItemWnd::CreateControls() {
-  this->m_mergeButton = new UIBitmapButton(*this->m_context);
+  this->m_mergeButton = new UIBitmapButton();
   this->m_mergeButton->SetBitmap("유저인터페이스\\btn_ok.bmp", 0, 0);
   this->m_mergeButton->SetBitmap("유저인터페이스\\btn_ok_a.bmp", 1, 0);
   this->m_mergeButton->SetBitmap("유저인터페이스\\btn_ok_b.bmp", 2, 0);
@@ -99,7 +99,7 @@ void CMergeItemWnd::CreateControls() {
   this->m_mergeButton->SetId(184);
   this->AddChild(this->m_mergeButton);
 
-  this->m_cancelButton = new UIBitmapButton(*this->m_context);
+  this->m_cancelButton = new UIBitmapButton();
   this->m_cancelButton->SetBitmap("유저인터페이스\\btn_cancel.bmp", 0, 0);
   this->m_cancelButton->SetBitmap("유저인터페이스\\btn_cancel_a.bmp", 1, 0);
   this->m_cancelButton->SetBitmap("유저인터페이스\\btn_cancel_b.bmp", 2, 0);
@@ -109,14 +109,14 @@ void CMergeItemWnd::CreateControls() {
 
   this->m_closeButton = this->AddCloseButton("", 240);
 
-  this->m_resizer = new UIResizer(*this->m_context);
+  this->m_resizer = new UIResizer();
   this->m_resizer->SetSize(16, 16);
   this->m_resizer->SetDirection(7);
   this->m_resizer->SetBitmapName("유저인터페이스\\btn_resize.bmp");
   this->m_resizer->SetColors(0xFFFF00FF, 0xFFFF00FF);
   this->AddChild(this->m_resizer);
 
-  this->m_scrollBar = new UIScrollBar(*this->m_context);
+  this->m_scrollBar = new UIScrollBar();
   this->m_scrollBar->Configure(1, 1, 1, 1);
   this->AddChild(this->m_scrollBar);
 }
@@ -355,7 +355,7 @@ int CMergeItemWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std:
     this->m_itemCount = argument2;
     const std::int16_t* ids = reinterpret_cast<const std::int16_t*>(argument1);
     for (int index = 0; index < this->m_itemCount; ++index) {
-      UICheckBox* box = new UICheckBox(*this->m_context);
+      UICheckBox* box = new UICheckBox();
       box->SetSize(120, 12);
       box->SetBitmaps("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp");
       box->m_message = ids[index];

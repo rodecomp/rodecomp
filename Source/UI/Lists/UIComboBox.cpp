@@ -297,5 +297,5 @@ int UIListBoxID::sub_8991B0(UIWindow* sender, int message, std::intptr_t argumen
 
 // OFFSET: 0x0086CB40
 // FUNCTION: fn_11033
-UIComboBox::UIComboBox(UIWindowContext& windows) : UIListBox(windows), targetId(10041) {
+UIComboBox::UIComboBox() : UIListBox(), targetId(10041) {
 }

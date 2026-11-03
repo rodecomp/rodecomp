@@ -8,8 +8,8 @@
 
 // OFFSET: 0x00850430
 // FUNCTION: fn_10676
-UIStaticBitmap::UIStaticBitmap(UIWindowContext& windows)
-    : UIWindow(windows, 0), tooltipX(0), tooltipY(-20), forwardHover(0) {
+UIStaticBitmap::UIStaticBitmap()
+    : UIWindow(0), tooltipX(0), tooltipY(-20), forwardHover(0) {
 }
 
 // OFFSET: 0x00852F20

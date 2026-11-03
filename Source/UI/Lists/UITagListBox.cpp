@@ -634,7 +634,7 @@ void UITagListBox::AddTagButton(STagInfoV2 tag, int lineCount) {
     return;
   }
 
-  UITagButton* button = new UITagButton(*this->m_context);
+  UITagButton* button = new UITagButton();
   button->Configure(tag.unknown_0010.c_str(), 0x00F4934A, 0, 12, 0, 1);
   const int height = button->geometry.height;
   button->ResizeToTextClipped(

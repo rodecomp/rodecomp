@@ -58,7 +58,7 @@ class CUIControl : public UIWindow {
 public:
   __declspec(noinline) CBitmapRes* LoadBitmapResource(const std::string& name, bool resolveSkin);
 
-  explicit CUIControl(UIWindowContext& context);
+  CUIControl();
   ~CUIControl() override;
   bool CanHitTest() override;
   void Slot10(int x, int y, std::intptr_t value) override;
@@ -86,7 +86,7 @@ class CUITabButton;
 
 class CUITab : public CUIControl {
 public:
-  __declspec(noinline) explicit CUITab(UIWindowContext& context);
+  __declspec(noinline) CUITab();
 
   void Paint() override;
 
@@ -104,7 +104,7 @@ public:
 
 class CUIButton : public CUIControl {
 public:
-  explicit CUIButton(UIWindowContext& context);
+  CUIButton();
   ~CUIButton() override;
   void Slot25(int x, int y) override;
   void Slot28(int x, int y) override;
@@ -129,7 +129,7 @@ public:
 
 class CUITextButton : public CUIButton {
 public:
-  explicit CUITextButton(UIWindowContext& context);
+  CUITextButton();
   ~CUITextButton() override;
   void Slot28(int x, int y) override;
   void Paint() override;
@@ -173,7 +173,7 @@ public:
 
 class CUIImageTextButton : public CUITextButton {
 public:
-  explicit CUIImageTextButton(UIWindowContext& context);
+  CUIImageTextButton();
   ~CUIImageTextButton() override;
   void Paint() override;
   void Slot53(int resolveSkin) override;
@@ -189,7 +189,7 @@ public:
 
 class CUIBasicButton : public CUITextButton {
 public:
-  explicit CUIBasicButton(UIWindowContext& context);
+  CUIBasicButton();
   ~CUIBasicButton() override;
   void Resize(int width, int height) override;
   void Paint() override;
@@ -211,7 +211,7 @@ public:
 
 class CUITabButton : public CUIImageTextButton {
 public:
-  explicit CUITabButton(UIWindowContext& context);
+  CUITabButton();
   void Slot25(int x, int y) override;
   void Slot31(int x, int y) override;
   void Slot47() override;
@@ -235,7 +235,7 @@ public:
 
 class CUIImageButton : public CUIButton {
 public:
-  explicit CUIImageButton(UIWindowContext& context);
+  CUIImageButton();
   ~CUIImageButton() override;
   void Paint() override;
   void Slot53(int resolveSkin) override;
@@ -253,7 +253,7 @@ class CUIStaticImage : public CUIControl {
 public:
   // OFFSET: 0x009BE0C0
   // FUNCTION: fn_13945
-  explicit CUIStaticImage(UIWindowContext& context) : CUIControl(context), image(), tooltip(), transparent(0), scale(100), imageName() {
+  explicit CUIStaticImage() : CUIControl(), image(), tooltip(), transparent(0), scale(100), imageName() {
   }
 
   void Paint() override;
@@ -272,8 +272,8 @@ public:
 class CUITitleBar : public CUIControl {
 public:
   // INLINED
-  explicit CUITitleBar(UIWindowContext& context)
-      : CUIControl(context), resizable(1), left(), middle(), right(), leftName(), middleName(), rightName(), unknown_00D8(), titleText(nullptr),
+  explicit CUITitleBar()
+      : CUIControl(), resizable(1), left(), middle(), right(), leftName(), middleName(), rightName(), unknown_00D8(), titleText(nullptr),
         firstButton(nullptr), secondButton(nullptr) {
   }
 
@@ -303,8 +303,8 @@ class CUIEditCtrl;
 class CUIEditBox : public CUIControl {
 public:
   // INLINED
-  explicit CUIEditBox(UIWindowContext& context)
-      : CUIControl(context), backgroundColor(0xF7F7F7), borderColor(0xC6C6C6), borderWidth(1), editLeft(0), editTop(0), editRight(0), editBottom(0),
+  explicit CUIEditBox()
+      : CUIControl(), backgroundColor(0xF7F7F7), borderColor(0xC6C6C6), borderWidth(1), editLeft(0), editTop(0), editRight(0), editBottom(0),
         edit(nullptr), onSubmit() {
   }
 
@@ -334,8 +334,8 @@ public:
 class CUIResizer : public CUIControl {
 public:
   // INLINED
-  explicit CUIResizer(UIWindowContext& context)
-      : CUIControl(context), minWidth(0), minHeight(0), maxWidth(0), maxHeight(0), stepX(1), stepY(1), startX(0), startY(0), startWidth(0), startHeight(0),
+  explicit CUIResizer()
+      : CUIControl(), minWidth(0), minHeight(0), maxWidth(0), maxHeight(0), stepX(1), stepY(1), startX(0), startY(0), startWidth(0), startHeight(0),
         deltaX(0), deltaY(0), imageName(), onResize(), image() {
   }
 

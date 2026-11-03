@@ -50,7 +50,7 @@ public:
 
 class CUIContents : public CUIControl {
 public:
-  __declspec(noinline) explicit CUIContents(UIWindowContext& context);
+  __declspec(noinline) CUIContents();
 
   void Slot15(int width, int height) override;
   void Slot16() override;
@@ -70,7 +70,7 @@ public:
 
 class CUIRewardItem : public CUIListItem {
 public:
-  explicit CUIRewardItem(UIWindowContext& context);
+  CUIRewardItem();
   void Slot15(int width, int height) override;
   void Slot16() override;
   void Paint() override;
@@ -83,7 +83,7 @@ public:
 
 class CUIRewards : public CUIControl {
 public:
-  __declspec(noinline) explicit CUIRewards(UIWindowContext& context);
+  __declspec(noinline) CUIRewards();
 
   void Slot15(int width, int height) override;
   void Slot16() override;
@@ -111,7 +111,7 @@ public:
 
 class CUIScrollWindow : public CUIControl {
 public:
-  __declspec(noinline) explicit CUIScrollWindow(UIWindowContext& context);
+  __declspec(noinline) CUIScrollWindow();
 
   void Slot15(int width, int height) override;
   void Slot16() override;

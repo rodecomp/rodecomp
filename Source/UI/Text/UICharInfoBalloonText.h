@@ -6,7 +6,7 @@
 class UICharInfoBalloonText : public UITransBalloonText {
 public:
   // INLINED
-  UICharInfoBalloonText(UIWindowContext& windows) : UITransBalloonText(windows) {}
+  UICharInfoBalloonText() : UITransBalloonText() {}
   void Paint() override;
 };
 

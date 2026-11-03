@@ -19,10 +19,6 @@
 #include <string>
 #include <vector>
 
-// INLINED
-UIColoringTextViewer::UIColoringTextViewer(UIWindowContext& windows) : UIListBox(windows), color(0), lineLimit(0) {
-}
-
 // OFFSET: 0x0099A1F0
 // FUNCTION: fn_13540
 void UIRoundBoxTooltipWnd::Slot15(int width, int height) {
@@ -30,7 +26,7 @@ void UIRoundBoxTooltipWnd::Slot15(int width, int height) {
     return;
   }
 
-  this->viewer = new UIColoringTextViewer(*this->m_context);
+  this->viewer = new UIColoringTextViewer();
   this->viewer->Configure(4, 4, width - 6, height - 6, 0);
 
   unsigned red;

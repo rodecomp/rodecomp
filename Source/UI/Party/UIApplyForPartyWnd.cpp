@@ -27,8 +27,8 @@ namespace {
 
 // OFFSET: 0x007BAD00
 // FUNCTION: fn_09275
-UIApplyForPartyWnd::UIApplyForPartyWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0) {
+UIApplyForPartyWnd::UIApplyForPartyWnd()
+    : UIFrameWnd(0) {
 }
 
 // OFFSET: 0x007BB610
@@ -53,7 +53,7 @@ void UIApplyForPartyWnd::Slot15(int, int) {
   const int positions[] = {51, 108, 173};
 
   for (int index = 0; index < 3; ++index) {
-    auto* button = new UIBasicButton(*this->m_context);
+    auto* button = new UIBasicButton();
     const char* label = LookupMessage(messages[index]);
     const int width = this->TextWidth(label, 0, 0, 12, 0, 0);
     button->Configure(width + 10, label);
@@ -67,7 +67,7 @@ void UIApplyForPartyWnd::Slot15(int, int) {
   int y = 136;
 
   for (const auto& line : lines) {
-    auto* label = new UIStaticText(*this->m_context);
+    auto* label = new UIStaticText();
     label->SetSize(this->geometry.width - 18, 15);
     label->Move(9, y);
     label->SetText(line.c_str(), 0);
@@ -79,7 +79,7 @@ void UIApplyForPartyWnd::Slot15(int, int) {
     y += 12;
   }
 
-  auto* close = new UIBitmapButton(*this->m_context);
+  auto* close = new UIBitmapButton();
   const std::string off = std::string(prefix) + "basic_interface\\big_sys_close_off.bmp";
   const std::string on = std::string(prefix) + "basic_interface\\big_sys_close_on.bmp";
   close->SetBitmap(off.c_str(), 0, 0);

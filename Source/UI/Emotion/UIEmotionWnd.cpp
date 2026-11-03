@@ -27,7 +27,7 @@ UIBitmapButton* UIEmotionWnd::AddCloseButton(const char* tooltip, int width) {
     width = this->geometry.width;
   }
 
-  UIBitmapButton* button = new UIBitmapButton(*this->m_context);
+  UIBitmapButton* button = new UIBitmapButton();
   button->SetBitmap("유저인터페이스\\basic_interface\\sys_close_off.bmp", 0, 0);
   button->SetBitmap("유저인터페이스\\basic_interface\\sys_close_on.bmp", 1, 0);
   button->SetBitmap("유저인터페이스\\basic_interface\\sys_close_on.bmp", 2, 0);
@@ -47,7 +47,7 @@ void UIEmotionWnd::Slot15(int, int) {
   auto* emotions = reinterpret_cast<EmotionHotkeys*>(&g_session.unknown_0FF8);
 
   for (int i = 0; i < 10; ++i) {
-    UIEditCtrl2* edit = new UIEditCtrl2(*this->m_context);
+    UIEditCtrl2* edit = new UIEditCtrl2();
     this->m_edits[i] = edit;
     edit->SetSize(270, 16);
     edit->Move(83, y - 3);
@@ -59,7 +59,7 @@ void UIEmotionWnd::Slot15(int, int) {
     char buffer[16];
     std::sprintf(buffer, "Alt + %d", i + 1);
 
-    UIStaticText* label = new UIStaticText(*this->m_context);
+    UIStaticText* label = new UIStaticText();
     this->m_labels[i] = label;
     label->SetSize(70, 16);
     label->Move(20, y);
@@ -73,7 +73,7 @@ void UIEmotionWnd::Slot15(int, int) {
   this->UIFrameWnd::AddCloseButton("Alt+M", 0);
 
   std::string path = "유저인터페이스\\";
-  this->viewButton = new UIBitmapButton(*this->m_context);
+  this->viewButton = new UIBitmapButton();
   this->viewButton->SetBitmap((path + "btn_view" + ".bmp").c_str(), 0, 0);
   this->viewButton->SetBitmap((path + "btn_view_a" + ".bmp").c_str(), 1, 0);
   this->viewButton->SetBitmap((path + "btn_view_b" + ".bmp").c_str(), 2, 0);

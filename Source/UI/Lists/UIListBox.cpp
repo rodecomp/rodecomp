@@ -27,7 +27,7 @@ namespace {}
 // OFFSET: 0x0086D940
 // FUNCTION: fn_11055
 UIListBox::UIListBox()
-    : UIWindow(*reinterpret_cast<UIWindowContext*>(nullptr), 0), backgroundRed(255), backgroundGreen(255), backgroundBlue(255), selected(0), topLine(0),
+    : UIWindow(0), backgroundRed(255), backgroundGreen(255), backgroundBlue(255), selected(0), topLine(0),
       horizontalOffset(0), contentWidth(0), verticalOverflow(0), bottomMargin(0), verticalBar(nullptr), horizontalBar(nullptr), transparent(0), lineHeight(16),
       textColor(0), textInset(3) {
   const SkinPaletteCell cell = {3, 2};
@@ -42,21 +42,6 @@ UIServerListBox::UIServerListBox() : UIListBox() {
   *reinterpret_cast<int*>(reinterpret_cast<char*>(this) + 0xD8) = 0;
   this->unknown_00DC = 0;
   this->unknown_00E0 = 0;
-}
-
-UIListBox::UIListBox(UIWindowContext& windows)
-    : UIWindow(windows, 0), backgroundRed(255), backgroundGreen(255), backgroundBlue(255), selected(0), topLine(0), horizontalOffset(0), contentWidth(0),
-      verticalOverflow(0), bottomMargin(0), verticalBar(nullptr), horizontalBar(nullptr), transparent(0), lineHeight(16), selectable(1), textColor(0),
-      centerVertically(0), textInset(3) {
-  constexpr char path[] = "유저인터페이스\\colorchip.bmp";
-  const auto* chip = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(path));
-  this->selectionColor = 0;
-
-  if (chip) {
-    const auto& image = chip->image;
-    const std::uint32_t pixel = image.width > 14 && image.height > 10 ? image.pixels[14 + 10 * image.width] : 0x00FF0000u;
-    this->selectionColor = ((pixel & 255) << 16) | (pixel & 0xFF00) | ((pixel >> 16) & 255);
-  }
 }
 
 // OFFSET: 0x00873690
@@ -103,7 +88,7 @@ void UIListBox::Configure(int x, int y, int width, int height, unsigned char val
 // OFFSET: 0x00886840
 // FUNCTION: fn_11326
 void UIListBox::Slot15(int width, int height) {
-  auto* vertical = new UIScrollBar(*this->m_context);
+  auto* vertical = new UIScrollBar();
   this->verticalBar = vertical;
   const int verticalWidth = vertical->thickness;
   vertical->vertical = 1;
@@ -113,7 +98,7 @@ void UIListBox::Slot15(int width, int height) {
   vertical->Slot22(verticalWidth, height);
   this->AddChild(vertical);
 
-  auto* horizontal = new UIScrollBar(*this->m_context);
+  auto* horizontal = new UIScrollBar();
   this->horizontalBar = horizontal;
   const int horizontalHeight = horizontal->thickness;
   horizontal->vertical = 0;
@@ -556,5 +541,5 @@ void UIListBoxID::AddLine(const char* text, int id) {
 
 // OFFSET: 0x0086D8C0
 // FUNCTION: fn_11054
-UIListBox2::UIListBox2(UIWindowContext& windows) : UIListBox(windows), fontFamily(0), fontHeight(12), bold(0), italic(0) {
+UIListBox2::UIListBox2() : UIListBox(), fontFamily(0), fontHeight(12), bold(0), italic(0) {
 }

@@ -31,21 +31,21 @@
 
 // OFFSET: 0x0099E0E0
 // FUNCTION: fn_13571
-UIMerchantItemLogWnd::UIMerchantItemLogWnd(UIWindowContext& windows, int mode) : UIItemBaseWnd(windows) {
+UIMerchantItemLogWnd::UIMerchantItemLogWnd(int mode) : UIItemBaseWnd() {
   this->unknown_00FC = mode;
 }
 
 // OFFSET: 0x0099E510
 // FUNCTION: fn_13575
 void UIMerchantItemLogWnd::Slot15(int width, int height) {
-  UIStaticText* title = new UIStaticText(*this->m_context);
+  UIStaticText* title = new UIStaticText();
   title->SetSize(160, 15);
   title->SetText(LookupMessage(2559 + (this->unknown_00FC != 0)), 0);
   title->Move(16, 2);
   title->shadow = 1;
   this->AddChild(title);
 
-  UIResizer* resizer = new UIResizer(*this->m_context);
+  UIResizer* resizer = new UIResizer();
   this->resizer = resizer;
   resizer->SetSize(16, 16);
   resizer->SetDirection(3);
@@ -54,12 +54,12 @@ void UIMerchantItemLogWnd::Slot15(int width, int height) {
   resizer->SetColors(0xFFFF00FF, 0xFFFF00FF);
   this->AddChild(resizer);
 
-  UIScrollBar* scrollBar = new UIScrollBar(*this->m_context);
+  UIScrollBar* scrollBar = new UIScrollBar();
   this->scrollBar = scrollBar;
   scrollBar->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - 38);
   this->AddChild(scrollBar);
 
-  UIBitmapButton* button = new UIBitmapButton(*this->m_context);
+  UIBitmapButton* button = new UIBitmapButton();
   this->buttons[0] = button;
   button->SetBitmap("유저인터페이스\\btn_close.bmp", 0, 0);
   button->SetBitmap("유저인터페이스\\btn_close_a.bmp", 1, 0);

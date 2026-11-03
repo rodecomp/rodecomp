@@ -15,7 +15,8 @@ class UICheckBox : public UIWindow {
 
 public:
   UICheckBox();
-  UICheckBox(UIWindowContext& windowContext);
+  UICheckBox(UIWindowContext&) : UICheckBox() {
+  }
   ~UICheckBox() override;
   void Paint() override;
   void Slot25(int x, int y) override;

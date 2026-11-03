@@ -42,8 +42,8 @@ void CUIListItem::SetImageResources(CBitmapRes* normal, CBitmapRes* hover, CBitm
 
 // OFFSET: 0x00A0EBF0
 // FUNCTION: fn_15152
-EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine::CUIItemEquipmentPropertiesLine(UIWindowContext& context)
-    : CUIListItem(context), unknown_00E8(nullptr), unknown_00EC(nullptr), evenRowColor(0), oddRowColor(0) {
+EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine::CUIItemEquipmentPropertiesLine()
+    : CUIListItem(), unknown_00E8(nullptr), unknown_00EC(nullptr), evenRowColor(0), oddRowColor(0) {
 }
 
 template <>
@@ -95,7 +95,7 @@ void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::s
     this->items.resize(count, nullptr);
     for (EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine*& slot : this->items) {
       EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine* item =
-          new EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine(*this->m_context);
+          new EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine();
       item->SetSize(this->itemWidth, this->rowHeight);
       item->Show(0);
       CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
@@ -222,8 +222,8 @@ bool CUIEquipmentPropertiesWnd::Slot08() {
 // OFFSET: 0x00A084C0
 // FUNCTION: fn_15025
 template <>
-CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::CUIListBoxEx(UIWindowContext& context)
-    : CUIControl(context), unknown_0084(), unknown_0088(), unknown_008C(), imageNames(), disabledName(), scrollBar(nullptr),
+CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::CUIListBoxEx()
+    : CUIControl(), unknown_0084(), unknown_0088(), unknown_008C(), imageNames(), disabledName(), scrollBar(nullptr),
       itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), unknown_00C5{}, items(), data(),
       selected(static_cast<unsigned int>(-1)), unknown_00E0(1), rebind(0), unknown_00E2{}, onSelect(), binder() {
 }
@@ -251,7 +251,7 @@ void CUIEquipmentPropertiesWnd::Slot53() {
 // FUNCTION: fn_15034
 template <>
 void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::Slot15(int width, int height) {
-  this->scrollBar = new CUIVScrollBar(*this->m_context);
+  this->scrollBar = new CUIVScrollBar();
   this->scrollBar->Show(0);
   this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
   this->AddChild(this->scrollBar);
@@ -293,7 +293,7 @@ private:
 // OFFSET: 0x00A09130
 // FUNCTION: fn_15035
 void CUIEquipmentPropertiesWnd::Slot15(int width, int height) {
-  this->titleBar = new CUITitleBar(*this->m_context);
+  this->titleBar = new CUITitleBar();
   this->titleBar->SetSize(300, 17);
   this->titleBar->Move(0, 0);
   {
@@ -327,7 +327,7 @@ void CUIEquipmentPropertiesWnd::Slot15(int width, int height) {
   }
   this->AddChild(this->titleBar);
 
-  CUIStaticText* title = new CUIStaticText(*this->m_context);
+  CUIStaticText* title = new CUIStaticText();
   title->SetSize(100, 18);
   title->Move(18, 0);
   const char* titleText = LookupMessage(4029);
@@ -348,7 +348,7 @@ void CUIEquipmentPropertiesWnd::Slot15(int width, int height) {
   this->titleBar->titleText = title;
   this->titleBar->AddChild(title);
 
-  CUIImageButton* baseButton = new CUIImageButton(*this->m_context);
+  CUIImageButton* baseButton = new CUIImageButton();
   baseButton->SetSize(11, 11);
   baseButton->Move(3, 3);
   baseButton->SetOnClick([this]() { this->OnClickButton1(); });
@@ -391,7 +391,7 @@ void CUIEquipmentPropertiesWnd::Slot15(int width, int height) {
   }
   this->titleBar->AddChild(baseButton);
 
-  CUIImageButton* closeButton = new CUIImageButton(*this->m_context);
+  CUIImageButton* closeButton = new CUIImageButton();
   closeButton->SetSize(11, 11);
   closeButton->Move(286, 3);
   closeButton->SetOnClick([this]() { this->OnClickClose(); });
@@ -436,7 +436,7 @@ void CUIEquipmentPropertiesWnd::Slot15(int width, int height) {
   }
   this->titleBar->SetSecondButton(closeButton);
 
-  this->list = new CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>(*this->m_context);
+  this->list = new CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>();
   this->list->itemWidth = 265;
   this->list->rowHeight = 18;
   this->list->SetSize(278, 270);
@@ -505,13 +505,13 @@ void CUIEquipmentPropertiesWnd::Slot15(int width, int height) {
   this->list->AddNewItem();
   this->AddChild(this->list);
 
-  this->tabs = new CUITab(*this->m_context);
+  this->tabs = new CUITab();
   this->tabs->SetSize(18, 265);
   this->tabs->Move(3, 18);
   this->tabs->SetOnChange([this](CUITabButton* button) { this->OnChangeTab(button); });
   this->AddChild(this->tabs);
 
-  CUITabButton* allButton = new CUITabButton(*this->m_context);
+  CUITabButton* allButton = new CUITabButton();
   allButton->SetSize(18, 34);
   allButton->Move(0, 0);
   allButton->SetOnClick([this]() { this->OnClickButton2(); });
@@ -541,7 +541,7 @@ void CUIEquipmentPropertiesWnd::Slot15(int width, int height) {
   allButton->SetOrientation(1);
   this->tabs->AddChild(allButton);
 
-  CUITabButton* statButton = new CUITabButton(*this->m_context);
+  CUITabButton* statButton = new CUITabButton();
   statButton->SetSize(18, 34);
   statButton->Move(0, 33);
   statButton->SetOnClick([this]() { this->OnClickButton3(); });
@@ -571,7 +571,7 @@ void CUIEquipmentPropertiesWnd::Slot15(int width, int height) {
   statButton->SetOrientation(1);
   this->tabs->AddChild(statButton);
 
-  CUITabButton* abilityButton = new CUITabButton(*this->m_context);
+  CUITabButton* abilityButton = new CUITabButton();
   abilityButton->SetSize(18, 34);
   abilityButton->Move(0, 66);
   abilityButton->SetOnClick([this]() { this->OnClickButton4(); });
@@ -601,7 +601,7 @@ void CUIEquipmentPropertiesWnd::Slot15(int width, int height) {
   abilityButton->SetOrientation(1);
   this->tabs->AddChild(abilityButton);
 
-  CUITabButton* battleButton = new CUITabButton(*this->m_context);
+  CUITabButton* battleButton = new CUITabButton();
   battleButton->SetSize(18, 34);
   battleButton->Move(0, 99);
   battleButton->SetOnClick([this]() { this->OnClickButton5(); });
@@ -631,7 +631,7 @@ void CUIEquipmentPropertiesWnd::Slot15(int width, int height) {
   battleButton->SetOrientation(1);
   this->tabs->AddChild(battleButton);
 
-  CUITabButton* elementButton = new CUITabButton(*this->m_context);
+  CUITabButton* elementButton = new CUITabButton();
   elementButton->SetSize(18, 34);
   elementButton->Move(0, 132);
   elementButton->SetOnClick([this]() { this->OnClickButton6(); });
@@ -661,7 +661,7 @@ void CUIEquipmentPropertiesWnd::Slot15(int width, int height) {
   elementButton->SetOrientation(1);
   this->tabs->AddChild(elementButton);
 
-  CUITabButton* raceButton = new CUITabButton(*this->m_context);
+  CUITabButton* raceButton = new CUITabButton();
   raceButton->SetSize(18, 34);
   raceButton->Move(0, 165);
   raceButton->SetOnClick([this]() { this->OnClickButton7(); });
@@ -691,7 +691,7 @@ void CUIEquipmentPropertiesWnd::Slot15(int width, int height) {
   raceButton->SetOrientation(1);
   this->tabs->AddChild(raceButton);
 
-  CUITabButton* skillButton = new CUITabButton(*this->m_context);
+  CUITabButton* skillButton = new CUITabButton();
   skillButton->SetSize(18, 34);
   skillButton->Move(0, 198);
   skillButton->SetOnClick([this]() { this->OnClickButton8(); });
@@ -721,7 +721,7 @@ void CUIEquipmentPropertiesWnd::Slot15(int width, int height) {
   skillButton->SetOrientation(1);
   this->tabs->AddChild(skillButton);
 
-  CUITabButton* specialButton = new CUITabButton(*this->m_context);
+  CUITabButton* specialButton = new CUITabButton();
   specialButton->SetSize(18, 34);
   specialButton->Move(0, 231);
   specialButton->SetOnClick([this]() { this->OnClickButton9(); });
@@ -751,7 +751,7 @@ void CUIEquipmentPropertiesWnd::Slot15(int width, int height) {
   specialButton->SetOrientation(1);
   this->tabs->AddChild(specialButton);
 
-  this->resizer = new CUIResizer(*this->m_context);
+  this->resizer = new CUIResizer();
   this->resizer->SetSize(13, 13);
   this->resizer->Move(286, 294);
   {
@@ -777,7 +777,7 @@ void CUIEquipmentPropertiesWnd::Slot15(int width, int height) {
 // OFFSET: 0x00A0C9C0
 // FUNCTION: fn_15036
 void EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine::Slot15(int width, int height) {
-  this->unknown_00E8 = new CUIStaticText(*this->m_context);
+  this->unknown_00E8 = new CUIStaticText();
   this->unknown_00E8->SetSize(44, 12);
   this->unknown_00E8->Move(0, 4);
   this->unknown_00E8->SetText("", 0);
@@ -794,7 +794,7 @@ void EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine::Slot15(int width, i
   this->unknown_00E8->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->unknown_00E8);
 
-  this->unknown_00EC = new CUIStaticText(*this->m_context);
+  this->unknown_00EC = new CUIStaticText();
   this->unknown_00EC->SetSize(216, 12);
   this->unknown_00EC->Move(49, 4);
   this->unknown_00EC->SetText("", 0);

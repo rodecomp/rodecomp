@@ -15,9 +15,6 @@ class CBitmapRes;
 class UIScrollBar2 : public UIScrollBar {
 public:
   UIScrollBar2();
-  explicit UIScrollBar2(UIWindowContext& windows) : UIScrollBar(windows) {
-    this->arrowLength = 10;
-  }
 
   void Paint() override;
 };
@@ -25,16 +22,13 @@ public:
 class UIScrollBar3 : public UIScrollBar {
 public:
   UIScrollBar3();
-  explicit UIScrollBar3(UIWindowContext& windows) : UIScrollBar(windows) {
-    this->arrowLength = 9;
-  }
 
   void Paint() override;
 };
 
 class UIScrollBar4 : public UIScrollBar {
 public:
-  explicit UIScrollBar4(UIWindowContext& windows);
+  UIScrollBar4();
 
   void Paint() override;
 
@@ -43,7 +37,7 @@ public:
 
 class UIScrollBar_Custom : public UIScrollBar {
 public:
-  explicit UIScrollBar_Custom(UIWindowContext& windows);
+  UIScrollBar_Custom();
 
   /* 00B4 */ CBitmapRes* m_trackTop;
   /* 00B8 */ CBitmapRes* m_trackMiddle;
@@ -61,7 +55,7 @@ public:
 
 class UIZeroQuestScrollBar : public UIScrollBar {
 public:
-  explicit UIZeroQuestScrollBar(UIWindowContext& windows);
+  UIZeroQuestScrollBar();
 
   void Paint() override;
 };

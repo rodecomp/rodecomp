@@ -23,7 +23,7 @@
 // OFFSET: 0x009537B0
 // FUNCTION: fn_12992
 UIAgitMessageBox::UIAgitMessageBox()
-    : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(0), 0), m_agitId(0) {
+    : UIFrameWnd(0), m_agitId(0) {
 }
 
 // OFFSET: 0x0095D580

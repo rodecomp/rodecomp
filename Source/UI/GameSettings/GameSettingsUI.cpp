@@ -149,7 +149,7 @@ void SetComboItemSkinText(GameSettingsUI::CUIComboItem* item, const std::string&
 // OFFSET: 0x00A2C3C0
 // FUNCTION: fn_15400
 void GameSettingsUI::CUIGroupSkin::Slot15(int width, int height) {
-  this->m_title = new CUIStaticText(*this->m_context);
+  this->m_title = new CUIStaticText();
   this->m_title->SetSize(75, 13);
   this->m_title->Move(19, 12);
   const std::uint8_t titleSource[] = {0x60, 0xEF, 0xAA, 0x1D, 0xE9};
@@ -168,7 +168,7 @@ void GameSettingsUI::CUIGroupSkin::Slot15(int width, int height) {
   this->m_title->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->m_title);
 
-  this->m_combo = new CUIComboBox<CUIComboItem, std::string>(*this->m_context);
+  this->m_combo = new CUIComboBox<CUIComboItem, std::string>();
   this->m_combo->Create(162, 16, 5);
   CUIComboBox<CUIComboItem, std::string>* combo = this->m_combo;
   const std::uint8_t disabledSource[] = {0x0F, 0x74, 0x11, 0xEF, 0x59, 0xE1, 0xAA, 0xDE, 0x09, 0x3F, 0x11, 0xD9, 0x24, 0x95, 0x33, 0x71, 0xAE, 0xA8, 0xB8, 0x76, 0xC6, 0x46, 0x01, 0x67, 0xAA, 0xA9, 0xB7, 0x74, 0xFA, 0x4A, 0x33, 0x67, 0xB7, 0xAF, 0xB3, 0x7A, 0xE1, 0x70, 0x0D, 0x67, 0xA1, 0x84, 0xB0, 0x3B, 0xFB, 0x42, 0x1F, 0x13};
@@ -190,12 +190,12 @@ void GameSettingsUI::CUIGroupSkin::Slot15(int width, int height) {
   }
   if (combo->unknown_0088 == nullptr) {
     combo->Resize(combo->geometry.width + 18, combo->geometry.height);
-    combo->unknown_0088 = new CUIImageButton(*this->m_context);
+    combo->unknown_0088 = new CUIImageButton();
     combo->unknown_0088->SetSize(18, 18);
     combo->unknown_0088->Move(combo->geometry.width - 18, 0);
     combo->unknown_0088->SetImages(normalName, hoverName, pressedName, disabledName);
     combo->unknown_0088->SetOnClick([combo]() {
-      WindowDropDown dropDown{*reinterpret_cast<UIWindowContext*>(nullptr), reinterpret_cast<WindowOrdering&>(g_windowMgr), reinterpret_cast<CUIDropDownBox*&>(g_windowMgr.window_0A30)};
+      WindowDropDown dropDown{reinterpret_cast<WindowOrdering&>(g_windowMgr), reinterpret_cast<CUIDropDownBox*&>(g_windowMgr.window_0A30)};
       if (!dropDown.Close()) {
         int x = 0;
         int y = combo->geometry.height - 1;
@@ -304,12 +304,12 @@ template <class T, class D> void CUIComboBox<T, D>::Create(int width, int itemHe
   display->Move(1, 1);
   this->AddChild(display);
 
-  this->button = new CUIButton(*this->m_context);
+  this->button = new CUIButton();
   this->button->SetSize(display->geometry.width, display->geometry.height);
   this->button->Move(display->geometry.x, display->geometry.y);
   this->button->SetOnClick([this]() {
     WindowOrdering ordering{g_windowMgr.rendered, *reinterpret_cast<WindowManagerWindows*>(&g_windowMgr), reinterpret_cast<const int&>(g_windowMgr.modal), g_windowMgr.window_4F174};
-    WindowDropDown dropDown{*this->m_context, ordering, reinterpret_cast<CUIDropDownBox*&>(g_windowMgr.window_0A30)};
+    WindowDropDown dropDown{ordering, reinterpret_cast<CUIDropDownBox*&>(g_windowMgr.window_0A30)};
     if (!dropDown.Close()) {
       int x = 0;
       int y = this->geometry.height - 1;
@@ -319,14 +319,14 @@ template <class T, class D> void CUIComboBox<T, D>::Create(int width, int itemHe
   });
   this->AddChild(this->button);
 
-  this->listBox = new CUIListBoxEx<T, D>(*this->m_context);
+  this->listBox = new CUIListBoxEx<T, D>();
   this->listBox->itemWidth = this->width;
   this->listBox->rowHeight = this->itemHeight;
   this->listBox->SetSize(this->width + 13, this->itemHeight);
   this->listBox->Move(1, 1);
   this->listBox->SetOnSelect([this, display](T* item, const D& value) {
     WindowOrdering ordering{g_windowMgr.rendered, *reinterpret_cast<WindowManagerWindows*>(&g_windowMgr), reinterpret_cast<const int&>(g_windowMgr.modal), g_windowMgr.window_4F174};
-    WindowDropDown dropDown{*this->m_context, ordering, reinterpret_cast<CUIDropDownBox*&>(g_windowMgr.window_0A30)};
+    WindowDropDown dropDown{ordering, reinterpret_cast<CUIDropDownBox*&>(g_windowMgr.window_0A30)};
     dropDown.Close();
     if (this->onChange) {
       this->onChange(display, value);
@@ -382,12 +382,12 @@ void CUIComboBox<T, D>::SetButton(const std::string& normal, const std::string& 
   }
   if (this->unknown_0088 == nullptr) {
     this->Resize(this->geometry.width + 18, this->geometry.height);
-    this->unknown_0088 = new CUIImageButton(*this->m_context);
+    this->unknown_0088 = new CUIImageButton();
     this->unknown_0088->SetSize(18, 18);
     this->unknown_0088->Move(this->geometry.width - 18, 0);
     this->unknown_0088->SetImages(normal, hover, pressed, disabled);
     this->unknown_0088->SetOnClick([this]() {
-      WindowDropDown dropDown{*reinterpret_cast<UIWindowContext*>(nullptr), reinterpret_cast<WindowOrdering&>(g_windowMgr), reinterpret_cast<CUIDropDownBox*&>(g_windowMgr.window_0A30)};
+      WindowDropDown dropDown{reinterpret_cast<WindowOrdering&>(g_windowMgr), reinterpret_cast<CUIDropDownBox*&>(g_windowMgr.window_0A30)};
       if (!dropDown.Close()) {
         int x = 0;
         int y = this->geometry.height - 1;
@@ -1145,7 +1145,7 @@ void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::OnScroll(int positio
 // FUNCTION: fn_15384
 template <>
 void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::Slot15(int width, int height) {
-  this->scrollBar = new CUIVScrollBar(*this->m_context);
+  this->scrollBar = new CUIVScrollBar();
   this->scrollBar->Show(0);
   this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
   this->AddChild(this->scrollBar);
@@ -1155,7 +1155,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::Slot15(int width
 // FUNCTION: fn_15385
 template <>
 void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::Slot15(int width, int height) {
-  this->scrollBar = new CUIVScrollBar(*this->m_context);
+  this->scrollBar = new CUIVScrollBar();
   this->scrollBar->Show(0);
   this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
   this->AddChild(this->scrollBar);
@@ -1165,7 +1165,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::Slot15(int width, 
 // FUNCTION: fn_15386
 template <>
 void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::Slot15(int width, int height) {
-  this->scrollBar = new CUIVScrollBar(*this->m_context);
+  this->scrollBar = new CUIVScrollBar();
   this->scrollBar->Show(0);
   this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
   this->AddChild(this->scrollBar);
@@ -1175,7 +1175,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::Slot15(int width
 // FUNCTION: fn_15387
 template <>
 void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::Slot15(int width, int height) {
-  this->scrollBar = new CUIVScrollBar(*this->m_context);
+  this->scrollBar = new CUIVScrollBar();
   this->scrollBar->Show(0);
   this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
   this->AddChild(this->scrollBar);
@@ -1185,7 +1185,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::Slot15(int width, 
 // FUNCTION: fn_15388
 template <>
 void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::Slot15(int width, int height) {
-  this->scrollBar = new CUIVScrollBar(*this->m_context);
+  this->scrollBar = new CUIVScrollBar();
   this->scrollBar->Show(0);
   this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
   this->AddChild(this->scrollBar);
@@ -2251,40 +2251,40 @@ void GameSettingsUI::CUIGroupTrilinear::Slot16() {
 // OFFSET: 0x00A193A0
 // FUNCTION: fn_15341
 template <>
-CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::CUIListBoxEx(UIWindowContext& context)
-    : CUIControl(context), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
+CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::CUIListBoxEx()
+    : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
       unknown_00E0(1), rebind(0) {
 }
 
 // OFFSET: 0x00A19560
 // FUNCTION: fn_15342
 template <>
-CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::CUIListBoxEx(UIWindowContext& context)
-    : CUIControl(context), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
+CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::CUIListBoxEx()
+    : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
       unknown_00E0(1), rebind(0) {
 }
 
 // OFFSET: 0x00A19720
 // FUNCTION: fn_15343
 template <>
-CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::CUIListBoxEx(UIWindowContext& context)
-    : CUIControl(context), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
+CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::CUIListBoxEx()
+    : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
       unknown_00E0(1), rebind(0) {
 }
 
 // OFFSET: 0x00A198E0
 // FUNCTION: fn_15344
 template <>
-CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::CUIListBoxEx(UIWindowContext& context)
-    : CUIControl(context), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
+CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::CUIListBoxEx()
+    : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
       unknown_00E0(1), rebind(0) {
 }
 
 // OFFSET: 0x00A19AA0
 // FUNCTION: fn_15345
 template <>
-CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::CUIListBoxEx(UIWindowContext& context)
-    : CUIControl(context), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
+CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::CUIListBoxEx()
+    : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
       unknown_00E0(1), rebind(0) {
 }
 
@@ -2327,7 +2327,7 @@ void GameSettingsUI::CUIGroupLogInOut::Slot16() {
 // OFFSET: 0x00A1F890
 // FUNCTION: fn_15390
 void GameSettingsUI::CUIComboItem::Slot15(int width, int height) {
-  this->m_text = new CUIStaticText(*this->m_context);
+  this->m_text = new CUIStaticText();
   this->m_text->SetSize(155, 16);
   this->m_text->Move(3, 0);
   this->m_text->SetText("", 0);
@@ -2395,115 +2395,115 @@ void GameSettingsUI::CUIGroupSound::Apply() {
 
 // OFFSET: 0x00A19C60
 // FUNCTION: fn_15346
-CUIButton::CUIButton(UIWindowContext& context) : CUIControl(context), state(0), disabled(0), tooltip(), unknown_00C4(nullptr), unknown_00EC(nullptr) {
+CUIButton::CUIButton() : CUIControl(), state(0), disabled(0), tooltip(), unknown_00C4(nullptr), unknown_00EC(nullptr) {
 }
 
 // OFFSET: 0x00A19D30
 // FUNCTION: fn_15347
-CUIRadioButton::CUIRadioButton(UIWindowContext& context) : CUICheckBox(context), onSelect() {
+CUIRadioButton::CUIRadioButton() : CUICheckBox(), onSelect() {
 }
 
 // OFFSET: 0x00A3C390
 // FUNCTION: fn_15886
-GameSettingsUI::CUIBasicPage::CUIBasicPage(UIWindowContext& context) : CUIPage(context), m_skin(nullptr), m_sound(nullptr), m_emblem(nullptr), m_rodexSpam(nullptr), m_processPriority(nullptr), m_logInOut(nullptr) {
+GameSettingsUI::CUIBasicPage::CUIBasicPage() : CUIPage(), m_skin(nullptr), m_sound(nullptr), m_emblem(nullptr), m_rodexSpam(nullptr), m_processPriority(nullptr), m_logInOut(nullptr) {
 }
 
 // OFFSET: 0x00A3C5D0
 // FUNCTION: fn_15889
-GameSettingsUI::CUIGraphicsPage::CUIGraphicsPage(UIWindowContext& context) : CUIPage(context), m_graphicsApi(nullptr), m_graphics(nullptr), m_spriteDetailLevel(nullptr), m_textureDetailLevel(nullptr), m_fullscreen(nullptr), m_trilinear(nullptr) {
+GameSettingsUI::CUIGraphicsPage::CUIGraphicsPage() : CUIPage(), m_graphicsApi(nullptr), m_graphics(nullptr), m_spriteDetailLevel(nullptr), m_textureDetailLevel(nullptr), m_fullscreen(nullptr), m_trilinear(nullptr) {
 }
 
 // OFFSET: 0x00A3C680
 // FUNCTION: fn_15890
-GameSettingsUI::CUIGroupEmblem::CUIGroupEmblem(UIWindowContext& context) : CUIGroup(context), m_onButton(nullptr), m_onText(nullptr), m_offButton(nullptr), m_offText(nullptr) {
+GameSettingsUI::CUIGroupEmblem::CUIGroupEmblem() : CUIGroup(), m_onButton(nullptr), m_onText(nullptr), m_offButton(nullptr), m_offText(nullptr) {
 }
 
 // OFFSET: 0x00A3C730
 // FUNCTION: fn_15891
-GameSettingsUI::CUIGroupFullscreen::CUIGroupFullscreen(UIWindowContext& context) : CUIGroup(context), m_onButton(nullptr), m_onText(nullptr), m_offButton(nullptr), m_offText(nullptr) {
+GameSettingsUI::CUIGroupFullscreen::CUIGroupFullscreen() : CUIGroup(), m_onButton(nullptr), m_onText(nullptr), m_offButton(nullptr), m_offText(nullptr) {
 }
 
 // OFFSET: 0x00A3C7E0
 // FUNCTION: fn_15892
-GameSettingsUI::CUIGroupGraphics::CUIGroupGraphics(UIWindowContext& context)
-    : CUIGroup(context), m_adapterCombo(nullptr), m_modeText(nullptr), m_modeCombo(nullptr),
+GameSettingsUI::CUIGroupGraphics::CUIGroupGraphics()
+    : CUIGroup(), m_adapterCombo(nullptr), m_modeText(nullptr), m_modeCombo(nullptr),
       m_adapter(), m_pendingAdapter(), m_mode(), m_pendingMode() {
 }
 
 // OFFSET: 0x00A3C910
 // FUNCTION: fn_15893
-GameSettingsUI::CUIGroupGraphicsAPI::CUIGroupGraphicsAPI(UIWindowContext& context) : CUIGroup(context), m_combo(nullptr), m_backend(-1), m_pendingBackend(-1) {
+GameSettingsUI::CUIGroupGraphicsAPI::CUIGroupGraphicsAPI() : CUIGroup(), m_combo(nullptr), m_backend(-1), m_pendingBackend(-1) {
 }
 
 // OFFSET: 0x00A3C9B0
 // FUNCTION: fn_15894
-GameSettingsUI::CUIGroupLogInOut::CUIGroupLogInOut(UIWindowContext& context) : CUIGroup(context), m_onButton(nullptr), m_onText(nullptr), m_offButton(nullptr), m_offText(nullptr) {
+GameSettingsUI::CUIGroupLogInOut::CUIGroupLogInOut() : CUIGroup(), m_onButton(nullptr), m_onText(nullptr), m_offButton(nullptr), m_offText(nullptr) {
 }
 
 // OFFSET: 0x00A3CA60
 // FUNCTION: fn_15895
-GameSettingsUI::CUIGroupProcessPriority::CUIGroupProcessPriority(UIWindowContext& context) : CUIGroup(context), m_highButton(nullptr), m_highText(nullptr), m_normalButton(nullptr), m_normalText(nullptr), m_idleButton(nullptr), m_idleText(nullptr) {
+GameSettingsUI::CUIGroupProcessPriority::CUIGroupProcessPriority() : CUIGroup(), m_highButton(nullptr), m_highText(nullptr), m_normalButton(nullptr), m_normalText(nullptr), m_idleButton(nullptr), m_idleText(nullptr) {
 }
 
 // OFFSET: 0x00A3CB20
 // FUNCTION: fn_15896
-GameSettingsUI::CUIGroupRodexSpam::CUIGroupRodexSpam(UIWindowContext& context) : CUIGroup(context), m_onButton(nullptr), m_onText(nullptr), m_offButton(nullptr), m_offText(nullptr) {
+GameSettingsUI::CUIGroupRodexSpam::CUIGroupRodexSpam() : CUIGroup(), m_onButton(nullptr), m_onText(nullptr), m_offButton(nullptr), m_offText(nullptr) {
 }
 
 // OFFSET: 0x00A3CBD0
 // FUNCTION: fn_15897
-GameSettingsUI::CUIGroupSkin::CUIGroupSkin(UIWindowContext& context) : CUIGroup(context), m_combo(nullptr) {
+GameSettingsUI::CUIGroupSkin::CUIGroupSkin() : CUIGroup(), m_combo(nullptr) {
 }
 
 // OFFSET: 0x00A3CC60
 // FUNCTION: fn_15898
-GameSettingsUI::CUIGroupSound::CUIGroupSound(UIWindowContext& context) : CUIGroup(context), m_bgmText(nullptr), m_bgmSlider(nullptr), m_bgmMute(nullptr), unknown_0090(nullptr), m_effectText(nullptr), m_effectSlider(nullptr), m_effectMute(nullptr), unknown_00A0(nullptr) {
+GameSettingsUI::CUIGroupSound::CUIGroupSound() : CUIGroup(), m_bgmText(nullptr), m_bgmSlider(nullptr), m_bgmMute(nullptr), unknown_0090(nullptr), m_effectText(nullptr), m_effectSlider(nullptr), m_effectMute(nullptr), unknown_00A0(nullptr) {
 }
 
 // OFFSET: 0x00A3CD30
 // FUNCTION: fn_15899
-GameSettingsUI::CUIGroupSpriteDetailLevel::CUIGroupSpriteDetailLevel(UIWindowContext& context) : CUIGroup(context), m_slider(nullptr) {
+GameSettingsUI::CUIGroupSpriteDetailLevel::CUIGroupSpriteDetailLevel() : CUIGroup(), m_slider(nullptr) {
 }
 
 // OFFSET: 0x00A3CDC0
 // FUNCTION: fn_15900
-GameSettingsUI::CUIGroupTextureDetailLevel::CUIGroupTextureDetailLevel(UIWindowContext& context) : CUIGroup(context), m_slider(nullptr) {
+GameSettingsUI::CUIGroupTextureDetailLevel::CUIGroupTextureDetailLevel() : CUIGroup(), m_slider(nullptr) {
 }
 
 // OFFSET: 0x00A3CE50
 // FUNCTION: fn_15901
-GameSettingsUI::CUIGroupTrilinear::CUIGroupTrilinear(UIWindowContext& context) : CUIGroup(context), m_onButton(nullptr), m_onText(nullptr), m_offButton(nullptr), m_offText(nullptr) {
+GameSettingsUI::CUIGroupTrilinear::CUIGroupTrilinear() : CUIGroup(), m_onButton(nullptr), m_onText(nullptr), m_offButton(nullptr), m_offText(nullptr) {
 }
 
 // OFFSET: 0x00A3CF00
 // FUNCTION: fn_15902
-GameSettingsUI::CUIListPage::CUIListPage(UIWindowContext& context) : CUIControl(context), m_optionList(nullptr) {
+GameSettingsUI::CUIListPage::CUIListPage() : CUIControl(), m_optionList(nullptr) {
 }
 
 // OFFSET: 0x00A1F620
 // FUNCTION: fn_15389
 void GameSettingsUI::CUIBasicPage::Slot15(int width, int height) {
-  this->m_skin = new CUIGroupSkin(*this->m_context);
+  this->m_skin = new CUIGroupSkin();
   this->m_skin->SetSize(400, 36);
   this->m_skin->Move(0, 0);
   this->AddChild(this->m_skin);
-  this->m_sound = new CUIGroupSound(*this->m_context);
+  this->m_sound = new CUIGroupSound();
   this->m_sound->SetSize(400, 60);
   this->m_sound->Move(0, 36);
   this->AddChild(this->m_sound);
-  this->m_emblem = new CUIGroupEmblem(*this->m_context);
+  this->m_emblem = new CUIGroupEmblem();
   this->m_emblem->SetSize(400, 36);
   this->m_emblem->Move(0, 96);
   this->AddChild(this->m_emblem);
-  this->m_rodexSpam = new CUIGroupRodexSpam(*this->m_context);
+  this->m_rodexSpam = new CUIGroupRodexSpam();
   this->m_rodexSpam->SetSize(400, 60);
   this->m_rodexSpam->Move(0, 132);
   this->AddChild(this->m_rodexSpam);
-  this->m_processPriority = new CUIGroupProcessPriority(*this->m_context);
+  this->m_processPriority = new CUIGroupProcessPriority();
   this->m_processPriority->SetSize(400, 36);
   this->m_processPriority->Move(0, 192);
   this->AddChild(this->m_processPriority);
-  this->m_logInOut = new CUIGroupLogInOut(*this->m_context);
+  this->m_logInOut = new CUIGroupLogInOut();
   this->m_logInOut->SetSize(400, 36);
   this->m_logInOut->Move(0, 228);
   this->AddChild(this->m_logInOut);
@@ -2512,7 +2512,7 @@ void GameSettingsUI::CUIBasicPage::Slot15(int width, int height) {
 // OFFSET: 0x00A32550
 // FUNCTION: fn_15405
 void GameSettingsUI::CUIListPage::Slot15(int width, int height) {
-  this->m_optionList = new CUIListBoxEx<CUIOptionItem, TALKTYPE>(*this->m_context);
+  this->m_optionList = new CUIListBoxEx<CUIOptionItem, TALKTYPE>();
   this->m_optionList->itemWidth = 387;
   this->m_optionList->rowHeight = 26;
   this->m_optionList->SetSize(400, 286);
@@ -2556,38 +2556,38 @@ void GameSettingsUI::CUIListPage::Slot15(int width, int height) {
 }
 
 // INLINED
-inline CUIHScrollBar::CUIHScrollBar(UIWindowContext& context) : CUIVScrollBar(context) {
+inline CUIHScrollBar::CUIHScrollBar() : CUIVScrollBar() {
 }
 
 // OFFSET: 0x00A22E00
 // FUNCTION: fn_15392
 void GameSettingsUI::CUIGraphicsPage::Slot15(int width, int height) {
-  this->m_graphicsApi = new CUIGroupGraphicsAPI(*this->m_context);
+  this->m_graphicsApi = new CUIGroupGraphicsAPI();
   this->m_graphicsApi->SetSize(400, 32);
   this->m_graphicsApi->Move(0, 0);
   this->AddChild(this->m_graphicsApi);
 
-  this->m_graphics = new CUIGroupGraphics(*this->m_context);
+  this->m_graphics = new CUIGroupGraphics();
   this->m_graphics->SetSize(400, 64);
   this->m_graphics->Move(0, 32);
   this->AddChild(this->m_graphics);
 
-  this->m_spriteDetailLevel = new CUIGroupSpriteDetailLevel(*this->m_context);
+  this->m_spriteDetailLevel = new CUIGroupSpriteDetailLevel();
   this->m_spriteDetailLevel->SetSize(400, 32);
   this->m_spriteDetailLevel->Move(0, 96);
   this->AddChild(this->m_spriteDetailLevel);
 
-  this->m_textureDetailLevel = new CUIGroupTextureDetailLevel(*this->m_context);
+  this->m_textureDetailLevel = new CUIGroupTextureDetailLevel();
   this->m_textureDetailLevel->SetSize(400, 32);
   this->m_textureDetailLevel->Move(0, 128);
   this->AddChild(this->m_textureDetailLevel);
 
-  this->m_fullscreen = new CUIGroupFullscreen(*this->m_context);
+  this->m_fullscreen = new CUIGroupFullscreen();
   this->m_fullscreen->SetSize(400, 32);
   this->m_fullscreen->Move(0, 160);
   this->AddChild(this->m_fullscreen);
 
-  this->m_trilinear = new CUIGroupTrilinear(*this->m_context);
+  this->m_trilinear = new CUIGroupTrilinear();
   this->m_trilinear->SetSize(400, 32);
   this->m_trilinear->Move(0, 192);
   this->AddChild(this->m_trilinear);
@@ -2596,7 +2596,7 @@ void GameSettingsUI::CUIGraphicsPage::Slot15(int width, int height) {
 // OFFSET: 0x00A23070
 // FUNCTION: fn_15393
 void GameSettingsUI::CUIGroupEmblem::Slot15(int width, int height) {
-  this->m_title = new CUIStaticText(*this->m_context);
+  this->m_title = new CUIStaticText();
   this->m_title->SetSize(85, 13);
   this->m_title->Move(19, 12);
   const std::uint8_t titleNameSource[] = {0x54, 0xFA, 0xB3, 0xDE, 0xC8, 0x1C, 0x11, 0x86, 0x3C, 0xEA, 0xC7, 0x8B, 0xD1, 0xA1};
@@ -2614,7 +2614,7 @@ void GameSettingsUI::CUIGroupEmblem::Slot15(int width, int height) {
   this->m_title->SetShadow(0, 0xFFFFFF);
   this->m_title->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->m_title);
-  this->m_onButton = new CUIRadioButton(*this->m_context);
+  this->m_onButton = new CUIRadioButton();
   this->m_onButton->SetSize(12, 12);
   this->m_onButton->Move(110, 12);
   this->m_onButton->SetOnSelect([this](CUIRadioButton* button) { this->OnSelect(button); });
@@ -2632,7 +2632,7 @@ void GameSettingsUI::CUIGroupEmblem::Slot15(int width, int height) {
   this->m_onButton->checked = false;
   this->m_onButton->Invalidate();
   this->AddChild(this->m_onButton);
-  this->m_onText = new CUIStaticText(*this->m_context);
+  this->m_onText = new CUIStaticText();
   this->m_onText->SetSize(50, 13);
   this->m_onText->Move(127, 12);
   const std::uint8_t onLabelNameSource[] = {0x3D, 0xAB, 0xAB, 0xB3, 0x88, 0xEB, 0x71};
@@ -2650,7 +2650,7 @@ void GameSettingsUI::CUIGroupEmblem::Slot15(int width, int height) {
   this->m_onText->SetShadow(0, 0xFFFFFF);
   this->m_onText->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->m_onText);
-  this->m_offButton = new CUIRadioButton(*this->m_context);
+  this->m_offButton = new CUIRadioButton();
   this->m_offButton->SetSize(12, 12);
   this->m_offButton->Move(205, 12);
   this->m_offButton->SetOnSelect([this](CUIRadioButton* button) { this->OnSelect(button); });
@@ -2668,7 +2668,7 @@ void GameSettingsUI::CUIGroupEmblem::Slot15(int width, int height) {
   this->m_offButton->checked = false;
   this->m_offButton->Invalidate();
   this->AddChild(this->m_offButton);
-  this->m_offText = new CUIStaticText(*this->m_context);
+  this->m_offText = new CUIStaticText();
   this->m_offText->SetSize(100, 13);
   this->m_offText->Move(222, 12);
   const std::uint8_t offLabelNameSource[] = {0xED, 0x70, 0x7C, 0xE3, 0x0A, 0xDF, 0x41};
@@ -2691,7 +2691,7 @@ void GameSettingsUI::CUIGroupEmblem::Slot15(int width, int height) {
 // OFFSET: 0x00A24510
 // FUNCTION: fn_15394
 void GameSettingsUI::CUIGroupFullscreen::Slot15(int width, int height) {
-  this->m_title = new CUIStaticText(*this->m_context);
+  this->m_title = new CUIStaticText();
   this->m_title->SetSize(130, 13);
   this->m_title->Move(19, 12);
   const std::uint8_t titleNameSource[] = {0xC3, 0x18, 0x31, 0xFC, 0x29, 0x0F, 0x69, 0x76, 0xEE, 0xB5};
@@ -2709,7 +2709,7 @@ void GameSettingsUI::CUIGroupFullscreen::Slot15(int width, int height) {
   this->m_title->SetShadow(0, 0xFFFFFF);
   this->m_title->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->m_title);
-  this->m_onButton = new CUIRadioButton(*this->m_context);
+  this->m_onButton = new CUIRadioButton();
   this->m_onButton->SetSize(12, 12);
   this->m_onButton->Move(150, 12);
   this->m_onButton->SetOnSelect([this](CUIRadioButton* button) { sub_A41E50(reinterpret_cast<int>(button)); });
@@ -2727,7 +2727,7 @@ void GameSettingsUI::CUIGroupFullscreen::Slot15(int width, int height) {
   this->m_onButton->checked = false;
   this->m_onButton->Invalidate();
   this->AddChild(this->m_onButton);
-  this->m_onText = new CUIStaticText(*this->m_context);
+  this->m_onText = new CUIStaticText();
   this->m_onText->SetSize(150, 13);
   this->m_onText->Move(167, 12);
   const std::uint8_t onLabelNameSource[] = {0xE7, 0xFD, 0xC4, 0xD1, 0xCB, 0x68, 0x4B, 0xC6, 0x07, 0xB9, 0xF7, 0xD8, 0xE6, 0xC5};
@@ -2745,7 +2745,7 @@ void GameSettingsUI::CUIGroupFullscreen::Slot15(int width, int height) {
   this->m_onText->SetShadow(0, 0xFFFFFF);
   this->m_onText->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->m_onText);
-  this->m_offButton = new CUIRadioButton(*this->m_context);
+  this->m_offButton = new CUIRadioButton();
   this->m_offButton->SetSize(12, 12);
   this->m_offButton->Move(270, 12);
   this->m_offButton->SetOnSelect([this](CUIRadioButton* button) { sub_A41E50(reinterpret_cast<int>(button)); });
@@ -2763,7 +2763,7 @@ void GameSettingsUI::CUIGroupFullscreen::Slot15(int width, int height) {
   this->m_offButton->checked = false;
   this->m_offButton->Invalidate();
   this->AddChild(this->m_offButton);
-  this->m_offText = new CUIStaticText(*this->m_context);
+  this->m_offText = new CUIStaticText();
   this->m_offText->SetSize(100, 13);
   this->m_offText->Move(287, 12);
   const std::uint8_t offLabelNameSource[] = {0xCA, 0x0B, 0x8F, 0xF2, 0x61, 0xB4, 0x55, 0x6B, 0xF9, 0x1C, 0xA2, 0x5F};
@@ -2786,7 +2786,7 @@ void GameSettingsUI::CUIGroupFullscreen::Slot15(int width, int height) {
 // OFFSET: 0x00A259E0
 // FUNCTION: fn_15395
 void GameSettingsUI::CUIGroupGraphics::Slot15(int width, int height) {
-  this->m_title = new CUIStaticText(*this->m_context);
+  this->m_title = new CUIStaticText();
   this->m_title->SetSize(130, 13);
   this->m_title->Move(19, 12);
   const std::uint8_t titleTextSource[] = {0x92, 0x54, 0x6C, 0x22, 0x86, 0x75, 0x1F, 0x0B, 0xC6, 0x47, 0x7A, 0xA3, 0xFD, 0x0E, 0xFE, 0x6F, 0x23};
@@ -2805,7 +2805,7 @@ void GameSettingsUI::CUIGroupGraphics::Slot15(int width, int height) {
   this->m_title->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->m_title);
 
-  this->m_adapterCombo = new CUIComboBox<CUIComboItem, RenderAdapter>(*this->m_context);
+  this->m_adapterCombo = new CUIComboBox<CUIComboItem, RenderAdapter>();
   this->m_adapterCombo->Create(162, 16, 5);
   const std::uint8_t adapterDisabledSource[] = {0xAD, 0xF0, 0x39, 0xC9, 0x23, 0xB5, 0x90, 0xF2, 0xAB, 0xBB, 0x39, 0xFF, 0x5E, 0xC1, 0x09, 0x5D, 0x0C, 0x2C, 0x90, 0x50, 0xBC, 0x12, 0x3B, 0x4B, 0x08, 0x2D, 0x9F, 0x52, 0x80, 0x1E, 0x09, 0x4B, 0x15, 0x2B, 0x9B, 0x5C, 0x9B, 0x24, 0x37, 0x4B, 0x03, 0x00, 0x98, 0x1D, 0x81, 0x16, 0x25, 0x3F};
   thread_local EncryptedName<sizeof(adapterDisabledSource), 0x3F557BE333F95F6DULL> adapterDisabled(adapterDisabledSource);
@@ -2826,7 +2826,7 @@ void GameSettingsUI::CUIGroupGraphics::Slot15(int width, int height) {
   this->m_adapterCombo->listBox->SetBinder(adapterBinder);
   this->AddChild(this->m_adapterCombo);
 
-  this->m_modeText = new CUIStaticText(*this->m_context);
+  this->m_modeText = new CUIStaticText();
   this->m_modeText->SetSize(130, 13);
   this->m_modeText->Move(19, 44);
   const std::uint8_t modeTextSource[] = {0xAA, 0xDA, 0x8E, 0xA8, 0x68, 0x81, 0xAF, 0x9C, 0xC3, 0xB6, 0xCA, 0xBC, 0x1A, 0x69, 0x33, 0xE8, 0xDA, 0xA9, 0x39};
@@ -2845,7 +2845,7 @@ void GameSettingsUI::CUIGroupGraphics::Slot15(int width, int height) {
   this->m_modeText->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->m_modeText);
 
-  this->m_modeCombo = new CUIComboBox<CUIComboItem, DisplayMode>(*this->m_context);
+  this->m_modeCombo = new CUIComboBox<CUIComboItem, DisplayMode>();
   this->m_modeCombo->Create(162, 16, 5);
   const std::uint8_t modeDisabledSource[] = {0x1F, 0x76, 0x9D, 0x93, 0xD3, 0x5D, 0x3A, 0xCC, 0x19, 0x3D, 0x9D, 0xA5, 0xAE, 0x29, 0xA3, 0x63, 0xBE, 0xAA, 0x34, 0x0A, 0x4C, 0xFA, 0x91, 0x75, 0xBA, 0xAB, 0x3B, 0x08, 0x70, 0xF6, 0xA3, 0x75, 0xA7, 0xAD, 0x3F, 0x06, 0x6B, 0xCC, 0x9D, 0x75, 0xB1, 0x86, 0x3C, 0x47, 0x71, 0xFE, 0x8F, 0x01};
   thread_local EncryptedName<sizeof(modeDisabledSource), 0x01FF9313695DD9DFULL> modeDisabled(modeDisabledSource);
@@ -2870,7 +2870,7 @@ void GameSettingsUI::CUIGroupGraphics::Slot15(int width, int height) {
 // OFFSET: 0x00A27130
 // FUNCTION: fn_15396
 void GameSettingsUI::CUIGroupGraphicsAPI::Slot15(int width, int height) {
-  this->m_title = new CUIStaticText(*this->m_context);
+  this->m_title = new CUIStaticText();
   this->m_title->SetSize(130, 13);
   this->m_title->Move(19, 12);
   const std::uint8_t titleSource[] = {0xEE, 0xE2, 0x18, 0x34, 0x5A, 0x41, 0xD3, 0x8E, 0x0F, 0x7C, 0xAF};
@@ -2889,7 +2889,7 @@ void GameSettingsUI::CUIGroupGraphicsAPI::Slot15(int width, int height) {
   this->m_title->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->m_title);
 
-  this->m_combo = new CUIComboBox<CUIComboItem, RenderBackend>(*this->m_context);
+  this->m_combo = new CUIComboBox<CUIComboItem, RenderBackend>();
   this->m_combo->Create(162, 16, 5);
   const std::uint8_t disabledSource[] = {0x37, 0xBC, 0xEB, 0x55, 0x31, 0xC1, 0xD8, 0x40, 0x31, 0xF7, 0xEB, 0x63, 0x4C, 0xB5, 0x41, 0xEF, 0x96, 0x60, 0x42, 0xCC, 0xAE, 0x66, 0x73, 0xF9, 0x92, 0x61, 0x4D, 0xCE, 0x92, 0x6A, 0x41, 0xF9, 0x8F, 0x67, 0x49, 0xC0, 0x89, 0x50, 0x7F, 0xF9, 0x99, 0x4C, 0x4A, 0x81, 0x93, 0x62, 0x6D, 0x8D};
   thread_local EncryptedName<sizeof(disabledSource), 0x8D1D0FF1AF2B13F7ULL> disabledImage(disabledSource);
@@ -2914,7 +2914,7 @@ void GameSettingsUI::CUIGroupGraphicsAPI::Slot15(int width, int height) {
 // OFFSET: 0x00A27D00
 // FUNCTION: fn_15397
 void GameSettingsUI::CUIGroupLogInOut::Slot15(int width, int height) {
-  this->m_title = new CUIStaticText(*this->m_context);
+  this->m_title = new CUIStaticText();
   this->m_title->SetSize(100, 12);
   this->m_title->Move(19, 12);
   const std::uint8_t titleNameSource[] = {0xC8, 0x1B, 0x1E, 0x8C, 0xAB, 0x7F, 0x35, 0xB1, 0xB4, 0x6D, 0x1D, 0x5B};
@@ -2932,7 +2932,7 @@ void GameSettingsUI::CUIGroupLogInOut::Slot15(int width, int height) {
   this->m_title->SetShadow(0, 0xFFFFFF);
   this->m_title->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->m_title);
-  this->m_onButton = new CUIRadioButton(*this->m_context);
+  this->m_onButton = new CUIRadioButton();
   this->m_onButton->SetSize(12, 12);
   this->m_onButton->Move(110, 12);
   this->m_onButton->SetOnSelect([this](CUIRadioButton* button) { this->OnSelect(button); });
@@ -2950,7 +2950,7 @@ void GameSettingsUI::CUIGroupLogInOut::Slot15(int width, int height) {
   this->m_onButton->checked = false;
   this->m_onButton->Invalidate();
   this->AddChild(this->m_onButton);
-  this->m_onText = new CUIStaticText(*this->m_context);
+  this->m_onText = new CUIStaticText();
   this->m_onText->SetSize(100, 12);
   this->m_onText->Move(127, 12);
   const std::uint8_t onLabelNameSource[] = {0xB1, 0xEA, 0xB2, 0xCD, 0x13};
@@ -2968,7 +2968,7 @@ void GameSettingsUI::CUIGroupLogInOut::Slot15(int width, int height) {
   this->m_onText->SetShadow(0, 0xFFFFFF);
   this->m_onText->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->m_onText);
-  this->m_offButton = new CUIRadioButton(*this->m_context);
+  this->m_offButton = new CUIRadioButton();
   this->m_offButton->SetSize(12, 12);
   this->m_offButton->Move(205, 12);
   this->m_offButton->SetOnSelect([this](CUIRadioButton* button) { this->OnSelect(button); });
@@ -2986,7 +2986,7 @@ void GameSettingsUI::CUIGroupLogInOut::Slot15(int width, int height) {
   this->m_offButton->checked = false;
   this->m_offButton->Invalidate();
   this->AddChild(this->m_offButton);
-  this->m_offText = new CUIStaticText(*this->m_context);
+  this->m_offText = new CUIStaticText();
   this->m_offText->SetSize(100, 12);
   this->m_offText->Move(222, 12);
   const std::uint8_t offLabelNameSource[] = {0x05, 0xC5, 0x5E, 0x21, 0x03};
@@ -3009,7 +3009,7 @@ void GameSettingsUI::CUIGroupLogInOut::Slot15(int width, int height) {
 // OFFSET: 0x00A29180
 // FUNCTION: fn_15398
 void GameSettingsUI::CUIGroupProcessPriority::Slot15(int width, int height) {
-  this->m_title = new CUIStaticText(*this->m_context);
+  this->m_title = new CUIStaticText();
   this->m_title->SetSize(100, 13);
   this->m_title->Move(19, 12);
   const std::uint8_t titleNameSource[] = {0xCE, 0xF1, 0x65, 0x6A, 0xA5, 0xD8, 0x95, 0x51, 0xCE, 0xAF, 0x27, 0x11, 0x22, 0x67};
@@ -3027,7 +3027,7 @@ void GameSettingsUI::CUIGroupProcessPriority::Slot15(int width, int height) {
   this->m_title->SetShadow(0, 0xFFFFFF);
   this->m_title->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->m_title);
-  this->m_highButton = new CUIRadioButton(*this->m_context);
+  this->m_highButton = new CUIRadioButton();
   this->m_highButton->SetSize(12, 12);
   this->m_highButton->Move(110, 12);
   this->m_highButton->SetOnSelect([this](CUIRadioButton* button) { this->OnSelect(button); });
@@ -3045,7 +3045,7 @@ void GameSettingsUI::CUIGroupProcessPriority::Slot15(int width, int height) {
   this->m_highButton->checked = true;
   this->m_highButton->Invalidate();
   this->AddChild(this->m_highButton);
-  this->m_highText = new CUIStaticText(*this->m_context);
+  this->m_highText = new CUIStaticText();
   this->m_highText->SetSize(100, 13);
   this->m_highText->Move(127, 12);
   const std::uint8_t highLabelNameSource[] = {0x14, 0x01, 0xBF, 0x84, 0x31};
@@ -3063,7 +3063,7 @@ void GameSettingsUI::CUIGroupProcessPriority::Slot15(int width, int height) {
   this->m_highText->SetShadow(0, 0xFFFFFF);
   this->m_highText->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->m_highText);
-  this->m_normalButton = new CUIRadioButton(*this->m_context);
+  this->m_normalButton = new CUIRadioButton();
   this->m_normalButton->SetSize(12, 12);
   this->m_normalButton->Move(205, 12);
   this->m_normalButton->SetOnSelect([this](CUIRadioButton* button) { this->OnSelect(button); });
@@ -3081,7 +3081,7 @@ void GameSettingsUI::CUIGroupProcessPriority::Slot15(int width, int height) {
   this->m_normalButton->checked = false;
   this->m_normalButton->Invalidate();
   this->AddChild(this->m_normalButton);
-  this->m_normalText = new CUIStaticText(*this->m_context);
+  this->m_normalText = new CUIStaticText();
   this->m_normalText->SetSize(100, 13);
   this->m_normalText->Move(222, 12);
   const std::uint8_t normalLabelNameSource[] = {0xDF, 0x4B, 0x12, 0xB6, 0x8D};
@@ -3099,7 +3099,7 @@ void GameSettingsUI::CUIGroupProcessPriority::Slot15(int width, int height) {
   this->m_normalText->SetShadow(0, 0xFFFFFF);
   this->m_normalText->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->m_normalText);
-  this->m_idleButton = new CUIRadioButton(*this->m_context);
+  this->m_idleButton = new CUIRadioButton();
   this->m_idleButton->SetSize(12, 12);
   this->m_idleButton->Move(300, 12);
   this->m_idleButton->SetOnSelect([this](CUIRadioButton* button) { this->OnSelect(button); });
@@ -3117,7 +3117,7 @@ void GameSettingsUI::CUIGroupProcessPriority::Slot15(int width, int height) {
   this->m_idleButton->checked = false;
   this->m_idleButton->Invalidate();
   this->AddChild(this->m_idleButton);
-  this->m_idleText = new CUIStaticText(*this->m_context);
+  this->m_idleText = new CUIStaticText();
   this->m_idleText->SetSize(100, 13);
   this->m_idleText->Move(317, 12);
   const std::uint8_t idleLabelNameSource[] = {0xAE, 0xB2, 0x53, 0x94, 0x71};
@@ -3140,7 +3140,7 @@ void GameSettingsUI::CUIGroupProcessPriority::Slot15(int width, int height) {
 // OFFSET: 0x00A2AEC0
 // FUNCTION: fn_15399
 void GameSettingsUI::CUIGroupRodexSpam::Slot15(int width, int height) {
-  this->m_title = new CUIStaticText(*this->m_context);
+  this->m_title = new CUIStaticText();
   this->m_title->SetSize(70, 13);
   this->m_title->Move(19, 12);
   const std::uint8_t titleNameSource[] = {0xDA, 0xF5, 0x83, 0xE4, 0x2D};
@@ -3158,7 +3158,7 @@ void GameSettingsUI::CUIGroupRodexSpam::Slot15(int width, int height) {
   this->m_title->SetShadow(0, 0xFFFFFF);
   this->m_title->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->m_title);
-  this->m_onButton = new CUIRadioButton(*this->m_context);
+  this->m_onButton = new CUIRadioButton();
   this->m_onButton->SetSize(12, 12);
   this->m_onButton->Move(110, 12);
   this->m_onButton->SetOnSelect([this](CUIRadioButton* button) { this->OnSelect(button); });
@@ -3176,7 +3176,7 @@ void GameSettingsUI::CUIGroupRodexSpam::Slot15(int width, int height) {
   this->m_onButton->checked = false;
   this->m_onButton->Invalidate();
   this->AddChild(this->m_onButton);
-  this->m_onText = new CUIStaticText(*this->m_context);
+  this->m_onText = new CUIStaticText();
   this->m_onText->SetSize(100, 13);
   this->m_onText->Move(127, 12);
   const std::uint8_t onLabelNameSource[] = {0x37, 0x69, 0x5E, 0xEA, 0x95, 0xBF, 0x50, 0xF9, 0x75, 0xB9, 0x57, 0xFB, 0x08, 0xBA, 0xFF};
@@ -3194,7 +3194,7 @@ void GameSettingsUI::CUIGroupRodexSpam::Slot15(int width, int height) {
   this->m_onText->SetShadow(0, 0xFFFFFF);
   this->m_onText->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->m_onText);
-  this->m_offButton = new CUIRadioButton(*this->m_context);
+  this->m_offButton = new CUIRadioButton();
   this->m_offButton->SetSize(12, 12);
   this->m_offButton->Move(110, 36);
   this->m_offButton->SetOnSelect([this](CUIRadioButton* button) { this->OnSelect(button); });
@@ -3212,7 +3212,7 @@ void GameSettingsUI::CUIGroupRodexSpam::Slot15(int width, int height) {
   this->m_offButton->checked = false;
   this->m_offButton->Invalidate();
   this->AddChild(this->m_offButton);
-  this->m_offText = new CUIStaticText(*this->m_context);
+  this->m_offText = new CUIStaticText();
   this->m_offText->SetSize(130, 13);
   this->m_offText->Move(127, 36);
   const std::uint8_t offLabelNameSource[] = {0x3D, 0x04, 0x8D, 0x6E, 0x95, 0x4F, 0x38, 0x27, 0x07, 0xF7, 0xF1, 0x5F, 0x08, 0x4A, 0xB7, 0x57, 0x38, 0x6D, 0x83, 0xA9};
@@ -3235,7 +3235,7 @@ void GameSettingsUI::CUIGroupRodexSpam::Slot15(int width, int height) {
 // OFFSET: 0x00A2CF80
 // FUNCTION: fn_15401
 void GameSettingsUI::CUIGroupSound::Slot15(int width, int height) {
-  this->m_title = new CUIStaticText(*this->m_context);
+  this->m_title = new CUIStaticText();
   this->m_title->SetSize(75, 13);
   this->m_title->Move(19, 12);
   const std::uint8_t titleNameSource[] = {0xEA, 0x4A, 0x42, 0xC5, 0xFA, 0xD6, 0xFF, 0xD7, 0xE2, 0x6C, 0x59, 0x2B};
@@ -3253,7 +3253,7 @@ void GameSettingsUI::CUIGroupSound::Slot15(int width, int height) {
   this->m_title->SetShadow(0, 0xFFFFFF);
   this->m_title->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->m_title);
-  this->m_bgmText = new CUIStaticText(*this->m_context);
+  this->m_bgmText = new CUIStaticText();
   this->m_bgmText->SetSize(50, 13);
   this->m_bgmText->Move(110, 12);
   const std::uint8_t bgmLabelNameSource[] = {0xFA, 0xD1, 0xEB, 0x8D, 0xA7, 0x90, 0x71};
@@ -3271,7 +3271,7 @@ void GameSettingsUI::CUIGroupSound::Slot15(int width, int height) {
   this->m_bgmText->SetShadow(0, 0xFFFFFF);
   this->m_bgmText->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->m_bgmText);
-  this->m_bgmSlider = new CUIHScrollBar(*this->m_context);
+  this->m_bgmSlider = new CUIHScrollBar();
   this->m_bgmSlider->SetSize(174, 13);
   this->m_bgmSlider->Move(152, 11);
   this->m_bgmSlider->SetOnChange([this](int position) { this->OnBgmScroll(position); });
@@ -3294,7 +3294,7 @@ void GameSettingsUI::CUIGroupSound::Slot15(int width, int height) {
   thread_local EncryptedName<sizeof(bgmSliderThumbRightSource), 0x9B0F234DEFDF7593ULL> bgmSliderThumbRight(bgmSliderThumbRightSource);
   static_cast<CUIHScrollBar*>(this->m_bgmSlider)->SetThumbImages(std::string(bgmSliderThumbLeft.Text()), std::string(bgmSliderThumbMiddle.Text()), std::string(bgmSliderThumbRight.Text()));
   this->AddChild(this->m_bgmSlider);
-  this->m_bgmMute = new CUICheckBox(*this->m_context);
+  this->m_bgmMute = new CUICheckBox();
   this->m_bgmMute->SetSize(10, 10);
   this->m_bgmMute->Move(334, 13);
   this->m_bgmMute->SetOnCheck([this](bool checked) { this->OnBgmMute(checked); });
@@ -3312,7 +3312,7 @@ void GameSettingsUI::CUIGroupSound::Slot15(int width, int height) {
   this->m_bgmMute->checked = false;
   this->m_bgmMute->Invalidate();
   this->AddChild(this->m_bgmMute);
-  this->unknown_0090 = new CUIStaticText(*this->m_context);
+  this->unknown_0090 = new CUIStaticText();
   this->unknown_0090->SetSize(50, 13);
   this->unknown_0090->Move(348, 12);
   const std::uint8_t bgmMuteLabelNameSource[] = {0xE9, 0x43, 0xD0, 0xBB, 0x4F};
@@ -3330,7 +3330,7 @@ void GameSettingsUI::CUIGroupSound::Slot15(int width, int height) {
   this->unknown_0090->SetShadow(0, 0xFFFFFF);
   this->unknown_0090->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->unknown_0090);
-  this->m_effectText = new CUIStaticText(*this->m_context);
+  this->m_effectText = new CUIStaticText();
   this->m_effectText->SetSize(50, 13);
   this->m_effectText->Move(110, 36);
   const std::uint8_t effectLabelNameSource[] = {0x1B, 0x86, 0xDF, 0xEB, 0x69, 0xA2, 0x9D};
@@ -3348,7 +3348,7 @@ void GameSettingsUI::CUIGroupSound::Slot15(int width, int height) {
   this->m_effectText->SetShadow(0, 0xFFFFFF);
   this->m_effectText->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->m_effectText);
-  this->m_effectSlider = new CUIHScrollBar(*this->m_context);
+  this->m_effectSlider = new CUIHScrollBar();
   this->m_effectSlider->SetSize(174, 13);
   this->m_effectSlider->Move(152, 35);
   this->m_effectSlider->SetOnChange([this](int position) { this->OnEffectScroll(position); });
@@ -3371,7 +3371,7 @@ void GameSettingsUI::CUIGroupSound::Slot15(int width, int height) {
   thread_local EncryptedName<sizeof(effectSliderThumbRightSource), 0xAD6153019F93A527ULL> effectSliderThumbRight(effectSliderThumbRightSource);
   static_cast<CUIHScrollBar*>(this->m_effectSlider)->SetThumbImages(std::string(effectSliderThumbLeft.Text()), std::string(effectSliderThumbMiddle.Text()), std::string(effectSliderThumbRight.Text()));
   this->AddChild(this->m_effectSlider);
-  this->m_effectMute = new CUICheckBox(*this->m_context);
+  this->m_effectMute = new CUICheckBox();
   this->m_effectMute->SetSize(10, 10);
   this->m_effectMute->Move(334, 37);
   this->m_effectMute->SetOnCheck([this](bool checked) { this->OnEffectMute(checked); });
@@ -3389,7 +3389,7 @@ void GameSettingsUI::CUIGroupSound::Slot15(int width, int height) {
   this->m_effectMute->checked = false;
   this->m_effectMute->Invalidate();
   this->AddChild(this->m_effectMute);
-  this->unknown_00A0 = new CUIStaticText(*this->m_context);
+  this->unknown_00A0 = new CUIStaticText();
   this->unknown_00A0->SetSize(50, 13);
   this->unknown_00A0->Move(348, 36);
   const std::uint8_t effectMuteLabelNameSource[] = {0xB3, 0xF9, 0xF6, 0xBF, 0xED};
@@ -3412,7 +3412,7 @@ void GameSettingsUI::CUIGroupSound::Slot15(int width, int height) {
 // OFFSET: 0x00A2F880
 // FUNCTION: fn_15402
 void GameSettingsUI::CUIGroupSpriteDetailLevel::Slot15(int width, int height) {
-  this->m_title = new CUIStaticText(*this->m_context);
+  this->m_title = new CUIStaticText();
   this->m_title->SetSize(130, 13);
   this->m_title->Move(19, 12);
   const std::uint8_t titleNameSource[] = {0xAE, 0x7D, 0xC4, 0xD4, 0x4D, 0x62, 0xD7, 0x83, 0xD5, 0x69, 0x23, 0xD2, 0x23, 0x2A, 0xE4, 0xFA, 0xA6, 0xC7};
@@ -3430,7 +3430,7 @@ void GameSettingsUI::CUIGroupSpriteDetailLevel::Slot15(int width, int height) {
   this->m_title->SetShadow(0, 0xFFFFFF);
   this->m_title->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->m_title);
-  this->m_slider = new CUIHScrollBar(*this->m_context);
+  this->m_slider = new CUIHScrollBar();
   this->m_slider->SetSize(175, 13);
   this->m_slider->Move(153, 11);
   this->m_slider->SetOnChange([this](int position) { sub_A43000(position); });
@@ -3458,7 +3458,7 @@ void GameSettingsUI::CUIGroupSpriteDetailLevel::Slot15(int width, int height) {
 // OFFSET: 0x00A30490
 // FUNCTION: fn_15403
 void GameSettingsUI::CUIGroupTextureDetailLevel::Slot15(int width, int height) {
-  this->m_title = new CUIStaticText(*this->m_context);
+  this->m_title = new CUIStaticText();
   this->m_title->SetSize(130, 13);
   this->m_title->Move(19, 12);
   const std::uint8_t titleNameSource[] = {0x34, 0x1B, 0x54, 0x07, 0x6E, 0xC9, 0x55, 0xBA, 0x29, 0x78, 0x1A, 0x08, 0x18, 0x0D};
@@ -3476,7 +3476,7 @@ void GameSettingsUI::CUIGroupTextureDetailLevel::Slot15(int width, int height) {
   this->m_title->SetShadow(0, 0xFFFFFF);
   this->m_title->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->m_title);
-  this->m_slider = new CUIHScrollBar(*this->m_context);
+  this->m_slider = new CUIHScrollBar();
   this->m_slider->SetSize(175, 13);
   this->m_slider->Move(153, 11);
   this->m_slider->SetOnChange([this](int position) { sub_A43040(position); });
@@ -3504,7 +3504,7 @@ void GameSettingsUI::CUIGroupTextureDetailLevel::Slot15(int width, int height) {
 // OFFSET: 0x00A31070
 // FUNCTION: fn_15404
 void GameSettingsUI::CUIGroupTrilinear::Slot15(int width, int height) {
-  this->m_title = new CUIStaticText(*this->m_context);
+  this->m_title = new CUIStaticText();
   this->m_title->SetSize(130, 13);
   this->m_title->Move(19, 12);
   const std::uint8_t titleNameSource[] = {0xAB, 0xCD, 0x83, 0xDE, 0x65, 0xCF, 0x3B, 0x16, 0xD3, 0x8D, 0x15, 0xEA, 0x6F, 0xC6, 0x42, 0x61, 0xD8, 0x63};
@@ -3522,7 +3522,7 @@ void GameSettingsUI::CUIGroupTrilinear::Slot15(int width, int height) {
   this->m_title->SetShadow(0, 0xFFFFFF);
   this->m_title->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->m_title);
-  this->m_onButton = new CUIRadioButton(*this->m_context);
+  this->m_onButton = new CUIRadioButton();
   this->m_onButton->SetSize(12, 12);
   this->m_onButton->Move(150, 12);
   this->m_onButton->SetOnSelect([this](CUIRadioButton* button) { sub_A41FA0(reinterpret_cast<int>(button)); });
@@ -3540,7 +3540,7 @@ void GameSettingsUI::CUIGroupTrilinear::Slot15(int width, int height) {
   this->m_onButton->checked = false;
   this->m_onButton->Invalidate();
   this->AddChild(this->m_onButton);
-  this->m_onText = new CUIStaticText(*this->m_context);
+  this->m_onText = new CUIStaticText();
   this->m_onText->SetSize(150, 13);
   this->m_onText->Move(167, 12);
   const std::uint8_t onLabelNameSource[] = {0xF7, 0xF6, 0x82, 0xED, 0xBD};
@@ -3558,7 +3558,7 @@ void GameSettingsUI::CUIGroupTrilinear::Slot15(int width, int height) {
   this->m_onText->SetShadow(0, 0xFFFFFF);
   this->m_onText->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->m_onText);
-  this->m_offButton = new CUIRadioButton(*this->m_context);
+  this->m_offButton = new CUIRadioButton();
   this->m_offButton->SetSize(12, 12);
   this->m_offButton->Move(270, 12);
   this->m_offButton->SetOnSelect([this](CUIRadioButton* button) { sub_A41FA0(reinterpret_cast<int>(button)); });
@@ -3576,7 +3576,7 @@ void GameSettingsUI::CUIGroupTrilinear::Slot15(int width, int height) {
   this->m_offButton->checked = false;
   this->m_offButton->Invalidate();
   this->AddChild(this->m_offButton);
-  this->m_offText = new CUIStaticText(*this->m_context);
+  this->m_offText = new CUIStaticText();
   this->m_offText->SetSize(100, 13);
   this->m_offText->Move(287, 12);
   const std::uint8_t offLabelNameSource[] = {0xC3, 0xEF, 0x42, 0x1D, 0x87};
@@ -3886,7 +3886,7 @@ void GameSettingsUI::CUIGraphicsPage::ApplySettings() {
 // OFFSET: 0x00A1FB10
 // FUNCTION: fn_15391
 void CUIGameSettingsUI::Slot15(int width, int height) {
-  this->m_titleBar = new CUITitleBar(*this->m_context);
+  this->m_titleBar = new CUITitleBar();
   this->m_titleBar->SetSize(400, 17);
   this->m_titleBar->Move(0, 0);
   {
@@ -3912,7 +3912,7 @@ void CUIGameSettingsUI::Slot15(int width, int height) {
   }
   this->AddChild(this->m_titleBar);
 
-  CUIStaticText* title = new CUIStaticText(*this->m_context);
+  CUIStaticText* title = new CUIStaticText();
   title->SetSize(100, 17);
   title->Move(18, 0);
   {
@@ -3936,7 +3936,7 @@ void CUIGameSettingsUI::Slot15(int width, int height) {
   this->m_titleBar->titleText = title;
   this->m_titleBar->AddChild(title);
 
-  CUIImageButton* baseButton = new CUIImageButton(*this->m_context);
+  CUIImageButton* baseButton = new CUIImageButton();
   baseButton->SetSize(11, 11);
   baseButton->Move(3, 3);
   baseButton->SetOnClick([this]() { this->sub_A3F0F0(); });
@@ -3967,7 +3967,7 @@ void CUIGameSettingsUI::Slot15(int width, int height) {
   }
   this->m_titleBar->AddChild(baseButton);
 
-  CUIImageButton* closeButton = new CUIImageButton(*this->m_context);
+  CUIImageButton* closeButton = new CUIImageButton();
   closeButton->SetSize(11, 11);
   closeButton->Move(386, 3);
   closeButton->SetOnClick([this]() { this->OnTitleClose(); });
@@ -4000,18 +4000,18 @@ void CUIGameSettingsUI::Slot15(int width, int height) {
   }
   this->m_titleBar->SetSecondButton(closeButton);
 
-  this->m_currentPage = new GameSettingsUI::CUIBasicPage(*this->m_context);
+  this->m_currentPage = new GameSettingsUI::CUIBasicPage();
   this->m_currentPage->SetSize(400, 288);
   this->m_currentPage->Move(0, 34);
   this->AddChild(this->m_currentPage);
 
-  this->m_graphicsPage = new GameSettingsUI::CUIGraphicsPage(*this->m_context);
+  this->m_graphicsPage = new GameSettingsUI::CUIGraphicsPage();
   this->m_graphicsPage->SetSize(400, 288);
   this->m_graphicsPage->Move(0, 34);
   this->AddChild(this->m_graphicsPage);
 
   for (int index = 0; index < 3; ++index) {
-    GameSettingsUI::CUIListPage* page = new GameSettingsUI::CUIListPage(*this->m_context);
+    GameSettingsUI::CUIListPage* page = new GameSettingsUI::CUIListPage();
     page->SetSize(400, 288);
     this->AddChild(page);
     this->m_pages.push_back(page);
@@ -4020,13 +4020,13 @@ void CUIGameSettingsUI::Slot15(int width, int height) {
   this->m_pages[1]->Move(0, 34);
   this->m_pages[2]->Move(0, 34);
 
-  this->m_tab = new CUITab(*this->m_context);
+  this->m_tab = new CUITab();
   this->m_tab->SetSize(400, 18);
   this->m_tab->Move(0, 17);
   this->m_tab->SetOnChange([this](CUITabButton* button) { this->sub_A433D0(button); });
   this->AddChild(this->m_tab);
 
-  CUITabButton* basicButton = new CUITabButton(*this->m_context);
+  CUITabButton* basicButton = new CUITabButton();
   basicButton->SetSize(72, 18);
   basicButton->Move(0, 0);
   basicButton->SetOnClick([this]() { this->sub_A43380(); });
@@ -4053,7 +4053,7 @@ void CUIGameSettingsUI::Slot15(int width, int height) {
   basicButton->SetSkinColors(0, 0, 0, 0, 3, 1);
   this->m_tab->AddChild(basicButton);
 
-  CUITabButton* effectButton = new CUITabButton(*this->m_context);
+  CUITabButton* effectButton = new CUITabButton();
   effectButton->SetSize(72, 18);
   effectButton->Move(71, 0);
   effectButton->SetOnClick([this]() { this->sub_A433A0(); });
@@ -4080,7 +4080,7 @@ void CUIGameSettingsUI::Slot15(int width, int height) {
   effectButton->useSkinColors = 1;
   this->m_tab->AddChild(effectButton);
 
-  CUITabButton* controlButton = new CUITabButton(*this->m_context);
+  CUITabButton* controlButton = new CUITabButton();
   controlButton->SetSize(72, 18);
   controlButton->Move(142, 0);
   controlButton->SetOnClick([this]() { this->sub_A43390(); });
@@ -4107,7 +4107,7 @@ void CUIGameSettingsUI::Slot15(int width, int height) {
   controlButton->SetSkinColors(0, 0, 0, 0, 3, 1);
   this->m_tab->AddChild(controlButton);
 
-  CUITabButton* graphicsButton = new CUITabButton(*this->m_context);
+  CUITabButton* graphicsButton = new CUITabButton();
   graphicsButton->SetSize(72, 18);
   graphicsButton->Move(213, 0);
   graphicsButton->SetOnClick([this]() { this->sub_A433C0(); });
@@ -4134,7 +4134,7 @@ void CUIGameSettingsUI::Slot15(int width, int height) {
   graphicsButton->SetSkinColors(0, 0, 0, 0, 3, 1);
   this->m_tab->AddChild(graphicsButton);
 
-  CUITabButton* etcButton = new CUITabButton(*this->m_context);
+  CUITabButton* etcButton = new CUITabButton();
   etcButton->SetSize(72, 18);
   etcButton->Move(284, 0);
   etcButton->SetOnClick([this]() { this->sub_A433B0(); });
@@ -4161,7 +4161,7 @@ void CUIGameSettingsUI::Slot15(int width, int height) {
   etcButton->SetSkinColors(0, 0, 0, 0, 3, 1);
   this->m_tab->AddChild(etcButton);
 
-  this->m_pageContainer = new CUIImageButton(*this->m_context);
+  this->m_pageContainer = new CUIImageButton();
   this->m_pageContainer->SetSize(42, 20);
   this->m_pageContainer->Move(5, 326);
   this->m_pageContainer->SetOnClick([this]() { this->ResetToDefaults(); });
@@ -4193,7 +4193,7 @@ void CUIGameSettingsUI::Slot15(int width, int height) {
   }
   this->AddChild(this->m_pageContainer);
 
-  this->m_applyButton = new CUIImageButton(*this->m_context);
+  this->m_applyButton = new CUIImageButton();
   this->m_applyButton->SetSize(42, 20);
   this->m_applyButton->Move(301, 326);
   this->m_applyButton->SetOnClick([this]() { this->OnApply(); });
@@ -4225,7 +4225,7 @@ void CUIGameSettingsUI::Slot15(int width, int height) {
   }
   this->AddChild(this->m_applyButton);
 
-  this->m_closeButton = new CUIImageButton(*this->m_context);
+  this->m_closeButton = new CUIImageButton();
   this->m_closeButton->SetSize(42, 20);
   this->m_closeButton->Move(348, 326);
   this->m_closeButton->SetOnClick([this]() { this->OnCloseButton(); });
@@ -4291,7 +4291,7 @@ void CUIGameSettingsUI::Slot16() {
 // OFFSET: 0x00A33250
 // FUNCTION: fn_15406
 void GameSettingsUI::CUIOptionItem::Slot15(int width, int height) {
-  this->m_check = new CUICheckBox(*this->m_context);
+  this->m_check = new CUICheckBox();
   this->m_check->SetSize(34, 15);
   this->m_check->Move(8, 5);
   this->m_check->SetOnCheck([this](bool checked) { this->OnCheck(checked); });
@@ -4310,7 +4310,7 @@ void GameSettingsUI::CUIOptionItem::Slot15(int width, int height) {
   this->m_check->Invalidate();
   this->AddChild(this->m_check);
 
-  CUIImageButton* runButton = new CUIImageButton(*this->m_context);
+  CUIImageButton* runButton = new CUIImageButton();
   this->unknown_00EC = runButton;
   runButton->SetSize(34, 15);
   runButton->Move(7, 5);
@@ -4328,7 +4328,7 @@ void GameSettingsUI::CUIOptionItem::Slot15(int width, int height) {
   runButton->SetImages(std::string(applyNormal.Text()), std::string(applyPressed.Text()), std::string(applyOver.Text()), std::string(applyDisabled.Text()));
   this->AddChild(this->unknown_00EC);
 
-  this->m_label = new CUITextButton(*this->m_context);
+  this->m_label = new CUITextButton();
   this->m_label->SetSize(85, 13);
   this->m_label->Move(47, 6);
   this->m_label->SetOnClick([this]() {
@@ -4353,7 +4353,7 @@ void GameSettingsUI::CUIOptionItem::Slot15(int width, int height) {
   this->m_label->SetOutline(false, 0xFFFFFF);
   this->AddChild(this->m_label);
 
-  this->m_description = new CUIStaticText(*this->m_context);
+  this->m_description = new CUIStaticText();
   this->m_description->SetSize(252, 13);
   this->m_description->Move(138, 6);
   this->m_description->SetText("", 0);

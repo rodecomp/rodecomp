@@ -11,7 +11,6 @@
 class CUIVScrollBar : public CUIControl {
 public:
   CUIVScrollBar();
-  explicit CUIVScrollBar(UIWindowContext& context);
   ~CUIVScrollBar() override;
   void Resize(int width, int height) override;
   void Show(int visible) override;
@@ -58,7 +57,7 @@ public:
 
 class CUIHScrollBar : public CUIVScrollBar {
 public:
-  explicit CUIHScrollBar(UIWindowContext& context);
+  CUIHScrollBar();
   void Resize(int width, int height) override;
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -76,13 +75,5 @@ static_assert(offsetof(CUIVScrollBar, dragging) == 0xA8);
 static_assert(offsetof(CUIVScrollBar, backgroundName) == 0xAC);
 static_assert(offsetof(CUIVScrollBar, onChange) == 0xC8);
 #endif
-
-inline CUIVScrollBar::CUIVScrollBar()
-    : CUIControl(*static_cast<UIWindowContext*>(nullptr)), total(0), visible(0), step(0), position(0), maximum(0),
-      trackLength(0), dragging(0), hidden(0), transparent(0), unknown_00C4(0) {
-  this->upButton = nullptr;
-  this->downButton = nullptr;
-  this->thumb = nullptr;
-}
 
 #endif

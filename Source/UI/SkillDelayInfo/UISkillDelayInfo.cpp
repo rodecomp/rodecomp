@@ -82,8 +82,8 @@ struct SkillDelayInfoSelectCallback {
 // OFFSET: 0x00A71140
 // FUNCTION: fn_16799
 template <>
-CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::CUIListBoxEx(UIWindowContext& context)
-    : CUIControl(context), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
+CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::CUIListBoxEx()
+    : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
       unknown_00E0(1), rebind(0) {
 }
 
@@ -127,7 +127,7 @@ void CUISkillDelayInfo::Slot53() {
 // FUNCTION: fn_16808
 template <>
 void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::Slot15(int width, int height) {
-  this->scrollBar = new CUIVScrollBar(*this->m_context);
+  this->scrollBar = new CUIVScrollBar();
   this->scrollBar->Show(0);
   this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
   this->AddChild(this->scrollBar);
@@ -138,7 +138,7 @@ namespace SkillDelayInfo {
 // OFFSET: 0x00A71D60
 // FUNCTION: fn_16809
 void CUIDelayItem::Slot15(int width, int height) {
-  this->level = new CUIStaticText(*this->m_context);
+  this->level = new CUIStaticText();
   this->level->SetSize(44, 21);
   this->level->Move(0, 0);
   this->level->SetText("", 0);
@@ -156,7 +156,7 @@ void CUIDelayItem::Slot15(int width, int height) {
   this->AddChild(this->level);
 
   for (int index = 4; index != 0; --index) {
-    CUITime* time = new CUITime(*this->m_context);
+    CUITime* time = new CUITime();
     time->SetSize(70, 21);
     this->AddChild(time);
     this->times.push_back(time);
@@ -171,7 +171,7 @@ void CUIDelayItem::Slot15(int width, int height) {
 // OFFSET: 0x00A75A00
 // FUNCTION: fn_16811
 void CUITime::Slot15(int width, int height) {
-  this->text = new CUIStaticText(*this->m_context);
+  this->text = new CUIStaticText();
   this->text->SetSize(60, 21);
   this->text->Move(5, 0);
   this->text->SetText("", 0);
@@ -417,7 +417,7 @@ CUIDelayItem::CUIDelayItem() : CUIListItem(), level(nullptr), times(), backgroun
 namespace SkillDelayInfo {
 // OFFSET: 0x00A77350
 // FUNCTION: fn_16873
-CUITime::CUITime(UIWindowContext& context) : CUIControl(context), text(nullptr) {
+CUITime::CUITime() : CUIControl(), text(nullptr) {
 }
 }
 
@@ -612,7 +612,7 @@ void CUISkillDelayInfo::Slot16() {
 // OFFSET: 0x00A720A0
 // FUNCTION: fn_16810
 void CUISkillDelayInfo::Slot15(int width, int height) {
-  this->titleBar = new CUITitleBar(*this->m_context);
+  this->titleBar = new CUITitleBar();
   this->titleBar->SetSize(345, 17);
   this->titleBar->Move(0, 0);
   {
@@ -638,7 +638,7 @@ void CUISkillDelayInfo::Slot15(int width, int height) {
   }
   this->AddChild(this->titleBar);
 
-  CUIStaticText* title = new CUIStaticText(*this->m_context);
+  CUIStaticText* title = new CUIStaticText();
   title->SetSize(100, 17);
   title->Move(18, 0);
   {
@@ -665,7 +665,7 @@ void CUISkillDelayInfo::Slot15(int width, int height) {
   this->titleBar->titleText = title;
   this->titleBar->AddChild(title);
 
-  CUIImageButton* menuButton = new CUIImageButton(*this->m_context);
+  CUIImageButton* menuButton = new CUIImageButton();
   menuButton->SetSize(11, 11);
   menuButton->Move(3, 3);
   menuButton->SetOnClick([this]() { this->OnButtonClick(); });
@@ -696,7 +696,7 @@ void CUISkillDelayInfo::Slot15(int width, int height) {
   }
   this->titleBar->AddChild(menuButton);
 
-  CUIImageButton* closeButton = new CUIImageButton(*this->m_context);
+  CUIImageButton* closeButton = new CUIImageButton();
   closeButton->SetSize(11, 11);
   closeButton->Move(331, 3);
   closeButton->SetOnClick([this]() { g_windowMgr.CloseWindow(10030); });
@@ -729,7 +729,7 @@ void CUISkillDelayInfo::Slot15(int width, int height) {
   }
   this->titleBar->SetSecondButton(closeButton);
 
-  this->unknown_00DC = new CUIStaticText(*this->m_context);
+  this->unknown_00DC = new CUIStaticText();
   this->unknown_00DC->SetSize(325, 25);
   this->unknown_00DC->Move(10, 27);
   this->unknown_00DC->SetText("", 0);
@@ -749,7 +749,7 @@ void CUISkillDelayInfo::Slot15(int width, int height) {
   this->unknown_00DC->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->unknown_00DC);
 
-  this->labels[0] = new CUIStaticText(*this->m_context);
+  this->labels[0] = new CUIStaticText();
   this->labels[0]->SetSize(140, 22);
   this->labels[0]->Move(54, 58);
   {
@@ -775,7 +775,7 @@ void CUISkillDelayInfo::Slot15(int width, int height) {
   this->labels[0]->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->labels[0]);
 
-  this->labels[1] = new CUIStaticText(*this->m_context);
+  this->labels[1] = new CUIStaticText();
   this->labels[1]->SetSize(140, 22);
   this->labels[1]->Move(194, 58);
   {
@@ -801,7 +801,7 @@ void CUISkillDelayInfo::Slot15(int width, int height) {
   this->labels[1]->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->labels[1]);
 
-  this->labels[2] = new CUIStaticText(*this->m_context);
+  this->labels[2] = new CUIStaticText();
   this->labels[2]->SetSize(44, 22);
   this->labels[2]->Move(10, 82);
   {
@@ -827,7 +827,7 @@ void CUISkillDelayInfo::Slot15(int width, int height) {
   this->labels[2]->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->labels[2]);
 
-  this->columns[0] = new CUIStaticText(*this->m_context);
+  this->columns[0] = new CUIStaticText();
   this->columns[0]->SetSize(70, 22);
   this->columns[0]->Move(54, 82);
   {
@@ -853,7 +853,7 @@ void CUISkillDelayInfo::Slot15(int width, int height) {
   this->columns[0]->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->columns[0]);
 
-  this->columns[1] = new CUIStaticText(*this->m_context);
+  this->columns[1] = new CUIStaticText();
   this->columns[1]->SetSize(70, 22);
   this->columns[1]->Move(124, 82);
   {
@@ -879,7 +879,7 @@ void CUISkillDelayInfo::Slot15(int width, int height) {
   this->columns[1]->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->columns[1]);
 
-  this->columns[2] = new CUIStaticText(*this->m_context);
+  this->columns[2] = new CUIStaticText();
   this->columns[2]->SetSize(70, 22);
   this->columns[2]->Move(194, 82);
   {
@@ -905,7 +905,7 @@ void CUISkillDelayInfo::Slot15(int width, int height) {
   this->columns[2]->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->columns[2]);
 
-  this->columns[3] = new CUIStaticText(*this->m_context);
+  this->columns[3] = new CUIStaticText();
   this->columns[3]->SetSize(70, 22);
   this->columns[3]->Move(264, 82);
   {
@@ -931,7 +931,7 @@ void CUISkillDelayInfo::Slot15(int width, int height) {
   this->columns[3]->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->columns[3]);
 
-  this->delayList = new CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>(*this->m_context);
+  this->delayList = new CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>();
   this->delayList->itemWidth = 325;
   this->delayList->rowHeight = 22;
   this->delayList->SetSize(325, 220);
@@ -993,7 +993,7 @@ void CUISkillDelayInfo::Slot15(int width, int height) {
   this->delayList->AddNewItem();
   this->AddChild(this->delayList);
 
-  this->description = new CUITextViewer(*this->m_context);
+  this->description = new CUITextViewer();
   this->description->SetSize(330, 35);
   this->description->Move(11, 334);
   this->description->SetTextOffset(0, 0);

@@ -9,7 +9,7 @@ class UIStaticText;
 
 class UISelectReplayDataWnd : public UIFrameWnd {
 public:
-  UISelectReplayDataWnd(UIWindowContext& windows);
+  UISelectReplayDataWnd();
 
   void Slot15(int width, int height) override;
   void Slot18() override;

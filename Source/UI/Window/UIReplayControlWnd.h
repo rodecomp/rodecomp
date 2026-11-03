@@ -9,7 +9,7 @@ class UIStaticText;
 
 class UIReplayControlWnd : public UIFrameWnd {
 public:
-  UIReplayControlWnd(UIWindowContext& windows);
+  UIReplayControlWnd();
 
   bool Slot03() override;
   void Slot15(int width, int height) override;

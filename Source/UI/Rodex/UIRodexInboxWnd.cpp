@@ -137,7 +137,7 @@ void UIRodexInboxWnd::Slot15(int width, int height) {
   this->AddBaseButton();
   this->AddCloseButton("", 0);
 
-  this->unknown_0138 = new UIBmpRadioBtn(*this->m_context);
+  this->unknown_0138 = new UIBmpRadioBtn();
   this->unknown_0138->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_listtab_empty_out.bmp", 0);
   this->unknown_0138->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_listtab_empty_over.bmp", 1);
   this->unknown_0138->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_listtab_empty_press.bmp", 2);
@@ -159,7 +159,7 @@ void UIRodexInboxWnd::Slot15(int width, int height) {
   this->AddChild(this->unknown_0138);
   this->unknown_0138->SendMsg(this, 13, 0, 0, 0, 0);
 
-  this->unknown_0134 = new UIBmpRadioBtn(*this->m_context);
+  this->unknown_0134 = new UIBmpRadioBtn();
   this->unknown_0134->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_listtab_empty_out.bmp", 0);
   this->unknown_0134->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_listtab_empty_over.bmp", 1);
   this->unknown_0134->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_listtab_empty_press.bmp", 2);
@@ -181,7 +181,7 @@ void UIRodexInboxWnd::Slot15(int width, int height) {
   this->AddChild(this->unknown_0134);
   this->unknown_0134->SendMsg(this, 13, 0, 0, 0, 0);
 
-  this->unknown_0130 = new UIBmpRadioBtn(*this->m_context);
+  this->unknown_0130 = new UIBmpRadioBtn();
   this->unknown_0130->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_listtab_empty_out.bmp", 0);
   this->unknown_0130->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_listtab_empty_over.bmp", 1);
   this->unknown_0130->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_listtab_empty_press.bmp", 2);
@@ -215,7 +215,7 @@ void UIRodexInboxWnd::Slot15(int width, int height) {
     break;
   }
 
-  this->unknown_013C = new UIBitmapButton(*this->m_context);
+  this->unknown_013C = new UIBitmapButton();
   this->unknown_013C->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_refresh_out.bmp", 0, 0);
   this->unknown_013C->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_refresh_over.bmp", 1, 0);
   this->unknown_013C->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_refresh_press.bmp", 2, 0);
@@ -225,7 +225,7 @@ void UIRodexInboxWnd::Slot15(int width, int height) {
   this->unknown_013C->SetId(0x19F);
   this->AddChild(this->unknown_013C);
 
-  this->unknown_0140 = new UIBitmapButton(*this->m_context);
+  this->unknown_0140 = new UIBitmapButton();
   this->unknown_0140->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_write_out.bmp", 0, 0);
   this->unknown_0140->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_write_over.bmp", 1, 0);
   this->unknown_0140->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_write_press.bmp", 2, 0);
@@ -236,7 +236,7 @@ void UIRodexInboxWnd::Slot15(int width, int height) {
   this->AddChild(this->unknown_0140);
 
   for (int y = 0x66, row = 0; y < 0x16E; y += 0x2C, ++row) {
-    this->checks[row] = new UICheckBox(*this->m_context);
+    this->checks[row] = new UICheckBox();
     this->checks[row]->SetSize(14, 14);
     this->checks[row]->SetBitmaps("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\checkbox_on.bmp", "유저인터페이스\\basic_interface\\rodexsystem\\renewal\\checkbox_off.bmp");
     this->checks[row]->Move(0x11, y + 6);
@@ -245,7 +245,7 @@ void UIRodexInboxWnd::Slot15(int width, int height) {
     this->checks[row]->Show(0);
     this->AddChild(this->checks[row]);
 
-    this->unknown_015C[row] = new UITextButton(*this->m_context);
+    this->unknown_015C[row] = new UITextButton();
     this->unknown_015C[row]->Configure("", 0, 0, 12, 0, 0);
     this->unknown_015C[row]->m_hoverColor = 0x51417E;
     this->unknown_015C[row]->Move(0x45, y);
@@ -254,7 +254,7 @@ void UIRodexInboxWnd::Slot15(int width, int height) {
     this->unknown_015C[row]->Enable(0);
     this->AddChild(this->unknown_015C[row]);
 
-    this->unknown_0144[row] = new UITextButton(*this->m_context);
+    this->unknown_0144[row] = new UITextButton();
     this->unknown_0144[row]->Configure("", 0x844A42, 0, 11, 1, 0);
     this->unknown_0144[row]->m_hoverColor = 0x51417E;
     this->unknown_0144[row]->Move(0x47, y + 0x10);
@@ -263,7 +263,7 @@ void UIRodexInboxWnd::Slot15(int width, int height) {
     this->unknown_0144[row]->Enable(0);
     this->AddChild(this->unknown_0144[row]);
 
-    this->unknown_01A8[row] = new UIBitmapButton(*this->m_context);
+    this->unknown_01A8[row] = new UIBitmapButton();
     this->unknown_01A8[row]->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_return_out.bmp", 0, 0);
     this->unknown_01A8[row]->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_return_over.bmp", 1, 0);
     this->unknown_01A8[row]->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_return_press.bmp", 2, 0);
@@ -275,21 +275,21 @@ void UIRodexInboxWnd::Slot15(int width, int height) {
     this->AddChild(this->unknown_01A8[row]);
   }
 
-  UIBasicButton* button = new UIBasicButton(*this->m_context);
+  UIBasicButton* button = new UIBasicButton();
   this->unknown_018C = button;
   button->Configure(0x46, LookupMessage(0xE05));
   this->unknown_018C->SetId(0x222);
   this->unknown_018C->Move(4, 0x178);
   this->AddChild(this->unknown_018C);
 
-  button = new UIBasicButton(*this->m_context);
+  button = new UIBasicButton();
   this->unknown_0190 = button;
   button->Configure(0x46, LookupMessage(0xE08));
   this->unknown_0190->Move(0x54, 0x188);
   this->unknown_0190->SetId(0x224);
   this->AddChild(this->unknown_0190);
 
-  this->unknown_0194 = new UIBitmapButton(*this->m_context);
+  this->unknown_0194 = new UIBitmapButton();
   this->unknown_0194->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_prev_out.bmp", 0, 0);
   this->unknown_0194->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_prev_over.bmp", 1, 0);
   this->unknown_0194->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_prev_press.bmp", 2, 0);
@@ -299,7 +299,7 @@ void UIRodexInboxWnd::Slot15(int width, int height) {
   this->unknown_0194->SetId(0x13C);
   this->AddChild(this->unknown_0194);
 
-  this->unknown_0198 = new UIBitmapButton(*this->m_context);
+  this->unknown_0198 = new UIBitmapButton();
   this->unknown_0198->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_next_out.bmp", 0, 0);
   this->unknown_0198->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_next_over.bmp", 1, 0);
   this->unknown_0198->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_next_press.bmp", 2, 0);
@@ -311,7 +311,7 @@ void UIRodexInboxWnd::Slot15(int width, int height) {
 
   const int searchTexts[2] = {0xC78, 0xC79};
   for (int x = 0x16, index = 0; x < 0x7C; x += 0x33, ++index) {
-    this->unknown_01C0[index] = new UIRadioBtn(*this->m_context);
+    this->unknown_01C0[index] = new UIRadioBtn();
     this->unknown_01C0[index]->SetSize(0x33, 12);
     {
       UIRadioBtn* radio = this->unknown_01C0[index];
@@ -338,7 +338,7 @@ void UIRodexInboxWnd::Slot15(int width, int height) {
   this->unknown_01C8->preserveInput = 1;
   this->AddChild(this->unknown_01C8);
 
-  this->unknown_01CC = new UIBitmapButton(*this->m_context);
+  this->unknown_01CC = new UIBitmapButton();
   this->unknown_01CC->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_search_out.bmp", 0, 0);
   this->unknown_01CC->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_search_over.bmp", 1, 0);
   this->unknown_01CC->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_search_press.bmp", 2, 0);
@@ -347,7 +347,7 @@ void UIRodexInboxWnd::Slot15(int width, int height) {
   this->unknown_01CC->SetId(0x141);
   this->AddChild(this->unknown_01CC);
 
-  this->unknown_01D0 = new UIBmpRadioBtn(*this->m_context);
+  this->unknown_01D0 = new UIBmpRadioBtn();
   this->unknown_01D0->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_listtab_empty_out.bmp", 0);
   this->unknown_01D0->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_listtab_empty_over.bmp", 1);
   this->unknown_01D0->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_listtab_empty_press.bmp", 2);

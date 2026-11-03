@@ -218,8 +218,8 @@ static const char* FindColorCode(const char* text, const char* end) {
 
 // OFFSET: 0x00A79A90
 // FUNCTION: fn_16914
-UIWindow::UIWindow(UIWindowContext& context, unsigned char cached)
-    : parent(nullptr), unknown_0044(0), unknown_0048(0), unknown_004C(4), m_dirty(1), m_uid(++g_windowUid), m_cached(cached), m_clip(0), m_context(&context) {
+UIWindow::UIWindow(unsigned char cached)
+    : parent(nullptr), unknown_0044(0), unknown_0048(0), unknown_004C(4), m_dirty(1), m_uid(++g_windowUid), m_cached(cached), m_clip(0) {
 }
 
 // OFFSET: 0x00A79E90
@@ -1953,7 +1953,7 @@ bool UIWindow::FitSprite(const ActionFrame* frame, const CSprRes* sprite, int wi
 
 // OFFSET: 0x005C27E0
 // FUNCTION: fn_03535
-UIListBox_NaviSearch::UIListBox_NaviSearch(UIWindowContext& windows) : UIListBox(windows) {
+UIListBox_NaviSearch::UIListBox_NaviSearch() : UIListBox() {
 }
 
 // OFFSET: 0x005C3340
@@ -2262,11 +2262,11 @@ int UIWindow::RecordEditTexts(WindowReplayRecorder& recorder) {
 // OFFSET: 0x005C4C80
 // FUNCTION: fn_03579
 void UIListBox_NaviSearch::Slot15(int width, int height) {
-  this->verticalBar = new UIScrollBar_Navi(*this->m_context);
+  this->verticalBar = new UIScrollBar_Navi();
   this->verticalBar->Configure(width - 7, 0, 1, height);
   this->AddChild(this->verticalBar);
 
-  this->horizontalBar = new UIScrollBar(*this->m_context);
+  this->horizontalBar = new UIScrollBar();
   this->horizontalBar->Configure(0, height - 13, 0, width - 13);
   this->AddChild(this->horizontalBar);
 }
@@ -2330,7 +2330,7 @@ void UIListBox_NaviSearch::Paint() {
 // OFFSET: 0x005C4EA0
 // FUNCTION: fn_03581
 void UINavigationV4Wnd::Slot15(int, int) {
-  UIBitmapButton* closeButton = new UIBitmapButton(*this->m_context);
+  UIBitmapButton* closeButton = new UIBitmapButton();
   this->unknown_00B8 = closeButton;
   closeButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_close_normal.bmp", 0, 0);
   closeButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_close_over.bmp", 1, 0);
@@ -2340,7 +2340,7 @@ void UINavigationV4Wnd::Slot15(int, int) {
   closeButton->SetTooltip(LookupMessage(0x0BE5));
   this->AddChild(closeButton);
 
-  UIBitmapButton* maximizeButton = new UIBitmapButton(*this->m_context);
+  UIBitmapButton* maximizeButton = new UIBitmapButton();
   this->unknown_00C4 = maximizeButton;
   maximizeButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_maximize_normal.bmp", 0, 0);
   maximizeButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_maximize_over.bmp", 1, 0);
@@ -2350,7 +2350,7 @@ void UINavigationV4Wnd::Slot15(int, int) {
   maximizeButton->SetTooltip(LookupMessage(0x089B));
   this->AddChild(maximizeButton);
 
-  UICheckBox* minimizeCheck = new UICheckBox(*this->m_context);
+  UICheckBox* minimizeCheck = new UICheckBox();
   this->unknown_00D4 = minimizeCheck;
   minimizeCheck->SetSize(110, 12);
   minimizeCheck->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", "Minimize");
@@ -2358,7 +2358,7 @@ void UINavigationV4Wnd::Slot15(int, int) {
   minimizeCheck->SetTooltip(LookupMessage(0x089C));
   this->AddChild(minimizeCheck);
 
-  UIBitmapButton* roadIconButton = new UIBitmapButton(*this->m_context);
+  UIBitmapButton* roadIconButton = new UIBitmapButton();
   this->unknown_00C8 = roadIconButton;
   this->SetRoadIcon(g_navigationRoadIcon);
   roadIconButton->SetSize(roadIconButton->geometry.width, roadIconButton->geometry.height);
@@ -2366,7 +2366,7 @@ void UINavigationV4Wnd::Slot15(int, int) {
   roadIconButton->SetTooltip(LookupMessage(0x0C8B));
   this->AddChild(roadIconButton);
 
-  UIBitmapButton* roadListButton = new UIBitmapButton(*this->m_context);
+  UIBitmapButton* roadListButton = new UIBitmapButton();
   this->unknown_00D8 = roadListButton;
   roadListButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_roadlistwnd_normal.bmp", 0, 0);
   roadListButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_roadlistwnd_over.bmp", 1, 0);
@@ -2376,7 +2376,7 @@ void UINavigationV4Wnd::Slot15(int, int) {
   roadListButton->SetTooltip(LookupMessage(0x0C85));
   this->AddChild(roadListButton);
 
-  UIListBox_NaviSearch* roadList = new UIListBox_NaviSearch(*this->m_context);
+  UIListBox_NaviSearch* roadList = new UIListBox_NaviSearch();
   this->unknown_00EC = roadList;
   roadList->SetSize(138, 244);
   roadList->backgroundRed = 255;
@@ -2385,7 +2385,7 @@ void UINavigationV4Wnd::Slot15(int, int) {
   roadList->SetId(336);
   this->AddChild(roadList);
 
-  UIListBox_NaviSearch* searchList = new UIListBox_NaviSearch(*this->m_context);
+  UIListBox_NaviSearch* searchList = new UIListBox_NaviSearch();
   this->unknown_00F0 = searchList;
   searchList->SetSize(132, 80);
   searchList->backgroundRed = 240;
@@ -2394,7 +2394,7 @@ void UINavigationV4Wnd::Slot15(int, int) {
   searchList->SetId(441);
   this->AddChild(searchList);
 
-  UICheckBox* filterCheck = new UICheckBox(*this->m_context);
+  UICheckBox* filterCheck = new UICheckBox();
   this->unknown_00F4 = filterCheck;
   filterCheck->SetSize(110, 12);
   filterCheck->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", "service");
@@ -2403,7 +2403,7 @@ void UINavigationV4Wnd::Slot15(int, int) {
   filterCheck->SetTooltip(LookupMessage(0x0C8C));
   this->AddChild(filterCheck);
 
-  UIBitmapButton* shareButton = new UIBitmapButton(*this->m_context);
+  UIBitmapButton* shareButton = new UIBitmapButton();
   this->unknown_00F8 = shareButton;
   shareButton->SetBitmap("유저인터페이스\\private_airplane\\btn_share_normal.bmp", 0, 0);
   shareButton->SetBitmap("유저인터페이스\\private_airplane\\btn_share_over.bmp", 1, 0);
@@ -2413,7 +2413,7 @@ void UINavigationV4Wnd::Slot15(int, int) {
   shareButton->SetTooltip(LookupMessage(0x0C86));
   this->AddChild(shareButton);
 
-  UIBitmapButton* findButton = new UIBitmapButton(*this->m_context);
+  UIBitmapButton* findButton = new UIBitmapButton();
   this->unknown_00FC = findButton;
   findButton->SetBitmap("유저인터페이스\\private_airplane\\btn_find_normal.bmp", 0, 0);
   findButton->SetBitmap("유저인터페이스\\private_airplane\\btn_find_over.bmp", 1, 0);
@@ -2423,7 +2423,7 @@ void UINavigationV4Wnd::Slot15(int, int) {
   findButton->SetTooltip(LookupMessage(0x0895));
   this->AddChild(findButton);
 
-  UIBitmapButton* moveButton = new UIBitmapButton(*this->m_context);
+  UIBitmapButton* moveButton = new UIBitmapButton();
   this->unknown_0100 = moveButton;
   moveButton->SetBitmap("유저인터페이스\\private_airplane\\btn_move_normal.bmp", 0, 0);
   moveButton->SetBitmap("유저인터페이스\\private_airplane\\btn_move_over.bmp", 1, 0);
@@ -2432,7 +2432,7 @@ void UINavigationV4Wnd::Slot15(int, int) {
   moveButton->SetId(499);
   this->AddChild(moveButton);
 
-  UIStaticText* label = new UIStaticText(*this->m_context);
+  UIStaticText* label = new UIStaticText();
   this->unknown_00E8 = label;
   label->SetSize(100, 20);
   this->AddChild(label);
@@ -2442,7 +2442,7 @@ void UINavigationV4Wnd::Slot15(int, int) {
   this->unknown_00B4 = this->AddCloseButton(LookupMessage(0x0BE5), 0);
   this->unknown_00BC = this->AddMinimizeButton(LookupMessage(0x089C), 0);
 
-  UIBitmapButton* helpButton = new UIBitmapButton(*this->m_context);
+  UIBitmapButton* helpButton = new UIBitmapButton();
   this->unknown_00C0 = helpButton;
   helpButton->SetBitmap("유저인터페이스\\navigation_interface\\NaviHelp_off.bmp", 0, 0);
   helpButton->SetBitmap("유저인터페이스\\navigation_interface\\NaviHelp_on.bmp", 1, 0);
@@ -2452,7 +2452,7 @@ void UINavigationV4Wnd::Slot15(int, int) {
   helpButton->SetTooltip(LookupMessage(0x089D));
   this->AddChild(helpButton);
 
-  UIBitmapButton* dataButton = new UIBitmapButton(*this->m_context);
+  UIBitmapButton* dataButton = new UIBitmapButton();
   this->unknown_00CC = dataButton;
   dataButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_Navidata_Open_normal.bmp", 0, 0);
   dataButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_Navidata_Open_over.bmp", 1, 0);
@@ -2470,7 +2470,7 @@ void UINavigationV4Wnd::Slot15(int, int) {
   searchEdit->SetId(516);
   this->AddChild(searchEdit);
 
-  UIBitmapButton* searchButton = new UIBitmapButton(*this->m_context);
+  UIBitmapButton* searchButton = new UIBitmapButton();
   this->unknown_00E4 = searchButton;
   searchButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_searchbar_normal.bmp", 3, 0);
   searchButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_searchbar_normal.bmp", 0, 0);
@@ -2481,7 +2481,7 @@ void UINavigationV4Wnd::Slot15(int, int) {
   searchButton->SetTooltip(LookupMessage(0x0894));
   this->AddChild(searchButton);
 
-  UIBitmapButton* backButton = new UIBitmapButton(*this->m_context);
+  UIBitmapButton* backButton = new UIBitmapButton();
   this->unknown_00D0 = backButton;
   backButton->SetBitmap("유저인터페이스\\navigation_interface3\\bt_back.bmp", 3, 0);
   backButton->SetBitmap("유저인터페이스\\navigation_interface3\\bt_back.bmp", 0, 0);
@@ -2516,7 +2516,7 @@ void UINavigationV4Wnd::Slot15(int, int) {
 void UINavigationroadiconWnd::Slot15(int, int) {
   this->AddCloseButton(LookupMessage(3045), 0);
 
-  this->icon = new UIStaticBitmap(*this->m_context);
+  this->icon = new UIStaticBitmap();
   this->icon->SetBitmap("유저인터페이스\\navigation_interface3\\img_roadIocn_bg_select.bmp");
   this->icon->SetSize(this->icon->geometry.width, this->icon->geometry.height);
 
@@ -3013,7 +3013,7 @@ int UINavigationroadiconWnd::SendMsg(UIWindow*, int message, std::intptr_t a, st
 // FUNCTION: fn_03580
 void UINavigationRuideWnd::Slot15(int width, int) {
   this->AddCloseButton(LookupMessage(3045), 0);
-  this->routeList = new UIListBox_NaviSearch(*this->m_context);
+  this->routeList = new UIListBox_NaviSearch();
   this->routeList->SetSize(width - 4, 293);
   this->routeList->backgroundRed = 255;
   this->routeList->backgroundGreen = 255;
@@ -3682,7 +3682,7 @@ void UIPrivateAirplaneWnd::Slot15(int, int) {
       continue;
     }
 
-    UIBasicButton* button = new UIBasicButton(*this->m_context);
+    UIBasicButton* button = new UIBasicButton();
     const std::string text = FormatOwnedString(LookupMessage(0xd01), name);
     button->Configure(0xc0, text.c_str());
     button->Move(8, y);

@@ -143,7 +143,7 @@ CUIFrameWnd* CreateMacroReport() {
 // OFFSET: 0x00A44240
 // FUNCTION: fn_16053
 void CUIMacroReport::Slot15(int width, int height) {
-  this->m_background = new CUIStaticImage(*this->m_context);
+  this->m_background = new CUIStaticImage();
   this->m_background->SetSize(231, 172);
   this->m_background->Move(0, 17);
   {
@@ -157,7 +157,7 @@ void CUIMacroReport::Slot15(int width, int height) {
   }
   this->AddChild(this->m_background);
 
-  this->m_titleBar = new CUITitleBar(*this->m_context);
+  this->m_titleBar = new CUITitleBar();
   this->m_titleBar->SetSize(231, 17);
   this->m_titleBar->Move(0, 0);
   {
@@ -183,7 +183,7 @@ void CUIMacroReport::Slot15(int width, int height) {
   }
   this->AddChild(this->m_titleBar);
 
-  CUIStaticText* title = new CUIStaticText(*this->m_context);
+  CUIStaticText* title = new CUIStaticText();
   title->SetSize(100, 17);
   title->Move(18, 0);
   {
@@ -209,7 +209,7 @@ void CUIMacroReport::Slot15(int width, int height) {
   this->m_titleBar->titleText = title;
   this->m_titleBar->AddChild(title);
 
-  CUIImageButton* menuButton = new CUIImageButton(*this->m_context);
+  CUIImageButton* menuButton = new CUIImageButton();
   menuButton->SetSize(11, 11);
   menuButton->Move(3, 3);
   menuButton->SetOnClick([this]() { this->OnButtonClick(); });
@@ -240,7 +240,7 @@ void CUIMacroReport::Slot15(int width, int height) {
   }
   this->m_titleBar->AddChild(menuButton);
 
-  CUIImageButton* closeButton = new CUIImageButton(*this->m_context);
+  CUIImageButton* closeButton = new CUIImageButton();
   closeButton->SetSize(11, 11);
   closeButton->Move(217, 3);
   closeButton->SetOnClick([this]() { g_windowMgr.CloseWindow(10005); });
@@ -273,7 +273,7 @@ void CUIMacroReport::Slot15(int width, int height) {
   }
   this->m_titleBar->SetSecondButton(closeButton);
 
-  this->m_messageEdit = new CUIEditBox(*this->m_context);
+  this->m_messageEdit = new CUIEditBox();
   this->m_messageEdit->SetSize(215, 58);
   this->m_messageEdit->Move(8, 80);
   {
@@ -295,7 +295,7 @@ void CUIMacroReport::Slot15(int width, int height) {
   }
   this->AddChild(this->m_messageEdit);
 
-  this->unknown_00E4 = new CUIStaticText(*this->m_context);
+  this->unknown_00E4 = new CUIStaticText();
   this->unknown_00E4->SetSize(165, 12);
   this->unknown_00E4->Move(28, 25);
   {
@@ -322,7 +322,7 @@ void CUIMacroReport::Slot15(int width, int height) {
   this->unknown_00E4->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->unknown_00E4);
 
-  this->unknown_00E8 = new CUIStaticText(*this->m_context);
+  this->unknown_00E8 = new CUIStaticText();
   this->unknown_00E8->SetSize(165, 12);
   this->unknown_00E8->Move(28, 43);
   {
@@ -349,7 +349,7 @@ void CUIMacroReport::Slot15(int width, int height) {
   this->unknown_00E8->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->unknown_00E8);
 
-  this->unknown_00EC = new CUIImageButton(*this->m_context);
+  this->unknown_00EC = new CUIImageButton();
   this->unknown_00EC->SetSize(58, 20);
   this->unknown_00EC->Move(117, 165);
   this->unknown_00EC->SetOnClick([this]() { g_windowMgr.CloseWindow(10005); });
@@ -381,7 +381,7 @@ void CUIMacroReport::Slot15(int width, int height) {
   }
   this->AddChild(this->unknown_00EC);
 
-  this->unknown_00F0 = new CUIImageButton(*this->m_context);
+  this->unknown_00F0 = new CUIImageButton();
   this->unknown_00F0->SetSize(58, 20);
   this->unknown_00F0->Move(55, 165);
   this->unknown_00F0->SetOnClick([this]() { this->SendReport(); });
@@ -413,7 +413,7 @@ void CUIMacroReport::Slot15(int width, int height) {
   }
   this->AddChild(this->unknown_00F0);
 
-  this->m_firstTypeButton = new CUIRadioButton(*this->m_context);
+  this->m_firstTypeButton = new CUIRadioButton();
   this->m_firstTypeButton->SetSize(12, 12);
   this->m_firstTypeButton->Move(9, 25);
   this->m_firstTypeButton->SetOnSelect([this](CUIRadioButton* button) { this->OnReportTypeSelect(button); });
@@ -447,7 +447,7 @@ void CUIMacroReport::Slot15(int width, int height) {
   this->m_firstTypeButton->Invalidate();
   this->AddChild(this->m_firstTypeButton);
 
-  this->m_secondTypeButton = new CUIRadioButton(*this->m_context);
+  this->m_secondTypeButton = new CUIRadioButton();
   this->m_secondTypeButton->SetSize(12, 12);
   this->m_secondTypeButton->Move(9, 43);
   this->m_secondTypeButton->SetOnSelect([this](CUIRadioButton* button) { this->OnReportTypeSelect(button); });
@@ -481,7 +481,7 @@ void CUIMacroReport::Slot15(int width, int height) {
   this->m_secondTypeButton->Invalidate();
   this->AddChild(this->m_secondTypeButton);
 
-  this->unknown_00FC = new CUIStaticText(*this->m_context);
+  this->unknown_00FC = new CUIStaticText();
   this->unknown_00FC->SetSize(210, 13);
   this->unknown_00FC->Move(9, 142);
   {

@@ -14,7 +14,7 @@ class UIBasicButton;
 
 class UIItemReformWnd_List : public UIFrameWnd {
 public:
-  UIItemReformWnd_List(UIWindowContext& windowContext);
+  UIItemReformWnd_List();
   void Move(int x, int y) override;
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -38,7 +38,7 @@ public:
 class UIItemReformWnd_Item : public UIWindow {
 public:
   // INLINED
-  explicit UIItemReformWnd_Item(UIWindowContext& context) : UIWindow(context, 0), item(nullptr) {
+  explicit UIItemReformWnd_Item() : UIWindow(0), item(nullptr) {
   }
   void Paint() override;
   void Slot28(int x, int y) override;
@@ -50,7 +50,7 @@ public:
 class UIItemReformWnd_DetailBtn : public UIButton {
 public:
   // INLINED
-  UIItemReformWnd_DetailBtn(UIWindowContext& windowContext) : UIButton(windowContext) {
+  UIItemReformWnd_DetailBtn() : UIButton() {
   }
   void Paint() override;
   void Slot47() override;
@@ -60,7 +60,7 @@ public:
 class UIItemReformWnd_DetailMsg : public UIWindow {
 public:
   // INLINED
-  explicit UIItemReformWnd_DetailMsg(UIWindowContext& context) : UIWindow(context, 0) {
+  explicit UIItemReformWnd_DetailMsg() : UIWindow(0) {
   }
   void Paint() override;
   void SetText(const std::string& text);
@@ -68,7 +68,7 @@ public:
 
 class UIItemReformWnd : public UIFrameWnd {
 public:
-  UIItemReformWnd(UIWindowContext& windowContext);
+  UIItemReformWnd();
 
   void Slot15(int width, int height) override;
   void Slot19() override;

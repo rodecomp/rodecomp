@@ -87,7 +87,7 @@ void UIRadioBtn::SetText(const char* value) {
 
 // OFFSET: 0x0084FFE0
 // FUNCTION: fn_10670
-UIRadioBtn::UIRadioBtn(UIWindowContext& windows) : UIWindow(windows, 0) {
+UIRadioBtn::UIRadioBtn() : UIWindow(0) {
   this->geometry.unknown_0030 = 0;
   this->enabled = 1;
   this->geometry.id = 215;

@@ -14,15 +14,15 @@
 
 // OFFSET: 0x0096D300
 // FUNCTION: fn_13194
-UICandidateWnd::UICandidateWnd(UIWindowContext& windowContext) : UIFrameWnd(windowContext, 0) {}
+UICandidateWnd::UICandidateWnd() : UIFrameWnd(0) {}
 
 // OFFSET: 0x0096D370
 // FUNCTION: fn_13195
-UICompositionWnd::UICompositionWnd(UIWindowContext& windowContext) : UIFrameWnd(windowContext, 0) {}
+UICompositionWnd::UICompositionWnd() : UIFrameWnd(0) {}
 
 // OFFSET: 0x0096D3F0
 // FUNCTION: fn_13196
-UIKeyStrokeWnd::UIKeyStrokeWnd(UIWindowContext& windowContext) : UIFrameWnd(windowContext, 0) {}
+UIKeyStrokeWnd::UIKeyStrokeWnd() : UIFrameWnd(0) {}
 
 // OFFSET: 0x0096D6F0
 // FUNCTION: fn_13200

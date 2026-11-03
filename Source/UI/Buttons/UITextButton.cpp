@@ -63,7 +63,7 @@ int g_screenHeight;
 
 // OFFSET: 0x0086EEB0
 // FUNCTION: fn_11085
-UITextButton::UITextButton(UIWindowContext& windows) : UIButton(windows), m_outlineColor(0xFFFFFF), m_value(0) {
+UITextButton::UITextButton() : UIButton(), m_outlineColor(0xFFFFFF), m_value(0) {
 }
 
 // OFFSET: 0x00874690
@@ -583,7 +583,7 @@ void UIListBox::Slot28(int x, int y) {
         hover = nullptr;
       }
 
-      UIColorTransBalloonText* balloon = new UIColorTransBalloonText(*this->m_context);
+      UIColorTransBalloonText* balloon = new UIColorTransBalloonText();
       hover = balloon;
       balloon->SetSize(8, 8);
 
@@ -1064,7 +1064,7 @@ void UIString::ResetCursor(int, int) {
 
 // OFFSET: 0x0086EA50
 // FUNCTION: fn_11080
-UIString::UIString(UIWindowContext& windows) : UIWindow(windows, 0), unknown_0080(1), unknown_009C(0), unknown_00A0(0), unknown_00A4(0) {
+UIString::UIString() : UIWindow(0), unknown_0080(1), unknown_009C(0), unknown_00A0(0), unknown_00A4(0) {
   this->unknown_0084.clear();
   this->unknown_00AC.clear();
   this->unknown_00C4.clear();
@@ -2175,7 +2175,7 @@ void TableBox::Slot15(int, int) {
 // OFFSET: 0x00884DE0
 // FUNCTION: fn_11314
 void UIChatHisBox2::Slot15(int width, int height) {
-  auto* vertical = new UIScrollBar(*this->m_context);
+  auto* vertical = new UIScrollBar();
   this->verticalBar = vertical;
   const int verticalWidth = vertical->thickness;
   vertical->vertical = 1;
@@ -2185,7 +2185,7 @@ void UIChatHisBox2::Slot15(int width, int height) {
   vertical->Slot22(verticalWidth, height);
   this->AddChild(this->verticalBar);
 
-  auto* horizontal = new UIScrollBar2(*this->m_context);
+  auto* horizontal = new UIScrollBar2();
   this->horizontalBar = horizontal;
   const int horizontalHeight = horizontal->thickness;
   horizontal->vertical = 0;
@@ -2199,7 +2199,7 @@ void UIChatHisBox2::Slot15(int width, int height) {
 // OFFSET: 0x00884F40
 // FUNCTION: fn_11315
 void UIChatHisBox3::Slot15(int width, int height) {
-  auto* vertical = new UIScrollBar3(*this->m_context);
+  auto* vertical = new UIScrollBar3();
   this->verticalBar = vertical;
   const int verticalWidth = vertical->thickness;
   vertical->vertical = 1;
@@ -2209,7 +2209,7 @@ void UIChatHisBox3::Slot15(int width, int height) {
   vertical->Slot22(verticalWidth, height);
   this->AddChild(this->verticalBar);
 
-  auto* horizontal = new UIScrollBar3(*this->m_context);
+  auto* horizontal = new UIScrollBar3();
   this->horizontalBar = horizontal;
   const int horizontalHeight = horizontal->thickness;
   horizontal->vertical = 0;
@@ -2223,7 +2223,7 @@ void UIChatHisBox3::Slot15(int width, int height) {
 // OFFSET: 0x008850C0
 // FUNCTION: fn_11316
 void UIChatHisBox::Slot15(int width, int height) {
-  auto* vertical = new UIScrollBar2(*this->m_context);
+  auto* vertical = new UIScrollBar2();
   this->verticalBar = vertical;
   const int verticalWidth = vertical->thickness;
   vertical->vertical = 1;
@@ -2233,7 +2233,7 @@ void UIChatHisBox::Slot15(int width, int height) {
   vertical->Slot22(verticalWidth, height);
   this->AddChild(this->verticalBar);
 
-  auto* horizontal = new UIScrollBar2(*this->m_context);
+  auto* horizontal = new UIScrollBar2();
   this->horizontalBar = horizontal;
   const int horizontalHeight = horizontal->thickness;
   horizontal->vertical = 0;
@@ -2487,7 +2487,7 @@ void UIPackageBoxNameList::Slot25(int x, int y) {
 // OFFSET: 0x00886AE0
 // FUNCTION: fn_11328
 void UIListBoxID::Slot15(int width, int height) {
-  auto* vertical = new UIScrollBar(*this->m_context);
+  auto* vertical = new UIScrollBar();
   this->verticalBar = vertical;
   const int verticalWidth = vertical->thickness;
   vertical->vertical = 1;
@@ -2497,7 +2497,7 @@ void UIListBoxID::Slot15(int width, int height) {
   vertical->Slot22(verticalWidth, height);
   this->AddChild(this->verticalBar);
 
-  auto* horizontal = new UIScrollBar(*this->m_context);
+  auto* horizontal = new UIScrollBar();
   this->horizontalBar = horizontal;
   const int horizontalHeight = horizontal->thickness;
   horizontal->vertical = 0;
@@ -2516,7 +2516,7 @@ void UITableBox::Slot15(int, int) {
 // OFFSET: 0x008872B0
 // FUNCTION: fn_11335
 void UITreeView::Slot15(int width, int height) {
-  auto* vertical = new UIScrollBar3(*this->m_context);
+  auto* vertical = new UIScrollBar3();
   this->verticalBar = vertical;
   const int verticalWidth = vertical->thickness;
   vertical->vertical = 1;
@@ -2526,7 +2526,7 @@ void UITreeView::Slot15(int width, int height) {
   vertical->Slot22(verticalWidth, height);
   this->AddChild(this->verticalBar);
 
-  this->edit = new UIEditCtrl2(*this->m_context);
+  this->edit = new UIEditCtrl2();
   this->edit->SetSize(100, 19);
   this->edit->Move(-100, -100);
   this->AddChild(this->edit);
@@ -2549,7 +2549,7 @@ void UISlotBmpButton::Slot15(int, int) {
   const std::string path = "유저인터페이스\\renewalparty\\";
   char name[256];
   std::sprintf(name, "%sicon_jobs_%d.bmp", path.c_str(), 0);
-  this->icon = new UIStaticBitmap(*this->m_context);
+  this->icon = new UIStaticBitmap();
   this->icon->SetBitmap(name);
   this->icon->SetSize(this->icon->geometry.width, this->icon->geometry.height);
   this->icon->Move(118, 14);
@@ -2571,7 +2571,6 @@ int UIListBoxNavi::LineOffset() {
 // OFFSET: 0x0088AB70
 // FUNCTION: fn_11356
 void UIComboBoxV2Wnd::Paint() {
-  UIWindowContext& context = *this->m_context;
   this->ClearSurface(0xFFFF00FF);
 
   if (!this->text.empty()) {
@@ -2627,7 +2626,7 @@ void UITreeView::AddNodeButtons(UITreeNode* node, int id) {
   std::string path = "유저인터페이스\\basic_interface\\";
 
   for (int index = 0; index < 2; ++index) {
-    UITVBitmapButton* button = new UITVBitmapButton(*this->m_context);
+    UITVBitmapButton* button = new UITVBitmapButton();
     button->SetBitmap((path + names[index]).c_str(), 0, 0);
     button->SetBitmap((path + names[index]).c_str(), 1, 0);
     button->SetBitmap((path + names[index]).c_str(), 2, 0);
@@ -2652,7 +2651,7 @@ void UITreeView::AddNodeButtons(UITreeNode* node, int id) {
 // OFFSET: 0x008814C0
 // FUNCTION: fn_11297
 void UITreeView::AddNodeLabel(UITreeNode* node, int id) {
-  UITVTextButton* button = new UITVTextButton(*this->m_context);
+  UITVTextButton* button = new UITVTextButton();
   button->SetSize(1, 1);
   button->SetLabel(node->name);
   button->ResizeToText();
@@ -2745,7 +2744,6 @@ void UINewComboBoxCtrl::Paint() {
 // OFFSET: 0x0088EB70
 // FUNCTION: fn_11384
 void UIShowAndEditTimeCtrl::Paint() {
-  UIWindowContext& context = *this->m_context;
   this->ClearSurface(0xFFFF00FF);
   this->DrawTextAt(22, 3, "m", 0, 0, 12, 0, 0, 0);
   this->DrawTextAt(60, 3, "s", 0, 0, 12, 0, 0, 0);
@@ -3407,7 +3405,7 @@ void UIRPImageWnd::Paint() {
 // OFFSET: 0x0086EBB0
 // FUNCTION: fn_11081
 UITVBitmapButton::UITVBitmapButton()
-    : UIBitmapButton(*reinterpret_cast<UIWindowContext*>(nullptr)), m_value(0) {
+    : UIBitmapButton(), m_value(0) {
 }
 
 // OFFSET: 0x0086EC10
@@ -3433,7 +3431,7 @@ UITVTextButton::UITVTextButton() : UIButton() {
 
 // OFFSET: 0x0086DE10
 // FUNCTION: fn_11060
-UIMemberListBox::UIMemberListBox(UIWindowContext& windows) : UIChatHisBox2(windows) {
+UIMemberListBox::UIMemberListBox() : UIChatHisBox2() {
   this->backgroundRed = 255;
   this->backgroundGreen = 255;
   this->backgroundBlue = 255;

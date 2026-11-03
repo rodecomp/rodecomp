@@ -10,7 +10,7 @@ struct ITEM_INFO;
 
 class UINpcEditDialogWnd : public UIFrameWnd {
 public:
-  UINpcEditDialogWnd(UIWindowContext& windows);
+  UINpcEditDialogWnd();
   void Paint() override;
   void Slot15(int width, int height) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
@@ -27,7 +27,7 @@ protected:
 
 class UINpcTextEditDialogWnd : public UINpcEditDialogWnd {
 public:
-  UINpcTextEditDialogWnd(UIWindowContext& windows);
+  UINpcTextEditDialogWnd();
   void Slot15(int width, int height) override;
   void InsertItemTag(const ITEM_INFO& item);
   void InsertSkillTag(int tagId);

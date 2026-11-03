@@ -48,8 +48,8 @@ UIMenuIcon::UIMenuIcon() {}
 
 // OFFSET: 0x0084A240
 // FUNCTION: fn_10607
-UIMenuIconWnd::UIMenuIconWnd(UIWindowContext& windowContext)
-    : UIFrameWnd(windowContext, 1), unknown_00CC(nullptr), unknown_00D0(nullptr), unknown_00D4(nullptr) {}
+UIMenuIconWnd::UIMenuIconWnd()
+    : UIFrameWnd(1), unknown_00CC(nullptr), unknown_00D0(nullptr), unknown_00D4(nullptr) {}
 
 // OFFSET: 0x0084A850
 // FUNCTION: fn_10612

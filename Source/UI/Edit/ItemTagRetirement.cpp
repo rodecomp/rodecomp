@@ -213,7 +213,7 @@ void UIItemTagCtrl::sub_89CFE0(const ITEM_INFO& item, unsigned int color) {
   tag += item.DisplayName(0);
   tag += ">";
 
-  UIItemTagButton* button = new UIItemTagButton(*this->m_context);
+  UIItemTagButton* button = new UIItemTagButton();
 
   std::string label = "<";
   label += FitText(*this->geometry.surface, item.DisplayName(0), this->tagWidth / 2);

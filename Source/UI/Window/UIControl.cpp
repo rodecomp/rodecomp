@@ -226,22 +226,22 @@ CBitmapRes* CUIControl::LoadBitmapResource(const std::string& name, bool resolve
 }
 
 // INLINED
-CUIControl::CUIControl(UIWindowContext& context) : UIWindow(context, 0), hitEnabled(1) {
+CUIControl::CUIControl() : UIWindow(0), hitEnabled(1) {
 }
 
 // INLINED
-__forceinline CUIButton::CUIButton(UIWindowContext& context) : CUIControl(context), state(0), disabled(0), tooltip(), unknown_00C4(nullptr), unknown_00EC(nullptr) {
+__forceinline CUIButton::CUIButton() : CUIControl(), state(0), disabled(0), tooltip(), unknown_00C4(nullptr), unknown_00EC(nullptr) {
 }
 
 // OFFSET: 0x009BDF40
 // FUNCTION: fn_13944
-__forceinline CUIImageButton::CUIImageButton(UIWindowContext& context) : CUIButton(context), images(), disabledImage(), transparent(0), imageNames(), disabledName() {
+__forceinline CUIImageButton::CUIImageButton() : CUIButton(), images(), disabledImage(), transparent(0), imageNames(), disabledName() {
 }
 
 // OFFSET: 0x009BE480
 // FUNCTION: fn_13948
-CUIVScrollBar::CUIVScrollBar(UIWindowContext& context)
-    : CUIControl(context), downButton(nullptr), thumb(nullptr), total(1), visible(1), step(1), position(0), maximum(0), trackLength(1), dragging(0),
+CUIVScrollBar::CUIVScrollBar()
+    : CUIControl(), downButton(nullptr), thumb(nullptr), total(1), visible(1), step(1), position(0), maximum(0), trackLength(1), dragging(0),
       hidden(0), transparent(0), upButton(nullptr) {
 }
 
@@ -1546,7 +1546,7 @@ void CUICheckBox::Slot31(int, int) {
 
 // OFFSET: 0x009E8430
 // FUNCTION: fn_14492
-CUICheckBox::CUICheckBox(UIWindowContext& context) : CUIImageButton(context), checked(false), onCheck() {
+CUICheckBox::CUICheckBox() : CUIImageButton(), checked(false), onCheck() {
 }
 
 // OFFSET: 0x009E89B0
@@ -1557,7 +1557,7 @@ bool CUIRadioItem::IsChecked() {
 
 // OFFSET: 0x009E7D60
 // FUNCTION: fn_14486
-CUIImageTextButton::CUIImageTextButton(UIWindowContext& context) : CUITextButton(context), images(), disabledImage(), imageNames(), disabledName() {
+CUIImageTextButton::CUIImageTextButton() : CUITextButton(), images(), disabledImage(), imageNames(), disabledName() {
   this->textColors[0] = 0;
   this->textColors[1] = 0;
   this->textColors[2] = 0;
@@ -1749,7 +1749,7 @@ void CUIListBoxEx<AdventureGuide::CUIItemInfo, AdventureGuide::CItemData>::AddNe
     }
     this->items.resize(count, nullptr);
     for (AdventureGuide::CUIItemInfo*& slot : this->items) {
-      AdventureGuide::CUIItemInfo* item = new AdventureGuide::CUIItemInfo(*this->m_context);
+      AdventureGuide::CUIItemInfo* item = new AdventureGuide::CUIItemInfo();
       item->SetSize(this->itemWidth, this->rowHeight);
       item->Show(0);
       CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
@@ -1815,7 +1815,7 @@ void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>:
     }
     this->items.resize(count, nullptr);
     for (AdventureGuide::CUIMonsterInfo*& slot : this->items) {
-      AdventureGuide::CUIMonsterInfo* item = new AdventureGuide::CUIMonsterInfo(*this->m_context);
+      AdventureGuide::CUIMonsterInfo* item = new AdventureGuide::CUIMonsterInfo();
       item->SetSize(this->itemWidth, this->rowHeight);
       item->Show(0);
       CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
@@ -1881,7 +1881,7 @@ void CUIListBoxEx<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestInfo>::Add
     }
     this->items.resize(count, nullptr);
     for (AdventureGuide::CUIQuestInfo*& slot : this->items) {
-      AdventureGuide::CUIQuestInfo* item = new AdventureGuide::CUIQuestInfo(*this->m_context);
+      AdventureGuide::CUIQuestInfo* item = new AdventureGuide::CUIQuestInfo();
       item->SetSize(this->itemWidth, this->rowHeight);
       item->Show(0);
       CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
@@ -1947,7 +1947,7 @@ void CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::AddNewItem
     }
     this->items.resize(count, nullptr);
     for (AdventureGuide::CUITabInfo*& slot : this->items) {
-      AdventureGuide::CUITabInfo* item = new AdventureGuide::CUITabInfo(*this->m_context);
+      AdventureGuide::CUITabInfo* item = new AdventureGuide::CUITabInfo();
       item->SetSize(this->itemWidth, this->rowHeight);
       item->Show(0);
       CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
@@ -2631,8 +2631,8 @@ UIWindow* CUIControl::FindChildById(int id) {
 
 // OFFSET: 0x009BE300
 // FUNCTION: fn_13947
-CUITextViewer::CUITextViewer(UIWindowContext& context)
-    : CUIControl(context), textX(0), textY(0), font(0), fontHeight(12), bold(false), textColor(0), unknown_0098(false), unknown_009C(0xFFFFFF), outline(false),
+CUITextViewer::CUITextViewer()
+    : CUIControl(), textX(0), textY(0), font(0), fontHeight(12), bold(false), textColor(0), unknown_0098(false), unknown_009C(0xFFFFFF), outline(false),
       outlineColor(0xFFFFFF), lineSpacing(6), backgroundColor(0xFFFFFF), paddingLeft(3), paddingTop(3), paddingRight(3), paddingBottom(3), scrollBar(nullptr),
       padding(nullptr), lines(), contentHeight(0), childPositions() {
 }
@@ -2724,32 +2724,32 @@ bool UnusedTrue9BD5C0() {
 // OFFSET: 0x009BD7D0
 // FUNCTION: fn_13939
 template <>
-CUIListBoxEx<AdventureGuide::CUIItemInfo, AdventureGuide::CItemData>::CUIListBoxEx(UIWindowContext& context)
-    : CUIControl(context), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
+CUIListBoxEx<AdventureGuide::CUIItemInfo, AdventureGuide::CItemData>::CUIListBoxEx()
+    : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
       unknown_00E0(1), rebind(0) {
 }
 
 // OFFSET: 0x009BD990
 // FUNCTION: fn_13940
 template <>
-CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>::CUIListBoxEx(UIWindowContext& context)
-    : CUIControl(context), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
+CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>::CUIListBoxEx()
+    : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
       unknown_00E0(1), rebind(0) {
 }
 
 // OFFSET: 0x009BDB50
 // FUNCTION: fn_13941
 template <>
-CUIListBoxEx<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestInfo>::CUIListBoxEx(UIWindowContext& context)
-    : CUIControl(context), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
+CUIListBoxEx<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestInfo>::CUIListBoxEx()
+    : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
       unknown_00E0(1), rebind(0) {
 }
 
 // OFFSET: 0x009BDD10
 // FUNCTION: fn_13942
 template <>
-CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::CUIListBoxEx(UIWindowContext& context)
-    : CUIControl(context), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
+CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::CUIListBoxEx()
+    : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
       unknown_00E0(1), rebind(0) {
 }
 
@@ -2815,37 +2815,37 @@ namespace AdventureGuide {
 
 // OFFSET: 0x009D9150
 // FUNCTION: fn_14276
-CUIItemInfo::CUIItemInfo(UIWindowContext& context)
-    : CUIListItem(context), unknown_00E8(), unknown_00F0(nullptr), unknown_00F4(nullptr), unknown_00F8(nullptr), itemId(-1), type(21), location(-1),
+CUIItemInfo::CUIItemInfo()
+    : CUIListItem(), unknown_00E8(), unknown_00F0(nullptr), unknown_00F4(nullptr), unknown_00F8(nullptr), itemId(-1), type(21), location(-1),
       unknown_0108() {
 }
 
 // OFFSET: 0x009D92D0
 // FUNCTION: fn_14278
-CUIMonsterInfo::CUIMonsterInfo(UIWindowContext& context)
-    : CUIListItem(context), unknown_00E8(nullptr), unknown_00EC(nullptr), unknown_00F0(nullptr), sprite(nullptr), action(nullptr) {
+CUIMonsterInfo::CUIMonsterInfo()
+    : CUIListItem(), unknown_00E8(nullptr), unknown_00EC(nullptr), unknown_00F0(nullptr), sprite(nullptr), action(nullptr) {
 }
 
 // OFFSET: 0x009D9420
 // FUNCTION: fn_14280
-CUIQuestInfo::CUIQuestInfo(UIWindowContext& context)
-    : CUIListItem(context), unknown_00E8(nullptr), unknown_00EC(nullptr), unknown_00F0(nullptr), unknown_00F4(nullptr), unknown_00F8(), questId(0) {
+CUIQuestInfo::CUIQuestInfo()
+    : CUIListItem(), unknown_00E8(nullptr), unknown_00EC(nullptr), unknown_00F0(nullptr), unknown_00F4(nullptr), unknown_00F8(), questId(0) {
 }
 
 // OFFSET: 0x009D94D0
 // FUNCTION: fn_14281
-CUISubTab::CUISubTab(UIWindowContext& context) : CUIListItem(context), unknown_00E8(nullptr), unknown_00EC(nullptr), id(0), unknown_00F4(0) {
+CUISubTab::CUISubTab() : CUIListItem(), unknown_00E8(nullptr), unknown_00EC(nullptr), id(0), unknown_00F4(0) {
 }
 
 // OFFSET: 0x009D9550
 // FUNCTION: fn_14282
-CUITab::CUITab(UIWindowContext& context)
-    : CUIListItem(context), unknown_00E8(nullptr), subTabs(nullptr), unknown_00F0(), type(7), page(nullptr), unknown_0110(0) {
+CUITab::CUITab()
+    : CUIListItem(), unknown_00E8(nullptr), subTabs(nullptr), unknown_00F0(), type(7), page(nullptr), unknown_0110(0) {
 }
 
 // OFFSET: 0x009D9600
 // FUNCTION: fn_14283
-CUITabInfo::CUITabInfo(UIWindowContext& context) : CUIListItem(context), unknown_00E8(nullptr), unknown_00EC(nullptr) {
+CUITabInfo::CUITabInfo() : CUIListItem(), unknown_00E8(nullptr), unknown_00EC(nullptr) {
 }
 
 }
@@ -3292,8 +3292,8 @@ void CUITabButton::Paint() {
 
 // OFFSET: 0x009EC430
 // FUNCTION: fn_14559
-CUITextButton::CUITextButton(UIWindowContext& context)
-    : CUIButton(context), text(), displayText(), fullText(), fitText(false), orientation(0), horizontalAlign(0), verticalAlign(0), fontIndex(0), fontHeight(12),
+CUITextButton::CUITextButton()
+    : CUIButton(), text(), displayText(), fullText(), fitText(false), orientation(0), horizontalAlign(0), verticalAlign(0), fontIndex(0), fontHeight(12),
       bold(0), textColors(), disabledTextColor(0x808080), shadow(0), shadowColor(0xFFFFFF), outline(0), outlineColor(0xFFFFFF), textX(0), textY(0),
       tooltipText() {
   this->textColors[0] = 0;
@@ -3303,8 +3303,8 @@ CUITextButton::CUITextButton(UIWindowContext& context)
 
 // OFFSET: 0x009E1250
 // FUNCTION: fn_14394
-CUIBasicButton::CUIBasicButton(UIWindowContext& context)
-    : CUITextButton(context), unknown_0190(0), defaultWidth(0), leftImages(), disabledLeft(), middleImages(), disabledMiddle(), rightImages(),
+CUIBasicButton::CUIBasicButton()
+    : CUITextButton(), unknown_0190(0), defaultWidth(0), leftImages(), disabledLeft(), middleImages(), disabledMiddle(), rightImages(),
       disabledRight() {
   this->textColors[0] = 0;
   this->textColors[1] = 0;
@@ -3314,11 +3314,11 @@ CUIBasicButton::CUIBasicButton(UIWindowContext& context)
 // OFFSET: 0x009E9F00
 // FUNCTION: fn_14513
 void CUITextViewer::Slot15(int width, int height) {
-  this->padding = new CUIPadding(*this->m_context);
+  this->padding = new CUIPadding();
   this->padding->SetSize(width, height);
   this->AddChild(this->padding);
 
-  this->scrollBar = new CUIVScrollBar(*this->m_context);
+  this->scrollBar = new CUIVScrollBar();
   this->scrollBar->Show(0);
   const std::function<void(int)> onChange = [this](int position) {
     int y = this->paddingTop;
@@ -3548,35 +3548,35 @@ void CUIRegisterMgr::Load() {
 }
 
 // INLINED
-CUIThumb::CUIThumb(UIWindowContext& context)
-    : CUIControl(context), top(), middle(), bottom(), dragOrigin(0), transparent(0), resizable(1), tooltip(), topName(), middleName(), bottomName(), onDrag() {
+CUIThumb::CUIThumb()
+    : CUIControl(), top(), middle(), bottom(), dragOrigin(0), transparent(0), resizable(1), tooltip(), topName(), middleName(), bottomName(), onDrag() {
 }
 
 // INLINED
-CUIVThumb::CUIVThumb(UIWindowContext& context) : CUIThumb(context) {
+CUIVThumb::CUIVThumb() : CUIThumb() {
 }
 
 // INLINED
-CUIHThumb::CUIHThumb(UIWindowContext& context) : CUIVThumb(context) {
+CUIHThumb::CUIHThumb() : CUIVThumb() {
 }
 
 // OFFSET: 0x009EDBE0
 // FUNCTION: fn_14596
 void CUIHScrollBar::Slot15(int, int) {
   if (!this->upButton) {
-    this->upButton = new CUIImageButton(*this->m_context);
+    this->upButton = new CUIImageButton();
     this->upButton->Show(0);
     this->upButton->SetOnClick([this]() { this->PageUp(); });
     this->AddChild(this->upButton);
   }
   if (!this->downButton) {
-    this->downButton = new CUIImageButton(*this->m_context);
+    this->downButton = new CUIImageButton();
     this->downButton->Show(0);
     this->downButton->SetOnClick([this]() { this->PageDown(); });
     this->AddChild(this->downButton);
   }
   if (!this->thumb) {
-    this->thumb = new CUIHThumb(*this->m_context);
+    this->thumb = new CUIHThumb();
     this->thumb->Show(0);
     const std::function<void(int)> onDrag = [this](int value) { this->Slot55(value); };
     this->thumb->onDrag = onDrag;
@@ -3588,19 +3588,19 @@ void CUIHScrollBar::Slot15(int, int) {
 // FUNCTION: fn_14706
 void CUIVScrollBar::Slot15(int, int) {
   if (!this->upButton) {
-    this->upButton = new CUIImageButton(*this->m_context);
+    this->upButton = new CUIImageButton();
     this->upButton->Show(0);
     this->upButton->SetOnClick([this]() { this->SetPosition(this->position - this->step); });
     this->AddChild(this->upButton);
   }
   if (!this->downButton) {
-    this->downButton = new CUIImageButton(*this->m_context);
+    this->downButton = new CUIImageButton();
     this->downButton->Show(0);
     this->downButton->SetOnClick([this]() { this->SetPosition(this->position + this->step); });
     this->AddChild(this->downButton);
   }
   if (!this->thumb) {
-    this->thumb = new CUIVThumb(*this->m_context);
+    this->thumb = new CUIVThumb();
     this->thumb->Show(0);
     const std::function<void(int)> onDrag = [this](int value) { this->Slot55(value); };
     this->thumb->onDrag = onDrag;
@@ -3610,8 +3610,8 @@ void CUIVScrollBar::Slot15(int, int) {
 
 // OFFSET: 0x009BE1A0
 // FUNCTION: fn_13946
-CUIStaticText::CUIStaticText(UIWindowContext& context)
-    : CUIControl(context), unknown_0084(), unknown_0098(), unknown_00B0(), scrollBar(nullptr), unknown_00C4(), fitText(false), horizontalAlign(0),
+CUIStaticText::CUIStaticText()
+    : CUIControl(), unknown_0084(), unknown_0098(), unknown_00B0(), scrollBar(nullptr), unknown_00C4(), fitText(false), horizontalAlign(0),
       verticalAlign(0), fontIndex(0), fontHeight(12), bold(0), color(0), shadow(false), shadowColor(0xFFFFFF), outline(false), outlineColor(0xFFFFFF), textX(0),
       textY(0), text() {
   new (&this->Tooltip()) std::string();
@@ -3626,7 +3626,7 @@ CUIListItem::~CUIListItem() {
 
 // OFFSET: 0x009EFC30
 // FUNCTION: fn_14653
-CUIListItem::CUIListItem(UIWindowContext& context) : CUIControl(context), unknown_0084(), selected(0), disabledImage(nullptr), frozen(0), index(-1), onHover(), onPress() {
+CUIListItem::CUIListItem() : CUIControl(), unknown_0084(), selected(0), disabledImage(nullptr), frozen(0), index(-1), onHover(), onPress() {
   new (&this->Images()) std::map<int, CBitmapRes*>();
   this->Images()[0] = nullptr;
   this->Images()[1] = nullptr;

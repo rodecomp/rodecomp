@@ -10,7 +10,7 @@ class UIBarGraph2;
 
 class UIMessageBoxAutoreturn : public UIFrameWnd {
 public:
-  UIMessageBoxAutoreturn(UIWindowContext& windows);
+  UIMessageBoxAutoreturn();
 
   void Slot19() override;
   void Paint() override;

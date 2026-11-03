@@ -6,7 +6,7 @@
 
 class UIApplyForPartyWnd : public UIFrameWnd {
 public:
-  UIApplyForPartyWnd(UIWindowContext& windows);
+  UIApplyForPartyWnd();
   ~UIApplyForPartyWnd() override;
   void Slot11() override;
   void Slot15(int width, int height) override;

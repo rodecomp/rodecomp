@@ -109,26 +109,26 @@ struct CashShopReplaceCartItemText {
 
 // OFFSET: 0x007CD5F0
 // FUNCTION: fn_09511
-UICashShopWnd::UICashShopWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), m_banner(nullptr), m_secondBanner(nullptr), m_selectedTab(0), m_itemsPerPage(9), m_columns(3), m_page(0),
+UICashShopWnd::UICashShopWnd()
+    : UIFrameWnd(0), m_banner(nullptr), m_secondBanner(nullptr), m_selectedTab(0), m_itemsPerPage(9), m_columns(3), m_page(0),
       m_pageCount(0), unknown_00E0(nullptr), unknown_00E8(0), unknown_00EC(0), unknown_00F0(0), unknown_00F4(nullptr), m_cart(nullptr) {
 }
 
 // OFFSET: 0x007CD750
 // FUNCTION: fn_09512
-UICashShopWnd_Banner::UICashShopWnd_Banner(UIWindowContext& windows)
-    : UIWindow(windows, 0), m_index(0), m_lastTick(timeGetTime()) {
+UICashShopWnd_Banner::UICashShopWnd_Banner()
+    : UIWindow(0), m_index(0), m_lastTick(timeGetTime()) {
 }
 
 // OFFSET: 0x007CD800
 // FUNCTION: fn_09513
-UICashShopWnd_Cart::UICashShopWnd_Cart(UIWindowContext& windows)
-    : UIWindow(windows, 0), m_scrollBar(nullptr), m_visibleCount(6), m_scrollIndex(0) {
+UICashShopWnd_Cart::UICashShopWnd_Cart()
+    : UIWindow(0), m_scrollBar(nullptr), m_visibleCount(6), m_scrollIndex(0) {
 }
 
 // OFFSET: 0x007CD8C0
 // FUNCTION: fn_09514
-UICashShopWnd_CartItem::UICashShopWnd_CartItem(UIWindowContext& windows) : UIWindow(windows, 0) {
+UICashShopWnd_CartItem::UICashShopWnd_CartItem() : UIWindow(0) {
 }
 
 // OFFSET: 0x007CDE30
@@ -240,12 +240,12 @@ void UICashShopWnd::Slot15(int, int) {
   this->AddBaseButton();
   this->AddCloseButton("", 0);
 
-  this->m_banner = new UICashShopWnd_Banner(*this->m_context);
+  this->m_banner = new UICashShopWnd_Banner();
   this->m_banner->SetSize(0x213, 0x33);
   this->m_banner->Move(3, 0x12);
   this->AddChild(this->m_banner);
   if (g_session.unknown_5912) {
-    this->m_secondBanner = new UICashShopWnd_Banner(*this->m_context);
+    this->m_secondBanner = new UICashShopWnd_Banner();
     this->m_secondBanner->SetSize(0xB0, 0x38);
     this->m_secondBanner->Move(0x21A, 0x1A9);
     this->AddChild(this->m_secondBanner);
@@ -256,7 +256,7 @@ void UICashShopWnd::Slot15(int, int) {
     const int tooltips[11] = {0xCDA, 0xCDB, 0xCDC, 0xCDD, 0xCDE, 0xCDF, 0xCE0, 0xCE1, 0xCE2, 0xE48, 0xECE};
     UIBmpRadioBtn* button = nullptr;
     if (tab != 8 && tab != 10) {
-      button = new UIBmpRadioBtn(*this->m_context);
+      button = new UIBmpRadioBtn();
       button->SetBitmap(FormatOwnedString("유저인터페이스\\cashshop\\img_shop_tap%d_off.bmp", tab).c_str(), 0);
       button->SetBitmap(FormatOwnedString("유저인터페이스\\cashshop\\img_shop_tap%d_off.bmp", tab).c_str(), 1);
       button->SetBitmap(FormatOwnedString("유저인터페이스\\cashshop\\img_shop_tap%d_on.bmp", tab).c_str(), 2);
@@ -271,7 +271,7 @@ void UICashShopWnd::Slot15(int, int) {
     this->m_tabButtons.insert(std::make_pair(tab, button));
   }
 
-  UIBitmapButton* previous = new UIBitmapButton(*this->m_context);
+  UIBitmapButton* previous = new UIBitmapButton();
   previous->SetBitmap("유저인터페이스\\cashshop\\bt_arrowL_off.bmp", 0, 0);
   previous->SetBitmap("유저인터페이스\\cashshop\\bt_arrowL_off.bmp", 1, 0);
   previous->SetBitmap("유저인터페이스\\cashshop\\bt_arrowL_on.bmp", 2, 0);
@@ -280,7 +280,7 @@ void UICashShopWnd::Slot15(int, int) {
   previous->SetId(0x13C);
   this->AddChild(previous);
 
-  UIBitmapButton* next = new UIBitmapButton(*this->m_context);
+  UIBitmapButton* next = new UIBitmapButton();
   next->SetBitmap("유저인터페이스\\cashshop\\bt_arrowR_off.bmp", 0, 0);
   next->SetBitmap("유저인터페이스\\cashshop\\bt_arrowR_off.bmp", 1, 0);
   next->SetBitmap("유저인터페이스\\cashshop\\bt_arrowR_on.bmp", 2, 0);
@@ -289,7 +289,7 @@ void UICashShopWnd::Slot15(int, int) {
   next->SetId(0x13D);
   this->AddChild(next);
 
-  UIBitmapButton* first = new UIBitmapButton(*this->m_context);
+  UIBitmapButton* first = new UIBitmapButton();
   first->SetBitmap("유저인터페이스\\cashshop\\bt_arrowL2_off.bmp", 0, 0);
   first->SetBitmap("유저인터페이스\\cashshop\\bt_arrowL2_off.bmp", 1, 0);
   first->SetBitmap("유저인터페이스\\cashshop\\bt_arrowL2_on.bmp", 2, 0);
@@ -298,7 +298,7 @@ void UICashShopWnd::Slot15(int, int) {
   first->SetId(0x183);
   this->AddChild(first);
 
-  UIBitmapButton* last = new UIBitmapButton(*this->m_context);
+  UIBitmapButton* last = new UIBitmapButton();
   last->SetBitmap("유저인터페이스\\cashshop\\bt_arrowR2_off.bmp", 0, 0);
   last->SetBitmap("유저인터페이스\\cashshop\\bt_arrowR2_off.bmp", 1, 0);
   last->SetBitmap("유저인터페이스\\cashshop\\bt_arrowR2_on.bmp", 2, 0);
@@ -307,7 +307,7 @@ void UICashShopWnd::Slot15(int, int) {
   last->SetId(0x184);
   this->AddChild(last);
 
-  UIBmpTextButton* charge = new UIBmpTextButton(*this->m_context);
+  UIBmpTextButton* charge = new UIBmpTextButton();
   charge->SetBitmap("유저인터페이스\\cashshop\\btn_charge_normal.bmp", 0, 0);
   charge->SetBitmap("유저인터페이스\\cashshop\\btn_charge_press.bmp", 1, 0);
   charge->SetBitmap("유저인터페이스\\cashshop\\btn_charge_press.bmp", 2, 0);
@@ -317,7 +317,7 @@ void UICashShopWnd::Slot15(int, int) {
   charge->SetId(0x11C);
   this->AddChild(charge);
 
-  this->unknown_00E4 = new UIBmpTextButton(*this->m_context);
+  this->unknown_00E4 = new UIBmpTextButton();
   this->unknown_00E4->SetBitmap("유저인터페이스\\cashshop\\btn_refresh_normal.bmp", 0, 0);
   this->unknown_00E4->SetBitmap("유저인터페이스\\cashshop\\btn_refresh_press.bmp", 1, 0);
   this->unknown_00E4->SetBitmap("유저인터페이스\\cashshop\\btn_refresh_press.bmp", 2, 0);
@@ -327,7 +327,7 @@ void UICashShopWnd::Slot15(int, int) {
   this->unknown_00E4->SetId(0x19F);
   this->AddChild(this->unknown_00E4);
 
-  this->unknown_00E0 = new UIEditCtrl(*this->m_context);
+  this->unknown_00E0 = new UIEditCtrl();
   this->unknown_00E0->SetSize(0x123, 0xE);
   this->unknown_00E0->Move(0x5E, 0x206);
   this->unknown_00E0->preserveInput = 1;
@@ -335,7 +335,7 @@ void UICashShopWnd::Slot15(int, int) {
   this->unknown_00E0->TextColor(0xB1B1B1, 0xFFFFFFFFu);
   this->AddChild(this->unknown_00E0);
 
-  UIBitmapButton* search = new UIBitmapButton(*this->m_context);
+  UIBitmapButton* search = new UIBitmapButton();
   search->SetBitmap("유저인터페이스\\cashshop\\btn_searchbar_normal.bmp", 0, 0);
   search->SetBitmap("유저인터페이스\\cashshop\\btn_searchbar_over.bmp", 1, 0);
   search->SetBitmap("유저인터페이스\\cashshop\\btn_searchbar_press.bmp", 2, 0);
@@ -344,7 +344,7 @@ void UICashShopWnd::Slot15(int, int) {
   search->SetId(0x141);
   this->AddChild(search);
 
-  UIBmpTextButton* buy = new UIBmpTextButton(*this->m_context);
+  UIBmpTextButton* buy = new UIBmpTextButton();
   buy->SetBitmap("유저인터페이스\\cashshop\\btn_buy_normal.bmp", 0, 0);
   buy->SetBitmap("유저인터페이스\\cashshop\\btn_buy_press.bmp", 1, 0);
   buy->SetBitmap("유저인터페이스\\cashshop\\btn_buy_press.bmp", 2, 0);
@@ -354,7 +354,7 @@ void UICashShopWnd::Slot15(int, int) {
   buy->SetId(0xE0);
   this->AddChild(buy);
 
-  this->unknown_00F4 = new UIEditCtrl_Custom(*this->m_context);
+  this->unknown_00F4 = new UIEditCtrl_Custom();
   this->unknown_00F4->SetSize(0x3E, 0xE);
   this->unknown_00F4->Move(0x27C, 0x1C0);
   this->unknown_00F4->unknown_0128 = 1;
@@ -364,7 +364,7 @@ void UICashShopWnd::Slot15(int, int) {
   this->AddChild(this->unknown_00F4);
 
   for (int index = 0; index < this->m_itemsPerPage; ++index) {
-    UICashShopWnd_Item* item = new UICashShopWnd_Item(*this->m_context);
+    UICashShopWnd_Item* item = new UICashShopWnd_Item();
     item->SetSize(0xAC, 0x7E);
     item->Move(index % this->m_columns * 0xAF + 8, index / this->m_columns * 0x7F + 0x6B);
     item->Show(0);
@@ -372,7 +372,7 @@ void UICashShopWnd::Slot15(int, int) {
     this->m_itemWindows.push_back(item);
   }
 
-  this->m_cart = new UICashShopWnd_Cart(*this->m_context);
+  this->m_cart = new UICashShopWnd_Cart();
   this->m_cart->SetSize(0xB9, 0x15E);
   this->m_cart->Move(0x219, 0x48);
   this->AddChild(this->m_cart);
@@ -389,7 +389,7 @@ void UICashShopWnd::Slot15(int, int) {
 // OFFSET: 0x007CF760
 // FUNCTION: fn_09536
 void UICashShopWnd_Cart::Slot15(int, int) {
-  this->m_scrollBar = new UIScrollBar_Custom(*this->m_context);
+  this->m_scrollBar = new UIScrollBar_Custom();
   this->m_scrollBar->Configure(this->geometry.width - 7, 0, this->geometry.height, 1, 7, 7);
   this->m_scrollBar->SetArrowBitmaps("유저인터페이스\\cashshop\\shop_scroll_up.bmp", "유저인터페이스\\cashshop\\shop_scroll_down.bmp");
   this->m_scrollBar->SetThumbBitmaps(
@@ -399,7 +399,7 @@ void UICashShopWnd_Cart::Slot15(int, int) {
 
   int y = 5;
   for (int index = 0; index < this->m_visibleCount; ++index) {
-    UICashShopWnd_CartItem* item = new UICashShopWnd_CartItem(*this->m_context);
+    UICashShopWnd_CartItem* item = new UICashShopWnd_CartItem();
     item->SetSize(0xAC, 0x36);
     item->Move(3, y);
     item->Show(0);
@@ -412,7 +412,7 @@ void UICashShopWnd_Cart::Slot15(int, int) {
 // OFFSET: 0x007CFB20
 // FUNCTION: fn_09537
 void UICashShopWnd_CartItem::Slot15(int, int) {
-  UIBitmapButton* close = new UIBitmapButton(*this->m_context);
+  UIBitmapButton* close = new UIBitmapButton();
   close->SetBitmap("유저인터페이스\\cashshop\\btn_close.bmp", 0, 0);
   close->SetBitmap("유저인터페이스\\cashshop\\btn_close.bmp", 1, 0);
   close->SetBitmap("유저인터페이스\\cashshop\\btn_close.bmp", 2, 0);
@@ -421,7 +421,7 @@ void UICashShopWnd_CartItem::Slot15(int, int) {
   close->SetId(0xD3);
   this->AddChild(close);
 
-  UIBitmapButton* plus = new UIBitmapButton(*this->m_context);
+  UIBitmapButton* plus = new UIBitmapButton();
   plus->SetBitmap("유저인터페이스\\cashshop\\btn_plus_normal.bmp", 0, 0);
   plus->SetBitmap("유저인터페이스\\cashshop\\btn_plus_over.bmp", 1, 0);
   plus->SetBitmap("유저인터페이스\\cashshop\\btn_plus_press.bmp", 2, 0);
@@ -430,7 +430,7 @@ void UICashShopWnd_CartItem::Slot15(int, int) {
   plus->SetId(0x117);
   this->AddChild(plus);
 
-  UIBitmapButton* minus = new UIBitmapButton(*this->m_context);
+  UIBitmapButton* minus = new UIBitmapButton();
   minus->SetBitmap("유저인터페이스\\cashshop\\btn_minus_normal.bmp", 0, 0);
   minus->SetBitmap("유저인터페이스\\cashshop\\btn_minus_over.bmp", 1, 0);
   minus->SetBitmap("유저인터페이스\\cashshop\\btn_minus_press.bmp", 2, 0);
@@ -443,7 +443,7 @@ void UICashShopWnd_CartItem::Slot15(int, int) {
 // OFFSET: 0x007CFD20
 // FUNCTION: fn_09538
 void UICashShopWnd_Item::Slot15(int, int) {
-  this->m_addButton = new UIBmpTextButton(*this->m_context);
+  this->m_addButton = new UIBmpTextButton();
   this->m_addButton->SetBitmap("유저인터페이스\\cashshop\\btn_add_normal.bmp", 0, 0);
   this->m_addButton->SetBitmap("유저인터페이스\\cashshop\\btn_add_press.bmp", 1, 0);
   this->m_addButton->SetBitmap("유저인터페이스\\cashshop\\btn_add_press.bmp", 2, 0);
@@ -454,7 +454,7 @@ void UICashShopWnd_Item::Slot15(int, int) {
   this->m_addButton->SetId(0xE0);
   this->AddChild(this->m_addButton);
 
-  this->m_soldOut = new UIStaticBitmap(*this->m_context);
+  this->m_soldOut = new UIStaticBitmap();
   this->m_soldOut->SetBitmap("유저인터페이스\\cashshop\\img_shop_soldout.bmp");
   this->m_soldOut->SetSize(this->m_soldOut->geometry.width, this->m_soldOut->geometry.height);
   this->m_soldOut->Move(9, 9);
@@ -780,7 +780,7 @@ void UICashShopWnd_CartItem::Slot35(int delta) {
 void UICashShopWnd_Banner::CreateButtons() {
   int index = 0;
   for (std::vector<Entry>::iterator entry = this->m_entries.begin(); entry != this->m_entries.end(); ++entry) {
-    UIBmpRadioBtn* button = new UIBmpRadioBtn(*this->m_context);
+    UIBmpRadioBtn* button = new UIBmpRadioBtn();
     button->SetBitmap("유저인터페이스\\cashshop\\btn_ad_off.bmp", 0);
     button->SetBitmap("유저인터페이스\\cashshop\\btn_ad_off.bmp", 1);
     button->SetBitmap("유저인터페이스\\cashshop\\btn_ad_on.bmp", 2);

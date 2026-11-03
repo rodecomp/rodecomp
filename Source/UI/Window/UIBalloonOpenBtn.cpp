@@ -31,8 +31,8 @@ void UIBalloonOpenBtn::Slot19() {
 
 // OFFSET: 0x009468D0
 // FUNCTION: fn_12847
-UIBalloonOpenBtn::UIBalloonOpenBtn(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), m_openTime(0), m_openDelay(4000), m_balloonId(0), m_balloon(nullptr), m_button(nullptr) {
+UIBalloonOpenBtn::UIBalloonOpenBtn()
+    : UIFrameWnd(0), m_openTime(0), m_openDelay(4000), m_balloonId(0), m_balloon(nullptr), m_button(nullptr) {
 }
 
 // OFFSET: 0x00950200
@@ -44,7 +44,7 @@ int UIBalloonOpenBtn::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     }
 
     if (this->m_balloon == nullptr) {
-      this->m_balloon = new UITransBalloonText(*this->m_context);
+      this->m_balloon = new UITransBalloonText();
       this->m_balloon->SetSize(8, 8);
       g_windowMgr.AddRenderedFront(this->m_balloon);
       if (this->m_balloon == nullptr) {

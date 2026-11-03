@@ -11,7 +11,6 @@ class UIItemTagButton : public UITextButton {
 
 public:
   UIItemTagButton();
-  UIItemTagButton(UIWindowContext& windows);
 
   void Paint() override;
   void Slot25(int x, int y) override;

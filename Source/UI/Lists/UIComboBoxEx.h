@@ -5,7 +5,7 @@
 
 class UIComboBoxEx : public UIListBoxEx {
 public:
-  UIComboBoxEx(UIWindowContext& windows);
+  UIComboBoxEx();
   ~UIComboBoxEx() override;
   void Resize(int width, int height) override;
   void Slot15(int width, int height) override;
@@ -26,7 +26,7 @@ protected:
 
 class UIComboBoxEx2 : public UIComboBoxEx {
 public:
-  UIComboBoxEx2(UIWindowContext& windows);
+  UIComboBoxEx2();
   ~UIComboBoxEx2() override;
   void Resize(int width, int height) override;
   void Slot15(int width, int height) override;

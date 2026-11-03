@@ -32,7 +32,7 @@ void UIBattleMsgOptionWnd::Slot35(int delta) {
 
 // OFFSET: 0x00910C40
 // FUNCTION: fn_12510
-UIBattleMsgOptionWnd::UIBattleMsgOptionWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0) {
+UIBattleMsgOptionWnd::UIBattleMsgOptionWnd() : UIFrameWnd(0) {
   this->unknown_00B8 = -1;
   this->messages.push_back(LookupMessage(0x50B));
 
@@ -71,7 +71,7 @@ UIBattleMsgOptionWnd::UIBattleMsgOptionWnd(UIWindowContext& windows) : UIFrameWn
 // OFFSET: 0x0091EC40
 // FUNCTION: fn_12636
 void UIBattleMsgOptionWnd::Slot15(int, int height) {
-  this->m_scrollBar = new UIScrollBar(*this->m_context);
+  this->m_scrollBar = new UIScrollBar();
   this->m_scrollBar->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - 38);
   this->AddChild(this->m_scrollBar);
   this->AddBaseButton();

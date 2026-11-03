@@ -5,7 +5,7 @@
 
 class UIJobSlotButton : public UIBitmapButton {
 public:
-  UIJobSlotButton(UIWindowContext& windows);
+  UIJobSlotButton();
   ~UIJobSlotButton() override;
   void Slot31(int x, int y) override;
   void SetSelected(unsigned char value);

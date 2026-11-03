@@ -49,15 +49,15 @@ namespace {
 
 // OFFSET: 0x00602D30
 // FUNCTION: fn_04187
-UILapineUpgradeBoxWnd::UILapineUpgradeBoxWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), closeButton(nullptr), upgradeButton(nullptr), selectButton(nullptr), ingredientList(nullptr), ingredientId(0),
+UILapineUpgradeBoxWnd::UILapineUpgradeBoxWnd()
+    : UIFrameWnd(0), closeButton(nullptr), upgradeButton(nullptr), selectButton(nullptr), ingredientList(nullptr), ingredientId(0),
       noticeTick(0), noticeDuration(3000), waiting(0) {
 }
 
 // OFFSET: 0x00602E60
 // FUNCTION: fn_04188
-UILapineUpgradeBox_IngredientInfoWnd::UILapineUpgradeBox_IngredientInfoWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), selected(0), quantity(0) {
+UILapineUpgradeBox_IngredientInfoWnd::UILapineUpgradeBox_IngredientInfoWnd()
+    : UIFrameWnd(0), selected(0), quantity(0) {
 }
 
 // INLINED
@@ -80,11 +80,11 @@ void UILapineUpgradeBoxWnd::Slot15(int, int) {
   this->AddBaseButton();
   this->AddCloseButton("", 0);
 
-  this->ingredientList = new UILapineUpgradeBox_IngredientListWnd(*this->m_context, 150, 204);
+  this->ingredientList = new UILapineUpgradeBox_IngredientListWnd(150, 204);
   this->ingredientList->Move(241, 17);
   this->AddChild(this->ingredientList);
 
-  this->closeButton = new UIBitmapButton(*this->m_context);
+  this->closeButton = new UIBitmapButton();
   this->closeButton->SetBitmap("유저인터페이스\\lapine\\btn_cancel_out.bmp", 0, 0);
   this->closeButton->SetBitmap("유저인터페이스\\lapine\\btn_cancel_over.bmp", 1, 0);
   this->closeButton->SetBitmap("유저인터페이스\\lapine\\btn_cancel_press.bmp", 2, 0);
@@ -94,7 +94,7 @@ void UILapineUpgradeBoxWnd::Slot15(int, int) {
   this->closeButton->SetId(201);
   this->AddChild(this->closeButton);
 
-  this->upgradeButton = new UIBitmapButton(*this->m_context);
+  this->upgradeButton = new UIBitmapButton();
   this->upgradeButton->SetBitmap("유저인터페이스\\lapine\\btn_make_out.bmp", 0, 0);
   this->upgradeButton->SetBitmap("유저인터페이스\\lapine\\btn_make_over.bmp", 1, 0);
   this->upgradeButton->SetBitmap("유저인터페이스\\lapine\\btn_make_press.bmp", 2, 0);
@@ -104,7 +104,7 @@ void UILapineUpgradeBoxWnd::Slot15(int, int) {
   this->upgradeButton->SetId(509);
   this->AddChild(this->upgradeButton);
 
-  this->selectButton = new UIBitmapButton(*this->m_context);
+  this->selectButton = new UIBitmapButton();
   this->selectButton->SetBitmap("유저인터페이스\\lapine\\btn_moveitem_out.bmp", 0, 0);
   this->selectButton->SetBitmap("유저인터페이스\\lapine\\btn_moveitem_over.bmp", 1, 0);
   this->selectButton->SetBitmap("유저인터페이스\\lapine\\btn_moveitem_press.bmp", 2, 0);
@@ -125,7 +125,7 @@ void UILapineUpgradeBox_IngredientListWnd::Slot15(int width, int height) {
     this->scrollBar = nullptr;
   }
 
-  this->scrollBar = new UILapineScrollBar(*this->m_context);
+  this->scrollBar = new UILapineScrollBar();
   this->scrollBar->Configure(width - this->scrollBarWidth, 0, 1, height - this->scrollBarHeight);
   this->AddChild(this->scrollBar);
 }
@@ -517,7 +517,7 @@ bool UILapineUpgradeBox_IngredientListWnd::AddIngredient(std::uint32_t identity)
     }
   }
   auto* owner = static_cast<UILapineUpgradeBoxWnd*>(this->parent);
-  auto* entry = new UILapineUpgradeBox_IngredientInfoWnd(*this->m_context);
+  auto* entry = new UILapineUpgradeBox_IngredientInfoWnd();
   entry->SetSize(136, 30);
   entry->SetItem(identity);
   entry->quantity = 1;

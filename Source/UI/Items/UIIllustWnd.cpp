@@ -11,7 +11,7 @@
 
 // OFFSET: 0x0096C8D0
 // FUNCTION: fn_13177
-UIIllustWnd::UIIllustWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0) {
+UIIllustWnd::UIIllustWnd() : UIFrameWnd(0) {
   this->m_titled = 0;
   this->m_closable = 0;
   this->geometry.currentAlpha = 32;
@@ -19,7 +19,7 @@ UIIllustWnd::UIIllustWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0) {
 
 // OFFSET: 0x0096C970
 // FUNCTION: fn_13178
-UIMultiIllustWnd::UIMultiIllustWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0) {
+UIMultiIllustWnd::UIMultiIllustWnd() : UIFrameWnd(0) {
   this->m_titled = 0;
   this->m_closable = 0;
   this->geometry.currentAlpha = 32;

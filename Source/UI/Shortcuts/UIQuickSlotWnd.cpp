@@ -179,8 +179,8 @@ void UIQuickSlotWnd::Slot32(int x, int y) {
 
 // OFFSET: 0x009118C0
 // FUNCTION: fn_12520
-UIQuickSlotWnd::UIQuickSlotWnd(UIWindowContext& windows, QuickSlotPainting& painting)
-    : UIFrameWnd(windows, 0), m_selected(-1), m_painting(&painting) {
+UIQuickSlotWnd::UIQuickSlotWnd(QuickSlotPainting& painting)
+    : UIFrameWnd(0), m_selected(-1), m_painting(&painting) {
   for (int i = 0; i < 2; ++i) {
     this->m_entries[i].skill = 0;
     this->m_entries[i].id = 0;

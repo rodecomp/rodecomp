@@ -35,7 +35,7 @@ namespace RecommendedQuestInfo {
 
 class CUIQuestInfo : public CUIControl {
 public:
-  __declspec(noinline) explicit CUIQuestInfo(UIWindowContext& context);
+  __declspec(noinline) CUIQuestInfo();
 
   void Slot15(int width, int height) override;
   void Slot16() override;
@@ -46,7 +46,7 @@ public:
 
 class CUIScrollWindow : public CUIControl {
 public:
-  __declspec(noinline) explicit CUIScrollWindow(UIWindowContext& context);
+  __declspec(noinline) CUIScrollWindow();
   void Slot15(int width, int height) override;
   void Slot16() override;
   void SetQuest(unsigned int questId);

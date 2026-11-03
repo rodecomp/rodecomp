@@ -14,7 +14,6 @@
 #include <string>
 
 struct LayoutWindowContexts {
-  UIWindowContext& windows;
   UIEntryQueueContext& entryQueue;
   QuickSlotPainting& quickSlots;
 };
@@ -43,21 +42,21 @@ UIWindow* UIWindowMgr::CreateLayoutWindow(int id) {
     LayoutWindowContexts& contexts = *reinterpret_cast<LayoutWindowContexts*>(this);
     switch (id) {
     case 0x9C:
-      window = new UIHotKeyWnd(contexts.windows);
+      window = new UIHotKeyWnd();
       this->unknown_0404 = window;
       break;
     case 0x9D:
-      window = new UIEntryQueueWnd(contexts.windows, contexts.entryQueue);
+      window = new UIEntryQueueWnd(contexts.entryQueue);
       break;
     case 0x9F:
-      window = new UIQuickSlotWnd(contexts.windows, contexts.quickSlots);
+      window = new UIQuickSlotWnd(contexts.quickSlots);
       break;
     case 0xB5:
       window = new UISerachStoreInfoWnd();
       g_searchStoreInfoCreated = true;
       break;
     case 0xD1:
-      window = new UIEntryQueueStandByWnd(contexts.windows, contexts.entryQueue);
+      window = new UIEntryQueueStandByWnd(contexts.entryQueue);
       break;
     }
 

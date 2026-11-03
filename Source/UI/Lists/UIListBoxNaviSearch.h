@@ -7,7 +7,7 @@
 
 class UIListBox_NaviSearch : public UIListBox {
 public:
-  UIListBox_NaviSearch(UIWindowContext& windows);
+  UIListBox_NaviSearch();
 
   void Resize(int width, int height) override;
   void Slot15(int width, int height) override;

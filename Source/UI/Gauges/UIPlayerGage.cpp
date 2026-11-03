@@ -2,7 +2,7 @@
 
 // OFFSET: 0x0086D2D0
 // FUNCTION: fn_11044
-UIGage::UIGage() : UIWindow(*reinterpret_cast<UIWindowContext*>(nullptr), 0) {
+UIGage::UIGage() : UIWindow(0) {
   this->m_context = reinterpret_cast<UIWindowContext*>(0x009B1914);
   this->colors[0] = 0x00444444;
   this->colors[1] = 0x0025EA16;

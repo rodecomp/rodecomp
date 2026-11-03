@@ -47,8 +47,8 @@ bool UnusedTrueA4F5A0() {
 // OFFSET: 0x00A4F630
 // FUNCTION: fn_16217
 template <>
-CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::CUIListBoxEx(UIWindowContext& context)
-    : CUIControl(context), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
+CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::CUIListBoxEx()
+    : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
       unknown_00E0(1), rebind(0) {
 }
 
@@ -91,7 +91,7 @@ void CUIOngoingQuestInfo::Slot53() {
 // FUNCTION: fn_16225
 template <>
 void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::Slot15(int width, int height) {
-  this->scrollBar = new CUIVScrollBar(*this->m_context);
+  this->scrollBar = new CUIVScrollBar();
   this->scrollBar->Show(0);
   this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
   this->AddChild(this->scrollBar);
@@ -341,7 +341,7 @@ void CUIRewards::Slot16() {
   this->thirdLabel->SetText(third, std::strlen(third));
   this->rewardList->unknown_00C4 = 1;
   this->rewardList->Invalidate();
-  this->npcSprite = new UINpcSprWnd(*this->m_context);
+  this->npcSprite = new UINpcSprWnd();
   this->npcSprite->SetSize(75, 145);
   this->npcSprite->Show(0);
   this->AddChild(this->npcSprite);
@@ -440,7 +440,7 @@ void CUIScrollWindow::SetQuest(unsigned int id) {
 // OFFSET: 0x00A50970
 // FUNCTION: fn_16227
 void CUIOngoingQuestInfo::Slot15(int width, int height) {
-  this->titleBar = new CUITitleBar(*this->m_context);
+  this->titleBar = new CUITitleBar();
   this->titleBar->SetSize(342, 17);
   this->titleBar->Move(0, 0);
   this->titleBar->SetImages(
@@ -449,7 +449,7 @@ void CUIOngoingQuestInfo::Slot15(int width, int height) {
   );
   this->AddChild(this->titleBar);
 
-  CUIStaticText* title = new CUIStaticText(*this->m_context);
+  CUIStaticText* title = new CUIStaticText();
   title->SetSize(100, 17);
   title->Move(18, 0);
   title->SetText("QUEST", 5);
@@ -464,7 +464,7 @@ void CUIOngoingQuestInfo::Slot15(int width, int height) {
   this->titleBar->titleText = title;
   this->titleBar->AddChild(title);
 
-  CUIImageButton* menuButton = new CUIImageButton(*this->m_context);
+  CUIImageButton* menuButton = new CUIImageButton();
   menuButton->SetSize(11, 11);
   menuButton->Move(3, 3);
   menuButton->SetOnClick([this]() { this->OnFirstAction(); });
@@ -476,13 +476,13 @@ void CUIOngoingQuestInfo::Slot15(int width, int height) {
   );
   this->titleBar->AddChild(menuButton);
 
-  this->background = new CUIStaticImage(*this->m_context);
+  this->background = new CUIStaticImage();
   this->background->SetSize(342, 395);
   this->background->Move(0, 17);
   this->background->SetImage("유저인터페이스\\Renew_QuestUI\\bg_detail_quest.bmp");
   this->AddChild(this->background);
 
-  this->titleText = new CUIStaticText(*this->m_context);
+  this->titleText = new CUIStaticText();
   this->titleText->SetSize(342, 12);
   this->titleText->Move(0, 39);
   this->titleText->SetText("", 0);
@@ -496,12 +496,12 @@ void CUIOngoingQuestInfo::Slot15(int width, int height) {
   this->titleText->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->titleText);
 
-  this->scrollWindow = new OngoingQuestInfo::CUIScrollWindow(*this->m_context);
+  this->scrollWindow = new OngoingQuestInfo::CUIScrollWindow();
   this->scrollWindow->SetSize(342, 322);
   this->scrollWindow->Move(0, 62);
   this->AddChild(this->scrollWindow);
 
-  this->dateText = new CUIStaticText(*this->m_context);
+  this->dateText = new CUIStaticText();
   this->dateText->SetSize(270, 12);
   this->dateText->Move(13, 393);
   this->dateText->SetText("", 0);
@@ -515,7 +515,7 @@ void CUIOngoingQuestInfo::Slot15(int width, int height) {
   this->dateText->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->dateText);
 
-  this->closeButton = new CUIImageButton(*this->m_context);
+  this->closeButton = new CUIImageButton();
   this->closeButton->SetSize(42, 20);
   this->closeButton->Move(288, 388);
   this->closeButton->SetOnClick([this]() { this->OnClose(); });
@@ -533,13 +533,13 @@ namespace OngoingQuestInfo {
 // OFFSET: 0x00A4FFE0
 // FUNCTION: fn_16226
 void CUIContents::Slot15(int width, int height) {
-  this->icon = new CUIStaticImage(*this->m_context);
+  this->icon = new CUIStaticImage();
   this->icon->SetSize(10, 9);
   this->icon->Move(9, 9);
   this->icon->SetImage("유저인터페이스\\Renew_QuestUI\\img_poring.bmp");
   this->AddChild(this->icon);
 
-  this->title = new CUIStaticText(*this->m_context);
+  this->title = new CUIStaticText();
   this->title->SetSize(50, 12);
   this->title->Move(25, 9);
   this->title->SetText("", 0);
@@ -553,7 +553,7 @@ void CUIContents::Slot15(int width, int height) {
   this->title->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->title);
 
-  this->textViewer = new CUITextViewer(*this->m_context);
+  this->textViewer = new CUITextViewer();
   this->textViewer->SetSize(290, 20);
   this->textViewer->Move(32, 30);
   this->textViewer->SetTextOffset(0, 0);
@@ -581,20 +581,20 @@ void CUIContents::Slot15(int width, int height) {
 // OFFSET: 0x00A51900
 // FUNCTION: fn_16228
 void CUIRewardItem::Slot15(int width, int height) {
-  this->background = new CUIStaticImage(*this->m_context);
+  this->background = new CUIStaticImage();
   this->background->SetSize(38, 38);
   this->background->Move(0, 0);
   this->background->SetImage("유저인터페이스\\Renew_QuestUI\\img_questIocn.bmp");
   this->AddChild(this->background);
 
-  this->gameItem = new CUIGameItem(*this->m_context);
+  this->gameItem = new CUIGameItem();
   this->gameItem->SetMode(0);
   this->gameItem->Move(7, 7);
   this->gameItem->unknown_0084 = 1;
   this->gameItem->unknown_0085 = 1;
   this->AddChild(this->gameItem);
 
-  this->nameText = new CUIStaticText(*this->m_context);
+  this->nameText = new CUIStaticText();
   this->nameText->SetSize(170, 12);
   this->nameText->Move(46, 5);
   this->nameText->SetText("", 0);
@@ -608,7 +608,7 @@ void CUIRewardItem::Slot15(int width, int height) {
   this->nameText->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->nameText);
 
-  this->countText = new CUIStaticText(*this->m_context);
+  this->countText = new CUIStaticText();
   this->countText->SetSize(170, 12);
   this->countText->Move(46, 20);
   this->countText->SetText("", 0);
@@ -626,34 +626,34 @@ void CUIRewardItem::Slot15(int width, int height) {
 // OFFSET: 0x00A53170
 // FUNCTION: fn_16230
 void CUIScrollWindow::Slot15(int width, int height) {
-  this->firstContents = new CUIContents(*this->m_context);
+  this->firstContents = new CUIContents();
   this->firstContents->SetSize(335, 59);
   this->firstContents->Move(0, 0);
   this->AddChild(this->firstContents);
 
-  this->firstLine = new CUIStaticImage(*this->m_context);
+  this->firstLine = new CUIStaticImage();
   this->firstLine->SetSize(334, 1);
   this->firstLine->Move(1, 59);
   this->firstLine->SetImage("유저인터페이스\\Renew_QuestUI\\img_line.bmp");
   this->AddChild(this->firstLine);
 
-  this->secondContents = new CUIContents(*this->m_context);
+  this->secondContents = new CUIContents();
   this->secondContents->SetSize(335, 59);
   this->secondContents->Move(0, 60);
   this->AddChild(this->secondContents);
 
-  this->secondLine = new CUIStaticImage(*this->m_context);
+  this->secondLine = new CUIStaticImage();
   this->secondLine->SetSize(334, 1);
   this->secondLine->Move(1, 119);
   this->secondLine->SetImage("유저인터페이스\\Renew_QuestUI\\img_line.bmp");
   this->AddChild(this->secondLine);
 
-  this->rewards = new CUIRewards(*this->m_context);
+  this->rewards = new CUIRewards();
   this->rewards->SetSize(335, 122);
   this->rewards->Move(0, 120);
   this->AddChild(this->rewards);
 
-  this->scrollBar = new CUIVScrollBar(*this->m_context);
+  this->scrollBar = new CUIVScrollBar();
   this->scrollBar->SetSize(7, 322);
   this->scrollBar->Move(335, 0);
   this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
@@ -676,7 +676,7 @@ void CUIScrollWindow::Slot15(int width, int height) {
 namespace OngoingQuestInfo {
 // OFFSET: 0x00A54D00
 // FUNCTION: fn_16289
-CUIContents::CUIContents(UIWindowContext& context) : CUIControl(context), title(nullptr), textViewer(nullptr), icon(nullptr) {
+CUIContents::CUIContents() : CUIControl(), title(nullptr), textViewer(nullptr), icon(nullptr) {
 }
 }
 
@@ -689,15 +689,15 @@ CUIOngoingQuestInfo::CUIOngoingQuestInfo()
 namespace OngoingQuestInfo {
 // OFFSET: 0x00A54F20
 // FUNCTION: fn_16292
-CUIRewards::CUIRewards(UIWindowContext& context)
-    : CUIControl(context), title(nullptr), firstLabel(nullptr), firstText(nullptr), secondLabel(nullptr), secondText(nullptr), thirdLabel(nullptr),
+CUIRewards::CUIRewards()
+    : CUIControl(), title(nullptr), firstLabel(nullptr), firstText(nullptr), secondLabel(nullptr), secondText(nullptr), thirdLabel(nullptr),
       rewardList(nullptr), npcSprite(nullptr), icon(nullptr) {
 }
 
 // OFFSET: 0x00A54FF0
 // FUNCTION: fn_16293
-CUIScrollWindow::CUIScrollWindow(UIWindowContext& context)
-    : CUIControl(context), firstLine(nullptr), secondContents(nullptr), secondLine(nullptr), rewards(nullptr), scrollBar(nullptr), firstContents(nullptr) {
+CUIScrollWindow::CUIScrollWindow()
+    : CUIControl(), firstLine(nullptr), secondContents(nullptr), secondLine(nullptr), rewards(nullptr), scrollBar(nullptr), firstContents(nullptr) {
 }
 }
 
@@ -722,7 +722,7 @@ void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItem
     }
     this->items.resize(count, nullptr);
     for (OngoingQuestInfo::CUIRewardItem*& slot : this->items) {
-      OngoingQuestInfo::CUIRewardItem* item = new OngoingQuestInfo::CUIRewardItem(*this->m_context);
+      OngoingQuestInfo::CUIRewardItem* item = new OngoingQuestInfo::CUIRewardItem();
       item->SetSize(this->itemWidth, this->rowHeight);
       item->Show(0);
       CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
@@ -774,7 +774,7 @@ void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItem
 namespace OngoingQuestInfo {
 // OFFSET: 0x00A54EA0
 // FUNCTION: fn_16291
-CUIRewardItem::CUIRewardItem(UIWindowContext& context) : CUIListItem(context), background(nullptr), gameItem(nullptr), nameText(nullptr), countText(nullptr) {
+CUIRewardItem::CUIRewardItem() : CUIListItem(), background(nullptr), gameItem(nullptr), nameText(nullptr), countText(nullptr) {
 }
 }
 
@@ -782,13 +782,13 @@ namespace OngoingQuestInfo {
 // OFFSET: 0x00A51ED0
 // FUNCTION: fn_16229
 void CUIRewards::Slot15(int width, int height) {
-  this->icon = new CUIStaticImage(*this->m_context);
+  this->icon = new CUIStaticImage();
   this->icon->SetSize(10, 9);
   this->icon->Move(9, 9);
   this->icon->SetImage("유저인터페이스\\Renew_QuestUI\\img_poring.bmp");
   this->AddChild(this->icon);
 
-  this->title = new CUIStaticText(*this->m_context);
+  this->title = new CUIStaticText();
   this->title->SetSize(50, 12);
   this->title->Move(25, 9);
   this->title->SetText("", 0);
@@ -802,7 +802,7 @@ void CUIRewards::Slot15(int width, int height) {
   this->title->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->title);
 
-  this->firstLabel = new CUIStaticText(*this->m_context);
+  this->firstLabel = new CUIStaticText();
   this->firstLabel->SetSize(50, 12);
   this->firstLabel->Move(32, 30);
   this->firstLabel->SetText("", 0);
@@ -816,7 +816,7 @@ void CUIRewards::Slot15(int width, int height) {
   this->firstLabel->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->firstLabel);
 
-  this->firstText = new CUIStaticText(*this->m_context);
+  this->firstText = new CUIStaticText();
   this->firstText->SetSize(150, 12);
   this->firstText->Move(110, 30);
   this->firstText->SetText("", 0);
@@ -830,7 +830,7 @@ void CUIRewards::Slot15(int width, int height) {
   this->firstText->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->firstText);
 
-  this->secondLabel = new CUIStaticText(*this->m_context);
+  this->secondLabel = new CUIStaticText();
   this->secondLabel->SetSize(100, 12);
   this->secondLabel->Move(32, 51);
   this->secondLabel->SetText("", 0);
@@ -844,7 +844,7 @@ void CUIRewards::Slot15(int width, int height) {
   this->secondLabel->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->secondLabel);
 
-  this->secondText = new CUIStaticText(*this->m_context);
+  this->secondText = new CUIStaticText();
   this->secondText->SetSize(150, 12);
   this->secondText->Move(110, 51);
   this->secondText->SetText("", 0);
@@ -858,7 +858,7 @@ void CUIRewards::Slot15(int width, int height) {
   this->secondText->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->secondText);
 
-  this->thirdLabel = new CUIStaticText(*this->m_context);
+  this->thirdLabel = new CUIStaticText();
   this->thirdLabel->SetSize(100, 12);
   this->thirdLabel->Move(32, 72);
   this->thirdLabel->SetText("", 0);
@@ -872,7 +872,7 @@ void CUIRewards::Slot15(int width, int height) {
   this->thirdLabel->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->thirdLabel);
 
-  this->rewardList = new CUIListBoxEx<CUIRewardItem, CRewardItemData>(*this->m_context);
+  this->rewardList = new CUIListBoxEx<CUIRewardItem, CRewardItemData>();
   this->rewardList->itemWidth = 225;
   this->rewardList->rowHeight = 41;
   this->rewardList->SetSize(225, 41);

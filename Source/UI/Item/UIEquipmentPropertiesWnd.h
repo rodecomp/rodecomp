@@ -11,7 +11,7 @@
 namespace EquipmentPropertiesWnd {
 class CUIItemEquipmentPropertiesLine : public CUIListItem {
 public:
-  explicit CUIItemEquipmentPropertiesLine(UIWindowContext& context);
+  CUIItemEquipmentPropertiesLine();
 
   /* 00E8 */ CUIStaticText* unknown_00E8;
   /* 00EC */ CUIStaticText* unknown_00EC;
@@ -60,7 +60,7 @@ public:
 };
 
 template <>
-CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::CUIListBoxEx(UIWindowContext& context);
+CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::CUIListBoxEx();
 template <>
 CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::~CUIListBoxEx();
 template <>

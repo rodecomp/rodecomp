@@ -31,8 +31,8 @@ namespace {
 
 // OFFSET: 0x007BAC40
 // FUNCTION: fn_09274
-UIAdvenPartyBoardWnd::UIAdvenPartyBoardWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), unknown_0104(0), unknown_0108(0), page(1), totalPages(1), unknown_0114(1), unknown_0118(0), selectedType(0) {
+UIAdvenPartyBoardWnd::UIAdvenPartyBoardWnd()
+    : UIFrameWnd(0), unknown_0104(0), unknown_0108(0), page(1), totalPages(1), unknown_0114(1), unknown_0118(0), selectedType(0) {
 }
 
 // OFFSET: 0x007BB590
@@ -52,7 +52,7 @@ void UIAdvenPartyBoardWnd::Slot11() {
 // OFFSET: 0x007BC220
 // FUNCTION: fn_09298
 void UIAdvenPartyBoardWnd::Slot15(int, int) {
-  this->minimum = new UIEditCtrl2(*this->m_context);
+  this->minimum = new UIEditCtrl2();
   this->minimum->SetSize(25, 14);
   this->minimum->invalidatesParent = 1;
   this->minimum->maximum = 3;
@@ -65,7 +65,7 @@ void UIAdvenPartyBoardWnd::Slot15(int, int) {
   this->minimum->Show(1);
   this->AddChild(this->minimum);
 
-  this->maximum = new UIEditCtrl2(*this->m_context);
+  this->maximum = new UIEditCtrl2();
   this->maximum->SetSize(25, 14);
   this->maximum->invalidatesParent = 1;
   this->maximum->maximum = 3;
@@ -80,7 +80,7 @@ void UIAdvenPartyBoardWnd::Slot15(int, int) {
   const int tooltips[] = {3420, 3491, 3444, 3508};
 
   for (int index = 0; index < 4; ++index) {
-    auto* job = new UIJobSlotButton(*this->m_context);
+    auto* job = new UIJobSlotButton();
     this->jobs[index] = job;
     job->SetSize(16, 16);
     job->Move(160 + index * 18, 23);
@@ -91,7 +91,7 @@ void UIAdvenPartyBoardWnd::Slot15(int, int) {
     this->AddChild(job);
   }
 
-  auto* memo = new UIEditCtrl5(*this->m_context);
+  auto* memo = new UIEditCtrl5();
   this->memo = memo;
   memo->SetSize(116, 14);
   memo->maximum = 150;
@@ -112,28 +112,28 @@ void UIAdvenPartyBoardWnd::Slot15(int, int) {
     button->SetSize(button->BitmapWidth(), button->BitmapHeight());
   };
 
-  auto* search = new UIBmpTextButton(*this->m_context);
+  auto* search = new UIBmpTextButton();
   artwork(search, "btn_search");
   search->Move(354, 22);
   search->SetId(365);
   search->SetText(LookupMessage(3366));
   this->AddChild(search);
 
-  auto* reset = new UIBmpTextButton(*this->m_context);
+  auto* reset = new UIBmpTextButton();
   artwork(reset, "btn_initialize");
   reset->Move(401, 22);
   reset->SetId(363);
   reset->SetText(LookupMessage(3367));
   this->AddChild(reset);
 
-  this->refresh = new UIBitmapButton(*this->m_context);
+  this->refresh = new UIBitmapButton();
   artwork(this->refresh, "btn_refresh");
   this->refresh->Move(452, 22);
   this->refresh->SetId(415);
   this->AddChild(this->refresh);
 
   const auto arrow = [&](const char* name, int id, int x) {
-    auto* button = new UIBitmapButton(*this->m_context);
+    auto* button = new UIBitmapButton();
 
     for (int state = 0; state < 4; ++state) {
       button->SetBitmap((std::string(prefix) + name + (state == 3 ? "_disable.bmp" : ".bmp")).c_str(), state, 0);
@@ -150,7 +150,7 @@ void UIAdvenPartyBoardWnd::Slot15(int, int) {
   this->next = arrow("btn_list_right", 218, 265);
 
   for (int index = 0; index < 10; ++index) {
-    auto* row = new UIPartyInfoWnd(*this->m_context);
+    auto* row = new UIPartyInfoWnd();
     this->rows[index] = row;
     artwork(row, "btn_list");
     row->Move(1, 73 + index * 24);
@@ -162,7 +162,7 @@ void UIAdvenPartyBoardWnd::Slot15(int, int) {
     this->AddChild(row);
   }
 
-  this->ownParty = new UIPartyInfoWnd(*this->m_context);
+  this->ownParty = new UIPartyInfoWnd();
   const char* ownImages[] = {"btn_recruit_on.bmp", "btn_recruit_on.bmp", "btn_recruiting_press.bmp", "btn_recruiting_disable.bmp"};
 
   for (int state = 0; state < 4; ++state) {
@@ -175,7 +175,7 @@ void UIAdvenPartyBoardWnd::Slot15(int, int) {
   this->ownParty->Enable(0);
   this->AddChild(this->ownParty);
 
-  auto* recruit = new UIBmpTextButton(*this->m_context);
+  auto* recruit = new UIBmpTextButton();
   this->recruit = recruit;
   artwork(recruit, "btn_recruit");
   recruit->Move(1, 49);
@@ -183,7 +183,7 @@ void UIAdvenPartyBoardWnd::Slot15(int, int) {
   recruit->Enable(0);
   this->AddChild(recruit);
 
-  this->types = new UIComboBoxDef2Wnd(*this->m_context);
+  this->types = new UIComboBoxDef2Wnd();
   this->types->dropdownHeight = 126;
   this->types->SetSize(76, 18);
   this->types->Move(76, 22);
@@ -194,7 +194,7 @@ void UIAdvenPartyBoardWnd::Slot15(int, int) {
   }
 
   this->types->Select(0);
-  this->pageText = new UIStaticText(*this->m_context);
+  this->pageText = new UIStaticText();
   this->pageText->SetSize(this->geometry.width, 18);
   const int textWidth = this->TextWidth("1/1", 0, 0, 12, 0, 0);
   this->pageText->Resize((textWidth + 1), 16);
@@ -204,13 +204,13 @@ void UIAdvenPartyBoardWnd::Slot15(int, int) {
   this->LoadPage(1);
   this->m_message0 = 365;
 
-  auto* close = new UIBasicButton(*this->m_context);
+  auto* close = new UIBasicButton();
   close->Configure(42, LookupMessage(3045));
   close->Move(this->geometry.width - close->geometry.width - 10, 317);
   close->SetId(201);
   this->AddChild(close);
 
-  this->stop = new UIBasicButton(*this->m_context);
+  this->stop = new UIBasicButton();
   const char* stopText = LookupMessage(3375);
   this->stop->Configure((this->TextWidth(stopText, 0, 0, 12, 0, 0) + 10), stopText);
   this->stop->Move(close->geometry.x - this->stop->geometry.width - 5, 317);
@@ -218,7 +218,7 @@ void UIAdvenPartyBoardWnd::Slot15(int, int) {
   this->AddChild(this->stop);
   this->stop->Enable(0);
 
-  auto* titleClose = new UIBitmapButton(*this->m_context);
+  auto* titleClose = new UIBitmapButton();
   const std::string basic = std::string("유저인터페이스\\basic_interface\\");
   titleClose->SetBitmap((basic + "sys_close_off.bmp").c_str(), 0, 0);
   titleClose->SetBitmap((basic + "sys_close_on.bmp").c_str(), 1, 0);

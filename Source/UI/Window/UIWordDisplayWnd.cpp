@@ -59,7 +59,7 @@ int UIWordDisplayWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
 
 // OFFSET: 0x00850910
 // FUNCTION: fn_10682
-UIWordDisplayWnd::UIWordDisplayWnd(UIWindowContext& windowContext) : UIFrameWnd(windowContext, 0), aid(0) {
+UIWordDisplayWnd::UIWordDisplayWnd() : UIFrameWnd(0), aid(0) {
   this->text.clear();
   this->SetSize(24, 24);
 }

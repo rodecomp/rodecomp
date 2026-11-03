@@ -12,7 +12,7 @@ class UIBasicButton;
 
 class UIRegisterPartyWnd : public UIFrameWnd {
 public:
-  UIRegisterPartyWnd(UIWindowContext& windows);
+  UIRegisterPartyWnd();
   ~UIRegisterPartyWnd() override;
   void Slot11() override;
   void Slot15(int width, int height) override;

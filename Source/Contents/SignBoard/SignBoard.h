@@ -12,7 +12,7 @@ class UIStaticText;
 
 class CBmpObjWnd : public UIWindow {
 public:
-  explicit CBmpObjWnd(UIWindowContext& windows);
+  CBmpObjWnd();
   ~CBmpObjWnd() override;
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -22,7 +22,7 @@ public:
 
 class CSignBoardWnd : public UIWindow {
 public:
-  CSignBoardWnd(UIWindowContext& windows);
+  CSignBoardWnd();
   ~CSignBoardWnd() override;
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -54,7 +54,7 @@ public:
   ~C3DCooRendering() override;
   bool OnProcess() override;
   void Render(int argument) override;
-  void Create(UIWindowContext& windows);
+  void Create();
   void SetOverrideColor();
   void SetBoard(const std::string& text, const std::string& color);
   void SetWindowImage(const std::string& name);

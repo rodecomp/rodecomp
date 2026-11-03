@@ -57,20 +57,20 @@ UIListBoxTitle::UIListBoxTitle() : titleColor(0x92C0FA) {
 
 // OFFSET: 0x0086E410
 // FUNCTION: fn_11070
-UIScrollBar2::UIScrollBar2() : UIScrollBar(*reinterpret_cast<UIWindowContext*>(nullptr)) {
+UIScrollBar2::UIScrollBar2() : UIScrollBar() {
   this->arrowLength = 10;
 }
 
 // OFFSET: 0x0086E470
 // FUNCTION: fn_11071
-UIScrollBar3::UIScrollBar3() : UIScrollBar(*reinterpret_cast<UIWindowContext*>(nullptr)) {
+UIScrollBar3::UIScrollBar3() : UIScrollBar() {
   this->arrowLength = 9;
 }
 
 // OFFSET: 0x0086E550
 // FUNCTION: fn_11073
-UIScrollBar::UIScrollBar(UIWindowContext& windows)
-    : UIWindow(windows, 0), state(0), maximum(0), position(0), vertical(1), pressX(0), pressY(0), dragAmount(0), total(0), visible(0), arrowLength(13),
+UIScrollBar::UIScrollBar()
+    : UIWindow(0), state(0), maximum(0), position(0), vertical(1), pressX(0), pressY(0), dragAmount(0), total(0), visible(0), arrowLength(13),
       thickness(13), minimumThumb(1), horizontalStep(1), verticalStep(1) {
 }
 
@@ -79,7 +79,7 @@ UIScrollBar::~UIScrollBar() = default;
 
 // OFFSET: 0x0086E4D0
 // FUNCTION: fn_11072
-UIScrollBar4::UIScrollBar4(UIWindowContext& windows) : UIScrollBar(windows) {
+UIScrollBar4::UIScrollBar4() : UIScrollBar() {
   this->thickness = 6;
   this->arrowLength = 0;
   this->m_thumbLength = 12;
@@ -87,14 +87,14 @@ UIScrollBar4::UIScrollBar4(UIWindowContext& windows) : UIScrollBar(windows) {
 
 // OFFSET: 0x0086E630
 // FUNCTION: fn_11074
-UIScrollBar_Custom::UIScrollBar_Custom(UIWindowContext& windows)
-    : UIScrollBar(windows), m_trackTop(nullptr), m_trackMiddle(nullptr), m_trackBottom(nullptr), m_arrowUp(nullptr), m_arrowDown(nullptr),
+UIScrollBar_Custom::UIScrollBar_Custom()
+    : UIScrollBar(), m_trackTop(nullptr), m_trackMiddle(nullptr), m_trackBottom(nullptr), m_arrowUp(nullptr), m_arrowDown(nullptr),
       m_thumbTop(nullptr), m_thumbMiddle(nullptr), m_thumbBottom(nullptr) {
 }
 
 // OFFSET: 0x0086F240
 // FUNCTION: fn_11088
-UIZeroQuestScrollBar::UIZeroQuestScrollBar(UIWindowContext& windows) : UIScrollBar(windows) {
+UIZeroQuestScrollBar::UIZeroQuestScrollBar() : UIScrollBar() {
   this->arrowLength = 12;
   this->thickness = 9;
 }
@@ -439,8 +439,8 @@ int UIImgMenu::ItemAt(int x, int y) {
 
 // OFFSET: 0x0086ECF0
 // FUNCTION: fn_11083
-UITabControl::UITabControl(UIWindowContext& windows)
-    : UIWindow(windows, 0), unknown_00E8(12), flags() {
+UITabControl::UITabControl()
+    : UIWindow(0), unknown_00E8(12), flags() {
   this->unknown_007C = -1;
   this->dragX = 0;
   this->dragY = 0;
@@ -1698,7 +1698,7 @@ void UITabControl::Configure(
   this->inactiveTextColor = inactiveTextColor;
   this->ClearTabs();
 
-  this->edit = new UIEditCtrl2(*this->m_context);
+  this->edit = new UIEditCtrl2();
   this->edit->SetSize(100, 19);
   this->edit->Move(-100, -100);
   this->AddChild(this->edit);
@@ -1857,7 +1857,7 @@ std::string UIChatHisBox::RenderItemLinks(const char* lineText, std::string& sou
           break;
         }
 
-        UIItemTagButton* button = new (std::nothrow) UIItemTagButton(*this->m_context);
+        UIItemTagButton* button = new (std::nothrow) UIItemTagButton();
         if (button) {
           std::memcpy(button->unknown_00F8, &item, sizeof(item));
           button->Configure(label.c_str(), 0x82F2E1, 0, 12, 0, 0);
@@ -1951,7 +1951,7 @@ std::string UIChatHisBox::RenderNavigationLinks(const char* text, std::string& s
       tail = line.substr(position + label.size());
     }
 
-    UINaviLinkButton* button = new (std::nothrow) UINaviLinkButton(*this->m_context);
+    UINaviLinkButton* button = new (std::nothrow) UINaviLinkButton();
     if (button) {
       button->link = link;
       button->Configure(label.c_str(), 0x82F2E1, 0, 12, 0, 0);
@@ -2101,7 +2101,7 @@ void UIChatHisBox::sub_89E0F0(const char* text, int& color, int& mode) {
 // OFFSET: 0x0086DBD0
 // FUNCTION: fn_11057
 UIListBoxID::UIListBoxID()
-    : UIWindow(*reinterpret_cast<UIWindowContext*>(nullptr), 0), lines(), selected(0), topLine(0), horizontalOffset(0), contentWidth(0), verticalOverflow(0),
+    : UIWindow(0), lines(), selected(0), topLine(0), horizontalOffset(0), contentWidth(0), verticalOverflow(0),
       bottomMargin(0), verticalBar(nullptr), horizontalBar(nullptr), transparent(0), lineHeight(16) {
   int* background = reinterpret_cast<int*>(this->unknown_007C);
   background[0] = 255;

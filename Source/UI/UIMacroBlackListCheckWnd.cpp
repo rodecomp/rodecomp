@@ -28,8 +28,8 @@ namespace {
 
 // OFFSET: 0x007EB0A0
 // FUNCTION: fn_09792
-UIMacroBlackListCheckWnd::UIMacroBlackListCheckWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), digitButtons(), resetButton(nullptr),
+UIMacroBlackListCheckWnd::UIMacroBlackListCheckWnd()
+    : UIFrameWnd(0), digitButtons(), resetButton(nullptr),
       unknown_00E4(0), inputLength(0), input(), code(), charSizes(), charFlags(), charColors(), duration(0), startTick(0) {}
 
 // OFFSET: 0x007EB230
@@ -44,7 +44,7 @@ void UIMacroBlackListCheckWnd::Slot15(int width, int height) {
 
   std::string directory;
 
-  this->okButton = new UIBitmapButton(*this->m_context);
+  this->okButton = new UIBitmapButton();
   this->okButton->SetBitmap("유저인터페이스\\btn_big_ok.bmp", 0, 0);
   this->okButton->SetBitmap("유저인터페이스\\btn_big_ok_a.bmp", 1, 0);
   this->okButton->SetBitmap("유저인터페이스\\btn_big_ok_b.bmp", 2, 0);
@@ -70,7 +70,7 @@ void UIMacroBlackListCheckWnd::Slot15(int width, int height) {
   for (int i = 0; i < 10; ++i) {
     const int digit = this->digits[i];
     UIBitmapButton*& button = this->digitButtons[i];
-    button = new UIBitmapButton(*this->m_context);
+    button = new UIBitmapButton();
     button->SetBitmap((directory + names[digit][0] + ".bmp").c_str(), 0, 0);
     button->SetBitmap((directory + names[digit][1] + ".bmp").c_str(), 1, 0);
     button->SetBitmap((directory + names[digit][2] + ".bmp").c_str(), 2, 0);
@@ -80,7 +80,7 @@ void UIMacroBlackListCheckWnd::Slot15(int width, int height) {
     this->AddChild(button);
   }
 
-  this->resetButton = new UIBitmapButton(*this->m_context);
+  this->resetButton = new UIBitmapButton();
   this->resetButton->SetBitmap((directory + names[10][0] + ".bmp").c_str(), 0, 0);
   this->resetButton->SetBitmap((directory + names[10][1] + ".bmp").c_str(), 1, 0);
   this->resetButton->SetBitmap((directory + names[10][2] + ".bmp").c_str(), 2, 0);

@@ -57,7 +57,7 @@ CEnchantMgr* Singleton<CEnchantMgr>::s_instance = nullptr;
 // FUNCTION: fn_14814
 // FUNCTION: fn_14815
 template <class T, class D> void CUIListBoxEx<T, D>::Slot15(int width, int height) {
-  this->scrollBar = new CUIVScrollBar(*this->m_context);
+  this->scrollBar = new CUIVScrollBar();
   this->scrollBar->Show(0);
   this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
   this->AddChild(this->scrollBar);
@@ -83,7 +83,7 @@ __declspec(noinline) void CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEn
 template <>
 __declspec(noinline) void CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>::AddNewItem();
 template <>
-__declspec(noinline) CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::CUIListBoxEx(UIWindowContext& context);
+__declspec(noinline) CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::CUIListBoxEx();
 
 // OFFSET: 0x009F93D0
 // FUNCTION: fn_14806
@@ -301,26 +301,26 @@ CUIEnchantUI::~CUIEnchantUI() {
 namespace EnchantUI {
 // OFFSET: 0x009F70C0
 // FUNCTION: fn_14768
-CUIEnchantPage::CUIEnchantPage(UIWindowContext& context)
-    : CUIControl(context), unknown_0080{}, gameItem(nullptr), unknown_0088(), unknown_0090(), enchantList(nullptr), unknown_009C{}, enchantInfo(nullptr),
+CUIEnchantPage::CUIEnchantPage()
+    : CUIControl(), unknown_0080{}, gameItem(nullptr), unknown_0088(), unknown_0090(), enchantList(nullptr), unknown_009C{}, enchantInfo(nullptr),
       group(0), unknown_00B0(-1) {
 }
 
 // OFFSET: 0x009F72F0
 // FUNCTION: fn_14770
-CUIMainPage::CUIMainPage(UIWindowContext& context) : CUIControl(context), firstPage(nullptr), secondPage(nullptr), tab(nullptr) {
+CUIMainPage::CUIMainPage() : CUIControl(), firstPage(nullptr), secondPage(nullptr), tab(nullptr) {
 }
 }
 
 // OFFSET: 0x009F7380
 // FUNCTION: fn_14771
-CUITab::CUITab(UIWindowContext& context) : CUIControl(context), current(nullptr) {
+CUITab::CUITab() : CUIControl(), current(nullptr) {
 }
 
 // OFFSET: 0x009F7420
 // FUNCTION: fn_14772
-CUITabButton::CUITabButton(UIWindowContext& context)
-    : CUIImageTextButton(context), page(nullptr), useSkinColors(0), normalColor(0xFFFFFF), selectedColor(0xFFFFFF), borderColor(0xCECECE), normalCell{0, 0},
+CUITabButton::CUITabButton()
+    : CUIImageTextButton(), page(nullptr), useSkinColors(0), normalColor(0xFFFFFF), selectedColor(0xFFFFFF), borderColor(0xCECECE), normalCell{0, 0},
       selectedCell{0, 0}, borderCell{3, 1} {
 }
 
@@ -334,7 +334,7 @@ namespace EnchantUI {
 // OFFSET: 0x009F9CE0
 // FUNCTION: fn_14816
 void CUIEnchantItem::Slot15(int width, int height) {
-  this->itemIcon = new CUIGameItem(*this->m_context);
+  this->itemIcon = new CUIGameItem();
   this->itemIcon->SetMode(0);
   this->itemIcon->SetScale(100);
   this->itemIcon->Move(2, 3);
@@ -342,7 +342,7 @@ void CUIEnchantItem::Slot15(int width, int height) {
   this->itemIcon->unknown_0085 = 1;
   this->AddChild(this->itemIcon);
 
-  this->name = new CUIStaticText(*this->m_context);
+  this->name = new CUIStaticText();
   this->name->SetSize(101, 12);
   this->name->Move(28, 9);
   this->name->SetText("", 0);
@@ -366,7 +366,7 @@ void CUIEnchantItem::Slot15(int width, int height) {
 // OFFSET: 0x00A00880
 // FUNCTION: fn_14828
 void CUITargetItem::Slot15(int width, int height) {
-  this->itemIcon = new CUIGameItem(*this->m_context);
+  this->itemIcon = new CUIGameItem();
   this->itemIcon->SetMode(0);
   this->itemIcon->SetScale(100);
   this->itemIcon->Move(6, 13);
@@ -374,7 +374,7 @@ void CUITargetItem::Slot15(int width, int height) {
   this->itemIcon->unknown_0085 = 1;
   this->AddChild(this->itemIcon);
 
-  this->unknown_00EC = new CUIStaticImage(*this->m_context);
+  this->unknown_00EC = new CUIStaticImage();
   this->unknown_00EC->SetSize(12, 12);
   this->unknown_00EC->Move(166, 7);
   {
@@ -390,7 +390,7 @@ void CUITargetItem::Slot15(int width, int height) {
   }
   this->AddChild(this->unknown_00EC);
 
-  this->unknown_00F0 = new CUIStaticText(*this->m_context);
+  this->unknown_00F0 = new CUIStaticText();
   this->unknown_00F0->SetSize(152, 12);
   this->unknown_00F0->Move(38, 23);
   this->unknown_00F0->SetText("", 0);
@@ -419,7 +419,7 @@ void CUIEnchantPage::Slot58(int) {
 // OFFSET: 0x009F99B0
 // FUNCTION: fn_14812
 CUIIngredient* CUIEnchantPage::CreateIngredient() {
-  CUIIngredient* ingredient = new CUIIngredient(*this->m_context);
+  CUIIngredient* ingredient = new CUIIngredient();
   ingredient->SetSize(70, 50);
   ingredient->Move(4, 200);
   this->AddChild(ingredient);
@@ -429,7 +429,7 @@ CUIIngredient* CUIEnchantPage::CreateIngredient() {
 // OFFSET: 0x009FB800
 // FUNCTION: fn_14818
 void CUIIngredient::Slot15(int width, int height) {
-  this->unknown_0080 = new CUIStaticImage(*this->m_context);
+  this->unknown_0080 = new CUIStaticImage();
   this->unknown_0080->SetSize(70, 50);
   this->unknown_0080->Move(0, 0);
   {
@@ -445,7 +445,7 @@ void CUIIngredient::Slot15(int width, int height) {
   }
   this->AddChild(this->unknown_0080);
 
-  this->unknown_0084 = new CUIStaticImage(*this->m_context);
+  this->unknown_0084 = new CUIStaticImage();
   this->unknown_0084->SetSize(70, 50);
   this->unknown_0084->Move(0, 0);
   {
@@ -461,7 +461,7 @@ void CUIIngredient::Slot15(int width, int height) {
   }
   this->AddChild(this->unknown_0084);
 
-  this->itemIcon = new CUIGameItem(*this->m_context);
+  this->itemIcon = new CUIGameItem();
   this->itemIcon->SetMode(0);
   this->itemIcon->SetScale(100);
   this->itemIcon->Move(6, 10);
@@ -469,7 +469,7 @@ void CUIIngredient::Slot15(int width, int height) {
   this->itemIcon->unknown_0085 = 1;
   this->AddChild(this->itemIcon);
 
-  this->ownedText = new CUIStaticText(*this->m_context);
+  this->ownedText = new CUIStaticText();
   this->ownedText->SetSize(40, 14);
   this->ownedText->Move(30, 17);
   this->ownedText->SetText("", 0);
@@ -489,7 +489,7 @@ void CUIIngredient::Slot15(int width, int height) {
   this->ownedText->SetOutline(1, 0x965532);
   this->AddChild(this->ownedText);
 
-  this->requiredText = new CUIStaticText(*this->m_context);
+  this->requiredText = new CUIStaticText();
   this->requiredText->SetSize(40, 14);
   this->requiredText->Move(30, 31);
   this->requiredText->SetText("", 0);
@@ -673,22 +673,22 @@ namespace EnchantUI {
 // OFFSET: 0x009FC080
 // FUNCTION: fn_14819
 void CUINormal::Slot15(int width, int height) {
-  this->firstPage = new CUINormalRandom(*this->m_context);
+  this->firstPage = new CUINormalRandom();
   this->firstPage->SetSize(470, 377);
   this->firstPage->Move(0, 0);
   this->AddChild(this->firstPage);
 
-  this->secondPage = new CUINormalPerfect(*this->m_context);
+  this->secondPage = new CUINormalPerfect();
   this->secondPage->SetSize(470, 377);
   this->secondPage->Move(0, 0);
   this->AddChild(this->secondPage);
 
-  this->tab = new CUITab(*this->m_context);
+  this->tab = new CUITab();
   this->tab->SetSize(76, 20);
   this->tab->Move(7, 1);
   this->AddChild(this->tab);
 
-  CUITabButton* firstButton = new CUITabButton(*this->m_context);
+  CUITabButton* firstButton = new CUITabButton();
   firstButton->SetSize(38, 20);
   firstButton->Move(0, 0);
   firstButton->disabled = 0;
@@ -732,7 +732,7 @@ void CUINormal::Slot15(int width, int height) {
   }
   this->tab->AddChild(firstButton);
 
-  CUITabButton* secondButton = new CUITabButton(*this->m_context);
+  CUITabButton* secondButton = new CUITabButton();
   secondButton->SetSize(38, 20);
   secondButton->Move(38, 0);
   secondButton->disabled = 0;
@@ -786,7 +786,7 @@ void CUINormal::Slot15(int width, int height) {
 // OFFSET: 0x009FF700
 // FUNCTION: fn_14827
 void CUISlot::Slot15(int width, int height) {
-  this->radioButton = new CUIRadioButton(*this->m_context);
+  this->radioButton = new CUIRadioButton();
   this->radioButton->SetSize(44, 44);
   this->radioButton->Move(59, 1);
   this->radioButton->SetOnSelect([this](CUIRadioButton* button) { this->SelectSlot(button); });
@@ -831,7 +831,7 @@ void CUISlot::Slot15(int width, int height) {
   this->radioButton->Invalidate();
   this->AddChild(this->radioButton);
 
-  this->itemIcon = new CUIGameItem(*this->m_context);
+  this->itemIcon = new CUIGameItem();
   this->itemIcon->SetMode(0);
   this->itemIcon->SetScale(100);
   this->itemIcon->Move(69, 11);
@@ -839,7 +839,7 @@ void CUISlot::Slot15(int width, int height) {
   this->itemIcon->unknown_0085 = 1;
   this->AddChild(this->itemIcon);
 
-  this->description = new CUITextViewer(*this->m_context);
+  this->description = new CUITextViewer();
   this->description->SetSize(96, 39);
   this->description->Move(0, 44);
   this->description->SetTextOffset(2, 0);
@@ -919,22 +919,22 @@ void CUISlot::Slot15(int width, int height) {
 // OFFSET: 0x00A00D50
 // FUNCTION: fn_14829
 void CUIUpgrade::Slot15(int width, int height) {
-  this->firstPage = new CUIUpgradeRandom(*this->m_context);
+  this->firstPage = new CUIUpgradeRandom();
   this->firstPage->SetSize(470, 377);
   this->firstPage->Move(0, 0);
   this->AddChild(this->firstPage);
 
-  this->secondPage = new CUIUpgradePerfect(*this->m_context);
+  this->secondPage = new CUIUpgradePerfect();
   this->secondPage->SetSize(470, 377);
   this->secondPage->Move(0, 0);
   this->AddChild(this->secondPage);
 
-  this->tab = new CUITab(*this->m_context);
+  this->tab = new CUITab();
   this->tab->SetSize(76, 20);
   this->tab->Move(7, 1);
   this->AddChild(this->tab);
 
-  CUITabButton* firstButton = new CUITabButton(*this->m_context);
+  CUITabButton* firstButton = new CUITabButton();
   firstButton->SetSize(38, 20);
   firstButton->Move(0, 0);
   firstButton->disabled = 0;
@@ -978,7 +978,7 @@ void CUIUpgrade::Slot15(int width, int height) {
   }
   this->tab->AddChild(firstButton);
 
-  CUITabButton* secondButton = new CUITabButton(*this->m_context);
+  CUITabButton* secondButton = new CUITabButton();
   secondButton->SetSize(38, 20);
   secondButton->Move(38, 0);
   secondButton->disabled = 0;
@@ -1284,16 +1284,16 @@ bool CUIEnchantUI::CanHitTest() {
 // OFFSET: 0x009F6D40
 // FUNCTION: fn_14766
 template <>
-CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::CUIListBoxEx(UIWindowContext& context)
-    : CUIControl(context), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
+CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::CUIListBoxEx()
+    : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
       unknown_00E0(1), rebind(0) {
 }
 
 // OFFSET: 0x009F6F00
 // FUNCTION: fn_14767
 template <>
-CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>::CUIListBoxEx(UIWindowContext& context)
-    : CUIControl(context), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
+CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>::CUIListBoxEx()
+    : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
       unknown_00E0(1), rebind(0) {
 }
 
@@ -1804,7 +1804,7 @@ bool CUIUpgradePerfect::Slot56() {
 // OFFSET: 0x009F9FE0
 // FUNCTION: fn_14817
 void CUIEnchantPage::Slot15(int width, int height) {
-  this->background = new CUIStaticImage(*this->m_context);
+  this->background = new CUIStaticImage();
   this->background->SetSize(470, 377);
   this->background->Move(0, 0);
   {
@@ -1820,7 +1820,7 @@ void CUIEnchantPage::Slot15(int width, int height) {
   }
   this->AddChild(this->background);
 
-  this->gameItem = new CUIGameItem(*this->m_context);
+  this->gameItem = new CUIGameItem();
   this->gameItem->SetMode(1);
   this->gameItem->SetScale(100);
   this->gameItem->Move(112, 5);
@@ -1828,31 +1828,31 @@ void CUIEnchantPage::Slot15(int width, int height) {
   this->gameItem->unknown_0085 = 1;
   this->AddChild(this->gameItem);
 
-  CUISlot* slot = new CUISlot0(*this->m_context);
+  CUISlot* slot = new CUISlot0();
   slot->SetSize(106, 84);
   slot->Move(6, 20);
   this->AddChild(slot);
   this->unknown_0088[0] = slot;
 
-  slot = new CUISlot1(*this->m_context);
+  slot = new CUISlot1();
   slot->SetSize(106, 84);
   slot->Move(29, 105);
   this->AddChild(slot);
   this->unknown_0088[1] = slot;
 
-  slot = new CUISlot2(*this->m_context);
+  slot = new CUISlot2();
   slot->SetSize(106, 84);
   slot->Move(164, 105);
   this->AddChild(slot);
   this->unknown_0088[2] = slot;
 
-  slot = new CUISlot3(*this->m_context);
+  slot = new CUISlot3();
   slot->SetSize(106, 84);
   slot->Move(187, 20);
   this->AddChild(slot);
   this->unknown_0088[3] = slot;
 
-  this->enchantList = new CUIListBoxEx<CUIEnchantItem, CEnchantItemData>(*this->m_context);
+  this->enchantList = new CUIListBoxEx<CUIEnchantItem, CEnchantItemData>();
   this->enchantList->itemWidth = 150;
   this->enchantList->rowHeight = 30;
   this->enchantList->SetSize(169, 377);
@@ -1943,7 +1943,7 @@ void CUIEnchantPage::Slot15(int width, int height) {
   this->enchantList->AddNewItem();
   this->AddChild(this->enchantList);
 
-  this->unknown_009C = new CUIStaticText(*this->m_context);
+  this->unknown_009C = new CUIStaticText();
   this->unknown_009C->SetSize(100, 15);
   this->unknown_009C->Move(150, 309);
   this->unknown_009C->SetText("", 0);
@@ -1963,7 +1963,7 @@ void CUIEnchantPage::Slot15(int width, int height) {
   this->unknown_009C->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->unknown_009C);
 
-  this->unknown_00A0 = new CUIImageButton(*this->m_context);
+  this->unknown_00A0 = new CUIImageButton();
   this->unknown_00A0->SetSize(140, 40);
   this->unknown_00A0->Move(80, 330);
   this->unknown_00A0->SetOnClick([this]() { this->Slot55(); });
@@ -2065,7 +2065,7 @@ void CUIUpgradeRandom::Slot15(int width, int height) {
 // OFFSET: 0x009F31B0
 // FUNCTION: fn_14753
 void CUIEnchantUI::Slot15(int width, int height) {
-  this->background = new CUIStaticImage(*this->m_context);
+  this->background = new CUIStaticImage();
   this->background->SetSize(690, 470);
   this->background->Move(0, 0);
   {
@@ -2081,7 +2081,7 @@ void CUIEnchantUI::Slot15(int width, int height) {
   }
   this->AddChild(this->background);
 
-  this->titleBar = new CUITitleBar(*this->m_context);
+  this->titleBar = new CUITitleBar();
   this->titleBar->SetSize(690, 17);
   this->titleBar->Move(0, 0);
   {
@@ -2115,7 +2115,7 @@ void CUIEnchantUI::Slot15(int width, int height) {
   }
   this->AddChild(this->titleBar);
 
-  CUIStaticText* title = new CUIStaticText(*this->m_context);
+  CUIStaticText* title = new CUIStaticText();
   title->SetSize(100, 17);
   title->Move(18, 0);
   title->SetText("", 0);
@@ -2135,7 +2135,7 @@ void CUIEnchantUI::Slot15(int width, int height) {
   this->titleBar->titleText = title;
   this->titleBar->AddChild(title);
 
-  CUIImageButton* closeButton = new CUIImageButton(*this->m_context);
+  CUIImageButton* closeButton = new CUIImageButton();
   closeButton->SetSize(11, 11);
   closeButton->Move(676, 3);
   closeButton->SetOnClick([this]() { this->OnClickClose(); });
@@ -2180,7 +2180,7 @@ void CUIEnchantUI::Slot15(int width, int height) {
   }
   this->titleBar->SetSecondButton(closeButton);
 
-  this->targetList = new CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>(*this->m_context);
+  this->targetList = new CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>();
   this->targetList->itemWidth = 200;
   this->targetList->rowHeight = 50;
   this->targetList->SetSize(220, 400);
@@ -2271,12 +2271,12 @@ void CUIEnchantUI::Slot15(int width, int height) {
   this->targetList->AddNewItem();
   this->AddChild(this->targetList);
 
-  this->tab = new CUITab(*this->m_context);
+  this->tab = new CUITab();
   this->tab->SetSize(290, 22);
   this->tab->Move(225, 18);
   this->AddChild(this->tab);
 
-  CUITabButton* normalButton = new CUITabButton(*this->m_context);
+  CUITabButton* normalButton = new CUITabButton();
   normalButton->SetSize(65, 22);
   normalButton->Move(48, 0);
   normalButton->disabled = 0;
@@ -2319,7 +2319,7 @@ void CUIEnchantUI::Slot15(int width, int height) {
   }
   this->tab->AddChild(normalButton);
 
-  CUITabButton* upgradeButton = new CUITabButton(*this->m_context);
+  CUITabButton* upgradeButton = new CUITabButton();
   upgradeButton->SetSize(65, 22);
   upgradeButton->Move(113, 0);
   upgradeButton->disabled = 0;
@@ -2362,7 +2362,7 @@ void CUIEnchantUI::Slot15(int width, int height) {
   }
   this->tab->AddChild(upgradeButton);
 
-  CUITabButton* resetButton = new CUITabButton(*this->m_context);
+  CUITabButton* resetButton = new CUITabButton();
   resetButton->SetSize(65, 22);
   resetButton->Move(178, 0);
   resetButton->disabled = 0;
@@ -2405,7 +2405,7 @@ void CUIEnchantUI::Slot15(int width, int height) {
   }
   this->tab->AddChild(resetButton);
 
-  this->normalPage = new EnchantUI::CUINormal(*this->m_context);
+  this->normalPage = new EnchantUI::CUINormal();
   this->normalPage->SetSize(470, 377);
   this->normalPage->Move(220, 40);
   this->AddChild(this->normalPage);
@@ -2432,7 +2432,7 @@ void CUIEnchantUI::Slot15(int width, int height) {
     this->normalPage->secondPage->background->SetImage(image);
   }
 
-  this->upgradePage = new EnchantUI::CUIUpgrade(*this->m_context);
+  this->upgradePage = new EnchantUI::CUIUpgrade();
   this->upgradePage->SetSize(470, 377);
   this->upgradePage->Move(220, 40);
   this->AddChild(this->upgradePage);
@@ -2459,12 +2459,12 @@ void CUIEnchantUI::Slot15(int width, int height) {
     this->upgradePage->secondPage->background->SetImage(image);
   }
 
-  this->resetPage = new EnchantUI::CUIReset(*this->m_context);
+  this->resetPage = new EnchantUI::CUIReset();
   this->resetPage->SetSize(470, 377);
   this->resetPage->Move(220, 40);
   this->AddChild(this->resetPage);
 
-  this->textViewer = new CUITextViewer(*this->m_context);
+  this->textViewer = new CUITextViewer();
   this->textViewer->SetSize(675, 47);
   this->textViewer->Move(10, 421);
   this->textViewer->SetTextOffset(0, 0);

@@ -64,8 +64,8 @@ std::uint32_t g_monsterInfoActorId;
 
 // OFFSET: 0x008A3700
 // FUNCTION: fn_11657
-UIFrameWnd::UIFrameWnd(UIWindowContext& windowContext, unsigned char cached)
-    : UIWindow(windowContext, cached), m_dragX(0), m_dragY(0), m_message0(600), m_message1(600) {
+UIFrameWnd::UIFrameWnd(unsigned char cached)
+    : UIWindow(cached), m_dragX(0), m_dragY(0), m_message0(600), m_message1(600) {
   this->m_textCache.max_load_factor(1.0f);
   this->m_textCache.rehash(8);
 }
@@ -234,7 +234,7 @@ int UIFrameWnd::Slot46() {
 // OFFSET: 0x008CEF10
 // FUNCTION: fn_12074
 UIBitmapButton* UIFrameWnd::AddBaseButton() {
-  UIBitmapButton* button = new UIBitmapButton(*this->m_context);
+  UIBitmapButton* button = new UIBitmapButton();
   button->SetBitmap("유저인터페이스\\basic_interface\\sys_base_off.bmp", 0, 0);
   button->SetBitmap("유저인터페이스\\basic_interface\\sys_base_on.bmp", 1, 0);
   button->SetBitmap("유저인터페이스\\basic_interface\\sys_base_on.bmp", 2, 0);
@@ -252,7 +252,7 @@ UIBitmapButton* UIFrameWnd::AddBigCloseButton(const char* tooltip, int width) {
     width = this->geometry.width;
   }
 
-  UIBitmapButton* button = new UIBitmapButton(*this->m_context);
+  UIBitmapButton* button = new UIBitmapButton();
   button->SetBitmap("유저인터페이스\\basic_interface\\big_sys_close_off.bmp", 0, 0);
   button->SetBitmap("유저인터페이스\\basic_interface\\big_sys_close_on.bmp", 1, 0);
   button->SetBitmap("유저인터페이스\\basic_interface\\big_sys_close_on.bmp", 2, 0);
@@ -272,7 +272,7 @@ UIBitmapButton* UIFrameWnd::AddCloseButton(const char* tooltip, int width) {
     width = this->geometry.width;
   }
 
-  UIBitmapButton* button = new UIBitmapButton(*this->m_context);
+  UIBitmapButton* button = new UIBitmapButton();
   button->SetBitmap("유저인터페이스\\basic_interface\\sys_close_off.bmp", 0, 0);
   button->SetBitmap("유저인터페이스\\basic_interface\\sys_close_on.bmp", 1, 0);
   button->SetBitmap("유저인터페이스\\basic_interface\\sys_close_on.bmp", 2, 0);
@@ -292,7 +292,7 @@ UIBitmapButton* UIFrameWnd::AddMinimizeButton(const char* tooltip, int width) {
     width = this->geometry.width;
   }
 
-  UIBitmapButton* button = new UIBitmapButton(*this->m_context);
+  UIBitmapButton* button = new UIBitmapButton();
   button->SetBitmap("유저인터페이스\\basic_interface\\sys_mini_off.bmp", 0, 0);
   button->SetBitmap("유저인터페이스\\basic_interface\\sys_mini_on.bmp", 1, 0);
   button->SetBitmap("유저인터페이스\\basic_interface\\sys_mini_on.bmp", 2, 0);
@@ -312,7 +312,7 @@ UIBitmapButton* UIFrameWnd::AddBitmapButton(int id, int x, int y, const char* na
     return nullptr;
   }
 
-  UIBitmapButton* button = new UIBitmapButton(*this->m_context);
+  UIBitmapButton* button = new UIBitmapButton();
   std::string path = "유저인터페이스\\";
   path += name;
   button->SetBitmap((path + "_out" + ".bmp").c_str(), 0, 0);
@@ -334,7 +334,7 @@ UIBitmapButton* UIFrameWnd::AddNumberedButton(int id, int x, int y, const char* 
     return nullptr;
   }
 
-  UIBitmapButton* button = new UIBitmapButton(*this->m_context);
+  UIBitmapButton* button = new UIBitmapButton();
   std::string path;
   if (prefix) {
     path += "유저인터페이스\\";
@@ -357,7 +357,7 @@ UIBitmapButton* UIFrameWnd::AddNumberedButton(int id, int x, int y, const char* 
 UICheckBox* UIFrameWnd::AddStyledCheckBox(int id, int width, int height, const char* text, int x, int y, bool checked, const char* tooltip, int fontHeight,
   std::uint32_t color, const char* checkedImage, const char* uncheckedImage
 ) {
-  UICheckBox* checkBox = new UICheckBox(*this->m_context);
+  UICheckBox* checkBox = new UICheckBox();
   checkBox->SetSize(width, height);
   checkBox->SetImages(
     checkedImage ? checkedImage : "유저인터페이스\\checkbox_1.bmp", uncheckedImage ? uncheckedImage : "유저인터페이스\\checkbox_0.bmp", text
@@ -376,7 +376,7 @@ UICheckBox* UIFrameWnd::AddStyledCheckBox(int id, int width, int height, const c
 // OFFSET: 0x008CFF40
 // FUNCTION: fn_12081
 UICheckBox* UIFrameWnd::AddCheckBox(int id, int width, int height, const char* text, int x, int y, int checked, const char* tooltip) {
-  UICheckBox* checkBox = new UICheckBox(*this->m_context);
+  UICheckBox* checkBox = new UICheckBox();
   checkBox->SetSize(width, height);
   checkBox->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", text);
   checkBox->Move(x, y);
@@ -610,20 +610,20 @@ int UICntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intpt
 
 // OFFSET: 0x008A34B0
 // FUNCTION: fn_11653
-UIAllyGuildAcceptWnd::UIAllyGuildAcceptWnd(UIWindowContext& windows, UIAcceptanceContext& acceptance)
-    : UIExchangeAcceptWnd(windows, acceptance) {
+UIAllyGuildAcceptWnd::UIAllyGuildAcceptWnd(UIAcceptanceContext& acceptance)
+    : UIExchangeAcceptWnd(acceptance) {
 }
 
 // OFFSET: 0x008A3510
 // FUNCTION: fn_11654
-UIBank_NewWnd::UIBank_NewWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), m_amountEdit(nullptr), m_status() {
+UIBank_NewWnd::UIBank_NewWnd()
+    : UIFrameWnd(0), m_amountEdit(nullptr), m_status() {
 }
 
 // OFFSET: 0x008A35A0
 // FUNCTION: fn_11655
-UIChatRoomWnd::UIChatRoomWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), title(), unknown_00CC(), unknown_010C(), unknown_0114(), saved(nullptr) {
+UIChatRoomWnd::UIChatRoomWnd()
+    : UIFrameWnd(0), title(), unknown_00CC(), unknown_010C(), unknown_0114(), saved(nullptr) {
 }
 
 // OFFSET: 0x008BB9E0
@@ -1091,24 +1091,24 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 
 // OFFSET: 0x008A36A0
 // FUNCTION: fn_11656
-UICntWnd::UICntWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0) {
+UICntWnd::UICntWnd()
+    : UIFrameWnd(0) {
 }
 
 // OFFSET: 0x008A37F0
 // FUNCTION: fn_11658
-UIHomunInfoWnd::UIHomunInfoWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0), unknown_00D0(0), unknown_00D4(0) {
+UIHomunInfoWnd::UIHomunInfoWnd() : UIFrameWnd(0), unknown_00D0(0), unknown_00D4(0) {
 }
 
 // OFFSET: 0x008A3860
 // FUNCTION: fn_11659
-UILoginOTPWnd::UILoginOTPWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), unknown_00B4(0), unknown_00B8(0), timerText(nullptr), unknown_00C0(0) {
+UILoginOTPWnd::UILoginOTPWnd()
+    : UIFrameWnd(0), unknown_00B4(0), unknown_00B8(0), timerText(nullptr), unknown_00C0(0) {
 }
 
 // OFFSET: 0x008A38E0
 // FUNCTION: fn_11660
-UILoginWnd::UILoginWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), idEdit(nullptr), passwordEdit(nullptr), unknown_00BC(0), unknown_00C4(0), saveId(0), unknown_00CC(1), unknown_00D0(0),
+UILoginWnd::UILoginWnd()
+    : UIFrameWnd(0), idEdit(nullptr), passwordEdit(nullptr), unknown_00BC(0), unknown_00C4(0), saveId(0), unknown_00CC(1), unknown_00D0(0),
       unknown_00D4(0), unknown_00D8(), unknown_00E8(0), unknown_00EC("G000") {
 }

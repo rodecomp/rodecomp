@@ -52,7 +52,7 @@ static_assert(sizeof(SearchStoreResult) == sizeof(SessionEntry5BD4));
 // OFFSET: 0x009121F0
 // FUNCTION: fn_12527
 UISerachStoreInfoWnd::UISerachStoreInfoWnd()
-    : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(nullptr), 0), unknown_00DC(1), unknown_00E0(-1),
+    : UIFrameWnd(0), unknown_00DC(1), unknown_00E0(-1),
       unknown_00E4(0), unknown_00E8(25), unknown_00EC(0), unknown_00ED(1) {
   this->unknown_00F0.clear();
 }
@@ -87,7 +87,7 @@ ITEM_INFO UISerachStoreInfoWnd::ItemAt(int x, int y) {
 void UISerachStoreInfoWnd::Slot15(int width, int height) {
   UIRadioBtn** radio = this->m_radios;
   for (int x = 10; x < 90; x += 40) {
-    *radio = new UIRadioBtn(*this->m_context);
+    *radio = new UIRadioBtn();
     (*radio)->SetSize(this->geometry.width / 2, 12);
     (*radio)->Move(x, 40);
     this->AddChild(*radio);
@@ -97,7 +97,7 @@ void UISerachStoreInfoWnd::Slot15(int width, int height) {
   this->m_radios[1]->SetText(LookupMessage(0x6F3));
   this->m_radios[this->unknown_00E4]->SendMsg(this, 0xD, 1, 0, 0, 0);
 
-  this->m_edits[1] = new UIEditCtrl(*this->m_context);
+  this->m_edits[1] = new UIEditCtrl();
   this->m_edits[1]->SetSize(0x4C, 0x10);
   this->m_edits[1]->Move(100, 0x24);
   this->m_edits[1]->maximum = 0x32;
@@ -106,7 +106,7 @@ void UISerachStoreInfoWnd::Slot15(int width, int height) {
   this->m_edits[1]->flat = 0;
   this->AddChild(this->m_edits[1]);
 
-  this->m_edits[0] = new UIEditCtrl(*this->m_context);
+  this->m_edits[0] = new UIEditCtrl();
   this->m_edits[0]->SetSize(0x4C, 0x10);
   this->m_edits[0]->Move(0xBB, 0x24);
   this->m_edits[0]->maximum = 0x32;
@@ -122,7 +122,7 @@ void UISerachStoreInfoWnd::Slot15(int width, int height) {
   this->m_edits[0]->invalidatesParent = 1;
   this->AddChild(this->m_edits[0]);
 
-  this->m_edits[2] = new UIEditCtrl(*this->m_context);
+  this->m_edits[2] = new UIEditCtrl();
   this->m_edits[2]->SetSize(0x4C, 0x10);
   this->m_edits[2]->Move(0x113, 0x24);
   this->m_edits[2]->maximum = 0x32;
@@ -133,7 +133,7 @@ void UISerachStoreInfoWnd::Slot15(int width, int height) {
   this->m_edits[2]->Invalidate();
   this->AddChild(this->m_edits[2]);
 
-  this->m_edits[3] = new UIEditCtrl(*this->m_context);
+  this->m_edits[3] = new UIEditCtrl();
   this->m_edits[3]->SetSize(0x4C, 0x10);
   this->m_edits[3]->Move(0x16C, 0x24);
   this->m_edits[3]->maximum = 0x32;
@@ -144,7 +144,7 @@ void UISerachStoreInfoWnd::Slot15(int width, int height) {
   this->m_edits[3]->Invalidate();
   this->AddChild(this->m_edits[3]);
 
-  UICheckBox* check = new UICheckBox(*this->m_context);
+  UICheckBox* check = new UICheckBox();
   check->SetSize(0xA0, 0xC);
   check->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(0x6FC));
   check->Move(100, 0x3C);
@@ -153,7 +153,7 @@ void UISerachStoreInfoWnd::Slot15(int width, int height) {
 
   {
     std::string path = "유저인터페이스\\";
-    this->m_findButton = new UIBitmapButton(*this->m_context);
+    this->m_findButton = new UIBitmapButton();
     this->m_findButton->SetBitmap((path + "btn_find" + ".bmp").c_str(), 0, 0);
     this->m_findButton->SetBitmap((path + "btn_find_a" + ".bmp").c_str(), 1, 0);
     this->m_findButton->SetBitmap((path + "btn_find_b" + ".bmp").c_str(), 2, 0);
@@ -163,7 +163,7 @@ void UISerachStoreInfoWnd::Slot15(int width, int height) {
     this->AddChild(this->m_findButton);
   }
 
-  this->m_prevButton = new UITextButton(*this->m_context);
+  this->m_prevButton = new UITextButton();
   this->m_prevButton->Configure(LookupMessage(0x41D), 0x8E8E8E, 0, 0xC, 0, 0);
   this->m_prevButton->m_hoverColor = 0xEFB700;
   this->m_prevButton->Move(
@@ -173,7 +173,7 @@ void UISerachStoreInfoWnd::Slot15(int width, int height) {
   this->m_prevButton->SetId(0x13C);
   this->AddChild(this->m_prevButton);
 
-  this->m_nextButton = new UITextButton(*this->m_context);
+  this->m_nextButton = new UITextButton();
   this->m_nextButton->Configure(LookupMessage(0x41E), 0x8E8E8E, 0, 0xC, 0, 0);
   this->m_nextButton->m_hoverColor = 0xEFB700;
   this->m_nextButton->Move(this->geometry.width / 2 + 0x14, this->geometry.height - 0x15);

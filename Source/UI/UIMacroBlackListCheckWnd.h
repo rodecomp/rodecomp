@@ -9,7 +9,7 @@ class UIBitmapButton;
 
 class UIMacroBlackListCheckWnd : public UIFrameWnd {
 public:
-  UIMacroBlackListCheckWnd(UIWindowContext& windows);
+  UIMacroBlackListCheckWnd();
   void Slot15(int width, int height) override;
   void Slot19() override;
   void Paint() override;

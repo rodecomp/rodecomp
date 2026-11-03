@@ -11,7 +11,7 @@ class UIScrollBar;
 
 class UIMakeCharWnd : public UIFrameWnd {
 public:
-  UIMakeCharWnd(UIWindowContext& windows);
+  UIMakeCharWnd();
 
   void Slot15(int width, int height) override;
   void Slot18() override;

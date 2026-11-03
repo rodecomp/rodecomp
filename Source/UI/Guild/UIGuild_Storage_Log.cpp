@@ -16,7 +16,7 @@ std::vector<GuildStorageLogEntry> g_guildStorageLogs[3];
 
 // OFFSET: 0x009469D0
 // FUNCTION: fn_12849
-UIGuild_Storage_Log::UIGuild_Storage_Log(UIWindowContext& windows) : UIFrameWnd(windows, 0) {
+UIGuild_Storage_Log::UIGuild_Storage_Log() : UIFrameWnd(0) {
   this->unknown_0184 = 0;
   this->unknown_0188 = 0;
   this->unknown_018C = 0;

@@ -10,7 +10,7 @@ struct ForbiddenWords;
 
 class UIMerchantShopTitle : public UIWindow {
 public:
-  UIMerchantShopTitle(UIWindowContext& windows, ForbiddenWords& forbiddenWords, int buyingShop);
+  UIMerchantShopTitle(ForbiddenWords& forbiddenWords, int buyingShop);
   void Slot15(int width, int height) override;
   void Paint() override;
   void Slot25(int x, int y) override;

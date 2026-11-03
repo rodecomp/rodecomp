@@ -6,7 +6,7 @@
 
 class UIPartyInfoWnd : public UIBitmapButton {
 public:
-  UIPartyInfoWnd(UIWindowContext& windows);
+  UIPartyInfoWnd();
   ~UIPartyInfoWnd() override;
   void Paint() override;
   void Slot31(int x, int y) override;

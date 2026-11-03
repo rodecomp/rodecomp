@@ -73,10 +73,10 @@ void UIPetInfoBarGraph::Paint() {
 
 // OFFSET: 0x0086D380
 // FUNCTION: fn_11045
-UIINT64BarGraph::UIINT64BarGraph(UIWindowContext& context) : UIWindow(context, 0), m_current(0), m_maximum(0) {
+UIINT64BarGraph::UIINT64BarGraph() : UIWindow(0), m_current(0), m_maximum(0) {
 }
 
 // OFFSET: 0x0086E1B0
 // FUNCTION: fn_11066
-UIPetInfoBarGraph::UIPetInfoBarGraph(UIWindowContext& context) : UIWindow(context, 0), unknown_007C(0) {
+UIPetInfoBarGraph::UIPetInfoBarGraph() : UIWindow(0), unknown_007C(0) {
 }

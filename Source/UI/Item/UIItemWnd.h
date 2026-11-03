@@ -15,7 +15,6 @@ class UITabControl;
 class UIItemWnd : public UIItemBaseWnd {
 public:
   UIItemWnd();
-  UIItemWnd(UIWindowContext& windows);
   __declspec(noinline) ~UIItemWnd() override;
   void Slot11() override;
   void Slot10(int x, int y, std::intptr_t value) override;

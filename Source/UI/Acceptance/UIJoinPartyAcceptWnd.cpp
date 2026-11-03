@@ -12,8 +12,8 @@
 
 // OFFSET: 0x008C8240
 // FUNCTION: fn_11950
-UIJoinPartyAcceptWnd::UIJoinPartyAcceptWnd(UIWindowContext& windows, UIAcceptanceContext& acceptance)
-    : UIExchangeAcceptWnd(windows, acceptance) {
+UIJoinPartyAcceptWnd::UIJoinPartyAcceptWnd(UIAcceptanceContext& acceptance)
+    : UIExchangeAcceptWnd(acceptance) {
 }
 
 // OFFSET: 0x008CCEE0

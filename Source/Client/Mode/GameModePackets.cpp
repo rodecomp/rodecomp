@@ -3759,7 +3759,7 @@ void CGameMode::ShowSpecialPopup(int popupId) {
     return;
   }
 
-  UIWindow window(*reinterpret_cast<UIWindowContext*>(nullptr), 0);
+  UIWindow window(0);
   std::string text;
   switch (popup->m_messageId) {
   case 0:

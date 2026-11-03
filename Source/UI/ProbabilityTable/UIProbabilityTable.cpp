@@ -158,8 +158,8 @@ bool UnusedTrueA47F10() {
 // OFFSET: 0x00A47FA0
 // FUNCTION: fn_16108
 template <>
-CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::CUIListBoxEx(UIWindowContext& context)
-    : CUIControl(context), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
+CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::CUIListBoxEx()
+    : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
       unknown_00E0(1), rebind(0) {
 }
 
@@ -201,7 +201,7 @@ void CUIProbabilityTable::Slot53() {
 // FUNCTION: fn_16117
 template <>
 void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::Slot15(int width, int height) {
-  this->scrollBar = new CUIVScrollBar(*this->m_context);
+  this->scrollBar = new CUIVScrollBar();
   this->scrollBar->Show(0);
   this->scrollBar->onChange = [this](int position) { this->OnScroll(position); };
   this->AddChild(this->scrollBar);
@@ -217,7 +217,7 @@ CUIItem::CUIItem() : CUIListItem(), nameText(nullptr), probabilityText(nullptr),
 // OFFSET: 0x00A48A70
 // FUNCTION: fn_16118
 void CUIItem::Slot15(int width, int height) {
-  this->nameText = new CUITextViewer(*this->m_context);
+  this->nameText = new CUITextViewer();
   this->nameText->SetSize(231, 29);
   this->nameText->Move(1, 0);
   this->nameText->SetTextOffset(0, 6);
@@ -238,7 +238,7 @@ void CUIItem::Slot15(int width, int height) {
   this->nameText->SetScrollBarThumbImage(std::string());
   this->AddChild(this->nameText);
 
-  this->probabilityText = new CUITextViewer(*this->m_context);
+  this->probabilityText = new CUITextViewer();
   this->probabilityText->SetSize(78, 29);
   this->probabilityText->Move(233, 0);
   this->probabilityText->SetTextOffset(2, 6);
@@ -550,7 +550,7 @@ void BindItem(ProbabilityTable::CUIItem* item, const ProbabilityTable::CItemData
 // OFFSET: 0x00A493D0
 // FUNCTION: fn_16119
 void CUIProbabilityTable::Slot15(int width, int height) {
-  this->m_titleBar = new CUITitleBar(*this->m_context);
+  this->m_titleBar = new CUITitleBar();
   this->m_titleBar->SetSize(345, 17);
   this->m_titleBar->Move(0, 0);
   const std::uint8_t titleRight[] = {
@@ -573,7 +573,7 @@ void CUIProbabilityTable::Slot15(int width, int height) {
   this->m_titleBar->SetImages(std::string(DecryptName<0x0B7109397F6B1387ULL>(titleLeft)), std::string(DecryptName<0x23BBD58F8B5FF5C9ULL>(titleMiddle)), std::string(DecryptName<0xC517FB932D95BB6DULL>(titleRight)));
   this->AddChild(this->m_titleBar);
 
-  CUIStaticText* title = new CUIStaticText(*this->m_context);
+  CUIStaticText* title = new CUIStaticText();
   title->SetSize(310, 17);
   title->Move(18, 0);
   const std::uint8_t titleTextSource[] = {0x8B, 0x87, 0xE4, 0xDB, 0xF5, 0x0F, 0xB1, 0x29, 0xF0, 0x29};
@@ -591,7 +591,7 @@ void CUIProbabilityTable::Slot15(int width, int height) {
   this->m_titleBar->titleText = title;
   this->m_titleBar->AddChild(title);
 
-  CUIImageButton* systemButton = new CUIImageButton(*this->m_context);
+  CUIImageButton* systemButton = new CUIImageButton();
   systemButton->SetSize(11, 11);
   systemButton->Move(3, 3);
   systemButton->SetOnClick([this]() { this->OnButtonClick(); });
@@ -623,7 +623,7 @@ void CUIProbabilityTable::Slot15(int width, int height) {
   );
   this->m_titleBar->AddChild(systemButton);
 
-  CUIImageButton* closeButton = new CUIImageButton(*this->m_context);
+  CUIImageButton* closeButton = new CUIImageButton();
   closeButton->SetSize(11, 11);
   closeButton->Move(331, 3);
   closeButton->SetOnClick([this]() { this->OnClose(); });
@@ -657,7 +657,7 @@ void CUIProbabilityTable::Slot15(int width, int height) {
   );
   this->m_titleBar->SetSecondButton(closeButton);
 
-  this->m_nameHeader = new CUIStaticText(*this->m_context);
+  this->m_nameHeader = new CUIStaticText();
   this->m_nameHeader->SetSize(160, 18);
   this->m_nameHeader->Move(10, 30);
   const std::uint8_t nameHeaderSource[] = {0x50, 0xC3, 0x45, 0x6D, 0x12, 0xA3, 0x19, 0x6D, 0x2A, 0xC0, 0x0F, 0xD7};
@@ -674,7 +674,7 @@ void CUIProbabilityTable::Slot15(int width, int height) {
   this->m_nameHeader->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->m_nameHeader);
 
-  this->m_searchEdit = new CUIEditBoxEx(*this->m_context);
+  this->m_searchEdit = new CUIEditBoxEx();
   this->m_searchEdit->Create(130, 18, false);
   this->m_searchEdit->Move(180, 30);
   this->m_searchEdit->SetText("");
@@ -689,7 +689,7 @@ void CUIProbabilityTable::Slot15(int width, int height) {
   this->m_searchEdit->SetOnSubmit([this]() { this->Search(); });
   this->AddChild(this->m_searchEdit);
 
-  this->m_searchButton = new CUIImageButton(*this->m_context);
+  this->m_searchButton = new CUIImageButton();
   this->m_searchButton->SetSize(25, 18);
   this->m_searchButton->Move(310, 30);
   this->m_searchButton->SetOnClick([this]() { this->Search(); });
@@ -725,7 +725,7 @@ void CUIProbabilityTable::Slot15(int width, int height) {
   );
   this->AddChild(this->m_searchButton);
 
-  this->m_itemName = new CUIStaticText(*this->m_context);
+  this->m_itemName = new CUIStaticText();
   this->m_itemName->SetSize(220, 24);
   this->m_itemName->Move(16, 61);
   this->m_itemName->SetText("", 0);
@@ -740,7 +740,7 @@ void CUIProbabilityTable::Slot15(int width, int height) {
   this->m_itemName->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->m_itemName);
 
-  this->m_probabilityHeader = new CUIStaticText(*this->m_context);
+  this->m_probabilityHeader = new CUIStaticText();
   this->m_probabilityHeader->SetSize(68, 24);
   this->m_probabilityHeader->Move(248, 61);
   const std::uint8_t probabilityHeaderSource[] = {0x35, 0x79, 0xFA, 0x55, 0xB5};
@@ -757,7 +757,7 @@ void CUIProbabilityTable::Slot15(int width, int height) {
   this->m_probabilityHeader->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->m_probabilityHeader);
 
-  this->m_list = new CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>(*this->m_context);
+  this->m_list = new CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>();
   this->m_list->itemWidth = 312;
   this->m_list->rowHeight = 30;
   this->m_list->SetSize(325, 360);

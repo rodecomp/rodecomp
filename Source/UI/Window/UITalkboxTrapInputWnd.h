@@ -19,7 +19,7 @@ struct TalkboxTrapRequest {
 
 class UITalkboxTrapInputWnd : public UIFrameWnd {
 public:
-  UITalkboxTrapInputWnd(UIWindowContext& windows);
+  UITalkboxTrapInputWnd();
 
   void Slot15(int width, int height) override;
   void Paint() override;

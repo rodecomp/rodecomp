@@ -62,12 +62,12 @@ struct RodexSendMailRequest {
 
 // OFFSET: 0x007FEF20
 // FUNCTION: fn_09993
-UIRodexEditCtrl3::UIRodexEditCtrl3(UIWindowContext& windows) : UIEditCtrl3(windows) {
+UIRodexEditCtrl3::UIRodexEditCtrl3() : UIEditCtrl3() {
 }
 
 // OFFSET: 0x007FEF80
 // FUNCTION: fn_09994
-UIRodexScrollBar::UIRodexScrollBar(UIWindowContext& windows) : UIScrollBar(windows) {
+UIRodexScrollBar::UIRodexScrollBar() : UIScrollBar() {
   this->arrowLength = 5;
 }
 
@@ -142,7 +142,7 @@ void UIRodexComposeWnd::sub_7FF940(int tagId) {
 // OFFSET: 0x00800480
 // FUNCTION: fn_10006
 void UIRodexEditCtrl3::Slot15(int width, int height) {
-  auto* scrollBar = new UIRodexScrollBar(*this->m_context);
+  auto* scrollBar = new UIRodexScrollBar();
   this->unknown_0130 = scrollBar;
   scrollBar->Configure(width - 5, 0, 1, height);
   this->AddChild(this->unknown_0130);
@@ -237,8 +237,8 @@ void UIRodexComposeWnd::Slot32(int x, int y) {
 
 // OFFSET: 0x007FEDD0
 // FUNCTION: fn_09992
-UIRodexComposeWnd::UIRodexComposeWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), unknown_00B4(nullptr), unknown_00B8(nullptr), unknown_00BC(nullptr), unknown_00C0(nullptr), unknown_00C4(nullptr),
+UIRodexComposeWnd::UIRodexComposeWnd()
+    : UIFrameWnd(0), unknown_00B4(nullptr), unknown_00B8(nullptr), unknown_00BC(nullptr), unknown_00C0(nullptr), unknown_00C4(nullptr),
       unknown_00C8(nullptr), unknown_00CC(0), unknown_00D0(nullptr), m_contents(nullptr), unknown_00D8(nullptr), m_zeny(nullptr), unknown_00E0(0),
       unknown_00E4(0), m_itemIndex(0), unknown_00F8(0), unknown_0100(nullptr) {
   this->m_items.clear();

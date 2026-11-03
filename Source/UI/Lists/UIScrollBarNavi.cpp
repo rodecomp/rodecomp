@@ -5,12 +5,7 @@
 
 // OFFSET: 0x0086E6E0
 // FUNCTION: fn_11075
-UIScrollBar_Navi::UIScrollBar_Navi() : UIScrollBar(*reinterpret_cast<UIWindowContext*>(nullptr)) {
-  this->arrowLength = 7;
-  this->thickness = 7;
-}
-
-UIScrollBar_Navi::UIScrollBar_Navi(UIWindowContext& windows) : UIScrollBar(windows) {
+UIScrollBar_Navi::UIScrollBar_Navi() : UIScrollBar() {
   this->arrowLength = 7;
   this->thickness = 7;
 }

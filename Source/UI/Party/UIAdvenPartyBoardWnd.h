@@ -24,7 +24,7 @@ struct PartyBoardPlacement {
 
 class UIAdvenPartyBoardWnd : public UIFrameWnd {
 public:
-  UIAdvenPartyBoardWnd(UIWindowContext& windows);
+  UIAdvenPartyBoardWnd();
   ~UIAdvenPartyBoardWnd() override;
   void Slot11() override;
   void Slot15(int width, int height) override;

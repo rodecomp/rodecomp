@@ -8,7 +8,7 @@
 
 class UIWordDisplayWnd : public UIFrameWnd {
 public:
-  UIWordDisplayWnd(UIWindowContext& windowContext);
+  UIWordDisplayWnd();
   void Slot15(int width, int height) override;
   void Slot19() override;
   void Paint() override;

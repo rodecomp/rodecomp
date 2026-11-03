@@ -11,7 +11,6 @@
 class UIItemBaseWnd : public UIFrameWnd {
 public:
   UIItemBaseWnd();
-  UIItemBaseWnd(UIWindowContext& windowContext);
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot11() override;
   void Slot15(int width, int height) override;

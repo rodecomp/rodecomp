@@ -19,7 +19,7 @@ struct WhisperLogLine {
 
 class UIWhisperWnd : public UIFrameWnd {
 public:
-  UIWhisperWnd(UIWindowContext& windows);
+  UIWhisperWnd();
 
   /* 00B4 */ std::string m_target;
   /* 00CC */ std::string m_name;

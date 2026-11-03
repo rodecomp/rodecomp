@@ -8,7 +8,7 @@
 
 class UIMonsterDisplayWnd : public UIFrameWnd {
 public:
-  UIMonsterDisplayWnd(UIWindowContext& windows);
+  UIMonsterDisplayWnd();
   /* 00B4 */ std::string m_name;
   /* 00CC */ std::string unknown_00CC;
   /* 00E4 */ unsigned char unknown_00E4;

@@ -21,8 +21,8 @@
 
 // OFFSET: 0x009F71F0
 // FUNCTION: fn_14769
-CUIGameItem::CUIGameItem(UIWindowContext& context)
-    : CUIControl(context), mode(0), unknown_0084(1), unknown_0085(1), transparent(0), scale(100), itemInfo(), name(), image(nullptr), showOverlay(0),
+CUIGameItem::CUIGameItem()
+    : CUIControl(), mode(0), unknown_0084(1), unknown_0085(1), transparent(0), scale(100), itemInfo(), name(), image(nullptr), showOverlay(0),
       overlay(nullptr), onClick() {
 }
 

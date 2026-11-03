@@ -48,8 +48,8 @@ namespace {
 
 // OFFSET: 0x007BAF30
 // FUNCTION: fn_09278
-UIRegisterPartyWnd::UIRegisterPartyWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), selectedType(0) {
+UIRegisterPartyWnd::UIRegisterPartyWnd()
+    : UIFrameWnd(0), selectedType(0) {
 }
 
 // OFFSET: 0x007BB810
@@ -70,7 +70,7 @@ void UIRegisterPartyWnd::Slot11() {
 // FUNCTION: fn_09300
 void UIRegisterPartyWnd::Slot15(int, int) {
   const auto label = [&](const char* text, int x, int y, int width) {
-    auto* value = new UIStaticText(*this->m_context);
+    auto* value = new UIStaticText();
     value->SetSize(width, 15);
     value->Move(x, y);
     value->SetText(text, 0);
@@ -89,7 +89,7 @@ void UIRegisterPartyWnd::Slot15(int, int) {
   const int level = g_session.m_level;
 
   const auto edit = [&](int x, int value) {
-    auto* control = new UIEditCtrl(*this->m_context);
+    auto* control = new UIEditCtrl();
     control->SetSize(25, 16);
     control->Move(x, 47);
     control->invalidatesParent = 1;
@@ -111,7 +111,7 @@ void UIRegisterPartyWnd::Slot15(int, int) {
   const int tooltips[] = {3420, 3491, 3444, 3508};
 
   for (int index = 0; index < 4; ++index) {
-    auto* job = new UIJobSlotButton(*this->m_context);
+    auto* job = new UIJobSlotButton();
     this->jobs[index] = job;
     job->SetSize(16, 16);
     job->Move(60 + index * 18, 95);
@@ -123,7 +123,7 @@ void UIRegisterPartyWnd::Slot15(int, int) {
   }
 
   label(LookupMessage(3359), 10, 121, this->geometry.width - 32);
-  this->memo = new UIEditCtrl(*this->m_context);
+  this->memo = new UIEditCtrl();
   this->memo->SetSize(139, 14);
   this->memo->maximum = 24;
   this->memo->TextColor(0, 0xFFFFFFFFu);
@@ -131,7 +131,7 @@ void UIRegisterPartyWnd::Slot15(int, int) {
   this->memo->Background(232, 232, 232);
   this->AddChild(this->memo);
 
-  auto* submit = new UIBasicButton(*this->m_context);
+  auto* submit = new UIBasicButton();
   const bool registered = g_adventurerAgencyMgr->registered;
   const char* title = LookupMessage(registered ? 3376 : 3371);
   submit->Configure(this->TextWidth(title, 0, 0, 12, 0, 0) + 10, title);
@@ -157,7 +157,7 @@ void UIRegisterPartyWnd::Slot15(int, int) {
     y += 12;
   }
 
-  auto* close = new UIBitmapButton(*this->m_context);
+  auto* close = new UIBitmapButton();
   const char* suffixes[] = {"", "_a", "_b"};
 
   for (int state = 0; state < 3; ++state) {
@@ -170,7 +170,7 @@ void UIRegisterPartyWnd::Slot15(int, int) {
   close->SetId(201);
   this->AddChild(close);
 
-  this->types = new UIComboBoxDef2Wnd(*this->m_context);
+  this->types = new UIComboBoxDef2Wnd();
   this->types->dropdownHeight = 126;
   this->types->SetSize(63, 18);
   this->types->Move(60, 70);
@@ -182,7 +182,7 @@ void UIRegisterPartyWnd::Slot15(int, int) {
   }
 
   this->types->Select(0);
-  auto* titleClose = new UIBitmapButton(*this->m_context);
+  auto* titleClose = new UIBitmapButton();
   const std::string off = std::string(prefix) + "basic_interface\\big_sys_close_off.bmp";
   const std::string on = std::string(prefix) + "basic_interface\\big_sys_close_on.bmp";
   titleClose->SetBitmap(off.c_str(), 0, 0);

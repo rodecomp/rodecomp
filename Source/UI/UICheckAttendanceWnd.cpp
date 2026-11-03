@@ -43,8 +43,8 @@ struct CheckAttendanceRequestPacket {
 
 // OFFSET: 0x007DC6B0
 // FUNCTION: fn_09631
-UICheckAttendanceWnd::UICheckAttendanceWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), m_blinking(0), m_checkedDays(0), m_daysLeft(0),
+UICheckAttendanceWnd::UICheckAttendanceWnd()
+    : UIFrameWnd(0), m_blinking(0), m_checkedDays(0), m_daysLeft(0),
       m_highlight(0), m_notice(nullptr) {
   this->m_rewardCount = static_cast<int>(g_checkAttendanceMgr->m_rewards.size());
 }
@@ -96,8 +96,8 @@ int UICheckAttendanceWnd::SlotAt(int x, int y) {
 }
 
 // INLINED
-UICheckAttendanceWnd_Banner::UICheckAttendanceWnd_Banner(UIWindowContext& windows)
-    : UIWindow(windows, 0), m_current(0), m_lastSwitch(timeGetTime()) {
+UICheckAttendanceWnd_Banner::UICheckAttendanceWnd_Banner()
+    : UIWindow(0), m_current(0), m_lastSwitch(timeGetTime()) {
 }
 
 // OFFSET: 0x007DCF50
@@ -120,7 +120,7 @@ void UICheckAttendanceWnd::Slot15(int, int) {
     this->m_daysLeft = _localtime32(&remaining)->tm_yday;
   }
 
-  this->m_notice = new UIBmpTextButton(*this->m_context);
+  this->m_notice = new UIBmpTextButton();
   this->m_notice->SetBitmap("유저인터페이스\\check_attendance\\bt_ok_normal.bmp", 0, 0);
   this->m_notice->SetBitmap("유저인터페이스\\check_attendance\\bt_ok_normal.bmp", 1, 0);
   this->m_notice->SetBitmap("유저인터페이스\\check_attendance\\bt_ok_press.bmp", 2, 0);
@@ -133,7 +133,7 @@ void UICheckAttendanceWnd::Slot15(int, int) {
   this->m_notice->SetId(201);
   this->AddChild(this->m_notice);
 
-  this->m_banner = new UICheckAttendanceWnd_Banner(*this->m_context);
+  this->m_banner = new UICheckAttendanceWnd_Banner();
   this->m_banner->SetSize(441, 41);
   this->m_banner->Move(this->geometry.width / 2 - this->m_banner->geometry.width / 2, 85);
   this->AddChild(this->m_banner);
@@ -142,7 +142,6 @@ void UICheckAttendanceWnd::Slot15(int, int) {
 // OFFSET: 0x007DD2E0
 // FUNCTION: fn_09640
 void UICheckAttendanceWnd::Paint() {
-  UIWindowContext& controls = *this->m_context;
 
   const char* backgroundName = this->m_banner->m_entries.size() != 0 ? "유저인터페이스\\check_attendance\\attendance_bg_ad.bmp"
                                                                      : "유저인터페이스\\check_attendance\\attendance_bg.bmp";
@@ -344,7 +343,7 @@ void UICheckAttendanceWnd_Banner::CreateButtons() {
   if (this->m_entries.size() > 1) {
     int index = 0;
     for (auto it = this->m_entries.begin(); it != this->m_entries.end(); ++it) {
-      UIBmpRadioBtn* button = new UIBmpRadioBtn(*this->m_context);
+      UIBmpRadioBtn* button = new UIBmpRadioBtn();
       button->SetBitmap("유저인터페이스\\check_attendance\\btn_ad_off.bmp", 0);
       button->SetBitmap("유저인터페이스\\check_attendance\\btn_ad_off.bmp", 1);
       button->SetBitmap("유저인터페이스\\check_attendance\\btn_ad_on.bmp", 2);

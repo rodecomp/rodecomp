@@ -15,7 +15,7 @@ class UIEditCtrl;
 
 class UIReputeWnd : public UIFrameWnd {
 public:
-  UIReputeWnd(UIWindowContext& windows);
+  UIReputeWnd();
   bool Slot02() override;
   void Slot15(int width, int height) override;
   void Paint() override;

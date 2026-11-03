@@ -8,7 +8,7 @@ class UIStaticText;
 
 class UICntWnd : public UIFrameWnd {
 public:
-  UICntWnd(UIWindowContext& windows);
+  UICntWnd();
   ~UICntWnd() override;
 
   void Slot15(int width, int height) override;

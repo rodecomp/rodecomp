@@ -2464,7 +2464,7 @@ std::vector<unsigned char> CGameMode::SaveGroundItems() {
 // FUNCTION: fn_21409
 UIBroadcastBalloon* CGameMode::EnsureBroadcastBalloon() {
   if (!this->broadcastBalloon) {
-    this->broadcastBalloon = new UIBroadcastBalloon(*reinterpret_cast<UIWindowContext*>(nullptr));
+    this->broadcastBalloon = new UIBroadcastBalloon();
     this->broadcastBalloon->SetSize(g_renderer->viewport.width, 50);
     this->broadcastBalloon->Move(0, 51);
     g_windowMgr.AddRenderedFront(this->broadcastBalloon);
@@ -2480,7 +2480,7 @@ void CGameMode::EnsureNameBalloon(UINameBalloonText*& balloon) {
   }
 
   g_serviceOptions.Get(0x5C);
-  balloon = new UINameBalloonText(*reinterpret_cast<UIWindowContext*>(nullptr));
+  balloon = new UINameBalloonText();
   balloon->SetSize(8, 8);
   g_windowMgr.AddRenderedFront(balloon);
 }
@@ -2498,7 +2498,7 @@ void __stdcall OpenWordDisplay(CGameActor* actor) {
     }
   }
 
-  UIWordDisplayWnd* window = new UIWordDisplayWnd(*reinterpret_cast<UIWindowContext*>(nullptr));
+  UIWordDisplayWnd* window = new UIWordDisplayWnd();
   window->SendMsg(nullptr, 34, actor->render.accountId, 0, 0, 0);
   g_windowMgr.AddRendered(window);
   actor->unknown_018C = reinterpret_cast<int>(window);
@@ -2513,7 +2513,7 @@ void CGameMode::ShowNoticeBalloon(const std::vector<std::string>* lines) {
 
   UIBroadcastBalloon* balloon = this->noticeBalloon;
   if (!balloon) {
-    this->noticeBalloon = new UIBroadcastBalloon(*reinterpret_cast<UIWindowContext*>(nullptr));
+    this->noticeBalloon = new UIBroadcastBalloon();
     this->noticeBalloon->SetSize(g_renderer->viewport.width, 50);
     this->noticeBalloon->Move(0, 130 * g_renderer->viewport.height / 480);
     g_windowMgr.AddRenderedFront(this->noticeBalloon);

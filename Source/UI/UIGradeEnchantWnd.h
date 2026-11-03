@@ -32,14 +32,14 @@ static_assert(sizeof(GradeEnchantInfo) == 16);
 
 class UIGradeEnchant_BtnStart : public UIBitmapButton {
 public:
-  UIGradeEnchant_BtnStart(UIWindowContext& windows);
+  UIGradeEnchant_BtnStart();
   void Paint() override;
   void Enable(unsigned char value) override;
 };
 
 class UIGradeEnchant_BtnEnhancedUp : public UIBitmapButton {
 public:
-  UIGradeEnchant_BtnEnhancedUp(UIWindowContext& windows);
+  UIGradeEnchant_BtnEnhancedUp();
   void Paint() override;
   void Slot28(int x, int y) override;
   void Enable(unsigned char value) override;
@@ -50,7 +50,7 @@ public:
 
 class UIGradeEnchant_BtnEnhancedDown : public UIBitmapButton {
 public:
-  UIGradeEnchant_BtnEnhancedDown(UIWindowContext& windows);
+  UIGradeEnchant_BtnEnhancedDown();
   void Paint() override;
   void Enable(unsigned char value) override;
 };

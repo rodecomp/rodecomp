@@ -11,7 +11,9 @@ class UIScrollBar;
 
 class UIScrollWnd : public UIWindow {
 public:
-  UIScrollWnd(UIWindowContext& windows, int width, int height, unsigned char cached);
+  UIScrollWnd(int width, int height, unsigned char cached);
+  UIScrollWnd(UIWindowContext&, int width, int height, unsigned char cached) : UIScrollWnd(width, height, cached) {
+  }
   ~UIScrollWnd() override;
   void Resize(int width, int height) override;
   void Slot15(int width, int height) override;

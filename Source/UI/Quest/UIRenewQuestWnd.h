@@ -20,7 +20,7 @@ class UITab;
 
 class UINpcSprWnd : public UIWindow {
 public:
-  __declspec(noinline) explicit UINpcSprWnd(UIWindowContext& context);
+  __declspec(noinline) UINpcSprWnd();
   // INLINED
   ~UINpcSprWnd() override {
     this->m_mapName.clear();
@@ -42,7 +42,7 @@ public:
 
 class UIOngoingQuestScrollWnd : public UIScrollWnd {
 public:
-  __declspec(noinline) UIOngoingQuestScrollWnd(UIWindowContext& windows, int width, int height);
+  __declspec(noinline) UIOngoingQuestScrollWnd(int width, int height);
   void Slot15(int width, int height) override;
   void Paint() override;
   void Slot35(int delta) override;
@@ -60,7 +60,7 @@ public:
 
 class UIRecommededQuestScrollWnd : public UIScrollWnd {
 public:
-  __declspec(noinline) UIRecommededQuestScrollWnd(UIWindowContext& windows, int width, int height);
+  __declspec(noinline) UIRecommededQuestScrollWnd(int width, int height);
   void Slot15(int width, int height) override;
   void Paint() override;
   void Slot35(int delta) override;
@@ -76,7 +76,7 @@ public:
 
 class UIRenewDetailQuestInfoWnd : public UIFrameWnd {
 public:
-  UIRenewDetailQuestInfoWnd(UIWindowContext& windows);
+  UIRenewDetailQuestInfoWnd();
   void Slot15(int width, int height) override;
   void Paint() override;
   void Slot25(int x, int y) override;
@@ -100,7 +100,7 @@ protected:
 
 class UIRenewQuestScrollBar : public UIScrollBar {
 public:
-  explicit UIRenewQuestScrollBar(UIWindowContext& windows);
+  UIRenewQuestScrollBar();
   void Paint() override;
 };
 
@@ -112,7 +112,7 @@ struct RenewQuestRowControls {
 
 class UIRenewQuestWnd : public UIFrameWnd {
 public:
-  UIRenewQuestWnd(UIWindowContext& windows);
+  UIRenewQuestWnd();
   void Slot15(int width, int height) override;
   void Paint() override;
   void Slot25(int x, int y) override;

@@ -12,7 +12,7 @@
 
 // OFFSET: 0x00946C00
 // FUNCTION: fn_12851
-UINormalMB::UINormalMB(UIWindowContext& windows) : UIFrameWnd(windows, 0), m_owner(nullptr), m_viewer(nullptr) {
+UINormalMB::UINormalMB() : UIFrameWnd(0), m_owner(nullptr), m_viewer(nullptr) {
   this->m_keepOpen = 0;
 }
 
@@ -60,7 +60,7 @@ int UINormalMB::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
 
 // INLINED
 __forceinline void UINormalMB::AddButton(const char* normal, const char* hover, const char* pressed, int x, int y, int id) {
-  auto* button = new UIBitmapButton(*this->m_context);
+  auto* button = new UIBitmapButton();
   button->SetBitmap(normal, 0, 0);
   button->SetBitmap(hover, 1, 0);
   button->SetBitmap(pressed, 2, 0);
@@ -85,7 +85,7 @@ void UINormalMB::Create(UIWindow* owner, const char* text, int type, bool defaul
   int inset = 0;
 
   if (icon) {
-    auto* image = new UIStaticBitmap(*this->m_context);
+    auto* image = new UIStaticBitmap();
     image->SetBitmap(icon);
     image->SetSize(image->geometry.width, image->geometry.height);
     image->Move(10, 22);
@@ -93,7 +93,7 @@ void UINormalMB::Create(UIWindow* owner, const char* text, int type, bool defaul
     inset = image->geometry.width + image->geometry.x;
   }
 
-  this->m_viewer = new UITextViewer(*this->m_context);
+  this->m_viewer = new UITextViewer();
   this->m_viewer->Configure(inset + 10, 22, width - inset - 20, height - 55, 0);
   unsigned red, green, blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
