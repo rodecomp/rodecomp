@@ -49,6 +49,8 @@
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
 #include "UI/Window/UIResizer.h"
+#include "UI/Edit/UIEditCtrl.h"
+#include "UI/CashEmotion/UICashEmotionMiniWnd.h"
 
 #include <direct.h>
 #include <io.h>
@@ -1378,3 +1380,6 @@ int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
   }
   return this->UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
 }
+
+
+// OFFSET: 0x009230A0

@@ -20,6 +20,7 @@ public:
   static void SaveChatWndInfo();
 
   void Resize(int width, int height) override;
+  void Slot15(int width, int height) override;
   void Move(int x, int y) override;
   void Slot11() override;
   void Show(int visible) override;

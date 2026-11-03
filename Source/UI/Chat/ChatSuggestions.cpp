@@ -34,7 +34,7 @@ void UINewChatWnd::ShowSuggestions(std::uint8_t visible) {
 // OFFSET: 0x00933980
 // FUNCTION: fn_12732
 void UINewChatWnd::ApplyInputLayout() {
-  if (g_inputSuggestionsEnabled) {
+  if (g_windowMgr.unknown_0024) {
     const int base = this->geometry.height - this->m_inputAreaHeight;
     this->unknown_00C0->Move(6, base + 4);
     this->m_chatEdit->Move(110, base + 4);
