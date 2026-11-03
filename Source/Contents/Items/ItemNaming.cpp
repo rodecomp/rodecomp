@@ -23,24 +23,24 @@ std::map<int, ItemCardName> g_itemCardNames;
 std::map<int, std::vector<const char*>> g_bookItemNames;
 
 // OFFSET: 0x006D8810
-  // FUNCTION: fn_06597
-  bool Equipment(const ITEM_INFO& item) {
-    switch (item.unknown_0000[0]) {
-    case 4:
-    case 5:
-    case 8:
-    case 9:
-    case 11:
-    case 12:
-    case 13:
-    case 14:
-    case 15:
-    case 21:
-      return true;
-    default:
-      return false;
-    }
+// FUNCTION: fn_06597
+bool Equipment(const ITEM_INFO& item) {
+  switch (item.unknown_0000[0]) {
+  case 4:
+  case 5:
+  case 8:
+  case 9:
+  case 11:
+  case 12:
+  case 13:
+  case 14:
+  case 15:
+  case 21:
+    return true;
+  default:
+    return false;
   }
+}
 
 namespace {
   // INLINED
