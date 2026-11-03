@@ -959,7 +959,7 @@ int UIMerInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
         g_windowMgr.CloseWindow(125);
         g_windowMgr.CloseWindow(126);
         g_session.ResetMercenaryStats();
-        g_groundMarkAltEnabled = 0;
+        g_session.unknown_56B0 = 0;
         return 0;
       }
 

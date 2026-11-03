@@ -12311,7 +12311,7 @@ void CGameMode::ReceiveActorStandEntry(const unsigned char* data) {
         g_groundMarkEnabled = 1;
       }
       if (g_session.IsMercenaryAid(packet->aid)) {
-        g_groundMarkAltEnabled = 1;
+        g_session.unknown_56B0 = 1;
       }
       created = this->NewActor(packet->job);
       entry.unknown_0008 = 0;
@@ -12403,7 +12403,7 @@ void CGameMode::ReceiveActorStandEntryFont(const unsigned char* data) {
         g_groundMarkEnabled = 1;
       }
       if (g_session.IsMercenaryAid(packet->aid)) {
-        g_groundMarkAltEnabled = 1;
+        g_session.unknown_56B0 = 1;
       }
       created = this->NewActor(packet->job);
       entry.unknown_0008 = 0;
@@ -12504,7 +12504,7 @@ void CGameMode::ReceiveActorTypedEntry(const unsigned char* data) {
         g_groundMarkEnabled = 1;
       }
       if (g_session.IsMercenaryAid(packet->aid)) {
-        g_groundMarkAltEnabled = 1;
+        g_session.unknown_56B0 = 1;
       }
       created = this->NewActor(packet->job);
       entry.unknown_0008 = 0;
@@ -12848,7 +12848,7 @@ void CGameMode::ReceiveActorMoveEntryLegacy(const unsigned char* data) {
   } else if (packet->objectType == 8 && g_session.IsHomunAid(packet->aid)) {
     g_groundMarkEnabled = 1;
   } else if (packet->objectType == 9 && g_session.IsMercenaryAid(packet->aid)) {
-    g_groundMarkAltEnabled = 1;
+    g_session.unknown_56B0 = 1;
   } else if (g_session.GetSceneUnknown004C() && actor->unknown_0188 == 0 &&
              (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
     this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
@@ -12982,7 +12982,7 @@ void CGameMode::SpawnMovingActor(
   } else if (objectType == 8 && g_session.IsHomunAid(aid)) {
     g_groundMarkEnabled = 1;
   } else if (objectType == 9 && g_session.IsMercenaryAid(aid)) {
-    g_groundMarkAltEnabled = 1;
+    g_session.unknown_56B0 = 1;
   } else if (g_session.GetSceneUnknown004C() && actor->unknown_0188 == 0 &&
              (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
     this->ShowGuildEmblem(actor, guildId, guildVersion);
@@ -13117,7 +13117,7 @@ void CGameMode::ReceiveActorMoveEntryOld(const unsigned char* data) {
         g_groundMarkEnabled = 1;
       }
       if (g_session.IsMercenaryAid(packet->aid)) {
-        g_groundMarkAltEnabled = 1;
+        g_session.unknown_56B0 = 1;
       }
       actor = this->NewActor(packet->job);
       entry.unknown_0008 = 0;
@@ -13250,7 +13250,7 @@ void CGameMode::ReceiveActorMoveEntryOld2(const unsigned char* data) {
         g_groundMarkEnabled = 1;
       }
       if (g_session.IsMercenaryAid(packet->aid)) {
-        g_groundMarkAltEnabled = 1;
+        g_session.unknown_56B0 = 1;
       }
       actor = this->NewActor(packet->job);
       entry.unknown_0008 = 0;
@@ -13396,7 +13396,7 @@ void CGameMode::ReceiveActorMoveEntryNamed(const unsigned char* data) {
         g_groundMarkEnabled = 1;
       }
       if (g_session.IsMercenaryAid(packet->aid)) {
-        g_groundMarkAltEnabled = 1;
+        g_session.unknown_56B0 = 1;
       }
       actor = this->NewActor(packet->job);
       entry.unknown_0008 = 0;
@@ -13521,7 +13521,7 @@ void CGameMode::ReceiveActorMoveEntryOld0(const unsigned char* data) {
         g_groundMarkEnabled = 1;
       }
       if (g_session.IsMercenaryAid(packet->aid)) {
-        g_groundMarkAltEnabled = 1;
+        g_session.unknown_56B0 = 1;
       }
       actor = this->NewActor(packet->job);
       entry.unknown_0008 = 0;
@@ -13843,7 +13843,7 @@ void CGameMode::ReceiveActorStandEntryLegacy(const unsigned char* data) {
   } else if (packet->objectType == 8 && g_session.IsHomunAid(packet->aid)) {
     g_groundMarkEnabled = 1;
   } else if (packet->objectType == 9 && g_session.IsMercenaryAid(packet->aid)) {
-    g_groundMarkAltEnabled = 1;
+    g_session.unknown_56B0 = 1;
   } else if (g_session.GetSceneUnknown004C() && actor->unknown_0188 == 0 &&
              (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
     this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
@@ -13999,7 +13999,7 @@ void CGameMode::ReceiveActorStandEntryNamedOld(const unsigned char* data) {
     } else if (packet->objectType == 8 && g_session.IsHomunAid(packet->aid)) {
       g_groundMarkEnabled = 1;
     } else if (packet->objectType == 9 && g_session.IsMercenaryAid(packet->aid)) {
-      g_groundMarkAltEnabled = 1;
+      g_session.unknown_56B0 = 1;
     }
 
     if (created) {
@@ -14118,7 +14118,7 @@ void CGameMode::ReceiveActorStandEntryOld(const unsigned char* data) {
         g_groundMarkEnabled = 1;
       }
       if (g_session.IsMercenaryAid(packet->aid)) {
-        g_groundMarkAltEnabled = 1;
+        g_session.unknown_56B0 = 1;
       }
       actor = this->NewActor(packet->job);
       entry.unknown_0008 = 0;
@@ -14243,7 +14243,7 @@ void CGameMode::ReceiveActorStandEntryOld2(const unsigned char* data) {
         g_groundMarkEnabled = 1;
       }
       if (g_session.IsMercenaryAid(packet->aid)) {
-        g_groundMarkAltEnabled = 1;
+        g_session.unknown_56B0 = 1;
       }
       actor = this->NewActor(packet->job);
       entry.unknown_0008 = 0;
@@ -14371,7 +14371,7 @@ void CGameMode::ReceiveActorStandEntryOld3(const unsigned char* data) {
         g_groundMarkEnabled = 1;
       }
       if (g_session.IsMercenaryAid(packet->aid)) {
-        g_groundMarkAltEnabled = 1;
+        g_session.unknown_56B0 = 1;
       }
       actor = this->NewActor(packet->job);
       entry.unknown_0008 = 0;
@@ -14502,7 +14502,7 @@ void CGameMode::ReceiveActorStandEntryOld0(const unsigned char* data) {
         g_groundMarkEnabled = 1;
       }
       if (g_session.IsMercenaryAid(packet->aid)) {
-        g_groundMarkAltEnabled = 1;
+        g_session.unknown_56B0 = 1;
       }
       actor = this->NewActor(packet->job);
       entry.unknown_0008 = 0;
@@ -14658,7 +14658,7 @@ void CGameMode::ReceiveActorStateEntryNamedOld(const unsigned char* data) {
     } else if (packet->objectType == 8 && g_session.IsHomunAid(packet->aid)) {
       g_groundMarkEnabled = 1;
     } else if (packet->objectType == 9 && g_session.IsMercenaryAid(packet->aid)) {
-      g_groundMarkAltEnabled = 1;
+      g_session.unknown_56B0 = 1;
     }
 
     if (created) {
@@ -14778,7 +14778,7 @@ void CGameMode::ReceiveActorStateEntryOld(const unsigned char* data) {
         g_groundMarkEnabled = 1;
       }
       if (g_session.IsMercenaryAid(packet->aid)) {
-        g_groundMarkAltEnabled = 1;
+        g_session.unknown_56B0 = 1;
       }
       actor = this->NewActor(packet->job);
       entry.unknown_0008 = 0;
@@ -14913,7 +14913,7 @@ void CGameMode::SpawnStandingActor(
   } else if (objectType == 8 && g_session.IsHomunAid(aid)) {
     g_groundMarkEnabled = 1;
   } else if (objectType == 9 && g_session.IsMercenaryAid(aid)) {
-    g_groundMarkAltEnabled = 1;
+    g_session.unknown_56B0 = 1;
   } else if (g_session.GetSceneUnknown004C() && actor->unknown_0188 == 0 &&
              (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
     this->ShowGuildEmblem(actor, guildId, guildVersion);
@@ -15198,7 +15198,7 @@ void CGameMode::SpawnStateActor(
   } else if (objectType == 8 && g_session.IsHomunAid(aid)) {
     g_groundMarkEnabled = 1;
   } else if (objectType == 9 && g_session.IsMercenaryAid(aid)) {
-    g_groundMarkAltEnabled = 1;
+    g_session.unknown_56B0 = 1;
   } else if (g_session.GetSceneUnknown004C() && actor->unknown_0188 == 0 &&
              (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
     this->ShowGuildEmblem(actor, guildId, guildVersion);
@@ -15660,7 +15660,7 @@ void CGameMode::ReceiveActorStateEntryLegacy(const unsigned char* data) {
   } else if (packet->objectType == 8 && g_session.IsHomunAid(packet->aid)) {
     g_groundMarkEnabled = 1;
   } else if (packet->objectType == 9 && g_session.IsMercenaryAid(packet->aid)) {
-    g_groundMarkAltEnabled = 1;
+    g_session.unknown_56B0 = 1;
   } else if (g_session.GetSceneUnknown004C() && actor->unknown_0188 == 0 &&
              (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
     this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);

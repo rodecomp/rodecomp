@@ -43,9 +43,6 @@ std::uint32_t g_groundMarkAid;
 // GLOBAL: gl_25142
 std::uint32_t g_groundMarkAltAid;
 
-// GLOBAL: gl_25143
-std::uint32_t g_groundMarkAltEnabled;
-
 // OFFSET: 0x00DA1190
 // FUNCTION: fn_22354
 CCorpse::CCorpse() {
@@ -1467,7 +1464,7 @@ bool CNpc::OnProcess() {
 
   if (g_groundMarkEnabled && g_groundMarkAid == this->render.accountId) {
     this->SendMsg(nullptr, 0x86, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-  } else if (g_groundMarkAltEnabled && g_groundMarkAltAid == this->render.accountId) {
+  } else if (g_session.unknown_56B0 && g_groundMarkAltAid == this->render.accountId) {
     this->SendMsg(nullptr, 0x86, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   } else {
     this->SendMsg(nullptr, 0x87, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
