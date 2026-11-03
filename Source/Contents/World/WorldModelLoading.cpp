@@ -60,7 +60,7 @@ namespace {
   }
 
   // INLINED
-  C3dActor* CreatePlacedWorldModel(const WorldModelRecord& placement, C3dModelRes& resource, BinkMovies& movies, ModelLightingContext& lighting) {
+  C3dActor* CreateWorldModel(const WorldModelRecord& placement, C3dModelRes& resource, BinkMovies& movies) {
     resource.RegisterMovies(movies, placement.position);
 
     if (!resource.FindNode(placement.node) && resource.nodes.empty()) {
@@ -88,130 +88,51 @@ namespace {
     actor->color = static_cast<std::uint32_t>(placement.index);
     actor->Assign(resource);
     actor->occlusionEnabled = 0;
-    actor->Prepare(lighting);
+    actor->Prepare(g_worldLightDirection, g_worldDiffuse, g_worldAmbient);
 
     return actor;
-  }
-
-  // INLINED
-  C3dActor* CreateInitWorldModel(const WorldModelRecord& placement, C3dModelRes& resource, BinkMovies& movies) {
-    resource.RegisterMovies(movies, placement.position);
-
-    if (!resource.FindNode(placement.node) && resource.nodes.empty()) {
-      return nullptr;
-    }
-
-    C3dActor* actor = nullptr;
-
-    if (resource.major == 1) {
-      actor = new C3dActorV1;
-    } else if (resource.major == 2) {
-      actor = new C3dActorV2;
-    }
-
-    actor->CopyVolumes(resource.volumes);
-    actor->SetSpeed(placement.animationSpeed);
-    actor->playback = placement.animation;
-    std::memcpy(actor->position, placement.position, sizeof(actor->position));
-    actor->dirty = 1;
-    std::memcpy(actor->rotation, placement.rotation, sizeof(actor->rotation));
-    actor->dirty = 1;
-    std::memcpy(actor->scale, placement.scale, sizeof(actor->scale));
-    actor->dirty = 1;
-    actor->commandMode = placement.flag;
-    actor->color = static_cast<std::uint32_t>(placement.index);
-    actor->Assign(resource);
-    actor->occlusionEnabled = 0;
-    void** actorVtbl = *reinterpret_cast<void***>(actor);
-    reinterpret_cast<void (__thiscall *)(C3dActor*, const float*, const float*, const float*)>(actorVtbl[4])(
-      actor, g_worldLightDirection, g_worldDiffuse, g_worldAmbient
-    );
-
-    return actor;
-  }
-}
-
-// INLINED
-void WorldModelLoading::Schedule(const WorldModelRecord& placement, const TerrainHeight& terrain, int column, int row, float* center) {
-  terrain.CellCenter(column, row, center[0], center[2]);
-  const float y = placement.position[1] - center[1];
-  const float x = placement.position[0] - center[0];
-  const float z = placement.position[2] - center[2];
-  const float squared = (y * y + x * x) + z * z;
-  const float distance = std::sqrt(squared);
-
-  if (distance > 200.0f) {
-    this->deferred.push_back({distance, &placement});
-    return;
-  }
-
-  auto* resource = static_cast<C3dModelRes*>(this->resources.Load(placement.model));
-
-  if (resource) {
-    if (C3dActor* model = CreatePlacedWorldModel(placement, *resource, this->movies, this->lighting)) {
-      this->models.push_back(model);
-    }
   }
 }
 
 // OFFSET: 0x00AC8BF0
 // FUNCTION: fn_17680
-DWORD WINAPI WorldModelLoading::ThreadEntry(void* context) {
-  static_cast<WorldModelLoading*>(context)->Run();
-  return 0;
-}
-
-// INLINED
-void WorldModelLoading::Start() {
-  this->thread = CreateThread(nullptr, 0, &WorldModelLoading::ThreadEntry, this, 0, nullptr);
-
-  if (!this->thread) {
-    this->Run();
-    this->Finish();
-  }
-}
-
-// INLINED
-void WorldModelLoading::Run() {
+DWORD WINAPI CWorld::LoadDeferredModels(void* parameter) {
+  CWorld* world = static_cast<CWorld*>(parameter);
   SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST);
-  std::sort(this->deferred.begin(), this->deferred.end(), Before);
+  std::sort(g_deferredWorldModels.begin(), g_deferredWorldModels.end(), Before);
 
-  for (const DeferredWorldModel& entry : this->deferred) {
+  for (const DeferredWorldModel& entry : g_deferredWorldModels) {
     const WorldModelRecord& placement = *entry.placement;
-    auto* resource = static_cast<C3dModelRes*>(this->resources.Load(placement.model));
+    auto* resource = static_cast<C3dModelRes*>(ResourceMgr::Instance().Load(placement.model));
 
     if (!resource) {
       continue;
     }
 
-    C3dActor* model = CreatePlacedWorldModel(placement, *resource, this->movies, this->lighting);
+    C3dActor* model = CreateWorldModel(placement, *resource, *world->movies);
 
     if (!model) {
       continue;
     }
 
-    this->models.push_back(model);
-    std::atomic_ref<int>(this->pending).fetch_add(1, std::memory_order_seq_cst);
+    world->models.push_back(model);
+    std::atomic_ref<int>(world->pending).fetch_add(1, std::memory_order_seq_cst);
     Sleep(0);
   }
-}
 
-// INLINED
-void WorldModelLoading::Publish(WorldSpatialTree& root) {
-  C3dActor* const* data = this->models.data();
-  PublishWorldModels(root, data, this->published, this->pending);
+  return 0;
 }
 
 // OFFSET: 0x00ACB6C0
 // FUNCTION: fn_17705
-void WorldModelLoading::Finish() {
-  if (this->thread) {
-    WaitForSingleObject(this->thread, INFINITE);
-    CloseHandle(this->thread);
-    this->thread = nullptr;
+void CWorld::FinishModelLoading() {
+  if (hObject) {
+    WaitForSingleObject(hObject, INFINITE);
+    CloseHandle(hObject);
+    hObject = nullptr;
   }
 
-  this->deferred.clear();
+  g_deferredWorldModels.clear();
   std::atomic_ref<int>(this->pending).store(0, std::memory_order_release);
 }
 
@@ -343,7 +264,7 @@ void CWorld::InitWorld() {
     } else {
       auto* modelRes = static_cast<C3dModelRes*>(ResourceMgr::Instance().Load(placement->model));
       if (modelRes) {
-        if (C3dActor* actor = CreateInitWorldModel(*placement, *modelRes, *this->movies)) {
+        if (C3dActor* actor = CreateWorldModel(*placement, *modelRes, *this->movies)) {
           this->models.push_back(actor);
         }
       }
@@ -358,10 +279,10 @@ void CWorld::InitWorld() {
   this->published = static_cast<int>(this->models.size());
 
   DWORD threadId = 0;
-  hObject = CreateThread(nullptr, 0, &WorldModelLoading::ThreadEntry, this, 0, &threadId);
+  hObject = CreateThread(nullptr, 0, &CWorld::LoadDeferredModels, this, 0, &threadId);
   if (!hObject) {
-    WorldModelLoading::ThreadEntry(this);
-    reinterpret_cast<WorldModelLoading*>(this)->Finish();
+    CWorld::LoadDeferredModels(this);
+    this->FinishModelLoading();
   }
 
   this->player = new CPlayer();

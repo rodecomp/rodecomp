@@ -53,6 +53,8 @@ public:
   void AddPcPosFromCell(std::uint32_t aid, const int* cell);
   void AddPcPosUnindexed(std::uint32_t aid, const CellFloatPos& cell);
   void InitWorld();
+  static unsigned long __stdcall LoadDeferredModels(void* parameter);
+  void FinishModelLoading();
 
   /* 0004 */ CGameMode* gameMode;
   /* 0008 */ std::list<CRenderObject*> objects;

@@ -14,7 +14,7 @@ public:
   virtual void Assign(const C3dModelRes& resource);
   virtual void UpdateMatrix();
   virtual void UpdateBounds();
-  virtual void Prepare(ModelLightingContext& context);
+  virtual void Prepare(const float* direction, const float* diffuse, const float* ambient);
   virtual void Animate(double frame);
   virtual void Update();
   virtual void Draw(const float* matrix, bool clip, ModelRenderContext& context);
@@ -60,7 +60,7 @@ public:
   ~C3dActorV1() override;
   void Assign(const C3dModelRes& resource) override;
   void UpdateBounds() override;
-  void Prepare(ModelLightingContext& context) override;
+  void Prepare(const float* direction, const float* diffuse, const float* ambient) override;
   void Animate(double frame) override;
   void Update() override;
   void Draw(const float* matrix, bool clip, ModelRenderContext& context) override;
@@ -79,7 +79,7 @@ public:
   void Assign(const C3dModelRes& resource) override;
   void UpdateMatrix() override;
   void UpdateBounds() override;
-  void Prepare(ModelLightingContext& context) override;
+  void Prepare(const float* direction, const float* diffuse, const float* ambient) override;
   void Animate(double frame) override;
   void Update() override;
   void Draw(const float* matrix, bool clip, ModelRenderContext& context) override;

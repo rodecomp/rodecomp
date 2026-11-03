@@ -26,8 +26,8 @@ public:
   virtual void Draw(const float* matrix, unsigned char reversed, bool clip, unsigned char commandMode, ModelRenderContext& context);
   C3dNode* Find(const char* name);
   void OverrideColors();
-  void Prepare(const float* matrix, ModelLightingContext& context);
-  void SampleGroundColors(const float* matrix, const float* position, const class GroundGeometry& ground);
+  void Prepare(const float* matrix, const float* direction, const float* diffuse, const float* ambient, int shade);
+  void SampleGroundColors(const class CRenderer* renderer, const float* matrix, const class GroundGeometry& ground);
   void AccumulateBounds(float* bounds, const float* matrix);
 
   /* 0004 */ std::string name;

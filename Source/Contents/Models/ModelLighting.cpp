@@ -1,10 +1,18 @@
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Contents/Ground/GroundGeometry.h"
+#include "Contents/Models/ModelActor.h"
 #include "Contents/Models/ModelNode.h"
+#include "Contents/World/World.h"
+#include "Render/Renderer.h"
 #include "Render/Textures/Texture.h"
 
 #include "Utility/Math/ScalarConversion.h"
 #include <cmath>
 #include <cstring>
+
+// GLOBAL: gl_25474
+static std::uint32_t g_modelFaceColors[90000];
 
 namespace {
   // INLINED
@@ -19,16 +27,16 @@ namespace {
   }
 
   // INLINED
-  void Light(const float* normal, const float* matrix, const ModelLightingContext& context, float* output) {
+  void Light(const float* normal, const float* matrix, const float* direction, const float* diffuse, const float* ambient, float* output) {
     const float x = ((normal[0] * matrix[0] + normal[1] * matrix[3]) + normal[2] * matrix[6]) + 0.0f;
     const float y = ((normal[0] * matrix[1] + normal[1] * matrix[4]) + normal[2] * matrix[7]) + 0.0f;
     const float z = ((normal[0] * matrix[2] + normal[1] * matrix[5]) + normal[2] * matrix[8]) + 0.0f;
     const float inverse = InverseLength((y * y + x * x) + z * z);
-    const float dot = ((y * inverse) * context.direction[1] + (x * inverse) * context.direction[0]) + (z * inverse) * context.direction[2];
+    const float dot = ((y * inverse) * direction[1] + (x * inverse) * direction[0]) + (z * inverse) * direction[2];
     const float amount = dot > 0.0f ? dot : 0.0f;
 
     for (unsigned component = 0; component < 3; ++component) {
-      const float color = amount * context.diffuse[component] + context.ambient[component];
+      const float color = amount * diffuse[component] + ambient[component];
       output[component] = color < 1.0f ? color : 1.0f;
     }
   }
@@ -77,7 +85,9 @@ void C3dNode::OverrideColors() {
 
 // OFFSET: 0x00ABB450
 // FUNCTION: fn_17515
-void C3dNode::SampleGroundColors(const float* matrix, const float* position, const GroundGeometry& ground) {
+void C3dNode::SampleGroundColors(const CRenderer*, const float* matrix, const GroundGeometry& ground) {
+  const float* position = this->model->position;
+
   for (int index = 0; index < this->mesh->faceCount; ++index) {
     const ModelFace& face = this->mesh->faces[index];
 
@@ -101,7 +111,7 @@ void C3dNode::SampleGroundColors(const float* matrix, const float* position, con
 
 // OFFSET: 0x00ABBB00
 // FUNCTION: fn_17521
-void C3dNode::Prepare(const float* matrix, ModelLightingContext& context) {
+void C3dNode::Prepare(const float* matrix, const float* direction, const float* diffuse, const float* ambient, int shade) {
   struct matrix parentMatrix;
   std::memcpy(parentMatrix.values, matrix, sizeof(parentMatrix.values));
   struct matrix combined;
@@ -111,22 +121,22 @@ void C3dNode::Prepare(const float* matrix, ModelLightingContext& context) {
     const ModelFace& face = this->mesh->faces[index];
     float light[3];
 
-    if (*context.shade == 1) {
-      Light(this->mesh->faceNormals[index].data(), combined.values, context, light);
+    if (shade == 1) {
+      Light(this->mesh->faceNormals[index].data(), combined.values, direction, diffuse, ambient, light);
     }
 
     for (unsigned corner = 0; corner < 3; ++corner) {
-      std::uint32_t& color = context.colors[index * 3u + corner];
+      std::uint32_t& color = g_modelFaceColors[index * 3u + corner];
 
-      if (*context.shade == 0) {
-        color = (*context.color & 0x00FFFFFFu) | (Byte(this->alpha * 255.0f) << 24);
-      } else if (*context.shade == 1 || *context.shade == 2) {
-        if (*context.shade == 2) {
-          Light(this->mesh->vertexNormals[index * 3u + corner].data(), combined.values, context, light);
+      if (shade == 0) {
+        color = (this->model->color & 0x00FFFFFFu) | (Byte(this->alpha * 255.0f) << 24);
+      } else if (shade == 1 || shade == 2) {
+        if (shade == 2) {
+          Light(this->mesh->vertexNormals[index * 3u + corner].data(), combined.values, direction, diffuse, ambient, light);
         }
 
         const bool shaded = this->mesh->textureVertices[face.textureVertices[corner]].shaded != 0;
-        color = LitColor(*context.color, this->alpha, shaded, light);
+        color = LitColor(this->model->color, this->alpha, shaded, light);
       }
     }
   }
@@ -145,7 +155,7 @@ void C3dNode::Prepare(const float* matrix, ModelLightingContext& context) {
       ModelFaceState& state = this->faceState[index];
 
       for (unsigned corner = 0; corner < 3; ++corner) {
-        state.colors[corner] = context.colors[index * 3u + corner];
+        state.colors[corner] = g_modelFaceColors[index * 3u + corner];
       }
 
       for (unsigned corner = 0; corner < 3; ++corner) {
@@ -163,9 +173,9 @@ void C3dNode::Prepare(const float* matrix, ModelLightingContext& context) {
     } while (index < this->mesh->faceCount && this->mesh->faces[index].texture == texture);
   }
 
-  this->SampleGroundColors(combined.values, context.position, context.ground);
+  this->SampleGroundColors(g_renderer, combined.values, *static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->ground);
 
   for (C3dNode* child : this->children) {
-    child->Prepare(combined.values, context);
+    child->Prepare(combined.values, direction, diffuse, ambient, shade);
   }
 }

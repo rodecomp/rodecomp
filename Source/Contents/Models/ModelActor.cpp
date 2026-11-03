@@ -128,51 +128,29 @@ void C3dActor::UpdateBounds() {
 
 // OFFSET: 0x00ABBA50
 // FUNCTION: fn_17518
-void C3dActor::Prepare(ModelLightingContext&) {
+void C3dActor::Prepare(const float*, const float*, const float*) {
 }
 
 // OFFSET: 0x00ABBA60
 // FUNCTION: fn_17519
-void C3dActorV1::Prepare(ModelLightingContext& context) {
+void C3dActorV1::Prepare(const float* direction, const float* diffuse, const float* ambient) {
   if (this->dirty == 1) {
     this->UpdateMatrix();
   }
 
-  const float* previousPosition = context.position;
-  const std::uint32_t* previousColor = context.color;
-  const int* previousShade = context.shade;
-
-  context.position = this->position;
-  context.color = &this->color;
-  context.shade = &this->shade;
-  this->root->Prepare(this->transform.values, context);
-  context.position = previousPosition;
-  context.color = previousColor;
-  context.shade = previousShade;
+  this->root->Prepare(this->transform.values, direction, diffuse, ambient, this->shade);
 }
 
 // OFFSET: 0x00ABBAA0
 // FUNCTION: fn_17520
-void C3dActorV2::Prepare(ModelLightingContext& context) {
+void C3dActorV2::Prepare(const float* direction, const float* diffuse, const float* ambient) {
   if (this->dirty == 1) {
     this->UpdateMatrix();
   }
 
-  const float* previousPosition = context.position;
-  const std::uint32_t* previousColor = context.color;
-  const int* previousShade = context.shade;
-
-  context.position = this->position;
-  context.color = &this->color;
-  context.shade = &this->shade;
-
   for (C3dNodeV2* root : this->roots) {
-    root->Prepare(this->transform.values, context);
+    root->Prepare(this->transform.values, direction, diffuse, ambient, this->shade);
   }
-
-  context.position = previousPosition;
-  context.color = previousColor;
-  context.shade = previousShade;
 }
 
 // OFFSET: 0x00AB9060

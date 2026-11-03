@@ -17,18 +17,6 @@ struct ModelFaceState {
   /* 000C */ float uv[3][2];
 };
 
-struct ModelLightingContext {
-  const float* position;
-  const std::uint32_t* color;
-  const float* direction;
-  const float* diffuse;
-  const float* ambient;
-  const int* shade;
-  const class GroundGeometry& ground;
-
-  std::array<std::uint32_t, 90000> colors{};
-};
-
 struct ModelRenderContext {
   const RenderProjection& projection;
   RenderCommandPool& commands;
