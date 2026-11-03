@@ -56,28 +56,6 @@ extern "C" {
 
 void __fastcall RefreshItemWindows(UIWindowMgr* mgr);
 
-struct SessionItemLists {
-  /* 0000 */ unsigned char unknown_0000[0x1710];
-  /* 1710 */ std::list<ITEM_INFO> inventory;
-  /* 1718 */ std::list<ITEM_INFO> items_1718;
-  /* 1720 */ std::list<ITEM_INFO> items_1720;
-  /* 1728 */ std::list<ITEM_INFO> items_1728;
-  /* 1730 */ std::list<ITEM_INFO> items_1730;
-  /* 1738 */ unsigned char unknown_1738[0x48];
-  /* 1780 */ std::list<ITEM_INFO> items_1780[11];
-
-  void ClearItems1780();
-  void KeepEquipment();
-  void RemoveEquipment();
-  void ClearTradeItems();
-};
-
-#if defined(_WIN32) && !defined(_WIN64)
-static_assert(offsetof(SessionItemLists, inventory) == 0x1710);
-static_assert(offsetof(SessionItemLists, items_1730) == 0x1730);
-static_assert(offsetof(SessionItemLists, items_1780) == 0x1780);
-#endif
-
 namespace EquipmentProperties {
   class CEquipmentProperties;
 }
@@ -5118,55 +5096,6 @@ void CSession::SetPartyLeader(std::uint32_t accountId, int leader) {
   }
 }
 
-struct SessionMessengerContext {
-  unsigned char pad_0000[0x1710];
-  /* 1710 */ std::list<MessengerMember> lists[12];
-  /* 1770 */ unsigned char pad_1770[0x18];
-  /* 1788 */ int listData[11][2];
-  /* 17E0 */ unsigned char pad_17E0[0x10];
-  /* 17F0 */ ITEM_INFO equipSlots[10];
-  /* 21A0 */ unsigned char pad_21A0[0x1D20];
-  /* 3EC0 */ int slots[10][62];
-  /* 4870 */ unsigned char pad_4870[0x9A0];
-  /* 5210 */ int slot5210;
-  /* 5214 */ unsigned char pad_5214[0x118];
-  /* 532C */ int stat2C;
-  /* 5330 */ int stat30;
-  /* 5334 */ int stat34;
-  /* 5338 */ int stat38;
-  /* 533C */ int stat3C;
-  /* 5340 */ int stats[12];
-  /* 5370 */ unsigned char pad_5370[0x1F8];
-  /* 5568 */ int bound68;
-  /* 556C */ int bound6C;
-  /* 5570 */ int bound70;
-  /* 5574 */ int bound74;
-
-  void UpdateRandomStats();
-  void sub_DD9D50();
-  void sub_DF33B0();
-  void ClearMemberLists();
-  void PurgeMatchingMembers1();
-  void ClearLists();
-  void InitSlots();
-  void PurgeMatchingMembers2();
-  void ResetSlots();
-  void ResetEquipment();
-
-  int GetList0Size() const;
-  int GetList11Size() const;
-  int GetList6Size() const;
-  int GetList8Size() const;
-  int GetList9Size() const;
-  int GetList10Size() const;
-  int GetList7Size() const;
-  int GetList1788(int index) const;
-  int GetList2Size() const;
-  int GetList4Size() const;
-  int GetList1Size() const;
-  int GetList5Size() const;
-};
-
 struct ItemNotificationWindow : UIWindow {
   /* 0080 */ unsigned char unknown_0080[0x34];
   /* 00B4 */ MessengerMember member;
@@ -5523,33 +5452,33 @@ bool CGameMode::IsValidCell(int x, int y) {
 
 // OFFSET: 0x00DD80A0
 // FUNCTION: fn_23304
-void SessionMessengerContext::UpdateRandomStats() {
+void CSession::UpdateRandomStats() {
   if (g_resetMessengerRandomStats != 0) {
     g_resetMessengerRandomStats = 0;
-    this->stat34 = std::max(std::rand() % 12, 0);
-    this->stat30 = std::max(std::rand() % 12, 0);
-    this->stat3C = std::max(std::rand() % 12, 0);
-    this->stat2C = std::max(std::rand() % 12, 0);
-    this->stat38 = std::max(std::rand() % 12, 0);
+    this->unknown_5334 = std::max(std::rand() % 12, 0);
+    this->unknown_5330 = std::max(std::rand() % 12, 0);
+    this->unknown_533C = std::max(std::rand() % 12, 0);
+    this->unknown_532C = std::max(std::rand() % 12, 0);
+    this->unknown_5338 = std::max(std::rand() % 12, 0);
   }
 
-  const int bound70 = this->bound70;
-  const int bound74 = this->bound74;
-  const int bound68 = this->bound68;
-  const int bound6C = this->bound6C;
-  this->stat34 = std::max(std::rand() % 12, 0);
-  this->stat2C = std::max(std::rand() % 12, 0);
-  this->stat38 = std::max(std::rand() % 12, 0);
-  this->stat30 = std::max(std::rand() % 12, 0);
-  this->stat3C = std::max(std::rand() % 12, 0);
-  for (int& value : this->stats) {
+  const int bound70 = reinterpret_cast<int&>(this->unknown_5570[0]);
+  const int bound74 = reinterpret_cast<int&>(this->unknown_5570[4]);
+  const int bound68 = this->unknown_5568;
+  const int bound6C = this->unknown_556C;
+  this->unknown_5334 = std::max(std::rand() % 12, 0);
+  this->unknown_532C = std::max(std::rand() % 12, 0);
+  this->unknown_5338 = std::max(std::rand() % 12, 0);
+  this->unknown_5330 = std::max(std::rand() % 12, 0);
+  this->unknown_533C = std::max(std::rand() % 12, 0);
+  for (int& value : this->unknown_5340) {
     value = std::max(std::abs(std::rand()) % 1, 0);
   }
 
   const auto notify = [this]() {
     if (g_modeMgr.GetGameMode()) {
       if (g_windowMgr.unknown_01DC) {
-        if (this->bound6C < this->bound68 || this->bound74 < this->bound70) {
+        if (this->unknown_556C < this->unknown_5568 || reinterpret_cast<int&>(this->unknown_5570[4]) < reinterpret_cast<int&>(this->unknown_5570[0])) {
           return;
         }
         reinterpret_cast<UIWindow*>(g_windowMgr.unknown_01DC)->Invalidate();
@@ -5558,20 +5487,20 @@ void SessionMessengerContext::UpdateRandomStats() {
       static_cast<CGameMode*>(g_modeMgr.GetGameMode())->NotifyItemBounds();
     }
   };
-  if (this->bound68 != bound68) {
-    this->bound68 = bound68;
+  if (this->unknown_5568 != bound68) {
+    this->unknown_5568 = bound68;
     notify();
   }
-  if (this->bound6C != bound6C) {
-    this->bound6C = bound6C;
+  if (this->unknown_556C != bound6C) {
+    this->unknown_556C = bound6C;
     notify();
   }
-  if (this->bound70 != bound70) {
-    this->bound70 = bound70;
+  if (reinterpret_cast<int&>(this->unknown_5570[0]) != bound70) {
+    reinterpret_cast<int&>(this->unknown_5570[0]) = bound70;
     notify();
   }
-  if (this->bound74 != bound74) {
-    this->bound74 = bound74;
+  if (reinterpret_cast<int&>(this->unknown_5570[4]) != bound74) {
+    reinterpret_cast<int&>(this->unknown_5570[4]) = bound74;
     notify();
   }
 }
@@ -5590,8 +5519,8 @@ void ClearMemberFlags(std::uint32_t* flags) {
 
 // OFFSET: 0x00DD85B0
 // FUNCTION: fn_23309
-void SessionMessengerContext::ResetEquipment() {
-  for (ITEM_INFO& item : this->equipSlots) {
+void CSession::ResetEquipment() {
+  for (ITEM_INFO& item : this->unknown_17F0) {
     item.Reset();
   }
   RequestBasicInfoRefresh();
@@ -5603,110 +5532,110 @@ void SessionMessengerContext::ResetEquipment() {
 
 // OFFSET: 0x00DD8750
 // FUNCTION: fn_23311
-void SessionMessengerContext::ResetSlots() {
-  this->slot5210 = 0;
-  this->slots[0][0] = 0;
-  this->slots[1][0] = 0;
-  this->slots[2][0] = 0;
-  this->slots[3][0] = 0;
-  this->slots[4][0] = 0;
-  this->slots[5][0] = 0;
-  this->slots[6][0] = 0;
-  this->slots[7][0] = 0;
-  this->slots[8][0] = 0;
-  this->slots[9][0] = 0;
+void CSession::ResetSlots() {
+  this->unknown_5210 = 0;
+  this->m_exchangeItems[0].quantity = 0;
+  this->m_exchangeItems[1].quantity = 0;
+  this->m_exchangeItems[2].quantity = 0;
+  this->m_exchangeItems[3].quantity = 0;
+  this->m_exchangeItems[4].quantity = 0;
+  this->m_exchangeItems[5].quantity = 0;
+  this->m_exchangeItems[6].quantity = 0;
+  this->m_exchangeItems[7].quantity = 0;
+  this->m_exchangeItems[8].quantity = 0;
+  this->m_exchangeItems[9].quantity = 0;
 }
 
 // OFFSET: 0x00DDF8B0
 // FUNCTION: fn_23428
-int SessionMessengerContext::GetList0Size() const {
-  return static_cast<int>(this->lists[0].size());
+int CSession::GetList0Size() const {
+  return static_cast<int>(this->m_inventoryItems.size());
 }
 
 // OFFSET: 0x00DDF8C0
 // FUNCTION: fn_23429
-int SessionMessengerContext::GetList11Size() const {
-  return static_cast<int>(this->lists[11].size());
+int CSession::GetList11Size() const {
+  return static_cast<int>(this->unknown_1768.size());
 }
 
 // OFFSET: 0x00DDF8D0
 // FUNCTION: fn_23430
-int SessionMessengerContext::GetList6Size() const {
-  return static_cast<int>(this->lists[6].size());
+int CSession::GetList6Size() const {
+  return static_cast<int>(this->unknown_1740.size());
 }
 
 // OFFSET: 0x00DDF8E0
 // FUNCTION: fn_23431
-int SessionMessengerContext::GetList8Size() const {
-  return static_cast<int>(this->lists[8].size());
+int CSession::GetList8Size() const {
+  return static_cast<int>(this->unknown_1750.size());
 }
 
 // OFFSET: 0x00DDF8F0
 // FUNCTION: fn_23432
-int SessionMessengerContext::GetList9Size() const {
-  return static_cast<int>(this->lists[9].size());
+int CSession::GetList9Size() const {
+  return static_cast<int>(this->unknown_1758.size());
 }
 
 // OFFSET: 0x00DDF900
 // FUNCTION: fn_23433
-int SessionMessengerContext::GetList10Size() const {
-  return static_cast<int>(this->lists[10].size());
+int CSession::GetList10Size() const {
+  return static_cast<int>(this->unknown_1760.size());
 }
 
 // OFFSET: 0x00DDF910
 // FUNCTION: fn_23434
-int SessionMessengerContext::GetList7Size() const {
-  return static_cast<int>(this->lists[7].size());
+int CSession::GetList7Size() const {
+  return static_cast<int>(this->unknown_1748.size());
 }
 
 // OFFSET: 0x00DDF920
 // FUNCTION: fn_23435
-int SessionMessengerContext::GetList1788(int index) const {
+int CSession::GetList1788(int index) const {
   if (index < 0) {
     return 0;
   }
   if (index >= 11) {
     return 0;
   }
-  return this->listData[index][0];
+  return static_cast<int>(this->unknown_1784[index].size());
 }
 
 // OFFSET: 0x00DDF9E0
 // FUNCTION: fn_23437
-int SessionMessengerContext::GetList2Size() const {
-  return static_cast<int>(this->lists[2].size());
+int CSession::GetList2Size() const {
+  return static_cast<int>(this->unknown_1720.size());
 }
 
 // OFFSET: 0x00DDF9F0
 // FUNCTION: fn_23438
-int SessionMessengerContext::GetList4Size() const {
-  return static_cast<int>(this->lists[4].size());
+int CSession::GetList4Size() const {
+  return static_cast<int>(this->unknown_1730.size());
 }
 
 // OFFSET: 0x00DDFA00
 // FUNCTION: fn_23439
-int SessionMessengerContext::GetList1Size() const {
-  return static_cast<int>(this->lists[1].size());
+int CSession::GetList1Size() const {
+  return static_cast<int>(this->unknown_1718.size());
 }
 
 // OFFSET: 0x00DDFA10
 // FUNCTION: fn_23440
-int SessionMessengerContext::GetList5Size() const {
-  return static_cast<int>(this->lists[5].size());
+int CSession::GetList5Size() const {
+  return static_cast<int>(this->unknown_1738.size());
 }
 
 // OFFSET: 0x00DD8380
 // FUNCTION: fn_23305
-void SessionItemLists::ClearItems1780() {
-  for (std::list<ITEM_INFO>& items : this->items_1780) {
+void CSession::ClearItems1784() {
+  for (std::list<ITEM_INFO>& items : this->unknown_1784) {
     items.clear();
   }
 }
 
 // OFFSET: 0x00DD8450
 // FUNCTION: fn_23306
-void SessionItemLists::KeepEquipment() {
-  for (auto entry = this->inventory.begin(); entry != this->inventory.end();) {
+void CSession::KeepEquipment() {
+  for (auto entry = this->m_inventoryItems.begin(); entry != this->m_inventoryItems.end();) {
     switch (entry->unknown_0000[0]) {
     case 4:
     case 5:
@@ -5720,7 +5649,7 @@ void SessionItemLists::KeepEquipment() {
       ++entry;
       break;
     default:
-      entry = this->inventory.erase(entry);
+      entry = this->m_inventoryItems.erase(entry);
       break;
     }
   }
@@ -5730,16 +5659,16 @@ void SessionItemLists::KeepEquipment() {
 
 // OFFSET: 0x00DD8540
 // FUNCTION: fn_23307
-void SessionItemLists::ClearTradeItems() {
-  this->items_1720.erase(this->items_1720.begin(), this->items_1720.end());
-  this->items_1730.erase(this->items_1730.begin(), this->items_1730.end());
-  this->items_1718.erase(this->items_1718.begin(), this->items_1718.end());
+void CSession::ClearTradeItems() {
+  this->unknown_1720.erase(this->unknown_1720.begin(), this->unknown_1720.end());
+  this->unknown_1730.erase(this->unknown_1730.begin(), this->unknown_1730.end());
+  this->unknown_1718.erase(this->unknown_1718.begin(), this->unknown_1718.end());
 }
 
 // OFFSET: 0x00DD8660
 // FUNCTION: fn_23310
-void SessionItemLists::RemoveEquipment() {
-  for (auto entry = this->inventory.begin(); entry != this->inventory.end();) {
+void CSession::RemoveEquipment() {
+  for (auto entry = this->m_inventoryItems.begin(); entry != this->m_inventoryItems.end();) {
     switch (entry->unknown_0000[0]) {
     case 4:
     case 5:
@@ -5750,7 +5679,7 @@ void SessionItemLists::RemoveEquipment() {
     case 13:
     case 14:
     case 15:
-      entry = this->inventory.erase(entry);
+      entry = this->m_inventoryItems.erase(entry);
       break;
     default:
       ++entry;
@@ -6325,7 +6254,7 @@ HANDLE g_embedFontFiles;
 
 // OFFSET: 0x00DD9D50
 // FUNCTION: fn_23337
-void SessionMessengerContext::sub_DD9D50() {
+void CSession::sub_DD9D50() {
   if (!g_itemInfoMgr->Load()) {
     const std::uint8_t caption[] = {0x2A, 0x0F, 0x89, 0x4C, 0x03, 0x07};
     const std::uint8_t message[] = {0x80, 0x81, 0x3A, 0xE6, 0xC6, 0xBB, 0xDD, 0x4C, 0xE9, 0x93, 0x36, 0xE7, 0xEA, 0xF5, 0xF2, 0x4D, 0xA0, 0x81, 0x5F};
@@ -6360,8 +6289,8 @@ void SessionMessengerContext::sub_DD9D50() {
 
   CGameSettingsMgr* settings = Singleton<CGameSettingsMgr>::GetInstance();
   static_cast<void>(settings->LoadSettings());
-  reinterpret_cast<CSession*>(this)->LoadOptionInfo();
-  reinterpret_cast<CSession*>(this)->LoadDamageSkinSettings();
+  this->LoadOptionInfo();
+  this->LoadDamageSkinSettings();
 
   if (g_serviceType == 0) {
     InitEmbedFont();

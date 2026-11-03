@@ -91,9 +91,6 @@ public:
 // GLOBAL: gl_25445
 int g_sessionTableLoadCount;
 
-struct SessionMessengerContext {
-  void sub_DF33B0();
-};
 
 namespace EquipmentProperties {
 class CEquipmentPropertiesMgr {
@@ -7026,8 +7023,8 @@ void CSession::ReloadLanguageTables() {
 
 // OFFSET: 0x00DF33B0
 // FUNCTION: fn_23506
-void SessionMessengerContext::sub_DF33B0() {
-  CSession* session = reinterpret_cast<CSession*>(this);
+void CSession::sub_DF33B0() {
+  CSession* session = this;
   ++g_sessionTableLoadCount;
   session->InitJobHitWaveNames();
 

@@ -3529,9 +3529,6 @@ int UIBookWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
   return 0;
 }
 
-struct SessionItemLists {
-  void ClearTradeItems();
-};
 
 // OFFSET: 0x008F8860
 // FUNCTION: fn_12332
@@ -3551,7 +3548,7 @@ int UIChooseSellBuyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
         return 0;
       }
 
-      reinterpret_cast<SessionItemLists*>(&g_session)->ClearTradeItems();
+      g_session.ClearTradeItems();
     }
 
     return 0;
@@ -5955,10 +5952,6 @@ void UIWhisperWnd::Slot11() {
   g_windowMgr.UnregisterNamedWindow(std::string(this->m_target.c_str(), this->m_target.size()));
 }
 
-struct SessionMessengerContext {
-  int GetList1788(int index) const;
-  int GetList2Size() const;
-};
 
 // OFFSET: 0x008D88F0
 // FUNCTION: fn_12130
@@ -5967,7 +5960,7 @@ ITEM_INFO UInCashWnd::ItemAt(int x, int y) {
     return ITEM_INFO(0);
   }
 
-  const SessionMessengerContext& lists = reinterpret_cast<const SessionMessengerContext&>(g_session);
+  const CSession& lists = g_session;
   int top = this->m_listTop;
   if (x < 252) {
     std::list<ITEM_INFO>::iterator it = this->items.begin();
@@ -6843,7 +6836,7 @@ int UIMixAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       g_windowMgr.CloseWindow(161);
       static_cast<CMode*>(g_charViewMode)->SendMsg(266, 0, 0, 0, 0);
       g_windowMgr.CloseWindow(163);
-      reinterpret_cast<SessionItemLists*>(&g_session)->ClearTradeItems();
+      g_session.ClearTradeItems();
     } else if (a == 185) {
       g_windowMgr.CloseWindow(163);
     }
@@ -8833,7 +8826,7 @@ void UInCashWnd::Slot26(int x, int y) {
   this->m_totalPrice -= item.quantity * item.unknown_0014[1];
   this->m_otherItems.clear();
 
-  const SessionMessengerContext& lists = reinterpret_cast<const SessionMessengerContext&>(g_session);
+  const CSession& lists = g_session;
   const int count = lists.GetList2Size();
   for (int index = 0; index < count; ++index) {
     ITEM_INFO other = g_session.GetItem1720At(index);

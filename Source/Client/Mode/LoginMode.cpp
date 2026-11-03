@@ -1818,9 +1818,6 @@ void CLoginMode::SubD911C0(const PasswordModePacket* packet) {
   }
 }
 
-struct SessionItemLists {
-  void ClearItems1780();
-};
 
 // OFFSET: 0x00D97410
 // FUNCTION: fn_22300
@@ -1852,7 +1849,7 @@ void CLoginMode::Initialize(const char* name) {
     g_soundMgr->PlayStream("bgm\\01.mp3", 0, false);
   }
   this->slotExtension = CharacterSlotExtension();
-  reinterpret_cast<SessionItemLists*>(&g_session)->ClearItems1780();
+  g_session.ClearItems1784();
   g_entryQueueMgr->ready = 0;
   g_entryQueueMgr->current = nullptr;
   g_session.ClearShortcutSlots();

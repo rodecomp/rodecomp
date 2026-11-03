@@ -30,9 +30,6 @@ struct ClientItemLists {
   void ClearItems1740();
 };
 
-struct SessionMessengerContext {
-  void ResetEquipment();
-};
 
 namespace {
 #pragma pack(push, 1)
@@ -183,7 +180,7 @@ void CGameMode::ReceiveInventoryStart(const unsigned char* packet) {
   switch (g_gameModePacketBuffer[4]) {
   case 0:
     reinterpret_cast<ClientItemLists*>(&g_session)->ClearInventory();
-    reinterpret_cast<SessionMessengerContext*>(&g_session)->ResetEquipment();
+    g_session.ResetEquipment();
     g_session.ResetItems2B50();
     break;
   case 1:

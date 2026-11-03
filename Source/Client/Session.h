@@ -372,7 +372,7 @@ public:
   /* 5334 */ int unknown_5334;
   /* 5338 */ int unknown_5338;
   /* 533C */ int unknown_533C;
-  /* 5340 */ unsigned char unknown_5340[0x30];
+  /* 5340 */ int unknown_5340[12];
   /* 5370 */ unsigned char unknown_5370[0x30];
   /* 53A0 */ unsigned char unknown_53A0[0x30];
   /* 53D0 */ unsigned char unknown_53D0[0x30];
@@ -887,6 +887,27 @@ public:
   void LoadXmlTables();
   void LoadExternalSettings();
   void ReloadLanguageTables();
+  void ClearItems1784();
+  void UpdateRandomStats();
+  void ResetEquipment();
+  void ResetSlots();
+  void sub_DD9D50();
+  void sub_DF33B0();
+  int GetList0Size() const;
+  int GetList1Size() const;
+  int GetList2Size() const;
+  int GetList4Size() const;
+  int GetList5Size() const;
+  int GetList6Size() const;
+  int GetList7Size() const;
+  int GetList8Size() const;
+  int GetList9Size() const;
+  int GetList10Size() const;
+  int GetList11Size() const;
+  int GetList1788(int index) const;
+  void KeepEquipment();
+  void ClearTradeItems();
+  void RemoveEquipment();
   float GetOptionFloat(const char* key, float fallback);
   // INLINED
   bool& ItemSlotActive() {

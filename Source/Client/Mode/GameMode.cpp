@@ -3216,13 +3216,7 @@ void CGameMode::PlayItemUseEffect(int itemId, std::uint32_t aid) {
 #include <winsock2.h>
 #include <windows.h>
 
-struct SessionMessengerContext {
-  void UpdateRandomStats();
-};
 
-struct SessionItemLists {
-  void ClearTradeItems();
-};
 
 // GLOBAL: gl_24776
 int g_visibleMinX;
@@ -3409,9 +3403,9 @@ void CGameMode::InitializeState() {
   }
 
   reinterpret_cast<ClientItemLists*>(&g_session)->ResetUnknown166C();
-  reinterpret_cast<SessionMessengerContext*>(&g_session)->UpdateRandomStats();
+  g_session.UpdateRandomStats();
   reinterpret_cast<ClientItemLists*>(&g_session)->ClearItems1738();
-  reinterpret_cast<SessionItemLists*>(&g_session)->ClearTradeItems();
+  g_session.ClearTradeItems();
   reinterpret_cast<ClientItemLists*>(&g_session)->ClearItems1768();
   reinterpret_cast<ClientItemLists*>(&g_session)->ClearItems1758();
   reinterpret_cast<ClientItemLists*>(&g_session)->ClearItems1750();

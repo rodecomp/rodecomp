@@ -41,9 +41,6 @@ struct BarterTree {
   ~BarterTree();
 };
 
-struct SessionMessengerContext {
-  int GetList0Size() const;
-};
 
 struct BarterTreeIterator {
   /* 0000 */ BarterTreeNode* node;
@@ -879,7 +876,7 @@ BarterKeyLookup BarterKeyTree::FindLowerBound(const std::vector<int>& key)
 void CExpandedBarterMarketItemMgr::LoadInventoryItems()
 {
   this->itemInfos.clear();
-  const int count = reinterpret_cast<const SessionMessengerContext*>(&g_session)->GetList0Size();
+  const int count = g_session.GetList0Size();
   for (int i = 0; i < count; ++i) {
     ITEM_INFO item = g_session.GetInventoryItemAt(i);
     if (item.identified) {

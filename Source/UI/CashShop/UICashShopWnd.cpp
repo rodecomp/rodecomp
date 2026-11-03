@@ -95,10 +95,6 @@ struct ClientItemLists {
   void ClearItems1784(int index);
 };
 
-struct SessionMessengerContext {
-  int GetList0Size() const;
-  int GetList1788(int index) const;
-};
 
 struct CashShopReplaceCartItemText {
   EncryptedName<85, 0x3B915119EFD523EFULL>& operator()() const;
@@ -795,7 +791,7 @@ void UICashShopWnd_Banner::CreateButtons() {
 // FUNCTION: fn_09558
 int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   ClientItemLists& itemLists = reinterpret_cast<ClientItemLists&>(g_session);
-  const SessionMessengerContext& lists = reinterpret_cast<const SessionMessengerContext&>(g_session);
+  const CSession& lists = g_session;
   switch (message) {
   case 0:
     if (sender == this->unknown_00E0) {

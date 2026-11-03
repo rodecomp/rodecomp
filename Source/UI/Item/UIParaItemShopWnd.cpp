@@ -40,14 +40,7 @@
 #include <cstring>
 #include <string>
 
-struct SessionItemLists {
-  void ClearTradeItems();
-};
 
-struct SessionMessengerContext {
-  int GetList1Size() const;
-  int GetList2Size() const;
-};
 
 namespace {
 #pragma pack(push, 1)
@@ -382,14 +375,14 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     if (a == 184) {
       ITEM_INFO item = g_session.GetItem1720At(0);
       mode->SendMsg(item.unknown_0074[3] == 1 ? 263 : 262, 0, 0, 0, 0);
-      reinterpret_cast<SessionItemLists*>(&g_session)->ClearTradeItems();
+      g_session.ClearTradeItems();
       return 0;
     }
 
     if (a == 185) {
       mode->SendMsg(292, 0, 0, 0, 0);
       mode->SendMsg(40, 0, 0, 0, 0);
-      reinterpret_cast<SessionItemLists*>(&g_session)->ClearTradeItems();
+      g_session.ClearTradeItems();
       return 0;
     }
     break;
@@ -433,7 +426,7 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
   case 23: {
     this->items.erase(this->items.begin(), this->items.end());
     int sum = 0;
-    const int size = reinterpret_cast<const SessionMessengerContext*>(&g_session)->GetList2Size();
+    const int size = g_session.GetList2Size();
     for (int i = 0; i < size; ++i) {
       ITEM_INFO item = g_session.GetItem1720At(i);
       if (item.unknown_0000[1] != 0) {
@@ -572,7 +565,7 @@ int UIParaItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     break;
   case 23: {
     this->items.erase(this->items.begin(), this->items.end());
-    const int size = reinterpret_cast<const SessionMessengerContext*>(&g_session)->GetList1Size();
+    const int size = g_session.GetList1Size();
     for (int i = 0; i < size; ++i) {
       ITEM_INFO item = g_session.GetItem1718At(i);
       if (item.unknown_0000[1] != 0) {
@@ -601,7 +594,7 @@ int UIParaResultWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
     if (a == 184) {
       mode->SendMsg(292, 0, 0, 0, 0);
       mode->SendMsg(40, 0, 0, 0, 0);
-      reinterpret_cast<SessionItemLists*>(&g_session)->ClearTradeItems();
+      g_session.ClearTradeItems();
       return 0;
     }
     break;

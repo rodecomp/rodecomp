@@ -633,9 +633,6 @@ void UIGradeEnchantWnd::SetResult(int state, int result) {
   this->Invalidate();
 }
 
-struct SessionMessengerContext {
-  int GetList0Size() const;
-};
 
 // OFFSET: 0x007E7050
 // FUNCTION: fn_09748
@@ -670,7 +667,7 @@ void UIGradeEnchantWnd::sub_7E7050() {
   }
 
   if (static_cast<float>(g_session.m_weight) > static_cast<float>(g_session.m_maxWeight) * 0.7f ||
-      reinterpret_cast<const SessionMessengerContext*>(&g_session)->GetList0Size() + g_session.CountItems17F0() +
+      g_session.GetList0Size() + g_session.CountItems17F0() +
           g_session.CountItems2B50() >=
         g_session.unknown_7FBC + 100) {
     this->unknown_011C.push_back(3710);

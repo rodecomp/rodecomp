@@ -1039,9 +1039,6 @@ int sub_E58100(HINSTANCE instance, int showCommand) {
   return 1;
 }
 
-struct SessionMessengerContext {
-  void sub_DD9D50();
-};
 
 // INLINED
 template <typename T>
@@ -1685,7 +1682,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
     }
   }
 
-  reinterpret_cast<SessionMessengerContext*>(&g_session)->sub_DD9D50();
+  g_session.sub_DD9D50();
 
   ResourceMgr& resources = ResourceMgr::Instance();
   const std::uint8_t resourceNamesSource[] = {0x8F, 0xA4, 0x00, 0x0D, 0x46, 0x3C, 0x78, 0x4B, 0x9C, 0xA3, 0x1F, 0x26, 0x09, 0x25, 0x65, 0x6B,

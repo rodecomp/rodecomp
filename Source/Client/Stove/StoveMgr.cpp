@@ -166,9 +166,6 @@ struct ConfirmPurchaseCallback {
   void operator()(Stove::PCSDK::CallbackResult callbackResult, bool purchased, int unknown1, unsigned int count, int unknown2, int unknown3) const;
 };
 
-struct SessionItemLists {
-  void ClearItems1780();
-};
 
 // OFFSET: 0x0063AAE0
 // FUNCTION: fn_04778
@@ -303,7 +300,7 @@ void CategoryProductsCallback::operator()(Stove::PCSDK::CallbackResult callbackR
                                           unsigned int count) const {
   g_stoveWaitingCallback = false;
   if (callbackResult.GetResult().IsSuccessful()) {
-    reinterpret_cast<SessionItemLists*>(&g_session)->ClearItems1780();
+    g_session.ClearItems1784();
     for (unsigned int index = 0; index < count; ++index) {
       const Stove::PCSDK::IAP::StovePCProduct& product = products[index];
       std::string categoryId = EncodeText(CP_ACP, std::wstring(product.GetCategoryId()));

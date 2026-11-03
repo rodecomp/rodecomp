@@ -11,9 +11,6 @@
 #include <cstdlib>
 #include <cstring>
 
-struct SessionMessengerContext {
-  int GetList11Size() const;
-};
 
 // OFFSET: 0x00970E60
 // FUNCTION: fn_13262
@@ -46,7 +43,7 @@ void UIMerchantShopMakeWnd::Refresh() {
     edit->Background(background, background, background);
   }
 
-  const int count = reinterpret_cast<const SessionMessengerContext*>(&g_session)->GetList11Size();
+  const int count = g_session.GetList11Size();
 
   for (int index = 0; index < count; ++index) {
     const ITEM_INFO item = g_session.GetItem1768At(index);

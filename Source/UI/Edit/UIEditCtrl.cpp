@@ -143,20 +143,7 @@ struct ClientItemLists {
   void ClearItems1760And1748();
 };
 
-struct SessionItemLists {
-  void ClearTradeItems();
-};
 
-struct SessionMessengerContext {
-  int GetList1Size() const;
-  int GetList0Size() const;
-  int GetList10Size() const;
-  int GetList4Size() const;
-  int GetList5Size() const;
-  int GetList6Size() const;
-  int GetList7Size() const;
-  int GetList8Size() const;
-};
 
 namespace {
 #pragma pack(push, 1)
@@ -4621,7 +4608,7 @@ int UIMerchantItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     break;
   case 23: {
     this->items.erase(this->items.begin(), this->items.end());
-    const int size = reinterpret_cast<const SessionMessengerContext*>(&g_session)->GetList6Size();
+    const int size = g_session.GetList6Size();
     for (int i = 0; i < size; ++i) {
       ITEM_INFO item = g_session.GetItem1740At(i);
       if (item.unknown_0000[1] != 0) {
@@ -4702,7 +4689,7 @@ int UIMerchantMirrorItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     break;
   case 23: {
     this->items.erase(this->items.begin(), this->items.end());
-    const int size = reinterpret_cast<const SessionMessengerContext*>(&g_session)->GetList8Size();
+    const int size = g_session.GetList8Size();
     for (int i = 0; i < size; ++i) {
       ITEM_INFO item = g_session.GetItem1750At(i);
       if (item.unknown_0000[1] != 0) {
@@ -4784,7 +4771,7 @@ int UIMerchantMirrorItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 int UIItemSellWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
   case 6: {
-    const int count = reinterpret_cast<const SessionMessengerContext*>(&g_session)->GetList4Size();
+    const int count = g_session.GetList4Size();
     CMode* mode = g_modeMgr.gameMode;
     if (a == 184) {
       if (count > 0) {
@@ -4792,14 +4779,14 @@ int UIItemSellWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
         mode->SendMsg(result == 187 ? 266 : 267, this->unknown_00FC, 0, 0, 0);
         g_windowMgr.CloseWindow(160);
         g_windowMgr.CloseWindow(161);
-        reinterpret_cast<SessionItemLists*>(&g_session)->ClearTradeItems();
+        g_session.ClearTradeItems();
         return 0;
       }
     } else if (a == 185) {
       mode->SendMsg(267, this->unknown_00FC, 0, 0, 0);
       g_windowMgr.CloseWindow(160);
       g_windowMgr.CloseWindow(161);
-      reinterpret_cast<SessionItemLists*>(&g_session)->ClearTradeItems();
+      g_session.ClearTradeItems();
       return 0;
     }
     break;
@@ -4845,7 +4832,7 @@ int UIItemSellWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     }
 
     this->items.erase(this->items.begin(), this->items.end());
-    const int size = reinterpret_cast<const SessionMessengerContext*>(&g_session)->GetList4Size();
+    const int size = g_session.GetList4Size();
     for (int i = 0; i < size; ++i) {
       ITEM_INFO item = g_session.GetItem1730At(i);
       if (item.unknown_0000[1] != 0) {
@@ -4945,7 +4932,7 @@ int UIMerchantItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intpt
     item.Assign(reinterpret_cast<const RawItemData&>(drag));
 
     ITEM_INFO found;
-    const int ownedCount = reinterpret_cast<const SessionMessengerContext*>(&g_session)->GetList10Size();
+    const int ownedCount = g_session.GetList10Size();
     int owned = 0;
     for (int i = 0; i < ownedCount; ++i) {
       found = g_session.GetItem1760At(i);
@@ -4956,7 +4943,7 @@ int UIMerchantItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intpt
     }
 
     ITEM_INFO stock;
-    const int stockCount = reinterpret_cast<const SessionMessengerContext*>(&g_session)->GetList7Size();
+    const int stockCount = g_session.GetList7Size();
     int limit = 0;
     for (int i = 0; i < stockCount; ++i) {
       stock = g_session.GetItem1748At(i);
@@ -5093,7 +5080,7 @@ int UIMerchantItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intpt
   case 23: {
     this->items.erase(this->items.begin(), this->items.end());
     int sum = 0;
-    const int count = reinterpret_cast<const SessionMessengerContext*>(&g_session)->GetList10Size();
+    const int count = g_session.GetList10Size();
     for (int i = 0; i < count; ++i) {
       ITEM_INFO item = g_session.GetItem1760At(i);
       if (item.unknown_0000[1] != 0) {
@@ -5175,7 +5162,7 @@ int UIMerchantItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     break;
   case 23: {
     this->items.erase(this->items.begin(), this->items.end());
-    const int size = reinterpret_cast<const SessionMessengerContext*>(&g_session)->GetList7Size();
+    const int size = g_session.GetList7Size();
     for (int i = 0; i < size; ++i) {
       ITEM_INFO item = g_session.GetItem1748At(i);
       if (item.unknown_0000[1] != 0) {
@@ -6514,7 +6501,7 @@ int UIItemShopWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     break;
   case 23: {
     this->items.erase(this->items.begin(), this->items.end());
-    const int size = reinterpret_cast<const SessionMessengerContext*>(&g_session)->GetList1Size();
+    const int size = g_session.GetList1Size();
     for (int i = 0; i < size; ++i) {
       ITEM_INFO item = g_session.GetItem1718At(i);
       if (item.unknown_0000[1] != 0) {
@@ -6686,7 +6673,7 @@ int UIItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     break;
   case 23: {
     this->items.erase(this->items.begin(), this->items.end());
-    const int size = reinterpret_cast<const SessionMessengerContext*>(&g_session)->GetList1Size();
+    const int size = g_session.GetList1Size();
     for (int i = 0; i < size; ++i) {
       ITEM_INFO item = g_session.GetItem1718At(i);
       if (item.unknown_0000[1] != 0) {
@@ -7723,7 +7710,7 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
       return 0;
     }
     this->items.erase(this->items.begin(), this->items.end());
-    for (int i = 0; i < reinterpret_cast<const SessionMessengerContext*>(&g_session)->GetList0Size(); ++i) {
+    for (int i = 0; i < g_session.GetList0Size(); ++i) {
       ITEM_INFO item = g_session.GetInventoryItemAt(i);
       if (item.unknown_0000[1] == 0) {
         continue;
@@ -7871,7 +7858,7 @@ int UIMerchantItemPurchaseMSGWnd::SendMsg(UIWindow* sender, int message, std::in
 // FUNCTION: fn_13443
 void UIItemWnd::RefreshItems() {
   this->items.clear();
-  for (int i = 0; i < reinterpret_cast<const SessionMessengerContext*>(&g_session)->GetList0Size(); ++i) {
+  for (int i = 0; i < g_session.GetList0Size(); ++i) {
     ITEM_INFO item = g_session.GetInventoryItemAt(i);
     if (item.unknown_0074[0] == 1) {
       this->items.push_back(item);
@@ -8012,7 +7999,7 @@ void UIMerchantItemPurchaseMSGWnd::SetPurchase(int value, int amount) {
   this->unknown_00D0 = amount;
 
   int total = 0;
-  const int count = reinterpret_cast<const SessionMessengerContext*>(&g_session)->GetList10Size();
+  const int count = g_session.GetList10Size();
   for (int i = 0; i < count; ++i) {
     ITEM_INFO item;
     item = g_session.GetItem1760At(i);
@@ -8662,7 +8649,7 @@ int UIItemSellWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     g_windowMgr.CloseWindow(22);
     g_windowMgr.CloseWindow(24);
     mode->SendMsg(40, 0, 0, 0, 0);
-    reinterpret_cast<SessionItemLists*>(&g_session)->ClearTradeItems();
+    g_session.ClearTradeItems();
     return 0;
   }
   case 14:
@@ -8704,7 +8691,7 @@ int UIItemSellWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
   case 23: {
     this->items.erase(this->items.begin(), this->items.end());
     int totalPrice = 0;
-    const int size = reinterpret_cast<const SessionMessengerContext*>(&g_session)->GetList4Size();
+    const int size = g_session.GetList4Size();
     for (int i = 0; i < size; ++i) {
       ITEM_INFO item = g_session.GetItem1730At(i);
       if (item.unknown_0000[1] != 0) {
@@ -8916,7 +8903,7 @@ void UIItemWnd::Paint() {
     }
   }
 
-  const int count = reinterpret_cast<const SessionMessengerContext*>(&g_session)->GetList0Size() + g_session.CountItems17F0() + g_session.CountItems2B50();
+  const int count = g_session.GetList0Size() + g_session.CountItems17F0() + g_session.CountItems2B50();
   const std::uint32_t color = count >= g_extraInventorySlots + 100 ? 0xFF : 0x232323;
   this->DrawTextAt(35, this->geometry.height - 15, FormatOwnedString("%d", count).c_str(), 0, 0, 11, color, 0, 0);
   const int width = this->TextWidth(FormatOwnedString("%d", count).c_str(), 0, 0, 11, 0, 0);
@@ -9074,7 +9061,7 @@ int UIItemStoreFindWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
     return 0;
   case 23: {
     this->items.erase(this->items.begin(), this->items.end());
-    const int size = reinterpret_cast<const SessionMessengerContext*>(&g_session)->GetList5Size();
+    const int size = g_session.GetList5Size();
     for (int i = 0; i < size; ++i) {
       ITEM_INFO item = g_session.GetItem1738At(i);
       if (item.unknown_0000[1] != 0) {

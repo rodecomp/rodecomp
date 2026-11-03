@@ -2862,10 +2862,6 @@ struct LongParChangePacket {
 };
 #pragma pack(pop)
 
-struct SessionMessengerContext {
-  void ResetSlots();
-  int GetList0Size() const;
-};
 
 // OFFSET: 0x00D195D0
 // FUNCTION: fn_21606
@@ -2951,16 +2947,13 @@ struct TradeItemFilterPacket {
 };
 #pragma pack(pop)
 
-struct SessionItemLists {
-  void ClearTradeItems();
-};
 
 // OFFSET: 0x00D198F0
 // FUNCTION: fn_21612
 void CGameMode::ReceiveTradeItemFilter(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const TradeItemFilterPacket*>(data);
-  reinterpret_cast<SessionItemLists*>(&g_session)->ClearTradeItems();
-  const int count = reinterpret_cast<SessionMessengerContext*>(&g_session)->GetList0Size();
+  g_session.ClearTradeItems();
+  const int count = g_session.GetList0Size();
   for (int i = 0; i < count; ++i) {
     ITEM_INFO item = g_session.GetInventoryItemAt(i);
     if (item.unknown_0000[1] == 0) {
@@ -3034,7 +3027,7 @@ void CGameMode::ReceiveExchangeRequestAck2(const unsigned char* data) {
   case 3: {
     this->SendMsg(40, 0, 0, 0, 0);
     *reinterpret_cast<int*>(&this->unknown_0100[0x14]) = 1;
-    reinterpret_cast<SessionMessengerContext*>(&g_session)->ResetSlots();
+    g_session.ResetSlots();
     reinterpret_cast<ClientItemLists*>(&g_session)->ClearItemSlotQuantities();
     g_windowMgr.CloseWindow(10011);
     UIWindow* window = g_windowMgr.EnsureWindow(10011);
@@ -3076,7 +3069,7 @@ void CGameMode::ReceiveExchangeRequestAck(const unsigned char* data) {
   case 3: {
     this->SendMsg(40, 0, 0, 0, 0);
     *reinterpret_cast<int*>(&this->unknown_0100[0x14]) = 1;
-    reinterpret_cast<SessionMessengerContext*>(&g_session)->ResetSlots();
+    g_session.ResetSlots();
     reinterpret_cast<ClientItemLists*>(&g_session)->ClearItemSlotQuantities();
     g_windowMgr.CloseWindow(10011);
     UIWindow* window = g_windowMgr.EnsureWindow(10011);
@@ -3567,7 +3560,7 @@ void CGameMode::ReceiveLongParChange(const unsigned char* data) {
   case 20:
     if (*reinterpret_cast<int*>(&this->unknown_0100[0x14])) {
       *reinterpret_cast<int*>(&this->unknown_0100[0x14]) = 0;
-      reinterpret_cast<SessionMessengerContext*>(&g_session)->ResetSlots();
+      g_session.ResetSlots();
     }
     g_session.m_zeny = static_cast<int>(packet->value);
     g_session.RefreshHpSpWindows();

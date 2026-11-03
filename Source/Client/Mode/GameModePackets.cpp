@@ -109,18 +109,7 @@ void CGameMode::ReceiveItemDisappear(std::uint32_t itemAid) {
   }
 }
 
-struct SessionMessengerContext {
-  void UpdateRandomStats();
-  int GetList9Size() const;
-  void KeepEquipment();
-  void ResetEquipment();
-  void ResetSlots();
-};
 
-struct SessionItemLists {
-  void ClearTradeItems();
-  void RemoveEquipment();
-};
 
 #pragma pack(push, 1)
 struct TradeItemRecord {
@@ -1281,7 +1270,7 @@ void CGameMode::ReceiveHpSpRecovery(const unsigned char* packet, int variant) {
 
   switch (type) {
   case 5: {
-    reinterpret_cast<SessionMessengerContext*>(&g_session)->UpdateRandomStats();
+    g_session.UpdateRandomStats();
     const int hp = g_session.unknown_5568 + amount;
     if (g_session.unknown_5568 != hp) {
       g_session.unknown_5568 = hp;
@@ -1292,7 +1281,7 @@ void CGameMode::ReceiveHpSpRecovery(const unsigned char* packet, int variant) {
     break;
   }
   case 7: {
-    reinterpret_cast<SessionMessengerContext*>(&g_session)->UpdateRandomStats();
+    g_session.UpdateRandomStats();
     int& sp = *reinterpret_cast<int*>(&g_session.unknown_5570[0]);
     const int value = sp + amount;
     if (sp != value) {
@@ -1905,7 +1894,7 @@ void __stdcall sub_D08110(int field8, int itemIdWord, int quantityWord, int fiel
   if (g_vendingOpenWindow != nullptr) {
     g_vendingOpenWindow->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
   }
-  if (reinterpret_cast<const SessionMessengerContext*>(&g_session)->GetList9Size() == 0) {
+  if (g_session.GetList9Size() == 0) {
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x137)), 0xFF00, 0, 0, 0);
     if (g_vendingOpenResultWindow != nullptr) {
       g_vendingOpenResultWindow->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
@@ -1938,7 +1927,7 @@ void __declspec(noinline) __stdcall sub_D08670(int field14, int itemId, int quan
     if (g_vendingSaleAlarm) {
       g_soundMgr->PlayWave("effect\\ef_steal.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
-    if (reinterpret_cast<SessionMessengerContext*>(&g_session)->GetList9Size() == 0) {
+    if (g_session.GetList9Size() == 0) {
       g_saleResultWindow->SendMsg(nullptr, 6, 0xC9, 0, 0, 0);
     }
   }
@@ -2011,7 +2000,7 @@ void CGameMode::ReceiveItem1740BasicListBind(const unsigned char* data) {
 // OFFSET: 0x00D2D770
 // FUNCTION: fn_21720
 void CGameMode::ReceiveItemInventoryList(const unsigned char* data) {
-  reinterpret_cast<SessionMessengerContext*>(&g_session)->KeepEquipment();
+  g_session.KeepEquipment();
 
   const PacketLengthHeader* packet = reinterpret_cast<const PacketLengthHeader*>(data);
   const int count = (packet->length - sizeof(PacketLengthHeader)) / sizeof(StoreNormalRecord);
@@ -3619,7 +3608,7 @@ void CGameMode::ReceiveActorStatusValue(std::uint32_t aid, int status, int amoun
   switch (status) {
   case 0x14b:
     if (aid == g_session.m_aid) {
-      reinterpret_cast<SessionMessengerContext*>(&g_session)->UpdateRandomStats();
+      g_session.UpdateRandomStats();
       const int hp = g_session.unknown_5568 + amount;
       if (g_session.unknown_5568 != hp) {
         g_session.unknown_5568 = hp;
@@ -3630,7 +3619,7 @@ void CGameMode::ReceiveActorStatusValue(std::uint32_t aid, int status, int amoun
     break;
   case 0x14c:
     if (aid == g_session.m_aid) {
-      reinterpret_cast<SessionMessengerContext*>(&g_session)->UpdateRandomStats();
+      g_session.UpdateRandomStats();
       int& sp = *reinterpret_cast<int*>(&g_session.unknown_5570[0]);
       const int value = sp + amount;
       if (sp != value) {
@@ -3678,7 +3667,7 @@ void CGameMode::ReceiveActorStatusValue(std::uint32_t aid, int status, int amoun
 // OFFSET: 0x00D39BB0
 // FUNCTION: fn_21773
 void CGameMode::ReceiveItem1718List(const unsigned char* packet) {
-  reinterpret_cast<SessionItemLists*>(&g_session)->ClearTradeItems();
+  g_session.ClearTradeItems();
 
   const std::int64_t count = (static_cast<std::int64_t>(*reinterpret_cast<const std::int16_t*>(packet + 2)) - 4) / 19;
   const Item1718Record* record = reinterpret_cast<const Item1718Record*>(packet + 4);
@@ -3713,7 +3702,7 @@ void CGameMode::ReceiveItem1718List(const unsigned char* packet) {
 // OFFSET: 0x00D77C90
 // FUNCTION: fn_22154
 void ReceiveTradeItems(int count, const TradeItemRecord* records) {
-  reinterpret_cast<SessionItemLists*>(&g_session)->ClearTradeItems();
+  g_session.ClearTradeItems();
 
   for (int i = 0; i < count; ++i) {
     const TradeItemRecord& record = records[i];
@@ -6851,7 +6840,7 @@ void CGameMode::ReceiveItemConsumed(const unsigned char* packet) {
 
   if (*reinterpret_cast<int*>(&this->unknown_0100[0x14])) {
     *reinterpret_cast<int*>(&this->unknown_0100[0x14]) = 0;
-    reinterpret_cast<SessionMessengerContext*>(&g_session)->ResetSlots();
+    g_session.ResetSlots();
   }
 
   reinterpret_cast<ClientItemLists*>(&g_session)->RemoveItem1710(
@@ -8075,8 +8064,8 @@ namespace {
 // OFFSET: 0x00D2C7F0
 // FUNCTION: fn_21717
 void CGameMode::ReceiveInventoryEquipList(const unsigned char* packet) {
-  reinterpret_cast<SessionItemLists*>(&g_session)->RemoveEquipment();
-  reinterpret_cast<SessionMessengerContext*>(&g_session)->ResetEquipment();
+  g_session.RemoveEquipment();
+  g_session.ResetEquipment();
   g_session.ResetItems2B50();
 
   const int length = *reinterpret_cast<const std::int16_t*>(packet + 2);
@@ -8113,8 +8102,8 @@ void CGameMode::ReceiveInventoryEquipList(const unsigned char* packet) {
 // OFFSET: 0x00D2CC80
 // FUNCTION: fn_21718
 void CGameMode::ReceiveInventoryEquipList2(const unsigned char* packet) {
-  reinterpret_cast<SessionItemLists*>(&g_session)->RemoveEquipment();
-  reinterpret_cast<SessionMessengerContext*>(&g_session)->ResetEquipment();
+  g_session.RemoveEquipment();
+  g_session.ResetEquipment();
   g_session.ResetItems2B50();
 
   const int length = *reinterpret_cast<const std::int16_t*>(packet + 2);
@@ -8134,8 +8123,8 @@ void CGameMode::ReceiveInventoryEquipList2(const unsigned char* packet) {
 // OFFSET: 0x00D2D140
 // FUNCTION: fn_21719
 void CGameMode::ReceiveInventoryEquipList3(const unsigned char* packet) {
-  reinterpret_cast<SessionItemLists*>(&g_session)->RemoveEquipment();
-  reinterpret_cast<SessionMessengerContext*>(&g_session)->ResetEquipment();
+  g_session.RemoveEquipment();
+  g_session.ResetEquipment();
   g_session.ResetItems2B50();
 
   const int length = *reinterpret_cast<const std::int16_t*>(packet + 2);
@@ -8310,7 +8299,7 @@ void CGameMode::ReceiveItemPickupAck2(const unsigned char* data) {
     window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     if (*reinterpret_cast<int*>(&this->unknown_0100[0x14]) != 0) {
       *reinterpret_cast<int*>(&this->unknown_0100[0x14]) = 0;
-      reinterpret_cast<SessionMessengerContext*>(&g_session)->ResetSlots();
+      g_session.ResetSlots();
     }
     g_session.UpdateInventoryItem(item, 1);
   } else {
@@ -8407,7 +8396,7 @@ void CGameMode::ReceiveItemPickupAck3(const unsigned char* data) {
     window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     if (*reinterpret_cast<int*>(&this->unknown_0100[0x14]) != 0) {
       *reinterpret_cast<int*>(&this->unknown_0100[0x14]) = 0;
-      reinterpret_cast<SessionMessengerContext*>(&g_session)->ResetSlots();
+      g_session.ResetSlots();
     }
     g_session.UpdateInventoryItem(item, 1);
     if (UIWindow* quest = g_windowMgr.LookupWindow(0x133)) {
@@ -8504,7 +8493,7 @@ void CGameMode::ReceiveItemPickupAck(const unsigned char* data) {
     window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     if (*reinterpret_cast<int*>(&this->unknown_0100[0x14]) != 0) {
       *reinterpret_cast<int*>(&this->unknown_0100[0x14]) = 0;
-      reinterpret_cast<SessionMessengerContext*>(&g_session)->ResetSlots();
+      g_session.ResetSlots();
     }
     g_session.UpdateInventoryItem(item, 1);
   } else {
@@ -8617,7 +8606,7 @@ void CGameMode::ReceiveItemPickupAck5(
     window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     if (*reinterpret_cast<int*>(&static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_0100[0x14]) != 0) {
       *reinterpret_cast<int*>(&static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_0100[0x14]) = 0;
-      reinterpret_cast<SessionMessengerContext*>(&g_session)->ResetSlots();
+      g_session.ResetSlots();
     }
     g_session.UpdateInventoryItem(item, 1);
     if (UIWindow* quest = g_windowMgr.LookupWindow(0x133)) {
@@ -8730,7 +8719,7 @@ void CGameMode::ReceiveItemPickupAck7(const unsigned char* data) {
     window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     if (*reinterpret_cast<int*>(&static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_0100[0x14]) != 0) {
       *reinterpret_cast<int*>(&static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_0100[0x14]) = 0;
-      reinterpret_cast<SessionMessengerContext*>(&g_session)->ResetSlots();
+      g_session.ResetSlots();
     }
     g_session.UpdateInventoryItem(item, 1);
     if (UIWindow* quest = g_windowMgr.LookupWindow(0x133)) {
@@ -9803,7 +9792,7 @@ void CGameMode::ReceiveItemPickupAck8(const unsigned char* data) {
     window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     if (*reinterpret_cast<int*>(&static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_0100[0x14]) != 0) {
       *reinterpret_cast<int*>(&static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_0100[0x14]) = 0;
-      reinterpret_cast<SessionMessengerContext*>(&g_session)->ResetSlots();
+      g_session.ResetSlots();
     }
     g_session.UpdateInventoryItem(item, 1);
     if (UIWindow* quest = g_windowMgr.LookupWindow(0x133)) {
@@ -9933,7 +9922,7 @@ void CGameMode::ReceiveItemPickupAck9(const unsigned char* data) {
     window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     if (*reinterpret_cast<int*>(&static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_0100[0x14]) != 0) {
       *reinterpret_cast<int*>(&static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_0100[0x14]) = 0;
-      reinterpret_cast<SessionMessengerContext*>(&g_session)->ResetSlots();
+      g_session.ResetSlots();
     }
     g_session.UpdateInventoryItem(item, 1);
     if (UIWindow* quest = g_windowMgr.LookupWindow(0x133)) {
@@ -11461,7 +11450,7 @@ void CGameMode::ReceiveExpChange(const unsigned char* packet) {
   case 20:
     if (*reinterpret_cast<int*>(&this->unknown_0100[0x14])) {
       *reinterpret_cast<int*>(&this->unknown_0100[0x14]) = 0;
-      reinterpret_cast<SessionMessengerContext*>(&g_session)->ResetSlots();
+      g_session.ResetSlots();
     }
     g_session.m_zeny = *reinterpret_cast<const int*>(packet + 4);
     g_session.RefreshHpSpWindows();
@@ -11548,8 +11537,8 @@ void CGameMode::ReceiveParaResultList(const unsigned char* packet) {
 // OFFSET: 0x00D2C5D0
 // FUNCTION: fn_21716
 void CGameMode::ReceiveEquipItemListFlags(const unsigned char* packet) {
-  reinterpret_cast<SessionItemLists*>(&g_session)->RemoveEquipment();
-  reinterpret_cast<SessionMessengerContext*>(&g_session)->ResetEquipment();
+  g_session.RemoveEquipment();
+  g_session.ResetEquipment();
   g_session.ResetItems2B50();
   const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t*>(packet + 2) - 4) / 0x25;
   const unsigned char* record = packet + 4;
@@ -11594,8 +11583,8 @@ void CGameMode::ReceiveEquipItemListFlags(const unsigned char* packet) {
 // OFFSET: 0x00D27EC0
 // FUNCTION: fn_21692
 void CGameMode::ReceiveEquipItemList34(const unsigned char* packet) {
-  reinterpret_cast<SessionItemLists*>(&g_session)->RemoveEquipment();
-  reinterpret_cast<SessionMessengerContext*>(&g_session)->ResetEquipment();
+  g_session.RemoveEquipment();
+  g_session.ResetEquipment();
   const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t*>(packet + 2) - 4) / 0x22;
   const unsigned char* record = packet + 4;
   for (int i = 0; i < count; ++i) {
@@ -11633,8 +11622,8 @@ void CGameMode::ReceiveEquipItemList34(const unsigned char* packet) {
 // OFFSET: 0x00D280B0
 // FUNCTION: fn_21693
 void CGameMode::ReceiveEquipItemList38(const unsigned char* packet) {
-  reinterpret_cast<SessionItemLists*>(&g_session)->RemoveEquipment();
-  reinterpret_cast<SessionMessengerContext*>(&g_session)->ResetEquipment();
+  g_session.RemoveEquipment();
+  g_session.ResetEquipment();
   g_session.ResetItems2B50();
   const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t*>(packet + 2) - 4) / 0x26;
   const unsigned char* record = packet + 4;

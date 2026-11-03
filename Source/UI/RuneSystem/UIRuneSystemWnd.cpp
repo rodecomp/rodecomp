@@ -1689,9 +1689,6 @@ void UIRune_Decom::SetItem(int itemId) {
   }
 }
 
-struct SessionMessengerContext {
-  int GetList0Size() const;
-};
 
 // OFFSET: 0x008184A0
 // FUNCTION: fn_10175
@@ -1737,7 +1734,7 @@ int UIRune_Decom::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
       g_windowMgr.CloseWindow(0x16A);
       if (!g_runeSystemMgr->IsRequestPending() && (!this->parent || this->parent->SendMsg(this, 0x6A, 50, 0, 0, 0) != 0) && this->m_ownedCount) {
         if (static_cast<float>(g_session.m_weight) > static_cast<float>(g_session.m_maxWeight) * 0.7f ||
-            reinterpret_cast<const SessionMessengerContext*>(&g_session)->GetList0Size() + g_session.CountItems17F0() + g_session.CountItems2B50() + 8 >=
+            g_session.GetList0Size() + g_session.CountItems17F0() + g_session.CountItems2B50() + 8 >=
               g_session.unknown_7FBC + 100) {
           g_windowMgr.Confirm(LookupMessage(4064), 0, true, false, 0, "Message", 280, 120, 0);
         } else {

@@ -362,9 +362,6 @@ struct GroundSkillArgumentData {
 static_assert(sizeof(GroundSkillExtendedData) == 0x20);
 static_assert(sizeof(GroundSkillArgumentData) == 0x24);
 
-struct SessionItemLists {
-  void ClearTradeItems();
-};
 
 // OFFSET: 0x00D66230
 // FUNCTION: fn_22010
@@ -673,7 +670,7 @@ void CGameMode::ReceivePendingResult(const unsigned char* packet) {
 // OFFSET: 0x00D3C1C0
 // FUNCTION: fn_21792
 void CGameMode::ReceiveItem1718BasicList(const unsigned char* packet) {
-  reinterpret_cast<SessionItemLists*>(&g_session)->ClearTradeItems();
+  g_session.ClearTradeItems();
 
   const std::int64_t count = (static_cast<std::int64_t>(*reinterpret_cast<const std::int16_t*>(packet + 2)) - 4) / 19;
   const Item1718BasicRecord* records = reinterpret_cast<const Item1718BasicRecord*>(packet + 4);
@@ -758,7 +755,7 @@ void CGameMode::ReceiveItem1718Result(const unsigned char* packet) {
 // OFFSET: 0x00D3C710
 // FUNCTION: fn_21794
 void CGameMode::ReceiveItem1718IndexList(const unsigned char* packet) {
-  reinterpret_cast<SessionItemLists*>(&g_session)->ClearTradeItems();
+  g_session.ClearTradeItems();
 
   const int count = (*reinterpret_cast<const std::int16_t*>(packet + 2) - 4) / sizeof(Item1718IndexRecord);
   const Item1718IndexRecord* records = reinterpret_cast<const Item1718IndexRecord*>(packet + 4);
@@ -2908,7 +2905,7 @@ void CGameMode::ReceivePendingItem1718List(const unsigned char* packet) {
     return;
   }
 
-  reinterpret_cast<SessionItemLists*>(&g_session)->ClearTradeItems();
+  g_session.ClearTradeItems();
   if (g_hangameLogin == 1) {
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>("한게임 유저는 12월 3일부로 유료아이템 구매가 불가능합니다."), 0xFF, 0, 0, 0);
