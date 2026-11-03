@@ -1926,7 +1926,7 @@ bool CSession::IsPartyRecommendTarget(std::uint32_t aid) {
   }
 
   const std::string name = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ActorName(aid);
-  if (ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyByName(name.c_str()).valid == 0) {
+  if (g_session.PartyByName(name.c_str()).valid == 0) {
     return false;
   }
 

@@ -448,10 +448,10 @@ void UIRoMapWnd::DrawRecordFaces(int) {
 // OFFSET: 0x0091BF80
 // FUNCTION: fn_12612
 void UIRoMapWnd::RefreshPartyRecords() {
-  const int count = ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyCount();
+  const int count = g_session.PartyCount();
   if (count > 0) {
     for (int index = 0; index < count; ++index) {
-      MessengerMember member = ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyAt(index);
+      MessengerMember member = g_session.PartyAt(index);
       if (member.valid == 0 || member.offline != 0) {
         continue;
       }

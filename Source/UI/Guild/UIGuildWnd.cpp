@@ -2801,7 +2801,7 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
 
           if (member.online == 1) {
             const bool invite = g_session.unknown_5464 != 0 &&
-                                ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyByName(member.name.c_str()).valid == 0;
+                                g_session.PartyByName(member.name.c_str()).valid == 0;
             if (invite) {
               this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(1330), 5));
             }

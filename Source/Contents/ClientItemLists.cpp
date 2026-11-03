@@ -506,8 +506,7 @@ void sub_D1FBA0(const unsigned char* data) {
       member.accountId = packet->accountId;
       member.characterId = packet->characterId;
       member.offline = 0;
-      ClientMessenger messenger{g_session.m_partyMembers, g_session.m_friends};
-      messenger.AddFriend(member);
+      g_session.AddFriend(member);
       g_session.RefreshWindow02C8();
       return;
     }

@@ -77,7 +77,7 @@ void CAdventurerAgencyMgr::CompletePartyInfo(AsyncDiagnostic diagnostic, std::st
 
   if (info.minimumLevel > g_session.m_level || info.maximumLevel < g_session.m_level) {
     notify(3416);
-  } else if (ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyCount() > 0) {
+  } else if (g_session.PartyCount() > 0) {
     notify(79);
   } else {
     static_cast<CMode*>(g_charViewMode)->SendMsg(265, reinterpret_cast<int>(&info.accountId), reinterpret_cast<int>(&info.characterId), 0, 0);

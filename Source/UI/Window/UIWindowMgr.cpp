@@ -1500,7 +1500,7 @@ void UIWindowMgr::SendEmotionHotkey(int index) {
       return;
     }
   } else {
-    if (chatTarget == 1 && ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyCount() != 0) {
+    if (chatTarget == 1 && g_session.PartyCount() != 0) {
       mode->SendMsg(0x42, 0, 0, 0, 0);
       return;
     }

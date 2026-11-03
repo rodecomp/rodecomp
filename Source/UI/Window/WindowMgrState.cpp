@@ -128,7 +128,7 @@ void UIWindowMgr::RestoreMiniPartyWindows() {
   const int count = static_cast<int>(g_session.unknown_0734.size());
   WindowDialogs& dialogs = *reinterpret_cast<WindowDialogs*>(this);
   for (int index = 0; index < count; ++index) {
-    MessengerMember member = ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyAt(index);
+    MessengerMember member = g_session.PartyAt(index);
     if (member.valid == 0) {
       continue;
     }

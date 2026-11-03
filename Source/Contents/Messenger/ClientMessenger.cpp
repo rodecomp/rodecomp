@@ -4899,7 +4899,7 @@ static_assert(sizeof(EquipmentProperties::CEquipmentPropertiesMgr) == 0x1FC);
 
 // OFFSET: 0x00DDFFE0
 // FUNCTION: fn_23451
-std::int32_t ClientMessenger::MemberColor(int index) {
+std::int32_t CSession::MemberColor(int index) {
   switch (index) {
   case 0:
     return -16108936;
@@ -4939,10 +4939,10 @@ std::int32_t ClientMessenger::MemberColor(int index) {
 
 // OFFSET: 0x00DD6F10
 // FUNCTION: fn_23281
-void ClientMessenger::AddFriend(MessengerMember& member) {
+void CSession::AddFriend(MessengerMember& member) {
   int index = 0;
 
-  for (MessengerMember& existing : this->friends) {
+  for (MessengerMember& existing : this->m_friends) {
     if (existing.name == member.name) {
       member.color = MemberColor(index);
       existing = member;
@@ -4952,12 +4952,12 @@ void ClientMessenger::AddFriend(MessengerMember& member) {
   }
 
   member.color = MemberColor(index);
-  this->friends.push_back(member);
+  this->m_friends.push_back(member);
 }
 
 // OFFSET: 0x00DD70B0
 // FUNCTION: fn_23283
-void ClientMessenger::AddPartyMember(MessengerMember& member) {
+void CSession::AddPartyMember(MessengerMember& member) {
   if (member.map.size() > 4) {
     member.map.resize(member.map.size() - 3);
     member.map.append("rsw", 3);
@@ -4965,7 +4965,7 @@ void ClientMessenger::AddPartyMember(MessengerMember& member) {
 
   int index = 0;
 
-  for (MessengerMember& existing : this->party) {
+  for (MessengerMember& existing : this->m_partyMembers) {
     if (existing.name == member.name) {
       member.color = MemberColor(index);
       existing = member;
@@ -4976,7 +4976,7 @@ void ClientMessenger::AddPartyMember(MessengerMember& member) {
   }
 
   member.color = MemberColor(index);
-  this->party.push_back(member);
+  this->m_partyMembers.push_back(member);
 
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   PartyMemberEffects effects{mode};
@@ -4987,28 +4987,28 @@ void ClientMessenger::AddPartyMember(MessengerMember& member) {
 
 // OFFSET: 0x00DD87E0
 // FUNCTION: fn_23312
-void ClientMessenger::ClearFriends() {
-  this->friends.clear();
+void CSession::ClearFriends() {
+  this->m_friends.clear();
 }
 
 // OFFSET: 0x00DDF8A0
 // FUNCTION: fn_23427
-int ClientMessenger::FriendCount() const {
-  return static_cast<int>(this->friends.size());
+int CSession::FriendCount() const {
+  return static_cast<int>(this->m_friends.size());
 }
 
 // OFFSET: 0x00DDF9D0
 // FUNCTION: fn_23436
-int ClientMessenger::PartyCount() const {
-  return static_cast<int>(this->party.size());
+int CSession::PartyCount() const {
+  return static_cast<int>(this->m_partyMembers.size());
 }
 
 // OFFSET: 0x00DDFA20
 // FUNCTION: fn_23441
-int ClientMessenger::OnlinePartyCount() const {
+int CSession::OnlinePartyCount() const {
   int count = 0;
 
-  for (const MessengerMember& member : this->party) {
+  for (const MessengerMember& member : this->m_partyMembers) {
     if (member.offline == 0) {
       ++count;
     }
@@ -5019,10 +5019,10 @@ int ClientMessenger::OnlinePartyCount() const {
 
 // OFFSET: 0x00DDCC30
 // FUNCTION: fn_23372
-MessengerMember ClientMessenger::FriendAt(int index) const {
+MessengerMember CSession::FriendAt(int index) const {
   int position = 0;
 
-  for (const MessengerMember& member : this->friends) {
+  for (const MessengerMember& member : this->m_friends) {
     if (position == index) {
       return member;
     }
@@ -5035,10 +5035,10 @@ MessengerMember ClientMessenger::FriendAt(int index) const {
 
 // OFFSET: 0x00DE0500
 // FUNCTION: fn_23455
-MessengerMember ClientMessenger::PartyAt(int index) const {
+MessengerMember CSession::PartyAt(int index) const {
   int position = 0;
 
-  for (const MessengerMember& member : this->party) {
+  for (const MessengerMember& member : this->m_partyMembers) {
     if (position == index) {
       return member;
     }
@@ -5051,8 +5051,8 @@ MessengerMember ClientMessenger::PartyAt(int index) const {
 
 // OFFSET: 0x00DE00D0
 // FUNCTION: fn_23452
-MessengerMember ClientMessenger::PartyByAccount(std::uint32_t accountId) const {
-  for (const MessengerMember& member : this->party) {
+MessengerMember CSession::PartyByAccount(std::uint32_t accountId) const {
+  for (const MessengerMember& member : this->m_partyMembers) {
     if (member.accountId == accountId) {
       return member;
     }
@@ -5063,8 +5063,8 @@ MessengerMember ClientMessenger::PartyByAccount(std::uint32_t accountId) const {
 
 // OFFSET: 0x00DE01C0
 // FUNCTION: fn_23453
-MessengerMember ClientMessenger::PartyByCharacter(std::uint32_t characterId) const {
-  for (const MessengerMember& member : this->party) {
+MessengerMember CSession::PartyByCharacter(std::uint32_t characterId) const {
+  for (const MessengerMember& member : this->m_partyMembers) {
     if (member.characterId == characterId) {
       return member;
     }
@@ -5075,8 +5075,8 @@ MessengerMember ClientMessenger::PartyByCharacter(std::uint32_t characterId) con
 
 // OFFSET: 0x00DE03E0
 // FUNCTION: fn_23454
-MessengerMember ClientMessenger::PartyByName(const char* name) const {
-  for (const MessengerMember& member : this->party) {
+MessengerMember CSession::PartyByName(const char* name) const {
+  for (const MessengerMember& member : this->m_partyMembers) {
     if (member.name == name) {
       return member;
     }
@@ -5087,8 +5087,8 @@ MessengerMember ClientMessenger::PartyByName(const char* name) const {
 
 // OFFSET: 0x00DD8000
 // FUNCTION: fn_23301
-void ClientMessenger::SetPartyDead(std::uint32_t accountId, int dead) {
-  for (MessengerMember& member : this->party) {
+void CSession::SetPartyDead(std::uint32_t accountId, int dead) {
+  for (MessengerMember& member : this->m_partyMembers) {
     if (member.accountId == accountId) {
       member.dead = dead;
       return;
@@ -5098,8 +5098,8 @@ void ClientMessenger::SetPartyDead(std::uint32_t accountId, int dead) {
 
 // OFFSET: 0x00DD8030
 // FUNCTION: fn_23302
-void ClientMessenger::SetPartyJobLevel(std::uint32_t accountId, std::uint16_t job, std::uint16_t level) {
-  for (MessengerMember& member : this->party) {
+void CSession::SetPartyJobLevel(std::uint32_t accountId, std::uint16_t job, std::uint16_t level) {
+  for (MessengerMember& member : this->m_partyMembers) {
     if (member.accountId == accountId) {
       member.job = job;
       member.level = level;
@@ -5110,8 +5110,8 @@ void ClientMessenger::SetPartyJobLevel(std::uint32_t accountId, std::uint16_t jo
 
 // OFFSET: 0x00DD8070
 // FUNCTION: fn_23303
-void ClientMessenger::SetPartyLeader(std::uint32_t accountId, int leader) {
-  for (MessengerMember& member : this->party) {
+void CSession::SetPartyLeader(std::uint32_t accountId, int leader) {
+  for (MessengerMember& member : this->m_partyMembers) {
     if (member.accountId == accountId) {
       member.leader = leader;
       return;

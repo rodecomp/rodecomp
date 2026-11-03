@@ -466,12 +466,12 @@ int UIEntryQueueWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
         error = 0x86B;
       } else if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->IsActiveSkillEffectId(0x29C)) {
         error = 0x86C;
-      } else if (ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyCount() == 0) {
+      } else if (g_session.PartyCount() == 0) {
         error = 0x86D;
       } else if (g_session.unknown_5464 == 0) {
         error = 0x86E;
       } else if (static_cast<unsigned>(g_entryQueueMgr->current->unknown_020C) <
-                 static_cast<unsigned>(ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.OnlinePartyCount())) {
+                 static_cast<unsigned>(g_session.OnlinePartyCount())) {
         error = 0x86F;
       } else {
         if (this->ConfirmApply(LookupMessage(0x863))) {

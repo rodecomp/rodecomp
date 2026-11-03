@@ -2067,7 +2067,7 @@ int sub_D64A40(const unsigned char* entries) {
 // OFFSET: 0x00D77C60
 // FUNCTION: fn_22153
 void CGameMode::ReceivePartyJobLevel(const unsigned char* packet) {
-  ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.SetPartyJobLevel(
+  g_session.SetPartyJobLevel(
     *reinterpret_cast<const std::uint32_t*>(packet + 2), *reinterpret_cast<const std::uint16_t*>(packet + 6),
     *reinterpret_cast<const std::uint16_t*>(packet + 8)
   );
@@ -2077,10 +2077,9 @@ void CGameMode::ReceivePartyJobLevel(const unsigned char* packet) {
 // OFFSET: 0x00D8A260
 // FUNCTION: fn_22217
 void CGameMode::ReceivePartyDead(const unsigned char* packet) {
-  ClientMessenger messenger{g_session.m_partyMembers, g_session.m_friends};
-  MessengerMember member = messenger.PartyByAccount(*reinterpret_cast<const std::uint32_t*>(packet + 2));
+  MessengerMember member = g_session.PartyByAccount(*reinterpret_cast<const std::uint32_t*>(packet + 2));
   if (member.valid != 0) {
-    messenger.SetPartyDead(*reinterpret_cast<const std::uint32_t*>(packet + 2), packet[6]);
+    g_session.SetPartyDead(*reinterpret_cast<const std::uint32_t*>(packet + 2), packet[6]);
     sub_DFF150(&g_session);
   }
 }
@@ -4082,8 +4081,7 @@ namespace {
 // OFFSET: 0x00D2AB70
 // FUNCTION: fn_21706
 void CGameMode::ReceiveFriendList(const unsigned char* packet) {
-  ClientMessenger messenger{g_session.m_partyMembers, g_session.m_friends};
-  messenger.ClearFriends();
+  g_session.ClearFriends();
 
   const std::int64_t length = *reinterpret_cast<const std::uint16_t*>(packet + 2);
   if (length == 4) {
@@ -4108,7 +4106,7 @@ void CGameMode::ReceiveFriendList(const unsigned char* packet) {
     member.accountId = record.accountId;
     member.characterId = record.characterId;
     member.offline = 1;
-    messenger.AddFriend(member);
+    g_session.AddFriend(member);
   }
 
   g_session.RefreshWindow02C8();
@@ -4887,7 +4885,7 @@ void CGameMode::ApplyStatusChange(
     }
   }
 
-  MessengerMember member = ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyByAccount(aid);
+  MessengerMember member = g_session.PartyByAccount(aid);
   if (aid != g_session.m_aid && (!member.valid || member.offline)) {
     return;
   }
@@ -6875,11 +6873,10 @@ void CGameMode::ReceiveItemConsumed(const unsigned char* packet) {
 // FUNCTION: fn_21676
 void CGameMode::ReceivePartyLeaderChange(const unsigned char* packet) {
   char text[500];
-  ClientMessenger messenger{g_session.m_partyMembers, g_session.m_friends};
-  MessengerMember member = messenger.PartyByAccount(*reinterpret_cast<const std::uint32_t*>(packet + 6));
+  MessengerMember member = g_session.PartyByAccount(*reinterpret_cast<const std::uint32_t*>(packet + 6));
   if (member.valid != 0) {
-    messenger.SetPartyLeader(*reinterpret_cast<const std::uint32_t*>(packet + 2), 1);
-    messenger.SetPartyLeader(*reinterpret_cast<const std::uint32_t*>(packet + 6), 0);
+    g_session.SetPartyLeader(*reinterpret_cast<const std::uint32_t*>(packet + 2), 1);
+    g_session.SetPartyLeader(*reinterpret_cast<const std::uint32_t*>(packet + 6), 0);
     g_session.unknown_5464 = *reinterpret_cast<const std::uint32_t*>(packet + 6) == g_session.m_aid;
     std::sprintf(text, LookupMessage(1552), member.name.c_str());
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 12, 0, 0);
@@ -7222,7 +7219,7 @@ void CGameMode::RefreshEmotionPurchaseSchedule() {
 // FUNCTION: fn_21733
 void CGameMode::ReceivePartyItemPickupNotice(const unsigned char* packet) {
   const std::uint32_t aid = *reinterpret_cast<const std::uint32_t*>(packet + 2);
-  MessengerMember member = ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyByAccount(aid);
+  MessengerMember member = g_session.PartyByAccount(aid);
   if (aid != g_session.m_aid && member.valid) {
     ITEM_INFO item;
     item.unknown_0000[0] = packet[0x1F];
@@ -8756,7 +8753,7 @@ void CGameMode::ReceiveEquipItemDamaged(const unsigned char* packet) {
   std::string text;
   const std::uint32_t aid = *reinterpret_cast<const std::uint32_t*>(packet + 4);
   if (aid != g_session.m_aid) {
-    MessengerMember member = ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyByAccount(aid);
+    MessengerMember member = g_session.PartyByAccount(aid);
     if (member.valid) {
       switch (location) {
       case 0x20:
@@ -15810,7 +15807,7 @@ void CGameMode::ReceivePartyMemberInfo(const unsigned char* data) {
     }
   }
 
-  ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.AddPartyMember(member);
+  g_session.AddPartyMember(member);
   sub_DFF150(&g_session);
 }
 
@@ -15845,7 +15842,7 @@ void CGameMode::ReceivePartyMemberList(const unsigned char* data) {
       member.map = map;
       member.leader = entry.leader;
       member.offline = entry.offline;
-      ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.AddPartyMember(member);
+      g_session.AddPartyMember(member);
       if (member.accountId == g_session.m_aid && member.leader == 0) {
         g_session.unknown_5464 = 1;
       }
@@ -15888,7 +15885,7 @@ void CGameMode::sub_D59FD0(const char* value, std::vector<PartyRosterEntry>* mem
       member.color = 0x6F3007;
       g_session.unknown_5464 = 1;
     }
-    ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.AddPartyMember(member);
+    g_session.AddPartyMember(member);
   }
 
   g_session.LoadMiniPartyInfo();
@@ -15945,9 +15942,8 @@ void CGameMode::sub_D5EEF0(
 
   g_session.unknown_54A8 = itemDistribute != 0;
   g_session.unknown_54A4 = itemShare != 0;
-  ClientMessenger messenger{g_session.m_partyMembers, g_session.m_friends};
-  messenger.PartyCount();
-  messenger.AddPartyMember(member);
+  g_session.PartyCount();
+  g_session.AddPartyMember(member);
   g_windowMgr.NotifyMemberWindows(&member);
   this->SetActorUnknown02E4(accountId, 1);
 }

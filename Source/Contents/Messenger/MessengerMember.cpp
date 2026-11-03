@@ -1066,12 +1066,12 @@ void UIMessengerGroupWnd::Paint() {
       this->DrawBitmap(this->geometry.width - 58, this->geometry.height - 18, &background->image, true);
 
       memset(path, 0, sizeof(path));
-      sprintf(path, "%d/%d", ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyCount(), 12);
+      sprintf(path, "%d/%d", g_session.PartyCount(), 12);
       this->DrawTextAt(this->geometry.width - 51, this->geometry.height - 16, path,
         static_cast<int>(strlen(path)), 0, 12, 0xFFFFFF, 0, 0
       );
     } else {
-      MessengerMember entry = ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.FriendAt(index);
+      MessengerMember entry = g_session.FriendAt(index);
       if (g_modeMgr.GetGameMode() && entry.valid) {
         entry.name = LookupPlayerName(entry.characterId);
       }
@@ -1357,7 +1357,7 @@ void UIMessengerGroupWnd::LayoutButtons() {
   int x;
   if (this->mode == 1) {
     const int offset = hidden * -26;
-    if (ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyCount()) {
+    if (g_session.PartyCount()) {
       this->buttons[10]->Move(offset + 213, this->geometry.height - 40);
       this->buttons[9]->Move(offset + 161, this->geometry.height - 40);
       this->buttons[8]->Move(offset + 187, this->geometry.height - 40);
@@ -1542,7 +1542,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
           if (!g_windowMgr.CloseWindow(0x44)) {
             g_windowMgr.EnsureWindow(0x44);
           }
-        } else if (!g_windowMgr.CloseWindow(0x35) && ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyCount() && this->mode == 1) {
+        } else if (!g_windowMgr.CloseWindow(0x35) && g_session.PartyCount() && this->mode == 1) {
           g_windowMgr.EnsureWindow(0x35);
         }
 
@@ -1610,7 +1610,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
         if (g_windowMgr.unknown_033C) {
           g_windowMgr.CloseWindow(0x44);
         }
-        if (!g_windowMgr.CloseWindow(0x35) && !ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyCount()) {
+        if (!g_windowMgr.CloseWindow(0x35) && !g_session.PartyCount()) {
           if (this->mode != 1) {
             return 0;
           }
@@ -1782,18 +1782,18 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       this->gauges[index]->Move(-100, -100);
     }
     if (this->mode == 0) {
-      const int count = ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.FriendCount();
+      const int count = g_session.FriendCount();
       for (int index = 0; index < count; ++index) {
-        MessengerMember member = ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.FriendAt(index);
+        MessengerMember member = g_session.FriendAt(index);
         if (member.valid) {
           this->members.push_back(member);
         }
       }
       this->rowHeight = 23;
     } else if (this->mode == 1) {
-      const int count = ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyCount();
+      const int count = g_session.PartyCount();
       for (int index = 0; index < count; ++index) {
-        MessengerMember member = ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyAt(index);
+        MessengerMember member = g_session.PartyAt(index);
         if (member.valid) {
           this->members.push_back(member);
         }
@@ -1983,7 +1983,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
         this->menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(0x15F)).c_str(), 0x13));
         MessengerMember member = this->MemberAtIndex(this->selected);
         if (member.valid && !member.offline && g_session.unknown_5464
-            && !ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyByName(member.name.c_str()).valid) {
+            && !g_session.PartyByName(member.name.c_str()).valid) {
           char text[200];
           sprintf(text, LookupMessage(0x532), member.name.c_str());
           this->menuItems.push_back(MiniPartyInfoEntry(text, 5));

@@ -504,7 +504,7 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
     } else {
       const bool visible =
         g_session.m_aid == unit->owner ||
-        ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyByCharacter(unit->characterId).valid != 0;
+        g_session.PartyByCharacter(unit->characterId).valid != 0;
       this->render.enabled = visible;
     }
 

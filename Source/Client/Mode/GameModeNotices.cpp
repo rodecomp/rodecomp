@@ -1078,7 +1078,7 @@ void CGameMode::ReceiveGradeEnchantInfo(const unsigned char* data) {
 // FUNCTION: fn_22127
 void CGameMode::ReceivePartyItemPickup(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const PartyItemPickupPacket*>(data);
-  MessengerMember member = ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyByAccount(packet->aid);
+  MessengerMember member = g_session.PartyByAccount(packet->aid);
   if (packet->aid != g_session.m_aid && member.valid) {
     ITEM_INFO item;
     item.unknown_0000[0] = packet->type;
@@ -5689,7 +5689,7 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
     }
   }
 
-  MessengerMember member = ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyByAccount(packet->aid);
+  MessengerMember member = g_session.PartyByAccount(packet->aid);
   if (packet->aid != g_session.m_aid && (!member.valid || member.offline)) {
     return;
   }

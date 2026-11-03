@@ -206,7 +206,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         if (g_windowMgr.unknown_042C) {
           g_windowMgr.CloseWindow(208);
         }
-        if (!g_windowMgr.CloseWindow(53) && ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyCount()) {
+        if (!g_windowMgr.CloseWindow(53) && g_session.PartyCount()) {
           g_windowMgr.EnsureWindow(53);
         }
         g_windowMgr.CloseWindow(68);
@@ -447,10 +447,9 @@ int UIMiniPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       return 0;
     }
 
-    ClientMessenger messenger{g_session.m_partyMembers, g_session.m_friends};
-    const int count = messenger.PartyCount();
+    const int count = g_session.PartyCount();
     for (int index = 0; index < count; ++index) {
-      const MessengerMember member = messenger.PartyAt(index);
+      const MessengerMember member = g_session.PartyAt(index);
       if (!member.valid) {
         continue;
       }

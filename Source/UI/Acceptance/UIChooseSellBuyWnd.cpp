@@ -1130,7 +1130,7 @@ int UIPartySettingWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         g_windowMgr.CloseWindow(53);
       }
       CMode* mode = g_modeMgr.GetGameMode();
-      if (ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyCount() != 0) {
+      if (g_session.PartyCount() != 0) {
         if (g_session.unknown_5464 != 0) {
           if (this->m_expShare != g_session.unknown_54A0 || this->m_itemShare != g_session.unknown_54A4 ||
               this->m_itemDistribute != g_session.unknown_54A8) {
@@ -1165,7 +1165,7 @@ int UIPartySettingWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       g_windowMgr.CloseWindow(207);
       return 0;
     case 215:
-      if (ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyCount() == 0 || g_session.unknown_5464 != 0) {
+      if (g_session.PartyCount() == 0 || g_session.unknown_5464 != 0) {
         if (sender == this->m_expShareButtons[0] || sender == this->m_expShareButtons[1]) {
           for (int i = 0; i < 2; ++i) {
             if (sender == this->m_expShareButtons[i]) {

@@ -783,7 +783,7 @@ void CGameMode::OpenActorMenu(const ActorPickInfo* pick, int handled) {
       }
 
       const bool canInviteParty =
-        g_session.unknown_5464 != 0 && ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyByName(name.c_str()).valid == 0;
+        g_session.unknown_5464 != 0 && g_session.PartyByName(name.c_str()).valid == 0;
       if (canInviteParty) {
         this->actorMenuIds.push_back(5);
         sprintf(line, LookupMessage(0x188), name.c_str());

@@ -112,10 +112,10 @@ void UIWindowMgr::RebuildMiniPartyWindows() {
   }
   this->snapExcluded.clear();
 
-  const int count = ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyCount();
+  const int count = g_session.PartyCount();
   std::list<SessionRecord0734> records;
   for (int index = 0; index < count; ++index) {
-    MessengerMember member = ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyAt(index);
+    MessengerMember member = g_session.PartyAt(index);
     if (member.valid == 0) {
       continue;
     }
@@ -132,7 +132,7 @@ void UIWindowMgr::RebuildMiniPartyWindows() {
 
   WindowDialogs& dialogs = *reinterpret_cast<WindowDialogs*>(this);
   for (const SessionRecord0734& record : records) {
-    MessengerMember member = ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyByAccount(record.id);
+    MessengerMember member = g_session.PartyByAccount(record.id);
     if (member.valid == 0) {
       continue;
     }
