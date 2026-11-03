@@ -98,11 +98,6 @@ void GroundGeometry::Reset(int columns, int rows) {
 void GroundGeometry::Slot01(int, int) {
 }
 
-// INLINED
-GroundSpatial GroundGeometry::Spatial() const {
-  return {this->width, this->height, this->cellSize, this->cells};
-}
-
 // OFFSET: 0x00ABDEF0
 // FUNCTION: fn_17556
 void GroundGeometry::Build(CGndRes& resource, const float* lightDirection, const float* diffuse, const float* ambient) {

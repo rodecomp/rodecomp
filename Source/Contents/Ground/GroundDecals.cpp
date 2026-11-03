@@ -3,6 +3,8 @@
 #include "Render/Primitives/RenderPrimitivePool.h"
 #include "Render/Projection/RenderProjection.h"
 #include "Render/Primitives/RenderQueues.h"
+#include "Render/Renderer.h"
+#include "Render/TextureQuad.h"
 #include "Render/Textures/Texture.h"
 #include "Render/Textures/TextureCache.h"
 #include "Resource/World/TerrainResource.h"
@@ -32,7 +34,7 @@ namespace {
   // INLINED
   void DrawDecal(
     const GroundGeometry& ground, const C3dAttr& terrain, const float* matrix, int column, int row, std::uint32_t color, CTexture& texture, const float* uv,
-    float bias, GroundRenderContext& context
+    float bias
   ) {
     float vertices[4][3]{};
 
@@ -58,10 +60,10 @@ namespace {
       }
     }
 
-    RenderPrimitive* primitive = context.primitives.Acquire();
+    RenderPrimitive* primitive = g_renderer->primitives.Acquire();
 
     for (unsigned corner = 0; corner < 4; ++corner) {
-      context.projection.Project(vertices[corner], matrix, primitive->vertices[corner]);
+      g_renderer->viewport.Projection().Project(vertices[corner], matrix, primitive->vertices[corner]);
       primitive->vertices[corner].z = primitive->vertices[corner].z - bias;
     }
 
@@ -77,16 +79,16 @@ namespace {
     primitive->unknown_0018 = 5;
     primitive->unknown_001C = 6;
     primitive->texture = &texture;
-    context.queues.Submit(primitive, 1, context.depthAlpha, context.depthStart, context.depthEnd);
+    g_renderer->queues.Submit(primitive, 1, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
   }
 }
 
 // OFFSET: 0x00AC3380
 // FUNCTION: fn_17602
 void GroundGeometry::DrawCellDecal(
-  const C3dAttr& terrain, const float* matrix, int column, int row, std::uint32_t color, CTexture& texture, const float* uv, GroundRenderContext& context
+  const C3dAttr& terrain, const float* matrix, int column, int row, std::uint32_t color, CTexture& texture, const float* uv
 ) const {
-  DrawDecal(*this, terrain, matrix, column, row, color, texture, uv, 0.10003052f, context);
+  DrawDecal(*this, terrain, matrix, column, row, color, texture, uv, 0.10003052f);
 }
 
 // OFFSET: 0x00AC1710
@@ -97,20 +99,20 @@ void GroundGeometry::Slot14(int, int, int, int) {
 // OFFSET: 0x00AC1720
 // FUNCTION: fn_17589
 void GroundGeometry::DrawGridDecal(
-  const C3dAttr& terrain, const float* matrix, int column, int row, std::uint32_t color, CTexture& texture, const float* uv, GroundRenderContext& context
+  const C3dAttr& terrain, const float* matrix, int column, int row, std::uint32_t color, CTexture& texture, const float* uv
 ) const {
-  DrawDecal(*this, terrain, matrix, column, row, color, texture, uv, 3.0517578e-05f, context);
+  DrawDecal(*this, terrain, matrix, column, row, color, texture, uv, 3.0517578e-05f);
 }
 
 // OFFSET: 0x00AC16D0
 // FUNCTION: fn_17587
 void GroundGeometry::DrawGrid(
-  const C3dAttr& terrain, const float* matrix, int column, int row, std::uint32_t color, GroundRenderContext& context
+  const C3dAttr& terrain, const float* matrix, int column, int row, std::uint32_t color
 ) const {
   CTexture* texture = g_texMgr.Load("grid.tga", 0, false, true, false);
   // STATIC: 0x01347EB0
   constexpr float uv[8] = {0, 0, 1, 0, 0, 1, 1, 1};
-  this->DrawGridDecal(terrain, matrix, column, row, color, *texture, uv, context);
+  this->DrawGridDecal(terrain, matrix, column, row, color, *texture, uv);
 }
 
 // OFFSET: 0x00AC3600
@@ -121,7 +123,7 @@ void GroundGeometry::Slot16(int, int, int, int, int, int) {
 // OFFSET: 0x00AC3610
 // FUNCTION: fn_17604
 void GroundGeometry::DrawTerrainOverlay(
-  const C3dAttr& terrain, const float* matrix, int column, int row, std::uint32_t color, CTexture* texture, GroundRenderContext& context
+  const C3dAttr& terrain, const float* matrix, int column, int row, std::uint32_t color, CTexture* texture
 ) const {
   const auto half = [](int value) { return TruncateToInt(static_cast<float>(value) * 0.5f); };
   const int cellColumn = half(column);
@@ -150,10 +152,10 @@ void GroundGeometry::DrawTerrainOverlay(
   const float vertices[4][3] = {
     {left, cell->heights[0], top}, {right, cell->heights[1], top}, {left, cell->heights[2], bottom}, {right, cell->heights[3], bottom}
   };
-  RenderPrimitive* primitive = context.primitives.Acquire();
+  RenderPrimitive* primitive = g_renderer->primitives.Acquire();
 
   for (unsigned corner = 0; corner < 4; ++corner) {
-    context.projection.Project(vertices[corner], matrix, primitive->vertices[corner]);
+    g_renderer->viewport.Projection().Project(vertices[corner], matrix, primitive->vertices[corner]);
     primitive->vertices[corner].u = static_cast<float>(corner & 1);
     primitive->vertices[corner].v = static_cast<float>(corner >> 1);
     primitive->vertices[corner].diffuse = color;
@@ -162,5 +164,5 @@ void GroundGeometry::DrawTerrainOverlay(
   primitive->unknown_0018 = 5;
   primitive->unknown_001C = 6;
   primitive->texture = texture;
-  context.queues.Submit(primitive, 1, context.depthAlpha, context.depthStart, context.depthEnd);
+  g_renderer->queues.Submit(primitive, 1, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
 }

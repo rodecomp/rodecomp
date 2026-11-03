@@ -17,7 +17,6 @@
 #include "Contents/Camera/Camera.h"
 #include "Contents/World/World.h"
 #include "Contents/Ground/GroundGeometry.h"
-#include "Contents/Ground/GroundRendering.h"
 #include "Render/Textures/TextureCache.h"
 #include "Contents/MapSkyMgr.h"
 #include "Client/Replay.h"
@@ -6150,12 +6149,6 @@ void CEffectPrim::RenderGrandCross2(matrix& wtm) {
 // OFFSET: 0x00BD9180
 // FUNCTION: fn_19891
 void CEffectPrim::RenderMagicTarget(matrix& wtm) {
-  const RenderProjection projection = g_renderer->viewport.Projection();
-  const bool depthAlpha = g_renderer->fog.supported != 0;
-  GroundRenderContext context{
-    projection, g_renderer->primitives, g_renderer->queues, g_renderer->viewport.width, g_renderer->viewport.height, g_renderer->frame, depthAlpha,
-    g_depthStart, g_depthEnd
-  };
 
   for (int ec = 0; ec < 4; ++ec) {
     const EffectPrimitiveSlot& slot = this->state.slots[ec];
@@ -6196,8 +6189,7 @@ void CEffectPrim::RenderMagicTarget(matrix& wtm) {
           (u01 * scale + 3.5f) / 7.0f, (v01 * scale + 3.5f) / 7.0f, (u11 * scale + 3.5f) / 7.0f, (v11 * scale + 3.5f) / 7.0f,
         };
         ground->DrawGridDecal(
-          *gameMode->scene->terrain, wtm.values, column + x, row + z, 0xAA9999FF, *g_texMgr.Load("effect\\magic_target.tga", 0, false, true, false), uv, context
-        );
+          *gameMode->scene->terrain, wtm.values, column + x, row + z, 0xAA9999FF, *g_texMgr.Load("effect\\magic_target.tga", 0, false, true, false), uv);
 
         scale = slot.maxHeight + 0.1f;
         uv[0] = (scale * u00 + 3.5f) / 7.0f;
@@ -6209,8 +6201,7 @@ void CEffectPrim::RenderMagicTarget(matrix& wtm) {
         uv[6] = (scale * u11 + 3.5f) / 7.0f;
         uv[7] = (scale * v11 + 3.5f) / 7.0f;
         ground->DrawGridDecal(
-          *gameMode->scene->terrain, wtm.values, column + x, row + z, 0x559999FF, *g_texMgr.Load("effect\\magic_target.tga", 0, false, true, false), uv, context
-        );
+          *gameMode->scene->terrain, wtm.values, column + x, row + z, 0x559999FF, *g_texMgr.Load("effect\\magic_target.tga", 0, false, true, false), uv);
       }
     }
   }

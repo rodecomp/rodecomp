@@ -9,7 +9,6 @@
 
 class CGndRes;
 class TextureCache;
-struct GroundRenderContext;
 
 struct GroundLightmap {
   /* 0000 */ unsigned char color[4];
@@ -27,29 +26,26 @@ public:
   void Build(CGndRes& resource, const float* lightDirection, const float* diffuse, const float* ambient);
   void ClearGeometry();
   void Reset(int columns, int rows);
-  GroundSpatial Spatial() const;
-  void Draw(const float* matrix, const int* rectangle, bool clip, GroundRenderContext& context);
+  void SpatialCell(float x, float z, int& column, int& row) const;
+  void HeightBounds(const int* rectangle, float& minimum, float& maximum) const;
+  void Draw(const float* matrix, const int* rectangle, bool clip);
   void CellBounds(int column, int row, float& minimum, float& maximum) const;
   bool OverlayHeights(const class C3dAttr& terrain, float* vertices, int column, int row) const;
   bool CellVertices(const class C3dAttr& terrain, float* vertices, int column, int row) const;
   void MarkRay(const float* ray, int column, int row, float limit);
   bool CellRectangle(const class C3dAttr& terrain, int column, int row, float* vertices) const;
   void DrawCellDecal(
-    const class C3dAttr& terrain, const float* matrix, int column, int row, std::uint32_t color, CTexture& texture, const float* uv,
-    GroundRenderContext& context
+    const class C3dAttr& terrain, const float* matrix, int column, int row, std::uint32_t color, CTexture& texture, const float* uv
   ) const;
   void DrawGridDecal(
-    const class C3dAttr& terrain, const float* matrix, int column, int row, std::uint32_t color, CTexture& texture, const float* uv,
-    GroundRenderContext& context
+    const class C3dAttr& terrain, const float* matrix, int column, int row, std::uint32_t color, CTexture& texture, const float* uv
   ) const;
-  void DrawGrid(
-    const class C3dAttr& terrain, const float* matrix, int column, int row, std::uint32_t color, GroundRenderContext& context
-  ) const;
-  void DrawTerrainOverlay(
-    const class C3dAttr& terrain, const float* matrix, int column, int row, std::uint32_t color, CTexture* texture, GroundRenderContext& context
-  ) const;
-  void DrawWaterCell(int column, int row, GroundCell& cell, const float* matrix, const float* ambient, bool overrideColor, GroundRenderContext& context);
-  void DrawLit(const float* matrix, const int* rectangle, bool clip, struct GroundLightingContext& context);
+  void DrawGrid(const class C3dAttr& terrain, const float* matrix, int column, int row, std::uint32_t color) const;
+  void DrawTerrainOverlay(const class C3dAttr& terrain, const float* matrix, int column, int row, std::uint32_t color, CTexture* texture) const;
+  void DrawWaterCell(int column, int row, GroundCell& cell, const float* matrix, const float* ambient);
+  void DrawLit(const float* matrix, const int* rectangle, bool clip);
+  __declspec(noinline) void DrawLightmapped(const float* matrix, const struct GroundQuad& quad, bool clip);
+  __declspec(noinline) void DrawSide(const float* matrix, const struct GroundQuad& quad, bool clip);
   void WorldColor(float x, float unusedY, float z, std::uint32_t* output) const;
   void Lighting(int column, int row, float& red, float& green, float& blue) const;
   void Slot01(int first, int second);

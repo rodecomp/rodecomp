@@ -1,4 +1,4 @@
-#include "Contents/Ground/GroundSpatial.h"
+#include "Contents/Ground/GroundGeometry.h"
 #include "Contents/Models/ModelActor.h"
 #include "Contents/World/WorldSpatialInitialization.h"
 #include "Contents/World/WorldSpatialTree.h"
@@ -9,7 +9,7 @@
 // OFFSET: 0x00AC79C0
 // FUNCTION: fn_17660
 void InitializeWorldSpatial(
-  WorldSpatialTree& root, GroundSpatial& ground, C3dAttr& terrain, std::span<C3dActor* const> models, const WorldSpatialTree* serialized
+  WorldSpatialTree& root, GroundGeometry& ground, C3dAttr& terrain, std::span<C3dActor* const> models, const WorldSpatialTree* serialized
 ) {
   root.ClearChildren();
   const int halfWidth = ground.width / 2;

@@ -1,29 +1,36 @@
 #include "Contents/Ground/GroundGeometry.h"
 #include "Contents/Ground/GroundRendering.h"
 #include "Contents/Configuration/ServiceOptions.h"
+#include "Contents/Effects/EffectPrim.h"
 #include "Render/Primitives/LightmappedPrimitive.h"
 #include "Render/Primitives/RenderPrimitivePool.h"
 #include "Render/Projection/RenderProjection.h"
 #include "Render/Primitives/RenderQueues.h"
+#include "Render/Renderer.h"
+#include "Render/TextureQuad.h"
+#include "Resource/World/WorldResource.h"
 
 #include "Utility/Math/ScalarConversion.h"
 #include <bit>
 #include <cstring>
 
+// GLOBAL: gl_24589
+float g_groundColorScale[3];
+
 // OFFSET: 0x00AC1D30
 // FUNCTION: fn_17592
-void DrawLightmappedGround(const float* matrix, const GroundQuad& quad, bool clip, GroundLightingContext& context) {
+void GroundGeometry::DrawLightmapped(const float* matrix, const GroundQuad& quad, bool clip) {
   RenderVertex vertices[4]{};
   float lightUV[4][2];
   float scales[3];
-  std::memcpy(scales, context.colorScale, sizeof(scales));
+  std::memcpy(scales, g_groundColorScale, sizeof(scales));
 
   for (unsigned corner = 0; corner < 4; ++corner) {
     vertices[corner].specular = 0xFF000000u;
-    context.render.projection.Project(quad.vertices[corner], matrix, vertices[corner]);
+    g_renderer->viewport.Projection().Project(quad.vertices[corner], matrix, vertices[corner]);
   }
 
-  if (clip && !GroundQuadVisible(vertices, context.render)) {
+  if (clip && !GroundQuadVisible(vertices)) {
     return;
   }
 
@@ -34,7 +41,7 @@ void DrawLightmappedGround(const float* matrix, const GroundQuad& quad, bool cli
     lightUV[corner][1] = quad.vertices[corner][7];
     std::uint32_t color = std::bit_cast<std::uint32_t>(quad.vertices[corner][3]);
 
-    if (!context.overrideColor && quad.selected != 0) {
+    if (!g_overrideColor && quad.selected != 0) {
       color = (color & 0x00FFFFFFu) | 0x80000000u;
     } else {
       for (unsigned channel = 0; channel < 3; ++channel) {
@@ -48,10 +55,10 @@ void DrawLightmappedGround(const float* matrix, const GroundQuad& quad, bool cli
     vertices[corner].diffuse = color;
   }
 
-  const bool enabled = context.options.Get(119) != 0;
+  const bool enabled = g_serviceOptions.Get(119) != 0;
 
-  if (context.multitexture && enabled) {
-    LightmappedPrimitive* primitive = context.primitives.Acquire();
+  if (g_multitexture && enabled) {
+    LightmappedPrimitive* primitive = g_renderer->lightmapped.Acquire();
 
     for (unsigned corner = 0; corner < 4; ++corner) {
       std::memcpy(&primitive->vertices[corner], &vertices[corner], sizeof(RenderVertex));
@@ -61,13 +68,13 @@ void DrawLightmappedGround(const float* matrix, const GroundQuad& quad, bool cli
 
     primitive->texture = quad.texture;
     primitive->lightmap = quad.lightmapTexture;
-    context.render.queues.lightmapped.Submit(primitive, 0, context.render.depthAlpha, context.render.depthStart, context.render.depthEnd);
+    g_renderer->queues.lightmapped.Submit(primitive, 0, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
 
     return;
   }
 
-  if (context.options.Get(119) != 0) {
-    RenderPrimitive* lightmap = context.render.primitives.Acquire();
+  if (g_serviceOptions.Get(119) != 0) {
+    RenderPrimitive* lightmap = g_renderer->primitives.Acquire();
     std::memcpy(lightmap->vertices, vertices, sizeof(vertices));
 
     for (unsigned corner = 0; corner < 4; ++corner) {
@@ -76,18 +83,20 @@ void DrawLightmappedGround(const float* matrix, const GroundQuad& quad, bool cli
     }
 
     lightmap->texture = quad.lightmapTexture;
-    context.render.queues.Submit(lightmap, 0x1000, context.render.depthAlpha, context.render.depthStart, context.render.depthEnd);
+    g_renderer->queues.Submit(lightmap, 0x1000, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
   }
 
-  RenderPrimitive* primitive = context.render.primitives.Acquire();
+  RenderPrimitive* primitive = g_renderer->primitives.Acquire();
   std::memcpy(primitive->vertices, vertices, sizeof(vertices));
   primitive->texture = quad.texture;
-  context.render.queues.Submit(primitive, 0x800, context.render.depthAlpha, context.render.depthStart, context.render.depthEnd);
+  g_renderer->queues.Submit(primitive, 0x800, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
 }
 
 // OFFSET: 0x00AC15A0
 // FUNCTION: fn_17585
-void GroundGeometry::DrawLit(const float* matrix, const int* rectangle, bool clip, GroundLightingContext& context) {
+void GroundGeometry::DrawLit(const float* matrix, const int* rectangle, bool clip) {
+  float ambient[3];
+  std::memcpy(ambient, g_worldLighting.ambient, sizeof(ambient));
   int row = rectangle[1];
 
   while (row <= rectangle[3]) {
@@ -97,20 +106,20 @@ void GroundGeometry::DrawLit(const float* matrix, const int* rectangle, bool cli
       const unsigned index = static_cast<unsigned>(column) + static_cast<unsigned>(row) * static_cast<unsigned>(this->width);
       GroundCell& cell = this->cells[index];
 
-      if (cell.frame != context.render.frame) {
-        cell.frame = context.render.frame;
+      if (cell.frame != g_renderer->frame) {
+        cell.frame = g_renderer->frame;
 
         if (cell.top) {
-          this->DrawWaterCell(column, row, cell, matrix, context.waterAmbient, context.overrideColor, context.render);
-          DrawLightmappedGround(matrix, *cell.top, clip, context);
+          this->DrawWaterCell(column, row, cell, matrix, ambient);
+          this->DrawLightmapped(matrix, *cell.top, clip);
         }
 
         if (cell.side2) {
-          DrawLightmappedGround(matrix, *cell.side2, clip, context);
+          this->DrawLightmapped(matrix, *cell.side2, clip);
         }
 
         if (cell.side1) {
-          DrawLightmappedGround(matrix, *cell.side1, clip, context);
+          this->DrawLightmapped(matrix, *cell.side1, clip);
         }
       }
 

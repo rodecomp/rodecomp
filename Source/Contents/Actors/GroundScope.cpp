@@ -4,7 +4,6 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Ground/GroundGeometry.h"
-#include "Contents/Ground/GroundRendering.h"
 #include "Contents/Skills/SkillInfo.h"
 #include "Contents/World/World.h"
 #include "Render/Primitives/RenderQueues.h"
@@ -140,12 +139,6 @@ void CGroundScope::Render(int argument) {
   const float cosine = static_cast<float>(std::cos(static_cast<double>(this->m_angle)));
   const std::uint32_t color = (static_cast<unsigned>(sine * 40.0f) << 24) + 0x80FFFFFF;
 
-  const RenderProjection projection = g_renderer->viewport.Projection();
-  const bool depthAlpha = g_renderer->fog.supported != 0;
-  GroundRenderContext context{
-    projection, g_renderer->primitives, g_renderer->queues, g_renderer->viewport.width, g_renderer->viewport.height, g_renderer->frame, depthAlpha,
-    g_depthStart, g_depthEnd
-  };
 
   for (int row = 0; row < this->m_size; ++row) {
     for (int column = 0; column < this->m_size; ++column) {
@@ -179,7 +172,7 @@ void CGroundScope::Render(int argument) {
       }
 
       CTexture* texture = g_texMgr.Load(name, 0, false, true, false);
-      ground->DrawGridDecal(*mode->scene->terrain, reinterpret_cast<const float*>(argument), left + column, top + row, tint, *texture, uv, context);
+      ground->DrawGridDecal(*mode->scene->terrain, reinterpret_cast<const float*>(argument), left + column, top + row, tint, *texture, uv);
     }
   }
 

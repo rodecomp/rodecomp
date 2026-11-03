@@ -133,7 +133,7 @@ int ClassifyModelView(const OrientedBounds& bounds, const ModelViewPlanes& plane
 // INLINED
 void DrawWorldModelLeaves(
   std::list<WorldSpatialTree*>& clipped, std::list<WorldSpatialTree*>& inside, const ModelViewPlanes& planes, const float* matrix, unsigned frame, int updates,
-  GroundGeometry& ground, ModelRenderContext& models, GroundLightingContext& lighting, int* visibleRectangle
+  GroundGeometry& ground, ModelRenderContext& models, int* visibleRectangle
 ) {
   visibleRectangle[0] = visibleRectangle[1] = 999;
   visibleRectangle[2] = visibleRectangle[3] = 0;
@@ -157,7 +157,7 @@ void DrawWorldModelLeaves(
       model->renderFrame = frame;
     }
 
-    ground.DrawLit(matrix, node->groundCells, true, lighting);
+    ground.DrawLit(matrix, node->groundCells, true);
     IncludeRectangle(node->groundCells, visibleRectangle);
   }
 
@@ -173,7 +173,7 @@ void DrawWorldModelLeaves(
       }
     }
 
-    ground.DrawLit(matrix, node->groundCells, false, lighting);
+    ground.DrawLit(matrix, node->groundCells, false);
     IncludeRectangle(node->groundCells, visibleRectangle);
   }
 }

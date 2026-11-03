@@ -6,7 +6,7 @@
 void GroundGeometry::WorldColor(float x, float, float z, std::uint32_t* output) const {
   int column;
   int row;
-  this->Spatial().SpatialCell(x, z, column, row);
+  this->SpatialCell(x, z, column, row);
 
   if (column < 0 || row < 0 || column >= this->width || row >= this->height) {
     output[1] = 255;

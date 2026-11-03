@@ -271,7 +271,7 @@ void CWorld::InitWorld() {
     }
   }
 
-  InitializeWorldSpatial(this->spatial, reinterpret_cast<GroundSpatial&>(*this->ground), *this->terrain, this->models, this->serializedSpatial);
+  InitializeWorldSpatial(this->spatial, *this->ground, *this->terrain, this->models, this->serializedSpatial);
   this->LoadMapEffects();
 
   reinterpret_cast<void (__thiscall *)(GroundGeometry*)>(groundVtbl[11])(this->ground);

@@ -3,6 +3,9 @@
 #include "Render/Primitives/RenderPrimitivePool.h"
 #include "Render/Projection/RenderProjection.h"
 #include "Render/Primitives/RenderQueues.h"
+#include "Contents/Effects/EffectPrim.h"
+#include "Render/Renderer.h"
+#include "Render/TextureQuad.h"
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Math/ScalarConversion.h"
 
@@ -12,7 +15,7 @@
 // OFFSET: 0x00AC2B80
 // FUNCTION: fn_17594
 void GroundGeometry::DrawWaterCell(
-  int column, int row, GroundCell& cell, const float* matrix, const float* ambient, bool overrideColor, GroundRenderContext& context
+  int column, int row, GroundCell& cell, const float* matrix, const float* ambient
 ) {
   const float level = this->water.Level(this->width, this->height, column, row);
   unsigned partition = 0;
@@ -61,7 +64,7 @@ void GroundGeometry::DrawWaterCell(
 
   for (unsigned corner = 0; corner < 4; ++corner) {
     vertices[corner].specular = 0xFF000000u;
-    context.projection.Project(cell.corners[corner], matrix, vertices[corner]);
+    g_renderer->viewport.Projection().Project(cell.corners[corner], matrix, vertices[corner]);
   }
 
   const float firstArea = (vertices[2].x - vertices[0].x) * (vertices[1].y - vertices[0].y);
@@ -71,11 +74,11 @@ void GroundGeometry::DrawWaterCell(
     return;
   }
 
-  RenderPrimitive* primitive = context.primitives.Acquire();
+  RenderPrimitive* primitive = g_renderer->primitives.Acquire();
   std::memcpy(primitive->vertices, vertices, sizeof(vertices));
   std::uint32_t color = 0x90FFFFFFu;
 
-  if (!overrideColor && this->water.type == 4) {
+  if (!g_overrideColor && this->water.type == 4) {
     color = 0xFF000000u;
 
     for (unsigned channel = 0; channel < 3; ++channel) {
@@ -97,5 +100,5 @@ void GroundGeometry::DrawWaterCell(
 
   primitive->unknown_0014 = (primitive->unknown_0014 & 0xFF00u) | 1u;
   primitive->texture = surface.texture;
-  context.queues.Submit(primitive, 1, context.depthAlpha, context.depthStart, context.depthEnd);
+  g_renderer->queues.Submit(primitive, 1, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
 }

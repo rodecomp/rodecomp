@@ -1,6 +1,6 @@
 #include "Client/Session.h"
 #include "Contents/Ground/GroundGeometry.h"
-#include "Contents/Ground/GroundSpatial.h"
+#include "Contents/Ground/GroundGeometry.h"
 #include "Contents/Models/ModelActor.h"
 #include "Contents/Movies/BinkMovies.h"
 #include "Contents/World/World.h"
@@ -146,7 +146,7 @@ void WorldSpatialTree::BindTerrain(C3dAttr& resource, int depth) {
 
 // OFFSET: 0x00AC8620
 // FUNCTION: fn_17675
-void WorldSpatialTree::BindGround(GroundSpatial& resource, int depth) {
+void WorldSpatialTree::BindGround(GroundGeometry& resource, int depth) {
   this->dirty = 1;
   this->ground = &resource;
   resource.SpatialCell(this->minimum[0], this->minimum[2], this->groundCells[0], this->groundCells[1]);

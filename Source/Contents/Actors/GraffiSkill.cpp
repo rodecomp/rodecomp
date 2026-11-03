@@ -4,7 +4,6 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Ground/GroundGeometry.h"
-#include "Contents/Ground/GroundRendering.h"
 #include "Contents/World/World.h"
 #include "Render/Primitives/RenderQueues.h"
 #include "Render/Projection/RenderProjection.h"
@@ -114,12 +113,6 @@ void CGraffiSkill::Render(int argument) {
   const float sine = static_cast<float>(std::sin(static_cast<double>(this->m_angle / 180.0f * 3.141592f)));
   const float cosine = static_cast<float>(std::cos(static_cast<double>(this->m_angle / 180.0f * 3.141592f)));
 
-  const RenderProjection projection = g_renderer->viewport.Projection();
-  const bool depthAlpha = g_renderer->fog.supported != 0;
-  GroundRenderContext context{
-    projection, g_renderer->primitives, g_renderer->queues, g_renderer->viewport.width, g_renderer->viewport.height, g_renderer->frame, depthAlpha,
-    g_depthStart, g_depthEnd
-  };
 
   for (int row = 0; row < 18; ++row) {
     for (int column = 0; column < 18; ++column) {
@@ -137,8 +130,7 @@ void CGraffiSkill::Render(int argument) {
       uv[6] = 1.0f - (row1 * sine + column1 * cosine + 9.0f) / 18.0f;
       uv[7] = (row1 * cosine - column1 * sine + 9.0f) / 18.0f;
       ground->DrawGridDecal(
-        *mode->scene->terrain, reinterpret_cast<const float*>(argument), cellX - 9 + column, cellY - 9 + row, 0xFFFFFFFF, *this->m_canvas, uv, context
-      );
+        *mode->scene->terrain, reinterpret_cast<const float*>(argument), cellX - 9 + column, cellY - 9 + row, 0xFFFFFFFF, *this->m_canvas, uv);
     }
   }
 }

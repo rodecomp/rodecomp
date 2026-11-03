@@ -3,6 +3,8 @@
 #include "Render/Primitives/RenderPrimitivePool.h"
 #include "Render/Projection/RenderProjection.h"
 #include "Render/Primitives/RenderQueues.h"
+#include "Render/Renderer.h"
+#include "Render/TextureQuad.h"
 
 #include <bit>
 #include <cstring>
@@ -24,10 +26,10 @@ namespace {
 }
 
 // INLINED
-bool GroundQuadVisible(const RenderVertex* vertices, const GroundRenderContext& context) {
+bool GroundQuadVisible(const RenderVertex* vertices) {
   const float minimumX = Minimum4(vertices[0].x, vertices[1].x, vertices[2].x, vertices[3].x);
 
-  if (minimumX >= static_cast<float>(context.width)) {
+  if (minimumX >= static_cast<float>(g_renderer->viewport.width)) {
     return false;
   }
 
@@ -39,7 +41,7 @@ bool GroundQuadVisible(const RenderVertex* vertices, const GroundRenderContext& 
 
   const float minimumY = Minimum4(vertices[0].y, vertices[1].y, vertices[2].y, vertices[3].y);
 
-  if (minimumY >= static_cast<float>(context.height)) {
+  if (minimumY >= static_cast<float>(g_renderer->viewport.height)) {
     return false;
   }
 
@@ -60,15 +62,15 @@ bool GroundQuadVisible(const RenderVertex* vertices, const GroundRenderContext& 
 
 namespace {
   // INLINED
-  void Submit(const float* matrix, const GroundQuad& quad, bool clip, GroundRenderContext& context) {
+  void Submit(const float* matrix, const GroundQuad& quad, bool clip) {
     RenderVertex vertices[4]{};
 
     for (unsigned corner = 0; corner < 4; ++corner) {
       vertices[corner].specular = 0xFF000000u;
-      context.projection.Project(quad.vertices[corner], matrix, vertices[corner]);
+      g_renderer->viewport.Projection().Project(quad.vertices[corner], matrix, vertices[corner]);
     }
 
-    if (clip && !GroundQuadVisible(vertices, context)) {
+    if (clip && !GroundQuadVisible(vertices)) {
       return;
     }
 
@@ -78,22 +80,22 @@ namespace {
       vertices[corner].v = quad.vertices[corner][5];
     }
 
-    RenderPrimitive* primitive = context.primitives.Acquire();
+    RenderPrimitive* primitive = g_renderer->primitives.Acquire();
     std::memcpy(primitive->vertices, vertices, sizeof(vertices));
     primitive->texture = quad.texture;
-    context.queues.Submit(primitive, 0x800, context.depthAlpha, context.depthStart, context.depthEnd);
+    g_renderer->queues.Submit(primitive, 0x800, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
   }
 }
 
 // OFFSET: 0x00AC2530
 // FUNCTION: fn_17593
-void DrawGroundSide(const float* matrix, const GroundQuad& quad, bool clip, GroundRenderContext& context) {
-  Submit(matrix, quad, clip, context);
+void GroundGeometry::DrawSide(const float* matrix, const GroundQuad& quad, bool clip) {
+  Submit(matrix, quad, clip);
 }
 
 // OFFSET: 0x00AC19A0
 // FUNCTION: fn_17590
-void GroundGeometry::Draw(const float* matrix, const int* rectangle, bool clip, GroundRenderContext& context) {
+void GroundGeometry::Draw(const float* matrix, const int* rectangle, bool clip) {
   int row = rectangle[1];
 
   while (row <= rectangle[3]) {
@@ -103,19 +105,19 @@ void GroundGeometry::Draw(const float* matrix, const int* rectangle, bool clip, 
       const unsigned index = static_cast<unsigned>(column) + static_cast<unsigned>(row) * static_cast<unsigned>(this->width);
       GroundCell& cell = this->cells[index];
 
-      if (cell.frame != context.frame) {
-        cell.frame = context.frame;
+      if (cell.frame != g_renderer->frame) {
+        cell.frame = g_renderer->frame;
 
         if (cell.top) {
-          Submit(matrix, *cell.top, clip, context);
+          Submit(matrix, *cell.top, clip);
         }
 
         if (cell.side2) {
-          DrawGroundSide(matrix, *cell.side2, clip, context);
+          this->DrawSide(matrix, *cell.side2, clip);
         }
 
         if (cell.side1) {
-          DrawGroundSide(matrix, *cell.side1, clip, context);
+          this->DrawSide(matrix, *cell.side1, clip);
         }
       }
 

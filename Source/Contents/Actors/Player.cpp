@@ -34,7 +34,6 @@
 #include "Contents/SpriteRidingOffset.h"
 #include "Contents/World/World.h"
 #include "Contents/Ground/GroundGeometry.h"
-#include "Contents/Ground/GroundRendering.h"
 #include "Contents/Ground/TerrainHeight.h"
 #include "Contents/MovementRouteInterpolation.h"
 #include "Contents/NavigationManager.h"
@@ -4597,12 +4596,6 @@ void CGrannyPc::RenderShadow(int argument, vector3d lightDirection, bool cached)
   const float groundSine = std::sin(0.0f);
   const float groundCosine = std::cos(0.0f);
 
-  const RenderProjection projection = g_renderer->viewport.Projection();
-  const bool depthAlpha = g_renderer->fog.supported != 0;
-  GroundRenderContext context{
-    projection, g_renderer->primitives, g_renderer->queues, g_renderer->viewport.width, g_renderer->viewport.height, g_renderer->frame, depthAlpha,
-    g_depthStart, g_depthEnd
-  };
 
   for (int i = 0; i < 5; ++i) {
     for (int j = 0; j < 5; ++j) {
@@ -4620,8 +4613,7 @@ void CGrannyPc::RenderShadow(int argument, vector3d lightDirection, bool cached)
       uv[6] = (row1 * groundSine + column1 * groundCosine + 2.5f) / 5.0f;
       uv[7] = (row1 * groundCosine - column1 * groundSine + 2.5f) / 5.0f;
       ground->DrawGridDecal(
-        *mode->scene->terrain, reinterpret_cast<const float*>(argument), column + j, row + i, 0x70FFFFFF, *this->unknown_2554, uv, context
-      );
+        *mode->scene->terrain, reinterpret_cast<const float*>(argument), column + j, row + i, 0x70FFFFFF, *this->unknown_2554, uv);
     }
   }
 }

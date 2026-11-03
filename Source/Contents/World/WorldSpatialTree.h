@@ -6,7 +6,7 @@
 
 class CFile;
 class C3dAttr;
-struct GroundSpatial;
+class GroundGeometry;
 class C3dActor;
 
 struct WorldSpatialTree {
@@ -18,7 +18,7 @@ struct WorldSpatialTree {
   void ReadBounds(CFile& input, int depth);
   void ClearChildren();
   void BindTerrain(C3dAttr& resource, int depth);
-  void BindGround(GroundSpatial& resource, int depth);
+  void BindGround(GroundGeometry& resource, int depth);
   void CopyBounds(int depth, const WorldSpatialTree& source);
   void RefreshBounds(int depth);
   void RefreshModelBounds(int depth);
@@ -34,7 +34,7 @@ struct WorldSpatialTree {
   /* 0038 */ float halfSize[3];
   /* 0044 */ int dirty;
   /* 0048 */ std::vector<C3dActor*> objects;
-  /* 0054 */ GroundSpatial* ground;
+  /* 0054 */ GroundGeometry* ground;
   /* 0058 */ int groundCells[4];
   /* 0068 */ C3dAttr* terrain;
   /* 006C */ int terrainCells[4];

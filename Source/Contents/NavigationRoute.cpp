@@ -29,7 +29,6 @@
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Ground/GroundGeometry.h"
-#include "Contents/Ground/GroundRendering.h"
 #include "Contents/World/World.h"
 #include "Render/Primitives/RenderQueues.h"
 #include "Render/Projection/RenderProjection.h"
@@ -56,11 +55,6 @@ void CNavigationManager::DrawRoute(const float* matrix) {
     mode->PlayerCell(&playerX, &playerY);
   }
 
-  const RenderProjection projection = g_renderer->viewport.Projection();
-  GroundRenderContext context{
-    projection, g_renderer->primitives, g_renderer->queues, g_renderer->viewport.width, g_renderer->viewport.height, g_renderer->frame,
-    g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
-  };
 
   int visible = 0;
   const int maxY = playerY + 10;
@@ -93,7 +87,7 @@ void CNavigationManager::DrawRoute(const float* matrix) {
       GroundGeometry* ground = mode->scene->ground;
       const std::string name = FormatOwnedString("유저인터페이스\\navigation_interface3\\location%d.tga", g_locationFrame);
       CTexture* texture = g_texMgr.Load(name.c_str(), 0, false, true, false);
-      ground->DrawTerrainOverlay(*mode->scene->terrain, matrix, lastX, lastY, color, texture, context);
+      ground->DrawTerrainOverlay(*mode->scene->terrain, matrix, lastX, lastY, color, texture);
     }
   }
 
@@ -111,7 +105,7 @@ void CNavigationManager::DrawRoute(const float* matrix) {
         CTexture* texture = g_texMgr.Load(this->labels[points[index + 1].metadata].c_str(), 0, false, true, false);
               constexpr float uv[8] = {0, 0, 1, 0, 0, 1, 1, 1};
         const std::uint32_t color = blink == static_cast<int>(index) % 10 ? 0xEEFFFFFF : 0x99FFFFFF;
-        this->ground->DrawGridDecal(*mode->scene->terrain, matrix, x, y, color, *texture, uv, context);
+        this->ground->DrawGridDecal(*mode->scene->terrain, matrix, x, y, color, *texture, uv);
       }
     }
   }

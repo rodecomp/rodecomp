@@ -34,16 +34,6 @@ struct GroundCell {
   /* 0053 */ unsigned char unknown_0053;
 };
 
-struct GroundSpatial {
-  const int& width;
-  const int& height;
-  const float& cellSize;
-  const std::vector<GroundCell>& cells;
-
-  void SpatialCell(float x, float z, int& column, int& row) const;
-  void HeightBounds(const int* rectangle, float& minimum, float& maximum) const;
-};
-
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(GroundQuad) == 156);
 static_assert(offsetof(GroundQuad, texture) == 0x84);

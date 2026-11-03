@@ -1,4 +1,4 @@
-#include "Contents/Ground/GroundSpatial.h"
+#include "Contents/Ground/GroundGeometry.h"
 #include "Utility/Math/ScalarConversion.h"
 
 #include <cmath>
@@ -20,7 +20,7 @@ GroundCell::GroundCell() : corners{}, top(nullptr), side1(nullptr), side2(nullpt
 
 // OFFSET: 0x00AC0180
 // FUNCTION: fn_17562
-void GroundSpatial::SpatialCell(float x, float z, int& column, int& row) const {
+void GroundGeometry::SpatialCell(float x, float z, int& column, int& row) const {
   const float first = static_cast<float>(std::floor(static_cast<double>(x / this->cellSize)));
   column = TruncateToInt(first) + this->width / 2;
   const float second = static_cast<float>(std::floor(static_cast<double>(z / this->cellSize)));
@@ -29,7 +29,7 @@ void GroundSpatial::SpatialCell(float x, float z, int& column, int& row) const {
 
 // OFFSET: 0x00AC0EA0
 // FUNCTION: fn_17573
-void GroundSpatial::HeightBounds(const int* rectangle, float& minimum, float& maximum) const {
+void GroundGeometry::HeightBounds(const int* rectangle, float& minimum, float& maximum) const {
   if (rectangle[0] < 0 || rectangle[0] >= this->width || rectangle[2] < 0 || rectangle[2] >= this->width || rectangle[1] < 0 || rectangle[1] >= this->height ||
       rectangle[3] < 0 || rectangle[3] >= this->height || rectangle[2] <= rectangle[0] || rectangle[3] <= rectangle[1]) {
     minimum = 0.0f;
