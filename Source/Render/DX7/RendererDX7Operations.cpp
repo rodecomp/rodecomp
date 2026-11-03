@@ -1,14 +1,15 @@
+#include "Render/DX7/RenderSystemDX7.h"
 #include "Render/BlendColor.h"
 #include "Render/DX7/DeviceOwnerDX7.h"
 #include "Render/Primitives/LightmappedPrimitive.h"
 #include "Render/Primitives/RenderPrimitive.h"
-#include "Render/DX7/RendererDX7Operations.h"
+#include "Render/RendererDX7.h"
 
 #include <bit>
 
 // OFFSET: 0x0055EC10
 // FUNCTION: fn_02114
-void RendererDX7Operations::SetLighting(const float* direction, const float* diffuse, const float* ambient) {
+void CRendererDX7::SetLighting(const float* direction, const float* diffuse, const float* ambient) {
   D3DLIGHT7 light{};
   light.dltType = D3DLIGHT_DIRECTIONAL;
   light.dvDirection.x = -direction[0];
@@ -28,27 +29,27 @@ void RendererDX7Operations::SetLighting(const float* direction, const float* dif
 
 // OFFSET: 0x0055A210
 // FUNCTION: fn_02077
-void RendererDX7Operations::ClearDepth(int clearColor) {
+void CRendererDX7::ClearDepth(int clearColor) {
   if (clearColor) {
-    this->owner.Clear(0xFF000000);
+    g_deviceOwnerDX7->Clear(0xFF000000);
   } else {
-    this->owner.ClearDepth();
+    g_deviceOwnerDX7->ClearDepth();
   }
 }
 
 // OFFSET: 0x0055A240
 // FUNCTION: fn_02078
-void RendererDX7Operations::ClearWorld(unsigned color, int mode, unsigned char worldFlag, unsigned overlay) {
+void CRendererDX7::ClearWorld(unsigned color, int mode, unsigned char worldFlag, unsigned overlay) {
   if (mode != 0 && worldFlag == 1) {
     color = BlendColor(color, overlay);
   }
 
-  this->owner.Clear(color);
+  g_deviceOwnerDX7->Clear(color);
 }
 
 // OFFSET: 0x0055ACB0
 // FUNCTION: fn_02082
-void RendererDX7Operations::DrawPrimitive(RenderCommand* primitive) {
+void CRendererDX7::DrawPrimitive(RenderCommand* primitive) {
   if (primitive->vertexCount <= 0) {
     return;
   }
@@ -69,7 +70,7 @@ void RendererDX7Operations::DrawPrimitive(RenderCommand* primitive) {
 // OFFSET: 0x0055AD50
 // FUNCTION: fn_02083
 // FUNCTION: fn_02084
-void RendererDX7Operations::DrawLightmappedPrimitive(LightmappedPrimitive* primitive) {
+void CRendererDX7::DrawLightmappedPrimitive(LightmappedPrimitive* primitive) {
   if (primitive->vertexCount <= 0) {
     return;
   }

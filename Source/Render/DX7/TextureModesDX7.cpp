@@ -1,8 +1,9 @@
-#include "Render/DX7/RendererDX7Operations.h"
+#include "Render/DX7/DeviceOwnerDX7.h"
+#include "Render/RendererDX7.h"
 
 // OFFSET: 0x0055ED50
 // FUNCTION: fn_02116
-void RendererDX7Operations::SetTextureMode(int mode) {
+void CRendererDX7::SetTextureMode(int mode) {
   switch (mode) {
     case 0:
       this->device->SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, 0);

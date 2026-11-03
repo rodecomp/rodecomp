@@ -5,7 +5,7 @@
 
 // OFFSET: 0x0055B0C0
 // FUNCTION: fn_02088
-void QueuedDrawingDX7::DrawDepthSortedQueue() {
+void CRendererDX7::DrawDepthSortedQueue() {
   std::sort(this->queues.queue_0180.begin(), this->queues.queue_0180.end(), [](const DepthPrimitive& left, const DepthPrimitive& right) {
     if (left.depth < right.depth) {
       return true;
@@ -27,7 +27,7 @@ void QueuedDrawingDX7::DrawDepthSortedQueue() {
 
 // OFFSET: 0x0055B9E0
 // FUNCTION: fn_02091
-void QueuedDrawingDX7::DrawOpaqueQueues() {
+void CRendererDX7::DrawOpaqueQueues() {
   const auto before = [](const RenderCommand* left, const RenderCommand* right) {
     return reinterpret_cast<std::uintptr_t>(left->texture) < reinterpret_cast<std::uintptr_t>(right->texture);
   };
@@ -57,7 +57,7 @@ void QueuedDrawingDX7::DrawOpaqueQueues() {
 
 // OFFSET: 0x0055BC40
 // FUNCTION: fn_02092
-void QueuedDrawingDX7::DrawGroundBaseQueue() {
+void CRendererDX7::DrawGroundBaseQueue() {
   std::sort(this->queues.queue_0168.begin(), this->queues.queue_0168.end(), [](const RenderCommand* left, const RenderCommand* right) {
     return reinterpret_cast<std::uintptr_t>(left->texture) < reinterpret_cast<std::uintptr_t>(right->texture);
   });

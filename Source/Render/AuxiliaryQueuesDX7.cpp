@@ -5,7 +5,7 @@
 
 // OFFSET: 0x0055BE40
 // FUNCTION: fn_02093
-void QueuedDrawingDX7::DrawAuxiliaryQueue() {
+void CRendererDX7::DrawAuxiliaryQueue() {
   auto& queue = this->queues.queue_0240;
 
   if (queue.empty()) {

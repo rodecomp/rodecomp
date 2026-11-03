@@ -115,4 +115,6 @@ static_assert(offsetof(DeviceOwnerDX7, red) == 0x01E4);
 static_assert(offsetof(DeviceOwnerDX7, alpha) == 0x01FC);
 #endif
 
+extern DeviceOwnerDX7* g_deviceOwnerDX7;
+
 #endif

@@ -1,6 +1,7 @@
+#include "Render/DX7/RenderSystemDX7.h"
 #include "Render/DX7/DeviceOwnerDX7.h"
 #include "Render/RendererBackBuffer.h"
-#include "Render/DX7/RendererDX7Operations.h"
+#include "Render/RendererDX7.h"
 #include "Resource/Bitmap/BitmapImage.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/Bitmap/IJL15Runtime.h"
@@ -30,8 +31,8 @@ namespace {
 
 // OFFSET: 0x0055D860
 // FUNCTION: fn_02109
-bool RendererDX7Operations::SaveBitmap(const char* filename, const BitmapImage& overlay, int width, int height, RendererBackBuffer& backBuffer) {
-  if (!backBuffer.Lock(this->owner)) {
+bool CRendererDX7::SaveBitmap(const char* filename, const BitmapImage& overlay, int width, int height, RendererBackBuffer& backBuffer) {
+  if (!backBuffer.Lock(*g_deviceOwnerDX7)) {
     return false;
   }
 
@@ -54,13 +55,13 @@ bool RendererDX7Operations::SaveBitmap(const char* filename, const BitmapImage& 
   information.biBitCount = 24;
   std::fwrite(&information, sizeof(information), 1, file);
 
-  const auto red = this->owner.red;
-  const auto green = this->owner.green;
-  const auto blue = this->owner.blue;
-  const auto redMask = this->owner.redMask;
-  const auto greenMask = this->owner.greenMask;
-  const auto blueMask = this->owner.blueMask;
-  const auto transparent = PackedColor(this->owner, 0xFF00FF);
+  const auto red = g_deviceOwnerDX7->red;
+  const auto green = g_deviceOwnerDX7->green;
+  const auto blue = g_deviceOwnerDX7->blue;
+  const auto redMask = g_deviceOwnerDX7->redMask;
+  const auto greenMask = g_deviceOwnerDX7->greenMask;
+  const auto blueMask = g_deviceOwnerDX7->blueMask;
+  const auto transparent = PackedColor(*g_deviceOwnerDX7, 0xFF00FF);
   std::array<unsigned char, 10800> row;
 
   for (int y = height - 1; y >= 0; --y) {
@@ -74,7 +75,7 @@ bool RendererDX7Operations::SaveBitmap(const char* filename, const BitmapImage& 
 
       if (useOverlay) {
         color = overlay.pixels[overlayX + overlayY * overlay.width];
-        useOverlay = backBuffer.bitsPerPixel == 16 ? PackedColor(this->owner, color) != transparent : (color & 0xFFFFFF) != 0xFF00FF;
+        useOverlay = backBuffer.bitsPerPixel == 16 ? PackedColor(*g_deviceOwnerDX7, color) != transparent : (color & 0xFFFFFF) != 0xFF00FF;
       }
 
       if (!useOverlay) {
@@ -96,29 +97,29 @@ bool RendererDX7Operations::SaveBitmap(const char* filename, const BitmapImage& 
     std::fwrite(row.data(), 3u * static_cast<unsigned>(width), 1, file);
   }
 
-  backBuffer.Unlock(this->owner);
+  backBuffer.Unlock(*g_deviceOwnerDX7);
   std::fclose(file);
   return true;
 }
 
 // OFFSET: 0x0055DDF0
 // FUNCTION: fn_02110
-bool RendererDX7Operations::SaveJpeg(
+bool CRendererDX7::SaveJpeg(
   const char* filename, const BitmapImage& overlay, int width, int height, RendererBackBuffer& backBuffer
 ) {
-  if (!backBuffer.Lock(this->owner)) {
+  if (!backBuffer.Lock(*g_deviceOwnerDX7)) {
     return false;
   }
 
   const unsigned size = 3u * static_cast<unsigned>(width) * static_cast<unsigned>(height);
   auto* pixels = static_cast<unsigned char*>(std::malloc(size));
-  const auto red = this->owner.red;
-  const auto green = this->owner.green;
-  const auto blue = this->owner.blue;
-  const auto redMask = this->owner.redMask;
-  const auto greenMask = this->owner.greenMask;
-  const auto blueMask = this->owner.blueMask;
-  const auto transparent = PackedColor(this->owner, 0xFF00FF);
+  const auto red = g_deviceOwnerDX7->red;
+  const auto green = g_deviceOwnerDX7->green;
+  const auto blue = g_deviceOwnerDX7->blue;
+  const auto redMask = g_deviceOwnerDX7->redMask;
+  const auto greenMask = g_deviceOwnerDX7->greenMask;
+  const auto blueMask = g_deviceOwnerDX7->blueMask;
+  const auto transparent = PackedColor(*g_deviceOwnerDX7, 0xFF00FF);
 
   for (int y = height - 1; y >= 0; --y) {
     const auto* source = static_cast<const unsigned char*>(backBuffer.pixels) + y * backBuffer.pitch;
@@ -132,7 +133,7 @@ bool RendererDX7Operations::SaveJpeg(
 
       if (useOverlay) {
         color = overlay.pixels[overlayX + overlayY * overlay.width];
-        useOverlay = backBuffer.bitsPerPixel == 16 ? PackedColor(this->owner, color) != transparent : (color & 0xFFFFFF) != 0xFF00FF;
+        useOverlay = backBuffer.bitsPerPixel == 16 ? PackedColor(*g_deviceOwnerDX7, color) != transparent : (color & 0xFFFFFF) != 0xFF00FF;
       }
 
       if (!useOverlay) {
@@ -152,7 +153,7 @@ bool RendererDX7Operations::SaveJpeg(
     }
   }
 
-  backBuffer.Unlock(this->owner);
+  backBuffer.Unlock(*g_deviceOwnerDX7);
   IJL15Properties properties{};
 
   if (ijlInit(&properties) != 0) {
@@ -176,7 +177,7 @@ bool RendererDX7Operations::SaveJpeg(
 
 // OFFSET: 0x0055E340
 // FUNCTION: fn_02111
-bool RendererDX7Operations::SaveLogo(std::string filename, ResourceMgr& resources) {
+bool CRendererDX7::SaveLogo(std::string filename, ResourceMgr& resources) {
   auto* logo = static_cast<CBitmapRes*>(resources.Load(Resolve("scr_logo.bmp")));
 
   if (!logo) {
@@ -186,7 +187,7 @@ bool RendererDX7Operations::SaveLogo(std::string filename, ResourceMgr& resource
   DDSURFACEDESC2 locked{};
   locked.dwSize = sizeof(locked);
 
-  if (FAILED(this->owner.renderTarget->Lock(nullptr, &locked, DDLOCK_WAIT, nullptr))) {
+  if (FAILED(g_deviceOwnerDX7->renderTarget->Lock(nullptr, &locked, DDLOCK_WAIT, nullptr))) {
     return false;
   }
 
@@ -210,9 +211,9 @@ bool RendererDX7Operations::SaveLogo(std::string filename, ResourceMgr& resource
         if (locked.ddpfPixelFormat.dwRGBBitCount == 16) {
           std::uint16_t value;
           std::memcpy(&value, source + x * pixelBytes, 2);
-          color = (static_cast<unsigned>(ExpandedChannel(value, this->owner.redMask, this->owner.red)) << 16) |
-                  (static_cast<unsigned>(ExpandedChannel(value, this->owner.greenMask, this->owner.green)) << 8) |
-                  ExpandedChannel(value, this->owner.blueMask, this->owner.blue);
+          color = (static_cast<unsigned>(ExpandedChannel(value, g_deviceOwnerDX7->redMask, g_deviceOwnerDX7->red)) << 16) |
+                  (static_cast<unsigned>(ExpandedChannel(value, g_deviceOwnerDX7->greenMask, g_deviceOwnerDX7->green)) << 8) |
+                  ExpandedChannel(value, g_deviceOwnerDX7->blueMask, g_deviceOwnerDX7->blue);
         } else {
           std::memcpy(&color, source + x * pixelBytes, 4);
         }
@@ -229,7 +230,7 @@ bool RendererDX7Operations::SaveLogo(std::string filename, ResourceMgr& resource
     remaining = 3u * static_cast<unsigned>(paddedWidth) * (locked.dwHeight - y - 1);
   }
 
-  this->owner.renderTarget->Unlock(nullptr);
+  g_deviceOwnerDX7->renderTarget->Unlock(nullptr);
   IJL15Properties properties{};
 
   if (ijlInit(&properties) != 0) {

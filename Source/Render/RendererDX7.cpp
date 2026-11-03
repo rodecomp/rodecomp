@@ -9,8 +9,8 @@ CRendererDX7::CRendererDX7() {
   this->unknown_025C = 0;
   this->time = timeGetTime();
   this->unknown_0264 = 0;
-  this->unknown_0268 = 0;
-  this->unknown_026C = 0;
+  this->boundTexture = nullptr;
+  this->boundLightmap = nullptr;
   this->fog.enabled = 0;
   this->fog.supported = 0;
   this->unknown_004C = 0;

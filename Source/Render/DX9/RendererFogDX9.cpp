@@ -1,3 +1,4 @@
+#include <d3d9.h>
 #include "Render/DX9/D3DX9Runtime.h"
 #include "Render/DX9/DeviceStateDX9.h"
 #include "Render/DX9/RendererFogDX9.h"
@@ -10,7 +11,7 @@
 
 // OFFSET: 0x00567E20
 // FUNCTION: fn_02230
-void RendererFogDX9::Set(int value, const D3DCAPS9& caps) {
+void RendererFogDX9::Set(int value, const _D3DCAPS9& caps) {
   const int supported = (caps.RasterCaps & D3DPRASTERCAPS_FOGVERTEX) != 0;
   this->dirty = 1;
   this->supported = supported;

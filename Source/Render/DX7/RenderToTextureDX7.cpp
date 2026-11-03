@@ -1,7 +1,8 @@
+#include "Render/DX7/RenderSystemDX7.h"
 #include "Render/DX7/DeviceOwnerDX7.h"
 #include "Render/Primitives/RenderPrimitive.h"
-#include "Render/DX7/RendererDX7Operations.h"
-#include "Render/DX7/TextureBindingDX7.h"
+#include "Render/RendererDX7.h"
+#include "Render/Textures/TextureCache.h"
 #include "Render/DX7/TextureDX7.h"
 
 #include <wrl/client.h>
@@ -16,11 +17,11 @@ bool CTextureDX7::CopySurface(IDirectDrawSurface7* source, const RECT* rectangle
 
 // OFFSET: 0x00813CA0
 // FUNCTION: fn_10125
-bool RendererDX7Operations::RenderToTexture(
-  int width, int height, const std::list<RenderPrimitive*>& primitives, CTexture*& texture, TextureDX7Context& context, TextureBindingDX7& binding
+bool CRendererDX7::RenderToTexture(
+  int width, int height, const std::list<RenderPrimitive*>& primitives, CTexture*& texture
 ) {
   if (!texture) {
-    texture = new CTextureDX7(context, width, height, TextureFormat::A8R8G8B8);
+    texture = CreateTexture(width, height, TextureFormat::A8R8G8B8, false, false);
 
     if (!texture) {
       return false;
@@ -41,14 +42,14 @@ bool RendererDX7Operations::RenderToTexture(
   description.ddpfPixelFormat.dwRGBAlphaBitMask = 0xFF000000;
   ComPtr<IDirectDrawSurface7> target;
 
-  if (FAILED(this->owner.draw->CreateSurface(&description, target.GetAddressOf(), nullptr))) {
+  if (FAILED(g_deviceOwnerDX7->draw->CreateSurface(&description, target.GetAddressOf(), nullptr))) {
     return false;
   }
 
   ComPtr<IDirectDrawSurface7> previous;
   DWORD depth = 0;
   DWORD fog = 0;
-  auto* device = this->owner.device;
+  auto* device = g_deviceOwnerDX7->device;
 
   if (device->GetRenderTarget(previous.GetAddressOf()) != S_OK || device->GetRenderState(D3DRENDERSTATE_ZENABLE, &depth) != S_OK ||
       device->GetRenderState(D3DRENDERSTATE_FOGENABLE, &fog) != S_OK) {
@@ -64,9 +65,8 @@ bool RendererDX7Operations::RenderToTexture(
       for (auto* primitive : primitives) {
         auto* selected = static_cast<CTextureDX7*>(primitive->texture);
 
-        binding.Set(device, 0, selected);
-
-        this->DrawPrimitive(primitive);
+        this->SetTexture(0, selected);
+        primitive->Draw(reinterpret_cast<int>(g_deviceOwnerDX7 ? g_deviceOwnerDX7->device : nullptr));
       }
 
       device->EndScene();

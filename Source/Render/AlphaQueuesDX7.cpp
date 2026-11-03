@@ -25,7 +25,7 @@ namespace {
 
 // OFFSET: 0x0055B160
 // FUNCTION: fn_02089
-void QueuedDrawingDX7::DrawAlphaQueues() {
+void CRendererDX7::DrawAlphaQueues() {
   const auto before = [](const DepthPrimitive& left, const DepthPrimitive& right) {
     return Before(left, right);
   };

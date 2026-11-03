@@ -2,16 +2,16 @@
 #define RAGNAROK_SOURCE_RENDER_DX9_RENDERERFOGDX9_H
 
 #include <cstddef>
-#include <d3d9.h>
 
 struct DeviceStateDX9;
+struct _D3DCAPS9;
 
 struct RendererFogDX9 {
   /* 0150 */ int enabled;
   /* 0154 */ int dirty;
   /* 0158 */ int supported;
 
-  void Set(int enabled, const D3DCAPS9& caps);
+  void Set(int enabled, const _D3DCAPS9& caps);
 };
 
 static_assert(sizeof(RendererFogDX9) == 12);
