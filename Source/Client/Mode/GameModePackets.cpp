@@ -137,9 +137,6 @@ char g_pendingWhisperCount;
 // GLOBAL: gl_25102
 int g_whisperRecord;
 
-// GLOBAL: gl_25097
-UIWindow* g_saleOpenWindow;
-
 // GLOBAL: gl_25098
 UIWindow* g_saleResultWindow;
 
@@ -1897,8 +1894,8 @@ void __declspec(noinline) __stdcall sub_D08670(int field14, int itemId, int quan
   UIWindow* window = g_windowMgr.EnsureWindow(0x102);
   window->SendMsg(nullptr, 0x17, reinterpret_cast<std::intptr_t>(&item), field10, field14, 0);
   g_session.RemoveItem1758ByItemId(item);
-  if (g_saleOpenWindow != nullptr) {
-    g_saleOpenWindow->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+  if (g_windowMgr.unknown_01D4 != nullptr) {
+    g_windowMgr.unknown_01D4->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
   }
   if (g_saleResultWindow != nullptr) {
     g_saleResultWindow->SendMsg(nullptr, 0x77, fieldC, 0, 0, 0);

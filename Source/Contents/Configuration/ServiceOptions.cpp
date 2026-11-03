@@ -948,8 +948,8 @@ void ApplyServiceOptionItemWnd(int id, unsigned char value, bool notify, int ena
     }
   }
 
-  if (g_saleOpenWindow != nullptr) {
-    static_cast<UIItemWnd*>(g_saleOpenWindow)->RefreshOptionBox();
+  if (g_windowMgr.unknown_01D4 != nullptr) {
+    static_cast<UIItemWnd*>(g_windowMgr.unknown_01D4)->RefreshOptionBox();
   }
 }
 
