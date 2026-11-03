@@ -5,16 +5,12 @@
 
 #include <d3d9.h>
 
-struct SurfaceDX9Context {
-  IDirect3DDevice9* device;
-  D3DSURFACE_DESC backBufferDescription;
-  IDirect3DSurface9* backBuffer;
-};
+class DeviceOwnerDX9;
 
 class CSurfaceDX9 : public CSurface {
 public:
-  CSurfaceDX9(SurfaceDX9Context& context, int width, int height);
-  CSurfaceDX9(SurfaceDX9Context& context, IDirect3DSurface9* surface);
+  CSurfaceDX9(DeviceOwnerDX9& owner, int width, int height);
+  CSurfaceDX9(DeviceOwnerDX9& owner, IDirect3DSurface9* surface);
   ~CSurfaceDX9() override;
   std::uint32_t Width() override;
   std::uint32_t Height() override;
@@ -29,7 +25,7 @@ public:
   void Stretch(int x, int y, int width, int height) override;
 
 protected:
-  /* 0004 */ SurfaceDX9Context* m_context;
+  /* 0004 */ DeviceOwnerDX9* m_owner;
   /* 0008 */ std::uint32_t m_width;
   /* 000C */ std::uint32_t m_height;
   /* 0010 */ IDirect3DSurface9* m_surface;

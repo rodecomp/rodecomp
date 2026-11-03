@@ -18,7 +18,7 @@ class CBitmapRes;
 
 class CRenderer {
 public:
-  explicit CRenderer(CRenderSystemBase& system);
+  CRenderer();
   virtual ~CRenderer();
   virtual void SetCamera(const float* eye, const float* target, const float* up) = 0;
   virtual void SetLighting(const float* direction, const float* diffuse, const float* ambient) = 0;

@@ -276,15 +276,3 @@ HRESULT DeviceOwnerDX9::Present(int) {
   return this->lastPresent;
 }
 
-// INLINED
-SurfaceDX9Context DeviceOwnerDX9::SurfaceContext() const {
-  return {this->device, this->backBufferDescription, this->backBuffer};
-}
-
-// INLINED
-TextureDX9Context DeviceOwnerDX9::TextureContext(
-  RenderPrimitivePool& primitives, RenderQueues& queues, bool depthAlpha, float depthStart, float depthEnd
-) const {
-  return {this->direct3D, this->device, this->adapter, this->presentation.BackBufferFormat, this->caps, this->dynamicTextures, nullptr, &primitives, &queues,
-          depthAlpha,     depthStart,   depthEnd};
-}

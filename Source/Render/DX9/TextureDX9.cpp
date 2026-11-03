@@ -1,3 +1,6 @@
+#include "Render/Renderer.h"
+#include "Render/TextureQuad.h"
+#include "Render/DX9/DeviceOwnerDX9.h"
 #include "Render/DX9/D3DX9Runtime.h"
 #include "Render/Primitives/RenderPrimitivePool.h"
 #include "Render/Primitives/RenderQueues.h"
@@ -50,8 +53,8 @@ namespace {
 
 // OFFSET: 0x00572500
 // FUNCTION: fn_02474
-CTextureDX9::CTextureDX9(TextureDX9Context& context)
-    : m_context(&context), m_renderTargetUsage(false), m_dynamic(false), m_allowDynamic(false), m_renderTarget(false), m_texture(nullptr), m_surface(nullptr),
+CTextureDX9::CTextureDX9(DeviceOwnerDX9& owner)
+    : m_owner(&owner), m_renderTargetUsage(false), m_dynamic(false), m_allowDynamic(false), m_renderTarget(false), m_texture(nullptr), m_surface(nullptr),
       m_description{} {
   this->m_textureWidth = this->m_textureHeight = this->m_width = this->m_height = 1;
   this->m_format = TextureFormat::A1R5G5B5;
@@ -59,7 +62,7 @@ CTextureDX9::CTextureDX9(TextureDX9Context& context)
 
 // OFFSET: 0x005725C0
 // FUNCTION: fn_02475
-CTextureDX9::CTextureDX9(TextureDX9Context& context, int width, int height, int format, bool dynamic, bool renderTarget) : CTextureDX9(context) {
+CTextureDX9::CTextureDX9(DeviceOwnerDX9& owner, int width, int height, int format, bool dynamic, bool renderTarget) : CTextureDX9(owner) {
   this->m_allowDynamic = dynamic;
   this->m_renderTarget = renderTarget;
   this->Create(width, height, format);
@@ -68,7 +71,7 @@ CTextureDX9::CTextureDX9(TextureDX9Context& context, int width, int height, int 
 
 // OFFSET: 0x00572650
 // FUNCTION: fn_02476
-CTextureDX9::CTextureDX9(TextureDX9Context& context, IDirect3DTexture9* texture) : CTextureDX9(context) {
+CTextureDX9::CTextureDX9(DeviceOwnerDX9& owner, IDirect3DTexture9* texture) : CTextureDX9(owner) {
   this->m_texture = texture;
   if (SUCCEEDED(texture->GetSurfaceLevel(0, &this->m_surface)) && SUCCEEDED(this->m_surface->GetDesc(&this->m_description))) {
     this->m_renderTargetUsage = (this->m_description.Usage & D3DUSAGE_RENDERTARGET) != 0;
@@ -147,9 +150,9 @@ bool CTextureDX9::Create(int width, int height, int format) {
     break;
   }
 
-  UINT w = std::min<UINT>(RoundUpPowerOfTwo(width), this->m_context->caps.MaxTextureWidth);
-  UINT h = std::min<UINT>(RoundUpPowerOfTwo(height), this->m_context->caps.MaxTextureHeight);
-  UINT ratio = this->m_context->caps.MaxTextureAspectRatio;
+  UINT w = std::min<UINT>(RoundUpPowerOfTwo(width), this->m_owner->caps.MaxTextureWidth);
+  UINT h = std::min<UINT>(RoundUpPowerOfTwo(height), this->m_owner->caps.MaxTextureHeight);
+  UINT ratio = this->m_owner->caps.MaxTextureAspectRatio;
 
   if (ratio) {
     if (w / h > ratio) {
@@ -168,10 +171,10 @@ bool CTextureDX9::Create(int width, int height, int format) {
   D3DPOOL pool = D3DPOOL_MANAGED;
   this->m_dynamic = false;
 
-  if (this->m_allowDynamic && this->m_context->dynamicTextures) {
-    this->m_dynamic = this->m_context->direct3D && (this->m_context->caps.Caps2 & D3DCAPS2_DYNAMICTEXTURES) &&
-                      this->m_context->direct3D->CheckDeviceFormat(
-                        this->m_context->adapter, D3DDEVTYPE_HAL, this->m_context->displayFormat, D3DUSAGE_DYNAMIC, D3DRTYPE_TEXTURE, nativeFormat
+  if (this->m_allowDynamic && this->m_owner->dynamicTextures) {
+    this->m_dynamic = this->m_owner->direct3D && (this->m_owner->caps.Caps2 & D3DCAPS2_DYNAMICTEXTURES) &&
+                      this->m_owner->direct3D->CheckDeviceFormat(
+                        this->m_owner->adapter, D3DDEVTYPE_HAL, this->m_owner->presentation.BackBufferFormat, D3DUSAGE_DYNAMIC, D3DRTYPE_TEXTURE, nativeFormat
                       ) == D3D_OK;
     pool = D3DPOOL_DEFAULT;
     if (this->m_dynamic) {
@@ -179,7 +182,7 @@ bool CTextureDX9::Create(int width, int height, int format) {
     }
   }
 
-  if (FAILED(this->m_context->device->CreateTexture(w, h, 1, usage, nativeFormat, pool, &this->m_texture, nullptr)) ||
+  if (FAILED(this->m_owner->device->CreateTexture(w, h, 1, usage, nativeFormat, pool, &this->m_texture, nullptr)) ||
       FAILED(this->m_texture->GetSurfaceLevel(0, &this->m_surface)) || FAILED(this->m_surface->GetDesc(&this->m_description))) {
     return false;
   }
@@ -379,8 +382,8 @@ void CTextureDX9::Upload(int x, int y, int width, int height, const std::uint32_
     if (surface) {
       surface->AddRef();
     }
-  } else if (SUCCEEDED(this->m_context->device->CreateTexture(
-               this->m_textureWidth, this->m_textureHeight, !this->m_context->dynamicTextures, 0, this->m_description.Format, D3DPOOL_SYSTEMMEM, &temporary,
+  } else if (SUCCEEDED(this->m_owner->device->CreateTexture(
+               this->m_textureWidth, this->m_textureHeight, !this->m_owner->dynamicTextures, 0, this->m_description.Format, D3DPOOL_SYSTEMMEM, &temporary,
                nullptr
              )) &&
              SUCCEEDED(temporary->GetSurfaceLevel(0, &surface))) {
@@ -394,7 +397,7 @@ void CTextureDX9::Upload(int x, int y, int width, int height, const std::uint32_
         D3DXFilterTexture(temporary, nullptr, UINT(-1), DWORD(-1));
       }
 
-      this->m_context->device->UpdateTexture(temporary, this->m_texture);
+      this->m_owner->device->UpdateTexture(temporary, this->m_texture);
     } else {
       this->Filter();
     }
@@ -479,21 +482,19 @@ bool CTextureDX9::CopyTexture(CTexture* source, int sourceX, int sourceY, int so
 // OFFSET: 0x00544410
 void CTextureDX9::Draw(int x, int y, int width, int height, std::uint32_t color) {
   this->DrawTo(
-    *this->m_context->primitives, *this->m_context->queues, x, y, width, height, color, this->m_context->depthAlpha, this->m_context->depthStart,
-    this->m_context->depthEnd
+    g_renderer->primitives, g_renderer->queues, x, y, width, height, color, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
   );
 }
 
 // OFFSET: 0x00544610
 void CTextureDX9::Stretch(int x, int y, int width, int height) {
   this->StretchTo(
-    *this->m_context->primitives, *this->m_context->queues, x, y, width, height, this->m_context->depthAlpha, this->m_context->depthStart,
-    this->m_context->depthEnd
+    g_renderer->primitives, g_renderer->queues, x, y, width, height, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
   );
 }
 
 // OFFSET: 0x0056CEE0
 // FUNCTION: fn_02352
-std::unique_ptr<CTextureDX9> CreateTextureDX9(TextureDX9Context** context) {
-  return std::make_unique<CTextureDX9>(**context);
+std::unique_ptr<CTextureDX9> CreateTextureDX9(DeviceOwnerDX9** owner) {
+  return std::make_unique<CTextureDX9>(**owner);
 }

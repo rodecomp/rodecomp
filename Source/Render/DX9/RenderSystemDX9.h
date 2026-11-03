@@ -39,9 +39,6 @@ private:
   /* 0008 */ CTexture* m_defaultTexture;
   /* 000C */ std::shared_ptr<CSurface> m_backBuffer;
 
-  TextureDX9Context m_textureContext;
-  SurfaceDX9Context m_surfaceContext;
-  void RefreshContexts();
 };
 
 #endif

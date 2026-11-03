@@ -1,4 +1,5 @@
 #include "Render/DX9/SurfaceDX9.h"
+#include "Render/DX9/DeviceOwnerDX9.h"
 
 #include <algorithm>
 #include <cstring>
@@ -45,14 +46,14 @@ namespace {
 
 // OFFSET: 0x00570720
 // FUNCTION: fn_02427
-CSurfaceDX9::CSurfaceDX9(SurfaceDX9Context& context, int width, int height)
-    : m_context(&context), m_width(AlignDimension(width)), m_height(AlignDimension(height)), m_surface(nullptr) {
-  context.device->CreateOffscreenPlainSurface(this->m_width, this->m_height, context.backBufferDescription.Format, D3DPOOL_DEFAULT, &this->m_surface, nullptr);
+CSurfaceDX9::CSurfaceDX9(DeviceOwnerDX9& owner, int width, int height)
+    : m_owner(&owner), m_width(AlignDimension(width)), m_height(AlignDimension(height)), m_surface(nullptr) {
+  owner.device->CreateOffscreenPlainSurface(this->m_width, this->m_height, owner.backBufferDescription.Format, D3DPOOL_DEFAULT, &this->m_surface, nullptr);
 }
 
 // OFFSET: 0x005707D0
 // FUNCTION: fn_02428
-CSurfaceDX9::CSurfaceDX9(SurfaceDX9Context& context, IDirect3DSurface9* surface) : m_context(&context) {
+CSurfaceDX9::CSurfaceDX9(DeviceOwnerDX9& owner, IDirect3DSurface9* surface) : m_owner(&owner) {
   D3DSURFACE_DESC description;
   if (FAILED(surface->GetDesc(&description))) {
     this->m_width = 0;
@@ -95,8 +96,8 @@ bool CSurfaceDX9::Resize(int width, int height) {
 
   this->m_width = AlignDimension(width);
   this->m_height = AlignDimension(height);
-  return SUCCEEDED(this->m_context->device->CreateOffscreenPlainSurface(
-           this->m_width, this->m_height, this->m_context->backBufferDescription.Format, D3DPOOL_DEFAULT, &this->m_surface, nullptr
+  return SUCCEEDED(this->m_owner->device->CreateOffscreenPlainSurface(
+           this->m_width, this->m_height, this->m_owner->backBufferDescription.Format, D3DPOOL_DEFAULT, &this->m_surface, nullptr
          )) &&
          this->m_surface;
 }
@@ -207,7 +208,7 @@ void CSurfaceDX9::Upload(int x, int y, int width, int height, const std::uint32_
 // FUNCTION: fn_02431
 void CSurfaceDX9::Fill(const RECT* rectangle, std::uint32_t color) {
   if (this->m_surface) {
-    this->m_context->device->ColorFill(this->m_surface, rectangle, color);
+    this->m_owner->device->ColorFill(this->m_surface, rectangle, color);
   }
 }
 
@@ -224,10 +225,10 @@ void CSurfaceDX9::Draw(int x, int y, int width, int height, std::uint32_t) {
   }
 
   const RECT target{x, y, x + width, y + height};
-  const RECT destination = Clip(target, this->m_context->backBufferDescription);
+  const RECT destination = Clip(target, this->m_owner->backBufferDescription);
   const RECT original{0, 0, destination.right - destination.left, destination.bottom - destination.top};
   const RECT source = Clip(original, description);
-  this->m_context->device->StretchRect(this->m_surface, &source, this->m_context->backBuffer, &destination, D3DTEXF_NONE);
+  this->m_owner->device->StretchRect(this->m_surface, &source, this->m_owner->backBuffer, &destination, D3DTEXF_NONE);
 }
 
 // OFFSET: 0x00570BA0
@@ -238,6 +239,6 @@ void CSurfaceDX9::Stretch(int x, int y, int width, int height) {
   }
 
   const RECT target{x, y, x + width, y + height};
-  const RECT destination = Clip(target, this->m_context->backBufferDescription);
-  this->m_context->device->StretchRect(this->m_surface, nullptr, this->m_context->backBuffer, &destination, D3DTEXF_LINEAR);
+  const RECT destination = Clip(target, this->m_owner->backBufferDescription);
+  this->m_owner->device->StretchRect(this->m_surface, nullptr, this->m_owner->backBuffer, &destination, D3DTEXF_LINEAR);
 }

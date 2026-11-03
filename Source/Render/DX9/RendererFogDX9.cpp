@@ -1,6 +1,8 @@
 #include "Render/DX9/D3DX9Runtime.h"
 #include "Render/DX9/DeviceStateDX9.h"
 #include "Render/DX9/RendererFogDX9.h"
+#include "Render/DX9/RendererDX9.h"
+#include "Render/DX9/DeviceOwnerDX9.h"
 #include "Render/DX9/TextureDX9.h"
 #include "Render/TextureQuad.h"
 
@@ -19,21 +21,20 @@ void RendererFogDX9::Set(int value, const D3DCAPS9& caps) {
 
 // OFFSET: 0x005654D0
 // FUNCTION: fn_02217
-void RendererFogDX9::Apply(
-  const TextureDX9Context& context, DeviceStateDX9& state, const float& aspect
-) {
-  if (this->dirty == 1) {
-    const float inverseAspect = 1.0f / aspect;
-    const bool supported = (context.caps.RasterCaps & D3DPRASTERCAPS_FOGVERTEX) != 0;
+void CRendererDX9::ApplyFog() {
+  DeviceStateDX9& state = this->device->state;
+  if (this->fog.dirty == 1) {
+    const float inverseAspect = 1.0f / this->viewport.aspect;
+    const bool supported = (this->device->caps.RasterCaps & D3DPRASTERCAPS_FOGVERTEX) != 0;
     D3DMATRIX identity{};
     identity._11 = identity._22 = identity._33 = identity._44 = 1.0f;
     const float start = g_depthStart * 1490.0f + 10.0f;
     const float end = g_depthEnd * 1490.0f + 10.0f;
     D3DMATRIX projection;
     D3DXMatrixPerspectiveFovLH(&projection, 0.2617994f, inverseAspect, 10.0f, 1500.0f);
-    context.device->SetTransform(D3DTS_WORLD, &identity);
-    context.device->SetTransform(D3DTS_PROJECTION, &projection);
-    context.device->SetTransform(D3DTS_VIEW, &identity);
+    this->nativeDevice->SetTransform(D3DTS_WORLD, &identity);
+    this->nativeDevice->SetTransform(D3DTS_PROJECTION, &projection);
+    this->nativeDevice->SetTransform(D3DTS_VIEW, &identity);
 
     state.SetRenderState(D3DRS_FOGCOLOR, g_worldOverlayColor);
     state.SetRenderState(D3DRS_RANGEFOGENABLE, g_fogRange);
@@ -45,11 +46,11 @@ void RendererFogDX9::Apply(
       state.SetRenderState(D3DRS_FOGTABLEMODE, D3DFOG_NONE);
       state.SetRenderState(D3DRS_FOGVERTEXMODE, g_fogVertexMode);
     } else {
-      this->enabled = 0;
+      this->fog.enabled = 0;
     }
 
-    this->dirty = 0;
+    this->fog.dirty = 0;
   }
 
-  state.SetRenderState(D3DRS_FOGENABLE, this->enabled);
+  state.SetRenderState(D3DRS_FOGENABLE, this->fog.enabled);
 }

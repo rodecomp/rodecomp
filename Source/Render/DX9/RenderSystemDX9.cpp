@@ -7,8 +7,7 @@
 
 // OFFSET: 0x0056CF60
 // FUNCTION: fn_02353
-CRenderSystemDX9::CRenderSystemDX9() : m_device(new DeviceOwnerDX9), m_defaultTexture(nullptr), m_textureContext{}, m_surfaceContext{} {
-  this->RefreshContexts();
+CRenderSystemDX9::CRenderSystemDX9() : m_device(new DeviceOwnerDX9), m_defaultTexture(nullptr) {
 }
 
 // OFFSET: 0x0056D180
@@ -21,20 +20,6 @@ CRenderSystemDX9::~CRenderSystemDX9() {
   delete this->m_defaultTexture;
 }
 
-// INLINED
-void CRenderSystemDX9::RefreshContexts() {
-  this->m_surfaceContext = this->m_device->SurfaceContext();
-  auto& context = this->m_textureContext;
-  context.direct3D = this->m_device->direct3D;
-  context.device = this->m_device->device;
-  context.adapter = this->m_device->adapter;
-  context.displayFormat = this->m_device->presentation.BackBufferFormat;
-  context.caps = this->m_device->caps;
-  context.dynamicTextures = this->m_device->dynamicTextures;
-  context.depthStart = g_depthStart;
-  context.depthEnd = g_depthEnd;
-}
-
 // OFFSET: 0x0056E250
 // FUNCTION: fn_02373
 std::int32_t CRenderSystemDX9::Backend() {
@@ -45,7 +30,6 @@ std::int32_t CRenderSystemDX9::Backend() {
 HRESULT CRenderSystemDX9::Initialize(HWND window) {
   const HRESULT result =
     InitializeConfiguredDeviceDX9(*this->m_device, window);
-  this->RefreshContexts();
   return result;
 }
 
@@ -85,8 +69,6 @@ CRenderer* CRenderSystemDX9::CreateRenderer() {
   renderer->viewport.SetSize(
     std::bit_cast<std::int32_t>(this->Width()), std::bit_cast<std::int32_t>(this->Height())
   );
-  this->m_textureContext.primitives = &renderer->primitives;
-  this->m_textureContext.queues = &renderer->queues;
 
   return renderer;
 }
@@ -100,16 +82,14 @@ void CRenderSystemDX9::DestroySurface(CSurface* surface) {
 // OFFSET: 0x0056D480
 // FUNCTION: fn_02360
 CSurface* CRenderSystemDX9::CreateSurface(std::uint32_t width, std::uint32_t height) {
-  this->RefreshContexts();
-  return new (std::nothrow) CSurfaceDX9(this->m_surfaceContext, std::bit_cast<std::int32_t>(width), std::bit_cast<std::int32_t>(height));
+  return new (std::nothrow) CSurfaceDX9(*this->m_device, std::bit_cast<std::int32_t>(width), std::bit_cast<std::int32_t>(height));
 }
 
 // OFFSET: 0x0056D510
 // FUNCTION: fn_02361
 CTexture* CRenderSystemDX9::CreateTexture(std::uint32_t width, std::uint32_t height, std::int32_t format, bool dynamic, bool renderTarget) {
-  this->RefreshContexts();
   return new (std::nothrow)
-    CTextureDX9(this->m_textureContext, std::bit_cast<std::int32_t>(width), std::bit_cast<std::int32_t>(height), format, dynamic, renderTarget);
+    CTextureDX9(*this->m_device, std::bit_cast<std::int32_t>(width), std::bit_cast<std::int32_t>(height), format, dynamic, renderTarget);
 }
 
 // OFFSET: 0x0056D5B0
@@ -126,8 +106,7 @@ CSurface* CRenderSystemDX9::CreateSurfaceOrTexture(std::uint32_t width, std::uin
 // FUNCTION: fn_02369
 CTexture* CRenderSystemDX9::BackBufferTexture() {
   if (!this->m_defaultTexture) {
-    this->RefreshContexts();
-    this->m_defaultTexture = new CTextureDX9(this->m_textureContext);
+      this->m_defaultTexture = new CTextureDX9(*this->m_device);
   }
 
   return this->m_defaultTexture;
@@ -137,8 +116,7 @@ CTexture* CRenderSystemDX9::BackBufferTexture() {
 // FUNCTION: fn_02371
 std::shared_ptr<CSurface> CRenderSystemDX9::BackBufferSurface() {
   if (!this->m_backBuffer) {
-    this->RefreshContexts();
-    this->m_backBuffer = std::make_shared<CSurfaceDX9>(this->m_surfaceContext, this->m_device->backBuffer);
+      this->m_backBuffer = std::make_shared<CSurfaceDX9>(*this->m_device, this->m_device->backBuffer);
   }
 
   return this->m_backBuffer;

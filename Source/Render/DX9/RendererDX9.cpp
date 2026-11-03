@@ -1,6 +1,7 @@
 #include "Render/DX9/DeviceOwnerDX9.h"
 #include "Render/TextureQuad.h"
 #include "Render/DX9/RendererDX9.h"
+#include "Render/Primitives/LightmappedPrimitive.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/World/World.h"
@@ -14,38 +15,13 @@
 // OFFSET: 0x00564EB0
 // FUNCTION: fn_02209
 CRendererDX9::CRendererDX9(DeviceOwnerDX9& owner)
-    : CRenderer(*GetRenderSystemHolder()->system), device(&owner), nativeDevice(owner.device), clearColor(0), lastTick(0), frames(0), fps(0.0f), unknown_context(nullptr),
-      m_textureContext(owner.TextureContext(this->primitives, this->queues, false, g_depthStart, g_depthEnd)) {
+    : device(&owner), nativeDevice(owner.device), clearColor(0), lastTick(0), frames(0), fps(0.0f) {
 }
 
 // OFFSET: 0x00564FE0
 // OFFSET: 0x00565070
 // FUNCTION: fn_02210
 CRendererDX9::~CRendererDX9() = default;
-
-TextureDX9Context& CRendererDX9::TextureContext() {
-  this->m_textureContext.dynamicTextures = this->device->dynamicTextures;
-  this->m_textureContext.depthAlpha = this->fog.supported != 0;
-  this->m_textureContext.depthStart = g_depthStart;
-  this->m_textureContext.depthEnd = g_depthEnd;
-
-  return this->m_textureContext;
-}
-
-RendererDX9Operations CRendererDX9::Operations(TextureDX9Context& context) {
-  context.device = this->nativeDevice;
-  return {context, this->device->state};
-}
-
-void CRendererDX9::SetCamera(const float* eye, const float* target, const float* up) {
-  auto& context = this->TextureContext();
-  this->Operations(context).SetCamera(eye, target, up);
-}
-
-void CRendererDX9::SetLighting(const float* direction, const float* diffuse, const float* ambient) {
-  auto& context = this->TextureContext();
-  this->Operations(context).SetLighting(direction, diffuse, ambient);
-}
 
 // OFFSET: 0x00568360
 // FUNCTION: fn_02238
@@ -55,16 +31,6 @@ void CRendererDX9::SetClearColor(unsigned color) {
 
 void CRendererDX9::SetFog(int enabled) {
   this->fog.Set(enabled, this->device->caps);
-}
-
-void CRendererDX9::ClearDepth(int clearColor) {
-  auto& context = this->TextureContext();
-  this->Operations(context).ClearDepth(clearColor);
-}
-
-void CRendererDX9::ClearWorld() {
-  auto& context = this->TextureContext();
-  this->Operations(context).ClearWorld(this->clearColor, this->fog.enabled, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->unknown_00FC, g_worldOverlayColor);
 }
 
 HRESULT CRendererDX9::Present(int option) {
@@ -89,23 +55,21 @@ bool CRendererDX9::RestoreBackBuffer() {
 // OFFSET: 0x00565860
 // FUNCTION: fn_02220
 void CRendererDX9::DrawAuxiliaryPrimitive(LightmappedPrimitive* primitive) {
-  auto& context = this->TextureContext();
-  this->Operations(context).DrawLightmappedPrimitive(primitive);
-}
+  if (primitive->vertexCount <= 0) {
+    return;
+  }
 
-void CRendererDX9::DrawLightmappedPrimitive(LightmappedPrimitive* primitive) {
-  auto& context = this->TextureContext();
-  this->Operations(context).DrawLightmappedPrimitive(primitive);
-}
+  this->device->state.SetFVF(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX2);
+  const auto type = static_cast<D3DPRIMITIVETYPE>(primitive->primitiveType);
+  const unsigned divisor = type == D3DPT_TRIANGLELIST ? 3 : 2;
 
-void CRendererDX9::DrawPrimitive(RenderCommand* primitive) {
-  auto& context = this->TextureContext();
-  this->Operations(context).DrawPrimitive(primitive);
-}
-
-bool CRendererDX9::RenderToTexture(int width, int height, const std::list<RenderPrimitive*>& primitives, CTexture*& texture) {
-  auto& context = this->TextureContext();
-  return this->Operations(context).RenderToTexture(width, height, primitives, texture);
+  if (primitive->indexCount) {
+    this->nativeDevice->DrawIndexedPrimitiveUP(
+      type, 0, primitive->vertexCount, primitive->indexCount / divisor, primitive->indices, D3DFMT_INDEX16, primitive->vertices, sizeof(LightmappedVertex)
+    );
+  } else {
+    this->nativeDevice->DrawPrimitiveUP(type, primitive->vertexCount / divisor, primitive->vertices, sizeof(LightmappedVertex));
+  }
 }
 
 bool CRendererDX9::SaveBitmapResource(const char* filename, int format, CBitmapRes* bitmap) {
@@ -116,8 +80,7 @@ bool CRendererDX9::SaveBitmapResource(const char* filename, int format, CBitmapR
     overlay.reset(g_texMgr.Upload(image.width, image.height, image.pixels, image.alpha != 0, 0, false, false, false));
   }
 
-  auto& context = this->TextureContext();
-  return this->Operations(context).SaveScreenshot(*this->device, GetRenderSystemHolder()->system, filename, format, overlay.get(), nullptr);
+  return this->SaveScreenshot(filename, format, overlay.get(), nullptr);
 }
 
 // OFFSET: 0x00567FC0
@@ -142,9 +105,8 @@ void CRendererDX9::CleanupTextures() {
 bool CRendererDX9::SaveLogo(std::string filename) {
   const char* name = Resolve("scr_logo.bmp");
   CTexture* overlay = g_texMgr.Load(name, 0, false, true, false);
-  auto& context = this->TextureContext();
 
-  return this->Operations(context).SaveScreenshot(*this->device, GetRenderSystemHolder()->system, filename.c_str(), 1, overlay, nullptr);
+  return this->SaveScreenshot(filename.c_str(), 1, overlay, nullptr);
 }
 
 void CRendererDX9::Submit(RenderCommand* command, std::uint16_t flags) {

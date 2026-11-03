@@ -6,7 +6,6 @@
 #include "Render/Primitives/RenderPrimitivePool.h"
 #include "Render/Primitives/RenderQueues.h"
 #include "Render/Primitives/RenderVertexPool.h"
-#include "Render/DX9/RendererDX9Operations.h"
 #include "Render/DeviceContext/DCSurface.h"
 
 // OFFSET: 0x0055A360
@@ -24,10 +23,7 @@ void CRenderer::ClearFrame() {
 // FUNCTION: fn_02222
 bool CRendererDX9::Draw() {
   this->device->Begin(GetRenderSystemHolder()->system);
-  auto& context = this->TextureContext();
-  this->Operations(context).DrawQueues(
-    this->queues, this->twoPass, this->fog, this->viewport.aspect
-  );
+  this->DrawQueues(this->queues, this->twoPass);
   this->ClearFrame();
   this->device->End();
 

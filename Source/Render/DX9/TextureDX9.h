@@ -7,28 +7,14 @@
 
 struct RenderQueues;
 class RenderPrimitivePool;
-
-struct TextureDX9Context {
-  IDirect3D9* direct3D;
-  IDirect3DDevice9* device;
-  UINT adapter;
-  D3DFORMAT displayFormat;
-  D3DCAPS9 caps;
-  bool dynamicTextures;
-  void* unknown_d3dx;
-  RenderPrimitivePool* primitives;
-  RenderQueues* queues;
-  bool depthAlpha;
-  float depthStart;
-  float depthEnd;
-};
+class DeviceOwnerDX9;
 
 class CTextureDX9 : public CTexture {
 public:
-  explicit CTextureDX9(TextureDX9Context& context);
-  CTextureDX9(TextureDX9Context& context, int width, int height, int format, bool dynamic, bool renderTarget);
+  explicit CTextureDX9(DeviceOwnerDX9& owner);
+  CTextureDX9(DeviceOwnerDX9& owner, int width, int height, int format, bool dynamic, bool renderTarget);
 
-  CTextureDX9(TextureDX9Context& context, IDirect3DTexture9* texture);
+  CTextureDX9(DeviceOwnerDX9& owner, IDirect3DTexture9* texture);
   ~CTextureDX9() override;
   bool Resize(int width, int height) override;
   SurfaceLock Lock() override;
@@ -49,7 +35,7 @@ public:
   }
 
 protected:
-  /* 0124 */ TextureDX9Context* m_context;
+  /* 0124 */ DeviceOwnerDX9* m_owner;
   /* 0128 */ bool m_renderTargetUsage;
   /* 0129 */ bool m_dynamic;
   /* 012A */ bool m_allowDynamic;

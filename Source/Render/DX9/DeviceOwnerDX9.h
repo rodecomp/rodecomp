@@ -26,9 +26,6 @@ public:
   bool CaptureBackBuffer();
   bool RestoreBackBuffer();
   ScopedDeviceStateDX9 SaveState();
-  SurfaceDX9Context SurfaceContext() const;
-  TextureDX9Context
-  TextureContext(class RenderPrimitivePool& primitives, RenderQueues& queues, bool depthAlpha, float depthStart, float depthEnd) const;
 
   /* 0000 */ HWND window;
   /* 0004 */ IDirect3D9Ex* direct3D;

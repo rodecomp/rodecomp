@@ -37,7 +37,7 @@ class SpriteAtlas {
 public:
   SpriteAtlas();
   ~SpriteAtlas();
-  void Initialize(CRenderSystemBase& system, unsigned spareCount);
+  void Initialize(unsigned spareCount);
   void Clear();
   CTexture* Find(const SpriteRleImage* image, const std::uint32_t* palette, SpriteAtlasRecord& output);
   CTexture* Insert(

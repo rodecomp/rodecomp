@@ -4,7 +4,7 @@
 
 // OFFSET: 0x00559420
 // FUNCTION: fn_02065
-CRendererDX7::CRendererDX7(CRenderSystemBase& system) : CRenderer(system) {
+CRendererDX7::CRendererDX7() {
   this->frame = 0;
   this->unknown_025C = 0;
   this->time = timeGetTime();

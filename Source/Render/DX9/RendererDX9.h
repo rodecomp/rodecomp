@@ -2,7 +2,8 @@
 #define RAGNAROK_SOURCE_RENDER_DX9_RENDERERDX9_H
 
 #include "Render/Renderer.h"
-#include "Render/DX9/RendererDX9Operations.h"
+#include <list>
+#include <vector>
 #include "Render/DX9/RendererPresentation.h"
 #include "Render/DX9/TextureDX9.h"
 
@@ -34,7 +35,16 @@ public:
   bool LockBackBuffer() override;
   HRESULT UnlockBackBuffer() override;
 
-  TextureDX9Context& TextureContext();
+  void SetTextureMode(int mode);
+  void DrawDepthQueue(std::vector<DepthPrimitive>& queue, bool sort);
+  void DrawOpaqueQueues(RenderQueues& queues);
+  void DrawGroundQueues(RenderQueues& queues);
+  void DrawAlphaQueues(RenderQueues& queues, unsigned char twoPass);
+  void DrawAuxiliaryQueue(RenderQueues& queues);
+  void DrawBaseQueue();
+  void DrawQueues(RenderQueues& queues, unsigned char twoPass);
+  void ApplyFog();
+  bool SaveScreenshot(const char* filename, int format, CTexture* overlay, const tagRECT* rectangle);
   void Submit(RenderCommand* command, std::uint16_t flags);
   void Submit(LightmappedPrimitive* command, int queue);
 
@@ -46,14 +56,11 @@ public:
   /* 0270 */ float fps;
 
 private:
-  void* unknown_context;
-  TextureDX9Context m_textureContext;
-  RendererDX9Operations Operations(TextureDX9Context& textureContext);
   bool SaveBitmapResource(const char* filename, int format, CBitmapRes* overlay);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(CRendererDX9) == 0x3D4);
+static_assert(sizeof(CRendererDX9) == 0x274);
 #endif
 
 #endif

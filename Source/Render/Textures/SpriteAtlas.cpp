@@ -1,6 +1,7 @@
 #include "Render/RenderSystemBase.h"
 #include "Render/Textures/SpriteAtlas.h"
 #include "Render/Textures/Texture.h"
+#include "Render/Textures/TextureCache.h"
 
 #include <bit>
 #include <windows.h>
@@ -62,7 +63,7 @@ std::size_t SpriteAtlas::Hash::operator()(const Key& key) const {
 
 // OFFSET: 0x0056FB00
 // FUNCTION: fn_02407
-void SpriteAtlas::Initialize(CRenderSystemBase& system, unsigned spareCount) {
+void SpriteAtlas::Initialize(unsigned spareCount) {
   this->Clear();
   this->ClearSpare();
   if (this->m_spare.capacity() < spareCount) {
@@ -70,7 +71,7 @@ void SpriteAtlas::Initialize(CRenderSystemBase& system, unsigned spareCount) {
   }
 
   for (unsigned i = 0; i < spareCount; ++i) {
-    CTexture* texture = system.CreateTexture(256, 256, TextureFormat::A1R5G5B5, false, false);
+    CTexture* texture = CreateTexture(256, 256, TextureFormat::A1R5G5B5, false, false);
     if (!texture) {
       break;
     }

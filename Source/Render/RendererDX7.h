@@ -5,7 +5,7 @@
 
 class CRendererDX7 : public CRenderer {
 public:
-  explicit CRendererDX7(CRenderSystemBase& system);
+  CRendererDX7();
 
   /* 025C */ unsigned unknown_025C;
   /* 0260 */ unsigned time;
