@@ -1,4 +1,8 @@
 #include "Client/Mode/CMode.h"
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Render/Renderer.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/MessageTable.h"
 #include "Client/Mode/ModeEvents.h"
 #include "Client/ReplayPacketRecorder.h"
@@ -14,8 +18,8 @@
 
 // OFFSET: 0x008C7AA0
 // FUNCTION: fn_11941
-UIExchangeAcceptWnd::UIExchangeAcceptWnd(UIAcceptanceContext& acceptance)
-    : UIChooseSellBuyWnd(acceptance), saved(nullptr) {
+UIExchangeAcceptWnd::UIExchangeAcceptWnd()
+    : UIChooseSellBuyWnd(), saved(nullptr) {
 }
 
 // OFFSET: 0x008CC9C0
@@ -36,8 +40,6 @@ void UIExchangeAcceptWnd::Slot15(int width, int height) {
 // OFFSET: 0x008FA8C0
 // FUNCTION: fn_12343
 int UIExchangeAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  auto& owner = *this->m_acceptance;
-
   if (message == 6) {
     const int response = static_cast<int>(a);
     this->RecordResponse(response, b, c, d);
@@ -53,8 +55,8 @@ int UIExchangeAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
   if (message == 34) {
     this->saved = reinterpret_cast<NormalItemSlotWindow*>(a);
 
-    if (this->saved->width != 280 || this->saved->height != 120 || this->saved->x < 0 || this->saved->x > owner.screenWidth - 280 || this->saved->y < 0 ||
-        this->saved->y > owner.screenHeight - 120) {
+    if (this->saved->width != 280 || this->saved->height != 120 || this->saved->x < 0 || this->saved->x > g_renderer->viewport.width - 280 || this->saved->y < 0 ||
+        this->saved->y > g_renderer->viewport.height - 120) {
       this->saved->x = 200;
       this->saved->y = 200;
       this->saved->width = 280;
@@ -75,7 +77,7 @@ int UIExchangeAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     text = "C-Code : ";
     text += ShortcutFilename(static_cast<std::uint32_t>(b));
     text += "     ";
-    text += owner.service == 12 ? "Nv." : "Lv.";
+    text += g_serviceType == 12 ? "Nv." : "Lv.";
     text += std::to_string(static_cast<int>(c));
     this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text.c_str()), 138, 0, 0);
 
@@ -105,7 +107,7 @@ int UIExchangeAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
           std::memcpy(text, bytes + offset, size);
           offset += size;
           this->SendMsg(nullptr, 50, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
-          owner.replayExchangeName = text;
+          static_cast<CGameMode*>(g_modeMgr.GetGameMode())->exchangeName = text;
         } else {
           offset += size;
         }

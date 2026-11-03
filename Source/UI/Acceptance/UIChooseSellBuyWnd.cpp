@@ -206,8 +206,8 @@ void UIChatHisBox::Configure(int x, int y, int width, int height, unsigned char)
 
 // OFFSET: 0x008C73C0
 // FUNCTION: fn_11930
-UIChooseSellBuyWnd::UIChooseSellBuyWnd(UIAcceptanceContext& acceptance)
-    : UIFrameWnd(0), identity(0), m_acceptance(&acceptance) {
+UIChooseSellBuyWnd::UIChooseSellBuyWnd()
+    : UIFrameWnd(0), identity(0) {
 }
 
 // OFFSET: 0x008C6FA0
@@ -3578,7 +3578,7 @@ int UIChooseSellBuyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
         offset += 6;
 
         if (kind == 20851) {
-          this->m_acceptance->replayShopState = 1;
+          static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_024C = 1;
           this->SendMsg(nullptr, 28, 0, 0, 0, 0);
           g_windowMgr.CloseWindow(22);
           g_windowMgr.CloseWindow(23);
@@ -6080,14 +6080,14 @@ UIAutoMessageWnd::UIAutoMessageWnd()
 
 // OFFSET: 0x008C6E80
 // FUNCTION: fn_11924
-UIBabyAcceptWnd2::UIBabyAcceptWnd2(UIAcceptanceContext& acceptance)
-    : UIExchangeAcceptWnd(acceptance) {
+UIBabyAcceptWnd2::UIBabyAcceptWnd2()
+    : UIExchangeAcceptWnd() {
 }
 
 // OFFSET: 0x008C6F10
 // FUNCTION: fn_11925
-UIBabyAcceptWnd::UIBabyAcceptWnd(UIAcceptanceContext& acceptance)
-    : UIExchangeAcceptWnd(acceptance) {
+UIBabyAcceptWnd::UIBabyAcceptWnd()
+    : UIExchangeAcceptWnd() {
 }
 
 // OFFSET: 0x008C7630
@@ -6336,20 +6336,20 @@ UISkillNameChangeWnd::UISkillNameChangeWnd()
 
 // OFFSET: 0x008C7710
 // FUNCTION: fn_11937
-UICoupleAcceptWnd::UICoupleAcceptWnd(UIAcceptanceContext& acceptance)
-    : UIExchangeAcceptWnd(acceptance) {
+UICoupleAcceptWnd::UICoupleAcceptWnd()
+    : UIExchangeAcceptWnd() {
 }
 
 // OFFSET: 0x008C8120
 // FUNCTION: fn_11948
-UIJoinFriendAcceptWnd::UIJoinFriendAcceptWnd(UIAcceptanceContext& acceptance)
-    : UIExchangeAcceptWnd(acceptance) {
+UIJoinFriendAcceptWnd::UIJoinFriendAcceptWnd()
+    : UIExchangeAcceptWnd() {
 }
 
 // OFFSET: 0x008C81B0
 // FUNCTION: fn_11949
-UIJoinGuildAcceptWnd::UIJoinGuildAcceptWnd(UIAcceptanceContext& acceptance)
-    : UIExchangeAcceptWnd(acceptance) {
+UIJoinGuildAcceptWnd::UIJoinGuildAcceptWnd()
+    : UIExchangeAcceptWnd() {
 }
 
 // OFFSET: 0x008FE310
@@ -6425,20 +6425,20 @@ int UIJoinGuildAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
 
 // OFFSET: 0x008C8510
 // FUNCTION: fn_11955
-UIMixAcceptWnd::UIMixAcceptWnd(UIAcceptanceContext& acceptance)
-    : UIExchangeAcceptWnd(acceptance) {
+UIMixAcceptWnd::UIMixAcceptWnd()
+    : UIExchangeAcceptWnd() {
 }
 
 // OFFSET: 0x008C9160
 // FUNCTION: fn_11977
-UIStarPlaceAcceptWnd::UIStarPlaceAcceptWnd(UIAcceptanceContext& acceptance)
-    : UIExchangeAcceptWnd(acceptance) {
+UIStarPlaceAcceptWnd::UIStarPlaceAcceptWnd()
+    : UIExchangeAcceptWnd() {
 }
 
 // OFFSET: 0x008C97F0
 // FUNCTION: fn_11985
-UIYourItemWnd::UIYourItemWnd(UIAcceptanceContext& acceptance)
-    : UIExchangeAcceptWnd(acceptance) {
+UIYourItemWnd::UIYourItemWnd()
+    : UIExchangeAcceptWnd() {
 }
 
 // OFFSET: 0x008C8C70

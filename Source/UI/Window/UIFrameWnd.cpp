@@ -608,8 +608,8 @@ int UICntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intpt
 
 // OFFSET: 0x008A34B0
 // FUNCTION: fn_11653
-UIAllyGuildAcceptWnd::UIAllyGuildAcceptWnd(UIAcceptanceContext& acceptance)
-    : UIExchangeAcceptWnd(acceptance) {
+UIAllyGuildAcceptWnd::UIAllyGuildAcceptWnd()
+    : UIExchangeAcceptWnd() {
 }
 
 // OFFSET: 0x008A3510
