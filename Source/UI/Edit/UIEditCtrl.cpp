@@ -7797,7 +7797,7 @@ void UIItemStoreWnd::Slot15(int width, int height) {
   scrollBar->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - 69);
   this->AddChild(this->scrollBar);
 
-  this->searchEdit = new UIBitmapEditCtrl();
+  this->searchEdit = new UIBitmapEditCtrl;
   this->searchEdit->SetSize(122, 18);
   this->searchEdit->SetBitmapName("유저인터페이스\\bg_search.bmp");
   this->searchEdit->Move(65, this->geometry.height - 23);
@@ -7860,8 +7860,9 @@ void UIItemStoreWnd::Slot15(int width, int height) {
   this->sortCombo->AddOption(LookupMessage(3274), 0);
   this->sortCombo->AddOption(LookupMessage(3275), 0);
 
+  const bool sortModes[3] = {g_session.m_itemDefaultSort, g_session.m_itemAscendingOrder, g_session.m_itemDescendingOrder};
   for (int index = 0; index < 3; ++index) {
-    if (g_itemStoreSortMode[index] == true) {
+    if (sortModes[index] == true) {
       this->sortCombo->Select(index);
       this->SendMsg(this->sortCombo, 39, index, 0, 0, 0);
       break;
