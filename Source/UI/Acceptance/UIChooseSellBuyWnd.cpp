@@ -5519,6 +5519,103 @@ void UIChatRoomMakeWnd::Slot15(int width, int height) {
 }
 
 // OFFSET: 0x008F80B0
+// FUNCTION: fn_12330
+int UIChatRoomMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  if (message == 6) {
+    switch (a) {
+    case 184: {
+      if (g_windowMgr.HasTitleAtActorCell(g_session.m_aid)) {
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(661)), 0xFF, 0, 0, 0);
+        break;
+      }
+
+      int error;
+      if (this->m_titleEdit->Length() == 0) {
+        error = 13;
+      } else if (g_forbiddenWords.Contains(this->m_titleEdit->Text())) {
+        error = 14;
+      } else if (g_serviceType == 1 && !ValidateCharacterName(this->m_titleEdit->Text())) {
+        error = 190;
+      } else if (this->m_passwordEdit->Length() < 4 && this->m_public == 1) {
+        error = this->m_passwordEdit->Length() != 0 ? 16 : 15;
+      } else {
+        ChatRoomSetting setting;
+        setting.limit = this->m_limit;
+        setting.unknown_0034 = 0;
+        setting.isPublic = this->m_public != 1;
+        setting.roomId = -1;
+        setting.title = this->m_titleEdit->Text();
+        setting.password = this->m_passwordEdit->Text();
+        g_modeMgr.gameMode->SendMsg(43, reinterpret_cast<int>(&setting), 0, 0, 0);
+        g_windowMgr.CloseWindow(27);
+        break;
+      }
+      g_windowMgr.Confirm(LookupMessage(error), 0, true, false, 0, "Message", 280, 120, 0);
+      break;
+    }
+    case 185:
+    case 201:
+      g_windowMgr.CloseWindow(27);
+      break;
+    case 215:
+      for (int i = 0; i < 2; ++i) {
+        this->m_publicButtons[i]->Invalidate();
+        if (sender == this->m_publicButtons[i]) {
+          this->m_public = i;
+          this->m_publicButtons[i]->SendMsg(this, 13, 1, 0, 0, 0);
+        } else {
+          this->m_publicButtons[i]->SendMsg(this, 13, 0, 0, 0, 0);
+        }
+      }
+      break;
+    case 228:
+    case 229: {
+      if (g_windowMgr.unknown_0214) {
+        g_windowMgr.CloseWindow(26);
+      }
+      UIWindow* list = g_windowMgr.sub_A978D0(26);
+      int count = 1;
+      if (a == 228) {
+        this->m_listKind = 0;
+        count = static_cast<int>(this->m_limitLabels.size());
+        for (unsigned int i = 0; i < this->m_limitLabels.size(); ++i) {
+          list->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(this->m_limitLabels[i].c_str()), 0, 0, 0);
+        }
+      } else if (a == 229) {
+        this->m_listKind = 1;
+        count = static_cast<int>(this->m_typeLabels.size());
+        for (unsigned int i = 0; i < this->m_typeLabels.size(); ++i) {
+          list->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(this->m_typeLabels[i].c_str()), 0, 0, 0);
+        }
+      }
+
+      const int height = count * 16;
+      list->SendMsg(nullptr, 40, 0, 0, 0, 0);
+      list->Resize(74, height > 48 ? 48 : height);
+      list->SendMsg(nullptr, 83, 27, 0, 0, 0);
+      int x = this->m_listKind * 137 + 44;
+      int y = 64;
+      this->ToScreen(x, y);
+      list->Move(x + 1, y);
+      break;
+    }
+    }
+    return 0;
+  }
+
+  if (message != 39) {
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
+
+  if (this->m_listKind == 0) {
+    this->m_limitText->SetText(this->m_limitLabels[a].c_str(), 0);
+    this->m_limit = this->m_limits[a];
+  } else if (this->m_listKind == 1) {
+    this->m_typeText->SetText(this->m_typeLabels[a].c_str(), 0);
+    this->m_type = this->m_types[a];
+  }
+  return 0;
+}
 
 // OFFSET: 0x008F7B10
 // FUNCTION: fn_12329
