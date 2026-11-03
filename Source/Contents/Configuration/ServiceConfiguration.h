@@ -8,6 +8,7 @@ extern signed char g_language;
 extern bool g_serviceFlag05;
 extern bool g_serviceFlag06;
 extern int g_serviceType;
+extern char g_homepageUrl[256];
 
 int SetServiceFlags(int first, int second);
 extern int g_serviceMode;

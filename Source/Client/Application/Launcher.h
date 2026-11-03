@@ -23,6 +23,7 @@ extern bool g_launchPassCommandLine;
 extern bool g_windowDragging;
 extern RECT g_windowDragRect;
 extern POINT g_windowDragStart;
+extern RECT Rect;
 
 __declspec(noinline) HANDLE StartClientProcess(char* program);
 
