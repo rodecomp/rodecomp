@@ -182,7 +182,6 @@ extern CharacterInfo g_charInfo;
 extern bool g_replayMode;
 extern int g_restoreSurfaces;
 extern int g_isAppActive;
-extern std::int32_t g_passwordWndAccountId;
 
 int GetClientType();
 std::string GetMacAddress();

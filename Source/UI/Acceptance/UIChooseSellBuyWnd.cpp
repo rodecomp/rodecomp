@@ -10619,7 +10619,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
         std::atoi(this->unknown_00D0);
         SecondPasswordPacket packet;
         packet.packetType = 0x8B8;
-        packet.accountId = g_passwordWndAccountId;
+        packet.accountId = g_session.m_passwordWndAccountId;
         std::memcpy(packet.password, this->unknown_00D0, sizeof(packet.password));
         GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
         this->sub_90C380();
@@ -10690,7 +10690,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
             std::atoi(this->unknown_00E2);
             SecondPasswordChangePacket packet;
             packet.packetType = 0x8BE;
-            packet.accountId = g_passwordWndAccountId;
+            packet.accountId = g_session.m_passwordWndAccountId;
             std::memcpy(packet.password, this->unknown_00D0, sizeof(packet.password));
             std::memcpy(packet.newPassword, this->unknown_00E2, sizeof(packet.newPassword));
             GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
@@ -10993,7 +10993,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
         std::atoi(this->unknown_00D0);
         SecondPasswordPacket packet;
         packet.packetType = 0x8C3;
-        packet.accountId = g_passwordWndAccountId;
+        packet.accountId = g_session.m_passwordWndAccountId;
         std::memcpy(packet.password, this->unknown_00D0, sizeof(packet.password));
         GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
         this->sub_90C380();
@@ -11027,7 +11027,7 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         std::atoi(this->unknown_00D0);
         SecondPasswordPacket packet;
         packet.packetType = 0x8BC;
-        packet.accountId = g_passwordWndAccountId;
+        packet.accountId = g_session.m_passwordWndAccountId;
         std::memcpy(packet.password, this->unknown_00D0, sizeof(packet.password));
         GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
         this->sub_90C380();
@@ -11093,7 +11093,7 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
           std::atoi(this->unknown_00E2);
           SecondPasswordPacket packet;
           packet.packetType = 0x8BA;
-          packet.accountId = g_passwordWndAccountId;
+          packet.accountId = g_session.m_passwordWndAccountId;
           std::memcpy(packet.password, this->unknown_00E2, sizeof(packet.password));
           GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
           this->sub_90C380();
@@ -11385,7 +11385,7 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         std::atoi(this->unknown_00D0);
         SecondPasswordPacket packet;
         packet.packetType = 0x8C3;
-        packet.accountId = g_passwordWndAccountId;
+        packet.accountId = g_session.m_passwordWndAccountId;
         std::memcpy(packet.password, this->unknown_00D0, sizeof(packet.password));
         GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
         this->sub_90C380();

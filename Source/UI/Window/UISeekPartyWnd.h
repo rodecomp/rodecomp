@@ -9,7 +9,6 @@ class UIBitmapButton;
 class UIStaticText;
 struct SeekPartyWndInfo;
 
-extern int g_partyBookingLevelLimit;
 extern int g_partyBookingLevelMax;
 
 class UISeekPartyWnd : public UIFrameWnd {

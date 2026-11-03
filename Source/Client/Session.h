@@ -469,7 +469,11 @@ public:
   /* 56B8 */ unsigned char unknown_56B8[0x1C];
   /* 56D4 */ int m_storePasswordMode;
   /* 56D8 */ bool m_passwordInputAlternate;
-  /* 56D9 */ unsigned char unknown_56D9[0x14];
+  /* 56D9 */ unsigned char unknown_56D9[0x7];
+  /* 56E0 */ int m_passwordWndMode;
+  /* 56E4 */ std::uint32_t m_loginAccountId;
+  /* 56E8 */ std::int32_t m_passwordWndAccountId;
+  /* 56EC */ unsigned char unknown_56EC;
   /* 56ED */ char m_loginErrorText[500];
   /* 58E1 */ unsigned char unknown_58E1[0x19];
   /* 58FA */ char unknown_58FA[0x18];
@@ -504,7 +508,7 @@ public:
     };
   };
   /* 5B78 */ PartyBookingMgr m_partyBooking;
-  /* 5BBC */ unsigned char unknown_5BBC[0x04];
+  /* 5BBC */ int m_partyBookingLevelLimit;
   /* 5BC0 */ int unknown_5BC0;
   /* 5BC4 */ int unknown_5BC4;
   /* 5BC8 */ int unknown_5BC8;
@@ -1364,6 +1368,10 @@ static_assert(offsetof(CSession, unknown_6B68) == 0x6B68);
 static_assert(offsetof(CSession, m_showRankingSchedule) == 0x7F90);
 static_assert(offsetof(CSession, unknown_7F94) == 0x7F94);
 static_assert(offsetof(CSession, unknown_8148) == 0x8148);
+static_assert(offsetof(CSession, m_passwordWndMode) == 0x56E0);
+static_assert(offsetof(CSession, m_loginAccountId) == 0x56E4);
+static_assert(offsetof(CSession, m_passwordWndAccountId) == 0x56E8);
+static_assert(offsetof(CSession, m_partyBookingLevelLimit) == 0x5BBC);
 #endif
 
 

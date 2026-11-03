@@ -11,8 +11,6 @@
 #include <string>
 #include <utility>
 
-// GLOBAL: gl_25105
-int g_partyBookingLevelLimit;
 
 // GLOBAL: gl_24978
 int g_partyBookingLevelMax;
@@ -37,8 +35,8 @@ UISeekPartyWnd::UISeekPartyWnd() : UIFrameWnd(0) {
 // FUNCTION: fn_12651
 void UISeekPartyWnd::Slot15(int, int) {
   char text[0x80] = {};
-  const int maximum = g_partyBookingLevelLimit + 0xF <= g_partyBookingLevelMax ? g_partyBookingLevelLimit + 0xF : g_partyBookingLevelMax;
-  std::sprintf(text, "%s - %d~%d", LookupMessage(0x6DA), g_partyBookingLevelLimit, maximum);
+  const int maximum = g_session.m_partyBookingLevelLimit + 0xF <= g_partyBookingLevelMax ? g_session.m_partyBookingLevelLimit + 0xF : g_partyBookingLevelMax;
+  std::sprintf(text, "%s - %d~%d", LookupMessage(0x6DA), g_session.m_partyBookingLevelLimit, maximum);
 
   this->m_label = new UIStaticText();
   this->m_label->SetSize(this->geometry.width - 0x20, 0xF);

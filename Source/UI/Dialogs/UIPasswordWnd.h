@@ -84,6 +84,5 @@ static_assert(offsetof(UISecondPasswordInputWnd, unknown_0164) == 0x164);
 static_assert(sizeof(UISecondPasswordInputWnd) == 0x168);
 #endif
 
-extern int g_passwordWndMode;
 
 #endif

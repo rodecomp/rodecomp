@@ -1,5 +1,6 @@
 #include "UI/Dialogs/UIPasswordWnd.h"
 
+#include "Client/Session.h"
 #include "Contents/MessageTable.h"
 #include "Security/SecondPwdRandom.h"
 #include "UI/Buttons/UIBitmapButton.h"
@@ -9,8 +10,6 @@
 #include <algorithm>
 #include <string>
 
-// GLOBAL: gl_25104
-int g_passwordWndMode;
 
 // OFFSET: 0x008C89F0
 // FUNCTION: fn_11965
@@ -101,10 +100,10 @@ void UISecondPasswordInputWnd::CreateKeypad(unsigned int seed) {
   this->AddChild(reset);
 
   this->unknown_0150[0]->Enable(0);
-  if (g_passwordWndMode == 2) {
+  if (g_session.m_passwordWndMode == 2) {
     this->unknown_0150[0]->Enable(1);
     this->unknown_0150[3]->Enable(0);
-  } else if (g_passwordWndMode == 4 || g_passwordWndMode == 5) {
+  } else if (g_session.m_passwordWndMode == 4 || g_session.m_passwordWndMode == 5) {
     UIButton* button = this->unknown_0150[1];
     button->SetDisabled(1);
     button->Invalidate();
@@ -146,7 +145,7 @@ void UISecondPasswordInputWnd::sub_90DE10() {
     ++slot;
   }
 
-  if (g_passwordWndMode == 4 || g_passwordWndMode == 5) {
+  if (g_session.m_passwordWndMode == 4 || g_session.m_passwordWndMode == 5) {
     UIButton* button = this->unknown_0150[1];
     button->SetDisabled(1);
     button->Invalidate();

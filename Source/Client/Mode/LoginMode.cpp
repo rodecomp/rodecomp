@@ -1643,41 +1643,37 @@ struct PasswordModePacket {
 };
 #pragma pack(pop)
 
-// GLOBAL: gl_25133
-std::uint32_t g_loginAccountId;
 
-// GLOBAL: gl_25134
-std::int32_t g_passwordWndAccountId;
 
 // OFFSET: 0x00D90C90
 // FUNCTION: fn_22286
 void CLoginMode::SubD90C90(const PasswordModePacket* packet) {
-  g_loginAccountId = packet->accountId;
+  g_session.m_loginAccountId = packet->accountId;
   switch (packet->mode) {
   case 0:
     g_windowMgr.CloseWindow(199);
-    g_passwordWndMode = 0;
+    g_session.m_passwordWndMode = 0;
     this->pendingCursorType = 7;
     break;
   case 1:
-    g_passwordWndAccountId = packet->value;
-    g_passwordWndMode = 2;
+    g_session.m_passwordWndAccountId = packet->value;
+    g_session.m_passwordWndMode = 2;
     this->passwordRetryCount = 0;
     this->pendingCursorType = 7;
     break;
   case 2:
-    g_passwordWndAccountId = packet->value;
-    g_passwordWndMode = 4;
+    g_session.m_passwordWndAccountId = packet->value;
+    g_session.m_passwordWndMode = 4;
     this->pendingCursorType = 7;
     break;
   case 3:
-    g_passwordWndAccountId = packet->value;
-    g_passwordWndMode = 3;
+    g_session.m_passwordWndAccountId = packet->value;
+    g_session.m_passwordWndMode = 3;
     this->pendingCursorType = 7;
     break;
   case 4:
-    g_passwordWndAccountId = packet->value;
-    g_passwordWndMode = 5;
+    g_session.m_passwordWndAccountId = packet->value;
+    g_session.m_passwordWndMode = 5;
     this->pendingCursorType = 7;
     break;
   case 5:
@@ -1691,7 +1687,7 @@ void CLoginMode::SubD90C90(const PasswordModePacket* packet) {
     g_windowMgr.Confirm(LookupMessage(0x769), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 7:
-    g_passwordWndMode = 1;
+    g_session.m_passwordWndMode = 1;
     this->pendingCursorType = 7;
     break;
   case 8:
@@ -1735,32 +1731,32 @@ void CLoginMode::SubD90C90(const PasswordModePacket* packet) {
 // OFFSET: 0x00D911C0
 // FUNCTION: fn_22287
 void CLoginMode::SubD911C0(const PasswordModePacket* packet) {
-  g_loginAccountId = packet->accountId;
+  g_session.m_loginAccountId = packet->accountId;
   switch (packet->mode) {
   case 0:
     g_windowMgr.CloseWindow(199);
-    g_passwordWndMode = 0;
+    g_session.m_passwordWndMode = 0;
     this->pendingCursorType = 7;
     break;
   case 1:
-    g_passwordWndAccountId = packet->value;
-    g_passwordWndMode = 2;
+    g_session.m_passwordWndAccountId = packet->value;
+    g_session.m_passwordWndMode = 2;
     this->passwordRetryCount = 0;
     this->pendingCursorType = 7;
     break;
   case 2:
-    g_passwordWndAccountId = packet->value;
-    g_passwordWndMode = 4;
+    g_session.m_passwordWndAccountId = packet->value;
+    g_session.m_passwordWndMode = 4;
     this->pendingCursorType = 7;
     break;
   case 3:
-    g_passwordWndAccountId = packet->value;
-    g_passwordWndMode = 3;
+    g_session.m_passwordWndAccountId = packet->value;
+    g_session.m_passwordWndMode = 3;
     this->pendingCursorType = 7;
     break;
   case 4:
-    g_passwordWndAccountId = packet->value;
-    g_passwordWndMode = 5;
+    g_session.m_passwordWndAccountId = packet->value;
+    g_session.m_passwordWndMode = 5;
     this->pendingCursorType = 7;
     break;
   case 5:
@@ -1774,7 +1770,7 @@ void CLoginMode::SubD911C0(const PasswordModePacket* packet) {
     g_windowMgr.Confirm(LookupMessage(0x769), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 7:
-    g_passwordWndMode = 1;
+    g_session.m_passwordWndMode = 1;
     this->pendingCursorType = 7;
     break;
   case 8: {
@@ -2723,7 +2719,7 @@ void CLoginMode::PollNetworkStatus() {
       break;
     case 0x8BB: {
       const SecondPasswordResultPacket* packet = reinterpret_cast<const SecondPasswordResultPacket*>(g_gameModePacketBuffer);
-      g_loginAccountId = packet->accountId;
+      g_session.m_loginAccountId = packet->accountId;
       switch (packet->result) {
       case 0:
         g_windowMgr.CloseWindow(200);
@@ -2754,7 +2750,7 @@ void CLoginMode::PollNetworkStatus() {
     }
     case 0x8BD: {
       const SecondPasswordResultPacket* packet = reinterpret_cast<const SecondPasswordResultPacket*>(g_gameModePacketBuffer);
-      g_loginAccountId = packet->accountId;
+      g_session.m_loginAccountId = packet->accountId;
       switch (packet->result) {
       case 0:
         g_windowMgr.CloseWindow(200);
@@ -2770,7 +2766,7 @@ void CLoginMode::PollNetworkStatus() {
     }
     case 0x8BF: {
       const SecondPasswordResultPacket* packet = reinterpret_cast<const SecondPasswordResultPacket*>(g_gameModePacketBuffer);
-      g_loginAccountId = packet->accountId;
+      g_session.m_loginAccountId = packet->accountId;
       switch (packet->result) {
       case 0:
         g_windowMgr.CloseWindow(199);
@@ -2796,13 +2792,13 @@ void CLoginMode::PollNetworkStatus() {
     }
     case 0x8C4: {
       const SecondPasswordResultPacket* packet = reinterpret_cast<const SecondPasswordResultPacket*>(g_gameModePacketBuffer);
-      g_loginAccountId = packet->accountId;
+      g_session.m_loginAccountId = packet->accountId;
       switch (packet->result) {
       case 0:
         g_windowMgr.CloseWindow(199);
         g_windowMgr.Confirm(LookupMessage(0x76D), 0, true, false, 0, "Message", 280, 120, 0);
         static_cast<UINewSelectCharWnd*>(g_windowMgr.window_03D4)->EnableButtonById(0x1A2);
-        g_passwordWndMode = 1;
+        g_session.m_passwordWndMode = 1;
         break;
       case 1:
         g_windowMgr.CloseWindow(199);

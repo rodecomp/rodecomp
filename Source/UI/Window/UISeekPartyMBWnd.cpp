@@ -76,7 +76,7 @@ int UISeekPartyMBWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       }
 
       this->m_registration.detail.level = static_cast<short>(std::atoi(this->m_levelEdit->Text()));
-      g_partyBookingLevelLimit = this->m_registration.detail.level;
+      g_session.m_partyBookingLevelLimit = this->m_registration.detail.level;
       const int maximum = g_partyBookingLevelMax;
       if (this->m_registration.detail.level >= 1 && this->m_registration.detail.level <= maximum) {
         this->m_registration.detail.mapId = static_cast<short>((this->m_type + 1) * 256 | this->m_subType);
