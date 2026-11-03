@@ -35,9 +35,6 @@ bool g_navigationMinimized;
 // GLOBAL: gl_24610
 int g_navigationMode;
 
-// GLOBAL: gl_24769
-UIWindow* g_navigationWindow;
-
 // GLOBAL: gl_24608
 bool g_navigationHidden;
 
@@ -765,7 +762,7 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         return 0;
       }
       g_windowMgr.Schedule(this);
-      g_navigationWindow = nullptr;
+      g_windowMgr.window_4F174 = nullptr;
       return 0;
     case 0xCA:
       g_navigationMinimized = !g_navigationMinimized;

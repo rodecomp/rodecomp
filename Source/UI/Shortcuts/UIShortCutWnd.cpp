@@ -654,9 +654,9 @@ void UIRoMapWnd::Slot31(int x, int y) {
 
       g_navigationMinimized = false;
       g_navigationManager.sub_B995D0(name, 0, false);
-      if (g_navigationWindow) {
-        static_cast<UINavigationV4Wnd*>(g_navigationWindow)->SelectRoute(0);
-        static_cast<UINavigationV4Wnd*>(g_navigationWindow)->SelectRouteNode(0);
+      if (g_windowMgr.window_4F174) {
+        static_cast<UINavigationV4Wnd*>(g_windowMgr.window_4F174)->SelectRoute(0);
+        static_cast<UINavigationV4Wnd*>(g_windowMgr.window_4F174)->SelectRouteNode(0);
       }
       this->UpdateNavigationButtons();
     }

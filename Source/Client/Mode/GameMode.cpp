@@ -2245,8 +2245,8 @@ void CGameMode::ProcessUiMessage(unsigned char* message) {
     break;
   }
   case 908:
-    if (values->values[0] == 0xCB && g_navigationWindow != nullptr) {
-      g_navigationWindow->SendMsg(nullptr, values->values[1], values->values[2], reinterpret_cast<std::intptr_t>(&values->values[3]), 0, 0);
+    if (values->values[0] == 0xCB && g_windowMgr.window_4F174 != nullptr) {
+      g_windowMgr.window_4F174->SendMsg(nullptr, values->values[1], values->values[2], reinterpret_cast<std::intptr_t>(&values->values[3]), 0, 0);
     }
     break;
   case 909:
@@ -2264,8 +2264,8 @@ void CGameMode::ProcessUiMessage(unsigned char* message) {
     std::memcpy(&states[0], values->values, states.size());
     g_windowMgr.CloseWindow(0x1A);
     g_navigationManager.LoadStates(states);
-    if (g_navigationWindow != nullptr) {
-      static_cast<UINavigationV4Wnd*>(g_navigationWindow)->FillRouteGroups();
+    if (g_windowMgr.window_4F174 != nullptr) {
+      static_cast<UINavigationV4Wnd*>(g_windowMgr.window_4F174)->FillRouteGroups();
     }
     break;
   }

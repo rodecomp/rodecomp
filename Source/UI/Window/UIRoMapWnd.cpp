@@ -81,7 +81,7 @@ void UIRoMapWnd::ResetKafraBounds() {
 // FUNCTION: fn_12634
 void UIRoMapWnd::UpdateNavigationButtons() {
   UIWindow** buttons = reinterpret_cast<UIWindow**>(reinterpret_cast<unsigned char*>(this) + 0x20C);
-  if (g_navigationWindow != nullptr && !g_navigationMinimized) {
+  if (g_windowMgr.window_4F174 != nullptr && !g_navigationMinimized) {
     buttons[0]->Move(-100, -100);
     buttons[1]->Move(-100, -100);
     buttons[2]->Move(-100, -100);
@@ -763,8 +763,8 @@ int UIRoMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
       return 0;
     case 200:
       g_windowMgr.EnsureWindow(203);
-      if (g_navigationWindow) {
-        g_navigationWindow->SendMsg(nullptr, 6, 200, 0, 0, 0);
+      if (g_windowMgr.window_4F174) {
+        g_windowMgr.window_4F174->SendMsg(nullptr, 6, 200, 0, 0, 0);
       }
       this->UpdateNavigationButtons();
       return 0;
@@ -796,8 +796,8 @@ int UIRoMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
       g_navigationMinimized = false;
       g_navigationManager.sub_B995D0(name, 0, false);
       if (g_windowMgr.LookupWindow(203)) {
-        static_cast<UINavigationV4Wnd*>(g_navigationWindow)->SelectRoute(0);
-        static_cast<UINavigationV4Wnd*>(g_navigationWindow)->SelectRouteNode(0);
+        static_cast<UINavigationV4Wnd*>(g_windowMgr.window_4F174)->SelectRoute(0);
+        static_cast<UINavigationV4Wnd*>(g_windowMgr.window_4F174)->SelectRouteNode(0);
       }
       this->UpdateNavigationButtons();
       }

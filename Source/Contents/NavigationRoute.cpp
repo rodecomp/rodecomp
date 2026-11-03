@@ -720,16 +720,16 @@ bool CNavigationManager::sub_B995D0(std::string name, int type, bool flag) {
   g_navigationManager.UpdateSearchResults();
 
   if (!this->unknown_1248) {
-    if (g_navigationWindow == nullptr) {
+    if (g_windowMgr.window_4F174 == nullptr) {
       g_windowMgr.EnsureWindow(203);
     } else {
-      g_navigationWindow->SendMsg(nullptr, 6, 200, 0, 0, 0);
+      g_windowMgr.window_4F174->SendMsg(nullptr, 6, 200, 0, 0, 0);
       if (g_windowMgr.modal != nullptr) {
         static_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapLevels();
       }
     }
 
-    g_windowMgr.Promote(g_navigationWindow);
+    g_windowMgr.Promote(g_windowMgr.window_4F174);
   }
 
   return true;
@@ -1687,8 +1687,8 @@ void CNavigationManager::CancelRoute() {
   this->unknown_125C = 0;
   if (!this->unknown_1248) {
     this->unknown_1258 = 1;
-    if (g_navigationWindow != nullptr) {
-      static_cast<UINavigationV4Wnd*>(g_navigationWindow)->RefreshLayout();
+    if (g_windowMgr.window_4F174 != nullptr) {
+      static_cast<UINavigationV4Wnd*>(g_windowMgr.window_4F174)->RefreshLayout();
     }
   }
   g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2309)), 0x62B0FF, 0, 0, 0);

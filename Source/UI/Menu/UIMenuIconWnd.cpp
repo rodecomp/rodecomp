@@ -407,8 +407,8 @@ int UIMenuIconWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
         this->ToggleWindow(140);
         break;
       case 430:
-        if (g_navigationWindow) {
-          g_navigationWindow->SendMsg(nullptr, 6, 201, 0, 0, 0);
+        if (g_windowMgr.window_4F174) {
+          g_windowMgr.window_4F174->SendMsg(nullptr, 6, 201, 0, 0, 0);
         } else {
           g_windowMgr.EnsureWindow(203);
         }

@@ -963,8 +963,8 @@ void CNavigationManager::ResetCurrentTarget() {
 // FUNCTION: fn_19570
 void CNavigationManager::CheckArrival(int cellX, int cellY) {
   if (this->unknown_1258 == 2) {
-    if (g_navigationWindow != nullptr) {
-      g_navigationWindow->Invalidate();
+    if (g_windowMgr.window_4F174 != nullptr) {
+      g_windowMgr.window_4F174->Invalidate();
     }
     if (this->unknown_115C) {
       NaviCell cell;
