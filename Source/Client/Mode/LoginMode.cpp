@@ -1134,7 +1134,7 @@ void CLoginMode::Update() {
     this->ExpireTooltip();
   }
 
-  reinterpret_cast<CTimeScheduler*>(g_timeScheduler)->Process();
+  g_timeScheduler->Process();
   g_asyncWorkMgr->Update(1000);
   g_ggHashMgr->VerifyPendingFiles();
   if (g_launchPassCommandLine) {
@@ -2853,7 +2853,7 @@ void CLoginMode::PollNetworkStatus() {
       const std::int64_t interval = 3600000;
       CPartialShutDownSchedule* schedule = new CPartialShutDownSchedule(timestamp, interval, 1);
       schedule->SetPeriod(endTime, startTime);
-      reinterpret_cast<CTimeScheduler*>(g_timeScheduler)->AddSchedule(schedule);
+      g_timeScheduler->AddSchedule(schedule);
       break;
     }
     case 0x9A0:

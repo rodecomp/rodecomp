@@ -164,7 +164,7 @@ void CShowRankingScheduler::Show() {
 // OFFSET: 0x00E493E0
 // FUNCTION: fn_24235
 void CSession::SetShowRankingSchedule(bool show, const void* data) {
-  CSchedule* existing = reinterpret_cast<CTimeScheduler*>(g_timeScheduler)->FindSchedule(this->m_showRankingSchedule);
+  CSchedule* existing = g_timeScheduler->FindSchedule(this->m_showRankingSchedule);
   if (show == true) {
     if (existing == nullptr) {
       std::uint64_t now = _Xtime_get_ticks();
@@ -180,7 +180,7 @@ void CSession::SetShowRankingSchedule(bool show, const void* data) {
         CSchedule* schedule = reinterpret_cast<CSchedule*>(ranking);
         schedule->Process(now);
         this->m_showRankingSchedule = schedule->serial;
-        reinterpret_cast<CTimeScheduler*>(g_timeScheduler)->AddSchedule(schedule);
+        g_timeScheduler->AddSchedule(schedule);
       }
     }
   } else if (existing != nullptr) {

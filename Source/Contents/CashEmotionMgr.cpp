@@ -2391,7 +2391,7 @@ int UICashEmotionListWnd::SetPeriod(int packId) {
 // OFFSET: 0x007C80C0
 // FUNCTION: fn_09416
 void UICashEmotionListWnd::RestartExpirySchedule() {
-  CTimeScheduler* scheduler = reinterpret_cast<CTimeScheduler*>(g_timeScheduler);
+  CTimeScheduler* scheduler = g_timeScheduler;
   scheduler->sub_BA95F0(7);
   if (g_cashEmotionMgr->m_expiry.size() != 0) {
     const std::uint64_t now = _Xtime_get_ticks();
@@ -2631,7 +2631,7 @@ void UICashEmotionListWnd::StartExpirySchedule() {
   if (g_cashEmotionMgr->m_expiry.size() != 0) {
     const std::uint64_t now = _Xtime_get_ticks();
     const std::int64_t interval = 30000;
-    reinterpret_cast<CTimeScheduler*>(g_timeScheduler)->AddSchedule(new CEmotionPurchaseUseableTimeUISchedule(now, interval, 1));
+    g_timeScheduler->AddSchedule(new CEmotionPurchaseUseableTimeUISchedule(now, interval, 1));
   }
 }
 

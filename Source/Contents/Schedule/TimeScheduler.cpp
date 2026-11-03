@@ -1,9 +1,11 @@
 #include "Contents/Schedule/TimeScheduler.h"
-#include "Contents/Schedule/CheckGDISchedule.h"
 
 #include <new>
 
 extern "C" long long _Xtime_get_ticks();
+
+// GLOBAL: gl_24852
+CTimeScheduler* g_timeScheduler;
 
 // INLINED
 CTimeScheduler::CTimeScheduler() {
@@ -36,7 +38,7 @@ bool CTimeScheduler::Create() {
   }
 
   CTimeScheduler* scheduler = new (std::nothrow) CTimeScheduler();
-  g_timeScheduler = reinterpret_cast<char*>(scheduler);
+  g_timeScheduler = scheduler;
   if (scheduler != nullptr) {
     if (scheduler->m_initialized) {
       return true;
@@ -51,7 +53,7 @@ bool CTimeScheduler::Create() {
 // FUNCTION: fn_19735
 void CTimeScheduler::Destroy() {
   if (g_timeScheduler != nullptr) {
-    delete reinterpret_cast<CTimeScheduler*>(g_timeScheduler);
+    delete g_timeScheduler;
     g_timeScheduler = nullptr;
   }
 }

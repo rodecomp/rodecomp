@@ -2696,11 +2696,11 @@ void CGameMode::UpdateBalloons() {
 // OFFSET: 0x00CDD7A0
 // FUNCTION: fn_21319
 void CGameMode::End() {
-  CSchedule* schedule = reinterpret_cast<CTimeScheduler*>(g_timeScheduler)->FindSchedule(g_session.m_pingLiveSchedule);
+  CSchedule* schedule = g_timeScheduler->FindSchedule(g_session.m_pingLiveSchedule);
   if (schedule) {
     schedule->active = false;
   }
-  reinterpret_cast<CTimeScheduler*>(g_timeScheduler)->sub_BA95F0(4);
+  g_timeScheduler->sub_BA95F0(4);
   this->StopReplayRecording();
   g_soundMgr->EndSamples();
 

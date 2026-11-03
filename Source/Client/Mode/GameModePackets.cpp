@@ -7196,7 +7196,7 @@ void CGameMode::ReceiveUiOpen(unsigned char type, std::uint64_t data) {
 // OFFSET: 0x00D17AD0
 // FUNCTION: fn_21596
 void CGameMode::RefreshEmotionPurchaseSchedule() {
-  reinterpret_cast<CTimeScheduler*>(g_timeScheduler)->sub_BA95F0(5);
+  g_timeScheduler->sub_BA95F0(5);
   CCashEmotionMgr* manager = g_cashEmotionMgr;
   if (!manager) {
     return;
@@ -7208,7 +7208,7 @@ void CGameMode::RefreshEmotionPurchaseSchedule() {
     const std::uint64_t now = static_cast<std::int64_t>(manager->sub_59FC50()) * 10000000;
     const std::int64_t interval = (static_cast<std::int64_t>(expiry) * 10000000 - static_cast<std::int64_t>(now)) / 10000;
     if (interval != 0 && interval >= 0) {
-      reinterpret_cast<CTimeScheduler*>(g_timeScheduler)->AddSchedule(new CEmotionPurchaseExpireSchedule(now, interval, 1));
+      g_timeScheduler->AddSchedule(new CEmotionPurchaseExpireSchedule(now, interval, 1));
     }
   }
   manager->RefreshCommands();
@@ -7428,7 +7428,7 @@ void CGameMode::ReceiveGuildPositionInfo(const unsigned char* packet) {
 }
 // FUNCTION: fn_21597
 void CGameMode::RefreshEmotionSaleSchedule() {
-  reinterpret_cast<CTimeScheduler*>(g_timeScheduler)->sub_BA95F0(6);
+  g_timeScheduler->sub_BA95F0(6);
   CCashEmotionMgr* manager = g_cashEmotionMgr;
   if (!manager) {
     return;
@@ -7439,7 +7439,7 @@ void CGameMode::RefreshEmotionSaleSchedule() {
     const std::uint64_t now = static_cast<std::int64_t>(manager->sub_59FC50()) * 10000000;
     const std::int64_t interval = (static_cast<std::int64_t>(expiry) * 10000000 - static_cast<std::int64_t>(now)) / 10000;
     if (interval != 0 && interval >= 0) {
-      reinterpret_cast<CTimeScheduler*>(g_timeScheduler)->AddSchedule(new CEmotionSaleExpireSchedule(now, interval, 1));
+      g_timeScheduler->AddSchedule(new CEmotionSaleExpireSchedule(now, interval, 1));
     }
   }
   manager->RefreshCommands();

@@ -1,4 +1,5 @@
 #include "Contents/Schedule/CheckGDISchedule.h"
+#include "Contents/Schedule/TimeScheduler.h"
 
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
@@ -10,9 +11,6 @@
 
 #include <cstdlib>
 #include <windows.h>
-
-// GLOBAL: gl_24852
-char* g_timeScheduler;
 
 // OFFSET: 0x00BA7FE0
 // FUNCTION: fn_19716
@@ -49,7 +47,7 @@ perform_check:
     return;
   }
 
-  g_timeScheduler[13] = 1;
+  g_timeScheduler->m_unknown_000D = true;
 
   if (roll == 2) {
     g_windowMgr.Confirm(LookupMessage(857), 0, true, false, 0, "Message", 280, 120, 0);

@@ -2532,7 +2532,7 @@ void CGameMode::ReceiveCaptchaUploadRequest(const std::uint32_t* sessionId, int 
     if (window) {
       std::uint64_t now = _Xtime_get_ticks();
       CCaptchaUploadSchedule* schedule = new CCaptchaUploadSchedule(now, sessionId, window->m_decompressedSize, window->m_decompressedData);
-      reinterpret_cast<CTimeScheduler*>(g_timeScheduler)->AddSchedule(schedule);
+      g_timeScheduler->AddSchedule(schedule);
       return;
     }
     message = 2881;

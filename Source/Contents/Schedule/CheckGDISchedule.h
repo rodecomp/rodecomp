@@ -3,8 +3,6 @@
 
 #include "Contents/Schedule/Schedule.h"
 
-extern char* g_timeScheduler;
-
 class CCheckGDISchedule : public CSchedule {
 public:
   CCheckGDISchedule(const std::uint64_t& timestamp, const std::int64_t& interval, int scheduleType);

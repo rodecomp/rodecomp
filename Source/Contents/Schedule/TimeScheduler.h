@@ -34,4 +34,6 @@ static_assert(offsetof(CTimeScheduler, m_initialized) == 0x0C);
 static_assert(offsetof(CTimeScheduler, m_unknown_000D) == 0x0D);
 #endif
 
+extern CTimeScheduler* g_timeScheduler;
+
 #endif
