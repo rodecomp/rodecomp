@@ -1290,6 +1290,7 @@ int UIMerchantItemMyShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     CMode* mode = g_modeMgr.gameMode;
     this->RecordResponse(static_cast<int>(a), b, c, d);
     if (a == 201) {
+      mode = g_modeMgr.gameMode;
       int windowId;
       if (this->unknown_0100 != 0) {
         if (this->shopOpen == 1) {
@@ -1316,7 +1317,7 @@ int UIMerchantItemMyShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       }
 
       {
-        UIWindow* window = g_windowMgr.EnsureWindow(windowId);
+        UIWindow* window = g_windowMgr.sub_A978D0(windowId);
         if (window) {
           window->Show(1);
           window->Move(this->geometry.x, this->geometry.y);
@@ -1332,7 +1333,7 @@ int UIMerchantItemMyShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     }
 
     if (a == 213) {
-      g_vendingSaleAlarm = !g_vendingSaleAlarm;
+      g_session.m_muteSellSound = !g_session.m_muteSellSound;
       return 0;
     }
 
@@ -1413,14 +1414,14 @@ int UIMerchantItemMyShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_
   case 36: {
     char text[40];
     std::sprintf(text, "%s : %s", LookupMessage(this->unknown_0100 != 0 ? 1734 : 226), g_session.unknown_550C.c_str());
-    this->title->SetTextAutoWidth(text);
+    this->title->SetTextFitted(text);
     return 0;
   }
   case 119: {
     char grouped[80];
     char text[80];
     std::sprintf(text, LookupMessage(1735), FormatGroupedInteger(static_cast<int>(a), grouped, 80));
-    this->notice->SetTextFitted(text);
+    this->notice->SetTextAutoWidth(text);
     this->notice->Move(12, this->geometry.height - 26);
     this->unknown_00F0 = static_cast<int>(a);
     return 0;
