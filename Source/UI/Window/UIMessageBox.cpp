@@ -3228,23 +3228,25 @@ EncryptedName<80, 0xF3CB6F7711A71B6DULL>& HangameJoinUrl::operator()() const {
 }
 
 // OFFSET: 0x008BE490
+// FUNCTION: fn_11805
 int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
   case 6:
     switch (a) {
     case 185:
-      static_cast<CMode*>(g_charViewMode)->SendMsg(10018, 0, 0, 0, 0);
+      *reinterpret_cast<std::uint8_t*>(0x03DE9AB0) = 1;
+      g_modeMgr.gameMode->SendMsg(10018, 0, 0, 0, 0);
       break;
     case 186: {
       const std::uint8_t soundSource[] = {0xDC, 0xA3, 0x0F, 0xCF, 0xB1, 0x3D, 0x97, 0xEB, 0x4B, 0x22, 0xA8, 0x09, 0x0D};
       thread_local EncryptedName<sizeof(soundSource), 0x452FEF0D7FC95565ULL> soundName(soundSource);
       g_soundMgr->PlayWave(soundName.Text(), 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       if (this->passwordEdit->Length() >= 6 && this->idEdit->Length() >= 4) {
-        static_cast<CMode*>(g_charViewMode)->SendMsg(10000, 0, 0, 0, 0);
+        g_modeMgr.gameMode->SendMsg(10000, 0, 0, 0, 0);
         StringFormat(g_launchAccountPassword, 24, static_cast<std::size_t>(-1), "%s", this->idEdit->Text());
-        static_cast<CMode*>(g_charViewMode)->SendMsg(10007, reinterpret_cast<int>(this->passwordEdit->Text()), 0, 0, 0);
-        static_cast<CMode*>(g_charViewMode)->SendMsg(10008, reinterpret_cast<int>(this->idEdit->Text()), 0, 0, 0);
-        static_cast<CMode*>(g_charViewMode)->SendMsg(10038, reinterpret_cast<int>(this->unknown_00EC), 0, 0, 0);
+        g_modeMgr.gameMode->SendMsg(10007, reinterpret_cast<int>(this->passwordEdit->Text()), 0, 0, 0);
+        g_modeMgr.gameMode->SendMsg(10008, reinterpret_cast<int>(this->idEdit->Text()), 0, 0, 0);
+        g_modeMgr.gameMode->SendMsg(10038, reinterpret_cast<int>(this->unknown_00EC), 0, 0, 0);
         g_windowMgr.CloseWindow(3);
         this->SaveLogin();
       } else if (this->idEdit->Length() < 4) {
@@ -3265,7 +3267,7 @@ int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       }
       break;
     case 229: {
-      if (g_closeChatAfterGroups) {
+      if (g_windowMgr.unknown_0214 != nullptr) {
         g_windowMgr.CloseWindow(26);
       }
       UIWindow* list = g_windowMgr.EnsureWindow(26);
@@ -3340,7 +3342,7 @@ int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
   }
 
 quit:
-  static_cast<CMode*>(g_charViewMode)->SendMsg(2, 0, 0, 0, 0);
+  g_modeMgr.gameMode->SendMsg(2, 0, 0, 0, 0);
   g_windowMgr.Schedule(this);
   return 0;
 }
