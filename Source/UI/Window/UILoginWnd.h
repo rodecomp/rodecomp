@@ -42,4 +42,6 @@ public:
   /* 00EC */ const char* unknown_00EC;
 };
 
+extern const char* g_webPageUrl;
+
 #endif

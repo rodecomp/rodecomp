@@ -22,6 +22,10 @@ extern const char* g_serviceHost;
 extern const char* g_servicePort;
 extern const char* g_serviceOverrideKey;
 extern char g_launchServerName[24];
+extern int g_serviceFlag07;
+extern char g_serviceAddress[129];
+extern const int s_adminIds[45];
+extern const int s_monsterJobIds[48];
 extern std::vector<std::string> g_loadingScreens;
 
 const char* GetLicenceText();
