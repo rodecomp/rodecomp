@@ -10323,7 +10323,7 @@ void CGameMode::ReceiveActorDisappear(const unsigned char* data) {
       }
       actor->SendMsg(nullptr, 28, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       const int job = actor->GetEffectiveJob(-1);
-      if (reinterpret_cast<CGameActor*>(&g_session)->IsMonsterClass(job) || actor->unknown_0314 == 9 || g_session.IsSkillIdInRange6001(job) ||
+      if (g_session.IsMonsterClass(job) || actor->unknown_0314 == 9 || g_session.IsSkillIdInRange6001(job) ||
           actor->GetEffectiveJob(-1) == 0x235) {
         this->SendMsg(13, packet->aid, 0, 0, 0);
       }

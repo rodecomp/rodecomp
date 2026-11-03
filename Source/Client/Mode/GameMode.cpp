@@ -4633,7 +4633,7 @@ void CGameMode::ProcessInput() {
         offset = g_session.IsSkillIdInRange6001(pick->job) && pick->kind == 4;
       } else {
         int eligible;
-        if (g_session.unknown_1708 && reinterpret_cast<CGameActor*>(&g_session)->IsMonsterClass(pick->job)) {
+        if (g_session.unknown_1708 && g_session.IsMonsterClass(pick->job)) {
           eligible = 1;
         } else if (g_serviceOptions.Get(0x2F)) {
           eligible = pick->kind == 1;
@@ -5307,7 +5307,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
           if (g_mouse.buttons[0] == 2) {
             result = 2;
           }
-        } else if (reinterpret_cast<CGameActor*>(&g_session)->IsMonsterClass(pick->job)) {
+        } else if (g_session.IsMonsterClass(pick->job)) {
           const std::intptr_t mode = reinterpret_cast<std::intptr_t>(this->unknown_0408);
           int skillMode;
           int attack;
@@ -5513,7 +5513,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
     }
 
     const int job = pick->job;
-    if (reinterpret_cast<CGameActor*>(&g_session)->IsMonsterClass(job)) {
+    if (g_session.IsMonsterClass(job)) {
       const std::intptr_t mode = reinterpret_cast<std::intptr_t>(this->unknown_0408);
       int attack;
       if (mode == 2 || mode == 4) {

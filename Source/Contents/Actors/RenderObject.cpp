@@ -874,7 +874,7 @@ void CGameActor::SetRenderInfo(const float* bounds, float x, float y) {
           depth = g_session.IsLocalPlayerAid(this->Slot50()) != 0 ? 100.0f : 400.0f;
         } else if (g_session.IsNpcJob(this->GetEffectiveJob(-1))) {
           depth = 200.0f;
-        } else if (reinterpret_cast<CGameActor*>(&g_session)->IsMonsterClass(this->GetEffectiveJob(-1))) {
+        } else if (g_session.IsMonsterClass(this->GetEffectiveJob(-1))) {
           depth = this->unknown_0314 == 7 ? 50.0f : 400.0f;
         } else if (g_session.IsSkillIdInRange6001(this->GetEffectiveJob(-1)) != 0) {
           depth = 200.0f;
@@ -884,7 +884,7 @@ void CGameActor::SetRenderInfo(const float* bounds, float x, float y) {
           depth = 100.0f;
         } else if (g_session.IsNpcJob(this->GetEffectiveJob(-1))) {
           depth = 200.0f;
-        } else if (reinterpret_cast<CGameActor*>(&g_session)->IsMonsterClass(this->GetEffectiveJob(-1))) {
+        } else if (g_session.IsMonsterClass(this->GetEffectiveJob(-1))) {
           depth = this->unknown_0314 == 7 ? 50.0f : 400.0f;
         } else if (g_session.IsSkillIdInRange6001(this->GetEffectiveJob(-1)) != 0) {
           depth = 200.0f;
@@ -896,7 +896,7 @@ void CGameActor::SetRenderInfo(const float* bounds, float x, float y) {
           depth = g_session.IsLocalPlayerAid(this->Slot50()) != 0 ? 400.0f : 100.0f;
         } else if (g_session.IsNpcJob(this->GetEffectiveJob(-1))) {
           depth = 100.0f;
-        } else if (reinterpret_cast<CGameActor*>(&g_session)->IsMonsterClass(this->GetEffectiveJob(-1))) {
+        } else if (g_session.IsMonsterClass(this->GetEffectiveJob(-1))) {
           depth = this->unknown_0314 == 7 ? 50.0f : 200.0f;
         } else if (g_session.IsSkillIdInRange6001(this->GetEffectiveJob(-1)) != 0) {
           depth = 200.0f;
@@ -906,7 +906,7 @@ void CGameActor::SetRenderInfo(const float* bounds, float x, float y) {
           depth = 400.0f;
         } else if (g_session.IsNpcJob(this->GetEffectiveJob(-1))) {
           depth = 100.0f;
-        } else if (reinterpret_cast<CGameActor*>(&g_session)->IsMonsterClass(this->GetEffectiveJob(-1))) {
+        } else if (g_session.IsMonsterClass(this->GetEffectiveJob(-1))) {
           depth = this->unknown_0314 == 7 ? 50.0f : 200.0f;
         } else if (g_session.IsSkillIdInRange6001(this->GetEffectiveJob(-1)) != 0) {
           depth = 200.0f;

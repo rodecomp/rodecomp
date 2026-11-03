@@ -250,7 +250,7 @@ bool CGameActor::Slot14() {
     if (this->render.isMotionFinished && this->unknown_02A8.size() == 0) {
       mode->SendMsg(0xD, static_cast<int>(this->render.accountId), 0, 0, 0);
       const int job = this->GetEffectiveJob(-1);
-      if ((job > 31 && job < 1000) || reinterpret_cast<CGameActor*>(&g_session)->IsMonsterClass(job) || this->unknown_0314 == 9 ||
+      if ((job > 31 && job < 1000) || g_session.IsMonsterClass(job) || this->unknown_0314 == 9 ||
           g_session.IsSkillIdInRange6001(job)) {
         this->Slot38();
         return false;
@@ -1082,7 +1082,7 @@ void CGameActor::ResetUnknown03B8() {
 
 // OFFSET: 0x00CADC90
 // FUNCTION: fn_21065
-bool CGameActor::IsMonsterClass(int job) {
+bool CSession::IsMonsterClass(int job) {
   return (job > 1000 && job < 3999) || static_cast<unsigned int>(job - 20021) <= 11978;
 }
 

@@ -289,7 +289,6 @@ public:
   int GetGaugeCurrent();
   int GetGaugeMaximum();
   void ResetUnknown03B8();
-  bool IsMonsterClass(int job);
   bool HasPendingDamage();
   bool UpdateUnknown03E8(std::int64_t value);
   int IsPlayerClass(int job);

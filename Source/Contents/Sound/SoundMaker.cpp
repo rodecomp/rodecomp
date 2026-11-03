@@ -1054,7 +1054,7 @@ void CHalluNPC::Render(int argument) {
     this->DrawShadow(argument, this->render.scale);
   }
   if (this->render.enabled) {
-    this->DrawSprite(argument, this->IsMonsterClass(this->GetEffectiveJob(-1)), 0.0f);
+    this->DrawSprite(argument, g_session.IsMonsterClass(this->GetEffectiveJob(-1)), 0.0f);
   } else {
     this->UpdateTlvertex(matrix);
   }
@@ -1141,7 +1141,7 @@ void CNpc::Render(int argument) {
 
   if (hidden && this->unknown_0314 == 5 && (!this->render.visible || !this->render.enabled)) {
     this->SetColor(-1, 0, 0, 0);
-    this->DrawSprite(argument, this->IsMonsterClass(this->GetEffectiveJob(-1)), 0.0f);
+    this->DrawSprite(argument, g_session.IsMonsterClass(this->GetEffectiveJob(-1)), 0.0f);
     return;
   }
 
@@ -1153,7 +1153,7 @@ void CNpc::Render(int argument) {
     this->DrawShadow(argument, this->render.scale);
   }
   if (this->render.enabled) {
-    this->DrawSprite(argument, this->IsMonsterClass(this->GetEffectiveJob(-1)), 0.0f);
+    this->DrawSprite(argument, g_session.IsMonsterClass(this->GetEffectiveJob(-1)), 0.0f);
   } else {
     this->UpdateTlvertex(matrix);
   }

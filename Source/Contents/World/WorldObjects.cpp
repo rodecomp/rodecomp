@@ -651,7 +651,7 @@ void CGameMode::OpenActorMenu(const ActorPickInfo* pick, int handled) {
   char text[256];
   const int job = pick->job;
   CGameActor* actor = nullptr;
-  if ((job >= 45 && job < 1000) || reinterpret_cast<CGameActor*>(&g_session)->IsMonsterClass(job) || g_session.IsSkillIdInRange6001(job) ||
+  if ((job >= 45 && job < 1000) || g_session.IsMonsterClass(job) || g_session.IsSkillIdInRange6001(job) ||
       pick->kind == 4) {
     actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(pick->accountId));
   }

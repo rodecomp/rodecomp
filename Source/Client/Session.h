@@ -949,6 +949,7 @@ public:
   }
   int IsSkillIdInRange6018(unsigned id) const;
   int IsSkillIdInRange6001(unsigned id) const;
+  bool IsMonsterClass(int job);
   int IsPetEgg(int itemId) const;
   const ActionFrame* GetSyncedFrame(CActRes* baseAct, CActRes* act, unsigned action, int baseFrame, std::uint32_t startTime, int* frame);
   float GetNpcLocationRadius(int job, bool riding);
