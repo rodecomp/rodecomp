@@ -42,7 +42,6 @@ extern int g_groundMarkA;
 extern int g_groundMarkB;
 extern std::uint32_t g_groundMarkAltAid;
 extern int g_groundMarkAltA;
-extern int g_groundMarkAltB;
 extern int g_groundMarkAltSet;
 
 #endif

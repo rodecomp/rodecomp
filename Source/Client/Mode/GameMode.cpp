@@ -4253,7 +4253,7 @@ void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor*
       this->SetCursorAction(11);
       g_groundMarkAltAid = actor->render.accountId;
       g_groundMarkAltA = 0;
-      g_groundMarkAltB = 0;
+      g_session.unknown_56A0 = 0;
       g_groundMarkAltSet = 0;
       g_session.unknown_56AC = 1;
     }
@@ -4600,7 +4600,7 @@ int CGameMode::ProcessGroundClick(int result) {
       }
 
       g_groundMarkAltA = column;
-      g_groundMarkAltB = row;
+      g_session.unknown_56A0 = row;
       g_groundMarkAltAid = 0;
       g_session.unknown_56AC = 0;
       if (mercenary && mercenary->HasUnknown0310Entry()) {
@@ -6138,7 +6138,7 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
       this->SetCursorAction(11);
       g_groundMarkAltAid = actor->render.accountId;
       g_groundMarkAltA = 0;
-      g_groundMarkAltB = 0;
+      g_session.unknown_56A0 = 0;
       g_groundMarkAltSet = 0;
       g_session.unknown_56AC = 1;
     }
@@ -6758,7 +6758,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
           this->SetCursorAction(11);
           g_groundMarkAltAid = pick->accountId;
           g_groundMarkAltA = 0;
-          g_groundMarkAltB = 0;
+          g_session.unknown_56A0 = 0;
           g_groundMarkAltSet = 0;
           g_session.unknown_56AC = 1;
         }
