@@ -10,7 +10,6 @@
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UICheckBox.h"
 #include "UI/Window/UIWindowMgr.h"
-#include "UI/Window/WindowDialogs.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Render/Renderer.h"
 #include "UI/Text/UICharInfoBalloonText.h"

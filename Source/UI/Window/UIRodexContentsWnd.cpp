@@ -27,7 +27,6 @@
 #include "UI/Shop/ItemDrawing.h"
 #include "UI/Text/NavigationLink.h"
 #include "UI/Window/UIWindowMgr.h"
-#include "UI/Window/WindowDialogs.h"
 #include "UI/Window/WindowManagerWindows.h"
 #include "Utility/Text/FormatString.h"
 #include "Utility/Text/GroupedInteger.h"

@@ -32,7 +32,6 @@
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Window/UITab.h"
 #include "UI/Window/UIWindowMgr.h"
-#include "UI/Window/WindowDialogs.h"
 #include "Utility/Text/FormatString.h"
 
 #include <cstddef>

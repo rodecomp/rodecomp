@@ -24,7 +24,6 @@
 #include "UI/Window/WindowMouseHit.h"
 #include "UI/Chat/UINewChatWnd.h"
 #include "UI/Window/InputFocus.h"
-#include "UI/Window/WindowDialogs.h"
 #include "UI/Skill/UISkillDescribeWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowBorder.h"

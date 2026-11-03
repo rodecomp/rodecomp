@@ -10,7 +10,6 @@
 #include "UI/Window/InputFocus.h"
 #include "UI/Window/UIFrameWnd.h"
 #include "UI/Window/UIWindowMgr.h"
-#include "UI/Window/WindowDialogs.h"
 #include "Client/Mode/CLoginMode.h"
 #include "Contents/ForbiddenWords.h"
 #include "Contents/Jobs/JobInheritance.h"

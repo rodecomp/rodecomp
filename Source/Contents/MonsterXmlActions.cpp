@@ -1,6 +1,5 @@
 #include "Client/Session.h"
 #include "Contents/MessageTable.h"
-#include "UI/Window/WindowDialogs.h"
 
 #include <algorithm>
 #include <cstdio>

@@ -68,7 +68,6 @@
 #include "UI/Window/UIRodexContentsWnd.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
-#include "UI/Window/WindowDialogs.h"
 #include "Utility/Text/FormatString.h"
 #include "Utility/Math/AffineMatrix.h"
 #include "UI/UIBroadcastBalloon.h"

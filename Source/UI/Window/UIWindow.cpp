@@ -4,7 +4,6 @@
 #include "Client/Mode/CMode.h"
 #include "Render/DeviceContext/DCSurface.h"
 #include "UI/Window/UINewSelectCharWnd.h"
-#include "UI/Window/WindowDialogs.h"
 #include "UI/Window/UIRoMapWnd.h"
 #include "File/FileEnumeration.h"
 #include "Contents/World/World.h"

@@ -117,7 +117,6 @@
 #include "UI/Window/InputFocus.h"
 #include "UI/Window/UIMonsterDisplayWnd.h"
 #include "UI/Window/UINewSelectCharWnd.h"
-#include "UI/Window/WindowDialogs.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowBorder.h"
 #include "UI/Layout/SnapMgr.h"

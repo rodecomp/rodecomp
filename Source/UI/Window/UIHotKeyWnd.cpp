@@ -21,7 +21,6 @@
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Window/UISerachStoreInfoWnd.h"
 #include "UI/Window/WindowBorder.h"
-#include "UI/Window/WindowDialogs.h"
 #include "UI/Window/WindowManagerWindows.h"
 #include "Utility/Text/FormatString.h"
 

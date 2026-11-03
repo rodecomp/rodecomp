@@ -65,7 +65,6 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/UIRefiningWnd.h"
 #include "UI/Dialogs/UIWaitWnd.h"
-#include "UI/Window/WindowDialogs.h"
 #include "Utility/Math/Vector3d.h"
 #include "Utility/Text/FormatString.h"
 #include "Utility/Text/StringUtil.h"

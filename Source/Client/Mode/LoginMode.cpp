@@ -46,7 +46,6 @@
 #include "UI/Dialogs/UIWaitWnd.h"
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Window/UISelCharForUServerWnd.h"
-#include "UI/Window/WindowDialogs.h"
 #include "Utility/Async/NAsyncWorkMgr.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/GGHashMgr.h"

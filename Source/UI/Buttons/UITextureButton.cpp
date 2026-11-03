@@ -1,6 +1,5 @@
 #include "Client/Replay.h"
 #include "UI/Window/WindowPolicy.h"
-#include "UI/Window/WindowDialogs.h"
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "Contents/MessageTable.h"
 #include "Client/Mode/CMode.h"

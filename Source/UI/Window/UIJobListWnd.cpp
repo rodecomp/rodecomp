@@ -12,7 +12,6 @@
 #include "UI/Buttons/UICheckBox.h"
 #include "UI/Text/UIStaticText.h"
 #include "UI/Window/UIWindowMgr.h"
-#include "UI/Window/WindowDialogs.h"
 
 #include <windows.h>
 

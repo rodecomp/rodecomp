@@ -12,7 +12,6 @@
 #include "UI/Text/UIStaticText.h"
 #include "UI/Window/UISeekPartyWnd.h"
 #include "UI/Window/UIWindowMgr.h"
-#include "UI/Window/WindowDialogs.h"
 #include "UI/Window/WindowManagerWindows.h"
 #include "Utility/Text/FormatString.h"
 

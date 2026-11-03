@@ -32,7 +32,6 @@
 #include "UI/Chat/UINewChatWnd.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
-#include "UI/Window/WindowDialogs.h"
 #include "Contents/Actors/GrannyGameActor.h"
 #include "Utility/Text/FormatString.h"
 #include "Client/Application/Launcher.h"

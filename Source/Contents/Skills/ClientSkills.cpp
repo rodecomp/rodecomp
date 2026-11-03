@@ -17,7 +17,6 @@
 #include "Script/LuaScript.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
-#include "UI/Window/WindowDialogs.h"
 #include "UI/Window/WindowManagerWindows.h"
 #include "Utility/Tokenizer.h"
 #include "Contents/Messenger/ClientMessenger.h"

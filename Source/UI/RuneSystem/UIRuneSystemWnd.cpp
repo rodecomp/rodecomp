@@ -1,4 +1,3 @@
-#include "UI/Window/WindowDialogs.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Items/RuneSystem.h"
 #include "Contents/MessageTable.h"

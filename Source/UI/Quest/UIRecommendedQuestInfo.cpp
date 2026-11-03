@@ -6,7 +6,6 @@
 #include "UI/Quest/UIRenewQuestWnd.h"
 #include "UI/Text/UIStaticTextControl.h"
 #include "UI/Window/UIWindowMgr.h"
-#include "UI/Window/WindowDialogs.h"
 
 #include <algorithm>
 #include <cstring>

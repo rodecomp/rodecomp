@@ -14,7 +14,6 @@
 #include "Resource/TextureNames.h"
 #include "Script/LuaScript.h"
 #include "UI/Window/UIWindowMgr.h"
-#include "UI/Window/WindowDialogs.h"
 #include <cstring>
 #include <mbstring.h>
 

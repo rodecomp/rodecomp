@@ -15,7 +15,6 @@
 #include "Script/LuaScript.h"
 #include "UI/Window/UINavigationWnd.h"
 #include "UI/Window/UIWindowMgr.h"
-#include "UI/Window/WindowDialogs.h"
 #include "Utility/Text/FormatString.h"
 
 #include <windows.h>

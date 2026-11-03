@@ -17,7 +17,6 @@
 #include "UI/Layout/SnapMgr.h"
 #include "UI/Window/MiniPartyWndAreaMgr.h"
 #include "UI/Window/UIWindowMgr.h"
-#include "UI/Window/WindowDialogs.h"
 #include "Client/Mode/CMode.h"
 
 #include <windows.h>

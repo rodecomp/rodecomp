@@ -23,7 +23,6 @@
 #include "UI/UIBasicCtrl.h"
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Window/UIWindowMgr.h"
-#include "UI/Window/WindowDialogs.h"
 #include "Utility/Text/FormatString.h"
 
 #include <algorithm>

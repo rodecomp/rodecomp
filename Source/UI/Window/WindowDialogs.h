@@ -1,7 +1,0 @@
-#ifndef RAGNAROK_SOURCE_UI_WINDOW_WINDOWDIALOGS_H
-#define RAGNAROK_SOURCE_UI_WINDOW_WINDOWDIALOGS_H
-
-extern int g_dialogKeyboardEnabled;
-extern int g_dialogKeyboardBlocked;
-
-#endif

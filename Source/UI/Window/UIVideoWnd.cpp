@@ -6,7 +6,6 @@
 #include "Contents/Sound/SoundMgr.h"
 #include "Render/Textures/Texture.h"
 #include "Render/Textures/TextureCache.h"
-#include "UI/Window/WindowDialogs.h"
 #include "UI/Window/WindowManagerWindows.h"
 
 #include <algorithm>

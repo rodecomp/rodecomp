@@ -44,7 +44,6 @@
 #include "UI/Lists/UIMemberListBox.h"
 #include "UI/Text/NavigationLink.h"
 #include "UI/Text/TextWrapping.h"
-#include "UI/Window/WindowDialogs.h"
 #include "UI/Window/UIResizer.h"
 #include "UI/Window/UINewSelectCharWnd.h"
 

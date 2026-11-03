@@ -4,7 +4,6 @@
 #include "Contents/MessageTable.h"
 #include "Network/Connection/Connection.h"
 #include "UI/Window/UIWindowMgr.h"
-#include "UI/Window/WindowDialogs.h"
 #include "Utility/Cipher/XorBytes.h"
 
 #include <cstddef>

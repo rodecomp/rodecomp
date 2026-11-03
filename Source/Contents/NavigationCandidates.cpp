@@ -5,7 +5,6 @@
 #include "Contents/MessageTable.h"
 #include "Resource/ResourceMgr.h"
 #include "UI/Window/UIWindowMgr.h"
-#include "UI/Window/WindowDialogs.h"
 
 #include <string>
 #include <vector>

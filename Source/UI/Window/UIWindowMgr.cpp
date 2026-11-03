@@ -21,7 +21,6 @@
 #include "UI/Chat/UINewChatWnd.h"
 #include "UI/Lists/UITabControl.h"
 #include "UI/Window/MiniPartyWndAreaMgr.h"
-#include "UI/Window/WindowDialogs.h"
 #include "UI/Window/InputFocus.h"
 #include "UI/Window/UINavigationWnd.h"
 #include "UI/Window/UIRoMapWnd.h"

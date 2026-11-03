@@ -38,7 +38,6 @@
 #include "UI/Window/UIFrameWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UINormalMB.h"
-#include "UI/Window/WindowDialogs.h"
 #include "UI/Window/WindowBorder.h"
 #include "Utility/Text/FormatString.h"
 #include "Contents/Schedule/CheckGDISchedule.h"

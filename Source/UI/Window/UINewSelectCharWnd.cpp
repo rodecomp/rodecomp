@@ -19,7 +19,6 @@
 #include "Contents/Actors/Pc.h"
 #include "Contents/SpriteRidingOffset.h"
 #include "UI/UIStaticBitmap.h"
-#include "UI/Window/WindowDialogs.h"
 #include "Contents/Async/AsyncWorkMgr.h"
 #include "Contents/Hotkeys/EmotionHotkeys.h"
 #include "Contents/Sound/SoundMgr.h"

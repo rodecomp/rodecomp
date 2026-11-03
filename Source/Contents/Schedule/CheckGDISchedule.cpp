@@ -7,7 +7,6 @@
 #include "Network/Connection/Connection.h"
 #include "Network/Connection/ConnectionRuntime.h"
 #include "UI/Window/UIWindowMgr.h"
-#include "UI/Window/WindowDialogs.h"
 
 #include <cstdlib>
 #include <windows.h>

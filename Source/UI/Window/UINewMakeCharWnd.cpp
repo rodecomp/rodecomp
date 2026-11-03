@@ -1,5 +1,4 @@
 #include "Render/DeviceContext/DCSurface.h"
-#include "UI/Window/WindowDialogs.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UINewMakeCharWnd.h"
 

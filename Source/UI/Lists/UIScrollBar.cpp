@@ -29,7 +29,6 @@
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/TipOfTheDay.h"
 #include "Contents/MessageTable.h"
-#include "UI/Window/WindowDialogs.h"
 #include <algorithm>
 #include <cstdio>
 #include <cstring>

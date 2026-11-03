@@ -27,7 +27,6 @@
 #include "UI/Window/WindowBorder.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UIMerInfoWnd.h"
-#include "UI/Window/WindowDialogs.h"
 #include "UI/Window/UIMessageBoxAutoreturn.h"
 #include "UI/Window/UIMonsterInfoWnd.h"
 #include "UI/Window/UITalkboxTrapInputWnd.h"

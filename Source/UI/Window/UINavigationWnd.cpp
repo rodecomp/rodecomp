@@ -23,7 +23,6 @@
 #include "UI/Window/UIResizer.h"
 #include "UI/Window/UIRoMapWnd.h"
 #include "UI/Window/UIWindowMgr.h"
-#include "UI/Window/WindowDialogs.h"
 #include "Utility/Text/FormatString.h"
 
 #include <cstdio>

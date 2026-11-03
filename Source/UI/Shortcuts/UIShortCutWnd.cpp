@@ -29,7 +29,6 @@
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/InputFocus.h"
 #include "UI/Window/UIWindowMgr.h"
-#include "UI/Window/WindowDialogs.h"
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Window/UIWindowCallBtnWnd.h"
 #include "UI/Window/UIRoMapWnd.h"
@@ -1213,7 +1212,6 @@ void UISubChatHisWnd::Resize(int width, int height) {
 }
 
 #include "UI/Edit/UIEditCtrl.h"
-#include "UI/Window/WindowDialogs.h"
 
 #include <mbstring.h>
 

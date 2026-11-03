@@ -20,7 +20,6 @@
 #include "UI/Text/UIStaticText.h"
 #include "UI/Window/UIFrameWnd.h"
 #include "UI/Window/UIWindow.h"
-#include "UI/Window/WindowDialogs.h"
 
 #include <algorithm>
 #include <bit>

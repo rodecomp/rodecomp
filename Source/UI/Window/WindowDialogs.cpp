@@ -6,7 +6,6 @@
 #include "UI/Window/UIMessageBox.h"
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Window/UIWindowMgr.h"
-#include "UI/Window/WindowDialogs.h"
 
 // GLOBAL: gl_24604
 int g_dialogKeyboardEnabled;

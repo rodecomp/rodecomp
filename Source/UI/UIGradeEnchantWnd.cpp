@@ -1,4 +1,3 @@
-#include "UI/Window/WindowDialogs.h"
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/UIGradeEnchantWnd.h"
 #include "Client/Mode/CMode.h"

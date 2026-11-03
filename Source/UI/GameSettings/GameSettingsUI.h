@@ -7,7 +7,6 @@
 #include "UI/Lists/UIListBoxTemplate.h"
 #include "UI/Window/UIControl.h"
 #include "UI/Window/UIFrameWnd.h"
-#include "UI/Window/WindowDialogs.h"
 
 #include <functional>
 #include <map>

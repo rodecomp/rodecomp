@@ -20,7 +20,6 @@
 #include "UI/Text/UITextViewer.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowManagerWindows.h"
-#include "UI/Window/WindowDialogs.h"
 #include <cstddef>
 #include <cstdio>
 #include <cstring>

@@ -18,7 +18,6 @@
 #include "UI/Window/UINavigationWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UIPayConfirmWnd.h"
-#include "UI/Window/WindowDialogs.h"
 #include "Utility/RegistryKey.h"
 
 #include <cstdint>

@@ -6,7 +6,6 @@
 #include "Network/Packets/PacketLengths.h"
 #include "UI/EntryQueue/UIEntryQueueWnd.h"
 #include "UI/Window/UIWindowMgr.h"
-#include "UI/Window/WindowDialogs.h"
 #include "Script/LuaScript.h"
 #include <cstring>
 #include <string>

@@ -25,7 +25,6 @@
 #include "Contents/PlayerNameDictionary.h"
 #include "Utility/Text/FormatString.h"
 #include "Resource/SkinPalette.h"
-#include "UI/Window/WindowDialogs.h"
 #include "UI/Text/UIStaticText.h"
 #include "File/ShortcutFilename.h"
 #include "UI/Buttons/UITextButton.h"

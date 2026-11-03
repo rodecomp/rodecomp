@@ -19,7 +19,6 @@
 #include "UI/Items/UIEquipWnd.h"
 #include "UI/Layout/SnapMgr.h"
 #include "UI/Lists/UITabControl.h"
-#include "UI/Window/WindowDialogs.h"
 #include "Utility/Text/FormatString.h"
 #include "Utility/Text/GroupedInteger.h"
 

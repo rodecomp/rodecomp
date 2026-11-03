@@ -45,7 +45,6 @@
 #include "UI/Window/UISeekPartyWnd.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
-#include "UI/Window/WindowDialogs.h"
 #include "Utility/Math/Vector3d.h"
 #include "Utility/Text/FormatString.h"
 

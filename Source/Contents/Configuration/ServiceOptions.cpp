@@ -27,7 +27,6 @@
 #include "Network/Packets/PacketLengths.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
-#include "UI/Window/WindowDialogs.h"
 #include "UI/Window/WindowManagerWindows.h"
 #include "Script/LuaInstance.h"
 #include "Script/LuaScript.h"

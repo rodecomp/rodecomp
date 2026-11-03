@@ -8,7 +8,6 @@
 #include "UI/Window/MiniPartyWndAreaMgr.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UIWindow.h"
-#include "UI/Window/WindowDialogs.h"
 #include "UI/Window/WindowManagerWindows.h"
 #include <new>
 

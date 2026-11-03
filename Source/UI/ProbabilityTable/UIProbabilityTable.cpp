@@ -9,7 +9,6 @@
 #include "UI/Text/UIStaticTextControl.h"
 #include "Contents/MessageTable.h"
 #include "Render/Renderer.h"
-#include "UI/Window/WindowDialogs.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"
 #include "Utility/Text/StringUtil.h"
