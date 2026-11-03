@@ -57,10 +57,6 @@ namespace {
     /* 0008 */ int size;
   };
 
-  struct SessionHelper {
-    const char* sub_DDE770(const char* mapName);
-  };
-
 }
 
 class UIDragMiniPartyWnd : public UIFrameWnd {
@@ -387,7 +383,7 @@ void UIDragMiniPartyWnd::Paint() {
       );
     }
 
-    const char* mapName = reinterpret_cast<SessionHelper&>(g_session).sub_DDE770(this->member.map.c_str());
+    const char* mapName = g_session.GetMapDisplayName(this->member.map.c_str());
     char text[256];
     sprintf(text, "%d %s(%s)", this->member.level, this->member.name.c_str(), mapName);
     std::string clipped = this->sub_A80880(this->geometry.width - 0x43, text, 0, 12, 1);

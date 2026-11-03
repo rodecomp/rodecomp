@@ -85,9 +85,6 @@ static_assert(sizeof(AddFriendPacket) == 26);
 static_assert(offsetof(AddFriendPacket, name) == 2);
 }
 
-struct SessionCommandTarget {
-  int sub_DE1010(const char* name, int* optionId, std::string* strings);
-};
 
 // GLOBAL: gl_24525
 CMiniPartyWndAreaMgr* g_miniPartyWndAreaMgr = nullptr;
@@ -1478,7 +1475,7 @@ void UIWindowMgr::SendEmotionHotkey(int index) {
     if (g_session.ProcessEmotionShortcut(text) == 0) {
       std::string parts[3];
       int talkType;
-      const int offset = reinterpret_cast<SessionCommandTarget*>(&g_session)->sub_DE1010(text, &talkType, parts);
+      const int offset = g_session.GetTalkType(text, &talkType, parts);
       if (offset != -1) {
         g_windowMgr.unknown_04DC = text + offset;
       }

@@ -188,7 +188,7 @@ void CSession::RemoveSkill(std::uint32_t id) {
   }
 
   this->m_skillBundle.Remove(id);
-  if (this->m_skillBundle.RemoveExtra(id, *reinterpret_cast<WindowManagerWindows*>(&g_windowMgr))) {
+  if (this->m_skillBundle.RemoveExtra(id, g_windowMgr)) {
     this->NotifySkillWindows();
   }
 }
@@ -224,7 +224,7 @@ bool CSession::UpdateSkill(const CSkillInfo& value, unsigned char notify, unsign
       } else {
         snapshot.unknown_0024 = UINT32_MAX;
         snapshot.unknown_002C = 0;
-        this->m_skillBundle.AddExtra(snapshot, *reinterpret_cast<WindowManagerWindows*>(&g_windowMgr));
+        this->m_skillBundle.AddExtra(snapshot, g_windowMgr);
       }
     }
 

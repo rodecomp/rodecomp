@@ -26,23 +26,6 @@
 #include <zlib.h>
 
 namespace {
-struct UIWindowMgrHelper : public UIWindowMgr {
-  int sub_A901E0(const char* text, int type, bool defaultAccept, bool replace, int timeout, const char* caption, int width, int height, unsigned char protect);
-};
-
-struct UIComboBoxDefWndHelper : public UIComboBoxDefWnd {
-  std::string sub_8A15A0();
-};
-
-struct UIEditCtrlHelper : public UIEditCtrl {
-  void sub_865E00(int red, int green, int blue);
-  void sub_868570(int red, int green, int blue, std::uint32_t secondary);
-};
-
-struct UIStaticTextHelper : public UIStaticText {
-  void sub_868880(const char* text);
-};
-
 struct CaptchaRegisterPacket {
   /* 0000 */ std::int16_t id;
   /* 0002 */ char text[16];
@@ -68,7 +51,7 @@ void UICaptchaRegisterWnd::Slot15(int width, int height) {
   this->m_pathText = new UIStaticText();
   this->m_pathText->SetSize(240, 16);
   this->m_pathText->Move(25, 27);
-  static_cast<UIStaticTextHelper*>(this->m_pathText)->sub_868880(directory.c_str());
+  this->m_pathText->SetTextFitted(directory.c_str());
   this->AddChild(this->m_pathText);
 
   std::list<std::string> files;
@@ -101,8 +84,8 @@ void UICaptchaRegisterWnd::Slot15(int width, int height) {
   this->m_editCtrl->maximum = 16;
   this->m_editCtrl->Background(255, 255, 255);
   this->m_editCtrl->flat = 0;
-  static_cast<UIEditCtrlHelper*>(this->m_editCtrl)->sub_865E00(0, 0, 0);
-  static_cast<UIEditCtrlHelper*>(this->m_editCtrl)->sub_868570(0, 0, 0, 0xFFFFFFFF);
+  this->m_editCtrl->Border(0, 0, 0);
+  this->m_editCtrl->TextColor(RGB(0, 0, 0), 0xFFFFFFFF);
   this->m_editCtrl->preserveInput = 1;
   this->AddChild(this->m_editCtrl);
 
@@ -135,14 +118,14 @@ int UICaptchaRegisterWnd::SendMsg(
       g_windowMgr.CloseWindow(284);
     } else if (a1 == 345) {
       if (this->m_editCtrl->Length() < 4) {
-        static_cast<UIWindowMgrHelper*>(&g_windowMgr)->sub_A901E0(LookupMessage(2872), 0, 1, 0, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(2872), 0, 1, 0, 0, "Message", 280, 120, 0);
       } else if (this->m_selectedFile.empty()) {
-        static_cast<UIWindowMgrHelper*>(&g_windowMgr)->sub_A901E0(LookupMessage(2874), 0, 1, 0, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(2874), 0, 1, 0, 0, "Message", 280, 120, 0);
       } else if (this->m_decompressedSize == 0) {
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>("compress data size error"), 0xFF, 0, 0, 0);
       } else {
         std::string str = FormatOwnedString(LookupMessage(2873), this->m_editCtrl->Text());
-        int result = static_cast<UIWindowMgrHelper*>(&g_windowMgr)->sub_A901E0(str.c_str(), 2, 0, 0, 0, "Message", 280, 120, 0);
+        int result = g_windowMgr.Confirm(str.c_str(), 2, 0, 0, 0, "Message", 280, 120, 0);
         if (result != 188) {
           this->registerButton->SetDisabled(1);
           this->registerButton->Invalidate();
@@ -160,7 +143,7 @@ int UICaptchaRegisterWnd::SendMsg(
       }
     }
   } else if (message == 39 && sender == this->m_fileComboBox) {
-    this->m_selectedFile = static_cast<UIComboBoxDefWndHelper*>(this->m_fileComboBox)->sub_8A15A0();
+    this->m_selectedFile = this->m_fileComboBox->GetSelectedText();
     if (!this->m_selectedFile.empty()) {
       std::string fullPath = this->m_pathText->tooltip + this->m_selectedFile;
       CFile file;

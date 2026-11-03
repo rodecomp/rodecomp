@@ -739,14 +739,6 @@ void GameSettings::ToggleOption(int id) {
   }
 }
 
-struct SessionCommandTarget {
-  int sub_DE1010(const char* name, int* optionId, std::string* strings);
-};
-
-struct ServiceOptionActorRefresh {
-  void sub_CD6DD0(char all);
-};
-
 // OFFSET: 0x006C29A0
 // FUNCTION: fn_06324
 int SetOption(const char* name, unsigned char value) {
@@ -756,7 +748,7 @@ int SetOption(const char* name, unsigned char value) {
 
   int optionId = 3;
   std::string strings[3];
-  reinterpret_cast<SessionCommandTarget*>(&g_session)->sub_DE1010(name, &optionId, strings);
+  g_session.GetTalkType(name, &optionId, strings);
   if (optionId != 3) {
     g_serviceOptions.values[static_cast<std::uint32_t>(optionId)] = value;
   }
@@ -772,7 +764,7 @@ std::pair<int, unsigned char> FindServiceOption(const char* name) {
 
   int optionId = 3;
   std::string strings[3];
-  reinterpret_cast<SessionCommandTarget*>(&g_session)->sub_DE1010(name, &optionId, strings);
+  g_session.GetTalkType(name, &optionId, strings);
   const auto entry = g_serviceOptions.values.find(static_cast<std::uint32_t>(optionId));
   if (entry == g_serviceOptions.values.end()) {
     return {3, 0};
@@ -1047,7 +1039,7 @@ void ApplyServiceOptionWithNotice(int id, unsigned char value, bool notify, int 
       return;
     }
 
-    reinterpret_cast<ServiceOptionActorRefresh*>(g_modeMgr.GetGameMode())->sub_CD6DD0(0);
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->RefreshActorJobEffects(false);
     if (notify) {
       NotifyServiceOption(value, enabledMessage, disabledMessage, 0x64FFFF);
     }
@@ -1064,7 +1056,7 @@ void ApplyServiceOptionActorRefresh(int id, unsigned char value, bool notify, in
     }
   }
 
-  reinterpret_cast<ServiceOptionActorRefresh*>(g_modeMgr.GetGameMode())->sub_CD6DD0(0);
+  static_cast<CGameMode*>(g_modeMgr.GetGameMode())->RefreshActorJobEffects(false);
 }
 
 // OFFSET: 0x006C4750
