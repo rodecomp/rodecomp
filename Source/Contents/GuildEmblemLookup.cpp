@@ -1,5 +1,4 @@
 #include "Client/Replay.h"
-#include "Contents/Emblems/EmblemCache.h"
 #include "Contents/Emblems/GuildEmblemReqBundle.h"
 #include "Contents/GuildMgr.h"
 #include "Resource/ResourceMgr.h"
@@ -12,7 +11,7 @@ std::string CGuildMgr::GetEmblemFilename(std::uint32_t guildId) {
     return std::string();
   }
 
-  std::string filename = reinterpret_cast<const EmblemCache*>(this)->Filename(guildId, found->second.m_emblemVersion);
+  std::string filename = this->EmblemFilename(guildId, found->second.m_emblemVersion);
   if (!ResourceMgr::Instance().Load(filename) && g_replayAnimationScaling == 0) {
     this->m_reqBundle->Add(guildId, this->GetEmblemVersion(guildId));
   }

@@ -1,6 +1,5 @@
 #include "Resource/EmblemResource.h"
 
-#include "Contents/Emblems/EmblemCache.h"
 #include "Contents/GuildMgr.h"
 #include "File/File.h"
 
@@ -8,13 +7,6 @@
 #include <cstdlib>
 #include <string>
 #include <zlib.h>
-
-namespace {
-  // INLINED
-  EmblemCache& GuildEmblemCache() {
-    return *reinterpret_cast<EmblemCache*>(g_guildMgr);
-  }
-}
 
 // INLINED
 CEmblemRes::~CEmblemRes() = default;
@@ -28,7 +20,7 @@ CEmblemRes* CEmblemRes::Create() {
 // OFFSET: 0x0074CA90
 // FUNCTION: fn_07881
 bool CEmblemRes::Load(const char* name) {
-  if (GuildEmblemCache().IsInvalid(name) == true) {
+  if (g_guildMgr->IsInvalidEmblem(name) == true) {
     this->gif.CreateBlank(24, 24);
     return true;
   }
@@ -42,7 +34,7 @@ bool CEmblemRes::Load(const char* name) {
   Bytef* buffer = static_cast<Bytef*>(std::malloc(size));
   if (uncompress(buffer, &size, static_cast<const Bytef*>(file.GetData()), file.GetSize()) != Z_OK
       || this->gif.Decode("_emblem.bmp", buffer, size, true) != true) {
-    GuildEmblemCache().MarkInvalid(name);
+    g_guildMgr->MarkInvalidEmblem(name);
     this->gif.CreateBlank(24, 24);
   }
 

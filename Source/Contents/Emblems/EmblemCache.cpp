@@ -1,8 +1,11 @@
-#include "Contents/Emblems/EmblemCache.h"
+#include "Client/Application/Launcher.h"
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Client/Session.h"
 #include "Contents/Emblems/GuildEmblemReqBundle.h"
 #include "Contents/GuildMgr.h"
 #include "UI/Window/UIWindow.h"
-#include "UI/Window/WindowManagerWindows.h"
+#include "UI/Window/UIWindowMgr.h"
 
 #include <cstdio>
 #include <cstring>
@@ -29,34 +32,34 @@ namespace {
 
 // OFFSET: 0x0065ED00
 // FUNCTION: fn_05178
-std::string EmblemCache::Filename(std::uint32_t guild, std::uint32_t revision) const {
+std::string CGuildMgr::EmblemFilename(std::uint32_t guild, std::uint32_t revision) const {
   std::ostringstream name;
-  name << this->accountName << '_' << guild << '_' << (revision + 0x7FFFFFFFu) << ".ebm";
+  name << g_session.m_accountName << '_' << guild << '_' << (revision + 0x7FFFFFFFu) << ".ebm";
   return name.str();
 }
 
 // OFFSET: 0x0065E6F0
 // FUNCTION: fn_05176
-bool EmblemCache::IsInvalid(std::string path) const {
-  return this->invalid.contains(Basename(path));
+bool CGuildMgr::IsInvalidEmblem(std::string path) const {
+  return this->m_invalidEmblems.contains(Basename(path));
 }
 
 // OFFSET: 0x0065DFB0
 // FUNCTION: fn_05171
-void EmblemCache::MarkInvalid(std::string path) {
-  this->invalid.insert(Basename(path));
+void CGuildMgr::MarkInvalidEmblem(std::string path) {
+  this->m_invalidEmblems.insert(Basename(path));
 }
 
 // OFFSET: 0x0065E890
 // FUNCTION: fn_05177
-void EmblemCache::Store(const void* bytes, std::uint32_t size, std::uint32_t guild, std::uint32_t revision) {
-  const std::string directory = std::string(this->rootDirectory) + "\\_tmpEmblem\\";
-  const std::string filename = this->Filename(guild, revision);
+void CGuildMgr::StoreEmblem(const void* bytes, std::uint32_t size, std::uint32_t guild, std::uint32_t revision) {
+  const std::string directory = std::string(g_applicationDirectory) + "\\_tmpEmblem\\";
+  const std::string filename = g_guildMgr->EmblemFilename(guild, revision);
   uLongf compressedSize = compressBound(size);
   std::unique_ptr<unsigned char[]> compressed(new unsigned char[compressedSize]);
 
   if (compress(compressed.get(), &compressedSize, static_cast<const Bytef*>(bytes), size) != Z_OK) {
-    this->MarkInvalid(filename);
+    g_guildMgr->MarkInvalidEmblem(filename);
     return;
   }
 
@@ -65,7 +68,7 @@ void EmblemCache::Store(const void* bytes, std::uint32_t size, std::uint32_t gui
   }
 
   std::ostringstream pattern;
-  pattern << this->accountName << '_' << guild << "_*.ebm";
+  pattern << g_session.m_accountName << '_' << guild << "_*.ebm";
   WIN32_FIND_DATAA found{};
   const HANDLE search = FindFirstFileA((directory + pattern.str()).c_str(), &found);
   std::list<std::string> names;
@@ -97,18 +100,20 @@ void EmblemCache::Store(const void* bytes, std::uint32_t size, std::uint32_t gui
 
 // OFFSET: 0x00D588E0
 // FUNCTION: fn_21954
-void EmblemCache::Receive(std::uint16_t state, std::uint32_t guild, std::uint32_t revision, const unsigned char* bytes, int size) {
+void __stdcall CGuildMgr::ReceiveEmblem(std::uint16_t state, std::uint32_t guild, std::uint32_t revision, const unsigned char* bytes, int size) {
+  CGuildMgr* manager = g_guildMgr;
+
   if (state == 0) {
-    this->guildId = guild;
-    this->version = revision;
-    this->data.clear();
+    manager->m_receiveGuildId = guild;
+    manager->m_receiveVersion = revision;
+    manager->m_receiveData.clear();
   } else if (state == 1) {
-    if (guild == this->guildId && revision == this->version) {
-      this->data.insert(this->data.end(), bytes, bytes + size);
+    if (guild == manager->m_receiveGuildId && revision == manager->m_receiveVersion) {
+      manager->m_receiveData.insert(manager->m_receiveData.end(), bytes, bytes + size);
     }
-  } else if (state == 2 && guild == this->guildId && revision == this->version) {
-    this->Store(this->data.data(), static_cast<std::uint32_t>(this->data.size()), guild, revision);
-    this->Refresh(guild);
+  } else if (state == 2 && guild == manager->m_receiveGuildId && revision == manager->m_receiveVersion) {
+    StoreEmblem(manager->m_receiveData.data(), static_cast<std::uint32_t>(manager->m_receiveData.size()), guild, revision);
+    RefreshEmblem(guild);
   }
 }
 
@@ -122,14 +127,12 @@ void CGuildMgr::UpdateEmblemRequests(
 
 // OFFSET: 0x0065EE50
 // FUNCTION: fn_05180
-void EmblemCache::Refresh(std::uint32_t guild) {
-  if (this->modeWindows) {
-    for (UIWindow* window : *this->modeWindows) {
-      window->SendMsg(nullptr, 60, guild, 0, 0, 0);
-    }
+void CGuildMgr::RefreshEmblem(std::uint32_t guild) {
+  if (g_modeMgr.GetGameMode()) {
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->NotifyUnknown0604(guild);
   }
 
-  UIWindow* window = this->windows.LookupWindow(60);
+  UIWindow* window = g_windowMgr.LookupWindow(60);
 
   if (window) {
     window->Invalidate();
