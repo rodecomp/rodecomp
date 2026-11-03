@@ -19967,3 +19967,38 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   }
 }
+
+#pragma pack(push, 1)
+struct CameraInfoPacket {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ unsigned char action;
+  /* 0003 */ float distance;
+  /* 0007 */ float yaw;
+  /* 000B */ float pitch;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(CameraInfoPacket) == 0x0F);
+static_assert(offsetof(CameraInfoPacket, distance) == 3);
+static_assert(offsetof(CameraInfoPacket, yaw) == 7);
+static_assert(offsetof(CameraInfoPacket, pitch) == 0x0B);
+
+// OFFSET: 0x00D08820
+// FUNCTION: fn_45485
+void CGameMode::HandleCameraInfo(const unsigned char* data) {
+  const CameraInfoPacket* packet = reinterpret_cast<const CameraInfoPacket*>(data);
+  if (packet->action == 1) {
+    UIWindow* window = g_windowMgr.LookupWindow(289);
+    if (window == nullptr) {
+      window = g_windowMgr.sub_A978D0(289);
+    }
+    g_session.unknown_61B1 = g_session.unknown_61B1 == 0;
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(g_session.unknown_61B1 == 1 ? "Camera Info On" : "Camera Info Off"), 0x64FFFF, 0, 0, 0);
+    window->Show(g_session.unknown_61B1);
+  } else if (this->camera != nullptr) {
+    this->camera->camera.desiredDistance = packet->distance;
+    this->camera->camera.desiredYaw = packet->yaw;
+    this->camera->camera.desiredPitch = packet->pitch;
+  }
+}

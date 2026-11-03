@@ -225,6 +225,7 @@ public:
 
   std::string MapName();
   UIBroadcastBalloon* EnsureBroadcastBalloon();
+  void HandleCameraInfo(const unsigned char* data);
   void InitializeCamera();
   void ReloadScene();
   void InitializeState();
