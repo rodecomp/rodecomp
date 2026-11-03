@@ -1,8 +1,8 @@
 #include "Contents/MessageTable.h"
-#include "UI/Shortcuts/ShortcutControls.h"
+#include "Client/Session.h"
+#include "UI/Shortcuts/UIShortCutWnd.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UICheckBox.h"
-#include "UI/Window/UIFrameWnd.h"
 
 #include <new>
 
@@ -10,27 +10,24 @@
 
 // OFFSET: 0x0092A190
 // FUNCTION: fn_12654
-ShortcutControls ShortcutControls::Create(
-  UIFrameWnd& frame, int bankOption, NormalItemSlot** slots, NormalItemSlot** itemSlots
-) {
-  ShortcutControls result;
-  frame.AddCloseButton("F12", 0)->Move(frame.geometry.width - 10, 0);
+void UIShortCutWnd::Slot15(int, int) {
+  this->AddCloseButton("F12", 0)->Move(this->geometry.width - 10, 0);
 
   for (int index = 0; index < 36; ++index) {
-    slots[index] = nullptr;
+    this->m_slots[index] = nullptr;
   }
 
-  result.bank = new (std::nothrow) UICheckBox();
-  result.bank->SetSize(10, 26);
-  result.bank->SetImages(
+  this->m_bank = new (std::nothrow) UICheckBox();
+  this->m_bank->SetSize(10, 26);
+  this->m_bank->SetImages(
     "유저인터페이스\\shortcut_2_bts.bmp",
     "유저인터페이스\\shortcut_1_bts.bmp", ""
   );
-  result.bank->SetId(549);
-  result.bank->Move(3, 4);
-  result.bank->SetChecked(bankOption);
-  result.bank->SetTooltip(LookupMessage(3596));
-  frame.AddChild(result.bank);
+  this->m_bank->SetId(549);
+  this->m_bank->Move(3, 4);
+  this->m_bank->SetChecked(g_session.GetOption(10));
+  this->m_bank->SetTooltip(LookupMessage(3596));
+  this->AddChild(this->m_bank);
 
   const auto create = [&](
                         int id, int x, int y, unsigned char disabled, unsigned char enabled, const char* normal, const char* over, const char* pressed,
@@ -51,32 +48,30 @@ ShortcutControls ShortcutControls::Create(
     button->Invalidate();
     button->Move(x, y);
     button->Enable(enabled);
-    frame.AddChild(button);
+    this->AddChild(button);
 
     return button;
   };
-  result.decrease = create(
+  this->m_decrease = create(
     217, 276, 0, 0, 0, SHORTCUT_RESOURCE "\\Shortcut\\btn_minus_normal.bmp", SHORTCUT_RESOURCE "\\Shortcut\\btn_minus_over.bmp",
     SHORTCUT_RESOURCE "\\Shortcut\\btn_minus_press.bmp", nullptr
   );
-  result.increase = create(
+  this->m_increase = create(
     216, 276, 19, 0, 1, SHORTCUT_RESOURCE "\\Shortcut\\btn_plus_normal.bmp", SHORTCUT_RESOURCE "\\Shortcut\\btn_plus_over.bmp",
     SHORTCUT_RESOURCE "\\Shortcut\\btn_plus_press.bmp", SHORTCUT_RESOURCE "\\Shortcut\\btn_plus_disable.bmp"
   );
 
   for (int index = 0; index < 9; ++index) {
-    itemSlots[index] = nullptr;
+    this->m_itemSlots[index] = nullptr;
   }
 
-  result.showItems = create(
+  this->m_showItems = create(
     588, 247, 33, 1, 0, SHORTCUT_RESOURCE "\\Shortcut\\btn_open_itemslot_normal.bmp", SHORTCUT_RESOURCE "\\Shortcut\\btn_open_itemslot_normal.bmp",
     SHORTCUT_RESOURCE "\\Shortcut\\btn_open_itemslot_press.bmp", nullptr
   );
-  result.hideItems = create(
+  this->m_hideItems = create(
     589, 247, 33, 0, 1, SHORTCUT_RESOURCE "\\Shortcut\\btn_close_itemslot_normal.bmp", SHORTCUT_RESOURCE "\\Shortcut\\btn_close_itemslot_normal.bmp",
     SHORTCUT_RESOURCE "\\Shortcut\\btn_close_itemslot_press.bmp", nullptr
   );
-  frame.SendMsg(nullptr, 23, 0, 0, 0, 0);
-
-  return result;
+  this->SendMsg(nullptr, 23, 0, 0, 0, 0);
 }

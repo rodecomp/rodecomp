@@ -89,9 +89,7 @@ static bool g_subChatMiniSecondCollapsed;
 // OFFSET: 0x009122B0
 // FUNCTION: fn_12528
 UIShortCutWnd::UIShortCutWnd()
-    : UIFrameWnd(0) {
-  this->m_controls.decrease = nullptr;
-  this->m_controls.increase = nullptr;
+    : UIFrameWnd(0), m_decrease(nullptr), m_increase(nullptr) {
 }
 
 // OFFSET: 0x00915D90
@@ -142,12 +140,6 @@ void UIShortCutWnd::Show(int visible) {
   this->SendMsg(nullptr, 23, 0, 0, 0, 0);
   this->Invalidate();
   g_windowMgr.StoreSnapRectangle(this);
-}
-
-// OFFSET: 0x0092A190
-void UIShortCutWnd::Slot15(int, int) {
-  this->m_controls =
-    ShortcutControls::Create(*this, g_session.GetOption(10), this->m_slots, this->m_itemSlots);
 }
 
 // OFFSET: 0x00932F30
@@ -207,8 +199,8 @@ inline void UIShortCutWnd::ClickControl(int id) {
   case 549: {
     const bool checked = g_session.GetOption(10) == 0;
     g_session.SetOption(10, checked ? 1 : 0, 0);
-    this->m_controls.bank->geometry.unknown_0030 = checked ? 1 : 0;
-    this->m_controls.bank->Invalidate();
+    this->m_bank->geometry.unknown_0030 = checked ? 1 : 0;
+    this->m_bank->Invalidate();
 
     for (ShortcutCooldownRecord& record : reinterpret_cast<ShortcutCooldowns&>(g_session.m_requestTimers).records) {
       record.main.clear();
@@ -223,13 +215,13 @@ inline void UIShortCutWnd::ClickControl(int id) {
     g_session.ItemSlotActive() = id == 588;
     const bool active = g_session.ItemSlotActive();
 
-    this->m_controls.showItems->Enable(active ? 0 : 1);
-    this->m_controls.showItems->SetDisabled(active ? 1 : 0);
-    this->m_controls.showItems->Invalidate();
+    this->m_showItems->Enable(active ? 0 : 1);
+    this->m_showItems->SetDisabled(active ? 1 : 0);
+    this->m_showItems->Invalidate();
 
-    this->m_controls.hideItems->Enable(active ? 1 : 0);
-    this->m_controls.hideItems->SetDisabled(active ? 0 : 1);
-    this->m_controls.hideItems->Invalidate();
+    this->m_hideItems->Enable(active ? 1 : 0);
+    this->m_hideItems->SetDisabled(active ? 0 : 1);
+    this->m_hideItems->Invalidate();
 
     this->SendMsg(nullptr, 14, 0, 0, 0, 0);
     return;
@@ -242,12 +234,12 @@ inline void UIShortCutWnd::ClickControl(int id) {
 
 // INLINED
 inline void UIShortCutWnd::PlaceRowButtons() {
-  this->m_controls.decrease->Move(this->geometry.width - this->m_controls.decrease->geometry.width - 2, this->m_grid.rows * 33 - 28);
-  this->m_controls.increase->Move(this->geometry.width - this->m_controls.increase->geometry.width - 2, this->m_grid.rows * 33 - 13);
-  this->m_controls.decrease->Enable(this->m_grid.rows == 1 ? 0 : 1);
-  this->m_controls.increase->Enable(1);
-  this->m_controls.increase->SetDisabled(this->m_grid.rows == 4 ? 1 : 0);
-  this->m_controls.increase->Invalidate();
+  this->m_decrease->Move(this->geometry.width - this->m_decrease->geometry.width - 2, this->m_grid.rows * 33 - 28);
+  this->m_increase->Move(this->geometry.width - this->m_increase->geometry.width - 2, this->m_grid.rows * 33 - 13);
+  this->m_decrease->Enable(this->m_grid.rows == 1 ? 0 : 1);
+  this->m_increase->Enable(1);
+  this->m_increase->SetDisabled(this->m_grid.rows == 4 ? 1 : 0);
+  this->m_increase->Invalidate();
 }
 
 // INLINED
@@ -259,14 +251,14 @@ inline void UIShortCutWnd::ResizeRows() {
 
   this->Resize(this->geometry.width, height);
 
-  this->m_controls.decrease->Move(this->geometry.width - this->m_controls.decrease->geometry.width - 2, this->m_grid.rows * 33 - 28);
-  this->m_controls.increase->Move(this->geometry.width - this->m_controls.increase->geometry.width - 2, this->m_grid.rows * 33 - 13);
-  this->m_controls.showItems->Move(247, height - 10);
-  this->m_controls.hideItems->Move(247, height - 10);
-  this->m_controls.decrease->Enable(this->m_grid.rows == 1 ? 0 : 1);
-  this->m_controls.increase->Enable(1);
-  this->m_controls.increase->SetDisabled(this->m_grid.rows == 4 ? 1 : 0);
-  this->m_controls.increase->Invalidate();
+  this->m_decrease->Move(this->geometry.width - this->m_decrease->geometry.width - 2, this->m_grid.rows * 33 - 28);
+  this->m_increase->Move(this->geometry.width - this->m_increase->geometry.width - 2, this->m_grid.rows * 33 - 13);
+  this->m_showItems->Move(247, height - 10);
+  this->m_hideItems->Move(247, height - 10);
+  this->m_decrease->Enable(this->m_grid.rows == 1 ? 0 : 1);
+  this->m_increase->Enable(1);
+  this->m_increase->SetDisabled(this->m_grid.rows == 4 ? 1 : 0);
+  this->m_increase->Invalidate();
   this->Slot11();
 }
 
@@ -280,14 +272,14 @@ inline void UIShortCutWnd::RestoreLayout(NormalItemSlotWindow* value) {
   const int height = value->height;
   this->Resize(this->geometry.width, height);
   const int extent = g_session.ItemSlotActive() ? height - 43 : height;
-  this->m_controls.showItems->Move(247, height - 10);
-  this->m_controls.hideItems->Move(247, height - 10);
-  this->m_controls.showItems->Enable(g_session.ItemSlotActive() ? 0 : 1);
-  this->m_controls.showItems->SetDisabled(g_session.ItemSlotActive() ? 1 : 0);
-  this->m_controls.showItems->Invalidate();
-  this->m_controls.hideItems->Enable(g_session.ItemSlotActive() ? 1 : 0);
-  this->m_controls.hideItems->SetDisabled(g_session.ItemSlotActive() ? 0 : 1);
-  this->m_controls.hideItems->Invalidate();
+  this->m_showItems->Move(247, height - 10);
+  this->m_hideItems->Move(247, height - 10);
+  this->m_showItems->Enable(g_session.ItemSlotActive() ? 0 : 1);
+  this->m_showItems->SetDisabled(g_session.ItemSlotActive() ? 1 : 0);
+  this->m_showItems->Invalidate();
+  this->m_hideItems->Enable(g_session.ItemSlotActive() ? 1 : 0);
+  this->m_hideItems->SetDisabled(g_session.ItemSlotActive() ? 0 : 1);
+  this->m_hideItems->Invalidate();
   this->m_grid.rows = extent / 33;
   this->PlaceRowButtons();
   this->SendMsg(nullptr, 23, 0, 0, 0, 0);

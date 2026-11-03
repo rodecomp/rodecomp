@@ -1,11 +1,12 @@
 #ifndef RAGNAROK_SOURCE_UI_SHORTCUTS_UISHORTCUTWND_H
 #define RAGNAROK_SOURCE_UI_SHORTCUTS_UISHORTCUTWND_H
 
-#include "UI/Shortcuts/ShortcutControls.h"
 #include "UI/Shortcuts/ShortcutGrid.h"
 #include "UI/Window/UIFrameWnd.h"
 
 struct ModeDragState;
+class UICheckBox;
+class UIBitmapButton;
 struct NormalItemSlot;
 struct NormalItemSlotWindow;
 
@@ -38,16 +39,19 @@ private:
   void RestoreLayout(NormalItemSlotWindow* value);
 
 private:
-  ShortcutControls m_controls;
+  UICheckBox* m_bank;
   NormalItemSlotWindow* m_saved;
+  UIBitmapButton* m_decrease;
+  UIBitmapButton* m_increase;
   NormalItemSlot* m_slots[36];
   ShortcutGrid m_grid;
   NormalItemSlot* m_itemSlots[9];
-  void* unknown_painting;
+  UIBitmapButton* m_showItems;
+  UIBitmapButton* m_hideItems;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(UIShortCutWnd) == 408);
+static_assert(sizeof(UIShortCutWnd) == 0x18C + 8);
 #endif
 
 #endif
