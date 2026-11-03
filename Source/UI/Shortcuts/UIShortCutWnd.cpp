@@ -1,4 +1,5 @@
 #include "Client/Session.h"
+#include "Client/Input/Mouse.h"
 #include "Contents/UserData/CharacterConfigSave.h"
 #include "Client/Mode/ModeDragState.h"
 #include "Client/Mode/ModeEvents.h"
@@ -6,13 +7,7 @@
 #include "Client/Mode/ModeMgr.h"
 #include "UI/Shortcuts/ShortcutActivation.h"
 #include "Contents/Skills/ClientSkills.h"
-#include "UI/Shortcuts/ShortcutControlEvents.h"
 #include "UI/Shortcuts/ShortcutCooldowns.h"
-#include "UI/Shortcuts/ShortcutDetails.h"
-#include "UI/Shortcuts/ShortcutDrop.h"
-#include "UI/Shortcuts/ShortcutLayout.h"
-#include "UI/Shortcuts/ShortcutPainting.h"
-#include "UI/Shortcuts/ShortcutPress.h"
 #include "UI/Window/UIWindowMgr.inl"
 #include "UI/Shortcuts/UIShortCutWnd.h"
 #include "UI/Chat/UINewChatWnd.h"
@@ -94,8 +89,8 @@ static bool g_subChatMiniSecondCollapsed;
 
 // OFFSET: 0x009122B0
 // FUNCTION: fn_12528
-UIShortCutWnd::UIShortCutWnd(ShortcutWindowContext& shortcuts)
-    : UIFrameWnd(0), m_shortcuts(&shortcuts) {
+UIShortCutWnd::UIShortCutWnd()
+    : UIFrameWnd(0) {
   this->m_controls.decrease = nullptr;
   this->m_controls.increase = nullptr;
 }
@@ -121,11 +116,6 @@ void UIShortCutWnd::Move(int x, int y) {
   const int top = (this->geometry.y + y);
   this->geometry.y = top < 0 ? 0 : top;
   g_windowMgr.StoreSnapRectangle(this);
-}
-
-// OFFSET: 0x00917640
-void UIShortCutWnd::Slot10(int x, int y, std::intptr_t value) {
-  this->m_shortcuts->drop.Drop(*this, this->m_grid, x, y, *reinterpret_cast<const ModeDragState*>(value));
 }
 
 // OFFSET: 0x00940FE0
@@ -164,26 +154,16 @@ void UIShortCutWnd::Slot15(int, int) {
 // OFFSET: 0x00932F30
 // FUNCTION: fn_12720
 void UIShortCutWnd::Slot19() {
-  const int x = (this->m_shortcuts->cursorX - this->geometry.x);
-  const int y = (this->m_shortcuts->cursorY - this->geometry.y);
-  this->m_grid.hovered = this->m_grid.HitTest(x, y, this->m_shortcuts->itemSlotActive, this->m_shortcuts->currentRow);
+  const int x = (g_mouse.x - this->geometry.x);
+  const int y = (g_mouse.y - this->geometry.y);
+  this->m_grid.hovered = this->m_grid.HitTest(x, y, g_session.ItemSlotActive(), g_session.m_hotkeyPage);
   this->Invalidate();
-}
-
-// OFFSET: 0x0092F8E0
-void UIShortCutWnd::Paint() {
-  this->m_shortcuts->painting.Paint(*this, this->m_grid, this->m_slots, this->m_itemSlots);
-}
-
-// OFFSET: 0x009310E0
-void UIShortCutWnd::Slot25(int x, int y) {
-  this->m_shortcuts->press.Press(*this, this->m_grid, x, y, this->m_slots, this->m_itemSlots);
 }
 
 // OFFSET: 0x00930900
 void UIShortCutWnd::Slot26(int x, int y) {
   ActivateShortcut(
-    *this, this->m_grid, x, y, this->m_shortcuts->itemSlotActive, this->m_shortcuts->currentRow, this->m_slots, this->m_shortcuts->automatic
+    *this, this->m_grid, x, y, g_session.ItemSlotActive(), g_session.m_hotkeyPage, this->m_slots, *reinterpret_cast<AutomaticSkills*>(g_session.unknown_7FB4)
   );
 }
 
@@ -194,70 +174,65 @@ void UIShortCutWnd::Slot31(int x, int y) {
   this->Slot11();
 }
 
-// OFFSET: 0x009332D0
-void UIShortCutWnd::Slot32(int x, int y) {
-  this->m_shortcuts->details.Open(*this, this->m_grid, x, y, this->m_slots, this->m_itemSlots);
-}
-
 // INLINED
-inline void ShortcutControlEvents::Click(int id) {
+inline void UIShortCutWnd::ClickControl(int id) {
   switch (id) {
   case 201:
     g_windowMgr.ShowShortcutWindow(0);
     return;
 
   case 216:
-    if (this->window.geometry.visible == 0) {
+    if (this->geometry.visible == 0) {
       g_windowMgr.ShowShortcutWindow(1);
       return;
     }
 
-    this->grid.rows = this->grid.rows + 1;
+    this->m_grid.rows = this->m_grid.rows + 1;
 
-    if (this->grid.rows > 4) {
-      this->grid.rows = 1;
+    if (this->m_grid.rows > 4) {
+      this->m_grid.rows = 1;
       g_windowMgr.ShowShortcutWindow(0);
     }
 
-    this->window.SendMsg(nullptr, 14, 0, 0, 0, 0);
+    this->SendMsg(nullptr, 14, 0, 0, 0, 0);
     return;
 
   case 217:
-    if (this->grid.rows > 1) {
-      --this->grid.rows;
+    if (this->m_grid.rows > 1) {
+      --this->m_grid.rows;
     }
 
-    this->window.SendMsg(nullptr, 14, 0, 0, 0, 0);
+    this->SendMsg(nullptr, 14, 0, 0, 0, 0);
     return;
 
   case 549: {
     const bool checked = g_session.GetOption(10) == 0;
     g_session.SetOption(10, checked ? 1 : 0, 0);
-    this->controls.bank->geometry.unknown_0030 = checked ? 1 : 0;
-    this->controls.bank->Invalidate();
+    this->m_controls.bank->geometry.unknown_0030 = checked ? 1 : 0;
+    this->m_controls.bank->Invalidate();
 
-    for (ShortcutCooldownRecord& record : this->cooldowns.records) {
+    for (ShortcutCooldownRecord& record : reinterpret_cast<ShortcutCooldowns&>(g_session.m_requestTimers).records) {
       record.main.clear();
     }
 
-    this->window.SendMsg(nullptr, 23, 0, 0, 0, 0);
+    this->SendMsg(nullptr, 23, 0, 0, 0, 0);
     return;
   }
 
   case 588:
   case 589: {
-    this->itemSlotActive = id == 588;
-    const bool active = this->itemSlotActive;
+    g_session.ItemSlotActive() = id == 588;
+    const bool active = g_session.ItemSlotActive();
 
-    this->controls.showItems->Enable(active ? 0 : 1);
-    this->controls.showItems->SetDisabled(active ? 1 : 0);
-    this->controls.showItems->Invalidate();
+    this->m_controls.showItems->Enable(active ? 0 : 1);
+    this->m_controls.showItems->SetDisabled(active ? 1 : 0);
+    this->m_controls.showItems->Invalidate();
 
-    this->controls.hideItems->Enable(active ? 1 : 0);
-    this->controls.hideItems->SetDisabled(active ? 0 : 1);
-    this->controls.hideItems->Invalidate();
+    this->m_controls.hideItems->Enable(active ? 1 : 0);
+    this->m_controls.hideItems->SetDisabled(active ? 0 : 1);
+    this->m_controls.hideItems->Invalidate();
 
-    this->window.SendMsg(nullptr, 14, 0, 0, 0, 0);
+    this->SendMsg(nullptr, 14, 0, 0, 0, 0);
     return;
   }
 
@@ -267,69 +242,57 @@ inline void ShortcutControlEvents::Click(int id) {
 }
 
 // INLINED
-inline void ShortcutLayout::PlaceRowButtons() {
-  this->decrease.Move(this->window.geometry.width - this->decrease.geometry.width - 2, this->grid.rows * 33 - 28);
-  this->increase.Move(this->window.geometry.width - this->increase.geometry.width - 2, this->grid.rows * 33 - 13);
-  this->decrease.Enable(this->grid.rows == 1 ? 0 : 1);
-  this->increase.Enable(1);
-  this->increase.SetDisabled(this->grid.rows == 4 ? 1 : 0);
-  this->increase.Invalidate();
+inline void UIShortCutWnd::PlaceRowButtons() {
+  this->m_controls.decrease->Move(this->geometry.width - this->m_controls.decrease->geometry.width - 2, this->m_grid.rows * 33 - 28);
+  this->m_controls.increase->Move(this->geometry.width - this->m_controls.increase->geometry.width - 2, this->m_grid.rows * 33 - 13);
+  this->m_controls.decrease->Enable(this->m_grid.rows == 1 ? 0 : 1);
+  this->m_controls.increase->Enable(1);
+  this->m_controls.increase->SetDisabled(this->m_grid.rows == 4 ? 1 : 0);
+  this->m_controls.increase->Invalidate();
 }
 
 // INLINED
-inline void ShortcutLayout::ResizeRows() {
-  const int height = (this->itemSlotActive ? 43 : 10) + this->grid.rows * 33;
-  if (height == this->window.geometry.height) {
+inline void UIShortCutWnd::ResizeRows() {
+  const int height = (g_session.ItemSlotActive() ? 43 : 10) + this->m_grid.rows * 33;
+  if (height == this->geometry.height) {
     return;
   }
 
-  this->window.Resize(this->window.geometry.width, height);
+  this->Resize(this->geometry.width, height);
 
-  this->decrease.Move(this->window.geometry.width - this->decrease.geometry.width - 2, this->grid.rows * 33 - 28);
-  this->increase.Move(this->window.geometry.width - this->increase.geometry.width - 2, this->grid.rows * 33 - 13);
-  this->showItems.Move(247, height - 10);
-  this->hideItems.Move(247, height - 10);
-  this->decrease.Enable(this->grid.rows == 1 ? 0 : 1);
-  this->increase.Enable(1);
-  this->increase.SetDisabled(this->grid.rows == 4 ? 1 : 0);
-  this->increase.Invalidate();
-  this->window.Slot11();
+  this->m_controls.decrease->Move(this->geometry.width - this->m_controls.decrease->geometry.width - 2, this->m_grid.rows * 33 - 28);
+  this->m_controls.increase->Move(this->geometry.width - this->m_controls.increase->geometry.width - 2, this->m_grid.rows * 33 - 13);
+  this->m_controls.showItems->Move(247, height - 10);
+  this->m_controls.hideItems->Move(247, height - 10);
+  this->m_controls.decrease->Enable(this->m_grid.rows == 1 ? 0 : 1);
+  this->m_controls.increase->Enable(1);
+  this->m_controls.increase->SetDisabled(this->m_grid.rows == 4 ? 1 : 0);
+  this->m_controls.increase->Invalidate();
+  this->Slot11();
 }
 
 // INLINED
-inline void ShortcutLayout::Restore(NormalItemSlotWindow* value) {
-  this->saved = value;
-  if (!value->IsValid(this->screenWidth, this->screenHeight, this->itemSlotActive)) {
+inline void UIShortCutWnd::RestoreLayout(NormalItemSlotWindow* value) {
+  this->m_saved = value;
+  if (!value->IsValid(g_windowMgr.unknown_047C, g_windowMgr.unknown_0480, g_session.ItemSlotActive())) {
     value->Reset();
   }
 
   const int height = value->height;
-  this->window.Resize(this->window.geometry.width, height);
-  const int extent = this->itemSlotActive ? height - 43 : height;
-  this->showItems.Move(247, height - 10);
-  this->hideItems.Move(247, height - 10);
-  this->showItems.Enable(this->itemSlotActive ? 0 : 1);
-  this->showItems.SetDisabled(this->itemSlotActive ? 1 : 0);
-  this->showItems.Invalidate();
-  this->hideItems.Enable(this->itemSlotActive ? 1 : 0);
-  this->hideItems.SetDisabled(this->itemSlotActive ? 0 : 1);
-  this->hideItems.Invalidate();
-  this->grid.rows = extent / 33;
+  this->Resize(this->geometry.width, height);
+  const int extent = g_session.ItemSlotActive() ? height - 43 : height;
+  this->m_controls.showItems->Move(247, height - 10);
+  this->m_controls.hideItems->Move(247, height - 10);
+  this->m_controls.showItems->Enable(g_session.ItemSlotActive() ? 0 : 1);
+  this->m_controls.showItems->SetDisabled(g_session.ItemSlotActive() ? 1 : 0);
+  this->m_controls.showItems->Invalidate();
+  this->m_controls.hideItems->Enable(g_session.ItemSlotActive() ? 1 : 0);
+  this->m_controls.hideItems->SetDisabled(g_session.ItemSlotActive() ? 0 : 1);
+  this->m_controls.hideItems->Invalidate();
+  this->m_grid.rows = extent / 33;
   this->PlaceRowButtons();
-  this->window.SendMsg(nullptr, 23, 0, 0, 0, 0);
-  this->window.Move(value->x, value->y);
-}
-
-// OFFSET: 0x00940FE0
-inline void ShortcutLayout::Persist() {
-  if (!this->saved) {
-    return;
-  }
-
-  this->saved->x = this->window.geometry.x;
-  this->saved->y = this->window.geometry.y;
-  this->saved->width = this->window.geometry.width;
-  this->saved->height = this->window.geometry.height;
+  this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  this->Move(value->x, value->y);
 }
 
 // INLINED
@@ -407,31 +370,14 @@ inline void UseShortcutSlot(const NormalItemSlot& slot) {
 // OFFSET: 0x0093B450
 // FUNCTION: fn_12760
 int UIShortCutWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  ShortcutWindowContext& owner = *this->m_shortcuts;
-
   switch (message) {
-  case 6: {
-    ShortcutControlEvents events{*this, this->m_grid, this->m_controls, reinterpret_cast<ShortcutCooldowns&>(g_session.m_requestTimers), owner.itemSlotActive};
-    events.Click(static_cast<int>(a));
+  case 6:
+    this->ClickControl(static_cast<int>(a));
     return 0;
-  }
 
-  case 14: {
-    ShortcutLayout layout{
-      *this,
-      this->m_grid,
-      this->m_saved,
-      *this->m_controls.decrease,
-      *this->m_controls.increase,
-      *this->m_controls.showItems,
-      *this->m_controls.hideItems,
-      owner.itemSlotActive,
-      g_windowMgr.unknown_047C,
-      g_windowMgr.unknown_0480
-    };
-    layout.ResizeRows();
+  case 14:
+    this->ResizeRows();
     return 0;
-  }
 
   case 23: {
     ShortcutCooldowns& cooldowns = reinterpret_cast<ShortcutCooldowns&>(g_session.m_requestTimers);
@@ -480,22 +426,9 @@ int UIShortCutWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     return 0;
   }
 
-  case 34: {
-    ShortcutLayout layout{
-      *this,
-      this->m_grid,
-      this->m_saved,
-      *this->m_controls.decrease,
-      *this->m_controls.increase,
-      *this->m_controls.showItems,
-      *this->m_controls.hideItems,
-      owner.itemSlotActive,
-      g_windowMgr.unknown_047C,
-      g_windowMgr.unknown_0480
-    };
-    layout.Restore(reinterpret_cast<NormalItemSlotWindow*>(a));
+  case 34:
+    this->RestoreLayout(reinterpret_cast<NormalItemSlotWindow*>(a));
     return 0;
-  }
 
   case 41: {
     const int index = 9 * static_cast<int>(b) + static_cast<int>(a);
@@ -504,7 +437,7 @@ int UIShortCutWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
   }
 
   case 143:
-    if (reinterpret_cast<ShortcutCooldowns&>(g_session.m_requestTimers).RotateRows(static_cast<int>(a), static_cast<int>(b), g_session.unknown_06FC, g_session.unknown_06A8, owner.clock)) {
+    if (reinterpret_cast<ShortcutCooldowns&>(g_session.m_requestTimers).RotateRows(static_cast<int>(a), static_cast<int>(b), g_session.unknown_06FC, g_session.unknown_06A8)) {
       this->SendMsg(nullptr, 23, 0, 0, 0, 0);
     }
 

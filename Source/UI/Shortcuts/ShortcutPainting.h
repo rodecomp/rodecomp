@@ -14,20 +14,8 @@ class FontCache;
 struct TextLocale;
 
 struct ShortcutPainting {
-  ResourceMgr& resources;
-  FontCache& fonts;
-  const TextLocale& locale;
-  const std::list<ITEM_INFO>& inventory;
-  std::list<ShortcutCooldownIcon>& icons;
-  ShortcutCooldowns& cooldowns;
-  CooldownDrawing& drawing;
-  const CooldownClock& clock;
   RenderCommandPool& commands;
   CRenderSystemBase& system;
-  const bool& itemSlotActive;
-  const unsigned char& currentRow;
-
-  void Paint(UIWindow& window, const ShortcutGrid& grid, const NormalItemSlot* const* slots, const NormalItemSlot* const* itemSlots);
 };
 
 #endif

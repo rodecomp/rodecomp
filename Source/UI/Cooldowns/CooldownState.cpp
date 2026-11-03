@@ -1,4 +1,5 @@
 #include "UI/Cooldowns/CooldownState.h"
+#include "Client/Replay.h"
 
 #include <cmath>
 #include <cstring>
@@ -6,8 +7,8 @@
 #include <timeapi.h>
 
 // INLINED
-std::uint32_t CooldownClock::Now() const {
-  return this->restricted ? this->serverTick : timeGetTime();
+std::uint32_t CooldownNow() {
+  return g_replayAnimationScaling ? Replay::Instance().elapsed : timeGetTime();
 }
 
 // OFFSET: 0x00CA4F30
@@ -45,14 +46,14 @@ void CooldownState::AddEdge(unsigned key, float origin, int radius, unsigned cha
 
 // OFFSET: 0x00CA5180
 // FUNCTION: fn_20948
-float CooldownState::Update(const CooldownClock& clock) {
-  std::uint32_t progress = clock.Now() + this->elapsed - this->start;
+float CooldownState::Update() {
+  std::uint32_t progress = CooldownNow() + this->elapsed - this->start;
   if (this->duration - progress <= 60000 && this->finalMinute == 0 && this->reverse == 1) {
     const std::uint32_t previous = this->duration;
     this->finalMinute = 1;
     this->duration = 60000;
     this->elapsed = progress - previous + 60000;
-    this->start = clock.Now();
+    this->start = CooldownNow();
     this->angle = 0;
     this->color = 0xAAFF6633u;
     progress = this->elapsed;

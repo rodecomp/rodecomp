@@ -13,16 +13,8 @@ struct ITEM_INFO;
 class AutomaticSkills;
 
 struct QuickSlotPainting {
-  FontCache& fonts;
-  const TextLocale& locale;
-  const std::list<ITEM_INFO>& inventory;
-  std::list<ShortcutCooldownIcon>& icons;
-  ShortcutCooldowns& cooldowns;
-  CooldownDrawing& drawing;
-  const CooldownClock& clock;
   RenderCommandPool& commands;
   CRenderSystemBase& system;
-  AutomaticSkills& automatic;
 };
 
 #pragma pack(push, 1)
@@ -37,7 +29,7 @@ struct QuickSlotWndInfo;
 
 class UIQuickSlotWnd : public UIFrameWnd {
 public:
-  UIQuickSlotWnd(QuickSlotPainting& painting);
+  UIQuickSlotWnd();
   void Slot10(int x, int y, std::intptr_t argument) override;
   void Slot11() override;
   void Slot15(int width, int height) override;

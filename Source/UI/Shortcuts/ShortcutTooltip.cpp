@@ -28,7 +28,7 @@ namespace {
 void UIShortCutWnd::Slot28(int x, int y) {
   UIWindow& window = *this;
   ShortcutGrid& grid = this->m_grid;
-  const bool itemSlotActive = this->m_shortcuts->itemSlotActive;
+  const bool itemSlotActive = g_session.ItemSlotActive();
   const int column = grid.HitTest(x, y, itemSlotActive, g_session.m_hotkeyPage);
   if (column != grid.hovered) {
     grid.hovered = column;

@@ -886,6 +886,10 @@ public:
   void LoadExternalSettings();
   void ReloadLanguageTables();
   float GetOptionFloat(const char* key, float fallback);
+  // INLINED
+  bool& ItemSlotActive() {
+    return reinterpret_cast<bool&>(this->unknown_8128[5]);
+  }
   int GetOptionInteger(const char* key, int fallback);
   std::string GetOptionString(const char* key, const char* fallback);
   GUID GetOptionGuid(const char* key, const GUID& fallback);

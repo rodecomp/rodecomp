@@ -5,34 +5,14 @@
 #include "UI/Shortcuts/ShortcutGrid.h"
 #include "UI/Window/UIFrameWnd.h"
 
-struct ShortcutPainting;
-struct ShortcutPress;
-struct ShortcutDrop;
-struct ShortcutDetails;
-struct CooldownClock;
 struct ModeDragState;
+struct ShortcutPainting;
 struct NormalItemSlot;
 struct NormalItemSlotWindow;
-class AutomaticSkills;
-
-struct ShortcutWindowContext {
-  ShortcutPainting& painting;
-  ShortcutPress& press;
-  ShortcutDrop& drop;
-  ShortcutDetails& details;
-  AutomaticSkills& automatic;
-  const CooldownClock& clock;
-  bool& itemSlotActive;
-  unsigned char& currentRow;
-  int& rotation0;
-  int& rotation1;
-  const int& cursorX;
-  const int& cursorY;
-};
 
 class UIShortCutWnd : public UIFrameWnd {
 public:
-  UIShortCutWnd(ShortcutWindowContext& shortcuts);
+  UIShortCutWnd();
   ~UIShortCutWnd() override;
 
   bool Slot03() override;
@@ -53,12 +33,18 @@ public:
   friend class CGameMode;
 
 private:
+  void ClickControl(int id);
+  void PlaceRowButtons();
+  void ResizeRows();
+  void RestoreLayout(NormalItemSlotWindow* value);
+
+private:
   ShortcutControls m_controls;
   NormalItemSlotWindow* m_saved;
   NormalItemSlot* m_slots[36];
   ShortcutGrid m_grid;
   NormalItemSlot* m_itemSlots[9];
-  ShortcutWindowContext* m_shortcuts;
+  ShortcutPainting* m_painting;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

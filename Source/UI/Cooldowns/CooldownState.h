@@ -13,11 +13,7 @@ struct CooldownEdge {
   /* 000C */ unsigned char increasing;
 };
 
-struct CooldownClock {
-  const bool& restricted;
-  const std::uint32_t& serverTick;
-  std::uint32_t Now() const;
-};
+std::uint32_t CooldownNow();
 
 struct CooldownState {
   /* 0000 */ std::map<unsigned, CooldownEdge> edges;
@@ -40,7 +36,7 @@ struct CooldownState {
   ~CooldownState();
   void ClearEdges();
   void AddEdge(unsigned segment, float origin, int radius, unsigned char increasing);
-  float Update(const CooldownClock& clock);
+  float Update();
 };
 
 static_assert(sizeof(CooldownEdge) == 16);

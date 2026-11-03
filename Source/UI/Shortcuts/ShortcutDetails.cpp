@@ -1,13 +1,14 @@
 #include "Client/Session.h"
-#include "UI/Shortcuts/ShortcutDetails.h"
-#include "UI/Shortcuts/SkillDetailClose.h"
+#include "UI/Shortcuts/UIShortCutWnd.h"
+#include "UI/Skill/UISkillDescribeWnd.h"
+#include "Render/DX7/RenderSystemDX7.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/WindowManagerWindows.h"
 #include "UI/Window/UIWindowMgr.h"
 
 namespace {
   // INLINED
-  void ToScreen(const UIWindow& window, int& x, int& y) {
+  void ScreenPosition(const UIWindow& window, int& x, int& y) {
     x = (x + window.geometry.x);
     y = (y + window.geometry.y);
 
@@ -18,53 +19,25 @@ namespace {
   }
 }
 
-// INLINED
-inline bool SkillDetailClose::Close() {
-  if (this->window) {
-    this->saved[46] = {this->window->geometry.x, this->window->geometry.y, this->window->geometry.width, this->window->geometry.height};
-  }
-
-  if (!this->modalStack.empty() && this->modalStack.back() != 0) {
-    return false;
-  }
-
-  if (this->window == this->reference_4F1D4) {
-    this->reference_4F1D4 = nullptr;
-  }
-
-  bool removed = false;
-
-  if (this->window) {
-    this->retirement.Schedule(this->window);
-    this->window = nullptr;
-    this->visible = 0;
-    removed = true;
-  }
-
-  this->windowsById.erase(46);
-
-  if (removed) {
-    g_windowMgr.RemoveOrder(46);
-  }
-
-  return removed;
-}
-
 // OFFSET: 0x009332D0
 // FUNCTION: fn_12724
-void ShortcutDetails::Open(UIWindow& window, ShortcutGrid& grid, int x, int y, const NormalItemSlot* const* slots, const NormalItemSlot* const* itemSlots) {
-  const int column = grid.HitTest(x, y, this->itemSlotActive, this->currentRow);
+void UIShortCutWnd::Slot32(int x, int y) {
+  UIWindow& window = *this;
+  ShortcutGrid& grid = this->m_grid;
+  const NormalItemSlot* const* slots = this->m_slots;
+  const NormalItemSlot* const* itemSlots = this->m_itemSlots;
+  const int column = grid.HitTest(x, y, g_session.ItemSlotActive(), g_session.m_hotkeyPage);
 
   if (column == -1) {
     return;
   }
 
-  const int index = 9 * this->currentRow + column;
+  const int index = 9 * g_session.m_hotkeyPage + column;
   const int limit = 9 * grid.rows;
   const NormalItemSlot* slot;
 
   if (limit <= index) {
-    if (!this->itemSlotActive) {
+    if (!g_session.ItemSlotActive()) {
       return;
     }
 
@@ -78,10 +51,10 @@ void ShortcutDetails::Open(UIWindow& window, ShortcutGrid& grid, int x, int y, c
   }
 
   if (limit <= index || slot->unknown_0000 == 0) {
-    ITEM_INFO item = LookupClientItem(this->inventory, static_cast<int>(slot->itemId), 1);
+    ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(slot->itemId), 1);
 
     if (item.unknown_0000[1] != 0) {
-      UIWindow* detail = this->windows.EnsureWindow(12);
+      UIWindow* detail = g_windowMgr.EnsureWindow(12);
       detail->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     }
 
@@ -94,11 +67,11 @@ void ShortcutDetails::Open(UIWindow& window, ShortcutGrid& grid, int x, int y, c
     return;
   }
 
-  UIWindow* detail = this->windows.EnsureWindow(46);
+  UIWindow* detail = g_windowMgr.EnsureWindow(46);
 
   if (detail) {
-    if (this->describedSkill == skill.id) {
-      this->skillClose.Close();
+    if (static_cast<std::uint32_t>(static_cast<UISkillDescribeWnd*>(detail)->m_skillId) == skill.id) {
+      g_windowMgr.CloseWindow(46);
     } else {
       detail->SendMsg(nullptr, 61, skill.id, 0, 0, 0);
     }
@@ -106,17 +79,17 @@ void ShortcutDetails::Open(UIWindow& window, ShortcutGrid& grid, int x, int y, c
 
   int originX = 0;
   int originY = 0;
-  ToScreen(window, originX, originY);
+  ScreenPosition(window, originX, originY);
   const int targetX = (originX + x);
   int adjustment = 0;
 
-  if (this->screenWidth - static_cast<unsigned>(targetX) < static_cast<unsigned>(detail->geometry.width)) {
-    adjustment = targetX + detail->geometry.width - static_cast<int>(this->screenWidth);
+  if (static_cast<unsigned>(g_configuredScreenWidth) - static_cast<unsigned>(targetX) < static_cast<unsigned>(detail->geometry.width)) {
+    adjustment = targetX + detail->geometry.width - static_cast<int>(static_cast<unsigned>(g_configuredScreenWidth));
   }
 
   const int rowY = 33 * (y / 33);
   const int targetY =
-    static_cast<float>(originY) <= static_cast<float>(this->screenHeight) * 0.5f ? ((originY + rowY) + 33) : ((originY + rowY) - detail->geometry.height);
+    static_cast<float>(originY) <= static_cast<float>(static_cast<unsigned>(g_configuredScreenHeight)) * 0.5f ? ((originY + rowY) + 33) : ((originY + rowY) - detail->geometry.height);
 
   detail->Move(targetX - adjustment, targetY);
 }

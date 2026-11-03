@@ -12,10 +12,6 @@
 
 #include <string>
 
-struct LayoutWindowContexts {
-  QuickSlotPainting& quickSlots;
-};
-
 // GLOBAL: gl_25184
 bool g_searchStoreInfoCreated;
 
@@ -37,7 +33,6 @@ UIWindow* UIWindowMgr::CreateLayoutWindow(int id) {
   std::string yKey;
   std::string xKey;
   if (window == nullptr) {
-    LayoutWindowContexts& contexts = *reinterpret_cast<LayoutWindowContexts*>(this);
     switch (id) {
     case 0x9C:
       window = new UIHotKeyWnd();
@@ -47,7 +42,7 @@ UIWindow* UIWindowMgr::CreateLayoutWindow(int id) {
       window = new UIEntryQueueWnd();
       break;
     case 0x9F:
-      window = new UIQuickSlotWnd(contexts.quickSlots);
+      window = new UIQuickSlotWnd();
       break;
     case 0xB5:
       window = new UISerachStoreInfoWnd();

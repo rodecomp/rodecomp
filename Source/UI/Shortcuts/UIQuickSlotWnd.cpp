@@ -50,7 +50,6 @@ void UIQuickSlotWnd::Slot25(int x, int y) {
     return;
   }
 
-  QuickSlotPainting& painting = *this->m_painting;
   const QuickSlotEntry entry = this->m_entries[index];
   if (entry.skill) {
     CSkillInfo skill = g_session.LookupSkill(entry.id);
@@ -60,7 +59,7 @@ void UIQuickSlotWnd::Slot25(int x, int y) {
       }
     }
   } else if (entry.id != 0) {
-    ITEM_INFO item = LookupClientItem(painting.inventory, static_cast<int>(entry.id), 1);
+    ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(entry.id), 1);
     if (item.unknown_0000[1] > 0) {
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
       mode->drag.BeginItem(g_windowMgr, 16, item, item.quantity, -1);
@@ -94,7 +93,6 @@ void UIQuickSlotWnd::Slot28(int x, int y) {
   int screenX = (x - 4) / 29 * 29 + 4;
   this->ToScreen(screenX, screenY);
   std::string text;
-  QuickSlotPainting& painting = *this->m_painting;
   const std::uint32_t id = this->m_entries[this->m_selected].id;
   if (id == 0) {
     text.clear();
@@ -110,7 +108,7 @@ void UIQuickSlotWnd::Slot28(int x, int y) {
       text = SkillUseTextFlat(skill.DisplayName(script), level, sp, ap);
     }
   } else {
-    ITEM_INFO item = LookupClientItem(painting.inventory, static_cast<int>(id), 1);
+    ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(id), 1);
     text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(183), item.DisplayName(0).c_str(), item.quantity));
   }
 
@@ -167,7 +165,7 @@ void UIQuickSlotWnd::Slot32(int x, int y) {
       detail->Move(originX - adjustment + x, originY + 33 + rowY);
     }
   } else if (entry.id != 0) {
-    ITEM_INFO item = LookupClientItem(this->m_painting->inventory, static_cast<int>(entry.id), 1);
+    ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(entry.id), 1);
     if (item.unknown_0000[1] > 0) {
       UIWindow* detail = g_windowMgr.EnsureWindow(12);
       detail->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
@@ -177,8 +175,8 @@ void UIQuickSlotWnd::Slot32(int x, int y) {
 
 // OFFSET: 0x009118C0
 // FUNCTION: fn_12520
-UIQuickSlotWnd::UIQuickSlotWnd(QuickSlotPainting& painting)
-    : UIFrameWnd(0), m_selected(-1), m_painting(&painting) {
+UIQuickSlotWnd::UIQuickSlotWnd()
+    : UIFrameWnd(0), m_selected(-1) {
   for (int i = 0; i < 2; ++i) {
     this->m_entries[i].skill = 0;
     this->m_entries[i].id = 0;
@@ -203,7 +201,7 @@ int UIQuickSlotWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       }
 
       if (source.unknown_0000 == 0) {
-        ITEM_INFO item = LookupClientItem(this->m_painting->inventory, static_cast<int>(source.itemId), 1);
+        ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(source.itemId), 1);
         if (item.unknown_0000[1] != 0 && item.identified != 0) {
           entry.id = source.itemId;
         }
@@ -212,7 +210,7 @@ int UIQuickSlotWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
 
       CSkillInfo skill = g_session.m_skillBundle.Lookup(source.itemId);
       if (skill.available == 0) {
-        std::list<ShortcutCooldownRecord>& records = this->m_painting->cooldowns.records;
+        std::list<ShortcutCooldownRecord>& records = reinterpret_cast<ShortcutCooldowns&>(g_session.m_requestTimers).records;
         const auto record = std::find_if(records.begin(), records.end(), [&](const ShortcutCooldownRecord& value) { return value.id == source.itemId; });
         if (record != records.end()) {
           const auto state = std::find_if(record->alternate.begin(), record->alternate.end(), [&](const CooldownState& value) { return value.slot == index; });
@@ -260,7 +258,7 @@ int UIQuickSlotWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
         return 0;
       }
 
-      ITEM_INFO item = LookupClientItem(this->m_painting->inventory, static_cast<int>(entry.id), 1);
+      ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(entry.id), 1);
       if (item.unknown_0000[1] != 0) {
         CMode* mode = g_modeMgr.GetGameMode();
         switch (item.unknown_0000[0]) {

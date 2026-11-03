@@ -4,6 +4,8 @@
 #include "Resource/ResourceMgr.h"
 #include "UI/Shop/ItemDrawing.h"
 #include "UI/Shortcuts/ShortcutPainting.h"
+#include "UI/Shortcuts/UIShortCutWnd.h"
+#include "UI/Cooldowns/CooldownOwner.h"
 #include "UI/Window/UIWindow.h"
 
 #include <cstdio>
@@ -56,29 +58,34 @@ void UIWindow::DrawRightOutlinedText(
 
 // OFFSET: 0x0092F8E0
 // FUNCTION: fn_12680
-void ShortcutPainting::Paint(UIWindow& window, const ShortcutGrid& grid, const NormalItemSlot* const* slots, const NormalItemSlot* const* itemSlots) {
-  CBitmapRes* frame = Load(this->resources, "\\Shortcut\\shortcut_frame.bmp");
+void UIShortCutWnd::Paint() {
+  UIWindow& window = *this;
+  const ShortcutGrid& grid = this->m_grid;
+  const NormalItemSlot* const* slots = this->m_slots;
+  const NormalItemSlot* const* itemSlots = this->m_itemSlots;
+  ResourceMgr& resources = ResourceMgr::Instance();
+  CBitmapRes* frame = Load(resources, "\\Shortcut\\shortcut_frame.bmp");
 
   for (int row = 0; row < grid.rows; ++row) {
     Bitmap(window, frame, 0, (row * 33), false);
   }
 
-  if (this->itemSlotActive) {
-    Bitmap(window, Load(this->resources, "\\Shortcut\\shortcut_frame_item.bmp"), 0, grid.rows > 0 ? (grid.rows * 33) : 0, false);
+  if (g_session.ItemSlotActive()) {
+    Bitmap(window, Load(resources, "\\Shortcut\\shortcut_frame_item.bmp"), 0, grid.rows > 0 ? (grid.rows * 33) : 0, false);
   }
 
   if (grid.row != -1 && grid.hovered != -1) {
-    CBitmapRes* chip = Load(this->resources, "\\colorchip.bmp");
+    CBitmapRes* chip = Load(resources, "\\colorchip.bmp");
     std::uint32_t color = 0;
     if (chip) {
       const std::uint32_t pixel = chip->image.width > 10 && chip->image.height > 10 ? chip->image.pixels[10 + 10 * chip->image.width] : 0x00FF0000u;
       color = ((pixel & 255) << 16) | (pixel & 0xFF00) | ((pixel >> 16) & 255);
     }
 
-    window.FillRegion(((grid.hovered * 29) + 16), 5 + 33 * static_cast<unsigned>(this->currentRow), 24, 24, color);
+    window.FillRegion(((grid.hovered * 29) + 16), 5 + 33 * static_cast<unsigned>(g_session.m_hotkeyPage), 24, 24, color);
   }
 
-  this->icons.clear();
+  g_session.m_mainCooldownIcons.clear();
 
   for (int row = 0; row < grid.rows; ++row) {
     const int y = ((row * 33) + 4);
@@ -104,12 +111,12 @@ void ShortcutPainting::Paint(UIWindow& window, const ShortcutGrid& grid, const N
         char path[200];
 
         std::sprintf(path, "%s\\item\\%s.bmp", prefix, skill.name);
-        CBitmapRes* image = static_cast<CBitmapRes*>(this->resources.Load(path));
+        CBitmapRes* image = static_cast<CBitmapRes*>(resources.Load(path));
         if (!image) {
-          image = Load(this->resources, "\\item\\am_berserkpitcher.bmp");
+          image = Load(resources, "\\item\\am_berserkpitcher.bmp");
         }
 
-        this->icons.push_back({skill.id, index, x, y});
+        g_session.m_mainCooldownIcons.push_back({skill.id, index, x, y});
         Bitmap(window, image, x, y, true);
         int level = slot.unknown_0005;
 
@@ -119,12 +126,12 @@ void ShortcutPainting::Paint(UIWindow& window, const ShortcutGrid& grid, const N
 
         Count(window, x + 27, (y + 17), level);
       } else {
-        ITEM_INFO item = LookupClientItem(this->inventory, static_cast<int>(slot.itemId), 1);
+        ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(slot.itemId), 1);
         if (item.unknown_0000[1] == 0) {
           continue;
         }
 
-        DrawItemIcon(window, this->resources, x, y, item, static_cast<unsigned char>(item.unknown_0060));
+        DrawItemIcon(window, resources, x, y, item, static_cast<unsigned char>(item.unknown_0060));
         if (item.quantity != 0) {
           Count(window, x + 27, (y + 17), item.quantity);
         }
@@ -132,13 +139,13 @@ void ShortcutPainting::Paint(UIWindow& window, const ShortcutGrid& grid, const N
         if (item.unknown_0088 > 0) {
           char tail[96];
           std::sprintf(tail, "\\grade_enchant\\grade_icon%d.bmp", item.unknown_0088);
-          Bitmap(window, Load(this->resources, tail), x, (y + 12), true);
+          Bitmap(window, Load(resources, tail), x, (y + 12), true);
         }
       }
     }
   }
 
-  if (this->itemSlotActive) {
+  if (g_session.ItemSlotActive()) {
     const int y = ((grid.rows * 33) + 4);
 
     for (int column = 0; column < 9; ++column) {
@@ -147,13 +154,13 @@ void ShortcutPainting::Paint(UIWindow& window, const ShortcutGrid& grid, const N
         continue;
       }
 
-      ITEM_INFO item = LookupClientItem(this->inventory, static_cast<int>(slot.itemId), 1);
+      ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(slot.itemId), 1);
       if (item.unknown_0000[1] == 0) {
         continue;
       }
 
       const int x = 16 + 29 * column;
-      DrawItemIcon(window, this->resources, x, y, item, static_cast<unsigned char>(item.unknown_0060));
+      DrawItemIcon(window, resources, x, y, item, static_cast<unsigned char>(item.unknown_0060));
       if (item.quantity != 0) {
         Count(window, x + 27, (y + 17), item.quantity);
       }
@@ -166,5 +173,6 @@ void ShortcutPainting::Paint(UIWindow& window, const ShortcutGrid& grid, const N
     window.DrawTextAt(6, ((row * 33) + 13), text, 0, 0, 11, 0x2F4A4A, 0, 0);
   }
 
-  this->cooldowns.PaintMain(this->icons, grid.rows, window.geometry.x, window.geometry.y, this->drawing, this->clock, this->commands, this->system);
+  reinterpret_cast<ShortcutCooldowns&>(g_session.m_requestTimers)
+    .PaintMain(g_session.m_mainCooldownIcons, grid.rows, window.geometry.x, window.geometry.y, g_cooldownOwner->Drawing(), this->m_painting->commands, this->m_painting->system);
 }

@@ -17,7 +17,7 @@ namespace {
 // OFFSET: 0x00CA66B0
 // FUNCTION: fn_20964
 void CooldownDrawing::Draw(
-  int centerX, int centerY, int radiusX, int radiusY, CooldownState& value, int limit, int offsetX, int offsetY, const CooldownClock& clock,
+  int centerX, int centerY, int radiusX, int radiusY, CooldownState& value, int limit, int offsetX, int offsetY,
   RenderCommandPool& pool, CRenderSystemBase& system
 ) {
   if (value.x <= 0 || value.y <= 0 || (value.color & 0xFF000000u) == 0) {
@@ -71,7 +71,7 @@ void CooldownDrawing::Draw(
   value.AddEdge(7, vertices[reversed ? 22 : 2].x, radiusX, 1);
 
   if (reversed) {
-    this->DrawReverse(value, clock, pool, system);
+    this->DrawReverse(value, pool, system);
     return;
   }
 
@@ -81,7 +81,7 @@ void CooldownDrawing::Draw(
 
   const unsigned previous = value.segment;
   if (previous < 8) {
-    const float position = value.Update(clock);
+    const float position = value.Update();
     RenderVertex& vertex = vertices[23 - 3 * previous];
     if (previous == 0 || previous == 3 || previous == 4 || previous == 7) {
       vertex.x = position;
@@ -109,14 +109,14 @@ void CooldownDrawing::Draw(
 
 // OFFSET: 0x00CA6C00
 // FUNCTION: fn_20965
-void CooldownDrawing::DrawReverse(CooldownState& value, const CooldownClock& clock, RenderCommandPool& pool, CRenderSystemBase& system) {
+void CooldownDrawing::DrawReverse(CooldownState& value, RenderCommandPool& pool, CRenderSystemBase& system) {
   if (value.duration == 0) {
     return;
   }
 
   const unsigned previous = value.segment;
   if (previous < 8) {
-    const float position = value.Update(clock);
+    const float position = value.Update();
     RenderVertex& vertex = value.vertices[2 + 3 * previous];
     if (previous == 0 || previous == 3 || previous == 4 || previous == 7) {
       vertex.x = position;

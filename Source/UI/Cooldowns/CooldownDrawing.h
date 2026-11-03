@@ -15,14 +15,14 @@ struct CooldownDrawing {
   /* 0010 */ std::vector<RenderCommand*> reverse;
 
   void Draw(
-    int centerX, int centerY, int radiusX, int radiusY, CooldownState& value, int limit, int offsetX, int offsetY, const CooldownClock& clock,
+    int centerX, int centerY, int radiusX, int radiusY, CooldownState& value, int limit, int offsetX, int offsetY,
     RenderCommandPool& pool, CRenderSystemBase& system
   );
   void SubmitNormal(RenderQueues& queues, bool depthAlpha, float depthStart, float depthEnd);
   void SubmitReverse(RenderQueues& queues, bool depthAlpha, float depthStart, float depthEnd);
 
 private:
-  void DrawReverse(CooldownState& value, const CooldownClock& clock, RenderCommandPool& pool, CRenderSystemBase& system);
+  void DrawReverse(CooldownState& value, RenderCommandPool& pool, CRenderSystemBase& system);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

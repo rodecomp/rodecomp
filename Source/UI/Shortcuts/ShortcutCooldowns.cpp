@@ -12,6 +12,7 @@
 #include "UI/Buttons/UIButton.h"
 #include "UI/Shop/ItemDrawing.h"
 #include "UI/Shortcuts/UIQuickSlotWnd.h"
+#include "UI/Cooldowns/CooldownOwner.h"
 #include "UI/Window/UIRebirthWnd.h"
 #include "UI/Window/UISeekPartyMBWnd.h"
 #include "UI/Window/UISeekPartyWnd.h"
@@ -176,7 +177,7 @@ void ShortcutCooldowns::ApplyStart(
 }
 
 // INLINED
-bool ShortcutCooldowns::RotateRows(int amount, int bank, int& rotation0, int& rotation1, const CooldownClock& clock) {
+bool ShortcutCooldowns::RotateRows(int amount, int bank, int& rotation0, int& rotation1) {
   const int rows = amount < 4 ? amount : amount % 4;
   if (rows <= 0) {
     return false;
@@ -190,7 +191,7 @@ bool ShortcutCooldowns::RotateRows(int amount, int bank, int& rotation0, int& ro
     }
   }
 
-  const std::uint32_t now = clock.Now();
+  const std::uint32_t now = CooldownNow();
 
   for (auto entry = this->records.begin(); entry != this->records.end();) {
     if (entry->end <= now) {
@@ -215,27 +216,26 @@ bool ShortcutCooldowns::RotateRows(int amount, int bank, int& rotation0, int& ro
 
 // INLINED
 void ShortcutCooldowns::PaintMain(
-  const std::list<ShortcutCooldownIcon>& icons, int rows, int x, int y, CooldownDrawing& drawing, const CooldownClock& clock, RenderCommandPool& pool,
+  const std::list<ShortcutCooldownIcon>& icons, int rows, int x, int y, CooldownDrawing& drawing, RenderCommandPool& pool,
   CRenderSystemBase& system
 ) {
   const int limit = rows * 33 + 4;
-  this->Paint(icons, &ShortcutCooldownRecord::main, limit, x, y, drawing, clock, pool, system);
+  this->Paint(icons, &ShortcutCooldownRecord::main, limit, x, y, drawing, pool, system);
 }
 
 // INLINED
 void ShortcutCooldowns::PaintAlternate(
-  const std::list<ShortcutCooldownIcon>& icons, int x, int y, CooldownDrawing& drawing, const CooldownClock& clock, RenderCommandPool& pool,
+  const std::list<ShortcutCooldownIcon>& icons, int x, int y, CooldownDrawing& drawing, RenderCommandPool& pool,
   CRenderSystemBase& system
 ) {
-  this->Paint(icons, &ShortcutCooldownRecord::alternate, 0, x, y, drawing, clock, pool, system);
+  this->Paint(icons, &ShortcutCooldownRecord::alternate, 0, x, y, drawing, pool, system);
 }
 
 // INLINED
 void ShortcutCooldowns::Paint(
-  const std::list<ShortcutCooldownIcon>& icons, std::list<CooldownState> ShortcutCooldownRecord::* values, int limit, int x, int y, CooldownDrawing& drawing,
-  const CooldownClock& clock, RenderCommandPool& pool, CRenderSystemBase& system
+  const std::list<ShortcutCooldownIcon>& icons, std::list<CooldownState> ShortcutCooldownRecord::* values, int limit, int x, int y, CooldownDrawing& drawing, RenderCommandPool& pool, CRenderSystemBase& system
 ) {
-  const std::uint32_t now = clock.Now();
+  const std::uint32_t now = CooldownNow();
 
   for (auto entry = this->records.begin(); entry != this->records.end();) {
     if (entry->end <= now) {
@@ -256,7 +256,7 @@ void ShortcutCooldowns::Paint(
     }
 
     for (CooldownState& state : states) {
-      drawing.Draw(0, 0, 12, 12, state, limit, x, y, clock, pool, system);
+      drawing.Draw(0, 0, 12, 12, state, limit, x, y, pool, system);
     }
 
     ++entry;
@@ -398,14 +398,13 @@ void UISeekPartyWnd::Paint() {
 // OFFSET: 0x0092D660
 // FUNCTION: fn_12671
 void UIQuickSlotWnd::Paint() {
-  QuickSlotPainting& painting = *this->m_painting;
   this->DrawPanelBackground(0, 0, "유저인터페이스\\basic_interface\\quickslot.bmp");
   if (this->m_selected != -1) {
     const SkinPaletteCell cell = {2, 2};
     this->FillRegion(this->m_selected * 29 + 5, 5, 24, 24, SkinPaletteColor(ResourceMgr::Instance(), cell, g_skinInfo.Selected()));
   }
 
-  painting.icons.clear();
+  g_session.m_alternateCooldownIcons.clear();
 
   for (int index = 0; index < 2; ++index) {
     const QuickSlotEntry& entry = this->m_entries[index];
@@ -423,7 +422,7 @@ void UIQuickSlotWnd::Paint() {
       char text[1024];
       std::sprintf(text, "유저인터페이스\\item\\%s.bmp", skill.name);
       auto* image = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(text)));
-      painting.icons.push_back({skill.id, index, x, 5});
+      g_session.m_alternateCooldownIcons.push_back({skill.id, index, x, 5});
       this->DrawBitmap(x, 5, &image->image, true);
       if (entry.count != 0) {
         std::sprintf(text, "%d", entry.count);
@@ -434,7 +433,7 @@ void UIQuickSlotWnd::Paint() {
         this->DrawTextAt(x + 14, 20, text, 0, 0, 11, 0, 0, 0);
       }
     } else {
-      ITEM_INFO item = LookupClientItem(painting.inventory, static_cast<int>(entry.id), 1);
+      ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(entry.id), 1);
       if (item.unknown_0000[1] == 0) {
         continue;
       }
@@ -448,7 +447,7 @@ void UIQuickSlotWnd::Paint() {
     }
   }
 
-  painting.cooldowns.PaintAlternate(painting.icons, this->geometry.x, this->geometry.y, painting.drawing, painting.clock, painting.commands, painting.system);
+  reinterpret_cast<ShortcutCooldowns&>(g_session.m_requestTimers).PaintAlternate(g_session.m_alternateCooldownIcons, this->geometry.x, this->geometry.y, g_cooldownOwner->Drawing(), this->m_painting->commands, this->m_painting->system);
 }
 
 // OFFSET: 0x00924A50
@@ -471,7 +470,7 @@ void UIQuickSlotWnd::Slot26(int x, int y) {
     return;
   }
 
-  AutomaticSkills& automatic = this->m_painting->automatic;
+  AutomaticSkills& automatic = *reinterpret_cast<AutomaticSkills*>(g_session.unknown_7FB4);
   const QuickSlotEntry& entry = this->m_entries[slot];
   if (entry.skill && automatic.Contains(static_cast<std::uint16_t>(entry.id))) {
     g_session.SetOption(AutomaticSkills::CancelOption(static_cast<std::int16_t>(entry.id)), 1, 0);

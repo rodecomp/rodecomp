@@ -33,21 +33,20 @@ struct ShortcutCooldowns {
     const std::uint32_t& serverTick
   );
   void LoadRecords(const void* packet);
-  bool RotateRows(int amount, int bank, int& rotation0, int& rotation1, const CooldownClock& clock);
+  bool RotateRows(int amount, int bank, int& rotation0, int& rotation1);
 
   void PaintMain(
-    const std::list<ShortcutCooldownIcon>& icons, int rows, int x, int y, CooldownDrawing& drawing, const CooldownClock& clock, RenderCommandPool& pool,
+    const std::list<ShortcutCooldownIcon>& icons, int rows, int x, int y, CooldownDrawing& drawing, RenderCommandPool& pool,
     CRenderSystemBase& system
   );
   void PaintAlternate(
-    const std::list<ShortcutCooldownIcon>& icons, int x, int y, CooldownDrawing& drawing, const CooldownClock& clock, RenderCommandPool& pool,
+    const std::list<ShortcutCooldownIcon>& icons, int x, int y, CooldownDrawing& drawing, RenderCommandPool& pool,
     CRenderSystemBase& system
   );
 
 private:
   void Paint(
-    const std::list<ShortcutCooldownIcon>& icons, std::list<CooldownState> ShortcutCooldownRecord::* values, int limit, int x, int y, CooldownDrawing& drawing,
-    const CooldownClock& clock, RenderCommandPool& pool, CRenderSystemBase& system
+    const std::list<ShortcutCooldownIcon>& icons, std::list<CooldownState> ShortcutCooldownRecord::* values, int limit, int x, int y, CooldownDrawing& drawing, RenderCommandPool& pool, CRenderSystemBase& system
   );
 };
 
