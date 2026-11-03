@@ -12,6 +12,9 @@
 // GLOBAL: gl_24503
 DeviceOwnerDX7* g_deviceOwnerDX7;
 
+// GLOBAL: gl_24510
+TextureAllocationDX7 g_textureAllocationDX7;
+
 // GLOBAL: gl_24765
 int g_configuredFullscreen;
 
@@ -61,14 +64,14 @@ CSurface* CRenderSystemDX7::CreateSurface(std::uint32_t width, std::uint32_t hei
 // OFFSET: 0x0056B680
 // FUNCTION: fn_02319
 CTexture* CRenderSystemDX7::CreateTexture(std::uint32_t width, std::uint32_t height, std::int32_t format, bool, bool) {
-  return new (std::nothrow) CTextureDX7(*reinterpret_cast<TextureDX7Context*>(this->m_device), static_cast<int>(width), static_cast<int>(height), format);
+  return new (std::nothrow) CTextureDX7(*this->m_device, static_cast<int>(width), static_cast<int>(height), format);
 }
 
 // OFFSET: 0x0056B710
 // FUNCTION: fn_02320
 CSurface* CRenderSystemDX7::CreateSurfaceOrTexture(std::uint32_t width, std::uint32_t height) {
   if (this->m_device->SupportsTextureDimensions(width, height)) {
-    return new CTextureDX7(*reinterpret_cast<TextureDX7Context*>(this->m_device), static_cast<int>(width), static_cast<int>(height), TextureFormat::A1R5G5B5);
+    return new CTextureDX7(*this->m_device, static_cast<int>(width), static_cast<int>(height), TextureFormat::A1R5G5B5);
   }
 
   return new CSurfaceWallpaperDX7(*this->m_device, static_cast<int>(this->m_device->width), static_cast<int>(this->m_device->height));
@@ -103,7 +106,7 @@ void CRenderSystemDX7::UpdateOption() {
 // FUNCTION: fn_02328
 CTexture* CRenderSystemDX7::BackBufferTexture() {
   if (!this->m_defaultTexture) {
-    this->m_defaultTexture = new CTextureDX7(*reinterpret_cast<TextureDX7Context*>(this->m_device));
+    this->m_defaultTexture = new CTextureDX7(*this->m_device);
   }
 
   return this->m_defaultTexture;

@@ -4,7 +4,6 @@
 #include "Render/Renderer.h"
 #include <list>
 #include <vector>
-#include "Render/DX9/RendererPresentation.h"
 #include "Render/DX9/TextureDX9.h"
 
 class DeviceOwnerDX9;

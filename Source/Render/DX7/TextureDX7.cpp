@@ -2,6 +2,10 @@
 #include "Render/DX7/DeviceOwnerDX7.h"
 #include "Render/Textures/SpritePixels.h"
 #include "Render/DX7/TextureDX7.h"
+#include "Render/DX7/TextureAllocationDX7.h"
+#include "Render/DeviceContext/DCSurface.h"
+#include "Render/Renderer.h"
+#include "Render/TextureQuad.h"
 
 #include <climits>
 #include <cstring>
@@ -94,22 +98,22 @@ namespace {
 
 // OFFSET: 0x00543B00
 // FUNCTION: fn_01807
-CTextureDX7::CTextureDX7(TextureDX7Context& context) : m_owner(&context.owner), m_surface(nullptr), m_context(&context) {
+CTextureDX7::CTextureDX7(DeviceOwnerDX7& owner) : m_owner(&owner), m_surface(nullptr) {
   this->m_width = this->m_height = this->m_textureWidth = this->m_textureHeight = 1;
   this->m_format = TextureFormat::A1R5G5B5;
 }
 
 // OFFSET: 0x00543B90
 // FUNCTION: fn_01808
-CTextureDX7::CTextureDX7(TextureDX7Context& context, int width, int height, int format) : m_owner(&context.owner), m_surface(nullptr), m_context(&context) {
+CTextureDX7::CTextureDX7(DeviceOwnerDX7& owner, int width, int height, int format) : m_owner(&owner), m_surface(nullptr) {
   this->Create(width, height, format);
   this->SetImageSize(width, height);
 }
 
 // OFFSET: 0x0056AF60
 // FUNCTION: fn_02306
-std::unique_ptr<CTextureDX7> CreateTextureDX7(TextureDX7Context*& context) {
-  return std::unique_ptr<CTextureDX7>(new CTextureDX7(*context));
+std::unique_ptr<CTextureDX7> CreateTextureDX7(DeviceOwnerDX7*& owner) {
+  return std::unique_ptr<CTextureDX7>(new CTextureDX7(*owner));
 }
 
 // OFFSET: 0x00543DC0
@@ -136,7 +140,7 @@ bool CTextureDX7::Create(int width, int height, int format) {
   }
 
   if (static_cast<unsigned>(format) >= TextureFormat::R5G6B5 && format != TextureFormat::R5G6B5 && format != TextureFormat::A8R8G8B8) {
-    ShowErrorDialog(this->m_context->renderSystem, "Create Texture::Unsupported pixelformat", 0);
+    ShowErrorDialog(GetRenderSystemHolder()->system, "Create Texture::Unsupported pixelformat", 0);
   }
 
   unsigned selected = format;
@@ -146,12 +150,12 @@ bool CTextureDX7::Create(int width, int height, int format) {
   }
 
   if (formats[selected].dwSize != sizeof(DDPIXELFORMAT)) {
-    ShowErrorDialog(this->m_context->renderSystem, "GFC ", 0);
+    ShowErrorDialog(GetRenderSystemHolder()->system, "GFC ", 0);
   }
 
   DDSURFACEDESC2 description{};
   description.dwSize = sizeof(description);
-  description.dwFlags = this->m_context->allocation.descriptorFlags | DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT | DDSD_TEXTURESTAGE;
+  description.dwFlags = g_textureAllocationDX7.descriptorFlags | DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT | DDSD_TEXTURESTAGE;
 
   if (selected == TextureFormat::R5G6B5) {
     description.dwFlags |= DDSD_CKSRCBLT;
@@ -160,7 +164,7 @@ bool CTextureDX7::Create(int width, int height, int format) {
   description.dwWidth = this->m_textureWidth;
   description.dwHeight = this->m_textureHeight;
   description.ddpfPixelFormat = formats[selected];
-  description.ddsCaps.dwCaps = this->m_context->allocation.surfaceCaps | DDSCAPS_TEXTURE;
+  description.ddsCaps.dwCaps = g_textureAllocationDX7.surfaceCaps | DDSCAPS_TEXTURE;
   description.ddsCaps.dwCaps2 = DDSCAPS2_TEXTUREMANAGE;
   description.ddckCKSrcBlt.dwColorSpaceLowValue = description.ddpfPixelFormat.dwRBitMask | description.ddpfPixelFormat.dwBBitMask;
   description.ddckCKSrcBlt.dwColorSpaceHighValue = description.ddckCKSrcBlt.dwColorSpaceLowValue;
@@ -338,14 +342,16 @@ void CTextureDX7::Fill(const RECT* rectangle, std::uint32_t color) {
 
 // OFFSET: 0x00544410
 void CTextureDX7::Draw(int x, int y, int width, int height, std::uint32_t color) {
-  const auto& context = *this->m_context;
-  this->DrawTo(context.primitives, context.queues, x, y, width, height, color, context.depthAlpha, context.depthStart, context.depthEnd);
+  this->DrawTo(
+    g_renderer->primitives, g_renderer->queues, x, y, width, height, color, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
+  );
 }
 
 // OFFSET: 0x00544610
 void CTextureDX7::Stretch(int x, int y, int width, int height) {
-  const auto& context = *this->m_context;
-  this->StretchTo(context.primitives, context.queues, x, y, width, height, context.depthAlpha, context.depthStart, context.depthEnd);
+  this->StretchTo(
+    g_renderer->primitives, g_renderer->queues, x, y, width, height, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
+  );
 }
 
 // OFFSET: 0x005451B0

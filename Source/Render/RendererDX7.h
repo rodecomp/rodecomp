@@ -15,9 +15,9 @@ class CRendererDX7 : public CRenderer {
 public:
   CRendererDX7();
 
-  /* 025C */ unsigned unknown_025C;
+  /* 025C */ unsigned samples;
   /* 0260 */ unsigned time;
-  /* 0264 */ unsigned unknown_0264;
+  /* 0264 */ unsigned rate;
   /* 0268 */ CTextureDX7* boundTexture;
   /* 026C */ CTextureDX7* boundLightmap;
   /* 0270 */ unsigned clearColor;
@@ -39,6 +39,9 @@ public:
   bool SaveJpeg(const char* filename, const BitmapImage& overlay, int width, int height, RendererBackBuffer& backBuffer);
   bool SaveLogo(std::string filename, ResourceMgr& resources);
   void SetTexture(unsigned stage, CTextureDX7* texture);
+  void Present(bool wait);
+  float FrameRate() const;
+  void DrawFPS();
   void DrawDepthSortedQueue();
   void DrawAlphaQueues();
   void DrawOpaqueQueues();

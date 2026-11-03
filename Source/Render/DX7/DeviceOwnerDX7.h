@@ -6,7 +6,6 @@
 #include <d3d.h>
 #include <ddraw.h>
 
-struct TextureDX7Context;
 struct TextureAllocationDX7;
 class CRenderSystemBase;
 class CSurface;
@@ -33,7 +32,7 @@ public:
   void RestoreDisplayMode();
   HRESULT RestoreAllSurfaces();
   void SetDialogClipper(int enabled);
-  bool CalibrateTextureCoordinates(TextureDX7Context& context);
+  bool CalibrateTextureCoordinates();
 
   int RefreshRendererCapabilities(int mipmaps, TextureAllocationDX7& allocation, bool& multitexture, CRenderSystemBase* renderSystem);
   std::uint16_t PackColor(int red, int green, int blue);

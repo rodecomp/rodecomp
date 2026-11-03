@@ -33,11 +33,6 @@ void CRendererDX9::SetFog(int enabled) {
   this->fog.Set(enabled, this->device->caps);
 }
 
-HRESULT CRendererDX9::Present(int option) {
-  RendererPresentation presentation{this->frame, this->lastTick, this->frames, this->fps};
-  return presentation.Present(*this->device, option);
-}
-
 // OFFSET: 0x00567E70
 // FUNCTION: fn_02231
 float CRendererDX9::FPS() const {

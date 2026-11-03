@@ -6,9 +6,9 @@
 // FUNCTION: fn_02065
 CRendererDX7::CRendererDX7() {
   this->frame = 0;
-  this->unknown_025C = 0;
+  this->samples = 0;
   this->time = timeGetTime();
-  this->unknown_0264 = 0;
+  this->rate = 0;
   this->boundTexture = nullptr;
   this->boundLightmap = nullptr;
   this->fog.enabled = 0;

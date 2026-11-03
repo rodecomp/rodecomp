@@ -10,4 +10,6 @@ struct TextureAllocationDX7 {
   void Update(int enabled, const D3DDEVICEDESC7& caps);
 };
 
+extern TextureAllocationDX7 g_textureAllocationDX7;
+
 #endif

@@ -15,10 +15,10 @@ namespace {
 
 // OFFSET: 0x0054B040
 // FUNCTION: fn_01905
-bool DeviceOwnerDX7::CalibrateTextureCoordinates(TextureDX7Context& context) {
+bool DeviceOwnerDX7::CalibrateTextureCoordinates() {
   const std::uint32_t pattern[16] = {0, 0, 0xFFFFFFFF, 0xFFFFFFFF, 0, 0, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0, 0, 0xFFFFFFFF, 0xFFFFFFFF, 0, 0};
   CSurfaceDX7 readback(*this, this->width, this->height);
-  CTextureDX7 texture(context, 4, 4, TextureFormat::A1R5G5B5);
+  CTextureDX7 texture(*this, 4, 4, TextureFormat::A1R5G5B5);
   texture.Upload(0, 0, 4, 4, pattern, 0, 0);
   this->device->SetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, 0);
   this->device->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, 0);

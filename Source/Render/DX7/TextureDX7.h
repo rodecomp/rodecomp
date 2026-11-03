@@ -10,21 +10,10 @@
 class DeviceOwnerDX7;
 class CRenderSystemBase;
 
-struct TextureDX7Context {
-  DeviceOwnerDX7& owner;
-  RenderPrimitivePool& primitives;
-  RenderQueues& queues;
-  CRenderSystemBase* renderSystem;
-  const TextureAllocationDX7& allocation;
-  const bool& depthAlpha;
-  const float& depthStart;
-  const float& depthEnd;
-};
-
 class CTextureDX7 : public CTexture {
 public:
-  __declspec(noinline) explicit CTextureDX7(TextureDX7Context& context);
-  CTextureDX7(TextureDX7Context& context, int width, int height, int format);
+  __declspec(noinline) explicit CTextureDX7(DeviceOwnerDX7& owner);
+  CTextureDX7(DeviceOwnerDX7& owner, int width, int height, int format);
   ~CTextureDX7() override;
   bool Resize(int width, int height) override;
   SurfaceLock Lock() override;
@@ -48,10 +37,8 @@ public:
 protected:
   /* 0124 */ DeviceOwnerDX7* m_owner;
   /* 0128 */ IDirectDrawSurface7* m_surface;
-
-  TextureDX7Context* m_context;
 };
 
-std::unique_ptr<CTextureDX7> CreateTextureDX7(TextureDX7Context*& context);
+std::unique_ptr<CTextureDX7> CreateTextureDX7(DeviceOwnerDX7*& owner);
 
 #endif

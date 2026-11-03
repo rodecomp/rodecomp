@@ -1,5 +1,5 @@
 #include "Render/DX9/DeviceOwnerDX9.h"
-#include "Render/DX9/RendererPresentation.h"
+#include "Render/DX9/RendererDX9.h"
 #include "UI/Window/UIWindowMgr.h"
 
 #include <windows.h>
@@ -7,7 +7,7 @@
 
 // OFFSET: 0x00565B70
 // FUNCTION: fn_02223
-HRESULT RendererPresentation::Present(DeviceOwnerDX9& owner, int option) {
+HRESULT CRendererDX9::Present(int option) {
   ++this->frame;
   ++this->frames;
   const unsigned now = timeGetTime();
@@ -23,7 +23,7 @@ HRESULT RendererPresentation::Present(DeviceOwnerDX9& owner, int option) {
   static constexpr char source[] = "C:\\repositories\\RagnarokClient\\RagnarokClient\\3dLib\\RendererDX9.cpp";
   g_renderDiagnosticLine = 161;
   g_renderDiagnosticFile = source;
-  const HRESULT result = owner.Present(option);
+  const HRESULT result = this->device->Present(option);
   g_renderDiagnosticLine = 164;
   g_renderDiagnosticFile = source;
 
