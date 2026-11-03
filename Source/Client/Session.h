@@ -212,7 +212,15 @@ public:
   /* 0798 */ int m_serverTimeAdjustCount;
   /* 079C */ unsigned char unknown_079C[0x04];
   /* 07A0 */ std::uint32_t m_averagePing;
-  /* 07A4 */ unsigned char unknown_07A4[0x10];
+  union {
+    /* 07A4 */ unsigned char unknown_07A4[0x10];
+    struct {
+      /* 07A4 */ std::uint32_t m_timeAttackCountdown;
+      /* 07A8 */ std::uint32_t m_timeAttackStart;
+      /* 07AC */ int m_timeAttackVisible;
+      /* 07B0 */ unsigned char unknown_07B0[4];
+    };
+  };
   /* 07B4 */ unsigned char m_playerNameKey[0x40];
   /* 07F4 */ unsigned char unknown_07F4[0x6A0];
   /* 0E94 */ int unknown_0E94;
@@ -404,7 +412,10 @@ public:
   /* 550C */ std::string unknown_550C;
   /* 5524 */ std::string unknown_5524;
   /* 553C */ std::string m_serverName;
-  /* 5554 */ unsigned char unknown_5554[4];
+  union {
+    /* 5554 */ unsigned char unknown_5554[4];
+    /* 5554 */ int m_whisperRecord;
+  };
   /* 5558 */ int unknown_5558;
   /* 555C */ unsigned char unknown_555C[0xC];
   /* 5568 */ int unknown_5568;
@@ -1209,6 +1220,10 @@ static_assert(sizeof(ProhibitionLogEntry) == 0x54);
 static_assert(sizeof(SubChatWndInfo) == 0x44);
 static_assert(sizeof(SessionEntry00A4) == 0x30);
 static_assert(offsetof(SubChatWndInfo, x) == 0x34);
+static_assert(offsetof(CSession, m_timeAttackCountdown) == 0x7A4);
+static_assert(offsetof(CSession, m_timeAttackStart) == 0x7A8);
+static_assert(offsetof(CSession, m_timeAttackVisible) == 0x7AC);
+static_assert(offsetof(CSession, m_whisperRecord) == 0x5554);
 static_assert(offsetof(CSession, m_noSubChatWnds) == 0x73C);
 static_assert(offsetof(CSession, m_subChatWnds) == 0x744);
 static_assert(offsetof(CSession, m_prohibitionLog) == 0x754);

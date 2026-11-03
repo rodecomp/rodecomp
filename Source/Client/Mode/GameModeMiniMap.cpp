@@ -47,7 +47,7 @@ void MiniMapNoOp() {
 // OFFSET: 0x00CCFF10
 // FUNCTION: fn_21249
 void sub_CCFF10() {
-  if (g_whisperRecord != 0) {
+  if (g_session.m_whisperRecord != 0) {
     if (g_session.IsAdminSubMode(7) != 0) {
       char path[256];
       char backup[256];
@@ -601,12 +601,12 @@ void CGameMode::DrawTimeAttackTimer() {
     return;
   }
 
-  const int start = g_timeAttackStart;
+  const std::uint32_t start = g_session.m_timeAttackStart;
   if (start == 0) {
-    g_timeAttackVisible = 0;
+    g_session.m_timeAttackVisible = 0;
   }
 
-  const std::uint32_t elapsed = timeGetTime() - static_cast<std::uint32_t>(start);
+  const std::uint32_t elapsed = timeGetTime() - start;
   int seconds = static_cast<int>(elapsed / 1000);
   int minutes = 0;
   int hours = 0;
@@ -672,7 +672,7 @@ void CGameMode::DrawTimeAttackTimer() {
     );
   }
 
-  if (g_timeAttackStart != 0 && timeGetTime() - static_cast<std::uint32_t>(g_timeAttackStart) < 3000) {
+  if (g_session.m_timeAttackStart != 0 && timeGetTime() - g_session.m_timeAttackStart < 3000) {
     CActRes* titleAction = static_cast<CActRes*>(ResourceMgr::Instance().Load("이팩트\\TimeAttack.act"));
     CSprRes* titleSprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load("이팩트\\TimeAttack.spr"));
     const int frame = g_timeAttackFrame / 3;
@@ -698,26 +698,26 @@ void CGameMode::DrawTimeAttackCountdown(std::uint32_t value, int mode) {
       remaining = value;
       if (timeGetTime() - this->unknown_0464 > 5000) {
         this->unknown_0464 = 0;
-        g_timeAttackVisible = 0;
+        g_session.m_timeAttackVisible = 0;
       }
       break;
     case 1:
       remaining = timeGetTime() - value;
       if (value == 0) {
-        g_timeAttackVisible = 0;
+        g_session.m_timeAttackVisible = 0;
       }
       break;
     case 2:
       remaining = value - timeGetTime();
       if (remaining == 0) {
-        g_timeAttackVisible = 0;
+        g_session.m_timeAttackVisible = 0;
       }
       break;
     case 3:
-      remaining = g_timeAttackCountdown / 30;
-      --g_timeAttackCountdown;
+      remaining = g_session.m_timeAttackCountdown / 30;
+      --g_session.m_timeAttackCountdown;
       if (remaining == 0) {
-        g_timeAttackVisible = 0;
+        g_session.m_timeAttackVisible = 0;
       }
       break;
     default:
