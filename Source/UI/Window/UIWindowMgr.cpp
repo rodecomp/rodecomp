@@ -18,7 +18,8 @@
 #include "UI/Dialogs/UIMemorialDunWnd.h"
 #include "UI/Layout/SnapMgr.h"
 #include "UI/Lists/UIDropDownBox.h"
-#include "UI/Chat/ChatSuggestions.h"
+#include "UI/Chat/UINewChatWnd.h"
+#include "UI/Lists/UITabControl.h"
 #include "UI/Window/MiniPartyWndAreaMgr.h"
 #include "UI/Window/WindowDialogs.h"
 #include "UI/Window/InputFocus.h"
@@ -72,6 +73,7 @@
 #include "UI/Text/TextWrapping.h"
 #include "UI/Chat/UIWhisperWnd.h"
 #include "UI/Chat/UINewChatWnd.h"
+#include "UI/Lists/UITabControl.h"
 #include "UI/Window/UIChatRoomWnd.h"
 #include "UI/Shortcuts/ShortcutVisibility.h"
 #include "Contents/GuildInfo.h"
@@ -2018,8 +2020,8 @@ bool UIWindowMgr::sub_A8CA20() {
       if (window == nullptr) {
         if (this->hoverWindow != nullptr) {
           if (this->window_01C8 != nullptr && this->hoverWindow->parent == this->window_01C8) {
-            if (reinterpret_cast<const ChatSuggestions*>(this->window_01C8)->Visible()) {
-              UIWindow* child = reinterpret_cast<const ChatSuggestions*>(this->window_01C8)->unknown_013C;
+            if (static_cast<const UINewChatWnd*>(this->window_01C8)->SuggestionsVisible()) {
+              UIWindow* child = static_cast<const UINewChatWnd*>(this->window_01C8)->m_suggestions;
               if (child != nullptr) {
                 child->SendMsg(nullptr, 0xB0, 0xD, 0, 0, 0);
                 return true;
@@ -2306,21 +2308,21 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
 
     if ((this->IsHoverOnWindow01C8Button() || (!this->windowHistory.empty() && this->windowHistory.front() == 1)) && this->unknown_0024 != 0 &&
         this->unknown_0026 != 0) {
-      ChatSuggestions* suggestions = reinterpret_cast<ChatSuggestions*>(this->window_01C8);
-      if (suggestions && suggestions->Visible()) {
-        suggestions->Show(0);
+      UINewChatWnd* suggestions = static_cast<UINewChatWnd*>(this->window_01C8);
+      if (suggestions && suggestions->SuggestionsVisible()) {
+        suggestions->ShowSuggestions(0);
         return false;
       }
 
       this->unknown_0024 = 0;
-      reinterpret_cast<ChatInputLayout*>(this->window_01C8)->Apply();
+      static_cast<UINewChatWnd*>(this->window_01C8)->ApplyInputLayout();
       return false;
     }
 
     if (this->window_01C8 && this->hoverWindow) {
       UIWindow* parent = this->hoverWindow->parent;
       if (parent && this->hoverWindow->geometry.x != -100) {
-        if (parent == reinterpret_cast<ChatSuggestions*>(this->window_01C8)->unknown_0138) {
+        if (parent == static_cast<UINewChatWnd*>(this->window_01C8)->m_tabControl) {
           parent->SendMsg(this->hoverWindow, 0, 1, 0, 0, 0);
           return false;
         }

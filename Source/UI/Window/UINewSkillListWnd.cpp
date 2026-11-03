@@ -23,7 +23,7 @@
 #include "UI/Lists/UIScrollBar.h"
 #include "UI/Lists/UITabControl.h"
 #include "UI/Window/WindowMouseHit.h"
-#include "UI/Chat/ChatSuggestions.h"
+#include "UI/Chat/UINewChatWnd.h"
 #include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/Window/InputFocus.h"
 #include "UI/Window/WindowDialogs.h"
@@ -1346,8 +1346,8 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(1377), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
         this->sub_9AE730();
         this->SendMsg(nullptr, 23, 0, 0, 0, 0);
-        if (g_chatSuggestions) {
-          g_windowMgr.SetFocus(g_chatSuggestions->window);
+        if (ChatWindow()) {
+          g_windowMgr.SetFocus(ChatWindow()->m_suggestions);
           return 0;
         }
       }

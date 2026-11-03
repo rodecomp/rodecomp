@@ -3,7 +3,7 @@
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Items/ItemNaming.h"
 #include "UI/Buttons/UIItemTagButton.h"
-#include "UI/Chat/ChatSuggestions.h"
+#include "UI/Chat/UINewChatWnd.h"
 #include "UI/Dialogs/UINpcEditDialogWnd.h"
 #include "UI/Window/InputFocus.h"
 #include "UI/Edit/ItemTagRetirement.h"
@@ -40,8 +40,8 @@ void UIItemTagCtrl::RemoveTagChild(UIWindow* child) {
 // OFFSET: 0x00896EE0
 // FUNCTION: fn_11520
 void UIItemTagOnChat::RemoveTagChild(UIWindow* child) {
-  if (g_inputSuggestionsEnabled == 1 && g_chatSuggestions->unknown_00BC != nullptr && g_chatSuggestions->unknown_00BC->Contains(child)) {
-    g_chatSuggestions->unknown_00BC->RemoveChild(child, 1);
+  if (g_inputSuggestionsEnabled == 1 && ChatWindow()->m_chatEdit != nullptr && ChatWindow()->m_chatEdit->Contains(child)) {
+    ChatWindow()->m_chatEdit->RemoveChild(child, 1);
     return;
   }
 

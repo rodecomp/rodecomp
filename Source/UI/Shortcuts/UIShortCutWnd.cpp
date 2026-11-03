@@ -14,7 +14,7 @@
 #include "UI/Shortcuts/ShortcutPress.h"
 #include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/Shortcuts/UIShortCutWnd.h"
-#include "UI/Chat/ChatSuggestions.h"
+#include "UI/Chat/UINewChatWnd.h"
 #include "UI/Chat/UINewChatWnd.h"
 #include "UI/Chat/UISubChatHisWnd.h"
 #include "UI/Chat/UISubChatMiniWnd.h"
@@ -654,9 +654,9 @@ void UINewChatWnd::Slot25(int x, int y) {
 
   if (y < 14 && x > this->m_lockButtonX && x < this->m_lockButtonX + 9) {
     g_chatInputFlag = g_chatInputFlag == 0;
-    reinterpret_cast<ChatHeaderLayout*>(this)->Apply();
+    this->ApplyHeaderLayout();
     for (unsigned int i = 0; i < g_windowMgr.retainedWindows.size(); ++i) {
-      reinterpret_cast<ChatButtonLayout*>(g_windowMgr.retainedWindows[i])->Apply();
+      static_cast<UISubChatHisWnd*>(g_windowMgr.retainedWindows[i])->ApplyButtonLayout();
       g_windowMgr.retainedWindows[i]->Invalidate();
     }
 
@@ -671,8 +671,8 @@ void UINewChatWnd::Slot25(int x, int y) {
 
   if (g_windowMgr.unknown_0026 && y < 14 && x > this->m_chatModeX && x < this->m_chatModeX + 14) {
     g_windowMgr.unknown_0024 = g_windowMgr.unknown_0024 == 0;
-    if (g_chatSuggestions) {
-      reinterpret_cast<ChatInputLayout*>(g_chatSuggestions)->Apply();
+    if (ChatWindow()) {
+      ChatWindow()->ApplyInputLayout();
     }
     this->Invalidate();
   }
@@ -1187,10 +1187,10 @@ UISubChatMiniWnd::UISubChatMiniWnd(UIWindowContext& windows)
 // OFFSET: 0x00911700
 // FUNCTION: fn_12518
 UINewChatWnd::UINewChatWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0) {
-  this->unknown_00BC = 0;
-  this->unknown_00C0 = 0;
+  this->m_chatEdit = nullptr;
+  this->unknown_00C0 = nullptr;
   this->m_inputEdit = nullptr;
-  this->unknown_00B8 = 0;
+  this->unknown_00B8 = nullptr;
   this->unknown_0110 = 10;
   *reinterpret_cast<unsigned char*>(&g_windowMgr.unknown_03F4) = 1;
   this->geometry.unknown_0030 = 0;
@@ -1213,7 +1213,7 @@ UINewChatWnd::UINewChatWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0) {
     this->m_tabWidth = 90;
     break;
   }
-  this->unknown_013C = 0;
+  this->m_suggestions = nullptr;
 }
 
 // OFFSET: 0x00933D60
@@ -1304,8 +1304,8 @@ int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       this->m_edit->Move(-100, -100);
       this->m_edit->SetText("");
       this->Invalidate();
-      reinterpret_cast<ChatButtonLayout*>(this)->Apply();
-      g_windowMgr.SetFocus(reinterpret_cast<UIWindow*>(g_chatSuggestions));
+      this->ApplyButtonLayout();
+      g_windowMgr.SetFocus(ChatWindow());
       RECT rectangle;
       rectangle.left = 0;
       rectangle.top = 0;
@@ -1322,8 +1322,8 @@ int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       new (static_cast<void*>(&local)) Concurrency::details::_ReentrantPPLLock();
       return 0;
     }
-    if (g_chatSuggestions != nullptr) {
-      reinterpret_cast<UIWindow*>(g_chatSuggestions)->SendMsg(this, 0, 0, 0, 0, 0);
+    if (ChatWindow() != nullptr) {
+      ChatWindow()->SendMsg(this, 0, 0, 0, 0, 0);
       return 0;
     }
     return 0;
@@ -1399,8 +1399,8 @@ int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       g_windowMgr.SelectWhisperName(reinterpret_cast<const char*>(argument2));
       return 0;
     case 0x165:
-      if (g_chatSuggestions != nullptr) {
-        reinterpret_cast<UIWindow*>(g_chatSuggestions)->SendMsg(this, 0x76, 0, 0, 0, 0);
+      if (ChatWindow() != nullptr) {
+        ChatWindow()->SendMsg(this, 0x76, 0, 0, 0, 0);
         return 0;
       }
       return 0;
@@ -1428,7 +1428,7 @@ int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       if (width != this->geometry.width || height != this->geometry.height) {
         this->Resize(width, height);
         this->m_resizer->Move(this->geometry.width - 0xF, this->geometry.height - 0xF);
-        reinterpret_cast<ChatButtonLayout*>(this)->Apply();
+        this->ApplyButtonLayout();
         return 0;
       }
     }

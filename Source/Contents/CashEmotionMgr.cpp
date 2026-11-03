@@ -28,7 +28,7 @@
 #include "UI/Buttons/UICashEmotionSprBtn.h"
 #include "UI/CashEmotion/UICashEmotionPack.h"
 #include "UI/CashEmotion/UICashEmotionPiece.h"
-#include "UI/Chat/ChatSuggestions.h"
+#include "UI/Chat/UINewChatWnd.h"
 #include "UI/Edit/UIEditCtrl.h"
 #include "Contents/MessageTable.h"
 #include "UI/Buttons/UIButton.h"
@@ -69,10 +69,6 @@ extern "C" {
 // STATIC: 0x013896C4
 // GLOBAL: gl_24350
 CCashEmotionMgr* g_cashEmotionMgr = nullptr;
-
-// STATIC: 0x01457848
-// GLOBAL: gl_24484
-ChatSuggestions* g_chatSuggestions = nullptr;
 
 extern "C" long long _Xtime_get_ticks();
 
@@ -407,10 +403,10 @@ bool CCashEmotionAction_Register::Execute(int packId, int emotionId) {
     return true;
   }
 
-  ChatSuggestions* suggestions = g_chatSuggestions;
-  if (suggestions && suggestions->input) {
-    suggestions->input->SetText(name);
-    suggestions->input->Slot39();
+  UINewChatWnd* suggestions = ChatWindow();
+  if (suggestions && suggestions->m_chatEdit) {
+    suggestions->m_chatEdit->SetText(name);
+    suggestions->m_chatEdit->Slot39();
   }
 
   return true;
@@ -419,13 +415,13 @@ bool CCashEmotionAction_Register::Execute(int packId, int emotionId) {
 // OFFSET: 0x00591FB0
 // FUNCTION: fn_02847
 bool CCashEmotionAction_SelectedUnPurchasedPack::Execute(int packId, int) {
-  if (g_windowMgr.unknown_0024 == 1 && g_chatSuggestions) {
-    ChatSuggestions* suggestions = g_chatSuggestions;
-    suggestions->Show(0);
-    if (suggestions->input) {
-      suggestions->input->SetText("");
+  if (g_windowMgr.unknown_0024 == 1 && ChatWindow()) {
+    UINewChatWnd* suggestions = ChatWindow();
+    suggestions->ShowSuggestions(0);
+    if (suggestions->m_chatEdit) {
+      suggestions->m_chatEdit->SetText("");
     }
-    reinterpret_cast<ChatInputFocus*>(suggestions)->Toggle();
+    suggestions->ToggleInput();
   }
 
   UICashEmotionListWnd* listWnd = g_cashEmotionListWnd;
@@ -609,8 +605,8 @@ void CCashEmotionMgr::Shutdown() {
 // OFFSET: 0x00599020
 // FUNCTION: fn_02937
 void CCashEmotionMgr::HideSuggestions() {
-  if (g_chatSuggestions) {
-    g_chatSuggestions->Show(0);
+  if (ChatWindow()) {
+    ChatWindow()->ShowSuggestions(0);
   }
 }
 
@@ -642,12 +638,12 @@ void CCashEmotionMgr::RefreshCommands() {
 // OFFSET: 0x00599730
 // FUNCTION: fn_02942
 int CCashEmotionMgr::ProcessChatCommand(const char* command) {
-  if (!g_chatSuggestions || !g_chatSuggestions->window) {
+  if (!ChatWindow() || !ChatWindow()->m_suggestions) {
     return 0;
   }
 
   if (!command || std::strlen(command) < 1 || command[0] != '/') {
-    g_chatSuggestions->Show(0);
+    ChatWindow()->ShowSuggestions(0);
     return 0;
   }
 
@@ -660,8 +656,8 @@ int CCashEmotionMgr::ProcessChatCommand(const char* command) {
   }
 
   if (actionId != 0) {
-    g_chatSuggestions->Show(1);
-    auto* miniWnd = reinterpret_cast<UICashEmotionMiniWnd*>(g_chatSuggestions->window);
+    ChatWindow()->ShowSuggestions(1);
+    auto* miniWnd = reinterpret_cast<UICashEmotionMiniWnd*>(ChatWindow()->m_suggestions);
     return static_cast<int>(miniWnd->Select(actionId));
   } else {
     this->HideSuggestions();
@@ -2911,11 +2907,11 @@ int UICashEmotionMiniWnd::SendMsg(
 
   int packId = data->id;
   if (packId == g_cashEmotionMgr->BasePackId() || g_cashEmotionMgr->IsOwnedPack(packId)) {
-    if (g_chatSuggestions) {
-      if (g_chatSuggestions->input) {
-        g_chatSuggestions->input->SetText(data->name.c_str());
+    if (ChatWindow()) {
+      if (ChatWindow()->m_chatEdit) {
+        ChatWindow()->m_chatEdit->SetText(data->name.c_str());
       }
-      g_chatSuggestions->Show(0);
+      ChatWindow()->ShowSuggestions(0);
     }
   } else if (this->m_action) {
     this->m_action->Execute(packId, 0);

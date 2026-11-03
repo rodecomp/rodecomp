@@ -2,12 +2,14 @@
 #define RAGNAROK_SOURCE_UI_CHAT_UINEWCHATWND_H
 
 #include "UI/Window/UIFrameWnd.h"
+#include "UI/Window/UIWindowMgr.h"
 
 #include <cstdint>
 #include <vector>
 
 class UIChatHisBox;
 class UITabControl;
+class UIEditCtrl;
 
 extern std::uint8_t g_chatInputFlag;
 
@@ -30,20 +32,27 @@ public:
   void SaveChatLogs();
   void RefreshTabs(bool arrange);
   std::string ConvertChat(std::string text);
+  bool SuggestionsVisible() const;
+  void ShowSuggestions(std::uint8_t visible);
+  void ApplyInputLayout();
+  void ApplyHeaderLayout();
+  void ResizeRows(int count);
+  void ToggleInput();
 
-private:
-  /* 00BC */ int unknown_00BC;
-  /* 00C0 */ int unknown_00C0;
+  /* 00BC */ UIEditCtrl* m_chatEdit;
+  /* 00C0 */ UIWindow* unknown_00C0;
   /* 00C4 */ int m_inputX;
   /* 00C8 */ int m_inputY;
   /* 00CC */ int m_listWidth;
   /* 00D0 */ int m_listHeight;
   /* 00D4 */ unsigned char unknown_00D4[0x4];
   /* 00D8 */ std::uint32_t m_listColor;
-  /* 00DC */ unsigned char unknown_00DC[0x14];
+  /* 00DC */ unsigned char unknown_00DC[0x4];
+  /* 00E0 */ UIWindow* m_inputButtons[3];
+  /* 00EC */ unsigned char unknown_00EC[0x4];
   /* 00F0 */ int unknown_00F0;
   /* 00F4 */ std::vector<UIChatHisBox*> m_tabs;
-  /* 0100 */ unsigned char unknown_0100[0x8];
+  /* 0100 */ UIWindow* m_headerButtons[2];
   /* 0108 */ int m_lockButtonX;
   /* 010C */ int m_chatModeX;
   /* 0110 */ int unknown_0110;
@@ -56,9 +65,14 @@ private:
   /* 012C */ UIWindow* m_chatModeButton;
   /* 0130 */ unsigned char unknown_0130[0x8];
   /* 0138 */ UITabControl* m_tabControl;
-  UIWindow* m_inputEdit;
-  int unknown_00B8;
-  int unknown_013C;
+  /* 013C */ UIWindow* m_suggestions;
+  UIEditCtrl* m_inputEdit;
+  UIWindow* unknown_00B8;
 };
+
+// INLINED
+inline UINewChatWnd* ChatWindow() {
+  return static_cast<UINewChatWnd*>(g_windowMgr.window_01C8);
+}
 
 #endif

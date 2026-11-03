@@ -11,7 +11,7 @@
 #include "UI/Buttons/UIItemTagButton.h"
 #include "UI/Window/InputFocus.h"
 #include "UI/Window/UIWindowMgr.h"
-#include "UI/Chat/ChatSuggestions.h"
+#include "UI/Chat/UINewChatWnd.h"
 #include "UI/Edit/UIEditCtrl.h"
 #include "UI/Lists/UIScrollBar.h"
 #include "Network/TextEncoding.h"
@@ -213,7 +213,7 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
 // OFFSET: 0x0085E420
 // FUNCTION: fn_10829
 void UIEditCtrl3::HandleInputMessage(unsigned key, std::intptr_t data) {
-  UIWindow* const chatWindow = g_chatSuggestions ? g_chatSuggestions->window : nullptr;
+  UIWindow* const chatWindow = ChatWindow() ? ChatWindow()->m_suggestions : nullptr;
 
   this->unknown_0150 = 0;
   this->unknown_0154 = 0;

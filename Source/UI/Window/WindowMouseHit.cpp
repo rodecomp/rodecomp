@@ -2,7 +2,7 @@
 #include "Client/Input/Mouse.h"
 #include "Client/Replay.h"
 #include "Contents/Messenger/MessengerMember.h"
-#include "UI/Chat/ChatSuggestions.h"
+#include "UI/Chat/UINewChatWnd.h"
 #include "UI/Edit/UIEditCtrl.h"
 #include "UI/Window/InputFocus.h"
 #include "UI/Lists/UIDropDownBox.h"
@@ -324,22 +324,22 @@ int UIWindowMgr::ProcessMouse() {
   this->unknown_4F248.clear();
 
   if (g_mouse.buttons[0] == 1 && this->window_01C8) {
-    ChatSuggestions* suggestions = reinterpret_cast<ChatSuggestions*>(this->window_01C8);
-    if (suggestions->Visible() == 1) {
+    UINewChatWnd* suggestions = static_cast<UINewChatWnd*>(this->window_01C8);
+    if (suggestions->SuggestionsVisible() == 1) {
       int left;
       int top;
       int right;
       int bottom;
-      WindowScreenBounds(suggestions->unknown_013C, left, top, right, bottom);
+      WindowScreenBounds(suggestions->m_suggestions, left, top, right, bottom);
       const bool outside = left > x || right < x || top > y || bottom < y;
       WindowScreenBounds(this->unknown_0384, left, top, right, bottom);
       const bool outsideCompanion = left > x || right < x || top > y || bottom < y;
       if (outside && outsideCompanion) {
-        suggestions->Show(0);
-        if (suggestions->unknown_00BC) {
-          static_cast<UIEditCtrl*>(suggestions->unknown_00BC)->SetText("");
+        suggestions->ShowSuggestions(0);
+        if (suggestions->m_chatEdit) {
+          static_cast<UIEditCtrl*>(suggestions->m_chatEdit)->SetText("");
         }
-        reinterpret_cast<ChatInputFocus*>(suggestions)->Toggle();
+        suggestions->ToggleInput();
       }
     }
   }

@@ -2,7 +2,7 @@
 #include "Render/Text/FontCache.h"
 #include "Render/Text/TextContext.h"
 #include "UI/Window/UIHotKeyWnd.h"
-#include "UI/Chat/ChatSuggestions.h"
+#include "UI/Chat/UINewChatWnd.h"
 #include "Client/Session.h"
 #include "Client/Mode/ModeTooltip.h"
 #include "Contents/Hotkeys/UserHotkeyMgr.h"
@@ -780,13 +780,13 @@ int UIHotKeyWnd::SendMsg(
       }
 
       g_windowCloseByte = argument2 != 0;
-      if (g_chatSuggestions) {
+      if (ChatWindow()) {
         if (argument2 != 0) {
-          reinterpret_cast<UIWindow*>(g_chatSuggestions)->Invalidate();
+          ChatWindow()->Invalidate();
           return 0;
         }
 
-        reinterpret_cast<ChatInputFocus*>(g_chatSuggestions)->Toggle();
+        ChatWindow()->ToggleInput();
       }
       return 0;
     case 316:

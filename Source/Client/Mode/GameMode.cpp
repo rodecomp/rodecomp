@@ -29,7 +29,7 @@
 #include "Resource/World/TerrainResource.h"
 #include "Script/LuaScript.h"
 #include "UI/UIBroadcastBalloon.h"
-#include "UI/Chat/ChatSuggestions.h"
+#include "UI/Chat/UINewChatWnd.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowDialogs.h"
@@ -4842,7 +4842,7 @@ void CGameMode::UpdateHoverNameBalloon() {
 #include "Contents/Messenger/WhisperBlockMgr.h"
 #include "Contents/NavigationManager.h"
 #include "Network/TextEncoding.h"
-#include "UI/Chat/ChatSuggestions.h"
+#include "UI/Chat/UINewChatWnd.h"
 #include <direct.h>
 #include <format>
 #include <io.h>

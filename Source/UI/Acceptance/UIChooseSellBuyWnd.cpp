@@ -19,7 +19,7 @@
 #include "Contents/Messenger/ClientMessenger.h"
 #include "Contents/Jobs/JobInheritance.h"
 #include "Contents/ClientItemLists.h"
-#include "UI/Chat/ChatSuggestions.h"
+#include "UI/Chat/UINewChatWnd.h"
 #include "UI/Rodex/UIRodexComposeWnd.h"
 #include "Contents/Items/ItemNaming.h"
 #include "Contents/GuildInfo.h"
@@ -8885,7 +8885,7 @@ void UIEquipWnd::Slot25(int x, int y) {
       } else if (g_windowMgr.GetHoverWindow()->geometry.id == 490) {
         static_cast<UIChatEditCtrl*>(g_windowMgr.GetHoverWindow())->InsertItemLink(item);
       } else if (g_windowMgr.GetHoverWindow()->geometry.id == 493) {
-        reinterpret_cast<UIChatEditCtrl*>(g_chatSuggestions->unknown_00BC)->InsertItemLink(item);
+        reinterpret_cast<UIChatEditCtrl*>(ChatWindow()->m_chatEdit)->InsertItemLink(item);
       } else if (g_windowMgr.GetHoverWindow()->geometry.id == 491) {
         reinterpret_cast<UIRodexComposeWnd*>(g_windowMgr.unknown_0458)->sub_7FF710(item);
       } else if (g_windowMgr.GetHoverWindow()->geometry.id == 494) {

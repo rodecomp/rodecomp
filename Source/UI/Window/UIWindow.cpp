@@ -40,7 +40,7 @@
 #include "UI/Buttons/UIButton.h"
 #include "UI/Buttons/UICheckBox.h"
 #include "UI/Buttons/UIItemTagButton.h"
-#include "UI/Chat/ChatSuggestions.h"
+#include "UI/Chat/UINewChatWnd.h"
 #include "UI/Edit/UIEditCtrl.h"
 #include "UI/Lists/UIComboBox.h"
 #include "UI/Lists/UIComboBoxDefWnd.h"
@@ -3456,13 +3456,13 @@ void UINavigationV4Wnd::InsertNavigationLink(std::string name, int x, int y) {
   link += g_windowNaviLinkCloseTag;
 
   if (g_windowMgr.GetHoverWindow() && g_windowMgr.GetHoverWindow()->geometry.id != 516) {
-    if (g_windowMgr.GetHoverWindow() == g_chatSuggestions->window && !g_windowMgr.unknown_0024) {
-      reinterpret_cast<ChatInputFocus*>(g_chatSuggestions)->Toggle();
+    if (g_windowMgr.GetHoverWindow() == ChatWindow()->m_suggestions && !g_windowMgr.unknown_0024) {
+      ChatWindow()->ToggleInput();
     }
   } else if (!g_windowMgr.unknown_0024) {
-    reinterpret_cast<ChatInputFocus*>(g_chatSuggestions)->Toggle();
+    ChatWindow()->ToggleInput();
   } else {
-    g_windowMgr.SetFocus(g_chatSuggestions->window);
+    g_windowMgr.SetFocus(ChatWindow()->m_suggestions);
   }
 
   g_windowMgr.GetHoverWindow()->SendMsg(nullptr, 153, reinterpret_cast<std::intptr_t>(link.c_str()), 0, 0, 0);

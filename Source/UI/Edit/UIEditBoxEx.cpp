@@ -368,14 +368,14 @@ void CUIEditBoxEx::SetBackgroundColor(std::uint32_t color) {
 }
 
 #include "Client/Input/Language.h"
-#include "UI/Chat/ChatSuggestions.h"
+#include "UI/Chat/UINewChatWnd.h"
 #include "UI/Window/InputFocus.h"
 #include "UI/Window/UIWindowMgr.h"
 
 // OFFSET: 0x009E4BF0
 // FUNCTION: fn_14444
 void CUIEditCtrlEx::HandleKeyDown(int key, std::intptr_t lparam) {
-  UIWindow* const chatWindow = g_chatSuggestions ? g_chatSuggestions->window : nullptr;
+  UIWindow* const chatWindow = ChatWindow() ? ChatWindow()->m_suggestions : nullptr;
 
   switch (key) {
   case VK_BACK:

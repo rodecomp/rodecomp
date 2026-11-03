@@ -6,7 +6,7 @@
 #include "Render/Text/FontCache.h"
 #include "Render/Text/TextContext.h"
 #include "UI/Buttons/UIBitmapButton.h"
-#include "UI/Chat/ChatSuggestions.h"
+#include "UI/Chat/UINewChatWnd.h"
 #include "UI/Chat/UINewChatWnd.h"
 #include "UI/Edit/UIEditCtrl.h"
 #include "UI/Text/ColoredText.h"
@@ -201,7 +201,7 @@ void UISubChatHisWnd::Slot15(int width, int height) {
   this->m_edit->Move(-100, -100);
   this->AddChild(this->m_edit);
 
-  ChatButtonLayout{g_chatInputFlag, this->geometry.width, {&this->m_miniButton, &this->m_stickButton, &this->m_optionButton}}.Apply();
+  this->ApplyButtonLayout();
 }
 
 // OFFSET: 0x00912340

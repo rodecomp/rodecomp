@@ -72,7 +72,7 @@
 #include "Utility/Text/FormatString.h"
 #include "Utility/Math/AffineMatrix.h"
 #include "UI/UIBroadcastBalloon.h"
-#include "UI/Chat/ChatSuggestions.h"
+#include "UI/Chat/UINewChatWnd.h"
 #include "UI/Text/NavigationLink.h"
 #include "UI/Text/UITextViewer.h"
 #include <algorithm>

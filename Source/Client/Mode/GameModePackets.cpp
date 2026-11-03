@@ -80,7 +80,7 @@
 #include "Contents/Schedule/EmotionSchedule.h"
 #include "Contents/Schedule/TimeScheduler.h"
 #include "Contents/Messenger/WhisperBlockMgr.h"
-#include "UI/Chat/ChatSuggestions.h"
+#include "UI/Chat/UINewChatWnd.h"
 #include "UI/Text/NavigationLink.h"
 #include "UI/Text/TextWrapping.h"
 #include "UI/Text/UITextViewer.h"

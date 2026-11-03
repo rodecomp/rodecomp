@@ -108,7 +108,7 @@
 #include <windows.h>
 #include <timeapi.h>
 #include "Contents/Items/ItemLink.h"
-#include "UI/Chat/ChatSuggestions.h"
+#include "UI/Chat/UINewChatWnd.h"
 #include "UI/Dialogs/UINpcEditDialogWnd.h"
 #include "UI/Rodex/UIRodexComposeWnd.h"
 #include "UI/UIBartermarketWnd.h"
@@ -8488,7 +8488,7 @@ void UIItemWnd::Slot25(int x, int y) {
           } else if (g_windowMgr.GetHoverWindow()->geometry.id == 490) {
             static_cast<UIChatEditCtrl*>(g_windowMgr.GetHoverWindow())->InsertItemLink(item);
           } else if (g_windowMgr.GetHoverWindow()->geometry.id == 493) {
-            reinterpret_cast<UIChatEditCtrl*>(g_chatSuggestions->unknown_00BC)->InsertItemLink(item);
+            reinterpret_cast<UIChatEditCtrl*>(ChatWindow()->m_chatEdit)->InsertItemLink(item);
           } else if (g_windowMgr.GetHoverWindow()->geometry.id == 491) {
             reinterpret_cast<UIRodexComposeWnd*>(g_windowMgr.unknown_0458)->sub_7FF710(item);
           } else if (g_windowMgr.GetHoverWindow()->geometry.id == 494) {
@@ -8525,7 +8525,7 @@ void UIMerchantItemWnd::Slot25(int x, int y) {
         } else if (g_windowMgr.GetHoverWindow()->geometry.id == 490) {
           static_cast<UIChatEditCtrl*>(g_windowMgr.GetHoverWindow())->InsertItemLink(item);
         } else if (g_windowMgr.GetHoverWindow()->geometry.id == 493) {
-          reinterpret_cast<UIChatEditCtrl*>(g_chatSuggestions->unknown_00BC)->InsertItemLink(item);
+          reinterpret_cast<UIChatEditCtrl*>(ChatWindow()->m_chatEdit)->InsertItemLink(item);
         } else if (g_windowMgr.GetHoverWindow()->geometry.id == 491) {
           reinterpret_cast<UIRodexComposeWnd*>(g_windowMgr.unknown_0458)->sub_7FF710(item);
         } else if (g_windowMgr.GetHoverWindow()->geometry.id == 494) {
@@ -9256,8 +9256,8 @@ void UIItemDropCntWnd::Show(int visible) {
     this->Invalidate();
     g_windowMgr.StoreSnapRectangle(this);
   } else {
-    if (this->m_edit == g_windowMgr.GetHoverWindow() && g_chatSuggestions) {
-      reinterpret_cast<UIWindow*>(g_chatSuggestions)->SendMsg(nullptr, 54, 0, 0, 0, 0);
+    if (this->m_edit == g_windowMgr.GetHoverWindow() && ChatWindow()) {
+      ChatWindow()->SendMsg(nullptr, 54, 0, 0, 0, 0);
     }
     g_windowMgr.RemoveSnapRectangle(this);
   }

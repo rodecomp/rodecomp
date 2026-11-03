@@ -7,7 +7,7 @@
 #include "Utility/Lexicon/LexiconBoundary.h"
 #include "Utility/Text/LanguageCharset.h"
 #include "Utility/Text/TextTokens.h"
-#include "UI/Chat/ChatSuggestions.h"
+#include "UI/Chat/UINewChatWnd.h"
 #include "UI/Lists/UIMemberListBox.h"
 #include "UI/UICaptchaPreviewWnd.h"
 #include "UI/UIRoundBoxTooltipWnd.h"
@@ -53,7 +53,7 @@ void CLanguageBase::DeleteSelection() {
   this->cursor = begin;
   this->anchor = begin;
 
-  if (g_windowMgr.unknown_0024 && g_chatSuggestions && g_chatSuggestions->window && g_windowMgr.GetHoverWindow() == g_chatSuggestions->window) {
+  if (g_windowMgr.unknown_0024 && ChatWindow() && ChatWindow()->m_suggestions && g_windowMgr.GetHoverWindow() == ChatWindow()->m_suggestions) {
     g_cashEmotionMgr->ProcessChatCommand(this->text.c_str());
   }
 }
@@ -66,7 +66,7 @@ void CLanguageBase::Insert(const char* value) {
   this->anchor = this->cursor + static_cast<int>(std::strlen(value));
   this->cursor = this->anchor;
 
-  if (g_windowMgr.unknown_0024 && g_chatSuggestions && g_chatSuggestions->window && g_windowMgr.GetHoverWindow() == g_chatSuggestions->window) {
+  if (g_windowMgr.unknown_0024 && ChatWindow() && ChatWindow()->m_suggestions && g_windowMgr.GetHoverWindow() == ChatWindow()->m_suggestions) {
     g_cashEmotionMgr->ProcessChatCommand(this->text.c_str());
   }
 }
@@ -283,8 +283,8 @@ void CLanguageBase::Character(unsigned value, LPARAM) {
   this->anchor = this->cursor + static_cast<int>(std::strlen(bytes));
   this->cursor = this->anchor;
 
-  if (this->text.c_str() && g_windowMgr.unknown_0024 && g_chatSuggestions && g_chatSuggestions->window &&
-      g_windowMgr.GetHoverWindow() == g_chatSuggestions->window) {
+  if (this->text.c_str() && g_windowMgr.unknown_0024 && ChatWindow() && ChatWindow()->m_suggestions &&
+      g_windowMgr.GetHoverWindow() == ChatWindow()->m_suggestions) {
     g_cashEmotionMgr->ProcessChatCommand(this->text.c_str());
   }
 }
@@ -352,8 +352,8 @@ void CLanguageBase::KeyDown(unsigned key, LPARAM) {
     this->anchor = 0;
     break;
   case VK_LEFT:
-    if (g_chatSuggestions && g_chatSuggestions->Visible() && g_chatSuggestions->unknown_013C) {
-      g_chatSuggestions->unknown_013C->SendMsg(nullptr, 176, VK_LEFT, 0, 0, 0);
+    if (ChatWindow() && ChatWindow()->SuggestionsVisible() && ChatWindow()->m_suggestions) {
+      ChatWindow()->m_suggestions->SendMsg(nullptr, 176, VK_LEFT, 0, 0, 0);
       return;
     }
 
@@ -361,8 +361,8 @@ void CLanguageBase::KeyDown(unsigned key, LPARAM) {
     this->anchor = this->cursor;
     break;
   case VK_RIGHT:
-    if (g_chatSuggestions && g_chatSuggestions->Visible() && g_chatSuggestions->unknown_013C) {
-      g_chatSuggestions->unknown_013C->SendMsg(nullptr, 176, VK_RIGHT, 0, 0, 0);
+    if (ChatWindow() && ChatWindow()->SuggestionsVisible() && ChatWindow()->m_suggestions) {
+      ChatWindow()->m_suggestions->SendMsg(nullptr, 176, VK_RIGHT, 0, 0, 0);
       return;
     }
 
@@ -382,8 +382,8 @@ void CLanguageBase::KeyDown(unsigned key, LPARAM) {
 // OFFSET: 0x00ACEEB0
 // FUNCTION: fn_45450
 void SuggestChatCommand(const char* text) {
-  if (text && g_windowMgr.unknown_0024 && g_chatSuggestions && g_chatSuggestions->window &&
-      g_windowMgr.GetHoverWindow() == g_chatSuggestions->window) {
+  if (text && g_windowMgr.unknown_0024 && ChatWindow() && ChatWindow()->m_suggestions &&
+      g_windowMgr.GetHoverWindow() == ChatWindow()->m_suggestions) {
     g_cashEmotionMgr->ProcessChatCommand(text);
   }
 }
@@ -528,7 +528,7 @@ void CLanguageBase::RefreshComposition() {
   std::memcpy(combined + committed, this->candidate.data(), pending);
   combined[committed + pending] = 0;
 
-  if (g_windowMgr.unknown_0024 && g_chatSuggestions && g_chatSuggestions->window && g_windowMgr.GetHoverWindow() == g_chatSuggestions->window) {
+  if (g_windowMgr.unknown_0024 && ChatWindow() && ChatWindow()->m_suggestions && g_windowMgr.GetHoverWindow() == ChatWindow()->m_suggestions) {
     g_cashEmotionMgr->ProcessChatCommand(combined);
   }
 }
