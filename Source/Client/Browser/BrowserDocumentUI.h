@@ -5,10 +5,12 @@
 #include <ole2.h>
 #include <mshtmhst.h>
 
+class BrowserClientSite;
+
 class BrowserDocumentUI final : public IDocHostUIHandler {
 public:
   // INLINED
-  explicit BrowserDocumentUI(IUnknown& site) : m_site(site) {
+  explicit BrowserDocumentUI(BrowserClientSite* site) : unknown_0004(0), m_site(site) {
   }
 
   HRESULT STDMETHODCALLTYPE QueryInterface(REFIID iid, void** output) override;
@@ -32,7 +34,8 @@ public:
   HRESULT STDMETHODCALLTYPE FilterDataObject(IDataObject* data, IDataObject** filtered) override;
 
 private:
-  IUnknown& m_site;
+  /* 0004 */ int unknown_0004;
+  /* 0008 */ BrowserClientSite* m_site;
 };
 
 #endif

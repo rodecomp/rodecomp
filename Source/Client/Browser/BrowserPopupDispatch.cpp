@@ -1,3 +1,4 @@
+#include "Client/Browser/BrowserClientSite.h"
 #include "Client/Browser/WebBrowser.h"
 #include "Render/Renderer.h"
 #include "UI/Window/UIWindowMgr.h"
@@ -11,7 +12,7 @@
 // OFFSET: 0x00AB1AA0
 // FUNCTION: fn_17380
 HRESULT STDMETHODCALLTYPE BrowserPopupDispatch::QueryInterface(REFIID iid, void** output) {
-  return this->m_site.QueryInterface(iid, output);
+  return static_cast<IOleClientSite*>(this->m_site)->QueryInterface(iid, output);
 }
 
 // OFFSET: 0x00AB15E0

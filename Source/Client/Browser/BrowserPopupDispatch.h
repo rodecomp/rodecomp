@@ -4,10 +4,12 @@
 #include <windows.h>
 #include <ole2.h>
 
+class BrowserClientSite;
+
 class BrowserPopupDispatch final : public IDispatch {
 public:
   // INLINED
-  explicit BrowserPopupDispatch(IUnknown& site) : m_site(site) {
+  explicit BrowserPopupDispatch(BrowserClientSite* site) : unknown_0004(0), m_site(site) {
   }
 
   HRESULT STDMETHODCALLTYPE QueryInterface(REFIID iid, void** output) override;
@@ -20,7 +22,8 @@ public:
   Invoke(DISPID id, REFIID iid, LCID locale, WORD flags, DISPPARAMS* args, VARIANT* result, EXCEPINFO* error, UINT* argumentError) override;
 
 private:
-  IUnknown& m_site;
+  /* 0004 */ int unknown_0004;
+  /* 0008 */ BrowserClientSite* m_site;
 };
 
 #endif

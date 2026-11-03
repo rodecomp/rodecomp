@@ -4,10 +4,12 @@
 #include <windows.h>
 #include <ole2.h>
 
+class BrowserClientSite;
+
 class BrowserInPlaceFrame final : public IOleInPlaceFrame {
 public:
   // INLINED
-  BrowserInPlaceFrame(IUnknown& site, HWND const& window) : m_site(site), m_window(window) {
+  explicit BrowserInPlaceFrame(BrowserClientSite* site) : unknown_0004(0), m_site(site) {
   }
 
   HRESULT STDMETHODCALLTYPE QueryInterface(REFIID iid, void** output) override;
@@ -27,14 +29,18 @@ public:
   HRESULT STDMETHODCALLTYPE TranslateAccelerator(MSG* message, WORD id) override;
 
 private:
-  IUnknown& m_site;
-  HWND const& m_window;
+  /* 0004 */ int unknown_0004;
+  /* 0008 */ BrowserClientSite* m_site;
 };
 
 class BrowserInPlaceSite final : public IOleInPlaceSite {
 public:
   // INLINED
-  BrowserInPlaceSite(IUnknown& site, HWND const& window, IUnknown* const& browser) : m_site(site), m_window(window), m_browser(browser), m_frame(site, window) {
+  explicit BrowserInPlaceSite(BrowserClientSite* site) : unknown_0004(0), m_frame(new BrowserInPlaceFrame(site)), m_site(site) {
+  }
+  // INLINED
+  ~BrowserInPlaceSite() {
+    delete this->m_frame;
   }
 
   HRESULT STDMETHODCALLTYPE QueryInterface(REFIID iid, void** output) override;
@@ -55,10 +61,9 @@ public:
   HRESULT STDMETHODCALLTYPE OnPosRectChange(const RECT* position) override;
 
 private:
-  IUnknown& m_site;
-  HWND const& m_window;
-  IUnknown* const& m_browser;
-  BrowserInPlaceFrame m_frame;
+  /* 0004 */ int unknown_0004;
+  /* 0008 */ BrowserInPlaceFrame* m_frame;
+  /* 000C */ BrowserClientSite* m_site;
 };
 
 #endif

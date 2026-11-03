@@ -5,10 +5,12 @@
 #include <ole2.h>
 #include <docobj.h>
 
+class BrowserClientSite;
+
 class BrowserCommandTarget final : public IOleCommandTarget {
 public:
   // INLINED
-  explicit BrowserCommandTarget(IUnknown& site) : m_site(site) {
+  explicit BrowserCommandTarget(BrowserClientSite* site) : unknown_0004(0), m_site(site) {
   }
 
   HRESULT STDMETHODCALLTYPE QueryInterface(REFIID iid, void** output) override;
@@ -18,7 +20,8 @@ public:
   HRESULT STDMETHODCALLTYPE Exec(const GUID* group, DWORD command, DWORD options, VARIANT* input, VARIANT* output) override;
 
 private:
-  IUnknown& m_site;
+  /* 0004 */ int unknown_0004;
+  /* 0008 */ BrowserClientSite* m_site;
 };
 
 #endif

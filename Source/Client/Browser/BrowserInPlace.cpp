@@ -1,9 +1,10 @@
+#include "Client/Browser/BrowserClientSite.h"
 #include "Client/Browser/BrowserInPlace.h"
 
 // OFFSET: 0x00AB1AE0
 // FUNCTION: fn_17382
 HRESULT STDMETHODCALLTYPE BrowserInPlaceFrame::QueryInterface(REFIID iid, void** output) {
-  return this->m_site.QueryInterface(iid, output);
+  return static_cast<IOleClientSite*>(this->m_site)->QueryInterface(iid, output);
 }
 
 // OFFSET: 0x00AB1600
@@ -21,7 +22,7 @@ ULONG STDMETHODCALLTYPE BrowserInPlaceFrame::Release() {
 // OFFSET: 0x00AB17E0
 // FUNCTION: fn_17365
 HRESULT STDMETHODCALLTYPE BrowserInPlaceFrame::GetWindow(HWND* output) {
-  *output = this->m_window;
+  *output = this->m_site->m_window;
   return S_OK;
 }
 
@@ -94,7 +95,7 @@ HRESULT STDMETHODCALLTYPE BrowserInPlaceFrame::TranslateAccelerator(MSG*, WORD) 
 // OFFSET: 0x00AB1B00
 // FUNCTION: fn_17383
 HRESULT STDMETHODCALLTYPE BrowserInPlaceSite::QueryInterface(REFIID iid, void** output) {
-  return this->m_site.QueryInterface(iid, output);
+  return static_cast<IOleClientSite*>(this->m_site)->QueryInterface(iid, output);
 }
 
 // OFFSET: 0x00AB1610
@@ -112,7 +113,7 @@ ULONG STDMETHODCALLTYPE BrowserInPlaceSite::Release() {
 // OFFSET: 0x00AB1800
 // FUNCTION: fn_17366
 HRESULT STDMETHODCALLTYPE BrowserInPlaceSite::GetWindow(HWND* output) {
-  *output = this->m_window;
+  *output = this->m_site->m_window;
   return S_OK;
 }
 
@@ -144,10 +145,10 @@ HRESULT STDMETHODCALLTYPE BrowserInPlaceSite::OnUIActivate() {
 // FUNCTION: fn_17367
 HRESULT STDMETHODCALLTYPE
 BrowserInPlaceSite::GetWindowContext(IOleInPlaceFrame** frame, IOleInPlaceUIWindow** document, RECT*, RECT*, OLEINPLACEFRAMEINFO* info) {
-  *frame = &this->m_frame;
+  *frame = this->m_frame;
   *document = nullptr;
   info->fMDIApp = FALSE;
-  info->hwndFrame = this->m_window;
+  info->hwndFrame = this->m_site->m_window;
   info->haccel = nullptr;
   info->cAccelEntries = 0;
 
@@ -188,7 +189,7 @@ HRESULT STDMETHODCALLTYPE BrowserInPlaceSite::DeactivateAndUndo() {
 // FUNCTION: fn_17375
 HRESULT STDMETHODCALLTYPE BrowserInPlaceSite::OnPosRectChange(const RECT* position) {
   IOleObject* object;
-  HRESULT result = this->m_browser->QueryInterface(IID_IOleObject, reinterpret_cast<void**>(&object));
+  HRESULT result = this->m_site->m_browser->QueryInterface(IID_IOleObject, reinterpret_cast<void**>(&object));
   if (SUCCEEDED(result)) {
     IOleInPlaceObject* inPlace;
     result = object->QueryInterface(IID_IOleInPlaceObject, reinterpret_cast<void**>(&inPlace));

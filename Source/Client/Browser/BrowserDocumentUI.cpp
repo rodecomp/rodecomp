@@ -1,9 +1,10 @@
+#include "Client/Browser/BrowserClientSite.h"
 #include "Client/Browser/BrowserDocumentUI.h"
 
 // OFFSET: 0x00AB1AC0
 // FUNCTION: fn_17381
 HRESULT STDMETHODCALLTYPE BrowserDocumentUI::QueryInterface(REFIID iid, void** output) {
-  return this->m_site.QueryInterface(iid, output);
+  return static_cast<IOleClientSite*>(this->m_site)->QueryInterface(iid, output);
 }
 
 // OFFSET: 0x00AB15F0

@@ -3,8 +3,11 @@
 // OFFSET: 0x00AB1310
 // FUNCTION: fn_17334
 BrowserClientSite::BrowserClientSite(HWND window, IUnknown* browser)
-    : m_window(window), m_browser(browser), m_events(*this), m_inPlace(*this, this->m_window, this->m_browser), m_documentUI(*this),
-      m_commands(*this) {
+    : unknown_0004(0), m_window(window), m_browser(browser) {
+  this->m_inPlace = new BrowserInPlaceSite(this);
+  this->m_documentUI = new BrowserDocumentUI(this);
+  this->m_events = new BrowserPopupDispatch(this);
+  this->m_commands = new BrowserCommandTarget(this);
   this->m_browser->AddRef();
 }
 
@@ -53,6 +56,10 @@ BrowserClientSite::~BrowserClientSite() {
     object->Release();
   }
 
+  delete this->m_commands;
+  delete this->m_events;
+  delete this->m_documentUI;
+  delete this->m_inPlace;
   this->m_browser->Release();
 }
 
@@ -62,13 +69,13 @@ HRESULT STDMETHODCALLTYPE BrowserClientSite::QueryInterface(REFIID iid, void** o
   if (iid == IID_IUnknown || iid == IID_IOleClientSite) {
     *output = static_cast<IOleClientSite*>(this);
   } else if (iid == IID_IOleInPlaceSite) {
-    *output = static_cast<IOleInPlaceSite*>(&this->m_inPlace);
+    *output = static_cast<IOleInPlaceSite*>(this->m_inPlace);
   } else if (iid == IID_IDocHostUIHandler) {
-    *output = static_cast<IDocHostUIHandler*>(&this->m_documentUI);
+    *output = static_cast<IDocHostUIHandler*>(this->m_documentUI);
   } else if (iid == IID_IDispatch) {
-    *output = &this->m_events;
+    *output = static_cast<IDispatch*>(this->m_events);
   } else if (iid == IID_IOleCommandTarget) {
-    *output = static_cast<IOleCommandTarget*>(&this->m_commands);
+    *output = static_cast<IOleCommandTarget*>(this->m_commands);
   } else {
     return E_NOINTERFACE;
   }

@@ -23,13 +23,17 @@ public:
   HRESULT STDMETHODCALLTYPE OnShowWindow(BOOL show) override;
   HRESULT STDMETHODCALLTYPE RequestNewObjectLayout() override;
 
+  friend class BrowserInPlaceFrame;
+  friend class BrowserInPlaceSite;
+
 private:
-  HWND m_window;
-  IUnknown* m_browser;
-  BrowserPopupDispatch m_events;
-  BrowserInPlaceSite m_inPlace;
-  BrowserDocumentUI m_documentUI;
-  BrowserCommandTarget m_commands;
+  /* 0004 */ int unknown_0004;
+  /* 0008 */ HWND m_window;
+  /* 000C */ IUnknown* m_browser;
+  /* 0010 */ BrowserInPlaceSite* m_inPlace;
+  /* 0014 */ BrowserDocumentUI* m_documentUI;
+  /* 0018 */ BrowserPopupDispatch* m_events;
+  /* 001C */ BrowserCommandTarget* m_commands;
 };
 
 #endif

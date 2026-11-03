@@ -1,3 +1,4 @@
+#include "Client/Browser/BrowserClientSite.h"
 #include "Client/Browser/BrowserCommandTarget.h"
 
 #include <mshtmhst.h>
@@ -5,7 +6,7 @@
 // OFFSET: 0x00AB1A80
 // FUNCTION: fn_17379
 HRESULT STDMETHODCALLTYPE BrowserCommandTarget::QueryInterface(REFIID iid, void** output) {
-  return this->m_site.QueryInterface(iid, output);
+  return static_cast<IOleClientSite*>(this->m_site)->QueryInterface(iid, output);
 }
 
 // OFFSET: 0x00AB15D0
