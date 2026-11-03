@@ -13,8 +13,15 @@ struct EffectVisibilityContext;
 
 struct CEffectPrim : CRenderObject {
   CEffectPrim();
+  bool OnProcess() override;
   void HandleMasterMessage(CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g);
 
+  bool MoveEffectPrimitive();
+  bool Prim3DCasting4();
+  bool Prim3DCasting5();
+  bool Prim3DCylinder();
+  bool Prim3DCylinderHalf();
+  void AdvanceEffectPrimitive();
   bool UpdateFireWall();
   bool UpdateStoneCurse();
   void Prim3DCircle();

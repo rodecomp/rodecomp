@@ -5,6 +5,7 @@
 #include "Client/Session.h"
 #include "Contents/Camera/Camera.h"
 #include "Contents/Actors/Pc.h"
+#include "Contents/Actors/GroundScope.h"
 #include "Contents/World/World.h"
 #include "Resource/Sprites/ActionResource.h"
 #include "Contents/Effects/EffectPrim.h"
@@ -103,200 +104,200 @@ namespace {
 
 // OFFSET: 0x00BB8C50
 // FUNCTION: fn_19785
-bool MoveEffectPrimitive(EffectPrimitiveState& particle, RenderObjectState& render, EffectMotionContext& context) {
-  particle.orgPos = {
-    context.parentRender.position.x + particle.deltaPos2.x, context.parentRender.position.y + particle.deltaPos2.y,
-    context.parentRender.position.z + particle.deltaPos2.z
+bool CEffectPrim::MoveEffectPrimitive() {
+  this->state.orgPos = {
+    this->state.master->render.position.x + this->state.deltaPos2.x, this->state.master->render.position.y + this->state.deltaPos2.y,
+    this->state.master->render.position.z + this->state.deltaPos2.z
   };
 
-  if (particle.changePoint == particle.stateCnt) {
-    particle.unknown_0138 = 1;
+  if (this->state.changePoint == this->state.stateCnt) {
+    this->state.unknown_0138 = 1;
     constexpr float sentinel = 0.0001f;
 
-    if (particle.changeWidthSpeed != sentinel) {
-      particle.widthSpeed = particle.changeWidthSpeed;
+    if (this->state.changeWidthSpeed != sentinel) {
+      this->state.widthSpeed = this->state.changeWidthSpeed;
     }
 
-    if (particle.changeHeightSpeed != sentinel) {
-      particle.heightSpeed = particle.changeHeightSpeed;
+    if (this->state.changeHeightSpeed != sentinel) {
+      this->state.heightSpeed = this->state.changeHeightSpeed;
     }
 
-    if (particle.changeSpeed != sentinel) {
-      particle.speed = particle.changeSpeed;
+    if (this->state.changeSpeed != sentinel) {
+      this->state.speed = this->state.changeSpeed;
     }
 
-    if (particle.changeWidthAccel != sentinel) {
-      particle.widthAccel = particle.changeWidthAccel;
+    if (this->state.changeWidthAccel != sentinel) {
+      this->state.widthAccel = this->state.changeWidthAccel;
     }
 
-    if (particle.changeHeightAccel != sentinel) {
-      particle.heightAccel = particle.changeHeightAccel;
+    if (this->state.changeHeightAccel != sentinel) {
+      this->state.heightAccel = this->state.changeHeightAccel;
     }
 
-    if (particle.changeAccel != sentinel) {
-      particle.accel = particle.changeAccel;
+    if (this->state.changeAccel != sentinel) {
+      this->state.accel = this->state.changeAccel;
     }
 
-    if (particle.changeSpeed3d.x != sentinel) {
-      particle.speed3d.x = particle.changeSpeed3d.x;
+    if (this->state.changeSpeed3d.x != sentinel) {
+      this->state.speed3d.x = this->state.changeSpeed3d.x;
     }
 
-    if (particle.changeSpeed3d.y != sentinel) {
-      particle.speed3d.y = particle.changeSpeed3d.y;
+    if (this->state.changeSpeed3d.y != sentinel) {
+      this->state.speed3d.y = this->state.changeSpeed3d.y;
     }
 
-    if (particle.changeSpeed3d.z != sentinel) {
-      particle.speed3d.z = particle.changeSpeed3d.z;
+    if (this->state.changeSpeed3d.z != sentinel) {
+      this->state.speed3d.z = this->state.changeSpeed3d.z;
     }
 
-    particle.changeWidthSpeed = sentinel;
-    particle.changeHeightSpeed = sentinel;
-    particle.changeSpeed = sentinel;
-    particle.changeWidthAccel = sentinel;
-    particle.changeHeightAccel = sentinel;
-    particle.changeAccel = sentinel;
-    particle.changeSpeed3d = {sentinel, sentinel, sentinel};
-    particle.changeAccel3d = {sentinel, sentinel, sentinel};
+    this->state.changeWidthSpeed = sentinel;
+    this->state.changeHeightSpeed = sentinel;
+    this->state.changeSpeed = sentinel;
+    this->state.changeWidthAccel = sentinel;
+    this->state.changeHeightAccel = sentinel;
+    this->state.changeAccel = sentinel;
+    this->state.changeSpeed3d = {sentinel, sentinel, sentinel};
+    this->state.changeAccel3d = {sentinel, sentinel, sentinel};
   }
 
-  particle.speed3d.x = particle.speed3d.x + particle.deltaPosAccel.x;
-  particle.speed3d.y = particle.deltaPosAccel.y + particle.speed3d.y;
-  particle.speed3d.z = particle.deltaPosAccel.z + particle.speed3d.z;
-  particle.widthSpeed = particle.widthAccel + particle.widthSpeed;
-  particle.speed = particle.accel + particle.speed;
-  particle.heightSpeed = particle.heightAccel + particle.heightSpeed;
-  particle.longSpeed = particle.longAccel + particle.longSpeed;
-  particle.latiSpeed = particle.latiAccel + particle.latiSpeed;
+  this->state.speed3d.x = this->state.speed3d.x + this->state.deltaPosAccel.x;
+  this->state.speed3d.y = this->state.deltaPosAccel.y + this->state.speed3d.y;
+  this->state.speed3d.z = this->state.deltaPosAccel.z + this->state.speed3d.z;
+  this->state.widthSpeed = this->state.widthAccel + this->state.widthSpeed;
+  this->state.speed = this->state.accel + this->state.speed;
+  this->state.heightSpeed = this->state.heightAccel + this->state.heightSpeed;
+  this->state.longSpeed = this->state.longAccel + this->state.longSpeed;
+  this->state.latiSpeed = this->state.latiAccel + this->state.latiSpeed;
 
-  if ((particle.pattern & 0x400u) != 0) {
-    particle.speed3d = {};
-    particle.speed3d = Forward(particle.speed, particle.transform);
-    particle.deltaPos.x = particle.speed3d.x + particle.deltaPos.x;
-    particle.deltaPos.z = particle.speed3d.z + particle.deltaPos.z;
-    particle.deltaPos.y = particle.speed3d.y + particle.deltaPos.y;
-  } else if ((particle.pattern & 0x100u) != 0) {
-    particle.deltaPos.x = particle.speed3d.x + particle.deltaPos.x;
-    particle.deltaPos.y = particle.speed3d.y + particle.deltaPos.y;
-    particle.deltaPos.z = particle.speed3d.z + particle.deltaPos.z;
+  if ((this->state.pattern & 0x400u) != 0) {
+    this->state.speed3d = {};
+    this->state.speed3d = Forward(this->state.speed, this->state.transform);
+    this->state.deltaPos.x = this->state.speed3d.x + this->state.deltaPos.x;
+    this->state.deltaPos.z = this->state.speed3d.z + this->state.deltaPos.z;
+    this->state.deltaPos.y = this->state.speed3d.y + this->state.deltaPos.y;
+  } else if ((this->state.pattern & 0x100u) != 0) {
+    this->state.deltaPos.x = this->state.speed3d.x + this->state.deltaPos.x;
+    this->state.deltaPos.y = this->state.speed3d.y + this->state.deltaPos.y;
+    this->state.deltaPos.z = this->state.speed3d.z + this->state.deltaPos.z;
   } else {
-    particle.speed3d = Forward(particle.speed, particle.transform);
-    particle.deltaPos.x = particle.speed3d.x + particle.deltaPos.x;
-    particle.deltaPos.z = particle.speed3d.z + particle.deltaPos.z;
-    particle.deltaPos.y = particle.speed3d.y + particle.deltaPos.y;
+    this->state.speed3d = Forward(this->state.speed, this->state.transform);
+    this->state.deltaPos.x = this->state.speed3d.x + this->state.deltaPos.x;
+    this->state.deltaPos.z = this->state.speed3d.z + this->state.deltaPos.z;
+    this->state.deltaPos.y = this->state.speed3d.y + this->state.deltaPos.y;
   }
 
-  if ((particle.pattern & 0x400u) != 0) {
-    const float x = particle.master->state.deltaPos[0] - render.position.x;
-    const float z = particle.master->state.deltaPos[2] - render.position.z;
+  if ((this->state.pattern & 0x400u) != 0) {
+    const float x = this->state.master->state.deltaPos[0] - this->render.position.x;
+    const float z = this->state.master->state.deltaPos[2] - this->render.position.z;
     const float distance = std::sqrt(z * z + x * x);
 
     if (3.0f >= distance) {
-      particle.unknown_014C.x = std::bit_cast<float>(1u);
+      this->state.unknown_014C.x = std::bit_cast<float>(1u);
       return false;
     }
 
-    particle.longitude = render.angle;
+    this->state.longitude = this->render.angle;
   }
 
-  render.position.x = particle.orgPos.x + particle.deltaPos.x;
-  render.position.y = particle.deltaPos.y + particle.orgPos.y;
-  render.position.z = particle.deltaPos.z + particle.orgPos.z;
-  particle.widthSize = particle.widthSpeed + particle.widthSize;
-  particle.heightSize = particle.heightSpeed + particle.heightSize;
-  particle.longitude = particle.longitude + particle.longSpeed;
-  particle.latitude = particle.latitude + particle.latiSpeed;
+  this->render.position.x = this->state.orgPos.x + this->state.deltaPos.x;
+  this->render.position.y = this->state.deltaPos.y + this->state.orgPos.y;
+  this->render.position.z = this->state.deltaPos.z + this->state.orgPos.z;
+  this->state.widthSize = this->state.widthSpeed + this->state.widthSize;
+  this->state.heightSize = this->state.heightSpeed + this->state.heightSize;
+  this->state.longitude = this->state.longitude + this->state.longSpeed;
+  this->state.latitude = this->state.latitude + this->state.latiSpeed;
 
-  if (!(particle.heightSize <= particle.maxHeightSize)) {
-    particle.heightAccel = 0;
-    particle.heightSpeed = 0;
+  if (!(this->state.heightSize <= this->state.maxHeightSize)) {
+    this->state.heightAccel = 0;
+    this->state.heightSpeed = 0;
   }
 
   struct matrix matrix;
 
-  if ((particle.pattern & 0x200u) != 0) {
-    matrix.MakeZRotation(context.cameraPitch);
-  } else if ((particle.pattern & 0x40u) != 0) {
-    particle.longitude = context.cameraYaw + 90.0f;
-    particle.roll = context.cameraPitch;
-    matrix.MakeXRotation(GetRadian(TruncateToInt(particle.latitude)));
-    matrix.AppendZRotation(GetRadian(TruncateToInt(particle.roll)));
+  if ((this->state.pattern & 0x200u) != 0) {
+    matrix.MakeZRotation(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.pitch);
+  } else if ((this->state.pattern & 0x40u) != 0) {
+    this->state.longitude = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw + 90.0f;
+    this->state.roll = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.pitch;
+    matrix.MakeXRotation(GetRadian(TruncateToInt(this->state.latitude)));
+    matrix.AppendZRotation(GetRadian(TruncateToInt(this->state.roll)));
   } else {
-    matrix.MakeZRotation(GetRadian(TruncateToInt(particle.roll)));
-    matrix.AppendXRotation(GetRadian(TruncateToInt(particle.latitude)));
+    matrix.MakeZRotation(GetRadian(TruncateToInt(this->state.roll)));
+    matrix.AppendXRotation(GetRadian(TruncateToInt(this->state.latitude)));
   }
 
-  const float angle = (particle.pattern & 0x200u) != 0 ? render.angle : particle.longitude;
+  const float angle = (this->state.pattern & 0x200u) != 0 ? this->render.angle : this->state.longitude;
   matrix.AppendYRotation(GetRadian(TruncateToInt(angle)));
-  std::memcpy(particle.rotTransform, matrix.values, sizeof(particle.rotTransform));
+  std::memcpy(this->state.rotTransform, matrix.values, sizeof(this->state.rotTransform));
 
-  if ((particle.pattern & 2u) != 0) {
-    const auto index = particle.chCnt;
-    particle.chCnt = index + 1u == 10u ? 0u : index + 1u;
+  if ((this->state.pattern & 2u) != 0) {
+    const auto index = this->state.chCnt;
+    this->state.chCnt = index + 1u == 10u ? 0u : index + 1u;
     const float offset = static_cast<float>(static_cast<int>(index)) / 10.0f;
-    particle.v1 = offset;
-    particle.v2 = offset + 1.0f;
+    this->state.v1 = offset;
+    this->state.v2 = offset + 1.0f;
   }
 
-  if ((particle.pattern & 0x10u) != 0) {
-    particle.master->state.deltaPos[0] = particle.deltaPos2.x + particle.deltaPos.x;
-    particle.master->state.deltaPos[1] = particle.deltaPos.y + particle.deltaPos2.y;
-    particle.master->state.deltaPos[2] = particle.deltaPos.z + particle.deltaPos2.z;
+  if ((this->state.pattern & 0x10u) != 0) {
+    this->state.master->state.deltaPos[0] = this->state.deltaPos2.x + this->state.deltaPos.x;
+    this->state.master->state.deltaPos[1] = this->state.deltaPos.y + this->state.deltaPos2.y;
+    this->state.master->state.deltaPos[2] = this->state.deltaPos.z + this->state.deltaPos2.z;
   }
 
-  if ((particle.pattern & 4u) != 0 && render.position.y > context.ground.Height(render.position.x, render.position.z)) {
-    particle.pattern &= ~4u;
-    particle.stateCnt = particle.duration - 25;
-    particle.speed = 0;
-    particle.master->state.flag = 1;
+  if ((this->state.pattern & 4u) != 0 && this->render.position.y > static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Grid().Height(this->render.position.x, this->render.position.z)) {
+    this->state.pattern &= ~4u;
+    this->state.stateCnt = this->state.duration - 25;
+    this->state.speed = 0;
+    this->state.master->state.flag = 1;
   }
 
-  const int frame = particle.stateCnt;
+  const int frame = this->state.stateCnt;
 
-  if ((particle.pattern & 0x20u) != 0 && frame % static_cast<int>(particle.type) == 0) {
-    particle.heightSpeed *= -1.0f;
+  if ((this->state.pattern & 0x20u) != 0 && frame % static_cast<int>(this->state.type) == 0) {
+    this->state.heightSpeed *= -1.0f;
   }
 
-  const bool wrap254 = (particle.pattern & 0x800u) != 0;
-  const bool gated = wrap254 && (particle.red == 254 || particle.green == 254 || particle.blue == 254);
+  const bool wrap254 = (this->state.pattern & 0x800u) != 0;
+  const bool gated = wrap254 && (this->state.red == 254 || this->state.green == 254 || this->state.blue == 254);
   bool advance = true;
 
   if (gated) {
-    if (particle.RGBCycleDelay != 0) {
-      ++particle.RGBCycleCnt;
+    if (this->state.RGBCycleDelay != 0) {
+      ++this->state.RGBCycleCnt;
     }
 
-    advance = particle.RGBCycleDelay == particle.RGBCycleCnt;
+    advance = this->state.RGBCycleDelay == this->state.RGBCycleCnt;
   }
 
   if (advance) {
-    particle.red += particle.redSpeed;
-    particle.green += particle.greenSpeed;
-    particle.blue += particle.blueSpeed;
+    this->state.red += this->state.redSpeed;
+    this->state.green += this->state.greenSpeed;
+    this->state.blue += this->state.blueSpeed;
 
     if (gated) {
-      particle.RGBCycleCnt = 0;
+      this->state.RGBCycleCnt = 0;
     }
   }
 
   if (wrap254) {
-    particle.red = particle.red > 254 ? 0 : particle.red < 0 ? 254 : particle.red;
-    particle.green = particle.green > 254 ? 0 : particle.green < 0 ? 254 : particle.green;
-    particle.blue = particle.blue > 254 ? 0 : particle.blue < 0 ? 254 : particle.blue;
+    this->state.red = this->state.red > 254 ? 0 : this->state.red < 0 ? 254 : this->state.red;
+    this->state.green = this->state.green > 254 ? 0 : this->state.green < 0 ? 254 : this->state.green;
+    this->state.blue = this->state.blue > 254 ? 0 : this->state.blue < 0 ? 254 : this->state.blue;
   } else {
-    particle.red = particle.red > 255 ? 0 : particle.red < 0 ? 255 : particle.red;
-    particle.green = particle.green > 255 ? 255 : particle.green < 0 ? 0 : particle.green;
-    particle.blue = particle.blue > 255 ? 255 : particle.blue < 0 ? 0 : particle.blue;
+    this->state.red = this->state.red > 255 ? 0 : this->state.red < 0 ? 255 : this->state.red;
+    this->state.green = this->state.green > 255 ? 255 : this->state.green < 0 ? 0 : this->state.green;
+    this->state.blue = this->state.blue > 255 ? 255 : this->state.blue < 0 ? 0 : this->state.blue;
   }
 
-  particle.ProcessAlpha();
+  this->state.ProcessAlpha();
 
-  if (particle.stateCnt % particle.animSpeed == 0) {
-    const auto next = render.curMotion + 1u;
-    render.curMotion = next;
+  if (this->state.stateCnt % this->state.animSpeed == 0) {
+    const auto next = this->render.curMotion + 1u;
+    this->render.curMotion = next;
 
-    if (particle.repeatAnim != 0) {
-      render.curMotion = static_cast<int>(next) % static_cast<int>(particle.totalTexture);
-    } else if (next == particle.totalTexture) {
+    if (this->state.repeatAnim != 0) {
+      this->render.curMotion = static_cast<int>(next) % static_cast<int>(this->state.totalTexture);
+    } else if (next == this->state.totalTexture) {
       return false;
     }
   }
@@ -306,30 +307,30 @@ bool MoveEffectPrimitive(EffectPrimitiveState& particle, RenderObjectState& rend
 
 // OFFSET: 0x00BAE7D0
 // FUNCTION: fn_19769
-bool UpdateEffectPrimitive15(EffectPrimitiveState& particle, RenderObjectState& render, EffectMotionContext& context, int updateTick) {
-  if (!particle.master) {
+bool CEffectPrim::OnProcess() {
+  if (!this->state.master) {
     return false;
   }
 
-  if (updateTick == 0) {
+  if (g_updateTick == 0) {
     return true;
   }
 
-  MoveEffectPrimitive(particle, render, context);
-  ++particle.stateCnt;
-  return particle.stateCnt <= particle.duration;
+  this->MoveEffectPrimitive();
+  ++this->state.stateCnt;
+  return this->state.stateCnt <= this->state.duration;
 }
 
 // OFFSET: 0x00BB6180
 // FUNCTION: fn_19773
-bool Prim3DCasting4(EffectPrimitiveState& particle, RenderObjectState& render, EffectMotionContext& context) {
-  const vector3d& parent = context.parentRender.position;
-  render.position.x = parent.x;
-  render.position.y = parent.y;
-  render.position.z = parent.z;
+bool CEffectPrim::Prim3DCasting4() {
+  const vector3d& parent = this->state.master->render.position;
+  this->render.position.x = parent.x;
+  this->render.position.y = parent.y;
+  this->render.position.z = parent.z;
 
   for (int index = 0; index < 4; ++index) {
-    EffectPrimitiveSlot& slot = particle.slots[index];
+    EffectPrimitiveSlot& slot = this->state.slots[index];
 
     if (slot.life != 1) {
       continue;
@@ -348,7 +349,7 @@ bool Prim3DCasting4(EffectPrimitiveState& particle, RenderObjectState& render, E
     slot.maxHeight = height;
     slot.riseAngle = static_cast<std::int16_t>(static_cast<int>(90.0f - height * 9.0f));
 
-    if (slot.process >= particle.duration - 40) {
+    if (slot.process >= this->state.duration - 40) {
       slot.alphaB -= 3;
 
       if (slot.alphaB < 0) {
@@ -374,14 +375,14 @@ bool Prim3DCasting4(EffectPrimitiveState& particle, RenderObjectState& render, E
 
 // OFFSET: 0x00BB62A0
 // FUNCTION: fn_19774
-bool Prim3DCasting5(EffectPrimitiveState& particle, RenderObjectState& render, EffectMotionContext& context) {
-  const vector3d& parent = context.parentRender.position;
-  render.position.x = parent.x;
-  render.position.y = parent.y;
-  render.position.z = parent.z;
+bool CEffectPrim::Prim3DCasting5() {
+  const vector3d& parent = this->state.master->render.position;
+  this->render.position.x = parent.x;
+  this->render.position.y = parent.y;
+  this->render.position.z = parent.z;
 
   for (int index = 0; index < 4; ++index) {
-    EffectPrimitiveSlot& slot = particle.slots[index];
+    EffectPrimitiveSlot& slot = this->state.slots[index];
 
     if (slot.life != 1) {
       continue;
@@ -434,54 +435,54 @@ bool Prim3DCasting5(EffectPrimitiveState& particle, RenderObjectState& render, E
 
 // OFFSET: 0x00BB6820
 // FUNCTION: fn_19777
-bool Prim3DCylinder(EffectPrimitiveState& particle, RenderObjectState& render, EffectMotionContext& context) {
-  particle.orgPos = {
-    context.parentRender.position.x + particle.deltaPos2.x, context.parentRender.position.y + particle.deltaPos2.y,
-    context.parentRender.position.z + particle.deltaPos2.z
+bool CEffectPrim::Prim3DCylinder() {
+  this->state.orgPos = {
+    this->state.master->render.position.x + this->state.deltaPos2.x, this->state.master->render.position.y + this->state.deltaPos2.y,
+    this->state.master->render.position.z + this->state.deltaPos2.z
   };
 
-  particle.speed = particle.accel + particle.speed;
-  particle.latiSpeed = particle.latiAccel + particle.latiSpeed;
-  particle.heightSpeed = particle.heightAccel + particle.heightSpeed;
-  particle.latitude = particle.latiSpeed + particle.latitude;
-  particle.outerSpeed = particle.outerAccel + particle.outerSpeed;
-  particle.innerSpeed = particle.innerAccel + particle.innerSpeed;
-  particle.longSpeed = particle.longAccel + particle.longSpeed;
-  particle.longitude = particle.longSpeed + particle.longitude;
+  this->state.speed = this->state.accel + this->state.speed;
+  this->state.latiSpeed = this->state.latiAccel + this->state.latiSpeed;
+  this->state.heightSpeed = this->state.heightAccel + this->state.heightSpeed;
+  this->state.latitude = this->state.latiSpeed + this->state.latitude;
+  this->state.outerSpeed = this->state.outerAccel + this->state.outerSpeed;
+  this->state.innerSpeed = this->state.innerAccel + this->state.innerSpeed;
+  this->state.longSpeed = this->state.longAccel + this->state.longSpeed;
+  this->state.longitude = this->state.longSpeed + this->state.longitude;
 
-  struct matrix& matrix = *reinterpret_cast<struct matrix*>(particle.transform);
-  matrix.MakeXRotation(GetRadian(static_cast<int>(particle.latitude)));
-  matrix.AppendYRotation(GetRadian(static_cast<int>(particle.longitude)));
+  struct matrix& matrix = *reinterpret_cast<struct matrix*>(this->state.transform);
+  matrix.MakeXRotation(GetRadian(static_cast<int>(this->state.latitude)));
+  matrix.AppendYRotation(GetRadian(static_cast<int>(this->state.longitude)));
 
-  particle.speed3d = Upward(particle.speed, particle.transform);
-  particle.deltaPos.y = particle.speed3d.y + particle.deltaPos.y;
-  particle.deltaPos.x = particle.speed3d.x + particle.deltaPos.x;
-  particle.deltaPos.z = particle.speed3d.z + particle.deltaPos.z;
-  particle.longitude = particle.longSpeed + particle.longitude;
-  particle.innerSize += particle.innerSpeed;
-  render.position.x = particle.deltaPos.x + particle.orgPos.x;
-  render.position.y = particle.deltaPos.y + particle.orgPos.y;
-  render.position.z = particle.deltaPos.z + particle.orgPos.z;
-  particle.outerSize += particle.outerSpeed;
-  particle.heightSize = particle.heightSpeed + particle.heightSize;
+  this->state.speed3d = Upward(this->state.speed, this->state.transform);
+  this->state.deltaPos.y = this->state.speed3d.y + this->state.deltaPos.y;
+  this->state.deltaPos.x = this->state.speed3d.x + this->state.deltaPos.x;
+  this->state.deltaPos.z = this->state.speed3d.z + this->state.deltaPos.z;
+  this->state.longitude = this->state.longSpeed + this->state.longitude;
+  this->state.innerSize += this->state.innerSpeed;
+  this->render.position.x = this->state.deltaPos.x + this->state.orgPos.x;
+  this->render.position.y = this->state.deltaPos.y + this->state.orgPos.y;
+  this->render.position.z = this->state.deltaPos.z + this->state.orgPos.z;
+  this->state.outerSize += this->state.outerSpeed;
+  this->state.heightSize = this->state.heightSpeed + this->state.heightSize;
 
-  if (particle.heightSize > particle.maxHeightSize) {
-    particle.heightSize = particle.maxHeightSize;
+  if (this->state.heightSize > this->state.maxHeightSize) {
+    this->state.heightSize = this->state.maxHeightSize;
   }
 
-  if ((particle.pattern & 1u) != 0 && particle.stateCnt == particle.fadeOutCnt) {
-    particle.outerSpeed = -(particle.outerSize / static_cast<float>(particle.duration - particle.stateCnt + 1));
+  if ((this->state.pattern & 1u) != 0 && this->state.stateCnt == this->state.fadeOutCnt) {
+    this->state.outerSpeed = -(this->state.outerSize / static_cast<float>(this->state.duration - this->state.stateCnt + 1));
   }
 
-  particle.ProcessAlpha();
+  this->state.ProcessAlpha();
 
-  if (particle.stateCnt % particle.animSpeed == 0) {
-    const auto next = render.curMotion + 1u;
-    render.curMotion = next;
+  if (this->state.stateCnt % this->state.animSpeed == 0) {
+    const auto next = this->render.curMotion + 1u;
+    this->render.curMotion = next;
 
-    if (particle.repeatAnim != 0) {
-      render.curMotion = static_cast<int>(next) % static_cast<int>(particle.totalTexture);
-    } else if (next == particle.totalTexture) {
+    if (this->state.repeatAnim != 0) {
+      this->render.curMotion = static_cast<int>(next) % static_cast<int>(this->state.totalTexture);
+    } else if (next == this->state.totalTexture) {
       return false;
     }
   }
@@ -491,50 +492,50 @@ bool Prim3DCylinder(EffectPrimitiveState& particle, RenderObjectState& render, E
 
 // OFFSET: 0x00BB6B30
 // FUNCTION: fn_19778
-bool Prim3DCylinderHalf(EffectPrimitiveState& particle, RenderObjectState& render, EffectMotionContext& context) {
-  particle.orgPos = {
-    context.parentRender.position.x + particle.deltaPos2.x, context.parentRender.position.y + particle.deltaPos2.y,
-    context.parentRender.position.z + particle.deltaPos2.z
+bool CEffectPrim::Prim3DCylinderHalf() {
+  this->state.orgPos = {
+    this->state.master->render.position.x + this->state.deltaPos2.x, this->state.master->render.position.y + this->state.deltaPos2.y,
+    this->state.master->render.position.z + this->state.deltaPos2.z
   };
 
-  particle.speed = particle.accel + particle.speed;
-  particle.outerSpeed = particle.outerAccel + particle.outerSpeed;
-  particle.innerSpeed = particle.innerAccel + particle.innerSpeed;
-  particle.heightSpeed = particle.heightAccel + particle.heightSpeed;
+  this->state.speed = this->state.accel + this->state.speed;
+  this->state.outerSpeed = this->state.outerAccel + this->state.outerSpeed;
+  this->state.innerSpeed = this->state.innerAccel + this->state.innerSpeed;
+  this->state.heightSpeed = this->state.heightAccel + this->state.heightSpeed;
 
-  struct matrix& matrix = *reinterpret_cast<struct matrix*>(particle.transform);
-  matrix.MakeXRotation(GetRadian(static_cast<int>(particle.latitude)));
-  matrix.AppendYRotation(GetRadian(static_cast<int>(particle.longitude)));
+  struct matrix& matrix = *reinterpret_cast<struct matrix*>(this->state.transform);
+  matrix.MakeXRotation(GetRadian(static_cast<int>(this->state.latitude)));
+  matrix.AppendYRotation(GetRadian(static_cast<int>(this->state.longitude)));
 
-  particle.speed3d = Upward(particle.speed, particle.transform);
-  particle.deltaPos.x = particle.speed3d.x + particle.deltaPos.x;
-  particle.deltaPos.y = particle.speed3d.y + particle.deltaPos.y;
-  particle.deltaPos.z = particle.speed3d.z + particle.deltaPos.z;
-  render.position.x = particle.deltaPos.x + particle.orgPos.x;
-  render.position.y = particle.deltaPos.y + particle.orgPos.y;
-  render.position.z = particle.deltaPos.z + particle.orgPos.z;
-  particle.longitude = particle.longSpeed + particle.longitude;
-  particle.outerSize = particle.outerSpeed + particle.outerSize;
-  particle.innerSize = particle.innerSpeed + particle.innerSize;
-  particle.heightSize += particle.heightSpeed;
+  this->state.speed3d = Upward(this->state.speed, this->state.transform);
+  this->state.deltaPos.x = this->state.speed3d.x + this->state.deltaPos.x;
+  this->state.deltaPos.y = this->state.speed3d.y + this->state.deltaPos.y;
+  this->state.deltaPos.z = this->state.speed3d.z + this->state.deltaPos.z;
+  this->render.position.x = this->state.deltaPos.x + this->state.orgPos.x;
+  this->render.position.y = this->state.deltaPos.y + this->state.orgPos.y;
+  this->render.position.z = this->state.deltaPos.z + this->state.orgPos.z;
+  this->state.longitude = this->state.longSpeed + this->state.longitude;
+  this->state.outerSize = this->state.outerSpeed + this->state.outerSize;
+  this->state.innerSize = this->state.innerSpeed + this->state.innerSize;
+  this->state.heightSize += this->state.heightSpeed;
 
-  if (particle.heightSize > particle.maxHeightSize) {
-    particle.heightSize = particle.maxHeightSize;
+  if (this->state.heightSize > this->state.maxHeightSize) {
+    this->state.heightSize = this->state.maxHeightSize;
   }
 
-  if ((particle.pattern & 1u) != 0 && particle.stateCnt == particle.fadeOutCnt) {
-    particle.outerSpeed = -(particle.outerSize / static_cast<float>(particle.duration - particle.stateCnt + 1));
+  if ((this->state.pattern & 1u) != 0 && this->state.stateCnt == this->state.fadeOutCnt) {
+    this->state.outerSpeed = -(this->state.outerSize / static_cast<float>(this->state.duration - this->state.stateCnt + 1));
   }
 
-  particle.ProcessAlpha();
+  this->state.ProcessAlpha();
 
-  if (particle.stateCnt % particle.animSpeed == 0) {
-    const auto next = render.curMotion + 1u;
-    render.curMotion = next;
+  if (this->state.stateCnt % this->state.animSpeed == 0) {
+    const auto next = this->render.curMotion + 1u;
+    this->render.curMotion = next;
 
-    if (particle.repeatAnim != 0) {
-      render.curMotion = static_cast<int>(next) % static_cast<int>(particle.totalTexture);
-    } else if (next == particle.totalTexture) {
+    if (this->state.repeatAnim != 0) {
+      this->render.curMotion = static_cast<int>(next) % static_cast<int>(this->state.totalTexture);
+    } else if (next == this->state.totalTexture) {
       return false;
     }
   }
@@ -544,38 +545,38 @@ bool Prim3DCylinderHalf(EffectPrimitiveState& particle, RenderObjectState& rende
 
 // OFFSET: 0x00BB8610
 // FUNCTION: fn_19784
-void AdvanceEffectPrimitive(EffectPrimitiveState& particle, RenderObjectState& render, EffectMotionContext& context) {
-  particle.orgPos = {
-    context.parentRender.position.x + particle.deltaPos2.x, context.parentRender.position.y + particle.deltaPos2.y,
-    context.parentRender.position.z + particle.deltaPos2.z
+void CEffectPrim::AdvanceEffectPrimitive() {
+  this->state.orgPos = {
+    this->state.master->render.position.x + this->state.deltaPos2.x, this->state.master->render.position.y + this->state.deltaPos2.y,
+    this->state.master->render.position.z + this->state.deltaPos2.z
   };
 
-  if (particle.stateCnt == particle.changePoint) {
-    particle.speed = particle.changeSpeed;
-    particle.accel = particle.changeAccel;
+  if (this->state.stateCnt == this->state.changePoint) {
+    this->state.speed = this->state.changeSpeed;
+    this->state.accel = this->state.changeAccel;
   }
 
-  particle.speed = particle.accel + particle.speed;
-  particle.speed3d = Forward(particle.speed, particle.transform);
-  particle.deltaPos.x = particle.speed3d.x + particle.deltaPos.x;
-  particle.deltaPos.y = particle.speed3d.y + particle.deltaPos.y;
-  particle.deltaPos.z = particle.speed3d.z + particle.deltaPos.z;
-  render.position.x = particle.deltaPos.x + particle.orgPos.x;
-  render.position.y = particle.deltaPos.y + particle.orgPos.y;
-  render.position.z = particle.deltaPos.z + particle.orgPos.z;
+  this->state.speed = this->state.accel + this->state.speed;
+  this->state.speed3d = Forward(this->state.speed, this->state.transform);
+  this->state.deltaPos.x = this->state.speed3d.x + this->state.deltaPos.x;
+  this->state.deltaPos.y = this->state.speed3d.y + this->state.deltaPos.y;
+  this->state.deltaPos.z = this->state.speed3d.z + this->state.deltaPos.z;
+  this->render.position.x = this->state.deltaPos.x + this->state.orgPos.x;
+  this->render.position.y = this->state.deltaPos.y + this->state.orgPos.y;
+  this->render.position.z = this->state.deltaPos.z + this->state.orgPos.z;
 
-  if ((particle.pattern & 1u) != 0 && particle.stateCnt == static_cast<int>(particle.chCnt)) {
-    particle.accel = 0;
-    particle.speed = 0;
+  if ((this->state.pattern & 1u) != 0 && this->state.stateCnt == static_cast<int>(this->state.chCnt)) {
+    this->state.accel = 0;
+    this->state.speed = 0;
   }
 
-  if ((particle.pattern & 2u) != 0) {
-    if (particle.stateCnt == particle.duration - 30) {
-      particle.speed = particle.changeSpeed3d.y;
-      particle.accel = particle.changeAccel3d.y;
+  if ((this->state.pattern & 2u) != 0) {
+    if (this->state.stateCnt == this->state.duration - 30) {
+      this->state.speed = this->state.changeSpeed3d.y;
+      this->state.accel = this->state.changeAccel3d.y;
     }
   } else {
-    particle.ProcessAlpha();
+    this->state.ProcessAlpha();
   }
 }
 
