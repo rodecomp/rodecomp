@@ -174,7 +174,7 @@ void UIButton::Slot31(int x, int y) {
           }
         } else {
           if (id == 184 || id == 321) {
-            RecordEditTextsNoArg(parent);
+            parent->RecordEditTexts();
             id = this->geometry.id;
             parent = this->parent;
           }

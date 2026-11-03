@@ -5,6 +5,7 @@
 #include "Network/Packets/PacketLengths.h"
 #include "Network/Packets/PacketId.h"
 #include "UI/Window/UIWindow.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowPolicy.h"
 
 #include <algorithm>
@@ -271,12 +272,12 @@ namespace {
 
 // OFFSET: 0x00A82F80
 // FUNCTION: fn_17000
-void WindowReplayRecorder::RecordDrop(int x, int y, const ModeDragState& drag, int target) {
+void UIWindow::RecordDrop(int x, int y, const ModeDragState& drag, int target) {
   if (Replay::Instance().state != 2) {
     return;
   }
 
-  if (WindowPolicy(this->policy, this->restricted, 5, this->windowId) == 0) {
+  if (WindowPolicy(g_windowMgr.policy[0].actions, g_replayAnimationScaling != 0, 5, this->geometry.id) == 0) {
     return;
   }
 
@@ -284,7 +285,7 @@ void WindowReplayRecorder::RecordDrop(int x, int y, const ModeDragState& drag, i
   std::memset(&packet, 0, sizeof(packet));
   packet.marker = 0x038508AEu;
   packet.bytes = sizeof(packet);
-  packet.windowId = target == -1 ? this->windowId : target;
+  packet.windowId = target == -1 ? this->geometry.id : target;
   packet.x = x;
   packet.y = y;
   packet.source = drag.source;
@@ -305,12 +306,12 @@ void WindowReplayRecorder::RecordDrop(int x, int y, const ModeDragState& drag, i
   packet.optionCount = drag.optionCount;
   std::memcpy(packet.options, drag.options, sizeof(packet.options));
 
-  this->packets.Record(packet.bytes, &packet, 42, 0);
+  reinterpret_cast<ReplayPacketRecorder*>(&Replay::Instance())->Record(packet.bytes, &packet, 42, 0);
 }
 
 // OFFSET: 0x00A83180
 // FUNCTION: fn_17001
-int WindowReplayRecorder::RecordData(std::uint16_t type, std::vector<unsigned char> data) {
+int UIWindow::RecordData(std::uint16_t type, std::vector<unsigned char> data) {
   if (Replay::Instance().state != 2 || data.empty()) {
     return 0;
   }
@@ -329,7 +330,7 @@ int WindowReplayRecorder::RecordData(std::uint16_t type, std::vector<unsigned ch
 
 // OFFSET: 0x00A83300
 // FUNCTION: fn_17002
-void WindowReplayRecorder::RecordValues(int value, int argument1, int argument2, int argument3, int argument4) {
+void UIWindow::RecordValues(int value, int argument1, int argument2, int argument3, int argument4) {
   if (g_replayAnimationScaling != 0 || Replay::Instance().state != 2) {
     return;
   }
@@ -337,18 +338,18 @@ void WindowReplayRecorder::RecordValues(int value, int argument1, int argument2,
   ValuesRecord packet;
   packet.marker = 0x039108AEu;
   packet.bytes = sizeof(packet);
-  packet.windowId = this->windowId;
+  packet.windowId = this->geometry.id;
   packet.value = value;
   packet.arguments[0] = argument1;
   packet.arguments[1] = argument2;
   packet.arguments[2] = argument3;
   packet.arguments[3] = argument4;
-  this->packets.Record(packet.bytes, &packet, 42, 0);
+  reinterpret_cast<ReplayPacketRecorder*>(&Replay::Instance())->Record(packet.bytes, &packet, 42, 0);
 }
 
 // OFFSET: 0x00A83440
 // FUNCTION: fn_17003
-void WindowReplayRecorder::RecordText(int event, const char* text) {
+void UIWindow::RecordText(int event, const char* text) {
   if (Replay::Instance().state != 2) {
     return;
   }
@@ -357,8 +358,8 @@ void WindowReplayRecorder::RecordText(int event, const char* text) {
   std::memset(packet.text, 0, sizeof(packet.text));
   packet.marker = 0x038B08AEu;
   packet.bytes = sizeof(packet);
-  packet.windowId = this->windowId;
+  packet.windowId = this->geometry.id;
   packet.event = event;
   std::memcpy(packet.text, text, std::min(static_cast<int>(std::strlen(text)), 100));
-  this->packets.Record(packet.bytes, &packet, 42, 0);
+  reinterpret_cast<ReplayPacketRecorder*>(&Replay::Instance())->Record(packet.bytes, &packet, 42, 0);
 }

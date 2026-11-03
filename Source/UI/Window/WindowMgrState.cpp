@@ -1095,7 +1095,7 @@ bool UIWindowMgr::DropAt(int x, int y, ModeDragState* drag) {
 
   const int localX = x - offsetX;
   const int localY = y - offsetY;
-  reinterpret_cast<WindowReplayRecorder*>(window)->RecordDrop(localX, localY, *drag, -1);
+  window->RecordDrop(localX, localY, *drag, -1);
   drag->unknown_038C = reinterpret_cast<std::uint32_t>(window);
   if (this->window_01EC != window->Root()) {
     window->Slot10(localX, localY, reinterpret_cast<std::intptr_t>(drag));

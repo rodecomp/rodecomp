@@ -1975,7 +1975,7 @@ bool UIWindowMgr::sub_A8CA20() {
     window = this->unknown_0314;
     if (window != nullptr) {
       if (Replay::Instance().state == 2) {
-        RecordEditTextsNoArg(window);
+        window->RecordEditTexts();
       }
       window->SendMsg(nullptr, 0, 0, 0, 0, 0);
       return true;
@@ -1983,7 +1983,7 @@ bool UIWindowMgr::sub_A8CA20() {
     window = this->unknown_0318;
     if (window != nullptr) {
       if (Replay::Instance().state == 2) {
-        RecordEditTextsNoArg(window);
+        window->RecordEditTexts();
       }
       window->SendMsg(nullptr, 0, 0, 0, 0, 0);
       return true;
@@ -2027,7 +2027,7 @@ bool UIWindowMgr::sub_A8CA20() {
             handled = false;
           }
           if (Replay::Instance().state == 2 && handled) {
-            RecordEditTextsNoArg(this->hoverWindow->Root());
+            this->hoverWindow->Root()->RecordEditTexts();
           }
           if (g_windowCloseByte == 0) {
             handled = true;
@@ -2041,7 +2041,7 @@ bool UIWindowMgr::sub_A8CA20() {
         if (window == nullptr) {
           if (this->window_01C8 != nullptr && g_inputSuggestionsEnabled == 1) {
             handled = false;
-            RecordEditTextsNoArg(this->window_01C8);
+            this->window_01C8->RecordEditTexts();
             window = this->window_01C8;
           } else {
             for (UIWindow* item : this->rendered) {
@@ -2049,7 +2049,7 @@ bool UIWindowMgr::sub_A8CA20() {
                 continue;
               }
               if (g_replayAnimationScaling == 0) {
-                RecordEditTextsNoArg(item->Root());
+                item->Root()->RecordEditTexts();
               }
               item->SendMsg(nullptr, 0, 0, 0, 0, 0);
             }

@@ -27,17 +27,5 @@ struct ReplayPacketRecorder {
   bool Record(std::uint16_t bytes, const void* packet, int event, std::uint32_t delay);
 };
 
-struct WindowReplayRecorder {
-  const int& windowId;
-  const int* policy;
-  const bool& restricted;
-  ReplayPacketRecorder& packets;
-
-  void RecordDrop(int x, int y, const ModeDragState& drag, int target);
-  int RecordData(std::uint16_t type, std::vector<unsigned char> data);
-  void RecordValues(int value, int argument1, int argument2, int argument3, int argument4);
-  void RecordWindowFlag(bool value);
-  void RecordText(int event, const char* text);
-};
 
 #endif

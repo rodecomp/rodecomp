@@ -7,7 +7,6 @@
 #include <cstddef>
 #include <cstdint>
 
-struct WindowReplayRecorder;
 class UICheckBox;
 class UIStaticText;
 
@@ -25,10 +24,7 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
 protected:
-  union {
-    WindowReplayRecorder* m_recorder;
-    /* 00F0 */ UIStaticText* title;
-  };
+  /* 00F0 */ UIStaticText* title;
 
 public:
   /* 00F4 */ UICheckBox* checkBox;

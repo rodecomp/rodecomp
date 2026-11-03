@@ -2215,8 +2215,8 @@ static_assert(sizeof(EditTextsRecord) == 0x1000);
 
 // OFFSET: 0x00A834E0
 // FUNCTION: fn_17004
-int UIWindow::RecordEditTexts(WindowReplayRecorder& recorder) {
-  if (Replay::Instance().state != 2 || !WindowPolicy(recorder.policy, recorder.restricted, 6, this->geometry.id)) {
+int UIWindow::RecordEditTexts() {
+  if (Replay::Instance().state != 2 || !WindowPolicy(g_windowMgr.policy[0].actions, g_replayAnimationScaling != 0, 6, this->geometry.id)) {
     return 0;
   }
 
@@ -2254,7 +2254,7 @@ int UIWindow::RecordEditTexts(WindowReplayRecorder& recorder) {
   record.bytes = static_cast<std::uint16_t>(offset);
   record.marker = 0x038608AEu;
   record.windowId = this->geometry.id;
-  recorder.packets.Record(record.bytes, &record, 41, 0);
+  reinterpret_cast<ReplayPacketRecorder*>(&Replay::Instance())->Record(record.bytes, &record, 41, 0);
   return offset;
 }
 
@@ -3314,7 +3314,7 @@ bool UINavigationV4Wnd::LoadRoute(int index) {
   g_navigationManager.BuildSingleNodePaths();
 
   if (g_navigationManager.StateCount() > 0) {
-    reinterpret_cast<WindowReplayRecorder*>(this)->RecordData(0x38F, g_navigationManager.WriteStates());
+    this->RecordData(0x38F, g_navigationManager.WriteStates());
   }
 
   this->FillRouteGroups();

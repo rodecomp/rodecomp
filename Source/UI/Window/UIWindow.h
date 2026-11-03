@@ -26,7 +26,7 @@ class CBitmapRes;
 class CActRes;
 class TextureCache;
 class UITextViewer;
-struct WindowReplayRecorder;
+struct ModeDragState;
 struct ITEM_INFO;
 class UIItemTagButton;
 
@@ -177,7 +177,12 @@ public:
   const char* TruncateText(const char* text, int maxBytes);
   const char* ClipTextToWidth(const char* text, int maxWidth, int family, int height, unsigned char bold);
   void RecordResponse(int response, std::intptr_t b, std::intptr_t c, std::intptr_t d);
-  int RecordEditTexts(WindowReplayRecorder& recorder);
+  int RecordEditTexts();
+  void RecordDrop(int x, int y, const ModeDragState& drag, int target);
+  int RecordData(std::uint16_t type, std::vector<unsigned char> data);
+  void RecordValues(int value, int argument1, int argument2, int argument3, int argument4);
+  void RecordWindowFlag(bool value);
+  void RecordText(int event, const char* text);
   int RestoreEditTexts(const unsigned char* data);
   void DrawActionSprite(
     const CSprRes* sprite, const CActRes* action, int x, int y, int width, int height, int interval, bool scaled, const CBitmapRes* background
@@ -232,16 +237,6 @@ private:
   UIWindow(const UIWindow&) = delete;
   UIWindow& operator=(const UIWindow&) = delete;
 };
-
-// INLINED
-__forceinline void RecordEditTextsNoArg(UIWindow* window) {
-  union {
-    int (UIWindow::*method)(WindowReplayRecorder&);
-    void (__thiscall* call)(UIWindow*);
-  } convert;
-  convert.method = &UIWindow::RecordEditTexts;
-  convert.call(window);
-}
 
 extern std::uint32_t g_windowUid;
 

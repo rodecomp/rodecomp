@@ -7,7 +7,6 @@
 #include <cstddef>
 #include <vector>
 
-struct WindowReplayRecorder;
 class UIStaticText;
 
 class UIItemSellWnd2 : public UIItemBaseWnd {
@@ -25,10 +24,7 @@ public:
   void Slot15(int width, int height) override;
 
 protected:
-  union {
-    WindowReplayRecorder* m_recorder;
-    /* 00F0 */ UIStaticText* total;
-  };
+  /* 00F0 */ UIStaticText* total;
 
 public:
   /* 00F4 */ ItemSellWndInfo* saved;

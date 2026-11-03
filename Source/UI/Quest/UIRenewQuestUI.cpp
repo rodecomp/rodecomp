@@ -954,7 +954,7 @@ template void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::ClearData
 
 // OFFSET: 0x00A661F0
 // FUNCTION: fn_16612
-void WindowReplayRecorder::RecordWindowFlag(bool value) {
+void UIWindow::RecordWindowFlag(bool value) {
   this->RecordValues(6, 0xd5, value, 0, 0);
   if (UIWindow* window = g_windowMgr.LookupWindow(0xcc)) {
     window->Show(value);
@@ -1101,7 +1101,7 @@ int CUIRenewQuestUI::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
       const bool checked = b != 0;
       this->checkBox->checked = checked;
       this->checkBox->Invalidate();
-      reinterpret_cast<WindowReplayRecorder*>(this)->RecordValues(6, 0xD5, checked, 0, 0);
+      this->RecordValues(6, 0xD5, checked, 0, 0);
       if (UIWindow* window = g_windowMgr.LookupWindow(0xCC)) {
         window->Show(checked);
       }
@@ -1593,7 +1593,7 @@ void CUIRenewQuestUI::Slot15(int width, int height) {
   processButton->SetSize(30, 100);
   processButton->Move(0, 0);
   processButton->SetOnClick([this]() {
-    reinterpret_cast<WindowReplayRecorder*>(this)->RecordValues(0x16, 1, 0, 0, 0);
+    this->RecordValues(0x16, 1, 0, 0, 0);
     for (RenewQuestUI::CUIQuestList* list : this->questLists) {
       if (list->type == 1) {
         if (list->list) {
@@ -1648,7 +1648,7 @@ void CUIRenewQuestUI::Slot15(int width, int height) {
   recommendedButton->SetSize(30, 100);
   recommendedButton->Move(0, 101);
   recommendedButton->SetOnClick([this]() {
-    reinterpret_cast<WindowReplayRecorder*>(this)->RecordValues(0x16, 2, 0, 0, 0);
+    this->RecordValues(0x16, 2, 0, 0, 0);
     for (RenewQuestUI::CUIQuestList* list : this->questLists) {
       if (list->type == 2) {
         if (list->list) {
@@ -1711,7 +1711,7 @@ void CUIRenewQuestUI::Slot15(int width, int height) {
   holdButton->SetSize(30, 100);
   holdButton->Move(0, 202);
   holdButton->SetOnClick([this]() {
-    reinterpret_cast<WindowReplayRecorder*>(this)->RecordValues(0x16, 4, 0, 0, 0);
+    this->RecordValues(0x16, 4, 0, 0, 0);
     for (RenewQuestUI::CUIQuestList* list : this->questLists) {
       if (list->type == 4) {
         if (list->list) {
@@ -1763,7 +1763,7 @@ void CUIRenewQuestUI::Slot15(int width, int height) {
   waitButton->SetSize(30, 100);
   waitButton->Move(0, 303);
   waitButton->SetOnClick([this]() {
-    reinterpret_cast<WindowReplayRecorder*>(this)->RecordValues(0x16, 8, 0, 0, 0);
+    this->RecordValues(0x16, 8, 0, 0, 0);
     for (RenewQuestUI::CUIQuestList* list : this->questLists) {
       if (list->type == 8) {
         if (list->list) {
@@ -1814,7 +1814,7 @@ void CUIRenewQuestUI::Slot15(int width, int height) {
   this->checkBox = new CUICheckBox();
   this->checkBox->SetSize(10, 10);
   this->checkBox->Move(38, 448);
-  this->checkBox->SetOnCheck([this](bool checked) { reinterpret_cast<WindowReplayRecorder*>(this)->RecordWindowFlag(checked); });
+  this->checkBox->SetOnCheck([this](bool checked) { this->RecordWindowFlag(checked); });
   this->checkBox->disabled = 0;
   this->checkBox->Invalidate();
   const std::uint8_t checkInactive[] = {

@@ -1065,7 +1065,7 @@ static void SetRecommendedQuestSummary(CRenewQuestMgr* mgr, unsigned int id, std
 int UIRenewQuestWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3,
                              std::intptr_t argument4) {
   if (message == 22 || argument1 == 0xD5) {
-    reinterpret_cast<WindowReplayRecorder*>(this)->RecordValues(message, argument1, argument2, argument3, argument4);
+    this->RecordValues(message, argument1, argument2, argument3, argument4);
   }
 
   switch (message) {

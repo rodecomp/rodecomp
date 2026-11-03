@@ -1079,7 +1079,7 @@ bool UINavigationWnd::LoadRoute(int index) {
   fclose(file);
 
   if (g_navigationManager.StateCount() > 0) {
-    reinterpret_cast<WindowReplayRecorder*>(this)->RecordData(0x38F, g_navigationManager.WriteStates());
+    this->RecordData(0x38F, g_navigationManager.WriteStates());
   }
 
   this->FillRouteList();

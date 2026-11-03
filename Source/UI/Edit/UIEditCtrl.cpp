@@ -1717,7 +1717,7 @@ void UIItemSellWnd2::Slot26(int x, int y) {
   if (target) {
     this->Slot25(x, y);
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    this->m_recorder->RecordDrop(x, y, mode->drag, 160);
+    this->RecordDrop(x, y, mode->drag, 160);
     target->Slot10(x, y, reinterpret_cast<std::intptr_t>(&mode->drag));
   }
 }
@@ -1734,7 +1734,7 @@ void UIItemSellWnd::Slot26(int x, int y) {
   if (target) {
     this->Slot25(x, y);
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    this->m_recorder->RecordDrop(x, y, mode->drag, 22);
+    this->RecordDrop(x, y, mode->drag, 22);
     target->Slot10(x, y, reinterpret_cast<std::intptr_t>(&mode->drag));
   }
 }
@@ -4204,7 +4204,7 @@ void UIItemShopWnd2::Slot26(int x, int y) {
   if (target) {
     this->Slot25(x, y);
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    this->m_recorder->RecordDrop(x, y, mode->drag, 161);
+    this->RecordDrop(x, y, mode->drag, 161);
     target->Slot10(x, y, reinterpret_cast<std::intptr_t>(&mode->drag));
   }
 }
@@ -4221,7 +4221,7 @@ void UIItemShopWnd::Slot26(int x, int y) {
   if (target) {
     this->Slot25(x, y);
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    this->m_recorder->RecordDrop(x, y, mode->drag, 24);
+    this->RecordDrop(x, y, mode->drag, 24);
     target->Slot10(x, y, reinterpret_cast<std::intptr_t>(&mode->drag));
   }
 }

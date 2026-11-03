@@ -6,7 +6,6 @@
 
 #include <cstddef>
 
-struct WindowReplayRecorder;
 class UIStaticText;
 
 class UIItemSellWnd : public UIItemBaseWnd {
@@ -23,10 +22,7 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
 protected:
-  union {
-    WindowReplayRecorder* m_recorder;
-    /* 00F0 */ UIStaticText* total;
-  };
+  /* 00F0 */ UIStaticText* total;
 
 public:
   /* 00F4 */ ItemSellWndInfo* saved;
