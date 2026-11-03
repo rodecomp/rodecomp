@@ -7,8 +7,11 @@
 #include <cstddef>
 #include <string>
 
+class UIBitmapEditCtrl;
 class UICheckBox;
+class UIItemStoreComboBoxWnd;
 class UIStaticText;
+class UITab;
 
 class UIItemStoreWnd : public UIItemBaseWnd {
 public:
@@ -20,12 +23,13 @@ public:
   void Slot11() override;
   void Slot25(int x, int y) override;
   void Paint() override;
+  void Slot15(int width, int height) override;
   __declspec(noinline) ITEM_INFO GetItemAt(int x, int y);
   void SetTabChecked(int index, bool checked);
   void SetTitle(std::string title);
 
-  /* 00F0 */ int unknown_00F0;
-  /* 00F4 */ unsigned char unknown_00F4[0x04];
+  /* 00F0 */ UIBitmapEditCtrl* searchEdit;
+  /* 00F4 */ UIItemStoreComboBoxWnd* sortCombo;
   /* 00F8 */ unsigned char unknown_00F8[0x08];
   /* 0100 */ UICheckBox* tabs[8];
   /* 0120 */ int unknown_0120[8];
@@ -34,7 +38,7 @@ public:
   /* 015C */ UIStaticText* title;
   /* 0160 */ unsigned char unknown_0160[0x04];
   /* 0164 */ WindowPlacement* saved;
-  /* 0168 */ unsigned char unknown_0168[0x04];
+  /* 0168 */ UITab* tabBar;
   /* 016C */ int unknown_016C;
   /* 0170 */ int unknown_0170;
   /* 0174 */ int unknown_0174;

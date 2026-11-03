@@ -59,6 +59,8 @@
 #include "UI/Buttons/UIBasicButton.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Window/UIResizer.h"
+#include "UI/Window/UITab.h"
+#include "UI/Lists/UIItemStoreComboBox.h"
 #include "UI/Buttons/UICheckBox.h"
 #include "UI/Dialogs/UIPasswordWnd.h"
 #include "Client/Session.h"
@@ -116,6 +118,15 @@ int g_skillTooltipActive;
 
 // GLOBAL: gl_24654
 DWORD g_skillTooltipTick;
+
+// GLOBAL: gl_25385
+bool g_itemStoreSortMode[3];
+
+// GLOBAL: gl_25457
+char g_skillListCount;
+
+// GLOBAL: gl_25458
+int g_skillUpgradeId;
 
 // GLOBAL: gl_24651
 static const std::string g_itemLinkOpen = "<ITEML>";
@@ -503,8 +514,8 @@ void UIEditCtrl::DrawSelection(int x, int width) {
 // OFFSET: 0x0096F410
 // FUNCTION: fn_13233
 UISkillListWnd::UISkillListWnd() : UIFrameWnd(0) {
-  this->scrollBar = nullptr;
-  this->unknown_00C0 = 0;
+  this->buttons[0] = nullptr;
+  this->buttons[1] = nullptr;
   this->hovered = -1;
   this->columns = 1;
   this->saved = nullptr;
@@ -1242,6 +1253,1128 @@ void UIMerchantMirrorItemWnd::Slot32(int x, int y) {
       g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     }
   }
+}
+
+// OFFSET: 0x0096F200
+// FUNCTION: fn_13231
+UIMerchantShopMakeWnd::UIMerchantShopMakeWnd(int mode) : UIFrameWnd(0), mode(mode) {
+  this->scrollBar = nullptr;
+  this->scroll = 0;
+  this->columns = 1;
+  this->unknown_0140 = 4;
+  this->unknown_0144 = 0;
+  this->saved = nullptr;
+  this->editIndex = -1;
+  this->notice = nullptr;
+  this->unknown_0154 = 0;
+  this->visibleRows = 4;
+  this->unknown_0158 = 4;
+  this->actionButtons[0] = nullptr;
+  this->actionButtons[1] = nullptr;
+  this->unknown_016C = 0;
+  this->unknown_0170.clear();
+  this->unknown_0188 = 0;
+  this->suspended = 0;
+  this->unknown_018A = -1;
+  this->unknown_018C = -1;
+  this->unknown_0168 = nullptr;
+}
+
+// OFFSET: 0x00990090
+// FUNCTION: fn_13427
+int UIMerchantItemMyShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  switch (message) {
+  case 6: {
+    CMode* mode = g_modeMgr.gameMode;
+    this->RecordResponse(static_cast<int>(a), b, c, d);
+    if (a == 201) {
+      int windowId;
+      if (this->unknown_0100 != 0) {
+        if (this->shopOpen == 1) {
+          g_windowMgr.CloseWindow(176);
+          mode->SendMsg(40, 0, 0, 0, 0);
+          goto closed;
+        }
+
+        mode->SendMsg(270, 0, 0, 0, 0);
+        mode->SendMsg(40, 0, 0, 0, 0);
+        g_windowMgr.CloseWindow(176);
+        windowId = 258;
+      } else {
+        if (this->shopOpen == 1) {
+          g_windowMgr.CloseWindow(45);
+          mode->SendMsg(40, 0, 0, 0, 0);
+          goto closed;
+        }
+
+        mode->SendMsg(81, 0, 0, 0, 0);
+        mode->SendMsg(40, 0, 0, 0, 0);
+        g_windowMgr.CloseWindow(45);
+        windowId = 257;
+      }
+
+      {
+        UIWindow* window = g_windowMgr.EnsureWindow(windowId);
+        if (window) {
+          window->Show(1);
+          window->Move(this->geometry.x, this->geometry.y);
+        }
+      }
+
+    closed:
+      if (this->shopOpen == 0) {
+        g_session.m_storeInfoBackup.Save(this->unknown_0100);
+      }
+      g_session.ClearItems1758();
+      return 0;
+    }
+
+    if (a == 213) {
+      g_vendingSaleAlarm = !g_vendingSaleAlarm;
+      return 0;
+    }
+
+    if (a == 506 &&
+        g_windowMgr.Confirm(LookupMessage(2926), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+      mode->SendMsg(301, this->unknown_010C, 0, 0, 0);
+      mode->SendMsg(40, 0, 0, 0, 0);
+      if (this->unknown_0100 == 1) {
+        g_windowMgr.CloseWindow(176);
+      } else {
+        g_windowMgr.CloseWindow(45);
+      }
+      return 0;
+    }
+    break;
+  }
+  case 14:
+    if (a == 7) {
+      int width = b <= 320 ? b : 320;
+      int height = c <= 240 ? c : 240;
+      if (width < 232) {
+        width = 232;
+      }
+      if (height < 120) {
+        height = 120;
+      }
+
+      const int newWidth = (width - 280) / 32 * 32 + 280;
+      const int newHeight = (height - 120) / 32 * 32 + 120;
+      if (newWidth != this->geometry.width || newHeight != this->geometry.height) {
+        this->Resize(newWidth, newHeight);
+        this->visibleRows = static_cast<unsigned int>(newHeight - this->unknown_011C - 17) / 32;
+        this->columns = (newWidth - 40) / 32;
+        this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
+        this->scrollBar->Move(this->geometry.width - 15, 14);
+        this->scrollBar->Resize(this->scrollBar->geometry.width, this->geometry.height - this->unknown_011C - 17);
+        this->saleAlarm->Move(12, this->unknown_0100 != 0 ? this->geometry.height - 12 : this->geometry.height - 18);
+        this->buttons[0]->Move(this->geometry.width - 61, this->geometry.height - 24);
+        if (this->actionButton) {
+          this->actionButton->Move(this->geometry.width - this->actionButton->geometry.width - 66, this->geometry.height - 24);
+        }
+        if (this->unknown_0100 != 0) {
+          this->notice->Move(12, this->geometry.height - 26);
+        }
+        this->UpdateScrollBar();
+      }
+
+      g_windowMgr.StoreSnapRectangle(this);
+      return 0;
+    }
+    break;
+  case 23: {
+    this->items.erase(this->items.begin(), this->items.end());
+    const int size = g_session.GetList9Size();
+    for (int i = 0; i < size; ++i) {
+      ITEM_INFO item = g_session.GetItem1758At(i);
+      if (item.unknown_0000[1] != 0) {
+        this->items.push_back(item);
+      }
+    }
+
+    this->Invalidate();
+    this->UpdateScrollBar();
+    return 0;
+  }
+  case 28:
+    this->unknown_010C = static_cast<int>(a);
+    return 0;
+  case 34:
+    this->saved = reinterpret_cast<MerchantItemMyShopWndInfo*>(a);
+    if (!this->saved->IsValid()) {
+      this->saved->Reset();
+    }
+
+    this->SendMsg(nullptr, 14, 7, this->saved->width, this->saved->height, 0);
+    this->Move(this->saved->x, this->saved->y);
+    return 0;
+  case 36: {
+    char text[40];
+    std::sprintf(text, "%s : %s", LookupMessage(this->unknown_0100 != 0 ? 1734 : 226), g_session.unknown_550C.c_str());
+    this->title->SetTextAutoWidth(text);
+    return 0;
+  }
+  case 119: {
+    char grouped[80];
+    char text[80];
+    std::sprintf(text, LookupMessage(1735), FormatGroupedInteger(static_cast<int>(a), grouped, 80));
+    this->notice->SetTextFitted(text);
+    this->notice->Move(12, this->geometry.height - 26);
+    this->unknown_00F0 = static_cast<int>(a);
+    return 0;
+  }
+  case 123: {
+    const auto* bytes = reinterpret_cast<const unsigned char*>(a);
+    ItemListChunkHeader header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
+    unsigned offset = 6;
+    if (static_cast<std::uint16_t>(header.type) == 21000 || static_cast<std::uint16_t>(header.type) == 21050) {
+      while (static_cast<unsigned>(b) > offset) {
+        header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
+        offset += 6;
+        if (header.type == 21001 || header.type == 21051) {
+          this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+          this->SendMsg(nullptr, 36, 0, 0, 0, 0);
+          break;
+        }
+
+        if (header.type == 21052) {
+          std::memcpy(&this->unknown_00F0, bytes + offset, header.size);
+          offset += header.size;
+          this->SendMsg(nullptr, 119, this->unknown_00F0, 0, 0, 0);
+        } else {
+          offset += header.size;
+        }
+      }
+    }
+    return 0;
+  }
+  default:
+    return UIItemBaseWnd::SendMsg(sender, message, a, b, c, d);
+  }
+
+  return 0;
+}
+
+// OFFSET: 0x0098B980
+// FUNCTION: fn_13420
+int UIItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  switch (message) {
+  case 36: {
+    this->unknown_00FC = a;
+    if (a) {
+      this->quantityEdit->Move(110, this->geometry.height - 50);
+    } else {
+      this->quantityEdit->Move(-100, -100);
+    }
+
+    const char* format;
+    if (!this->unknown_00FC) {
+      format = "Total : %d Zeny";
+    } else if (g_serviceType == 6) {
+      format = "Total : %d Koin";
+    } else if (g_serviceType == 0) {
+      format = g_hangameLogin == 1 ? "Total : %d 한코인" : "Total : %d Cash";
+    } else {
+      format = "Total : %d Point";
+    }
+
+    char text[80];
+    std::sprintf(text, format, 0);
+    this->title->SetTextAutoWidth(text);
+    return 0;
+  }
+  case 34:
+    this->saved = reinterpret_cast<ItemPurchaseWndInfo*>(a);
+    if (!this->saved->IsValid()) {
+      this->saved->Reset();
+    }
+
+    this->SendMsg(nullptr, 14, 3, this->saved->width, this->saved->height, 0);
+    this->Move(this->saved->x, this->saved->y);
+    return 0;
+  case 38: {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    ModeDragState& drag = mode->drag;
+    switch (drag.type) {
+    case 4:
+    case 5:
+    case 8:
+    case 9:
+    case 11:
+    case 12:
+    case 13:
+    case 14:
+    case 15:
+      if (g_session.GetItem1720QuantityByItemId(drag.name.c_str())) {
+        mode->SendMsg(18, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(119)), 0xFF, 0, 0, 0);
+        return 0;
+      }
+      break;
+    }
+
+    ITEM_INFO item;
+    item.Assign(reinterpret_cast<const RawItemData&>(drag));
+    int total = g_session.GetItem1720Total();
+    int budget = g_session.m_zeny;
+    if (this->unknown_00FC) {
+      if (g_session.GetList2Size() == 10) {
+        g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>("한 번에 10개 이상 구매 할 수 없습니다."), 0xFF, 0, 0, 0);
+        return 0;
+      }
+      budget = g_pendingGid + g_pendingAid;
+    }
+
+    total += drag.quantity * drag.unknown_0314;
+    int owned = 0;
+    for (std::list<ITEM_INFO>::iterator it = this->items.begin(); it != this->items.end(); ++it) {
+      if (it->itemId == item.itemId) {
+        owned = it->quantity;
+        break;
+      }
+    }
+
+    if (owned + item.quantity > 30000) {
+      item.quantity += 30000 - (owned + item.quantity);
+      char text[200];
+      std::sprintf(text, LookupMessage(1704), 30000);
+      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
+    }
+
+    if (item.quantity > 0) {
+      if (budget >= total) {
+        g_session.MergeItem1720ByName(item);
+        this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+      } else {
+        g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(this->unknown_00FC ? 1254 : 55)), 0xFF, 0, 0, 0);
+      }
+    }
+
+    mode->SendMsg(18, 0, 0, 0, 0);
+    return 0;
+  }
+  case 6: {
+    this->RecordResponse(static_cast<int>(a), b, c, d);
+    CMode* mode = g_modeMgr.gameMode;
+    if (a == 184) {
+      if (!this->unknown_00FC) {
+        mode->SendMsg(34, 0, 0, 0, 0);
+      } else {
+        if (!g_session.GetList2Size()) {
+          break;
+        }
+
+        int amount = std::atoi(this->quantityEdit->Text());
+        if (amount < 0) {
+          amount = 0;
+        }
+        if (amount > g_pendingGid) {
+          amount = g_pendingGid;
+        }
+        if (amount > g_session.GetItem1720Total()) {
+          amount = g_session.GetItem1720Total();
+        }
+
+        char text[16];
+        _itoa(amount, text, 10);
+        g_windowMgr.SetFocus(this->quantityEdit);
+        this->quantityEdit->SetText(text);
+        g_windowMgr.SetFocus(nullptr);
+
+        const int total = g_session.GetItem1720Total();
+        if (g_pendingGid + g_pendingAid < total) {
+          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1254)), 0xFF, 0, 0, 0);
+          break;
+        }
+
+        if (amount == 0 && g_pendingAid < total) {
+          if (g_windowMgr.Confirm(LookupMessage(1329), 0, true, false, 0, "Message", 280, 120, 0)) {
+            break;
+          }
+        }
+
+        std::string confirm;
+        const int price = g_session.GetItem1720Total();
+        if (amount > 0) {
+          confirm = FormatOwnedString(LookupMessage(3772), price - amount, amount);
+        } else {
+          confirm = FormatOwnedString(LookupMessage(3771), price);
+        }
+
+        if (g_windowMgr.Confirm(confirm.c_str(), 2, true, true, 0, "Message", 280, 120, 0) == 187) {
+          g_windowMgr.SetFocus(this->quantityEdit);
+          this->quantityEdit->SetText("0");
+          mode->SendMsg(249, amount, 0, 0, 0);
+          this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+        }
+        return 0;
+      }
+    } else if (a == 185) {
+      g_windowMgr.CloseWindow(22);
+      g_windowMgr.CloseWindow(23);
+    } else {
+      if (a == 271 && this->unknown_00FC) {
+        int amount = std::atoi(this->quantityEdit->Text());
+        if (amount < 0) {
+          amount = 0;
+        }
+        if (amount > g_pendingGid) {
+          amount = g_pendingGid;
+        }
+
+        char text[12];
+        _itoa(amount, text, 10);
+        this->quantityEdit->SetText(text);
+        g_windowMgr.SetFocus(nullptr);
+        return 0;
+      }
+      break;
+    }
+
+    mode->SendMsg(40, 0, 0, 0, 0);
+    g_session.ClearTradeItems();
+    return 0;
+  }
+  case 14:
+    if (a == 3) {
+      int width = b <= 320 ? b : 320;
+      int height = c <= 336 ? c : 336;
+      if (width < 232) {
+        width = 232;
+      }
+      if (height < 120) {
+        height = 120;
+      }
+
+      const int newWidth = (width - 280) / 32 * 32 + 280;
+      const int newHeight = (height - 120) / 32 * 32 + 120;
+      if (newWidth != this->geometry.width || newHeight != this->geometry.height) {
+        this->Resize(newWidth, newHeight);
+        this->columns = 1;
+        this->visibleRows = (this->geometry.height - 58) / 32;
+        this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
+        this->scrollBar->Move(this->geometry.width - 15, 14);
+        this->scrollBar->Resize(this->scrollBar->geometry.width, this->geometry.height - 58);
+        this->UpdateScrollBar();
+      }
+
+      this->title->Move(12, this->geometry.height - 20);
+      if (this->unknown_00FC) {
+        this->quantityEdit->Move(110, this->geometry.height - 50);
+      } else {
+        this->quantityEdit->Move(-100, -100);
+      }
+
+      const int positions[2][2] = {
+        {this->geometry.width - 106, this->geometry.height - 24},
+        {this->geometry.width - 61, this->geometry.height - 24},
+      };
+      for (int i = 0; i < 2; ++i) {
+        this->buttons[i]->Move(positions[i][0], positions[i][1]);
+      }
+
+      g_windowMgr.StoreSnapRectangle(this);
+      return 0;
+    }
+    break;
+  case 23: {
+    this->items.erase(this->items.begin(), this->items.end());
+    int total = 0;
+    const int size = g_session.GetList2Size();
+    for (int i = 0; i < size; ++i) {
+      ITEM_INFO item = g_session.GetItem1720At(i);
+      if (item.unknown_0000[1] != 0) {
+        total += item.quantity * item.unknown_0014[1];
+        this->items.push_back(item);
+      }
+    }
+
+    const char* format;
+    if (!this->unknown_00FC) {
+      format = "Total : %s Zeny";
+    } else if (g_serviceType == 6) {
+      format = "Total : %s Koin";
+    } else if (g_serviceType == 0) {
+      format = g_hangameLogin == 1 ? "Total : %s 한코인" : "Total : %s 캐시";
+    } else {
+      format = "Total : %s Point";
+    }
+
+    char grouped[64];
+    char text[80];
+    std::sprintf(text, format, FormatGroupedInteger(total, grouped, 64));
+    this->title->SetTextAutoWidth(text);
+    this->Invalidate();
+    this->UpdateScrollBar();
+    return 0;
+  }
+  case 123: {
+    const auto* bytes = reinterpret_cast<const unsigned char*>(a);
+    ItemListChunkHeader header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
+    unsigned offset = 6;
+    if (header.type == 20700) {
+      while (static_cast<unsigned>(b) > offset) {
+        header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
+        offset += 6;
+        if (header.type == 20701) {
+          UIWindow* window = g_windowMgr.EnsureWindow(22);
+          if (window) {
+            window->SendMsg(nullptr, 36, 0, 0, 0, 0);
+            window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+          }
+
+          this->SendMsg(nullptr, 36, 0, 0, 0, 0);
+          this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+          break;
+        }
+
+        offset += header.size;
+      }
+    }
+    break;
+  }
+  default:
+    return UIItemBaseWnd::SendMsg(sender, message, a, b, c, d);
+  }
+
+  return 0;
+}
+
+// OFFSET: 0x0098AB40
+// FUNCTION: fn_13419
+int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  switch (message) {
+  case 0:
+    if (this->m_message0 != 0 && this->geometry.visible != 0) {
+      this->SendMsg(this, 6, this->m_message0, 0, 0, 0);
+      return 0;
+    }
+    return 0;
+  case 6: {
+    if (a != 184 || this->m_edit->Length() == 0) {
+      return 0;
+    }
+
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    int quantity = std::atoi(this->m_edit->Text());
+    this->RecordResponse(184, 100, quantity, this->geometry.unknown_0030);
+    if (g_replayAnimationScaling != 0 && b == 100) {
+      this->geometry.unknown_0030 = d;
+      mode->unknown_05EC[0] = 0;
+      quantity = static_cast<int>(c);
+    }
+
+    UIWindow* window;
+    int windowId;
+    switch (this->geometry.unknown_0030) {
+    case 0:
+      if (quantity <= 0 || quantity > mode->drag.quantity) {
+        goto invalid;
+      }
+      mode->SendMsg(21, quantity, 0, 0, 0);
+      break;
+    case 1:
+      if (quantity <= 0) {
+        goto invalid;
+      }
+      if (quantity > 30000) {
+        mode->drag.quantity = 30000;
+      } else {
+        mode->drag.quantity = quantity;
+      }
+      if (quantity >= 30000) {
+        char text[200];
+        std::sprintf(text, LookupMessage(1704), 30000);
+        g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
+      }
+      window = g_windowMgr.unknown_0258;
+      goto notify;
+    case 2:
+    case 16: {
+      const int owned = g_session.GetItem1718Quantity(mode->drag.id);
+      if (owned == 0) {
+        goto invalid;
+      }
+      if (quantity <= 0) {
+        mode->SendMsg(18, 0, 0, 0, 0);
+      }
+      if (quantity > owned) {
+        quantity = owned;
+      }
+      mode->drag.quantity = quantity;
+      if (this->geometry.unknown_0030 == 2) {
+        window = g_windowMgr.unknown_025C;
+      } else if (this->geometry.unknown_0030 == 16) {
+        window = g_windowMgr.unknown_0260;
+      } else {
+        break;
+      }
+      goto notify;
+    }
+    case 3: {
+      const int owned = g_session.GetItem1720QuantityByItemId(mode->drag.name.c_str());
+      if (owned == 0) {
+        goto invalid;
+      }
+      if (quantity <= 0) {
+        mode->SendMsg(18, 0, 0, 0, 0);
+      }
+      if (quantity > owned) {
+        quantity = owned;
+      }
+      mode->drag.quantity = quantity;
+      window = g_windowMgr.unknown_0250;
+      goto notify;
+    }
+    case 4:
+    case 15: {
+      const int owned = g_session.GetItem1730Quantity(mode->drag.id);
+      if (owned == 0) {
+        goto invalid;
+      }
+      if (quantity <= 0) {
+        mode->SendMsg(18, 0, 0, 0, 0);
+      }
+      if (quantity > owned) {
+        quantity = owned;
+      }
+      mode->drag.quantity = quantity;
+      if (this->geometry.unknown_0030 == 4) {
+        window = g_windowMgr.unknown_0250;
+      } else if (this->geometry.unknown_0030 == 15) {
+        window = g_windowMgr.unknown_0254;
+      } else {
+        break;
+      }
+      if (window) {
+        window->SendMsg(nullptr, 38, 1, 0, 0, 0);
+      }
+      break;
+    }
+    case 5: {
+      if (!g_session.HasInventoryItem(mode->drag.id)) {
+        goto invalid;
+      }
+      const int owned = LookupClientItemByIdentity(g_session.m_inventoryItems, mode->drag.id).quantity;
+      if (quantity <= 0) {
+        mode->SendMsg(18, 0, 0, 0, 0);
+      }
+      if (owned != 0) {
+        mode->drag.quantity = quantity <= owned ? quantity : owned;
+      }
+      window = g_windowMgr.LookupWindow(10011);
+      if (window) {
+        window->SendMsg(nullptr, 38, 0, 0, 0, 0);
+      }
+      break;
+    }
+    case 6:
+      if (quantity <= 0) {
+        mode->SendMsg(18, 0, 0, 0, 0);
+      }
+      if (mode->drag.source == 6) {
+        if (g_session.GetItem1738Quantity(mode->drag.id) != 0) {
+          const int owned = g_session.FindItem1738(mode->drag.id).quantity;
+          if (owned != 0) {
+            mode->drag.quantity = quantity <= owned ? quantity : owned;
+          }
+        }
+      } else if (mode->drag.source == 9) {
+        if (g_windowMgr.unknown_02FC) {
+          break;
+        }
+        if (g_session.GetItem1740Quantity(mode->drag.id) != 0) {
+          const int owned = g_session.FindItem1740(mode->drag.id).quantity;
+          if (owned != 0) {
+            mode->drag.quantity = quantity <= owned ? quantity : owned;
+          }
+        }
+      } else if (mode->drag.source == 15) {
+        const int owned = mode->drag.quantity;
+        if (owned != 0) {
+          mode->drag.quantity = quantity <= owned ? quantity : owned;
+        }
+      }
+      window = g_windowMgr.unknown_01D4;
+      goto notify;
+    case 7: {
+      int owned = 0;
+      if (mode->drag.source == 9) {
+        const ITEM_INFO item = g_session.FindItem1740(mode->drag.id);
+        if (item.unknown_0000[1] != 0) {
+          owned = item.quantity;
+        }
+      } else {
+        if (mode->drag.source != 1 || !g_session.HasInventoryItem(mode->drag.id)) {
+          break;
+        }
+        owned = LookupClientItemByIdentity(g_session.m_inventoryItems, mode->drag.id).quantity;
+      }
+      if (owned == 0) {
+        break;
+      }
+      if (quantity <= 0) {
+        quantity = 1;
+      }
+      mode->drag.quantity = quantity <= owned ? quantity : owned;
+      window = g_windowMgr.window_0288;
+      goto notify;
+    }
+    case 8: {
+      int owned = 0;
+      if (mode->drag.source == 1) {
+        const ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, mode->drag.id);
+        if (item.unknown_0000[1] != 0) {
+          owned = item.quantity;
+        }
+      } else if (mode->drag.source == 6) {
+        const ITEM_INFO item = g_session.FindItem1738(mode->drag.id);
+        if (item.unknown_0000[1] != 0) {
+          owned = item.quantity;
+        }
+      } else {
+        break;
+      }
+      if (owned == 0) {
+        break;
+      }
+      if (quantity <= 0) {
+        quantity = 1;
+      }
+      mode->drag.quantity = quantity <= owned ? quantity : owned;
+      window = g_windowMgr.unknown_02F4;
+      goto notify;
+    }
+    case 9: {
+      if (mode->drag.source != 11) {
+        break;
+      }
+      int owned = 0;
+      const ITEM_INFO item = g_session.FindItem1750(mode->drag.id);
+      if (item.unknown_0000[1] != 0) {
+        owned = item.quantity;
+      }
+      if (owned == 0) {
+        break;
+      }
+      if (quantity <= 0) {
+        quantity = 1;
+      }
+      mode->drag.quantity = quantity <= owned ? quantity : owned;
+      window = g_windowMgr.unknown_02FC;
+      goto notify;
+    }
+    case 10: {
+      if (mode->drag.source != 10) {
+        break;
+      }
+      int owned = 0;
+      const ITEM_INFO item = g_session.FindItem1768(mode->drag.id);
+      if (item.unknown_0000[1] != 0) {
+        owned = item.quantity;
+      }
+      if (owned == 0) {
+        break;
+      }
+      if (quantity <= 0) {
+        quantity = 1;
+      }
+      mode->drag.quantity = quantity <= owned ? quantity : owned;
+      window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_02F8);
+      goto notify;
+    }
+    case 11: {
+      if (mode->drag.source != 13) {
+        break;
+      }
+      const int owned = g_session.GetItem1760QuantityByItemId(mode->drag.name.c_str());
+      if (owned == 0) {
+        break;
+      }
+      if (quantity <= 0) {
+        quantity = 1;
+      }
+      mode->drag.quantity = quantity <= owned ? quantity : owned;
+      window = g_windowMgr.unknown_0300;
+      goto notify;
+    }
+    case 12:
+      if (quantity <= 0) {
+        mode->SendMsg(18, 0, 0, 0, 0);
+      }
+      mode->drag.quantity = quantity;
+      window = g_windowMgr.unknown_0308;
+      goto notify;
+    case 13: {
+      if (!g_session.HasInventoryItem(mode->drag.id)) {
+        goto invalid;
+      }
+      const int owned = LookupClientItemByIdentity(g_session.m_inventoryItems, mode->drag.id).quantity;
+      if (quantity <= 0) {
+        mode->SendMsg(18, 0, 0, 0, 0);
+      }
+      if (owned != 0) {
+        mode->drag.quantity = quantity <= owned ? quantity : owned;
+      }
+      window = g_windowMgr.unknown_0458;
+      goto notify;
+    }
+    case 17: {
+      if (mode->drag.source != 22) {
+        break;
+      }
+      int owned = 0;
+      const ITEM_INFO item = g_session.FindItem1750(mode->drag.id);
+      if (item.unknown_0000[1] != 0) {
+        owned = item.quantity;
+      }
+      if (owned == 0) {
+        break;
+      }
+      if (quantity <= 0) {
+        quantity = 1;
+      }
+      mode->drag.quantity = quantity <= owned ? quantity : owned;
+      window = g_windowMgr.unknown_041C;
+      goto notify;
+    }
+    case 18: {
+      if (mode->drag.source != 21) {
+        break;
+      }
+      int owned = 0;
+      const ITEM_INFO item = g_session.FindItem1760(mode->drag.id);
+      if (item.unknown_0000[1] != 0) {
+        owned = item.quantity;
+      }
+      if (owned == 0) {
+        break;
+      }
+      if (quantity <= 0) {
+        quantity = 1;
+      }
+      mode->drag.quantity = quantity <= owned ? quantity : owned;
+      window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0420);
+      goto notify;
+    }
+    case 19:
+      if (quantity <= 0) {
+        goto invalid;
+      }
+      if (quantity > 100) {
+        mode->drag.quantity = 100;
+      } else {
+        mode->drag.quantity = quantity;
+        if (quantity < 100) {
+          goto stall;
+        }
+      }
+      g_windowMgr.Confirm(FormatOwnedString(LookupMessage(1704), 100).c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+      break;
+    case 20: {
+      const int current = mode->drag.quantity;
+      if (current <= 0) {
+        if (quantity <= 0) {
+          goto invalid;
+        }
+        if (current == 0) {
+          goto stall;
+        }
+      }
+      mode->drag.quantity = quantity <= current ? quantity : current;
+      goto stall;
+    }
+    case 21: {
+      if (quantity <= 0) {
+        goto invalid;
+      }
+      if (quantity > 30000) {
+        mode->drag.quantity = 30000;
+      } else {
+        mode->drag.quantity = quantity;
+      }
+      if (quantity >= 30000) {
+        char text[200] = {};
+        sprintf_s(text, sizeof(text), LookupMessage(1704), 30000);
+        g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
+      }
+      UIParaItemPurchaseWnd* purchase = dynamic_cast<UIParaItemPurchaseWnd*>(g_windowMgr.LookupWindow(255));
+      if (purchase) {
+        purchase->SendMsg(nullptr, 38, quantity, 0, 0, 0);
+      }
+      break;
+    }
+    case 22: {
+      const int owned = g_session.GetItem1720QuantityByItemId(mode->drag.name.c_str());
+      if (owned == 0) {
+        goto invalid;
+      }
+      if (quantity <= 0) {
+        mode->SendMsg(18, 0, 0, 0, 0);
+      }
+      if (quantity > owned) {
+        quantity = owned;
+      }
+      mode->drag.quantity = quantity;
+      UIParaItemShopWnd* shop = dynamic_cast<UIParaItemShopWnd*>(g_windowMgr.LookupWindow(254));
+      if (shop) {
+        shop->SendMsg(nullptr, 38, 0, 0, 0, 0);
+      }
+      break;
+    }
+    case 23: {
+      if (quantity <= 0) {
+        goto invalid;
+      }
+      const int owned = g_barterMarketItemMgr->GetAllItemValueById(mode->drag.unknown_03B0);
+      if (owned <= 0) {
+        goto invalid;
+      }
+      if (quantity > owned) {
+        quantity = owned;
+      }
+      mode->drag.quantity = quantity;
+      window = g_windowMgr.LookupWindow(334);
+      if (window) {
+        window->SendMsg(nullptr, 38, 0, 0, 0, 0);
+      }
+      break;
+    }
+    case 24: {
+      if (quantity <= 0) {
+        goto invalid;
+      }
+      if (quantity > 30000) {
+        goto tooMany;
+      }
+      int limit = g_barterMarketItemMgr->GetValueById(mode->drag.unknown_03B0);
+      if (limit == -1) {
+        limit = 30000;
+      }
+      if (limit != 0) {
+        mode->drag.quantity = quantity <= limit ? quantity : limit;
+      }
+      windowId = 335;
+      goto lookup;
+    }
+    case 25: {
+      if (quantity <= 0) {
+        goto invalid;
+      }
+      const int owned = g_expandedBarterMarketItemMgr->GetValueById(mode->drag.unknown_03B0);
+      if (owned <= 0) {
+        goto invalid;
+      }
+      if (quantity > owned) {
+        quantity = owned;
+      }
+      mode->drag.quantity = quantity;
+      window = g_windowMgr.LookupWindow(341);
+      if (window) {
+        window->SendMsg(nullptr, 38, 0, 0, 0, 0);
+      }
+      break;
+    }
+    case 26: {
+      if (quantity <= 0) {
+        goto invalid;
+      }
+      if (quantity > 30000) {
+        goto tooMany;
+      }
+      int limit = g_expandedBarterMarketItemMgr->GetItemValueById(mode->drag.unknown_03B0);
+      if (limit == -1) {
+        limit = 30000;
+      }
+      if (limit != 0) {
+        mode->drag.quantity = quantity <= limit ? quantity : limit;
+      }
+      windowId = 342;
+      goto lookup;
+    }
+    lookup:
+      window = g_windowMgr.LookupWindow(windowId);
+      if (window) {
+        window->SendMsg(nullptr, 38, quantity, 0, 0, 0);
+      } else {
+        mode->SendMsg(18, 0, 0, 0, 0);
+      }
+      break;
+    stall:
+      window = g_windowMgr.LookupWindow(318);
+      if (window) {
+        window->SendMsg(nullptr, 38, 0, 0, 0, 0);
+      }
+      break;
+    tooMany:
+      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(807)), 0xFF, 0, 0, 0);
+    invalid:
+      mode->SendMsg(18, 0, 0, 0, 0);
+      break;
+    notify:
+      if (window) {
+        window->SendMsg(nullptr, 38, 0, 0, 0, 0);
+      }
+      break;
+    }
+
+    mode->SendMsg(18, 0, 0, 0, 0);
+    g_windowMgr.ShowWindowById(15, 0);
+    return 0;
+  }
+  case 13:
+    this->geometry.unknown_0030 = static_cast<std::uint32_t>(a);
+    if (a == 20) {
+      char text[24];
+      std::sprintf(text, "%d", b);
+      this->m_edit->SetText(text);
+      if (this->geometry.unknown_0030 == 20) {
+        this->m_edit->SetText(IntToString(static_cast<int>(b), 0).c_str());
+        return 0;
+      }
+    }
+    return 0;
+  case 29:
+    if (b != 0) {
+      reinterpret_cast<UIStaticText*>(this->unknown_00B8)->SetText(reinterpret_cast<const char*>(b), 0);
+      this->Invalidate();
+      return 0;
+    }
+    return 0;
+  default:
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
+}
+
+// OFFSET: 0x0097C230
+// FUNCTION: fn_13324
+void UIMerchantShopMakeWnd::Slot15(int width, int height) {
+  int count;
+  if (this->mode != 0) {
+    count = g_session.m_buyingStoreSlotCount;
+    this->unknown_00B4 = LookupMessage(1720);
+  } else {
+    count = g_session.m_vendingSlotCount;
+    this->unknown_00B4 = LookupMessage(224);
+  }
+
+  this->unknown_00CC = new UIEditCtrl();
+  this->unknown_00CC->SetSize(this->geometry.width - 66, 16);
+  this->unknown_00CC->Move(41, 22);
+  this->unknown_00CC->maximum = 36;
+  this->unknown_00CC->Background(232, 232, 232);
+  this->unknown_00CC->SetText("");
+  this->AddChild(this->unknown_00CC);
+  g_windowMgr.SetFocus(this->unknown_00CC);
+
+  UIScrollBar* scrollBar = new UIScrollBar();
+  this->scrollBar = scrollBar;
+  scrollBar->Configure(this->geometry.width - 15, 17, 1, this->geometry.height - 58);
+  this->AddChild(this->scrollBar);
+
+  this->unknown_012C = count;
+  if (this->mode == 0) {
+    if (count > 13) {
+      this->unknown_012C = 13;
+    }
+  } else if (count > 5) {
+    this->unknown_012C = 5;
+  }
+  this->columns = 1;
+  this->unknown_0140 = 4;
+
+  int y = 54;
+  for (int index = 0; index < this->unknown_012C; ++index, y += 42) {
+    if (this->mode != 0) {
+      UIEditCtrl* quantity = new UIEditCtrlWheel();
+      this->quantityEdits[index] = quantity;
+      quantity->SetSize(42, 16);
+      quantity->Move(this->geometry.width - 231, y);
+      quantity->maximum = 5;
+      quantity->SetText("0");
+      quantity->Background(232, 232, 232);
+      this->AddChild(quantity);
+    }
+
+    UIEditCtrl* price = new UIEditCtrlWheel();
+    this->priceEdits[index] = price;
+    price->SetSize(94, 16);
+    price->Move(this->geometry.width - 119, y);
+    price->maximum = 14;
+    price->SetText("0");
+    int shade;
+    if (this->mode != 0) {
+      shade = 232;
+    } else {
+      price->disabled = 1;
+      price->Invalidate();
+      shade = 182;
+    }
+    price->Background(shade, shade, shade);
+    this->AddChild(price);
+  }
+
+  if (this->mode != 0) {
+    const int labelWidth = this->TextWidth(LookupMessage(1723), 0, 0, 12, 0, 0);
+    this->unknown_0128 = new UIEditCtrlWheel();
+    this->unknown_0128->Move(labelWidth + 10, this->geometry.height - 17);
+    this->unknown_0128->SetSize(94, 16);
+    this->unknown_0128->maximum = 15;
+    this->unknown_0128->Background(232, 232, 232);
+    this->unknown_0128->SetText("0");
+    this->AddChild(this->unknown_0128);
+  }
+
+  const std::string prefix("유저인터페이스\\");
+  const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
+  int positions[2][2] = {{this->geometry.width - 92, this->geometry.height - 24}, {this->geometry.width - 46, this->geometry.height - 24}};
+  int ids[2] = {184, 185};
+  for (int index = 0; index < 2; ++index) {
+    UIBitmapButton* button = new UIBitmapButton();
+    button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
+    button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
+    button->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
+    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    button->Move(positions[index][0], positions[index][1]);
+    button->SetId(ids[index]);
+    this->AddChild(button);
+    this->actionButtons[index] = button;
+  }
+
+  this->m_message0 = 184;
+  if (Replay::Instance().state != 6) {
+    g_session.ClearItems1768();
+  }
+
+  if (this->mode == 0) {
+    UICheckBox* notice = new UICheckBox();
+    this->notice = notice;
+    notice->SetSize(140, 12);
+    notice->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(2479));
+    notice->FitToText();
+    notice->Move(12, this->geometry.height - 20);
+    notice->SetChecked(g_session.unknown_5C00[1]);
+    this->AddChild(notice);
+  }
+
+  this->unknown_0154 = this->geometry.height;
+  this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+
+  UIBitmapButton* info = new UIBitmapButton();
+  info->SetBitmap("유저인터페이스\\basic_interface\\bt_shopinfo.bmp", 0, 0);
+  info->SetBitmap("유저인터페이스\\basic_interface\\bt_shopinfo.bmp", 1, 0);
+  info->SetBitmap("유저인터페이스\\basic_interface\\bt_shopinfo.bmp", 2, 0);
+  info->SetSize(info->BitmapWidth(), info->BitmapHeight());
+  info->Move(this->geometry.width - 23, 20);
+  info->SetId(343);
+  this->AddChild(info);
 }
 
 // OFFSET: 0x00989FE0
@@ -4273,6 +5406,384 @@ void UIItemBaseWnd::Slot35(int value) {
   }
 }
 
+// OFFSET: 0x00993A80
+// FUNCTION: fn_13435
+int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  if (g_skillTooltipActive == 1) {
+    const int elapsed = timeGetTime() - g_skillTooltipTick;
+    if (elapsed > 1000 || elapsed < 0) {
+      g_skillTooltipActive = 0;
+      this->Invalidate();
+    }
+  }
+
+  switch (message) {
+  case 6:
+    switch (a) {
+    case 0xB8:
+      if (this->hovered != -1) {
+        CSkillInfo skill = this->GetSkillByIndex(this->hovered);
+        if (skill.available != 0 && skill.level != 0 && skill.unknown_0014 != 0) {
+          this->SendMsg(nullptr, 0x3A, reinterpret_cast<std::intptr_t>(&skill), 0, 0, 0);
+        }
+        return 0;
+      }
+      break;
+    case 0xC9:
+      if (this->skillTab == 0) {
+        g_windowMgr.CloseWindow(0x72);
+        return 0;
+      }
+      if (this->skillTab == 1) {
+        g_windowMgr.CloseWindow(0x7E);
+        return 0;
+      }
+      break;
+    case 0xEF:
+    case 0xF0:
+    case 0xF1:
+    case 0xF2:
+    case 0xF3:
+    case 0xF4:
+    case 0xF5: {
+      if (this->skillTab == 0) {
+        if (reinterpret_cast<int*>(g_session.unknown_1664)[0] == 0) {
+          return 0;
+        }
+      } else if (this->skillTab == 1) {
+        if (reinterpret_cast<int*>(g_session.unknown_1664)[1] == 0) {
+          return 0;
+        }
+      }
+      const int index = this->scroll - 0xEF + a;
+      if (g_skillTooltipActive == 0) {
+        CSkillInfo skill = this->GetSkillByIndex(index);
+        g_skillUpgradeId = skill.id;
+        if (skill.available != 0) {
+          g_modeMgr.gameMode->SendMsg(0x43, skill.id, 0, 0, 0);
+        }
+      } else {
+        CSkillInfo skill = this->GetSkillByIndex(index);
+        if (g_skillUpgradeId == static_cast<int>(skill.id) && skill.available != 0) {
+          g_modeMgr.gameMode->SendMsg(0x43, skill.id, 0, 0, 0);
+        }
+      }
+      return 0;
+    }
+    case 0xFD:
+    case 0xFE:
+    case 0xFF:
+    case 0x100:
+    case 0x101:
+    case 0x102:
+    case 0x103:
+    case 0x104:
+    case 0x105:
+    case 0x106:
+    case 0x107:
+    case 0x108:
+    case 0x109:
+    case 0x10A: {
+      const bool lower = a < 0x104;
+      CSkillInfo skill = this->GetSkillByIndex(this->scroll + a - (lower ? 0xFD : 0x104));
+      if (skill.available != 0) {
+        int current = 0;
+        if (this->skillTab == 0) {
+          current = g_session.HomunSkillLevel(skill.id);
+        } else if (this->skillTab == 1) {
+          current = g_session.MercSkillLevel(skill.id);
+        }
+        int level;
+        if (lower) {
+          level = current - 1 > 0 ? current - 1 : 1;
+        } else {
+          level = current >= 0 ? current + 1 : 1;
+        }
+        if (level > skill.level) {
+          level = skill.level;
+        }
+        if (this->skillTab == 0) {
+          g_session.SetOption(8, 1, 0);
+          g_session.SetHomunSkillLevel(skill.id, level);
+        } else if (this->skillTab == 1) {
+          g_session.SetMercSkillLevel(skill.id, level);
+        }
+        this->Invalidate();
+      }
+      return 0;
+    }
+    }
+    break;
+  case 7:
+  case 9:
+  case 10: {
+    const int previous = this->scroll;
+    int position;
+    if (message == 9) {
+      position = previous - this->visibleRows + 1;
+    } else if (message == 10) {
+      position = this->visibleRows - 1 + previous;
+    } else {
+      position = a + previous;
+    }
+    this->scroll = position;
+    if (previous != position) {
+      this->UpdateScrollBar();
+      this->UpdateRowButtons();
+      this->Invalidate();
+    }
+    return this->scroll - previous;
+  }
+  case 0xE:
+    if (a == 3) {
+      int width = b <= 320 ? b : 320;
+      int height = c <= 288 ? c : 288;
+      if (width < 232) {
+        width = 232;
+      }
+      if (height < 120) {
+        height = 120;
+      }
+      width = (width - 280) / 32 * 32 + 280;
+      height = (height - 120) / 32 * 32 + 120;
+      if (width != this->geometry.width || height != this->geometry.height) {
+        this->Resize(width, height);
+        this->columns = 1;
+        this->visibleRows = (height - 38) / 32;
+        this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
+        this->buttons[0]->Move(this->geometry.width - 107, this->geometry.height - 24);
+        this->buttons[1]->Move(this->geometry.width - 61, this->geometry.height - 24);
+        this->scrollBar->Move(this->geometry.width - 15, 14);
+        this->scrollBar->Resize(this->scrollBar->geometry.width, this->geometry.height - 38);
+        int row = 0;
+        for (int y = 17; y < 241; y += 32, ++row) {
+          this->upgradeButtons[row]->Move(row < this->visibleRows && static_cast<unsigned>(this->scroll + row) < this->skills.size() ? 53 : -200, y);
+        }
+        this->UpdateScrollBar();
+        this->UpdateRowButtons();
+      }
+      g_windowMgr.StoreSnapRectangle(this);
+      return 0;
+    }
+    break;
+  case 0x17: {
+    this->skills.clear();
+    int count = 0;
+    if (this->skillTab == 0) {
+      count = static_cast<int>(g_session.m_homunSkills.size());
+    } else if (this->skillTab == 1) {
+      count = static_cast<int>(g_session.m_mercSkills.size());
+    }
+
+    char upgradable = 0;
+    for (int index = 0; index < count; ++index) {
+      CSkillInfo skill;
+      if (this->skillTab == 0) {
+        skill = g_session.HomunSkillAt(index);
+      } else if (this->skillTab == 1) {
+        skill = g_session.MercSkillAt(index);
+      }
+
+      if (skill.available != 0) {
+        if (skill.unknown_0018 != 0 || skill.level != 0) {
+          this->skills.push_back(skill);
+          ++upgradable;
+        }
+        if (CSkillInfo::UsesLevel(*g_session.m_hotkeyScript, skill.id) && skill.level != 0) {
+          int current = 0;
+          if (this->skillTab == 0) {
+            current = g_session.HomunSkillLevel(skill.id);
+          } else if (this->skillTab == 1) {
+            current = g_session.MercSkillLevel(skill.id);
+          }
+          if (current < 1 || current > skill.level) {
+            if (this->skillTab == 0) {
+              g_session.SetHomunSkillLevel(skill.id, skill.level);
+            } else if (this->skillTab == 1) {
+              g_session.SetMercSkillLevel(skill.id, skill.level);
+            }
+          }
+        }
+      }
+    }
+
+    if (upgradable != g_skillListCount) {
+      if (g_skillTooltipTick != 0) {
+        g_skillTooltipActive = 1;
+      }
+      g_skillListCount = upgradable;
+      g_skillTooltipTick = timeGetTime();
+    }
+    this->Invalidate();
+    this->UpdateScrollBar();
+    this->UpdateRowButtons();
+    return 0;
+  }
+  case 0x22:
+    this->saved = reinterpret_cast<SkillListWndInfo*>(a);
+    if (!this->saved->IsValid()) {
+      this->saved->Reset();
+    }
+    this->Move(this->saved->x, this->saved->y);
+    this->SendMsg(nullptr, 0xE, 3, this->saved->width, this->saved->height, 0);
+    return 0;
+  case 0x30:
+    if (this->hovered != -1) {
+      CSkillInfo skill = this->GetSkillByIndex(this->hovered);
+      if (skill.available != 0) {
+        const int kind = this->unknown_0138[a].value;
+        if (kind == 3) {
+          g_windowMgr.EnsureWindow(0x2E)->SendMsg(nullptr, 0x3D, skill.id, 0, 0, 0);
+        } else if (kind == 0xE) {
+          g_windowMgr.EnsureWindow(0x37)->SendMsg(nullptr, 0x44, skill.id, 0, 0, 0);
+        }
+      }
+      return 0;
+    }
+    break;
+  case 0x31:
+    this->unknown_0138.clear();
+    if (g_windowMgr.unknown_0210) {
+      g_windowMgr.CloseWindow(0x12);
+    }
+    if (this->hovered != -1) {
+      CSkillInfo skill = this->GetSkillByIndex(this->hovered);
+      if (skill.available != 0) {
+        this->unknown_0138.push_back(MiniPartyInfoEntry(std::string(LookupMessage(0x142)).c_str(), 3));
+      }
+    }
+    if (this->unknown_0138.size()) {
+      UIWindow* menu = g_windowMgr.EnsureWindow(0x12);
+      for (unsigned index = 0; index < this->unknown_0138.size(); ++index) {
+        menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(this->unknown_0138[index].text.c_str()), 0, 0, 0);
+      }
+      if (this->skillTab == 0) {
+        menu->SendMsg(nullptr, 0x53, 0x72, 0, 0, 0);
+      } else if (this->skillTab == 1) {
+        menu->SendMsg(nullptr, 0x53, 0x7E, 0, 0, 0);
+      }
+      menu->SendMsg(nullptr, 0x1E, 0, 0, 0, 0);
+      menu->Move(
+        std::min(std::max(g_screenWidth + 1, 1), g_renderer->viewport.width - menu->geometry.width),
+        std::min(std::max(g_screenHeight + 1, 1), g_renderer->viewport.height - menu->geometry.height)
+      );
+      return 0;
+    }
+    break;
+  case 0x3A: {
+    const CSkillInfo* skill = reinterpret_cast<const CSkillInfo*>(a);
+    if (skill->level != 0) {
+      CMode* mode = g_modeMgr.gameMode;
+      int level = 0;
+      if (this->skillTab == 0) {
+        level = g_session.HomunSkillLevel(skill->id);
+      } else if (this->skillTab == 1) {
+        level = g_session.MercSkillLevel(skill->id);
+      }
+      mode->SendMsg(0x71, a, level, 0, 0);
+      return 0;
+    }
+    break;
+  }
+  default:
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
+  return 0;
+}
+
+// OFFSET: 0x0097D300
+// FUNCTION: fn_13326
+void UISkillListWnd::Slot15(int width, int height) {
+  this->resizer = new UIResizer();
+  this->resizer->SetSize(16, 16);
+  static_cast<UIResizer*>(this->resizer)->SetDirection(3);
+  static_cast<UIResizer*>(this->resizer)->SetBitmapName("유저인터페이스\\btn_resize.bmp");
+  this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
+  static_cast<UIResizer*>(this->resizer)->SetColors(0xFFFF00FF, 0xFFFF00FF);
+  this->AddChild(this->resizer);
+
+  UIScrollBar* scrollBar = new UIScrollBar();
+  this->scrollBar = scrollBar;
+  scrollBar->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - 38);
+  this->AddChild(this->scrollBar);
+
+  const std::string prefix("유저인터페이스\\");
+  const char* names[2][3] = {{"btn_use", "btn_use_a", "btn_use_b"}, {"btn_close", "btn_close_a", "btn_close_b"}};
+  int positions[2][2] = {{this->geometry.width - 107, this->geometry.height - 24}, {this->geometry.width - 61, this->geometry.height - 24}};
+  int ids[2] = {184, 201};
+  for (int index = 0; index < 2; ++index) {
+    UIBitmapButton* button = new UIBitmapButton();
+    this->buttons[index] = button;
+    button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
+    button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
+    button->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
+    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    button->Move(positions[index][0], positions[index][1]);
+    button->SetId(ids[index]);
+    this->AddChild(button);
+  }
+
+  this->columns = 1;
+  this->visibleRows = (height - 38) / 32;
+  this->AddBaseButton();
+  this->AddCloseButton("Alt+S", 0);
+
+  {
+    int upgradeIds[7] = {239, 240, 241, 242, 243, 244, 245};
+    std::string normal("유저인터페이스\\basic_interface\\skill_up_a.bmp");
+    std::string over("유저인터페이스\\basic_interface\\skill_up_b.bmp");
+    std::string pressed("유저인터페이스\\basic_interface\\skill_up_c.bmp");
+    int row = 0;
+    for (int y = 21; y < 245; y += 32, ++row) {
+      UIBitmapButton* button = new UIBitmapButton();
+      this->upgradeButtons[row] = button;
+      button->SetBitmap(normal.c_str(), 0, 0);
+      button->SetBitmap(over.c_str(), 1, 0);
+      button->SetBitmap(pressed.c_str(), 2, 0);
+      button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+      button->Move(78, y);
+      button->SetId(upgradeIds[row]);
+      this->AddChild(button);
+    }
+  }
+
+  {
+    int levelDownIds[7] = {253, 254, 255, 256, 257, 258, 259};
+    std::string left("유저인터페이스\\basic_interface\\arw_left.bmp");
+    int row = 0;
+    for (int y = 34; y < 258; y += 32, ++row) {
+      UIBitmapButton* button = new UIBitmapButton();
+      this->levelButtons[row] = button;
+      button->SetBitmap(left.c_str(), 0, 0);
+      button->SetBitmap(left.c_str(), 1, 0);
+      button->SetBitmap(left.c_str(), 2, 0);
+      button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+      button->Move(112, y);
+      button->SetId(levelDownIds[row]);
+      this->AddChild(button);
+    }
+  }
+
+  {
+    int levelUpIds[7] = {260, 261, 262, 263, 264, 265, 266};
+    std::string right("유저인터페이스\\basic_interface\\arw_right.bmp");
+    int row = 0;
+    for (int y = 34; y < 258; y += 32, ++row) {
+      UIBitmapButton* button = new UIBitmapButton();
+      this->levelLabels[row] = button;
+      button->SetBitmap(right.c_str(), 0, 0);
+      button->SetBitmap(right.c_str(), 1, 0);
+      button->SetBitmap(right.c_str(), 2, 0);
+      button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+      button->Move(192, y);
+      button->SetId(levelUpIds[row]);
+      this->AddChild(button);
+    }
+  }
+
+  this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+}
+
 // OFFSET: 0x0098A3A0
 // FUNCTION: fn_13413
 void UISkillListWnd::Slot35(int value) {
@@ -6242,7 +7753,7 @@ UIItemStoreWnd::UIItemStoreWnd() : UIItemBaseWnd() {
   this->saved = nullptr;
   this->unknown_0178 = 0;
   this->unknown_017C = 0;
-  this->unknown_00F0 = 0;
+  this->searchEdit = nullptr;
   for (int i = 0; i < 8; ++i) {
     this->unknown_00F8[i] = 0;
     this->tabs[i] = nullptr;
@@ -6252,6 +7763,115 @@ UIItemStoreWnd::UIItemStoreWnd() : UIItemBaseWnd() {
   this->unknown_0188 = 0;
   this->unknown_018C = 0;
   this->unknown_0190 = 0;
+}
+
+// OFFSET: 0x00977E10
+// FUNCTION: fn_13316
+void UIItemStoreWnd::Slot15(int width, int height) {
+  this->title = new UIStaticText();
+  this->title->SetSize(70, 15);
+  this->title->SetText(LookupMessage(g_unknown_01738268 ? 2500 : 169), 0);
+  this->title->Move(16, 2);
+  this->title->shadow = 1;
+  this->AddChild(this->title);
+
+  this->resizer = new UIResizer();
+  this->resizer->SetSize(16, 16);
+  static_cast<UIResizer*>(this->resizer)->SetDirection(3);
+  static_cast<UIResizer*>(this->resizer)->SetBitmapName("유저인터페이스\\btn_resize.bmp");
+  this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
+  static_cast<UIResizer*>(this->resizer)->SetColors(0xFFFF00FF, 0xFFFF00FF);
+  this->AddChild(this->resizer);
+
+  this->tabBar = new UITab();
+  this->tabBar->SetSize(20, 235);
+  this->tabBar->Move(0, 18);
+  this->tabBar->tabCount = 8;
+  this->tabBar->style = 3;
+  this->tabBar->SendMsg(this, 13, 0, 0, 0, 0);
+  this->AddChild(this->tabBar);
+
+  UIScrollBar* scrollBar = new UIScrollBar();
+  this->scrollBar = scrollBar;
+  scrollBar->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - 69);
+  this->AddChild(this->scrollBar);
+
+  this->searchEdit = new UIBitmapEditCtrl();
+  this->searchEdit->SetSize(122, 18);
+  this->searchEdit->SetBitmapName("유저인터페이스\\bg_search.bmp");
+  this->searchEdit->Move(65, this->geometry.height - 23);
+  this->searchEdit->maximum = 20;
+  this->AddChild(this->searchEdit);
+
+  const std::string prefix("유저인터페이스\\");
+  const char* names[2][3] = {{"btn_close", "btn_close_a", "btn_close_b"}, {"bt_search_normal", "bt_search_over", "bt_search_press"}};
+  int positions[2][2] = {{220, this->geometry.height - 23}, {185, this->geometry.height - 23}};
+  int ids[2] = {201, 365};
+  for (int index = 0; index < 2; ++index) {
+    this->buttons[index] = new UIBitmapButton();
+    UIBitmapButton* button = static_cast<UIBitmapButton*>(this->buttons[index]);
+    button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
+    button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
+    button->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
+    this->buttons[index]->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    this->buttons[index]->Move(positions[index][0], positions[index][1]);
+    this->buttons[index]->SetId(ids[index]);
+    this->AddChild(this->buttons[index]);
+  }
+
+  int tabIds[8] = {146, 147, 148, 149, 150, 151, 152, 309};
+  const char* tabNames[8][2] = {{"소비-1", "소비-2"},     {"캐시-1", "캐시-2"}, {"방어구-1", "방어구-2"}, {"무기-1", "무기-2"},
+                                {"의상-1", "의상-2"},     {"투사체-1", "투사체-2"}, {"카드-1", "카드-2"}, {"기타-1", "기타-2"}};
+  for (int index = 0; index < 8; ++index) {
+    this->tabs[index] = new UICheckBox();
+    this->tabs[index]->SetBitmaps(
+      (prefix + "basic_interface\\" + tabNames[index][0] + ".bmp").c_str(), (prefix + "basic_interface\\" + tabNames[index][1] + ".bmp").c_str()
+    );
+    this->tabs[index]->SetSize(23, 23);
+    this->tabs[index]->Move(index * 26 + 5, this->geometry.height - 52);
+    this->tabs[index]->SetChecked(0);
+    this->tabs[index]->SetId(tabIds[index]);
+
+    int tooltip;
+    if (index < 4) {
+      tooltip = index + 1465;
+    } else if (index == 4) {
+      tooltip = 3151;
+    } else {
+      tooltip = index + 1464;
+    }
+    this->tabs[index]->SetTooltip(LookupMessage(tooltip));
+    this->AddChild(this->tabs[index]);
+  }
+
+  this->m_message0 = 365;
+  this->unknown_0144 = "";
+  this->columns = 1;
+  this->visibleRows = (height - 74) / 32;
+  this->AddCloseButton("", 0);
+
+  this->sortCombo = new UIItemStoreComboBoxWnd();
+  this->sortCombo->pink = 0;
+  this->sortCombo->SetSize(62, 18);
+  this->sortCombo->Move(214, this->geometry.height - 52);
+  this->AddChild(this->sortCombo);
+  this->sortCombo->AddOption(LookupMessage(3276), 0);
+  this->sortCombo->AddOption(LookupMessage(3274), 0);
+  this->sortCombo->AddOption(LookupMessage(3275), 0);
+
+  for (int index = 0; index < 3; ++index) {
+    if (g_itemStoreSortMode[index] == true) {
+      this->sortCombo->Select(index);
+      this->SendMsg(this->sortCombo, 39, index, 0, 0, 0);
+      break;
+    }
+
+    if (index == 2) {
+      this->sortCombo->Select(0);
+      this->SendMsg(this->sortCombo, 39, 0, 0, 0, 0);
+      break;
+    }
+  }
 }
 
 // OFFSET: 0x009792B0
@@ -8996,9 +10616,6 @@ void UIItemPurchaseWnd::Slot15(int width, int height) {
   this->visibleRows = (height - 38) / 32;
   this->SendMsg(nullptr, 23, 0, 0, 0, 0);
 }
-
-// GLOBAL: gl_25385
-bool g_itemStoreSortMode[3];
 
 // OFFSET: 0x0098DBF0
 // FUNCTION: fn_13425

@@ -15,6 +15,7 @@ public:
   UISkillListWnd();
   bool Slot03() override;
   void Slot11() override;
+  void Slot15(int width, int height) override;
   void Paint() override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
@@ -22,6 +23,7 @@ public:
   void Slot32(int x, int y) override;
   void Slot33(int x, int y) override;
   void Slot35(int value) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
   __declspec(noinline) int SkillAt(int x, int y);
   __declspec(noinline) CSkillInfo GetSkillByIndex(int index);
@@ -30,10 +32,9 @@ public:
   void UpdateScrollBar();
   void UpdateRowButtons();
 
-  /* 00B4 */ unsigned char unknown_00B4[0x8];
-
-  /* 00BC */ UIWindow* scrollBar;
-  /* 00C0 */ int unknown_00C0;
+  /* 00B4 */ UIWindow* resizer;
+  /* 00B8 */ UIWindow* scrollBar;
+  /* 00BC */ UIWindow* buttons[2];
   /* 00C4 */ UIWindow* upgradeButtons[7];
   /* 00E0 */ UIWindow* levelButtons[7];
   /* 00FC */ UIWindow* levelLabels[7];
@@ -49,8 +50,8 @@ public:
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(offsetof(UISkillListWnd, scrollBar) == 0xBC);
-static_assert(offsetof(UISkillListWnd, unknown_00C0) == 0xC0);
+static_assert(offsetof(UISkillListWnd, scrollBar) == 0xB8);
+static_assert(offsetof(UISkillListWnd, buttons) == 0xBC);
 static_assert(offsetof(UISkillListWnd, hovered) == 0x118);
 static_assert(offsetof(UISkillListWnd, skills) == 0x12C);
 static_assert(offsetof(UISkillListWnd, saved) == 0x134);
