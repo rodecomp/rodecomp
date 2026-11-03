@@ -86,6 +86,8 @@ protected:
   /* 0130 */ int m_totalCharacters;
   /* 0134 */ int m_maxCharacters;
   /* 0138 */ int m_unknown138;
+
+public:
   /* 013C */ bool m_unknown13C;
 };
 

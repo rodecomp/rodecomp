@@ -51,6 +51,26 @@
 #include "Utility/Text/FormatString.h"
 #include "Utility/Text/TextTokens.h"
 #include "Client/Mode/CMode.h"
+#include "Client/Registry.h"
+#include "Contents/Actors/Pc.h"
+#include "Contents/Actors/RenderObject.h"
+#include "Contents/CashEmotionMgr.h"
+#include "Contents/Emblems/EmblemDataMgr.h"
+#include "Contents/Items/RuneSystem.h"
+#include "Contents/Jobs/JobInheritance.h"
+#include "Contents/PlayerNameDictionary.h"
+#include "Contents/RodexMailStore.h"
+#include "Contents/UserData/AccountLinkedUserDataMgr.h"
+#include "Contents/UserData/CharacterLinkedUserDataMgr.h"
+#include "Network/ExecutableDigestPacket.h"
+#include "Security/ReassemblyPacketMgr.h"
+#include "UI/Edit/UIEditCtrl.h"
+#include "UI/Lists/UIListBox.h"
+#include "UI/Lists/UIReplayListBox.h"
+#include "UI/Window/UISelectReplayDataWnd.h"
+#include "UI/Window/UISelectServerWnd.h"
+#include "Utility/Cipher/AES.h"
+#include "Utility/Cipher/Rijndael.h"
 
 #include <algorithm>
 #include <chrono>
@@ -67,6 +87,7 @@
 #include <shellapi.h>
 #include <iphlpapi.h>
 #include <new>
+#include <random>
 #include <timeapi.h>
 
 void sub_D8C390(const int* first, const int* last);
@@ -3394,5 +3415,665 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     return 0;
   default:
     return CMode::SendMsg(event, argument1, argument2, argument3, 0);
+  }
+}
+
+#pragma pack(push, 1)
+struct ZoneLoginPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ char code[4];
+  /* 0006 */ char name[25];
+  /* 001F */ char password[32];
+  /* 003F */ char extra[5];
+};
+
+struct AccountLoginPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint32_t version;
+  /* 0006 */ char name[24];
+  /* 001E */ char password[24];
+  /* 0036 */ unsigned char clientType;
+};
+
+struct CharServerEnterPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint32_t aid;
+  /* 0006 */ int authCode;
+  /* 000A */ int userLevel;
+  /* 000E */ std::uint16_t unknown_000E;
+  /* 0010 */ unsigned char sex;
+};
+
+struct SelectCharacterPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ unsigned char slot;
+};
+
+struct MakeCharacterPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ char name[24];
+  /* 001A */ unsigned char slot;
+  /* 001B */ std::int16_t headPalette;
+  /* 001D */ std::int16_t head;
+  /* 001F */ int job;
+  /* 0023 */ unsigned char sex;
+};
+
+struct DeleteCharacterPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint32_t gid;
+  /* 0006 */ char code[6];
+};
+
+struct DeleteCharacterEmailPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint32_t gid;
+  /* 0006 */ char code[50];
+};
+
+struct ZoneEnterPacket {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::uint32_t aid;
+  /* 0006 */ std::uint32_t gid;
+  /* 000A */ int authCode;
+  /* 000E */ unsigned char unknown_000E[4];
+  /* 0012 */ std::uint32_t clientTime;
+  /* 0016 */ unsigned char sex;
+};
+
+struct SelectMapPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ unsigned char slot;
+  /* 0003 */ unsigned char map;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(ZoneLoginPacket) == 0x44);
+static_assert(sizeof(AccountLoginPacket) == 0x37);
+static_assert(sizeof(CharServerEnterPacket) == 0x11);
+static_assert(sizeof(MakeCharacterPacket) == 0x24);
+static_assert(sizeof(DeleteCharacterEmailPacket) == 0x38);
+static_assert(sizeof(ZoneEnterPacket) == 0x17);
+
+std::string nullsub_481(int length, unsigned int seed);
+void __stdcall sub_3DE9318(CLoginMode* mode);
+
+// OFFSET: 0x00D93B20
+// FUNCTION: fn_22297
+void CLoginMode::Slot7(int value) {
+  this->otpStarted = timeGetTime();
+  g_windowMgr.Shutdown();
+  this->tooltip = nullptr;
+  g_session.unknown_5480 = 0;
+  this->unknown_0018 = 1;
+
+  ServerAddress2* servers = reinterpret_cast<ServerAddress2*>(this->serverList);
+  SessionAccount& account = *reinterpret_cast<SessionAccount*>(g_session.unknown_0E9C);
+
+  switch (value) {
+  case 0:
+  case 1:
+  case 13:
+    this->SendMsg(28, 0, 0, 0, 0);
+    break;
+  case 38: {
+    CharServerEndpoint endpoint;
+    std::memset(&endpoint, 0, sizeof(endpoint));
+    if (!std::strstr(g_session.unknown_58FA, "Dev")) {
+      const int port = rand() % 3 + 6951;
+      const std::uint8_t hostSource[] = {0x24, 0xD3, 0xA0, 0x18, 0x02, 0xB0, 0x24, 0x17, 0x2C, 0xD8, 0xE1, 0x47, 0x02,
+                                         0xB0, 0x2F, 0x18, 0x3D, 0xCE, 0xA4, 0x1B, 0x00, 0xB8, 0x6F, 0x12, 0x3D, 0xA1};
+      thread_local EncryptedName<sizeof(hostSource), 0x7941D76335CFA14FULL> host(hostSource);
+      const char* hostText = host.Text();
+      const std::uint8_t formatSource[] = {0xC4, 0xEA, 0xBD, 0x6A, 0xE5, 0xC3};
+      thread_local EncryptedName<sizeof(formatSource), 0x7321C3814F8799E1ULL> format(formatSource);
+      StringFormat(endpoint.host, sizeof(endpoint.host), static_cast<std::size_t>(-1), format.Text(), hostText, port);
+    } else {
+      const std::uint8_t hostSource[] = {0xA2, 0x61, 0x96, 0x5E, 0x88, 0xB4, 0x38, 0x10, 0xAE, 0x76, 0x97, 0x10, 0x80, 0xF7, 0x67, 0x10, 0xAE,
+                                         0x7D, 0x98, 0x01, 0x96, 0xB2, 0x3B, 0x12, 0xA6, 0x3D, 0x92, 0x01, 0xC3, 0xEF, 0x2C, 0x44, 0xF8, 0x13};
+      thread_local EncryptedName<sizeof(hostSource), 0x7115D9F973F913C9ULL> host(hostSource);
+      const char* hostText = host.Text();
+      const std::uint8_t formatSource[] = {0x46, 0x86, 0xE1};
+      thread_local EncryptedName<sizeof(formatSource), 0xCB1D253B7FE1F563ULL> format(formatSource);
+      StringFormat(endpoint.host, sizeof(endpoint.host), static_cast<std::size_t>(-1), format.Text(), hostText);
+    }
+
+    this->unknown_0018 = GetRagConnection().Connect(*reinterpret_cast<const ConnectionEndpoint*>(&endpoint));
+    if (!this->unknown_0018) {
+      GetRagConnection().Close();
+      if (g_windowMgr.Confirm(LookupMessage(1), 1, true, true, 0, "Message", 280, 120, 0) != 0x10D) {
+        this->pendingCursorType = 3;
+      }
+      break;
+    }
+
+    ZoneLoginPacket packet;
+    std::memset(&packet, 0, sizeof(packet));
+    packet.id = 0xACF;
+    const std::uint8_t codeSource[] = {0x7F, 0x57, 0xDC, 0xB4, 0x09};
+    thread_local EncryptedName<sizeof(codeSource), 0x793F370985ED674FULL> code(codeSource);
+    std::memcpy(packet.code, code.Text(), sizeof(packet.code));
+    const std::uint8_t nameFormatSource[] = {0x38, 0xB4, 0x4B};
+    thread_local EncryptedName<sizeof(nameFormatSource), 0x234977DDB54BC71DULL> nameFormat(nameFormatSource);
+    StringFormat(packet.name, sizeof(packet.name), static_cast<std::size_t>(-1), nameFormat.Text(), reinterpret_cast<const char*>(&this->unknown_0138[0x40]));
+    char password[33] = {};
+    const std::uint8_t passwordFormatSource[] = {0xE0, 0x5E, 0x2B};
+    thread_local EncryptedName<sizeof(passwordFormatSource), 0xEF6D1D893F2B2DC5ULL> passwordFormat(passwordFormatSource);
+    StringFormat(password, sizeof(password), static_cast<std::size_t>(-1), passwordFormat.Text(), reinterpret_cast<const char*>(this->unknown_0138));
+    DecryptRijndael256(password, packet.password);
+    const std::uint8_t extraFormatSource[] = {0x7E, 0x20, 0x5F};
+    thread_local EncryptedName<sizeof(extraFormatSource), 0x39A39F87DD5F535BULL> extraFormat(extraFormatSource);
+    StringFormat(packet.extra, sizeof(packet.extra), static_cast<std::size_t>(-1), extraFormat.Text(), reinterpret_cast<const char*>(this->unknown_01D0));
+    GetRagConnection().Send(sizeof(packet), &packet);
+    this->otpStarted = timeGetTime();
+    this->window_6F14 = g_windowMgr.EnsureWindow(6);
+    static_cast<UIWaitWnd*>(this->window_6F14)->SetMessage(LookupMessage(122), 16, 1);
+    break;
+  }
+  case 2:
+  case 3:
+    g_accountLinkedUserDataMgr->Reset(*g_session.m_hotkeyScript, g_serviceHost, g_servicePort, g_serviceOverrideKey);
+    g_characterLinkedUserDataMgr->Reset(*g_session.m_hotkeyScript, g_serviceHost, g_servicePort, g_serviceOverrideKey);
+    g_session.m_storeInfoBackup.Reset(*g_session.m_hotkeyScript, *g_session.m_hotkeyScript, g_serviceHost, g_servicePort, g_serviceOverrideKey);
+    g_guildMgr->m_guilds.clear();
+    g_emblemDataMgr->RefreshUrls(*g_session.m_hotkeyScript, *g_session.m_hotkeyScript, g_serviceHost, g_servicePort, g_serviceOverrideKey);
+    this->wallpaperName = g_loginWallpaperName;
+    g_windowMgr.SetSurface0478(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+    if (!g_session.unknown_5912) {
+      if (g_session.m_loginModeFlag == true) {
+        this->otpStarted = timeGetTime();
+        g_charServerAccountIdPending = 0;
+        this->unknown_6F74 = false;
+        this->unknown_6F75 = false;
+        SecureZeroMemory(g_session.m_loginErrorText, sizeof(g_session.m_loginErrorText));
+      }
+
+      if (std::strcmp(g_session.m_loginErrorText, "") == 0) {
+        g_session.m_loginModeFlag = true;
+        if (!g_windowMgr.LookupWindow(3)) {
+          g_windowMgr.EnsureWindow(3);
+        }
+        break;
+      }
+
+      if (g_session.m_launchAccountEnabled != true) {
+        g_modeMgr.Quit();
+        break;
+      }
+      g_session.m_launchAccountEnabled = false;
+    }
+    this->pendingCursorType = 4;
+    break;
+  case 6: {
+    Replay::Instance().SetState(1);
+    this->wallpaperName = g_loginWallpaperName;
+    g_windowMgr.SetSurface0478(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+    UISelectServerWnd* window = static_cast<UISelectServerWnd*>(g_windowMgr.EnsureWindow(2));
+    const std::uint8_t countNameSource[] = {0x39, 0xC2, 0xCA, 0x4E, 0x66, 0x01, 0xB7, 0x2A, 0x25, 0x97};
+    thread_local EncryptedName<sizeof(countNameSource), 0x6FE153231D879777ULL> countName(countNameSource);
+    window->SendMsg(nullptr, 80, 10003, reinterpret_cast<std::intptr_t>(countName.Text()), 0, 0);
+
+    std::uint8_t& reloadServers = *reinterpret_cast<std::uint8_t*>(0x03DE9AB0);
+    if (reloadServers == 1) {
+      reloadServers = 0;
+      sub_3DE9318(this);
+    } else if (this->unknown_01C4 < 1 || this->unknown_01C4 > 8) {
+      sub_3DE9318(this);
+    }
+    if (this->unknown_01C4 != 0) {
+      *reinterpret_cast<std::uint8_t*>(0x03DE9BD5) = 1;
+    }
+
+    char(*displayNames)[128] = reinterpret_cast<char(*)[128]>(0x03DE96A0);
+    for (int i = 0; i < this->unknown_01C4; ++i) {
+      const ServerAddress2& server = servers[i];
+      char text[64];
+      std::memset(text, 0, sizeof(text));
+      if (server.address.property == 1) {
+        std::sprintf(text, LookupMessage(0x1E2));
+      }
+      const bool custom = server.address.userCount == 4 && server.address.state == 0;
+      std::sprintf(text + std::strlen(text), custom ? server.domain : server.address.name);
+
+      std::string status;
+      std::string green = "^00B509";
+      std::string orange = "^FF7800";
+      std::string red = "^FF0000";
+      std::string purple = "^BA00FF";
+      switch (server.address.userCount) {
+      case 0:
+        status = FormatOwnedString("%s%s  ^000000%s", green.c_str(), LookupMessage(0xCBD), text);
+        break;
+      case 1:
+        status = FormatOwnedString("%s%s  ^000000%s", orange.c_str(), LookupMessage(0xCBE), text);
+        break;
+      case 2:
+        status = FormatOwnedString("%s%s  ^000000%s", red.c_str(), LookupMessage(0xCBF), text);
+        break;
+      case 3:
+        status = FormatOwnedString("%s%s  ^000000%s", purple.c_str(), LookupMessage(0xCC0), text);
+        break;
+      }
+
+      switch (server.address.state) {
+      case 2:
+        status.append(LookupMessage(0xCBA));
+        break;
+      case 3:
+        status.append(LookupMessage(0xCBB));
+        break;
+      case 4:
+        status.append(LookupMessage(0xCBC));
+        break;
+      }
+
+      if (!status.empty()) {
+        strcpy_s(text, sizeof(text), status.c_str());
+      }
+      window->m_serverList->AddLine(text);
+
+      if (custom && static_cast<unsigned int>(i) < 8 && displayNames[i][0] != '\0') {
+        std::string balloon;
+        balloon.assign(displayNames[i], std::strlen(displayNames[i]));
+        UIServerListBox* list = static_cast<UIServerListBox*>(window->m_serverList);
+        if (list->unknown_00D8 != list->unknown_00DC) {
+          new (reinterpret_cast<std::string*>(list->unknown_00D8)) std::string(balloon);
+          list->unknown_00D8 += sizeof(std::string);
+        } else if (list->unknown_00D4 == 0) {
+          if (void* storage = std::calloc(8, sizeof(std::string))) {
+            list->unknown_00D4 = reinterpret_cast<int>(storage);
+            list->unknown_00D8 = reinterpret_cast<int>(storage);
+            list->unknown_00DC = reinterpret_cast<int>(storage) + 8 * sizeof(std::string);
+            new (storage) std::string(balloon);
+            list->unknown_00D8 += sizeof(std::string);
+          }
+        }
+      }
+    }
+
+    window->SendMsg(nullptr, 40, 0, 0, 0, 0);
+    break;
+  }
+  case 7:
+    g_screenShakeDuration = 0;
+    g_statusRefreshSuppressed = 0;
+    g_skillTooltipActive = 0;
+    g_session.cartCount = 0;
+    g_session.cartWeight = 0;
+    g_session.unknown_103C = -1;
+    g_session.SetUnknown16EC(0);
+    g_session.unknown_5450 = 0;
+    g_renewQuestMgr->m_ongoingQuests.clear();
+    g_session.ClearAchievements();
+    g_nProtectGameGuardMgr->IncrementCounter();
+    this->wallpaperName = g_loginWallpaperName;
+    g_windowMgr.SetSurface0478(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+    g_rodexMailStore->Clear();
+    if (UINewSelectCharWnd* window = dynamic_cast<UINewSelectCharWnd*>(static_cast<UIFrameWnd*>(g_windowMgr.EnsureWindow(0x115)))) {
+      window->m_unknown13C = false;
+    }
+    g_session.ClearEntryList5BD4();
+    g_session.ClearPairValues(1, 1, 1);
+    g_windowMgr.CloseWindow(198);
+    g_windowMgr.CloseWindow(269);
+    g_session.RestoreItems5C68();
+    g_session.ClearItemQuantities();
+    g_session.ClearInventory();
+    g_session.ResetEquipment();
+    g_session.ResetItems2B50();
+    g_session.ClearItems1740();
+    g_session.ResetItems61B8();
+    g_session.ResetItems6B68();
+    switch (g_session.m_passwordWndMode) {
+    case 2:
+      g_session.m_passwordInputAlternate = false;
+      g_windowMgr.SetSurface0478(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+      g_windowMgr.EnsureWindow(199);
+      break;
+    case 3:
+      g_session.m_passwordInputAlternate = false;
+      g_windowMgr.SetSurface0478(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+      g_windowMgr.EnsureWindow(199);
+      g_windowMgr.unknown_03B8->SendMsg(nullptr, 6, 0x124, 0, 0, 0);
+      break;
+    case 4:
+      g_session.m_passwordInputAlternate = true;
+      g_windowMgr.SetSurface0478(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+      g_windowMgr.EnsureWindow(200);
+      g_windowMgr.unknown_03BC->SendMsg(nullptr, 6, 0x124, 0, 0, 0);
+      g_windowMgr.unknown_03BC->SendMsg(nullptr, 6, 0xB8, 1, 0, 0);
+      break;
+    case 5:
+      g_session.m_passwordInputAlternate = true;
+      g_windowMgr.SetSurface0478(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+      g_windowMgr.EnsureWindow(200);
+      break;
+    }
+    break;
+  case 8:
+    this->wallpaperName = g_loginWallpaperName;
+    g_windowMgr.SetSurface0478(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+    g_windowMgr.EnsureWindow(0x116);
+    break;
+  case 4: {
+    g_playerNameDictionary->Clear();
+    this->wallpaperName = g_loginWallpaperName;
+    g_windowMgr.SetSurface0478(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+    if (!std::strstr(g_session.unknown_58FA, "Dev")) {
+      const std::uint8_t hostSource[] = {0xBA, 0x29, 0xF8, 0xC8, 0x58, 0xE4, 0x88, 0x1E, 0xFF, 0x29, 0xF6, 0x82, 0x57, 0xE6, 0x99,
+                                         0x40, 0xBA, 0x75, 0xF4, 0x8A, 0x17, 0xEC, 0x99, 0x15, 0xE7, 0x62, 0xA7, 0xD5, 0x39};
+      thread_local EncryptedName<sizeof(hostSource), 0x2FEB8739E5975BD1ULL> host(hostSource);
+      host.Text();
+      const std::uint8_t formatSource[] = {0xE8, 0x70, 0xCD};
+      thread_local EncryptedName<sizeof(formatSource), 0x33133B977BCD03CDULL> format(formatSource);
+      format.Text();
+    } else {
+      const std::uint8_t hostSource[] = {0x44, 0xA5, 0x2A, 0x08, 0x48, 0xC6, 0x00, 0x90, 0x4E, 0xF9, 0x37, 0x44, 0x5E, 0xC5, 0x4C,
+                                         0xD3, 0x40, 0xBC, 0x6B, 0x46, 0x56, 0x85, 0x46, 0xD3, 0x15, 0xE1, 0x7C, 0x15, 0x09, 0xAB};
+      thread_local EncryptedName<sizeof(hostSource), 0xA12DAB392545D72FULL> host(hostSource);
+      host.Text();
+      const std::uint8_t formatSource[] = {0x50, 0x48, 0x03};
+      thread_local EncryptedName<sizeof(formatSource), 0x6BA1C1132F033B75ULL> format(formatSource);
+      format.Text();
+    }
+
+    CharServerEndpoint endpoint;
+    endpoint.ip[0] = '\0';
+    endpoint.port = 0;
+    endpoint.host[0] = '\0';
+    const char* address = *reinterpret_cast<const char* const*>(0x03DE8D70);
+    const char* port = *reinterpret_cast<const char* const*>(0x03DE8D74);
+    const char* domain = *reinterpret_cast<const char* const*>(0x03DE8D78);
+    if (address) {
+      std::strcpy(endpoint.ip, address);
+    }
+    if (domain || address) {
+      std::strcpy(endpoint.host, domain ? domain : address);
+    }
+    if (port) {
+      endpoint.port = atoi(port);
+    }
+
+    this->unknown_0018 = GetRagConnection().Connect(*reinterpret_cast<const ConnectionEndpoint*>(&endpoint));
+    if (!this->unknown_0018) {
+      GetRagConnection().Close();
+      if (g_windowMgr.Confirm(LookupMessage(1), 1, true, true, 0, "Message", 280, 120, 0) != 0x10D) {
+        g_charServerAccountIdPending = 0;
+        this->pendingCursorType = 3;
+      }
+      break;
+    }
+
+    g_packetReassembler->Notify(2);
+    SendExecutableDigest(g_serviceType, g_serviceMode, g_instance, GetRagConnection(), *reinterpret_cast<const PacketLengths*>(&GetRagConnection()));
+    AccountLoginPacket packet;
+    packet.id = 0x64;
+    packet.version = *reinterpret_cast<const std::uint32_t*>(0x04A12000);
+    std::memcpy(packet.name, &this->unknown_0138[0x40], sizeof(packet.name));
+    if (g_serviceType == 7) {
+      char password[24];
+      DecryptAES(reinterpret_cast<const char*>(this->unknown_0138), password, sizeof(password));
+      std::memcpy(packet.password, password, sizeof(packet.password));
+    } else if (g_serviceType == 4) {
+      DecryptRijndael192(reinterpret_cast<const char*>(this->unknown_0138), packet.password);
+    } else {
+      std::memcpy(packet.password, this->unknown_0138, sizeof(packet.password));
+    }
+    packet.clientType = static_cast<unsigned char>(GetClientType());
+    GetRagConnection().Send(reinterpret_cast<const PacketLengths*>(&GetRagConnection())->FixedLength(packet.id), &packet);
+    static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(6))->SetMessage(LookupMessage(122), 16, 1);
+    break;
+  }
+  case 24:
+    g_windowMgr.EnsureWindow(180);
+    break;
+  case 5: {
+    this->wallpaperName = g_loginWallpaperName;
+    g_windowMgr.SetSurface0478(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+    g_session.m_partyBooking.Reset();
+    GetRagConnection().Close();
+    this->unknown_0018 = GetRagConnection().Connect(*reinterpret_cast<const ConnectionEndpoint*>(&g_charServerEndpoint));
+    if (!this->unknown_0018) {
+      GetRagConnection().Close();
+      if (g_windowMgr.Confirm(LookupMessage(1), 1, true, true, 0, "Message", 280, 120, 0) != 0x10D) {
+        g_charServerAccountIdPending = 0;
+        this->pendingCursorType = 3;
+      }
+      break;
+    }
+
+    g_packetReassembler->Notify(2);
+    g_charServerAccountIdPending = 1;
+    CharServerEnterPacket packet;
+    packet.id = 0x65;
+    packet.unknown_000E = 0;
+    packet.aid = g_session.m_aid;
+    packet.authCode = account.authCode;
+    packet.userLevel = account.userLevel;
+    packet.sex = static_cast<unsigned char>(account.sex);
+    GetRagConnection().Send(reinterpret_cast<const PacketLengths*>(&GetRagConnection())->FixedLength(packet.id), &packet);
+    static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(6))->SetMessage(LookupMessage(122), 16, 1);
+    g_accountLinkedUserDataMgr->Load(g_session.m_aid, g_session.m_accountName);
+    break;
+  }
+  case 10: {
+    this->wallpaperName = g_loginWallpaperName;
+    g_windowMgr.SetSurface0478(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+    MakeCharacterPacket packet;
+    packet.id = 0xA39;
+    std::memcpy(packet.name, g_charInfo.name, sizeof(packet.name));
+    packet.slot = static_cast<unsigned char>(g_selectedSlotIndex);
+    packet.headPalette = g_charInfo.headPalette;
+    packet.head = g_charInfo.head;
+    packet.job = g_charInfo.job;
+    packet.sex = g_charInfo.sex;
+    GetRagConnection().Send(reinterpret_cast<const PacketLengths*>(&GetRagConnection())->FixedLength(packet.id), &packet);
+    if (UIWaitWnd* wait = static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(6))) {
+      wait->SetMessage(LookupMessage(123), 17, 1);
+    }
+    break;
+  }
+  case 11: {
+    this->wallpaperName = g_loginWallpaperName;
+    g_windowMgr.SetSurface0478(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+    DeleteCharacterPacket packet;
+    packet.id = 0x829;
+    std::strncpy(packet.code, reinterpret_cast<const char*>(this->billingInfo), sizeof(packet.code));
+    const CharacterInfo* character = reinterpret_cast<const CharacterInfo*>(this->SendMsg(8, static_cast<unsigned char>(g_selectedSlotIndex), 0, 0, 0));
+    packet.gid = character->gid;
+    if (g_serviceType == 0) {
+      if (this->billingInfo[5] == '\0') {
+        packet.code[0] = '\0';
+      }
+      GetRagConnection().Send(reinterpret_cast<const PacketLengths*>(&GetRagConnection())->FixedLength(packet.id), &packet);
+    } else if (g_serviceType == 10 || g_serviceType == 12 || g_serviceType == 1) {
+      DeleteCharacterEmailPacket email;
+      email.gid = character->gid;
+      email.id = 0x1FB;
+      std::strncpy(email.code, reinterpret_cast<const char*>(this->billingInfo), sizeof(email.code));
+      email.code[49] = '\0';
+      GetRagConnection().Send(reinterpret_cast<const PacketLengths*>(&GetRagConnection())->FixedLength(email.id), &email);
+    } else {
+      GetRagConnection().Send(reinterpret_cast<const PacketLengths*>(&GetRagConnection())->FixedLength(packet.id), &packet);
+    }
+    static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(6))->SetMessage(LookupMessage(124), 17, 1);
+    break;
+  }
+  case 9: {
+    this->wallpaperName = g_loginWallpaperName;
+    g_windowMgr.SetSurface0478(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+    SelectCharacterPacket packet;
+    packet.id = 0x66;
+    packet.slot = static_cast<unsigned char>(g_selectedSlotIndex);
+    g_cashEmotionMgr->ClearOwnedPacks();
+    GetRagConnection().Send(reinterpret_cast<const PacketLengths*>(&GetRagConnection())->FixedLength(packet.id), &packet);
+    static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(6))->SetMessage(LookupMessage(122), 16, 1);
+    break;
+  }
+  case 12: {
+    g_characterLinkedUserDataMgr->Load(g_session.m_aid, g_session.m_gid, g_session.m_accountName);
+    g_runeSystemMgr->Reset();
+    g_session.unknown_593C = 0;
+    this->wallpaperName = g_loginWallpaperName;
+    g_windowMgr.SetSurface0478(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+    this->unknown_0018 = GetRagConnection().Connect(*reinterpret_cast<const ConnectionEndpoint*>(g_zoneServerIp));
+    if (!this->unknown_0018) {
+      GetRagConnection().Close();
+      if (g_windowMgr.Confirm(LookupMessage(1), 1, true, true, 0, "Message", 280, 120, 0) != 0x10D) {
+        g_charServerAccountIdPending = 0;
+        this->pendingCursorType = 3;
+      }
+      break;
+    }
+
+    g_nProtectGameGuardMgr->IncrementCounter();
+    g_packetReassembler->Notify(1);
+    char keyName[MAX_PATH];
+    std::strcpy(keyName, g_subKey);
+    const std::uint8_t cashKeySource[] = {0xD1, 0xF5, 0xAA, 0x14, 0xD2, 0xC6, 0xEC, 0xDB, 0x8D};
+    thread_local EncryptedName<sizeof(cashKeySource), 0xB39FA7917BCFBB8DULL> cashKey(cashKeySource);
+    std::strcat(keyName, cashKey.Text());
+    DWORD category = 0;
+    DWORD disposition = 0;
+    HKEY key;
+    if (RegCreateKeyExA(HKEY_LOCAL_MACHINE, keyName, 0, nullptr, 0, KEY_ALL_ACCESS, nullptr, &key, &disposition) == ERROR_SUCCESS) {
+      const std::uint8_t valueNameSource[] = {0xB4, 0x52, 0x78, 0xE7, 0xAE, 0x4C, 0x5C, 0xD9, 0xB2, 0x54, 0x64, 0xFD, 0xA8, 0x0F};
+      thread_local EncryptedName<sizeof(valueNameSource), 0x8D1D0FF1AF2B13F7ULL> valueName(valueNameSource);
+      RegSetValueExA(key, valueName.Text(), 0, REG_DWORD, reinterpret_cast<const BYTE*>(&category), sizeof(category));
+      RegCloseKey(key);
+    }
+
+    ZoneEnterPacket packet;
+    packet.packetType = 0x436;
+    packet.clientTime = timeGetTime();
+    packet.aid = g_session.m_aid;
+    packet.gid = g_session.m_gid;
+    packet.authCode = account.authCode;
+    packet.sex = static_cast<unsigned char>(g_session.SyncUnknown0E98());
+    GetRagConnection().Send(reinterpret_cast<const PacketLengths*>(&GetRagConnection())->FixedLength(packet.packetType), &packet);
+    g_session.SetOption(17, 1, 0);
+    GetRagConnection().SetBlock(1);
+    static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(6))->SetMessage(LookupMessage(122), 16, 1);
+    break;
+  }
+  case 19:
+    g_screenShakeDuration = 0;
+    g_statusRefreshSuppressed = 0;
+    g_skillTooltipActive = 0;
+    g_session.unknown_103C = -1;
+    g_session.SetUnknown16EC(0);
+    this->wallpaperName = g_loginWallpaperName;
+    g_windowMgr.SetSurface0478(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+    g_windowMgr.EnsureWindow(127);
+    break;
+  case 29: {
+    if (g_serviceType == 6 || g_serviceType == 10 || g_serviceType == 12) {
+      g_serviceOptions.Set(0x6C, 0);
+    }
+    const unsigned char flags = g_serviceOptions.Get(0x6C);
+    SetServiceFlags(flags, flags);
+    reinterpret_cast<Replay&>(ReplayFileList::Instance()).SetBaseFrame(reinterpret_cast<std::uint32_t>(&Replay::Instance()));
+    const std::uint8_t wallpaperSource[] = {0x77, 0x9E, 0x2F, 0x39, 0xC3, 0x11, 0x5C, 0x82, 0x71, 0xD5, 0x2F, 0x0F, 0xBE, 0x65, 0xC5,
+                                            0x23, 0xD8, 0x56, 0x86, 0xAD, 0x5C, 0xB6, 0xF7, 0x3B, 0xD2, 0x43, 0x89, 0xA2, 0x60, 0xBA,
+                                            0xC5, 0x38, 0xD6, 0x43, 0x81, 0xAA, 0x6D, 0xB8, 0xAB, 0x61, 0xD5, 0x5C, 0x9F, 0xC3};
+    thread_local EncryptedName<sizeof(wallpaperSource), 0x4F99DF03C3EF31B7ULL> wallpaper(wallpaperSource);
+    this->wallpaperName = std::string(wallpaper.Text());
+    g_windowMgr.SetSurface0478(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+    g_windowMgr.EnsureWindow(20)->SendMsg(nullptr, 80, 10026, 0, 0, 0);
+    break;
+  }
+  case 25:
+    if (ReplayFileList::Instance().Open(32, 0, 0) == 1) {
+      this->pendingCursorType = 28;
+    } else {
+      g_windowMgr.Confirm(LookupMessage(0xC4E), 4, true, true, 0, "Message", 280, 120, 0);
+      this->pendingCursorType = 26;
+    }
+    break;
+  case 26:
+    this->unknown_01C4 = ReplayFileList::Instance().unknown_0124;
+    if (this->unknown_01C4 > 100) {
+      this->unknown_01C4 = 0;
+      ReplayFileList::Instance().unknown_0124 = 0;
+    }
+    for (int i = 0; i < this->unknown_01C4; ++i) {
+      std::memcpy(&servers[i], &reinterpret_cast<const ServerAddress2*>(ReplayFileList::Instance().buffer)[i], sizeof(ServerAddress2));
+    }
+    this->SendMsg(10026, 0, 0, 0, 0);
+  case 27: {
+    this->wallpaperName = g_loginWallpaperName;
+    g_windowMgr.SetSurface0478(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+    UISelectReplayDataWnd* window = static_cast<UISelectReplayDataWnd*>(g_windowMgr.EnsureWindow(186));
+    ReplayFileList::Instance().Refresh();
+    const int count = static_cast<int>(ReplayFileList::Instance().files.size());
+    for (int i = 0; i < count; ++i) {
+      window->m_list->AddLine(ReplayFileList::Instance().FileName(i));
+    }
+    window->SendMsg(nullptr, 40, 0, 0, 0, 0);
+    ReplayFileList::Instance().unknown_0124 = this->unknown_01C4;
+    if (this->unknown_01C4 > 100) {
+      this->unknown_01C4 = 0;
+      ReplayFileList::Instance().unknown_0124 = 0;
+    }
+    for (int i = 0; i < this->unknown_01C4; ++i) {
+      const ServerAddress2 server = servers[i];
+      reinterpret_cast<ServerAddress2*>(ReplayFileList::Instance().buffer)[i] = server;
+    }
+    break;
+  }
+  case 28: {
+    std::string key = nullsub_481(47, std::_Random_device());
+    unsigned char digest[16] = {};
+    ComputeLoginDigest(digest, key.data(), static_cast<int>(key.size()));
+    g_pakRegistry.ApplyAuxiliary(digest, sizeof(digest));
+    SecureZeroMemory(digest, sizeof(digest));
+    g_windowMgr.CloseWindow(269);
+    g_session.RestoreItems5C68();
+    g_session.ClearItemQuantities();
+    g_session.ClearInventory();
+    g_session.ResetEquipment();
+    g_session.ResetItems2B50();
+    g_session.ClearItems1740();
+    g_session.ResetItems61B8();
+    g_session.ResetItems6B68();
+    Replay::Instance().SetState(6);
+    ReplayHeader header = Replay::Instance().header;
+    g_session.SetPlayerNameKey(reinterpret_cast<const unsigned char*>(header.characterName));
+    g_session.SetNavigationPlayerMap(header.mapName);
+    g_session.unknown_0000 = header.accountId;
+    g_session.m_playerX = header.cellX;
+    g_session.m_playerY = header.cellY;
+    g_session.m_playerDir = header.unknown_0078;
+    g_windowMgr.ApplyReplayOptions(header.options);
+    g_session.ResetUnknownState();
+    g_session.ReadReplayCharacter(Replay::Instance().ReadSection(3));
+    char mapName[56];
+    std::sprintf(mapName, "%s.rsw", g_session.m_navigationPlayerMap);
+    g_modeMgr.Switch(1, mapName);
+    break;
+  }
+  case 30: {
+    UISelectServerWnd* window = static_cast<UISelectServerWnd*>(g_windowMgr.EnsureWindow(2));
+    const std::uint8_t countNameSource[] = {0xB9, 0x9C, 0x2E, 0x33, 0x32, 0xD7, 0x34, 0x91};
+    thread_local EncryptedName<sizeof(countNameSource), 0x9171997D6963C9F7ULL> countName(countNameSource);
+    window->SendMsg(nullptr, 80, 10028, reinterpret_cast<std::intptr_t>(countName.Text()), 0, 0);
+    for (unsigned int i = 0; i < this->mapStates.size(); ++i) {
+      char mapName[16];
+      std::strncpy(mapName, g_session.GatName2RswName(reinterpret_cast<const char*>(&this->mapStates[i].data)), sizeof(mapName));
+      window->m_serverList->AddLine(g_session.GetMapDisplayName(mapName));
+    }
+    window->SendMsg(nullptr, 40, 0, 0, 0, 0);
+    break;
+  }
+  case 31: {
+    SelectMapPacket packet;
+    packet.id = 0x841;
+    packet.slot = static_cast<unsigned char>(g_selectedSlotIndex);
+    packet.map = static_cast<unsigned char>(this->mapStates.front().index);
+    GetRagConnection().Send(reinterpret_cast<const PacketLengths*>(&GetRagConnection())->FixedLength(packet.id), &packet);
+    break;
+  }
+  default:
+    break;
   }
 }

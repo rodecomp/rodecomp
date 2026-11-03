@@ -130,6 +130,7 @@ public:
   void Update() override;
   void Slot5(int value) override;
   int SendMsg(int event, int argument1, int argument2, int argument3, int argument4) override;
+  void Slot7(int value) override;
 
   void SubD8D4F0(int);
   void SubD8D500(const char* packet);

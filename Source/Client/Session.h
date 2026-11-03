@@ -473,7 +473,7 @@ public:
   /* 56E0 */ int m_passwordWndMode;
   /* 56E4 */ std::uint32_t m_loginAccountId;
   /* 56E8 */ std::int32_t m_passwordWndAccountId;
-  /* 56EC */ unsigned char unknown_56EC;
+  /* 56EC */ bool m_launchAccountEnabled;
   /* 56ED */ char m_loginErrorText[500];
   /* 58E1 */ unsigned char unknown_58E1[0x19];
   /* 58FA */ char unknown_58FA[0x18];
@@ -585,7 +585,13 @@ public:
   /* 7F70 */ int m_maxLevelEffect4thSub;
   /* 7F74 */ unsigned char unknown_7F74[8];
   /* 7F7C */ bool m_homunculusAutoFeed;
-  /* 7F7D */ unsigned char unknown_7F7D[0x0F];
+  union {
+    /* 7F7D */ unsigned char unknown_7F7D[0x0F];
+    struct {
+      /* 7F7D */ unsigned char unknown_7F7D_0000[0x0B];
+      /* 7F88 */ bool m_loginModeFlag;
+    };
+  };
   /* 7F8C */ int m_priorityClass;
   /* 7F90 */ int m_showRankingSchedule;
   /* 7F94 */ std::set<std::uint32_t> unknown_7F94;
@@ -1256,6 +1262,8 @@ static_assert(offsetof(CSession, m_muteSellSound) == 0x5C14);
 static_assert(offsetof(CSession, m_itemDescendingOrder) == 0x61B5);
 static_assert(offsetof(CSession, m_showMenuIcon) == 0x7EDC);
 static_assert(offsetof(CSession, m_priorityClass) == 0x7F8C);
+static_assert(offsetof(CSession, m_launchAccountEnabled) == 0x56EC);
+static_assert(offsetof(CSession, m_loginModeFlag) == 0x7F88);
 static_assert(offsetof(CSession, m_mercenaryStats) == 0x564C);
 static_assert(offsetof(CSession, m_mercenaryExpiration) == 0x5694);
 static_assert(offsetof(CSession, m_homunJob) == 0x55BC);
