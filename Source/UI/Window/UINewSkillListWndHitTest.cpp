@@ -1,5 +1,5 @@
+#include "Client/Session.h"
 #include "UI/Window/UINewSkillListWnd.h"
-#include "UI/Window/WindowMouseHit.h"
 
 // OFFSET: 0x009B0240
 // FUNCTION: fn_13804
@@ -10,7 +10,7 @@ int UINewSkillListWnd::SkillIndexAt(int x, int y) {
 
   int column = 0;
   int row;
-  if (g_mouseRefreshGate != 0) {
+  if (g_session.m_simplifiedSkillList != 0) {
     row = (y - 34) / 32;
   } else {
     column = (x - 76) / 68;

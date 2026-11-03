@@ -1,3 +1,5 @@
+#include "Client/Session.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Client/Browser/WebBrowser.h"
 #include "Client/Input/Mouse.h"
 #include "Client/Replay.h"
@@ -11,12 +13,6 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Layout/WindowCoordinates.h"
 #include "UI/Window/WindowManagerWindows.h"
-#include "UI/Window/WindowMouseHit.h"
-
-// GLOBAL: gl_24656
-int g_alternateDoubleClickGate;
-// GLOBAL: gl_24657
-int g_mouseRefreshGate;
 
 // INLINED
 static void PromoteWindow(UIWindowMgr& mgr, UIWindow* window) {
@@ -197,7 +193,7 @@ int UIWindowMgr::ProcessMouse() {
       this->inputWindow->Slot25(localX, localY);
     }
 
-    if (g_mouse.buttons[0] == 4 && (g_replayAnimationScaling == 0 || g_alternateDoubleClickGate == 0)) {
+    if (g_mouse.buttons[0] == 4 && (g_replayAnimationScaling == 0 || g_modeMgr.state == 0)) {
       this->inputWindow->Slot25(localX, localY);
       this->inputWindow->Slot26(localX, localY);
     }
@@ -238,7 +234,7 @@ int UIWindowMgr::ProcessMouse() {
       const int localX = x - left;
       const int localY = y - top;
 
-      if (g_mouse.buttons[0] == 4 && (g_replayAnimationScaling == 0 || g_alternateDoubleClickGate == 0)) {
+      if (g_mouse.buttons[0] == 4 && (g_replayAnimationScaling == 0 || g_modeMgr.state == 0)) {
         window->Slot26(localX, localY);
       }
 
@@ -321,7 +317,7 @@ int UIWindowMgr::ProcessMouse() {
     if (this->window_03D8) {
       this->window_03D8->Invalidate();
     }
-    if (this->window_02C4 && g_mouseRefreshGate == 0) {
+    if (this->window_02C4 && g_session.m_simplifiedSkillList == 0) {
       this->window_02C4->Invalidate();
     }
     if (this->window_4F170) {

@@ -21,7 +21,6 @@
 #include "UI/Window/UIResizer.h"
 #include "UI/Lists/UIScrollBar.h"
 #include "UI/Lists/UITabControl.h"
-#include "UI/Window/WindowMouseHit.h"
 #include "UI/Chat/UINewChatWnd.h"
 #include "UI/Window/InputFocus.h"
 #include "UI/Skill/UISkillDescribeWnd.h"
@@ -1029,7 +1028,7 @@ void UINewSkillListWnd::Slot31(int x, int y) {
 // OFFSET: 0x009B28F0
 // FUNCTION: fn_13819
 void UINewSkillListWnd::Slot28(int x, int y) {
-  const int gate = g_mouseRefreshGate;
+  const int gate = g_session.m_simplifiedSkillList;
   if (!this->IsSkillArea(x, y) || (gate != 0 && x > 96)) {
     return;
   }

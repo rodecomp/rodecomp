@@ -10,7 +10,6 @@
 #include "UI/UIBroadcastBalloon.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
-#include "UI/Window/WindowMouseHit.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"
 
@@ -204,7 +203,7 @@ void ShutdownCallback::operator()(Stove::PCSDK::CallbackResult callbackResult, S
       const char* caption = captionName.Text();
       MessageBoxA(hWnd, message.c_str(), caption, MB_OK);
       g_modeMgr.gameMode->SendMsg(2, 0, 0, 0, 0);
-    } else if (g_alternateDoubleClickGate == 0) {
+    } else if (g_modeMgr.state == 0) {
       g_windowMgr.Confirm(message.c_str(), 0, true, true, 0, "Message", 280, 120, 0);
     } else {
       UIBroadcastBalloon* balloonWindow = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->EnsureBroadcastBalloon();
