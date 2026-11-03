@@ -2038,7 +2038,7 @@ void GameSettingsUI::CUIGroupTextureDetailLevel::Slot16() {
 void ToggleGameSettingsTab4() {
   UIWindow* window = g_windowMgr.LookupWindow(0x271E);
   if (!window) {
-    window = g_windowMgr.EnsureWindow(0x271E);
+    window = g_windowMgr.sub_A978D0(0x271E);
   }
 
   CUIGameSettingsUI* settings = static_cast<CUIGameSettingsUI*>(window);

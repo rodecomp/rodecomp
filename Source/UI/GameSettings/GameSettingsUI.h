@@ -15,6 +15,8 @@
 #include <optional>
 #include <string>
 
+void ToggleGameSettingsTab4();
+
 enum TALKTYPE : int;
 
 class CUICheckBox;

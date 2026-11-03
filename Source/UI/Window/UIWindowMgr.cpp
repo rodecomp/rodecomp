@@ -73,14 +73,37 @@
 #include "UI/Window/UIChatRoomWnd.h"
 #include "Contents/GuildInfo.h"
 
+#include "Contents/Configuration/GameSettingsMgr.h"
+#include "Contents/Sound/SoundMaker.h"
+#include "UI/GameSettings/GameSettingsUI.h"
+
 namespace {
 #pragma pack(push, 1)
 struct AddFriendPacket {
   /* 0000 */ std::int16_t id;
   /* 0002 */ char name[24];
 };
+
+struct BankingCheckPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint32_t aid;
+};
+
+struct ShortcutRotatePacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint16_t option;
+  /* 0004 */ unsigned char state;
+};
 #pragma pack(pop)
 
+struct AiCommand {
+  /* 0000 */ int type;
+  /* 0004 */ int args[5];
+};
+
+static_assert(sizeof(BankingCheckPacket) == 6);
+static_assert(sizeof(ShortcutRotatePacket) == 5);
+static_assert(sizeof(AiCommand) == 0x18);
 static_assert(sizeof(AddFriendPacket) == 26);
 static_assert(offsetof(AddFriendPacket, name) == 2);
 }
@@ -3954,3 +3977,6 @@ void UIWindowMgr::ShowWaitDBSaveWindow() {
 
   this->window_4F2AC->Show(1);
 }
+
+
+// OFFSET: 0x00AA35F0
