@@ -281,8 +281,8 @@ SurfaceDX9Context DeviceOwnerDX9::SurfaceContext() const {
 
 // INLINED
 TextureDX9Context DeviceOwnerDX9::TextureContext(
-  D3DX9Runtime& d3dx, RenderPrimitivePool& primitives, RenderQueues& queues, bool depthAlpha, float depthStart, float depthEnd
+  RenderPrimitivePool& primitives, RenderQueues& queues, bool depthAlpha, float depthStart, float depthEnd
 ) const {
-  return {this->direct3D, this->device, this->adapter, this->presentation.BackBufferFormat, this->caps, this->dynamicTextures, &d3dx, &primitives, &queues,
+  return {this->direct3D, this->device, this->adapter, this->presentation.BackBufferFormat, this->caps, this->dynamicTextures, nullptr, &primitives, &queues,
           depthAlpha,     depthStart,   depthEnd};
 }

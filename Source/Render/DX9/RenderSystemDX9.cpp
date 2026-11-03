@@ -7,7 +7,7 @@
 // FUNCTION: fn_02353
 CRenderSystemDX9::CRenderSystemDX9(RenderSystemDX9Context& context)
     : m_device(new DeviceOwnerDX9), m_defaultTexture(nullptr), m_context(&context),
-      m_rendererContext{*this,       context.d3dx, context.options, context.multitexture,
+      m_rendererContext{*this,       context.options, context.multitexture,
                         context.fog, context.worldFlag, context.overlayColor, context.diagnostic},
       m_textureContext{}, m_surfaceContext{} {
   this->RefreshContexts();
@@ -33,7 +33,6 @@ void CRenderSystemDX9::RefreshContexts() {
   context.displayFormat = this->m_device->presentation.BackBufferFormat;
   context.caps = this->m_device->caps;
   context.dynamicTextures = this->m_device->dynamicTextures;
-  context.d3dx = &this->m_context->d3dx;
   context.depthStart = this->m_context->fog.start;
   context.depthEnd = this->m_context->fog.end;
 }

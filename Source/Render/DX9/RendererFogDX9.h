@@ -6,7 +6,6 @@
 #include <cstddef>
 #include <d3d9.h>
 
-class D3DX9Runtime;
 struct TextureDX9Context;
 struct DeviceStateDX9;
 
@@ -16,7 +15,7 @@ struct RendererFogDX9 {
   /* 0158 */ int supported;
 
   void Set(int enabled, const D3DCAPS9& caps, FogConfiguration& configuration);
-  void Apply(const TextureDX9Context& context, DeviceStateDX9& state, D3DX9Runtime& d3dx, const float& aspect, const FogConfiguration& configuration);
+  void Apply(const TextureDX9Context& context, DeviceStateDX9& state, const float& aspect, const FogConfiguration& configuration);
 };
 
 static_assert(sizeof(RendererFogDX9) == 12);

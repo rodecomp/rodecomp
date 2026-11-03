@@ -19,7 +19,7 @@ void RendererFogDX9::Set(int value, const D3DCAPS9& caps, FogConfiguration& conf
 // OFFSET: 0x005654D0
 // FUNCTION: fn_02217
 void RendererFogDX9::Apply(
-  const TextureDX9Context& context, DeviceStateDX9& state, D3DX9Runtime& d3dx, const float& aspect, const FogConfiguration& configuration
+  const TextureDX9Context& context, DeviceStateDX9& state, const float& aspect, const FogConfiguration& configuration
 ) {
   if (this->dirty == 1) {
     const float inverseAspect = 1.0f / aspect;
@@ -29,7 +29,7 @@ void RendererFogDX9::Apply(
     const float start = configuration.start * 1490.0f + 10.0f;
     const float end = configuration.end * 1490.0f + 10.0f;
     D3DMATRIX projection;
-    d3dx.perspectiveFovLH(&projection, 0.2617994f, inverseAspect, 10.0f, 1500.0f);
+    D3DXMatrixPerspectiveFovLH(&projection, 0.2617994f, inverseAspect, 10.0f, 1500.0f);
     context.device->SetTransform(D3DTS_WORLD, &identity);
     context.device->SetTransform(D3DTS_PROJECTION, &projection);
     context.device->SetTransform(D3DTS_VIEW, &identity);

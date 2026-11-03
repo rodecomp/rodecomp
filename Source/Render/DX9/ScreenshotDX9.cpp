@@ -46,5 +46,5 @@ bool RendererDX9Operations::SaveScreenshot(
     }
   }
 
-  return SUCCEEDED(this->context.d3dx->saveSurfaceToFileA(filename, format, owner.backBuffer, nullptr, rectangle));
+  return SUCCEEDED(D3DXSaveSurfaceToFileA(filename, format, owner.backBuffer, nullptr, rectangle));
 }

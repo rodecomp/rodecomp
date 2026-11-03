@@ -58,7 +58,7 @@ void RendererDX9Operations::DrawQueues(
   RenderQueues& queues, const ServiceOptions& options, unsigned char multitexture, unsigned char twoPass, RendererFogDX9& fog, const float& aspect,
   const FogConfiguration& configuration
 ) {
-  fog.Apply(this->context, this->state, *this->context.d3dx, aspect, configuration);
+  fog.Apply(this->context, this->state, aspect, configuration);
   this->state.SetRenderState(D3DRS_ALPHATESTENABLE, 1);
   this->state.SetRenderState(D3DRS_ALPHAREF, 207);
   this->state.SetRenderState(D3DRS_ALPHABLENDENABLE, 0);

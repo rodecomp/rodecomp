@@ -5,7 +5,6 @@
 
 #include <d3d9.h>
 
-class D3DX9Runtime;
 struct RenderQueues;
 class RenderPrimitivePool;
 
@@ -16,7 +15,7 @@ struct TextureDX9Context {
   D3DFORMAT displayFormat;
   D3DCAPS9 caps;
   bool dynamicTextures;
-  D3DX9Runtime* d3dx;
+  void* unknown_d3dx;
   RenderPrimitivePool* primitives;
   RenderQueues* queues;
   bool depthAlpha;

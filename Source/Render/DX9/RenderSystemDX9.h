@@ -10,7 +10,6 @@ struct RenderSystemDX9Context {
   const DeviceOptionsDX9& deviceOptions;
   const AdapterConfiguration& adapter;
   const bool& serviceUsesDX7;
-  D3DX9Runtime& d3dx;
   const ServiceOptions& options;
   const unsigned char& multitexture;
   FogConfiguration& fog;

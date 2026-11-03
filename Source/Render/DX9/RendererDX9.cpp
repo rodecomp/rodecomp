@@ -10,7 +10,7 @@
 // FUNCTION: fn_02209
 CRendererDX9::CRendererDX9(DeviceOwnerDX9& owner, RendererDX9Context& context)
     : CRenderer(context.system), device(&owner), nativeDevice(owner.device), clearColor(0), lastTick(0), frames(0), fps(0.0f), m_context(&context),
-      m_textureContext(owner.TextureContext(context.d3dx, this->primitives, this->queues, false, context.fog.start, context.fog.end)) {
+      m_textureContext(owner.TextureContext(this->primitives, this->queues, false, context.fog.start, context.fog.end)) {
 }
 
 // OFFSET: 0x00564FE0

@@ -227,7 +227,7 @@ SurfaceLock CTextureDX9::Lock() {
 // FUNCTION: fn_02482
 void CTextureDX9::Filter() {
   if (!this->m_dynamic && !this->m_renderTarget && this->m_texture && this->m_texture->GetLevelCount() > 1) {
-    this->m_context->d3dx->filterTexture(this->m_texture, nullptr, UINT(-1), DWORD(-1));
+    D3DXFilterTexture(this->m_texture, nullptr, UINT(-1), DWORD(-1));
   }
 }
 
@@ -265,7 +265,7 @@ void CTextureDX9::Update(const RECT*) {
 void CTextureDX9::Fill(const RECT* rectangle, std::uint32_t color) {
   if (this->m_surface) {
     const RECT pixel{0, 0, 1, 1};
-    if (SUCCEEDED(this->m_context->d3dx->loadSurfaceFromMemory(this->m_surface, nullptr, rectangle, &color, D3DFMT_A8R8G8B8, 4, nullptr, &pixel, 2, 0))) {
+    if (SUCCEEDED(D3DXLoadSurfaceFromMemory(this->m_surface, nullptr, rectangle, &color, D3DFMT_A8R8G8B8, 4, nullptr, &pixel, 2, 0))) {
       this->Filter();
     }
   }
@@ -391,7 +391,7 @@ void CTextureDX9::Upload(int x, int y, int width, int height, const std::uint32_
     this->UploadSurface(surface, x, y, width, height, pixels, option != 0, sourceWidth);
     if (this->m_renderTarget && temporary) {
       if (temporary->GetLevelCount() > 1) {
-        this->m_context->d3dx->filterTexture(temporary, nullptr, UINT(-1), DWORD(-1));
+        D3DXFilterTexture(temporary, nullptr, UINT(-1), DWORD(-1));
       }
 
       this->m_context->device->UpdateTexture(temporary, this->m_texture);
@@ -467,7 +467,7 @@ bool CTextureDX9::CopyTexture(CTexture* source, int sourceX, int sourceY, int so
   RECT src{sourceX, sourceY, sourceX + sourceWidth, sourceY + sourceHeight};
   RECT dst{x, y, x + width, y + height};
   if (FAILED(
-        this->m_context->d3dx->loadSurfaceFromSurface(this->m_surface, nullptr, &dst, static_cast<CTextureDX9*>(source)->m_surface, nullptr, &src, 3, 0)
+        D3DXLoadSurfaceFromSurface(this->m_surface, nullptr, &dst, static_cast<CTextureDX9*>(source)->m_surface, nullptr, &src, 3, 0)
       )) {
     return false;
   }
