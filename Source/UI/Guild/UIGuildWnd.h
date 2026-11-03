@@ -63,7 +63,7 @@ struct GuildWndNameEntry {
 
 class UIGuildWnd : public UIFrameWnd {
 public:
-  UIGuildWnd(UIWindowContext& windows);
+  UIGuildWnd();
   void Slot11() override;
   void Paint() override;
   void Slot25(int x, int y) override;
@@ -81,7 +81,7 @@ protected:
 
 class UIGuildBanishedMemberWnd : public UIGuildWnd {
 public:
-  UIGuildBanishedMemberWnd(UIWindowContext& windows);
+  UIGuildBanishedMemberWnd();
   int Tab() override;
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -104,7 +104,7 @@ protected:
 
 class UIGuildInfoManageWnd : public UIGuildWnd {
 public:
-  UIGuildInfoManageWnd(UIWindowContext& windows);
+  UIGuildInfoManageWnd();
   int Tab() override;
   void Slot15(int width, int height) override;
   void Slot19() override;
@@ -134,7 +134,7 @@ protected:
 
 class UIGuildMemberManageWnd : public UIGuildWnd {
 public:
-  UIGuildMemberManageWnd(UIWindowContext& windows);
+  UIGuildMemberManageWnd();
   int Tab() override;
   void Slot15(int width, int height) override;
   void Slot19() override;
@@ -173,7 +173,7 @@ protected:
 
 class UIGuildNoticeWnd : public UIGuildWnd {
 public:
-  UIGuildNoticeWnd(UIWindowContext& windows);
+  UIGuildNoticeWnd();
   void Slot15(int width, int height) override;
   void Paint() override;
   void Slot25(int x, int y) override;
@@ -187,7 +187,7 @@ protected:
 
 class UIGuildPositionManageWnd : public UIGuildWnd {
 public:
-  UIGuildPositionManageWnd(UIWindowContext& windows);
+  UIGuildPositionManageWnd();
   void Slot15(int width, int height) override;
   void Slot19() override;
   void Paint() override;
@@ -223,7 +223,7 @@ protected:
 
 class UIGuildSkillWnd : public UIGuildWnd {
 public:
-  UIGuildSkillWnd(UIWindowContext& windows);
+  UIGuildSkillWnd();
   int Tab() override;
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -257,7 +257,7 @@ protected:
 
 class UIGuildTotalInfoWnd : public UIGuildWnd {
 public:
-  UIGuildTotalInfoWnd(UIWindowContext& windows);
+  UIGuildTotalInfoWnd();
   int Tab() override;
   void Slot15(int width, int height) override;
   void Paint() override;

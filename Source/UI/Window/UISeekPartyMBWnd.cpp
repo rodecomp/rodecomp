@@ -160,7 +160,7 @@ void UISeekPartyMBWnd::CreateJobChecks() {
   int starts[8] = {1, 5, 11, 24, 30, 37, 43, 56};
 
   for (int i = 0; i < counts[0]; ++i) {
-    UICheckBox* check = new UICheckBox(*this->m_context);
+    UICheckBox* check = new UICheckBox();
     check->SetSize(110, 12);
     const int job = i + 1;
     check->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(0x6AF + job));
@@ -178,7 +178,7 @@ void UISeekPartyMBWnd::CreateJobChecks() {
 
   for (int category = 1; category < 8; ++category) {
     for (int i = 0; i < counts[category]; ++i) {
-      UICheckBox* check = new UICheckBox(*this->m_context);
+      UICheckBox* check = new UICheckBox();
       check->SetSize(110, 12);
       check->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(0x65D + message));
       if (i < 8) {
@@ -253,8 +253,8 @@ void UISeekPartyMBWnd::ShowJobCategory(int category) {
 
 // OFFSET: 0x00911EE0
 // FUNCTION: fn_12524
-UISeekPartyMBWnd::UISeekPartyMBWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), unknown_00BC(nullptr), unknown_00C0(nullptr), m_levelEdit(nullptr), m_typeCombo(nullptr), m_subTypeCombo(nullptr), m_jobCategoryCombo(nullptr),
+UISeekPartyMBWnd::UISeekPartyMBWnd()
+    : UIFrameWnd(0), unknown_00BC(nullptr), unknown_00C0(nullptr), m_levelEdit(nullptr), m_typeCombo(nullptr), m_subTypeCombo(nullptr), m_jobCategoryCombo(nullptr),
       m_jobChecks(), m_subTypes(), unknown_0154(nullptr), unknown_0158(nullptr), m_jobCategory(-1), m_subType(0), m_restoreHeight(0), m_minimized(0), m_titleText(nullptr), m_levelText(nullptr) {
 }
 
@@ -269,7 +269,7 @@ void UISeekPartyMBWnd::Slot15(int width, int height) {
   std::memset(title, 0, sizeof(title));
   std::sprintf(title, LookupMessage(0x698));
 
-  this->m_titleText = new UIStaticText(*this->m_context);
+  this->m_titleText = new UIStaticText();
   this->m_titleText->SetSize(this->geometry.width - 0x20, 0xF);
   this->m_titleText->SetTextFitted(title);
   this->m_titleText->Move(0x10, 2);
@@ -281,7 +281,7 @@ void UISeekPartyMBWnd::Slot15(int width, int height) {
 
   std::string label;
   label = "LEVEL";
-  this->m_levelText = new UIStaticText(*this->m_context);
+  this->m_levelText = new UIStaticText();
   this->m_levelText->SetSize(this->geometry.width - 10, 0x1E);
   this->m_levelText->SetText(label.c_str(), 1);
   this->m_levelText->Move(10, 0x17);
@@ -289,7 +289,7 @@ void UISeekPartyMBWnd::Slot15(int width, int height) {
   this->AddChild(this->m_levelText);
 
   label = "MAP";
-  this->unknown_00BC = new UIStaticText(*this->m_context);
+  this->unknown_00BC = new UIStaticText();
   this->unknown_00BC->SetSize(this->geometry.width - 10, 0x1E);
   this->unknown_00BC->SetText(label.c_str(), 1);
   this->unknown_00BC->Move(10, 0x2D);
@@ -297,7 +297,7 @@ void UISeekPartyMBWnd::Slot15(int width, int height) {
   this->AddChild(this->unknown_00BC);
 
   label = "JOB";
-  this->unknown_00C0 = new UIStaticText(*this->m_context);
+  this->unknown_00C0 = new UIStaticText();
   this->unknown_00C0->SetSize(this->geometry.width - 10, 0x1E);
   this->unknown_00C0->SetText(label.c_str(), 1);
   this->unknown_00C0->Move(10, 0x46);
@@ -306,7 +306,7 @@ void UISeekPartyMBWnd::Slot15(int width, int height) {
 
   {
     std::string path = "유저인터페이스\\";
-    this->unknown_0158 = new UIBitmapButton(*this->m_context);
+    this->unknown_0158 = new UIBitmapButton();
     this->unknown_0158->SetBitmap((path + "btn_ok" + ".bmp").c_str(), 0, 0);
     this->unknown_0158->SetBitmap((path + "btn_ok_a" + ".bmp").c_str(), 1, 0);
     this->unknown_0158->SetBitmap((path + "btn_ok_b" + ".bmp").c_str(), 2, 0);
@@ -318,7 +318,7 @@ void UISeekPartyMBWnd::Slot15(int width, int height) {
 
   {
     std::string path = "유저인터페이스\\";
-    this->unknown_0154 = new UIBitmapButton(*this->m_context);
+    this->unknown_0154 = new UIBitmapButton();
     this->unknown_0154->SetBitmap((path + "btn_cancel" + ".bmp").c_str(), 0, 0);
     this->unknown_0154->SetBitmap((path + "btn_cancel_a" + ".bmp").c_str(), 1, 0);
     this->unknown_0154->SetBitmap((path + "btn_cancel_b" + ".bmp").c_str(), 2, 0);
@@ -330,7 +330,7 @@ void UISeekPartyMBWnd::Slot15(int width, int height) {
 
   this->CreateJobChecks();
 
-  this->m_levelEdit = new UIEditCtrl(*this->m_context);
+  this->m_levelEdit = new UIEditCtrl();
   this->m_levelEdit->SetSize(0x28, 0x10);
   this->m_levelEdit->Move(0x32, 0x14);
   this->m_levelEdit->maximum = 5;
@@ -343,7 +343,7 @@ void UISeekPartyMBWnd::Slot15(int width, int height) {
   }
   this->AddChild(this->m_levelEdit);
 
-  this->m_jobCategoryCombo = new UIComboBoxDefWnd(*this->m_context);
+  this->m_jobCategoryCombo = new UIComboBoxDefWnd();
   this->m_jobCategoryCombo->dropdownHeight = 0x50;
   this->m_jobCategoryCombo->SetSize(0x96, 0x12);
   this->m_jobCategoryCombo->Move(0x32, 0x44);
@@ -355,7 +355,7 @@ void UISeekPartyMBWnd::Slot15(int width, int height) {
   this->m_jobCategoryCombo->blue = 0xE8;
   this->AddChild(this->m_jobCategoryCombo);
 
-  this->m_typeCombo = new UIComboBoxDefWnd(*this->m_context);
+  this->m_typeCombo = new UIComboBoxDefWnd();
   this->m_typeCombo->dropdownHeight = 0x50;
   this->m_typeCombo->SetSize(0x64, 0x12);
   this->m_typeCombo->Move(0x32, 0x2B);
@@ -367,7 +367,7 @@ void UISeekPartyMBWnd::Slot15(int width, int height) {
   this->m_typeCombo->blue = 0xE8;
   this->AddChild(this->m_typeCombo);
 
-  this->m_subTypeCombo = new UIComboBoxDefWnd(*this->m_context);
+  this->m_subTypeCombo = new UIComboBoxDefWnd();
   this->m_subTypeCombo->dropdownHeight = 0x50;
   this->m_subTypeCombo->SetSize(0xBE, 0x12);
   this->m_subTypeCombo->Move(0x9B, 0x2B);

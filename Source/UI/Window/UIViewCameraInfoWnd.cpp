@@ -11,7 +11,7 @@
 
 // OFFSET: 0x00A78B00
 // FUNCTION: fn_16892
-UIViewCameraInfoWnd::UIViewCameraInfoWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0) {
+UIViewCameraInfoWnd::UIViewCameraInfoWnd() : UIFrameWnd(0) {
 }
 
 // OFFSET: 0x00A78C20

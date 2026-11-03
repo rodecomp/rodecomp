@@ -19,7 +19,7 @@ struct MiniMapMark {
 
 class UIMiniMapWnd : public UIFrameWnd {
 public:
-  UIMiniMapWnd(UIWindowContext& windows);
+  UIMiniMapWnd();
   void Slot11() override;
   void Slot15(int width, int height) override;
   void Paint() override;

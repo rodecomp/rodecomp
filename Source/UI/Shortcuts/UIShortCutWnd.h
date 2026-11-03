@@ -32,7 +32,7 @@ struct ShortcutWindowContext {
 
 class UIShortCutWnd : public UIFrameWnd {
 public:
-  UIShortCutWnd(UIWindowContext& windows, ShortcutWindowContext& shortcuts);
+  UIShortCutWnd(ShortcutWindowContext& shortcuts);
   ~UIShortCutWnd() override;
 
   bool Slot03() override;

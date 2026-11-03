@@ -15,7 +15,7 @@ extern std::uint8_t g_chatInputFlag;
 
 class UINewChatWnd : public UIFrameWnd {
 public:
-  UINewChatWnd(UIWindowContext& windows);
+  UINewChatWnd();
 
   static void SaveChatWndInfo();
 

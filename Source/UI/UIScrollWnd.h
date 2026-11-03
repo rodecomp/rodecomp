@@ -12,8 +12,6 @@ class UIScrollBar;
 class UIScrollWnd : public UIWindow {
 public:
   UIScrollWnd(int width, int height, unsigned char cached);
-  UIScrollWnd(UIWindowContext&, int width, int height, unsigned char cached) : UIScrollWnd(width, height, cached) {
-  }
   ~UIScrollWnd() override;
   void Resize(int width, int height) override;
   void Slot15(int width, int height) override;
@@ -30,7 +28,7 @@ public:
 
   // INLINED
   int& ViewWidth() {
-    return reinterpret_cast<int&>(this->m_context);
+    return reinterpret_cast<int&>(this->unknown_007C);
   }
 
   bool Update(int redraw) override;

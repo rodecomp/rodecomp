@@ -7,7 +7,7 @@
 
 class UIRPImageWnd2 : public UIFrameWnd {
 public:
-  UIRPImageWnd2(UIWindowContext& windows);
+  UIRPImageWnd2();
   void Paint() override;
   void SetImage(std::string imageName, int imageCount);
 

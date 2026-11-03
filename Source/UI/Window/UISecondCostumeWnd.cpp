@@ -160,7 +160,7 @@ void UISecondCostumeWnd::Slot15(int width, int height) {
   this->LoadLists();
   this->AddCloseButton("Close", 0);
 
-  this->m_list = new UIListBoxNavi(*this->m_context);
+  this->m_list = new UIListBoxNavi();
   this->m_list->SetSize(width - 212, 160);
   this->m_list->backgroundRed = 210;
   this->m_list->backgroundGreen = 210;
@@ -170,7 +170,7 @@ void UISecondCostumeWnd::Slot15(int width, int height) {
   this->AddChild(this->m_list);
   this->RefreshList(this->m_tab);
 
-  this->m_typeCombo = new UIComboBoxDefWnd(*this->m_context);
+  this->m_typeCombo = new UIComboBoxDefWnd();
   this->m_typeCombo->dropdownHeight = 67;
   this->m_typeCombo->SetSize(width - 212, 18);
   this->m_typeCombo->Move(4, 20);
@@ -187,7 +187,7 @@ void UISecondCostumeWnd::Slot15(int width, int height) {
   this->m_typeCombo->AddOption(LookupMessage(2766), 0);
   this->m_typeCombo->Select(this->m_tab);
 
-  auto* previous = new UIBitmapButton(*this->m_context);
+  auto* previous = new UIBitmapButton();
   previous->SetBitmap("유저인터페이스\\scroll1left.bmp", 0, 0);
   previous->SetBitmap("유저인터페이스\\scroll1left.bmp", 1, 0);
   previous->SetBitmap("유저인터페이스\\scroll1left.bmp", 2, 0);
@@ -196,7 +196,7 @@ void UISecondCostumeWnd::Slot15(int width, int height) {
   previous->SetId(227);
   this->AddChild(previous);
 
-  auto* next = new UIBitmapButton(*this->m_context);
+  auto* next = new UIBitmapButton();
   next->SetBitmap("유저인터페이스\\scroll1right.bmp", 0, 0);
   next->SetBitmap("유저인터페이스\\scroll1right.bmp", 1, 0);
   next->SetBitmap("유저인터페이스\\scroll1right.bmp", 2, 0);
@@ -287,8 +287,8 @@ bool UISecondCostumeWnd::Slot03() {
 
 // OFFSET: 0x00946FB0
 // FUNCTION: fn_12857
-UISecondCostumeWnd::UISecondCostumeWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0) {
+UISecondCostumeWnd::UISecondCostumeWnd()
+    : UIFrameWnd(0) {
   this->m_typeCombo = nullptr;
   this->m_list = nullptr;
   this->m_tab = 0;

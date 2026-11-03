@@ -18,7 +18,7 @@ struct SecondCostumeEntry {
 
 class UISecondCostumeWnd : public UIFrameWnd {
 public:
-  UISecondCostumeWnd(UIWindowContext& windows);
+  UISecondCostumeWnd();
   bool Slot03() override;
   void Slot15(int width, int height) override;
   void Paint() override;

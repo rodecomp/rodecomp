@@ -22,8 +22,6 @@ struct UIMessageBoxContext {
 class UIMessageBox : public UIFrameWnd {
 public:
   UIMessageBox(UIMessageBoxContext& dialog);
-  UIMessageBox(UIWindowContext&, UIMessageBoxContext& dialog) : UIMessageBox(dialog) {
-  }
   ~UIMessageBox() override;
   void Slot18() override;
   void Slot19() override;

@@ -11,8 +11,6 @@ class UICheckBox;
 class UIFrameWnd : public UIWindow {
 public:
   UIFrameWnd(unsigned char cached);
-  UIFrameWnd(UIWindowContext&, unsigned char cached) : UIFrameWnd(cached) {
-  }
   ~UIFrameWnd() override;
   bool Slot02() override;
   void Move(int x, int y) override;

@@ -10,7 +10,7 @@ class UITextButton;
 
 class UIPetEvolutionWnd : public UIFrameWnd {
 public:
-  UIPetEvolutionWnd(UIWindowContext& windows);
+  UIPetEvolutionWnd();
   ~UIPetEvolutionWnd() override;
   void Slot15(int width, int height) override;
   void Paint() override;

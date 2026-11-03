@@ -26,8 +26,6 @@ public:
 class UIRodexEditCtrl3 : public UIEditCtrl3 {
 public:
   UIRodexEditCtrl3();
-  UIRodexEditCtrl3(UIWindowContext&) : UIRodexEditCtrl3() {
-  }
   void Slot15(int width, int height) override;
   void sub_855150();
 };

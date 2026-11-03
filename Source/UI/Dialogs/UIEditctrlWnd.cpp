@@ -43,14 +43,14 @@ const char* g_miniMapMemoLineFormat = "%d\t%d\t%s\r\n";
 
 // OFFSET: 0x0099B0C0
 // FUNCTION: fn_13549
-UIEditctrlWnd::UIEditctrlWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0) {
+UIEditctrlWnd::UIEditctrlWnd()
+    : UIFrameWnd(0) {
 }
 
 // OFFSET: 0x0099B120
 // FUNCTION: fn_13550
-UIMiniMapWnd::UIMiniMapWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0) {
+UIMiniMapWnd::UIMiniMapWnd()
+    : UIFrameWnd(0) {
   this->dragging = 0;
   this->unknown_0114 = 0;
   this->unknown_011C = nullptr;
@@ -75,7 +75,7 @@ void UIMiniMapWnd::AddTownMarks() {
       mark.y = static_cast<int>(this->originY - (static_cast<float>(info.y) * this->scale + 6.0f));
       this->warpMarks.push_back(mark);
     } else {
-      UIBitmapButton* button = new UIBitmapButton(*this->m_context);
+      UIBitmapButton* button = new UIBitmapButton();
       button->SetBitmap(info.image.c_str(), 0, 0);
       button->SetBitmap(info.image.c_str(), 1, 0);
       button->SetBitmap(info.image.c_str(), 2, 0);
@@ -156,7 +156,7 @@ void UIEditctrlWnd::Slot15(int, int) {
   this->AddCloseButton(LookupMessage(2741), 0);
   this->AddNumberedButton(184, 205, 19, "minimap\\memo_ok", LookupMessage(2754), true);
 
-  this->edit = new UIEditCtrl(*this->m_context);
+  this->edit = new UIEditCtrl();
   this->edit->SetSize(200, 18);
   this->edit->Move(5, 19);
   this->edit->maximum = 20;
@@ -201,7 +201,7 @@ void UIMiniMapWnd::Slot15(int width, int height) {
   }
 
   this->LoadMemos();
-  this->m_playerHead = new UIHeadsprButton(*this->m_context);
+  this->m_playerHead = new UIHeadsprButton();
   this->UpdatePlayerHead();
   this->m_playerHead->Move(-100, -100);
   this->m_playerHead->unknown_00BC = 0;
@@ -502,7 +502,7 @@ int UIMiniMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
   case 485: {
     const int id = static_cast<int>(this->questButtons.size()) + 2001;
     const std::string name = FormatOwnedString("유저인터페이스\\minimap\\Quest_%d_%d.bmp", argument1, argument2);
-    UIBitmapButton* button = new UIBitmapButton(*this->m_context);
+    UIBitmapButton* button = new UIBitmapButton();
     button->SetBitmap(name.c_str(), 0, 0);
     button->SetBitmap(name.c_str(), 1, 0);
     button->SetBitmap(name.c_str(), 2, 0);

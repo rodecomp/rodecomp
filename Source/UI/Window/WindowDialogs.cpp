@@ -158,7 +158,7 @@ int WindowDialogs::Confirm(
     return 185;
   }
 
-  auto* box = new UIMessageBox(this->windows, this->dialog);
+  auto* box = new UIMessageBox(this->dialog);
   this->latest = box;
   box->Configure(text, type, defaultAccept, timeout, caption, width, height, 1, nullptr);
 
@@ -256,7 +256,7 @@ void WindowDialogs::AddMessageBox(
     return;
   }
 
-  auto* box = new UIMessageBox(this->windows, this->dialog);
+  auto* box = new UIMessageBox(this->dialog);
   box->Configure(text, type, defaultAccept, timeout, caption, width, height, 0, icon);
   this->dialog.retirement.rendered.push_back(box);
 

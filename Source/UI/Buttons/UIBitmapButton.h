@@ -9,8 +9,6 @@ class UIBitmapButton : public UIButton {
 
 public:
   UIBitmapButton();
-  UIBitmapButton(UIWindowContext&) : UIBitmapButton() {
-  }
   ~UIBitmapButton() override;
   void Paint() override;
   bool SetBitmap(const char* name, int state, unsigned char exactSize);

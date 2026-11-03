@@ -94,8 +94,8 @@ static bool g_subChatMiniSecondCollapsed;
 
 // OFFSET: 0x009122B0
 // FUNCTION: fn_12528
-UIShortCutWnd::UIShortCutWnd(UIWindowContext& windows, ShortcutWindowContext& shortcuts)
-    : UIFrameWnd(windows, 0), m_shortcuts(&shortcuts) {
+UIShortCutWnd::UIShortCutWnd(ShortcutWindowContext& shortcuts)
+    : UIFrameWnd(0), m_shortcuts(&shortcuts) {
   this->m_controls.decrease = nullptr;
   this->m_controls.increase = nullptr;
 }
@@ -158,7 +158,7 @@ void UIShortCutWnd::Show(int visible) {
 // OFFSET: 0x0092A190
 void UIShortCutWnd::Slot15(int, int) {
   this->m_controls =
-    ShortcutControls::Create(*this, *this->m_context, g_session.GetOption(10), this->m_slots, this->m_itemSlots);
+    ShortcutControls::Create(*this, g_session.GetOption(10), this->m_slots, this->m_itemSlots);
 }
 
 // OFFSET: 0x00932F30
@@ -804,7 +804,7 @@ void UIMemorialDunWnd::Slot15(int, int) {
 
   {
     const std::string name = "유저인터페이스\\btn_ok";
-    this->m_actionButton = new UIBitmapButton(*this->m_context);
+    this->m_actionButton = new UIBitmapButton();
     this->m_actionButton->SetBitmap((name + ".bmp").c_str(), 0, 0);
     this->m_actionButton->SetBitmap((name + "_a.bmp").c_str(), 1, 0);
     this->m_actionButton->SetBitmap((name + "_b.bmp").c_str(), 2, 0);
@@ -814,7 +814,7 @@ void UIMemorialDunWnd::Slot15(int, int) {
     this->AddChild(this->m_actionButton);
   }
 
-  this->m_partyButton = new (std::nothrow) UIBasicButton(*this->m_context);
+  this->m_partyButton = new (std::nothrow) UIBasicButton();
   this->m_partyButton->Configure(125, LookupMessage(3270));
   this->m_partyButton->Move(-100, -100);
   this->m_partyButton->SetId(211);
@@ -1174,19 +1174,19 @@ bool UINavigationWnd::LoadRoute(int index) {
 
 // OFFSET: 0x00911490
 // FUNCTION: fn_12515
-UIMemorialDunWnd::UIMemorialDunWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), m_partyButton(nullptr) {
+UIMemorialDunWnd::UIMemorialDunWnd()
+    : UIFrameWnd(0), m_partyButton(nullptr) {
 }
 
 // OFFSET: 0x00912460
 // FUNCTION: fn_12530
-UISubChatMiniWnd::UISubChatMiniWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), unknown_00B4(2), m_rowHeight(32), m_offsetY(32) {
+UISubChatMiniWnd::UISubChatMiniWnd()
+    : UIFrameWnd(0), unknown_00B4(2), m_rowHeight(32), m_offsetY(32) {
 }
 
 // OFFSET: 0x00911700
 // FUNCTION: fn_12518
-UINewChatWnd::UINewChatWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0) {
+UINewChatWnd::UINewChatWnd() : UIFrameWnd(0) {
   this->m_chatEdit = nullptr;
   this->unknown_00C0 = nullptr;
   this->m_inputEdit = nullptr;

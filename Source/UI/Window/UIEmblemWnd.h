@@ -8,7 +8,6 @@
 class UIEmblemWnd : public UIWindow {
 public:
   UIEmblemWnd();
-  explicit UIEmblemWnd(UIWindowContext& windows);
   void Slot15(int width, int height) override;
   void Slot19() override;
   void Paint() override;

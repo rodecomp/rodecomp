@@ -8,8 +8,6 @@
 class UISpriteButton : public UIButton {
 public:
   UISpriteButton();
-  UISpriteButton(UIWindowContext&) : UISpriteButton() {
-  }
   ~UISpriteButton() override;
   void Paint() override;
   void Slot25(int x, int y) override;

@@ -11,14 +11,14 @@ class CTexture;
 
 class UIVideoSkipButton : public UIButton {
 public:
-  UIVideoSkipButton(UIWindowContext& windowContext);
+  UIVideoSkipButton();
 
   void Paint() override;
 };
 
 class UIVideoWnd : public UIWindow {
 public:
-  UIVideoWnd(UIWindowContext& windowContext);
+  UIVideoWnd();
   ~UIVideoWnd() override;
   bool Slot02() override;
   void Slot15(int width, int height) override;

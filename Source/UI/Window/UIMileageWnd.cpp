@@ -161,7 +161,7 @@ int UIMileageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
 
 // OFFSET: 0x00946B50
 // FUNCTION: fn_12850
-UIMileageWnd::UIMileageWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), m_startTime(0), m_point(0), m_remaining(0), m_bonus(1) {
+UIMileageWnd::UIMileageWnd()
+    : UIFrameWnd(0), m_startTime(0), m_point(0), m_remaining(0), m_bonus(1) {
   this->m_tooltip.clear();
 }

@@ -7,7 +7,6 @@
 
 class UIWindow;
 class UIMessageBox;
-struct UIWindowContext;
 struct UIMessageBoxContext;
 
 class ModalFramePump {
@@ -19,7 +18,6 @@ protected:
 };
 
 struct WindowDialogs {
-  UIWindowContext& windows;
   UIMessageBoxContext& dialog;
   int& result;
   std::set<UIWindow*>& suspendedRoots;

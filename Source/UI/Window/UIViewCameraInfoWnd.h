@@ -8,7 +8,7 @@
 
 class UIViewCameraInfoWnd : public UIFrameWnd {
 public:
-  UIViewCameraInfoWnd(UIWindowContext& windows);
+  UIViewCameraInfoWnd();
   bool Slot08() override;
   void Slot15(int width, int height) override;
   void Paint() override;

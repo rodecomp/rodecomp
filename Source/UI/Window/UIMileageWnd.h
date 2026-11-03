@@ -9,7 +9,7 @@
 
 class UIMileageWnd : public UIFrameWnd {
 public:
-  UIMileageWnd(UIWindowContext& windows);
+  UIMileageWnd();
   void Paint() override;
   void Slot19() override;
   void Slot25(int x, int y) override;

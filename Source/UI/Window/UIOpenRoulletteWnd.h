@@ -6,7 +6,7 @@
 
 class UIOpenRoulletteWnd : public UIFrameWnd {
 public:
-  UIOpenRoulletteWnd(UIWindowContext& windows);
+  UIOpenRoulletteWnd();
   void Slot19() override;
   void Slot15(int width, int height) override;
   void Paint() override;

@@ -22,8 +22,6 @@ class UIEditCtrl : public UIWindow {
 
 public:
   UIEditCtrl();
-  UIEditCtrl(UIWindowContext&) : UIEditCtrl() {
-  }
   UIEditCtrl(const UIEditCtrl& other);
   ~UIEditCtrl() override;
   bool Slot05() override;
@@ -109,8 +107,6 @@ public:
 class UIEditCtrl3 : public UIEditCtrl2 {
 public:
   UIEditCtrl3();
-  UIEditCtrl3(UIWindowContext&) : UIEditCtrl3() {
-  }
   UIEditCtrl3(const UIEditCtrl3& other);
   ~UIEditCtrl3() override;
   void Slot15(int width, int height) override;

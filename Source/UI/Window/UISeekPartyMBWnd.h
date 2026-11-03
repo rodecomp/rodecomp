@@ -24,7 +24,7 @@ struct SeekPartyRegistration {
 
 class UISeekPartyMBWnd : public UIFrameWnd {
 public:
-  UISeekPartyMBWnd(UIWindowContext& windows);
+  UISeekPartyMBWnd();
   ~UISeekPartyMBWnd() override;
   void Slot11() override;
   void Slot15(int width, int height) override;

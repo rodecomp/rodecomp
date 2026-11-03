@@ -9,8 +9,6 @@
 class UIStaticText : public UIWindow {
 public:
   UIStaticText();
-  UIStaticText(UIWindowContext&) : UIStaticText() {
-  }
   ~UIStaticText() override;
   void Paint() override;
   void Slot25(int x, int y) override;

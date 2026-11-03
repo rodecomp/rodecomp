@@ -61,7 +61,7 @@ class UIRoMapWnd : public UIFrameWnd {
   friend class CFlyingShipRouteInfo;
 
 public:
-  UIRoMapWnd(UIWindowContext& windows);
+  UIRoMapWnd();
   ~UIRoMapWnd() override;
   void Paint() override;
   void Slot15(int width, int height) override;

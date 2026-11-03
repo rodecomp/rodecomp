@@ -784,7 +784,7 @@ bool UINewSkillListWnd::IsSkillArea(int x, int y) {
 // OFFSET: 0x009B1050
 // FUNCTION: fn_13814
 void UINewSkillListWnd::Slot15(int width, int height) {
-  this->m_tabs = new UITabControl(*this->m_context);
+  this->m_tabs = new UITabControl();
   this->m_tabs->Configure(0, 17, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   this->m_tabs->Move(0, 6);
   this->AddChild(this->m_tabs);
@@ -797,14 +797,14 @@ void UINewSkillListWnd::Slot15(int width, int height) {
   this->m_btnMinimize->Move(this->geometry.width - 30, 5);
   this->m_btnClose->Move(this->geometry.width - 16, 5);
 
-  this->m_scrollBar = new UIScrollBar(*this->m_context);
+  this->m_scrollBar = new UIScrollBar();
   this->m_scrollBar->Configure(this->geometry.width - 15, 20, 1, this->geometry.height - this->m_topMargin - this->m_bottomMargin);
   this->m_scrollBar->Move(this->geometry.width - 15, 20);
   this->m_scrollBar->SetSize(this->m_scrollBar->geometry.width, this->geometry.height - this->m_topMargin - this->m_bottomMargin);
   this->AddChild(this->m_scrollBar);
 
   for (int i = 0; i < 10; ++i) {
-    UIBitmapButton* button = new UIBitmapButton(*this->m_context);
+    UIBitmapButton* button = new UIBitmapButton();
     button->SetBitmap("유저인터페이스\\basic_interface\\skill_up_a.bmp", 0, 0);
     button->SetBitmap("유저인터페이스\\basic_interface\\skill_up_b.bmp", 1, 0);
     button->SetBitmap("유저인터페이스\\basic_interface\\skill_up_c.bmp", 2, 0);
@@ -816,7 +816,7 @@ void UINewSkillListWnd::Slot15(int width, int height) {
   }
 
   for (int i = 0; i < 42; ++i) {
-    UIBitmapButton* button = new UIBitmapButton(*this->m_context);
+    UIBitmapButton* button = new UIBitmapButton();
     button->SetBitmap("유저인터페이스\\basic_interface\\arw_left.bmp", 0, 0);
     button->SetBitmap("유저인터페이스\\basic_interface\\arw_left.bmp", 1, 0);
     button->SetBitmap("유저인터페이스\\basic_interface\\arw_left.bmp", 2, 0);
@@ -828,7 +828,7 @@ void UINewSkillListWnd::Slot15(int width, int height) {
   }
 
   for (int i = 0; i < 42; ++i) {
-    UIBitmapButton* button = new UIBitmapButton(*this->m_context);
+    UIBitmapButton* button = new UIBitmapButton();
     button->SetBitmap("유저인터페이스\\basic_interface\\arw_right.bmp", 0, 0);
     button->SetBitmap("유저인터페이스\\basic_interface\\arw_right.bmp", 1, 0);
     button->SetBitmap("유저인터페이스\\basic_interface\\arw_right.bmp", 2, 0);
@@ -841,7 +841,7 @@ void UINewSkillListWnd::Slot15(int width, int height) {
 
   const char* baseDir = "유저인터페이스\\";
   const char* applyNames[3] = {"btn_apply", "btn_apply_a", "btn_apply_b"};
-  this->m_btnApply = new UIBitmapButton(*this->m_context);
+  this->m_btnApply = new UIBitmapButton();
   for (int state = 0; state < 3; ++state) {
     std::string path = std::string(baseDir) + applyNames[state] + ".bmp";
     this->m_btnApply->SetBitmap(Resolve(path.c_str()), state, 0);
@@ -854,7 +854,7 @@ void UINewSkillListWnd::Slot15(int width, int height) {
   this->AddChild(this->m_btnApply);
 
   const char* resetNames[3] = {"btn_reset", "btn_reset_a", "btn_reset_b"};
-  this->m_btnCancel = new UIBitmapButton(*this->m_context);
+  this->m_btnCancel = new UIBitmapButton();
   for (int state = 0; state < 3; ++state) {
     std::string path = std::string(baseDir) + resetNames[state] + ".bmp";
     this->m_btnCancel->SetBitmap(Resolve(path.c_str()), state, 0);
@@ -866,7 +866,7 @@ void UINewSkillListWnd::Slot15(int width, int height) {
   this->m_btnCancel->Invalidate();
   this->AddChild(this->m_btnCancel);
 
-  this->m_btnDetail = new UIResizer(*this->m_context);
+  this->m_btnDetail = new UIResizer();
   this->m_btnDetail->SetSize(16, 16);
   this->m_btnDetail->SetDirection(3);
   this->m_btnDetail->SetBitmapName("유저인터페이스\\btn_resize.bmp");
@@ -1737,7 +1737,7 @@ void UINewSkillListWnd::sub_9AF960() {
 
 // OFFSET: 0x009AE260
 // FUNCTION: fn_13797
-UINewSkillListWnd::UINewSkillListWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0) {
+UINewSkillListWnd::UINewSkillListWnd() : UIFrameWnd(0) {
   this->m_tab = 0;
   this->m_needsRedraw = 1;
   this->m_selectedSkill = -1;

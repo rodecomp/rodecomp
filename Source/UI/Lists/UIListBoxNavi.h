@@ -9,8 +9,6 @@
 class UIListBoxNavi : public UIListBox {
 public:
   UIListBoxNavi();
-  UIListBoxNavi(UIWindowContext&) : UIListBoxNavi() {
-  }
   void Paint() override;
   void Slot25(int x, int y) override;
   void Clear() override;

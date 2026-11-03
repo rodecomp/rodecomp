@@ -11,7 +11,7 @@
 // OFFSET: 0x0092A190
 // FUNCTION: fn_12654
 ShortcutControls ShortcutControls::Create(
-  UIFrameWnd& frame, UIWindowContext& windows, int bankOption, NormalItemSlot** slots, NormalItemSlot** itemSlots
+  UIFrameWnd& frame, int bankOption, NormalItemSlot** slots, NormalItemSlot** itemSlots
 ) {
   ShortcutControls result;
   frame.AddCloseButton("F12", 0)->Move(frame.geometry.width - 10, 0);
@@ -20,7 +20,7 @@ ShortcutControls ShortcutControls::Create(
     slots[index] = nullptr;
   }
 
-  result.bank = new (std::nothrow) UICheckBox(windows);
+  result.bank = new (std::nothrow) UICheckBox();
   result.bank->SetSize(10, 26);
   result.bank->SetImages(
     "유저인터페이스\\shortcut_2_bts.bmp",
@@ -36,7 +36,7 @@ ShortcutControls ShortcutControls::Create(
                         int id, int x, int y, unsigned char disabled, unsigned char enabled, const char* normal, const char* over, const char* pressed,
                         const char* unavailable
                       ) {
-    UIBitmapButton* button = new UIBitmapButton(windows);
+    UIBitmapButton* button = new UIBitmapButton();
     button->SetBitmap(normal, 0, 0);
     button->SetBitmap(over, 1, 0);
     button->SetBitmap(pressed, 2, 0);

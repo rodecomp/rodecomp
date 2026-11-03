@@ -14,7 +14,7 @@ struct TransMenuItem {
 
 class UITransMenuWnd : public UIFrameWnd {
 public:
-  UITransMenuWnd(UIWindowContext& windows);
+  UITransMenuWnd();
   void Resize(int width, int height) override;
   void Move(int x, int y) override;
   bool Slot07(void* output) override;

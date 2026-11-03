@@ -56,7 +56,7 @@ void UIQuestDisplay::Paint() {
 
     const int top = single * 50 + (none + multiple * 2) * 40;
     std::string title = info.m_title.size() == 0 ? FormatOwnedString("Unknown Quest, ID = %d", questId) : info.m_title;
-    if (questId == reinterpret_cast<std::uintptr_t>(this->m_context)) {
+    if (questId == this->unknown_007C) {
       this->FillRegion(-12, top - 2, this->geometry.width - 10, 40, 0);
     }
     this->DrawShadowedText(0, top, title.c_str(), 0, 0xD6E1, 0, 0, 12, 0);

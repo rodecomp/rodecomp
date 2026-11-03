@@ -6,8 +6,6 @@
 class UIScrollBar : public UIWindow {
 public:
   UIScrollBar();
-  UIScrollBar(UIWindowContext&) : UIScrollBar() {
-  }
   ~UIScrollBar() override;
   void Resize(int width, int height) override;
   bool Slot08() override;

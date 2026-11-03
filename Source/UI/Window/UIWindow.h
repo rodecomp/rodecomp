@@ -30,10 +30,6 @@ struct WindowReplayRecorder;
 struct ITEM_INFO;
 class UIItemTagButton;
 
-struct UIWindowContext {
-  UITextViewer* const& chatConverter;
-};
-
 class UIWindow : public UIRPData {
   friend struct WindowDialogs;
   friend class UIWindowMgr;
@@ -44,8 +40,6 @@ class UIWindow : public UIRPData {
 
 public:
   explicit UIWindow(unsigned char cached);
-  UIWindow(UIWindowContext&, unsigned char cached) : UIWindow(cached) {
-  }
   ~UIWindow() override;
   virtual void Resize(int width, int height);
   virtual bool Slot02();
@@ -231,7 +225,7 @@ protected:
   /* 0078 */ unsigned char m_cached;
   /* 0079 */ unsigned char m_clip;
 
-  UIWindowContext* m_context;
+  /* 007C */ std::uint32_t unknown_007C;
 
 private:
   UIWindow* Parent() const;

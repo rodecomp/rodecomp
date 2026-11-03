@@ -14,8 +14,6 @@ class UIScrollBar;
 class UIListBox : public UIWindow {
 public:
   __declspec(noinline) UIListBox();
-  UIListBox(UIWindowContext&) : UIListBox() {
-  }
   ~UIListBox() override;
   void Resize(int width, int height) override;
   void Slot15(int width, int height) override;

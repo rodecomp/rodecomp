@@ -14,8 +14,6 @@ class UITextViewer : public UIListBox {
 
 public:
   UITextViewer();
-  UITextViewer(UIWindowContext&) : UITextViewer() {
-  }
   ~UITextViewer() override;
   void Slot15(int width, int height) override;
   void Paint() override;

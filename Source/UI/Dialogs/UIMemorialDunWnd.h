@@ -11,7 +11,7 @@ extern int g_memorialDunWndY;
 
 class UIMemorialDunWnd : public UIFrameWnd {
 public:
-  UIMemorialDunWnd(UIWindowContext& windows);
+  UIMemorialDunWnd();
   void Move(int x, int y) override;
   void Slot15(int width, int height) override;
   void Paint() override;

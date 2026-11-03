@@ -290,24 +290,24 @@ void UIGuildTotalInfoWnd::Slot35(int delta) {
 
 // OFFSET: 0x00954020
 // FUNCTION: fn_13005
-UIGuildWnd::UIGuildWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), m_saved(nullptr), m_tabs{} {}
+UIGuildWnd::UIGuildWnd()
+    : UIFrameWnd(0), m_saved(nullptr), m_tabs{} {}
 // OFFSET: 0x00953900
 // FUNCTION: fn_12995
-UIGuildBanishedMemberWnd::UIGuildBanishedMemberWnd(UIWindowContext& windows)
-    : UIGuildWnd(windows) {
+UIGuildBanishedMemberWnd::UIGuildBanishedMemberWnd()
+    : UIGuildWnd() {
 }
 
 // OFFSET: 0x009539C0
 // FUNCTION: fn_12997
-UIGuildInfoManageWnd::UIGuildInfoManageWnd(UIWindowContext& windows)
-    : UIGuildWnd(windows), unknown_00D8(), unknown_00E0(), unknown_00EC(0), unknown_00F0(0), m_guildId(g_guildInfo.m_guildId) {
+UIGuildInfoManageWnd::UIGuildInfoManageWnd()
+    : UIGuildWnd(), unknown_00D8(), unknown_00E0(), unknown_00EC(0), unknown_00F0(0), m_guildId(g_guildInfo.m_guildId) {
 }
 
 // OFFSET: 0x00953B00
 // FUNCTION: fn_12999
-UIGuildMemberManageWnd::UIGuildMemberManageWnd(UIWindowContext& windows)
-    : UIGuildWnd(windows), unknown_0150(), m_scrollTop(0), m_hoverRow(10), m_columns(1), m_visibleRows(6), unknown_016C(0),
+UIGuildMemberManageWnd::UIGuildMemberManageWnd()
+    : UIGuildWnd(), unknown_0150(), m_scrollTop(0), m_hoverRow(10), m_columns(1), m_visibleRows(6), unknown_016C(0),
       m_scrollable(0), m_rowSpacing(0), m_members(), unknown_0180(), m_sortOrders() {
   this->m_buttonTime = 0;
   this->m_scrollBar = nullptr;
@@ -323,13 +323,13 @@ UIGuildMemberManageWnd::UIGuildMemberManageWnd(UIWindowContext& windows)
 
 // OFFSET: 0x00953D10
 // FUNCTION: fn_13000
-UIGuildNoticeWnd::UIGuildNoticeWnd(UIWindowContext& windows) : UIGuildWnd(windows) {
+UIGuildNoticeWnd::UIGuildNoticeWnd() : UIGuildWnd() {
 }
 
 // OFFSET: 0x00953D70
 // FUNCTION: fn_13001
-UIGuildPositionManageWnd::UIGuildPositionManageWnd(UIWindowContext& windows)
-    : UIGuildWnd(windows), m_buttonTime(0) {
+UIGuildPositionManageWnd::UIGuildPositionManageWnd()
+    : UIGuildWnd(), m_buttonTime(0) {
   for (int index = 0; index < 11; ++index) {
     this->unknown_00D0[index] = 0;
     this->unknown_00FC[index] = 0;
@@ -343,7 +343,7 @@ UIGuildPositionManageWnd::UIGuildPositionManageWnd(UIWindowContext& windows)
 
 // OFFSET: 0x00953E80
 // FUNCTION: fn_13002
-UIGuildSkillWnd::UIGuildSkillWnd(UIWindowContext& windows) : UIGuildWnd(windows) {
+UIGuildSkillWnd::UIGuildSkillWnd() : UIGuildWnd() {
   this->m_actionButtons[0] = nullptr;
   this->m_actionButtons[1] = nullptr;
   this->m_hoverIndex = -1;
@@ -634,7 +634,7 @@ __declspec(noinline) void UIGuildWnd::CreateTabs() {
   const char** name = names;
   UIStaticText** tab = this->m_tabs;
   for (int x = 3; x < 399; x += 66) {
-    *tab = new UIStaticText(*this->m_context);
+    *tab = new UIStaticText();
     (*tab)->SetSize(62, 15);
     (*tab)->SetTextFitted(*name);
     (*tab)->Move(x, 22);
@@ -929,12 +929,12 @@ void UIGuildTotalInfoWnd::Slot15(int, int) {
   this->m_columns = 1;
   this->m_visibleRows = 12;
   this->m_scrollable = 0;
-  this->m_scrollBar = new UIScrollBar(*this->m_context);
+  this->m_scrollBar = new UIScrollBar();
   this->m_scrollBar->Configure(this->geometry.width - 15, 63, 1, this->geometry.height - 87);
   this->AddChild(this->m_scrollBar);
 
   for (int index = 0; index < 12; ++index) {
-    this->m_rows[index] = new UIStaticText(*this->m_context);
+    this->m_rows[index] = new UIStaticText();
     this->m_rows[index]->SetSize(g_guildBanishedColumnWidths[0] - 4, 15);
     this->m_rows[index]->SetTextFitted("");
     this->m_rows[index]->Move(8, index * g_guildTotalInfoRowHeight + 63);
@@ -959,18 +959,18 @@ void UIGuildBanishedMemberWnd::Slot15(int, int) {
   this->m_columns = 1;
   this->m_visibleRows = 11;
   this->m_scrollable = 0;
-  this->m_scrollBar = new UIScrollBar(*this->m_context);
+  this->m_scrollBar = new UIScrollBar();
   this->m_scrollBar->Configure(this->geometry.width - 15, 63, 1, this->geometry.height - 87);
   this->AddChild(this->m_scrollBar);
 
   for (int index = 0; index < 11; ++index) {
-    this->m_names[index] = new UIStaticText(*this->m_context);
+    this->m_names[index] = new UIStaticText();
     this->m_names[index]->SetSize(g_guildBanishedColumnWidths[0] - 4, 15);
     this->m_names[index]->SetTextFitted("");
     this->m_names[index]->Move(8, index * g_guildBanishedRowHeight + 63);
     this->AddChild(this->m_names[index]);
 
-    this->m_reasons[index] = new UIStaticText(*this->m_context);
+    this->m_reasons[index] = new UIStaticText();
     this->m_reasons[index]->SetSize(g_guildBanishedColumnWidths[1] - 4, 15);
     this->m_reasons[index]->SetTextFitted("");
     this->m_reasons[index]->Move(g_guildMemberColumnWidths[0] + 58, index * g_guildBanishedRowHeight + 63);
@@ -999,7 +999,7 @@ void UIGuildInfoManageWnd::Slot15(int, int) {
 
   {
     const std::string prefix("유저인터페이스\\");
-    this->m_editButton = new UIBitmapButton(*this->m_context);
+    this->m_editButton = new UIBitmapButton();
     this->m_editButton->SetBitmap((prefix + "btn_edit" + ".bmp").c_str(), 0, 0);
     this->m_editButton->SetBitmap((prefix + "btn_edit_a" + ".bmp").c_str(), 1, 0);
     this->m_editButton->SetBitmap((prefix + "btn_edit_b" + ".bmp").c_str(), 2, 0);
@@ -1012,7 +1012,7 @@ void UIGuildInfoManageWnd::Slot15(int, int) {
     this->m_editButton->SetId(278);
     this->AddChild(this->m_editButton);
 
-    this->m_disbandButton = new UIBitmapButton(*this->m_context);
+    this->m_disbandButton = new UIBitmapButton();
     this->m_disbandButton->SetBitmap("유저인터페이스\\btn_disBand.bmp", 0, 0);
     this->m_disbandButton->SetBitmap("유저인터페이스\\btn_disBand_a.bmp", 1, 0);
     this->m_disbandButton->SetBitmap("유저인터페이스\\btn_disBand_b.bmp", 2, 0);
@@ -1026,14 +1026,14 @@ void UIGuildInfoManageWnd::Slot15(int, int) {
     this->AddChild(this->m_disbandButton);
   }
 
-  this->m_agitList = new UIListBoxAgit(*this->m_context);
+  this->m_agitList = new UIListBoxAgit();
   this->m_agitList->SetSize(95, 158);
   this->m_agitList->Move(this->TextWidth(LookupMessage(333), 0, 0, 12, 0, 0) + 19, 129);
   this->m_agitList->lineHeight = 13;
   this->m_agitList->SetId(558);
   this->AddChild(this->m_agitList);
 
-  this->m_agitMenu = new UIListBoxAgitMenu(*this->m_context);
+  this->m_agitMenu = new UIListBoxAgitMenu();
   this->m_agitMenu->SetSize(120, 35);
   this->m_agitMenu->SetId(559);
   this->m_agitMenu->Show(0);
@@ -1718,25 +1718,25 @@ void UIGuildMemberManageWnd::Slot15(int, int) {
   this->m_rowSpacing += 8;
 
   for (int row = 0; row < 6; ++row) {
-    this->m_rowTexts[1][row] = new UIStaticText(*this->m_context);
+    this->m_rowTexts[1][row] = new UIStaticText();
     this->m_rowTexts[1][row]->SetSize(g_guildMemberColumnWidths[0] / 2 + 2, 15);
     this->m_rowTexts[1][row]->SetTextFitted("");
     this->m_rowTexts[1][row]->Move(8, (this->m_rowSpacing + 36) * row + 63);
     this->AddChild(this->m_rowTexts[1][row]);
 
-    this->m_rowTexts[2][row] = new UIStaticText(*this->m_context);
+    this->m_rowTexts[2][row] = new UIStaticText();
     this->m_rowTexts[2][row]->SetSize(g_guildMemberColumnWidths[1] - 16, 15);
     this->m_rowTexts[2][row]->SetTextFitted("");
     this->m_rowTexts[2][row]->Move(g_guildMemberColumnWidths[0] + 8, (this->m_rowSpacing + 36) * row + 63);
     this->AddChild(this->m_rowTexts[2][row]);
 
-    this->m_rowTexts[3][row] = new UIStaticText(*this->m_context);
+    this->m_rowTexts[3][row] = new UIStaticText();
     this->m_rowTexts[3][row]->SetSize(39, 15);
     this->m_rowTexts[3][row]->SetTextFitted("");
     this->m_rowTexts[3][row]->Move(g_guildMemberColumnWidths[0] + 58, (this->m_rowSpacing + 36) * row + 63);
     this->AddChild(this->m_rowTexts[3][row]);
 
-    this->m_rowTexts[0][row] = new UIStaticText(*this->m_context);
+    this->m_rowTexts[0][row] = new UIStaticText();
     this->m_rowTexts[0][row]->SetSize(39, 15);
     this->m_rowTexts[0][row]->SetTextFitted("");
     this->m_rowTexts[0][row]->Move(g_guildMemberColumnWidths[0] + 101, (this->m_rowSpacing + 36) * row + 63);
@@ -1747,7 +1747,7 @@ void UIGuildMemberManageWnd::Slot15(int, int) {
     const std::string prefix("유저인터페이스\\basic_interface\\");
     UIBitmapButton** button = this->m_rowButtons;
     for (int y = 82; y < 298; y += 36, ++button) {
-      *button = new UIBitmapButton(*this->m_context);
+      *button = new UIBitmapButton();
       (*button)->SetBitmap((prefix + "txtbox_btn_a" + ".bmp").c_str(), 0, 0);
       (*button)->SetBitmap((prefix + "txtbox_btn_b" + ".bmp").c_str(), 1, 0);
       (*button)->SetBitmap((prefix + "txtbox_btn_c" + ".bmp").c_str(), 2, 0);
@@ -1758,7 +1758,7 @@ void UIGuildMemberManageWnd::Slot15(int, int) {
     }
   }
 
-  this->m_scrollBar = new UIScrollBar(*this->m_context);
+  this->m_scrollBar = new UIScrollBar();
   this->m_scrollBar->Configure(this->geometry.width - 16, 43, 1, this->m_rowSpacing + 241);
   this->AddChild(this->m_scrollBar);
 
@@ -1766,7 +1766,7 @@ void UIGuildMemberManageWnd::Slot15(int, int) {
     const std::string prefix("유저인터페이스\\");
     int x = this->geometry.width - 61;
     int y = this->geometry.height - 23;
-    UIBitmapButton* button = new UIBitmapButton(*this->m_context);
+    UIBitmapButton* button = new UIBitmapButton();
     this->m_button = button;
     button->SetBitmap((prefix + "btn_ok" + ".bmp").c_str(), 0, 0);
     button->SetBitmap((prefix + "btn_ok_a" + ".bmp").c_str(), 1, 0);
@@ -1783,7 +1783,7 @@ void UIGuildMemberManageWnd::Slot15(int, int) {
     this->m_message0 = 184;
   }
 
-  this->m_onlineCheck = new UICheckBox(*this->m_context);
+  this->m_onlineCheck = new UICheckBox();
   this->m_onlineCheck->SetSize(240, 12);
   this->m_onlineCheck->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(2864));
   this->m_onlineCheck->FitToText();
@@ -2018,7 +2018,7 @@ void UIGuildNoticeWnd::Slot15(int, int) {
   g_windowMgr.SetFocus(this->m_titleEdit);
   this->m_titleEdit->SetText(g_guildInfo.unknown_0030.c_str());
 
-  this->m_bodyEdit = new UIEditCtrl3(*this->m_context);
+  this->m_bodyEdit = new UIEditCtrl3();
   this->m_bodyEdit->SetSize(this->geometry.width - 10, 156);
   this->m_bodyEdit->invalidatesParent = 1;
   this->m_bodyEdit->Move(5, 104);
@@ -2028,7 +2028,7 @@ void UIGuildNoticeWnd::Slot15(int, int) {
   this->m_bodyEdit->SetText(g_guildInfo.unknown_0048.c_str());
 
   const std::string prefix("유저인터페이스\\");
-  this->m_sendButton = new UIBitmapButton(*this->m_context);
+  this->m_sendButton = new UIBitmapButton();
   this->m_sendButton->SetBitmap((prefix + "btn_send" + ".bmp").c_str(), 0, 0);
   this->m_sendButton->SetBitmap((prefix + "btn_send_a" + ".bmp").c_str(), 1, 0);
   this->m_sendButton->SetBitmap((prefix + "btn_send_b" + ".bmp").c_str(), 2, 0);
@@ -2243,19 +2243,19 @@ int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, st
 
 // OFFSET: 0x00953F60
 // FUNCTION: fn_13003
-UIGuildTipWnd::UIGuildTipWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0) {
+UIGuildTipWnd::UIGuildTipWnd()
+    : UIFrameWnd(0) {
 }
 
 // OFFSET: 0x00953FC0
 // FUNCTION: fn_13004
-UIGuildTotalInfoWnd::UIGuildTotalInfoWnd(UIWindowContext& windows)
-    : UIGuildWnd(windows) {
+UIGuildTotalInfoWnd::UIGuildTotalInfoWnd()
+    : UIGuildWnd() {
 }
 
 // OFFSET: 0x00954120
 // FUNCTION: fn_13006
-UIListBoxAgitMenu::UIListBoxAgitMenu(UIWindowContext& windows) : UIListBox(windows) {
+UIListBoxAgitMenu::UIListBoxAgitMenu() : UIListBox() {
 }
 
 // OFFSET: 0x0095BF90
@@ -2268,7 +2268,7 @@ void UIGuildSkillWnd::Slot15(int, int height) {
 
   g_guildInfo.unknown_00C8 = 1;
   g_modeMgr.gameMode->SendMsg(107, 3, 0, 0, 0);
-  this->m_scrollBar = new UIScrollBar(*this->m_context);
+  this->m_scrollBar = new UIScrollBar();
   this->m_scrollBar->Configure(this->geometry.width - 15, 41, 1, this->geometry.height - 70);
   this->AddChild(this->m_scrollBar);
   this->m_columns = 1;
@@ -2282,7 +2282,7 @@ void UIGuildSkillWnd::Slot15(int, int height) {
     UIBitmapButton** button = this->m_levelUpButtons;
     int* id = ids;
     for (int y = 45; y < 283; y += 34, ++button, ++id) {
-      *button = new UIBitmapButton(*this->m_context);
+      *button = new UIBitmapButton();
       (*button)->SetBitmap(normal.c_str(), 0, 0);
       (*button)->SetBitmap(hover.c_str(), 1, 0);
       (*button)->SetBitmap(pressed.c_str(), 2, 0);
@@ -2299,7 +2299,7 @@ void UIGuildSkillWnd::Slot15(int, int height) {
     UIBitmapButton** button = this->m_previousButtons;
     int* id = ids;
     for (int y = 58; y < 296; y += 34, ++button, ++id) {
-      *button = new UIBitmapButton(*this->m_context);
+      *button = new UIBitmapButton();
       (*button)->SetBitmap(bitmap.c_str(), 0, 0);
       (*button)->SetBitmap(bitmap.c_str(), 1, 0);
       (*button)->SetBitmap(bitmap.c_str(), 2, 0);
@@ -2316,7 +2316,7 @@ void UIGuildSkillWnd::Slot15(int, int height) {
     UIBitmapButton** button = this->m_nextButtons;
     int* id = ids;
     for (int y = 58; y < 296; y += 34, ++button, ++id) {
-      *button = new UIBitmapButton(*this->m_context);
+      *button = new UIBitmapButton();
       (*button)->SetBitmap(bitmap.c_str(), 0, 0);
       (*button)->SetBitmap(bitmap.c_str(), 1, 0);
       (*button)->SetBitmap(bitmap.c_str(), 2, 0);
@@ -2340,7 +2340,7 @@ void UIGuildSkillWnd::Slot15(int, int height) {
     };
     UIBitmapButton** button = this->m_actionButtons;
     for (int index = 0; index < 2; ++index, ++button) {
-      *button = new UIBitmapButton(*this->m_context);
+      *button = new UIBitmapButton();
       (*button)->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
       (*button)->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
       (*button)->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
@@ -2854,7 +2854,7 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
         this->m_rowButtons[index]->Enable(enabled);
       } else {
         const std::string prefix("유저인터페이스\\basic_interface\\");
-        this->m_rowButtons[index] = new UIBitmapButton(*this->m_context);
+        this->m_rowButtons[index] = new UIBitmapButton();
         this->m_rowButtons[index]->SetBitmap((prefix + "txtbox_btn_a" + ".bmp").c_str(), 0, 0);
         this->m_rowButtons[index]->SetBitmap((prefix + "txtbox_btn_b" + ".bmp").c_str(), 1, 0);
         this->m_rowButtons[index]->SetBitmap((prefix + "txtbox_btn_c" + ".bmp").c_str(), 2, 0);
@@ -2899,7 +2899,7 @@ void UIGuildPositionManageWnd::Slot15(int, int) {
   this->m_columns = 1;
   this->m_visibleRows = 11;
   this->m_scrollable = 0;
-  this->m_scrollBar = new UIScrollBar(*this->m_context);
+  this->m_scrollBar = new UIScrollBar();
   this->m_scrollBar->Configure(this->geometry.width - 15, 41, 1, this->geometry.height - 70);
   this->AddChild(this->m_scrollBar);
 

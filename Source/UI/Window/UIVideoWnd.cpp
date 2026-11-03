@@ -14,8 +14,8 @@
 
 // OFFSET: 0x00AB40C0
 // FUNCTION: fn_17437
-UIVideoWnd::UIVideoWnd(UIWindowContext& windowContext)
-    : UIWindow(windowContext, 1), m_movie(nullptr), m_texture(nullptr), m_savedVolume(-1) {
+UIVideoWnd::UIVideoWnd()
+    : UIWindow(1), m_movie(nullptr), m_texture(nullptr), m_savedVolume(-1) {
   this->m_movie = new BinkMovie();
 }
 
@@ -36,7 +36,7 @@ UIVideoWnd::~UIVideoWnd() {
 
 // OFFSET: 0x00AB4060
 // FUNCTION: fn_17436
-UIVideoSkipButton::UIVideoSkipButton(UIWindowContext& windowContext) : UIButton(windowContext) {
+UIVideoSkipButton::UIVideoSkipButton() : UIButton() {
 }
 
 // OFFSET: 0x00AB4380
@@ -48,7 +48,7 @@ bool UIVideoWnd::Slot02() {
 // OFFSET: 0x00AB4390
 // FUNCTION: fn_17441
 void UIVideoWnd::Slot15(int width, int height) {
-  UIVideoSkipButton* button = new UIVideoSkipButton(*this->m_context);
+  UIVideoSkipButton* button = new UIVideoSkipButton();
   button->SetSize(127, 43);
   button->Move(width - button->geometry.width - 33, height - button->geometry.height - 110);
   button->SetId(521);

@@ -9,13 +9,13 @@
 // OFFSET: 0x0094C2D0
 // FUNCTION: fn_12895
 void UINoteWnd::Slot15(int width, int height) {
-  UIBasicButton* button = new UIBasicButton(*this->m_context);
+  UIBasicButton* button = new UIBasicButton();
   button->Configure(60, LookupMessage(0xBE5));
   button->Move(width - 68, height - 26);
   button->SetId(201);
   this->AddChild(button);
 
-  this->m_scroll = new UINoteWnd_Scroll(*this->m_context, width - 35, height - 59);
+  this->m_scroll = new UINoteWnd_Scroll(width - 35, height - 59);
   this->m_scroll->Move(16, 16);
   this->AddChild(this->m_scroll);
 }
@@ -65,8 +65,8 @@ void UINoteWnd_Scroll::Slot35(int delta) {
 
 // OFFSET: 0x00946D00
 // FUNCTION: fn_12852
-UINoteWnd::UINoteWnd(UIWindowContext& windows)
-    : UIFrameWnd(windows, 0), m_scroll(nullptr) {
+UINoteWnd::UINoteWnd()
+    : UIFrameWnd(0), m_scroll(nullptr) {
 }
 
 // OFFSET: 0x00950840
@@ -79,7 +79,7 @@ int UINoteWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, s
   } else if (message == 0x22) {
     UINoteWnd_Scroll* scroll = this->m_scroll;
     const std::string text = LookupMessage(static_cast<int>(argument1));
-    UIStaticText_LF* label = new UIStaticText_LF(*this->m_context, 0);
+    UIStaticText_LF* label = new UIStaticText_LF(0);
     scroll->m_text = label;
     label->SetSize(scroll->geometry.width - 13, 12);
     label->Move(0, 0);

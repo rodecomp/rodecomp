@@ -14,7 +14,7 @@ extern std::map<int, bool> g_partyBookingJobs;
 
 class UIJobListWnd : public UIFrameWnd {
 public:
-  UIJobListWnd(UIWindowContext& windows);
+  UIJobListWnd();
   void Slot11() override;
   void Slot15(int width, int height) override;
   void Paint() override;

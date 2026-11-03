@@ -63,5 +63,5 @@ void UIMiniBtnWnd::Toggle() {
 
 // OFFSET: 0x009114F0
 // FUNCTION: fn_12516
-UIMiniBtnWnd::UIMiniBtnWnd(UIWindowContext& windows) : UIFrameWnd(windows, 0), m_windowId(-1) {
+UIMiniBtnWnd::UIMiniBtnWnd() : UIFrameWnd(0), m_windowId(-1) {
 }
