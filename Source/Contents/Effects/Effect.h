@@ -91,11 +91,6 @@ public:
   /* 00C9 */ unsigned char unknown_00C9[3];
 };
 
-struct EffectRetirement {
-  std::list<CEffect*>& effects;
-  void Clear();
-};
-
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(EffectEvent) == 36);
 static_assert(offsetof(EffectEvent, text) == 0xC);

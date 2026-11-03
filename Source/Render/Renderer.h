@@ -50,6 +50,7 @@ public:
   float UiScaleY() const;
   void DrawBattleFieldIcon(CRenderSystemBase& system);
   void DrawOverlays(CRenderSystemBase& system);
+  void ClearFrame();
 
   /* 0004 */ RendererViewport viewport;
   /* 0038 */ unsigned frame;

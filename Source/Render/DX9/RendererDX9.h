@@ -8,13 +8,11 @@
 
 class DeviceOwnerDX9;
 class D3DX9Runtime;
-struct EffectRetirement;
 struct ServiceOptions;
 
 struct RendererDX9Context {
   CRenderSystemBase& system;
   D3DX9Runtime& d3dx;
-  EffectRetirement& retirement;
   const ServiceOptions& options;
   const unsigned char& multitexture;
   FogConfiguration& fog;

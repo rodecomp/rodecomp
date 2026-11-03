@@ -43,6 +43,7 @@ public:
   void RetireActor(int actor);
   void Render();
   void Clear();
+  void ClearRetired();
   void Release();
   void SpawnLevel99(CRenderObject* actor, unsigned char flag, int extra);
   bool RegisterAllocators();

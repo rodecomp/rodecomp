@@ -214,11 +214,11 @@ bool CEffect::IsFinished() const {
 
 // OFFSET: 0x00B249A0
 // FUNCTION: fn_18773
-void EffectRetirement::Clear() {
-  for (auto effect = this->effects.begin(); effect != this->effects.end(); ++effect) {
+void EffectLists::ClearRetired() {
+  for (auto effect = this->retired.begin(); effect != this->retired.end(); ++effect) {
     (*effect)->Close();
     delete *effect;
   }
 
-  this->effects.clear();
+  this->retired.clear();
 }

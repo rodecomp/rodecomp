@@ -1488,7 +1488,6 @@ void CGameMode::InitializeCamera() {
 #include "Client/Registry.h"
 #include "Contents/Schedule/CheckGDISchedule.h"
 #include "Contents/Schedule/TimeScheduler.h"
-#include "Render/DX9/RendererFrameDX9.h"
 #include "Render/Textures/TextureCache.h"
 #include "Contents/ClientItemLists.h"
 #include "Contents/Jobs/JobInheritance.h"
@@ -2771,11 +2770,7 @@ void CGameMode::End() {
   ResourceMgr::Instance().ClearUnused("gat");
   ResourceMgr::Instance().ClearExpired();
   g_texMgr.ClearUnused();
-  RendererFrameDX9 frame{
-    *reinterpret_cast<DeviceOwnerDX9*>(nullptr), *reinterpret_cast<RendererDX9Operations*>(nullptr), g_renderer->commands,
-    g_renderer->primitives, g_renderer->lightmapped, g_renderer->vertices, g_renderer->queues, *reinterpret_cast<EffectRetirement*>(nullptr)
-  };
-  frame.Clear();
+  g_renderer->ClearFrame();
   g_renderer->atlas.Clear();
   g_windowMgr.SaveShortcutItems();
 

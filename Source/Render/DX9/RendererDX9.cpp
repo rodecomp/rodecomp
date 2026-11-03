@@ -1,6 +1,5 @@
 #include "Render/DX9/DeviceOwnerDX9.h"
 #include "Render/DX9/RendererDX9.h"
-#include "Render/DX9/RendererFrameDX9.h"
 #include "Render/Textures/TextureCache.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/TextureNames.h"
@@ -61,17 +60,6 @@ void CRendererDX9::ClearDepth(int clearColor) {
 void CRendererDX9::ClearWorld() {
   auto& context = this->TextureContext();
   this->Operations(context).ClearWorld(this->clearColor, this->fog.enabled, this->m_context->worldFlag, this->m_context->overlayColor);
-}
-
-bool CRendererDX9::Draw() {
-  auto& context = this->TextureContext();
-  auto operations = this->Operations(context);
-  RendererFrameDX9 frame{*this->device,     operations,     this->commands, this->primitives,
-                         this->lightmapped, this->vertices, this->queues,   this->m_context->retirement};
-
-  return frame.Draw(
-    &this->m_context->system, this->m_context->options, this->m_context->multitexture, this->twoPass, this->fog, this->viewport.aspect, this->m_context->fog
-  );
 }
 
 HRESULT CRendererDX9::Present(int option) {

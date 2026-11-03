@@ -1,17 +1,17 @@
-#include "Contents/Effects/Effect.h"
+#include "Contents/Effects/EffectLists.h"
 #include "Render/DX9/DeviceOwnerDX9.h"
+#include "Render/DX9/RendererDX9.h"
 #include "Render/Primitives/LightmappedPrimitive.h"
 #include "Render/Primitives/RenderCommandPool.h"
 #include "Render/Primitives/RenderPrimitivePool.h"
 #include "Render/Primitives/RenderQueues.h"
 #include "Render/Primitives/RenderVertexPool.h"
 #include "Render/DX9/RendererDX9Operations.h"
-#include "Render/DX9/RendererFrameDX9.h"
 
 // OFFSET: 0x0055A360
 // FUNCTION: fn_02079
-void RendererFrameDX9::Clear() {
-  this->retirement.Clear();
+void CRenderer::ClearFrame() {
+  g_effectMgr->ClearRetired();
   this->queues.Clear();
   this->commands.Rewind();
   this->primitives.Rewind();
@@ -21,14 +21,14 @@ void RendererFrameDX9::Clear() {
 
 // OFFSET: 0x00565970
 // FUNCTION: fn_02222
-bool RendererFrameDX9::Draw(
-  CRenderSystemBase* renderSystem, const ServiceOptions& options, unsigned char multitexture, unsigned char twoPass, RendererFogDX9& fog, const float& aspect,
-  const FogConfiguration& configuration
-) {
-  this->device.Begin(renderSystem);
-  this->operations.DrawQueues(this->queues, options, multitexture, twoPass, fog, aspect, configuration);
-  this->Clear();
-  this->device.End();
+bool CRendererDX9::Draw() {
+  this->device->Begin(&this->m_context->system);
+  auto& context = this->TextureContext();
+  this->Operations(context).DrawQueues(
+    this->queues, this->m_context->options, this->m_context->multitexture, this->twoPass, this->fog, this->viewport.aspect, this->m_context->fog
+  );
+  this->ClearFrame();
+  this->device->End();
 
   return true;
 }
