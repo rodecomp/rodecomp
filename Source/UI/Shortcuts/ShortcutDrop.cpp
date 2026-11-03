@@ -25,8 +25,8 @@ namespace {
   }
 
   // INLINED
-  void RemoveFirst(ShortcutCooldowns& cooldowns, int slot) {
-    for (ShortcutCooldownRecord& record : cooldowns.records) {
+  void RemoveFirst(std::list<ShortcutCooldownRecord>& cooldowns, int slot) {
+    for (ShortcutCooldownRecord& record : cooldowns) {
       const auto value = std::find_if(record.main.begin(), record.main.end(), [&](const CooldownState& state) { return state.slot == slot; });
       if (value != record.main.end()) {
         record.main.erase(value);
@@ -70,17 +70,17 @@ void UIShortCutWnd::Slot10(int x, int y, std::intptr_t argument) {
       g_session.AssignShortcut(1, skill.id, value.skillLevel, index, bank);
 
       if (originalSlot != index) {
-        RemoveFirst(reinterpret_cast<ShortcutCooldowns&>(g_session.m_requestTimers), index);
+        RemoveFirst(g_session.m_requestTimers, index);
       }
 
       const std::uint32_t key = Grouped(skill.id) ? 9999 : skill.id;
 
       const auto record =
-        std::find_if(reinterpret_cast<ShortcutCooldowns&>(g_session.m_requestTimers).records.begin(), reinterpret_cast<ShortcutCooldowns&>(g_session.m_requestTimers).records.end(), [&](const ShortcutCooldownRecord& entry) {
+        std::find_if(g_session.m_requestTimers.begin(), g_session.m_requestTimers.end(), [&](const ShortcutCooldownRecord& entry) {
           return entry.id == key;
         });
 
-      if (record != reinterpret_cast<ShortcutCooldowns&>(g_session.m_requestTimers).records.end() && record->end > timeGetTime()) {
+      if (record != g_session.m_requestTimers.end() && record->end > timeGetTime()) {
         const auto previous = std::find_if(record->main.begin(), record->main.end(), [&](const CooldownState& state) { return state.slot == originalSlot; });
         const int targetX = 29 * column + 16;
         const int targetY = 33 * g_session.m_hotkeyPage + 4;
@@ -98,11 +98,11 @@ void UIShortCutWnd::Slot10(int x, int y, std::intptr_t argument) {
       CSkillInfo skill = g_session.LookupSkill(id);
       const std::uint32_t key = Grouped(skill.id) ? 9999 : skill.id;
       const auto record =
-        std::find_if(reinterpret_cast<ShortcutCooldowns&>(g_session.m_requestTimers).records.begin(), reinterpret_cast<ShortcutCooldowns&>(g_session.m_requestTimers).records.end(), [&](const ShortcutCooldownRecord& entry) {
+        std::find_if(g_session.m_requestTimers.begin(), g_session.m_requestTimers.end(), [&](const ShortcutCooldownRecord& entry) {
           return entry.id == key;
         });
 
-      if (record != reinterpret_cast<ShortcutCooldowns&>(g_session.m_requestTimers).records.end()) {
+      if (record != g_session.m_requestTimers.end()) {
         const auto previous = std::find_if(record->main.begin(), record->main.end(), [&](const CooldownState& state) { return state.slot == originalSlot; });
         if (previous != record->main.end()) {
           record->main.erase(previous);
@@ -155,7 +155,7 @@ void UIShortCutWnd::Slot10(int x, int y, std::intptr_t argument) {
         const int index = 9 * g_session.m_hotkeyPage + column;
         g_session.AssignShortcut(0, static_cast<std::uint32_t>(item.GetItemId()), 0, index, bank);
         if (value.slot != index) {
-          RemoveFirst(reinterpret_cast<ShortcutCooldowns&>(g_session.m_requestTimers), index);
+          RemoveFirst(g_session.m_requestTimers, index);
         }
 
         Refresh(window);
@@ -168,8 +168,8 @@ void UIShortCutWnd::Slot10(int x, int y, std::intptr_t argument) {
 
 namespace {
   // INLINED
-  void RemoveAlternate(ShortcutCooldowns& cooldowns, int source, int slot) {
-    for (ShortcutCooldownRecord& record : cooldowns.records) {
+  void RemoveAlternate(std::list<ShortcutCooldownRecord>& cooldowns, int source, int slot) {
+    for (ShortcutCooldownRecord& record : cooldowns) {
       if (source == slot) {
         continue;
       }
@@ -188,7 +188,7 @@ namespace {
 // FUNCTION: fn_12588
 void UIQuickSlotWnd::Slot10(int x, int y, std::intptr_t argument) {
   const ModeDragState& value = *reinterpret_cast<const ModeDragState*>(argument);
-  std::list<ShortcutCooldownRecord>& records = reinterpret_cast<ShortcutCooldowns&>(g_session.m_requestTimers).records;
+  std::list<ShortcutCooldownRecord>& records = g_session.m_requestTimers;
 
   if (value.skill != 0) {
     const std::string copiedName(value.skillName.c_str(), value.skillName.size());
@@ -197,7 +197,7 @@ void UIQuickSlotWnd::Slot10(int x, int y, std::intptr_t argument) {
       CSkillInfo skill = g_session.LookupSkill(value.id);
       if (skill.level != 0 && skill.available != 0) {
         g_session.SetHotkeyEntry(1, skill.id, value.skillLevel, slot);
-        RemoveAlternate(reinterpret_cast<ShortcutCooldowns&>(g_session.m_requestTimers), value.slot, slot);
+        RemoveAlternate(g_session.m_requestTimers, value.slot, slot);
 
         const std::uint32_t key = Grouped(skill.id) ? 9999 : skill.id;
         const std::list<ShortcutCooldownRecord>::iterator record =
@@ -266,7 +266,7 @@ void UIQuickSlotWnd::Slot10(int x, int y, std::intptr_t argument) {
         const int slot = this->SlotAt(x, y);
         if (slot != -1) {
           g_session.SetHotkeyEntry(0, item.GetItemId(), 0, slot);
-          RemoveAlternate(reinterpret_cast<ShortcutCooldowns&>(g_session.m_requestTimers), value.slot, slot);
+          RemoveAlternate(g_session.m_requestTimers, value.slot, slot);
           this->SendMsg(nullptr, 23, 0, 0, 0, 0);
           this->Invalidate();
         }

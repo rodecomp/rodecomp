@@ -107,14 +107,6 @@ struct ProhibitionLogEntry {
   /* 0034 */ char ownerName[32];
 };
 
-struct SessionRequestTimer {
-  /* 0000 */ int requestId;
-  /* 0004 */ unsigned long readyTime;
-  /* 0008 */ std::uint32_t duration;
-  /* 000C */ std::list<CooldownState> main;
-  /* 0014 */ std::list<CooldownState> alternate;
-};
-
 struct SessionRecord0734 {
   /* 0000 */ std::uint32_t unknown_0000 = 0;
   /* 0004 */ int id;
@@ -384,7 +376,7 @@ public:
   /* 53A0 */ unsigned char unknown_53A0[0x30];
   /* 53D0 */ unsigned char unknown_53D0[0x30];
   /* 5400 */ unsigned char unknown_5400[0x40];
-  /* 5440 */ std::list<SessionRequestTimer> m_requestTimers;
+  /* 5440 */ std::list<ShortcutCooldownRecord> m_requestTimers;
   /* 5448 */ int unknown_5448;
   /* 544C */ unsigned char unknown_544C[0x04];
   /* 5450 */ int unknown_5450;

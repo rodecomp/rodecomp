@@ -25,6 +25,8 @@
 #include "Network/Packets/PacketLengths.h"
 #include "Utility/Text/FormatString.h"
 #include "UI/Shortcuts/ShortcutCooldowns.h"
+#include "Client/Mode/CGameMode.h"
+#include "Client/Replay.h"
 #include "Contents/Party/PartyBookingMgr.h"
 #include "Render/Text/FontCache.h"
 #include "Render/Text/TextContext.h"
@@ -92,11 +94,8 @@ int CSession::IsSkillIdInRange6001(unsigned id) const {
 
 // OFFSET: 0x00D42070
 // FUNCTION: fn_21827
-void ShortcutCooldowns::LoadSnapshot(
-  const void* packet, const std::list<ShortcutCooldownIcon>& mainIcons, const std::list<ShortcutCooldownIcon>& alternateIcons, int replayMode,
-  const std::uint32_t& serverTick
-) {
-  this->records.clear();
+void CGameMode::LoadCooldownSnapshot(const void* packet) {
+  g_session.m_requestTimers.clear();
   const auto* bytes = static_cast<const unsigned char*>(packet);
   std::int16_t size;
   std::memcpy(&size, bytes + 2, sizeof(size));
@@ -110,74 +109,75 @@ void ShortcutCooldowns::LoadSnapshot(
     std::memcpy(&id, source, sizeof(id));
     std::memcpy(&duration, source + 2, sizeof(duration));
     std::memcpy(&remaining, source + 6, sizeof(remaining));
-    const std::uint32_t now = replayMode == 1 ? serverTick : timeGetTime();
+    const std::uint32_t now = g_replayAnimationScaling == 1 ? Replay::Instance().elapsed : timeGetTime();
     ShortcutCooldownRecord value{id, now + remaining, duration, {}, {}};
 
-    for (const ShortcutCooldownIcon& icon : mainIcons) {
+    for (const ShortcutCooldownIcon& icon : g_session.m_mainCooldownIcons) {
       if (icon.id == id) {
         value.main.emplace_back(icon.slot, icon.x, icon.y, duration, now, duration - remaining, 0);
       }
     }
 
-    for (const ShortcutCooldownIcon& icon : alternateIcons) {
+    for (const ShortcutCooldownIcon& icon : g_session.m_alternateCooldownIcons) {
       if (icon.id == id) {
         value.alternate.emplace_back(icon.slot, icon.x, icon.y, duration, now, duration - remaining, 0);
       }
     }
 
-    this->records.push_back(value);
+    g_session.m_requestTimers.push_back(value);
   }
 }
 
 // OFFSET: 0x00D41990
 // FUNCTION: fn_21826
-void ShortcutCooldowns::ApplyStart(
-  const void* packet, const std::list<ShortcutCooldownIcon>& mainIcons, const std::list<ShortcutCooldownIcon>& alternateIcons, int replayMode,
-  const std::uint32_t& serverTick
-) {
+void CGameMode::ApplyCooldownStart(const void* packet) {
   const auto* bytes = static_cast<const unsigned char*>(packet);
   std::uint16_t id;
   std::uint32_t duration;
   std::memcpy(&id, bytes + 2, sizeof(id));
   std::memcpy(&duration, bytes + 4, sizeof(duration));
-  const std::uint32_t now = replayMode == 1 ? serverTick : timeGetTime();
+  const std::uint32_t now = g_replayAnimationScaling == 1 ? Replay::Instance().elapsed : timeGetTime();
   ShortcutCooldownRecord value{id, now + duration, duration, {}, {}};
   const auto find = [&]() {
-    return std::find_if(this->records.begin(), this->records.end(), [&](const ShortcutCooldownRecord& record) { return record.id == id; });
+    return std::find_if(g_session.m_requestTimers.begin(), g_session.m_requestTimers.end(), [&](const ShortcutCooldownRecord& record) { return record.id == id; });
   };
 
-  for (const ShortcutCooldownIcon& icon : mainIcons) {
+  for (const ShortcutCooldownIcon& icon : g_session.m_mainCooldownIcons) {
     if (icon.id != id) {
       continue;
     }
 
     const auto entry = find();
-    if (entry == this->records.end()) {
+    if (entry == g_session.m_requestTimers.end()) {
       value.main.push_back(CooldownState(icon.slot, icon.x, icon.y, duration, now, 0, 0));
-      this->records.push_back(value);
+      g_session.m_requestTimers.push_back(value);
     } else {
       const auto slot = std::find_if(entry->main.begin(), entry->main.end(), [&](const CooldownState& state) { return state.slot == icon.slot; });
       if (slot == entry->main.end()) {
         entry->main.push_back(CooldownState(icon.slot, icon.x, icon.y, duration, now, 0, 0));
       } else {
-        this->records.erase(entry);
+        g_session.m_requestTimers.erase(entry);
 
         value.main.push_back(CooldownState(icon.slot, icon.x, icon.y, duration, now, 0, 0));
-        this->records.push_back(value);
+        g_session.m_requestTimers.push_back(value);
       }
     }
   }
 
-  for (const ShortcutCooldownIcon& icon : alternateIcons) {
-    if (icon.id == id && find() == this->records.end()) {
+  for (const ShortcutCooldownIcon& icon : g_session.m_alternateCooldownIcons) {
+    if (icon.id == id && find() == g_session.m_requestTimers.end()) {
       value.alternate.push_back(CooldownState(icon.slot, icon.x, icon.y, duration, now, 0, 0));
-      this->records.push_back(value);
+      g_session.m_requestTimers.push_back(value);
     }
   }
 }
 
+void PaintCooldowns(
+  std::list<ShortcutCooldownRecord>& records, const std::list<ShortcutCooldownIcon>& icons, std::list<CooldownState> ShortcutCooldownRecord::* values, int limit, int x, int y, CooldownDrawing& drawing
+);
+
 // INLINED
-bool ShortcutCooldowns::RotateRows(int amount, int bank, int& rotation0, int& rotation1) {
+bool RotateCooldownRows(std::list<ShortcutCooldownRecord>& records, int amount, int bank, int& rotation0, int& rotation1) {
   const int rows = amount < 4 ? amount : amount % 4;
   if (rows <= 0) {
     return false;
@@ -193,9 +193,9 @@ bool ShortcutCooldowns::RotateRows(int amount, int bank, int& rotation0, int& ro
 
   const std::uint32_t now = CooldownNow();
 
-  for (auto entry = this->records.begin(); entry != this->records.end();) {
+  for (auto entry = records.begin(); entry != records.end();) {
     if (entry->end <= now) {
-      entry = this->records.erase(entry);
+      entry = records.erase(entry);
       continue;
     }
 
@@ -215,29 +215,29 @@ bool ShortcutCooldowns::RotateRows(int amount, int bank, int& rotation0, int& ro
 }
 
 // INLINED
-void ShortcutCooldowns::PaintMain(
-  const std::list<ShortcutCooldownIcon>& icons, int rows, int x, int y, CooldownDrawing& drawing
+void PaintMainCooldowns(
+  std::list<ShortcutCooldownRecord>& records, const std::list<ShortcutCooldownIcon>& icons, int rows, int x, int y, CooldownDrawing& drawing
 ) {
   const int limit = rows * 33 + 4;
-  this->Paint(icons, &ShortcutCooldownRecord::main, limit, x, y, drawing);
+  PaintCooldowns(records, icons, &ShortcutCooldownRecord::main, limit, x, y, drawing);
 }
 
 // INLINED
-void ShortcutCooldowns::PaintAlternate(
-  const std::list<ShortcutCooldownIcon>& icons, int x, int y, CooldownDrawing& drawing
+void PaintAlternateCooldowns(
+  std::list<ShortcutCooldownRecord>& records, const std::list<ShortcutCooldownIcon>& icons, int x, int y, CooldownDrawing& drawing
 ) {
-  this->Paint(icons, &ShortcutCooldownRecord::alternate, 0, x, y, drawing);
+  PaintCooldowns(records, icons, &ShortcutCooldownRecord::alternate, 0, x, y, drawing);
 }
 
 // INLINED
-void ShortcutCooldowns::Paint(
-  const std::list<ShortcutCooldownIcon>& icons, std::list<CooldownState> ShortcutCooldownRecord::* values, int limit, int x, int y, CooldownDrawing& drawing
+void PaintCooldowns(
+  std::list<ShortcutCooldownRecord>& records, const std::list<ShortcutCooldownIcon>& icons, std::list<CooldownState> ShortcutCooldownRecord::* values, int limit, int x, int y, CooldownDrawing& drawing
 ) {
   const std::uint32_t now = CooldownNow();
 
-  for (auto entry = this->records.begin(); entry != this->records.end();) {
+  for (auto entry = records.begin(); entry != records.end();) {
     if (entry->end <= now) {
-      entry = this->records.erase(entry);
+      entry = records.erase(entry);
       continue;
     }
 
@@ -445,7 +445,7 @@ void UIQuickSlotWnd::Paint() {
     }
   }
 
-  reinterpret_cast<ShortcutCooldowns&>(g_session.m_requestTimers).PaintAlternate(g_session.m_alternateCooldownIcons, this->geometry.x, this->geometry.y, g_cooldownOwner->Drawing());
+  PaintAlternateCooldowns(g_session.m_requestTimers, g_session.m_alternateCooldownIcons, this->geometry.x, this->geometry.y, g_cooldownOwner->Drawing());
 }
 
 // OFFSET: 0x00924A50
@@ -618,7 +618,7 @@ void UISeekPartyListWnd::Slot11() {
 
 // OFFSET: 0x00D42590
 // FUNCTION: fn_21828
-void ShortcutCooldowns::LoadRecords(const void* packet) {
+void CGameMode::LoadCooldownRecords(const void* packet) {
   const auto* bytes = static_cast<const unsigned char*>(packet);
   std::int16_t size;
   std::memcpy(&size, bytes + 2, sizeof(size));
@@ -633,7 +633,7 @@ void ShortcutCooldowns::LoadRecords(const void* packet) {
     std::memcpy(&remaining, source + 2, sizeof(remaining));
     value.id = id;
     value.end = timeGetTime() + remaining;
-    this->records.push_back(value);
+    g_session.m_requestTimers.push_back(value);
   }
 }
 

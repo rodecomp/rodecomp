@@ -178,6 +178,5 @@ void UIShortCutWnd::Paint() {
     window.DrawTextAt(6, ((row * 33) + 13), text, 0, 0, 11, 0x2F4A4A, 0, 0);
   }
 
-  reinterpret_cast<ShortcutCooldowns&>(g_session.m_requestTimers)
-    .PaintMain(g_session.m_mainCooldownIcons, grid.rows, window.geometry.x, window.geometry.y, g_cooldownOwner->Drawing());
+  PaintMainCooldowns(g_session.m_requestTimers, g_session.m_mainCooldownIcons, grid.rows, window.geometry.x, window.geometry.y, g_cooldownOwner->Drawing());
 }

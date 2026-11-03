@@ -2600,26 +2600,26 @@ void CGameMode::ReceiveSimulationResult(const unsigned char* packet) {
 // OFFSET: 0x00D415C0
 // FUNCTION: fn_21825
 void CGameMode::UpdateSkillCooldown(std::uint16_t skill, std::uint32_t remaining, std::uint32_t duration) {
-  SessionRequestTimer value;
-  value.requestId = skill;
+  ShortcutCooldownRecord value;
+  value.id = skill;
   const std::uint32_t now = g_replayAnimationScaling == 1 ? Replay::Instance().elapsed : timeGetTime();
-  value.readyTime = now + remaining;
+  value.end = now + remaining;
   value.duration = duration;
 
   for (const ShortcutCooldownIcon& icon : g_session.m_mainCooldownIcons) {
     if (icon.id == skill) {
-      value.main.push_back(CooldownState(icon.slot, icon.x, icon.y, duration, value.readyTime - remaining, duration - remaining, 0));
+      value.main.push_back(CooldownState(icon.slot, icon.x, icon.y, duration, value.end - remaining, duration - remaining, 0));
     }
   }
 
   for (const ShortcutCooldownIcon& icon : g_session.m_alternateCooldownIcons) {
     if (icon.id == skill) {
-      value.alternate.push_back(CooldownState(icon.slot, icon.x, icon.y, duration, value.readyTime - remaining, duration - remaining, 0));
+      value.alternate.push_back(CooldownState(icon.slot, icon.x, icon.y, duration, value.end - remaining, duration - remaining, 0));
     }
   }
 
-  const auto found = std::find_if(g_session.m_requestTimers.begin(), g_session.m_requestTimers.end(), [skill](const SessionRequestTimer& timer) {
-    return timer.requestId == skill;
+  const auto found = std::find_if(g_session.m_requestTimers.begin(), g_session.m_requestTimers.end(), [skill](const ShortcutCooldownRecord& timer) {
+    return timer.id == skill;
   });
   if (found == g_session.m_requestTimers.end()) {
     g_session.m_requestTimers.push_back(value);

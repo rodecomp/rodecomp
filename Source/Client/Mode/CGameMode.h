@@ -735,6 +735,9 @@ public:
   void ReceiveActorStatusValue(std::uint32_t aid, int status, int amount, int option);
   void ReceiveActorSkillResult(const unsigned char* packet);
   void UpdateSkillCooldown(std::uint16_t skill, std::uint32_t remaining, std::uint32_t duration);
+  void LoadCooldownSnapshot(const void* packet);
+  void ApplyCooldownStart(const void* packet);
+  void LoadCooldownRecords(const void* packet);
   void sub_D5B030(
     std::uint32_t source, std::uint32_t target, std::uint16_t skill, std::uint16_t x, std::uint16_t y,
     int tick, int level, unsigned char flag, int result

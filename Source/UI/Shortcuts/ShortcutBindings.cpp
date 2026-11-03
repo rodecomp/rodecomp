@@ -30,12 +30,12 @@ void CSession::AssignShortcut(unsigned char type, std::uint32_t id, int level, i
   const int rowStart = this->RotateShortcut(9 * this->m_hotkeyPage, bank);
   const int destination = this->RotateShortcut(slot, bank);
   CMode* modeEvents = g_modeMgr.GetGameMode();
-  ShortcutCooldowns& cooldowns = reinterpret_cast<ShortcutCooldowns&>(this->m_requestTimers);
+  std::list<ShortcutCooldownRecord>& cooldowns = this->m_requestTimers;
   if (id == 0) {
     if (type != 0) {
       bool erased = false;
 
-      for (ShortcutCooldownRecord& record : cooldowns.records) {
+      for (ShortcutCooldownRecord& record : cooldowns) {
         const auto value = std::find_if(record.main.begin(), record.main.end(), [&](const CooldownState& state) { return state.slot == slot; });
         if (value != record.main.end()) {
           record.main.erase(value);
@@ -75,8 +75,8 @@ void CSession::AssignShortcut(unsigned char type, std::uint32_t id, int level, i
     }
 
     const auto record =
-      std::find_if(cooldowns.records.begin(), cooldowns.records.end(), [&](const ShortcutCooldownRecord& value) { return value.id == id; });
-    if (record != cooldowns.records.end() && record->end > timeGetTime()) {
+      std::find_if(cooldowns.begin(), cooldowns.end(), [&](const ShortcutCooldownRecord& value) { return value.id == id; });
+    if (record != cooldowns.end() && record->end > timeGetTime()) {
       const int position = index + 9 * this->m_hotkeyPage - rowStart;
       const auto value = std::find_if(record->main.begin(), record->main.end(), [&](const CooldownState& state) { return state.slot == position; });
       if (value != record->main.end()) {

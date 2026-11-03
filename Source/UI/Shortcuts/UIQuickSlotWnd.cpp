@@ -209,7 +209,7 @@ int UIQuickSlotWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
 
       CSkillInfo skill = g_session.m_skillBundle.Lookup(source.itemId);
       if (skill.available == 0) {
-        std::list<ShortcutCooldownRecord>& records = reinterpret_cast<ShortcutCooldowns&>(g_session.m_requestTimers).records;
+        std::list<ShortcutCooldownRecord>& records = g_session.m_requestTimers;
         const auto record = std::find_if(records.begin(), records.end(), [&](const ShortcutCooldownRecord& value) { return value.id == source.itemId; });
         if (record != records.end()) {
           const auto state = std::find_if(record->alternate.begin(), record->alternate.end(), [&](const CooldownState& value) { return value.slot == index; });

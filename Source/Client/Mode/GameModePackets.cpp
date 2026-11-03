@@ -4906,34 +4906,34 @@ void CGameMode::ApplyStatusChange(
           this->scene->player->SetUnknown0305(1, value2);
         }
       } else if (type == 46) {
-        SessionRequestTimer timer;
-        timer.requestId = 577;
-        timer.readyTime = now + remaining;
+        ShortcutCooldownRecord timer;
+        timer.id = 577;
+        timer.end = now + remaining;
         timer.duration = total;
         g_session.m_requestTimers.push_back(timer);
       } else if (type == 684) {
-        SessionRequestTimer timer;
-        timer.requestId = 9999;
-        timer.readyTime = now + remaining;
+        ShortcutCooldownRecord timer;
+        timer.id = 9999;
+        timer.end = now + remaining;
         timer.duration = total;
         g_session.m_requestTimers.push_back(timer);
       } else if (type == 175) {
-        SessionRequestTimer timer;
+        ShortcutCooldownRecord timer;
         for (int requestId = 10000; requestId < 10020; ++requestId) {
-          std::list<SessionRequestTimer>::iterator it = g_session.m_requestTimers.begin();
+          std::list<ShortcutCooldownRecord>::iterator it = g_session.m_requestTimers.begin();
           for (; it != g_session.m_requestTimers.end(); ++it) {
-            if (it->requestId == requestId) {
+            if (it->id == requestId) {
               break;
             }
           }
 
-          timer.requestId = requestId;
-          timer.readyTime = now + remaining;
+          timer.id = requestId;
+          timer.end = now + remaining;
           timer.duration = total;
           if (it == g_session.m_requestTimers.end()) {
             g_session.m_requestTimers.push_back(timer);
           } else {
-            it->readyTime = timer.readyTime;
+            it->end = timer.end;
           }
         }
       } else if (type == 824) {

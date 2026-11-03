@@ -202,7 +202,7 @@ inline void UIShortCutWnd::ClickControl(int id) {
     this->m_bank->geometry.unknown_0030 = checked ? 1 : 0;
     this->m_bank->Invalidate();
 
-    for (ShortcutCooldownRecord& record : reinterpret_cast<ShortcutCooldowns&>(g_session.m_requestTimers).records) {
+    for (ShortcutCooldownRecord& record : g_session.m_requestTimers) {
       record.main.clear();
     }
 
@@ -371,7 +371,7 @@ int UIShortCutWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     return 0;
 
   case 23: {
-    ShortcutCooldowns& cooldowns = reinterpret_cast<ShortcutCooldowns&>(g_session.m_requestTimers);
+    std::list<ShortcutCooldownRecord>& cooldowns = g_session.m_requestTimers;
     for (int index = 0; index < 36; ++index) {
       const int source = g_session.RotateShortcut(index, g_session.unknown_06FC);
       if (g_session.unknown_06FC == 0 || g_session.unknown_06FC == 1) {
@@ -385,10 +385,10 @@ int UIShortCutWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 
       CSkillInfo skill = g_session.m_skillBundle.Lookup(slot.itemId);
       if (skill.available == 0) {
-        const auto record = std::find_if(cooldowns.records.begin(), cooldowns.records.end(), [&](const ShortcutCooldownRecord& value) {
+        const auto record = std::find_if(cooldowns.begin(), cooldowns.end(), [&](const ShortcutCooldownRecord& value) {
           return value.id == slot.itemId;
         });
-        if (record != cooldowns.records.end()) {
+        if (record != cooldowns.end()) {
           const auto value = std::find_if(record->main.begin(), record->main.end(), [&](const CooldownState& state) { return state.slot == index; });
           if (value != record->main.end()) {
             record->main.erase(value);
@@ -428,7 +428,7 @@ int UIShortCutWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
   }
 
   case 143:
-    if (reinterpret_cast<ShortcutCooldowns&>(g_session.m_requestTimers).RotateRows(static_cast<int>(a), static_cast<int>(b), g_session.unknown_06FC, g_session.unknown_06A8)) {
+    if (RotateCooldownRows(g_session.m_requestTimers, static_cast<int>(a), static_cast<int>(b), g_session.unknown_06FC, g_session.unknown_06A8)) {
       this->SendMsg(nullptr, 23, 0, 0, 0, 0);
     }
 

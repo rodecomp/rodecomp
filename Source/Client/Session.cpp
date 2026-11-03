@@ -2329,13 +2329,13 @@ ITEM_INFO CSession::GetItem61B8(int index) const {
 // OFFSET: 0x00E31DE0
 // FUNCTION: fn_24177
 bool CSession::IsRequestReady(int requestId) {
-  std::list<SessionRequestTimer>::iterator it = this->m_requestTimers.begin();
+  std::list<ShortcutCooldownRecord>::iterator it = this->m_requestTimers.begin();
   for (; it != this->m_requestTimers.end(); ++it) {
-    if (requestId == it->requestId || it->requestId == 0x241) {
+    if (requestId == it->id || it->id == 0x241) {
       break;
     }
   }
-  if (it != this->m_requestTimers.end() && it->readyTime - 100 > timeGetTime()) {
+  if (it != this->m_requestTimers.end() && it->end - 100 > timeGetTime()) {
     return false;
   }
   return true;
