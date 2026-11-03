@@ -3980,3 +3980,449 @@ void UIWindowMgr::ShowWaitDBSaveWindow() {
 
 
 // OFFSET: 0x00AA35F0
+// FUNCTION: fn_17221
+bool UIWindowMgr::sub_AA35F0(int action) {
+  if (action != 4) {
+    return false;
+  }
+
+  const int hotkey = this->GetHotkeyBehavior();
+  if (hotkey == -1) {
+    return false;
+  }
+
+  if (g_replayAnimationScaling != 0 && hotkey != 0x8B && hotkey != 0x8C && hotkey != 0x8D) {
+    const ReplayOptions& options = Replay::Instance().header.options;
+    if (hotkey != 0x71 && hotkey != 0x6C && hotkey != 0x78 && hotkey != 0x67 && hotkey != 0x73) {
+      bool restricted;
+      if (hotkey == 0x64) {
+        restricted = options.Get(ReplayRecordOption::BasicInfo) == 0;
+      } else if (hotkey == 0x65 || hotkey == 0x7A || hotkey == 0x7B || hotkey == 0x7C) {
+        restricted = options.Get(ReplayRecordOption::Equip) == 0;
+      } else if (hotkey == 0x6D || hotkey == 0x6B) {
+        restricted = options.Get(ReplayRecordOption::Item) == 0;
+      } else if (hotkey == 0x66) {
+        restricted = options.Get(ReplayRecordOption::Skill) == 0;
+      } else if (hotkey == 0x68 || hotkey == 0x69) {
+        restricted = options.Get(ReplayRecordOption::Party) == 0;
+      } else if (hotkey == 0x75) {
+        restricted = options.Get(ReplayRecordOption::Shortcut) == 0;
+      } else if (hotkey == 0x76 || hotkey == 0x77) {
+        restricted = options.Get(ReplayRecordOption::Chatting) == 0;
+      } else if (hotkey == 0x93) {
+        restricted = options.Get(ReplayRecordOption::Status) == 0;
+      } else {
+        return false;
+      }
+
+      if (restricted) {
+        return false;
+      }
+    }
+  }
+
+  if (static_cast<int>(g_session.m_options.Get(5)) > 0) {
+    return false;
+  }
+
+  if (this->window_4F258 != nullptr) {
+    return false;
+  }
+
+  if (static_cast<unsigned int>(hotkey) < 45) {
+    if (this->window_01E8) {
+      this->window_01E8->SendMsg(nullptr, 41, hotkey % 9, hotkey / 9, 0, 0);
+    }
+    return true;
+  }
+
+  if (this->unknown_0474 == 0) {
+    if (this->LookupWindow(0x2731) || this->LookupWindow(0x2728)) {
+      return false;
+    }
+  }
+
+  switch (hotkey) {
+  case 0x64:
+    if (this->unknown_01DC) {
+      this->unknown_01DC->SendMsg(nullptr, 6, 0xCA, 0, 0, 0);
+    }
+    break;
+  case 0x65:
+    if (this->unknown_01DC) {
+      this->unknown_01DC->SendMsg(nullptr, 6, 0xC3, 0, 0, 0);
+    }
+    break;
+  case 0x66:
+    if (this->unknown_01DC) {
+      this->unknown_01DC->SendMsg(nullptr, 6, 0xC4, 0, 0, 0);
+    }
+    break;
+  case 0x67:
+    if (this->unknown_01DC) {
+      this->unknown_01DC->SendMsg(nullptr, 6, 0x169, 0, 0, 0);
+    }
+    break;
+  case 0x68:
+  case 0x69:
+    if (this->unknown_01DC) {
+      int previous;
+      std::memcpy(&previous, this->unknown_0740, sizeof(previous));
+      int partyTab = hotkey == 0x69 ? 1 : 0;
+      std::memcpy(this->unknown_0740, &partyTab, sizeof(partyTab));
+      const bool closed = g_windowMgr.CloseWindow(0x45);
+      std::memcpy(&partyTab, this->unknown_0740, sizeof(partyTab));
+      if (!closed || previous != partyTab) {
+        g_windowMgr.sub_A978D0(0x45);
+      }
+    }
+    break;
+  case 0x6A:
+    if (this->unknown_01DC) {
+      this->unknown_01DC->SendMsg(nullptr, 6, 0xD6, 0, 0, 0);
+    }
+    break;
+  case 0x6B:
+    if (this->unknown_01DC) {
+      this->unknown_01DC->SendMsg(nullptr, 6, 0xF7, 0, 0, 0);
+    }
+    break;
+  case 0x6C:
+    if (this->unknown_01DC && !g_windowMgr.CloseWindow(0x8C)) {
+      g_windowMgr.sub_A978D0(0x8C);
+    }
+    break;
+  case 0x6D:
+    if (this->unknown_01DC) {
+      this->unknown_01DC->SendMsg(nullptr, 6, 0xC2, 0, 0, 0);
+    }
+    break;
+  case 0x6E:
+    if (this->unknown_01DC) {
+      if (g_guildInfo.m_guildId != 0) {
+        if (!g_windowMgr.CloseWindow(0x3B)) {
+          g_windowMgr.sub_A978D0(0x3B);
+        }
+      } else if (!g_windowMgr.CloseWindow(0xD4)) {
+        g_windowMgr.sub_A978D0(0xD4);
+      }
+    }
+    break;
+  case 0x6F:
+    if (this->unknown_01DC && !g_windowMgr.CloseWindow(0x57)) {
+      g_windowMgr.sub_A978D0(0x57);
+    }
+    break;
+  case 0x70:
+    if (g_modeMgr.gameMode) {
+      g_modeMgr.gameMode->SendMsg(0x2A, 0x16, 0, 0, 0);
+    }
+    break;
+  case 0x71:
+    if (g_windowMgr.modal == nullptr && static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_0254 != 0) {
+      if (this->unknown_005C == 0xFFFFFFFF) {
+        this->unknown_005C = 0xAAFFFFFF;
+        return true;
+      }
+      if (!this->CloseWindow(14)) {
+        this->sub_A978D0(14);
+        this->unknown_005C = 0xFFFFFFFF;
+      }
+    }
+    break;
+  case 0x72:
+    if (this->unknown_01DC && !g_windowMgr.CloseWindow(0x56)) {
+      g_windowMgr.sub_A978D0(0x56);
+    }
+    break;
+  case 0x73:
+    if (this->unknown_01DC) {
+      ToggleGameSettingsTab4();
+    }
+    break;
+  case 0x74:
+    this->CycleWindowVisibility(4);
+    break;
+  case 0x75:
+    if (UIWindow* window = this->LookupWindow(0x24)) {
+      window->SendMsg(nullptr, 6, 0xD8, 0, 0, 0);
+    }
+    break;
+  case 0x76:
+    if (this->unknown_01DC) {
+      this->ShowWindowById(1, 1 - this->unknown_003C);
+    }
+    break;
+  case 0x77:
+    if (UIWindow* window = this->window_01C8) {
+      if (window->geometry.visible == 0) {
+        this->ShowWindowById(1, 1);
+        static_cast<UINewChatWnd*>(this->window_01C8)->ApplyInputLayout();
+        return true;
+      }
+      window->SendMsg(nullptr, 2, 0, 0, 0, 0);
+      if (this->window_01C8->geometry.unknown_0030 == 0) {
+        this->ShowWindowById(1, 0);
+      }
+    }
+    break;
+  case 0x78:
+    if (g_modeMgr.gameMode) {
+      g_modeMgr.gameMode->SendMsg(0x29, 0, 0, 0, 0);
+    }
+    break;
+  case 0x79:
+    g_modeMgr.gameMode->SendMsg(0x44, 0, 0, 0, 0);
+    break;
+  case 0x7A:
+    if (UIWindow* window = this->unknown_03F8) {
+      window->Show(window->geometry.visible == 0);
+    } else {
+      g_windowMgr.sub_A978D0(0x89);
+    }
+    break;
+  case 0x7B:
+    if (this->unknown_01DC && !g_windowMgr.CloseWindow(0x58)) {
+      g_windowMgr.sub_A978D0(0x58);
+    }
+    break;
+  case 0x7C:
+    if (this->unknown_01DC && g_session.unknown_5614 != 0 && !g_windowMgr.CloseWindow(0x71)) {
+      g_windowMgr.sub_A978D0(0x71);
+    }
+    break;
+  case 0x7D:
+    if (this->unknown_01DC && g_session.unknown_56B0 != 0 && !g_windowMgr.CloseWindow(0x7D)) {
+      g_windowMgr.sub_A978D0(0x7D);
+    }
+    break;
+  case 0x7E:
+    if (g_session.unknown_5614 != 0) {
+      g_session.ClearHomunStatus();
+      if (CMode* mode = g_modeMgr.GetGameMode()) {
+        std::uint32_t aid;
+        std::memcpy(&aid, &g_session.unknown_5570[8], sizeof(aid));
+        CGameActor* actor = static_cast<CGameActor*>(static_cast<CGameMode*>(mode)->scene->GetGameActorByAID(aid));
+        if (actor) {
+          if (actor->HasUnknown030CEntry()) {
+            AiCommand command = {};
+            command.type = 9;
+            actor->SetUnknown0318(reinterpret_cast<const float*>(&command), 0);
+          }
+        }
+      }
+    }
+    break;
+  case 0x7F:
+    if (g_session.unknown_56B0 != 0) {
+      g_session.ResetMercenaryStats();
+      if (CMode* mode = g_modeMgr.GetGameMode()) {
+        std::uint32_t aid;
+        std::memcpy(&aid, &g_session.unknown_5620[8], sizeof(aid));
+        CGameActor* actor = static_cast<CGameActor*>(static_cast<CGameMode*>(mode)->scene->GetGameActorByAID(aid));
+        if (actor && actor->HasUnknown0310Entry()) {
+          AiCommand command = {};
+          command.type = 9;
+          actor->SetUnknown0318(reinterpret_cast<const float*>(&command), 1);
+        }
+      }
+    }
+    break;
+  case 0x80:
+    if (this->unknown_01DC && !g_windowMgr.CloseWindow(0x44)) {
+      g_windowMgr.sub_A978D0(0x44);
+    }
+    break;
+  case 0x81:
+    if (this->unknown_01DC && !g_windowMgr.CloseWindow(0x35) && g_session.PartyCount()) {
+      g_windowMgr.sub_A978D0(0x35);
+    }
+    break;
+  case 0x83:
+    if (this->unknown_01DC && this->chatModeChanged && this->window_01C8 && (this->IsHoverOnWindow01C8Button() || this->hoverWindow == nullptr)) {
+      static_cast<UINewChatWnd*>(this->window_01C8)->ToggleInput();
+      if (this->hoverWindow) {
+        this->hoverWindow->SendMsg(nullptr, 0, 0, 0, 0, 0);
+      }
+    }
+    break;
+  case 0x84:
+    if (UIWindow* window = this->LookupWindow(0x133)) {
+      window->SendMsg(nullptr, 60, 0, 0, 0, 0);
+    }
+    break;
+  case 0x87: {
+    int flag;
+    std::memcpy(&flag, g_session.unknown_546C, sizeof(flag));
+    flag = 1 - flag;
+    std::memcpy(g_session.unknown_546C, &flag, sizeof(flag));
+    break;
+  }
+  case 0x89:
+    if (this->unknown_01DC) {
+      if (g_windowMgr.LookupWindow(0x13E) == nullptr) {
+        g_modeMgr.GetGameMode()->SendMsg(0x143, 0, 0, 0, 0);
+      } else {
+        g_windowMgr.CloseWindow(0x13E);
+      }
+    }
+    break;
+  case 0x8A:
+    if (UIWindow* window = g_windowMgr.LookupWindow(0x133)) {
+      window->SendMsg(nullptr, 6, 0x18F, 0, 0, 0);
+    }
+    break;
+  case 0x8B:
+    if (g_replayAnimationScaling != 0 && this->window_4F168) {
+      this->window_4F168->SendMsg(nullptr, 6, Replay::Instance().state == 6 ? 0x191 : 0x192, 0, 0, 0);
+      this->window_4F168->SendMsg(nullptr, 35, 0, 0, 0, 0);
+    }
+    break;
+  case 0x8C:
+    if (g_replayAnimationScaling != 0 && this->window_4F168) {
+      this->window_4F168->SendMsg(nullptr, 6, 0x195, 0, 0, 0);
+    }
+    break;
+  case 0x8D:
+    if (g_replayAnimationScaling != 0 && this->window_4F168) {
+      this->window_4F168->SendMsg(nullptr, 6, 0x196, 0, 0, 0);
+    }
+    break;
+  case 0x8E:
+    if (g_windowMgr.window_4F174) {
+      g_windowMgr.window_4F174->SendMsg(nullptr, 6, 0xC9, 0, 0, 0);
+    } else if (g_windowMgr.modal) {
+      g_windowMgr.modal->SendMsg(nullptr, 6, 0xC8, 0, 0, 0);
+    } else {
+      g_windowMgr.sub_A978D0(0xCB);
+    }
+    break;
+  case 0x90:
+    if (this->unknown_01DC && !g_windowMgr.CloseWindow(0xED)) {
+      g_windowMgr.sub_A978D0(0xED);
+    }
+    break;
+  case 0x92:
+    if (g_windowMgr.window_0448) {
+      g_windowMgr.CloseWindow(0x113);
+    } else {
+      BankingCheckPacket packet;
+      packet.id = 0x9AB;
+      packet.aid = g_session.m_aid;
+      CRagConnection& connection = GetRagConnection();
+      GetRagConnection();
+      connection.Send(g_packetLengths.FixedLength(packet.id), &packet);
+    }
+    break;
+  case 0x93:
+    if (this->unknown_01DC) {
+      this->unknown_01DC->SendMsg(nullptr, 6, 0xC0, 0, 0, 0);
+    }
+    break;
+  case 0x94: {
+    if (UIWindow* window = this->window_01E8) {
+      window->SendMsg(nullptr, 143, 1, g_session.GetOption(10), 0, 0);
+    }
+    ShortcutRotatePacket packet;
+    packet.id = 0xB22;
+    packet.option = static_cast<std::uint16_t>(g_session.GetOption(10));
+    if (packet.option == 0) {
+      packet.state = static_cast<unsigned char>(g_session.unknown_06FC);
+    } else if (packet.option == 1) {
+      packet.state = static_cast<unsigned char>(g_session.unknown_06A8);
+    }
+    CRagConnection& connection = GetRagConnection();
+    GetRagConnection();
+    connection.Send(g_packetLengths.FixedLength(packet.id), &packet);
+    break;
+  }
+  case 0x95:
+    if (!g_windowMgr.CloseWindow(0x10E)) {
+      g_windowMgr.sub_A978D0(0x10E);
+    }
+    break;
+  case 0x96:
+    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_0254 != 0) {
+      if (!g_session.IsNavigationAllowed()) {
+        g_windowMgr.Confirm(LookupMessage(0xACF), 0, true, false, 0, "Message", 280, 120, 0);
+      } else if (!g_windowMgr.CloseWindow(0x111)) {
+        g_windowMgr.sub_A978D0(0x111);
+      }
+    }
+    break;
+  case 0x97:
+    if (UIWindow* window = g_windowMgr.LookupWindow(0x133)) {
+      window->SendMsg(nullptr, 6, 0x1DC, 0, 0, 0);
+    }
+    break;
+  case 0x98:
+    g_modeMgr.GetGameMode()->SendMsg(0x130, 0, 0, 0, 0);
+    break;
+  case 0x9A:
+    if (!g_windowMgr.CloseWindow(0x13B)) {
+      g_windowMgr.sub_A978D0(0x13B);
+    }
+    break;
+  case 0x9B:
+    if (UIWindow* window = g_windowMgr.LookupWindow(0x24)) {
+      window->SendMsg(nullptr, 6, 0x225, 0, 0, 0);
+    }
+    break;
+  case 0x9C:
+    if (this->unknown_01DC) {
+      this->unknown_01DC->SendMsg(nullptr, 6, 0x242, 0, 0, 0);
+    }
+    break;
+  case 0x9D:
+    if (!g_windowMgr.CloseWindow(0x144)) {
+      g_windowMgr.sub_A978D0(0x144);
+    }
+    break;
+  case 0x9F:
+    Singleton<CGameSettingsMgr>::GetInstance()->ToggleOption(0x109);
+    break;
+  case 0xA0:
+    if (!g_windowMgr.CloseWindow(0x15A)) {
+      g_windowMgr.sub_A978D0(0x15A);
+    }
+    break;
+  case 0xA1:
+    if (!g_windowMgr.CloseWindow(0x2711)) {
+      g_windowMgr.sub_A978D0(0x2711);
+    }
+    break;
+  case 0xA3:
+    Singleton<CGameSettingsMgr>::GetInstance()->ToggleOption(0x10A);
+    break;
+  case 0xC8:
+  case 0xC9:
+  case 0xCA:
+  case 0xCB:
+  case 0xCC:
+  case 0xCD:
+  case 0xCE:
+  case 0xCF:
+  case 0xD0:
+  case 0xD1:
+    if (g_modeMgr.gameMode) {
+      this->SendEmotionHotkey(hotkey - 200);
+    }
+    break;
+  case 0xD2:
+  case 0xD3:
+  case 0xD4:
+  case 0xD5:
+  case 0xD6:
+  case 0xD7:
+  case 0xD8:
+  case 0xD9:
+  case 0xDA:
+  case 0xDB:
+    this->SendFlagEffect(hotkey);
+    break;
+  default:
+    return false;
+  }
+
+  return true;
+}
