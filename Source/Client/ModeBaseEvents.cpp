@@ -1,4 +1,4 @@
-#include "Client/ModeBaseEvents.h"
+#include "Client/Application/ApplicationWindow.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Party/AdventurerAgencyMgr.h"
@@ -9,15 +9,15 @@
 
 // OFFSET: 0x00AD7500
 // FUNCTION: fn_17849
-int ModeBaseEvents::Send(int event, const char* text, int, int, int) {
+int CMode::SendMsg(int event, int argument1, int, int, int) {
   if (event == 2) {
-    g_accountLinkedUserDataMgr->Save(this->emotions, this->script, this->persistenceAccountId, this->renderSystem, this->token16, this->work);
+    g_accountLinkedUserDataMgr->Save();
     if (g_modeMgr.state != 1) {
       if (g_modeMgr.gameMode) {
         g_modeMgr.gameMode->running = 0;
       }
     } else if (g_modeMgr.gameMode) {
-      g_characterLinkedUserDataMgr->Save(this->characterSave, this->token16, this->work);
+      g_characterLinkedUserDataMgr->Save();
       if (g_modeMgr.state != 1) {
         if (g_modeMgr.gameMode) {
           g_modeMgr.gameMode->running = 0;
@@ -31,13 +31,13 @@ int ModeBaseEvents::Send(int event, const char* text, int, int, int) {
     }
 
     if (g_serviceType == 11) {
-      ShellExecuteA(this->window, "open", "http://www.ragnarok.co.in/index.php", nullptr, nullptr, SW_SHOWNORMAL);
+      ShellExecuteA(hWnd, "open", "http://www.ragnarok.co.in/index.php", nullptr, nullptr, SW_SHOWNORMAL);
     }
     g_modeMgr.running = 0;
   } else if (event == 68) {
-    this->transitionRequested = 1;
-    if (text) {
-      this->transitionName = text;
+    this->screenshotRequested = 1;
+    if (const char* text = reinterpret_cast<const char*>(argument1)) {
+      this->screenshotName = text;
     }
   }
   return 0;

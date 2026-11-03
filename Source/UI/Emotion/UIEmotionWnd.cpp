@@ -44,7 +44,7 @@ UIBitmapButton* UIEmotionWnd::AddCloseButton(const char* tooltip, int width) {
 // FUNCTION: fn_11644
 void UIEmotionWnd::Slot15(int, int) {
   int y = 23;
-  auto* emotions = reinterpret_cast<EmotionHotkeys*>(&g_session.unknown_0FF8);
+  auto* emotions = &g_session.m_emotionHotkeys;
 
   for (int i = 0; i < 10; ++i) {
     UIEditCtrl2* edit = new UIEditCtrl2();
@@ -172,7 +172,7 @@ void UIEmotionWnd::Slot11() {
     this->m_saved->height = this->geometry.height;
   }
 
-  std::string* macros = reinterpret_cast<std::string*>(reinterpret_cast<char*>(&g_session) + 0xFF8);
+  std::string* macros = g_session.m_emotionHotkeys.current.data();
   for (int i = 0; i < 10; ++i) {
     const char* text = this->m_edits[i]->Text();
     std::string value(text, std::strlen(text));
@@ -181,8 +181,5 @@ void UIEmotionWnd::Slot11() {
     }
   }
 
-  g_accountLinkedUserDataMgr->Save(
-    *reinterpret_cast<EmotionHotkeys*>(&g_session.unknown_0FF8), *g_luaScript, g_session.m_aid, GetRenderSystemHolder()->system,
-    reinterpret_cast<const char*>(&g_session.unknown_807C[8]), *g_asyncWorkMgr
-  );
+  g_accountLinkedUserDataMgr->Save();
 }

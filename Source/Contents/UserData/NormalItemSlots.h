@@ -399,6 +399,5 @@ static_assert(sizeof(UnusedWndInfoC) == 0x14);
 extern int g_defaultPlacementWidth;
 extern int g_defaultPlacementHeight;
 
-void ExportNormalItemSlots(Json::Value& data, const NormalItemSlot* slots, const NormalItemSlotWindow& window, bool active);
 
 #endif

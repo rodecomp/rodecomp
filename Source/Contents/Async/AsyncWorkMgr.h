@@ -8,7 +8,6 @@ class CAsyncWorkRecycleObjectPoolMgr;
 class CConnection;
 class CEmblemDataMgr;
 #include "UI/Window/WindowManagerWindows.h"
-struct AccountConfigLoad;
 
 class CAsyncWorkMgr : public NAsyncWorkMgr {
 public:
@@ -18,7 +17,7 @@ public:
   static bool Initialize(std::uint32_t workers);
   static void Shutdown();
 
-  void LoadAccount(std::uint32_t accountId, std::string world, std::string url, AccountConfigLoad& context);
+  void LoadAccount(std::uint32_t accountId, std::string world, std::string url);
   void SaveAccount(std::uint32_t accountId, std::string world, std::string url, std::string token, std::string data);
   void ChangePartyMaster(
     std::uint32_t accountId, std::uint32_t characterId, std::string characterName, std::uint32_t targetAccountId, std::uint32_t targetCharacterId,

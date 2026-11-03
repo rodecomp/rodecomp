@@ -3,6 +3,7 @@
 #include "Render/Renderer.h"
 
 #include "Contents/InstantVar.h"
+#include "Contents/Hotkeys/EmotionHotkeys.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Messenger/MessengerMember.h"
 #include "Contents/Party/PartyBookingMgr.h"
@@ -276,7 +277,7 @@ public:
   /* 0FD8 */ std::vector<const char*> m_jobKeyNames;
   /* 0FE4 */ std::list<std::uint32_t> m_pingSamples;
   /* 0FEC */ std::vector<const char*> m_palJobNames;
-  /* 0FF8 */ unsigned char unknown_0FF8[0x18];
+  /* 0FF8 */ EmotionHotkeys m_emotionHotkeys;
   /* 1010 */ std::uint32_t unknown_1010;
   /* 1014 */ unsigned char unknown_1014[4];
   /* 1018 */ char unknown_1018[0x20];
@@ -881,6 +882,8 @@ public:
   void StoreEmblem(const void* data, std::size_t size, std::uint32_t guildId, int version);
   int MercSkillLevel(int skillId) const;
   int HomunSkillLevel(int skillId) const;
+  __declspec(noinline) int UseLevel(int id) const;
+  int SkillLevel(int id) const;
   CRenderObject* FindGameActor(std::uint32_t aid) const;
   int GetPetTargetAid() const;
   bool sub_E1DE30(std::uint32_t aid);

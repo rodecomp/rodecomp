@@ -1,4 +1,6 @@
-#include "Contents/UserData/AccountConfigLoad.h"
+#include "Client/Session.h"
+#include "Render/DeviceContext/DCSurface.h"
+#include "Script/LuaScript.h"
 #include "Contents/UserData/AccountLinkedUserDataMgr.h"
 #include "Contents/UserData/AccountService.h"
 #include "Contents/UserData/AccountUserData.h"
@@ -68,8 +70,7 @@ std::string CAccountLinkedUserDataMgr::SaveUrl() const {
 // OFFSET: 0x005BC520
 // FUNCTION: fn_03465
 void CAccountLinkedUserDataMgr::CompleteLoad(
-  AsyncDiagnostic diagnostic, std::uint32_t accountId, std::string accountName, std::string response, EmotionHotkeys& emotions, LuaScript& script,
-  std::uint32_t persistenceAccountId, CRenderSystemBase* renderSystem
+  AsyncDiagnostic diagnostic, std::uint32_t accountId, std::string accountName, std::string response
 ) {
   if (diagnostic.success && this->m_accountId == 0) {
     Json::Value root;
@@ -78,8 +79,8 @@ void CAccountLinkedUserDataMgr::CompleteLoad(
       const int type = root["Type"].asInt();
       if (type == 1) {
         LoadWhisperBlockList(root["data"]);
-        emotions.Load(root["data"]);
-        g_userHotkeyMgr->LoadV2(script, root["data"]);
+        g_session.m_emotionHotkeys.Load(root["data"]);
+        g_userHotkeyMgr->LoadV2(*g_luaScript, root["data"]);
       }
 
       if (type == 1 || type == 2) {
@@ -88,7 +89,7 @@ void CAccountLinkedUserDataMgr::CompleteLoad(
         this->m_accountId = accountId;
         this->m_accountName = accountName;
         this->m_loaded = true;
-        emotions.Save(persistenceAccountId, renderSystem);
+        g_session.m_emotionHotkeys.Save(g_session.m_aid, GetRenderSystemHolder()->system);
       }
     }
   }
@@ -106,12 +107,12 @@ void CAccountLinkedUserDataMgr::RefreshUrls(LuaScript& settings, LuaScript& tabl
 
 // OFFSET: 0x005BD170
 // FUNCTION: fn_03470
-void CAccountLinkedUserDataMgr::Reset(EmotionHotkeys& emotions, LuaScript& script, const char* host, const char* port, const char* overrideKey) {
+void CAccountLinkedUserDataMgr::Reset(LuaScript& script, const char* host, const char* port, const char* overrideKey) {
   this->m_accountId = 0;
   this->m_accountName = "unknown";
   this->m_loaded = false;
   g_whisperBlockMgr->Reset();
-  emotions.saved.clear();
+  g_session.m_emotionHotkeys.saved.clear();
   g_userHotkeyMgr->Reset();
   this->RefreshUrls(script, script, host, port, overrideKey);
 }
@@ -124,11 +125,9 @@ void CAccountLinkedUserDataMgr::CompleteSave() {
 
 // OFFSET: 0x005BCE50
 // FUNCTION: fn_03469
-void CAccountLinkedUserDataMgr::Save(
-  EmotionHotkeys& emotions, LuaScript& script, std::uint32_t persistenceAccountId, CRenderSystemBase* renderSystem, const char* token16,
-  CAsyncWorkMgr& workManager
-) {
-  emotions.Save(persistenceAccountId, renderSystem);
+void CAccountLinkedUserDataMgr::Save() {
+  EmotionHotkeys& emotions = g_session.m_emotionHotkeys;
+  emotions.Save(g_session.m_aid, GetRenderSystemHolder()->system);
   if (!this->m_loaded) {
     return;
   }
@@ -145,28 +144,28 @@ void CAccountLinkedUserDataMgr::Save(
     emotions.Export(data);
   }
 
-  if (g_userHotkeyMgr->HasChanges(script)) {
-    g_userHotkeyMgr->Export(script, data);
+  if (g_userHotkeyMgr->HasChanges(*g_luaScript)) {
+    g_userHotkeyMgr->Export(*g_luaScript, data);
   }
 
   if (!data.isNull()) {
     root["data"] = data;
     Json::StyledWriter writer;
     const std::string response = writer.write(root);
-    workManager.SaveAccount(this->m_accountId, this->m_accountName, this->SaveUrl(), std::string(token16, 16), response);
+    g_asyncWorkMgr->SaveAccount(this->m_accountId, this->m_accountName, this->SaveUrl(), std::string(reinterpret_cast<const char*>(&g_session.unknown_807C[0x08]), 16), response);
     ++this->unknown_0028;
   }
 }
 
 // OFFSET: 0x005BCD80
 // FUNCTION: fn_03468
-void CAccountLinkedUserDataMgr::Load(std::uint32_t accountId, std::string accountName, CAsyncWorkMgr& workManager, AccountConfigLoad& context) {
-  context.emotions.LoadDefaults(context.persistenceAccountId, context.languagePrefix, context.serviceType, context.language);
+void CAccountLinkedUserDataMgr::Load(std::uint32_t accountId, std::string accountName) {
+  g_session.m_emotionHotkeys.LoadDefaults(g_session.m_aid);
 
   if (this->m_accountId == accountId && this->m_accountName == accountName) {
     return;
   }
 
   const std::string url = this->LoadUrl();
-  workManager.LoadAccount(accountId, accountName, url, context);
+  g_asyncWorkMgr->LoadAccount(accountId, accountName, url);
 }

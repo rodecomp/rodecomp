@@ -8,7 +8,6 @@
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/GuildMgr.h"
 #include "Contents/MessageTable.h"
-#include "Contents/UserData/CharacterConfigSave.h"
 #include "Contents/UserData/NormalItemSlots.h"
 #include "File/ShortcutFilename.h"
 #include "Resource/Bitmap/BitmapResource.h"
@@ -1617,7 +1616,7 @@ void UIGuildSkillWnd::Slot25(int x, int y) {
     if (skill.available != 0 && skill.level != 0 && skill.unknown_000C != 0) {
       CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
       if (gameMode) {
-        int level = reinterpret_cast<CharacterConfigSave*>(&g_session)->UseLevel(skill.id);
+        int level = g_session.UseLevel(skill.id);
         if (level == 0) {
           level = skill.level;
         }
@@ -2109,7 +2108,7 @@ int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, st
     case 259: {
       CSkillInfo skill = this->SkillAt(this->m_scrollTop + a1 - 253);
       if (skill.available != 0) {
-        int level = reinterpret_cast<CharacterConfigSave*>(&g_session)->UseLevel(skill.id) - 1;
+        int level = g_session.UseLevel(skill.id) - 1;
         if (level <= 0) {
           level = 1;
         }
@@ -2130,7 +2129,7 @@ int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, st
     case 266: {
       CSkillInfo skill = this->SkillAt(this->m_scrollTop + a1 - 260);
       if (skill.available != 0) {
-        int level = reinterpret_cast<CharacterConfigSave*>(&g_session)->UseLevel(skill.id) + 1;
+        int level = g_session.UseLevel(skill.id) + 1;
         if (level <= 0) {
           level = 1;
         }
@@ -2229,7 +2228,7 @@ int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, st
   case 58: {
     const CSkillInfo* skill = reinterpret_cast<const CSkillInfo*>(a1);
     if (skill->level != 0) {
-      g_modeMgr.gameMode->SendMsg(113, a1, reinterpret_cast<CharacterConfigSave*>(&g_session)->UseLevel(skill->id), 0, 0);
+      g_modeMgr.gameMode->SendMsg(113, a1, g_session.UseLevel(skill->id), 0, 0);
     }
     break;
   }

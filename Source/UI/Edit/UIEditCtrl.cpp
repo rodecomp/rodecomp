@@ -83,7 +83,6 @@
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Items/ItemNaming.h"
 #include "Contents/PlayerNameDictionary.h"
-#include "Contents/UserData/CharacterConfigSave.h"
 #include "UI/Edit/UIItemTagCtrl.h"
 #include "UI/Window/WindowBorder.h"
 #include "UI/Window/UINewSelectCharWnd.h"
@@ -4217,7 +4216,7 @@ void UISkillListWnd::Slot25(int x, int y) {
     if (mode) {
       mode->drag.BeginSkill(
         g_windowMgr, ResourceMgr::Instance(), 8, skill.id, skill.name,
-        reinterpret_cast<CharacterConfigSave*>(&g_session)->SkillLevel(skill.id), -1
+        g_session.SkillLevel(skill.id), -1
       );
     }
   }

@@ -1,6 +1,5 @@
 #include "Client/Session.h"
 #include "Client/Input/Mouse.h"
-#include "Contents/UserData/CharacterConfigSave.h"
 #include "Client/Mode/ModeDragState.h"
 #include "Client/Mode/ModeEvents.h"
 #include "Client/Mode/CMode.h"
@@ -414,7 +413,7 @@ int UIShortCutWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         }
       }
 
-      if (skill.available != 0 && skill.level != 0 && reinterpret_cast<const CharacterConfigSave*>(&g_session)->UseLevel(static_cast<int>(skill.id)) == 0) {
+      if (skill.available != 0 && skill.level != 0 && g_session.UseLevel(static_cast<int>(skill.id)) == 0) {
         slot.unknown_0005 = static_cast<std::int16_t>(skill.level);
       }
     }

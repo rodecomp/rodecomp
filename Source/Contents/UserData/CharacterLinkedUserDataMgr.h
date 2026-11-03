@@ -9,7 +9,6 @@ struct AsyncDiagnostic;
 namespace Json {
   class Value;
 }
-struct CharacterConfigSave;
 class CAsyncWorkMgr;
 
 class CCharacterLinkedUserDataMgr {
@@ -26,7 +25,8 @@ public:
   void LoadUseSkillLevels(Json::Value& data);
   void LoadHomunculusSkillLevels(Json::Value& data);
   void LoadNormalItemSlots(Json::Value& data);
-  void Save(CharacterConfigSave& context, const char* token16, CAsyncWorkMgr& workManager);
+  void Save();
+  void ExportNormalItemSlots(Json::Value& data);
   void RefreshUrls(LuaScript& script, const char* host, const char* port, const char* overrideKey);
   void Reset(LuaScript& script, const char* host, const char* port, const char* overrideKey);
 

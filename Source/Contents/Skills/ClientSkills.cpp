@@ -10,7 +10,6 @@
 #include "Contents/Jobs/JobId.h"
 #include "Contents/Jobs/JobInheritance.h"
 #include "Contents/MapPropertyMgr.h"
-#include "Contents/UserData/CharacterConfigSave.h"
 #include "Contents/World/World.h"
 #include "File/File.h"
 #include "Network/TextEncoding.h"
@@ -234,7 +233,7 @@ bool CSession::UpdateSkill(const CSkillInfo& value, unsigned char notify, unsign
 
     if (grouped || snapshot.available) {
       if (CSkillInfo::UsesLevel(*this->m_hotkeyScript, static_cast<int>(snapshot.id)) && snapshot.level != 0) {
-        const int saved = reinterpret_cast<const CharacterConfigSave*>(this)->UseLevel(static_cast<int>(snapshot.id));
+        const int saved = this->UseLevel(static_cast<int>(snapshot.id));
         if (saved <= 0 || saved > snapshot.level) {
           this->m_skillBundle.SetUnknownValue(static_cast<int>(snapshot.id), snapshot.level);
         }
@@ -784,7 +783,7 @@ void CSession::ClearAdditionalShortcutSkills() {
 
 // OFFSET: 0x00E089A0
 // FUNCTION: fn_23768
-int CharacterConfigSave::SkillLevel(int id) const {
+int CSession::SkillLevel(int id) const {
   if (id - 8000u <= 60u) {
     return g_session.HomunSkillLevel(id);
   }
@@ -793,7 +792,7 @@ int CharacterConfigSave::SkillLevel(int id) const {
     return g_session.MercSkillLevel(id);
   }
 
-  return this->UseLevel(id);
+  return g_session.UseLevel(id);
 }
 
 // OFFSET: 0x00E094E0

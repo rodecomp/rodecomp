@@ -1,5 +1,6 @@
 #include "Contents/UserData/NormalItemSlots.h"
 #include "Client/Session.h"
+#include "Contents/UserData/CharacterLinkedUserDataMgr.h"
 #include "Contents/MapSkyMgr.h"
 #include "Render/Renderer.h"
 #include "UI/Navigation/UINavigationV4Wnd.h"
@@ -36,25 +37,25 @@ bool NormalItemSlotWindow::IsValid(int screenWidth, int screenHeight, bool activ
 
 // OFFSET: 0x005E75A0
 // FUNCTION: fn_03935
-void ExportNormalItemSlots(Json::Value& data, const NormalItemSlot* slots, const NormalItemSlotWindow& window, bool active) {
+void CCharacterLinkedUserDataMgr::ExportNormalItemSlots(Json::Value& data) {
   Json::Value values;
 
   for (int index = 0; index < 9; ++index) {
     Json::Value value;
-    value["ItemID"] = Json::UInt(slots[index].itemId);
+    value["ItemID"] = Json::UInt(g_session.m_normalItemSlots[index].itemId);
     value["SlotNum"] = index;
     values.append(value);
   }
 
   Json::Value info;
-  info["SlotX"] = window.x;
-  info["SlotY"] = window.y;
-  info["SlotWidth"] = window.width;
-  info["SlotHeight"] = window.height;
-  info["SlotShow"] = window.show;
+  info["SlotX"] = g_windowMgr.m_normalItemSlotWindow.x;
+  info["SlotY"] = g_windowMgr.m_normalItemSlotWindow.y;
+  info["SlotWidth"] = g_windowMgr.m_normalItemSlotWindow.width;
+  info["SlotHeight"] = g_windowMgr.m_normalItemSlotWindow.height;
+  info["SlotShow"] = g_windowMgr.m_normalItemSlotWindow.show;
   data["SlotInfo"] = info;
   data["NormalItemSlot"] = values;
-  data["ItemSlotActive"] = active;
+  data["ItemSlotActive"] = g_session.ItemSlotActive();
 }
 
 // OFFSET: 0x009A50E0

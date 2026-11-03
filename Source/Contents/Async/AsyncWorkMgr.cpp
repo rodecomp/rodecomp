@@ -74,11 +74,11 @@ void CAsyncWorkMgr::Shutdown() {
 
 // OFFSET: 0x00573DB0
 // FUNCTION: fn_02499
-void CAsyncWorkMgr::LoadAccount(std::uint32_t accountId, std::string world, std::string url, AccountConfigLoad& context) {
+void CAsyncWorkMgr::LoadAccount(std::uint32_t accountId, std::string world, std::string url) {
   NAsyncWorkPtr work(this->m_pools, "AccountLinkedUserData_Load");
 
   if (work.Get()) {
-    static_cast<CAccountLinkedUserDataLoadAsyncWork*>(work.Get())->Bind(accountId, world, url, context);
+    static_cast<CAccountLinkedUserDataLoadAsyncWork*>(work.Get())->Bind(accountId, world, url);
     this->Submit(work);
   }
 }

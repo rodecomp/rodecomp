@@ -1463,7 +1463,7 @@ bool UIWindowMgr::ProcessKeyDown(int key, int keyData, int pressed) {
 // FUNCTION: fn_17224
 void UIWindowMgr::SendEmotionHotkey(int index) {
   char text[256];
-  const EmotionHotkeys* emotions = reinterpret_cast<const EmotionHotkeys*>(&g_session.unknown_0FF8);
+  const EmotionHotkeys* emotions = &g_session.m_emotionHotkeys;
   std::strcpy(text, emotions->current[index].c_str());
 
   if (g_windowMgr.unknown_01DC != nullptr) {

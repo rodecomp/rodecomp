@@ -3,11 +3,13 @@
 
 #include <cstddef>
 #include <cstdint>
-#include <json/value.h>
 #include <string>
 #include <vector>
 
 class CRenderSystemBase;
+namespace Json {
+  class Value;
+}
 
 struct EmotionHotkeys {
   /* 0FF8 */ std::vector<std::string> current;
@@ -16,7 +18,7 @@ struct EmotionHotkeys {
   void Load(Json::Value& data);
   bool HasChanges() const;
   void Save(std::uint32_t accountId, CRenderSystemBase* renderSystem) const;
-  bool LoadDefaults(std::uint32_t accountId, bool languagePrefix, int serviceType, std::uint16_t language);
+  bool LoadDefaults(std::uint32_t accountId);
   void Export(Json::Value& data) const;
 };
 

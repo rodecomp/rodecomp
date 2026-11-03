@@ -1,4 +1,3 @@
-#include "Contents/UserData/AccountConfigLoad.h"
 #include "Contents/UserData/AccountLinkedUserDataLoadAsyncWork.h"
 #include "Contents/UserData/AccountLinkedUserDataMgr.h"
 #include "Network/Http/CURLPostHander.h"
@@ -23,7 +22,7 @@ namespace {
 // OFFSET: 0x005B9E50
 // FUNCTION: fn_03440
 CAccountLinkedUserDataLoadAsyncWork::CAccountLinkedUserDataLoadAsyncWork()
-    : NAsyncWork("AccountLinkedUserData_Load"), m_accountId(0), m_diagnostic(Diagnostic(false, "unknwon", 26)), m_context(nullptr) {
+    : NAsyncWork("AccountLinkedUserData_Load"), m_accountId(0), m_diagnostic(Diagnostic(false, "unknwon", 26)) {
 }
 
 // INLINED
@@ -36,14 +35,13 @@ void CAccountLinkedUserDataLoadAsyncWork::Reset() {
 
 // OFFSET: 0x005BA5D0
 // FUNCTION: fn_03445
-void CAccountLinkedUserDataLoadAsyncWork::Bind(std::uint32_t accountId, std::string accountName, std::string url, AccountConfigLoad& context) {
+void CAccountLinkedUserDataLoadAsyncWork::Bind(std::uint32_t accountId, std::string accountName, std::string url) {
   this->m_group = timeGetTime();
   this->m_accountId = accountId;
   this->m_key = 0;
   this->m_accountName = accountName;
   this->m_url = url;
   this->m_response.clear();
-  this->m_context = &context;
 
   AsyncDiagnostic diagnostic = Diagnostic(false, "unknwon", 50);
   this->m_diagnostic.MoveFrom(diagnostic);
@@ -73,7 +71,6 @@ bool CAccountLinkedUserDataLoadAsyncWork::Execute() {
 // FUNCTION: fn_03447
 void CAccountLinkedUserDataLoadAsyncWork::Complete() {
   g_accountLinkedUserDataMgr->CompleteLoad(
-    this->m_diagnostic, this->m_accountId, this->m_accountName, this->m_response, this->m_context->emotions, this->m_context->script,
-    this->m_context->persistenceAccountId, this->m_context->renderSystem
+    this->m_diagnostic, this->m_accountId, this->m_accountName, this->m_response
   );
 }

@@ -5,8 +5,6 @@
 #include <string>
 
 struct AsyncDiagnostic;
-struct EmotionHotkeys;
-struct AccountConfigLoad;
 class LuaScript;
 class CRenderSystemBase;
 class CAsyncWorkMgr;
@@ -25,16 +23,12 @@ public:
   void RefreshUrls(LuaScript& settings, LuaScript& tables, const char* host, const char* port, const char* overrideKey);
 
   void CompleteLoad(
-    AsyncDiagnostic diagnostic, std::uint32_t accountId, std::string accountName, std::string response, EmotionHotkeys& emotions, LuaScript& script,
-    std::uint32_t persistenceAccountId, CRenderSystemBase* renderSystem
+    AsyncDiagnostic diagnostic, std::uint32_t accountId, std::string accountName, std::string response
   );
-  void Load(std::uint32_t accountId, std::string accountName, CAsyncWorkMgr& workManager, AccountConfigLoad& context);
-  void Reset(EmotionHotkeys& emotions, LuaScript& script, const char* host, const char* port, const char* overrideKey);
+  void Load(std::uint32_t accountId, std::string accountName);
+  void Reset(LuaScript& script, const char* host, const char* port, const char* overrideKey);
   void CompleteSave();
-  void Save(
-    EmotionHotkeys& emotions, LuaScript& script, std::uint32_t persistenceAccountId, CRenderSystemBase* renderSystem, const char* token16,
-    CAsyncWorkMgr& workManager
-  );
+  void Save();
 
 protected:
   /* 0004 */ bool m_enabled;

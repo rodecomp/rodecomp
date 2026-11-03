@@ -655,10 +655,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       break;
     }
     case 0xB9:
-      g_accountLinkedUserDataMgr->Save(
-        *reinterpret_cast<EmotionHotkeys*>(&g_session.unknown_0FF8), *g_luaScript, g_session.m_aid, GetRenderSystemHolder()->system,
-        reinterpret_cast<const char*>(&g_session.unknown_807C[8]), *g_asyncWorkMgr
-      );
+      g_accountLinkedUserDataMgr->Save();
       if (g_loginModeFlag == 1) {
         if (g_windowMgr.Confirm(LookupMessage(0xD68), 2, true, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
           static_cast<CMode*>(g_charViewMode)->SendMsg(0x271B, 0, 0, 0, 0);

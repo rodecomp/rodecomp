@@ -19,7 +19,6 @@
 #include "Contents/Items/ItemNaming.h"
 #include "Contents/MessageTable.h"
 #include "Contents/PlayerNameDictionary.h"
-#include "Contents/UserData/CharacterConfigSave.h"
 #include "UI/UIBasicCtrl.h"
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Window/UIWindowMgr.h"
@@ -231,7 +230,7 @@ int UIQuickSlotWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       if (skill.available != 0 && skill.level != 0) {
         entry.id = skill.id;
         entry.skill = 1;
-        if (reinterpret_cast<const CharacterConfigSave*>(&g_session)->UseLevel(static_cast<int>(skill.id)) == 0) {
+        if (g_session.UseLevel(static_cast<int>(skill.id)) == 0) {
           entry.count = static_cast<std::int16_t>(skill.level);
         } else {
           entry.count = source.unknown_0005;

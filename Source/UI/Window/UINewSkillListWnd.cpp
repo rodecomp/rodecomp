@@ -9,7 +9,6 @@
 #include "Contents/Skills/AutomaticSkills.h"
 #include "Contents/Hotkeys/HotkeyInfo.h"
 #include "Contents/Skills/SkillId.h"
-#include "Contents/UserData/CharacterConfigSave.h"
 #include "Contents/UserData/NormalItemSlots.h"
 #include "Render/Renderer.h"
 #include "Resource/Bitmap/BitmapResource.h"
@@ -334,7 +333,7 @@ void UINewSkillListWnd::sub_9AF300() {
 
         int levelX;
         if (usesLevel) {
-          int useLevel = reinterpret_cast<const CharacterConfigSave*>(&g_session)->UseLevel(static_cast<int>(skill.id));
+          int useLevel = g_session.UseLevel(static_cast<int>(skill.id));
           if (useLevel <= 0 || useLevel > skill.level) {
             useLevel = skill.level;
           }
@@ -355,7 +354,7 @@ void UINewSkillListWnd::sub_9AF300() {
           std::sprintf(text, LookupMessage(286));
         } else {
           int sp = static_cast<int>(skill.unknown_0014);
-          const int useLevel = reinterpret_cast<const CharacterConfigSave*>(&g_session)->UseLevel(static_cast<int>(skill.id));
+          const int useLevel = g_session.UseLevel(static_cast<int>(skill.id));
           bool found = false;
           if (usesLevel) {
             const std::uint32_t id = skill.id;
@@ -992,7 +991,7 @@ void UINewSkillListWnd::Slot25(int x, int y) {
     if (skill.available != 0 && skill.level != 0 && skill.unknown_000C != 0) {
       CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
       if (gameMode) {
-        int level = reinterpret_cast<CharacterConfigSave*>(&g_session)->UseLevel(skill.id);
+        int level = g_session.UseLevel(skill.id);
         if (level == 0) {
           level = skill.level;
         }
@@ -1359,7 +1358,7 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       const unsigned int slot = offset > 41 ? static_cast<unsigned int>(a) : offset;
       CSkillInfo skill = this->SkillAt(this->m_columns * this->m_firstRow + slot, false);
       if (skill.available != 0) {
-        const int current = reinterpret_cast<CharacterConfigSave*>(&g_session)->UseLevel(skill.id);
+        const int current = g_session.UseLevel(skill.id);
         int level = offset > 41 ? current - 1 : current + 1;
         if (level <= 0) {
           level = 1;
@@ -1462,7 +1461,7 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   case 58: {
     const CSkillInfo* skill = reinterpret_cast<const CSkillInfo*>(a);
     if (skill->level != 0) {
-      gameMode->SendMsg(113, a, reinterpret_cast<CharacterConfigSave*>(&g_session)->UseLevel(skill->id), 0, 0);
+      gameMode->SendMsg(113, a, g_session.UseLevel(skill->id), 0, 0);
       return 0;
     }
     break;
@@ -1690,7 +1689,7 @@ void UINewSkillListWnd::sub_9AF960() {
         const int width = this->TextWidth(text, 0, 0, 11, 1, 0);
         DrawOutlinedText(*this, (24 - width) / 2 + x + 4, textY, text, 0, (blue << 8 | green) << 8 | red, 0xFFFFFF, 0, 11, 1, 0);
       } else {
-        int useLevel = reinterpret_cast<const CharacterConfigSave*>(&g_session)->UseLevel(static_cast<int>(skill.id));
+        int useLevel = g_session.UseLevel(static_cast<int>(skill.id));
         if (useLevel <= 0 || useLevel > skill.level) {
           useLevel = skill.level;
         }

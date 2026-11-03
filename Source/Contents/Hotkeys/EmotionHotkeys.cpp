@@ -6,6 +6,7 @@
 #include "Script/LuaInstance.h"
 
 #include <direct.h>
+#include <json/value.h>
 #include <io.h>
 
 // OFFSET: 0x005BC230
@@ -69,7 +70,7 @@ void EmotionHotkeys::Save(std::uint32_t accountId, CRenderSystemBase* renderSyst
 
 // OFFSET: 0x00E3D4D0
 // FUNCTION: fn_24191
-bool EmotionHotkeys::LoadDefaults(std::uint32_t accountId, bool languagePrefix, int serviceType, std::uint16_t language) {
+bool EmotionHotkeys::LoadDefaults(std::uint32_t accountId) {
   this->current.clear();
 
   for (int id : {544, 545, 546, 547, 549, 550, 551, 552, 553, 554}) {
