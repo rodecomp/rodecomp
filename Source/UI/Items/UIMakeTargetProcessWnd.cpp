@@ -18,10 +18,6 @@
 #include <cstring>
 #include <vector>
 
-struct ClientItemLists {
-  bool AddItem1710(const ITEM_INFO& item, unsigned char refresh);
-  void RemoveItem1710(std::uint32_t id, int quantity);
-};
 
 // OFFSET: 0x009A0090
 // FUNCTION: fn_13598
@@ -55,7 +51,7 @@ void UIMakeTargetProcessWnd::Slot10(int x, int y, std::intptr_t value) {
       if (item.unknown_0000[1] != 0 && item.IsForgeMaterial() && (!hasElementalStone || !item.IsElementalStone())) {
         this->materials[emptySlot] = item;
         this->materials[emptySlot].quantity = 1;
-        reinterpret_cast<ClientItemLists*>(&g_session)->RemoveItem1710(item.unknown_0000[1], 1);
+        g_session.RemoveItem1710(item.unknown_0000[1], 1);
         if (g_windowMgr.unknown_01D4) {
           reinterpret_cast<UIWindow*>(g_windowMgr.unknown_01D4)->SendMsg(nullptr, 23, 0, 0, 0, 0);
         }
@@ -191,7 +187,7 @@ int UIMakeTargetProcessWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
       for (ITEM_INFO& material : this->materials) {
         if (material.unknown_0000[1] != 0) {
           restored = true;
-          reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1710(material, 0);
+          g_session.AddItem1710(material, 0);
         }
       }
 
@@ -220,7 +216,7 @@ int UIMakeTargetProcessWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
     for (int index = 2; index >= 0; --index) {
       ITEM_INFO& material = this->materials[index];
       if (material.unknown_0000[1] != 0 && material.itemId == name) {
-        reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1710(material, 1);
+        g_session.AddItem1710(material, 1);
         material.Reset();
         this->Invalidate();
         return 0;

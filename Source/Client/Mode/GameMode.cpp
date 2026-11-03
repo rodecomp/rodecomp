@@ -1439,7 +1439,6 @@ void CGameMode::InitializeCamera() {
 #include "Contents/Schedule/CheckGDISchedule.h"
 #include "Contents/Schedule/TimeScheduler.h"
 #include "Render/Textures/TextureCache.h"
-#include "Contents/ClientItemLists.h"
 #include "Contents/Jobs/JobInheritance.h"
 #include "Network/Packets/PacketId.h"
 #include "Security/ReassemblyPacketMgr.h"
@@ -3196,7 +3195,6 @@ void CGameMode::PlayItemUseEffect(int itemId, std::uint32_t aid) {
 #include "Client/Input/Mouse.h"
 #include "Client/Mode/CLoginMode.h"
 #include "Client/Registry.h"
-#include "Contents/ClientItemLists.h"
 #include "Contents/Effects/EffectPrim.h"
 #include "Contents/MapSkyMgr.h"
 #include "Contents/NavigationManager.h"
@@ -3402,13 +3400,13 @@ void CGameMode::InitializeState() {
     }
   }
 
-  reinterpret_cast<ClientItemLists*>(&g_session)->ResetUnknown166C();
+  g_session.ResetUnknown166C();
   g_session.UpdateRandomStats();
-  reinterpret_cast<ClientItemLists*>(&g_session)->ClearItems1738();
+  g_session.ClearItems1738();
   g_session.ClearTradeItems();
-  reinterpret_cast<ClientItemLists*>(&g_session)->ClearItems1768();
-  reinterpret_cast<ClientItemLists*>(&g_session)->ClearItems1758();
-  reinterpret_cast<ClientItemLists*>(&g_session)->ClearItems1750();
+  g_session.ClearItems1768();
+  g_session.ClearItems1758();
+  g_session.ClearItems1750();
 
   // GLOBAL: gl_25334
   static int s_window315Checked;

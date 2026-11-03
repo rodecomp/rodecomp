@@ -36,10 +36,6 @@ struct MergeItemCancelPacket {
   /* 0000 */ std::int16_t id;
 };
 
-struct ClientItemLists {
-  bool AddItem1710(const ITEM_INFO& item, unsigned char refresh);
-  void RemoveItem1710(std::uint32_t id, int quantity);
-};
 
 // OFFSET: 0x007DEC20
 // FUNCTION: fn_09659
@@ -368,9 +364,9 @@ int CMergeItemWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std:
   }
   case 60: {
     ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, argument1);
-    reinterpret_cast<ClientItemLists*>(&g_session)->RemoveItem1710(item.unknown_0000[1], item.quantity);
+    g_session.RemoveItem1710(item.unknown_0000[1], item.quantity);
     item.quantity = argument2;
-    reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1710(item, 1);
+    g_session.AddItem1710(item, 1);
     break;
   }
   }

@@ -22,13 +22,6 @@ public:
 };
 }
 
-struct ClientItemLists {
-  bool AddItem1710(const ITEM_INFO& item, unsigned char refresh);
-  bool AddItem1738(const ITEM_INFO& item, unsigned char refresh);
-  bool AddItem1740(const ITEM_INFO& item);
-  void ClearInventory();
-  void ClearItems1740();
-};
 
 
 namespace {
@@ -113,7 +106,7 @@ void CGameMode::ReceiveEquipListPart(unsigned char listType, int count, const un
       std::memcpy(options, record.options, sizeof(options));
       ITEM_INFO item;
       FillEquipListItem(item, record, options);
-      reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1738(item, 0);
+      g_session.AddItem1738(item, 0);
     }
     break;
   case 0:
@@ -129,7 +122,7 @@ void CGameMode::ReceiveEquipListPart(unsigned char listType, int count, const un
       }
 
       if (item.unknown_0000[3] == 0) {
-        reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1710(item, 0);
+        g_session.AddItem1710(item, 0);
         g_session.UpdateInventoryItem(item, 0);
       } else {
         char equipped = 1;
@@ -163,7 +156,7 @@ void CGameMode::ReceiveEquipListPart(unsigned char listType, int count, const un
       std::memcpy(options, record.options, sizeof(options));
       ITEM_INFO item;
       FillEquipListItem(item, record, options);
-      reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1740(item);
+      g_session.AddItem1740(item);
     }
     break;
   }
@@ -179,12 +172,12 @@ void CGameMode::ReceiveInventoryStart(const unsigned char* packet) {
 
   switch (g_gameModePacketBuffer[4]) {
   case 0:
-    reinterpret_cast<ClientItemLists*>(&g_session)->ClearInventory();
+    g_session.ClearInventory();
     g_session.ResetEquipment();
     g_session.ResetItems2B50();
     break;
   case 1:
-    reinterpret_cast<ClientItemLists*>(&g_session)->ClearItems1740();
+    g_session.ClearItems1740();
     break;
   case 2:
   case 3: {

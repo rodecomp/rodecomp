@@ -42,9 +42,6 @@ const char* g_uiRectInfoKeySuffix = "\\UIRectInfo";
 // GLOBAL: gl_24987
 const char* g_shortcutItemKeySuffix = "\\ShortcutItem";
 
-struct ClientItemLists {
-  void ResetHotkeyDescriptions();
-};
 
 // OFFSET: 0x00A911E0
 // FUNCTION: fn_17156
@@ -159,7 +156,7 @@ void UIWindowMgr::LoadShortcutItems() {
     RegCloseKey(probe);
     HKEY key;
     if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, path, 0, KEY_QUERY_VALUE, &key) == ERROR_SUCCESS) {
-      reinterpret_cast<ClientItemLists*>(&g_session)->ResetHotkeyDescriptions();
+      g_session.ResetHotkeyDescriptions();
       g_session.ClearUnknown0420();
       for (int index = 0; index < 36; ++index) {
         DWORD type = REG_SZ;

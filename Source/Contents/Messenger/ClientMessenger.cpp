@@ -5626,7 +5626,7 @@ int CSession::GetList5Size() const {
 
 // OFFSET: 0x00DD8380
 // FUNCTION: fn_23305
-void CSession::ClearItems1784() {
+void CSession::ClearAllItems1784() {
   for (std::list<ITEM_INFO>& items : this->unknown_1784) {
     items.clear();
   }

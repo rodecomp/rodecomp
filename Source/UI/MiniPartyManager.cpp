@@ -1,5 +1,4 @@
 #include "Client/Session.h"
-#include "Contents/ClientItemLists.h"
 #include "Contents/Messenger/ClientMessenger.h"
 #include "Contents/Messenger/MessengerMember.h"
 #include "UI/MiniPartyGrid.h"
@@ -126,7 +125,7 @@ void UIWindowMgr::RebuildMiniPartyWindows() {
     records.push_back(record);
   }
 
-  reinterpret_cast<ClientItemLists&>(g_session).ClearRecords0734();
+  g_session.ClearRecords0734();
 
   for (const SessionRecord0734& record : records) {
     MessengerMember member = g_session.PartyByAccount(record.id);

@@ -18,7 +18,6 @@
 #include "Contents/ForbiddenWords.h"
 #include "Contents/Messenger/ClientMessenger.h"
 #include "Contents/Jobs/JobInheritance.h"
-#include "Contents/ClientItemLists.h"
 #include "UI/Chat/UINewChatWnd.h"
 #include "UI/Rodex/UIRodexComposeWnd.h"
 #include "Contents/Items/ItemNaming.h"
@@ -8822,7 +8821,7 @@ void UInCashWnd::Slot26(int x, int y) {
 
   g_modeMgr.GetGameMode();
   this->m_selected = ~this->m_selected;
-  reinterpret_cast<ClientItemLists&>(g_session).RemoveItem1720ByName(item);
+  g_session.RemoveItem1720ByName(item);
   this->m_totalPrice -= item.quantity * item.unknown_0014[1];
   this->m_otherItems.clear();
 

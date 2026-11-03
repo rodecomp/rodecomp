@@ -3,7 +3,6 @@
 #include "Contents/Store/MCStoreInfoBackup.h"
 #include "Contents/MessageTable.h"
 #include "Client/Session.h"
-#include "Contents/ClientItemLists.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Async/AsyncDiagnostic.h"
 
@@ -32,7 +31,7 @@ void CMCStoreInfoBackup::Clear() {
 // OFFSET: 0x00606BB0
 // FUNCTION: fn_04234
 int CMCStoreInfoBackup::Restore(unsigned char wholeItem, int maximum) {
-  ClientItemLists& lists = *reinterpret_cast<ClientItemLists*>(&g_session);
+  CSession& lists = g_session;
   int examined = 0;
   auto saved = this->items.begin();
 

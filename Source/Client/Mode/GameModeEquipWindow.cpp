@@ -7,10 +7,6 @@
 #include <cstdint>
 #include <cstring>
 
-struct ClientItemLists {
-  bool Equip(const ITEM_INFO& item);
-  void ResetEquipped();
-};
 
 // GLOBAL: gl_25085
 EquipWindowLook g_equipWindowLook;
@@ -18,7 +14,7 @@ EquipWindowLook g_equipWindowLook;
 // OFFSET: 0x00D325F0
 // FUNCTION: fn_21743
 void CGameMode::ReceiveEquipWindowMicroscope(const unsigned char* packet) {
-  reinterpret_cast<ClientItemLists*>(&g_session)->ResetEquipped();
+  g_session.ResetEquipped();
   g_session.ResetItems3500();
 
   const int length = *reinterpret_cast<const std::int16_t*>(packet + 2);
@@ -47,7 +43,7 @@ void CGameMode::ReceiveEquipWindowMicroscope(const unsigned char* packet) {
       if (g_session.IsCostumeLocation(item.unknown_0000[3])) {
         g_session.EquipItem3500(item);
       } else {
-        reinterpret_cast<ClientItemLists*>(&g_session)->Equip(item);
+        g_session.Equip(item);
       }
     }
   }

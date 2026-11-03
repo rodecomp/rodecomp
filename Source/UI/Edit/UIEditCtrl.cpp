@@ -126,22 +126,6 @@ static const std::string g_editNaviTagBegin = "<NAVIL>";
 // GLOBAL: gl_24648
 static const std::string g_editNaviTagEnd = "</NAVIL>";
 
-struct ClientItemLists {
-  void SetItems1750(int count, const short* ids);
-  bool AddItem1750(const ITEM_INFO& item, int type, unsigned char refresh);
-  bool RemoveItem1768(const ITEM_INFO& item, unsigned char alternate);
-  void RemoveItem1760(const ITEM_INFO& item);
-  void AddItem1760(const ITEM_INFO& item);
-  bool RemoveItem1750(const ITEM_INFO& item, int type, unsigned char refresh);
-  void AddItem1730(const ITEM_INFO& item);
-  void ReduceItem1718(const ITEM_INFO& item);
-  void ClearItems1760();
-  void MergeItem1718(const ITEM_INFO& item);
-  void RemoveItem1730(const ITEM_INFO& item);
-  void RemoveItem1720ByName(const ITEM_INFO& item);
-  void CopyItems1740To1750();
-  void ClearItems1760And1748();
-};
 
 
 
@@ -2499,7 +2483,7 @@ void UIMerchantShopMakeWnd::SetItems(int count, const short* ids) {
   if (this->mode == 1) {
     window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0410);
   } else {
-    reinterpret_cast<ClientItemLists*>(&g_session)->SetItems1750(count, ids);
+    g_session.SetItems1750(count, ids);
     window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_02F8);
   }
 
@@ -3674,7 +3658,7 @@ void UIMerchantMirrorItemWnd::Slot15(int width, int height) {
   } else if (this->unknown_00F4 == 2) {
     g_session.RefreshItems1750();
   } else if (Replay::Instance().state != 6) {
-    reinterpret_cast<ClientItemLists*>(&g_session)->CopyItems1740To1750();
+    g_session.CopyItems1740To1750();
   }
   this->SendMsg(nullptr, 23, 0, 0, 0, 0);
 }
@@ -4715,7 +4699,7 @@ int UIMerchantMirrorItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     ModeDragState& drag = mode->drag;
     ITEM_INFO item;
     item.Assign(reinterpret_cast<const RawItemData&>(drag));
-    ClientItemLists* lists = reinterpret_cast<ClientItemLists*>(&g_session);
+    CSession* lists = &g_session;
 
     switch (drag.source) {
     case 10:
@@ -4859,7 +4843,7 @@ int UIItemSellWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     ITEM_INFO item;
     item.Assign(reinterpret_cast<const RawItemData&>(drag));
     if (g_session.HasItem1718(drag.id)) {
-      ClientItemLists* lists = reinterpret_cast<ClientItemLists*>(&g_session);
+      CSession* lists = &g_session;
       lists->AddItem1730(item);
       lists->ReduceItem1718(item);
       if (g_windowMgr.unknown_0254) {
@@ -4983,15 +4967,15 @@ int UIMerchantItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intpt
           g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
           g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(694)), 255, 0, 0, 0);
         } else {
-          reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1760(item);
-          reinterpret_cast<ClientItemLists*>(&g_session)->RemoveItem1750(item, 2, 1);
+          g_session.AddItem1760(item);
+          g_session.RemoveItem1750(item, 2, 1);
           this->SendMsg(nullptr, 23, 0, 0, 0, 0);
           if (g_windowMgr.unknown_0420) {
             reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0420)->SendMsg(nullptr, 23, 0, 0, 0, 0);
           }
         }
       } else if (g_session.m_zeny >= static_cast<long long>(price) * item.quantity + pending) {
-        reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1760(item);
+        g_session.AddItem1760(item);
         this->SendMsg(nullptr, 23, 0, 0, 0, 0);
       } else {
         g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
@@ -5047,7 +5031,7 @@ int UIMerchantItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intpt
       g_windowMgr.CloseWindow(first);
       g_windowMgr.CloseWindow(second);
       mode->SendMsg(40, 0, 0, 0, 0);
-      reinterpret_cast<ClientItemLists*>(&g_session)->ClearItems1760And1748();
+      g_session.ClearItems1760And1748();
     }
     return 0;
   }
@@ -5195,7 +5179,7 @@ int UIMerchantItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     if (this->unknown_010C == 0) {
       ITEM_INFO item;
       item.Assign(reinterpret_cast<const RawItemData&>(mode->drag));
-      reinterpret_cast<ClientItemLists*>(&g_session)->RemoveItem1760(item);
+      g_session.RemoveItem1760(item);
       if (g_windowMgr.unknown_0308) {
         reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0308)->SendMsg(nullptr, 23, 0, 0, 0, 0);
       }
@@ -6411,7 +6395,7 @@ UIMerchantItemPurchaseWnd::UIMerchantItemPurchaseWnd(int value) : UIItemBaseWnd(
   this->unknown_00F8 = 0;
   this->saved = nullptr;
   this->hovered = -1;
-  reinterpret_cast<ClientItemLists*>(&g_session)->ClearItems1760();
+  g_session.ClearItems1760();
   this->unknown_00F0 = 0;
 }
 
@@ -6533,7 +6517,7 @@ int UIItemShopWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
       ITEM_INFO item;
       item.Assign(reinterpret_cast<const RawItemData&>(mode->drag));
-      reinterpret_cast<ClientItemLists*>(&g_session)->RemoveItem1720ByName(item);
+      g_session.RemoveItem1720ByName(item);
       if (g_windowMgr.unknown_0258) {
         g_windowMgr.unknown_0258->SendMsg(nullptr, 23, 0, 0, 0, 0);
       }
@@ -6546,7 +6530,7 @@ int UIItemShopWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
       ITEM_INFO item;
       item.Assign(reinterpret_cast<const RawItemData&>(mode->drag));
-      ClientItemLists* lists = reinterpret_cast<ClientItemLists*>(&g_session);
+      CSession* lists = &g_session;
       lists->MergeItem1718(item);
       lists->RemoveItem1730(item);
       if (g_windowMgr.unknown_0260) {
@@ -6596,7 +6580,7 @@ int UIItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
       ITEM_INFO item;
       item.Assign(reinterpret_cast<const RawItemData&>(mode->drag));
-      reinterpret_cast<ClientItemLists*>(&g_session)->RemoveItem1720ByName(item);
+      g_session.RemoveItem1720ByName(item);
       if (g_windowMgr.unknown_0258) {
         g_windowMgr.unknown_0258->SendMsg(nullptr, 23, 0, 0, 0, 0);
       }
@@ -6609,7 +6593,7 @@ int UIItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
       ITEM_INFO item;
       item.Assign(reinterpret_cast<const RawItemData&>(mode->drag));
-      ClientItemLists* lists = reinterpret_cast<ClientItemLists*>(&g_session);
+      CSession* lists = &g_session;
       lists->MergeItem1718(item);
       lists->RemoveItem1730(item);
       if (g_windowMgr.unknown_025C) {
@@ -7848,7 +7832,7 @@ int UIMerchantItemPurchaseMSGWnd::SendMsg(UIWindow* sender, int message, std::in
     static_cast<CMode*>(g_charViewMode)->SendMsg(83, this->purchaseIndex, this->unknown_00D0, 0, 0);
   case 185:
     g_windowMgr.CloseWindow(230);
-    reinterpret_cast<ClientItemLists*>(&g_session)->ClearItems1760And1748();
+    g_session.ClearItems1760And1748();
     break;
   }
   return 0;
@@ -8723,7 +8707,7 @@ int UIItemSellWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     ITEM_INFO item;
     item.Assign(reinterpret_cast<const RawItemData&>(drag));
     if (g_session.HasItem1718(drag.id)) {
-      ClientItemLists* lists = reinterpret_cast<ClientItemLists*>(&g_session);
+      CSession* lists = &g_session;
       lists->AddItem1730(item);
       lists->ReduceItem1718(item);
       if (g_windowMgr.unknown_0250) {

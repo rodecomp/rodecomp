@@ -91,9 +91,6 @@ struct PACKET_CZ_SE_PC_BUY_CASHITEM_LIST {
 static_assert(sizeof(CashItemPurchase) == 10);
 static_assert(offsetof(PACKET_CZ_SE_PC_BUY_CASHITEM_LIST, items) == 10);
 
-struct ClientItemLists {
-  void ClearItems1784(int index);
-};
 
 
 struct CashShopReplaceCartItemText {
@@ -790,7 +787,7 @@ void UICashShopWnd_Banner::CreateButtons() {
 // OFFSET: 0x007D17A0
 // FUNCTION: fn_09558
 int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  ClientItemLists& itemLists = reinterpret_cast<ClientItemLists&>(g_session);
+  CSession& itemLists = g_session;
   const CSession& lists = g_session;
   switch (message) {
   case 0:

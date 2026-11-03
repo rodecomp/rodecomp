@@ -1,7 +1,6 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/CGameMode.h"
-#include "Contents/ClientItemLists.h"
 #include "Contents/ClientState.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/WeaponType.h"
@@ -1723,7 +1722,7 @@ bool CSession::UnequipItem2B50(int location) {
         const std::string text = FormatOwnedString("%s%s", name.c_str(), message);
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFF, 7, 0, 0);
         item.unknown_0000[3] = 0;
-        reinterpret_cast<ClientItemLists*>(this)->AddItem1710(item, 1);
+        this->AddItem1710(item, 1);
         item.Reset();
       }
       if (slots.values[1] != -1 && slots.values[1] < 10) {

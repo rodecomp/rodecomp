@@ -488,10 +488,6 @@ void CGameMode::SpawnGroundSkill(std::uint32_t aid, std::uint32_t owner, int val
   skill->SendMsg(nullptr, 45, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 }
 
-struct ClientItemLists {
-  void AddItem1718(const RawItemBasic& item, int mode);
-  void RemoveItem1710(std::uint32_t id, int quantity);
-};
 
 int sub_D64A40(const unsigned char* entries);
 
@@ -688,7 +684,7 @@ void CGameMode::ReceiveItem1718BasicList(const unsigned char* packet) {
     item.unknown_0038 = record.unknown_000D;
     item.id = -1;
     item.identified = 1;
-    reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1718(item, 0);
+    g_session.AddItem1718(item, 0);
   }
 
   if (UIWindow* window = g_windowMgr.EnsureWindow(22)) {
@@ -770,7 +766,7 @@ void CGameMode::ReceiveItem1718IndexList(const unsigned char* packet) {
       item.unknown_0008 = record.unknown_0006;
       item.unknown_000C = owned.unknown_0000[0];
       item.identified = owned.identified;
-      reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1718(item, 1);
+      g_session.AddItem1718(item, 1);
     }
   }
 
@@ -2275,7 +2271,7 @@ void CGameMode::ReceiveItemReward2(const unsigned char* data) {
   switch (packet->result) {
   case 0:
     g_session.AddStackedItem(reward);
-    reinterpret_cast<ClientItemLists*>(&g_session)->RemoveItem1710(reward.unknown_0000[1], reward.quantity);
+    g_session.RemoveItem1710(reward.unknown_0000[1], reward.quantity);
     g_session.unknown_6140 = value;
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2594)), 0x64FFFF, 0, 0, 0);
     break;
@@ -2316,7 +2312,7 @@ void CGameMode::ReceiveItemReward(const unsigned char* data) {
     }
     item.unknown_0074[0] = packet->bound;
     g_session.AddStackedItem(item);
-    reinterpret_cast<ClientItemLists*>(&g_session)->RemoveItem1710(packet->index, packet->quantity);
+    g_session.RemoveItem1710(packet->index, packet->quantity);
     g_session.unknown_6140 = packet->value;
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2594)), 0x64FFFF, 0, 0, 0);
     break;
@@ -2922,7 +2918,7 @@ void CGameMode::ReceivePendingItem1718List(const unsigned char* packet) {
     item.unknown_000C = record->type;
     item.id = -1;
     item.identified = 1;
-    reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1718(item, 0);
+    g_session.AddItem1718(item, 0);
     if (g_unknown_015D4818 && g_unknown_015D4818->entry) {
       Unknown015D4818Values& values = g_unknown_015D4818->entry->values;
       values.unknown_0070 = record->unknown_000D;

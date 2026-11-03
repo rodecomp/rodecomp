@@ -1849,7 +1849,7 @@ void CLoginMode::Initialize(const char* name) {
     g_soundMgr->PlayStream("bgm\\01.mp3", 0, false);
   }
   this->slotExtension = CharacterSlotExtension();
-  g_session.ClearItems1784();
+  g_session.ClearAllItems1784();
   g_entryQueueMgr->ready = 0;
   g_entryQueueMgr->current = nullptr;
   g_session.ClearShortcutSlots();

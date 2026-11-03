@@ -31,7 +31,6 @@
 #include "Resource/ResourceMgr.h"
 #include "File/ShortcutFilename.h"
 #include "Contents/Sound/SoundMgr.h"
-#include "Contents/ClientItemLists.h"
 #include "Contents/Skills/AutomaticSkills.h"
 #include "UI/Window/UIHotKeyWnd.h"
 #include "UI/Window/UIWindow.h"
@@ -968,9 +967,9 @@ int UIWindowMgr::ShowWhisperFrom(const char* name, const char* text, int color, 
       label = LookupMessage(102);
     } else if (g_session.IsGuildMemberCharacter(accountId)) {
       label = "GuildMember";
-    } else if (reinterpret_cast<ClientItemLists*>(&g_session)->IsFriendName(name)) {
+    } else if (g_session.IsFriendNameDifferent(name)) {
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(917)), 0xFFFF, 0, 0, 0);
-    } else if (reinterpret_cast<ClientItemLists*>(&g_session)->IsGuildMemberName(name)) {
+    } else if (g_session.IsGuildMemberNameDifferent(name)) {
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(919)), 0xFFFF, 0, 0, 0);
     }
 

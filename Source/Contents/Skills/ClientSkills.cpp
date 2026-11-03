@@ -23,9 +23,6 @@
 #include <cstdlib>
 #include <cstring>
 
-struct ClientItemLists {
-  bool AddItem1710(const ITEM_INFO& item, unsigned char refresh);
-};
 
 // GLOBAL: gl_24650
 char g_decodedPlayerName[64];
@@ -898,7 +895,7 @@ void CSession::RestoreItems5C68() {
   for (int index = 0; index < 5; ++index) {
     if (this->unknown_5C68[index].quantity != 0) {
       restored = true;
-      reinterpret_cast<ClientItemLists&>(g_session).AddItem1710(this->unknown_5C68[index], 0);
+      g_session.AddItem1710(this->unknown_5C68[index], 0);
     }
   }
 
@@ -915,7 +912,7 @@ void CSession::ReturnStackedItem(int index, int count) {
     const int quantity = item.quantity;
     if (quantity != 0 && item.unknown_0000[1] == index) {
       item.quantity = count;
-      reinterpret_cast<ClientItemLists&>(g_session).AddItem1710(item, 0);
+      g_session.AddItem1710(item, 0);
       item.quantity = quantity - count;
       RefreshItemWindows(&g_windowMgr);
       break;

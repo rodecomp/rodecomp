@@ -169,110 +169,6 @@ static_assert(sizeof(ItemAddGradePacket) == 0x3A);
 static_assert(sizeof(ItemListRecord) == 0x22);
 #endif
 
-struct ClientItemLists {
-  /* 0000 */ unsigned char unknown_0000[0xC0];
-  /* 00C0 */ std::string hotkeyDescriptions[36];
-  /* 0420 */ unsigned char unknown_0420[0x314];
-  /* 0734 */ std::list<SessionRecord0734> records0734;
-  /* 073C */ unsigned char unknown_073C[0xF30];
-  /* 166C */ int unknown_166C;
-  /* 1670 */ int unknown_1670;
-  /* 1674 */ int unknown_1674;
-  /* 1678 */ int unknown_1678;
-  /* 167C */ int unknown_167C;
-  /* 1680 */ int unknown_1680;
-  /* 1684 */ unsigned char unknown_1684[0x8C];
-  /* 1710 */ std::list<ITEM_INFO> inventory;
-  /* 1718 */ std::list<ITEM_INFO> items_1718;
-  /* 1720 */ std::list<ITEM_INFO> items_1720;
-  /* 1728 */ std::list<ITEM_INFO> items_1728;
-  /* 1730 */ std::list<ITEM_INFO> items_1730;
-  /* 1738 */ std::list<ITEM_INFO> items_1738;
-  /* 1740 */ std::list<ITEM_INFO> items_1740;
-  /* 1748 */ std::list<ITEM_INFO> items_1748;
-  /* 1750 */ std::list<ITEM_INFO> items_1750;
-  /* 1758 */ std::list<ITEM_INFO> items_1758;
-  /* 1760 */ std::list<ITEM_INFO> items_1760;
-  /* 1768 */ std::list<ITEM_INFO> items_1768;
-  /* 1770 */ std::list<ITEM_INFO> items_1770;
-  /* 1778 */ unsigned char unknown_1778[0xC];
-  /* 1784 */ std::list<ITEM_INFO> items_1784[11];
-  /* 17DC */ std::list<MessengerMember> partyMembers;
-  /* 17E4 */ std::list<MessengerMember> friends;
-  /* 17EC */ unsigned char unknown_17EC[0x9B4];
-  /* 21A0 */ ITEM_INFO equipped[10];
-  /* 2B50 */ unsigned char unknown_2B50[0x1360];
-  /* 3EB0 */ ITEM_INFO exchangeItems[10];
-  /* 4860 */ ITEM_INFO itemSlots[10];
-  /* 5210 */ int unknown_5210;
-  /* 5214 */ int unknown_5214;
-  /* 5218 */ unsigned char unknown_5218[0x24C];
-  /* 5464 */ int unknown_5464;
-  /* 5468 */ unsigned char unknown_5468[0x5C];
-  /* 54C4 */ std::string unknown_54C4;
-  /* 54DC */ unsigned char unknown_54DC[0xCDC];
-  /* 61B8 */ ITEM_INFO items_61B8[10];
-  /* 6B68 */ ITEM_INFO items_6B68[10];
-
-  bool AddItem1710(const ITEM_INFO& item, unsigned char refresh);
-  void AddItem1718(const RawItemBasic& item, int quantity, std::uint16_t unknown_006C);
-  void AddItem1718(const RawItemBasic& item, int mode);
-  bool AddItem1768(const ITEM_INFO& item, unsigned char alternate, unsigned char refresh);
-  bool AddItem1740(const ITEM_INFO& item);
-  bool AddItem1750(const ITEM_INFO& item, int type, unsigned char refresh);
-  void AddItem1758(const ITEM_INFO& item);
-  void AddItem1760(const ITEM_INFO& item);
-  void AddItem1748(const ITEM_INFO& item);
-  bool Equip(const ITEM_INFO& item);
-  void AppendItem1718(const ITEM_INFO& item);
-  void MergeItem1718ByName(const ITEM_INFO& item);
-  void MergeItem1720ByName(const ITEM_INFO& item);
-  void MergeItem1720(const ITEM_INFO& item);
-  void AddItem1730(const ITEM_INFO& item);
-  void MergeItem1718(const ITEM_INFO& item);
-  bool AddItem1738(const ITEM_INFO& item, unsigned char refresh);
-  void RemoveItem1758ByItemId(ITEM_INFO& item);
-  __declspec(noinline) void RemoveItem1710(std::uint32_t id, int quantity);
-  bool AddExchangeItem(ITEM_INFO item);
-  bool RemoveItem1768(const ITEM_INFO& item, unsigned char alternate);
-  bool RemoveItem1740(const ITEM_INFO& item);
-  bool RemoveItem1750(const ITEM_INFO& item, int type, unsigned char refresh);
-  void RemoveItem1758(ITEM_INFO& item);
-  void RemoveItem1760(const ITEM_INFO& item);
-  void RemoveItem1718ByItemId(const ITEM_INFO& item);
-  void RemoveItem1718(const ITEM_INFO& item);
-  void RemoveItem1720ByName(const ITEM_INFO& item);
-  void RemoveItem1720(const ITEM_INFO& item);
-  void RemoveItem1730(const ITEM_INFO& item);
-  void ReduceItem1718(const ITEM_INFO& item);
-  bool RemoveItem1738(const ITEM_INFO& item);
-  void ClearInventory();
-  void ClearItems1760And1748();
-  void ClearItems1768();
-  void ClearItems1740();
-  void ClearItems1750();
-  void SetItems1750(int count, const short* ids);
-  void ClearItems1758();
-  void ClearItems1760();
-  void ClearItems1748();
-  void ClearItems1784(int index);
-  void ClearItemSlotQuantities();
-  void ResetEquipped();
-  void ClearItems1720();
-  void ClearItems1738();
-  void CopyItems1740To1750();
-  void CopyItems1760To1770();
-  std::pair<bool, ITEM_INFO> FindItem1750(const ITEM_INFO& item, unsigned char unknown);
-  void ClearRecords0734();
-  void ResetUnknown166C();
-  void ResetHotkeyDescriptions();
-  int IsDifferentName(const char* name, const char* other);
-  int IsGuildMemberName(const char* name);
-  int IsFriendName(const char* name);
-  bool EquipItem6B68(const ITEM_INFO& item);
-  void ResetItems6B68();
-  void ResetItems61B8();
-};
 
 int GetEquipLocationIndex(const int& mask);
 
@@ -316,20 +212,6 @@ public:
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(EquipmentProperties::CEquipmentPropertiesMgr) == 0x1FC);
-static_assert(offsetof(ClientItemLists, inventory) == 0x1710);
-static_assert(offsetof(ClientItemLists, items_1768) == 0x1768);
-static_assert(offsetof(ClientItemLists, items_1784) == 0x1784);
-static_assert(offsetof(ClientItemLists, equipped) == 0x21A0);
-static_assert(offsetof(ClientItemLists, itemSlots) == 0x4860);
-static_assert(offsetof(ClientItemLists, unknown_5214) == 0x5214);
-static_assert(offsetof(ClientItemLists, hotkeyDescriptions) == 0xC0);
-static_assert(offsetof(ClientItemLists, records0734) == 0x734);
-static_assert(offsetof(ClientItemLists, unknown_166C) == 0x166C);
-static_assert(offsetof(ClientItemLists, partyMembers) == 0x17DC);
-static_assert(offsetof(ClientItemLists, unknown_5464) == 0x5464);
-static_assert(offsetof(ClientItemLists, unknown_54C4) == 0x54C4);
-static_assert(offsetof(ClientItemLists, items_61B8) == 0x61B8);
-static_assert(offsetof(ClientItemLists, items_6B68) == 0x6B68);
 #endif
 
 // OFFSET: 0x00AA6440
@@ -379,7 +261,7 @@ void CGameMode::ReceiveItem1738Add(const unsigned char* data) {
     reinterpret_cast<ItemRandomOption*>(item.unknown_009C)[index] = options[index];
   }
   item.unknown_0088 = 0;
-  reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1738(item, 1);
+  g_session.AddItem1738(item, 1);
 }
 
   struct ItemAddSlotPacket {
@@ -557,7 +439,7 @@ void CGameMode::ReceiveItem1740Add(const unsigned char* data) {
     reinterpret_cast<ItemRandomOption*>(item.unknown_009C)[index] = options[index];
   }
   item.unknown_0088 = 0;
-  reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1740(item);
+  g_session.AddItem1740(item);
 }
 
 // OFFSET: 0x00D1FF70
@@ -580,7 +462,7 @@ void CGameMode::ReceiveItem1740AddOptions(const unsigned char* data) {
     reinterpret_cast<ItemRandomOption*>(item.unknown_009C)[index] = options[index];
   }
   item.unknown_0088 = 0;
-  reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1740(item);
+  g_session.AddItem1740(item);
 }
 
 // OFFSET: 0x00D20180
@@ -603,7 +485,7 @@ void CGameMode::ReceiveItem1740AddGrade(const unsigned char* data) {
     reinterpret_cast<ItemRandomOption*>(item.unknown_009C)[index] = options[index];
   }
   item.unknown_0088 = packet.grade;
-  reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1740(item);
+  g_session.AddItem1740(item);
 }
 
 // OFFSET: 0x00D204B0
@@ -626,7 +508,7 @@ void CGameMode::ReceiveItem1738AddOptions(const unsigned char* data) {
     reinterpret_cast<ItemRandomOption*>(item.unknown_009C)[index] = options[index];
   }
   item.unknown_0088 = 0;
-  reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1738(item, 1);
+  g_session.AddItem1738(item, 1);
 }
 
 // OFFSET: 0x00D206C0
@@ -649,7 +531,7 @@ void CGameMode::ReceiveItem1738AddGrade(const unsigned char* data) {
     reinterpret_cast<ItemRandomOption*>(item.unknown_009C)[index] = options[index];
   }
   item.unknown_0088 = packet.grade;
-  reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1738(item, 1);
+  g_session.AddItem1738(item, 1);
 }
 
 namespace {
@@ -724,7 +606,7 @@ void CGameMode::ReceiveEquipItemList(const unsigned char* packet) {
       std::memcpy(options, record.options, sizeof(options));
       ITEM_INFO item;
       FillEquipItemListItem(item, record, options);
-      reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1738(item, 0);
+      g_session.AddItem1738(item, 0);
     }
     break;
   case 0:
@@ -740,7 +622,7 @@ void CGameMode::ReceiveEquipItemList(const unsigned char* packet) {
       }
 
       if (item.unknown_0000[3] == 0) {
-        reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1710(item, 0);
+        g_session.AddItem1710(item, 0);
         g_session.UpdateInventoryItem(item, 0);
       } else {
         char equipped = 1;
@@ -774,7 +656,7 @@ void CGameMode::ReceiveEquipItemList(const unsigned char* packet) {
       std::memcpy(options, record.options, sizeof(options));
       ITEM_INFO item;
       FillEquipItemListItem(item, record, options);
-      reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1740(item);
+      g_session.AddItem1740(item);
     }
     break;
   }
@@ -803,11 +685,11 @@ void CGameMode::ReceiveItemListPart(unsigned char listType, int count, const uns
       g_session.UpdateInventoryItem(item, 0);
       break;
     case 1:
-      reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1740(item);
+      g_session.AddItem1740(item);
       break;
     case 2:
     case 3:
-      reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1738(item, 0);
+      g_session.AddItem1738(item, 0);
       break;
     }
   }
@@ -863,8 +745,8 @@ EquipSlots EquipSlotDecoder::Decode(int mask) const {
 
 // OFFSET: 0x00DD7030
 // FUNCTION: fn_23282
-bool ClientItemLists::AddItem1710(const ITEM_INFO& item, unsigned char refresh) {
-  for (ITEM_INFO& value : this->inventory) {
+bool CSession::AddItem1710(const ITEM_INFO& item, unsigned char refresh) {
+  for (ITEM_INFO& value : this->m_inventoryItems) {
     if (value.unknown_0000[1] == item.unknown_0000[1]) {
       value.quantity += item.quantity;
       value.unknown_0074[1] = item.unknown_0074[1];
@@ -876,7 +758,7 @@ bool ClientItemLists::AddItem1710(const ITEM_INFO& item, unsigned char refresh) 
     }
   }
 
-  this->inventory.push_back(item);
+  this->m_inventoryItems.push_back(item);
   if (refresh) {
     RefreshItemWindows(&g_windowMgr);
   }
@@ -885,8 +767,8 @@ bool ClientItemLists::AddItem1710(const ITEM_INFO& item, unsigned char refresh) 
 
 // OFFSET: 0x00DD7210
 // FUNCTION: fn_23284
-bool ClientItemLists::AddItem1768(const ITEM_INFO& item, unsigned char alternate, unsigned char refresh) {
-  for (ITEM_INFO& value : this->items_1768) {
+bool CSession::AddItem1768(const ITEM_INFO& item, unsigned char alternate, unsigned char refresh) {
+  for (ITEM_INFO& value : this->unknown_1768) {
     if (value.unknown_0000[1] == item.unknown_0000[1]) {
       if (!alternate) {
         value.quantity += item.quantity;
@@ -900,7 +782,7 @@ bool ClientItemLists::AddItem1768(const ITEM_INFO& item, unsigned char alternate
     }
   }
 
-  this->items_1768.push_back(item);
+  this->unknown_1768.push_back(item);
   if (refresh == 1) {
     UIWindow* window = reinterpret_cast<UIWindow*>(alternate ? g_windowMgr.unknown_040C : g_windowMgr.unknown_02FC);
     if (window) {
@@ -912,8 +794,8 @@ bool ClientItemLists::AddItem1768(const ITEM_INFO& item, unsigned char alternate
 
 // OFFSET: 0x00DD72C0
 // FUNCTION: fn_23285
-bool ClientItemLists::AddItem1740(const ITEM_INFO& item) {
-  for (ITEM_INFO& value : this->items_1740) {
+bool CSession::AddItem1740(const ITEM_INFO& item) {
+  for (ITEM_INFO& value : this->unknown_1740) {
     if (value.unknown_0000[1] == item.unknown_0000[1]) {
       value.quantity += item.quantity;
       if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_02F4)) {
@@ -923,7 +805,7 @@ bool ClientItemLists::AddItem1740(const ITEM_INFO& item) {
     }
   }
 
-  this->items_1740.push_back(item);
+  this->unknown_1740.push_back(item);
   if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_02F4)) {
     window->SendMsg(nullptr, 23, 0, 0, 0, 0);
   }
@@ -932,8 +814,8 @@ bool ClientItemLists::AddItem1740(const ITEM_INFO& item) {
 
 // OFFSET: 0x00DD7350
 // FUNCTION: fn_23286
-bool ClientItemLists::AddItem1750(const ITEM_INFO& item, int type, unsigned char refresh) {
-  for (ITEM_INFO& value : this->items_1750) {
+bool CSession::AddItem1750(const ITEM_INFO& item, int type, unsigned char refresh) {
+  for (ITEM_INFO& value : this->unknown_1750) {
     if (value.unknown_0000[1] == item.unknown_0000[1]) {
       value.quantity += item.quantity;
       if (refresh == 1) {
@@ -951,7 +833,7 @@ bool ClientItemLists::AddItem1750(const ITEM_INFO& item, int type, unsigned char
     }
   }
 
-  this->items_1750.push_back(item);
+  this->unknown_1750.push_back(item);
   if (refresh == 1) {
     std::uint32_t window;
     if (type == 1) {
@@ -968,53 +850,53 @@ bool ClientItemLists::AddItem1750(const ITEM_INFO& item, int type, unsigned char
 
 // OFFSET: 0x00DD7420
 // FUNCTION: fn_23287
-void ClientItemLists::AddItem1758(const ITEM_INFO& item) {
-  for (ITEM_INFO& value : this->items_1758) {
+void CSession::AddItem1758(const ITEM_INFO& item) {
+  for (ITEM_INFO& value : this->unknown_1758) {
     if (value.unknown_0000[1] == item.unknown_0000[1]) {
       value.quantity += item.quantity;
       return;
     }
   }
 
-  this->items_1758.push_back(item);
+  this->unknown_1758.push_back(item);
 }
 
 // OFFSET: 0x00DD7470
 // FUNCTION: fn_23288
-void ClientItemLists::AddItem1760(const ITEM_INFO& item) {
-  for (ITEM_INFO& value : this->items_1760) {
+void CSession::AddItem1760(const ITEM_INFO& item) {
+  for (ITEM_INFO& value : this->unknown_1760) {
     if (value.unknown_0000[1] == item.unknown_0000[1]) {
       value.quantity += item.quantity;
       return;
     }
   }
 
-  this->items_1760.push_back(item);
+  this->unknown_1760.push_back(item);
 }
 
 // OFFSET: 0x00DD74C0
 // FUNCTION: fn_23289
-void ClientItemLists::AddItem1748(const ITEM_INFO& item) {
-  for (ITEM_INFO& value : this->items_1748) {
+void CSession::AddItem1748(const ITEM_INFO& item) {
+  for (ITEM_INFO& value : this->unknown_1748) {
     if (value.unknown_0000[1] == item.unknown_0000[1]) {
       value.quantity += item.quantity;
       return;
     }
   }
 
-  this->items_1748.push_back(item);
+  this->unknown_1748.push_back(item);
 }
 
 // OFFSET: 0x00DD7510
 // FUNCTION: fn_23290
-bool ClientItemLists::Equip(const ITEM_INFO& item) {
+bool CSession::Equip(const ITEM_INFO& item) {
   const EquipSlots slots = reinterpret_cast<CSession*>(this)->GetEquipSlots(item.unknown_0000[3]);
   const int order[3] = {slots.values[2], slots.values[1], slots.values[0]};
 
   for (int index = 0; index < 3; ++index) {
     const int slot = order[index];
     if (slot != -1) {
-      ITEM_INFO& equipped = this->equipped[slot];
+      ITEM_INFO& equipped = this->unknown_21A0[slot];
       equipped = item;
       equipped.quantity = 1;
       equipped.unknown_0068 = item.unknown_0068;
@@ -1028,7 +910,7 @@ bool ClientItemLists::Equip(const ITEM_INFO& item) {
 
 // OFFSET: 0x00DD75C0
 // FUNCTION: fn_23291
-void ClientItemLists::AddItem1718(const RawItemBasic& item, int quantity, std::uint16_t unknown_006C) {
+void CSession::AddItem1718(const RawItemBasic& item, int quantity, std::uint16_t unknown_006C) {
   ITEM_INFO value;
   value.AssignBasic(item);
   value.quantity = quantity;
@@ -1036,45 +918,45 @@ void ClientItemLists::AddItem1718(const RawItemBasic& item, int quantity, std::u
   value.unknown_0060 = 0;
   value.unknown_005D = 0;
   value.SetItemId(std::atoi(value.itemId.c_str()));
-  this->items_1718.push_back(value);
+  this->unknown_1718.push_back(value);
 }
 
 // OFFSET: 0x00DD76C0
 // FUNCTION: fn_23292
-void ClientItemLists::AppendItem1718(const ITEM_INFO& item) {
-  this->items_1718.push_back(item);
+void CSession::AppendItem1718(const ITEM_INFO& item) {
+  this->unknown_1718.push_back(item);
 }
 
 // OFFSET: 0x00DD76D0
 // FUNCTION: fn_23293
-void ClientItemLists::MergeItem1718ByName(const ITEM_INFO& item) {
-  for (ITEM_INFO& value : this->items_1718) {
+void CSession::MergeItem1718ByName(const ITEM_INFO& item) {
+  for (ITEM_INFO& value : this->unknown_1718) {
     if (value.itemId == item.itemId) {
       value.quantity = value.quantity == -1 ? -1 : value.quantity + item.quantity;
       return;
     }
   }
 
-  this->items_1718.push_back(item);
+  this->unknown_1718.push_back(item);
 }
 
 // OFFSET: 0x00DD7770
 // FUNCTION: fn_23294
-void ClientItemLists::MergeItem1720ByName(const ITEM_INFO& item) {
-  for (ITEM_INFO& value : this->items_1720) {
+void CSession::MergeItem1720ByName(const ITEM_INFO& item) {
+  for (ITEM_INFO& value : this->unknown_1720) {
     if (value.itemId == item.itemId) {
       value.quantity += item.quantity;
       return;
     }
   }
 
-  this->items_1720.push_back(item);
+  this->unknown_1720.push_back(item);
 }
 
 // OFFSET: 0x00DD77F0
 // FUNCTION: fn_23295
-void ClientItemLists::MergeItem1720(const ITEM_INFO& item) {
-  for (ITEM_INFO& value : this->items_1720) {
+void CSession::MergeItem1720(const ITEM_INFO& item) {
+  for (ITEM_INFO& value : this->unknown_1720) {
     const bool same = item.unknown_0074[3] ? value.unknown_0000[1] == item.unknown_0000[1] : value.itemId == item.itemId;
     if (same) {
       value.quantity += item.quantity;
@@ -1082,15 +964,15 @@ void ClientItemLists::MergeItem1720(const ITEM_INFO& item) {
     }
   }
 
-  this->items_1720.push_back(item);
+  this->unknown_1720.push_back(item);
 }
 
 // OFFSET: 0x00DD7890
 // FUNCTION: fn_23296
-void ClientItemLists::AddItem1730(const ITEM_INFO& item) {
-  const ITEM_INFO owned = LookupClientItemByIdentity(this->inventory, item.unknown_0000[1]);
+void CSession::AddItem1730(const ITEM_INFO& item) {
+  const ITEM_INFO owned = LookupClientItemByIdentity(this->m_inventoryItems, item.unknown_0000[1]);
   if (owned.unknown_0000[1] > 0) {
-    for (ITEM_INFO& value : this->items_1730) {
+    for (ITEM_INFO& value : this->unknown_1730) {
       if (value.unknown_0000[1] == item.unknown_0000[1]) {
         const int quantity = value.quantity + item.quantity;
         if (owned.quantity >= quantity) {
@@ -1101,21 +983,21 @@ void ClientItemLists::AddItem1730(const ITEM_INFO& item) {
     }
 
     if (owned.quantity >= item.quantity) {
-      this->items_1730.push_back(item);
+      this->unknown_1730.push_back(item);
     }
   }
 }
 
 // OFFSET: 0x00DD7970
 // FUNCTION: fn_23297
-void ClientItemLists::AddItem1718(const RawItemBasic& item, int mode) {
+void CSession::AddItem1718(const RawItemBasic& item, int mode) {
   if (mode != 0) {
-    const ITEM_INFO owned = LookupClientItemByIdentity(this->inventory, item.id);
+    const ITEM_INFO owned = LookupClientItemByIdentity(this->m_inventoryItems, item.id);
     if (owned.unknown_0000[1] != 0) {
       ITEM_INFO value(owned);
       value.AssignBasic(item);
       value.SetItemId(std::atoi(value.itemId.c_str()));
-      this->items_1718.push_back(value);
+      this->unknown_1718.push_back(value);
     }
   } else {
     ITEM_INFO value;
@@ -1125,14 +1007,14 @@ void ClientItemLists::AddItem1718(const RawItemBasic& item, int mode) {
     value.SetItemId(std::atoi(value.itemId.c_str()));
     value.unknown_0000[2] = item.unknown_0034;
     value.unknown_0070 = item.unknown_0038;
-    this->items_1718.push_back(value);
+    this->unknown_1718.push_back(value);
   }
 }
 
 // OFFSET: 0x00DD7B30
 // FUNCTION: fn_23298
-void ClientItemLists::MergeItem1718(const ITEM_INFO& item) {
-  for (ITEM_INFO& value : this->items_1718) {
+void CSession::MergeItem1718(const ITEM_INFO& item) {
+  for (ITEM_INFO& value : this->unknown_1718) {
     if (value.unknown_0000[1] == item.unknown_0000[1]) {
       if (value.quantity != -1) {
         value.quantity += item.quantity;
@@ -1141,17 +1023,17 @@ void ClientItemLists::MergeItem1718(const ITEM_INFO& item) {
     }
   }
 
-  this->items_1718.push_back(item);
+  this->unknown_1718.push_back(item);
 }
 
 // OFFSET: 0x00DD7B80
 // FUNCTION: fn_23299
-bool ClientItemLists::AddItem1738(const ITEM_INFO& item, unsigned char refresh) {
+bool CSession::AddItem1738(const ITEM_INFO& item, unsigned char refresh) {
   if (g_replayAnimationScaling && !Replay::Instance().header.options.Get(ReplayRecordOption::Item)) {
     return true;
   }
 
-  for (ITEM_INFO& value : this->items_1738) {
+  for (ITEM_INFO& value : this->unknown_1738) {
     if (value.unknown_0000[1] == item.unknown_0000[1]) {
       value.quantity += item.quantity;
       if (refresh && g_windowMgr.window_0288) {
@@ -1161,7 +1043,7 @@ bool ClientItemLists::AddItem1738(const ITEM_INFO& item, unsigned char refresh) 
     }
   }
 
-  this->items_1738.push_back(item);
+  this->unknown_1738.push_back(item);
   if (refresh && g_windowMgr.window_0288) {
     g_windowMgr.window_0288->SendMsg(nullptr, 23, 0, 0, 0, 0);
   }
@@ -1225,7 +1107,7 @@ bool CSession::OnItemEquipped(ITEM_INFO& item) {
   }
 
   if (item.unknown_0000[3] != 0x8000) {
-    reinterpret_cast<ClientItemLists*>(this)->RemoveItem1710(item.unknown_0000[1], 1);
+    this->RemoveItem1710(item.unknown_0000[1], 1);
   }
   if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_022C)) {
     window->SendMsg(nullptr, 60, 0, 0, 0, 0);
@@ -1388,83 +1270,83 @@ EquipSlots CSession::GetEquipSlots(int location) {
 
 // OFFSET: 0x00DD8890
 // FUNCTION: fn_23313
-void ClientItemLists::ClearInventory() {
-  this->inventory.erase(this->inventory.begin(), this->inventory.end());
+void CSession::ClearInventory() {
+  this->m_inventoryItems.erase(this->m_inventoryItems.begin(), this->m_inventoryItems.end());
   RefreshItemWindows(&g_windowMgr);
 }
 
 // OFFSET: 0x00DD88C0
 // FUNCTION: fn_23314
-void ClientItemLists::ClearItems1760And1748() {
-  this->items_1760.erase(this->items_1760.begin(), this->items_1760.end());
-  this->items_1748.erase(this->items_1748.begin(), this->items_1748.end());
+void CSession::ClearItems1760And1748() {
+  this->unknown_1760.erase(this->unknown_1760.begin(), this->unknown_1760.end());
+  this->unknown_1748.erase(this->unknown_1748.begin(), this->unknown_1748.end());
 }
 
 // OFFSET: 0x00DD8900
 // FUNCTION: fn_23315
-void ClientItemLists::ClearItems1768() {
-  this->items_1768.erase(this->items_1768.begin(), this->items_1768.end());
+void CSession::ClearItems1768() {
+  this->unknown_1768.erase(this->unknown_1768.begin(), this->unknown_1768.end());
 }
 
 // OFFSET: 0x00DD8920
 // FUNCTION: fn_23316
-void ClientItemLists::ClearItems1740() {
-  this->items_1740.erase(this->items_1740.begin(), this->items_1740.end());
+void CSession::ClearItems1740() {
+  this->unknown_1740.erase(this->unknown_1740.begin(), this->unknown_1740.end());
 }
 
 // OFFSET: 0x00DD8940
 // FUNCTION: fn_23317
-void ClientItemLists::ClearItems1750() {
-  this->items_1750.erase(this->items_1750.begin(), this->items_1750.end());
+void CSession::ClearItems1750() {
+  this->unknown_1750.erase(this->unknown_1750.begin(), this->unknown_1750.end());
 }
 
 // OFFSET: 0x00DD8960
 // FUNCTION: fn_23318
-void ClientItemLists::ClearItems1758() {
-  this->items_1758.erase(this->items_1758.begin(), this->items_1758.end());
+void CSession::ClearItems1758() {
+  this->unknown_1758.erase(this->unknown_1758.begin(), this->unknown_1758.end());
 }
 
 // OFFSET: 0x00DD8980
 // FUNCTION: fn_23319
-void ClientItemLists::ClearItems1760() {
-  this->items_1760.erase(this->items_1760.begin(), this->items_1760.end());
+void CSession::ClearItems1760() {
+  this->unknown_1760.erase(this->unknown_1760.begin(), this->unknown_1760.end());
 }
 
 // OFFSET: 0x00DD89A0
 // FUNCTION: fn_23320
-void ClientItemLists::ClearItems1748() {
-  this->items_1748.erase(this->items_1748.begin(), this->items_1748.end());
+void CSession::ClearItems1748() {
+  this->unknown_1748.erase(this->unknown_1748.begin(), this->unknown_1748.end());
 }
 
 // OFFSET: 0x00DD89C0
 // FUNCTION: fn_23321
-void ClientItemLists::ClearRecords0734() {
-  this->records0734.clear();
+void CSession::ClearRecords0734() {
+  this->unknown_0734.clear();
 }
 
 // OFFSET: 0x00DD8A20
 // FUNCTION: fn_23322
-void ClientItemLists::ClearItems1784(int index) {
+void CSession::ClearItems1784(int index) {
   if (index >= 0 && static_cast<unsigned>(index) < 11) {
-    this->items_1784[index].erase(this->items_1784[index].begin(), this->items_1784[index].end());
+    this->unknown_1784[index].erase(this->unknown_1784[index].begin(), this->unknown_1784[index].end());
   }
 }
 
 // OFFSET: 0x00DD8A50
 // FUNCTION: fn_23323
-void ClientItemLists::ClearItemSlotQuantities() {
+void CSession::ClearItemSlotQuantities() {
   this->unknown_5214 = 0;
 
   for (int index = 0; index < 10; ++index) {
-    this->itemSlots[index].quantity = 0;
+    this->m_itemSlots[index].quantity = 0;
   }
 }
 
 // OFFSET: 0x00DD8AC0
 // FUNCTION: fn_23324
-void ClientItemLists::ResetEquipped() {
+void CSession::ResetEquipped() {
   for (int index = 0; index < 10; ++index) {
-    this->equipped[index].Reset();
+    this->unknown_21A0[index].Reset();
   }
 }
 
@@ -1489,7 +1371,7 @@ void CSession::ClearPartyMembers() {
 
 // OFFSET: 0x00DD8BD0
 // FUNCTION: fn_23326
-void ClientItemLists::ResetUnknown166C() {
+void CSession::ResetUnknown166C() {
   this->unknown_166C = 0;
   this->unknown_167C = 0;
   this->unknown_1680 = 0;
@@ -1500,61 +1382,61 @@ void ClientItemLists::ResetUnknown166C() {
 
 // OFFSET: 0x00DD8C10
 // FUNCTION: fn_23327
-void ClientItemLists::ClearItems1720() {
-  this->items_1720.erase(this->items_1720.begin(), this->items_1720.end());
+void CSession::ClearItems1720() {
+  this->unknown_1720.erase(this->unknown_1720.begin(), this->unknown_1720.end());
 }
 
 // OFFSET: 0x00DD8C70
 // FUNCTION: fn_23328
-void ClientItemLists::ResetHotkeyDescriptions() {
+void CSession::ResetHotkeyDescriptions() {
   for (int index = 0; index < 9; ++index) {
-    this->hotkeyDescriptions[index] = "nothing";
+    this->m_hotkeyDescriptions[index] = "nothing";
   }
 }
 
 // OFFSET: 0x00DD8CA0
 // FUNCTION: fn_23329
-void ClientItemLists::ClearItems1738() {
-  this->items_1738.erase(this->items_1738.begin(), this->items_1738.end());
+void CSession::ClearItems1738() {
+  this->unknown_1738.erase(this->unknown_1738.begin(), this->unknown_1738.end());
 }
 
 // OFFSET: 0x00DD8CC0
 // FUNCTION: fn_23330
-void ClientItemLists::CopyItems1740To1750() {
-  this->items_1750.erase(this->items_1750.begin(), this->items_1750.end());
+void CSession::CopyItems1740To1750() {
+  this->unknown_1750.erase(this->unknown_1750.begin(), this->unknown_1750.end());
 
-  for (auto item = this->items_1740.begin(); item != this->items_1740.end(); ++item) {
-    this->items_1750.push_back(*item);
+  for (auto item = this->unknown_1740.begin(); item != this->unknown_1740.end(); ++item) {
+    this->unknown_1750.push_back(*item);
   }
 }
 
 // OFFSET: 0x00DD8DB0
 // FUNCTION: fn_23331
-void ClientItemLists::CopyItems1760To1770() {
-  this->items_1770.erase(this->items_1770.begin(), this->items_1770.end());
+void CSession::CopyItems1760To1770() {
+  this->unknown_1770.erase(this->unknown_1770.begin(), this->unknown_1770.end());
 
-  for (auto item = this->items_1760.begin(); item != this->items_1760.end(); ++item) {
-    this->items_1770.push_back(*item);
+  for (auto item = this->unknown_1760.begin(); item != this->unknown_1760.end(); ++item) {
+    this->unknown_1770.push_back(*item);
   }
 }
 
 // OFFSET: 0x00DD8EA0
 // FUNCTION: fn_23332
-std::pair<bool, ITEM_INFO> ClientItemLists::FindItem1750(const ITEM_INFO& item, unsigned char) {
-  auto found = this->items_1750.begin();
+std::pair<bool, ITEM_INFO> CSession::FindItem1750(const ITEM_INFO& item, unsigned char) {
+  auto found = this->unknown_1750.begin();
 
-  for (; found != this->items_1750.end(); ++found) {
+  for (; found != this->unknown_1750.end(); ++found) {
     if (IsSameItem(*found, item)) {
       break;
     }
   }
 
-  return found != this->items_1750.end() ? std::make_pair(true, *found) : std::make_pair(false, ITEM_INFO());
+  return found != this->unknown_1750.end() ? std::make_pair(true, *found) : std::make_pair(false, ITEM_INFO());
 }
 
 // OFFSET: 0x00DD91C0
 // FUNCTION: fn_23333
-int ClientItemLists::IsDifferentName(const char* name, const char* other) {
+int CSession::IsDifferentName(const char* name, const char* other) {
   if (std::strlen(other) == 0) {
     return 1;
   }
@@ -1628,13 +1510,13 @@ int ClientItemLists::IsDifferentName(const char* name, const char* other) {
 
 // OFFSET: 0x00DDA470
 // FUNCTION: fn_23338
-void ClientItemLists::RemoveItem1758ByItemId(ITEM_INFO& item) {
-  for (auto it = this->items_1758.begin(); it != this->items_1758.end(); ++it) {
+void CSession::RemoveItem1758ByItemId(ITEM_INFO& item) {
+  for (auto it = this->unknown_1758.begin(); it != this->unknown_1758.end(); ++it) {
     if (std::atoi(it->itemId.c_str()) == std::atoi(item.itemId.c_str())) {
       item.itemId = it->itemId;
       it->quantity -= item.quantity;
       if (it->quantity < 1) {
-        this->items_1758.erase(it);
+        this->unknown_1758.erase(it);
       }
       return;
     }
@@ -1643,15 +1525,15 @@ void ClientItemLists::RemoveItem1758ByItemId(ITEM_INFO& item) {
 
 // OFFSET: 0x00DDA510
 // FUNCTION: fn_23339
-void ClientItemLists::RemoveItem1710(std::uint32_t id, int quantity) {
-  for (auto it = this->inventory.begin(); it != this->inventory.end(); ++it) {
+void CSession::RemoveItem1710(std::uint32_t id, int quantity) {
+  for (auto it = this->m_inventoryItems.begin(); it != this->m_inventoryItems.end(); ++it) {
     if (it->unknown_0000[1] == id) {
       if (quantity < it->quantity) {
         it->quantity -= quantity;
       } else {
-        this->inventory.erase(it);
+        this->m_inventoryItems.erase(it);
       }
-      for (auto it2 = this->inventory.begin(); it2 != this->inventory.end(); ++it2) {
+      for (auto it2 = this->m_inventoryItems.begin(); it2 != this->m_inventoryItems.end(); ++it2) {
         if (it2->unknown_0000[1] == id) {
           it2->unknown_0074[2] = 0;
           break;
@@ -1665,21 +1547,21 @@ void ClientItemLists::RemoveItem1710(std::uint32_t id, int quantity) {
 
 // OFFSET: 0x00DDA5A0
 // FUNCTION: fn_23340
-bool ClientItemLists::RemoveItem1768(const ITEM_INFO& item, unsigned char alternate) {
+bool CSession::RemoveItem1768(const ITEM_INFO& item, unsigned char alternate) {
   int index = 0;
-  for (auto it = this->items_1768.begin(); it != this->items_1768.end(); ++it, ++index) {
+  for (auto it = this->unknown_1768.begin(); it != this->unknown_1768.end(); ++it, ++index) {
     if (it->unknown_0000[1] == item.unknown_0000[1]) {
       if (!alternate) {
         it->quantity -= item.quantity;
         if (it->quantity < 1) {
-          this->items_1768.erase(it);
+          this->unknown_1768.erase(it);
           reinterpret_cast<CSession*>(this)->RefreshItem1768Window(0, index + 1);
           return true;
         }
         reinterpret_cast<CSession*>(this)->RefreshItem1768Window(0, 0);
         return true;
       }
-      this->items_1768.erase(it);
+      this->unknown_1768.erase(it);
       reinterpret_cast<CSession*>(this)->RefreshItem1768Window(1, 0);
       return true;
     }
@@ -1690,14 +1572,14 @@ bool ClientItemLists::RemoveItem1768(const ITEM_INFO& item, unsigned char altern
 
 // OFFSET: 0x00DDA690
 // FUNCTION: fn_23341
-bool ClientItemLists::RemoveItem1740(const ITEM_INFO& item) {
-  for (auto it = this->items_1740.begin(); it != this->items_1740.end(); ++it) {
+bool CSession::RemoveItem1740(const ITEM_INFO& item) {
+  for (auto it = this->unknown_1740.begin(); it != this->unknown_1740.end(); ++it) {
     if (it->unknown_0000[1] == item.unknown_0000[1]) {
       it->quantity -= item.quantity;
       if (it->quantity < 1) {
-        this->items_1740.erase(it);
+        this->unknown_1740.erase(it);
       }
-      for (auto it2 = this->items_1740.begin(); it2 != this->items_1740.end(); ++it2) {
+      for (auto it2 = this->unknown_1740.begin(); it2 != this->unknown_1740.end(); ++it2) {
         if (it2->unknown_0000[1] == item.unknown_0000[1]) {
           it2->unknown_0074[2] = 0;
           break;
@@ -1713,16 +1595,16 @@ bool ClientItemLists::RemoveItem1740(const ITEM_INFO& item) {
 
 // OFFSET: 0x00DDA740
 // FUNCTION: fn_23342
-bool ClientItemLists::RemoveItem1750(const ITEM_INFO& item, int type, unsigned char refresh) {
-  for (auto it = this->items_1750.begin(); it != this->items_1750.end(); ++it) {
+bool CSession::RemoveItem1750(const ITEM_INFO& item, int type, unsigned char refresh) {
+  for (auto it = this->unknown_1750.begin(); it != this->unknown_1750.end(); ++it) {
     if (it->unknown_0000[1] == item.unknown_0000[1]) {
       if (type == 0) {
         it->quantity -= item.quantity;
         if (it->quantity < 1) {
-          this->items_1750.erase(it);
+          this->unknown_1750.erase(it);
         }
       } else {
-        this->items_1750.erase(it);
+        this->unknown_1750.erase(it);
       }
 
       if (refresh == 1) {
@@ -1758,13 +1640,13 @@ bool ClientItemLists::RemoveItem1750(const ITEM_INFO& item, int type, unsigned c
 
 // OFFSET: 0x00DDA8B0
 // FUNCTION: fn_23343
-void ClientItemLists::RemoveItem1758(ITEM_INFO& item) {
-  for (auto it = this->items_1758.begin(); it != this->items_1758.end(); ++it) {
+void CSession::RemoveItem1758(ITEM_INFO& item) {
+  for (auto it = this->unknown_1758.begin(); it != this->unknown_1758.end(); ++it) {
     if (it->unknown_0000[1] == item.unknown_0000[1]) {
       item.itemId = it->itemId;
       it->quantity -= item.quantity;
       if (it->quantity < 1) {
-        this->items_1758.erase(it);
+        this->unknown_1758.erase(it);
       }
       return;
     }
@@ -1773,12 +1655,12 @@ void ClientItemLists::RemoveItem1758(ITEM_INFO& item) {
 
 // OFFSET: 0x00DDA920
 // FUNCTION: fn_23344
-void ClientItemLists::RemoveItem1760(const ITEM_INFO& item) {
-  for (auto it = this->items_1760.begin(); it != this->items_1760.end(); ++it) {
+void CSession::RemoveItem1760(const ITEM_INFO& item) {
+  for (auto it = this->unknown_1760.begin(); it != this->unknown_1760.end(); ++it) {
     if (it->unknown_0000[1] == item.unknown_0000[1]) {
       it->quantity -= item.quantity;
       if (it->quantity < 1) {
-        this->items_1760.erase(it);
+        this->unknown_1760.erase(it);
       }
       return;
     }
@@ -1787,13 +1669,13 @@ void ClientItemLists::RemoveItem1760(const ITEM_INFO& item) {
 
 // OFFSET: 0x00DDA9C0
 // FUNCTION: fn_23345
-void ClientItemLists::RemoveItem1718ByItemId(const ITEM_INFO& item) {
-  for (auto it = this->items_1718.begin(); it != this->items_1718.end(); ++it) {
+void CSession::RemoveItem1718ByItemId(const ITEM_INFO& item) {
+  for (auto it = this->unknown_1718.begin(); it != this->unknown_1718.end(); ++it) {
     if (std::atoi(it->itemId.c_str()) == std::atoi(item.itemId.c_str())) {
       if (it->quantity != -1) {
         it->quantity -= item.quantity;
         if (it->quantity < 1) {
-          this->items_1718.erase(it);
+          this->unknown_1718.erase(it);
         }
       }
       return;
@@ -1803,13 +1685,13 @@ void ClientItemLists::RemoveItem1718ByItemId(const ITEM_INFO& item) {
 
 // OFFSET: 0x00DDAA50
 // FUNCTION: fn_23346
-void ClientItemLists::RemoveItem1718(const ITEM_INFO& item) {
-  for (auto it = this->items_1718.begin(); it != this->items_1718.end(); ++it) {
+void CSession::RemoveItem1718(const ITEM_INFO& item) {
+  for (auto it = this->unknown_1718.begin(); it != this->unknown_1718.end(); ++it) {
     if (it->unknown_0000[1] == item.unknown_0000[1]) {
       if (it->quantity != -1) {
         it->quantity -= item.quantity;
         if (it->quantity < 1) {
-          this->items_1718.erase(it);
+          this->unknown_1718.erase(it);
         }
       }
       return;
@@ -1819,12 +1701,12 @@ void ClientItemLists::RemoveItem1718(const ITEM_INFO& item) {
 
 // OFFSET: 0x00DDAAB0
 // FUNCTION: fn_23347
-void ClientItemLists::RemoveItem1720ByName(const ITEM_INFO& item) {
-  for (auto it = this->items_1720.begin(); it != this->items_1720.end(); ++it) {
+void CSession::RemoveItem1720ByName(const ITEM_INFO& item) {
+  for (auto it = this->unknown_1720.begin(); it != this->unknown_1720.end(); ++it) {
     if (it->itemId == item.itemId) {
       it->quantity -= item.quantity;
       if (it->quantity < 1) {
-        this->items_1720.erase(it);
+        this->unknown_1720.erase(it);
       }
       return;
     }
@@ -1833,14 +1715,14 @@ void ClientItemLists::RemoveItem1720ByName(const ITEM_INFO& item) {
 
 // OFFSET: 0x00DDAB30
 // FUNCTION: fn_23348
-void ClientItemLists::RemoveItem1720(const ITEM_INFO& item) {
+void CSession::RemoveItem1720(const ITEM_INFO& item) {
   const bool hasFlag = item.unknown_0074[3] != 0;
-  for (auto it = this->items_1720.begin(); it != this->items_1720.end(); ++it) {
+  for (auto it = this->unknown_1720.begin(); it != this->unknown_1720.end(); ++it) {
     const bool same = hasFlag ? it->unknown_0000[1] == item.unknown_0000[1] : it->itemId == item.itemId;
     if (same) {
       it->quantity -= item.quantity;
       if (it->quantity < 1) {
-        this->items_1720.erase(it);
+        this->unknown_1720.erase(it);
       }
       return;
     }
@@ -1849,12 +1731,12 @@ void ClientItemLists::RemoveItem1720(const ITEM_INFO& item) {
 
 // OFFSET: 0x00DDAC40
 // FUNCTION: fn_23349
-void ClientItemLists::RemoveItem1730(const ITEM_INFO& item) {
-  for (auto it = this->items_1730.begin(); it != this->items_1730.end(); ++it) {
+void CSession::RemoveItem1730(const ITEM_INFO& item) {
+  for (auto it = this->unknown_1730.begin(); it != this->unknown_1730.end(); ++it) {
     if (it->unknown_0000[1] == item.unknown_0000[1]) {
       it->quantity -= item.quantity;
       if (it->quantity < 1) {
-        this->items_1730.erase(it);
+        this->unknown_1730.erase(it);
       }
       return;
     }
@@ -1863,12 +1745,12 @@ void ClientItemLists::RemoveItem1730(const ITEM_INFO& item) {
 
 // OFFSET: 0x00DDAC90
 // FUNCTION: fn_23350
-void ClientItemLists::ReduceItem1718(const ITEM_INFO& item) {
-  for (auto it = this->items_1718.begin(); it != this->items_1718.end(); ++it) {
+void CSession::ReduceItem1718(const ITEM_INFO& item) {
+  for (auto it = this->unknown_1718.begin(); it != this->unknown_1718.end(); ++it) {
     if (it->unknown_0000[1] == item.unknown_0000[1]) {
       it->quantity -= item.quantity;
       if (it->quantity < 1) {
-        this->items_1718.erase(it);
+        this->unknown_1718.erase(it);
       }
       return;
     }
@@ -1877,14 +1759,14 @@ void ClientItemLists::ReduceItem1718(const ITEM_INFO& item) {
 
 // OFFSET: 0x00DDACE0
 // FUNCTION: fn_23351
-bool ClientItemLists::RemoveItem1738(const ITEM_INFO& item) {
-  for (auto it = this->items_1738.begin(); it != this->items_1738.end(); ++it) {
+bool CSession::RemoveItem1738(const ITEM_INFO& item) {
+  for (auto it = this->unknown_1738.begin(); it != this->unknown_1738.end(); ++it) {
     if (it->unknown_0000[1] == item.unknown_0000[1]) {
       it->quantity -= item.quantity;
       if (it->quantity < 1) {
-        this->items_1738.erase(it);
+        this->unknown_1738.erase(it);
       }
-      for (auto it2 = this->items_1738.begin(); it2 != this->items_1738.end(); ++it2) {
+      for (auto it2 = this->unknown_1738.begin(); it2 != this->unknown_1738.end(); ++it2) {
         if (it2->unknown_0000[1] == item.unknown_0000[1]) {
           it2->unknown_0074[2] = 0;
           break;
@@ -1900,14 +1782,14 @@ bool ClientItemLists::RemoveItem1738(const ITEM_INFO& item) {
 
 // OFFSET: 0x00E2EC10
 // FUNCTION: fn_24149
-bool ClientItemLists::EquipItem6B68(const ITEM_INFO& item) {
+bool CSession::EquipItem6B68(const ITEM_INFO& item) {
   const EquipSlots slots = g_session.GetEquipSlots(item.unknown_0000[3]);
   const int order[3] = {slots.values[2], slots.values[1], slots.values[0]};
 
   for (int index = 0; index < 3; ++index) {
     const int slot = order[index];
     if (slot != -1) {
-      ITEM_INFO& equipped = this->items_6B68[slot];
+      ITEM_INFO& equipped = this->unknown_6B68[slot];
       equipped = item;
       equipped.quantity = 1;
       equipped.unknown_0068 = item.unknown_0068;
@@ -1921,30 +1803,6 @@ bool ClientItemLists::EquipItem6B68(const ITEM_INFO& item) {
   }
   RefreshItemWindows(&g_windowMgr);
   return true;
-}
-
-// OFFSET: 0x00E2F540
-// FUNCTION: fn_24155
-void ClientItemLists::ResetItems6B68() {
-  int count = 10;
-  ITEM_INFO* item = this->items_6B68;
-  do {
-    item->Reset();
-    ++item;
-  } while (--count);
-  RefreshItemWindows(&g_windowMgr);
-}
-
-// OFFSET: 0x00E2F570
-// FUNCTION: fn_24156
-void ClientItemLists::ResetItems61B8() {
-  int count = 10;
-  ITEM_INFO* item = this->items_61B8;
-  do {
-    item->Reset();
-    ++item;
-  } while (--count);
-  RefreshItemWindows(&g_windowMgr);
 }
 
 // OFFSET: 0x00E2FC50
@@ -1985,19 +1843,19 @@ ITEM_INFO CSession::FindItemByIdentity(std::uint32_t identity, int location) {
 
 // OFFSET: 0x00E49F40
 // FUNCTION: fn_24247
-void ClientItemLists::SetItems1750(int count, const short* ids) {
+void CSession::SetItems1750(int count, const short* ids) {
   this->ClearItems1750();
   for (int i = 0; i < count; ++i) {
     const ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, ids[i]);
     if (item.unknown_0000[1] > 0) {
-      this->items_1750.push_back(item);
+      this->unknown_1750.push_back(item);
     }
   }
 }
 
 // OFFSET: 0x00DF9560
 // FUNCTION: fn_23520
-int ClientItemLists::IsGuildMemberName(const char* name) {
+int CSession::IsGuildMemberNameDifferent(const char* name) {
   std::list<GuildInfo::Member> members = g_guildInfo.m_members;
   for (auto it = members.begin(); it != members.end(); ++it) {
     if (this->IsDifferentName(name, it->name.c_str()) == 0) {
@@ -2010,8 +1868,8 @@ int ClientItemLists::IsGuildMemberName(const char* name) {
 
 // OFFSET: 0x00DF9690
 // FUNCTION: fn_23521
-int ClientItemLists::IsFriendName(const char* name) {
-  for (auto it = this->friends.begin(); it != this->friends.end(); ++it) {
+int CSession::IsFriendNameDifferent(const char* name) {
+  for (auto it = this->m_friends.begin(); it != this->m_friends.end(); ++it) {
     if (this->IsDifferentName(name, it->name.c_str()) == 0) {
       return 1;
     }
@@ -2022,10 +1880,10 @@ int ClientItemLists::IsFriendName(const char* name) {
 
 // OFFSET: 0x00DFCBB0
 // FUNCTION: fn_23600
-bool ClientItemLists::AddExchangeItem(ITEM_INFO item) {
+bool CSession::AddExchangeItem(ITEM_INFO item) {
   int count = 0;
   for (int i = 0; i < 10; ++i) {
-    if (this->exchangeItems[i].quantity != 0) {
+    if (this->m_exchangeItems[i].quantity != 0) {
       ++count;
     }
   }
@@ -2039,16 +1897,16 @@ bool ClientItemLists::AddExchangeItem(ITEM_INFO item) {
   ITEM_INFO added = item;
   int index = 0;
   for (; index < 10; ++index) {
-    if (this->exchangeItems[index].quantity != 0 && this->exchangeItems[index].unknown_0000[1] == added.unknown_0000[1]) {
-      this->exchangeItems[index].quantity += added.quantity;
+    if (this->m_exchangeItems[index].quantity != 0 && this->m_exchangeItems[index].unknown_0000[1] == added.unknown_0000[1]) {
+      this->m_exchangeItems[index].quantity += added.quantity;
       break;
     }
   }
 
   if (index == 10) {
     for (int i = 0; i < 10; ++i) {
-      if (this->exchangeItems[i].quantity == 0) {
-        this->exchangeItems[i] = added;
+      if (this->m_exchangeItems[i].quantity == 0) {
+        this->m_exchangeItems[i] = added;
         break;
       }
     }

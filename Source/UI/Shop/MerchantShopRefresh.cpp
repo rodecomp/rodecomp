@@ -1,5 +1,4 @@
 #include "Client/Session.h"
-#include "Contents/ClientItemLists.h"
 #include "Contents/Store/MCStoreInfoBackup.h"
 #include "UI/Shop/PriceColor.h"
 #include "UI/Shop/UIMerchantShopMakeWnd.h"
@@ -47,10 +46,10 @@ void UIMerchantShopMakeWnd::Refresh() {
 
   for (int index = 0; index < count; ++index) {
     const ITEM_INFO item = g_session.GetItem1768At(index);
-    reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1750(item, this->mode, 0);
+    g_session.AddItem1750(item, this->mode, 0);
   }
 
-  reinterpret_cast<ClientItemLists*>(&g_session)->ClearItems1768();
+  g_session.ClearItems1768();
   backup.Restore(this->mode != 0, this->unknown_012C);
 
   const std::vector<ITEM_INFO> displayed(backup.items);

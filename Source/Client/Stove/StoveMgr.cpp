@@ -41,9 +41,6 @@ const wchar_t g_stoveCategoryIdA[] = L"44C71118750747D";
 // STRING: st_01260
 const wchar_t g_stoveCategoryIdB[] = L"14A6891F90E24D7";
 
-struct ClientItemLists {
-  void ClearItems1784(int index);
-};
 
 // OFFSET: 0x0063EEE0
 // FUNCTION: fn_04800
@@ -59,7 +56,7 @@ void CStoveMgr::FetchAllProducts() {
     Sleep(200);
   } while (g_stoveWaitingCallback);
 
-  reinterpret_cast<ClientItemLists*>(&g_session)->ClearItems1784(9);
+  g_session.ClearItems1784(9);
   Stove::PCSDK::IAP::StovePCFetchProductParam categoryParam;
   categoryParam.SetCategoryId(this->m_environment == 2 ? g_stoveCategoryIdA : g_stoveCategoryIdB);
   categoryParam.SetPageNumber(1);
@@ -88,7 +85,7 @@ void FetchStoveTermsAgreement() {
 // OFFSET: 0x0063E910
 // FUNCTION: fn_45460
 void CStoveMgr::FetchCategoryProducts() {
-  reinterpret_cast<ClientItemLists*>(&g_session)->ClearItems1784(9);
+  g_session.ClearItems1784(9);
   Stove::PCSDK::IAP::StovePCFetchProductParam param;
   param.SetCategoryId(this->m_environment == 2 ? g_stoveCategoryIdA : g_stoveCategoryIdB);
   param.SetPageNumber(1);
@@ -300,7 +297,7 @@ void CategoryProductsCallback::operator()(Stove::PCSDK::CallbackResult callbackR
                                           unsigned int count) const {
   g_stoveWaitingCallback = false;
   if (callbackResult.GetResult().IsSuccessful()) {
-    g_session.ClearItems1784();
+    g_session.ClearAllItems1784();
     for (unsigned int index = 0; index < count; ++index) {
       const Stove::PCSDK::IAP::StovePCProduct& product = products[index];
       std::string categoryId = EncodeText(CP_ACP, std::wstring(product.GetCategoryId()));

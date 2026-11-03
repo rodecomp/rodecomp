@@ -9,7 +9,6 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Replay.h"
 #include "Client/Session.h"
-#include "Contents/ClientItemLists.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemNaming.h"
@@ -352,7 +351,7 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
         g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2536)), 255, 0, 0, 0);
       } else {
-        ClientItemLists* lists = reinterpret_cast<ClientItemLists*>(&g_session);
+        CSession* lists = &g_session;
         if (item.unknown_0074[3] == 1) {
           lists->RemoveItem1718(item);
           lists->MergeItem1720(item);
@@ -507,7 +506,7 @@ int UIParaItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
       ITEM_INFO item;
       item.Assign(reinterpret_cast<const RawItemData&>(mode->drag));
-      ClientItemLists* lists = reinterpret_cast<ClientItemLists*>(&g_session);
+      CSession* lists = &g_session;
       if (item.unknown_0074[3] == 1) {
         lists->RemoveItem1720(item);
         lists->MergeItem1718(item);
