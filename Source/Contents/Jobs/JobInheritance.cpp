@@ -1941,9 +1941,9 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     for (int index = 0; index < 8; ++index) {
       float x;
       float z;
-      mode->scene->terrain->Grid().CellCenter(offsets[index][0] + column, offsets[index][1] + row, x, z);
+      mode->CellCenter(offsets[index][0] + column, offsets[index][1] + row, x, z);
       position.x = x;
-      position.y = mode->scene->terrain->Grid().Height(x, z);
+      position.y = mode->scene->terrain->Height(x, z);
       position.z = z;
       mode->SpawnArrowEffect64(sourcePosition, &position, 18.0f);
     }

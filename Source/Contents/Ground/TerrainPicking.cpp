@@ -1,9 +1,9 @@
-#include "Contents/Ground/TerrainHeight.h"
+#include "Resource/World/TerrainResource.h"
 #include "Utility/Math/RayTriangle.h"
 
 // OFFSET: 0x00749300
 // FUNCTION: fn_07842
-float TerrainHeight::RayDistance(const float* ray, int column, int row) const {
+float C3dAttr::RayDistance(const float* ray, int column, int row) const {
   const TerrainHeightCell* cell = this->CellAt(column, row);
 
   if (!cell) {

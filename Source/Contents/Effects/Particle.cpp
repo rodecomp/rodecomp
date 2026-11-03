@@ -663,7 +663,7 @@ void CEZ2STRParticle::RenderGround(EZeffectClip* clip, EZeffectTransform* transf
     point.y = x * values[1] + y * values[4] + z * values[7] + values[10];
     point.z = x * values[2] + y * values[5] + z * values[8] + values[11];
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    point.y = mode->scene->terrain->Grid().PlaneHeight(point.x, point.z) - 2.0f;
+    point.y = mode->scene->terrain->PlaneHeight(point.x, point.z) - 2.0f;
     if (this->m_groundHeight != -1000.0f && point.y - this->m_groundHeight > 5.0f) {
       point.y = this->m_groundHeight;
     }

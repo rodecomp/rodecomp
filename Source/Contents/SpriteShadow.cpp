@@ -25,7 +25,7 @@ RenderPrimitive* CCharacterRender::DrawShadow(const float* matrix, float scale) 
   const float* origin = reinterpret_cast<const float*>(&this->unknown_0004);
   float position[3];
   position[0] = origin[0];
-  position[1] = mode->scene->terrain->Grid().Height(origin[0], origin[2]);
+  position[1] = mode->scene->terrain->Height(origin[0], origin[2]);
   position[2] = origin[2];
   const float depth = position[0] * matrix[2] + position[1] * matrix[5] + position[2] * matrix[8] + matrix[11];
 

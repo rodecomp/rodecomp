@@ -2372,7 +2372,7 @@ std::vector<unsigned char> CGameMode::SaveGroundItems() {
     int row;
     int subColumn;
     int subRow;
-    this->scene->terrain->Grid().WorldSubcell(item->render.position.x, item->render.position.z, column, row, subColumn, subRow);
+    this->WorldSubcell(item->render.position.x, item->render.position.z, column, row, subColumn, subRow);
     packet.x = static_cast<std::int16_t>(column);
     packet.y = static_cast<std::int16_t>(row);
     packet.subX = static_cast<unsigned char>(subColumn);
@@ -4454,7 +4454,7 @@ int CGameMode::ProcessGroundClick(int result) {
     g_groundOverlayB = row;
     g_groundOverlaySkip = 0;
     int skip = 1;
-    const TerrainHeightCell* cell = this->scene->terrain->Grid().CellAt(column, row);
+    const TerrainHeightCell* cell = this->scene->terrain->CellAt(column, row);
     if (!cell || cell->type == 1) {
       g_groundOverlayC = 0xFEFF0000;
     } else if (cell->type == 5) {
@@ -4493,14 +4493,14 @@ int CGameMode::ProcessGroundClick(int result) {
 
   bool findClosest = true;
   CPlayer* player = this->scene->player;
-  const TerrainHeightCell* cell = this->scene->terrain->Grid().CellAt(column, row);
+  const TerrainHeightCell* cell = this->scene->terrain->CellAt(column, row);
   if (cell && cell->type != 1 && cell->type != 5 &&
       (column != *reinterpret_cast<const int*>(&player->unknown_04F8) || row != player->unknown_04FC)) {
     int startColumn;
     int startRow;
     int startSubColumn;
     int startSubRow;
-    this->scene->terrain->Grid().WorldSubcell(player->render.position.x, player->render.position.z, startColumn, startRow, startSubColumn, startSubRow);
+    this->WorldSubcell(player->render.position.x, player->render.position.z, startColumn, startRow, startSubColumn, startSubRow);
     if (this->CanFindPath(startColumn, startRow, startSubColumn, startSubRow, column, row) && !this->IsRegisterCell(column, row)) {
       findClosest = false;
     }
@@ -4692,7 +4692,7 @@ void CGameMode::ProcessInput() {
         g_renderer->viewport.Projection(), g_mouse.x, g_mouse.y, this->camera->frame.eye, this->camera->frame.inverse.values, this->scene->spatial,
         column, row
       );
-      const TerrainHeightCell* cell = this->scene->terrain->Grid().CellAt(column, row);
+      const TerrainHeightCell* cell = this->scene->terrain->CellAt(column, row);
       if (cell && cell->type != 1 && cell->type != 5) {
         this->SetCursorAction(0);
       } else {

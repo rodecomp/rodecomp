@@ -129,7 +129,7 @@ void CSteal::Slot03() {
 
     if (lift > 0.0f) {
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-      if (y > mode->scene->terrain->Grid().Height(x, z)) {
+      if (y > mode->scene->terrain->Height(x, z)) {
         lift /= -1.5f;
       }
     }

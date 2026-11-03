@@ -11119,7 +11119,7 @@ void LaunchSkillCastEffect(CGameMode* mode, CGameActor* source, CGameActor* targ
     float worldZ = 0.0f;
     const int column = x;
     const int row = y;
-    reinterpret_cast<const ::TerrainHeight*>(g_modeMgr.GetGameMode())->CellCenter(column, row, worldX, worldZ);
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->CellCenter(column, row, worldX, worldZ);
     source->Face(worldX, worldZ);
 
     CGroundScope* scope = new (std::nothrow) CGroundScope;
@@ -11924,9 +11924,9 @@ void CGameMode::SpawnMirrorActor(std::uint32_t aid, std::uint32_t owner, short x
   if (owner == g_session.m_aid) {
     CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(aid));
     if (actor) {
-      reinterpret_cast<const ::TerrainHeight*>(this)->CellCenter(x, y, actor->render.position.x, actor->render.position.z);
+      this->CellCenter(x, y, actor->render.position.x, actor->render.position.z);
       actor->render.position.y =
-        reinterpret_cast<const ::TerrainHeight*>(this->scene->terrain)->Height(actor->render.position.x, actor->render.position.z);
+        this->scene->terrain->Height(actor->render.position.x, actor->render.position.z);
       return;
     }
 
@@ -16181,9 +16181,8 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
   }
   case 0x98F: {
     vector3d position{0.0f, 0.0f, 0.0f};
-    const TerrainHeight terrain = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Grid();
-    terrain.CellCenter(x, y, position.x, position.z);
-    position.y = terrain.Height(position.x, position.z);
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->CellCenter(x, y, position.x, position.z);
+    position.y = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Height(position.x, position.z);
     effect = g_effectMgr->Spawn(0, g_serviceOptions.Get(0xE5) ? 0x5AC : 0x504, position.x, position.y, position.z, 0, -1, 0, 0);
     if (effect) {
       effect->Slot14(delay);
@@ -16193,9 +16192,8 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
   case 0x2E0:
   case 0x991: {
     vector3d position{0.0f, 0.0f, 0.0f};
-    const TerrainHeight terrain = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Grid();
-    terrain.CellCenter(x, y, position.x, position.z);
-    position.y = terrain.Height(position.x, position.z);
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->CellCenter(x, y, position.x, position.z);
+    position.y = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Height(position.x, position.z);
     effect = g_effectMgr->Spawn(0, g_serviceOptions.Get(0xE5) ? 0x5B0 : 0x50A, position.x, position.y, position.z, 0, -1, 0, 0);
     if (effect) {
       effect->Slot14(delay);
@@ -16857,7 +16855,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     if (source != nullptr) {
       float x;
       float z;
-      this->scene->terrain->Grid().CellCenter(targetAid >> 16, targetAid & 0xFFFF, x, z);
+      this->CellCenter(targetAid >> 16, targetAid & 0xFFFF, x, z);
       source->Face(x, z);
     }
     break;

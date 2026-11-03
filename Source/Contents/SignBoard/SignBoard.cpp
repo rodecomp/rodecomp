@@ -2,7 +2,7 @@
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
-#include "Contents/Ground/TerrainHeight.h"
+#include "Resource/World/TerrainResource.h"
 #include "Contents/World/World.h"
 #include "Network/TextEncoding.h"
 #include "Render/Renderer.h"
@@ -90,8 +90,8 @@ void CSignBoardMgr::Initialize() {
       object->SetWindowImage(image);
 
       vector3d position = {0.0f, 0.0f, 0.0f};
-      reinterpret_cast<const TerrainHeight*>(g_modeMgr.GetGameMode())->CellCenter(it->column, it->row, position.x, position.z);
-      position.y = reinterpret_cast<const TerrainHeight*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain)->Height(position.x, position.z) -
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->CellCenter(it->column, it->row, position.x, position.z);
+      position.y = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Height(position.x, position.z) -
         static_cast<float>(it->offset);
       object->render.position = position;
       static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->objects.push_back(object);
@@ -100,8 +100,8 @@ void CSignBoardMgr::Initialize() {
     case 2: {
       CIcon* icon = new CIcon();
       vector3d position = {0.0f, 0.0f, 0.0f};
-      reinterpret_cast<const TerrainHeight*>(g_modeMgr.GetGameMode())->CellCenter(it->column, it->row, position.x, position.z);
-      position.y = reinterpret_cast<const TerrainHeight*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain)->Height(position.x, position.z) -
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->CellCenter(it->column, it->row, position.x, position.z);
+      position.y = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Height(position.x, position.z) -
         static_cast<float>(it->offset);
       icon->render.position = position;
       icon->Load(std::string(it->image));
@@ -121,8 +121,8 @@ void CSignBoardMgr::Initialize() {
       object->SetBoard(std::string(it->unknown_0014), std::string(it->unknown_001C));
 
       vector3d position = {0.0f, 0.0f, 0.0f};
-      reinterpret_cast<const TerrainHeight*>(g_modeMgr.GetGameMode())->CellCenter(it->column, it->row, position.x, position.z);
-      position.y = reinterpret_cast<const TerrainHeight*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain)->Height(position.x, position.z) -
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->CellCenter(it->column, it->row, position.x, position.z);
+      position.y = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Height(position.x, position.z) -
         static_cast<float>(it->offset);
       object->render.position = position;
       static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->objects.push_back(object);

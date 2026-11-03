@@ -1245,7 +1245,7 @@ void CMsgEffect::FollowOwner() {
           this->render.curMotion = static_cast<int>(this->unknown_018C * 0.23f * 4.0f / this->render.speed) % static_cast<int>(frames);
         }
         this->Face(owner->render.position.x, owner->render.position.z);
-        this->render.position.y = scene->terrain->Grid().Height(this->render.position.x, this->render.position.z);
+        this->render.position.y = scene->terrain->Height(this->render.position.x, this->render.position.z);
       }
       return;
 
@@ -1360,7 +1360,7 @@ void CMsgEffect::FollowOwner() {
           this->unknown_018C += SquareRoot(movedX * movedX + movedZ * movedZ);
         }
         this->Face(owner->render.position.x, owner->render.position.z);
-        this->render.position.y = scene->terrain->Grid().Height(this->render.position.x, this->render.position.z) - 25.0f;
+        this->render.position.y = scene->terrain->Height(this->render.position.x, this->render.position.z) - 25.0f;
       }
       return;
 
@@ -1416,7 +1416,7 @@ void CMsgEffect::FollowOwner() {
           this->render.previousAnimation = this->render.animation + dir;
         }
         this->Face(owner->render.position.x, owner->render.position.z);
-        this->render.position.y = scene->terrain->Grid().Height(this->render.position.x, this->render.position.z);
+        this->render.position.y = scene->terrain->Height(this->render.position.x, this->render.position.z);
       }
       return;
 

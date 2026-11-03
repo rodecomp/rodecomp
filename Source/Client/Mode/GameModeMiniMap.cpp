@@ -78,7 +78,7 @@ void CGameMode::StepTowardWalkableCell(const int& targetX, const int& targetY, i
     --y;
   }
 
-  if (this->scene->terrain->Grid().Walkable(x, y)) {
+  if (this->scene->terrain->Walkable(x, y)) {
     return;
   }
 
@@ -86,7 +86,7 @@ void CGameMode::StepTowardWalkableCell(const int& targetX, const int& targetY, i
   for (int i = 0; i < 8; ++i) {
     x = startX + offsets[i][0];
     y = startY + offsets[i][1];
-    if (this->scene->terrain->Grid().Walkable(x, y)) {
+    if (this->scene->terrain->Walkable(x, y)) {
       return;
     }
   }
@@ -103,7 +103,7 @@ void CGameMode::FindWalkableCellToward(float x, float z, float originX, float or
 
   const int startY = row;
   const int startX = column;
-  if (this->scene->terrain->Grid().Walkable(startX, startY)) {
+  if (this->scene->terrain->Walkable(startX, startY)) {
     return;
   }
 
@@ -111,7 +111,7 @@ void CGameMode::FindWalkableCellToward(float x, float z, float originX, float or
   for (int i = 0; i < 8; ++i) {
     column = startX + offsets[i][0];
     row = startY + offsets[i][1];
-    if (this->scene->terrain->Grid().Walkable(column, row)) {
+    if (this->scene->terrain->Walkable(column, row)) {
       return;
     }
   }

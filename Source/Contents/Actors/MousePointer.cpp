@@ -30,7 +30,7 @@ void CMousePointer::SendMsg(CGameObject*, int message, int a, int b, int c, int 
     this->render.position.x = position[0];
     this->render.position.z = position[1];
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    this->render.position.y = mode->scene->terrain->Grid().Height(this->render.position.x, this->render.position.z);
+    this->render.position.y = mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
     this->render.visible = 1;
     this->m_remainingFrames = 0;
     if ((d | e) != 0) {

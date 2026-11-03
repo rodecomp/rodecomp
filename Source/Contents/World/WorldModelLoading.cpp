@@ -250,7 +250,7 @@ void CWorld::InitWorld() {
       PumpApplicationMessages();
     }
 
-    reinterpret_cast<const ::TerrainHeight*>(g_modeMgr.GetGameMode())
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())
       ->CellCenter(g_session.m_playerX, g_session.m_playerY, g_worldLoadCenter[0], g_worldLoadCenter[2]);
 
     const float dx = placement->position[0] - g_worldLoadCenter[0];

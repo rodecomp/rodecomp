@@ -1,9 +1,9 @@
-#include "Contents/Ground/TerrainHeight.h"
+#include "Resource/World/TerrainResource.h"
 #include "Utility/Math/ScalarConversion.h"
 
 // OFFSET: 0x00749040
 // FUNCTION: fn_07840
-float TerrainHeight::PlaneHeight(float x, float z) const {
+float C3dAttr::PlaneHeight(float x, float z) const {
   const float size = static_cast<float>(this->cellSize);
   const int columns = this->width;
   const int rows = this->height;

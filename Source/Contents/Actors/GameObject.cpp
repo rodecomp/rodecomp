@@ -695,7 +695,7 @@ void CRenderObject::DrawShadow(int argument, float scale) {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   float position[3];
   position[0] = this->render.position.x;
-  position[1] = mode->scene->terrain->Grid().Height(this->render.position.x, this->render.position.z);
+  position[1] = mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
   position[2] = z;
   const float depth = position[1] * matrix[5] + position[0] * matrix[2] + z * matrix[8] + matrix[11];
 

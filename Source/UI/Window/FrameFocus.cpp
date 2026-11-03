@@ -183,7 +183,7 @@ bool UIWindowMgr::HasTitleAtActorCell(std::uint32_t aid) {
   int actorColumn = 0;
   int actorRow = 0;
   CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
-  world->terrain->Grid().SpatialCell(actor->render.position.x, actor->render.position.z, actorColumn, actorRow);
+  world->terrain->SpatialCell(actor->render.position.x, actor->render.position.z, actorColumn, actorRow);
   for (std::list<UIWindow*>::iterator it = this->rendered.begin(); it != this->rendered.end(); ++it) {
     UIWindow* window = *it;
     CRenderObject* owner;
@@ -211,7 +211,7 @@ bool UIWindowMgr::HasTitleAtActorCell(std::uint32_t aid) {
       continue;
     }
 
-    world->terrain->Grid().SpatialCell(owner->render.position.x, owner->render.position.z, titleColumn, titleRow);
+    world->terrain->SpatialCell(owner->render.position.x, owner->render.position.z, titleColumn, titleRow);
     if (titleColumn == actorColumn && titleRow == actorRow) {
       return true;
     }

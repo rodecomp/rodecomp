@@ -1,11 +1,11 @@
-#include "Contents/Ground/TerrainHeight.h"
+#include "Resource/World/TerrainResource.h"
 
 #include "Client/Application/ErrorDialog.h"
 #include "Utility/Math/ScalarConversion.h"
 
 // OFFSET: 0x00748C80
 // FUNCTION: fn_07836
-std::uint32_t TerrainHeight::CellType(float x, float z) const {
+std::uint32_t C3dAttr::CellType(float x, float z) const {
   const float size = static_cast<float>(this->cellSize);
   const int column = static_cast<int>(((static_cast<float>(this->width) * size) * 0.5f + x) / size);
   if (column >= 0) {
@@ -22,7 +22,7 @@ std::uint32_t TerrainHeight::CellType(float x, float z) const {
 
 // OFFSET: 0x00748D80
 // FUNCTION: fn_07838
-float TerrainHeight::Height(float x, float z) const {
+float C3dAttr::Height(float x, float z) const {
   const float size = static_cast<float>(this->cellSize);
   const float gridX = (static_cast<float>(this->width) * size) * 0.5f + x;
   const float gridZ = (static_cast<float>(this->height) * size) * 0.5f + z;
@@ -33,7 +33,7 @@ float TerrainHeight::Height(float x, float z) const {
     return 0.0f;
   }
 
-  const TerrainHeightCell* cell = this->cells + column + row * this->width;
+  const TerrainHeightCell* cell = this->m_cells.data() + column + row * this->width;
 
   if (!cell) {
     return 0.0f;
@@ -49,17 +49,17 @@ float TerrainHeight::Height(float x, float z) const {
 
 // OFFSET: 0x00748D30
 // FUNCTION: fn_07837
-const TerrainHeightCell* TerrainHeight::CellAt(int column, int row) const {
+const TerrainHeightCell* C3dAttr::CellAt(int column, int row) const {
   if (column < 0 || column >= this->width || row < 0 || row >= this->height) {
     return nullptr;
   }
 
-  return this->cells + column + row * this->width;
+  return this->m_cells.data() + column + row * this->width;
 }
 
 // OFFSET: 0x007492A0
 // FUNCTION: fn_07841
-bool TerrainHeight::Walkable(int column, int row) const {
+bool C3dAttr::Walkable(int column, int row) const {
   const TerrainHeightCell* cell = this->CellAt(column, row);
   return cell && cell->type != 1 && cell->type != 5;
 }

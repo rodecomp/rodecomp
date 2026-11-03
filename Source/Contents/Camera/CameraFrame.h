@@ -6,7 +6,6 @@
 
 #include <cstddef>
 
-struct TerrainHeight;
 class CRenderer;
 
 struct CameraFrame {
@@ -15,10 +14,10 @@ struct CameraFrame {
   /* 0098 */ matrix view;
   /* 00C8 */ matrix inverse;
 
-  void Build(const CameraState& camera, const TerrainHeight& terrain);
-  void Refresh(const CameraState& camera, const TerrainHeight& terrain, CRenderer& renderer);
+  void Build(const CameraState& camera);
+  void Refresh(const CameraState& camera, CRenderer& renderer);
   void Forward(const CameraState& camera, float* output) const;
-  void AlternateView(const CameraState& camera, float yaw, const TerrainHeight& terrain, matrix& output) const;
+  void AlternateView(const CameraState& camera, float yaw, matrix& output) const;
 };
 
 

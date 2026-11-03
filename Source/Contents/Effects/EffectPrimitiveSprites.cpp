@@ -120,7 +120,7 @@ void CEffectPrim::RenderGroundSprite(matrix& wtm) {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   float position[3];
   position[0] = this->render.position.x;
-  position[1] = mode->scene->terrain->Grid().Height(this->render.position.x, this->render.position.z);
+  position[1] = mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
   position[2] = z;
   const float depth = position[0] * wtm.values[2] + position[1] * wtm.values[5] + z * wtm.values[8] + wtm.values[11];
 

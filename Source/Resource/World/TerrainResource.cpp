@@ -73,8 +73,3 @@ void C3dAttr::Unload() {
   this->width = 0;
   this->height = 0;
 }
-
-// INLINED
-TerrainHeight C3dAttr::Grid() const {
-  return {this->width, this->height, this->cellSize, this->m_cells.data()};
-}

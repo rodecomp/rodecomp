@@ -232,7 +232,7 @@ void CSkill::LaunchGroundEffects(int effectId, int, int duration) {
     for (int row = -range; row <= range; ++row) {
       const float x = static_cast<float>(column * 6) + this->render.position.x + static_cast<float>(rand() % 11) * 0.2f - 1.0f;
       const float z = static_cast<float>(row * 6) + this->render.position.z + static_cast<float>(rand() % 11) * 0.2f - 1.0f;
-      float y = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Grid().Height(x, z);
+      float y = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Height(x, z);
       if (effectId == 0x3BF || effectId == 0x3CF) {
         y += 20.0f;
       }
@@ -506,8 +506,8 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
       this->render.enabled = visible;
     }
 
-    reinterpret_cast<const TerrainHeight*>(mode)->CellCenter(unit->x, unit->y, this->render.position.x, this->render.position.z);
-    this->render.position.y = mode->scene->terrain->Grid().Height(this->render.position.x, this->render.position.z);
+    mode->CellCenter(unit->x, unit->y, this->render.position.x, this->render.position.z);
+    this->render.position.y = mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
     this->m_effectId = -1;
 
     const vector3d& position = this->render.position;

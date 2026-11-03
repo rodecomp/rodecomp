@@ -2785,7 +2785,7 @@ bool CPlayer::OnProcess() {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   if (this->unknown_050C != 0 && timeGetTime() > (g_session.m_averagePing >> 1) + this->unknown_0504) {
     PlayerMoveRequest request;
-    reinterpret_cast<const ::TerrainHeight*>(mode)->WorldSubcell(
+    mode->WorldSubcell(
       this->render.position.x, this->render.position.z, request.column, request.row, request.subColumn, request.subRow
     );
     request.serverTime = g_session.GetServerTime();
@@ -2875,7 +2875,7 @@ void CPlayer::UpdatePendingAction() {
         x = target->render.position.x;
         z = target->render.position.z;
       } else {
-        reinterpret_cast<const ::TerrainHeight*>(mode)->CellCenter(cellX, cellY, x, z);
+        mode->CellCenter(cellX, cellY, x, z);
       }
       this->ApplyFollowOffset(target, x, z, &cellY, &cellX);
       mode->FindWalkableCellToward(this->render.position.x, this->render.position.z, x, z, cellX, cellY, g_session.unknown_0F4C);
@@ -2997,7 +2997,7 @@ void CPlayer::UpdatePendingAction() {
     const int range = mode->GetSkillAttackRange(this->unknown_052C, this->unknown_0530);
     float x;
     float z;
-    reinterpret_cast<const ::TerrainHeight*>(mode)->CellCenter(groundX, groundY, x, z);
+    mode->CellCenter(groundX, groundY, x, z);
     mode->FindWalkableCellToward(this->render.position.x, this->render.position.z, x, z, groundX, groundY, range);
     const int state = static_cast<int>(this->render.unknown_0070);
     if (state != 1 && state != 0 && state != 4 && state < 16) {
@@ -3040,7 +3040,7 @@ void CPlayer::UpdatePendingAction() {
     }
     float x;
     float z;
-    reinterpret_cast<const ::TerrainHeight*>(mode)->CellCenter(cellX, cellY, x, z);
+    mode->CellCenter(cellX, cellY, x, z);
     mode->FindWalkableCellToward(this->render.position.x, this->render.position.z, x, z, cellX, cellY, range);
     const int state = static_cast<int>(this->render.unknown_0070);
     if (state != 1 && state != 0 && state != 4 && state < 16) {
@@ -3794,7 +3794,7 @@ void CPlayer::SendMsg(
       int row = 0;
       int subColumn = 0;
       int subRow = 0;
-      reinterpret_cast<const TerrainHeight*>(g_modeMgr.GetGameMode())
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())
         ->WorldSubcell(this->render.position.x, this->render.position.z, column, row, subColumn, subRow);
       MovementRouteInterpolation route;
       if (g_pathFinder.FindPath(timeGetTime(), column, row, subColumn, subRow, this->unknown_0534, this->unknown_0538, 150, route, 15) == true) {
@@ -3857,7 +3857,7 @@ void CPlayer::SendMsg(
     }
     float targetX;
     float targetZ;
-    reinterpret_cast<const TerrainHeight*>(mode)->CellCenter(b, d, targetX, targetZ);
+    mode->CellCenter(b, d, targetX, targetZ);
     const float heading = CRenderObject::Heading(this->render.position.x, this->render.position.z, targetX, targetZ);
     const float facing = static_cast<float>((CPlayer::AngleToDirection(static_cast<float>(heading + 22.5)) + 4) * 45);
     int delta = static_cast<int>(this->render.angle - facing);
@@ -3931,7 +3931,7 @@ void CPlayer::SendMsg(
       int row;
       int subColumn;
       int subRow;
-      reinterpret_cast<const TerrainHeight*>(mode)->WorldSubcell(this->render.position.x, this->render.position.z, column, row, subColumn, subRow);
+      mode->WorldSubcell(this->render.position.x, this->render.position.z, column, row, subColumn, subRow);
       if (this->FindRoute(column, row, subColumn, subRow, route[5], route[6], *reinterpret_cast<const int*>(g_session.unknown_16F4))) {
         this->unknown_0158[5] = route[5];
         *reinterpret_cast<int*>(this->unknown_0170) = route[6];
@@ -4202,9 +4202,9 @@ CPlayer::CPlayer() {
 // OFFSET: 0x00DB5340
 // FUNCTION: fn_22665
 void CPlayer::Initialize() {
-  reinterpret_cast<const ::TerrainHeight*>(g_modeMgr.GetGameMode())
+  static_cast<CGameMode*>(g_modeMgr.GetGameMode())
     ->CellCenter(g_session.m_playerX, g_session.m_playerY, this->render.position.x, this->render.position.z);
-  this->render.position.y = reinterpret_cast<const ::TerrainHeight*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain)
+  this->render.position.y = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain
                               ->Height(this->render.position.x, this->render.position.z);
   static_cast<CGameMode*>(g_modeMgr.GetGameMode())
     ->WorldCell(this->render.position.x, this->render.position.z, reinterpret_cast<int&>(this->unknown_04F8), this->unknown_04FC);
@@ -4565,10 +4565,10 @@ void CGrannyPc::RenderShadow(int argument, vector3d lightDirection, bool cached)
   int subColumn;
   int subRow;
   if (!cached) {
-    reinterpret_cast<const ::TerrainHeight*>(mode)->WorldSubcell(this->render.position.x, this->render.position.z, column, row, subColumn, subRow);
+    mode->WorldSubcell(this->render.position.x, this->render.position.z, column, row, subColumn, subRow);
     float centerX;
     float centerZ;
-    reinterpret_cast<const ::TerrainHeight*>(mode)->CellCenter(column, row, centerX, centerZ);
+    mode->CellCenter(column, row, centerX, centerZ);
     const int offsetX = static_cast<int>(this->render.position.x - centerX);
     const int offsetZ = static_cast<int>(this->render.position.z - centerZ);
 
@@ -4589,7 +4589,7 @@ void CGrannyPc::RenderShadow(int argument, vector3d lightDirection, bool cached)
     this->unknown_2554->Upload(0, 0, 35, 35, g_groundShadowPixels, 0, 0);
   }
 
-  reinterpret_cast<const ::TerrainHeight*>(mode)->WorldSubcell(this->render.position.x, this->render.position.z, column, row, subColumn, subRow);
+  mode->WorldSubcell(this->render.position.x, this->render.position.z, column, row, subColumn, subRow);
   GroundGeometry* ground = mode->scene->ground;
   column -= 2;
   row -= 2;
@@ -4696,9 +4696,9 @@ void CPc::SendMsg(
   switch (static_cast<std::int64_t>(a) << 32 | static_cast<std::uint32_t>(message)) {
   case 3: {
     PcStandEntry* entry = reinterpret_cast<PcStandEntry*>(b);
-    reinterpret_cast<const ::TerrainHeight*>(mode)->CellCenter(entry->cellX, entry->cellY, this->render.position.x, this->render.position.z);
+    mode->CellCenter(entry->cellX, entry->cellY, this->render.position.x, this->render.position.z);
     this->render.position.y =
-      reinterpret_cast<const ::TerrainHeight*>(mode->scene->terrain)->Height(this->render.position.x, this->render.position.z);
+      mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
     this->render.angle = static_cast<float>((entry->direction + 4) * 45);
     this->unknown_0294 = entry->unknown_001C;
     this->unknown_0298 = entry->unknown_0020;
@@ -4732,9 +4732,9 @@ void CPc::SendMsg(
     PcStandEntry* entry = reinterpret_cast<PcStandEntry*>(b);
     this->render.accountId = entry->aid;
     CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    reinterpret_cast<const ::TerrainHeight*>(gameMode)->CellCenter(entry->cellX, entry->cellY, this->render.position.x, this->render.position.z);
+    gameMode->CellCenter(entry->cellX, entry->cellY, this->render.position.x, this->render.position.z);
     this->render.position.y =
-      reinterpret_cast<const ::TerrainHeight*>(gameMode->scene->terrain)->Height(this->render.position.x, this->render.position.z);
+      gameMode->scene->terrain->Height(this->render.position.x, this->render.position.z);
     this->render.angle = static_cast<float>((entry->direction + 4) * 45);
     *reinterpret_cast<int*>(&this->unknown_0170[4]) = entry->speed;
     this->unknown_0294 = entry->unknown_001C;
@@ -4810,11 +4810,11 @@ void CPc::SendMsg(
     this->SetUnknown02C8(entry->unknown_0048);
     this->Slot49(entry->guildId, entry->guildVersion);
     this->Slot41(entry->unknown_006C, entry->unknown_0070);
-    reinterpret_cast<const ::TerrainHeight*>(mode)->CellCenter(entry->startX, entry->startY, this->render.position.x, this->render.position.z);
+    mode->CellCenter(entry->startX, entry->startY, this->render.position.x, this->render.position.z);
     this->render.position.x += static_cast<float>(mode->scene->terrain->cellSize) * 0.0625f * static_cast<float>(entry->startSubX - 8);
     this->render.position.z += static_cast<float>(mode->scene->terrain->cellSize) * 0.0625f * static_cast<float>(entry->startSubY - 8);
     this->render.position.y =
-      reinterpret_cast<const ::TerrainHeight*>(mode->scene->terrain)->Height(this->render.position.x, this->render.position.z);
+      mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
     if (this->FindRoute(entry->startX, entry->startY, entry->startSubX, entry->startSubY, entry->destX, entry->destY, entry->speed)) {
       this->unknown_0158[5] = entry->destX;
       *reinterpret_cast<int*>(this->unknown_0170) = entry->destY;
@@ -4917,9 +4917,9 @@ void CPc::SendMsg(
     this->unknown_04D0 = entry->unknown_0078;
     this->render.accountId = entry->aid;
     CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    reinterpret_cast<const ::TerrainHeight*>(gameMode)->CellCenter(entry->cellX, entry->cellY, this->render.position.x, this->render.position.z);
+    gameMode->CellCenter(entry->cellX, entry->cellY, this->render.position.x, this->render.position.z);
     this->render.position.y =
-      reinterpret_cast<const ::TerrainHeight*>(gameMode->scene->terrain)->Height(this->render.position.x, this->render.position.z);
+      gameMode->scene->terrain->Height(this->render.position.x, this->render.position.z);
     this->render.angle = static_cast<float>((entry->direction + 4) * 45);
     *reinterpret_cast<int*>(&this->unknown_0170[4]) = entry->speed;
     this->unknown_0294 = entry->unknown_001C;
@@ -4973,11 +4973,11 @@ void CPc::SendMsg(
     this->SetUnknown02C8(entry->unknown_0048);
     this->Slot49(entry->guildId, entry->guildVersion);
     this->Slot41(entry->unknown_006C, entry->unknown_0070);
-    reinterpret_cast<const ::TerrainHeight*>(mode)->CellCenter(entry->startX, entry->startY, this->render.position.x, this->render.position.z);
+    mode->CellCenter(entry->startX, entry->startY, this->render.position.x, this->render.position.z);
     this->render.position.x += static_cast<float>(mode->scene->terrain->cellSize) * 0.0625f * static_cast<float>(entry->startSubX - 8);
     this->render.position.z += static_cast<float>(mode->scene->terrain->cellSize) * 0.0625f * static_cast<float>(entry->startSubY - 8);
     this->render.position.y =
-      reinterpret_cast<const ::TerrainHeight*>(mode->scene->terrain)->Height(this->render.position.x, this->render.position.z);
+      mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
     if (this->FindRoute(entry->startX, entry->startY, entry->startSubX, entry->startSubY, entry->destX, entry->destY, entry->speed)) {
       this->unknown_0158[5] = entry->destX;
       *reinterpret_cast<int*>(this->unknown_0170) = entry->destY;
@@ -5021,9 +5021,9 @@ void CPc::SendMsg(
   case 124: {
     PcStandEntry* entry = reinterpret_cast<PcStandEntry*>(b);
     this->unknown_04D0 = entry->unknown_0078;
-    reinterpret_cast<const ::TerrainHeight*>(mode)->CellCenter(entry->cellX, entry->cellY, this->render.position.x, this->render.position.z);
+    mode->CellCenter(entry->cellX, entry->cellY, this->render.position.x, this->render.position.z);
     this->render.position.y =
-      reinterpret_cast<const ::TerrainHeight*>(mode->scene->terrain)->Height(this->render.position.x, this->render.position.z);
+      mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
     this->render.angle = static_cast<float>((entry->direction + 4) * 45);
     this->unknown_0294 = entry->unknown_001C;
     this->unknown_0298 = entry->unknown_0020;
@@ -5106,9 +5106,9 @@ void CGrannyPc::SendMsg(
   switch (static_cast<std::int64_t>(a) << 32 | static_cast<std::uint32_t>(message)) {
   case 3: {
     PcStandEntry* entry = reinterpret_cast<PcStandEntry*>(b);
-    reinterpret_cast<const ::TerrainHeight*>(mode)->CellCenter(entry->cellX, entry->cellY, this->render.position.x, this->render.position.z);
+    mode->CellCenter(entry->cellX, entry->cellY, this->render.position.x, this->render.position.z);
     this->render.position.y =
-      reinterpret_cast<const ::TerrainHeight*>(mode->scene->terrain)->Height(this->render.position.x, this->render.position.z);
+      mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
     this->render.angle = static_cast<float>((entry->direction + 4) * 45);
     this->unknown_0294 = entry->unknown_001C;
     this->unknown_0298 = entry->unknown_0020;
@@ -5143,9 +5143,9 @@ void CGrannyPc::SendMsg(
     PcStandEntry* entry = reinterpret_cast<PcStandEntry*>(b);
     this->render.accountId = entry->aid;
     CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    reinterpret_cast<const ::TerrainHeight*>(gameMode)->CellCenter(entry->cellX, entry->cellY, this->render.position.x, this->render.position.z);
+    gameMode->CellCenter(entry->cellX, entry->cellY, this->render.position.x, this->render.position.z);
     this->render.position.y =
-      reinterpret_cast<const ::TerrainHeight*>(gameMode->scene->terrain)->Height(this->render.position.x, this->render.position.z);
+      gameMode->scene->terrain->Height(this->render.position.x, this->render.position.z);
     this->render.angle = static_cast<float>((entry->direction + 4) * 45);
     *reinterpret_cast<int*>(&this->unknown_0170[4]) = entry->speed;
     this->unknown_0294 = entry->unknown_001C;
@@ -5220,11 +5220,11 @@ void CGrannyPc::SendMsg(
     this->SetUnknown02C8(entry->unknown_0048);
     this->Slot49(entry->guildId, entry->guildVersion);
     this->Slot41(entry->unknown_006C, entry->unknown_0070);
-    reinterpret_cast<const ::TerrainHeight*>(mode)->CellCenter(entry->startX, entry->startY, this->render.position.x, this->render.position.z);
+    mode->CellCenter(entry->startX, entry->startY, this->render.position.x, this->render.position.z);
     this->render.position.x += static_cast<float>(mode->scene->terrain->cellSize) * 0.0625f * static_cast<float>(entry->startSubX - 8);
     this->render.position.z += static_cast<float>(mode->scene->terrain->cellSize) * 0.0625f * static_cast<float>(entry->startSubY - 8);
     this->render.position.y =
-      reinterpret_cast<const ::TerrainHeight*>(mode->scene->terrain)->Height(this->render.position.x, this->render.position.z);
+      mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
     if (this->FindRoute(entry->startX, entry->startY, entry->startSubX, entry->startSubY, entry->destX, entry->destY, entry->speed)) {
       this->unknown_0158[5] = entry->destX;
       *reinterpret_cast<int*>(this->unknown_0170) = entry->destY;
@@ -5292,11 +5292,11 @@ void CGrannyPc::SendMsg(
     this->SetUnknown02C8(entry->unknown_0048);
     this->Slot49(entry->guildId, entry->guildVersion);
     this->Slot41(entry->unknown_006C, entry->unknown_0070);
-    reinterpret_cast<const ::TerrainHeight*>(mode)->CellCenter(entry->startX, entry->startY, this->render.position.x, this->render.position.z);
+    mode->CellCenter(entry->startX, entry->startY, this->render.position.x, this->render.position.z);
     this->render.position.x += static_cast<float>(mode->scene->terrain->cellSize) * 0.0625f * static_cast<float>(entry->startSubX - 8);
     this->render.position.z += static_cast<float>(mode->scene->terrain->cellSize) * 0.0625f * static_cast<float>(entry->startSubY - 8);
     this->render.position.y =
-      reinterpret_cast<const ::TerrainHeight*>(mode->scene->terrain)->Height(this->render.position.x, this->render.position.z);
+      mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
     if (this->FindRoute(entry->startX, entry->startY, entry->startSubX, entry->startSubY, entry->destX, entry->destY, entry->speed)) {
       this->unknown_0158[5] = entry->destX;
       *reinterpret_cast<int*>(this->unknown_0170) = entry->destY;
@@ -5310,9 +5310,9 @@ void CGrannyPc::SendMsg(
   }
   case 124: {
     PcStandEntry* entry = reinterpret_cast<PcStandEntry*>(b);
-    reinterpret_cast<const ::TerrainHeight*>(mode)->CellCenter(entry->cellX, entry->cellY, this->render.position.x, this->render.position.z);
+    mode->CellCenter(entry->cellX, entry->cellY, this->render.position.x, this->render.position.z);
     this->render.position.y =
-      reinterpret_cast<const ::TerrainHeight*>(mode->scene->terrain)->Height(this->render.position.x, this->render.position.z);
+      mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
     this->render.angle = static_cast<float>((entry->direction + 4) * 45);
     this->unknown_0294 = entry->unknown_001C;
     this->unknown_0298 = entry->unknown_0020;

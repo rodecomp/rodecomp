@@ -1,5 +1,4 @@
 #include "Client/Mode/CGameMode.h"
-#include "Contents/Ground/TerrainHeight.h"
 #include "Contents/World/World.h"
 #include "Resource/World/TerrainResource.h"
 #include "Utility/Math/ScalarConversion.h"
@@ -8,18 +7,18 @@
 
 // OFFSET: 0x00AC8150
 // FUNCTION: fn_17666
-void TerrainHeight::CellOrigin(int column, int row, float& x, float& z) const {
-  x = static_cast<float>((column - this->width / 2) * this->cellSize);
-  z = static_cast<float>((row - this->height / 2) * this->cellSize);
+void CWorld::CellOrigin(int column, int row, float& x, float& z) const {
+  x = static_cast<float>((column - this->terrain->width / 2) * this->terrain->cellSize);
+  z = static_cast<float>((row - this->terrain->height / 2) * this->terrain->cellSize);
 }
 
 // OFFSET: 0x00CD36E0
 // FUNCTION: fn_21270
-void TerrainHeight::CellCenter(int column, int row, float& x, float& z) const {
-  const float size = static_cast<float>(this->cellSize);
-  const float offset = (size * 8.0f) * 0.0625f;
-  x = ((static_cast<float>(column) - static_cast<float>(this->width) * 0.5f) * size) + offset;
-  z = ((static_cast<float>(row) - static_cast<float>(this->height) * 0.5f) * static_cast<float>(this->cellSize)) + offset;
+void CGameMode::CellCenter(int column, int row, float& x, float& z) const {
+  x = (static_cast<float>(column) - static_cast<float>(this->scene->terrain->width) * 0.5f) * static_cast<float>(this->scene->terrain->cellSize) +
+    static_cast<float>(this->scene->terrain->cellSize) * 8.0f * 0.0625f;
+  z = (static_cast<float>(row) - static_cast<float>(this->scene->terrain->height) * 0.5f) * static_cast<float>(this->scene->terrain->cellSize) +
+    static_cast<float>(this->scene->terrain->cellSize) * 8.0f * 0.0625f;
 }
 
 // OFFSET: 0x00CD3620
@@ -45,28 +44,29 @@ void CGameMode::WorldCell(float x, float z, int& column, int& row) const {
 
 // OFFSET: 0x00CD50A0
 // FUNCTION: fn_21277
-void TerrainHeight::WorldSubcell(float x, float z, int& column, int& row, int& subColumn, int& subRow) const {
-  const float size = static_cast<float>(this->cellSize);
+void CGameMode::WorldSubcell(float x, float z, int& column, int& row, int& subColumn, int& subRow) const {
+  const C3dAttr* terrain = this->scene->terrain;
+  const float size = static_cast<float>(terrain->cellSize);
   const float localX = x / size;
-  const float gridX = static_cast<float>(this->width / 2) + localX;
+  const float gridX = static_cast<float>(terrain->width / 2) + localX;
   const float flooredX = static_cast<float>(std::floor(static_cast<double>(gridX)));
   const float localZ = z / size;
   column = TruncateToInt(flooredX);
-  const float gridZ = static_cast<float>(this->height / 2) + localZ;
+  const float gridZ = static_cast<float>(terrain->height / 2) + localZ;
   const float flooredZ = static_cast<float>(std::floor(static_cast<double>(gridZ)));
   row = TruncateToInt(flooredZ);
 
-  const float fractionX = (static_cast<float>(this->width / 2) + localX) - static_cast<float>(column);
+  const float fractionX = (static_cast<float>(terrain->width / 2) + localX) - static_cast<float>(column);
   const float sixteenthsX = static_cast<float>(std::floor(static_cast<double>(fractionX * 16.0f)));
   subColumn = TruncateToInt(sixteenthsX) % 16;
-  const float fractionZ = (static_cast<float>(this->height / 2) + localZ) - static_cast<float>(row);
+  const float fractionZ = (static_cast<float>(terrain->height / 2) + localZ) - static_cast<float>(row);
   const float sixteenthsZ = static_cast<float>(std::floor(static_cast<double>(fractionZ * 16.0f)));
   subRow = TruncateToInt(sixteenthsZ) % 16;
 }
 
 // OFFSET: 0x00A8C790
 // FUNCTION: fn_17135
-void TerrainHeight::SpatialCell(float x, float z, int& column, int& row) const {
+void C3dAttr::SpatialCell(float x, float z, int& column, int& row) const {
   const int halfRows = 2 * (this->height / 4);
   const float first = static_cast<float>(std::floor(static_cast<double>(x / static_cast<float>(this->cellSize))));
   const int firstCell = TruncateToInt(first);
@@ -77,7 +77,7 @@ void TerrainHeight::SpatialCell(float x, float z, int& column, int& row) const {
 
 // OFFSET: 0x00748E90
 // FUNCTION: fn_07839
-void TerrainHeight::HeightBounds(const int* rectangle, float& minimum, float& maximum) const {
+void C3dAttr::HeightBounds(const int* rectangle, float& minimum, float& maximum) const {
   minimum = 999999.0f;
   maximum = -999999.0f;
   int column = rectangle[0];

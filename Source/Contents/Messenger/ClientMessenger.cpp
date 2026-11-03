@@ -5196,7 +5196,7 @@ bool CGameMode::GetClosestValidCell(int* x, int* y) {
   int row;
   int subColumn;
   int subRow;
-  this->scene->terrain->Grid().WorldSubcell(player->render.position.x, player->render.position.z, column, row, subColumn, subRow);
+  this->WorldSubcell(player->render.position.x, player->render.position.z, column, row, subColumn, subRow);
   const int startY = *y;
   const int startX = *x;
   const int deltaY = row - startY;
@@ -5212,7 +5212,7 @@ bool CGameMode::GetClosestValidCell(int* x, int* y) {
       for (int i = 0; i < 9; ++i) {
         const int candidateX = cellX + offsets[i][0];
         const int candidateY = cellY + offsets[i][1];
-        if (this->scene->terrain->Grid().Walkable(candidateX, candidateY) && !this->IsRegisterCell(candidateX, candidateY)) {
+        if (this->scene->terrain->Walkable(candidateX, candidateY) && !this->IsRegisterCell(candidateX, candidateY)) {
           if (!this->CanFindPath(column, row, subColumn, subRow, candidateX, candidateY)) {
             return false;
           }
@@ -5232,7 +5232,7 @@ bool CGameMode::GetClosestValidCell(int* x, int* y) {
       for (int i = 0; i < 9; ++i) {
         const int candidateX = cellX + offsets[i][0];
         const int candidateY = cellY + offsets[i][1];
-        if (this->scene->terrain->Grid().Walkable(candidateX, candidateY) && !this->IsRegisterCell(candidateX, candidateY)) {
+        if (this->scene->terrain->Walkable(candidateX, candidateY) && !this->IsRegisterCell(candidateX, candidateY)) {
           if (!this->CanFindPath(column, row, subColumn, subRow, candidateX, candidateY)) {
             return false;
           }
@@ -5506,7 +5506,7 @@ bool CGameMode::HasUnknown01A4(int value) {
 // OFFSET: 0x00CD75B0
 // FUNCTION: fn_21295
 bool CGameMode::IsValidCell(int x, int y) {
-  if (!this->scene->terrain->Grid().Walkable(x, y)) {
+  if (!this->scene->terrain->Walkable(x, y)) {
     return false;
   }
   CPlayer* player = this->scene->player;
@@ -5517,7 +5517,7 @@ bool CGameMode::IsValidCell(int x, int y) {
   int row;
   int subColumn;
   int subRow;
-  this->scene->terrain->Grid().WorldSubcell(player->render.position.x, player->render.position.z, column, row, subColumn, subRow);
+  this->WorldSubcell(player->render.position.x, player->render.position.z, column, row, subColumn, subRow);
   return this->CanFindPath(column, row, subColumn, subRow, x, y) && !this->IsRegisterCell(x, y);
 }
 

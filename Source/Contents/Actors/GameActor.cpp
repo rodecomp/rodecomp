@@ -170,7 +170,7 @@ bool CGameActor::Slot14() {
       this->unknown_023C = this->route.NextPoint(serverTime, &nextTick, &cellX, &cellY);
       float destX = 0.0f;
       float destZ = 0.0f;
-      reinterpret_cast<const TerrainHeight*>(mode)->CellCenter(static_cast<int>(cellX), static_cast<int>(cellY), destX, destZ);
+      mode->CellCenter(static_cast<int>(cellX), static_cast<int>(cellY), destX, destZ);
       int dtNext = static_cast<int>(nextTick) - static_cast<int>(this->unknown_0258);
       int dtNow = static_cast<int>(serverTime) - static_cast<int>(this->unknown_0258);
       if (dtNext < 0) {
@@ -214,7 +214,7 @@ bool CGameActor::Slot14() {
           if (this->route.Point(previousIndex, &pointX, &pointY)) {
             float notifyX = 0.0f;
             float notifyZ = 0.0f;
-            reinterpret_cast<const TerrainHeight*>(mode)->CellCenter(pointX, pointY, notifyX, notifyZ);
+            mode->CellCenter(pointX, pointY, notifyX, notifyZ);
             this->NotifyCellMove(&notifyX, &notifyZ);
           }
         }
@@ -233,7 +233,7 @@ bool CGameActor::Slot14() {
       mode->SetFollowTicks(0, 0);
       this->unknown_0244 = timeGetTime();
       this->unknown_0258 = serverTime;
-      this->render.position.y = reinterpret_cast<const TerrainHeight*>(world->terrain)->Height(this->render.position.x, this->render.position.z);
+      this->render.position.y = world->terrain->Height(this->render.position.x, this->render.position.z);
       this->render.position.x += this->unknown_03F0.x;
       this->render.position.y += this->unknown_03F0.y;
       this->render.position.z += this->unknown_03F0.z;
@@ -395,7 +395,7 @@ bool CGameActor::Slot14() {
   this->unknown_0244 = timeGetTime();
   this->unknown_0258 = serverTime;
   if (moved != 0) {
-    this->render.position.y = reinterpret_cast<const TerrainHeight*>(world->terrain)->Height(this->render.position.x, this->render.position.z);
+    this->render.position.y = world->terrain->Height(this->render.position.x, this->render.position.z);
     this->render.position.x += this->unknown_03F0.x;
     this->render.position.y += this->unknown_03F0.y;
     this->render.position.z += this->unknown_03F0.z;

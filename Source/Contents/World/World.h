@@ -30,6 +30,7 @@ public:
   CWorld(const CWorld&) = delete;
   CWorld& operator=(const CWorld&) = delete;
   void LoadMapEffects();
+  void CellOrigin(int column, int row, float& x, float& z) const;
   void Clear();
   void OnExitFrame();
   void OnProcess();

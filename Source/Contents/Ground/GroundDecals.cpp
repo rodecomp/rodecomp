@@ -137,7 +137,7 @@ void GroundGeometry::DrawTerrainOverlay(
     return;
   }
 
-  const TerrainHeightCell* cell = terrain.Grid().CellAt(column, row);
+  const TerrainHeightCell* cell = terrain.CellAt(column, row);
 
   if (!cell) {
     return;

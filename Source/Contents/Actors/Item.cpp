@@ -110,8 +110,8 @@ bool CItem::OnProcess() {
   if (this->isFalling) {
     this->render.position.y = (elapsed * 0.083f + this->fallVelocity) * elapsed + this->fallOrigin;
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    if (this->render.position.y > mode->scene->terrain->Grid().Height(this->render.position.x, this->render.position.z)) {
-      this->render.position.y = mode->scene->terrain->Grid().Height(this->render.position.x, this->render.position.z);
+    if (this->render.position.y > mode->scene->terrain->Height(this->render.position.x, this->render.position.z)) {
+      this->render.position.y = mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
       this->isFalling = 0;
     }
   }
@@ -142,7 +142,7 @@ void CItem::SendMsg(CGameObject* sender, int message, int a, int b, int c, int d
   this->name = entry->itemId;
   std::string itemName = this->name;
   mode->SubcellPosition(entry->column, entry->row, entry->subColumn, entry->subRow, this->render.position.x, this->render.position.z);
-  this->render.position.y = mode->scene->terrain->Grid().Height(this->render.position.x, this->render.position.z);
+  this->render.position.y = mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
   if (entry->falling) {
     this->fallVelocity = -0.6f;
     this->render.position.y -= 15.0f;
@@ -174,7 +174,7 @@ void CItem::SendMsg(CGameObject* sender, int message, int a, int b, int c, int d
   if (entry->showEffect == 1) {
     const float x = this->render.position.x;
     const float z = this->render.position.z;
-    const float height = mode->scene->terrain->Grid().Height(x, z);
+    const float height = mode->scene->terrain->Height(x, z);
     const int effectId = g_itemInfoMgr->GetEffectId(this->itemIndex);
     if (effectId >= 0 && !g_effectMgr->Spawn(entry->aid, effectId, x, height, z, 0, -1, 0, 0)) {
       if (CRagEffect* effect = this->LaunchEffect(effectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {

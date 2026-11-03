@@ -982,8 +982,8 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
   g_session.GetSkillActionInfo2(skillId, effectId, motion);
   float x;
   float z;
-  reinterpret_cast<const ::TerrainHeight*>(mode)->CellCenter(skill[2], skill[3], x, z);
-  const float height = mode->scene->terrain->Grid().Height(x, z);
+  mode->CellCenter(skill[2], skill[3], x, z);
+  const float height = mode->scene->terrain->Height(x, z);
   this->hitTargetAid = 0;
 
   switch (skillId) {
@@ -1287,7 +1287,7 @@ void CGameActor::Slot15(int state, int resetPosition) {
   if (this->render.unknown_0070 == 4 && static_cast<unsigned char>(resetPosition) == 1) {
     this->render.position.x = this->unknown_02D0;
     this->render.position.z = this->unknown_02D4;
-    this->render.position.y = mode->scene->terrain->Grid().Height(this->unknown_02D0, this->unknown_02D4);
+    this->render.position.y = mode->scene->terrain->Height(this->unknown_02D0, this->unknown_02D4);
   }
 
   const std::uint32_t aid = this->render.accountId;
@@ -3845,8 +3845,8 @@ void CGrannyCorpse3d::Render(int argument) {
   CWorld* scene = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
   const float sine = ClientSine(static_cast<int>(this->angle));
   const float cosine = ClientCosine(static_cast<int>(this->angle));
-  scene->terrain->Grid().Height(cosine * 0.0f - sine * -40.0f + this->position.x, sine * 0.0f - cosine * 40.0f + this->position.z);
-  scene->terrain->Grid().Height(cosine * 0.0f - sine * 40.0f + this->position.x, cosine * 40.0f + sine * 0.0f + this->position.z);
+  scene->terrain->Height(cosine * 0.0f - sine * -40.0f + this->position.x, sine * 0.0f - cosine * 40.0f + this->position.z);
+  scene->terrain->Height(cosine * 0.0f - sine * 40.0f + this->position.x, cosine * 40.0f + sine * 0.0f + this->position.z);
 
   matrix transform;
   std::memcpy(transform.values, g_identityMatrix, sizeof(g_identityMatrix));
@@ -4013,10 +4013,10 @@ void C3dGrannyGameActor::RenderLit(int argument, const GrannyActorLight& light) 
   CWorld* scene = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
   const float sine = ClientSine(static_cast<int>(this->angle));
   const float cosine = ClientCosine(static_cast<int>(this->angle));
-  scene->terrain->Grid().Height(
+  scene->terrain->Height(
     cosine * 0.0f - sine * -40.0f + this->render.position.x, sine * 0.0f - cosine * 40.0f + this->render.position.z
   );
-  scene->terrain->Grid().Height(
+  scene->terrain->Height(
     cosine * 0.0f - sine * 40.0f + this->render.position.x, cosine * 40.0f + sine * 0.0f + this->render.position.z
   );
 

@@ -240,6 +240,8 @@ public:
   std::vector<unsigned char> SaveGroundItems();
   std::vector<unsigned char> SaveActorStates();
   void WorldCell(float x, float z, int& column, int& row) const;
+  void CellCenter(int column, int row, float& x, float& z) const;
+  void WorldSubcell(float x, float z, int& column, int& row, int& subColumn, int& subRow) const;
   void SubcellPosition(int column, int row, int subColumn, int subRow, float& x, float& z) const;
   void PlayerCell(int* column, int* row) const;
   void RefreshActorJobEffects(bool playerOnly);

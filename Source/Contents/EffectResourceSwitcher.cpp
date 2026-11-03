@@ -354,7 +354,7 @@ void CEZ2STREffect::Slot03() {
 
   if (this->emitter->unknown_3FEB) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    this->position[1] = mode->scene->terrain->Grid().Height(this->position[0], this->position[2]);
+    this->position[1] = mode->scene->terrain->Height(this->position[0], this->position[2]);
   }
 
   if (EZ2STREmitter* emitter = this->emitter) {

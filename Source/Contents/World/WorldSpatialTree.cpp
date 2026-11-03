@@ -134,8 +134,8 @@ void WorldSpatialTree::ReadBounds(CFile& input, int depth) {
 void WorldSpatialTree::BindTerrain(C3dAttr& resource, int depth) {
   this->dirty = 1;
   this->terrain = &resource;
-  resource.Grid().SpatialCell(this->minimum[0], this->minimum[2], this->terrainCells[0], this->terrainCells[1]);
-  this->terrain->Grid().SpatialCell(this->maximum[0], this->maximum[2], this->terrainCells[2], this->terrainCells[3]);
+  resource.SpatialCell(this->minimum[0], this->minimum[2], this->terrainCells[0], this->terrainCells[1]);
+  this->terrain->SpatialCell(this->maximum[0], this->maximum[2], this->terrainCells[2], this->terrainCells[3]);
 
   if (depth != 5) {
     for (WorldSpatialTree* child : this->children) {
@@ -207,7 +207,7 @@ void WorldSpatialTree::RefreshBounds(int depth) {
   float terrainMinimum;
   float terrainMaximum;
   this->ground->HeightBounds(this->groundCells, groundMinimum, groundMaximum);
-  this->terrain->Grid().HeightBounds(this->terrainCells, terrainMinimum, terrainMaximum);
+  this->terrain->HeightBounds(this->terrainCells, terrainMinimum, terrainMaximum);
   this->maximum[1] = terrainMaximum > groundMaximum ? terrainMaximum : groundMaximum;
   this->minimum[1] = terrainMinimum < groundMinimum ? terrainMinimum : groundMinimum;
 
@@ -341,7 +341,7 @@ void WorldSpatialTree::RefreshModelBounds(int depth) {
   float terrainMinimum;
   float terrainMaximum;
   this->ground->HeightBounds(this->groundCells, groundMinimum, groundMaximum);
-  this->terrain->Grid().HeightBounds(this->terrainCells, terrainMinimum, terrainMaximum);
+  this->terrain->HeightBounds(this->terrainCells, terrainMinimum, terrainMaximum);
   this->maximum[1] = terrainMaximum > groundMaximum ? terrainMaximum : groundMaximum;
   this->minimum[1] = terrainMinimum < groundMinimum ? terrainMinimum : groundMinimum;
 

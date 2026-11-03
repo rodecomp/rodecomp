@@ -24,7 +24,7 @@ bool PickScreenTerrain(
       int candidateColumn = node->terrainCells[0];
 
       while (candidateColumn <= node->terrainCells[2]) {
-        const float distance = terrain->Grid().RayDistance(ray, candidateColumn, candidateRow);
+        const float distance = terrain->RayDistance(ray, candidateColumn, candidateRow);
 
         if (nearest > distance) {
           nearest = distance;

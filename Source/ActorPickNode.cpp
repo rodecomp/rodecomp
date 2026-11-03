@@ -30,7 +30,7 @@ bool MovementRouteInterpolation::Empty() const {
 // OFFSET: 0x00AD9600
 // FUNCTION: fn_17881
 bool CPathFinder::Walkable(int column, int row) const {
-  return this->attr->Grid().Walkable(column, row);
+  return this->attr->Walkable(column, row);
 }
 
 // OFFSET: 0x00ADA690

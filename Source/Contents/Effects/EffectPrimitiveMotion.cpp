@@ -243,7 +243,7 @@ bool CEffectPrim::MoveEffectPrimitive() {
     this->state.master->state.deltaPos[2] = this->state.deltaPos.z + this->state.deltaPos2.z;
   }
 
-  if ((this->state.pattern & 4u) != 0 && this->render.position.y > static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Grid().Height(this->render.position.x, this->render.position.z)) {
+  if ((this->state.pattern & 4u) != 0 && this->render.position.y > static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Height(this->render.position.x, this->render.position.z)) {
     this->state.pattern &= ~4u;
     this->state.stateCnt = this->state.duration - 25;
     this->state.speed = 0;
@@ -2496,7 +2496,7 @@ bool CEffectPrim::Prim3DParticleGravity() {
   this->render.position.z = this->state.deltaPos.z + this->state.orgPos.z;
   this->state.size = this->state.sizeSpeed + this->state.size;
 
-  if (this->state.gravSpeed > 0.0f && this->render.position.y > mode->scene->terrain->Grid().Height(this->render.position.x, this->render.position.z)) {
+  if (this->state.gravSpeed > 0.0f && this->render.position.y > mode->scene->terrain->Height(this->render.position.x, this->render.position.z)) {
     this->state.gravSpeed = this->state.gravSpeed / -1.5f;
 
     if (this->state.playWaveType == 1) {
@@ -2663,7 +2663,7 @@ bool CEffectPrim::Prim3DTextureNoMaster() {
   if ((particle.pattern & 4u) != 0) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
 
-    if (this->render.position.y > mode->scene->terrain->Grid().Height(this->render.position.x, this->render.position.z)) {
+    if (this->render.position.y > mode->scene->terrain->Height(this->render.position.x, this->render.position.z)) {
       particle.pattern &= ~4u;
       particle.stateCnt = particle.duration - 25;
       particle.speed = 0;
@@ -5950,9 +5950,9 @@ bool CEffectPrim::PrimFieldFireflies() {
         } else if (respawn == 3.0f) {
           slot.vecBNow.x = static_cast<float>(Random(300) - 150);
           slot.vecBNow.z = static_cast<float>(Random(300) - 150);
-          const auto& grid = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Grid();
+          const C3dAttr* grid = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain;
           const int sink = Random(5);
-          slot.vecBNow.y = grid.Height(this->render.position.x + slot.vecBNow.x, this->render.position.z + slot.vecBNow.z) - 20.0f - static_cast<float>(sink);
+          slot.vecBNow.y = grid->Height(this->render.position.x + slot.vecBNow.x, this->render.position.z + slot.vecBNow.z) - 20.0f - static_cast<float>(sink);
         } else {
           slot.vecBNow.x = static_cast<float>(Random(200) + 25);
           slot.vecBNow.z = static_cast<float>(Random(200) + 25);

@@ -3969,10 +3969,10 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       actor->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       float x;
       float z;
-      reinterpret_cast<const ::TerrainHeight*>(mode)->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
+      mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
       vector3d position;
       position.x = x;
-      position.y = mode->scene->terrain->Grid().Height(x, z);
+      position.y = mode->scene->terrain->Height(x, z);
       position.z = z;
       int count = message.level + 2;
       if (count > 7) {
@@ -4019,10 +4019,10 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
     for (int index = 0; index < 8; ++index) {
       float x;
       float z;
-      reinterpret_cast<const ::TerrainHeight*>(mode)->CellCenter(offsets[index][0] + cellX, offsets[index][1] + cellY, x, z);
+      mode->CellCenter(offsets[index][0] + cellX, offsets[index][1] + cellY, x, z);
       vector3d target;
       target.x = x;
-      target.y = mode->scene->terrain->Grid().Height(x, z);
+      target.y = mode->scene->terrain->Height(x, z);
       target.z = z;
       mode->SpawnArrowEffect64(source, &target, 18.0f);
     }
@@ -4038,10 +4038,10 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     float x;
     float z;
-    reinterpret_cast<const ::TerrainHeight*>(mode)->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
+    mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
     vector3d position;
     position.x = x;
-    position.y = mode->scene->terrain->Grid().Height(x, z);
+    position.y = mode->scene->terrain->Height(x, z);
     position.z = z;
     this->LaunchDummyEffect(&position, 0x26E, 200, 0);
     break;
@@ -4055,10 +4055,10 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     float x;
     float z;
-    reinterpret_cast<const ::TerrainHeight*>(mode)->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
+    mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
     vector3d position;
     position.x = x;
-    position.y = mode->scene->terrain->Grid().Height(x, z);
+    position.y = mode->scene->terrain->Height(x, z);
     position.z = z;
     this->LaunchDummyEffect(&position, 0x2D6, EffectLifetime(0x2D6) + 10, 0);
     break;
@@ -4070,10 +4070,10 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
     actor->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     float x;
     float z;
-    reinterpret_cast<const ::TerrainHeight*>(mode)->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
+    mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
     vector3d position;
     position.x = x;
-    position.y = mode->scene->terrain->Grid().Height(x, z);
+    position.y = mode->scene->terrain->Height(x, z);
     position.z = z;
     int count = message.level + 2;
     if (count > 7) {
@@ -4152,10 +4152,10 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     float x;
     float z;
-    reinterpret_cast<const ::TerrainHeight*>(mode)->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
+    mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
     vector3d position;
     position.x = x;
-    position.y = mode->scene->terrain->Grid().Height(x, z);
+    position.y = mode->scene->terrain->Height(x, z);
     position.z = z;
     effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     g_modeMgr.GetGameMode()->SendMsg(0x7A, 0, 0, 0, 0);
@@ -4171,10 +4171,10 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     float x;
     float z;
-    reinterpret_cast<const ::TerrainHeight*>(mode)->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
+    mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
     vector3d position;
     position.x = x;
-    position.y = mode->scene->terrain->Grid().Height(x, z);
+    position.y = mode->scene->terrain->Height(x, z);
     position.z = z;
     effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     break;
@@ -4185,8 +4185,8 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
     actor->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     float x;
     float z;
-    reinterpret_cast<const ::TerrainHeight*>(mode)->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
-    const float y = mode->scene->terrain->Grid().Height(x, z);
+    mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
+    const float y = mode->scene->terrain->Height(x, z);
     int delay = 0;
     for (int degrees = 0; degrees < 1080; degrees += 72) {
       const float radius = static_cast<float>(std::max(std::rand() % 20, 0)) + 5.0f;
@@ -4215,10 +4215,10 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
     g_soundMgr->PlayWave("effect\\G가시나무덫.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     float x;
     float z;
-    reinterpret_cast<const ::TerrainHeight*>(mode)->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
+    mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
     vector3d position;
     position.x = x;
-    position.y = mode->scene->terrain->Grid().Height(x, z);
+    position.y = mode->scene->terrain->Height(x, z);
     position.z = z;
     this->LaunchDummyEffect(&position, 0x393, 150, 0);
     break;
@@ -4228,10 +4228,10 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
     actor->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     float x;
     float z;
-    reinterpret_cast<const ::TerrainHeight*>(mode)->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
+    mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
     vector3d position;
     position.x = x;
-    position.y = mode->scene->terrain->Grid().Height(x, z);
+    position.y = mode->scene->terrain->Height(x, z);
     position.z = z;
     this->LaunchDummyEffect(&position, 0x376, 300, 0);
     this->LaunchDummyEffect(&position, 0x375, 200, 0);
@@ -4247,16 +4247,16 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
     break;
   case 0x14F9: {
     vector3d position = {0.0f, 0.0f, 0.0f};
-    reinterpret_cast<const ::TerrainHeight*>(this)->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), position.x, position.z);
-    position.y = this->scene->terrain->Grid().Height(position.x, position.z);
+    this->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), position.x, position.z);
+    position.y = this->scene->terrain->Height(position.x, position.z);
     g_effectMgr->Spawn(0, 0x7EB, position.x, position.y, position.z, 0, -1, 0, 0);
     g_effectMgr->Spawn(0, 0x7EA, position.x, position.y, position.z, 0, -1, 0, 0);
     break;
   }
   case 0x14FD: {
     vector3d position = {0.0f, 0.0f, 0.0f};
-    reinterpret_cast<const ::TerrainHeight*>(this)->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), position.x, position.z);
-    position.y = this->scene->terrain->Grid().Height(position.x, position.z);
+    this->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), position.x, position.z);
+    position.y = this->scene->terrain->Height(position.x, position.z);
     g_effectMgr->Spawn(0, 0x856, position.x, position.y, position.z, 0, -1, 0, 0);
     g_effectMgr->Spawn(0, 0x855, position.x, position.y, position.z, 0, -1, 0, 0);
     break;

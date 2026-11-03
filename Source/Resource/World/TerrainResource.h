@@ -13,7 +13,14 @@ public:
   C3dAttr* Create() override;
   bool Load(const char* name) override;
   void Unload() override;
-  TerrainHeight Grid() const;
+  float Height(float x, float z) const;
+  float PlaneHeight(float x, float z) const;
+  const TerrainHeightCell* CellAt(int column, int row) const;
+  bool Walkable(int column, int row) const;
+  std::uint32_t CellType(float x, float z) const;
+  void SpatialCell(float x, float z, int& column, int& row) const;
+  void HeightBounds(const int* rectangle, float& minimum, float& maximum) const;
+  float RayDistance(const float* ray, int column, int row) const;
 
   /* 0110 */ int width;
   /* 0114 */ int height;

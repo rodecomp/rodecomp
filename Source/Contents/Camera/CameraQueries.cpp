@@ -1,5 +1,8 @@
 #include "Contents/Camera/CameraFrame.h"
-#include "Contents/Ground/TerrainHeight.h"
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Contents/World/World.h"
+#include "Resource/World/TerrainResource.h"
 
 #include <cmath>
 
@@ -30,7 +33,7 @@ void CameraFrame::Forward(const CameraState& camera, float* output) const {
 
 // OFFSET: 0x00ADBB60
 // FUNCTION: fn_17925
-void CameraFrame::AlternateView(const CameraState& camera, float yaw, const TerrainHeight& terrain, matrix& output) const {
+void CameraFrame::AlternateView(const CameraState& camera, float yaw, matrix& output) const {
   constexpr float pi = 3.141592f;
   matrix orbit;
   orbit.MakeXRotation((camera.pitch / 180.0f) * pi);
@@ -40,7 +43,7 @@ void CameraFrame::AlternateView(const CameraState& camera, float yaw, const Terr
   eye[0] = (((orbit.values[3] * 0.0f + orbit.values[0] * 0.0f) + distance * orbit.values[6]) + orbit.values[9]) + camera.target[0];
   eye[1] = (((orbit.values[4] * 0.0f + orbit.values[1] * 0.0f) + distance * orbit.values[7]) + orbit.values[10]) + camera.target[1];
   eye[2] = (((orbit.values[5] * 0.0f + orbit.values[2] * 0.0f) + distance * orbit.values[8]) + orbit.values[11]) + camera.target[2];
-  const float height = terrain.Height(eye[0], eye[2]);
+  const float height = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Height(eye[0], eye[2]);
 
   if (eye[1] > height) {
     eye[1] = height;

@@ -52,7 +52,7 @@ void GroundGeometry::Slot07(int, int, int, int) const {
 // OFFSET: 0x00AC0E30
 // FUNCTION: fn_17572
 bool GroundGeometry::OverlayHeights(const C3dAttr& terrain, float* vertices, int column, int row) const {
-  const TerrainHeightCell* cell = terrain.Grid().CellAt(column, row);
+  const TerrainHeightCell* cell = terrain.CellAt(column, row);
 
   if (!cell) {
     return false;

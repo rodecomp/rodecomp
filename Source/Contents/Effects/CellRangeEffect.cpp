@@ -106,7 +106,7 @@ void CCellRangeEffect::Slot03() {
       position.x = static_cast<float>(particle->unknown_000C) * this->cellSize + position.x;
       position.z = static_cast<float>(particle->unknown_0010) * this->cellSize + position.z;
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-      position.y = mode->scene->terrain->Grid().Height(position.x, position.z) - 1.2f;
+      position.y = mode->scene->terrain->Height(position.x, position.z) - 1.2f;
       particle->position.x = position.x;
       particle->position.y = position.y;
       particle->position.z = position.z;

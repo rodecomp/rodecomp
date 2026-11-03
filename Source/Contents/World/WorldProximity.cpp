@@ -142,7 +142,7 @@ bool CWorld::IsExistGuildMasterNearby(const float& x, const float& z) {
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
       mode->WorldCell(actor->render.position.x + 0.5f, actor->render.position.z + 0.5f, column, row);
       mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-      mode->scene->terrain->Grid().CellCenter(column, row, centerX, centerZ);
+      mode->CellCenter(column, row, centerX, centerZ);
       return std::fabs(centerX - x) <= static_cast<float>(this->nearbyRange) && std::fabs(centerZ - z) <= static_cast<float>(this->nearbyRange);
     }
 
@@ -306,7 +306,7 @@ void CWorld::AddPcPosFromCell(std::uint32_t aid, const int* cell) {
   CellFloatPos pos;
   pos.x = 0.0f;
   pos.z = 0.0f;
-  static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Grid().CellCenter(cell[0], cell[1], pos.x, pos.z);
+  static_cast<CGameMode*>(g_modeMgr.GetGameMode())->CellCenter(cell[0], cell[1], pos.x, pos.z);
   this->AddPcPos(aid, pos);
 }
 

@@ -1118,7 +1118,7 @@ CParticle* CFootprintEffect::SpawnFootprint() {
     const float x = vertex.x * world.values[0] + vertex.y * world.values[3] + 0.0f * world.values[6] + world.values[9];
     const float z = vertex.x * world.values[2] + vertex.y * world.values[5] + 0.0f * world.values[8] + world.values[11];
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    float y = mode->scene->terrain->Grid().PlaneHeight(x, z) - 2.0f;
+    float y = mode->scene->terrain->PlaneHeight(x, z) - 2.0f;
     if (this->unknown_0120 != -1000.0f && y - this->unknown_0120 > 5.0f) {
       y = this->unknown_0120;
     }
@@ -1263,7 +1263,7 @@ void CFootprintStrEffect::SpawnFootprint() {
   point.z =
     (direction.x * rotation.values[2] + direction.y * rotation.values[5] + direction.z * rotation.values[8] + rotation.values[11]) * gap * side +
     this->position[2];
-  point.y = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Grid().Height(point.x, point.z);
+  point.y = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Height(point.x, point.z);
   vector3d spawn = point;
 
   const std::string& bottom = this->unknown_0169 ? this->unknown_00DC : this->unknown_00F4;
@@ -4508,9 +4508,7 @@ void CGravityControlEffect::Close() {
     return;
   }
 
-  actor->render.position.y = static_cast<CGameMode*>(g_modeMgr.GetGameMode())
-                               ->scene->terrain->Grid()
-                               .Height(actor->render.position.x, actor->render.position.z);
+  actor->render.position.y = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Height(actor->render.position.x, actor->render.position.z);
   actor->unknown_03F0.x = 0.0f;
   actor->unknown_03F0.y = 0.0f;
   actor->unknown_03F0.z = 0.0f;
@@ -4538,7 +4536,7 @@ void CGravityControlEffect::Slot03() {
   this->unknown_00D0 = depth;
 
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-  const float height = mode->scene->terrain->Grid().Height(actor->render.position.x, actor->render.position.z);
+  const float height = mode->scene->terrain->Height(actor->render.position.x, actor->render.position.z);
   const int offset = static_cast<int>(this->unknown_00D0);
   actor->unknown_03F0.x = 0.0f;
   actor->unknown_03F0.z = 0.0f;

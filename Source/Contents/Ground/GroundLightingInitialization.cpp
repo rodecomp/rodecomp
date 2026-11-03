@@ -12,7 +12,7 @@ void GroundGeometry::InitializeLighting(const C3dAttr& terrain) {
   for (int row = 0; row < rows; ++row) {
     for (int column = 0; column < columns; ++column) {
       float average = 0.0f;
-      const TerrainHeightCell* cell = terrain.Grid().CellAt(column, row);
+      const TerrainHeightCell* cell = terrain.CellAt(column, row);
 
       if (cell) {
         average = ((cell->heights[1] + cell->heights[0]) + cell->heights[2] + cell->heights[3]) * 0.25f;

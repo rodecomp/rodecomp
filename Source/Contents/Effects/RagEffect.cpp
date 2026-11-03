@@ -2224,7 +2224,7 @@ void CRagEffect::Snow() {
     EffectPrimitiveState& particle = *this->state.unknown_11C84;
     reinterpret_cast<matrix*>(particle.transform)->MakeYRotation(GetRadian(std::max(rand() % 360, 0)));
     const float z = static_cast<float>(std::max(rand() % 300, 0) - 300);
-    const float y = world->terrain->Grid().Height(this->render.position.x, this->render.position.z) - 100.0f;
+    const float y = world->terrain->Height(this->render.position.x, this->render.position.z) - 100.0f;
     const float* m = particle.transform;
     particle.deltaPos2 = {
       y * m[3] + m[0] * 0.0f + z * m[6] + m[9],
@@ -7605,7 +7605,7 @@ void CRagEffect::MonsterSpriteBurst(char kind) {
   Owner(this->state.unknown_11C84).render.position.z = radius * g_cosTable[angle] + Owner(this->state.unknown_11C84).render.position.z;
   CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
   Owner(this->state.unknown_11C84).render.position.y =
-    world->terrain->Grid().Height(Owner(this->state.unknown_11C84).render.position.x, Owner(this->state.unknown_11C84).render.position.z);
+    world->terrain->Height(Owner(this->state.unknown_11C84).render.position.x, Owner(this->state.unknown_11C84).render.position.z);
 
   if (kind == 5 || kind == 10) {
     this->state.unknown_11C84->slots[0].flag1[0] = 4;
@@ -8929,7 +8929,7 @@ void CRagEffect::ScatterItemIcons(char kind) {
     CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
     const int drop = rand() % 66;
     this->state.unknown_11C84->slots[i].vecBNow.y =
-      world->terrain->Grid().Height(
+      world->terrain->Height(
         this->state.unknown_11C84->slots[i].vecBNow.x + this->render.position.x, this->state.unknown_11C84->slots[i].vecBNow.z + this->render.position.z
       ) -
       5.0f - static_cast<float>(std::max(drop, 0));
@@ -9979,7 +9979,7 @@ void CRagEffect::LockOnMarker() {
   }
 
   CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
-  this->render.position.y = world->terrain->Grid().Height(this->render.position.x, this->render.position.z) - 2.0f;
+  this->render.position.y = world->terrain->Height(this->render.position.x, this->render.position.z) - 2.0f;
 }
 
 // OFFSET: 0x00C1EC30
@@ -10736,7 +10736,7 @@ void CRagEffect::SkyCloud(char kind) {
       const CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
       const EffectPrimitiveSlot& slot = this->state.unknown_11C84->slots[index];
       this->state.unknown_11C84->slots[index].vecBNow.y =
-        mode->scene->terrain->Grid().Height(slot.vecBNow.x + this->render.position.x, this->render.position.z + slot.vecBNow.z) - 20.0f -
+        mode->scene->terrain->Height(slot.vecBNow.x + this->render.position.x, this->render.position.z + slot.vecBNow.z) - 20.0f -
         static_cast<float>(std::max(rand() % 5, 0));
     } else if (kind == 5) {
       this->state.unknown_11C84->slots[index].vecBNow.y = static_cast<float>(std::max(rand() % 10, 0)) + 20.0f;
@@ -24296,7 +24296,7 @@ bool CRagEffect::OnProcess() {
         this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\LockOn128.tga", 0, false, true, false);
       }
       CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
-      this->render.position.y = world->terrain->Grid().Height(this->render.position.x, this->render.position.z) - 2.0f;
+      this->render.position.y = world->terrain->Height(this->render.position.x, this->render.position.z) - 2.0f;
       break;
     }
     case 160:
@@ -24319,7 +24319,7 @@ bool CRagEffect::OnProcess() {
         this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\party.tga", 0, false, true, false);
       }
       CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
-      this->render.position.y = world->terrain->Grid().Height(this->render.position.x, this->render.position.z) - 2.0f;
+      this->render.position.y = world->terrain->Height(this->render.position.x, this->render.position.z) - 2.0f;
       break;
     }
     case 162:

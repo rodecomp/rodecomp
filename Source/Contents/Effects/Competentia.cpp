@@ -45,7 +45,7 @@ void CCompetentia::Slot01() {
     pos.x = point.x;
     pos.z = point.y;
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    pos.y = mode->scene->terrain->Grid().Height(pos.x, pos.z);
+    pos.y = mode->scene->terrain->Height(pos.x, pos.z);
 
     CParticle* particle = CreateEZ2STRParticle(&pos, 5);
     if (particle != nullptr) {

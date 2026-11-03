@@ -170,9 +170,9 @@ vector3d PlayerPosition() {
   }
 
   mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-  mode->scene->terrain->Grid().CellCenter(g_session.m_playerX, g_session.m_playerY, position.x, position.z);
+  mode->CellCenter(g_session.m_playerX, g_session.m_playerY, position.x, position.z);
   mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-  position.y = mode->scene->terrain->Grid().Height(position.x, position.z);
+  position.y = mode->scene->terrain->Height(position.x, position.z);
   return position;
 }
 
