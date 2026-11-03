@@ -31,6 +31,7 @@
 #include "UI/Chat/UINewChatWnd.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Edit/UIEditCtrl.h"
 #include "Contents/Actors/GrannyGameActor.h"
 #include "Utility/Text/FormatString.h"
 #include "Client/Application/Launcher.h"
@@ -4792,6 +4793,940 @@ static_assert(sizeof(TalkCameraPacket) == 0xF);
 static_assert(sizeof(TalkSelectPacket) == 8);
 
 // OFFSET: 0x00CE4B90
+// FUNCTION: fn_21338
+void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
+  std::string defaults[3];
+  std::string* parts = arguments ? arguments : defaults;
+  if (g_serviceType == 4 && talkType == 6) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x5F)), 0xFFFF, 0, 0, 0);
+    return;
+  }
+
+  switch (talkType) {
+  case 57:
+    g_windowMgr.SetUnknown04DC(parts[0].c_str());
+    this->SendMsg(0x81, 0, 0, 0, 0);
+    break;
+  case 18:
+  case 19: {
+    this->unknown_0118 = parts[0];
+    if (this->unknown_0118.size() > 0x18) {
+      break;
+    }
+    TalkWhisperSettingPacket packet;
+    if (talkType == 18) {
+      g_whisperBlockMgr->Add(this->unknown_0118);
+    } else {
+      g_whisperBlockMgr->Remove(this->unknown_0118);
+    }
+    packet.id = ID_CZ_SETTING_WHISPER_PC;
+    StringFormat(packet.name, 0x18, static_cast<std::size_t>(-1), "%s", parts[0].c_str());
+    packet.type = talkType == 18 ? 0 : 1;
+    GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+    break;
+  }
+  case 52:
+    g_windowMgr.SendNotice(7, 0, 0, 0, 0, 0);
+    break;
+  case 104: {
+    if (g_session.IsAdminSubMode(7) == 0) {
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x5F)), 0xFFFF, 0, 0, 0);
+      break;
+    }
+    char text[128];
+    g_whisperRecord = 1 - g_whisperRecord;
+    if (g_whisperRecord != 0) {
+      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      if (g_session.IsAdminSubMode(7) != 0) {
+        char directory[3000];
+        mode->chatLogLines = 0;
+        std::sprintf(directory, "%s\\Chat", g_applicationDirectory);
+        int index = 0;
+        if (_access(directory, 0) == 0 || _mkdir(directory) == 0) {
+          std::sprintf(g_chatLogPath, "%s\\Chat\\Chat.txt", g_applicationDirectory);
+          if (_access(g_chatLogPath, 0) == 0) {
+            do {
+              ++index;
+              std::sprintf(g_chatLogPath, "%s\\Chat\\Chat%03d.txt", g_applicationDirectory, index);
+            } while (_access(g_chatLogPath, 0) == 0);
+          }
+        }
+      }
+      std::sprintf(text, "Chatting Auto Save Start..");
+    } else {
+      std::sprintf(text, "Chatting Auto Save END");
+      g_modeMgr.GetGameMode();
+      sub_CCFF10();
+    }
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
+    break;
+  }
+  case 3:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x5F)), 0xFFFF, 0, 0, 0);
+    break;
+  case 0:
+  case 50: {
+    char text[364];
+    int party = 0;
+    int alternate = 0;
+    std::strcpy(text, g_windowMgr.unknown_04DC.c_str());
+    if (text[0] == '%') {
+      if (std::strlen(text) <= 1) {
+        break;
+      }
+      g_windowMgr.SetUnknown04DC(text + 1);
+      party = 1;
+    } else if (text[0] == '$') {
+      if (std::strlen(text) <= 1) {
+        break;
+      }
+      g_windowMgr.SetUnknown04DC(text + 1);
+      alternate = 1;
+    }
+    if (HIBYTE(GetAsyncKeyState(VK_CONTROL))) {
+      party = 1;
+    }
+    if (HIBYTE(GetAsyncKeyState(VK_MENU))) {
+      alternate = 1;
+    }
+    bool clan = false;
+    if (text[0] == '#') {
+      if (std::strlen(text) <= 1) {
+        break;
+      }
+      g_windowMgr.SetUnknown04DC(text + 1);
+      clan = true;
+    }
+    int clanChat = clan;
+    if (HIBYTE(GetAsyncKeyState(VK_CAPITAL))) {
+      clanChat = 1;
+    }
+    if (talkType == 50) {
+      this->SendMsg(6, 0, 0, 0, 0);
+      break;
+    }
+    if (g_session.unknown_5484 != 0) {
+      this->SendMsg(0xFE, 0, 0, 0, 0);
+      break;
+    }
+    const int sendMode = *reinterpret_cast<const int*>(&g_session.unknown_5490[8]);
+    if (sendMode == 2 && g_guildInfo.m_guildId != 0) {
+      this->SendMsg(alternate ? 6 : 0x81, 0, 0, 0, 0);
+      break;
+    }
+    if (sendMode == 1) {
+      if (party == 0 && g_session.PartyCount() != 0) {
+        this->SendMsg(0x42, 0, 0, 0, 0);
+      } else {
+        this->SendMsg(6, 0, 0, 0, 0);
+      }
+      break;
+    }
+    if (sendMode == 3 && g_clanInfo->m_hasClan == 1) {
+      this->SendMsg(0x121, 0, 0, 0, 0);
+      break;
+    }
+    if (sendMode == 4 && g_guildInfo.m_guildId != 0) {
+      this->SendMsg(static_cast<char>(clanChat) ? 6 : 0x14A, 0, 0, 0, 0);
+      break;
+    }
+    if (party != 0 && g_session.PartyCount() != 0) {
+      this->SendMsg(0x42, 0, 0, 0, 0);
+    } else if (alternate != 0) {
+      this->SendMsg(0x81, 0, 0, 0, 0);
+    } else if (static_cast<char>(clanChat)) {
+      this->SendMsg(0x14A, 0, 0, 0, 0);
+    } else {
+      this->SendMsg(6, 0, 0, 0, 0);
+    }
+    break;
+  }
+  case 151: {
+    char text[256];
+    if (std::strcmp(parts[0].c_str(), "") == 0) {
+      g_session.sub_DE3D90(nullptr);
+      std::sprintf(text, "[ To Friends ] : (Hi) *^_^*");
+    } else {
+      char* message = const_cast<char*>(g_windowMgr.unknown_04DC.c_str());
+      std::string copy(message);
+      g_session.sub_DE3D90(message);
+      if (g_serviceType == 0) {
+        std::sprintf(text, "[ To Friends ] : (Hi) %s", copy.c_str());
+      } else {
+        std::sprintf(text, "[ To Friends ] : (Hi) %s%s", g_serverLanguage->Prefix(false), copy.c_str());
+      }
+    }
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0x1EFFFF, 0, 0, 0);
+    break;
+  }
+  case 149:
+    for (int count = 32; count != 0; --count) {
+      this->SendMsg(0x5B, reinterpret_cast<int>("LEVEL"), 0, 0, 0);
+    }
+    break;
+  case 150:
+    for (int count = 5; count != 0; --count) {
+      this->SendMsg(0x5B, reinterpret_cast<int>("SPPOINT"), 0, 0, 0);
+      this->SendMsg(0x5B, reinterpret_cast<int>("JOBLEVEL"), 0, 0, 0);
+    }
+    break;
+  case 145: {
+    const char* text;
+    if (g_randomLoadingScreen) {
+      g_randomLoadingScreen = false;
+      text = "RANDOM LOADING SCREEN ON";
+    } else {
+      g_randomLoadingScreen = true;
+      text = "RANDOM LOADING SCREEN OFF";
+    }
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0x6E96FF, 0, 0, 0);
+    break;
+  }
+  case 115:
+    g_modeMgr.gameMode->SendMsg(0x2A, 0x71, 0, 0, 0);
+    g_modeMgr.gameMode->SendMsg(0x2A, 0x6C, 0, 0, 0);
+    g_modeMgr.gameMode->SendMsg(0x2A, 0x6D, 0, 0, 0);
+    g_modeMgr.gameMode->SendMsg(0x2A, 0x8D, 0, 0, 0);
+    break;
+  case 138:
+    g_modeMgr.gameMode->SendMsg(0x2A, 0x71, 0, 0, 0);
+    g_modeMgr.gameMode->SendMsg(0x2A, 0x6C, 0, 0, 0);
+    g_modeMgr.gameMode->SendMsg(0x2A, 0x6D, 0, 0, 0);
+    g_modeMgr.gameMode->SendMsg(0x2A, 0x78, 0, 0, 0);
+    g_modeMgr.gameMode->SendMsg(0x2A, 0x79, 0, 0, 0);
+    g_modeMgr.gameMode->SendMsg(0x2A, 0x8D, 0, 0, 0);
+    break;
+  case 166:
+    g_modeMgr.gameMode->SendMsg(0x2A, 0x71, 0, 0, 0);
+    g_modeMgr.gameMode->SendMsg(0x2A, 0x6C, 0, 0, 0);
+    g_modeMgr.gameMode->SendMsg(0x2A, 0x6D, 0, 0, 0);
+    g_modeMgr.gameMode->SendMsg(0x2A, 0x8D, 0, 0, 0);
+    g_modeMgr.gameMode->SendMsg(0x2A, 0xA5, 0, 0, 0);
+    g_modeMgr.gameMode->SendMsg(0x2A, 0x87, 0, 0, 0);
+    g_modeMgr.gameMode->SendMsg(0x2A, 0xA7, 0, 0, 0);
+    break;
+  case 122:
+    g_modeMgr.gameMode->SendMsg(0x2A, 0x78, 0, 0, 0);
+    g_modeMgr.gameMode->SendMsg(0x2A, 0x79, 0, 0, 0);
+    break;
+  case 113:
+    g_serviceOptions.Set(0x71, !g_serviceOptions.Get(0x71));
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(g_serviceOptions.Get(0x71) ? 0x2DA : 0x2DB)), 0x64FFFF, 0, 0, 0);
+    break;
+  case 165:
+    g_serviceOptions.Set(0xA5, !g_serviceOptions.Get(0xA5));
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(g_serviceOptions.Get(0xA5) ? 0x414 : 0x415)), 0x64FFFF, 0, 0, 0);
+    g_windowMgr.sub_AAB090();
+    break;
+  case 243:
+    g_serviceOptions.Set(0xF3, !g_serviceOptions.Get(0xF3));
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(g_serviceOptions.Get(0xF3) ? 0xDC7 : 0xDC8)), 0x64FFFF, 0, 0, 0);
+    g_windowMgr.sub_AAB090();
+    break;
+  case 135:
+    g_windowCloseByte = g_windowCloseByte == 0;
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    if (g_windowCloseByte) {
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x311)), 0x64FFFF, 0, 0, 0);
+    } else {
+      if (!g_inputSuggestionsEnabled) {
+        ChatWindow()->ToggleInput();
+      }
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x312)), 0x64FFFF, 0, 0, 0);
+    }
+    break;
+  case 186:
+    g_session.unknown_5484 = 1 - g_session.unknown_5484;
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(g_session.unknown_5484 ? 0x555 : 0x556)), 0x64FFFF, 0, 0, 0);
+    break;
+  case 153:
+    g_windowToggleFlag = !g_windowToggleFlag;
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    if (g_windowToggleFlag) {
+      g_windowMgr.sub_A978D0(0x74);
+    } else {
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x3AF)), 0x64FFFF, 0, 0, 0);
+    }
+    break;
+  case 162:
+    g_session.m_traceAi = g_session.m_traceAi == 0;
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    if (g_session.m_traceAi != 0) {
+      char path[256];
+      GetCurrentDirectoryA(sizeof(path), path);
+      char* data = std::strstr(path, "\\data");
+      if (data) {
+        std::memcpy(path, path, data - path);
+      }
+      std::strcat(path, "\\TraceAI.txt");
+      CFile file;
+      file.Open(path, 0x1001, true, false);
+      file.Write("", 0);
+      file.Close();
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x3BC)), 0x64FFFF, 0, 0, 0);
+    } else {
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x3BD)), 0x64FFFF, 0, 0, 0);
+    }
+    break;
+  case 12: {
+    const int volume = std::atoi(parts[0].c_str());
+    g_soundMgr->SetSampleVolume(volume);
+    g_soundMgr->Set3DVolume(volume);
+    char text[120];
+    std::sprintf(text, "%s %d", LookupMessage(0x19), volume);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0x64FFFF, 0, 0, 0);
+    g_windowMgr.sub_AAB090();
+    break;
+  }
+  case 13: {
+    const int volume = std::atoi(parts[0].c_str());
+    CSoundMgr::SetVolume(g_soundMgr, volume);
+    g_soundMgr->SetTargetVolume(CSoundMgr::Volume(g_soundMgr));
+    char text[120];
+    std::sprintf(text, "%s %d", LookupMessage(0x1A), volume);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0x64FFFF, 0, 0, 0);
+    g_windowMgr.sub_AAB090();
+    break;
+  }
+  case 11:
+    g_serviceOptions.Set(0xB, !g_serviceOptions.Get(0xB));
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(g_serviceOptions.Get(0xB) ? 0x1B : 0x1C)), 0x64FFFF, 0, 0, 0);
+    if (g_serviceOptions.Get(0xB)) {
+      g_soundMgr->unknown = 0;
+    }
+    g_windowMgr.sub_AAB090();
+    break;
+  case 195:
+    g_soundMgr->unknown = g_soundMgr->unknown == 0;
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(g_soundMgr->unknown ? 0x5DA : 0x5DB)), 0x64FFFF, 0, 0, 0);
+    break;
+  case 10:
+    g_frameskip = 1 - g_frameskip;
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(g_frameskip ? 0x1D : 0x1E)), 0x64FFFF, 0, 0, 0);
+    break;
+  case 7:
+    g_serviceOptions.Set(7, !g_serviceOptions.Get(7));
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(g_serviceOptions.Get(7) ? 0x1F : 0x20)), 0x64FFFF, 0, 0, 0);
+    if (g_serviceOptions.Get(7)) {
+      g_soundMgr->PlayStream(nullptr, 0, false);
+    } else {
+      g_soundMgr->StopStreams();
+    }
+    g_windowMgr.sub_AAB090();
+    break;
+  case 49: {
+    const int third = std::atoi(parts[2].c_str());
+    const int second = std::atoi(parts[1].c_str());
+    this->SendMsg(0x5C, reinterpret_cast<int>(parts[0].c_str()), second, third, 0);
+    break;
+  }
+  case 44: {
+    std::string value(parts[0].c_str());
+    LowercaseText(value);
+    if (value == "off" || value == "on") {
+      this->SendMsg(0x55, value == "off" ? 0 : 1, 0, 0, 0);
+    }
+    break;
+  }
+  case 25: {
+    const std::uint32_t id = this->nameCard.FindId(parts[0].c_str());
+    if (id != 0) {
+      this->SendMsg(0x31, id, 0, 0, 0);
+    }
+    break;
+  }
+  case 42:
+    if (!g_windowMgr.CloseWindow(0x13B)) {
+      g_windowMgr.sub_A978D0(0x13B);
+    }
+    break;
+  case 29:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_SURPRISE"), 0, 0, 0);
+    break;
+  case 30:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_QUESTION"), 0, 0, 0);
+    break;
+  case 31:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_DELIGHT"), 0, 0, 0);
+    break;
+  case 32:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_THROB"), 0, 0, 0);
+    break;
+  case 33:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_SWEAT"), 0, 0, 0);
+    break;
+  case 34:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_AHA"), 0, 0, 0);
+    break;
+  case 35:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_FRET"), 0, 0, 0);
+    break;
+  case 36:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_ANGER"), 0, 0, 0);
+    break;
+  case 37:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_MONEY"), 0, 0, 0);
+    break;
+  case 38:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_THINK"), 0, 0, 0);
+    break;
+  case 39:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_SCISSOR"), 0, 0, 0);
+    break;
+  case 40:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_ROCK"), 0, 0, 0);
+    break;
+  case 41:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_WRAP"), 0, 0, 0);
+    break;
+  case 79:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_BIGTHROB"), 0, 0, 0);
+    break;
+  case 66:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_THANKS"), 0, 0, 0);
+    break;
+  case 67:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_KEK"), 0, 0, 0);
+    break;
+  case 68:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_SORRY"), 0, 0, 0);
+    break;
+  case 69:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_SMILE"), 0, 0, 0);
+    break;
+  case 70:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_PROFUSELY_SWEAT"), 0, 0, 0);
+    break;
+  case 71:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_SCRATCH"), 0, 0, 0);
+    break;
+  case 72:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_BEST"), 0, 0, 0);
+    break;
+  case 73:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_STARE_ABOUT"), 0, 0, 0);
+    break;
+  case 74:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_HUK"), 0, 0, 0);
+    break;
+  case 75:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_O"), 0, 0, 0);
+    break;
+  case 76:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_X"), 0, 0, 0);
+    break;
+  case 77:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_HELP"), 0, 0, 0);
+    break;
+  case 78:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_GO"), 0, 0, 0);
+    break;
+  case 80:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_CRY"), 0, 0, 0);
+    break;
+  case 81:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_KIK"), 0, 0, 0);
+    break;
+  case 82:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_CHUP"), 0, 0, 0);
+    break;
+  case 83:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_CHUPCHUP"), 0, 0, 0);
+    break;
+  case 84:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_HNG"), 0, 0, 0);
+    break;
+  case 85:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_OK"), 0, 0, 0);
+    break;
+  case 123:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_STARE"), 0, 0, 0);
+    break;
+  case 124:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_HUNGRY"), 0, 0, 0);
+    break;
+  case 125:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_COOL"), 0, 0, 0);
+    break;
+  case 126:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_MERONG"), 0, 0, 0);
+    break;
+  case 127:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_SHY"), 0, 0, 0);
+    break;
+  case 128:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_GOODBOY"), 0, 0, 0);
+    break;
+  case 129:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_SPTIME"), 0, 0, 0);
+    break;
+  case 130:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_SEXY"), 0, 0, 0);
+    break;
+  case 131:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_COMEON"), 0, 0, 0);
+    break;
+  case 132:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_SLEEPY"), 0, 0, 0);
+    break;
+  case 133:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_CONGRATULATION"), 0, 0, 0);
+    break;
+  case 134:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_HPTIME"), 0, 0, 0);
+    break;
+  case 154:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_SPARK"), 0, 0, 0);
+    break;
+  case 155:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_CONFUSE"), 0, 0, 0);
+    break;
+  case 156:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_OHNO"), 0, 0, 0);
+    break;
+  case 157:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_HUM"), 0, 0, 0);
+    break;
+  case 158:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_BLABLA"), 0, 0, 0);
+    break;
+  case 159:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_OTL"), 0, 0, 0);
+    break;
+  case 171:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_LUV"), 0, 0, 0);
+    break;
+  case 175:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_MOBILE"), 0, 0, 0);
+    break;
+  case 176:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_MAIL"), 0, 0, 0);
+    break;
+  case 177:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_ANTENNA0"), 0, 0, 0);
+    break;
+  case 178:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_ANTENNA1"), 0, 0, 0);
+    break;
+  case 179:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_ANTENNA2"), 0, 0, 0);
+    break;
+  case 180:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_ANTENNA3"), 0, 0, 0);
+    break;
+  case 187:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_HUM2"), 0, 0, 0);
+    break;
+  case 188:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_ABS"), 0, 0, 0);
+    break;
+  case 189:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_OOPS"), 0, 0, 0);
+    break;
+  case 190:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_SPIT"), 0, 0, 0);
+    break;
+  case 191:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_ENE"), 0, 0, 0);
+    break;
+  case 192:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_PANIC"), 0, 0, 0);
+    break;
+  case 193:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_WHISP"), 0, 0, 0);
+    break;
+  case 160:
+    this->SendMsg(0x149, reinterpret_cast<int>("ET_DICE1"), 0, 0, 0);
+    break;
+  case 1:
+    this->SendMsg(7, 0, 0, 0, 0);
+    break;
+  case 87:
+    this->SendMsg(7, 1, 0, 0, 0);
+    break;
+  case 90:
+    this->SendMsg(7, 2, 0, 0, 0);
+    break;
+  case 91:
+    this->SendMsg(7, 3, 0, 0, 0);
+    break;
+  case 102:
+    this->SendMsg(7, 4, 0, 0, 0);
+    break;
+  case 103:
+    this->SendMsg(7, 5, 0, 0, 0);
+    break;
+  case 6:
+    this->SendMsg(0x20, 0, 0, 0, 0);
+    break;
+  case 163:
+    this->SendMsg(0xbd, 0, 0, 0, 0);
+    break;
+  case 4:
+    this->SendMsg(0xe, 0, 0, 0, 0);
+    break;
+  case 5:
+    this->SendMsg(0xf, 0, 0, 0, 0);
+    break;
+  case 56:
+    this->SendMsg(0x6a, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
+    break;
+  case 55:
+    this->SendMsg(0x70, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
+    break;
+  case 26:
+    this->SendMsg(0x3a, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
+    break;
+  case 196:
+    this->SendMsg(0x105, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
+    break;
+  case 200:
+    this->SendMsg(0x10d, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
+    break;
+  case 48:
+    this->SendMsg(0x5b, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
+    break;
+  case 95:
+    this->SendMsg(0x9b, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
+    break;
+  case 96:
+    this->SendMsg(0x9c, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
+    break;
+  case 97:
+    this->SendMsg(0x9d, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
+    break;
+  case 98:
+    this->SendMsg(0x9e, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
+    break;
+  case 143:
+    this->SendMsg(0xb1, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
+    break;
+  case 144:
+    this->SendMsg(0xb2, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
+    break;
+  case 101:
+    this->SendMsg(0xa1, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
+    break;
+  case 28:
+    this->SendMsg(0x3e, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
+    break;
+  case 61:
+    this->SendMsg(0x8e, 0, 0, 0, 0);
+    break;
+  case 184:
+    this->SendMsg(0x3b, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
+    break;
+  case 211:
+    this->SendMsg(0x11e, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
+    break;
+  case 251:
+    this->SendMsg(0x13d, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
+    break;
+  case 252:
+    this->SendMsg(0x13e, 0, 0, 0, 0);
+    break;
+  case 86: {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x25D)), 0xFFFF64, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x224)), 0xFFFF64, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x22b)), 0xFFFF64, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x22c)), 0xFFFF64, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x22d)), 0xFFFF64, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x22e)), 0xFFFF64, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x22f)), 0xFFFF64, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x230)), 0xFFFF64, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x231)), 0xFFFF64, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x232)), 0xFFFF64, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x233)), 0xFFFF64, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x234)), 0xFFFF64, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x235)), 0xFFFF64, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x236)), 0xFFFF64, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x237)), 0xFFFF64, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x238)), 0xFFFF64, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x239)), 0xFFFF64, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x23a)), 0xFFFF64, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x23b)), 0xFFFF64, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x23c)), 0xFFFF64, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x23d)), 0xFFFF64, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x304)), 0xFFFF64, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x305)), 0xFFFF64, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x306)), 0xFFFF64, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x307)), 0xFFFF64, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x308)), 0xFFFF64, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x309)), 0xFFFF64, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x30a)), 0xFFFF64, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x30b)), 0xFFFF64, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x30c)), 0xFFFF64, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x30d)), 0xFFFF64, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x30e)), 0xFFFF64, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x30f)), 0xFFFF64, 0, 0, 0);
+    break;
+  }
+  case 62:
+    this->SendMsg(0x146, std::atoi(parts[0].c_str()), 0, 0, 0);
+    break;
+  case 63: {
+    const int third = std::atoi(parts[2].c_str());
+    const int second = std::atoi(parts[1].c_str());
+    this->SendMsg(0x8F, std::atoi(parts[0].c_str()), second, third, 0);
+    break;
+  }
+  case 88: {
+    std::uint32_t flags = g_session.m_jobFlags;
+    if (StateFlag02(flags)) {
+      ClearMemberFlags(&flags);
+    } else {
+      SetMemberFlags(&flags);
+    }
+    this->SendMsg(0x90, 0x40, 0, 0, 0);
+    break;
+  }
+  case 181:
+    if (IsAdminAccount(g_session.m_aid)) {
+      const unsigned char enabled = this->unknown_05CC[1];
+      this->unknown_05CC[1] = enabled == 0;
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(enabled == 0 ? "Copy_Name_On!!" : "Copy_Name_Off!!"), 0x64FFFF, 0, 0, 0);
+    }
+    break;
+  case 182:
+  case 183: {
+    TalkConfigPacket packet;
+    packet.value = talkType != 182;
+    packet.id = ID_CZ_PARTY_CONFIG;
+    GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+    break;
+  }
+  case 185:
+    this->SendMsg(0xFD, *reinterpret_cast<int*>(g_session.unknown_5974) == 0, 0, 0, 0);
+    break;
+  case 205: {
+    CWebBrowser* browser = g_windowMgr.activeBrowser;
+    if (browser) {
+      browser->ShowAuxiliary(browser->auxiliaryVisible == 0);
+    }
+    break;
+  }
+  case 208: {
+    CWebBrowser* browser = g_windowMgr.EnsureSpecialBrowser(g_renderer->viewport.width, g_renderer->viewport.height);
+    if (browser) {
+      browser->Navigate(parts[0].c_str());
+    }
+    break;
+  }
+  case 209: {
+    const NaviCell cell = g_navigationManager.ParseCell(parts[1].c_str());
+    if (cell.x == -1 || cell.y == -1) {
+      g_navigationManager.ShowRouteResult(-100, 1);
+      break;
+    }
+    g_navigationManager.sub_B99030(parts[0], 0, 5, true, cell.x, cell.y, 0x3EA);
+    break;
+  }
+  case 210: {
+    const NaviCell cell = g_navigationManager.ParseCell(parts[1].c_str());
+    bool first = false;
+    bool second = false;
+    bool third = false;
+    if (cell.x == -1 || cell.y == -1 || !g_navigationManager.ParseFlags(parts[2].c_str(), &first, &second, &third)) {
+      g_navigationManager.ShowRouteResult(-100, 1);
+      break;
+    }
+    unsigned char mode = second ? 1 : 0;
+    if (first) {
+      mode += 2;
+    }
+    if (third) {
+      mode += 4;
+    }
+    g_navigationManager.sub_B99030(parts[0], 0, mode, true, cell.x, cell.y, 0x3EA);
+    break;
+  }
+  case 217:
+    g_windowMgr.sub_A978D0(0xCB);
+    break;
+  case 207: {
+    char text[1024];
+    std::memset(text, 0, sizeof(text));
+    sprintf_s(text, sizeof(text), "", "", "");
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
+    sprintf_s(text, sizeof(text), "ver : %d.%d.%d", 14, 2, 3);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
+    sprintf_s(text, sizeof(text), "s/n : %s", "");
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
+    _snprintf_s(text, _TRUNCATE, "verification : %s", "XXXXXXX");
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
+    break;
+  }
+  case 214:
+    g_windowMgr.SetUnknown04DC(parts[0].c_str());
+    this->SendMsg(0x121, 0, 0, 0, 0);
+    break;
+  case 218: {
+    UIWindow* window = g_windowMgr.LookupWindow(0xBE);
+    if (window) {
+      g_serviceOptions.Set(0xDA, !g_serviceOptions.Get(0xDA));
+      window->Show(g_serviceOptions.Get(0xDA));
+    }
+    break;
+  }
+  case 219: {
+    UIWindow* window = g_windowMgr.LookupWindow(0x10B);
+    if (window) {
+      g_serviceOptions.Set(0xDB, !g_serviceOptions.Get(0xDB));
+      window->Show(g_serviceOptions.Get(0xDB));
+    }
+    break;
+  }
+  case 220: {
+    UIWindow* window = g_windowMgr.LookupWindow(0x10C);
+    if (window) {
+      g_serviceOptions.Set(0xDC, !g_serviceOptions.Get(0xDC));
+      window->Show(g_serviceOptions.Get(0xDC));
+    }
+    break;
+  }
+  case 224:
+  case 226: {
+    TalkConfigPacket packet;
+    packet.value = talkType == 224 ? 2 : 3;
+    packet.id = 0xA68;
+    GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+    break;
+  }
+  case 225: {
+    TalkIntPacket packet;
+    packet.id = ID_CZ_REQ_PREVIEW_MACRO_DETECTOR;
+    packet.value = std::atoi(parts[0].c_str());
+    GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+    break;
+  }
+  case 227: {
+    TalkCameraPacket packet;
+    packet.range = 0.0f;
+    packet.rotation = 0.0f;
+    packet.latitude = 0.0f;
+    packet.id = ID_CZ_VIEW_CAMERAINFO;
+    packet.action = 1;
+    GetRagConnection().Send(sizeof(packet), &packet);
+    break;
+  }
+  case 228: {
+    CView* camera = this->camera;
+    if (camera == nullptr) {
+      break;
+    }
+    TalkCameraPacket packet;
+    packet.action = 0;
+    packet.id = ID_CZ_VIEW_CAMERAINFO;
+    packet.range = camera->camera.distance;
+    packet.rotation = camera->camera.yaw;
+    packet.latitude = camera->camera.pitch;
+    if (parts[0].find("range", 0) != std::string::npos) {
+      packet.range = static_cast<float>(std::atof(parts[1].c_str()));
+    } else if (parts[0].find("rotation", 0) != std::string::npos) {
+      packet.rotation = static_cast<float>(std::atof(parts[1].c_str()));
+    } else if (parts[0].find("latitude", 0) != std::string::npos) {
+      packet.latitude = static_cast<float>(std::atof(parts[1].c_str()));
+    } else {
+      packet.range = static_cast<float>(std::atof(parts[0].c_str()));
+      packet.rotation = static_cast<float>(std::atof(parts[1].c_str()));
+      packet.latitude = static_cast<float>(std::atof(parts[2].c_str()));
+    }
+    GetRagConnection().Send(sizeof(packet), &packet);
+    break;
+  }
+  case 230: {
+    TalkConfigPacket packet;
+    packet.id = ID_CZ_CMD_RESETCOOLTIME;
+    GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+    break;
+  }
+  case 237:
+    if (!g_windowMgr.CloseWindow(0x144)) {
+      g_windowMgr.sub_A978D0(0x144);
+    }
+    break;
+  case 254:
+  case 255: {
+    TalkSelectPacket packet;
+    packet.id = 0xA5F;
+    if (talkType == 254) {
+      packet.enabled = 1;
+      packet.value = std::atoi(parts[0].c_str());
+      packet.option = static_cast<unsigned char>(std::atoi(parts[1].c_str()));
+    } else {
+      packet.enabled = 0;
+      packet.value = 0;
+    }
+    GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+    break;
+  }
+  case 260: {
+    TalkNamePacket packet;
+    packet.id = ID_CZ_GM_CHECKER;
+    strncpy_s(packet.name, sizeof(packet.name), parts[0].c_str(), _TRUNCATE);
+    GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+    break;
+  }
+  case 279: {
+    this->unknown_0648 = this->unknown_0648 == 0;
+    std::string server("Dev");
+    if (g_serviceMode == 0 && server.compare(0, 3, g_launchServerName, std::strlen(g_launchServerName)) != 0) {
+      break;
+    }
+    SYSTEMTIME time;
+    GetLocalTime(&time);
+    if (this->unknown_0648 == 1) {
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>("확률 로그 시작"), 0x64FFFF, 0, 0, 0);
+      std::string name(FormatString("ProbabilityLog(%02d-%02d-%02d).txt", time.wYear, time.wMonth, time.wDay));
+      FILE* file = std::fopen(name.c_str(), "a");
+      if (file) {
+        std::fprintf(file, "시작 : %02d-%02d-%02d %02d:%02d:%02d \n", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute,
+                     time.wSecond);
+      }
+      std::fclose(file);
+    } else {
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>("확률 로그 끝"), 0x64FFFF, 0, 0, 0);
+      std::string name(FormatString("ProbabilityLog(%02d-%02d-%02d).txt", time.wYear, time.wMonth, time.wDay));
+      FILE* file = std::fopen(name.c_str(), "a");
+      if (file) {
+        for (const auto& entry : this->unknown_064C) {
+          int itemId = entry.first;
+          int count = entry.second;
+          ITEM_INFO item;
+          item.SetItemId(itemId);
+          item.identified = 1;
+          const std::string itemName = item.DisplayName(0);
+          std::string line = std::format("ID : {}, {}, {}개 \n", itemId, itemName.c_str(), count);
+          std::fprintf(file, line.c_str());
+        }
+        std::fprintf(file, "끝 : %02d-%02d-%02d %02d:%02d:%02d \n\n", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute,
+                     time.wSecond);
+        std::fclose(file);
+      }
+      this->unknown_064C.clear();
+    }
+    break;
+  }
+  case 2:
+  case 20:
+  case 137:
+  case 169:
+  case 173:
+  case 194:
+  case 203:
+    break;
+  default:
+    Singleton<CGameSettingsMgr>::GetInstance()->ToggleOption(talkType);
+    break;
+  }
+}
 
 // OFFSET: 0x00CE3D30
 // FUNCTION: fn_21335
