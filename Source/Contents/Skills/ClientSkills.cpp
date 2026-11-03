@@ -117,8 +117,8 @@ namespace {
 
 // OFFSET: 0x00E1DF20
 // FUNCTION: fn_23886
-bool ClientSkills::HasEffect(std::uint32_t id) const {
-  for (const ActiveSkillEffect& effect : this->effects) {
+bool CSession::HasSkillEffect(std::uint32_t id) const {
+  for (const ActiveSkillEffect& effect : g_activeSkillEffects) {
     if (effect.id == id) {
       return true;
     }
@@ -129,98 +129,78 @@ bool ClientSkills::HasEffect(std::uint32_t id) const {
 
 // OFFSET: 0x00E096F0
 // FUNCTION: fn_23782
-CSkillInfo ClientSkills::LookupFirst(std::uint32_t id) const {
-  return Find(this->firstRange, id);
+CSkillInfo CSession::LookupHomunSkill(std::uint32_t id) const {
+  return Find(this->m_homunSkills, id);
 }
 
 // OFFSET: 0x00E09A10
 // FUNCTION: fn_23787
-CSkillInfo ClientSkills::LookupOther(std::uint32_t id) const {
-  return Find(this->otherRanges, id);
+CSkillInfo CSession::LookupMercSkill(std::uint32_t id) const {
+  return Find(this->m_mercSkills, id);
 }
 
 // OFFSET: 0x00E095B0
 // FUNCTION: fn_23780
-CSkillInfo ClientSkills::LookupAdditional(std::uint32_t id) const {
-  return Find(this->additional, id);
+CSkillInfo CSession::LookupAdditionalSkill(std::uint32_t id) const {
+  return Find(this->m_additionalSkills, id);
 }
 
 // OFFSET: 0x00E088A0
 // FUNCTION: fn_23767
-CSkillInfo ClientSkills::Lookup(std::uint32_t id) const {
+CSkillInfo CSession::LookupSkill(std::uint32_t id) {
   if (id - 8000u <= 60) {
-    return this->LookupFirst(id);
+    return this->LookupHomunSkill(id);
   }
 
   if (id - 8200u <= 41 || id - 8400u <= 57) {
-    return this->LookupOther(id);
+    return this->LookupMercSkill(id);
   }
 
   if (id - 10000u <= 19) {
-    return this->LookupAdditional(id);
+    return this->LookupAdditionalSkill(id);
   }
 
-  return this->bundle.Lookup(id, this->classMode, this->HasEffect(1717), this->HasEffect(1716));
+  return this->m_skillBundle.Lookup(id);
 }
 
 // OFFSET: 0x00E25240
 // FUNCTION: fn_23904
-void SkillWindows::Notify() {
-  if (this->first) {
-    this->first->SendMsg(nullptr, 23, 0, 0, 0, 0);
+void CSession::NotifySkillWindows() {
+  if (g_windowMgr.window_02C4) {
+    g_windowMgr.window_02C4->SendMsg(nullptr, 23, 0, 0, 0, 0);
   }
 
-  if (this->second) {
-    this->second->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  if (g_windowMgr.window_01E8) {
+    g_windowMgr.window_01E8->SendMsg(nullptr, 23, 0, 0, 0, 0);
   }
 
-  if (UIWindow* window = this->windows.LookupWindow(159)) {
+  if (UIWindow* window = g_windowMgr.LookupWindow(159)) {
     window->SendMsg(nullptr, 23, 0, 0, 0, 0);
   }
 }
 
 // OFFSET: 0x00E08530
 // FUNCTION: fn_23762
-void ClientSkills::Remove(std::uint32_t id, SkillWindows& windows) {
-  if (CSkillInfo* skill = this->bundle.FindGrouped(id)) {
+void CSession::RemoveSkill(std::uint32_t id) {
+  if (CSkillInfo* skill = this->m_skillBundle.FindGrouped(id)) {
     int previous;
-    if (this->bundle.PreviousLevel(static_cast<int>(id), previous)) {
+    if (this->m_skillBundle.PreviousLevel(static_cast<int>(id), previous)) {
       skill->level = previous;
     }
 
-    windows.Notify();
+    this->NotifySkillWindows();
     return;
   }
 
-  this->bundle.Remove(id);
-  if (this->bundle.RemoveExtra(id, windows.windows)) {
-    windows.Notify();
+  this->m_skillBundle.Remove(id);
+  if (this->m_skillBundle.RemoveExtra(id, *reinterpret_cast<WindowManagerWindows*>(&g_windowMgr))) {
+    this->NotifySkillWindows();
   }
-}
-
-// OFFSET: 0x00DE0E40
-int SkillUseLevels::Lookup(int id) const {
-  const auto value = static_cast<std::uint32_t>(id);
-  if (value - 1u <= 0x1F3Du) {
-    return this->use[value];
-  }
-
-  if (id > 10000) {
-    return this->additional[value - 10000u];
-  }
-
-  if (value - 8000u <= 60u) {
-    return this->homunculus[value - 8000u];
-  }
-
-  return 0;
 }
 
 // OFFSET: 0x00E07540
 // FUNCTION: fn_23746
-bool ClientSkills::Update(
-  const CSkillInfo& value, unsigned char notify, unsigned char updateUnknown000C, LuaScript& script, const SkillUseLevels& levels, SkillWindows& windows
-) {
+bool CSession::UpdateSkill(const CSkillInfo& value, unsigned char notify, unsigned char updateUnknown000C) {
   {
     CSkillInfo snapshot(value);
     const auto update = [](CSkillInfo& target, const CSkillInfo& source, bool copy000C, bool copy0030) {
@@ -240,30 +220,30 @@ bool ClientSkills::Update(
       target.unknown_0034 = source.unknown_0034;
     };
 
-    CSkillInfo* grouped = this->bundle.FindGrouped(snapshot.id);
+    CSkillInfo* grouped = this->m_skillBundle.FindGrouped(snapshot.id);
     if (grouped) {
       update(*grouped, snapshot, true, true);
     } else if (snapshot.available) {
-      if (CSkillInfo* extra = this->bundle.FindExtra(snapshot.id)) {
+      if (CSkillInfo* extra = this->m_skillBundle.FindExtra(snapshot.id)) {
         update(*extra, snapshot, true, false);
       } else {
         snapshot.unknown_0024 = UINT32_MAX;
         snapshot.unknown_002C = 0;
-        this->bundle.AddExtra(snapshot, windows.windows);
+        this->m_skillBundle.AddExtra(snapshot, *reinterpret_cast<WindowManagerWindows*>(&g_windowMgr));
       }
     }
 
     if (grouped || snapshot.available) {
-      if (CSkillInfo::UsesLevel(script, static_cast<int>(snapshot.id)) && snapshot.level != 0) {
-        const int saved = levels.Lookup(static_cast<int>(snapshot.id));
+      if (CSkillInfo::UsesLevel(*this->m_hotkeyScript, static_cast<int>(snapshot.id)) && snapshot.level != 0) {
+        const int saved = reinterpret_cast<const CharacterConfigSave*>(this)->UseLevel(static_cast<int>(snapshot.id));
         if (saved <= 0 || saved > snapshot.level) {
-          this->bundle.SetUnknownValue(static_cast<int>(snapshot.id), snapshot.level);
+          this->m_skillBundle.SetUnknownValue(static_cast<int>(snapshot.id), snapshot.level);
         }
       }
     }
   }
 
-  if (CSkillInfo* existing = this->bundle.Find(value.id)) {
+  if (CSkillInfo* existing = this->m_skillBundle.Find(value.id)) {
     existing->level = value.level;
     std::memcpy(&existing->unknown_0014, &value.unknown_0014, sizeof(existing->unknown_0014));
     std::memcpy(&existing->unknown_001C, &value.unknown_001C, sizeof(existing->unknown_001C));
@@ -276,51 +256,15 @@ bool ClientSkills::Update(
     existing->unknown_0030 = value.unknown_0030;
     existing->unknown_0034 = value.unknown_0034;
     if (notify == 1) {
-      windows.Notify();
+      this->NotifySkillWindows();
     }
 
     return false;
   }
 
-  this->bundle.Add(value);
+  this->m_skillBundle.Add(value);
   if (notify != 0) {
-    windows.Notify();
-  }
-
-  return true;
-}
-
-void CompanionSkills::Notify() {
-  if (this->window) {
-    this->window->SendMsg(nullptr, 23, 0, 0, 0, 0);
-  }
-
-  if (this->sharedWindow) {
-    this->sharedWindow->SendMsg(nullptr, 23, 0, 0, 0, 0);
-  }
-}
-
-bool CompanionSkills::Update(const CSkillInfo& value, unsigned char notify) {
-  for (CSkillInfo& skill : this->skills) {
-    if (skill.id == value.id) {
-      skill.level = value.level;
-      std::memcpy(&skill.unknown_0014, &value.unknown_0014, sizeof(skill.unknown_0014));
-      std::memcpy(&skill.unknown_001C, &value.unknown_001C, sizeof(skill.unknown_001C));
-      std::memcpy(&skill.unknown_0018, &value.unknown_0018, sizeof(skill.unknown_0018));
-      std::memcpy(&skill.unknown_000C, &value.unknown_000C, sizeof(skill.unknown_000C));
-      skill.unknown_0034 = value.unknown_0034;
-
-      if (notify) {
-        this->Notify();
-      }
-
-      return false;
-    }
-  }
-
-  this->skills.push_back(value);
-  if (notify) {
-    this->Notify();
+    this->NotifySkillWindows();
   }
 
   return true;
@@ -328,8 +272,8 @@ bool CompanionSkills::Update(const CSkillInfo& value, unsigned char notify) {
 
 // OFFSET: 0x00E07290
 // FUNCTION: fn_23740
-bool ClientSkills::UpdateAdditional(const CSkillInfo& value, int) {
-  for (CSkillInfo& skill : this->additional) {
+bool CSession::UpdateAdditionalSkill(const CSkillInfo& value, int) {
+  for (CSkillInfo& skill : this->m_additionalSkills) {
     if (skill.id == value.id) {
       skill.level = value.level;
       std::memcpy(&skill.unknown_0014, &value.unknown_0014, sizeof(skill.unknown_0014));
@@ -341,7 +285,7 @@ bool ClientSkills::UpdateAdditional(const CSkillInfo& value, int) {
     }
   }
 
-  this->additional.push_back(value);
+  this->m_additionalSkills.push_back(value);
   return true;
 }
 

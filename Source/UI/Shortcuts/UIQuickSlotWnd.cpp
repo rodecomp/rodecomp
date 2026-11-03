@@ -55,7 +55,7 @@ void UIQuickSlotWnd::Slot25(int x, int y) {
   QuickSlotPainting& painting = *this->m_painting;
   const QuickSlotEntry entry = this->m_entries[index];
   if (entry.skill) {
-    CSkillInfo skill = painting.skills.Lookup(entry.id);
+    CSkillInfo skill = g_session.LookupSkill(entry.id);
     if (skill.available && skill.level) {
       if (CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode())) {
         mode->drag.BeginSkill(g_windowMgr, ResourceMgr::Instance(), 16, skill.id, skill.name, entry.count, index);
@@ -102,7 +102,7 @@ void UIQuickSlotWnd::Slot28(int x, int y) {
     text.clear();
   } else if (this->m_entries[this->m_selected].skill) {
     LuaScript& script = *g_session.m_hotkeyScript;
-    CSkillInfo skill = painting.skills.Lookup(id);
+    CSkillInfo skill = g_session.LookupSkill(id);
     const int level = this->m_entries[this->m_selected].count;
     const int sp = skill.UseSpAmount(script, level);
     const int ap = skill.UseApAmount(script, level);
@@ -212,8 +212,7 @@ int UIQuickSlotWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
         continue;
       }
 
-      ClientSkills& skills = this->m_painting->skills;
-      CSkillInfo skill = skills.bundle.Lookup(source.itemId, skills.classMode, skills.HasEffect(1717), skills.HasEffect(1716));
+      CSkillInfo skill = g_session.m_skillBundle.Lookup(source.itemId);
       if (skill.available == 0) {
         std::list<ShortcutCooldownRecord>& records = this->m_painting->cooldowns.records;
         const auto record = std::find_if(records.begin(), records.end(), [&](const ShortcutCooldownRecord& value) { return value.id == source.itemId; });
@@ -224,12 +223,12 @@ int UIQuickSlotWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
           }
         }
 
-        skill = skills.LookupFirst(source.itemId);
+        skill = g_session.LookupHomunSkill(source.itemId);
         if (skill.available == 0) {
-          skill = skills.LookupOther(source.itemId);
+          skill = g_session.LookupMercSkill(source.itemId);
         }
         if (skill.available == 0) {
-          skill = skills.LookupAdditional(source.itemId);
+          skill = g_session.LookupAdditionalSkill(source.itemId);
         }
       }
 
@@ -299,7 +298,7 @@ int UIQuickSlotWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       return 0;
     }
 
-    CSkillInfo skill = this->m_painting->skills.Lookup(entry.id);
+    CSkillInfo skill = g_session.LookupSkill(entry.id);
     if (skill.level != 0 && skill.available != 0) {
       static_cast<CMode*>(g_charViewMode)->SendMsg(0x71, reinterpret_cast<int>(&skill), entry.count, 0, 0);
     }

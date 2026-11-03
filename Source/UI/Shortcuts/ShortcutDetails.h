@@ -14,7 +14,6 @@ struct ShortcutDetails {
   WindowManagerWindows& windows;
   SkillDetailClose& skillClose;
   const std::uint32_t& describedSkill;
-  ClientSkills& skills;
   const std::list<ITEM_INFO>& inventory;
   const bool& itemSlotActive;
   unsigned char& currentRow;

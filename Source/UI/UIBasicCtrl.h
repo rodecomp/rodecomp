@@ -6,7 +6,6 @@
 
 #include <string>
 
-struct ClientSkills;
 #include "UI/Window/WindowManagerWindows.h"
 
 class UIBasicItemCtrl : public UIWindow {
@@ -32,7 +31,7 @@ protected:
 
 class UIBasicSkillCtrl : public UIWindow {
 public:
-  UIBasicSkillCtrl(ClientSkills& skills);
+  UIBasicSkillCtrl();
   void Slot10(int argument1, int argument2, std::intptr_t argument3) override;
   void Paint() override;
   void Slot26(int x, int y) override;
@@ -41,9 +40,7 @@ public:
 
 protected:
   /* 007C */ int m_skillId;
-  ClientSkills* m_skills;
-  void* unknown_controls;
-  int m_level;
+  /* 0080 */ int m_level;
 };
 
 std::string SkillUseTextPercent(const char* name, int level, int sp, int ap);

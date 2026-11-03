@@ -1,3 +1,4 @@
+#include "Client/Session.h"
 #include "Client/Mode/ModeDragState.h"
 #include "UI/Shortcuts/ShortcutPress.h"
 #include "UI/Window/UIFrameWnd.h"
@@ -29,7 +30,7 @@ void ShortcutPress::Press(UIFrameWnd& window, ShortcutGrid& grid, int x, int y, 
     }
 
     if (slot.unknown_0000 != 0) {
-      CSkillInfo skill = this->skills.Lookup(slot.itemId);
+      CSkillInfo skill = g_session.LookupSkill(slot.itemId);
       if (skill.MatchesShortcut(&slot) && this->drag) {
         this->drag->BeginSkill(this->windows, this->resources, 7, skill.id, skill.name, slot.unknown_0005, index);
       }

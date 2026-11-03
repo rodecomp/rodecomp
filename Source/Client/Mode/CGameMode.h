@@ -376,6 +376,12 @@ public:
   void ReceiveSkillUpdate(
     std::uint16_t id, std::int16_t level, std::int16_t spCost, unsigned char upgradable, std::int16_t range, int type, std::int16_t unknown
   );
+  void ApplySkillUpdatePacket(const void* packet);
+  void ReceiveLearnedSkill(
+    std::uint16_t id, std::int16_t level, int unknown000C, std::uint8_t unknown0018, std::int16_t unknown0014, std::int16_t unknown001C,
+    std::int16_t unknown0030
+  );
+  void ApplyAdditionalSkillPacket(const void* packet);
   std::uint32_t FindUnknown01AC(std::uint32_t key);
   std::string ActorName(std::uint32_t id);
   std::uint32_t ActorNameColor(int job, std::uint32_t aid);

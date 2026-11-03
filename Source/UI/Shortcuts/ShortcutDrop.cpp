@@ -54,14 +54,7 @@ void ShortcutDrop::Drop(UIWindow& window, ShortcutGrid& grid, int x, int y, cons
         return;
       }
 
-      CSkillInfo skill = ClientSkills{
-        g_session.m_skillBundle,
-        g_session.m_homunSkills,
-        g_session.m_mercSkills,
-        g_session.m_additionalSkills,
-        reinterpret_cast<const int&>(g_session.m_jobFlags),
-        g_activeSkillEffects
-      }.Lookup(id);
+      CSkillInfo skill = g_session.LookupSkill(id);
       if ((skill.level == 0 && skill.available == 0) || grid.rows <= this->currentRow) {
         if (this->mode) {
           this->mode->SendModeMessage(18, 0, 0, 0, 0);
@@ -98,14 +91,7 @@ void ShortcutDrop::Drop(UIWindow& window, ShortcutGrid& grid, int x, int y, cons
 
       Refresh(window);
     } else if (originalSlot != -1) {
-      CSkillInfo skill = ClientSkills{
-        g_session.m_skillBundle,
-        g_session.m_homunSkills,
-        g_session.m_mercSkills,
-        g_session.m_additionalSkills,
-        reinterpret_cast<const int&>(g_session.m_jobFlags),
-        g_activeSkillEffects
-      }.Lookup(id);
+      CSkillInfo skill = g_session.LookupSkill(id);
       const std::uint32_t key = Grouped(skill.id) ? 9999 : skill.id;
       const auto record =
         std::find_if(reinterpret_cast<ShortcutCooldowns&>(g_session.m_requestTimers).records.begin(), reinterpret_cast<ShortcutCooldowns&>(g_session.m_requestTimers).records.end(), [&](const ShortcutCooldownRecord& entry) {
@@ -205,7 +191,7 @@ void UIQuickSlotWnd::Slot10(int x, int y, std::intptr_t argument) {
     const std::string copiedName(value.skillName.c_str(), value.skillName.size());
     const int slot = this->SlotAt(x, y);
     if (slot != -1) {
-      CSkillInfo skill = painting.skills.Lookup(value.id);
+      CSkillInfo skill = g_session.LookupSkill(value.id);
       if (skill.level != 0 && skill.available != 0) {
         g_session.SetHotkeyEntry(1, skill.id, value.skillLevel, slot);
         RemoveAlternate(painting.cooldowns, value.slot, slot);
@@ -234,7 +220,7 @@ void UIQuickSlotWnd::Slot10(int x, int y, std::intptr_t argument) {
         this->Invalidate();
       }
     } else if (value.slot != -1) {
-      CSkillInfo skill = painting.skills.Lookup(value.id);
+      CSkillInfo skill = g_session.LookupSkill(value.id);
       const std::uint32_t key = Grouped(skill.id) ? 9999 : skill.id;
       const std::list<ShortcutCooldownRecord>::iterator record =
         std::find_if(records.begin(), records.end(), [&](const ShortcutCooldownRecord& entry) { return entry.id == key; });

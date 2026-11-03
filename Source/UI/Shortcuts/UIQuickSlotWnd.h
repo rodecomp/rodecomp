@@ -9,14 +9,12 @@
 
 class FontCache;
 struct TextLocale;
-struct ClientSkills;
 struct ITEM_INFO;
 class AutomaticSkills;
 
 struct QuickSlotPainting {
   FontCache& fonts;
   const TextLocale& locale;
-  ClientSkills& skills;
   const std::list<ITEM_INFO>& inventory;
   std::list<ShortcutCooldownIcon>& icons;
   ShortcutCooldowns& cooldowns;

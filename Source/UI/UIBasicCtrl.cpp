@@ -8,6 +8,6 @@ UIBasicItemCtrl::UIBasicItemCtrl(WindowManagerWindows& windowList)
 
 // OFFSET: 0x0086C4C0
 // FUNCTION: fn_11027
-UIBasicSkillCtrl::UIBasicSkillCtrl(ClientSkills& skills)
-    : UIWindow(0), m_skillId(-1), m_skills(&skills), m_level(0) {
+UIBasicSkillCtrl::UIBasicSkillCtrl()
+    : UIWindow(0), m_skillId(-1), m_level(0) {
 }

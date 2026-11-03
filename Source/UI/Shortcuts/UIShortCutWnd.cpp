@@ -1,4 +1,5 @@
 #include "Client/Session.h"
+#include "Contents/UserData/CharacterConfigSave.h"
 #include "Client/Mode/ModeDragState.h"
 #include "Client/Mode/ModeEvents.h"
 #include "Client/Mode/CMode.h"
@@ -339,14 +340,7 @@ inline void UseShortcutSlot(const NormalItemSlot& slot) {
   }
 
   if (slot.unknown_0000 != 0) {
-    CSkillInfo skill = ClientSkills{
-        g_session.m_skillBundle,
-        g_session.m_homunSkills,
-        g_session.m_mercSkills,
-        g_session.m_additionalSkills,
-        reinterpret_cast<const int&>(g_session.m_jobFlags),
-        g_activeSkillEffects
-      }.Lookup(slot.itemId);
+    CSkillInfo skill = g_session.LookupSkill(slot.itemId);
     if (skill.MatchesShortcut(&slot)) {
       int level = slot.unknown_0005;
       if ((skill.id == 6579 || skill.id == 6580) && skill.level < level) {
@@ -442,17 +436,6 @@ int UIShortCutWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 
   case 23: {
     ShortcutCooldowns& cooldowns = reinterpret_cast<ShortcutCooldowns&>(g_session.m_requestTimers);
-    ClientSkills skills{
-      g_session.m_skillBundle,
-      g_session.m_homunSkills,
-      g_session.m_mercSkills,
-      g_session.m_additionalSkills,
-      reinterpret_cast<const int&>(g_session.m_jobFlags),
-      g_activeSkillEffects
-    };
-    const SkillUseLevels levels{
-      g_session.m_skillBundle.unknown_0064, *reinterpret_cast<const std::vector<int>*>(g_session.unknown_0710), g_session.m_homunSkillLevels
-    };
     for (int index = 0; index < 36; ++index) {
       const int source = g_session.RotateShortcut(index, g_session.unknown_06FC);
       if (g_session.unknown_06FC == 0 || g_session.unknown_06FC == 1) {
@@ -464,7 +447,7 @@ int UIShortCutWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         continue;
       }
 
-      CSkillInfo skill = skills.bundle.Lookup(slot.itemId, skills.classMode, skills.HasEffect(1717), skills.HasEffect(1716));
+      CSkillInfo skill = g_session.m_skillBundle.Lookup(slot.itemId);
       if (skill.available == 0) {
         const auto record = std::find_if(cooldowns.records.begin(), cooldowns.records.end(), [&](const ShortcutCooldownRecord& value) {
           return value.id == slot.itemId;
@@ -476,17 +459,17 @@ int UIShortCutWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
           }
         }
 
-        skill = skills.LookupFirst(slot.itemId);
+        skill = g_session.LookupHomunSkill(slot.itemId);
         if (skill.available == 0) {
-          skill = skills.LookupOther(slot.itemId);
+          skill = g_session.LookupMercSkill(slot.itemId);
         }
 
         if (skill.available == 0) {
-          skill = skills.LookupAdditional(slot.itemId);
+          skill = g_session.LookupAdditionalSkill(slot.itemId);
         }
       }
 
-      if (skill.available != 0 && skill.level != 0 && levels.Lookup(static_cast<int>(skill.id)) == 0) {
+      if (skill.available != 0 && skill.level != 0 && reinterpret_cast<const CharacterConfigSave*>(&g_session)->UseLevel(static_cast<int>(skill.id)) == 0) {
         slot.unknown_0005 = static_cast<std::int16_t>(skill.level);
       }
     }

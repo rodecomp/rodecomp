@@ -478,15 +478,7 @@ int AiHomunGetV(lua_State* state) {
   case 6:
   case 14: {
     std::uint32_t skillId = static_cast<std::uint32_t>(lua_tonumber(state, 3));
-    ClientSkills skills{
-      g_session.m_skillBundle,
-      g_session.m_homunSkills,
-      g_session.m_mercSkills,
-      g_session.m_additionalSkills,
-      reinterpret_cast<const int&>(g_session.m_jobFlags),
-      g_activeSkillEffects
-    };
-    CSkillInfo skill = skills.LookupFirst(skillId);
+    CSkillInfo skill = g_session.LookupHomunSkill(skillId);
     if (!skill.available) {
       result = 1.0;
     } else {
@@ -670,15 +662,7 @@ int AiMercenaryGetV(lua_State* state) {
   case 6:
   case 14: {
     std::uint32_t skillId = static_cast<std::uint32_t>(lua_tonumber(state, 3));
-    ClientSkills skills{
-      g_session.m_skillBundle,
-      g_session.m_homunSkills,
-      g_session.m_mercSkills,
-      g_session.m_additionalSkills,
-      reinterpret_cast<const int&>(g_session.m_jobFlags),
-      g_activeSkillEffects
-    };
-    CSkillInfo skill = skills.LookupOther(skillId);
+    CSkillInfo skill = g_session.LookupMercSkill(skillId);
     if (!skill.available) {
       result = 1.0;
     } else {
@@ -1120,15 +1104,7 @@ int AiSkillObject(lua_State* state) {
   std::uint32_t skillId = static_cast<std::uint32_t>(lua_tonumber(state, 3));
   std::uint32_t target = static_cast<std::uint32_t>(lua_tonumber(state, 4));
 
-  ClientSkills skills{
-    g_session.m_skillBundle,
-    g_session.m_homunSkills,
-    g_session.m_mercSkills,
-    g_session.m_additionalSkills,
-    reinterpret_cast<const int&>(g_session.m_jobFlags),
-    g_activeSkillEffects
-  };
-  CSkillInfo skill = skills.Lookup(skillId);
+  CSkillInfo skill = g_session.LookupSkill(skillId);
   if (!skill.available) {
     return 0;
   }

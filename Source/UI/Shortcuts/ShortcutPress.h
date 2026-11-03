@@ -13,7 +13,6 @@ class ResourceMgr;
 struct ModeDragState;
 
 struct ShortcutPress {
-  ClientSkills& skills;
   const std::list<ITEM_INFO>& inventory;
   ResourceMgr& resources;
   WindowManagerWindows& windows;

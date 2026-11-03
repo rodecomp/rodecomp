@@ -1,4 +1,5 @@
 #include "Contents/Skills/PlayerSkillBundle.h"
+#include "Client/Session.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/WindowManagerWindows.h"
 
@@ -68,20 +69,17 @@ CSkillInfo* CPlayerSkillBundle::Find(std::uint32_t id) {
 
 // OFFSET: 0x00CACF20
 // FUNCTION: fn_21049
-std::uint32_t CPlayerSkillBundle::ResolveSkillId(std::uint32_t id, int classMode, bool effect1717, bool effect1716) {
-  if (classMode != 1 || (id != 6578 && id != 6579)) {
+std::uint32_t ResolveSkillId(std::uint32_t id) {
+  if (g_session.GetUnknown8134() != 1 || (id != 6578 && id != 6579)) {
     return id;
   }
 
-  const auto valid = [&](std::uint32_t key) {
-    const auto entry = this->index.find(key);
-    return entry != this->index.end() && entry->second->IsValid();
-  };
-  if (effect1717 && valid(6580)) {
+  CSkillInfo* skill;
+  if (g_session.HasSkillEffect(1717) && g_session.m_skillBundle.FindIndexed(6580, skill) && skill->IsValid()) {
     return 6580;
   }
 
-  if (effect1716 && valid(6579)) {
+  if (g_session.HasSkillEffect(1716) && g_session.m_skillBundle.FindIndexed(6579, skill) && skill->IsValid()) {
     return 6579;
   }
 
@@ -90,12 +88,12 @@ std::uint32_t CPlayerSkillBundle::ResolveSkillId(std::uint32_t id, int classMode
 
 // OFFSET: 0x007716B0
 // FUNCTION: fn_08280
-CSkillInfo CPlayerSkillBundle::Lookup(std::uint32_t id, int classMode, bool effect1717, bool effect1716) {
+CSkillInfo CPlayerSkillBundle::Lookup(std::uint32_t id) {
   if (this->skills.empty()) {
     return CSkillInfo(-1);
   }
 
-  const auto entry = this->index.find(this->ResolveSkillId(id, classMode, effect1717, effect1716));
+  const auto entry = this->index.find(ResolveSkillId(id));
   if (entry != this->index.end() && entry->second->IsValid()) {
     return *entry->second;
   }

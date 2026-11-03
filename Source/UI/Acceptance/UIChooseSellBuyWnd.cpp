@@ -7012,15 +7012,7 @@ int UISkillDescribeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
   this->unknown_00EC = this->unknown_00D4 = skill.DisplayName(*g_luaScript);
   this->m_skillId = static_cast<int>(skill.id);
   {
-    ClientSkills skills{
-      g_session.m_skillBundle,
-      g_session.m_homunSkills,
-      g_session.m_mercSkills,
-      g_session.m_additionalSkills,
-      reinterpret_cast<const int&>(g_session.m_jobFlags),
-      g_activeSkillEffects
-    };
-    CSkillInfo owned = skills.Lookup(static_cast<std::uint32_t>(a));
+    CSkillInfo owned = g_session.LookupSkill(static_cast<std::uint32_t>(a));
     if (owned.available != 0 && owned.unknown_0014 != 0 && owned.level != 0) {
       char cost[64];
       if (skill.UseApAmount(*g_luaScript, owned.level) != 0) {

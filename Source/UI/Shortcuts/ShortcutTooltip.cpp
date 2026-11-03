@@ -90,14 +90,7 @@ void UIShortCutWnd::Slot28(int x, int y) {
   if (slot.itemId == 0) {
     text = shortcut;
   } else if (slot.unknown_0000 != 0) {
-    CSkillInfo skill = ClientSkills{
-        g_session.m_skillBundle,
-        g_session.m_homunSkills,
-        g_session.m_mercSkills,
-        g_session.m_additionalSkills,
-        reinterpret_cast<const int&>(g_session.m_jobFlags),
-        g_activeSkillEffects
-      }.Lookup(slot.itemId);
+    CSkillInfo skill = g_session.LookupSkill(slot.itemId);
     if (!skill.MatchesShortcut(&slot)) {
       text = shortcut;
     } else {

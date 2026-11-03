@@ -4643,7 +4643,7 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
   case 12:
     *reinterpret_cast<int*>(&g_session.unknown_165C[0]) = packet->value;
     g_session.InvalidateWindowFrames();
-    reinterpret_cast<SkillWindows*>(&g_session)->Notify();
+    g_session.NotifySkillWindows();
     break;
   case 13:
     g_session.m_standardStats[0] = packet->value;

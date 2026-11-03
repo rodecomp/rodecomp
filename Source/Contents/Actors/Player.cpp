@@ -3211,18 +3211,10 @@ void CPlayer::ReapplySkillEffects() {
       this->LaunchEffect(0x18A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
     case 0x98: {
-      ClientSkills skills{
-        g_session.m_skillBundle,
-        g_session.m_homunSkills,
-        g_session.m_mercSkills,
-        g_session.m_additionalSkills,
-        reinterpret_cast<const int&>(g_session.m_jobFlags),
-        g_activeSkillEffects
-      };
-      CSkillInfo skill = skills.bundle.Lookup(0x1B9, skills.classMode, skills.HasEffect(1717), skills.HasEffect(1716));
+      CSkillInfo skill = g_session.m_skillBundle.Lookup(0x1B9);
       int effectId = skill.level;
       if (effectId > 0) {
-        CSkillInfo upgrade = skills.bundle.Lookup(0xA1D, skills.classMode, skills.HasEffect(1717), skills.HasEffect(1716));
+        CSkillInfo upgrade = g_session.m_skillBundle.Lookup(0xA1D);
         if (upgrade.level > 0) {
           effectId = 5;
         }

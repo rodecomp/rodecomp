@@ -841,6 +841,15 @@ public:
   int IsAdminSubMode(int subMode);
   void GetMonsterSkillInfo(const char* monster, int skill, int* action, int* loopType, WindowDialogs& dialogs);
   const char* DecodePlayerName() const;
+  bool HasSkillEffect(std::uint32_t id) const;
+  CSkillInfo LookupHomunSkill(std::uint32_t id) const;
+  CSkillInfo LookupMercSkill(std::uint32_t id) const;
+  CSkillInfo LookupAdditionalSkill(std::uint32_t id) const;
+  CSkillInfo LookupSkill(std::uint32_t id);
+  void NotifySkillWindows();
+  void RemoveSkill(std::uint32_t id);
+  bool UpdateSkill(const CSkillInfo& value, unsigned char notify, unsigned char updateUnknown000C);
+  bool UpdateAdditionalSkill(const CSkillInfo& value, int unused);
   void NotifyHomunSkillWindows();
   void NotifyMercSkillWindows();
   int GetPetActionNumber(int hungerLevel, int friendlyLevel, int action);

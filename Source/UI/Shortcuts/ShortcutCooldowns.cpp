@@ -415,7 +415,7 @@ void UIQuickSlotWnd::Paint() {
 
     const int x = index * 29 + 5;
     if (entry.skill) {
-      CSkillInfo skill = painting.skills.Lookup(entry.id);
+      CSkillInfo skill = g_session.LookupSkill(entry.id);
       if (!skill.available) {
         continue;
       }

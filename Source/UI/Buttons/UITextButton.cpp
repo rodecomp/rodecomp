@@ -545,7 +545,7 @@ void UIBasicSkillCtrl::Slot28(int, int) {
   }
 
   LuaScript& script = *g_session.m_hotkeyScript;
-  CSkillInfo skill = this->m_skills->Lookup(static_cast<std::uint32_t>(this->m_skillId));
+  CSkillInfo skill = g_session.LookupSkill(static_cast<std::uint32_t>(this->m_skillId));
   const int sp = skill.UseSpAmount(script, skill.level);
   const int ap = skill.UseApAmount(script, skill.level);
   std::string text;
@@ -2283,7 +2283,7 @@ void UIBasicSkillCtrl::Paint() {
   this->ClearSurface(0xFFFF00FF);
   bool drawn = false;
   if (this->m_skillId >= 0) {
-    CSkillInfo skill = this->m_skills->Lookup(static_cast<std::uint32_t>(this->m_skillId));
+    CSkillInfo skill = g_session.LookupSkill(static_cast<std::uint32_t>(this->m_skillId));
     if (skill.available != 0) {
       drawn = true;
       if (this->m_level > 0) {

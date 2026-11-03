@@ -876,7 +876,7 @@ void UIBasicSkillCtrl::Slot10(int, int, std::intptr_t argument3) {
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(argument3);
   if (drag->skill) {
     std::string name = drag->skillName;
-    CSkillInfo skill = reinterpret_cast<const ClientSkills&>(g_session).Lookup(drag->id);
+    CSkillInfo skill = g_session.LookupSkill(drag->id);
     if (skill.level && skill.available && skill.unknown_0014) {
       this->m_skillId = static_cast<int>(drag->id);
       this->m_level = drag->skillLevel;

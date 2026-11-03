@@ -1,3 +1,4 @@
+#include "Client/Session.h"
 #include "Render/Text/TextContext.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
@@ -95,7 +96,7 @@ void ShortcutPainting::Paint(UIWindow& window, const ShortcutGrid& grid, const N
 
       const int x = 16 + 29 * column;
       if (slot.unknown_0000 != 0) {
-        CSkillInfo skill = this->skills.Lookup(slot.itemId);
+        CSkillInfo skill = g_session.LookupSkill(slot.itemId);
         if (!skill.MatchesShortcut(&slot)) {
           continue;
         }

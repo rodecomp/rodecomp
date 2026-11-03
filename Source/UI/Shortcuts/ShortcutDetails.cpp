@@ -1,3 +1,4 @@
+#include "Client/Session.h"
 #include "UI/Shortcuts/ShortcutDetails.h"
 #include "UI/Shortcuts/SkillDetailClose.h"
 #include "UI/Window/UIWindow.h"
@@ -87,7 +88,7 @@ void ShortcutDetails::Open(UIWindow& window, ShortcutGrid& grid, int x, int y, c
     return;
   }
 
-  CSkillInfo skill = this->skills.Lookup(slot->itemId);
+  CSkillInfo skill = g_session.LookupSkill(slot->itemId);
 
   if (!skill.MatchesShortcut(slot)) {
     return;

@@ -1,5 +1,7 @@
-#include "Network/Packets/SkillUpdatePacket.h"
-#include "UI/Window/WindowOrdering.h"
+#include "Client/Mode/CGameMode.h"
+#include "Client/Session.h"
+#include "UI/Window/UIWindow.h"
+#include "UI/Window/UIWindowMgr.h"
 
 #include <cstring>
 
@@ -14,8 +16,8 @@ namespace {
 
 // OFFSET: 0x00D42AA0
 // FUNCTION: fn_21829
-void SkillUpdatePacket::Apply(const void* packet) {
-  this->pending = 0;
+void CGameMode::ApplySkillUpdatePacket(const void* packet) {
+  *reinterpret_cast<int*>(&this->unknown_0100[0x0C]) = 0;
 
   const auto* bytes = static_cast<const unsigned char*>(packet);
   const auto opcode = Read<std::uint16_t>(bytes);
@@ -24,13 +26,13 @@ void SkillUpdatePacket::Apply(const void* packet) {
 
   switch (opcode) {
   case 270:
-    value = this->client.bundle.Lookup(id, this->client.classMode, this->client.HasEffect(1717), this->client.HasEffect(1716));
+    value = g_session.m_skillBundle.Lookup(id);
     break;
   case 569:
-    value = this->client.LookupFirst(id);
+    value = g_session.LookupHomunSkill(id);
     break;
   case 670:
-    value = this->client.LookupOther(id);
+    value = g_session.LookupMercSkill(id);
     break;
   }
 
@@ -39,25 +41,25 @@ void SkillUpdatePacket::Apply(const void* packet) {
   value.unknown_0014 = static_cast<std::int32_t>(Read<std::int16_t>(bytes + 6));
   value.unknown_0018 = bytes[10];
   value.unknown_001C = static_cast<std::int32_t>(Read<std::int16_t>(bytes + 8));
-  value.unknown_0034 = value.UseApAmount(this->script, value.level);
-  this->client.bundle.ApplyLevelChange(value);
+  value.unknown_0034 = value.UseApAmount(*g_session.m_hotkeyScript, value.level);
+  g_session.m_skillBundle.ApplyLevelChange(value);
 
   switch (opcode) {
   case 270:
-    this->client.Update(value, 1, 0, this->script, this->levels, this->windows);
+    g_session.UpdateSkill(value, 1, 0);
     break;
   case 569:
-    this->first.Update(value, 1);
+    g_session.UpdateHomunSkill(value, 1);
     break;
   case 670:
-    this->other.Update(value, 1);
+    g_session.UpdateMercSkill(value, 1);
     break;
   }
 }
 
 // OFFSET: 0x00D06AF0
 // FUNCTION: fn_21577
-void LearnedSkillReceiver::Apply(
+void CGameMode::ReceiveLearnedSkill(
   std::uint16_t id, std::int16_t level, int unknown000C, std::uint8_t unknown0018, std::int16_t unknown0014, std::int16_t unknown001C, std::int16_t unknown0030
 ) {
   CSkillInfo value;
@@ -65,25 +67,25 @@ void LearnedSkillReceiver::Apply(
   value.id = id;
   value.level = level;
   value.unknown_0018 = unknown0018;
-  value.name = value.IdName(this->script);
+  value.name = value.IdName(*g_session.m_hotkeyScript);
   value.unknown_0014 = unknown0014;
   value.unknown_001C = unknown001C;
   value.unknown_0030 = unknown0030;
-  value.unknown_0034 = value.UseApAmount(this->script, level);
+  value.unknown_0034 = value.UseApAmount(*g_session.m_hotkeyScript, level);
 
-  this->client.bundle.RecordLevelChange(value);
+  g_session.m_skillBundle.RecordLevelChange(value);
   if (value.id == 336) {
-    this->skill336 = 1;
+    g_session.unknown_5468 = 1;
   }
 
-  this->client.Update(value, 1, 0, this->script, this->levels, this->windows);
+  g_session.UpdateSkill(value, 1, 0);
 }
 
 // OFFSET: 0x00D2B5C0
 // FUNCTION: fn_45442
-void AdditionalSkillPacket::Apply(const void* packet) {
-  this->pending = 0;
-  this->client.additional.clear();
+void CGameMode::ApplyAdditionalSkillPacket(const void* packet) {
+  *reinterpret_cast<int*>(&this->unknown_0100[0x0C]) = 0;
+  g_session.m_additionalSkills.clear();
 
   const auto* bytes = static_cast<const unsigned char*>(packet);
 
@@ -98,15 +100,21 @@ void AdditionalSkillPacket::Apply(const void* packet) {
     value.unknown_0014 = static_cast<std::int32_t>(Read<std::int16_t>(record + 8));
     value.unknown_000C = Read<std::uint32_t>(record + 2);
     value.unknown_0018 = record[36];
-    value.name = value.IdName(this->script);
-    value.unknown_0034 = value.UseApAmount(this->script, value.level);
+    value.name = value.IdName(*g_session.m_hotkeyScript);
+    value.unknown_0034 = value.UseApAmount(*g_session.m_hotkeyScript, value.level);
 
     if (value.id - 10000u <= 19u) {
-      this->client.UpdateAdditional(value, 1);
+      g_session.UpdateAdditionalSkill(value, 1);
     }
   }
 
-  this->capacity = Read<std::int16_t>(bytes + 4);
-  this->ordering.InvalidateFrames(this->frameLatch);
-  this->windows.Notify();
+  g_session.m_guildSkillPoint = Read<std::int16_t>(bytes + 4);
+  g_session.InvalidateWindowFrames();
+  if (g_windowMgr.window_032C) {
+    g_windowMgr.window_032C->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  }
+
+  if (g_windowMgr.window_01E8) {
+    g_windowMgr.window_01E8->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  }
 }

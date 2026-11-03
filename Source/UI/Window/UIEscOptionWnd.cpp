@@ -72,7 +72,7 @@ UIEscOptionWnd::UIEscOptionWnd()
   int escMode;
   if (mode->unknown_0250 == 0) {
     escMode = 0;
-  } else if (!mode->HasResurrectionItem() && !reinterpret_cast<const ClientSkills&>(g_session).HasEffect(580)) {
+  } else if (!mode->HasResurrectionItem() && !g_session.HasSkillEffect(580)) {
     escMode = 1;
   } else {
     escMode = 2;

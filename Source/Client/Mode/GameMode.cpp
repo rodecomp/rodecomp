@@ -118,7 +118,7 @@ int CGameMode::GetSkillAttackRange(int id, int level) {
   }
 
   int range = 1;
-  CSkillInfo skill = reinterpret_cast<const ClientSkills&>(g_session).Lookup(id);
+  CSkillInfo skill = g_session.LookupSkill(id);
   if (!skill.available) {
     skill = g_session.m_skillBundle.Pending(id);
     if (!skill.available) {
@@ -3700,15 +3700,7 @@ void CGameMode::ProcessMouseWheel(int requireControl) {
     return;
   }
 
-  ClientSkills skills{
-    g_session.m_skillBundle,
-    g_session.m_homunSkills,
-    g_session.m_mercSkills,
-    g_session.m_additionalSkills,
-    reinterpret_cast<const int&>(g_session.m_jobFlags),
-    g_activeSkillEffects
-  };
-  CSkillInfo wheelSkill = skills.bundle.Lookup(0x27F, skills.classMode, skills.HasEffect(1717), skills.HasEffect(1716));
+  CSkillInfo wheelSkill = g_session.m_skillBundle.Lookup(0x27F);
   if (wheelSkill.level > 0) {
     const int count = this->unknown_05F4;
     if (count > this->unknown_05F8) {
@@ -3784,7 +3776,7 @@ void CGameMode::ProcessMouseWheel(int requireControl) {
   const float step = g_mouse.wheel > 0 ? -24.3f : 24.3f;
   g_cameraDistance = this->camera->camera.desiredDistance - step;
   float maxDistance = this->unknown_0254 ? g_serviceOptionJitterScale : g_cameraBaseDistance;
-  CSkillInfo zoomSkill = skills.bundle.Lookup(0x1B9, skills.classMode, skills.HasEffect(1717), skills.HasEffect(1716));
+  CSkillInfo zoomSkill = g_session.m_skillBundle.Lookup(0x1B9);
   bool extendedZoom = false;
   if (this->hasViewParameters) {
     if (g_cameraDistance < static_cast<float>(this->viewParameters[0])) {
@@ -3868,7 +3860,6 @@ void CGameMode::ReceiveSkillList(int packetType, const std::vector<SkillListEntr
     g_session.m_mercSkills.clear();
   }
 
-  SkillWindows windows{g_windowMgr.window_02C4, g_windowMgr.window_01E8, g_windowMgr};
   for (const SkillListEntry& entry : skills) {
     CSkillInfo skill;
     if ((entry.id != 0 && entry.id < 7999) || g_session.IsHomunculusSkill(entry.id) || g_session.IsMercenarySkill(entry.id)) {
@@ -3884,18 +3875,7 @@ void CGameMode::ReceiveSkillList(int packetType, const std::vector<SkillListEntr
       g_session.m_skillBundle.ApplyLevelChange(skill);
 
       if (packetType == 0x10F || packetType == 0xB32) {
-        ClientSkills client{
-          g_session.m_skillBundle,
-          g_session.m_homunSkills,
-          g_session.m_mercSkills,
-          g_session.m_additionalSkills,
-          reinterpret_cast<const int&>(g_session.m_jobFlags),
-          g_activeSkillEffects
-        };
-        const SkillUseLevels levels{
-          g_session.m_skillBundle.unknown_0064, *reinterpret_cast<const std::vector<int>*>(g_session.unknown_0710), g_session.m_homunSkillLevels
-        };
-        client.Update(skill, 0, 0, *g_session.m_hotkeyScript, levels, windows);
+        g_session.UpdateSkill(skill, 0, 0);
       } else if (packetType == 0x235) {
         g_session.UpdateHomunSkill(skill, 0);
       } else if (packetType == 0x29D) {
@@ -3905,7 +3885,7 @@ void CGameMode::ReceiveSkillList(int packetType, const std::vector<SkillListEntr
   }
 
   if (packetType == 0x10F || packetType == 0xB32) {
-    windows.Notify();
+    g_session.NotifySkillWindows();
   } else if (packetType == 0x235) {
     g_session.NotifyHomunSkillWindows();
   } else if (packetType == 0x29D) {
@@ -3925,15 +3905,7 @@ void CGameMode::ReceiveSkillUpdate(
 ) {
   *reinterpret_cast<int*>(&this->unknown_0100[0x0C]) = 0;
 
-  ClientSkills client{
-    g_session.m_skillBundle,
-    g_session.m_homunSkills,
-    g_session.m_mercSkills,
-    g_session.m_additionalSkills,
-    reinterpret_cast<const int&>(g_session.m_jobFlags),
-    g_activeSkillEffects
-  };
-  CSkillInfo skill = client.Lookup(id);
+  CSkillInfo skill = g_session.LookupSkill(id);
   skill.level = level;
   skill.unknown_0014 = spCost;
   skill.unknown_0018 = upgradable;
@@ -3947,11 +3919,7 @@ void CGameMode::ReceiveSkillUpdate(
   } else if (g_session.IsMercenarySkill(id)) {
     g_session.UpdateMercSkill(skill, 1);
   } else {
-    const SkillUseLevels levels{
-      g_session.m_skillBundle.unknown_0064, *reinterpret_cast<const std::vector<int>*>(g_session.unknown_0710), g_session.m_homunSkillLevels
-    };
-    SkillWindows windows{g_windowMgr.window_02C4, g_windowMgr.window_01E8, g_windowMgr};
-    client.Update(skill, 1, 1, *g_session.m_hotkeyScript, levels, windows);
+    g_session.UpdateSkill(skill, 1, 1);
   }
 
   if (g_equipmentPropertiesMgr == nullptr) {
