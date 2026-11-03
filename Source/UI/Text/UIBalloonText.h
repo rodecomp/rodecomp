@@ -12,6 +12,7 @@ struct TextLocale;
 class UIBalloonText : public UIWindow {
   friend class UIBalloonOpenBtn;
   friend class UIHotKeyWnd;
+  friend class CGameActor;
   friend class CGameMode;
   friend class UIBookWnd;
   friend class UISelCharForUServerWnd;
