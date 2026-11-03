@@ -9,7 +9,6 @@ class CConnection;
 class CEmblemDataMgr;
 #include "UI/Window/WindowManagerWindows.h"
 struct AccountConfigLoad;
-struct CharacterConfigLoad;
 
 class CAsyncWorkMgr : public NAsyncWorkMgr {
 public:
@@ -25,7 +24,7 @@ public:
     std::uint32_t accountId, std::uint32_t characterId, std::string characterName, std::uint32_t targetAccountId, std::uint32_t targetCharacterId,
     std::string targetName, std::string world, std::string url, std::string token, WindowManagerWindows& windows
   );
-  void LoadCharacter(std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, CharacterConfigLoad& context);
+  void LoadCharacter(std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token);
   void SaveCharacter(std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, std::string data);
   void DownloadEmblem(
     std::string url, std::uint32_t accountId, std::string token, std::string world, std::uint32_t guildId, std::uint32_t version, CConnection& connection

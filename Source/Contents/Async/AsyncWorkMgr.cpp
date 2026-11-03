@@ -112,12 +112,12 @@ void CAsyncWorkMgr::ChangePartyMaster(
 // OFFSET: 0x00574190
 // FUNCTION: fn_02502
 void CAsyncWorkMgr::LoadCharacter(
-  std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, CharacterConfigLoad& context
+  std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token
 ) {
   NAsyncWorkPtr work(this->m_pools, "CharacterLinkedUserData_Load");
 
   if (work.Get()) {
-    static_cast<CCharacterLinkedUserDataLoadAsyncWork*>(work.Get())->Bind(accountId, characterId, world, url, token, context);
+    static_cast<CCharacterLinkedUserDataLoadAsyncWork*>(work.Get())->Bind(accountId, characterId, world, url, token);
     this->Submit(work);
   }
 }

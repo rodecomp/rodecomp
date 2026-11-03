@@ -12,7 +12,7 @@ inline bool UIWindowMgr::ShowShortcutWindow(int value) {
     return false;
   }
 
-  this->unknown_0758 = value;
+  this->m_normalItemSlotWindow.show = value;
   g_windowMgr.EnsureWindow(36);
   this->window_01E8->Show(value);
 

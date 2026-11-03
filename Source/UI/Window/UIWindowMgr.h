@@ -354,8 +354,8 @@ public:
   /* 05D0 */ int unknown_05D0;
   /* 05D4 */ unsigned char unknown_05D4[0x168];
   /* 073C */ int unknown_073C;
-  /* 0740 */ unsigned char unknown_0740[0x18];
-  /* 0758 */ int unknown_0758;
+  /* 0740 */ unsigned char unknown_0740[0x08];
+  /* 0748 */ NormalItemSlotWindow m_normalItemSlotWindow;
   /* 075C */ unsigned char unknown_075C[0x20];
   /* 077C */ int unknown_077C;
   /* 0780 */ unsigned char unknown_0780[0x10];

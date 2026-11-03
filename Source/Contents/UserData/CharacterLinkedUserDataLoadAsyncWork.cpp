@@ -22,7 +22,7 @@ namespace {
 // OFFSET: 0x005E4A50
 // FUNCTION: fn_03916
 CCharacterLinkedUserDataLoadAsyncWork::CCharacterLinkedUserDataLoadAsyncWork()
-    : NAsyncWork("CharacterLinkedUserData_Load"), m_accountId(0), m_characterId(0), m_diagnostic(Diagnostic(false, "unknwon", 29)), m_context(nullptr) {
+    : NAsyncWork("CharacterLinkedUserData_Load"), m_accountId(0), m_characterId(0), m_diagnostic(Diagnostic(false, "unknwon", 29)) {
 }
 
 // INLINED
@@ -36,7 +36,7 @@ void CCharacterLinkedUserDataLoadAsyncWork::Reset() {
 // OFFSET: 0x005E4F10
 // FUNCTION: fn_03918
 void CCharacterLinkedUserDataLoadAsyncWork::Bind(
-  std::uint32_t accountId, std::uint32_t characterId, std::string accountName, std::string url, std::string token, CharacterConfigLoad& context
+  std::uint32_t accountId, std::uint32_t characterId, std::string accountName, std::string url, std::string token
 ) {
   this->m_group = timeGetTime();
   this->m_accountId = accountId;
@@ -46,7 +46,6 @@ void CCharacterLinkedUserDataLoadAsyncWork::Bind(
   this->m_url = url;
   this->m_token = token;
   this->m_response.clear();
-  this->m_context = &context;
 
   AsyncDiagnostic diagnostic = Diagnostic(false, "unknwon", 55);
   this->m_diagnostic.MoveFrom(diagnostic);
@@ -80,6 +79,6 @@ bool CCharacterLinkedUserDataLoadAsyncWork::Execute() {
 // FUNCTION: fn_03920
 void CCharacterLinkedUserDataLoadAsyncWork::Complete() {
   g_characterLinkedUserDataMgr->CompleteLoad(
-    this->m_diagnostic, this->m_accountId, this->m_characterId, this->m_accountName, this->m_response, *this->m_context
+    this->m_diagnostic, this->m_accountId, this->m_characterId, this->m_accountName, this->m_response
   );
 }

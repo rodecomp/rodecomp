@@ -6,7 +6,9 @@
 
 class LuaScript;
 struct AsyncDiagnostic;
-struct CharacterConfigLoad;
+namespace Json {
+  class Value;
+}
 struct CharacterConfigSave;
 class CAsyncWorkMgr;
 
@@ -19,12 +21,11 @@ public:
   std::string LoadUrl() const;
   std::string SaveUrl() const;
   void CompleteSave();
-  void CompleteLoad(
-    AsyncDiagnostic diagnostic, std::uint32_t accountId, std::uint32_t characterId, std::string accountName, std::string response, CharacterConfigLoad& context
-  );
-  void Load(
-    std::uint32_t accountId, std::uint32_t characterId, std::string accountName, const char* token16, CAsyncWorkMgr& workManager, CharacterConfigLoad& context
-  );
+  void CompleteLoad(AsyncDiagnostic diagnostic, std::uint32_t accountId, std::uint32_t characterId, std::string accountName, std::string response);
+  void Load(std::uint32_t accountId, std::uint32_t characterId, std::string accountName);
+  void LoadUseSkillLevels(Json::Value& data);
+  void LoadHomunculusSkillLevels(Json::Value& data);
+  void LoadNormalItemSlots(Json::Value& data);
   void Save(CharacterConfigSave& context, const char* token16, CAsyncWorkMgr& workManager);
   void RefreshUrls(LuaScript& script, const char* host, const char* port, const char* overrideKey);
   void Reset(LuaScript& script, const char* host, const char* port, const char* overrideKey);
@@ -41,6 +42,7 @@ protected:
 };
 
 extern CCharacterLinkedUserDataMgr* g_characterLinkedUserDataMgr;
+extern bool g_sortPrivateTab;
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CCharacterLinkedUserDataMgr) == 96);

@@ -1299,7 +1299,7 @@ void UIWindowMgr::ApplyReplayOptions(const ReplayOptions& options) {
   this->unknown_077C = 0;
   this->unknown_05BC = 0;
   this->unknown_05D0 = 0;
-  this->unknown_0758 = options.unknown_0007;
+  this->m_normalItemSlotWindow.show = options.unknown_0007;
   this->unknown_003C = options.recordRestricted;
 }
 

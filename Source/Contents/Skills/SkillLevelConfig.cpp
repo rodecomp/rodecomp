@@ -1,10 +1,13 @@
-#include "Contents/Skills/SkillLevelConfig.h"
+#include "Client/Session.h"
+#include "Contents/UserData/CharacterLinkedUserDataMgr.h"
+
+#include <json/value.h>
 
 #include <cstdint>
 
 // OFFSET: 0x005E6A10
 // FUNCTION: fn_03930
-void LoadUseSkillLevels(Json::Value& data, int* levels) {
+void CCharacterLinkedUserDataMgr::LoadUseSkillLevels(Json::Value& data) {
   Json::Value values = data["UseSkillInfo"];
   if (!values.isNull()) {
     for (auto it = values.begin(); it != values.end(); ++it) {
@@ -12,9 +15,7 @@ void LoadUseSkillLevels(Json::Value& data, int* levels) {
       if (value.isObject()) {
         int id = value.get("SKID", 0).asInt();
         int level = value.get("SKLv", 0).asInt();
-        if (static_cast<std::uint32_t>(id) - 1 <= 0x1F3D) {
-          levels[id] = level;
-        }
+        g_session.m_skillBundle.SetUnknownValue(id, level);
       }
     }
   }
@@ -22,7 +23,7 @@ void LoadUseSkillLevels(Json::Value& data, int* levels) {
 
 // OFFSET: 0x005E63B0
 // FUNCTION: fn_03928
-void LoadHomunculusSkillLevels(Json::Value& data, int* levels) {
+void CCharacterLinkedUserDataMgr::LoadHomunculusSkillLevels(Json::Value& data) {
   Json::Value values = data["HomunSkillInfo"];
   if (!values.isNull()) {
     for (auto it = values.begin(); it != values.end(); ++it) {
@@ -31,10 +32,7 @@ void LoadHomunculusSkillLevels(Json::Value& data, int* levels) {
         int id = value.get("HomunSKID", 0).asInt();
         int level = value.get("HomunSKLv", 0).asInt();
 
-        std::uint32_t index = static_cast<std::uint32_t>(id) - 8000;
-        if (static_cast<std::int32_t>(index) > -1) {
-          levels[index] = level;
-        }
+        g_session.SetHomunSkillLevel(id, level);
       }
     }
   }

@@ -4,8 +4,6 @@
 #include "Utility/Async/AsyncDiagnostic.h"
 #include "Utility/Async/NAsyncWork.h"
 
-struct CharacterConfigLoad;
-
 class CCharacterLinkedUserDataLoadAsyncWork : public NAsyncWork {
 public:
   CCharacterLinkedUserDataLoadAsyncWork();
@@ -13,7 +11,7 @@ public:
   void Reset() override;
   bool Execute() override;
   void Complete() override;
-  void Bind(std::uint32_t accountId, std::uint32_t characterId, std::string accountName, std::string url, std::string token, CharacterConfigLoad& context);
+  void Bind(std::uint32_t accountId, std::uint32_t characterId, std::string accountName, std::string url, std::string token);
 
 protected:
   /* 0028 */ std::uint32_t m_accountId;
@@ -23,12 +21,10 @@ protected:
   /* 0060 */ std::string m_token;
   /* 0078 */ std::string m_response;
   /* 0090 */ AsyncDiagnostic m_diagnostic;
-
-  CharacterConfigLoad* m_context;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(CCharacterLinkedUserDataLoadAsyncWork) == 204);
+static_assert(sizeof(CCharacterLinkedUserDataLoadAsyncWork) == 200);
 #endif
 
 #endif

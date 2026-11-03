@@ -1,23 +1,25 @@
-#include "UI/Shortcuts/NormalItemSlotLoad.h"
+#include "Client/Session.h"
+#include "Contents/UserData/CharacterLinkedUserDataMgr.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UIWindowMgr.inl"
 #include "UI/Window/UIWindow.h"
-#include "UI/Window/WindowManagerWindows.h"
 
 #include <cstring>
 #include <json/value.h>
 
 // OFFSET: 0x005E65E0
 // FUNCTION: fn_03929
-void LoadNormalItemSlots(
-  Json::Value& data, NormalItemSlot* slots, NormalItemSlotWindow& saved, bool& itemSlotActive, WindowManagerWindows& windows
-) {
+void CCharacterLinkedUserDataMgr::LoadNormalItemSlots(Json::Value& data) {
+  NormalItemSlotWindow& saved = g_windowMgr.m_normalItemSlotWindow;
+  bool& itemSlotActive = g_session.ItemSlotActive();
+
   Json::Value& values = data["NormalItemSlot"];
 
   if (values.isNull()) {
     return;
   }
 
-  std::memset(slots, 0, 9 * sizeof(NormalItemSlot));
+  g_session.ClearNormalItemSlots();
 
   for (auto entry = values.begin(); entry != values.end(); ++entry) {
     Json::Value& value = *entry;
@@ -28,7 +30,7 @@ void LoadNormalItemSlots(
 
     const int item = value.get("ItemID", 0).asInt();
     const int index = value.get("SlotNum", 0).asInt();
-    slots[index].itemId = static_cast<std::uint32_t>(item);
+    g_session.m_normalItemSlots[index].itemId = static_cast<std::uint32_t>(item);
   }
 
   Json::Value& info = data["SlotInfo"];
@@ -52,7 +54,7 @@ void LoadNormalItemSlots(
   Json::Value& active = data["ItemSlotActive"];
   itemSlotActive = active.isNull() ? true : active.asBool();
 
-  UIWindow* window = windows.LookupWindow(36);
+  UIWindow* window = g_windowMgr.LookupWindow(36);
 
   if (!window) {
     return;
