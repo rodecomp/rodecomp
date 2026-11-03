@@ -1,6 +1,7 @@
 #include "Render/Text/FontCache.h"
 #include "Client/Input/InputCharset.h"
 #include "Client/Input/Language.h"
+#include "Client/Input/Mouse.h"
 #include "Client/Replay.h"
 #include "File/File.h"
 #include "Network/TextEncoding.h"
@@ -5664,8 +5665,8 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       }
       menu->SendMsg(nullptr, 0x1E, 0, 0, 0, 0);
       menu->Move(
-        std::min(std::max(g_screenWidth + 1, 1), g_renderer->viewport.width - menu->geometry.width),
-        std::min(std::max(g_screenHeight + 1, 1), g_renderer->viewport.height - menu->geometry.height)
+        std::min(std::max(g_mouse.x + 1, 1), g_renderer->viewport.width - menu->geometry.width),
+        std::min(std::max(g_mouse.y + 1, 1), g_renderer->viewport.height - menu->geometry.height)
       );
       return 0;
     }
