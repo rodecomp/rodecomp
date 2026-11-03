@@ -891,7 +891,7 @@ void CGameMode::ReceivePlayerMessage82(const unsigned char* packet) {
   }
 
   player->SendMsg(nullptr, 0x52, 0, *reinterpret_cast<const int*>(packet + 6) * 1000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-  g_playerMessage82Pending = true;
+  g_session.unknown_555C[0x0A] = true;
 }
 
 // OFFSET: 0x00D3D390
