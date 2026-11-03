@@ -29,6 +29,7 @@
 
 class UIWindowMgr;
 class CActRes;
+class CFile;
 class CGameActor;
 class CRenderObject;
 class LuaScript;
@@ -850,6 +851,12 @@ public:
   void RemoveSkill(std::uint32_t id);
   bool UpdateSkill(const CSkillInfo& value, unsigned char notify, unsigned char updateUnknown000C);
   bool UpdateAdditionalSkill(const CSkillInfo& value, int unused);
+  int InheritedJob(int job);
+  void WriteOptionFloat(CFile& file, const char* key, float value);
+  void WriteOptionInteger(CFile& file, const char* key, int value);
+  void WriteOptionString(CFile& file, const char* key, const char* value);
+  void WriteOptionGuid(CFile& file, const char* key, const GUID& value);
+  void InitializeSkillTree();
   void NotifyHomunSkillWindows();
   void NotifyMercSkillWindows();
   int GetPetActionNumber(int hungerLevel, int friendlyLevel, int action);
@@ -966,7 +973,7 @@ public:
   void InitResourceNameTables();
   void InitJobSpriteNames();
   const char* GetEFSTImgFileName(int efstId, int type);
-  int IsTreeGroupTwo(int job) const;
+  bool IsTreeGroupTwo(int job) const;
   bool IsTreeGroupThree(int job) const;
   bool IsThirdJobOrHigher(int job);
   std::string GetSexName(int sex);

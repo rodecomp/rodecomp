@@ -43,6 +43,8 @@ public:
     StoreBackupContext& context
   );
   void Save(int type);
+  void ImportData(Json::Value& data);
+  void ExportData(Json::Value& data) const;
 
   /* 0004 */ bool enabled;
   /* 0005 */ bool loaded;

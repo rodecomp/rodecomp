@@ -26,7 +26,7 @@ namespace {
 
 // OFFSET: 0x00638A90
 // FUNCTION: fn_45421
-CSoundMgr::CSoundMgr(SoundMgrContext& context) : m_context(&context) {
+CSoundMgr::CSoundMgr() {
   if (this->Initialize()) {
     this->initialized = 1;
   }
@@ -101,7 +101,7 @@ bool CSoundMgr::Initialize() {
     this->providers[i] = 0;
   }
 
-  SoundConfiguration& configuration = this->m_context->configuration;
+  SoundConfiguration& configuration = g_soundConfiguration;
 
   if (configuration.mode == 0) {
     return true;
@@ -204,12 +204,12 @@ bool CSoundMgr::Initialize() {
 
 // OFFSET: 0x00639350
 // FUNCTION: fn_04751
-bool CSoundMgr::Create(SoundMgrContext& context) {
+bool CSoundMgr::Create() {
   if (g_soundMgr) {
     return false;
   }
 
-  g_soundMgr = new (std::nothrow) CSoundMgr(context);
+  g_soundMgr = new (std::nothrow) CSoundMgr();
 
   if (!g_soundMgr) {
     return false;
@@ -249,7 +249,7 @@ void CSoundMgr::Update() {
 // OFFSET: 0x006396B0
 // FUNCTION: fn_45423
 void CSoundMgr::Shutdown() {
-  if (this->m_context->configuration.mode == 0) {
+  if (g_soundConfiguration.mode == 0) {
     return;
   }
 
@@ -364,7 +364,7 @@ int CSoundMgr::Volume(const CSoundMgr* sound) {
 // OFFSET: 0x00639A70
 // FUNCTION: fn_04757
 bool CSoundMgr::IsComplete() const {
-  if (this->m_context->configuration.mode == 0 || !this->stream || !this->secondaryStream || this->fadeExit != 0) {
+  if (g_soundConfiguration.mode == 0 || !this->stream || !this->secondaryStream || this->fadeExit != 0) {
     return false;
   }
 
@@ -447,7 +447,7 @@ bool CSoundMgr::PlayData3D(const void* data, const float& x, const float& y, con
 void CSoundMgr::SetDefaultName(std::string name) {
   this->defaultName = name;
 
-  if (this->m_context->serviceOptions.Get(7)) {
+  if (g_serviceOptions.Get(7)) {
     this->PlayStream(nullptr, 0, false);
   }
 
@@ -507,7 +507,7 @@ bool CSoundMgr::PlayData2D(const void* data, const float& x, const float& y, con
 // OFFSET: 0x00639F00
 // FUNCTION: fn_04763
 void CSoundMgr::PlayStream(const char* name, int loopCount, bool fade) {
-  if (this->m_context->configuration.mode == 0) {
+  if (g_soundConfiguration.mode == 0) {
     return;
   }
 
@@ -551,9 +551,9 @@ void CSoundMgr::PlayStream(const char* name, int loopCount, bool fade) {
 // OFFSET: 0x0063A130
 // FUNCTION: fn_04764
 void CSoundMgr::PlayWave(const char* name, float x, float y, float z, int maximumDistance, int minimumDistance, float scale, int unused) {
-  const unsigned char enabled = this->m_context->serviceOptions.Get(11);
+  const unsigned char enabled = g_serviceOptions.Get(11);
 
-  if (this->m_context->configuration.mode == 0 || !enabled) {
+  if (g_soundConfiguration.mode == 0 || !enabled) {
     return;
   }
 
@@ -563,15 +563,15 @@ void CSoundMgr::PlayWave(const char* name, float x, float y, float z, int maximu
     return;
   }
 
-  CWave* wave = static_cast<CWave*>(this->m_context->resources.Load(name));
+  CWave* wave = static_cast<CWave*>(ResourceMgr::Instance().Load(name));
 
   if (!wave) {
     return;
   }
 
-  if (this->m_context->configuration.mode == 1) {
+  if (g_soundConfiguration.mode == 1) {
     this->PlayData2D(wave->data, x, y, z, maximumDistance, minimumDistance, scale);
-  } else if (this->m_context->configuration.mode == 2) {
+  } else if (g_soundConfiguration.mode == 2) {
     this->PlayData3D(wave->data, x, y, z, maximumDistance, minimumDistance, scale);
   }
 }

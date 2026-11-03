@@ -20,6 +20,7 @@ public:
   virtual void RemoveTagChild(UIWindow* child);
   virtual void PlaceTagButton(UIWindow* button, const std::string& name, const int& x, int unused) = 0;
 
+  void ClearTags();
   std::string AppendTag(const std::string& name);
   int MeasureText(const std::string& text, const unsigned& bytes);
   bool SyncTagsWithText();

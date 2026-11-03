@@ -15,21 +15,6 @@ struct ItemTagRecord {
   /* 01C4 */ int index;
 };
 
-class ItemTagRemoval {
-public:
-  virtual void Remove(UIWindow* child) = 0;
-
-protected:
-  ~ItemTagRemoval() = default;
-};
-
-struct ItemTagRetirement {
-  std::list<ItemTagRecord>& records;
-  ItemTagRemoval& removal;
-
-  void Clear();
-};
-
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(ItemTagRecord) == 456);
 static_assert(offsetof(ItemTagRecord, child) == 0x0000);

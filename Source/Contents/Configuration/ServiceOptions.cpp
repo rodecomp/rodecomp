@@ -4,7 +4,6 @@
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/MapSkyMgr.h"
 #include "Contents/MessageTable.h"
-#include "Contents/Configuration/OptionWriter.h"
 #include "Contents/SkinMgr.h"
 #include "File/File.h"
 #include "Contents/Sound/SoundMgr.h"
@@ -1682,63 +1681,62 @@ void CSession::SaveOptionInfo() {
   output.Write(buffer, size);
   delete[] buffer;
 
-  OptionWriter writer{output};
-  writer.Integer("Trilinear", g_textureFiltering);
-  writer.Integer("Bgm_Volume", g_soundMgr->targetVolume);
-  writer.Integer("Effect_Volume", g_soundMgr->sampleVolume);
-  writer.Integer("AutoOpen1to1Window", this->m_autoOpenWhisperWindow);
-  writer.Integer("AutoOpen1to1Window_Friend", this->m_autoOpenFriendWhisperWindow);
-  writer.Integer("PlaySound_Open1to1Window", this->m_whisperOpenSound);
-  writer.Float("Outdoor_ViewLatitude", g_outdoorCameraPitch);
-  writer.Float("Outdoor_ViewDistance", g_outdoorCameraDistance);
-  writer.Float("Indoor_ViewLatitude", g_indoorCameraPitch);
-  writer.Float("Indoor_ViewDistance", g_indoorCameraDistance);
-  writer.String("SkinName", g_skinInfo.Name());
-  writer.Integer("ChannelCopID", this->m_channelCopId);
+  this->WriteOptionInteger(output, "Trilinear", g_textureFiltering);
+  this->WriteOptionInteger(output, "Bgm_Volume", g_soundMgr->targetVolume);
+  this->WriteOptionInteger(output, "Effect_Volume", g_soundMgr->sampleVolume);
+  this->WriteOptionInteger(output, "AutoOpen1to1Window", this->m_autoOpenWhisperWindow);
+  this->WriteOptionInteger(output, "AutoOpen1to1Window_Friend", this->m_autoOpenFriendWhisperWindow);
+  this->WriteOptionInteger(output, "PlaySound_Open1to1Window", this->m_whisperOpenSound);
+  this->WriteOptionFloat(output, "Outdoor_ViewLatitude", g_outdoorCameraPitch);
+  this->WriteOptionFloat(output, "Outdoor_ViewDistance", g_outdoorCameraDistance);
+  this->WriteOptionFloat(output, "Indoor_ViewLatitude", g_indoorCameraPitch);
+  this->WriteOptionFloat(output, "Indoor_ViewDistance", g_indoorCameraDistance);
+  this->WriteOptionString(output, "SkinName", g_skinInfo.Name());
+  this->WriteOptionInteger(output, "ChannelCopID", this->m_channelCopId);
 
   RECT rect;
   GetWindowRect(hWnd, &rect);
-  writer.Integer("Window_XPos", rect.left);
-  writer.Integer("Window_YPos", rect.top);
-  writer.Integer("Simplicity_SkillList", this->m_simplifiedSkillList);
-  writer.Integer("Show_SkillDescript", this->m_showSkillDescription);
-  writer.Integer("ChangeChatMode", g_windowCloseByte);
-  writer.Integer("LockMouse", this->m_lockMouse);
-  writer.Integer("ShowBattleFieldIcon", g_showBattleFieldIcon);
-  writer.Integer("MouseExclusive", g_serviceOptions.Get(ConfineCursor));
-  writer.Integer("RenderSystemReset", g_renderSystemReset);
-  writer.Integer("RENDERSYSTEM", g_configuredRenderBackend);
-  writer.Guid("DX9DEVICEID", g_configuredDeviceGuid);
-  writer.String("DX9DEVICENAME", g_configuredDeviceName);
-  writer.Integer("ISFULLSCREENMODE", g_configuredFullscreen);
-  writer.Integer("WIDTH", g_configuredScreenWidth);
-  writer.Integer("HEIGHT", g_configuredScreenHeight);
-  writer.Integer("OLD_WIDTH", g_configuredScreenWidth);
-  writer.Integer("OLD_HEIGHT", g_configuredScreenHeight);
-  writer.Integer("BITPERPIXEL", g_configuredBitsPerPixel);
-  writer.Integer("DEVICECNT", g_configuredDeviceCount);
-  writer.Integer("MODECNT", g_configuredModeCount);
-  writer.Integer("SPRITEMODE", g_effectDetailLevel);
-  writer.Integer("TEXTUREMODE", g_textureDetailLevel);
-  writer.Integer("bLockItemDropFromItemWnd", this->m_lockItemDrop);
-  writer.Integer("bWarningPriceCheck", !this->m_skipPriceWarning);
-  writer.Integer("bSoundEffectInItemSellWnd", !this->m_muteSellSound);
-  writer.Integer("bGuildMemberListSort", this->m_guildMemberListSort != 0);
-  writer.Integer("bBlockPrivateTab", this->m_blockPrivateTab != 0);
-  writer.Integer("bShowMenuIcon", this->m_showMenuIcon != 0);
-  writer.Integer("bItemDefaultSort", this->m_itemDefaultSort != 0);
-  writer.Integer("bItemAscendingOrder", this->m_itemAscendingOrder != 0);
-  writer.Integer("bItemDescendingOrder", this->m_itemDescendingOrder != 0);
-  writer.Integer(LookupMessage(0xDC6), g_serviceOptions.Get(0xF3));
-  writer.Integer("bExtendDamage", g_serviceOptions.Get(0x10B));
-  writer.Integer("bShowMapName", g_serviceOptions.Get(0x10C));
-  writer.Integer("bShowOnlyMineFootprint", g_serviceOptions.Get(0x10D));
-  writer.Integer(LookupMessage(0xDB9), g_serviceOptions.Get(0xF1));
-  writer.Integer("DamageSkin", this->m_damageSkinIndex);
-  writer.Integer("DamageDir", this->m_damageSkinMode);
-  writer.Integer("PriorityClass", this->m_priorityClass);
-  writer.Integer("bSummonTranslucent", g_serviceOptions.Get(0x10A));
-  writer.Integer("bHidePlayer", g_serviceOptions.Get(0x109));
-  writer.Integer("bQuickSlot", g_serviceOptions.Get(0x10E));
+  this->WriteOptionInteger(output, "Window_XPos", rect.left);
+  this->WriteOptionInteger(output, "Window_YPos", rect.top);
+  this->WriteOptionInteger(output, "Simplicity_SkillList", this->m_simplifiedSkillList);
+  this->WriteOptionInteger(output, "Show_SkillDescript", this->m_showSkillDescription);
+  this->WriteOptionInteger(output, "ChangeChatMode", g_windowCloseByte);
+  this->WriteOptionInteger(output, "LockMouse", this->m_lockMouse);
+  this->WriteOptionInteger(output, "ShowBattleFieldIcon", g_showBattleFieldIcon);
+  this->WriteOptionInteger(output, "MouseExclusive", g_serviceOptions.Get(ConfineCursor));
+  this->WriteOptionInteger(output, "RenderSystemReset", g_renderSystemReset);
+  this->WriteOptionInteger(output, "RENDERSYSTEM", g_configuredRenderBackend);
+  this->WriteOptionGuid(output, "DX9DEVICEID", g_configuredDeviceGuid);
+  this->WriteOptionString(output, "DX9DEVICENAME", g_configuredDeviceName);
+  this->WriteOptionInteger(output, "ISFULLSCREENMODE", g_configuredFullscreen);
+  this->WriteOptionInteger(output, "WIDTH", g_configuredScreenWidth);
+  this->WriteOptionInteger(output, "HEIGHT", g_configuredScreenHeight);
+  this->WriteOptionInteger(output, "OLD_WIDTH", g_configuredScreenWidth);
+  this->WriteOptionInteger(output, "OLD_HEIGHT", g_configuredScreenHeight);
+  this->WriteOptionInteger(output, "BITPERPIXEL", g_configuredBitsPerPixel);
+  this->WriteOptionInteger(output, "DEVICECNT", g_configuredDeviceCount);
+  this->WriteOptionInteger(output, "MODECNT", g_configuredModeCount);
+  this->WriteOptionInteger(output, "SPRITEMODE", g_effectDetailLevel);
+  this->WriteOptionInteger(output, "TEXTUREMODE", g_textureDetailLevel);
+  this->WriteOptionInteger(output, "bLockItemDropFromItemWnd", this->m_lockItemDrop);
+  this->WriteOptionInteger(output, "bWarningPriceCheck", !this->m_skipPriceWarning);
+  this->WriteOptionInteger(output, "bSoundEffectInItemSellWnd", !this->m_muteSellSound);
+  this->WriteOptionInteger(output, "bGuildMemberListSort", this->m_guildMemberListSort != 0);
+  this->WriteOptionInteger(output, "bBlockPrivateTab", this->m_blockPrivateTab != 0);
+  this->WriteOptionInteger(output, "bShowMenuIcon", this->m_showMenuIcon != 0);
+  this->WriteOptionInteger(output, "bItemDefaultSort", this->m_itemDefaultSort != 0);
+  this->WriteOptionInteger(output, "bItemAscendingOrder", this->m_itemAscendingOrder != 0);
+  this->WriteOptionInteger(output, "bItemDescendingOrder", this->m_itemDescendingOrder != 0);
+  this->WriteOptionInteger(output, LookupMessage(0xDC6), g_serviceOptions.Get(0xF3));
+  this->WriteOptionInteger(output, "bExtendDamage", g_serviceOptions.Get(0x10B));
+  this->WriteOptionInteger(output, "bShowMapName", g_serviceOptions.Get(0x10C));
+  this->WriteOptionInteger(output, "bShowOnlyMineFootprint", g_serviceOptions.Get(0x10D));
+  this->WriteOptionInteger(output, LookupMessage(0xDB9), g_serviceOptions.Get(0xF1));
+  this->WriteOptionInteger(output, "DamageSkin", this->m_damageSkinIndex);
+  this->WriteOptionInteger(output, "DamageDir", this->m_damageSkinMode);
+  this->WriteOptionInteger(output, "PriorityClass", this->m_priorityClass);
+  this->WriteOptionInteger(output, "bSummonTranslucent", g_serviceOptions.Get(0x10A));
+  this->WriteOptionInteger(output, "bHidePlayer", g_serviceOptions.Get(0x109));
+  this->WriteOptionInteger(output, "bQuickSlot", g_serviceOptions.Get(0x10E));
   output.Close();
 }

@@ -2,7 +2,7 @@
 #include "UI/Chat/UINewChatWnd.h"
 #include "UI/Chat/UISubChatHisWnd.h"
 #include "UI/Window/InputFocus.h"
-#include "UI/Edit/ItemTagRetirement.h"
+#include "UI/Edit/UIItemTagCtrl.h"
 #include "UI/Edit/UIEditCtrl.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Lists/UIChatHisBox.h"
@@ -207,6 +207,6 @@ void UINewChatWnd::ToggleInput() {
   }
 
   if (UIItemTagOnChat* tags = static_cast<UIChatEditCtrl*>(this->m_chatEdit)->unknown_0144) {
-    reinterpret_cast<ItemTagRetirement*>(tags)->Clear();
+    tags->ClearTags();
   }
 }

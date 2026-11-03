@@ -2,7 +2,6 @@
 #include "Contents/Async/AsyncWorkMgr.h"
 #include "Contents/Store/MCStoreInfoBackup.h"
 #include "Contents/MessageTable.h"
-#include "Contents/Store/StoreBackupData.h"
 #include "Client/Session.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Async/AsyncDiagnostic.h"
@@ -138,7 +137,7 @@ void CMCStoreInfoBackup::CompleteLoad(
 
   if (type == 1) {
     Json::Value& data = root["data"];
-    StoreBackupData{this->title, this->items}.Import(data);
+    this->ImportData(data);
 
     if (!data["Item"].isNull() || !this->title.empty()) {
       context.RefreshShop();
@@ -196,7 +195,7 @@ void CMCStoreInfoBackup::Save(int type) {
   this->type = type;
   Json::Value root;
   Json::Value data;
-  StoreBackupData{this->title, this->items}.Export(data, g_session.unknown_1758);
+  this->ExportData(data);
 
   if (!data.isNull()) {
     root["data"] = data;

@@ -2590,8 +2590,7 @@ int CSession::CountItems17F0() const {
 // OFFSET: 0x00DF9490
 // FUNCTION: fn_23516
 void CSession::RefreshSkillTree() {
-  JobInheritance inheritance{*this->m_hotkeyScript};
-  inheritance.InitializeSkillTree(this->m_skillBundle, this->m_job);
+  this->InitializeSkillTree();
   if (g_windowMgr.window_02C4) {
     g_windowMgr.window_02C4->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
   }

@@ -12,18 +12,12 @@ class ResourceMgr;
 struct ServiceOptions;
 struct SoundConfiguration;
 
-struct SoundMgrContext {
-  SoundConfiguration& configuration;
-  const ServiceOptions& serviceOptions;
-  ResourceMgr& resources;
-};
-
 class CSoundMgr {
 public:
-  explicit CSoundMgr(SoundMgrContext& context);
+  CSoundMgr();
   virtual ~CSoundMgr();
 
-  static bool Create(SoundMgrContext& context);
+  static bool Create();
   static void Destroy();
 
   void FadeIn();
@@ -91,8 +85,6 @@ public:
 
 private:
   static unsigned __stdcall FadeThread(void* direction);
-
-  SoundMgrContext* m_context;
 };
 
 extern CSoundMgr* g_soundMgr;
@@ -134,7 +126,7 @@ static_assert(offsetof(CSoundMgr, fadePending) == 0x414);
 static_assert(offsetof(CSoundMgr, reopenPending) == 0x415);
 static_assert(offsetof(CSoundMgr, unknown_0416) == 0x0416);
 static_assert(offsetof(CSoundMgr, fadeExit) == 0x418);
-static_assert(sizeof(CSoundMgr) == 0x420);
+static_assert(sizeof(CSoundMgr) == 0x41C);
 #endif
 
 #endif

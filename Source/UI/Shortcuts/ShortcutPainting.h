@@ -10,8 +10,6 @@
 
 class UIWindow;
 class ResourceMgr;
-class FontCache;
-struct TextLocale;
 
 struct ShortcutPainting {
   RenderCommandPool& commands;

@@ -76,7 +76,7 @@ UIItemTagOnMegaPhone::UIItemTagOnMegaPhone() {
 // OFFSET: 0x00870DF0
 // FUNCTION: fn_11104
 UIItemTagCtrl::~UIItemTagCtrl() {
-  reinterpret_cast<ItemTagRetirement*>(this)->Clear();
+  this->ClearTags();
 }
 
 // OFFSET: 0x00879830
@@ -84,7 +84,7 @@ UIItemTagCtrl::~UIItemTagCtrl() {
 bool UIItemTagOnChat::CanInsertTag(const std::string& name, int width) {
   if (g_windowMgr.GetHoverWindow()->geometry.id != 490 && g_windowMgr.GetHoverWindow()->geometry.id != 494 &&
       !g_windowMgr.unknown_0024) {
-    reinterpret_cast<ItemTagRetirement*>(this)->Clear();
+    this->ClearTags();
     return false;
   }
 
@@ -150,7 +150,7 @@ bool UIItemTagCtrl::SyncTagsWithText() {
     }
   }
 
-  reinterpret_cast<ItemTagRetirement*>(this)->Clear();
+  this->ClearTags();
   this->tags.swap(kept);
   return true;
 }
@@ -173,11 +173,13 @@ void UIItemTagOnMegaPhone::RemoveTagChild(UIWindow* child) {
 
 // OFFSET: 0x0087A2F0
 // FUNCTION: fn_11231
-void ItemTagRetirement::Clear() {
-  for (auto entry = this->records.begin(); entry != this->records.end();) {
-    this->removal.Remove(entry->child);
-    entry = this->records.erase(entry);
+void UIItemTagCtrl::ClearTags() {
+  for (auto entry = this->tags.begin(); entry != this->tags.end();) {
+    this->RemoveTagChild(entry->child);
+    entry = this->tags.erase(entry);
   }
+
+  this->tags.clear();
 }
 
 // OFFSET: 0x00879820

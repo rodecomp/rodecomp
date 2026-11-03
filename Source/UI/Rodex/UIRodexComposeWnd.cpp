@@ -9,7 +9,7 @@
 #include "Client/Session.h"
 #include "File/ShortcutFilename.h"
 #include "UI/Buttons/UIBmpTextButton.h"
-#include "UI/Edit/ItemTagRetirement.h"
+#include "UI/Edit/UIItemTagCtrl.h"
 #include "UI/Edit/UIItemTagCtrl.h"
 #include "UI/Text/UIStaticText.h"
 #include "Utility/Text/FormatString.h"
@@ -246,7 +246,7 @@ UIRodexComposeWnd::UIRodexComposeWnd()
 // INLINED
 UIRodexComposeWnd::~UIRodexComposeWnd() {
   if (this->unknown_0100) {
-    reinterpret_cast<ItemTagRetirement*>(this->unknown_0100)->Clear();
+    static_cast<UIItemTagCtrl*>(this->unknown_0100)->ClearTags();
     delete this->unknown_0100;
   }
 }

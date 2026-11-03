@@ -7,8 +7,6 @@
 #include <cstdint>
 #include <list>
 
-class FontCache;
-struct TextLocale;
 struct ITEM_INFO;
 class AutomaticSkills;
 

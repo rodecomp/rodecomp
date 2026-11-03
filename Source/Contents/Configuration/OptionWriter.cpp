@@ -1,4 +1,4 @@
-#include "Contents/Configuration/OptionWriter.h"
+#include "Client/Session.h"
 #include "File/File.h"
 
 #include <cstdio>
@@ -7,23 +7,23 @@
 
 // OFFSET: 0x00E26B10
 // FUNCTION: fn_23917
-void OptionWriter::Float(const char* key, float value) {
+void CSession::WriteOptionFloat(CFile& file, const char* key, float value) {
   char line[200];
   std::sprintf(line, "OptionInfoList[\"%s\"] = %f\r\n", key, value);
-  this->file.Write(line, static_cast<unsigned>(std::strlen(line)));
+  file.Write(line, static_cast<unsigned>(std::strlen(line)));
 }
 
 // OFFSET: 0x00E26C00
 // FUNCTION: fn_23919
-void OptionWriter::Integer(const char* key, int value) {
+void CSession::WriteOptionInteger(CFile& file, const char* key, int value) {
   char line[204];
   std::sprintf(line, "OptionInfoList[\"%s\"] = %d\r\n", key, value);
-  this->file.Write(line, static_cast<unsigned>(std::strlen(line)));
+  file.Write(line, static_cast<unsigned>(std::strlen(line)));
 }
 
 // OFFSET: 0x00E26C70
 // FUNCTION: fn_23920
-void OptionWriter::String(const char* key, const char* value) {
+void CSession::WriteOptionString(CFile& file, const char* key, const char* value) {
   std::string escaped(value);
   std::size_t offset = 0;
 
@@ -36,13 +36,13 @@ void OptionWriter::String(const char* key, const char* value) {
   const int count = _snprintf_s(line, sizeof(line), _TRUNCATE, "OptionInfoList[\"%s\"] = \"%s\"\r\n", key, escaped.c_str());
 
   if (count > 0) {
-    this->file.Write(line, count);
+    file.Write(line, count);
   }
 }
 
 // OFFSET: 0x00E26B90
 // FUNCTION: fn_23918
-void OptionWriter::Guid(const char* key, const GUID& value) {
+void CSession::WriteOptionGuid(CFile& file, const char* key, const GUID& value) {
   char text[40];
   _snprintf_s(
     text, sizeof(text), _TRUNCATE, "{%08X-%04hX-%04hX-%02hhX%02hhX-%02hhX%02hhX%02hhX%02hhX%02hhX%02hhX}", value.Data1, value.Data2, value.Data3,
@@ -52,6 +52,6 @@ void OptionWriter::Guid(const char* key, const GUID& value) {
   const int count = _snprintf_s(line, sizeof(line), _TRUNCATE, "OptionInfoList[\"%s\"] = \"%s\"\r\n", key, text);
 
   if (count > 0) {
-    this->file.Write(line, count);
+    file.Write(line, count);
   }
 }

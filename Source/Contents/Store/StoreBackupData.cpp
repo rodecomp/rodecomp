@@ -1,4 +1,5 @@
-#include "Contents/Store/StoreBackupData.h"
+#include "Contents/Store/MCStoreInfoBackup.h"
+#include "Client/Session.h"
 #include "Network/TextEncoding.h"
 
 #include <cstddef>
@@ -8,7 +9,7 @@
 
 // OFFSET: 0x00606190
 // FUNCTION: fn_04233
-void StoreBackupData::Import(Json::Value& data) {
+void CMCStoreInfoBackup::ImportData(Json::Value& data) {
   this->items.clear();
   this->title = FromUtf8(data.get("Title", "").asString(), g_textCodePage);
   Json::Value values = data["Item"];
@@ -56,11 +57,11 @@ void StoreBackupData::Import(Json::Value& data) {
 
 // OFFSET: 0x00607240
 // FUNCTION: fn_04238
-void StoreBackupData::Export(Json::Value& data, const std::list<ITEM_INFO>& storeItems) const {
+void CMCStoreInfoBackup::ExportData(Json::Value& data) const {
   data["Title"] = ToUtf8(this->title, g_textCodePage);
   Json::Value values;
 
-  for (const ITEM_INFO& item : storeItems) {
+  for (const ITEM_INFO& item : g_session.unknown_1758) {
     Json::Value value;
     value["ID"] = std::atoi(item.itemId.c_str());
     value["Count"] = item.quantity;

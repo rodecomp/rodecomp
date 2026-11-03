@@ -1673,8 +1673,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
   ResetTimer();
   CoInitialize(nullptr);
 
-  SoundMgrContext sound{g_soundConfiguration, g_serviceOptions, ResourceMgr::Instance()};
-  if (!CSoundMgr::Create(sound)) {
+  if (!CSoundMgr::Create()) {
     const std::uint8_t audioFailureSource[] = {0x68, 0xBA, 0x4D, 0x6E, 0x8C, 0x09, 0xA4, 0x12, 0x5A, 0xBB, 0x4C, 0x6A, 0xC3, 0x60, 0x99, 0x02,
                                                0x5D, 0xEF, 0x6F, 0x66, 0x8A, 0x45, 0x92, 0x0F, 0x29};
     thread_local EncryptedName<sizeof(audioFailureSource), 0x6BF729E30729CF29ULL> audioFailure(audioFailureSource);
