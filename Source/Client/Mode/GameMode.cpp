@@ -2761,7 +2761,7 @@ void CGameMode::End() {
     g_indoorCameraDistance = g_cameraDistance;
   }
 
-  if (g_whisperRecord != 0) {
+  if (g_session.m_whisperRecord != 0) {
     sub_CCFF10();
   }
   g_effectMgr->Clear();
