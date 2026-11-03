@@ -7,7 +7,6 @@
 #include "Contents/Actors/Item.h"
 #include "Contents/Actors/GameActor.h"
 #include "Client/Mode/ModeMgr.h"
-#include "Contents/World/WorldObjects.h"
 #include "Contents/World/World.h"
 #include "Contents/Effects/ArrowEffect.h"
 #include "Contents/Effects/EffectLists.h"
@@ -75,7 +74,7 @@ CRenderObject* CWorld::GetGameActorByAidIncludeMe(std::uint32_t aid) const {
 
 // OFFSET: 0x00ACA4E0
 // FUNCTION: fn_17692
-void WorldObjects::Remove(CRenderObject* object) {
+void CWorld::RemoveObject(CRenderObject* object) {
   for (auto entry = this->objects.begin(); entry != this->objects.end(); ++entry) {
     if (*entry == object) {
       delete object;
@@ -259,7 +258,7 @@ void CWorld::Clear() {
 
 // OFFSET: 0x00ACA980
 // FUNCTION: fn_17698
-void WorldObjects::SendObjectMessage(CGameObject* sender, std::uint64_t identity, int message, int a, int b, int c, int d) {
+void CWorld::SendObjectMessage(CGameObject* sender, std::uint64_t identity, int message, int a, int b, int c, int d) {
   if (this == nullptr) {
     return;
   }
@@ -922,7 +921,7 @@ bool CWorld::RemoveSkill(std::uint32_t aid) {
         return false;
       }
 
-      reinterpret_cast<WorldObjects*>(this)->Remove(skill);
+      this->RemoveObject(skill);
       this->unknown_0020.erase(entry);
       return true;
     }

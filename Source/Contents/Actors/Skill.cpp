@@ -20,7 +20,6 @@
 #include "Contents/World/World.h"
 #include "Resource/Models/ModelResource.h"
 #include "Resource/ResourceMgr.h"
-#include "Contents/World/WorldObjects.h"
 #include "Render/Renderer.h"
 #include "Render/SpriteGeometry.h"
 #include "Resource/World/TerrainResource.h"
@@ -97,7 +96,7 @@ CSkill::~CSkill() {
   this->ReleaseModel();
   for (std::uint64_t target : this->m_targets) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    reinterpret_cast<WorldObjects*>(mode->scene)->SendObjectMessage(this, target, 24, 0, 0, 0, 0);
+    mode->scene->SendObjectMessage(this, target, 24, 0, 0, 0, 0);
   }
 
   this->m_targets.clear();

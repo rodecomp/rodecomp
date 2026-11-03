@@ -9,7 +9,6 @@
 #include "Contents/Effects/Particle.h"
 #include "Contents/Sound/SoundMgr.h"
 #include "Contents/World/World.h"
-#include "Contents/World/WorldObjects.h"
 #include "Utility/Math/AffineMatrix.h"
 
 #include <cmath>

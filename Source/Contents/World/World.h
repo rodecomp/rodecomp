@@ -13,6 +13,7 @@
 class BinkMovies;
 class CItem;
 class CGameMode;
+class CGameObject;
 class CPlayer;
 class CRenderObject;
 class GroundGeometry;
@@ -53,6 +54,8 @@ public:
   void AddPcPosFromCell(std::uint32_t aid, const int* cell);
   void AddPcPosUnindexed(std::uint32_t aid, const CellFloatPos& cell);
   void InitWorld();
+  void RemoveObject(CRenderObject* object);
+  void SendObjectMessage(CGameObject* sender, std::uint64_t identity, int message, int a, int b, int c, int d);
   static unsigned long __stdcall LoadDeferredModels(void* parameter);
   void FinishModelLoading();
 

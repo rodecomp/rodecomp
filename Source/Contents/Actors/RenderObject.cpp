@@ -54,7 +54,6 @@
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Math/ScalarConversion.h"
-#include "Contents/World/WorldObjects.h"
 #include "Contents/ChampionMonsterMgr.h"
 #include "Contents/Effects/EffectPrim.h"
 #include "Contents/Ground/TerrainHeight.h"
@@ -4821,7 +4820,7 @@ void CGameActor::SpawnDamageDigits(int, int damage, std::uint32_t color, int typ
         this->ClearUnknown037C(reinterpret_cast<int>(effect));
         effect->SendMsg(this, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         it = this->unknown_03B0.erase(it);
-        reinterpret_cast<WorldObjects*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene)->Remove(effect);
+        static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->RemoveObject(effect);
       } else {
         ++it;
       }
