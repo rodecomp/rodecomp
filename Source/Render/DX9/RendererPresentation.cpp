@@ -1,5 +1,6 @@
 #include "Render/DX9/DeviceOwnerDX9.h"
 #include "Render/DX9/RendererPresentation.h"
+#include "UI/Window/UIWindowMgr.h"
 
 #include <windows.h>
 #include <timeapi.h>
@@ -20,11 +21,11 @@ HRESULT RendererPresentation::Present(DeviceOwnerDX9& owner, int option) {
   }
 
   static constexpr char source[] = "C:\\repositories\\RagnarokClient\\RagnarokClient\\3dLib\\RendererDX9.cpp";
-  this->diagnostic.line = 161;
-  this->diagnostic.file = source;
+  g_renderDiagnosticLine = 161;
+  g_renderDiagnosticFile = source;
   const HRESULT result = owner.Present(option);
-  this->diagnostic.line = 164;
-  this->diagnostic.file = source;
+  g_renderDiagnosticLine = 164;
+  g_renderDiagnosticFile = source;
 
   return result;
 }

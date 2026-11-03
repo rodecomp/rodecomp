@@ -55,10 +55,9 @@ void RendererDX9Operations::DrawAuxiliaryQueue(RenderQueues& queues) {
 // OFFSET: 0x00567610
 // FUNCTION: fn_02229
 void RendererDX9Operations::DrawQueues(
-  RenderQueues& queues, const ServiceOptions& options, unsigned char multitexture, unsigned char twoPass, RendererFogDX9& fog, const float& aspect,
-  const FogConfiguration& configuration
+  RenderQueues& queues, unsigned char twoPass, RendererFogDX9& fog, const float& aspect
 ) {
-  fog.Apply(this->context, this->state, aspect, configuration);
+  fog.Apply(this->context, this->state, aspect);
   this->state.SetRenderState(D3DRS_ALPHATESTENABLE, 1);
   this->state.SetRenderState(D3DRS_ALPHAREF, 207);
   this->state.SetRenderState(D3DRS_ALPHABLENDENABLE, 0);
@@ -66,7 +65,7 @@ void RendererDX9Operations::DrawQueues(
   this->state.SetRenderState(D3DRS_ZWRITEENABLE, 1);
 
   this->DrawOpaqueQueues(queues);
-  this->DrawGroundQueues(queues, options, multitexture);
+  this->DrawGroundQueues(queues);
 
   this->state.SetRenderState(D3DRS_ALPHAREF, 1);
   this->state.SetRenderState(D3DRS_ALPHABLENDENABLE, 1);

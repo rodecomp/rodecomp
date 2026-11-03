@@ -19,7 +19,7 @@ struct RendererViewport {
   /* 0030 */ int centerX;
   /* 0034 */ int centerY;
 
-  void SetSize(int width, int height, const float& projectionScale, float& heightScale, float& tangent, float& cotangent);
+  void SetSize(int width, int height);
   RenderProjection Projection() const;
 };
 

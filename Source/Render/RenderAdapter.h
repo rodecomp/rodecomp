@@ -7,7 +7,6 @@
 #include <windows.h>
 
 class DeviceOwnerDX9;
-struct DeviceOptionsDX9;
 
 struct RenderAdapter {
   RenderAdapter();
@@ -34,21 +33,11 @@ struct RenderAdapter {
   bool Matches(const RenderAdapter& selected) const;
 };
 
-struct AdapterConfiguration {
-  const int& backend;
-  const GUID& drawGuid;
-  const GUID& renderGuid;
-  const GUID& deviceGuid;
-  const char* deviceName;
-};
-
-RenderAdapter SelectedRenderAdapter(const AdapterConfiguration& configuration, bool serviceUsesDX7);
+RenderAdapter SelectedRenderAdapter();
 std::vector<RenderAdapter> EnumerateRenderAdapters(int backend);
 std::vector<RenderAdapter> EnumerateAdaptersDX7();
 std::vector<RenderAdapter> EnumerateAdaptersDX9();
-HRESULT InitializeConfiguredDeviceDX9(
-  DeviceOwnerDX9& owner, HWND window, const DeviceOptionsDX9& options, const AdapterConfiguration& configuration, bool serviceUsesDX7
-);
+HRESULT InitializeConfiguredDeviceDX9(DeviceOwnerDX9& owner, HWND window);
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(RenderAdapter) == 104);

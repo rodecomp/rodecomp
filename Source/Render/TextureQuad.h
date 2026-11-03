@@ -13,6 +13,9 @@ struct TextureRegion {
 extern float g_depthStart;
 extern float g_depthEnd;
 extern std::uint32_t g_worldOverlayColor;
+extern std::uint32_t g_fogVertexMode;
+extern std::uint32_t g_fogRange;
+extern unsigned char g_multitexture;
 extern float g_fogDensity;
 
 float RhwToDepth(float rhw);

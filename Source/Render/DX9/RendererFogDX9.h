@@ -1,8 +1,6 @@
 #ifndef RAGNAROK_SOURCE_RENDER_DX9_RENDERERFOGDX9_H
 #define RAGNAROK_SOURCE_RENDER_DX9_RENDERERFOGDX9_H
 
-#include "Render/FogConfiguration.h"
-
 #include <cstddef>
 #include <d3d9.h>
 
@@ -14,8 +12,8 @@ struct RendererFogDX9 {
   /* 0154 */ int dirty;
   /* 0158 */ int supported;
 
-  void Set(int enabled, const D3DCAPS9& caps, FogConfiguration& configuration);
-  void Apply(const TextureDX9Context& context, DeviceStateDX9& state, const float& aspect, const FogConfiguration& configuration);
+  void Set(int enabled, const D3DCAPS9& caps);
+  void Apply(const TextureDX9Context& context, DeviceStateDX9& state, const float& aspect);
 };
 
 static_assert(sizeof(RendererFogDX9) == 12);

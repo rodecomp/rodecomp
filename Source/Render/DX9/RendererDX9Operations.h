@@ -14,7 +14,6 @@ struct RenderQueues;
 struct LightmappedPrimitive;
 struct ServiceOptions;
 struct RendererFogDX9;
-struct FogConfiguration;
 class DeviceOwnerDX9;
 class CRenderSystemBase;
 struct tagRECT;
@@ -32,12 +31,11 @@ struct RendererDX9Operations {
   void DrawLightmappedPrimitive(LightmappedPrimitive* primitive);
   void DrawDepthQueue(std::vector<DepthPrimitive>& queue, bool sort);
   void DrawOpaqueQueues(RenderQueues& queues);
-  void DrawGroundQueues(RenderQueues& queues, const ServiceOptions& options, unsigned char multitexture);
+  void DrawGroundQueues(RenderQueues& queues);
   void DrawAlphaQueues(RenderQueues& queues, unsigned char twoPass);
   void DrawAuxiliaryQueue(RenderQueues& queues);
   void DrawQueues(
-    RenderQueues& queues, const ServiceOptions& options, unsigned char multitexture, unsigned char twoPass, RendererFogDX9& fog, const float& aspect,
-    const FogConfiguration& configuration
+    RenderQueues& queues, unsigned char twoPass, RendererFogDX9& fog, const float& aspect
   );
   bool RenderToTexture(int width, int height, const std::list<RenderPrimitive*>& primitives, CTexture*& texture);
   bool SaveScreenshot(DeviceOwnerDX9& owner, CRenderSystemBase* renderSystem, const char* filename, int format, CTexture* overlay, const tagRECT* rectangle);

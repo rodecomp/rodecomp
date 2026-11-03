@@ -1,5 +1,9 @@
 #include "Render/DX9/DeviceOwnerDX9.h"
 #include "Render/RenderAdapter.h"
+#include "Client/Session.h"
+#include "Render/DeviceSelection.h"
+#include "Render/DX7/RenderSystemDX7.h"
+#include "UI/GameSettings/GameSettingsUI.h"
 
 #include <cstring>
 
@@ -37,20 +41,20 @@ bool RenderAdapter::Matches(const RenderAdapter& selected) const {
 
 // OFFSET: 0x0056A0F0
 // FUNCTION: fn_02284
-RenderAdapter SelectedRenderAdapter(const AdapterConfiguration& configuration, bool serviceUsesDX7) {
+RenderAdapter SelectedRenderAdapter() {
   RenderAdapter selected{};
-  selected.backend = configuration.backend;
+  selected.backend = g_configuredRenderBackend;
 
   if (selected.backend == 0) {
-    selected.backend = serviceUsesDX7 ? 1 : 2;
+    selected.backend = g_session.DefaultRenderBackend() == 1 ? 1 : 2;
   }
 
   if (selected.backend == 1) {
-    selected.drawGuid = configuration.drawGuid;
-    selected.renderGuid = configuration.renderGuid;
+    std::memcpy(&selected.drawGuid, g_guidDriver, sizeof(GUID));
+    std::memcpy(&selected.renderGuid, g_guidDevice, sizeof(GUID));
   } else if (selected.backend == 2) {
-    selected.deviceGuid = configuration.deviceGuid;
-    selected.deviceName = configuration.deviceName;
+    selected.deviceGuid = g_configuredDeviceGuid;
+    selected.deviceName = g_configuredDeviceName;
   }
 
   return selected;
@@ -85,9 +89,7 @@ std::vector<RenderAdapter> EnumerateAdaptersDX9() {
 
 // OFFSET: 0x0056E270
 // FUNCTION: fn_02375
-HRESULT InitializeConfiguredDeviceDX9(
-  DeviceOwnerDX9& owner, HWND window, const DeviceOptionsDX9& options, const AdapterConfiguration& configuration, bool serviceUsesDX7
-) {
+HRESULT InitializeConfiguredDeviceDX9(DeviceOwnerDX9& owner, HWND window) {
   const std::vector<RenderAdapter> adapters = EnumerateAdaptersDX9();
 
   if (adapters.empty()) {
@@ -95,7 +97,7 @@ HRESULT InitializeConfiguredDeviceDX9(
     return D3DERR_NOTAVAILABLE;
   }
 
-  const RenderAdapter selected = SelectedRenderAdapter(configuration, serviceUsesDX7);
+  const RenderAdapter selected = SelectedRenderAdapter();
   UINT ordinal = D3DADAPTER_DEFAULT;
 
   for (const RenderAdapter& adapter : adapters) {
@@ -105,5 +107,5 @@ HRESULT InitializeConfiguredDeviceDX9(
     }
   }
 
-  return owner.Initialize(window, ordinal, options);
+  return owner.Initialize(window, ordinal);
 }

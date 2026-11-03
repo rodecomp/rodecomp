@@ -5,17 +5,11 @@
 
 class DeviceOwnerDX9;
 
-struct RenderDiagnostic {
-  unsigned line;
-  const char* file;
-};
-
 struct RendererPresentation {
   unsigned& frame;
   unsigned& lastTick;
   unsigned& frames;
   float& fps;
-  RenderDiagnostic& diagnostic;
 
   HRESULT Present(DeviceOwnerDX9& owner, int option);
 };

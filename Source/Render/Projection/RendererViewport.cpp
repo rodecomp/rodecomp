@@ -1,3 +1,4 @@
+#include "Render/SpriteGeometry.h"
 #include "Render/Projection/RendererViewport.h"
 
 #include <bit>
@@ -5,7 +6,7 @@
 
 // OFFSET: 0x0055F6A0
 // FUNCTION: fn_02118
-void RendererViewport::SetSize(int columns, int rows, const float& projectionScale, float& heightScale, float& tangent, float& cotangent) {
+void RendererViewport::SetSize(int columns, int rows) {
   this->height = rows;
   this->centerX = columns / 2;
   this->width = columns;
@@ -25,9 +26,9 @@ void RendererViewport::SetSize(int columns, int rows, const float& projectionSca
   this->uiScaleX = static_cast<float>(columns) / 640.0f;
   const float height = (static_cast<float>(rows) * 1.34f) / 768.0f;
   this->uiScaleY = static_cast<float>(rows) / 730.0f;
-  heightScale = height;
-  tangent = projectionScale / this->uiScaleY;
-  cotangent = projectionScale / this->uiScaleY;
+  g_heightScale = height;
+  g_tangent = g_projectionScale / this->uiScaleY;
+  g_cotangent = g_projectionScale / this->uiScaleY;
 }
 
 // INLINED

@@ -1,5 +1,10 @@
 #include "Render/DX9/DeviceOwnerDX9.h"
+#include "Render/TextureQuad.h"
 #include "Render/DX9/RendererDX9.h"
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Contents/World/World.h"
+#include "Render/DeviceContext/DCSurface.h"
 #include "Render/Textures/TextureCache.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/TextureNames.h"
@@ -8,9 +13,9 @@
 
 // OFFSET: 0x00564EB0
 // FUNCTION: fn_02209
-CRendererDX9::CRendererDX9(DeviceOwnerDX9& owner, RendererDX9Context& context)
-    : CRenderer(context.system), device(&owner), nativeDevice(owner.device), clearColor(0), lastTick(0), frames(0), fps(0.0f), m_context(&context),
-      m_textureContext(owner.TextureContext(this->primitives, this->queues, false, context.fog.start, context.fog.end)) {
+CRendererDX9::CRendererDX9(DeviceOwnerDX9& owner)
+    : CRenderer(*GetRenderSystemHolder()->system), device(&owner), nativeDevice(owner.device), clearColor(0), lastTick(0), frames(0), fps(0.0f), unknown_context(nullptr),
+      m_textureContext(owner.TextureContext(this->primitives, this->queues, false, g_depthStart, g_depthEnd)) {
 }
 
 // OFFSET: 0x00564FE0
@@ -21,8 +26,8 @@ CRendererDX9::~CRendererDX9() = default;
 TextureDX9Context& CRendererDX9::TextureContext() {
   this->m_textureContext.dynamicTextures = this->device->dynamicTextures;
   this->m_textureContext.depthAlpha = this->fog.supported != 0;
-  this->m_textureContext.depthStart = this->m_context->fog.start;
-  this->m_textureContext.depthEnd = this->m_context->fog.end;
+  this->m_textureContext.depthStart = g_depthStart;
+  this->m_textureContext.depthEnd = g_depthEnd;
 
   return this->m_textureContext;
 }
@@ -49,7 +54,7 @@ void CRendererDX9::SetClearColor(unsigned color) {
 }
 
 void CRendererDX9::SetFog(int enabled) {
-  this->fog.Set(enabled, this->device->caps, this->m_context->fog);
+  this->fog.Set(enabled, this->device->caps);
 }
 
 void CRendererDX9::ClearDepth(int clearColor) {
@@ -59,11 +64,11 @@ void CRendererDX9::ClearDepth(int clearColor) {
 
 void CRendererDX9::ClearWorld() {
   auto& context = this->TextureContext();
-  this->Operations(context).ClearWorld(this->clearColor, this->fog.enabled, this->m_context->worldFlag, this->m_context->overlayColor);
+  this->Operations(context).ClearWorld(this->clearColor, this->fog.enabled, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->unknown_00FC, g_worldOverlayColor);
 }
 
 HRESULT CRendererDX9::Present(int option) {
-  RendererPresentation presentation{this->frame, this->lastTick, this->frames, this->fps, this->m_context->diagnostic};
+  RendererPresentation presentation{this->frame, this->lastTick, this->frames, this->fps};
   return presentation.Present(*this->device, option);
 }
 
@@ -112,7 +117,7 @@ bool CRendererDX9::SaveBitmapResource(const char* filename, int format, CBitmapR
   }
 
   auto& context = this->TextureContext();
-  return this->Operations(context).SaveScreenshot(*this->device, &this->m_context->system, filename, format, overlay.get(), nullptr);
+  return this->Operations(context).SaveScreenshot(*this->device, GetRenderSystemHolder()->system, filename, format, overlay.get(), nullptr);
 }
 
 // OFFSET: 0x00567FC0
@@ -139,13 +144,13 @@ bool CRendererDX9::SaveLogo(std::string filename) {
   CTexture* overlay = g_texMgr.Load(name, 0, false, true, false);
   auto& context = this->TextureContext();
 
-  return this->Operations(context).SaveScreenshot(*this->device, &this->m_context->system, filename.c_str(), 1, overlay, nullptr);
+  return this->Operations(context).SaveScreenshot(*this->device, GetRenderSystemHolder()->system, filename.c_str(), 1, overlay, nullptr);
 }
 
 void CRendererDX9::Submit(RenderCommand* command, std::uint16_t flags) {
-  this->queues.Submit(command, flags, this->fog.supported != 0, this->m_context->fog.start, this->m_context->fog.end);
+  this->queues.Submit(command, flags, this->fog.supported != 0, g_depthStart, g_depthEnd);
 }
 
 void CRendererDX9::Submit(LightmappedPrimitive* command, int queue) {
-  this->queues.lightmapped.Submit(command, queue, this->fog.supported != 0, this->m_context->fog.start, this->m_context->fog.end);
+  this->queues.lightmapped.Submit(command, queue, this->fog.supported != 0, g_depthStart, g_depthEnd);
 }

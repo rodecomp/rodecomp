@@ -1,4 +1,5 @@
 #include "Client/Application/ErrorDialog.h"
+#include "Render/TextureQuad.h"
 #include "Render/DX7/RendererFogDX7.h"
 
 #include <bit>
@@ -64,27 +65,27 @@ HRESULT PerspectiveMatrixDX7(D3DMATRIX& matrix, float fov, float aspect, float n
 
 // OFFSET: 0x0055CF10
 // FUNCTION: fn_02094
-void RendererFogDX7::Set(int value, IDirect3DDevice7* device, const D3DDEVICEDESC7& caps, FogConfiguration& configuration) {
+void RendererFogDX7::Set(int value, IDirect3DDevice7* device, const D3DDEVICEDESC7& caps) {
   this->supported = (caps.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_FOGVERTEX) != 0;
   this->enabled = value;
   device->SetRenderState(D3DRENDERSTATE_FOGENABLE, value);
   this->dirty = 1;
-  configuration.range = 1;
-  configuration.vertexMode = D3DFOG_LINEAR;
+  g_fogRange = 1;
+  g_fogVertexMode = D3DFOG_LINEAR;
 }
 
 // OFFSET: 0x0055A500
 // FUNCTION: fn_02080
 void RendererFogDX7::Apply(
-  IDirect3DDevice7* device, const D3DDEVICEDESC7& caps, float aspect, const FogConfiguration& configuration, CRenderSystemBase* renderSystem
+  IDirect3DDevice7* device, const D3DDEVICEDESC7& caps, float aspect, CRenderSystemBase* renderSystem
 ) {
   if (!this->dirty) {
     return;
   }
 
   if (this->enabled) {
-    const float start = configuration.start * 1490.0f + 10.0f;
-    const float end = configuration.end * 1490.0f + 10.0f;
+    const float start = g_depthStart * 1490.0f + 10.0f;
+    const float end = g_depthEnd * 1490.0f + 10.0f;
     const bool vertexFog = (caps.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_FOGVERTEX) != 0;
     D3DMATRIX identity{};
     identity._11 = identity._22 = identity._33 = identity._44 = 1;
@@ -93,30 +94,30 @@ void RendererFogDX7::Apply(
     device->SetTransform(D3DTRANSFORMSTATE_WORLD, &identity);
     device->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &projection);
     device->SetTransform(D3DTRANSFORMSTATE_VIEW, &identity);
-    device->SetRenderState(D3DRENDERSTATE_FOGCOLOR, configuration.color);
+    device->SetRenderState(D3DRENDERSTATE_FOGCOLOR, g_worldOverlayColor);
 
-    if (configuration.vertexMode == D3DFOG_LINEAR) {
+    if (g_fogVertexMode == D3DFOG_LINEAR) {
       if (vertexFog) {
         device->SetRenderState(D3DRENDERSTATE_FOGSTART, std::bit_cast<unsigned>(start));
         device->SetRenderState(D3DRENDERSTATE_FOGEND, std::bit_cast<unsigned>(end));
-        device->SetRenderState(D3DRENDERSTATE_FOGDENSITY, std::bit_cast<unsigned>(configuration.density));
+        device->SetRenderState(D3DRENDERSTATE_FOGDENSITY, std::bit_cast<unsigned>(g_fogDensity));
         device->SetRenderState(D3DRENDERSTATE_FOGTABLEMODE, D3DFOG_NONE);
-        device->SetRenderState(D3DRENDERSTATE_FOGVERTEXMODE, configuration.vertexMode);
+        device->SetRenderState(D3DRENDERSTATE_FOGVERTEXMODE, g_fogVertexMode);
       } else {
         device->SetRenderState(D3DRENDERSTATE_FOGENABLE, 0);
       }
     } else {
       if (vertexFog) {
         device->SetRenderState(D3DRENDERSTATE_FOGTABLEMODE, D3DFOG_NONE);
-        device->SetRenderState(D3DRENDERSTATE_FOGVERTEXMODE, configuration.vertexMode);
+        device->SetRenderState(D3DRENDERSTATE_FOGVERTEXMODE, g_fogVertexMode);
       } else {
         ShowErrorDialog(renderSystem, "Your graphic accelerator does not support fog effect.", 0);
       }
 
-      device->SetRenderState(D3DRENDERSTATE_FOGDENSITY, std::bit_cast<unsigned>(configuration.density));
+      device->SetRenderState(D3DRENDERSTATE_FOGDENSITY, std::bit_cast<unsigned>(g_fogDensity));
     }
 
-    if (vertexFog && configuration.range) {
+    if (vertexFog && g_fogRange) {
       device->SetRenderState(D3DRENDERSTATE_RANGEFOGENABLE, 1);
     }
   }

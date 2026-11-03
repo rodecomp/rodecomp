@@ -1,15 +1,13 @@
 #include "Render/DX9/RenderSystemDX9.h"
+#include "UI/GameSettings/GameSettingsUI.h"
+#include "Render/TextureQuad.h"
 
 #include <bit>
 #include <new>
 
 // OFFSET: 0x0056CF60
 // FUNCTION: fn_02353
-CRenderSystemDX9::CRenderSystemDX9(RenderSystemDX9Context& context)
-    : m_device(new DeviceOwnerDX9), m_defaultTexture(nullptr), m_context(&context),
-      m_rendererContext{*this,       context.options, context.multitexture,
-                        context.fog, context.worldFlag, context.overlayColor, context.diagnostic},
-      m_textureContext{}, m_surfaceContext{} {
+CRenderSystemDX9::CRenderSystemDX9() : m_device(new DeviceOwnerDX9), m_defaultTexture(nullptr), m_textureContext{}, m_surfaceContext{} {
   this->RefreshContexts();
 }
 
@@ -33,8 +31,8 @@ void CRenderSystemDX9::RefreshContexts() {
   context.displayFormat = this->m_device->presentation.BackBufferFormat;
   context.caps = this->m_device->caps;
   context.dynamicTextures = this->m_device->dynamicTextures;
-  context.depthStart = this->m_context->fog.start;
-  context.depthEnd = this->m_context->fog.end;
+  context.depthStart = g_depthStart;
+  context.depthEnd = g_depthEnd;
 }
 
 // OFFSET: 0x0056E250
@@ -46,7 +44,7 @@ std::int32_t CRenderSystemDX9::Backend() {
 // INLINED
 HRESULT CRenderSystemDX9::Initialize(HWND window) {
   const HRESULT result =
-    InitializeConfiguredDeviceDX9(*this->m_device, window, this->m_context->deviceOptions, this->m_context->adapter, this->m_context->serviceUsesDX7);
+    InitializeConfiguredDeviceDX9(*this->m_device, window);
   this->RefreshContexts();
   return result;
 }
@@ -83,10 +81,9 @@ std::uint32_t CRenderSystemDX9::Height() {
 // OFFSET: 0x0056D3F0
 // FUNCTION: fn_02359
 CRenderer* CRenderSystemDX9::CreateRenderer() {
-  auto* renderer = new CRendererDX9(*this->m_device, this->m_rendererContext);
+  auto* renderer = new CRendererDX9(*this->m_device);
   renderer->viewport.SetSize(
-    std::bit_cast<std::int32_t>(this->Width()), std::bit_cast<std::int32_t>(this->Height()), this->m_context->projectionScale, this->m_context->heightScale,
-    this->m_context->tangent, this->m_context->cotangent
+    std::bit_cast<std::int32_t>(this->Width()), std::bit_cast<std::int32_t>(this->Height())
   );
   this->m_textureContext.primitives = &renderer->primitives;
   this->m_textureContext.queues = &renderer->queues;
@@ -150,7 +147,7 @@ std::shared_ptr<CSurface> CRenderSystemDX9::BackBufferSurface() {
 // OFFSET: 0x0056D740
 // FUNCTION: fn_02365
 void CRenderSystemDX9::UpdateOption() {
-  this->m_device->dynamicTextures = (this->m_device->caps.Caps2 & D3DCAPS2_DYNAMICTEXTURES) != 0 && this->m_context->deviceOptions.dynamicTextures != 0;
+  this->m_device->dynamicTextures = (this->m_device->caps.Caps2 & D3DCAPS2_DYNAMICTEXTURES) != 0 && g_textureFiltering != 0;
 }
 
 // OFFSET: 0x0056D760

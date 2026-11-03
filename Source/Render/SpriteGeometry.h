@@ -26,6 +26,7 @@ extern float g_tangent;
 extern float g_cameraScaleY;
 extern float g_cameraScaleX;
 extern float g_heightScale;
+extern float g_projectionScale;
 
 static_assert(sizeof(SpriteColor) == 4);
 static_assert(sizeof(SpriteCellQuad) == 0x20);

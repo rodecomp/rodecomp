@@ -3,6 +3,7 @@
 #include "Render/Primitives/RenderQueues.h"
 #include "Render/DX9/RendererDX9Operations.h"
 #include "Render/DX9/TextureDX9.h"
+#include "Render/TextureQuad.h"
 
 #include <algorithm>
 #include <bit>
@@ -29,13 +30,13 @@ namespace {
 
 // OFFSET: 0x005668B0
 // FUNCTION: fn_02226
-void RendererDX9Operations::DrawGroundQueues(RenderQueues& queues, const ServiceOptions& options, unsigned char multitexture) {
+void RendererDX9Operations::DrawGroundQueues(RenderQueues& queues) {
   ScopedDeviceStateDX9 restore(this->state);
   this->state.SetRenderState(D3DRS_COLORWRITEENABLE, 0xFFFFFFFFu);
   this->state.SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
 
-  if (options.Get(119) != 0) {
-    if (multitexture == 1) {
+  if (g_serviceOptions.Get(119) != 0) {
+    if (g_multitexture == 1) {
       ScopedDeviceStateDX9 restoreDual(this->state);
       this->state.SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_MODULATEALPHA_ADDCOLOR);
       auto& queue = queues.lightmapped.first;

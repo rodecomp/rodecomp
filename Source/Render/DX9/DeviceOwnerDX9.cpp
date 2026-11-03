@@ -1,4 +1,6 @@
 #include "Render/DX9/DeviceOwnerDX9.h"
+#include "Render/DX7/RenderSystemDX7.h"
+#include "UI/GameSettings/GameSettingsUI.h"
 
 #include <cstring>
 
@@ -100,7 +102,7 @@ UINT* DeviceOwnerDX9::AdjustTextureDimensions(UINT* output, UINT width, UINT hei
 
 // OFFSET: 0x0054BD10
 // FUNCTION: fn_01914
-HRESULT DeviceOwnerDX9::CreateDevice(UINT selectedAdapter, const DeviceOptionsDX9& options) {
+HRESULT DeviceOwnerDX9::CreateDevice(UINT selectedAdapter) {
   HRESULT result = Direct3DCreate9Ex(D3D_SDK_VERSION, &this->direct3D);
 
   if (FAILED(result)) {
@@ -108,10 +110,10 @@ HRESULT DeviceOwnerDX9::CreateDevice(UINT selectedAdapter, const DeviceOptionsDX
   }
 
   this->adapter = selectedAdapter;
-  UINT width = options.width;
-  UINT height = options.height;
+  UINT width = g_configuredScreenWidth;
+  UINT height = g_configuredScreenHeight;
 
-  if (options.fullscreen == 0) {
+  if (g_configuredFullscreen == 0) {
     RECT rectangle;
     GetClientRect(this->window, &rectangle);
     width = rectangle.right - rectangle.left;
@@ -126,7 +128,7 @@ HRESULT DeviceOwnerDX9::CreateDevice(UINT selectedAdapter, const DeviceOptionsDX
   this->presentation.MultiSampleType = D3DMULTISAMPLE_NONE;
   this->presentation.SwapEffect = D3DSWAPEFFECT_DISCARD;
   this->presentation.hDeviceWindow = this->window;
-  this->presentation.Windowed = options.fullscreen == 0;
+  this->presentation.Windowed = g_configuredFullscreen == 0;
   this->presentation.EnableAutoDepthStencil = TRUE;
   this->presentation.AutoDepthStencilFormat = D3DFMT_D24S8;
   this->presentation.Flags = D3DPRESENTFLAG_LOCKABLE_BACKBUFFER | D3DPRESENTFLAG_DISCARD_DEPTHSTENCIL;
@@ -197,13 +199,13 @@ HRESULT DeviceOwnerDX9::AcquireBackBuffer() {
 
 // OFFSET: 0x0054C140
 // FUNCTION: fn_01918
-HRESULT DeviceOwnerDX9::Initialize(HWND value, UINT selectedAdapter, const DeviceOptionsDX9& options) {
+HRESULT DeviceOwnerDX9::Initialize(HWND value, UINT selectedAdapter) {
   if (!value) {
     return E_INVALIDARG;
   }
 
   this->window = value;
-  const HRESULT result = this->CreateDevice(selectedAdapter, options);
+  const HRESULT result = this->CreateDevice(selectedAdapter);
 
   if (FAILED(result)) {
     this->Close();
@@ -212,7 +214,7 @@ HRESULT DeviceOwnerDX9::Initialize(HWND value, UINT selectedAdapter, const Devic
 
   this->state.Initialize(this->device);
   this->state.SetInitialStates();
-  this->dynamicTextures = (this->caps.Caps2 & D3DCAPS2_DYNAMICTEXTURES) != 0 && options.dynamicTextures != 0;
+  this->dynamicTextures = (this->caps.Caps2 & D3DCAPS2_DYNAMICTEXTURES) != 0 && g_textureFiltering != 0;
   this->ClipFullscreenCursor();
 
   return D3D_OK;

@@ -6,26 +6,9 @@
 #include "Render/RenderSystemBase.h"
 #include "Render/DX9/RendererDX9.h"
 
-struct RenderSystemDX9Context {
-  const DeviceOptionsDX9& deviceOptions;
-  const AdapterConfiguration& adapter;
-  const bool& serviceUsesDX7;
-  const ServiceOptions& options;
-  const unsigned char& multitexture;
-  FogConfiguration& fog;
-  const unsigned char& worldFlag;
-  const unsigned& overlayColor;
-  RenderDiagnostic& diagnostic;
-  const float& projectionScale;
-  float& heightScale;
-  float& tangent;
-  float& cotangent;
-};
-
 class CRenderSystemDX9 : public CRenderSystemBase {
 public:
   CRenderSystemDX9();
-  explicit CRenderSystemDX9(RenderSystemDX9Context& context);
   ~CRenderSystemDX9() override;
   std::int32_t Backend() override;
   HRESULT Initialize(HWND window) override;
@@ -56,8 +39,6 @@ private:
   /* 0008 */ CTexture* m_defaultTexture;
   /* 000C */ std::shared_ptr<CSurface> m_backBuffer;
 
-  RenderSystemDX9Context* m_context;
-  RendererDX9Context m_rendererContext;
   TextureDX9Context m_textureContext;
   SurfaceDX9Context m_surfaceContext;
   void RefreshContexts();

@@ -149,12 +149,7 @@ HRESULT CRenderSystemDX7::Initialize(HWND window) {
 
   GUID drawIdentity{};
   GUID renderIdentity{};
-  const int backend = 1;
-  const GUID savedDraw = *reinterpret_cast<const GUID*>(g_guidDriver);
-  const GUID savedRender = *reinterpret_cast<const GUID*>(g_guidDevice);
-  const GUID savedDevice = *reinterpret_cast<const GUID*>(g_guidDevice);
-  const AdapterConfiguration configuration{backend, savedDraw, savedRender, savedDevice, g_deviceName};
-  const RenderAdapter selected = SelectedRenderAdapter(configuration, true);
+  const RenderAdapter selected = SelectedRenderAdapter();
 
   for (const RenderAdapter& adapter : adapters) {
     if (adapter.Matches(selected)) {

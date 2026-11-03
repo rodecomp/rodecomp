@@ -87,8 +87,12 @@ void WorldObjects::Remove(CRenderObject* object) {
 
 // GLOBAL: gl_24483
 EffectLists* g_effectMgr;
+// GLOBAL: gl_24693
+std::uint32_t g_fogVertexMode = 0xFFFFFFFF;
 // GLOBAL: gl_24692
 std::uint32_t g_worldOverlayColor;
+// GLOBAL: gl_24694
+std::uint32_t g_fogRange = 0xFFFFFFFF;
 // GLOBAL: gl_24695
 float g_fogDensity;
 

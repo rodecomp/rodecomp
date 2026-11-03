@@ -1,8 +1,6 @@
 #ifndef RAGNAROK_SOURCE_RENDER_DX7_RENDERERFOGDX7_H
 #define RAGNAROK_SOURCE_RENDER_DX7_RENDERERFOGDX7_H
 
-#include "Render/FogConfiguration.h"
-
 #include <d3d.h>
 
 class CRenderSystemBase;
@@ -14,8 +12,8 @@ struct RendererFogDX7 {
   /* 0154 */ int dirty;
   /* 0158 */ int supported;
 
-  void Set(int value, IDirect3DDevice7* device, const D3DDEVICEDESC7& caps, FogConfiguration& configuration);
-  void Apply(IDirect3DDevice7* device, const D3DDEVICEDESC7& caps, float aspect, const FogConfiguration& configuration, CRenderSystemBase* renderSystem);
+  void Set(int value, IDirect3DDevice7* device, const D3DDEVICEDESC7& caps);
+  void Apply(IDirect3DDevice7* device, const D3DDEVICEDESC7& caps, float aspect, CRenderSystemBase* renderSystem);
 };
 
 static_assert(sizeof(RendererFogDX7) == 12);

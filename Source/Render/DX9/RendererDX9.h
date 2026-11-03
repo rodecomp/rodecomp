@@ -7,21 +7,10 @@
 #include "Render/DX9/TextureDX9.h"
 
 class DeviceOwnerDX9;
-struct ServiceOptions;
-
-struct RendererDX9Context {
-  CRenderSystemBase& system;
-  const ServiceOptions& options;
-  const unsigned char& multitexture;
-  FogConfiguration& fog;
-  const unsigned char& worldFlag;
-  const unsigned& overlayColor;
-  RenderDiagnostic& diagnostic;
-};
 
 class CRendererDX9 : public CRenderer {
 public:
-  CRendererDX9(DeviceOwnerDX9& device, RendererDX9Context& context);
+  explicit CRendererDX9(DeviceOwnerDX9& device);
   ~CRendererDX9() override;
   void SetCamera(const float* eye, const float* target, const float* up) override;
   void SetLighting(const float* direction, const float* diffuse, const float* ambient) override;
@@ -57,7 +46,7 @@ public:
   /* 0270 */ float fps;
 
 private:
-  RendererDX9Context* m_context;
+  void* unknown_context;
   TextureDX9Context m_textureContext;
   RendererDX9Operations Operations(TextureDX9Context& textureContext);
   bool SaveBitmapResource(const char* filename, int format, CBitmapRes* overlay);

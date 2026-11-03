@@ -14,6 +14,9 @@ inline void TextureAllocationDX7::Update(int enabled, const D3DDEVICEDESC7& caps
   }
 }
 
+// GLOBAL: gl_24508
+unsigned char g_multitexture = 1;
+
 // OFFSET: 0x0054A380
 // FUNCTION: fn_01896
 int DeviceOwnerDX7::RefreshRendererCapabilities(int mipmaps, TextureAllocationDX7& allocation, bool& multitexture, CRenderSystemBase* renderSystem) {

@@ -5,20 +5,13 @@
 #include "Render/DX9/SurfaceDX9.h"
 #include "Render/DX9/TextureDX9.h"
 
-struct DeviceOptionsDX9 {
-  const int& fullscreen;
-  const int& width;
-  const int& height;
-  const int& dynamicTextures;
-};
-
 class DeviceOwnerDX9 {
 public:
   DeviceOwnerDX9();
   DeviceOwnerDX9(const DeviceOwnerDX9&) = delete;
   DeviceOwnerDX9& operator=(const DeviceOwnerDX9&) = delete;
-  HRESULT Initialize(HWND window, UINT adapter, const DeviceOptionsDX9& options);
-  HRESULT CreateDevice(UINT adapter, const DeviceOptionsDX9& options);
+  HRESULT Initialize(HWND window, UINT adapter);
+  HRESULT CreateDevice(UINT adapter);
   HRESULT AcquireBackBuffer();
 
   UINT* AdjustTextureDimensions(UINT* output, UINT width, UINT height) const;

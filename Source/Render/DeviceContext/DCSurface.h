@@ -7,7 +7,6 @@
 #include <memory>
 
 class CTexture;
-struct RenderSystemDX9Context;
 
 std::shared_ptr<CSurface> AcquireBackBufferSurface(CRenderSystemBase* system);
 
