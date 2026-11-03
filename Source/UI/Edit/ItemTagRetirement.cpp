@@ -40,7 +40,7 @@ void UIItemTagCtrl::RemoveTagChild(UIWindow* child) {
 // OFFSET: 0x00896EE0
 // FUNCTION: fn_11520
 void UIItemTagOnChat::RemoveTagChild(UIWindow* child) {
-  if (g_inputSuggestionsEnabled == 1 && ChatWindow()->m_chatEdit != nullptr && ChatWindow()->m_chatEdit->Contains(child)) {
+  if (g_windowMgr.inputSuggestionsEnabled == 1 && ChatWindow()->m_chatEdit != nullptr && ChatWindow()->m_chatEdit->Contains(child)) {
     ChatWindow()->m_chatEdit->RemoveChild(child, 1);
     return;
   }
@@ -83,7 +83,7 @@ UIItemTagCtrl::~UIItemTagCtrl() {
 // FUNCTION: fn_11218
 bool UIItemTagOnChat::CanInsertTag(const std::string& name, int width) {
   if (g_windowMgr.GetHoverWindow()->geometry.id != 490 && g_windowMgr.GetHoverWindow()->geometry.id != 494 &&
-      !g_windowMgr.unknown_0024) {
+      !g_windowMgr.inputSuggestionsEnabled) {
     this->ClearTags();
     return false;
   }

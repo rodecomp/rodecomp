@@ -577,8 +577,8 @@ void UINewChatWnd::Slot25(int x, int y) {
     this->Invalidate();
   }
 
-  if (g_windowMgr.unknown_0026 && y < 14 && x > this->m_chatModeX && x < this->m_chatModeX + 14) {
-    g_windowMgr.unknown_0024 = g_windowMgr.unknown_0024 == 0;
+  if (g_windowMgr.chatModeChanged && y < 14 && x > this->m_chatModeX && x < this->m_chatModeX + 14) {
+    g_windowMgr.inputSuggestionsEnabled = g_windowMgr.inputSuggestionsEnabled == 0;
     if (ChatWindow()) {
       ChatWindow()->ApplyInputLayout();
     }
@@ -601,15 +601,15 @@ void UINewChatWnd::Paint() {
     this->FillRegion(this->geometry.width - 4, this->m_inputOffsetY + 2, 1, this->geometry.height - this->m_inputOffsetY - 2, 0x8E8E8E);
   }
 
-  if (g_windowMgr.unknown_0024) {
+  if (g_windowMgr.inputSuggestionsEnabled) {
     auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\dialog_bg.bmp")));
     this->DrawBitmap(0, this->geometry.height - background->image.height, &background->image, false);
   }
 
   if (static_cast<int>(this->geometry.unknown_0030) > 0) {
-    if (g_windowMgr.unknown_0026) {
+    if (g_windowMgr.chatModeChanged) {
       auto* chatMode = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
-        Resolve(g_windowMgr.unknown_0024 ? "유저인터페이스\\basic_interface\\chatmode_on.bmp" : "유저인터페이스\\basic_interface\\chatmode_off.bmp")
+        Resolve(g_windowMgr.inputSuggestionsEnabled ? "유저인터페이스\\basic_interface\\chatmode_on.bmp" : "유저인터페이스\\basic_interface\\chatmode_off.bmp")
       ));
       if (chatMode) {
         this->m_chatModeX = this->m_chatModeButton->geometry.x - chatMode->image.width - 2;
@@ -1543,8 +1543,8 @@ void UINewChatWnd::Slot15(int width, int height) {
   std::memset(this->unknown_00D4, 0, sizeof(this->unknown_00D4));
   this->m_listHeight = this->geometry.height - this->m_inputOffsetY - this->m_inputAreaHeight;
 
-  if (!g_windowMgr.unknown_0026) {
-    g_windowMgr.unknown_0024 = 1;
+  if (!g_windowMgr.chatModeChanged) {
+    g_windowMgr.inputSuggestionsEnabled = 1;
     this->ApplyInputLayout();
     g_windowMgr.SetFocus(this->m_inputEdit);
   }

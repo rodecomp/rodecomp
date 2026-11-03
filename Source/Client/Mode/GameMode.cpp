@@ -5027,12 +5027,12 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     g_windowMgr.sub_AAB090();
     break;
   case 135:
-    g_windowCloseByte = g_windowCloseByte == 0;
+    g_windowMgr.chatModeChanged = g_windowMgr.chatModeChanged == 0;
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-    if (g_windowCloseByte) {
+    if (g_windowMgr.chatModeChanged) {
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x311)), 0x64FFFF, 0, 0, 0);
     } else {
-      if (!g_inputSuggestionsEnabled) {
+      if (!g_windowMgr.inputSuggestionsEnabled) {
         ChatWindow()->ToggleInput();
       }
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x312)), 0x64FFFF, 0, 0, 0);

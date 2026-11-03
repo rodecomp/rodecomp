@@ -1261,7 +1261,7 @@ int UIWindowMgr::GetHotkeyBehavior() {
     return behavior;
   }
 
-  if (this->modifierKey == VK_SHIFT && !g_inputSuggestionsEnabled) {
+  if (this->modifierKey == VK_SHIFT && !g_windowMgr.inputSuggestionsEnabled) {
     UIWindow* parent = this->hoverWindow ? this->hoverWindow->parent : nullptr;
     if (!parent || parent == this->window_01C8 || parent->geometry.visible == 0) {
       const int count = HotkeyCount(*g_session.m_hotkeyScript, 0);

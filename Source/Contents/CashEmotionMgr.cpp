@@ -413,7 +413,7 @@ bool CCashEmotionAction_Register::Execute(int packId, int emotionId) {
 // OFFSET: 0x00591FB0
 // FUNCTION: fn_02847
 bool CCashEmotionAction_SelectedUnPurchasedPack::Execute(int packId, int) {
-  if (g_windowMgr.unknown_0024 == 1 && ChatWindow()) {
+  if (g_windowMgr.inputSuggestionsEnabled == 1 && ChatWindow()) {
     UINewChatWnd* suggestions = ChatWindow();
     suggestions->ShowSuggestions(0);
     if (suggestions->m_chatEdit) {

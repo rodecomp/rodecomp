@@ -141,7 +141,7 @@ void UIHotKeyWnd::Slot15(int, int) {
   checkBox->SetSize(150, 12);
   checkBox->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(1775));
   checkBox->Move(80, this->geometry.height - 22);
-  checkBox->SetChecked(g_windowCloseByte);
+  checkBox->SetChecked(g_windowMgr.chatModeChanged);
   this->AddChild(this->unknown_0108);
 
   this->m_prevButton = new UIBitmapButton();
@@ -776,7 +776,7 @@ int UIHotKeyWnd::SendMsg(
         return 0;
       }
 
-      g_windowCloseByte = argument2 != 0;
+      g_windowMgr.chatModeChanged = argument2 != 0;
       if (ChatWindow()) {
         if (argument2 != 0) {
           ChatWindow()->Invalidate();

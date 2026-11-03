@@ -112,9 +112,6 @@
 // GLOBAL: gl_24862
 bool g_vendingSaleAlarm;
 
-// GLOBAL: gl_24635
-bool g_inputSuggestionsEnabled;
-
 // GLOBAL: gl_24653
 int g_skillTooltipActive;
 
@@ -460,7 +457,7 @@ void UIEditCtrl3::DrawBlinkingCaret(const std::uint32_t& color) {
     return;
   }
 
-  if (g_windowMgr.IsHoverOnWindow01C8Button() && !g_inputSuggestionsEnabled) {
+  if (g_windowMgr.IsHoverOnWindow01C8Button() && !g_windowMgr.inputSuggestionsEnabled) {
     return;
   }
 
@@ -7589,7 +7586,7 @@ void UIMerchantMirrorItemWnd::Slot28(int x, int y) {
 // OFFSET: 0x00859200
 // FUNCTION: fn_10774
 bool IsInputSuggestionAllowed() {
-  if (g_windowMgr.IsHoverOnWindow01C8Button() && !g_inputSuggestionsEnabled) {
+  if (g_windowMgr.IsHoverOnWindow01C8Button() && !g_windowMgr.inputSuggestionsEnabled) {
     return false;
   }
 

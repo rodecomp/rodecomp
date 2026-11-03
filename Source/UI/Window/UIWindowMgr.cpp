@@ -92,9 +92,6 @@ CMiniPartyWndAreaMgr* g_miniPartyWndAreaMgr = nullptr;
 // GLOBAL: gl_24366
 UIWindowMgr g_windowMgr;
 
-// GLOBAL: gl_25090
-unsigned char g_windowCloseByte;
-
 // GLOBAL: gl_25159
 bool g_windowToggleFlag;
 
@@ -709,8 +706,8 @@ UIWindowMgr::UIWindowMgr()
   this->unknown_04C0 = 0;
   this->windowHistory.clear();
   this->lastWindowId = -1;
-  this->unknown_0024 = 0;
-  this->unknown_0026 = 1;
+  this->inputSuggestionsEnabled = 0;
+  this->chatModeChanged = 1;
   this->unknown_0508 = 0;
   this->window_4F168 = nullptr;
   this->window_4F164 = nullptr;
@@ -1361,7 +1358,7 @@ bool UIWindowMgr::ProcessKeyDown(int key, int keyData, int pressed) {
 
   if (this->LookupWindow(0x9C) != nullptr) {
     this->unknown_0025 = 0;
-  } else if (!this->unknown_0024) {
+  } else if (!this->inputSuggestionsEnabled) {
     UIWindow* hover = this->hoverWindow;
     UIWindow* parent = hover ? hover->parent : nullptr;
     if (!hover || !parent || parent == this->window_01C8 || !parent->geometry.visible) {
@@ -1376,7 +1373,7 @@ bool UIWindowMgr::ProcessKeyDown(int key, int keyData, int pressed) {
   }
 
   bool hoverOnButton = false;
-  if (this->unknown_0024) {
+  if (this->inputSuggestionsEnabled) {
     const UIWindow* window = this->window_01C8;
     if (window) {
       UIWindow* const* buttons = reinterpret_cast<UIWindow* const*>(reinterpret_cast<const char*>(window) + 0xBC);
@@ -2024,7 +2021,7 @@ bool UIWindowMgr::sub_A8CA20() {
           if (Replay::Instance().state == 2 && handled) {
             this->hoverWindow->Root()->RecordEditTexts();
           }
-          if (g_windowCloseByte == 0) {
+          if (g_windowMgr.chatModeChanged == 0) {
             handled = true;
           } else if (!handled) {
             return false;
@@ -2034,7 +2031,7 @@ bool UIWindowMgr::sub_A8CA20() {
         }
         window = this->window_03D4;
         if (window == nullptr) {
-          if (this->window_01C8 != nullptr && g_inputSuggestionsEnabled == 1) {
+          if (this->window_01C8 != nullptr && g_windowMgr.inputSuggestionsEnabled == 1) {
             handled = false;
             this->window_01C8->RecordEditTexts();
             window = this->window_01C8;
@@ -2298,15 +2295,15 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
       g_windowToggleFlag = false;
     }
 
-    if ((this->IsHoverOnWindow01C8Button() || (!this->windowHistory.empty() && this->windowHistory.front() == 1)) && this->unknown_0024 != 0 &&
-        this->unknown_0026 != 0) {
+    if ((this->IsHoverOnWindow01C8Button() || (!this->windowHistory.empty() && this->windowHistory.front() == 1)) && this->inputSuggestionsEnabled != 0 &&
+        this->chatModeChanged != 0) {
       UINewChatWnd* suggestions = static_cast<UINewChatWnd*>(this->window_01C8);
       if (suggestions && suggestions->SuggestionsVisible()) {
         suggestions->ShowSuggestions(0);
         return false;
       }
 
-      this->unknown_0024 = 0;
+      this->inputSuggestionsEnabled = 0;
       static_cast<UINewChatWnd*>(this->window_01C8)->ApplyInputLayout();
       return false;
     }

@@ -1509,7 +1509,7 @@ void CSession::LoadOptionInfo() {
   this->m_whisperOpenSound = this->GetOptionInteger("PlaySound_Open1to1Window", 1);
   this->m_simplifiedSkillList = this->GetOptionInteger("Simplicity_SkillList", 0);
   this->m_showSkillDescription = this->GetOptionInteger("Show_SkillDescript", 0);
-  g_windowCloseByte = this->GetOptionInteger("ChangeChatMode", 1) != 0;
+  g_windowMgr.chatModeChanged = this->GetOptionInteger("ChangeChatMode", 1) != 0;
   this->m_lockMouse = this->GetOptionInteger("LockMouse", 0) != 0;
   this->m_channelCopId = this->GetOptionInteger("ChannelCopID", 0);
 
@@ -1689,7 +1689,7 @@ void CSession::SaveOptionInfo() {
   this->WriteOptionInteger(output, "Window_YPos", rect.top);
   this->WriteOptionInteger(output, "Simplicity_SkillList", this->m_simplifiedSkillList);
   this->WriteOptionInteger(output, "Show_SkillDescript", this->m_showSkillDescription);
-  this->WriteOptionInteger(output, "ChangeChatMode", g_windowCloseByte);
+  this->WriteOptionInteger(output, "ChangeChatMode", g_windowMgr.chatModeChanged);
   this->WriteOptionInteger(output, "LockMouse", this->m_lockMouse);
   this->WriteOptionInteger(output, "ShowBattleFieldIcon", g_showBattleFieldIcon);
   this->WriteOptionInteger(output, "MouseExclusive", g_serviceOptions.Get(ConfineCursor));

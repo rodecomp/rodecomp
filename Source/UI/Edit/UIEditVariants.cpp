@@ -658,7 +658,7 @@ void UIEditCtrl3::PaintText() {
       this->unknown_014C = caretX;
     }
 
-    if ((timeGetTime() / 500 & 1) == 0 && (!g_windowMgr.IsHoverOnWindow01C8Button() || g_inputSuggestionsEnabled)) {
+    if ((timeGetTime() / 500 & 1) == 0 && (!g_windowMgr.IsHoverOnWindow01C8Button() || g_windowMgr.inputSuggestionsEnabled)) {
       this->DrawTextAt(x - 2 + caretX, (wrapped + this->textY - first) * this->unknown_0138, "|", 0, 0, 12, color, 0, 0);
 
       const unsigned char* scroll = reinterpret_cast<const unsigned char*>(&this->unknown_015C);

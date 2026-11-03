@@ -273,7 +273,6 @@ static_assert(sizeof(UIEditCtrl4) == 0x13C);
 static_assert(sizeof(UIEditCtrl5) == 0x13C);
 #endif
 
-extern bool g_inputSuggestionsEnabled;
 
 bool IsInputSuggestionAllowed();
 

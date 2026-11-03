@@ -53,7 +53,7 @@ void CLanguageBase::DeleteSelection() {
   this->cursor = begin;
   this->anchor = begin;
 
-  if (g_windowMgr.unknown_0024 && ChatWindow() && ChatWindow()->m_suggestions && g_windowMgr.GetHoverWindow() == ChatWindow()->m_suggestions) {
+  if (g_windowMgr.inputSuggestionsEnabled && ChatWindow() && ChatWindow()->m_suggestions && g_windowMgr.GetHoverWindow() == ChatWindow()->m_suggestions) {
     g_cashEmotionMgr->ProcessChatCommand(this->text.c_str());
   }
 }
@@ -66,7 +66,7 @@ void CLanguageBase::Insert(const char* value) {
   this->anchor = this->cursor + static_cast<int>(std::strlen(value));
   this->cursor = this->anchor;
 
-  if (g_windowMgr.unknown_0024 && ChatWindow() && ChatWindow()->m_suggestions && g_windowMgr.GetHoverWindow() == ChatWindow()->m_suggestions) {
+  if (g_windowMgr.inputSuggestionsEnabled && ChatWindow() && ChatWindow()->m_suggestions && g_windowMgr.GetHoverWindow() == ChatWindow()->m_suggestions) {
     g_cashEmotionMgr->ProcessChatCommand(this->text.c_str());
   }
 }
@@ -283,7 +283,7 @@ void CLanguageBase::Character(unsigned value, LPARAM) {
   this->anchor = this->cursor + static_cast<int>(std::strlen(bytes));
   this->cursor = this->anchor;
 
-  if (this->text.c_str() && g_windowMgr.unknown_0024 && ChatWindow() && ChatWindow()->m_suggestions &&
+  if (this->text.c_str() && g_windowMgr.inputSuggestionsEnabled && ChatWindow() && ChatWindow()->m_suggestions &&
       g_windowMgr.GetHoverWindow() == ChatWindow()->m_suggestions) {
     g_cashEmotionMgr->ProcessChatCommand(this->text.c_str());
   }
@@ -382,7 +382,7 @@ void CLanguageBase::KeyDown(unsigned key, LPARAM) {
 // OFFSET: 0x00ACEEB0
 // FUNCTION: fn_45450
 void SuggestChatCommand(const char* text) {
-  if (text && g_windowMgr.unknown_0024 && ChatWindow() && ChatWindow()->m_suggestions &&
+  if (text && g_windowMgr.inputSuggestionsEnabled && ChatWindow() && ChatWindow()->m_suggestions &&
       g_windowMgr.GetHoverWindow() == ChatWindow()->m_suggestions) {
     g_cashEmotionMgr->ProcessChatCommand(text);
   }
@@ -528,7 +528,7 @@ void CLanguageBase::RefreshComposition() {
   std::memcpy(combined + committed, this->candidate.data(), pending);
   combined[committed + pending] = 0;
 
-  if (g_windowMgr.unknown_0024 && ChatWindow() && ChatWindow()->m_suggestions && g_windowMgr.GetHoverWindow() == ChatWindow()->m_suggestions) {
+  if (g_windowMgr.inputSuggestionsEnabled && ChatWindow() && ChatWindow()->m_suggestions && g_windowMgr.GetHoverWindow() == ChatWindow()->m_suggestions) {
     g_cashEmotionMgr->ProcessChatCommand(combined);
   }
 }
