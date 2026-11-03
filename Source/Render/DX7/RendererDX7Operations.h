@@ -15,7 +15,6 @@ struct TextureDX7Context;
 struct TextureBindingDX7;
 struct RendererBackBuffer;
 struct BitmapImage;
-class IJL15Runtime;
 class ResourceMgr;
 
 struct RendererDX7Operations {
@@ -32,8 +31,8 @@ struct RendererDX7Operations {
     int width, int height, const std::list<RenderPrimitive*>& primitives, CTexture*& texture, TextureDX7Context& context, TextureBindingDX7& binding
   );
   bool SaveBitmap(const char* filename, const BitmapImage& overlay, int width, int height, RendererBackBuffer& backBuffer);
-  bool SaveJpeg(const char* filename, const BitmapImage& overlay, int width, int height, RendererBackBuffer& backBuffer, IJL15Runtime& runtime);
-  bool SaveLogo(std::string filename, ResourceMgr& resources, IJL15Runtime& runtime);
+  bool SaveJpeg(const char* filename, const BitmapImage& overlay, int width, int height, RendererBackBuffer& backBuffer);
+  bool SaveLogo(std::string filename, ResourceMgr& resources);
 };
 
 #endif

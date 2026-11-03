@@ -104,7 +104,7 @@ bool RendererDX7Operations::SaveBitmap(const char* filename, const BitmapImage& 
 // OFFSET: 0x0055DDF0
 // FUNCTION: fn_02110
 bool RendererDX7Operations::SaveJpeg(
-  const char* filename, const BitmapImage& overlay, int width, int height, RendererBackBuffer& backBuffer, IJL15Runtime& runtime
+  const char* filename, const BitmapImage& overlay, int width, int height, RendererBackBuffer& backBuffer
 ) {
   if (!backBuffer.Lock(this->owner)) {
     return false;
@@ -155,7 +155,7 @@ bool RendererDX7Operations::SaveJpeg(
   backBuffer.Unlock(this->owner);
   IJL15Properties properties{};
 
-  if (runtime.initialize(&properties) != 0) {
+  if (ijlInit(&properties) != 0) {
     return false;
   }
 
@@ -168,7 +168,7 @@ bool RendererDX7Operations::SaveJpeg(
   properties.dibColor = 2;
   properties.jpegWidth = width;
   properties.jpegHeight = height;
-  const int status = runtime.write(&properties, 8);
+  const int status = ijlWrite(&properties, 8);
   std::free(pixels);
 
   return status == 0;
@@ -176,7 +176,7 @@ bool RendererDX7Operations::SaveJpeg(
 
 // OFFSET: 0x0055E340
 // FUNCTION: fn_02111
-bool RendererDX7Operations::SaveLogo(std::string filename, ResourceMgr& resources, IJL15Runtime& runtime) {
+bool RendererDX7Operations::SaveLogo(std::string filename, ResourceMgr& resources) {
   auto* logo = static_cast<CBitmapRes*>(resources.Load(Resolve("scr_logo.bmp")));
 
   if (!logo) {
@@ -232,7 +232,7 @@ bool RendererDX7Operations::SaveLogo(std::string filename, ResourceMgr& resource
   this->owner.renderTarget->Unlock(nullptr);
   IJL15Properties properties{};
 
-  if (runtime.initialize(&properties) != 0) {
+  if (ijlInit(&properties) != 0) {
     std::free(pixels);
     return false;
   }
@@ -246,7 +246,7 @@ bool RendererDX7Operations::SaveLogo(std::string filename, ResourceMgr& resource
   properties.dibColor = 2;
   properties.jpegWidth = locked.dwWidth;
   properties.jpegHeight = locked.dwHeight;
-  const int status = runtime.write(&properties, 8);
+  const int status = ijlWrite(&properties, 8);
   std::free(pixels);
 
   return status == 0;
