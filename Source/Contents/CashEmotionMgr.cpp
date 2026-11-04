@@ -464,7 +464,7 @@ void CashEmotionCommand::Add(int packId, int emotionId) {
 
 // OFFSET: 0x00592420
 // FUNCTION: fn_02851
-std::pair<int, int> CashEmotionCommand::Get(int index) const {
+__declspec(noinline) std::pair<int, int> CashEmotionCommand::Get(int index) const {
   if (index < 0 || static_cast<std::size_t>(index) >= this->entries.size()) {
     return std::pair<int, int>(-1, -1);
   }
@@ -3156,7 +3156,7 @@ void UICashEmotionPack::SetSaleBadge(char type) {
 
 // OFFSET: 0x007CA8F0
 // FUNCTION: fn_09454
-void UICashEmotionPack::SetTitle(const char* title) {
+__declspec(noinline) void UICashEmotionPack::SetTitle(const char* title) {
   if (title) {
     this->m_title = title;
   } else {
@@ -3648,7 +3648,7 @@ void UICashEmotionScrollBar::Paint() {
 
 // OFFSET: 0x007CC290
 // FUNCTION: fn_09493
-void UICashEmotionScrollBar::SetDisabled(bool disabled) {
+__declspec(noinline) void UICashEmotionScrollBar::SetDisabled(bool disabled) {
   if (disabled != this->m_disabled) {
     this->m_disabled = disabled;
     this->Invalidate();
@@ -3822,7 +3822,7 @@ void UICashEmotionSprBtn::Paint() {
 
 // OFFSET: 0x007CCE10
 // FUNCTION: fn_09503
-void UICashEmotionSprBtn::SetSelected(bool selected) {
+__declspec(noinline) void UICashEmotionSprBtn::SetSelected(bool selected) {
   if (selected != this->m_selected) {
     this->m_selected = selected;
     this->Invalidate();
@@ -4107,7 +4107,7 @@ void UISpriteButton2::Slot35(int argument) {
 
 // OFFSET: 0x00865380
 // FUNCTION: fn_10924
-void UISpriteButton::SetActName(const char* name) {
+__declspec(noinline) void UISpriteButton::SetActName(const char* name) {
   this->actionName = name;
 }
 
