@@ -180,7 +180,7 @@ CWorldViewField* CWorldViewWorld::FindField(const char* name) {
 
 // OFFSET: 0x00613CB0
 // FUNCTION: fn_04355
-CWorldViewField* CWorldViewMap::FindField(const char* name) {
+__declspec(noinline) CWorldViewField* CWorldViewMap::FindField(const char* name) {
   for (std::vector<CWorldViewField*>::iterator it = this->fields.begin(); it != this->fields.end(); ++it) {
     CWorldViewField* field = *it;
     if (std::strcmp(field->name.c_str(), name) == 0) {
