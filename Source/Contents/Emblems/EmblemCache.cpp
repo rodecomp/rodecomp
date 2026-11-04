@@ -4,13 +4,16 @@
 #include "Client/Session.h"
 #include "Contents/Emblems/GuildEmblemReqBundle.h"
 #include "Contents/GuildMgr.h"
+#include "File/FileEnumeration.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "Utility/Text/FormatString.h"
 
 #include <cstdio>
 #include <cstring>
 #include <direct.h>
 #include <io.h>
+#include <list>
 #include <memory>
 #include <sstream>
 #include <sys/stat.h>
@@ -33,8 +36,8 @@ namespace {
 // OFFSET: 0x0065ED00
 // FUNCTION: fn_05178
 std::string CGuildMgr::EmblemFilename(std::uint32_t guild, std::uint32_t revision) const {
-  std::ostringstream name;
-  name << g_session.m_accountName << '_' << guild << '_' << (revision + 0x7FFFFFFFu) << ".ebm";
+  std::stringstream name;
+  name << g_session.m_accountName << "_" << guild << "_" << (revision + 0x7FFFFFFFu) << ".ebm";
   return name.str();
 }
 
@@ -53,49 +56,42 @@ void CGuildMgr::MarkInvalidEmblem(std::string path) {
 // OFFSET: 0x0065E890
 // FUNCTION: fn_05177
 void CGuildMgr::StoreEmblem(const void* bytes, std::uint32_t size, std::uint32_t guild, std::uint32_t revision) {
-  const std::string directory = std::string(g_applicationDirectory) + "\\_tmpEmblem\\";
+  const std::string directory = FormatOwnedString("%s\\_tmpEmblem\\", g_applicationDirectory);
   const std::string filename = g_guildMgr->EmblemFilename(guild, revision);
   uLongf compressedSize = compressBound(size);
-  std::unique_ptr<unsigned char[]> compressed(new unsigned char[compressedSize]);
+  Bytef* compressed = new Bytef[compressedSize];
 
-  if (compress(compressed.get(), &compressedSize, static_cast<const Bytef*>(bytes), size) != Z_OK) {
-    g_guildMgr->MarkInvalidEmblem(filename);
-    return;
-  }
+  if (compress(compressed, &compressedSize, static_cast<const Bytef*>(bytes), size) == Z_OK) {
+    if (_access(directory.c_str(), 0) != 0 && _mkdir(directory.c_str()) == -1) {
+      return;
+    }
 
-  if (_access(directory.c_str(), 0) != 0 && _mkdir(directory.c_str()) == -1) {
-    return;
-  }
+    {
+      std::stringstream stream;
+      stream << g_session.m_accountName << "_" << guild << "_*.ebm";
+      std::string path = stream.str();
+      std::list<std::string> names;
+      EnumerateFileNames(names, directory.c_str(), path.c_str());
 
-  std::ostringstream pattern;
-  pattern << g_session.m_accountName << '_' << guild << "_*.ebm";
-  WIN32_FIND_DATAA found{};
-  const HANDLE search = FindFirstFileA((directory + pattern.str()).c_str(), &found);
-  std::list<std::string> names;
-
-  if (search != INVALID_HANDLE_VALUE) {
-    do {
-      if (std::strcmp(found.cFileName, ".") != 0 && std::strcmp(found.cFileName, "..") != 0) {
-        names.emplace_back(found.cFileName);
+      for (const std::string& name : names) {
+        path = directory + name;
+        _chmod(path.c_str(), _S_IWRITE);
+        _unlink(path.c_str());
       }
-    } while (FindNextFileA(search, &found));
+    }
+
+    const std::string path = directory + filename;
+    FILE* file = std::fopen(path.c_str(), "wb");
+
+    if (file) {
+      std::fwrite(compressed, compressedSize, 1, file);
+      std::fclose(file);
+    }
+  } else {
+    g_guildMgr->MarkInvalidEmblem(filename);
   }
 
-  FindClose(search);
-
-  for (const std::string& name : names) {
-    const std::string path = directory + name;
-    _chmod(path.c_str(), _S_IWRITE);
-    _unlink(path.c_str());
-  }
-
-  const std::string path = directory + filename;
-  FILE* file = std::fopen(path.c_str(), "wb");
-
-  if (file) {
-    std::fwrite(compressed.get(), compressedSize, 1, file);
-    std::fclose(file);
-  }
+  delete compressed;
 }
 
 // OFFSET: 0x00D588E0
