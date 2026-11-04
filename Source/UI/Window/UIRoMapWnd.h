@@ -48,7 +48,7 @@ struct CKafraMoveMapServiceInfo {
   virtual ~CKafraMoveMapServiceInfo() = default;
 
   void Build(std::string mapName);
-  void Update(UIRoMapWnd* wnd, float elapsed);
+  __declspec(noinline) void Update(UIRoMapWnd* wnd, float elapsed);
 
   /* 0004 */ std::vector<RoMapMarker> markers;
   /* 0010 */ RoMapMarker current;
@@ -72,14 +72,14 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void ClearRecords();
   void ResetKafraBounds();
-  void UpdateNavigationButtons();
+  __declspec(noinline) void UpdateNavigationButtons();
   void DrawHoverTooltip();
   void DrawMapNames();
   void DrawFieldLabels();
   void DrawRecordBorders();
-  void DrawDungeonLinks();
-  void DrawMarks();
-  void DrawRecordFaces(int unused);
+  __declspec(noinline) void DrawDungeonLinks();
+  __declspec(noinline) void DrawMarks();
+  __declspec(noinline) void DrawRecordFaces(int unused);
   void DrawRecordAreas();
   void DrawSelectedMapPreview();
   void DrawKafraIcon(float x, float y);
@@ -91,11 +91,11 @@ public:
     float startX, float startY, float endX, float endY, int stepWidth, int thickness, CTexture* body, int headSize, CTexture* head, float progress,
     std::uint32_t color, int offset
   );
-  void DrawKafraMarkers(float elapsed);
-  void DrawMapMarker(const RoMapMarker& marker, unsigned char skipSelected);
+  __declspec(noinline) void DrawKafraMarkers(float elapsed);
+  __declspec(noinline) void DrawMapMarker(const RoMapMarker& marker, unsigned char skipSelected);
   void DrawWorld();
-  void RefreshPartyRecords();
-  bool LocateRecord(WorldViewRecord& record);
+  __declspec(noinline) void RefreshPartyRecords();
+  __declspec(noinline) bool LocateRecord(WorldViewRecord& record);
 
 private:
   /* 00B4 */ std::list<WorldViewRecord> m_records;

@@ -40,6 +40,8 @@ CWorldViewMgr g_worldViewMgr;
 void UIRoMapWnd::Slot25(int, int) {
 }
 
+__declspec(noinline) void SetRoMapMarker(std::string name, const WorldViewArea& area, RoMapMarker& marker);
+
 // OFFSET: 0x0091BE80
 // FUNCTION: fn_12611
 void SetRoMapMarker(std::string name, const WorldViewArea& area, RoMapMarker& marker) {

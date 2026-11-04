@@ -31,7 +31,7 @@ public:
   bool IsRouteMap(std::string mapName);
   void Draw(UIRoMapWnd* wnd);
   void BuildRoute(const std::vector<std::string>& mapNames);
-  bool UpdateRoute(WorldViewRecord* record);
+  __declspec(noinline) bool UpdateRoute(WorldViewRecord* record);
   void Update(UIRoMapWnd* wnd, float elapsed);
 
   /* 0004 */ std::vector<FlyingShipRouteEntry> entries;
