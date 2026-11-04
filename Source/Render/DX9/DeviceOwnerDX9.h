@@ -17,6 +17,7 @@ public:
   UINT* AdjustTextureDimensions(UINT* output, UINT width, UINT height) const;
   bool CanAutoGenerateMipmaps(D3DFORMAT format) const;
   HRESULT Close();
+  void UpdateMipmapFiltering();
   void RestoreDisplayMode();
   HRESULT Present(int unused);
   HRESULT ClipFullscreenCursor();

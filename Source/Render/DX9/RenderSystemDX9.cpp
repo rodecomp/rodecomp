@@ -136,6 +136,7 @@ void CRenderSystemDX9::PrepareErrorDialog() {
 // OFFSET: 0x0056D750
 // FUNCTION: fn_02366
 void CRenderSystemDX9::RestoreDisplayMode() {
+  this->m_device->RestoreDisplayMode();
 }
 
 // OFFSET: 0x0056E3F0
