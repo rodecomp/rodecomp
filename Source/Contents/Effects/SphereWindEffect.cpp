@@ -89,7 +89,7 @@ void CSphereWindEffect::Slot03() {
 
 // OFFSET: 0x00B78480
 // FUNCTION: fn_19192
-void CSphereWindEffect::UpdateParticle(CParticle* particle) {
+__declspec(noinline) void CSphereWindEffect::UpdateParticle(CParticle* particle) {
   float& rotation = *reinterpret_cast<float*>(&particle->unknown_00C4);
   if (particle) {
     float value = *reinterpret_cast<const float*>(particle->unknown_0058) + rotation;
