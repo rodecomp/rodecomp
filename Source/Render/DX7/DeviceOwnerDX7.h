@@ -28,9 +28,15 @@ public:
   bool SupportsTextureDimensions(std::uint32_t width, std::uint32_t height) const;
   void CaptureBackBuffer();
   void RestoreBackBuffer();
-  void PrepareErrorDialog();
-  void RestoreDisplayMode();
-  HRESULT RestoreAllSurfaces();
+  void UpdateMipmapFiltering();
+  __declspec(noinline) void PrepareErrorDialog();
+  // INLINED
+  void RestoreDisplayMode() {
+    if (this->direct3D) {
+      this->direct3D->EvictManagedTextures();
+    }
+  }
+  __declspec(noinline) HRESULT RestoreAllSurfaces();
   void SetDialogClipper(int enabled);
   bool CalibrateTextureCoordinates();
 

@@ -1,7 +1,10 @@
 #include "Render/DX7/DeviceOwnerDX7.h"
 #include "Client/Application/ApplicationWindow.h"
 #include "Render/DX7/DirectDrawEnumeration.h"
+#include "Render/DX7/RenderSystemDX7.h"
+#include "Render/DX7/TextureAllocationDX7.h"
 #include "Render/Textures/Surface.h"
+#include "UI/GameSettings/GameSettingsUI.h"
 
 #include <cstring>
 
@@ -550,15 +553,13 @@ bool DeviceOwnerDX7::SupportsTextureDimensions(std::uint32_t width, std::uint32_
 
 // OFFSET: 0x0056B890
 // FUNCTION: fn_02324
-void DeviceOwnerDX7::PrepareErrorDialog() {
-  if (this->direct3D) {
-    this->direct3D->EvictManagedTextures();
-  }
+void CRenderSystemDX7::RestoreDisplayMode() {
+  this->m_device->RestoreDisplayMode();
 }
 
-// OFFSET: 0x0056B8B0
-// FUNCTION: fn_02325
-void DeviceOwnerDX7::RestoreDisplayMode() {
+// OFFSET: 0x0054AA10
+// FUNCTION: fn_45502
+void DeviceOwnerDX7::PrepareErrorDialog() {
   if (this->draw) {
     if (this->backBuffer) {
       this->backBuffer->Unlock(nullptr);
@@ -572,16 +573,28 @@ void DeviceOwnerDX7::RestoreDisplayMode() {
   }
 }
 
+// OFFSET: 0x0056B8B0
+// FUNCTION: fn_02325
+void CRenderSystemDX7::PrepareErrorDialog() {
+  this->m_device->PrepareErrorDialog();
+}
+
 // OFFSET: 0x0056BB90
 // FUNCTION: fn_02327
 IDirect3D7* DeviceOwnerDX7::Direct3D() {
   return this->direct3D;
 }
 
-// OFFSET: 0x0056C4B0
-// FUNCTION: fn_02336
+// OFFSET: 0x0054AF00
+// FUNCTION: fn_45503
 HRESULT DeviceOwnerDX7::RestoreAllSurfaces() {
   return this->draw->RestoreAllSurfaces();
+}
+
+// OFFSET: 0x0056C4B0
+// FUNCTION: fn_02336
+HRESULT CRenderSystemDX7::TestDevice() {
+  return this->m_device->RestoreAllSurfaces();
 }
 
 // OFFSET: 0x0054A8D0
@@ -602,5 +615,17 @@ void DeviceOwnerDX7::SetDialogClipper(int enabled) {
 
   if (clipper) {
     clipper->Release();
+  }
+}
+
+// OFFSET: 0x0054A930
+// FUNCTION: fn_45501
+void DeviceOwnerDX7::UpdateMipmapFiltering() {
+  if (g_textureFiltering != 0 && (this->caps.dpcTriCaps.dwTextureFilterCaps & D3DPTFILTERCAPS_LINEARMIPLINEAR)) {
+    g_textureAllocationDX7.descriptorFlags = DDSD_MIPMAPCOUNT;
+    g_textureAllocationDX7.surfaceCaps = DDSCAPS_COMPLEX | DDSCAPS_MIPMAP;
+  } else {
+    g_textureAllocationDX7.descriptorFlags = 0;
+    g_textureAllocationDX7.surfaceCaps = 0;
   }
 }

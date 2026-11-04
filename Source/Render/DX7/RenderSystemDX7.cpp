@@ -96,10 +96,7 @@ void CRenderSystemDX7::DestroySurface(CSurface* surface) {
 // OFFSET: 0x0056B880
 // FUNCTION: fn_02323
 void CRenderSystemDX7::UpdateOption() {
-  if (this->m_device) {
-    const bool trilinear = (this->m_device->caps.dpcTriCaps.dwTextureFilterCaps & D3DPTFILTERCAPS_LINEARMIPLINEAR) != 0;
-    (void)trilinear;
-  }
+  this->m_device->UpdateMipmapFiltering();
 }
 
 // OFFSET: 0x0056BBA0
