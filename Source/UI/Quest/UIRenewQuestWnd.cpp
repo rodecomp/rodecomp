@@ -1,4 +1,5 @@
 #include "Client/Mode/CMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Render/DeviceContext/DCSurface.h"
 #include "UI/Quest/UIRenewQuestWnd.h"
 
@@ -137,7 +138,7 @@ void UINpcSprWnd::Slot31(int, int) {
 // OFFSET: 0x007F97F0
 // FUNCTION: fn_09936
 void UINpcSprWnd::ResetCursor(int, int) {
-  static_cast<CMode*>(g_charViewMode)->SetCursorAction(2);
+  g_modeMgr.gameMode->SetCursorAction(2);
 }
 
 // OFFSET: 0x007F9800
