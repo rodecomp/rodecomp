@@ -520,7 +520,8 @@ void BitmapPixels::DrawScaledSurface(
   bool mirrored, int offsetX, int offsetY, int sourceX, int sourceY
 ) {
   if (!source || x < 0 || this->width < static_cast<unsigned>(x) || y < 0 || this->height < static_cast<unsigned>(y) || drawWidth < 0 || drawHeight < 0 ||
-      this->width < static_cast<unsigned>(x) + drawWidth || this->height < static_cast<unsigned>(y) + drawHeight || !(scaleX > 0) || !(scaleY > 0) || !color) {
+      this->width < static_cast<unsigned>(x) + drawWidth || this->height < static_cast<unsigned>(y) + drawHeight || !(scaleX > 0) || !(scaleY > 0) ||
+      !(0.0f < static_cast<float>(color))) {
     return;
   }
 
@@ -530,54 +531,146 @@ void BitmapPixels::DrawScaledSurface(
     return;
   }
 
-  const auto* input = static_cast<const unsigned char*>(locked.pixels);
+  const std::uint16_t* input = static_cast<const std::uint16_t*>(locked.pixels);
   const int stride = locked.pitch / 2;
-  const int start = sourceX + sourceY * stride;
-  const int limit = sourceHeight * stride;
-  const float alpha = static_cast<float>(color >> 24) / 255;
-  const float inverse = 1 - alpha;
-  const float redScale = static_cast<float>((color >> 16) & 255) * alpha / 255;
-  const float greenScale = static_cast<float>((color >> 8) & 255) * alpha / 255;
-  const float blueScale = static_cast<float>(color & 255) * alpha / 255;
-  const float inverseX = 1 / scaleX;
-  const float inverseY = 1 / scaleY;
+  const std::uint16_t* sourcePixels = input + sourceY * stride + sourceX;
+  std::uint32_t* destinationPixels = this->pixels + this->width * y + x;
+  const float alpha = static_cast<float>(color >> 24) / 255.0f;
+  const float inverse = 1.0f - alpha;
+  const float redScale = static_cast<float>((color >> 16) & 0xFF) * alpha / 255.0f;
+  const float greenScale = static_cast<float>((color >> 8) & 0xFF) * alpha / 255.0f;
+  const float blueScale = static_cast<float>(color & 0xFF) * alpha / 255.0f;
+  const float inverseX = 1.0f / scaleX;
+  const float inverseY = 1.0f / scaleY;
   const int scaledWidth = static_cast<int>(static_cast<float>(sourceWidth) * scaleX);
   const int scaledHeight = static_cast<int>(static_cast<float>(sourceHeight) * scaleY);
+  const int limit = sourceHeight * stride;
 
-  for (int row = 0; row < scaledHeight; ++row) {
-    for (int column = 0; column < scaledWidth; ++column) {
-      const int destinationX = offsetX + column;
-      const int destinationY = offsetY + row;
+  if (format == TextureFormat::A4R4G4B4) {
+    if (!mirrored) {
+      for (int row = 0; row < scaledHeight; ++row) {
+        for (int column = 0; column < scaledWidth; ++column) {
+          if (offsetX + column < 0 || offsetX + column > drawWidth) {
+            continue;
+          }
 
-      if (destinationX < 0 || drawWidth < destinationX || destinationY < 0 || drawHeight < destinationY) {
-        continue;
+          if (offsetY + row < 0 || offsetY + row > drawHeight) {
+            continue;
+          }
+
+          const int index = static_cast<int>(static_cast<float>(row) * inverseY) * stride + static_cast<int>(static_cast<float>(column) * inverseX);
+          if (index < 0 || index >= limit) {
+            continue;
+          }
+
+          const std::uint16_t value = sourcePixels[index];
+          if (!(value & 0xF000)) {
+            continue;
+          }
+
+          std::uint32_t& pixel = destinationPixels[this->width * (offsetY + row) + column + offsetX];
+          const unsigned red =
+            static_cast<unsigned>(static_cast<float>((pixel >> 16) & 0xFF) * inverse + static_cast<float>((value >> 4) & 0xF0) * redScale);
+          const unsigned green = static_cast<unsigned>(static_cast<float>((pixel >> 8) & 0xFF) * inverse + static_cast<float>(value & 0xF0) * greenScale);
+          const unsigned blue =
+            static_cast<unsigned>(static_cast<float>((value & 0x0F) << 4) * blueScale + static_cast<float>(pixel & 0xFF) * inverse);
+          pixel = PackPixel(0xFF, red, green, blue);
+        }
       }
+    } else {
+      for (int row = 0; row < scaledHeight; ++row) {
+        for (int column = 0; column < scaledWidth; ++column) {
+          if (offsetX + column < 0 || offsetX + column > drawWidth) {
+            continue;
+          }
 
-      const int sampleX = static_cast<int>(static_cast<float>(column) * inverseX);
-      const int sampleY = static_cast<int>(static_cast<float>(row) * inverseY);
-      const int index = sampleY * stride + (mirrored ? sourceWidth - sampleX - 1 : sampleX);
+          if (offsetY + row < 0 || offsetY + row > drawHeight) {
+            continue;
+          }
 
-      if (index < 0 || index >= limit) {
-        continue;
+          const int index = sourceWidth - 1 + static_cast<int>(static_cast<float>(row) * inverseY) * stride -
+                            static_cast<int>(static_cast<float>(column) * inverseX);
+          if (index < 0 || index >= limit) {
+            continue;
+          }
+
+          const std::uint16_t value = sourcePixels[index];
+          if (!(value & 0xF000)) {
+            continue;
+          }
+
+          std::uint32_t& pixel = destinationPixels[this->width * (offsetY + row) + column + offsetX];
+          const unsigned red =
+            static_cast<unsigned>(static_cast<float>((pixel >> 16) & 0xFF) * inverse + static_cast<float>((value >> 4) & 0xF0) * redScale);
+          const unsigned green = static_cast<unsigned>(static_cast<float>((pixel >> 8) & 0xFF) * inverse + static_cast<float>(value & 0xF0) * greenScale);
+          const unsigned blue =
+            static_cast<unsigned>(static_cast<float>((value & 0x0F) << 4) * blueScale + static_cast<float>(pixel & 0xFF) * inverse);
+          pixel = PackPixel(0xFF, red, green, blue);
+        }
       }
+    }
+  } else if (format == TextureFormat::A1R5G5B5) {
+    if (!mirrored) {
+      for (int row = 0; row < scaledHeight; ++row) {
+        for (int column = 0; column < scaledWidth; ++column) {
+          if (offsetX + column < 0 || offsetX + column > drawWidth) {
+            continue;
+          }
 
-      std::uint16_t value;
-      std::memcpy(&value, input + 2 * (start + index), sizeof(value));
-      if ((format == TextureFormat::A1R5G5B5 && !(value & 0x8000)) || (format == TextureFormat::A4R4G4B4 && !(value & 0xF000)) ||
-          (format != TextureFormat::A1R5G5B5 && format != TextureFormat::A4R4G4B4)) {
-        continue;
+          if (offsetY + row < 0 || offsetY + row > drawHeight) {
+            continue;
+          }
+
+          const int index = static_cast<int>(static_cast<float>(row) * inverseY) * stride + static_cast<int>(static_cast<float>(column) * inverseX);
+          if (index < 0 || index >= limit) {
+            continue;
+          }
+
+          const std::uint16_t value = sourcePixels[index];
+          if (!(value & 0x8000)) {
+            continue;
+          }
+
+          std::uint32_t& pixel = destinationPixels[this->width * (offsetY + row) + column + offsetX];
+          const unsigned red =
+            static_cast<unsigned>(static_cast<float>((pixel >> 16) & 0xFF) * inverse + static_cast<float>((value >> 7) & 0xF8) * redScale);
+          const unsigned green = static_cast<unsigned>(static_cast<float>((pixel >> 8) & 0xFF) * inverse + static_cast<float>((value >> 2) & 0xF8) * greenScale);
+          const unsigned blue =
+            static_cast<unsigned>(static_cast<float>((value & 0x1F) << 3) * blueScale + static_cast<float>(pixel & 0xFF) * inverse);
+          pixel = PackPixel(0xFF, red, green, blue);
+        }
       }
+    } else {
+      for (int row = 0; row < scaledHeight; ++row) {
+        for (int column = 0; column < scaledWidth; ++column) {
+          if (offsetX + column < 0 || offsetX + column > drawWidth) {
+            continue;
+          }
 
-      const unsigned red = format != TextureFormat::A1R5G5B5 ? (value >> 4) & 0xF0 : (value >> 7) & 0xF8;
-      const unsigned green = format != TextureFormat::A1R5G5B5 ? value & 0xF0 : (value >> 2) & 0xF8;
-      const unsigned blue = format != TextureFormat::A1R5G5B5 ? (value & 15) << 4 : (value & 31) << 3;
-      std::uint32_t& destination = this->pixels[x + destinationX + (y + destinationY) * this->width];
-      const auto b = static_cast<unsigned char>(static_cast<unsigned>(static_cast<float>(destination & 255) * inverse + static_cast<float>(blue) * blueScale));
-      const auto g =
-        static_cast<unsigned char>(static_cast<unsigned>(static_cast<float>((destination >> 8) & 255) * inverse + static_cast<float>(green) * greenScale));
-      const auto r =
-        static_cast<unsigned char>(static_cast<unsigned>(static_cast<float>((destination >> 16) & 255) * inverse + static_cast<float>(red) * redScale));
-      destination = 0xFF000000 | (r << 16) | (g << 8) | b;
+          if (offsetY + row < 0 || offsetY + row > drawHeight) {
+            continue;
+          }
+
+          const int index = sourceWidth - 1 + static_cast<int>(static_cast<float>(row) * inverseY) * stride -
+                            static_cast<int>(static_cast<float>(column) * inverseX);
+          if (index < 0 || index >= limit) {
+            continue;
+          }
+
+          const std::uint16_t value = sourcePixels[index];
+          if (!(value & 0x8000)) {
+            continue;
+          }
+
+          std::uint32_t& pixel = destinationPixels[this->width * (offsetY + row) + column + offsetX];
+          const unsigned red =
+            static_cast<unsigned>(static_cast<float>((pixel >> 16) & 0xFF) * inverse + static_cast<float>((value >> 7) & 0xF8) * redScale);
+          const unsigned green = static_cast<unsigned>(static_cast<float>((pixel >> 8) & 0xFF) * inverse + static_cast<float>((value >> 2) & 0xF8) * greenScale);
+          const unsigned blue =
+            static_cast<unsigned>(static_cast<float>((value & 0x1F) << 3) * blueScale + static_cast<float>(pixel & 0xFF) * inverse);
+          pixel = PackPixel(0xFF, red, green, blue);
+        }
+      }
     }
   }
 
