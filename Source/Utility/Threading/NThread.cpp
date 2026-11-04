@@ -55,7 +55,8 @@ bool NThread::Start() {
   return true;
 }
 
-// INLINED
+// OFFSET: 0x00737480
+// FUNCTION: fn_45509
 void NThread::Stop() {
   switch (this->m_state) {
   case 2:
