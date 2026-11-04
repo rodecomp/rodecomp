@@ -1,6 +1,8 @@
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
+#include "Resource/SkinPalette.h"
+#include "Contents/SkinMgr.h"
 #include "UI/Text/ColoredText.h"
 #include "UI/Lists/UIListBox.h"
 #include "UI/Lists/UIListBoxEx.h"
@@ -13,14 +15,8 @@
 UIListBoxEx::UIListBoxEx()
     : UIWindow(0), backgroundRed(255), backgroundGreen(255), backgroundBlue(255), selected(0), topLine(0), horizontalOffset(0), contentWidth(0),
       verticalOverflow(0), bottomMargin(0), verticalBar(nullptr), horizontalBar(nullptr), transparent(0), lineHeight(16), selectionColor(0) {
-  constexpr char path[] = "유저인터페이스\\colorchip.bmp";
-  const auto* chip = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(path));
-
-  if (chip) {
-    const auto& image = chip->image;
-    const std::uint32_t pixel = image.width > 10 && image.height > 10 ? image.pixels[10 + 10 * image.width] : 0x00FF0000u;
-    this->selectionColor = ((pixel & 255) << 16) | (pixel & 0xFF00) | ((pixel >> 16) & 255);
-  }
+  const SkinPaletteCell cell = {2, 2};
+  this->selectionColor = SkinPaletteColor(ResourceMgr::Instance(), cell, g_skinInfo.Selected());
 }
 
 // OFFSET: 0x00873710
