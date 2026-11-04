@@ -35,9 +35,6 @@ struct BitmapPixels {
     int x, int y, int sourceLeft, int sourceTop, int sourceRight, int sourceBottom, const std::uint32_t* source, int sourceWidth, int sourceHeight,
     bool transparent, bool alpha
   );
-  void DrawSurface(
-    int x, int y, CSurface* source, int sourceX, int sourceY, int sourceWidth, int sourceHeight, bool mirrored, int scaleX, int scaleY, int filter, int format
-  );
   void DrawScaledSurface(
     int x, int y, int width, int height, CSurface* source, int sourceWidth, int sourceHeight, float scaleX, float scaleY, std::uint32_t color, bool mirrored,
     int offsetX, int offsetY, int sourceX, int sourceY

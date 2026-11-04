@@ -99,13 +99,6 @@ void CDCBitmap::DrawRleSprite(
   this->m_bitmap.DrawRleSprite(x, y, cells, images, palette, cellCount);
 }
 
-// OFFSET: 0x005460B0
-void CDCBitmap::DrawSurface(
-  int x, int y, CSurface* source, int sourceX, int sourceY, int sourceWidth, int sourceHeight, bool mirrored, int scaleX, int scaleY, int filter, int format
-) {
-  this->m_bitmap.DrawSurface(x, y, source, sourceX, sourceY, sourceWidth, sourceHeight, mirrored, scaleX, scaleY, filter, format);
-}
-
 // OFFSET: 0x00547460
 void CDCBitmap::Fill(const RECT* rectangle, std::uint32_t color) {
   this->m_bitmap.Fill(rectangle, color);

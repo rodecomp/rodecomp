@@ -40,6 +40,7 @@ public:
   void Dim(int x, int y, int width, int height, int percent) override;
   void UploadTexture(CRenderSystemBase& system, CTexture*& texture);
   HGDIOBJ Create(int width, int height);
+  void ApplyPixelFilter(int filter, unsigned int* red, unsigned int* green, unsigned int* blue);
   void SetAlpha(unsigned char maxLuminance);
   // INLINED
   void SetAlpha(bool alpha) {

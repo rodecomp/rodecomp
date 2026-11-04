@@ -332,12 +332,23 @@ void BitmapPixels::CopyRegion(
   }
 }
 
+// INLINED
+static std::uint32_t PackPixel(unsigned alpha, unsigned red, unsigned green, unsigned blue) {
+  return ((((alpha << 8) + static_cast<unsigned char>(red)) << 8) + static_cast<unsigned char>(green) << 8) + static_cast<unsigned char>(blue);
+}
+
+// INLINED
+static float SurfacePixelAlpha(int value) {
+  const float alpha = static_cast<float>(static_cast<unsigned>(value) >> 12) * 0.06666667f;
+  return alpha > 0.97f ? 1.0f : alpha;
+}
+
 // OFFSET: 0x005460B0
 // FUNCTION: fn_01839
-void BitmapPixels::DrawSurface(
-  int x, int y, CSurface* source, int sourceX, int sourceY, int sourceWidth, int sourceHeight, bool mirrored, int scaleX, int scaleY, int filter, int format
+void CDCBitmap::DrawSurface(
+  int x, int y, CSurface* source, int sourceX, int sourceY, int sourceWidth, int sourceHeight, bool mirrored, int scaleX, int scaleY, int filter, int
 ) {
-  if (!source || !this->pixels) {
+  if (!source || !this->m_bitmap.pixels) {
     return;
   }
 
@@ -346,64 +357,139 @@ void BitmapPixels::DrawSurface(
     return;
   }
 
-  this->dirty = true;
-  const auto* input = static_cast<const unsigned char*>(locked.pixels);
+  const auto* input = static_cast<const std::uint16_t*>(locked.pixels);
   const int stride = locked.pitch / 2;
+  this->m_bitmap.dirty = true;
+  const int format = static_cast<CTexture*>(source)->Format();
+  const int width = this->m_bitmap.width;
+  std::uint32_t* pixels = this->m_bitmap.pixels;
+  unsigned red, green, blue;
 
-  for (int row = 0; row < sourceHeight; ++row) {
-    for (int column = 0; column < sourceWidth; ++column) {
-      const int inputX = sourceX + (mirrored ? sourceWidth - column - 1 : column);
-      std::uint16_t value;
-      std::memcpy(&value, input + 2 * (inputX + (sourceY + row) * stride), sizeof(value));
+  if (format == TextureFormat::A4R4G4B4) {
+    if (mirrored) {
+      for (int row = 0; row < sourceHeight; ++row) {
+        for (int column = sourceWidth - 1; column >= 0; --column) {
+          const int value = input[(sourceY + row) * stride + sourceX + column];
+          if (!(value & 0xF000)) {
+            continue;
+          }
 
-      if ((format == TextureFormat::A1R5G5B5 && !(value & 0x8000)) || (format == TextureFormat::A4R4G4B4 && !(value & 0xF000)) ||
-          (format != TextureFormat::A1R5G5B5 && format != TextureFormat::A4R4G4B4)) {
-        continue;
-      }
+          const float alpha = SurfacePixelAlpha(value);
+          red = (value >> 4) & 0xF0;
+          green = value & 0xF0;
+          blue = (value & 0xF) << 4;
+          this->ApplyPixelFilter(filter, &red, &green, &blue);
 
-      unsigned red = format != TextureFormat::A1R5G5B5 ? (value >> 4) & 0xF0 : (value >> 7) & 0xF8;
-      unsigned green = format != TextureFormat::A1R5G5B5 ? value & 0xF0 : (value >> 2) & 0xF8;
-      unsigned blue = format != TextureFormat::A1R5G5B5 ? (value & 15) << 4 : (value & 31) << 3;
-
-      if (filter) {
-        const unsigned average = std::max((red + green + blue) / 3, filter == 1 ? 120u : 100u);
-        red = green = blue = average;
-        if (filter == 2) {
-          red = 200;
-        } else if (filter == 3) {
-          green = 200;
-        } else if (filter == 4) {
-          blue = 200;
+          for (int dy = 0; dy < scaleY; ++dy) {
+            for (int dx = 0; dx < scaleX; ++dx) {
+              const int destinationX = x + (sourceWidth - column - 1) * scaleX + dx;
+              const int destinationY = y + row * scaleY + dy;
+              if (destinationX >= 0 && destinationY >= 0 && static_cast<unsigned>(destinationX) < this->m_bitmap.width &&
+                  static_cast<unsigned>(destinationY) < this->m_bitmap.height) {
+                const float inverse = 1.0f - alpha;
+                const int index = destinationX + destinationY * width;
+                const unsigned outputRed =
+                  static_cast<unsigned>(static_cast<float>(static_cast<unsigned char>(pixels[index] >> 16)) * inverse + static_cast<float>(red) * alpha);
+                const unsigned outputGreen =
+                  static_cast<unsigned>(static_cast<float>(static_cast<unsigned char>(pixels[index] >> 8)) * inverse + static_cast<float>(green) * alpha);
+                const unsigned outputBlue =
+                  static_cast<unsigned>(static_cast<float>(pixels[index] & 0xFF) * inverse + static_cast<float>(blue) * alpha);
+                pixels[index] = PackPixel(0, outputRed, outputGreen, outputBlue);
+              }
+            }
+          }
         }
       }
+    } else {
+      for (int row = 0; row < sourceHeight; ++row) {
+        for (int column = 0; column < sourceWidth; ++column) {
+          const int value = input[(sourceY + row) * stride + sourceX + column];
+          if (!(value & 0xF000)) {
+            continue;
+          }
 
-      float alpha = 1;
-      if (format == TextureFormat::A4R4G4B4) {
-        alpha = static_cast<float>(value >> 12) * 0.06666667f;
-        if (alpha > 0.97f) {
-          alpha = 1;
+          const float alpha = SurfacePixelAlpha(value);
+          red = (value >> 4) & 0xF0;
+          green = value & 0xF0;
+          blue = (value & 0xF) << 4;
+          this->ApplyPixelFilter(filter, &red, &green, &blue);
+
+          if (!&pixels[(y + (row + 1) * scaleY - 1) * width + x + column * scaleX + scaleX - 1]) {
+            continue;
+          }
+
+          for (int dy = 0; dy < scaleY; ++dy) {
+            for (int dx = 0; dx < scaleX; ++dx) {
+              const int destinationX = x + column * scaleX + dx;
+              const int destinationY = y + row * scaleY + dy;
+              if (destinationX >= 0 && destinationY >= 0 && static_cast<unsigned>(destinationX) < this->m_bitmap.width &&
+                  static_cast<unsigned>(destinationY) < this->m_bitmap.height) {
+                const float inverse = 1.0f - alpha;
+                const int index = destinationX + destinationY * width;
+                const unsigned outputRed =
+                  static_cast<unsigned>(static_cast<float>(static_cast<unsigned char>(pixels[index] >> 16)) * inverse + static_cast<float>(red) * alpha);
+                const unsigned outputGreen =
+                  static_cast<unsigned>(static_cast<float>(static_cast<unsigned char>(pixels[index] >> 8)) * inverse + static_cast<float>(green) * alpha);
+                const unsigned outputBlue =
+                  static_cast<unsigned>(static_cast<float>(pixels[index] & 0xFF) * inverse + static_cast<float>(blue) * alpha);
+                pixels[index] = PackPixel(0, outputRed, outputGreen, outputBlue);
+              }
+            }
+          }
         }
       }
+    }
+  } else if (format == TextureFormat::A1R5G5B5) {
+    if (mirrored) {
+      for (int row = 0; row < sourceHeight; ++row) {
+        for (int column = sourceWidth - 1; column >= 0; --column) {
+          const int value = input[(sourceY + row) * stride + sourceX + column];
+          if (!(value & 0x8000)) {
+            continue;
+          }
 
-      for (int dy = 0; dy < scaleY; ++dy) {
-        const int destinationY = y + row * scaleY + dy;
+          red = (value >> 7) & 0xF8;
+          green = (value >> 2) & 0xF8;
+          blue = (value & 0x1F) << 3;
+          this->ApplyPixelFilter(filter, &red, &green, &blue);
 
-        for (int dx = 0; dx < scaleX; ++dx) {
-          const int destinationX = x + column * scaleX + dx;
-          if (destinationX >= 0 && destinationY >= 0 && static_cast<unsigned>(destinationX) < this->width &&
-              static_cast<unsigned>(destinationY) < this->height) {
-            std::uint32_t& destination = this->pixels[destinationX + destinationY * this->width];
-            if (format == TextureFormat::A1R5G5B5) {
-              destination = 0xFF000000 | (red << 16) | (green << 8) | blue;
-            } else {
-              const float inverse = 1 - alpha;
-              const auto b =
-                static_cast<unsigned char>(static_cast<unsigned>(static_cast<float>(destination & 255) * inverse + static_cast<float>(blue) * alpha));
-              const auto g =
-                static_cast<unsigned char>(static_cast<unsigned>(static_cast<float>((destination >> 8) & 255) * inverse + static_cast<float>(green) * alpha));
-              const auto r =
-                static_cast<unsigned char>(static_cast<unsigned>(static_cast<float>((destination >> 16) & 255) * inverse + static_cast<float>(red) * alpha));
-              destination = b | (g << 8) | (r << 16);
+          for (int dy = 0; dy < scaleY; ++dy) {
+            for (int dx = 0; dx < scaleX; ++dx) {
+              const int destinationX = x + (sourceWidth - column - 1) * scaleX + dx;
+              const int destinationY = y + row * scaleY + dy;
+              if (destinationX >= 0 && destinationY >= 0 && static_cast<unsigned>(destinationX) < this->m_bitmap.width &&
+                  static_cast<unsigned>(destinationY) < this->m_bitmap.height) {
+                pixels[destinationX + destinationY * width] = PackPixel(0xFF, red, green, blue);
+              }
+            }
+          }
+        }
+      }
+    } else {
+      for (int row = 0; row < sourceHeight; ++row) {
+        for (int column = 0; column < sourceWidth; ++column) {
+          const int value = input[(sourceY + row) * stride + sourceX + column];
+          if (!(value & 0x8000)) {
+            continue;
+          }
+
+          red = (value >> 7) & 0xF8;
+          green = (value >> 2) & 0xF8;
+          blue = (value & 0x1F) << 3;
+          this->ApplyPixelFilter(filter, &red, &green, &blue);
+
+          if (!&pixels[(y + (row + 1) * scaleY - 1) * width + x + column * scaleX + scaleX - 1]) {
+            continue;
+          }
+
+          for (int dy = 0; dy < scaleY; ++dy) {
+            for (int dx = 0; dx < scaleX; ++dx) {
+              const int destinationX = x + column * scaleX + dx;
+              const int destinationY = y + row * scaleY + dy;
+              if (destinationX >= 0 && destinationY >= 0 && static_cast<unsigned>(destinationX) < this->m_bitmap.width &&
+                  static_cast<unsigned>(destinationY) < this->m_bitmap.height) {
+                pixels[destinationX + destinationY * width] = PackPixel(0xFF, red, green, blue);
+              }
             }
           }
         }
@@ -704,7 +790,7 @@ void BitmapPixels::ScaleCopy(int x, int y, int sourceWidth, int sourceHeight, in
 
 // OFFSET: 0x00547670
 // FUNCTION: fn_01842
-void ApplyPixelFilter(int filter, unsigned int* red, unsigned int* green, unsigned int* blue) {
+void CDCBitmap::ApplyPixelFilter(int filter, unsigned int* red, unsigned int* green, unsigned int* blue) {
   if (!filter) {
     return;
   }
