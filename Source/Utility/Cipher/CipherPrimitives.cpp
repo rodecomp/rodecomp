@@ -193,7 +193,7 @@ static unsigned int CryptonRotate(unsigned int value, unsigned int shift) {
 }
 
 // INLINED
-static unsigned int CryptonKeyTransform(unsigned int value, unsigned int lane) {
+static __forceinline unsigned int CryptonKeyTransform(unsigned int value, unsigned int lane) {
   switch (lane) {
   case 0:
     return (CryptonRotate(value, 24) & 0xFCCFFCCFu) ^ (CryptonRotate(value, 16) & 0xF33FF33Fu) ^
@@ -211,7 +211,7 @@ static unsigned int CryptonKeyTransform(unsigned int value, unsigned int lane) {
 }
 
 // INLINED
-static void CryptonRound(unsigned int& a, unsigned int& b, unsigned int& c, unsigned int& d, const unsigned int* key, bool alternate) {
+static __forceinline void CryptonRound(unsigned int& a, unsigned int& b, unsigned int& c, unsigned int& d, const unsigned int* key, bool alternate) {
   unsigned int x;
   unsigned int y;
   unsigned int z;
@@ -234,7 +234,7 @@ static void CryptonRound(unsigned int& a, unsigned int& b, unsigned int& c, unsi
 }
 
 // INLINED
-static void CryptonSubstitute(unsigned int a, unsigned int b, unsigned int c, unsigned int d, unsigned int* output, bool alternate) {
+static __forceinline void CryptonSubstitute(unsigned int a, unsigned int b, unsigned int c, unsigned int d, unsigned int* output, bool alternate) {
   for (unsigned int lane = 0; lane < 4; ++lane) {
     const unsigned int shift = lane * 8;
     if ((lane & 1) == alternate) {
@@ -487,89 +487,88 @@ unsigned int* CryptonSetKey(const unsigned int* input, unsigned int keyBits) {
     g_cryptonEncryptKey[5] = input[3];
   }
 
-  unsigned int* key = g_cryptonEncryptKey;
-  unsigned int a = key[0];
-  unsigned int b = key[1];
-  unsigned int c = key[2];
-  unsigned int d = key[3];
+  unsigned int a = g_cryptonEncryptKey[0];
+  unsigned int b = g_cryptonEncryptKey[1];
+  unsigned int c = g_cryptonEncryptKey[2];
+  unsigned int d = g_cryptonEncryptKey[3];
   unsigned int x = (a & 0x3FCFF3FCu) ^ (b & 0xFC3FCFF3u) ^ (c & 0xF3FC3FCFu) ^ (d & 0xCFF3FC3Fu) ^ g_cryptonKeyConstants[0];
   unsigned int y = (a & 0xFC3FCFF3u) ^ (b & 0xF3FC3FCFu) ^ (c & 0xCFF3FC3Fu) ^ (d & 0x3FCFF3FCu) ^ g_cryptonKeyConstants[1];
   unsigned int z = (a & 0xF3FC3FCFu) ^ (b & 0xCFF3FC3Fu) ^ (c & 0x3FCFF3FCu) ^ (d & 0xFC3FCFF3u) ^ g_cryptonKeyConstants[2];
   unsigned int w = (a & 0xCFF3FC3Fu) ^ (b & 0x3FCFF3FCu) ^ (c & 0xFC3FCFF3u) ^ (d & 0xF3FC3FCFu) ^ g_cryptonKeyConstants[3];
-  CryptonSubstitute(x, y, z, w, key, false);
+  CryptonSubstitute(x, y, z, w, g_cryptonEncryptKey, false);
 
-  a = key[4];
-  b = key[5];
-  c = key[6];
-  d = key[7];
+  a = g_cryptonEncryptKey[4];
+  b = g_cryptonEncryptKey[5];
+  c = g_cryptonEncryptKey[6];
+  d = g_cryptonEncryptKey[7];
   x = (a & 0xFC3FCFF3u) ^ (b & 0xF3FC3FCFu) ^ (c & 0xCFF3FC3Fu) ^ (d & 0x3FCFF3FCu) ^ g_cryptonKeyConstants[4];
   y = (a & 0xF3FC3FCFu) ^ (b & 0xCFF3FC3Fu) ^ (c & 0x3FCFF3FCu) ^ (d & 0xFC3FCFF3u) ^ g_cryptonKeyConstants[5];
   z = (a & 0xCFF3FC3Fu) ^ (b & 0x3FCFF3FCu) ^ (c & 0xFC3FCFF3u) ^ (d & 0xF3FC3FCFu) ^ g_cryptonKeyConstants[6];
   w = (a & 0x3FCFF3FCu) ^ (b & 0xFC3FCFF3u) ^ (c & 0xF3FC3FCFu) ^ (d & 0xCFF3FC3Fu) ^ g_cryptonKeyConstants[7];
-  CryptonSubstitute(x, y, z, w, key + 4, true);
+  CryptonSubstitute(x, y, z, w, g_cryptonEncryptKey + 4, true);
 
-  const unsigned int first = key[0] ^ key[1] ^ key[2] ^ key[3];
-  const unsigned int second = key[4] ^ key[5] ^ key[6] ^ key[7];
+  const unsigned int first = g_cryptonEncryptKey[0] ^ g_cryptonEncryptKey[1] ^ g_cryptonEncryptKey[2] ^ g_cryptonEncryptKey[3];
+  const unsigned int second = g_cryptonEncryptKey[4] ^ g_cryptonEncryptKey[5] ^ g_cryptonEncryptKey[6] ^ g_cryptonEncryptKey[7];
   for (unsigned int i = 0; i < 4; ++i) {
-    key[i] ^= second;
-    key[i + 4] ^= first;
+    g_cryptonEncryptKey[i] ^= second;
+    g_cryptonEncryptKey[i + 4] ^= first;
   }
 
-  key[8] = CryptonRotate(key[0], 8);
-  key[9] = key[1] ^ 0x01010101u;
-  key[10] = CryptonRotate(key[2], 16);
-  key[11] = key[3] ^ 0x01010101u;
-  key[12] = key[4] ^ 0x01010101u;
-  key[13] = CryptonRotate(key[5], 16);
-  key[14] = key[6] ^ 0x01010101u;
-  key[15] = CryptonRotate(key[7], 24);
-  key[16] = key[8] ^ 0x02020202u;
-  key[17] = CryptonRotate(key[9], 24);
-  key[18] = key[10] ^ 0x02020202u;
-  key[19] = CryptonRotate(key[11], 8);
-  key[20] = CryptonRotate(key[12], 8);
-  key[21] = key[13] ^ 0x02020202u;
-  key[22] = CryptonRotate(key[14], 16);
-  key[23] = key[15] ^ 0x02020202u;
-  key[24] = CryptonRotate(key[16], 16);
-  key[25] = key[17] ^ 0x04040404u;
-  key[26] = CryptonRotate(key[18], 24);
-  key[27] = key[19] ^ 0x04040404u;
-  key[28] = key[20] ^ 0x04040404u;
-  key[29] = CryptonRotate(key[21], 24);
-  key[30] = key[22] ^ 0x04040404u;
-  key[31] = CryptonRotate(key[23], 8);
-  key[32] = key[24] ^ 0x08080808u;
-  key[33] = CryptonRotate(key[25], 8);
-  key[34] = key[26] ^ 0x08080808u;
-  key[35] = CryptonRotate(key[27], 16);
-  key[36] = CryptonRotate(key[28], 16);
-  key[37] = key[29] ^ 0x08080808u;
-  key[38] = CryptonRotate(key[30], 24);
-  key[39] = key[31] ^ 0x08080808u;
-  key[40] = CryptonRotate(key[32], 24);
-  key[41] = key[33] ^ 0x10101010u;
-  key[42] = CryptonRotate(key[34], 8);
-  key[43] = key[35] ^ 0x10101010u;
-  key[44] = key[36] ^ 0x10101010u;
-  key[45] = CryptonRotate(key[37], 8);
-  key[46] = key[38] ^ 0x10101010u;
-  key[47] = CryptonRotate(key[39], 16);
-  key[48] = key[40] ^ 0x20202020u;
-  key[49] = CryptonRotate(key[41], 16);
-  key[50] = key[42] ^ 0x20202020u;
-  key[51] = CryptonRotate(key[43], 24);
+  g_cryptonEncryptKey[8] = CryptonRotate(g_cryptonEncryptKey[0], 8);
+  g_cryptonEncryptKey[9] = g_cryptonEncryptKey[1] ^ 0x01010101u;
+  g_cryptonEncryptKey[10] = CryptonRotate(g_cryptonEncryptKey[2], 16);
+  g_cryptonEncryptKey[11] = g_cryptonEncryptKey[3] ^ 0x01010101u;
+  g_cryptonEncryptKey[12] = g_cryptonEncryptKey[4] ^ 0x01010101u;
+  g_cryptonEncryptKey[13] = CryptonRotate(g_cryptonEncryptKey[5], 16);
+  g_cryptonEncryptKey[14] = g_cryptonEncryptKey[6] ^ 0x01010101u;
+  g_cryptonEncryptKey[15] = CryptonRotate(g_cryptonEncryptKey[7], 24);
+  g_cryptonEncryptKey[16] = g_cryptonEncryptKey[8] ^ 0x02020202u;
+  g_cryptonEncryptKey[17] = CryptonRotate(g_cryptonEncryptKey[9], 24);
+  g_cryptonEncryptKey[18] = g_cryptonEncryptKey[10] ^ 0x02020202u;
+  g_cryptonEncryptKey[19] = CryptonRotate(g_cryptonEncryptKey[11], 8);
+  g_cryptonEncryptKey[20] = CryptonRotate(g_cryptonEncryptKey[12], 8);
+  g_cryptonEncryptKey[21] = g_cryptonEncryptKey[13] ^ 0x02020202u;
+  g_cryptonEncryptKey[22] = CryptonRotate(g_cryptonEncryptKey[14], 16);
+  g_cryptonEncryptKey[23] = g_cryptonEncryptKey[15] ^ 0x02020202u;
+  g_cryptonEncryptKey[24] = CryptonRotate(g_cryptonEncryptKey[16], 16);
+  g_cryptonEncryptKey[25] = g_cryptonEncryptKey[17] ^ 0x04040404u;
+  g_cryptonEncryptKey[26] = CryptonRotate(g_cryptonEncryptKey[18], 24);
+  g_cryptonEncryptKey[27] = g_cryptonEncryptKey[19] ^ 0x04040404u;
+  g_cryptonEncryptKey[28] = g_cryptonEncryptKey[20] ^ 0x04040404u;
+  g_cryptonEncryptKey[29] = CryptonRotate(g_cryptonEncryptKey[21], 24);
+  g_cryptonEncryptKey[30] = g_cryptonEncryptKey[22] ^ 0x04040404u;
+  g_cryptonEncryptKey[31] = CryptonRotate(g_cryptonEncryptKey[23], 8);
+  g_cryptonEncryptKey[32] = g_cryptonEncryptKey[24] ^ 0x08080808u;
+  g_cryptonEncryptKey[33] = CryptonRotate(g_cryptonEncryptKey[25], 8);
+  g_cryptonEncryptKey[34] = g_cryptonEncryptKey[26] ^ 0x08080808u;
+  g_cryptonEncryptKey[35] = CryptonRotate(g_cryptonEncryptKey[27], 16);
+  g_cryptonEncryptKey[36] = CryptonRotate(g_cryptonEncryptKey[28], 16);
+  g_cryptonEncryptKey[37] = g_cryptonEncryptKey[29] ^ 0x08080808u;
+  g_cryptonEncryptKey[38] = CryptonRotate(g_cryptonEncryptKey[30], 24);
+  g_cryptonEncryptKey[39] = g_cryptonEncryptKey[31] ^ 0x08080808u;
+  g_cryptonEncryptKey[40] = CryptonRotate(g_cryptonEncryptKey[32], 24);
+  g_cryptonEncryptKey[41] = g_cryptonEncryptKey[33] ^ 0x10101010u;
+  g_cryptonEncryptKey[42] = CryptonRotate(g_cryptonEncryptKey[34], 8);
+  g_cryptonEncryptKey[43] = g_cryptonEncryptKey[35] ^ 0x10101010u;
+  g_cryptonEncryptKey[44] = g_cryptonEncryptKey[36] ^ 0x10101010u;
+  g_cryptonEncryptKey[45] = CryptonRotate(g_cryptonEncryptKey[37], 8);
+  g_cryptonEncryptKey[46] = g_cryptonEncryptKey[38] ^ 0x10101010u;
+  g_cryptonEncryptKey[47] = CryptonRotate(g_cryptonEncryptKey[39], 16);
+  g_cryptonEncryptKey[48] = g_cryptonEncryptKey[40] ^ 0x20202020u;
+  g_cryptonEncryptKey[49] = CryptonRotate(g_cryptonEncryptKey[41], 16);
+  g_cryptonEncryptKey[50] = g_cryptonEncryptKey[42] ^ 0x20202020u;
+  g_cryptonEncryptKey[51] = CryptonRotate(g_cryptonEncryptKey[43], 24);
 
   for (unsigned int group = 0; group < 13; ++group) {
     for (unsigned int lane = 0; lane < 4; ++lane) {
-      g_cryptonDecryptKey[(12 - group) * 4 + lane] = CryptonKeyTransform(key[group * 4 + lane], (lane + (group & 1 ? 3 : 0)) & 3);
+      g_cryptonDecryptKey[(12 - group) * 4 + lane] = CryptonKeyTransform(g_cryptonEncryptKey[group * 4 + lane], (lane + (group & 1 ? 3 : 0)) & 3);
     }
   }
   for (unsigned int lane = 0; lane < 4; ++lane) {
     g_cryptonDecryptKey[48 + lane] = CryptonKeyTransform(g_cryptonDecryptKey[48 + lane], lane);
   }
   for (unsigned int lane = 0; lane < 4; ++lane) {
-    key[48 + lane] = CryptonKeyTransform(key[48 + lane], lane);
+    g_cryptonEncryptKey[48 + lane] = CryptonKeyTransform(g_cryptonEncryptKey[48 + lane], lane);
   }
   return g_cryptonDecryptKeys;
 }
