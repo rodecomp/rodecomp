@@ -439,7 +439,8 @@ private:
   bool m_encrypted;
 };
 
-void ApplyServiceOption(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage);
+__declspec(noinline) void NotifyServiceOption(unsigned char enabled, int enabledMessage, int disabledMessage, int color);
+__declspec(noinline) void ApplyServiceOption(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage);
 
 // OFFSET: 0x006C48C0
 // FUNCTION: fn_45461
