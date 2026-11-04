@@ -564,9 +564,9 @@ const char* CSession::GatName2RswName(const char* gatName) {
 // OFFSET: 0x00DDEF40
 // FUNCTION: fn_23415
 ITEM_INFO CSession::FindItem1760ByItemId(const char* itemId) const {
-  for (const ITEM_INFO& item : this->unknown_1760) {
-    if (item.itemId == itemId) {
-      return item;
+  for (std::list<ITEM_INFO>::const_iterator it = this->unknown_1760.begin(); it != this->unknown_1760.end(); ++it) {
+    if (it->itemId == itemId) {
+      return *it;
     }
   }
 
@@ -1570,9 +1570,9 @@ std::uint16_t CSession::SumItem1720Unknown006C() const {
 // OFFSET: 0x00DE0620
 // FUNCTION: fn_23456
 ITEM_INFO CSession::FindItem1720ByItemId(const char* itemId) const {
-  for (const ITEM_INFO& item : this->unknown_1720) {
-    if (item.itemId == itemId) {
-      return item;
+  for (std::list<ITEM_INFO>::const_iterator it = this->unknown_1720.begin(); it != this->unknown_1720.end(); ++it) {
+    if (it->itemId == itemId) {
+      return *it;
     }
   }
 
