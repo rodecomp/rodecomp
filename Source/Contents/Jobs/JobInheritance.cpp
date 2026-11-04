@@ -1400,7 +1400,7 @@ int CSession::IsPlayerJobId(int job) const {
 
 // OFFSET: 0x00E1E050
 // FUNCTION: fn_23892
-bool CSession::IsSuperNoviceJob(int job) const {
+__declspec(noinline) bool CSession::IsSuperNoviceJob(int job) const {
   if (job == JT_SUPERNOVICE || job == JT_SUPERNOVICE_B || job == JT_PORING_SNOVICE || job == JT_PORING_SNOVICE_B) {
     return true;
   }
@@ -1584,7 +1584,7 @@ int CSession::IsNewMercenaryJob(int job) const {
 
 // OFFSET: 0x00E1E020
 // FUNCTION: fn_23891
-bool CSession::IsSuperNovice2Job(int job) const {
+__declspec(noinline) bool CSession::IsSuperNovice2Job(int job) const {
   return job == JT_SUPERNOVICE2 || job == JT_SUPERNOVICE2_B || job == JT_PORING_SNOVICE2 || job == JT_PORING_SNOVICE2_B;
 }
 
