@@ -1,30 +1,12 @@
 #include "Client/Input/InputCharset.h"
 #include "Render/Text/TextContext.h"
+#include "UI/Text/ColoredText.h"
 #include "UI/Text/PixelTextWrapping.h"
 #include "UI/Window/UIWindow.h"
 #include "Network/TextEncoding.h"
 
 #include <cstring>
 #include <mbstring.h>
-
-namespace {
-  // INLINED
-  unsigned Digit(unsigned char value) {
-    if (value >= '0' && value <= '9') {
-      return value - '0';
-    }
-
-    if (value >= 'a' && value <= 'f') {
-      return value - 'a' + 10;
-    }
-
-    if (value >= 'A' && value <= 'F') {
-      return value - 'A' + 10;
-    }
-
-    return 0;
-  }
-}
 
 // OFFSET: 0x00A82310
 // FUNCTION: fn_16993
@@ -33,23 +15,9 @@ void UIWindow::WrapPixelText(const char* text, std::vector<std::string>& lines, 
     return;
   }
 
-  const auto measure = [&](const char* part, int bytes) {
-    if (bytes == 0) {
-      bytes = static_cast<int>(std::strlen(part));
-    }
-
-    if (bytes == 0) {
-      return 0;
-    }
-
-    TextContext context(*this->geometry.surface);
-    context.SetFont(0, 12, 0, 0);
-    return static_cast<int>(context.Measure(part, bytes).cx);
-  };
-
   const int bytes = static_cast<int>(std::strlen(text));
 
-  if (measure(text, bytes) <= 0) {
+  if (this->TextWidth(text, bytes, 0, 12, 0, 0) <= 0) {
     return;
   }
 
@@ -76,11 +44,11 @@ void UIWindow::WrapPixelText(const char* text, std::vector<std::string>& lines, 
       const char* next = g_serverLanguage->NextChar(current, static_cast<int>(end - current));
       const int length = static_cast<int>(next - current);
 
-      extent = (extent + measure(current, length));
+      extent = (extent + this->TextWidth(current, length, 0, 12, 0, 0));
       count = (count + length);
 
       if (length == 1 && (*current == '\r' || *current == '\n')) {
-        measure("\n", 1);
+        this->TextWidth("\n", 1, 0, 12, 0, 0);
         newline = true;
 
         if (current + 1 < end && current[1] == '\n') {
@@ -91,11 +59,23 @@ void UIWindow::WrapPixelText(const char* text, std::vector<std::string>& lines, 
       }
 
       if (*current == '^') {
-        const unsigned color = (Digit(current[2]) + 16 * Digit(current[1])) | ((Digit(current[4]) + 16 * Digit(current[3])) << 8) |
-                               ((Digit(current[6]) + 16 * Digit(current[5])) << 16);
+        const unsigned char red = static_cast<unsigned char>(g_hexDigits[current[1]] * 16 + g_hexDigits[current[2]]);
+        const unsigned char green = static_cast<unsigned char>(g_hexDigits[current[3]] * 16 + g_hexDigits[current[4]]);
+        const unsigned char blue = static_cast<unsigned char>(g_hexDigits[current[5]] * 16 + g_hexDigits[current[6]]);
+        const std::uint32_t color = red | (green << 8) | (blue << 16);
 
-        if (color != 0 || std::strncmp(current, "^000000", 7) == 0) {
-          extent = (extent - measure("^000000", 7));
+        if (color != 0) {
+          extent = (extent - this->TextWidth("^000000", 7, 0, 12, 0, 0));
+        } else {
+          char* code = new char[8];
+          std::memcpy(code, current, 7);
+          code[7] = '\0';
+
+          if (std::strcmp(code, "^000000") == 0) {
+            extent = (extent - this->TextWidth("^000000", 7, 0, 12, 0, 0));
+          }
+
+          delete[] code;
         }
       }
 
@@ -104,8 +84,8 @@ void UIWindow::WrapPixelText(const char* text, std::vector<std::string>& lines, 
 
         if (close) {
           const int bracketBytes = static_cast<int>(reinterpret_cast<const char*>(close) - current) + 1;
-          const int bracketWidth = measure(current, bracketBytes);
-          const int characterWidth = measure(current, length);
+          const int bracketWidth = this->TextWidth(current, bracketBytes, 0, 12, 0, 0);
+          const int characterWidth = this->TextWidth(current, length, 0, 12, 0, 0);
 
           if (((extent + bracketWidth) - characterWidth) > width && bracketWidth <= width) {
             count = previous;
@@ -126,16 +106,23 @@ void UIWindow::WrapPixelText(const char* text, std::vector<std::string>& lines, 
       continue;
     }
 
-    std::string line(begin, static_cast<std::size_t>(count));
+    char* buffer = new char[count + 1];
+    std::memcpy(buffer, begin, count);
 
     if (newline) {
-      line[static_cast<std::size_t>(count - 1)] = '\0';
-      line.resize(std::strlen(line.c_str()));
-      lines.push_back(line.empty() ? " " : line);
+      buffer[count - 1] = '\0';
+
+      if (std::strlen(buffer) == 0) {
+        lines.push_back(" ");
+      } else {
+        lines.push_back(buffer);
+      }
     } else {
-      lines.push_back(std::move(line));
+      buffer[count] = '\0';
+      lines.push_back(buffer);
     }
 
+    delete[] buffer;
     offset = (offset + count);
   }
 }
