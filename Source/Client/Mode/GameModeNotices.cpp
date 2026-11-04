@@ -3827,7 +3827,7 @@ struct VendingItemRecord2 {
 #pragma pack(pop)
 
 // INLINED
-static void FillVendingItem(ITEM_INFO& item, const VendingItemRecord2& record) {
+static __forceinline void FillVendingItem(ITEM_INFO& item, const VendingItemRecord2& record) {
   item.unknown_0000[1] = record.index;
   item.unknown_0014[0] = record.price;
   item.unknown_0014[1] = record.price;
