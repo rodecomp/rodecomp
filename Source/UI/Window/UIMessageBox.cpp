@@ -265,46 +265,8 @@ UIMessageBox::~UIMessageBox() = default;
 // OFFSET: 0x008B8E60
 // FUNCTION: fn_11768
 void UIMessageBox::Paint() {
-  const auto load = [&](const char* name) { return static_cast<CBitmapRes*>(ResourceMgr::Instance().Load((std::string(prefix) + name).c_str())); };
-  int leftWidth = 0;
-  int rightWidth = 0;
-  int titleHeight = 0;
-  const int width = this->geometry.width;
-  const int height = this->geometry.height;
-
-  if (const auto* left = load("basic_interface\\titlebar_left.bmp")) {
-    this->DrawBitmap(0, 0, &left->image, false);
-    leftWidth = left->image.width;
-  }
-
-  if (const auto* right = load("basic_interface\\titlebar_right.bmp")) {
-    rightWidth = right->image.width;
-    this->DrawBitmap(width - rightWidth, 0, &right->image, false);
-  }
-
-  if (const auto* middle = load("basic_interface\\titlebar_mid.bmp")) {
-    titleHeight = middle->image.height;
-    const int tileWidth = middle->image.width;
-    const int extent = width - rightWidth - leftWidth;
-    const int tiles = extent / tileWidth + (extent % tileWidth != 0);
-
-    for (int index = 0; index < tiles; ++index) {
-      this->DrawBitmap(leftWidth, 0, &middle->image, false);
-      leftWidth += tileWidth;
-    }
-  }
-
-  this->DrawTextAt(19, titleHeight - 13, this->caption.c_str(), 0, 0, 12, 0xFFFFFF, 0, 0);
-  this->DrawTextAt(18, titleHeight - 14, this->caption.c_str(), 0, 0, 12, 0, 0, 0);
-  const auto* base = load("basic_interface\\sys_base_off.bmp");
-  this->DrawBitmap(3, 3, base ? &base->image : nullptr, true);
-
-  const auto border = Palette(ResourceMgr::Instance(), 14, 6);
-  DrawRoundedBorder(*this, 0, 17, width, height - 17, border);
-  this->FillRegion(0, 17, width, 5, border);
-  const auto background = Palette(ResourceMgr::Instance(), 2, 2);
-  this->FillRegion(1, 17, width - 2, height - 19, background);
-  this->FillRegion(2, height - 2, width - 4, 1, background);
+  this->DrawTitleBar(true, this->caption.c_str(), 0);
+  this->DrawPanelBackground(17, 0, "");
 }
 
 // OFFSET: 0x008AC410
