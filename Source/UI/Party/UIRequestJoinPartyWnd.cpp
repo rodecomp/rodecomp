@@ -1,4 +1,5 @@
 #include "Client/Mode/CMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Contents/MessageTable.h"
 #include "Client/Mode/ModeEvents.h"
 #include "Client/Session.h"
@@ -163,7 +164,7 @@ int UIRequestJoinPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       g_requestJoinPartyMgr->Block(this->accountId);
     }
 
-    static_cast<CMode*>(g_charViewMode)->SendMsg(264, this->characterId, value == 541, reinterpret_cast<std::intptr_t>(&this->accountId), 0);
+    g_modeMgr.gameMode->SendMsg(264, this->characterId, value == 541, reinterpret_cast<std::intptr_t>(&this->accountId), 0);
     g_requestJoinPartyMgr->Advance();
     this->block->SetChecked(0);
 
