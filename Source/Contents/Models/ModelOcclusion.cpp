@@ -10,7 +10,7 @@ namespace {
 
   // OFFSET: 0x00553850
   // FUNCTION: fn_02019
-  bool Intersects(const float* ray, const OrientedBounds& bounds) {
+  __declspec(noinline) bool Intersects(const float* ray, const OrientedBounds& bounds) {
     const float delta[3] = {bounds.center[0] - ray[0], bounds.center[1] - ray[1], bounds.center[2] - ray[2]};
     float near = -999999.0f;
     float far = 999999.0f;
