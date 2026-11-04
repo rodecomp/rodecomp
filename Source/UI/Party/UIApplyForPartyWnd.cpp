@@ -9,6 +9,7 @@
 #include "Render/Text/TextContext.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
+#include "Resource/TextureNames.h"
 #include "UI/Text/TextFitting.h"
 #include "UI/Text/TextWrapping.h"
 #include "UI/Party/UIApplyForPartyWnd.h"
@@ -102,40 +103,10 @@ void UIApplyForPartyWnd::SetInfo(CAdvenPartyInfo value) {
 // OFFSET: 0x007BF5A0
 // FUNCTION: fn_09303
 void UIApplyForPartyWnd::Paint() {
-  this->geometry.surface->Fill(nullptr, 0xFFFF00FFu);
-  const auto load = [&](const char* name) { return static_cast<CBitmapRes*>(ResourceMgr::Instance().Load((std::string(prefix) + name).c_str())); };
-  const auto* background = load("UIadventurerAgency\\bg_agency_register.bmp");
+  this->ClearSurface(0xFFFF00FF);
+  const auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\UIadventurerAgency\\bg_agency_register.bmp")));
   this->DrawBitmap(0, 0, background ? &background->image : nullptr, false);
-  int leftWidth = 0;
-  int rightWidth = 0;
-  int titleHeight = 0;
-
-  if (const auto* left = load("basic_interface\\titlebar_left.bmp")) {
-    this->DrawBitmap(0, 0, &left->image, false);
-    leftWidth = left->image.width;
-  }
-
-  if (const auto* right = load("basic_interface\\titlebar_right.bmp")) {
-    rightWidth = right->image.width;
-    this->DrawBitmap(this->geometry.width - rightWidth, 0, &right->image, false);
-  }
-
-  if (const auto* middle = load("basic_interface\\titlebar_mid.bmp")) {
-    titleHeight = middle->image.height;
-    const int extent = this->geometry.width - rightWidth - leftWidth;
-    const int tiles = extent / middle->image.width + (extent % middle->image.width != 0);
-
-    for (int index = 0; index < tiles; ++index) {
-      this->DrawBitmap(leftWidth, 0, &middle->image, false);
-      leftWidth += middle->image.width;
-    }
-  }
-
-  const char* caption = LookupMessage(3368);
-  this->DrawTextAt(19, titleHeight - 13, caption, 0, 0, 12, 0xFFFFFF, 0, 0);
-  this->DrawTextAt(18, titleHeight - 14, caption, 0, 0, 12, 0, 0, 0);
-  const auto* base = load("basic_interface\\sys_base_off.bmp");
-  this->DrawBitmap(3, 3, base ? &base->image : nullptr, true);
+  this->DrawTitleBar(true, LookupMessage(3368), 0);
   const auto text = [&](int x, int y, const char* value) { this->DrawTextAt(x, y, value, 0, 0, 12, 0, 0, 0); };
   text(10, 25, LookupMessage(3415));
   const std::string fitted = FitText(*this->geometry.surface, this->info.characterName, 119);
@@ -147,15 +118,14 @@ void UIApplyForPartyWnd::Paint() {
   text(10, 73, LookupMessage(3369));
   text(60, 73, UIPartyInfoWnd::TypeName(this->info.type));
   text(10, 97, LookupMessage(504));
-  const char* jobs[] = {"def", "heal", "atk", "buf"};
-  const bool selected[] = {this->info.tanker, this->info.healer, this->info.dealer, this->info.assist};
-
-  for (int index = 0; index < 4; ++index) {
-    const std::string name = std::string("UIadventurerAgency\\btn_job_") + jobs[index] + (selected[index] ? "_on.bmp" : "_off.bmp");
-    const auto* icon = load(name.c_str());
-    this->DrawBitmap(60 + index * 18, 95, icon ? &icon->image : nullptr, false);
-  }
-
+  const auto job = [&](int x, bool selected, const char* selectedImage, const char* unselectedImage) {
+    const auto* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(selected == 1 ? selectedImage : unselectedImage)));
+    this->DrawBitmap(x, 95, icon ? &icon->image : nullptr, false);
+  };
+  job(60, this->info.tanker, "유저인터페이스\\UIadventurerAgency\\btn_job_def_on.bmp", "유저인터페이스\\UIadventurerAgency\\btn_job_def_off.bmp");
+  job(78, this->info.healer, "유저인터페이스\\UIadventurerAgency\\btn_job_heal_on.bmp", "유저인터페이스\\UIadventurerAgency\\btn_job_heal_off.bmp");
+  job(96, this->info.dealer, "유저인터페이스\\UIadventurerAgency\\btn_job_atk_on.bmp", "유저인터페이스\\UIadventurerAgency\\btn_job_atk_off.bmp");
+  job(114, this->info.assist, "유저인터페이스\\UIadventurerAgency\\btn_job_buf_on.bmp", "유저인터페이스\\UIadventurerAgency\\btn_job_buf_off.bmp");
   text(10, 121, LookupMessage(3359));
   text(60, 121, this->info.memo.c_str());
 }
