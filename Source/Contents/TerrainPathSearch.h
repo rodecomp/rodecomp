@@ -21,7 +21,7 @@ public:
   std::vector<PathNode*>& Nodes() {
     return this->nodes;
   }
-  void Push(PathNode* node);
+  __declspec(noinline) void Push(PathNode* node);
 
   /* 0000 */ std::vector<PathNode*> nodes;
 };
@@ -43,11 +43,11 @@ public:
   /* 1098 */ CPriorityQueue openList;
 
   void Clear();
-  void Reset();
+  __declspec(noinline) void Reset();
   bool CanMove(int startX, int startY, int targetX, int targetY, char flag) const;
   bool Walkable(int column, int row) const;
-  PathNode* FindOrCreateNode(int x, int y);
-  bool AddNeighbor(PathNode* current, int cost, int nextX, int nextY, int metadata);
+  __declspec(noinline) PathNode* FindOrCreateNode(int x, int y);
+  __declspec(noinline) bool AddNeighbor(PathNode* current, int cost, int nextX, int nextY, int metadata);
   bool FindPath(
     int startTick, int startX, int startY, int currentFractionX, int currentFractionY, int destX, int destY, int speed, MovementRouteInterpolation& route,
     char flag
