@@ -94,19 +94,30 @@ void UIListBoxEx::Clear() {
 void UIListBoxEx::Refresh() {
   const int visible = this->geometry.height / this->lineHeight;
   const int count = static_cast<int>(this->lines.size());
-  const int overflow = std::max((count - visible), 0);
+  int overflow = count - visible;
 
-  this->verticalOverflow = overflow != 0;
-  this->verticalBar->maximum = overflow != 0 ? (this->bottomMargin + overflow) : 0;
-  this->verticalBar->total = count;
-  this->verticalBar->visible = visible;
-  this->verticalBar->Invalidate();
-
-  if (this->verticalBar->position > this->verticalBar->maximum) {
-    this->verticalBar->position = this->verticalBar->maximum;
+  if (overflow < 0) {
+    overflow = 0;
   }
 
-  this->verticalBar->Invalidate();
+  this->verticalOverflow = overflow != 0;
+  auto* bar = this->verticalBar;
+
+  if (overflow == 0) {
+    bar->maximum = 0;
+  } else {
+    bar->maximum = this->bottomMargin + overflow;
+  }
+
+  bar->total = count;
+  bar->visible = visible;
+  bar->Invalidate();
+
+  if (bar->position > bar->maximum) {
+    bar->position = bar->maximum;
+  }
+
+  bar->Invalidate();
 }
 
 // INLINED
