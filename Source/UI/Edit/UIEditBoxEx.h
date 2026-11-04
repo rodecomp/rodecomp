@@ -13,9 +13,9 @@
 
 struct EditLine {
   /* 0000 */ std::string text;
-  /* 0018 */ unsigned char unknown_0018;
-  /* 001C */ int selectionBegin;
-  /* 0020 */ int selectionEnd;
+  /* 0018 */ unsigned char unknown_0018 = 0;
+  /* 001C */ int selectionBegin = 0;
+  /* 0020 */ int selectionEnd = 0;
 };
 
 class CUIEditCtrlEx : public UIEditCtrl3 {
@@ -31,7 +31,7 @@ public:
 
   void sub_860C60(std::vector<std::string>* lines);
 
-  void RefreshPlaceholder();
+  __declspec(noinline) void RefreshPlaceholder();
   void HandleKeyDown(int key, std::intptr_t lparam);
   void ResetDragState();
   void DrawCaret(int x, int y);

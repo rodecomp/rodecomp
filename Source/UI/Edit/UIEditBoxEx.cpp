@@ -205,8 +205,8 @@ void CUIEditCtrlEx::Synchronize() {
 
   const std::string prefix = g_serverLanguage->Prefix(false);
   const std::string fullText = prefix + this->text;
-  std::vector<std::string> lines;
   std::vector<bool> breaks;
+  std::vector<std::string> lines;
   if (reinterpret_cast<const unsigned char*>(&this->unknown_0184)[1] == 0) {
     lines.push_back(fullText);
     breaks.push_back(false);
@@ -217,110 +217,89 @@ void CUIEditCtrlEx::Synchronize() {
   }
 
   this->lines.clear();
-  if (lines.empty()) {
-    this->UpdateScrollBar();
-    this->Invalidate();
-    return;
-  }
-
-  int anchor = 0;
-  int cursor = 0;
-  g_serverLanguage->Selection(anchor, cursor);
-  int selStart = anchor;
-  int selEnd = cursor;
-  if (selStart > selEnd) {
-    std::swap(selStart, selEnd);
-  }
-
-  int currentOffset = 0;
-  for (const std::string& rawLine : lines) {
-    EditLine line;
-    auto crPos = rawLine.find("\r\n");
-    bool hasCR = crPos != std::string::npos;
-    if (hasCR) {
-      line.text = rawLine.substr(0, crPos);
-    } else {
-      line.text = rawLine;
+  if (!lines.empty()) {
+    int anchor = 0;
+    int cursor = 0;
+    g_serverLanguage->Selection(anchor, cursor);
+    if (anchor > cursor) {
+      std::swap(anchor, cursor);
     }
-    line.unknown_0018 = hasCR ? 1 : 0;
 
-    int lineLen = static_cast<int>(line.text.size());
-    int rawLineEnd = currentOffset + static_cast<int>(rawLine.size());
+    int currentOffset = 0;
+    for (const std::string& rawLine : lines) {
+      std::size_t crPos = rawLine.find("\r\n");
+      EditLine line;
+      line.unknown_0018 = crPos != std::string::npos;
+      line.text = crPos != std::string::npos ? rawLine.substr(0, crPos) : rawLine;
 
-    int begin = 0;
-    int end = 0;
-    if (static_cast<unsigned>(selStart) <= static_cast<unsigned>(rawLineEnd)) {
-      int val = selStart - currentOffset;
-      if (lineLen < val) {
-        begin = lineLen;
-      } else {
-        begin = std::max(0, val);
+      int lineLen = static_cast<int>(line.text.size());
+      std::size_t lineEnd = currentOffset + rawLine.size();
+      if (static_cast<std::size_t>(anchor) <= lineEnd) {
+        int offset = anchor - currentOffset;
+        if (lineLen < offset) {
+          line.selectionBegin = lineLen;
+        } else {
+          line.selectionBegin = std::max(offset, 0);
+        }
+        line.selectionEnd = lineLen;
       }
-      end = lineLen;
+      if (static_cast<std::size_t>(cursor) <= lineEnd) {
+        int offset = cursor - currentOffset;
+        if (lineLen < offset) {
+          line.selectionEnd = lineLen;
+        } else {
+          line.selectionEnd = std::max(offset, 0);
+        }
+      }
+      currentOffset = static_cast<int>(lineEnd);
+
+      this->lines.push_back(line);
     }
-    if (static_cast<unsigned>(selEnd) <= static_cast<unsigned>(rawLineEnd)) {
-      int val = selEnd - currentOffset;
-      if (lineLen >= val) {
-        end = std::max(0, val);
+
+    if (this->lines.back().unknown_0018 != 0) {
+      this->lines.emplace_back();
+    }
+
+    int remaining = cursor + static_cast<int>(prefix.size());
+    this->line = 0;
+    this->column = 0;
+    for (std::size_t i = 0; i < this->lines.size(); ++i) {
+      int fullLen = static_cast<int>(this->lines[i].text.size()) + (this->lines[i].unknown_0018 ? 2 : 0);
+      if (remaining - fullLen <= 0) {
+        this->column = remaining;
+        this->line = static_cast<int>(i);
+        break;
+      }
+      remaining -= fullLen;
+    }
+
+    const EditLine& current = this->lines[this->line];
+    if (current.unknown_0018 != 0 || this->unknown_01DC == 0) {
+      int fullLen = static_cast<int>(current.text.size()) + (current.unknown_0018 ? 2 : 0);
+      if (remaining == fullLen && static_cast<std::size_t>(this->line) < this->lines.size() - 1) {
+        this->column = 0;
+        this->line++;
       }
     }
-    line.selectionBegin = begin;
-    line.selectionEnd = end;
 
-    currentOffset = rawLineEnd;
-    this->lines.push_back(line);
-  }
+    const int candidateCursor = g_serverLanguage->compositionCursor;
+    if (candidateCursor != 0) {
+      this->column += candidateCursor;
+      int cursorX = 0;
+      if (this->column > 0) {
+        cursorX = this->TextWidth(this->lines[this->line].text.c_str(), this->column, 0, 12, 0, 0);
+      }
 
-  if (this->lines.back().unknown_0018 != 0) {
-    EditLine emptyLine{};
-    this->lines.push_back(emptyLine);
-  }
-
-  this->line = 0;
-  this->column = 0;
-  int remaining = std::max(anchor, cursor) + static_cast<int>(prefix.size());
-  int lineOffset = remaining;
-  for (std::size_t i = 0; i < this->lines.size(); ++i) {
-    int cr = this->lines[i].unknown_0018 ? 2 : 0;
-    int lineLen = static_cast<int>(this->lines[i].text.size());
-    int fullLen = lineLen + cr;
-    if (remaining - fullLen <= 0) {
-      this->column = remaining;
-      this->line = static_cast<int>(i);
-      lineOffset = remaining;
-      break;
+      int end = std::max(anchor, cursor) + candidateCursor + static_cast<int>(prefix.size());
+      int readingOffset = end - currentOffset;
+      int readingX = 0;
+      if (readingOffset > 0) {
+        readingX = this->TextWidth(this->lines[this->line].text.c_str(), readingOffset, 0, 12, 0, 0);
+      }
+      int delta = std::max(cursorX - readingX, 2);
+      this->MoveCandidateWindow(cursorX + 2 + delta);
+      this->MoveReadingWindow(readingX);
     }
-    remaining -= fullLen;
-    lineOffset = remaining;
-  }
-
-  const EditLine& current = this->lines[this->line];
-  if (current.unknown_0018 != 0 || this->unknown_01DC == 0) {
-    int cr = current.unknown_0018 ? 2 : 0;
-    int fullLen = static_cast<int>(current.text.size()) + cr;
-    if (lineOffset == fullLen && this->line < static_cast<int>(this->lines.size()) - 1) {
-      this->column = 0;
-      this->line++;
-    }
-  }
-
-  const int candidateCursor = g_serverLanguage->compositionCursor;
-  if (candidateCursor != 0) {
-    this->column += candidateCursor;
-    int cursorX = 0;
-    if (this->column > 0) {
-      cursorX = this->TextWidth(this->lines[this->line].text.c_str(), this->column, 0, 12, 0, 0);
-    }
-
-    int end = std::max(anchor, cursor) + candidateCursor + static_cast<int>(prefix.size());
-    int readingOffset = end - currentOffset;
-    int readingX = 0;
-    if (readingOffset > 0) {
-      readingX = this->TextWidth(this->lines[this->line].text.c_str(), readingOffset, 0, 12, 0, 0);
-    }
-    int delta = std::max(cursorX - readingX, 2);
-    this->MoveCandidateWindow(cursorX + 2 + delta);
-    this->MoveReadingWindow(readingX);
   }
 
   this->UpdateScrollBar();
