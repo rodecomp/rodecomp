@@ -4,11 +4,11 @@
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
+#include "Resource/TextureNames.h"
 #include "UI/Text/TextFitting.h"
 #include "UI/Party/UIPartyInfoWnd.h"
 #include "UI/Window/UIWindowMgr.h"
-
-#include <cstdio>
+#include "Utility/Text/FormatString.h"
 
 // OFFSET: 0x007BAE20
 // FUNCTION: fn_09277
@@ -42,7 +42,7 @@ void UIPartyInfoWnd::SetInfo(const CAdvenPartyInfo& value) {
   this->m_drawLabel = 1;
   this->memo = value.memo;
   char text[10] = {};
-  _snprintf_s(text, sizeof(text), _TRUNCATE, "%d~%d", value.minimumLevel, value.maximumLevel);
+  StringFormat(text, sizeof(text), _TRUNCATE, "%d~%d", value.minimumLevel, value.maximumLevel);
   this->levels = text;
   this->tanker = value.tanker;
   this->healer = value.healer;
