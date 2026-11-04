@@ -1892,10 +1892,43 @@ std::uint32_t Deobfuscate(std::uint32_t value) {
 
 namespace GPakEx {
 
+  struct SecureByteBuffer {
+    /* 0000 */ std::uint8_t* first;
+    /* 0004 */ std::uint8_t* last;
+    /* 0008 */ std::uint8_t* end;
+
+    ~SecureByteBuffer();
+  };
+
+  // OFFSET: 0x006429B0
+  // FUNCTION: fn_04822
+  SecureByteBuffer::~SecureByteBuffer() {
+    for (std::uint8_t* current = this->first; current != this->last; ++current) {
+      *current = 0;
+    }
+
+    if (this->first) {
+      std::size_t allocationSize = static_cast<std::size_t>(this->end - this->first);
+      void* allocation = this->first;
+      if (allocationSize > 0xFFF) {
+        allocation = reinterpret_cast<void**>(this->first)[-1];
+        if (reinterpret_cast<std::uintptr_t>(this->first) - reinterpret_cast<std::uintptr_t>(allocation) - 4 > 0x1F) {
+          _invalid_parameter_noinfo_noreturn();
+        }
+        allocationSize += 0x23;
+      }
+      ::operator delete(allocation, static_cast<unsigned int>(allocationSize));
+      this->first = nullptr;
+      this->last = nullptr;
+      this->end = nullptr;
+    }
+  }
+
+  // VTABLE: vt_00294
   class BlockCipher {
   public:
-    virtual ~BlockCipher() {
-    }
+    virtual ~BlockCipher();
+    void* ScalarDeletingDestructor(std::uint32_t flags);
 
     virtual bool IsForwardTransformation() const = 0;
     virtual std::size_t BlockSize() const = 0;
@@ -1906,6 +1939,21 @@ namespace GPakEx {
 
     enum Flags : std::uint32_t { InPlace = 1, Increment = 2, Reverse = 4 };
   };
+
+  // OFFSET: 0x00642A60
+  // FUNCTION: fn_04823
+  BlockCipher::~BlockCipher() {
+  }
+
+  // OFFSET: 0x00642AD0
+  // FUNCTION: fn_04825
+  void* BlockCipher::ScalarDeletingDestructor(std::uint32_t flags) {
+    this->~BlockCipher();
+    if (flags & 1) {
+      ::operator delete(this, 4);
+    }
+    return this;
+  }
 
   class BlockCipherStub {
   public:
