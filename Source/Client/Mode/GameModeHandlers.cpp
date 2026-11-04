@@ -454,22 +454,18 @@ void CGameMode::SpawnGroundSkill(std::uint32_t aid, std::uint32_t owner, int val
   data.extended.skill.level = level;
   data.extended.flags = flags;
   data.value = value;
-  if (owner == g_session.m_aid) {
-    if (visible) {
-      this->m_skillUnitIds.push_back(aid);
-    }
-  } else if (!visible) {
+  if (owner != g_session.m_aid && !visible) {
     const auto found = std::find(this->m_skillUnitIds.begin(), this->m_skillUnitIds.end(), aid);
     if (found != this->m_skillUnitIds.end()) {
       this->m_skillUnitIds.erase(found);
       data.extended.skill.visible = 0;
     }
-  } else {
+  } else if (visible) {
     this->m_skillUnitIds.push_back(aid);
   }
   CSkill* skill = static_cast<CSkill*>(this->scene->GetSkillByAID(aid));
   if (!skill) {
-    if (!((type >= 45 && type <= 999) || (type >= 1001 && type <= 3998) ||
+    if (!((type >= 45 && type < 1000) || (type > 1000 && type < 3999) ||
           static_cast<unsigned>(type) - 20021u <= 11978u)) {
       return;
     }
