@@ -21,6 +21,7 @@ public:
   void Slot26(int x, int y) override;
   void Slot35(int value) override;
   void Paint() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
   __declspec(noinline) ITEM_INFO GetItemAt(int x, int y);
   void SetTabIndex(int index);
@@ -46,7 +47,7 @@ public:
   /* 011C */ int unknown_011C;
   /* 0120 */ std::string unknown_0120;
   /* 0138 */ std::string unknown_0138;
-  /* 0150 */ WindowPlacement* saved;
+  /* 0150 */ ItemStoreFindSlotInfo* saved;
   /* 0154 */ int tabIndex;
   /* 0158 */ unsigned char unknown_0158;
   /* 0159 */ unsigned char unknown_0159[7];

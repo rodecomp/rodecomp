@@ -24,6 +24,7 @@ public:
   void Slot25(int x, int y) override;
   void Paint() override;
   void Slot15(int width, int height) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   __declspec(noinline) ITEM_INFO GetItemAt(int x, int y);
   void SetTabChecked(int index, bool checked);
   void SetTitle(std::string title);
@@ -32,12 +33,12 @@ public:
   /* 00F4 */ UIItemStoreComboBoxWnd* sortCombo;
   /* 00F8 */ unsigned char unknown_00F8[0x08];
   /* 0100 */ UICheckBox* tabs[8];
-  /* 0120 */ int unknown_0120[8];
-  /* 0140 */ int unknown_0140;
+  /* 0120 */ UIWindow* unknown_0120[8];
+  /* 0140 */ UIWindow* unknown_0140;
   /* 0144 */ std::string unknown_0144;
   /* 015C */ UIStaticText* title;
   /* 0160 */ unsigned char unknown_0160[0x04];
-  /* 0164 */ WindowPlacement* saved;
+  /* 0164 */ ItemStoreFindListInfo* saved;
   /* 0168 */ UITab* tabBar;
   /* 016C */ int unknown_016C;
   /* 0170 */ int unknown_0170;

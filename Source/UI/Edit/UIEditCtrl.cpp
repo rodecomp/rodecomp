@@ -104,6 +104,7 @@
 #include <windows.h>
 #include <timeapi.h>
 #include "Contents/Items/ItemLink.h"
+#include "Contents/Items/ItemInfoMgr.h"
 #include "UI/Chat/UINewChatWnd.h"
 #include "UI/Dialogs/UINpcEditDialogWnd.h"
 #include "UI/Rodex/UIRodexComposeWnd.h"
@@ -8288,6 +8289,155 @@ int UIItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 
   return 0;
 }
+
+// OFFSET: 0x0098E0D0
+// FUNCTION: fn_45489
+int UIItemStoreSubWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  switch (message) {
+  case 34:
+    this->saved = reinterpret_cast<ItemStoreFindSlotInfo*>(a);
+    if (!this->saved->IsValid()) {
+      this->saved->Reset(this->tabIndex);
+    }
+
+    this->Move(this->saved->x, this->saved->y);
+    this->SendMsg(nullptr, 14, 3, this->saved->width, this->saved->height, 0);
+    return 0;
+  case 38: {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    if (mode->drag.source == 1) {
+      mode->SendMsg(55, mode->drag.id, mode->drag.quantity, 0, 0);
+    } else if (mode->drag.source == 9) {
+      mode->SendMsg(79, mode->drag.id, mode->drag.quantity, 0, 0);
+    }
+
+    mode->SendMsg(18, 0, 0, 0, 0);
+    return 0;
+  }
+  case 23: {
+    this->items.erase(this->items.begin(), this->items.end());
+    const int size = g_session.GetList5Size();
+    for (int i = 0; i < size; ++i) {
+      ITEM_INFO item = g_session.GetItem1738At(i);
+      if (item.unknown_0000[1] == 0) {
+        continue;
+      }
+
+      item.unknown_0078[0] = g_itemInfoMgr->IsCostume(std::stoi(item.itemId));
+      const int type = static_cast<int>(item.unknown_0000[0]);
+      bool matches = false;
+      if (item.unknown_0078[0] != 0) {
+        matches = this->tabIndex == 4;
+      } else {
+        switch (this->tabIndex) {
+        case 0:
+          matches = type == 0 || type == 1 || type == 2;
+          break;
+        case 1:
+          matches = type == 18;
+          break;
+        case 2:
+          matches = type == 4 || type == 11 || type == 12 || type == 13 || type == 14;
+          break;
+        case 3:
+          matches = type == 5 || type == 8 || type == 9 || type == 15;
+          break;
+        case 5:
+          matches = type == 10 || type == 16 || type == 17 || type == 19;
+          break;
+        case 6:
+          matches = type == 6;
+          break;
+        case 7:
+          matches = type == 3 || type == 7;
+          break;
+        }
+      }
+
+      if (matches) {
+        this->items.push_back(item);
+      }
+    }
+
+    if (g_session.m_itemAscendingOrder) {
+      this->Sort2();
+    } else if (g_session.m_itemDescendingOrder) {
+      this->SortReversed2();
+    }
+
+    if (!this->unknown_0138.empty() && !this->FilterByName2(std::string(this->unknown_0138.c_str(), this->unknown_0138.size()))) {
+      return 0;
+    }
+
+    this->Invalidate();
+    this->UpdateScrollBar();
+    return 0;
+  }
+  case 14:
+    if (a == 7) {
+      int width = b <= 320 ? b : 320;
+      int height = c <= 336 ? c : 336;
+      if (width < 140) {
+        width = 140;
+      }
+      if (height < 145) {
+        height = 145;
+      }
+
+      const int newWidth = (width - 140) / 32 * 32 + 140;
+      const int newHeight = (height - 160) / 32 * 32 + 145;
+      if (newWidth != this->geometry.width || newHeight != this->geometry.height) {
+        this->scroll = 0;
+        this->Resize(newWidth, newHeight);
+        this->resizeHandle->Move(this->geometry.width - 15, this->geometry.height - 15);
+        this->scrollBar->Move(this->geometry.width - 15, 14);
+        this->scrollBar->Resize(this->scrollBar->geometry.width, this->geometry.height - 38);
+        this->visibleRows = (newHeight - 38) / 32;
+        this->UpdateScrollBar();
+      }
+
+      g_windowMgr.StoreSnapRectangle(this);
+    }
+    return 0;
+  case 55: {
+    char text[64];
+    std::sprintf(text, "%d/%d", a, b);
+    this->unknown_0120 = text;
+    this->Invalidate();
+    return 0;
+  }
+  case 365:
+    if (!this->unknown_0138.empty() && this->FilterByName2(std::string(this->unknown_0138.c_str(), this->unknown_0138.size()))) {
+      this->Invalidate();
+      this->UpdateScrollBar();
+    }
+    return 0;
+  case 364:
+    if (g_session.m_itemDefaultSort == true) {
+      this->SendMsg(nullptr, 246, 0, 0, 0, 0);
+      return 0;
+    }
+
+    this->unknown_0158 = 1;
+    if (g_session.m_itemAscendingOrder == true) {
+      this->Sort2();
+    } else if (g_session.m_itemDescendingOrder == true) {
+      this->SortReversed2();
+    }
+
+    this->Invalidate();
+    this->UpdateScrollBar();
+    return 0;
+  case 246:
+    this->unknown_0158 = 0;
+    this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    return 0;
+  default:
+    return UIItemBaseWnd::SendMsg(sender, message, a, b, c, d);
+  }
+}
+
+// OFFSET: 0x0098E6C0
 
 // OFFSET: 0x00859470
 // FUNCTION: fn_10776
