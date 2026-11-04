@@ -218,7 +218,8 @@ int UIGuildBanReasonDescWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 // OFFSET: 0x00961710
 // FUNCTION: fn_13126
 int UIGuildHelperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, std::intptr_t a2, std::intptr_t a3, std::intptr_t a4) {
-  if (message == 6) {
+  switch (message) {
+  case 6:
     switch (a1) {
     case 184:
       g_windowMgr.CloseWindow(214);
@@ -227,12 +228,12 @@ int UIGuildHelperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, s
       break;
     case 343:
       if (!g_windowMgr.CloseWindow(214)) {
-        g_windowMgr.EnsureWindow(214);
+        g_windowMgr.sub_A978D0(214);
       }
       break;
     case 448:
       if (!g_windowMgr.CloseWindow(213)) {
-        g_windowMgr.EnsureWindow(213);
+        g_windowMgr.sub_A978D0(213);
         if (g_windowMgr.unknown_0438) {
           int x = 0;
           int y = 0;
@@ -243,9 +244,7 @@ int UIGuildHelperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, s
       break;
     }
     return 0;
-  }
-
-  if (message == 34) {
+  case 34:
     this->m_saved = reinterpret_cast<GuildHelperWndInfo*>(a1);
     if (!this->m_saved->IsValid()) {
       this->m_saved->Reset();
@@ -253,9 +252,9 @@ int UIGuildHelperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, s
     this->SendMsg(nullptr, 23, 0, 0, 0, 0);
     this->Move(this->m_saved->x, this->m_saved->y);
     return 0;
+  default:
+    return UIFrameWnd::SendMsg(sender, message, a1, a2, a3, a4);
   }
-
-  return UIFrameWnd::SendMsg(sender, message, a1, a2, a3, a4);
 }
 
 // OFFSET: 0x00964C60
