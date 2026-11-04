@@ -489,16 +489,17 @@ void Replay::ResetFile() {
 std::vector<unsigned char> Replay::ReadSection(int id) {
   std::vector<unsigned char> data;
 
-  if (id >= 1 && id <= 25) {
-    const int index = this->FindSection(id);
+  if (id < 1 || id > 25) {
+    return data;
+  }
 
-    if (index != -1 && this->sections[index].fileOffset != 0 && this->sections[index].bytes != 0) {
-      const ReplaySection& section = this->sections[index];
-      data.resize(section.bytes);
-      std::fseek(this->file, static_cast<long>(section.fileOffset), SEEK_SET);
-      std::fread(data.data(), section.bytes, 1, this->file);
-      this->Cipher(section.bytes, data.data());
-    }
+  const int index = this->FindSection(id);
+  if (index != -1 && this->sections[index].fileOffset != 0 && this->sections[index].bytes != 0) {
+    const ReplaySection& section = this->sections[index];
+    data.resize(section.bytes);
+    std::fseek(this->file, static_cast<long>(section.fileOffset), SEEK_SET);
+    std::fread(data.data(), section.bytes, 1, this->file);
+    this->Cipher(section.bytes, data.data());
   }
 
   return data;
@@ -539,7 +540,7 @@ std::uint32_t Replay::ParseMetadata(const std::vector<unsigned char>& data) {
 
         if (this->header.signature != this->header.closingSignature) {
           std::uint32_t fileOffset = this->fileOffset;
-          ReplayRecordHeader record{};
+          ReplayRecordHeader record;
           int count = static_cast<int>(this->header.records) - 1;
 
           if (count > 0) {
