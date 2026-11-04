@@ -125,11 +125,10 @@ void GroundGeometry::Slot16(int, int, int, int, int, int) {
 void GroundGeometry::DrawTerrainOverlay(
   const C3dAttr& terrain, const float* matrix, int column, int row, std::uint32_t color, CTexture* texture
 ) const {
-  const auto half = [](int value) { return TruncateToInt(static_cast<float>(value) * 0.5f); };
-  const int cellColumn = half(column);
-  const int cellRow = half(row);
-  const int halfWidth = half(this->width);
-  const int halfHeight = half(this->height);
+  const int cellColumn = static_cast<int>(static_cast<float>(column) * 0.5f);
+  const int cellRow = static_cast<int>(static_cast<float>(row) * 0.5f);
+  const int halfWidth = static_cast<int>(static_cast<float>(this->width) * 0.5f);
+  const int halfHeight = static_cast<int>(static_cast<float>(this->height) * 0.5f);
   const float halfSize = this->cellSize * 0.5f;
   const float margin = halfSize * 0.5f;
 
@@ -144,7 +143,7 @@ void GroundGeometry::DrawTerrainOverlay(
   }
 
   const float x = static_cast<float>(cellColumn - halfWidth) * this->cellSize + ((column & 1) ? halfSize : 0.0f);
-  const float z = static_cast<float>(cellRow - halfHeight) * this->cellSize + (row % 2 == 1 ? halfSize : 0.0f);
+  const float z = static_cast<float>(cellRow - halfHeight) * this->cellSize + ((row & 1) ? halfSize : 0.0f);
   const float left = x - margin;
   const float right = (x + halfSize) + margin;
   const float top = z - margin;
