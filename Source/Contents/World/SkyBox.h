@@ -42,7 +42,7 @@ struct FlareElement {
 
 class CLensFlare {
 public:
-  CLensFlare();
+  __declspec(noinline) CLensFlare();
 
   void Init();
   void Update(const float* matrix, vector3d eye, vector3d target);
