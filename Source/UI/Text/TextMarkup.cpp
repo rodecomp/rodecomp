@@ -97,13 +97,13 @@ std::string RemoveTextColors(const char* text) {
 
   while (current < end) {
     const char* next = SegmentEnd(current, end);
-    result.append(current, next);
+    result += std::string(current, next);
 
     if (next >= end) {
       break;
     }
 
-    current = next + 7;
+    current = next != nullptr ? (*next == '^' ? next + 7 : next) : nullptr;
   }
 
   return result;
