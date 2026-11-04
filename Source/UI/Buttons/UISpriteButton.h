@@ -18,7 +18,7 @@ public:
   int FrameHeight(int action, int frame);
   int FrameWidth(int action, int frame);
   void SetActName(const char* name);
-  void SetSprite(const char* name);
+  __declspec(noinline) void SetSprite(const char* name);
   void SetPalette(const char* name);
 
 public:

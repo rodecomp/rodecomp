@@ -285,7 +285,7 @@ public:
   void RefreshCurrentList();
   __declspec(noinline) void ShowPack(int packId);
   void sub_7C7E50();
-  void ResetLists();
+  __declspec(noinline) void ResetLists();
   int SetPeriod(int packId);
   void SetTab(char tab);
   void StartExpirySchedule();

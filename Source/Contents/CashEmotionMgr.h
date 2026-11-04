@@ -131,30 +131,30 @@ public:
   void HideSuggestions();
   __declspec(noinline) int FindEmotionId(const char* name);
   int ProcessChatCommand(const char* command);
-  const char* GetPackName(int packId);
+  __declspec(noinline) const char* GetPackName(int packId);
   std::vector<int> FindBaseEmotions(const char* filter);
   CashEmotionTable* GetBasePackEmotions();
   int GetSpecialEmotion(CashEmotionSpecial type);
   CashEmotionData* GetEmotionData(int packId, int emotionId);
   const char* GetEmotionName(int packId, int emotionId);
-  std::vector<int> GetPackEmotions(int packId);
+  __declspec(noinline) std::vector<int> GetPackEmotions(int packId);
   int GetEarliestExpiry();
   CashEmotionTable* GetPackEmotionTable(int packId);
   CashEmotionPack* GetPack(int packId);
   const char* GetPackTitle(int packId);
   int GetPackUnknown18(int packId);
-  Timestamp* FindExpiry(int packId);
-  std::vector<int> SortOwnedPacks(const char* filter);
-  unsigned int GetPackEndTime(int packId);
-  unsigned int GetPackStartTime(int packId);
-  void Search(
+  __declspec(noinline) Timestamp* FindExpiry(int packId);
+  __declspec(noinline) std::vector<int> SortOwnedPacks(const char* filter);
+  __declspec(noinline) unsigned int GetPackEndTime(int packId);
+  __declspec(noinline) unsigned int GetPackStartTime(int packId);
+  __declspec(noinline) void Search(
     const char* text, std::vector<std::pair<int, int>>& basePack, std::vector<std::pair<int, int>>& ownedPacks, std::vector<std::pair<int, int>>& otherPacks
   );
   void AddSearchResult(std::vector<std::pair<int, int>>& results, const std::pair<int, int>& entry);
   std::vector<int> SortPacks(const std::vector<int>& packs, const char* filter);
-  const char* GetSprFileName(int sprId);
-  std::vector<int> SortUnownedPacks(const char* filter);
-  int GetPackUnknown24(int packId);
+  __declspec(noinline) const char* GetSprFileName(int sprId);
+  __declspec(noinline) std::vector<int> SortUnownedPacks(const char* filter);
+  __declspec(noinline) int GetPackUnknown24(int packId);
   void SetOwnedPack(int packId, unsigned int expiry);
   int LookupSpecialEmotion(CashEmotionSpecial type);
   int LookupSpecialEmotion(CashEmotionSpecial type, const char* name);
@@ -171,7 +171,7 @@ public:
   bool sub_59D2C0();
   void ShowErrorMessage(const char* key, int value);
   void Unknown59D040(int argument1, int argument2);
-  int sub_59FC50();
+  __declspec(noinline) int sub_59FC50();
   // INLINED
   int BasePackId() const {
     return this->unknown_000C;
