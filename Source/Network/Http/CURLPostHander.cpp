@@ -44,12 +44,12 @@ int CCURLPostHander::AddField(std::string name, std::string value, int type) {
 // OFFSET: 0x005E9AF0
 // FUNCTION: fn_03961
 std::size_t __cdecl CCURLPostHander::WriteResponse(char* data, std::size_t size, std::size_t count, std::string* response) {
-  if (!response) {
-    return 0;
+  if (response) {
+    response->append(data, size * count);
+    return size * count;
   }
 
-  response->append(data, size * count);
-  return size * count;
+  return 0;
 }
 
 // OFFSET: 0x005E9A20
