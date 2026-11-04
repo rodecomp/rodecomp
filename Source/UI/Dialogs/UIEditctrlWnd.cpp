@@ -238,9 +238,9 @@ void UIMiniMapWnd::Slot25(int x, int y) {
 // FUNCTION: fn_13561
 void UIMiniMapWnd::ResetCursor(int, int) {
   if (this->dragging) {
-    static_cast<CMode*>(g_charViewMode)->SetCursorAction(1);
+    g_modeMgr.gameMode->SetCursorAction(1);
   } else {
-    static_cast<CMode*>(g_charViewMode)->SetCursorAction(0);
+    g_modeMgr.gameMode->SetCursorAction(0);
   }
 }
 
