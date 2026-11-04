@@ -141,12 +141,6 @@ void XorWithKey16(std::span<const std::uint8_t, 16> key, std::span<const std::ui
   }
 }
 
-// OFFSET: 0x00654410
-// FUNCTION: fn_04984
-int OptimalDataAlignmentC1ZJND5E() {
-  return 8;
-}
-
 // OFFSET: 0x00654420
 // FUNCTION: fn_04985
 int OptimalDataAlignmentFKMTHOUN() {
@@ -156,12 +150,6 @@ int OptimalDataAlignmentFKMTHOUN() {
 // OFFSET: 0x00654430
 // FUNCTION: fn_04986
 int OptimalDataAlignmentKFT7JG15() {
-  return 8;
-}
-
-// OFFSET: 0x00654440
-// FUNCTION: fn_04987
-int OptimalDataAlignmentOXDMVGOM() {
   return 8;
 }
 
@@ -542,12 +530,6 @@ bool IsForwardTransformationBTYLIPTLEnc() {
   return true;
 }
 
-// OFFSET: 0x00654C20
-// FUNCTION: fn_05036
-bool IsForwardTransformationC1ZJND5EEnc() {
-  return true;
-}
-
 // OFFSET: 0x00654C30
 // FUNCTION: fn_05037
 bool IsForwardTransformationFKMTHOUNEnc() {
@@ -560,12 +542,6 @@ bool IsForwardTransformationKFT7JG15Enc() {
   return true;
 }
 
-// OFFSET: 0x00654C50
-// FUNCTION: fn_05039
-bool IsForwardTransformationOXDMVGOMEnc() {
-  return true;
-}
-
 // OFFSET: 0x00654C60
 // FUNCTION: fn_05040
 bool IsForwardTransformationBTYLIPTLCFBDecryption() {
@@ -575,18 +551,6 @@ bool IsForwardTransformationBTYLIPTLCFBDecryption() {
 // OFFSET: 0x00654C70
 // FUNCTION: fn_05041
 bool IsForwardTransformationBTYLIPTLOFBBase() {
-  return false;
-}
-
-// OFFSET: 0x00654C80
-// FUNCTION: fn_05042
-bool IsForwardTransformationC1ZJND5ECFBDecryption() {
-  return false;
-}
-
-// OFFSET: 0x00654C90
-// FUNCTION: fn_05043
-bool IsForwardTransformationC1ZJND5EOFBBase() {
   return false;
 }
 
@@ -611,12 +575,6 @@ bool IsForwardTransformationKFT7JG15CFBDecryption() {
 // OFFSET: 0x00654CD0
 // FUNCTION: fn_05047
 bool IsForwardTransformationKFT7JG15OFBBase() {
-  return false;
-}
-
-// OFFSET: 0x00654CE0
-// FUNCTION: fn_05048
-bool IsForwardTransformationOXDMVGOMCFBDecryption() {
   return false;
 }
 
@@ -1941,7 +1899,7 @@ namespace GPakEx {
 
   // OFFSET: 0x00642A60
   // FUNCTION: fn_04823
-  BlockCipher::~BlockCipher() {
+  __declspec(noinline) BlockCipher::~BlockCipher() {
   }
 
   // OFFSET: 0x00642AD0
@@ -1969,9 +1927,9 @@ namespace GPakEx {
     /* 0014 */ std::uint8_t* m_buffer[3];
 
     void sub_642A70();
-    std::size_t sub_642C80(std::size_t length, bool padding) const;
-    std::size_t sub_643160(std::span<const std::uint8_t> input, std::span<std::uint8_t> output, bool final);
-    void sub_643480(std::span<const std::uint8_t> key, std::span<const std::uint8_t> iv);
+    std::size_t CiphertextLength(std::size_t length, bool padding) const;
+    std::size_t Process(std::span<const std::uint8_t> input, std::span<std::uint8_t> output, bool final);
+    void SetKeyWithIV(std::span<const std::uint8_t> key, std::span<const std::uint8_t> iv);
   };
 
   template<std::size_t StateSize>
@@ -1981,6 +1939,8 @@ namespace GPakEx {
 
   };
 
+  // OFFSET: 0x006434B0
+  // FUNCTION: fn_04838
   __declspec(noinline) void XorBuffers(std::uint8_t* output, const std::uint8_t* input, const std::uint8_t* mask, std::size_t length) {
     for (; length >= 16; length -= 16, output += 16, input += 16, mask += 16) {
       for (std::size_t i = 0; i < 16; ++i) {
@@ -1992,6 +1952,7 @@ namespace GPakEx {
     }
   }
 
+  // OFFSET: 0x00642B80
   std::size_t BlockCipher::AdvancedProcessBlocks(const std::uint8_t* input, const std::uint8_t* xorBlock, std::uint8_t* output, std::size_t length, std::uint32_t flags) const {
     const std::size_t blockSize = this->BlockSize();
     std::ptrdiff_t step = static_cast<std::ptrdiff_t>(blockSize);
@@ -2029,6 +1990,12 @@ namespace GPakEx {
   public:
     class Base : public BlockCipher {
     public:
+      ~Base() override {
+        SecureWipe(this->m_key, sizeof(this->m_key));
+      }
+
+      std::size_t BlockSize() const override;
+      std::size_t OptimalDataAlignment() const override;
       void SetKey(std::span<const std::uint8_t> key) override;
 
       /* 0004 */ std::uint32_t m_key[4];
@@ -2039,6 +2006,18 @@ namespace GPakEx {
       void ProcessAndXorBlock(const std::uint8_t* input, const std::uint8_t* xorBlock, std::uint8_t* output) const override;
     };
   };
+
+  // OFFSET: 0x00654410
+  // FUNCTION: fn_04984
+  std::size_t TEA::Base::BlockSize() const {
+    return 8;
+  }
+
+  // OFFSET: 0x00654B60
+  // FUNCTION: fn_05027
+  std::size_t TEA::Base::OptimalDataAlignment() const {
+    return 16;
+  }
 
   // OFFSET: 0x0065BB10
   // FUNCTION: fn_05142
@@ -2075,6 +2054,12 @@ namespace GPakEx {
   public:
     class Base : public BlockCipher {
     public:
+      ~Base() override {
+        SecureWipe(this->m_key, sizeof(this->m_key));
+      }
+
+      std::size_t BlockSize() const override;
+      std::size_t OptimalDataAlignment() const override;
       void SetKey(std::span<const std::uint8_t> key) override;
 
       /* 0004 */ std::uint32_t m_key[4];
@@ -2085,6 +2070,18 @@ namespace GPakEx {
       void ProcessAndXorBlock(const std::uint8_t* input, const std::uint8_t* xorBlock, std::uint8_t* output) const override;
     };
   };
+
+  // OFFSET: 0x00654440
+  // FUNCTION: fn_04987
+  std::size_t XTEA::Base::BlockSize() const {
+    return 8;
+  }
+
+  // OFFSET: 0x00654B90
+  // FUNCTION: fn_05030
+  std::size_t XTEA::Base::OptimalDataAlignment() const {
+    return 16;
+  }
 
   // OFFSET: 0x0065BBD0
   // FUNCTION: fn_05143
@@ -2623,7 +2620,9 @@ namespace GPakEx {
 
   static_assert(sizeof(CipherModeBase) == 0x20);
 
-  CipherModeBase::~CipherModeBase() {
+  // OFFSET: 0x00642A70
+  // FUNCTION: fn_04824
+  __declspec(noinline) CipherModeBase::~CipherModeBase() {
   }
 
   // OFFSET: 0x006433A0
@@ -2636,7 +2635,7 @@ namespace GPakEx {
 
   // OFFSET: 0x00642C80
   // FUNCTION: fn_04828
-  std::size_t CipherModeBase::CiphertextLength(std::size_t length, bool padding) const {
+  __declspec(noinline) std::size_t CipherModeBase::CiphertextLength(std::size_t length, bool padding) const {
     const std::size_t blockSize = this->m_cipher->BlockSize();
     if (length == 0) {
       return padding ? blockSize : 0;
@@ -2647,7 +2646,8 @@ namespace GPakEx {
     return length + (blockSize - length % blockSize);
   }
 
-  std::size_t CipherModeBase::Process(std::span<const std::uint8_t> input, std::span<std::uint8_t> output, bool final) {
+  // OFFSET: 0x00643160
+  __declspec(noinline) std::size_t CipherModeBase::Process(std::span<const std::uint8_t> input, std::span<std::uint8_t> output, bool final) {
     const bool forward = this->IsForwardTransformation();
     const std::size_t blockSize = this->m_cipher->BlockSize();
     const std::size_t reserved = (!forward && final) ? blockSize : 0;
@@ -2697,7 +2697,7 @@ namespace GPakEx {
 
   // OFFSET: 0x00643480
   // FUNCTION: fn_04837
-  void CipherModeBase::SetKeyWithIV(std::span<const std::uint8_t> key, std::span<const std::uint8_t> iv) {
+  __declspec(noinline) void CipherModeBase::SetKeyWithIV(std::span<const std::uint8_t> key, std::span<const std::uint8_t> iv) {
     this->m_cipher->SetKey(key);
     std::memcpy(this->m_register.data(), iv.data(), this->m_register.size());
   }
@@ -2707,6 +2707,7 @@ namespace GPakEx {
     void ProcessData(std::uint8_t* output, const std::uint8_t* input, std::size_t length) override;
   };
 
+  // OFFSET: 0x00642E20
   void CBC_Encryption::ProcessData(std::uint8_t* output, const std::uint8_t* input, std::size_t length) {
     const std::size_t blockSize = this->m_cipher->BlockSize();
     if (length == 0) {
@@ -2727,11 +2728,14 @@ namespace GPakEx {
     /* 0020 */ std::vector<std::uint8_t> m_temp;
   };
 
+  // OFFSET: 0x006432C0
+  // FUNCTION: fn_04834
   void CBC_Decryption::ResizeBuffers() {
     this->CipherModeBase::ResizeBuffers();
     this->m_temp.resize(this->m_cipher->BlockSize());
   }
 
+  // OFFSET: 0x00642D60
   void CBC_Decryption::ProcessData(std::uint8_t* output, const std::uint8_t* input, std::size_t length) {
     const std::size_t blockSize = this->m_cipher->BlockSize();
     if (length == 0) {
@@ -2753,11 +2757,14 @@ namespace GPakEx {
     /* 0020 */ std::vector<std::uint8_t> m_temp;
   };
 
+  // OFFSET: 0x00643330
+  // FUNCTION: fn_04835
   void CFB_Decryption::ResizeBuffers() {
     this->CipherModeBase::ResizeBuffers();
     this->m_temp.resize(this->m_cipher->BlockSize());
   }
 
+  // OFFSET: 0x00642EB0
   void CFB_Decryption::ProcessData(std::uint8_t* output, const std::uint8_t* input, std::size_t length) {
     const std::size_t blockSize = this->m_cipher->BlockSize();
     if (length == 0) {
@@ -2776,6 +2783,7 @@ namespace GPakEx {
     void ProcessData(std::uint8_t* output, const std::uint8_t* input, std::size_t length) override;
   };
 
+  // OFFSET: 0x006430F0
   void OFB_Base::ProcessData(std::uint8_t* output, const std::uint8_t* input, std::size_t length) {
     const std::size_t blockSize = this->m_cipher->BlockSize();
     while (length != 0) {
@@ -2786,6 +2794,108 @@ namespace GPakEx {
       output = output ? output + blockSize : nullptr;
     }
   }
+
+  template<bool Forward, class Cipher>
+  class BlockCipherFinal : public Cipher {
+  public:
+    bool IsForwardTransformation() const override;
+  };
+
+  template<class Algorithm, bool Forward, class Cipher, class Mode>
+  class CipherModeFinal : public Mode {
+  public:
+    CipherModeFinal();
+    ~CipherModeFinal() override;
+
+    bool IsForwardTransformation() const override;
+
+    Cipher m_blockCipher;
+  };
+
+  using TeaCfbDecryption = CipherModeFinal<TEA, true, BlockCipherFinal<false, TEA::Enc>, CFB_Decryption>;
+
+  // OFFSET: 0x00654C20
+  // FUNCTION: fn_05036
+  template<>
+  bool BlockCipherFinal<false, TEA::Enc>::IsForwardTransformation() const {
+    return true;
+  }
+
+  // OFFSET: 0x00654C80
+  // FUNCTION: fn_05042
+  template<>
+  bool TeaCfbDecryption::IsForwardTransformation() const {
+    return false;
+  }
+
+  // OFFSET: 0x00646B40
+  template<>
+  __declspec(noinline) TeaCfbDecryption::CipherModeFinal() {
+    this->m_cipher = &this->m_blockCipher;
+    this->ResizeBuffers();
+  }
+
+  // OFFSET: 0x00649C50
+  // FUNCTION: fn_04900
+  template<>
+  __declspec(noinline) TeaCfbDecryption::~CipherModeFinal() {
+  }
+
+  static_assert(offsetof(TeaCfbDecryption, m_blockCipher) == 0x2C);
+
+  using TeaOfb = CipherModeFinal<TEA, true, BlockCipherFinal<false, TEA::Enc>, OFB_Base>;
+
+  // OFFSET: 0x00654C90
+  // FUNCTION: fn_05043
+  template<>
+  bool TeaOfb::IsForwardTransformation() const {
+    return false;
+  }
+
+  // OFFSET: 0x00646BE0
+  template<>
+  __declspec(noinline) TeaOfb::CipherModeFinal() {
+    this->m_cipher = &this->m_blockCipher;
+    this->ResizeBuffers();
+  }
+
+  // INLINED
+  template<>
+  __forceinline TeaOfb::~CipherModeFinal() {
+  }
+
+  static_assert(offsetof(TeaOfb, m_blockCipher) == 0x20);
+
+  using XteaCfbDecryption = CipherModeFinal<XTEA, true, BlockCipherFinal<false, XTEA::Enc>, CFB_Decryption>;
+
+  // OFFSET: 0x00654C50
+  // FUNCTION: fn_05039
+  template<>
+  bool BlockCipherFinal<false, XTEA::Enc>::IsForwardTransformation() const {
+    return true;
+  }
+
+  // OFFSET: 0x00654CE0
+  // FUNCTION: fn_05048
+  template<>
+  bool XteaCfbDecryption::IsForwardTransformation() const {
+    return false;
+  }
+
+  // OFFSET: 0x00646F90
+  template<>
+  __declspec(noinline) XteaCfbDecryption::CipherModeFinal() {
+    this->m_cipher = &this->m_blockCipher;
+    this->ResizeBuffers();
+  }
+
+  // OFFSET: 0x00649FB0
+  // FUNCTION: fn_04903
+  template<>
+  __declspec(noinline) XteaCfbDecryption::~CipherModeFinal() {
+  }
+
+  static_assert(offsetof(XteaCfbDecryption, m_blockCipher) == 0x2C);
 
   class CipherModeFinal_6469E0 : public CipherModeStub {
   public:
@@ -2803,24 +2913,6 @@ namespace GPakEx {
 
     void sub_6469E0();
     void sub_649B50();
-  };
-
-  class CipherModeFinal_646B40 : public CipherModeStub {
-  public:
-    /* 0020 */ std::uint8_t unknown_0020[0x20];
-
-    // INLINED
-    CipherModeFinal_646B40() {
-      this->sub_646B40();
-    }
-
-    // INLINED
-    ~CipherModeFinal_646B40() {
-      this->sub_649C50();
-    }
-
-    void sub_646B40();
-    void sub_649C50();
   };
 
   class CipherModeFinal_646C80 : public CipherModeStub {
@@ -2857,24 +2949,6 @@ namespace GPakEx {
 
     void sub_646E30();
     void sub_649EB0();
-  };
-
-  class CipherModeFinal_646F90 : public CipherModeStub {
-  public:
-    /* 0020 */ std::uint8_t unknown_0020[0x20];
-
-    // INLINED
-    CipherModeFinal_646F90() {
-      this->sub_646F90();
-    }
-
-    // INLINED
-    ~CipherModeFinal_646F90() {
-      this->sub_649FB0();
-    }
-
-    void sub_646F90();
-    void sub_649FB0();
   };
 
   class BlockCipher_64A730 : public BlockCipherStub {
@@ -2925,25 +2999,6 @@ namespace GPakEx {
     }
 
     void sub_646EE0();
-  };
-
-  class CipherModeFinal_646BE0 : public CipherModeStub {
-  public:
-    /* 0020 */ FixedStateBlockCipher<0x10> m_blockCipher;
-
-    // INLINED
-    CipherModeFinal_646BE0() {
-      this->sub_646BE0();
-    }
-
-    // INLINED
-    ~CipherModeFinal_646BE0() {
-      SecureWipe(this->m_blockCipher.m_state, sizeof(this->m_blockCipher.m_state));
-      this->m_blockCipher.sub_642A60();
-      this->sub_642A70();
-    }
-
-    void sub_646BE0();
   };
 
   class CipherModeFinal_646D90 : public CipherModeStub {
@@ -3013,8 +3068,8 @@ __forceinline void EncryptBlockWithDataHash(std::span<const std::uint8_t> data, 
   const auto iv = keyData.subspan(Deobfuscate<0x53F9360C, 0x4CC36824>(ivOffset), Deobfuscate<0x53F9360C, 0x4CC36824>(8));
   XXH128_hash_t key = XXH3_128bits(data.data(), data.size());
   GPakEx::CipherModeFinal_6470D0 cipher;
-  cipher.sub_643480(std::span<const std::uint8_t>(reinterpret_cast<const std::uint8_t*>(&key), sizeof(key)), iv);
-  cipher.sub_643160(input, output, false);
+  cipher.SetKeyWithIV(std::span<const std::uint8_t>(reinterpret_cast<const std::uint8_t*>(&key), sizeof(key)), iv);
+  cipher.Process(input, output, false);
   SecureWipe(&key, sizeof(key));
 }
 
@@ -3024,8 +3079,8 @@ __forceinline void EncryptDataHash(std::span<const std::uint8_t> data, std::span
   const auto iv = keyData.subspan(Deobfuscate<0x53F9360C, 0x4CC36824>(ivOffset), Deobfuscate<0x53F9360C, 0x4CC36824>(8));
   XXH128_hash_t hash = XXH3_128bits(data.data(), data.size());
   GPakEx::CipherModeFinal_6470D0 cipher;
-  cipher.sub_643480(key, iv);
-  cipher.sub_643160(std::span<const std::uint8_t>(reinterpret_cast<const std::uint8_t*>(&hash), sizeof(hash)), output, false);
+  cipher.SetKeyWithIV(key, iv);
+  cipher.Process(std::span<const std::uint8_t>(reinterpret_cast<const std::uint8_t*>(&hash), sizeof(hash)), output, false);
   SecureWipe(&hash, sizeof(hash));
 }
 
@@ -3271,8 +3326,8 @@ __forceinline bool DecryptWithCipherMode(PakBlockTransform transform, std::uint3
   const auto key = keys.subspan(Deobfuscate<0xC0C9A189, 0x9DD8961C>(keyOffset), Deobfuscate<0xC0C9A189, 0x9DD8961C>(keySize));
   const auto iv = keys.subspan(Deobfuscate<0x3D1F34CF, 0x7D456D99>(ivOffset), Deobfuscate<0x3D1F34CF, 0x7D456D99>(ivSize));
   CipherMode cipher;
-  cipher.sub_643480(key, iv);
-  const std::size_t encryptedSize = cipher.sub_642C80(0x400, true);
+  cipher.SetKeyWithIV(key, iv);
+  const std::size_t encryptedSize = cipher.CiphertextLength(0x400, true);
 
   bool succeeded = false;
   if (input.size() <= prefixSize) {
@@ -3282,8 +3337,8 @@ __forceinline bool DecryptWithCipherMode(PakBlockTransform transform, std::uint3
     XorWithKey16(mask, input.first(prefixSize), output.first(prefixSize));
     if (input.size() <= prefixSize + encryptedSize) {
       const std::span<std::uint8_t> remaining = output.subspan(prefixSize);
-      succeeded = cipher.sub_643160(input.subspan(prefixSize), remaining, true) == remaining.size();
-    } else if (cipher.sub_643160(input.subspan(prefixSize, encryptedSize), output.subspan(prefixSize, 0x400), true) == 0x400) {
+      succeeded = cipher.Process(input.subspan(prefixSize), remaining, true) == remaining.size();
+    } else if (cipher.Process(input.subspan(prefixSize, encryptedSize), output.subspan(prefixSize, 0x400), true) == 0x400) {
       XorWithKey16(mask, input.subspan(prefixSize + encryptedSize), output.subspan(prefixSize + 0x400));
       succeeded = true;
     }
@@ -3295,7 +3350,7 @@ __forceinline bool DecryptWithCipherMode(PakBlockTransform transform, std::uint3
 // FUNCTION: fn_04959
 bool PakDecryptor::Decrypt100(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block,
                                 std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const {
-  return DecryptWithCipherMode<GPakEx::CipherModeFinal_646B40>(DataHashKeyTransform31, 0x1C, 0x10, 0x2C, 8, 0x400, data, seed, block, input, output);
+  return DecryptWithCipherMode<GPakEx::TeaCfbDecryption>(DataHashKeyTransform31, 0x1C, 0x10, 0x2C, 8, 0x400, data, seed, block, input, output);
 }
 
 // OFFSET: 0x0064F2F0
@@ -3316,7 +3371,7 @@ bool PakDecryptor::Decrypt102(std::span<const std::uint8_t> data, std::span<cons
 // FUNCTION: fn_04962
 bool PakDecryptor::Decrypt103(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block,
                                 std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const {
-  return DecryptWithCipherMode<GPakEx::CipherModeFinal_646B40>(DataHashKeyTransform30, 0, 0x10, 0x20, 8, 0x800, data, seed, block, input, output);
+  return DecryptWithCipherMode<GPakEx::TeaCfbDecryption>(DataHashKeyTransform30, 0, 0x10, 0x20, 8, 0x800, data, seed, block, input, output);
 }
 
 // OFFSET: 0x0064FAE0
@@ -3330,14 +3385,14 @@ bool PakDecryptor::Decrypt104(std::span<const std::uint8_t> data, std::span<cons
 // FUNCTION: fn_04964
 bool PakDecryptor::Decrypt105(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block,
                                 std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const {
-  return DecryptWithCipherMode<GPakEx::CipherModeFinal_646BE0>(DataHashBlockTransform33, 0x10, 0x10, 0x20, 8, 0, data, seed, block, input, output);
+  return DecryptWithCipherMode<GPakEx::TeaOfb>(DataHashBlockTransform33, 0x10, 0x10, 0x20, 8, 0, data, seed, block, input, output);
 }
 
 // OFFSET: 0x006500A0
 // FUNCTION: fn_04965
 bool PakDecryptor::Decrypt106(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block,
                                 std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const {
-  return DecryptWithCipherMode<GPakEx::CipherModeFinal_646B40>(DataHashBlockTransform32, 0, 0x10, 0x20, 8, 0, data, seed, block, input, output);
+  return DecryptWithCipherMode<GPakEx::TeaCfbDecryption>(DataHashBlockTransform32, 0, 0x10, 0x20, 8, 0, data, seed, block, input, output);
 }
 
 // OFFSET: 0x00650350
@@ -3365,14 +3420,14 @@ bool PakDecryptor::Decrypt109(std::span<const std::uint8_t> data, std::span<cons
 // FUNCTION: fn_04969
 bool PakDecryptor::Decrypt10A(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block,
                                 std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const {
-  return DecryptWithCipherMode<GPakEx::CipherModeFinal_646BE0>(DataHashBlockTransform31, 0x18, 0x10, 0x20, 8, 0x400, data, seed, block, input, output);
+  return DecryptWithCipherMode<GPakEx::TeaOfb>(DataHashBlockTransform31, 0x18, 0x10, 0x20, 8, 0x400, data, seed, block, input, output);
 }
 
 // OFFSET: 0x00650DD0
 // FUNCTION: fn_04970
 bool PakDecryptor::Decrypt10B(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block,
                                 std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const {
-  return DecryptWithCipherMode<GPakEx::CipherModeFinal_646B40>(DataHashKeyTransform34, 0x10, 0x10, 0x20, 8, 0, data, seed, block, input, output);
+  return DecryptWithCipherMode<GPakEx::TeaCfbDecryption>(DataHashKeyTransform34, 0x10, 0x10, 0x20, 8, 0, data, seed, block, input, output);
 }
 
 // OFFSET: 0x00651080
@@ -3400,7 +3455,7 @@ bool PakDecryptor::Decrypt10E(std::span<const std::uint8_t> data, std::span<cons
 // FUNCTION: fn_04974
 bool PakDecryptor::Decrypt10F(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block,
                                 std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const {
-  return DecryptWithCipherMode<GPakEx::CipherModeFinal_646F90>(DataHashKeyTransform30, 0x2C, 0x10, 0x10, 8, 0x400, data, seed, block, input, output);
+  return DecryptWithCipherMode<GPakEx::XteaCfbDecryption>(DataHashKeyTransform30, 0x2C, 0x10, 0x10, 8, 0x400, data, seed, block, input, output);
 }
 
 // OFFSET: 0x00651BD0
@@ -3414,7 +3469,7 @@ bool PakDecryptor::Decrypt110(std::span<const std::uint8_t> data, std::span<cons
 // FUNCTION: fn_04976
 bool PakDecryptor::Decrypt111(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block,
                                 std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const {
-  return DecryptWithCipherMode<GPakEx::CipherModeFinal_646F90>(DataHashKeyTransform32, 0x2C, 0x10, 0, 8, 0, data, seed, block, input, output);
+  return DecryptWithCipherMode<GPakEx::XteaCfbDecryption>(DataHashKeyTransform32, 0x2C, 0x10, 0, 8, 0, data, seed, block, input, output);
 }
 
 // OFFSET: 0x006520E0
