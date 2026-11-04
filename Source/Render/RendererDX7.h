@@ -27,6 +27,7 @@ public:
 
   void SetCamera(const float* eye, const float* target, const float* up) override;
   void SetClearColor(unsigned color) override;
+  void SetFog(int enabled) override;
   bool Draw() override;
   bool LockBackBuffer() override;
   HRESULT UnlockBackBuffer() override;
