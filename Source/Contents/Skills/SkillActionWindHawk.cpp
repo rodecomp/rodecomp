@@ -37,6 +37,7 @@ public:
   bool Slot06() override;
   bool Slot07() override;
   void Slot08(int level, CGameActor* source) override;
+  void Slot15(int sourceActor, CGameActor* target, CGameActor* argument3) override;
   void Slot16(int level, CGameActor* source, CGameActor* target) override;
 };
 
@@ -151,6 +152,20 @@ void CSkillAction_WH_CRESCIVE_BOLT::Slot08(int level, CGameActor* source) {
   if (source) {
     if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("crescivebolt_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
       effect->Slot14(level);
+    }
+  }
+}
+
+// OFFSET: 0x007A65A0
+// FUNCTION: fn_45492
+void CSkillAction_WH_CRESCIVE_BOLT::Slot15(int sourceActor, CGameActor* target, CGameActor* argument3) {
+  CGameActor* source = reinterpret_cast<CGameActor*>(sourceActor);
+  if (source && target) {
+    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("crescivebolt"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+      effect->Slot17(
+        ScreenAngle(&source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values) + 180.0f
+      );
+      effect->Slot16(static_cast<int>(source->unknown_0378 * source->render.speed * 16.0f));
     }
   }
 }
