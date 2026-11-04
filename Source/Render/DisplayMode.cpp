@@ -4,7 +4,9 @@
 
 #include <algorithm>
 #include <d3d9.h>
+#include <format>
 #include <utility>
+#include <wrl/client.h>
 
 // OFFSET: 0x00569E60
 // FUNCTION: fn_02272
@@ -15,15 +17,14 @@ bool DisplayMode::Matches(const DisplayMode& other) const {
 // OFFSET: 0x0056A590
 // FUNCTION: fn_02291
 std::vector<DisplayMode> EnumerateDisplayModes(int backend, unsigned deviceIndex) {
-  if (backend == 1) {
+  switch (backend) {
+  case 1:
     return EnumerateDisplayModesDX7(deviceIndex);
-  }
-
-  if (backend == 2) {
+  case 2:
     return EnumerateDisplayModesDX9(deviceIndex);
+  default:
+    return {};
   }
-
-  return {};
 }
 
 // OFFSET: 0x0056DCF0
