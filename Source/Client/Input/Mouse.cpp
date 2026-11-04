@@ -27,18 +27,18 @@ void CMouse::Update() {
       this->pressTicks[index] = now - this->doubleClickTime;
     }
 
-    if (this->pendingButtons[index]) {
-      if (this->previousButtons[index]) {
-        this->buttons[index] = 2;
-      } else if (now >= this->pressTicks[index] + this->doubleClickTime) {
-        this->pressTicks[index] = now;
-        this->buttons[index] = 1;
-      } else {
+    if (!this->pendingButtons[index]) {
+      this->buttons[index] = this->previousButtons[index] ? 3 : 0;
+    } else if (!this->previousButtons[index]) {
+      if (now < this->pressTicks[index] + this->doubleClickTime) {
         this->buttons[index] = 4;
         this->pressTicks[index] = now - this->doubleClickTime;
+      } else {
+        this->pressTicks[index] = now;
+        this->buttons[index] = 1;
       }
     } else {
-      this->buttons[index] = this->previousButtons[index] ? 3 : 0;
+      this->buttons[index] = 2;
     }
   }
 
