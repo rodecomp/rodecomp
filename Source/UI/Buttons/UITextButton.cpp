@@ -131,8 +131,9 @@ void UITextButton::Slot27(int x, int y) {
     return;
   }
 
+  const bool captured = g_windowMgr.Capture() == this;
   const bool inside = x >= 0 && x < this->geometry.width && y >= 0 && y < this->geometry.height;
-  const unsigned state = inside ? (g_windowMgr.Capture() == this ? 2 : 1) : 0;
+  const unsigned state = inside ? (captured ? 2 : 1) : 0;
   this->m_color = inside ? this->m_hoverColor : this->m_normalColor;
 
   if (this->geometry.unknown_0030 != state) {
@@ -1352,19 +1353,30 @@ void UIComboBoxID::Resize(int width, int height) {
 void UIListBoxID::Refresh() {
   const int visible = this->geometry.height / this->lineHeight;
   const int count = static_cast<int>(this->lines.size());
-  const int overflow = std::max((count - visible), 0);
+  int overflow = count - visible;
 
-  this->verticalOverflow = overflow != 0;
-  this->verticalBar->maximum = overflow != 0 ? (this->bottomMargin + overflow) : 0;
-  this->verticalBar->total = count;
-  this->verticalBar->visible = visible;
-  this->verticalBar->Invalidate();
-
-  if (this->verticalBar->position > this->verticalBar->maximum) {
-    this->verticalBar->position = this->verticalBar->maximum;
+  if (overflow < 0) {
+    overflow = 0;
   }
 
-  this->verticalBar->Invalidate();
+  this->verticalOverflow = overflow != 0;
+  auto* bar = this->verticalBar;
+
+  if (overflow == 0) {
+    bar->maximum = 0;
+  } else {
+    bar->maximum = this->bottomMargin + overflow;
+  }
+
+  bar->total = count;
+  bar->visible = visible;
+  bar->Invalidate();
+
+  if (bar->position > bar->maximum) {
+    bar->position = bar->maximum;
+  }
+
+  bar->Invalidate();
 }
 
 // OFFSET: 0x00895D80
