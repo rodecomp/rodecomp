@@ -22,23 +22,23 @@ ModelRenderCommand::ModelRenderCommand()
 }
 
 struct LightmappedBuffer {
-  void* vertices;
-  int count;
-  void* indices;
+  /* 0000 */ void* vertices;
+  /* 0004 */ int count;
+  /* 0008 */ void* indices;
   void Clear();
 };
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(offsetof(LightmappedBuffer, indices) == 0x8);
+#endif
 
 // OFFSET: 0x00569310
 // FUNCTION: fn_02254
 void LightmappedBuffer::Clear() {
-  if (this->vertices) {
-    std::free(this->vertices);
-    this->vertices = nullptr;
-  }
-  if (this->indices) {
-    std::free(this->indices);
-    this->indices = nullptr;
-  }
+  std::free(this->vertices);
+  this->vertices = nullptr;
+  std::free(this->indices);
+  this->indices = nullptr;
 }
 
 // OFFSET: 0x00569020
