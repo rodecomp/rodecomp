@@ -26,6 +26,8 @@ void SaveUserHotkeys() {
   }
 }
 
+__declspec(noinline) void ChangeUserHotkey(int tab, int index, int key1, int key2, const std::string& description);
+
 // OFFSET: 0x005F8B20
 // FUNCTION: fn_04064
 void ChangeUserHotkey(int tab, int index, int key1, int key2, const std::string& description) {
