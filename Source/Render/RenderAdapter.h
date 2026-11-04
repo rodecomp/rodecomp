@@ -30,7 +30,7 @@ struct RenderAdapter {
   /* 0040 */ GUID deviceGuid;
   /* 0050 */ std::string deviceName;
 
-  bool Matches(const RenderAdapter& selected) const;
+  __declspec(noinline) bool Matches(const RenderAdapter& selected) const;
 };
 
 RenderAdapter SelectedRenderAdapter();

@@ -39,6 +39,8 @@ bool RenderAdapter::Matches(const RenderAdapter& selected) const {
   return false;
 }
 
+__declspec(noinline) RenderAdapter SelectedRenderAdapter();
+
 // OFFSET: 0x0056A0F0
 // FUNCTION: fn_02284
 RenderAdapter SelectedRenderAdapter() {
@@ -59,6 +61,8 @@ RenderAdapter SelectedRenderAdapter() {
 
   return selected;
 }
+
+__declspec(noinline) std::vector<RenderAdapter> EnumerateAdaptersDX9();
 
 // OFFSET: 0x0056D770
 // FUNCTION: fn_02368
