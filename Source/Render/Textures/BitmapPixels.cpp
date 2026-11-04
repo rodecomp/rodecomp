@@ -242,20 +242,17 @@ void BitmapPixels::Brighten(int x, int y, int copyWidth, int copyHeight, int amo
   }
 
   this->dirty = true;
-  const unsigned right = std::min(this->width, static_cast<unsigned>(x) + copyWidth);
-  const unsigned bottom = std::min(this->height, static_cast<unsigned>(y) + copyHeight);
+  const int right = std::min(static_cast<std::uint32_t>(x + copyWidth), this->width);
+  const int bottom = std::min(static_cast<std::uint32_t>(y + copyHeight), this->height);
 
-  for (unsigned row = y; row < bottom; ++row) {
-    for (unsigned column = x; column < right; ++column) {
+  for (int row = y; row < bottom; ++row) {
+    for (int column = x; column < right; ++column) {
       std::uint32_t& pixel = this->pixels[column + row * this->width];
       if (pixel != 0xFFFF00FF) {
-        std::uint32_t value = 0xFF000000;
-
-        for (unsigned shift : {0u, 8u, 16u}) {
-          value |= std::clamp(amount + static_cast<int>((pixel >> shift) & 255), 0, 255) << shift;
-        }
-
-        pixel = value;
+        const int red = std::min(std::max(static_cast<int>((pixel >> 16) & 0xFF) + amount, 0), 255);
+        const int green = std::min(std::max(static_cast<int>((pixel >> 8) & 0xFF) + amount, 0), 255);
+        const int blue = std::min(std::max(static_cast<int>(pixel & 0xFF) + amount, 0), 255);
+        pixel = 0xFF000000 | ((red & 0xFF) << 16) | ((green & 0xFF) << 8) | (blue & 0xFF);
       }
     }
   }
@@ -268,21 +265,18 @@ void BitmapPixels::Dim(int x, int y, int copyWidth, int copyHeight, int percent)
     return;
   }
 
-  const unsigned right = std::min(this->width, static_cast<unsigned>(x) + copyWidth);
-  const unsigned bottom = std::min(this->height, static_cast<unsigned>(y) + copyHeight);
+  const int right = std::min(static_cast<std::uint32_t>(x + copyWidth), this->width);
+  const int bottom = std::min(static_cast<std::uint32_t>(y + copyHeight), this->height);
   const float factor = static_cast<float>(100 - percent) * 0.01f;
 
-  for (unsigned row = y; row < bottom; ++row) {
-    for (unsigned column = x; column < right; ++column) {
+  for (int row = y; row < bottom; ++row) {
+    for (int column = x; column < right; ++column) {
       std::uint32_t& pixel = this->pixels[column + row * this->width];
       if (pixel != 0xFFFF00FF) {
-        std::uint32_t value = 0xFF000000;
-
-        for (unsigned shift : {0u, 8u, 16u}) {
-          value |= static_cast<unsigned char>(static_cast<int>(static_cast<float>((pixel >> shift) & 255) * factor)) << shift;
-        }
-
-        pixel = value;
+        const int red = static_cast<int>(static_cast<BYTE>(pixel >> 16) * factor);
+        const int green = static_cast<int>(static_cast<BYTE>(pixel >> 8) * factor);
+        const int blue = static_cast<int>(static_cast<BYTE>(pixel) * factor);
+        pixel = 0xFF000000 | ((red & 0xFF) << 16) | ((green & 0xFF) << 8) | (blue & 0xFF);
       }
     }
   }
