@@ -74,20 +74,6 @@ namespace myGPack {
     };
 
     // INLINED
-    void Permute(std::uint8_t* block, const std::uint8_t* table, unsigned count) {
-      std::uint8_t result[8] = {};
-
-      for (unsigned i = 0; i < count; ++i) {
-        unsigned bit = table[i] - 1;
-        if (block[bit >> 3] & (0x80u >> (bit & 7))) {
-          result[i >> 3] |= static_cast<std::uint8_t>(0x80u >> (i & 7));
-        }
-      }
-
-      std::memcpy(block, result, sizeof(result));
-    }
-
-    // INLINED
     std::uint8_t SubstituteLastByte(std::uint8_t value) {
       switch (value) {
       case 0x00:
@@ -198,7 +184,7 @@ namespace myGPack {
     std::memcpy(&inputHigh, input + 4, sizeof(inputHigh));
     std::memcpy(output, &inputLow, sizeof(inputLow));
     std::memcpy(output + 4, &inputHigh, sizeof(inputHigh));
-    Permute(output, s_initialPermutation, 64);
+    InitialPermutation(output);
 
     for (int round = 0; round < rounds; ++round) {
       std::uint8_t expanded[8] = {};
@@ -247,7 +233,7 @@ namespace myGPack {
       std::swap(output[i], output[i + 4]);
     }
 
-    Permute(output, s_finalPermutation, 64);
+    FinalPermutation(output);
     return 1;
   }
 
