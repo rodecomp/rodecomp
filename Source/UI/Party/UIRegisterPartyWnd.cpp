@@ -1,7 +1,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "Client/Input/InputCharset.h"
 #include "Contents/MessageTable.h"
-#include "Client/Input/Language.h"
+#include "Resource/TextureNames.h"
 #include "Contents/Party/AdventurerAgencyMgr.h"
 #include "Client/Session.h"
 #include "Contents/ForbiddenWords.h"
@@ -9,8 +9,8 @@
 #include "Render/Text/TextContext.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
-#include "UI/Window/InputFocus.h"
 #include "UI/Text/TextFitting.h"
+#include "Utility/Text/FormatString.h"
 #include "UI/Text/TextWrapping.h"
 #include "UI/Buttons/UIBasicButton.h"
 #include "UI/Buttons/UIBitmapButton.h"
@@ -202,9 +202,9 @@ void UIRegisterPartyWnd::SetInfo(CAdvenPartyInfo value) {
   this->jobs[2]->SetSelected(value.dealer);
   this->jobs[3]->SetSelected(value.assist);
   char number[10] = {};
-  _snprintf_s(number, sizeof(number), _TRUNCATE, "%d", value.minimumLevel);
+  StringFormat(number, sizeof(number), _TRUNCATE, "%d", value.minimumLevel);
   this->minimum->SetText(number);
-  _snprintf_s(number, sizeof(number), _TRUNCATE, "%d", value.maximumLevel);
+  StringFormat(number, sizeof(number), _TRUNCATE, "%d", value.maximumLevel);
   this->maximum->SetText(number);
   this->selectedType = value.type;
   this->types->Select(value.type);
@@ -213,24 +213,23 @@ void UIRegisterPartyWnd::SetInfo(CAdvenPartyInfo value) {
   this->Invalidate();
 }
 
-// INLINED
-const char* UIRegisterPartyWnd::Text(UIEditCtrl& control) const {
-  return g_windowMgr.hoverWindow == &control ? g_serverLanguage->text.c_str() : control.text.c_str();
-}
-
 // OFFSET: 0x007BBA80
 // FUNCTION: fn_09290
 void UIRegisterPartyWnd::NormalizeLevels() {
   const int level = g_session.m_level;
-  char number[10] = {};
+  std::string text = this->minimum->Text();
 
-  if (!Digits(this->Text(*this->minimum))) {
-    _snprintf_s(number, sizeof(number), _TRUNCATE, "%d", std::max((level - 5), 1));
+  if (!Digits(text)) {
+    char number[10] = {};
+    StringFormat(number, sizeof(number), _TRUNCATE, "%d", std::max(level - 5, 1));
     this->minimum->SetText(number);
   }
 
-  if (!Digits(this->Text(*this->maximum))) {
-    _snprintf_s(number, sizeof(number), _TRUNCATE, "%d", (level + 5));
+  text = this->maximum->Text();
+
+  if (!Digits(text)) {
+    char number[10] = {};
+    StringFormat(number, sizeof(number), _TRUNCATE, "%d", level + 5);
     this->maximum->SetText(number);
   }
 }
@@ -238,41 +237,11 @@ void UIRegisterPartyWnd::NormalizeLevels() {
 // OFFSET: 0x007BFBB0
 // FUNCTION: fn_09305
 void UIRegisterPartyWnd::Paint() {
-  this->geometry.surface->Fill(nullptr, 0xFFFF00FFu);
-  const auto load = [&](const char* name) { return static_cast<CBitmapRes*>(ResourceMgr::Instance().Load((std::string(prefix) + name).c_str())); };
-  const auto* background = load("UIadventurerAgency\\bg_agency_register.bmp");
+  this->ClearSurface(0xFFFF00FF);
+  const auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\UIadventurerAgency\\bg_agency_register.bmp")));
   this->DrawBitmap(0, 0, background ? &background->image : nullptr, false);
   this->DrawTextAt(86, 50, "~", 0, 0, 12, 0, 0, 0);
-  int leftWidth = 0;
-  int rightWidth = 0;
-  int titleHeight = 0;
-
-  if (const auto* left = load("basic_interface\\titlebar_left.bmp")) {
-    this->DrawBitmap(0, 0, &left->image, false);
-    leftWidth = left->image.width;
-  }
-
-  if (const auto* right = load("basic_interface\\titlebar_right.bmp")) {
-    rightWidth = right->image.width;
-    this->DrawBitmap(this->geometry.width - rightWidth, 0, &right->image, false);
-  }
-
-  if (const auto* middle = load("basic_interface\\titlebar_mid.bmp")) {
-    titleHeight = middle->image.height;
-    const int extent = this->geometry.width - rightWidth - leftWidth;
-    const int tiles = extent / middle->image.width + (extent % middle->image.width != 0);
-
-    for (int index = 0; index < tiles; ++index) {
-      this->DrawBitmap(leftWidth, 0, &middle->image, false);
-      leftWidth += middle->image.width;
-    }
-  }
-
-  const char* caption = LookupMessage(3356);
-  this->DrawTextAt(19, titleHeight - 13, caption, 0, 0, 12, 0xFFFFFF, 0, 0);
-  this->DrawTextAt(18, titleHeight - 14, caption, 0, 0, 12, 0, 0, 0);
-  const auto* base = load("basic_interface\\sys_base_off.bmp");
-  this->DrawBitmap(3, 3, base ? &base->image : nullptr, true);
+  this->DrawTitleBar(true, LookupMessage(3356), 0);
 }
 
 // OFFSET: 0x007C1410
@@ -286,22 +255,18 @@ int UIRegisterPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
         return 0;
       }
 
-      const auto notify = [&](int id) {
-        char text[256] = {};
-        _snprintf_s(text, sizeof(text), _TRUNCATE, LookupMessage(id));
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
-      };
-
       if (g_session.unknown_5464 != 0) {
-        if (g_forbiddenWords.Contains(this->Text(*this->memo))) {
-          notify(3372);
+        if (g_forbiddenWords.Contains(this->memo->Text()) == true) {
+          char text[256] = {};
+          StringFormat(text, sizeof(text), _TRUNCATE, LookupMessage(3372));
+          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
           return 0;
         }
 
         this->NormalizeLevels();
 
-        if (std::atoi(this->Text(*this->minimum)) > std::atoi(this->Text(*this->maximum))) {
-          notify(3516);
+        if (std::atoi(this->minimum->Text()) > std::atoi(this->maximum->Text())) {
+          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3516)), 0xFF, 0, 0, 0);
           return 0;
         }
 
@@ -310,14 +275,16 @@ int UIRegisterPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
         info.healer = this->jobs[1]->selected;
         info.dealer = this->jobs[2]->selected;
         info.assist = this->jobs[3]->selected;
-        info.minimumLevel = std::atoi(this->Text(*this->minimum));
-        info.maximumLevel = std::atoi(this->Text(*this->maximum));
+        info.minimumLevel = std::atoi(this->minimum->Text());
+        info.maximumLevel = std::atoi(this->maximum->Text());
         info.type = this->selectedType;
-        info.memo = this->Text(*this->memo);
+        info.memo = this->memo->Text();
         info.characterName = g_session.DecodePlayerName();
         g_adventurerAgencyMgr->RequestRegistration(info);
       } else {
-        notify(3506);
+        char text[256] = {};
+        StringFormat(text, sizeof(text), _TRUNCATE, LookupMessage(3506));
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
       }
     }
 
@@ -326,11 +293,10 @@ int UIRegisterPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
   }
 
   if (message == 34) {
-    this->saved = reinterpret_cast<PartyBoardPlacement*>(a);
+    this->saved = reinterpret_cast<RegisterPartyWndInfo*>(a);
 
-    if (this->saved->width <= 0 || this->saved->height <= 0 || this->saved->x < 0 || this->saved->x > g_renderer->viewport.width - this->saved->width ||
-        this->saved->y < 0 || this->saved->y > g_renderer->viewport.height - this->saved->height) {
-      *this->saved = {200, 200, 220, 197};
+    if (!this->saved->IsValid()) {
+      this->saved->Reset();
     }
 
     this->Move(this->saved->x, this->saved->y);

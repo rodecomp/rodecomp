@@ -9,6 +9,7 @@ class UIEditCtrl;
 class UIJobSlotButton;
 class UIStaticText;
 class UIBasicButton;
+struct RegisterPartyWndInfo;
 
 class UIRegisterPartyWnd : public UIFrameWnd {
 public:
@@ -29,10 +30,9 @@ public:
   /* 00D8 */ UIStaticText* character;
   /* 00DC */ UIBasicButton* recruit;
   /* 00E0 */ UIBasicButton* change;
-  /* 00E4 */ PartyBoardPlacement* saved;
+  /* 00E4 */ RegisterPartyWndInfo* saved;
 
 private:
-  const char* Text(UIEditCtrl& control) const;
   void NormalizeLevels();
 };
 
