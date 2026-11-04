@@ -72,9 +72,9 @@ void UIMerchantShopTitle::Slot26(int, int) {
 // FUNCTION: fn_10878
 void UIMerchantShopTitle::ResetCursor(int x, int y) {
   if (x >= 0 && x < this->geometry.width && y >= 0 && y <= this->geometry.height) {
-    static_cast<CMode*>(g_charViewMode)->SetCursorAction(2);
+    g_modeMgr.gameMode->SetCursorAction(2);
   } else {
-    static_cast<CMode*>(g_charViewMode)->SetCursorAction(0);
+    g_modeMgr.gameMode->SetCursorAction(0);
   }
 }
 
