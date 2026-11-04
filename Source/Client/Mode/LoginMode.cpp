@@ -623,7 +623,7 @@ int CLoginMode::GetMaxCharacterSlot() {
       break;
     }
 
-    maxSlot = std::max(maxSlot, static_cast<int>(this->characters[i].slot));
+    maxSlot = std::max(static_cast<int>(this->characters[i].slot), maxSlot);
   }
 
   return maxSlot;
