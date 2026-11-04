@@ -43,7 +43,7 @@ namespace {
 char* FormatGroupedInteger(std::int64_t value, char* output, int capacity) {
   if (output && capacity > 0) {
     char digits[32];
-    const int length = std::snprintf(digits, sizeof(digits), "%lld", static_cast<long long>(value));
+    const int length = _snprintf_s(digits, _TRUNCATE, "%I64d", value);
     GroupDigits(digits, length, output, capacity);
   }
 
@@ -55,7 +55,7 @@ char* FormatGroupedInteger(std::int64_t value, char* output, int capacity) {
 char* FormatGroupedInteger(int value, char* output, int capacity) {
   if (output && capacity > 0) {
     char digits[32];
-    const int length = std::snprintf(digits, sizeof(digits), "%d", value);
+    const int length = _snprintf_s(digits, _TRUNCATE, "%d", value);
     GroupDigits(digits, length, output, capacity);
   }
 
