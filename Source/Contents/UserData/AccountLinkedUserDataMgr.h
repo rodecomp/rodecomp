@@ -19,8 +19,8 @@ public:
   static bool Initialize();
   static void Shutdown();
   std::string SaveUrl() const;
-  std::string LoadUrl() const;
-  void RefreshUrls(LuaScript& settings, LuaScript& tables, const char* host, const char* port, const char* overrideKey);
+  __declspec(noinline) std::string LoadUrl() const;
+  __declspec(noinline) void RefreshUrls(LuaScript& settings, LuaScript& tables, const char* host, const char* port, const char* overrideKey);
 
   void CompleteLoad(
     AsyncDiagnostic diagnostic, std::uint32_t accountId, std::string accountName, std::string response
