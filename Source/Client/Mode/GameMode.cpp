@@ -365,7 +365,7 @@ bool CGameMode::IsOverWeight(bool notify) {
 
 // OFFSET: 0x00CCFCF0
 // FUNCTION: fn_21247
-void CGameMode::CompleteUnknown0194(std::uint32_t id, const std::string& text) {
+__declspec(noinline) void CGameMode::CompleteUnknown0194(std::uint32_t id, const std::string& text) {
   auto it = this->unknown_0194.find(id);
   if (it != this->unknown_0194.end()) {
     this->SendMsg(140, reinterpret_cast<int>(text.c_str()), it->second, 0, 0);
