@@ -2813,7 +2813,7 @@ namespace AdventureGuide {
 
 // OFFSET: 0x009D9150
 // FUNCTION: fn_14276
-CUIItemInfo::CUIItemInfo()
+__declspec(noinline) CUIItemInfo::CUIItemInfo()
     : CUIListItem(), unknown_00E8(), unknown_00F0(nullptr), unknown_00F4(nullptr), unknown_00F8(nullptr), itemId(-1), type(21), location(-1),
       unknown_0108() {
 }
@@ -2826,7 +2826,7 @@ CUIMonsterInfo::CUIMonsterInfo()
 
 // OFFSET: 0x009D9420
 // FUNCTION: fn_14280
-CUIQuestInfo::CUIQuestInfo()
+__declspec(noinline) CUIQuestInfo::CUIQuestInfo()
     : CUIListItem(), unknown_00E8(nullptr), unknown_00EC(nullptr), unknown_00F0(nullptr), unknown_00F4(nullptr), unknown_00F8(), questId(0) {
 }
 
@@ -3050,7 +3050,7 @@ void CUITextButton::SetFont(const std::string& name) {
 
 // OFFSET: 0x009ED470
 // FUNCTION: fn_14576
-void CUITextButton::SetText(const std::string& value) {
+__declspec(noinline) void CUITextButton::SetText(const std::string& value) {
   this->text = value;
   this->UpdateText();
 }
