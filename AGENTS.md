@@ -155,8 +155,12 @@ other contributors' agents: a function merges once "same" leads
 - **No inline assembly, `__emit`, byte arrays of code, `#pragma code_seg`,
   `#pragma comment`, `#line`, or `__declspec(naked/allocate)`.** These are
   rejected automatically, also when hidden behind macros.
-- Only edit the files the task allows (its unit file and headers under
-  `include/`). Header changes affect everyone and get stricter review.
+- Edit your region's unit and the headers it needs. Header changes affect
+  everyone and get stricter review. You may also edit other units for a
+  refactor (a rename, a declaration moved to a header): there, every function
+  must compile to the same linked code as on main, or match the original
+  exactly; list any other function whose code changes in `td submit` as a
+  revision. A batch that edits other units merges as a whole or not at all.
 - Do not break functions that already match; the verifier recompiles every unit
   that includes a changed header.
 - Prefer real names and struct members over raw offsets and casts. Use
