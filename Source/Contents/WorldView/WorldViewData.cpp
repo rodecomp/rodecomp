@@ -147,7 +147,7 @@ CWorldViewField* CWorldViewWorld::FieldAt(unsigned int& mapIndex, int x, int y) 
 
 // OFFSET: 0x00613B80
 // FUNCTION: fn_04353
-CWorldViewField* CWorldViewWorld::FindField(unsigned int& mapIndex, const char* name) {
+__declspec(noinline) CWorldViewField* CWorldViewWorld::FindField(unsigned int& mapIndex, const char* name) {
   const unsigned int count = this->maps.size();
   for (unsigned int index = 0; index < count; ++index) {
     CWorldViewMap* map = this->maps[index];
@@ -168,7 +168,7 @@ CWorldViewField* CWorldViewWorld::FindField(unsigned int& mapIndex, const char* 
 
 // OFFSET: 0x00613C30
 // FUNCTION: fn_04354
-CWorldViewField* CWorldViewWorld::FindField(const char* name) {
+__declspec(noinline) CWorldViewField* CWorldViewWorld::FindField(const char* name) {
   for (std::vector<CWorldViewMap*>::iterator it = this->maps.begin(); it != this->maps.end(); ++it) {
     if (CWorldViewField* field = (*it)->FindField(name)) {
       return field;
@@ -368,7 +368,7 @@ unsigned int CWorldViewMgr::FindWorld(int mapId) {
 
 // OFFSET: 0x00616C20
 // FUNCTION: fn_04377
-void CWorldViewMgr::ResetSelection() {
+__declspec(noinline) void CWorldViewMgr::ResetSelection() {
   this->selection.worldIndex = 0;
   this->selection.mapIndex = 0;
   this->selection.name.clear();
