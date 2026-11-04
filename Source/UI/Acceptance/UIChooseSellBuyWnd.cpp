@@ -467,8 +467,8 @@ void __stdcall Nullsub301(int, int) {
 // OFFSET: 0x008ED130
 // FUNCTION: fn_12214
 void UIChooseSellBuyWnd::Paint() {
-  const std::string path = std::string(prefix) + "win_msgbox.bmp";
-  const auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(path.c_str()));
+  auto* bitmap = static_cast<CBitmapRes*>(
+    ResourceMgr::Instance().Load(Resolve("유저인터페이스\\win_msgbox.bmp")));
   this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
 }
 
@@ -2380,7 +2380,7 @@ void UICombinedCardItemCollectionWnd::Move(int x, int y) {
   UIFrameWnd::Move(x, y);
   if (UIWindow* comparison = g_windowMgr.unknown_0224) {
     if (UIWindow* window = g_windowMgr.LookupWindow(82)) {
-      comparison->Move(window->geometry.x - window->geometry.width, window->geometry.y);
+      static_cast<UIFrameWnd*>(comparison)->UIFrameWnd::Move(window->geometry.x - window->geometry.width, window->geometry.y);
     }
   }
 }
@@ -2397,7 +2397,7 @@ void UIItemCollectionWnd::Move(int x, int y) {
   UIFrameWnd::Move(x, y);
   if (UIWindow* comparison = g_windowMgr.unknown_0220) {
     if (UIWindow* window = g_windowMgr.LookupWindow(12)) {
-      comparison->Move(window->geometry.x - window->geometry.width, window->geometry.y);
+      static_cast<UIFrameWnd*>(comparison)->UIFrameWnd::Move(window->geometry.x - window->geometry.width, window->geometry.y);
     }
   }
 }
