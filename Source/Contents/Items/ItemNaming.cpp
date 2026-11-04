@@ -478,7 +478,7 @@ int ItemUnidentifiedName(const ITEM_INFO& item, char* output, int& capacity, uns
 
 // OFFSET: 0x006D3770
 // FUNCTION: fn_06544
-ItemCardName& FindItemCardName(int id, std::map<int, ItemCardName>& values) {
+__declspec(noinline) ItemCardName& FindItemCardName(int id, std::map<int, ItemCardName>& values) {
   // GLOBAL: gl_24676
   static ItemCardName missing{};
   const auto entry = values.find(id);
