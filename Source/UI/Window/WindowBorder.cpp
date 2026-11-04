@@ -10,6 +10,8 @@
 
 namespace {}
 
+__declspec(noinline) void DrawRoundedBorder(UIWindow& window, int x, int y, int width, int height, std::uint32_t color);
+
 // OFFSET: 0x00A7C060
 // FUNCTION: fn_16942
 void DrawRoundedBorder(UIWindow& window, int x, int y, int width, int height, std::uint32_t color) {
