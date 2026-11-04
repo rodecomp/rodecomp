@@ -61,7 +61,7 @@ namespace {
   }
 
   // INLINED
-  void ChannelMask(DeviceOwnerDX7::Channel& channel, DWORD mask) {
+  __forceinline void ChannelMask(DeviceOwnerDX7::Channel& channel, DWORD mask) {
     channel = {0, 8};
 
     if (!mask) {
