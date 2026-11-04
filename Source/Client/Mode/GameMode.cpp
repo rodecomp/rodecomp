@@ -306,6 +306,17 @@ float CGameMode::CameraDesiredYaw() {
   return this->camera->camera.desiredYaw;
 }
 
+// OFFSET: 0x00CF06D0
+// FUNCTION: fn_45499
+int ConfirmGameModeActionB8() {
+  if (g_windowMgr.LookupWindow(0x271B)) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xDDF)), 0xFF, 0, 0, 0);
+    return 0;
+  }
+  g_modeMgr.gameMode->SendMsg(0xB8, 1, 0, 0, 0);
+  return 0;
+}
+
 // OFFSET: 0x00CF0380
 // FUNCTION: fn_21414
 std::string CGameMode::GetActiveSkillEffectTimeText(int skillId, int* activeSkillId) {
@@ -915,6 +926,17 @@ void CGameMode::UpdateReplayActionSpeeds() {
   for (CRenderObject* actor : this->scene->actors) {
     actor->SetActionSpeed(Replay::Instance().AnimationScale());
   }
+}
+
+// OFFSET: 0x00CF1010
+// FUNCTION: fn_45498
+int ConfirmGameModeAction96() {
+  if (g_windowMgr.LookupWindow(0x271B)) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xDDE)), 0xFF, 0, 0, 0);
+    return 0;
+  }
+  g_modeMgr.gameMode->SendMsg(0x96, 1, 0, 0, 0);
+  return 0;
 }
 
 // OFFSET: 0x00CF1060
