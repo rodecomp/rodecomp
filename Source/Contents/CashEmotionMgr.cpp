@@ -157,7 +157,7 @@ public:
 
   int Slot53(int packId, bool showTooltip, bool hoverable) override;
 
-  void SetPressed(bool pressed, bool force);
+  __declspec(noinline) void SetPressed(bool pressed, bool force);
 
 protected:
   /* 00E0 */ bool m_pressed;
