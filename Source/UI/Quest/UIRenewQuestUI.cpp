@@ -2213,6 +2213,20 @@ void CUIRenewQuestUI::OnWaitTabClick() {
   }
 }
 
+// OFFSET: 0x00A66230
+// FUNCTION: fn_45521
+void CUIRenewQuestUI::OnSearchSubmit() {
+  this->searchText = this->searchEdit->edit->Text();
+  this->sub_A67290(0xF);
+}
+
+// OFFSET: 0x00A66370
+// FUNCTION: fn_45520
+void CUIRenewQuestUI::OnSearchButton() {
+  this->searchText = this->searchEdit->edit->Text();
+  this->sub_A67290(0xF);
+}
+
 // OFFSET: 0x00A65AF0
 // FUNCTION: fn_16599
 CUIRenewQuestUI::CUIRenewQuestUI()

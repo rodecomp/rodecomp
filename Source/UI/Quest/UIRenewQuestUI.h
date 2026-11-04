@@ -74,6 +74,8 @@ public:
   void OnRecommendedTabClick();
   void OnHoldTabClick();
   void OnWaitTabClick();
+  void OnSearchSubmit();
+  void OnSearchButton();
   void OnFilterButton(UIWindow* button);
   void OnPanelButton();
   void OnCallback6();
