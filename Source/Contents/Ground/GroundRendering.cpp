@@ -10,16 +10,16 @@
 
 namespace {
   // INLINED
-  float Minimum4(float a, float b, float c, float d) {
-    const float first = !(a > b) ? a : b;
-    const float second = !(c > d) ? c : d;
+  const float& Minimum4(const float& a, const float& b, const float& c, const float& d) {
+    const float& first = !(a > b) ? a : b;
+    const float& second = !(c > d) ? c : d;
     return first > second ? second : first;
   }
 
   // INLINED
-  float Maximum4(float a, float b, float c, float d) {
-    const float first = !(b > a) ? a : b;
-    const float second = !(d > c) ? c : d;
+  const float& Maximum4(const float& a, const float& b, const float& c, const float& d) {
+    const float& first = !(b > a) ? a : b;
+    const float& second = !(d > c) ? c : d;
     return second > first ? second : first;
   }
 }
@@ -61,11 +61,14 @@ bool GroundQuadVisible(const RenderVertex* vertices) {
 
 namespace {
   // INLINED
-  void Submit(const float* matrix, const GroundQuad& quad, bool clip) {
+  __forceinline void SubmitGroundQuad(const float* matrix, const GroundQuad& quad, bool clip) {
     RenderVertex vertices[4]{};
 
+    for (auto& vertex : vertices) {
+      vertex.specular = 0xFF000000u;
+    }
+
     for (unsigned corner = 0; corner < 4; ++corner) {
-      vertices[corner].specular = 0xFF000000u;
       g_renderer->viewport.Project(quad.vertices[corner], matrix, vertices[corner]);
     }
 
@@ -89,7 +92,7 @@ namespace {
 // OFFSET: 0x00AC2530
 // FUNCTION: fn_17593
 void GroundGeometry::DrawSide(const float* matrix, const GroundQuad& quad, bool clip) {
-  Submit(matrix, quad, clip);
+  SubmitGroundQuad(matrix, quad, clip);
 }
 
 // OFFSET: 0x00AC19A0
@@ -108,7 +111,7 @@ void GroundGeometry::Draw(const float* matrix, const int* rectangle, bool clip) 
         cell.frame = g_renderer->frame;
 
         if (cell.top) {
-          Submit(matrix, *cell.top, clip);
+          SubmitGroundQuad(matrix, *cell.top, clip);
         }
 
         if (cell.side2) {
