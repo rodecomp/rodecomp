@@ -62,7 +62,7 @@ ItemCardName& EnsureItemCardName(int id, std::map<int, ItemCardName>& values) {
     return entry->second;
   }
 
-  return values[id];
+  return values.insert({id, ItemCardName()}).first->second;
 }
 
 // OFFSET: 0x006D3C10
@@ -73,7 +73,7 @@ std::vector<const char*>& EnsureItemDescriptionLines(int id, std::map<int, std::
     return entry->second;
   }
 
-  return values[id];
+  return values.insert({id, std::vector<const char*>()}).first->second;
 }
 
 // OFFSET: 0x006D5890
@@ -99,8 +99,8 @@ void CSession::IconPath(char* output, const char* id, int identified) {
 // OFFSET: 0x006D5730
 // FUNCTION: fn_06576
 const std::vector<const char*>& ITEM_INFO::Description() const {
-  const ITEM_DESC& value = FindItemDescription(std::atoi(this->itemId.c_str()), g_itemDescriptions);
-  return this->identified == 1 ? value.identifiedDescription : value.unidentifiedDescription;
+  return this->identified == 1 ? FindItemDescription(std::atoi(this->itemId.c_str()), g_itemDescriptions).identifiedDescription
+                               : FindItemDescription(std::atoi(this->itemId.c_str()), g_itemDescriptions).unidentifiedDescription;
 }
 
 // OFFSET: 0x006D5810
