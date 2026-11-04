@@ -150,14 +150,12 @@ void CReputeMgr::InfoInserter::operator()(const std::pair<const int, ReputeInfoR
   info.name = FromUtf8(entry.second.name, g_textCodePage);
   info.unknown_0018 = entry.second.maxPointPositive;
   info.unknown_0020 = entry.second.maxPointNegative;
-  const std::string& invisible = entry.second.invisible;
+  const std::string invisible = FromUtf8(entry.second.invisible, g_textCodePage);
   if (invisible.size() == 12 && invisible[0] == 'V' && invisible[1] == 'I' && invisible[2] == 'S' && invisible[3] == 'I' &&
       invisible[4] == 'B' && invisible[5] == 'L' && invisible[6] == 'E' && invisible[7] == '_' && invisible[8] == 'T' &&
       invisible[9] == 'R' && invisible[10] == 'U' && invisible[11] == 'E') {
     info.visibility = REPUTE_VISIBLE;
-  } else if (invisible.size() == 13 && invisible[0] == 'V' && invisible[1] == 'I' && invisible[2] == 'S' && invisible[3] == 'I' &&
-             invisible[4] == 'B' && invisible[5] == 'L' && invisible[6] == 'E' && invisible[7] == '_' && invisible[8] == 'F' &&
-             invisible[9] == 'A' && invisible[10] == 'L' && invisible[11] == 'S' && invisible[12] == 'E') {
+  } else if (invisible == "VISIBLE_FALSE") {
     info.visibility = REPUTE_HIDDEN;
   } else {
     info.visibility = REPUTE_VISIBLE_WITH_POINT;
