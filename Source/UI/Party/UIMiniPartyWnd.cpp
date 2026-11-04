@@ -1,4 +1,5 @@
 #include "UI/Party/UIMiniPartyWnd.h"
+#include "Client/Input/Mouse.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/MapInfoMgr.h"
@@ -369,8 +370,8 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       }
       menu->SendMsg(nullptr, 83, 301, this->m_owner->m_cell, 0, 0);
       menu->SendMsg(nullptr, 30, 0, 0, 0, 0);
-      int x = g_screenWidth + 1;
-      int y = g_screenHeight + 1;
+      int x = g_mouse.x + 1;
+      int y = g_mouse.y + 1;
       if (x < 1) {
         x = 1;
       }
