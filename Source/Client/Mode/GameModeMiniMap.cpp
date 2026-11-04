@@ -1,4 +1,5 @@
 #include "Client/Mode/CGameMode.h"
+#include "Client/Input/Mouse.h"
 #include "Client/Session.h"
 #include "Contents/TownInfoMgr.h"
 #include "File/File.h"
@@ -570,10 +571,10 @@ void CGameMode::DrawMiniMapNumber() {
   CSprRes* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load("이팩트\\숫자.spr"));
   for (int index = 0; index < g_minimapCoordinateDigits; ++index) {
     const int x = static_cast<int>(
-      static_cast<float>(g_screenWidth) + this->cursorOffsetX + 24.0f - static_cast<float>(index * 16) +
+      static_cast<float>(g_mouse.x) + this->cursorOffsetX + 24.0f - static_cast<float>(index * 16) +
       static_cast<float>(g_minimapCoordinateDigits * 16 - 16)
     );
-    const int y = static_cast<int>(static_cast<float>(g_screenHeight) + this->cursorOffsetY);
+    const int y = static_cast<int>(static_cast<float>(g_mouse.y) + this->cursorOffsetY);
     DrawActionSprite(
       reinterpret_cast<CRenderSystemBase&>(*this), x, y, action, sprite, 0, g_minimapCoordinateDigitValues[index], 2.0f, 0.0f, 0xFAFFFFFF, 0x201
     );
