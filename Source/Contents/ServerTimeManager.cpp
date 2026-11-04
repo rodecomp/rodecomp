@@ -57,7 +57,7 @@ void ServerTimeManager::Reset() {
 
 // OFFSET: 0x0053E930
 // FUNCTION: fn_01696
-void ServerTimeManager::Update() {
+__declspec(noinline) void ServerTimeManager::Update() {
   this->now = std::chrono::system_clock::now();
   this->now += this->offset;
 
