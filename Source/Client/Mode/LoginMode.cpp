@@ -815,7 +815,7 @@ void CLoginMode::SubD8F560(int) {
 
 // OFFSET: 0x00D8F8E0
 // FUNCTION: fn_22280
-void CLoginMode::ReceiveCharacterList(const CharacterListPacket* packet) {
+__declspec(noinline) void CLoginMode::ReceiveCharacterList(const CharacterListPacket* packet) {
   this->characterCount = (packet->length - 4) / sizeof(CharacterInfo);
   g_session.unknown_59BC = this->characterCount;
   memcpy_s(this->characters, sizeof(this->characters), packet->characters, this->characterCount * sizeof(CharacterInfo));
@@ -1643,7 +1643,7 @@ void CLoginMode::ConnectZoneServer(std::uint32_t gid, std::string mapName, std::
 
 // OFFSET: 0x00D90740
 // FUNCTION: fn_22285
-void CLoginMode::ReceiveNotifyZoneServer(const NotifyZoneServerPacket* packet) {
+__declspec(noinline) void CLoginMode::ReceiveNotifyZoneServer(const NotifyZoneServerPacket* packet) {
   this->ConnectZoneServer(packet->gid, std::string(std::begin(packet->mapName), std::end(packet->mapName)).c_str(), packet->ip, packet->port, std::string());
 }
 
