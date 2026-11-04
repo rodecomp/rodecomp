@@ -21,7 +21,7 @@ bool CNavigationManager::PlayerCell(int* column, int* row) {
 
 // OFFSET: 0x00CD5510
 // FUNCTION: fn_21282
-void CGameMode::PlayerCell(int* column, int* row) const {
+__declspec(noinline) void CGameMode::PlayerCell(int* column, int* row) const {
   const auto* player = reinterpret_cast<const CRenderObject*>(this->scene->player);
   this->WorldCell(player->render.position.x, player->render.position.z, *column, *row);
 }
