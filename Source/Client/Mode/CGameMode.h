@@ -1025,6 +1025,11 @@ static_assert(offsetof(CGameMode, unknown_066C) == 0x66C);
 static_assert(sizeof(CGameMode) == 0x670);
 #endif
 
+void SendPacketHeader(std::uint16_t packetType);
+void SendPacketHeader2(std::uint16_t packetType);
+void sub_D73A10(const unsigned char* packet);
+void sub_D6E440();
+
 extern char g_pendingWhisperCount;
 extern int g_whisperRecord;
 extern int g_timeAttackStart;

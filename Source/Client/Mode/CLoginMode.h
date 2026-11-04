@@ -170,6 +170,8 @@ public:
 };
 
 extern bool g_loginModeFlag;
+extern int g_charServerAccountIdPending;
+extern std::uint32_t g_loginAcceptTime;
 extern int g_loginStartMode;
 extern int g_isStopByLogin;
 extern int g_modalImmediate;

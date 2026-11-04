@@ -79,7 +79,6 @@
 #include "Contents/Schedule/EmotionSchedule.h"
 #include "Contents/Schedule/TimeScheduler.h"
 #include "Contents/Messenger/WhisperBlockMgr.h"
-#include "UI/Chat/UINewChatWnd.h"
 #include "UI/Text/NavigationLink.h"
 #include "UI/Text/TextWrapping.h"
 #include "UI/Text/UITextViewer.h"
@@ -100,6 +99,42 @@
 #include <xtimec.h>
 #include "Contents/ChampionMonsterMgr.h"
 #include "Contents/Jobs/JobId.h"
+#include "Contents/Actors/GraffiSkill.h"
+#include "UI/Party/UIRequestJoinPartyMgr.h"
+#include "Contents/Items/RuneSystem.h"
+#include "Contents/SimpleStringMgr.h"
+#include "Contents/Party/PartyJoinResult.h"
+#include "Security/NProtectGameGuardMgr.h"
+#include "Contents/EntryQueueMgr.h"
+#include "UI/Window/UIBalloonOpenBtn.h"
+#include "UI/Window/UINewSelectCharWnd.h"
+#include "Client/Application/ErrorDialog.h"
+#include "UI/Items/UIItemCollectionWnd.h"
+#include "Contents/MapPropertyMgr.h"
+#include <ctime>
+#include "UI/Window/UIChatRoomWnd.h"
+#include "UI/Navigation/UINavigationV4Wnd.h"
+#include "Contents/ClanInfo.h"
+#include "Contents/NavigationManager.h"
+#include "Utility/Text/LanguageCharset.h"
+#include "UI/Edit/UIEditCtrl.h"
+#include "Client/Mode/CLoginMode.h"
+#include "Contents/Jobs/JobInheritance.h"
+#include "UI/Item/UIParaItemShopWnd.h"
+#include "Script/LuaScript.h"
+#include "Contents/Actors/Item.h"
+#include "Contents/ClientState.h"
+#include "Contents/ClientItemLists.h"
+#include "Contents/Sound/SoundMaker.h"
+#include "Contents/PetEvolutionMgr.h"
+#include "UI/Window/UIPetInfoWnd.h"
+#include "UI/Items/UIItemIdentifyWnd.h"
+#include "UI/Chat/UIChatRoomTitle.h"
+#include "Network/ActorNamePacket.h"
+#include "UI/Guild/UIGuild_Storage_Log.h"
+#include "Contents/Actors/GroundScope.h"
+#include "Contents/Ground/TerrainHeight.h"
+#include <new>
 
 // OFFSET: 0x00D7AF70
 // FUNCTION: fn_22198
@@ -108,8 +143,6 @@ void CGameMode::ReceiveItemDisappear(std::uint32_t itemAid) {
     this->SendMsg(13, static_cast<int>(itemAid), 0, 0, 0);
   }
 }
-
-
 
 #pragma pack(push, 1)
 struct TradeItemRecord {
@@ -128,7 +161,6 @@ struct TradeItemRecord {
 static_assert(sizeof(TradeItemRecord) == 0x22);
 #endif
 
-
 void __fastcall sub_DFF150(CSession* session);
 
 // GLOBAL: gl_24992
@@ -136,8 +168,6 @@ char g_pendingWhisperCount;
 
 // GLOBAL: gl_25102
 int g_whisperRecord;
-
-
 
 namespace {
 #pragma pack(push, 1)
@@ -3997,8 +4027,6 @@ void CGameMode::ReceiveBuyingStoreItemList(const unsigned char* packet) {
   this->unknown_024C = 1;
 }
 
-#include "Contents/Jobs/JobInheritance.h"
-
 // OFFSET: 0x00D5F3E0
 // FUNCTION: fn_21969
 void CGameMode::SetActorNameCard(std::uint32_t id, const char* name, const char* value1, const char* value2, const char* value3, int job) {
@@ -4091,7 +4119,11 @@ namespace {
   static_assert(sizeof(StatusBonusPacket) == 0xE);
 }
 
+int GetEquipLocationIndex(const int& mask);
+
 namespace EquipmentProperties {
+class CEquipmentWearable;
+
 class CEquipmentPropertiesMgr {
 public:
   CEquipmentPropertiesMgr();
@@ -4101,6 +4133,8 @@ public:
   void RemoveExpansion(const int& kind, const int& itemId);
   void AddExpansion(const int& kind, const int& itemId, bool notify);
   void RefreshExpansion(const int& kind, const int& itemId);
+  CEquipmentWearable* FindProperty1(const int& key);
+  void UnequipWearable(const int& location);
   unsigned char unknown_0004[0x1F8];
 };
 }
@@ -6499,8 +6533,6 @@ void CGameMode::ReceiveFormattedMessage(const unsigned char* packet) {
   }
 }
 
-#include "UI/Item/UIParaItemShopWnd.h"
-
 #pragma pack(push, 1)
 struct ParaResultEntry {
   /* 0000 */ int itemId;
@@ -6624,8 +6656,6 @@ void CGameMode::OpenVendingMake(unsigned char slotCount, int itemCount, const sh
   this->SendMsg(297, 0, 0, 0, 0);
 }
 
-#include "Script/LuaScript.h"
-
 // OFFSET: 0x00D799C0
 // FUNCTION: fn_22176
 void CGameMode::ReceiveAgitNotice(unsigned char agitId, int first, int second) {
@@ -6639,8 +6669,6 @@ void CGameMode::ReceiveAgitNotice(unsigned char agitId, int first, int second) {
   sprintf_s(text, LookupMessage(3632), agitName, second, 100, first, 100);
   g_windowMgr.Confirm(text, 0, true, false, 0, "Message", 250, 130, 0);
 }
-
-#include "Contents/Actors/Item.h"
 
 struct ItemFallEntry {
   /* 0000 */ char itemId[0x20];
@@ -6682,8 +6710,6 @@ void CGameMode::ReceiveItemFallEntry(const unsigned char* packet) {
   const int entryAddress = reinterpret_cast<int>(&entry);
   item->SendMsg(nullptr, 4, 0, entryAddress, entryAddress >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 }
-
-#include "Contents/ClientState.h"
 
 // OFFSET: 0x00D266C0
 // FUNCTION: fn_21681
@@ -6739,8 +6765,6 @@ void CGameMode::ReceiveTakeOffEquipResult(unsigned char result, int location, st
     break;
   }
 }
-
-#include "Contents/Sound/SoundMaker.h"
 
 // OFFSET: 0x00D25E90
 // FUNCTION: fn_21677
@@ -7733,12 +7757,6 @@ struct SkillFailurePacket {
 static_assert(sizeof(SkillFailurePacket) == 0xE);
 
 // OFFSET: 0x00D1E840
-
-#include "Contents/ForbiddenWords.h"
-#include "Contents/PetEvolutionMgr.h"
-#include "UI/Window/UIPetInfoWnd.h"
-#include "UI/Items/UIItemIdentifyWnd.h"
-#include "UI/Chat/UIChatRoomTitle.h"
 
 // OFFSET: 0x00D21220
 // FUNCTION: fn_21654
@@ -9601,9 +9619,6 @@ void CGameMode::ReceiveChatRoomMemberList(const unsigned char* data) {
   }
 }
 
-#include "Contents/ForbiddenWords.h"
-#include "Network/ActorNamePacket.h"
-
 // GLOBAL: gl_25381
 std::string g_gameModeNamelessTag = "<NAMELESS>";
 
@@ -10900,9 +10915,6 @@ static_assert(sizeof(EquipItemNoticePacket) == 7);
 
 // OFFSET: 0x00D50AA0
 
-#include "UI/Guild/UIGuild_Storage_Log.h"
-#include <algorithm>
-
 #pragma pack(push, 1)
 struct MapMovePacket {
   /* 0000 */ std::uint16_t packetType;
@@ -11062,10 +11074,6 @@ void CGameMode::ApplyGuildStorageLog(std::uint16_t result, const std::vector<Gui
 }
 
 // OFFSET: 0x00D5B3C0
-
-#include "Contents/Actors/GroundScope.h"
-#include "Contents/Ground/TerrainHeight.h"
-#include <new>
 
 // OFFSET: 0x00D5E930
 // FUNCTION: fn_21967
@@ -20000,5 +20008,5157 @@ void CGameMode::HandleCameraInfo(const unsigned char* data) {
     this->camera->camera.desiredDistance = packet->distance;
     this->camera->camera.desiredYaw = packet->yaw;
     this->camera->camera.desiredPitch = packet->pitch;
+  }
+}
+
+#pragma pack(push, 1)
+struct ActorStopPacket {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::uint32_t aid;
+  /* 0006 */ std::uint16_t x;
+  /* 0008 */ std::uint16_t y;
+};
+
+struct ActorActionPacket {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::uint32_t sourceAid;
+  /* 0006 */ std::uint32_t targetAid;
+  /* 000A */ std::uint32_t tick;
+  /* 000E */ int attackMT;
+  /* 0012 */ int attackedMT;
+  /* 0016 */ std::int16_t damage;
+  /* 0018 */ std::uint16_t count;
+  /* 001A */ unsigned char type;
+  /* 001B */ std::int16_t damage2;
+};
+
+struct ActorRestPacket {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::uint32_t sourceAid;
+  /* 0006 */ std::uint32_t targetAid;
+  /* 000A */ std::uint32_t tick;
+  /* 000E */ std::int16_t attackMT;
+  /* 0010 */ std::int16_t attackedMT;
+  /* 0012 */ std::int16_t damage;
+  /* 0014 */ std::int16_t count;
+  /* 0016 */ unsigned char type;
+};
+
+struct ActorNamePacket {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::uint32_t aid;
+  /* 0006 */ char name[24];
+};
+struct ActorDirectionPacket {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::uint32_t aid;
+  /* 0006 */ std::int16_t headDirection;
+  /* 0008 */ unsigned char direction;
+};
+
+struct NormalItemRecord {
+  /* 0000 */ std::int16_t index;
+  /* 0002 */ int itemId;
+  /* 0006 */ unsigned char type;
+  /* 0007 */ unsigned char identified;
+  /* 0008 */ std::int16_t amount;
+  /* 000A */ std::uint16_t location;
+};
+
+struct CardItemRecord {
+  /* 0000 */ std::int16_t index;
+  /* 0002 */ int itemId;
+  /* 0006 */ unsigned char type;
+  /* 0007 */ unsigned char identified;
+  /* 0008 */ std::int16_t amount;
+  /* 000A */ std::uint16_t location;
+  /* 000C */ int cards[4];
+};
+
+struct CardItemExpiryRecord {
+  /* 0000 */ CardItemRecord base;
+  /* 001C */ std::uint32_t expireTime;
+};
+
+struct FlaggedItemRecord {
+  /* 0000 */ std::int16_t index;
+  /* 0002 */ int itemId;
+  /* 0006 */ unsigned char type;
+  /* 0007 */ std::int16_t amount;
+  /* 0009 */ std::uint16_t location;
+  /* 000B */ int cards[4];
+  /* 001B */ std::uint32_t expireTime;
+  /* 001F */ unsigned char flags;
+};
+
+struct FlaggedEquipRecord {
+  /* 0000 */ std::int16_t index;
+  /* 0002 */ int itemId;
+  /* 0006 */ unsigned char type;
+  /* 0007 */ std::uint16_t location;
+  /* 0009 */ std::uint16_t wearState;
+  /* 000B */ unsigned char refine;
+  /* 000C */ int cards[4];
+  /* 001C */ std::uint32_t expireTime;
+  /* 0020 */ std::uint16_t bindOnEquip;
+  /* 0022 */ std::uint16_t look;
+  /* 0024 */ unsigned char flags;
+};
+
+struct EquipItemRecord {
+  /* 0000 */ std::int16_t index;
+  /* 0002 */ int itemId;
+  /* 0006 */ unsigned char type;
+  /* 0007 */ unsigned char identified;
+  /* 0008 */ std::uint16_t location;
+  /* 000A */ std::uint16_t wearState;
+  /* 000C */ unsigned char damaged;
+  /* 000D */ unsigned char refine;
+  /* 000E */ unsigned char cards[16];
+};
+
+struct ItemUseAckPacket {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::uint16_t index;
+  /* 0004 */ std::int16_t amount;
+  /* 0006 */ unsigned char result;
+};
+struct ShopItemRecord {
+  /* 0000 */ std::uint32_t price;
+  /* 0004 */ std::uint32_t discountPrice;
+  /* 0008 */ unsigned char type;
+  /* 0009 */ std::int32_t itemId;
+};
+struct SkillListRecord {
+  /* 0000 */ std::uint16_t id;
+  /* 0002 */ int type;
+  /* 0006 */ std::int16_t level;
+  /* 0008 */ std::int16_t spCost;
+  /* 000A */ std::int16_t range;
+  /* 000C */ char name[24];
+  /* 0024 */ unsigned char upgradable;
+};
+#pragma pack(pop)
+
+struct ActorMoveRoute {
+  /* 0000 */ std::uint32_t tick;
+  /* 0004 */ int srcX;
+  /* 0008 */ int srcY;
+  /* 000C */ int subX;
+  /* 0010 */ int subY;
+  /* 0014 */ int dstX;
+  /* 0018 */ int dstY;
+};
+
+#pragma pack(push, 1)
+struct ItemSlotOption {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int16_t value;
+  /* 0004 */ unsigned char parameter;
+};
+
+struct ItemSlotOptions {
+  /* 0000 */ ItemSlotOption options[5];
+};
+#pragma pack(pop)
+
+struct ChatRoomMemberUpdateInfo {
+  /* 0000 */ std::string title;
+  /* 0018 */ std::string unknown_0018;
+  /* 0030 */ int type;
+  /* 0034 */ int memberCount;
+  /* 0038 */ int memberLimit;
+  /* 003C */ int id;
+};
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(ChatRoomMemberUpdateInfo) == 0x40);
+static_assert(offsetof(ChatRoomMemberUpdateInfo, unknown_0018) == 0x18);
+static_assert(offsetof(ChatRoomMemberUpdateInfo, type) == 0x30);
+#endif
+
+// OFFSET: 0x00D08910
+// FUNCTION: fn_21595
+void CGameMode::sub_D08910() {
+  memset(g_gameModePacketBuffer, 0, sizeof(g_gameModePacketBuffer));
+  if (!g_replayAnimationScaling) {
+    const std::uint32_t elapsedHours = (timeGetTime() - g_loginAcceptTime) / 3600000;
+    if (!GetRagConnection().Update()) {
+      g_modeMgr.gameMode->SendMsg(1, 0, 0, 0, 0);
+    }
+
+    if (g_charServerAccountIdPending == 1) {
+      int accountId;
+      if (GetRagConnection().Read(&accountId, 4, 1)) {
+        g_charServerAccountIdPending = 0;
+      }
+      return;
+    }
+  }
+
+  const int replayState = Replay::Instance().state;
+  if (replayState == 7) {
+    g_windowMgr.window_4F168->SendMsg(nullptr, 60, 0, 0, 0, 0);
+  } else if (replayState == 2) {
+    Replay::Instance().WriteHeader(12);
+    if (g_windowMgr.window_4F164) {
+      g_windowMgr.window_4F164->SendMsg(nullptr, 116, 0, 0, 0, 0);
+    }
+  }
+
+  unsigned short size = 0;
+  std::uint16_t type = 0;
+  for (;;) {
+    bool received;
+    if (!g_replayAnimationScaling) {
+      received = GetRagConnection().ReadPacket(g_gameModePacketBuffer, &size, g_packetLengths);
+      if (received) {
+        type = GetRagConnection().GetPacketType(reinterpret_cast<const char *>(g_gameModePacketBuffer));
+        if (replayState == 2) {
+          Replay::Instance().Record(size, g_gameModePacketBuffer, 42, 0);
+        }
+      }
+      Replay::Instance().CachePacket(type, size, g_gameModePacketBuffer);
+    } else {
+      received = Replay::Instance().ReadRecord(g_gameModePacketBuffer, type, false);
+    }
+    if (!received) {
+      return;
+    }
+
+    g_session.m_lastReceiveTick = timeGetTime();
+    switch (static_cast<short>(type)) {
+    case 0x75:
+    case 0x76:
+    case 0x77:
+    case 0x7A:
+    case 0x83:
+    case 0x84:
+    case 0x98:
+    case 0x164:
+    case 0x187:
+    case 0x1CC:
+    case 0x1E0:
+    case 0x1E9:
+    case 0x227:
+    case 0x283:
+    case 0x851:
+    case 0x853:
+    case 0x855:
+    case 0x90D:
+    case 0x9B7:
+    case 0x9B9:
+    case 0x9CC:
+    case 0x9EB:
+    case 0xA7B:
+    case 0xAB1:
+    case 0xAD2:
+    case 0xAD3:
+    case 0xAD4:
+    case 0xAD6:
+    case 0xAD9:
+    case 0xB00:
+    case 0xB1D:
+    case 0xC20:
+    case 0xC29:
+    case 0xC35:
+      break;
+    case 0x78:
+      this->ReceiveActorTypedEntry(g_gameModePacketBuffer);
+      break;
+    case 0x79:
+      this->ReceiveActorStandEntryOld0(g_gameModePacketBuffer);
+      break;
+    case 0x7B:
+      this->ReceiveActorMoveEntryOld0(g_gameModePacketBuffer);
+      break;
+    case 0x7C:
+      this->ReceiveNpcStandEntry(g_gameModePacketBuffer);
+      break;
+    case 0x80:
+      this->ReceiveActorDisappear(g_gameModePacketBuffer);
+      break;
+    case 0x81:
+      this->ReceiveNotifyBan(g_gameModePacketBuffer);
+      break;
+    case 0x8D:
+      this->ReceiveActorChat(g_gameModePacketBuffer);
+      break;
+    case 0x8E:
+      this->ReceiveBroadcast(g_gameModePacketBuffer);
+      break;
+    case 0x91:
+      this->ReceiveMapMove(g_gameModePacketBuffer);
+      break;
+    case 0x92:
+      this->ReceiveZoneServerChange(g_gameModePacketBuffer);
+      break;
+    case 0x97:
+      this->sub_D48530(g_gameModePacketBuffer);
+      break;
+    case 0xA0:
+      this->ReceiveItemPickupAck(g_gameModePacketBuffer);
+      break;
+    case 0xB0:
+      this->ReceiveParChange(g_gameModePacketBuffer);
+      break;
+    case 0xB1:
+      this->ReceiveExpChange(g_gameModePacketBuffer);
+      break;
+    case 0xB6:
+      this->ReceiveUnknownD264E0(g_gameModePacketBuffer);
+      break;
+    case 0xB7:
+      this->ReceiveWindow17Entries(g_gameModePacketBuffer);
+      break;
+    case 0xBC:
+      this->ReceiveStatusChangeAck(g_gameModePacketBuffer);
+      break;
+    case 0xBD:
+      this->ReceiveStatus(g_gameModePacketBuffer);
+      break;
+    case 0xBE:
+      this->ReceiveStatusChange(g_gameModePacketBuffer);
+      break;
+    case 0xC3:
+      this->ReceiveSpriteChange(g_gameModePacketBuffer);
+      break;
+    case 0xC7:
+      this->ReceiveItem1718IndexList(g_gameModePacketBuffer);
+      break;
+    case 0xCA:
+      this->ReceiveItem1718Result(g_gameModePacketBuffer);
+      break;
+    case 0xD1:
+      this->ReceiveResultNotice0118(g_gameModePacketBuffer);
+      break;
+    case 0xD7:
+      this->ReceiveActorMessage32(g_gameModePacketBuffer);
+      break;
+    case 0xDA:
+      this->ReceiveResultNotice00FC(g_gameModePacketBuffer);
+      break;
+    case 0xDB:
+      this->ReceiveChatRoomMemberList(g_gameModePacketBuffer);
+      break;
+    case 0xDF:
+      this->ReceiveActorMessage34(g_gameModePacketBuffer);
+      break;
+    case 0xE7:
+      this->ReceiveExchangeRequestAck(g_gameModePacketBuffer);
+      break;
+    case 0xEA:
+      this->ReceiveExchangeItemAddAck(g_gameModePacketBuffer);
+      break;
+    case 0xFB:
+      this->ReceivePartyMemberList(g_gameModePacketBuffer);
+      break;
+    case 0xFD:
+    case 0x2C5:
+      this->ReceiveNamedActionResult(g_gameModePacketBuffer);
+      break;
+    case 0x104:
+      this->ReceivePartyMemberInfo(g_gameModePacketBuffer);
+      break;
+    case 0x105:
+      this->ReceivePartyMemberLeft(g_gameModePacketBuffer);
+      break;
+    case 0x109:
+      this->ReceivePartyChat(g_gameModePacketBuffer);
+      break;
+    case 0x10E:
+    case 0x239:
+    case 0x29E:
+      this->ApplySkillUpdatePacket(g_gameModePacketBuffer);
+      break;
+    case 0x114:
+      this->ReceiveActorSkillAction(g_gameModePacketBuffer);
+      break;
+    case 0x115:
+      this->ReceiveActorSkillMessage(g_gameModePacketBuffer);
+      break;
+    case 0x117:
+      this->ReceiveNotifyGroundSkill(g_gameModePacketBuffer);
+      break;
+    case 0x11F:
+      this->sub_D41250(g_gameModePacketBuffer);
+      break;
+    case 0x133:
+    case 0x800:
+      this->ReceiveItem1748List(g_gameModePacketBuffer);
+      break;
+    case 0x135:
+      this->ReceiveEquipItemNotice(g_gameModePacketBuffer);
+      break;
+    case 0x136:
+      this->ReceiveUnknownD50810(g_gameModePacketBuffer);
+      break;
+    case 0x13B:
+      this->ReceiveEquipAck(g_gameModePacketBuffer);
+      break;
+    case 0x141:
+      this->ReceiveStatusBonus(g_gameModePacketBuffer);
+      break;
+    case 0x14C:
+      this->ReceiveGuildRelationList(g_gameModePacketBuffer);
+      break;
+    case 0x150:
+      this->ReceiveGuildInfo2(g_gameModePacketBuffer);
+      break;
+    case 0x154:
+      this->ReceiveGuildMemberMemoList(g_gameModePacketBuffer);
+      break;
+    case 0x15A:
+      this->ReceiveGuildMemberLeft(g_gameModePacketBuffer);
+      break;
+    case 0x160:
+      this->ReceiveGuildPositionInfo(g_gameModePacketBuffer);
+      break;
+    case 0x163:
+      this->ReceiveGuildBanList(g_gameModePacketBuffer);
+      break;
+    case 0x166:
+      this->ReceiveGuildPositionNames(g_gameModePacketBuffer);
+      break;
+    case 0x16F:
+      this->ReceiveGuildNotice(g_gameModePacketBuffer);
+      break;
+    case 0x174:
+      this->ReceiveGuildPositionUpdate(g_gameModePacketBuffer);
+      break;
+    case 0x17D:
+      this->ReceiveCardCompositionResult(g_gameModePacketBuffer);
+      break;
+    case 0x17F:
+      this->ReceiveGuildChat(g_gameModePacketBuffer);
+      break;
+    case 0x182:
+      this->ReceiveGuildMemberAdd(g_gameModePacketBuffer);
+      break;
+    case 0x185:
+      this->ReceiveAddRelatedGuild(g_gameModePacketBuffer);
+      break;
+    case 0x188:
+      this->ReceiveRefineResult(g_gameModePacketBuffer);
+      break;
+    case 0x18F:
+      this->ReceiveItemEffectResult(g_gameModePacketBuffer);
+      break;
+    case 0x195:
+      this->ReceiveActorNameAll(reinterpret_cast<const ActorNameAllPacket *>(g_gameModePacketBuffer));
+      break;
+    case 0x196:
+      this->ReceiveStatusChangeNotice(g_gameModePacketBuffer);
+      break;
+    case 0x19A:
+      this->ReceiveEffectNumber(g_gameModePacketBuffer);
+      break;
+    case 0x19B:
+      this->ReceivePartyMemberEffect(g_gameModePacketBuffer);
+      break;
+    case 0x19E:
+      this->Zc_Start_Capture(g_gameModePacketBuffer);
+      break;
+    case 0x1A0:
+      this->Zc_Trycapture_Monster(g_gameModePacketBuffer);
+      break;
+    case 0x1A3:
+    case 0x22F:
+      this->ReceiveFeedResult(g_gameModePacketBuffer);
+      break;
+    case 0x1A4:
+      this->ReceivePetChangeState(g_gameModePacketBuffer);
+      break;
+    case 0x1AA:
+      this->ReceivePetAct(g_gameModePacketBuffer);
+      break;
+    case 0x1B6:
+      this->ReceiveGuildInfo(g_gameModePacketBuffer);
+      break;
+    case 0x1B9:
+      this->ReceiveDispel(g_gameModePacketBuffer);
+      break;
+    case 0x1C1:
+      this->ReceiveBillingInfo(g_gameModePacketBuffer);
+      break;
+    case 0x1C4:
+      this->ReceiveItem1738Add(g_gameModePacketBuffer);
+      break;
+    case 0x1C5:
+      this->ReceiveItem1740Add(g_gameModePacketBuffer);
+      break;
+    case 0x1C9:
+      this->sub_D40730(g_gameModePacketBuffer);
+      break;
+    case 0x1CF:
+      this->ReceiveDevotionList(g_gameModePacketBuffer);
+      break;
+    case 0x1D1:
+      this->ReceiveActorPairFreeze(g_gameModePacketBuffer);
+      break;
+    case 0x1D2:
+    case 0xC36:
+      this->ReceiveActorSequenceDeadline(g_gameModePacketBuffer);
+      break;
+    case 0x1D3:
+      this->ReceiveSound(g_gameModePacketBuffer);
+      break;
+    case 0x1D7:
+      this->ReceiveSpriteChange2Mirrored(g_gameModePacketBuffer);
+      break;
+    case 0x1D8:
+      this->ReceiveActorStateEntryOld(g_gameModePacketBuffer);
+      break;
+    case 0x1D9:
+      this->ReceiveActorStandEntryOld(g_gameModePacketBuffer);
+      break;
+    case 0x1DA:
+      this->ReceiveActorMoveEntryOld(g_gameModePacketBuffer);
+      break;
+    case 0x1DE:
+      this->ReceiveNotifySkill(g_gameModePacketBuffer);
+      break;
+    case 0x1E1:
+      this->Zc_Spirits2(g_gameModePacketBuffer);
+      break;
+    case 0x1E4:
+      this->Zc_Start_Couple(g_gameModePacketBuffer);
+      break;
+    case 0x1E6:
+      this->ReceiveUnknown0294Text(g_gameModePacketBuffer);
+      break;
+    case 0x1EA:
+      this->ReceiveActorEffect347(g_gameModePacketBuffer);
+      break;
+    case 0x1F3:
+      this->ReceiveNotifyEffect(g_gameModePacketBuffer);
+      break;
+    case 0x1F5:
+      this->ReceiveExchangeRequestAck2(g_gameModePacketBuffer);
+      break;
+    case 0x1F8:
+      this->Zc_Start_Baby(g_gameModePacketBuffer);
+      break;
+    case 0x201:
+      this->ReceiveFriendList(g_gameModePacketBuffer);
+      break;
+    case 0x20E:
+      this->ReceiveSpecialBroadcast(g_gameModePacketBuffer);
+      break;
+    case 0x214:
+      this->ReceiveStatDump(g_gameModePacketBuffer);
+      break;
+    case 0x215:
+      this->ReceiveStatusNotice(g_gameModePacketBuffer);
+      break;
+    case 0x223:
+      this->ReceiveItemObtainNotice(g_gameModePacketBuffer);
+      break;
+    case 0x22A:
+      this->ReceiveActorStandEntry(g_gameModePacketBuffer);
+      break;
+    case 0x22B:
+      this->ReceiveActorStandEntryOld2(g_gameModePacketBuffer);
+      break;
+    case 0x22C:
+      this->ReceiveActorMoveEntryOld2(g_gameModePacketBuffer);
+      break;
+    case 0x22E:
+      this->ReceiveHomunculusInfo(g_gameModePacketBuffer);
+      break;
+    case 0x230:
+      this->ReceiveHomunculusChange(g_gameModePacketBuffer);
+      break;
+    case 0x27A:
+      this->ReceiveHuntingList(g_gameModePacketBuffer);
+      break;
+    case 0x27B:
+      this->ReceiveBroadcastBalloonNotice(g_gameModePacketBuffer);
+      break;
+    case 0x284:
+      this->ReceiveActorStatusValuePacket(g_gameModePacketBuffer);
+      break;
+    case 0x287:
+      this->ReceivePendingItem1718List(g_gameModePacketBuffer);
+      break;
+    case 0x289:
+      this->ReceivePendingResult(g_gameModePacketBuffer);
+      break;
+    case 0x28A:
+      this->ReceiveUnknownD78010(g_gameModePacketBuffer);
+      break;
+    case 0x291:
+      this->Zc_Msg(g_gameModePacketBuffer);
+      break;
+    case 0x293:
+      this->ReceiveUnknown05C4Result(g_gameModePacketBuffer);
+      break;
+    case 0x294:
+      this->ReceiveBookOpen(g_gameModePacketBuffer);
+      break;
+    case 0x295:
+      this->ReceiveEquipItemList34(g_gameModePacketBuffer);
+      break;
+    case 0x296:
+      this->ReceiveStorageEquipList(g_gameModePacketBuffer);
+      break;
+    case 0x297:
+      this->ReceiveItem1740BasicList(g_gameModePacketBuffer);
+      break;
+    case 0x298:
+      this->ReceiveRentalItemTime(g_gameModePacketBuffer);
+      break;
+    case 0x299:
+      this->ReceiveUnknownD25850(g_gameModePacketBuffer);
+      break;
+    case 0x29A:
+      this->ReceiveItemPickupAck2(g_gameModePacketBuffer);
+      break;
+    case 0x29B:
+      this->Zc_Mer_Init(g_gameModePacketBuffer);
+      break;
+    case 0x2A2:
+      this->Zc_Mer_Par_Change(g_gameModePacketBuffer);
+      break;
+    case 0x2B8:
+      this->ReceivePartyItemPickupNotice(g_gameModePacketBuffer);
+      break;
+    case 0x2BB:
+      this->ReceiveEquipItemDamaged(g_gameModePacketBuffer);
+      break;
+    case 0x2C1:
+      this->ReceiveActorColorChat(g_gameModePacketBuffer);
+      break;
+    case 0x2C2:
+      this->ReceiveFormatStringMessage(g_gameModePacketBuffer);
+      break;
+    case 0x2C9:
+      this->ReceiveToggleNotice(g_gameModePacketBuffer);
+      break;
+    case 0x2CB:
+      this->ReceiveMemorialDungeonSubscriptionInfo(g_gameModePacketBuffer);
+      break;
+    case 0x2CC:
+      this->ReceiveMemorialDungeonSubscriptionNotify(g_gameModePacketBuffer);
+      break;
+    case 0x2CD:
+      this->ReceiveMemorialDungeonInfo(g_gameModePacketBuffer);
+      break;
+    case 0x2CE:
+      this->ReceiveMemorialDungeonNotify(g_gameModePacketBuffer);
+      break;
+    case 0x2D0:
+      this->ReceiveEquipItemList38(g_gameModePacketBuffer);
+      break;
+    case 0x2D1:
+      this->ReceiveStorageEquipList2(g_gameModePacketBuffer);
+      break;
+    case 0x2D2:
+      this->ReceiveItem1740BasicListBind(g_gameModePacketBuffer);
+      break;
+    case 0x2D4:
+      this->ReceiveItemPickupAck3(g_gameModePacketBuffer);
+      break;
+    case 0x2D5:
+      this->ReceiveUnknownD2D990(g_gameModePacketBuffer);
+      break;
+    case 0x2D7:
+    case 0x859:
+      this->ReceiveEquipWindowMicroscope2(g_gameModePacketBuffer);
+      break;
+    case 0x2D9:
+      this->ReceiveFeedOption(g_gameModePacketBuffer);
+      break;
+    case 0x2DA:
+      this->ReceiveUnknownD26800(g_gameModePacketBuffer);
+      break;
+    case 0x2DC:
+      this->ReceiveActorBroadcastText(g_gameModePacketBuffer);
+      break;
+    case 0x2EB:
+      this->ReceiveAcceptEnter(g_gameModePacketBuffer);
+      break;
+    case 0x2EC:
+    case 0x7F7:
+    case 0x856:
+      this->ReceiveActorMoveEntryNamed(g_gameModePacketBuffer);
+      break;
+    case 0x2ED:
+      this->ReceiveActorStandEntryOld3(g_gameModePacketBuffer);
+      break;
+    case 0x2EE:
+      this->ReceiveActorStandEntryFont(g_gameModePacketBuffer);
+      break;
+    case 0x43D:
+      this->ApplyCooldownStart(g_gameModePacketBuffer);
+      break;
+    case 0x43E:
+      this->LoadCooldownRecords(g_gameModePacketBuffer);
+      break;
+    case 0x43F:
+      this->ReceiveStatusChangeExtended(g_gameModePacketBuffer);
+      break;
+    case 0x440:
+      this->ReceiveActorEffect228(g_gameModePacketBuffer);
+      break;
+    case 0x446:
+      this->ReceiveMinimapMarker(g_gameModePacketBuffer);
+      break;
+    case 0x7D8:
+      this->ReceiveServerRateNotice(g_gameModePacketBuffer);
+      break;
+    case 0x7DB:
+      this->ReceiveHomunculusProperty(g_gameModePacketBuffer);
+      break;
+    case 0x7E2:
+      this->ReceiveFormattedMessage(g_gameModePacketBuffer);
+      break;
+    case 0x7E3:
+      this->ReceiveTradeItemFilter(g_gameModePacketBuffer);
+      break;
+    case 0x7F6:
+      this->Zc_Notify_Exp(g_gameModePacketBuffer);
+      break;
+    case 0x7F8:
+    case 0x858:
+      this->ReceiveActorStandEntryNamedOld(g_gameModePacketBuffer);
+      break;
+    case 0x7F9:
+    case 0x857:
+      this->ReceiveActorStateEntryNamedOld(g_gameModePacketBuffer);
+      break;
+    case 0x7FA:
+      this->ReceiveItemConsumed(g_gameModePacketBuffer);
+      break;
+    case 0x7FC:
+      this->ReceivePartyLeaderChange(g_gameModePacketBuffer);
+      break;
+    case 0x7FE:
+      this->ReceiveNpcBgm(g_gameModePacketBuffer);
+      break;
+    case 0x803:
+      this->ReceivePartyBookingUpdateResult(g_gameModePacketBuffer);
+      break;
+    case 0x805:
+      this->ReceivePartyBookingSearchResult(g_gameModePacketBuffer);
+      break;
+    case 0x807:
+      this->ReceivePartyBookingRegisterResult(g_gameModePacketBuffer);
+      break;
+    case 0x809:
+      this->ReceivePartyBookingInsert(g_gameModePacketBuffer);
+      break;
+    case 0x80A:
+      this->ReceivePartyBookingUpdate(g_gameModePacketBuffer);
+      break;
+    case 0x80B:
+      this->ReceivePartyBookingDelete(g_gameModePacketBuffer);
+      break;
+    case 0x810:
+      this->ReceiveOpenStore(g_gameModePacketBuffer);
+      break;
+    case 0x812:
+      this->ReceiveBuyingStoreOpenResult(g_gameModePacketBuffer);
+      break;
+    case 0x813:
+      this->ReceiveItem1758List(g_gameModePacketBuffer);
+      break;
+    case 0x814:
+      this->ReceiveActorText(g_gameModePacketBuffer);
+      break;
+    case 0x816:
+      this->ReceiveActorSignal(g_gameModePacketBuffer);
+      break;
+    case 0x818:
+      this->ReceiveBuyingStoreItemList(g_gameModePacketBuffer);
+      break;
+    case 0x81A:
+      this->ReceiveUnknownD2A1F0(g_gameModePacketBuffer);
+      break;
+    case 0x81B:
+      this->ReceiveVendingItemSoldNow(g_gameModePacketBuffer);
+      break;
+    case 0x81C:
+      this->ReceiveItemSellResult(g_gameModePacketBuffer);
+      break;
+    case 0x81D:
+      this->ReceiveActorStatusBlock(g_gameModePacketBuffer);
+      break;
+    case 0x81E:
+      this->ReceiveActorStatusUpdate(g_gameModePacketBuffer);
+      break;
+    case 0x81F:
+      this->ReceiveColoredNotice(g_gameModePacketBuffer);
+      break;
+    case 0x824:
+      this->ReceiveBuyingStoreSellResult(g_gameModePacketBuffer);
+      break;
+    case 0x836:
+      this->ReceiveSearchStoreItemsOld(g_gameModePacketBuffer);
+      break;
+    case 0x837:
+      this->ReceiveWindow181Message(g_gameModePacketBuffer);
+      break;
+    case 0x839:
+      this->ReceiveGuildMemberExpelled(g_gameModePacketBuffer);
+      break;
+    case 0x83A:
+      this->ReceiveSearchStoreOpen(g_gameModePacketBuffer);
+      break;
+    case 0x849:
+      this->ReceiveRequestResult(g_gameModePacketBuffer);
+      break;
+    case 0x8AE:
+      this->ProcessUiMessage(g_gameModePacketBuffer);
+      break;
+    case 0x8B1:
+      this->ReceiveUnknownD31A40(g_gameModePacketBuffer);
+      break;
+    case 0x8B3:
+      this->ReceiveActorMessage7(g_gameModePacketBuffer);
+      break;
+    case 0x8B4:
+      this->Zc_Start_Collection(g_gameModePacketBuffer);
+      break;
+    case 0x8B6:
+      this->Zc_Trycollection(g_gameModePacketBuffer);
+      break;
+    case 0x8C7:
+      this->ReceiveGroundSkill8(g_gameModePacketBuffer);
+      break;
+    case 0x8CA:
+      this->ReceiveTypedItemList(g_gameModePacketBuffer);
+      break;
+    case 0x8CB:
+    case 0x97B:
+      this->ReceiveRateInfo(g_gameModePacketBuffer);
+      break;
+    case 0x8CE:
+      this->ReceiveNotice1950(g_gameModePacketBuffer);
+      break;
+    case 0x8CF:
+      this->ReceiveActorCharm(g_gameModePacketBuffer);
+      break;
+    case 0x8D2:
+      this->ReceiveActorMessage144(g_gameModePacketBuffer);
+      break;
+    case 0x8D6:
+      this->RefreshWindow16(g_gameModePacketBuffer);
+      break;
+    case 0x8FF:
+      this->ReceiveStatusChangeEffect(g_gameModePacketBuffer);
+      break;
+    case 0x901:
+      this->ReceiveEquipItemListFlags(g_gameModePacketBuffer);
+      break;
+    case 0x906:
+      this->ReceiveEquipWindowMicroscope(g_gameModePacketBuffer);
+      break;
+    case 0x908:
+      this->ReceiveInventoryItemUpdate(g_gameModePacketBuffer);
+      break;
+    case 0x90F:
+      this->ReceiveActorStandEntryLegacy(g_gameModePacketBuffer);
+      break;
+    case 0x914:
+      this->ReceiveActorMoveEntryLegacy(g_gameModePacketBuffer);
+      break;
+    case 0x915:
+      this->ReceiveActorStateEntryLegacy(g_gameModePacketBuffer);
+      break;
+    case 0x96B:
+      this->ReceiveUnknown16FC588(g_gameModePacketBuffer);
+      break;
+    case 0x96D:
+      this->ReceiveWindow227Entries(g_gameModePacketBuffer);
+      break;
+    case 0x96F:
+      this->ReceiveWindow227Result(g_gameModePacketBuffer);
+      break;
+    case 0x975:
+      this->ReceiveStorageNormalList(g_gameModePacketBuffer);
+      break;
+    case 0x976:
+      this->ReceiveStorageEquipList3(g_gameModePacketBuffer);
+      break;
+    case 0x977:
+      this->ReceiveActorInt64Pair(g_gameModePacketBuffer);
+      break;
+    case 0x97D:
+      this->ReceiveRankingList(g_gameModePacketBuffer);
+      break;
+    case 0x97E:
+      this->ReceiveTypedNotice(g_gameModePacketBuffer);
+      break;
+    case 0x97F:
+      this->ReceiveWindow95Data(g_gameModePacketBuffer);
+      break;
+    case 0x983:
+      this->ReceiveStatusChangeEffect2(g_gameModePacketBuffer);
+      break;
+    case 0x984:
+      this->sub_D65FC0(g_gameModePacketBuffer);
+      break;
+    case 0x985:
+      this->LoadCooldownSnapshot(g_gameModePacketBuffer);
+      break;
+    case 0x988:
+      this->ReceiveClanMemberCount(g_gameModePacketBuffer);
+      break;
+    case 0x989:
+      this->ReceiveClanLeave(g_gameModePacketBuffer);
+      break;
+    case 0x98A:
+      this->ReceiveClanInfo(g_gameModePacketBuffer);
+      break;
+    case 0x98E:
+      this->ReceiveClanChat(g_gameModePacketBuffer);
+      break;
+    case 0x991:
+      this->ReceiveItemInventoryList(g_gameModePacketBuffer);
+      break;
+    case 0x992:
+      this->ReceiveInventoryEquipList(g_gameModePacketBuffer);
+      break;
+    case 0x993:
+      this->ReceiveItem1740List(g_gameModePacketBuffer);
+      break;
+    case 0x994:
+      this->ReceiveItem1740EquipList(g_gameModePacketBuffer);
+      break;
+    case 0x995:
+      this->ReceiveStorageNormalList2(g_gameModePacketBuffer);
+      break;
+    case 0x996:
+      this->ReceiveStorageEquipList4(g_gameModePacketBuffer);
+      break;
+    case 0x997:
+      this->ReceiveEquipWindowMicroscope3(g_gameModePacketBuffer);
+      break;
+    case 0x99B:
+      this->ReceiveMapProperty(g_gameModePacketBuffer);
+      break;
+    case 0x99F:
+      this->ReceiveGroundSkill32(g_gameModePacketBuffer);
+      break;
+    case 0x9A6:
+      this->ReceiveBankCheck(g_gameModePacketBuffer);
+      break;
+    case 0x9A8:
+      this->ReceiveBankDepositAck(g_gameModePacketBuffer);
+      break;
+    case 0x9AA:
+      this->ReceiveBankWithdrawAck(g_gameModePacketBuffer);
+      break;
+    case 0x9C1:
+      this->AddMiniMapEffectMarker(g_gameModePacketBuffer);
+      break;
+    case 0x9CA:
+      this->ReceiveGroundSkillExtended(g_gameModePacketBuffer);
+      break;
+    case 0x9CD:
+      this->Zc_Msg_Color(g_gameModePacketBuffer);
+      break;
+    case 0x9D2:
+      this->ReceiveItem1738NormalList(g_gameModePacketBuffer);
+      break;
+    case 0x9D3:
+      this->ReceiveItem1738EquipList(g_gameModePacketBuffer);
+      break;
+    case 0x9DA:
+      this->ReceiveGuildStorageLog(g_gameModePacketBuffer);
+      break;
+    case 0x9DB:
+      this->ReceiveActorMoveEntry(g_gameModePacketBuffer);
+      break;
+    case 0x9DC:
+      this->ReceiveActorStandEntryNamed(g_gameModePacketBuffer);
+      break;
+    case 0x9DD:
+      this->ReceiveActorStateEntryNamed(g_gameModePacketBuffer);
+      break;
+    case 0x9DE:
+      this->sub_D1A330(g_gameModePacketBuffer);
+      break;
+    case 0x9E7:
+      this->ReceiveUnknownD77BF0(g_gameModePacketBuffer);
+      break;
+    case 0x9ED:
+      this->ReceiveUnknown0454Result(g_gameModePacketBuffer);
+      break;
+    case 0x9F0:
+      this->ReceiveRodexMailListAppend(g_gameModePacketBuffer);
+      break;
+    case 0x9F2:
+      this->ReceiveRodexMailReturn(g_gameModePacketBuffer);
+      break;
+    case 0x9F4:
+      this->ReceiveRodexItemReturn(g_gameModePacketBuffer);
+      break;
+    case 0x9F6:
+      this->ReceiveRodexMailDeleted(g_gameModePacketBuffer);
+      break;
+    case 0x9F8:
+      this->ReceiveOngoingQuestList(g_gameModePacketBuffer);
+      break;
+    case 0x9F9:
+      this->ReceiveAddQuest(g_gameModePacketBuffer);
+      break;
+    case 0x9FA:
+      this->ReceiveQuestHuntUpdate2(g_gameModePacketBuffer);
+      break;
+    case 0x9FD:
+      this->ReceiveActorMoveEntryBody(g_gameModePacketBuffer);
+      break;
+    case 0x9FE:
+      this->ReceiveActorStandEntryNamedBody(g_gameModePacketBuffer);
+      break;
+    case 0x9FF:
+      this->ReceiveActorStateEntryNamedBody(g_gameModePacketBuffer);
+      break;
+    case 0xA02:
+      this->EnsureWindow259(g_gameModePacketBuffer);
+      break;
+    case 0xA05:
+      this->ReceiveItemReward(g_gameModePacketBuffer);
+      break;
+    case 0xA07:
+      this->ReceiveStackedItemReturn(g_gameModePacketBuffer);
+      break;
+    case 0xA0A:
+      this->ReceiveItem1738AddOptions(g_gameModePacketBuffer);
+      break;
+    case 0xA0B:
+      this->ReceiveItem1740AddOptions(g_gameModePacketBuffer);
+      break;
+    case 0xA0C:
+      this->ReceiveItemPickupAck7(g_gameModePacketBuffer);
+      break;
+    case 0xA0D:
+      this->ReceiveInventoryEquipList2(g_gameModePacketBuffer);
+      break;
+    case 0xA0F:
+      this->ReceiveItem1740EquipListOptions(g_gameModePacketBuffer);
+      break;
+    case 0xA10:
+      this->ReceiveStorageEquipList5(g_gameModePacketBuffer);
+      break;
+    case 0xA11:
+      this->ReceiveItem1738EquipListOptions(g_gameModePacketBuffer);
+      break;
+    case 0xA12:
+      this->ReceiveRodexOpen(g_gameModePacketBuffer);
+      break;
+    case 0xA15:
+      this->ReceiveUnknownD612A0(g_gameModePacketBuffer);
+      break;
+    case 0xA17:
+      this->ReceiveDynamicNpcNotice(g_gameModePacketBuffer);
+      break;
+    case 0xA1A:
+      this->ReceiveRouletteOpen(g_gameModePacketBuffer);
+      break;
+    case 0xA1C:
+      this->ReceiveRouletteInfo(g_gameModePacketBuffer);
+      break;
+    case 0xA1E:
+      this->ReceiveRouletteClose(g_gameModePacketBuffer);
+      break;
+    case 0xA20:
+      this->ReceiveRouletteResult(g_gameModePacketBuffer);
+      break;
+    case 0xA22:
+      this->ReceiveRouletteSetResult(g_gameModePacketBuffer);
+      break;
+    case 0xA2D:
+      this->ReceiveEquipWindowMicroscope4(g_gameModePacketBuffer);
+      break;
+    case 0xA30:
+      this->ReceiveActorNameCard(g_gameModePacketBuffer);
+      break;
+    case 0xA31:
+      this->ReceivePackageItemTest(g_gameModePacketBuffer);
+      break;
+    case 0xA33:
+      this->ReceiveRouletteBonusPoints(g_gameModePacketBuffer);
+      break;
+    case 0xA36:
+      this->ReceiveActorInt8(g_gameModePacketBuffer);
+      break;
+    case 0xA37:
+      this->ReceiveItemPickupAck8(g_gameModePacketBuffer);
+      break;
+    case 0xA3B:
+      this->ReceiveStatusChangeList(g_gameModePacketBuffer);
+      break;
+    case 0xA3F:
+      this->ReceiveEquipCardChange(g_gameModePacketBuffer);
+      break;
+    case 0xA43:
+      this->ReceiveUnknownD89C60(g_gameModePacketBuffer);
+      break;
+    case 0xA44:
+      this->sub_D6F900(g_gameModePacketBuffer);
+      break;
+    case 0xA47:
+      this->ReceiveCharacterRenameResult(g_gameModePacketBuffer);
+      break;
+    case 0xA7D:
+      this->ReceiveRodexMailListRefresh(g_gameModePacketBuffer);
+      break;
+    case 0xA82:
+      this->sub_D48C60(g_gameModePacketBuffer);
+      break;
+    case 0xA83:
+      this->sub_D4A060(g_gameModePacketBuffer);
+      break;
+    case 0xA84:
+      this->ReceiveGuildInfo3(g_gameModePacketBuffer);
+      break;
+    case 0xA85:
+      this->ReceiveGuildMemberAdd3(g_gameModePacketBuffer);
+      break;
+    case 0xA86:
+      this->ReceiveGuildMemberList3(g_gameModePacketBuffer);
+      break;
+    case 0xA87:
+      this->ReceiveGuildBanList2(g_gameModePacketBuffer);
+      break;
+    case 0xA96:
+      this->ReceiveItemSlotAddOptions(g_gameModePacketBuffer);
+      break;
+    case 0xA98:
+      this->ReceiveEquipItemResult(g_gameModePacketBuffer);
+      break;
+    case 0xA9A:
+      this->ReceiveTakeOffEquipItemResult(g_gameModePacketBuffer);
+      break;
+    case 0xA9B:
+      this->ReceiveSwapEquipmentList(g_gameModePacketBuffer);
+      break;
+    case 0xA9D:
+      this->ReceiveCharViewResult(g_gameModePacketBuffer);
+      break;
+    case 0xAA5:
+      this->ReceiveGuildMemberList(g_gameModePacketBuffer);
+      break;
+    case 0xAA6:
+      this->ReceiveGuildMemberAdd4(g_gameModePacketBuffer);
+      break;
+    case 0xAA7:
+      this->ClearItemLists(g_gameModePacketBuffer);
+      break;
+    case 0xAB2:
+      this->ReceivePartyDead(g_gameModePacketBuffer);
+      break;
+    case 0xAB8:
+      this->ReceivePacket0AB8(g_gameModePacketBuffer);
+      break;
+    case 0xABD:
+      this->ReceivePartyJobLevel(g_gameModePacketBuffer);
+      break;
+    case 0xABE:
+      this->ReceiveChatEntries(g_gameModePacketBuffer);
+      break;
+    case 0xABF:
+      this->ReceiveWindow308TextEntries(g_gameModePacketBuffer);
+      break;
+    case 0xAC2:
+      this->ReceiveRodexMailList(g_gameModePacketBuffer);
+      break;
+    case 0xAC7:
+      this->sub_D08390(g_gameModePacketBuffer);
+      break;
+    case 0xAC8:
+      this->ResetItemLists(g_gameModePacketBuffer);
+      break;
+    case 0xACB:
+      this->ReceiveLongParChange(g_gameModePacketBuffer);
+      break;
+    case 0xACC:
+      this->ReceiveExpGainNotice(g_gameModePacketBuffer);
+      break;
+    case 0xADD:
+      this->ReceiveItemDropEntry(g_gameModePacketBuffer);
+      break;
+    case 0xADE:
+      this->ReceiveUnknown173A5BC(g_gameModePacketBuffer);
+      break;
+    case 0xADF:
+      this->ReceiveActorNameTitle(reinterpret_cast<const ActorNameTitlePacket *>(g_gameModePacketBuffer));
+      break;
+    case 0xAE1:
+      this->ReceiveNamedResultNotice(g_gameModePacketBuffer);
+      break;
+    case 0xAE4:
+      this->ReceiveUnknownD65870(g_gameModePacketBuffer);
+      break;
+    case 0xAE5:
+      this->ReceivePartyRoster(g_gameModePacketBuffer);
+      break;
+    case 0xAF6:
+      this->ReceiveShowRankingSchedule(g_gameModePacketBuffer);
+      break;
+    case 0xAF7:
+      this->ReceivePlayerNameUpdate(reinterpret_cast<const PlayerNameUpdatePacket *>(g_gameModePacketBuffer));
+      break;
+    case 0xAFD:
+      this->ReceiveActorClanName(g_gameModePacketBuffer);
+      break;
+    case 0xAFE:
+      this->ReceiveQuestHuntUpdate(g_gameModePacketBuffer);
+      break;
+    case 0xAFF:
+      this->ReceiveOngoingQuestList2(g_gameModePacketBuffer);
+      break;
+    case 0xB03:
+      this->ReceiveEquipWindowMicroscope5(g_gameModePacketBuffer);
+      break;
+    case 0xB08:
+      this->ReceiveInventoryStart(g_gameModePacketBuffer);
+      break;
+    case 0xB0C:
+      this->ReceiveAddQuest64(g_gameModePacketBuffer);
+      break;
+    case 0xB0D:
+      this->ReceiveEffectRemove(g_gameModePacketBuffer);
+      break;
+    case 0xB15:
+      this->ReceiveExtraInventoryResult(g_gameModePacketBuffer);
+      break;
+    case 0xB17:
+      this->NotifyResult3562(g_gameModePacketBuffer);
+      break;
+    case 0xB18:
+      this->ReceiveUnknown7FBC(g_gameModePacketBuffer);
+      break;
+    case 0xB1A:
+      this->ReceiveActorSkillResult(g_gameModePacketBuffer);
+      break;
+    case 0xB1B:
+      this->ReceiveDeferredReset(g_gameModePacketBuffer);
+      break;
+    case 0xB20:
+      this->ReceiveShortcutPagePacket(g_gameModePacketBuffer);
+      break;
+    case 0xB27:
+      this->ReceiveGuildUnknown0114List(g_gameModePacketBuffer);
+      break;
+    case 0xB2F:
+      this->ReceiveHomunculusInfo2(g_gameModePacketBuffer);
+      break;
+    case 0xB37:
+      this->ReceiveEquipWindowMicroscope6(g_gameModePacketBuffer);
+      break;
+    case 0xB39:
+      this->ReceiveEquipItemList(g_gameModePacketBuffer);
+      break;
+    case 0xB3C:
+      this->ReceiveInventoryEquipList3(g_gameModePacketBuffer);
+      break;
+    case 0xB3D:
+      this->ReceiveItem1748List2(g_gameModePacketBuffer);
+      break;
+    case 0xB3E:
+      this->ReceiveGuildStorageLogItems(g_gameModePacketBuffer);
+      break;
+    case 0xB3F:
+      this->ReceiveItemReward2(g_gameModePacketBuffer);
+      break;
+    case 0xB40:
+      this->ReceiveItem1758StoreList(g_gameModePacketBuffer);
+      break;
+    case 0xB41:
+      this->ReceiveItemPickupAck9(g_gameModePacketBuffer);
+      break;
+    case 0xB42:
+      this->ReceiveItemSlotAddGrade(g_gameModePacketBuffer);
+      break;
+    case 0xB43:
+      this->RefreshInventoryOrEquipItem2(g_gameModePacketBuffer);
+      break;
+    case 0xB44:
+      this->ReceiveItem1738AddGrade(g_gameModePacketBuffer);
+      break;
+    case 0xB45:
+      this->ReceiveItem1740AddGrade(g_gameModePacketBuffer);
+      break;
+    case 0xB4D:
+      this->ReceiveItem1784List(g_gameModePacketBuffer);
+      break;
+    case 0xB4E:
+      this->ReceiveParaResultList(g_gameModePacketBuffer);
+      break;
+    case 0xB56:
+      this->ReceiveExpandedBarterMarketItemList(g_gameModePacketBuffer);
+      break;
+    case 0xB5A:
+      this->ReceiveGradeEnchantInfo(g_gameModePacketBuffer);
+      break;
+    case 0xB5D:
+      this->ReceiveGradeEnchantResult(g_gameModePacketBuffer);
+      break;
+    case 0xB5E:
+      this->ReceiveGradeEnchantBroadcast(g_gameModePacketBuffer);
+      break;
+    case 0xB62:
+      this->ReceiveShopItemListPacket(g_gameModePacketBuffer);
+      break;
+    case 0xB63:
+      this->ReceiveRodexReadMail(g_gameModePacketBuffer);
+      break;
+    case 0xB64:
+      this->ReceiveSearchStoreItems(g_gameModePacketBuffer);
+      break;
+    case 0xB65:
+      this->ReceiveWindow107List(g_gameModePacketBuffer);
+      break;
+    case 0xB67:
+      this->ReceivePartyItemPickup(g_gameModePacketBuffer);
+      break;
+    case 0xB69:
+      this->ReceiveActorStatusValuePacket2(g_gameModePacketBuffer);
+      break;
+    case 0xB6B:
+      this->ReceiveSummonHpInit(g_gameModePacketBuffer);
+      break;
+    case 0xB6C:
+      this->ReceiveSummonHpUpdate(g_gameModePacketBuffer);
+      break;
+    case 0xB73:
+      this->ReceivePacket0B73(g_gameModePacketBuffer);
+      break;
+    case 0xB77:
+      this->ReceiveItem1718BasicList(g_gameModePacketBuffer);
+      break;
+    case 0xB78:
+      this->ReceiveBarterMarketItemList(g_gameModePacketBuffer);
+      break;
+    case 0xB79:
+      this->ReceiveExpandedBarterMarketItemList2(g_gameModePacketBuffer);
+      break;
+    case 0xB7A:
+      this->ReceiveItem1718List(g_gameModePacketBuffer);
+      break;
+    case 0xB7B:
+      this->ReceiveGuildInfo4(g_gameModePacketBuffer);
+      break;
+    case 0xB7C:
+      this->ReceiveGuildBanList3(g_gameModePacketBuffer);
+      break;
+    case 0xB7D:
+      this->ReceiveGuildMemberList2(g_gameModePacketBuffer);
+      break;
+    case 0xB7E:
+      this->ReceiveGuildMemberAdd2(g_gameModePacketBuffer);
+      break;
+    case 0xBA4:
+      this->ReceiveHomunculusInfo3(g_gameModePacketBuffer);
+      break;
+    case 0xBA5:
+      this->ReceiveHomunculusProperty64(g_gameModePacketBuffer);
+      break;
+    case 0xBB3:
+      this->ReceiveDdukddakBoxTest(g_gameModePacketBuffer);
+      break;
+    case 0xBB4:
+      this->ReceiveItemOptionsRefresh(g_gameModePacketBuffer);
+      break;
+    case 0xBBB:
+      this->ReceiveShopItemList(g_gameModePacketBuffer);
+      break;
+    case 0xBCC:
+      this->ReceiveRuneActivation(g_gameModePacketBuffer);
+      break;
+    case 0xBCD:
+      this->ReceiveRuneSetGrades(g_gameModePacketBuffer);
+      break;
+    case 0xBD9:
+      this->ReceiveRuneRewardPacket(g_gameModePacketBuffer);
+      break;
+    case 0xBDE:
+      this->ReceiveBroadcastText(g_gameModePacketBuffer);
+      break;
+    case 0xC10:
+      this->ReceiveStovePurchaseResult(g_gameModePacketBuffer);
+      break;
+    case 0xC14:
+      this->ReceiveMessageBox(g_gameModePacketBuffer);
+      break;
+    case 0xC15:
+      this->ReceiveRuneRewardSteps(g_gameModePacketBuffer);
+      break;
+    case 0xC2B:
+      this->ReceiveUnknownD79660(g_gameModePacketBuffer);
+      break;
+    case 0xC2C:
+      this->ReceiveResultNotice4327(g_gameModePacketBuffer);
+      break;
+    case 0xC38:
+      this->ReceiveItemBroadcast(g_gameModePacketBuffer);
+      break;
+    case 0xC39:
+      this->ReceiveTradeBroadcast(g_gameModePacketBuffer);
+      break;
+    case 0xC3A:
+      this->ReceiveRefineBroadcast(g_gameModePacketBuffer);
+      break;
+    case 0xC44:
+      this->ReceiveSimulationResult(g_gameModePacketBuffer);
+      break;
+    case 0x73: {
+      g_session.SetServerTime(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2));
+      const unsigned char *posDir = g_gameModePacketBuffer + 6;
+      g_session.SetPlayerPosition((posDir[0] << 2) | (posDir[1] >> 6), ((posDir[1] & 0x3F) << 4) | (posDir[2] >> 4), posDir[2] & 0xF);
+
+      char mapName[36];
+      sprintf(mapName, "%s.rsw", g_session.m_navigationPlayerMap);
+      g_modeMgr.Switch(1, mapName);
+      GetRagConnection().SetBlock(0);
+
+      if (g_pingLogEnabled) {
+        FILE *file = fopen("PingLog.txt", "at");
+        if (file) {
+          __time32_t now;
+          _time32(&now);
+          fprintf(file, "\n");
+          fprintf(file, "server:%s\n", g_session.m_accountName.c_str());
+          fprintf(file, "ip:%s\n", g_zoneServerIp);
+          fprintf(file, "map:%s.gat\n", g_session.m_navigationPlayerMap);
+          fprintf(file, "time:%s\n\n", _ctime32(&now));
+          fclose(file);
+        }
+        g_pingLogTicks.clear();
+        g_pingLogFirstTick = 0;
+      }
+      break;
+    }
+    case 0x7F: {
+      if (g_pingLogEnabled) {
+        FILE *file = fopen("PingLog.txt", "at");
+        if (file) {
+          const std::uint32_t sent = g_pingLogTicks.front();
+          fprintf(file, "%10.2f\t%10d\n", static_cast<float>(sent - g_pingLogFirstTick) / 1000.0f, timeGetTime() - sent);
+          fclose(file);
+        }
+        g_pingLogTicks.pop_front();
+      }
+
+      const std::uint32_t serverTime = *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2);
+      if (this->unknown_0454 == 0) {
+        g_session.SetServerTime(serverTime);
+      } else {
+        g_session.SyncServerTime(serverTime);
+      }
+      ++this->unknown_0454;
+      *reinterpret_cast<int *>(&this->unknown_026E[0x02]) = 1;
+      g_session.AddPingSample(timeGetTime() - *reinterpret_cast<const std::uint32_t *>(&this->unknown_026E[0x06]));
+      break;
+    }
+    case 0x86: {
+      const std::uint32_t aid = *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2);
+      ActorMoveRoute path;
+      path.tick = *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 12);
+      DecodeSrcDst(g_gameModePacketBuffer + 6, &path.srcX, &path.srcY, &path.dstX, &path.dstY, &path.subX, &path.subY);
+      CRenderObject *actor = this->scene->GetGameActorByAID(aid);
+      g_session.SyncServerTime(path.tick);
+      if (actor) {
+        const int pathAddress = reinterpret_cast<int>(&path);
+        actor->SendMsg(nullptr, 0, 0, pathAddress, pathAddress >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      break;
+    }
+    case 0x87: {
+      ActorMoveRoute path;
+      path.tick = *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2);
+      DecodeSrcDst(g_gameModePacketBuffer + 6, &path.srcX, &path.srcY, &path.dstX, &path.dstY, &path.subX, &path.subY);
+      g_session.SyncServerTime(path.tick);
+      const int pathAddress = reinterpret_cast<int>(&path);
+      this->scene->player->SendMsg(nullptr, 0, 0, pathAddress, pathAddress >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      break;
+    }
+    case 0x88: {
+      const ActorStopPacket *packet = reinterpret_cast<const ActorStopPacket *>(g_gameModePacketBuffer);
+      this->StopActorMove(packet->aid, packet->x, packet->y, 0);
+      break;
+    }
+    case 0x8A: {
+      const ActorActionPacket *packet = reinterpret_cast<const ActorActionPacket *>(g_gameModePacketBuffer);
+      this->ReceiveActorAction(packet->sourceAid, packet->targetAid, packet->tick, packet->attackMT, packet->attackedMT, packet->damage, packet->count,
+                               packet->type, packet->damage2, 0);
+      break;
+    }
+    case 0x8B: {
+      const ActorRestPacket *packet = reinterpret_cast<const ActorRestPacket *>(g_gameModePacketBuffer);
+      if (packet->damage == -30000) {
+        break;
+      }
+
+      ACTSTRUCT act;
+      act.damage = packet->damage;
+      act.type = packet->type;
+      act.targetId = packet->targetAid;
+      act.tick = packet->tick;
+      act.count = packet->count;
+      act.unknown_001C = packet->attackMT;
+      act.unknown_0020 = packet->attackedMT;
+      act.damage2 = 0;
+      act.attackMT = 432;
+      act.attackedMT = 288;
+      CRenderObject *actor;
+      if (packet->sourceAid == g_session.m_aid) {
+        actor = this->scene->player;
+      } else {
+        actor = this->scene->GetGameActorByAID(packet->sourceAid);
+        if (!actor) {
+          break;
+        }
+      }
+      const int actAddress = reinterpret_cast<int>(&act);
+      actor->SendMsg(nullptr, 11, 0, actAddress, actAddress >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      break;
+    }
+    case 0x93:
+      this->unknown_0244 = 0;
+      break;
+    case 0x95: {
+      const ActorNamePacket *packet = reinterpret_cast<const ActorNamePacket *>(g_gameModePacketBuffer);
+      this->nameCard.SetName(packet->aid, std::string(packet->name, sizeof(packet->name)).c_str());
+      if (packet->aid == g_session.unknown_1010) {
+        sprintf(g_session.unknown_1018, packet->name);
+        if (UIPetInfoWnd *window = static_cast<UIPetInfoWnd *>(g_windowMgr.window_038C)) {
+          window->nameEdit->SetText(packet->name);
+        }
+      }
+      break;
+    }
+    case 0x9A:
+      this->ReceiveTaggedBroadcast(g_gameModePacketBuffer);
+      break;
+    case 0x9C: {
+      const ActorDirectionPacket *packet = reinterpret_cast<const ActorDirectionPacket *>(g_gameModePacketBuffer);
+      CRenderObject *actor;
+      if (packet->aid == g_session.m_aid) {
+        actor = this->scene->player;
+      } else {
+        actor = this->scene->GetGameActorByAID(packet->aid);
+        if (!actor) {
+          break;
+        }
+      }
+      actor->render.angle = static_cast<float>(45 * (packet->direction + 4));
+      actor->SendMsg(nullptr, 100, 0, packet->headDirection, packet->headDirection >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      break;
+    }
+    case 0x9D:
+    case 0x9E: {
+      const unsigned char *packet = g_gameModePacketBuffer;
+      const bool falling = static_cast<short>(type) == 0x9E;
+      ItemFallEntry entry = {};
+      entry.count = *reinterpret_cast<const std::int16_t *>(packet + (falling ? 0x11 : 0x0F));
+      entry.aid = *reinterpret_cast<const std::uint32_t *>(packet + 2);
+      entry.column = *reinterpret_cast<const std::int16_t *>(packet + 0x0B);
+      entry.row = *reinterpret_cast<const std::int16_t *>(packet + 0x0D);
+      entry.subColumn = packet[falling ? 0x0F : 0x11];
+      entry.subRow = packet[falling ? 0x10 : 0x12];
+      entry.falling = 0;
+      _itoa(*reinterpret_cast<const int *>(packet + 6), entry.itemId, 10);
+      entry.falling = falling;
+      entry.identified = packet[0x0A];
+
+      CItem *item = this->scene->GetItemByAID(entry.aid);
+      if (!item) {
+        item = new CItem;
+        this->scene->objects.push_back(item);
+        this->scene->unknown_0018.push_back(item);
+      }
+
+      const int entryAddress = reinterpret_cast<int>(&entry);
+      item->SendMsg(nullptr, 4, 0, entryAddress, entryAddress >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      break;
+    }
+    case 0xA1: {
+      const std::uint32_t aid = *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2);
+      this->scene->RemoveGroundItem(aid);
+      this->RemoveUnknown01A4(aid);
+      break;
+    }
+    case 0xA3: {
+      g_session.KeepEquipment();
+      const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / sizeof(NormalItemRecord);
+      const NormalItemRecord *record = reinterpret_cast<const NormalItemRecord *>(g_gameModePacketBuffer + 4);
+      for (int i = 0; i < count; ++i, ++record) {
+        ITEM_INFO item;
+        item.unknown_0000[0] = record->type;
+        item.unknown_0000[2] = 0;
+        item.unknown_0000[1] = record->index;
+        item.unknown_0000[3] = record->location;
+        item.quantity = record->amount;
+        std::memset(item.unknown_001C, 0, sizeof(item.unknown_001C));
+        item.SetItemId(record->itemId);
+        item.identified = record->identified;
+        item.unknown_005D = 0;
+        item.unknown_0060 = 0;
+        g_session.UpdateInventoryItem(item, 0);
+      }
+      RefreshItemWindows(&g_windowMgr);
+      break;
+    }
+    case 0xA4: {
+      g_session.RemoveEquipment();
+      g_session.ResetEquipment();
+      const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / sizeof(EquipItemRecord);
+      const EquipItemRecord *record = reinterpret_cast<const EquipItemRecord *>(g_gameModePacketBuffer + 4);
+      for (int i = 0; i < count; ++i, ++record) {
+        ITEM_INFO item;
+        item.unknown_0000[0] = record->type;
+        item.unknown_0000[2] = record->location;
+        item.unknown_0000[1] = record->index;
+        item.unknown_0000[3] = record->wearState;
+        item.quantity = 1;
+        std::memcpy(item.unknown_001C, record->cards, sizeof(record->cards));
+        item.SetItemId(record->itemId);
+        item.identified = record->identified;
+        item.unknown_005D = record->damaged;
+        item.unknown_0060 = record->refine;
+        if (g_session.IsPetEgg(std::atoi(item.itemId.c_str())) && item.unknown_005D) {
+          g_session.unknown_1050 = item.unknown_0000[1];
+        }
+
+        if (item.unknown_0000[3] == 0) {
+          g_session.AddItem1710(item, 0);
+          g_session.UpdateInventoryItem(item, 0);
+        } else {
+          char equipped = 1;
+          g_session.EquipUnknown17F0(item, &equipped);
+        }
+      }
+      RefreshItemWindows(&g_windowMgr);
+      break;
+    }
+    case 0xA5: {
+      g_windowMgr.sub_A978D0(33);
+      const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / sizeof(NormalItemRecord);
+      const NormalItemRecord *record = reinterpret_cast<const NormalItemRecord *>(g_gameModePacketBuffer + 4);
+      for (int i = 0; i < count; ++i, ++record) {
+        ITEM_INFO item;
+        item.unknown_0000[0] = record->type;
+        item.unknown_0000[2] = 0;
+        item.unknown_0000[1] = record->index;
+        item.unknown_0000[3] = record->location;
+        item.quantity = record->amount;
+        std::memset(item.unknown_001C, 0, sizeof(item.unknown_001C));
+        item.SetItemId(record->itemId);
+        item.identified = record->identified;
+        item.unknown_005D = 0;
+        item.unknown_0060 = 0;
+        g_session.AddItem1738(item, 0);
+      }
+      g_session.RefreshItem1738Window();
+      break;
+    }
+    case 0xA6: {
+      g_windowMgr.sub_A978D0(33);
+      const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / sizeof(EquipItemRecord);
+      const EquipItemRecord *record = reinterpret_cast<const EquipItemRecord *>(g_gameModePacketBuffer + 4);
+      for (int i = 0; i < count; ++i, ++record) {
+        ITEM_INFO item;
+        item.unknown_0000[0] = record->type;
+        item.unknown_0000[2] = record->location;
+        item.unknown_0000[1] = record->index;
+        item.unknown_0000[3] = record->wearState;
+        item.quantity = 1;
+        std::memcpy(item.unknown_001C, record->cards, sizeof(record->cards));
+        item.SetItemId(record->itemId);
+        item.identified = record->identified;
+        item.unknown_005D = record->damaged;
+        item.unknown_0060 = record->refine;
+        g_session.AddItem1738(item, 0);
+      }
+      g_session.RefreshItem1738Window();
+      break;
+    }
+    case 0xA8: {
+      const ItemUseAckPacket *packet = reinterpret_cast<const ItemUseAckPacket *>(g_gameModePacketBuffer);
+      if (packet->result) {
+        ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, packet->index);
+        if (item.unknown_0000[1]) {
+          g_session.RemoveItem1710(packet->index, item.quantity - packet->amount);
+          if (item.IsAboveItemId600()) {
+            this->scene->player->SendMsg(nullptr, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+          }
+        }
+      }
+      this->unknown_02CC = 0;
+      break;
+    }
+    case 0xAA: {
+      const unsigned char *packet = g_gameModePacketBuffer;
+      *reinterpret_cast<std::uint32_t *>(&this->unknown_0100[0x04]) = timeGetTime() - 2000;
+      switch (packet[8]) {
+      case 0:
+      case 2:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(372)), 0xFF, 7, 0, 0);
+        break;
+      case 1: {
+        ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *reinterpret_cast<const std::uint16_t *>(packet + 2));
+        if (item.unknown_0000[1]) {
+          item.unknown_0070 = *reinterpret_cast<const std::uint16_t *>(packet + 6);
+          item.unknown_0000[3] = *reinterpret_cast<const std::uint16_t *>(packet + 4);
+          g_session.OnItemEquipped(item);
+        }
+        break;
+      }
+      }
+      break;
+    }
+    case 0xAC: {
+      const unsigned char *packet = g_gameModePacketBuffer;
+      *reinterpret_cast<std::uint32_t *>(&this->unknown_0100[0x08]) = timeGetTime() - 2000;
+      const std::uint16_t location = *reinterpret_cast<const std::uint16_t *>(packet + 4);
+      if (packet[6] && location) {
+        if (g_session.IsCostumeLocation(location)) {
+          g_session.UnequipItem2B50(location);
+        } else {
+          g_session.UnequipItem(location, 0);
+        }
+      }
+      break;
+    }
+    case 0xAF: {
+      const unsigned char *packet = g_gameModePacketBuffer;
+      if (*reinterpret_cast<int *>(&this->unknown_0100[0x14])) {
+        *reinterpret_cast<int *>(&this->unknown_0100[0x14]) = 0;
+        g_session.ResetSlots();
+      }
+
+      const std::uint16_t index = *reinterpret_cast<const std::uint16_t *>(packet + 2);
+      const std::int16_t amount = *reinterpret_cast<const std::int16_t *>(packet + 4);
+      ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, index);
+      if (item.unknown_0000[1] && amount > 0) {
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(1609), item.DisplayName(0).c_str(), amount).c_str()),
+                               0xFFFF00, 6, 0, 0);
+      }
+      g_session.RemoveItem1710(index, amount);
+      *reinterpret_cast<int *>(this->unknown_02D0) = 0;
+      break;
+    }
+    case 0xB3:
+      g_navigationManager.Reset(true);
+      g_navigationManager.ClearData();
+      g_navigationManager.unknown_125C = 0;
+      g_clanInfo->Clear();
+      if (g_gameModePacketBuffer[2] == 1) {
+        g_timeScheduler->sub_BA95F0(6);
+        g_timeScheduler->sub_BA95F0(5);
+        g_timeScheduler->sub_BA95F0(7);
+        GetRagConnection().Close();
+        g_loginStartMode = 5;
+        g_modeMgr.Switch(0, "login.rsw");
+      }
+      break;
+    case 0xB4: {
+      const unsigned char *packet = g_gameModePacketBuffer;
+      this->unknown_024C = 1;
+      this->unknown_02DC = *reinterpret_cast<const int *>(packet + 4);
+      unsigned int length = *reinterpret_cast<const std::uint16_t *>(packet + 2) - 8;
+      UIWindow *window = g_windowMgr.sub_A978D0(16);
+      char text[0x803];
+      if (g_serviceType == 10) {
+        sprintf(text, "|%02x", LanguageCharset(31));
+        memcpy(text + 3, packet + 8, length);
+        length += 3;
+      } else {
+        memcpy(text, packet + 8, length);
+      }
+      text[length] = 0;
+      window->SendMsg(nullptr, 26, reinterpret_cast<std::intptr_t>(text), *reinterpret_cast<const int *>(packet + 4), 0, 0);
+      break;
+    }
+    case 0xB5:
+      this->unknown_024C = 1;
+      this->unknown_02DC = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2);
+      g_windowMgr.sub_A978D0(16)->SendMsg(nullptr, 25, 0, 0, 0, 0);
+      break;
+    case 0xC0: {
+      const std::uint32_t aid = *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2);
+      CRenderObject *actor;
+      if (aid == g_session.m_aid) {
+        actor = this->scene->player;
+      } else {
+        actor = this->scene->GetGameActorByAID(aid);
+        if (!actor) {
+          break;
+        }
+      }
+      const int emotion = g_gameModePacketBuffer[6];
+      actor->SendMsg(nullptr, 160, 0, 0, 0, emotion, emotion >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+      break;
+    }
+    case 0xC2: {
+      char text[128];
+      if (g_serviceType == 3 && !IsAdminAccount(g_session.m_aid)) {
+        strcpy(text, GetUserCountText(*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2)));
+      } else {
+        sprintf(text, LookupMessage(178), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2));
+      }
+      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
+      break;
+    }
+    case 0xC4:
+      this->unknown_024C = 1;
+      g_windowMgr.sub_A978D0(25)->SendMsg(nullptr, 28, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), 0, 0, 0);
+      g_windowMgr.CloseWindow(22);
+      g_windowMgr.CloseWindow(23);
+      g_windowMgr.CloseWindow(24);
+      break;
+    case 0xC6: {
+      g_session.ClearTradeItems();
+      const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / sizeof(ShopItemRecord);
+      const ShopItemRecord *records = reinterpret_cast<const ShopItemRecord *>(g_gameModePacketBuffer + 4);
+      for (int i = 0; i < count; ++i) {
+        const ShopItemRecord record = records[i];
+        RawItemBasic item = {};
+        _itoa(record.itemId, item.itemId, 10);
+        item.unknown_0004 = record.price;
+        item.unknown_0008 = record.discountPrice;
+        item.unknown_000C = record.type;
+        item.id = -1;
+        item.identified = 1;
+        g_session.AddItem1718(item, 0);
+      }
+
+      UIWindow *buyWindow = g_windowMgr.sub_A978D0(22);
+      buyWindow->SendMsg(nullptr, 36, 0, 0, 0, 0);
+      buyWindow->SendMsg(nullptr, 23, 0, 0, 0, 0);
+      UIWindow *sellWindow = g_windowMgr.sub_A978D0(23);
+      sellWindow->SendMsg(nullptr, 36, 0, 0, 0, 0);
+      sellWindow->SendMsg(nullptr, 23, 0, 0, 0, 0);
+      break;
+    }
+    case 0xCB:
+      switch (g_gameModePacketBuffer[2]) {
+      case 0:
+        g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(54)), 0xFFFF00, 0, 0, 0);
+        break;
+      case 1:
+        g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(57)), 0xFF, 0, 0, 0);
+        break;
+      }
+      g_session.ClearTradeItems();
+      g_windowMgr.CloseWindow(22);
+      g_windowMgr.CloseWindow(24);
+      break;
+    case 0xCD: {
+      char text[80];
+      sprintf(text, LookupMessage(g_gameModePacketBuffer[2] == 0 ? 152 : 151));
+      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0x32FF, 0, 0, 0);
+      break;
+    }
+    case 0xD2:
+      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+      switch (g_gameModePacketBuffer[2]) {
+      case 0:
+        switch (g_gameModePacketBuffer[3]) {
+        case 0:
+          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3427)), 0xFFFF, 0, 0, 0);
+          break;
+        case 1:
+          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3428)), 0xFFFF, 0, 0, 0);
+          break;
+        }
+        break;
+      case 1:
+        switch (g_gameModePacketBuffer[3]) {
+        case 0:
+          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3429)), 0xFFFF, 0, 0, 0);
+          break;
+        case 1:
+          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3430)), 0xFFFF, 0, 0, 0);
+          break;
+        }
+        break;
+      }
+      break;
+    case 0xD4: {
+      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+      const int length = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2);
+      const int count = (length - 4) / 24;
+      char name[25];
+      name[24] = '\0';
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(count != 0 ? 3396 : 3395)), 0xFFFF00, 0, 0, 0);
+      for (int i = 0; i < count; ++i) {
+        if (i * 24 + 4 > length) {
+          break;
+        }
+        std::memcpy(name, g_gameModePacketBuffer + 4 + i * 24, 24);
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(name), 0xFFFF00, 0, 0, 0);
+      }
+      break;
+    }
+    case 0xD6:
+      this->unknown_00FC = 0;
+      switch (g_gameModePacketBuffer[2]) {
+      case 0: {
+        g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(64)), 0xFFFF00, 0, 0, 0);
+        UIWindow *window = g_windowMgr.sub_A978D0(28);
+        this->unknown_03FC = 1;
+        window->SendMsg(nullptr, 34, reinterpret_cast<std::intptr_t>(&this->unknown_03C8), 0, 0, 0);
+        window->SendMsg(nullptr, 43, 0, 0, 0, 0);
+        window->SendMsg(nullptr, 44, reinterpret_cast<std::intptr_t>(g_session.DecodePlayerName()), 0, 0, 0);
+        break;
+      }
+      case 1:
+        g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(65)), 0xFF, 0, 0, 0);
+        break;
+      case 2:
+        g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(66)), 0xFF, 0, 0, 0);
+        break;
+      }
+      break;
+    case 0xD8: {
+      const std::uint32_t roomId = *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2);
+      if (CRenderObject *actor = this->scene->GetGameActorByAID(this->unknown_01AC[roomId])) {
+        actor->SendMsg(nullptr, 33, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      if (g_windowMgr.window_027C && static_cast<UIChatRoomWnd *>(g_windowMgr.window_027C)->roomStatus.roomId == static_cast<int>(roomId)) {
+        g_windowMgr.CloseWindow(28);
+        g_windowMgr.CloseWindow(30);
+      }
+      break;
+    }
+    case 0xDC: {
+      char name[25];
+      std::memcpy(name, g_gameModePacketBuffer + 4, 24);
+      name[24] = '\0';
+      g_session.DecodePlayerName();
+      UIChatRoomWnd *window = static_cast<UIChatRoomWnd *>(g_windowMgr.sub_A978D0(28));
+      ChatRoomMemberUpdateInfo info{window->title, window->unknown_00CC, window->roomStatus.roomType, window->roomStatus.memberCount,
+                             window->roomStatus.memberLimit, window->roomStatus.roomId};
+      info.memberCount = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2);
+      window->SendMsg(nullptr, 34, reinterpret_cast<std::intptr_t>(&info), 0, 0, 0);
+      window->SendMsg(nullptr, 44, reinterpret_cast<std::intptr_t>(name), 1, 0, 0);
+      char text[128];
+      sprintf(text, LookupMessage(179), name);
+      g_windowMgr.SendNotice(5, reinterpret_cast<std::intptr_t>(text), 0x808000, 0, 0, 0);
+      break;
+    }
+    case 0xDD: {
+      char name[25];
+      std::memcpy(name, g_gameModePacketBuffer + 4, 24);
+      name[24] = '\0';
+      if (strcmp(g_session.DecodePlayerName(), name) == 0) {
+        g_windowMgr.CloseWindow(28);
+        g_windowMgr.CloseWindow(30);
+        break;
+      }
+
+      UIChatRoomWnd *window = static_cast<UIChatRoomWnd *>(g_windowMgr.sub_A978D0(28));
+      ChatRoomMemberUpdateInfo info{window->title, window->unknown_00CC, window->roomStatus.roomType, window->roomStatus.memberCount,
+                             window->roomStatus.memberLimit, window->roomStatus.roomId};
+      info.memberCount = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2);
+      window->SendMsg(nullptr, 34, reinterpret_cast<std::intptr_t>(&info), 0, 0, 0);
+      window->SendMsg(nullptr, 45, reinterpret_cast<std::intptr_t>(name), 0, 0, 0);
+      char text[128];
+      switch (g_gameModePacketBuffer[0x1C]) {
+      case 0:
+        sprintf(text, LookupMessage(180), name);
+        g_windowMgr.SendNotice(5, reinterpret_cast<std::intptr_t>(text), 0x80, 0, 0, 0);
+        break;
+      case 1:
+        sprintf(text, LookupMessage(181), name);
+        g_windowMgr.SendNotice(5, reinterpret_cast<std::intptr_t>(text), 0x80, 0, 0, 0);
+        break;
+      }
+      break;
+    }
+    case 0xE1: {
+      UIWindow *window = g_windowMgr.sub_A978D0(28);
+      char name[25];
+      std::memcpy(name, g_gameModePacketBuffer + 6, 24);
+      name[24] = '\0';
+      window->SendMsg(nullptr, 46, reinterpret_cast<std::intptr_t>(name), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), 0, 0);
+      break;
+    }
+    case 0xE5: {
+      if (g_serviceOptions.Get(136)) {
+        g_modeMgr.gameMode->SendMsg(50, 4, 0, 0, 0);
+        break;
+      }
+
+      char name[25];
+      std::memcpy(name, g_gameModePacketBuffer + 2, 24);
+      name[24] = '\0';
+      g_windowMgr.sub_A978D0(32)->SendMsg(nullptr, 50, reinterpret_cast<std::intptr_t>(name), 0, 0, 0);
+      this->exchangeName.assign(name, strlen(name));
+      break;
+    }
+    case 0xEC:
+      if (UIWindow *window = g_windowMgr.LookupWindow(10011)) {
+        switch (g_gameModePacketBuffer[2]) {
+        case 0:
+          window->SendMsg(nullptr, 51, 0, 0, 0, 0);
+          break;
+        case 1:
+          window->SendMsg(nullptr, 52, 0, 0, 0, 0);
+          break;
+        }
+      }
+      break;
+    case 0xEE:
+      *reinterpret_cast<int *>(&this->unknown_0100[0x00]) = 0;
+      this->SendMsg(18, 0, 0, 0, 0);
+      g_windowMgr.CloseWindow(10011);
+      g_windowMgr.CloseWindow(32);
+      *reinterpret_cast<int *>(&this->unknown_0100[0x14]) = 0;
+      g_session.ResetSlots();
+      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(74)), 0xFF, 0, 0, 0);
+      break;
+    case 0xF0:
+      this->SendMsg(18, 0, 0, 0, 0);
+      g_windowMgr.CloseWindow(10011);
+      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+      switch (g_gameModePacketBuffer[2]) {
+      case 0:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(75)), 0xFFFF00, 0, 0, 0);
+        break;
+      case 1:
+        *reinterpret_cast<int *>(&this->unknown_0100[0x14]) = 0;
+        g_session.ResetSlots();
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(76)), 0xFF, 0, 0, 0);
+        break;
+      }
+      break;
+    case 0xF1:
+      *reinterpret_cast<int *>(&this->unknown_0100[0x14]) = 0;
+      g_session.ResetSlots();
+      break;
+    case 0xF2:
+      g_windowMgr.sub_A978D0(33)->SendMsg(nullptr, 55, *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2),
+                                          *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 4), 0, 0);
+      break;
+    case 0xF6: {
+      ITEM_INFO item;
+      item.unknown_0000[1] = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2);
+      item.quantity = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 4);
+      g_session.RemoveItem1738(item);
+      this->unknown_05CE = 1;
+      break;
+    }
+    case 0xF8:
+      g_windowMgr.CloseWindow(33);
+      g_session.ClearItems1738();
+      break;
+    case 0xFA:
+      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+      switch (g_gameModePacketBuffer[2]) {
+      case 0:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(77)), 0xFFFF00, 0, 0, 0);
+        g_windowMgr.sub_A978D0(34);
+        break;
+      case 1:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(78)), 0xFF, 0, 0, 0);
+        break;
+      case 2:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(79)), 0xFF, 0, 0, 0);
+        break;
+      case 3:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1387)), 0xFF, 0, 0, 0);
+        break;
+      }
+      break;
+    case 0xFE:
+    case 0x2C6: {
+      char name[25];
+      strncpy(name, reinterpret_cast<const char *>(g_gameModePacketBuffer + 6), 24);
+      name[24] = 0;
+      if (g_forbiddenWords.Contains(name)) {
+        std::string masked("");
+        g_forbiddenWords.Mask(name, &masked);
+      }
+      g_session.unknown_54C4.assign(name, strlen(name));
+      g_windowMgr.sub_A978D0(35)->SendMsg(nullptr, 56, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), reinterpret_cast<std::intptr_t>(name), 0, 0);
+      break;
+    }
+    case 0x101: {
+      char text[128];
+      g_session.unknown_54A0 = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2);
+      if (g_windowMgr.unknown_030C) {
+        g_windowMgr.unknown_030C->SendMsg(nullptr, 60, 0, 0, 0, 0);
+      }
+      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+      if (g_session.unknown_54A0 == 0 || g_session.unknown_54A0 == 1) {
+        sprintf(text, "%s - %s : %s", LookupMessage(291), LookupMessage(292), LookupMessage(g_session.unknown_54A0 == 0 ? 287 : 288));
+      } else if (g_session.unknown_54A0 == 2) {
+        StringFormat(text, 128, static_cast<std::size_t>(-1), LookupMessage(373), LookupMessage(292), LookupMessage(288));
+      } else {
+        break;
+      }
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 12, 0, 0);
+      break;
+    }
+    case 0x106: {
+      const std::uint32_t aid = *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2);
+      if (g_session.IsMercenaryAid(aid)) {
+        break;
+      }
+      const int hp = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 6);
+      const int maxHp = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 8);
+      if (CRenderObject *actor = this->scene->GetGameActorByAID(aid)) {
+        actor->SendMsg(nullptr, 34, 0, hp, hp >> 31, maxHp, maxHp >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      if (g_windowMgr.window_02C8) {
+        g_windowMgr.window_02C8->SendMsg(nullptr, 6, 34, aid, hp, maxHp);
+      }
+      g_windowMgr.NotifyItemWindows(aid, hp, maxHp);
+      break;
+    }
+    case 0x107: {
+      const unsigned char *packet = g_gameModePacketBuffer;
+      this->SendMsg(63, *reinterpret_cast<const int *>(packet + 2), *reinterpret_cast<const std::int16_t *>(packet + 6),
+                    *reinterpret_cast<const std::int16_t *>(packet + 8), 0);
+      break;
+    }
+    case 0x10A: {
+      char itemId[25];
+      _itoa(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), itemId, 10);
+      itemId[24] = 0;
+      ITEM_INFO item;
+      item.itemId.assign(itemId, strlen(itemId));
+      item.unknown_0060 = 0;
+      item.identified = 0;
+      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+      const char *suffix = LookupMessage(144);
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s%s", LookupMessage(143), item.DisplayName(0).c_str(), suffix).c_str()),
+                             0xFFFF00, 0, 0, 0);
+      break;
+    }
+    case 0x10B: {
+      char text[256];
+      memset(text, 0, sizeof(text));
+      StringFormat(text, 256, static_cast<std::size_t>(-1), "%s%s", LookupMessage(145), LookupMessage(146));
+      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF00, 0, 0, 0);
+      break;
+    }
+    case 0x10C: {
+      const std::uint32_t aid = *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2);
+      if (aid == g_session.m_aid) {
+        this->scene->player->SendMsg(nullptr, 36, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      } else if (CRenderObject *actor = this->scene->GetGameActorByAID(aid)) {
+        actor->SendMsg(nullptr, 36, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      break;
+    }
+    case 0x10D:
+      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(147)), 0xFF, 0, 0, 0);
+      break;
+    case 0x10F:
+    case 0x235:
+    case 0x29D: {
+      std::vector<SkillListEntry> skills;
+      const int count = static_cast<int>((*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2) - 4u) / sizeof(SkillListRecord));
+      const SkillListRecord *record = reinterpret_cast<const SkillListRecord *>(g_gameModePacketBuffer + 4);
+      for (int i = 0; i < count; ++i, ++record) {
+        SkillListEntry entry = {};
+        entry.id = record->id;
+        entry.type = record->type;
+        entry.level = record->level;
+        entry.spCost = record->spCost;
+        entry.range = record->range;
+        entry.upgradable = record->upgradable;
+        entry.unknown_000D = record->level;
+        skills.push_back(entry);
+      }
+      this->ReceiveSkillList(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer), skills);
+      break;
+    }
+    case 0x110:
+      this->ReceiveSkillFailure(g_gameModePacketBuffer);
+      break;
+    case 0x111: {
+      const unsigned char *packet = g_gameModePacketBuffer;
+      this->ReceiveLearnedSkill(*reinterpret_cast<const std::uint16_t *>(packet + 2), *reinterpret_cast<const std::uint16_t *>(packet + 8),
+                                *reinterpret_cast<const int *>(packet + 4), packet[0x26], *reinterpret_cast<const std::uint16_t *>(packet + 0x0A),
+                                *reinterpret_cast<const std::uint16_t *>(packet + 0x0C), *reinterpret_cast<const std::uint16_t *>(packet + 8));
+      break;
+    }
+    case 0x119: {
+      const unsigned char *packet = g_gameModePacketBuffer;
+      int state[4];
+      state[0] = *reinterpret_cast<const std::int16_t *>(packet + 6);
+      state[1] = *reinterpret_cast<const std::int16_t *>(packet + 0x0A);
+      state[2] = *reinterpret_cast<const std::int16_t *>(packet + 8);
+      state[3] = packet[0x0C];
+      const std::uint32_t aid = *reinterpret_cast<const std::uint32_t *>(packet + 2);
+      CRenderObject *actor;
+      if (aid == g_session.m_aid) {
+        actor = this->scene->player;
+        *reinterpret_cast<int *>(&g_session.unknown_0F0C[0x00]) = state[0];
+        *reinterpret_cast<int *>(&g_session.unknown_0F0C[0x04]) = state[2];
+        g_session.m_jobFlags = state[1];
+        if (g_windowMgr.unknown_01E0) {
+          g_windowMgr.unknown_01E0->SendMsg(nullptr, 60, 0, 0, 0, 0);
+        }
+        if (g_session.unknown_5C1C <= 0) {
+          g_session.ClearItems1740();
+          g_windowMgr.CloseWindow(40);
+        }
+      } else {
+        actor = this->scene->GetGameActorByAID(aid);
+      }
+      if (actor) {
+        const int stateAddress = reinterpret_cast<int>(state);
+        actor->SendMsg(nullptr, 43, 0, stateAddress, stateAddress >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      break;
+    }
+    case 0x11A: {
+      const unsigned char *packet = g_gameModePacketBuffer;
+      this->ReceiveSkillUse(*reinterpret_cast<const std::uint16_t *>(packet + 2), *reinterpret_cast<const std::int16_t *>(packet + 4),
+                            *reinterpret_cast<const std::uint32_t *>(packet + 0x0A), *reinterpret_cast<const std::uint32_t *>(packet + 6), packet[0x0E]);
+      break;
+    }
+    case 0x11C: {
+      g_windowMgr.CloseWindow(39);
+      UIWindow *window = g_windowMgr.sub_A978D0(39);
+      window->SendMsg(nullptr, 59, *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2), 0, 0, 0);
+      const char *name = reinterpret_cast<const char *>(g_gameModePacketBuffer + 4);
+      for (unsigned int i = 0; i < 4; ++i, name += 16) {
+        if (strlen(name)) {
+          window->SendMsg(nullptr, 27, reinterpret_cast<std::intptr_t>(name), 0, 0, 0);
+        }
+      }
+      window->SendMsg(nullptr, 27, reinterpret_cast<std::intptr_t>("cancel"), 0, 0, 0);
+      break;
+    }
+    case 0x11E:
+      switch (g_gameModePacketBuffer[2]) {
+      case 0:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(217)), 0xFFFF00, 0, 0, 0);
+        g_windowMgr.SendNotice(19, reinterpret_cast<std::intptr_t>(LookupMessage(217)), 0xFFFF00, 0, 0, 0);
+        break;
+      case 1:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(214)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(19, reinterpret_cast<std::intptr_t>(LookupMessage(214)), 0xFF, 0, 0, 0);
+        break;
+      case 2:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(216)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(19, reinterpret_cast<std::intptr_t>(LookupMessage(216)), 0xFF, 0, 0, 0);
+        break;
+      case 3:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2535)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(19, reinterpret_cast<std::intptr_t>(LookupMessage(2535)), 0xFF, 0, 0, 0);
+        break;
+      }
+      break;
+    case 0x120: {
+      const std::uint32_t aid = *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2);
+      std::vector<std::uint32_t>::iterator it = this->spriteMirrorActorIds.begin();
+      while (it != this->spriteMirrorActorIds.end() && *it != aid) {
+        ++it;
+      }
+      if (it == this->spriteMirrorActorIds.end()) {
+        this->scene->RemoveSkill(aid);
+      } else if (this->scene->RemoveItem(aid) == true) {
+        this->SendMsg(13, aid, 0, 0, 0);
+        this->spriteMirrorActorIds.erase(it);
+      }
+      break;
+    }
+    case 0x121: {
+      const unsigned char *packet = g_gameModePacketBuffer;
+      g_session.cartCount = *reinterpret_cast<const std::int16_t *>(packet + 2);
+      g_session.cartMaxCount = *reinterpret_cast<const std::int16_t *>(packet + 4);
+      g_session.cartWeight = *reinterpret_cast<const int *>(packet + 6) / 10;
+      g_session.cartMaxWeight = *reinterpret_cast<const int *>(packet + 0x0A) / 10;
+      if (g_windowMgr.unknown_02F4) {
+        g_windowMgr.unknown_02F4->SendMsg(nullptr, 55, 0, 0, 0, 0);
+      }
+      break;
+    }
+    case 0x122: {
+      const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / sizeof(EquipItemRecord);
+      const EquipItemRecord *record = reinterpret_cast<const EquipItemRecord *>(g_gameModePacketBuffer + 4);
+      for (int i = 0; i < count; ++i, ++record) {
+        ITEM_INFO item;
+        item.unknown_0000[0] = record->type;
+        item.unknown_0000[2] = record->location;
+        item.unknown_0000[1] = record->index;
+        item.unknown_0000[3] = record->wearState;
+        item.quantity = 1;
+        std::memcpy(item.unknown_001C, record->cards, sizeof(record->cards));
+        item.SetItemId(record->itemId);
+        item.identified = record->identified;
+        item.unknown_005D = record->damaged;
+        item.unknown_0060 = record->refine;
+        g_session.AddItem1740(item);
+      }
+      g_session.RefreshItem1740Window();
+      break;
+    }
+    case 0x123: {
+      const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / sizeof(NormalItemRecord);
+      const NormalItemRecord *record = reinterpret_cast<const NormalItemRecord *>(g_gameModePacketBuffer + 4);
+      for (int i = 0; i < count; ++i, ++record) {
+        ITEM_INFO item;
+        item.unknown_0000[0] = record->type;
+        item.unknown_0000[2] = 0;
+        item.unknown_0000[1] = record->index;
+        item.unknown_0000[3] = record->location;
+        item.quantity = record->amount;
+        std::memset(item.unknown_001C, 0, sizeof(item.unknown_001C));
+        item.SetItemId(record->itemId);
+        item.identified = record->identified;
+        item.unknown_005D = 0;
+        item.unknown_0060 = 0;
+        g_session.AddItem1740(item);
+      }
+      g_session.RefreshItem1740Window();
+      break;
+    }
+    case 0x124: {
+      const unsigned char *packet = g_gameModePacketBuffer;
+      ITEM_INFO item;
+      item.unknown_0000[1] = *reinterpret_cast<const std::int16_t *>(packet + 2);
+      item.quantity = *reinterpret_cast<const int *>(packet + 4);
+      item.SetItemId(*reinterpret_cast<const int *>(packet + 8));
+      item.identified = packet[0x0C];
+      item.unknown_005D = packet[0x0D];
+      item.unknown_0060 = packet[0x0E];
+      std::memcpy(item.unknown_001C, packet + 0x0F, sizeof(item.unknown_001C));
+      g_session.AddItem1740(item);
+      break;
+    }
+    case 0x125: {
+      ITEM_INFO item;
+      item.unknown_0000[1] = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2);
+      item.quantity = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 4);
+      g_session.RemoveItem1740(item);
+      this->unknown_05CE = 1;
+      break;
+    }
+    case 0x12B:
+      g_session.ClearItems1740();
+      g_windowMgr.CloseWindow(40);
+      break;
+    case 0x12C:
+      switch (g_gameModePacketBuffer[2]) {
+      case 0:
+        g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(56)), 0xFF, 0, 0, 0);
+        break;
+      case 1:
+        g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(221)), 0xFF, 0, 0, 0);
+        break;
+      }
+      break;
+    case 0x12D: {
+      CGameMode *mode = static_cast<CGameMode *>(g_modeMgr.GetGameMode());
+      if (mode && mode->drag.source != 0) {
+        this->SendMsg(81, 0, 0, 0, 0);
+        break;
+      }
+
+      const int slots = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2);
+      if (slots < 3) {
+        g_session.m_vendingSlotCount = 3;
+      } else {
+        g_session.m_vendingSlotCount = slots > 13 ? 13 : slots;
+      }
+      g_session.ClearItems1768();
+      if (g_windowMgr.window_027C || g_windowMgr.window_0274) {
+        g_windowMgr.Confirm(LookupMessage(587), 0, true, false, 0, "Message", 280, 120, 0);
+        this->SendMsg(81, 0, 0, 0, 0);
+      } else if (UIMerchantShopMakeWnd *window = static_cast<UIMerchantShopMakeWnd *>(g_windowMgr.sub_A978D0(41))) {
+        window->AddActionButton();
+      }
+      break;
+    }
+    case 0x131: {
+      char title[81];
+      strncpy(title, reinterpret_cast<const char *>(g_gameModePacketBuffer + 6), 80);
+      title[80] = 0;
+      if (CRenderObject *actor = this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2))) {
+        const int titleAddress = reinterpret_cast<int>(title);
+        actor->SendMsg(nullptr, 55, 0, titleAddress, titleAddress >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      break;
+    }
+    case 0x132:
+      if (CRenderObject *actor = this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2))) {
+        actor->SendMsg(nullptr, 54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      break;
+    case 0x137:
+      sub_D08110(_time32(nullptr), *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2),
+                 *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 4), 0, 0);
+      break;
+    case 0x139: {
+      const unsigned char *packet = g_gameModePacketBuffer;
+      const std::uint32_t aid = *reinterpret_cast<const std::uint32_t *>(packet + 2);
+      g_session.unknown_0F4C = *reinterpret_cast<const std::int16_t *>(packet + 0x0E);
+      if (CRenderObject *actor = this->scene->GetGameActorByAID(aid)) {
+        const int x = *reinterpret_cast<const std::int16_t *>(packet + 6);
+        const int y = *reinterpret_cast<const std::int16_t *>(packet + 8);
+        actor->SendMsg(nullptr, 61, 0, x, x >> 31, y, y >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      const int playerX = *reinterpret_cast<const std::int16_t *>(packet + 0x0A);
+      const int playerY = *reinterpret_cast<const std::int16_t *>(packet + 0x0C);
+      this->scene->player->SendMsg(nullptr, 61, 0, playerX, playerX >> 31, playerY, playerY >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->scene->player->SendMsg(nullptr, 60, 0, aid, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      break;
+    }
+    case 0x13A:
+      g_session.unknown_0F4C = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2);
+      break;
+    case 0x13C:
+      if (*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2) == 0 && g_session.unknown_16EC) {
+        const int location = 0x8000;
+        EquipmentProperties::CEquipmentPropertiesMgr *properties = EquipmentProperties::CEquipmentPropertiesMgr::GetInstance();
+        const int index = GetEquipLocationIndex(location);
+        if (properties->FindProperty1(index)) {
+          const int unequipLocation = 0x8000;
+          EquipmentProperties::CEquipmentPropertiesMgr::GetInstance()->UnequipWearable(unequipLocation);
+        }
+      }
+      g_session.SetUnknown16EC(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2));
+      *reinterpret_cast<std::uint32_t *>(&this->unknown_0100[0x04]) = timeGetTime() - 2000;
+      break;
+    case 0x13D:
+      this->ReceiveHpSpRecovery(g_gameModePacketBuffer, 0);
+      break;
+    case 0x13E:
+      this->ProcessSkillUsePacket(g_gameModePacketBuffer, 0);
+      break;
+    case 0x142: {
+      const std::uint32_t aid = *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2);
+      if (this->scene->GetGameActorByAID(aid)) {
+        g_windowMgr.sub_A978D0(56)->SendMsg(nullptr, 28, aid, 0, 0, 0);
+      }
+      break;
+    }
+    case 0x144: {
+      const unsigned char *packet = g_gameModePacketBuffer;
+      const int type = *reinterpret_cast<const int *>(packet + 6);
+      const std::uint32_t id = packet[0x12];
+      if (type == 2) {
+        this->RemoveMiniMapPing(id);
+        break;
+      }
+      this->unknown_01C4[id].x = *reinterpret_cast<const int *>(packet + 0x0A);
+      this->unknown_01C4[id].y = *reinterpret_cast<const int *>(packet + 0x0E);
+      this->unknown_01C4[id].color = *reinterpret_cast<const std::uint32_t *>(packet + 0x13) | 0xFF000000;
+      this->unknown_01C4[id].persistent = type;
+      this->unknown_01C4[id].tick = timeGetTime();
+      break;
+    }
+    case 0x145: {
+      char name[17];
+      strncpy(name, reinterpret_cast<const char *>(g_gameModePacketBuffer + 2), 16);
+      int index = g_gameModePacketBuffer[0x12];
+      name[16] = 0;
+      if (index == 0xFF) {
+        index = -1;
+      }
+      this->SendMsg(100, reinterpret_cast<int>(name), index, 0, 0);
+      break;
+    }
+    case 0x147: {
+      const unsigned char *packet = g_gameModePacketBuffer;
+      CSkillInfo skill;
+      skill.level = *reinterpret_cast<const std::int16_t *>(packet + 8);
+      skill.unknown_000C = *reinterpret_cast<const int *>(packet + 4);
+      skill.id = *reinterpret_cast<const std::uint16_t *>(packet + 2);
+      skill.unknown_0018 = packet[0x26];
+      skill.name = skill.IdName(*g_session.m_hotkeyScript);
+      skill.unknown_0014 = *reinterpret_cast<const std::int16_t *>(packet + 0x0A);
+      skill.unknown_001C = *reinterpret_cast<const std::int16_t *>(packet + 0x0C);
+      skill.unknown_0034 = skill.UseApAmount(*g_session.m_hotkeyScript, *reinterpret_cast<const std::int16_t *>(packet + 8));
+      g_session.m_skillBundle.UpdatePending(skill);
+      this->SendMsg(113, reinterpret_cast<int>(&skill), skill.level, 1, -1);
+      break;
+    }
+    case 0x148: {
+      const std::uint32_t aid = *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2);
+      if (CRenderObject *actor = this->scene->GetGameActorByAID(aid)) {
+        actor->SendMsg(nullptr, 98, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      if (aid == g_session.m_aid) {
+        this->scene->player->SendMsg(nullptr, 98, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        this->unknown_024C = 0;
+        this->unknown_0250 = 0;
+      }
+      MessengerMember member = g_session.PartyByAccount(aid);
+      if (member.valid != 0) {
+        g_session.SetPartyDead(aid, 0);
+        sub_DFF150(&g_session);
+      }
+      break;
+    }
+    case 0x14A:
+      switch (*reinterpret_cast<const int *>(g_gameModePacketBuffer + 2)) {
+      case 0:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(854)), 0xFFFF00, 0, 0, 0);
+        break;
+      case 3:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(830)), 0xFFFF, 0, 0, 0);
+        break;
+      case 4:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(833)), 0xFFFF, 0, 0, 0);
+        break;
+      }
+      break;
+    case 0x14B: {
+      char name[25];
+      std::memcpy(name, g_gameModePacketBuffer + 3, 24);
+      name[24] = 0;
+      if (g_gameModePacketBuffer[2] == 0) {
+        char text[128];
+        sprintf(text, LookupMessage(387), name);
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF00, 0, 0, 0);
+      }
+      break;
+    }
+    case 0x14E:
+      g_guildInfo.unknown_00A4 = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2);
+      break;
+    case 0x152: {
+      const unsigned char *packet = g_gameModePacketBuffer;
+      const std::uint32_t guildId = *reinterpret_cast<const std::uint32_t *>(packet + 4);
+      const int version = *reinterpret_cast<const int *>(packet + 8);
+      g_session.StoreEmblem(packet + 0x0C, *reinterpret_cast<const std::int16_t *>(packet + 2) - 12, guildId, version);
+      if (g_guildInfo.m_guildId == guildId) {
+        this->scene->player->Slot49(guildId, version);
+        if (g_windowMgr.window_0320) {
+          g_windowMgr.window_0320->SendMsg(nullptr, 60, 0, 0, 0, 0);
+        }
+      }
+      break;
+    }
+    case 0x156: {
+      const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / 12;
+      const int *record = reinterpret_cast<const int *>(g_gameModePacketBuffer + 4);
+      for (int i = 0; i < count; ++i, record += 3) {
+        g_guildInfo.ChangeMemberPosition(record[0], record[1], record[2]);
+        if (record[2] == 0) {
+          g_guildInfo.SetMasterCharacterId(record[1]);
+        }
+      }
+      if (UIWindow *window = g_windowMgr.LookupWindow(61)) {
+        window->SendMsg(nullptr, 106, 0, 0, 0, 0);
+      }
+      g_windowMgr.RefreshGuildWindows();
+      break;
+    }
+    case 0x15E:
+      switch (*reinterpret_cast<const int *>(g_gameModePacketBuffer + 2)) {
+      case 0:
+        g_session.ClearAdditionalShortcutSkills();
+        g_guildInfo.Init();
+        g_windowMgr.CloseWindow(59);
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(400)), 0xFFFF, 4, 0, 0);
+        break;
+      case 1:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(401)), 0xFFFF, 0, 0, 0);
+        break;
+      case 2:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(402)), 0xFFFF, 4, 0, 0);
+        break;
+      }
+      break;
+    case 0x15F: {
+      char reason[41];
+      std::memcpy(reason, g_gameModePacketBuffer + 2, 40);
+      reason[40] = 0;
+      char text[1024];
+      sprintf(text, LookupMessage(367), reason);
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 4, 0, 0);
+      break;
+    }
+    case 0x162:
+      this->ApplyAdditionalSkillPacket(g_gameModePacketBuffer);
+      break;
+    case 0x167:
+      switch (g_gameModePacketBuffer[2]) {
+      case 0:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(374)), 0xFFFF00, 4, 0, 0);
+        g_windowMgr.CloseWindow(214);
+        g_windowMgr.CloseWindow(213);
+        g_windowMgr.CloseWindow(212);
+        break;
+      case 1:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(375)), 0xFFFF, 4, 0, 0);
+        break;
+      case 2:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(376)), 0xFFFF, 4, 0, 0);
+        break;
+      case 3:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(405)), 0xFFFF, 4, 0, 0);
+        break;
+      case 4:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2687)), 0xFFFF, 4, 0, 0);
+        break;
+      }
+      break;
+    case 0x169:
+      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+      switch (g_gameModePacketBuffer[2]) {
+      case 0:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(378)), 0xFF, 4, 0, 0);
+        break;
+      case 1:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(379)), 0xFF, 4, 0, 0);
+        break;
+      case 2:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(380)), 0xFFFF00, 4, 0, 0);
+        break;
+      case 3:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(381)), 0xFF, 4, 0, 0);
+        break;
+      case 4:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2090)), 0xFF, 4, 0, 0);
+        break;
+      }
+      break;
+    case 0x16A: {
+      char name[25];
+      std::memcpy(name, g_gameModePacketBuffer + 6, 24);
+      name[24] = 0;
+      if (g_forbiddenWords.Contains(name) == true) {
+        std::string masked("");
+        g_forbiddenWords.Mask(name, &masked);
+      }
+      g_windowMgr.sub_A978D0(70)->SendMsg(nullptr, 73, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), reinterpret_cast<std::intptr_t>(name), 0, 0);
+      break;
+    }
+    case 0x16C: {
+      const unsigned char *packet = g_gameModePacketBuffer;
+      const int flags = *reinterpret_cast<const int *>(packet + 0x0A);
+      const std::uint32_t guildId = *reinterpret_cast<const std::uint32_t *>(packet + 2);
+      g_guildInfo.unknown_00AC = flags & 1;
+      g_guildInfo.m_guildId = guildId;
+      g_guildInfo.unknown_00B0 = (flags >> 4) & 1;
+      g_guildInfo.unknown_00B4 = packet[0x0E];
+      this->scene->player->Slot49(guildId, *reinterpret_cast<const int *>(packet + 6));
+      if (g_guildInfo.unknown_00C8 == 0) {
+        g_guildInfo.unknown_00C8 = 1;
+        g_modeMgr.gameMode->SendMsg(107, 3, 0, 0, 0);
+      }
+      if (g_guildInfo.unknown_00C0 == 0) {
+        g_guildInfo.unknown_00C0 = 1;
+        g_modeMgr.gameMode->SendMsg(107, 1, 0, 0, 0);
+      }
+      break;
+    }
+    case 0x16D: {
+      const unsigned char *packet = g_gameModePacketBuffer;
+      const int online = *reinterpret_cast<const int *>(packet + 0x0A);
+      g_guildInfo.SetMemberOnline(*reinterpret_cast<const int *>(packet + 2), online);
+      std::string name = LookupPlayerName(*reinterpret_cast<const std::uint32_t *>(packet + 6));
+      if (name.size()) {
+        this->SendMsg(140, reinterpret_cast<int>(name.c_str()), online, 0, 0);
+      }
+      if (online == 0) {
+        this->SendMsg(171, *reinterpret_cast<const int *>(packet + 2), 0, 0, 0);
+      }
+      break;
+    }
+    case 0x171: {
+      char name[25];
+      std::memcpy(name, g_gameModePacketBuffer + 6, 24);
+      name[24] = 0;
+      if (g_forbiddenWords.Contains(name) == true) {
+        std::string masked("");
+        g_forbiddenWords.Mask(name, &masked);
+      }
+      g_windowMgr.sub_A978D0(72)->SendMsg(nullptr, 74, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), reinterpret_cast<std::intptr_t>(name), 0, 0);
+      break;
+    }
+    case 0x173:
+      switch (g_gameModePacketBuffer[2]) {
+      case 0:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(394)), 0xFFFF, 4, 0, 0);
+        break;
+      case 1:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(395)), 0xFFFF, 4, 0, 0);
+        break;
+      case 2:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(396)), 0xFFFF00, 4, 0, 0);
+        break;
+      case 3:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(397)), 0xFFFF, 4, 0, 0);
+        break;
+      case 4:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(398)), 0xFFFF, 4, 0, 0);
+        break;
+      case 5:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1717)), 0xFFFF, 4, 0, 0);
+        break;
+      }
+      break;
+    case 0x177: {
+      unsigned int count = (*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2) - 4u) >> 1;
+      UIWindow *window = g_windowMgr.sub_A978D0(73);
+      window->SendMsg(nullptr, 75, 0, 0, 0, 0);
+      const std::int16_t *index = reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 4);
+      for (; count != 0; --count, ++index) {
+        ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *index);
+        if (item.unknown_0000[1]) {
+          window->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), item.unknown_0000[1], 0, 0);
+        }
+      }
+      window->SendMsg(nullptr, 60, 0, 0, 0, 0);
+      break;
+    }
+    case 0x179:
+      switch (g_gameModePacketBuffer[4]) {
+      case 0: {
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(491)), 0xFFFF00, 0, 0, 0);
+        ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2));
+        item.identified = 1;
+        g_session.UpdateInventoryItem(item, 1);
+        break;
+      }
+      case 1:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(492)), 0xFF, 0, 0, 0);
+        break;
+      }
+      break;
+    case 0x17B: {
+      unsigned int count = (*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2) - 4u) >> 1;
+      UIWindow *window = g_windowMgr.sub_A978D0(74);
+      window->SendMsg(nullptr, 75, 0, 0, 0, 0);
+      window->SendMsg(nullptr, 77, *reinterpret_cast<const int *>(this->unknown_045C), 0, 0, 0);
+      const std::int16_t *index = reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 4);
+      for (; count != 0; --count, ++index) {
+        ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *index);
+        if (item.unknown_0000[1]) {
+          window->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), item.unknown_0000[1], 0, 0);
+        }
+      }
+      window->SendMsg(nullptr, 60, 0, 0, 0, 0);
+      break;
+    }
+    case 0x181:
+      switch (g_gameModePacketBuffer[2]) {
+      case 0:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(495)), 0xFFFF00, 4, 0, 0);
+        break;
+      case 1:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(496)), 0xFF, 4, 0, 0);
+        break;
+      case 2:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(497)), 0xFF, 4, 0, 0);
+        break;
+      case 3:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1718)), 0xFF, 4, 0, 0);
+        break;
+      }
+      break;
+    case 0x184:
+      if (g_guildInfo.unknown_00BC) {
+        g_guildInfo.RemoveRelatedGuild(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6));
+      }
+      break;
+    case 0x189:
+      switch (*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2)) {
+      case 0:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(500)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(19, reinterpret_cast<std::intptr_t>(LookupMessage(500)), 0xFF, 0, 0, 0);
+        break;
+      case 1:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(501)), 0xFFFF00, 0, 0, 0);
+        g_windowMgr.SendNotice(19, reinterpret_cast<std::intptr_t>(LookupMessage(501)), 0xFFFF00, 0, 0, 0);
+        break;
+      case 2:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1334)), 0xFFFF00, 0, 0, 0);
+        g_windowMgr.SendNotice(19, reinterpret_cast<std::intptr_t>(LookupMessage(1334)), 0xFFFF00, 0, 0, 0);
+        break;
+      case 3:
+        this->unknown_02CC = 0;
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1335)), 0xFFFF00, 0, 0, 0);
+        g_windowMgr.SendNotice(19, reinterpret_cast<std::intptr_t>(LookupMessage(1335)), 0xFFFF00, 0, 0, 0);
+        break;
+      }
+      break;
+    case 0x18B:
+      switch (*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2)) {
+      case 0:
+        GetRagConnection().Close();
+        this->SendMsg(2, 0, 0, 0, 0);
+        break;
+      case 1:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(502)), 0xFF, 0, 0, 0);
+        break;
+      }
+      break;
+    case 0x18C: {
+      const std::uint16_t id = *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2);
+      if (id != 1285 && id != 1286 && id != 1287 && id != 1829 && id != 1830) {
+        g_windowMgr.sub_A978D0(77)->SendMsg(nullptr, 79, reinterpret_cast<std::intptr_t>(g_gameModePacketBuffer), 0, 0, 0);
+      }
+      break;
+    }
+    case 0x18D: {
+      unsigned int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) >> 4;
+      if (count == 0) {
+        g_windowMgr.Confirm(LookupMessage(424), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      }
+      g_windowMgr.CloseWindow(79);
+      UIWindow *window = g_windowMgr.sub_A978D0(79);
+      const int *record = reinterpret_cast<const int *>(g_gameModePacketBuffer + 4);
+      for (; count != 0; --count, record += 4) {
+        window->SendMsg(nullptr, 31, *record, 0, 0, 0);
+      }
+      break;
+    }
+    case 0x191:
+      if (CRenderObject *skill = this->scene->GetSkillByAID(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2))) {
+        const int textAddress = reinterpret_cast<int>(g_gameModePacketBuffer + 6);
+        skill->SendMsg(nullptr, 7, 0, textAddress, textAddress >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      break;
+    case 0x192: {
+      CGameMode *mode = static_cast<CGameMode *>(g_modeMgr.GetGameMode());
+      const int column = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2);
+      const int row = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 4);
+      const_cast<TerrainHeightCell *>(mode->scene->terrain->CellAt(column, row))->type = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 6);
+      break;
+    }
+    case 0x194:
+      SetPlayerName(
+          *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2),
+          std::string(reinterpret_cast<const char *>(g_gameModePacketBuffer + 6), reinterpret_cast<const char *>(g_gameModePacketBuffer + 0x1E)).c_str());
+      break;
+    case 0x199:
+      g_serviceOptions.Set(229, *reinterpret_cast<const int *>(g_session.unknown_5454) != 0);
+      switch (*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2)) {
+      case 1:
+      case 5:
+        this->scene->unknown_0048 = 1;
+        break;
+      case 2:
+        this->scene->unknown_0054 = 1;
+        break;
+      case 3:
+        this->scene->unknown_004C = 1;
+        g_serviceOptions.Set(229, 1);
+        break;
+      case 4:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(855)), 0x9B9BFF, 0, 0, 0);
+        break;
+      }
+      if (g_session.GetMapProperty0F()) {
+        g_serviceOptions.Set(229, 1);
+      }
+      if (g_serviceType) {
+        g_mapPropertyMgr->Clear();
+      }
+      break;
+    case 0x1A2: {
+      unsigned char *packet = g_gameModePacketBuffer;
+      g_session.unknown_103C = *reinterpret_cast<const std::int16_t *>(packet + 0x23);
+      std::int16_t &value = *reinterpret_cast<std::int16_t *>(packet + 0x1B);
+      if (value >= 10000) {
+        value -= 10000;
+        if (UIItemCollectionWnd *window = static_cast<UIItemCollectionWnd *>(g_windowMgr.sub_A978D0(12))) {
+          window->unknown_0218 = value;
+          window->unknown_021A = *reinterpret_cast<const std::int16_t *>(packet + 0x1D);
+          window->unknown_021C = *reinterpret_cast<const std::int16_t *>(packet + 0x1F);
+          window->unknown_0236 = *reinterpret_cast<const std::uint16_t *>(packet + 0x21);
+          window->unknown_0238 = packet[0x1A];
+          sprintf(reinterpret_cast<char *>(window->unknown_021E), reinterpret_cast<const char *>(packet + 2));
+          window->SendMsg(nullptr, 29, 0, 0, 0, 0);
+        }
+        break;
+      }
+
+      sprintf(g_session.unknown_1018, reinterpret_cast<const char *>(packet + 2));
+      g_session.unknown_1054 = g_session.unknown_1044;
+      g_session.unknown_1044 = *reinterpret_cast<const std::int16_t *>(packet + 0x1D);
+      g_session.m_petFriendly = *reinterpret_cast<const std::int16_t *>(packet + 0x1F);
+      g_session.unknown_1038 = *reinterpret_cast<const std::uint16_t *>(packet + 0x21);
+      if (UIPetInfoWnd *window = static_cast<UIPetInfoWnd *>(g_windowMgr.window_038C)) {
+        window->UpdateFriendlyGauge();
+        window->nameEdit->SetText(g_session.unknown_1018);
+        window->Invalidate();
+      }
+      *reinterpret_cast<int *>(g_session.unknown_1014) = packet[0x1A];
+      g_session.unknown_1040 = value;
+      break;
+    }
+    case 0x1A6: {
+      const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) >> 1;
+      UIWindow *window = g_windowMgr.sub_A978D0(90);
+      window->SendMsg(nullptr, 75, 0, 0, 0, 0);
+      const std::int16_t *index = reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 4);
+      for (int i = 0; i < count; ++i, ++index) {
+        ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *index);
+        if (item.unknown_0000[1]) {
+          window->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), item.unknown_0000[1], 0, 0);
+        }
+      }
+      window->SendMsg(nullptr, 60, 0, 0, 0, 0);
+      break;
+    }
+    case 0x1AB:
+      if (CGameActor *actor = static_cast<CGameActor *>(this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2)))) {
+        if (*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 6) == 4) {
+          actor->Slot40(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 8));
+        }
+      }
+      break;
+    case 0x1AC:
+      if (CGameActor *skill = static_cast<CGameActor *>(this->scene->GetSkillByAID(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2)))) {
+        if (skill->GetEffectiveJob(-1) > 138 && skill->GetEffectiveJob(-1) <= 153) {
+          skill->SendMsg(nullptr, 119, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        }
+        switch (skill->GetEffectiveJob(-1)) {
+        case 0x5174:
+        case 0x5175:
+        case 0x5176:
+        case 0x5177:
+          skill->SendMsg(nullptr, 119, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+          break;
+        }
+      }
+      break;
+    case 0x1AD: {
+      const unsigned int count = static_cast<unsigned int>(*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2) - 4) >> 2;
+      UIWindow *window = g_windowMgr.sub_A978D0(94);
+      window->SendMsg(nullptr, 75, 0, 0, 0, 0);
+      const unsigned char *entry = g_gameModePacketBuffer + 4;
+      for (unsigned int i = count; i != 0; --i, entry += 4) {
+        window->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(entry), 0, 0, 0);
+      }
+      window->SendMsg(nullptr, 34, 2, 0, 0, 0);
+      break;
+    }
+    case 0x1B0:
+      if (CGameActor *actor = static_cast<CGameActor *>(this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2)))) {
+        actor->Slot18(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 7), 0, 0);
+      }
+      break;
+    case 0x1B1: {
+      const int seconds = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 3);
+      switch (g_gameModePacketBuffer[2]) {
+      case 0:
+        *reinterpret_cast<int *>(g_session.unknown_079C) = 0;
+        g_session.m_timeAttackVisible = 1;
+        g_session.m_timeAttackCountdown = seconds * 1000;
+        break;
+      case 1:
+        g_session.m_timeAttackCountdown = timeGetTime() + seconds * 1000;
+        *reinterpret_cast<int *>(g_session.unknown_079C) = 1;
+        g_session.m_timeAttackVisible = 1;
+        break;
+      case 2:
+        g_session.m_timeAttackCountdown = timeGetTime() - seconds * 1000;
+        *reinterpret_cast<int *>(g_session.unknown_079C) = 2;
+        g_session.m_timeAttackVisible = 1;
+        break;
+      case 3:
+        *reinterpret_cast<int *>(g_session.unknown_079C) = 3;
+        g_session.m_timeAttackCountdown = seconds * 30 + 29;
+        g_session.m_timeAttackVisible = 1;
+        break;
+      default:
+        g_session.m_timeAttackVisible = 1;
+        break;
+      }
+      break;
+    }
+    case 0x1B3: {
+      char name[65];
+      strncpy(name, reinterpret_cast<const char *>(g_gameModePacketBuffer + 2), 64);
+      int position = g_gameModePacketBuffer[0x42];
+      name[64] = 0;
+      if (position == 255) {
+        position = -1;
+      }
+      this->SendMsg(100, reinterpret_cast<int>(name), position, 0, 0);
+      break;
+    }
+    case 0x1B4:
+      if (CGameActor *actor = static_cast<CGameActor *>(this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2)))) {
+        actor->Slot49(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 6), *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0xA));
+      }
+      break;
+    case 0x1C2: {
+      char message[256];
+      const int remaining = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6);
+      if (g_serviceType == 0) {
+        switch (*reinterpret_cast<const int *>(g_gameModePacketBuffer + 2)) {
+        case 100:
+          sprintf(message, "\xb0\xb3\xc0\xce \xc1\xa4\xbe\xd7\xc1\xa6 \xbd\xc3\xb0\xa3\xc0\xcc %d\xba\xd0 %d\xc3\xca \xb3\xb2\xbe\xd2\xbd\xc0\xb4\xcf\xb4\xd9.",
+                  remaining / 60, remaining % 60);
+          break;
+        case 200:
+          sprintf(message, "\xb0\xb3\xc0\xce \xc1\xa4\xb7\xae\xc1\xa6 \xbd\xc3\xb0\xa3\xc0\xcc %d\xba\xd0 %d\xc3\xca \xb3\xb2\xbe\xd2\xbd\xc0\xb4\xcf\xb4\xd9.",
+                  remaining / 60, remaining % 60);
+          break;
+        case 300:
+          sprintf(message, "PC\xb9\xe6 \xc1\xa4\xb7\xae\xc1\xa6 \xbd\xc3\xb0\xa3\xc0\xcc %d\xba\xd0 %d\xc3\xca \xb3\xb2\xbe\xd2\xbd\xc0\xb4\xcf\xb4\xd9.",
+                  remaining / 60, remaining % 60);
+          break;
+        }
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0xFFFFFF, 0, 0, 0);
+      } else if (g_serviceType == 6) {
+        sprintf(message, "Sisa waktu voucher kamu adalah %d menit.", remaining / 60);
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0xFFFFFF, 0, 0, 0);
+      }
+      break;
+    }
+    case 0x1C3:
+      this->ReceiveColorBroadcast(g_gameModePacketBuffer);
+      break;
+    case 0x1C7:
+      ShowErrorDialog(GetRenderSystemHolder()->system, "No Packet Encryption !!!", 0);
+      break;
+    case 0x1C8: {
+      if (*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 8) == g_session.m_aid) {
+        this->unknown_02CC = 0;
+        if (g_gameModePacketBuffer[0xE]) {
+          ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2));
+          if (item.unknown_0000[1]) {
+            g_session.RemoveItem1710(*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2),
+                                     item.quantity - *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0xC));
+            if (item.GetItemId() == 607) {
+              this->unknown_05B4 = 0;
+            }
+          }
+        } else {
+          if (*reinterpret_cast<const int *>(g_gameModePacketBuffer + 4) != 103061) {
+            break;
+          }
+          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4209)), 0xFF, 0, 0, 0);
+        }
+      }
+      if (g_gameModePacketBuffer[0xE]) {
+        this->PlayItemUseEffect(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 4),
+                                *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 8));
+      }
+      break;
+    }
+    case 0x1CD: {
+      char count = 0;
+      for (const int *skill = reinterpret_cast<const int *>(g_gameModePacketBuffer + 2); skill < reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x1E);
+           ++skill) {
+        if (*skill) {
+          ++count;
+        }
+      }
+      if (count <= 0) {
+        break;
+      }
+      if (UIWindow *window = g_windowMgr.sub_A978D0(99)) {
+        for (const int *skill = reinterpret_cast<const int *>(g_gameModePacketBuffer + 2); skill < reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x1E);
+             ++skill) {
+          if (*skill) {
+            window->SendMsg(nullptr, 31, *skill, 0, 0, 0);
+          }
+        }
+      }
+      break;
+    }
+    case 0x1D0:
+      this->UpdateActorSpiritCount(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2),
+                                   *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 6));
+      break;
+    case 0x1D4:
+      if (this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2)) ||
+          *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2) == 0) {
+        g_windowMgr.sub_A978D0(100)->SendMsg(nullptr, 28, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), 0, 0, 0);
+      }
+      break;
+    case 0x1D6: {
+      g_serviceOptions.Set(229, *reinterpret_cast<const int *>(g_session.unknown_5454) != 0);
+      const std::int16_t type = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2);
+      g_session.unknown_0000 = type;
+      if (type == 5 || type == 6) {
+        this->scene->unknown_0048 = 1;
+        this->forcedAttack = 1;
+      } else if (type != 11 && type != 12) {
+        if (g_session.GetMapProperty09() || *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) == 18 ||
+            *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) == 8) {
+          this->scene->unknown_004C = 1;
+          g_serviceOptions.Set(229, 1);
+        } else if (*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) == 19) {
+          this->scene->unknown_0050 = 1;
+          this->scene->unknown_0048 = 1;
+        }
+      }
+      if (g_session.GetMapProperty0F()) {
+        g_serviceOptions.Set(229, 1);
+      }
+      if (!g_statusRefreshSuppressed) {
+        static_cast<CGameMode *>(g_modeMgr.GetGameMode())->scene->player->ReapplySkillEffects();
+      }
+      switch (*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2)) {
+      case 5:
+      case 6:
+      case 7:
+      case 8:
+      case 9:
+      case 11:
+      case 14:
+      case 17:
+      case 18:
+      case 19:
+      case 25:
+      case 31:
+      case 32:
+        this->scene->unknown_00FD = true;
+        break;
+      }
+      break;
+    }
+    case 0x1E2: {
+      char name[25];
+      strncpy(name, reinterpret_cast<const char *>(g_gameModePacketBuffer + 0xA), 24);
+      name[24] = 0;
+      *reinterpret_cast<int *>(this->unknown_028C) = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2);
+      *reinterpret_cast<int *>(this->unknown_028C + 4) = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6);
+      g_windowMgr.sub_A978D0(104)->SendMsg(nullptr, 90, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6), reinterpret_cast<std::intptr_t>(name), 0,
+                                           0);
+      break;
+    }
+    case 0x1EB:
+      if (*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2) != g_session.m_aid) {
+        this->SendMsg(170, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 6),
+                      *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 8), 0);
+      }
+      break;
+    case 0x1EC:
+      if (strcmp(g_session.m_navigationPlayerMap, reinterpret_cast<const char *>(g_gameModePacketBuffer + 0xA))) {
+        this->SendMsg(171, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6), 0, 0, 0);
+        if (CGameActor *actor =
+                static_cast<CGameActor *>(this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 6)))) {
+          actor->SetUnknown02E4(0);
+        }
+      } else if (CGameActor *actor =
+                     static_cast<CGameActor *>(this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 6)))) {
+        actor->SetUnknown02E4(1);
+      }
+      break;
+    case 0x1EE: {
+      g_session.KeepEquipment();
+      const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / sizeof(CardItemRecord);
+      const CardItemRecord *record = reinterpret_cast<const CardItemRecord *>(g_gameModePacketBuffer + 4);
+      for (int i = 0; i < count; ++i, ++record) {
+        ITEM_INFO item;
+        item.unknown_0000[0] = record->type;
+        item.unknown_0000[2] = 0;
+        item.unknown_0000[1] = record->index;
+        item.unknown_0000[3] = record->location;
+        item.quantity = record->amount;
+        for (int card = 0; card < 4; ++card) {
+          reinterpret_cast<int *>(item.unknown_001C)[card] = record->cards[card];
+        }
+        item.SetItemId(record->itemId);
+        item.identified = record->identified;
+        item.unknown_005D = 0;
+        item.unknown_0060 = 0;
+        g_session.UpdateInventoryItem(item, 0);
+      }
+      RefreshItemWindows(&g_windowMgr);
+      break;
+    }
+    case 0x1EF: {
+      const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / sizeof(CardItemRecord);
+      const CardItemRecord *record = reinterpret_cast<const CardItemRecord *>(g_gameModePacketBuffer + 4);
+      for (int i = 0; i < count; ++i, ++record) {
+        ITEM_INFO item;
+        item.unknown_0000[0] = record->type;
+        item.unknown_0000[2] = 0;
+        item.unknown_0000[1] = record->index;
+        item.unknown_0000[3] = record->location;
+        item.quantity = record->amount;
+        for (int card = 0; card < 4; ++card) {
+          reinterpret_cast<int *>(item.unknown_001C)[card] = record->cards[card];
+        }
+        item.SetItemId(record->itemId);
+        item.identified = record->identified;
+        item.unknown_005D = 0;
+        item.unknown_0060 = 0;
+        g_session.AddItem1740(item);
+      }
+      g_session.RefreshItem1740Window();
+      break;
+    }
+    case 0x1F0: {
+      g_windowMgr.sub_A978D0(33);
+      const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / sizeof(CardItemRecord);
+      const CardItemRecord *record = reinterpret_cast<const CardItemRecord *>(g_gameModePacketBuffer + 4);
+      for (int i = 0; i < count; ++i, ++record) {
+        ITEM_INFO item;
+        item.unknown_0000[0] = record->type;
+        item.unknown_0000[2] = 0;
+        item.unknown_0000[1] = record->index;
+        item.unknown_0000[3] = record->location;
+        item.quantity = record->amount;
+        for (int card = 0; card < 4; ++card) {
+          reinterpret_cast<int *>(item.unknown_001C)[card] = record->cards[card];
+        }
+        item.SetItemId(record->itemId);
+        item.identified = record->identified;
+        item.unknown_005D = 0;
+        item.unknown_0060 = 0;
+        g_session.AddItem1738(item, 0);
+      }
+      g_session.RefreshItem1738Window();
+      break;
+    }
+    case 0x1F2: {
+      g_guildInfo.UpdateMemberStatus(
+          *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0xA),
+          *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6), *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0xE),
+          *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x10), *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x12));
+      std::string name = LookupPlayerName(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 6));
+      if (name.size()) {
+        this->SendMsg(140, reinterpret_cast<int>(name.c_str()), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0xA), 0, 0);
+      }
+      if (*reinterpret_cast<const int *>(g_gameModePacketBuffer + 0xA) == 0) {
+        this->SendMsg(171, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), 0, 0, 0);
+      }
+      break;
+    }
+    case 0x1F4: {
+      if (g_serviceOptions.Get(136)) {
+        g_modeMgr.gameMode->SendMsg(50, 4, 0, 0, 0);
+        break;
+      }
+
+      char name[25];
+      std::memcpy(name, g_gameModePacketBuffer + 2, 24);
+      name[24] = '\0';
+      g_windowMgr.sub_A978D0(32)->SendMsg(nullptr, 50, reinterpret_cast<std::intptr_t>(name), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x1A),
+                                          *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x1E), 0);
+      this->exchangeName.assign(name, strlen(name));
+      break;
+    }
+    case 0x1F6: {
+      char name[25];
+      strncpy(name, reinterpret_cast<const char *>(g_gameModePacketBuffer + 0xA), 24);
+      name[24] = 0;
+      *reinterpret_cast<int *>(this->unknown_028C) = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2);
+      *reinterpret_cast<int *>(this->unknown_028C + 4) = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6);
+      g_windowMgr.sub_A978D0(105)->SendMsg(nullptr, 91, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6), reinterpret_cast<std::intptr_t>(name), 0,
+                                           0);
+      break;
+    }
+    case 0x1FC: {
+      const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / 23;
+      if (count == 0) {
+        g_windowMgr.Confirm(LookupMessage(424), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      }
+      g_windowMgr.CloseWindow(107);
+      UIWindow *window = g_windowMgr.sub_A978D0(107);
+      const unsigned char *record = g_gameModePacketBuffer + 4;
+      for (int i = 0; i < count; ++i, record += 23) {
+        window->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(record), 0, 0, 0);
+      }
+      break;
+    }
+    case 0x1FE:
+      switch (g_gameModePacketBuffer[4]) {
+      case 0:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(813)), 0xFFFF00, 0, 0, 0);
+        break;
+      case 1:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(814)), 0xFF, 0, 0, 0);
+        break;
+      }
+      break;
+    case 0x1FF: {
+      vector3d position{0.0f, 0.0f, 0.0f};
+      static_cast<CGameMode *>(g_modeMgr.GetGameMode())
+          ->CellCenter(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 6), *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 8),
+                       position.x, position.z);
+      position.y = this->scene->terrain->Height(position.x, position.z);
+      if (*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2) == g_session.m_aid) {
+        this->scene->player->unknown_02D0 = position.x;
+        this->scene->player->unknown_02D4 = position.z;
+        this->scene->player->render.position = position;
+      } else if (CGameActor *actor =
+                     static_cast<CGameActor *>(this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2)))) {
+        actor->unknown_02D0 = position.x;
+        actor->unknown_02D4 = position.z;
+        actor->render.position = position;
+      }
+      break;
+    }
+    case 0x205: {
+      char message[1024];
+      sprintf(message, LookupMessage(836), g_session.DecodePlayerName(), reinterpret_cast<const char *>(g_gameModePacketBuffer + 2));
+      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0xFFFF00, 0, 0, 0);
+      break;
+    }
+    case 0x206:
+      g_session.UpdateFriendName(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 6),
+                                 reinterpret_cast<const char *>(g_gameModePacketBuffer + 0xB));
+      if (g_session.SetFriendOffline(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2),
+                                     *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 6), g_gameModePacketBuffer[0xA])) {
+        g_session.RefreshWindow02C8();
+      }
+      break;
+    case 0x207: {
+      char name[25];
+      strncpy(name, reinterpret_cast<const char *>(g_gameModePacketBuffer + 0xA), 24);
+      name[24] = 0;
+      const unsigned char option = g_serviceOptions.Get(136);
+      if (IsMonsterJob(g_session.m_aid) || option) {
+        g_modeMgr.gameMode->SendMsg(175, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6),
+                                    0, 0);
+      } else {
+        g_windowMgr.sub_A978D0(109)->SendMsg(nullptr, 95, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2),
+                                             *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6), reinterpret_cast<std::intptr_t>(name), 0);
+      }
+      break;
+    }
+    case 0x209:
+      sub_D1FBA0(g_gameModePacketBuffer);
+      break;
+    case 0x20A:
+      if (g_session.RemoveFriendByCharacterId(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 6))) {
+        g_session.RefreshWindow02C8();
+      }
+      break;
+    case 0x216:
+      switch (*reinterpret_cast<const int *>(g_gameModePacketBuffer + 2)) {
+      case 0:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(899)), 0x9B9BFF, 0, 0, 0);
+        break;
+      case 1:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(900)), 0x9B9BFF, 0, 0, 0);
+        break;
+      case 2:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(916)), 0x9B9BFF, 0, 0, 0);
+        break;
+      }
+      break;
+    case 0x221: {
+      const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / 23;
+      if (count == 0) {
+        g_windowMgr.Confirm(LookupMessage(424), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      }
+      if (g_windowMgr.LookupWindow(111)) {
+        g_windowMgr.CloseWindow(111);
+      }
+      UIWindow *window = g_windowMgr.sub_A978D0(111);
+      const unsigned char *record = g_gameModePacketBuffer + 4;
+      for (int i = 0; i < count; ++i, record += 23) {
+        window->SendMsg(nullptr, 31, *reinterpret_cast<const int *>(record + 2), *reinterpret_cast<const std::int16_t *>(record), 0, 0);
+      }
+      break;
+    }
+    case 0x229: {
+      int state[4];
+      state[1] = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0xA);
+      state[3] = g_gameModePacketBuffer[0xE];
+      state[0] = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 6);
+      state[2] = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 8);
+      CRenderObject *actor;
+      if (*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2) == g_session.m_aid) {
+        actor = this->scene->player;
+        this->ApplyStatusIcons(state[0], state[2]);
+        reinterpret_cast<int *>(g_session.unknown_0F0C)[0] = state[0];
+        reinterpret_cast<int *>(g_session.unknown_0F0C)[1] = state[2];
+        g_session.m_jobFlags = state[1];
+        if (g_windowMgr.unknown_01E0) {
+          g_windowMgr.unknown_01E0->SendMsg(nullptr, 60, 0, 0, 0, 0);
+        }
+        if (g_session.unknown_5C1C <= 0) {
+          g_session.ClearItems1740();
+          g_windowMgr.CloseWindow(40);
+        }
+      } else {
+        actor = this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2));
+      }
+      if (actor) {
+        const int stateAddress = reinterpret_cast<int>(state);
+        actor->SendMsg(nullptr, 43, 0, stateAddress, stateAddress >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      break;
+    }
+    case 0x253:
+      g_windowMgr.sub_A978D0(119)->SendMsg(nullptr, 91, static_cast<signed char>(g_gameModePacketBuffer[2]), 0, 0, 0);
+      break;
+    case 0x25A: {
+      const unsigned int count = static_cast<unsigned int>(*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2) - 6) >> 2;
+      UIWindow *window = g_windowMgr.sub_A978D0(94);
+      if (!window) {
+        break;
+      }
+      window->SendMsg(nullptr, 75, 0, 0, 0, 0);
+      window->SendMsg(nullptr, 34, *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 4), 0, 0, 0);
+      const unsigned char *entry = g_gameModePacketBuffer + 6;
+      for (unsigned int i = count; i != 0; --i, entry += 4) {
+        window->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(entry), 0, 0, 0);
+      }
+      break;
+    }
+    case 0x2B4: {
+      std::string title = g_renewQuestMgr->GetOngoingQuest(*reinterpret_cast<const unsigned int *>(g_gameModePacketBuffer + 2)).m_title;
+      CRenewQuestMgr *manager = g_renewQuestMgr;
+      unsigned int id = *reinterpret_cast<const unsigned int *>(g_gameModePacketBuffer + 2);
+      manager->m_ongoingQuests.erase(id);
+      manager->sub_67B6B0();
+      std::string message = FormatOwnedString(LookupMessage(1611), title.c_str());
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFFFF, 19, 0, 0);
+      break;
+    }
+    case 0x2B7:
+      g_renewQuestMgr->SetOngoingQuestState(*reinterpret_cast<const unsigned int *>(g_gameModePacketBuffer + 2), g_gameModePacketBuffer[6]);
+      g_renewQuestMgr->sub_67B6B0();
+      break;
+    case 0x2D3: {
+      ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2));
+      if (item.unknown_0000[1]) {
+        std::string name = item.DisplayName(0);
+        std::string message = FormatOwnedString(LookupMessage(1328), name.c_str());
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message.c_str()), 0x6EFFFF, 0, 0, 0);
+      }
+      break;
+    }
+    case 0x2DD:
+      if (*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2) == g_session.m_aid) {
+        g_session.unknown_0F24[0] = g_gameModePacketBuffer[0x1E];
+        break;
+      }
+      if (CGameActor *actor = static_cast<CGameActor *>(this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2)))) {
+        const unsigned char team = g_gameModePacketBuffer[0x1E];
+        reinterpret_cast<unsigned char *>(&actor->render.flags)[3] = team;
+        if (team != g_session.unknown_0F24[0]) {
+          OpenWordDisplay(actor);
+        } else if (actor->unknown_018C) {
+          g_windowMgr.Schedule(reinterpret_cast<UIWindow *>(actor->unknown_018C));
+          actor->unknown_018C = 0;
+        }
+      }
+      break;
+    case 0x2DE:
+      g_session.m_score1 = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2);
+      g_session.m_score2 = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 4);
+      break;
+    case 0x2DF:
+      if (*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2) != g_session.m_aid) {
+        this->SendMsg(63, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x20),
+                      *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x22), 0);
+      }
+      break;
+    case 0x2E0:
+      if (g_session.IsCompanionAid(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2))) {
+        break;
+      }
+      if (CRenderObject *actor = this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2))) {
+        const int x = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x1E);
+        const int y = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x20);
+        actor->SendMsg(nullptr, 34, 0, x, x >> 31, y, y >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      break;
+    case 0x2E1:
+      this->ReceiveActorAction(
+          *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2), *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 6),
+          *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 0xA), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0xE),
+          *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x12), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x16),
+          *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x1A), g_gameModePacketBuffer[0x1C],
+          *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x1D), 0);
+      break;
+    case 0x2E8: {
+      g_session.KeepEquipment();
+      const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / sizeof(CardItemExpiryRecord);
+      const CardItemExpiryRecord *entry = reinterpret_cast<const CardItemExpiryRecord *>(g_gameModePacketBuffer + 4);
+      for (int i = 0; i < count; ++i, ++entry) {
+        const CardItemRecord *record = &entry->base;
+        ITEM_INFO item;
+        item.unknown_0000[0] = record->type;
+        item.unknown_0000[2] = 0;
+        item.unknown_0000[1] = record->index;
+        item.unknown_0000[3] = record->location;
+        item.quantity = record->amount;
+        for (int card = 0; card < 4; ++card) {
+          reinterpret_cast<int *>(item.unknown_001C)[card] = record->cards[card];
+        }
+        item.SetItemId(record->itemId);
+        item.identified = record->identified;
+        item.unknown_005D = 0;
+        item.unknown_0060 = 0;
+        item.unknown_0068 = entry->expireTime;
+        g_session.UpdateInventoryItem(item, 0);
+      }
+      RefreshItemWindows(&g_windowMgr);
+      break;
+    }
+    case 0x2E9: {
+      const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / sizeof(CardItemExpiryRecord);
+      const CardItemExpiryRecord *entry = reinterpret_cast<const CardItemExpiryRecord *>(g_gameModePacketBuffer + 4);
+      for (int i = 0; i < count; ++i, ++entry) {
+        const CardItemRecord *record = &entry->base;
+        ITEM_INFO item;
+        item.unknown_0000[0] = record->type;
+        item.unknown_0000[2] = 0;
+        item.unknown_0000[1] = record->index;
+        item.unknown_0000[3] = record->location;
+        item.quantity = record->amount;
+        for (int card = 0; card < 4; ++card) {
+          reinterpret_cast<int *>(item.unknown_001C)[card] = record->cards[card];
+        }
+        item.SetItemId(record->itemId);
+        item.identified = record->identified;
+        item.unknown_005D = 0;
+        item.unknown_0060 = 0;
+        item.unknown_0068 = entry->expireTime;
+        g_session.AddItem1740(item);
+      }
+      g_session.RefreshItem1740Window();
+      break;
+    }
+    case 0x2EA: {
+      g_windowMgr.sub_A978D0(33);
+      const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / sizeof(CardItemExpiryRecord);
+      const CardItemExpiryRecord *entry = reinterpret_cast<const CardItemExpiryRecord *>(g_gameModePacketBuffer + 4);
+      for (int i = 0; i < count; ++i, ++entry) {
+        const CardItemRecord *record = &entry->base;
+        ITEM_INFO item;
+        item.unknown_0000[0] = record->type;
+        item.unknown_0000[2] = 0;
+        item.unknown_0000[1] = record->index;
+        item.unknown_0000[3] = record->location;
+        item.quantity = record->amount;
+        for (int card = 0; card < 4; ++card) {
+          reinterpret_cast<int *>(item.unknown_001C)[card] = record->cards[card];
+        }
+        item.SetItemId(record->itemId);
+        item.identified = record->identified;
+        item.unknown_005D = 0;
+        item.unknown_0060 = 0;
+        item.unknown_0068 = entry->expireTime;
+        g_session.AddItem1738(item, 0);
+      }
+      g_session.RefreshItem1738Window();
+      break;
+    }
+    case 0x2EF:
+      if (*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2) == g_session.m_aid) {
+        g_session.unknown_0F30[0] = g_gameModePacketBuffer[6];
+      } else if (CRenderObject *actor = this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2))) {
+        *reinterpret_cast<std::uint16_t *>(actor->render.unknown_00ECBytes) = *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 6);
+      }
+      break;
+    case 0x2F0:
+      if (CPlayer *player = this->scene->player) {
+        player->SendMsg(nullptr, 82, 0, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6) * 1000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        g_session.unknown_555C[0x0A] = true;
+      }
+      break;
+    case 0x2F2:
+      if (CPlayer *player = this->scene->player) {
+        player->SendMsg(nullptr, 83, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        if (*reinterpret_cast<const int *>(&player->render.unknown_0060) == 8) {
+          player->Slot15(0, 1);
+        }
+      }
+      break;
+    case 0x2F7: {
+      const std::uint32_t flags = *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 0xA);
+      g_guildInfo.unknown_00AC = flags & 1;
+      g_guildInfo.unknown_00B4 = g_gameModePacketBuffer[0xE];
+      g_guildInfo.m_guildId = *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2);
+      g_guildInfo.unknown_00B0 = (flags >> 4) & 1;
+      g_guildInfo.unknown_00D0 = *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 0x2B);
+      this->scene->player->Slot49(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6));
+      if (!g_guildInfo.unknown_00C8) {
+        g_guildInfo.unknown_00C8 = 1;
+        g_modeMgr.gameMode->SendMsg(107, 3, 0, 0, 0);
+      }
+      if (!g_guildInfo.unknown_00C0) {
+        g_guildInfo.unknown_00C0 = 1;
+        g_modeMgr.gameMode->SendMsg(107, 1, 0, 0, 0);
+      }
+      break;
+    }
+    case 0x441:
+      g_session.RemoveSkill(*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2));
+      break;
+    case 0x442: {
+      const int count = static_cast<unsigned int>(*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2) - 8) >> 1;
+      if (count == 0) {
+        break;
+      }
+      if (UIWindow *window = g_windowMgr.sub_A978D0(99)) {
+        window->SendMsg(nullptr, 27, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 4), 0, 0, 0);
+        const std::uint16_t *skills = reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 8);
+        for (int i = 0; i < count; ++i) {
+          window->SendMsg(nullptr, 31, skills[i], 0, 0, 0);
+        }
+      }
+      break;
+    }
+    case 0x7DD: {
+      char message[256];
+      memset(message, 0, sizeof(message));
+      const char *job = g_session.GetJobName(*reinterpret_cast<const unsigned *>(g_gameModePacketBuffer + 0x1A), -1);
+      sprintf(message, LookupMessage(1930), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x1E),
+              reinterpret_cast<const char *>(g_gameModePacketBuffer + 2), job);
+      if (g_windowMgr.window_027C) {
+        g_windowMgr.SendNotice(5, reinterpret_cast<std::intptr_t>(message), 0x222222, 0, 0, 0);
+      } else if (!g_serviceOptions.Get(114) && !g_serviceOptions.Get(148)) {
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0xFFFF00, 1, 0, 0);
+      }
+      if (g_session.m_whisperRecord) {
+        this->WriteChatLog(message);
+      }
+      break;
+    }
+    case 0x7E1:
+      this->ReceiveSkillUpdate(
+          *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2), *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 8),
+          *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0xA), g_gameModePacketBuffer[0xE],
+          *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0xC), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 4),
+          *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 8));
+      break;
+    case 0x7E6: {
+      char text[256];
+      sprintf(text, LookupMessage(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 4)));
+      char message[256];
+      sprintf(message, "[%s] %s", CSkillInfo::DisplayName(*g_session.m_hotkeyScript, *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2)),
+              text);
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0xFFCDCD, 11, 0, 0);
+      break;
+    }
+    case 0x7FB:
+      this->ProcessSkillUsePacket(g_gameModePacketBuffer, 1);
+      break;
+    case 0x85A: {
+      std::uint16_t packetType = 0x884;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x85B: {
+      std::uint16_t packetType = 0x885;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x85C: {
+      std::uint16_t packetType = 0x886;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x85D: {
+      std::uint16_t packetType = 0x887;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x85E: {
+      std::uint16_t packetType = 0x888;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x85F:
+      SendPacketHeader(0x889);
+      break;
+    case 0x860: {
+      std::uint16_t packetType = 0x88A;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x861:
+      SendPacketHeader2(0x88B);
+      break;
+    case 0x862: {
+      std::uint16_t packetType = 0x88C;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x863:
+      SendPacketHeader2(0x88D);
+      break;
+    case 0x864: {
+      std::uint16_t packetType = 0x88E;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x865: {
+      std::uint16_t packetType = 0x88F;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x866: {
+      std::uint16_t packetType = 0x890;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x867: {
+      std::uint16_t packetType = 0x891;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x868: {
+      std::uint16_t packetType = 0x892;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x869: {
+      std::uint16_t packetType = 0x893;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x86A: {
+      std::uint16_t packetType = 0x894;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x86B: {
+      std::uint16_t packetType = 0x895;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x86C: {
+      std::uint16_t packetType = 0x896;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x86D: {
+      std::uint16_t packetType = 0x897;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x86E: {
+      std::uint16_t packetType = 0x898;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x86F: {
+      std::uint16_t packetType = 0x899;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x870: {
+      std::uint16_t packetType = 0x89A;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x871: {
+      std::uint16_t packetType = 0x89B;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x872: {
+      std::uint16_t packetType = 0x89C;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x873: {
+      std::uint16_t packetType = 0x89D;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x874: {
+      std::uint16_t packetType = 0x89E;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x875: {
+      std::uint16_t packetType = 0x89F;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x876: {
+      std::uint16_t packetType = 0x8A0;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x877: {
+      std::uint16_t packetType = 0x8A1;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x878:
+      SendPacketHeader(0x8A2);
+      break;
+    case 0x879: {
+      std::uint16_t packetType = 0x8A3;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x87A: {
+      std::uint16_t packetType = 0x8A4;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x87B:
+      SendPacketHeader2(0x8A5);
+      break;
+    case 0x87C: {
+      std::uint16_t packetType = 0x8A6;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x87D: {
+      std::uint16_t packetType = 0x8A7;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x87E: {
+      std::uint16_t packetType = 0x8A8;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x87F: {
+      std::uint16_t packetType = 0x8A9;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x880: {
+      std::uint16_t packetType = 0x8AA;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x881: {
+      std::uint16_t packetType = 0x8AB;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x882:
+      SendPacketHeader(0x8AC);
+      break;
+    case 0x883: {
+      std::uint16_t packetType = 0x8AD;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x917:
+      SendPacketHeader2(0x941);
+      break;
+    case 0x918: {
+      std::uint16_t packetType = 0x942;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x919: {
+      std::uint16_t packetType = 0x943;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x91A: {
+      std::uint16_t packetType = 0x944;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x91B:
+      SendPacketHeader2(0x945);
+      break;
+    case 0x91C:
+      SendPacketHeader(0x946);
+      break;
+    case 0x91D: {
+      std::uint16_t packetType = 0x947;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x91E: {
+      std::uint16_t packetType = 0x948;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x91F: {
+      std::uint16_t packetType = 0x949;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x920: {
+      std::uint16_t packetType = 0x94A;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x921:
+      SendPacketHeader(0x94B);
+      break;
+    case 0x922: {
+      std::uint16_t packetType = 0x94C;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x923: {
+      std::uint16_t packetType = 0x94D;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x924: {
+      std::uint16_t packetType = 0x94E;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x925:
+      SendPacketHeader2(0x94F);
+      break;
+    case 0x926: {
+      std::uint16_t packetType = 0x950;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x927: {
+      std::uint16_t packetType = 0x951;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x928: {
+      std::uint16_t packetType = 0x952;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x929: {
+      std::uint16_t packetType = 0x953;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x92A: {
+      std::uint16_t packetType = 0x954;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x92B:
+      SendPacketHeader(0x955);
+      break;
+    case 0x92C: {
+      std::uint16_t packetType = 0x956;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x92D:
+      SendPacketHeader2(0x957);
+      break;
+    case 0x92E: {
+      std::uint16_t packetType = 0x958;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x92F:
+      SendPacketHeader(0x959);
+      break;
+    case 0x930: {
+      std::uint16_t packetType = 0x95A;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x931:
+      SendPacketHeader2(0x95B);
+      break;
+    case 0x932: {
+      std::uint16_t packetType = 0x95C;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x933:
+      SendPacketHeader2(0x95D);
+      break;
+    case 0x934:
+      SendPacketHeader2(0x95E);
+      break;
+    case 0x935: {
+      std::uint16_t packetType = 0x95F;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x936: {
+      std::uint16_t packetType = 0x960;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x937: {
+      std::uint16_t packetType = 0x961;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x938: {
+      std::uint16_t packetType = 0x962;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x939: {
+      std::uint16_t packetType = 0x963;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x93A:
+      SendPacketHeader(0x964);
+      break;
+    case 0x93B:
+      SendPacketHeader(0x965);
+      break;
+    case 0x93C: {
+      std::uint16_t packetType = 0x966;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x93D: {
+      std::uint16_t packetType = 0x967;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x93E: {
+      std::uint16_t packetType = 0x968;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x93F: {
+      std::uint16_t packetType = 0x969;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x940: {
+      std::uint16_t packetType = 0x96A;
+      GetRagConnection().Send(sizeof(packetType), &packetType);
+      break;
+    }
+    case 0x7FD:
+      this->ReceiveItemObtainBroadcast(g_gameModePacketBuffer, false);
+      break;
+    case 0x80E: {
+      if (!g_session.IsCompanionAid(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2))) {
+        if (CRenderObject *actor = this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2))) {
+          const int hp = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6);
+          const int maxHp = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0xA);
+          actor->SendMsg(nullptr, 34, 0, hp, hp >> 31, maxHp, maxHp >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+        }
+        if (g_windowMgr.window_02C8) {
+          g_windowMgr.window_02C8->SendMsg(nullptr, 6, 34, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2),
+                                           *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6),
+                                           *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0xA));
+        }
+        g_windowMgr.NotifyItemWindows(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6),
+                                      *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0xA));
+      }
+      break;
+    }
+    case 0x80F:
+      sub_D1F770(g_gameModePacketBuffer);
+      break;
+    case 0x83D:
+      g_session.unknown_5BE8 = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2);
+      g_session.unknown_5BEC = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 4);
+      break;
+    case 0x845:
+    case 0xA2B:
+      if (!g_windowMgr.CloseWindow(318)) {
+        if (UIWindow *window = g_windowMgr.sub_A978D0(318)) {
+          window->SendMsg(nullptr, 120, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6),
+                          0, 0);
+        } else {
+          std::int16_t packetType = 0x844;
+          GetRagConnection().Send(reinterpret_cast<const PacketLengths &>(GetRagConnection()).FixedLength(packetType), &packetType);
+        }
+      }
+      break;
+    case 0x84B: {
+      const unsigned char *packet = g_gameModePacketBuffer;
+      ItemFallEntry entry = {};
+      entry.count = *reinterpret_cast<const std::int16_t *>(packet + 0x13);
+      entry.aid = *reinterpret_cast<const std::uint32_t *>(packet + 2);
+      entry.column = *reinterpret_cast<const std::int16_t *>(packet + 0x0D);
+      entry.row = *reinterpret_cast<const std::int16_t *>(packet + 0x0F);
+      entry.subColumn = packet[0x11];
+      entry.subRow = packet[0x12];
+      entry.falling = 0;
+      _itoa(*reinterpret_cast<const int *>(packet + 6), entry.itemId, 10);
+      entry.identified = packet[0x0C];
+      entry.falling = 1;
+      entry.unknown_003E = *reinterpret_cast<const std::uint16_t *>(packet + 0x0A);
+
+      CItem *item = this->scene->GetItemByAID(entry.aid);
+      if (!item) {
+        item = new CItem;
+        this->scene->objects.push_back(item);
+        this->scene->unknown_0018.push_back(item);
+      }
+
+      const int entryAddress = reinterpret_cast<int>(&entry);
+      item->SendMsg(nullptr, 4, 0, entryAddress, entryAddress >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      break;
+    }
+    case 0x8C8:
+      this->ReceiveActorAction(
+          *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2), *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 6),
+          *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 0xA), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0xE),
+          *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x12), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x16),
+          *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x1B), g_gameModePacketBuffer[0x1D],
+          *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x1E), g_gameModePacketBuffer[0x1A]);
+      break;
+    case 0x8CD: {
+      const ActorStopPacket *packet = reinterpret_cast<const ActorStopPacket *>(g_gameModePacketBuffer);
+      this->StopActorMove(packet->aid, packet->x, packet->y, 1);
+      break;
+    }
+    case 0x8D0: {
+      const unsigned char *packet = g_gameModePacketBuffer;
+      *reinterpret_cast<std::uint32_t *>(&this->unknown_0100[0x04]) = timeGetTime() - 2000;
+      switch (packet[8]) {
+      case 0: {
+        ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *reinterpret_cast<const std::uint16_t *>(packet + 2));
+        if (item.unknown_0000[1]) {
+          item.unknown_0070 = *reinterpret_cast<const std::uint16_t *>(packet + 6);
+          item.unknown_0000[3] = *reinterpret_cast<const std::uint16_t *>(packet + 4);
+          g_session.OnItemEquipped(item);
+        }
+        break;
+      }
+      case 1:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1953)), 0xFF, 7, 0, 0);
+        break;
+      }
+      break;
+    }
+    case 0x8D1: {
+      const unsigned char *packet = g_gameModePacketBuffer;
+      *reinterpret_cast<std::uint32_t *>(&this->unknown_0100[0x08]) = timeGetTime() - 2000;
+      switch (packet[6]) {
+      case 0: {
+        const std::uint16_t location = *reinterpret_cast<const std::uint16_t *>(packet + 4);
+        if (location) {
+          if (g_session.IsCostumeLocation(location)) {
+            g_session.UnequipItem2B50(location);
+          } else {
+            g_session.UnequipItem(location, 0);
+          }
+        }
+        break;
+      }
+      case 1:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1953)), 0xFF, 7, 0, 0);
+        break;
+      }
+      break;
+    }
+    case 0x8D3:
+      if (UIWindow *window = g_windowMgr.LookupWindow(318)) {
+        window->SendMsg(nullptr, 122, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6), 0,
+                        0);
+      }
+      break;
+    case 0x8D8:
+      g_entryQueueMgr->OnApplyResult(reinterpret_cast<const EntryQueueApplyResult *>(g_gameModePacketBuffer));
+      break;
+    case 0x8D9:
+      g_entryQueueMgr->OnStatus(reinterpret_cast<const EntryQueueStatus *>(g_gameModePacketBuffer));
+      break;
+    case 0x8DB:
+      g_entryQueueMgr->OnCancelResult(reinterpret_cast<const EntryQueueNotice *>(g_gameModePacketBuffer));
+      break;
+    case 0x8DC:
+      g_entryQueueMgr->IgnorePacket(g_gameModePacketBuffer);
+      break;
+    case 0x8DE:
+      g_entryQueueMgr->OnResultNotice(reinterpret_cast<const EntryQueueNotice *>(g_gameModePacketBuffer));
+      break;
+    case 0x8DF:
+      g_entryQueueMgr->OnReady(reinterpret_cast<const EntryQueueReady *>(g_gameModePacketBuffer));
+      break;
+    case 0x8E1:
+      g_entryQueueMgr->OnNotify(reinterpret_cast<const EntryQueueNotice *>(g_gameModePacketBuffer));
+      break;
+    case 0x8E2:
+      sub_D73A10(g_gameModePacketBuffer);
+      break;
+    case 0x90E:
+      g_entryQueueMgr->ResetCurrent(reinterpret_cast<int>(g_gameModePacketBuffer));
+      break;
+    case 0x99A:
+      this->ReceiveTakeOffEquipResult(g_gameModePacketBuffer[0x8], *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x4),
+                                      *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x2));
+      break;
+    case 0x9BB:
+      ReceiveBuyingStoreResult(reinterpret_cast<const BuyingStoreResultPacket *>(g_gameModePacketBuffer));
+      break;
+    case 0x9BF:
+      sub_D1C050(reinterpret_cast<const AchievementStatePacket *>(g_gameModePacketBuffer));
+      break;
+    case 0x9CF:
+      g_nProtectGameGuardMgr->ProcessAuth(reinterpret_cast<int>(g_gameModePacketBuffer + 0x4),
+                                          *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x2) - 4);
+      break;
+    case 0x9DF:
+      this->sub_D079A0(g_gameModePacketBuffer[0x2], *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x3));
+      break;
+    case 0x9E6:
+      sub_D08640(g_gameModePacketBuffer);
+      break;
+    case 0x9FC:
+      this->NotifyResult2571(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x2));
+      break;
+    case 0xA09:
+      sub_D1F970(g_gameModePacketBuffer);
+      break;
+    case 0xA26:
+      this->ReceiveAchievementResult(g_gameModePacketBuffer[0x2], *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x3));
+      break;
+    case 0xA27:
+      this->ReceiveHpSpRecovery(g_gameModePacketBuffer, 1);
+      break;
+    case 0xA29:
+      this->ReceivePacket0A29(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x2));
+      break;
+    case 0xA2F:
+      this->ReceiveJobTitle(g_gameModePacketBuffer[0x2], *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x3));
+      break;
+    case 0xA38:
+      this->OpenServiceWindow(g_gameModePacketBuffer[0x2]);
+      break;
+    case 0xA3A:
+      this->UpdateSkillCooldown(*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x2),
+                                *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 0x4),
+                                *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 0x8));
+      break;
+    case 0xA4A:
+      this->NotifyWindow4F258(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x2));
+      break;
+    case 0xA4B:
+      this->RequestLocalMapMove(reinterpret_cast<const char *>(g_gameModePacketBuffer + 0x2),
+                                *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x12),
+                                *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x14));
+      break;
+    case 0xA4E:
+      this->ReceiveLapineBoxIngredient(reinterpret_cast<const unsigned char *>(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x2)));
+      break;
+    case 0xA50:
+      this->ReceiveLapineBoxResult(*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x2));
+      break;
+    case 0xA53:
+      this->ReceiveCaptchaUploadRequest(reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 0x2),
+                                        *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x6));
+      break;
+    case 0xA55:
+      this->NotifyCaptchaRegistered();
+      break;
+    case 0xA57:
+      this->NotifyResult2877(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x2));
+      break;
+    case 0xA58:
+      this->BeginCaptchaImage(*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x2),
+                              reinterpret_cast<const char *>(g_gameModePacketBuffer + 0x4));
+      break;
+    case 0xA5B:
+      this->SetMacroDetectorCountdown(g_gameModePacketBuffer[0x2], *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 0x3));
+      break;
+    case 0xA5D:
+      this->ReceiveMacroDetectorResult(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x2));
+      break;
+    case 0xA60:
+      this->NotifyResult3995(g_gameModePacketBuffer[0x2]);
+      break;
+    case 0xA6A:
+      this->ReceiveCaptchaPreview(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x2),
+                                  *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x6),
+                                  reinterpret_cast<const char *>(g_gameModePacketBuffer + 0x8));
+      break;
+    case 0xA6D:
+      sub_D6AD60((static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x2) - 4) >> 2),
+                 reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x4));
+      break;
+    case 0xA6F:
+      this->ShowFormattedNotice(*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x4),
+                                *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 0x6), reinterpret_cast<int>(g_gameModePacketBuffer + 0xA));
+      break;
+    case 0xA81:
+      this->ReceiveStoreResult(g_gameModePacketBuffer[0x2], g_gameModePacketBuffer[0x3]);
+      break;
+    case 0xA8A:
+      this->ReceiveItemDisappear(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 0x2));
+      break;
+    case 0xA93:
+      this->OpenBuyingStoreMake(g_gameModePacketBuffer[0x2]);
+      break;
+    case 0xA95:
+      this->ReceiveFeedConfig(g_gameModePacketBuffer[0x2], g_gameModePacketBuffer[0x3]);
+      break;
+    case 0xAA0:
+      g_windowMgr.sub_A978D0(295);
+      break;
+    case 0xAB4:
+      this->ReceiveLapineUpgradeBoxValue(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x2));
+      break;
+    case 0xAB7:
+      this->ReceiveLapineUpgradeResult(*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x2));
+      break;
+    case 0xAC3:
+      this->IgnoreRemovedPacket6();
+      break;
+    case 0xAE2:
+      this->ReceiveServiceRequest(g_gameModePacketBuffer[0x2], *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x3));
+      break;
+    case 0xAF0:
+      this->ReceiveWindow328Result(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x2), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x6));
+      break;
+    case 0xAF5:
+      SetActiveSkillEffect184(g_gameModePacketBuffer[0x2]);
+      break;
+    case 0xAFA:
+      ReceivePartyJoinResult(reinterpret_cast<const void *>(g_gameModePacketBuffer));
+      break;
+    case 0xAFB:
+      this->ReceiveWindow99Values((static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x2) - 4) >> 2),
+                                  reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x4));
+      break;
+    case 0xB0B:
+      this->RefreshItemListWindow(g_gameModePacketBuffer[0x2], g_gameModePacketBuffer[0x3]);
+      break;
+    case 0xB2B:
+      this->ReceiveGuildUnknown0114Change(g_gameModePacketBuffer[0x2], *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 0x3),
+                                          *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 0x7));
+      break;
+    case 0xB2D:
+      this->ReceiveAgitNotice(g_gameModePacketBuffer[0x2], *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x3),
+                              *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x7));
+      break;
+    case 0xB2E:
+      this->ReceivePacket0B2E(*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x2));
+      break;
+    case 0xB30:
+      this->ReceiveObjectsDisappear((static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x2) - 4) >> 2),
+                                    reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 0x4));
+      break;
+    case 0xB47:
+      this->ReceiveGuildEmblemVersion(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 0xA),
+                                      *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x2),
+                                      *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x6));
+      break;
+    case 0xB49:
+      this->ReceiveWindow154Result(*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x2));
+      break;
+    case 0xB4B:
+      this->ReceiveWindow154Close(*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x2));
+      break;
+    case 0xB50:
+      this->OpenWindow154();
+      break;
+    case 0xB52:
+      sub_D6E440();
+      break;
+    case 0xB54:
+      this->ReceiveUnknownD79E90(*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x2),
+                                 *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x4));
+      break;
+    case 0xB68:
+      this->ReceiveActorStateValue(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 0x2),
+                                   *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x6),
+                                   *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0xA));
+      break;
+    case 0xB6E:
+      this->ReceiveCashShopBanner(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x2), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x6),
+                                  *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0xA));
+      break;
+    case 0xB8E:
+      this->ReceiveReputeOpen(*reinterpret_cast<const std::uint64_t *>(g_gameModePacketBuffer + 0x2),
+                              *reinterpret_cast<const std::uint64_t *>(g_gameModePacketBuffer + 0xA));
+      break;
+    case 0xB8F:
+      this->ReceiveItemReformOpen(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x2));
+      break;
+    case 0xB92:
+      this->ReceiveWindow348Result(g_gameModePacketBuffer[0x4], *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x2));
+      break;
+    case 0xB94:
+      this->ReceiveGameOptionResult(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x2), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x6),
+                                    *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0xA));
+      break;
+    case 0xB95:
+      this->ReceiveGameOptions((static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x2) - 4) >> 3),
+                               reinterpret_cast<const GameOptionEntry *>(g_gameModePacketBuffer + 0x4));
+      break;
+    case 0xB99:
+      this->ReceiveRodexMailDeleteResult(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x2),
+                                         *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x6));
+      break;
+    case 0xB9A:
+      this->ReceiveUiOpen(g_gameModePacketBuffer[0x2], *reinterpret_cast<const std::uint64_t *>(g_gameModePacketBuffer + 0x3));
+      break;
+    case 0xB9F:
+      this->ReceiveEnchantResult(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x2), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x6));
+      break;
+    case 0xBA1:
+      this->SetWindow16Align(g_gameModePacketBuffer[0x2]);
+      break;
+    case 0xBA2:
+      this->ResizeWindow16(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x6), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x2));
+      break;
+    case 0xBA3:
+      this->MoveWindow16(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x2), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x6));
+      break;
+    case 0xBAA:
+      this->RejectRequest(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x2), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x6),
+                          *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0xA), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0xE),
+                          *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x12));
+      break;
+    case 0xBAB:
+      this->IgnoreRemovedPacket12(reinterpret_cast<const unsigned char *>(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x2)),
+                                  *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x6), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0xA),
+                                  *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0xE), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x12));
+      break;
+    case 0xBAE:
+      this->ReceiveBasicInfoResult(g_gameModePacketBuffer[0x2]);
+      break;
+    case 0xBB5:
+      this->PlaceWindow16(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 0x2),
+                          *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 0x6));
+      break;
+    case 0xBBA:
+      this->ReceiveItemObtainBroadcast(g_gameModePacketBuffer, 1);
+      break;
+    case 0xBBC:
+      this->ReceiveShopName(reinterpret_cast<const char *>(g_gameModePacketBuffer + 0x2), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x12));
+      break;
+    case 0xBBE:
+      this->ShowSpecialPopup(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x2));
+      break;
+    case 0xBC2:
+      this->NotifyResult4013(g_gameModePacketBuffer[0x2], *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x3));
+      break;
+    case 0xBC5:
+      this->ActivateMacroBlackListCheck(g_gameModePacketBuffer[0x2], *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x3));
+      break;
+    case 0xBC7:
+      this->ReceiveMacroBlackListResult(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x2));
+      break;
+    case 0xBD7:
+      this->ApplyRuneSetResult(g_gameModePacketBuffer[0x2], *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x3),
+                               *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x5));
+      break;
+    case 0xBDB:
+      this->ReceiveMacroBlackListCode(g_gameModePacketBuffer[0x2], reinterpret_cast<const char *>(g_gameModePacketBuffer + 0x3));
+      break;
+    case 0xBDF:
+      this->ToggleWindow169(g_gameModePacketBuffer[0x2]);
+      break;
+    case 0xBE1:
+      this->RequestWindow169(g_gameModePacketBuffer[0x2]);
+      break;
+    case 0xC06:
+      this->ReceiveResultNotice(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x4));
+      break;
+    case 0xC0C:
+      this->NotifyResult4138(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x2));
+      break;
+    case 0xC3C:
+      this->ReceiveToggle128(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x2));
+      break;
+    case 0xAA9:
+      ReceiveTradeItems(static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / sizeof(TradeItemRecord),
+                        reinterpret_cast<const TradeItemRecord *>(g_gameModePacketBuffer + 4));
+      break;
+    case 0xA59:
+      this->ReceiveCaptchaImageData(reinterpret_cast<const char *>(g_gameModePacketBuffer + 4), g_gameModePacketBuffer + 8,
+                                    static_cast<std::uint16_t>(*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2) - 8));
+      break;
+    case 0xA6B:
+      this->ReceiveCaptchaPreviewImage(reinterpret_cast<const char *>(g_gameModePacketBuffer + 4), g_gameModePacketBuffer + 8,
+                                       static_cast<std::uint16_t>(*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2) - 8));
+      break;
+    case 0xBF4:
+      this->ReceiveQuestStates(static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / 5,
+                               g_gameModePacketBuffer + 4);
+      break;
+    case 0xA7E:
+      this->OpenVendingMake(g_gameModePacketBuffer[4], static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 5) >> 1,
+                            reinterpret_cast<const short *>(g_gameModePacketBuffer + 5));
+      break;
+    case 0xAA8:
+      this->ReceiveFeedConfig2(g_gameModePacketBuffer[2], g_gameModePacketBuffer[3], g_gameModePacketBuffer[4]);
+      break;
+    case 0xB8D:
+      this->ReceiveReputeInfo(g_gameModePacketBuffer[4],
+                              static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 5) >> 4,
+                              reinterpret_cast<const ReputePointEntry *>(g_gameModePacketBuffer + 5));
+      break;
+    case 0xB25:
+      this->ReceiveTraitStatusChangeAck(g_gameModePacketBuffer[4], *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2),
+                                        g_gameModePacketBuffer[5]);
+      break;
+    case 0xA51:
+      this->ReceiveRodexRecipient(
+          *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 6),
+          *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 8), reinterpret_cast<const char *>(g_gameModePacketBuffer + 0xA));
+      break;
+    case 0xADA:
+      this->ReceiveRefineStatus(reinterpret_cast<const char *>(g_gameModePacketBuffer + 2), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x1A),
+                                g_gameModePacketBuffer[0x1E], g_gameModePacketBuffer[0x1F]);
+      break;
+    case 0xBD5:
+      this->ApplyRuneSetResultWithRequest(g_gameModePacketBuffer[2], *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 3),
+                                          *reinterpret_cast<const int *>(g_gameModePacketBuffer + 5), -1, -1);
+      break;
+    case 0xB96:
+      this->ShowNoticeText(reinterpret_cast<const char *>(g_gameModePacketBuffer + 2));
+      break;
+    case 0xBCF:
+      this->ReceiveRuneGradeResult(g_gameModePacketBuffer[2], *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 3), 1,
+                                   *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 5), 0, 0);
+      break;
+    case 0x999:
+      this->ReceiveWearEquipAck(g_gameModePacketBuffer[0xA], *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2),
+                                *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 8),
+                                *reinterpret_cast<const int *>(g_gameModePacketBuffer + 4));
+      break;
+    case 0xB09:
+      this->ReceiveItemListPart(g_gameModePacketBuffer[4],
+                                static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 5) / 34,
+                                g_gameModePacketBuffer + 5);
+      break;
+    case 0xB0A:
+      this->ReceiveEquipListPart(g_gameModePacketBuffer[4],
+                                 static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 5) / 67,
+                                 g_gameModePacketBuffer + 5);
+      break;
+    case 0xAAB:
+      this->ReceiveParaItemResult(g_gameModePacketBuffer[4],
+                                  static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 5) / 29,
+                                  g_gameModePacketBuffer + 5);
+      break;
+    case 0x9E5:
+      sub_D08110(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 0xA), *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2),
+                 *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 4), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0xE),
+                 *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6));
+      break;
+    case 0xC17:
+      this->ReceiveRuneRewardResult(g_gameModePacketBuffer[2], *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 3),
+                                    *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 5), g_gameModePacketBuffer[9]);
+      break;
+    case 0xADC:
+      this->ReceiveFeedConfig3(g_gameModePacketBuffer[2], g_gameModePacketBuffer[3], g_gameModePacketBuffer[4], g_gameModePacketBuffer[5]);
+      break;
+    case 0x9CB:
+      this->ReceiveSkillUse(*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 4),
+                            *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 0xC),
+                            *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 8), g_gameModePacketBuffer[0x10]);
+      break;
+    case 0xA23:
+      sub_D6C460(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 4), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 8),
+                 *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0xC), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0xE),
+                 *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x12),
+                 reinterpret_cast<const AchievementRecordPacket *>(g_gameModePacketBuffer + 0x16));
+      break;
+    case 0xB36:
+      CGuildMgr::ReceiveEmblem(*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 4),
+                               *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 6),
+                               *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 0xA), g_gameModePacketBuffer + 0xE,
+                               *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 14);
+      break;
+    case 0xA4C:
+      this->ReceiveZoneServerChange(
+          reinterpret_cast<const char *>(g_gameModePacketBuffer + 2), *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x12),
+          *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x14), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x16),
+          *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x1A));
+      break;
+    case 0xC3B:
+      this->ReceiveRefineStatusGraded(reinterpret_cast<const char *>(g_gameModePacketBuffer + 2), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x1A),
+                                      g_gameModePacketBuffer[0x1E], g_gameModePacketBuffer[0x1F], g_gameModePacketBuffer[0x20]);
+      break;
+    case 0xBC9:
+      this->ReceiveFeedConfig4(g_gameModePacketBuffer[2], g_gameModePacketBuffer[3], g_gameModePacketBuffer[4], g_gameModePacketBuffer[5],
+                               *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6));
+      break;
+    case 0xAA2:
+      this->ApplyRefiningMaterial(*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 4),
+                                  static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 7) / 9,
+                                  g_gameModePacketBuffer + 7, g_gameModePacketBuffer[6]);
+      break;
+    case 0xBE3:
+      this->ReceiveNamedResult(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2), reinterpret_cast<const char *>(g_gameModePacketBuffer + 6),
+                               *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x1E));
+      break;
+    case 0xA41:
+      this->SpawnSkillWarningPlanes(
+          *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2), *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 6),
+          *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 8), *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0xA),
+          *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0xC), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0xE));
+      break;
+    case 0xBD1:
+    case 0xBD3:
+      this->ReceiveRuneGradeResult(g_gameModePacketBuffer[2], *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 3), 0,
+                                   *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 5),
+                                   *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 9),
+                                   *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0xB));
+      break;
+    case 0x973:
+      this->unknown_024C = 1;
+      this->unknown_02DC = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2);
+      g_windowMgr.sub_A978D0(226)->SendMsg(nullptr, 25, 0, 0, 0, 0);
+      break;
+    case 0xBEE:
+      switch (g_gameModePacketBuffer[4]) {
+      case 0:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_NOT_ENOUGH_NYANGVINE")), 0xFF, 0, 0, 0);
+        break;
+      case 1:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_FAIL_DATE")), 0xFF, 0, 0, 0);
+        this->RefreshEmotionSaleSchedule();
+        break;
+      case 2:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_FAIL_ALREADY_BUY")), 0xFF, 0, 0, 0);
+        break;
+      case 3:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_FAIL_ANOTHER_SALE_BUY")), 0xFF, 0, 0, 0);
+        break;
+      case 4:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_NOT_ENOUGH_BASICSKILL_LEVEL")), 0xFF, 0,
+                               0, 0);
+        break;
+      case 5:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_NOT_YET_SALE_START_TIME")), 0xFF, 0, 0, 0);
+        this->RefreshEmotionSaleSchedule();
+        break;
+      default:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_FAIL_UNKNOWN")), 0xFF, 0, 0, 0);
+        break;
+      }
+      break;
+    case 0xB8C: {
+      const unsigned char type = g_gameModePacketBuffer[4];
+      this->PlayBgm(
+          type, std::string(reinterpret_cast<const char *>(g_gameModePacketBuffer + 5), *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2)));
+      break;
+    }
+    case 0xA8D:
+      this->ReceiveVendingItemList2(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 4), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 8),
+                                    g_gameModePacketBuffer[0xC],
+                                    static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 0x11) / 63,
+                                    *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 0xD), g_gameModePacketBuffer + 0x11);
+      break;
+    case 0xA24:
+      this->ReceiveAchievementUpdate(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 2),
+                                     *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 6),
+                                     *reinterpret_cast<const int *>(g_gameModePacketBuffer + 8), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0xC),
+                                     *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x10), g_gameModePacketBuffer[0x14],
+                                     reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 0x15),
+                                     *reinterpret_cast<const __time32_t *>(g_gameModePacketBuffer + 0x3D), g_gameModePacketBuffer[0x41]);
+      break;
+    case 0xB33:
+      this->ReceiveSkillUpdate(
+          *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2), *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 8),
+          *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0xA), g_gameModePacketBuffer[0xE],
+          *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0xC), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 4),
+          *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0xF));
+      break;
+    case 0xB31:
+      this->ReceiveLearnedSkill(
+          *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2), *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 8),
+          *reinterpret_cast<const int *>(g_gameModePacketBuffer + 4), g_gameModePacketBuffer[0xE],
+          *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0xA), *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0xC),
+          *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0xF));
+      break;
+    case 0xA91:
+      this->ReceiveVendingItemList(
+          *reinterpret_cast<const int *>(g_gameModePacketBuffer + 4), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 8), g_gameModePacketBuffer[0xC],
+          static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 0x19) / 11,
+          *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 0xD), g_gameModePacketBuffer + 0x19,
+          *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x11), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x15));
+      break;
+    case 0xBF2:
+      g_runeSystemMgr->ClearCurRuneSet();
+      this->ApplyRuneSetResultWithRequest(g_gameModePacketBuffer[2], *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 3),
+                                          *reinterpret_cast<const int *>(g_gameModePacketBuffer + 5),
+                                          *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 9),
+                                          *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0xB));
+      break;
+    case 0x9D1:
+      if (CRenderObject *actor = this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2))) {
+        actor->SendMsg(nullptr, 82, 0, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0xA) * 1000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      break;
+    case 0xAE7: {
+      char name[25];
+      strncpy(name, reinterpret_cast<const char *>(g_gameModePacketBuffer + 0xA), 24);
+      name[24] = 0;
+      g_requestJoinPartyMgr->Add(
+          *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 6), *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2), name,
+          *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x22), *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x24));
+      break;
+    }
+    case 0xAB9:
+      this->ReceiveItemUpgrade(
+          *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2), *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 4),
+          *reinterpret_cast<const ItemCardSlots *>(g_gameModePacketBuffer + 6), *reinterpret_cast<const ItemSlotOptions *>(g_gameModePacketBuffer + 0x16));
+      break;
+    case 0xB13:
+      this->RefreshInventoryOrEquipItem(*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2), g_gameModePacketBuffer[4],
+                                        *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 5),
+                                        *reinterpret_cast<const ItemCardSlots *>(g_gameModePacketBuffer + 7),
+                                        *reinterpret_cast<const ItemSlotOptions *>(g_gameModePacketBuffer + 0x17));
+      break;
+    case 0xBED:
+      g_cashEmotionMgr->AcquirePack(*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2),
+                                    g_gameModePacketBuffer[4] ? *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 5) : 0);
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_BUY_SUCCESS")), 0xFFFF, 0, 0, 0);
+      this->RefreshEmotionPurchaseSchedule();
+      break;
+    case 0xA0E:
+      if (!g_session.IsCompanionAid(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2))) {
+        if (CRenderObject *actor = this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2))) {
+          const int hp = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6);
+          const int maxHp = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0xA);
+          actor->SendMsg(nullptr, 34, 0, hp, hp >> 31, maxHp, maxHp >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+        }
+      }
+      break;
+    case 0x990:
+      this->ReceiveItemPickupAck5(
+          *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2), *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 4),
+          *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6), g_gameModePacketBuffer[0xA], g_gameModePacketBuffer[0xB], g_gameModePacketBuffer[0xC],
+          *reinterpret_cast<const ItemCardSlots *>(g_gameModePacketBuffer + 0xD), *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 0x1D),
+          g_gameModePacketBuffer[0x21], g_gameModePacketBuffer[0x22], *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 0x23),
+          *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x27));
+      break;
+    case 0xC08:
+      this->ReceiveUnknownD264E0(g_gameModePacketBuffer);
+      this->miniMapTooltipId = -1;
+      this->miniMapTooltipText.assign("", 0);
+      g_windowMgr.CloseWindow(78);
+      g_windowMgr.RestoreHiddenWindows();
+      this->miniMapTooltipWindows.clear();
+      break;
+    case 0xBEA: {
+      CRenderObject *actor;
+      if (g_session.m_aid == *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2)) {
+        actor = this->scene->player;
+      } else {
+        actor = this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2));
+        if (!actor) {
+          this->unknown_026E[0x16] = 0;
+          break;
+        }
+      }
+      const int first = *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 6);
+      const int second = *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 8);
+      actor->SendMsg(nullptr, 160, 0, first, first >> 31, second, second >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+      break;
+    }
+    case 0xBEB:
+      switch (g_gameModePacketBuffer[6]) {
+      case 0:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_USE_FAIL_DATE")), 0xFF, 0, 0, 0);
+        g_cashEmotionMgr->RemoveOwnedPack(*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2), true, true);
+        this->RefreshEmotionPurchaseSchedule();
+        break;
+      case 1:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_USE_FAIL_UNPURCHASED")), 0xFF, 0, 0, 0);
+        break;
+      case 2:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_USE_FAIL_SKILL_LEVEL")), 0xFF, 0, 0, 0);
+        break;
+      default:
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_USE_FAIL_UNKNOWN")), 0xFF, 0, 0, 0);
+        break;
+      }
+      this->unknown_026E[0x16] = 0;
+      break;
+    case 0x972: {
+      const unsigned char *packet = g_gameModePacketBuffer;
+      this->unknown_024C = 1;
+      this->unknown_02DC = *reinterpret_cast<const int *>(packet + 4);
+      unsigned int length = *reinterpret_cast<const std::uint16_t *>(packet + 2) - 9;
+      char text[0x803];
+      if (g_serviceType == 10) {
+        sprintf(text, "|%02x", LanguageCharset(31));
+        memcpy(text + 3, packet + 9, length);
+        length += 3;
+      } else {
+        memcpy(text, packet + 9, length);
+      }
+      text[length] = 0;
+      g_windowMgr.sub_A978D0(226)->SendMsg(nullptr, 26, reinterpret_cast<std::intptr_t>(text), *reinterpret_cast<const int *>(packet + 4), 0, 0);
+      break;
+    }
+    case 0xBF6: {
+      const int count = static_cast<unsigned int>(*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2) - 10) / 7;
+      CCashEmotionMgr *manager = g_cashEmotionMgr;
+      if (!manager) {
+        break;
+      }
+      manager->sub_59CDE0(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 4));
+      manager->SetServerTimeZone(*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 8));
+      const unsigned char *entry = g_gameModePacketBuffer + 0xA;
+      for (int i = 0; i < count; ++i, entry += 7) {
+        manager->SetOwnedPack(*reinterpret_cast<const std::uint16_t *>(entry), entry[2] ? *reinterpret_cast<const std::uint32_t *>(entry + 3) : 0);
+      }
+      this->RefreshEmotionSaleSchedule();
+      this->RefreshEmotionPurchaseSchedule();
+      break;
+    }
+    case 0xA89:
+      this->SpawnStandingPc(
+          *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 0x2), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x6),
+          *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0xA), *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0xC),
+          g_gameModePacketBuffer[0xE], *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0xF),
+          *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x11), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x15),
+          *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x19), *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x1B),
+          *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x1D), *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x1F),
+          *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x21), *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x23),
+          reinterpret_cast<const char *>(g_gameModePacketBuffer + 0x25));
+      break;
+    case 0xB05:
+      this->SpawnStandingPc2(
+          *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 0x2), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x6),
+          *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0xA), *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0xC),
+          g_gameModePacketBuffer[0xE], *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0xF),
+          *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x11), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x15),
+          *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x19), *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x1B),
+          *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x1D), *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x1F),
+          *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x21), *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x23),
+          reinterpret_cast<const char *>(g_gameModePacketBuffer + 0x25), *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x3D));
+      break;
+    case 0xB32: {
+      std::vector<SkillListEntry> skills;
+      const int count = static_cast<unsigned int>(*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2) - 4) / sizeof(SkillListEntry);
+      const SkillListEntry *record = reinterpret_cast<const SkillListEntry *>(g_gameModePacketBuffer + 4);
+      for (int i = 0; i < count; ++i, ++record) {
+        skills.push_back(*record);
+      }
+      this->ReceiveSkillList(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer), skills);
+      break;
+    }
+    case 0xA78:
+      if (g_gameModePacketBuffer[2] == 1) {
+        UIWindow *window = g_windowMgr.LookupWindow(289);
+        if (!window) {
+          window = g_windowMgr.sub_A978D0(289);
+        }
+        g_session.unknown_61B1 = !g_session.unknown_61B1;
+        g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(g_session.unknown_61B1 == true ? "Camera Info On" : "Camera Info Off"), 0x64FFFF, 0, 0, 0);
+        window->Show(g_session.unknown_61B1);
+      } else if (CView *camera = this->camera) {
+        camera->camera.desiredDistance = *reinterpret_cast<const float *>(g_gameModePacketBuffer + 3);
+        this->camera->camera.desiredYaw = *reinterpret_cast<const float *>(g_gameModePacketBuffer + 7);
+        this->camera->camera.desiredPitch = *reinterpret_cast<const float *>(g_gameModePacketBuffer + 0xB);
+      }
+      break;
+    case 0xBC8:
+      if (*reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x14) != 176) {
+        this->SpawnGroundSkill(
+            *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 4), *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 8),
+            *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0xC), *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x10),
+            *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x12), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x14),
+            g_gameModePacketBuffer[0x18], g_gameModePacketBuffer[0x19], g_gameModePacketBuffer[0x1A]);
+        break;
+      }
+      if (*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 27 > 0) {
+        CGraffiSkill *skill = new CGraffiSkill;
+        skill->SendMsg(nullptr, 22, 0, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 4), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        const int address = reinterpret_cast<int>(g_gameModePacketBuffer + 0x1B);
+        const int x = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x10);
+        const int y = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x12);
+        skill->SendMsg(nullptr, 117, 0, address, address >> 31, x, x >> 31, y, y >> 31, 0, 0, 0, 0, 0, 0);
+        this->scene->objects.push_back(skill);
+        this->scene->unknown_0020.push_back(skill);
+      }
+      break;
+    case 0xADB: {
+      std::string text(reinterpret_cast<const char *>(g_gameModePacketBuffer + 8),
+                       reinterpret_cast<const char *>(g_gameModePacketBuffer + *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2)));
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 4), 0, 0, 0);
+      break;
+    }
+    case 0xA28:
+      switch (g_gameModePacketBuffer[2]) {
+      case 0:
+        if (UIWindow *window = g_windowMgr.sub_A978D0(45)) {
+          window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+        }
+        if (UIMerchantShopMakeWnd *window = static_cast<UIMerchantShopMakeWnd *>(g_windowMgr.sub_A978D0(41))) {
+          window->PrintSellList();
+        }
+        g_windowMgr.CloseWindow(41);
+        this->unknown_024C = 1;
+        break;
+      case 1:
+        this->SendMsg(40, 0, 0, 0, 0);
+        g_windowMgr.CloseWindow(43);
+        g_windowMgr.CloseWindow(44);
+        g_session.ClearItems1760And1748();
+        g_session.ClearItems1758();
+        g_windowMgr.Confirm(LookupMessage(2639), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.CloseWindow(41);
+        break;
+      case 3:
+        this->SendMsg(40, 0, 0, 0, 0);
+        g_windowMgr.CloseWindow(43);
+        g_windowMgr.CloseWindow(44);
+        g_session.ClearItems1760And1748();
+        g_session.ClearItems1758();
+        g_windowMgr.CloseWindow(41);
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3229)), 0xFF, 0, 0, 0);
+        break;
+      }
+      break;
+    case 0xB55: {
+      std::string text(reinterpret_cast<const char *>(g_gameModePacketBuffer + 4),
+                       reinterpret_cast<const char *>(g_gameModePacketBuffer + *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2)));
+      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 0, 0, 0);
+      break;
+    }
+    case 0x8FE: {
+      const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / 12;
+      const unsigned char *entry = g_gameModePacketBuffer + 4;
+      for (int i = 0; i < count; ++i, entry += 12) {
+        const RenewQuestOngoingInfo &quest = g_renewQuestMgr->GetOngoingQuest(*reinterpret_cast<const unsigned int *>(entry));
+        if (quest.m_title.empty()) {
+          continue;
+        }
+
+        RenewQuestOngoingInfo info = quest;
+        for (int index = i; index < 3; ++index) {
+          if (*reinterpret_cast<const int *>(entry + 4) == info.m_huntUnknown00D4[index]) {
+            info.m_huntUnknown00E0[index] = *reinterpret_cast<const std::int16_t *>(entry + 0xA);
+            info.m_huntUnknown0180[index] = *reinterpret_cast<const std::int16_t *>(entry + 8);
+            g_renewQuestMgr->SetOngoingQuest(*reinterpret_cast<const unsigned int *>(entry), info);
+            break;
+          }
+        }
+      }
+      if (g_windowMgr.window_0428) {
+        g_windowMgr.window_0428->Invalidate();
+      }
+      g_renewQuestMgr->sub_67B690();
+      break;
+    }
+    case 0x900: {
+      g_session.KeepEquipment();
+      const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / sizeof(FlaggedItemRecord);
+      for (int i = 0; i < count; ++i) {
+        const FlaggedItemRecord *record = reinterpret_cast<const FlaggedItemRecord *>(g_gameModePacketBuffer + 4) + i;
+        ITEM_INFO item;
+        item.unknown_0000[0] = record->type;
+        item.unknown_0000[2] = 0;
+        item.unknown_0000[1] = record->index;
+        item.unknown_0000[3] = record->location;
+        item.quantity = record->amount;
+        for (int card = 0; card < 4; ++card) {
+          reinterpret_cast<int *>(item.unknown_001C)[card] = record->cards[card];
+        }
+        item.SetItemId(record->itemId);
+        item.unknown_005D = 0;
+        item.identified = record->flags & 1;
+        item.unknown_0060 = 0;
+        item.unknown_0068 = record->expireTime;
+        item.unknown_0074[0] = (record->flags >> 1) & 1;
+        g_session.UpdateInventoryItem(item, 0);
+      }
+      RefreshItemWindows(&g_windowMgr);
+      break;
+    }
+    case 0x902: {
+      const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / sizeof(FlaggedItemRecord);
+      for (int i = 0; i < count; ++i) {
+        const FlaggedItemRecord *record = reinterpret_cast<const FlaggedItemRecord *>(g_gameModePacketBuffer + 4) + i;
+        ITEM_INFO item;
+        item.unknown_0000[0] = record->type;
+        item.unknown_0000[2] = 0;
+        item.unknown_0000[1] = record->index;
+        item.unknown_0000[3] = record->location;
+        item.quantity = record->amount;
+        for (int card = 0; card < 4; ++card) {
+          reinterpret_cast<int *>(item.unknown_001C)[card] = record->cards[card];
+        }
+        item.SetItemId(record->itemId);
+        item.unknown_005D = 0;
+        item.identified = record->flags & 1;
+        item.unknown_0060 = 0;
+        item.unknown_0068 = record->expireTime;
+        item.unknown_0074[0] = (record->flags >> 1) & 1;
+        g_session.AddItem1740(item);
+      }
+      g_session.RefreshItem1740Window();
+      break;
+    }
+    case 0x904: {
+      g_windowMgr.sub_A978D0(33);
+      const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / sizeof(FlaggedItemRecord);
+      for (int i = 0; i < count; ++i) {
+        const FlaggedItemRecord *record = reinterpret_cast<const FlaggedItemRecord *>(g_gameModePacketBuffer + 4) + i;
+        ITEM_INFO item;
+        item.unknown_0000[0] = record->type;
+        item.unknown_0000[2] = 0;
+        item.unknown_0000[1] = record->index;
+        item.unknown_0000[3] = record->location;
+        item.quantity = record->amount;
+        for (int card = 0; card < 4; ++card) {
+          reinterpret_cast<int *>(item.unknown_001C)[card] = record->cards[card];
+        }
+        item.SetItemId(record->itemId);
+        item.unknown_005D = 0;
+        item.identified = record->flags & 1;
+        item.unknown_0060 = 0;
+        item.unknown_0068 = record->expireTime;
+        item.unknown_0074[0] = (record->flags >> 1) & 1;
+        g_session.AddItem1738(item, 0);
+      }
+      g_session.RefreshItem1738Window();
+      break;
+    }
+    case 0x903: {
+      const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / sizeof(FlaggedEquipRecord);
+      for (int i = 0; i < count; ++i) {
+        const FlaggedEquipRecord *record = reinterpret_cast<const FlaggedEquipRecord *>(g_gameModePacketBuffer + 4) + i;
+        ITEM_INFO item;
+        item.unknown_0000[0] = record->type;
+        item.unknown_0000[2] = record->location;
+        item.unknown_0000[1] = record->index;
+        item.unknown_0000[3] = record->wearState;
+        item.quantity = 1;
+        for (int card = 0; card < 4; ++card) {
+          reinterpret_cast<int *>(item.unknown_001C)[card] = record->cards[card];
+        }
+        item.SetItemId(record->itemId);
+        item.identified = record->flags & 1;
+        item.unknown_005D = (record->flags >> 1) & 1;
+        item.unknown_0060 = record->refine;
+        item.unknown_0068 = record->expireTime;
+        item.unknown_0064 = record->bindOnEquip;
+        item.unknown_0070 = record->look;
+        item.unknown_0074[0] = (record->flags >> 2) & 1;
+        g_session.AddItem1740(item);
+      }
+      g_session.RefreshItem1740Window();
+      break;
+    }
+    case 0x905: {
+      g_windowMgr.sub_A978D0(33);
+      const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / sizeof(FlaggedEquipRecord);
+      for (int i = 0; i < count; ++i) {
+        const FlaggedEquipRecord *record = reinterpret_cast<const FlaggedEquipRecord *>(g_gameModePacketBuffer + 4) + i;
+        ITEM_INFO item;
+        item.unknown_0000[0] = record->type;
+        item.unknown_0000[2] = record->location;
+        item.unknown_0000[1] = record->index;
+        item.unknown_0000[3] = record->wearState;
+        item.quantity = 1;
+        for (int card = 0; card < 4; ++card) {
+          reinterpret_cast<int *>(item.unknown_001C)[card] = record->cards[card];
+        }
+        item.SetItemId(record->itemId);
+        item.identified = record->flags & 1;
+        item.unknown_005D = (record->flags >> 1) & 1;
+        item.unknown_0060 = record->refine;
+        item.unknown_0068 = record->expireTime;
+        item.unknown_0064 = record->bindOnEquip;
+        item.unknown_0070 = record->look;
+        item.unknown_0074[0] = (record->flags >> 2) & 1;
+        g_session.AddItem1738(item, 0);
+      }
+      g_session.RefreshItem1738Window();
+      break;
+    }
+    case 0xB76:
+      StringFormat(reinterpret_cast<char *>(g_session.unknown_5570 + 0xC), 32, static_cast<std::size_t>(-1), "%s",
+                   reinterpret_cast<const char *>(g_gameModePacketBuffer + 2));
+      g_session.unknown_55F8 = g_gameModePacketBuffer[0x1A];
+      *reinterpret_cast<int *>(g_session.unknown_55C0) = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x1B);
+      g_session.unknown_55F0 = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x1D);
+      g_session.RefreshHomunculusInfo();
+      switch (*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x1D)) {
+      case 1:
+      case 5:
+      case 10:
+        if (*reinterpret_cast<int *>(g_session.unknown_5620) != *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x1D)) {
+          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1018)), 0xFF, 0, 0, 0);
+          *reinterpret_cast<int *>(g_session.unknown_5620) = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x1D);
+        }
+        break;
+      }
+      g_session.unknown_55D4 = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x1F);
+      reinterpret_cast<int *>(g_session.unknown_5570 + 0x2C)[0] = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x21);
+      reinterpret_cast<int *>(g_session.unknown_5570 + 0x30)[0] = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x23);
+      reinterpret_cast<int *>(g_session.unknown_5570 + 0x34)[0] = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x25);
+      reinterpret_cast<int *>(g_session.unknown_5570 + 0x38)[0] = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x27);
+      reinterpret_cast<int *>(g_session.unknown_5570 + 0x3C)[0] = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x29);
+      reinterpret_cast<int *>(g_session.unknown_5570 + 0x40)[0] = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x2B);
+      reinterpret_cast<int *>(g_session.unknown_5570 + 0x44)[0] = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x2D);
+      reinterpret_cast<int *>(g_session.unknown_5570 + 0x48)[0] = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x2F);
+      g_session.m_homunHp = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x31);
+      g_session.RefreshHomunculusInfo();
+      *reinterpret_cast<int *>(g_session.unknown_55C8) = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x35);
+      g_session.RefreshHomunculusInfo();
+      g_session.m_homunSp = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x39);
+      g_session.RefreshHomunculusInfo();
+      g_session.unknown_55D0 = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x3D);
+      g_session.RefreshHomunculusInfo();
+      g_session.m_homunExp = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x41);
+      g_session.RefreshHomunculusInfo();
+      g_session.m_homunMaxExp = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x45);
+      g_session.RefreshHomunculusInfo();
+      *reinterpret_cast<int *>(g_session.unknown_1664) = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x49);
+      g_session.InvalidateWindowFrames();
+      if (g_windowMgr.window_03C4) {
+        g_windowMgr.window_03C4->SendMsg(nullptr, 23, 0, 0, 0, 0);
+      }
+      reinterpret_cast<int *>(g_session.unknown_5620)[1] = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x4B);
+      break;
+    case 0xB0E: {
+      g_barterMarketItemMgr->Clear();
+      const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / 25;
+      const unsigned char *record = g_gameModePacketBuffer + 4;
+      for (int i = 0; i < count; ++i, record += 25) {
+        BarterMarketItem item;
+        char itemName[33] = {};
+        _itoa(*reinterpret_cast<const int *>(record), itemName, 10);
+        item.name.assign(itemName, strlen(itemName));
+        item.field_1c = record[4];
+        item.value = *reinterpret_cast<const int *>(record + 5);
+        item.field_2c = *reinterpret_cast<const int *>(record + 9);
+        item.field_28 = *reinterpret_cast<const int *>(record + 0xD);
+        item.flag_24 = true;
+        item.amount = *reinterpret_cast<const int *>(record + 0x11) / 10;
+        item.flag_38 = *reinterpret_cast<const int *>(record + 5) == -1;
+        item.id = *reinterpret_cast<const int *>(record + 0x15);
+        g_barterMarketItemMgr->items.push_back(item);
+      }
+      g_windowMgr.sub_A978D0(334)->SendMsg(nullptr, 23, 0, 0, 0, 0);
+      g_windowMgr.sub_A978D0(335)->SendMsg(nullptr, 23, 0, 0, 0, 0);
+      break;
+    }
+    case 0x9D5: {
+      g_session.ClearTradeItems();
+      const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / 15;
+      const unsigned char *record = g_gameModePacketBuffer + 4;
+      for (int i = 0; i < count; ++i, record += 15) {
+        unsigned char entry[15];
+        memcpy(entry, record, sizeof(entry));
+        RawItemBasic item = {};
+        _itoa(*reinterpret_cast<const int *>(entry), item.itemId, 10);
+        item.unknown_0004 = *reinterpret_cast<const std::uint32_t *>(entry + 5);
+        item.unknown_0008 = *reinterpret_cast<const std::uint32_t *>(entry + 5);
+        item.unknown_000C = entry[4];
+        item.id = -1;
+        item.identified = 1;
+        g_session.AddItem1718(item, *reinterpret_cast<const int *>(entry + 9),
+                              static_cast<std::uint16_t>(*reinterpret_cast<const std::uint16_t *>(entry + 0xD) / 10));
+      }
+      UIWindow *window = g_windowMgr.sub_A978D0(254);
+      window->SendMsg(nullptr, 36, 0, 0, 0, 0);
+      window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+      window = g_windowMgr.sub_A978D0(255);
+      window->SendMsg(nullptr, 36, 0, 0, 0, 0);
+      window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+      break;
+    }
+    default:
+      GetRagConnection().ResetQueue();
+      break;
+    }
   }
 }
