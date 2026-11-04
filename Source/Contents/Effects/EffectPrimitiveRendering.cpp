@@ -1189,7 +1189,15 @@ void CEffectPrim::RenderTeiRect(
 
     for (int index = 0; index < 3; ++index) {
       RenderVertex& vertex = triangle.vertices[index];
-      vertex = TransformVert(wtm, *corners[half][index]);
+      vertex.x = 0.0f;
+      vertex.y = 0.0f;
+      vertex.z = 0.0f;
+      vertex.rhw = 0.0f;
+      vertex.diffuse = 0;
+      vertex.specular = 0xFF000000;
+      vertex.u = 0.0f;
+      vertex.v = 0.0f;
+      g_renderer->viewport.Project(&corners[half][index]->x, wtm.values, vertex);
       vertex.diffuse = color;
       vertex.u = us[half][index];
       vertex.v = vs[half][index];
