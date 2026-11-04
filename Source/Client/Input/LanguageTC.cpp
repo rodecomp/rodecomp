@@ -54,7 +54,7 @@ void CLanguageTC::ProcessKey(unsigned virtualKey) {
   const auto key = static_cast<std::uint8_t>(virtualKey);
   if (key == 8) {
     if (!this->keys.empty()) {
-      this->keys.pop_back();
+      this->keys.resize(this->keys.size() - 1);
     }
 
     return;
@@ -79,17 +79,17 @@ const char* CLanguageBase::DisplayText() const {
 // OFFSET: 0x00ACE280
 // FUNCTION: fn_17778
 const char* CLanguageTC::DisplayText() const {
-  char bytes[8] = {};
+  char bytes[9] = {};
 
   for (std::uint8_t key : this->keys) {
     const auto& mapping = this->mappings[key];
+
     if (mapping.category < 4) {
-      bytes[2 * mapping.category] = static_cast<char>(mapping.bytes[0]);
-      bytes[2 * mapping.category + 1] = static_cast<char>(mapping.bytes[1]);
+      std::memcpy(&bytes[2 * mapping.category], mapping.bytes, 2);
     }
   }
 
-  const_cast<std::string&>(this->composition).assign(bytes, sizeof(bytes));
+  const_cast<std::string&>(this->composition).assign(bytes, 8);
   return this->composition.c_str();
 }
 
