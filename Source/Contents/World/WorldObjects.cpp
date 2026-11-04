@@ -74,7 +74,7 @@ CRenderObject* CWorld::GetGameActorByAidIncludeMe(std::uint32_t aid) const {
 
 // OFFSET: 0x00ACA4E0
 // FUNCTION: fn_17692
-void CWorld::RemoveObject(CRenderObject* object) {
+__declspec(noinline) void CWorld::RemoveObject(CRenderObject* object) {
   for (auto entry = this->objects.begin(); entry != this->objects.end(); ++entry) {
     if (*entry == object) {
       delete object;
