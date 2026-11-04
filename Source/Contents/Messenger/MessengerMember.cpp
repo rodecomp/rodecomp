@@ -1,4 +1,5 @@
 #include "Contents/Messenger/MessengerMember.h"
+#include "Client/Input/Mouse.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/MessageTable.h"
 #include "Resource/Bitmap/BitmapResource.h"
@@ -2004,8 +2005,8 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       menu->SendMsg(nullptr, 0x53, 0x22, 0, 0, 0);
       menu->SendMsg(nullptr, 0x1E, 0, 0, 0, 0);
       menu->Move(
-        std::min(std::max(g_screenWidth + 1, 1), g_renderer->viewport.width - menu->geometry.width),
-        std::min(std::max(g_screenHeight + 1, 1), g_renderer->viewport.height - menu->geometry.height)
+        std::min(std::max(g_mouse.x + 1, 1), g_renderer->viewport.width - menu->geometry.width),
+        std::min(std::max(g_mouse.y + 1, 1), g_renderer->viewport.height - menu->geometry.height)
       );
     }
     return 0;
