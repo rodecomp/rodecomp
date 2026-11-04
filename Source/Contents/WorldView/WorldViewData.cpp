@@ -20,14 +20,14 @@ static bool AreaContains(int left, int top, int right, int bottom, int x, int y)
 
 // OFFSET: 0x00612C70
 // FUNCTION: fn_04345
-CWorldViewWorld::CWorldViewWorld(const char* name, const char* imageName) {
+__declspec(noinline) CWorldViewWorld::CWorldViewWorld(const char* name, const char* imageName) {
   this->name = name;
   this->imageName = imageName;
 }
 
 // OFFSET: 0x00613050
 // FUNCTION: fn_04346
-CWorldViewField::CWorldViewField(WorldViewArea area, const char* name, const char* unknown2, const char* unknown3) {
+__declspec(noinline) CWorldViewField::CWorldViewField(WorldViewArea area, const char* name, const char* unknown2, const char* unknown3) {
   this->left = area.left;
   this->top = area.top;
   this->right = area.right;
