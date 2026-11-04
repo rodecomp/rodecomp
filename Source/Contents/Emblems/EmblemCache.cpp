@@ -22,7 +22,7 @@
 
 namespace {
   // INLINED
-  std::string Basename(std::string path) {
+  __forceinline std::string Basename(std::string path) {
     const auto separator = path.rfind('\\');
 
     if (separator != std::string::npos) {
