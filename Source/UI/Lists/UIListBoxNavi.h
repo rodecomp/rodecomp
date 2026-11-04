@@ -11,6 +11,7 @@ public:
   UIListBoxNavi();
   void Paint() override;
   void Slot25(int x, int y) override;
+  void AddLine(const char* text) override;
   void Clear() override;
   /* 00D4 */ std::uint32_t defaultLineColor;
   /* 00D8 */ std::vector<std::uint32_t> lineColors;
