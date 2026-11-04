@@ -797,43 +797,49 @@ void UINewSkillListWnd::Slot15(int width, int height) {
   this->m_scrollBar = new UIScrollBar();
   this->m_scrollBar->Configure(this->geometry.width - 15, 20, 1, this->geometry.height - this->m_topMargin - this->m_bottomMargin);
   this->m_scrollBar->Move(this->geometry.width - 15, 20);
-  this->m_scrollBar->SetSize(this->m_scrollBar->geometry.width, this->geometry.height - this->m_topMargin - this->m_bottomMargin);
+  this->m_scrollBar->Resize(this->m_scrollBar->geometry.width, this->geometry.height - this->m_topMargin - this->m_bottomMargin);
   this->AddChild(this->m_scrollBar);
 
-  for (int i = 0; i < 10; ++i) {
-    UIBitmapButton* button = new UIBitmapButton();
-    button->SetBitmap("유저인터페이스\\basic_interface\\skill_up_a.bmp", 0, 0);
-    button->SetBitmap("유저인터페이스\\basic_interface\\skill_up_b.bmp", 1, 0);
-    button->SetBitmap("유저인터페이스\\basic_interface\\skill_up_c.bmp", 2, 0);
-    button->SetSize(button->geometry.width, button->geometry.height);
-    button->Move(78, 21 + i * 32);
-    button->SetId(i + 239);
-    this->AddChild(button);
-    this->m_btnLevelUp[i] = button;
+  {
+    std::string normal = "유저인터페이스\\basic_interface\\skill_up_a.bmp";
+    std::string hover = "유저인터페이스\\basic_interface\\skill_up_b.bmp";
+    std::string pressed = "유저인터페이스\\basic_interface\\skill_up_c.bmp";
+    for (int i = 0; i < 10; ++i) {
+      this->m_btnLevelUp[i] = new UIBitmapButton();
+      this->m_btnLevelUp[i]->SetBitmap(normal.c_str(), 0, 0);
+      this->m_btnLevelUp[i]->SetBitmap(hover.c_str(), 1, 0);
+      this->m_btnLevelUp[i]->SetBitmap(pressed.c_str(), 2, 0);
+      this->m_btnLevelUp[i]->SetSize(this->m_btnLevelUp[i]->BitmapWidth(), this->m_btnLevelUp[i]->BitmapHeight());
+      this->m_btnLevelUp[i]->Move(78, 21 + i * 32);
+      this->m_btnLevelUp[i]->SetId(i + 239);
+      this->AddChild(this->m_btnLevelUp[i]);
+    }
   }
-
-  for (int i = 0; i < 42; ++i) {
-    UIBitmapButton* button = new UIBitmapButton();
-    button->SetBitmap("유저인터페이스\\basic_interface\\arw_left.bmp", 0, 0);
-    button->SetBitmap("유저인터페이스\\basic_interface\\arw_left.bmp", 1, 0);
-    button->SetBitmap("유저인터페이스\\basic_interface\\arw_left.bmp", 2, 0);
-    button->SetSize(button->geometry.width, button->geometry.height);
-    button->Move(106, 34 + i * 32);
-    button->SetId(i);
-    this->AddChild(button);
-    this->m_btnSkills[i] = button;
+  {
+    std::string left = "유저인터페이스\\basic_interface\\arw_left.bmp";
+    for (int i = 0; i < 42; ++i) {
+      this->m_btnSkills[i] = new UIBitmapButton();
+      this->m_btnSkills[i]->SetBitmap(left.c_str(), 0, 0);
+      this->m_btnSkills[i]->SetBitmap(left.c_str(), 1, 0);
+      this->m_btnSkills[i]->SetBitmap(left.c_str(), 2, 0);
+      this->m_btnSkills[i]->SetSize(this->m_btnSkills[i]->BitmapWidth(), this->m_btnSkills[i]->BitmapHeight());
+      this->m_btnSkills[i]->Move(106, 34 + i * 32);
+      this->m_btnSkills[i]->SetId(i);
+      this->AddChild(this->m_btnSkills[i]);
+    }
   }
-
-  for (int i = 0; i < 42; ++i) {
-    UIBitmapButton* button = new UIBitmapButton();
-    button->SetBitmap("유저인터페이스\\basic_interface\\arw_right.bmp", 0, 0);
-    button->SetBitmap("유저인터페이스\\basic_interface\\arw_right.bmp", 1, 0);
-    button->SetBitmap("유저인터페이스\\basic_interface\\arw_right.bmp", 2, 0);
-    button->SetSize(button->geometry.width, button->geometry.height);
-    button->Move(198, 34 + i * 32);
-    button->SetId(i + 42);
-    this->AddChild(button);
-    this->m_btnSkillUps[i] = button;
+  {
+    std::string right = "유저인터페이스\\basic_interface\\arw_right.bmp";
+    for (int i = 0; i < 42; ++i) {
+      this->m_btnSkillUps[i] = new UIBitmapButton();
+      this->m_btnSkillUps[i]->SetBitmap(right.c_str(), 0, 0);
+      this->m_btnSkillUps[i]->SetBitmap(right.c_str(), 1, 0);
+      this->m_btnSkillUps[i]->SetBitmap(right.c_str(), 2, 0);
+      this->m_btnSkillUps[i]->SetSize(this->m_btnSkillUps[i]->BitmapWidth(), this->m_btnSkillUps[i]->BitmapHeight());
+      this->m_btnSkillUps[i]->Move(198, 34 + i * 32);
+      this->m_btnSkillUps[i]->SetId(i + 42);
+      this->AddChild(this->m_btnSkillUps[i]);
+    }
   }
 
   const char* baseDir = "유저인터페이스\\";
@@ -841,9 +847,9 @@ void UINewSkillListWnd::Slot15(int width, int height) {
   this->m_btnApply = new UIBitmapButton();
   for (int state = 0; state < 3; ++state) {
     std::string path = std::string(baseDir) + applyNames[state] + ".bmp";
-    this->m_btnApply->SetBitmap(Resolve(path.c_str()), state, 0);
+    this->m_btnApply->SetBitmap(path.c_str(), state, 0);
   }
-  this->m_btnApply->SetSize(this->m_btnApply->geometry.width, this->m_btnApply->geometry.height);
+  this->m_btnApply->SetSize(this->m_btnApply->BitmapWidth(), this->m_btnApply->BitmapHeight());
   this->m_btnApply->Move(this->geometry.width - 100, this->geometry.height - 27);
   this->m_btnApply->SetId(271);
   this->m_btnApply->SetDisabled(1);
@@ -854,9 +860,9 @@ void UINewSkillListWnd::Slot15(int width, int height) {
   this->m_btnCancel = new UIBitmapButton();
   for (int state = 0; state < 3; ++state) {
     std::string path = std::string(baseDir) + resetNames[state] + ".bmp";
-    this->m_btnCancel->SetBitmap(Resolve(path.c_str()), state, 0);
+    this->m_btnCancel->SetBitmap(path.c_str(), state, 0);
   }
-  this->m_btnCancel->SetSize(this->m_btnCancel->geometry.width, this->m_btnCancel->geometry.height);
+  this->m_btnCancel->SetSize(this->m_btnCancel->BitmapWidth(), this->m_btnCancel->BitmapHeight());
   this->m_btnCancel->Move(this->geometry.width - 50, this->geometry.height - 27);
   this->m_btnCancel->SetId(363);
   this->m_btnCancel->SetDisabled(1);
