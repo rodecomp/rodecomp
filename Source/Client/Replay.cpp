@@ -624,7 +624,7 @@ bool Replay::ReadRecord(unsigned char* buffer, std::uint16_t& id, bool force) {
     return false;
   }
 
-  ReplayRecordHeader record{};
+  ReplayRecordHeader record;
   bool result = false;
   std::fseek(this->file, static_cast<long>(this->fileOffset), SEEK_SET);
   std::fread(&record, sizeof(record), 1, this->file);
