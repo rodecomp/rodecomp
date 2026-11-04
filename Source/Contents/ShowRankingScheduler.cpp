@@ -83,6 +83,8 @@ void CShowRankingScheduler::Process(const std::uint64_t& now) {
   this->schedule[32] = 0;
 }
 
+__declspec(noinline) std::map<int, RankingBoardStyle> RankingBoardStyles();
+
 // OFFSET: 0x006378D0
 // FUNCTION: fn_04738
 std::map<int, RankingBoardStyle> RankingBoardStyles() {

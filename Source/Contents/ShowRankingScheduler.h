@@ -21,7 +21,7 @@ public:
   CShowRankingScheduler(const std::uint64_t& start, const std::uint64_t& end, int extra);
   virtual ~CShowRankingScheduler() = default;
 
-  const void* SetData(const void* data);
+  __declspec(noinline) const void* SetData(const void* data);
   void Process(const std::uint64_t& now);
   void Show();
 
