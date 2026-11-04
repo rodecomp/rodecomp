@@ -414,7 +414,7 @@ bool HasNaviLinkTag(const std::string& text) {
 
 // OFFSET: 0x00865DD0
 // FUNCTION: fn_10937
-void UIEditCtrl::Background(int red, int green, int blue) {
+__declspec(noinline) void UIEditCtrl::Background(int red, int green, int blue) {
   this->red = red;
   this->green = green;
   this->blue = blue;
