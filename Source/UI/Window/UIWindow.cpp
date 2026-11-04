@@ -250,7 +250,7 @@ UIWindow* UIWindow::Parent() const {
 
 // OFFSET: 0x00A82EB0
 // FUNCTION: fn_16998
-void UIWindow::Resize(int width, int height) {
+__declspec(noinline) void UIWindow::Resize(int width, int height) {
   delete this->geometry.surface;
   this->geometry.surface = CreateBitmapDC(width, height, true);
   this->geometry.width = width;
@@ -902,7 +902,7 @@ void UIWindow::ResetStates() {
 
 // OFFSET: 0x00A7B430
 // FUNCTION: fn_16927
-void UIWindow::ClearSurface(std::uint32_t color) {
+__declspec(noinline) void UIWindow::ClearSurface(std::uint32_t color) {
   if (this->geometry.surface) {
     this->geometry.surface->Fill(nullptr, color);
   }
@@ -910,7 +910,7 @@ void UIWindow::ClearSurface(std::uint32_t color) {
 
 // OFFSET: 0x00A7B470
 // FUNCTION: fn_16929
-void UIWindow::SetSize(int width, int height) {
+__declspec(noinline) void UIWindow::SetSize(int width, int height) {
   delete this->geometry.surface;
   this->geometry.surface = CreateBitmapDC(width, height, true);
   this->geometry.width = width;
