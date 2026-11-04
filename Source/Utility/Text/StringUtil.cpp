@@ -108,7 +108,7 @@ int CountCharacters(WORD codePage, const char* text, const char* end) {
 // OFFSET: 0x0058A620
 // FUNCTION: fn_02758
 bool ContainsText(const std::string& text, std::string_view pattern) {
-  return text.find(pattern.data(), 0, pattern.size()) != std::string::npos;
+  return text.find(pattern) != std::string::npos;
 }
 
 // OFFSET: 0x0058A8F0
