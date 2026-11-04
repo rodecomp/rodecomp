@@ -3697,7 +3697,7 @@ void UICashEmotionScrollWnd::Slot53() {
 
 // OFFSET: 0x007CC870
 // FUNCTION: fn_09499
-UICashEmotionSprBtn::UICashEmotionSprBtn(UIWindow* target)
+__declspec(noinline) UICashEmotionSprBtn::UICashEmotionSprBtn(UIWindow* target)
     : UISpriteButton2(target), m_selected(false) {
 }
 
