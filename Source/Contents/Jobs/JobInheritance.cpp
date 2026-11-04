@@ -134,8 +134,7 @@ bool IsNavigationActive() {
   if (g_windowMgr.unknown_0250 != 0) {
     return false;
   }
-  if (g_windowMgr.window_4F260 != nullptr || g_windowMgr.window_4F264 != nullptr ||
-      g_windowMgr.window_4F268 != nullptr || g_windowMgr.window_4F26C != nullptr) {
+  if (g_windowMgr.HasNavigationBlocker() == true) {
     return false;
   }
   if (g_windowMgr.unknown_01E4 != 0) {
@@ -1211,8 +1210,7 @@ std::pair<int, int>* CSession::InsertPair(int key, int value) {
     }
   }
 
-  this->unknown_0778.push_back(std::make_pair(key, value));
-  return &this->unknown_0778.back();
+  return &this->unknown_0778.emplace_back(std::make_pair(key, value));
 }
 
 // OFFSET: 0x00E0A1F0
