@@ -13,16 +13,16 @@
 // FUNCTION: fn_12638
 void UIEscOptionWnd::Slot15(int, int) {
   const std::string prefix("유저인터페이스\\");
-  int ids[7] = {371, 458, 370, 251, 185, 353, 372};
   const char* names[7] = {"esc_01", "esc_001", "esc_08", "esc_09", "esc_02", "esc_05", "esc_10"};
+  int ids[7] = {371, 458, 370, 251, 185, 353, 372};
 
   for (int i = 0; i < 7; ++i) {
-    UIBitmapButton* button = new UIBitmapButton();
-    this->m_buttons[i] = button;
-    button->SetBitmap((prefix + names[i] + "a.bmp").c_str(), 0, 0);
-    button->SetBitmap((prefix + names[i] + "b.bmp").c_str(), 1, 0);
-    button->SetBitmap((prefix + names[i] + "c.bmp").c_str(), 2, 0);
-    this->m_buttons[i]->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    this->m_buttons[i] = new UIBitmapButton();
+
+    this->m_buttons[i]->SetBitmap((prefix + names[i] + "a.bmp").c_str(), 0, 0);
+    this->m_buttons[i]->SetBitmap((prefix + names[i] + "b.bmp").c_str(), 1, 0);
+    this->m_buttons[i]->SetBitmap((prefix + names[i] + "c.bmp").c_str(), 2, 0);
+    this->m_buttons[i]->SetSize(this->m_buttons[i]->BitmapWidth(), this->m_buttons[i]->BitmapHeight());
     this->m_buttons[i]->Move(-100, -100);
     this->m_buttons[i]->SetId(ids[i]);
     this->AddChild(this->m_buttons[i]);
@@ -92,63 +92,47 @@ int UIEscOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
-  const int id = static_cast<int>(argument1);
-  if (id > 0x173) {
-    if (id == 0x174) {
-      const int result = g_windowMgr.Confirm(
-        LookupMessage(0x60C), 2, false, false, 0, "Message", 0x118, 0x78, 0
-      );
-      if (result != 0xBB) {
-        return 0;
-      }
-      mode->SendMsg(0x19, 0, 0, 0, 0);
-      g_windowMgr.CloseWindow(0x9B);
-      return 0;
+  switch (argument1) {
+  case 0x172:
+    if (!g_windowMgr.CloseWindow(0x9C)) {
+      g_windowMgr.EnsureWindow(0x9C);
     }
-    if (id == 0x1C9) {
-      if (!g_windowMgr.CloseWindow(0xEC)) {
-        g_windowMgr.EnsureWindow(0xEC);
-      }
-      return 0;
-    }
-    if (id == 0x1CA) {
-      if (!g_windowMgr.CloseWindow(0x271E)) {
-        g_windowMgr.EnsureWindow(0x271E);
-      }
-      return 0;
-    }
-    return 0;
-  }
-
-  if (id == 0x173) {
+    break;
+  case 0xFB:
+    g_windowMgr.CloseWindow(0x9B);
+    mode->SendMsg(0x58, 0, 0, 0, 0);
+    break;
+  case 0x161:
+    mode->SendMsg(0xFA, 0, 0, 0, 0);
+    g_windowMgr.CloseWindow(0x9B);
+    break;
+  case 0x173:
     g_characterLinkedUserDataMgr->Save();
     g_adventurerAgencyMgr->RequestStop();
     mode->SendMsg(0x19, 1, 0, 0, 0);
     g_windowMgr.CloseWindow(0x9B);
     g_windowMgr.CloseWindow(0xA4);
     g_windowMgr.CloseWindow(0x10D);
-    return 0;
-  }
-
-  if (id == 0xB9) {
-    g_windowMgr.CloseWindow(0x9B);
-    return 0;
-  }
-  if (id == 0xFB) {
-    g_windowMgr.CloseWindow(0x9B);
-    mode->SendMsg(0x58, 0, 0, 0, 0);
-    return 0;
-  }
-  if (id == 0x161) {
-    mode->SendMsg(0xFA, 0, 0, 0, 0);
-    g_windowMgr.CloseWindow(0x9B);
-    return 0;
-  }
-  if (id == 0x172) {
-    if (!g_windowMgr.CloseWindow(0x9C)) {
-      g_windowMgr.EnsureWindow(0x9C);
+    break;
+  case 0x1CA:
+    if (!g_windowMgr.CloseWindow(0x271E)) {
+      g_windowMgr.EnsureWindow(0x271E);
     }
-    return 0;
+    break;
+  case 0x1C9:
+    if (!g_windowMgr.CloseWindow(0xEC)) {
+      g_windowMgr.EnsureWindow(0xEC);
+    }
+    break;
+  case 0x174:
+    if (g_windowMgr.Confirm(LookupMessage(0x60C), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
+      mode->SendMsg(0x19, 0, 0, 0, 0);
+      g_windowMgr.CloseWindow(0x9B);
+    }
+    break;
+  case 0xB9:
+    g_windowMgr.CloseWindow(0x9B);
+    break;
   }
   return 0;
 }
