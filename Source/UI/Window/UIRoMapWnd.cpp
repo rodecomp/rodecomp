@@ -58,7 +58,7 @@ void SetRoMapMarker(std::string name, const WorldViewArea& area, RoMapMarker& ma
 
 // OFFSET: 0x0091CF40
 // FUNCTION: fn_12622
-void UIRoMapWnd::ClearRecords() {
+__declspec(noinline) void UIRoMapWnd::ClearRecords() {
   this->m_records.clear();
   this->unknown_00D0 = 0;
   this->unknown_00C4 = 0;
