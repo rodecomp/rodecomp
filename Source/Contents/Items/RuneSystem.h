@@ -28,7 +28,7 @@ public:
 class RuneData {
 public:
   /* 0008 */ int m_kind;
-  /* 000C */ bool m_active;
+  /* 000C */ std::uint8_t m_active;
   /* 0010 */ std::int64_t m_id;
   /* 0018 */ std::string m_name;
   /* 0030 */ std::string m_resName;

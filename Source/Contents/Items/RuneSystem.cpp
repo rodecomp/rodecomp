@@ -240,7 +240,7 @@ int RuneSetData::CountActiveSlots() const {
   int count = 0;
   for (RuneData* rune : this->m_slots) {
     if (rune) {
-      count += rune->m_active;
+      count += rune->IsActive();
     }
   }
 
