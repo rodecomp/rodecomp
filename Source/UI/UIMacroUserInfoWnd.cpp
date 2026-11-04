@@ -152,6 +152,7 @@ std::string UIMacroReporterWnd::sub_7EF680(int maxWidth, const char* text, int f
 
   std::string fitted(text);
   std::wstring wide(ATL::CA2WEX<128>(text, CP_THREAD_ACP));
+
   while (wide.size() > 1) {
     if (wide.size() >= 2) {
       const std::size_t size = wide.size();
@@ -159,15 +160,14 @@ std::string UIMacroReporterWnd::sub_7EF680(int maxWidth, const char* text, int f
       wide.resize(size - cut);
     }
 
-    fitted = ATL::CW2AEX<128>(wide.c_str(), CP_THREAD_ACP);
-    fitted += "...";
+    fitted = std::string(ATL::CW2AEX<128>(wide.c_str(), CP_THREAD_ACP)) + "...";
+
     if (this->TextWidth(fitted.c_str(), 0, font, height, bold, 0) <= maxWidth) {
       return fitted;
     }
   }
 
-  fitted = ATL::CW2AEX<128>(wide.c_str(), CP_THREAD_ACP);
-  fitted += "...";
+  fitted = std::string(ATL::CW2AEX<128>(wide.c_str(), CP_THREAD_ACP)) + "...";
   return fitted;
 }
 
