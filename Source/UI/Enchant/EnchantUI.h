@@ -46,7 +46,7 @@ public:
   }
   ~CUIEnchantUI() override;
   bool CanHitTest() override;
-  void Slot15(int width, int height) override;
+  __declspec(noinline) void Slot15(int width, int height) override;
   void Slot16() override;
   void Slot25(int x, int y) override;
   virtual void Slot53();
@@ -105,7 +105,7 @@ public:
   /* 0090 */ CUIStaticText* requiredText;
 
   void Slot15(int width, int height) override;
-  void SetMaterial(int itemId, int required);
+  __declspec(noinline) void SetMaterial(int itemId, int required);
 };
 
 #pragma pack(push, 4)
@@ -151,8 +151,8 @@ public:
   }
 
   __declspec(noinline) int FindEmptySlot();
-  std::optional<EnchantOptionInfo*> FindOption(uint32_t key);
-  void SetCost(const EnchantPerfectInfo& info);
+  __declspec(noinline) std::optional<EnchantOptionInfo*> FindOption(uint32_t key);
+  __declspec(noinline) void SetCost(const EnchantPerfectInfo& info);
 };
 #pragma pack(pop)
 
