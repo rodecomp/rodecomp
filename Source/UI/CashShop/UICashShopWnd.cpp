@@ -777,7 +777,7 @@ void UICashShopWnd_Banner::CreateButtons() {
     button->Move(this->geometry.width + (index - static_cast<int>(this->m_entries.size())) * 12 - 12, 0x29);
     button->SendMsg(this, 13, index == this->m_index, 0, 0, 0);
     this->AddChild(button);
-    this->m_buttons.push_back(button);
+    this->m_buttons.emplace_back(button);
     ++index;
   }
 
