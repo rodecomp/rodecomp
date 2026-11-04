@@ -1,6 +1,5 @@
 #include "Utility/Math/AffineMatrix.h"
 
-#include <bit>
 #include <cmath>
 #include <cstring>
 
@@ -10,19 +9,19 @@ const float g_identityMatrix[12] = {1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0};
 
 namespace {
   // INLINED
-  void Rotate(float* values, const float* rotation) {
+  __forceinline void Rotate(float* values, const float* rotation) {
     for (unsigned row = 0; row < 4; ++row) {
       const float x = values[row * 3];
       const float y = values[row * 3 + 1];
       const float z = values[row * 3 + 2];
-      const float first = (x * rotation[0] + y * rotation[3]) + z * rotation[6];
-      const float second = (x * rotation[1] + y * rotation[4]) + z * rotation[7];
-      const float third = (x * rotation[2] + y * rotation[5]) + z * rotation[8];
-
-      values[row * 3] = row == 3 ? first + rotation[9] : first;
-      values[row * 3 + 1] = row == 3 ? second + rotation[10] : second;
-      values[row * 3 + 2] = row == 3 ? third + rotation[11] : third;
+      values[row * 3] = (x * rotation[0] + y * rotation[3]) + z * rotation[6];
+      values[row * 3 + 1] = (x * rotation[1] + y * rotation[4]) + z * rotation[7];
+      values[row * 3 + 2] = (x * rotation[2] + y * rotation[5]) + z * rotation[8];
     }
+
+    values[9] += rotation[9];
+    values[10] += rotation[10];
+    values[11] += rotation[11];
   }
 }
 
