@@ -6,7 +6,7 @@
 
 class CMapProperty {
 public:
-  CMapProperty();
+  __declspec(noinline) CMapProperty();
   virtual ~CMapProperty();
 
   __declspec(noinline) void SetValue(int key, int value);
