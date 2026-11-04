@@ -1805,6 +1805,72 @@ int BlockSizeDS8OP34T() {
   return 32;
 }
 
+// OFFSET: 0x00654400
+// FUNCTION: fn_04983
+int QueryExceptionSize04983() {
+  return 16;
+}
+
+// OFFSET: 0x00654B50
+// FUNCTION: fn_05026
+int QueryExceptionSize05026() {
+  return 16;
+}
+
+// OFFSET: 0x00654B80
+// FUNCTION: fn_05029
+int QueryExceptionSize05029() {
+  return 16;
+}
+
+// OFFSET: 0x00654BA0
+// FUNCTION: fn_05031
+int QueryExceptionSize05031() {
+  return 16;
+}
+
+// OFFSET: 0x00659AF0
+// FUNCTION: fn_45528
+bool PakAuxiliaryFlag45528() {
+  return false;
+}
+
+// OFFSET: 0x00659B00
+// FUNCTION: fn_45529
+bool PakAuxiliaryFlag45529() {
+  return false;
+}
+
+// OFFSET: 0x00659B10
+// FUNCTION: fn_45530
+bool PakAuxiliaryFlag45530() {
+  return true;
+}
+
+// OFFSET: 0x00659B20
+// FUNCTION: fn_45531
+bool PakAuxiliaryFlag45531() {
+  return false;
+}
+
+// OFFSET: 0x00659B30
+// FUNCTION: fn_45532
+bool PakAuxiliaryFlag45532() {
+  return false;
+}
+
+// OFFSET: 0x00659B40
+// FUNCTION: fn_45533
+bool PakAuxiliaryFlag45533() {
+  return false;
+}
+
+// OFFSET: 0x00659B50
+// FUNCTION: fn_45534
+bool PakAuxiliaryFlag45534() {
+  return false;
+}
+
 // OFFSET: 0x0065AA00
 // FUNCTION: fn_05133
 std::uint32_t IdeaMulInv(std::uint32_t x) {
