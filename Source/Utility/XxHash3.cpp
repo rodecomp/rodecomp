@@ -65,10 +65,10 @@ namespace {
   __forceinline std::uint64_t Swap64(std::uint64_t value) { return _byteswap_uint64(value); }
 
   // INLINED
-  __forceinline std::uint32_t Rotl32(std::uint32_t value, int bits) { return (value << bits) | (value >> (32 - bits)); }
+  __forceinline std::uint32_t Rotl32(std::uint32_t value, int bits) { return _rotl(value, bits); }
 
   // INLINED
-  __forceinline std::uint64_t Rotl64(std::uint64_t value, int bits) { return (value << bits) | (value >> (64 - bits)); }
+  __forceinline std::uint64_t Rotl64(std::uint64_t value, int bits) { return _rotl64(value, bits); }
 
   // INLINED
   __forceinline std::uint64_t Xorshift64(std::uint64_t value, int bits) { return value ^ (value >> bits); }
