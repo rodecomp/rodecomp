@@ -79,7 +79,7 @@ void CHealEffect::AddSparks(int kind) {
 
 // OFFSET: 0x00B678F0
 // FUNCTION: fn_19068
-void CHealEffect::AddColumn(int kind) {
+__declspec(noinline) void CHealEffect::AddColumn(int kind) {
   const float randomHeight = static_cast<float>((std::max)(rand() % 20, 0)) + 40.0f;
   for (int row = 0, angle = 0; angle < 360; ++row, angle += 180) {
     const int randomAngle = (std::max)(rand() % 360, 0);
