@@ -50,7 +50,7 @@ ITEM_INFO CSession::GetItem17F0(int index) const {
 
 // OFFSET: 0x00E3D290
 // FUNCTION: fn_24184
-unsigned char CSession::IsAllyActor(std::uint32_t aid, int job) {
+__declspec(noinline) unsigned char CSession::IsAllyActor(std::uint32_t aid, int job) {
   CGameActor* actor = static_cast<CGameActor*>(this->FindGameActor(aid));
   if (actor) {
     switch (actor->unknown_0314) {
