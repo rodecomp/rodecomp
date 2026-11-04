@@ -205,7 +205,7 @@ bool CEffectPrim::MoveEffectPrimitive() {
   this->state.longitude = this->state.longitude + this->state.longSpeed;
   this->state.latitude = this->state.latitude + this->state.latiSpeed;
 
-  if (!(this->state.heightSize <= this->state.maxHeightSize)) {
+  if (this->state.maxHeightSize <= this->state.heightSize && this->state.heightSize != this->state.maxHeightSize) {
     this->state.heightAccel = 0;
     this->state.heightSpeed = 0;
   }
