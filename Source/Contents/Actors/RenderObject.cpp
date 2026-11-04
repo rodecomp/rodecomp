@@ -474,7 +474,7 @@ void CRenderObject::SetRenderInfo(const float*, float, float) {
 
 // OFFSET: 0x00CC2DA0
 // FUNCTION: fn_21146
-void CGameActor::SetUnknown0260(int value) {
+__declspec(noinline) void CGameActor::SetUnknown0260(int value) {
   this->unknown_0260 = value & 1;
 }
 
