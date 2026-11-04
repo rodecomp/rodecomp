@@ -168,7 +168,7 @@ void UIQuestDisplay::Slot33(int x, int y) {
     const int top = single * 50 + (none + multiple * 2) * 40;
     const RenewQuestOngoingInfo& info = it->second;
     if (info.m_active && info.m_simpleView) {
-      if (top <= y && y <= top + 10) {
+      if (y >= top && y <= top + 10) {
         selected = index;
         break;
       }
