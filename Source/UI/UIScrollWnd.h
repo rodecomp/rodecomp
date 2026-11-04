@@ -22,7 +22,7 @@ public:
 
   RenderPrimitive* BuildPrimitive(int x, int y, int sourceX, int sourceY, int width, int height, CTexture* texture, std::uint32_t color);
   void Clear();
-  void RemoveChild(UIWindow* child, unsigned char destroy);
+  __declspec(noinline) void RemoveChild(UIWindow* child, unsigned char destroy);
   void AddScrollChild(UIWindow* child);
   void MoveScrollChild(UIWindow* child, int x, int y);
 
