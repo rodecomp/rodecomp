@@ -3,6 +3,9 @@
 #include <windows.h>
 
 namespace {
+  // GLOBAL: gl_24389
+  WSADATA wsaData;
+
   // STATIC: 0x016FDC94
   // GLOBAL: gl_24393
   HMODULE module;
@@ -18,15 +21,14 @@ int(WSAAPI* g_connectionReceive)(SOCKET, char*, int, int);
 // OFFSET: 0x00C7C400
 // FUNCTION: fn_20387
 bool CheckConnectionRuntime() {
+  const char* names[] = {"connect", "closesocket", "send", "select"};
   HMODULE library = LoadLibraryA("ws2_32.dll");
   if (!library) {
     return true;
   }
 
-  static const char* names[] = {"connect", "closesocket", "send", "select"};
-
-  for (const char* name : names) {
-    if (GetProcAddress(library, name) != GetProcAddress(module, name)) {
+  for (unsigned index = 0; index < 4; ++index) {
+    if (GetProcAddress(library, names[index]) != GetProcAddress(module, names[index])) {
       FreeLibrary(library);
       return false;
     }
@@ -39,8 +41,7 @@ bool CheckConnectionRuntime() {
 // OFFSET: 0x00C7D020
 // FUNCTION: fn_20408
 bool InitializeConnections() {
-  WSADATA data;
-  WSAStartup(MAKEWORD(1, 1), &data);
+  WSAStartup(MAKEWORD(1, 1), &wsaData);
   module = LoadLibraryA("ws2_32.dll");
   g_connectionSend = reinterpret_cast<decltype(g_connectionSend)>(GetProcAddress(module, "send"));
   g_connectionReceive = reinterpret_cast<decltype(g_connectionReceive)>(GetProcAddress(module, "recv"));
