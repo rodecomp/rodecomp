@@ -28,7 +28,10 @@ namespace {
 
 // OFFSET: 0x007AEEE0
 // FUNCTION: fn_09148
-AutomaticSkills::AutomaticSkills() : m_ids{2036, 6601, 6552} {
+AutomaticSkills::AutomaticSkills() {
+  this->m_ids.insert(2036);
+  this->m_ids.insert(6601);
+  this->m_ids.insert(6552);
 }
 
 // OFFSET: 0x007AF130
