@@ -3,6 +3,8 @@
 #include "Client/Session.h"
 #include "Network/Http/CURLPostHander.h"
 #include "Network/TextEncoding.h"
+#include "Utility/Cipher/XorBytes.h"
+#include "Utility/Text/FormatString.h"
 
 #include <cstdio>
 #include <windows.h>
@@ -15,16 +17,53 @@ namespace {
                                 "cpp";
 
   // INLINED
-  AsyncDiagnostic Diagnostic(bool success, const char* text, const char* file, std::uint32_t line) {
+  __forceinline AsyncDiagnostic Diagnostic(bool success, const char* text, const char* file, std::uint32_t line) {
     std::string message = text;
     return AsyncDiagnostic(&success, &message, file, &line);
+  }
+
+  template <std::size_t Length, std::uint64_t Key>
+  class EncryptedName {
+  public:
+    explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+      for (std::uint64_t index = 0; index < Length; ++index) {
+        this->m_text[index] = source[index];
+      }
+    }
+
+    ~EncryptedName() {
+      for (std::uint64_t index = 0; index < Length; ++index) {
+        this->m_text[index] = 0;
+      }
+    }
+
+    const char* Text() {
+      if (this->m_encrypted) {
+        utility::XorBytes(this->m_text, Length, Key);
+        this->m_encrypted = false;
+      }
+
+      return reinterpret_cast<const char*>(this->m_text);
+    }
+
+  private:
+    /* 0000 */ std::uint8_t m_text[Length];
+    bool m_encrypted;
+  };
+
+  // INLINED
+  template <std::uint64_t Key, std::size_t Length>
+  const char* DecryptName(const std::uint8_t (&source)[Length]) {
+    thread_local EncryptedName<Length, Key> name(source);
+    return name.Text();
   }
 }
 
 // OFFSET: 0x00607B10
 // FUNCTION: fn_04241
 CMCStoreInfoBackupLoadAsyncWork::CMCStoreInfoBackupLoadAsyncWork()
-    : NAsyncWork("MerchantStoreInformation_Load"), m_accountId(0), m_characterId(0), m_diagnostic(Diagnostic(false, "unknwon", loadSource, 28)), m_type(0) {
+    : NAsyncWork("MerchantStoreInformation_Load"), m_accountId(0), m_characterId(0),
+      m_diagnostic(Diagnostic(false, DecryptName<0xF535E561137F138DULL>({0xF8, 0x7D, 0x14, 0x7D, 0x16, 0x8A, 0x5B, 0xF5}), loadSource, 28)), m_type(0) {
 }
 
 // INLINED
@@ -48,7 +87,8 @@ void CMCStoreInfoBackupLoadAsyncWork::Bind(
   this->m_url = url;
   this->m_token = token;
   this->m_response.clear();
-  AsyncDiagnostic diagnostic = Diagnostic(false, "unknwon", loadSource, 55);
+  const std::uint8_t unknown[] = {0xA4, 0x0F, 0x9A, 0xE7, 0x18, 0x3E, 0x8B, 0xD3};
+  AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0xD3E5516F89F161D1ULL>(unknown), loadSource, 55);
   this->m_diagnostic.MoveFrom(diagnostic);
   this->m_type = type;
 }
@@ -57,21 +97,27 @@ void CMCStoreInfoBackupLoadAsyncWork::Bind(
 // FUNCTION: fn_04246
 bool CMCStoreInfoBackupLoadAsyncWork::Execute() {
   char account[64] = {}, character[64] = {}, type[64] = {};
-  _snprintf_s(account, sizeof(account), _TRUNCATE, "%d", static_cast<std::int32_t>(this->m_accountId));
-  _snprintf_s(character, sizeof(character), _TRUNCATE, "%d", static_cast<std::int32_t>(this->m_characterId));
+  StringFormat(account, sizeof(account), _TRUNCATE, "%lu", this->m_accountId);
+  StringFormat(character, sizeof(character), _TRUNCATE, "%lu", this->m_characterId);
   std::string name = ToUtf8(this->m_accountName);
-  _snprintf_s(type, sizeof(type), _TRUNCATE, "%d", this->m_type);
+  StringFormat(type, sizeof(type), _TRUNCATE, "%d", this->m_type);
 
   CCURLPostHander handler(this->m_url);
-  handler.AddField("AID", account, 4);
-  handler.AddField("GID", character, 4);
-  handler.AddField("AuthToken", this->m_token, 4);
-  handler.AddField("Type", type, 4);
-  handler.AddField("WorldName", name, 4);
+  const std::uint8_t aid[] = {0xB4, 0x6C, 0x17, 0xE9};
+  handler.AddField(DecryptName<0x2B8725D7E95325F5ULL>(aid), account, 4);
+  const std::uint8_t gid[] = {0x4A, 0x12, 0x2D, 0x83};
+  handler.AddField(DecryptName<0x899D11BB83695B0DULL>(gid), character, 4);
+  const std::uint8_t authToken[] = {0x2A, 0x7E, 0xD1, 0xAD, 0xD3, 0xB2, 0xC6, 0xD8, 0x05, 0x0B};
+  handler.AddField(DecryptName<0xBDADDD87C5A50B6BULL>(authToken), this->m_token, 4);
+  const std::uint8_t typeName[] = {0xE9, 0xE4, 0x4B, 0x82, 0x0D};
+  handler.AddField(DecryptName<0x7989830DE73B9DBDULL>(typeName), type, 4);
+  const std::uint8_t worldName[] = {0xDE, 0x52, 0x1F, 0x89, 0xC3, 0x4F, 0x46, 0x42, 0xEC, 0x3D};
+  handler.AddField(DecryptName<0x2F2701A7E56D3D89ULL>(worldName), name, 4);
 
   if (handler.Perform() == 0) {
     this->m_response = handler.Response();
-    AsyncDiagnostic diagnostic = Diagnostic(true, "good", loadSource, 115);
+    const std::uint8_t good[] = {0x42, 0xFE, 0x68, 0xC7, 0xE1};
+    AsyncDiagnostic diagnostic = Diagnostic(true, DecryptName<0x6B3301E1A3079125ULL>(good), loadSource, 115);
     this->m_diagnostic.MoveFrom(diagnostic);
   }
 
@@ -87,7 +133,8 @@ void CMCStoreInfoBackupLoadAsyncWork::Complete() {
 // OFFSET: 0x00608D60
 // FUNCTION: fn_04247
 CMCStoreInfoBackupSaveAsyncWork::CMCStoreInfoBackupSaveAsyncWork()
-    : NAsyncWork("MerchantStoreInformation_Save"), m_accountId(0), m_characterId(0), m_diagnostic(Diagnostic(false, "unknwon", saveSource, 30)), m_type(0) {
+    : NAsyncWork("MerchantStoreInformation_Save"), m_accountId(0), m_characterId(0),
+      m_diagnostic(Diagnostic(false, DecryptName<0x3FAF85D995034FD7ULL>({0xA2, 0x21, 0x68, 0xFB, 0xAE, 0xEA, 0xC1, 0x3F}), saveSource, 30)), m_type(0) {
 }
 
 // INLINED
@@ -111,7 +158,8 @@ void CMCStoreInfoBackupSaveAsyncWork::Bind(
   this->m_url = url;
   this->m_token = token;
   this->m_data = data;
-  AsyncDiagnostic diagnostic = Diagnostic(false, "unknwon", saveSource, 57);
+  const std::uint8_t unknown[] = {0xCC, 0x63, 0x44, 0xCF, 0x34, 0x94, 0x61, 0x49};
+  AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0x490FFB43A12F0DB9ULL>(unknown), saveSource, 57);
   this->m_diagnostic.MoveFrom(diagnostic);
   this->m_type = type;
 }
@@ -120,23 +168,36 @@ void CMCStoreInfoBackupSaveAsyncWork::Bind(
 // FUNCTION: fn_04252
 bool CMCStoreInfoBackupSaveAsyncWork::Execute() {
   char account[64] = {}, character[64] = {}, type[64] = {};
-  _snprintf_s(account, sizeof(account), _TRUNCATE, "%d", static_cast<std::int32_t>(this->m_accountId));
-  _snprintf_s(character, sizeof(character), _TRUNCATE, "%d", static_cast<std::int32_t>(this->m_characterId));
-  _snprintf_s(type, sizeof(type), _TRUNCATE, "%d", this->m_type);
+  StringFormat(account, sizeof(account), _TRUNCATE, "%lu", this->m_accountId);
+  StringFormat(character, sizeof(character), _TRUNCATE, "%lu", this->m_characterId);
+  StringFormat(type, sizeof(type), _TRUNCATE, "%d", this->m_type);
   std::string name = ToUtf8(this->m_accountName);
 
   CCURLPostHander handler(this->m_url);
-  handler.AddField("AID", account, 4);
-  handler.AddField("GID", character, 4);
-  handler.AddField("AuthToken", this->m_token, 4);
-  handler.AddField("WorldName", name, 4);
-  handler.AddField("Type", type, 4);
-  handler.AddField("data", this->m_data, 4);
+  const std::uint8_t aid[] = {0x48, 0xE0, 0x03, 0x5F};
+  handler.AddField(DecryptName<0xD3755DD95F47A909ULL>(aid), account, 4);
+  const std::uint8_t gid[] = {0x2A, 0xAA, 0x01, 0xA3};
+  handler.AddField(DecryptName<0x31D7C1EDA345E36DULL>(gid), character, 4);
+  const std::uint8_t authToken[] = {0x2C, 0x16, 0x41, 0x45, 0xF1, 0x6C, 0xE4, 0xBC, 0x03, 0x63};
+  handler.AddField(DecryptName<0xD98F03A52D35636DULL>(authToken), this->m_token, 4);
+  const std::uint8_t worldName[] = {0x86, 0x76, 0xEF, 0xE3, 0x0F, 0xC5, 0x6E, 0x62, 0xB4, 0x19};
+  handler.AddField(DecryptName<0x0F0F8B6B8F9D19D1ULL>(worldName), name, 4);
+  const std::uint8_t typeName[] = {0x01, 0x84, 0xC5, 0xBE, 0xC7};
+  handler.AddField(DecryptName<0x3375B1C7DBB5FD55ULL>(typeName), type, 4);
+  const std::uint8_t dataName[] = {0x7B, 0x50, 0xB9, 0x86, 0xED};
+  handler.AddField(DecryptName<0x1D6D75EDE7CD311FULL>(dataName), this->m_data, 4);
 
-  const bool success = handler.Perform() == 0;
-  AsyncDiagnostic diagnostic = Diagnostic(success, success ? "good" : "fail", saveSource, success ? 122 : 112);
-  this->m_diagnostic.MoveFrom(diagnostic);
-  this->m_response = handler.Response();
+  if (handler.Perform() != 0) {
+    const std::uint8_t fail[] = {0xC7, 0x5C, 0xF6, 0xBB, 0x63};
+    AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0x59278F63D79F3DA1ULL>(fail), saveSource, 112);
+    this->m_diagnostic.MoveFrom(diagnostic);
+    this->m_response = handler.Response();
+  } else {
+    const std::uint8_t good[] = {0xD0, 0x68, 0x38, 0xA9, 0x2B};
+    AsyncDiagnostic diagnostic = Diagnostic(true, DecryptName<0x812BE72BCD5707B7ULL>(good), saveSource, 122);
+    this->m_diagnostic.MoveFrom(diagnostic);
+    this->m_response = handler.Response();
+  }
 
   return false;
 }
