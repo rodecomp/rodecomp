@@ -284,22 +284,22 @@ int UIItemRepairWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
 // OFFSET: 0x009A4C50
 // FUNCTION: fn_13618
 int UIMakeTargetResultWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == 6) {
+  switch (message) {
+  case 6:
     g_windowMgr.CloseWindow(81);
+    return 0;
+
+  case 40:
+    this->makeType = static_cast<int>(a);
+    if (b) {
+      this->succeeded = true;
+    }
+
+    this->Invalidate();
     return 0;
   }
 
-  if (message != 40) {
-    return this->UIFrameWnd::SendMsg(sender, message, a, b, c, d);
-  }
-
-  this->makeType = static_cast<int>(a);
-  if (b) {
-    this->succeeded = true;
-  }
-
-  this->Invalidate();
-  return 0;
+  return this->UIFrameWnd::SendMsg(sender, message, a, b, c, d);
 }
 
 // OFFSET: 0x0099F780
