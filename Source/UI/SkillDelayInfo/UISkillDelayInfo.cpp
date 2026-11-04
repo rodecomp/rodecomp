@@ -500,13 +500,13 @@ void CUITime::SetTime(int milliseconds) {
 // OFFSET: 0x00A78190
 // FUNCTION: fn_16888
 int CUISkillDelayInfo::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message == 60) {
-    if (this->skillId != 7999) {
-      this->SetSkill(this->skillId);
-    }
-    return 0;
+  if (message != 60) {
+    return CUIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
-  return CUIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  if (this->skillId != 7999) {
+    this->SetSkill(this->skillId);
+  }
+  return 0;
 }
 
 // OFFSET: 0x00A781C0
