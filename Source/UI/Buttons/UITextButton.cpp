@@ -618,14 +618,9 @@ void UIMemberListBox::Slot28(int, int y) {
   }
 
   int screenX = -4;
-  int screenY = y - y % this->lineHeight;
-
-  for (const UIWindow* window = this; window; window = window->parent) {
-    screenX = (screenX + window->geometry.x);
-    screenY = (screenY + window->geometry.y);
-  }
-
-  static_cast<CMode*>(g_charViewMode)->ShowTooltip(this->lines[line].c_str(), screenX, screenY, -1, false, true);
+  y -= y % this->lineHeight;
+  this->ToScreen(screenX, y);
+  static_cast<CMode*>(g_charViewMode)->ShowTooltip(this->lines[line].c_str(), screenX, y, -1, false, true);
 }
 
 // OFFSET: 0x00891E40
