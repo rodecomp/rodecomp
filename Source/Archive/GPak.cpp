@@ -1113,7 +1113,6 @@ HashNode_655340* HashTable_655340::EraseRange(HashNode_655340* first, HashNode_6
 }
 
 void sub_6563E0(void*, void*, void*);
-void* sub_4D3760(void* out, const void* data, unsigned int len);
 
 struct PakUniformRandom {
   /* 0000 */ std::mt19937 m_engine;
@@ -1170,17 +1169,6 @@ short* PakCipherBlock_655900::Encode(const short* in, const int* src) {
   return out;
 }
 
-struct SpanKey16_61B410 {
-  const void* ptr;
-  unsigned int len;
-};
-
-struct CipherObj_61B410 {
-  void sub_61B410(SpanKey16_61B410 span);
-  void sub_61B440(int param);
-  int sub_61AF30(void* a1_ptr, unsigned int a1_sz, void* a2_ptr, unsigned int a2_sz, int a5);
-};
-
 struct PakSpan_655A30 {
   void* data;
   unsigned int size;
@@ -1191,42 +1179,36 @@ struct PakVerifier_655A30 {
   PakSpan_655A30* span_a;
   PakSpan_655A30* span_b;
 
-  bool Verify(CipherObj_61B410** cipher_ptr, const PakMaskedKey48* masked_key, int a4, int mode);
+  __declspec(noinline) bool Verify(AES** cipher_ptr, const PakMaskedKey48* masked_key, int mode, int keySource);
 };
 
 // OFFSET: 0x00655A30
 // FUNCTION: fn_05068
-bool PakVerifier_655A30::Verify(CipherObj_61B410** cipher_ptr, const PakMaskedKey48* masked_key, int a4, int mode) {
+__declspec(noinline) bool PakVerifier_655A30::Verify(AES** cipher_ptr, const PakMaskedKey48* masked_key, int mode, int keySource) {
   unsigned char key[16];
   std::memset(key, 0, sizeof(key));
 
-  if (mode == 0) {
+  if (keySource == 0) {
     PakKeyBlock48 block = masked_key->Unmask();
     std::memcpy(key, block.bytes + 16, 16);
     std::memset(&block, 0, sizeof(block));
-  } else if (mode == 1) {
-    unsigned char hash_out[20];
-    PakSpan_655A30* obj = *this->span_objs;
-    void* res = sub_4D3760(hash_out, obj->data, obj->size);
-    std::memcpy(key, res, 16);
-    std::memset(hash_out, 0, sizeof(hash_out));
-  } else if (mode == 2) {
-    unsigned char hash_out[20];
-    void* ptr = reinterpret_cast<char*>(reinterpret_cast<void**>(this->span_objs)[1]) + 4;
-    void* res = sub_4D3760(hash_out, ptr, 4);
-    std::memcpy(key, res, 16);
-    std::memset(hash_out, 0, sizeof(hash_out));
+  } else if (keySource == 1) {
+    PakSpan_655A30* name = *this->span_objs;
+    XXH128_hash_t hash = XXH3_128bits(name->data, name->size);
+    std::memcpy(key, &hash, 16);
+    std::memset(&hash, 0, sizeof(hash));
+  } else if (keySource == 2) {
+    const void* checksum = reinterpret_cast<char*>(reinterpret_cast<void**>(this->span_objs)[1]) + 4;
+    XXH128_hash_t hash = XXH3_128bits(checksum, 4);
+    std::memcpy(key, &hash, 16);
+    std::memset(&hash, 0, sizeof(hash));
   }
 
-  CipherObj_61B410* cipher = *cipher_ptr;
-  SpanKey16_61B410 span;
-  span.ptr = key;
-  span.len = 16;
-  cipher->sub_61B410(span);
-  cipher->sub_61B440(a4);
+  AES* cipher = *cipher_ptr;
+  cipher->SetIV(key, sizeof(key));
+  cipher->SetMode(mode);
 
-  int res = cipher->sub_61AF30(this->span_a->data, this->span_a->size,
-                               this->span_b->data, this->span_b->size, 0);
+  const ULONG res = cipher->Decrypt(static_cast<PUCHAR>(this->span_a->data), this->span_a->size, static_cast<PUCHAR>(this->span_b->data), this->span_b->size, 0);
 
   volatile int check = 0xe5c3c820;
   check ^= 0xf63071d0;
@@ -1799,7 +1781,7 @@ bool PakAuxiliaryState::DecodeHeader(PakSpan_655A30 name, std::uint8_t* data, st
   case 0:
     break;
   case 1:
-    if (!verifier.Verify(reinterpret_cast<CipherObj_61B410**>(&this->m_cipher), &this->m_key, 1, 0)) {
+    if (!verifier.Verify(&this->m_cipher, &this->m_key, AES::CBC, 0)) {
       return false;
     }
     break;
@@ -1912,21 +1894,30 @@ namespace GPakEx {
 
   class BlockCipher {
   public:
+    virtual ~BlockCipher() {
+    }
+
+    virtual bool IsForwardTransformation() const = 0;
+    virtual std::size_t BlockSize() const = 0;
+    virtual std::size_t OptimalDataAlignment() const = 0;
+    virtual void SetKey(std::span<const std::uint8_t> key) = 0;
+    virtual void ProcessAndXorBlock(const std::uint8_t* input, const std::uint8_t* xorBlock, std::uint8_t* output) const = 0;
+    virtual std::size_t AdvancedProcessBlocks(const std::uint8_t* input, const std::uint8_t* xorBlock, std::uint8_t* output, std::size_t length, std::uint32_t flags) const;
+
+    enum Flags : std::uint32_t { InPlace = 1, Increment = 2, Reverse = 4 };
+  };
+
+  class BlockCipherStub {
+  public:
     /* 0000 */ void* m_vftable;
 
     void sub_642A60();
   };
 
-  template<std::size_t StateSize>
-  class FixedStateBlockCipher : public BlockCipher {
-  public:
-    /* 0004 */ std::uint8_t m_state[StateSize];
-  };
-
-  class CipherModeBase {
+  class CipherModeStub {
   public:
     /* 0000 */ void* m_vftable;
-    /* 0004 */ BlockCipher* m_cipher;
+    /* 0004 */ BlockCipherStub* m_cipher;
     /* 0008 */ std::uint8_t* m_register[3];
     /* 0014 */ std::uint8_t* m_buffer[3];
 
@@ -1936,9 +1927,251 @@ namespace GPakEx {
     void sub_643480(std::span<const std::uint8_t> key, std::span<const std::uint8_t> iv);
   };
 
+  template<std::size_t StateSize>
+  class FixedStateBlockCipher : public BlockCipherStub {
+  public:
+    /* 0004 */ std::uint8_t m_state[StateSize];
+
+  };
+
+  // OFFSET: 0x006434B0
+  __declspec(noinline) void XorBuffers(std::uint8_t* output, const std::uint8_t* input, const std::uint8_t* mask, std::size_t length) {
+    for (; length >= 16; length -= 16, output += 16, input += 16, mask += 16) {
+      for (std::size_t i = 0; i < 16; ++i) {
+        output[i] = input[i] ^ mask[i];
+      }
+    }
+    for (std::size_t i = 0; i < length; ++i) {
+      output[i] = input[i] ^ mask[i];
+    }
+  }
+
+  // OFFSET: 0x00642B80
+  std::size_t BlockCipher::AdvancedProcessBlocks(const std::uint8_t* input, const std::uint8_t* xorBlock, std::uint8_t* output, std::size_t length, std::uint32_t flags) const {
+    const std::size_t blockSize = this->BlockSize();
+    std::ptrdiff_t step = static_cast<std::ptrdiff_t>(blockSize);
+    if (flags & Reverse) {
+      if (!(flags & Increment)) {
+        input = input ? input + length - blockSize : nullptr;
+      }
+      xorBlock = xorBlock ? xorBlock + length - blockSize : nullptr;
+      output = output ? output + length - blockSize : nullptr;
+      step = -step;
+    }
+
+    const bool xorFirst = xorBlock && (flags & InPlace);
+    while (length >= blockSize) {
+      if (xorFirst) {
+        XorBuffers(output, xorBlock, input, blockSize);
+        this->ProcessAndXorBlock(output, nullptr, output);
+      } else {
+        this->ProcessAndXorBlock(input, xorBlock, output);
+      }
+
+      if (flags & Increment) {
+        ++const_cast<std::uint8_t*>(input)[blockSize - 1];
+      } else {
+        input = input ? input + step : nullptr;
+      }
+      length -= blockSize;
+      xorBlock = xorBlock ? xorBlock + step : nullptr;
+      output = output ? output + step : nullptr;
+    }
+    return length;
+  }
+
+  class CipherModeBase {
+  public:
+    virtual ~CipherModeBase();
+
+    virtual bool IsForwardTransformation() const = 0;
+    virtual void ResizeBuffers();
+    virtual void ProcessData(std::uint8_t* output, const std::uint8_t* input, std::size_t length) = 0;
+
+    std::size_t CiphertextLength(std::size_t length, bool padding) const;
+    std::size_t Process(std::span<const std::uint8_t> input, std::span<std::uint8_t> output, bool final);
+    void SetKeyWithIV(std::span<const std::uint8_t> key, std::span<const std::uint8_t> iv);
+
+    /* 0004 */ BlockCipher* m_cipher;
+    /* 0008 */ std::vector<std::uint8_t> m_register;
+    /* 0014 */ std::vector<std::uint8_t> m_buffer;
+  };
+
   static_assert(sizeof(CipherModeBase) == 0x20);
 
-  class CipherModeFinal_6469E0 : public CipherModeBase {
+  // OFFSET: 0x00642B00
+  // OFFSET: 0x00642A70
+  CipherModeBase::~CipherModeBase() {
+  }
+
+  // OFFSET: 0x006433A0
+  // FUNCTION: fn_04836
+  void CipherModeBase::ResizeBuffers() {
+    const std::size_t blockSize = this->m_cipher->BlockSize();
+    this->m_register.resize(blockSize);
+    this->m_buffer.resize(blockSize);
+  }
+
+  // OFFSET: 0x00642C80
+  std::size_t CipherModeBase::CiphertextLength(std::size_t length, bool padding) const {
+    const std::size_t blockSize = this->m_cipher->BlockSize();
+    if (length == 0) {
+      return padding ? blockSize : 0;
+    }
+    if (!padding) {
+      return (length + blockSize - 1) - (length + blockSize - 1) % blockSize;
+    }
+    return length + (blockSize - length % blockSize);
+  }
+
+  // OFFSET: 0x00643160
+  std::size_t CipherModeBase::Process(std::span<const std::uint8_t> input, std::span<std::uint8_t> output, bool final) {
+    const bool forward = this->IsForwardTransformation();
+    const std::size_t blockSize = this->m_cipher->BlockSize();
+    const std::size_t reserved = (!forward && final) ? blockSize : 0;
+    const std::uint8_t* in = input.data();
+    std::size_t inLength = input.size();
+    std::uint8_t* out = output.data();
+    std::size_t outLength = output.size();
+
+    std::size_t done = 0;
+    if (inLength >= reserved + blockSize) {
+      done = (inLength - reserved) - (inLength - reserved) % blockSize;
+      if (outLength < done) {
+        return static_cast<std::size_t>(-1);
+      }
+      this->ProcessData(out, in, done);
+      in += done;
+      out += done;
+      inLength -= done;
+      outLength -= done;
+    }
+
+    if (!final) {
+      if (inLength == 0) {
+        return done;
+      }
+    } else if (!forward) {
+      if (inLength == blockSize) {
+        this->ProcessData(this->m_buffer.data(), in, blockSize);
+        const std::uint8_t pad = this->m_buffer[blockSize - 1];
+        const std::size_t size = blockSize - pad;
+        if (pad != 0 && pad <= blockSize && size <= outLength) {
+          std::memcpy(out, this->m_buffer.data(), size);
+          return done + size;
+        }
+      }
+    } else {
+      std::memcpy(this->m_buffer.data(), in, inLength);
+      const std::uint8_t pad = static_cast<std::uint8_t>(blockSize - inLength);
+      std::memset(this->m_buffer.data() + inLength, pad, pad);
+      if (blockSize <= outLength) {
+        this->ProcessData(out, this->m_buffer.data(), blockSize);
+        return done + blockSize;
+      }
+    }
+    return static_cast<std::size_t>(-1);
+  }
+
+  // OFFSET: 0x00643480
+  // FUNCTION: fn_04837
+  void CipherModeBase::SetKeyWithIV(std::span<const std::uint8_t> key, std::span<const std::uint8_t> iv) {
+    this->m_cipher->SetKey(key);
+    std::memcpy(this->m_register.data(), iv.data(), this->m_register.size());
+  }
+
+  class CBC_Encryption : public CipherModeBase {
+  public:
+    void ProcessData(std::uint8_t* output, const std::uint8_t* input, std::size_t length) override;
+  };
+
+  // OFFSET: 0x00642E20
+  void CBC_Encryption::ProcessData(std::uint8_t* output, const std::uint8_t* input, std::size_t length) {
+    const std::size_t blockSize = this->m_cipher->BlockSize();
+    if (length == 0) {
+      return;
+    }
+    this->m_cipher->AdvancedProcessBlocks(input, this->m_register.data(), output, blockSize, BlockCipher::InPlace);
+    if (length > blockSize) {
+      this->m_cipher->AdvancedProcessBlocks(input ? input + blockSize : nullptr, output, output ? output + blockSize : nullptr, length - blockSize, BlockCipher::InPlace);
+    }
+    std::memcpy(this->m_register.data(), output ? output + length - blockSize : nullptr, blockSize);
+  }
+
+  class CBC_Decryption : public CipherModeBase {
+  public:
+    void ResizeBuffers() override;
+    void ProcessData(std::uint8_t* output, const std::uint8_t* input, std::size_t length) override;
+
+    /* 0020 */ std::vector<std::uint8_t> m_temp;
+  };
+
+  // OFFSET: 0x006432C0
+  void CBC_Decryption::ResizeBuffers() {
+    this->CipherModeBase::ResizeBuffers();
+    this->m_temp.resize(this->m_cipher->BlockSize());
+  }
+
+  // OFFSET: 0x00642D60
+  void CBC_Decryption::ProcessData(std::uint8_t* output, const std::uint8_t* input, std::size_t length) {
+    const std::size_t blockSize = this->m_cipher->BlockSize();
+    if (length == 0) {
+      return;
+    }
+    std::memcpy(this->m_temp.data(), input ? input + length - blockSize : nullptr, blockSize);
+    if (length > blockSize) {
+      this->m_cipher->AdvancedProcessBlocks(input ? input + blockSize : nullptr, input, output ? output + blockSize : nullptr, length - blockSize, BlockCipher::Increment);
+    }
+    this->m_cipher->ProcessAndXorBlock(input, this->m_register.data(), output);
+    this->m_register.swap(this->m_temp);
+  }
+
+  class CFB_Decryption : public CipherModeBase {
+  public:
+    void ResizeBuffers() override;
+    void ProcessData(std::uint8_t* output, const std::uint8_t* input, std::size_t length) override;
+
+    /* 0020 */ std::vector<std::uint8_t> m_temp;
+  };
+
+  // OFFSET: 0x00643330
+  void CFB_Decryption::ResizeBuffers() {
+    this->CipherModeBase::ResizeBuffers();
+    this->m_temp.resize(this->m_cipher->BlockSize());
+  }
+
+  // OFFSET: 0x00642EB0
+  void CFB_Decryption::ProcessData(std::uint8_t* output, const std::uint8_t* input, std::size_t length) {
+    const std::size_t blockSize = this->m_cipher->BlockSize();
+    if (length == 0) {
+      return;
+    }
+    std::memcpy(this->m_temp.data(), input ? input + length - blockSize : nullptr, blockSize);
+    if (length > blockSize) {
+      this->m_cipher->AdvancedProcessBlocks(input, input ? input + blockSize : nullptr, output ? output + blockSize : nullptr, length - blockSize, BlockCipher::Increment);
+    }
+    this->m_cipher->ProcessAndXorBlock(this->m_register.data(), input, output);
+    this->m_register.swap(this->m_temp);
+  }
+
+  class OFB_Base : public CipherModeBase {
+  public:
+    void ProcessData(std::uint8_t* output, const std::uint8_t* input, std::size_t length) override;
+  };
+
+  // OFFSET: 0x006430F0
+  void OFB_Base::ProcessData(std::uint8_t* output, const std::uint8_t* input, std::size_t length) {
+    const std::size_t blockSize = this->m_cipher->BlockSize();
+    while (length != 0) {
+      this->m_cipher->ProcessAndXorBlock(this->m_register.data(), nullptr, this->m_register.data());
+      XorBuffers(output, input, this->m_register.data(), blockSize);
+      length -= blockSize;
+      input = input ? input + blockSize : nullptr;
+      output = output ? output + blockSize : nullptr;
+    }
+  }
+
+  class CipherModeFinal_6469E0 : public CipherModeStub {
   public:
     /* 0020 */ std::uint8_t unknown_0020[0x2C];
 
@@ -1956,7 +2189,7 @@ namespace GPakEx {
     void sub_649B50();
   };
 
-  class CipherModeFinal_646B40 : public CipherModeBase {
+  class CipherModeFinal_646B40 : public CipherModeStub {
   public:
     /* 0020 */ std::uint8_t unknown_0020[0x20];
 
@@ -1974,7 +2207,7 @@ namespace GPakEx {
     void sub_649C50();
   };
 
-  class CipherModeFinal_646C80 : public CipherModeBase {
+  class CipherModeFinal_646C80 : public CipherModeStub {
   public:
     /* 0020 */ std::uint8_t unknown_0020[0x1C];
 
@@ -1992,7 +2225,7 @@ namespace GPakEx {
     void sub_649D80();
   };
 
-  class CipherModeFinal_646E30 : public CipherModeBase {
+  class CipherModeFinal_646E30 : public CipherModeStub {
   public:
     /* 0020 */ std::uint8_t unknown_0020[0x2C];
 
@@ -2010,7 +2243,7 @@ namespace GPakEx {
     void sub_649EB0();
   };
 
-  class CipherModeFinal_646F90 : public CipherModeBase {
+  class CipherModeFinal_646F90 : public CipherModeStub {
   public:
     /* 0020 */ std::uint8_t unknown_0020[0x20];
 
@@ -2028,14 +2261,14 @@ namespace GPakEx {
     void sub_649FB0();
   };
 
-  class BlockCipher_64A730 : public BlockCipher {
+  class BlockCipher_64A730 : public BlockCipherStub {
   public:
     /* 0004 */ std::uint8_t unknown_0004[0x1C];
 
     void sub_64A730();
   };
 
-  class CipherModeFinal_646A90 : public CipherModeBase {
+  class CipherModeFinal_646A90 : public CipherModeStub {
   public:
     /* 0020 */ BlockCipher_64A730 m_blockCipher;
 
@@ -2053,14 +2286,14 @@ namespace GPakEx {
     void sub_646A90();
   };
 
-  class BlockCipher_64A880 : public BlockCipher {
+  class BlockCipher_64A880 : public BlockCipherStub {
   public:
     /* 0004 */ std::uint8_t unknown_0004[0x1C];
 
     void sub_64A880();
   };
 
-  class CipherModeFinal_646EE0 : public CipherModeBase {
+  class CipherModeFinal_646EE0 : public CipherModeStub {
   public:
     /* 0020 */ BlockCipher_64A880 m_blockCipher;
 
@@ -2078,7 +2311,7 @@ namespace GPakEx {
     void sub_646EE0();
   };
 
-  class CipherModeFinal_646BE0 : public CipherModeBase {
+  class CipherModeFinal_646BE0 : public CipherModeStub {
   public:
     /* 0020 */ FixedStateBlockCipher<0x10> m_blockCipher;
 
@@ -2097,7 +2330,7 @@ namespace GPakEx {
     void sub_646BE0();
   };
 
-  class CipherModeFinal_646D90 : public CipherModeBase {
+  class CipherModeFinal_646D90 : public CipherModeStub {
   public:
     /* 0020 */ FixedStateBlockCipher<0xC> m_blockCipher;
 
@@ -2116,7 +2349,7 @@ namespace GPakEx {
     void sub_646D90();
   };
 
-  class CipherModeFinal_647030 : public CipherModeBase {
+  class CipherModeFinal_647030 : public CipherModeStub {
   public:
     /* 0020 */ FixedStateBlockCipher<0x10> m_blockCipher;
 
@@ -2135,7 +2368,7 @@ namespace GPakEx {
     void sub_647030();
   };
 
-  class CipherModeFinal_6470D0 : public CipherModeBase {
+  class CipherModeFinal_6470D0 : public CipherModeStub {
   public:
     /* 0020 */ FixedStateBlockCipher<0xD0> m_blockCipher;
 
