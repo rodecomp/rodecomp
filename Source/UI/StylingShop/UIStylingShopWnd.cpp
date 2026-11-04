@@ -588,7 +588,7 @@ void UIStylingShopWnd::RefreshFavoriteButton() {
 
 // OFFSET: 0x00824900
 // FUNCTION: fn_10316
-void UIStylingshopTabParentWnd::UpdateFavoriteButton(const bool& favorite) {
+__declspec(noinline) void UIStylingshopTabParentWnd::UpdateFavoriteButton(const bool& favorite) {
   UIDisplayCharacter* display = this->m_display;
   if (!display) {
     return;
@@ -812,7 +812,7 @@ void UIShowInfoWnd::ArrangeCheckBoxes(const int& layout) {
 
 // OFFSET: 0x0082E500
 // FUNCTION: fn_10378
-void ToggleStylingAccessory(int itemId, int slot) {
+__declspec(noinline) void ToggleStylingAccessory(int itemId, int slot) {
   UIStylingShopWnd* shop = static_cast<UIStylingShopWnd*>(g_windowMgr.LookupWindow(281));
   UIStylingshopTabParentWnd* tab = nullptr;
   for (auto it = shop->m_tabs.begin(); it != shop->m_tabs.end(); ++it) {
