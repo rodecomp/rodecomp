@@ -4,6 +4,7 @@
 #include "Render/Textures/SpriteAtlas.h"
 #include "Render/Textures/Surface.h"
 #include "Render/Textures/Texture.h"
+#include "Render/Textures/TextureCache.h"
 
 #include <algorithm>
 #include <cstring>
@@ -129,15 +130,19 @@ void BitmapPixels::Fill(const RECT* rectangle, std::uint32_t color) {
   }
 
   this->dirty = true;
-  const std::uint32_t converted = (color & 0xFF00FF00) | ((color & 0xFF) << 16) | ((color >> 16) & 0xFF);
-  const int left = rectangle ? rectangle->left : 0;
-  const int top = rectangle ? rectangle->top : 0;
-  const int right = rectangle ? rectangle->right : static_cast<int>(this->width);
-  const int bottom = rectangle ? rectangle->bottom : static_cast<int>(this->height);
+  const std::uint32_t converted = ((color >> 16) & 0xFF) + ((color & 0xFF) << 16) + (color & 0xFF000000) + (color & 0xFF00);
 
-  for (int y = top; y < bottom; ++y) {
-    for (int x = left; x < right; ++x) {
-      this->pixels[x + y * this->width] = converted;
+  if (rectangle) {
+    for (int y = rectangle->top; y < rectangle->bottom; ++y) {
+      for (int x = rectangle->left; x < rectangle->right; ++x) {
+        this->pixels[x + y * this->width] = converted;
+      }
+    }
+  } else {
+    for (std::uint32_t y = 0; y < this->height; ++y) {
+      for (std::uint32_t x = 0; x < this->width; ++x) {
+        this->pixels[x + y * this->width] = converted;
+      }
     }
   }
 }
@@ -407,6 +412,16 @@ void BitmapPixels::DrawSurface(
   }
 
   source->Unlock();
+}
+
+// INLINED
+static __forceinline void BlendScaledPixel(
+  std::uint32_t& pixel, std::uint32_t red, std::uint32_t green, std::uint32_t blue, float inverse, float redScale, float greenScale, float blueScale
+) {
+  const BYTE r = static_cast<BYTE>(static_cast<std::uint32_t>(static_cast<float>((pixel >> 16) & 255) * inverse + static_cast<float>(red) * redScale));
+  const BYTE g = static_cast<BYTE>(static_cast<std::uint32_t>(static_cast<float>((pixel >> 8) & 255) * inverse + static_cast<float>(green) * greenScale));
+  const BYTE b = static_cast<BYTE>(static_cast<std::uint32_t>(static_cast<float>(pixel & 255) * inverse + static_cast<float>(blue) * blueScale));
+  pixel = 0xFF000000 + (r << 16) + (g << 8) + b;
 }
 
 // OFFSET: 0x005469E0
