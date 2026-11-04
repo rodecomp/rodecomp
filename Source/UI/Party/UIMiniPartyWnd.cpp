@@ -122,7 +122,7 @@ void UIMiniPartyInfoWnd::Slot28(int, int) {
   char text[256];
   std::memset(text, 0, sizeof(text));
   std::string fitted;
-  const std::string mapName = g_mapInfoMgr->GetDisplayName(std::string(this->m_owner->GetMember().map.c_str()));
+  const std::string mapName = g_session.GetMapDisplayName(this->m_owner->GetMember().map.c_str());
   if (this->m_owner->m_sizeMode == 1) {
     std::sprintf(text, "%s", this->m_owner->GetMember().name.c_str());
     fitted = this->FitDisplayText(static_cast<int>(static_cast<float>(this->geometry.width) * 0.532f), text, 0, 12, 1);
