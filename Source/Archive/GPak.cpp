@@ -1960,7 +1960,7 @@ namespace GPakEx {
     virtual void ProcessAndXorBlock(const std::uint8_t* input, const std::uint8_t* xorBlock, std::uint8_t* output) const = 0;
     virtual std::size_t AdvancedProcessBlocks(const std::uint8_t* input, const std::uint8_t* xorBlock, std::uint8_t* output, std::size_t length, std::uint32_t flags) const;
 
-    enum Flags : std::uint32_t { InPlace = 1, Increment = 2, Reverse = 4 };
+    enum Flags : std::uint32_t { InPlace = 1, Reverse = 2, Increment = 4 };
   };
 
   // OFFSET: 0x00642A60
@@ -2019,6 +2019,8 @@ namespace GPakEx {
   }
 
   // OFFSET: 0x00642B80
+  // OFFSET: 0x00642B80
+  // FUNCTION: fn_04827
   std::size_t BlockCipher::AdvancedProcessBlocks(const std::uint8_t* input, const std::uint8_t* xorBlock, std::uint8_t* output, std::size_t length, std::uint32_t flags) const {
     const std::size_t blockSize = this->BlockSize();
     std::ptrdiff_t step = static_cast<std::ptrdiff_t>(blockSize);
