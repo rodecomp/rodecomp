@@ -2,6 +2,8 @@
 #include "Contents/Party/ChangePartyMasterAsyncWork.h"
 #include "Network/Http/CURLPostHander.h"
 #include "Network/TextEncoding.h"
+#include "Utility/Cipher/XorBytes.h"
+#include "Utility/Text/FormatString.h"
 
 #include <cstdio>
 #include <windows.h>
@@ -11,16 +13,53 @@ namespace {
   constexpr char sourceFile[] = "C:\\repositories\\RagnarokClient\\RagnarokClient\\Contents\\AdventurerAgency\\CChangePartyMasterAsyncWork.cpp";
 
   // INLINED
-  AsyncDiagnostic Diagnostic(bool success, const char* text, std::uint32_t line) {
+  __forceinline AsyncDiagnostic Diagnostic(bool success, const char* text, std::uint32_t line) {
     std::string message = text;
     return AsyncDiagnostic(&success, &message, sourceFile, &line);
+  }
+
+  template <std::size_t Length, std::uint64_t Key>
+  class EncryptedName {
+  public:
+    explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+      for (std::uint64_t index = 0; index < Length; ++index) {
+        this->m_text[index] = source[index];
+      }
+    }
+
+    ~EncryptedName() {
+      for (std::uint64_t index = 0; index < Length; ++index) {
+        this->m_text[index] = 0;
+      }
+    }
+
+    const char* Text() {
+      if (this->m_encrypted) {
+        utility::XorBytes(this->m_text, Length, Key);
+        this->m_encrypted = false;
+      }
+
+      return reinterpret_cast<const char*>(this->m_text);
+    }
+
+  private:
+    /* 0000 */ std::uint8_t m_text[Length];
+    bool m_encrypted;
+  };
+
+  // INLINED
+  template <std::uint64_t Key, std::size_t Length>
+  const char* DecryptName(const std::uint8_t (&source)[Length]) {
+    thread_local EncryptedName<Length, Key> name(source);
+    return name.Text();
   }
 }
 
 // OFFSET: 0x005CD7B0
 // FUNCTION: fn_03677
 CChangePartyMasterAsyncWork::CChangePartyMasterAsyncWork()
-    : NAsyncWork("Change_PartyMaster"), m_accountId(0), m_characterId(0), m_diagnostic(Diagnostic(false, "unknwon", 27)), m_windows(nullptr) {
+    : NAsyncWork("Change_PartyMaster"), m_accountId(0), m_characterId(0), m_token(""), m_worldName(""), m_response(""), m_url(""),
+      m_diagnostic(Diagnostic(false, DecryptName<0x2FF3C5036D070127ULL>({0x52, 0x6F, 0x6C, 0x03, 0x74, 0xAA, 0x9D, 0x2F}), 27)), m_windows(nullptr) {
 }
 
 // INLINED
@@ -48,7 +87,8 @@ void CChangePartyMasterAsyncWork::Bind(
   this->m_worldName = worldName;
   this->m_url = url;
   this->m_token = token;
-  AsyncDiagnostic diagnostic = Diagnostic(false, "unknwon", 55);
+  const std::uint8_t unknown[] = {0xC6, 0x09, 0xA8, 0x3D, 0x8E, 0xF4, 0x5B, 0x17};
+  AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0x17359BF953C367B3ULL>(unknown), 55);
   this->m_diagnostic.MoveFrom(diagnostic);
   this->m_windows = &windows;
 }
@@ -57,32 +97,42 @@ void CChangePartyMasterAsyncWork::Bind(
 // FUNCTION: fn_03683
 bool CChangePartyMasterAsyncWork::Execute() {
   char account[64] = {};
+  StringFormat(account, sizeof(account), _TRUNCATE, "%lu", this->m_accountId);
   char character[64] = {};
+  StringFormat(character, sizeof(character), _TRUNCATE, "%lu", this->m_characterId);
   char targetAccount[64] = {};
+  StringFormat(targetAccount, sizeof(targetAccount), _TRUNCATE, "%lu", this->m_targetAccountId);
   char targetCharacter[64] = {};
-  _snprintf_s(account, sizeof(account), _TRUNCATE, "%d", static_cast<std::int32_t>(this->m_accountId));
-  _snprintf_s(character, sizeof(character), _TRUNCATE, "%d", static_cast<std::int32_t>(this->m_characterId));
-  _snprintf_s(targetAccount, sizeof(targetAccount), _TRUNCATE, "%d", static_cast<std::int32_t>(this->m_targetAccountId));
-  _snprintf_s(targetCharacter, sizeof(targetCharacter), _TRUNCATE, "%d", static_cast<std::int32_t>(this->m_targetCharacterId));
+  StringFormat(targetCharacter, sizeof(targetCharacter), _TRUNCATE, "%lu", this->m_targetCharacterId);
   std::string world = ToUtf8(this->m_worldName);
   std::string name = ToUtf8(this->m_characterName);
   std::string targetName = ToUtf8(this->m_targetName);
   CCURLPostHander handler(this->m_url);
-  handler.AddField("AID", account, 4);
-  handler.AddField("GID", character, 4);
-  handler.AddField("CharName", name, 4);
-  handler.AddField("To_AID", targetAccount, 4);
-  handler.AddField("To_GID", targetCharacter, 4);
-  handler.AddField("To_CharName", targetName, 4);
-  handler.AddField("WorldName", world, 4);
-  handler.AddField("AuthToken", this->m_token, 4);
+  const std::uint8_t aid[] = {0x14, 0xB4, 0xF1, 0xDB};
+  handler.AddField(DecryptName<0x3375B1C7DBB5FD55ULL>(aid), account, 4);
+  const std::uint8_t gid[] = {0x58, 0x78, 0x89, 0xE7};
+  handler.AddField(DecryptName<0x1D6D75EDE7CD311FULL>(gid), character, 4);
+  const std::uint8_t charName[] = {0xE2, 0x55, 0xFE, 0xA5, 0x2D, 0xEE, 0x4A, 0x3C, 0xA1};
+  handler.AddField(DecryptName<0x59278F63D79F3DA1ULL>(charName), name, 4);
+  const std::uint8_t toAid[] = {0xE3, 0x68, 0x08, 0x8C, 0x62, 0xA3, 0x2B};
+  handler.AddField(DecryptName<0x812BE72BCD5707B7ULL>(toAid), targetAccount, 4);
+  const std::uint8_t toGid[] = {0x5D, 0xC6, 0x18, 0x18, 0x90, 0x19, 0x75};
+  handler.AddField(DecryptName<0xD3755DD95F47A909ULL>(toGid), targetCharacter, 4);
+  const std::uint8_t toCharName[] = {0x39, 0x8C, 0x1A, 0xE0, 0x85, 0xA0, 0xA5, 0x7F, 0x0C, 0x8E, 0x20, 0xA3};
+  handler.AddField(DecryptName<0x31D7C1EDA345E36DULL>(toCharName), targetName, 4);
+  const std::uint8_t worldName[] = {0x3A, 0x0C, 0x47, 0x41, 0xC1, 0x4D, 0xEE, 0xB4, 0x08, 0x63};
+  handler.AddField(DecryptName<0xD98F03A52D35636DULL>(worldName), world, 4);
+  const std::uint8_t authToken[] = {0x90, 0x6C, 0xE9, 0xE7, 0x3F, 0xE4, 0x64, 0x6A, 0xBF, 0x19};
+  handler.AddField(DecryptName<0x0F0F8B6B8F9D19D1ULL>(authToken), this->m_token, 4);
 
   if (handler.Perform() != 0) {
-    AsyncDiagnostic diagnostic = Diagnostic(false, "fail", 113);
+    const std::uint8_t fail[] = {0x17, 0x98, 0x30, 0x99, 0x81};
+    AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0x91651D81F559F971ULL>(fail), 113);
     this->m_diagnostic.MoveFrom(diagnostic);
   } else {
     this->m_response = FromUtf8(handler.Response());
-    AsyncDiagnostic diagnostic = Diagnostic(true, "success", 122);
+    const std::uint8_t success[] = {0x78, 0x0E, 0xBC, 0x02, 0x2E, 0x14, 0xA2, 0x73};
+    AsyncDiagnostic diagnostic = Diagnostic(true, DecryptName<0x73D1674B61DF7B0BULL>(success), 122);
     this->m_diagnostic.MoveFrom(diagnostic);
   }
 
