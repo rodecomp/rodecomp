@@ -533,7 +533,7 @@ public:
   void NotifyMemberWindows(const MessengerMember* target);
   int SendMsg(int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4, std::intptr_t argument5);
   bool IsOrderFixed(int id);
-  void RemoveOrder(int id);
+  __declspec(noinline) void RemoveOrder(int id);
   void BringToFront(int id);
   void sub_A8C4B0(int id);
   bool sub_A8CA20();
