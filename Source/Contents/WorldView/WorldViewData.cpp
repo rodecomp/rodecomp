@@ -230,7 +230,7 @@ CWorldViewMap* CWorldViewWorld::MapAt(unsigned int& mapIndex, int x, int y) {
 
 // OFFSET: 0x00613F10
 // FUNCTION: fn_04358
-void CWorldViewWorld::Draw(int, int x, int y, int width, int height) {
+__declspec(noinline) void CWorldViewWorld::Draw(int, int x, int y, int width, int height) {
   std::string path = "유저인터페이스\\";
   path += this->imageName;
   this->texture = g_texMgr.Load(path.c_str(), 0, true, true, false);
