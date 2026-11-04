@@ -73,22 +73,40 @@ void CRenderer::DrawBattleFieldIcon(CRenderSystemBase& system) {
   int count = (score > 9) + 1;
   digits[0] = score % 10;
   digits[1] = score / 10 % 10;
-  int x = this->viewport.width - (width > 1 ? 175 : 207);
-  for (int i = 0; i < count; ++i) {
-    g_modeMgr.GetGameMode();
-    DrawActionSprite(system, x, 50, action, sprite, digits[i], 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201);
-    x -= 32;
+  if (width < 2) {
+    int x = this->viewport.width - 207;
+    for (int i = 0; i < count; ++i) {
+      g_modeMgr.GetGameMode();
+      DrawActionSprite(system, x, 50, action, sprite, digits[i], 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201);
+      x -= 32;
+    }
+  } else {
+    int x = this->viewport.width - 175;
+    for (int i = 0; i < count; ++i) {
+      g_modeMgr.GetGameMode();
+      DrawActionSprite(system, x, 50, action, sprite, digits[i], 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201);
+      x -= 32;
+    }
   }
 
   score = g_session.m_score2 < 0 ? 0 : g_session.m_score2;
   count = (score > 9) + 1;
   digits[0] = score % 10;
   digits[1] = score / 10 % 10;
-  x = this->viewport.width - (width > 1 ? 175 : 207);
-  for (int i = 0; i < count; ++i) {
-    g_modeMgr.GetGameMode();
-    DrawActionSprite(system, x, 108, action, sprite, digits[i], 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201);
-    x -= 32;
+  if (width > 1) {
+    int x = this->viewport.width - 175;
+    for (int i = 0; i < count; ++i) {
+      g_modeMgr.GetGameMode();
+      DrawActionSprite(system, x, 108, action, sprite, digits[i], 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201);
+      x -= 32;
+    }
+  } else {
+    int x = this->viewport.width - 207;
+    for (int i = 0; i < count; ++i) {
+      g_modeMgr.GetGameMode();
+      DrawActionSprite(system, x, 108, action, sprite, digits[i], 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201);
+      x -= 32;
+    }
   }
 }
 
