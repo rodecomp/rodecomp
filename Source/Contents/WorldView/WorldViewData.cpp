@@ -206,20 +206,22 @@ CWorldViewMap* CWorldViewWorld::FindMap(int id) {
 // OFFSET: 0x00613E00
 // FUNCTION: fn_04357
 CWorldViewMap* CWorldViewWorld::MapAt(unsigned int& mapIndex, int x, int y) {
-  const unsigned int count = this->maps.size();
-  for (unsigned int index = 0; index < count; ++index) {
-    const CWorldViewMap* map = this->maps[index];
+  unsigned int index = 0;
+  std::vector<CWorldViewMap*>::const_iterator it = this->maps.begin();
+  const std::vector<CWorldViewMap*>::const_iterator end = this->maps.end();
+  for (; it != end; ++it, ++index) {
+    const CWorldViewMap* map = *it;
     if (map->id < 100) {
       if (map->fields.empty()) {
         if (AreaContains(map->left, map->top, map->right, map->bottom, x, y)) {
           mapIndex = index;
-          return this->maps[index];
+          return *it;
         }
       } else {
         const CWorldViewField* first = map->fields.front();
         if (AreaContains(first->left, first->top, first->right, first->bottom, x, y)) {
           mapIndex = index;
-          return this->maps[index];
+          return *it;
         }
       }
     }
