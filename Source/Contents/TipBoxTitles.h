@@ -45,7 +45,7 @@ public:
   CTipBoxMgr();
   virtual ~CTipBoxMgr();
 
-  void AddParagraph(int id, std::string text);
+  __declspec(noinline) void AddParagraph(int id, std::string text);
   TipBoxEntry& SelectRandomTip();
   const TipBoxEntry& GetTip(int id) const;
   void Sub7ACF50();
@@ -55,7 +55,7 @@ public:
   bool HasImages() const;
   bool HasSearchResults() const;
   std::vector<int>& Search(std::string& keyword);
-  void SelectTip(int id);
+  __declspec(noinline) void SelectTip(int id);
   static bool Create();
   static void Destroy();
 
