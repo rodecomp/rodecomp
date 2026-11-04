@@ -1,6 +1,7 @@
 #include "Client/Session.h"
 #include "Contents/Ground/GroundGeometry.h"
 #include "Contents/Ground/GroundGeometry.h"
+#include "Contents/MapSkyMgr.h"
 #include "Contents/Models/ModelActor.h"
 #include "Contents/Movies/BinkMovies.h"
 #include "Contents/World/World.h"
@@ -40,7 +41,7 @@ CWorld::~CWorld() {
 
 // OFFSET: 0x00AC66F0
 // FUNCTION: fn_17652
-WorldSpatialTree::WorldSpatialTree() : parent(nullptr), children{}, minimum{}, maximum{}, center{}, halfSize{}, dirty(1) {
+WorldSpatialTree::WorldSpatialTree() : minimum{0.0f, 0.0f, 0.0f}, maximum{0.0f, 0.0f, 0.0f}, center{0.0f, 0.0f, 0.0f}, halfSize{0.0f, 0.0f, 0.0f} {
   this->parent = nullptr;
   for (unsigned index = 0; index < 4; ++index) {
     this->children[index] = nullptr;
@@ -111,21 +112,18 @@ void WorldSpatialTree::Subdivide(int depth) {
 // OFFSET: 0x00AC8F60
 // FUNCTION: fn_17681
 void WorldSpatialTree::ReadBounds(CFile& input, int depth) {
-  for (unsigned index = 0; index < 3; ++index) {
-    input.Read(&this->maximum[index], sizeof(float));
-  }
-
-  for (unsigned index = 0; index < 3; ++index) {
-    input.Read(&this->minimum[index], sizeof(float));
-  }
-
-  for (unsigned index = 0; index < 3; ++index) {
-    input.Read(&this->halfSize[index], sizeof(float));
-  }
-
-  for (unsigned index = 0; index < 3; ++index) {
-    input.Read(&this->center[index], sizeof(float));
-  }
+  input.Read(&this->maximum[0], sizeof(float));
+  input.Read(&this->maximum[1], sizeof(float));
+  input.Read(&this->maximum[2], sizeof(float));
+  input.Read(&this->minimum[0], sizeof(float));
+  input.Read(&this->minimum[1], sizeof(float));
+  input.Read(&this->minimum[2], sizeof(float));
+  input.Read(&this->halfSize[0], sizeof(float));
+  input.Read(&this->halfSize[1], sizeof(float));
+  input.Read(&this->halfSize[2], sizeof(float));
+  input.Read(&this->center[0], sizeof(float));
+  input.Read(&this->center[1], sizeof(float));
+  input.Read(&this->center[2], sizeof(float));
 
   if (depth != 5) {
     for (unsigned index = 0; index < 4; ++index) {
