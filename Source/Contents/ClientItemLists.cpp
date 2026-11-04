@@ -1593,51 +1593,6 @@ bool CSession::RemoveItem1740(const ITEM_INFO& item) {
   return false;
 }
 
-// OFFSET: 0x00DDA740
-// FUNCTION: fn_23342
-bool CSession::RemoveItem1750(const ITEM_INFO& item, int type, unsigned char refresh) {
-  for (auto it = this->unknown_1750.begin(); it != this->unknown_1750.end(); ++it) {
-    if (it->unknown_0000[1] == item.unknown_0000[1]) {
-      if (type == 0) {
-        it->quantity -= item.quantity;
-        if (it->quantity < 1) {
-          this->unknown_1750.erase(it);
-        }
-      } else {
-        this->unknown_1750.erase(it);
-      }
-
-      if (refresh == 1) {
-        std::uint32_t window;
-        if (type == 1) {
-          window = g_windowMgr.unknown_0410;
-        } else {
-          window = type == 2 ? g_windowMgr.unknown_0420 : g_windowMgr.unknown_02F8;
-        }
-
-        if (window) {
-          reinterpret_cast<UIWindow*>(window)->SendMsg(nullptr, 23, 0, 0, 0, 0);
-        }
-      }
-      return true;
-    }
-  }
-
-  if (refresh == 1) {
-    std::uint32_t window;
-    if (type == 1) {
-      window = g_windowMgr.unknown_0410;
-    } else {
-      window = type == 2 ? g_windowMgr.unknown_0420 : g_windowMgr.unknown_02F8;
-    }
-
-    if (window) {
-      reinterpret_cast<UIWindow*>(window)->SendMsg(nullptr, 23, 0, 0, 0, 0);
-    }
-  }
-  return false;
-}
-
 // OFFSET: 0x00DDA8B0
 // FUNCTION: fn_23343
 void CSession::RemoveItem1758(ITEM_INFO& item) {
@@ -1704,22 +1659,6 @@ void CSession::RemoveItem1718(const ITEM_INFO& item) {
 void CSession::RemoveItem1720ByName(const ITEM_INFO& item) {
   for (auto it = this->unknown_1720.begin(); it != this->unknown_1720.end(); ++it) {
     if (it->itemId == item.itemId) {
-      it->quantity -= item.quantity;
-      if (it->quantity < 1) {
-        this->unknown_1720.erase(it);
-      }
-      return;
-    }
-  }
-}
-
-// OFFSET: 0x00DDAB30
-// FUNCTION: fn_23348
-void CSession::RemoveItem1720(const ITEM_INFO& item) {
-  const bool hasFlag = item.unknown_0074[3] != 0;
-  for (auto it = this->unknown_1720.begin(); it != this->unknown_1720.end(); ++it) {
-    const bool same = hasFlag ? it->unknown_0000[1] == item.unknown_0000[1] : it->itemId == item.itemId;
-    if (same) {
       it->quantity -= item.quantity;
       if (it->quantity < 1) {
         this->unknown_1720.erase(it);

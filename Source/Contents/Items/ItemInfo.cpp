@@ -4,9 +4,12 @@
 #include "File/File.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemNaming.h"
+#include "UI/Window/UIWindow.h"
+#include "UI/Window/UIWindowMgr.h"
 
 #include <cstdlib>
 #include <cstring>
+#include <list>
 #include <vector>
 
 namespace {
@@ -29,6 +32,8 @@ unsigned char g_digitCharacters[256] = {
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
+
+template std::list<ITEM_INFO>::iterator std::list<ITEM_INFO>::erase(std::list<ITEM_INFO>::const_iterator) noexcept;
 
 // OFFSET: 0x006D47E0
 // FUNCTION: fn_06562
@@ -639,4 +644,65 @@ int ReadItemArray(ITEM_INFO* items, int offset, int size, const std::vector<unsi
   }
 
   return end;
+}
+
+// OFFSET: 0x00DDA740
+// FUNCTION: fn_23342
+bool CSession::RemoveItem1750(const ITEM_INFO& item, int type, unsigned char refresh) {
+  for (auto it = this->unknown_1750.begin(); it != this->unknown_1750.end(); ++it) {
+    if (it->unknown_0000[1] == item.unknown_0000[1]) {
+      if (type == 0) {
+        it->quantity -= item.quantity;
+        if (it->quantity <= 0) {
+          this->unknown_1750.erase(it);
+        }
+      } else {
+        this->unknown_1750.erase(it);
+      }
+
+      if (refresh == 1) {
+        std::uint32_t window;
+        if (type == 1) {
+          window = g_windowMgr.unknown_0410;
+        } else {
+          window = type == 2 ? g_windowMgr.unknown_0420 : g_windowMgr.unknown_02F8;
+        }
+
+        if (window) {
+          reinterpret_cast<UIWindow*>(window)->SendMsg(nullptr, 23, 0, 0, 0, 0);
+        }
+      }
+      return true;
+    }
+  }
+
+  if (refresh == 1) {
+    std::uint32_t window;
+    if (type == 1) {
+      window = g_windowMgr.unknown_0410;
+    } else {
+      window = type == 2 ? g_windowMgr.unknown_0420 : g_windowMgr.unknown_02F8;
+    }
+
+    if (window) {
+      reinterpret_cast<UIWindow*>(window)->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    }
+  }
+  return false;
+}
+
+// OFFSET: 0x00DDAB30
+// FUNCTION: fn_23348
+void CSession::RemoveItem1720(const ITEM_INFO& item) {
+  const bool hasFlag = item.unknown_0074[3] != 0;
+  for (auto it = this->unknown_1720.begin(); it != this->unknown_1720.end(); ++it) {
+    const bool same = hasFlag ? it->unknown_0000[1] == item.unknown_0000[1] : it->itemId == item.itemId;
+    if (same) {
+      it->quantity -= item.quantity;
+      if (it->quantity <= 0) {
+        this->unknown_1720.erase(it);
+      }
+      return;
+    }
+  }
 }
