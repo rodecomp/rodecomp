@@ -852,6 +852,8 @@ void CUIEquipmentPropertiesWnd::OnClickButton8() {
 void CUIEquipmentPropertiesWnd::OnClickButton9() {
 }
 
+// OFFSET: 0x00A0EF10
+// FUNCTION: fn_45511
 void CUIEquipmentPropertiesWnd::OnClickClose() {
   g_windowMgr.CloseWindow(10001);
 }
