@@ -171,7 +171,7 @@ void UILapineUpgradeBoxWnd::Paint() {
 // OFFSET: 0x006035E0
 // FUNCTION: fn_04194
 void UILapineUpgradeBoxWnd::Slot10(int x, int y, std::intptr_t value) {
-  CMode* mode = static_cast<CMode*>(g_charViewMode);
+  CMode* mode = g_modeMgr.GetGameMode();
   if (this->item.unknown_0000[1] > 0) {
     mode->SendMsg(18, 0, 0, 0, 0);
     return;
@@ -460,7 +460,7 @@ void UILapineUpgradeBox_IngredientInfoWnd::Slot28(int x, int y) {
     int tipX = 0;
     int tipY = -20;
     this->ToScreen(tipX, tipY);
-    static_cast<CMode*>(g_charViewMode)->ShowTooltip(this->tooltip.c_str(), tipX, tipY, -1, false, true);
+    g_modeMgr.gameMode->ShowTooltip(this->tooltip.c_str(), tipX, tipY, -1, false, true);
   }
 }
 
