@@ -78,7 +78,7 @@ void UISelCharForUServerWnd::Slot15(int, int) {
   }
 
   for (int index = 0; index < g_session.unknown_0E94; ++index) {
-    CharacterInfo* info = reinterpret_cast<CharacterInfo*>(static_cast<CMode*>(g_charViewMode)->SendMsg(8, index, 0, 0, 0));
+    CharacterInfo* info = reinterpret_cast<CharacterInfo*>(g_modeMgr.gameMode->SendMsg(8, index, 0, 0, 0));
     if (!info) {
       continue;
     }
