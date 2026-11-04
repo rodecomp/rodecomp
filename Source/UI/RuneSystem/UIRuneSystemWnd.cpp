@@ -1025,11 +1025,8 @@ void UIRuneSystemWnd::Paint() {
 // OFFSET: 0x0081E3F0
 // FUNCTION: fn_10226
 int UIRuneSystem_DecomResultWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::intptr_t, std::intptr_t, std::intptr_t) {
-  if (message == 6) {
-    if (argument1 == 0xB8) {
-      g_windowMgr.CloseWindow(0x16A);
-    }
-  } else if (message == 0x0D) {
+  switch (message) {
+  case 0x0D: {
     const RuneDecomResultPacket* packet = reinterpret_cast<const RuneDecomResultPacket*>(argument1);
     this->m_total = 0;
     for (int index = 0; index < 8; ++index) {
@@ -1038,6 +1035,13 @@ int UIRuneSystem_DecomResultWnd::SendMsg(UIWindow*, int message, std::intptr_t a
       this->m_total += this->m_counts[index];
     }
     this->Invalidate();
+    break;
+  }
+  case 6:
+    if (argument1 == 0xB8) {
+      g_windowMgr.CloseWindow(0x16A);
+    }
+    break;
   }
   return 0;
 }
