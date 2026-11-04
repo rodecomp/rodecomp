@@ -18,7 +18,7 @@ __declspec(noinline) bool IsAdminAccount(int aid) {
 
 // OFFSET: 0x00DFA390
 // FUNCTION: fn_23572
-int CSession::IsAdminSubMode(int subMode) {
+__declspec(noinline) int CSession::IsAdminSubMode(int subMode) {
   if (IsAdminAccount(this->m_aid) && subMode == 7) {
     return 1;
   }
