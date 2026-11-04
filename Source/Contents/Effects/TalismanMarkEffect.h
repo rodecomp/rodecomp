@@ -20,7 +20,7 @@ public:
   bool Slot06() override;
 
   void PlayEnd();
-  void UpdateParticle(CEZ2STRParticle* particle);
+  __declspec(noinline) void UpdateParticle(CEZ2STRParticle* particle);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
