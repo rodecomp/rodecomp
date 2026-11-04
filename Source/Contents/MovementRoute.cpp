@@ -60,11 +60,11 @@ std::uint32_t* MovementRouteInterpolation::EndTick(std::uint32_t* tick) const {
 // OFFSET: 0x00AD8D90
 // FUNCTION: fn_17871
 int MovementRouteInterpolation::EndMetadata() const {
-  if (this->points.empty()) {
-    return -1;
+  if (!this->points.empty()) {
+    return this->points[this->points.size() - 1].metadata;
   }
 
-  return this->points.back().metadata;
+  return -1;
 }
 
 // OFFSET: 0x00AD8F20
