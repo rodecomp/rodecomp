@@ -32,6 +32,7 @@
 #include "Render/Text/TextContext.h"
 #include "Client/Mode/CLoginMode.h"
 #include "Client/Mode/CMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Render/DeviceContext/DCSurface.h"
 #include "Render/Renderer.h"
@@ -672,7 +673,7 @@ void UISelCharForUServerWnd::Paint() {
       int offsetX = 0;
       int offsetY = 0;
       if (g_session.IsDoramJob(slot.job) == true) {
-        const auto* info = reinterpret_cast<const CharacterInfo*>(static_cast<CMode*>(g_charViewMode)->SendMsg(8, index, 0, 0, 0));
+        const auto* info = reinterpret_cast<const CharacterInfo*>(g_modeMgr.gameMode->SendMsg(8, index, 0, 0, 0));
         int x = 0;
         int y = 0;
         int item = 0;
