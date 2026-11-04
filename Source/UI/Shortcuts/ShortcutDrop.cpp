@@ -1,4 +1,5 @@
 #include "Client/Mode/CMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/ModeDragState.h"
 #include "Client/Mode/ModeEvents.h"
 #include "Client/Session.h"
@@ -277,6 +278,6 @@ void UIQuickSlotWnd::Slot10(int x, int y, std::intptr_t argument) {
     }
   }
 
-  static_cast<CMode*>(g_charViewMode)->SendMsg(18, 0, 0, 0, 0);
+  g_modeMgr.gameMode->SendMsg(18, 0, 0, 0, 0);
 }
 
