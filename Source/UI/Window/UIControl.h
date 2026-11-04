@@ -79,7 +79,7 @@ public:
   bool IsPointInside(int x, int y);
   UIWindow* FindChildById(int id);
 
-  /* 007C */ unsigned char hitEnabled;
+  /* 007C */ bool hitEnabled;
 };
 
 class CUITabButton;

@@ -251,7 +251,7 @@ CUIControl::~CUIControl() = default;
 // OFFSET: 0x009D5490
 // FUNCTION: fn_14047
 bool CUIControl::CanHitTest() {
-  return this->hitEnabled != 0;
+  return this->hitEnabled;
 }
 
 // OFFSET: 0x009EEAD0
