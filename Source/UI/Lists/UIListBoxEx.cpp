@@ -142,7 +142,12 @@ void UIListBoxEx::Slot26(int, int) {
 // FUNCTION: fn_11497
 void UIListBoxEx::Slot35(int value) {
   if (this->verticalOverflow != 0) {
-    this->SendMsg(this->verticalBar, 7, value >= 0 ? -3 : 3, 0, 0, 0);
+    if (value < 0) {
+      this->SendMsg(this->verticalBar, 7, 3, 0, 0, 0);
+      return;
+    }
+
+    this->SendMsg(this->verticalBar, 7, -3, 0, 0, 0);
   }
 }
 
