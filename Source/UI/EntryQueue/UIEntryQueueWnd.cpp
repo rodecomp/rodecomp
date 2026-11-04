@@ -199,15 +199,15 @@ void UIEntryQueueRequestWnd::Slot19() {
 // FUNCTION: fn_19695
 int UIEntryQueueRequestWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   if (message == 6) {
-    const int response = static_cast<int>(a);
-    this->RecordResponse(response, b, c, d);
-
-    if (response == 0) {
+    this->RecordResponse(static_cast<int>(a), b, c, d);
+    switch (a) {
+    case 0:
       g_entryQueueMgr->SendAdmissionReply(1);
       g_windowMgr.CloseWindow(209);
       g_windowMgr.CloseWindow(210);
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2132)), 0x64FFFF, 0, 0, 0);
-    } else if (response == 1) {
+      break;
+    case 1:
       g_entryQueueMgr->SendAdmissionReply(2);
       g_windowMgr.CloseWindow(209);
       g_windowMgr.CloseWindow(210);
@@ -286,12 +286,12 @@ void UIEntryQueueStandByWnd::Slot19() {
 // FUNCTION: fn_19702
 int UIEntryQueueStandByWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   if (message == 6) {
-    const int response = static_cast<int>(a);
-    this->RecordResponse(response, b, c, d);
-
-    if (response == 0) {
+    this->RecordResponse(static_cast<int>(a), b, c, d);
+    switch (a) {
+    case 0:
       g_entryQueueMgr->SendCancel();
-    } else if (response == 1) {
+      break;
+    case 1:
       g_windowMgr.CloseWindow(209);
       return 0;
     }
@@ -595,14 +595,14 @@ void UIEntryQueueWnd::SelectQueue(EntryQueueInfo* info) {
 // FUNCTION: fn_19712
 bool UIEntryQueueWnd::ConfirmApply(const char* type) {
   EntryQueueInfo* info = g_entryQueueMgr->current;
-  if (!info) {
-    return false;
+  if (info) {
+    char text[0x104];
+    std::memset(text, 0, sizeof(text));
+    sprintf_s(text, sizeof(text), "%s %s", info->displayName, type);
+    return g_windowMgr.Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) == 187;
   }
 
-  char text[0x104];
-  std::memset(text, 0, sizeof(text));
-  sprintf_s(text, sizeof(text), "%s %s", info->displayName, type);
-  return g_windowMgr.Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) == 187;
+  return false;
 }
 
 // OFFSET: 0x00BA7B90
