@@ -679,7 +679,7 @@ void Replay::Rewind() {
 
 // OFFSET: 0x00B83EC0
 // FUNCTION: fn_19311
-void ReplayFileList::Clear() {
+__declspec(noinline) void ReplayFileList::Clear() {
   this->selected = -1;
   this->files.erase(this->files.begin(), this->files.end());
 }
