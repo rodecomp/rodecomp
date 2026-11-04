@@ -27,11 +27,11 @@ PacketLengthResult PacketLengths::Lookup(int id) const {
 // OFFSET: 0x00C7C970
 // FUNCTION: fn_20391
 int PacketLengths::FixedLength(int id) const {
-  if (id == 703) {
+  switch (id) {
+  case 703:
     return 12;
-  }
 
-  if (id == 704) {
+  case 704:
     return 4;
   }
 
@@ -74,7 +74,7 @@ PacketLengths::~PacketLengths() {
 // OFFSET: 0x00B02100
 // FUNCTION: fn_18385
 void PacketLengths::Register(int id, int length, int variable, int record) {
-  this->m_values.try_emplace(id, PacketLengthValue{length, variable, record});
+  this->m_values.insert(std::make_pair(id, PacketLengthValue{length, variable, record}));
 }
 
 // OFFSET: 0x00B02210
