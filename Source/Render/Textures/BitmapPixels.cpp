@@ -213,24 +213,31 @@ void BitmapPixels::BlendFrom(std::uint32_t x, std::uint32_t y, int copyWidth, in
   }
 
   this->dirty = true;
+  std::uint32_t* destination = this->pixels + x + y * this->width;
+  const std::uint32_t* input = source.pixels;
 
   for (int row = 0; row < copyHeight; ++row) {
+    if (!destination || !input) {
+      break;
+    }
+
     for (int column = 0; column < copyWidth; ++column) {
-      std::uint32_t& destination = this->pixels[x + column + this->width * (y + row)];
-      const std::uint32_t input = source.pixels[column + source.width * row];
       if (alpha) {
-        const unsigned a = input >> 24;
-        std::uint32_t output = std::max(a, destination >> 24) << 24;
-
-        for (unsigned shift : {0u, 8u, 16u}) {
-          output |= (a * ((input >> shift) & 255) / 255 + (255 - a) * ((destination >> shift) & 255) / 255) << shift;
-        }
-
-        destination = output;
-      } else if (input != 0xFFFF00FF) {
-        destination = input - 0x01000000;
+        const std::uint32_t target = destination[column];
+        const std::uint32_t pixel = input[column];
+        const WORD targetAlpha = static_cast<WORD>(target >> 24);
+        const WORD sourceAlpha = static_cast<WORD>(pixel >> 24);
+        const BYTE blue = GetBValue(target) * (255 - sourceAlpha) / 255 + GetBValue(pixel) * sourceAlpha / 255;
+        const BYTE green = GetGValue(target) * (255 - sourceAlpha) / 255 + GetGValue(pixel) * sourceAlpha / 255;
+        const BYTE red = GetRValue(target) * (255 - sourceAlpha) / 255 + GetRValue(pixel) * sourceAlpha / 255;
+        destination[column] = (std::max(sourceAlpha, targetAlpha) << 24) + (blue << 16) + (green << 8) + red;
+      } else if (input[column] != 0xFFFF00FF) {
+        destination[column] = input[column] - 0x01000000;
       }
     }
+
+    destination += this->width;
+    input += source.width;
   }
 }
 
@@ -311,14 +318,20 @@ void BitmapPixels::CopyRegion(
 
       std::uint32_t& destination = this->pixels[destinationX + destinationY * this->width];
       if (alpha) {
-        const unsigned a = input >> 24;
-        std::uint32_t output = std::max(a, destination >> 24) << 24;
+        const std::uint32_t target = destination;
+        const std::int64_t targetAlpha = target >> 24;
+        const std::int64_t targetChannels[3] = {GetBValue(target), GetGValue(target), GetRValue(target)};
+        const std::int64_t sourceAlpha = input >> 24;
+        const std::int64_t sourceChannels[3] = {GetBValue(input), GetGValue(input), GetRValue(input)};
+        int channels[3] = {};
 
-        for (unsigned shift : {0u, 8u, 16u}) {
-          output |= (a * ((input >> shift) & 255) / 255 + (255 - a) * ((destination >> shift) & 255) / 255) << shift;
+        for (std::int64_t channel = 0; channel < 3; ++channel) {
+          channels[channel] = static_cast<int>(sourceChannels[channel] * sourceAlpha / 255 + targetChannels[channel] * (255 - sourceAlpha) / 255);
         }
 
-        destination = output;
+        const std::uint32_t outputAlpha = static_cast<std::uint32_t>(std::max(sourceAlpha, targetAlpha));
+        this->pixels[destinationX + destinationY * this->width] =
+          (outputAlpha << 24) + (static_cast<BYTE>(channels[0]) << 16) + (static_cast<BYTE>(channels[1]) << 8) + static_cast<BYTE>(channels[2]);
       } else {
         destination = input;
       }
