@@ -19,6 +19,7 @@
 #include "UI/Text/UIStaticText.h"
 #include "UI/Window/WindowManagerWindows.h"
 #include "Client/Mode/CMode.h"
+#include "Client/Mode/ModeMgr.h"
 
 #include <cstdio>
 
@@ -148,7 +149,7 @@ void UIApplyForPartyWnd::Slot28(int x, int y) {
         int screenX = positions[index];
         int screenY = 75;
         this->ToScreen(screenX, screenY);
-        static_cast<CMode*>(g_charViewMode)->ShowTooltip(label, screenX, screenY, -1, false, true);
+        g_modeMgr.gameMode->ShowTooltip(label, screenX, screenY, -1, false, true);
       }
 
       break;
