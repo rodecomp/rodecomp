@@ -1954,7 +1954,7 @@ void UIWindowMgr::BroadcastMessage21() {
 
 // OFFSET: 0x00AB1120
 // FUNCTION: fn_17332
-bool UIWindowMgr::IsHoverOnWindow01C8Button() {
+__declspec(noinline) bool UIWindowMgr::IsHoverOnWindow01C8Button() {
   const UIWindow* window = this->window_01C8;
   if (window) {
     UIWindow* const* buttons = reinterpret_cast<UIWindow* const*>(reinterpret_cast<const char*>(window) + 0xBC);
@@ -1967,7 +1967,7 @@ bool UIWindowMgr::IsHoverOnWindow01C8Button() {
 
 // OFFSET: 0x007D5250
 // FUNCTION: fn_09589
-bool UIWindowMgr::HasModalWindow() {
+__declspec(noinline) bool UIWindowMgr::HasModalWindow() {
   UIWindow* top = this->modalWindows.empty() ? nullptr : this->modalWindows.back();
   return top != nullptr;
 }
