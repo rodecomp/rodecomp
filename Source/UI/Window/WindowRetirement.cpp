@@ -7,7 +7,7 @@
 
 // OFFSET: 0x00AA2C90
 // FUNCTION: fn_17219
-void UIWindowMgr::Schedule(UIWindow* window) {
+__declspec(noinline) void UIWindowMgr::Schedule(UIWindow* window) {
   if (window == this->window_03D4) {
     this->window_03D4 = nullptr;
   }
