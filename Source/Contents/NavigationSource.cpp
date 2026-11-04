@@ -374,7 +374,7 @@ bool CNavigationManager::ParseFlags(const char* text, bool* first, bool* second,
 
 // OFFSET: 0x00B938F0
 // FUNCTION: fn_19564
-NaviCell CNavigationManager::ParseCell(const char* text) {
+__forceinline NaviCell CNavigationManager::ParseCell(const char* text) {
   NaviCell cell;
   const char* slash;
   if (text == nullptr || (slash = std::strstr(text, "/")) == nullptr) {
@@ -501,7 +501,7 @@ std::vector<char> CNavigationManager::WriteTarget(NavigationTarget target) {
 
 // OFFSET: 0x00B94B50
 // FUNCTION: fn_19569
-std::vector<char> CNavigationManager::WriteObject(CNavi_Object* object) {
+__declspec(noinline) std::vector<char> CNavigationManager::WriteObject(CNavi_Object* object) {
   std::vector<char> buffer;
   if (object != nullptr) {
     const int type = object->GetType();
