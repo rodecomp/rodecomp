@@ -11,6 +11,9 @@
 
 struct ITEM_INFO;
 
+std::vector<unsigned char> BuildEntryQueueReplayRecords();
+std::vector<unsigned char> BuildRenewQuestReplayRecords();
+
 struct ReplayCachedPacket {
   /* 0000 */ bool enabled;
   /* 0004 */ std::vector<unsigned char> bytes;

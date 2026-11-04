@@ -101,6 +101,7 @@ struct MinimapMarker {
 class CGameMode : public CMode {
 public:
   CGameMode();
+  int SendMsg(int event, int argument1, int argument2, int argument3, int argument4) override;
   void sub_D1C050(const AchievementStatePacket* packet);
   void ReceiveBuyingStoreResult(const BuyingStoreResultPacket* packet);
   void sub_D6C460(int count, int unknown01738784, short unknown01738788, int completed, int total, const AchievementRecordPacket* packets);
