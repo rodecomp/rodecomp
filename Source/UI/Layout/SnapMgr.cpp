@@ -29,8 +29,8 @@ namespace {
       return true;
     }
 
-    for (SnapObject* next : object->edges[1]) {
-      if (ContainsUpward(next, target)) {
+    for (auto next = object->edges[1].begin(); next != object->edges[1].end(); ++next) {
+      if (ContainsUpward(*next, target)) {
         return true;
       }
     }
@@ -135,7 +135,8 @@ bool CSnapMgr::ConnectedToRoot(UIWindow* window) {
 // OFFSET: 0x007E34C0
 // FUNCTION: fn_09719
 void CSnapMgr::UpdateLinks(SnapObject* object) {
-  for (SnapObject* existing : this->objects) {
+  for (auto entry = this->objects.begin(); entry != this->objects.end(); ++entry) {
+    SnapObject* existing = *entry;
     const int side = object->AdjacentSide(*existing);
     object->Remove(existing);
     existing->Remove(object);
@@ -157,8 +158,8 @@ void CSnapMgr::Refresh(UIWindow* window) {
     return;
   }
 
-  for (SnapObject* object : this->objects) {
-    this->UpdateLinks(object);
+  for (auto entry = this->objects.begin(); entry != this->objects.end(); ++entry) {
+    this->UpdateLinks(*entry);
   }
 }
 
@@ -169,9 +170,9 @@ void CSnapMgr::CaptureOrigins(UIWindow* window) {
     return;
   }
 
-  for (SnapObject* object : this->objects) {
-    if (object->window && this->ConnectedToRoot(object->window)) {
-      object->window->Slot12();
+  for (auto entry = this->objects.begin(); entry != this->objects.end(); ++entry) {
+    if ((*entry)->window && this->ConnectedToRoot((*entry)->window)) {
+      (*entry)->window->Slot12();
     }
   }
 }
@@ -185,8 +186,8 @@ void CSnapMgr::ConstrainGroup(UIWindow* window, int& dx, int& dy) {
 
   int resultX = 0, resultY = 0;
   if (this->root->window == window) {
-    for (SnapObject* object : this->objects) {
-      UIWindow* member = object->window;
+    for (auto entry = this->objects.begin(); entry != this->objects.end(); ++entry) {
+      UIWindow* member = (*entry)->window;
       if (!this->ConnectedToRoot(member)) {
         continue;
       }
@@ -218,30 +219,31 @@ void CSnapMgr::MoveConnected(UIWindow* window, int dx, int dy) {
     return;
   }
 
-  for (SnapObject* object : this->objects) {
-    if (this->ConnectedToRoot(object->window)) {
-      object->window->Slot13(dx, dy);
-      g_windowMgr.StoreSnapRectangle(object->window);
+  for (auto entry = this->objects.begin(); entry != this->objects.end(); ++entry) {
+    UIWindow* member = (*entry)->window;
+    if (this->ConnectedToRoot(member)) {
+      member->Slot13(dx, dy);
+      g_windowMgr.StoreSnapRectangle(member);
     }
   }
 }
 
 // OFFSET: 0x007E31C0
 // FUNCTION: fn_09717
-void CSnapMgr::MoveBranch(SnapObject* object, int dx, int dy, int side) {
-  if (side == -1 || object->visited == 1) {
+void SnapObject::MoveBranch(int dx, int dy, int side) {
+  if (side == -1 || this->visited == 1) {
     return;
   }
 
-  object->visited = 1;
-  if (object->window) {
-    object->window->geometry.x = (object->window->geometry.x + dx);
-    object->window->geometry.y = (object->window->geometry.y + dy);
-    g_windowMgr.StoreSnapRectangle(object->window);
+  this->visited = 1;
+  if (this->window) {
+    this->window->geometry.x = (this->window->geometry.x + dx);
+    this->window->geometry.y = (this->window->geometry.y + dy);
+    g_windowMgr.StoreSnapRectangle(this->window);
   }
 
-  for (SnapObject* next : object->edges[side]) {
-    MoveBranch(next, dx, dy, side);
+  for (auto next = this->edges[side].begin(); next != this->edges[side].end(); ++next) {
+    (*next)->MoveBranch(dx, dy, side);
   }
 }
 
@@ -302,8 +304,8 @@ void CSnapMgr::MoveEdge(UIWindow* window, int dx, int dy, int side) {
       }
     }
 
-    for (SnapObject* next : object->edges[side]) {
-      MoveBranch(next, dx, dy, side);
+    for (auto next = object->edges[side].begin(); next != object->edges[side].end(); ++next) {
+      (*next)->MoveBranch(dx, dy, side);
     }
   }
 
@@ -313,8 +315,8 @@ void CSnapMgr::MoveEdge(UIWindow* window, int dx, int dy, int side) {
 // OFFSET: 0x007E3600
 // FUNCTION: fn_09720
 void CSnapMgr::Clear() {
-  for (SnapObject* object : this->objects) {
-    delete object;
+  for (auto entry = this->objects.begin(); entry != this->objects.end(); ++entry) {
+    delete *entry;
   }
 
   this->objects.clear();
@@ -337,8 +339,8 @@ void CSnapMgr::Remove(UIWindow* window) {
     delete object;
     this->objects.erase(entry);
 
-    for (SnapObject* remaining : this->objects) {
-      remaining->Remove(object);
+    for (auto remaining = this->objects.begin(); remaining != this->objects.end(); ++remaining) {
+      (*remaining)->Remove(object);
     }
 
     return;

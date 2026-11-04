@@ -31,7 +31,6 @@ public:
 private:
   void ResetVisited();
   SnapObject* Find(const UIWindow* window) const;
-  static void MoveBranch(SnapObject* object, int dx, int dy, int side);
   CSnapMgr(const CSnapMgr&) = delete;
   CSnapMgr& operator=(const CSnapMgr&) = delete;
 };

@@ -15,6 +15,7 @@ public:
   bool Connected(SnapObject* target);
   int GetHeight() const;
   void AccumulateHeight(int& height, int side) const;
+  void MoveBranch(int dx, int dy, int side);
 
   /* 0004 */ UIWindow* window;
   /* 0008 */ std::list<SnapObject*> edges[4];
