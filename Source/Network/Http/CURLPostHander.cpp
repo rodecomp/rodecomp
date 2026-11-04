@@ -4,8 +4,8 @@
 
 // OFFSET: 0x005E9600
 // FUNCTION: fn_03955
-CCURLPostHander::CCURLPostHander(std::string url)
-    : m_enabled(false), m_url(std::move(url)), m_headers(nullptr), m_last(nullptr), m_form(nullptr), m_easy(nullptr) {
+CCURLPostHander::CCURLPostHander(std::string url) : m_url(url), m_headers(nullptr), m_last(nullptr), m_form(nullptr), m_easy(nullptr) {
+  this->m_enabled = false;
   this->m_easy = g_curlMgr->easyInit();
   if (this->m_easy) {
     this->m_headers = g_curlMgr->slistAppend(this->m_headers, "Content-Type: multipart/form-data");
