@@ -3,7 +3,7 @@
 
 #include "UI/Window/UIFrameWnd.h"
 
-class UIButton;
+class UIBitmapButton;
 class UIEditCtrl;
 class UIStaticText;
 
@@ -72,8 +72,8 @@ public:
   /* 0110 */ unsigned char m_digits[10];
   /* 011C */ int unknown_011C;
   /* 0120 */ int unknown_0120;
-  /* 0124 */ UIButton* unknown_0124[11];
-  /* 0150 */ UIButton* unknown_0150[5];
+  /* 0124 */ UIBitmapButton* unknown_0124[11];
+  /* 0150 */ UIBitmapButton* unknown_0150[5];
   /* 0164 */ UIStaticText* unknown_0164;
 };
 
