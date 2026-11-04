@@ -19,10 +19,10 @@ private:
     RenderVertex* Append(unsigned count);
   };
 
-  /* 00B0 */ unsigned m_minimum;
-  /* 00B4 */ unsigned m_used;
-  /* 00B8 */ std::forward_list<std::unique_ptr<Block>> m_active;
-  /* 00BC */ std::forward_list<std::unique_ptr<Block>> m_unused;
+  /* 0000 */ unsigned m_minimum;
+  /* 0004 */ unsigned m_used;
+  /* 0008 */ std::forward_list<Block*> m_active;
+  /* 000C */ std::forward_list<Block*> m_unused;
   Block& Activate(unsigned capacity);
   void Release();
 };

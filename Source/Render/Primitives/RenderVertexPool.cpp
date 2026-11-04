@@ -28,13 +28,13 @@ RenderVertexPool::~RenderVertexPool() {
 // OFFSET: 0x00562290
 // FUNCTION: fn_02177
 void RenderVertexPool::Release() {
-  for (auto& block : this->m_active) {
-    block.reset();
+  for (Block* block : this->m_active) {
+    delete block;
   }
   this->m_active.clear();
 
-  for (auto& block : this->m_unused) {
-    block.reset();
+  for (Block* block : this->m_unused) {
+    delete block;
   }
   this->m_unused.clear();
 }
@@ -42,22 +42,26 @@ void RenderVertexPool::Release() {
 // OFFSET: 0x00559AA0
 // FUNCTION: fn_02070
 RenderVertexPool::Block& RenderVertexPool::Activate(unsigned capacity) {
+  Block* block = nullptr;
   auto previous = this->m_unused.before_begin();
 
   for (auto current = this->m_unused.begin(); current != this->m_unused.end(); ++current) {
     if ((*current)->capacity() >= capacity) {
+      block = *current;
       this->m_active.splice_after(this->m_active.before_begin(), this->m_unused, previous);
-      return *this->m_active.front();
+      break;
     }
 
     previous = current;
   }
 
-  auto block = std::make_unique<Block>();
-  block->reserve(capacity);
-  this->m_active.push_front(std::move(block));
+  if (!block) {
+    block = new Block();
+    block->reserve(capacity);
+    this->m_active.push_front(block);
+  }
 
-  return *this->m_active.front();
+  return *block;
 }
 
 // OFFSET: 0x00ABC950
