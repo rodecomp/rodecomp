@@ -1,4 +1,5 @@
 #include "Client/Mode/CMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "Client/Replay.h"
 #include "Render/DeviceContext/DeviceContext.h"
@@ -119,14 +120,14 @@ void UICheckBox::Slot28(int x, int y) {
   }
 
   const std::string& tooltip = this->geometry.unknown_0030 != 0 || this->m_uncheckedTooltip.empty() ? this->m_tooltip : this->m_uncheckedTooltip;
-  static_cast<CMode*>(g_charViewMode)->ShowTooltip(tooltip.c_str(), screenX, screenY, -1, false, true);
+  g_modeMgr.gameMode->ShowTooltip(tooltip.c_str(), screenX, screenY, -1, false, true);
 }
 
 // OFFSET: 0x0085F9C0
 // FUNCTION: fn_10877
 void UICheckBox::ResetCursor(int, int) {
   if (this->m_disabled == 0) {
-    static_cast<CMode*>(g_charViewMode)->SetCursorAction(2);
+    g_modeMgr.gameMode->SetCursorAction(2);
   }
 }
 
