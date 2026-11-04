@@ -1944,21 +1944,18 @@ void CGameMode::ReceiveRouletteOpen(const unsigned char* packet) {
 // FUNCTION: fn_22062
 void CGameMode::ReceiveRodexOpen(const unsigned char* packet) {
   const auto* open = reinterpret_cast<const RodexOpenPacket*>(packet);
-  if (open->result != 1) {
+  if (open->result == 1) {
+    if (!g_windowMgr.unknown_0458) {
+      g_session.RestoreItems5C68();
+      g_session.ClearItemQuantities();
+      g_windowMgr.EnsureWindow(264);
+      const char* text = open->text;
+      if (text) {
+        reinterpret_cast<UIRodexContentsWnd*>(g_windowMgr.unknown_0458)->SetContentsText(text);
+      }
+    }
+  } else {
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2604)), 0x64FFFF, 0, 0, 0);
-    return;
-  }
-
-  if (g_windowMgr.unknown_0458) {
-    return;
-  }
-
-  g_session.RestoreItems5C68();
-  g_session.ClearItemQuantities();
-  g_windowMgr.EnsureWindow(264);
-  const char* text = open->text;
-  if (text) {
-    reinterpret_cast<UIRodexContentsWnd*>(g_windowMgr.unknown_0458)->SetContentsText(text);
   }
 }
 
@@ -2000,10 +1997,12 @@ void CGameMode::ReceiveStackedItemReturn(const unsigned char* packet) {
 // OFFSET: 0x00D6E0B0
 // FUNCTION: fn_22095
 void CGameMode::ReceiveRodexRecipient(int id, unsigned short job, unsigned short level, const char* name) {
-  if (id == 0) {
+  if (id) {
+    if (g_windowMgr.unknown_0458) {
+      reinterpret_cast<UIRodexComposeWnd*>(g_windowMgr.unknown_0458)->SetRecipient(id, job, level, name);
+    }
+  } else {
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2615)), 0x64FFFF, 0, 0, 0);
-  } else if (g_windowMgr.unknown_0458) {
-    reinterpret_cast<UIRodexComposeWnd*>(g_windowMgr.unknown_0458)->SetRecipient(id, job, level, name);
   }
 }
 
@@ -2175,27 +2174,35 @@ void CGameMode::ReceiveItemOptionsRefresh(const unsigned char* data) {
 // FUNCTION: fn_21575
 int GetBaseJob(int job) {
   switch (job) {
+  case JT_NOVICE:
   case JT_NOVICE_H:
   case JT_NOVICE_B:
     return JT_NOVICE;
+  case JT_SWORDMAN:
   case JT_SWORDMAN_H:
   case JT_SWORDMAN_B:
     return JT_SWORDMAN;
+  case JT_MAGICIAN:
   case JT_MAGICIAN_H:
   case JT_MAGICIAN_B:
     return JT_MAGICIAN;
+  case JT_ARCHER:
   case JT_ARCHER_H:
   case JT_ARCHER_B:
     return JT_ARCHER;
+  case JT_ACOLYTE:
   case JT_ACOLYTE_H:
   case JT_ACOLYTE_B:
     return JT_ACOLYTE;
+  case JT_MERCHANT:
   case JT_MERCHANT_H:
   case JT_MERCHANT_B:
     return JT_MERCHANT;
+  case JT_THIEF:
   case JT_THIEF_H:
   case JT_THIEF_B:
     return JT_THIEF;
+  case JT_KNIGHT:
   case JT_KNIGHT_H:
   case JT_KNIGHT_B:
   case JT_RUNE_KNIGHT:
@@ -2203,6 +2210,7 @@ int GetBaseJob(int job) {
   case JT_RUNE_KNIGHT_B:
   case JT_DRAGON_KNIGHT:
     return JT_KNIGHT;
+  case JT_PRIEST:
   case JT_PRIEST_H:
   case JT_PRIEST_B:
   case JT_ARCHBISHOP:
@@ -2210,6 +2218,7 @@ int GetBaseJob(int job) {
   case JT_ARCHBISHOP_B:
   case JT_CARDINAL:
     return JT_PRIEST;
+  case JT_WIZARD:
   case JT_WIZARD_H:
   case JT_WIZARD_B:
   case JT_WARLOCK:
@@ -2217,6 +2226,7 @@ int GetBaseJob(int job) {
   case JT_WARLOCK_B:
   case JT_ARCH_MAGE:
     return JT_WIZARD;
+  case JT_BLACKSMITH:
   case JT_BLACKSMITH_H:
   case JT_BLACKSMITH_B:
   case JT_MECHANIC:
@@ -2224,6 +2234,7 @@ int GetBaseJob(int job) {
   case JT_MECHANIC_B:
   case JT_MEISTER:
     return JT_BLACKSMITH;
+  case JT_HUNTER:
   case JT_HUNTER_H:
   case JT_HUNTER_B:
   case JT_RANGER:
@@ -2231,6 +2242,7 @@ int GetBaseJob(int job) {
   case JT_RANGER_B:
   case JT_WINDHAWK:
     return JT_HUNTER;
+  case JT_ASSASSIN:
   case JT_ASSASSIN_H:
   case JT_ASSASSIN_B:
   case JT_GUILLOTINE_CROSS:
@@ -2238,6 +2250,7 @@ int GetBaseJob(int job) {
   case JT_GUILLOTINE_CROSS_B:
   case JT_SHADOW_CROSS:
     return JT_ASSASSIN;
+  case JT_CRUSADER:
   case JT_CRUSADER_H:
   case JT_CRUSADER_B:
   case JT_ROYAL_GUARD:
@@ -2245,6 +2258,7 @@ int GetBaseJob(int job) {
   case JT_ROYAL_GUARD_B:
   case JT_IMPERIAL_GUARD:
     return JT_CRUSADER;
+  case JT_MONK:
   case JT_MONK_H:
   case JT_MONK_B:
   case JT_SURA:
@@ -2252,6 +2266,7 @@ int GetBaseJob(int job) {
   case JT_SURA_B:
   case JT_INQUISITOR:
     return JT_MONK;
+  case JT_SAGE:
   case JT_SAGE_H:
   case JT_SAGE_B:
   case JT_SORCERER:
@@ -2259,6 +2274,7 @@ int GetBaseJob(int job) {
   case JT_SORCERER_B:
   case JT_ELEMENTAL_MASTER:
     return JT_SAGE;
+  case JT_ROGUE:
   case JT_ROGUE_H:
   case JT_ROGUE_B:
   case JT_SHADOW_CHASER:
@@ -2266,6 +2282,7 @@ int GetBaseJob(int job) {
   case JT_SHADOW_CHASER_B:
   case JT_ABYSS_CHASER:
     return JT_ROGUE;
+  case JT_ALCHEMIST:
   case JT_ALCHEMIST_H:
   case JT_ALCHEMIST_B:
   case JT_GENETIC:
@@ -2273,6 +2290,7 @@ int GetBaseJob(int job) {
   case JT_GENETIC_B:
   case JT_BIOLO:
     return JT_ALCHEMIST;
+  case JT_BARD:
   case JT_BARD_H:
   case JT_BARD_B:
   case JT_MINSTREL:
@@ -2280,6 +2298,7 @@ int GetBaseJob(int job) {
   case JT_MINSTREL_B:
   case JT_TROUBADOUR:
     return JT_BARD;
+  case JT_DANCER:
   case JT_DANCER_H:
   case JT_DANCER_B:
   case JT_WANDERER:
@@ -2287,16 +2306,19 @@ int GetBaseJob(int job) {
   case JT_WANDERER_B:
   case JT_TROUVERE:
     return JT_DANCER;
+  case JT_SUPERNOVICE:
   case JT_SUPERNOVICE_B:
   case JT_SUPERNOVICE2:
   case JT_SUPERNOVICE2_B:
   case JT_HYPER_NOVICE:
     return JT_SUPERNOVICE;
+  case JT_GUNSLINGER:
   case JT_REBELLION:
   case JT_GUNSLINGER_B:
   case JT_REBELLION_B:
   case JT_NIGHT_WATCH:
     return JT_GUNSLINGER;
+  case JT_NINJA:
   case JT_KAGEROU:
   case JT_OBORO:
   case JT_NINJA_B:
@@ -2305,21 +2327,26 @@ int GetBaseJob(int job) {
   case JT_SHINKIRO:
   case JT_SHIRANUI:
     return JT_NINJA;
+  case JT_TAEKWON:
   case JT_TAEKWON_B:
     return JT_TAEKWON;
+  case JT_STAR:
   case JT_STAR_B:
   case JT_STAR_EMPEROR:
   case JT_STAR_EMPEROR_B:
   case JT_SKY_EMPEROR:
     return JT_STAR;
+  case JT_LINKER:
   case JT_LINKER_B:
   case JT_SOUL_REAPER:
   case JT_SOUL_REAPER_B:
   case JT_SOUL_ASCETIC:
     return JT_LINKER;
+  case JT_DO_SUMMONER:
   case JT_DO_SUMMONER_B:
   case JT_SPIRIT_HANDLER:
     return JT_DO_SUMMONER;
+  case JT_DRUID:
   case JT_DRUID_B:
   case JT_KARNOS:
   case JT_KARNOS_B:
