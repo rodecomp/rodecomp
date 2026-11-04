@@ -144,17 +144,17 @@ void UIBalloonText::FitText() {
 // OFFSET: 0x0085B140
 // FUNCTION: fn_10793
 void UIBalloonText::Paint() {
-  if (this->geometry.surface) {
-    this->geometry.surface->Fill(nullptr, 0xFFFFFF);
-  }
+  this->ClearSurface(0xFFFFFF);
 
   int y = 4;
+  unsigned int index = 0;
 
-  for (const std::string& line : this->m_lines) {
-    this->DrawTextAt(6, y, line.c_str(), 0, 0, this->m_fontHeight, this->m_textColor, 0, 0);
+  while (index < this->m_lines.size()) {
+    this->DrawTextAt(6, y, this->m_lines[index].c_str(), 0, 0, this->m_fontHeight, this->m_textColor, 0, 0);
 
-    const int height = Measure(*this, line, 0, this->m_fontHeight).cy;
-    y = (y + (height + 4));
+    const int height = this->TextHeight(this->m_lines[index].c_str(), 0, 0, this->m_fontHeight, 0, 0);
+    y += height + 4;
+    ++index;
   }
 }
 
