@@ -2,10 +2,13 @@
 #include "Render/Text/TextContext.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
+#include "Resource/SkinPalette.h"
+#include "Resource/TextureNames.h"
 #include "UI/Shop/ItemDrawing.h"
 #include "Contents/Skills/ClientSkills.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
+#include "Contents/SkinMgr.h"
 #include "Contents/UserData/NormalItemSlots.h"
 #include "UI/Shortcuts/ShortcutCooldowns.h"
 #include "UI/Shortcuts/ShortcutGrid.h"
@@ -23,7 +26,7 @@ namespace {
   CBitmapRes* Load(ResourceMgr& resources, const char* tail) {
     char path[200];
     std::sprintf(path, "%s%s", prefix, tail);
-    return static_cast<CBitmapRes*>(resources.Load(path));
+    return static_cast<CBitmapRes*>(resources.Load(Resolve(path)));
   }
 
   // INLINED
@@ -80,14 +83,9 @@ void UIShortCutWnd::Paint() {
   }
 
   if (grid.row != -1 && grid.hovered != -1) {
-    CBitmapRes* chip = Load(resources, "\\colorchip.bmp");
-    std::uint32_t color = 0;
-    if (chip) {
-      const std::uint32_t pixel = chip->image.width > 10 && chip->image.height > 10 ? chip->image.pixels[10 + 10 * chip->image.width] : 0x00FF0000u;
-      color = ((pixel & 255) << 16) | (pixel & 0xFF00) | ((pixel >> 16) & 255);
-    }
-
-    window.FillRegion(((grid.hovered * 29) + 16), 5 + 33 * static_cast<unsigned>(g_session.m_hotkeyPage), 24, 24, color);
+    const SkinPaletteCell cell{2, 2};
+    window.FillRegion(((grid.hovered * 29) + 16), 5 + 33 * static_cast<unsigned>(g_session.m_hotkeyPage), 24, 24,
+                      SkinPaletteColor(resources, cell, g_skinInfo.Selected()));
   }
 
   g_session.m_mainCooldownIcons.clear();
@@ -116,7 +114,7 @@ void UIShortCutWnd::Paint() {
         char path[200];
 
         std::sprintf(path, "%s\\item\\%s.bmp", prefix, skill.name);
-        CBitmapRes* image = static_cast<CBitmapRes*>(resources.Load(path));
+        CBitmapRes* image = static_cast<CBitmapRes*>(resources.Load(Resolve(path)));
         if (!image) {
           image = Load(resources, "\\item\\am_berserkpitcher.bmp");
         }
@@ -136,7 +134,7 @@ void UIShortCutWnd::Paint() {
           continue;
         }
 
-        DrawItemIcon(window, resources, x, y, item, static_cast<unsigned char>(item.unknown_0060));
+        DrawItemIcon(window, resources, x, y, item, item.identified);
         if (item.quantity != 0) {
           Count(window, x + 27, (y + 17), item.quantity);
         }
@@ -165,7 +163,7 @@ void UIShortCutWnd::Paint() {
       }
 
       const int x = 16 + 29 * column;
-      DrawItemIcon(window, resources, x, y, item, static_cast<unsigned char>(item.unknown_0060));
+      DrawItemIcon(window, resources, x, y, item, item.identified);
       if (item.quantity != 0) {
         Count(window, x + 27, (y + 17), item.quantity);
       }
