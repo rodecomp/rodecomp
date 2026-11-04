@@ -31,7 +31,7 @@ bool GroundGeometry::CellRectangle(const C3dAttr& terrain, int column, int row, 
 
 namespace {
   // INLINED
-  void DrawDecal(
+  __forceinline void DrawDecal(
     const GroundGeometry& ground, const C3dAttr& terrain, const float* matrix, int column, int row, std::uint32_t color, CTexture& texture, const float* uv,
     float bias
   ) {
@@ -97,7 +97,7 @@ void GroundGeometry::Slot14(int, int, int, int) {
 
 // OFFSET: 0x00AC1720
 // FUNCTION: fn_17589
-void GroundGeometry::DrawGridDecal(
+__declspec(noinline) void GroundGeometry::DrawGridDecal(
   const C3dAttr& terrain, const float* matrix, int column, int row, std::uint32_t color, CTexture& texture, const float* uv
 ) const {
   DrawDecal(*this, terrain, matrix, column, row, color, texture, uv, 3.0517578e-05f);
@@ -110,7 +110,8 @@ void GroundGeometry::DrawGrid(
 ) const {
   CTexture* texture = g_texMgr.Load("grid.tga", 0, false, true, false);
   // STATIC: 0x01347EB0
-  constexpr float uv[8] = {0, 0, 1, 0, 0, 1, 1, 1};
+  // GLOBAL: gl_25477
+  static const float uv[8] = {0, 0, 1, 0, 0, 1, 1, 1};
   this->DrawGridDecal(terrain, matrix, column, row, color, *texture, uv);
 }
 
