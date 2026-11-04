@@ -14,7 +14,7 @@
 
 // STATIC: 0x016D5780
 // GLOBAL: gl_24382
-std::unordered_map<int, std::string> g_messageStrings;
+std::unordered_map<int, std::string, MessageIdHash> g_messageStrings;
 
 // GLOBAL: gl_24601
 static CCommonObject g_messageTableObject;

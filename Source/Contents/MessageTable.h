@@ -10,7 +10,13 @@ enum MessageId : int {
   MSI_FAILED_ADD_TAB = 1578
 };
 
-extern std::unordered_map<int, std::string> g_messageStrings;
+struct MessageIdHash {
+  std::size_t operator()(int id) const {
+    return static_cast<std::size_t>(id);
+  }
+};
+
+extern std::unordered_map<int, std::string, MessageIdHash> g_messageStrings;
 const char* LookupMessage(int id);
 void InsertMessage(int id, const char* text);
 int FindMessageId(const char* name);
