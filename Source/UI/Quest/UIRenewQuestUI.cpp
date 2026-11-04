@@ -2169,6 +2169,23 @@ void CUIRenewQuestUI::OnProcessTabClick() {
   }
 }
 
+// FUNCTION: fn_45516
+void CUIRenewQuestUI::OnRecommendedTabClick() {
+  this->RecordValues(0x16, 2, 0, 0, 0);
+  for (RenewQuestUI::CUIQuestList* list : this->questLists) {
+    if (list->type == 2) {
+      if (list->list) {
+        if (s_recommendedTabFirstSelect) {
+          list->list->SelectIndex(0);
+          s_recommendedTabFirstSelect = false;
+          return;
+        }
+        list->list->scrollBar->SetPosition(0);
+      }
+      return;
+    }
+  }
+}
 
 // FUNCTION: fn_45517
 void CUIRenewQuestUI::OnHoldTabClick() {
