@@ -239,26 +239,7 @@ void UIItemTagCtrl::sub_89CFE0(const ITEM_INFO& item, unsigned int color) {
 
   link += links->ItemLinkNumberText(item.unknown_0000[2]);
 
-  bool equipment;
-  switch (item.unknown_0000[0]) {
-  case 4:
-  case 5:
-  case 8:
-  case 9:
-  case 11:
-  case 12:
-  case 13:
-  case 14:
-  case 15:
-  case 21:
-    equipment = true;
-    break;
-  default:
-    equipment = false;
-    break;
-  }
-
-  link += equipment ? "1" : "0";
+  link += Equipment(item) ? "1" : "0";
   link += links->ItemLinkNumberText(std::atoi(item.itemId.c_str()));
 
   if (item.unknown_0060 != 0) {
