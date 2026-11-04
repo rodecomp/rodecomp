@@ -65,7 +65,7 @@ void CCharacterLinkedUserDataMgr::CompleteSave() {
 
 // OFFSET: 0x005E6BB0
 // FUNCTION: fn_03931
-void CCharacterLinkedUserDataMgr::RefreshUrls(LuaScript& script, const char* host, const char* port, const char* overrideKey) {
+__declspec(noinline) void CCharacterLinkedUserDataMgr::RefreshUrls(LuaScript& script, const char* host, const char* port, const char* overrideKey) {
   const std::string base = ResolveAccountServiceBase(script, script, host, port, overrideKey);
   if (!base.empty()) {
     this->m_saveUrl = base + "/charconfig/save";
