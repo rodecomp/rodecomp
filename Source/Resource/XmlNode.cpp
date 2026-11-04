@@ -3,15 +3,18 @@
 #include <cstdlib>
 #include <cstring>
 
+// OFFSET: 0x00AFA470
 // FUNCTION: fn_18291
 XmlNode::XmlNode(const char* name) : name(name), unknown_0004(0), unknown_0008(0), sibling(nullptr), child(nullptr) {
 }
 
+// OFFSET: 0x00AFA500
 // FUNCTION: fn_18292
 XmlNode::~XmlNode() {
   this->Clear();
 }
 
+// OFFSET: 0x00AFA590
 // FUNCTION: fn_18293
 XmlNode* XmlNode::AppendSibling(XmlNode* node) {
   XmlNode* current = this;
@@ -23,6 +26,7 @@ XmlNode* XmlNode::AppendSibling(XmlNode* node) {
   return node;
 }
 
+// OFFSET: 0x00AFA5C0
 // FUNCTION: fn_18294
 void XmlDocument::Reset() {
   this->Clear();
@@ -32,6 +36,7 @@ void XmlDocument::Reset() {
   }
 }
 
+// OFFSET: 0x00AFA5F0
 // FUNCTION: fn_18295
 void XmlNode::Clear() {
   if (this->sibling != nullptr) {
@@ -48,6 +53,7 @@ void XmlNode::Clear() {
   this->unknown_0004 = 0;
 }
 
+// OFFSET: 0x00AFA6B0
 // FUNCTION: fn_18296
 XmlNode* XmlNode::FindChild(const char* name) {
   XmlNode* first = this->child;
@@ -62,6 +68,7 @@ XmlNode* XmlNode::FindChild(const char* name) {
   return first->FindSibling(name);
 }
 
+// OFFSET: 0x00AFA710
 // FUNCTION: fn_18297
 XmlNode* XmlNode::FindSibling(const char* name) {
   for (XmlNode* current = this->sibling; current != nullptr; current = current->sibling) {

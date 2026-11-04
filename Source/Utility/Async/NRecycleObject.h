@@ -35,7 +35,6 @@ public:
   virtual ~NRecycleObjectPoolInter();
 };
 
-// OFFSET: 0x005782C0
 inline NRecycleObjectPoolInter::~NRecycleObjectPoolInter() = default;
 
 template <class T> class NRecycleObjectPool : public NRecycleObjectPoolInter {
@@ -56,32 +55,32 @@ public:
   }
 
   // OFFSET: 0x005782F0
-  // OFFSET: 0x005783D0
-  // OFFSET: 0x005784B0
-  // OFFSET: 0x00578590
-  // OFFSET: 0x00578670
-  // OFFSET: 0x00578750
-  // OFFSET: 0x00578830
-  // OFFSET: 0x00578910
-  // OFFSET: 0x005789F0
-  // OFFSET: 0x00578AD0
-  // OFFSET: 0x00578BB0
-  // OFFSET: 0x00578C90
-  // OFFSET: 0x00578D70
-  // OFFSET: 0x00578E50
   // FUNCTION: fn_02552
+  // OFFSET: 0x005783D0
   // FUNCTION: fn_02553
+  // OFFSET: 0x005784B0
   // FUNCTION: fn_02554
+  // OFFSET: 0x00578590
   // FUNCTION: fn_02555
+  // OFFSET: 0x00578670
   // FUNCTION: fn_02556
+  // OFFSET: 0x00578750
   // FUNCTION: fn_02557
+  // OFFSET: 0x00578830
   // FUNCTION: fn_02558
+  // OFFSET: 0x00578910
   // FUNCTION: fn_02559
+  // OFFSET: 0x005789F0
   // FUNCTION: fn_02560
+  // OFFSET: 0x00578AD0
   // FUNCTION: fn_02561
+  // OFFSET: 0x00578BB0
   // FUNCTION: fn_02562
+  // OFFSET: 0x00578C90
   // FUNCTION: fn_02563
+  // OFFSET: 0x00578D70
   // FUNCTION: fn_02564
+  // OFFSET: 0x00578E50
   // FUNCTION: fn_02565
   T* Acquire() override {
     NSyncObject held(&this->m_criticalSection);
@@ -102,32 +101,32 @@ public:
   }
 
   // OFFSET: 0x0057A6F0
-  // OFFSET: 0x0057A780
-  // OFFSET: 0x0057A810
-  // OFFSET: 0x0057A8A0
-  // OFFSET: 0x0057A930
-  // OFFSET: 0x0057A9C0
-  // OFFSET: 0x0057AA50
-  // OFFSET: 0x0057AAE0
-  // OFFSET: 0x0057AB70
-  // OFFSET: 0x0057AC00
-  // OFFSET: 0x0057AC90
-  // OFFSET: 0x0057AD20
-  // OFFSET: 0x0057ADB0
-  // OFFSET: 0x0057AE40
   // FUNCTION: fn_02567
+  // OFFSET: 0x0057A780
   // FUNCTION: fn_02568
+  // OFFSET: 0x0057A810
   // FUNCTION: fn_02569
+  // OFFSET: 0x0057A8A0
   // FUNCTION: fn_02570
+  // OFFSET: 0x0057A930
   // FUNCTION: fn_02571
+  // OFFSET: 0x0057A9C0
   // FUNCTION: fn_02572
+  // OFFSET: 0x0057AA50
   // FUNCTION: fn_02573
+  // OFFSET: 0x0057AAE0
   // FUNCTION: fn_02574
+  // OFFSET: 0x0057AB70
   // FUNCTION: fn_02575
+  // OFFSET: 0x0057AC00
   // FUNCTION: fn_02576
+  // OFFSET: 0x0057AC90
   // FUNCTION: fn_02577
+  // OFFSET: 0x0057AD20
   // FUNCTION: fn_02578
+  // OFFSET: 0x0057ADB0
   // FUNCTION: fn_02579
+  // OFFSET: 0x0057AE40
   // FUNCTION: fn_02580
   void Release(NRecycleObject* object) override {
     NSyncObject held(&this->m_criticalSection);

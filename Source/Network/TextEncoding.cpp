@@ -144,6 +144,7 @@ std::string ToUtf8(const std::string& text, UINT codePage) {
   return result;
 }
 
+// OFFSET: 0x00AF7110
 // FUNCTION: fn_18257
 void LowercaseText(std::string& text) {
   for (unsigned index = 0; index < text.size(); ++index) {
@@ -155,6 +156,7 @@ void LowercaseText(std::string& text) {
   }
 }
 
+// OFFSET: 0x00AF7450
 // FUNCTION: fn_18258
 std::wstring DecodeText(UINT codePage, const std::string& text) {
   const int length = MultiByteToWideChar(codePage, 0, text.data(), static_cast<int>(text.size()), nullptr, 0);
@@ -174,6 +176,7 @@ std::wstring DecodeText(UINT codePage, const std::string& text) {
   return result;
 }
 
+// OFFSET: 0x00AF8930
 // FUNCTION: fn_18265
 std::string EncodeText(UINT codePage, const std::wstring& text) {
   const int length = WideCharToMultiByte(codePage, 0, text.c_str(), -1, nullptr, 0, nullptr, nullptr);

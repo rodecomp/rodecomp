@@ -23,15 +23,12 @@ CConnection::CConnection() : m_socket(INVALID_SOCKET), m_deferred(0), m_sendDead
 
 // OFFSET: 0x00C7C280
 // FUNCTION: fn_20384
-// OFFSET: 0x00C7C2F0
 CConnection::~CConnection() = default;
 
 // OFFSET: 0x00C7C1C0
 // FUNCTION: fn_20383
 CRagConnection::CRagConnection() : unknown_006C(0) {
 }
-
-// OFFSET: 0x00C7C370
 
 // OFFSET: 0x00C7C4D0
 // FUNCTION: fn_20389

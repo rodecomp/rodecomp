@@ -258,7 +258,6 @@ UIReplayRECControlWnd::~UIReplayRECControlWnd() {
 }
 
 // OFFSET: 0x008A5220
-// OFFSET: 0x008A64E0
 // FUNCTION: fn_11680
 UIMessageBox::~UIMessageBox() = default;
 
@@ -1773,8 +1772,6 @@ void UINoticeWnd::Slot15(int, int) {
     this->LoadNotice();
   }
 }
-
-// OFFSET: 0x008B42D0
 
 // OFFSET: 0x008B42D0
 // FUNCTION: fn_11749

@@ -4,22 +4,22 @@
 #include <new>
 
 // OFFSET: 0x006C7720
-// OFFSET: 0x006C7920
-// OFFSET: 0x006C7B30
-// OFFSET: 0x006C7D40
-// OFFSET: 0x006C7F60
-// OFFSET: 0x006C8180
-// OFFSET: 0x006C83A0
-// OFFSET: 0x006C85D0
-// OFFSET: 0x006C8810
 // FUNCTION: fn_06421
+// OFFSET: 0x006C7920
 // FUNCTION: fn_06422
+// OFFSET: 0x006C7B30
 // FUNCTION: fn_06423
+// OFFSET: 0x006C7D40
 // FUNCTION: fn_06424
+// OFFSET: 0x006C7F60
 // FUNCTION: fn_06425
+// OFFSET: 0x006C8180
 // FUNCTION: fn_06426
+// OFFSET: 0x006C83A0
 // FUNCTION: fn_06427
+// OFFSET: 0x006C85D0
 // FUNCTION: fn_06428
+// OFFSET: 0x006C8810
 // FUNCTION: fn_06429
 template <typename... Groups>
 void CJobCodeForItem::AddJobCodeFromGroups(unsigned long code, Groups... groups) {
@@ -53,18 +53,18 @@ template void CJobCodeForItem::AddJobCodeFromGroups(unsigned long, int, int);
 template void CJobCodeForItem::AddJobCodeFromGroups(unsigned long, int);
 
 // OFFSET: 0x006C8A50
-// OFFSET: 0x006C8B10
-// OFFSET: 0x006C8BD0
-// OFFSET: 0x006C8CB0
-// OFFSET: 0x006C8D90
-// OFFSET: 0x006C8F60
-// OFFSET: 0x006C9050
 // FUNCTION: fn_06430
+// OFFSET: 0x006C8B10
 // FUNCTION: fn_06431
+// OFFSET: 0x006C8BD0
 // FUNCTION: fn_06432
+// OFFSET: 0x006C8CB0
 // FUNCTION: fn_06433
+// OFFSET: 0x006C8D90
 // FUNCTION: fn_06434
+// OFFSET: 0x006C8F60
 // FUNCTION: fn_06435
+// OFFSET: 0x006C9050
 // FUNCTION: fn_06436
 template <typename... Jobs>
 void CJobCodeForItem::AddJobCode(unsigned long code, Jobs... jobs) {
@@ -88,20 +88,20 @@ template void CJobCodeForItem::AddJobCode(unsigned long, JobId, JobId);
 template void CJobCodeForItem::AddJobCode(unsigned long, JobId);
 
 // OFFSET: 0x006C9270
-// OFFSET: 0x006C9350
-// OFFSET: 0x006C9430
-// OFFSET: 0x006C9510
-// OFFSET: 0x006C9600
-// OFFSET: 0x006C96F0
-// OFFSET: 0x006C98F0
-// OFFSET: 0x006C9A00
 // FUNCTION: fn_06437
+// OFFSET: 0x006C9350
 // FUNCTION: fn_06438
+// OFFSET: 0x006C9430
 // FUNCTION: fn_06439
+// OFFSET: 0x006C9510
 // FUNCTION: fn_06440
+// OFFSET: 0x006C9600
 // FUNCTION: fn_06441
+// OFFSET: 0x006C96F0
 // FUNCTION: fn_06442
+// OFFSET: 0x006C98F0
 // FUNCTION: fn_06443
+// OFFSET: 0x006C9A00
 // FUNCTION: fn_06444
 template <typename... Jobs>
 void CJobCodeForItem::AddJobGroup(unsigned int group, Jobs... jobs) {

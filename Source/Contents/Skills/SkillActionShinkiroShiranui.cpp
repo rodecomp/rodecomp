@@ -215,8 +215,6 @@ void CSkillAction_SS_ANTENPOU::Slot11(int level, CGameActor* source, CGameActor*
   }
 }
 
-// OFFSET: 0x00795D60
-
 // OFFSET: 0x00795EE0
 // FUNCTION: fn_08800
 int CSkillAction_SS_KAGEAKUMU::Slot01() {
@@ -237,8 +235,6 @@ void CSkillAction_SS_KAGEAKUMU::Slot08(int level, CGameActor* source) {
     static_cast<EffectActor*>(source)->LaunchEffect(1656, level / 16);
   }
 }
-
-// OFFSET: 0x00795F00
 
 // OFFSET: 0x00795F60
 // FUNCTION: fn_08803
@@ -268,8 +264,6 @@ void CSkillAction_SS_HITOUAKUMU::Slot08(int level, CGameActor* source) {
     static_cast<EffectActor*>(source)->LaunchEffect(1656, level / 16);
   }
 }
-
-// OFFSET: 0x007960E0
 
 // OFFSET: 0x00796140
 // FUNCTION: fn_08807
@@ -318,8 +312,6 @@ void CSkillAction_SS_ANKOKURYUUAKUMU::Slot08(int level, CGameActor* source) {
     static_cast<EffectActor*>(source)->LaunchEffect(1656, level / 16);
   }
 }
-
-// OFFSET: 0x007964B0
 
 // OFFSET: 0x00796510
 // FUNCTION: fn_08811

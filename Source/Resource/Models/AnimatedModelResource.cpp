@@ -71,7 +71,6 @@ C3dAnimModelRes* C3dAnimModelRes::Create() {
   return new C3dAnimModelRes;
 }
 
-// OFFSET: 0x00752380
 // OFFSET: 0x0075C710
 // FUNCTION: fn_08023
 void C3dAnimModelRes::Unload() {

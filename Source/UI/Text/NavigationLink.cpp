@@ -938,8 +938,6 @@ void CCreateLineInfo::BuildWindows() {
 }
 
 // OFFSET: 0x008392C0
-
-// OFFSET: 0x008392C0
 // FUNCTION: fn_10456
 void CCreateLineInfo::Rebuild(int) {
   DecodeTextEscapes(this->m_text);

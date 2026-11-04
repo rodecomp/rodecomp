@@ -2894,7 +2894,6 @@ struct Unknown015D4818 {
 Unknown015D4818* g_unknown_015D4818;
 
 // OFFSET: 0x00D3BD40
-// OFFSET: 0x03DEA400
 // FUNCTION: fn_21790
 void CGameMode::ReceivePendingItem1718List(const unsigned char* packet) {
   if (g_windowMgr.unknown_01E4 || g_windowMgr.LookupWindow(318)) {

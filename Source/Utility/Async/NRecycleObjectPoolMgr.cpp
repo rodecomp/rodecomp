@@ -25,7 +25,6 @@ NRecycleObjectPoolMgr::NRecycleObjectPoolMgr() : m_enabled(false) {
 }
 
 // OFFSET: 0x00736DE0
-// OFFSET: 0x00736E50
 // FUNCTION: fn_07635
 NRecycleObjectPoolMgr::~NRecycleObjectPoolMgr() = default;
 

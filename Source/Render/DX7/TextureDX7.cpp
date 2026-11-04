@@ -117,7 +117,6 @@ std::unique_ptr<CTextureDX7> CreateTextureDX7(DeviceOwnerDX7*& owner) {
 }
 
 // OFFSET: 0x00543DC0
-// OFFSET: 0x00543E30
 // FUNCTION: fn_01809
 CTextureDX7::~CTextureDX7() {
   if (this->m_surface) {
@@ -340,14 +339,12 @@ void CTextureDX7::Fill(const RECT* rectangle, std::uint32_t color) {
   }
 }
 
-// OFFSET: 0x00544410
 void CTextureDX7::Draw(int x, int y, int width, int height, std::uint32_t color) {
   this->DrawTo(
     g_renderer->primitives, g_renderer->queues, x, y, width, height, color, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
   );
 }
 
-// OFFSET: 0x00544610
 void CTextureDX7::Stretch(int x, int y, int width, int height) {
   this->StretchTo(
     g_renderer->primitives, g_renderer->queues, x, y, width, height, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd

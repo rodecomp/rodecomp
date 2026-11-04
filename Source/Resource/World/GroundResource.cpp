@@ -8,7 +8,6 @@ CGndRes::CGndRes() : loaded(0), width(0), height(0), cellSize(10.0f) {
 }
 
 // OFFSET: 0x0074E390
-// OFFSET: 0x0074DD10
 // FUNCTION: fn_07908
 CGndRes::~CGndRes() = default;
 

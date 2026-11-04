@@ -10,6 +10,7 @@ int __fastcall sub_AEA5B0(const void* self) {
   return *reinterpret_cast<const int*>(static_cast<const char*>(self) + 0x20);
 }
 
+// OFFSET: 0x00AEA780
 // FUNCTION: fn_18122
 int RemoveProtectionTools() {
   if (_access("nconfig.ini", 6) == 0) {
@@ -32,6 +33,7 @@ int RemoveProtectionTools() {
   return result == 0 ? _unlink("cfindhack.exe") : result;
 }
 
+// OFFSET: 0x00AEACD0
 // FUNCTION: fn_18124
 int LoadLibraryFunctions(HMODULE* module, const char* name, int count, ...) {
   *module = LoadLibraryA(name);
@@ -61,6 +63,7 @@ int LoadLibraryFunctions(HMODULE* module, const char* name, int count, ...) {
   return 0;
 }
 
+// OFFSET: 0x00AEA820
 // FUNCTION: fn_18123
 BOOL __stdcall SetDebugPrivilege(int enabled) {
   BOOL result = FALSE;
@@ -91,6 +94,7 @@ BOOL __stdcall SetDebugPrivilege(int enabled) {
   return result;
 }
 
+// OFFSET: 0x00AEB050
 // FUNCTION: fn_18125
 BOOL IsLegacyWindows() {
   OSVERSIONINFOEXA version;

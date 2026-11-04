@@ -27,7 +27,6 @@ UIEditCtrl2::UIEditCtrl2() : UIEditCtrl() {
 }
 
 // OFFSET: 0x008515E0
-// OFFSET: 0x00852700
 // FUNCTION: fn_10692
 UIEditCtrl2::~UIEditCtrl2() = default;
 
@@ -359,8 +358,8 @@ UIEditCtrl3::UIEditCtrl3(const UIEditCtrl3& other) : UIEditCtrl2(other) {
 }
 
 // OFFSET: 0x00851630
-// OFFSET: 0x00852770
 // FUNCTION: fn_10693
+// OFFSET: 0x00852770
 // FUNCTION: fn_10715
 UIEditCtrl3::~UIEditCtrl3() {
   this->ClearLineState();
@@ -409,8 +408,6 @@ int UIWhisperEditCtrl::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
 
   return 0;
 }
-
-// OFFSET: 0x00867FC0
 
 // OFFSET: 0x00853760
 // FUNCTION: fn_10741
@@ -747,12 +744,11 @@ int UIEditCtrl::MeasureText(const std::string& text, const int& bytes) {
   return this->TextWidth(text.c_str(), bytes, 0, 12, 0, 0);
 }
 
-// OFFSET: 0x0084F7B0
+// OFFSET: 0x0084F710
 // FUNCTION: fn_10660
 UIEditCtrl4::UIEditCtrl4() : UIEditCtrl(), placeholderColor(0xFFFFFFFFu), placeholderEnabled(0) {
 }
 
-// OFFSET: 0x00852870
 UIEditCtrl4::~UIEditCtrl4() = default;
 
 // OFFSET: 0x0085AA40
@@ -808,7 +804,6 @@ void UIEditCtrl4::SetPlaceholderColor(std::uint32_t color) {
 UIEditCtrl5::UIEditCtrl5() : UIEditCtrl4() {
 }
 
-// OFFSET: 0x008528F0
 UIEditCtrl5::~UIEditCtrl5() = default;
 
 // OFFSET: 0x00864140

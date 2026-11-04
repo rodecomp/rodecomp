@@ -7,7 +7,6 @@
 UINaviLinkButton::UINaviLinkButton() : UITextButton() {
 }
 
-// OFFSET: 0x00873A90
 UINaviLinkButton::~UINaviLinkButton() = default;
 
 // OFFSET: 0x00893050

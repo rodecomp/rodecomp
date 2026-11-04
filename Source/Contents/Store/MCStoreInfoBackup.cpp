@@ -18,7 +18,6 @@ CMCStoreInfoBackup::CMCStoreInfoBackup() : enabled(true), loaded(false), pending
 }
 
 // OFFSET: 0x00605D70
-// OFFSET: 0x00605DF0
 // FUNCTION: fn_04227
 CMCStoreInfoBackup::~CMCStoreInfoBackup() = default;
 

@@ -513,8 +513,6 @@ void CGameMode::UpdateUnknown0628(int id, bool add) {
   }
 }
 
-// OFFSET: 0x00CEFFC0
-
 // OFFSET: 0x00CF0070
 // FUNCTION: fn_21410
 const char* CGameMode::Unknown04DCText() {
@@ -689,10 +687,6 @@ void CGameMode::sub_CEB8E0() {
 
   Replay::Instance().Record(static_cast<std::uint16_t>(record.length), &record, 0x2A, 0);
 }
-
-// OFFSET: 0x00CEBF30
-
-// OFFSET: 0x00CEC100
 
 // OFFSET: 0x00CEC6A0
 // FUNCTION: fn_21356
@@ -5207,8 +5201,6 @@ bool CGameMode::SaveEmblemFile(const std::vector<unsigned char>& data) {
   return true;
 }
 
-// OFFSET: 0x00CF0E30
-
 // OFFSET: 0x00CF0BA0
 // FUNCTION: fn_21423
 void WriteMyLog(const char* file, int line, const char* format, ...) {
@@ -6381,8 +6373,6 @@ void CGameMode::ReceiveUiDragMessage(const unsigned char* message) {
 
   this->SendMsg(0x12, 0, 0, 0, 0);
 }
-
-// OFFSET: 0x00CDBEB0
 
 // OFFSET: 0x00CEA0C0
 // FUNCTION: fn_21349

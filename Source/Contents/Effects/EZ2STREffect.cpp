@@ -5408,7 +5408,6 @@ int CEZ2STRScreenEffect::Slot28() {
 }
 
 // OFFSET: 0x00B52980
-
 // FUNCTION: fn_19039
 void CEZ2STRScreenEffect::Slot01() {
   CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(

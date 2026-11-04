@@ -8,8 +8,6 @@ CooldownOwner::CooldownOwner() : m_initialized(false) {
   this->m_initialized = true;
 }
 
-// OFFSET: 0x00CA60D0
-
 // OFFSET: 0x00CA61A0
 // FUNCTION: fn_20957
 void CooldownOwner::Register(unsigned id, std::uint32_t duration, std::uint32_t start, std::uint32_t elapsed) {

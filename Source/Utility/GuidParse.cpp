@@ -28,6 +28,7 @@ int ParseGuid(const char* text, std::size_t bytes, GUID& output, bool braced) {
   return count == 11 ? 1 : count == EOF ? -1 : 0;
 }
 
+// OFFSET: 0x00AF75B0
 // FUNCTION: fn_18259
 int FormatGuid(char* text, std::size_t bytes, const GUID& value, bool braced) {
   const char* format = braced ? "{%08X-%04hX-%04hX-%02hhX%02hhX-%02hhX%02hhX%02hhX%02hhX%02hhX%02hhX}" : "%08X-%04hX-%04hX-%02hhX%02hhX-%02hhX%02hhX%02hhX%02hhX%02hhX%02hhX";

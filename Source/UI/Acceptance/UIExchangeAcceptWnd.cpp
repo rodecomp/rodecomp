@@ -22,7 +22,7 @@ UIExchangeAcceptWnd::UIExchangeAcceptWnd()
     : UIChooseSellBuyWnd(), saved(nullptr) {
 }
 
-// OFFSET: 0x008CC9C0
+// OFFSET: 0x008CAAE0
 // FUNCTION: fn_11996
 UIExchangeAcceptWnd::~UIExchangeAcceptWnd() = default;
 

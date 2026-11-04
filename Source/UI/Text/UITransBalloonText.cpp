@@ -44,7 +44,6 @@ UITransBalloonText::UITransBalloonText() : UIBalloonText(), m_borderColor(605295
 UIAchBalloonText::UIAchBalloonText() : UITransBalloonText(), m_fontFamily(0) {
 }
 
-// OFFSET: 0x00853210
 // OFFSET: 0x00851F40
 // FUNCTION: fn_10700
 UITransBalloonText::~UITransBalloonText() = default;

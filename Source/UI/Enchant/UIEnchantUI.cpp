@@ -53,8 +53,8 @@ template <>
 CEnchantMgr* Singleton<CEnchantMgr>::s_instance = nullptr;
 
 // OFFSET: 0x009F9B40
-// OFFSET: 0x009F9C10
 // FUNCTION: fn_14814
+// OFFSET: 0x009F9C10
 // FUNCTION: fn_14815
 template <class T, class D> void CUIListBoxEx<T, D>::Slot15(int width, int height) {
   this->scrollBar = new CUIVScrollBar();
@@ -1296,8 +1296,6 @@ CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>::CUIListBoxEx()
     : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
       unknown_00E0(1), rebind(0) {
 }
-
-// OFFSET: 0x009F74E0
 
 // OFFSET: 0x009F7670
 // FUNCTION: fn_14774

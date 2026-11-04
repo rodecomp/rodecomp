@@ -5,7 +5,6 @@
 #include <timeapi.h>
 
 // OFFSET: 0x006370C0
-// OFFSET: 0x006370D0
 // FUNCTION: fn_04724
 CMouse::~CMouse() = default;
 

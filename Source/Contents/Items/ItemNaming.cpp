@@ -910,8 +910,6 @@ int ITEM_INFO::Apprentice(char* output, int& capacity, unsigned char consume) co
 }
 
 // OFFSET: 0x006D70A0
-
-// OFFSET: 0x006D70A0
 // FUNCTION: fn_06589
 int ITEM_INFO::Refine(char* output, int& capacity, unsigned char consume) const {
   const int bytes = StringFormat(output, capacity, static_cast<std::size_t>(-1), "+%d ", this->unknown_0060);

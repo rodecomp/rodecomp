@@ -66,8 +66,8 @@ template <> AdventureGuide::CUISubTab* CUIListBox<AdventureGuide::CUISubTab>::Cr
 template <> AdventureGuide::CUITab* CUIListBox<AdventureGuide::CUITab>::CreateItem();
 
 // OFFSET: 0x009C28B0
-// OFFSET: 0x009C2980
 // FUNCTION: fn_13993
+// OFFSET: 0x009C2980
 // FUNCTION: fn_13994
 template <class T> void CUIListBox<T>::Slot15(int width, int height) {
   this->scrollBar = new CUIVScrollBar();
@@ -91,12 +91,12 @@ template void CUIListBox<AdventureGuide::CUISubTab>::Slot15(int, int);
 template void CUIListBox<AdventureGuide::CUITab>::Slot15(int, int);
 
 // OFFSET: 0x009C2A50
-// OFFSET: 0x009C2B20
-// OFFSET: 0x009C2BF0
-// OFFSET: 0x009C2CC0
 // FUNCTION: fn_13995
+// OFFSET: 0x009C2B20
 // FUNCTION: fn_13996
+// OFFSET: 0x009C2BF0
 // FUNCTION: fn_13997
+// OFFSET: 0x009C2CC0
 // FUNCTION: fn_13998
 template <class T, class D> void CUIListBoxEx<T, D>::Slot15(int width, int height) {
   this->scrollBar = new CUIVScrollBar();

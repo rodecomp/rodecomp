@@ -10,7 +10,6 @@ CMemMapPakFile::CMemMapPakFile() : m_handle(nullptr), m_mapping(nullptr), m_view
 
 // OFFSET: 0x00AE9850
 // FUNCTION: fn_18108
-// OFFSET: 0x00AE9950
 CMemMapPakFile::~CMemMapPakFile() {
   this->Close();
 }

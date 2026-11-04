@@ -87,7 +87,6 @@ CUserHotkeyMgr* g_userHotkeyMgr;
 CUserHotkeyMgr::CUserHotkeyMgr() : m_enabled(true), m_loaded(false), m_changes(0), m_version2(false) {
 }
 
-// OFFSET: 0x005F7CE0
 CUserHotkeyMgr::~CUserHotkeyMgr() = default;
 
 // OFFSET: 0x005F7F70

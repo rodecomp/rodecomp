@@ -154,7 +154,6 @@ void UISlotForSelectWnd::Slot25(int x, int y) {
 }
 
 // OFFSET: 0x0082A110
-// OFFSET: 0x03DE9BE0
 // FUNCTION: fn_10356
 void UIStylingShopButton::Slot31(int, int) {
   if (this->m_disabled != 0 || g_windowMgr.Capture() != this) {
@@ -1488,8 +1487,6 @@ struct StyleChangePacket {
 };
 #pragma pack(pop)
 
-// OFFSET: 0x00824EE0
-
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Actors/Pc.h"
@@ -1827,6 +1824,7 @@ void UIShowInfoWnd::Paint() {
   this->UpdateChangedStyles();
   this->DrawPayments();
 }
+// OFFSET: 0x00824EE0
 // FUNCTION: fn_10318
 bool UIShowInfoWnd::SendStyleChange() {
   StyleChangeHeader header = {};
@@ -1982,8 +1980,6 @@ void UIAccessoryShowCase::AddAccessories(int& loaded, int& skipped, const char* 
     ++loaded;
   }
 }
-
-// OFFSET: 0x008280F0
 
 #include "Contents/Items/ItemDescription.h"
 
@@ -2175,6 +2171,7 @@ void UIMyStyleWnd::Slot15(int, int) {
     this->AddChild(this->unknown_00A4[i]);
   }
 }
+// OFFSET: 0x008280F0
 // FUNCTION: fn_10333
 void UIAccessoryCusWnd::Slot15(int, int) {
   this->m_display = new (std::nothrow) UIDisplayCharacter();

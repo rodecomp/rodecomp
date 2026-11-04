@@ -43,7 +43,6 @@ NAsyncWorkPtr::NAsyncWorkPtr(NRecycleObjectPoolMgr* manager, std::string poolNam
 }
 
 // OFFSET: 0x00731B50
-// OFFSET: 0x00731BD0
 // FUNCTION: fn_07561
 NAsyncWorkPtr::~NAsyncWorkPtr() {
   if (this->m_work) {

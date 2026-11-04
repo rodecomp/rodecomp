@@ -273,7 +273,6 @@ UIItemCollectionWnd::~UIItemCollectionWnd() {
   g_windowMgr.CloseWindow(276);
 }
 
-// OFFSET: 0x008CC430
 UIChooseSellBuyWnd::~UIChooseSellBuyWnd() = default;
 
 // INLINED
@@ -2345,8 +2344,6 @@ void UINpcTextEditDialogWnd::InsertItemTag(const ITEM_INFO& item) {
   this->m_tagCtrl->sub_89CFE0(item, 0x12B8A4);
 }
 
-// OFFSET: 0x008DA690
-
 // OFFSET: 0x008DACF0
 // FUNCTION: fn_12149
 void UINpcTextEditDialogWnd::InsertSkillTag(int tagId) {
@@ -4163,8 +4160,6 @@ void UISkillNameChangeWnd::Slot15(int, int) {
   this->m_skillId = -1;
   this->m_message0 = 184;
 }
-
-// OFFSET: 0x008E9C90
 
 // OFFSET: 0x008EA780
 // FUNCTION: fn_12205
@@ -7345,8 +7340,6 @@ UIItemCollection_ComparisonWnd::UIItemCollection_ComparisonWnd()
     : UIItemCollectionWnd() {
 }
 
-// OFFSET: 0x008C6FA0
-
 // OFFSET: 0x008C7070
 // FUNCTION: fn_11927
 UICardItemIllustWnd::UICardItemIllustWnd()
@@ -7482,8 +7475,6 @@ UIPetTamingDeceiveWnd::UIPetTamingDeceiveWnd()
 UISkillNameChangeWnd::UISkillNameChangeWnd()
     : UIFrameWnd(0) {
 }
-
-// OFFSET: 0x008C91F0
 
 // OFFSET: 0x008C7710
 // FUNCTION: fn_11937
@@ -7834,8 +7825,6 @@ void UIPartyInvitationToWnd::Slot15(int, int) {
 
   g_windowMgr.SetFocus(this->m_edit);
 }
-
-// OFFSET: 0x008E60A0
 
 // OFFSET: 0x008F95F0
 // FUNCTION: fn_12339
@@ -8305,6 +8294,7 @@ void UIPasswordWnd::Slot15(int, int) {
   this->geometry.unknown_0030 = 0;
   this->unknown_00BC = 0;
 }
+// OFFSET: 0x008C91F0
 // FUNCTION: fn_11978
 UIStatusWnd::UIStatusWnd()
     : UIFrameWnd(0) {
@@ -9639,8 +9629,6 @@ UIMakingArrowListWnd::UIMakingArrowListWnd()
     : UIItemIdentifyWnd() {
 }
 
-// OFFSET: 0x008C8A50
-
 // OFFSET: 0x008D4320
 // FUNCTION: fn_12107
 std::vector<unsigned char> UIChooseWarpWnd::Slot44() {
@@ -9768,6 +9756,7 @@ void UILoadingWnd::Slot15(int, int) {
   ResourceMgr::Instance().Load(Resolve(name));
   g_windowMgr.SetSurface0478(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name))));
 }
+// OFFSET: 0x008C8A50
 // FUNCTION: fn_11966
 UIPetEggListWnd::UIPetEggListWnd()
     : UIItemIdentifyWnd() {
@@ -10468,8 +10457,6 @@ void UITipboxWnd::Slot15(int width, int) {
   this->unknown_00D0->Invalidate();
   this->unknown_00D0->Invalidate();
 }
-
-// OFFSET: 0x008E60A0
 
 // OFFSET: 0x008F1430
 // FUNCTION: fn_12254
@@ -11514,8 +11501,6 @@ void UIBookWnd::Slot19() {
 
 int ParseItemIdTag(const char* text, const char* end, int& length, int& itemId);
 
-// OFFSET: 0x008F8ED0
-
 // OFFSET: 0x008F2DF0
 // FUNCTION: fn_12262
 void UITipboxWnd::PaintAnimations() {
@@ -11874,8 +11859,6 @@ int UIChooseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
 }
-
-// OFFSET: 0x008FD640
 
 // OFFSET: 0x008F8640
 // FUNCTION: fn_12331

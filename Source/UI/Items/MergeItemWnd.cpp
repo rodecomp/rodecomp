@@ -45,8 +45,6 @@ CMergeItemWnd::CMergeItemWnd()
       m_mergeButton(nullptr), m_cancelButton(nullptr), m_closeButton(nullptr), m_items(), m_resizer(nullptr), m_scrollBar(nullptr), m_itemCount(0), m_columns(0),
       m_rows(0), m_visibleCount(0), m_scrollRow(0), m_scrollable(0) {}
 
-// OFFSET: 0x007DEF00
-
 // OFFSET: 0x007DEF80
 // FUNCTION: fn_09662
 void CMergeItemWnd::SelectSameItems(int id) {

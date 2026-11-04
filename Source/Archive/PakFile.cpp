@@ -82,8 +82,8 @@ namespace {
 }
 
 // OFFSET: 0x005EF3F0
-// OFFSET: 0x005EF660
 // FUNCTION: fn_04004
+// OFFSET: 0x005EF660
 // FUNCTION: fn_04009
 CPakFile::~CPakFile() = default;
 

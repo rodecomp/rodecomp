@@ -13,7 +13,6 @@ NMessageQueue::NMessageQueue() : m_semaphore(nullptr), m_enabled(false) {
 }
 
 // OFFSET: 0x00736460
-// OFFSET: 0x007364F0
 // FUNCTION: fn_07620
 NMessageQueue::~NMessageQueue() {
   if (this->m_semaphore) {

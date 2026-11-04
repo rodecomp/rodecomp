@@ -3151,8 +3151,6 @@ int __stdcall sub_6A8350(lua_State* state) {
   return 0;
 }
 
-// OFFSET: 0x006A8410
-
 // OFFSET: 0x006A84D0
 // FUNCTION: fn_06102
 int __stdcall sub_6A84D0(lua_State* state) {
@@ -3182,8 +3180,6 @@ int __stdcall sub_6A8650(lua_State* state) {
   g_equipmentPropertiesMgr->ApplyProperty("ClassSubDamage", state, 3, 3, -1, -1);
   return 0;
 }
-
-// OFFSET: 0x006A8710
 
 // OFFSET: 0x006A87D0
 // FUNCTION: fn_06106
@@ -3314,10 +3310,6 @@ int __stdcall sub_6A90D0(lua_State* state) {
   g_equipmentPropertiesMgr->ApplyProperty("RaceSubDamage", state, 2, 2, -1, -1);
   return 0;
 }
-
-// OFFSET: 0x006A8410
-
-// OFFSET: 0x006A8710
 
 // OFFSET: 0x006A9190
 // FUNCTION: fn_06119
@@ -5505,12 +5497,6 @@ void CSession::UpdateRandomStats() {
   }
 }
 
-// OFFSET: 0x00DD8380
-
-// OFFSET: 0x00DD8450
-
-// OFFSET: 0x00DD8540
-
 // OFFSET: 0x00DD85A0
 // FUNCTION: fn_23308
 void ClearMemberFlags(std::uint32_t* flags) {
@@ -5527,8 +5513,6 @@ void CSession::ResetEquipment() {
   EquipmentProperties::CEquipmentPropertiesMgr::GetInstance()->Clear();
   g_windowMgr.InvalidateFrames();
 }
-
-// OFFSET: 0x00DD8660
 
 // OFFSET: 0x00DD8750
 // FUNCTION: fn_23311

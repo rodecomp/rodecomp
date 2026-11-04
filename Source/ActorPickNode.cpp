@@ -211,7 +211,6 @@ CView::CView() {
   *reinterpret_cast<unsigned char*>(&this->shake.unknown_0010) = 0;
 }
 
-// OFFSET: 0x00ADAEA0
 CView::~CView() {
   if (this->unknown_01B4) {
     delete this->unknown_01B4;

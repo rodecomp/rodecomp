@@ -31,6 +31,7 @@ BYTE g_rsaPublicKeyBlob[] = {
 // GLOBAL: gl_24468
 DWORD g_rsaPublicKeyBlobLen = 276;
 
+// OFFSET: 0x00402B10
 // FUNCTION: fn_00136
 FileSignatureVerifier::FileSignatureVerifier() {
   signature = nullptr;
@@ -52,6 +53,7 @@ FileSignatureVerifier::FileSignatureVerifier() {
   }
 }
 
+// OFFSET: 0x00402B60
 // FUNCTION: fn_45444
 FileSignatureVerifier::~FileSignatureVerifier() {
   if (fileData != nullptr) {
@@ -77,6 +79,7 @@ FileSignatureVerifier::~FileSignatureVerifier() {
   }
 }
 
+// OFFSET: 0x00402BE0
 // FUNCTION: fn_00138
 bool FileSignatureVerifier::VerifyBuffer(const WCHAR* fileName, const BYTE* data, DWORD dataSize, bool verifyFileName) {
   std::memcpy(&footer, data + dataSize - sizeof(footer), sizeof(footer));
@@ -177,6 +180,7 @@ bool FileSignatureVerifier::VerifyBuffer(const WCHAR* fileName, const BYTE* data
   return true;
 }
 
+// OFFSET: 0x00402F10
 // FUNCTION: fn_00139
 bool FileSignatureVerifier::VerifyFile(const WCHAR* fileName, bool verifyFileName) {
   if (fileName == nullptr) {
@@ -226,6 +230,7 @@ bool FileSignatureVerifier::VerifyFile(const WCHAR* fileName, bool verifyFileNam
   return result;
 }
 
+// OFFSET: 0x00403050
 // FUNCTION: fn_00140
 bool FileSignatureVerifier::VerifyBuffer(const char* fileName, const BYTE* data, DWORD dataSize, bool verifyFileName) {
   WCHAR wideFileName[MAX_PATH];
@@ -233,6 +238,7 @@ bool FileSignatureVerifier::VerifyBuffer(const char* fileName, const BYTE* data,
   return VerifyBuffer(wideFileName, data, dataSize, verifyFileName);
 }
 
+// OFFSET: 0x004030D0
 // FUNCTION: fn_00141
 bool FileSignatureVerifier::VerifyFile(const char* fileName, bool verifyFileName) {
   WCHAR wideFileName[MAX_PATH];

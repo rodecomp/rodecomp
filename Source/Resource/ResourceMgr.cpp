@@ -34,7 +34,6 @@ unsigned char g_lowercaseTable[256] = {
   0xF0, 0xF1, 0xF2, 0xF3, 0xF4, 0xF5, 0xF6, 0xF7, 0xF8, 0xF9, 0xFA, 0xFB, 0xFC, 0xFD, 0xFE, 0xFF,
 };
 
-// OFFSET: 0x00AECEE0
 bool ResourceNameLess::operator()(const ResourceName* left, const ResourceName* right) const {
   if (left->hash != right->hash) {
     return left->hash < right->hash;

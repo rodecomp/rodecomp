@@ -75,7 +75,6 @@ UITextViewer::UITextViewer() : UIListBox(), splitTipLinks(0), outline(0), bold(0
   this->unknown_00BC = 0;
 }
 
-// OFFSET: 0x008747F0
 UITextViewer::~UITextViewer() = default;
 
 // OFFSET: 0x008872A0

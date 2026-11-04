@@ -34,7 +34,6 @@ UIAdvenPartyBoardWnd::UIAdvenPartyBoardWnd()
     : UIFrameWnd(0), unknown_0104(0), unknown_0108(0), page(1), totalPages(1), unknown_0114(1), unknown_0118(0), selectedType(0) {
 }
 
-// OFFSET: 0x007BB590
 UIAdvenPartyBoardWnd::~UIAdvenPartyBoardWnd() = default;
 
 // OFFSET: 0x007C23C0

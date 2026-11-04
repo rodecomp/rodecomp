@@ -221,7 +221,6 @@ UIWindow::UIWindow(unsigned char cached)
 }
 
 // OFFSET: 0x00A79E90
-// OFFSET: 0x00A7A050
 // FUNCTION: fn_16917
 UIWindow::~UIWindow() {
   this->Slot18();
@@ -2675,8 +2674,6 @@ void UINavigationroadiconWnd::Paint() {
 }
 
 // OFFSET: 0x005C7CC0
-
-// OFFSET: 0x005C7CC0
 // FUNCTION: fn_03626
 int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   const auto recordResponse = [this](int response, std::intptr_t first, std::intptr_t second, std::intptr_t third) {
@@ -3714,8 +3711,6 @@ int UIPrivateAirplaneWnd::SendMsg(
   return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
 }
 
-// OFFSET: 0x00A7DA40
-
 // OFFSET: 0x00A7B4D0
 // FUNCTION: fn_16930
 UIItemTagButton* UIWindow::CreateItemTagButton(const std::string& title, const std::string& label, int tagId, UIWindow* parent, std::uint32_t color) {
@@ -3946,7 +3941,6 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
 }
 
 
-// OFFSET: 0x00A84400
 // OFFSET: 0x00A84400
 // FUNCTION: fn_17010
 int UIWindow::sub_A84400(

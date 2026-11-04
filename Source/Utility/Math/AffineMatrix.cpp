@@ -181,6 +181,7 @@ void matrix::MakeInverse(const matrix& source) {
   output[11] = -((secondZ * a[10] + firstZ * a[9]) + thirdZ * a[11]);
 }
 
+// OFFSET: 0x00554620
 // FUNCTION: fn_02026
 int matrix::IsIdentity() const {
   const auto absolute = [](float value) {

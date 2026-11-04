@@ -145,7 +145,6 @@ void UIButton::ResetCursor(int, int) {
 }
 
 // OFFSET: 0x0085EED0
-// OFFSET: 0x03DE9C61
 // FUNCTION: fn_10852
 void UIButton::Slot31(int x, int y) {
   if (this->m_disabled != 0) {

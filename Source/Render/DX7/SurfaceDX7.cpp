@@ -62,7 +62,6 @@ CSurfaceDX7::CSurfaceDX7(DeviceOwnerDX7& owner, IDirectDrawSurface7* surface) : 
 }
 
 // OFFSET: 0x00542DC0
-// OFFSET: 0x00542E60
 // FUNCTION: fn_01779
 CSurfaceDX7::~CSurfaceDX7() {
   if (this->m_surface) {

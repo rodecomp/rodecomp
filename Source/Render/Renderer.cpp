@@ -223,5 +223,4 @@ CRenderer::CRenderer() : frame(0), unknown_003C(0), unknown_0040(0), unknown_004
 
 // OFFSET: 0x00562090
 // FUNCTION: fn_02175
-// OFFSET: 0x00562260
 CRenderer::~CRenderer() = default;

@@ -1345,7 +1345,6 @@ CGPak::CGPak() : m_file(nullptr), m_version(0), m_entryCount(0), m_tableOffset(0
 }
 
 // OFFSET: 0x00AE97D0
-// OFFSET: 0x00AE98C0
 // FUNCTION: fn_18107
 CGPak::~CGPak() {
   DeleteCriticalSection(&this->m_criticalSection);
@@ -1982,7 +1981,6 @@ namespace GPakEx {
 
   };
 
-  // OFFSET: 0x006434B0
   __declspec(noinline) void XorBuffers(std::uint8_t* output, const std::uint8_t* input, const std::uint8_t* mask, std::size_t length) {
     for (; length >= 16; length -= 16, output += 16, input += 16, mask += 16) {
       for (std::size_t i = 0; i < 16; ++i) {
@@ -1994,7 +1992,6 @@ namespace GPakEx {
     }
   }
 
-  // OFFSET: 0x00642B80
   std::size_t BlockCipher::AdvancedProcessBlocks(const std::uint8_t* input, const std::uint8_t* xorBlock, std::uint8_t* output, std::size_t length, std::uint32_t flags) const {
     const std::size_t blockSize = this->BlockSize();
     std::ptrdiff_t step = static_cast<std::ptrdiff_t>(blockSize);
@@ -2047,8 +2044,6 @@ namespace GPakEx {
 
   static_assert(sizeof(CipherModeBase) == 0x20);
 
-  // OFFSET: 0x00642B00
-  // OFFSET: 0x00642A70
   CipherModeBase::~CipherModeBase() {
   }
 
@@ -2073,7 +2068,6 @@ namespace GPakEx {
     return length + (blockSize - length % blockSize);
   }
 
-  // OFFSET: 0x00643160
   std::size_t CipherModeBase::Process(std::span<const std::uint8_t> input, std::span<std::uint8_t> output, bool final) {
     const bool forward = this->IsForwardTransformation();
     const std::size_t blockSize = this->m_cipher->BlockSize();
@@ -2134,7 +2128,6 @@ namespace GPakEx {
     void ProcessData(std::uint8_t* output, const std::uint8_t* input, std::size_t length) override;
   };
 
-  // OFFSET: 0x00642E20
   void CBC_Encryption::ProcessData(std::uint8_t* output, const std::uint8_t* input, std::size_t length) {
     const std::size_t blockSize = this->m_cipher->BlockSize();
     if (length == 0) {
@@ -2155,13 +2148,11 @@ namespace GPakEx {
     /* 0020 */ std::vector<std::uint8_t> m_temp;
   };
 
-  // OFFSET: 0x006432C0
   void CBC_Decryption::ResizeBuffers() {
     this->CipherModeBase::ResizeBuffers();
     this->m_temp.resize(this->m_cipher->BlockSize());
   }
 
-  // OFFSET: 0x00642D60
   void CBC_Decryption::ProcessData(std::uint8_t* output, const std::uint8_t* input, std::size_t length) {
     const std::size_t blockSize = this->m_cipher->BlockSize();
     if (length == 0) {
@@ -2183,13 +2174,11 @@ namespace GPakEx {
     /* 0020 */ std::vector<std::uint8_t> m_temp;
   };
 
-  // OFFSET: 0x00643330
   void CFB_Decryption::ResizeBuffers() {
     this->CipherModeBase::ResizeBuffers();
     this->m_temp.resize(this->m_cipher->BlockSize());
   }
 
-  // OFFSET: 0x00642EB0
   void CFB_Decryption::ProcessData(std::uint8_t* output, const std::uint8_t* input, std::size_t length) {
     const std::size_t blockSize = this->m_cipher->BlockSize();
     if (length == 0) {
@@ -2208,7 +2197,6 @@ namespace GPakEx {
     void ProcessData(std::uint8_t* output, const std::uint8_t* input, std::size_t length) override;
   };
 
-  // OFFSET: 0x006430F0
   void OFB_Base::ProcessData(std::uint8_t* output, const std::uint8_t* input, std::size_t length) {
     const std::size_t blockSize = this->m_cipher->BlockSize();
     while (length != 0) {

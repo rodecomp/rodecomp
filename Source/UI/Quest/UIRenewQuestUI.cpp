@@ -1012,6 +1012,7 @@ void CUIRenewQuestUI::OnCallback74() {
 void CUIRenewQuestUI::OnCallback56() {
 }
 
+// OFFSET: 0x00A66FF0
 // FUNCTION: fn_16628
 void CUIRenewQuestUI::sub_A66FF0(unsigned int questId) {
   for (RenewQuestUI::CUIQuestList* list : this->questLists) {
@@ -2156,6 +2157,7 @@ RenewQuestUI::CUIQuestItem::CUIQuestItem()
 RenewQuestUI::CUIQuestList::CUIQuestList() : CUIControl(), list(nullptr), type(1) {
 }
 
+// OFFSET: 0x00A67E90
 // FUNCTION: fn_45515
 void CUIRenewQuestUI::OnProcessTabClick() {
   this->RecordValues(0x16, 1, 0, 0, 0);
@@ -2169,6 +2171,7 @@ void CUIRenewQuestUI::OnProcessTabClick() {
   }
 }
 
+// OFFSET: 0x00A67EE0
 // FUNCTION: fn_45516
 void CUIRenewQuestUI::OnRecommendedTabClick() {
   this->RecordValues(0x16, 2, 0, 0, 0);
@@ -2187,6 +2190,7 @@ void CUIRenewQuestUI::OnRecommendedTabClick() {
   }
 }
 
+// OFFSET: 0x00A67E40
 // FUNCTION: fn_45517
 void CUIRenewQuestUI::OnHoldTabClick() {
   this->RecordValues(0x16, 4, 0, 0, 0);
@@ -2200,6 +2204,7 @@ void CUIRenewQuestUI::OnHoldTabClick() {
   }
 }
 
+// OFFSET: 0x00A67F50
 // FUNCTION: fn_45518
 void CUIRenewQuestUI::OnWaitTabClick() {
   this->RecordValues(0x16, 8, 0, 0, 0);

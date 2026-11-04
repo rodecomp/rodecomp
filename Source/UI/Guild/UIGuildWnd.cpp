@@ -1629,7 +1629,6 @@ void UIGuildSkillWnd::Slot25(int x, int y) {
 }
 
 // OFFSET: 0x0095F460
-
 // FUNCTION: fn_13079
 void UIGuildTotalInfoWnd::Paint() {
   UIGuildWnd::Paint();
@@ -1992,8 +1991,6 @@ bool UIGuildMemberManageWnd::DrawMember(GuildInfo::Member& member, int& index, i
   this->DrawTextAt(8, y + 17, FormatOwnedString(LookupMessage(3012), lastLogin).c_str(), 0, 0, 11, 0x404040, 0, 0);
   return true;
 }
-
-// OFFSET: 0x0095E320
 
 // OFFSET: 0x0095ACC0
 // FUNCTION: fn_13062

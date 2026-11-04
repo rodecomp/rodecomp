@@ -150,8 +150,6 @@ static void SendAfterimageColor(CGameObject& target, CRagEffect& sender, const v
 int g_statusIconIds[100];
 
 // OFFSET: 0x00C11C60
-
-// OFFSET: 0x00C11C60
 // FUNCTION: fn_20039
 void CRagEffect::Endure() {
   RenderVertex screen{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
@@ -688,8 +686,6 @@ void CRagEffect::IncAgility() {
 }
 
 // OFFSET: 0x00C18490
-
-// OFFSET: 0x00C18490
 // FUNCTION: fn_20063
 void CRagEffect::Hit1() {
   if (this->state.stateCnt != 0) {
@@ -780,8 +776,6 @@ void CRagEffect::Hit1() {
 }
 
 // OFFSET: 0x00C18D90
-
-// OFFSET: 0x00C18D90
 // FUNCTION: fn_20064
 void CRagEffect::Hit2(int option) {
   RenderVertex screen{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
@@ -833,8 +827,6 @@ void CRagEffect::Hit2(int option) {
     this->state.unknown_11C84->textures[0] = g_texMgr.Load((index & 1) == 0 ? "effect\\lens1.tga" : "effect\\lens2.tga", 0, false, true, false);
   }
 }
-
-// OFFSET: 0x00C191D0
 
 // OFFSET: 0x00C191D0
 // FUNCTION: fn_20065
@@ -1609,8 +1601,6 @@ bool CRagEffect::Aspersio() {
 }
 
 // OFFSET: 0x00C0B910
-
-// OFFSET: 0x00C0B910
 // FUNCTION: fn_20017
 void CRagEffect::Bash() {
   if (g_serviceOptions.Get(0xe5) != 0) {
@@ -1755,8 +1745,6 @@ static __forceinline void SpawnBottomQuad(CRagEffect& effect, const vector3d& ve
 }
 
 // OFFSET: 0x00C0D630
-
-// OFFSET: 0x00C0D630
 // FUNCTION: fn_20022
 void CRagEffect::Bottom2() {
   if (this->state.stateCnt != 0) {
@@ -1857,8 +1845,6 @@ bool CRagEffect::ProcessEZ2STRC10830() {
 bool CRagEffect::ProcessEZ2STRC153A0() {
   return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
 }
-
-// OFFSET: 0x00C3C7E0
 
 // OFFSET: 0x00C3C7E0
 // FUNCTION: fn_20111
@@ -2152,8 +2138,6 @@ int CRagEffect::GetDuration() {
 void CRagEffect::SetStateDuration(int duration) {
   this->state.duration = duration;
 }
-
-// OFFSET: 0x00C39EC0
 
 // OFFSET: 0x00C39EC0
 // FUNCTION: fn_20103
@@ -3318,8 +3302,6 @@ void CRagEffect::TexturedScatterLow(const char* name, char flag) {
 }
 
 // OFFSET: 0x00C6E370
-
-// OFFSET: 0x00C6E370
 // FUNCTION: fn_20302
 void CRagEffect::TorchDustRing(const char* name, char kind, std::int16_t angle) {
   char path[64];
@@ -3562,8 +3544,6 @@ void CRagEffect::BlackMaximize(const char* name) {
   this->state.unknown_11C84->slots[0].height[0] = 0.0f;
   this->state.unknown_11C84->slots[0].flag1[0] = 1;
 }
-
-// OFFSET: 0x00C3F7A0
 
 // OFFSET: 0x00C3F7A0
 // FUNCTION: fn_20121
@@ -9406,8 +9386,6 @@ void CRagEffect::AlphaDownRipples(const char* name, char kind) {
 }
 
 // OFFSET: 0x00C0E820
-
-// OFFSET: 0x00C0E820
 // FUNCTION: fn_20027
 bool CRagEffect::Coin() {
   if (g_serviceOptions.Get(0xe5) == 0 && this->state.stateCnt == 20) {
@@ -9450,8 +9428,6 @@ bool CRagEffect::Coin() {
   this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
   return this->state.stateCnt < 100;
 }
-
-// OFFSET: 0x00C0EBE0
 
 // OFFSET: 0x00C0EBE0
 // FUNCTION: fn_20028
@@ -9724,8 +9700,6 @@ void CRagEffect::SakuraFireArrow() {
   Owner(this->state.unknown_11C84).SetAction(std::max(rand() % 3, 0), 36, 0);
   Owner(this->state.unknown_11C84).InitSegment();
 }
-
-// OFFSET: 0x00C6E370
 
 // OFFSET: 0x00C6D890
 // FUNCTION: fn_20300
@@ -12634,8 +12608,6 @@ void CRagEffect::Bottom_Music(const char* name, char kind) {
 }
 
 // OFFSET: 0x00C1A5C0
-
-// OFFSET: 0x00C1A5C0
 // FUNCTION: fn_20069
 void CRagEffect::HitDark() {
   if (this->state.stateCnt != 0) {
@@ -13495,8 +13467,6 @@ void CRagEffect::Detoxication() {
   Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\particle2.act");
   Owner(this->state.unknown_11C84).InitSegment();
 }
-
-// OFFSET: 0x00C112D0
 
 // OFFSET: 0x00C112D0
 // FUNCTION: fn_20037
@@ -14363,7 +14333,6 @@ void CRagEffect::BlueRingWave() {
   this->state.unknown_11C84->slots[3].process = 0;
   this->state.unknown_11C84->slots[3].alphaT = 1;
 }
-// OFFSET: 0x00C526D0
 // OFFSET: 0x00C4A650
 // FUNCTION: fn_20170
 void CRagEffect::QuadRingStack(const char* name) {
@@ -14635,8 +14604,6 @@ void CRagEffect::QuadRingStackSized(const char* name, char kind) {
     this->state.unknown_11C84->slots[3].flag1[height] = 0;
   }
 }
-
-// OFFSET: 0x00C5CC00
 
 // OFFSET: 0x00C649E0
 // FUNCTION: fn_20263
@@ -15466,8 +15433,6 @@ bool CRagEffect::StormGust() {
 
   return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
 }
-
-// OFFSET: 0x00C0F7E0
 
 // OFFSET: 0x00C0F7E0
 // FUNCTION: fn_20031
@@ -17361,8 +17326,6 @@ void CPlayer::RefreshEffect164() {
   this->SendMsg(nullptr, 109, 0, 164, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   this->unknown_0544 = this->LaunchEffect(164, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
 }
-
-// OFFSET: 0x00C40DF0
 
 // OFFSET: 0x00C4FAB0
 // FUNCTION: fn_20183

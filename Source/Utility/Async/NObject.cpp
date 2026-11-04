@@ -12,6 +12,5 @@ NObject::NObject() : m_objectId(++s_nextObjectId) {
 }
 
 // OFFSET: 0x007369D0
-// OFFSET: 0x007369E0
 // FUNCTION: fn_07629
 NObject::~NObject() = default;

@@ -215,12 +215,12 @@ void GameSettingsUI::CUIGroupSkin::Slot15(int width, int height) {
 }
 
 // OFFSET: 0x00A344D0
-// OFFSET: 0x00A34500
-// OFFSET: 0x00A34530
-// OFFSET: 0x00A34560
 // FUNCTION: fn_15407
+// OFFSET: 0x00A34500
 // FUNCTION: fn_15408
+// OFFSET: 0x00A34530
 // FUNCTION: fn_15409
+// OFFSET: 0x00A34560
 // FUNCTION: fn_15410
 template <class T, class D> void CUIComboBox<T, D>::Paint() {
   this->ClearSurface(0xFFFFFFFF);
@@ -233,12 +233,12 @@ template void CUIComboBox<GameSettingsUI::CUIComboItem, DisplayMode>::Paint();
 template void CUIComboBox<GameSettingsUI::CUIComboItem, RenderAdapter>::Paint();
 
 // OFFSET: 0x00A40040
-// OFFSET: 0x00A40050
-// OFFSET: 0x00A40060
-// OFFSET: 0x00A40070
 // FUNCTION: fn_15962
+// OFFSET: 0x00A40050
 // FUNCTION: fn_15963
+// OFFSET: 0x00A40060
 // FUNCTION: fn_15964
+// OFFSET: 0x00A40070
 // FUNCTION: fn_15965
 template <class T, class D> unsigned int CUIComboBox<T, D>::Selected() const {
   return this->listBox->selected;
@@ -250,12 +250,12 @@ template unsigned int CUIComboBox<GameSettingsUI::CUIComboItem, RenderBackend>::
 template unsigned int CUIComboBox<GameSettingsUI::CUIComboItem, std::string>::Selected() const;
 
 // OFFSET: 0x00A41FE0
-// OFFSET: 0x00A42060
-// OFFSET: 0x00A420E0
-// OFFSET: 0x00A42160
 // FUNCTION: fn_16009
+// OFFSET: 0x00A42060
 // FUNCTION: fn_16010
+// OFFSET: 0x00A420E0
 // FUNCTION: fn_16011
+// OFFSET: 0x00A42160
 // FUNCTION: fn_16012
 template <class T, class D> void CUIComboBox<T, D>::UpdateListHeight() {
   const int height = std::min<unsigned int>(this->listBox->data.size(), this->visibleItems) * this->itemHeight;
@@ -283,12 +283,12 @@ template <class T, class D> int CUIComboBox<T, D>::AddItem(const D& value, bool 
 template int CUIComboBox<GameSettingsUI::CUIComboItem, std::string>::AddItem(const std::string& value, bool refresh);
 
 // OFFSET: 0x00A1C1B0
-// OFFSET: 0x00A1CC90
-// OFFSET: 0x00A1D770
-// OFFSET: 0x00A1E250
 // FUNCTION: fn_15379
+// OFFSET: 0x00A1CC90
 // FUNCTION: fn_15380
+// OFFSET: 0x00A1D770
 // FUNCTION: fn_15381
+// OFFSET: 0x00A1E250
 // FUNCTION: fn_15382
 template <class T, class D> void CUIComboBox<T, D>::Create(int width, int itemHeight, int visibleItems) {
   this->visibleItems = visibleItems;
@@ -2218,8 +2218,6 @@ void GameSettingsUI::CUIGroupGraphicsAPI::Slot16() {
   this->m_backend = backend;
 }
 
-// OFFSET: 0x00A41560
-
 // OFFSET: 0x00A41710
 // FUNCTION: fn_15992
 void GameSettingsUI::CUIGroupProcessPriority::Slot16() {
@@ -2330,12 +2328,6 @@ void GameSettingsUI::CUIGroupLogInOut::Slot16() {
   const char* tooltipText = tooltip.Text();
   this->m_title->SetTooltip(tooltipText, std::strlen(tooltipText));
 }
-
-// OFFSET: 0x00A1A320
-
-// OFFSET: 0x00A1A480
-
-// OFFSET: 0x00A1A5E0
 
 // OFFSET: 0x00A1F890
 // FUNCTION: fn_15390
@@ -4278,7 +4270,7 @@ void CUIGameSettingsUI::Slot15(int width, int height) {
   this->m_tab->Select(basicButton);
 }
 
- // OFFSET: 0x00A40C40
+// OFFSET: 0x00A40C40
 // FUNCTION: fn_15986
 void CUIGameSettingsUI::Slot16() {
   this->Move((g_renderer->viewport.width - this->geometry.width) / 2, (g_renderer->viewport.height - this->geometry.height) / 2);

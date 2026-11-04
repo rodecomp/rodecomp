@@ -80,8 +80,8 @@ void CRendererDX7::DrawPrimitive(RenderCommand* primitive) {
 }
 
 // OFFSET: 0x0055AD00
-// OFFSET: 0x0055AD50
 // FUNCTION: fn_02083
+// OFFSET: 0x0055AD50
 // FUNCTION: fn_02084
 void CRendererDX7::DrawLightmappedPrimitive(LightmappedPrimitive* primitive) {
   if (primitive->vertexCount <= 0) {

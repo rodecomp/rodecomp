@@ -19,7 +19,6 @@ CRendererDX9::CRendererDX9(DeviceOwnerDX9& owner)
 }
 
 // OFFSET: 0x00564FE0
-// OFFSET: 0x00565070
 // FUNCTION: fn_02210
 CRendererDX9::~CRendererDX9() = default;
 

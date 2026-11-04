@@ -181,12 +181,12 @@ bool CreateEffectMemoryMgr() {
 namespace {
 
 // OFFSET: 0x00B825B0
-// OFFSET: 0x00B826D0
-// OFFSET: 0x00B82640
-// OFFSET: 0x00B82520
 // FUNCTION: fn_19276
+// OFFSET: 0x00B826D0
 // FUNCTION: fn_19278
+// OFFSET: 0x00B82640
 // FUNCTION: fn_19277
+// OFFSET: 0x00B82520
 // FUNCTION: fn_19275
 template <class T>
 void CEffectMemoryPool<T>::Free(CParticle* particle) {

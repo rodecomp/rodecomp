@@ -6,6 +6,7 @@
 #include <ctime>
 #include <io.h>
 
+// OFFSET: 0x00732E70
 // FUNCTION: fn_07589
 bool NFileLog::Initialize(const char* directoryName, const char* filePrefix) {
   char currentDirectory[1024]{};

@@ -11,7 +11,6 @@ CRenderSystemDX9::CRenderSystemDX9() : m_device(new DeviceOwnerDX9), m_defaultTe
 }
 
 // OFFSET: 0x0056D180
-// OFFSET: 0x0056D320
 // FUNCTION: fn_02355
 CRenderSystemDX9::~CRenderSystemDX9() {
   delete this->m_device;

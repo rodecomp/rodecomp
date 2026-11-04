@@ -45,7 +45,6 @@ CSnapMgr::CSnapMgr() : root(nullptr) {
 }
 
 // OFFSET: 0x007E23D0
-// OFFSET: 0x007E2520
 // FUNCTION: fn_09697
 CSnapMgr::~CSnapMgr() {
   this->Clear();

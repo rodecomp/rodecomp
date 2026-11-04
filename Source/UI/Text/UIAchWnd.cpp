@@ -51,8 +51,6 @@ UIAchievementWnd::UIAchievementWnd()
 UIAchievementWnd::~UIAchievementWnd() {
 }
 
-// OFFSET: 0x007B32B0
-
 // OFFSET: 0x007B37F0
 // FUNCTION: fn_09205
 void UIAchListWnd::sub_7B37F0(int index) {

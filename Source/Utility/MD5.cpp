@@ -14,14 +14,17 @@ namespace {
   }
 }
 
+// OFFSET: 0x00401C40
 // FUNCTION: fn_00121
 MD5::MD5() {
 }
 
+// OFFSET: 0x00401C50
 // FUNCTION: fn_00122
 MD5::~MD5() {
 }
 
+// OFFSET: 0x00401C60
 // FUNCTION: fn_00123
 const unsigned char* MD5::Decode(std::uint32_t* output, const unsigned char* input, std::uint32_t count) {
   do {
@@ -31,6 +34,7 @@ const unsigned char* MD5::Decode(std::uint32_t* output, const unsigned char* inp
   return input;
 }
 
+// OFFSET: 0x00401CA0
 // FUNCTION: fn_00124
 int MD5::Initialize() {
   m_state[0] = 0x67452301;
@@ -51,6 +55,7 @@ int MD5::Initialize() {
   (a) = (((a) << (s)) | ((a) >> (32 - (s)))) + (b); \
 } while (0)
 
+// OFFSET: 0x00401CD0
 // FUNCTION: fn_00125
 std::uint32_t* MD5::Transform(std::uint32_t* state, const std::uint32_t* input) {
   std::uint32_t a = state[0];
@@ -139,6 +144,7 @@ std::uint32_t* MD5::Transform(std::uint32_t* state, const std::uint32_t* input) 
 #undef MD5_F2
 #undef MD5_F1
 
+// OFFSET: 0x00402360
 // FUNCTION: fn_00126
 __declspec(noinline) void MD5::Update(const unsigned char* input, std::uint32_t length) {
   std::uint32_t buffered = m_byteCount[0];
@@ -173,6 +179,7 @@ __declspec(noinline) void MD5::Update(const unsigned char* input, std::uint32_t 
   }
 }
 
+// OFFSET: 0x00402420
 // FUNCTION: fn_00127
 __declspec(noinline) unsigned char* MD5::Finalize() {
   const std::uint32_t buffered = m_byteCount[0] & 63;

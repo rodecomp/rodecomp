@@ -202,7 +202,6 @@ SurfaceLock CTextureDX9::Lock() {
 }
 
 // OFFSET: 0x00572D50
-// OFFSET: 0x005737A0
 // FUNCTION: fn_02482
 void CTextureDX9::Filter() {
   if (!this->m_dynamic && !this->m_renderTarget && this->m_texture && this->m_texture->GetLevelCount() > 1) {
@@ -494,14 +493,12 @@ bool CTextureDX9::CopyTexture(CTexture* source, int sourceX, int sourceY, int so
   return true;
 }
 
-// OFFSET: 0x00544410
 void CTextureDX9::Draw(int x, int y, int width, int height, std::uint32_t color) {
   this->DrawTo(
     g_renderer->primitives, g_renderer->queues, x, y, width, height, color, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
   );
 }
 
-// OFFSET: 0x00544610
 void CTextureDX9::Stretch(int x, int y, int width, int height) {
   this->StretchTo(
     g_renderer->primitives, g_renderer->queues, x, y, width, height, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd

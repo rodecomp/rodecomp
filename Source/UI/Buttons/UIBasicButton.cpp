@@ -12,7 +12,6 @@ UIBasicButton::UIBasicButton() : UIButton(), invalidateParent(0) {
   this->geometry.height = 20;
 }
 
-// OFFSET: 0x00852170
 UIBasicButton::~UIBasicButton() = default;
 
 // OFFSET: 0x00809910

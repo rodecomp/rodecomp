@@ -16,12 +16,6 @@ struct GGHashEntry {
 CGGHash::CGGHash() : m_error(0), m_size(0), m_data(nullptr) {
 }
 
-// OFFSET: 0x00401300
-
-// OFFSET: 0x00401640
-
-// OFFSET: 0x00401730
-
 // OFFSET: 0x00401870
 // FUNCTION: fn_00113
 DWORD CGGHash::GetSize() const {

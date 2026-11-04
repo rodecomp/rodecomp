@@ -245,7 +245,6 @@ CUIVScrollBar::CUIVScrollBar()
       hidden(0), transparent(0), upButton(nullptr) {
 }
 
-// OFFSET: 0x009C08C0
 CUIControl::~CUIControl() = default;
 
 // OFFSET: 0x009D5490
@@ -1567,8 +1566,6 @@ CUIImageTextButton::CUIImageTextButton() : CUITextButton(), images(), disabledIm
 // FUNCTION: fn_14487
 CUIImageTextButton::~CUIImageTextButton() = default;
 
-// OFFSET: 0x009E80C0
-
 // OFFSET: 0x009E8150
 // FUNCTION: fn_14490
 void CUIImageTextButton::Slot53(int resolveSkin) {
@@ -2083,8 +2080,6 @@ void CUIListBoxEx<AdventureGuide::CUIItemInfo, AdventureGuide::CItemData>::Resiz
   this->rebind = 1;
 }
 
-// OFFSET: 0x009D2930
-
 // OFFSET: 0x009D4130
 // FUNCTION: fn_14040
 template <>
@@ -2098,8 +2093,6 @@ void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>:
   this->rebind = 1;
 }
 
-// OFFSET: 0x009D2B90
-
 // OFFSET: 0x009D41B0
 // FUNCTION: fn_14041
 template <>
@@ -2112,8 +2105,6 @@ void CUIListBoxEx<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestInfo>::Res
   this->scrollBar->SetPosition(this->scrollBar->position);
   this->rebind = 1;
 }
-
-// OFFSET: 0x009D2DF0
 
 // OFFSET: 0x009D4230
 // FUNCTION: fn_14042

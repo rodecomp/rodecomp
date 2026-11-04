@@ -16,7 +16,6 @@ CPlayerNameDictionary::CPlayerNameDictionary() : m_enabled(true) {
 CPlayerNameDictionary::~CPlayerNameDictionary() {
 }
 
-// OFFSET: 0x0060AFB0
 // OFFSET: 0x0060B010
 // FUNCTION: fn_04262
 std::string CPlayerNameDictionary::Lookup(std::uint32_t id) {

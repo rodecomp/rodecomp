@@ -26,7 +26,6 @@ CAdventurerAgencyMgr::CAdventurerAgencyMgr() : enabled(true), registered(false),
 }
 
 // OFFSET: 0x005CA880
-// OFFSET: 0x005CA8D0
 // FUNCTION: fn_03650
 CAdventurerAgencyMgr::~CAdventurerAgencyMgr() = default;
 

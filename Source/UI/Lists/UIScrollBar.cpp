@@ -73,7 +73,6 @@ UIScrollBar::UIScrollBar()
       thickness(13), minimumThumb(1), horizontalStep(1), verticalStep(1) {
 }
 
-// OFFSET: 0x00873FA0
 UIScrollBar::~UIScrollBar() = default;
 
 // OFFSET: 0x0086E4D0

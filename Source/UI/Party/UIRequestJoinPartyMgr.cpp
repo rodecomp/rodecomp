@@ -16,7 +16,6 @@ UIRequestJoinPartyMgr::UIRequestJoinPartyMgr(WindowManagerWindows& windows) : m_
 }
 
 // OFFSET: 0x007BB470
-// OFFSET: 0x007BB880
 // FUNCTION: fn_09281
 UIRequestJoinPartyMgr::~UIRequestJoinPartyMgr() = default;
 

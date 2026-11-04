@@ -14,7 +14,6 @@ __declspec(noinline) UIStaticText::UIStaticText()
       bold(0), italic(0), tooltipEnabled(0) {
 }
 
-// OFFSET: 0x00853050
 // OFFSET: 0x00851E10
 // FUNCTION: fn_10699
 UIStaticText::~UIStaticText() = default;

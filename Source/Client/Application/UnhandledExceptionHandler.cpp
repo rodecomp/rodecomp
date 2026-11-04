@@ -71,7 +71,6 @@ extern "C" long long __cdecl _Xtime_get_ticks();
 CUnhandledExceptionHandler::CUnhandledExceptionHandler() {
 }
 
-// OFFSET: 0x00635A80
 CUnhandledExceptionHandler::~CUnhandledExceptionHandler() = default;
 
 // OFFSET: 0x00635AB0

@@ -77,6 +77,7 @@ const char* FormatString(const char* format, ...) {
   return s_buffer.GetBuffer();
 }
 
+// OFFSET: 0x00AF62D0
 // FUNCTION: fn_18252
 std::string FormatOwnedString(const char* format, ...) {
   char buffer[4096];

@@ -179,8 +179,6 @@ void CNProtectGameGuardMgr::SetError(const char*, int, std::string message) {
 void CNProtectGameGuardMgr::Send(const char*) {
 }
 
-// OFFSET: 0x0076C4C0
-
 // OFFSET: 0x0076D910
 // FUNCTION: fn_08219
 int __stdcall sub_76D910(int code, const int* packet) {

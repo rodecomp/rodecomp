@@ -530,6 +530,7 @@ int g_minimapCoordinateDigitValues[4];
 int g_screenWidth;
 
 
+// OFFSET: 0x00CD2A10
 // FUNCTION: fn_21261
 void CGameMode::DrawMiniMapNumber() {
   if (this->unknown_0408 == nullptr || this->unknown_0414 == 0) {

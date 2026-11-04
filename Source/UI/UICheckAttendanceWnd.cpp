@@ -48,10 +48,6 @@ UICheckAttendanceWnd::UICheckAttendanceWnd()
   this->m_rewardCount = static_cast<int>(g_checkAttendanceMgr->m_rewards.size());
 }
 
-// OFFSET: 0x007DCAD0
-
-// OFFSET: 0x007DCB40
-
 // OFFSET: 0x007DCBD0
 // FUNCTION: fn_09636
 void UICheckAttendanceWnd_Banner::AddBanner(std::string image, std::string url, int action, int argument) {

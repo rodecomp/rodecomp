@@ -45,7 +45,7 @@ UIServerListBox::UIServerListBox() : UIListBox() {
   this->unknown_00E0 = 0;
 }
 
-// OFFSET: 0x00873690
+// OFFSET: 0x00871040
 // FUNCTION: fn_11105
 UIListBox::~UIListBox() = default;
 

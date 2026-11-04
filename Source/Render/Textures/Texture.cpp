@@ -23,7 +23,6 @@ CTexture::CTexture()
 }
 
 // OFFSET: 0x00572380
-// OFFSET: 0x005723D0
 // FUNCTION: fn_02465
 CTexture::~CTexture() = default;
 

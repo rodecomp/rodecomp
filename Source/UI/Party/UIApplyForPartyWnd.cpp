@@ -33,7 +33,6 @@ UIApplyForPartyWnd::UIApplyForPartyWnd()
     : UIFrameWnd(0) {
 }
 
-// OFFSET: 0x007BB610
 UIApplyForPartyWnd::~UIApplyForPartyWnd() = default;
 
 // OFFSET: 0x007C2400

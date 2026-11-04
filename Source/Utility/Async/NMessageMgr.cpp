@@ -7,7 +7,6 @@
 // GLOBAL: gl_24361
 NMessageMgr* g_messageMgr;
 
-// OFFSET: 0x00732BF0
 NInter::~NInter() = default;
 
 // INLINED

@@ -2623,8 +2623,6 @@ void UICashEmotionListWnd::SetTab(char tab) {
 }
 
 // OFFSET: 0x007C8A40
-
-// OFFSET: 0x007C8A40
 // FUNCTION: fn_09419
 void UICashEmotionListWnd::StartExpirySchedule() {
   if (g_cashEmotionMgr->m_expiry.size() != 0) {
@@ -2916,8 +2914,6 @@ int UICashEmotionMiniWnd::SendMsg(
 
   return 0;
 }
-
-// OFFSET: 0x007C9C40
 
 // OFFSET: 0x007C9C40
 // FUNCTION: fn_09438
@@ -3564,8 +3560,6 @@ int UICashEmotionPiece::SendMsg(
     return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 }
-
-// OFFSET: 0x007CBF20
 
 // OFFSET: 0x007CBF20
 // FUNCTION: fn_09490

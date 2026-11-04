@@ -866,8 +866,6 @@ ITEM_INFO CSession::GetExchangeItem(int index) const {
   return this->m_exchangeItems[index];
 }
 
-// OFFSET: 0x00DDC9D0
-
 // OFFSET: 0x00DDD300
 // FUNCTION: fn_23384
 std::uint16_t CSession::FindInventoryIndexByItemId(int itemId) {

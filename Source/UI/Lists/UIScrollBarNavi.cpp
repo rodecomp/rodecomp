@@ -10,7 +10,6 @@ UIScrollBar_Navi::UIScrollBar_Navi() : UIScrollBar() {
   this->thickness = 7;
 }
 
-// OFFSET: 0x00874080
 UIScrollBar_Navi::~UIScrollBar_Navi() = default;
 
 // OFFSET: 0x0088E930

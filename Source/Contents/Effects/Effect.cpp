@@ -25,7 +25,6 @@ CEffect::CEffect(int value)
 }
 
 // OFFSET: 0x00B4DD10
-// OFFSET: 0x00B4DDD0
 // FUNCTION: fn_18981
 CEffect::~CEffect() = default;
 

@@ -132,8 +132,6 @@ CEZ2STRParticle::CEZ2STRParticle(vector3d position, int flags) : CParticle(posit
   this->Clear();
 }
 
-// OFFSET: 0x00B3CF20
-
 // OFFSET: 0x00B3CFC0
 // FUNCTION: fn_18815
 void CEZ2STRParticle::Slot01() {

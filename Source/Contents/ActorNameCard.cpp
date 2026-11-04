@@ -1,9 +1,11 @@
 #include "Contents/ActorNameCard.h"
 
+// OFFSET: 0x005BEA30
 // FUNCTION: fn_03484
 CActorNameCard::CActorNameCard() : unknown_0094(0), received(0) {
 }
 
+// OFFSET: 0x005BEB40
 // FUNCTION: fn_03485
 CActorNameCard::~CActorNameCard() = default;
 
@@ -23,6 +25,7 @@ void CActorNameCard::Reset() {
 // FUNCTION: fn_03491
 CActorNameCardHolder::CActorNameCardHolder() = default;
 
+// OFFSET: 0x005BF520
 // FUNCTION: fn_03493
 CActorNameCardHolder::~CActorNameCardHolder() {
 }

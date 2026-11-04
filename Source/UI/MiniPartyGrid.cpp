@@ -5,6 +5,7 @@ int g_miniPartyCellWidth = 177;
 // GLOBAL: gl_24519
 int g_miniPartyCellHeight = 55;
 
+// OFFSET: 0x00737EC0
 // FUNCTION: fn_07659
 MiniPartyGridPoint* MiniPartyGrid::GetCellPosition(MiniPartyGridPoint* position, int index) const {
   const int y = this->top + g_miniPartyCellHeight * (index % this->rows);
@@ -13,6 +14,7 @@ MiniPartyGridPoint* MiniPartyGrid::GetCellPosition(MiniPartyGridPoint* position,
   return position;
 }
 
+// OFFSET: 0x00737EF0
 // FUNCTION: fn_07660
 MiniPartyGridPoint* MiniPartyGrid::GetWindowPosition(MiniPartyGridPoint* position, int index) const {
   const int y = this->top + g_miniPartyCellHeight * (index % this->rows);
@@ -21,6 +23,7 @@ MiniPartyGridPoint* MiniPartyGrid::GetWindowPosition(MiniPartyGridPoint* positio
   return position;
 }
 
+// OFFSET: 0x00737F20
 // FUNCTION: fn_07661
 int MiniPartyGrid::FindCell(int x, int y) const {
   const int dx = x - this->left;
@@ -56,6 +59,7 @@ int MiniPartyGrid::FindCell(int x, int y) const {
   return -1;
 }
 
+// OFFSET: 0x00737FE0
 // FUNCTION: fn_07662
 int MiniPartyGrid::BuildAvailableCells() {
   int index = 0;

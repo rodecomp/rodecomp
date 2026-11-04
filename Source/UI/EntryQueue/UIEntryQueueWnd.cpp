@@ -65,8 +65,6 @@ int UIEntryQueueHelpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
 UIEntryQueueListBox::UIEntryQueueListBox() : UIListBox() {
 }
 
-// OFFSET: 0x00BA43F0
-
 // OFFSET: 0x00BA4490
 // FUNCTION: fn_19686
 void UIEntryQueueListBox::AddEntry(const char* name, int value) {
@@ -100,8 +98,6 @@ void UIEntryQueueListBox::Slot31(int x, int y) {
 UIEntryQueueRequestWnd::UIEntryQueueRequestWnd()
     : UIFrameWnd(0), m_interval(1000), m_elapsed(0), m_delta(0), m_lastTick(0) {
 }
-
-// OFFSET: 0x00BA4870
 
 // OFFSET: 0x00BA48E0
 // FUNCTION: fn_19691
@@ -229,8 +225,6 @@ UIEntryQueueStandByWnd::UIEntryQueueStandByWnd()
       m_rankingText() {
 }
 
-// OFFSET: 0x00BA5680
-
 // OFFSET: 0x00BA5700
 // FUNCTION: fn_19698
 bool UIEntryQueueStandByWnd::Create() {
@@ -329,8 +323,6 @@ void UIEntryQueueStandByWnd::SetInfo(const char* queueName, int waiting, int ran
 UIEntryQueueWnd::UIEntryQueueWnd()
     : UIFrameWnd(0), m_applyButtons(), m_helpButton(nullptr), m_labels(), m_values(), m_list(nullptr), saved(nullptr) {
 }
-
-// OFFSET: 0x00BA6110
 
 // OFFSET: 0x00BA6410
 // FUNCTION: fn_19706

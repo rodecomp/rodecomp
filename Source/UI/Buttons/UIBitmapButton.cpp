@@ -9,7 +9,6 @@ UIBitmapButton::UIBitmapButton()
 }
 
 // OFFSET: 0x008511B0
-// OFFSET: 0x00852220
 // FUNCTION: fn_10689
 UIBitmapButton::~UIBitmapButton() = default;
 

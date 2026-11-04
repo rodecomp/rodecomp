@@ -160,8 +160,6 @@ EffectPrimitiveState::~EffectPrimitiveState() {
   std::free(this->textures);
 }
 
-// OFFSET: 0x00BAE3A0
-
 // OFFSET: 0x00BAE460
 // FUNCTION: fn_19765
 void EffectPrimitiveState::GetColorOverride(unsigned char* red, unsigned char* green, unsigned char* blue) {

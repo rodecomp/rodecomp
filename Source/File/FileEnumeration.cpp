@@ -2,6 +2,7 @@
 
 #include <windows.h>
 
+// OFFSET: 0x00AF5080
 // FUNCTION: fn_18246
 void EnumerateFileNames(std::list<std::string>& names, const char* directory, const char* pattern) {
   std::string search(directory);
@@ -22,6 +23,7 @@ void EnumerateFileNames(std::list<std::string>& names, const char* directory, co
   FindClose(handle);
 }
 
+// OFFSET: 0x00AF5510
 // FUNCTION: fn_18247
 void EnumerateFileNames(std::vector<std::string>& names, const char* directory, const char* pattern) {
   std::string search(directory);

@@ -13,6 +13,7 @@ namespace {
   static_assert(sizeof(GifLzwEntry) == 12);
 }
 
+// OFFSET: 0x0074A840
 // FUNCTION: fn_07868
 int __stdcall DecodeGifLzw(int minimumCodeSize, const unsigned char* input, int inputBytes, unsigned char* output) {
   const int clearCode = 1 << minimumCodeSize;

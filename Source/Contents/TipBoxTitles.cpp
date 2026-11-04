@@ -100,6 +100,7 @@ CTipBoxMgr::CTipBoxMgr()
 // INLINED
 CTipBoxMgr::~CTipBoxMgr() = default;
 
+// OFFSET: 0x007AC710
 // FUNCTION: fn_09122
 void CTipBoxMgr::AddParagraph(int id, std::string text) {
   for (;;) {
@@ -113,6 +114,7 @@ void CTipBoxMgr::AddParagraph(int id, std::string text) {
   this->m_entries[id].paragraphs.push_back(std::move(text));
 }
 
+// OFFSET: 0x007AC990
 // FUNCTION: fn_09123
 bool CTipBoxMgr::Create() {
   if (g_itemTagOwner) {
@@ -133,6 +135,7 @@ bool CTipBoxMgr::Create() {
   return true;
 }
 
+// OFFSET: 0x007ACB20
 // FUNCTION: fn_09124
 void CTipBoxMgr::Destroy() {
   if (g_itemTagOwner) {
@@ -141,6 +144,7 @@ void CTipBoxMgr::Destroy() {
   }
 }
 
+// OFFSET: 0x007ACB40
 // FUNCTION: fn_09125
 TipBoxEntry& CTipBoxMgr::SelectRandomTip() {
   this->m_randomList.clear();
@@ -161,6 +165,7 @@ TipBoxEntry& CTipBoxMgr::SelectRandomTip() {
   return this->m_currentEntry;
 }
 
+// OFFSET: 0x007ACC00
 // FUNCTION: fn_09126
 const TipBoxEntry& CTipBoxMgr::GetTip(int id) const {
   const auto it = this->m_entries.find(id);

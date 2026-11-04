@@ -149,7 +149,6 @@ void UIShortCutWnd::Slot19() {
   this->Invalidate();
 }
 
-// OFFSET: 0x00930900
 void UIShortCutWnd::Slot26(int x, int y) {
   ActivateShortcut(
     *this, this->m_grid, x, y, g_session.ItemSlotActive(), g_session.m_hotkeyPage, this->m_slots, g_session.m_automaticSkills

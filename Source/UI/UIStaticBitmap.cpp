@@ -12,7 +12,6 @@ UIStaticBitmap::UIStaticBitmap()
     : UIWindow(0), tooltipX(0), tooltipY(-20), forwardHover(0) {
 }
 
-// OFFSET: 0x00852F20
 UIStaticBitmap::~UIStaticBitmap() = default;
 
 // OFFSET: 0x00865740

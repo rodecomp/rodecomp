@@ -2,6 +2,7 @@
 
 #include <cstring>
 
+// OFFSET: 0x0061AE00
 // FUNCTION: fn_04417
 AES::~AES() {
   if (m_key != nullptr) {
@@ -14,6 +15,7 @@ AES::~AES() {
   }
 }
 
+// OFFSET: 0x0061AF30
 // FUNCTION: fn_04418
 ULONG AES::Decrypt(PUCHAR input, ULONG inputSize, PUCHAR output, ULONG outputSize, UCHAR flags) {
   PUCHAR iv;
@@ -32,6 +34,7 @@ ULONG AES::Decrypt(PUCHAR input, ULONG inputSize, PUCHAR output, ULONG outputSiz
   return status < 0 ? static_cast<ULONG>(-1) : result;
 }
 
+// OFFSET: 0x0061B1A0
 // FUNCTION: fn_04419
 bool AES::Initialize(PUCHAR secret, ULONG secretSize, const UCHAR* iv, ULONG ivSize, int mode) {
   if (m_key != nullptr) {
@@ -98,12 +101,14 @@ bool AES::Initialize(PUCHAR secret, ULONG secretSize, const UCHAR* iv, ULONG ivS
   return true;
 }
 
+// OFFSET: 0x0061B3C0
 // FUNCTION: fn_04420
 bool AES::Initialize(PUCHAR secret, ULONG secretSize, int mode) {
   UCHAR iv[16]{};
   return Initialize(secret, secretSize, iv, sizeof(iv), mode);
 }
 
+// OFFSET: 0x0061B410
 // FUNCTION: fn_04421
 bool AES::SetIV(const UCHAR* iv, ULONG ivSize) {
   if (ivSize != 16) {
@@ -114,6 +119,7 @@ bool AES::SetIV(const UCHAR* iv, ULONG ivSize) {
   return true;
 }
 
+// OFFSET: 0x0061B440
 // FUNCTION: fn_04422
 bool AES::SetMode(int mode) {
   OSVERSIONINFOEXW version{};

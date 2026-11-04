@@ -87,7 +87,6 @@ CTableMng::CTableMng() {
   this->m_entryQueue.clear();
 }
 
-// OFFSET: 0x00CA35B0
 CTableMng::~CTableMng() {
   this->Clear();
 }

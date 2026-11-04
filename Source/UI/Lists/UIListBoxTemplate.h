@@ -195,16 +195,16 @@ public:
 
   void Slot15(int width, int height) override;
   // OFFSET: 0x009D23B0
-  // OFFSET: 0x009D23C0
   // FUNCTION: fn_14011
+  // OFFSET: 0x009D23C0
   // FUNCTION: fn_14012
   void Paint() override {
     this->ClearSurface(0xFFFF00FF);
   }
 
   // OFFSET: 0x009D2410
-  // OFFSET: 0x009D2450
   // FUNCTION: fn_14017
+  // OFFSET: 0x009D2450
   // FUNCTION: fn_14018
   void Slot35(int value) override {
     if (!this->scrollBar->dragging && this->scrollBar->total > this->scrollBar->visible) {
@@ -215,8 +215,8 @@ public:
   }
 
   // OFFSET: 0x009D3FD0
-  // OFFSET: 0x009D4040
   // FUNCTION: fn_14037
+  // OFFSET: 0x009D4040
   // FUNCTION: fn_14038
   void Resize(int width, int height) override {
     UIWindow::Resize(width, height);
@@ -231,8 +231,8 @@ public:
   }
 
   // OFFSET: 0x009DD9A0
-  // OFFSET: 0x009DD9F0
   // FUNCTION: fn_14345
+  // OFFSET: 0x009DD9F0
   // FUNCTION: fn_14346
   void UpdateScrollBar() {
     int total = 0;
@@ -292,24 +292,24 @@ public:
   ~CUIListBoxEx() override;
   void Slot15(int width, int height) override;
   // OFFSET: 0x00A01E70
-  // OFFSET: 0x00A01E80
-  // OFFSET: 0x00A0CE60
-  // OFFSET: 0x00A63890
   // FUNCTION: fn_14832
+  // OFFSET: 0x00A01E80
   // FUNCTION: fn_14833
+  // OFFSET: 0x00A0CE60
   // FUNCTION: fn_15037
+  // OFFSET: 0x00A63890
   // FUNCTION: fn_16437
   void Paint() override {
     this->ClearSurface(0xFFFF00FF);
   }
 
   // OFFSET: 0x00A01E90
-  // OFFSET: 0x00A01ED0
-  // OFFSET: 0x00A0CE70
-  // OFFSET: 0x00A638A0
   // FUNCTION: fn_14834
+  // OFFSET: 0x00A01ED0
   // FUNCTION: fn_14835
+  // OFFSET: 0x00A0CE70
   // FUNCTION: fn_15038
+  // OFFSET: 0x00A638A0
   // FUNCTION: fn_16438
   void Slot35(int value) override {
     if (!this->scrollBar->dragging && this->scrollBar->total > this->scrollBar->visible) {
@@ -320,10 +320,10 @@ public:
   }
 
   // OFFSET: 0x009F9890
-  // OFFSET: 0x009F98F0
-  // OFFSET: 0x00A08DE0
   // FUNCTION: fn_14810
+  // OFFSET: 0x009F98F0
   // FUNCTION: fn_14811
+  // OFFSET: 0x00A08DE0
   // FUNCTION: fn_15032
   void ClearItems() {
     for (T* item : this->items) {
@@ -356,8 +356,8 @@ public:
   }
 
   // OFFSET: 0x00A051E0
-  // OFFSET: 0x00A662D0
   // FUNCTION: fn_14971
+  // OFFSET: 0x00A662D0
   // FUNCTION: fn_16614
   void ClearData() {
     this->data.clear();
@@ -389,8 +389,8 @@ public:
   }
 
   // OFFSET: 0x009DD950
-  // OFFSET: 0x00A06300
   // FUNCTION: fn_14344
+  // OFFSET: 0x00A06300
   // FUNCTION: fn_15001
   void UpdateScrollBar() {
     this->scrollBar->SetTotal(this->data.size() * this->rowHeight + this->itemY);
@@ -400,16 +400,16 @@ public:
   }
 
   // OFFSET: 0x009D43D0
-  // OFFSET: 0x009D45D0
-  // OFFSET: 0x009D47D0
-  // OFFSET: 0x009D49D0
-  // OFFSET: 0x00A027C0
-  // OFFSET: 0x00A029C0
   // FUNCTION: fn_14043
+  // OFFSET: 0x009D45D0
   // FUNCTION: fn_14044
+  // OFFSET: 0x009D47D0
   // FUNCTION: fn_14045
+  // OFFSET: 0x009D49D0
   // FUNCTION: fn_14046
+  // OFFSET: 0x00A027C0
   // FUNCTION: fn_14843
+  // OFFSET: 0x00A029C0
   // FUNCTION: fn_14844
   void OnScroll(int position) {
     auto it = this->items.begin();

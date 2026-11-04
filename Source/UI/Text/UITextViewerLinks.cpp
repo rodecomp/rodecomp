@@ -335,7 +335,6 @@ void UITextViewer::AddTipLinks(std::string text, unsigned addedLines) {
 }
 
 // OFFSET: 0x00878750
-// OFFSET: 0x00878750
 // FUNCTION: fn_11212
 bool UITextViewer::AddUrlLinks(std::string text, unsigned addedLines) {
   std::string parsed = RemoveTextColors(text.c_str());

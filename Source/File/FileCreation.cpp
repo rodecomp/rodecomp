@@ -10,6 +10,7 @@
 #include <share.h>
 #include <windows.h>
 
+// OFFSET: 0x00AF6960
 // FUNCTION: fn_18255
 bool CreateDirectoryPath(std::string path) {
   if (path.empty()) {
@@ -32,6 +33,7 @@ bool CreateDirectoryPath(std::string path) {
   return true;
 }
 
+// OFFSET: 0x00AF6EA0
 // FUNCTION: fn_18256
 std::string CreateUniqueFileName(const std::string& filename) {
   char drive[MAX_PATH]{};

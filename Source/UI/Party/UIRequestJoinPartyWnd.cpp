@@ -29,7 +29,6 @@ UIRequestJoinPartyWnd::UIRequestJoinPartyWnd()
     : UIFrameWnd(0) {
 }
 
-// OFFSET: 0x007BB960
 UIRequestJoinPartyWnd::~UIRequestJoinPartyWnd() = default;
 
 // OFFSET: 0x007BEFD0

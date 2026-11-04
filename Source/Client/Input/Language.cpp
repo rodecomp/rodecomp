@@ -421,8 +421,6 @@ UIChatHisBox3::UIChatHisBox3() : UIChatHisBox2(), unknown_0130(1), unknown_0134(
 UIColoringTextViewer::UIColoringTextViewer() : UIListBox(), color(0), lineLimit(0) {
 }
 
-// OFFSET: 0x0099A060
-
 // OFFSET: 0x007ECF50
 // FUNCTION: fn_09805
 UIMacroDetectorWnd::UIMacroDetectorWnd()
@@ -432,6 +430,7 @@ UIMacroDetectorWnd::UIMacroDetectorWnd()
   g_windowMgr.CloseWindow(155);
   g_windowMgr.CloseWindow(39);
 }
+// OFFSET: 0x0099A060
 // FUNCTION: fn_13537
 UIRoundBoxTooltipWnd::UIRoundBoxTooltipWnd() : UIFrameWnd(0), viewer(nullptr) {
 }
@@ -490,8 +489,6 @@ CLanguageTH::CLanguageTH() : lexiconLoaded(g_lexiconBoundary.Load()) {
 // FUNCTION: fn_09608
 UIHairStyleButton::UIHairStyleButton(int style, int sex) : UIBitmapButton(), m_style(style), m_sex(sex), m_race(0), m_preview(nullptr), m_selected(false) {
 }
-
-// OFFSET: 0x00999FF0
 
 // OFFSET: 0x00ACD140
 // FUNCTION: fn_17755

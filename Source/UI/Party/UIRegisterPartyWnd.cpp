@@ -52,7 +52,6 @@ UIRegisterPartyWnd::UIRegisterPartyWnd()
     : UIFrameWnd(0), selectedType(0) {
 }
 
-// OFFSET: 0x007BB810
 UIRegisterPartyWnd::~UIRegisterPartyWnd() = default;
 
 // OFFSET: 0x007C2440

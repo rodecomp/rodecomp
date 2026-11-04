@@ -16,7 +16,6 @@ UIJoinPartyAcceptWnd::UIJoinPartyAcceptWnd()
     : UIExchangeAcceptWnd() {
 }
 
-// OFFSET: 0x008CCEE0
 UIJoinPartyAcceptWnd::~UIJoinPartyAcceptWnd() = default;
 
 // OFFSET: 0x008FE780

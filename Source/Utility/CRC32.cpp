@@ -3,6 +3,7 @@
 #include <cstring>
 #include <cwchar>
 
+// OFFSET: 0x00403140
 // FUNCTION: fn_00142
 CRC32::CRC32() {
   for (int i = 0; i < 256; ++i) {
@@ -18,10 +19,12 @@ CRC32::CRC32() {
   }
 }
 
+// OFFSET: 0x004031E0
 // FUNCTION: fn_00143
 CRC32::~CRC32() {
 }
 
+// OFFSET: 0x004031F0
 // FUNCTION: fn_00144
 bool CRC32::Update(const BYTE* data, int length, DWORD* checksum) {
   if (data == nullptr) {
@@ -36,6 +39,7 @@ bool CRC32::Update(const BYTE* data, int length, DWORD* checksum) {
   return true;
 }
 
+// OFFSET: 0x004034A0
 // FUNCTION: fn_00145
 bool CRC32::UpdateFile(const WCHAR* filename, LONG offset, DWORD length, DWORD* checksum) {
   BYTE buffer[65536];
@@ -82,6 +86,7 @@ bool CRC32::UpdateFile(const WCHAR* filename, LONG offset, DWORD length, DWORD* 
   return true;
 }
 
+// OFFSET: 0x00403630
 // FUNCTION: fn_00146
 DWORD CRC32::Calculate(const char* text) {
   DWORD checksum = 0xFFFFFFFF;
@@ -89,6 +94,7 @@ DWORD CRC32::Calculate(const char* text) {
   return ~checksum;
 }
 
+// OFFSET: 0x00403670
 // FUNCTION: fn_00147
 DWORD CRC32::Calculate(const WCHAR* text) {
   char converted[MAX_PATH];
@@ -98,6 +104,7 @@ DWORD CRC32::Calculate(const WCHAR* text) {
   return ~checksum;
 }
 
+// OFFSET: 0x00403700
 // FUNCTION: fn_00148
 DWORD CRC32::CalculateLowercase(const char* text) {
   char lowercase[MAX_PATH];
@@ -108,6 +115,7 @@ DWORD CRC32::CalculateLowercase(const char* text) {
   return ~checksum;
 }
 
+// OFFSET: 0x00403790
 // FUNCTION: fn_00149
 DWORD CRC32::CalculateLowercase(const WCHAR* text) {
   WCHAR lowercase[MAX_PATH];
@@ -116,6 +124,7 @@ DWORD CRC32::CalculateLowercase(const WCHAR* text) {
   return Calculate(lowercase);
 }
 
+// OFFSET: 0x00403800
 // FUNCTION: fn_00150
 bool CRC32::Calculate(const BYTE* data, int length, DWORD* checksum) {
   *checksum = 0xFFFFFFFF;
@@ -124,6 +133,7 @@ bool CRC32::Calculate(const BYTE* data, int length, DWORD* checksum) {
   return true;
 }
 
+// OFFSET: 0x00403830
 // FUNCTION: fn_00151
 bool CRC32::CalculateFile(const WCHAR* filename, DWORD* checksum) {
   if (filename == nullptr || *filename == 0) {

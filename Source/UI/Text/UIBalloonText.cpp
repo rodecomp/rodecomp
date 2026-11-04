@@ -69,7 +69,6 @@ __declspec(noinline) UIBalloonText::UIBalloonText()
   this->geometry.unknown_0034 = 0;
 }
 
-// OFFSET: 0x008520F0
 UIBalloonText::~UIBalloonText() = default;
 
 // OFFSET: 0x00851A00

@@ -21,7 +21,6 @@ NThread::NThread(std::string name) : m_threadId(0), unknown_0008(true), m_state(
 }
 
 // OFFSET: 0x00737290
-// OFFSET: 0x00737350
 // FUNCTION: fn_07644
 NThread::~NThread() {
   this->Stop();

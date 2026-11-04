@@ -24,14 +24,12 @@ EZeffectClip::~EZeffectClip() {
   }
 }
 
-// OFFSET: 0x0074CEE0
 // OFFSET: 0x0074D570
 // FUNCTION: fn_07893
 CEZeffectRes::CEZeffectRes() : unknown_D320(0) {
 }
 
 // OFFSET: 0x0074D6F0
-// OFFSET: 0x0074D330
 // FUNCTION: fn_07895
 CEZeffectRes::~CEZeffectRes() = default;
 

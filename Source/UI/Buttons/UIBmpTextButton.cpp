@@ -11,7 +11,6 @@
 UIBmpTextButton::UIBmpTextButton() : UIBitmapButton() {
 }
 
-// OFFSET: 0x00852360
 UIBmpTextButton::~UIBmpTextButton() = default;
 
 // OFFSET: 0x007C2340

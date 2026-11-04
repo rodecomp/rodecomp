@@ -226,7 +226,6 @@ UIEditCtrl::UIEditCtrl()
 }
 
 // OFFSET: 0x008517E0
-// OFFSET: 0x00852980
 // FUNCTION: fn_10694
 UIEditCtrl::~UIEditCtrl() = default;
 
@@ -463,8 +462,6 @@ void UIEditCtrl3::DrawBlinkingCaret(const std::uint32_t& color) {
   this->DrawTextAt(1, 0, "|", 0, 0, 12, color, 0, 0);
 }
 
-// OFFSET: 0x00854130
-
 // OFFSET: 0x00856F10
 // FUNCTION: fn_10757
 void UIEditCtrl3::PlaceTags(const int& x, const int& y, const int& firstLine, const int& endLine, const int& line, const int&) {
@@ -523,7 +520,6 @@ UISkillListWnd::UISkillListWnd() : UIFrameWnd(0) {
 UIEditCtrlWheel::UIEditCtrlWheel() : UIEditCtrl() {
 }
 
-// OFFSET: 0x009701B0
 UIEditCtrlWheel::~UIEditCtrlWheel() = default;
 
 // OFFSET: 0x0098A240
@@ -9469,8 +9465,6 @@ void UIMerchantItemPurchaseWnd::Paint() {
   }
 }
 
-// OFFSET: 0x00981EE0
-
 // OFFSET: 0x00982A80
 // FUNCTION: fn_13344
 void UIMerchantShopMakeWnd::Paint() {
@@ -10213,6 +10207,7 @@ bool UIEditCtrl3::LinkDisplayName(const std::string& encoded, std::string& outpu
 
   return decoded;
 }
+// OFFSET: 0x00981EE0
 // FUNCTION: fn_13342
 void UIMerchantItemShopWnd::Paint() {
   this->DrawTitleBar(false, "", 0);

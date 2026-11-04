@@ -1560,8 +1560,6 @@ void CGameMode::ReceiveZoneServerChange(const char* mapName, std::int16_t x, std
   this->ChangeZoneServer(mapName, x, y, ip, port, std::string());
 }
 
-// OFFSET: 0x00D3A1E0
-
 // OFFSET: 0x00D272A0
 // FUNCTION: fn_21688
 void CGameMode::ReceiveActorStatusBlock(const unsigned char* packet) {
@@ -2682,8 +2680,6 @@ void CGameMode::ReceiveChatEntries(unsigned char* data) {
   }
   window->SendMsg(nullptr, 0x1B, reinterpret_cast<std::intptr_t>("cancel"), 0, 0, 0);
 }
-
-// OFFSET: 0x00D795B0
 
 // OFFSET: 0x00D7A200
 // FUNCTION: fn_22189
@@ -4234,8 +4230,6 @@ void CGameMode::ReceiveStatusBonus(const unsigned char* data) {
   }
 }
 
-// OFFSET: 0x00D27EC0
-
 // OFFSET: 0x00D8A600
 // FUNCTION: fn_22220
 void CGameMode::ReceiveSwapEquipmentList(const unsigned char* data) {
@@ -4450,8 +4444,6 @@ void CGameMode::ReceiveOpenStore(const unsigned char* packet) {
   this->SendMsg(270, 0, 0, 0, 0);
 }
 
-// OFFSET: 0x00D3A770
-
 struct ACTSTRUCT {
   virtual ~ACTSTRUCT();
 
@@ -4471,6 +4463,7 @@ struct ACTSTRUCT {
 // OFFSET: 0x00D051F0
 // FUNCTION: fn_21563
 ACTSTRUCT::~ACTSTRUCT() = default;
+// OFFSET: 0x00D3A770
 // FUNCTION: fn_21779
 void CGameMode::ReceiveSearchStoreOpen(const unsigned char* packet) {
   g_session.unknown_5BE0 = packet[4];
@@ -7019,8 +7012,6 @@ void CGameMode::ReceiveBuyingStoreOpenResult(const unsigned char* packet) {
   }
 }
 
-// OFFSET: 0x00D316D0
-
 // OFFSET: 0x00D4B050
 // FUNCTION: fn_21863
 void CGameMode::ReceiveItemObtainNotice(const unsigned char* packet) {
@@ -7108,8 +7099,6 @@ void CGameMode::ReceiveBuyingStoreSellResult(const unsigned char* packet) {
   g_windowMgr.CloseWindow(179);
 }
 
-// OFFSET: 0x00D31390
-
 struct ReputePointEntry {
   /* 0000 */ std::uint64_t id;
   /* 0008 */ std::int64_t point;
@@ -7196,7 +7185,7 @@ void CGameMode::RefreshEmotionPurchaseSchedule() {
   manager->RefreshCommands();
 }
 
-// OFFSET: 0x00D17BF0
+// OFFSET: 0x00D31390
 // FUNCTION: fn_21733
 void CGameMode::ReceivePartyItemPickupNotice(const unsigned char* packet) {
   const std::uint32_t aid = *reinterpret_cast<const std::uint32_t*>(packet + 2);
@@ -7408,6 +7397,7 @@ void CGameMode::ReceiveGuildPositionInfo(const unsigned char* packet) {
   });
   g_windowMgr.RefreshGuildWindows();
 }
+// OFFSET: 0x00D17BF0
 // FUNCTION: fn_21597
 void CGameMode::RefreshEmotionSaleSchedule() {
   g_timeScheduler->sub_BA95F0(6);
@@ -7755,8 +7745,6 @@ struct SkillFailurePacket {
 #pragma pack(pop)
 
 static_assert(sizeof(SkillFailurePacket) == 0xE);
-
-// OFFSET: 0x00D1E840
 
 // OFFSET: 0x00D21220
 // FUNCTION: fn_21654
@@ -9154,7 +9142,7 @@ namespace {
   static_assert(sizeof(ChatRoomMemberListPacket) == 0x8);
 }
 
-// OFFSET: 0x00D27420
+// OFFSET: 0x00D1E840
 // FUNCTION: fn_21636
 void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const SkillFailurePacket*>(data);
@@ -9566,6 +9554,7 @@ void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
 
   g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(notice), 0xFF, 0xB, 0, 0);
 }
+// OFFSET: 0x00D27420
 // FUNCTION: fn_21690
 void CGameMode::ReceiveChatRoomMemberList(const unsigned char* data) {
   const ChatRoomMemberListPacket* packet = reinterpret_cast<const ChatRoomMemberListPacket*>(data);
@@ -10913,8 +10902,6 @@ struct EquipItemNoticePacket {
 
 static_assert(sizeof(EquipItemNoticePacket) == 7);
 
-// OFFSET: 0x00D50AA0
-
 #pragma pack(push, 1)
 struct MapMovePacket {
   /* 0000 */ std::uint16_t packetType;
@@ -11073,8 +11060,6 @@ void CGameMode::ApplyGuildStorageLog(std::uint16_t result, const std::vector<Gui
   g_guildStorageLogs[2].clear();
 }
 
-// OFFSET: 0x00D5B3C0
-
 // OFFSET: 0x00D5E930
 // FUNCTION: fn_21967
 void LaunchSkillCastEffect(CGameMode* mode, CGameActor* source, CGameActor* target, std::uint32_t targetAid, std::uint16_t skillId, short x, short y, int delay) {
@@ -11170,7 +11155,7 @@ void LaunchSkillCastEffect(CGameMode* mode, CGameActor* source, CGameActor* targ
   }
 }
 
-// OFFSET: 0x00D5B940
+// OFFSET: 0x00D50AA0
 // FUNCTION: fn_21887
 void CGameMode::ReceiveEquipItemNotice(const unsigned char* data) {
   const EquipItemNoticePacket* packet = reinterpret_cast<const EquipItemNoticePacket*>(data);
@@ -11218,6 +11203,7 @@ void CGameMode::ReceiveEquipItemNotice(const unsigned char* data) {
     }
   }
 }
+// OFFSET: 0x00D5B3C0
 // FUNCTION: fn_21964
 void NoticeSkillUse(CGameActor* target, CGameActor* source, std::uint16_t skillId, unsigned char silent) {
   if (silent == 1) {
@@ -14980,10 +14966,6 @@ void CGameMode::ReceiveActorStateEntryNamedBody(const unsigned char* data) {
   );
 }
 
-// OFFSET: 0x00D63D70
-
-// OFFSET: 0x00D642F0
-
 #pragma pack(push, 1)
 struct RefineBroadcastPacket {
   /* 0000 */ std::uint16_t packetType;
@@ -16695,6 +16677,7 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
     return;
   }
 }
+// OFFSET: 0x00D7B640
 // FUNCTION: fn_22208
 void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t sourceAid, std::uint32_t targetAid, bool result) {
   CGameActor* source;

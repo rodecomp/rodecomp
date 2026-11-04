@@ -20,7 +20,7 @@ std::size_t SkillIdHash::operator()(std::uint32_t id) const {
 CPlayerSkillBundle::lcEXCInfo::lcEXCInfo() {
 }
 
-// OFFSET: 0x00770E90
+// OFFSET: 0x00770A30
 // FUNCTION: fn_08260
 CPlayerSkillBundle::lcEXCInfo::~lcEXCInfo() = default;
 
@@ -30,7 +30,6 @@ CPlayerSkillBundle::CPlayerSkillBundle() : index(8) {
 }
 
 // OFFSET: 0x00770830
-// OFFSET: 0x00770D40
 // FUNCTION: fn_08258
 CPlayerSkillBundle::~CPlayerSkillBundle() = default;
 

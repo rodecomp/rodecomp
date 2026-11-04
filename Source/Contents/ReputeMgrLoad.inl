@@ -127,10 +127,6 @@ bool JsonCppLoader::sub_50B830(std::map<int, ReputeInfoRecord>* out) {
   return this->succeeded;
 }
 
-// OFFSET: 0x0060D060
-
-// OFFSET: 0x0060D440
-
 // OFFSET: 0x0060DC70
 // FUNCTION: fn_04294
 bool CReputeMgr::sub_60DC70(std::map<std::uint64_t, ReputeGroup>& groups) {

@@ -4,6 +4,7 @@
 #include <wincrypt.h>
 
 namespace myGPack {
+  // OFFSET: 0x00AEA5C0
   // FUNCTION: fn_18121
   int DecryptPakData(const BYTE* secret, DWORD secretSize, const BYTE* input, BYTE* output, DWORD dataSize) {
     HCRYPTPROV provider = 0;

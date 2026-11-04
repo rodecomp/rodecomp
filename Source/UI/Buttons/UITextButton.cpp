@@ -64,7 +64,7 @@ int g_screenHeight;
 UITextButton::UITextButton() : UIButton(), m_outlineColor(0xFFFFFF), m_value(0) {
 }
 
-// OFFSET: 0x00874690
+// OFFSET: 0x00871D60
 // FUNCTION: fn_11110
 UITextButton::~UITextButton() = default;
 
@@ -2446,8 +2446,6 @@ void UIComboBox::Paint() {
 
   this->parent->Invalidate();
 }
-
-// OFFSET: 0x0088AEC0
 
 // OFFSET: 0x0088F1C0
 // FUNCTION: fn_11387

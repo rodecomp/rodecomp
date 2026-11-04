@@ -8,10 +8,8 @@
 // VTABLE: vt_00282
 class CUnhandledExceptionHandler {
 public:
-  // OFFSET: 0x00635A70
   CUnhandledExceptionHandler();
 
-  // OFFSET: 0x00635A80
   virtual ~CUnhandledExceptionHandler();
 };
 
@@ -19,25 +17,18 @@ public:
 static_assert(sizeof(CUnhandledExceptionHandler) == 4);
 #endif
 
-// OFFSET: 0x00635AB0
 bool InitUnhandledExceptionHandler(int (*callback)());
 
-// OFFSET: 0x00635C10
 int CleanupUnhandledExceptionHandler();
 
-// OFFSET: 0x00635C30
 INT_PTR CALLBACK DialogFunc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-// OFFSET: 0x00635DB0
 BOOL CALLBACK EnumerateLoadedModulesCallback(PCSTR moduleName, ULONG moduleBase, ULONG moduleSize, PVOID userContext);
 
-// OFFSET: 0x00635E00
 void __cdecl InvalidParameterHandler(const wchar_t* expression, const wchar_t* function, const wchar_t* file, unsigned int line, uintptr_t pReserved);
 
-// OFFSET: 0x00635E90
 void __cdecl PurecallHandler();
 
-// OFFSET: 0x00635F00
 LONG WINAPI TopLevelExceptionFilter(EXCEPTION_POINTERS* exceptionInfo);
 
 #endif

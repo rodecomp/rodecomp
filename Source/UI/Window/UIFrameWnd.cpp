@@ -69,7 +69,6 @@ UIFrameWnd::UIFrameWnd(unsigned char cached)
 }
 
 // OFFSET: 0x008A4E90
-// OFFSET: 0x008A60E0
 // FUNCTION: fn_11678
 UIFrameWnd::~UIFrameWnd() = default;
 

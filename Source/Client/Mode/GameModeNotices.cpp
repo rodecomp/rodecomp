@@ -5496,8 +5496,6 @@ struct QuestHuntUpdatePacket {
 };
 #pragma pack(pop)
 
-// OFFSET: 0x00D47760
-
 #pragma pack(push, 1)
 struct QuestHuntUpdateEntry2 {
   /* 0000 */ unsigned int questId;
