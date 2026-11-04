@@ -116,7 +116,7 @@ void CNavigationManager::DrawRoute(const float* matrix) {
 
 // OFFSET: 0x00B88800
 // FUNCTION: fn_19376
-CNaviInfo* CNavigationManager::FindObject(const char* name) const {
+__declspec(noinline) CNaviInfo* CNavigationManager::FindObject(const char* name) const {
   for (CNaviInfo* info : this->data.destinations) {
     if (info->HasName(name)) {
       return info;
@@ -327,7 +327,7 @@ std::string CNavigationManager::RouteText() {
 
 // OFFSET: 0x00B98780
 // FUNCTION: fn_19609
-void CNavigationManager::ShowRouteResult(int result, int mode) {
+__declspec(noinline) void CNavigationManager::ShowRouteResult(int result, int mode) {
   std::string message;
   switch (result) {
   case -100:
@@ -446,7 +446,7 @@ void CNavigationManager::ShowRouteResult(int result, int mode) {
 
 // OFFSET: 0x00B8D270
 // FUNCTION: fn_19434
-bool CNaviInfo::HasName(const char* name) const {
+__declspec(noinline) bool CNaviInfo::HasName(const char* name) const {
   return std::strcmp(this->name.c_str(), name) == 0;
 }
 
@@ -1038,7 +1038,7 @@ int NaviDataEntry::GetCost() const {
 
 // OFFSET: 0x00B890E0
 // FUNCTION: fn_19384
-bool CNaviData::CollectLinksTo(CNaviInfo* target, std::vector<CNavi_Link*>* out) {
+__declspec(noinline) bool CNaviData::CollectLinksTo(CNaviInfo* target, std::vector<CNavi_Link*>* out) {
   out->clear();
   for (auto info = this->destinations.begin(); info != this->destinations.end(); ++info) {
     for (auto link = (*info)->LinksBegin(); link != (*info)->LinksEnd(); ++link) {
@@ -1071,7 +1071,7 @@ void NaviDataEntry::Init() {
 
 // OFFSET: 0x00B88AB0
 // FUNCTION: fn_19383
-bool CNaviData::Search(std::string query, int type, std::vector<NavigationTarget>& out) {
+__declspec(noinline) bool CNaviData::Search(std::string query, int type, std::vector<NavigationTarget>& out) {
   if (query.size() == 0) {
     return false;
   }
@@ -1182,7 +1182,7 @@ void CNavigationManager::RefreshSearch() {
 
 // OFFSET: 0x00B9C5C0
 // FUNCTION: fn_19620
-bool CNavigationManager::UpdateSearchResults() {
+__declspec(noinline) bool CNavigationManager::UpdateSearchResults() {
   this->unknown_125C = 0;
   if (!this->data.Search(this->unknown_1264, 0, this->states)) {
     return false;
@@ -1696,7 +1696,7 @@ void CNavigationManager::CancelRoute() {
 
 // OFFSET: 0x00B97B90
 // FUNCTION: fn_19602
-int CNavigationManager::Navigate(int cellX, int cellY) {
+__declspec(noinline) int CNavigationManager::Navigate(int cellX, int cellY) {
   int x = cellX;
   int y = cellY;
   if (this->savedTarget.object != nullptr) {
