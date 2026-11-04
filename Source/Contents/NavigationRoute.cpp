@@ -172,7 +172,7 @@ void CNaviData::ClearAll() {
 
 // OFFSET: 0x00B8CF70
 // FUNCTION: fn_19432
-bool CNavi_Object::HasId(const unsigned int& id) const {
+__declspec(noinline) bool CNavi_Object::HasId(const unsigned int& id) const {
   return static_cast<unsigned int>(this->id) == id;
 }
 
