@@ -43,8 +43,9 @@ void CMouse::Update() {
 
   this->wheel = this->pendingWheel;
   this->pendingWheel = 0;
-  this->previousButtons[0] = this->pendingButtons[0];
-  this->previousButtons[1] = this->pendingButtons[1];
+  for (unsigned index = 0; index < 2; ++index) {
+    this->previousButtons[index] = this->pendingButtons[index];
+  }
 }
 
 // OFFSET: 0x006371E0
