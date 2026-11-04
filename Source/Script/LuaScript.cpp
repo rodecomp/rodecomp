@@ -1221,25 +1221,19 @@ int LuaScript::TableInteger(std::string table, int keyType, std::intptr_t key) {
   int value = -1;
   lua_getglobal(this->m_state, table.c_str());
 
-  if (lua_type(this->m_state, -1) != LUA_TTABLE) {
-    return value;
-  }
+  if (lua_type(this->m_state, -1) == LUA_TTABLE) {
+    std::string signature;
 
-  if (keyType == 0) {
-    lua_pushnumber(this->m_state, static_cast<int>(key));
-    lua_gettable(this->m_state, -2);
-  } else if (keyType == 1) {
-    lua_pushstring(this->m_state, reinterpret_cast<const char*>(key));
-    lua_gettable(this->m_state, -2);
-  } else if (keyType != 2) {
-    lua_pushnumber(this->m_state, static_cast<int>(key));
-    lua_gettable(this->m_state, -2);
-    return value;
-  }
+    if (keyType == 0) {
+      signature = "d";
+    } else if (keyType == 1) {
+      signature = "s";
+    } else if (keyType == 2) {
+      signature = "l";
+    }
 
-  if (lua_isnumber(this->m_state, -1)) {
-    value = static_cast<int>(lua_tonumber(this->m_state, -1));
-    lua_pop(this->m_state, 1);
+    signature += "d";
+    this->TableField(signature.c_str(), key, &value);
   }
 
   return value;
