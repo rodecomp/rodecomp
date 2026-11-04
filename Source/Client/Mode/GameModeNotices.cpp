@@ -1696,7 +1696,7 @@ void CGameMode::ReceiveMacroBlackListResult(int result) {
   }
 
   GetRagConnection().Close();
-  static_cast<CMode*>(g_charViewMode)->SendMsg(2, 0, 0, 0, 0);
+  g_modeMgr.gameMode->SendMsg(2, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x00D6E520
@@ -1718,7 +1718,7 @@ void CGameMode::ReceiveMacroDetectorResult(int result) {
   }
 
   GetRagConnection().Close();
-  static_cast<CMode*>(g_charViewMode)->SendMsg(2, 0, 0, 0, 0);
+  g_modeMgr.gameMode->SendMsg(2, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x00D71600
