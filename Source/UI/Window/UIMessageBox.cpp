@@ -589,14 +589,14 @@ void UIFrameWnd::DrawBorder(int x, int y, int width, int height) {
 }
 
 // INLINED
-void UIMessageBox::FormatCountdown() {
+__forceinline void UIMessageBox::FormatCountdown() {
   char text[512];
   std::sprintf(text, this->format.c_str(), this->remaining);
   this->messageText = text;
 }
 
 // INLINED
-void UIMessageBox::AddButton(const char* name, int id, int x, int y) {
+__forceinline void UIMessageBox::AddButton(const char* name, int id, int x, int y) {
   auto* button = new UIBitmapButton();
   const char* suffixes[] = {"", "_a", "_b"};
 
