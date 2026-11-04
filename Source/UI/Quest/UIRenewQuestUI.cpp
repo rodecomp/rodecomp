@@ -2225,6 +2225,12 @@ void CUIRenewQuestUI::OnSearchSubmit() {
   this->sub_A67290(0xF);
 }
 
+// OFFSET: 0x00A66100
+// FUNCTION: fn_45519
+void CUIRenewQuestUI::OnClose() {
+  g_windowMgr.CloseWindow(0x2718);
+}
+
 // OFFSET: 0x00A66370
 // FUNCTION: fn_45520
 void CUIRenewQuestUI::OnSearchButton() {
