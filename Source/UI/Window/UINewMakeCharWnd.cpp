@@ -2,7 +2,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UINewMakeCharWnd.h"
 
-#include "Client/Mode/CMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
@@ -240,6 +240,7 @@ int UIHairStyleButton::SendMsg(UIWindow* sender, int message, std::intptr_t argu
       if (argument1) {
         this->SetBitmap("유저인터페이스\\make_character_ver2\\bt_hairStyle_select.bmp", 0, 0);
         this->SetBitmap("유저인터페이스\\make_character_ver2\\bt_hairStyle_select.bmp", 1, 0);
+        this->SetBitmap("유저인터페이스\\make_character_ver2\\bt_hairStyle_select.bmp", 2, 0);
       } else {
         this->SetBitmap("유저인터페이스\\make_character_ver2\\bt_hairStyle_normal.bmp", 0, 0);
         this->SetBitmap("유저인터페이스\\make_character_ver2\\bt_hairStyle_over.bmp", 1, 0);
@@ -275,8 +276,7 @@ int UIHairStyleButton::SendMsg(UIWindow* sender, int message, std::intptr_t argu
       }
       this->m_preview->Enable(1);
       sprintf_s(
-        name,
-        this->m_sex == 0 ? "유저인터페이스\\make_character_ver2\\img_hairStyle_doramGirl%02d.bmp" : "유저인터페이스\\make_character_ver2\\img_hairStyle_doramBoy%02d.bmp",
+        name, this->m_sex == 0 ? "유저인터페이스\\make_character_ver2\\img_hairStyle_doramGirl%02d.bmp" : "유저인터페이스\\make_character_ver2\\img_hairStyle_doramBoy%02d.bmp",
         this->m_style + 1
       );
     }
