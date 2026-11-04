@@ -57,7 +57,7 @@ namespace {
 
   // OFFSET: 0x009B45D0
   // FUNCTION: fn_13832
-  void SplitTitle(const char* text, std::vector<std::string>& lines, int width) {
+  __declspec(noinline) void SplitTitle(const char* text, std::vector<std::string>& lines, int width) {
     const char* begin = text;
     const char* current = text;
     const char* end = text + std::char_traits<char>::length(text);
@@ -168,12 +168,11 @@ TipBoxEntry& CTipBoxMgr::SelectRandomTip() {
 // OFFSET: 0x007ACC00
 // FUNCTION: fn_09126
 const TipBoxEntry& CTipBoxMgr::GetTip(int id) const {
-  const auto it = this->m_entries.find(id);
-  if (it == this->m_entries.end()) {
-    return this->m_missing;
+  if (this->m_entries.find(id) != this->m_entries.end()) {
+    return this->m_entries.find(id)->second;
   }
 
-  return it->second;
+  return this->m_missing;
 }
 
 // OFFSET: 0x007ACC70
