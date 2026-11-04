@@ -12,6 +12,8 @@ namespace {
   }
 }
 
+__declspec(noinline) std::uint32_t FinalizeXxHash32(std::uint32_t hash, const void* data, std::uint32_t remaining, int);
+
 // OFFSET: 0x004D3490
 // FUNCTION: fn_00163
 std::uint32_t FinalizeXxHash32(std::uint32_t hash, const void* data, std::uint32_t remaining, int) {
