@@ -4965,7 +4965,7 @@ void CSession::AddPartyMember(MessengerMember& member) {
 // OFFSET: 0x00DD87E0
 // FUNCTION: fn_23312
 void CSession::ClearFriends() {
-  this->m_friends.clear();
+  this->m_friends.erase(this->m_friends.begin(), this->m_friends.end());
 }
 
 // OFFSET: 0x00DDF8A0
