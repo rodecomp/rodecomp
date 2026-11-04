@@ -838,18 +838,6 @@ void UIWindow::ClearChildren(bool destroy) {
   }
 }
 
-// OFFSET: 0x00AA5E90
-// FUNCTION: fn_17226
-void UIWindowMgr::DeferDeletion(UIWindow* window) {
-  if (!window) {
-    return;
-  }
-
-  this->ForgetWindowReferences(window);
-  this->deferredDeletion.insert(window);
-  window->Show(0);
-}
-
 // OFFSET: 0x00A82E50
 // FUNCTION: fn_16997
 void UIWindow::RemoveChild(UIWindow* child, unsigned char destroy) {

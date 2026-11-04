@@ -5,7 +5,7 @@
 
 // OFFSET: 0x00A81C90
 // FUNCTION: fn_16985
-bool UIWindow::IsDescendantOf(const UIWindow* ancestor) const {
+__declspec(noinline) bool UIWindow::IsDescendantOf(const UIWindow* ancestor) const {
   for (const UIWindow* node = this->parent; node; node = node->parent) {
     if (node == ancestor) {
       return true;
@@ -17,7 +17,7 @@ bool UIWindow::IsDescendantOf(const UIWindow* ancestor) const {
 
 // OFFSET: 0x00A8C200
 // FUNCTION: fn_17130
-void UIWindowMgr::ForgetWindowReferences(UIWindow* removed) {
+__forceinline void UIWindowMgr::ForgetWindowReferences(UIWindow* removed) {
   if (this->inputWindow && (this->inputWindow == removed || this->inputWindow->IsDescendantOf(removed))) {
     this->inputWindow = nullptr;
   }
@@ -37,6 +37,18 @@ void UIWindowMgr::ForgetWindowReferences(UIWindow* removed) {
   if (this->window_4F1D4 && (this->window_4F1D4 == removed || this->window_4F1D4->IsDescendantOf(removed))) {
     this->window_4F1D4 = nullptr;
   }
+}
+
+// OFFSET: 0x00AA5E90
+// FUNCTION: fn_17226
+void UIWindowMgr::DeferDeletion(UIWindow* window) {
+  if (!window) {
+    return;
+  }
+
+  this->ForgetWindowReferences(window);
+  this->deferredDeletion.insert(window);
+  window->Show(0);
 }
 
 // OFFSET: 0x00AA8F30
