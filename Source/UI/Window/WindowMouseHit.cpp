@@ -14,53 +14,9 @@
 #include "UI/Layout/WindowCoordinates.h"
 #include "UI/Window/WindowManagerWindows.h"
 
-// INLINED
-static void PromoteWindow(UIWindowMgr& mgr, UIWindow* window) {
-  if (mgr.modal != 0 && mgr.window_4F174 != window) {
-    return;
-  }
-
-  if (mgr.LookupWindow(278) || mgr.LookupWindow(4) || mgr.LookupWindow(199) || mgr.LookupWindow(200)) {
-    return;
-  }
-
-  int companion = window->geometry.id == 12 ? 234 : -1;
-  if (window->geometry.id == 82) {
-    companion = 250;
-  }
-
-  if (window->geometry.id == 82 || window->geometry.id == 12) {
-    for (auto entry = mgr.rendered.begin(); entry != mgr.rendered.end(); ++entry) {
-      UIWindow* value = *entry;
-      if (value->geometry.id == companion) {
-        mgr.rendered.erase(entry);
-        mgr.rendered.push_back(value);
-        break;
-      }
-    }
-  }
-
-  for (auto entry = mgr.rendered.begin(); entry != mgr.rendered.end(); ++entry) {
-    if (*entry == window) {
-      mgr.rendered.erase(entry);
-      mgr.rendered.push_back(window);
-      break;
-    }
-  }
-}
-
-// INLINED
-static void HideDropDown(UIWindowMgr& mgr) {
-  CUIDropDownBox* popup = static_cast<CUIDropDownBox*>(mgr.window_0A30);
-  if (popup && popup->geometry.visible != 0) {
-    popup->Detach();
-    popup->Show(0);
-  }
-}
-
 // OFFSET: 0x00A91B30
 // FUNCTION: fn_17168
-UIWindow* UIWindowMgr::FindRenderedUid(std::uint32_t uid) {
+__declspec(noinline) UIWindow* UIWindowMgr::FindRenderedUid(std::uint32_t uid) {
   for (UIWindow* window : this->rendered) {
     if (UIWindow* found = window->FindUid(uid)) {
       return found;
@@ -73,9 +29,9 @@ UIWindow* UIWindowMgr::FindRenderedUid(std::uint32_t uid) {
 // OFFSET: 0x00A91C70
 // FUNCTION: fn_17171
 UIWindow* UIWindowMgr::HitTestWindows(int x, int y) {
-  while (!this->rendered.empty()) {
-    UIWindow* hit = this->rendered.back()->HitTest(x, y);
-    y = static_cast<int>(static_cast<std::uint32_t>(reinterpret_cast<std::uintptr_t>(hit)));
+  for (auto entry = this->rendered.rbegin(); entry != this->rendered.rend(); ++entry) {
+    UIWindow* hit = (*entry)->HitTest(x, y);
+
     if (hit && hit->geometry.visible != 0) {
       this->previousHitUid = this->currentHitUid;
       this->currentHitUid = hit->Uid();
@@ -187,7 +143,7 @@ int UIWindowMgr::ProcessMouse() {
     if (g_mouse.buttons[0] == 1) {
       UIWindow* root = this->inputWindow->Root();
       if (root && root->Slot02()) {
-        PromoteWindow(*this, root);
+        this->Promote(root);
       }
 
       this->inputWindow->Slot25(localX, localY);
@@ -245,12 +201,12 @@ int UIWindowMgr::ProcessMouse() {
       if (g_mouse.buttons[0] == 1) {
         UIWindow* root = window->Root();
         if (root && root->Slot02()) {
-          PromoteWindow(*this, root);
+          this->Promote(root);
         }
 
         CUIDropDownBox* popup = static_cast<CUIDropDownBox*>(this->window_0A30);
         if (popup && window != popup && root != popup && !popup->HasOwnerChild(window)) {
-          HideDropDown(*this);
+          this->CloseDropDown();
         }
 
         window->Slot25(localX, localY);
@@ -259,7 +215,7 @@ int UIWindowMgr::ProcessMouse() {
       if (g_mouse.buttons[1] == 1) {
         UIWindow* root = window->Root();
         if (root && root->Slot02()) {
-          PromoteWindow(*this, root);
+          this->Promote(root);
         }
 
         window->Slot32(localX, localY);
@@ -293,12 +249,12 @@ int UIWindowMgr::ProcessMouse() {
       if (this->unknown_021C) {
         if (!window) {
           this->CloseWindow(260);
-          HideDropDown(*this);
+          this->CloseDropDown();
         } else if (window != this->unknown_021C && !window->IsDescendantOf(this->unknown_021C)) {
           this->CloseWindow(260);
         }
       } else if (!window) {
-        HideDropDown(*this);
+        this->CloseDropDown();
       }
     }
 
