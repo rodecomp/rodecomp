@@ -103,7 +103,8 @@ bool CTownInfoMgr::LoadScript() {
           return true;
         }
 
-        MessageBoxA(nullptr, (std::string("error found :") + lua_tostring(lua.GetState(), -1)).c_str(), "CTownInfoMgr", MB_OK);
+        const std::string message = std::string("error found :") + lua_tostring(lua.GetState(), -1);
+        MessageBoxA(nullptr, message.c_str(), "CTownInfoMgr", MB_OK);
         return false;
       }
     }
