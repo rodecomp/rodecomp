@@ -41,6 +41,11 @@ CWorld::~CWorld() {
 // OFFSET: 0x00AC66F0
 // FUNCTION: fn_17652
 WorldSpatialTree::WorldSpatialTree() : parent(nullptr), children{}, minimum{}, maximum{}, center{}, halfSize{}, dirty(1) {
+  this->parent = nullptr;
+  for (unsigned index = 0; index < 4; ++index) {
+    this->children[index] = nullptr;
+  }
+  this->dirty = 1;
 }
 
 // OFFSET: 0x00AC71E0
@@ -106,25 +111,25 @@ void WorldSpatialTree::Subdivide(int depth) {
 // OFFSET: 0x00AC8F60
 // FUNCTION: fn_17681
 void WorldSpatialTree::ReadBounds(CFile& input, int depth) {
-  for (float& value : this->maximum) {
-    input.Read(&value, sizeof(value));
+  for (unsigned index = 0; index < 3; ++index) {
+    input.Read(&this->maximum[index], sizeof(float));
   }
 
-  for (float& value : this->minimum) {
-    input.Read(&value, sizeof(value));
+  for (unsigned index = 0; index < 3; ++index) {
+    input.Read(&this->minimum[index], sizeof(float));
   }
 
-  for (float& value : this->halfSize) {
-    input.Read(&value, sizeof(value));
+  for (unsigned index = 0; index < 3; ++index) {
+    input.Read(&this->halfSize[index], sizeof(float));
   }
 
-  for (float& value : this->center) {
-    input.Read(&value, sizeof(value));
+  for (unsigned index = 0; index < 3; ++index) {
+    input.Read(&this->center[index], sizeof(float));
   }
 
   if (depth != 5) {
-    for (WorldSpatialTree* child : this->children) {
-      child->ReadBounds(input, depth + 1);
+    for (unsigned index = 0; index < 4; ++index) {
+      this->children[index]->ReadBounds(input, depth + 1);
     }
   }
 }
