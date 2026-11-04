@@ -3831,7 +3831,9 @@ void UICashEmotionSprBtn::Slot28(int x, int y) {
     int screenY = -20;
     this->ToScreen(screenX, screenY);
 
-    static_cast<CMode*>(g_charViewMode)->ShowTooltip(this->m_tooltip.c_str(), screenX, screenY, -1, false, false);
+    if (CMode* mode = g_modeMgr.gameMode) {
+      mode->ShowTooltip(this->m_tooltip.c_str(), screenX, screenY, -1, false, false);
+    }
   }
 
   if (!this->m_disabled) {
