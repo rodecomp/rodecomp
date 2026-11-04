@@ -8438,6 +8438,355 @@ int UIItemStoreSubWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
 }
 
 // OFFSET: 0x0098E6C0
+// FUNCTION: fn_45490
+int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  switch (message) {
+  case 55:
+    this->unknown_0188 = a;
+    this->unknown_018C = b;
+    this->unknown_0144 = FormatThreadText("%d/%d", a, b);
+    this->Invalidate();
+    return 0;
+  case 34:
+    this->saved = reinterpret_cast<ItemStoreFindListInfo*>(a);
+    if (!this->saved->IsValid()) {
+      this->saved->Reset();
+    }
+
+    this->Move(this->saved->x, this->saved->y);
+    this->SendMsg(nullptr, 14, 3, this->saved->width, this->saved->height, 0);
+    this->unknown_016C = 3;
+    this->unknown_0170 = 3;
+    this->unknown_0174 = 3;
+    this->unknown_0178 = 3;
+    this->unknown_017C = 4;
+    for (int index = 0; index < 8; ++index) {
+      if ((this->saved->unknown_0010 & (1 << index)) != 0 && this->tabs[index]) {
+        this->tabs[index]->SetChecked(1);
+      }
+    }
+
+    this->Invalidate();
+    return 0;
+  case 6:
+    switch (a) {
+    case 201: {
+      const int openTabs = this->saved->unknown_0010;
+      for (int index = 0; index < 7; ++index) {
+        g_windowMgr.CloseWindow(index + 146);
+      }
+      g_windowMgr.CloseWindow(309);
+      this->saved->unknown_0010 = openTabs;
+      g_windowMgr.CloseWindow(153);
+      this->unknown_0140 = nullptr;
+      if (g_modeMgr.gameMode) {
+        g_modeMgr.gameMode->SendMsg(57, 0, 0, 0, 0);
+      }
+      break;
+    }
+    case 364:
+      reinterpret_cast<UIItemStoreSubWnd*>(this)->Sort3();
+      this->Invalidate();
+      this->UpdateScrollBar();
+      static_cast<UIButton*>(this->buttons[1])->Enable(0);
+      static_cast<UIButton*>(this->buttons[3])->Enable(1);
+      this->buttons[3]->Move(this->geometry.width - 48, this->geometry.height - 52);
+      for (int id = 146; id < 153; ++id) {
+        if (g_windowMgr.LookupWindow(id)) {
+          g_windowMgr.LookupWindow(id)->SendMsg(nullptr, 364, 0, 0, 0, 0);
+        }
+      }
+      if (g_windowMgr.LookupWindow(309)) {
+        g_windowMgr.LookupWindow(309)->SendMsg(nullptr, 364, 0, 0, 0, 0);
+      }
+      if (this->unknown_0140) {
+        this->unknown_0140->SendMsg(nullptr, 364, 0, 0, 0, 0);
+      }
+      break;
+    case 246:
+      this->unknown_0184[0] = 0;
+      static_cast<UIButton*>(this->buttons[1])->Enable(1);
+      static_cast<UIButton*>(this->buttons[3])->Enable(0);
+      this->buttons[1]->Move(this->geometry.width - 105, this->geometry.height - 24);
+      this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+      for (int index = 0; index < 7; ++index) {
+        if (this->unknown_0120[index]) {
+          this->unknown_0120[index]->SendMsg(nullptr, 246, 0, 0, 0, 0);
+        }
+      }
+      this->buttons[1]->Move(220, this->geometry.height - 50);
+      break;
+    case 365: {
+      std::string text(this->searchEdit->Text());
+      if (!text.empty()) {
+        UIItemStoreFindWnd* window = static_cast<UIItemStoreFindWnd*>(g_windowMgr.sub_A978D0(153));
+        this->unknown_0140 = window;
+        window->SetSearchText(std::string(text.c_str(), text.size()));
+        this->unknown_0140->SendMsg(nullptr, 23, 365, 0, 0, 0);
+        this->unknown_0140->SendMsg(nullptr, 365, 0, 0, 0, 0);
+        this->searchEdit->SetText("");
+      }
+      break;
+    }
+    case 146:
+    case 147:
+    case 148:
+    case 149:
+    case 150:
+    case 151:
+    case 152: {
+      UICheckBox* tab = this->tabs[a - 146];
+      const int index = a - 146;
+      if (!tab) {
+        break;
+      }
+
+      if (tab->geometry.unknown_0030 != 0) {
+        this->unknown_0120[index] = nullptr;
+        this->unknown_0120[index] = g_windowMgr.sub_A978D0(a);
+        if (this->unknown_0120[index]) {
+          this->unknown_0120[index]->SendMsg(nullptr, 23, 0, 0, 0, 0);
+        }
+        this->saved->unknown_0010 |= 1 << index;
+        break;
+      }
+
+      g_windowMgr.CloseWindow(a);
+      if (this->unknown_0120[index]) {
+        this->saved->unknown_0010 ^= 1 << index;
+        this->unknown_0120[index] = nullptr;
+      }
+      break;
+    }
+    case 309:
+      if (!this->tabs[7]) {
+        break;
+      }
+
+      if (this->tabs[7]->geometry.unknown_0030 != 0) {
+        this->unknown_0120[7] = nullptr;
+        this->unknown_0120[7] = g_windowMgr.sub_A978D0(309);
+        if (this->unknown_0120[7]) {
+          this->unknown_0120[7]->SendMsg(nullptr, 23, 0, 0, 0, 0);
+        }
+        this->saved->unknown_0010 |= 0x80;
+        break;
+      }
+
+      g_windowMgr.CloseWindow(309);
+      if (this->unknown_0120[7]) {
+        this->saved->unknown_0010 ^= 0x80;
+        this->unknown_0120[7] = nullptr;
+      }
+      break;
+    case 133:
+      if (!this->unknown_0140) {
+        this->unknown_0140 = g_windowMgr.sub_A978D0(153);
+        std::string text(this->searchEdit->Text());
+        if (!text.empty() && reinterpret_cast<UIItemStoreSubWnd*>(this)->FilterByName3(std::string(text.c_str(), text.size()))) {
+          static_cast<UIItemStoreFindWnd*>(this->unknown_0140)->SetSearchText(std::string(text.c_str(), text.size()));
+          this->unknown_0140->SendMsg(nullptr, 365, 0, 0, 0, 0);
+        }
+      }
+      break;
+    }
+    return 0;
+  case 38: {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    if (mode->drag.source == 1) {
+      mode->SendMsg(55, mode->drag.id, mode->drag.quantity, 0, 0);
+    } else if (mode->drag.source == 9) {
+      mode->SendMsg(79, mode->drag.id, mode->drag.quantity, 0, 0);
+    }
+
+    mode->SendMsg(18, 0, 0, 0, 0);
+    return 0;
+  }
+  case 14:
+    if (a == 3) {
+      int height = c;
+      const int maximum = g_windowMgr.unknown_0480 * 7 / 10;
+      if (height > maximum) {
+        height = maximum;
+      }
+      if (height < 458) {
+        height = 458;
+      }
+
+      const int newHeight = (height - 458) / 32 * 32 + 458;
+      if (newHeight != this->geometry.height) {
+        this->Resize(this->geometry.width, newHeight);
+        this->columns = 1;
+        this->visibleRows = (newHeight - 74) / 32;
+        this->buttons[0]->Move(220, this->geometry.height - 23);
+        this->buttons[1]->Move(185, this->geometry.height - 23);
+        for (int index = 0; index < 8; ++index) {
+          this->tabs[index]->Move(index * 26 + 5, this->geometry.height - 52);
+        }
+        this->sortCombo->Move(214, this->geometry.height - 52);
+        this->searchEdit->Move(77, this->geometry.height - 23);
+        this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
+        this->scrollBar->Move(this->geometry.width - 15, 14);
+        this->scrollBar->Resize(this->scrollBar->geometry.width, this->geometry.height - 74);
+        this->UpdateScrollBar();
+      }
+
+      g_windowMgr.StoreSnapRectangle(this);
+    }
+    return 0;
+  case 23: {
+    this->items.erase(this->items.begin(), this->items.end());
+    const int size = g_session.GetList5Size();
+    for (int i = 0; i < size; ++i) {
+      ITEM_INFO item = g_session.GetItem1738At(i);
+      if (item.unknown_0000[1] == 0) {
+        continue;
+      }
+
+      item.unknown_0078[0] = g_itemInfoMgr->IsCostume(std::stoi(item.itemId));
+      const int type = static_cast<int>(item.unknown_0000[0]);
+      bool matches = false;
+      if (item.unknown_0078[0] != 0) {
+        matches = this->unknown_0180 == 4;
+      } else {
+        switch (this->unknown_0180) {
+        case 0:
+          matches = type == 0 || type == 1 || type == 2;
+          break;
+        case 1:
+          matches = type == 18;
+          break;
+        case 2:
+          matches = type == 4 || type == 11 || type == 12 || type == 13 || type == 14;
+          break;
+        case 3:
+          matches = type == 5 || type == 8 || type == 9 || type == 15;
+          break;
+        case 5:
+          matches = type == 10 || type == 16 || type == 17 || type == 19;
+          break;
+        case 6:
+          matches = type == 6;
+          break;
+        case 7:
+          matches = type == 3 || type == 7;
+          break;
+        }
+      }
+
+      if (matches) {
+        this->items.push_back(item);
+      }
+    }
+
+    if (g_session.m_itemAscendingOrder) {
+      reinterpret_cast<UIItemStoreSubWnd*>(this)->Sort3();
+    } else if (g_session.m_itemDescendingOrder) {
+      reinterpret_cast<UIItemStoreSubWnd*>(this)->SortReversed3();
+    }
+
+    std::string text = this->searchEdit->Text();
+    if (!text.empty() && a == 365) {
+      if (reinterpret_cast<UIItemStoreSubWnd*>(this)->FilterByName3(std::string(text.c_str(), text.size()))) {
+        this->Invalidate();
+        this->UpdateScrollBar();
+        for (int index = 0; index < 7; ++index) {
+          UIWindow* window = g_windowMgr.LookupWindow(index + 146);
+          if (window) {
+            window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+          }
+        }
+        UIWindow* window = g_windowMgr.LookupWindow(309);
+        if (window) {
+          window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+        }
+        window = g_windowMgr.LookupWindow(153);
+        if (window) {
+          window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+        }
+      }
+    } else {
+      for (int index = 0; index < 7; ++index) {
+        UIWindow* window = g_windowMgr.LookupWindow(index + 146);
+        if (window) {
+          window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+        }
+      }
+      UIWindow* window = g_windowMgr.LookupWindow(309);
+      if (window) {
+        window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+      }
+      window = g_windowMgr.LookupWindow(153);
+      if (window) {
+        window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+      }
+      this->Invalidate();
+      this->UpdateScrollBar();
+    }
+    return 0;
+  }
+  case 22:
+    this->unknown_0180 = a;
+    if (this->unknown_0180 < 0) {
+      this->unknown_0180 = 0;
+    } else if (this->unknown_0180 > 7) {
+      this->unknown_0180 = 7;
+    }
+
+    this->Invalidate();
+    this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    return 0;
+  case 123: {
+    const auto* bytes = reinterpret_cast<const unsigned char*>(a);
+    ItemListChunkHeader header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
+    unsigned offset = 6;
+    if (header.type == 20900) {
+      while (static_cast<unsigned>(b) > offset) {
+        header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
+        offset += 6;
+        if (header.type == 20901) {
+          this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+          break;
+        }
+
+        offset += header.size;
+      }
+    }
+    return 0;
+  }
+  case 39:
+    if (sender == this->sortCombo) {
+      g_session.m_itemDefaultSort = a == 0;
+      g_session.m_itemAscendingOrder = a == 1;
+      g_session.m_itemDescendingOrder = a == 2;
+      if (a == 0) {
+        this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+        return 0;
+      }
+
+      if (a == 1) {
+        reinterpret_cast<UIItemStoreSubWnd*>(this)->Sort3();
+      } else if (a == 2) {
+        reinterpret_cast<UIItemStoreSubWnd*>(this)->SortReversed3();
+      }
+
+      for (int index = 0; index < 8; ++index) {
+        if (this->unknown_0120[index]) {
+          this->unknown_0120[index]->SendMsg(nullptr, 364, 0, 0, 0, 0);
+        }
+      }
+      if (this->unknown_0140) {
+        this->unknown_0140->SendMsg(nullptr, 364, 0, 0, 0, 0);
+      }
+
+      this->Invalidate();
+      this->UpdateScrollBar();
+    }
+    return 0;
+  default:
+    return UIItemBaseWnd::SendMsg(sender, message, a, b, c, d);
+  }
+}
 
 // OFFSET: 0x00859470
 // FUNCTION: fn_10776
