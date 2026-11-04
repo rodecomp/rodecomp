@@ -228,13 +228,7 @@ void CPc::Slot44(int first, int second) {
 // FUNCTION: fn_22608
 void CPc::Slot33(int value) {
   this->render.previousAnimation = value;
-  if (value < 2 && static_cast<unsigned>(this->unknown_04D0 - 0x10ec) > 0x11) {
-    if (static_cast<unsigned>(this->unknown_025C - JT_NOVICE_H) <= 0x15) {
-      this->render.previousAnimation = this->unknown_025C <= 0xfa7;
-    } else {
-      this->render.previousAnimation = static_cast<unsigned>(this->unknown_025C - JT_NOVICE_H) <= 6;
-    }
-  }
+  this->render.previousAnimation = g_session.GetBodyStyle(this->unknown_025C, this->render.previousAnimation, this->unknown_04D0);
   this->Slot32();
 }
 
