@@ -30,6 +30,10 @@ public:
 
 class UIChoose3Wnd : public UIChooseWnd {
 public:
+  // INLINED
+  UIChoose3Wnd() : m_minimumLines(4), m_maximumLines(15) {
+  }
+
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
   /* 00D8 */ int m_minimumLines;

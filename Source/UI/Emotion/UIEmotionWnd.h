@@ -15,6 +15,10 @@ public:
   /* 0104 */ EmotionWndInfo* m_saved;
   /* 0108 */ UIBitmapButton* viewButton;
 
+  // INLINED
+  UIEmotionWnd() : UIFrameWnd(0), m_labels(), m_edits(), m_saved(nullptr), viewButton(nullptr) {
+  }
+
   void Slot11() override;
   void Slot15(int width, int height) override;
   void Paint() override;

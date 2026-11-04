@@ -171,6 +171,10 @@ protected:
 class UIGuildNoticeWnd : public UIGuildWnd {
 public:
   UIGuildNoticeWnd();
+  // INLINED
+  int Tab() override {
+    return 5;
+  }
   void Slot15(int width, int height) override;
   void Paint() override;
   void Slot25(int x, int y) override;
@@ -185,6 +189,10 @@ protected:
 class UIGuildPositionManageWnd : public UIGuildWnd {
 public:
   UIGuildPositionManageWnd();
+  // INLINED
+  int Tab() override {
+    return 2;
+  }
   void Slot15(int width, int height) override;
   void Slot19() override;
   void Paint() override;

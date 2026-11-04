@@ -76,6 +76,172 @@
 #include "Contents/Configuration/GameSettingsMgr.h"
 #include "Contents/Sound/SoundMaker.h"
 #include "UI/GameSettings/GameSettingsUI.h"
+#include "Client/ReplayRecordOption.h"
+#include "Contents/Items/RuneSystem.h"
+#include "Contents/MapPropertyMgr.h"
+#include "Contents/MapSkyMgr.h"
+#include "Contents/Messenger/MessengerWindows.h"
+#include "Contents/Skills/ClientSkills.h"
+#include "Contents/UserData/NormalItemSlots.h"
+#include "Resource/Bitmap/BitmapResource.h"
+#include "Resource/TextureNames.h"
+#include "Script/LuaScript.h"
+#include "UI/Acceptance/UIAutoMessageWnd.h"
+#include "UI/Acceptance/UIJoinPartyAcceptWnd.h"
+#include "UI/Buttons/UITextButton.h"
+#include "UI/CashEmotion/UICashEmotionListWnd.h"
+#include "UI/CashShop/UICashShopWnd.h"
+#include "UI/Chat/UIChatRoomMakeWnd.h"
+#include "UI/Chat/UISubChatMiniWnd.h"
+#include "UI/Clan/UIClanWnd.h"
+#include "UI/Dialogs/UIBookWnd.h"
+#include "UI/Dialogs/UIChooseWarpWnd.h"
+#include "UI/Dialogs/UIChooseWnd.h"
+#include "UI/Dialogs/UIDisconnectedServerMsgWnd.h"
+#include "UI/Dialogs/UIEditctrlWnd.h"
+#include "UI/Dialogs/UIGraffiStrboxWnd.h"
+#include "UI/Dialogs/UILoadingWnd.h"
+#include "UI/Dialogs/UIMenuWnd.h"
+#include "UI/Dialogs/UIMiniMapWnd.h"
+#include "UI/Dialogs/UIMinimapZoomWnd.h"
+#include "UI/Dialogs/UINoticeConfirmWnd.h"
+#include "UI/Dialogs/UINotifyJobLevelUpWnd.h"
+#include "UI/Dialogs/UINotifyLevelUpWnd.h"
+#include "UI/Dialogs/UINotifyQuestWnd.h"
+#include "UI/Dialogs/UINpcEditDialogWnd.h"
+#include "UI/Dialogs/UIPasswordWnd.h"
+#include "UI/Dialogs/UIPetTamingDeceiveWnd.h"
+#include "UI/Dialogs/UIProhibitListWnd.h"
+#include "UI/Dialogs/UIQuitWnd.h"
+#include "UI/Dialogs/UIRestartWnd.h"
+#include "UI/Dialogs/UISayDialogWnd.h"
+#include "UI/Dialogs/UISecondPasswordEditWnd.h"
+#include "UI/Dialogs/UISelectCartWnd.h"
+#include "UI/Dialogs/UITipOfTheDayWnd.h"
+#include "UI/Dialogs/UITipboxWnd.h"
+#include "UI/Dialogs/UIToolTipWnd.h"
+#include "UI/Dialogs/UIWaitWnd.h"
+#include "UI/Edit/UICandidateWnd.h"
+#include "UI/Emotion/UIEmotionWnd.h"
+#include "UI/EntryQueue/UIEntryQueueWnd.h"
+#include "UI/Guild/UIGuildHelperWnd.h"
+#include "UI/Guild/UIGuildWnd.h"
+#include "UI/Guild/UIGuild_Storage_Log.h"
+#include "UI/Item/UIItemPurchaseWnd.h"
+#include "UI/Item/UIItemSellWnd.h"
+#include "UI/Item/UIItemSellWnd2.h"
+#include "UI/Item/UIItemShopWnd.h"
+#include "UI/Item/UIItemShopWnd2.h"
+#include "UI/Item/UIItemStoreFindWnd.h"
+#include "UI/Item/UIItemStoreSubWnd.h"
+#include "UI/Item/UIMerchantItemLogWnd.h"
+#include "UI/Item/UIParaItemShopWnd.h"
+#include "UI/Items/MergeItemWnd.h"
+#include "UI/Items/UICardItemIllustWnd.h"
+#include "UI/Items/UIEquipWnd.h"
+#include "UI/Items/UIIllustWnd.h"
+#include "UI/Items/UIItemCollectionWnd.h"
+#include "UI/Items/UIItemIdentifyWnd.h"
+#include "UI/Items/UIItemParamChangeDisplayWnd.h"
+#include "UI/Items/UIItemRepairWnd.h"
+#include "UI/Items/UIMakeTargetListWnd.h"
+#include "UI/Items/UIMakeTargetProcessWnd.h"
+#include "UI/Items/UIMakeTargetResultWnd.h"
+#include "UI/Items/UINotifyItemObtainWnd.h"
+#include "UI/Items/UISpellListWnd.h"
+#include "UI/Items/UIWeaponRefineWnd.h"
+#include "UI/Lists/UIComboBoxWnd.h"
+#include "UI/Menu/UIMenuIconWnd.h"
+#include "UI/Party/UIAdvenPartyBoardWnd.h"
+#include "UI/Party/UIApplyForPartyWnd.h"
+#include "UI/Party/UIPartySettingWnd.h"
+#include "UI/Party/UIRegisterPartyWnd.h"
+#include "UI/Party/UIRequestJoinPartyWnd.h"
+#include "UI/Quest/UIQuestDisplay.h"
+#include "UI/Quest/UIRenewQuestWnd.h"
+#include "UI/Rodex/UIRodexComposeWnd.h"
+#include "UI/Rodex/UIRodexInboxWnd.h"
+#include "UI/RuneSystem/UIRuneSystemWindows.h"
+#include "UI/Shop/UIMerchantItemMyShopWnd.h"
+#include "UI/Shop/UIMerchantItemPurchaseMSGWnd.h"
+#include "UI/Shop/UIMerchantItemPurchaseWnd.h"
+#include "UI/Shop/UIMerchantItemShopWnd.h"
+#include "UI/Shop/UIMerchantItemWnd.h"
+#include "UI/Shop/UIMerchantMirrorItemWnd.h"
+#include "UI/Shop/UIMerchantShopMakeWnd.h"
+#include "UI/Shop/UInCash_CallWnd.h"
+#include "UI/Shortcuts/UIShortCutWnd.h"
+#include "UI/Skill/UISkillDescribeWnd.h"
+#include "UI/Skill/UISkillListWnd.h"
+#include "UI/Skill/UISkillNameChangeWnd.h"
+#include "UI/Status/UIStatusWnd.h"
+#include "UI/StylingShop/UIStylingShopWnd.h"
+#include "UI/Text/UIAchWnd.h"
+#include "UI/UIBartermarketWnd.h"
+#include "UI/UICaptchaPreviewWnd.h"
+#include "UI/UICaptchaRegisterWnd.h"
+#include "UI/UIChangeMaterialWnd.h"
+#include "UI/UICheckAttendanceWnd.h"
+#include "UI/UIGradeEnchantWnd.h"
+#include "UI/UIHotkeyGuideWnd.h"
+#include "UI/UIItemReformWnd.h"
+#include "UI/UILapineScrollBar.h"
+#include "UI/UILapineUpgradeBoxWnd.h"
+#include "UI/UIMacroBlackListCheckWnd.h"
+#include "UI/UIMacroDetectorWnd.h"
+#include "UI/UIMacroUserInfoWnd.h"
+#include "UI/UIPreviewEquipWnd.h"
+#include "UI/UIRefiningWnd.h"
+#include "UI/UIReputeWnd.h"
+#include "UI/UIRoundBoxTooltipWnd.h"
+#include "UI/Window/UIAccountLimitedToolWnd.h"
+#include "UI/Window/UIBalloonOpenBtn.h"
+#include "UI/Window/UIBank_NewWnd.h"
+#include "UI/Window/UIBasicInfoWnd.h"
+#include "UI/Window/UIBattleMsgOptionWnd.h"
+#include "UI/Window/UIChangeNameWnd.h"
+#include "UI/Window/UICollectionSystemWnd.h"
+#include "UI/Window/UIDebuffRemoveWnd.h"
+#include "UI/Window/UIEscOptionWnd.h"
+#include "UI/Window/UIFrameWnd.h"
+#include "UI/Window/UIHomunInfoWnd.h"
+#include "UI/Window/UIJobListWnd.h"
+#include "UI/Window/UILoginOTPWnd.h"
+#include "UI/Window/UILoginWnd.h"
+#include "UI/Window/UIMakeCharWnd.h"
+#include "UI/Window/UIMerInfoWnd.h"
+#include "UI/Window/UIMileageWnd.h"
+#include "UI/Window/UIMonsterDisplayWnd.h"
+#include "UI/Window/UIMonsterInfoWnd.h"
+#include "UI/Window/UINavigationHelpWnd.h"
+#include "UI/Window/UINewMakeCharWnd.h"
+#include "UI/Window/UINewSkillListWnd.h"
+#include "UI/Window/UINoteWnd.h"
+#include "UI/Window/UINoticeWnd.h"
+#include "UI/Window/UIOpenMailBoxWnd.h"
+#include "UI/Window/UIOpenRoulletteWnd.h"
+#include "UI/Window/UIPartyBookingHelpWnd.h"
+#include "UI/Window/UIPetEvolutionWnd.h"
+#include "UI/Window/UIPetInfoWnd.h"
+#include "UI/Window/UIRPImageWnd.h"
+#include "UI/Window/UIRPImageWnd2.h"
+#include "UI/Window/UIRebirthWnd.h"
+#include "UI/Window/UIReplayControlWnd.h"
+#include "UI/Window/UIReplayRECControlWnd.h"
+#include "UI/Window/UIRodexContentsWnd.h"
+#include "UI/Window/UISecondCostumeWnd.h"
+#include "UI/Window/UISeekPartyListWnd.h"
+#include "UI/Window/UISeekPartyMBWnd.h"
+#include "UI/Window/UISeekPartyWnd.h"
+#include "UI/Window/UISelCharForUServerWnd.h"
+#include "UI/Window/UISelectReplayDataWnd.h"
+#include "UI/Window/UISelectServerWnd.h"
+#include "UI/Window/UIShowWarpWnd.h"
+#include "UI/Window/UITalkboxTrapInputWnd.h"
+#include "UI/Window/UITransMenuWnd.h"
+#include "UI/Window/UIVideoWnd.h"
+#include "UI/Window/UIViewCameraInfoWnd.h"
+#include <cstdlib>
 
 namespace {
 #pragma pack(push, 1)
@@ -4423,4 +4589,2987 @@ bool UIWindowMgr::sub_AA35F0(int action) {
   }
 
   return true;
+}
+// OFFSET: 0x00A978D0
+// FUNCTION: fn_17207
+UIWindow* UIWindowMgr::sub_A978D0(int id) {
+  UIWindow* transient = this->window_4F250;
+  if (transient && static_cast<UIDragMiniPartyWnd*>(transient)->member.valid && transient->geometry.unknown_0030 == 0) {
+    bool behavior = false;
+    g_session.m_hotkeyScript->Call("IsBeHaviorOfWindow", "d>b", this->GetHotkeyBehavior(), &behavior);
+    if (behavior && this->window_4F250 && static_cast<UIDragMiniPartyWnd*>(this->window_4F250)->member.valid) {
+      this->window_4F250->geometry.unknown_0030 = 1;
+      this->Schedule(this->window_4F250);
+      this->window_4F250 = nullptr;
+    }
+  }
+
+  if (this->window_4F288) {
+    switch (id) {
+    case 8:
+    case 10:
+    case 18:
+    case 40:
+    case 155:
+    case 203:
+    case 251:
+    case 263:
+    case 275:
+      return nullptr;
+    }
+  }
+
+  if (!this->IsOrderFixed(id)) {
+    this->RemoveOrder(id);
+    if (id == 203) {
+      this->windowHistory.push_back(int(id));
+    } else {
+      this->windowHistory.push_front(int(id));
+    }
+  }
+
+  unsigned char* const base = reinterpret_cast<unsigned char*>(this);
+  const auto layerGreater = [](const UIWindow* left, const UIWindow* right) {
+    return static_cast<int>(left->unknown_004C) > static_cast<int>(right->unknown_004C);
+  };
+  UIWindow* window = nullptr;
+  switch (id) {
+  case 0:
+    window = this->unknown_01DC;
+    if (window == nullptr) {
+      window = new UIBasicInfoWnd();
+      this->unknown_01DC = window;
+      window->SetSize(220, g_session.IsTreeGroupThree(g_session.GetDisplayJob()) == true ? 71 : 55);
+      window->Move(0, 0);
+      this->AddRendered(window);
+      this->unknown_01DC->SendMsg(this->unknown_01DC, 0x22, reinterpret_cast<std::intptr_t>(this->unknown_0514), 0, 0, 0);
+      g_snapMgr.SetRoot(window);
+      if (UIWindow* navigation = g_windowMgr.sub_A978D0(307)) {
+        int x = 0;
+        int y = 0;
+        window->ToScreen(x, y);
+        navigation->Move(x, window->geometry.height + y);
+      }
+    }
+    window->Show(g_replayAnimationScaling ? Replay::Instance().header.options.Get(ReplayRecordOption::BasicInfo) : 1);
+    if (this->savedWindowIds.size() != 0) {
+      for (int savedId : this->savedWindowIds) {
+        if (savedId == 301) {
+          this->RebuildMiniPartyWindows();
+        } else {
+          this->sub_A978D0(savedId);
+        }
+      }
+    } else {
+      if (this->unknown_054C) {
+        this->sub_A978D0(8);
+      }
+      if (this->unknown_05A4) {
+        this->sub_A978D0(10);
+      }
+      if (this->unknown_0588) {
+        this->sub_A978D0(11);
+      }
+      if (this->unknown_05BC) {
+        this->sub_A978D0(13);
+      }
+      if (this->unknown_077C) {
+        this->sub_A978D0(37);
+      }
+      if (this->unknown_0568) {
+        this->sub_A978D0(321);
+      }
+      if (this->unknown_073C) {
+        this->sub_A978D0(69);
+      }
+      if (g_session.unknown_5470 == 1 && g_session.unknown_5474 == 1 && g_effectDetailLevel == 2 && g_textureDetailLevel == 2) {
+        this->sub_A978D0(10014);
+      }
+      if (g_session.HasUnknown6178Records() == true) {
+        this->sub_A978D0(271);
+      }
+      if (this->unknown_4F210 == true) {
+        this->sub_A978D0(286);
+      }
+      this->RebuildMiniPartyWindows();
+    }
+    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_0254) {
+      this->sub_A978D0(14);
+    }
+    this->ShowWindowById(1, this->unknown_003C);
+    this->ShowWindowById(36, this->m_normalItemSlotWindow.show);
+    this->ShowWindowById(15, 0);
+    break;
+  case 1:
+    window = this->window_01C8;
+    if (window == nullptr) {
+      window = new UINewChatWnd();
+      this->window_01C8 = window;
+      window->SetSize(600, this->unknown_0038);
+      this->AddRendered(window);
+    }
+    this->window_01C8->SendMsg(nullptr, 0x22, 0, 0, 0, 0);
+    break;
+  case 2:
+    window = new UISelectServerWnd();
+    window->SetSize(280, 200);
+    window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300) - 80);
+    this->AddRendered(window);
+    break;
+  case 325:
+    if (this->LookupWindow(325) == nullptr) {
+      window = new UIRPImageWnd2();
+      this->window_4F25C = window;
+      window->SetSize(301, 132);
+      window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300));
+      this->AddRendered(window);
+    } else {
+      window = this->LookupWindow(325);
+    }
+    break;
+  case 3:
+    window = new UILoginWnd();
+    this->window_01CC = window;
+    window->SetSize(301, 132);
+    window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300));
+    this->AddRendered(window);
+    break;
+  case 180:
+    window = new UILoginOTPWnd();
+    this->window_01D0 = window;
+    window->SetSize(280, 142);
+    window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300));
+    this->AddRendered(window);
+    break;
+  case 93:
+    window = new UINoticeWnd();
+    window->SetSize(600, 400);
+    window->Move(CenterOnViewportX(33), CenterOnViewportY(40));
+    this->AddRendered(window);
+    break;
+  case 4:
+    window = new UIMakeCharWnd();
+    window->SetSize(150, 286);
+    window->Move((g_renderer->viewport.width - 150) / 2, (g_renderer->viewport.height - 286) / 2);
+    this->AddRendered(window);
+    break;
+  case 277: {
+    window = new UINewSelectCharWnd();
+    this->window_03D4 = window;
+    UIWindow* background = new UIRPImageWnd("유저인터페이스\\select_character_ver3\\bg_back1.tga", 5);
+    CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\select_character_ver3\\bg_back1.tga")));
+    if (background && bitmap) {
+      background->SetSize(bitmap->image.width, bitmap->image.height);
+      background->Move((g_renderer->viewport.width - background->geometry.width) / 2, (g_renderer->viewport.height - background->geometry.height) / 2);
+      this->AddRendered(background);
+      window->SetSize(background->geometry.width, background->geometry.height);
+      window->Move((g_renderer->viewport.width - background->geometry.width) / 2, (g_renderer->viewport.height - background->geometry.height) / 2);
+      this->AddRendered(window);
+    }
+    g_activeSkillEffects.erase(g_activeSkillEffects.begin(), g_activeSkillEffects.end());
+    g_session.m_requestTimers.clear();
+    if (g_session.m_passwordWndMode == 1) {
+      static_cast<UINewSelectCharWnd*>(this->window_03D4)->EnableButtonById(418);
+    } else {
+      static_cast<UINewSelectCharWnd*>(this->window_03D4)->DisableButtonById(418);
+      static_cast<UINewSelectCharWnd*>(this->window_03D4)->DisableButtonById(416);
+      static_cast<UINewSelectCharWnd*>(this->window_03D4)->DisableButtonById(417);
+    }
+    break;
+  }
+  case 278: {
+    window = new UINewMakeCharWnd();
+    UIWindow* background = new UIRPImageWnd("", 1);
+    background->SetSize(1028, 768);
+    background->Move((g_renderer->viewport.width - 1028) / 2 - 2, (g_renderer->viewport.height - 768) / 2);
+    this->AddRendered(background);
+    window->SetSize(794, 422);
+    window->Move((g_renderer->viewport.width - 794) / 2, (g_renderer->viewport.height - 422) / 2 - 70);
+    this->AddRendered(window);
+    break;
+  }
+  case 8:
+    window = this->unknown_01D4;
+    if (window == nullptr) {
+      this->RecordWindowPacket(8);
+      window = new UIItemWnd();
+      this->unknown_01D4 = window;
+      window->SetSize(280, 120);
+      window->Move(0, 120);
+      this->AddRendered(window);
+      this->unknown_01D4->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x528), 0, 0, 0);
+      g_snapMgr.Add(window);
+    }
+    window->Show(1);
+    this->unknown_054C = 1;
+    if (UIWindow* basicInfo = g_windowMgr.LookupWindow(307)) {
+      basicInfo->SendMsg(nullptr, 6, 0x11E, 0xC2, 0, 0);
+    }
+    break;
+  case 204:
+    if (this->window_0428 == nullptr) {
+      UIQuestDisplay* display = new UIQuestDisplay();
+      this->window_0428 = display;
+      display->Create(250, 400);
+      this->window_0428->Move(this->unknown_047C - 320, 150);
+      this->window_0428->unknown_004C = 5;
+      this->AddRendered(this->window_0428);
+      this->rendered.sort(layerGreater);
+      this->window_0428->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x570), 0, 0, 0);
+    }
+    break;
+  case 6:
+    window = new UIWaitWnd();
+    window->SetSize(280, 120);
+    window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300));
+    this->AddRendered(window);
+    break;
+  case 7:
+    window = this->unknown_01BC;
+    if (window == nullptr) {
+      window = new UILoadingWnd();
+      this->unknown_01BC = window;
+      window->SetSize(240, 15);
+      window->Move(g_renderer->viewport.width / 2 - 100, g_renderer->viewport.height / 2 + 160);
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 9:
+    window = new UIToolTipWnd();
+    window->SetSize(200, 120);
+    window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300));
+    this->AddRendered(window);
+    break;
+  case 36:
+    window = this->window_01E8;
+    if (window == nullptr) {
+      window = new UIShortCutWnd();
+      this->window_01E8 = window;
+      window->SetSize(290, 34);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
+      this->AddRendered(window);
+      this->window_01E8->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(&this->m_normalItemSlotWindow), 0, 0, 0);
+      g_snapMgr.Add(window);
+    }
+    break;
+  case 10:
+    window = this->unknown_01E0;
+    if (window == nullptr) {
+      window = new UIEquipWnd();
+      this->unknown_01E0 = window;
+      static_cast<UIEquipWnd*>(window)->m_viewOther = 0;
+      window->SetSize(280, 167);
+      window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300));
+      this->AddRendered(window);
+      this->unknown_01E0->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x590), 0, 0, 0);
+      g_snapMgr.Add(window);
+    }
+    window->Show(1);
+    this->unknown_05A4 = 1;
+    break;
+  case 184:
+    window = this->unknown_01E4;
+    if (window == nullptr) {
+      window = new UInCashWnd();
+      this->unknown_01E4 = window;
+      window->SetSize(640, 540);
+      window->Move(CenterOnViewportX(0), ScaleByScreenHeight(30));
+      this->AddRendered(window);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x9B4), 0, 0, 0);
+      g_snapMgr.Add(window);
+    }
+    window->Show(1);
+    break;
+  case 11:
+    window = this->unknown_01C4;
+    if (window == nullptr) {
+      window = new UIStatusWnd();
+      this->unknown_01C4 = window;
+      window->SetSize(280, 141);
+      window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300));
+      this->AddRendered(window);
+      this->unknown_01C4->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x574), 0, 0, 0);
+      g_snapMgr.Add(window);
+    }
+    window->Show(1);
+    this->unknown_0588 = 1;
+    this->CloseWindow(21);
+    if (UIWindow* basicInfo = g_windowMgr.LookupWindow(307)) {
+      basicInfo->SendMsg(nullptr, 6, 0x11E, 0xC0, 0, 0);
+    }
+    break;
+  case 37:
+    window = this->window_02C4;
+    if (window == nullptr) {
+      window = new UINewSkillListWnd();
+      this->window_02C4 = window;
+      window->SetSize(560, 400);
+      window->Move(CenterOnViewportX(50), ScaleByScreenHeight(50));
+      this->AddRendered(window);
+      this->window_02C4->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x76C), 0, 0, 0);
+    }
+    window->Show(1);
+    this->unknown_077C = 1;
+    this->CloseWindow(49);
+    if (UIWindow* basicInfo = g_windowMgr.LookupWindow(307)) {
+      basicInfo->SendMsg(nullptr, 6, 0x11E, 0xC4, 0, 0);
+    }
+    break;
+  case 33:
+    window = this->window_0288;
+    if (window == nullptr) {
+      window = new UIItemStoreWnd();
+      this->window_0288 = window;
+      window->SetSize(280, 458);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
+      this->AddRendered(window);
+      this->window_0288->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x614), 0, 0, 0);
+    }
+    window->Show(1);
+    break;
+  case 146:
+  case 147:
+  case 148:
+  case 149:
+  case 150:
+  case 151:
+  case 152: {
+    const int tab = id - 146;
+    window = this->unknown_028C[tab];
+    if (window == nullptr) {
+      UIItemStoreSubWnd* store = new UIItemStoreSubWnd();
+      window = store;
+      this->unknown_028C[tab] = window;
+      store->SetTabIndex(tab);
+      int message = 0;
+      switch (id) {
+      case 146:
+      case 147:
+      case 148:
+      case 149:
+        message = tab + 0x5B9;
+        break;
+      case 150:
+        message = 0xC4F;
+        break;
+      case 151:
+      case 152:
+        message = tab + 0x5B8;
+        break;
+      }
+      window->SetSize(140, 145);
+      static_cast<UIItemStoreSubWnd*>(this->unknown_028C[tab])->SetTitle(LookupMessage(message));
+      this->AddRendered(window);
+      this->unknown_028C[tab]->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(reinterpret_cast<ItemStoreFindSlotInfo*>(base + 0x62C) + tab), 0, 0, 0);
+    }
+    window->Show(1);
+    break;
+  }
+  case 309:
+    window = this->unknown_02A8;
+    if (window == nullptr) {
+      UIItemStoreSubWnd* store = new UIItemStoreSubWnd();
+      window = store;
+      this->unknown_02A8 = window;
+      store->SetTabIndex(7);
+      window->SetSize(140, 145);
+      static_cast<UIItemStoreSubWnd*>(this->unknown_02A8)->SetTitle(LookupMessage(id == 309 ? 0x5BF : 0));
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
+      this->AddRendered(window);
+      this->unknown_02A8->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x69C), 0, 0, 0);
+    }
+    window->Show(1);
+    break;
+  case 153:
+    window = this->unknown_02AC;
+    if (window == nullptr) {
+      window = new UIItemStoreFindWnd();
+      this->unknown_02AC = window;
+      window->SetSize(140, 145);
+      static_cast<UIItemStoreFindWnd*>(this->unknown_02AC)->SetTitle(LookupMessage(0x447));
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
+      this->AddRendered(window);
+      this->unknown_02AC->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x6AC), 0, 0, 0);
+    }
+    window->Show(1);
+    break;
+  case 173:
+    if (this->unknown_02C0 == nullptr) {
+      window = new UIPartyBookingHelpWnd();
+      this->unknown_02C0 = window;
+      window->SetSize(320, 199);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
+      this->AddRendered(window);
+    }
+    break;
+  case 170:
+    if (this->unknown_02B8 == nullptr) {
+      window = new UIJobListWnd();
+      this->unknown_02B8 = window;
+      window->SetSize(152, 199);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
+      this->AddRendered(window);
+      this->unknown_02B8->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x6EC), 0, 0, 0);
+    }
+    break;
+  case 164:
+    window = this->unknown_02B0;
+    if (window == nullptr) {
+      window = new UISeekPartyWnd();
+      this->unknown_02B0 = window;
+      window->SetSize(152, 199);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
+      this->AddRendered(window);
+      this->unknown_02B0->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x6DC), 0, 0, 0);
+    }
+    window->Show(1);
+    g_session.m_partyBooking.unknown_0000 = 1;
+    break;
+  case 168:
+    if (this->unknown_02B0 == nullptr) {
+      if (this->unknown_02B4 == nullptr) {
+        window = new UISeekPartyMBWnd();
+        this->unknown_02B4 = window;
+        window->SetSize(360, 350);
+        window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
+        this->AddRendered(window);
+        this->unknown_02B4->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x6CC), 0, 0, 0);
+      } else {
+        g_windowMgr.CloseWindow(168);
+      }
+    }
+    break;
+  case 169:
+    if (this->unknown_02BC == nullptr) {
+      window = new UISeekPartyListWnd();
+      this->unknown_02BC = window;
+      window->SetSize(550, 350);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
+      this->AddRendered(window);
+      this->unknown_02BC->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x6BC), 0, 0, 0);
+    } else {
+      g_windowMgr.CloseWindow(169);
+    }
+    break;
+  case 69:
+    if (*reinterpret_cast<const int*>(this->unknown_0740)) {
+      this->sub_A978D0(34)->SendMsg(nullptr, 6, 0xD7, 2, 0, 0);
+    } else {
+      this->sub_A978D0(34)->SendMsg(nullptr, 6, 0xD7, 1, 0, 0);
+    }
+    break;
+  case 34:
+    if (g_replayAnimationScaling && !Replay::Instance().header.options.Get(ReplayRecordOption::Party)) {
+      break;
+    }
+    this->CloseWindow(69);
+    window = this->window_02C8;
+    if (window == nullptr) {
+      window = new UIMessengerGroupWnd();
+      this->window_02C8 = window;
+      window->SetSize(273, 326);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
+      this->AddRendered(window);
+      this->window_02C8->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x72C), 0, 0, 0);
+    }
+    window->Show(1);
+    this->unknown_073C = 1;
+    break;
+  case 41:
+    window = this->unknown_02FC;
+    if (window == nullptr) {
+      window = new UIMerchantShopMakeWnd(0);
+      this->unknown_02FC = window;
+      window->SetSize(400, 260);
+      window->Move(CenterOnViewportX(185), ScaleByScreenHeight(200));
+      this->AddRendered(window);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x7A4), 0, 0, 0);
+    }
+    window->Show(1);
+    this->sub_A978D0(42);
+    break;
+  case 42:
+    window = reinterpret_cast<UIWindow*>(this->unknown_02F8);
+    if (window == nullptr) {
+      window = new UIMerchantMirrorItemWnd(0);
+      this->unknown_02F8 = reinterpret_cast<std::uint32_t>(window);
+      window->SetSize(280, 120);
+      window->Move(CenterOnViewportX(0), ScaleByScreenHeight(120));
+      this->AddRendered(window);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(this->unknown_0794), 0, 0, 0);
+    }
+    window->Show(1);
+    break;
+  case 40:
+    if (!g_mapPropertyMgr->GetValue(g_session.unknown_0000, 40)) {
+      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x94C)), 255, 0, 0, 0);
+      break;
+    }
+    window = this->unknown_02F4;
+    if (window == nullptr) {
+      window = new UIMerchantItemWnd();
+      this->unknown_02F4 = window;
+      window->SetSize(280, 120);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(120));
+      this->AddRendered(window);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(this->unknown_0780), 0, 0, 0);
+    }
+    window->Show(1);
+    this->unknown_0790 = 1;
+    break;
+  case 58:
+    window = this->unknown_031C;
+    if (window == nullptr) {
+      window = new UINotifyItemObtainWnd();
+      this->unknown_031C = window;
+      window->SetSize(180, 32);
+      window->Move(CenterOnViewportX(220), 75);
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 56:
+    window = this->unknown_0314;
+    if (window == nullptr) {
+      window = new UINpcEditDialogWnd();
+      this->unknown_0314 = window;
+      window->SetSize(176, 46);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 100:
+    window = this->unknown_0318;
+    if (window == nullptr) {
+      window = new UINpcTextEditDialogWnd();
+      this->unknown_0318 = window;
+      window->SetSize(346, 46);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 55:
+    window = this->unknown_0310;
+    if (window == nullptr) {
+      window = new UISkillNameChangeWnd();
+      this->unknown_0310 = window;
+      window->SetSize(280, 48);
+      window->Move(CenterOnViewportX(185), CenterOnViewportY(180));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 212:
+    window = this->unknown_0430;
+    if (window == nullptr) {
+      window = new UIGuildHelperWnd();
+      this->unknown_0430 = window;
+      window->SetSize(200, 100);
+      window->Move(CenterOnViewportX(220), CenterOnViewportY(120));
+      this->AddRendered(window);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x9D4), 0, 0, 0);
+    }
+    window->Show(1);
+    break;
+  case 214:
+    window = this->unknown_0434;
+    if (window == nullptr) {
+      window = new UIGuildTipWnd();
+      this->unknown_0434 = window;
+      window->SetSize(330, 230);
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 213:
+    window = this->unknown_0438;
+    if (window == nullptr) {
+      window = new UICreateGuildWnd(0);
+      this->unknown_0438 = window;
+      window->SetSize(150, 100);
+      window->Move(CenterOnViewportX(200), CenterOnViewportY(120));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 215:
+    window = this->unknown_043C;
+    if (window == nullptr) {
+      window = new UICreateGuildWnd(1);
+      this->unknown_043C = window;
+      window->SetSize(150, 100);
+      window->Move(CenterOnViewportX(200), CenterOnViewportY(120));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 59: {
+    GuildWndInfo* guildInfo = reinterpret_cast<GuildWndInfo*>(base + 0x834);
+    if (!guildInfo->IsValid()) {
+      guildInfo->Reset();
+    }
+    switch (guildInfo->unknown_0010) {
+    case 0:
+      window = g_windowMgr.sub_A978D0(60);
+      break;
+    case 1:
+      window = g_windowMgr.sub_A978D0(61);
+      break;
+    case 2:
+      window = g_windowMgr.sub_A978D0(62);
+      break;
+    case 3:
+      window = g_windowMgr.sub_A978D0(63);
+      break;
+    case 4:
+      window = g_windowMgr.sub_A978D0(64);
+      break;
+    case 5:
+      window = g_windowMgr.sub_A978D0(65);
+      break;
+    case 6:
+      window = g_windowMgr.sub_A978D0(66);
+      break;
+    }
+    break;
+  }
+  case 61:
+    window = this->window_0324;
+    if (window == nullptr) {
+      window = new UIGuildMemberManageWnd();
+      this->window_0324 = window;
+      window->SetSize(g_defaultPlacementWidth, g_defaultPlacementHeight);
+      window->Move(ScaleToViewportWidth(0), 147);
+      this->AddRendered(window);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x834), 0, 0, 0);
+    }
+    window->Show(1);
+    break;
+  case 62:
+    window = this->unknown_0328;
+    if (window == nullptr) {
+      window = new UIGuildPositionManageWnd();
+      this->unknown_0328 = window;
+      window->SetSize(g_defaultPlacementWidth, g_defaultPlacementHeight);
+      window->Move(ScaleToViewportWidth(0), 147);
+      this->AddRendered(window);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x834), 0, 0, 0);
+    }
+    window->Show(1);
+    break;
+  case 63:
+    window = this->window_032C;
+    if (window == nullptr) {
+      window = new UIGuildSkillWnd();
+      this->window_032C = window;
+      window->SetSize(g_defaultPlacementWidth, g_defaultPlacementHeight);
+      window->Move(ScaleToViewportWidth(0), 147);
+      this->AddRendered(window);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x834), 0, 0, 0);
+    }
+    window->Show(1);
+    break;
+  case 64:
+    window = this->unknown_0330;
+    if (window == nullptr) {
+      window = new UIGuildBanishedMemberWnd();
+      this->unknown_0330 = window;
+      window->SetSize(g_defaultPlacementWidth, g_defaultPlacementHeight);
+      window->Move(ScaleToViewportWidth(0), 147);
+      this->AddRendered(window);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x834), 0, 0, 0);
+    }
+    window->Show(1);
+    break;
+  case 65:
+    window = this->unknown_0334;
+    if (window == nullptr) {
+      window = new UIGuildNoticeWnd();
+      this->unknown_0334 = window;
+      window->SetSize(g_defaultPlacementWidth, g_defaultPlacementHeight);
+      window->Move(ScaleToViewportWidth(0), 147);
+      this->AddRendered(window);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x834), 0, 0, 0);
+    }
+    window->Show(1);
+    break;
+  case 66:
+    window = this->unknown_0338;
+    if (window == nullptr) {
+      window = new UIGuildTotalInfoWnd();
+      this->unknown_0338 = window;
+      window->SetSize(g_defaultPlacementWidth, g_defaultPlacementHeight);
+      window->Move(ScaleToViewportWidth(0), 147);
+      this->AddRendered(window);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x834), 0, 0, 0);
+    }
+    window->Show(1);
+    break;
+  case 60:
+    window = this->window_0320;
+    if (window == nullptr) {
+      window = new UIGuildInfoManageWnd();
+      this->window_0320 = window;
+      window->SetSize(g_defaultPlacementWidth, g_defaultPlacementHeight);
+      window->Move(ScaleToViewportWidth(0), 147);
+      this->AddRendered(window);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x834), 0, 0, 0);
+    }
+    window->Show(1);
+    break;
+  case 75:
+    window = this->unknown_0340;
+    if (window == nullptr) {
+      window = new UIGuildLeaveReasonDescWnd();
+      this->unknown_0340 = window;
+      window->SetSize(280, 80);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(120));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 78:
+    window = this->unknown_0348;
+    if (window == nullptr) {
+      window = new UIIllustWnd();
+      this->unknown_0348 = window;
+      window->SetSize(4, 4);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(120));
+      this->rendered.push_front(window);
+      this->unknown_0348->unknown_004C = 2;
+      this->rendered.sort(layerGreater);
+    } else {
+      this->unknown_0348->SendMsg(nullptr, 0x22, -1, 0, 0, 0);
+    }
+    window->Show(1);
+    break;
+  case 216:
+  case 217:
+  case 218:
+  case 219:
+  case 220:
+  case 221:
+  case 222:
+  case 223:
+  case 224:
+  case 225:
+    window = this->unknown_034C[id - 216];
+    if (window == nullptr) {
+      window = new UIMultiIllustWnd();
+      this->unknown_034C[id - 216] = window;
+      window->SetSize(4, 4);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(120));
+      this->AddOverlay(id - 216, window);
+    }
+    window->Show(1);
+    break;
+  case 76:
+    window = this->unknown_0344;
+    if (window == nullptr) {
+      window = new UIGuildBanReasonDescWnd();
+      this->unknown_0344 = window;
+      window->SetSize(280, 80);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(120));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 68:
+    window = this->unknown_033C;
+    if (window == nullptr) {
+      window = new UIFriendOptionWnd();
+      this->unknown_033C = window;
+      window->SetSize(213, 90);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(120));
+      this->AddRendered(window);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x86C), 0, 0, 0);
+    }
+    window->Show(1);
+    break;
+  case 53:
+    window = this->unknown_030C;
+    if (window == nullptr) {
+      window = new UIPartySettingWnd();
+      this->unknown_030C = window;
+      window->SetSize(130, g_session.PartyCount() ? 245 : 180);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(120));
+      this->AddRendered(window);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x814), 0, 0, 0);
+    }
+    window->Show(1);
+    break;
+  case 207:
+    window = this->unknown_030C;
+    if (window == nullptr) {
+      window = new UIPartySettingWnd();
+      this->unknown_030C = window;
+      window->SetSize(130, 220);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(120));
+      this->AddRendered(window);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x814), 0, 0, 0);
+    }
+    window->Show(1);
+    break;
+  case 208:
+    window = this->unknown_042C;
+    if (window == nullptr) {
+      window = new UIPartyInvitationToWnd();
+      this->unknown_042C = window;
+      window->SetSize(150, 100);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(120));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 52:
+    window = this->unknown_03A8;
+    if (window == nullptr) {
+      window = new UICompositionWnd();
+      this->unknown_03A8 = window;
+      window->SetSize(34, 34);
+      window->Move(0, 0);
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 51:
+    window = this->window_03A4;
+    if (window == nullptr) {
+      window = new UICandidateWnd();
+      this->window_03A4 = window;
+      const int width = this->unknown_0068 ? 120 : 292;
+      const int height = this->unknown_0068 ? 212 : 34;
+      window->SetSize(width, height);
+      window->Move(g_renderer->viewport.width - width, g_renderer->viewport.height - height);
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 38:
+    window = this->unknown_02F0;
+    if (window == nullptr) {
+      window = new UITipOfTheDayWnd();
+      this->unknown_02F0 = window;
+      window->SetSize(280, 180);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(120));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 70:
+    window = this->unknown_02E8;
+    if (window == nullptr) {
+      window = new UIJoinGuildAcceptWnd();
+      this->unknown_02E8 = window;
+      window->SetSize(280, 120);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 72:
+    window = this->unknown_02EC;
+    if (window == nullptr) {
+      window = new UIAllyGuildAcceptWnd();
+      this->unknown_02EC = window;
+      window->SetSize(280, 120);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 35:
+    window = this->unknown_02CC;
+    if (window == nullptr) {
+      window = new UIJoinPartyAcceptWnd();
+      this->unknown_02CC = window;
+      window->SetSize(280, 120);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 104:
+    window = this->unknown_02D0;
+    if (window == nullptr) {
+      window = new UICoupleAcceptWnd();
+      this->unknown_02D0 = window;
+      window->SetSize(280, 120);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 119:
+    window = this->unknown_02D4;
+    if (window == nullptr) {
+      window = new UIStarPlaceAcceptWnd();
+      this->unknown_02D4 = window;
+      window->SetSize(280, 120);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 163:
+    window = this->unknown_02D8;
+    if (window == nullptr) {
+      window = new UIMixAcceptWnd();
+      this->unknown_02D8 = window;
+      window->SetSize(280, 120);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 138:
+    window = this->unknown_02DC;
+    if (window == nullptr) {
+      window = new UIYourItemWnd();
+      this->unknown_02DC = window;
+      window->SetSize(280, 120);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 105:
+    window = this->unknown_02E0;
+    if (window == nullptr) {
+      window = new UIBabyAcceptWnd();
+      this->unknown_02E0 = window;
+      window->SetSize(280, 120);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 110:
+    window = this->unknown_02E4;
+    if (window == nullptr) {
+      window = new UIBabyAcceptWnd2();
+      this->unknown_02E4 = window;
+      window->SetSize(280, 120);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 32:
+    window = this->unknown_0284;
+    if (window == nullptr) {
+      window = new UIExchangeAcceptWnd();
+      this->unknown_0284 = window;
+      window->SetSize(280, 120);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
+      this->AddRendered(window);
+      this->unknown_0284->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x75C), 0, 0, 0);
+    }
+    window->Show(1);
+    break;
+  case 29:
+    window = this->unknown_0280;
+    if (window == nullptr) {
+      window = new UIPasswordWnd();
+      this->unknown_0280 = window;
+      window->SetSize(176, 46);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 15:
+    window = this->window_01EC;
+    if (window == nullptr) {
+      window = new UIItemDropCntWnd();
+      this->window_01EC = window;
+      window->SetSize(182, 46);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
+      this->AddRendered(window);
+    }
+    break;
+  case 16:
+    window = this->unknown_01F0;
+    if (window == nullptr) {
+      window = new UISayDialogWnd();
+      this->unknown_01F0 = window;
+      window->SetSize(280, 180);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(100));
+      this->AddRendered(window);
+      this->unknown_01F0->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x5E4), 0, 0, 0);
+    }
+    window->Show(1);
+    this->unknown_01F0->unknown_004C = 1;
+    this->rendered.sort(layerGreater);
+    break;
+  case 226:
+    window = this->unknown_01F4;
+    if (window == nullptr) {
+      window = new UISayDialogWnd();
+      this->unknown_01F4 = window;
+      window->SetSize(g_renderer->viewport.width, 100);
+      window->Move(0, g_renderer->viewport.height - 100);
+      this->AddOverlay(250, window);
+    }
+    window->Show(1);
+    break;
+  case 28:
+    window = this->window_027C;
+    if (window == nullptr) {
+      window = new UIChatRoomWnd();
+      this->window_027C = window;
+      window->SetSize(280, 120);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(300));
+      this->AddRendered(window);
+      this->window_027C->SendMsg(nullptr, 0x35, reinterpret_cast<std::intptr_t>(base + 0x604), 0, 0, 0);
+    }
+    window->Show(1);
+    break;
+  case 39:
+    window = this->unknown_020C;
+    if (window == nullptr) {
+      window = new UIChooseWarpWnd();
+      this->unknown_020C = window;
+      window->SetSize(280, 120);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(300));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 17:
+    window = this->unknown_01F8;
+    if (window == nullptr) {
+      window = new UIChoose3Wnd();
+      this->unknown_01F8 = window;
+      window->SetSize(280, 120);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(300));
+      this->AddRendered(window);
+      this->unknown_01F8->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x5F4), 0, 0, 0);
+    }
+    window->Show(1);
+    break;
+  case 74:
+    window = this->unknown_0208;
+    if (window == nullptr) {
+      window = new UIItemCompositionWnd();
+      this->unknown_0208 = window;
+      window->SetSize(200, 200);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
+      this->AddRendered(window);
+      this->unknown_0208->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x87C), 0, 0, 0);
+    }
+    window->Show(1);
+    break;
+  case 73:
+    window = this->unknown_01FC;
+    if (window == nullptr) {
+      window = new UIItemIdentifyWnd();
+      this->unknown_01FC = window;
+      window->SetSize(200, 200);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
+      this->AddRendered(window);
+      this->unknown_01FC->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x88C), 0, 0, 0);
+    }
+    window->Show(1);
+    break;
+  case 26:
+    window = this->unknown_0214;
+    if (window == nullptr) {
+      window = new UIComboBoxWnd();
+      this->unknown_0214 = window;
+      window->SetSize(16, 16);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(300));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 260:
+    window = this->unknown_021C;
+    if (window == nullptr) {
+      window = new UIComboBoxIDWnd();
+      this->unknown_021C = window;
+      window->SetSize(16, 16);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(300));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 18:
+    window = this->unknown_0210;
+    if (window == nullptr) {
+      window = new UIMenuWnd();
+      this->unknown_0210 = window;
+      window->SetSize(4, 4);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(300));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 14:
+    window = this->unknown_01C0;
+    if (window == nullptr) {
+      window = new UIMinimapZoomWnd();
+      this->unknown_01C0 = window;
+      window->SetSize(128, 140);
+      window->Move(g_renderer->viewport.width - 145, 17);
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 30:
+    window = this->window_0278;
+    if (window == nullptr) {
+      window = new UIChatRoomChangeWnd();
+      this->window_0278 = window;
+      window->SetSize(280, 120);
+      window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 27:
+    window = this->window_0274;
+    if (window == nullptr) {
+      window = new UIChatRoomMakeWnd();
+      this->window_0274 = window;
+      window->SetSize(280, 120);
+      window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 25:
+    window = this->unknown_0264;
+    if (window == nullptr) {
+      window = new UIChooseSellBuyWnd();
+      this->unknown_0264 = window;
+      window->SetSize(280, 120);
+      window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 24:
+    window = this->unknown_025C;
+    if (window == nullptr) {
+      window = new UIItemSellWnd();
+      this->unknown_025C = window;
+      window->SetSize(280, 120);
+      window->Move(300, 200);
+      this->AddRendered(window);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x70C), 0, 0, 0);
+    }
+    window->Show(1);
+    break;
+  case 161:
+    window = this->unknown_0260;
+    if (window == nullptr) {
+      window = new UIItemSellWnd2();
+      this->unknown_0260 = window;
+      window->SetSize(280, 120);
+      window->Move(300, 200);
+      this->AddRendered(window);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x70C), 0, 0, 0);
+    }
+    window->Show(1);
+    break;
+  case 44:
+    window = this->unknown_0308;
+    if (window == nullptr) {
+      window = new UIMerchantItemPurchaseWnd(0);
+      this->unknown_0308 = window;
+      window->SetSize(280, 120);
+      window->Move(300, 200);
+      this->AddRendered(window);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x7D4), 0, 0, 0);
+    }
+    window->Show(1);
+    break;
+  case 23:
+    window = this->unknown_0258;
+    if (window == nullptr) {
+      window = new UIItemPurchaseWnd();
+      this->unknown_0258 = window;
+      window->SetSize(280, 120);
+      window->Move(300, 200);
+      this->AddRendered(window);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x71C), 0, 0, 0);
+    }
+    window->Show(1);
+    this->sub_A978D0(50);
+    break;
+  case 45:
+    window = this->unknown_0304;
+    if (window == nullptr) {
+      window = new UIMerchantItemMyShopWnd(0);
+      this->unknown_0304 = window;
+      window->SetSize(280, 120);
+      window->Move(0, 200);
+      this->AddRendered(window);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x7C4), 0, 0, 0);
+    }
+    window->Show(1);
+    break;
+  case 43:
+    window = this->unknown_0300;
+    if (window == nullptr) {
+      window = new UIMerchantItemShopWnd(0);
+      this->unknown_0300 = window;
+      window->SetSize(280, 120);
+      window->Move(0, 200);
+      this->AddRendered(window);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x7B4), 0, 0, 0);
+    }
+    window->Show(1);
+    break;
+  case 22:
+    window = this->unknown_0250;
+    if (window == nullptr) {
+      window = new UIItemShopWnd();
+      this->unknown_0250 = window;
+      window->SetSize(280, 120);
+      window->Move(0, 200);
+      this->AddRendered(window);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x6FC), 0, 0, 0);
+    }
+    window->Show(1);
+    break;
+  case 160:
+    window = this->unknown_0254;
+    if (window == nullptr) {
+      window = new UIItemShopWnd2();
+      this->unknown_0254 = window;
+      window->SetSize(280, 120);
+      window->Move(0, 200);
+      this->AddRendered(window);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x6FC), 0, 0, 0);
+    }
+    window->Show(1);
+    break;
+  case 254:
+    window = this->unknown_0268;
+    if (window == nullptr) {
+      window = new UIParaItemShopWnd();
+      this->unknown_0268 = window;
+      window->SetSize(280, 120);
+      window->Move(0, 200);
+      this->AddRendered(window);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x6FC), 0, 0, 0);
+    }
+    window->Show(1);
+    break;
+  case 255:
+    window = this->unknown_026C;
+    if (window == nullptr) {
+      window = new UIParaItemPurchaseWnd();
+      this->unknown_026C = window;
+      window->SetSize(280, 120);
+      window->Move(300, 200);
+      this->AddRendered(window);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x71C), 0, 0, 0);
+    }
+    window->Show(1);
+    break;
+  case 256:
+    window = this->window_0270;
+    if (window == nullptr) {
+      window = new UIParaResultWnd();
+      this->window_0270 = window;
+      window->SetSize(280, 120);
+      window->Move(300, 200);
+      this->AddRendered(window);
+      window->SendMsg(nullptr, 0x22, 0, 0, 0, 0);
+    }
+    window->Show(1);
+    break;
+  case 49:
+    window = this->unknown_0244;
+    if (window == nullptr) {
+      window = new UINotifyJobLevelUpWnd();
+      this->unknown_0244 = window;
+      window->SetSize(43, 43);
+      window->Move(0, g_renderer->viewport.height - 43);
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 21:
+    window = this->unknown_0240;
+    if (window == nullptr) {
+      window = new UINotifyLevelUpWnd();
+      this->unknown_0240 = window;
+      window->SetSize(43, 43);
+      window->Move(g_renderer->viewport.width - 43, g_renderer->viewport.height - 43);
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 143:
+    window = this->unknown_0248;
+    if (window == nullptr) {
+      window = new UINotifyQuestWnd();
+      this->unknown_0248 = window;
+      window->SetSize(43, 43);
+      window->Move(g_renderer->viewport.width - 43, g_renderer->viewport.height - 43);
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 190:
+    window = this->unknown_024C;
+    if (window == nullptr) {
+      window = new UInCash_CallWnd();
+      this->unknown_024C = window;
+      window->SetSize(43, 43);
+      window->Move(g_renderer->viewport.width - 187, 16);
+      this->AddRendered(window);
+    }
+    window->Show(g_serviceOptions.Get(218));
+    break;
+  case 47:
+    window = this->unknown_023C;
+    if (window == nullptr) {
+      window = new UICardItemIllustWnd();
+      this->unknown_023C = window;
+      window->SetSize(300, 417);
+      window->Move(CenterOnViewportX(0), ScaleByScreenHeight(0));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 201:
+    window = this->unknown_0424;
+    if (window == nullptr) {
+      window = new UIMonsterDisplayWnd();
+      this->unknown_0424 = window;
+      window->SetSize(100, 150);
+      window->Move(CenterOnViewportX(0), ScaleByScreenHeight(0));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 19:
+    window = this->unknown_0238;
+    if (window == nullptr) {
+      window = new UIRestartWnd();
+      this->unknown_0238 = window;
+      window->SetSize(280, 120);
+      window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 48:
+    window = this->unknown_0234;
+    if (window == nullptr) {
+      window = new UIQuitWnd();
+      this->unknown_0234 = window;
+      window->SetSize(280, 120);
+      window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 46:
+    window = this->window_0230;
+    if (window == nullptr) {
+      window = new UISkillDescribeWnd();
+      this->window_0230 = window;
+      window->SetSize(304, 120);
+      window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300) - 120);
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 50:
+    window = this->unknown_022C;
+    if (window == nullptr) {
+      window = new UIItemParamChangeDisplayWnd();
+      this->unknown_022C = window;
+      window->SetSize(280, 34);
+      window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300) - 34);
+      this->AddRendered(window);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x804), 0, 0, 0);
+    }
+    window->Show(1);
+    break;
+  case 82:
+    window = this->unknown_0228;
+    if (window == nullptr) {
+      window = new UICombinedCardItemCollectionWnd();
+      this->unknown_0228 = window;
+      window->SetSize(280, 120);
+      window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300));
+      this->AddRendered(window);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x7F4), 0, 0, 0);
+    }
+    window->Show(1);
+    break;
+  case 12:
+    window = this->unknown_0218;
+    if (window == nullptr) {
+      window = new UIItemCollectionWnd();
+      this->unknown_0218 = window;
+      window->SetSize(280, 120);
+      window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300));
+      this->AddRendered(window);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x7E4), 0, 0, 0);
+    }
+    window->Show(1);
+    break;
+  case 234:
+    window = this->unknown_0220;
+    if (window == nullptr) {
+      window = new UIItemCollection_ComparisonWnd();
+      this->unknown_0220 = window;
+      window->SetSize(280, 120);
+      this->AddRendered(window);
+    }
+    window->SendMsg(nullptr, 0x22, 0, 0, 0, 0);
+    window->Show(1);
+    break;
+  case 250:
+    window = this->unknown_0224;
+    if (window == nullptr) {
+      window = new UICombinedCardItemCollection_ComparisonWnd();
+      this->unknown_0224 = window;
+      window->SetSize(280, 120);
+      window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300));
+      this->AddRendered(window);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x7F4), 0, 0, 0);
+    }
+    window->Show(1);
+    break;
+  case 20:
+    window = new UINoticeConfirmWnd();
+    window->SetSize(280, 120);
+    window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300));
+    this->AddRendered(window);
+    break;
+  case 332:
+    window = new UIDisconnectedServerMsgWnd();
+    window->SetSize(280, 120);
+    window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300));
+    this->AddRendered(window);
+    break;
+  case 77:
+    window = new UIMonsterInfoWnd();
+    window->SetSize(400, 200);
+    window->Move(0, 0);
+    this->AddRendered(window);
+    break;
+  case 79:
+    window = this->unknown_0374;
+    if (window == nullptr) {
+      window = new UIMakeTargetListWnd();
+      this->unknown_0374 = window;
+      window->SetSize(280, 150);
+      window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300) - 60);
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 107:
+    window = this->unknown_0200;
+    if (window == nullptr) {
+      window = new UIItemRepairWnd();
+      this->unknown_0200 = window;
+      window->SetSize(280, 150);
+      window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300) - 60);
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 111:
+    window = this->unknown_0204;
+    if (window == nullptr) {
+      window = new UIWeaponRefineWnd();
+      this->unknown_0204 = window;
+      window->SetSize(280, 150);
+      window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300) - 60);
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 80:
+    window = this->unknown_0378;
+    if (window == nullptr) {
+      window = new UIMakeTargetProcessWnd();
+      this->unknown_0378 = window;
+      window->SetSize(280, 150);
+      window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300) - 60);
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 81:
+    window = this->unknown_037C;
+    if (window == nullptr) {
+      window = new UIMakeTargetResultWnd();
+      this->unknown_037C = window;
+      window->SetSize(280, 120);
+      window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300) - 60);
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 84:
+    window = new UITalkboxTrapInputWnd();
+    window->SetSize(280, 120);
+    window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300) - 60);
+    this->AddRendered(window);
+    break;
+  case 85:
+    window = this->window_03AC;
+    if (window == nullptr) {
+      window = new UIKeyStrokeWnd();
+      this->window_03AC = window;
+      window->SetSize(60, 18);
+      window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300) - 60);
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 86:
+    window = this->unknown_0380;
+    if (window == nullptr) {
+      window = new UIEmotionWnd();
+      this->unknown_0380 = window;
+      window->SetSize(375, 260);
+      window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300) - 60);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x89C), 0, 0, 0);
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 87:
+    window = this->unknown_0384;
+    if (window == nullptr) {
+      window = new (std::nothrow) UICashEmotionListWnd();
+      this->unknown_0384 = window;
+      if (window == nullptr) {
+        return nullptr;
+      }
+      window->SetSize(298, 380);
+      window->Move(CenterOnViewportX(185), ScaleByScreenHeight(400) - 60);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x8AC), 0, 0, 0);
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 88:
+    if (g_session.unknown_103C == -1) {
+      break;
+    }
+    window = this->window_038C;
+    if (window == nullptr) {
+      window = new UIPetInfoWnd();
+      this->window_038C = window;
+      window->SetSize(280, 180);
+      window->Move(CenterOnViewportX(185), ScaleByScreenHeight(400) - 60);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x8BC), 0, 0, 0);
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 90:
+    window = this->unknown_0390;
+    if (window == nullptr) {
+      window = new UIPetEggListWnd();
+      this->unknown_0390 = window;
+      window->SetSize(200, 200);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 91:
+    window = this->unknown_0394;
+    if (window == nullptr) {
+      window = new UIPetTamingDeceiveWnd();
+      this->unknown_0394 = window;
+      window->SetSize(196, 256);
+      window->Move(g_renderer->viewport.width / 2 - 98, g_renderer->viewport.height / 2 - 128);
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 94:
+    window = this->unknown_0398;
+    if (window == nullptr) {
+      window = new UIMakingArrowListWnd();
+      this->unknown_0398 = window;
+      window->SetSize(200, 200);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 95:
+    window = this->unknown_039C;
+    if (window == nullptr) {
+      window = new UISelectCartWnd();
+      this->unknown_039C = window;
+      window->SetSize(385, 98);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 99:
+    if (this->unknown_03A0) {
+      this->Schedule(this->unknown_03A0);
+      this->unknown_03A0 = nullptr;
+    }
+    window = new UISpellListWnd();
+    this->unknown_03A0 = window;
+    window->SetSize(200, 200);
+    window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
+    this->AddRendered(window);
+    window->Show(1);
+    break;
+  case 101:
+    window = new UIGraffiStrboxWnd();
+    window->SetSize(280, 120);
+    window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300) - 60);
+    this->AddRendered(window);
+    break;
+  case 103:
+    window = this->window_0388;
+    if (window == nullptr) {
+      window = new UIProhibitListWnd();
+      this->window_0388 = window;
+      window->SetSize(500, 400);
+      window->Move(CenterOnViewportX(100), ScaleByScreenHeight(100));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 106:
+    window = this->unknown_03B0;
+    if (window == nullptr) {
+      window = new UIBookWnd();
+      this->unknown_03B0 = window;
+      window->SetSize(600, 420);
+      window->Move(CenterOnViewportX(0), ScaleByScreenHeight(0));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 109:
+    window = this->unknown_03B4;
+    if (window == nullptr) {
+      window = new UIJoinFriendAcceptWnd();
+      this->unknown_03B4 = window;
+      window->SetSize(280, 120);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 113:
+    if (g_session.m_homunJob == -1) {
+      break;
+    }
+    window = this->window_03C0;
+    if (window == nullptr) {
+      window = new UIHomunInfoWnd();
+      this->window_03C0 = window;
+      window->SetSize(280, 208);
+      window->Move(CenterOnViewportX(185), ScaleByScreenHeight(400) - 60);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x8CC), 0, 0, 0);
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 114:
+    window = this->window_03C4;
+    if (window == nullptr) {
+      window = new UISkillListWnd();
+      this->window_03C4 = window;
+      static_cast<UISkillListWnd*>(window)->skillTab = 0;
+      window->SetSize(280, 120);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
+      this->AddRendered(window);
+      this->window_03C4->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x8DC), 0, 0, 0);
+    }
+    static_cast<UISkillListWnd*>(this->window_03C4)->skillTab = 0;
+    this->window_03C4->Show(1);
+    this->unknown_08EC = 1;
+    break;
+  case 125:
+    if (g_session.m_mercenaryClass == -1) {
+      break;
+    }
+    window = this->window_03C8;
+    if (window == nullptr) {
+      window = new UIMerInfoWnd();
+      this->window_03C8 = window;
+      window->SetSize(280, 180);
+      window->Move(CenterOnViewportX(185), ScaleByScreenHeight(400) - 60);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x8F0), 0, 0, 0);
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 186:
+    window = new UISelectReplayDataWnd();
+    window->SetSize(280, 311);
+    window->Move(CenterOnViewportX(320) - 140, CenterOnViewportY(240) - 160);
+    this->AddRendered(window);
+    break;
+  case 187:
+    if (this->window_4F168 == nullptr) {
+      window = new UIReplayControlWnd();
+      this->window_4F168 = window;
+      window->SetSize(197, 138);
+      window->Move(ScaleToViewportWidth(640) - 197, ScaleByScreenHeight(480) - 138);
+      window->unknown_004C = 0;
+      this->rendered.sort(layerGreater);
+      this->AddRendered(window);
+    }
+    break;
+  case 198:
+    if (this->window_4F164 == nullptr) {
+      if (Replay::Instance().state == 2) {
+        window = new UIReplayRECControlWnd(1);
+      } else {
+        window = new UIReplayRECControlWnd(0);
+      }
+      this->window_4F164 = window;
+      window->SetSize(194, 34);
+      window->Move(CenterOnViewportX(259), CenterOnViewportY(230));
+      this->AddRendered(window);
+      this->window_4F164->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(this->unknown_4F154), 0, 0, 0);
+    }
+    break;
+  case 203:
+    if (this->window_4F174 == nullptr) {
+      this->RecordWindowPacket(203);
+      g_navigationHidden = false;
+      window = new UINavigationV4Wnd();
+      this->window_4F174 = window;
+      window->SetSize(272, 338);
+      this->window_4F174->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x4F178), 0, 0, 0);
+      this->AddRendered(window);
+    }
+    break;
+  case 229:
+    if (this->LookupWindow(229) == nullptr) {
+      window = new UINavigationHelpWnd();
+      window->SetSize(310, 200);
+      window->Move(100, 100);
+      this->AddRendered(window);
+    }
+    break;
+  case 306:
+    if (this->LookupWindow(306) == nullptr) {
+      int x = 200;
+      int y = 200;
+      if (this->window_4F174) {
+        x = this->window_4F174->geometry.x;
+        y = this->window_4F174->geometry.y;
+      }
+      window = new UINavigationroadiconWnd();
+      window->SetSize(158, 102);
+      window->Move(x + 113, y + 211);
+      this->AddRendered(window);
+    }
+    break;
+  case 314:
+    if (this->LookupWindow(314) == nullptr) {
+      int x = 200;
+      int y = 200;
+      if (this->window_4F174) {
+        x = this->window_4F174->geometry.x;
+        y = this->window_4F174->geometry.y;
+      }
+      window = new UINavigationRuideWnd();
+      window->SetSize(150, 338);
+      window->Move(x + 272, y);
+      this->AddRendered(window);
+    }
+    break;
+  case 126:
+    window = this->window_03CC;
+    if (window == nullptr) {
+      window = new UISkillListWnd();
+      this->window_03CC = window;
+      static_cast<UISkillListWnd*>(window)->skillTab = 1;
+      window->SetSize(280, 120);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
+      this->AddRendered(window);
+      this->window_03CC->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x900), 0, 0, 0);
+    }
+    static_cast<UISkillListWnd*>(this->window_03CC)->skillTab = 1;
+    this->window_03CC->Show(1);
+    this->unknown_0910 = 1;
+    break;
+  case 116:
+    window = this->unknown_03D0;
+    if (window == nullptr) {
+      window = new UIAutoMessageWnd();
+      this->unknown_03D0 = window;
+      window->SetSize(280, 48);
+      window->Move(CenterOnViewportX(185), CenterOnViewportY(180));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 127: {
+    const int width = g_session.unknown_0E94 > 12 ? 783 : 540;
+    window = new UISelCharForUServerWnd();
+    this->window_03D8 = window;
+    window->SetSize(width, 400);
+    window->Move((g_renderer->viewport.width - width) / 2, (g_renderer->viewport.height - 400) / 2);
+    this->AddRendered(window);
+    break;
+  }
+  case 128:
+    window = this->window_03DC;
+    if (window == nullptr) {
+      window = new UIChangeNameWnd();
+      this->window_03DC = window;
+      window->SetSize(184, 105);
+      window->Move(CenterOnViewportX(260), CenterOnViewportY(180));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 129:
+    window = this->unknown_03E0;
+    if (window == nullptr) {
+      window = new UIRebirthWnd();
+      this->unknown_03E0 = window;
+      window->SetSize(280, 143);
+      window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 130:
+    window = reinterpret_cast<UIWindow*>(this->unknown_03E4);
+    if (window == nullptr) {
+      window = new UISubChatHisWnd();
+      this->unknown_03E4 = reinterpret_cast<std::uint32_t>(window);
+      window->SetSize(300, 95);
+      this->AddRendered(window);
+      reinterpret_cast<UIWindow*>(this->unknown_03E4)->SetId(130);
+      reinterpret_cast<UIWindow*>(this->unknown_03E4)->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x914), 0, 0, 0);
+    }
+    window->Show(0);
+    break;
+  case 131:
+    window = reinterpret_cast<UIWindow*>(this->unknown_03E8);
+    if (window == nullptr) {
+      window = new UISubChatHisWnd();
+      this->unknown_03E8 = reinterpret_cast<std::uint32_t>(window);
+      window->SetSize(300, 95);
+      this->AddRendered(window);
+      reinterpret_cast<UIWindow*>(this->unknown_03E8)->SetId(131);
+      reinterpret_cast<UIWindow*>(this->unknown_03E8)->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x924), 0, 0, 0);
+    }
+    window->Show(0);
+    break;
+  case 132:
+    window = this->unknown_03EC;
+    if (window == nullptr) {
+      window = new UIBattleMsgOptionWnd();
+      this->unknown_03EC = window;
+      window->SetSize(280, 200);
+      window->Move(CenterOnViewportX(400), ScaleByScreenHeight(200));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 133:
+    window = reinterpret_cast<UIWindow*>(this->unknown_03F0);
+    if (window == nullptr) {
+      window = new UISubChatMiniWnd();
+      this->unknown_03F0 = reinterpret_cast<std::uint32_t>(window);
+      window->SetSize(5, 5);
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 137:
+    if (g_session.unknown_5950 == "") {
+      return nullptr;
+    }
+    window = this->unknown_03F8;
+    if (window == nullptr) {
+      window = new UIMemorialDunWnd();
+      this->unknown_03F8 = window;
+      window->SetSize(200, 150);
+      if (g_session.unknown_5940 >= 0 && g_session.unknown_5944 >= 0) {
+        window->Move(g_session.unknown_5940, g_session.unknown_5944);
+      } else {
+        window->Move(0, 310);
+      }
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    g_session.unknown_593C = 1;
+    break;
+  case 139:
+    window = this->unknown_03FC;
+    if (window == nullptr) {
+      window = new UIEquipWnd();
+      this->unknown_03FC = window;
+      static_cast<UIEquipWnd*>(window)->m_viewOther = 1;
+      window->SetSize(280, 167);
+      window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300));
+      this->AddRendered(window);
+      g_snapMgr.Add(window);
+    }
+    window->Show(1);
+    break;
+  case 140:
+    window = this->modal;
+    if (window == nullptr) {
+      window = new UIRoMapWnd();
+      this->modal = window;
+      window->SetSize(g_renderer->viewport.width, g_renderer->viewport.height);
+      window->Move(0, 0);
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    g_windowMgr.Promote(this->modal);
+    g_windowMgr.Promote(this->window_4F174);
+    break;
+  case 155:
+    if (this->window_4F1EC || this->window_4F288) {
+      break;
+    }
+    window = this->unknown_0408;
+    if (window == nullptr) {
+      window = new UIEscOptionWnd();
+      this->unknown_0408 = window;
+      window->SetSize(280, 143);
+      window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 156:
+  case 158:
+  case 159:
+  case 165:
+  case 166:
+  case 167:
+  case 181:
+  case 183:
+  case 191:
+    window = this->CreateLayoutWindow(id);
+    if (window == nullptr) {
+      break;
+    }
+    window->Show(1);
+    break;
+  case 157:
+    window = this->LookupWindow(157);
+    if (window == nullptr) {
+      window = new UIEntryQueueWnd();
+      window->SetSize(350, 350);
+      this->AddRendered(window);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(this->unknown_0944), 0, 0, 0);
+    }
+    window->Show(1);
+    break;
+  case 209:
+    window = this->LookupWindow(209);
+    if (window == nullptr) {
+      UIEntryQueueStandByWnd* standBy = new UIEntryQueueStandByWnd();
+      window = standBy;
+      standBy->Create();
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 210:
+    window = this->LookupWindow(210);
+    if (window == nullptr) {
+      UIEntryQueueRequestWnd* request = new UIEntryQueueRequestWnd();
+      window = request;
+      request->Create();
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 211:
+    window = this->LookupWindow(211);
+    if (window == nullptr) {
+      window = new UIEntryQueueHelpWnd();
+      window->SetSize(100, 100);
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 174:
+    window = this->unknown_040C;
+    if (window == nullptr) {
+      window = new UIMerchantShopMakeWnd(1);
+      this->unknown_040C = window;
+      window->SetSize(360, 289);
+      window->Move(CenterOnViewportX(185), ScaleByScreenHeight(200));
+      this->AddRendered(window);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x954), 0, 0, 0);
+    }
+    window->Show(1);
+    this->sub_A978D0(175);
+    break;
+  case 175:
+    window = reinterpret_cast<UIWindow*>(this->unknown_0410);
+    if (window == nullptr) {
+      window = new UIMerchantMirrorItemWnd(1);
+      this->unknown_0410 = reinterpret_cast<std::uint32_t>(window);
+      window->SetSize(280, 120);
+      window->Move(CenterOnViewportX(0), ScaleByScreenHeight(120));
+      this->AddRendered(window);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x964), 0, 0, 0);
+    }
+    window->Show(1);
+    break;
+  case 176:
+    window = this->unknown_0414;
+    if (window == nullptr) {
+      window = new UIMerchantItemMyShopWnd(1);
+      this->unknown_0414 = window;
+      window->SetSize(280, 120);
+      window->Move(0, 200);
+      this->AddRendered(window);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x974), 0, 0, 0);
+    }
+    window->Show(1);
+    break;
+  case 177:
+    window = this->unknown_0418;
+    if (window == nullptr) {
+      window = new UIMerchantItemShopWnd(1);
+      this->unknown_0418 = window;
+      window->SetSize(350, 120);
+      window->Move(0, 200);
+      this->AddRendered(window);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x984), 0, 0, 0);
+    }
+    window->Show(1);
+    break;
+  case 178:
+    window = this->unknown_041C;
+    if (window == nullptr) {
+      window = new UIMerchantItemPurchaseWnd(1);
+      this->unknown_041C = window;
+      window->SetSize(280, 120);
+      window->Move(300, 200);
+      this->AddRendered(window);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x994), 0, 0, 0);
+    }
+    window->Show(1);
+    break;
+  case 179:
+    window = reinterpret_cast<UIWindow*>(this->unknown_0420);
+    if (window == nullptr) {
+      window = new UIMerchantMirrorItemWnd(2);
+      this->unknown_0420 = reinterpret_cast<std::uint32_t>(window);
+      window->SetSize(280, 120);
+      window->Move(300, 0);
+      this->AddRendered(window);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x9A4), 0, 0, 0);
+    }
+    window->Show(1);
+    break;
+  case 196:
+    window = this->window_4F18C;
+    if (window == nullptr) {
+      window = new CUICollectionSystemWnd();
+      this->window_4F18C = window;
+      window->SetSize(196, 256);
+      window->Move(g_renderer->viewport.width / 2 - 98, g_renderer->viewport.height / 2 - 128);
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 199: {
+    const int rangeX = g_renderer->viewport.width - 540;
+    const int minX = rangeX / 2;
+    const int rangeY = g_renderer->viewport.height - 365;
+    const int minY = rangeY / 2;
+    window = this->unknown_03B8;
+    if (window == nullptr) {
+      window = new UISecondPasswordInputWnd();
+      this->unknown_03B8 = window;
+      window->SetSize(540, 365);
+      int x;
+      int y;
+      for (;;) {
+        x = std::rand() % rangeX;
+        y = std::rand() % rangeY;
+        if (x > minX && x < rangeX && y > minY && y < rangeY) {
+          break;
+        }
+        std::rand();
+        std::rand();
+      }
+      window->Move(x, y);
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    static_cast<UISecondPasswordInputWnd*>(this->unknown_03B8)->CreateKeypad(g_session.m_loginAccountId);
+    static_cast<UISecondPasswordInputWnd*>(this->unknown_03B8)->sub_90C970(0);
+    break;
+  }
+  case 200: {
+    const int rangeX = g_renderer->viewport.width - 540;
+    const int minX = rangeX / 2;
+    const int rangeY = g_renderer->viewport.height - 365;
+    const int minY = rangeY / 2;
+    window = this->unknown_03BC;
+    if (window == nullptr) {
+      window = new UISecondPasswordEditWnd();
+      this->unknown_03BC = window;
+      window->SetSize(540, 365);
+      int x;
+      int y;
+      for (;;) {
+        x = std::rand() % rangeX;
+        y = std::rand() % rangeY;
+        if (x > minX && x < rangeX && y > minY && y < rangeY) {
+          break;
+        }
+        std::rand();
+        std::rand();
+      }
+      window->Move(x, y);
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    static_cast<UISecondPasswordInputWnd*>(this->unknown_03BC)->CreateKeypad(g_session.m_loginAccountId);
+    static_cast<UISecondPasswordInputWnd*>(this->unknown_03BC)->sub_90C970(1);
+    break;
+  }
+  case 227:
+    window = this->LookupWindow(227);
+    if (window == nullptr) {
+      window = new CMergeItemWnd();
+      window->SetSize(1, 1);
+      window->Show(1);
+      window->Move(static_cast<int>(g_renderer->viewport.width * 0.5), static_cast<int>(g_renderer->viewport.height * 0.5));
+      this->AddRendered(window);
+    }
+    break;
+  case 230:
+    if (this->LookupWindow(230) == nullptr) {
+      this->CloseWindow(230);
+    }
+    window = new (std::nothrow) UIMerchantItemPurchaseMSGWnd();
+    if (window == nullptr) {
+      break;
+    }
+    window->SetSize(300, 150);
+    window->Move((g_renderer->viewport.width - window->geometry.width) / 2, (g_renderer->viewport.height - window->geometry.height) / 2);
+    window->Show(1);
+    this->AddRendered(window);
+    break;
+  case 237:
+    window = this->window_0444;
+    if (window == nullptr) {
+      window = new UIClanInfoManageWnd();
+      this->window_0444 = window;
+      window->SetSize(400, 317);
+      window->Move(ScaleToViewportWidth(0), 147);
+      this->AddRendered(window);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x9F0), 0, 0, 0);
+    }
+    window->Show(1);
+    break;
+  case 275:
+    if (this->LookupWindow(295)) {
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xBC6)), 255, 0, 0, 0);
+      break;
+    }
+    if (this->LookupWindow(343)) {
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xE85)), 255, 0, 0, 0);
+      break;
+    }
+    if (this->LookupWindow(10006)) {
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xF05)), 255, 0, 0, 0);
+      break;
+    }
+    if (this->LookupWindow(341)) {
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xF7F)), 255, 0, 0, 0);
+      break;
+    }
+    if (g_windowMgr.LookupWindow(361)) {
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xFD7)), 255, 0, 0, 0);
+      break;
+    }
+    window = this->window_0448;
+    if (window == nullptr) {
+      window = new UIBank_NewWnd();
+      this->window_0448 = window;
+      window->SetSize(280, 153);
+      window->Move(static_cast<int>(g_renderer->viewport.width * 0.5 - 140.0), static_cast<int>(g_renderer->viewport.height * 0.5 - 77.0));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 253:
+    window = this->window_044C;
+    if (window == nullptr) {
+      window = new UIGuild_Storage_Log();
+      this->window_044C = window;
+      window->SetSize(400, 250);
+      window->Move(static_cast<int>(g_renderer->viewport.width * 0.5 - 300.0), static_cast<int>(g_renderer->viewport.height * 0.5 - 225.0));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 257:
+  case 258:
+    window = this->LookupWindow(id);
+    if (window == nullptr) {
+      if (id == 258) {
+        window = new UIMerchantItemLogWnd(1);
+      } else {
+        window = new UIMerchantItemLogWnd(0);
+      }
+      window->SetSize(450, 152);
+      window->Move(0, 200);
+      window->Show(0);
+      this->AddRendered(window);
+    }
+    break;
+  case 262:
+    window = this->unknown_0450;
+    if (window == nullptr) {
+      window = new UIOpenMailBoxWnd();
+      this->unknown_0450 = window;
+      window->SetSize(43, 43);
+      window->Move(g_renderer->viewport.width - 234, 16);
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 263:
+    window = this->unknown_0454;
+    if (window == nullptr) {
+      window = new UIRodexInboxWnd();
+      this->unknown_0454 = window;
+      window->SetSize(309, 416);
+      window->Move(CenterOnViewportX(100), ScaleByScreenHeight(100));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 264:
+    window = this->unknown_0458;
+    if (window == nullptr) {
+      window = new UIRodexComposeWnd();
+      this->unknown_0458 = window;
+      window->SetSize(300, 400);
+      window->Move(CenterOnViewportX(120), ScaleByScreenHeight(120));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 265:
+    window = this->unknown_045C;
+    if (window == nullptr) {
+      window = new UIRodexContentsWnd();
+      this->unknown_045C = window;
+      window->SetSize(300, 400);
+      window->Move(CenterOnViewportX(120), ScaleByScreenHeight(120));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 261:
+    window = this->LookupWindow(261);
+    if (window == nullptr) {
+      window = new UIPetEvolutionWnd();
+      window->SetSize(290, 400);
+      window->Move(static_cast<int>((g_renderer->viewport.width - 290) * 0.5), static_cast<int>((g_renderer->viewport.height - 400) * 0.5));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 259:
+    window = dynamic_cast<UIFrameWnd*>(this->LookupWindow(259));
+    if (window == nullptr) {
+      window = new UISecondCostumeWnd();
+      this->window_4F170 = window;
+      window->SetSize(395, 205);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200) + 46);
+      window->Show(1);
+      this->AddRendered(window);
+    }
+    break;
+  case 267:
+    window = this->LookupWindow(267);
+    if (window == nullptr) {
+      window = new UIMileageWnd();
+      CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\mileage_bg1.bmp")));
+      if (bitmap == nullptr) {
+        window->SetSize(150, 70);
+        window->Move(g_renderer->viewport.width - 480, 12);
+      } else {
+        window->SetSize(bitmap->image.width, bitmap->image.height);
+        if (this->unknown_024C) {
+          window->Move(g_renderer->viewport.width - 292, 11);
+        } else {
+          window->Move(g_renderer->viewport.width - bitmap->image.width - 340, 12);
+        }
+      }
+      this->AddRendered(window);
+    }
+    window->Show(g_serviceOptions.Get(219));
+    break;
+  case 268:
+    window = this->unknown_0460;
+    if (window == nullptr) {
+      window = new UIOpenRoulletteWnd();
+      this->unknown_0460 = window;
+      window->SetSize(43, 43);
+      window->Move(g_renderer->viewport.width - 187, 71);
+      this->AddRendered(window);
+    }
+    window->Show(g_serviceOptions.Get(220));
+    break;
+  case 269:
+    window = this->unknown_0464;
+    if (window == nullptr) {
+      UIRoulletteWnd* roulette = new UIRoulletteWnd();
+      window = roulette;
+      this->unknown_0464 = roulette;
+      window->SetSize(640, 497);
+      window->Move(static_cast<int>(g_renderer->viewport.width * 0.5 - 320.0), static_cast<int>(g_renderer->viewport.height * 0.5 - 240.0));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 270:
+    window = dynamic_cast<UIFrameWnd*>(this->LookupWindow(270));
+    if (window == nullptr) {
+      window = new UIAchievementWnd();
+      window->SetSize(750, 468);
+      window->Move((g_renderer->viewport.width - 750) / 2, (g_renderer->viewport.height - 468) / 2);
+      window->Show(1);
+      this->AddRendered(window);
+    }
+    if (UIWindow* basicInfo = g_windowMgr.LookupWindow(307)) {
+      basicInfo->SendMsg(nullptr, 6, 0x11E, 0x1D9, 0, 0);
+    }
+    break;
+  case 271:
+    window = dynamic_cast<UIFrameWnd*>(this->LookupWindow(271));
+    if (window == nullptr) {
+      window = new UIAchTracingWnd();
+      window->SetSize(300, 150);
+      window->Move(g_renderer->viewport.width - 350, (g_renderer->viewport.height - 150) / 2);
+      window->Show(1);
+      window->unknown_004C = 5;
+      this->AddRendered(window);
+      this->rendered.sort(layerGreater);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x4F1D8), 0, 0, 0);
+    }
+    break;
+  case 273:
+    if (this->window_4F1CC == nullptr) {
+      window = new UIMiniMapWnd();
+      this->window_4F1CC = window;
+      MiniMapWndInfo* miniMapInfo = reinterpret_cast<MiniMapWndInfo*>(base + 0x4F1A8);
+      window->SetSize(miniMapInfo->unknown_0010, miniMapInfo->unknown_0014);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(miniMapInfo), 0, 0, 0);
+      window->Show(1);
+      this->AddRendered(window);
+    }
+    break;
+  case 274:
+    if (this->window_4F1D0 == nullptr) {
+      window = new UIEditctrlWnd();
+      this->window_4F1D0 = window;
+      window->SetSize(250, 42);
+      window->Move(g_mouse.x, g_mouse.y);
+      window->Show(1);
+      this->AddRendered(window);
+    }
+    break;
+  case 276:
+    if (this->LookupWindow(276) == nullptr) {
+      window = new UIRoundBoxTooltipWnd();
+      this->window_4F1E4 = window;
+      window->SetSize(100, 200);
+      window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300) - 120);
+      this->AddRendered(window);
+      window->Show(1);
+    } else {
+      window = this->window_4F1E4;
+      this->window_4F1E4->Show(1);
+    }
+    break;
+  case 281:
+    window = this->LookupWindow(281);
+    if (window == nullptr) {
+      window = new UIStylingShopWnd();
+      window->SetSize(480, 330);
+      window->Move((g_renderer->viewport.width - 480) / 2, (g_renderer->viewport.height - 330) / 2);
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 284:
+    window = this->window_4F1E8;
+    if (window == nullptr) {
+      window = new UICaptchaRegisterWnd();
+      this->window_4F1E8 = window;
+      window->SetSize(290, 211);
+      window->Move((g_renderer->viewport.width - 290) / 2, (g_renderer->viewport.height - 211) / 2);
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 285:
+    window = this->window_4F1EC;
+    if (window == nullptr) {
+      window = new UIMacroDetectorWnd();
+      this->window_4F1EC = window;
+      window->SetSize(340, 312);
+      window->Move((g_renderer->viewport.width - 340) / 2, (g_renderer->viewport.height - 312) / 2);
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    this->window_4F1FC = static_cast<UIMacroDetectorWnd*>(this->window_4F1EC)->m_editCtrl;
+    break;
+  case 286:
+    window = this->window_4F1F0;
+    if (window == nullptr) {
+      window = new UIMacroReporterWnd();
+      this->window_4F1F0 = window;
+      window->SetSize(249, 308);
+      window->Move(g_renderer->viewport.width - 299, (g_renderer->viewport.height - 308) / 2);
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x4F200), 0, 0, 0);
+    this->unknown_4F210 = true;
+    break;
+  case 287:
+    window = this->window_4F1F4;
+    if (window == nullptr) {
+      window = new UIMacroUserInfoWnd();
+      this->window_4F1F4 = window;
+      window->SetSize(200, 37);
+      window->Move((g_renderer->viewport.width - 200) / 2, (g_renderer->viewport.height - 37) / 2);
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 288:
+    window = this->window_4F1F8;
+    if (window == nullptr) {
+      window = new UICaptchaPreviewWnd();
+      this->window_4F1F8 = window;
+      window->SetSize(220, 90);
+      window->Move((g_renderer->viewport.width - 220) / 2, (g_renderer->viewport.height - 90) / 2);
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 289:
+    window = this->LookupWindow(289);
+    if (window == nullptr) {
+      int y = 200;
+      int x = g_renderer->viewport.width - 200;
+      window = new UIViewCameraInfoWnd();
+      window->SetSize(150, 100);
+      if (this->window_4F1CC) {
+        x = this->window_4F1CC->geometry.x;
+        y = this->window_4F1CC->geometry.height + 20 + this->window_4F1CC->geometry.y;
+      }
+      window->Move(x, y);
+      window->unknown_004C = 1;
+      this->AddRendered(window);
+      this->rendered.sort(layerGreater);
+    }
+    window->Show(g_session.unknown_61B1);
+    break;
+  case 290:
+    if (this->LookupWindow(290) == nullptr) {
+      window = new UILapineBoxWnd();
+      window->SetSize(400, 250);
+      window->Move((g_renderer->viewport.width - 400) / 2, (g_renderer->viewport.height - 250) / 2);
+      this->AddRendered(window);
+    }
+    break;
+  case 291:
+    window = this->LookupWindow(291);
+    if (window == nullptr) {
+      window = new UITransMenuWnd();
+      window->SetSize(30, 40);
+      this->AddRendered(window);
+    } else {
+      window->Show(1);
+      this->Promote(window);
+    }
+    break;
+  case 294:
+    if (this->LookupWindow(294) == nullptr) {
+      window = new UIPreviewEquipWnd();
+      window->SetSize(280, 260);
+      window->Move(static_cast<int>((g_renderer->viewport.width - 280) * g_depthAverageHalf), static_cast<int>((g_renderer->viewport.height - 260) * g_depthAverageHalf));
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(this->unknown_4F220), 0, 0, 0);
+      this->AddRendered(window);
+    } else {
+      window = this->LookupWindow(294);
+    }
+    break;
+  case 295: {
+    const int x = static_cast<int>((g_renderer->viewport.width - 264) * g_depthAverageHalf);
+    const int y = static_cast<int>((g_renderer->viewport.height - 346) * g_depthAverageHalf);
+    this->sub_A978D0(8);
+    if (this->unknown_01D4) {
+      this->unknown_01D4->Move(x + 264, y - this->unknown_01D4->geometry.height + 346);
+    }
+    if (this->unknown_0454) {
+      this->CloseWindow(264);
+      this->CloseWindow(265);
+      this->unknown_0454->SendMsg(nullptr, 6, 0xC9, 0, 0, 0);
+      this->SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xBAF)), 255, 0, 0, 0);
+    }
+    if (this->window_0448) {
+      g_windowMgr.CloseWindow(275);
+      this->SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xBC5)), 255, 0, 0, 0);
+    }
+    if (this->LookupWindow(295) == nullptr) {
+      window = new UIRefiningWnd();
+      window->SetSize(264, 346);
+      window->Move(x, y);
+      this->AddRendered(window);
+    } else {
+      window = this->LookupWindow(295);
+    }
+    break;
+  }
+  case 302:
+    if (this->LookupWindow(302) == nullptr) {
+      window = new UILapineUpgradeBoxWnd();
+      window->SetSize(400, 250);
+      window->Move((g_renderer->viewport.width - 400) / 2, (g_renderer->viewport.height - 250) / 2);
+      this->AddRendered(window);
+    } else {
+      window = this->LookupWindow(302);
+    }
+    break;
+  case 303:
+    if (this->LookupWindow(303) == nullptr) {
+      window = new UIHotkeyGuideWnd();
+      window->SetSize(934, 498);
+      window->Move((g_renderer->viewport.width - 934) / 2, (g_renderer->viewport.height - 498) / 2);
+      this->AddRendered(window);
+    } else {
+      window = this->LookupWindow(303);
+    }
+    break;
+  case 304:
+    window = this->LookupWindow(304);
+    if (window == nullptr) {
+      window = new UIVideoWnd();
+      window->SetSize(g_renderer->viewport.width, g_renderer->viewport.height);
+      window->Move(0, 0);
+      this->AddRendered(window);
+    }
+    break;
+  case 307:
+    if (this->LookupWindow(307) == nullptr) {
+      window = new UIMenuIconWnd();
+      window->SetSize(220, 197);
+      window->Move(0, 225);
+      this->AddRendered(window);
+    } else {
+      window = this->LookupWindow(307);
+    }
+    break;
+  case 308:
+    if (this->LookupWindow(308) == nullptr) {
+      window = new UIShowWarpWnd();
+      window->SetSize(280, 120);
+      window->Move(CenterOnViewportX(200), ScaleByScreenHeight(300));
+      this->AddRendered(window);
+      window->Show(1);
+    } else {
+      window = this->LookupWindow(308);
+      window->Show(1);
+    }
+    break;
+  case 315:
+    if (this->LookupWindow(315) == nullptr) {
+      window = new UITipboxWnd();
+      this->window_0468 = window;
+      window->SetSize(480, 365);
+      window->Move(CenterOnViewportX(120), ScaleByScreenHeight(120));
+      this->AddRendered(window);
+      window->Show(1);
+    } else {
+      window = this->LookupWindow(315);
+      window->Show(1);
+    }
+    break;
+  case 318:
+    if (this->LookupWindow(318) == nullptr) {
+      window = new UICashShopWnd();
+      this->window_4F254 = window;
+      window->SetSize(723, 540);
+      window->Move(static_cast<int>((g_renderer->viewport.width - 723) * 0.5), static_cast<int>((g_renderer->viewport.height - 540) * 0.5));
+      window->SendMsg(nullptr, 0x22, 0, 0, 0, 0);
+      this->AddRendered(window);
+    } else {
+      window = this->LookupWindow(318);
+    }
+    break;
+  case 321:
+    this->RecordWindowPacket(321);
+    window = this->LookupWindow(id);
+    if (window == nullptr) {
+      window = new UIRenewQuestWnd();
+      window->SetSize(381, 466);
+      window->Move((g_renderer->viewport.width - 381) / 2, (g_renderer->viewport.height - 466) / 2);
+      this->AddRendered(window);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x550), 0, 0, 0);
+      g_snapMgr.Add(window);
+    }
+    window->Show(1);
+    this->CloseWindow(143);
+    this->unknown_0568 = 1;
+    break;
+  case 322:
+    this->RecordWindowPacket(321);
+    window = this->LookupWindow(id);
+    if (window == nullptr) {
+      window = new UIRenewDetailQuestInfoWnd();
+      window->SetSize(342, 412);
+      if (UIWindow* quest = this->LookupWindow(321)) {
+        window->Move(quest->geometry.x + quest->geometry.width, quest->geometry.y);
+      } else {
+        window->Move((g_renderer->viewport.width - 342) / 2, (g_renderer->viewport.height - 412) / 2);
+      }
+      this->AddRendered(window);
+      g_snapMgr.Add(window);
+    }
+    window->Show(1);
+    break;
+  case 328:
+    if (this->LookupWindow(328) == nullptr) {
+      window = new UICheckAttendanceWnd();
+      window->SetSize(488, 413);
+      window->Move(static_cast<int>((g_renderer->viewport.width - 488) * 0.5), static_cast<int>((g_renderer->viewport.height - 413) * 0.5));
+      this->AddRendered(window);
+    } else {
+      window = this->LookupWindow(328);
+    }
+    break;
+  case 334:
+    if (this->LookupWindow(334) == nullptr) {
+      window = new UIBartermarketWnd();
+      this->window_4F260 = window;
+      window->SetSize(280, 400);
+      window->Move(0, 200);
+      this->AddRendered(window);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x6FC), 0, 0, 0);
+    } else {
+      window = this->LookupWindow(334);
+    }
+    break;
+  case 335:
+    if (this->LookupWindow(335) == nullptr) {
+      window = new UIBarterItemPurchaseWnd();
+      this->window_4F264 = window;
+      window->SetSize(280, 120);
+      window->Move(300, 200);
+      this->AddRendered(window);
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x71C), 0, 0, 0);
+    } else {
+      window = this->LookupWindow(335);
+    }
+    break;
+  case 341:
+    if (this->LookupWindow(275)) {
+      g_windowMgr.CloseWindow(275);
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xF7E)), 255, 0, 0, 0);
+    }
+    if (this->LookupWindow(341) == nullptr) {
+      window = new UIExpandedBartermarketWnd();
+      this->window_4F268 = window;
+      window->SetSize(366, 366);
+      window->Move(200, 200);
+      this->AddRendered(window);
+    } else {
+      window = this->LookupWindow(341);
+    }
+    break;
+  case 342:
+    if (this->LookupWindow(275)) {
+      break;
+    }
+    if (this->LookupWindow(342) == nullptr) {
+      window = new UIExpandedBarterItemPurchaseWnd();
+      this->window_4F26C = window;
+      window->SetSize(366, 366);
+      window->Move(586, 200);
+      this->AddRendered(window);
+    } else {
+      window = this->LookupWindow(341);
+    }
+    break;
+  case 333:
+    if (this->LookupWindow(333) == nullptr) {
+      window = new UINoteWnd();
+      window->SetSize(358, 275);
+      if (UIWindow* shop = this->unknown_02FC) {
+        window->Move(shop->geometry.width + shop->geometry.x + 5, shop->geometry.y);
+      } else {
+        window->Move(static_cast<int>((g_renderer->viewport.width - 358) * 0.5), static_cast<int>((g_renderer->viewport.height - 275) * 0.5));
+      }
+      window->SendMsg(nullptr, 0x22, 0xC95, 0, 0, 0);
+      this->AddRendered(window);
+    } else {
+      window = this->LookupWindow(333);
+    }
+    break;
+  case 340:
+    window = this->LookupWindow(340);
+    if (window == nullptr) {
+      window = new UIAccountLimitedToolWnd();
+      window->SetSize(390, 350);
+      window->Move(g_renderer->viewport.centerX - window->geometry.width / 2, g_renderer->viewport.centerY - window->geometry.height / 2);
+      window->Show(1);
+      this->AddRendered(window);
+    }
+    break;
+  case 343: {
+    const int x = static_cast<int>((g_renderer->viewport.width - 400) * g_depthAverageHalf - 100.0f);
+    const int y = static_cast<int>((g_renderer->viewport.height - 330) * g_depthAverageHalf);
+    this->sub_A978D0(8);
+    if (this->unknown_01D4) {
+      this->unknown_01D4->Move(x + 400, y - this->unknown_01D4->geometry.height + 330);
+    }
+    if (this->unknown_0454) {
+      this->CloseWindow(264);
+      this->CloseWindow(265);
+      this->unknown_0454->SendMsg(nullptr, 6, 0xC9, 0, 0, 0);
+      this->SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xE82)), 255, 0, 0, 0);
+    }
+    if (this->window_0448) {
+      g_windowMgr.CloseWindow(275);
+      this->SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xE84)), 255, 0, 0, 0);
+    }
+    if (this->LookupWindow(343) == nullptr) {
+      window = new UIGradeEnchantWnd();
+      window->SetSize(400, 330);
+      window->Move(x, y);
+      this->AddRendered(window);
+    } else {
+      window = this->LookupWindow(343);
+    }
+    break;
+  }
+  case 344:
+    window = this->LookupWindow(344);
+    if (window == nullptr) {
+      window = new UIChangeMaterialWnd();
+      window->SetSize(500, 314);
+      window->Move(static_cast<int>((g_renderer->viewport.width - 500) * 0.5), static_cast<int>((g_renderer->viewport.height - 314) * 0.5));
+      window->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+      this->AddRendered(window);
+      this->SetFocus(nullptr);
+    }
+    break;
+  case 324:
+    window = this->window_4F274;
+    if (window == nullptr) {
+      window = new UIAdvenPartyBoardWnd();
+      this->window_4F274 = window;
+      window->SetSize(480, 340);
+      window->Move(g_renderer->viewport.centerX - window->geometry.width / 2, g_renderer->viewport.centerY - window->geometry.height / 2);
+      this->AddRendered(window);
+      this->window_4F274->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0xA20), 0, 0, 0);
+    }
+    break;
+  case 323:
+    window = this->window_4F270;
+    if (window == nullptr) {
+      window = new UIRegisterPartyWnd();
+      this->window_4F270 = window;
+      window->SetSize(220, 215);
+      window->Move(g_renderer->viewport.centerX + 240, g_renderer->viewport.centerY + 170);
+      this->AddRendered(window);
+      this->window_4F270->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0xA00), 0, 0, 0);
+    }
+    break;
+  case 326:
+    window = this->window_4F278;
+    if (window == nullptr) {
+      window = new UIRequestJoinPartyWnd();
+      this->window_4F278 = window;
+      window->SetSize(220, 160);
+      window->Move(g_renderer->viewport.centerX - window->geometry.width / 2, g_renderer->viewport.centerY - window->geometry.height / 2);
+      this->AddRendered(window);
+    }
+    break;
+  case 345:
+    window = this->window_4F27C;
+    if (window == nullptr) {
+      window = new UIApplyForPartyWnd();
+      this->window_4F27C = window;
+      window->SetSize(220, 190);
+      window->Move(g_renderer->viewport.centerX + 240, g_renderer->viewport.centerY - 170);
+      this->AddRendered(window);
+      this->window_4F27C->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0xA10), 0, 0, 0);
+    }
+    break;
+  case 346:
+    window = this->LookupWindow(346);
+    if (window == nullptr) {
+      window = new UIReputeWnd();
+      window->SetSize(640, 450);
+      window->Move(static_cast<int>((g_renderer->viewport.width - 640u) * 0.5), static_cast<int>((g_renderer->viewport.height - 450u) * 0.5));
+      this->AddRendered(window);
+    }
+    break;
+  case 348:
+    window = this->LookupWindow(348);
+    if (window == nullptr) {
+      window = new UIItemReformWnd();
+      window->SetSize(440, 260);
+      window->Move(static_cast<int>((g_renderer->viewport.width - 440u) * 0.5), static_cast<int>((g_renderer->viewport.height - 260u) * 0.5));
+      this->AddRendered(window);
+    }
+    break;
+  case 358:
+    window = this->LookupWindow(358);
+    if (window == nullptr) {
+      window = new UIBalloonOpenBtn();
+      window->SetSize(18, 18);
+      window->Move(g_renderer->viewport.width - 200, static_cast<int>(g_renderer->viewport.height * 0.5));
+      this->AddRendered(window);
+    }
+    break;
+  case 359:
+    window = this->window_4F288;
+    if (window == nullptr) {
+      window = new UIMacroBlackListCheckWnd();
+      this->window_4F288 = window;
+      window->SetSize(540, 365);
+      window->Move((g_renderer->viewport.width - 540) / 2, (g_renderer->viewport.height - 365) / 2);
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 361:
+    window = this->LookupWindow(361);
+    if (window == nullptr) {
+      g_runeSystemMgr->SendRequest(0xBCB, nullptr, -1);
+      if (this->unknown_0454) {
+        this->CloseWindow(264);
+        this->CloseWindow(265);
+        this->unknown_0454->SendMsg(nullptr, 6, 0xC9, 0, 0, 0);
+        this->SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xFD8)), 255, 0, 0, 0);
+      }
+      if (this->window_0448) {
+        g_windowMgr.CloseWindow(275);
+        this->SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xFD9)), 255, 0, 0, 0);
+      }
+      window = new UIRuneSystemWnd();
+      window->SetSize(910, 539);
+      window->Move(static_cast<int>((g_renderer->viewport.width - window->geometry.width) * 0.5), static_cast<int>((g_renderer->viewport.height - window->geometry.height) * 0.5));
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    break;
+  case 362:
+    window = this->LookupWindow(362);
+    if (window == nullptr) {
+      window = new UIRuneSystem_DecomResultWnd();
+      window->SetSize(240, 180);
+      if (UIWindow* runeSystem = this->LookupWindow(361)) {
+        window->Move(runeSystem->geometry.x + 478, runeSystem->geometry.y + 129);
+      }
+      this->AddRendered(window);
+    }
+    window->Show(1);
+    this->Promote(window);
+    break;
+  case 10032:
+    if (this->LookupWindow(10032) == nullptr) {
+      window = new UIDebuffRemoveWnd();
+      window->SetSize(180, 47);
+      window->Move(static_cast<int>((g_renderer->viewport.width - 180) * 0.5), static_cast<int>((g_renderer->viewport.height - 47) * 0.5));
+      this->AddRendered(window);
+    }
+    break;
+  default:
+    if (Singleton<CUIRegisterMgr>::GetInstance()->sub_A970A0(id)) {
+      window = this->LookupWindow(id);
+      if (window == nullptr) {
+        window = Singleton<CUIRegisterMgr>::GetInstance()->Create(id);
+        if (window == nullptr) {
+          break;
+        }
+        this->AddRendered(window);
+      }
+    }
+    break;
+  }
+
+  if (window) {
+    window->SetId(id);
+    this->windows[id] = window;
+    UIWindow* root = window;
+    while (root->parent) {
+      root = root->parent;
+    }
+    this->window_4F1D4 = root;
+  }
+
+  bool notify = false;
+  auto transientEntry = std::find(this->rendered.begin(), this->rendered.end(), this->window_4F258);
+  if (transientEntry != this->rendered.end()) {
+    this->rendered.erase(transientEntry);
+    this->rendered.push_back(this->window_4F258);
+    notify = true;
+  }
+
+  auto topEntry = std::find_if(this->rendered.begin(), this->rendered.end(), [](const UIWindow* entry) {
+    return entry->geometry.id == 363;
+  });
+  if (topEntry != this->rendered.end()) {
+    UIWindow* top = *topEntry;
+    this->rendered.erase(topEntry);
+    this->rendered.push_back(top);
+    notify = true;
+  }
+
+  if (notify) {
+    switch (id) {
+    case 70:
+      this->SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xFDA)), 0xFFFF00, 0, 0, 0);
+      break;
+    case 72:
+      this->SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xFDB)), 0xFFFF00, 0, 0, 0);
+      break;
+    case 109:
+      this->SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xFDC)), 0xFFFF00, 0, 0, 0);
+      break;
+    case 35:
+      this->SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xFDD)), 0xFFFF00, 0, 0, 0);
+      break;
+    case 32:
+      this->SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xFDE)), 0xFFFF00, 0, 0, 0);
+      break;
+    }
+  }
+  return window;
 }
