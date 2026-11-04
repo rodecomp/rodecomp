@@ -10,6 +10,7 @@
 
 #include <cstdio>
 #include <cstring>
+#include <intrin.h>
 #include <vector>
 
 // STATIC: 0x016D5780
@@ -4886,7 +4887,7 @@ bool CCommonObject::LoadCsv(const char* name, std::function<std::vector<std::str
 
 // OFFSET: 0x00B00360
 // FUNCTION: fn_18368
-int FillMessageBuckets(int* first, std::uintptr_t last, int* value) {
+void FillMessageBuckets(int* first, std::uintptr_t last, int* value) {
   int result = 0;
   int* dest = first;
   unsigned int count = (last - reinterpret_cast<std::uintptr_t>(first) + 3) >> 2;
@@ -4898,16 +4899,12 @@ int FillMessageBuckets(int* first, std::uintptr_t last, int* value) {
     if (first > value || &first[count - 1] < value) {
       unsigned int aligned = count & ~3u;
       dest = &first[aligned];
-      for (int* p = first; p != dest; ++p) {
-        *p = result;
-      }
+      __stosd(reinterpret_cast<unsigned long*>(first), static_cast<unsigned long>(result), aligned);
     }
   }
   for (; dest != reinterpret_cast<int*>(last); ++dest) {
-    result = *value;
     *dest = *value;
   }
-  return result;
 }
 
 // OFFSET: 0x00B00130
