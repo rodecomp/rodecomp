@@ -68,7 +68,7 @@ public:
   CEnchantMgr();
   virtual ~CEnchantMgr();
 
-  void AddPerfectEnchant(uint64_t group, uint32_t optionKey, const std::string& itemName, uint64_t cost, const std::map<std::string, int>& materials);
+  __declspec(noinline) void AddPerfectEnchant(uint64_t group, uint32_t optionKey, const std::string& itemName, uint64_t cost, const std::map<std::string, int>& materials);
   void AddPerfectUpgradeEnchant(uint64_t group, uint32_t optionKey, const std::string& baseItemName, const std::string& itemName, uint64_t cost,
                                 const std::map<std::string, int>& materials);
   bool CallScript(const std::string& name);
