@@ -1,5 +1,6 @@
 #include "Client/Session.h"
 #include "Client/Mode/CMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Contents/Party/AdventurerAgencyMgr.h"
 #include "Utility/Async/AsyncDiagnostic.h"
 #include "Contents/MessageTable.h"
@@ -78,7 +79,7 @@ void CAdventurerAgencyMgr::CompletePartyInfo(AsyncDiagnostic diagnostic, std::st
   } else if (g_session.PartyCount() > 0) {
     notify(79);
   } else {
-    static_cast<CMode*>(g_charViewMode)->SendMsg(265, reinterpret_cast<int>(&info.accountId), reinterpret_cast<int>(&info.characterId), 0, 0);
+    g_modeMgr.gameMode->SendMsg(265, reinterpret_cast<int>(&info.accountId), reinterpret_cast<int>(&info.characterId), 0, 0);
     g_windowMgr.CloseWindow(345);
   }
 }
