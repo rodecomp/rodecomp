@@ -1,6 +1,7 @@
 #include "UI/Rodex/UIRodexInboxWnd.h"
 
 #include "Contents/MessageTable.h"
+#include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketId.h"
@@ -109,15 +110,14 @@ void UIRodexInboxWnd::DrawMailIcons(int row, unsigned char attachments, unsigned
   if ((attachments & 6) == 6) {
     this->DrawBitmap(0xD8, y + 0x8B, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\shadow_item_on.bmp"))), true);
     attachmentIcon = "유저인터페이스\\basic_interface\\rodexsystem\\renewal\\icon_zeny_n_item.bmp";
-  } else if ((attachments & 2) == 0) {
-    if ((attachments & 4) == 0) {
-      return;
-    }
+  } else if ((attachments & 2) != 0) {
+    this->DrawBitmap(0xD8, y + 0x8B, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\shadow_item_on.bmp"))), true);
+    attachmentIcon = "유저인터페이스\\basic_interface\\rodexsystem\\renewal\\icon_zeny.bmp";
+  } else if ((attachments & 4) != 0) {
     this->DrawBitmap(0xD8, y + 0x8B, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\shadow_item_on.bmp"))), true);
     attachmentIcon = "유저인터페이스\\basic_interface\\rodexsystem\\renewal\\icon_item.bmp";
   } else {
-    this->DrawBitmap(0xD8, y + 0x8B, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\shadow_item_on.bmp"))), true);
-    attachmentIcon = "유저인터페이스\\basic_interface\\rodexsystem\\renewal\\icon_zeny.bmp";
+    return;
   }
 
   this->DrawBitmap(0xDB, y + 0x7F, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve(attachmentIcon))), true);
