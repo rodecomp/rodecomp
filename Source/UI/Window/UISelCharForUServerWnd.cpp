@@ -145,8 +145,7 @@ int UISelCharForUServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
 
     int characterIds[9] = {};
     int count = 0;
-    const int viewCount = g_session.unknown_0E94;
-    for (int index = 0; index < viewCount; ++index) {
+    for (int index = 0; index < g_session.unknown_0E94; ++index) {
       if (this->m_checkBoxes[index]->geometry.unknown_0030 != 0) {
         CMode* mode = g_modeMgr.gameMode;
         const int* character = reinterpret_cast<const int*>(mode->SendMsg(8, index, 0, 0, 0));
