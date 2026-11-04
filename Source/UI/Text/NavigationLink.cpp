@@ -88,17 +88,10 @@ class UIEmotion : public UIWindow {
 public:
   explicit UIEmotion(const char* sprite, const char* action);
   explicit UIEmotion();
-  // INLINED
-  UIEmotion(const char* sprite, const char* action, unsigned animation, unsigned maxLoops)
-      : UIWindow(0), m_animation(animation), m_frame(0), m_maxLoops(maxLoops),
-        m_sprite(static_cast<CSprRes*>(ResourceMgr::Instance().Load(sprite))), m_action(static_cast<CActRes*>(ResourceMgr::Instance().Load(action))),
-        m_startTime(timeGetTime()), m_loops(1) {
-  }
 
   void Slot19() override;
   void Paint() override;
 
-protected:
   /* 007C */ unsigned m_animation;
   /* 0080 */ unsigned m_frame;
   /* 0084 */ unsigned m_maxLoops;
@@ -747,7 +740,9 @@ int CCreateLineInfo::LayoutEmotion(int x, const std::string& text) {
   int id = -1;
   std::cmatch match;
 
-  if (!std::regex_search(text.c_str(), text.c_str() + text.size(), match, std::regex("^\\^e\\[(\\d{1,3})\\](\\[\\d\\])*"))) {
+  if (std::regex_search(text.c_str(), text.c_str() + text.size(), match, std::regex("^\\^e\\[(\\d{1,3})\\](\\[\\d\\])*"))) {
+    id = std::stoi(match[1].str());
+  } else {
     if (!std::regex_search(text.c_str(), text.c_str() + text.size(), match, std::regex("^\\^e\\[(\\d{1,3}\\s*,\\s*\\d{1,3})\\](\\[\\d\\])*"))) {
       return x;
     }
@@ -757,13 +752,11 @@ int CCreateLineInfo::LayoutEmotion(int x, const std::string& text) {
       group = std::stoi(parts[0]);
       id = std::stoi(parts[1]);
     }
-  } else {
-    id = std::stoi(match[1].str());
   }
 
   if (id >= 0) {
     int loops = 0;
-    if (match.size() > 2 && match[2].matched) {
+    if (match[2].matched) {
       const std::string tail = match[2].str();
       std::cmatch loopMatch;
       if (std::regex_search(tail.c_str(), tail.c_str() + tail.size(), loopMatch, std::regex("^\\[(\\d)\\]"))) {
@@ -777,9 +770,12 @@ int CCreateLineInfo::LayoutEmotion(int x, const std::string& text) {
       if (sprite) {
         const char* action = g_cashEmotionMgr->GetPackName(data->sprId);
         if (action) {
-          UIEmotion* emotion = new UIEmotion(sprite, action, data->unknown_0020, loops);
+          UIEmotion* emotion = new UIEmotion(sprite, action);
           emotion->SetSize(50, 50);
+          emotion->m_animation = data->unknown_0020;
           emotion->Invalidate();
+          emotion->m_maxLoops = loops;
+          emotion->m_loops = 1;
           if (this->m_width < emotion->geometry.width + x) {
             this->NewLine();
             this->AddWindow(emotion);
