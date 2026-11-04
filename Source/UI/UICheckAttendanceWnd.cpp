@@ -355,35 +355,35 @@ void UICheckAttendanceWnd_Banner::CreateButtons() {
 // OFFSET: 0x007DE250
 // FUNCTION: fn_09651
 int UICheckAttendanceWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message == 6) {
-    if (argument1 == 184) {
-      if (this->m_blinking) {
-        CheckAttendanceRequestPacket packet;
-        packet.id = 0xAEF;
-        GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
-      }
-    } else if (argument1 == 201) {
-      g_windowMgr.CloseWindow(328);
-    }
-  } else if (message == 34) {
+  switch (message) {
+  case 34:
     if (g_session.m_hotkeyScript->Call("set_checkAttendance_banner", "") == true) {
       this->m_banner->CreateButtons();
     }
-    if (this->m_banner->m_entries.size() == 0) {
-      this->m_banner->Show(0);
-      this->Resize(488, 413);
-      this->m_notice->Move(170, 376);
-    } else {
+    if (this->m_banner->m_entries.size() != 0) {
       this->m_banner->Show(1);
       this->Resize(488, 455);
       this->m_notice->Move(170, 418);
+    } else {
+      this->m_banner->Show(0);
+      this->Resize(488, 413);
+      this->m_notice->Move(170, 376);
     }
     this->m_checkedDays = argument1 / 10;
     this->m_blinking = argument1 == this->m_checkedDays * 10;
     this->m_blinking = this->m_checkedDays < this->m_rewardCount && this->m_blinking;
     this->Invalidate();
+    break;
+  case 6:
+    if (argument1 == 184) {
+      if (this->m_blinking) {
+        CheckAttendanceRequestPacket packet = {0xAEF};
+        GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+      }
+    } else if (argument1 == 201) {
+      g_windowMgr.CloseWindow(328);
+    }
   }
-
   return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
 }
 
