@@ -349,7 +349,7 @@ void UICheckAttendanceWnd_Banner::CreateButtons() {
       button->Move(this->geometry.width + (index - static_cast<int>(this->m_entries.size())) * 12 - 12, 41);
       button->SendMsg(this, 13, index == static_cast<int>(this->m_current), 0, 0, 0);
       this->AddChild(button);
-      this->m_buttons.push_back(button);
+      this->m_buttons.emplace_back(button);
       ++index;
     }
     this->Invalidate();
