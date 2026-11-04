@@ -28,7 +28,7 @@ void UIEditCtrl::Trim() {
   this->text.resize(length - std::strlen(previous));
 
   while (this->text.size() < static_cast<unsigned>(this->maximum)) {
-    this->text.push_back(' ');
+    this->text += " ";
   }
 }
 
