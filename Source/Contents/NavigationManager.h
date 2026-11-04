@@ -321,8 +321,8 @@ public:
   NaviCell* MapCellToView(NaviCell* out, const char* mapName, int cellX, int cellY, float size);
   std::string RouteText();
   __declspec(noinline) void ShowRouteResult(int result, int mode);
-  void Reset(bool clearAll);
-  void ClearRouteNodes();
+  __declspec(noinline) void Reset(bool clearAll);
+  __declspec(noinline) void ClearRouteNodes();
   void ClearNodePaths();
   void BuildNodePaths();
   void BuildSingleNodePaths();
@@ -340,7 +340,7 @@ public:
   std::vector<unsigned char> WriteStates();
   CNavi_Link* ReadObject(const char* record);
   NavigationTarget ReadTarget(const char* data, int size);
-  CNavi_Object* ReadTargetObject(const char* record);
+  __declspec(noinline) CNavi_Object* ReadTargetObject(const char* record);
   bool GetMobInfo(
     std::string title, std::string* name, std::string* sprite, int* cellX, int* cellYByte1, int* element, int* elementLevel, int* cellYByte0, int* type
   );
