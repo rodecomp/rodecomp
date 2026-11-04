@@ -17,27 +17,27 @@ namespace {
   constexpr unsigned charsets[20] = {HANGUL_CHARSET,  ANSI_CHARSET, SHIFTJIS_CHARSET, GB2312_CHARSET,  CHINESEBIG5_CHARSET, THAI_CHARSET,
                                      TURKISH_CHARSET, ANSI_CHARSET, ANSI_CHARSET,     RUSSIAN_CHARSET, VIETNAMESE_CHARSET,  ARABIC_CHARSET};
 
-  // INLINED
-  unsigned Hex(unsigned char value) {
-    if (value >= '0' && value <= '9') {
-      return value - '0';
-    }
-
-    if (value >= 'a' && value <= 'f') {
-      return value - 'a' + 10;
-    }
-
-    return 0;
-  }
+  // GLOBAL: gl_24682
+  char g_inlineCharsetDigits[256] = {
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 10, 11, 12, 13, 14, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+  };
 
   // INLINED
   bool ValidHex(unsigned char value) {
-    return (value >= '0' && value <= '9') || (value >= 'a' && value <= 'f') || (value >= 'A' && value <= 'F');
+    return g_colorHexDigit[value] != 0;
   }
 
   // INLINED
   unsigned InlineCharset(const char* marker) {
-    return 16 * Hex(static_cast<unsigned char>(marker[1])) + Hex(static_cast<unsigned char>(marker[2]));
+    return 16 * g_inlineCharsetDigits[static_cast<unsigned char>(marker[1])] + g_inlineCharsetDigits[static_cast<unsigned char>(marker[2])];
   }
 }
 
@@ -229,17 +229,16 @@ SIZE TextContext::MeasurePart(const char* text, int bytes, unsigned charset) {
   }
 
   const unsigned extent = 2u * static_cast<unsigned>(bytes);
-  const unsigned allocation = extent < extent + 8 ? extent + 8 : 0;
-  if (!allocation) {
+  const std::size_t allocation = _MallocaComputeSize(extent);
+  auto* wide = static_cast<WCHAR*>(
+    allocation == 0                       ? nullptr
+    : allocation <= _ALLOCA_S_THRESHOLD ? _MarkAllocaS(_alloca(allocation), _ALLOCA_S_STACK_MARKER)
+                                        : _MarkAllocaS(std::malloc(allocation), _ALLOCA_S_HEAP_MARKER)
+  );
+  if (!wide) {
     return size;
   }
 
-  void* memory = allocation > 0x400 ? std::malloc(allocation) : _alloca(allocation);
-  if (!memory) {
-    return size;
-  }
-
-  auto* wide = reinterpret_cast<WCHAR*>(static_cast<char*>(memory) + 8);
   const int count = MultiByteToWideChar(CodePage(charset), 0, text, bytes, wide, static_cast<int>(extent));
   SelectObject(this->m_dc, g_fontCache.Get(this->m_family, this->m_height, charset, this->m_bold, this->m_italic));
   GetTextExtentPoint32W(this->m_dc, wide, count, &size);
@@ -256,9 +255,7 @@ SIZE TextContext::MeasurePart(const char* text, int bytes, unsigned charset) {
     size.cx = width;
   }
 
-  if (allocation > 0x400) {
-    std::free(memory);
-  }
+  _freea(wide);
 
   return size;
 }
@@ -271,25 +268,21 @@ void TextContext::DrawPart(int x, int y, const char* text, int bytes, unsigned c
   }
 
   const unsigned extent = 2u * static_cast<unsigned>(bytes);
-  const unsigned allocation = extent < extent + 8 ? extent + 8 : 0;
-  if (!allocation) {
+  const std::size_t allocation = _MallocaComputeSize(extent);
+  auto* wide = static_cast<WCHAR*>(
+    allocation == 0                       ? nullptr
+    : allocation <= _ALLOCA_S_THRESHOLD ? _MarkAllocaS(_alloca(allocation), _ALLOCA_S_STACK_MARKER)
+                                        : _MarkAllocaS(std::malloc(allocation), _ALLOCA_S_HEAP_MARKER)
+  );
+  if (!wide) {
     return;
   }
-
-  void* memory = allocation > 0x400 ? std::malloc(allocation) : _alloca(allocation);
-  if (!memory) {
-    return;
-  }
-
-  auto* wide = reinterpret_cast<WCHAR*>(static_cast<char*>(memory) + 8);
 
   const int count = MultiByteToWideChar(CodePage(this->m_charset), 0, text, bytes, wide, static_cast<int>(extent));
   SelectObject(this->m_dc, g_fontCache.Get(this->m_family, this->m_height, charset, this->m_bold, this->m_italic));
   TextOutW(this->m_dc, x, y, wide, count);
 
-  if (allocation > 0x400) {
-    std::free(memory);
-  }
+  _freea(wide);
 }
 
 // OFFSET: 0x0054FD00
