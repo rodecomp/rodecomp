@@ -8,7 +8,7 @@ These apply to rodecomp: Ragnarok Online Ragexe 2026-02-19 (x86), built with MSV
 Code carries no explanatory comments: none inside functions, none above them, no file headers, no
 commented-out code. Allowed comments are Clank stable-ID annotations (`// FUNCTION:`, `// GLOBAL:`,
 `// STRING:`, `// VTABLE:`), `// OFFSET:` provenance on standalone functions, existing `// STATIC:` provenance,
-exact bare `// INLINED` markers, and field-offset markers (`/* XXXX */`). Use only string literals evidenced in the original executable.
+exact bare `// INLINED` markers, `// VIRTUALIZED:` markers on protector stubs (section 2), and field-offset markers (`/* XXXX */`). Use only string literals evidenced in the original executable.
 
 Put explanations in submission notes rather than adding source comments or creating documentation by default.
 Preserve existing provenance except `OFFSET` annotations attached to inline-only functions, which must be removed.
@@ -107,6 +107,26 @@ static void BuildFullKeyName(const char* keyname, char* buffer) {
   This overrides general provenance-preservation rules.
 - Do not invent a standalone ID or mark a source-only helper inline without original evidence.
 - Inlined code is checked through its callers, not submitted as an invented standalone original.
+
+### `// VIRTUALIZED:` for protector-virtualized functions
+
+A few functions of the target exist only as a protector stub: a short prologue that jumps into a
+section the file has no bytes for (Themida's virtual machine fills it at load time). Their body is
+ported from a build where the same code is ordinary x86, named in the marker by build date and address:
+
+```cpp
+// OFFSET: 0x0065B380
+// FUNCTION: fn_05138
+// VIRTUALIZED: 2025-06-04 0x0060C460
+void RC6::Base::SetKey(std::span<const std::uint8_t> key) {
+    ...
+}
+```
+
+- The server proves the stub from the target's bytes; on ordinary code the marker is refused.
+- A marked function is not compared or peer reviewed: it goes to maintainer review, who checks it
+  against the reference build.
+- Use it only for such stubs, and only with a reference build that has the real body.
 
 ## 2a. Verification uses Clank
 
