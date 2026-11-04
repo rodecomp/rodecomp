@@ -1125,7 +1125,7 @@ void UINewSelectCharWnd::EnableButtonById(int id) {
 
 // OFFSET: 0x007D90E0
 // FUNCTION: fn_09596
-void UINewSelectCharWnd::sub_7D90E0() {
+__declspec(noinline) void UINewSelectCharWnd::sub_7D90E0() {
   const int slot = this->m_slotsPerPage * this->m_page + this->m_pageSlot;
   if (slot >= this->m_totalSlots) {
     return;
