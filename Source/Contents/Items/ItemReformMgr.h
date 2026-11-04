@@ -20,9 +20,9 @@ struct ItemReformInfo {
   /* 0000 */ int baseItem;
   /* 0004 */ int resultItem;
   /* 0008 */ std::map<int, ItemReformMaterial> materials;
-  /* 0010 */ std::int64_t needRefineMin;
-  /* 0018 */ std::int64_t needRefineMax;
-  /* 0020 */ std::int64_t needOptionNumMin;
+  /* 0010 */ std::uint64_t needRefineMin;
+  /* 0018 */ std::uint64_t needRefineMax;
+  /* 0020 */ std::uint64_t needOptionNumMin;
   /* 0028 */ bool isEmptySocket;
   /* 0030 */ std::int64_t changeRefineValue;
   /* 0038 */ std::string randomOptionCode;
@@ -45,7 +45,7 @@ public:
   void LoadReformItemList();
 
   /* 0004 */ std::map<std::uint64_t, ItemReformInfo> m_reformInfo;
-  /* 000C */ std::map<int, std::vector<std::pair<std::uint32_t, std::uint32_t>>> m_reformItemList;
+  /* 000C */ std::map<int, std::vector<std::uint64_t>> m_reformItemList;
   /* 0014 */ CLuaInstance m_lua;
   /* 001C */ unsigned int m_maxMaterials;
 };
