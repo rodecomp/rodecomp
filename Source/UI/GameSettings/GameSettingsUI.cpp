@@ -1887,7 +1887,7 @@ void CUIGameSettingsUI::OnTitleClose() {
 
 // OFFSET: 0x00A40240
 // FUNCTION: fn_15967
-bool CUIGameSettingsUI::IsTab4Selected() {
+__declspec(noinline) bool CUIGameSettingsUI::IsTab4Selected() {
   const int id = this->m_tab->current ? this->m_tab->current->geometry.id : -1;
   return id == 4;
 }
@@ -2262,7 +2262,7 @@ void GameSettingsUI::CUIGroupTrilinear::Slot16() {
 // OFFSET: 0x00A193A0
 // FUNCTION: fn_15341
 template <>
-CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::CUIListBoxEx()
+__declspec(noinline) CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::CUIListBoxEx()
     : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
       unknown_00E0(1), rebind(0) {
 }
@@ -2270,7 +2270,7 @@ CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::CUIListBoxEx()
 // OFFSET: 0x00A19560
 // FUNCTION: fn_15342
 template <>
-CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::CUIListBoxEx()
+__declspec(noinline) CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::CUIListBoxEx()
     : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
       unknown_00E0(1), rebind(0) {
 }
@@ -2278,7 +2278,7 @@ CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::CUIListBoxEx()
 // OFFSET: 0x00A19720
 // FUNCTION: fn_15343
 template <>
-CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::CUIListBoxEx()
+__declspec(noinline) CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::CUIListBoxEx()
     : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
       unknown_00E0(1), rebind(0) {
 }
@@ -2286,7 +2286,7 @@ CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::CUIListBoxEx()
 // OFFSET: 0x00A198E0
 // FUNCTION: fn_15344
 template <>
-CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::CUIListBoxEx()
+__declspec(noinline) CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::CUIListBoxEx()
     : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
       unknown_00E0(1), rebind(0) {
 }
@@ -2294,7 +2294,7 @@ CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::CUIListBoxEx()
 // OFFSET: 0x00A19AA0
 // FUNCTION: fn_15345
 template <>
-CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::CUIListBoxEx()
+__declspec(noinline) CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::CUIListBoxEx()
     : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
       unknown_00E0(1), rebind(0) {
 }
