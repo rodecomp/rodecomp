@@ -1,5 +1,6 @@
 #include "Client/Application/LaunchInfo.h"
 #include "Client/Application/Launcher.h"
+#include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Application/UnhandledExceptionHandler.h"
 #include "Client/Session.h"
@@ -32,38 +33,6 @@ char g_moduleBaseName[260] = {};
 // GLOBAL: gl_24360
 char g_crashString[8096] = {};
 
-namespace {
-  // INLINED
-  int ReadPlayerJob() {
-    return g_session.m_job;
-  }
-
-  // INLINED
-  const char* ReadPlayerJobName(int jobId) {
-    const char* const* namesBegin = g_session.m_jobNameTable.data();
-    const char* const* namesEnd = namesBegin + g_session.m_jobNameTable.size();
-
-    if (!namesBegin || !namesEnd || namesBegin >= namesEnd) {
-      return "";
-    }
-
-    size_t count = namesEnd - namesBegin;
-    if (static_cast<size_t>(jobId) >= count || !namesBegin[jobId]) {
-      return "";
-    }
-
-    return namesBegin[jobId];
-  }
-
-  // INLINED
-  const char* ReadCurrentMapName() {
-    if (g_modeMgr.state == 1 && g_modeMgr.gameMode != nullptr) {
-      return reinterpret_cast<const char*>(g_modeMgr.gameMode) + 0x68;
-    }
-
-    return nullptr;
-  }
-}
 extern "C" long long __cdecl _Xtime_get_ticks();
 
 // OFFSET: 0x00635A70
@@ -89,23 +58,14 @@ bool InitUnhandledExceptionHandler(int (*callback)()) {
   g_unhandledExceptionCallback = callback;
   GetModuleFileNameA(nullptr, g_filename, sizeof(g_filename));
 
-  const char* baseName = strrchr(g_filename, '\\');
-  if (baseName) {
-    baseName++;
-  } else {
-    baseName = g_filename;
+  _snprintf_s(g_moduleBaseName, sizeof(g_moduleBaseName), static_cast<size_t>(-1), "%s", strrchr(g_filename, '\\') ? strrchr(g_filename, '\\') + 1 : g_filename);
+
+  if (strrchr(g_filename, '\\')) {
+    *strrchr(g_filename, '\\') = '\0';
   }
 
-  _snprintf_s(g_moduleBaseName, sizeof(g_moduleBaseName), static_cast<size_t>(-1), "%s", baseName);
-
-  char* sep = strrchr(g_filename, '\\');
-  if (sep) {
-    *sep = '\0';
-  }
-
-  char* dot = strrchr(g_moduleBaseName, '.');
-  if (dot) {
-    *dot = '\0';
+  if (strrchr(g_moduleBaseName, '.')) {
+    *strrchr(g_moduleBaseName, '.') = '\0';
   }
 
   SetUnhandledExceptionFilter(TopLevelExceptionFilter);
@@ -130,29 +90,28 @@ int CleanupUnhandledExceptionHandler() {
 // OFFSET: 0x00635C30
 // FUNCTION: fn_04705
 INT_PTR CALLBACK DialogFunc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
-  if (uMsg == WM_INITDIALOG) {
+  switch (uMsg) {
+  case WM_INITDIALOG: {
     HWND item = GetDlgItem(hDlg, 1006);
     RECT rect = {};
     SetWindowTextA(item, g_crashString);
     GetWindowRect(hDlg, &rect);
 
-    int screenHeight = GetSystemMetrics(SM_CYSCREEN);
-    int dlgHeight = rect.bottom - rect.top;
-    int y = (screenHeight / 2) - (dlgHeight / 2);
+    int y = GetSystemMetrics(SM_CYSCREEN) / 2 - (rect.bottom - rect.top) / 2;
+    int x = GetSystemMetrics(SM_CXSCREEN) / 2 - (rect.right - rect.left) / 2;
 
-    int screenWidth = GetSystemMetrics(SM_CXSCREEN);
-    int dlgWidth = rect.right - rect.left;
-    int x = (screenWidth / 2) - (dlgWidth / 2);
-
-    MoveWindow(hDlg, x, y, dlgWidth, dlgHeight, TRUE);
-  } else if (uMsg == WM_COMMAND) {
+    MoveWindow(hDlg, x, y, rect.right - rect.left, rect.bottom - rect.top, TRUE);
+    break;
+  }
+  case WM_COMMAND:
     if (LOWORD(wParam) == 2) {
-      size_t len = strlen(g_crashString);
-      HGLOBAL memory = GlobalAlloc(GMEM_MOVEABLE, len + 1);
+      HGLOBAL memory = GlobalAlloc(GMEM_DDESHARE, strlen(g_crashString) + 1);
       if (memory != nullptr) {
         char* locked = static_cast<char*>(GlobalLock(memory));
-        if (locked != nullptr) {
-          memcpy(locked, g_crashString, len + 1);
+        if (locked == nullptr) {
+          GlobalFree(memory);
+        } else {
+          strcpy(locked, g_crashString);
           GlobalUnWire(memory);
 
           if (OpenClipboard(hDlg)) {
@@ -163,14 +122,13 @@ INT_PTR CALLBACK DialogFunc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 
           HWND button = GetDlgItem(hDlg, 7);
           SetFocus(button);
-        } else {
-          GlobalFree(memory);
         }
       }
     } else if (LOWORD(wParam) == 7) {
       EndDialog(hDlg, 7);
     }
-  } else {
+    break;
+  default:
     return FALSE;
   }
 
@@ -241,16 +199,12 @@ LONG WINAPI TopLevelExceptionFilter(EXCEPTION_POINTERS* exceptionInfo) {
       reinterpret_cast<BOOL(WINAPI*)(HANDLE, PENUMLOADED_MODULES_CALLBACK, PVOID)>(GetProcAddress(dbgHelp, "EnumerateLoadedModules"));
 
     HMODULE module = GetModuleHandleA(nullptr);
-    CHAR filename[256] = {};
+    CHAR filename[256];
     GetModuleFileNameA(module, filename, sizeof(filename));
 
-    unsigned int timestamp = pGetTimestamp ? pGetTimestamp(module) : 0;
+    __time32_t timestamp = pGetTimestamp(module);
     sprintf(&g_crashString[strlen(g_crashString)], "Module Name: %s\r\n", filename);
-
-    __time32_t timestampTime;
-    std::memcpy(&timestampTime, &timestamp, sizeof(timestampTime));
-    const char* timeString = _ctime32(&timestampTime);
-    sprintf(&g_crashString[strlen(g_crashString)], "Time Stamp: 0x%08x - %s\r\n", timestamp, timeString);
+    sprintf(&g_crashString[strlen(g_crashString)], "Time Stamp: 0x%08x - %s\r\n", timestamp, _ctime32(&timestamp));
     sprintf(&g_crashString[strlen(g_crashString)], "Version: 0x%08x\r\n", g_clientVersion);
     sprintf(&g_crashString[strlen(g_crashString)], "\r\n");
     sprintf(&g_crashString[strlen(g_crashString)], "Exception Type: 0x%08x\r\n", static_cast<unsigned int>(exceptionInfo->ExceptionRecord->ExceptionCode));
@@ -282,6 +236,7 @@ LONG WINAPI TopLevelExceptionFilter(EXCEPTION_POINTERS* exceptionInfo) {
     );
     sprintf(&g_crashString[strlen(g_crashString)], "\r\n");
 
+    const auto* stack = reinterpret_cast<const unsigned char*>(context->Esp);
     for (int i = 0; i < 512; ++i) {
       if (frame.AddrPC.Offset == 0) {
         break;
@@ -292,11 +247,10 @@ LONG WINAPI TopLevelExceptionFilter(EXCEPTION_POINTERS* exceptionInfo) {
       }
 
       sprintf(&g_crashString[strlen(g_crashString)], "0x%08x\t", static_cast<unsigned int>(frame.AddrPC.Offset));
-      pEnumerateLoadedModules(process, EnumerateLoadedModulesCallback, &frame.AddrPC.Offset);
+      pEnumerateLoadedModules(GetCurrentProcess(), EnumerateLoadedModulesCallback, &frame.AddrPC.Offset);
       sprintf(&g_crashString[strlen(g_crashString)], "\r\n");
     }
 
-    const auto* stack = reinterpret_cast<const unsigned char*>(context->Esp);
     sprintf(&g_crashString[strlen(g_crashString)], "\r\n");
     sprintf(
       &g_crashString[strlen(g_crashString)], "stack %08x - %08x\r\n", static_cast<unsigned int>(reinterpret_cast<uintptr_t>(stack)),
@@ -324,23 +278,20 @@ LONG WINAPI TopLevelExceptionFilter(EXCEPTION_POINTERS* exceptionInfo) {
       sprintf(&g_crashString[strlen(g_crashString)], "\r\n");
     }
 
-    int jobId = ReadPlayerJob();
-    const char* jobName = ReadPlayerJobName(jobId);
-    sprintf(&g_crashString[strlen(g_crashString)], "\r\nJob : %s\r\n", jobName);
+    sprintf(&g_crashString[strlen(g_crashString)], "\r\nJob : %s\r\n", g_session.GetJobName(g_session.GetDisplayJob(), -1));
 
-    const char* mapName = ReadCurrentMapName();
-    if (mapName != nullptr) {
-      sprintf(&g_crashString[strlen(g_crashString)], "%s %d %d\r\n", mapName, g_session.m_playerX, g_session.m_playerY);
+    if (CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode())) {
+      sprintf(&g_crashString[strlen(g_crashString)], "%s %d %d\r\n", std::string(gameMode->mapName).c_str(), g_session.m_playerX, g_session.m_playerY);
     }
 
     sprintf(&g_crashString[strlen(g_crashString)], "\r\n%I64d - %I64d", g_session.m_startTimeTicks / 10000000LL, g_session.m_loginTimeTicks / 10000000LL);
 
     int64_t reportTime = _Xtime_get_ticks() / 10000000LL;
-    PROCESS_MEMORY_COUNTERS memCounters = {};
+    PROCESS_MEMORY_COUNTERS memCounters;
     double workingSet = 0.0;
     double pagefile = 0.0;
 
-    if (K32GetProcessMemoryInfo(process, &memCounters, sizeof(memCounters))) {
+    if (K32GetProcessMemoryInfo(GetCurrentProcess(), &memCounters, sizeof(memCounters))) {
       workingSet = static_cast<double>(static_cast<uint32_t>(memCounters.WorkingSetSize >> 10));
       pagefile = static_cast<double>(static_cast<uint32_t>(memCounters.PagefileUsage >> 10));
     }
