@@ -124,16 +124,19 @@ const char* CSession::Text80EC() const {
 // OFFSET: 0x00CD3A30
 // FUNCTION: fn_21272
 const char* CGameMode::DragItemName() {
-  if (this->drag.source == 2 || this->drag.source == 24) {
+  switch (this->drag.source) {
+  case 2:
+  case 24: {
     const ITEM_INFO item = g_session.GetItem17F0(this->drag.slot);
-    return item.unknown_0000[1] != 0 ? item.itemId.c_str() : nullptr;
+    return item.unknown_0000[1] > 0 ? item.itemId.c_str() : nullptr;
   }
+  default:
+    if (this->drag.name.size() == 0) {
+      return nullptr;
+    }
 
-  if (this->drag.name.size() == 0) {
-    return nullptr;
+    return this->drag.name.c_str();
   }
-
-  return this->drag.name.c_str();
 }
 
 // OFFSET: 0x00CD3B10
