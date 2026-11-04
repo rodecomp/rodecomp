@@ -14,7 +14,7 @@ namespace {
                                 "untLinkedUserDataSaveAsyncWork.cpp";
 
   // INLINED
-  AsyncDiagnostic Diagnostic(bool success, const char* text, std::uint32_t line) {
+  __forceinline AsyncDiagnostic Diagnostic(bool success, const char* text, std::uint32_t line) {
     std::string message = text;
     return AsyncDiagnostic(&success, &message, sourceFile, &line);
   }
@@ -47,12 +47,20 @@ namespace {
     /* 0000 */ std::uint8_t m_text[Length];
     bool m_encrypted;
   };
+
+  // INLINED
+  template <std::uint64_t Key, std::size_t Length>
+  const char* DecryptName(const std::uint8_t (&source)[Length]) {
+    thread_local EncryptedName<Length, Key> name(source);
+    return name.Text();
+  }
 }
 
 // OFFSET: 0x005BDAA0
 // FUNCTION: fn_03478
 CAccountLinkedUserDataSaveAsyncWork::CAccountLinkedUserDataSaveAsyncWork()
-    : NAsyncWork("AccountLinkedUserData_Save"), m_accountId(0), m_diagnostic(Diagnostic(false, "unknwon", 26)) {
+    : NAsyncWork("AccountLinkedUserData_Save"), m_accountId(0),
+      m_diagnostic(Diagnostic(false, DecryptName<0x59278F63D79F3DA1ULL>({0xD4, 0x53, 0xF4, 0xB9, 0x14, 0xE0, 0x49, 0x59}), 26)) {
 }
 
 // INLINED
@@ -73,7 +81,8 @@ void CAccountLinkedUserDataSaveAsyncWork::Bind(std::uint32_t accountId, std::str
   this->m_url = url;
   this->m_token = token;
   this->m_data = data;
-  AsyncDiagnostic diagnostic = Diagnostic(false, "unknwon", 54);
+  const std::uint8_t unknown[] = {0xC2, 0x69, 0x3C, 0xA3, 0x5C, 0x88, 0x45, 0x81};
+  AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0x812BE72BCD5707B7ULL>(unknown), 54);
   this->m_diagnostic.MoveFrom(diagnostic);
 }
 
