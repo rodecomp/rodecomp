@@ -1517,7 +1517,7 @@ void CSession::RemoveItem1758ByItemId(ITEM_INFO& item) {
     if (std::atoi(it->itemId.c_str()) == std::atoi(item.itemId.c_str())) {
       item.itemId = it->itemId;
       it->quantity -= item.quantity;
-      if (it->quantity < 1) {
+      if (it->quantity <= 0) {
         this->unknown_1758.erase(it);
       }
       return;
@@ -1555,7 +1555,7 @@ bool CSession::RemoveItem1768(const ITEM_INFO& item, unsigned char alternate) {
     if (it->unknown_0000[1] == item.unknown_0000[1]) {
       if (!alternate) {
         it->quantity -= item.quantity;
-        if (it->quantity < 1) {
+        if (it->quantity <= 0) {
           this->unknown_1768.erase(it);
           reinterpret_cast<CSession*>(this)->RefreshItem1768Window(0, index + 1);
           return true;
@@ -1578,7 +1578,7 @@ bool CSession::RemoveItem1740(const ITEM_INFO& item) {
   for (auto it = this->unknown_1740.begin(); it != this->unknown_1740.end(); ++it) {
     if (it->unknown_0000[1] == item.unknown_0000[1]) {
       it->quantity -= item.quantity;
-      if (it->quantity < 1) {
+      if (it->quantity <= 0) {
         this->unknown_1740.erase(it);
       }
       for (auto it2 = this->unknown_1740.begin(); it2 != this->unknown_1740.end(); ++it2) {
@@ -1631,7 +1631,7 @@ void CSession::RemoveItem1718ByItemId(const ITEM_INFO& item) {
     if (std::atoi(it->itemId.c_str()) == std::atoi(item.itemId.c_str())) {
       if (it->quantity != -1) {
         it->quantity -= item.quantity;
-        if (it->quantity < 1) {
+        if (it->quantity <= 0) {
           this->unknown_1718.erase(it);
         }
       }
@@ -1662,7 +1662,7 @@ void CSession::RemoveItem1720ByName(const ITEM_INFO& item) {
   for (auto it = this->unknown_1720.begin(); it != this->unknown_1720.end(); ++it) {
     if (it->itemId == item.itemId) {
       it->quantity -= item.quantity;
-      if (it->quantity < 1) {
+      if (it->quantity <= 0) {
         this->unknown_1720.erase(it);
       }
       return;
@@ -1704,7 +1704,7 @@ bool CSession::RemoveItem1738(const ITEM_INFO& item) {
   for (auto it = this->unknown_1738.begin(); it != this->unknown_1738.end(); ++it) {
     if (it->unknown_0000[1] == item.unknown_0000[1]) {
       it->quantity -= item.quantity;
-      if (it->quantity < 1) {
+      if (it->quantity <= 0) {
         this->unknown_1738.erase(it);
       }
       for (auto it2 = this->unknown_1738.begin(); it2 != this->unknown_1738.end(); ++it2) {
