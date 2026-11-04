@@ -133,7 +133,7 @@ void C3dModelRes::Unload() {
 }
 
 // INLINED
-inline void C3dModelResV1::ReadNode(ResourceByteReader& input, unsigned minor, const std::vector<std::string>& textureNames) {
+__forceinline void C3dModelResV1::ReadNode(ResourceByteReader& input, unsigned minor, const std::vector<std::string>& textureNames) {
   auto node = std::make_unique<ModelNodeV1>();
   node->model = this;
   node->alpha = this->alpha;
