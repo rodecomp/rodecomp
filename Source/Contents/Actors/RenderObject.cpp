@@ -800,7 +800,7 @@ void CRenderObject::ApplySwing(int mode, int& x, int& y, int& outX, int& outY) c
 
 // OFFSET: 0x00CC1C40
 // FUNCTION: fn_21126
-void CRenderObject::DrawTintedQuad(SpriteQuad& quad, short red, short green, short blue, const std::uint32_t* palette) {
+__declspec(noinline) void CRenderObject::DrawTintedQuad(SpriteQuad& quad, short red, short green, short blue, const std::uint32_t* palette) {
   const unsigned char phase = this->render.unknown_00F6;
   if (phase <= 10) {
     quad.color = (((((phase * 15) << 8) + red) << 8) + green << 8) + blue;
@@ -3215,7 +3215,7 @@ void CGameActor::ResetJobEffects() {
 
 // OFFSET: 0x00CAB020
 // FUNCTION: fn_21024
-void CGameActor::ClearUnknown037C(int value) {
+__declspec(noinline) void CGameActor::ClearUnknown037C(int value) {
   if (this->unknown_037C[1] == value) {
     this->unknown_037C[1] = 0;
   } else if (this->unknown_037C[0] == value) {
