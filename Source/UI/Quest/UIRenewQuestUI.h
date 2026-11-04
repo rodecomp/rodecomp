@@ -70,6 +70,10 @@ public:
   bool MatchesFilter(const RenewQuestInfo& info) const;
 
   void OnTabButton(CUITabButton* button);
+  void OnProcessTabClick();
+  void OnRecommendedTabClick();
+  void OnHoldTabClick();
+  void OnWaitTabClick();
   void OnFilterButton(UIWindow* button);
   void OnPanelButton();
   void OnCallback6();

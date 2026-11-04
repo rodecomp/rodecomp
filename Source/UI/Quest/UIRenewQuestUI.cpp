@@ -22,6 +22,9 @@
 #include <cstring>
 #include <format>
 
+// GLOBAL: gl_25249
+static bool s_recommendedTabFirstSelect = true;
+
 template <std::size_t Length, std::uint64_t Key>
 class EncryptedName {
 public:
@@ -845,7 +848,7 @@ void CQuestItemSelector::Select(CUIListItem* const& item) {
 // OFFSET: 0x00A67CE0
 // FUNCTION: fn_16631
 template <>
-bool CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::SelectIndex(int index) {
+__declspec(noinline) bool CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::SelectIndex(int index) {
   this->scrollBar->SetPosition(this->rowHeight * index);
   for (RenewQuestUI::CUIQuestItem* item : this->items) {
     if (index == item->index) {
@@ -1592,17 +1595,7 @@ void CUIRenewQuestUI::Slot15(int width, int height) {
   CUITabButton* processButton = new CUITabButton();
   processButton->SetSize(30, 100);
   processButton->Move(0, 0);
-  processButton->SetOnClick([this]() {
-    this->RecordValues(0x16, 1, 0, 0, 0);
-    for (RenewQuestUI::CUIQuestList* list : this->questLists) {
-      if (list->type == 1) {
-        if (list->list) {
-          list->list->scrollBar->SetPosition(0);
-        }
-        return;
-      }
-    }
-  });
+  processButton->SetOnClick([this]() { this->OnProcessTabClick(); });
   processButton->disabled = 0;
   processButton->Invalidate();
   const std::uint8_t processFont[] = {0x96, 0x2E, 0xFB, 0x8C, 0x54, 0x87};
@@ -1647,24 +1640,7 @@ void CUIRenewQuestUI::Slot15(int width, int height) {
   CUITabButton* recommendedButton = new CUITabButton();
   recommendedButton->SetSize(30, 100);
   recommendedButton->Move(0, 101);
-  recommendedButton->SetOnClick([this]() {
-    this->RecordValues(0x16, 2, 0, 0, 0);
-    for (RenewQuestUI::CUIQuestList* list : this->questLists) {
-      if (list->type == 2) {
-        if (list->list) {
-          // GLOBAL: gl_25249
-          static bool firstSelect = true;
-          if (firstSelect) {
-            list->list->SelectIndex(0);
-            firstSelect = false;
-            return;
-          }
-          list->list->scrollBar->SetPosition(0);
-        }
-        return;
-      }
-    }
-  });
+  recommendedButton->SetOnClick([this]() { this->OnRecommendedTabClick(); });
   recommendedButton->disabled = 0;
   recommendedButton->Invalidate();
   const std::uint8_t recommendedFont[] = {0x1E, 0xC2, 0x6B, 0x7A, 0xA8, 0x7D};
@@ -1710,17 +1686,7 @@ void CUIRenewQuestUI::Slot15(int width, int height) {
   CUITabButton* holdButton = new CUITabButton();
   holdButton->SetSize(30, 100);
   holdButton->Move(0, 202);
-  holdButton->SetOnClick([this]() {
-    this->RecordValues(0x16, 4, 0, 0, 0);
-    for (RenewQuestUI::CUIQuestList* list : this->questLists) {
-      if (list->type == 4) {
-        if (list->list) {
-          list->list->scrollBar->SetPosition(0);
-        }
-        return;
-      }
-    }
-  });
+  holdButton->SetOnClick([this]() { this->OnHoldTabClick(); });
   holdButton->disabled = 0;
   holdButton->Invalidate();
   const std::uint8_t holdFont[] = {0x62, 0x04, 0xC3, 0xA2, 0x60, 0xF3};
@@ -1762,17 +1728,7 @@ void CUIRenewQuestUI::Slot15(int width, int height) {
   CUITabButton* waitButton = new CUITabButton();
   waitButton->SetSize(30, 100);
   waitButton->Move(0, 303);
-  waitButton->SetOnClick([this]() {
-    this->RecordValues(0x16, 8, 0, 0, 0);
-    for (RenewQuestUI::CUIQuestList* list : this->questLists) {
-      if (list->type == 8) {
-        if (list->list) {
-          list->list->scrollBar->SetPosition(0);
-        }
-        return;
-      }
-    }
-  });
+  waitButton->SetOnClick([this]() { this->OnWaitTabClick(); });
   waitButton->disabled = 0;
   waitButton->Invalidate();
   const std::uint8_t waitFont[] = {0x50, 0x6E, 0x41, 0xCA, 0xD0, 0xEB};
@@ -2194,6 +2150,46 @@ RenewQuestUI::CUIQuestItem::CUIQuestItem()
 // OFFSET: 0x00A65A70
 // FUNCTION: fn_16598
 RenewQuestUI::CUIQuestList::CUIQuestList() : CUIControl(), list(nullptr), type(1) {
+}
+
+// FUNCTION: fn_45515
+void CUIRenewQuestUI::OnProcessTabClick() {
+  this->RecordValues(0x16, 1, 0, 0, 0);
+  for (RenewQuestUI::CUIQuestList* list : this->questLists) {
+    if (list->type == 1) {
+      if (list->list) {
+        list->list->scrollBar->SetPosition(0);
+      }
+      return;
+    }
+  }
+}
+
+
+// FUNCTION: fn_45517
+void CUIRenewQuestUI::OnHoldTabClick() {
+  this->RecordValues(0x16, 4, 0, 0, 0);
+  for (RenewQuestUI::CUIQuestList* list : this->questLists) {
+    if (list->type == 4) {
+      if (list->list) {
+        list->list->scrollBar->SetPosition(0);
+      }
+      return;
+    }
+  }
+}
+
+// FUNCTION: fn_45518
+void CUIRenewQuestUI::OnWaitTabClick() {
+  this->RecordValues(0x16, 8, 0, 0, 0);
+  for (RenewQuestUI::CUIQuestList* list : this->questLists) {
+    if (list->type == 8) {
+      if (list->list) {
+        list->list->scrollBar->SetPosition(0);
+      }
+      return;
+    }
+  }
 }
 
 // OFFSET: 0x00A65AF0
