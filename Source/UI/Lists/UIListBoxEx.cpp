@@ -209,13 +209,9 @@ int UIListBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
       this->parent->Invalidate();
     }
 
-    UIWindow* root = this;
-
-    while (root->parent) {
-      root = root->parent;
+    if (this->Root()) {
+      this->Root()->Invalidate();
     }
-
-    root->Invalidate();
     return (this->topLine - previous);
   }
   case 8:
