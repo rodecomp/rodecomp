@@ -998,13 +998,13 @@ bool CWhirlwindEffect::OnProcess() {
 
 // OFFSET: 0x005B6D00
 // FUNCTION: fn_03405
-void CWhirlwindEffect::SetLifetime(int milliseconds) {
+__declspec(noinline) void CWhirlwindEffect::SetLifetime(int milliseconds) {
   this->endTime = std::chrono::steady_clock::now() + std::chrono::milliseconds(milliseconds);
 }
 
 // OFFSET: 0x005B6D50
 // FUNCTION: fn_03406
-void CWhirlwindEffect::SetDuration(int duration) {
+__declspec(noinline) void CWhirlwindEffect::SetDuration(int duration) {
   this->duration = duration;
 }
 
