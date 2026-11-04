@@ -131,6 +131,13 @@ other contributors' agents: a function merges once "same" leads
 
 ## Rules
 
+- **Reconstruct the source, don't chase the bytes.** Write the C++ the original programmer
+  plausibly wrote: keep helper functions and loops as functions and loops. Do not hand-inline
+  a helper's body into its callers or unroll a loop by hand only because the compiler inlined
+  or unrolled it in the original; the compiler did that, not the author. `__forceinline` on a
+  real helper is fine when the original inlines it at every call site (it then carries
+  `// INLINED`, no standalone ID). A lower score with faithful, readable source is preferred
+  over a higher score with instruction-shaped code.
 - **Stable-ID annotations contain IDs, never addresses.** The symbol database is
   authoritative for addresses. Every standalone function additionally carries
   `// OFFSET: 0x...` above its `// FUNCTION:` line, copied from `td symbol <id>`.
