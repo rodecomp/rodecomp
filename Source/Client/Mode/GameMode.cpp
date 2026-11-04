@@ -351,16 +351,16 @@ bool CGameMode::IsOverWeight(bool notify) {
     maxWeight = 1;
   }
 
-  if (g_session.m_weight * 100 / maxWeight < 90) {
-    return false;
+  if (g_session.m_weight * 100 / maxWeight >= 90) {
+    if (notify) {
+      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(307)), 255, 0, 0, 0);
+    }
+
+    return true;
   }
 
-  if (notify) {
-    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(307)), 255, 0, 0, 0);
-  }
-
-  return true;
+  return false;
 }
 
 // OFFSET: 0x00CCFCF0
@@ -645,30 +645,23 @@ bool CGameMode::IsExcludedSkillEffectId(std::uint32_t id) {
 // OFFSET: 0x00D07740
 // FUNCTION: fn_21583
 int CGameMode::SubD07740(int id, int defaultResult) {
-  if (id < 0xFB5) {
-    if (id == 0xFB4 || id == 0x13) {
-      return 1;
-    }
-
-    if (id == 0x14) {
-      return 0;
-    }
-  } else {
-    switch (id) {
-    case 0xFB5:
-    case 0xFCB:
-    case 0xFE5:
-    case 0xFEC:
-    case 0x1009:
-    case 0x10A8:
-      return 0;
-    case 0xFCA:
-    case 0xFE4:
-    case 0xFEB:
-    case 0x1008:
-    case 0x10A7:
-      return 1;
-    }
+  switch (id) {
+  case 0x13:
+  case 0xFB4:
+  case 0xFCA:
+  case 0xFE4:
+  case 0xFEB:
+  case 0x1008:
+  case 0x10A7:
+    return 1;
+  case 0x14:
+  case 0xFB5:
+  case 0xFCB:
+  case 0xFE5:
+  case 0xFEC:
+  case 0x1009:
+  case 0x10A8:
+    return 0;
   }
 
   return defaultResult;
@@ -716,17 +709,15 @@ unsigned CGameMode::sub_CEC6A0(const std::vector<unsigned char>& data) {
       offset += 6;
 
       if (type == 0xCD) {
-        unsigned char* record = new unsigned char[0x10]();
-        std::memcpy(record, data.data() + offset, size);
+        std::vector<unsigned char> record(0x10);
+        std::memcpy(record.data(), data.data() + offset, size);
         offset += size;
-        this->sub_D41250(record);
-        delete[] record;
+        this->sub_D41250(record.data());
       } else if (type == 0xCE) {
-        unsigned char* record = new unsigned char[0x61]();
-        std::memcpy(record, data.data() + offset, size);
+        std::vector<unsigned char> record(0x61);
+        std::memcpy(record.data(), data.data() + offset, size);
         offset += size;
-        this->sub_D40730(record);
-        delete[] record;
+        this->sub_D40730(record.data());
       } else if (type == 0x4269) {
         break;
       } else {
