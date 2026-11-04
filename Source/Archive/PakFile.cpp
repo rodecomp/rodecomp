@@ -776,7 +776,7 @@ namespace myGPack {
 
   // OFFSET: 0x005F7810
   // FUNCTION: fn_04047
-  void CReadPakFile::Close() {
+  __declspec(noinline) void CReadPakFile::Close() {
     if (this->m_handle) {
       CloseHandle(this->m_handle);
       this->m_handle = nullptr;
@@ -785,7 +785,7 @@ namespace myGPack {
 
   // OFFSET: 0x005F7890
   // FUNCTION: fn_04048
-  bool CWritePakFile::Open(const char* filename) {
+  __declspec(noinline) bool CWritePakFile::Open(const char* filename) {
     this->m_handle = CreateFileA(filename, GENERIC_READ | GENERIC_WRITE, 0, nullptr, OPEN_ALWAYS, FILE_FLAG_WRITE_THROUGH | FILE_ATTRIBUTE_NORMAL, nullptr);
     if (this->m_handle == INVALID_HANDLE_VALUE) {
       return false;
@@ -822,7 +822,7 @@ namespace myGPack {
 
   // OFFSET: 0x005F79C0
   // FUNCTION: fn_04050
-  bool CWritePakFile::Write(std::uint64_t offset, const void* bytes, std::uint32_t length) {
+  __declspec(noinline) bool CWritePakFile::Write(std::uint64_t offset, const void* bytes, std::uint32_t length) {
     LARGE_INTEGER position;
     position.QuadPart = static_cast<std::int64_t>(offset);
     SetFilePointerEx(this->m_handle, position, nullptr, FILE_BEGIN);
