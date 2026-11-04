@@ -30,6 +30,8 @@
 #include <utility>
 #include <vector>
 
+extern template std::list<ITEM_INFO>::iterator std::list<ITEM_INFO>::erase(std::list<ITEM_INFO>::const_iterator) noexcept;
+
 namespace {
   struct EquipSlotDecoder {
     EquipSlots Decode(int mask) const;
@@ -1600,7 +1602,7 @@ void CSession::RemoveItem1758(ITEM_INFO& item) {
     if (it->unknown_0000[1] == item.unknown_0000[1]) {
       item.itemId = it->itemId;
       it->quantity -= item.quantity;
-      if (it->quantity < 1) {
+      if (it->quantity <= 0) {
         this->unknown_1758.erase(it);
       }
       return;
@@ -1614,7 +1616,7 @@ void CSession::RemoveItem1760(const ITEM_INFO& item) {
   for (auto it = this->unknown_1760.begin(); it != this->unknown_1760.end(); ++it) {
     if (it->unknown_0000[1] == item.unknown_0000[1]) {
       it->quantity -= item.quantity;
-      if (it->quantity < 1) {
+      if (it->quantity <= 0) {
         this->unknown_1760.erase(it);
       }
       return;
@@ -1645,7 +1647,7 @@ void CSession::RemoveItem1718(const ITEM_INFO& item) {
     if (it->unknown_0000[1] == item.unknown_0000[1]) {
       if (it->quantity != -1) {
         it->quantity -= item.quantity;
-        if (it->quantity < 1) {
+        if (it->quantity <= 0) {
           this->unknown_1718.erase(it);
         }
       }
@@ -1674,7 +1676,7 @@ void CSession::RemoveItem1730(const ITEM_INFO& item) {
   for (auto it = this->unknown_1730.begin(); it != this->unknown_1730.end(); ++it) {
     if (it->unknown_0000[1] == item.unknown_0000[1]) {
       it->quantity -= item.quantity;
-      if (it->quantity < 1) {
+      if (it->quantity <= 0) {
         this->unknown_1730.erase(it);
       }
       return;
@@ -1688,7 +1690,7 @@ void CSession::ReduceItem1718(const ITEM_INFO& item) {
   for (auto it = this->unknown_1718.begin(); it != this->unknown_1718.end(); ++it) {
     if (it->unknown_0000[1] == item.unknown_0000[1]) {
       it->quantity -= item.quantity;
-      if (it->quantity < 1) {
+      if (it->quantity <= 0) {
         this->unknown_1718.erase(it);
       }
       return;
