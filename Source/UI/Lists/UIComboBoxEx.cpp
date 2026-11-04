@@ -210,7 +210,7 @@ int UIComboBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
 }
 
 // INLINED
-void UIComboBoxEx::DrawRows(bool centered) {
+__forceinline void UIComboBoxEx::DrawRows(bool centered) {
   const unsigned end = std::min(
     static_cast<unsigned>(this->lines.size()), static_cast<unsigned>((this->topLine + (this->geometry.height / this->lineHeight - this->bottomMargin)))
   );
