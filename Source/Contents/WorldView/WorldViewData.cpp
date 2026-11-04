@@ -193,7 +193,7 @@ __declspec(noinline) CWorldViewField* CWorldViewMap::FindField(const char* name)
 
 // OFFSET: 0x00613DD0
 // FUNCTION: fn_04356
-CWorldViewMap* CWorldViewWorld::FindMap(int id) {
+__declspec(noinline) CWorldViewMap* CWorldViewWorld::FindMap(int id) {
   for (std::vector<CWorldViewMap*>::iterator it = this->maps.begin(); it != this->maps.end(); ++it) {
     if (id == (*it)->id) {
       return *it;
