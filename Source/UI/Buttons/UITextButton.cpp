@@ -256,11 +256,7 @@ void UIStaticItem_Illust::Slot28(int, int) {
 void UIBmpRadioBtn::Slot28(int, int) {
   if (!this->m_tooltip.empty()) {
     int screenX = 0, screenY = -20;
-
-    for (const UIWindow* window = this; window; window = window->parent) {
-      screenX = (screenX + window->geometry.x);
-      screenY = (screenY + window->geometry.y);
-    }
+    this->ToScreen(screenX, screenY);
 
     static_cast<CMode*>(g_charViewMode)->ShowTooltip(this->m_tooltip.c_str(), screenX, screenY, -1, false, true);
   }
@@ -384,11 +380,7 @@ void UIBmpRadioBtn2::Slot48() {
 void UICaptchaImage::Slot28(int, int) {
   if (!this->m_tooltip.empty()) {
     int screenX = 0, screenY = -20;
-
-    for (const UIWindow* window = this; window; window = window->parent) {
-      screenX = (screenX + window->geometry.x);
-      screenY = (screenY + window->geometry.y);
-    }
+    this->ToScreen(screenX, screenY);
 
     static_cast<CMode*>(g_charViewMode)->ShowTooltip(this->m_tooltip.c_str(), screenX, screenY, -1, false, true);
   }
