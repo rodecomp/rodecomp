@@ -2025,6 +2025,585 @@ namespace GPakEx {
     return length;
   }
 
+  class TEA {
+  public:
+    class Base : public BlockCipher {
+    public:
+      void SetKey(std::span<const std::uint8_t> key) override;
+
+      /* 0004 */ std::uint32_t m_key[4];
+    };
+
+    class Enc : public Base {
+    public:
+      void ProcessAndXorBlock(const std::uint8_t* input, const std::uint8_t* xorBlock, std::uint8_t* output) const override;
+    };
+  };
+
+  // OFFSET: 0x0065BB10
+  // FUNCTION: fn_05142
+  // VIRTUALIZED: 2026-01-07 0x0065AAA0
+  void TEA::Base::SetKey(std::span<const std::uint8_t> key) {
+    memcpy_s(this->m_key, sizeof(this->m_key), key.data(), key.size());
+    for (std::uint32_t& word : this->m_key) {
+      word = _byteswap_ulong(word);
+    }
+  }
+
+  // OFFSET: 0x0065B940
+  // FUNCTION: fn_05140
+  // VIRTUALIZED: 2026-01-07 0x0065A920
+  void TEA::Enc::ProcessAndXorBlock(const std::uint8_t* input, const std::uint8_t* xorBlock, std::uint8_t* output) const {
+    const std::uint32_t* in = reinterpret_cast<const std::uint32_t*>(input);
+    std::uint32_t y = _byteswap_ulong(in[0]);
+    std::uint32_t z = _byteswap_ulong(in[1]);
+
+    std::uint32_t sum = 0;
+    for (int round = 0; round < 16; ++round) {
+      sum += 0x9E3779B9;
+      y += ((z << 4) + this->m_key[0]) ^ (z + sum) ^ ((z >> 5) + this->m_key[1]);
+      z += ((y << 4) + this->m_key[2]) ^ (y + sum) ^ ((y >> 5) + this->m_key[3]);
+    }
+
+    const std::uint32_t* mask = reinterpret_cast<const std::uint32_t*>(xorBlock);
+    std::uint32_t* out = reinterpret_cast<std::uint32_t*>(output);
+    out[0] = _byteswap_ulong(y) ^ (mask ? mask[0] : 0);
+    out[1] = _byteswap_ulong(z) ^ (mask ? mask[1] : 0);
+  }
+
+  class XTEA {
+  public:
+    class Base : public BlockCipher {
+    public:
+      void SetKey(std::span<const std::uint8_t> key) override;
+
+      /* 0004 */ std::uint32_t m_key[4];
+    };
+
+    class Enc : public Base {
+    public:
+      void ProcessAndXorBlock(const std::uint8_t* input, const std::uint8_t* xorBlock, std::uint8_t* output) const override;
+    };
+  };
+
+  // OFFSET: 0x0065BBD0
+  // FUNCTION: fn_05143
+  // VIRTUALIZED: 2026-01-07 0x0065AB20
+  void XTEA::Base::SetKey(std::span<const std::uint8_t> key) {
+    memcpy_s(this->m_key, sizeof(this->m_key), key.data(), key.size());
+    for (std::uint32_t& word : this->m_key) {
+      word = _byteswap_ulong(word);
+    }
+  }
+
+  // OFFSET: 0x0065BA30
+  // FUNCTION: fn_05141
+  // VIRTUALIZED: 2026-01-07 0x0065A9E0
+  void XTEA::Enc::ProcessAndXorBlock(const std::uint8_t* input, const std::uint8_t* xorBlock, std::uint8_t* output) const {
+    const std::uint32_t* in = reinterpret_cast<const std::uint32_t*>(input);
+    std::uint32_t y = _byteswap_ulong(in[0]);
+    std::uint32_t z = _byteswap_ulong(in[1]);
+
+    std::uint32_t sum = 0;
+    for (int round = 0; round < 16; ++round) {
+      y += (((z << 4) ^ (z >> 5)) + z) ^ (sum + this->m_key[sum & 3]);
+      sum += 0x9E3779B9;
+      z += (((y << 4) ^ (y >> 5)) + y) ^ (sum + this->m_key[(sum >> 11) & 3]);
+    }
+
+    const std::uint32_t* mask = reinterpret_cast<const std::uint32_t*>(xorBlock);
+    std::uint32_t* out = reinterpret_cast<std::uint32_t*>(output);
+    out[0] = _byteswap_ulong(y) ^ (mask ? mask[0] : 0);
+    out[1] = _byteswap_ulong(z) ^ (mask ? mask[1] : 0);
+  }
+
+  // INLINED
+  inline std::uint32_t RotateLeft(std::uint32_t value, std::uint32_t count) {
+    return _rotl(value, static_cast<int>(count & 31));
+  }
+
+  // INLINED
+  __forceinline void ExpandRcKey(std::vector<std::uint32_t>& table, std::size_t rounds, std::span<const std::uint8_t> key) {
+    table.resize(rounds);
+    std::uint32_t words[4];
+    memcpy_s(words, sizeof(words), key.data(), key.size());
+
+    table[0] = 0xB7E15163;
+    for (std::size_t i = 1; i < table.size(); ++i) {
+      table[i] = table[i - 1] + 0x9E3779B9;
+    }
+
+    std::uint32_t a = 0;
+    std::uint32_t b = 0;
+    const std::size_t count = 3 * (std::max)(table.size(), std::size_t{4});
+    for (std::size_t h = 0; h < count; ++h) {
+      a = table[h % table.size()] = RotateLeft(table[h % table.size()] + a + b, 3);
+      b = words[h & 3] = RotateLeft(words[h & 3] + a + b, a + b);
+    }
+    SecureWipe(words, sizeof(words));
+  }
+
+  class RC5 {
+  public:
+    class Base : public BlockCipher {
+    public:
+      void SetKey(std::span<const std::uint8_t> key) override;
+
+      /* 0004 */ std::vector<std::uint32_t> m_table;
+    };
+
+    class Enc : public Base {
+    public:
+      void ProcessAndXorBlock(const std::uint8_t* input, const std::uint8_t* xorBlock, std::uint8_t* output) const override;
+    };
+  };
+
+  // OFFSET: 0x0065B540
+  // FUNCTION: fn_05139
+  // VIRTUALIZED: 2026-01-07 0x0065A410
+  void RC5::Base::SetKey(std::span<const std::uint8_t> key) {
+    ExpandRcKey(this->m_table, 42, key);
+  }
+
+  // OFFSET: 0x0065B2E0
+  // FUNCTION: fn_05137
+  // VIRTUALIZED: 2026-01-07 0x0065A280
+  void RC5::Enc::ProcessAndXorBlock(const std::uint8_t* input, const std::uint8_t* xorBlock, std::uint8_t* output) const {
+    const std::uint32_t* in = reinterpret_cast<const std::uint32_t*>(input);
+    const std::uint32_t* s = this->m_table.data();
+    std::uint32_t a = in[0] + s[0];
+    std::uint32_t b = in[1] + s[1];
+    for (std::size_t i = 1; i <= 20; ++i) {
+      a = RotateLeft(a ^ b, b) + s[2 * i];
+      b = RotateLeft(b ^ a, a) + s[2 * i + 1];
+    }
+
+    const std::uint32_t* mask = reinterpret_cast<const std::uint32_t*>(xorBlock);
+    std::uint32_t* out = reinterpret_cast<std::uint32_t*>(output);
+    out[0] = a ^ (mask ? mask[0] : 0);
+    out[1] = b ^ (mask ? mask[1] : 0);
+  }
+
+  class RC6 {
+  public:
+    class Base : public BlockCipher {
+    public:
+      void SetKey(std::span<const std::uint8_t> key) override;
+
+      /* 0004 */ std::vector<std::uint32_t> m_table;
+    };
+
+    class Enc : public Base {
+    public:
+      void ProcessAndXorBlock(const std::uint8_t* input, const std::uint8_t* xorBlock, std::uint8_t* output) const override;
+    };
+  };
+
+  // OFFSET: 0x0065B380
+  // FUNCTION: fn_05138
+  // VIRTUALIZED: 2026-01-07 0x0065A5A0
+  void RC6::Base::SetKey(std::span<const std::uint8_t> key) {
+    ExpandRcKey(this->m_table, 44, key);
+  }
+
+  // OFFSET: 0x0065B1B0
+  // FUNCTION: fn_05136
+  // VIRTUALIZED: 2026-01-07 0x0065A300
+  void RC6::Enc::ProcessAndXorBlock(const std::uint8_t* input, const std::uint8_t* xorBlock, std::uint8_t* output) const {
+    const std::uint32_t* in = reinterpret_cast<const std::uint32_t*>(input);
+    const std::uint32_t* s = this->m_table.data();
+    std::uint32_t a = in[0];
+    std::uint32_t b = in[1] + s[0];
+    std::uint32_t c = in[2];
+    std::uint32_t d = in[3] + s[1];
+    for (std::size_t i = 1; i <= 20; ++i) {
+      const std::uint32_t t = RotateLeft(b * (2 * b + 1), 5);
+      const std::uint32_t u = RotateLeft(d * (2 * d + 1), 5);
+      a = RotateLeft(a ^ t, u) + s[2 * i];
+      c = RotateLeft(c ^ u, t) + s[2 * i + 1];
+      const std::uint32_t first = a;
+      a = b;
+      b = c;
+      c = d;
+      d = first;
+    }
+    a += s[42];
+    c += s[43];
+
+    const std::uint32_t* mask = reinterpret_cast<const std::uint32_t*>(xorBlock);
+    std::uint32_t* out = reinterpret_cast<std::uint32_t*>(output);
+    out[0] = a ^ (mask ? mask[0] : 0);
+    out[1] = b ^ (mask ? mask[1] : 0);
+    out[2] = c ^ (mask ? mask[2] : 0);
+    out[3] = d ^ (mask ? mask[3] : 0);
+  }
+
+  // INLINED
+  inline std::uint32_t IdeaMultiply(std::uint32_t a, std::uint32_t b) {
+    const std::uint32_t p = (a & 0xffff) * (b & 0xffff);
+    if (p) {
+      const std::uint32_t r = (p & 0xffff) - (p >> 16);
+      return r - (r >> 16);
+    }
+    return 1 - a - b;
+  }
+
+  class IDEA {
+  public:
+    class Base : public BlockCipher {
+    public:
+      void SetKey(std::span<const std::uint8_t> key) override;
+      void ProcessAndXorBlock(const std::uint8_t* input, const std::uint8_t* xorBlock, std::uint8_t* output) const override;
+
+      /* 0004 */ std::uint32_t m_key[52];
+    };
+  };
+
+  // OFFSET: 0x0065ACF0
+  // FUNCTION: fn_05135
+  // VIRTUALIZED: 2026-01-07 0x00659E50
+  void IDEA::Base::SetKey(std::span<const std::uint8_t> key) {
+    const std::uint8_t* bytes = key.data();
+    for (std::size_t i = 0; i < 8; ++i) {
+      this->m_key[i] = (bytes[2 * i] << 8) | bytes[2 * i + 1];
+    }
+    for (std::size_t i = 8; i < 52; ++i) {
+      const std::size_t base = (i & ~7) - 8;
+      this->m_key[i] = ((this->m_key[base + ((i + 1) & 7)] << 9) | (this->m_key[base + ((i + 2) & 7)] >> 7)) & 0xffff;
+    }
+
+    if (this->IsForwardTransformation()) {
+      return;
+    }
+
+    std::uint32_t inverted[52];
+    for (std::size_t round = 0; round < 8; ++round) {
+      const std::uint32_t* k = &this->m_key[48 - 6 * round];
+      std::uint32_t* out = &inverted[6 * round];
+      out[0] = IdeaMulInv(k[0]);
+      out[1] = (0 - k[round == 0 ? 1 : 2]) & 0xffff;
+      out[2] = (0 - k[round == 0 ? 2 : 1]) & 0xffff;
+      out[3] = IdeaMulInv(k[3]);
+      out[4] = k[-2];
+      out[5] = k[-1];
+    }
+    inverted[48] = IdeaMulInv(this->m_key[0]);
+    inverted[49] = (0 - this->m_key[1]) & 0xffff;
+    inverted[50] = (0 - this->m_key[2]) & 0xffff;
+    inverted[51] = IdeaMulInv(this->m_key[3]);
+    std::memcpy(this->m_key, inverted, sizeof(inverted));
+    SecureWipe(inverted, sizeof(inverted));
+  }
+
+  // OFFSET: 0x0065AA70
+  // FUNCTION: fn_05134
+  // VIRTUALIZED: 2026-01-07 0x00659C00
+  void IDEA::Base::ProcessAndXorBlock(const std::uint8_t* input, const std::uint8_t* xorBlock, std::uint8_t* output) const {
+    const std::uint16_t* in = reinterpret_cast<const std::uint16_t*>(input);
+    std::uint32_t x0 = _byteswap_ushort(in[0]);
+    std::uint32_t x1 = _byteswap_ushort(in[1]);
+    std::uint32_t x2 = _byteswap_ushort(in[2]);
+    std::uint32_t x3 = _byteswap_ushort(in[3]);
+
+    const std::uint32_t* k = this->m_key;
+    for (int round = 0; round < 8; ++round, k += 6) {
+      x0 = IdeaMultiply(x0, k[0]);
+      x1 += k[1];
+      x2 += k[2];
+      x3 = IdeaMultiply(x3, k[3]);
+      std::uint32_t t0 = x0 ^ x2;
+      t0 = IdeaMultiply(t0, k[4]);
+      std::uint32_t t1 = t0 + (x1 ^ x3);
+      t1 = IdeaMultiply(t1, k[5]);
+      t0 += t1;
+      x0 ^= t1;
+      x3 ^= t0;
+      t0 ^= x1;
+      x1 = x2 ^ t1;
+      x2 = t0;
+    }
+
+    const std::uint16_t result[4] = {
+      _byteswap_ushort(static_cast<std::uint16_t>(IdeaMultiply(x0, k[0]))),
+      _byteswap_ushort(static_cast<std::uint16_t>(x2 + k[1])),
+      _byteswap_ushort(static_cast<std::uint16_t>(x1 + k[2])),
+      _byteswap_ushort(static_cast<std::uint16_t>(IdeaMultiply(x3, k[3]))),
+    };
+    const std::uint16_t* mask = reinterpret_cast<const std::uint16_t*>(xorBlock);
+    std::uint16_t* out = reinterpret_cast<std::uint16_t*>(output);
+    for (int i = 0; i < 4; ++i) {
+      out[i] = result[i] ^ (mask ? mask[i] : 0);
+    }
+  }
+
+  // INLINED
+  inline std::uint32_t ReverseBits(std::uint32_t value) {
+    value = ((value & 0xAAAAAAAA) >> 1) | ((value & 0x55555555) << 1);
+    value = ((value & 0xCCCCCCCC) >> 2) | ((value & 0x33333333) << 2);
+    value = ((value & 0xF0F0F0F0) >> 4) | ((value & 0x0F0F0F0F) << 4);
+    return value;
+  }
+
+  // INLINED
+  inline void ThreeWayMu(std::uint32_t& a0, std::uint32_t& a1, std::uint32_t& a2) {
+    a1 = ReverseBits(a1);
+    const std::uint32_t t = ReverseBits(a0);
+    a0 = ReverseBits(a2);
+    a2 = t;
+  }
+
+  // INLINED
+  inline void ThreeWayTheta(std::uint32_t& a0, std::uint32_t& a1, std::uint32_t& a2) {
+    const std::uint32_t c = a0 ^ a1 ^ a2;
+    const std::uint32_t mix = _rotl(c, 16) ^ _rotl(c, 8);
+    const std::uint32_t b0 = ((a1 ^ (a0 << 16)) << 8) ^ ((a2 ^ (a0 >> 16)) >> 8);
+    const std::uint32_t b1 = ((a0 ^ (a1 >> 16)) >> 8) ^ ((a2 ^ (a1 << 16)) << 8);
+    a0 ^= mix ^ b0;
+    a1 ^= mix ^ b1;
+    a2 ^= mix ^ (b0 >> 16) ^ (b1 << 16);
+  }
+
+  // INLINED
+  inline void ThreeWayRho(std::uint32_t& a0, std::uint32_t& a1, std::uint32_t& a2) {
+    ThreeWayTheta(a0, a1, a2);
+    a0 = _rotr(a0, 10);
+    a2 = _rotl(a2, 1);
+    const std::uint32_t g0 = a0 ^ (a1 | ~a2);
+    const std::uint32_t g1 = a1 ^ (a2 | ~a0);
+    const std::uint32_t g2 = a2 ^ (a0 | ~a1);
+    a0 = _rotl(g0, 1);
+    a1 = g1;
+    a2 = _rotr(g2, 10);
+  }
+
+  // INLINED
+  inline std::uint32_t ThreeWayNextConstant(std::uint32_t rc) {
+    rc <<= 1;
+    return (rc & 0x10000) ? rc ^ 0x11011 : rc;
+  }
+
+  class ThreeWay {
+  public:
+    class Base : public BlockCipher {
+    public:
+      void SetKey(std::span<const std::uint8_t> key) override;
+
+      /* 0004 */ std::uint32_t m_key[3];
+    };
+
+    class Enc : public Base {
+    public:
+      void ProcessAndXorBlock(const std::uint8_t* input, const std::uint8_t* xorBlock, std::uint8_t* output) const override;
+    };
+
+    class Dec : public Base {
+    public:
+      void ProcessAndXorBlock(const std::uint8_t* input, const std::uint8_t* xorBlock, std::uint8_t* output) const override;
+    };
+  };
+
+  // OFFSET: 0x0065C230
+  // FUNCTION: fn_05146
+  // VIRTUALIZED: 2026-01-07 0x0065B0F0
+  void ThreeWay::Base::SetKey(std::span<const std::uint8_t> key) {
+    const std::uint8_t* bytes = key.data();
+    for (std::size_t i = 0; i < 3; ++i) {
+      this->m_key[i] = (bytes[4 * i] << 24) | (bytes[4 * i + 1] << 16) | (bytes[4 * i + 2] << 8) | bytes[4 * i + 3];
+    }
+
+    if (this->IsForwardTransformation()) {
+      return;
+    }
+
+    ThreeWayTheta(this->m_key[0], this->m_key[1], this->m_key[2]);
+    ThreeWayMu(this->m_key[0], this->m_key[1], this->m_key[2]);
+    for (std::uint32_t& word : this->m_key) {
+      word = _byteswap_ulong(word);
+    }
+  }
+
+  // OFFSET: 0x0065C030
+  // FUNCTION: fn_05145
+  // VIRTUALIZED: 2026-01-07 0x0065AF20
+  void ThreeWay::Enc::ProcessAndXorBlock(const std::uint8_t* input, const std::uint8_t* xorBlock, std::uint8_t* output) const {
+    const std::uint32_t* in = reinterpret_cast<const std::uint32_t*>(input);
+    std::uint32_t a0 = _byteswap_ulong(in[0]);
+    std::uint32_t a1 = _byteswap_ulong(in[1]);
+    std::uint32_t a2 = _byteswap_ulong(in[2]);
+
+    std::uint32_t rc = 0x0B0B;
+    for (int round = 0; round < 11; ++round) {
+      a0 ^= this->m_key[0] ^ (rc << 16);
+      a1 ^= this->m_key[1];
+      a2 ^= this->m_key[2] ^ rc;
+      ThreeWayRho(a0, a1, a2);
+      rc = ThreeWayNextConstant(rc);
+    }
+    a0 ^= this->m_key[0] ^ (rc << 16);
+    a1 ^= this->m_key[1];
+    a2 ^= this->m_key[2] ^ rc;
+    ThreeWayTheta(a0, a1, a2);
+
+    const std::uint32_t* mask = reinterpret_cast<const std::uint32_t*>(xorBlock);
+    std::uint32_t* out = reinterpret_cast<std::uint32_t*>(output);
+    out[0] = _byteswap_ulong(a0) ^ (mask ? mask[0] : 0);
+    out[1] = _byteswap_ulong(a1) ^ (mask ? mask[1] : 0);
+    out[2] = _byteswap_ulong(a2) ^ (mask ? mask[2] : 0);
+  }
+
+  // OFFSET: 0x0065BC90
+  // FUNCTION: fn_05144
+  // VIRTUALIZED: 2026-01-07 0x0065ABA0
+  void ThreeWay::Dec::ProcessAndXorBlock(const std::uint8_t* input, const std::uint8_t* xorBlock, std::uint8_t* output) const {
+    const std::uint32_t* in = reinterpret_cast<const std::uint32_t*>(input);
+    std::uint32_t a0 = in[0];
+    std::uint32_t a1 = in[1];
+    std::uint32_t a2 = in[2];
+    ThreeWayMu(a0, a1, a2);
+
+    std::uint32_t rc = 0xB1B1;
+    for (int round = 0; round < 11; ++round) {
+      a0 ^= this->m_key[0] ^ (rc << 16);
+      a1 ^= this->m_key[1];
+      a2 ^= this->m_key[2] ^ rc;
+      ThreeWayRho(a0, a1, a2);
+      rc = ThreeWayNextConstant(rc);
+    }
+    a0 ^= this->m_key[0] ^ (rc << 16);
+    a1 ^= this->m_key[1];
+    a2 ^= this->m_key[2] ^ rc;
+    ThreeWayTheta(a0, a1, a2);
+    ThreeWayMu(a0, a1, a2);
+
+    const std::uint32_t* mask = reinterpret_cast<const std::uint32_t*>(xorBlock);
+    std::uint32_t* out = reinterpret_cast<std::uint32_t*>(output);
+    out[0] = a0 ^ (mask ? mask[0] : 0);
+    out[1] = a1 ^ (mask ? mask[1] : 0);
+    out[2] = a2 ^ (mask ? mask[2] : 0);
+  }
+
+  class GOST {
+  public:
+    class Base : public BlockCipher {
+    public:
+      void SetKey(std::span<const std::uint8_t> key) override;
+
+      static void PrecalculateSTable();
+
+      static const std::uint8_t s_sbox[8][16];
+      static bool s_sTableCalculated;
+      static std::uint32_t s_sTable[4][256];
+
+      /* 0004 */ std::uint32_t m_key[8];
+    };
+
+    class Enc : public Base {
+    public:
+      void ProcessAndXorBlock(const std::uint8_t* input, const std::uint8_t* xorBlock, std::uint8_t* output) const override;
+    };
+
+    class Dec : public Base {
+    public:
+      void ProcessAndXorBlock(const std::uint8_t* input, const std::uint8_t* xorBlock, std::uint8_t* output) const override;
+    };
+  };
+
+  // GLOBAL: gl_25481
+  const std::uint8_t GOST::Base::s_sbox[8][16] = {
+    {0x0b, 0x04, 0x0c, 0x07, 0x0c, 0x00, 0x09, 0x0d, 0x03, 0x0e, 0x0b, 0x0b, 0x09, 0x08, 0x00, 0x04},
+    {0x0c, 0x01, 0x04, 0x05, 0x0e, 0x03, 0x04, 0x0c, 0x07, 0x04, 0x0a, 0x0e, 0x07, 0x0f, 0x0e, 0x00},
+    {0x0e, 0x0b, 0x02, 0x0a, 0x02, 0x0b, 0x0b, 0x07, 0x05, 0x0a, 0x00, 0x0f, 0x07, 0x00, 0x09, 0x00},
+    {0x04, 0x08, 0x0c, 0x07, 0x09, 0x03, 0x06, 0x04, 0x0c, 0x0e, 0x0a, 0x0f, 0x0d, 0x00, 0x08, 0x01},
+    {0x06, 0x0f, 0x00, 0x04, 0x00, 0x0b, 0x00, 0x03, 0x0a, 0x0e, 0x06, 0x0c, 0x07, 0x03, 0x05, 0x03},
+    {0x03, 0x04, 0x0f, 0x0d, 0x03, 0x03, 0x0d, 0x04, 0x01, 0x06, 0x0f, 0x0a, 0x0d, 0x06, 0x0c, 0x0f},
+    {0x02, 0x0a, 0x04, 0x0c, 0x01, 0x00, 0x0e, 0x00, 0x09, 0x0c, 0x0b, 0x0b, 0x09, 0x05, 0x03, 0x09},
+    {0x0e, 0x09, 0x08, 0x07, 0x00, 0x0f, 0x03, 0x07, 0x04, 0x07, 0x0f, 0x0d, 0x0b, 0x0a, 0x06, 0x02},
+  };
+
+  // GLOBAL: gl_25483
+  bool GOST::Base::s_sTableCalculated;
+
+  // GLOBAL: gl_25484
+  std::uint32_t GOST::Base::s_sTable[4][256];
+
+  // INLINED
+  void GOST::Base::PrecalculateSTable() {
+    if (s_sTableCalculated) {
+      return;
+    }
+    for (std::size_t i = 0; i < 4; ++i) {
+      for (std::uint32_t j = 0; j < 256; ++j) {
+        const std::uint32_t value = (s_sbox[2 * i + 1][j >> 4] << 4) | s_sbox[2 * i][j & 15];
+        s_sTable[i][j] = _rotl(value, static_cast<int>(11 + 8 * i));
+      }
+    }
+    s_sTableCalculated = true;
+  }
+
+  // OFFSET: 0x00644130
+  // FUNCTION: fn_04841
+  // VIRTUALIZED: 2026-01-07 0x00643180
+  void GOST::Base::SetKey(std::span<const std::uint8_t> key) {
+    PrecalculateSTable();
+    memcpy_s(this->m_key, sizeof(this->m_key), key.data(), key.size());
+  }
+
+  // INLINED
+  inline std::uint32_t GostRound(std::uint32_t value) {
+    return GOST::Base::s_sTable[0][value & 0xff] ^ GOST::Base::s_sTable[1][(value >> 8) & 0xff] ^ GOST::Base::s_sTable[2][(value >> 16) & 0xff] ^
+           GOST::Base::s_sTable[3][value >> 24];
+  }
+
+  // OFFSET: 0x00643CC0
+  // FUNCTION: fn_04840
+  // VIRTUALIZED: 2026-01-07 0x00642D30
+  void GOST::Enc::ProcessAndXorBlock(const std::uint8_t* input, const std::uint8_t* xorBlock, std::uint8_t* output) const {
+    const std::uint32_t* in = reinterpret_cast<const std::uint32_t*>(input);
+    std::uint32_t n1 = in[0];
+    std::uint32_t n2 = in[1];
+
+    for (int pass = 0; pass < 3; ++pass) {
+      for (std::size_t i = 0; i < 8; i += 2) {
+        n2 ^= GostRound(n1 + this->m_key[i]);
+        n1 ^= GostRound(n2 + this->m_key[i + 1]);
+      }
+    }
+    for (std::size_t i = 8; i > 0; i -= 2) {
+      n2 ^= GostRound(n1 + this->m_key[i - 1]);
+      n1 ^= GostRound(n2 + this->m_key[i - 2]);
+    }
+
+    const std::uint32_t* mask = reinterpret_cast<const std::uint32_t*>(xorBlock);
+    std::uint32_t* out = reinterpret_cast<std::uint32_t*>(output);
+    out[0] = n2 ^ (mask ? mask[0] : 0);
+    out[1] = n1 ^ (mask ? mask[1] : 0);
+  }
+
+  // OFFSET: 0x00643860
+  // FUNCTION: fn_04839
+  // VIRTUALIZED: 2026-01-07 0x006428F0
+  void GOST::Dec::ProcessAndXorBlock(const std::uint8_t* input, const std::uint8_t* xorBlock, std::uint8_t* output) const {
+    const std::uint32_t* in = reinterpret_cast<const std::uint32_t*>(input);
+    std::uint32_t n1 = in[0];
+    std::uint32_t n2 = in[1];
+
+    for (std::size_t i = 0; i < 8; i += 2) {
+      n2 ^= GostRound(n1 + this->m_key[i]);
+      n1 ^= GostRound(n2 + this->m_key[i + 1]);
+    }
+    for (int pass = 0; pass < 3; ++pass) {
+      for (std::size_t i = 8; i > 0; i -= 2) {
+        n2 ^= GostRound(n1 + this->m_key[i - 1]);
+        n1 ^= GostRound(n2 + this->m_key[i - 2]);
+      }
+    }
+
+    const std::uint32_t* mask = reinterpret_cast<const std::uint32_t*>(xorBlock);
+    std::uint32_t* out = reinterpret_cast<std::uint32_t*>(output);
+    out[0] = n2 ^ (mask ? mask[0] : 0);
+    out[1] = n1 ^ (mask ? mask[1] : 0);
+  }
+
   class CipherModeBase {
   public:
     virtual ~CipherModeBase();
