@@ -747,7 +747,7 @@ EquipSlots EquipSlotDecoder::Decode(int mask) const {
 
 // OFFSET: 0x00DD7030
 // FUNCTION: fn_23282
-bool CSession::AddItem1710(const ITEM_INFO& item, unsigned char refresh) {
+__declspec(noinline) bool CSession::AddItem1710(const ITEM_INFO& item, unsigned char refresh) {
   for (ITEM_INFO& value : this->m_inventoryItems) {
     if (value.unknown_0000[1] == item.unknown_0000[1]) {
       value.quantity += item.quantity;
@@ -1298,7 +1298,7 @@ void CSession::ClearItems1740() {
 
 // OFFSET: 0x00DD8940
 // FUNCTION: fn_23317
-void CSession::ClearItems1750() {
+__declspec(noinline) void CSession::ClearItems1750() {
   this->unknown_1750.erase(this->unknown_1750.begin(), this->unknown_1750.end());
 }
 
