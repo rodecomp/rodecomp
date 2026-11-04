@@ -1694,12 +1694,14 @@ void UIBarterItemPurchaseWnd::Paint() {
 
     const ITEM_INFO item = it->ToItemInfo();
     DrawItemWithQuantity(*this, ResourceMgr::Instance(), x + 44, y + 21, item, 0, 0);
-    this->DrawItemName(x + 76, y + 29, 100, &item, 0, 0, 12);
-    const std::string iconId = std::to_string(it->field_2c);
-    DrawItemIconById(*this, this->geometry.width - 70, y + 21, iconId.c_str(), 1);
+    this->DrawWrappedItemName(x + 76, y + 29, 100, &item, 0, 0, 12);
+    char iconId[64] = {};
+    StringFormat(iconId, sizeof(iconId), static_cast<std::size_t>(-1), "%d", it->field_2c);
+    DrawItemIconById(*this, this->geometry.width - 70, y + 21, iconId, 1);
+    char amount[64] = {};
     if (it->field_28 > 0) {
-      const std::string amount = std::to_string(it->value * it->field_28);
-      this->DrawRightAlignedText(this->geometry.width - 25, y + 29, amount.c_str(), 0, 0, 12, 0, 0);
+      const int bytes = StringFormat(amount, sizeof(amount), static_cast<std::size_t>(-1), "%d", it->value * it->field_28);
+      this->DrawRightAlignedText(this->geometry.width - 25, y + 29, amount, bytes, 0, 12, 0, 0);
     }
 
     if (++visible == this->visibleRows * this->columns) {
