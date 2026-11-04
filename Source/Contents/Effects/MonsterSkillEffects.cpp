@@ -1942,7 +1942,7 @@ bool CJupitelThunderHit::Slot06() {
     return true;
   }
 
-  return this->frame < this->unknown_002C;
+  return !this->IsFinished();
 }
 
 // OFFSET: 0x0071C570
@@ -2670,12 +2670,16 @@ bool CRandomOptEffect::Slot06() {
     return false;
   }
 
-  CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-  if (!gameMode || !gameMode->scene) {
+  if (!g_modeMgr.GetGameMode()) {
     return false;
   }
 
-  if (!gameMode->scene->GetItemByAID(this->actor)) {
+  CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
+  if (!world) {
+    return false;
+  }
+
+  if (!world->GetItemByAID(this->actor)) {
     return false;
   }
 
@@ -4397,7 +4401,7 @@ struct CylinderSlice {
 
 // OFFSET: 0x0070F800
 // FUNCTION: fn_07190
-vector3d* CylinderSlice::ComputePoints(vector3d points[2], double angle) {
+__declspec(noinline) vector3d* CylinderSlice::ComputePoints(vector3d points[2], double angle) {
   const float radians = static_cast<float>(angle);
   const double radiansAsDouble = static_cast<double>(radians);
   const float sine = static_cast<float>(std::sin(radiansAsDouble));
@@ -4421,11 +4425,6 @@ vector3d* CylinderSlice::ComputePoints(vector3d points[2], double angle) {
   return points;
 }
 
-__declspec(noinline) void __fastcall CylinderFrame(const double* values, float* output, double angle) {
-  CylinderSlice slice{values[0], values[1], values[2]};
-  slice.ComputePoints(reinterpret_cast<vector3d*>(output), angle);
-}
-
 // OFFSET: 0x0070FC80
 // FUNCTION: fn_07195
 void CCylinderEffect::Slot03() {
@@ -4442,29 +4441,29 @@ void CCylinderEffect::Slot03() {
     float& angle = reinterpret_cast<float&>(particle->unknown_00C4);
     const double baseAngle = angle;
 
-    double values[3];
-    values[0] = static_cast<double>(particle->scale);
-    values[1] = static_cast<double>(static_cast<float>(particle->unknown_004C) / 180.0f * 3.141592f);
-    values[2] = static_cast<double>(particle->unknown_0054);
+    CylinderSlice slice;
+    slice.radius = particle->scale;
+    slice.pitch = static_cast<float>(particle->unknown_004C) / 180.0f * 3.141592f;
+    slice.height = particle->unknown_0054;
 
-    float front[6];
-    float back[6];
+    vector3d front[2];
+    vector3d back[2];
     const double offset = static_cast<double>(particle->unknown_000C) * 0.29919925332069397 + baseAngle;
-    CylinderFrame(values, front, offset);
-    CylinderFrame(values, back, offset + 0.29919925332069397);
+    slice.ComputePoints(front, offset);
+    slice.ComputePoints(back, offset + 0.29919925332069397);
 
-    particle->vertices[0].x = front[3];
-    particle->vertices[0].y = front[4];
-    particle->vertices[0].z = front[5];
-    particle->vertices[2].x = front[0];
-    particle->vertices[2].y = front[1];
-    particle->vertices[2].z = front[2];
-    particle->vertices[1].x = back[3];
-    particle->vertices[1].y = back[4];
-    particle->vertices[1].z = back[5];
-    particle->vertices[3].x = back[0];
-    particle->vertices[3].y = back[1];
-    particle->vertices[3].z = back[2];
+    particle->vertices[0].x = front[1].x;
+    particle->vertices[0].y = front[1].y;
+    particle->vertices[0].z = front[1].z;
+    particle->vertices[2].x = front[0].x;
+    particle->vertices[2].y = front[0].y;
+    particle->vertices[2].z = front[0].z;
+    particle->vertices[1].x = back[1].x;
+    particle->vertices[1].y = back[1].y;
+    particle->vertices[1].z = back[1].z;
+    particle->vertices[3].x = back[0].x;
+    particle->vertices[3].y = back[0].y;
+    particle->vertices[3].z = back[0].z;
 
     angle = static_cast<float>(static_cast<double>(particle->unknown_00C0) + baseAngle);
   }
