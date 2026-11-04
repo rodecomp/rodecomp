@@ -8,10 +8,10 @@
 #include <cstddef>
 #include <string>
 
+class CUIBasicButton;
 class CUIGameItem;
 class CUIStaticImage;
 class CUIStaticText;
-class CUITextButton;
 
 namespace SelectPackageItemBox {
 class CTabInfoData {
@@ -46,10 +46,13 @@ public:
 class CUISelectPackageItemBox : public CUIFrameWnd {
 public:
   CUISelectPackageItemBox();
+  void Slot15(int width, int height) override;
   void Slot16() override;
   virtual void Slot53();
 
   void OnCancel();
+  void OnClickClose();
+  void OnClose();
   void OnOk();
   void OnSelectItem(SelectPackageItemBox::CUIItemInfo* item, const ITEM_INFO& data);
   void OnSelectTab(SelectPackageItemBox::CUITabInfo* tab, const SelectPackageItemBox::CTabInfoData& data);
@@ -60,8 +63,8 @@ public:
   /* 00D8 */ CUITitleBar* title;
   /* 00DC */ CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>* tabList;
   /* 00E0 */ CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>* itemList;
-  /* 00E4 */ CUITextButton* okButton;
-  /* 00E8 */ CUITextButton* cancelButton;
+  /* 00E4 */ CUIBasicButton* okButton;
+  /* 00E8 */ CUIBasicButton* cancelButton;
   /* 00EC */ int sourceIndex;
   /* 00F0 */ int packageId;
 };
