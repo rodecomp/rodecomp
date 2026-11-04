@@ -4029,18 +4029,16 @@ void UIItemSellWnd2::Slot10(int x, int y, std::intptr_t value) {
 
   CMode* mode = g_modeMgr.GetGameMode();
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
-  if (drag->source != 3) {
+  if (drag->source == 3) {
+    if (drag->quantity != 1 && g_windowMgr.unknown_0064 == 0) {
+      g_windowMgr.ShowWindowById(15, 1);
+      g_windowMgr.window_01EC->SendMsg(nullptr, 13, 16, 0, 0, 0);
+    } else {
+      this->SendMsg(nullptr, 38, 0, 0, 0, 0);
+    }
+  } else {
     mode->SendMsg(18, 0, 0, 0, 0);
-    return;
   }
-
-  if (drag->quantity == 1 || g_windowMgr.unknown_0064 != 0) {
-    this->SendMsg(nullptr, 38, 0, 0, 0, 0);
-    return;
-  }
-
-  g_windowMgr.ShowWindowById(15, 1);
-  g_windowMgr.window_01EC->SendMsg(nullptr, 13, 16, 0, 0, 0);
 }
 
 // OFFSET: 0x009722A0
@@ -4053,18 +4051,16 @@ void UIItemSellWnd::Slot10(int x, int y, std::intptr_t value) {
 
   CMode* mode = g_modeMgr.GetGameMode();
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
-  if (drag->source != 3) {
+  if (drag->source == 3) {
+    if (drag->quantity != 1 && g_windowMgr.unknown_0064 == 0) {
+      g_windowMgr.ShowWindowById(15, 1);
+      g_windowMgr.window_01EC->SendMsg(nullptr, 13, 2, 0, 0, 0);
+    } else {
+      this->SendMsg(nullptr, 38, 0, 0, 0, 0);
+    }
+  } else {
     mode->SendMsg(18, 0, 0, 0, 0);
-    return;
   }
-
-  if (drag->quantity == 1 || g_windowMgr.unknown_0064 != 0) {
-    this->SendMsg(nullptr, 38, 0, 0, 0, 0);
-    return;
-  }
-
-  g_windowMgr.ShowWindowById(15, 1);
-  g_windowMgr.window_01EC->SendMsg(nullptr, 13, 2, 0, 0, 0);
 }
 
 // OFFSET: 0x00972B50
