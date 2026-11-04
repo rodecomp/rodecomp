@@ -188,8 +188,12 @@ HRESULT STDMETHODCALLTYPE BrowserInPlaceSite::DeactivateAndUndo() {
 // OFFSET: 0x00AB19F0
 // FUNCTION: fn_17375
 HRESULT STDMETHODCALLTYPE BrowserInPlaceSite::OnPosRectChange(const RECT* position) {
+  HRESULT result;
   IOleObject* object;
-  HRESULT result = this->m_site->m_browser->QueryInterface(IID_IOleObject, reinterpret_cast<void**>(&object));
+  if (this->m_site->m_browser) {
+    result = this->m_site->m_browser->QueryInterface(IID_IOleObject, reinterpret_cast<void**>(&object));
+  }
+
   if (SUCCEEDED(result)) {
     IOleInPlaceObject* inPlace;
     result = object->QueryInterface(IID_IOleInPlaceObject, reinterpret_cast<void**>(&inPlace));
