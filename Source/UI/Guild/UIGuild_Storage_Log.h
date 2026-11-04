@@ -51,6 +51,7 @@ protected:
   /* 0188 */ std::uint32_t* unknown_0188;
   /* 018C */ std::uint32_t* unknown_018C;
 
+  void FillLogRows(int index);
   void FillRows();
 };
 

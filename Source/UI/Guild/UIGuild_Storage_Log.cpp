@@ -121,25 +121,8 @@ int UIGuild_Storage_Log::SendMsg(UIWindow* sender, int message, std::intptr_t a,
   }
 }
 
-// OFFSET: 0x00948FE0
-// FUNCTION: fn_12883
-void UIGuild_Storage_Log::FillRows() {
-  const unsigned page = this->m_page;
-  char pages[10] = {};
-  int index;
-  if (this->m_category == 0) {
-    std::sprintf(pages, "%02d / %02d", page, this->m_pageCounts[0]);
-    index = 0;
-  } else {
-    index = this->m_category == 1 ? 1 : 2;
-    if (this->m_pageCounts[index] == 0) {
-      std::sprintf(pages, "%02d / 01", page);
-    } else {
-      std::sprintf(pages, "%02d / %02d", page, this->m_pageCounts[index]);
-    }
-  }
-  this->DrawTextAt(175, 228, pages, 0, 0, 12, 0, 0, 0);
-
+// INLINED
+__forceinline void UIGuild_Storage_Log::FillLogRows(int index) {
   const std::vector<GuildStorageLogEntry>& logs = g_guildStorageLogs[index];
   char number[256];
   std::memset(number, 0, 255);
@@ -154,26 +137,53 @@ void UIGuild_Storage_Log::FillRows() {
     reinterpret_cast<std::vector<std::uint32_t>*>(&this->unknown_0184)->push_back(flag);
     _itoa(logs[this->m_offset].unknown_0004, number, 10);
 
-    const int row = this->m_state - 1;
     if (logs[this->m_offset].unknown_0070 == 1) {
-      this->m_dateTexts[row]->SetColor(255, 0, 0);
-      this->m_nameTexts[row]->SetColor(255, 0, 0);
-      this->m_itemTexts[row]->SetColor(255, 0, 0);
-      this->m_countTexts[row]->SetColor(255, 0, 0);
+      this->m_dateTexts[this->m_state - 1]->SetColor(255, 0, 0);
+      this->m_nameTexts[this->m_state - 1]->SetColor(255, 0, 0);
+      this->m_itemTexts[this->m_state - 1]->SetColor(255, 0, 0);
+      this->m_countTexts[this->m_state - 1]->SetColor(255, 0, 0);
     } else {
-      this->m_dateTexts[row]->SetColor(0, 0, 0);
-      this->m_nameTexts[row]->SetColor(0, 0, 0);
-      this->m_itemTexts[row]->SetColor(0, 0, 0);
-      this->m_countTexts[row]->SetColor(0, 0, 0);
+      this->m_dateTexts[this->m_state - 1]->SetColor(0, 0, 0);
+      this->m_nameTexts[this->m_state - 1]->SetColor(0, 0, 0);
+      this->m_itemTexts[this->m_state - 1]->SetColor(0, 0, 0);
+      this->m_countTexts[this->m_state - 1]->SetColor(0, 0, 0);
     }
 
-    this->m_dateTexts[row]->SetTextFitted(date.c_str());
-    this->m_nameTexts[row]->SetTextFitted(number);
-    this->m_itemTexts[row]->SetTextFitted(logs[this->m_offset].unknown_0009);
-    this->m_countTexts[row]->SetTextFitted(logs[this->m_offset].unknown_0021);
+    this->m_dateTexts[this->m_state - 1]->SetTextFitted(date.c_str());
+    this->m_nameTexts[this->m_state - 1]->SetTextFitted(number);
+    this->m_itemTexts[this->m_state - 1]->SetTextFitted(logs[this->m_offset].unknown_0009);
+    this->m_countTexts[this->m_state - 1]->SetTextFitted(logs[this->m_offset].unknown_0021);
     this->unknown_0174 += 15;
     ++this->m_state;
     ++this->m_offset;
+  }
+}
+
+// OFFSET: 0x00948FE0
+// FUNCTION: fn_12883
+void UIGuild_Storage_Log::FillRows() {
+  const unsigned page = this->m_page;
+  char pages[10] = {};
+  if (this->m_category == 0) {
+    std::sprintf(pages, "%02d / %02d", page, this->m_pageCounts[0]);
+    this->DrawTextAt(175, 228, pages, 0, 0, 12, 0, 0, 0);
+    this->FillLogRows(0);
+  } else if (this->m_category == 1) {
+    if (this->m_pageCounts[1] == 0) {
+      std::sprintf(pages, "%02d / 01", page);
+    } else {
+      std::sprintf(pages, "%02d / %02d", page, this->m_pageCounts[1]);
+    }
+    this->DrawTextAt(175, 228, pages, 0, 0, 12, 0, 0, 0);
+    this->FillLogRows(1);
+  } else {
+    if (this->m_pageCounts[2] == 0) {
+      std::sprintf(pages, "%02d / 01", page);
+    } else {
+      std::sprintf(pages, "%02d / %02d", page, this->m_pageCounts[2]);
+    }
+    this->DrawTextAt(175, 228, pages, 0, 0, 12, 0, 0, 0);
+    this->FillLogRows(2);
   }
 }
 
