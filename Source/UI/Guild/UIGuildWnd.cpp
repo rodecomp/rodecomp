@@ -286,7 +286,7 @@ void UIGuildTotalInfoWnd::Slot35(int delta) {
 
 // OFFSET: 0x00954020
 // FUNCTION: fn_13005
-UIGuildWnd::UIGuildWnd()
+__declspec(noinline) UIGuildWnd::UIGuildWnd()
     : UIFrameWnd(0), m_saved(nullptr), m_tabs{} {}
 // OFFSET: 0x00953900
 // FUNCTION: fn_12995
