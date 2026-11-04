@@ -341,9 +341,9 @@ void CWorldViewMgr::sub_6168F0() {
     (*it)->LoadTexture();
   }
 
-  if (gl_25167 == 0) {
-    gl_25167 = this->ScaleToScreen();
-    g_session.sub_DE4FF0();
+  if (g_session.unknown_5324 == 0) {
+    g_session.unknown_5324 = this->ScaleToScreen();
+    g_session.ScaleMapPositions();
   }
 }
 
