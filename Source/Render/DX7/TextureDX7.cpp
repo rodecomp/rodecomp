@@ -368,7 +368,7 @@ void CTextureDX7::Update(const RECT* rectangle) {
     destination.bottom >>= 1;
 
     if (destination.left != destination.right && destination.top != destination.bottom) {
-      if (FAILED(level->Blt(&destination, this->m_surface, const_cast<RECT*>(rectangle), DDBLT_DDFX, nullptr))) {
+      if (FAILED(level->Blt(&destination, this->m_surface, const_cast<RECT*>(rectangle), DDBLT_ASYNC, nullptr))) {
         level->Blt(&destination, this->m_surface, const_cast<RECT*>(rectangle), DDBLT_WAIT, nullptr);
       }
     }
