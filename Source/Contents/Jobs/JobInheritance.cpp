@@ -1535,19 +1535,47 @@ void CSession::SetPlayerNameKey(const unsigned char* key) {
 // OFFSET: 0x00E1D870
 // FUNCTION: fn_23853
 bool CSession::IsBabyJob(int job) const {
-  return (job >= JT_NOVICE_B && job <= JT_THIEF_B) || job == JT_SUPERNOVICE_B || job == JT_SUPERNOVICE2_B ||
-         (job >= JT_KNIGHT_B && job <= JT_CHICKEN2_B) || (job >= JT_RUNE_KNIGHT_B && job <= JT_MADOGEAR_B) ||
-         (job >= JT_PORING_NOVICE_B && job <= JT_DOG_CHASER_B) || (job >= JT_SHEEP_PRIEST_B && job <= JT_PIG_BLACKSMITH_B) ||
-         job == JT_PORING_SNOVICE2_B || (job >= JT_PIG_MECHANIC_B && job <= JT_LION_CRUSADER_B) || job == JT_DO_SUMMONER_B ||
-         (job >= JT_NINJA_B && job <= JT_STAR2_B) || job == JT_STAR_EMPEROR_B || job == JT_SOUL_REAPER_B ||
-         job == JT_STAR2_EMPEROR_B || job == JT_HAETAE_STAR_EMPEROR_B || job == JT_HAETAE_SOUL_REAPER_B || job == JT_DRUID_B ||
-         job == JT_KARNOS_B;
+  if ((job >= JT_NOVICE_B && job <= JT_THIEF_B) || job == JT_SUPERNOVICE_B || job == JT_SUPERNOVICE2_B) {
+    return true;
+  }
+  if (job >= JT_KNIGHT_B && job <= JT_CHICKEN2_B) {
+    return true;
+  }
+  if (job >= JT_RUNE_KNIGHT_B && job <= JT_MADOGEAR_B) {
+    return true;
+  }
+  if (job >= JT_PORING_NOVICE_B && job <= JT_DOG_CHASER_B) {
+    return true;
+  }
+  if ((job >= JT_SHEEP_PRIEST_B && job <= JT_PIG_BLACKSMITH_B) || job == JT_PORING_SNOVICE2_B) {
+    return true;
+  }
+  if (job >= JT_PIG_MECHANIC_B && job <= JT_LION_CRUSADER_B) {
+    return true;
+  }
+  if (job == JT_DO_SUMMONER_B) {
+    return true;
+  }
+  if (job >= JT_NINJA_B && job <= JT_STAR2_B) {
+    return true;
+  }
+  if (job == JT_STAR_EMPEROR_B || job == JT_SOUL_REAPER_B || job == JT_STAR2_EMPEROR_B || job == JT_HAETAE_STAR_EMPEROR_B ||
+      job == JT_HAETAE_SOUL_REAPER_B || job == JT_DRUID_B || job == JT_KARNOS_B) {
+    return true;
+  }
+  return false;
 }
 
 // OFFSET: 0x00E1DC50
 // FUNCTION: fn_23873
 int CSession::IsMercenaryJob(int job) const {
-  return (job >= JT_MER_LIF && job <= JT_MER_VANILMIRTH_H2) || (job >= JT_MER_EIRA && job <= JT_MER_ELEANOR) ? 1 : 0;
+  if (job >= JT_MER_LIF && job <= JT_MER_VANILMIRTH_H2) {
+    return 1;
+  }
+  if (job >= JT_MER_EIRA && job <= JT_MER_ELEANOR) {
+    return 1;
+  }
+  return 0;
 }
 
 // OFFSET: 0x00E1DC80
