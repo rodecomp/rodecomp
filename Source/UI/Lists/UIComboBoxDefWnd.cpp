@@ -47,12 +47,12 @@ UIComboBoxDefWnd::~UIComboBoxDefWnd() = default;
 // OFFSET: 0x00885920
 // FUNCTION: fn_11319
 void UIComboBoxDefWnd::Slot15(int, int) {
-  this->button = new UIBitmapButton();
-  const char* names[] = {"txtbox_btn_a.bmp", "txtbox_btn_b.bmp", "txtbox_btn_c.bmp"};
+  const std::string path = "유저인터페이스\\basic_interface\\";
 
-  for (int state = 0; state < 3; ++state) {
-    this->button->SetBitmap((std::string(prefix) + "basic_interface\\" + names[state]).c_str(), state, 0);
-  }
+  this->button = new UIBitmapButton();
+  this->button->SetBitmap((path + "txtbox_btn_a" + ".bmp").c_str(), 0, 0);
+  this->button->SetBitmap((path + "txtbox_btn_b" + ".bmp").c_str(), 1, 0);
+  this->button->SetBitmap((path + "txtbox_btn_c" + ".bmp").c_str(), 2, 0);
 
   this->button->SetSize(this->button->BitmapWidth(), this->button->BitmapHeight());
   this->button->Move((this->geometry.width - this->button->BitmapWidth()), 0);
@@ -106,16 +106,17 @@ void UIComboBox_BmpWnd::Create(int width, int height, const char* path, const ch
 // OFFSET: 0x00889D60
 // FUNCTION: fn_11352
 void UIComboBoxDefWnd::Paint() {
-  const unsigned background =
-    static_cast<unsigned char>(this->red) | (static_cast<unsigned char>(this->green) << 8) | (static_cast<unsigned char>(this->blue) << 16);
+  const COLORREF background = RGB(this->red, this->green, this->blue);
+  const COLORREF border = RGB(this->borderRed, this->borderGreen, this->borderBlue);
 
-  if (this->borderless != 0) {
-    this->geometry.surface->Fill(nullptr, background);
+  if (this->borderless == 0) {
+    RECT rectangle = {0, 0, this->geometry.width, this->geometry.height};
+    this->FillSurface(border, &rectangle);
+
+    SetRect(&rectangle, 1, 1, this->geometry.width - 1, this->geometry.height - 1);
+    this->FillSurface(background, &rectangle);
   } else {
-    const unsigned border =
-      static_cast<unsigned char>(this->borderRed) | (static_cast<unsigned char>(this->borderGreen) << 8) | (static_cast<unsigned char>(this->borderBlue) << 16);
-    this->geometry.surface->Fill(nullptr, border);
-    this->FillRegion(1, 1, (this->geometry.width - 2), (this->geometry.height - 2), background);
+    this->ClearSurface(background);
   }
 }
 
@@ -267,14 +268,14 @@ UIComboBoxDef2Wnd::~UIComboBoxDef2Wnd() = default;
 // OFFSET: 0x00885250
 // FUNCTION: fn_11318
 void UIComboBoxDef2Wnd::Slot15(int width, int) {
-  const std::string path = std::string(prefix) + (this->skin == 1 ? "login_interface\\" : "UIadventurerAgency\\");
-
-  this->button = new UIBitmapButton();
-  const char* names[] = {"btn_dropdown_out.bmp", "btn_dropdown_over.bmp", "btn_dropdown_press.bmp"};
-
-  for (int state = 0; state < 3; ++state) {
-    this->button->SetBitmap((path + names[state]).c_str(), state, 0);
+  std::string path = "유저인터페이스\\UIadventurerAgency\\";
+  if (this->skin == 1) {
+    path = "유저인터페이스\\login_interface\\";
   }
+  this->button = new UIBitmapButton();
+  this->button->SetBitmap((path + "btn_dropdown_out" + ".bmp").c_str(), 0, 0);
+  this->button->SetBitmap((path + "btn_dropdown_over" + ".bmp").c_str(), 1, 0);
+  this->button->SetBitmap((path + "btn_dropdown_press" + ".bmp").c_str(), 2, 0);
 
   this->button->SetSize(this->button->BitmapWidth(), this->button->BitmapHeight());
   this->button->Move((this->geometry.width - this->button->BitmapWidth()), 0);
@@ -291,15 +292,14 @@ void UIComboBoxDef2Wnd::Slot15(int width, int) {
   this->label = new UIStaticText();
   this->label->SetSize((this->geometry.width - this->button->BitmapWidth()), (this->button->BitmapHeight() - 6));
   this->label->SetText("", 0);
-  int x = 0;
 
   if (this->alignment == 0) {
-    x = 2;
+    this->label->Move(2, (this->textOffset + 3));
   } else if (this->alignment == 1) {
-    x = static_cast<int>(static_cast<float>(this->geometry.width) * 0.5f);
-  }
+    const std::string text = this->label->text;
+    const int textWidth = this->TextWidth(text.c_str(), 0, 0, 12, 0, 0);
+    const int x = static_cast<int>(static_cast<float>(this->geometry.width) * 0.5f - static_cast<float>(textWidth) * 0.5f);
 
-  if (this->alignment == 0 || this->alignment == 1) {
     this->label->Move(x, (this->textOffset + 3));
   }
 
@@ -310,13 +310,13 @@ void UIComboBoxDef2Wnd::Slot15(int width, int) {
 // OFFSET: 0x00889BB0
 // FUNCTION: fn_11351
 void UIComboBoxDef2Wnd::Paint() {
-  this->geometry.surface->Fill(nullptr, 0xFFFF00FFu);
+  this->ClearSurface(0xFFFF00FF);
 
   if (this->alignment != 1) {
     return;
   }
 
-  const int width = this->TextWidth(this->label->text.c_str(), 0, 0, 12, 0, 0);
+  const int width = this->TextWidth(std::string(this->label->text).c_str(), 0, 0, 12, 0, 0);
   const int x = static_cast<int>(static_cast<float>(this->geometry.width) * 0.5f - static_cast<float>(width) * 0.5f);
 
   if (x != this->previousTextX) {
