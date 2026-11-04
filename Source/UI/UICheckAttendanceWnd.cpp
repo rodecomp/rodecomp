@@ -289,7 +289,7 @@ void UICheckAttendanceWnd::Slot28(int x, int y) {
 // OFFSET: 0x007DDEF0
 // FUNCTION: fn_09646
 void UICheckAttendanceWnd_Banner::ResetCursor(int, int) {
-  static_cast<CMode*>(g_charViewMode)->SetCursorAction(2);
+  g_modeMgr.gameMode->SetCursorAction(2);
 }
 
 // OFFSET: 0x007DDF00
