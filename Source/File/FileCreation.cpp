@@ -80,26 +80,15 @@ bool JsonCppLoader::sub_50C2A0(std::map<std::string, EZ2STREffectRecord>* out) {
   for (const JsonMember& member : members ? *members : none) {
     const std::string name = member.first;
     const JsonValue node = member.second;
-    std::string filePath;
-    std::string soundPath;
-    double posX;
-    double posY;
-    bool isInfinite;
-    bool isFloor;
-    bool isAboveUI;
-    bool isSoundLoop;
-    int quakeDelay;
-    int startDelayTime;
-    bool isToGround;
-
-    this->GetStringValue(node, "FilePath", &filePath);
+    EZ2STREffectRecord record;
+    this->GetStringValue(node, "FilePath", &record.name);
 
     JsonValue x;
     this->GetValue(x, "PosX", node, JsonValue::DOUBLE_VALUE);
     if (x.IsNull()) {
       this->Fail("key 에 해당하는 데이터를 찾지 못했습니다. (keyName : %s)", "PosX");
     } else {
-      posX = x.AsDouble();
+      record.offsetX = x.AsDouble();
     }
 
     JsonValue y;
@@ -107,30 +96,18 @@ bool JsonCppLoader::sub_50C2A0(std::map<std::string, EZ2STREffectRecord>* out) {
     if (y.IsNull()) {
       this->Fail("key 에 해당하는 데이터를 찾지 못했습니다. (keyName : %s)", "PosY");
     } else {
-      posY = y.AsDouble();
+      record.offsetY = y.AsDouble();
     }
 
-    this->GetBoolValue(node, "IsInfinite", &isInfinite);
-    this->GetBoolValue(node, "IsFloor", &isFloor);
-    this->GetBoolValue(node, "IsAboveUI", &isAboveUI);
-    this->GetStringValue(node, "SoundPath", &soundPath);
-    this->GetBoolValue(node, "IsSoundLoop", &isSoundLoop);
-    this->GetIntValue(node, "QuakeDelay", &quakeDelay);
-    this->GetIntValue(node, "StartDelayTime", &startDelayTime);
-    this->GetBoolValue(node, "IsToGround", &isToGround);
+    this->GetBoolValue(node, "IsInfinite", &record.unknown_0028);
+    this->GetBoolValue(node, "IsFloor", &record.unknown_0029);
+    this->GetBoolValue(node, "IsAboveUI", &record.unknown_002A);
+    this->GetStringValue(node, "SoundPath", &record.unknown_002C);
+    this->GetBoolValue(node, "IsSoundLoop", &record.unknown_0044);
+    this->GetIntValue(node, "QuakeDelay", &record.unknown_0048[0]);
+    this->GetIntValue(node, "StartDelayTime", &record.unknown_0048[1]);
+    this->GetBoolValue(node, "IsToGround", &record.unknown_0050);
 
-    EZ2STREffectRecord record;
-    record.name = filePath;
-    record.offsetX = posX;
-    record.offsetY = posY;
-    record.unknown_0028 = isInfinite;
-    record.unknown_0029 = isFloor;
-    record.unknown_002A = isAboveUI;
-    record.unknown_002C = soundPath;
-    record.unknown_0044 = isSoundLoop;
-    record.unknown_0048[0] = quakeDelay;
-    record.unknown_0048[1] = startDelayTime;
-    record.unknown_0050 = isToGround;
     if (!out->insert(std::make_pair(name, record)).second) {
       this->Fail("중복키가 입력되었습니다. (key : %s)", name.c_str());
       return false;
