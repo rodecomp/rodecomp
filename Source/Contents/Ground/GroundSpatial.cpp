@@ -1,37 +1,64 @@
 #include "Contents/Ground/GroundGeometry.h"
-#include "Utility/Math/ScalarConversion.h"
 
 #include <cmath>
 
 // OFFSET: 0x00ABD8F0
 // FUNCTION: fn_17548
-GroundQuad::GroundQuad() : texture(nullptr), selected(0) {
+GroundQuad::GroundQuad() {
   for (auto& vertex : this->vertices) {
     vertex[0] = 0.0f;
     vertex[1] = 0.0f;
     vertex[2] = 0.0f;
   }
+  this->texture = nullptr;
+  this->selected = 0;
 }
 
 // OFFSET: 0x00ABD8A0
 // FUNCTION: fn_17547
-GroundCell::GroundCell() : corners{}, top(nullptr), side1(nullptr), side2(nullptr), color{255, 255, 255} {
+GroundCell::GroundCell() {
+  for (auto& corner : this->corners) {
+    corner[0] = 0.0f;
+    corner[1] = 0.0f;
+    corner[2] = 0.0f;
+  }
+  this->top = nullptr;
+  this->side1 = nullptr;
+  this->side2 = nullptr;
+  this->color[0] = 255;
+  this->color[1] = 255;
+  this->color[2] = 255;
 }
 
 // OFFSET: 0x00AC0180
 // FUNCTION: fn_17562
 void GroundGeometry::SpatialCell(float x, float z, int& column, int& row) const {
-  const float first = static_cast<float>(std::floor(static_cast<double>(x / this->cellSize)));
-  column = TruncateToInt(first) + this->width / 2;
-  const float second = static_cast<float>(std::floor(static_cast<double>(z / this->cellSize)));
-  row = TruncateToInt(second) + this->height / 2;
+  column = static_cast<int>(std::floor(x / this->cellSize)) + this->width / 2;
+  row = static_cast<int>(std::floor(z / this->cellSize)) + this->height / 2;
 }
 
 // OFFSET: 0x00AC0EA0
 // FUNCTION: fn_17573
 void GroundGeometry::HeightBounds(const int* rectangle, float& minimum, float& maximum) const {
-  if (rectangle[0] < 0 || rectangle[0] >= this->width || rectangle[2] < 0 || rectangle[2] >= this->width || rectangle[1] < 0 || rectangle[1] >= this->height ||
-      rectangle[3] < 0 || rectangle[3] >= this->height || rectangle[2] <= rectangle[0] || rectangle[3] <= rectangle[1]) {
+  bool outside = false;
+
+  if (rectangle[0] < 0 || rectangle[0] >= this->width) {
+    outside = true;
+  }
+
+  if (rectangle[2] < 0 || rectangle[2] >= this->width) {
+    outside = true;
+  }
+
+  if (rectangle[1] < 0 || rectangle[1] >= this->height) {
+    outside = true;
+  }
+
+  if (rectangle[3] < 0 || rectangle[3] >= this->height) {
+    outside = true;
+  }
+
+  if (rectangle[2] <= rectangle[0] || rectangle[3] <= rectangle[1] || outside) {
     minimum = 0.0f;
     maximum = 0.0f;
     return;
@@ -39,34 +66,49 @@ void GroundGeometry::HeightBounds(const int* rectangle, float& minimum, float& m
 
   minimum = 999999.0f;
   maximum = -999999.0f;
-  int column = rectangle[0];
 
-  while (column <= rectangle[2]) {
-    int row = rectangle[1];
-
-    while (row <= rectangle[3]) {
-      const auto index = static_cast<unsigned>(column) + static_cast<unsigned>(row) * static_cast<unsigned>(this->width);
-      const GroundQuad* top = this->cells[index].top;
+  for (int column = rectangle[0]; column <= rectangle[2]; ++column) {
+    for (int row = rectangle[1]; row <= rectangle[3]; ++row) {
+      const GroundQuad* top = this->cells[column + row * this->width].top;
 
       if (top) {
-        const float heights[4] = {top->vertices[0][1], top->vertices[1][1], top->vertices[2][1], top->vertices[3][1]};
+        const float height0 = top->vertices[0][1];
+        const float height1 = top->vertices[1][1];
+        const float height2 = top->vertices[2][1];
+        const float height3 = top->vertices[3][1];
 
-        for (float value : heights) {
-          if (value > maximum) {
-            maximum = value;
-          }
+        if (height0 > maximum) {
+          maximum = height0;
         }
 
-        for (float value : heights) {
-          if (minimum > value) {
-            minimum = value;
-          }
+        if (height1 > maximum) {
+          maximum = height1;
+        }
+
+        if (height2 > maximum) {
+          maximum = height2;
+        }
+
+        if (height3 > maximum) {
+          maximum = height3;
+        }
+
+        if (minimum > height0) {
+          minimum = height0;
+        }
+
+        if (minimum > height1) {
+          minimum = height1;
+        }
+
+        if (minimum > height2) {
+          minimum = height2;
+        }
+
+        if (minimum > height3) {
+          minimum = height3;
         }
       }
-
-      ++row;
     }
-
-    ++column;
   }
 }
