@@ -1,7 +1,7 @@
 #include "Client/Input/Mouse.h"
+#include "Client/Application/ApplicationWindow.h"
 #include "Render/DeviceContext/DCSurface.h"
 
-#include <windows.h>
 #include <timeapi.h>
 
 // OFFSET: 0x006370C0
@@ -88,21 +88,16 @@ void CMouse::SetY(int value) {
 
 // OFFSET: 0x00637260
 // FUNCTION: fn_04731
-void CMouse::Message(CMouse& global, HWND mainWindow, HWND source, UINT message, WPARAM keys, LPARAM) {
-  if (global.active != 1) {
-    global.Reset();
-    global.active = 1;
+void CMouse::Message(HWND source, UINT message, WPARAM keys, LPARAM) {
+  if (g_mouse.active != 1) {
+    g_mouse.Reset();
+    g_mouse.active = 1;
   }
 
   switch (message) {
-  case WM_MOUSEMOVE: {
-    POINT point;
-    GetCursorPos(&point);
-    ScreenToClient(mainWindow, &point);
-    this->pendingX = point.x;
-    this->pendingY = point.y;
+  case WM_MOUSEWHEEL:
+    this->pendingWheel = GET_WHEEL_DELTA_WPARAM(keys);
     break;
-  }
   case WM_LBUTTONDOWN:
     this->pendingButtons[0] = 1;
     SetCapture(source);
@@ -117,8 +112,13 @@ void CMouse::Message(CMouse& global, HWND mainWindow, HWND source, UINT message,
   case WM_RBUTTONUP:
     this->pendingButtons[1] = 0;
     break;
-  case WM_MOUSEWHEEL:
-    this->pendingWheel = GET_WHEEL_DELTA_WPARAM(keys);
+  case WM_MOUSEMOVE: {
+    POINT point;
+    GetCursorPos(&point);
+    ScreenToClient(hWnd, &point);
+    this->pendingX = point.x;
+    this->pendingY = point.y;
     break;
+  }
   }
 }

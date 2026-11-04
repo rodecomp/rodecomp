@@ -13,7 +13,7 @@ public:
   void SetX(int value);
   void SetY(int value);
 
-  void Message(CMouse& global, HWND mainWindow, HWND source, UINT message, WPARAM keys, LPARAM unused);
+  void Message(HWND source, UINT message, WPARAM keys, LPARAM unused);
 
   /* 0004 */ int x = 0;
   /* 0008 */ int y = 0;

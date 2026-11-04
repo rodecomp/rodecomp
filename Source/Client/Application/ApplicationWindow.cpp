@@ -126,17 +126,17 @@ LRESULT CALLBACK sub_E5C430(HWND window, UINT message, WPARAM wParam, LPARAM lPa
       }
       return 1;
     }
-    if (g_isAppActive != 1) {
-      CWebBrowser* browser = g_windowMgr.FindBrowser(reinterpret_cast<HWND>(lParam));
-      if (browser && browser->MatchesWindow(reinterpret_cast<HWND>(lParam))) {
-        SetApplicationActive(1);
-      } else {
-        ShowWindow(window, SW_MINIMIZE);
-      }
+    if (g_isAppActive == 1) {
+      g_restoreSurfaces = 1;
+      ShowWindow(window, SW_MAXIMIZE);
       return 1;
     }
-    g_restoreSurfaces = 1;
-    ShowWindow(window, SW_MAXIMIZE);
+    CWebBrowser* browser = g_windowMgr.FindBrowser(reinterpret_cast<HWND>(lParam));
+    if (browser && browser->MatchesWindow(reinterpret_cast<HWND>(lParam))) {
+      SetApplicationActive(1);
+    } else {
+      ShowWindow(window, SW_MINIMIZE);
+    }
     return 1;
   }
   case WM_ERASEBKGND:
@@ -171,10 +171,11 @@ LRESULT CALLBACK sub_E5C430(HWND window, UINT message, WPARAM wParam, LPARAM lPa
   case WM_GETMINMAXINFO:
     if (hWnd) {
       MINMAXINFO* info = reinterpret_cast<MINMAXINFO*>(lParam);
-      info->ptMinTrackSize.x = Rect.right - Rect.left;
-      info->ptMaxTrackSize.x = Rect.right - Rect.left;
-      info->ptMinTrackSize.y = Rect.bottom - Rect.top;
-      info->ptMaxTrackSize.y = Rect.bottom - Rect.top;
+      const RECT bounds = Rect;
+      info->ptMinTrackSize.x = bounds.right - bounds.left;
+      info->ptMaxTrackSize.x = bounds.right - bounds.left;
+      info->ptMinTrackSize.y = bounds.bottom - bounds.top;
+      info->ptMaxTrackSize.y = bounds.bottom - bounds.top;
     }
     return 0;
   case WM_NCACTIVATE:
@@ -263,7 +264,7 @@ LRESULT CALLBACK sub_E5C430(HWND window, UINT message, WPARAM wParam, LPARAM lPa
   case WM_RBUTTONUP:
   case WM_RBUTTONDBLCLK:
   case WM_MOUSEWHEEL:
-    g_mouse.Message(g_mouse, hWnd, window, message, wParam, lParam);
+    g_mouse.Message(window, message, wParam, lParam);
     break;
   case WM_ENTERMENULOOP:
   case WM_ENTERSIZEMOVE:
