@@ -1,4 +1,5 @@
 #include "Client/Mode/CMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
@@ -111,9 +112,9 @@ void UIResizer::Slot27(int x, int y) {
 // FUNCTION: fn_10879
 void UIResizer::ResetCursor(int x, int y) {
   if (g_windowMgr.Capture() == this || (x >= 0 && x < this->geometry.width && y >= 0 && y <= this->geometry.height)) {
-    static_cast<CMode*>(g_charViewMode)->SetCursorAction(2);
+    g_modeMgr.gameMode->SetCursorAction(2);
   } else if (g_windowMgr.Capture() != this) {
-    static_cast<CMode*>(g_charViewMode)->SetCursorAction(0);
+    g_modeMgr.gameMode->SetCursorAction(0);
   }
 }
 
