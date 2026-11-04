@@ -8,9 +8,9 @@ struct XmlNode {
   explicit XmlNode(const char* name);
   ~XmlNode();
   XmlNode* AppendSibling(XmlNode* node);
-  void Clear();
+  __declspec(noinline) void Clear();
   XmlNode* FindChild(const char* name);
-  XmlNode* FindSibling(const char* name);
+  __declspec(noinline) XmlNode* FindSibling(const char* name);
   const std::string& Text();
   std::string DecodeEntity(const char* begin, const char* end);
 
