@@ -35,44 +35,44 @@ void CGameMode::SubcellPosition(int column, int row, int subColumn, int subRow, 
 void CGameMode::WorldCell(float x, float z, int& column, int& row) const {
   const float size = static_cast<float>(this->scene->terrain->cellSize);
   const float first = static_cast<float>(this->scene->terrain->width / 2) + x / size;
-  const float flooredX = static_cast<float>(std::floor(static_cast<double>(first)));
-  column = TruncateToInt(flooredX);
+  const float flooredX = std::floor(first);
+  column = static_cast<int>(flooredX);
   const float second = static_cast<float>(this->scene->terrain->height / 2) + z / size;
-  const float flooredZ = static_cast<float>(std::floor(static_cast<double>(second)));
-  row = TruncateToInt(flooredZ);
+  const float flooredZ = std::floor(second);
+  row = static_cast<int>(flooredZ);
 }
 
 // OFFSET: 0x00CD50A0
 // FUNCTION: fn_21277
 void CGameMode::WorldSubcell(float x, float z, int& column, int& row, int& subColumn, int& subRow) const {
-  const C3dAttr* terrain = this->scene->terrain;
-  const float size = static_cast<float>(terrain->cellSize);
-  const float localX = x / size;
-  const float gridX = static_cast<float>(terrain->width / 2) + localX;
-  const float flooredX = static_cast<float>(std::floor(static_cast<double>(gridX)));
-  const float localZ = z / size;
-  column = TruncateToInt(flooredX);
-  const float gridZ = static_cast<float>(terrain->height / 2) + localZ;
-  const float flooredZ = static_cast<float>(std::floor(static_cast<double>(gridZ)));
-  row = TruncateToInt(flooredZ);
+  const float size = static_cast<float>(this->scene->terrain->cellSize);
 
-  const float fractionX = (static_cast<float>(terrain->width / 2) + localX) - static_cast<float>(column);
-  const float sixteenthsX = static_cast<float>(std::floor(static_cast<double>(fractionX * 16.0f)));
-  subColumn = TruncateToInt(sixteenthsX) % 16;
-  const float fractionZ = (static_cast<float>(terrain->height / 2) + localZ) - static_cast<float>(row);
-  const float sixteenthsZ = static_cast<float>(std::floor(static_cast<double>(fractionZ * 16.0f)));
-  subRow = TruncateToInt(sixteenthsZ) % 16;
+  const float localX = x / size;
+  const float gridX = static_cast<float>(this->scene->terrain->width / 2) + localX;
+  const float flooredX = std::floor(gridX);
+  column = static_cast<int>(flooredX);
+  const float localZ = z / size;
+  const float gridZ = static_cast<float>(this->scene->terrain->height / 2) + localZ;
+  const float flooredZ = std::floor(gridZ);
+  row = static_cast<int>(flooredZ);
+
+  const float fractionX = (static_cast<float>(this->scene->terrain->width / 2) + localX) - static_cast<float>(column);
+  const float sixteenthsX = std::floor(fractionX * 16.0f);
+  subColumn = static_cast<int>(sixteenthsX) % 16;
+  const float fractionZ = (static_cast<float>(this->scene->terrain->height / 2) + localZ) - static_cast<float>(row);
+  const float sixteenthsZ = std::floor(fractionZ * 16.0f);
+  subRow = static_cast<int>(sixteenthsZ) % 16;
 }
 
 // OFFSET: 0x00A8C790
 // FUNCTION: fn_17135
 void C3dAttr::SpatialCell(float x, float z, int& column, int& row) const {
   const int halfRows = 2 * (this->height / 4);
-  const float first = static_cast<float>(std::floor(static_cast<double>(x / static_cast<float>(this->cellSize))));
-  const int firstCell = TruncateToInt(first);
+  const float first = std::floor(x / static_cast<float>(this->cellSize));
+  const int firstCell = static_cast<int>(first);
   column = firstCell + 2 * (this->width / 4);
-  const float second = static_cast<float>(std::floor(static_cast<double>(z / static_cast<float>(this->cellSize))));
-  row = TruncateToInt(second) + halfRows;
+  const float second = std::floor(z / static_cast<float>(this->cellSize));
+  row = static_cast<int>(second) + halfRows;
 }
 
 // OFFSET: 0x00748E90
