@@ -9,8 +9,8 @@ public:
   CMapProperty();
   virtual ~CMapProperty();
 
-  void SetValue(int key, int value);
-  int GetValue(int key);
+  __declspec(noinline) void SetValue(int key, int value);
+  __declspec(noinline) int GetValue(int key);
 
   /* 0004 */ std::map<int, int> m_values;
 };
