@@ -537,7 +537,7 @@ void CUIHThumb::Slot27(int x, int) {
 // OFFSET: 0x009F24F0
 // FUNCTION: fn_14714
 void CUIThumb::ResetCursor(int, int) {
-  static_cast<CMode*>(g_charViewMode)->SetCursorAction(2);
+  g_modeMgr.gameMode->SetCursorAction(2);
 }
 
 // OFFSET: 0x009F2450
@@ -859,7 +859,7 @@ void CUIButton::Slot48() {
 // OFFSET: 0x009EEAA0
 // FUNCTION: fn_14633
 void CUIButton::ResetCursor(int, int) {
-  static_cast<CMode*>(g_charViewMode)->SetCursorAction(this->disabled ? 0 : 2);
+  g_modeMgr.gameMode->SetCursorAction(this->disabled ? 0 : 2);
 }
 
 // OFFSET: 0x009ECCD0
@@ -2513,79 +2513,79 @@ void CUIResizer::Paint() {
 // OFFSET: 0x009E9430
 // FUNCTION: fn_14504
 void CUIResizer::Slot25(int x, int y) {
-  if (this->parent) {
-    g_windowMgr.SetCapture(this);
-    for (const UIWindow* node = this; node; node = node->parent) {
-      x += node->geometry.x;
-      y += node->geometry.y;
-    }
-    this->startX = x;
-    this->startY = y;
-    this->startWidth = this->parent->geometry.width;
-    this->startHeight = this->parent->geometry.height;
-    this->deltaX = 0;
-    this->deltaY = 0;
+  if (!this->parent) {
+    return;
   }
+
+  g_windowMgr.SetCapture(this);
+  this->ToScreen(x, y);
+
+  this->startX = x;
+  this->startY = y;
+  this->startWidth = this->parent->geometry.width;
+  this->startHeight = this->parent->geometry.height;
+  this->deltaX = 0;
+  this->deltaY = 0;
 }
 
 // OFFSET: 0x009E94B0
 // FUNCTION: fn_14505
 void CUIResizer::Slot31(int x, int y) {
-  if (this->parent && this == g_windowMgr.Capture()) {
-    g_windowMgr.ReleaseCapture();
-    this->parent->Slot36();
-    for (const UIWindow* node = this; node; node = node->parent) {
-      x += node->geometry.x;
-      y += node->geometry.y;
-    }
-    this->startX = x;
-    this->startY = y;
-    this->startWidth = this->parent->geometry.width;
-    this->startHeight = this->parent->geometry.height;
-    this->deltaX = 0;
-    this->deltaY = 0;
+  if (!this->parent || this != g_windowMgr.Capture()) {
+    return;
   }
+
+  g_windowMgr.ReleaseCapture();
+  this->parent->Slot36();
+  this->ToScreen(x, y);
+
+  this->startX = x;
+  this->startY = y;
+  this->startWidth = this->parent->geometry.width;
+  this->startHeight = this->parent->geometry.height;
+  this->deltaX = 0;
+  this->deltaY = 0;
 }
 
 // OFFSET: 0x009E9540
 // FUNCTION: fn_14506
 void CUIResizer::Slot27(int x, int y) {
-  if (this->parent && this == g_windowMgr.Capture()) {
-    for (const UIWindow* node = this; node; node = node->parent) {
-      x += node->geometry.x;
-      y += node->geometry.y;
-    }
-    const int rows = static_cast<int>(std::roundf(static_cast<float>(y - this->startY) / static_cast<float>(this->stepY)) * static_cast<float>(this->stepY));
-    int width = static_cast<int>(std::roundf(static_cast<float>(x - this->startX) / static_cast<float>(this->stepX)) * static_cast<float>(this->stepX)) + this->startWidth;
-    if (width > this->maxWidth) {
-      width = this->maxWidth;
-    } else if (width < this->minWidth) {
-      width = this->minWidth;
-    }
+  if (!this->parent || this != g_windowMgr.Capture()) {
+    return;
+  }
 
-    int height = rows + this->startHeight;
-    if (height > this->maxHeight) {
-      height = this->maxHeight;
-    } else if (height < this->minHeight) {
-      height = this->minHeight;
-    }
+  this->ToScreen(x, y);
 
-    width -= this->startWidth;
-    height -= this->startHeight;
-    if (width != this->deltaX || height != this->deltaY) {
-      if (this->onResize) {
-        this->onResize(width - this->deltaX, height - this->deltaY);
-      }
-      this->deltaX = width;
-      this->deltaY = height;
+  const int rows = static_cast<int>(std::roundf(static_cast<float>(y - this->startY) / static_cast<float>(this->stepY)) * static_cast<float>(this->stepY));
+  int width = static_cast<int>(std::roundf(static_cast<float>(x - this->startX) / static_cast<float>(this->stepX)) * static_cast<float>(this->stepX)) + this->startWidth;
+  if (width > this->maxWidth) {
+    width = this->maxWidth;
+  } else if (width < this->minWidth) {
+    width = this->minWidth;
+  }
+
+  int height = rows + this->startHeight;
+  if (height > this->maxHeight) {
+    height = this->maxHeight;
+  } else if (height < this->minHeight) {
+    height = this->minHeight;
+  }
+
+  width -= this->startWidth;
+  height -= this->startHeight;
+  if (width != this->deltaX || height != this->deltaY) {
+    if (this->onResize) {
+      this->onResize(width - this->deltaX, height - this->deltaY);
     }
+    this->deltaX = width;
+    this->deltaY = height;
   }
 }
 
 // OFFSET: 0x009E96B0
 // FUNCTION: fn_14507
 void CUIResizer::ResetCursor(int, int) {
-  static_cast<CMode*>(g_charViewMode)->SetCursorAction(2);
+  g_modeMgr.gameMode->SetCursorAction(2);
 }
 
 // OFFSET: 0x009E96C0
