@@ -61,6 +61,15 @@ namespace {
     return 0;
   }
 
+  // INLINED
+  inline bool IsWorldVersionAtLeast(unsigned char major, unsigned char minor, unsigned char requiredMajor, unsigned char requiredMinor) {
+    if (major == requiredMajor) {
+      return minor >= requiredMinor;
+    }
+
+    return major > requiredMajor;
+  }
+
   // OFFSET: 0x00763740
   // FUNCTION: fn_08079
   unsigned char IsUnsupportedWorldVersion(unsigned major, unsigned minor, unsigned build, char* message, unsigned capacity) {
@@ -111,13 +120,13 @@ void C3dWorldRes::Unload() {
 }
 
 // INLINED
-inline void C3dWorldRes::ReadEnvironment(CFile& input, unsigned version) {
-  if (version < 0x206u) {
-    if (version >= 0x103u) {
+__forceinline void C3dWorldRes::ReadEnvironment(CFile& input, unsigned char major, unsigned char minor) {
+  if (!IsWorldVersionAtLeast(major, minor, 2, 6)) {
+    if (IsWorldVersionAtLeast(major, minor, 1, 3)) {
       input.Read(&this->waterLevel, sizeof(this->waterLevel));
     }
 
-    if (version >= 0x108u) {
+    if (IsWorldVersionAtLeast(major, minor, 1, 8)) {
       input.Read(&this->waterType, sizeof(this->waterType));
       input.Read(&this->waveHeight, sizeof(this->waveHeight));
       input.Read(&this->waveSpeed, sizeof(this->waveSpeed));
@@ -129,14 +138,14 @@ inline void C3dWorldRes::ReadEnvironment(CFile& input, unsigned version) {
       this->wavePitch = 50.0f;
     }
 
-    if (version >= 0x109u) {
+    if (IsWorldVersionAtLeast(major, minor, 1, 9)) {
       input.Read(&this->waterAnimation, sizeof(this->waterAnimation));
     } else {
       this->waterAnimation = 3;
     }
   }
 
-  if (version >= 0x105u) {
+  if (IsWorldVersionAtLeast(major, minor, 1, 5)) {
     input.Read(&this->longitude, sizeof(this->longitude));
     input.Read(&this->latitude, sizeof(this->latitude));
     input.Read(this->diffuse, sizeof(this->diffuse));
@@ -164,12 +173,12 @@ inline void C3dWorldRes::ReadEnvironment(CFile& input, unsigned version) {
       ((matrix.values[component] * 0.0f + matrix.values[component + 3]) + matrix.values[component + 6] * 0.0f) + matrix.values[component + 9];
   }
 
-  if (version >= 0x107u) {
+  if (IsWorldVersionAtLeast(major, minor, 1, 7)) {
     unsigned unused;
     input.Read(&unused, sizeof(unused));
   }
 
-  if (version >= 0x106u) {
+  if (IsWorldVersionAtLeast(major, minor, 1, 6)) {
     for (int& bound : this->bounds) {
       input.Read(&bound, sizeof(bound));
     }
@@ -182,7 +191,7 @@ inline void C3dWorldRes::ReadEnvironment(CFile& input, unsigned version) {
 }
 
 // INLINED
-inline void C3dWorldRes::ReadObjects(CFile& input, unsigned version, unsigned build, char* lastName) {
+__forceinline void C3dWorldRes::ReadObjects(CFile& input, unsigned char major, unsigned char minor, unsigned build, char* lastName) {
   int count;
   input.Read(&count, sizeof(count));
 
@@ -196,19 +205,24 @@ inline void C3dWorldRes::ReadObjects(CFile& input, unsigned version, unsigned bu
       int unknown = 0;
       int modelIndex = -1;
       float speed = 1.0f;
-      unsigned char flag = 0;
+      unsigned char flag;
 
-      if (version >= 0x103u) {
+      if (IsWorldVersionAtLeast(major, minor, 1, 3)) {
         input.Read(lastName, 40);
         input.Read(&animation, sizeof(animation));
         input.Read(&speed, sizeof(speed));
         input.Read(&unknown, sizeof(unknown));
 
-        if (version >= 0x206u && build >= 186) {
+        if (major > 2 || (major == 2 && minor >= 6 && build >= 186)) {
           input.Read(&flag, 1);
+        } else {
+          flag = 0;
         }
 
-        if (version >= 0x207u) {
+        const int modelVersion[2] = {7, 2};
+        const unsigned char* const fileVersion[2] = {&minor, &major};
+
+        if (CompareWorldVersion(modelVersion, fileVersion) <= 0) {
           input.Read(&modelIndex, sizeof(modelIndex));
         }
 
@@ -247,7 +261,7 @@ inline void C3dWorldRes::ReadObjects(CFile& input, unsigned version, unsigned bu
     case 3: {
       WorldSoundRecord* record;
 
-      if (version < 0x200u) {
+      if (major < 2) {
         WorldLegacySoundFileRecord wire;
         input.Read(&wire, sizeof(wire));
         record = new WorldSoundRecord;
@@ -304,12 +318,11 @@ bool C3dWorldRes::Load(const char* name) {
   unsigned char minor = 0;
   input.Read(&major, 1);
   input.Read(&minor, 1);
-  const unsigned version = static_cast<unsigned>(major) * 256u + minor;
 
   char message[256];
 
-  if (version > 0x207u) {
-    std::snprintf(message, sizeof(message), "Unsupported Version\n current version: %d.%d < %d.%d", 2, 7, major, minor);
+  if (major > 2 || (major == 2 && minor > 7)) {
+    sprintf_s(message, sizeof(message), "Unsupported Version\n current version: %d.%d < %d.%d", 2, 7, major, minor);
     ShowErrorDialog(GetRenderSystemHolder()->system, message, 0);
 
     return false;
@@ -337,14 +350,14 @@ bool C3dWorldRes::Load(const char* name) {
   input.Read(lastName, sizeof(lastName));
   this->groundName = lastName;
 
-  if (version >= 0x104u) {
+  if (IsWorldVersionAtLeast(major, minor, 1, 4)) {
     input.Read(lastName, sizeof(lastName));
     this->terrainName = lastName;
   }
 
   input.Read(lastName, sizeof(lastName));
   this->sourceName = lastName;
-  this->ReadEnvironment(input, version);
+  this->ReadEnvironment(input, major, minor);
 
   const int targetVersion[2] = {7, 2};
   const unsigned char* const fileVersion[2] = {&minor, &major};
@@ -356,7 +369,7 @@ bool C3dWorldRes::Load(const char* name) {
     input.Seek(4u * count, FILE_CURRENT);
   }
 
-  this->ReadObjects(input, version, build, lastName);
+  this->ReadObjects(input, major, minor, build, lastName);
 
   if (major == 2 && minor >= 1) {
     this->spatial = new WorldSpatialTree;

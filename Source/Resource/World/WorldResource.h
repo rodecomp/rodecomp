@@ -86,8 +86,8 @@ public:
   /* 01CD */ unsigned char unknown_01CD[3];
 
 private:
-  void ReadEnvironment(CFile& input, unsigned version);
-  void ReadObjects(CFile& input, unsigned version, unsigned build, char* lastName);
+  void ReadEnvironment(CFile& input, unsigned char major, unsigned char minor);
+  void ReadObjects(CFile& input, unsigned char major, unsigned char minor, unsigned build, char* lastName);
 };
 
 static_assert(sizeof(WorldModelRecord) == 268);
