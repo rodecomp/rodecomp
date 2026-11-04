@@ -4083,12 +4083,18 @@ void CEffectPrim::RenderOrbitIcons(matrix& wtm, float scale, unsigned char red, 
       blue = 20;
     }
 
-    vector3d* const points[4] = {&slot.vecBPre, &slot.vecBNow, &slot.vecTPre, &slot.vecTNow};
-    for (int item = 0; item < 4; ++item) {
-      const int angle = static_cast<int>(slot.height[3 + 4 * item]);
-      points[item]->x = g_cosTable[angle] * 4.0f;
-      points[item]->z = g_sinTable[angle] * 4.0f;
-    }
+    const int angle0 = static_cast<int>(slot.height[3]);
+    slot.vecBPre.x = g_cosTable[angle0] * 4.0f;
+    slot.vecBPre.z = g_sinTable[angle0] * 4.0f;
+    const int angle1 = static_cast<int>(slot.height[7]);
+    slot.vecBNow.x = g_cosTable[angle1] * 4.0f;
+    slot.vecBNow.z = g_sinTable[angle1] * 4.0f;
+    const int angle2 = static_cast<int>(slot.height[11]);
+    slot.vecTPre.x = g_cosTable[angle2] * 4.0f;
+    slot.vecTPre.z = g_sinTable[angle2] * 4.0f;
+    const int angle3 = static_cast<int>(slot.height[15]);
+    slot.vecTNow.x = g_cosTable[angle3] * 4.0f;
+    slot.vecTNow.z = g_sinTable[angle3] * 4.0f;
 
     const float rx = scale * slot.distance;
     vec1 = {rx * g_cosTable[45], 0.0f, rx * g_sinTable[45]};
@@ -4098,12 +4104,11 @@ void CEffectPrim::RenderOrbitIcons(matrix& wtm, float scale, unsigned char red, 
     this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
     const vector3d quad[4] = {vec1, vec2, vec3, vec4};
 
-    for (int item = 0; item < 4; ++item) {
+    const auto renderItem = [&](int item, const vector3d& point) {
       const float mode = slot.height[2 + 4 * item];
       const int delta = static_cast<int>(slot.height[3 + 4 * item] - static_cast<float>(this->state.slots[0].alphaT));
       const bool back = (delta >= 70 || delta <= -80) && static_cast<unsigned>(delta + 270) <= 540;
       const bool flipped = mode == 0.0f || mode == 2.0f ? back : !back;
-      const vector3d& point = *points[item];
       const int order[4] = {flipped ? 1 : 0, flipped ? 0 : 1, flipped ? 3 : 2, flipped ? 2 : 3};
       vector3d corners[4];
       for (int corner = 0; corner < 4; ++corner) {
@@ -4114,7 +4119,11 @@ void CEffectPrim::RenderOrbitIcons(matrix& wtm, float scale, unsigned char red, 
         &rpCnt, static_cast<short>(static_cast<int>(slot.height[1 + 4 * item])), corners[0], corners[1], corners[2], corners[3], wtm, 0,
         static_cast<unsigned char>(static_cast<int>(mode)), 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 2
       );
-    }
+    };
+    renderItem(0, slot.vecBPre);
+    renderItem(1, slot.vecBNow);
+    renderItem(2, slot.vecTPre);
+    renderItem(3, slot.vecTNow);
   }
 }
 
