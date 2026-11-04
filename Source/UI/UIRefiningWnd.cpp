@@ -177,8 +177,8 @@ __declspec(noinline) void UIRefiningWnd::Reset() {
 // OFFSET: 0x007F54B0
 // FUNCTION: fn_09904
 std::uint32_t UIRefiningWnd::SelectedMaterialValue() {
-  if (this->item.unknown_0000[1] != 0 && !this->materials.empty() && this->selectedMaterial >= 0 &&
-      static_cast<unsigned>(this->selectedMaterial) < this->materials.size()) {
+  if (this->item.unknown_0000[1] > 0 && this->materials.size() > 0 && this->selectedMaterial >= 0 &&
+      this->materials.size() > static_cast<unsigned>(this->selectedMaterial)) {
     return this->materials[this->selectedMaterial].unknown_0005;
   }
   return 0;
@@ -292,41 +292,39 @@ void UIRefiningWnd::ApplyResult() {
       same = false;
     }
 
-    this->materials.assign(this->nextMaterials.begin(), this->nextMaterials.end());
+    this->materials = this->nextMaterials;
 
     unsigned char level = 0;
-    if (this->item.unknown_0000[1] != 0 && !this->materials.empty() && this->selectedMaterial >= 0 &&
-        static_cast<unsigned>(this->selectedMaterial) < this->materials.size()) {
+    if (this->item.unknown_0000[1] > 0 && this->materials.size() > 0 && this->selectedMaterial >= 0 &&
+        this->materials.size() > static_cast<unsigned>(this->selectedMaterial)) {
       level = this->materials[this->selectedMaterial].unknown_0004;
     }
     this->againButton->unknown_0125 = level;
     this->againButton->Invalidate();
 
-    if (same) {
-      if (this->selectedMaterial >= 0 && static_cast<unsigned>(this->selectedMaterial) < this->materials.size()) {
-        this->selectedMaterial = nextIndex;
-        const std::uint32_t itemId = this->materials[nextIndex].itemId;
-
-        ITEM_INFO info;
-        char name[260];
-        std::memset(name, 0, sizeof(name));
-        info.SetItemId(itemId);
-        int capacity = 260;
-        info.sub_6D5810(name, capacity, 0);
-        this->againButton->SetTooltip(name);
-
-        const ITEM_INFO owned = LookupClientItem(g_session.m_inventoryItems, itemId, 0);
-        if (owned.quantity == 0) {
-          this->notice->SetNotice(LookupMessage(3243), 5000, 1);
-          this->againButton->SetDisabled(1);
-          this->againButton->Invalidate();
-        }
-      }
-    } else {
+    if (!same) {
       this->selectedMaterial = -1;
       this->notice->SetNotice(LookupMessage(3242), 5000, 1);
       this->againButton->SetDisabled(1);
       this->againButton->Invalidate();
+    } else if (this->selectedMaterial >= 0 && static_cast<unsigned>(this->selectedMaterial) < this->materials.size()) {
+      this->selectedMaterial = nextIndex;
+      const std::uint32_t itemId = this->materials[nextIndex].itemId;
+
+      ITEM_INFO info;
+      char name[260];
+      std::memset(name, 0, sizeof(name));
+      info.SetItemId(itemId);
+      int capacity = 260;
+      info.sub_6D5810(name, capacity, 0);
+      this->againButton->SetTooltip(name);
+
+      const ITEM_INFO owned = LookupClientItem(g_session.m_inventoryItems, itemId, 0);
+      if (owned.quantity == 0) {
+        this->notice->SetNotice(LookupMessage(3243), 5000, 1);
+        this->againButton->SetDisabled(1);
+        this->againButton->Invalidate();
+      }
     }
   }
 
@@ -786,9 +784,11 @@ int UIRefiningWnd::SendMsg(
   UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
   if (message == 6) {
-    if (argument1 == 510) {
+    switch (argument1) {
+    case 510:
       ShellExecuteA(hWnd, "open", LookupMessage(4123), nullptr, nullptr, SW_SHOWNORMAL);
-    } else if (argument1 == 184) {
+      break;
+    case 184:
       if (this->unknown_01F0 != 1) {
         const std::uint32_t index = this->item.unknown_0000[1];
         if (index != 0) {
@@ -805,14 +805,17 @@ int UIRefiningWnd::SendMsg(
           }
         }
       }
-    } else if (argument1 == 185 || argument1 == 201) {
+      break;
+    case 185:
+    case 201:
       if (this->state != 2) {
         RefiningClosePacket packet;
         packet.id = 0xAA4;
         GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
         g_windowMgr.CloseWindow(295);
       }
-    } else if (argument1 == 519) {
+      break;
+    case 519:
       this->notice->SetNotice("", 0, 0);
       this->selectedMaterial = -1;
       this->catalystEnabled = 0;
@@ -821,8 +824,10 @@ int UIRefiningWnd::SendMsg(
       } else {
         this->SetState(1, 7);
       }
-    } else if (argument1 == 520) {
+      break;
+    case 520:
       this->SendMsg(this, 6, 184, 0, 0, 0);
+      break;
     }
   } else if (message == 23 && (this->state == 0 || this->state == 1)) {
     const ITEM_INFO info = LookupClientItemByIdentity(g_session.m_inventoryItems, argument1);
