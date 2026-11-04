@@ -17,6 +17,18 @@
 #include <string>
 #include <vector>
 
+// GLOBAL: gl_24664
+static const std::string g_viewerItemTagBegin = "<ITEM>";
+
+// GLOBAL: gl_24665
+static const std::string g_viewerItemTagEnd = "</ITEM>";
+
+// GLOBAL: gl_24666
+static const std::string g_viewerQuestTagBegin = "<QUEST>";
+
+// GLOBAL: gl_24667
+static const std::string g_viewerQuestTagEnd = "</QUEST>";
+
 // OFFSET: 0x0091B800
 // FUNCTION: fn_12605
 std::string UINewChatWnd::ConvertChat(std::string text) {

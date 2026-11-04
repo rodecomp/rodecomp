@@ -19,6 +19,15 @@ static const std::string g_naviTagBegin = "<NAVI>";
 // GLOBAL: gl_24594
 static const std::string g_naviTagEnd = "</NAVI>";
 
+// GLOBAL: gl_25478
+static const std::string g_infoTagBegin = "<INFO>";
+
+// GLOBAL: gl_25479
+static const std::string g_infoTagEnd = "</INFO>";
+
+// GLOBAL: gl_25480
+static const std::string g_itemLinkTagOpen = "<ITEML>";
+
 // GLOBAL: gl_24595
 static const std::string g_itemTagBegin = "<ITEM>";
 
@@ -33,8 +42,8 @@ static const std::string g_questTagEnd = "</QUEST>";
 
 // OFFSET: 0x00A7CA90
 // FUNCTION: fn_16949
-void ExtractNavigationTextLinks(std::string&& text, std::vector<TextLink>& links) {
-  ExtractTextLinks(std::move(text), g_naviTagBegin, g_naviTagEnd, links);
+void ExtractNavigationTextLinks(const std::string& text, std::vector<TextLink>& links) {
+  ExtractTextLinks(text, g_naviTagBegin, g_naviTagEnd, links);
 }
 
 // GLOBAL: gl_24597
@@ -45,8 +54,8 @@ static const std::string g_tipBoxTagEnd = "</TIPBOX>";
 
 // OFFSET: 0x00A7D690
 // FUNCTION: fn_16951
-void ExtractTipBoxTextLinks(std::string&& text, std::vector<TextLink>& links) {
-  ExtractTextLinks(std::move(text), g_tipBoxTagBegin, g_tipBoxTagEnd, links);
+void ExtractTipBoxTextLinks(const std::string& text, std::vector<TextLink>& links) {
+  ExtractTextLinks(text, g_tipBoxTagBegin, g_tipBoxTagEnd, links);
 }
 
 // GLOBAL: gl_24591
@@ -57,15 +66,15 @@ static const std::string g_urlTagEnd = "</URL>";
 
 // OFFSET: 0x00A7D6B0
 // FUNCTION: fn_16952
-void ExtractUrlTextLinks(std::string&& text, std::vector<TextLink>& links) {
-  ExtractTextLinks(std::move(text), g_urlTagBegin, g_urlTagEnd, links);
+void ExtractUrlTextLinks(const std::string& text, std::vector<TextLink>& links) {
+  ExtractTextLinks(text, g_urlTagBegin, g_urlTagEnd, links);
 }
 
 // OFFSET: 0x00A81A70
 // FUNCTION: fn_16980
 bool HasTextLinks(const std::string& text) {
-  return text.find("<URL>") != std::string::npos || text.find("<NAVI>") != std::string::npos || text.find("<INFO>") != std::string::npos ||
-         text.find("<ITEML>") != std::string::npos || text.find("<TIPBOX>") != std::string::npos || text.find("<QUEST>") != std::string::npos;
+  return text.find(g_urlTagBegin) != std::string::npos || text.find(g_itemTagBegin) != std::string::npos || text.find(g_tipBoxTagBegin) != std::string::npos ||
+         text.find(g_naviTagBegin) != std::string::npos || text.find(g_itemLinkTagOpen) != std::string::npos || text.find(g_questTagBegin) != std::string::npos;
 }
 
 // OFFSET: 0x008791E0
@@ -202,7 +211,8 @@ std::string RemoveTextLinkInfo(std::string text) {
 
 // OFFSET: 0x00A7CAB0
 // FUNCTION: fn_16950
-void ExtractTextLinks(std::string text, const std::string& begin, const std::string& end, std::vector<TextLink>& links) {
+void ExtractTextLinks(const std::string& source, const std::string& begin, const std::string& end, std::vector<TextLink>& links) {
+  std::string text = source;
   auto position = text.find(begin);
 
   if (position == std::string::npos) {
@@ -224,12 +234,12 @@ void ExtractTextLinks(std::string text, const std::string& begin, const std::str
 
     std::string display = tail.substr(0, close);
     std::string metadata;
-    const auto info = display.find("<INFO>");
+    const auto info = display.find(g_infoTagBegin);
 
     if (info != std::string::npos) {
       display = tail.substr(0, info);
       metadata = tail.substr(info + 6);
-      const auto infoEnd = metadata.find("</INFO>");
+      const auto infoEnd = metadata.find(g_infoTagEnd);
 
       if (infoEnd != std::string::npos) {
         metadata.resize(infoEnd);
