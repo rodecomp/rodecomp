@@ -37,18 +37,6 @@ namespace {
       return 0;
     }
   }
-
-  // INLINED
-  UINT RoundUpPowerOfTwo(UINT value) {
-    --value;
-    value |= value >> 1;
-    value |= value >> 2;
-    value |= value >> 4;
-    value |= value >> 8;
-    value |= value >> 16;
-
-    return value + 1 + (value == 0xFFFFFFFFu);
-  }
 }
 
 // OFFSET: 0x00572500
@@ -75,7 +63,7 @@ CTextureDX9::CTextureDX9(DeviceOwnerDX9& owner, IDirect3DTexture9* texture) : CT
   this->m_texture = texture;
   if (SUCCEEDED(texture->GetSurfaceLevel(0, &this->m_surface)) && SUCCEEDED(this->m_surface->GetDesc(&this->m_description))) {
     this->m_renderTargetUsage = (this->m_description.Usage & D3DUSAGE_RENDERTARGET) != 0;
-    this->m_dynamic = (this->m_description.Usage & D3DUSAGE_DYNAMIC) != 0;
+    this->m_dynamic = (this->m_description.Usage & D3DUSAGE_AUTOGENMIPMAP) != 0;
     this->m_textureWidth = this->m_description.Width;
     this->m_textureHeight = this->m_description.Height;
 
@@ -130,6 +118,7 @@ bool CTextureDX9::Create(int width, int height, int format) {
     this->m_texture = nullptr;
   }
 
+  IDirect3DDevice9Ex* device = this->m_owner->device;
   D3DFORMAT nativeFormat = D3DFMT_UNKNOWN;
 
   switch (format) {
@@ -150,39 +139,26 @@ bool CTextureDX9::Create(int width, int height, int format) {
     break;
   }
 
-  UINT w = std::min<UINT>(RoundUpPowerOfTwo(width), this->m_owner->caps.MaxTextureWidth);
-  UINT h = std::min<UINT>(RoundUpPowerOfTwo(height), this->m_owner->caps.MaxTextureHeight);
-  UINT ratio = this->m_owner->caps.MaxTextureAspectRatio;
-
-  if (ratio) {
-    if (w / h > ratio) {
-      h = w / ratio;
-    }
-
-    if (h / w > ratio) {
-      w = h / ratio;
-    }
-  }
-
-  this->m_textureWidth = w;
-  this->m_textureHeight = h;
+  const bool renderTarget = this->m_renderTarget;
+  DWORD usage = renderTarget ? 0 : D3DUSAGE_DYNAMIC;
+  UINT size[2];
+  const UINT* adjusted = this->m_owner->AdjustTextureDimensions(size, width, height);
+  this->m_textureWidth = adjusted[0];
+  this->m_textureHeight = adjusted[1];
   this->m_format = format;
-  DWORD usage = this->m_renderTarget ? 0 : D3DUSAGE_AUTOGENMIPMAP;
-  D3DPOOL pool = D3DPOOL_MANAGED;
-  this->m_dynamic = false;
+  UINT levels = 1;
 
   if (this->m_allowDynamic && this->m_owner->dynamicTextures) {
-    this->m_dynamic = this->m_owner->direct3D && (this->m_owner->caps.Caps2 & D3DCAPS2_DYNAMICTEXTURES) &&
-                      this->m_owner->direct3D->CheckDeviceFormat(
-                        this->m_owner->adapter, D3DDEVTYPE_HAL, this->m_owner->presentation.BackBufferFormat, D3DUSAGE_DYNAMIC, D3DRTYPE_TEXTURE, nativeFormat
-                      ) == D3D_OK;
-    pool = D3DPOOL_DEFAULT;
+    this->m_dynamic = this->m_owner->CanAutoGenerateMipmaps(nativeFormat);
+    levels = 0;
     if (this->m_dynamic) {
-      usage = D3DUSAGE_DYNAMIC | (this->m_renderTarget ? 0 : D3DUSAGE_AUTOGENMIPMAP);
+      usage = renderTarget ? D3DUSAGE_AUTOGENMIPMAP : D3DUSAGE_DYNAMIC | D3DUSAGE_AUTOGENMIPMAP;
     }
+  } else {
+    this->m_dynamic = false;
   }
 
-  if (FAILED(this->m_owner->device->CreateTexture(w, h, 1, usage, nativeFormat, pool, &this->m_texture, nullptr)) ||
+  if (FAILED(device->CreateTexture(this->m_textureWidth, this->m_textureHeight, levels, usage, nativeFormat, D3DPOOL_DEFAULT, &this->m_texture, nullptr)) ||
       FAILED(this->m_texture->GetSurfaceLevel(0, &this->m_surface)) || FAILED(this->m_surface->GetDesc(&this->m_description))) {
     return false;
   }
@@ -313,21 +289,15 @@ bool CTextureDX9::UploadSurface(
 
   const int stride = sourceWidth ? sourceWidth : width;
   int stepX = 1, stepY = 1;
-  int extentX = x + width;
-  int extentY = y + height;
+  const int extentX = x + width;
+  const int extentY = y + height;
 
-  if (static_cast<UINT>(extentX) > this->m_width) {
-    do {
-      ++stepX;
-      extentX /= stepX;
-    } while (static_cast<UINT>(extentX) > this->m_width);
+  while (static_cast<UINT>(extentX / stepX) > this->m_width) {
+    ++stepX;
   }
 
-  if (static_cast<UINT>(extentY) > this->m_height) {
-    do {
-      ++stepY;
-      extentY /= stepY;
-    } while (static_cast<UINT>(extentY) > this->m_height);
+  while (static_cast<UINT>(extentY / stepY) > this->m_height) {
+    ++stepY;
   }
 
   const int w = width / stepX, h = height / stepY;
@@ -341,26 +311,63 @@ bool CTextureDX9::UploadSurface(
     return false;
   }
 
-  for (int row = 0; row < h; ++row) {
-    auto* output = static_cast<unsigned char*>(locked.pBits) + row * locked.Pitch;
+  switch (description.Format) {
+  case D3DFMT_A1R5G5B5:
+    for (int row = 0; row < h; ++row) {
+      auto* output = static_cast<unsigned char*>(locked.pBits) + row * locked.Pitch;
+      const std::uint32_t* input = pixels + row * stepY * stride;
 
-    for (int column = 0; column < w; ++column) {
-      const std::uint32_t color = pixels[row * stepY * stride + column * stepX];
-      if (description.Format == D3DFMT_A8R8G8B8) {
-        std::memcpy(output + column * sizeof(color), &color, sizeof(color));
-      } else if (description.Format == D3DFMT_R5G6B5) {
-        const std::uint16_t converted = Convert16(color, description.Format);
-        std::memcpy(output + column * sizeof(converted), &converted, sizeof(converted));
-      } else if (description.Format == D3DFMT_A1R5G5B5 || description.Format == D3DFMT_A4R4G4B4) {
-        std::uint16_t converted = Convert16(color, description.Format);
-        const std::uint16_t rgb = description.Format == D3DFMT_A1R5G5B5 ? converted & 0x7FFF : converted & 0x0FFF;
-        if (rgb == (description.Format == D3DFMT_A1R5G5B5 ? 0x7C1F : 0xF0F) || (blackTransparent && !rgb)) {
+      for (int column = 0; column < w; ++column) {
+        std::uint16_t converted = Convert16(input[column * stepX], D3DFMT_A1R5G5B5);
+        const std::uint16_t rgb = converted & 0x7FFF;
+        if (rgb == 0x7C1F || (blackTransparent && !rgb)) {
           converted = 0;
         }
 
         std::memcpy(output + column * sizeof(converted), &converted, sizeof(converted));
       }
     }
+    break;
+  case D3DFMT_A4R4G4B4:
+    for (int row = 0; row < h; ++row) {
+      auto* output = static_cast<unsigned char*>(locked.pBits) + row * locked.Pitch;
+      const std::uint32_t* input = pixels + row * stepY * stride;
+
+      for (int column = 0; column < w; ++column) {
+        std::uint16_t converted = Convert16(input[column * stepX], D3DFMT_A4R4G4B4);
+        const std::uint16_t rgb = converted & 0x0FFF;
+        if (rgb == 0xF0F || (blackTransparent && !rgb)) {
+          converted = 0;
+        }
+
+        std::memcpy(output + column * sizeof(converted), &converted, sizeof(converted));
+      }
+    }
+    break;
+  case D3DFMT_R5G6B5:
+    for (int row = 0; row < h; ++row) {
+      auto* output = static_cast<unsigned char*>(locked.pBits) + row * locked.Pitch;
+      const std::uint32_t* input = pixels + row * stepY * stride;
+
+      for (int column = 0; column < w; ++column) {
+        const std::uint16_t converted = Convert16(input[column * stepX], D3DFMT_R5G6B5);
+        std::memcpy(output + column * sizeof(converted), &converted, sizeof(converted));
+      }
+    }
+    break;
+  case D3DFMT_A8R8G8B8:
+    for (int row = 0; row < h; ++row) {
+      auto* output = static_cast<unsigned char*>(locked.pBits) + row * locked.Pitch;
+      const std::uint32_t* input = pixels + row * stepY * stride;
+
+      for (int column = 0; column < w; ++column) {
+        const std::uint32_t color = input[column * stepX];
+        std::memcpy(output + column * sizeof(color), &color, sizeof(color));
+      }
+    }
+    break;
+  default:
+    break;
   }
 
   return SUCCEEDED(surface->UnlockRect());
@@ -375,29 +382,37 @@ void CTextureDX9::Upload(int x, int y, int width, int height, const std::uint32_
     return;
   }
 
+  IDirect3DDevice9Ex* device = this->m_owner->device;
   IDirect3DTexture9* temporary = nullptr;
   IDirect3DSurface9* surface = nullptr;
-  if (!this->m_renderTarget) {
+  bool ready = true;
+
+  if (this->m_renderTarget) {
+    ready = SUCCEEDED(device->CreateTexture(
+              this->m_textureWidth, this->m_textureHeight, !this->m_owner->dynamicTextures, 0, this->m_description.Format, D3DPOOL_SYSTEMMEM, &temporary, nullptr
+            )) &&
+            SUCCEEDED(temporary->GetSurfaceLevel(0, &surface));
+    if (ready) {
+      this->ClearSurface(surface, 0);
+    }
+  } else {
     surface = this->m_surface;
     if (surface) {
       surface->AddRef();
     }
-  } else if (SUCCEEDED(this->m_owner->device->CreateTexture(
-               this->m_textureWidth, this->m_textureHeight, !this->m_owner->dynamicTextures, 0, this->m_description.Format, D3DPOOL_SYSTEMMEM, &temporary,
-               nullptr
-             )) &&
-             SUCCEEDED(temporary->GetSurfaceLevel(0, &surface))) {
-    this->ClearSurface(surface, 0);
   }
 
-  if (surface) {
-    this->UploadSurface(surface, x, y, width, height, pixels, option != 0, sourceWidth);
+  if (ready) {
+    if (surface) {
+      this->UploadSurface(surface, x, y, width, height, pixels, option != 0, sourceWidth);
+    }
+
     if (this->m_renderTarget && temporary) {
       if (temporary->GetLevelCount() > 1) {
         D3DXFilterTexture(temporary, nullptr, UINT(-1), DWORD(-1));
       }
 
-      this->m_owner->device->UpdateTexture(temporary, this->m_texture);
+      device->UpdateTexture(temporary, this->m_texture);
     } else {
       this->Filter();
     }
