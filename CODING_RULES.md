@@ -27,9 +27,21 @@ void Player::Update(float dt) {
 }
 ```
 
-- `// OFFSET: 0x...` is mandatory on every standalone `// FUNCTION:` definition: one line per stacked ID, placed above
-  the `FUNCTION` lines, with the address `td symbol <id>` reports (eight uppercase hex digits). Never type an address
-  from memory or a decompiler listing that disagrees with the symbol database.
+- `// OFFSET: 0x...` is mandatory on every standalone `// FUNCTION:` line, on the line directly above it, with the
+  address `td symbol <id>` reports (eight uppercase hex digits). Never type an address from memory or a decompiler
+  listing that disagrees with the symbol database. An `OFFSET` line always has its `FUNCTION` line right below it,
+  and no blank line separates the annotations from the definition. The submission gate checks this.
+- Several IDs stack on one definition only for template instances: each `FUNCTION` line keeps its own `OFFSET`
+  line above it. Two non-template functions with identical bytes are two source functions; one often only calls
+  the other, which the compiler inlined.
+
+  ```cpp
+  // OFFSET: 0x009C2A50
+  // FUNCTION: fn_13995
+  // OFFSET: 0x009C2B20
+  // FUNCTION: fn_13996
+  template <class T, class D> void CUIListBoxEx<T, D>::Slot15(int width, int height) {
+  ```
 - `FUNCTION`/`GLOBAL`/`STRING`/`VTABLE` annotations contain IDs, never addresses; the symbol database stays
   authoritative. Preserve existing `// STATIC: 0x...` provenance for data. Inline-only functions must not carry
   `OFFSET` provenance.
