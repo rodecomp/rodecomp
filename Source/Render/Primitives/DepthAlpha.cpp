@@ -4,6 +4,8 @@
 
 #include <cmath>
 
+__declspec(noinline) std::uint32_t DepthAlpha(float reciprocalDepth, float start, float end);
+
 // OFFSET: 0x0055D190
 // FUNCTION: fn_02100
 std::uint32_t DepthAlpha(float reciprocalDepth, float start, float end) {
