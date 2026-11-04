@@ -1189,30 +1189,7 @@ __declspec(noinline) bool CNavigationManager::UpdateSearchResults() {
   }
 
   std::sort(this->states.begin(), this->states.end(), [](const NavigationTarget& left, const NavigationTarget& right) { return left > right; });
-  this->ClearNodePaths();
-
-  if (this->unknown_1260 == 0 || this->unknown_1260 == 1) {
-    for (unsigned index = 0; index < this->states.size(); ++index) {
-      if (this->states[index].type == 1) {
-        this->nodePaths.push_back(std::vector<int>(1, static_cast<int>(index)));
-      }
-    }
-  }
-
-  for (unsigned index = 0; index < this->states.size(); ++index) {
-    const int type = this->states[index].type;
-    if ((this->unknown_1260 != 0 && type != this->unknown_1260) || type == 1) {
-      continue;
-    }
-
-    const int path = this->FindNodePath(index);
-    if (path == -1) {
-      this->nodePaths.push_back(std::vector<int>(1, static_cast<int>(index)));
-    } else {
-      this->nodePaths[path].push_back(static_cast<int>(index));
-    }
-  }
-
+  this->BuildNodePaths();
   this->SelectNodePath(this->unknown_1264);
   return true;
 }
