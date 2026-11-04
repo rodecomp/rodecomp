@@ -1696,7 +1696,7 @@ void PakIntrusiveLink::Unlink657820() {
 
 // OFFSET: 0x00656B60
 // FUNCTION: fn_05078
-PakUniformRandom::PakUniformRandom(int minimum, int maximum, unsigned int seed) : m_engine(seed), m_distribution(minimum, maximum) {
+__declspec(noinline) PakUniformRandom::PakUniformRandom(int minimum, int maximum, unsigned int seed) : m_engine(seed), m_distribution(minimum, maximum) {
 }
 
 struct PakAuxiliaryHeader {
