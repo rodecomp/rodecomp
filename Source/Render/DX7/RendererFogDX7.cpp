@@ -1,6 +1,9 @@
 #include "Client/Application/ErrorDialog.h"
 #include "Render/TextureQuad.h"
 #include "Render/DX7/RendererFogDX7.h"
+#include "Render/DX7/DeviceOwnerDX7.h"
+#include "Render/DeviceContext/DCSurface.h"
+#include "Render/RendererDX7.h"
 
 #include <bit>
 #include <cmath>
@@ -76,51 +79,54 @@ void RendererFogDX7::Set(int value, IDirect3DDevice7* device, const D3DDEVICEDES
 
 // OFFSET: 0x0055A500
 // FUNCTION: fn_02080
-void RendererFogDX7::Apply(
-  IDirect3DDevice7* device, const D3DDEVICEDESC7& caps, float aspect, CRenderSystemBase* renderSystem
-) {
-  if (!this->dirty) {
+void CRendererDX7::ApplyFog() {
+  if (!this->fog.dirty) {
     return;
   }
 
-  if (this->enabled) {
+  if (this->fog.enabled) {
+    D3DDEVICEDESC7 empty = g_emptyCapabilitiesDX7;
+    const D3DDEVICEDESC7 caps = g_deviceOwnerDX7 ? g_deviceOwnerDX7->caps : empty;
     const float start = g_depthStart * 1490.0f + 10.0f;
     const float end = g_depthEnd * 1490.0f + 10.0f;
     const bool vertexFog = (caps.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_FOGVERTEX) != 0;
     D3DMATRIX identity{};
     identity._11 = identity._22 = identity._33 = identity._44 = 1;
     D3DMATRIX projection;
-    PerspectiveMatrixDX7(projection, 0.26179934f, aspect, 10.0f, 1500.0f);
-    device->SetTransform(D3DTRANSFORMSTATE_WORLD, &identity);
-    device->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &projection);
-    device->SetTransform(D3DTRANSFORMSTATE_VIEW, &identity);
-    device->SetRenderState(D3DRENDERSTATE_FOGCOLOR, g_worldOverlayColor);
+    PerspectiveMatrixDX7(projection, 0.26179934f, this->viewport.aspect, 10.0f, 1500.0f);
+    this->device->SetTransform(D3DTRANSFORMSTATE_WORLD, &identity);
+    this->device->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &projection);
+    this->device->SetTransform(D3DTRANSFORMSTATE_VIEW, &identity);
+    this->device->SetRenderState(D3DRENDERSTATE_FOGCOLOR, g_worldOverlayColor);
 
     if (g_fogVertexMode == D3DFOG_LINEAR) {
       if (vertexFog) {
-        device->SetRenderState(D3DRENDERSTATE_FOGSTART, std::bit_cast<unsigned>(start));
-        device->SetRenderState(D3DRENDERSTATE_FOGEND, std::bit_cast<unsigned>(end));
-        device->SetRenderState(D3DRENDERSTATE_FOGDENSITY, std::bit_cast<unsigned>(g_fogDensity));
-        device->SetRenderState(D3DRENDERSTATE_FOGTABLEMODE, D3DFOG_NONE);
-        device->SetRenderState(D3DRENDERSTATE_FOGVERTEXMODE, g_fogVertexMode);
+        this->device->SetRenderState(D3DRENDERSTATE_FOGSTART, std::bit_cast<unsigned>(start));
+        this->device->SetRenderState(D3DRENDERSTATE_FOGEND, std::bit_cast<unsigned>(end));
+        this->device->SetRenderState(D3DRENDERSTATE_FOGDENSITY, std::bit_cast<unsigned>(g_fogDensity));
+        this->device->SetRenderState(D3DRENDERSTATE_FOGTABLEMODE, D3DFOG_NONE);
+        this->device->SetRenderState(D3DRENDERSTATE_FOGVERTEXMODE, g_fogVertexMode);
       } else {
-        device->SetRenderState(D3DRENDERSTATE_FOGENABLE, 0);
+        this->device->SetRenderState(D3DRENDERSTATE_FOGENABLE, 0);
       }
     } else {
       if (vertexFog) {
-        device->SetRenderState(D3DRENDERSTATE_FOGTABLEMODE, D3DFOG_NONE);
-        device->SetRenderState(D3DRENDERSTATE_FOGVERTEXMODE, g_fogVertexMode);
+        this->device->SetRenderState(D3DRENDERSTATE_FOGTABLEMODE, D3DFOG_NONE);
+        this->device->SetRenderState(D3DRENDERSTATE_FOGVERTEXMODE, g_fogVertexMode);
       } else {
-        ShowErrorDialog(renderSystem, "Your graphic accelerator does not support fog effect.", 0);
+        ShowErrorDialog(GetRenderSystemHolder()->system, "Your graphic accelerator does not support fog effect.", 0);
       }
 
-      device->SetRenderState(D3DRENDERSTATE_FOGDENSITY, std::bit_cast<unsigned>(g_fogDensity));
+      this->device->SetRenderState(D3DRENDERSTATE_FOGDENSITY, std::bit_cast<unsigned>(g_fogDensity));
     }
 
     if (vertexFog && g_fogRange) {
-      device->SetRenderState(D3DRENDERSTATE_RANGEFOGENABLE, 1);
+      this->device->SetRenderState(D3DRENDERSTATE_RANGEFOGENABLE, 1);
     }
   }
 
-  this->dirty = 0;
+  this->fog.dirty = 0;
 }
+
+// GLOBAL: gl_24699
+D3DDEVICEDESC7 g_emptyCapabilitiesDX7;

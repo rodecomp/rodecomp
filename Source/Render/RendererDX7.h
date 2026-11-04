@@ -22,10 +22,13 @@ public:
   /* 026C */ CTextureDX7* boundLightmap;
   /* 0270 */ unsigned clearColor;
   /* 0274 */ IDirect3DDevice7* device;
-  /* 0278 */ unsigned char unknown_0278[0xC];
+  /* 0278 */ unsigned char unknown_0278[4];
+  /* 027C */ unsigned screenWidth;
+  /* 0280 */ unsigned screenHeight;
 
   void SetCamera(const float* eye, const float* target, const float* up) override;
   void SetClearColor(unsigned color) override;
+  bool Draw() override;
 
   void SetTextureFormat(unsigned format);
   void SetLighting(const float* direction, const float* diffuse, const float* ambient);
@@ -47,6 +50,10 @@ public:
   void DrawOpaqueQueues();
   void DrawGroundBaseQueue();
   void DrawAuxiliaryQueue();
+  void ApplyFog();
+  void DrawTopmostQueue();
+  void DrawBlendedQueue();
+  void FlushRenderList();
   // INLINED
   void BindTexture(CTextureDX7* texture);
   // INLINED
@@ -59,6 +66,8 @@ static_assert(offsetof(CRendererDX7, clearColor) == 0x0270);
 static_assert(offsetof(CRendererDX7, boundTexture) == 0x0268);
 static_assert(offsetof(CRendererDX7, boundLightmap) == 0x026C);
 static_assert(offsetof(CRendererDX7, device) == 0x0274);
+static_assert(offsetof(CRendererDX7, screenWidth) == 0x027C);
+static_assert(offsetof(CRendererDX7, screenHeight) == 0x0280);
 #endif
 
 #endif

@@ -115,5 +115,6 @@ static_assert(offsetof(DeviceOwnerDX7, alpha) == 0x01FC);
 #endif
 
 extern DeviceOwnerDX7* g_deviceOwnerDX7;
+extern D3DDEVICEDESC7 g_emptyCapabilitiesDX7;
 
 #endif

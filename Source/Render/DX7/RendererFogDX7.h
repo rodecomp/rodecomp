@@ -13,7 +13,6 @@ struct RendererFogDX7 {
   /* 0158 */ int supported;
 
   void Set(int value, IDirect3DDevice7* device, const D3DDEVICEDESC7& caps);
-  void Apply(IDirect3DDevice7* device, const D3DDEVICEDESC7& caps, float aspect, CRenderSystemBase* renderSystem);
 };
 
 static_assert(sizeof(RendererFogDX7) == 12);
