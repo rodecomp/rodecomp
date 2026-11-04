@@ -1547,7 +1547,7 @@ void UIMakeCharWnd::InitHairControls() {
 // OFFSET: 0x008B0B60
 // FUNCTION: fn_11743
 void UIMakeCharWnd::Slot15(int, int) {
-  static_cast<CMode*>(g_charViewMode)->SendMsg(10014, 0, 0, 0, 0);
+  g_modeMgr.gameMode->SendMsg(10014, 0, 0, 0, 0);
   this->m_nameEdit = new UIBitmapEditCtrl();
   this->m_nameEdit->SetBitmapName("유저인터페이스\\login_interface\\name-edit.bmp");
   this->m_nameEdit->SetSize(this->m_nameEdit->geometry.width, this->m_nameEdit->geometry.height);
@@ -2225,7 +2225,7 @@ int UIReplayRECControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     case 420:
       if (!this->replayPathEnabled) {
         this->mode = 1;
-        static_cast<CMode*>(g_charViewMode)->SendMsg(274, 0, 0, 0, 0);
+        g_modeMgr.gameMode->SendMsg(274, 0, 0, 0, 0);
         this->ApplyMode();
         return 0;
       }
@@ -2236,7 +2236,7 @@ int UIReplayRECControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     case 421:
       this->mode = 0;
       this->ApplyMode();
-      static_cast<CMode*>(g_charViewMode)->SendMsg(275, 0, 0, 0, 0);
+      g_modeMgr.gameMode->SendMsg(275, 0, 0, 0, 0);
       return 0;
     case 422: {
       auto* edit = static_cast<UIEditCtrl*>(this->window_0134);
@@ -2251,7 +2251,7 @@ int UIReplayRECControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
         ReplayFileList::Instance().SetPath(edit->Text());
         g_windowMgr.SetFocus(nullptr);
         edit->SetText("");
-        static_cast<CMode*>(g_charViewMode)->SendMsg(274, 0, 0, 0, 0);
+        g_modeMgr.gameMode->SendMsg(274, 0, 0, 0, 0);
 
         if (Replay::Instance().state == 1) {
           return 0;
@@ -2733,7 +2733,7 @@ int UISelectReplayDataWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
         this->Invalidate();
         if (ReplayFileList::Instance().Open(32, 0, 0) == 1) {
           if (Replay::Instance().MatchesService(g_serviceMode)) {
-            static_cast<CMode*>(g_charViewMode)->SendMsg(10027, 0, 0, 0, 0);
+            g_modeMgr.gameMode->SendMsg(10027, 0, 0, 0, 0);
             g_windowMgr.Schedule(this);
             g_soundMgr->PlayWave("버튼소리.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
             return 0;
@@ -2749,11 +2749,11 @@ int UISelectReplayDataWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     case 400:
       Replay::Instance().SetState(1);
       g_windowMgr.Schedule(this);
-      static_cast<CMode*>(g_charViewMode)->SendMsg(10025, 0, 0, 0, 0);
+      g_modeMgr.gameMode->SendMsg(10025, 0, 0, 0, 0);
       return 0;
     case 221:
       if (g_windowMgr.Confirm(LookupMessage(17), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
-        static_cast<CMode*>(g_charViewMode)->SendMsg(2, 0, 0, 0, 0);
+        g_modeMgr.gameMode->SendMsg(2, 0, 0, 0, 0);
         g_windowMgr.Schedule(this);
         return 0;
       }
@@ -2877,7 +2877,7 @@ int UISelectServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     case 184:
       if (this->m_serverList->selected != -1) {
         g_windowMgr.Schedule(this);
-        static_cast<CMode*>(g_charViewMode)->SendMsg(this->m_event, this->m_serverList->selected, 0, 0, 0);
+        g_modeMgr.gameMode->SendMsg(this->m_event, this->m_serverList->selected, 0, 0, 0);
         g_soundMgr->PlayWave("버튼소리.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
         const char* name = this->m_valueName.c_str();
         this->m_selectedServer = this->m_serverList->selected;
@@ -2892,11 +2892,11 @@ int UISelectServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       break;
     case 185:
       g_windowMgr.Schedule(this);
-      static_cast<CMode*>(g_charViewMode)->SendMsg(10006, 0, 0, 0, 0);
+      g_modeMgr.gameMode->SendMsg(10006, 0, 0, 0, 0);
       return 0;
     case 221:
       if (g_windowMgr.Confirm(LookupMessage(17), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
-        static_cast<CMode*>(g_charViewMode)->SendMsg(2, 0, 0, 0, 0);
+        g_modeMgr.gameMode->SendMsg(2, 0, 0, 0, 0);
         g_windowMgr.Schedule(this);
         return 0;
       }
@@ -2905,7 +2905,7 @@ int UISelectServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       reinterpret_cast<Replay&>(ReplayFileList::Instance()).SetBaseFrame(reinterpret_cast<std::uint32_t>(&Replay::Instance()));
       ReplayFileList::Instance().unknown_011C = g_session.m_aid;
       ReplayFileList::Instance().unknown_0120 = g_session.SyncUnknown0E98();
-      static_cast<CMode*>(g_charViewMode)->SendMsg(10026, 0, 0, 0, 0);
+      g_modeMgr.gameMode->SendMsg(10026, 0, 0, 0, 0);
       g_windowMgr.Schedule(this);
       return 0;
     }
@@ -3312,7 +3312,7 @@ int UILoginOTPWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
   if (message == 6) {
     if (a == 185) {
       if (g_windowMgr.Confirm(LookupMessage(17), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
-        static_cast<CMode*>(g_charViewMode)->SendMsg(2, 0, 0, 0, 0);
+        g_modeMgr.gameMode->SendMsg(2, 0, 0, 0, 0);
         g_windowMgr.Schedule(this);
       }
     } else if (a == 382) {
@@ -3320,8 +3320,8 @@ int UILoginOTPWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       thread_local EncryptedName<sizeof(soundSource), 0x7321C3814F8799E1ULL> soundName(soundSource);
       g_soundMgr->PlayWave(soundName.Text(), 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       if (this->unknown_00B4->Length() == 8) {
-        static_cast<CMode*>(g_charViewMode)->SendMsg(10024, reinterpret_cast<int>(this->unknown_00B4->Text()), 0, 0, 0);
-        static_cast<CMode*>(g_charViewMode)->SendMsg(39, 0, 0, 0, 0);
+        g_modeMgr.gameMode->SendMsg(10024, reinterpret_cast<int>(this->unknown_00B4->Text()), 0, 0, 0);
+        g_modeMgr.gameMode->SendMsg(39, 0, 0, 0, 0);
         g_windowMgr.CloseWindow(180);
       } else {
         g_windowMgr.Confirm(LookupMessage(3249), 0, true, false, 0, "Message", 280, 120, 0);
