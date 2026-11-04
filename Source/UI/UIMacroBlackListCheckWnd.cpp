@@ -99,39 +99,39 @@ void UIMacroBlackListCheckWnd::Paint() {
   this->DrawPanelBackground(titleHeight, 0x21C, "유저인터페이스\\basic_interface\\blacklist_check_bg.bmp");
   this->DrawButtonBar(2, this->geometry.width + 1, 1);
 
-  this->sub_A85850(7, 0x24, FormatOwnedString(LookupMessage(0xFB4)), 0x20E, 6, 0, 0, 0, 0xC, 1, 0);
-  this->sub_A85850(7, 0x159, FormatOwnedString(LookupMessage(0xFB5), this->unknown_00E4), 0x20E, 6, 0x3939FF, 0, 0, 0xC, 1, 0);
-  this->sub_A85850(0x4F, 0xF6, FormatOwnedString(LookupMessage(0xFB6), this->unknown_00E4), 0xA2, 6, 0, 0, 0, 0xC, 0, 0);
+  this->sub_A85850(7, 0x24, FormatOwnedString(LookupMessage(0xFB4)).c_str(), 0x20E, 6, 0, 0, 0, 0xC, 1, 0);
+  this->sub_A85850(7, 0x159, FormatOwnedString(LookupMessage(0xFB5), this->unknown_00E4).c_str(), 0x20E, 6, 0x3939FF, 0, 0, 0xC, 1, 0);
+  this->sub_A85850(0x4F, 0xF6, FormatOwnedString(LookupMessage(0xFB6), this->unknown_00E4).c_str(), 0xA2, 6, 0, 0, 0, 0xC, 0, 0);
 
   std::string stars;
   for (int i = 0; i < this->inputLength; ++i) {
-    stars += '*';
+    stars += "*";
   }
-  this->sub_A85850(0x86, 0x109, stars, 0x32, 6, 0x4949FF, 0, 0, 0xC, 0, 0);
+  this->sub_A85850(0x86, 0x109, stars.c_str(), 0x32, 6, 0x4949FF, 0, 0, 0xC, 0, 0);
 
-  if (this->codeLength > 0) {
-    int x = 0;
+  int x = 0;
+  for (int i = 0; i < this->codeLength; ++i) {
     int base = 0x46;
     if (this->codeLength == 4) {
       base = 0x74;
     } else if (this->codeLength == 5 || this->codeLength == 6) {
       base = 0x5D;
     }
-    for (int i = 0; i < this->codeLength; ++i) {
-      this->sub_A85850(x + base, this->charColors[i], std::string(this->code + i), 0, 0, 0, 0, 0, this->charSizes[i], this->charFlags[i], 0);
-      x += 0x17;
-    }
+
+    this->sub_A85850(x + base, this->charColors[i], this->code + i, 0, 0, 0, 0, 0, this->charSizes[i], this->charFlags[i], 0);
+    x += 0x17;
   }
+
 
   const unsigned remainingMs = this->startTick + static_cast<unsigned>(this->duration) - timeGetTime();
   const unsigned remainingSec = remainingMs / 1000u;
   if (remainingSec < 60u) {
     this->sub_A85850(
-      0x4F, 0xA4, FormatOwnedString(LookupMessage(0xFB3), 0, static_cast<int>(remainingSec / 60u), static_cast<int>(remainingSec)), 0xA2, 6, 0xFF, 0, 0,
+      0x4F, 0xA4, FormatOwnedString(LookupMessage(0xFB3), 0, static_cast<int>(remainingSec / 60u), static_cast<int>(remainingSec)).c_str(), 0xA2, 6, 0xFF, 0, 0,
       0xD, 1, 0
     );
   } else {
-    this->sub_A85850(0x4F, 0xA4, FormatOwnedString(LookupMessage(0xFB3), 0, 0, 0), 0xA2, 6, 0xFF, 0, 0, 0xD, 1, 0);
+    this->sub_A85850(0x4F, 0xA4, FormatOwnedString(LookupMessage(0xFB3), 0, 0, 0).c_str(), 0xA2, 6, 0xFF, 0, 0, 0xD, 1, 0);
   }
 }
 
@@ -201,18 +201,81 @@ int UIMacroBlackListCheckWnd::SendMsg(
     }
     break;
   case 293:
+    this->ShuffleDigitButtons();
+    if (this->inputLength < 8) {
+      this->input[this->inputLength] = '0';
+      ++this->inputLength;
+      return 0;
+    }
+    break;
   case 294:
+    this->ShuffleDigitButtons();
+    if (this->inputLength < 8) {
+      this->input[this->inputLength] = '1';
+      ++this->inputLength;
+      return 0;
+    }
+    break;
   case 295:
+    this->ShuffleDigitButtons();
+    if (this->inputLength < 8) {
+      this->input[this->inputLength] = '2';
+      ++this->inputLength;
+      return 0;
+    }
+    break;
   case 296:
+    this->ShuffleDigitButtons();
+    if (this->inputLength < 8) {
+      this->input[this->inputLength] = '3';
+      ++this->inputLength;
+      return 0;
+    }
+    break;
   case 297:
+    this->ShuffleDigitButtons();
+    if (this->inputLength < 8) {
+      this->input[this->inputLength] = '4';
+      ++this->inputLength;
+      return 0;
+    }
+    break;
   case 298:
+    this->ShuffleDigitButtons();
+    if (this->inputLength < 8) {
+      this->input[this->inputLength] = '5';
+      ++this->inputLength;
+      return 0;
+    }
+    break;
   case 299:
+    this->ShuffleDigitButtons();
+    if (this->inputLength < 8) {
+      this->input[this->inputLength] = '6';
+      ++this->inputLength;
+      return 0;
+    }
+    break;
   case 300:
+    this->ShuffleDigitButtons();
+    if (this->inputLength < 8) {
+      this->input[this->inputLength] = '7';
+      ++this->inputLength;
+      return 0;
+    }
+    break;
   case 301:
+    this->ShuffleDigitButtons();
+    if (this->inputLength < 8) {
+      this->input[this->inputLength] = '8';
+      ++this->inputLength;
+      return 0;
+    }
+    break;
   case 302:
     this->ShuffleDigitButtons();
     if (this->inputLength < 8) {
-      this->input[this->inputLength] = static_cast<char>('0' + (argument1 - 293));
+      this->input[this->inputLength] = '9';
       ++this->inputLength;
       return 0;
     }
