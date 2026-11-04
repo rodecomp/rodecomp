@@ -110,7 +110,7 @@ void CRenderObject::ClearLevelEffects() {
 
 // OFFSET: 0x00B25750
 // FUNCTION: fn_18783
-CEffect* EffectLists::Find(int actor, int id) const {
+__declspec(noinline) CEffect* EffectLists::Find(int actor, int id) const {
   const auto found = this->active.find(actor);
 
   if (found != this->active.end()) {
