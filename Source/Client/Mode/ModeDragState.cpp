@@ -15,9 +15,9 @@
 void ModeDragState::Clear() {
   this->identified = 0;
   this->id = 0;
-  this->name.clear();
+  this->name = "";
   this->unknown_0310 = 0;
-  this->resource.clear();
+  this->resource = "";
   this->source = 0;
   this->quantity = 0;
   this->slot = -1;
