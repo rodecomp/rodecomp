@@ -94,7 +94,7 @@ CNaviInfo* CNavi_Object::GetInfo() const {
 
 // OFFSET: 0x00B89940
 // FUNCTION: fn_19387
-bool CNaviData::SetDestination(CNaviInfo* info, int cellX, int cellY) {
+__declspec(noinline) bool CNaviData::SetDestination(CNaviInfo* info, int cellX, int cellY) {
   if (info == nullptr) {
     return false;
   }
