@@ -214,7 +214,7 @@ HRESULT DeviceOwnerDX9::Initialize(HWND value, UINT selectedAdapter) {
 
   this->state.Initialize(this->device);
   this->state.SetInitialStates();
-  this->dynamicTextures = (this->caps.Caps2 & D3DCAPS2_DYNAMICTEXTURES) != 0 && g_textureFiltering != 0;
+  this->UpdateMipmapFiltering();
   this->ClipFullscreenCursor();
 
   return D3D_OK;
@@ -249,6 +249,14 @@ HRESULT DeviceOwnerDX9::Close() {
 }
 
 // OFFSET: 0x0054C020
+// FUNCTION: fn_45500
+void DeviceOwnerDX9::UpdateMipmapFiltering() {
+  if (!(this->caps.TextureFilterCaps & D3DPTFILTERCAPS_MIPFLINEAR)) {
+    this->dynamicTextures = false;
+  } else {
+    this->dynamicTextures = g_textureFiltering != 0;
+  }
+}
 
 // OFFSET: 0x0054C070
 // FUNCTION: fn_01917

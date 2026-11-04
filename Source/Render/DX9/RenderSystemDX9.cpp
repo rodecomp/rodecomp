@@ -125,7 +125,7 @@ std::shared_ptr<CSurface> CRenderSystemDX9::BackBufferSurface() {
 // OFFSET: 0x0056D740
 // FUNCTION: fn_02365
 void CRenderSystemDX9::UpdateOption() {
-  this->m_device->dynamicTextures = (this->m_device->caps.Caps2 & D3DCAPS2_DYNAMICTEXTURES) != 0 && g_textureFiltering != 0;
+  this->m_device->UpdateMipmapFiltering();
 }
 
 // OFFSET: 0x0056D760
