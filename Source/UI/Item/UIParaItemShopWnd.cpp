@@ -351,13 +351,12 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
         g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2536)), 255, 0, 0, 0);
       } else {
-        CSession* lists = &g_session;
         if (item.unknown_0074[3] == 1) {
-          lists->RemoveItem1718(item);
-          lists->MergeItem1720(item);
+          g_session.RemoveItem1718(item);
+          g_session.MergeItem1720(item);
         } else {
-          lists->RemoveItem1718ByItemId(item);
-          lists->MergeItem1720ByName(item);
+          g_session.RemoveItem1718ByItemId(item);
+          g_session.MergeItem1720ByName(item);
         }
 
         this->SendMsg(nullptr, 23, 0, 0, 0, 0);
@@ -371,14 +370,18 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
   case 6: {
     this->RecordResponse(static_cast<int>(a), b, c, d);
     CMode* mode = g_modeMgr.gameMode;
-    if (a == 184) {
+    switch (a) {
+    case 184: {
       ITEM_INFO item = g_session.GetItem1720At(0);
-      mode->SendMsg(item.unknown_0074[3] == 1 ? 263 : 262, 0, 0, 0, 0);
+      if (item.unknown_0074[3] == 1) {
+        mode->SendMsg(263, 0, 0, 0, 0);
+      } else {
+        mode->SendMsg(262, 0, 0, 0, 0);
+      }
       g_session.ClearTradeItems();
       return 0;
     }
-
-    if (a == 185) {
+    case 185:
       mode->SendMsg(292, 0, 0, 0, 0);
       mode->SendMsg(40, 0, 0, 0, 0);
       g_session.ClearTradeItems();
@@ -410,10 +413,7 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       }
 
       this->title->Move(12, this->geometry.height - 20);
-      const int positions[2][2] = {
-        {this->geometry.width - 106, this->geometry.height - 24},
-        {this->geometry.width - 61, this->geometry.height - 24},
-      };
+      const int positions[2][2] = {{this->geometry.width - 106, this->geometry.height - 24}, {this->geometry.width - 61, this->geometry.height - 24}};
       for (int i = 0; i < 2; ++i) {
         this->buttons[i]->Move(positions[i][0], positions[i][1]);
       }
