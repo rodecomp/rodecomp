@@ -377,6 +377,7 @@ void CRendererDX7::FlushRenderList() {
 }
 
 // OFFSET: 0x0055ADA0
+// FUNCTION: fn_02085
 bool CRendererDX7::Draw() {
   this->screenWidth = g_deviceOwnerDX7 ? g_deviceOwnerDX7->width : 0;
   this->screenHeight = g_deviceOwnerDX7 ? g_deviceOwnerDX7->height : 0;
