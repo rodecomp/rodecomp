@@ -24,22 +24,18 @@ BitmapPixels::~BitmapPixels() {
 
 // OFFSET: 0x00547C90
 // FUNCTION: fn_01847
-void BitmapPixels::UploadTexture(CRenderSystemBase& system, CTexture*& texture) {
-  const std::int32_t bytes = 4 * static_cast<int>(this->width) * static_cast<int>(this->height);
+void BitmapPixels::UploadTexture(CRenderSystemBase&, CTexture*& texture) {
+  unsigned char* bytes = reinterpret_cast<unsigned char*>(this->pixels);
+  const std::int32_t size = 4 * static_cast<int>(this->width) * static_cast<int>(this->height);
 
-  for (std::int32_t offset = 0; offset < bytes; offset += 4) {
-    reinterpret_cast<unsigned char*>(this->pixels)[offset + 3] = 255;
+  for (std::int32_t offset = 0; offset < size; offset += 4) {
+    bytes[offset + 3] = 255;
   }
 
   if (texture) {
     texture->Upload(0, 0, this->width, this->height, this->pixels, 0, 0);
   } else {
-    CTexture* created = system.CreateTexture(this->width, this->height, TextureFormat::A1R5G5B5, false, false);
-    if (created) {
-      created->Upload(0, 0, this->width, this->height, this->pixels, 0, 0);
-    }
-
-    texture = created;
+    texture = g_texMgr.Upload(this->width, this->height, this->pixels, TextureFormat::A1R5G5B5, 0, true, false, false);
   }
 }
 
