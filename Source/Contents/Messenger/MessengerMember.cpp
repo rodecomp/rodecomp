@@ -436,7 +436,7 @@ void UIDragMiniPartyWnd::Paint() {
 
 // OFFSET: 0x00738630
 // FUNCTION: fn_07668
-void UIDragMiniPartyWnd::MoveGauge(int x, int y) {
+__declspec(noinline) void UIDragMiniPartyWnd::MoveGauge(int x, int y) {
   this->gauge->Move(x, y);
 }
 
@@ -451,21 +451,21 @@ void UIDragMiniPartyWnd::Slot31(int argument1, int argument2) {
 
 // OFFSET: 0x00738D20
 // FUNCTION: fn_07672
-void UIDragMiniPartyWnd::RemoveGauge() {
+__declspec(noinline) void UIDragMiniPartyWnd::RemoveGauge() {
   this->RemoveChild(this->gauge, 1);
   this->gauge = nullptr;
 }
 
 // OFFSET: 0x00738D50
 // FUNCTION: fn_07674
-void UIDragMiniPartyWnd::SetUnknown010C(int first, int second) {
+__declspec(noinline) void UIDragMiniPartyWnd::SetUnknown010C(int first, int second) {
   this->unknown_010C = first;
   this->unknown_0110 = second;
 }
 
 // OFFSET: 0x00738D40
 // FUNCTION: fn_07673
-void UIDragMiniPartyWnd::SetGaugeValues(int current, int maximum) {
+__declspec(noinline) void UIDragMiniPartyWnd::SetGaugeValues(int current, int maximum) {
   this->gauge->SetValues(current, maximum);
 }
 
