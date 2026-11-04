@@ -103,12 +103,15 @@ UIZeroQuestScrollBar::UIZeroQuestScrollBar() : UIScrollBar() {
 void UIScrollBar::Resize(int width, int height) {
   this->Invalidate();
 
-  if (this->vertical == 0) {
+  switch (this->vertical) {
+  case 0:
     height = this->thickness;
     UIWindow::Resize(width, height);
     this->Slot22(width, height);
-  } else if (this->vertical == 1) {
+    break;
+  case 1:
     width = this->thickness;
+    break;
   }
 
   UIWindow::Resize(width, height);
