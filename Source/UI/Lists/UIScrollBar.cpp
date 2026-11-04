@@ -294,19 +294,21 @@ void UIScrollBar::Slot27(int x, int y) {
 
 // OFFSET: 0x00892570
 // FUNCTION: fn_11474
-void UIScrollBar::ResetCursor(int, int) {
-  static_cast<CMode*>(g_charViewMode)->SetCursorAction(this->maximum != 0 ? 2 : 0);
+void UIScrollBar::ResetCursor(int x, int y) {
+  if (this->maximum == 0) {
+    UIWindow::ResetCursor(x, y);
+  } else {
+    static_cast<CMode*>(g_charViewMode)->SetCursorAction(2);
+  }
 }
 
 // OFFSET: 0x00890E90
 // FUNCTION: fn_11440
 void UIScrollBar::Slot31(int x, int y) {
-  if (this->maximum != 0) {
-    if (g_windowMgr.Capture() == this) {
-      g_windowMgr.ReleaseCapture();
-    }
-  } else {
-    this->parent->Slot31((x + this->geometry.x), (y + this->geometry.y));
+  if (this->maximum == 0) {
+    this->parent->Slot31(this->geometry.x + x, this->geometry.y + y);
+  } else if (g_windowMgr.Capture() == this) {
+    g_windowMgr.ReleaseCapture();
   }
 }
 
@@ -1114,7 +1116,7 @@ void UIChatHisBox::ShiftNaviLinks() {
 
 // OFFSET: 0x0087CA70
 // FUNCTION: fn_11255
-void UIChatHisBox::ClearNaviLinks() {
+__declspec(noinline) void UIChatHisBox::ClearNaviLinks() {
   for (auto row = this->naviLinks.begin(); row != this->naviLinks.end();) {
     for (UINaviLinkButton* button : *row) {
       this->RemoveChild(button, 1);
