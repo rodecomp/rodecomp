@@ -108,16 +108,16 @@ void UIClanInfoManageWnd::Paint() {
   this->FillRegion(200, 155, 168, 48, RGB(red, green, blue));
   int row = 0;
   int y = 157;
-  for (const auto& relation : g_clanInfo->m_relations) {
+  for (auto relation = g_clanInfo->m_relations.begin(); relation != g_clanInfo->m_relations.end(); ++relation) {
     if (y >= 205) {
       break;
     }
-    if (relation.first == 0) {
+    if (relation->first == 0) {
       if (row == this->unknown_00BC) {
         SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
         this->FillRegion(204, y, 80, 16, RGB(red, green, blue));
       }
-      this->DrawTextAt(204, y, relation.second.c_str(), 0, 0, 12, 0, 0, 0);
+      this->DrawTextAt(204, y, relation->second.c_str(), 0, 0, 12, 0, 0, 0);
       ++row;
       y += 16;
     }
@@ -127,16 +127,16 @@ void UIClanInfoManageWnd::Paint() {
   this->FillRegion(200, 229, 168, 48, RGB(red, green, blue));
   row = 0;
   y = 231;
-  for (const auto& relation : g_clanInfo->m_relations) {
+  for (auto relation = g_clanInfo->m_relations.begin(); relation != g_clanInfo->m_relations.end(); ++relation) {
     if (y >= 279) {
       break;
     }
-    if (relation.first == 1) {
+    if (relation->first == 1) {
       if (row == this->unknown_00C0) {
         SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
         this->FillRegion(204, y, 80, 16, RGB(red, green, blue));
       }
-      this->DrawTextAt(204, y, relation.second.c_str(), 0, 0, 12, 0, 0, 0);
+      this->DrawTextAt(204, y, relation->second.c_str(), 0, 0, 12, 0, 0, 0);
       ++row;
       y += 16;
     }
