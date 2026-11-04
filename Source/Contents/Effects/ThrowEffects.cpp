@@ -239,25 +239,18 @@ void CThrowItemEffect::InitPotionParticle(CParticle* particle, int kind) {
     particle->destinationBlend = 6;
   }
 
-  switch (kind) {
-  case 1:
+  if (kind == 1) {
     particle->SetColor(255, 135, 135);
-    break;
-  case 2:
+  } else if (kind == 2) {
     particle->SetColor(255, 205, 135);
-    break;
-  case 3:
+  } else if (kind == 3) {
     particle->SetColor(255, 255, 135);
-    break;
-  case 4:
+  } else if (kind == 4) {
     particle->SetColor(255, 255, 255);
-    break;
-  case 5:
+  } else if (kind == 5) {
     particle->SetColor(135, 135, 255);
-    break;
-  case 6:
+  } else if (kind == 6) {
     particle->SetColor(255, 255, 255);
-    break;
   }
 }
 
