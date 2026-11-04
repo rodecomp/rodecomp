@@ -112,7 +112,7 @@ void UIQuickSlotWnd::Slot28(int x, int y) {
   }
 
   if (!text.empty()) {
-    static_cast<CMode*>(g_charViewMode)->ShowTooltip(text.c_str(), screenX, screenY, -1, 0, 1);
+    g_modeMgr.gameMode->ShowTooltip(text.c_str(), screenX, screenY, -1, 0, 1);
   }
 }
 
@@ -295,7 +295,7 @@ int UIQuickSlotWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
 
     CSkillInfo skill = g_session.LookupSkill(entry.id);
     if (skill.level != 0 && skill.available != 0) {
-      static_cast<CMode*>(g_charViewMode)->SendMsg(0x71, reinterpret_cast<int>(&skill), entry.count, 0, 0);
+      g_modeMgr.gameMode->SendMsg(0x71, reinterpret_cast<int>(&skill), entry.count, 0, 0);
     }
     return 0;
   }
