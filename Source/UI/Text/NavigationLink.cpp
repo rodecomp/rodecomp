@@ -306,6 +306,8 @@ std::string EncodeNavigationNumber(int value) {
   return result;
 }
 
+__declspec(noinline) bool ParseNavigationLink(std::string value, std::string& name, int& x, int& y);
+
 // OFFSET: 0x00835890
 // FUNCTION: fn_10420
 bool ParseNavigationLink(std::string value, std::string& name, int& x, int& y) {

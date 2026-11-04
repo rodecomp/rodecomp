@@ -103,9 +103,9 @@ public:
   void AppendText(const std::string& text);
   void AddWindow(UIWindow* window);
   void ApplyFont(std::string tag);
-  int AddLink(int index, int type);
-  void NewLine();
-  void AddSegment(int type);
+  __declspec(noinline) int AddLink(int index, int type);
+  __declspec(noinline) void NewLine();
+  __declspec(noinline) void AddSegment(int type);
   void ParseText();
   int ParseEmotion(int index);
   int ParseMarkup(int index);
@@ -117,12 +117,12 @@ public:
   void ArrangeLines();
   void BuildWindows();
   void Rebuild(int unused);
-  int LayoutEmotion(int x, const std::string& text);
-  int LayoutLink(int x, std::string text, int type, LineTextStyle style);
-  int LayoutItemImage(int x, const std::string& text);
-  int LayoutText(int x, std::string text, LineTextStyle style);
+  __declspec(noinline) int LayoutEmotion(int x, const std::string& text);
+  __declspec(noinline) int LayoutLink(int x, std::string text, int type, LineTextStyle style);
+  __declspec(noinline) int LayoutItemImage(int x, const std::string& text);
+  __declspec(noinline) int LayoutText(int x, std::string text, LineTextStyle style);
   UITextButton* CreateLinkWindow(const std::string& text, const std::vector<std::string>& parts, int type, LineTextStyle style);
-  UIWindow* CreateTextWindow(std::string text, const LineTextStyle& style);
+  __declspec(noinline) UIWindow* CreateTextWindow(std::string text, const LineTextStyle& style);
 
 private:
   void CloseFont(std::string tag);
