@@ -646,27 +646,36 @@ void UITagListBox::AddTagButton(STagInfoV2 tag, int lineCount) {
   std::string data = tag.unknown_0028;
   if (!data.empty()) {
     switch (tag.unknown_0004) {
-    case 438:
-    case 464: {
+    case 438: {
       std::string remaining = data;
-      std::size_t separator = remaining.find(',');
+      std::size_t separator = remaining.find(",");
       while (separator != std::string::npos) {
         const std::string field = remaining.substr(0, separator);
         button->AddString(field);
         remaining = remaining.substr(separator + 1);
-        separator = remaining.find(',');
+        separator = remaining.find(",");
       }
       button->AddString(remaining);
-      if (tag.unknown_0004 == 464) {
-        int id = 0;
-        if (!button->GetString(1).empty()) {
-          id = std::atoi(button->GetString(1).c_str());
-        }
-        button->item.unknown_0000[0] = id;
-        button->item.identified = 1;
-        button->item.unknown_0060 = 0;
-        button->item.itemId = button->GetString(0);
+      break;
+    }
+    case 464: {
+      std::string remaining = data;
+      std::size_t separator = remaining.find(",");
+      while (separator != std::string::npos) {
+        const std::string field = remaining.substr(0, separator);
+        button->AddString(field);
+        remaining = remaining.substr(separator + 1);
+        separator = remaining.find(",");
       }
+      button->AddString(remaining);
+      int id = 0;
+      if (!button->GetString(1).empty()) {
+        id = std::atoi(button->GetString(1).c_str());
+      }
+      button->item.unknown_0000[0] = id;
+      button->item.identified = 1;
+      button->item.unknown_0060 = 0;
+      button->item.itemId = button->GetString(0);
       break;
     }
     case 501: {
