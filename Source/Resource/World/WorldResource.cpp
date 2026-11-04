@@ -86,25 +86,28 @@ C3dWorldRes* C3dWorldRes::Create() {
 // OFFSET: 0x00761B40
 // FUNCTION: fn_08072
 void C3dWorldRes::Unload() {
-  for (WorldModelRecord* model : this->models) {
-    delete model;
+  for (auto model = this->models.begin(); model != this->models.end(); ++model) {
+    delete *model;
   }
 
-  this->models.clear();
+  this->models.erase(this->models.begin(), this->models.end());
 
-  for (WorldEffectRecord* effect : this->effects) {
-    delete effect;
+  for (auto effect = this->effects.begin(); effect != this->effects.end(); ++effect) {
+    delete *effect;
   }
 
-  this->effects.clear();
+  this->effects.erase(this->effects.begin(), this->effects.end());
 
-  for (WorldSoundRecord* sound : this->sounds) {
-    delete sound;
+  for (auto sound = this->sounds.begin(); sound != this->sounds.end(); ++sound) {
+    delete *sound;
   }
 
-  delete this->spatial;
-  this->spatial = nullptr;
-  this->sounds.clear();
+  if (this->spatial) {
+    delete this->spatial;
+    this->spatial = nullptr;
+  }
+
+  this->sounds.erase(this->sounds.begin(), this->sounds.end());
 }
 
 // INLINED
