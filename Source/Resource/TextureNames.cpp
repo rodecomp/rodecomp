@@ -29,7 +29,7 @@ const char* CLanguageBase::ServiceName(const char* name) {
 // OFFSET: 0x00B01200
 // FUNCTION: fn_18378
 const char* Resolve(const char* name) {
-  if (*name == '\0') {
+  if (std::strlen(name) == 0) {
     return name;
   }
 
@@ -45,15 +45,16 @@ const char* Resolve(const char* name) {
     // STATIC: 0x016D58CC
     // GLOBAL: gl_24385
     static std::string selectedPath;
-    selectedPath = prefix;
-
-    if (original.size() > 15) {
-      selectedPath.append(original.data() + 15, original.size() - 15);
+    std::string path(name);
+    selectedPath.clear();
+    for (int index = 0; index < static_cast<int>(path.size()) - 15; ++index) {
+      selectedPath.push_back(path[index + 15]);
     }
 
     g_skinInfo.Prepare();
-
-    if (ResourceMgr::Instance().Exists(selectedPath.c_str())) {
+    selectedPath = prefix + selectedPath;
+    path = selectedPath;
+    if (ResourceMgr::Instance().Exists(path.c_str())) {
       return selectedPath.c_str();
     }
   }
@@ -66,12 +67,15 @@ const char* Resolve(const char* name) {
     // STATIC: 0x016D58E8
     // GLOBAL: gl_24386
     static std::string uiPath;
-    uiPath = "UI\\";
-    if (original.size() > 15) {
-      uiPath.append(original.data() + 15, original.size() - 15);
+    std::string path(name);
+    uiPath.clear();
+    for (int index = 0; index < static_cast<int>(path.size()) - 15; ++index) {
+      uiPath.push_back(path[index + 15]);
     }
 
-    if (ResourceMgr::Instance().Exists(uiPath.c_str())) {
+    uiPath = "UI\\" + uiPath;
+    path = uiPath;
+    if (ResourceMgr::Instance().Exists(path.c_str())) {
       return uiPath.c_str();
     }
   }
