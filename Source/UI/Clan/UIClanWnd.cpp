@@ -193,17 +193,16 @@ int UIClanInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1
 // OFFSET: 0x0084DAE0
 // FUNCTION: fn_10634
 int UIClanWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, std::intptr_t a2, std::intptr_t a3, std::intptr_t a4) {
-  if (message == 34) {
+  switch (message) {
+  case 60:
+    this->InvalidateChildren();
+    return 0;
+  case 34:
     this->m_saved = reinterpret_cast<ClanWndInfo*>(a1);
     if (!this->m_saved->IsValid()) {
       this->m_saved->Reset();
     }
     this->Move(this->m_saved->x, this->m_saved->y);
-    return 0;
-  }
-
-  if (message == 60) {
-    this->InvalidateChildren();
     return 0;
   }
 
