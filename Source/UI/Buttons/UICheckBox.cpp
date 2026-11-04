@@ -52,7 +52,7 @@ void UICheckBox::Paint() {
 }
 
 // INLINED
-void UICheckBox::Notify() {
+__forceinline void UICheckBox::Notify() {
   this->Invalidate();
   UIWindow* root = this;
 
