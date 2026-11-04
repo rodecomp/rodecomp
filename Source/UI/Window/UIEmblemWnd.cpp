@@ -73,11 +73,16 @@ void UIEmblemWnd::Slot19() {
 // OFFSET: 0x00864D60
 // FUNCTION: fn_10917
 int UIEmblemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message == 34) {
+  switch (message) {
+  case 34:
     this->aid = argument1;
     this->guildId = argument2;
-  } else if (message == 60 && this->guildId == static_cast<std::uint32_t>(argument1)) {
-    this->Invalidate();
+    break;
+  case 60:
+    if (this->guildId == static_cast<std::uint32_t>(argument1)) {
+      this->Invalidate();
+    }
+    break;
   }
 
   return 0;
