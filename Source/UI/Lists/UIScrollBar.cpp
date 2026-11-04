@@ -126,7 +126,16 @@ bool UIScrollBar::Slot08() {
 // OFFSET: 0x00880C60
 // FUNCTION: fn_11288
 int UIScrollBar::ThumbLength() {
-  int length = ((this->vertical == 0 ? this->geometry.width : this->geometry.height) - (2 * this->arrowLength));
+  int length = this->geometry.height;
+  switch (this->vertical) {
+  case 0:
+    length = this->geometry.width;
+    break;
+  case 1:
+    length = this->geometry.height;
+    break;
+  }
+  length -= 2 * this->arrowLength;
 
   if (this->total != 0) {
     length = (length * this->visible) / this->total;
@@ -162,29 +171,42 @@ int UIScrollBar::ThumbOffset() {
 // OFFSET: 0x008806E0
 // FUNCTION: fn_11278
 int UIScrollBar::Part(int x, int y) {
-  if (this->maximum == 0 || x < 0 || x >= this->geometry.width || y < 0 || y >= this->geometry.height || (this->vertical != 0 && this->vertical != 1)) {
+  if (this->maximum == 0 || x < 0 || x >= this->geometry.width || y < 0 || y >= this->geometry.height) {
     return -1;
   }
 
-  const int coordinate = this->vertical == 0 ? x : y;
-  const int length = this->vertical == 0 ? this->geometry.width : this->geometry.height;
-
-  if (coordinate < this->arrowLength) {
-    return 0;
+  switch (this->vertical) {
+  case 0:
+    if (x < this->arrowLength) {
+      return 0;
+    }
+    if (x < this->arrowLength + this->ThumbOffset()) {
+      return 1;
+    }
+    if (x < this->arrowLength + this->ThumbLength() + this->ThumbOffset()) {
+      return 2;
+    }
+    if (x < this->geometry.width - this->arrowLength) {
+      return 3;
+    }
+    return 4;
+  case 1:
+    if (y < this->arrowLength) {
+      return 0;
+    }
+    if (y < this->arrowLength + this->ThumbOffset()) {
+      return 1;
+    }
+    if (y < this->arrowLength + this->ThumbLength() + this->ThumbOffset()) {
+      return 2;
+    }
+    if (y < this->geometry.height - this->arrowLength) {
+      return 3;
+    }
+    return 4;
+  default:
+    return -1;
   }
-
-  if (coordinate < (this->arrowLength + this->ThumbOffset())) {
-    return 1;
-  }
-
-  const int thumb = this->ThumbLength();
-  const int offset = this->ThumbOffset();
-
-  if (coordinate < ((this->arrowLength + thumb) + offset)) {
-    return 2;
-  }
-
-  return coordinate >= (length - this->arrowLength) ? 4 : 3;
 }
 
 // OFFSET: 0x00890720
@@ -246,10 +268,8 @@ void UIScrollBar::Slot26(int x, int y) {
 // OFFSET: 0x008921D0
 // FUNCTION: fn_11468
 void UIScrollBar::Slot27(int x, int y) {
-  UIWindow* owner = this->parent;
-
   if (this->maximum == 0) {
-    owner->Slot27((x + this->geometry.x), (y + this->geometry.y));
+    this->parent->Slot27((x + this->geometry.x), (y + this->geometry.y));
     return;
   }
 
@@ -282,14 +302,24 @@ void UIScrollBar::Slot27(int x, int y) {
     this->Invalidate();
   }
 
-  if (g_windowMgr.Capture() == this && owner && (this->vertical == 0 || this->vertical == 1)) {
-    const int distance = this->vertical == 0 ? (x - this->pressX) : (y - this->pressY);
-    const int delta = ((distance * (this->maximum + 1)) / this->Travel() - this->dragAmount);
+  if (g_windowMgr.Capture() == this && this->parent) {
+    switch (this->vertical) {
+    case 0: {
+      const int delta = (x - this->pressX) * (this->maximum + 1) / this->Travel() - this->dragAmount;
 
-    if (delta != 0) {
-      const int result = owner->SendMsg(this, this->vertical == 0 ? 8 : 7, delta, 0, 0, 0);
+      if (delta != 0) {
+        this->dragAmount += this->parent->SendMsg(this, 8, delta, 0, 0, 0);
+      }
+      break;
+    }
+    case 1: {
+      const int delta = (y - this->pressY) * (this->maximum + 1) / this->Travel() - this->dragAmount;
 
-      this->dragAmount = (this->dragAmount + result);
+      if (delta != 0) {
+        this->dragAmount += this->parent->SendMsg(this, 7, delta, 0, 0, 0);
+      }
+      break;
+    }
     }
   }
 }
