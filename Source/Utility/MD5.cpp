@@ -6,7 +6,7 @@
 
 namespace {
   // INLINED
-  inline std::uint32_t FoldDigest(const unsigned char* digest) {
+  __forceinline std::uint32_t FoldDigest(const unsigned char* digest) {
     return ((digest[0] ^ digest[1] ^ digest[2] ^ digest[3]) << 8)
       | (digest[4] ^ digest[5] ^ digest[6] ^ digest[7])
       | ((digest[8] ^ digest[9] ^ digest[10] ^ digest[11]) << 16)
@@ -140,7 +140,7 @@ std::uint32_t* MD5::Transform(std::uint32_t* state, const std::uint32_t* input) 
 #undef MD5_F1
 
 // FUNCTION: fn_00126
-void MD5::Update(const unsigned char* input, std::uint32_t length) {
+__declspec(noinline) void MD5::Update(const unsigned char* input, std::uint32_t length) {
   std::uint32_t buffered = m_byteCount[0];
   m_byteCount[0] = buffered + length;
   if (m_byteCount[0] < buffered) {
@@ -174,7 +174,7 @@ void MD5::Update(const unsigned char* input, std::uint32_t length) {
 }
 
 // FUNCTION: fn_00127
-unsigned char* MD5::Finalize() {
+__declspec(noinline) unsigned char* MD5::Finalize() {
   const std::uint32_t buffered = m_byteCount[0] & 63;
   unsigned char* padding = m_buffer + buffered;
   *padding++ = 0x80;
@@ -198,15 +198,19 @@ unsigned char* MD5::Finalize() {
   return digest;
 }
 
+// OFFSET: 0x00402520
 // FUNCTION: fn_00128
-unsigned char* MD5::DigestBuffer(const unsigned char* input, std::uint32_t length, unsigned char* digest) {
+__declspec(noinline) unsigned char* MD5::DigestBuffer(const unsigned char* input, std::uint32_t length, unsigned char* digest) {
   Initialize();
   Update(input, length);
   Finalize();
-  std::memcpy(digest, m_state, 16);
+  for (std::uint32_t i = 0; i < 4; ++i) {
+    std::memcpy(digest + i * sizeof(std::uint32_t), &m_state[i], sizeof(std::uint32_t));
+  }
   return digest;
 }
 
+// OFFSET: 0x00402580
 // FUNCTION: fn_00129
 std::uint32_t MD5::HashBuffer(const unsigned char* input, std::uint32_t length) {
   unsigned char digest[16] = {};
@@ -214,13 +218,19 @@ std::uint32_t MD5::HashBuffer(const unsigned char* input, std::uint32_t length) 
   return FoldDigest(digest);
 }
 
+// OFFSET: 0x00402640
 // FUNCTION: fn_00130
 std::uint32_t MD5::HashString(const char* text) {
   unsigned char digest[16] = {};
-  DigestBuffer(reinterpret_cast<const unsigned char*>(text), static_cast<std::uint32_t>(std::strlen(text)), digest);
+  const char* end = text;
+  do {
+    ++end;
+  } while (end[-1] != '\0');
+  DigestBuffer(reinterpret_cast<const unsigned char*>(text), static_cast<std::uint32_t>(end - text - 1), digest);
   return FoldDigest(digest);
 }
 
+// OFFSET: 0x00402710
 // FUNCTION: fn_00131
 std::uint32_t MD5::HashString(const wchar_t* text) {
   char converted[260];
@@ -228,8 +238,9 @@ std::uint32_t MD5::HashString(const wchar_t* text) {
   return HashString(converted);
 }
 
+// OFFSET: 0x00402770
 // FUNCTION: fn_00132
-std::uint32_t MD5::HashFile(const wchar_t* filename) {
+__declspec(noinline) std::uint32_t MD5::HashFile(const wchar_t* filename) {
   if (filename == nullptr || *filename == 0) {
     return 0;
   }
@@ -266,6 +277,7 @@ std::uint32_t MD5::HashFile(const wchar_t* filename) {
   return result;
 }
 
+// OFFSET: 0x004029D0
 // FUNCTION: fn_00133
 std::uint32_t MD5::HashStringLower(const char* text) {
   char lowered[260];
@@ -274,6 +286,7 @@ std::uint32_t MD5::HashStringLower(const char* text) {
   return HashString(lowered);
 }
 
+// OFFSET: 0x00402A40
 // FUNCTION: fn_00134
 std::uint32_t MD5::HashStringLower(const wchar_t* text) {
   wchar_t lowered[260];
@@ -282,6 +295,7 @@ std::uint32_t MD5::HashStringLower(const wchar_t* text) {
   return HashString(lowered);
 }
 
+// OFFSET: 0x00402AB0
 // FUNCTION: fn_00135
 std::uint32_t MD5::HashFile(const char* filename) {
   wchar_t converted[260];
