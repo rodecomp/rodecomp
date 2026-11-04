@@ -1,5 +1,8 @@
 #include "Render/DX7/RenderSystemDX7.h"
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Contents/Configuration/ServiceOptions.h"
+#include "Contents/World/World.h"
 #include "Render/BlendColor.h"
 #include "Render/DX7/DeviceOwnerDX7.h"
 #include "Render/DX7/QueuedDrawingDX7.h"
@@ -36,20 +39,25 @@ void CRendererDX7::SetLighting(const float* direction, const float* diffuse, con
 // FUNCTION: fn_02077
 void CRendererDX7::ClearDepth(int clearColor) {
   if (clearColor) {
-    g_deviceOwnerDX7->Clear(0xFF000000);
-  } else {
+    if (g_deviceOwnerDX7) {
+      g_deviceOwnerDX7->Clear(0xFF000000);
+    }
+  } else if (g_deviceOwnerDX7) {
     g_deviceOwnerDX7->ClearDepth();
   }
 }
 
 // OFFSET: 0x0055A240
 // FUNCTION: fn_02078
-void CRendererDX7::ClearWorld(unsigned color, int mode, unsigned char worldFlag, unsigned overlay) {
-  if (mode != 0 && worldFlag == 1) {
-    color = BlendColor(color, overlay);
+void CRendererDX7::ClearWorld() {
+  unsigned color = this->clearColor;
+  if (this->fog.enabled != 0 && static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->unknown_00FC == 1) {
+    color = BlendColor(this->clearColor, g_worldOverlayColor);
   }
 
-  g_deviceOwnerDX7->Clear(color);
+  if (g_deviceOwnerDX7) {
+    g_deviceOwnerDX7->Clear(color);
+  }
 }
 
 // OFFSET: 0x0055ACB0

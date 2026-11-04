@@ -33,7 +33,7 @@ public:
   void SetTextureFormat(unsigned format);
   void SetLighting(const float* direction, const float* diffuse, const float* ambient);
   void ClearDepth(int clearColor);
-  void ClearWorld(unsigned color, int mode, unsigned char worldFlag, unsigned overlay);
+  void ClearWorld() override;
   void DrawPrimitive(RenderCommand* primitive);
   void DrawLightmappedPrimitive(LightmappedPrimitive* primitive);
   void SetTextureMode(int mode);
