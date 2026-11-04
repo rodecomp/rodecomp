@@ -11,17 +11,20 @@
 // OFFSET: 0x00E12FC0
 // FUNCTION: fn_23821
 int CSession::RotateShortcut(int index, int bank) const {
-  if (bank != 0 && bank != 1) {
+  int rotation;
+  if (bank == 0) {
+    rotation = this->unknown_06FC;
+  } else if (bank == 1) {
+    rotation = this->unknown_06A8;
+  } else {
     return index;
   }
 
-  const int rotation = bank == 0 ? this->unknown_06FC : this->unknown_06A8;
-  if (rotation == 0) {
-    return index;
+  if (rotation != 0) {
+    const int value = index + 9 * rotation;
+    return value < 36 ? value : value - 36;
   }
-
-  const int value = index + 9 * rotation;
-  return value < 36 ? value : value - 36;
+  return index;
 }
 
 // OFFSET: 0x00E26050
@@ -30,19 +33,13 @@ void CSession::AssignShortcut(unsigned char type, std::uint32_t id, int level, i
   const int rowStart = this->RotateShortcut(9 * this->m_hotkeyPage, bank);
   const int destination = this->RotateShortcut(slot, bank);
   CMode* modeEvents = g_modeMgr.GetGameMode();
-  std::list<ShortcutCooldownRecord>& cooldowns = this->m_requestTimers;
+  std::list<ShortcutCooldownRecord>& cooldowns = g_session.m_requestTimers;
   if (id == 0) {
     if (type != 0) {
-      bool erased = false;
-
       for (ShortcutCooldownRecord& record : cooldowns) {
         const auto value = std::find_if(record.main.begin(), record.main.end(), [&](const CooldownState& state) { return state.slot == slot; });
         if (value != record.main.end()) {
           record.main.erase(value);
-          erased = true;
-        }
-
-        if (erased) {
           break;
         }
       }
@@ -56,12 +53,11 @@ void CSession::AssignShortcut(unsigned char type, std::uint32_t id, int level, i
     return;
   }
 
-  for (int offset = 0; offset < 9; ++offset) {
+  for (int index = rowStart; index < rowStart + 9; ++index) {
     if (bank != 0 && bank != 1) {
       continue;
     }
 
-    const int index = rowStart + offset;
     const NormalItemSlot previous = (bank == 0 ? this->m_shortcutSlots : this->m_secondaryShortcutSlots)[index];
     bool duplicate = previous.itemId == id && previous.unknown_0005 == level && previous.unknown_0000 == type;
 
