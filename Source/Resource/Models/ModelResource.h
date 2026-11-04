@@ -3,6 +3,7 @@
 
 #include "Resource/Models/ModelMesh.h"
 #include "Resource/Resource.h"
+#include "Utility/Math/AffineMatrix.h"
 
 #include <functional>
 #include <list>
@@ -45,7 +46,8 @@ struct ModelVolume {
   /* 000C */ float position[3];
   /* 0018 */ float rotation[3];
   /* 0024 */ float corners[8][3];
-  /* 0084 */ unsigned char unknown_0084[96];
+  /* 0084 */ matrix transform;
+  /* 00B4 */ matrix inverseTransform;
   /* 00E4 */ int flag;
 };
 

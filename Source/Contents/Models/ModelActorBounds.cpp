@@ -1,4 +1,5 @@
 #include "Contents/Models/ModelActor.h"
+#include "Utility/Math/AffineMatrix.h"
 
 #include <cmath>
 #include <cstring>
@@ -16,7 +17,7 @@ namespace {
 
   // INLINED
   float InverseLength(float squared) {
-    const float root = std::sqrt(squared);
+    const float root = SquareRoot(squared);
     return static_cast<float>(1.0 / static_cast<double>(root));
   }
 
@@ -26,42 +27,8 @@ namespace {
   }
 }
 
-// OFFSET: 0x00AB9660
-// FUNCTION: fn_17512
-void C3dActorV1::UpdateBounds() {
-  float bounds[6] = {100000, 100000, 100000, -100000, -100000, -100000};
-  matrix identity;
-  identity.Identity();
-  this->root->AccumulateBounds(bounds, identity.values);
-  this->offset[0] = -(bounds[3] + bounds[0]) * 0.5f;
-  this->offset[1] = -bounds[4];
-  this->offset[2] = -(bounds[5] + bounds[2]) * 0.5f;
-  this->transform.MakeTranslate(this->offset[0], this->offset[1], this->offset[2]);
-  this->transform.AppendScale(this->scale[0], this->scale[1], this->scale[2]);
-  this->transform.AppendYRotation(Radians(this->rotation[1]));
-  this->transform.AppendXRotation(Radians(this->rotation[0]));
-  this->transform.AppendZRotation(Radians(this->rotation[2]));
-  this->transform.AppendTranslate(this->position);
-  this->FinishBounds(bounds, false);
-}
-
-// OFFSET: 0x00ABA520
-// FUNCTION: fn_17513
-void C3dActorV2::UpdateBounds() {
-  float bounds[6] = {100000, 100000, 100000, -100000, -100000, -100000};
-  matrix identity;
-  identity.Identity();
-
-  for (C3dNodeV2* root : this->roots) {
-    root->AccumulateBounds(bounds, identity.values);
-  }
-
-  this->UpdateMatrix();
-  this->FinishBounds(bounds, true);
-}
-
 // INLINED
-void C3dActor::FinishBounds(const float* bounds, bool modern) {
+__forceinline void C3dActor::FinishBounds(const float* bounds, bool modern) {
   for (unsigned axis = 0; axis < 3; ++axis) {
     this->minimum[axis] = 100000;
     this->maximum[axis] = -100000;
@@ -111,17 +78,13 @@ void C3dActor::FinishBounds(const float* bounds, bool modern) {
   }
 
   for (ModelVolume* volume : this->volumes) {
-    matrix rotation;
-    rotation.MakeXRotation(Radians(volume->rotation[0]));
-    rotation.AppendYRotation(Radians(volume->rotation[1]));
-    rotation.AppendZRotation(Radians(volume->rotation[2]));
-    rotation.AppendTranslate(volume->position);
-    std::memcpy(volume->unknown_0084, rotation.values, sizeof(rotation.values));
-    matrix inverse;
-    inverse.MakeInverse(rotation);
-    std::memcpy(volume->unknown_0084 + 48, inverse.values, sizeof(inverse.values));
+    volume->transform.MakeXRotation(Radians(volume->rotation[0]));
+    volume->transform.AppendYRotation(Radians(volume->rotation[1]));
+    volume->transform.AppendZRotation(Radians(volume->rotation[2]));
+    volume->transform.AppendTranslate(volume->position);
+    volume->inverseTransform.MakeInverse(volume->transform);
     matrix combined;
-    combined.Compose(rotation, this->transform);
+    combined.Compose(volume->transform, this->transform);
 
     for (unsigned corner = 0; corner < 8; ++corner) {
       const float point[3] = {
@@ -136,4 +99,38 @@ void C3dActor::FinishBounds(const float* bounds, bool modern) {
   }
 
   this->dirty = 1;
+}
+
+// OFFSET: 0x00AB9660
+// FUNCTION: fn_17512
+void C3dActorV1::UpdateBounds() {
+  float bounds[6] = {100000, 100000, 100000, -100000, -100000, -100000};
+  matrix identity;
+  std::memcpy(identity.values, g_identityMatrix, sizeof(identity.values));
+  this->root->AccumulateBounds(bounds, identity.values);
+  this->offset[0] = -(bounds[3] + bounds[0]) * 0.5f;
+  this->offset[1] = -bounds[4];
+  this->offset[2] = -(bounds[5] + bounds[2]) * 0.5f;
+  this->transform.MakeTranslate(this->offset[0], this->offset[1], this->offset[2]);
+  this->transform.AppendScale(this->scale[0], this->scale[1], this->scale[2]);
+  this->transform.AppendYRotation(Radians(this->rotation[1]));
+  this->transform.AppendXRotation(Radians(this->rotation[0]));
+  this->transform.AppendZRotation(Radians(this->rotation[2]));
+  this->transform.AppendTranslate(this->position);
+  this->FinishBounds(bounds, false);
+}
+
+// OFFSET: 0x00ABA520
+// FUNCTION: fn_17513
+void C3dActorV2::UpdateBounds() {
+  float bounds[6] = {100000, 100000, 100000, -100000, -100000, -100000};
+  matrix identity;
+  std::memcpy(identity.values, g_identityMatrix, sizeof(identity.values));
+
+  for (C3dNodeV2* root : this->roots) {
+    root->AccumulateBounds(bounds, identity.values);
+  }
+
+  this->UpdateMatrix();
+  this->FinishBounds(bounds, true);
 }
