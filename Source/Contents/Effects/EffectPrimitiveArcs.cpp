@@ -600,8 +600,7 @@ void CEffectPrim::RenderFanWedge(matrix& wtm) {
   vector3d back{};
   int rpCnt = 0;
 
-  for (int ec = 0; ec < 4; ++ec) {
-    const EffectPrimitiveSlot& slot = this->state.slots[ec];
+  for (const EffectPrimitiveSlot& slot : this->state.slots) {
 
     if (slot.life != 1 || slot.alphaB <= 0) {
       continue;
