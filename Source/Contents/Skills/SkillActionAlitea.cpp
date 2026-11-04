@@ -835,7 +835,7 @@ void CSkillAction_AT_PINION_SHOT::Slot11(int level, CGameActor* source, CGameAct
     return;
   }
 
-  if (!source || !source->GetUnknown0404() || !this->Slot17(source)) {
+  if (!this->CanUse(source)) {
     return;
   }
 
