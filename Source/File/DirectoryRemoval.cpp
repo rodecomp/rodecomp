@@ -8,6 +8,7 @@
 #include <sys/stat.h>
 #include <windows.h>
 
+// OFFSET: 0x00AF45E0
 // FUNCTION: fn_18245
 void RemoveDirectoryTree(const char* path) {
   std::list<std::string> files;
@@ -20,8 +21,10 @@ void RemoveDirectoryTree(const char* path) {
   if (search == INVALID_HANDLE_VALUE) {
     FindClose(search);
   } else {
+    std::string dot(".");
+    std::string dotdot("..");
     do {
-      if (found.cFileName[0] == '.' && (found.cFileName[1] == 0 || (found.cFileName[1] == '.' && found.cFileName[2] == 0))) {
+      if (dot == found.cFileName || dotdot == found.cFileName) {
         continue;
       }
       if ((found.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0) {
@@ -35,11 +38,11 @@ void RemoveDirectoryTree(const char* path) {
     std::strcpy(filename, path);
     std::strcat(filename, "\\");
     for (const std::string& file : files) {
-      _chmod((std::string(filename) + file).c_str(), _S_IWRITE);
-      _unlink((std::string(filename) + file).c_str());
+      _chmod((filename + file).c_str(), _S_IWRITE);
+      _unlink((filename + file).c_str());
     }
     for (const std::string& directory : directories) {
-      RemoveDirectoryTree((std::string(filename) + directory).c_str());
+      RemoveDirectoryTree((filename + directory).c_str());
     }
   }
   _rmdir(path);
