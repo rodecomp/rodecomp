@@ -90,7 +90,7 @@ HRESULT CRenderSystemDX7::Close() {
 // OFFSET: 0x0056B870
 // FUNCTION: fn_02322
 void CRenderSystemDX7::DestroySurface(CSurface* surface) {
-  delete surface;
+  this->m_device->DestroySurface(surface);
 }
 
 // OFFSET: 0x0056B880
