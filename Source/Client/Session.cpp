@@ -229,7 +229,7 @@ bool CSession::IsWithinUnknown59C0(int value) const {
 
 // OFFSET: 0x00E3D390
 // FUNCTION: fn_24189
-int CSession::HasItem61B8(std::uint32_t id) const {
+__declspec(noinline) int CSession::HasItem61B8(std::uint32_t id) const {
   if (id == 0) {
     return 0;
   }
