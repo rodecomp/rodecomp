@@ -379,7 +379,8 @@ void CGameMode::ReceivePartyRoster(const unsigned char* packet) {
 // FUNCTION: fn_21822
 void CGameMode::ReceiveGroundSkillExtended(const unsigned char* record) {
   const GroundSkillPacketExtended& packet = *reinterpret_cast<const GroundSkillPacketExtended*>(record);
-  if (packet.type == 176) {
+  switch (packet.type) {
+  case 176: {
     if (packet.length <= 23) {
       return;
     }
@@ -393,7 +394,7 @@ void CGameMode::ReceiveGroundSkillExtended(const unsigned char* record) {
     this->scene->unknown_0020.push_back(skill);
     return;
   }
-  if (packet.type == 0x126) {
+  case 0x126:
     this->sub_D60D70(packet.aid, packet.owner, packet.x, packet.y);
     return;
   }
@@ -407,24 +408,20 @@ void CGameMode::ReceiveGroundSkillExtended(const unsigned char* record) {
   data.skill.visible = packet.visible;
   data.skill.level = packet.level;
   data.flags = packet.flags;
-  if (data.skill.owner == g_session.m_aid) {
-    if (data.skill.visible) {
-      this->m_skillUnitIds.push_back(packet.aid);
-    }
-  } else if (!data.skill.visible) {
+  if (data.skill.owner != g_session.m_aid && !data.skill.visible) {
     const auto found = std::find(this->m_skillUnitIds.begin(), this->m_skillUnitIds.end(), data.skill.aid);
     if (found != this->m_skillUnitIds.end()) {
       this->m_skillUnitIds.erase(found);
       data.skill.visible = 0;
     }
-  } else {
+  } else if (data.skill.visible) {
     this->m_skillUnitIds.push_back(packet.aid);
   }
 
   CSkill* skill = static_cast<CSkill*>(this->scene->GetSkillByAID(packet.aid));
   if (!skill) {
     const int type = packet.type;
-    if (!((type >= 45 && type <= 999) || (type >= 1001 && type <= 3998) ||
+    if (!((type >= 45 && type < 1000) || (type > 1000 && type < 3999) ||
           static_cast<unsigned>(type) - 20021u <= 11978u)) {
       return;
     }
@@ -532,25 +529,22 @@ void CGameMode::ReceivePartyBookingRegisterResult(const unsigned char* packet) {
 // FUNCTION: fn_21782
 void CGameMode::ReceivePartyBookingUpdateResult(const unsigned char* packet) {
   const std::int16_t result = *reinterpret_cast<const std::int16_t*>(packet + 2);
-  if (result != 0) {
-    g_windowMgr.Confirm(LookupMessage(result == 2 ? 1941 : 1826), 0, true, false, 0, "Message", 280, 120, 0);
-    return;
+  if (result == 0) {
+    g_session.m_partyBooking.unknown_0034 = GetTickCount();
+    g_windowMgr.EnsureWindow(164);
+    UISeekPartyWnd* seekWindow = static_cast<UISeekPartyWnd*>(g_windowMgr.LookupWindow(164));
+    if (seekWindow) {
+      UIWindow* jobWindow = g_windowMgr.LookupWindow(168);
+      if (jobWindow) {
+        seekWindow->SetJobs(reinterpret_cast<const std::int16_t*>(reinterpret_cast<const unsigned char*>(jobWindow) + 0x16D));
+        g_windowMgr.CloseWindow(168);
+      }
+    }
+  } else if (result == 2) {
+    g_windowMgr.Confirm(LookupMessage(1941), 0, true, false, 0, "Message", 280, 120, 0);
+  } else {
+    g_windowMgr.Confirm(LookupMessage(1826), 0, true, false, 0, "Message", 280, 120, 0);
   }
-
-  g_session.m_partyBooking.unknown_0034 = GetTickCount();
-  g_windowMgr.EnsureWindow(164);
-  UISeekPartyWnd* seekWindow = static_cast<UISeekPartyWnd*>(g_windowMgr.LookupWindow(164));
-  if (!seekWindow) {
-    return;
-  }
-
-  UIWindow* jobWindow = g_windowMgr.LookupWindow(168);
-  if (!jobWindow) {
-    return;
-  }
-
-  seekWindow->SetJobs(reinterpret_cast<const std::int16_t*>(reinterpret_cast<const unsigned char*>(jobWindow) + 0x16D));
-  g_windowMgr.CloseWindow(168);
 }
 
 // OFFSET: 0x00D3B7F0
@@ -608,7 +602,8 @@ void CGameMode::ReceivePartyBookingUpdate(const unsigned char* packet) {
 // FUNCTION: fn_21787
 void CGameMode::ReceiveToggleNotice(const unsigned char* packet) {
   g_toggleNoticeState = packet[2];
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(g_toggleNoticeState == 0 ? 1326 : 1325)), 0x64FFFF, 0, 0, 0);
+  const char* message = LookupMessage(g_toggleNoticeState == 0 ? 1326 : 1325);
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0x64FFFF, 0, 0, 0);
 }
 
 // OFFSET: 0x00D3BF00
@@ -1079,12 +1074,12 @@ void CGameMode::ReceiveBookOpen(const unsigned char* packet) {
   }
 
   CFile file;
-  if (file.Open(path, 0, true, false)) {
-    g_windowMgr.EnsureWindow(106)->SendMsg(nullptr, 0x5E, reinterpret_cast<std::intptr_t>(number), 287, *reinterpret_cast<const int*>(packet + 6), 0);
-    file.Close();
-  } else {
+  if (!file.Open(path, 0, true, false)) {
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>("책이 없습니다"), 0xFF, 0, 0, 0);
+  } else {
+    g_windowMgr.EnsureWindow(106)->SendMsg(nullptr, 0x5E, reinterpret_cast<std::intptr_t>(number), 287, *reinterpret_cast<const int*>(packet + 6), 0);
+    file.Close();
   }
 }
 
@@ -1093,41 +1088,36 @@ void CGameMode::ReceiveBookOpen(const unsigned char* packet) {
 void CGameMode::ReceiveResultNotice00FC(const unsigned char* packet) {
   this->unknown_00FC = 0;
 
-  int messageId;
   switch (packet[2]) {
   case 0:
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-    messageId = 0x43;
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x43)), 0xFF, 0, 0, 0);
     break;
   case 1:
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-    messageId = 7;
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(7)), 0xFF, 0, 0, 0);
     break;
   case 2:
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-    messageId = 0x44;
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x44)), 0xFF, 0, 0, 0);
     break;
   case 4:
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-    messageId = 0x37;
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x37)), 0xFF, 0, 0, 0);
     break;
   case 5:
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-    messageId = 0x1B0;
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x1B0)), 0xFF, 0, 0, 0);
     break;
   case 6:
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-    messageId = 0x1B1;
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x1B1)), 0xFF, 0, 0, 0);
     break;
   case 7:
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-    messageId = 0x1B2;
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x1B2)), 0xFF, 0, 0, 0);
     break;
-  default:
-    return;
   }
-
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(messageId)), 0xFF, 0, 0, 0);
 }
 
 // OFFSET: 0x00D3E0B0
@@ -1375,45 +1365,45 @@ void CGameMode::ReceiveRequestResult(const unsigned char* packet) {
 // OFFSET: 0x00D3F760
 // FUNCTION: fn_21813
 void CGameMode::ReceiveStatusNotice(const unsigned char* packet) {
-  int message;
+  const char* message;
   switch (*reinterpret_cast<const int*>(packet + 2)) {
   case 21:
-    message = 889;
+    message = LookupMessage(889);
     break;
   case 22:
-    message = 890;
+    message = LookupMessage(890);
     break;
   case 23:
-    message = 891;
+    message = LookupMessage(891);
     break;
   case 24:
-    message = 892;
+    message = LookupMessage(892);
     break;
   case 25:
-    message = 893;
+    message = LookupMessage(893);
     break;
   case 28:
-    message = 894;
+    message = LookupMessage(894);
     break;
   case 29:
-    message = 895;
+    message = LookupMessage(895);
     break;
   case 30:
-    message = 896;
+    message = LookupMessage(896);
     break;
   case 31:
-    message = 897;
+    message = LookupMessage(897);
     break;
   case 32:
-    message = 898;
+    message = LookupMessage(898);
     break;
   case 40:
-    message = 915;
+    message = LookupMessage(915);
     break;
   default:
     return;
   }
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(message)), 0x9B9BFF, 8, 0, 0);
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0x9B9BFF, 8, 0, 0);
 }
 
 // OFFSET: 0x00D40080
@@ -2368,18 +2358,18 @@ void CGameMode::IgnoreRemovedPacket12(const unsigned char*, int, int, int, int) 
 // FUNCTION: fn_22031
 void CGameMode::ToggleWindow169(unsigned char enable) {
   UIWindow* window = g_windowMgr.LookupWindow(0x169);
-  if (enable == 0) {
-    if (window) {
-      g_windowMgr.CloseWindow(0x169);
+  if (enable != 0) {
+    if (!window) {
+      g_windowMgr.EnsureWindow(0x169);
     }
-  } else if (!window) {
-    g_windowMgr.EnsureWindow(0x169);
+  } else if (window) {
+    g_windowMgr.CloseWindow(0x169);
   }
 }
 
 #pragma pack(push, 1)
 struct RequestWindow169Packet {
-  /* 0000 */ std::uint16_t id;
+  /* 0000 */ std::int16_t id;
   /* 0002 */ unsigned char unknown_0002;
 };
 #pragma pack(pop)
@@ -2388,21 +2378,16 @@ struct RequestWindow169Packet {
 // FUNCTION: fn_22030
 void CGameMode::RequestWindow169(unsigned char enable) {
   UIWindow* window = g_windowMgr.LookupWindow(0x169);
-  if (enable == 0) {
-    if (window) {
-      g_windowMgr.CloseWindow(0x169);
+  if (enable != 0) {
+    if (!window) {
+      RequestWindow169Packet packet;
+      packet.id = 0x0BE0;
+      packet.unknown_0002 = 0;
+      GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
     }
-    return;
+  } else if (window) {
+    g_windowMgr.CloseWindow(0x169);
   }
-
-  if (window) {
-    return;
-  }
-
-  RequestWindow169Packet packet;
-  packet.id = 0x0BE0;
-  packet.unknown_0002 = 0;
-  GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
 }
 
 // OFFSET: 0x00D66A60
@@ -2634,18 +2619,14 @@ void CGameMode::sub_D41250(const unsigned char* record) {
   packet.visible = 1;
 
   CSkill* skill = static_cast<CSkill*>(this->scene->GetSkillByAID(data.aid));
-  if (data.owner == g_session.m_aid) {
-    if (data.visible) {
-      this->m_skillUnitIds.push_back(packet.aid);
-    }
-  } else if (!data.visible) {
+  if (data.owner != g_session.m_aid && !data.visible) {
     const auto found = std::find(this->m_skillUnitIds.begin(), this->m_skillUnitIds.end(), packet.aid);
     if (found != this->m_skillUnitIds.end()) {
       this->m_skillUnitIds.erase(found);
       packet.visible = 0;
       data.visible = false;
     }
-  } else {
+  } else if (data.visible) {
     this->m_skillUnitIds.push_back(packet.aid);
   }
 
@@ -2688,18 +2669,14 @@ void CGameMode::sub_D40730(const unsigned char* record) {
   }
 
   CSkill* skill = static_cast<CSkill*>(this->scene->GetSkillByAID(data.aid));
-  if (data.owner == g_session.m_aid) {
-    if (data.visible) {
-      this->m_skillUnitIds.push_back(packet.aid);
-    }
-  } else if (!data.visible) {
+  if (data.owner != g_session.m_aid && !data.visible) {
     const auto found = std::find(this->m_skillUnitIds.begin(), this->m_skillUnitIds.end(), packet.aid);
     if (found != this->m_skillUnitIds.end()) {
       this->m_skillUnitIds.erase(found);
       packet.visible = 0;
       data.visible = false;
     }
-  } else {
+  } else if (data.visible) {
     this->m_skillUnitIds.push_back(packet.aid);
   }
 
@@ -2721,7 +2698,7 @@ void CGameMode::sub_D40730(const unsigned char* record) {
 void CGameMode::ReceiveGroundSkill8(const unsigned char* record) {
   const GroundSkillPacket8& packet = *reinterpret_cast<const GroundSkillPacket8*>(record);
   if (packet.type == 176) {
-    if (packet.length < 20) {
+    if (packet.length <= 19) {
       return;
     }
     CGraffiSkill* skill = new CGraffiSkill;
@@ -2779,7 +2756,7 @@ void CGameMode::ReceiveGroundSkill8(const unsigned char* record) {
 void CGameMode::ReceiveGroundSkill32(const unsigned char* record) {
   const GroundSkillPacket32& packet = *reinterpret_cast<const GroundSkillPacket32*>(record);
   if (packet.type == 176) {
-    if (packet.length < 23) {
+    if (packet.length <= 22) {
       return;
     }
     CGraffiSkill* skill = new CGraffiSkill;
@@ -2818,7 +2795,7 @@ void CGameMode::ReceiveGroundSkill32(const unsigned char* record) {
   CSkill* skill = static_cast<CSkill*>(this->scene->GetSkillByAID(packet.aid));
   if (!skill) {
     const int type = packet.type;
-    if (!((type >= 45 && type <= 999) || (type >= 1001 && type <= 3998) ||
+    if (!((type >= 45 && type < 1000) || (type > 1000 && type < 3999) ||
           static_cast<unsigned>(type) - 20021u <= 11978u)) {
       return;
     }
