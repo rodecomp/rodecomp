@@ -202,7 +202,7 @@ template void CEffectMemoryPool<CMultiTexParticle>::Free(CParticle* particle);
 
 // OFFSET: 0x00B820C0
 // FUNCTION: fn_19271
-CParticle* CEffectMemoryMgr::Alloc(int type) {
+__declspec(noinline) CParticle* CEffectMemoryMgr::Alloc(int type) {
   return this->m_pools[type]->Alloc();
 }
 
@@ -217,7 +217,7 @@ void DestroyEffectMemoryMgr() {
 
 // OFFSET: 0x00B82760
 // FUNCTION: fn_19279
-void CEffectMemoryMgr::Free(int type, CParticle* particle) {
+__declspec(noinline) void CEffectMemoryMgr::Free(int type, CParticle* particle) {
   this->m_pools[type]->Free(particle);
 }
 
