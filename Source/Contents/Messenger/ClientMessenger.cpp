@@ -220,7 +220,7 @@ EquipmentProperties::CEquipmentProperties* EquipmentProperties::CEquipmentProper
 
 // OFFSET: 0x00699070
 // FUNCTION: fn_05778
-void EquipmentProperties::CEquipmentProperties1Dim::SetValue(const int& value, const unsigned int& key) {
+__declspec(noinline) void EquipmentProperties::CEquipmentProperties1Dim::SetValue(const int& value, const unsigned int& key) {
   this->m_value = value;
   if (key != -1) {
     this->m_keys.insert(key);
@@ -229,7 +229,7 @@ void EquipmentProperties::CEquipmentProperties1Dim::SetValue(const int& value, c
 
 // OFFSET: 0x006990A0
 // FUNCTION: fn_05779
-void EquipmentProperties::CEquipmentProperties2Dim::SetValue(const int& index, const int& value, const unsigned int& key) {
+__declspec(noinline) void EquipmentProperties::CEquipmentProperties2Dim::SetValue(const int& index, const int& value, const unsigned int& key) {
   this->m_values[index] = value;
   if (key != -1) {
     this->m_keys.insert(key);
@@ -492,7 +492,7 @@ const COLORREF g_equipmentApplyColor = RGB(0, 255, 200);
 
 // OFFSET: 0x006BF770
 // FUNCTION: fn_06293
-bool EquipmentPropertyDefinition::IsTwoDimensional() const {
+__declspec(noinline) bool EquipmentPropertyDefinition::IsTwoDimensional() const {
   return this->unknown_0040 != 0;
 }
 
@@ -520,7 +520,7 @@ EquipmentPropertyStore::~EquipmentPropertyStore() {
 
 // OFFSET: 0x00699040
 // FUNCTION: fn_05775
-std::map<unsigned int, std::map<unsigned int, EquipmentProperty*>>& EquipmentPropertyStore::GetProperties() {
+__declspec(noinline) std::map<unsigned int, std::map<unsigned int, EquipmentProperty*>>& EquipmentPropertyStore::GetProperties() {
   return this->properties;
 }
 
@@ -609,7 +609,7 @@ EquipmentProperties::CEquipment::~CEquipment() {
 
 // OFFSET: 0x0068CE10
 // FUNCTION: fn_05638
-void EquipmentProperties::CEquipment::Clear() {
+__declspec(noinline) void EquipmentProperties::CEquipment::Clear() {
   this->m_properties.Clear();
 }
 
@@ -635,7 +635,7 @@ int& EquipmentProperties::CEquipment::GetId() {
 
 // OFFSET: 0x0068C140
 // FUNCTION: fn_05633
-EquipmentPropertyStore& EquipmentProperties::CEquipment::GetProperties() {
+__declspec(noinline) EquipmentPropertyStore& EquipmentProperties::CEquipment::GetProperties() {
   return this->m_properties;
 }
 
@@ -699,7 +699,7 @@ std::string_view EquipmentProperties::CEquipmentExpansion::GetSuffix() {
 
 // OFFSET: 0x0068CEF0
 // FUNCTION: fn_05642
-bool EquipmentProperties::CEquipment::IsPretend() {
+__declspec(noinline) bool EquipmentProperties::CEquipment::IsPretend() {
   if (this->m_pretend == true) {
     this->Load(false);
   }
@@ -1381,7 +1381,7 @@ int GetEquipLocationMask(const int& location) {
 
 // OFFSET: 0x006AC610
 // FUNCTION: fn_06178
-CLuaInstance& EquipmentProperties::CEquipmentPropertiesMgr::GetScript() {
+__declspec(noinline) CLuaInstance& EquipmentProperties::CEquipmentPropertiesMgr::GetScript() {
   return this->script;
 }
 
