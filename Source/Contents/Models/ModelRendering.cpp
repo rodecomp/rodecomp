@@ -204,5 +204,102 @@ void C3dNodeV1::Draw(const float* matrix, unsigned char reversed, bool clip, uns
 void C3dNodeV2::Draw(const float* matrix, unsigned char reversed, bool clip, unsigned char commandMode) {
   // GLOBAL: gl_24587
   static ProjectedVertex projected[30000];
-  DrawModelNode(*this, matrix, reversed, clip, commandMode, projected, true);
+  C3dNode& node = *this;
+  struct matrix camera;
+  std::memcpy(camera.values, matrix, sizeof(camera.values));
+  struct matrix combined;
+  combined.Compose(node.transform, camera);
+  float overrideScale[3];
+  std::memcpy(overrideScale, g_worldLighting.ambient, sizeof(overrideScale));
+  float colorScale[3];
+  std::memcpy(colorScale, g_weatherEffect.lightColor, sizeof(colorScale));
+  const unsigned char alpha = node.model->alpha;
+
+  for (int index = 0; index < node.mesh->vertexCount; ++index) {
+    g_renderer->viewport.Project(node.mesh->vertices[index].data(), combined.values, projected[index]);
+  }
+
+  RenderVertex* output = g_renderer->vertices.Acquire(static_cast<unsigned>(node.mesh->faceCount) * 3u);
+  int index = 0;
+
+  while (index < node.mesh->faceCount) {
+    const unsigned texture = node.mesh->faces[index].texture;
+    RenderVertex* first = output;
+
+    std::uint16_t flags = 0;
+
+    do {
+      const ModelFace& face = node.mesh->faces[index];
+      const RenderVertex& a = projected[face.vertices[0]];
+      const RenderVertex& b = projected[face.vertices[1]];
+      const RenderVertex& c = projected[face.vertices[2]];
+      bool visible = !clip || ModelTriangleVisible(&a, &b, &c);
+      const float left = (b.y - a.y) * (c.x - a.x);
+      const float right = (c.y - a.y) * (b.x - a.x);
+      const bool winding = right > left;
+      const bool accepted = winding ? reversed == 0 : reversed == 1;
+      visible = visible && (accepted || face.twoSided == 1);
+
+      if (visible) {
+        output[0] = a;
+        output[1] = b;
+        output[2] = c;
+        const ModelFaceState& state = node.faceState[index];
+
+        for (unsigned corner = 0; corner < 3; ++corner) {
+          output[corner].u = state.uv[corner][0];
+          output[corner].v = state.uv[corner][1];
+        }
+
+        const auto& transforms = this->textureTransforms;
+        const auto found = transforms.find(static_cast<int>(texture));
+
+        if (found != transforms.end()) {
+          for (unsigned corner = 0; corner < 3; ++corner) {
+            TransformModelUV(output[corner].u, output[corner].v, found->second);
+          }
+
+          flags = 0x20;
+        }
+
+        for (unsigned corner = 0; corner < 3; ++corner) {
+          if (g_overrideColor) {
+            output[corner].diffuse = Color(state.colors[corner], alpha, overrideScale);
+          } else if (node.unknown_0088) {
+            output[corner].diffuse = (state.colors[corner] & 0x00FFFFFFu) | 0x80000000u;
+          } else if (g_weatherEffect.unknown_0001) {
+            const int* values = node.faceValues.data() + index * 9u + corner * 3u;
+            output[corner].diffuse = (static_cast<unsigned>(alpha) << 24) | (Byte(static_cast<float>(values[0]) * colorScale[0]) << 16) |
+                                     (Byte(static_cast<float>(values[1]) * colorScale[1]) << 8) | Byte(static_cast<float>(values[2]) * colorScale[2]);
+          } else {
+            output[corner].diffuse = Color(state.colors[corner], alpha, colorScale);
+          }
+        }
+
+        output += 3;
+      }
+
+      ++index;
+    } while (index < node.mesh->faceCount && node.mesh->faces[index].texture == texture);
+
+    if (output != first) {
+      RenderCommand* command = g_renderer->commands.Acquire();
+      command->vertices = first;
+      command->vertexCount = static_cast<unsigned>(output - first);
+      command->texture = node.textures[texture % node.textures.size()];
+      command->unknown_0014 = static_cast<std::uint16_t>((command->unknown_0014 & 0x00FFu) | (static_cast<unsigned>(commandMode) << 8));
+
+      if (alpha != 255 || command->texture->Format() == TextureFormat::A4R4G4B4) {
+        flags |= 1;
+      }
+
+      g_renderer->queues.Submit(command, flags, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+    }
+  }
+
+  node.unknown_0088 = 0;
+
+  for (C3dNode* child : node.children) {
+    child->Draw(combined.values, reversed, clip, commandMode);
+  }
 }
