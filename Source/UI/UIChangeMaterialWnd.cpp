@@ -39,8 +39,15 @@
 // OFFSET: 0x005E03B0
 // FUNCTION: fn_03861
 UIChangeMaterialWnd::UIChangeMaterialWnd()
-    : UIFrameWnd(0), unknown_00B4(nullptr), unknown_00B8(nullptr), m_sortBox(nullptr), m_button(nullptr), m_resultX(168), m_resultY(131), m_resultItem(),
-      m_materialPos{{90, 86}, {246, 86}, {168, 222}, {168, 40}, {90, 176}, {246, 176}}, m_materials(), m_resultAmount(0), m_resultText() {
+    : UIFrameWnd(0), unknown_00B4(nullptr), unknown_00B8(nullptr), m_sortBox(nullptr), m_button(nullptr), m_resultItem(), m_materials(), m_resultAmount(0),
+      m_resultText() {
+  this->m_resultX = 168;
+  this->m_resultY = 131;
+
+  const MaterialSlotPos positions[6] = {{90, 86}, {246, 86}, {168, 222}, {168, 40}, {90, 176}, {246, 176}};
+  for (int index = 0; index < 6; ++index) {
+    this->m_materialPos[index] = positions[index];
+  }
 }
 
 // OFFSET: 0x005E0560
@@ -189,7 +196,11 @@ void UIChangeMaterialWnd::Slot32(int x, int y) {
 // OFFSET: 0x005E2A30
 // FUNCTION: fn_03889
 void UIChangeMaterialWnd_List::Slot35(int argument) {
-  this->SendMsg(this->m_scrollBar, argument < 0 ? 10 : 9, 0, 0, 0, 0);
+  if (argument < 0) {
+    this->SendMsg(this->m_scrollBar, 10, 0, 0, 0, 0);
+  } else {
+    this->SendMsg(this->m_scrollBar, 9, 0, 0, 0, 0);
+  }
 }
 
 // OFFSET: 0x005E2A70
@@ -229,17 +240,14 @@ void UIChangeMaterialWnd_List::ApplyFilter(std::string text) {
   this->m_items.clear();
 
   std::string filter = text;
-  for (std::size_t i = 0; i < filter.size(); ++i) {
-    filter[i] = static_cast<char>(tolower(static_cast<unsigned char>(filter[i])));
-  }
+  std::transform(filter.begin(), filter.end(), filter.begin(), [](unsigned char c) { return static_cast<char>(tolower(c)); });
 
-  for (int index = 0; index < static_cast<int>(this->m_entries.size()); ++index) {
-    std::string name = ItemDisplayName(this->m_entries[index].results.front().id);
-    for (std::size_t i = 0; i < name.size(); ++i) {
-      name[i] = static_cast<char>(tolower(static_cast<unsigned char>(name[i])));
-    }
+  int index = 0;
+  for (auto entry = this->m_entries.begin(); entry != this->m_entries.end(); ++entry, ++index) {
+    std::string name = ItemDisplayName(entry->results.front().id);
+    std::transform(name.begin(), name.end(), name.begin(), [](unsigned char c) { return static_cast<char>(tolower(c)); });
 
-    if (filter.empty() || name.find(filter) != std::string::npos) {
+    if (name.find(filter) != std::string::npos) {
       this->m_items.push_back(index);
     }
   }
@@ -349,13 +357,10 @@ void UIChangeMaterialWnd_List::sub_5E3B80(int index) {
 int UIChangeMaterialWnd::SendMsg(
   UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
-  auto* list = this->unknown_00B4;
-  auto* edit = this->unknown_00B8;
-
   switch (message) {
   case 0:
-    if (sender == reinterpret_cast<UIWindow*>(edit) && g_windowMgr.GetHoverWindow() == reinterpret_cast<UIWindow*>(edit)) {
-      list->SendMsg(nullptr, 6, 0x141, reinterpret_cast<std::intptr_t>(edit->Text()), 0, 0);
+    if (sender == reinterpret_cast<UIWindow*>(this->unknown_00B8) && reinterpret_cast<UIWindow*>(this->unknown_00B8) == g_windowMgr.GetHoverWindow()) {
+      this->unknown_00B4->SendMsg(nullptr, 6, 0x141, reinterpret_cast<std::intptr_t>(this->unknown_00B8->Text()), 0, 0);
     }
     break;
   case 6:
@@ -367,23 +372,23 @@ int UIChangeMaterialWnd::SendMsg(
       g_windowMgr.CloseWindow(0x158);
       break;
     case 0x141:
-      list->SendMsg(nullptr, 6, 0x141, reinterpret_cast<std::intptr_t>(edit->Text()), 0, 0);
+      this->unknown_00B4->SendMsg(nullptr, 6, 0x141, reinterpret_cast<std::intptr_t>(this->unknown_00B8->Text()), 0, 0);
       break;
     case 0x16c:
-      list->SortItems(argument2 > 0);
+      this->unknown_00B4->SortItems(argument2 > 0);
       break;
     case 0x19f:
-      list->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+      this->unknown_00B4->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
       break;
     default:
       break;
     }
     break;
   case 0x12:
-    list->SendMsg(nullptr, 0x12, 0, 0, 0, 0);
+    this->unknown_00B4->SendMsg(nullptr, 0x12, 0, 0, 0, 0);
     break;
   case 0x13:
-    list->SendMsg(nullptr, 0x13, 0, 0, 0, 0);
+    this->unknown_00B4->SendMsg(nullptr, 0x13, 0, 0, 0, 0);
     break;
   case 0x17:
     if (argument1 != 0) {
@@ -404,7 +409,7 @@ int UIChangeMaterialWnd::SendMsg(
 
       if (entry->results.size() < 2) {
         this->m_resultAmount = entry->results.front().amount;
-        this->m_resultText.clear();
+        this->m_resultText = "";
       } else {
         int total = 0;
         for (const MaterialResult& result : entry->results) {
@@ -414,8 +419,8 @@ int UIChangeMaterialWnd::SendMsg(
         const MaterialResult& first = entry->results.front();
         const MaterialResult& last = entry->results.back();
         const std::string name = ItemDisplayName(first.id);
-        this->m_resultText =
-          FormatOwnedString(LookupMessage(0xe8b), name.c_str(), first.quantity, last.quantity);
+        const std::string text = FormatOwnedString(LookupMessage(0xe8b), name.c_str(), first.quantity, last.quantity);
+        this->m_resultText = text;
       }
 
       this->m_button->SetDisabled(entry->state != 1);
