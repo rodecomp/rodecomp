@@ -12,21 +12,18 @@ void UIEditCtrl3::UpdateScrollBar() {
   const int total = this->unknown_013C;
   int maximum = total - visible;
   if (maximum == 1 && this->unknown_0158 == 0) {
-    this->unknown_0134 = 0;
+    maximum = 0;
+  }
+  if (maximum < 0) {
+    maximum = 0;
+  }
+  this->unknown_0134 = maximum > 0;
+  if (maximum > 0) {
+    static_cast<UIScrollBar*>(this->unknown_0130)->SetRange(maximum, visible, total);
+    static_cast<UIScrollBar*>(this->unknown_0130)->SetPosition(this->unknown_0158);
+  } else {
     static_cast<UIScrollBar*>(this->unknown_0130)->SetRange(0, visible, total);
     this->unknown_0158 = 0;
-  } else {
-    if (maximum < 0) {
-      maximum = 0;
-    }
-    this->unknown_0134 = maximum > 0;
-    if (maximum > 0) {
-      static_cast<UIScrollBar*>(this->unknown_0130)->SetRange(maximum, visible, total);
-      static_cast<UIScrollBar*>(this->unknown_0130)->SetPosition(this->unknown_0158);
-    } else {
-      static_cast<UIScrollBar*>(this->unknown_0130)->SetRange(0, visible, total);
-      this->unknown_0158 = 0;
-    }
   }
 
   this->unknown_0130->Invalidate();
@@ -63,7 +60,7 @@ void UIEditCtrl3::PlaceLinks(const std::string& value, int y, int line, int firs
   std::string prefix;
   std::string rest;
 
-  if (remaining.find('<') == std::string::npos && remaining.find('>') == std::string::npos) {
+  if (value.find("<") == std::string::npos && value.find(">") == std::string::npos) {
     return;
   }
 
@@ -73,15 +70,17 @@ void UIEditCtrl3::PlaceLinks(const std::string& value, int y, int line, int firs
     }
 
     auto* button = static_cast<UINaviLinkButton*>(*entry);
-    const std::string name = FormatNavigationLink(button->link, false);
+    const std::string name = FormatNavigationLink(button->Link(), false);
     const std::string fitted = FitText(*this->geometry.surface, name, this->geometry.width / 2);
-    const std::string display = "<" + fitted + ">";
+    std::string display = "<";
+    display += fitted;
+    display += ">";
     const std::size_t found = remaining.find(display);
 
     if (found != std::string::npos) {
       this->pendingText[line].clear();
       prefix = remaining.substr(0, found);
-      rest = remaining.substr(found + display.size());
+      rest = remaining.substr(found + std::strlen(display.c_str()));
 
       int x = 3;
 
@@ -90,12 +89,13 @@ void UIEditCtrl3::PlaceLinks(const std::string& value, int y, int line, int firs
       }
 
       button->line = line;
-      button->Move(x - 1 + this->TextWidth(prefix.c_str(), 0, 0, 12, 0, 0), y);
+      (*entry)->Move(x - 1 + this->TextWidth(prefix.c_str(), 0, 0, 12, 0, 0), y);
     }
 
-    this->SnapLinkSelection(prefix.size(), fitted.size());
+    const std::string visible = FitText(*this->geometry.surface, name, this->geometry.width / 2);
+    this->SnapLinkSelection(prefix.size(), std::strlen(visible.c_str()));
     this->pendingText[line] += prefix;
-    this->pendingText[line] += button->link;
+    this->pendingText[line] += button->Link();
     this->pendingText[line] += rest;
   }
 }
