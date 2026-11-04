@@ -503,7 +503,7 @@ void CSession::SetHotkeyDescription(const char* description, int index) {
     }
   }
 
-  if (description[0] == '\0') {
+  if (std::strlen(description) == 0) {
     this->m_hotkeyDescriptions[index] = "nothing";
   } else {
     this->m_hotkeyDescriptions[index] = description;
