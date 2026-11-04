@@ -687,7 +687,7 @@ void UIChangeMaterialWnd_List::Slot28(int x, int y) {
 
   const std::string name = ItemDisplayName(entry->results.front().id);
   const std::string text = FormatOwnedString(LookupMessage(0xB7), name.c_str(), entry->results.front().quantity);
-  static_cast<CMode*>(g_charViewMode)->ShowTooltip(text.c_str(), screenX + 5, screenY - 5, -1, 0, 1);
+  g_modeMgr.gameMode->ShowTooltip(text.c_str(), screenX + 5, screenY - 5, -1, 0, 1);
 }
 
 // OFFSET: 0x005E1320
