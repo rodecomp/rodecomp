@@ -5185,7 +5185,10 @@ void CEffectPrim::PrimTrailShift() {
 // OFFSET: 0x00BBE960
 // FUNCTION: fn_19812
 void CEffectPrim::PrimGrowFollow() {
-  this->render.position = this->state.master->render.position;
+  const CRagEffect* master = this->state.master;
+  this->render.position.x = master->render.position.x;
+  this->render.position.y = master->render.position.y;
+  this->render.position.z = master->render.position.z;
 
   for (int index = 0; index < 4; ++index) {
     EffectPrimitiveSlot& slot = this->state.slots[index];
@@ -5201,7 +5204,11 @@ void CEffectPrim::PrimGrowFollow() {
     }
 
     if (slot.process <= 10) {
-      slot.alphaB = static_cast<std::int16_t>(slot.alphaB + (this->state.size != 113.0f ? 2 : 6));
+      if (this->state.size == 113.0f) {
+        slot.alphaB += 6;
+      } else {
+        slot.alphaB += 2;
+      }
     }
 
     slot.distance *= 1.07f;
@@ -6773,7 +6780,15 @@ void CEffectPrim::PrimFadingColumns() {
 // FUNCTION: fn_19801
 void CEffectPrim::PrimAuraGlow() {
   EffectPrimitiveSlot* slots = this->state.slots;
-  FaceCamera(slots);
+  const CView* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera;
+  const short yaw = static_cast<short>(static_cast<int>(view->camera.yaw));
+  const short pitch = static_cast<short>(-static_cast<int>(view->camera.pitch));
+  slots[0].alphaT = static_cast<short>(360 - yaw);
+  const short anglePitch = static_cast<short>(pitch + 450);
+  slots[1].alphaT = anglePitch;
+  if (anglePitch >= 360) {
+    slots[1].alphaT = static_cast<short>(pitch + 90);
+  }
 
   const CRagEffect* master = this->state.master;
   this->render.position.x = master->render.position.x;
@@ -6834,9 +6849,10 @@ void CEffectPrim::PrimAuraGlow() {
 
   if (kind == 2) {
     if (slot.process > 40) {
-      slot.alphaB += slot.process >= 62 ? -8 : 8;
+      const short alpha = static_cast<short>(slot.alphaB + (slot.process >= 62 ? -8 : 8));
+      slot.alphaB = alpha;
 
-      if (slot.alphaB > 0) {
+      if (alpha > 0) {
         slot.distance += 0.7f;
       }
     }
