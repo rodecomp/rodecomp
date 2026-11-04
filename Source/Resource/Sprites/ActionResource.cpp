@@ -41,19 +41,17 @@ CActRes* CActRes::Create() {
 bool CActRes::Load(const char* name) {
   CFile file;
   if (!file.Open(name, 0, true, false)) {
-    const std::string message = std::string("Cannot find File : ") + name;
-    ShowErrorDialog(GetRenderSystemHolder()->system, message.c_str(), 0);
+    ShowErrorDialog(GetRenderSystemHolder()->system, (std::string("Cannot find File : ") + std::string(name)).c_str(), 0);
     return false;
   }
 
-  ResourceByteReader input{static_cast<const unsigned char*>(file.GetData()), static_cast<unsigned>(file.GetSize())};
   struct Header {
     std::uint16_t magic;
     std::uint16_t version;
     std::uint16_t count;
     unsigned char reserved[10];
   } header;
-  input.Read(&header, sizeof(header));
+  file.Read(&header, sizeof(header));
 
   if (header.magic != 0x4341) {
     ShowErrorDialog(GetRenderSystemHolder()->system, "Illegal file format", 0);
@@ -79,13 +77,13 @@ bool CActRes::Load(const char* name) {
 
   for (auto& animation : this->animations) {
     std::uint32_t frameCount;
-    input.Read(&frameCount, sizeof(frameCount));
+    file.Read(&frameCount, sizeof(frameCount));
     animation.resize(frameCount);
 
     for (ActionFrame& frame : animation) {
-      input.Read(frame.unknown_0000, sizeof(frame.unknown_0000));
+      file.Read(frame.unknown_0000, sizeof(frame.unknown_0000));
       int cellCount;
-      input.Read(&cellCount, sizeof(cellCount));
+      file.Read(&cellCount, sizeof(cellCount));
       frame.sound = -1;
       frame.cellCount = cellCount;
       frame.cells.resize(std::min(static_cast<unsigned>(cellCount), 1000u));
@@ -97,7 +95,7 @@ bool CActRes::Load(const char* name) {
         SpriteFrameCell& cell = frame.cells[index];
 
         if (header.version < 0x0200) {
-          input.Read(&cell, 16);
+          file.Read(&cell, 16);
           cell.color = 0xFFFFFFFFu;
           cell.scaleX = 1.0f;
           cell.scaleY = 1.0f;
@@ -117,17 +115,17 @@ bool CActRes::Load(const char* name) {
             std::int32_t rotation;
             std::int32_t imageType;
           } legacy;
-          input.Read(&legacy, sizeof(legacy));
+          file.Read(&legacy, sizeof(legacy));
           cell = {legacy.x, legacy.y, legacy.image, legacy.mirrored, legacy.color, legacy.scale, legacy.scale, legacy.rotation, legacy.imageType};
         } else {
-          input.Read(&cell, sizeof(cell));
+          file.Read(&cell, sizeof(cell));
         }
 
         if (header.version >= 0x0205) {
           int width;
           int height;
-          input.Read(&width, sizeof(width));
-          input.Read(&height, sizeof(height));
+          file.Read(&width, sizeof(width));
+          file.Read(&height, sizeof(height));
 
           if (cell.image != -1) {
             cell.x = RelativeCoordinate(cell.x, width, cell.scaleX);
@@ -150,7 +148,7 @@ bool CActRes::Load(const char* name) {
       }
 
       if (header.version >= 0x0200) {
-        input.Read(&frame.sound, sizeof(frame.sound));
+        file.Read(&frame.sound, sizeof(frame.sound));
 
         if (header.version == 0x0200) {
           frame.sound = -1;
@@ -159,7 +157,7 @@ bool CActRes::Load(const char* name) {
 
       if (header.version >= 0x0203) {
         int count;
-        input.Read(&count, sizeof(count));
+        file.Read(&count, sizeof(count));
         frame.anchorCount = count;
         frame.anchors.resize(static_cast<unsigned>(count));
 
@@ -168,7 +166,7 @@ bool CActRes::Load(const char* name) {
             int unused;
             ActionAnchor anchor;
           } anchor;
-          input.Read(&anchor, sizeof(anchor));
+          file.Read(&anchor, sizeof(anchor));
           frame.anchors[index] = anchor.anchor;
         }
       }
@@ -177,19 +175,19 @@ bool CActRes::Load(const char* name) {
 
   if (header.version >= 0x0201) {
     int count;
-    input.Read(&count, sizeof(count));
+    file.Read(&count, sizeof(count));
     this->sounds.resize(static_cast<unsigned>(count));
 
     for (int index = 0; index < count; ++index) {
       char sound[40];
-      input.Read(sound, sizeof(sound));
+      file.Read(sound, sizeof(sound));
       this->sounds[index].assign(sound, std::strlen(sound));
     }
   }
 
   if (header.version >= 0x0202) {
     for (float& speed : this->speeds) {
-      input.Read(&speed, sizeof(speed));
+      file.Read(&speed, sizeof(speed));
     }
   }
 
