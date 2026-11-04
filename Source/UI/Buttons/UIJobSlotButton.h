@@ -8,7 +8,7 @@ public:
   UIJobSlotButton();
   ~UIJobSlotButton() override;
   void Slot31(int x, int y) override;
-  void SetSelected(unsigned char value);
+  __declspec(noinline) void SetSelected(unsigned char value);
 
   /* 0120 */ std::string selectedImage;
   /* 0138 */ std::string unselectedImage;
