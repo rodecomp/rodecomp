@@ -155,12 +155,12 @@ void CWorld::OnProcess() {
       continue;
     }
 
-    for (auto itemEntry = this->unknown_0018.begin(); itemEntry != this->unknown_0018.end(); ++itemEntry) {
-      if (*itemEntry == object) {
-        CItem* item = static_cast<CItem*>(object);
-        this->RemovePcPos(item->itemAid, true);
-        this->RemovePcPosForMove(item->itemAid, true);
-        this->unknown_0018.erase(itemEntry);
+    for (auto actorEntry = this->actors.begin(); actorEntry != this->actors.end(); ++actorEntry) {
+      if (*actorEntry == object) {
+        this->RemovePcPos((*actorEntry)->render.accountId, true);
+        this->RemovePcPosForMove((*actorEntry)->render.accountId, true);
+
+        this->actors.erase(actorEntry);
         break;
       }
     }
