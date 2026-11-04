@@ -440,14 +440,14 @@ CSkillInfo UINewSkillListWnd::SkillAt(int index, bool live) {
 // OFFSET: 0x009B0680
 // FUNCTION: fn_13807
 CSkillInfo UINewSkillListWnd::VisibleSkill(int row) {
+  std::list<CSkillInfo>& list = this->SkillList(this->m_tab, false);
   int index = 0;
-  for (const CSkillInfo& skill : this->SkillList(this->m_tab, false)) {
+  for (const CSkillInfo& skill : list) {
     if (row + this->m_firstRow == index) {
       return skill;
     }
     ++index;
   }
-
   return CSkillInfo(0);
 }
 
@@ -760,22 +760,22 @@ bool UINewSkillListWnd::IsSkillArea(int x, int y) {
   int minX = 76;
   int rowHeight = 56;
   int yOffset = 40;
-  const int gate = g_session.m_simplifiedSkillList;
-  if (gate != 0) {
+  bool inside = true;
+  if (g_session.m_simplifiedSkillList != 0) {
     rowHeight = 32;
     minX = 40;
     yOffset = 30;
   }
   if (y < this->m_topMargin || y >= this->m_visibleRows * rowHeight + 4 + yOffset) {
-    return false;
+    inside = false;
   }
   if (x < minX) {
-    return false;
+    inside = false;
   }
-  if (gate == 0 && x > 504) {
-    return false;
+  if (g_session.m_simplifiedSkillList == 0 && x > 504) {
+    inside = false;
   }
-  return true;
+  return inside;
 }
 
 // OFFSET: 0x009B1050
