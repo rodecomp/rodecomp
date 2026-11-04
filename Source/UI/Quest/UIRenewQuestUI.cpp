@@ -809,8 +809,9 @@ private:
 // OFFSET: 0x00A64DE0
 // FUNCTION: fn_16497
 void CQuestItemSelector::SetHighlighted(CUIListItem* const& item) {
+  CUIListItem* highlighted = item;
   for (RenewQuestUI::CUIQuestItem* entry : this->listBox->items) {
-    entry->SetHighlighted(static_cast<CUIListItem*>(entry) == item);
+    entry->SetHighlighted(static_cast<CUIListItem*>(entry) == highlighted);
   }
 }
 
@@ -1099,18 +1100,21 @@ void RenewQuestUI::CUIQuestItem::SetSelected(bool selected) {
 // OFFSET: 0x00A67D40
 // FUNCTION: fn_16632
 int CUIRenewQuestUI::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == 6) {
+  switch (message) {
+  case 6:
     if (a == 0xD5) {
       const bool checked = b != 0;
       this->checkBox->checked = checked;
       this->checkBox->Invalidate();
-      this->RecordValues(6, 0xD5, checked, 0, 0);
+      this->RecordValues(6, a, b != 0, 0, 0);
       if (UIWindow* window = g_windowMgr.LookupWindow(0xCC)) {
         window->Show(checked);
       }
     }
-  } else if (message == 0x16) {
+    break;
+  case 0x16:
     this->tab->SelectIndex(static_cast<int>(std::log2(static_cast<double>(a))));
+    break;
   }
 
   return CUIFrameWnd::SendMsg(sender, message, a, b, c, d);
