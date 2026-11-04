@@ -184,16 +184,13 @@ void matrix::MakeInverse(const matrix& source) {
 // OFFSET: 0x00554620
 // FUNCTION: fn_02026
 int matrix::IsIdentity() const {
-  const auto absolute = [](float value) {
-    return std::bit_cast<float>(std::bit_cast<unsigned>(value) & 0x7FFFFFFFu);
-  };
   const float tolerance = 1.0e-5f;
-  if (absolute(this->values[0] - 1.0f) > tolerance || absolute(this->values[4] - 1.0f) > tolerance ||
-      absolute(this->values[8] - 1.0f) > tolerance || absolute(this->values[1]) > tolerance ||
-      absolute(this->values[2]) > tolerance || absolute(this->values[3]) > tolerance ||
-      absolute(this->values[5]) > tolerance || absolute(this->values[6]) > tolerance ||
-      absolute(this->values[7]) > tolerance || absolute(this->values[9]) > tolerance ||
-      absolute(this->values[10]) > tolerance || absolute(this->values[11]) > tolerance) {
+  if (std::fabs(this->values[0] - 1.0f) > tolerance || std::fabs(this->values[4] - 1.0f) > tolerance ||
+      std::fabs(this->values[8] - 1.0f) > tolerance || std::fabs(this->values[1]) > tolerance ||
+      std::fabs(this->values[2]) > tolerance || std::fabs(this->values[3]) > tolerance ||
+      std::fabs(this->values[5]) > tolerance || std::fabs(this->values[6]) > tolerance ||
+      std::fabs(this->values[7]) > tolerance || std::fabs(this->values[9]) > tolerance ||
+      std::fabs(this->values[10]) > tolerance || std::fabs(this->values[11]) > tolerance) {
     return 0;
   }
   return 1;
