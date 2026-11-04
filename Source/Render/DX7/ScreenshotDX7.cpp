@@ -15,11 +15,14 @@
 
 namespace {
   // INLINED
-  std::uint16_t PackedColor(const DeviceOwnerDX7& owner, unsigned color) {
+  std::uint16_t PackedColor(const DeviceOwnerDX7* owner, unsigned color) {
+    if (!owner) {
+      return 0;
+    }
     const auto channel = [](unsigned value, const DeviceOwnerDX7::Channel& field) {
       return static_cast<std::uint16_t>((value >> (field.expansion & 31)) << (field.shift & 31));
     };
-    return static_cast<std::uint16_t>(channel((color >> 16) & 255, owner.red) + channel((color >> 8) & 255, owner.green) + channel(color & 255, owner.blue));
+    return static_cast<std::uint16_t>(channel((color >> 16) & 255, owner->red) + channel((color >> 8) & 255, owner->green) + channel(color & 255, owner->blue));
   }
 
   // INLINED
@@ -31,8 +34,8 @@ namespace {
 
 // OFFSET: 0x0055D860
 // FUNCTION: fn_02109
-bool CRendererDX7::SaveBitmap(const char* filename, const BitmapImage& overlay, int width, int height, RendererBackBuffer& backBuffer) {
-  if (!backBuffer.Lock(*g_deviceOwnerDX7)) {
+bool CRendererDX7::SaveBitmap(const char* filename, CBitmapRes* overlay) {
+  if (!this->LockBackBuffer()) {
     return false;
   }
 
@@ -42,6 +45,8 @@ bool CRendererDX7::SaveBitmap(const char* filename, const BitmapImage& overlay, 
     return false;
   }
 
+  const int width = this->viewport.width;
+  const int height = this->viewport.height;
   BITMAPFILEHEADER header{};
   header.bfType = 0x4D42;
   header.bfSize = 3u * (static_cast<unsigned>(width) * static_cast<unsigned>(height) + 18u);
@@ -55,31 +60,32 @@ bool CRendererDX7::SaveBitmap(const char* filename, const BitmapImage& overlay, 
   information.biBitCount = 24;
   std::fwrite(&information, sizeof(information), 1, file);
 
-  const auto red = g_deviceOwnerDX7->red;
-  const auto green = g_deviceOwnerDX7->green;
-  const auto blue = g_deviceOwnerDX7->blue;
-  const auto redMask = g_deviceOwnerDX7->redMask;
-  const auto greenMask = g_deviceOwnerDX7->greenMask;
-  const auto blueMask = g_deviceOwnerDX7->blueMask;
-  const auto transparent = PackedColor(*g_deviceOwnerDX7, 0xFF00FF);
+  auto* owner = g_deviceOwnerDX7;
+  const auto red = owner ? owner->red : DeviceOwnerDX7::Channel{0, 8};
+  const auto green = owner ? owner->green : DeviceOwnerDX7::Channel{0, 8};
+  const auto blue = owner ? owner->blue : DeviceOwnerDX7::Channel{0, 8};
+  const auto redMask = owner ? owner->redMask : 0u;
+  const auto greenMask = owner ? owner->greenMask : 0u;
+  const auto blueMask = owner ? owner->blueMask : 0u;
+  const auto transparent = PackedColor(owner, 0xFF00FF);
   std::array<unsigned char, 10800> row;
 
   for (int y = height - 1; y >= 0; --y) {
-    const auto* source = static_cast<const unsigned char*>(backBuffer.pixels) + y * backBuffer.pitch;
+    const auto* source = static_cast<const unsigned char*>(this->backBuffer.pixels) + y * this->backBuffer.pitch;
 
     for (int x = 0; x < width; ++x) {
       unsigned color = 0;
-      const int overlayX = x + overlay.width - width;
-      const int overlayY = y + overlay.height - height;
-      bool useOverlay = overlayX >= 0 && overlayX < overlay.width && overlayY >= 0 && overlayY < overlay.height;
+      const int overlayX = x + overlay->image.width - width;
+      const int overlayY = y + overlay->image.height - height;
+      bool useOverlay = overlayX >= 0 && overlayX < overlay->image.width && overlayY >= 0 && overlayY < overlay->image.height;
 
       if (useOverlay) {
-        color = overlay.pixels[overlayX + overlayY * overlay.width];
-        useOverlay = backBuffer.bitsPerPixel == 16 ? PackedColor(*g_deviceOwnerDX7, color) != transparent : (color & 0xFFFFFF) != 0xFF00FF;
+        color = overlay->image.pixels[overlayX + overlayY * overlay->image.width];
+        useOverlay = this->backBuffer.bitsPerPixel == 16 ? PackedColor(owner, color) != transparent : (color & 0xFFFFFF) != 0xFF00FF;
       }
 
       if (!useOverlay) {
-        if (backBuffer.bitsPerPixel == 16) {
+        if (this->backBuffer.bitsPerPixel == 16) {
           std::uint16_t pixel;
           std::memcpy(&pixel, source + 2 * x, sizeof(pixel));
           color = (static_cast<unsigned>(ExpandedChannel(pixel, redMask, red)) << 16) | (static_cast<unsigned>(ExpandedChannel(pixel, greenMask, green)) << 8) |
@@ -95,9 +101,10 @@ bool CRendererDX7::SaveBitmap(const char* filename, const BitmapImage& overlay, 
     }
 
     std::fwrite(row.data(), 3u * static_cast<unsigned>(width), 1, file);
+    owner = g_deviceOwnerDX7;
   }
 
-  backBuffer.Unlock(*g_deviceOwnerDX7);
+  this->UnlockBackBuffer();
   std::fclose(file);
   return true;
 }
@@ -105,39 +112,42 @@ bool CRendererDX7::SaveBitmap(const char* filename, const BitmapImage& overlay, 
 // OFFSET: 0x0055DDF0
 // FUNCTION: fn_02110
 bool CRendererDX7::SaveJpeg(
-  const char* filename, const BitmapImage& overlay, int width, int height, RendererBackBuffer& backBuffer
+  const char* filename, CBitmapRes* overlay
 ) {
-  if (!backBuffer.Lock(*g_deviceOwnerDX7)) {
+  if (!this->LockBackBuffer()) {
     return false;
   }
 
+  const int width = this->viewport.width;
+  const int height = this->viewport.height;
   const unsigned size = 3u * static_cast<unsigned>(width) * static_cast<unsigned>(height);
   auto* pixels = static_cast<unsigned char*>(std::malloc(size));
-  const auto red = g_deviceOwnerDX7->red;
-  const auto green = g_deviceOwnerDX7->green;
-  const auto blue = g_deviceOwnerDX7->blue;
-  const auto redMask = g_deviceOwnerDX7->redMask;
-  const auto greenMask = g_deviceOwnerDX7->greenMask;
-  const auto blueMask = g_deviceOwnerDX7->blueMask;
-  const auto transparent = PackedColor(*g_deviceOwnerDX7, 0xFF00FF);
+  auto* owner = g_deviceOwnerDX7;
+  const auto red = owner ? owner->red : DeviceOwnerDX7::Channel{0, 8};
+  const auto green = owner ? owner->green : DeviceOwnerDX7::Channel{0, 8};
+  const auto blue = owner ? owner->blue : DeviceOwnerDX7::Channel{0, 8};
+  const auto redMask = owner ? owner->redMask : 0u;
+  const auto greenMask = owner ? owner->greenMask : 0u;
+  const auto blueMask = owner ? owner->blueMask : 0u;
+  const auto transparent = PackedColor(owner, 0xFF00FF);
 
   for (int y = height - 1; y >= 0; --y) {
-    const auto* source = static_cast<const unsigned char*>(backBuffer.pixels) + y * backBuffer.pitch;
+    const auto* source = static_cast<const unsigned char*>(this->backBuffer.pixels) + y * this->backBuffer.pitch;
     auto* row = pixels + 3u * static_cast<unsigned>(y) * static_cast<unsigned>(width);
 
     for (int x = 0; x < width; ++x) {
       unsigned color = 0;
-      const int overlayX = x + overlay.width - width;
-      const int overlayY = y + overlay.height - height;
-      bool useOverlay = overlayX >= 0 && overlayX < overlay.width && overlayY >= 0 && overlayY < overlay.height;
+      const int overlayX = x + overlay->image.width - width;
+      const int overlayY = y + overlay->image.height - height;
+      bool useOverlay = overlayX >= 0 && overlayX < overlay->image.width && overlayY >= 0 && overlayY < overlay->image.height;
 
       if (useOverlay) {
-        color = overlay.pixels[overlayX + overlayY * overlay.width];
-        useOverlay = backBuffer.bitsPerPixel == 16 ? PackedColor(*g_deviceOwnerDX7, color) != transparent : (color & 0xFFFFFF) != 0xFF00FF;
+        color = overlay->image.pixels[overlayX + overlayY * overlay->image.width];
+        useOverlay = this->backBuffer.bitsPerPixel == 16 ? PackedColor(owner, color) != transparent : (color & 0xFFFFFF) != 0xFF00FF;
       }
 
       if (!useOverlay) {
-        if (backBuffer.bitsPerPixel == 16) {
+        if (this->backBuffer.bitsPerPixel == 16) {
           std::uint16_t pixel;
           std::memcpy(&pixel, source + 2 * x, sizeof(pixel));
           color = (static_cast<unsigned>(ExpandedChannel(pixel, redMask, red)) << 16) | (static_cast<unsigned>(ExpandedChannel(pixel, greenMask, green)) << 8) |
@@ -151,9 +161,10 @@ bool CRendererDX7::SaveJpeg(
       row[3 * x + 1] = static_cast<unsigned char>(color >> 8);
       row[3 * x + 2] = static_cast<unsigned char>(color >> 16);
     }
+    owner = g_deviceOwnerDX7;
   }
 
-  backBuffer.Unlock(*g_deviceOwnerDX7);
+  this->UnlockBackBuffer();
   IJL15Properties properties{};
 
   if (ijlInit(&properties) != 0) {

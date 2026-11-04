@@ -27,8 +27,8 @@ void CRendererDX7::Present(bool wait) {
     return;
   }
 
-  if (this->backBuffer.Lock(*g_deviceOwnerDX7)) {
-    this->backBuffer.Unlock(*g_deviceOwnerDX7);
+  if (this->LockBackBuffer()) {
+    this->UnlockBackBuffer();
   }
 
   if (g_deviceOwnerDX7->Present(wait) == DDERR_SURFACELOST) {

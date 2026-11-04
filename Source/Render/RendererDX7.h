@@ -9,7 +9,6 @@
 class CTextureDX7;
 class ResourceMgr;
 struct IDirect3DDevice7;
-struct BitmapImage;
 
 class CRendererDX7 : public CRenderer {
 public:
@@ -29,6 +28,8 @@ public:
   void SetCamera(const float* eye, const float* target, const float* up) override;
   void SetClearColor(unsigned color) override;
   bool Draw() override;
+  bool LockBackBuffer() override;
+  HRESULT UnlockBackBuffer() override;
 
   void SetTextureFormat(unsigned format);
   void SetLighting(const float* direction, const float* diffuse, const float* ambient);
@@ -38,8 +39,8 @@ public:
   void DrawLightmappedPrimitive(LightmappedPrimitive* primitive);
   void SetTextureMode(int mode);
   bool RenderToTexture(int width, int height, const std::list<RenderPrimitive*>& primitives, CTexture*& texture);
-  bool SaveBitmap(const char* filename, const BitmapImage& overlay, int width, int height, RendererBackBuffer& backBuffer);
-  bool SaveJpeg(const char* filename, const BitmapImage& overlay, int width, int height, RendererBackBuffer& backBuffer);
+  bool SaveBitmap(const char* filename, CBitmapRes* overlay) override;
+  bool SaveJpeg(const char* filename, CBitmapRes* overlay) override;
   bool SaveLogo(std::string filename, ResourceMgr& resources);
   void SetTexture(unsigned stage, CTextureDX7* texture);
   void Present(bool wait);

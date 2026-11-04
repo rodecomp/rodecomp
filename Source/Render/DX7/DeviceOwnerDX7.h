@@ -28,6 +28,8 @@ public:
   bool SupportsTextureDimensions(std::uint32_t width, std::uint32_t height) const;
   void CaptureBackBuffer();
   void RestoreBackBuffer();
+  __declspec(noinline) void CaptureBackBufferImpl();
+  __declspec(noinline) void RestoreBackBufferImpl();
   void UpdateMipmapFiltering();
   __declspec(noinline) void PrepareErrorDialog();
   // INLINED
