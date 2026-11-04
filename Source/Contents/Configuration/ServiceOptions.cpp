@@ -1100,7 +1100,7 @@ void ApplyServiceOptionCursorClip(int id, unsigned char value, bool notify, int 
   if (value) {
     ClipApplicationCursor(hWnd);
   } else {
-    ClipCursor(nullptr);
+    ReleaseApplicationCursor();
   }
 }
 

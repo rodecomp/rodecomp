@@ -48,6 +48,12 @@ BOOL ClipApplicationCursor(HWND window) {
   return ClipCursor(&clip);
 }
 
+// OFFSET: 0x00E599C0
+// FUNCTION: fn_45508
+BOOL ReleaseApplicationCursor() {
+  return ClipCursor(nullptr);
+}
+
 // OFFSET: 0x00E5C430
 // FUNCTION: fn_24372
 LRESULT CALLBACK sub_E5C430(HWND window, UINT message, WPARAM wParam, LPARAM lParam) {

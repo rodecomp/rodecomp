@@ -11,5 +11,6 @@ HWND CreateApplicationWindow(
 );
 
 BOOL ClipApplicationCursor(HWND window);
+BOOL ReleaseApplicationCursor();
 
 #endif

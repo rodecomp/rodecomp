@@ -39,10 +39,14 @@ float CRendererDX9::FPS() const {
   return this->fps;
 }
 
+// OFFSET: 0x005650E0
+// FUNCTION: fn_02212
 bool CRendererDX9::CaptureBackBuffer() {
   return this->device->CaptureBackBuffer();
 }
 
+// OFFSET: 0x00567FB0
+// FUNCTION: fn_02233
 bool CRendererDX9::RestoreBackBuffer() {
   return this->device->RestoreBackBuffer();
 }
