@@ -197,7 +197,7 @@ std::string CurrentMapScriptName() {
 
 // OFFSET: 0x00B3C1C0
 // FUNCTION: fn_18806
-std::string EffectFunctionName(std::string name) {
+__declspec(noinline) std::string EffectFunctionName(std::string name) {
   std::string result = "_" + name + "_Effect";
   const std::size_t at = result.find("@");
   if (at != std::string::npos) {
