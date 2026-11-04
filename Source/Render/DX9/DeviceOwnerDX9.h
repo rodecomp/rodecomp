@@ -13,6 +13,7 @@ public:
   HRESULT Initialize(HWND window, UINT adapter);
   HRESULT CreateDevice(UINT adapter);
   HRESULT AcquireBackBuffer();
+  void SetInitialStates();
 
   UINT* AdjustTextureDimensions(UINT* output, UINT width, UINT height) const;
   bool CanAutoGenerateMipmaps(D3DFORMAT format) const;

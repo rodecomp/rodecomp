@@ -213,7 +213,7 @@ HRESULT DeviceOwnerDX9::Initialize(HWND value, UINT selectedAdapter) {
   }
 
   this->state.Initialize(this->device);
-  this->state.SetInitialStates();
+  this->SetInitialStates();
   this->UpdateMipmapFiltering();
   this->ClipFullscreenCursor();
 

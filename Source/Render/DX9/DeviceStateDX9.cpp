@@ -1,4 +1,4 @@
-#include "Render/DX9/DeviceStateDX9.h"
+#include "Render/DX9/DeviceOwnerDX9.h"
 
 #include <cstring>
 
@@ -18,22 +18,22 @@ void DeviceStateDX9::Initialize(IDirect3DDevice9* value) {
   this->device = value;
   value->GetFVF(&this->fvf);
 
-  for (unsigned state = 0; state < 210; ++state) {
+  for (int state = 0; state < 210; ++state) {
     DWORD result;
     if (SUCCEEDED(value->GetRenderState(static_cast<D3DRENDERSTATETYPE>(state), &result))) {
       this->render[state] = result;
     }
   }
 
-  for (unsigned stage = 0; stage < 2; ++stage) {
-    for (unsigned state = 0; state < 33; ++state) {
+  for (int stage = 0; stage < 2; ++stage) {
+    for (int state = 0; state < 33; ++state) {
       DWORD result;
       if (SUCCEEDED(value->GetTextureStageState(stage, static_cast<D3DTEXTURESTAGESTATETYPE>(state), &result))) {
         this->textureStage[stage][state] = result;
       }
     }
 
-    for (unsigned state = 0; state < 14; ++state) {
+    for (int state = 0; state < 14; ++state) {
       DWORD result;
       if (SUCCEEDED(value->GetSamplerState(stage, static_cast<D3DSAMPLERSTATETYPE>(state), &result))) {
         this->sampler[stage][state] = result;
@@ -44,47 +44,47 @@ void DeviceStateDX9::Initialize(IDirect3DDevice9* value) {
 
 // OFFSET: 0x0054C2A0
 // FUNCTION: fn_01919
-void DeviceStateDX9::SetInitialStates() {
-  this->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
-  this->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
-  this->SetRenderState(D3DRS_ALPHATESTENABLE, 1);
-  this->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
-  this->SetRenderState(D3DRS_ALPHAREF, 240);
-  this->SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE);
-  this->SetRenderState(D3DRS_ZWRITEENABLE, 1);
-  this->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-  this->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+void DeviceOwnerDX9::SetInitialStates() {
+  this->state.SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+  this->state.SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
+  this->state.SetRenderState(D3DRS_ALPHATESTENABLE, 1);
+  this->state.SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
+  this->state.SetRenderState(D3DRS_ALPHAREF, 240);
+  this->state.SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE);
+  this->state.SetRenderState(D3DRS_ZWRITEENABLE, 1);
+  this->state.SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+  this->state.SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 
-  this->SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, 0);
-  this->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
-  this->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-  this->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-  this->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
-  this->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-  this->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
-  this->SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, 1);
-  this->SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-  this->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
-  this->SetTextureStageState(1, D3DTSS_COLORARG2, D3DTA_CURRENT);
-  this->SetTextureStageState(1, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
+  this->state.SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, 0);
+  this->state.SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+  this->state.SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+  this->state.SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+  this->state.SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
+  this->state.SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+  this->state.SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
+  this->state.SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, 1);
+  this->state.SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+  this->state.SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
+  this->state.SetTextureStageState(1, D3DTSS_COLORARG2, D3DTA_CURRENT);
+  this->state.SetTextureStageState(1, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
 
-  this->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
-  this->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-  this->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
-  this->SetSamplerState(1, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
-  this->SetSamplerState(1, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-  this->SetSamplerState(1, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
-  this->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
-  this->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
-  this->SetSamplerState(1, D3DSAMP_ADDRESSU, D3DTADDRESS_BORDER);
-  this->SetSamplerState(1, D3DSAMP_ADDRESSV, D3DTADDRESS_BORDER);
-  this->SetSamplerState(1, D3DSAMP_BORDERCOLOR, 0xFF000000u);
+  this->state.SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+  this->state.SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+  this->state.SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
+  this->state.SetSamplerState(1, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+  this->state.SetSamplerState(1, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+  this->state.SetSamplerState(1, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
+  this->state.SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
+  this->state.SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
+  this->state.SetSamplerState(1, D3DSAMP_ADDRESSU, D3DTADDRESS_BORDER);
+  this->state.SetSamplerState(1, D3DSAMP_ADDRESSV, D3DTADDRESS_BORDER);
+  this->state.SetSamplerState(1, D3DSAMP_BORDERCOLOR, 0xFF000000u);
 }
 
 // OFFSET: 0x00550C00
 // FUNCTION: fn_01993
 void DeviceStateDX9::Begin() {
-  for (unsigned stage = 0; stage < 2; ++stage) {
+  for (int stage = 0; stage < 2; ++stage) {
     this->textures[stage] = nullptr;
     this->device->SetTexture(stage, nullptr);
   }
@@ -214,21 +214,21 @@ ScopedDeviceStateDX9::ScopedDeviceStateDX9(DeviceStateDX9& state) : m_state(&sta
 // OFFSET: 0x005516A0
 // FUNCTION: fn_01998
 ScopedDeviceStateDX9::~ScopedDeviceStateDX9() {
-  for (unsigned state = 0; state < 210; ++state) {
-    if (this->m_render[state] != this->m_state->render[state] && this->m_state->device) {
+  for (int state = 0; state < 210; ++state) {
+    if (this->m_render[state] != this->m_state->render[state]) {
       this->m_state->SetRenderState(static_cast<D3DRENDERSTATETYPE>(state), this->m_render[state]);
     }
   }
 
-  for (unsigned stage = 0; stage < 2; ++stage) {
-    for (unsigned state = 0; state < 33; ++state) {
-      if (this->m_textureStage[stage][state] != this->m_state->textureStage[stage][state] && this->m_state->device) {
+  for (int stage = 0; stage < 2; ++stage) {
+    for (int state = 0; state < 33; ++state) {
+      if (this->m_textureStage[stage][state] != this->m_state->textureStage[stage][state]) {
         this->m_state->SetTextureStageState(stage, static_cast<D3DTEXTURESTAGESTATETYPE>(state), this->m_textureStage[stage][state]);
       }
     }
 
-    for (unsigned state = 0; state < 14; ++state) {
-      if (this->m_sampler[stage][state] != this->m_state->sampler[stage][state] && this->m_state->device) {
+    for (int state = 0; state < 14; ++state) {
+      if (this->m_sampler[stage][state] != this->m_state->sampler[stage][state]) {
         this->m_state->SetSamplerState(stage, static_cast<D3DSAMPLERSTATETYPE>(state), this->m_sampler[stage][state]);
       }
     }

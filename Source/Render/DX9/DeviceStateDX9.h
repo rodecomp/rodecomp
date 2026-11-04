@@ -14,7 +14,6 @@ struct DeviceStateDX9 {
 
   DeviceStateDX9();
   void Initialize(IDirect3DDevice9* device);
-  void SetInitialStates();
   void Begin();
   void End();
   HRESULT SetFVF(DWORD value);
