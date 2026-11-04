@@ -41,48 +41,48 @@ bool UIChatHisBox::Name(const std::string& encoded, std::string& output) {
 // OFFSET: 0x0087FD70
 // FUNCTION: fn_11275
 bool UIChatHisBox::Next(std::string& remaining, std::string& encoded, unsigned& position, const char* original) {
-  constexpr std::size_t opening = 7;
-  constexpr std::size_t closing = 8;
-  auto close = remaining.find("</ITEML>");
+  auto close = remaining.find(g_itemLinkTagEnd);
 
   if (close == std::string::npos) {
     return false;
   }
 
   do {
-    remaining.resize(close);
-    auto begin = remaining.find("<ITEML>");
+    remaining = remaining.substr(0, close);
+    auto begin = remaining.find(g_itemLinkTagBegin);
 
-    if (begin == std::string::npos) {
-      position += closing;
-      remaining = std::string(original).substr(position);
+    if (close != std::string::npos && begin == std::string::npos) {
+      position += static_cast<unsigned>(g_itemLinkTagEnd.size());
+      remaining = original;
+      remaining = remaining.substr(position);
       return true;
     }
 
-    close = remaining.find("</ITEML>");
+    close = remaining.find(g_itemLinkTagEnd);
 
-    do {
-      position += static_cast<unsigned>(begin);
-      remaining = remaining.substr(begin + opening);
-      begin = remaining.find("<ITEML>");
-      close = remaining.find("</ITEML>");
+    if (begin != std::string::npos) {
+      do {
+        position += static_cast<unsigned>(begin);
+        remaining = remaining.substr(begin + g_itemLinkTagBegin.size());
+        begin = remaining.find(g_itemLinkTagBegin);
+        close = remaining.find(g_itemLinkTagEnd);
 
-      if (begin != std::string::npos) {
-        position += opening;
+        if (begin != std::string::npos) {
+          position += static_cast<unsigned>(g_itemLinkTagBegin.size());
+        }
+      } while (begin != std::string::npos);
+
+      encoded = remaining;
+      remaining = original;
+      std::string name = "";
+
+      if (this->Name(encoded, name)) {
+        remaining = remaining.substr(position + encoded.size() + g_itemLinkTagBegin.size() + g_itemLinkTagEnd.size());
+      } else {
+        position += static_cast<unsigned>(encoded.size() + g_itemLinkTagBegin.size() + g_itemLinkTagEnd.size());
+        remaining = remaining.substr(position);
+        return true;
       }
-    } while (begin != std::string::npos);
-
-    encoded = remaining;
-    remaining = original;
-    std::string name;
-    const bool valid = this->Name(encoded, name);
-    const auto extent = static_cast<unsigned>(closing + opening + encoded.size());
-    const auto next = position + extent;
-    remaining = remaining.substr(next);
-
-    if (!valid) {
-      position = next;
-      return true;
     }
   } while (close != std::string::npos);
 
