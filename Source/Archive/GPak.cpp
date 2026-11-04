@@ -2013,6 +2013,7 @@ namespace GPakEx {
   }
 
   // OFFSET: 0x00642C80
+  // FUNCTION: fn_04828
   std::size_t CipherModeBase::CiphertextLength(std::size_t length, bool padding) const {
     const std::size_t blockSize = this->m_cipher->BlockSize();
     if (length == 0) {
