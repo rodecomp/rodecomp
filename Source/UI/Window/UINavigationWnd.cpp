@@ -962,8 +962,8 @@ void UINavigationWnd::FillRouteList() {
 // OFFSET: 0x00917000
 // FUNCTION: fn_12587
 bool UINavigationWnd::ClearHistory() {
-  for (std::string& name : this->m_history) {
-    name.clear();
+  for (std::vector<std::string>::iterator it = this->m_history.begin(); it != this->m_history.end(); ++it) {
+    it->clear();
   }
   this->m_history.clear();
   return true;
