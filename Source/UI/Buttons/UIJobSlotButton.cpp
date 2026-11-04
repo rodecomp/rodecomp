@@ -19,7 +19,7 @@ void UIJobSlotButton::Slot31(int x, int y) {
 // FUNCTION: fn_09318
 void UIJobSlotButton::SetSelected(unsigned char value) {
   this->selected = value;
-  this->geometry.unknown_0030 = 0;
+  this->SetState(0);
 
   if (value == 1) {
     this->SetBitmap(this->selectedImage.c_str(), 0, 0);
