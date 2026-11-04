@@ -395,12 +395,16 @@ void C3DCooRendering::SetWindowImage(const std::string& name) {
     return;
   }
 
-  if (this->type == 1) {
+  switch (this->type) {
+  case 1: {
     CBmpObjWnd* window = static_cast<CBmpObjWnd*>(this->window);
     window->path = name;
     const CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(window->path.c_str())));
     window->Resize(bitmap->image.width, bitmap->image.height);
-  } else if (this->type == 3) {
+    break;
+  }
+  case 3:
     static_cast<CSignBoardWnd*>(this->window)->iconPath = name;
+    break;
   }
 }
