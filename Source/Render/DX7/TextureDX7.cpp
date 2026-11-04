@@ -31,29 +31,34 @@ namespace {
       return D3DENUMRET_OK;
     }
 
-    bool accepted = false;
-
     switch (*format) {
     case TextureFormat::A1R5G5B5:
-      accepted = (candidate->dwFlags & DDPF_ALPHAPIXELS) && candidate->dwRGBBitCount == 16 && candidate->dwRGBAlphaBitMask == 0x8000;
+      if ((candidate->dwFlags & DDPF_ALPHAPIXELS) && candidate->dwRGBBitCount == 16 && candidate->dwRGBAlphaBitMask == 0x8000) {
+        formats[TextureFormat::A1R5G5B5] = *candidate;
+        return D3DENUMRET_CANCEL;
+      }
       break;
     case TextureFormat::A4R4G4B4:
-      accepted = (candidate->dwFlags & DDPF_ALPHAPIXELS) && candidate->dwRGBBitCount == 16 && candidate->dwRGBAlphaBitMask == 0xF000;
+      if ((candidate->dwFlags & DDPF_ALPHAPIXELS) && candidate->dwRGBBitCount == 16 && candidate->dwRGBAlphaBitMask == 0xF000) {
+        formats[TextureFormat::A4R4G4B4] = *candidate;
+        return D3DENUMRET_CANCEL;
+      }
       break;
     case TextureFormat::R5G6B5:
-      accepted = !(candidate->dwFlags & DDPF_ALPHAPIXELS) && candidate->dwRGBBitCount == 16 && candidate->dwRBitMask == 0xF800;
+      if (!(candidate->dwFlags & DDPF_ALPHAPIXELS) && candidate->dwRGBBitCount == 16 && candidate->dwRBitMask == 0xF800) {
+        formats[TextureFormat::R5G6B5] = *candidate;
+        return D3DENUMRET_CANCEL;
+      }
       break;
     case TextureFormat::A8R8G8B8:
-      accepted = (candidate->dwFlags & DDPF_ALPHAPIXELS) && candidate->dwRGBBitCount == 32 && candidate->dwRGBAlphaBitMask == 0xFF000000;
+      if ((candidate->dwFlags & DDPF_ALPHAPIXELS) && candidate->dwRGBBitCount == 32 && candidate->dwRGBAlphaBitMask == 0xFF000000) {
+        formats[TextureFormat::A8R8G8B8] = *candidate;
+        return D3DENUMRET_CANCEL;
+      }
       break;
     }
 
-    if (!accepted) {
-      return D3DENUMRET_OK;
-    }
-
-    formats[*format] = *candidate;
-    return D3DENUMRET_CANCEL;
+    return D3DENUMRET_OK;
   }
 
   // INLINED
@@ -275,12 +280,11 @@ void CTextureDX7::Upload(int x, int y, int width, int height, const std::uint32_
   auto* output = static_cast<unsigned char*>(description.lpSurface);
   const bool transparent = static_cast<unsigned char>(option) != 0;
 
-  for (int row = 0; row < rows; ++row) {
-    for (int column = 0; column < columns; ++column) {
-      const std::uint32_t color = pixels[column * stepX];
-
-      switch (this->m_format) {
-      case TextureFormat::A1R5G5B5: {
+  switch (this->m_format) {
+  case TextureFormat::A1R5G5B5:
+    for (int row = 0; row < rows; ++row) {
+      for (int column = 0; column < columns; ++column) {
+        const std::uint32_t color = pixels[column * stepX];
         std::uint16_t value = ((color >> 16) & 0x8000) | ((color >> 3) & 0x1F) | ((color >> 6) & 0x3E0) | ((color >> 9) & 0x7C00);
 
         if (value == 0xFC1F || (transparent && !(value & 0x7FFF))) {
@@ -288,9 +292,16 @@ void CTextureDX7::Upload(int x, int y, int width, int height, const std::uint32_
         }
 
         std::memcpy(output + column * sizeof(value), &value, sizeof(value));
-        break;
       }
-      case TextureFormat::A4R4G4B4: {
+
+      output += description.lPitch;
+      pixels += static_cast<unsigned>(stepY) * stride;
+    }
+    break;
+  case TextureFormat::A4R4G4B4:
+    for (int row = 0; row < rows; ++row) {
+      for (int column = 0; column < columns; ++column) {
+        const std::uint32_t color = pixels[column * stepX];
         std::uint16_t value = ((color & 255) >> 4) | ((color >> 8) & 0xF0) | ((color >> 12) & 0xF00) | ((color >> 16) & 0xF000);
 
         if ((value & 0xFFF) == 0xF0F || (transparent && !(value & 0xFFF))) {
@@ -298,25 +309,38 @@ void CTextureDX7::Upload(int x, int y, int width, int height, const std::uint32_
         }
 
         std::memcpy(output + column * sizeof(value), &value, sizeof(value));
-        break;
       }
-      case TextureFormat::R5G6B5: {
+
+      output += description.lPitch;
+      pixels += static_cast<unsigned>(stepY) * stride;
+    }
+    break;
+  case TextureFormat::R5G6B5:
+    for (int row = 0; row < rows; ++row) {
+      for (int column = 0; column < columns; ++column) {
+        const std::uint32_t color = pixels[column * stepX];
         const std::uint16_t value = ((color >> 8) & 0xF800) | ((color >> 3) & 0x1F) | ((color >> 5) & 0x7E0);
 
         if (!transparent || value != 0xF81F) {
           std::memcpy(output + column * sizeof(value), &value, sizeof(value));
         }
+      }
 
-        break;
-      }
-      case TextureFormat::A8R8G8B8:
-        std::memcpy(output + column * sizeof(color), &color, sizeof(color));
-        break;
-      }
+      output += description.lPitch;
+      pixels += static_cast<unsigned>(stepY) * stride;
     }
+    break;
+  case TextureFormat::A8R8G8B8:
+    for (int row = 0; row < rows; ++row) {
+      for (int column = 0; column < columns; ++column) {
+        const std::uint32_t color = transparent && !pixels[column * stepX] ? 0 : pixels[column * stepX];
+        std::memcpy(output + column * sizeof(color), &color, sizeof(color));
+      }
 
-    output += description.lPitch;
-    pixels += static_cast<unsigned>(stepY) * stride;
+      output += description.lPitch;
+      pixels += static_cast<unsigned>(stepY) * stride;
+    }
+    break;
   }
 
   this->m_surface->Unlock(nullptr);
