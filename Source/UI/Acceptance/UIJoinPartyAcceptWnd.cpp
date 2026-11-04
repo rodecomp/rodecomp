@@ -1,4 +1,5 @@
 #include "Client/Mode/CMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Contents/MessageTable.h"
 #include "Client/Mode/ModeEvents.h"
 #include "Client/Replay.h"
@@ -27,7 +28,7 @@ int UIJoinPartyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
 
     if (response == 184 || response == 185) {
       g_windowMgr.CloseWindow(35);
-      static_cast<CMode*>(g_charViewMode)->SendMsg(60, this->identity, response == 184, 0, 0);
+      g_modeMgr.gameMode->SendMsg(60, this->identity, response == 184, 0, 0);
     }
 
     return 0;
