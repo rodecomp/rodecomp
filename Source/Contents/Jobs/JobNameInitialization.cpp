@@ -3,45 +3,59 @@
 #include "Contents/Jobs/JobId.h"
 #include "Script/LuaScript.h"
 
+#include <cstring>
+#include <list>
 
 // OFFSET: 0x00DE67E0
 // FUNCTION: fn_23495
 void CSession::InitJobNameTable() {
   this->m_jobNameTable.resize(32003, "Poring");
+
+  std::list<int> jobs;
+  for (int id = JT_NOVICE; id < JT_MAX_BASIC; ++id) {
+    jobs.push_back(id);
+  }
+  for (int id = JT_NOVICE_H; id < JT_UPPER_EXTENDED_JOB2_END; ++id) {
+    jobs.push_back(id);
+  }
+  for (int id = JT_RUNE_KNIGHT_2ND; id < JT_SECOND_JOB_END; ++id) {
+    jobs.push_back(id);
+  }
+  for (int id = JT_DRUID; id < JT_2004_JOB_LAST; ++id) {
+    jobs.push_back(id);
+  }
+
   const char* name = nullptr;
-
-  const auto player = [&](int first, int end) {
-    for (int id = first; id < end; ++id) {
-      if (this->m_hotkeyScript->Call("ReqPCJobName", "d>s", id, &name) && *name != '\0') {
-        this->m_jobNameTable[id] = name;
-      }
-
-      if (this->m_hotkeyScript->Call("ReqPCJobNameMan", "d>s", id, &name) && *name != '\0') {
-        this->m_jobNameTableMan[id] = name;
-      }
-
-      if (this->m_hotkeyScript->Call("ReqPCJobNameWoman", "d>s", id, &name) && *name != '\0') {
-        this->m_jobNameTableWoman[id] = name;
-      }
+  for (std::list<int>::iterator job = jobs.begin(); job != jobs.end(); ++job) {
+    const int id = *job;
+    if (this->m_hotkeyScript->Call("ReqPCJobName", "d>s", id, &name) && std::strlen(name) != 0) {
+      this->m_jobNameTable[id] = name;
     }
-  };
 
-  player(JT_NOVICE, JT_MAX_BASIC);
-  player(JT_NOVICE_H, JT_UPPER_EXTENDED_JOB2_END);
-  player(JT_RUNE_KNIGHT_2ND, JT_SECOND_JOB_END);
-  player(JT_DRUID, JT_2004_JOB_LAST);
-
-  const auto other = [&](int first, int end) {
-    for (int id = first; id < end; ++id) {
-      g_session.m_hotkeyScript->Call("ReqJobName", "d>s", id, &this->m_jobNameTable[id]);
+    if (this->m_hotkeyScript->Call("ReqPCJobNameMan", "d>s", id, &name) && std::strlen(name) != 0) {
+      this->m_jobNameTableMan[id] = name;
     }
-  };
 
-  other(JT_WARPNPC, JT_SAFETYWALL);
-  other(JT_NEW_NPC_START, JT_MON_BEGIN);
-  other(JT_SCORPION, JT_MONSTER_LAST);
-  other(JT_NPC_START, JT_NPC_NAME_END);
-  other(JT_EXTENDED_JOB_NAME_START, JT_EXTENDED_JOB_NAME_END);
+    if (this->m_hotkeyScript->Call("ReqPCJobNameWoman", "d>s", id, &name) && std::strlen(name) != 0) {
+      this->m_jobNameTableWoman[id] = name;
+    }
+  }
+
+  for (int id = JT_WARPNPC; id < JT_SAFETYWALL; ++id) {
+    g_session.m_hotkeyScript->Call("ReqJobName", "d>s", id, &this->m_jobNameTable[id]);
+  }
+  for (int id = JT_NEW_NPC_START; id < JT_MON_BEGIN; ++id) {
+    g_session.m_hotkeyScript->Call("ReqJobName", "d>s", id, &this->m_jobNameTable[id]);
+  }
+  for (int id = JT_SCORPION; id < JT_MONSTER_LAST; ++id) {
+    g_session.m_hotkeyScript->Call("ReqJobName", "d>s", id, &this->m_jobNameTable[id]);
+  }
+  for (int id = JT_NPC_START; id < JT_NPC_NAME_END; ++id) {
+    g_session.m_hotkeyScript->Call("ReqJobName", "d>s", id, &this->m_jobNameTable[id]);
+  }
+  for (int id = JT_EXTENDED_JOB_NAME_START; id < JT_EXTENDED_JOB_NAME_END; ++id) {
+    g_session.m_hotkeyScript->Call("ReqJobName", "d>s", id, &this->m_jobNameTable[id]);
+  }
 
   const char* const homunculi[] = {"LIF",   "AMISTR",   "FILIR",   "VANILMIRTH",   "LIF2",   "AMISTR2",   "FILIR2",   "VANILMIRTH2",
                                    "LIF_H", "AMISTR_H", "FILIR_H", "VANILMIRTH_H", "LIF_H2", "AMISTR_H2", "FILIR_H2", "VANILMIRTH_H2"};
