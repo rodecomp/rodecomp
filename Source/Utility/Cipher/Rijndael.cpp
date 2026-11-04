@@ -385,12 +385,12 @@ const signed char CRijndael::sm_rcon[30] = {1,  2,  4,   8,  16,  32,   64, -128
 
 // OFFSET: 0x00617FE0
 // FUNCTION: fn_04401
-CRijndael::CRijndael() : m_bKeyInit(false) {
+__declspec(noinline) CRijndael::CRijndael() : m_bKeyInit(false) {
 }
 
 // OFFSET: 0x00618060
 // FUNCTION: fn_04403
-CRijndael::~CRijndael() = default;
+__declspec(noinline) CRijndael::~CRijndael() = default;
 
 // OFFSET: 0x00619100
 // FUNCTION: fn_04409
@@ -678,7 +678,7 @@ void CRijndael::EncryptBlock(const char* in, char* result) {
 
 // OFFSET: 0x00618E00
 // FUNCTION: fn_04408
-void CRijndael::DecryptBlock(const char* in, char* result) {
+__declspec(noinline) void CRijndael::DecryptBlock(const char* in, char* result) {
   if (!this->m_bKeyInit) {
     throw std::exception(s_errorMsg1);
   }
