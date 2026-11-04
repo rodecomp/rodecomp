@@ -683,10 +683,10 @@ bool CEffectPrim::UpdateFireWall() {
       for (int sample = 0; sample < 21; ++sample) {
         if (slot.flag1[sample] == 0) {
           if (slot.process <= 90) {
-            slot.height[sample] = slot.maxHeight * ClientSine(sample * 9) * ClientSine(slot.process);
+            slot.height[sample] = slot.maxHeight * g_sinTable[sample * 9] * g_sinTable[slot.process];
           }
 
-          const float maximum = slot.maxHeight * ClientSine(sample * 9);
+          const float maximum = slot.maxHeight * g_sinTable[sample * 9];
 
           if (slot.height[sample] > maximum) {
             slot.height[sample] = maximum;
@@ -701,9 +701,9 @@ bool CEffectPrim::UpdateFireWall() {
     } else {
       for (int sample = 0; sample < 21; ++sample) {
         if (slot.flag1[sample] != 0) {
-          const float base = slot.maxHeight * ClientSine(sample * 9) * 0.55f;
+          const float base = slot.maxHeight * g_sinTable[sample * 9] * 0.55f;
           slot.height[sample] = base;
-          slot.height[sample] = slot.maxHeight * ClientSine(sample * 9) * 0.45f * ClientSine(slot.process % 360) + base;
+          slot.height[sample] = slot.maxHeight * g_sinTable[sample * 9] * 0.45f * g_sinTable[slot.process % 360] + base;
         } else {
           float value;
 
@@ -711,11 +711,11 @@ bool CEffectPrim::UpdateFireWall() {
             slot.flag1[sample] = 1;
             value = slot.height[sample];
           } else {
-            value = slot.maxHeight * ClientSine(sample * 9) * ClientSine(slot.process);
+            value = slot.maxHeight * g_sinTable[sample * 9] * g_sinTable[slot.process];
             slot.height[sample] = value;
           }
 
-          if (value > slot.maxHeight * ClientSine(sample * 9)) {
+          if (value > slot.maxHeight * g_sinTable[sample * 9]) {
             slot.flag1[sample] = 1;
           }
 
@@ -786,10 +786,10 @@ bool CEffectPrim::UpdateStoneCurse() {
     for (int sample = 0; sample < 21; ++sample) {
       if (slot.flag1[sample] == 0) {
         if (slot.process <= 90) {
-          slot.height[sample] = slot.maxHeight * ClientSine(sample * 9) * ClientSine(slot.process);
+          slot.height[sample] = slot.maxHeight * g_sinTable[sample * 9] * g_sinTable[slot.process];
         }
 
-        const float maximum = slot.maxHeight * ClientSine(sample * 9);
+        const float maximum = slot.maxHeight * g_sinTable[sample * 9];
 
         if (slot.height[sample] > maximum) {
           slot.height[sample] = maximum;
@@ -5564,15 +5564,14 @@ void CEffectPrim::PrimWaveSpin() {
     }
 
     const int process = ++slot.process;
-    const bool slow = this->state.accel == 99.0f;
-    slot.rotStart = static_cast<std::int16_t>(slot.rotStart + (slow ? 3 : 5));
+    slot.rotStart = static_cast<std::int16_t>(slot.rotStart + (this->state.accel == 99.0f ? 3 : 5));
     if (slot.rotStart >= 360) {
       slot.rotStart = static_cast<std::int16_t>(slot.rotStart - 360);
     }
 
     slot.riseAngle = static_cast<std::int16_t>(slot.riseAngle - 1);
-    slot.distance += slow ? 0.1f : 0.3f;
-    const int floor = slow ? 30 : 40;
+    slot.distance += this->state.accel == 99.0f ? 0.1f : 0.3f;
+    const int floor = this->state.accel == 99.0f ? 30 : 40;
     if (slot.riseAngle < floor) {
       slot.riseAngle = static_cast<std::int16_t>(floor);
     }
@@ -5916,7 +5915,7 @@ bool CEffectPrim::PrimFieldFireflies() {
       }
 
       if (kind == 0.0f) {
-        if (process < 80 && slot.height[6] > this->render.position.y) {
+        if (process < 80 && this->render.position.y <= slot.height[6] && slot.height[6] != this->render.position.y) {
           slot.alphaB += 2;
         }
       } else if (kind == 2.0f) {
