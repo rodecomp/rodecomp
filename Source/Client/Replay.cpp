@@ -12,7 +12,6 @@
 #include "Contents/EntryQueueMgr.h"
 #include "UI/EntryQueue/UIEntryQueueWnd.h"
 #include "UI/Window/UIWindowMgr.h"
-#include "Client/Session.h"
 #include "Contents/RenewQuestMgr.h"
 #include "Contents/ClientState.h"
 #include "Contents/Configuration/ServiceOptions.h"
@@ -35,18 +34,19 @@ struct ReplayTaggedRecordHeader {
   /* 0000 */ std::uint16_t id;
   /* 0002 */ std::uint32_t bytes;
 };
-#pragma pack(pop)
 
-static_assert(sizeof(ReplayTaggedRecordHeader) == 6);
-
-#pragma pack(push, 1)
 struct ReplayRecordHeader {
   /* 0000 */ std::uint32_t frame;
   /* 0004 */ std::uint32_t tick;
   /* 0008 */ std::uint16_t bytes;
+  // INLINED
+  ReplayRecordHeader() : frame(0), tick(0), bytes(0) {}
+  // INLINED
+  ~ReplayRecordHeader() { this->frame = 0; this->tick = 0; this->bytes = 0; }
 };
 #pragma pack(pop)
 
+static_assert(sizeof(ReplayTaggedRecordHeader) == 6);
 static_assert(sizeof(ReplayRecordHeader) == 10);
 
 // OFFSET: 0x006DA340

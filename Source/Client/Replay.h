@@ -161,6 +161,18 @@ public:
 struct ReplayFileEntry {
   /* 0000 */ int unknown_0000;
   /* 0004 */ char name[0x104];
+
+  // INLINED
+  ReplayFileEntry() {
+    this->unknown_0000 = 0;
+    std::memset(this->name, 0, sizeof(this->name));
+  }
+
+  // INLINED
+  ~ReplayFileEntry() {
+    this->unknown_0000 = 0;
+    std::memset(this->name, 0, sizeof(this->name));
+  }
 };
 
 class ReplayFileList {
