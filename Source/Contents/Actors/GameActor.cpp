@@ -868,12 +868,12 @@ int CGameActor::GetEffectCounter(int effectId) {
   case 0x14d1:
   case 0x1978:
     return this->unknown_037C[0];
-  case 0x8c3:
-  case 0x8c4:
-    return this->unknown_037C[1];
-  default:
-    return 0;
   }
+
+  if (effectId == 0x8c3 || effectId == 0x8c4) {
+    return this->unknown_037C[1];
+  }
+  return 0;
 }
 
 // OFFSET: 0x00CAD4B0
