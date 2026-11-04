@@ -1499,7 +1499,7 @@ int CPc::MapMotion(int motion) {
 
 // OFFSET: 0x00DAA2E0
 // FUNCTION: fn_22570
-void CGrannyPc::ReleaseMeshes() {
+__declspec(noinline) void CGrannyPc::ReleaseMeshes() {
   for (int i = 0; i < 20; ++i) {
     if (this->controls[i]) {
       this->controls[i] = nullptr;
@@ -1577,7 +1577,7 @@ int CPc::Slot55() {
 
 // OFFSET: 0x00DAAD80
 // FUNCTION: fn_22577
-int CPc::JobActionBase(int state) {
+__declspec(noinline) int CPc::JobActionBase(int state) {
   int base = 0;
   switch (state) {
     case 0:
