@@ -269,11 +269,11 @@ void UIMacroReporterWnd::Slot31(int, int) {
 // FUNCTION: fn_09852
 void UIMacroReporterWnd::Slot19() {
   for (auto it = this->m_removedRows.begin(); it != this->m_removedRows.end();) {
-    if ((*it)->Disabled()) {
+    if (!(*it)->Disabled()) {
+      ++it;
+    } else {
       this->RemoveChild(*it, 1);
       it = this->m_removedRows.erase(it);
-    } else {
-      ++it;
     }
   }
 
@@ -284,7 +284,11 @@ void UIMacroReporterWnd::Slot19() {
 // FUNCTION: fn_09853
 void UIMacroReporterWnd::Slot35(int delta) {
   if (this->m_scrollable == 1) {
-    this->SendMsg(this->m_scrollBar, 7, delta < 0 ? 3 : -3, 0, 0, 0);
+    if (delta < 0) {
+      this->SendMsg(this->m_scrollBar, 7, 3, 0, 0, 0);
+    } else {
+      this->SendMsg(this->m_scrollBar, 7, -3, 0, 0, 0);
+    }
   }
 }
 
