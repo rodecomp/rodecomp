@@ -436,7 +436,7 @@ int CUIEditCtrlEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
   int position;
   switch (message) {
   case 0:
-    if (reinterpret_cast<const unsigned char*>(&this->unknown_0184)[1] != 0 && (static_cast<unsigned short>(GetKeyState(VK_SHIFT)) >> 8) != 0) {
+    if (reinterpret_cast<const unsigned char*>(&this->unknown_0184)[1] != 0 && HIBYTE(GetKeyState(VK_SHIFT))) {
       g_serverLanguage->Insert("\r\n");
       return 0;
     }
@@ -457,20 +457,20 @@ int CUIEditCtrlEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         g_serverLanguage->RetreatCursor(this->unknown_01D8);
       } else {
         const EditLine& previous = this->lines[this->line - 1];
-        const std::string& current = this->lines[this->line].text;
         int offset;
         if (this->alignment == 2) {
-          const int width = this->TextWidth(current.c_str(), 0, 0, 12, 0, 0);
+          const int width = this->TextWidth(this->lines[this->line].text.c_str(), 0, 0, 12, 0, 0);
           const int columnWidth =
-            this->column > 0 ? this->TextWidth(current.c_str(), this->column, 0, 12, 0, 0) : 0;
+            this->column > 0 ? this->TextWidth(this->lines[this->line].text.c_str(), this->column, 0, 12, 0, 0) : 0;
           offset = this->TrailingOffsetFitting(previous.text, width - columnWidth);
         } else {
           const int columnWidth =
-            this->column > 0 ? this->TextWidth(current.c_str(), this->column, 0, 12, 0, 0) : 0;
+            this->column > 0 ? this->TextWidth(this->lines[this->line].text.c_str(), this->column, 0, 12, 0, 0) : 0;
           offset = this->LeadingBytesFitting(previous.text, columnWidth);
         }
 
-        const int delta = (previous.unknown_0018 != 0 ? 2 : 0) + static_cast<int>(previous.text.size()) - offset + this->column;
+        const EditLine& line = this->lines[this->line - 1];
+        const int delta = (line.unknown_0018 != 0 ? 2 : 0) + static_cast<int>(line.text.size()) - offset + this->column;
         g_serverLanguage->RetreatCursor(delta);
         this->unknown_01D8 = delta;
       }
@@ -485,16 +485,15 @@ int CUIEditCtrlEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         g_serverLanguage->AdvanceCursor(this->unknown_01D8);
       } else {
         const EditLine& next = this->lines[this->line + 1];
-        const std::string& current = this->lines[this->line].text;
         int offset;
         if (this->alignment == 2) {
-          const int width = this->TextWidth(current.c_str(), 0, 0, 12, 0, 0);
+          const int width = this->TextWidth(this->lines[this->line].text.c_str(), 0, 0, 12, 0, 0);
           const int columnWidth =
-            this->column > 0 ? this->TextWidth(current.c_str(), this->column, 0, 12, 0, 0) : 0;
+            this->column > 0 ? this->TextWidth(this->lines[this->line].text.c_str(), this->column, 0, 12, 0, 0) : 0;
           offset = this->TrailingOffsetFitting(next.text, width - columnWidth);
         } else {
           const int columnWidth =
-            this->column > 0 ? this->TextWidth(current.c_str(), this->column, 0, 12, 0, 0) : 0;
+            this->column > 0 ? this->TextWidth(this->lines[this->line].text.c_str(), this->column, 0, 12, 0, 0) : 0;
           offset = this->LeadingBytesFitting(next.text, columnWidth);
         }
 
