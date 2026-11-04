@@ -911,7 +911,7 @@ __declspec(noinline) void UIWindow::SetSize(int width, int height) {
 
 // OFFSET: 0x00A7BB60
 // FUNCTION: fn_16935
-void UIWindow::DrawBitmap(int x, int y, const BitmapImage* image, bool transparent) {
+__declspec(noinline) void UIWindow::DrawBitmap(int x, int y, const BitmapImage* image, bool transparent) {
   if (!this->geometry.surface || !image) {
     return;
   }
@@ -922,7 +922,7 @@ void UIWindow::DrawBitmap(int x, int y, const BitmapImage* image, bool transpare
 
 // OFFSET: 0x00A7BD60
 // FUNCTION: fn_16938
-void UIWindow::FillRegion(int x, int y, int width, int height, std::uint32_t color) {
+__declspec(noinline) void UIWindow::FillRegion(int x, int y, int width, int height, std::uint32_t color) {
   const int right = (x + width);
   const int bottom = (y + height);
   RECT rectangle = {
@@ -979,7 +979,7 @@ int UIWindow::ColoredTextWidth(const char* text, unsigned bytes, int family, int
 
 // OFFSET: 0x00A84360
 // FUNCTION: fn_17009
-void UIWindow::DrawTextAt(int x, int y, const char* text, int bytes, int family, int height, std::uint32_t color, unsigned char bold,
+__declspec(noinline) void UIWindow::DrawTextAt(int x, int y, const char* text, int bytes, int family, int height, std::uint32_t color, unsigned char bold,
   unsigned char italic
 ) {
   if (!bytes) {
