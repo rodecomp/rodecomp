@@ -915,7 +915,7 @@ UIWindowMgr::UIWindowMgr()
 
 // OFFSET: 0x007375E0
 // FUNCTION: fn_07649
-CMiniPartyWndAreaMgr::CMiniPartyWndAreaMgr() {
+__declspec(noinline) CMiniPartyWndAreaMgr::CMiniPartyWndAreaMgr() {
   SetRect(&this->area, 0, 0, g_windowMgr.unknown_047C, g_windowMgr.unknown_0480);
 }
 
@@ -1245,7 +1245,7 @@ void UIWindowMgr::RefreshFrameSkins() {
 
 // OFFSET: 0x00A8B840
 // FUNCTION: fn_17124
-void UIWindowMgr::RegisterNamedWindow(std::string name, UIWindow* window) {
+__declspec(noinline) void UIWindowMgr::RegisterNamedWindow(std::string name, UIWindow* window) {
   if (this->namedWindows.find(name) == this->namedWindows.end()) {
     this->namedWindows[name] = window;
   }
@@ -1295,7 +1295,7 @@ void UIWindowMgr::AddRenderedFront(UIWindow* window) {
 
 // OFFSET: 0x00A8C150
 // FUNCTION: fn_17129
-void UIWindowMgr::ShowWindows189(unsigned char show) {
+__declspec(noinline) void UIWindowMgr::ShowWindows189(unsigned char show) {
   for (auto it = this->rendered.begin(); it != this->rendered.end(); ++it) {
     if ((*it)->geometry.id != 189) {
       continue;
@@ -1938,7 +1938,7 @@ int UIWindowMgr::SendNotice(int selector, std::intptr_t a, std::intptr_t b, std:
 
 // OFFSET: 0x00AA8F50
 // FUNCTION: fn_17252
-void UIWindowMgr::BroadcastMessage21() {
+__declspec(noinline) void UIWindowMgr::BroadcastMessage21() {
   UIWindow* window = this->window_03DC;
   if (window || (window = this->unknown_03B0) != nullptr) {
     window->SendMsg(nullptr, 21, 0, 0, 0, 0);
