@@ -654,7 +654,7 @@ bool CSession::IsJobWeaponTypeAllowed(int job, std::int64_t weaponType) const {
 
 // OFFSET: 0x00DFBCE0
 // FUNCTION: fn_23587
-bool __stdcall IsPlayerJob(int job) {
+__declspec(noinline) bool __stdcall IsPlayerJob(int job) {
   const auto value = static_cast<unsigned>(job);
   return value - JT_NOVICE_H <= unsigned(JT_MER_BEGIN - 1 - JT_NOVICE_H) || value <= unsigned(JT_SUMMER2);
 }
