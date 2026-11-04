@@ -68,8 +68,8 @@ public:
 
   void Create(int width, int height, int rows);
   void sub_7B37F0(int index);
-  void SetAchievements(std::map<int, AchievementInfo>* achievements, int mode);
-  void UpdateScroll();
+  __declspec(noinline) void SetAchievements(std::map<int, AchievementInfo>* achievements, int mode);
+  __declspec(noinline) void UpdateScroll();
 
   void Paint() override;
   void Slot25(int x, int y) override;
@@ -115,9 +115,9 @@ public:
 
   void ClearGroups();
   void DrawGroup(int group);
-  std::string Label(int group, int sub);
-  bool sub_7B4370(int x, int y, int* a, int* b);
-  void sub_7B7F10();
+  __declspec(noinline) std::string Label(int group, int sub);
+  __declspec(noinline) bool sub_7B4370(int x, int y, int* a, int* b);
+  __declspec(noinline) void sub_7B7F10();
   void Refresh();
   void SetLabel(const char* text, int group, int sub);
 
@@ -176,7 +176,7 @@ public:
   /* 00E0 */ int achievementId;
   /* 00E4 */ AchievementInfo* info;
 
-  void UpdateInfo();
+  __declspec(noinline) void UpdateInfo();
 
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -211,7 +211,7 @@ public:
   /* 008C */ std::vector<std::pair<int, AchievementInfo>> recent;
   /* 0098 */ UIWindow* buttons[2];
 
-  void UpdateInfo();
+  __declspec(noinline) void UpdateInfo();
 
   void Show(int visible) override;
   void Slot15(int width, int height) override;
@@ -239,7 +239,7 @@ public:
 
   void CreateTab();
   void SelectAchievement(int id);
-  void SelectTab(int group, int sub);
+  __declspec(noinline) void SelectTab(int group, int sub);
 };
 
 struct AchTracingCondition {
