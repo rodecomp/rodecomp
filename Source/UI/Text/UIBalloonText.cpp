@@ -340,11 +340,11 @@ void UINameBalloonText::SetName(const CActorNameCard& info, bool stripHash, unsi
   }
 
   if (g_serviceFlag05) {
-    if (!info.unknown_007C.empty()) {
-      this->m_lines.push_back(info.unknown_007C);
+    if (std::strlen(info.unknown_007C.c_str()) != 0) {
+      this->m_lines.push_back(info.unknown_007C.c_str());
     }
 
-    if (info.unknown_004C.empty()) {
+    if (std::strlen(info.unknown_004C.c_str()) == 0) {
       this->unknown_00B8 = 0;
     } else {
       char position[260];
@@ -357,18 +357,18 @@ void UINameBalloonText::SetName(const CActorNameCard& info, bool stripHash, unsi
       this->m_lines.push_back(position);
     }
 
-    this->m_lines.push_back(name);
+    this->m_lines.push_back(name.c_str());
   } else {
-    if (!info.unknown_007C.empty()) {
-      this->m_lines.push_back(info.unknown_007C);
+    if (std::strlen(info.unknown_007C.c_str()) != 0) {
+      this->m_lines.push_back(info.unknown_007C.c_str());
     }
 
-    if (!info.unknown_0064.empty()) {
+    if (std::strlen(info.unknown_0064.c_str()) != 0) {
       name = FormatOwnedString("[%s] %s", info.unknown_0064.c_str(), name.c_str());
     }
 
-    if (info.unknown_001C.empty()) {
-      this->m_lines.push_back(name);
+    if (std::strlen(info.unknown_001C.c_str()) == 0) {
+      this->m_lines.push_back(name.c_str());
     } else {
       char party[260];
       std::memset(party, 0, sizeof(party));
@@ -380,11 +380,11 @@ void UINameBalloonText::SetName(const CActorNameCard& info, bool stripHash, unsi
 
       char line[260];
       std::memset(line, 0, sizeof(line));
-      StringFormat(line, sizeof(line), sizeof(line), g_serviceType != 0 ? "%s (%s)" : "%s (%s) ", name.c_str(), party);
+      sprintf_s(line, sizeof(line), g_serviceType != 0 ? "%s (%s)" : "%s (%s) ", name.c_str(), party);
       this->m_lines.push_back(line);
     }
 
-    if (!info.unknown_0034.empty()) {
+    if (std::strlen(info.unknown_0034.c_str()) != 0) {
       char guild[260];
       std::memset(guild, 0, sizeof(guild));
       strncpy_s(guild, sizeof(guild), info.unknown_0034.c_str(), info.unknown_0034.size());
@@ -403,7 +403,7 @@ void UINameBalloonText::SetName(const CActorNameCard& info, bool stripHash, unsi
 
       char line[260];
       std::memset(line, 0, sizeof(line));
-      StringFormat(line, sizeof(line), sizeof(line), g_serviceType != 0 ? "%s [%s]" : "%s (%s) ", guild, position);
+      sprintf_s(line, sizeof(line), g_serviceType != 0 ? "%s [%s]" : "%s (%s) ", guild, position);
       this->m_lines.push_back(line);
     }
   }
@@ -445,11 +445,10 @@ void UINameBalloonText::SetName(const CActorNameCard& info, bool stripHash, unsi
 // OFFSET: 0x00866DE0
 // FUNCTION: fn_10941
 void UINameBalloonText::AddNameLine(const char* text) {
-  for (const std::string& line : this->m_lines) {
-    if (line == text) {
-      return;
-    }
+  if (this->m_lines.size() != 0 && this->m_lines.front() == text) {
+    return;
   }
+
   this->m_lines.clear();
   this->m_lines.push_back(std::string(text));
   const std::string& last = this->m_lines.back();
@@ -462,14 +461,12 @@ void UINameBalloonText::AddNameLine(const char* text) {
 // OFFSET: 0x00867740
 // FUNCTION: fn_10942
 void UIVerticalNameBalloonText::AddNameLine(const char* text) {
-  if (!this->m_lines.empty() && this->m_lines.front() == text) {
+  if (this->m_lines.size() != 0 && this->m_lines.front() == text) {
     return;
   }
 
   this->m_lines.clear();
-  std::string line;
-  line.assign(text);
-  this->m_lines.push_back(std::move(line));
+  this->m_lines.push_back(std::string(text));
   const int textHeight = this->VerticalTextHeight(this->m_lines.back().c_str(), 0, 0, g_nameBalloonFontHeight, g_serviceFlag06);
   this->textHeight = std::max(textHeight + 8, 32);
   this->Resize(g_nameBalloonFontHeight + 8, this->textHeight);
