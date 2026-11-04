@@ -1071,7 +1071,7 @@ void UIChatHisBox::DropOldestLines() {
   for (unsigned int index = 0; index < half; ++index) {
     this->lines[index] = this->lines[index + half];
   }
-  this->lines.erase(this->lines.begin() + half, this->lines.end());
+  this->lines.resize(half);
 
   half = static_cast<unsigned int>(this->unknown_00E4.size()) / 2;
   for (int index = 0; index < static_cast<int>(half); ++index) {
@@ -1083,7 +1083,7 @@ void UIChatHisBox::DropOldestLines() {
   for (unsigned int index = 0; index < half; ++index) {
     this->history[index] = this->history[index + half];
   }
-  this->history.erase(this->history.begin() + half, this->history.end());
+  this->history.resize(half);
 
   this->Refresh();
 }
@@ -1147,7 +1147,7 @@ void UIChatHisBox::DropOldestRecords() {
   for (unsigned int index = 0; index < half; ++index) {
     this->unknown_0100[index] = this->unknown_0100[index + half];
   }
-  this->unknown_0100.erase(this->unknown_0100.begin() + half, this->unknown_0100.end());
+  this->unknown_0100.resize(half);
 
   half = static_cast<unsigned int>(this->unknown_010C.size()) / 2;
   for (int index = 0; index < static_cast<int>(half); ++index) {
@@ -1159,7 +1159,7 @@ void UIChatHisBox::DropOldestRecords() {
   for (unsigned int index = 0; index < half; ++index) {
     this->unknown_0118[index] = this->unknown_0118[index + half];
   }
-  this->unknown_0118.erase(this->unknown_0118.begin() + half, this->unknown_0118.end());
+  this->unknown_0118.resize(half);
 
   this->sub_89C080();
 }
