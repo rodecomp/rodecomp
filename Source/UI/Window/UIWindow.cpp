@@ -1580,11 +1580,13 @@ std::string UIWindow::FitDisplayText(int width, const char* text, int family, in
 // OFFSET: 0x00A81400
 // FUNCTION: fn_16978
 std::string UIWindow::FitVerticalDisplayText(int height, const char* text, int family, int fontHeight, unsigned char bold) {
-  std::string display = DisplayTextTag(std::string(text), "<URL>", "</URL>");
-  display = DisplayTextTag(std::move(display), "<NAVI>", "</NAVI>");
-  display = DisplayTextTag(std::move(display), "<TIPBOX>", "</TIPBOX>");
-  display = DisplayTextTag(std::move(display), "<ITEM>", "</ITEM>");
-  display = RemoveTextLinkInfo(std::move(display));
+  std::string display;
+  display = text;
+  display = DisplayUrlTextTag(display);
+  display = static_cast<const std::string&>(DisplayNavigationTextTag(display));
+  display = static_cast<const std::string&>(DisplayTipBoxTextTag(display));
+  display = static_cast<const std::string&>(DisplayItemTextTag(display));
+  display = static_cast<const std::string&>(RemoveTextLinkInfo(display));
 
   if (g_windowMgr.window_01C8) {
     display = static_cast<UINewChatWnd*>(g_windowMgr.window_01C8)->ConvertChat(std::move(display));
@@ -1593,7 +1595,7 @@ std::string UIWindow::FitVerticalDisplayText(int height, const char* text, int f
   std::string navigation;
   DisplayNavigationLink(navigation, display);
   display = std::move(navigation);
-  display = DisplayTextTag(std::move(display), "<QUEST>", "</QUEST>");
+  display = static_cast<const std::string&>(DisplayQuestTextTag(display));
 
   if (this->VerticalTextHeight(display.c_str(), display.size(), family, fontHeight, bold) <= height) {
     return display;
