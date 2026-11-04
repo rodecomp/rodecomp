@@ -710,19 +710,19 @@ UIRoMapWnd::~UIRoMapWnd() {
 // OFFSET: 0x0091E4D0
 // FUNCTION: fn_12627
 bool CFlyingShipRouteInfo::IsRouteMap(std::string mapName) {
-  if (this->unknown_002C == 0) {
-    if ((mapName.size() == 10 && std::memcmp(mapName.c_str(), "izlude.rsw", 10) == 0) ||
-        (mapName.size() == 13 && std::memcmp(mapName.c_str(), "ra_fild12.rsw", 13) == 0) ||
-        (mapName.size() == 8 && std::memcmp(mapName.c_str(), "yuno.rsw", 8) == 0)) {
+  switch (this->unknown_002C) {
+  case 0:
+    if (mapName == "izlude.rsw" || mapName == "ra_fild12.rsw" || mapName == "yuno.rsw") {
       return true;
     }
-  } else if (this->unknown_002C == 1) {
-    if ((mapName.size() == 12 && std::memcmp(mapName.c_str(), "einbroch.rsw", 12) == 0) ||
-        (mapName.size() == 15 && std::memcmp(mapName.c_str(), "lighthalzen.rsw", 15) == 0) ||
-        (mapName.size() == 9 && std::memcmp(mapName.c_str(), "hugel.rsw", 9) == 0)) {
+    break;
+  case 1:
+    if (mapName == "einbroch.rsw" || mapName == "lighthalzen.rsw" || mapName == "hugel.rsw" || mapName == "yuno.rsw") {
       return true;
     }
+    break;
   }
+
   return false;
 }
 
@@ -826,22 +826,24 @@ bool CFlyingShipRouteInfo::UpdateRoute(WorldViewRecord* record) {
     }
 
     std::string name = record->name;
-    if (this->unknown_002C == 0) {
-      if (name.size() == 10 && std::memcmp(name.c_str(), "izlude.rsw", 10) == 0) {
+
+    switch (this->unknown_002C) {
+    case 0:
+      if (name == "izlude.rsw") {
         std::vector<std::string> route;
         route.push_back("izlude.rsw");
         route.push_back("yuno.rsw");
         route.push_back("ra_fild12.rsw");
         route.push_back("izlude.rsw");
         this->BuildRoute(route);
-      } else if (name.size() == 13 && std::memcmp(name.c_str(), "ra_fild12.rsw", 13) == 0) {
+      } else if (name == "ra_fild12.rsw") {
         std::vector<std::string> route;
         route.push_back("ra_fild12.rsw");
         route.push_back("izlude.rsw");
         route.push_back("yuno.rsw");
         route.push_back("ra_fild12.rsw");
         this->BuildRoute(route);
-      } else if (name.size() == 8 && std::memcmp(name.c_str(), "yuno.rsw", 8) == 0) {
+      } else if (name == "yuno.rsw") {
         std::vector<std::string> route;
         route.push_back("yuno.rsw");
         route.push_back("ra_fild12.rsw");
@@ -852,10 +854,8 @@ bool CFlyingShipRouteInfo::UpdateRoute(WorldViewRecord* record) {
         return false;
       }
       return true;
-    }
-
-    if (this->unknown_002C == 1) {
-      if (name.size() == 12 && std::memcmp(name.c_str(), "einbroch.rsw", 12) == 0) {
+    case 1:
+      if (name == "einbroch.rsw") {
         std::vector<std::string> route;
         route.push_back("einbroch.rsw");
         route.push_back("lighthalzen.rsw");
@@ -865,7 +865,7 @@ bool CFlyingShipRouteInfo::UpdateRoute(WorldViewRecord* record) {
         route.push_back("yuno.rsw");
         route.push_back("einbroch.rsw");
         this->BuildRoute(route);
-      } else if (name.size() == 15 && std::memcmp(name.c_str(), "lighthalzen.rsw", 15) == 0) {
+      } else if (name == "lighthalzen.rsw") {
         std::vector<std::string> route;
         route.push_back("lighthalzen.rsw");
         route.push_back("einbroch.rsw");
@@ -875,7 +875,7 @@ bool CFlyingShipRouteInfo::UpdateRoute(WorldViewRecord* record) {
         route.push_back("einbroch.rsw");
         route.push_back("lighthalzen.rsw");
         this->BuildRoute(route);
-      } else if (name.size() == 9 && std::memcmp(name.c_str(), "hugel.rsw", 9) == 0) {
+      } else if (name == "hugel.rsw") {
         std::vector<std::string> route;
         route.push_back("hugel.rsw");
         route.push_back("yuno.rsw");
@@ -885,7 +885,7 @@ bool CFlyingShipRouteInfo::UpdateRoute(WorldViewRecord* record) {
         route.push_back("yuno.rsw");
         route.push_back("hugel.rsw");
         this->BuildRoute(route);
-      } else if (name.size() == 8 && std::memcmp(name.c_str(), "yuno.rsw", 8) == 0) {
+      } else if (name == "yuno.rsw") {
         std::vector<std::string> route;
         route.push_back("yuno.rsw");
         route.push_back("einbroch.rsw");
