@@ -1,7 +1,7 @@
 #include "Client/Replay.h"
 #include "UI/Window/WindowPolicy.h"
 #include "UI/Window/UINewSelectCharWnd.h"
-#include "Client/Mode/CMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "UI/StylingShop/UIStylingShopWnd.h"
 #include "Client/Mode/ModeEvents.h"
 #include "Client/Session.h"
@@ -82,31 +82,19 @@ void UICostumeChangeWnd::Paint() {
   this->DrawCenteredText(43, 248, g_session.GetJobName(this->m_display->job, -1), 161, 0, 11, 0, 0);
 }
 
-namespace {
-struct UICheckBoxBitmaps : UICheckBox {
-  void Apply(const char* checked, const char* unchecked) {
-    this->m_checked = checked;
-    this->m_unchecked = unchecked;
-    CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_checked.c_str())));
-    this->geometry.width = bitmap->image.width;
-    this->geometry.height = bitmap->image.height;
-    ResourceMgr::Instance().Load(Resolve(this->m_unchecked.c_str()));
-  }
-};
-}
-
 // OFFSET: 0x00827670
 // FUNCTION: fn_10328
 void UIShowInfoWnd::ResetCheckBoxes() {
   for (int i = 0; i < 8; ++i) {
     this->m_checks[i]->SetChecked(0);
-    static_cast<UICheckBoxBitmaps*>(this->m_checks[i])->Apply(
-        "유저인터페이스\\styleshop\\check_able.bmp", "유저인터페이스\\styleshop\\Notcheck.bmp");
+    this->m_checks[i]->SetBitmaps("유저인터페이스\\styleshop\\check_able.bmp", "유저인터페이스\\styleshop\\Notcheck.bmp");
   }
 
   std::memset(this->m_changed, 0, sizeof(this->m_changed));
   this->unknown_00BC = 0;
-  this->m_list.clear();
+  for (unsigned int i = 0; i < this->m_list.size(); ++i) {
+    this->m_list.clear();
+  }
 }
 
 // OFFSET: 0x00829F30
@@ -197,12 +185,8 @@ void UIStylingShopButton::Slot28(int, int) {
 
   int screenX = 0;
   int screenY = -20;
-  for (const UIWindow* window = this; window; window = window->parent) {
-    screenX += window->geometry.x;
-    screenY += window->geometry.y;
-  }
-
-  static_cast<CMode*>(g_charViewMode)->ShowTooltip("No Color", screenX, screenY, -1, false, true);
+  this->ToScreen(screenX, screenY);
+  g_modeMgr.gameMode->ShowTooltip("No Color", screenX, screenY, -1, false, true);
 }
 
 // OFFSET: 0x0082A210
