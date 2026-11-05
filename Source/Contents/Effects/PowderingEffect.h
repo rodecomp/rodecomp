@@ -7,6 +7,7 @@
 #include <vector>
 
 class CParticle;
+class CSpriteParticle;
 
 class CPowderingEffect : public CEffect {
 public:
@@ -23,7 +24,7 @@ public:
   void sub_7096B0(CParticle* particle);
 
   /* 00CC */ std::vector<CParticle*> smokeParticles;
-  /* 00D8 */ std::vector<CParticle*> spriteParticles;
+  /* 00D8 */ std::vector<CSpriteParticle*> spriteParticles;
   /* 00E4 */ int unknown_00E4;
 };
 

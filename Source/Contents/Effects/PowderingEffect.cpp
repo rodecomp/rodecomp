@@ -279,15 +279,17 @@ void CPowderingEffect::Slot03() {
 // OFFSET: 0x00709E40
 // FUNCTION: fn_07095
 void CPowderingEffect::Slot04() {
-  for (CParticle* particle : this->smokeParticles) {
+  for (auto it = this->smokeParticles.begin(); it != this->smokeParticles.end(); ++it) {
+    CParticle* particle = *it;
     if (particle && particle->unknown_00A8 != 2) {
       particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
     }
   }
 
-  for (CParticle* particle : this->spriteParticles) {
+  for (auto it = this->spriteParticles.begin(); it != this->spriteParticles.end(); ++it) {
+    CSpriteParticle* particle = *it;
     if (particle && particle->unknown_00A8 != 2) {
-      static_cast<CSpriteParticle*>(particle)->sub_B40F30(1);
+      particle->sub_B40F30(1);
     }
   }
 }
