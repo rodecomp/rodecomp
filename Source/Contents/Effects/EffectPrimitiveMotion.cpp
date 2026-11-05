@@ -7952,8 +7952,7 @@ namespace {
 // OFFSET: 0x00BB4F00
 // FUNCTION: fn_19771
 bool CEffectPrim::PrimFloatingMotes() {
-  EffectPrimitiveSlot* slots = this->state.slots;
-  FaceCamera(slots);
+  FaceCamera(this->state.slots);
 
   const CRagEffect* master = this->state.master;
   this->render.position.x = master->render.position.x;
@@ -7961,17 +7960,27 @@ bool CEffectPrim::PrimFloatingMotes() {
   this->render.position.z = master->render.position.z;
 
   for (int index = 0; index < 4; ++index) {
-    EffectPrimitiveSlot& slot = slots[index];
-
-    if (slot.life != 1) {
+    if (this->state.slots[index].life != 1) {
       continue;
     }
 
-    DriftSlotAngles(slot, 8, 3.0f, 2.0f);
-    MoveFloatingMote(slot, slot.vecBPre, 0, 2, slot.flag1[1], false, true, false, false, true);
-    MoveFloatingMote(slot, slot.vecBNow, 4, 6, slot.flag1[2], false, true, true, true, false);
-    MoveFloatingMote(slot, slot.vecTPre, 8, 10, slot.flag1[3], false, true, false, true, false);
-    MoveFloatingMote(slot, slot.vecTNow, 12, 14, slot.flag1[4], true, false, true, false, false);
+    DriftSlotAngles(this->state.slots[index], 8, 3.0f, 2.0f);
+    MoveFloatingMote(
+      this->state.slots[index], this->state.slots[index].vecBPre, 0, 2, this->state.slots[index].flag1[1], false, true, false, false,
+      true
+    );
+    MoveFloatingMote(
+      this->state.slots[index], this->state.slots[index].vecBNow, 4, 6, this->state.slots[index].flag1[2], false, true, true, true,
+      false
+    );
+    MoveFloatingMote(
+      this->state.slots[index], this->state.slots[index].vecTPre, 8, 10, this->state.slots[index].flag1[3], false, true, false,
+      true, false
+    );
+    MoveFloatingMote(
+      this->state.slots[index], this->state.slots[index].vecTNow, 12, 14, this->state.slots[index].flag1[4], true, false, true,
+      false, false
+    );
   }
 
   return true;
