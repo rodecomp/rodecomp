@@ -882,19 +882,14 @@ int* __fastcall GetCallable(int* a) {
 // OFFSET: 0x006553C0
 // FUNCTION: fn_05062
 void HashTable_655340::RehashForInsert() {
-  unsigned int bucket_count = static_cast<unsigned int>(std::ceil(static_cast<float>(this->size + 1) / this->max_load_factor));
-  if (bucket_count < 8) {
-    bucket_count = 8;
-  }
-  unsigned int buckets = this->bucket_count;
-  if (buckets < bucket_count) {
-    if (buckets < 512) {
-      buckets *= 8;
-      if (buckets < bucket_count) {
-        buckets = bucket_count;
-      }
+  const unsigned int old_buckets = this->bucket_count;
+  const unsigned int required = (std::max)(8u, static_cast<unsigned int>(std::ceil(static_cast<float>(this->size + 1) / this->max_load_factor)));
+  unsigned int buckets = old_buckets;
+  if (old_buckets < required) {
+    if (old_buckets < 512 && old_buckets * 8 >= required) {
+      buckets = old_buckets * 8;
     } else {
-      buckets = bucket_count;
+      buckets = required;
     }
   }
   this->ForcedRehash(buckets);
@@ -1075,23 +1070,29 @@ struct PakVerifier_655A30 {
 // OFFSET: 0x00655A30
 // FUNCTION: fn_05068
 __declspec(noinline) bool PakVerifier_655A30::Verify(AES** cipher_ptr, const PakMaskedKey48* masked_key, int mode, int keySource) {
-  unsigned char key[16];
-  std::memset(key, 0, sizeof(key));
+  alignas(16) unsigned char key[16]{};
 
-  if (keySource == 0) {
+  switch (keySource) {
+  case 0: {
     PakKeyBlock48 block = masked_key->Unmask();
     std::memcpy(key, block.bytes + 16, 16);
-    std::memset(&block, 0, sizeof(block));
-  } else if (keySource == 1) {
+    SecureZeroMemory(&block, sizeof(block));
+    break;
+  }
+  case 1: {
     PakSpan_655A30* name = *this->span_objs;
-    XXH128_hash_t hash = XXH3_128bits(name->data, name->size);
+    alignas(16) XXH128_hash_t hash = XXH3_128bits(name->data, name->size);
     std::memcpy(key, &hash, 16);
-    std::memset(&hash, 0, sizeof(hash));
-  } else if (keySource == 2) {
+    SecureZeroMemory(&hash, sizeof(hash));
+    break;
+  }
+  case 2: {
     const void* checksum = reinterpret_cast<char*>(reinterpret_cast<void**>(this->span_objs)[1]) + 4;
-    XXH128_hash_t hash = XXH3_128bits(checksum, 4);
+    alignas(16) XXH128_hash_t hash = XXH3_128bits(checksum, 4);
     std::memcpy(key, &hash, 16);
-    std::memset(&hash, 0, sizeof(hash));
+    SecureZeroMemory(&hash, sizeof(hash));
+    break;
+  }
   }
 
   AES* cipher = *cipher_ptr;
@@ -1261,20 +1262,34 @@ bool CGPak::Open(CPakFile* file) {
 
   this->m_file = file;
   const std::uint8_t* bytes = file->Read(0, sizeof(PakHeaderFile));
-  if (std::memcmp(bytes, "Event Horizon", 14) == 0) {
-    PakHeaderFile64 header;
-    std::memcpy(&header, bytes, sizeof(header));
-    this->m_version = header.version;
-    this->m_entryCount = header.entryCount;
-    this->m_tableOffset = header.tableOffset + sizeof(header);
-  } else if (std::memcmp(bytes, "Master of Magic", 16) == 0) {
-    PakHeaderFile header;
-    std::memcpy(&header, bytes, sizeof(header));
-    this->m_version = header.version;
-    this->m_entryCount = header.entryCount - header.seed - 7;
-    this->m_tableOffset = static_cast<std::uint64_t>(header.tableOffset) + sizeof(header);
+  EncryptedName<14, 0x050505679903579BULL>& eventHorizon = []() -> EncryptedName<14, 0x050505679903579BULL>& {
+    const std::uint8_t source[] = {0xDE, 0x21, 0x66, 0xF7, 0x13, 0x25, 0x4D, 0x6A, 0xE9, 0x3E, 0x79, 0xF6, 0x09, 0x05};
+    // GLOBAL: gl_25504
+    thread_local EncryptedName<sizeof(source), 0x050505679903579BULL> name(source);
+    return name;
+  }();
+
+  if (std::memcmp(bytes, eventHorizon.Text(), 14) == 0) {
+    const PakHeaderFile64* header = reinterpret_cast<const PakHeaderFile64*>(bytes);
+    this->m_version = header->version;
+    this->m_entryCount = header->entryCount;
+    this->m_tableOffset = header->tableOffset + sizeof(PakHeaderFile64);
   } else {
-    return false;
+    EncryptedName<16, 0x83EFBFBB37EDBDBDULL>& masterOfMagic = []() -> EncryptedName<16, 0x83EFBFBB37EDBDBDULL>& {
+      const std::uint8_t source[] = {0xF0, 0xDC, 0x9E, 0x43, 0xDE, 0xCD, 0xCF, 0xEC, 0xDB, 0x9D, 0xA0, 0x56, 0xDC, 0xD6, 0x8C, 0x83};
+      // GLOBAL: gl_25505
+      thread_local EncryptedName<sizeof(source), 0x83EFBFBB37EDBDBDULL> name(source);
+      return name;
+    }();
+
+    if (std::memcmp(bytes, masterOfMagic.Text(), 16) != 0) {
+      return false;
+    }
+
+    const PakHeaderFile* header = reinterpret_cast<const PakHeaderFile*>(bytes);
+    this->m_version = header->version;
+    this->m_entryCount = header->entryCount - header->seed - 7;
+    this->m_tableOffset = static_cast<std::uint64_t>(header->tableOffset) + sizeof(PakHeaderFile);
   }
 
   bool loaded;
@@ -1362,16 +1377,15 @@ bool CGPak::ReadTableV1() {
     }
 
     const std::uint8_t* metadata = cursor + nameSize;
-    PakEntryFile fileEntry;
-    std::memcpy(&fileEntry, metadata, sizeof(fileEntry));
-    cursor = metadata + sizeof(fileEntry);
+    const PakEntryFile* fileEntry = reinterpret_cast<const PakEntryFile*>(metadata);
+    cursor = metadata + sizeof(PakEntryFile);
 
     myGPack::PakEntry& entry = this->m_entries[i];
-    entry.compressedSize = fileEntry.compressedSize - fileEntry.originalSize - 715;
-    entry.alignedSize = fileEntry.alignedSize - 37579;
-    entry.originalSize = fileEntry.originalSize;
-    entry.flags = fileEntry.flags;
-    entry.dataOffset = fileEntry.dataOffset;
+    entry.compressedSize = fileEntry->compressedSize - fileEntry->originalSize - 715;
+    entry.alignedSize = fileEntry->alignedSize - 37579;
+    entry.originalSize = fileEntry->originalSize;
+    entry.flags = fileEntry->flags;
+    entry.dataOffset = fileEntry->dataOffset;
     entry.name.Assign(name);
 
     const char* extension = std::strrchr(name, '.');
@@ -1409,16 +1423,15 @@ bool CGPak::ReadTableV2() {
   for (std::uint32_t i = 0; i < this->m_entryCount; ++i) {
     const char* name = reinterpret_cast<const char*>(cursor);
     const std::uint8_t* metadata = cursor + std::strlen(name) + 1;
-    PakEntryFile fileEntry;
-    std::memcpy(&fileEntry, metadata, sizeof(fileEntry));
-    cursor = metadata + sizeof(fileEntry);
+    const PakEntryFile* fileEntry = reinterpret_cast<const PakEntryFile*>(metadata);
+    cursor = metadata + sizeof(PakEntryFile);
 
     myGPack::PakEntry& entry = this->m_entries[i];
-    entry.compressedSize = fileEntry.compressedSize;
-    entry.alignedSize = fileEntry.alignedSize;
-    entry.originalSize = fileEntry.originalSize;
-    entry.flags = fileEntry.flags;
-    entry.dataOffset = fileEntry.dataOffset;
+    entry.compressedSize = fileEntry->compressedSize;
+    entry.alignedSize = fileEntry->alignedSize;
+    entry.originalSize = fileEntry->originalSize;
+    entry.flags = fileEntry->flags;
+    entry.dataOffset = fileEntry->dataOffset;
     entry.name.Assign(name);
     maximum = std::max(maximum, entry.alignedSize);
   }
@@ -1449,16 +1462,15 @@ bool CGPak::ReadTableV3() {
   for (std::uint32_t i = 0; i < this->m_entryCount; ++i) {
     const char* name = reinterpret_cast<const char*>(cursor);
     const std::uint8_t* metadata = cursor + std::strlen(name) + 1;
-    PakEntryFileV3 fileEntry;
-    std::memcpy(&fileEntry, metadata, sizeof(fileEntry));
-    cursor = metadata + sizeof(fileEntry);
+    const PakEntryFileV3* fileEntry = reinterpret_cast<const PakEntryFileV3*>(metadata);
+    cursor = metadata + sizeof(PakEntryFileV3);
 
     myGPack::PakEntry& entry = this->m_entries[i];
-    entry.compressedSize = fileEntry.compressedSize;
-    entry.alignedSize = fileEntry.alignedSize;
-    entry.originalSize = fileEntry.originalSize;
-    entry.flags = fileEntry.flags;
-    entry.dataOffset = fileEntry.dataOffset;
+    entry.compressedSize = fileEntry->compressedSize;
+    entry.alignedSize = fileEntry->alignedSize;
+    entry.originalSize = fileEntry->originalSize;
+    entry.flags = fileEntry->flags;
+    entry.dataOffset = fileEntry->dataOffset;
     entry.name.Assign(name);
     maximum = std::max(maximum, entry.alignedSize);
   }
