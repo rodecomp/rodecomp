@@ -10,7 +10,6 @@
 #include "File/ShortcutFilename.h"
 #include "UI/Buttons/UIBmpTextButton.h"
 #include "UI/Edit/UIItemTagCtrl.h"
-#include "UI/Edit/UIItemTagCtrl.h"
 #include "UI/Text/UIStaticText.h"
 #include "Utility/Text/FormatString.h"
 #include "Contents/Items/ItemDescription.h"
@@ -40,6 +39,7 @@
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
+#include <format>
 
 namespace {
 #pragma pack(push, 1)
@@ -452,7 +452,7 @@ void UIRodexComposeWnd::Paint() {
     this->DrawBitmap(161, 21, balloon, true);
   }
 
-  std::string countStr = FormatOwnedString("/ %d", 1000);
+  std::string countStr = std::format("/ {}", 1000);
   this->DrawTextAt(261, 276, countStr.c_str(), 0, 0, 10, 0xD66E44, 0, 0);
 
   int length = this->m_contents->Length() + this->m_contents->unknown_00F0;
@@ -531,6 +531,7 @@ void UIRodexComposeWnd::Paint() {
     auto* tagCtrl = static_cast<UIItemTagOnMail*>(this->unknown_0100);
     tagCtrl->SetLines(this->m_contents->unknown_0168);
     tagCtrl->SetTaggedText(this->m_contents->Text(), this->m_contents->geometry.width);
+    tagCtrl->sub_8962C0();
     auto* editCtrl3 = static_cast<UIEditCtrl3*>(this->unknown_0100);
     int diff = editCtrl3->unknown_0150 - editCtrl3->unknown_0138;
     this->m_contents->unknown_00F0 = std::max(0, diff);
