@@ -1805,18 +1805,6 @@ int BlockSizeDS8OP34T() {
   return 32;
 }
 
-// OFFSET: 0x00654400
-// FUNCTION: fn_04983
-int QueryExceptionSize04983() {
-  return 16;
-}
-
-// OFFSET: 0x00654B50
-// FUNCTION: fn_05026
-int QueryExceptionSize05026() {
-  return 16;
-}
-
 // OFFSET: 0x00654B80
 // FUNCTION: fn_05029
 int QueryExceptionSize05029() {
@@ -2253,6 +2241,9 @@ namespace GPakEx {
   public:
     class Base : public BlockCipher {
     public:
+      ~Base() override;
+      std::size_t BlockSize() const override;
+      std::size_t OptimalDataAlignment() const override;
       void SetKey(std::span<const std::uint8_t> key) override;
 
       /* 0004 */ std::vector<std::uint32_t> m_table;
@@ -2263,6 +2254,24 @@ namespace GPakEx {
       void ProcessAndXorBlock(const std::uint8_t* input, const std::uint8_t* xorBlock, std::uint8_t* output) const override;
     };
   };
+
+  // OFFSET: 0x00654400
+  // FUNCTION: fn_04983
+  std::size_t RC6::Base::BlockSize() const {
+    return 16;
+  }
+
+  // OFFSET: 0x00654B50
+  // FUNCTION: fn_05026
+  std::size_t RC6::Base::OptimalDataAlignment() const {
+    return 16;
+  }
+
+  // OFFSET: 0x0064A730
+  // FUNCTION: fn_04908
+  RC6::Base::~Base() {
+    SecureWipe(this->m_table.data(), this->m_table.size() * sizeof(std::uint32_t));
+  }
 
   // OFFSET: 0x0065B380
   // FUNCTION: fn_05138
@@ -2872,6 +2881,36 @@ namespace GPakEx {
     Cipher m_blockCipher;
   };
 
+  using Rc6Ofb = CipherModeFinal<RC6, true, BlockCipherFinal<false, RC6::Enc>, OFB_Base>;
+
+  // INLINED
+  template<>
+  __forceinline bool BlockCipherFinal<false, RC6::Enc>::IsForwardTransformation() const {
+    return IsForwardTransformationBTYLIPTLEnc();
+  }
+
+  // INLINED
+  template<>
+  __forceinline bool Rc6Ofb::IsForwardTransformation() const {
+    return IsForwardTransformationBTYLIPTLOFBBase();
+  }
+
+  // OFFSET: 0x00646A90
+  // FUNCTION: fn_04886
+  template<>
+  __declspec(noinline) Rc6Ofb::CipherModeFinal() {
+    this->m_cipher = &this->m_blockCipher;
+    this->ResizeBuffers();
+  }
+
+  // INLINED
+  template<>
+  __forceinline Rc6Ofb::~CipherModeFinal() {
+  }
+
+  static_assert(offsetof(Rc6Ofb, m_blockCipher) == 0x20);
+  static_assert(sizeof(Rc6Ofb) == 0x30);
+
   using TeaCfbDecryption = CipherModeFinal<TEA, true, BlockCipherFinal<false, TEA::Enc>, CFB_Decryption>;
 
   // OFFSET: 0x00654C20
@@ -3011,30 +3050,7 @@ namespace GPakEx {
     void sub_649EB0();
   };
 
-  class BlockCipher_64A730 : public BlockCipherStub {
-  public:
-    /* 0004 */ std::uint8_t unknown_0004[0x1C];
-
-    void sub_64A730();
-  };
-
-  class CipherModeFinal_646A90 : public CipherModeStub {
-  public:
-    /* 0020 */ BlockCipher_64A730 m_blockCipher;
-
-    // INLINED
-    CipherModeFinal_646A90() {
-      this->sub_646A90();
-    }
-
-    // INLINED
-    ~CipherModeFinal_646A90() {
-      this->m_blockCipher.sub_64A730();
-      this->sub_642A70();
-    }
-
-    void sub_646A90();
-  };
+  using CipherModeFinal_646A90 = Rc6Ofb;
 
   class BlockCipher_64A880 : public BlockCipherStub {
   public:
