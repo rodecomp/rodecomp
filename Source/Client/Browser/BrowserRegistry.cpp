@@ -45,7 +45,7 @@ CWebBrowser* UIWindowMgr::EnsureSpecialBrowser(int width, int height) {
 
   this->specialBrowser = new CWebBrowser();
   if (this->specialBrowser && this->specialBrowser->Create(hWnd, g_instance, width, height)) {
-    this->browsers.emplace(this->specialBrowser->host, this->specialBrowser);
+    this->browsers.insert(std::make_pair(this->specialBrowser->host, this->specialBrowser));
   }
 
   return this->specialBrowser;
