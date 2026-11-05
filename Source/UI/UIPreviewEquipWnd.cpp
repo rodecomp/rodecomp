@@ -192,103 +192,103 @@ int UIPreviewEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       this->Invalidate();
       break;
     }
+  } else if (message == 0x17) {
+    if (a != 0) {
+      const ITEM_INFO* item = reinterpret_cast<const ITEM_INFO*>(a);
+      switch (item->unknown_0000[2]) {
+      case 0x100:
+      case 0x400:
+        this->m_render->unknown_002C = item->unknown_0070;
+        this->m_render->unknown_0038 = 0x100;
+        if ((this->m_render->unknown_0034 & 0x100) != 0) {
+          this->m_render->unknown_0034 = 0;
+          this->m_render->unknown_0028 = 0;
+        }
+        if ((this->m_render->unknown_003C & 0x100) != 0) {
+          this->m_render->unknown_003C = 0;
+          this->m_render->unknown_0030 = 0;
+        }
+        break;
+      case 0x200:
+      case 0x800:
+        this->m_render->unknown_0030 = item->unknown_0070;
+        this->m_render->unknown_003C = 0x200;
+        if ((this->m_render->unknown_0034 & 0x200) != 0) {
+          this->m_render->unknown_0034 = 0;
+          this->m_render->unknown_0028 = 0;
+        }
+        if ((this->m_render->unknown_0038 & 0x200) != 0) {
+          this->m_render->unknown_0038 = 0;
+          this->m_render->unknown_002C = 0;
+        }
+        break;
+      case 0x300:
+      case 0xC00:
+        this->m_render->unknown_002C = item->unknown_0070;
+        this->m_render->unknown_0030 = 0;
+        this->m_render->unknown_0038 = 0x300;
+        this->m_render->unknown_003C = 0x300;
+        if (this->m_render->unknown_0034 != 1) {
+          this->m_render->unknown_0034 = 0;
+          this->m_render->unknown_0028 = 0;
+        }
+        break;
+      case 0x301:
+      case 0x1C00:
+        this->m_render->unknown_0028 = item->unknown_0070;
+        this->m_render->unknown_002C = 0;
+        this->m_render->unknown_0030 = 0;
+        this->m_render->unknown_0034 = 0x301;
+        this->m_render->unknown_0038 = 0x301;
+        this->m_render->unknown_003C = 0x301;
+        break;
+      case 0x201:
+      case 0x1800:
+        this->m_render->unknown_0030 = item->unknown_0070;
+        this->m_render->unknown_0028 = 0;
+        this->m_render->unknown_003C = 0x201;
+        this->m_render->unknown_0034 = 0x201;
+        if (this->m_render->unknown_0038 != 0x100) {
+          this->m_render->unknown_0038 = 0;
+          this->m_render->unknown_002C = 0;
+        }
+        break;
+      case 0x101:
+      case 0x1400:
+        this->m_render->unknown_002C = item->unknown_0070;
+        this->m_render->unknown_0028 = 0;
+        this->m_render->unknown_0038 = 0x101;
+        this->m_render->unknown_0034 = 0x101;
+        if (this->m_render->unknown_003C != 0x200) {
+          this->m_render->unknown_003C = 0;
+          this->m_render->unknown_0030 = 0;
+        }
+        break;
+      case 1:
+      case 0x1000:
+        this->m_render->unknown_0028 = item->unknown_0070;
+        this->m_render->unknown_0034 = 1;
+        if ((this->m_render->unknown_0038 & 1) != 0) {
+          this->m_render->unknown_0038 = 0;
+          this->m_render->unknown_002C = 0;
+        }
+        if ((this->m_render->unknown_003C & 1) != 0) {
+          this->m_render->unknown_003C = 0;
+          this->m_render->unknown_0030 = 0;
+        }
+        break;
+      case 4:
+      case 0x2000:
+        this->m_render->SetRobe(item->unknown_0070);
+        break;
+      }
+    }
   } else if (message == 0x22) {
     this->saved = reinterpret_cast<PreviewEquipWndInfo*>(a);
     if (!this->saved->IsValid()) {
       this->saved->Reset();
     }
     this->Move(this->saved->x, this->saved->y);
-  } else if (message == 0x17 && a != 0) {
-    const ITEM_INFO* item = reinterpret_cast<const ITEM_INFO*>(a);
-    CCharacterRender* render = this->m_render;
-    const int value = static_cast<int>(item->unknown_0070);
-    switch (item->unknown_0000[2]) {
-    case 0x100:
-    case 0x400:
-      render->unknown_002C = value;
-      render->unknown_0038 = 0x100;
-      if ((render->unknown_0034 & 0x100) != 0) {
-        render->unknown_0034 = 0;
-        render->unknown_0028 = 0;
-      }
-      if ((render->unknown_003C & 0x100) != 0) {
-        render->unknown_003C = 0;
-        render->unknown_0030 = 0;
-      }
-      break;
-    case 0x200:
-    case 0x800:
-      render->unknown_0030 = value;
-      render->unknown_003C = 0x200;
-      if ((render->unknown_0034 & 0x200) != 0) {
-        render->unknown_0034 = 0;
-        render->unknown_0028 = 0;
-      }
-      if ((render->unknown_0038 & 0x200) != 0) {
-        render->unknown_0038 = 0;
-        render->unknown_002C = 0;
-      }
-      break;
-    case 0x300:
-    case 0xC00:
-      render->unknown_002C = value;
-      render->unknown_0030 = 0;
-      render->unknown_0038 = 0x300;
-      render->unknown_003C = 0x300;
-      if (render->unknown_0034 != 1) {
-        render->unknown_0034 = 0;
-        render->unknown_0028 = 0;
-      }
-      break;
-    case 0x301:
-    case 0x1C00:
-      render->unknown_0028 = value;
-      render->unknown_002C = 0;
-      render->unknown_0030 = 0;
-      render->unknown_0034 = 0x301;
-      render->unknown_0038 = 0x301;
-      render->unknown_003C = 0x301;
-      break;
-    case 0x201:
-    case 0x1800:
-      render->unknown_0030 = value;
-      render->unknown_0028 = 0;
-      render->unknown_003C = 0x201;
-      render->unknown_0034 = 0x201;
-      if (render->unknown_0038 != 0x100) {
-        render->unknown_0038 = 0;
-        render->unknown_002C = 0;
-      }
-      break;
-    case 0x101:
-    case 0x1400:
-      render->unknown_002C = value;
-      render->unknown_0028 = 0;
-      render->unknown_0038 = 0x101;
-      render->unknown_0034 = 0x101;
-      if (render->unknown_003C != 0x200) {
-        render->unknown_003C = 0;
-        render->unknown_0030 = 0;
-      }
-      break;
-    case 1:
-    case 0x1000:
-      render->unknown_0028 = value;
-      render->unknown_0034 = 1;
-      if ((render->unknown_0038 & 1) != 0) {
-        render->unknown_0038 = 0;
-        render->unknown_002C = 0;
-      }
-      if ((render->unknown_003C & 1) != 0) {
-        render->unknown_003C = 0;
-        render->unknown_0030 = 0;
-      }
-      break;
-    case 4:
-    case 0x2000:
-      render->SetRobe(value);
-      break;
-    }
   }
 
   return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
