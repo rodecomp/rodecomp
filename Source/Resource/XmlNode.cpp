@@ -49,8 +49,8 @@ void XmlNode::Clear() {
     this->child = nullptr;
   }
 
-  this->unknown_0008 = 0;
   this->unknown_0004 = 0;
+  this->unknown_0008 = 0;
 }
 
 // OFFSET: 0x00AFA6B0
