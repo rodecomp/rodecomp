@@ -45,7 +45,7 @@ public:
   bool Seek(std::uint32_t distance, DWORD origin);
   void* ReadPtr(std::uint32_t bytes);
   bool IsEOF() const;
-  void Close();
+  __declspec(noinline) void Close();
 
 protected:
   /* 0004 */ HANDLE m_handle;
