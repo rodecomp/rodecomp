@@ -101,7 +101,7 @@ public:
   CAdventureGuideMgr();
   virtual ~CAdventureGuideMgr();
 
-  bool IsAvailable(int type, int id) const;
+  bool IsAvailable(int type, int id);
   void Init();
   bool Load();
   void GetEpisodeList(std::list<AdventureGuideEpisode>& out);
