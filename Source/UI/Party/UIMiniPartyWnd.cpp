@@ -451,6 +451,7 @@ int UIMiniPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     }
 
     const int count = g_session.PartyCount();
+    std::list<SessionRecord0734> records;
     for (int index = 0; index < count; ++index) {
       const MessengerMember member = g_session.PartyAt(index);
       if (!member.valid) {
