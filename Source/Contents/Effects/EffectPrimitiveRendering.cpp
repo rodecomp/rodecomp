@@ -5417,15 +5417,15 @@ void CEffectPrim::RenderGroundFog(matrix& wtm) {
         continue;
       }
 
-      if (copy == 0 && kind == 11) {
-        alpha = 250;
-        if (-40.0f > y) {
-          alpha = static_cast<int>((y + 40.0f) * 25.0f + 250.0f);
-        }
-      } else if (kind <= 1 || kind == 11) {
+      if (kind < 2) {
         alpha = 250;
         if (-20.0f > y) {
           alpha = static_cast<int>((y + 20.0f) * 25.0f + 250.0f);
+        }
+      } else if (kind == 11) {
+        alpha = 250;
+        if (-40.0f > y) {
+          alpha = static_cast<int>((y + 40.0f) * 25.0f + 250.0f);
         }
       } else if (kind == 14 || kind == 16) {
         alpha = 100;
