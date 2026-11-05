@@ -6,13 +6,27 @@
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMgr.h"
 
+#include <atlconv.h>
 #include <cstdio>
 
 // OFFSET: 0x00850550
 // FUNCTION: fn_10678
-__declspec(noinline) UIStaticText::UIStaticText()
-    : UIWindow(0), red(0), green(0), blue(0), shadow(0), outline(0), background(0xFFFF00FFu), outlineColor(0x969696), fontHeight(12), fontFamily(0),
-      bold(0), italic(0), tooltipEnabled(0) {
+__declspec(noinline) UIStaticText::UIStaticText() : UIWindow(0) {
+  this->fontHeight = 12;
+  this->fontFamily = 0;
+  this->bold = 0;
+  this->background = 0xFFFF00FFu;
+  this->Invalidate();
+
+  this->tooltipEnabled = 0;
+  this->shadow = 0;
+  this->outline = 0;
+  this->red = 0;
+  this->green = 0;
+  this->blue = 0;
+  this->text.clear();
+  this->outlineColor = 0x969696;
+  this->italic = 0;
 }
 
 // OFFSET: 0x00851E10
@@ -193,11 +207,7 @@ void UIStaticText::Slot28(int, int) {
 
   int x = -6;
   int y = -4;
-
-  for (const UIWindow* node = this; node; node = node->parent) {
-    x = (x + node->geometry.x);
-    y = (y + node->geometry.y);
-  }
+  this->ToScreen(x, y);
 
   g_modeMgr.gameMode->ShowTooltip(this->tooltip.c_str(), x, y, -1, false, true);
 }
@@ -323,9 +333,7 @@ void UIStaticText::SetTextAutoWidth(const char* value) {
   this->text = value;
   this->Invalidate();
 
-  const int height = this->geometry.height;
-  const int width = this->TextWidth(value, 0, this->fontFamily, this->fontHeight, this->bold, 0);
-  this->Resize(width + 2, height);
+  this->Resize(this->TextWidth(value, 0, this->fontFamily, this->fontHeight, this->bold, 0) + 2, this->geometry.height);
 }
 
 // OFFSET: 0x008687F0
@@ -351,9 +359,7 @@ void UIStaticText::SetTextWithinWidth(const char* value, int outlineValue) {
   if (this->geometry.width < width) {
     this->SetTextFitted(value);
   } else {
-    const int height = this->geometry.height;
-    const int textWidth = this->TextWidth(value, 0, 0, this->fontHeight, this->bold, 0);
-    this->Resize(textWidth, height);
+    this->Resize(this->TextWidth(value, 0, 0, this->fontHeight, this->bold, 0), this->geometry.height);
   }
   this->Invalidate();
 }
