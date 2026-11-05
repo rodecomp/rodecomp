@@ -53,7 +53,7 @@ void EffectPrimitiveState::ProcessAlpha() {
   const float minimum = this->minAlpha > sum ? this->minAlpha : sum;
   const float bounded = this->maxAlpha < minimum ? this->maxAlpha : minimum;
   this->alpha = bounded;
-  const auto alpha = static_cast<std::uint32_t>(TruncateToInt(bounded));
+  const int alpha = static_cast<int>(bounded);
   const auto color =
     ((alpha * 256u + static_cast<unsigned char>(this->red)) * 256u + static_cast<unsigned char>(this->green)) * 256u + static_cast<unsigned char>(this->blue);
   this->argb = color;
