@@ -580,8 +580,8 @@ void CUIIntro::Slot16() {
     return;
   }
 
-  for (const auto& text : texts) {
-    this->contents->data.emplace_back(text.second.first, text.second.second);
+  for (const auto& [id, text] : texts) {
+    this->contents->data.emplace_back(text.first, text.second);
   }
 
   this->contents->UpdateScrollBar();
@@ -626,25 +626,21 @@ void CUIItemInfo::SetDescription(int type, const std::vector<const char*>& descr
     }
 
     std::string text(value);
-    bool highlighted = false;
-    for (std::size_t pos = text.find('^'); pos != std::string::npos; pos = text.find('^', pos + 1)) {
-      if (pos + 6 < text.size() && text[pos + 1] == '7' && text[pos + 2] == '7' && text[pos + 3] == '7' &&
-          text[pos + 4] == '7' && text[pos + 5] == '7' && text[pos + 6] == '7') {
-        highlighted = true;
-        break;
-      }
-    }
-    if (!highlighted) {
+    constexpr char highlight[] = {'^', '7', '7', '7', '7', '7', '7'};
+    if (text.find(highlight, 0, sizeof(highlight)) == std::string::npos) {
       continue;
     }
 
-    std::regex pattern("\\^000000");
     std::cmatch match;
-    while (std::regex_search(text.c_str(), text.c_str() + text.size(), match, pattern)) {
-      viewer->AddLine(match.prefix().str() + match[0].str());
+    std::regex pattern("\\^000000");
+    std::regex_search(text.c_str(), text.c_str() + text.size(), match, pattern);
+    while (!match.empty()) {
+      std::string line = match.prefix().str() + match[0].str();
+      viewer->AddLine(line);
       ++lines;
       text = match.suffix().str();
       text.erase(0, text.find_first_not_of(" \r\n\t\v\f"));
+      std::regex_search(text.c_str(), text.c_str() + text.size(), match, pattern);
     }
   }
 }
@@ -720,22 +716,25 @@ void CUIQuestInfo::SetTitle(int id) {
 
   std::string text = entry.title;
   std::cmatch match;
-  if (std::regex_search(text.c_str(), text.c_str() + text.size(), match, std::regex("Q(.+)\\(")) && match.size() > 1) {
+  std::regex_search(text.c_str(), text.c_str() + text.size(), match, std::regex("Q(.+)\\("));
+  const std::string whitespace(" \r\n\t\v\f");
+  if (match.size() > 1) {
     text = match[1].str();
   }
 
-  text.erase(0, text.find_first_not_of(" \r\n\t\v\f"));
-  text.erase(text.find_last_not_of(" \r\n\t\v\f") + 1);
+  text.erase(0, text.find_first_not_of(whitespace));
+  text.erase(text.find_last_not_of(whitespace) + 1);
   viewer->SetBold(1);
   viewer->AddLine(text);
 
   text = entry.paragraphs[0];
-  if (std::regex_search(text.c_str(), text.c_str() + text.size(), match, std::regex("\n"))) {
+  std::regex_search(text.c_str(), text.c_str() + text.size(), match, std::regex("\n"));
+  if (!match.empty()) {
     text = match.prefix().str();
   }
 
-  text.erase(0, text.find_first_not_of(" \r\n\t\v\f"));
-  text.erase(text.find_last_not_of(" \r\n\t\v\f") + 1);
+  text.erase(0, text.find_first_not_of(whitespace));
+  text.erase(text.find_last_not_of(whitespace) + 1);
   viewer->SetBold(0);
   viewer->AddLine(text);
 }
@@ -917,6 +916,10 @@ void CUIAdventureGuide::Slot16() {
   const char* title = LookupMessage(0xFD5);
   this->titleBar->SetTitle(title, std::strlen(title));
 
+  if (g_adventureGuideMgr->m_intros.empty()) {
+    return;
+  }
+
   std::map<int, AdventureGuide::CUIPage*> pages = {
       {0, this->intro},
       {1, this->quest},
@@ -927,6 +930,7 @@ void CUIAdventureGuide::Slot16() {
       {6, this->item},
   };
 
+  const int level = g_session.m_level;
   for (const auto& [type, intro] : g_adventureGuideMgr->m_intros) {
     AdventureGuide::CUITab* tab = this->tabs->CreateItem();
     tab->type = type;
@@ -941,11 +945,10 @@ void CUIAdventureGuide::Slot16() {
 
     if (!intro.details.empty()) {
       std::map<int, AdventureGuideDetail> details;
-      for (const auto& [id, detail] : intro.details) {
-        if (g_adventureGuideMgr->IsAvailable(tab->type, id)) {
-          details[id] = detail;
-        }
-      }
+      std::copy_if(intro.details.begin(), intro.details.end(), std::inserter(details, details.begin()),
+                   [type, level](const std::pair<const int, AdventureGuideDetail>& entry) {
+                     return g_adventureGuideMgr->IsAvailable(type, entry.first);
+                   });
       if (!details.empty()) {
         CUIListBox<AdventureGuide::CUISubTab>* subTabs = tab->CreateSubTabList();
         subTabs->Resize(subTabs->geometry.width, subTabs->rowHeight * static_cast<int>(details.size()));
