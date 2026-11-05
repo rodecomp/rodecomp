@@ -2471,12 +2471,14 @@ static std::unordered_map<int, int> BuildLifetimes() {
 namespace {
   // STATIC: 0x016FDAC0
   // GLOBAL: gl_24388
-  const std::unordered_map<int, int> lifetimes = BuildLifetimes();
+  std::unordered_map<int, int> lifetimes = BuildLifetimes();
 }
 
 // OFFSET: 0x00C16440
 // FUNCTION: fn_20056
 int EffectLifetime(int id) {
-  const auto found = lifetimes.find(id);
-  return found == lifetimes.end() ? 0 : found->second;
+  if (lifetimes.find(id) != lifetimes.end()) {
+    return lifetimes[id];
+  }
+  return 0;
 }
