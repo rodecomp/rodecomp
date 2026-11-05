@@ -105,120 +105,117 @@ bool C3dAnimModelRes::Load(const char* name) {
   CFile file;
 
   if (!file.Open(name, 0, true, false)) {
-    file.Close();
     return false;
   }
 
-  ResourceByteReader input{static_cast<const unsigned char*>(file.GetData()), static_cast<unsigned>(file.GetSize())};
   char magic[5];
   unsigned char major;
   unsigned char minor;
-  input.Read(magic, 4);
+  file.Read(magic, 4);
   magic[4] = 0;
-  input.Read(&major, 1);
-  input.Read(&minor, 1);
+  file.Read(&major, 1);
+  file.Read(&minor, 1);
 
   if (major == 1 && minor >= 2) {
-    input.Read(&this->speed, 4);
-    input.Read(&this->unknown_0154, 12);
+    file.Read(&this->speed, 4);
+    file.Read(&this->unknown_0154, 12);
   }
 
   if (major == 1 && minor == 3) {
-    input.Read(&this->alpha, 4);
+    file.Read(&this->alpha, 4);
   }
 
-  input.Read(&this->shade, 4);
-  input.Read(&this->frameCount, 4);
-  input.Read(&this->animationLength, 4);
+  file.Read(&this->shade, 4);
+  file.Read(&this->frameCount, 4);
+  file.Read(&this->animationLength, 4);
   unsigned char reserved[16];
-  input.Read(reserved, sizeof(reserved));
-  unsigned textureCount;
-  input.Read(&textureCount, 4);
-  std::vector<std::string> names;
+  file.Read(reserved, sizeof(reserved));
+  int textureCount;
+  file.Read(&textureCount, 4);
+  std::string* names = new std::string[textureCount];
   char field[40];
 
-  for (unsigned index = 0; index < textureCount; ++index) {
-    input.Read(field, sizeof(field));
-    names.emplace_back(field);
+  for (int index = 0; index < textureCount; ++index) {
+    file.Read(field, sizeof(field));
+    names[index] = std::string(field);
   }
 
-  input.Read(field, sizeof(field));
-  const std::string rootName(field);
+  std::string rootName;
+  file.Read(field, sizeof(field));
+  rootName = std::string(field);
   int nodeCount;
-  input.Read(&nodeCount, 4);
+  file.Read(&nodeCount, 4);
 
   for (int index = 0; index < nodeCount; ++index) {
-    auto node = std::make_unique<AnimatedModelNode>();
+    AnimatedModelNode* node = new AnimatedModelNode;
     node->model = this;
     node->frames = new AnimatedModelFrame[this->frameCount];
-    std::uint32_t marker;
-    input.Read(&marker, 4);
+    std::uint32_t header;
+    file.Read(&header, 4);
 
-    if (marker != 0x12345678u) {
+    if (header != 0x12345678u) {
       ShowErrorDialog(GetRenderSystemHolder()->system, "data corrupt", 0);
-      file.Close();
       return false;
     }
 
-    input.Read(field, sizeof(field));
-    node->name = field;
-    input.Read(field, sizeof(field));
-    node->parentName = field;
-    input.Read(&node->textureCount, 4);
+    file.Read(field, sizeof(field));
+    node->name = std::string(field);
+    file.Read(field, sizeof(field));
+    node->parentName = std::string(field);
+    file.Read(&node->textureCount, 4);
     node->textures = new CTexture*[node->textureCount];
 
     for (int texture = 0; texture < node->textureCount; ++texture) {
       int id;
-      input.Read(&id, 4);
-      CTexture* value = g_texMgr.Load(names[id].c_str(), 0, false, true, false);
-      value->Retain();
-      node->textures[texture] = value;
+      file.Read(&id, 4);
+      const std::string textureName = names[id];
+      node->textures[texture] = g_texMgr.Load(textureName.c_str(), 0, false, true, false);
+      node->textures[texture]->Retain();
     }
 
-    input.Read(&node->vertexCount, 4);
+    file.Read(&node->vertexCount, 4);
 
     for (int frameIndex = 0; frameIndex < this->frameCount; ++frameIndex) {
-      AnimatedModelFrame& frame = node->frames[frameIndex];
-      frame.vertices = new std::array<float, 3>[node->vertexCount]{};
-      input.Read(frame.vertices, static_cast<unsigned>(node->vertexCount) * 12u);
+      node->frames[frameIndex].vertices = new std::array<float, 3>[node->vertexCount]{};
+      file.Read(node->frames[frameIndex].vertices, node->vertexCount * 12);
     }
 
-    input.Read(&node->textureVertexCount, 4);
-    input.Read(&node->sharedTextureVertices, 4);
+    file.Read(&node->textureVertexCount, 4);
+    file.Read(&node->sharedTextureVertices, 4);
 
     if (node->sharedTextureVertices) {
       node->frames[0].textureVertices = new ModelTextureVertex[node->textureVertexCount];
-      input.Read(node->frames[0].textureVertices, static_cast<unsigned>(node->textureVertexCount) * 12u);
+      file.Read(node->frames[0].textureVertices, node->textureVertexCount * 12);
     } else {
       for (int frameIndex = 0; frameIndex < this->frameCount; ++frameIndex) {
-        AnimatedModelFrame& frame = node->frames[frameIndex];
-        frame.textureVertices = new ModelTextureVertex[node->textureVertexCount];
-        input.Read(frame.textureVertices, static_cast<unsigned>(node->textureVertexCount) * 12u);
+        node->frames[frameIndex].textureVertices = new ModelTextureVertex[node->textureVertexCount];
+        file.Read(node->frames[frameIndex].textureVertices, node->textureVertexCount * 12);
       }
     }
 
-    input.Read(&node->faceCount, 4);
+    file.Read(&node->faceCount, 4);
     node->faceNormals = new std::array<float, 3>[node->faceCount];
     node->faces = new AnimatedModelFace[node->faceCount];
-    input.Read(node->faces, static_cast<unsigned>(node->faceCount) * 24u);
-    this->nodes.push_back(node.release());
-    input.Read(&marker, 4);
+    file.Read(node->faces, node->faceCount * 24);
+    this->nodes.push_back(node);
+    std::uint32_t footer;
+    file.Read(&footer, 4);
 
-    if (marker != 0x12345678u) {
+    if (footer != 0x12345678u) {
       ShowErrorDialog(GetRenderSystemHolder()->system, "data corrupt", 0);
-      file.Close();
       return false;
     }
   }
 
   file.Close();
+  delete[] names;
 
   for (AnimatedModelNode* node : this->nodes) {
     if (!node->parentName.empty()) {
       AnimatedModelNode* parent = nullptr;
 
       for (AnimatedModelNode* candidate : this->nodes) {
-        if (candidate->name == node->parentName) {
+        if (candidate->name == node->parentName.c_str()) {
           parent = candidate;
           break;
         }
@@ -229,8 +226,7 @@ bool C3dAnimModelRes::Load(const char* name) {
     }
   }
 
-  this->rootNames.push_back(rootName);
-  file.Close();
+  this->rootNames.push_back(rootName.c_str());
   return true;
 }
 
