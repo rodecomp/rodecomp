@@ -59,8 +59,8 @@ HRESULT STDMETHODCALLTYPE BrowserPopupDispatch::Invoke(DISPID id, REFIID, LCID, 
   // STATIC: 0x01115448
   // GLOBAL: gl_13426
   const float scale = 0.7f;
-  const int height = TruncateToInt(static_cast<float>(g_renderer->viewport.height) * scale);
-  const int width = TruncateToInt(static_cast<float>(g_renderer->viewport.width) * scale);
+  const int height = static_cast<int>(static_cast<float>(g_renderer->viewport.height) * scale);
+  const int width = static_cast<int>(static_cast<float>(g_renderer->viewport.width) * scale);
   CWebBrowser* browser = g_windowMgr.CreateBrowser(width, height);
 
   if (!browser) {
