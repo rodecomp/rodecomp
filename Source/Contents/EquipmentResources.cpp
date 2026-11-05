@@ -55,13 +55,13 @@ void EquipmentResourceMgr::Destroy() {
 // FUNCTION: fn_19746
 std::string EquipmentResourceMgr::GetAccessoryResourceName(int type, int job, int sex, int head, int accessory) {
   if (accessory == 0) {
-    return std::string();
+    return "";
   }
 
-  std::string path;
-  std::string sexName;
-  std::string headName;
-  std::string accessoryName;
+  std::string path = "";
+  std::string sexName = "";
+  std::string headName = "";
+  std::string accessoryName = "";
 
   if (sex == 1) {
     headName = g_session.m_humanMaleHeadNames[head];
@@ -91,8 +91,8 @@ std::string EquipmentResourceMgr::GetAccessoryResourceName(int type, int job, in
 // OFFSET: 0x00BAA110
 // FUNCTION: fn_19747
 std::string EquipmentResourceMgr::GetNamedAccessoryResourceName(int type, int sex, std::string accessoryName) {
-  std::string path;
-  std::string sexName;
+  std::string path = "";
+  std::string sexName = "";
 
   sexName = g_session.GetSexName(sex);
   path = FormatOwnedString("sprite\\악세사리\\%s\\%s%s.%s", sexName.c_str(), sexName.c_str(), accessoryName.c_str(), g_equipmentResourceExtensions[type]);
@@ -109,8 +109,8 @@ std::string EquipmentResourceMgr::GetBodyPalName(int job, int sex, int palette, 
     spriteJob -= 3950;
   }
 
-  std::string result;
-  std::string sexName;
+  std::string result = "";
+  std::string sexName = "";
 
   sexName = g_session.GetSexName(sex);
 
