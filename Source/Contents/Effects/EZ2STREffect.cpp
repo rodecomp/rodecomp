@@ -1433,7 +1433,11 @@ vector3d CEZ2STRScreenEffect::Slot25() {
     return particle->m_windowOffset;
   }
 
-  return vector3d{};
+  vector3d zero;
+  zero.x = 0.0f;
+  zero.y = 0.0f;
+  zero.z = 0.0f;
+  return zero;
 }
 
 // OFFSET: 0x00B51D20
@@ -1448,7 +1452,7 @@ bool CEZ2STRScreenEffect::Slot33() {
     return false;
   }
 
-  if (actor->unknown_0304 != 0) {
+  if (actor->unknown_0304 > 0) {
     return actor->EffectVisible();
   }
 
@@ -1458,11 +1462,12 @@ bool CEZ2STRScreenEffect::Slot33() {
 // OFFSET: 0x00B56790
 // FUNCTION: fn_19042
 bool CEZ2STRScreenEffect::Slot06() {
+  int id = this->id;
   if (this->unknown_00C8 == 1) {
     return this->ActorExists();
   }
 
-  switch (this->id) {
+  switch (id) {
   case 0x8D:
   case 0x3E6:
   case 0x45F:
@@ -1579,7 +1584,7 @@ bool CEZ2STRScreenEffect::Slot06() {
   }
 
   CEZ2STRParticle* particle = this->particle;
-  if (particle->life == 0.0f) {
+  if (0.0f == particle->life) {
     return true;
   }
 
