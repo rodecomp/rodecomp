@@ -250,23 +250,25 @@ void UINavigationWnd::LayoutTabs() {
 // OFFSET: 0x0093DB80
 // FUNCTION: fn_12771
 void UINavigationWnd::RefreshHeaderTexts(int mode) {
-  if (!g_navigationMinimized) {
-    this->m_title = LookupMessage(0x8AD);
-    this->m_subtitle = LookupMessage(0x8AC);
-  } else if (mode == 2) {
-    char text[260];
-    char saved[260];
-    std::memset(text, 0, sizeof(text));
-    std::memset(saved, 0, sizeof(saved));
-    if (g_navigationManager.SavedTargetText(saved, sizeof(saved))) {
-      std::sprintf(text, ">>%s", saved);
+  if (g_navigationMinimized) {
+    if (mode == 2) {
+      char text[260];
+      char saved[260];
+      std::memset(text, 0, sizeof(text));
+      std::memset(saved, 0, sizeof(saved));
+      if (g_navigationManager.SavedTargetText(saved, sizeof(saved))) {
+        std::sprintf(text, ">>%s", saved);
+      } else {
+        std::sprintf(text, LookupMessage(0x8A9));
+      }
+      this->m_title = LookupMessage(0x8AA);
+      this->m_subtitle = text;
     } else {
-      std::sprintf(text, LookupMessage(0x8A9));
+      this->m_title = LookupMessage(0x8AB);
+      this->m_subtitle = LookupMessage(0x8AC);
     }
-    this->m_title = LookupMessage(0x8AA);
-    this->m_subtitle = text;
   } else {
-    this->m_title = LookupMessage(0x8AB);
+    this->m_title = LookupMessage(0x8AD);
     this->m_subtitle = LookupMessage(0x8AC);
   }
 
@@ -283,13 +285,13 @@ void UINavigationWnd::RefreshWorldMapMarks() {
       CNavi_Link* node = g_navigationManager.GetNode(index);
       if (node) {
         name = node->GetInfo()->GetName();
-        name.append(".rsw", 4);
+        name += ".rsw";
         g_worldViewMgr.AddMark(name.c_str());
       }
     }
 
     name = g_navigationManager.GetDestinationInfo()->GetName();
-    name.append(".rsw", 4);
+    name += ".rsw";
     g_worldViewMgr.AddMark(name.c_str());
     this->Invalidate();
   }
@@ -319,7 +321,7 @@ void UINavigationWnd::RefreshWorldMapLevels() {
       int distance = 0;
       name = g_navigationManager.StateMapName(index, &distance);
       if (!name.empty()) {
-        name.append(".rsw", 4);
+        name += ".rsw";
         g_worldViewMgr.AddLevel(name.c_str(), distance);
       }
     }
@@ -547,8 +549,8 @@ void UINavigationWnd::Slot11() {
   if (this->m_saved) {
     this->m_saved->width = this->geometry.width;
     this->m_saved->height = this->geometry.height;
-    const int maxX = g_renderer->viewport.width - (this->m_saved->minimized ? 272 : 228);
-    if (this->geometry.x > maxX) {
+    const int maxX = g_renderer->viewport.width - (!this->m_saved->minimized ? 228 : 272);
+    if (maxX < this->geometry.x) {
       this->geometry.x = maxX;
     }
     if (this->geometry.x < 0) {
@@ -556,7 +558,7 @@ void UINavigationWnd::Slot11() {
     }
     this->m_saved->x = this->geometry.x;
     const int maxY = g_renderer->viewport.height - 338;
-    if (this->geometry.y > maxY) {
+    if (maxY < this->geometry.y) {
       this->geometry.y = maxY;
     }
     if (this->geometry.y < 0) {
