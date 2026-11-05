@@ -27,8 +27,8 @@ void UIWindowMgr::UnregisterWindow(UIWindow* window) {
 // OFFSET: 0x00AA6650
 // FUNCTION: fn_17231
 void UIWindowMgr::InvalidateRegisteredWindows() {
-  for (UIWindow* window : this->registeredWindows) {
-    window->Invalidate();
+  for (auto entry = this->registeredWindows.begin(); entry != this->registeredWindows.end(); ++entry) {
+    (*entry)->Invalidate();
   }
 
   this->registeredWindows.clear();
