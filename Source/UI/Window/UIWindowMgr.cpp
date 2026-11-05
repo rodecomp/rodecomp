@@ -2279,6 +2279,16 @@ UIWindow* UIWindowMgr::sub_A97580(int id, int x, int y, int width, int height) {
   return window;
 }
 
+// FUNCTION: fn_45514
+void CloseWindow10005A() {
+  g_windowMgr.CloseWindow(10005);
+}
+
+// FUNCTION: fn_45513
+void CloseWindow10005B() {
+  g_windowMgr.CloseWindow(10005);
+}
+
 // OFFSET: 0x00AA76F0
 // FUNCTION: fn_17239
 void UIWindowMgr::DrawLoginOverlay() {
