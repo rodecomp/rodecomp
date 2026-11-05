@@ -127,7 +127,7 @@ public:
   std::vector<unsigned char> BuildMetadata();
   std::uint32_t ParseMetadata(const std::vector<unsigned char>& data);
   float AnimationScale() const;
-  float DelayScale() const;
+  __declspec(noinline) float DelayScale() const;
   bool SetState(int state);
   bool SetBaseFrame(std::uint32_t baseFrame);
   void UpdateDuration();
