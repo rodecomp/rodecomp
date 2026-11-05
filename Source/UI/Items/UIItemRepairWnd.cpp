@@ -23,6 +23,23 @@
 #include <cstring>
 #include <string>
 
+#pragma pack(push, 1)
+struct UIItemRepairRecordHeader {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint32_t bytes;
+
+  // INLINED
+  UIItemRepairRecordHeader() : id(0), bytes(0) {
+  }
+
+  // INLINED
+  ~UIItemRepairRecordHeader() {
+    this->bytes = 0;
+    this->id = 0;
+  }
+};
+#pragma pack(pop)
+
 // OFFSET: 0x009A3860
 // FUNCTION: fn_13609
 void UIItemRepairWnd::Paint() {
@@ -53,8 +70,10 @@ void UIMakeTargetResultWnd::Paint() {
 // OFFSET: 0x009A0B00
 // FUNCTION: fn_13604
 void UIItemRepairWnd::Slot15(int width, int height) {
+  const int listWidth = width - 24;
+  const int listHeight = height - 55;
   this->m_list = new UIListBox();
-  this->m_list->Configure(12, 22, width - 24, height - 55, 0);
+  this->m_list->Configure(12, 22, listWidth, listHeight, 0);
   this->m_list->backgroundRed = 240;
   this->m_list->backgroundGreen = 240;
   this->m_list->backgroundBlue = 240;
@@ -83,8 +102,10 @@ void UIItemRepairWnd::Slot15(int width, int height) {
 // OFFSET: 0x009A1590
 // FUNCTION: fn_13605
 void UIMakeTargetListWnd::Slot15(int width, int height) {
+  const int listWidth = width - 24;
+  const int listHeight = height - 55;
   this->m_list = new UIListBox();
-  this->m_list->Configure(12, 22, width - 24, height - 55, 0);
+  this->m_list->Configure(12, 22, listWidth, listHeight, 0);
   this->m_list->backgroundRed = 240;
   this->m_list->backgroundGreen = 240;
   this->m_list->backgroundBlue = 240;
@@ -136,13 +157,15 @@ void UIMakeTargetProcessWnd::Slot15(int width, int height) {
 // FUNCTION: fn_13607
 void UIMakeTargetResultWnd::Slot15(int width, int height) {
   const std::string prefix("유저인터페이스\\");
+  const int buttonX = width - 91;
+  const int buttonY = height - 24;
 
   auto* button = new UIBitmapButton();
   button->SetBitmap((prefix + "btn_ok" + ".bmp").c_str(), 0, 0);
   button->SetBitmap((prefix + "btn_ok_a" + ".bmp").c_str(), 1, 0);
   button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
   button->SetSize(button->BitmapWidth(), button->BitmapHeight());
-  button->Move(width - 91, height - 24);
+  button->Move(buttonX, buttonY);
   button->SetId(184);
   this->AddChild(button);
 
@@ -152,8 +175,10 @@ void UIMakeTargetResultWnd::Slot15(int width, int height) {
 // OFFSET: 0x009A2DD0
 // FUNCTION: fn_13608
 void UIWeaponRefineWnd::Slot15(int width, int height) {
+  const int listWidth = width - 24;
+  const int listHeight = height - 55;
   this->m_list = new UIListBox();
-  this->m_list->Configure(12, 22, width - 24, height - 55, 0);
+  this->m_list->Configure(12, 22, listWidth, listHeight, 0);
   this->m_list->backgroundRed = 240;
   this->m_list->backgroundGreen = 240;
   this->m_list->backgroundBlue = 240;
