@@ -50,8 +50,9 @@
 #include "UI/Text/TextFitting.h"
 // OFFSET: 0x0086DDA0
 // FUNCTION: fn_11059
-UIListBoxTitle::UIListBoxTitle() : titleColor(0x92C0FA) {
+UIListBoxTitle::UIListBoxTitle() {
   this->lineHeight = 0xF;
+  this->titleColor = 0x92C0FA;
 }
 
 // OFFSET: 0x0086E410
@@ -68,9 +69,20 @@ UIScrollBar3::UIScrollBar3() : UIScrollBar() {
 
 // OFFSET: 0x0086E550
 // FUNCTION: fn_11073
-UIScrollBar::UIScrollBar()
-    : UIWindow(0), state(0), maximum(0), position(0), vertical(1), pressX(0), pressY(0), dragAmount(0), total(0), visible(0), arrowLength(13),
-      thickness(13), minimumThumb(1), horizontalStep(1), verticalStep(1) {
+UIScrollBar::UIScrollBar() : UIWindow(0), arrowLength(13) {
+  this->maximum = 0;
+  this->position = 0;
+  this->vertical = 1;
+  this->state = 0;
+  this->pressX = 0;
+  this->pressY = 0;
+  this->dragAmount = 0;
+  this->total = 0;
+  this->visible = 0;
+  this->thickness = 13;
+  this->minimumThumb = 1;
+  this->horizontalStep = 1;
+  this->verticalStep = 1;
 }
 
 UIScrollBar::~UIScrollBar() = default;
