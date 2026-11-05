@@ -165,6 +165,15 @@ void DestroyNavigationLinkParser() {
   }
 }
 
+// GLOBAL: gl_25506
+static const std::string g_parserMessageTag = "<MSG>";
+// GLOBAL: gl_25507
+static const std::string g_parserMessageCloseTag = "</MSG>";
+// GLOBAL: gl_25498
+static const std::string g_parserNaviLinkTag = "<NAVIL>";
+// GLOBAL: gl_25499
+static const std::string g_parserNaviLinkCloseTag = "</NAVIL>";
+
 // GLOBAL: gl_24818
 static const std::string g_urlTag = "<URL>";
 // GLOBAL: gl_24819
@@ -225,13 +234,13 @@ std::string NavigationLinkParser::ExpandMessages(std::string text) {
       work = expanded;
     }
 
-    const std::size_t begin = work.find(g_messageTag);
+    const std::size_t begin = work.find(g_parserMessageTag);
     if (begin == std::string::npos) {
       return text;
     }
 
-    work = work.substr(begin + std::strlen(g_messageTag.c_str()));
-    const std::size_t end = work.find(g_messageCloseTag);
+    work = work.substr(begin + std::strlen(g_parserMessageTag.c_str()));
+    const std::size_t end = work.find(g_parserMessageCloseTag);
     if (end == std::string::npos) {
       return text;
     }
@@ -246,15 +255,19 @@ std::string NavigationLinkParser::ExpandMessages(std::string text) {
 
     const std::string message = FormatMessageArguments(work, messageId);
     work.clear();
-    work = expanded.empty() ? text : expanded;
+    if (expanded.empty()) {
+      work = text;
+    } else {
+      work = expanded;
+    }
     const std::string head = work.substr(0, begin);
-    const std::string tail = work.substr(work.find(g_messageCloseTag) + std::strlen(g_messageCloseTag.c_str()));
+    const std::string tail = work.substr(work.find(g_parserMessageCloseTag) + std::strlen(g_parserMessageCloseTag.c_str()));
     expanded.clear();
     expanded += head;
     expanded += message;
     expanded += tail;
 
-    if (expanded.find(g_messageTag) == std::string::npos) {
+    if (expanded.find(g_parserMessageTag) == std::string::npos) {
       return expanded;
     }
   }
