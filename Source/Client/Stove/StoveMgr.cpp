@@ -73,7 +73,7 @@ void CStoveMgr::FetchAllProducts() {
 // FUNCTION: fn_04801
 void FetchStoveTermsAgreement() {
   Stove::PCSDK::IAP::StovePCTermsOption option;
-  option.SetOperation(0);
+  option.SetOperation(Stove::PCSDK::IAP::StovePCPaymentOperation::DEFAULT);
   IAP_FetchTermsAgreement(&option, sub_63A7F0);
   g_stoveWaitingCallback = true;
   do {
@@ -649,7 +649,7 @@ void CStoveMgr::StartPurchase(const std::vector<ITEM_INFO>& items) {
   }
 
   Stove::PCSDK::IAP::StovePCPaymentOption option;
-  option.SetOperation(0);
+  option.SetOperation(Stove::PCSDK::IAP::StovePCPaymentOperation::DEFAULT);
   param.SetPurchaseOption(option);
   IAP_StartPurchase(&param, sub_63A940);
   g_stoveWaitingCallback = true;

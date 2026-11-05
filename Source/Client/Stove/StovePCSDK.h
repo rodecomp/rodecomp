@@ -60,10 +60,15 @@ namespace Stove::PCSDK {
   }
 
   namespace IAP {
+    enum class StovePCPaymentOperation : int {
+      DEFAULT = 0,
+      WITH_WEBVIEW = 1,
+    };
+
     struct __declspec(dllimport) StovePCPaymentOption {
       StovePCPaymentOption();
       StovePCPaymentOption(const StovePCPaymentOption& other);
-      void SetOperation(int operation);
+      void SetOperation(StovePCPaymentOperation operation);
 
       /* 0000 */ void* unknown_0000[6];
     };
