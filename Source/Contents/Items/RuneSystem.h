@@ -158,7 +158,7 @@ public:
   int GetItemListCount(int listId);
   RuneData* GetCurrentRune(int type, int index);
   int GetGradeValue(RuneSetData* runeSet);
-  RuneData* FindRune(int tagId, int type, std::int64_t id, unsigned int* index);
+  __declspec(noinline) RuneData* FindRune(int tagId, int type, std::int64_t id, unsigned int* index);
   int GetSelectTag() const;
   std::vector<Decom_ItemInfo>* GetDecomList(int itemId, int which);
   bool IsRequestPending() const;
@@ -171,7 +171,7 @@ public:
   int UpdateOwnedDecomItems();
   void SetCurRuneSet(int tagId, int runeSetId, int grade, int slotCount);
   void SetCurSlotCount(const int& count);
-  void SetSelectTag(int tagId);
+  __declspec(noinline) void SetSelectTag(int tagId);
   void SetRequestPending(bool pending);
   int SetRuneGrade(int tagId, int type, std::int64_t id, int grade, int gradeLevel);
   bool SetRewardStep(int tagId, std::int64_t id, int step);
