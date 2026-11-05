@@ -9,7 +9,7 @@
 #include "Resource/Sprites/ActionResource.h"
 #include "Resource/Sprites/SpriteResource.h"
 #include "Utility/Math/AffineMatrix.h"
-#include <cstdlib>
+#include "Contents/Actors/GameActor.h"
 
 // OFFSET: 0x00BEBC80
 // FUNCTION: fn_19972
@@ -276,7 +276,7 @@ void CEffectPrim::RenderGroundArcStep(matrix& wtm) {
 // OFFSET: 0x00BEC960
 // FUNCTION: fn_19976
 __declspec(safebuffers) void CEffectPrim::RenderSegmentSprites(matrix& wtm) {
-  CSprRes* sprite = this->render.sprite;
+  CSprRes* sprite = static_cast<CGameActor*>(static_cast<CRenderObject*>(this))->GetSprite();
   CActRes* action = this->GetActRes();
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -1617,7 +1617,7 @@ void CEffectPrim::RenderPolygonFrames(matrix& wtm) {
 // OFFSET: 0x00BF6AD0
 // FUNCTION: fn_20000
 void CEffectPrim::RenderSegmentSpriteGlow(matrix& wtm) {
-  CSprRes* sprite = this->render.sprite;
+  CSprRes* sprite = static_cast<CGameActor*>(static_cast<CRenderObject*>(this))->GetSprite();
   CActRes* action = this->GetActRes();
   const short alpha = static_cast<short>(this->state.alpha);
 
