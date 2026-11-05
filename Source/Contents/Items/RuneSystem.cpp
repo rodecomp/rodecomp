@@ -444,11 +444,7 @@ std::vector<Decom_ItemInfo>* CRuneSystemMgr::GetDecomList(int itemId, int which)
 
   const int typeId = which == 0 ? types->first : types->second;
   const auto found = this->m_decomTypes.find(typeId);
-  if (found == this->m_decomTypes.end()) {
-    return nullptr;
-  }
-
-  return &found->second;
+  return found != this->m_decomTypes.end() ? &found->second : nullptr;
 }
 
 // OFFSET: 0x00767230
