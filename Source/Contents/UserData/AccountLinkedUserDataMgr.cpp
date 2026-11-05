@@ -156,8 +156,10 @@ void CAccountLinkedUserDataMgr::CompleteLoad(
 void CAccountLinkedUserDataMgr::RefreshUrls(LuaScript& settings, LuaScript& tables, const char* host, const char* port, const char* overrideKey) {
   const std::string base = ResolveAccountServiceBase(settings, tables, host, port, overrideKey);
   if (!base.empty()) {
-    this->m_saveUrl = base + "/userconfig/save";
-    this->m_loadUrl = base + "/userconfig/load";
+    const std::uint8_t saveSource[] = {0x8E, 0x48, 0xEC, 0xB2, 0x11, 0xEC, 0x48, 0x37, 0xC7, 0x54, 0xF8, 0xF8, 0x10, 0xEE, 0x51, 0x3C, 0xA1};
+    this->m_saveUrl = base + DecryptText<0x59278F63D79F3DA1ULL>(saveSource);
+    const std::uint8_t loadSource[] = {0x98, 0x72, 0x24, 0xA8, 0x59, 0x84, 0x44, 0xEF, 0xD1, 0x6E, 0x30, 0xE2, 0x47, 0x88, 0x4A, 0xE5, 0xB7};
+    this->m_loadUrl = base + DecryptText<0x812BE72BCD5707B7ULL>(loadSource);
   }
 }
 
