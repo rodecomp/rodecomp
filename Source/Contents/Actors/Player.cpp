@@ -213,7 +213,7 @@ void CPc::Slot44(int first, int second) {
   this->unknown_04D0 = first;
   if (static_cast<unsigned char>(second) != 0) {
     int job;
-    if (g_session.IsCostumeJob(this->GetEffectiveJob(-1)) != 1 && this->unknown_0404 != 0) {
+    if (this->IsShapeShifted()) {
       job = this->GetUnknown0404Job();
     } else {
       job = this->GetEffectiveJob(-1);
@@ -1766,7 +1766,15 @@ int CPc::GetDualWieldWeaponType(int first, int second) {
 // OFFSET: 0x00DAB6A0
 // FUNCTION: fn_22585
 bool IsReadyOrAttackAction(int action) {
-  if (action < 32 || action >= 40 && action < 80 || action >= 96) {
+  if (action < 32) {
+    return false;
+  }
+
+  if (action >= 40 && action < 80) {
+    return false;
+  }
+
+  if (action > 95) {
     return false;
   }
 
@@ -1811,15 +1819,7 @@ void CGrannyPc::Slot08() {
 // OFFSET: 0x00DAB210
 // FUNCTION: fn_22581
 bool CPc::HasAppearanceOverride() {
-  if (this->Slot55() > 0) {
-    return true;
-  }
-
-  if (g_session.IsCostumeJob(this->GetEffectiveJob(-1)) == true) {
-    return false;
-  }
-
-  return this->HasShapeShift();
+  return this->Slot55() > 0 || g_session.IsCostumeJob(this->GetEffectiveJob(-1)) != true && this->HasShapeShift();
 }
 
 // OFFSET: 0x00DACF90
