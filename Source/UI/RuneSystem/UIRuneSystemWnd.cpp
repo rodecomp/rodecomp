@@ -1577,45 +1577,60 @@ UIRune_Info::UIRune_Info() : UIWindow(0), m_rune(nullptr) {
 // FUNCTION: fn_10223
 int UIRuneSet_Info::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
+  case 0x16:
+    if (!this->m_runeSet) {
+      break;
+    }
+    if (!this->m_runeSet->IsActive()) {
+      UIRuneSystemTab* tab = this->m_tab;
+      tab->geometry.unknown_0030 = 0;
+      tab->Invalidate();
+      g_windowMgr.Confirm(LookupMessage(4047), 0, true, false, 0, "Message", 280, 120, 0);
+    }
+    this->Refresh();
+    break;
+  case 0x3C:
+    this->Refresh();
+    break;
   case 6:
-    if (argument1 > 0x158) {
-      switch (argument1) {
-      case 0x1FD:
-        if (!this->m_runeSet) {
-          g_windowMgr.Confirm(LookupMessage(4048), 0, true, false, 0, "Message", 280, 120, 0);
-        } else if (!this->parent || this->parent->SendMsg(this, 0x6A, 100, 0, 0, 0) != 0) {
-          g_runeSystemMgr->SendRequest(0xBD2, this->m_runeSet, -1);
-        }
-        break;
-      case 0x23C:
-        if (!this->m_runeSet) {
-          g_windowMgr.Confirm(LookupMessage(4048), 0, true, false, 0, "Message", 280, 120, 0);
-        } else if (!this->parent || this->parent->SendMsg(this, 0x6A, 100, 0, 0, 0) != 0) {
-          g_runeSystemMgr->SendRequest(0xBD0, this->m_runeSet, -1);
-        }
-        break;
-      case 0x24E:
-      case 0x24F:
-      case 0x250:
-      case 0x251:
-      case 0x252:
-      case 0x253:
-      case 0x254:
-        if (!this->m_runeSet->IsRewardStep(argument1 - 0x24E)) {
-          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4199)), 0xFF, 0, 0, 0);
-        } else {
-          g_runeSystemMgr->SendRequest(0xC16, this->m_runeSet, argument1 - 0x24D);
-        }
-        break;
-      }
-    } else if (argument1 == 0x158) {
-      if (!this->parent || this->parent->SendMsg(this, 0x6A, 1500, 0, 0, 0) != 0) {
-        this->parent->SendMsg(this, 0xAB, 0x158, 0, 0, 0);
-      }
-    } else if (argument1 == 0xC3) {
+    switch (argument1) {
+    case 0xC3:
       if (this->m_runeSet && (!this->parent || this->parent->SendMsg(this, 0x6A, 1500, 0, 0, 0) != 0)) {
         this->parent->SendMsg(this, 0xAB, 0xC3, reinterpret_cast<std::intptr_t>(this->m_runeSet), 0, 0);
       }
+      break;
+    case 0x158:
+      if (!this->parent || this->parent->SendMsg(this, 0x6A, 1500, 0, 0, 0) != 0) {
+        this->parent->SendMsg(this, 0xAB, 0x158, 0, 0, 0);
+      }
+      break;
+    case 0x24E:
+    case 0x24F:
+    case 0x250:
+    case 0x251:
+    case 0x252:
+    case 0x253:
+    case 0x254:
+      if (!this->m_runeSet->IsRewardStep(argument1 - 0x24E)) {
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4199)), 0xFF, 0, 0, 0);
+      } else {
+        g_runeSystemMgr->SendRequest(0xC16, this->m_runeSet, argument1 - 0x24D);
+      }
+      break;
+    case 0x23C:
+      if (!this->m_runeSet) {
+        g_windowMgr.Confirm(LookupMessage(4048), 0, true, false, 0, "Message", 280, 120, 0);
+      } else if (!this->parent || this->parent->SendMsg(this, 0x6A, 100, 0, 0, 0) != 0) {
+        g_runeSystemMgr->SendRequest(0xBD0, this->m_runeSet, -1);
+      }
+      break;
+    case 0x1FD:
+      if (!this->m_runeSet) {
+        g_windowMgr.Confirm(LookupMessage(4048), 0, true, false, 0, "Message", 280, 120, 0);
+      } else if (!this->parent || this->parent->SendMsg(this, 0x6A, 100, 0, 0, 0) != 0) {
+        g_runeSystemMgr->SendRequest(0xBD2, this->m_runeSet, -1);
+      }
+      break;
     }
     break;
   case 7:
@@ -1623,20 +1638,6 @@ int UIRuneSet_Info::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
   case 10:
     this->m_infoList->ScrollBy(argument1);
     this->Invalidate();
-    break;
-  case 0x16:
-    if (!this->m_runeSet) {
-      break;
-    }
-    if (!this->m_runeSet->IsActive()) {
-      this->m_tab->geometry.unknown_0030 = 0;
-      this->m_tab->Invalidate();
-      g_windowMgr.Confirm(LookupMessage(4047), 0, true, false, 0, "Message", 280, 120, 0);
-    }
-    this->Refresh();
-    break;
-  case 0x3C:
-    this->Refresh();
     break;
   }
 
