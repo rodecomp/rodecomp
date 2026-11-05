@@ -451,7 +451,7 @@ void GreetFriends() {
 
 // OFFSET: 0x006BFE60
 // FUNCTION: fn_06299
-CGameSettingsMgr::CGameSettingsMgr() {
+__declspec(noinline) CGameSettingsMgr::CGameSettingsMgr() {
 }
 
 // OFFSET: 0x006C01A0
@@ -742,7 +742,7 @@ void GameSettings::ToggleOption(int id) {
 
 // OFFSET: 0x006C29A0
 // FUNCTION: fn_06324
-int SetOption(const char* name, unsigned char value) {
+__declspec(noinline) int SetOption(const char* name, unsigned char value) {
   if (!name || name[0] == '\0') {
     return 3;
   }
