@@ -1952,29 +1952,27 @@ void CRagEffect::AttackEnergy2(const char* name) {
   }
 
   this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 106, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-  EffectPrimitiveState& prim = *this->state.unknown_11C84;
-  prim.renderFlag = 5;
-  prim.duration = this->state.duration;
-  prim.totalTexture = 1;
-  AllocateTextures(prim);
-  prim.textures[0] = g_texMgr.Load(name, 0, false, true, false);
-  prim.size = 4.0f;
+  this->state.unknown_11C84->renderFlag = 5;
+  this->state.unknown_11C84->duration = this->state.duration;
+  this->state.unknown_11C84->totalTexture = 1;
+  AllocateTextures(*this->state.unknown_11C84);
+  this->state.unknown_11C84->textures[0] = g_texMgr.Load(name, 0, false, true, false);
+  this->state.unknown_11C84->size = 4.0f;
 
-  for (EffectPrimitiveSlot& slot : prim.slots) {
-    slot.life = 0;
+  for (int index = 0; index < 4; ++index) {
+    this->state.unknown_11C84->slots[index].life = 0;
   }
 
   for (int index = 0; index < 4; ++index) {
-    EffectPrimitiveSlot& slot = this->state.unknown_11C84->slots[index];
-    slot.life = 1;
-    slot.process = 0;
-    slot.maxHeight = 8.0f;
-    slot.alphaB = 0;
-    slot.distance = 8.0f;
-    slot.fullDisplayAngle = 360;
-    slot.height[0] = 10.0f;
-    slot.riseAngle = static_cast<std::int16_t>(index * 45);
-    slot.height[1] = static_cast<float>(index * 22);
+    this->state.unknown_11C84->slots[index].life = 1;
+    this->state.unknown_11C84->slots[index].process = 0;
+    this->state.unknown_11C84->slots[index].maxHeight = 8.0f;
+    this->state.unknown_11C84->slots[index].alphaB = 0;
+    this->state.unknown_11C84->slots[index].distance = 8.0f;
+    this->state.unknown_11C84->slots[index].fullDisplayAngle = 360;
+    this->state.unknown_11C84->slots[index].height[0] = 10.0f;
+    this->state.unknown_11C84->slots[index].riseAngle = static_cast<std::int16_t>(index * 45);
+    this->state.unknown_11C84->slots[index].height[1] = static_cast<float>(index * 22);
   }
 }
 
@@ -13051,22 +13049,40 @@ void CRagEffect::Enhance() {
     this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\alpha_down.tga", 0, false, true, false);
   }
 
-  const int interval = g_serviceOptions.Get(229) == 0 ? 5 : 15;
-  if (this->state.stateCnt % interval != 0) {
-    return;
+  if (g_serviceOptions.Get(229) == 0) {
+    if (this->state.stateCnt % 5 != 0) {
+      return;
+    }
+
+    this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 16, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+    this->state.unknown_11C84->duration = 50;
+    reinterpret_cast<matrix*>(this->state.unknown_11C84->transform)->MakeYRotation(GetRadian(std::max(rand() % 360, 0)));
+    const float distance = static_cast<float>(std::max(rand() % 5, 0) + 2);
+    this->state.unknown_11C84->deltaPos2 = RotatedForward(this->state.unknown_11C84->transform, distance);
+    reinterpret_cast<matrix*>(this->state.unknown_11C84->transform)->MakeXRotation(GetRadian(90));
+    this->state.unknown_11C84->speed = 2.0f;
+    this->state.unknown_11C84->widthSize = 7.0f;
+    this->state.unknown_11C84->heightSize = 0.25f;
+    AllocateTextures(*this->state.unknown_11C84);
+    this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\alpha_down.tga", 0, false, true, false);
+  } else {
+    if (this->state.stateCnt % 15 != 0) {
+      return;
+    }
+
+    this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 16, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+    this->state.unknown_11C84->duration = 50;
+    reinterpret_cast<matrix*>(this->state.unknown_11C84->transform)->MakeYRotation(GetRadian(std::max(rand() % 360, 0)));
+    const float distance = static_cast<float>(std::max(rand() % 5, 0) + 2);
+    this->state.unknown_11C84->deltaPos2 = RotatedForward(this->state.unknown_11C84->transform, distance);
+    reinterpret_cast<matrix*>(this->state.unknown_11C84->transform)->MakeXRotation(GetRadian(90));
+    this->state.unknown_11C84->speed = 2.0f;
+    this->state.unknown_11C84->widthSize = 7.0f;
+    this->state.unknown_11C84->heightSize = 0.25f;
+    AllocateTextures(*this->state.unknown_11C84);
+    this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\alpha_down.tga", 0, false, true, false);
   }
 
-  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 16, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-  this->state.unknown_11C84->duration = 50;
-  reinterpret_cast<matrix*>(this->state.unknown_11C84->transform)->MakeYRotation(GetRadian(std::max(rand() % 360, 0)));
-  const float distance = static_cast<float>(std::max(rand() % 5, 0) + 2);
-  this->state.unknown_11C84->deltaPos2 = RotatedForward(this->state.unknown_11C84->transform, distance);
-  reinterpret_cast<matrix*>(this->state.unknown_11C84->transform)->MakeXRotation(GetRadian(90));
-  this->state.unknown_11C84->speed = 2.0f;
-  this->state.unknown_11C84->widthSize = 7.0f;
-  this->state.unknown_11C84->heightSize = 0.25f;
-  AllocateTextures(*this->state.unknown_11C84);
-  this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\alpha_down.tga", 0, false, true, false);
   this->state.unknown_11C84->slots[0].life = 0;
 }
 
