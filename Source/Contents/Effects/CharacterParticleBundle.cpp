@@ -197,7 +197,7 @@ bool CChopChopClawMarks::Slot06() {
   }
 
   const std::chrono::nanoseconds elapsed = std::chrono::steady_clock::now().time_since_epoch() - std::chrono::nanoseconds(this->startTime);
-  return std::chrono::seconds(this->unknown_002C) >= std::chrono::duration_cast<std::chrono::milliseconds>(elapsed);
+  return std::chrono::milliseconds(std::chrono::seconds(this->unknown_002C)).count() >= std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count();
 }
 
 // OFFSET: 0x005A3F10
