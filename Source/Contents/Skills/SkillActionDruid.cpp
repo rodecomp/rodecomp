@@ -612,19 +612,19 @@ void CSkillAction_DR_LOW_FLIGHT::Slot11(int level, CGameActor* source, CGameActo
   const float scale = source->unknown_0378 * source->render.speed * 16.0f;
   const bool flag = direction != 1 && direction != 2;
 
-  const int effectId = CEZ2STREffectMgr::GetInstance()->EffectId(
-    (direction & 1) != 0 ? [] {
+  const std::string effectName(
+    (direction & 1) != 0 ? std::string([] {
       const std::uint8_t horizonSource[] = {0x5D, 0x36, 0x5C, 0x5E, 0x07, 0xA1, 0x0C, 0xEC, 0x59, 0x2D, 0x74, 0x69, 0x0E, 0xBF, 0x0C, 0xF1, 0x5E, 0x37, 0x2B};
       thread_local EncryptedName<sizeof(horizonSource), 0x8B65CD61012B5931ULL> horizonName(horizonSource);
       return horizonName.Text();
-    }() : [] {
+    }()) : std::string([] {
       const std::uint8_t verticalSource[] = {0x89, 0xE0, 0x3A, 0x4A, 0x51, 0x6D, 0x3A, 0x90, 0x8D, 0xFB, 0x12, 0x63, 0x52, 0x73, 0x27, 0x9E, 0x86, 0xEE, 0x21, 0x15};
       thread_local EncryptedName<sizeof(verticalSource), 0xF7530137154D8FE5ULL> verticalName(verticalSource);
       return verticalName.Text();
-    }()
+    }())
   );
 
-  if (CEffect* effect = g_effectMgr->Spawn(target->render.accountId, effectId, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+  if (CEffect* effect = g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
     effect->Slot16(static_cast<int>(scale));
     float angleOffset = 0.0f;
     if ((direction & 1) != 0) {
