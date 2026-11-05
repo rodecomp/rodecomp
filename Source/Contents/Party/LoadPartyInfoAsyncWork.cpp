@@ -122,5 +122,6 @@ bool CLoadPartyInfoAsyncWork::Execute() {
 // OFFSET: 0x005D0BC0
 // FUNCTION: fn_03696
 void CLoadPartyInfoAsyncWork::Complete() {
-  g_adventurerAgencyMgr->CompletePartyInfo(this->m_diagnostic, this->m_response);
+  CAdventurerAgencyMgr* manager = g_adventurerAgencyMgr;
+  manager->CompletePartyInfo(this->m_diagnostic, this->m_response);
 }
