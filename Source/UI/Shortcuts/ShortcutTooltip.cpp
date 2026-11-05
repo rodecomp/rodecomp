@@ -5,23 +5,8 @@
 #include "UI/Shortcuts/UIShortCutWnd.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Window/UIWindow.h"
-#include "UI/Window/UINewSelectCharWnd.h"
-#include "Client/Mode/CMode.h"
-
-#include <stdio.h>
-
-namespace {
-  // INLINED
-  void ScreenPosition(const UIWindow& window, int& x, int& y) {
-    x = (x + window.geometry.x);
-    y = (y + window.geometry.y);
-
-    for (const UIWindow* node = window.parent; node; node = node->parent) {
-      x = (x + node->geometry.x);
-      y = (y + node->geometry.y);
-    }
-  }
-}
+#include "Client/Mode/ModeMgr.h"
+#include "Utility/Text/FormatString.h"
 
 // OFFSET: 0x00932050
 // FUNCTION: fn_12711
@@ -54,22 +39,21 @@ void UIShortCutWnd::Slot28(int x, int y) {
     }
 
     ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(slot.itemId), 1);
-    if (item.unknown_0000[1] == 0) {
+    if (item.quantity == 0) {
       return;
     }
 
-    const std::string name = item.DisplayName(0);
-    char text[4096];
-    _snprintf_s(text, sizeof(text), _TRUNCATE, LookupMessage(183), name.c_str(), item.unknown_0000[1]);
-    ScreenPosition(window, tooltipX, tooltipY);
+    const std::string text = FormatOwnedString(LookupMessage(183), item.DisplayName(0).c_str(), item.quantity);
+    window.ToScreen(tooltipX, tooltipY);
 
-    if (g_charViewMode) {
-      static_cast<CMode*>(g_charViewMode)->ShowTooltip(text, tooltipX, tooltipY, -1, 0, 1);
+    if (g_modeMgr.gameMode) {
+      g_modeMgr.gameMode->ShowTooltip(text.c_str(), tooltipX, tooltipY, -1, 0, 1);
     }
 
     return;
   }
 
+  std::string shortcut;
   HotkeyInfo hotkey;
   const int bank = g_session.GetOption(10);
   if (bank == 0) {
@@ -78,12 +62,11 @@ void UIShortCutWnd::Slot28(int x, int y) {
     hotkey = GetHotkeyInfo(*g_session.m_hotkeyScript, 3, index);
   }
 
-  std::string shortcut;
   if (!hotkey.description.empty()) {
-    shortcut = std::move(hotkey.text);
+    shortcut = hotkey.text;
   }
 
-  ScreenPosition(window, tooltipX, tooltipY);
+  window.ToScreen(tooltipX, tooltipY);
   std::string text;
   const NormalItemSlot& slot = *this->m_slots[index];
 
@@ -101,19 +84,20 @@ void UIShortCutWnd::Slot28(int x, int y) {
 
       const int sp = skill.UseSpAmount(*g_session.m_hotkeyScript, level);
       const int ap = skill.UseApAmount(*g_session.m_hotkeyScript, level);
-      text = SkillTooltip(shortcut.c_str(), skill.DisplayName(*g_session.m_hotkeyScript), level, sp, ap, SkillUsesPercentSp(static_cast<int>(skill.id)));
+      if (SkillUsesPercentSp(static_cast<int>(skill.id))) {
+        text = SkillTooltipPercent(shortcut.c_str(), skill.DisplayName(*g_session.m_hotkeyScript), level, sp, ap);
+      } else {
+        text = SkillTooltipFlat(shortcut.c_str(), skill.DisplayName(*g_session.m_hotkeyScript), level, sp, ap);
+      }
     }
   } else {
     ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(slot.itemId), 1);
-    if (item.unknown_0000[1] == 0) {
+    if (item.quantity == 0) {
       text = shortcut;
     } else {
-      const std::string name = item.DisplayName(0);
-      char formatted[4096];
-      _snprintf_s(formatted, sizeof(formatted), _TRUNCATE, LookupMessage(184), shortcut.c_str(), name.c_str(), item.unknown_0000[1]);
-      text = formatted;
+      text = FormatOwnedString(LookupMessage(184), shortcut.c_str(), item.DisplayName(0).c_str(), item.quantity);
     }
   }
 
-  static_cast<CMode*>(g_charViewMode)->ShowTooltip(text.c_str(), tooltipX, tooltipY, -1, 0, 1);
+  g_modeMgr.gameMode->ShowTooltip(text.c_str(), tooltipX, tooltipY, -1, 0, 1);
 }
