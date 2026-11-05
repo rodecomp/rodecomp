@@ -20,13 +20,68 @@
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Math/AffineMatrix.h"
+#include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"
 
+#include <cstdint>
 #include <cstdio>
 #include <cstring>
 #include <timeapi.h>
 #include <windows.h>
 
+
+namespace {
+
+template <std::size_t Length, std::uint64_t Key>
+class EncryptedName {
+public:
+  // INLINED
+  explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+    for (std::uint64_t index = 0; index < Length; ++index) {
+      this->m_text[index] = source[index];
+    }
+  }
+
+  ~EncryptedName() {
+    for (std::uint64_t index = 0; index < Length; ++index) {
+      this->m_text[index] = 0;
+    }
+  }
+
+  // INLINED
+  const char* Text() {
+    if (this->m_encrypted) {
+      utility::XorBytes(this->m_text, Length, Key);
+      this->m_encrypted = false;
+    }
+
+    return reinterpret_cast<const char*>(this->m_text);
+  }
+
+private:
+  std::uint8_t m_text[Length];
+  bool m_encrypted;
+};
+
+// INLINED
+__forceinline const char* TimeFontActionName() {
+  const std::uint8_t source[] = {0xB1, 0x4F, 0xAD, 0xDA, 0xD7, 0xA1, 0x01, 0x29, 0x18, 0xEE,
+                                 0x0E, 0x4D, 0x7E, 0x61, 0x29, 0x53, 0x10, 0xE0, 0x1F, 0x0B};
+  // GLOBAL: gl_25508
+  thread_local EncryptedName<sizeof(source), 0x7D5D0F110B6B8371ULL> name(source);
+  return name.Text();
+}
+
+// INLINED
+__forceinline const char* TimeFontSpriteName() {
+  const std::uint8_t source[] = {0x89, 0xA1, 0xB9, 0x32, 0x01, 0xAF, 0x15, 0x45, 0x20, 0x00,
+                                 0x1A, 0xA5, 0xA8, 0x6F, 0x3D, 0x3F, 0x3A, 0x1D, 0x0D, 0xE3};
+  // GLOBAL: gl_25509
+  thread_local EncryptedName<sizeof(source), 0x114901C7E37F6D49ULL> name(source);
+  return name.Text();
+}
+
+}
 
 // GLOBAL: gl_25107
 CFile g_whisperFile;
@@ -538,33 +593,34 @@ void CGameMode::DrawMiniMapNumber() {
     return;
   }
 
-  if (this->unknown_0414 != g_minimapCoordinateValue) {
-    g_minimapCoordinateValue = this->unknown_0414;
-    int value;
-    int count;
-    if (this->unknown_0414 > 9999) {
+  const int number = this->unknown_0414;
+  if (number != g_minimapCoordinateValue) {
+    g_minimapCoordinateValue = number;
+    int value = number;
+    if (value > 9999) {
       value = 9999;
-      count = 4;
+      g_minimapCoordinateDigits = 4;
     } else {
-      value = this->unknown_0414;
       if (value < 0) {
         value = 0;
       }
-      count = 1;
       if (value > 999) {
-        count = 4;
+        g_minimapCoordinateDigits = 4;
       } else if (value > 99) {
-        count = 3;
+        g_minimapCoordinateDigits = 3;
       } else if (value > 9) {
-        count = 2;
+        g_minimapCoordinateDigits = 2;
+      } else {
+        g_minimapCoordinateDigits = 1;
       }
     }
 
-    g_minimapCoordinateDigits = count;
     g_minimapCoordinateDigitValues[0] = value % 10;
-    g_minimapCoordinateDigitValues[1] = value / 10 % 10;
-    g_minimapCoordinateDigitValues[2] = value / 100 % 10;
-    g_minimapCoordinateDigitValues[3] = value / 1000 % 10;
+    value /= 10;
+    g_minimapCoordinateDigitValues[1] = value % 10;
+    value /= 10;
+    g_minimapCoordinateDigitValues[2] = value % 10;
+    g_minimapCoordinateDigitValues[3] = value / 10;
   }
 
   CActRes* action = static_cast<CActRes*>(ResourceMgr::Instance().Load("이팩트\\숫자.act"));
@@ -596,10 +652,10 @@ void CGameMode::DrawTimeAttackTimer() {
   const char* player = reinterpret_cast<const char*>(this->scene->player);
   const int coordinateX = *reinterpret_cast<const int*>(player + 0x494);
   const int coordinateY = *reinterpret_cast<const int*>(player + 0x498);
-  if (coordinateY < 1 || coordinateX < 1) {
+  if (coordinateY <= 0 || coordinateX <= 0) {
     return;
   }
-  if (coordinateY < 2 || coordinateX != 1) {
+  if (coordinateY <= 1 || coordinateX != 1) {
     return;
   }
 
@@ -609,27 +665,27 @@ void CGameMode::DrawTimeAttackTimer() {
   }
 
   const std::uint32_t elapsed = timeGetTime() - start;
+  int digits[16] = {};
   int seconds = static_cast<int>(elapsed / 1000);
   int minutes = 0;
   int hours = 0;
   int days = 0;
-  if (seconds > 59) {
+  if (seconds >= 60) {
     minutes = seconds / 60;
     seconds %= 60;
-    if (minutes > 59) {
+    if (minutes >= 60) {
       hours = minutes / 60;
       minutes %= 60;
-      if (hours > 23) {
+      if (hours >= 24) {
         days = hours / 24;
         hours %= 24;
       }
     }
   }
 
-  CActRes* action = static_cast<CActRes*>(ResourceMgr::Instance().Load("이팩트\\TimeFont.act"));
-  CSprRes* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load("이팩트\\TimeFont.spr"));
+  CActRes* action = static_cast<CActRes*>(ResourceMgr::Instance().Load(TimeFontActionName()));
+  CSprRes* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(TimeFontSpriteName()));
 
-  int digits[11] = {};
   int count = 2;
   int value = seconds;
   if (value > 9999) {
@@ -640,12 +696,12 @@ void CGameMode::DrawTimeAttackTimer() {
   }
   digits[0] = value % 10;
   digits[1] = value / 10 % 10;
-  if (minutes != 0) {
+  if (minutes > 0) {
     count = 4;
     digits[3] = minutes % 10;
     digits[4] = minutes / 10 % 10;
   }
-  if (hours != 0) {
+  if (hours > 0) {
     count = 6;
     digits[6] = hours % 10;
     digits[7] = hours / 10 % 10;
@@ -654,16 +710,16 @@ void CGameMode::DrawTimeAttackTimer() {
   int total;
   int offset;
   int startIndex;
-  if (days == 0) {
-    total = count + (count - 2) / 2;
-    offset = total * -20;
-    startIndex = total - 1;
-  } else {
+  if (days > 0) {
     digits[9] = days % 10;
     digits[10] = days / 10 % 10;
     total = 11;
     offset = -220;
     startIndex = 10;
+  } else {
+    total = count + (count - 2) / 2;
+    offset = total * -20;
+    startIndex = total - 1;
   }
 
   const int center = g_renderer->viewport.width / 2;
@@ -726,25 +782,26 @@ void CGameMode::DrawTimeAttackCountdown(std::uint32_t value, int mode) {
       break;
   }
 
+  int digits[16] = {};
   int seconds = static_cast<int>(remaining / 1000);
   int minutes = 0;
   int hours = 0;
   int days = 0;
-  if (seconds > 59) {
+  if (seconds >= 60) {
     minutes = seconds / 60;
     seconds %= 60;
-    if (minutes > 59) {
+    if (minutes >= 60) {
       hours = minutes / 60;
       minutes %= 60;
-      if (hours > 23) {
+      if (hours >= 24) {
         days = hours / 24;
         hours %= 24;
       }
     }
   }
 
-  CActRes* action = static_cast<CActRes*>(ResourceMgr::Instance().Load("이팩트\\TimeFont.act"));
-  CSprRes* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load("이팩트\\TimeFont.spr"));
+  CActRes* action = static_cast<CActRes*>(ResourceMgr::Instance().Load(TimeFontActionName()));
+  CSprRes* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(TimeFontSpriteName()));
 
   int display = mode != 3 ? seconds : static_cast<int>(remaining);
   if (mode == 3) {
@@ -752,7 +809,6 @@ void CGameMode::DrawTimeAttackCountdown(std::uint32_t value, int mode) {
     hours = 0;
     days = 0;
   }
-  int digits[11] = {};
   int count = 2;
   if (display > 9999) {
     display = 9999;
@@ -762,12 +818,12 @@ void CGameMode::DrawTimeAttackCountdown(std::uint32_t value, int mode) {
   }
   digits[0] = display % 10;
   digits[1] = display / 10 % 10;
-  if (minutes != 0) {
+  if (minutes > 0) {
     count = 4;
     digits[3] = minutes % 10;
     digits[4] = minutes / 10 % 10;
   }
-  if (hours != 0) {
+  if (hours > 0) {
     count = 6;
     digits[6] = hours % 10;
     digits[7] = hours / 10 % 10;
@@ -776,16 +832,16 @@ void CGameMode::DrawTimeAttackCountdown(std::uint32_t value, int mode) {
   int total;
   int offset;
   int startIndex;
-  if (days == 0) {
-    total = count + (count - 2) / 2;
-    offset = total * -20;
-    startIndex = total - 1;
-  } else {
+  if (days > 0) {
     digits[9] = days % 10;
     digits[10] = days / 10 % 10;
     total = 11;
     offset = -220;
     startIndex = 10;
+  } else {
+    total = count + (count - 2) / 2;
+    offset = total * -20;
+    startIndex = total - 1;
   }
 
   const int center = g_renderer->viewport.width / 2;
@@ -896,14 +952,10 @@ int CGameMode::UpdateMiniMapTooltip() {
   int id = tooltipId;
   if (id > 9 || id == -1) {
     this->RefreshMiniMapTooltips();
-    id = tooltipId;
-    if (id != -1) {
-      return id;
+    if (tooltipId == -1 && g_windowMgr.unknown_0348 != nullptr) {
+      return g_windowMgr.CloseWindow(0x4E);
     }
-    if (g_windowMgr.unknown_0348 == nullptr) {
-      return id;
-    }
-    return g_windowMgr.CloseWindow(0x4E);
+    return tooltipId;
   }
 
   if (tooltipText.size() == 0) {
@@ -913,20 +965,20 @@ int CGameMode::UpdateMiniMapTooltip() {
   UIWindow* window = g_windowMgr.unknown_0348;
   if (window == nullptr) {
     window = g_windowMgr.EnsureWindow(0x4E);
-    g_miniMapTooltipId = id;
-    std::sprintf(g_miniMapTooltipText, tooltipText.c_str());
-  } else if (id != g_miniMapTooltipId || std::strcmp(g_miniMapTooltipText, tooltipText.c_str()) != 0) {
-    g_miniMapTooltipId = id;
-    std::sprintf(g_miniMapTooltipText, tooltipText.c_str());
+    g_miniMapTooltipId = tooltipId;
   } else {
-    return 0;
+    if (id == g_miniMapTooltipId && std::strcmp(g_miniMapTooltipText, tooltipText.c_str()) == 0) {
+      return 0;
+    }
+    g_miniMapTooltipId = id;
   }
+  std::sprintf(g_miniMapTooltipText, tooltipText.c_str());
 
   window->SendMsg(nullptr, 0x22, -1, 0, 0, 0);
 
   int x = 160;
   int y = 0;
-  switch (id) {
+  switch (tooltipId) {
   case 0:
     window->SendMsg(nullptr, 0x4E, reinterpret_cast<std::intptr_t>(tooltipText.c_str()), 0, 0, 0);
     x = 200;
