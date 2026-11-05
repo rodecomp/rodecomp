@@ -41,8 +41,7 @@ void CPowderingEffect::Slot01() {
     this->unknown_00E4 = 7;
   }
 
-  const int smokeCount = this->unknown_00E4 * this->unknown_00E4;
-  for (int i = 0; i < smokeCount; ++i) {
+  for (int i = 0; i < this->unknown_00E4 * this->unknown_00E4; ++i) {
     CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
     if (!particle) {
       continue;
@@ -52,6 +51,7 @@ void CPowderingEffect::Slot01() {
     particle->unknown_000C = i;
     particle->unknown_0010 = 0;
     particle->unknown_0008 = 1;
+
     particle->SetTexture("smoke2.bmp");
 
     const int span1 = this->unknown_00E4 * 5;
@@ -77,8 +77,7 @@ void CPowderingEffect::Slot01() {
     this->smokeParticles.push_back(particle);
   }
 
-  const int spriteCount = this->unknown_00E4 * this->unknown_00E4;
-  for (int i = 0; i < spriteCount; ++i) {
+  for (int i = 0; i < this->unknown_00E4 * this->unknown_00E4; ++i) {
     CSpriteParticle* particle = static_cast<CSpriteParticle*>(
       CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 1)
     );
@@ -90,6 +89,7 @@ void CPowderingEffect::Slot01() {
     particle->unknown_000C = i;
     particle->unknown_0010 = 0;
     particle->unknown_0008 = 1;
+
     particle->SetSprite("이팩트\\particle2.spr");
     particle->SetAction("이팩트\\particle2.act");
 
@@ -111,7 +111,7 @@ void CPowderingEffect::sub_709570(CParticle* particle) {
   }
   const int r1Final = r1 - span1 / 2 + 1;
 
-  const int yVal = std::max(rand() % 7, 0) + 7;
+  const float yVal = static_cast<float>(std::max(rand() % 7, 0) + 7);
 
   const int span2 = this->unknown_00E4 * 5;
   int r2 = 0;
@@ -120,7 +120,7 @@ void CPowderingEffect::sub_709570(CParticle* particle) {
   }
   const int r2Final = r2 - span2 / 2 + 1;
 
-  spriteParticle->velocity.y = -static_cast<float>(yVal);
+  spriteParticle->velocity.y = -yVal;
   spriteParticle->velocity.x = static_cast<float>(r1Final);
   spriteParticle->velocity.z = static_cast<float>(r2Final);
 
@@ -188,7 +188,8 @@ bool CPowderingEffect::Slot06() {
 // OFFSET: 0x00709800
 // FUNCTION: fn_07094
 void CPowderingEffect::Slot03() {
-  for (CParticle* particle : this->smokeParticles) {
+  for (auto it = this->smokeParticles.begin(); it != this->smokeParticles.end(); ++it) {
+    CParticle* particle = *it;
     if (!particle || particle->unknown_00A8 == 2) {
       continue;
     }
@@ -200,7 +201,7 @@ void CPowderingEffect::Slot03() {
 
     if (particle->unknown_00A8 == 0) {
       alpha += step;
-      if (alpha >= targetAlpha) {
+      if (targetAlpha <= alpha) {
         alpha = targetAlpha;
         particle->unknown_00A8 = 1;
       }
@@ -238,7 +239,8 @@ void CPowderingEffect::Slot03() {
     ++particle->unknown_00E8;
   }
 
-  for (CParticle* particle : this->spriteParticles) {
+  for (auto it = this->spriteParticles.begin(); it != this->spriteParticles.end(); ++it) {
+    CSpriteParticle* particle = *it;
     if (!particle || particle->unknown_00A8 == 2) {
       continue;
     }
@@ -264,11 +266,10 @@ void CPowderingEffect::Slot03() {
       }
     }
 
-    CSpriteParticle* spriteParticle = static_cast<CSpriteParticle*>(particle);
-    vector3d velocity = spriteParticle->velocity;
+    vector3d velocity = particle->velocity;
     particle->alpha = alpha;
     velocity.y += static_cast<float>(std::max(rand() % 10, 0)) * 0.01f;
-    spriteParticle->velocity = velocity;
+    particle->velocity = velocity;
     ++particle->unknown_00E8;
     particle->position.x = velocity.x + this->position[0];
     particle->position.y = velocity.y + this->position[1];
