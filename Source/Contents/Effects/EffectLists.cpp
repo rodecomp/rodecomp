@@ -517,16 +517,14 @@ void EffectLists::SpawnLevel99(CRenderObject* actor, unsigned char flag, int ext
     return;
   }
 
-  actor->ClearLevelEffects();
+  static_cast<CGameActor*>(actor)->ResetJobEffects();
 
   if (!flag) {
     return;
   }
 
   const int aid = static_cast<int>(actor->render.accountId);
-  const float x = actor->render.position.x;
-  const float y = actor->render.position.y;
-  const float z = actor->render.position.z;
+  const vector3d position = actor->render.position;
   CEffect* effect = nullptr;
 
   if (aid) {
@@ -549,9 +547,9 @@ void EffectLists::SpawnLevel99(CRenderObject* actor, unsigned char flag, int ext
 
     effect->SetActor(static_cast<std::uint32_t>(aid));
     effect->SetSourceActor(0);
-    effect->position[0] = x;
-    effect->position[1] = y;
-    effect->position[2] = z;
+    effect->position[0] = position.x;
+    effect->position[1] = position.y;
+    effect->position[2] = position.z;
     effect->Slot29(EF_LEVEL99);
     effect->Slot01();
     effect->Slot12();
@@ -559,11 +557,8 @@ void EffectLists::SpawnLevel99(CRenderObject* actor, unsigned char flag, int ext
   }
 
 applyLevel99:
-  {
-    const char path[] = {'e', 'f', 'f', 'e', 'c', 't', '\\', '\xb9', '\xf8', '\xb0', '\xb3', '3', '.', 'b', 'm', 'p'};
-    effect->Slot11(std::string(path, sizeof(path)));
-    effect->Slot08(0x50, 0x50, 0xFF);
-  }
+  effect->Slot11("effect\\번개3.bmp");
+  effect->Slot08(0x50, 0x50, 0xFF);
 }
 
 namespace {
