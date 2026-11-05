@@ -154,19 +154,19 @@ int NaviCell::GetY() const {
 void CNaviData::ClearAll() {
   this->Clear();
 
-  for (CNavi_Link*& object : this->objects) {
-    if (object != nullptr) {
-      delete object;
+  for (auto it = this->objects.begin(); it != this->objects.end(); ++it) {
+    if (*it != nullptr) {
+      delete *it;
     }
-    object = nullptr;
+    *it = nullptr;
   }
   this->objects.clear();
 
-  for (CNaviInfo*& info : this->destinations) {
-    if (info != nullptr) {
-      delete info;
+  for (auto it = this->destinations.begin(); it != this->destinations.end(); ++it) {
+    if (*it != nullptr) {
+      delete *it;
     }
-    info = nullptr;
+    *it = nullptr;
   }
   this->destinations.clear();
 }
