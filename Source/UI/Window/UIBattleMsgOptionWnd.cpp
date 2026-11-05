@@ -243,7 +243,8 @@ void UIBattleMsgOptionWnd::Paint() {
 int UIBattleMsgOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
   case 6:
-    if (a == 193) {
+    switch (a) {
+    case 193: {
       if (this->unknown_0108 == b && this->unknown_0110 == (c != 0)) {
         if (d != 2) {
           g_windowMgr.CloseWindow(132);
@@ -274,13 +275,10 @@ int UIBattleMsgOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       this->UpdateScrollBar();
       return 0;
     }
-
-    if (a == 201) {
+    case 201:
       g_windowMgr.CloseWindow(132);
       return 0;
-    }
-
-    if (a == 213) {
+    case 213:
       this->unknown_010C = b;
       for (int i = 0; i < 25; ++i) {
         const bool checked = this->unknown_010C != 0;
