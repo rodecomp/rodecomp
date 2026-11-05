@@ -609,8 +609,7 @@ void CUIItemInfo::Slot16() {
 // OFFSET: 0x009DEF40
 // FUNCTION: fn_14358
 void CUIItemInfo::SetDescription(int type, const std::vector<const char*>& description) {
-  CUITextViewer* viewer = reinterpret_cast<CUITextViewer*>(this->unknown_00F0);
-  viewer->Clear();
+  reinterpret_cast<CUITextViewer*>(this->unknown_00F0)->Clear();
 
   if (type == 5) {
     this->type = 5;
@@ -635,7 +634,7 @@ void CUIItemInfo::SetDescription(int type, const std::vector<const char*>& descr
     std::regex_search(text.c_str(), text.c_str() + text.size(), match, pattern);
     while (!match.empty()) {
       std::string line = match.prefix().str() + match[0].str();
-      viewer->AddLine(line);
+      reinterpret_cast<CUITextViewer*>(this->unknown_00F0)->AddLine(line);
       ++lines;
       text = match.suffix().str();
       text.erase(0, text.find_first_not_of(" \r\n\t\v\f"));
@@ -704,12 +703,11 @@ void CUIIntro::BindContents(CUITabInfo* item, const Guide_Intro::Contents& conte
 // OFFSET: 0x009E0350
 // FUNCTION: fn_14361
 void CUIQuestInfo::SetTitle(int id) {
-  CUITextViewer* viewer = reinterpret_cast<CUITextViewer*>(this->unknown_00EC);
-  viewer->Clear();
+  reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->Clear();
 
   const TipBoxEntry& entry = g_itemTagOwner->GetTip(id);
   if (entry.title.empty() || entry.paragraphs.empty()) {
-    viewer->AddLine(std::to_string(id));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(std::to_string(id));
     return;
   }
 
@@ -723,19 +721,19 @@ void CUIQuestInfo::SetTitle(int id) {
 
   text.erase(0, text.find_first_not_of(whitespace));
   text.erase(text.find_last_not_of(whitespace) + 1);
-  viewer->SetBold(1);
-  viewer->AddLine(text);
+  reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->SetBold(1);
+  reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(text);
 
   text = entry.paragraphs[0];
   std::regex_search(text.c_str(), text.c_str() + text.size(), match, std::regex("\n"));
-  if (!match.empty()) {
+  if (match.size() > 0) {
     text = match.prefix().str();
   }
 
   text.erase(0, text.find_first_not_of(whitespace));
   text.erase(text.find_last_not_of(whitespace) + 1);
-  viewer->SetBold(0);
-  viewer->AddLine(text);
+  reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->SetBold(0);
+  reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(text);
 }
 
 // OFFSET: 0x009DFAD0
@@ -932,7 +930,7 @@ void CUIAdventureGuide::Slot16() {
   for (const auto& [type, intro] : g_adventureGuideMgr->m_intros) {
     AdventureGuide::CUITab* tab = this->tabs->CreateItem();
     tab->type = type;
-    tab->unknown_00E8->SetText(intro.text.c_str(), intro.text.size());
+    tab->unknown_00E8->SetText(intro.text);
     tab->unknown_00F0 = intro.title;
     tab->unknown_0110 = this->tabs->rowHeight;
 
@@ -952,7 +950,7 @@ void CUIAdventureGuide::Slot16() {
         subTabs->Resize(subTabs->geometry.width, subTabs->rowHeight * static_cast<int>(details.size()));
         for (const auto& [id, detail] : details) {
           AdventureGuide::CUISubTab* subTab = subTabs->CreateItem();
-          subTab->unknown_00E8->SetText(detail.text.c_str(), detail.text.size());
+          subTab->unknown_00E8->SetText(detail.text);
           subTab->id = id;
           subTab->unknown_00F4 = detail.unknown_0008;
           if (tab->type == 1) {
@@ -980,27 +978,26 @@ void CUIAdventureGuide::Slot16() {
 // OFFSET: 0x009DE7D0
 // FUNCTION: fn_14356
 void AdventureGuide::CUIQuestInfo::SetTip(int id) {
-  CUITextViewer* viewer = reinterpret_cast<CUITextViewer*>(this->unknown_00EC);
-  viewer->Clear();
+  reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->Clear();
 
   const TipBoxEntry& tip = g_itemTagOwner->GetTip(id);
   if (tip.title.empty() || tip.paragraphs.empty()) {
-    viewer->AddLine(std::to_string(id));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(std::to_string(id));
     return;
   }
 
   std::string title = tip.title;
   std::match_results<const char*> match;
   std::regex_search(title.c_str(), title.c_str() + title.size(), match, std::regex("\\#"));
+  const std::string whitespace(" \r\n\t\v\f");
   if (!match.empty()) {
     title = match.prefix().str();
   }
 
-  const std::string whitespace(" \r\n\t\v\f");
   title.erase(0, title.find_first_not_of(whitespace));
   title.erase(title.find_last_not_of(whitespace) + 1);
-  viewer->SetBold(true);
-  viewer->AddLine(title);
+  reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->SetBold(true);
+  reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(title);
 
   title = tip.paragraphs.front();
   std::regex_search(title.c_str(), title.c_str() + title.size(), match, std::regex("\n"));
@@ -1009,8 +1006,8 @@ void AdventureGuide::CUIQuestInfo::SetTip(int id) {
   }
   title.erase(0, title.find_first_not_of(whitespace));
   title.erase(title.find_last_not_of(whitespace) + 1);
-  viewer->SetBold(false);
-  viewer->AddLine(title);
+  reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->SetBold(false);
+  reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(title);
 }
 
 // OFFSET: 0x009DEBF0
