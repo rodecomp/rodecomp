@@ -3827,32 +3827,109 @@ void CEffectPrim::RenderGroundBubbles(matrix& wtm) {
     }
 
     const float rx = slot.distance;
-    vector3d corners[4] = {
-      {rx * g_cosTable[45], 0.0f, rx * g_sinTable[45]},
-      {rx * g_cosTable[135], 0.0f, rx * g_sinTable[135]},
-      {rx * g_cosTable[225], 0.0f, rx * g_sinTable[225]},
-      {rx * g_cosTable[315], 0.0f, rx * g_sinTable[315]},
-    };
-    this->Tei_TowardScreen(corners[0], corners[1], corners[2], corners[3], this->state.slots[0].alphaT, this->state.slots[1].alphaT);
+    vector3d corner0 = {rx * g_cosTable[45], 0.0f, rx * g_sinTable[45]};
+    vector3d corner1 = {rx * g_cosTable[135], 0.0f, rx * g_sinTable[135]};
+    vector3d corner2 = {rx * g_cosTable[225], 0.0f, rx * g_sinTable[225]};
+    vector3d corner3 = {rx * g_cosTable[315], 0.0f, rx * g_sinTable[315]};
+    this->Tei_TowardScreen(corner0, corner1, corner2, corner3, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
 
-    const vector3d* centers[4] = {&slot.vecBPre, &slot.vecBNow, &slot.vecTPre, &slot.vecTNow};
-    for (const vector3d* center : centers) {
-      const vector3d vec1{corners[0].x + center->x, corners[0].y + center->y, corners[0].z + center->z};
-      const vector3d vec2{corners[1].x + center->x, corners[1].y + center->y, corners[1].z + center->z};
-      const vector3d vec3{corners[2].x + center->x, corners[2].y + center->y, corners[2].z + center->z};
-      const vector3d vec4{corners[3].x + center->x, corners[3].y + center->y, corners[3].z + center->z};
-      const float top = corners[0].y + center->y;
-      const bool green = slot.flag1[1] == 2;
-      int alpha = green ? 150 : 130;
+    {
+      const vector3d& center = slot.vecBPre;
+      const vector3d vec1{corner0.x + center.x, corner0.y + center.y, corner0.z + center.z};
+      const vector3d vec2{corner1.x + center.x, corner1.y + center.y, corner1.z + center.z};
+      const vector3d vec3{corner2.x + center.x, corner2.y + center.y, corner2.z + center.z};
+      const vector3d vec4{corner3.x + center.x, corner3.y + center.y, corner3.z + center.z};
+      const float top = corner0.y + center.y;
+      int alpha = 150;
+      if (slot.flag1[1] != 2) {
+        alpha = 130;
+      }
       if (-1.0f > top) {
         alpha = static_cast<int>((top + 1.0f) * 4.0f + 130.0f);
       }
       if (alpha < 0) {
         alpha = 0;
       }
-
       if (top <= 0.0f) {
-        if (green) {
+        if (slot.flag1[1] == 2) {
+          this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 155, 255, 155, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        } else {
+          this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        }
+      }
+    }
+
+    {
+      const vector3d& center = slot.vecBNow;
+      const vector3d vec1{corner0.x + center.x, corner0.y + center.y, corner0.z + center.z};
+      const vector3d vec2{corner1.x + center.x, corner1.y + center.y, corner1.z + center.z};
+      const vector3d vec3{corner2.x + center.x, corner2.y + center.y, corner2.z + center.z};
+      const vector3d vec4{corner3.x + center.x, corner3.y + center.y, corner3.z + center.z};
+      const float top = corner0.y + center.y;
+      int alpha = 150;
+      if (slot.flag1[1] != 2) {
+        alpha = 130;
+      }
+      if (-1.0f > top) {
+        alpha = static_cast<int>((top + 1.0f) * 4.0f + 130.0f);
+      }
+      if (alpha < 0) {
+        alpha = 0;
+      }
+      if (top <= 0.0f) {
+        if (slot.flag1[1] == 2) {
+          this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 155, 255, 155, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        } else {
+          this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        }
+      }
+    }
+
+    {
+      const vector3d& center = slot.vecTPre;
+      const vector3d vec1{corner0.x + center.x, corner0.y + center.y, corner0.z + center.z};
+      const vector3d vec2{corner1.x + center.x, corner1.y + center.y, corner1.z + center.z};
+      const vector3d vec3{corner2.x + center.x, corner2.y + center.y, corner2.z + center.z};
+      const vector3d vec4{corner3.x + center.x, corner3.y + center.y, corner3.z + center.z};
+      const float top = corner0.y + center.y;
+      int alpha = 150;
+      if (slot.flag1[1] != 2) {
+        alpha = 130;
+      }
+      if (-1.0f > top) {
+        alpha = static_cast<int>((top + 1.0f) * 4.0f + 130.0f);
+      }
+      if (alpha < 0) {
+        alpha = 0;
+      }
+      if (top <= 0.0f) {
+        if (slot.flag1[1] == 2) {
+          this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 155, 255, 155, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        } else {
+          this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        }
+      }
+    }
+
+    {
+      const vector3d& center = slot.vecTNow;
+      const vector3d vec1{corner0.x + center.x, corner0.y + center.y, corner0.z + center.z};
+      const vector3d vec2{corner1.x + center.x, corner1.y + center.y, corner1.z + center.z};
+      const vector3d vec3{corner2.x + center.x, corner2.y + center.y, corner2.z + center.z};
+      const vector3d vec4{corner3.x + center.x, corner3.y + center.y, corner3.z + center.z};
+      const float top = corner0.y + center.y;
+      int alpha = 150;
+      if (slot.flag1[1] != 2) {
+        alpha = 130;
+      }
+      if (-1.0f > top) {
+        alpha = static_cast<int>((top + 1.0f) * 4.0f + 130.0f);
+      }
+      if (alpha < 0) {
+        alpha = 0;
+      }
+      if (top <= 0.0f) {
+        if (slot.flag1[1] == 2) {
           this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 155, 255, 155, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         } else {
           this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
