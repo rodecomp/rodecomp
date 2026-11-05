@@ -360,13 +360,14 @@ int CRuneSystemMgr::GetGradeValue(RuneSetData* runeSet) {
     const auto found = this->m_gradeTypes.find(runeSet->m_gradeType);
     if (found != this->m_gradeTypes.end()) {
       const unsigned int grade = runeSet->m_grade;
-      if (grade < found->second.size()) {
+      if (found->second.size() > grade) {
+        int failValue = 0;
         const auto fail = this->m_gradeFailTypes.find(runeSet->m_gradeFailType);
-        if (fail != this->m_gradeFailTypes.end() && grade < fail->second.size()) {
-          return runeSet->m_gradeLevel * fail->second[grade] + found->second[grade];
+        if (fail != this->m_gradeFailTypes.end() && fail->second.size() > grade) {
+          failValue = fail->second[grade];
         }
 
-        return found->second[grade];
+        return runeSet->m_gradeLevel * failValue + found->second[grade];
       }
     }
   }
@@ -470,88 +471,87 @@ bool CRuneSystemMgr::LoadScripts() {
     return false;
   }
 
-  lua_State* state = lua.GetState();
-  luaL_openlibs(state);
-  lua_register(state, "Add_Decom_ItemNum", AddDecomItemNum);
-  lua_register(state, "AdditemDecomType", AddItemDecomType);
-  lua_register(state, "AdditemDecom", AddItemDecom);
-  lua_register(state, "AddGradeType_Fail", AddGradeTypeFail);
-  lua_register(state, "AddGradeType", AddGradeType);
-  lua_register(state, "AddItemListTable_Type", AddItemListTableType);
-  lua_register(state, "AddTag", AddTag);
-  lua_register(state, "SetRuneSysteminfo", SetRuneSystemInfo);
-  lua_register(state, "AddRune", AddRuneData);
-  lua_register(state, "SetRune_UpGradeTable", SetRuneUpGradeTable);
-  lua_register(state, "AddRune_SlotCollectionList", AddRuneSlotCollectionList);
-  lua_register(state, "AddRune_GradeList", AddRuneGradeList);
-  lua_register(state, "SetRune_DisplayName", SetRuneDisplayName);
-  lua_register(state, "AddRune_Description", AddRuneDescription);
-  lua_register(state, "AddRuneSetReward", AddRuneSetReward);
+  luaL_openlibs(lua.GetState());
+  lua_register(lua.GetState(), "Add_Decom_ItemNum", AddDecomItemNum);
+  lua_register(lua.GetState(), "AdditemDecomType", AddItemDecomType);
+  lua_register(lua.GetState(), "AdditemDecom", AddItemDecom);
+  lua_register(lua.GetState(), "AddGradeType_Fail", AddGradeTypeFail);
+  lua_register(lua.GetState(), "AddGradeType", AddGradeType);
+  lua_register(lua.GetState(), "AddItemListTable_Type", AddItemListTableType);
+  lua_register(lua.GetState(), "AddTag", AddTag);
+  lua_register(lua.GetState(), "SetRuneSysteminfo", SetRuneSystemInfo);
+  lua_register(lua.GetState(), "AddRune", AddRuneData);
+  lua_register(lua.GetState(), "SetRune_UpGradeTable", SetRuneUpGradeTable);
+  lua_register(lua.GetState(), "AddRune_SlotCollectionList", AddRuneSlotCollectionList);
+  lua_register(lua.GetState(), "AddRune_GradeList", AddRuneGradeList);
+  lua_register(lua.GetState(), "SetRune_DisplayName", SetRuneDisplayName);
+  lua_register(lua.GetState(), "AddRune_Description", AddRuneDescription);
+  lua_register(lua.GetState(), "AddRuneSetReward", AddRuneSetReward);
 
-  if (!LoadLuaResource(state, "System\\Rune\\runeSystem_table.lub", 0) || lua_pcall(state, 0, 0, 0) != 0) {
-    MessageBoxA(nullptr, lua_tostring(state, -1), "System\\Rune\\runeSystem_table.lub", 0);
+  if (!LoadLuaResource(lua.GetState(), "System\\Rune\\runeSystem_table.lub", 0) || lua_pcall(lua.GetState(), 0, 0, 0) != 0) {
+    MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "System\\Rune\\runeSystem_table.lub", 0);
     return false;
   }
 
-  if (!LoadLuaResource(state, "System\\Rune\\itemDecom.lub", 0) || lua_pcall(state, 0, 0, 0) != 0) {
-    MessageBoxA(nullptr, lua_tostring(state, -1), "System\\Rune\\itemDecom.lub", 0);
+  if (!LoadLuaResource(lua.GetState(), "System\\Rune\\itemDecom.lub", 0) || lua_pcall(lua.GetState(), 0, 0, 0) != 0) {
+    MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "System\\Rune\\itemDecom.lub", 0);
     return false;
   }
 
-  if (!LoadLuaResource(state, "System\\Rune\\runesystemid.lub", 0) || lua_pcall(state, 0, 0, 0) != 0) {
-    MessageBoxA(nullptr, lua_tostring(state, -1), "System\\Rune\\runesystemid.lub", 0);
+  if (!LoadLuaResource(lua.GetState(), "System\\Rune\\runesystemid.lub", 0) || lua_pcall(lua.GetState(), 0, 0, 0) != 0) {
+    MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "System\\Rune\\runesystemid.lub", 0);
     return false;
   }
 
-  if (!LoadLuaResource(state, "System\\Rune\\rune_info.lub", 0) || lua_pcall(state, 0, 0, 0) != 0) {
-    MessageBoxA(nullptr, lua_tostring(state, -1), "System\\Rune\\collection_info.lub", 0);
+  if (!LoadLuaResource(lua.GetState(), "System\\Rune\\rune_info.lub", 0) || lua_pcall(lua.GetState(), 0, 0, 0) != 0) {
+    MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "System\\Rune\\collection_info.lub", 0);
     return false;
   }
 
-  if (!LoadLuaResource(state, "System\\Rune\\rune_desc.lub", 0) || lua_pcall(state, 0, 0, 0) != 0) {
-    MessageBoxA(nullptr, lua_tostring(state, -1), "System\\Rune\\collection_desc.lub", 0);
+  if (!LoadLuaResource(lua.GetState(), "System\\Rune\\rune_desc.lub", 0) || lua_pcall(lua.GetState(), 0, 0, 0) != 0) {
+    MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "System\\Rune\\collection_desc.lub", 0);
     return false;
   }
 
-  if (!LoadLuaResource(state, "System\\Rune\\runeset_info.lub", 0) || lua_pcall(state, 0, 0, 0) != 0) {
-    MessageBoxA(nullptr, lua_tostring(state, -1), "System\\Rune\\rune_info.lub", 0);
+  if (!LoadLuaResource(lua.GetState(), "System\\Rune\\runeset_info.lub", 0) || lua_pcall(lua.GetState(), 0, 0, 0) != 0) {
+    MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "System\\Rune\\rune_info.lub", 0);
     return false;
   }
 
-  if (!LoadLuaResource(state, "System\\Rune\\runeset_desc.lub", 0) || lua_pcall(state, 0, 0, 0) != 0) {
-    MessageBoxA(nullptr, lua_tostring(state, -1), "System\\Rune\\rune_desc.lub", 0);
+  if (!LoadLuaResource(lua.GetState(), "System\\Rune\\runeset_desc.lub", 0) || lua_pcall(lua.GetState(), 0, 0, 0) != 0) {
+    MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "System\\Rune\\rune_desc.lub", 0);
     return false;
   }
 
-  if (!LoadLuaResource(state, "System\\Rune\\runesystem_f.lub", 0) || lua_pcall(state, 0, 0, 0) != 0) {
-    MessageBoxA(nullptr, lua_tostring(state, -1), "System\\Rune\\runesystem_f.lub", 0);
+  if (!LoadLuaResource(lua.GetState(), "System\\Rune\\runesystem_f.lub", 0) || lua_pcall(lua.GetState(), 0, 0, 0) != 0) {
+    MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "System\\Rune\\runesystem_f.lub", 0);
     return false;
   }
 
-  if (!LoadLuaResource(state, "System\\Rune\\runeset_reward.lub", 0) || lua_pcall(state, 0, 0, 0) != 0) {
-    MessageBoxA(nullptr, lua_tostring(state, -1), "System\\Rune\\runeset_reward.lub", 0);
+  if (!LoadLuaResource(lua.GetState(), "System\\Rune\\runeset_reward.lub", 0) || lua_pcall(lua.GetState(), 0, 0, 0) != 0) {
+    MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "System\\Rune\\runeset_reward.lub", 0);
     return false;
   }
 
-  lua_getglobal(state, "main_rune");
-  if (lua_pcall(state, 0, 2, 0) != 0) {
-    MessageBoxA(nullptr, lua_tostring(state, -1), "CRuneSystemMgr main_rune X", 0);
+  lua_getglobal(lua.GetState(), "main_rune");
+  if (lua_pcall(lua.GetState(), 0, 2, 0) != 0) {
+    MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "CRuneSystemMgr main_rune X", 0);
     return false;
   }
 
-  lua_getglobal(state, "main_runeset_reward");
-  if (lua_pcall(state, 0, 2, 0) != 0) {
-    MessageBoxA(nullptr, lua_tostring(state, -1), "CRuneSystemMgr main_runeset_reward X", 0);
+  lua_getglobal(lua.GetState(), "main_runeset_reward");
+  if (lua_pcall(lua.GetState(), 0, 2, 0) != 0) {
+    MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "CRuneSystemMgr main_runeset_reward X", 0);
     return false;
   }
 
-  if (!lua_isstring(state, -1)) {
+  if (!lua_isstring(lua.GetState(), -1)) {
     MessageBoxA(nullptr, "second return value is not string...", "CRuneSystemMgr", 0);
     return false;
   }
 
-  if (!lua_toboolean(state, -2)) {
-    std::string message = std::string("error found :") + lua_tostring(state, -1);
+  if (!lua_toboolean(lua.GetState(), -2)) {
+    std::string message = std::string("error found :") + lua_tostring(lua.GetState(), -1);
     MessageBoxA(nullptr, message.c_str(), "CRuneSystemMgr", 0);
     return false;
   }
@@ -651,8 +651,16 @@ int CRuneSystemMgr::SendRequest(int packetId, RuneData* rune, int value) {
     return 0;
   }
 
-  int listId;
   switch (packetId) {
+  case 0x0C16: {
+    RuneSelectPacket packet;
+    packet.id = static_cast<std::uint16_t>(packetId);
+    packet.tagId = static_cast<std::uint16_t>(rune->m_tagId);
+    packet.runeId = static_cast<int>(rune->m_id);
+    packet.value = static_cast<std::uint8_t>(value);
+    GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packetId), &packet);
+    return 1;
+  }
   case 0x0BCB: {
     CTagData* tag = this->GetTag(value);
     if (!tag) {
@@ -666,53 +674,52 @@ int CRuneSystemMgr::SendRequest(int packetId, RuneData* rune, int value) {
     RuneTagPacket packet;
     packet.id = static_cast<std::uint16_t>(packetId);
     packet.tagId = static_cast<std::uint16_t>(tag->m_id);
-    GetRagConnection().Send(g_packetLengths.FixedLength(packetId), &packet);
+    GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packetId), &packet);
     return 1;
   }
   case 0x0BCE:
-  case 0x0BD0:
-    listId = rune->m_activeType;
-    break;
-  case 0x0BD2:
-    listId = static_cast<RuneSetData*>(rune)->GetGradeValue();
-    break;
+  case 0x0BD0: {
+    if (!this->HasRequiredItems(rune->m_activeType)) {
+      return 0;
+    }
+
+    RuneItemPacket packet;
+    packet.id = static_cast<std::uint16_t>(packetId);
+    packet.tagId = static_cast<std::uint16_t>(rune->m_tagId);
+    packet.runeId = static_cast<int>(rune->m_id);
+    GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packetId), &packet);
+    this->m_requestPending = true;
+    return 1;
+  }
+  case 0x0BD2: {
+    if (!this->HasRequiredItems(static_cast<RuneSetData*>(rune)->GetGradeValue())) {
+      return 0;
+    }
+
+    RuneItemPacket packet;
+    packet.id = static_cast<std::uint16_t>(packetId);
+    packet.tagId = static_cast<std::uint16_t>(rune->m_tagId);
+    packet.runeId = static_cast<int>(rune->m_id);
+    GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packetId), &packet);
+    this->m_requestPending = true;
+    return 1;
+  }
   case 0x0BD4: {
     RuneHeaderPacket packet;
     packet.id = static_cast<std::uint16_t>(packetId);
-    GetRagConnection().Send(g_packetLengths.FixedLength(packetId), &packet);
+    GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packetId), &packet);
     return 1;
   }
   case 0x0BD6: {
     RuneIdPacket packet;
     packet.id = static_cast<std::uint16_t>(packetId);
     packet.runeId = static_cast<int>(rune->m_id);
-    GetRagConnection().Send(g_packetLengths.FixedLength(packetId), &packet);
-    return 1;
-  }
-  case 0x0C16: {
-    RuneSelectPacket packet;
-    packet.id = static_cast<std::uint16_t>(packetId);
-    packet.tagId = static_cast<std::uint16_t>(rune->m_tagId);
-    packet.runeId = static_cast<int>(rune->m_id);
-    packet.value = static_cast<std::uint8_t>(value);
-    GetRagConnection().Send(g_packetLengths.FixedLength(packetId), &packet);
+    GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packetId), &packet);
     return 1;
   }
   default:
     return 1;
   }
-
-  if (!this->HasRequiredItems(listId)) {
-    return 0;
-  }
-
-  RuneItemPacket packet;
-  packet.id = static_cast<std::uint16_t>(packetId);
-  packet.tagId = static_cast<std::uint16_t>(rune->m_tagId);
-  packet.runeId = static_cast<int>(rune->m_id);
-  GetRagConnection().Send(g_packetLengths.FixedLength(packetId), &packet);
-  this->m_requestPending = true;
-  return 1;
 }
 
 // OFFSET: 0x007684C0
