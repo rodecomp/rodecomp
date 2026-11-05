@@ -17,18 +17,19 @@ ResourceFailures::ResourceFailures() {
 // FUNCTION: fn_18171
 void ResourceFailures::Report(std::string requested, std::string resolved) {
   const char* extension = std::strrchr(resolved.c_str(), '.');
-  if (extension && _stricmp(extension, ".ebm") == 0) {
+  if (extension && _stricmp(".ebm", extension) == 0) {
     return;
   }
 
-  bool report;
   {
     NSyncObject lock(&this->m_lock);
-    report = this->m_reported.insert(resolved).second;
+    if (this->m_reported.find(resolved) != this->m_reported.end()) {
+      return;
+    }
+    this->m_reported.insert(resolved);
   }
-  if (report) {
-    g_windowMgr.SendMsg(1, reinterpret_cast<std::intptr_t>("Resource File Loading fail"), 255, 0, 0, 0);
-    g_windowMgr.SendMsg(1, reinterpret_cast<std::intptr_t>(requested.c_str()), 255, 0, 0, 0);
-    g_windowMgr.SendMsg(1, reinterpret_cast<std::intptr_t>(resolved.c_str()), 255, 0, 0, 0);
-  }
+
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>("Resource File Loading fail"), 255, 0, 0, 0);
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(requested.c_str()), 255, 0, 0, 0);
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(resolved.c_str()), 255, 0, 0, 0);
 }
