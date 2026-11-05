@@ -36,7 +36,7 @@ void* PakRegistry::Read(const char* filename, std::uint32_t* size, int) {
     return result;
   }
 
-  return ReadLooseResource(filename, size);
+  return this->ReadLooseResource(filename, size);
 }
 
 // OFFSET: 0x00AE9FE0

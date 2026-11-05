@@ -7,6 +7,4 @@
 std::string MakeResourcePath(std::string filename);
 bool ResourceExists(const char* filename, int looseOnly);
 
-void* ReadLooseResource(const char* filename, std::uint32_t* size);
-
 #endif
