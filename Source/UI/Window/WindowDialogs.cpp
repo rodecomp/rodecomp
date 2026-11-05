@@ -248,9 +248,7 @@ int UIWindowMgr::Confirm(
 void UIWindowMgr::AddMessageBox(
   const char* text, int type, bool defaultAccept, int, int timeout, const char* caption, int width, int height, const char* icon, bool track
 ) {
-  std::vector<UIWindow*>& boxes = this->messageBoxes;
-
-  if (boxes.size() > 5) {
+  if (this->messageBoxes.size() > 5) {
     MessageBoxA(hWnd, "Max MessageBox Count", "ERROR", 0);
     return;
   }
@@ -260,7 +258,7 @@ void UIWindowMgr::AddMessageBox(
   this->rendered.push_back(box);
 
   if (track) {
-    boxes.push_back(box);
+    this->messageBoxes.push_back(box);
   }
 
   this->inputWindow = nullptr;

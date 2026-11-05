@@ -16,6 +16,7 @@
 #include <vector>
 
 class UIWindow;
+class UIMessageBox;
 class CBitmapRes;
 class CWebBrowser;
 struct MessengerMember;
@@ -373,7 +374,7 @@ public:
   /* 09CC */ CWebBrowser* activeBrowser;
   /* 09D0 */ CWebBrowser* specialBrowser;
   /* 09D4 */ unsigned char unknown_09D4[0x10];
-  /* 09E4 */ std::vector<UIWindow*> messageBoxes;
+  /* 09E4 */ std::vector<UIMessageBox*> messageBoxes;
   /* 09F0 */ unsigned char unknown_09F0[0x40];
   /* 0A30 */ UIWindow* window_0A30;
   /* 0A34 */ WindowPolicyEntry policy[10041];
