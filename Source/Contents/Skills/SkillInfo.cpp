@@ -701,9 +701,12 @@ bool IsSupportSkill(int skillId) {
 // OFFSET: 0x0077B4A0
 // FUNCTION: fn_08413
 bool CSkillActionMgr::IsSupportAction(int skillId) {
-  auto it = this->m_skillActions.find(skillId);
-  std::unique_ptr<CSkillAction> action(it != this->m_skillActions.end() ? it->second() : nullptr);
-  return action ? action->Slot00() : false;
+  std::unique_ptr<CSkillAction> action(CreateAction(this->m_skillActions, skillId));
+  if (!action) {
+    return false;
+  }
+
+  return action->Slot00();
 }
 
 // OFFSET: 0x007737C0
@@ -953,13 +956,8 @@ bool CSkillAction_ABC_ABYSS_FLAME_ATK::Slot03(int argument) {
 // OFFSET: 0x0077ACC0
 // FUNCTION: fn_08404
 std::pair<bool, int> CSkillActionMgr::ActionSlot01(int skillId) {
-  const auto found = this->m_skillActions.find(skillId);
-  std::unique_ptr<CSkillAction> action(found != this->m_skillActions.end() ? found->second() : nullptr);
-  if (!action) {
-    return {false, 8};
-  }
-
-  return {true, action->Slot01()};
+  std::unique_ptr<CSkillAction> action(CreateAction(this->m_skillActions, skillId));
+  return !action ? std::pair<bool, int>(false, 8) : std::pair<bool, int>(true, action->Slot01());
 }
 
 // OFFSET: 0x0077AD90
@@ -1003,9 +1001,12 @@ EfstActionMessage CSkillActionMgr::EfstSlot04(int efstId) {
 // OFFSET: 0x0077B060
 // FUNCTION: fn_08408
 int CSkillActionMgr::ActionSlot14(int skillId) {
-  const auto found = this->m_skillActions.find(skillId);
-  std::unique_ptr<CSkillAction> action(found != this->m_skillActions.end() ? found->second() : nullptr);
-  return action ? action->Slot14() : 0;
+  std::unique_ptr<CSkillAction> action(CreateAction(this->m_skillActions, skillId));
+  if (!action) {
+    return 0;
+  }
+
+  return action->Slot14();
 }
 
 // OFFSET: 0x0077B210
@@ -1029,9 +1030,12 @@ bool CSkillActionMgr::ActionSlot03(int skillId, int argument) {
 // OFFSET: 0x0077B3A0
 // FUNCTION: fn_08411
 bool CSkillActionMgr::ActionSlot04(int skillId) {
-  const auto found = this->m_skillActions.find(skillId);
-  std::unique_ptr<CSkillAction> action(found != this->m_skillActions.end() ? found->second() : nullptr);
-  return action ? action->Slot04() : false;
+  std::unique_ptr<CSkillAction> action(CreateAction(this->m_skillActions, skillId));
+  if (!action) {
+    return false;
+  }
+
+  return action->Slot04();
 }
 
 // OFFSET: 0x0077B460
@@ -1566,50 +1570,50 @@ bool CSkillActionMgr::ActionSlot09(int skillId, int argument1, int argument2, in
 // OFFSET: 0x0077BB70
 // FUNCTION: fn_08422
 bool CSkillActionMgr::ActionSlot10(int skillId, int level, CGameActor* source, short column, short row) {
-  const auto found = this->m_skillActions.find(skillId);
-  std::unique_ptr<CSkillAction> action(found != this->m_skillActions.end() ? found->second() : nullptr);
-  if (action) {
-    const vector3d position = CellWorldPosition(column, row);
-    action->Slot10(level, source, std::bit_cast<int>(position.x), std::bit_cast<int>(position.y), std::bit_cast<int>(position.z));
+  std::unique_ptr<CSkillAction> action(CreateAction(this->m_skillActions, skillId));
+  if (!action) {
+    return false;
   }
 
-  return action != nullptr;
+  const vector3d position = CellWorldPosition(column, row);
+  action->Slot10(level, source, std::bit_cast<int>(position.x), std::bit_cast<int>(position.y), std::bit_cast<int>(position.z));
+  return true;
 }
 
 // OFFSET: 0x0077BC60
 // FUNCTION: fn_08423
 bool CSkillActionMgr::EfstSlot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
-  const auto found = this->m_efstActions.find(efstId);
-  std::unique_ptr<CEfstAction> action(found != this->m_efstActions.end() ? found->second() : nullptr);
-  if (action) {
-    action->Slot01(efstId, argument2, argument3, argument4, actor);
+  std::unique_ptr<CEfstAction> action(CreateAction(this->m_efstActions, efstId));
+  if (!action) {
+    return false;
   }
 
-  return action != nullptr;
+  action->Slot01(efstId, argument2, argument3, argument4, actor);
+  return true;
 }
 
 // OFFSET: 0x0077BD20
 // FUNCTION: fn_08424
 bool CSkillActionMgr::ActionSlot12(int skillId, int column, int row, int argument2, int argument3) {
-  const auto found = this->m_skillActions.find(skillId);
-  std::unique_ptr<CSkillAction> action(found != this->m_skillActions.end() ? found->second() : nullptr);
-  if (action) {
-    action->Slot12(CellWorldPosition(column, row), argument2, argument3);
+  std::unique_ptr<CSkillAction> action(CreateAction(this->m_skillActions, skillId));
+  if (!action) {
+    return false;
   }
 
-  return action != nullptr;
+  action->Slot12(CellWorldPosition(column, row), argument2, argument3);
+  return true;
 }
 
 // OFFSET: 0x0077BE10
 // FUNCTION: fn_08425
 bool CSkillActionMgr::ActionSlot15(int skillId, int level, CGameActor* source, CGameActor* target) {
-  const auto found = this->m_skillActions.find(skillId);
-  std::unique_ptr<CSkillAction> action(found != this->m_skillActions.end() ? found->second() : nullptr);
-  if (action) {
-    action->Slot15(level, source, target);
+  std::unique_ptr<CSkillAction> action(CreateAction(this->m_skillActions, skillId));
+  if (!action) {
+    return false;
   }
 
-  return action != nullptr;
+  action->Slot15(level, source, target);
+  return true;
 }
 
 // OFFSET: 0x0077BED0
@@ -1639,13 +1643,13 @@ bool CSkillActionMgr::ObjectSlot01(int skillId, CRenderObject* object) {
 // OFFSET: 0x0077C050
 // FUNCTION: fn_08428
 bool CSkillActionMgr::ObjectSlot00(int skillId, int argument, CRenderObject* object, CGameActor* source) {
-  const auto found = this->m_skillObjectActions.find(skillId);
-  std::unique_ptr<CSkillObjectAction> action(found != this->m_skillObjectActions.end() ? found->second() : nullptr);
-  if (action) {
-    action->Slot00(argument, object, source);
+  std::unique_ptr<CSkillObjectAction> action(CreateAction(this->m_skillObjectActions, skillId));
+  if (!action) {
+    return false;
   }
 
-  return action != nullptr;
+  action->Slot00(argument, object, source);
+  return true;
 }
 
 // OFFSET: 0x0077C110
