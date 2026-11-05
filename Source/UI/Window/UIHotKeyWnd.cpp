@@ -578,14 +578,14 @@ bool UIHotKeyWnd::AssignSelectedHotkey(int mode) {
       mode = this->CheckHotkeyConflict();
     }
 
-    if (mode == 1) {
-      return false;
-    }
-
-    if (mode == 2) {
-      rejection = 0x5CF;
-    } else if (mode == 3) {
-      rejection = 0x5D0;
+    switch (mode) {
+      case 1:
+        return false;
+      case 2:
+        rejection = 0x5CF;
+        break;
+      case 3:
+        rejection = 0x5D0;
     }
   }
 
