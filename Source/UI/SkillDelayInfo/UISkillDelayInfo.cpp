@@ -35,7 +35,9 @@ namespace {
 template <std::size_t Length, std::uint64_t Key>
 class EncryptedName {
 public:
-  explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+  // INLINED
+  template <typename Byte>
+  explicit EncryptedName(const Byte (&source)[Length]) : m_encrypted(true) {
     for (std::uint64_t index = 0; index < Length; ++index) {
       this->m_text[index] = source[index];
     }
@@ -617,21 +619,21 @@ void CUISkillDelayInfo::Slot15(int width, int height) {
   this->titleBar->Move(0, 0);
   {
     CUITitleBar* titleBar = this->titleBar;
-    const std::uint8_t titleRightSource[] = {
-        0xF3, 0xCC, 0x95, 0x0B, 0xE9, 0xFB, 0x16, 0x84, 0xF5, 0x87, 0x95, 0x3D, 0x94, 0x8F, 0x8F, 0x2B, 0x52, 0x10, 0x3C, 0x92, 0x76, 0x5C, 0xBD, 0x3D,
-        0x56, 0x11, 0x33, 0x90, 0x4A, 0x50, 0x8F, 0x3D, 0x5A, 0x17, 0x39, 0x94, 0x4B, 0x54, 0xA1, 0x16, 0x41, 0x0A, 0x32, 0x99, 0x5D, 0x1B, 0xB1, 0x24,
-        0x43, 0x63};
+    const char titleRightSource[] = {
+        '\xF3', '\xCC', '\x95', '\x0B', '\xE9', '\xFB', '\x16', '\x84', '\xF5', '\x87', '\x95', '\x3D', '\x94', '\x8F', '\x8F', '\x2B', '\x52', '\x10', '\x3C', '\x92', '\x76', '\x5C', '\xBD', '\x3D',
+        '\x56', '\x11', '\x33', '\x90', '\x4A', '\x50', '\x8F', '\x3D', '\x5A', '\x17', '\x39', '\x94', '\x4B', '\x54', '\xA1', '\x16', '\x41', '\x0A', '\x32', '\x99', '\x5D', '\x1B', '\xB1', '\x24',
+        '\x43', '\x63'};
     thread_local EncryptedName<sizeof(titleRightSource), 0x49D33529F1556333ULL> titleRightName(titleRightSource);
     const std::string titleRight(titleRightName.Text());
-    const std::uint8_t titleMiddleSource[] = {
-        0x75, 0x20, 0x81, 0xDF, 0xD3, 0x33, 0xEA, 0xB4, 0x73, 0x6B, 0x81, 0xE9, 0xAE, 0x47, 0x73, 0x1B, 0xD4, 0xFC, 0x28, 0x46, 0x4C, 0x94, 0x41, 0x0D,
-        0xD0, 0xFD, 0x27, 0x44, 0x70, 0x98, 0x73, 0x0D, 0xDC, 0xFB, 0x2D, 0x40, 0x71, 0x9C, 0x5D, 0x26, 0xD8, 0xE6, 0x25, 0x0B, 0x71, 0x90, 0x5F, 0x79};
+    const char titleMiddleSource[] = {
+        '\x75', '\x20', '\x81', '\xDF', '\xD3', '\x33', '\xEA', '\xB4', '\x73', '\x6B', '\x81', '\xE9', '\xAE', '\x47', '\x73', '\x1B', '\xD4', '\xFC', '\x28', '\x46', '\x4C', '\x94', '\x41', '\x0D',
+        '\xD0', '\xFD', '\x27', '\x44', '\x70', '\x98', '\x73', '\x0D', '\xDC', '\xFB', '\x2D', '\x40', '\x71', '\x9C', '\x5D', '\x26', '\xD8', '\xE6', '\x25', '\x0B', '\x71', '\x90', '\x5F', '\x79'};
     thread_local EncryptedName<sizeof(titleMiddleSource), 0x792FFD1325418FB5ULL> titleMiddleName(titleMiddleSource);
     const std::string titleMiddle(titleMiddleName.Text());
-    const std::uint8_t titleLeftSource[] = {
-        0x7F, 0xC6, 0x23, 0x37, 0x45, 0x49, 0x9A, 0x3C, 0x79, 0x8D, 0x23, 0x01, 0x38, 0x3D, 0x03, 0x93, 0xDE, 0x1A, 0x8A, 0xAE, 0xDA, 0xEE, 0x31, 0x85,
-        0xDA, 0x1B, 0x85, 0xAC, 0xE6, 0xE2, 0x03, 0x85, 0xD6, 0x1D, 0x8F, 0xA8, 0xE7, 0xE6, 0x2D, 0xAE, 0xD3, 0x0C, 0x85, 0xB9, 0xAB, 0xE5, 0x32, 0x81,
-        0xBF};
+    const char titleLeftSource[] = {
+        '\x7F', '\xC6', '\x23', '\x37', '\x45', '\x49', '\x9A', '\x3C', '\x79', '\x8D', '\x23', '\x01', '\x38', '\x3D', '\x03', '\x93', '\xDE', '\x1A', '\x8A', '\xAE', '\xDA', '\xEE', '\x31', '\x85',
+        '\xDA', '\x1B', '\x85', '\xAC', '\xE6', '\xE2', '\x03', '\x85', '\xD6', '\x1D', '\x8F', '\xA8', '\xE7', '\xE6', '\x2D', '\xAE', '\xD3', '\x0C', '\x85', '\xB9', '\xAB', '\xE5', '\x32', '\x81',
+        '\xBF'};
     thread_local EncryptedName<sizeof(titleLeftSource), 0xF15F8785CDE369BFULL> titleLeftName(titleLeftSource);
     const std::string titleLeft(titleLeftName.Text());
     titleBar->SetImages(titleLeft, titleMiddle, titleRight);
@@ -642,8 +644,8 @@ void CUISkillDelayInfo::Slot15(int width, int height) {
   title->SetSize(100, 17);
   title->Move(18, 0);
   {
-    const std::uint8_t titleTextSource[] = {
-        0xF5, 0x4A, 0x6E, 0x43, 0xDB, 0x8C, 0xEB, 0xC0, 0x95, 0x43, 0x6B, 0xF9};
+    const char titleTextSource[] = {
+        '\xF5', '\x4A', '\x6E', '\x43', '\xDB', '\x8C', '\xEB', '\xC0', '\x95', '\x43', '\x6B', '\xF9'};
     thread_local EncryptedName<sizeof(titleTextSource), 0x01CB4F1DF9D3F931ULL> titleTextName(titleTextSource);
     const char* titleText = titleTextName.Text();
     title->SetText(titleText, std::strlen(titleText));
@@ -651,8 +653,8 @@ void CUISkillDelayInfo::Slot15(int width, int height) {
   title->SetFitText(0);
   title->SetAlign(0, 6);
   {
-    const std::uint8_t titleFontSource[] = {
-        0xD0, 0xBC, 0xA5, 0xF2, 0xA0, 0xBB};
+    const char titleFontSource[] = {
+        '\xD0', '\xBC', '\xA5', '\xF2', '\xA0', '\xBB'};
     thread_local EncryptedName<sizeof(titleFontSource), 0xC5B1BBCD9BC9C997ULL> titleFontName(titleFontSource);
     const std::string titleFont(titleFontName.Text());
     title->SetFont(titleFont);
@@ -672,24 +674,24 @@ void CUISkillDelayInfo::Slot15(int width, int height) {
   menuButton->disabled = 0;
   menuButton->Invalidate();
   {
-    const std::uint8_t menuDisabledSource[] = {
-        0x0F, 0x74, 0x11, 0xEF, 0x59, 0xE1, 0xAA, 0xDE, 0x09, 0x3F, 0x11, 0xD9, 0x24, 0x95, 0x33, 0x71, 0xAE, 0xA8, 0xB8, 0x76, 0xC6, 0x46, 0x01, 0x67,
-        0xAA, 0xA9, 0xB7, 0x74, 0xFA, 0x4A, 0x33, 0x60, 0xB6, 0xA8, 0x8E, 0x77, 0xF8, 0x5C, 0x0A, 0x4C, 0xA0, 0xBD, 0xB7, 0x3B, 0xFB, 0x42, 0x1F, 0x13};
+    const char menuDisabledSource[] = {
+        '\x0F', '\x74', '\x11', '\xEF', '\x59', '\xE1', '\xAA', '\xDE', '\x09', '\x3F', '\x11', '\xD9', '\x24', '\x95', '\x33', '\x71', '\xAE', '\xA8', '\xB8', '\x76', '\xC6', '\x46', '\x01', '\x67',
+        '\xAA', '\xA9', '\xB7', '\x74', '\xFA', '\x4A', '\x33', '\x60', '\xB6', '\xA8', '\x8E', '\x77', '\xF8', '\x5C', '\x0A', '\x4C', '\xA0', '\xBD', '\xB7', '\x3B', '\xFB', '\x42', '\x1F', '\x13'};
     thread_local EncryptedName<sizeof(menuDisabledSource), 0x136F2F9915D1DBCFULL> menuDisabledName(menuDisabledSource);
     const std::string menuDisabled(menuDisabledName.Text());
-    const std::uint8_t menuPressedSource[] = {
-        0xEB, 0x78, 0x89, 0xD5, 0xCF, 0x1F, 0xE6, 0xC6, 0xED, 0x33, 0x89, 0xE3, 0xB2, 0x6B, 0x7F, 0x69, 0x4A, 0xA4, 0x20, 0x4C, 0x50, 0xB8, 0x4D, 0x7F,
-        0x4E, 0xA5, 0x2F, 0x4E, 0x6C, 0xB4, 0x7F, 0x78, 0x52, 0xA4, 0x16, 0x4D, 0x6E, 0xA2, 0x46, 0x54, 0x44, 0xB9, 0x67, 0x4D, 0x62, 0xA1, 0x23};
+    const char menuPressedSource[] = {
+        '\xEB', '\x78', '\x89', '\xD5', '\xCF', '\x1F', '\xE6', '\xC6', '\xED', '\x33', '\x89', '\xE3', '\xB2', '\x6B', '\x7F', '\x69', '\x4A', '\xA4', '\x20', '\x4C', '\x50', '\xB8', '\x4D', '\x7F',
+        '\x4E', '\xA5', '\x2F', '\x4E', '\x6C', '\xB4', '\x7F', '\x78', '\x52', '\xA4', '\x16', '\x4D', '\x6E', '\xA2', '\x46', '\x54', '\x44', '\xB9', '\x67', '\x4D', '\x62', '\xA1', '\x23'};
     thread_local EncryptedName<sizeof(menuPressedSource), 0x0B23D10F2F49D72BULL> menuPressedName(menuPressedSource);
     const std::string menuPressed(menuPressedName.Text());
-    const std::uint8_t menuHoverSource[] = {
-        0x4B, 0x32, 0xB7, 0x77, 0x21, 0x13, 0xA2, 0xDA, 0x4D, 0x79, 0xB7, 0x41, 0x5C, 0x67, 0x3B, 0x75, 0xEA, 0xEE, 0x1E, 0xEE, 0xBE, 0xB4, 0x09, 0x63,
-        0xEE, 0xEF, 0x11, 0xEC, 0x82, 0xB8, 0x3B, 0x64, 0xF2, 0xEE, 0x28, 0xEF, 0x80, 0xAE, 0x02, 0x48, 0xE4, 0xF3, 0x59, 0xEF, 0x8C, 0xAD, 0x67};
+    const char menuHoverSource[] = {
+        '\x4B', '\x32', '\xB7', '\x77', '\x21', '\x13', '\xA2', '\xDA', '\x4D', '\x79', '\xB7', '\x41', '\x5C', '\x67', '\x3B', '\x75', '\xEA', '\xEE', '\x1E', '\xEE', '\xBE', '\xB4', '\x09', '\x63',
+        '\xEE', '\xEF', '\x11', '\xEC', '\x82', '\xB8', '\x3B', '\x64', '\xF2', '\xEE', '\x28', '\xEF', '\x80', '\xAE', '\x02', '\x48', '\xE4', '\xF3', '\x59', '\xEF', '\x8C', '\xAD', '\x67'};
     thread_local EncryptedName<sizeof(menuHoverSource), 0x1767DDE18D779D8BULL> menuHoverName(menuHoverSource);
     const std::string menuHover(menuHoverName.Text());
-    const std::uint8_t menuNormalSource[] = {
-        0x21, 0x2C, 0x11, 0x17, 0xD1, 0x4F, 0x7E, 0x0C, 0x27, 0x67, 0x11, 0x21, 0xAC, 0x3B, 0xE7, 0xA3, 0x80, 0xF0, 0xB8, 0x8E, 0x4E, 0xE8, 0xD5, 0xB5,
-        0x84, 0xF1, 0xB7, 0x8C, 0x72, 0xE4, 0xE7, 0xB2, 0x98, 0xF0, 0x8E, 0x8F, 0x70, 0xF2, 0xDE, 0x9E, 0x8E, 0xE5, 0xB7, 0xC3, 0x73, 0xEC, 0xCB, 0xC1};
+    const char menuNormalSource[] = {
+        '\x21', '\x2C', '\x11', '\x17', '\xD1', '\x4F', '\x7E', '\x0C', '\x27', '\x67', '\x11', '\x21', '\xAC', '\x3B', '\xE7', '\xA3', '\x80', '\xF0', '\xB8', '\x8E', '\x4E', '\xE8', '\xD5', '\xB5',
+        '\x84', '\xF1', '\xB7', '\x8C', '\x72', '\xE4', '\xE7', '\xB2', '\x98', '\xF0', '\x8E', '\x8F', '\x70', '\xF2', '\xDE', '\x9E', '\x8E', '\xE5', '\xB7', '\xC3', '\x73', '\xEC', '\xCB', '\xC1'};
     thread_local EncryptedName<sizeof(menuNormalSource), 0xC1BB8111EDD183E1ULL> menuNormalName(menuNormalSource);
     const std::string menuNormal(menuNormalName.Text());
     menuButton->SetImages(menuNormal, menuHover, menuPressed, menuDisabled);
@@ -703,26 +705,26 @@ void CUISkillDelayInfo::Slot15(int width, int height) {
   closeButton->disabled = 0;
   closeButton->Invalidate();
   {
-    const std::uint8_t closeDisabledSource[] = {
-        0xC1, 0xDA, 0x3D, 0x23, 0xEF, 0x73, 0x6A, 0x7A, 0xC7, 0x91, 0x3D, 0x15, 0x92, 0x07, 0xF3, 0xD5, 0x60, 0x06, 0x94, 0xBA, 0x70, 0xD4, 0xC1, 0xC3,
-        0x64, 0x07, 0x9B, 0xB8, 0x4C, 0xD8, 0xF3, 0xC4, 0x78, 0x06, 0xA2, 0xBA, 0x43, 0xD2, 0xDC, 0xD2, 0x5E, 0x1A, 0x9B, 0xBF, 0x01, 0xDF, 0xC2, 0xC7,
-        0x01};
+    const char closeDisabledSource[] = {
+        '\xC1', '\xDA', '\x3D', '\x23', '\xEF', '\x73', '\x6A', '\x7A', '\xC7', '\x91', '\x3D', '\x15', '\x92', '\x07', '\xF3', '\xD5', '\x60', '\x06', '\x94', '\xBA', '\x70', '\xD4', '\xC1', '\xC3',
+        '\x64', '\x07', '\x9B', '\xB8', '\x4C', '\xD8', '\xF3', '\xC4', '\x78', '\x06', '\xA2', '\xBA', '\x43', '\xD2', '\xDC', '\xD2', '\x5E', '\x1A', '\x9B', '\xBF', '\x01', '\xDF', '\xC2', '\xC7',
+        '\x01'};
     thread_local EncryptedName<sizeof(closeDisabledSource), 0xB7AFBD2FD9FD7501ULL> closeDisabledName(closeDisabledSource);
     const std::string closeDisabled(closeDisabledName.Text());
-    const std::uint8_t closePressedSource[] = {
-        0x1D, 0xFA, 0xAF, 0x55, 0x29, 0xDB, 0x2C, 0xB4, 0x1B, 0xB1, 0xAF, 0x63, 0x54, 0xAF, 0xB5, 0x1B, 0xBC, 0x26, 0x06, 0xCC, 0xB6, 0x7C, 0x87, 0x0D,
-        0xB8, 0x27, 0x09, 0xCE, 0x8A, 0x70, 0xB5, 0x0A, 0xA4, 0x26, 0x30, 0xCC, 0x85, 0x7A, 0x9A, 0x1C, 0x82, 0x3A, 0x01, 0x81, 0x8B, 0x78, 0x99, 0x79};
+    const char closePressedSource[] = {
+        '\x1D', '\xFA', '\xAF', '\x55', '\x29', '\xDB', '\x2C', '\xB4', '\x1B', '\xB1', '\xAF', '\x63', '\x54', '\xAF', '\xB5', '\x1B', '\xBC', '\x26', '\x06', '\xCC', '\xB6', '\x7C', '\x87', '\x0D',
+        '\xB8', '\x27', '\x09', '\xCE', '\x8A', '\x70', '\xB5', '\x0A', '\xA4', '\x26', '\x30', '\xCC', '\x85', '\x7A', '\x9A', '\x1C', '\x82', '\x3A', '\x01', '\x81', '\x8B', '\x78', '\x99', '\x79'};
     thread_local EncryptedName<sizeof(closePressedSource), 0x79E915E9AF6F55DDULL> closePressedName(closePressedSource);
     const std::string closePressed(closePressedName.Text());
-    const std::uint8_t closeHoverSource[] = {
-        0x81, 0x92, 0x97, 0x8F, 0xF9, 0x51, 0x88, 0xAA, 0x87, 0xD9, 0x97, 0xB9, 0x84, 0x25, 0x11, 0x05, 0x20, 0x4E, 0x3E, 0x16, 0x66, 0xF6, 0x23, 0x13,
-        0x24, 0x4F, 0x31, 0x14, 0x5A, 0xFA, 0x11, 0x14, 0x38, 0x4E, 0x08, 0x16, 0x55, 0xF0, 0x3E, 0x02, 0x1E, 0x52, 0x39, 0x5B, 0x5B, 0xF2, 0x3D, 0x67};
+    const char closeHoverSource[] = {
+        '\x81', '\x92', '\x97', '\x8F', '\xF9', '\x51', '\x88', '\xAA', '\x87', '\xD9', '\x97', '\xB9', '\x84', '\x25', '\x11', '\x05', '\x20', '\x4E', '\x3E', '\x16', '\x66', '\xF6', '\x23', '\x13',
+        '\x24', '\x4F', '\x31', '\x14', '\x5A', '\xFA', '\x11', '\x14', '\x38', '\x4E', '\x08', '\x16', '\x55', '\xF0', '\x3E', '\x02', '\x1E', '\x52', '\x39', '\x5B', '\x5B', '\xF2', '\x3D', '\x67'};
     thread_local EncryptedName<sizeof(closeHoverSource), 0x674D9F3975573D41ULL> closeHoverName(closeHoverSource);
     const std::string closeHover(closeHoverName.Text());
-    const std::uint8_t closeNormalSource[] = {
-        0x91, 0x02, 0x3D, 0xD1, 0x8F, 0xFD, 0x1A, 0xA6, 0x97, 0x49, 0x3D, 0xE7, 0xF2, 0x89, 0x83, 0x09, 0x30, 0xDE, 0x94, 0x48, 0x10, 0x5A, 0xB1, 0x1F,
-        0x34, 0xDF, 0x9B, 0x4A, 0x2C, 0x56, 0x83, 0x18, 0x28, 0xDE, 0xA2, 0x48, 0x23, 0x5C, 0xAC, 0x0E, 0x0E, 0xC2, 0x9B, 0x4D, 0x61, 0x51, 0xB2, 0x1B,
-        0x51};
+    const char closeNormalSource[] = {
+        '\x91', '\x02', '\x3D', '\xD1', '\x8F', '\xFD', '\x1A', '\xA6', '\x97', '\x49', '\x3D', '\xE7', '\xF2', '\x89', '\x83', '\x09', '\x30', '\xDE', '\x94', '\x48', '\x10', '\x5A', '\xB1', '\x1F',
+        '\x34', '\xDF', '\x9B', '\x4A', '\x2C', '\x56', '\x83', '\x18', '\x28', '\xDE', '\xA2', '\x48', '\x23', '\x5C', '\xAC', '\x0E', '\x0E', '\xC2', '\x9B', '\x4D', '\x61', '\x51', '\xB2', '\x1B',
+        '\x51'};
     thread_local EncryptedName<sizeof(closeNormalSource), 0x6BDF334F2BFDAD51ULL> closeNormalName(closeNormalSource);
     const std::string closeNormal(closeNormalName.Text());
     closeButton->SetImages(closeNormal, closeHover, closePressed, closeDisabled);
@@ -736,8 +738,8 @@ void CUISkillDelayInfo::Slot15(int width, int height) {
   this->unknown_00DC->SetFitText(1);
   this->unknown_00DC->SetAlign(6, 6);
   {
-    const std::uint8_t noticeFontSource[] = {
-        0xA2, 0x0E, 0x5F, 0x40, 0x20, 0x65};
+    const char noticeFontSource[] = {
+        '\xA2', '\x0E', '\x5F', '\x40', '\x20', '\x65'};
     thread_local EncryptedName<sizeof(noticeFontSource), 0x192D654D29337BE5ULL> noticeFontName(noticeFontSource);
     const std::string noticeFont(noticeFontName.Text());
     this->unknown_00DC->SetFont(noticeFont);
@@ -753,8 +755,8 @@ void CUISkillDelayInfo::Slot15(int width, int height) {
   this->labels[0]->SetSize(140, 22);
   this->labels[0]->Move(54, 58);
   {
-    const std::uint8_t castingTextSource[] = {
-        0x27, 0x66, 0xEE, 0x4D, 0x63, 0xC4, 0xE3};
+    const char castingTextSource[] = {
+        '\x27', '\x66', '\xEE', '\x4D', '\x63', '\xC4', '\xE3'};
     thread_local EncryptedName<sizeof(castingTextSource), 0xB3E307A5F753D5E3ULL> castingTextName(castingTextSource);
     const char* castingText = castingTextName.Text();
     this->labels[0]->SetText(castingText, std::strlen(castingText));
@@ -762,8 +764,8 @@ void CUISkillDelayInfo::Slot15(int width, int height) {
   this->labels[0]->SetFitText(0);
   this->labels[0]->SetAlign(6, 6);
   {
-    const std::uint8_t castingFontSource[] = {
-        0x1E, 0xF2, 0x6F, 0x14, 0x38, 0xCB};
+    const char castingFontSource[] = {
+        '\x1E', '\xF2', '\x6F', '\x14', '\x38', '\xCB'};
     thread_local EncryptedName<sizeof(castingFontSource), 0xDB27CB557D038759ULL> castingFontName(castingFontSource);
     const std::string castingFont(castingFontName.Text());
     this->labels[0]->SetFont(castingFont);
@@ -779,8 +781,8 @@ void CUISkillDelayInfo::Slot15(int width, int height) {
   this->labels[1]->SetSize(140, 22);
   this->labels[1]->Move(194, 58);
   {
-    const std::uint8_t cooldownTextSource[] = {
-        0x3B, 0x13, 0x98, 0xBB, 0x67, 0x7C, 0xA3};
+    const char cooldownTextSource[] = {
+        '\x3B', '\x13', '\x98', '\xBB', '\x67', '\x7C', '\xA3'};
     thread_local EncryptedName<sizeof(cooldownTextSource), 0x3FA3AFA7035DE3FFULL> cooldownTextName(cooldownTextSource);
     const char* cooldownText = cooldownTextName.Text();
     this->labels[1]->SetText(cooldownText, std::strlen(cooldownText));
@@ -788,8 +790,8 @@ void CUISkillDelayInfo::Slot15(int width, int height) {
   this->labels[1]->SetFitText(0);
   this->labels[1]->SetAlign(6, 6);
   {
-    const std::uint8_t cooldownFontSource[] = {
-        0xA8, 0x58, 0x3B, 0x64, 0xA8, 0xD1};
+    const char cooldownFontSource[] = {
+        '\xA8', '\x58', '\x3B', '\x64', '\xA8', '\xD1'};
     thread_local EncryptedName<sizeof(cooldownFontSource), 0x87E3D1C50D572DEFULL> cooldownFontName(cooldownFontSource);
     const char* cooldownFont = cooldownFontName.Text();
     this->labels[1]->SetFont(std::string(cooldownFont));
@@ -805,8 +807,8 @@ void CUISkillDelayInfo::Slot15(int width, int height) {
   this->labels[2]->SetSize(44, 22);
   this->labels[2]->Move(10, 82);
   {
-    const std::uint8_t levelTextSource[] = {
-        0x3A, 0x04, 0x01, 0xC4, 0xB7};
+    const char levelTextSource[] = {
+        '\x3A', '\x04', '\x01', '\xC4', '\xB7'};
     thread_local EncryptedName<sizeof(levelTextSource), 0x51BB39B763BBBD8DULL> levelTextName(levelTextSource);
     const char* levelText = levelTextName.Text();
     this->labels[2]->SetText(levelText, std::strlen(levelText));
@@ -814,8 +816,8 @@ void CUISkillDelayInfo::Slot15(int width, int height) {
   this->labels[2]->SetFitText(1);
   this->labels[2]->SetAlign(6, 6);
   {
-    const std::uint8_t levelFontSource[] = {
-        0x7A, 0x34, 0xE7, 0xA0, 0x94, 0x1B};
+    const char levelFontSource[] = {
+        '\x7A', '\x34', '\xE7', '\xA0', '\x94', '\x1B'};
     thread_local EncryptedName<sizeof(levelFontSource), 0xADC51BF9C98B413DULL> levelFontName(levelFontSource);
     const char* levelFont = levelFontName.Text();
     this->labels[2]->SetFont(std::string(levelFont));
@@ -831,8 +833,8 @@ void CUISkillDelayInfo::Slot15(int width, int height) {
   this->columns[0]->SetSize(70, 22);
   this->columns[0]->Move(54, 82);
   {
-    const std::uint8_t fixedTextSource[] = {
-        0xE1, 0x18, 0x0E, 0xED, 0xFF};
+    const char fixedTextSource[] = {
+        '\xE1', '\x18', '\x0E', '\xED', '\xFF'};
     thread_local EncryptedName<sizeof(fixedTextSource), 0xDF8117FF49CFF551ULL> fixedTextName(fixedTextSource);
     const char* fixedText = fixedTextName.Text();
     this->columns[0]->SetText(fixedText, std::strlen(fixedText));
@@ -840,8 +842,8 @@ void CUISkillDelayInfo::Slot15(int width, int height) {
   this->columns[0]->SetFitText(1);
   this->columns[0]->SetAlign(6, 6);
   {
-    const std::uint8_t fixedFontSource[] = {
-        0x0E, 0x18, 0x13, 0x8A, 0xAA, 0x01};
+    const char fixedFontSource[] = {
+        '\x0E', '\x18', '\x13', '\x8A', '\xAA', '\x01'};
     thread_local EncryptedName<sizeof(fixedFontSource), 0x114901C7E37F6D49ULL> fixedFontName(fixedFontSource);
     const char* fixedFont = fixedFontName.Text();
     this->columns[0]->SetFont(std::string(fixedFont));
@@ -857,8 +859,8 @@ void CUISkillDelayInfo::Slot15(int width, int height) {
   this->columns[1]->SetSize(70, 22);
   this->columns[1]->Move(124, 82);
   {
-    const std::uint8_t variableTextSource[] = {
-        0xCB, 0x2C, 0xDE, 0xB4, 0x11};
+    const char variableTextSource[] = {
+        '\xCB', '\x2C', '\xDE', '\xB4', '\x11'};
     thread_local EncryptedName<sizeof(variableTextSource), 0x7D5D0F110B6B8371ULL> variableTextName(variableTextSource);
     const char* variableText = variableTextName.Text();
     this->columns[1]->SetText(variableText, std::strlen(variableText));
@@ -866,8 +868,8 @@ void CUISkillDelayInfo::Slot15(int width, int height) {
   this->columns[1]->SetFitText(1);
   this->columns[1]->SetAlign(6, 6);
   {
-    const std::uint8_t variableFontSource[] = {
-        0x1C, 0xC2, 0x0D, 0x30, 0x22, 0x51};
+    const char variableFontSource[] = {
+        '\x1C', '\xC2', '\x0D', '\x30', '\x22', '\x51'};
     thread_local EncryptedName<sizeof(variableFontSource), 0xF715514F5961B75BULL> variableFontName(variableFontSource);
     const char* variableFont = variableFontName.Text();
     this->columns[1]->SetFont(std::string(variableFont));
@@ -883,8 +885,8 @@ void CUISkillDelayInfo::Slot15(int width, int height) {
   this->columns[2]->SetSize(70, 22);
   this->columns[2]->Move(194, 82);
   {
-    const std::uint8_t globalTextSource[] = {
-        0x28, 0xE2, 0x4A, 0xFF, 0xEC, 0x41, 0x91};
+    const char globalTextSource[] = {
+        '\x28', '\xE2', '\x4A', '\xFF', '\xEC', '\x41', '\x91'};
     thread_local EncryptedName<sizeof(globalTextSource), 0x4191BB5531FD3999ULL> globalTextName(globalTextSource);
     const char* globalText = globalTextName.Text();
     this->columns[2]->SetText(globalText, std::strlen(globalText));
@@ -892,8 +894,8 @@ void CUISkillDelayInfo::Slot15(int width, int height) {
   this->columns[2]->SetFitText(1);
   this->columns[2]->SetAlign(6, 6);
   {
-    const std::uint8_t globalFontSource[] = {
-        0x94, 0x4C, 0x03, 0x78, 0xC4, 0x1F};
+    const char globalFontSource[] = {
+        '\x94', '\x4C', '\x03', '\x78', '\xC4', '\x1F'};
     thread_local EncryptedName<sizeof(globalFontSource), 0xB19D1FA9116F39D3ULL> globalFontName(globalFontSource);
     const char* globalFont = globalFontName.Text();
     this->columns[2]->SetFont(std::string(globalFont));
@@ -909,8 +911,8 @@ void CUISkillDelayInfo::Slot15(int width, int height) {
   this->columns[3]->SetSize(70, 22);
   this->columns[3]->Move(264, 82);
   {
-    const std::uint8_t skillTextSource[] = {
-        0x12, 0xB3, 0xCC, 0x54, 0xC7};
+    const char skillTextSource[] = {
+        '\x12', '\xB3', '\xCC', '\x54', '\xC7'};
     thread_local EncryptedName<sizeof(skillTextSource), 0x9569C9C7E70909AFULL> skillTextName(skillTextSource);
     const char* skillText = skillTextName.Text();
     this->columns[3]->SetText(skillText, std::strlen(skillText));
@@ -918,8 +920,8 @@ void CUISkillDelayInfo::Slot15(int width, int height) {
   this->columns[3]->SetFitText(1);
   this->columns[3]->SetAlign(6, 6);
   {
-    const std::uint8_t skillFontSource[] = {
-        0x2A, 0xCA, 0xB9, 0x4E, 0x86, 0x49};
+    const char skillFontSource[] = {
+        '\x2A', '\xCA', '\xB9', '\x4E', '\x86', '\x49'};
     thread_local EncryptedName<sizeof(skillFontSource), 0xD7A749EB27D5BF6DULL> skillFontName(skillFontSource);
     const char* skillFont = skillFontName.Text();
     this->columns[3]->SetFont(std::string(skillFont));
@@ -946,45 +948,45 @@ void CUISkillDelayInfo::Slot15(int width, int height) {
   this->delayList->scrollBar->step = 10;
   {
     CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>* delayList = this->delayList;
-    const std::uint8_t listDownSource[] = {
-        0x95, 0x94, 0x41, 0x0D, 0x8D, 0x25, 0x68, 0x60, 0x93, 0xDF, 0x41, 0x3B, 0xF0, 0x51, 0xF1, 0xDE, 0x36, 0x49, 0xEE, 0x9B, 0x21, 0xDB, 0xC9, 0xC2,
-        0x22, 0x55, 0xAF, 0x95, 0x20, 0x9B, 0xAD};
+    const char listDownSource[] = {
+        '\x95', '\x94', '\x41', '\x0D', '\x8D', '\x25', '\x68', '\x60', '\x93', '\xDF', '\x41', '\x3B', '\xF0', '\x51', '\xF1', '\xDE', '\x36', '\x49', '\xEE', '\x9B', '\x21', '\xDB', '\xC9', '\xC2',
+        '\x22', '\x55', '\xAF', '\x95', '\x20', '\x9B', '\xAD'};
     thread_local EncryptedName<sizeof(listDownSource), 0xADADEB4DF7813B55ULL> listDownName(listDownSource);
     const char* listDown = listDownName.Text();
     const std::string down(listDown);
-    const std::uint8_t listUpSource[] = {
-        0x99, 0xA2, 0x0B, 0x55, 0xBD, 0xAD, 0x50, 0x7C, 0x9F, 0xE9, 0x0B, 0x63, 0xC0, 0xD9, 0xC9, 0xC2, 0x3A, 0x7F, 0xA4, 0xC3, 0x11, 0x53, 0xE0, 0xC1,
-        0x77, 0x6F, 0xA6, 0xDF, 0x7D};
+    const char listUpSource[] = {
+        '\x99', '\xA2', '\x0B', '\x55', '\xBD', '\xAD', '\x50', '\x7C', '\x9F', '\xE9', '\x0B', '\x63', '\xC0', '\xD9', '\xC9', '\xC2', '\x3A', '\x7F', '\xA4', '\xC3', '\x11', '\x53', '\xE0', '\xC1',
+        '\x77', '\x6F', '\xA6', '\xDF', '\x7D'};
     thread_local EncryptedName<sizeof(listUpSource), 0xB195637DAFCB0D59ULL> listUpName(listUpSource);
     const char* listUp = listUpName.Text();
     const std::string up(listUp);
     delayList->scrollBar->SetButtonImages(up, down);
   }
   {
-    const std::uint8_t listBackgroundSource[] = {
-        0x01, 0x36, 0x0D, 0x1F, 0x41, 0xE3, 0x80, 0x14, 0x07, 0x7D, 0x0D, 0x29, 0x3C, 0x97, 0x19, 0xAA, 0xA2, 0xEB, 0xA2, 0x89, 0xED, 0x1D, 0x28, 0xB0,
-        0xA5, 0xB7, 0xAF, 0x88, 0xF1, 0x2D};
+    const char listBackgroundSource[] = {
+        '\x01', '\x36', '\x0D', '\x1F', '\x41', '\xE3', '\x80', '\x14', '\x07', '\x7D', '\x0D', '\x29', '\x3C', '\x97', '\x19', '\xAA', '\xA2', '\xEB', '\xA2', '\x89', '\xED', '\x1D', '\x28', '\xB0',
+        '\xA5', '\xB7', '\xAF', '\x88', '\xF1', '\x2D'};
     thread_local EncryptedName<sizeof(listBackgroundSource), 0xD9452D81E5CD99C1ULL> listBackgroundName(listBackgroundSource);
     const char* listBackground = listBackgroundName.Text();
     this->delayList->scrollBar->SetBackground(std::string(listBackground));
   }
   {
     CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>* delayList = this->delayList;
-    const std::uint8_t listThumbBottomSource[] = {
-        0xCD, 0xCC, 0x4D, 0xF3, 0x85, 0x9D, 0x4A, 0x14, 0xCB, 0x87, 0x4D, 0xC5, 0xF8, 0xE9, 0xD3, 0xAA, 0x6E, 0x11, 0xE2, 0x65, 0x29, 0x63, 0xED, 0xB8,
-        0x7F, 0x3C, 0xE9, 0x66, 0x32, 0x3D, 0xA1, 0xBB, 0x60, 0x13, 0x8D};
+    const char listThumbBottomSource[] = {
+        '\xCD', '\xCC', '\x4D', '\xF3', '\x85', '\x9D', '\x4A', '\x14', '\xCB', '\x87', '\x4D', '\xC5', '\xF8', '\xE9', '\xD3', '\xAA', '\x6E', '\x11', '\xE2', '\x65', '\x29', '\x63', '\xED', '\xB8',
+        '\x7F', '\x3C', '\xE9', '\x66', '\x32', '\x3D', '\xA1', '\xBB', '\x60', '\x13', '\x8D'};
     thread_local EncryptedName<sizeof(listThumbBottomSource), 0xD98F5345098D630DULL> listThumbBottomName(listThumbBottomSource);
     const char* listThumbBottom = listThumbBottomName.Text();
     const std::string bottom(listThumbBottom);
-    const std::uint8_t listThumbMiddleSource[] = {
-        0xEB, 0xB0, 0x29, 0x51, 0x01, 0x31, 0xE8, 0xB2, 0xED, 0xFB, 0x29, 0x67, 0x7C, 0x45, 0x71, 0x0C, 0x48, 0x6D, 0x86, 0xC7, 0xAD, 0xCF, 0x4F, 0x1E,
-        0x59, 0x40, 0x84, 0xC2, 0xA5, 0xD1, 0x4F, 0x12, 0x5B, 0x1F};
+    const char listThumbMiddleSource[] = {
+        '\xEB', '\xB0', '\x29', '\x51', '\x01', '\x31', '\xE8', '\xB2', '\xED', '\xFB', '\x29', '\x67', '\x7C', '\x45', '\x71', '\x0C', '\x48', '\x6D', '\x86', '\xC7', '\xAD', '\xCF', '\x4F', '\x1E',
+        '\x59', '\x40', '\x84', '\xC2', '\xA5', '\xD1', '\x4F', '\x12', '\x5B', '\x1F'};
     thread_local EncryptedName<sizeof(listThumbMiddleSource), 0x7F2DFFC1ABE91F2BULL> listThumbMiddleName(listThumbMiddleSource);
     const char* listThumbMiddle = listThumbMiddleName.Text();
     const std::string middle(listThumbMiddle);
-    const std::uint8_t listThumbTopSource[] = {
-        0x4D, 0x2E, 0xD1, 0x09, 0x73, 0x67, 0xAC, 0x30, 0x4B, 0x65, 0xD1, 0x3F, 0x0E, 0x13, 0x35, 0x8E, 0xEE, 0xF3, 0x7E, 0x9F, 0xDF, 0x99, 0x0B, 0x9C,
-        0xFF, 0xDE, 0x64, 0x83, 0x9D, 0xCB, 0x04, 0x8D, 0x8D};
+    const char listThumbTopSource[] = {
+        '\x4D', '\x2E', '\xD1', '\x09', '\x73', '\x67', '\xAC', '\x30', '\x4B', '\x65', '\xD1', '\x3F', '\x0E', '\x13', '\x35', '\x8E', '\xEE', '\xF3', '\x7E', '\x9F', '\xDF', '\x99', '\x0B', '\x9C',
+        '\xFF', '\xDE', '\x64', '\x83', '\x9D', '\xCB', '\x04', '\x8D', '\x8D'};
     thread_local EncryptedName<sizeof(listThumbTopSource), 0xFD69A9B3F311818DULL> listThumbTopName(listThumbTopSource);
     const char* listThumbTop = listThumbTopName.Text();
     const std::string top(listThumbTop);
@@ -998,8 +1000,8 @@ void CUISkillDelayInfo::Slot15(int width, int height) {
   this->description->Move(11, 334);
   this->description->SetTextOffset(0, 0);
   {
-    const std::uint8_t descriptionFontSource[] = {
-        0xD4, 0x00, 0xB3, 0x86, 0x20, 0x23};
+    const char descriptionFontSource[] = {
+        '\xD4', '\x00', '\xB3', '\x86', '\x20', '\x23'};
     thread_local EncryptedName<sizeof(descriptionFontSource), 0x9B0F234DEFDF7593ULL> descriptionFontName(descriptionFontSource);
     const char* descriptionFont = descriptionFontName.Text();
     this->description->SetFont(std::string(descriptionFont));
@@ -1014,44 +1016,44 @@ void CUISkillDelayInfo::Slot15(int width, int height) {
   this->description->SetScrollBarSize(13, 35);
   this->description->SetScrollStep(1);
   {
-    const std::uint8_t descriptionDownSource[] = {
-        0x79, 0x82, 0xFD, 0xC9, 0x4D, 0x5D, 0xD0, 0x20, 0x7F, 0xC9, 0xFD, 0xFF, 0x30, 0x29, 0x49, 0x9E, 0xDA, 0x5F, 0x52, 0x5F, 0xE1, 0xA3, 0x71, 0x82,
-        0xCE, 0x43, 0x13, 0x51, 0xE0, 0xE3, 0x15};
+    const char descriptionDownSource[] = {
+        '\x79', '\x82', '\xFD', '\xC9', '\x4D', '\x5D', '\xD0', '\x20', '\x7F', '\xC9', '\xFD', '\xFF', '\x30', '\x29', '\x49', '\x9E', '\xDA', '\x5F', '\x52', '\x5F', '\xE1', '\xA3', '\x71', '\x82',
+        '\xCE', '\x43', '\x13', '\x51', '\xE0', '\xE3', '\x15'};
     thread_local EncryptedName<sizeof(descriptionDownSource), 0xED15938D333D2DB9ULL> descriptionDownName(descriptionDownSource);
     const char* descriptionDown = descriptionDownName.Text();
     const std::string down(descriptionDown);
-    const std::uint8_t descriptionUpSource[] = {
-        0x83, 0x96, 0x9B, 0x91, 0xA7, 0xE3, 0xB4, 0x04, 0x85, 0xDD, 0x9B, 0xA7, 0xDA, 0x97, 0x2D, 0xBA, 0x20, 0x4B, 0x34, 0x07, 0x0B, 0x1D, 0x04, 0xB9,
-        0x6D, 0x5B, 0x36, 0x1B, 0x67};
+    const char descriptionUpSource[] = {
+        '\x83', '\x96', '\x9B', '\x91', '\xA7', '\xE3', '\xB4', '\x04', '\x85', '\xDD', '\x9B', '\xA7', '\xDA', '\x97', '\x2D', '\xBA', '\x20', '\x4B', '\x34', '\x07', '\x0B', '\x1D', '\x04', '\xB9',
+        '\x6D', '\x5B', '\x36', '\x1B', '\x67'};
     thread_local EncryptedName<sizeof(descriptionUpSource), 0xC9712D676B5B3943ULL> descriptionUpName(descriptionUpSource);
     const char* descriptionUp = descriptionUpName.Text();
     const std::string up(descriptionUp);
     this->description->SetScrollBarButtonImages(up, down);
   }
   {
-    const std::uint8_t descriptionBackgroundSource[] = {
-        0xFB, 0x48, 0xC1, 0xE1, 0x01, 0x6F, 0xEE, 0x70, 0xFD, 0x03, 0xC1, 0xD7, 0x7C, 0x1B, 0x77, 0xCE, 0x58, 0x95, 0x6E, 0x77, 0xAD, 0x91, 0x46, 0xD4,
-        0x5F, 0xC9, 0x63, 0x76, 0xB1, 0xA1};
+    const char descriptionBackgroundSource[] = {
+        '\xFB', '\x48', '\xC1', '\xE1', '\x01', '\x6F', '\xEE', '\x70', '\xFD', '\x03', '\xC1', '\xD7', '\x7C', '\x1B', '\x77', '\xCE', '\x58', '\x95', '\x6E', '\x77', '\xAD', '\x91', '\x46', '\xD4',
+        '\x5F', '\xC9', '\x63', '\x76', '\xB1', '\xA1'};
     thread_local EncryptedName<sizeof(descriptionBackgroundSource), 0xBD2BA1C11B01E73BULL> descriptionBackgroundName(descriptionBackgroundSource);
     const char* descriptionBackground = descriptionBackgroundName.Text();
     this->description->SetScrollBarBackground(std::string(descriptionBackground));
   }
   {
-    const std::uint8_t descriptionThumbBottomSource[] = {
-        0xB3, 0x88, 0x8D, 0xB7, 0x39, 0xA1, 0xC0, 0x1C, 0xB5, 0xC3, 0x8D, 0x81, 0x44, 0xD5, 0x59, 0xA2, 0x10, 0x55, 0x22, 0x21, 0x95, 0x5F, 0x67, 0xB0,
-        0x01, 0x78, 0x29, 0x22, 0x8E, 0x01, 0x2B, 0xB3, 0x1E, 0x57, 0x4D};
+    const char descriptionThumbBottomSource[] = {
+        '\xB3', '\x88', '\x8D', '\xB7', '\x39', '\xA1', '\xC0', '\x1C', '\xB5', '\xC3', '\x8D', '\x81', '\x44', '\xD5', '\x59', '\xA2', '\x10', '\x55', '\x22', '\x21', '\x95', '\x5F', '\x67', '\xB0',
+        '\x01', '\x78', '\x29', '\x22', '\x8E', '\x01', '\x2B', '\xB3', '\x1E', '\x57', '\x4D'};
     thread_local EncryptedName<sizeof(descriptionThumbBottomSource), 0xD1056FF94D4D2773ULL> descriptionThumbBottomName(descriptionThumbBottomSource);
     const char* descriptionThumbBottom = descriptionThumbBottomName.Text();
     const std::string bottom(descriptionThumbBottom);
-    const std::uint8_t descriptionThumbMiddleSource[] = {
-        0x2B, 0xF0, 0xC9, 0xC9, 0xBF, 0x6F, 0xF4, 0x8E, 0x2D, 0xBB, 0xC9, 0xFF, 0xC2, 0x1B, 0x6D, 0x30, 0x88, 0x2D, 0x66, 0x5F, 0x13, 0x91, 0x53, 0x22,
-        0x99, 0x00, 0x64, 0x5A, 0x1B, 0x8F, 0x53, 0x2E, 0x9B, 0x5F};
+    const char descriptionThumbMiddleSource[] = {
+        '\x2B', '\xF0', '\xC9', '\xC9', '\xBF', '\x6F', '\xF4', '\x8E', '\x2D', '\xBB', '\xC9', '\xFF', '\xC2', '\x1B', '\x6D', '\x30', '\x88', '\x2D', '\x66', '\x5F', '\x13', '\x91', '\x53', '\x22',
+        '\x99', '\x00', '\x64', '\x5A', '\x1B', '\x8F', '\x53', '\x2E', '\x9B', '\x5F'};
     thread_local EncryptedName<sizeof(descriptionThumbMiddleSource), 0x4331A17F33095FEBULL> descriptionThumbMiddleName(descriptionThumbMiddleSource);
     const char* descriptionThumbMiddle = descriptionThumbMiddleName.Text();
     const std::string middle(descriptionThumbMiddle);
-    const std::uint8_t descriptionThumbTopSource[] = {
-        0xD1, 0x4C, 0x93, 0x63, 0x71, 0x93, 0xB0, 0x86, 0xD7, 0x07, 0x93, 0x55, 0x0C, 0xE7, 0x29, 0x38, 0x72, 0x91, 0x3C, 0xF5, 0xDD, 0x6D, 0x17, 0x2A,
-        0x63, 0xBC, 0x26, 0xE9, 0x9F, 0x3F, 0x18, 0x3B, 0x11};
+    const char descriptionThumbTopSource[] = {
+        '\xD1', '\x4C', '\x93', '\x63', '\x71', '\x93', '\xB0', '\x86', '\xD7', '\x07', '\x93', '\x55', '\x0C', '\xE7', '\x29', '\x38', '\x72', '\x91', '\x3C', '\xF5', '\xDD', '\x6D', '\x17', '\x2A',
+        '\x63', '\xBC', '\x26', '\xE9', '\x9F', '\x3F', '\x18', '\x3B', '\x11'};
     thread_local EncryptedName<sizeof(descriptionThumbTopSource), 0x4B755DB19953E311ULL> descriptionThumbTopName(descriptionThumbTopSource);
     const char* descriptionThumbTop = descriptionThumbTopName.Text();
     const std::string top(descriptionThumbTop);

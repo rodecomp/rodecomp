@@ -31,7 +31,9 @@ namespace {
 template <std::size_t Length, std::uint64_t Key>
 class EncryptedName {
 public:
-  explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+  // INLINED
+  template <typename Byte>
+  explicit EncryptedName(const Byte (&source)[Length]) : m_encrypted(true) {
     for (std::uint64_t index = 0; index < Length; ++index) {
       this->m_text[index] = source[index];
     }
@@ -59,7 +61,7 @@ private:
 
 // INLINED
 template <std::uint64_t Key, std::size_t Length>
-const char* DecryptName(const std::uint8_t (&source)[Length]) {
+const char* DecryptName(const char (&source)[Length]) {
   thread_local EncryptedName<Length, Key> name(source);
   return name.Text();
 }
@@ -552,22 +554,22 @@ void CUIProbabilityTable::Slot15(int width, int height) {
   this->m_titleBar = new CUITitleBar();
   this->m_titleBar->SetSize(345, 17);
   this->m_titleBar->Move(0, 0);
-  const std::uint8_t titleRight[] = {
-    0xAD, 0x14, 0x55, 0xD7, 0x53, 0x35, 0xD2, 0x08, 0xAB, 0x5F, 0x55, 0xE1, 0x2E, 0x41, 0x4B, 0xA7,
-    0x0C, 0xC8, 0xFC, 0x4E, 0xCC, 0x92, 0x79, 0xB1, 0x08, 0xC9, 0xF3, 0x4C, 0xF0, 0x9E, 0x4B, 0xB1,
-    0x04, 0xCF, 0xF9, 0x48, 0xF1, 0x9A, 0x65, 0x9A, 0x1F, 0xD2, 0xF2, 0x45, 0xE7, 0xD5, 0x75, 0xA8,
-    0x1D, 0xBB
+  const char titleRight[] = {
+    '\xAD', '\x14', '\x55', '\xD7', '\x53', '\x35', '\xD2', '\x08', '\xAB', '\x5F', '\x55', '\xE1', '\x2E', '\x41', '\x4B', '\xA7',
+    '\x0C', '\xC8', '\xFC', '\x4E', '\xCC', '\x92', '\x79', '\xB1', '\x08', '\xC9', '\xF3', '\x4C', '\xF0', '\x9E', '\x4B', '\xB1',
+    '\x04', '\xCF', '\xF9', '\x48', '\xF1', '\x9A', '\x65', '\x9A', '\x1F', '\xD2', '\xF2', '\x45', '\xE7', '\xD5', '\x75', '\xA8',
+    '\x1D', '\xBB'
   };
-  const std::uint8_t titleMiddle[] = {
-    0x09, 0x5A, 0x9F, 0x71, 0x4F, 0x1B, 0x7E, 0xEE, 0x0F, 0x11, 0x9F, 0x47, 0x32, 0x6F, 0xE7, 0x41,
-    0xA8, 0x86, 0x36, 0xE8, 0xD0, 0xBC, 0xD5, 0x57, 0xAC, 0x87, 0x39, 0xEA, 0xEC, 0xB0, 0xE7, 0x57,
-    0xA0, 0x81, 0x33, 0xEE, 0xED, 0xB4, 0xC9, 0x7C, 0xA4, 0x9C, 0x3B, 0xA5, 0xED, 0xB8, 0xCB, 0x23
+  const char titleMiddle[] = {
+    '\x09', '\x5A', '\x9F', '\x71', '\x4F', '\x1B', '\x7E', '\xEE', '\x0F', '\x11', '\x9F', '\x47', '\x32', '\x6F', '\xE7', '\x41',
+    '\xA8', '\x86', '\x36', '\xE8', '\xD0', '\xBC', '\xD5', '\x57', '\xAC', '\x87', '\x39', '\xEA', '\xEC', '\xB0', '\xE7', '\x57',
+    '\xA0', '\x81', '\x33', '\xEE', '\xED', '\xB4', '\xC9', '\x7C', '\xA4', '\x9C', '\x3B', '\xA5', '\xED', '\xB8', '\xCB', '\x23'
   };
-  const std::uint8_t titleLeft[] = {
-    0x47, 0xBC, 0xAB, 0x85, 0xF9, 0xC7, 0xB4, 0xC6, 0x41, 0xF7, 0xAB, 0xB3, 0x84, 0xB3, 0x2D, 0x69,
-    0xE6, 0x60, 0x02, 0x1C, 0x66, 0x60, 0x1F, 0x7F, 0xE2, 0x61, 0x0D, 0x1E, 0x5A, 0x6C, 0x2D, 0x7F,
-    0xEE, 0x67, 0x07, 0x1A, 0x5B, 0x68, 0x03, 0x54, 0xEB, 0x76, 0x0D, 0x0B, 0x17, 0x6B, 0x1C, 0x7B,
-    0x87
+  const char titleLeft[] = {
+    '\x47', '\xBC', '\xAB', '\x85', '\xF9', '\xC7', '\xB4', '\xC6', '\x41', '\xF7', '\xAB', '\xB3', '\x84', '\xB3', '\x2D', '\x69',
+    '\xE6', '\x60', '\x02', '\x1C', '\x66', '\x60', '\x1F', '\x7F', '\xE2', '\x61', '\x0D', '\x1E', '\x5A', '\x6C', '\x2D', '\x7F',
+    '\xEE', '\x67', '\x07', '\x1A', '\x5B', '\x68', '\x03', '\x54', '\xEB', '\x76', '\x0D', '\x0B', '\x17', '\x6B', '\x1C', '\x7B',
+    '\x87'
   };
   this->m_titleBar->SetImages(std::string(DecryptName<0x0B7109397F6B1387ULL>(titleLeft)), std::string(DecryptName<0x23BBD58F8B5FF5C9ULL>(titleMiddle)), std::string(DecryptName<0xC517FB932D95BB6DULL>(titleRight)));
   this->AddChild(this->m_titleBar);
@@ -575,12 +577,12 @@ void CUIProbabilityTable::Slot15(int width, int height) {
   CUIStaticText* title = new CUIStaticText();
   title->SetSize(310, 17);
   title->Move(18, 0);
-  const std::uint8_t titleTextSource[] = {0x8B, 0x87, 0xE4, 0xDB, 0xF5, 0x0F, 0xB1, 0x29, 0xF0, 0x29};
+  const char titleTextSource[] = {'\x8B', '\x87', '\xE4', '\xDB', '\xF5', '\x0F', '\xB1', '\x29', '\xF0', '\x29'};
   const char* titleText = DecryptName<0x9949BFD527532943ULL>(titleTextSource);
   title->SetText(titleText, std::strlen(titleText));
   title->SetFitText(0);
   title->SetAlign(0, 6);
-  const std::uint8_t titleFont[] = {0x28, 0x08, 0x97, 0x4A, 0x1C, 0x07};
+  const char titleFont[] = {'\x28', '\x08', '\x97', '\x4A', '\x1C', '\x07'};
   title->SetFont(std::string(DecryptName<0xCD8F077123FB7D6FULL>(titleFont)));
   title->SetFontHeight(12);
   title->SetBold(0);
@@ -596,25 +598,25 @@ void CUIProbabilityTable::Slot15(int width, int height) {
   systemButton->SetOnClick([this]() { this->OnButtonClick(); });
   systemButton->disabled = 0;
   systemButton->Invalidate();
-  const std::uint8_t systemInactive[] = {
-    0x5F, 0x6A, 0xAD, 0x51, 0x17, 0xE7, 0x38, 0x68, 0x59, 0x21, 0xAD, 0x67, 0x6A, 0x93, 0xA1, 0xC7,
-    0xFE, 0xB6, 0x04, 0xC8, 0x88, 0x40, 0x93, 0xD1, 0xFA, 0xB7, 0x0B, 0xCA, 0xB4, 0x4C, 0xA1, 0xD6,
-    0xE6, 0xB6, 0x32, 0xC9, 0xB6, 0x5A, 0x98, 0xFA, 0xF0, 0xA3, 0x0B, 0x85, 0xB5, 0x44, 0x8D, 0xA5
+  const char systemInactive[] = {
+    '\x5F', '\x6A', '\xAD', '\x51', '\x17', '\xE7', '\x38', '\x68', '\x59', '\x21', '\xAD', '\x67', '\x6A', '\x93', '\xA1', '\xC7',
+    '\xFE', '\xB6', '\x04', '\xC8', '\x88', '\x40', '\x93', '\xD1', '\xFA', '\xB7', '\x0B', '\xCA', '\xB4', '\x4C', '\xA1', '\xD6',
+    '\xE6', '\xB6', '\x32', '\xC9', '\xB6', '\x5A', '\x98', '\xFA', '\xF0', '\xA3', '\x0B', '\x85', '\xB5', '\x44', '\x8D', '\xA5'
   };
-  const std::uint8_t systemPressed[] = {
-    0x31, 0x68, 0xF9, 0xF3, 0xD7, 0xB7, 0x8A, 0x3C, 0x37, 0x23, 0xF9, 0xC5, 0xAA, 0xC3, 0x13, 0x93,
-    0x90, 0xB4, 0x50, 0x6A, 0x48, 0x10, 0x21, 0x85, 0x94, 0xB5, 0x5F, 0x68, 0x74, 0x1C, 0x13, 0x82,
-    0x88, 0xB4, 0x66, 0x6B, 0x76, 0x0A, 0x2A, 0xAE, 0x9E, 0xA9, 0x17, 0x6B, 0x7A, 0x09, 0x4F
+  const char systemPressed[] = {
+    '\x31', '\x68', '\xF9', '\xF3', '\xD7', '\xB7', '\x8A', '\x3C', '\x37', '\x23', '\xF9', '\xC5', '\xAA', '\xC3', '\x13', '\x93',
+    '\x90', '\xB4', '\x50', '\x6A', '\x48', '\x10', '\x21', '\x85', '\x94', '\xB5', '\x5F', '\x68', '\x74', '\x1C', '\x13', '\x82',
+    '\x88', '\xB4', '\x66', '\x6B', '\x76', '\x0A', '\x2A', '\xAE', '\x9E', '\xA9', '\x17', '\x6B', '\x7A', '\x09', '\x4F'
   };
-  const std::uint8_t systemHover[] = {
-    0xF7, 0xE8, 0x6D, 0xC3, 0x7F, 0x2B, 0x6C, 0xDA, 0xF1, 0xA3, 0x6D, 0xF5, 0x02, 0x5F, 0xF5, 0x75,
-    0x56, 0x34, 0xC4, 0x5A, 0xE0, 0x8C, 0xC7, 0x63, 0x52, 0x35, 0xCB, 0x58, 0xDC, 0x80, 0xF5, 0x64,
-    0x4E, 0x34, 0xF2, 0x5B, 0xDE, 0x96, 0xCC, 0x48, 0x58, 0x29, 0x83, 0x5B, 0xD2, 0x95, 0xA9
+  const char systemHover[] = {
+    '\xF7', '\xE8', '\x6D', '\xC3', '\x7F', '\x2B', '\x6C', '\xDA', '\xF1', '\xA3', '\x6D', '\xF5', '\x02', '\x5F', '\xF5', '\x75',
+    '\x56', '\x34', '\xC4', '\x5A', '\xE0', '\x8C', '\xC7', '\x63', '\x52', '\x35', '\xCB', '\x58', '\xDC', '\x80', '\xF5', '\x64',
+    '\x4E', '\x34', '\xF2', '\x5B', '\xDE', '\x96', '\xCC', '\x48', '\x58', '\x29', '\x83', '\x5B', '\xD2', '\x95', '\xA9'
   };
-  const std::uint8_t systemNormal[] = {
-    0xA7, 0x04, 0x51, 0x5F, 0x61, 0xF1, 0x26, 0xDE, 0xA1, 0x4F, 0x51, 0x69, 0x1C, 0x85, 0xBF, 0x71,
-    0x06, 0xD8, 0xF8, 0xC6, 0xFE, 0x56, 0x8D, 0x67, 0x02, 0xD9, 0xF7, 0xC4, 0xC2, 0x5A, 0xBF, 0x60,
-    0x1E, 0xD8, 0xCE, 0xC7, 0xC0, 0x4C, 0x86, 0x4C, 0x08, 0xCD, 0xF7, 0x8B, 0xC3, 0x52, 0x93, 0x13
+  const char systemNormal[] = {
+    '\xA7', '\x04', '\x51', '\x5F', '\x61', '\xF1', '\x26', '\xDE', '\xA1', '\x4F', '\x51', '\x69', '\x1C', '\x85', '\xBF', '\x71',
+    '\x06', '\xD8', '\xF8', '\xC6', '\xFE', '\x56', '\x8D', '\x67', '\x02', '\xD9', '\xF7', '\xC4', '\xC2', '\x5A', '\xBF', '\x60',
+    '\x1E', '\xD8', '\xCE', '\xC7', '\xC0', '\x4C', '\x86', '\x4C', '\x08', '\xCD', '\xF7', '\x8B', '\xC3', '\x52', '\x93', '\x13'
   };
   systemButton->SetImages(
     std::string(DecryptName<0x13E33FA1A591AB67ULL>(systemNormal)), std::string(DecryptName<0x17A9E5BF39AD4737ULL>(systemHover)),
@@ -628,27 +630,27 @@ void CUIProbabilityTable::Slot15(int width, int height) {
   closeButton->SetOnClick([this]() { this->OnClose(); });
   closeButton->disabled = 0;
   closeButton->Invalidate();
-  const std::uint8_t closeInactive[] = {
-    0x67, 0x5A, 0xBF, 0xC3, 0xF1, 0x85, 0xEE, 0x72, 0x61, 0x11, 0xBF, 0xF5, 0x8C, 0xF1, 0x77, 0xDD,
-    0xC6, 0x86, 0x16, 0x5A, 0x6E, 0x22, 0x45, 0xCB, 0xC2, 0x87, 0x19, 0x58, 0x52, 0x2E, 0x77, 0xCC,
-    0xDE, 0x86, 0x20, 0x5A, 0x5D, 0x24, 0x58, 0xDA, 0xF8, 0x9A, 0x19, 0x5F, 0x1F, 0x29, 0x46, 0xCF,
-    0xA7
+  const char closeInactive[] = {
+    '\x67', '\x5A', '\xBF', '\xC3', '\xF1', '\x85', '\xEE', '\x72', '\x61', '\x11', '\xBF', '\xF5', '\x8C', '\xF1', '\x77', '\xDD',
+    '\xC6', '\x86', '\x16', '\x5A', '\x6E', '\x22', '\x45', '\xCB', '\xC2', '\x87', '\x19', '\x58', '\x52', '\x2E', '\x77', '\xCC',
+    '\xDE', '\x86', '\x20', '\x5A', '\x5D', '\x24', '\x58', '\xDA', '\xF8', '\x9A', '\x19', '\x5F', '\x1F', '\x29', '\x46', '\xCF',
+    '\xA7'
   };
-  const std::uint8_t closePressed[] = {
-    0x7D, 0x12, 0x2D, 0xCD, 0x7B, 0x71, 0x2A, 0x4E, 0x7B, 0x59, 0x2D, 0xFB, 0x06, 0x05, 0xB3, 0xE1,
-    0xDC, 0xCE, 0x84, 0x54, 0xE4, 0xD6, 0x81, 0xF7, 0xD8, 0xCF, 0x8B, 0x56, 0xD8, 0xDA, 0xB3, 0xF0,
-    0xC4, 0xCE, 0xB2, 0x54, 0xD7, 0xD0, 0x9C, 0xE6, 0xE2, 0xD2, 0x83, 0x19, 0xD9, 0xD2, 0x9F, 0x83
+  const char closePressed[] = {
+    '\x7D', '\x12', '\x2D', '\xCD', '\x7B', '\x71', '\x2A', '\x4E', '\x7B', '\x59', '\x2D', '\xFB', '\x06', '\x05', '\xB3', '\xE1',
+    '\xDC', '\xCE', '\x84', '\x54', '\xE4', '\xD6', '\x81', '\xF7', '\xD8', '\xCF', '\x8B', '\x56', '\xD8', '\xDA', '\xB3', '\xF0',
+    '\xC4', '\xCE', '\xB2', '\x54', '\xD7', '\xD0', '\x9C', '\xE6', '\xE2', '\xD2', '\x83', '\x19', '\xD9', '\xD2', '\x9F', '\x83'
   };
-  const std::uint8_t closeHover[] = {
-    0xBF, 0xBC, 0x1F, 0x2B, 0x45, 0xA9, 0xBC, 0x20, 0xB9, 0xF7, 0x1F, 0x1D, 0x38, 0xDD, 0x25, 0x8F,
-    0x1E, 0x60, 0xB6, 0xB2, 0xDA, 0x0E, 0x17, 0x99, 0x1A, 0x61, 0xB9, 0xB0, 0xE6, 0x02, 0x25, 0x9E,
-    0x06, 0x60, 0x80, 0xB2, 0xE9, 0x08, 0x0A, 0x88, 0x20, 0x7C, 0xB1, 0xFF, 0xE7, 0x0A, 0x09, 0xED
+  const char closeHover[] = {
+    '\xBF', '\xBC', '\x1F', '\x2B', '\x45', '\xA9', '\xBC', '\x20', '\xB9', '\xF7', '\x1F', '\x1D', '\x38', '\xDD', '\x25', '\x8F',
+    '\x1E', '\x60', '\xB6', '\xB2', '\xDA', '\x0E', '\x17', '\x99', '\x1A', '\x61', '\xB9', '\xB0', '\xE6', '\x02', '\x25', '\x9E',
+    '\x06', '\x60', '\x80', '\xB2', '\xE9', '\x08', '\x0A', '\x88', '\x20', '\x7C', '\xB1', '\xFF', '\xE7', '\x0A', '\x09', '\xED'
   };
-  const std::uint8_t closeNormal[] = {
-    0xC9, 0x88, 0xEF, 0x41, 0x7D, 0x93, 0xB8, 0x14, 0xCF, 0xC3, 0xEF, 0x77, 0x00, 0xE7, 0x21, 0xBB,
-    0x68, 0x54, 0x46, 0xD8, 0xE2, 0x34, 0x13, 0xAD, 0x6C, 0x55, 0x49, 0xDA, 0xDE, 0x38, 0x21, 0xAA,
-    0x70, 0x54, 0x70, 0xD8, 0xD1, 0x32, 0x0E, 0xBC, 0x56, 0x48, 0x49, 0xDD, 0x93, 0x3F, 0x10, 0xA9,
-    0x09
+  const char closeNormal[] = {
+    '\xC9', '\x88', '\xEF', '\x41', '\x7D', '\x93', '\xB8', '\x14', '\xCF', '\xC3', '\xEF', '\x77', '\x00', '\xE7', '\x21', '\xBB',
+    '\x68', '\x54', '\x46', '\xD8', '\xE2', '\x34', '\x13', '\xAD', '\x6C', '\x55', '\x49', '\xDA', '\xDE', '\x38', '\x21', '\xAA',
+    '\x70', '\x54', '\x70', '\xD8', '\xD1', '\x32', '\x0E', '\xBC', '\x56', '\x48', '\x49', '\xDD', '\x93', '\x3F', '\x10', '\xA9',
+    '\x09'
   };
   closeButton->SetImages(
     std::string(DecryptName<0xD97D5DBDBB2F2709ULL>(closeNormal)), std::string(DecryptName<0xED796785D1DF137FULL>(closeHover)),
@@ -659,12 +661,12 @@ void CUIProbabilityTable::Slot15(int width, int height) {
   this->m_nameHeader = new CUIStaticText();
   this->m_nameHeader->SetSize(160, 18);
   this->m_nameHeader->Move(10, 30);
-  const std::uint8_t nameHeaderSource[] = {0x50, 0xC3, 0x45, 0x6D, 0x12, 0xA3, 0x19, 0x6D, 0x2A, 0xC0, 0x0F, 0xD7};
+  const char nameHeaderSource[] = {'\x50', '\xC3', '\x45', '\x6D', '\x12', '\xA3', '\x19', '\x6D', '\x2A', '\xC0', '\x0F', '\xD7'};
   const char* nameHeaderText = DecryptName<0xDD3913D5D7F97BE1ULL>(nameHeaderSource);
   this->m_nameHeader->SetText(nameHeaderText, std::strlen(nameHeaderText));
   this->m_nameHeader->SetFitText(0);
   this->m_nameHeader->SetAlign(2, 6);
-  const std::uint8_t nameHeaderFont[] = {0xDC, 0x22, 0x6F, 0xF0, 0x0A, 0x05};
+  const char nameHeaderFont[] = {'\xDC', '\x22', '\x6F', '\xF0', '\x0A', '\x05'};
   this->m_nameHeader->SetFont(std::string(DecryptName<0x050505679903579BULL>(nameHeaderFont)));
   this->m_nameHeader->SetFontHeight(12);
   this->m_nameHeader->SetBold(0);
@@ -694,29 +696,29 @@ void CUIProbabilityTable::Slot15(int width, int height) {
   this->m_searchButton->SetOnClick([this]() { this->Search(); });
   this->m_searchButton->disabled = 0;
   this->m_searchButton->Invalidate();
-  const std::uint8_t searchInactive[] = {
-    0x4F, 0x36, 0x2B, 0xF7, 0x75, 0xB1, 0x3A, 0xF4, 0x49, 0x7D, 0x2B, 0xC1, 0x08, 0xC5, 0xA3, 0x57,
-    0xEE, 0xEF, 0x82, 0x6A, 0xD4, 0x0B, 0x96, 0x56, 0xE1, 0xC6, 0x82, 0x63, 0xC1, 0x1A, 0x8D, 0x5F,
-    0xEE, 0xFA, 0x8E, 0x3E, 0xE9, 0x1D, 0x8B, 0x57, 0xD0, 0xEA, 0x8E, 0x6C, 0xC7, 0x1C, 0x97, 0x5B,
-    0xEE, 0xEB, 0xB4, 0x63, 0xDA, 0x0D, 0x92, 0x58, 0xE3, 0xB7, 0x89, 0x60, 0xC5, 0x7F
+  const char searchInactive[] = {
+    '\x4F', '\x36', '\x2B', '\xF7', '\x75', '\xB1', '\x3A', '\xF4', '\x49', '\x7D', '\x2B', '\xC1', '\x08', '\xC5', '\xA3', '\x57',
+    '\xEE', '\xEF', '\x82', '\x6A', '\xD4', '\x0B', '\x96', '\x56', '\xE1', '\xC6', '\x82', '\x63', '\xC1', '\x1A', '\x8D', '\x5F',
+    '\xEE', '\xFA', '\x8E', '\x3E', '\xE9', '\x1D', '\x8B', '\x57', '\xD0', '\xEA', '\x8E', '\x6C', '\xC7', '\x1C', '\x97', '\x5B',
+    '\xEE', '\xEB', '\xB4', '\x63', '\xDA', '\x0D', '\x92', '\x58', '\xE3', '\xB7', '\x89', '\x60', '\xC5', '\x7F'
   };
-  const std::uint8_t searchPressed[] = {
-    0x57, 0x5E, 0x21, 0x27, 0x11, 0x5D, 0x2C, 0xE2, 0x51, 0x15, 0x21, 0x11, 0x6C, 0x29, 0xB5, 0x41,
-    0xF6, 0x87, 0x88, 0xBA, 0xB0, 0xE7, 0x80, 0x40, 0xF9, 0xAE, 0x88, 0xB3, 0xA5, 0xF6, 0x9B, 0x49,
-    0xF6, 0x92, 0x84, 0xEE, 0x8D, 0xF1, 0x9D, 0x41, 0xC8, 0x82, 0x84, 0xBC, 0xA3, 0xF0, 0x81, 0x4D,
-    0xF6, 0x83, 0xBE, 0xB2, 0xA7, 0xF6, 0x9B, 0x01, 0xF5, 0x9C, 0x91, 0xDD
+  const char searchPressed[] = {
+    '\x57', '\x5E', '\x21', '\x27', '\x11', '\x5D', '\x2C', '\xE2', '\x51', '\x15', '\x21', '\x11', '\x6C', '\x29', '\xB5', '\x41',
+    '\xF6', '\x87', '\x88', '\xBA', '\xB0', '\xE7', '\x80', '\x40', '\xF9', '\xAE', '\x88', '\xB3', '\xA5', '\xF6', '\x9B', '\x49',
+    '\xF6', '\x92', '\x84', '\xEE', '\x8D', '\xF1', '\x9D', '\x41', '\xC8', '\x82', '\x84', '\xBC', '\xA3', '\xF0', '\x81', '\x4D',
+    '\xF6', '\x83', '\xBE', '\xB2', '\xA7', '\xF6', '\x9B', '\x01', '\xF5', '\x9C', '\x91', '\xDD'
   };
-  const std::uint8_t searchHover[] = {
-    0x0D, 0x5E, 0x59, 0x4F, 0x4D, 0x95, 0xC2, 0x60, 0x0B, 0x15, 0x59, 0x79, 0x30, 0xE1, 0x5B, 0xC3,
-    0xAC, 0x87, 0xF0, 0xD2, 0xEC, 0x2F, 0x6E, 0xC2, 0xA3, 0xAE, 0xF0, 0xDB, 0xF9, 0x3E, 0x75, 0xCB,
-    0xAC, 0x92, 0xFC, 0x86, 0xD1, 0x39, 0x73, 0xC3, 0x92, 0x82, 0xFC, 0xD4, 0xFF, 0x38, 0x6F, 0xCF,
-    0xAC, 0x83, 0xC6, 0xC5, 0xFF, 0x3E, 0x74, 0xDE, 0xE3, 0x93, 0xF4, 0xC5, 0x8D
+  const char searchHover[] = {
+    '\x0D', '\x5E', '\x59', '\x4F', '\x4D', '\x95', '\xC2', '\x60', '\x0B', '\x15', '\x59', '\x79', '\x30', '\xE1', '\x5B', '\xC3',
+    '\xAC', '\x87', '\xF0', '\xD2', '\xEC', '\x2F', '\x6E', '\xC2', '\xA3', '\xAE', '\xF0', '\xDB', '\xF9', '\x3E', '\x75', '\xCB',
+    '\xAC', '\x92', '\xFC', '\x86', '\xD1', '\x39', '\x73', '\xC3', '\x92', '\x82', '\xFC', '\xD4', '\xFF', '\x38', '\x6F', '\xCF',
+    '\xAC', '\x83', '\xC6', '\xC5', '\xFF', '\x3E', '\x74', '\xDE', '\xE3', '\x93', '\xF4', '\xC5', '\x8D'
   };
-  const std::uint8_t searchNormal[] = {
-    0xBF, 0xBA, 0x4D, 0xEB, 0xF7, 0xC1, 0x4E, 0xE2, 0xB9, 0xF1, 0x4D, 0xDD, 0x8A, 0xB5, 0xD7, 0x41,
-    0x1E, 0x63, 0xE4, 0x76, 0x56, 0x7B, 0xE2, 0x40, 0x11, 0x4A, 0xE4, 0x7F, 0x43, 0x6A, 0xF9, 0x49,
-    0x1E, 0x76, 0xE8, 0x22, 0x6B, 0x6D, 0xFF, 0x41, 0x20, 0x66, 0xE8, 0x70, 0x45, 0x6C, 0xE3, 0x4D,
-    0x1E, 0x67, 0xD2, 0x7F, 0x58, 0x7D, 0xE6, 0x4E, 0x13, 0x3B, 0xEF, 0x7C, 0x47, 0x0F
+  const char searchNormal[] = {
+    '\xBF', '\xBA', '\x4D', '\xEB', '\xF7', '\xC1', '\x4E', '\xE2', '\xB9', '\xF1', '\x4D', '\xDD', '\x8A', '\xB5', '\xD7', '\x41',
+    '\x1E', '\x63', '\xE4', '\x76', '\x56', '\x7B', '\xE2', '\x40', '\x11', '\x4A', '\xE4', '\x7F', '\x43', '\x6A', '\xF9', '\x49',
+    '\x1E', '\x76', '\xE8', '\x22', '\x6B', '\x6D', '\xFF', '\x41', '\x20', '\x66', '\xE8', '\x70', '\x45', '\x6C', '\xE3', '\x4D',
+    '\x1E', '\x67', '\xD2', '\x7F', '\x58', '\x7D', '\xE6', '\x4E', '\x13', '\x3B', '\xEF', '\x7C', '\x47', '\x0F'
   };
   this->m_searchButton->SetImages(
     std::string(DecryptName<0x2F8B0F37118D157FULL>(searchNormal)), std::string(DecryptName<0xAD075B8DB599F1CDULL>(searchHover)),
@@ -730,7 +732,7 @@ void CUIProbabilityTable::Slot15(int width, int height) {
   this->m_itemName->SetText("", 0);
   this->m_itemName->SetFitText(1);
   this->m_itemName->SetAlign(6, 6);
-  const std::uint8_t itemNameFont[] = {0x2C, 0xCC, 0xAB, 0x66, 0x0A, 0x8F};
+  const char itemNameFont[] = {'\x2C', '\xCC', '\xAB', '\x66', '\x0A', '\x8F'};
   this->m_itemName->SetFont(std::string(DecryptName<0xB7FD8F670FC7B96BULL>(itemNameFont)));
   this->m_itemName->SetFontHeight(12);
   this->m_itemName->SetBold(1);
@@ -742,12 +744,12 @@ void CUIProbabilityTable::Slot15(int width, int height) {
   this->m_probabilityHeader = new CUIStaticText();
   this->m_probabilityHeader->SetSize(68, 24);
   this->m_probabilityHeader->Move(248, 61);
-  const std::uint8_t probabilityHeaderSource[] = {0x35, 0x79, 0xFA, 0x55, 0xB5};
+  const char probabilityHeaderSource[] = {'\x35', '\x79', '\xFA', '\x55', '\xB5'};
   const char* probabilityHeaderText = DecryptName<0xE7978FB5A94DD7FDULL>(probabilityHeaderSource);
   this->m_probabilityHeader->SetText(probabilityHeaderText, std::strlen(probabilityHeaderText));
   this->m_probabilityHeader->SetFitText(1);
   this->m_probabilityHeader->SetAlign(6, 6);
-  const std::uint8_t probabilityHeaderFont[] = {0xBA, 0xCC, 0xD7, 0x48, 0xF2, 0xFD};
+  const char probabilityHeaderFont[] = {'\xBA', '\xCC', '\xD7', '\x48', '\xF2', '\xFD'};
   this->m_probabilityHeader->SetFont(std::string(DecryptName<0x4941FD9F21BBB9FDULL>(probabilityHeaderFont)));
   this->m_probabilityHeader->SetFontHeight(12);
   this->m_probabilityHeader->SetBold(0);
@@ -769,34 +771,34 @@ void CUIProbabilityTable::Slot15(int width, int height) {
   this->m_list->scrollBar->SetSize(13, 360);
   this->m_list->scrollBar->Move(312, 0);
   this->m_list->scrollBar->step = 30;
-  const std::uint8_t scrollDown[] = {
-    0x8F, 0xC8, 0x2D, 0x7F, 0xC9, 0xF9, 0xFA, 0xB4, 0x89, 0x83, 0x2D, 0x49, 0xB4, 0x8D, 0x63, 0x0A,
-    0x2C, 0x15, 0x82, 0xE9, 0x65, 0x07, 0x5B, 0x16, 0x38, 0x09, 0xC3, 0xE7, 0x64, 0x47, 0x3F
+  const char scrollDown[] = {
+    '\x8F', '\xC8', '\x2D', '\x7F', '\xC9', '\xF9', '\xFA', '\xB4', '\x89', '\x83', '\x2D', '\x49', '\xB4', '\x8D', '\x63', '\x0A',
+    '\x2C', '\x15', '\x82', '\xE9', '\x65', '\x07', '\x5B', '\x16', '\x38', '\x09', '\xC3', '\xE7', '\x64', '\x47', '\x3F'
   };
-  const std::uint8_t scrollUp[] = {
-    0xB5, 0x62, 0x2D, 0xA7, 0xAB, 0xAB, 0x20, 0xF8, 0xB3, 0x29, 0x2D, 0x91, 0xD6, 0xDF, 0xB9, 0x46,
-    0x16, 0xBF, 0x82, 0x31, 0x07, 0x55, 0x90, 0x45, 0x5B, 0xAF, 0x80, 0x2D, 0x6B
+  const char scrollUp[] = {
+    '\xB5', '\x62', '\x2D', '\xA7', '\xAB', '\xAB', '\x20', '\xF8', '\xB3', '\x29', '\x2D', '\x91', '\xD6', '\xDF', '\xB9', '\x46',
+    '\x16', '\xBF', '\x82', '\x31', '\x07', '\x55', '\x90', '\x45', '\x5B', '\xAF', '\x80', '\x2D', '\x6B'
   };
   this->m_list->scrollBar->SetButtonImages(std::string(DecryptName<0x35E5656B5DEDCD75ULL>(scrollUp)), std::string(DecryptName<0x793F370985ED674FULL>(scrollDown)));
-  const std::uint8_t scrollMiddle[] = {
-    0xDD, 0xAA, 0x53, 0xD3, 0xB1, 0xED, 0x92, 0x28, 0xDB, 0xE1, 0x53, 0xE5, 0xCC, 0x99, 0x0B, 0x96,
-    0x7E, 0x77, 0xFC, 0x45, 0x1D, 0x13, 0x3A, 0x8C, 0x79, 0x2B, 0xF1, 0x44, 0x01, 0x23
+  const char scrollMiddle[] = {
+    '\xDD', '\xAA', '\x53', '\xD3', '\xB1', '\xED', '\x92', '\x28', '\xDB', '\xE1', '\x53', '\xE5', '\xCC', '\x99', '\x0B', '\x96',
+    '\x7E', '\x77', '\xFC', '\x45', '\x1D', '\x13', '\x3A', '\x8C', '\x79', '\x2B', '\xF1', '\x44', '\x01', '\x23'
   };
   this->m_list->scrollBar->SetBackground(std::string(DecryptName<0xE55723712993051DULL>(scrollMiddle)));
-  const std::uint8_t thumbBottom[] = {
-    0x8F, 0x0E, 0x0F, 0xCF, 0xA3, 0x19, 0x84, 0xB4, 0x89, 0x45, 0x0F, 0xF9, 0xDE, 0x6D, 0x1D, 0x0A,
-    0x2C, 0xD3, 0xA0, 0x59, 0x0F, 0xE7, 0x23, 0x18, 0x3D, 0xFE, 0xAB, 0x5A, 0x14, 0xB9, 0x6F, 0x1B,
-    0x22, 0xD1, 0xCF
+  const char thumbBottom[] = {
+    '\x8F', '\x0E', '\x0F', '\xCF', '\xA3', '\x19', '\x84', '\xB4', '\x89', '\x45', '\x0F', '\xF9', '\xDE', '\x6D', '\x1D', '\x0A',
+    '\x2C', '\xD3', '\xA0', '\x59', '\x0F', '\xE7', '\x23', '\x18', '\x3D', '\xFE', '\xAB', '\x5A', '\x14', '\xB9', '\x6F', '\x1B',
+    '\x22', '\xD1', '\xCF'
   };
-  const std::uint8_t thumbMiddle[] = {
-    0xA3, 0x5A, 0x21, 0x85, 0xFB, 0xEB, 0xD8, 0x06, 0xA5, 0x11, 0x21, 0xB3, 0x86, 0x9F, 0x41, 0xB8,
-    0x00, 0x87, 0x8E, 0x13, 0x57, 0x15, 0x7F, 0xAA, 0x11, 0xAA, 0x8C, 0x16, 0x5F, 0x0B, 0x7F, 0xA6,
-    0x13, 0xF5
+  const char thumbMiddle[] = {
+    '\xA3', '\x5A', '\x21', '\x85', '\xFB', '\xEB', '\xD8', '\x06', '\xA5', '\x11', '\x21', '\xB3', '\x86', '\x9F', '\x41', '\xB8',
+    '\x00', '\x87', '\x8E', '\x13', '\x57', '\x15', '\x7F', '\xAA', '\x11', '\xAA', '\x8C', '\x16', '\x5F', '\x0B', '\x7F', '\xA6',
+    '\x13', '\xF5'
   };
-  const std::uint8_t thumbTop[] = {
-    0x09, 0xBC, 0x39, 0x89, 0x39, 0x17, 0xD0, 0xBC, 0x0F, 0xF7, 0x39, 0xBF, 0x44, 0x63, 0x49, 0x02,
-    0xAA, 0x61, 0x96, 0x1F, 0x95, 0xE9, 0x77, 0x10, 0xBB, 0x4C, 0x8C, 0x03, 0xD7, 0xBB, 0x78, 0x01,
-    0xC9
+  const char thumbTop[] = {
+    '\x09', '\xBC', '\x39', '\x89', '\x39', '\x17', '\xD0', '\xBC', '\x0F', '\xF7', '\x39', '\xBF', '\x44', '\x63', '\x49', '\x02',
+    '\xAA', '\x61', '\x96', '\x1F', '\x95', '\xE9', '\x77', '\x10', '\xBB', '\x4C', '\x8C', '\x03', '\xD7', '\xBB', '\x78', '\x01',
+    '\xC9'
   };
   this->m_list->scrollBar->SetThumbImages(
     std::string(DecryptName<0x7115D9F973F913C9ULL>(thumbTop)), std::string(DecryptName<0xCB1D253B7FE1F563ULL>(thumbMiddle)), std::string(DecryptName<0x7941D76335CFA14FULL>(thumbBottom))

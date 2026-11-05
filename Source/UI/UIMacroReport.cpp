@@ -24,7 +24,9 @@ namespace {
 template <std::size_t Length, std::uint64_t Key>
 class EncryptedName {
 public:
-  explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+  // INLINED
+  template <typename Byte>
+  explicit EncryptedName(const Byte (&source)[Length]) : m_encrypted(true) {
     for (std::uint64_t index = 0; index < Length; ++index) {
       this->m_text[index] = source[index];
     }
@@ -49,6 +51,13 @@ private:
   std::uint8_t m_text[Length];
   bool m_encrypted;
 };
+
+// INLINED
+template <std::uint64_t Key, std::size_t Length>
+const char* DecryptName(const char (&source)[Length]) {
+  thread_local EncryptedName<Length, Key> name(source);
+  return name.Text();
+}
 
 }
 
@@ -148,11 +157,10 @@ void CUIMacroReport::Slot15(int width, int height) {
   this->m_background->Move(0, 17);
   {
     CUIStaticImage* background = this->m_background;
-    const std::uint8_t backgroundImageSource[] = {
-        0x19, 0x56, 0x21, 0x19, 0xAD, 0xDB, 0x68, 0xE6, 0x1F, 0x1D, 0x21, 0x2F, 0xD0, 0xAF, 0xF1, 0x66, 0xB8, 0x9A, 0x93, 0x8C, 0x3F, 0x70, 0xDD, 0x44,
-        0xAB, 0x8D, 0xBD, 0x81, 0x0A, 0x4A, 0xC0, 0x4A, 0xBA, 0x8B, 0x8E, 0x91, 0x08, 0x65, 0xC2, 0x59, 0xAD, 0xD7, 0x83, 0x8E, 0x1D, 0x15};
-    thread_local EncryptedName<sizeof(backgroundImageSource), 0x2BAD156DE3E1F9D9ULL> backgroundImageName(backgroundImageSource);
-    const std::string backgroundImage(backgroundImageName.Text());
+    const char backgroundImageSource[] = {
+        '\x19', '\x56', '\x21', '\x19', '\xAD', '\xDB', '\x68', '\xE6', '\x1F', '\x1D', '\x21', '\x2F', '\xD0', '\xAF', '\xF1', '\x66', '\xB8', '\x9A', '\x93', '\x8C', '\x3F', '\x70', '\xDD', '\x44',
+        '\xAB', '\x8D', '\xBD', '\x81', '\x0A', '\x4A', '\xC0', '\x4A', '\xBA', '\x8B', '\x8E', '\x91', '\x08', '\x65', '\xC2', '\x59', '\xAD', '\xD7', '\x83', '\x8E', '\x1D', '\x15'};
+    const std::string backgroundImage(DecryptName<0x2BAD156DE3E1F9D9ULL>(backgroundImageSource));
     background->SetImage(backgroundImage);
   }
   this->AddChild(this->m_background);
@@ -162,23 +170,20 @@ void CUIMacroReport::Slot15(int width, int height) {
   this->m_titleBar->Move(0, 0);
   {
     CUITitleBar* titleBar = this->m_titleBar;
-    const std::uint8_t titleRightSource[] = {
-        0x65, 0x32, 0xAD, 0x03, 0xA3, 0xE9, 0xB2, 0xCE, 0x63, 0x79, 0xAD, 0x35, 0xDE, 0x9D, 0x2B, 0x61, 0xC4, 0xEE, 0x04, 0x9A, 0x3C, 0x4E, 0x19, 0x77,
-        0xC0, 0xEF, 0x0B, 0x98, 0x00, 0x42, 0x2B, 0x77, 0xCC, 0xE9, 0x01, 0x9C, 0x01, 0x46, 0x05, 0x5C, 0xD7, 0xF4, 0x0A, 0x91, 0x17, 0x09, 0x15, 0x6E,
-        0xD5, 0x9D};
-    thread_local EncryptedName<sizeof(titleRightSource), 0x03772763F96D9DA5ULL> titleRightName(titleRightSource);
-    const std::string titleRight(titleRightName.Text());
-    const std::uint8_t titleMiddleSource[] = {
-        0xAD, 0x14, 0x55, 0xD7, 0x53, 0x35, 0xD2, 0x08, 0xAB, 0x5F, 0x55, 0xE1, 0x2E, 0x41, 0x4B, 0xA7, 0x0C, 0xC8, 0xFC, 0x4E, 0xCC, 0x92, 0x79, 0xB1,
-        0x08, 0xC9, 0xF3, 0x4C, 0xF0, 0x9E, 0x4B, 0xB1, 0x04, 0xCF, 0xF9, 0x48, 0xF1, 0x9A, 0x65, 0x9A, 0x00, 0xD2, 0xF1, 0x03, 0xF1, 0x96, 0x67, 0xC5};
-    thread_local EncryptedName<sizeof(titleMiddleSource), 0xC517FB932D95BB6DULL> titleMiddleName(titleMiddleSource);
-    const std::string titleMiddle(titleMiddleName.Text());
-    const std::uint8_t titleLeftSource[] = {
-        0x09, 0x5A, 0x9F, 0x71, 0x4F, 0x1B, 0x7E, 0xEE, 0x0F, 0x11, 0x9F, 0x47, 0x32, 0x6F, 0xE7, 0x41, 0xA8, 0x86, 0x36, 0xE8, 0xD0, 0xBC, 0xD5, 0x57,
-        0xAC, 0x87, 0x39, 0xEA, 0xEC, 0xB0, 0xE7, 0x57, 0xA0, 0x81, 0x33, 0xEE, 0xED, 0xB4, 0xC9, 0x7C, 0xA5, 0x90, 0x39, 0xFF, 0xA1, 0xB7, 0xD6, 0x53,
-        0xC9};
-    thread_local EncryptedName<sizeof(titleLeftSource), 0x23BBD58F8B5FF5C9ULL> titleLeftName(titleLeftSource);
-    const std::string titleLeft(titleLeftName.Text());
+    const char titleRightSource[] = {
+        '\x65', '\x32', '\xAD', '\x03', '\xA3', '\xE9', '\xB2', '\xCE', '\x63', '\x79', '\xAD', '\x35', '\xDE', '\x9D', '\x2B', '\x61', '\xC4', '\xEE', '\x04', '\x9A', '\x3C', '\x4E', '\x19', '\x77',
+        '\xC0', '\xEF', '\x0B', '\x98', '\x00', '\x42', '\x2B', '\x77', '\xCC', '\xE9', '\x01', '\x9C', '\x01', '\x46', '\x05', '\x5C', '\xD7', '\xF4', '\x0A', '\x91', '\x17', '\x09', '\x15', '\x6E',
+        '\xD5', '\x9D'};
+    const std::string titleRight(DecryptName<0x03772763F96D9DA5ULL>(titleRightSource));
+    const char titleMiddleSource[] = {
+        '\xAD', '\x14', '\x55', '\xD7', '\x53', '\x35', '\xD2', '\x08', '\xAB', '\x5F', '\x55', '\xE1', '\x2E', '\x41', '\x4B', '\xA7', '\x0C', '\xC8', '\xFC', '\x4E', '\xCC', '\x92', '\x79', '\xB1',
+        '\x08', '\xC9', '\xF3', '\x4C', '\xF0', '\x9E', '\x4B', '\xB1', '\x04', '\xCF', '\xF9', '\x48', '\xF1', '\x9A', '\x65', '\x9A', '\x00', '\xD2', '\xF1', '\x03', '\xF1', '\x96', '\x67', '\xC5'};
+    const std::string titleMiddle(DecryptName<0xC517FB932D95BB6DULL>(titleMiddleSource));
+    const char titleLeftSource[] = {
+        '\x09', '\x5A', '\x9F', '\x71', '\x4F', '\x1B', '\x7E', '\xEE', '\x0F', '\x11', '\x9F', '\x47', '\x32', '\x6F', '\xE7', '\x41', '\xA8', '\x86', '\x36', '\xE8', '\xD0', '\xBC', '\xD5', '\x57',
+        '\xAC', '\x87', '\x39', '\xEA', '\xEC', '\xB0', '\xE7', '\x57', '\xA0', '\x81', '\x33', '\xEE', '\xED', '\xB4', '\xC9', '\x7C', '\xA5', '\x90', '\x39', '\xFF', '\xA1', '\xB7', '\xD6', '\x53',
+        '\xC9'};
+    const std::string titleLeft(DecryptName<0x23BBD58F8B5FF5C9ULL>(titleLeftSource));
     titleBar->SetImages(titleLeft, titleMiddle, titleRight);
   }
   this->AddChild(this->m_titleBar);
@@ -187,19 +192,17 @@ void CUIMacroReport::Slot15(int width, int height) {
   title->SetSize(100, 17);
   title->Move(18, 0);
   {
-    const std::uint8_t titleTextSource[] = {
-        0x47, 0xBC, 0xAB, 0x85, 0x19, 0xB4, 0xB4, 0xBB, 0x6A, 0x13};
-    thread_local EncryptedName<sizeof(titleTextSource), 0x0B7109397F6B1387ULL> titleTextName(titleTextSource);
-    const char* value = titleTextName.Text();
+    const char titleTextSource[] = {
+        '\x47', '\xBC', '\xAB', '\x85', '\x19', '\xB4', '\xB4', '\xBB', '\x6A', '\x13'};
+    const char* value = DecryptName<0x0B7109397F6B1387ULL>(titleTextSource);
     title->SetText(value, std::strlen(value));
   }
   title->SetFitText(0);
   title->SetAlign(0, 6);
   {
-    const std::uint8_t titleFontSource[] = {
-        0x20, 0xDE, 0xFD, 0xCC, 0xCC, 0x3F};
-    thread_local EncryptedName<sizeof(titleFontSource), 0x13E33FA1A591AB67ULL> titleFontName(titleFontSource);
-    title->SetFont(std::string(titleFontName.Text()));
+    const char titleFontSource[] = {
+        '\x20', '\xDE', '\xFD', '\xCC', '\xCC', '\x3F'};
+    title->SetFont(std::string(DecryptName<0x13E33FA1A591AB67ULL>(titleFontSource)));
   }
   title->SetFontHeight(12);
   title->SetBold(0);
@@ -216,26 +219,22 @@ void CUIMacroReport::Slot15(int width, int height) {
   menuButton->disabled = 0;
   menuButton->Invalidate();
   {
-    const std::uint8_t menuDisabledSource[] = {
-        0xC9, 0x88, 0xEF, 0x41, 0x7D, 0x93, 0xB8, 0x14, 0xCF, 0xC3, 0xEF, 0x77, 0x00, 0xE7, 0x21, 0xBB, 0x68, 0x54, 0x46, 0xD8, 0xE2, 0x34, 0x13, 0xAD,
-        0x6C, 0x55, 0x49, 0xDA, 0xDE, 0x38, 0x21, 0xAA, 0x70, 0x54, 0x70, 0xD9, 0xDC, 0x2E, 0x18, 0x86, 0x66, 0x41, 0x49, 0x95, 0xDF, 0x30, 0x0D, 0xD9};
-    thread_local EncryptedName<sizeof(menuDisabledSource), 0xD97D5DBDBB2F2709ULL> menuDisabledName(menuDisabledSource);
-    const std::string menuDisabled(menuDisabledName.Text());
-    const std::uint8_t menuPressedSource[] = {
-        0xAF, 0xD2, 0x3B, 0xD9, 0xB1, 0xC9, 0x4A, 0x00, 0xA9, 0x99, 0x3B, 0xEF, 0xCC, 0xBD, 0xD3, 0xAF, 0x0E, 0x0E, 0x92, 0x40, 0x2E, 0x6E, 0xE1, 0xB9,
-        0x0A, 0x0F, 0x9D, 0x42, 0x12, 0x62, 0xD3, 0xBE, 0x16, 0x0E, 0xA4, 0x41, 0x10, 0x74, 0xEA, 0x92, 0x00, 0x13, 0xD5, 0x41, 0x1C, 0x77, 0x8F};
-    thread_local EncryptedName<sizeof(menuPressedSource), 0xCD8F077123FB7D6FULL> menuPressedName(menuPressedSource);
-    const std::string menuPressed(menuPressedName.Text());
-    const std::uint8_t menuHoverSource[] = {
-        0x83, 0x86, 0x93, 0xDD, 0x15, 0x71, 0x8C, 0x54, 0x85, 0xCD, 0x93, 0xEB, 0x68, 0x05, 0x15, 0xFB, 0x22, 0x5A, 0x3A, 0x44, 0x8A, 0xD6, 0x27, 0xED,
-        0x26, 0x5B, 0x35, 0x46, 0xB6, 0xDA, 0x15, 0xEA, 0x3A, 0x5A, 0x0C, 0x45, 0xB4, 0xCC, 0x2C, 0xC6, 0x2C, 0x47, 0x7D, 0x45, 0xB8, 0xCF, 0x49};
-    thread_local EncryptedName<sizeof(menuHoverSource), 0x9949BFD527532943ULL> menuHoverName(menuHoverSource);
-    const std::string menuHover(menuHoverName.Text());
-    const std::uint8_t menuNormalSource[] = {
-        0xF7, 0xE8, 0x6D, 0xC3, 0x7F, 0x2B, 0x6C, 0xDA, 0xF1, 0xA3, 0x6D, 0xF5, 0x02, 0x5F, 0xF5, 0x75, 0x56, 0x34, 0xC4, 0x5A, 0xE0, 0x8C, 0xC7, 0x63,
-        0x52, 0x35, 0xCB, 0x58, 0xDC, 0x80, 0xF5, 0x64, 0x4E, 0x34, 0xF2, 0x5B, 0xDE, 0x96, 0xCC, 0x48, 0x58, 0x21, 0xCB, 0x17, 0xDD, 0x88, 0xD9, 0x17};
-    thread_local EncryptedName<sizeof(menuNormalSource), 0x17A9E5BF39AD4737ULL> menuNormalName(menuNormalSource);
-    const std::string menuNormal(menuNormalName.Text());
+    const char menuDisabledSource[] = {
+        '\xC9', '\x88', '\xEF', '\x41', '\x7D', '\x93', '\xB8', '\x14', '\xCF', '\xC3', '\xEF', '\x77', '\x00', '\xE7', '\x21', '\xBB', '\x68', '\x54', '\x46', '\xD8', '\xE2', '\x34', '\x13', '\xAD',
+        '\x6C', '\x55', '\x49', '\xDA', '\xDE', '\x38', '\x21', '\xAA', '\x70', '\x54', '\x70', '\xD9', '\xDC', '\x2E', '\x18', '\x86', '\x66', '\x41', '\x49', '\x95', '\xDF', '\x30', '\x0D', '\xD9'};
+    const std::string menuDisabled(DecryptName<0xD97D5DBDBB2F2709ULL>(menuDisabledSource));
+    const char menuPressedSource[] = {
+        '\xAF', '\xD2', '\x3B', '\xD9', '\xB1', '\xC9', '\x4A', '\x00', '\xA9', '\x99', '\x3B', '\xEF', '\xCC', '\xBD', '\xD3', '\xAF', '\x0E', '\x0E', '\x92', '\x40', '\x2E', '\x6E', '\xE1', '\xB9',
+        '\x0A', '\x0F', '\x9D', '\x42', '\x12', '\x62', '\xD3', '\xBE', '\x16', '\x0E', '\xA4', '\x41', '\x10', '\x74', '\xEA', '\x92', '\x00', '\x13', '\xD5', '\x41', '\x1C', '\x77', '\x8F'};
+    const std::string menuPressed(DecryptName<0xCD8F077123FB7D6FULL>(menuPressedSource));
+    const char menuHoverSource[] = {
+        '\x83', '\x86', '\x93', '\xDD', '\x15', '\x71', '\x8C', '\x54', '\x85', '\xCD', '\x93', '\xEB', '\x68', '\x05', '\x15', '\xFB', '\x22', '\x5A', '\x3A', '\x44', '\x8A', '\xD6', '\x27', '\xED',
+        '\x26', '\x5B', '\x35', '\x46', '\xB6', '\xDA', '\x15', '\xEA', '\x3A', '\x5A', '\x0C', '\x45', '\xB4', '\xCC', '\x2C', '\xC6', '\x2C', '\x47', '\x7D', '\x45', '\xB8', '\xCF', '\x49'};
+    const std::string menuHover(DecryptName<0x9949BFD527532943ULL>(menuHoverSource));
+    const char menuNormalSource[] = {
+        '\xF7', '\xE8', '\x6D', '\xC3', '\x7F', '\x2B', '\x6C', '\xDA', '\xF1', '\xA3', '\x6D', '\xF5', '\x02', '\x5F', '\xF5', '\x75', '\x56', '\x34', '\xC4', '\x5A', '\xE0', '\x8C', '\xC7', '\x63',
+        '\x52', '\x35', '\xCB', '\x58', '\xDC', '\x80', '\xF5', '\x64', '\x4E', '\x34', '\xF2', '\x5B', '\xDE', '\x96', '\xCC', '\x48', '\x58', '\x21', '\xCB', '\x17', '\xDD', '\x88', '\xD9', '\x17'};
+    const std::string menuNormal(DecryptName<0x17A9E5BF39AD4737ULL>(menuNormalSource));
     menuButton->SetImages(menuNormal, menuHover, menuPressed, menuDisabled);
   }
   this->m_titleBar->AddChild(menuButton);
@@ -247,28 +246,24 @@ void CUIMacroReport::Slot15(int width, int height) {
   closeButton->disabled = 0;
   closeButton->Invalidate();
   {
-    const std::uint8_t closeDisabledSource[] = {
-        0x21, 0xD4, 0x39, 0x2D, 0x15, 0xDD, 0xFC, 0x10, 0x27, 0x9F, 0x39, 0x1B, 0x68, 0xA9, 0x65, 0xBF, 0x80, 0x08, 0x90, 0xB4, 0x8A, 0x7A, 0x57, 0xA9,
-        0x84, 0x09, 0x9F, 0xB6, 0xB6, 0x76, 0x65, 0xAE, 0x98, 0x08, 0xA6, 0xB4, 0xB9, 0x7C, 0x4A, 0xB8, 0xBE, 0x14, 0x9F, 0xB1, 0xFB, 0x71, 0x54, 0xAD,
-        0xE1};
-    thread_local EncryptedName<sizeof(closeDisabledSource), 0xDD3913D5D7F97BE1ULL> closeDisabledName(closeDisabledSource);
-    const std::string closeDisabled(closeDisabledName.Text());
-    const std::uint8_t closePressedSource[] = {
-        0x5F, 0x6A, 0xAD, 0x51, 0x17, 0xE7, 0x38, 0x68, 0x59, 0x21, 0xAD, 0x67, 0x6A, 0x93, 0xA1, 0xC7, 0xFE, 0xB6, 0x04, 0xC8, 0x88, 0x40, 0x93, 0xD1,
-        0xFA, 0xB7, 0x0B, 0xCA, 0xB4, 0x4C, 0xA1, 0xD6, 0xE6, 0xB6, 0x32, 0xC8, 0xBB, 0x46, 0x8E, 0xC0, 0xC0, 0xAA, 0x03, 0x85, 0xB5, 0x44, 0x8D, 0xA5};
-    thread_local EncryptedName<sizeof(closePressedSource), 0xA5FD29D7AB6DC59FULL> closePressedName(closePressedSource);
-    const std::string closePressed(closePressedName.Text());
-    const std::uint8_t closeHoverSource[] = {
-        0x31, 0x68, 0xF9, 0xF3, 0xD7, 0xB7, 0x8A, 0x3C, 0x37, 0x23, 0xF9, 0xC5, 0xAA, 0xC3, 0x13, 0x93, 0x90, 0xB4, 0x50, 0x6A, 0x48, 0x10, 0x21, 0x85,
-        0x94, 0xB5, 0x5F, 0x68, 0x74, 0x1C, 0x13, 0x82, 0x88, 0xB4, 0x66, 0x6A, 0x7B, 0x16, 0x3C, 0x94, 0xAE, 0xA8, 0x57, 0x27, 0x75, 0x14, 0x3F, 0xF1};
-    thread_local EncryptedName<sizeof(closeHoverSource), 0xF14F79170939C7F1ULL> closeHoverName(closeHoverSource);
-    const std::string closeHover(closeHoverName.Text());
-    const std::uint8_t closeNormalSource[] = {
-        0xBF, 0xBC, 0x1F, 0x2B, 0x45, 0xA9, 0xBC, 0x20, 0xB9, 0xF7, 0x1F, 0x1D, 0x38, 0xDD, 0x25, 0x8F, 0x1E, 0x60, 0xB6, 0xB2, 0xDA, 0x0E, 0x17, 0x99,
-        0x1A, 0x61, 0xB9, 0xB0, 0xE6, 0x02, 0x25, 0x9E, 0x06, 0x60, 0x80, 0xB2, 0xE9, 0x08, 0x0A, 0x88, 0x20, 0x7C, 0xB9, 0xB7, 0xAB, 0x05, 0x14, 0x9D,
-        0x7F};
-    thread_local EncryptedName<sizeof(closeNormalSource), 0xED796785D1DF137FULL> closeNormalName(closeNormalSource);
-    const std::string closeNormal(closeNormalName.Text());
+    const char closeDisabledSource[] = {
+        '\x21', '\xD4', '\x39', '\x2D', '\x15', '\xDD', '\xFC', '\x10', '\x27', '\x9F', '\x39', '\x1B', '\x68', '\xA9', '\x65', '\xBF', '\x80', '\x08', '\x90', '\xB4', '\x8A', '\x7A', '\x57', '\xA9',
+        '\x84', '\x09', '\x9F', '\xB6', '\xB6', '\x76', '\x65', '\xAE', '\x98', '\x08', '\xA6', '\xB4', '\xB9', '\x7C', '\x4A', '\xB8', '\xBE', '\x14', '\x9F', '\xB1', '\xFB', '\x71', '\x54', '\xAD',
+        '\xE1'};
+    const std::string closeDisabled(DecryptName<0xDD3913D5D7F97BE1ULL>(closeDisabledSource));
+    const char closePressedSource[] = {
+        '\x5F', '\x6A', '\xAD', '\x51', '\x17', '\xE7', '\x38', '\x68', '\x59', '\x21', '\xAD', '\x67', '\x6A', '\x93', '\xA1', '\xC7', '\xFE', '\xB6', '\x04', '\xC8', '\x88', '\x40', '\x93', '\xD1',
+        '\xFA', '\xB7', '\x0B', '\xCA', '\xB4', '\x4C', '\xA1', '\xD6', '\xE6', '\xB6', '\x32', '\xC8', '\xBB', '\x46', '\x8E', '\xC0', '\xC0', '\xAA', '\x03', '\x85', '\xB5', '\x44', '\x8D', '\xA5'};
+    const std::string closePressed(DecryptName<0xA5FD29D7AB6DC59FULL>(closePressedSource));
+    const char closeHoverSource[] = {
+        '\x31', '\x68', '\xF9', '\xF3', '\xD7', '\xB7', '\x8A', '\x3C', '\x37', '\x23', '\xF9', '\xC5', '\xAA', '\xC3', '\x13', '\x93', '\x90', '\xB4', '\x50', '\x6A', '\x48', '\x10', '\x21', '\x85',
+        '\x94', '\xB5', '\x5F', '\x68', '\x74', '\x1C', '\x13', '\x82', '\x88', '\xB4', '\x66', '\x6A', '\x7B', '\x16', '\x3C', '\x94', '\xAE', '\xA8', '\x57', '\x27', '\x75', '\x14', '\x3F', '\xF1'};
+    const std::string closeHover(DecryptName<0xF14F79170939C7F1ULL>(closeHoverSource));
+    const char closeNormalSource[] = {
+        '\xBF', '\xBC', '\x1F', '\x2B', '\x45', '\xA9', '\xBC', '\x20', '\xB9', '\xF7', '\x1F', '\x1D', '\x38', '\xDD', '\x25', '\x8F', '\x1E', '\x60', '\xB6', '\xB2', '\xDA', '\x0E', '\x17', '\x99',
+        '\x1A', '\x61', '\xB9', '\xB0', '\xE6', '\x02', '\x25', '\x9E', '\x06', '\x60', '\x80', '\xB2', '\xE9', '\x08', '\x0A', '\x88', '\x20', '\x7C', '\xB9', '\xB7', '\xAB', '\x05', '\x14', '\x9D',
+        '\x7F'};
+    const std::string closeNormal(DecryptName<0xED796785D1DF137FULL>(closeNormalSource));
     closeButton->SetImages(closeNormal, closeHover, closePressed, closeDisabled);
   }
   this->m_titleBar->SetSecondButton(closeButton);
@@ -278,10 +273,9 @@ void CUIMacroReport::Slot15(int width, int height) {
   this->m_messageEdit->Move(8, 80);
   {
     CUIEditBox* edit = this->m_messageEdit;
-    const std::uint8_t placeholderSource[] = {
-        0x26, 0x92, 0xB3, 0x74, 0x47, 0xB6, 0xBE, 0xBA, 0x70, 0x97, 0xB8, 0xB9, 0xA7, 0xD1, 0xB2, 0xC7, 0x5C, 0x98, 0xBF, 0x25, 0xD8, 0xE1, 0x2B, 0x05};
-    thread_local EncryptedName<sizeof(placeholderSource), 0x050505679903579BULL> placeholderName(placeholderSource);
-    edit->SetText(std::string(placeholderName.Text()));
+    const char placeholderSource[] = {
+        '\x26', '\x92', '\xB3', '\x74', '\x47', '\xB6', '\xBE', '\xBA', '\x70', '\x97', '\xB8', '\xB9', '\xA7', '\xD1', '\xB2', '\xC7', '\x5C', '\x98', '\xBF', '\x25', '\xD8', '\xE1', '\x2B', '\x05'};
+    edit->SetText(std::string(DecryptName<0x050505679903579BULL>(placeholderSource)));
   }
   this->m_messageEdit->SetTextColor(0x808080);
   this->m_messageEdit->SetBackgroundColor(0xFFF3EE);
@@ -300,20 +294,18 @@ void CUIMacroReport::Slot15(int width, int height) {
   this->unknown_00E4->Move(28, 25);
   {
     CUIStaticText* text = this->unknown_00E4;
-    const std::uint8_t firstTypeSource[] = {
-        0x07, 0x6F, 0x54, 0xCA, 0x9B, 0x78, 0x2E, 0x34, 0x73, 0x0C, 0x3A, 0x80, 0x1E, 0x9F, 0x2F, 0x44, 0x00, 0x74, 0xCD, 0x8A, 0x7E, 0x0F, 0x02, 0x83};
-    thread_local EncryptedName<sizeof(firstTypeSource), 0x83EFBFBB37EDBDBDULL> firstTypeName(firstTypeSource);
-    const char* value = firstTypeName.Text();
+    const char firstTypeSource[] = {
+        '\x07', '\x6F', '\x54', '\xCA', '\x9B', '\x78', '\x2E', '\x34', '\x73', '\x0C', '\x3A', '\x80', '\x1E', '\x9F', '\x2F', '\x44', '\x00', '\x74', '\xCD', '\x8A', '\x7E', '\x0F', '\x02', '\x83'};
+    const char* value = DecryptName<0x83EFBFBB37EDBDBDULL>(firstTypeSource);
     text->SetText(value, std::strlen(value));
   }
   this->unknown_00E4->SetFitText(0);
   this->unknown_00E4->SetAlign(0, 0);
   {
     CUIStaticText* text = this->unknown_00E4;
-    const std::uint8_t firstTypeFontSource[] = {
-        0xE0, 0x80, 0x13, 0x50, 0x5C, 0x4B};
-    thread_local EncryptedName<sizeof(firstTypeFontSource), 0xBF2B4B31397FF5A7ULL> firstTypeFontName(firstTypeFontSource);
-    text->SetFont(std::string(firstTypeFontName.Text()));
+    const char firstTypeFontSource[] = {
+        '\xE0', '\x80', '\x13', '\x50', '\x5C', '\x4B'};
+    text->SetFont(std::string(DecryptName<0xBF2B4B31397FF5A7ULL>(firstTypeFontSource)));
   }
   this->unknown_00E4->SetFontHeight(12);
   this->unknown_00E4->SetBold(0);
@@ -327,20 +319,18 @@ void CUIMacroReport::Slot15(int width, int height) {
   this->unknown_00E8->Move(28, 43);
   {
     CUIStaticText* text = this->unknown_00E8;
-    const std::uint8_t secondTypeSource[] = {
-        0x2E, 0x07, 0x50, 0x0A, 0xF1, 0x2A, 0x3E, 0x0F, 0x2A, 0x32, 0x5C, 0x67, 0x14, 0x48, 0xC9, 0x91, 0x50, 0x4E, 0x0A, 0xDD};
-    thread_local EncryptedName<sizeof(secondTypeSource), 0x2FE993D1DDE1F197ULL> secondTypeName(secondTypeSource);
-    const char* value = secondTypeName.Text();
+    const char secondTypeSource[] = {
+        '\x2E', '\x07', '\x50', '\x0A', '\xF1', '\x2A', '\x3E', '\x0F', '\x2A', '\x32', '\x5C', '\x67', '\x14', '\x48', '\xC9', '\x91', '\x50', '\x4E', '\x0A', '\xDD'};
+    const char* value = DecryptName<0x2FE993D1DDE1F197ULL>(secondTypeSource);
     text->SetText(value, std::strlen(value));
   }
   this->unknown_00E8->SetFitText(0);
   this->unknown_00E8->SetAlign(0, 0);
   {
     CUIStaticText* text = this->unknown_00E8;
-    const std::uint8_t secondTypeFontSource[] = {
-        0xC8, 0xEC, 0x87, 0x64, 0xD8, 0x7F};
-    thread_local EncryptedName<sizeof(secondTypeFontSource), 0x39FF7FB50DEB998FULL> secondTypeFontName(secondTypeFontSource);
-    text->SetFont(std::string(secondTypeFontName.Text()));
+    const char secondTypeFontSource[] = {
+        '\xC8', '\xEC', '\x87', '\x64', '\xD8', '\x7F'};
+    text->SetFont(std::string(DecryptName<0x39FF7FB50DEB998FULL>(secondTypeFontSource)));
   }
   this->unknown_00E8->SetFontHeight(12);
   this->unknown_00E8->SetBold(0);
@@ -357,26 +347,22 @@ void CUIMacroReport::Slot15(int width, int height) {
   this->unknown_00EC->Invalidate();
   {
     CUIImageButton* button = this->unknown_00EC;
-    const std::uint8_t cancelDisabledSource[] = {
-        0xB5, 0x62, 0x2D, 0xA7, 0xAB, 0xAB, 0x20, 0xF8, 0xB3, 0x29, 0x2D, 0x91, 0xD6, 0xDF, 0xB9, 0x57, 0x01, 0xA3, 0xB2, 0x3E, 0x0A, 0x0B, 0x86, 0x50,
-        0x19, 0xFF, 0xB2, 0x39, 0x02, 0x16, 0x84, 0x57, 0x19, 0xA8, 0xC3, 0x3F, 0x06, 0x15, 0xE5};
-    thread_local EncryptedName<sizeof(cancelDisabledSource), 0x35E5656B5DEDCD75ULL> cancelDisabledName(cancelDisabledSource);
-    const std::string cancelDisabled(cancelDisabledName.Text());
-    const std::uint8_t cancelHoverSource[] = {
-        0x3D, 0x16, 0x7B, 0xDB, 0x5F, 0x33, 0x84, 0x84, 0x3B, 0x5D, 0x7B, 0xED, 0x22, 0x47, 0x1D, 0x2B, 0x89, 0xD7, 0xE4, 0x42, 0xFE, 0x93, 0x22, 0x2C,
-        0x91, 0x8B, 0xE4, 0x4E, 0xE9, 0x98, 0x33, 0x67, 0x9F, 0xD4, 0xCB, 0x21};
-    thread_local EncryptedName<sizeof(cancelHoverSource), 0x4941FD9F21BBB9FDULL> cancelHoverName(cancelHoverSource);
-    const std::string cancelHover(cancelHoverName.Text());
-    const std::uint8_t cancelPressedSource[] = {
-        0x0D, 0x5E, 0x59, 0x4F, 0x4D, 0x95, 0xC2, 0x60, 0x0B, 0x15, 0x59, 0x79, 0x30, 0xE1, 0x5B, 0xCF, 0xB9, 0x9F, 0xC6, 0xD6, 0xEC, 0x35, 0x64, 0xC8,
-        0xA1, 0xC3, 0xC6, 0xC5, 0xFF, 0x3E, 0x74, 0xDE, 0xE3, 0x93, 0xF4, 0xC5, 0x8D};
-    thread_local EncryptedName<sizeof(cancelPressedSource), 0xAD075B8DB599F1CDULL> cancelPressedName(cancelPressedSource);
-    const std::string cancelPressed(cancelPressedName.Text());
-    const std::uint8_t cancelNormalSource[] = {
-        0xBF, 0xBA, 0x4D, 0xEB, 0xF7, 0xC1, 0x4E, 0xE2, 0xB9, 0xF1, 0x4D, 0xDD, 0x8A, 0xB5, 0xD7, 0x4D, 0x0B, 0x7B, 0xD2, 0x72, 0x56, 0x61, 0xE8, 0x4A,
-        0x13, 0x27, 0xD2, 0x7F, 0x58, 0x7D, 0xE6, 0x4E, 0x13, 0x3B, 0xEF, 0x7C, 0x47, 0x0F};
-    thread_local EncryptedName<sizeof(cancelNormalSource), 0x2F8B0F37118D157FULL> cancelNormalName(cancelNormalSource);
-    const std::string cancelNormal(cancelNormalName.Text());
+    const char cancelDisabledSource[] = {
+        '\xB5', '\x62', '\x2D', '\xA7', '\xAB', '\xAB', '\x20', '\xF8', '\xB3', '\x29', '\x2D', '\x91', '\xD6', '\xDF', '\xB9', '\x57', '\x01', '\xA3', '\xB2', '\x3E', '\x0A', '\x0B', '\x86', '\x50',
+        '\x19', '\xFF', '\xB2', '\x39', '\x02', '\x16', '\x84', '\x57', '\x19', '\xA8', '\xC3', '\x3F', '\x06', '\x15', '\xE5'};
+    const std::string cancelDisabled(DecryptName<0x35E5656B5DEDCD75ULL>(cancelDisabledSource));
+    const char cancelHoverSource[] = {
+        '\x3D', '\x16', '\x7B', '\xDB', '\x5F', '\x33', '\x84', '\x84', '\x3B', '\x5D', '\x7B', '\xED', '\x22', '\x47', '\x1D', '\x2B', '\x89', '\xD7', '\xE4', '\x42', '\xFE', '\x93', '\x22', '\x2C',
+        '\x91', '\x8B', '\xE4', '\x4E', '\xE9', '\x98', '\x33', '\x67', '\x9F', '\xD4', '\xCB', '\x21'};
+    const std::string cancelHover(DecryptName<0x4941FD9F21BBB9FDULL>(cancelHoverSource));
+    const char cancelPressedSource[] = {
+        '\x0D', '\x5E', '\x59', '\x4F', '\x4D', '\x95', '\xC2', '\x60', '\x0B', '\x15', '\x59', '\x79', '\x30', '\xE1', '\x5B', '\xCF', '\xB9', '\x9F', '\xC6', '\xD6', '\xEC', '\x35', '\x64', '\xC8',
+        '\xA1', '\xC3', '\xC6', '\xC5', '\xFF', '\x3E', '\x74', '\xDE', '\xE3', '\x93', '\xF4', '\xC5', '\x8D'};
+    const std::string cancelPressed(DecryptName<0xAD075B8DB599F1CDULL>(cancelPressedSource));
+    const char cancelNormalSource[] = {
+        '\xBF', '\xBA', '\x4D', '\xEB', '\xF7', '\xC1', '\x4E', '\xE2', '\xB9', '\xF1', '\x4D', '\xDD', '\x8A', '\xB5', '\xD7', '\x4D', '\x0B', '\x7B', '\xD2', '\x72', '\x56', '\x61', '\xE8', '\x4A',
+        '\x13', '\x27', '\xD2', '\x7F', '\x58', '\x7D', '\xE6', '\x4E', '\x13', '\x3B', '\xEF', '\x7C', '\x47', '\x0F'};
+    const std::string cancelNormal(DecryptName<0x2F8B0F37118D157FULL>(cancelNormalSource));
     button->SetImages(cancelNormal, cancelPressed, cancelHover, cancelDisabled);
   }
   this->AddChild(this->unknown_00EC);
@@ -389,26 +375,22 @@ void CUIMacroReport::Slot15(int width, int height) {
   this->unknown_00F0->Invalidate();
   {
     CUIImageButton* button = this->unknown_00F0;
-    const std::uint8_t reportDisabledSource[] = {
-        0xA3, 0x5A, 0x21, 0x85, 0xFB, 0xEB, 0xD8, 0x06, 0xA5, 0x11, 0x21, 0xB3, 0x86, 0x9F, 0x41, 0xA9, 0x17, 0x9B, 0xBE, 0x0D, 0x5E, 0x55, 0x72, 0xB9,
-        0x17, 0xAA, 0x85, 0x16, 0x48, 0x44, 0x7F, 0xA7, 0x06, 0xDB, 0x83, 0x12, 0x4B, 0x25};
-    thread_local EncryptedName<sizeof(reportDisabledSource), 0xCB1D253B7FE1F563ULL> reportDisabledName(reportDisabledSource);
-    const std::string reportDisabled(reportDisabledName.Text());
-    const std::uint8_t reportHoverSource[] = {
-        0x09, 0xBC, 0x39, 0x89, 0x39, 0x17, 0xD0, 0xBC, 0x0F, 0xF7, 0x39, 0xBF, 0x44, 0x63, 0x49, 0x13, 0xBD, 0x7D, 0xA6, 0x01, 0x9C, 0xA9, 0x7A, 0x03,
-        0xBD, 0x4C, 0x96, 0x05, 0x9C, 0xAB, 0x3B, 0x13, 0xA4, 0x63, 0xF9};
-    thread_local EncryptedName<sizeof(reportHoverSource), 0x7115D9F973F913C9ULL> reportHoverName(reportHoverSource);
-    const std::string reportHover(reportHoverName.Text());
-    const std::uint8_t reportPressedSource[] = {
-        0x3D, 0x78, 0x8D, 0x53, 0x75, 0x41, 0x52, 0x2A, 0x3B, 0x33, 0x8D, 0x65, 0x08, 0x35, 0xCB, 0x85, 0x89, 0xB9, 0x12, 0xDB, 0xD0, 0xFF, 0xF8, 0x95,
-        0x89, 0x88, 0x3D, 0xDB, 0xD0, 0xFC, 0xE4, 0xC9, 0x9F, 0xBA, 0x3D, 0xA9};
-    thread_local EncryptedName<sizeof(reportPressedSource), 0xE7978FB5A94DD7FDULL> reportPressedName(reportPressedSource);
-    const std::string reportPressed(reportPressedName.Text());
-    const std::uint8_t reportNormalSource[] = {
-        0xAB, 0x16, 0x07, 0xF5, 0xA7, 0x41, 0x38, 0x7A, 0xAD, 0x5D, 0x07, 0xC3, 0xDA, 0x35, 0xA1, 0xD5, 0x1F, 0xD7, 0x98, 0x7D, 0x02, 0xFF, 0x92, 0xC5,
-        0x1F, 0xE6, 0xA9, 0x60, 0x15, 0xE2, 0x9C, 0xDB, 0x45, 0xDB, 0xAA, 0x7F, 0x67};
-    thread_local EncryptedName<sizeof(reportNormalSource), 0xB7FD8F670FC7B96BULL> reportNormalName(reportNormalSource);
-    const std::string reportNormal(reportNormalName.Text());
+    const char reportDisabledSource[] = {
+        '\xA3', '\x5A', '\x21', '\x85', '\xFB', '\xEB', '\xD8', '\x06', '\xA5', '\x11', '\x21', '\xB3', '\x86', '\x9F', '\x41', '\xA9', '\x17', '\x9B', '\xBE', '\x0D', '\x5E', '\x55', '\x72', '\xB9',
+        '\x17', '\xAA', '\x85', '\x16', '\x48', '\x44', '\x7F', '\xA7', '\x06', '\xDB', '\x83', '\x12', '\x4B', '\x25'};
+    const std::string reportDisabled(DecryptName<0xCB1D253B7FE1F563ULL>(reportDisabledSource));
+    const char reportHoverSource[] = {
+        '\x09', '\xBC', '\x39', '\x89', '\x39', '\x17', '\xD0', '\xBC', '\x0F', '\xF7', '\x39', '\xBF', '\x44', '\x63', '\x49', '\x13', '\xBD', '\x7D', '\xA6', '\x01', '\x9C', '\xA9', '\x7A', '\x03',
+        '\xBD', '\x4C', '\x96', '\x05', '\x9C', '\xAB', '\x3B', '\x13', '\xA4', '\x63', '\xF9'};
+    const std::string reportHover(DecryptName<0x7115D9F973F913C9ULL>(reportHoverSource));
+    const char reportPressedSource[] = {
+        '\x3D', '\x78', '\x8D', '\x53', '\x75', '\x41', '\x52', '\x2A', '\x3B', '\x33', '\x8D', '\x65', '\x08', '\x35', '\xCB', '\x85', '\x89', '\xB9', '\x12', '\xDB', '\xD0', '\xFF', '\xF8', '\x95',
+        '\x89', '\x88', '\x3D', '\xDB', '\xD0', '\xFC', '\xE4', '\xC9', '\x9F', '\xBA', '\x3D', '\xA9'};
+    const std::string reportPressed(DecryptName<0xE7978FB5A94DD7FDULL>(reportPressedSource));
+    const char reportNormalSource[] = {
+        '\xAB', '\x16', '\x07', '\xF5', '\xA7', '\x41', '\x38', '\x7A', '\xAD', '\x5D', '\x07', '\xC3', '\xDA', '\x35', '\xA1', '\xD5', '\x1F', '\xD7', '\x98', '\x7D', '\x02', '\xFF', '\x92', '\xC5',
+        '\x1F', '\xE6', '\xA9', '\x60', '\x15', '\xE2', '\x9C', '\xDB', '\x45', '\xDB', '\xAA', '\x7F', '\x67'};
+    const std::string reportNormal(DecryptName<0xB7FD8F670FC7B96BULL>(reportNormalSource));
     button->SetImages(reportNormal, reportPressed, reportHover, reportDisabled);
   }
   this->AddChild(this->unknown_00F0);
@@ -421,26 +403,22 @@ void CUIMacroReport::Slot15(int width, int height) {
   this->m_firstTypeButton->Invalidate();
   {
     CUIRadioButton* button = this->m_firstTypeButton;
-    const std::uint8_t firstRadioDisabledSource[] = {
-        0xBF, 0x7A, 0x6F, 0xA1, 0xAB, 0x7F, 0xD0, 0xC2, 0xB9, 0x31, 0x6F, 0x97, 0xD6, 0x0B, 0x49, 0x7D, 0x1E, 0xB1, 0xC6, 0x34, 0x09, 0xC5, 0x7B, 0x50,
-        0x10, 0xB3, 0xC9, 0x75, 0x09, 0xDC, 0x65, 0x0F};
-    thread_local EncryptedName<sizeof(firstRadioDisabledSource), 0x0F15B16B5BAFD57FULL> firstRadioDisabledName(firstRadioDisabledSource);
-    const std::string firstRadioDisabled(firstRadioDisabledName.Text());
-    const std::uint8_t firstRadioHoverSource[] = {
-        0xE3, 0x5E, 0x17, 0xED, 0x17, 0x87, 0x26, 0xB0, 0xE5, 0x15, 0x17, 0xDB, 0x6A, 0xF3, 0xBF, 0x0F, 0x42, 0x95, 0xBE, 0x78, 0xB5, 0x3D, 0x8D, 0x22,
-        0x4C, 0x97, 0xB1, 0x39, 0xB5, 0x24, 0x93, 0x7D};
-    thread_local EncryptedName<sizeof(firstRadioHoverSource), 0x7DE349D717D7F123ULL> firstRadioHoverName(firstRadioHoverSource);
-    const std::string firstRadioHover(firstRadioHoverName.Text());
-    const std::uint8_t firstRadioPressedSource[] = {
-        0xDD, 0xAA, 0x53, 0xD3, 0xB1, 0xED, 0x92, 0x28, 0xDB, 0xE1, 0x53, 0xE5, 0xCC, 0x99, 0x0B, 0x97, 0x7C, 0x61, 0xFA, 0x46, 0x13, 0x57, 0x39, 0xBA,
-        0x72, 0x6B, 0xBD, 0x4B, 0x1C, 0x53, 0x57};
-    thread_local EncryptedName<sizeof(firstRadioPressedSource), 0xE55723712993051DULL> firstRadioPressedName(firstRadioPressedSource);
-    const std::string firstRadioPressed(firstRadioPressedName.Text());
-    const std::uint8_t firstRadioNormalSource[] = {
-        0x8F, 0xC8, 0x2D, 0x7F, 0xC9, 0xF9, 0xFA, 0xB4, 0x89, 0x83, 0x2D, 0x49, 0xB4, 0x8D, 0x63, 0x0B, 0x2E, 0x03, 0x84, 0xEA, 0x6B, 0x43, 0x51, 0x26,
-        0x20, 0x01, 0x8B, 0xAB, 0x6B, 0x5A, 0x4F, 0x79};
-    thread_local EncryptedName<sizeof(firstRadioNormalSource), 0x793F370985ED674FULL> firstRadioNormalName(firstRadioNormalSource);
-    const std::string firstRadioNormal(firstRadioNormalName.Text());
+    const char firstRadioDisabledSource[] = {
+        '\xBF', '\x7A', '\x6F', '\xA1', '\xAB', '\x7F', '\xD0', '\xC2', '\xB9', '\x31', '\x6F', '\x97', '\xD6', '\x0B', '\x49', '\x7D', '\x1E', '\xB1', '\xC6', '\x34', '\x09', '\xC5', '\x7B', '\x50',
+        '\x10', '\xB3', '\xC9', '\x75', '\x09', '\xDC', '\x65', '\x0F'};
+    const std::string firstRadioDisabled(DecryptName<0x0F15B16B5BAFD57FULL>(firstRadioDisabledSource));
+    const char firstRadioHoverSource[] = {
+        '\xE3', '\x5E', '\x17', '\xED', '\x17', '\x87', '\x26', '\xB0', '\xE5', '\x15', '\x17', '\xDB', '\x6A', '\xF3', '\xBF', '\x0F', '\x42', '\x95', '\xBE', '\x78', '\xB5', '\x3D', '\x8D', '\x22',
+        '\x4C', '\x97', '\xB1', '\x39', '\xB5', '\x24', '\x93', '\x7D'};
+    const std::string firstRadioHover(DecryptName<0x7DE349D717D7F123ULL>(firstRadioHoverSource));
+    const char firstRadioPressedSource[] = {
+        '\xDD', '\xAA', '\x53', '\xD3', '\xB1', '\xED', '\x92', '\x28', '\xDB', '\xE1', '\x53', '\xE5', '\xCC', '\x99', '\x0B', '\x97', '\x7C', '\x61', '\xFA', '\x46', '\x13', '\x57', '\x39', '\xBA',
+        '\x72', '\x6B', '\xBD', '\x4B', '\x1C', '\x53', '\x57'};
+    const std::string firstRadioPressed(DecryptName<0xE55723712993051DULL>(firstRadioPressedSource));
+    const char firstRadioNormalSource[] = {
+        '\x8F', '\xC8', '\x2D', '\x7F', '\xC9', '\xF9', '\xFA', '\xB4', '\x89', '\x83', '\x2D', '\x49', '\xB4', '\x8D', '\x63', '\x0B', '\x2E', '\x03', '\x84', '\xEA', '\x6B', '\x43', '\x51', '\x26',
+        '\x20', '\x01', '\x8B', '\xAB', '\x6B', '\x5A', '\x4F', '\x79'};
+    const std::string firstRadioNormal(DecryptName<0x793F370985ED674FULL>(firstRadioNormalSource));
     button->SetImages(firstRadioNormal, firstRadioPressed, firstRadioHover, firstRadioDisabled);
   }
   this->m_firstTypeButton->checked = true;
@@ -455,26 +433,22 @@ void CUIMacroReport::Slot15(int width, int height) {
   this->m_secondTypeButton->Invalidate();
   {
     CUIRadioButton* button = this->m_secondTypeButton;
-    const std::uint8_t secondRadioDisabledSource[] = {
-        0xAD, 0xB4, 0x67, 0xEB, 0xB7, 0xA1, 0x0E, 0x3E, 0xAB, 0xFF, 0x67, 0xDD, 0xCA, 0xD5, 0x97, 0x81, 0x0C, 0x7F, 0xCE, 0x7E, 0x15, 0x1B, 0xA5, 0xAC,
-        0x02, 0x7D, 0xC1, 0x3F, 0x15, 0x02, 0xBB, 0xF3};
-    thread_local EncryptedName<sizeof(secondRadioDisabledSource), 0xF3CB6F7711A71B6DULL> secondRadioDisabledName(secondRadioDisabledSource);
-    const std::string secondRadioDisabled(secondRadioDisabledName.Text());
-    const std::uint8_t secondRadioHoverSource[] = {
-        0x73, 0xC8, 0x99, 0x75, 0x1F, 0xE9, 0x5E, 0x4E, 0x75, 0x83, 0x99, 0x43, 0x62, 0x9D, 0xC7, 0xF1, 0xD2, 0x03, 0x30, 0xE0, 0xBD, 0x53, 0xF5, 0xDC,
-        0xDC, 0x01, 0x3F, 0xA1, 0xBD, 0x4A, 0xEB, 0x83};
-    thread_local EncryptedName<sizeof(secondRadioHoverSource), 0x839B27DF8F5967B3ULL> secondRadioHoverName(secondRadioHoverSource);
-    const std::string secondRadioHover(secondRadioHoverName.Text());
-    const std::uint8_t secondRadioPressedSource[] = {
-        0x21, 0x36, 0x47, 0xB5, 0x41, 0x0D, 0xE4, 0xBE, 0x27, 0x7D, 0x47, 0x83, 0x3C, 0x79, 0x7D, 0x01, 0x80, 0xFD, 0xEE, 0x20, 0xE3, 0xB7, 0x4F, 0x2C,
-        0x8E, 0xF7, 0xA9, 0x2D, 0xEC, 0xB3, 0x21};
-    thread_local EncryptedName<sizeof(secondRadioPressedSource), 0x7321C3814F8799E1ULL> secondRadioPressedName(secondRadioPressedSource);
-    const std::string secondRadioPressed(secondRadioPressedName.Text());
-    const std::uint8_t secondRadioNormalSource[] = {
-        0x8F, 0x0E, 0x0F, 0xCF, 0xA3, 0x19, 0x84, 0xB4, 0x89, 0x45, 0x0F, 0xF9, 0xDE, 0x6D, 0x1D, 0x0B, 0x2E, 0xC5, 0xA6, 0x5A, 0x01, 0xA3, 0x2F, 0x26,
-        0x20, 0xC7, 0xA9, 0x1B, 0x01, 0xBA, 0x31, 0x79};
-    thread_local EncryptedName<sizeof(secondRadioNormalSource), 0x7941D76335CFA14FULL> secondRadioNormalName(secondRadioNormalSource);
-    const std::string secondRadioNormal(secondRadioNormalName.Text());
+    const char secondRadioDisabledSource[] = {
+        '\xAD', '\xB4', '\x67', '\xEB', '\xB7', '\xA1', '\x0E', '\x3E', '\xAB', '\xFF', '\x67', '\xDD', '\xCA', '\xD5', '\x97', '\x81', '\x0C', '\x7F', '\xCE', '\x7E', '\x15', '\x1B', '\xA5', '\xAC',
+        '\x02', '\x7D', '\xC1', '\x3F', '\x15', '\x02', '\xBB', '\xF3'};
+    const std::string secondRadioDisabled(DecryptName<0xF3CB6F7711A71B6DULL>(secondRadioDisabledSource));
+    const char secondRadioHoverSource[] = {
+        '\x73', '\xC8', '\x99', '\x75', '\x1F', '\xE9', '\x5E', '\x4E', '\x75', '\x83', '\x99', '\x43', '\x62', '\x9D', '\xC7', '\xF1', '\xD2', '\x03', '\x30', '\xE0', '\xBD', '\x53', '\xF5', '\xDC',
+        '\xDC', '\x01', '\x3F', '\xA1', '\xBD', '\x4A', '\xEB', '\x83'};
+    const std::string secondRadioHover(DecryptName<0x839B27DF8F5967B3ULL>(secondRadioHoverSource));
+    const char secondRadioPressedSource[] = {
+        '\x21', '\x36', '\x47', '\xB5', '\x41', '\x0D', '\xE4', '\xBE', '\x27', '\x7D', '\x47', '\x83', '\x3C', '\x79', '\x7D', '\x01', '\x80', '\xFD', '\xEE', '\x20', '\xE3', '\xB7', '\x4F', '\x2C',
+        '\x8E', '\xF7', '\xA9', '\x2D', '\xEC', '\xB3', '\x21'};
+    const std::string secondRadioPressed(DecryptName<0x7321C3814F8799E1ULL>(secondRadioPressedSource));
+    const char secondRadioNormalSource[] = {
+        '\x8F', '\x0E', '\x0F', '\xCF', '\xA3', '\x19', '\x84', '\xB4', '\x89', '\x45', '\x0F', '\xF9', '\xDE', '\x6D', '\x1D', '\x0B', '\x2E', '\xC5', '\xA6', '\x5A', '\x01', '\xA3', '\x2F', '\x26',
+        '\x20', '\xC7', '\xA9', '\x1B', '\x01', '\xBA', '\x31', '\x79'};
+    const std::string secondRadioNormal(DecryptName<0x7941D76335CFA14FULL>(secondRadioNormalSource));
     button->SetImages(secondRadioNormal, secondRadioPressed, secondRadioHover, secondRadioDisabled);
   }
   this->m_secondTypeButton->checked = false;
@@ -486,21 +460,19 @@ void CUIMacroReport::Slot15(int width, int height) {
   this->unknown_00FC->Move(9, 142);
   {
     CUIStaticText* text = this->unknown_00FC;
-    const std::uint8_t warningSource[] = {
-        0xD4, 0xB7, 0x7D, 0xB6, 0x2D, 0x51, 0xE8, 0xFA, 0x8E, 0x75, 0x74, 0xBC, 0x2D, 0x2E, 0x89, 0x85, 0x82, 0xED, 0x6F, 0x5F, 0xB4, 0x31, 0xEF, 0xFE,
-        0x45, 0xE9, 0x3F, 0x5F, 0xCD, 0x39, 0x92, 0x85, 0xD1, 0x9A, 0x7D, 0xA6, 0x23, 0xEF};
-    thread_local EncryptedName<sizeof(warningSource), 0x452FEF0D7FC95565ULL> warningName(warningSource);
-    const char* value = warningName.Text();
+    const char warningSource[] = {
+        '\xD4', '\xB7', '\x7D', '\xB6', '\x2D', '\x51', '\xE8', '\xFA', '\x8E', '\x75', '\x74', '\xBC', '\x2D', '\x2E', '\x89', '\x85', '\x82', '\xED', '\x6F', '\x5F', '\xB4', '\x31', '\xEF', '\xFE',
+        '\x45', '\xE9', '\x3F', '\x5F', '\xCD', '\x39', '\x92', '\x85', '\xD1', '\x9A', '\x7D', '\xA6', '\x23', '\xEF'};
+    const char* value = DecryptName<0x452FEF0D7FC95565ULL>(warningSource);
     text->SetText(value, std::strlen(value));
   }
   this->unknown_00FC->SetFitText(0);
   this->unknown_00FC->SetAlign(0, 0);
   {
     CUIStaticText* text = this->unknown_00FC;
-    const std::uint8_t warningFontSource[] = {
-        0x1A, 0x78, 0x25, 0xE0, 0xCC, 0x7D};
-    thread_local EncryptedName<sizeof(warningFontSource), 0x9FED7DA189490D5DULL> warningFontName(warningFontSource);
-    text->SetFont(std::string(warningFontName.Text()));
+    const char warningFontSource[] = {
+        '\x1A', '\x78', '\x25', '\xE0', '\xCC', '\x7D'};
+    text->SetFont(std::string(DecryptName<0x9FED7DA189490D5DULL>(warningFontSource)));
   }
   this->unknown_00FC->SetFontHeight(12);
   this->unknown_00FC->SetBold(0);
