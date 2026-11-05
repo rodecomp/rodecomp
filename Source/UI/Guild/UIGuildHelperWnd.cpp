@@ -397,17 +397,17 @@ void UIGuildTipWnd::Slot15(int width, int height) {
     g_guildTip.Load();
   }
 
-  if (!g_guildTip.m_tipList.empty()) {
+  if (g_guildTip.m_tipList.size() != 0) {
     std::vector<StringList> tipList = g_guildTip.GetTipList();
     for (const auto& tip : tipList) {
-      for (const auto& line : tip) {
-        this->m_textViewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(line.c_str()), 50, 0, 0);
+      for (unsigned int i = 0; i < tip.size(); ++i) {
+        this->m_textViewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(tip[i].c_str()), 50, 0, 0);
       }
     }
   }
 
-  this->m_closeButton = new UIBitmapButton();
   const std::string prefix("유저인터페이스\\");
+  this->m_closeButton = new UIBitmapButton();
   this->m_closeButton->SetBitmap((prefix + "btn_close" + ".bmp").c_str(), 0, 0);
   this->m_closeButton->SetBitmap((prefix + "btn_close_a" + ".bmp").c_str(), 1, 0);
   this->m_closeButton->SetBitmap((prefix + "btn_close_b" + ".bmp").c_str(), 2, 0);
