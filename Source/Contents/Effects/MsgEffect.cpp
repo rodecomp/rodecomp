@@ -79,8 +79,8 @@ CMsgEffect::~CMsgEffect() {
 // FUNCTION: fn_24272
 vector2d& vector2d::Normalize() {
   const float inverse = 1.0f / SquareRoot(this->x * this->x + this->y * this->y);
-  this->y = inverse * this->y;
   this->x = inverse * this->x;
+  this->y = inverse * this->y;
   return *this;
 }
 
