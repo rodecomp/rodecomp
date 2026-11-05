@@ -33,6 +33,9 @@ namespace myGPack {
   };
 
   struct PakFreeBlock {
+    PakFreeBlock(std::uint32_t blockSize, std::uint64_t blockOffset) : size(blockSize), offset(blockOffset) {
+    }
+
     /* 0000 */ std::uint32_t size;
     /* 0008 */ std::uint64_t offset;
 

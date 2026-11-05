@@ -32,6 +32,9 @@ namespace {
   };
 
   struct PakUsedBlock {
+    PakUsedBlock(std::uint64_t blockOffset, std::uint32_t blockSize) : offset(blockOffset), size(blockSize) {
+    }
+
     /* 0000 */ std::uint64_t offset;
     /* 0008 */ std::uint32_t size;
 
@@ -604,8 +607,8 @@ namespace myGPack {
   // FUNCTION: fn_04017
   void CGPakRead::CollectNames(std::set<std::string>& names) const {
     for (const PakEntry& entry : this->m_entries) {
-      const char* name = entry.name.m_name;
-      if (std::strrchr(name, '.')) {
+      if (std::strrchr(entry.name.m_name, '.')) {
+        const char* name = entry.name.m_name;
         names.emplace(name);
       }
     }
@@ -787,15 +790,15 @@ namespace myGPack {
   // FUNCTION: fn_04048
   __declspec(noinline) bool CWritePakFile::Open(const char* filename) {
     this->m_handle = CreateFileA(filename, GENERIC_READ | GENERIC_WRITE, 0, nullptr, OPEN_ALWAYS, FILE_FLAG_WRITE_THROUGH | FILE_ATTRIBUTE_NORMAL, nullptr);
-    if (this->m_handle == INVALID_HANDLE_VALUE) {
-      return false;
+    if (this->m_handle != INVALID_HANDLE_VALUE) {
+      LARGE_INTEGER size;
+
+      GetFileSizeEx(this->m_handle, &size);
+      this->m_size = static_cast<std::uint64_t>(size.QuadPart);
+      return true;
     }
 
-    LARGE_INTEGER size;
-
-    GetFileSizeEx(this->m_handle, &size);
-    this->m_size = static_cast<std::uint64_t>(size.QuadPart);
-    return true;
+    return false;
   }
 
   // OFFSET: 0x005F78F0
