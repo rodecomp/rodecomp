@@ -291,23 +291,23 @@ void UILapineBoxWnd::Paint() {
 // FUNCTION: fn_04177
 int UILapineBoxWnd::AddIngredient(std::uint32_t id, int quantity) {
   if (this->items.size() < 10) {
-    for (const ITEM_INFO& entry : this->items) {
-      if (entry.unknown_0000[1] == id) {
-        return 0;
-      }
+    if (std::find_if(this->items.begin(), this->items.end(), [id](ITEM_INFO entry) { return id == entry.unknown_0000[1]; }) != this->items.end()) {
+      return 0;
     }
-
     ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, id);
     item.quantity = quantity;
-    char name[260];
-    std::memset(name, 0, sizeof(name));
-    int capacity = 260;
-    item.sub_6D5810(name, capacity, 1);
-    if (item.identified == 1 && item.unknown_0098 != 0) {
-      char formatted[260];
-      StringFormat(formatted, sizeof(formatted), sizeof(formatted), LookupMessage(2600), name, item.unknown_0098);
-      item.SetName(formatted);
-    } else {
+    {
+      std::vector<char*> breaks;
+      char name[260];
+      std::memset(name, 0, sizeof(name));
+      char* highlight = nullptr;
+      std::size_t remaining = sizeof(name);
+      char* cursor = name;
+      int highlightColor;
+      this->BuildItemName(&item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
+      if (item.identified == 1 && item.unknown_0098 != 0) {
+        sprintf_s(name, sizeof(name), LookupMessage(2600), name, item.unknown_0098);
+      }
       item.SetName(name);
     }
     this->items.push_back(item);
