@@ -6,19 +6,6 @@
 #include "UI/Window/WindowManagerWindows.h"
 #include "UI/Window/UIWindowMgr.h"
 
-namespace {
-  // INLINED
-  void ScreenPosition(const UIWindow& window, int& x, int& y) {
-    x = (x + window.geometry.x);
-    y = (y + window.geometry.y);
-
-    for (const UIWindow* node = window.parent; node; node = node->parent) {
-      x = (x + node->geometry.x);
-      y = (y + node->geometry.y);
-    }
-  }
-}
-
 // OFFSET: 0x009332D0
 // FUNCTION: fn_12724
 void UIShortCutWnd::Slot32(int x, int y) {
@@ -79,7 +66,7 @@ void UIShortCutWnd::Slot32(int x, int y) {
 
   int originX = 0;
   int originY = 0;
-  ScreenPosition(window, originX, originY);
+  window.ToScreen(originX, originY);
   const int targetX = (originX + x);
   int adjustment = 0;
 
