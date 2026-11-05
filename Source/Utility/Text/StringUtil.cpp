@@ -180,8 +180,7 @@ std::vector<std::string> Split(std::string_view text, std::string_view delimiter
 // FUNCTION: fn_02766
 void TrimRight(std::string& text, std::string_view characters) {
   if (characters.empty()) {
-    auto last = std::find_if(text.rbegin(), text.rend(), [](unsigned char c) { return !std::isspace(c); });
-    text.erase(last.base(), text.end());
+    text.erase(std::find_if(text.rbegin(), text.rend(), [](char c) { return !std::isspace(static_cast<unsigned char>(c)); }).base(), text.end());
     return;
   }
   text.erase(text.find_last_not_of(characters) + 1);
