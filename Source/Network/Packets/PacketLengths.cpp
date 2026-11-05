@@ -7,7 +7,7 @@ PacketLengths g_packetLengths;
 
 // OFFSET: 0x00B09E50
 // FUNCTION: fn_18388
-PacketLengthResult PacketLengths::Lookup(int id) const {
+__declspec(noinline) PacketLengthResult PacketLengths::Lookup(int id) const {
   const auto entry = this->m_values.find(id);
   if (entry == this->m_values.end()) {
     return {-1, 4};
