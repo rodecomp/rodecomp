@@ -431,12 +431,42 @@ void CGameMode::ReceiveStatusChangeAck(const unsigned char* data) {
   int* bonusStats = reinterpret_cast<int*>(g_session.unknown_169C);
   switch (packet->type) {
   case 13:
+    g_session.m_standardStats[0] = packet->value;
+    g_session.InvalidateWindowFrames();
+    if (window) {
+      window->SendMsg(nullptr, 35, 0, 0, 0, 0);
+    }
+    break;
   case 14:
+    g_session.m_standardStats[1] = packet->value;
+    g_session.InvalidateWindowFrames();
+    if (window) {
+      window->SendMsg(nullptr, 35, 0, 0, 0, 0);
+    }
+    break;
   case 15:
+    g_session.m_standardStats[2] = packet->value;
+    g_session.InvalidateWindowFrames();
+    if (window) {
+      window->SendMsg(nullptr, 35, 0, 0, 0, 0);
+    }
+    break;
   case 16:
+    g_session.m_standardStats[3] = packet->value;
+    g_session.InvalidateWindowFrames();
+    if (window) {
+      window->SendMsg(nullptr, 35, 0, 0, 0, 0);
+    }
+    break;
   case 17:
+    g_session.m_standardStats[4] = packet->value;
+    g_session.InvalidateWindowFrames();
+    if (window) {
+      window->SendMsg(nullptr, 35, 0, 0, 0, 0);
+    }
+    break;
   case 18:
-    g_session.m_standardStats[packet->type - 13] = packet->value;
+    g_session.m_standardStats[5] = packet->value;
     g_session.InvalidateWindowFrames();
     if (window) {
       window->SendMsg(nullptr, 35, 0, 0, 0, 0);
@@ -914,7 +944,8 @@ void CGameMode::ReceiveEffectRemove(const unsigned char* data) {
   CRenderObject* actor = this->scene->GetGameActorByAidIncludeMe(packet->aid);
   if (actor) {
     while (static_cast<EffectActor*>(actor)->HasId(packet->effectId)) {
-      actor->SendMsg(nullptr, 109, 0, packet->effectId, packet->effectId >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      const std::int64_t effectId = packet->effectId;
+      actor->SendMsg(nullptr, 109, 0, static_cast<int>(effectId), static_cast<int>(effectId >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
   }
 
@@ -1026,37 +1057,32 @@ void CGameMode::ReceiveActorMessage144(const unsigned char* data) {
   }
 
   if (actor) {
-    const int x = packet->x;
-    const int y = packet->y;
-    actor->SendMsg(nullptr, 144, 0, x, x >> 31, y, y >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+    const std::int64_t x = packet->x;
+    const std::int64_t y = packet->y;
+    actor->SendMsg(nullptr, 144, 0, static_cast<int>(x), static_cast<int>(x >> 32), static_cast<int>(y), static_cast<int>(y >> 32), 0, 0, 0, 0, 0, 0, 0, 0);
   }
 }
 
 // OFFSET: 0x00D6EF60
 // FUNCTION: fn_22121
 void CGameMode::NotifyResult4138(int result) {
-  int message;
   switch (result) {
   case 0:
-    message = 4138;
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4138)), 0xFF, 0, 0, 0);
     break;
   case 1:
-    message = 4139;
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4139)), 0xFF, 0, 0, 0);
     break;
   case 2:
-    message = 4140;
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4140)), 0xFF, 0, 0, 0);
     break;
   case 3:
-    message = 4187;
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4187)), 0xFF, 0, 0, 0);
     break;
   case 4:
-    message = 4141;
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4141)), 0xFF, 0, 0, 0);
     break;
-  default:
-    return;
   }
-
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(message)), 0xFF, 0, 0, 0);
 }
 
 #pragma pack(push, 1)
@@ -3637,8 +3663,7 @@ void sub_D73A10(const unsigned char* packet) {
   const int x = *reinterpret_cast<const std::int16_t*>(packet + 0x15);
   const int y = *reinterpret_cast<const std::int16_t*>(packet + 0x17);
   const int id = *reinterpret_cast<const std::int16_t*>(packet + 0x19);
-  const std::string name(reinterpret_cast<const char*>(packet + 5));
-  g_navigationManager.sub_B99030(name, packet[2], mode, packet[4] != 0, x, y, id);
+  g_navigationManager.sub_B99030(std::string(reinterpret_cast<const char*>(packet + 5)), packet[2], mode, packet[4] != 0, x, y, id);
 }
 
 // OFFSET: 0x00D73AF0
@@ -4492,7 +4517,8 @@ void CGameMode::ReceiveWindow227Entries(const unsigned char* data) {
     return;
   }
 
-  std::vector<std::uint16_t> entries(packet->entries, packet->entries + count);
+  std::vector<std::uint16_t> entries;
+  entries.insert(entries.end(), packet->entries, packet->entries + count);
   UIWindow* window = g_windowMgr.EnsureWindow(227);
   if (window) {
     window->SendMsg(nullptr, 34, reinterpret_cast<std::intptr_t>(entries.data()), count, 0, 0);
@@ -4781,7 +4807,7 @@ void CGameMode::ReceiveSpriteChange2(const unsigned char* data) {
       actor->Slot24(value, shield);
       break;
     default:
-      actor->Slot24(weapon, weapon >> 31);
+      actor->Slot24(weapon, static_cast<int>(static_cast<std::int64_t>(weapon) >> 32));
       break;
     }
     if (view == -1 || shield == 0) {
