@@ -56,13 +56,7 @@ HotkeyGuideLabel::~HotkeyGuideLabel() {
 // OFFSET: 0x00966C70
 // FUNCTION: fn_13164
 void UIHotkeyGuideWnd::Slot15(int, int) {
-  UIBitmapButton* base = new UIBitmapButton();
-  base->SetBitmap("유저인터페이스\\basic_interface\\sys_base_off.bmp", 0, 0);
-  base->SetBitmap("유저인터페이스\\basic_interface\\sys_base_on.bmp", 1, 0);
-  base->SetBitmap("유저인터페이스\\basic_interface\\sys_base_on.bmp", 2, 0);
-  base->SetSize(base->BitmapWidth(), base->BitmapHeight());
-  base->Move(3, 3);
-  this->AddChild(base);
+  this->AddBaseButton();
   this->AddCloseButton("", 0);
 
   this->m_labels[8] = HotkeyGuideLabel("←", HotkeyGuideKey(528, 93, 0, 75, 15, 36), HotkeyGuideKey());
