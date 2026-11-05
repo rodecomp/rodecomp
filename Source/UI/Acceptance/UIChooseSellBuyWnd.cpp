@@ -183,6 +183,8 @@ namespace {
   static_assert(sizeof(PackedItemOption) == 5);
 }
 
+std::string CartTypeName(int type);
+
 // STRING: st_16833
 static const char menuSeparatorText[] = "-";
 // GLOBAL: gl_24749
@@ -314,11 +316,30 @@ UIChooseWarpWnd::UIChooseWarpWnd()
 // OFFSET: 0x008DD290
 // FUNCTION: fn_12162
 void UIChooseSellBuyWnd::Slot15(int width, int height) {
-  this->AddChoice("btn_buy", 224, 144, 96);
-  this->AddChoice("btn_sell", 223, 189, 96);
-  this->AddChoice("btn_cancel", 185, 234, 96);
+  const std::string buttonPrefix("유저인터페이스\\");
+  const char* names[3][3] = {{"btn_buy", "btn_buy_a", "btn_buy_b"}, {"btn_sell", "btn_sell_a", "btn_sell_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
+  int ids[3] = {224, 223, 185};
+  int positions[3][2] = {{144, 96}, {189, 96}, {234, 96}};
+
+  for (int i = 0; i < 3; ++i) {
+    auto* button = new UIBitmapButton();
+    button->SetBitmap((buttonPrefix + names[i][0] + ".bmp").c_str(), 0, 0);
+    button->SetBitmap((buttonPrefix + names[i][1] + ".bmp").c_str(), 1, 0);
+    button->SetBitmap((buttonPrefix + names[i][2] + ".bmp").c_str(), 2, 0);
+    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    button->Move(positions[i][0], positions[i][1]);
+    button->SetId(ids[i]);
+    this->AddChild(button);
+  }
+
   this->m_message0 = 224;
-  this->CreateViewer(width, height);
+  this->viewer = new UITextViewer();
+  this->viewer->Configure(10, 22, width - 20, height - 55, 0);
+  unsigned red, green, blue;
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  this->viewer->textColor = 0xFF000000u | RGB(red, green, blue);
+  this->viewer->Invalidate();
+  this->AddChild(this->viewer);
   this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(92)), 38, 0, 0);
 }
 
@@ -1765,23 +1786,7 @@ void UISelectCartWnd::Slot25(int x, int y) {
 // OFFSET: 0x008CE2C0
 // FUNCTION: fn_12069
 void UISelectCartWnd::AddCart(int index, int type) {
-  const char* names[] = {
-      "NOTHING_CART",
-      "손수레",
-      "손수레1",
-      "손수레2",
-      "손수레3",
-      "손수레4",
-      "손수레5",
-      "손수레6",
-      "손수레7",
-      "손수레8",
-      "선물상자카트",
-      "포링싣은카트",
-      "포링카트",
-      "마도카트",
-  };
-  std::string name = names[type];
+  const std::string name = CartTypeName(type);
   int x = (index % 5) * 70;
   int y = (index / 5) * 82 + 28;
   switch (type) {
@@ -1817,9 +1822,8 @@ void UISelectCartWnd::AddCart(int index, int type) {
     break;
   }
   UISpriteButton* button = new UISpriteButton();
-  const std::string prefix = "이팩트\\";
-  button->SetSprite((prefix + name + ".spr").c_str());
-  button->SetActName((prefix + name + ".act").c_str());
+  button->SetSprite((std::string("이팩트\\") + name + std::string(".spr")).c_str());
+  button->SetActName((std::string("이팩트\\") + name + std::string(".act")).c_str());
   button->SetSize(100, 100);
   button->Move(x, y);
   button->unknown_00BC = 0;
@@ -2491,14 +2495,22 @@ void UIWhisperWnd::Slot33(int, int) {
 // OFFSET: 0x008F5A10
 // FUNCTION: fn_12310
 void UIExchangeWnd::Slot35(int delta) {
-  this->SendMsg(this->m_scrollBar, 7, delta < 0 ? 1 : -1, 0, 0, 0);
+  if (delta < 0) {
+    this->SendMsg(this->m_scrollBar, 7, 1, 0, 0, 0);
+  } else {
+    this->SendMsg(this->m_scrollBar, 7, -1, 0, 0, 0);
+  }
 }
 
 // OFFSET: 0x008F59C0
 // FUNCTION: fn_12309
 void UIEquipWnd::Slot35(int delta) {
   if (g_session.unknown_80C8 > 4 && this->m_page == 3) {
-    this->SendMsg(this->m_scrollBar, 8, delta < 0 ? 1 : -1, 0, 0, 0);
+    if (delta < 0) {
+      this->SendMsg(this->m_scrollBar, 8, 1, 0, 0, 0);
+    } else {
+      this->SendMsg(this->m_scrollBar, 8, -1, 0, 0, 0);
+    }
   }
 }
 
@@ -5590,9 +5602,8 @@ bool IsEquipViewHidden() {
     return false;
   }
 
-  const std::uint32_t flags = g_session.m_jobFlags;
-  if (StateFlag04(flags) || StateFlag05(flags) || StateFlag19(flags) || StateFlag23(flags) || StateFlag24(flags) || StateFlag25(flags) ||
-      StateFlag26(flags) || StateFlag22(flags)) {
+  if (StateFlag04(g_session.m_jobFlags) || StateFlag05(g_session.m_jobFlags) || StateFlag19(g_session.m_jobFlags) || StateFlag23(g_session.m_jobFlags) ||
+      StateFlag24(g_session.m_jobFlags) || StateFlag25(g_session.m_jobFlags) || StateFlag26(g_session.m_jobFlags) || StateFlag22(g_session.m_jobFlags)) {
     return false;
   }
 
@@ -6673,7 +6684,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
 // OFFSET: 0x008F5AA0
 // FUNCTION: fn_12312
 void UInCashWnd::Slot35(int delta) {
-  if (static_cast<int>(g_session.unknown_1720.size()) < 4) {
+  if (g_session.GetList2Size() < 4) {
     return;
   }
   if (delta < 0) {
