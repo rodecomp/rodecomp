@@ -15,18 +15,16 @@ namespace {
       --length;
     }
 
-    const char* next = digits + written;
     int phase = 3 * (length / 3) - length + 2;
-
-    for (; *next != '\0'; phase = (phase + 1) % 3) {
-      if (written >= capacity) {
+    for (int index = written; digits[index] != '\0'; phase = (phase + 1) % 3) {
+      if (capacity <= written) {
         break;
       }
 
-      output[written++] = *next++;
+      output[written++] = digits[index++];
 
       if (phase == 1) {
-        if (written >= capacity) {
+        if (capacity <= written) {
           break;
         }
 
