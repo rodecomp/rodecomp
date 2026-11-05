@@ -26,8 +26,8 @@ RenderVertex* RenderVertex::Reset() {
 // OFFSET: 0x00569560
 // FUNCTION: fn_02263
 bool RenderTriangle::Visible() const {
-  for (const RenderVertex& vertex : this->vertices) {
-    if (vertex.rhw <= 0.0f) {
+  for (std::size_t i = 0; i < 3; ++i) {
+    if (this->vertices[i].rhw <= 0.0f) {
       return false;
     }
   }
@@ -69,13 +69,11 @@ RenderPrimitive::RenderPrimitive(const RenderPrimitive& other) : RenderPrimitive
 
 // OFFSET: 0x005692F0
 // FUNCTION: fn_02253
-RenderCommand* RenderCommand::FreeVertices() {
+void RenderCommand::FreeVertices() {
   if (this->vertices != nullptr) {
-    ::operator delete(this->vertices);
+    delete this->vertices;
     this->vertices = nullptr;
   }
-
-  return this;
 }
 
 // OFFSET: 0x00569360
@@ -105,9 +103,8 @@ void RenderCommand::Draw(int unused) {
 // OFFSET: 0x00569580
 // FUNCTION: fn_02264
 void RenderCommand::SetPosition(std::uint32_t index, const float* position) {
-  RenderVertex& vertex = this->vertices[index];
-  vertex.x = position[0];
-  vertex.y = position[1];
-  vertex.z = position[2];
-  vertex.rhw = position[3];
+  this->vertices[index].x = position[0];
+  this->vertices[index].y = position[1];
+  this->vertices[index].z = position[2];
+  this->vertices[index].rhw = position[3];
 }
