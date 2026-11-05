@@ -434,14 +434,26 @@ void CEffectPrim::RenderArcWalls(matrix& wtm) {
 // OFFSET: 0x00BF2AC0
 // FUNCTION: fn_19991
 void CEffectPrim::RenderJitterSweeps(matrix& wtm) {
-  vector3d bottoms[20] = {};
-  vector3d bottomsCopy[20] = {};
-  vector3d tops[20] = {};
-  vector3d topsCopy[20] = {};
   vector3d lastBottom = {};
   vector3d currentBottom = {};
   vector3d lastTop = {};
   vector3d currentTop = {};
+  vector3d bottoms[20];
+  vector3d bottomsCopy[20];
+  vector3d tops[20];
+  vector3d topsCopy[20];
+  for (int j = 0; j < 20; ++j) {
+    bottoms[j] = {0.0f, 0.0f, 0.0f};
+  }
+  for (int j = 0; j < 20; ++j) {
+    bottomsCopy[j] = {0.0f, 0.0f, 0.0f};
+  }
+  for (int j = 0; j < 20; ++j) {
+    tops[j] = {0.0f, 0.0f, 0.0f};
+  }
+  for (int j = 0; j < 20; ++j) {
+    topsCopy[j] = {0.0f, 0.0f, 0.0f};
+  }
   int count = 0;
 
   for (int layer = 0; layer < 4; ++layer) {
@@ -450,9 +462,12 @@ void CEffectPrim::RenderJitterSweeps(matrix& wtm) {
     float jitterX[21];
     float jitterZ[21];
     for (int i = 0; i < slot.vecTNow.y; ++i) {
-      jitterY[i] = static_cast<float>(std::max(std::rand() % 7, 0)) * 0.1f - 0.3f;
-      jitterX[i] = static_cast<float>(std::max(std::rand() % 7, 0)) * 0.1f - 0.3f;
-      jitterZ[i] = static_cast<float>(std::max(std::rand() % 7, 0)) * 0.1f - 0.3f;
+      int ry = std::rand() % 7;
+      jitterY[i] = static_cast<float>(ry >= 0 ? ry : 0) * 0.1f - 0.3f;
+      int rx = std::rand() % 7;
+      jitterX[i] = static_cast<float>(rx >= 0 ? rx : 0) * 0.1f - 0.3f;
+      int rz = std::rand() % 7;
+      jitterZ[i] = static_cast<float>(rz >= 0 ? rz : 0) * 0.1f - 0.3f;
     }
 
     if (slot.life != 1 || slot.alphaB <= 0 || slot.process <= 0) {
@@ -510,8 +525,10 @@ void CEffectPrim::RenderJitterSweeps(matrix& wtm) {
               unsigned char green;
               unsigned char blue;
               if (this->state.slots[0].fullDisplayAngle == 3) {
-                blue = static_cast<unsigned char>(std::max(std::rand() % 26, 0) + 100);
-                green = static_cast<unsigned char>(std::max(std::rand() % 51, 0));
+                int rb = std::rand() % 26;
+                int rg = std::rand() % 51;
+                blue = static_cast<unsigned char>((rb >= 0 ? rb : 0) + 100);
+                green = static_cast<unsigned char>(rg >= 0 ? rg : 0);
               } else {
                 green = static_cast<unsigned char>(i * 3);
                 blue = green;
