@@ -1205,7 +1205,7 @@ void CEffectPrim::RenderTeiRect(
 
 // OFFSET: 0x00BE5640
 // FUNCTION: fn_19925
-void CEffectPrim::RenderTeiRect(
+__declspec(safebuffers) void CEffectPrim::RenderTeiRect(
   int* rpCnt, int texPart, short alphaB, short alphaT, vector3d vec1, vector3d vec2, vector3d vec3, vector3d vec4, matrix& wtm, char pw, unsigned char r,
   unsigned char g, unsigned char b
 ) {
