@@ -75,21 +75,30 @@ bool CActRes::Load(const char* name) {
   this->animations.resize(header.count);
   this->speeds.resize(header.count, 4.0f);
 
-  for (auto& animation : this->animations) {
-    std::uint32_t frameCount;
+  for (unsigned animationIndex = 0; animationIndex < this->animations.size(); ++animationIndex) {
+    std::vector<ActionFrame>& animation = this->animations[animationIndex];
+    int frameCount;
     file.Read(&frameCount, sizeof(frameCount));
     animation.resize(frameCount);
 
-    for (ActionFrame& frame : animation) {
-      file.Read(frame.unknown_0000, sizeof(frame.unknown_0000));
+    for (int frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
+      std::int32_t range1[4];
+      std::int32_t range2[4];
+      file.Read(range1, sizeof(range1));
+      file.Read(range2, sizeof(range2));
       int cellCount;
       file.Read(&cellCount, sizeof(cellCount));
+      ActionFrame& frame = animation[frameIndex];
       frame.sound = -1;
       frame.cellCount = cellCount;
       frame.cells.resize(std::min(static_cast<unsigned>(cellCount), 1000u));
       frame.anchors.clear();
       frame.anchorCount = 0;
-      this->maximumCells = std::max(this->maximumCells, cellCount);
+      std::memcpy(frame.unknown_0000, range1, sizeof(range1));
+      std::memcpy(frame.unknown_0000 + 4, range2, sizeof(range2));
+      if (this->maximumCells < cellCount) {
+        this->maximumCells = cellCount;
+      }
 
       for (int index = 0; index < cellCount; ++index) {
         SpriteFrameCell& cell = frame.cells[index];
@@ -181,13 +190,13 @@ bool CActRes::Load(const char* name) {
     for (int index = 0; index < count; ++index) {
       char sound[40];
       file.Read(sound, sizeof(sound));
-      this->sounds[index].assign(sound, std::strlen(sound));
+      this->sounds[index] = sound;
     }
   }
 
   if (header.version >= 0x0202) {
-    for (float& speed : this->speeds) {
-      file.Read(&speed, sizeof(speed));
+    for (int index = 0; index < header.count; ++index) {
+      file.Read(&this->speeds[index], sizeof(float));
     }
   }
 
