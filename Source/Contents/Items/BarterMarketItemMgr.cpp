@@ -710,7 +710,7 @@ BarterChunk16* BarterChunkVector::Umove(BarterChunk16* first, BarterChunk16* las
 
 // OFFSET: 0x005DB210
 // FUNCTION: fn_03786
-BarterChunk16* MoveChunks16(BarterChunk16* first, BarterChunk16* last, BarterChunk16* dest)
+BarterChunk16* BarterChunkVector::MoveChunks16(BarterChunk16* first, BarterChunk16* last, BarterChunk16* dest)
 {
   while (first != last) {
     *dest = *first;
