@@ -256,21 +256,21 @@ const char* RuneData::GetName() const {
 // OFFSET: 0x00766CB0
 // FUNCTION: fn_08125
 int CRuneSystemMgr::GetDecomItem(unsigned int index) const {
-  if (index < this->m_decomItems.size()) {
-    return this->m_decomItems[index];
+  if (index >= this->m_decomItems.size()) {
+    return 0;
   }
 
-  return 0;
+  return this->m_decomItems[index];
 }
 
 // OFFSET: 0x00766CE0
 // FUNCTION: fn_08126
 int CRuneSystemMgr::GetOwnedDecomItem(unsigned int index) const {
-  if (index < this->m_ownedDecomItems.size()) {
-    return this->m_ownedDecomItems[index];
+  if (index >= this->m_ownedDecomItems.size()) {
+    return 0;
   }
 
-  return 0;
+  return this->m_ownedDecomItems[index];
 }
 
 // OFFSET: 0x00766DB0
@@ -389,16 +389,14 @@ RuneData* CRuneSystemMgr::FindRune(int tagId, int type, std::int64_t id, unsigne
 // FUNCTION: fn_08138
 RuneData* CTagData::FindRune(int type, std::int64_t id, unsigned int* index) {
   if (type == 0 || type == 1) {
-    std::vector<RuneData*>& runes = this->m_runes[type];
-    const unsigned int count = static_cast<unsigned int>(runes.size());
+    const unsigned int count = static_cast<unsigned int>(this->m_runes[type].size());
     for (unsigned int i = 0; i < count; ++i) {
-      RuneData* rune = runes[i];
-      if (rune && id == rune->m_id) {
+      if (this->m_runes[type][i] && id == this->m_runes[type][i]->m_id) {
         if (index) {
           *index = i;
         }
 
-        return runes[i];
+        return this->m_runes[type][i];
       }
     }
   }
@@ -833,17 +831,13 @@ bool CRuneSystemMgr::SetRewardStep(int tagId, std::int64_t id, int step) {
     return false;
   }
 
-  std::vector<RuneData*>& runes = tag->m_runes[0];
-  const unsigned int count = static_cast<unsigned int>(runes.size());
-  for (unsigned int i = 0; i < count; ++i) {
-    RuneData* rune = runes[i];
-    if (rune && id == rune->m_id) {
-      static_cast<RuneSetData*>(rune)->m_rewardStep = step;
-      return true;
-    }
+  RuneSetData* runeSet = static_cast<RuneSetData*>(tag->FindRune(0, id, nullptr));
+  if (!runeSet) {
+    return false;
   }
 
-  return false;
+  runeSet->m_rewardStep = step;
+  return true;
 }
 
 // OFFSET: 0x00769240
