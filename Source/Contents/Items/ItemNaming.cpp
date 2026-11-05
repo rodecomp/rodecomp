@@ -257,12 +257,12 @@ int ITEM_INFO::Suffixes(char* output, int& capacity, unsigned char consume) cons
 // OFFSET: 0x006D76E0
 // FUNCTION: fn_06593
 int ITEM_INFO::Slots(char* output, int& capacity, unsigned char consume) const {
-  const int slots = FindItemDescription(std::atoi(this->itemId.c_str())).slots;
+  const int slots = FindItemDescription(std::atoi(this->itemId.c_str()), g_itemDescriptions).slots;
   if (slots == 0) {
     return 0;
   }
 
-  const int bytes = _snprintf_s(output, capacity, _TRUNCATE, " [%d]", slots);
+  const int bytes = StringFormat(output, capacity, _TRUNCATE, " [%d]", slots);
   if (bytes <= 0) {
     return 0;
   }
