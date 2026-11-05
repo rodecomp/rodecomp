@@ -9,12 +9,30 @@
 #include "Contents/UserData/NormalItemSlots.h"
 #include "File/ShortcutFilename.h"
 #include "UI/Buttons/UIButton.h"
+#include "UI/Buttons/UIBitmapButton.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/SkinPalette.h"
 #include "UI/Acceptance/UIJoinPartyAcceptWnd.h"
 #include "UI/Text/UITextViewer.h"
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Window/WindowManagerWindows.h"
 
 #include <cstring>
+#include <format>
+
+namespace {
+#pragma pack(push, 1)
+  struct ExchangeRecordHeader {
+    /* 0000 */ std::int16_t type;
+    /* 0002 */ std::uint32_t length;
+  };
+#pragma pack(pop)
+
+  // INLINED
+  void SetExchangeName(CGameMode* mode, std::string name) {
+    mode->exchangeName = name;
+  }
+}
 
 // OFFSET: 0x008C7AA0
 // FUNCTION: fn_11941
@@ -29,12 +47,31 @@ UIExchangeAcceptWnd::~UIExchangeAcceptWnd() = default;
 // OFFSET: 0x008E0380
 // FUNCTION: fn_12172
 void UIExchangeAcceptWnd::Slot15(int width, int height) {
-  this->AddChoice("btn_ok", 184, 189, 96);
-  this->AddChoice("btn_cancel", 185, 234, 96);
+  const std::string prefix("유저인터페이스\\");
+  const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
+  int ids[2] = {184, 185};
+  int positions[2][2] = {{189, 96}, {234, 96}};
+
+  for (int i = 0; i < 2; ++i) {
+    auto* button = new UIBitmapButton();
+    for (int state = 0; state < 3; ++state) {
+      button->SetBitmap((prefix + names[i][state] + ".bmp").c_str(), state, 0);
+    }
+    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    button->Move(positions[i][0], positions[i][1]);
+    button->SetId(ids[i]);
+    this->AddChild(button);
+  }
+
   this->m_message0 = 184;
-  this->CreateViewer(width, height);
-  char text[] = "deal";
-  this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text), 38, 0, 0);
+  this->viewer = new UITextViewer();
+  this->viewer->Configure(10, 22, width - 20, height - 55, 0);
+  unsigned red, green, blue;
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  this->viewer->textColor = 0xFF000000u | RGB(red, green, blue);
+  this->viewer->Invalidate();
+  this->AddChild(this->viewer);
+  this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>("deal"), 38, 0, 0);
 }
 
 // OFFSET: 0x008FA8C0
