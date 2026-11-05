@@ -263,27 +263,31 @@ std::string NavigationLinkParser::ExpandMessages(std::string text) {
 // OFFSET: 0x00833160
 // FUNCTION: fn_10409
 int DecodeNavigationNumber(std::string value) {
-  constexpr char digits[] = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  const std::size_t length = value.size();
-  std::uint32_t result = 0;
+  const char digits[] = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const int size = static_cast<int>(value.size()) + 1;
+  int result = 0;
+  char* buffer = new char[size];
+  strcpy_s(buffer, size, value.c_str());
+  const int length = static_cast<int>(value.size());
 
-  for (std::size_t index = 0; index < length; ++index) {
-    const char* digit = std::strchr(digits, value[index]);
-
-    if (!digit || *digit == '\0') {
-      continue;
+  for (int index = 0; index < length; ++index) {
+    for (int digit = 0; digit < 62; ++digit) {
+      if (digits[digit] == buffer[index]) {
+        int place = 1;
+        for (int exponent = 1; exponent < length - index; ++exponent) {
+          place *= 62;
+        }
+        result += digit * place;
+        break;
+      }
     }
-
-    std::uint32_t place = 1;
-
-    for (std::size_t exponent = index + 1; exponent < length; ++exponent) {
-      place *= 62;
-    }
-
-    result += static_cast<std::uint32_t>(digit - digits) * place;
   }
 
-  return static_cast<int>(result);
+  if (buffer) {
+    delete[] buffer;
+  }
+
+  return result;
 }
 
 // OFFSET: 0x00833270
