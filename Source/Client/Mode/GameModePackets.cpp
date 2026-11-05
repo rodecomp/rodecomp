@@ -3344,16 +3344,16 @@ void CGameMode::ReceiveActorSkillAction(const unsigned char* packet) {
   int job = -1;
 
   if (*reinterpret_cast<const std::uint32_t*>(packet + 4) == g_session.m_aid) {
-    actor = this->scene->player;
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&message);
-    actor->SendMsg(nullptr, 0x25, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->scene->player->SendMsg(nullptr, 0x25, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor = this->scene->player;
     job = actor->GetEffectiveJob(-1);
   } else {
     gameActor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t*>(packet + 4)));
     if (gameActor != nullptr) {
-      actor = gameActor;
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&message);
-      actor->SendMsg(nullptr, 0x25, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      gameActor->SendMsg(nullptr, 0x25, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor = gameActor;
       job = actor->GetEffectiveJob(-1);
     } else if (CRenderObject* skill = this->scene->GetSkillByAID(*reinterpret_cast<const std::uint32_t*>(packet + 4))) {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&message);
