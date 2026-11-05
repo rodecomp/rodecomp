@@ -116,12 +116,14 @@ UIWindow* UIWindowMgr::Top() const {
 // OFFSET: 0x00A91120
 // FUNCTION: fn_17155
 void UIWindowMgr::RestoreInput() {
-  for (UIWindow* window : this->rendered) {
+  for (std::list<UIWindow*>::iterator it = this->rendered.begin(); it != this->rendered.end(); ++it) {
+    UIWindow* window = *it;
     if (window->geometry.visible == 0) {
       continue;
     }
 
-    for (UIWindow* child : window->m_children) {
+    for (std::list<UIWindow*>::iterator childIt = window->m_children.begin(); childIt != window->m_children.end(); ++childIt) {
+      UIWindow* child = *childIt;
       if (!child->Slot05() || child->geometry.x <= 0 || child->geometry.y <= 0) {
         continue;
       }
