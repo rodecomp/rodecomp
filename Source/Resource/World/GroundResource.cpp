@@ -130,20 +130,20 @@ void CGndRes::Unload() {
 // OFFSET: 0x0074E4B0
 // FUNCTION: fn_07909
 void GroundLegacyLightmap::Decode(unsigned char* output) const {
-  int pixel = 0;
-
-  for (int bit = 0; bit < 320; bit += 5) {
+  for (int index = 0; index < 64; ++index) {
+    const int bit = index * 5;
     const int shift = bit % 8;
     const unsigned char* packed = this->bits + bit / 8;
+    const int mask = 248 >> shift;
     unsigned char value;
 
-    if (shift >= 4) {
-      value = static_cast<unsigned char>(((packed[0] & (248 >> shift)) << shift) + (((248 << (8 - shift)) & packed[1]) >> (8 - shift)));
+    if (shift < 4) {
+      value = static_cast<unsigned char>((packed[0] & mask) << shift);
     } else {
-      value = static_cast<unsigned char>((packed[0] & (248 >> shift)) << shift);
+      value = static_cast<unsigned char>(((packed[0] & mask) << shift) + (((248 << (8 - shift)) & packed[1]) >> (8 - shift)));
     }
 
-    output[pixel++] = value;
+    output[index] = value;
   }
 }
 
