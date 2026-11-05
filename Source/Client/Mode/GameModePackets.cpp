@@ -416,6 +416,24 @@ namespace {
   };
 #pragma pack(pop)
 
+  struct StoreEquipEntry {
+    std::int16_t index;
+    int itemId;
+    unsigned char type;
+    std::uint32_t location;
+    std::uint32_t wearState;
+    unsigned char refine;
+    std::uint32_t cards[4];
+    std::uint32_t expireTime;
+    std::uint16_t bindOnEquip;
+    std::uint16_t sprite;
+    bool identified;
+    bool damaged;
+    bool placeEtcTab;
+    StoreItemOption options[5];
+    unsigned char grade;
+  };
+
   static_assert(sizeof(ItemStoreListHeader) == 0x1C);
   static_assert(sizeof(StoreEquipRecord) == 0x29);
   static_assert(sizeof(StoreEquipOptionRecord) == 0x43);
@@ -437,6 +455,42 @@ namespace {
       }
     }
     return count;
+  }
+
+  // INLINED
+  __forceinline void ReadStoreEquipEntry(StoreEquipEntry& entry, const StoreEquipRecord& record) {
+    entry.index = record.index;
+    entry.itemId = record.itemId;
+    entry.type = record.type;
+    entry.location = record.location;
+    entry.wearState = record.wearState;
+    entry.refine = record.refine;
+    std::memcpy(entry.cards, record.cards, sizeof(entry.cards));
+    entry.expireTime = record.expireTime;
+    entry.bindOnEquip = record.bindOnEquip;
+    entry.sprite = record.sprite;
+    entry.identified = record.flags & 1;
+    entry.damaged = (record.flags >> 1) & 1;
+    entry.placeEtcTab = (record.flags >> 2) & 1;
+    std::memset(entry.options, 0, sizeof(entry.options));
+  }
+
+  // INLINED
+  __forceinline void ReadStoreEquipEntry(StoreEquipEntry& entry, const StoreEquipOptionRecord& record) {
+    entry.index = record.index;
+    entry.itemId = record.itemId;
+    entry.type = record.type;
+    entry.location = record.location;
+    entry.wearState = record.wearState;
+    entry.refine = record.refine;
+    std::memcpy(entry.cards, record.cards, sizeof(entry.cards));
+    entry.expireTime = record.expireTime;
+    entry.bindOnEquip = record.bindOnEquip;
+    entry.sprite = record.sprite;
+    entry.identified = record.flags & 1;
+    entry.damaged = (record.flags >> 1) & 1;
+    entry.placeEtcTab = (record.flags >> 2) & 1;
+    std::memcpy(entry.options, record.options, sizeof(entry.options));
   }
 
   static_assert(sizeof(DispelPacket) == 6);
@@ -799,25 +853,26 @@ void CGameMode::ReceiveItem1738EquipList(const unsigned char* data) {
   const int count = (packet->length - sizeof(ItemStoreListHeader)) / sizeof(StoreEquipRecord);
   const StoreEquipRecord* record = reinterpret_cast<const StoreEquipRecord*>(data + sizeof(ItemStoreListHeader));
   for (int i = 0; i < count; ++i, ++record) {
-    StoreItemOption options[5] = {};
+    StoreEquipEntry entry;
+    ReadStoreEquipEntry(entry, *record);
     ITEM_INFO item;
-    item.unknown_0000[0] = record->type;
-    item.unknown_0000[1] = record->index;
-    item.unknown_0000[2] = record->location;
-    item.unknown_0000[3] = record->wearState;
+    item.unknown_0000[0] = entry.type;
+    item.unknown_0000[1] = entry.index;
+    item.unknown_0000[2] = entry.location;
+    item.unknown_0000[3] = entry.wearState;
     item.quantity = 1;
-    std::memcpy(item.unknown_001C, record->cards, sizeof(record->cards));
-    item.SetItemId(record->itemId);
-    item.identified = record->flags & 1;
-    item.unknown_005D = (record->flags >> 1) & 1;
-    item.unknown_0060 = record->refine;
-    item.unknown_0068 = record->expireTime;
-    item.unknown_0064 = record->bindOnEquip;
-    *reinterpret_cast<std::uint32_t*>(item.unknown_0074) = record->sprite;
-    *reinterpret_cast<unsigned char*>(item.unknown_0078) = (record->flags >> 2) & 1;
-    item.unknown_0098 = CountStoreItemOptions(options);
+    std::memcpy(item.unknown_001C, entry.cards, sizeof(entry.cards));
+    item.SetItemId(entry.itemId);
+    item.identified = entry.identified;
+    item.unknown_005D = entry.damaged;
+    item.unknown_0060 = entry.refine;
+    item.unknown_0068 = entry.expireTime;
+    item.unknown_0064 = entry.bindOnEquip;
+    *reinterpret_cast<std::uint32_t*>(item.unknown_0074) = entry.sprite;
+    *reinterpret_cast<unsigned char*>(item.unknown_0078) = entry.placeEtcTab;
+    item.unknown_0098 = CountStoreItemOptions(entry.options);
     for (int index = 0; index < item.unknown_0098; ++index) {
-      reinterpret_cast<StoreItemOption*>(item.unknown_009C)[index] = options[index];
+      reinterpret_cast<StoreItemOption*>(item.unknown_009C)[index] = entry.options[index];
     }
     g_session.AddItem1738(item, 1);
   }
@@ -838,26 +893,26 @@ void CGameMode::ReceiveItem1738EquipListOptions(const unsigned char* data) {
   const int count = (packet->length - sizeof(ItemStoreListHeader)) / sizeof(StoreEquipOptionRecord);
   const StoreEquipOptionRecord* record = reinterpret_cast<const StoreEquipOptionRecord*>(data + sizeof(ItemStoreListHeader));
   for (int i = 0; i < count; ++i, ++record) {
-    StoreItemOption options[5];
-    std::memcpy(options, record->options, sizeof(options));
+    StoreEquipEntry entry;
+    ReadStoreEquipEntry(entry, *record);
     ITEM_INFO item;
-    item.unknown_0000[0] = record->type;
-    item.unknown_0000[1] = record->index;
-    item.unknown_0000[2] = record->location;
-    item.unknown_0000[3] = record->wearState;
+    item.unknown_0000[0] = entry.type;
+    item.unknown_0000[1] = entry.index;
+    item.unknown_0000[2] = entry.location;
+    item.unknown_0000[3] = entry.wearState;
     item.quantity = 1;
-    std::memcpy(item.unknown_001C, record->cards, sizeof(record->cards));
-    item.SetItemId(record->itemId);
-    item.identified = record->flags & 1;
-    item.unknown_005D = (record->flags >> 1) & 1;
-    item.unknown_0060 = record->refine;
-    item.unknown_0068 = record->expireTime;
-    item.unknown_0064 = record->bindOnEquip;
-    *reinterpret_cast<std::uint32_t*>(item.unknown_0074) = record->sprite;
-    *reinterpret_cast<unsigned char*>(item.unknown_0078) = (record->flags >> 2) & 1;
-    item.unknown_0098 = CountStoreItemOptions(options);
+    std::memcpy(item.unknown_001C, entry.cards, sizeof(entry.cards));
+    item.SetItemId(entry.itemId);
+    item.identified = entry.identified;
+    item.unknown_005D = entry.damaged;
+    item.unknown_0060 = entry.refine;
+    item.unknown_0068 = entry.expireTime;
+    item.unknown_0064 = entry.bindOnEquip;
+    *reinterpret_cast<std::uint32_t*>(item.unknown_0074) = entry.sprite;
+    *reinterpret_cast<unsigned char*>(item.unknown_0078) = entry.placeEtcTab;
+    item.unknown_0098 = CountStoreItemOptions(entry.options);
     for (int index = 0; index < item.unknown_0098; ++index) {
-      reinterpret_cast<StoreItemOption*>(item.unknown_009C)[index] = options[index];
+      reinterpret_cast<StoreItemOption*>(item.unknown_009C)[index] = entry.options[index];
     }
     g_session.AddItem1738(item, 1);
   }
@@ -930,19 +985,15 @@ __declspec(noinline) void CGameMode::ReceiveHomunculusProperty64(const unsigned 
 // FUNCTION: fn_21714
 __declspec(noinline) void CGameMode::ReceiveHomunculusProperty(const unsigned char* data) {
   const HomunculusPropertyPacket* packet = reinterpret_cast<const HomunculusPropertyPacket*>(data);
-  switch (packet->type) {
-  case 5:
+  if (packet->type == 5) {
     g_session.m_homunHp = packet->value;
     g_session.RefreshHomunculusInfo();
-    break;
-  case 7:
+  } else if (packet->type == 7) {
     g_session.m_homunSp = packet->value;
     g_session.RefreshHomunculusInfo();
-    break;
-  case 1:
+  } else if (packet->type == 1) {
     g_session.m_homunExp = packet->value;
     g_session.RefreshHomunculusInfo();
-    break;
   }
 
   g_session.RefreshHomunculusInfo();
@@ -971,18 +1022,18 @@ __declspec(noinline) void CGameMode::ReceiveHuntingList(const unsigned char* pac
 bool CGameMode::NotifyItemResult(int result) {
   int message;
   switch (result) {
-  case 1:
-  case 6:
-    message = 53;
-    break;
-  case 2:
-    message = 52;
+  case 5:
+    message = 279;
     break;
   case 4:
     message = 220;
     break;
-  case 5:
-    message = 279;
+  case 2:
+    message = 52;
+    break;
+  case 1:
+  case 6:
+    message = 53;
     break;
   case 7:
     message = 1418;
@@ -994,7 +1045,8 @@ bool CGameMode::NotifyItemResult(int result) {
     return false;
   }
   g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(message)), 0xFF, 0, 0, 0);
+  const char* text = LookupMessage(message);
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
   return true;
 }
 
@@ -1637,26 +1689,27 @@ __declspec(noinline) void CGameMode::ReceiveItem1740EquipList(const unsigned cha
   const int count = (*reinterpret_cast<const std::int16_t*>(packet + 2) - 4) / sizeof(StoreEquipRecord);
   const StoreEquipRecord* record = reinterpret_cast<const StoreEquipRecord*>(packet + 4);
   for (int i = 0; i < count; ++i, ++record) {
-    StoreItemOption options[5] = {};
+    StoreEquipEntry entry;
+    ReadStoreEquipEntry(entry, *record);
     ITEM_INFO item;
-    item.unknown_0000[0] = record->type;
-    item.unknown_0000[1] = record->index;
-    item.unknown_0000[2] = record->location;
-    item.unknown_0000[3] = record->wearState;
+    item.unknown_0000[0] = entry.type;
+    item.unknown_0000[1] = entry.index;
+    item.unknown_0000[2] = entry.location;
+    item.unknown_0000[3] = entry.wearState;
     item.quantity = 1;
-    std::memcpy(item.unknown_001C, record->cards, sizeof(record->cards));
-    item.SetItemId(record->itemId);
-    item.identified = record->flags & 1;
-    item.unknown_005D = (record->flags >> 1) & 1;
-    item.unknown_0060 = record->refine;
-    item.unknown_0068 = record->expireTime;
-    item.unknown_0064 = record->bindOnEquip;
-    item.unknown_0070 = record->sprite;
-    item.unknown_0074[0] = (record->flags >> 2) & 1;
+    std::memcpy(item.unknown_001C, entry.cards, sizeof(entry.cards));
+    item.SetItemId(entry.itemId);
+    item.identified = entry.identified;
+    item.unknown_005D = entry.damaged;
+    item.unknown_0060 = entry.refine;
+    item.unknown_0068 = entry.expireTime;
+    item.unknown_0064 = entry.bindOnEquip;
+    item.unknown_0070 = entry.sprite;
+    item.unknown_0074[0] = entry.placeEtcTab;
     item.unknown_0088 = 0;
-    item.unknown_0098 = CountStoreItemOptions(options);
+    item.unknown_0098 = CountStoreItemOptions(entry.options);
     for (int index = 0; index < item.unknown_0098; ++index) {
-      reinterpret_cast<StoreItemOption*>(item.unknown_009C)[index] = options[index];
+      reinterpret_cast<StoreItemOption*>(item.unknown_009C)[index] = entry.options[index];
     }
     g_session.AddItem1740(item);
   }
@@ -1670,27 +1723,27 @@ void CGameMode::ReceiveItem1740EquipListOptions(const unsigned char* packet) {
   const int count = (*reinterpret_cast<const std::int16_t*>(packet + 2) - 4) / sizeof(StoreEquipOptionRecord);
   const StoreEquipOptionRecord* record = reinterpret_cast<const StoreEquipOptionRecord*>(packet + 4);
   for (int i = 0; i < count; ++i, ++record) {
-    StoreItemOption options[5];
-    std::memcpy(options, record->options, sizeof(options));
+    StoreEquipEntry entry;
+    ReadStoreEquipEntry(entry, *record);
     ITEM_INFO item;
-    item.unknown_0000[0] = record->type;
-    item.unknown_0000[1] = record->index;
-    item.unknown_0000[2] = record->location;
-    item.unknown_0000[3] = record->wearState;
+    item.unknown_0000[0] = entry.type;
+    item.unknown_0000[1] = entry.index;
+    item.unknown_0000[2] = entry.location;
+    item.unknown_0000[3] = entry.wearState;
     item.quantity = 1;
-    std::memcpy(item.unknown_001C, record->cards, sizeof(record->cards));
-    item.SetItemId(record->itemId);
-    item.identified = record->flags & 1;
-    item.unknown_005D = (record->flags >> 1) & 1;
-    item.unknown_0060 = record->refine;
-    item.unknown_0068 = record->expireTime;
-    item.unknown_0064 = record->bindOnEquip;
-    item.unknown_0070 = record->sprite;
-    item.unknown_0074[0] = (record->flags >> 2) & 1;
+    std::memcpy(item.unknown_001C, entry.cards, sizeof(entry.cards));
+    item.SetItemId(entry.itemId);
+    item.identified = entry.identified;
+    item.unknown_005D = entry.damaged;
+    item.unknown_0060 = entry.refine;
+    item.unknown_0068 = entry.expireTime;
+    item.unknown_0064 = entry.bindOnEquip;
+    item.unknown_0070 = entry.sprite;
+    item.unknown_0074[0] = entry.placeEtcTab;
     item.unknown_0088 = 0;
-    item.unknown_0098 = CountStoreItemOptions(options);
+    item.unknown_0098 = CountStoreItemOptions(entry.options);
     for (int index = 0; index < item.unknown_0098; ++index) {
-      reinterpret_cast<StoreItemOption*>(item.unknown_009C)[index] = options[index];
+      reinterpret_cast<StoreItemOption*>(item.unknown_009C)[index] = entry.options[index];
     }
     g_session.AddItem1740(item);
   }
@@ -1703,7 +1756,8 @@ void CGameMode::ReceiveItem1740EquipListOptions(const unsigned char* packet) {
 __declspec(noinline) void CGameMode::ReceiveUnknownD26800(const unsigned char* packet) {
   const unsigned char value = packet[2];
   *reinterpret_cast<int*>(g_session.unknown_5974) = value;
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(value != 0 ? 0x54F : 0x54E)), 0x64FFFF, 0, 0, 0);
+  const char* text = LookupMessage(value != 0 ? 0x54F : 0x54E);
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0x64FFFF, 0, 0, 0);
   if (g_windowMgr.unknown_01E0) {
     g_windowMgr.unknown_01E0->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
   }
@@ -1718,10 +1772,12 @@ __declspec(noinline) void CGameMode::ReceiveUnknownD79660(const unsigned char* p
   }
 
   switch (*reinterpret_cast<const std::int16_t*>(packet + 6) - 1) {
-  case 0:
+  case 0: {
     window->Show(0);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x10E8)), 0xFF, 0, 0, 0);
+    const char* text = LookupMessage(0x10E8);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
     return;
+  }
   case 1:
     g_windowMgr.CloseWindow(10032);
     return;
@@ -2542,8 +2598,10 @@ __declspec(noinline) void CGameMode::Zc_Msg(const unsigned char* packet) {
   }
 
   g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(message)), color, type, 0, 0);
-  g_windowMgr.SendNotice(19, reinterpret_cast<std::intptr_t>(LookupMessage(message)), color, type, 0, 0);
+  const char* text = LookupMessage(message);
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), color, type, 0, 0);
+  const char* chatText = LookupMessage(message);
+  g_windowMgr.SendNotice(19, reinterpret_cast<std::intptr_t>(chatText), color, type, 0, 0);
 }
 
 // OFFSET: 0x00D328E0
@@ -3530,20 +3588,21 @@ void CGameMode::ReceiveUnknownD50810(const unsigned char* packet) {
 
   const Item1758StoreRecord* record = reinterpret_cast<const Item1758StoreRecord*>(packet + 8);
   for (int i = 0; i < count; ++i, ++record) {
+    const Item1758StoreRecord entry = *record;
     ITEM_INFO item;
-    item.unknown_0000[0] = record->type;
-    item.unknown_0000[1] = record->index;
-    item.unknown_0014[0] = record->unknown_0000;
-    item.unknown_0014[1] = record->unknown_0000;
-    item.quantity = record->amount;
-    std::memcpy(item.unknown_001C, record->cards, sizeof(record->cards));
-    item.SetItemId(record->itemId);
-    item.identified = record->identified;
-    item.unknown_005D = record->damaged;
-    item.unknown_0060 = record->refine;
-    item.unknown_0098 = CountStoreItemOptions(record->options);
+    item.unknown_0000[0] = entry.type;
+    item.unknown_0000[1] = entry.index;
+    item.unknown_0014[0] = entry.unknown_0000;
+    item.unknown_0014[1] = entry.unknown_0000;
+    item.quantity = entry.amount;
+    std::memcpy(item.unknown_001C, entry.cards, sizeof(entry.cards));
+    item.SetItemId(entry.itemId);
+    item.identified = entry.identified;
+    item.unknown_005D = entry.damaged;
+    item.unknown_0060 = entry.refine;
+    item.unknown_0098 = CountStoreItemOptions(entry.options);
     for (int index = 0; index < item.unknown_0098; ++index) {
-      reinterpret_cast<StoreItemOption*>(item.unknown_009C)[index] = record->options[index];
+      reinterpret_cast<StoreItemOption*>(item.unknown_009C)[index] = entry.options[index];
     }
     g_session.AddItem1758(item);
   }
@@ -4486,9 +4545,9 @@ static_assert(sizeof(ParChangePacket) == 8);
 void CGameMode::ReceiveParChange(unsigned char* data) {
   auto* packet = reinterpret_cast<ParChangePacket*>(data);
   int* derivedStats = reinterpret_cast<int*>(g_session.unknown_169C);
+  g_modeMgr.GetGameMode();
   std::string text;
 
-  g_modeMgr.GetGameMode();
 
   switch (packet->type) {
   case 0:
@@ -4513,6 +4572,11 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 0, 0, 0);
     *reinterpret_cast<int*>(&g_session.unknown_16F4[4]) = packet->value;
     g_session.InvalidateWindowFrames();
+    break;
+  case 60:
+    if (packet->value < -60) {
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(858)), 0xFFFF, 0, 0, 0);
+    }
     break;
   case 5:
     if (g_session.unknown_556C > 0 && (packet->value * 100) / g_session.unknown_556C < 25 &&
@@ -4624,6 +4688,21 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
     }
     break;
   }
+  case 55:
+    g_session.m_jobLevel = packet->value;
+    g_session.InvalidateWindowFrames();
+    this->scene->player->LaunchEffect(packet->value < 51 ? 158 : 337, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+
+    if (g_replayAnimationScaling == 0) {
+      g_windowMgr.EnsureWindow(49);
+      if (g_windowMgr.unknown_01DC) {
+        reinterpret_cast<UIBasicInfoWnd*>(g_windowMgr.unknown_01DC)->SetHeight(g_windowMgr.unknown_01DC->geometry.height);
+      }
+    }
+    if (UIWindow* window = g_windowMgr.LookupWindow(307)) {
+      window->SendMsg(nullptr, 6, 286, 196, 1, 0);
+    }
+    break;
   case 12:
     g_session.m_skillPoint = packet->value;
     g_session.InvalidateWindowFrames();
@@ -4776,26 +4855,6 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
   case 54:
     derivedStats[9] = packet->value;
     g_session.InvalidateWindowFrames();
-    break;
-  case 55:
-    g_session.m_jobLevel = packet->value;
-    g_session.InvalidateWindowFrames();
-    this->scene->player->LaunchEffect(packet->value < 51 ? 158 : 337, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-
-    if (g_replayAnimationScaling == 0) {
-      g_windowMgr.EnsureWindow(49);
-      if (g_windowMgr.unknown_01DC) {
-        reinterpret_cast<UIBasicInfoWnd*>(g_windowMgr.unknown_01DC)->SetHeight(g_windowMgr.unknown_01DC->geometry.height);
-      }
-    }
-    if (UIWindow* window = g_windowMgr.LookupWindow(307)) {
-      window->SendMsg(nullptr, 6, 286, 196, 1, 0);
-    }
-    break;
-  case 60:
-    if (packet->value < -60) {
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(858)), 0xFFFF, 0, 0, 0);
-    }
     break;
   case 169:
     reinterpret_cast<bool&>(g_session.unknown_8128[4]) = packet->value != 0;
@@ -6487,19 +6546,23 @@ __declspec(noinline) void CGameMode::ReceiveWearEquipAck(unsigned char result, s
   switch (result) {
   case 0: {
     ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, index);
-    if (item.unknown_0000[1]) {
+    if (item.unknown_0000[1] > 0) {
       item.unknown_0070 = look;
       item.unknown_0000[3] = location;
       g_session.OnItemEquipped(item);
     }
     break;
   }
-  case 1:
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1953)), 0xFF, 7, 0, 0);
+  case 1: {
+    const char* text = LookupMessage(1953);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF, 7, 0, 0);
     break;
-  case 2:
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(372)), 0xFF, 7, 0, 0);
+  }
+  case 2: {
+    const char* text = LookupMessage(372);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF, 7, 0, 0);
     break;
+  }
   }
 }
 
@@ -6708,15 +6771,15 @@ void CGameMode::ReceiveItemFallEntry(const unsigned char* packet) {
 // FUNCTION: fn_21681
 __declspec(noinline) void CGameMode::ReceiveFeedOption(const unsigned char* packet) {
   switch (*reinterpret_cast<const int*>(packet + 2)) {
-  case 0:
+  case 0: {
     *reinterpret_cast<int*>(g_session.unknown_5974) = *reinterpret_cast<const int*>(packet + 6);
-    g_windowMgr.SendNotice(
-      1, reinterpret_cast<std::intptr_t>(LookupMessage((*reinterpret_cast<int*>(g_session.unknown_5974) != 0) + 0x54E)), 0x64FFFF, 0, 0, 0
-    );
+    const char* text = LookupMessage((*reinterpret_cast<int*>(g_session.unknown_5974) != 0) + 0x54E);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0x64FFFF, 0, 0, 0);
     if (g_windowMgr.unknown_01E0) {
       g_windowMgr.unknown_01E0->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
     }
     break;
+  }
   case 1:
     g_serviceOptions.Set(231, *reinterpret_cast<const int*>(packet + 6) != 0);
     g_windowMgr.SendNotice(
@@ -6753,9 +6816,11 @@ __declspec(noinline) void CGameMode::ReceiveTakeOffEquipResult(unsigned char res
       g_session.UnequipItem(location, identity);
     }
     break;
-  case 1:
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1953)), 0xFF, 7, 0, 0);
+  case 1: {
+    const char* text = LookupMessage(1953);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF, 7, 0, 0);
     break;
+  }
   }
 }
 
@@ -7561,7 +7626,8 @@ void CGameMode::ReceiveAddQuest64(const unsigned char* data) {
   g_renewQuestMgr->AddOngoingQuest(packet->questId, info);
   g_renewQuestMgr->sub_67B6B0();
   g_windowMgr.EnsureWindow(0x8F);
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x55E)), 0xFFFF, 0x13, 0, 0);
+  const char* text = LookupMessage(0x55E);
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0x13, 0, 0);
 }
 
 // OFFSET: 0x00D20EF0
@@ -7613,7 +7679,8 @@ void CGameMode::ReceiveAddQuest(const unsigned char* data) {
   g_renewQuestMgr->AddOngoingQuest(packet->questId, info);
   g_renewQuestMgr->sub_67B6B0();
   g_windowMgr.EnsureWindow(0x8F);
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x55E)), 0xFFFF, 0x13, 0, 0);
+  const char* text = LookupMessage(0x55E);
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0x13, 0, 0);
 }
 
 #pragma pack(push, 1)
@@ -7820,7 +7887,26 @@ namespace {
   static_assert(sizeof(EquipWindowGradeRecord) == 0x44);
 
   // INLINED
-  __forceinline void FillEquipWindowItem(ITEM_INFO& item, const StoreEquipOptionRecord& record, const StoreItemOption* options) {
+  __forceinline void ReadStoreEquipEntry(StoreEquipEntry& entry, const EquipWindowGradeRecord& record) {
+    entry.index = record.index;
+    entry.itemId = record.itemId;
+    entry.type = record.type;
+    entry.location = record.location;
+    entry.wearState = record.wearState;
+    entry.refine = record.refine;
+    std::memcpy(entry.cards, record.cards, sizeof(entry.cards));
+    entry.expireTime = record.expireTime;
+    entry.bindOnEquip = record.bindOnEquip;
+    entry.sprite = record.sprite;
+    entry.identified = record.flags & 1;
+    entry.damaged = (record.flags >> 1) & 1;
+    entry.placeEtcTab = (record.flags >> 2) & 1;
+    std::memcpy(entry.options, record.options, sizeof(entry.options));
+    entry.grade = record.grade;
+  }
+
+  // INLINED
+  __forceinline void FillEquipWindowItem(ITEM_INFO& item, const StoreEquipEntry& record) {
     item.unknown_0000[0] = record.type;
     item.unknown_0000[1] = record.index;
     item.unknown_0000[2] = record.location;
@@ -7828,22 +7914,22 @@ namespace {
     item.quantity = 1;
     std::memcpy(item.unknown_001C, record.cards, sizeof(record.cards));
     item.SetItemId(record.itemId);
-    item.identified = record.flags & 1;
-    item.unknown_005D = (record.flags >> 1) & 1;
+    item.identified = record.identified;
+    item.unknown_005D = record.damaged;
     item.unknown_0060 = record.refine;
     item.unknown_0068 = record.expireTime;
     item.unknown_0064 = record.bindOnEquip;
     item.unknown_0070 = record.sprite;
-    item.unknown_0074[0] = (record.flags >> 2) & 1;
-    item.unknown_0098 = CountStoreItemOptions(options);
+    item.unknown_0074[0] = record.placeEtcTab;
+    item.unknown_0098 = CountStoreItemOptions(record.options);
     item.unknown_0088 = 0;
     for (int index = 0; index < item.unknown_0098; ++index) {
-      reinterpret_cast<StoreItemOption*>(item.unknown_009C)[index] = options[index];
+      reinterpret_cast<StoreItemOption*>(item.unknown_009C)[index] = record.options[index];
     }
   }
 
   // INLINED
-  __forceinline void FillEquipWindowGradeItem(ITEM_INFO& item, const EquipWindowGradeRecord& record, const StoreItemOption* options) {
+  __forceinline void FillEquipWindowGradeItem(ITEM_INFO& item, const StoreEquipEntry& record) {
     item.unknown_0000[0] = record.type;
     item.unknown_0000[1] = record.index;
     item.unknown_0000[2] = record.location;
@@ -7851,17 +7937,17 @@ namespace {
     item.quantity = 1;
     std::memcpy(item.unknown_001C, record.cards, sizeof(record.cards));
     item.SetItemId(record.itemId);
-    item.identified = record.flags & 1;
-    item.unknown_005D = (record.flags >> 1) & 1;
+    item.identified = record.identified;
+    item.unknown_005D = record.damaged;
     item.unknown_0060 = record.refine;
     item.unknown_0068 = record.expireTime;
     item.unknown_0064 = record.bindOnEquip;
     item.unknown_0070 = record.sprite;
-    item.unknown_0074[0] = (record.flags >> 2) & 1;
-    item.unknown_0098 = CountStoreItemOptions(options);
+    item.unknown_0074[0] = record.placeEtcTab;
+    item.unknown_0098 = CountStoreItemOptions(record.options);
     item.unknown_0088 = record.grade;
     for (int index = 0; index < item.unknown_0098; ++index) {
-      reinterpret_cast<StoreItemOption*>(item.unknown_009C)[index] = options[index];
+      reinterpret_cast<StoreItemOption*>(item.unknown_009C)[index] = record.options[index];
     }
   }
 
@@ -7906,10 +7992,10 @@ void CGameMode::ReceiveEquipWindowMicroscope4(const unsigned char* packet) {
   const int count = static_cast<unsigned>(length - 45) / 67u;
   const StoreEquipOptionRecord* record = reinterpret_cast<const StoreEquipOptionRecord*>(packet + 45);
   for (int index = 0; index < count; ++index, ++record) {
-    StoreItemOption options[5];
-    std::memcpy(options, record->options, sizeof(options));
+    StoreEquipEntry entry;
+    ReadStoreEquipEntry(entry, *record);
     ITEM_INFO item;
-    FillEquipWindowItem(item, *record, options);
+    FillEquipWindowItem(item, entry);
     EquipWindowItem(item);
   }
 
@@ -7940,10 +8026,10 @@ void CGameMode::ReceiveEquipWindowMicroscope5(const unsigned char* packet) {
   const int count = static_cast<unsigned>(length - 47) / 67u;
   const StoreEquipOptionRecord* record = reinterpret_cast<const StoreEquipOptionRecord*>(packet + 47);
   for (int index = 0; index < count; ++index, ++record) {
-    StoreItemOption options[5];
-    std::memcpy(options, record->options, sizeof(options));
+    StoreEquipEntry entry;
+    ReadStoreEquipEntry(entry, *record);
     ITEM_INFO item;
-    FillEquipWindowItem(item, *record, options);
+    FillEquipWindowItem(item, entry);
     EquipWindowItem(item);
   }
 
@@ -7975,10 +8061,10 @@ void CGameMode::ReceiveEquipWindowMicroscope6(const unsigned char* packet) {
   const int count = static_cast<unsigned>(length - 47) / 68u;
   const EquipWindowGradeRecord* record = reinterpret_cast<const EquipWindowGradeRecord*>(packet + 47);
   for (int index = 0; index < count; ++index, ++record) {
-    StoreItemOption options[5];
-    std::memcpy(options, record->options, sizeof(options));
+    StoreEquipEntry entry;
+    ReadStoreEquipEntry(entry, *record);
     ITEM_INFO item;
-    FillEquipWindowGradeItem(item, *record, options);
+    FillEquipWindowGradeItem(item, entry);
     EquipWindowItem(item);
   }
 
@@ -8047,27 +8133,10 @@ void CGameMode::ReceiveInventoryEquipList(const unsigned char* packet) {
   const int count = static_cast<unsigned>(length - 4) / 41u;
   const StoreEquipRecord* record = reinterpret_cast<const StoreEquipRecord*>(packet + 4);
   for (int index = 0; index < count; ++index, ++record) {
-    StoreItemOption options[5] = {};
+    StoreEquipEntry entry;
+    ReadStoreEquipEntry(entry, *record);
     ITEM_INFO item;
-    item.unknown_0000[0] = record->type;
-    item.unknown_0000[1] = record->index;
-    item.unknown_0000[2] = record->location;
-    item.unknown_0000[3] = record->wearState;
-    item.quantity = 1;
-    std::memcpy(item.unknown_001C, record->cards, sizeof(record->cards));
-    item.SetItemId(record->itemId);
-    item.identified = record->flags & 1;
-    item.unknown_005D = (record->flags >> 1) & 1;
-    item.unknown_0060 = record->refine;
-    item.unknown_0068 = record->expireTime;
-    item.unknown_0064 = record->bindOnEquip;
-    item.unknown_0070 = record->sprite;
-    item.unknown_0074[0] = (record->flags >> 2) & 1;
-    item.unknown_0098 = CountStoreItemOptions(options);
-    item.unknown_0088 = 0;
-    for (int option = 0; option < item.unknown_0098; ++option) {
-      reinterpret_cast<StoreItemOption*>(item.unknown_009C)[option] = options[option];
-    }
+    FillEquipWindowItem(item, entry);
     AddInventoryEquipItem(item);
   }
 
@@ -8085,10 +8154,10 @@ void CGameMode::ReceiveInventoryEquipList2(const unsigned char* packet) {
   const int count = static_cast<unsigned>(length - 4) / 67u;
   const StoreEquipOptionRecord* record = reinterpret_cast<const StoreEquipOptionRecord*>(packet + 4);
   for (int index = 0; index < count; ++index, ++record) {
-    StoreItemOption options[5];
-    std::memcpy(options, record->options, sizeof(options));
+    StoreEquipEntry entry;
+    ReadStoreEquipEntry(entry, *record);
     ITEM_INFO item;
-    FillEquipWindowItem(item, *record, options);
+    FillEquipWindowItem(item, entry);
     AddInventoryEquipItem(item);
   }
 
@@ -8106,10 +8175,10 @@ void CGameMode::ReceiveInventoryEquipList3(const unsigned char* packet) {
   const int count = static_cast<unsigned>(length - 4) / 68u;
   const EquipWindowGradeRecord* record = reinterpret_cast<const EquipWindowGradeRecord*>(packet + 4);
   for (int index = 0; index < count; ++index, ++record) {
-    StoreItemOption options[5];
-    std::memcpy(options, record->options, sizeof(options));
+    StoreEquipEntry entry;
+    ReadStoreEquipEntry(entry, *record);
     ITEM_INFO item;
-    FillEquipWindowGradeItem(item, *record, options);
+    FillEquipWindowGradeItem(item, entry);
     AddInventoryEquipItem(item);
   }
 
@@ -8195,9 +8264,10 @@ namespace {
 // FUNCTION: fn_21725
 void CGameMode::ReceiveItemPickupAck2(const unsigned char* data) {
   const ItemPickupAck2Packet* packet = reinterpret_cast<const ItemPickupAck2Packet*>(data);
-  this->unknown_01A4.clear();
+  this->unknown_01A4.erase(this->unknown_01A4.begin(), this->unknown_01A4.end());
 
-  if (packet->result == 0) {
+  switch (packet->result) {
+  case 0: {
     ITEM_INFO item;
     item.unknown_0000[0] = packet->type;
     item.unknown_0000[2] = packet->location;
@@ -8226,7 +8296,9 @@ void CGameMode::ReceiveItemPickupAck2(const unsigned char* data) {
     window->SendMsg(nullptr, 0x4C, item.identified, 0, 0, 0);
     window->SendMsg(nullptr, 0x24, 0, packet->amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
     window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
-  } else if (packet->result == 3) {
+    break;
+  }
+  case 3: {
     ITEM_INFO item;
     item.unknown_0000[0] = packet->type;
     item.unknown_0000[2] = packet->location;
@@ -8263,7 +8335,7 @@ void CGameMode::ReceiveItemPickupAck2(const unsigned char* data) {
 
     const ITEM_INFO current = LookupClientItemByIdentity(g_session.m_inventoryItems, packet->index);
     int amount = packet->amount;
-    if (current.unknown_0000[1] != 0) {
+    if (current.unknown_0000[1] > 0) {
       amount -= current.quantity;
     }
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0x99), item.DisplayName(0).c_str(), amount).c_str()), 0xFFFF00, 6, 0, 0);
@@ -8277,8 +8349,11 @@ void CGameMode::ReceiveItemPickupAck2(const unsigned char* data) {
       g_session.ResetSlots();
     }
     g_session.UpdateInventoryItem(item, 1);
-  } else {
+    break;
+  }
+  default:
     this->NotifyItemResult(packet->result);
+    break;
   }
 }
 
@@ -8286,9 +8361,10 @@ void CGameMode::ReceiveItemPickupAck2(const unsigned char* data) {
 // FUNCTION: fn_21726
 void CGameMode::ReceiveItemPickupAck3(const unsigned char* data) {
   const ItemPickupAck3Packet* packet = reinterpret_cast<const ItemPickupAck3Packet*>(data);
-  this->unknown_01A4.clear();
+  this->unknown_01A4.erase(this->unknown_01A4.begin(), this->unknown_01A4.end());
 
-  if (packet->result == 0) {
+  switch (packet->result) {
+  case 0: {
     ITEM_INFO item;
     item.unknown_0000[0] = packet->type;
     item.unknown_0000[2] = packet->location;
@@ -8322,7 +8398,9 @@ void CGameMode::ReceiveItemPickupAck3(const unsigned char* data) {
     if (UIWindow* quest = g_windowMgr.LookupWindow(0x133)) {
       quest->SendMsg(nullptr, 6, 0x11E, 0xC2, 1, 0);
     }
-  } else if (packet->result == 3) {
+    break;
+  }
+  case 3: {
     ITEM_INFO item;
     item.unknown_0000[0] = packet->type;
     item.unknown_0000[2] = packet->location;
@@ -8360,7 +8438,7 @@ void CGameMode::ReceiveItemPickupAck3(const unsigned char* data) {
 
     const ITEM_INFO current = LookupClientItemByIdentity(g_session.m_inventoryItems, packet->index);
     int amount = packet->amount;
-    if (current.unknown_0000[1] != 0) {
+    if (current.unknown_0000[1] > 0) {
       amount -= current.quantity;
     }
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0x99), item.DisplayName(0).c_str(), amount).c_str()), 0xFFFF00, 6, 0, 0);
@@ -8377,8 +8455,11 @@ void CGameMode::ReceiveItemPickupAck3(const unsigned char* data) {
     if (UIWindow* quest = g_windowMgr.LookupWindow(0x133)) {
       quest->SendMsg(nullptr, 6, 0x11E, 0xC2, 1, 0);
     }
-  } else {
+    break;
+  }
+  default:
     this->NotifyItemResult(packet->result);
+    break;
   }
 }
 
@@ -8386,9 +8467,10 @@ void CGameMode::ReceiveItemPickupAck3(const unsigned char* data) {
 // FUNCTION: fn_21727
 void CGameMode::ReceiveItemPickupAck(const unsigned char* data) {
   const ItemPickupAckPacket* packet = reinterpret_cast<const ItemPickupAckPacket*>(data);
-  this->unknown_01A4.clear();
+  this->unknown_01A4.erase(this->unknown_01A4.begin(), this->unknown_01A4.end());
 
-  if (packet->result == 0) {
+  switch (packet->result) {
+  case 0: {
     ITEM_INFO item;
     item.unknown_0000[0] = packet->type;
     item.unknown_0000[2] = packet->location;
@@ -8416,7 +8498,9 @@ void CGameMode::ReceiveItemPickupAck(const unsigned char* data) {
     window->SendMsg(nullptr, 0x4C, item.identified, 0, 0, 0);
     window->SendMsg(nullptr, 0x24, 0, packet->amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
     window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
-  } else if (packet->result == 3) {
+    break;
+  }
+  case 3: {
     ITEM_INFO item;
     item.unknown_0000[0] = packet->type;
     item.unknown_0000[2] = packet->location;
@@ -8453,7 +8537,7 @@ void CGameMode::ReceiveItemPickupAck(const unsigned char* data) {
     const ITEM_INFO current = LookupClientItemByIdentity(g_session.m_inventoryItems, packet->index);
     std::string text;
     int amount;
-    if (current.unknown_0000[1] != 0) {
+    if (current.unknown_0000[1] > 0) {
       text = FormatOwnedString(LookupMessage(0x99), item.DisplayName(0).c_str(), packet->amount - current.quantity);
       amount = packet->amount - current.quantity;
     } else {
@@ -8471,8 +8555,11 @@ void CGameMode::ReceiveItemPickupAck(const unsigned char* data) {
       g_session.ResetSlots();
     }
     g_session.UpdateInventoryItem(item, 1);
-  } else {
+    break;
+  }
+  default:
     this->NotifyItemResult(packet->result);
+    break;
   }
 }
 
@@ -8482,9 +8569,10 @@ void CGameMode::ReceiveItemPickupAck5(
   std::uint16_t index, std::uint16_t amount, int itemId, unsigned char identified, unsigned char damaged, unsigned char refine, ItemCardSlots slots,
   std::uint32_t location, unsigned char type, unsigned char result, std::uint32_t expireTime, std::uint16_t bindOnEquip
 ) {
-  this->unknown_01A4.clear();
+  this->unknown_01A4.erase(this->unknown_01A4.begin(), this->unknown_01A4.end());
 
-  if (result == 0) {
+  switch (result) {
+  case 0: {
     {
       StoreItemOption options[5] = {};
       ITEM_INFO item;
@@ -8526,7 +8614,9 @@ void CGameMode::ReceiveItemPickupAck5(
     if (UIWindow* quest = g_windowMgr.LookupWindow(0x133)) {
       quest->SendMsg(nullptr, 6, 0x11E, 0xC2, 1, 0);
     }
-  } else if (result == 3) {
+    break;
+  }
+  case 3: {
     StoreItemOption options[5] = {};
     ITEM_INFO item;
     item.unknown_0000[0] = type;
@@ -8570,7 +8660,7 @@ void CGameMode::ReceiveItemPickupAck5(
 
     const ITEM_INFO current = LookupClientItemByIdentity(g_session.m_inventoryItems, index);
     int count = amount;
-    if (current.unknown_0000[1] != 0) {
+    if (current.unknown_0000[1] > 0) {
       count -= current.quantity;
     }
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0x99), item.DisplayName(0).c_str(), count).c_str()), 0xFFFF00, 6, 0, 0);
@@ -8587,8 +8677,11 @@ void CGameMode::ReceiveItemPickupAck5(
     if (UIWindow* quest = g_windowMgr.LookupWindow(0x133)) {
       quest->SendMsg(nullptr, 6, 0x11E, 0xC2, 1, 0);
     }
-  } else {
+    break;
+  }
+  default:
     this->NotifyItemResult(result);
+    break;
   }
 }
 
@@ -8596,9 +8689,10 @@ void CGameMode::ReceiveItemPickupAck5(
 // FUNCTION: fn_21730
 void CGameMode::ReceiveItemPickupAck7(const unsigned char* data) {
   const ItemPickupAck7Packet* packet = reinterpret_cast<const ItemPickupAck7Packet*>(data);
-  this->unknown_01A4.clear();
+  this->unknown_01A4.erase(this->unknown_01A4.begin(), this->unknown_01A4.end());
 
-  if (packet->result == 0) {
+  switch (packet->result) {
+  case 0: {
     StoreItemOption options[5];
     std::memcpy(options, packet->options, sizeof(options));
     ITEM_INFO item;
@@ -8638,7 +8732,9 @@ void CGameMode::ReceiveItemPickupAck7(const unsigned char* data) {
     if (UIWindow* quest = g_windowMgr.LookupWindow(0x133)) {
       quest->SendMsg(nullptr, 6, 0x11E, 0xC2, 1, 0);
     }
-  } else if (packet->result == 3) {
+    break;
+  }
+  case 3: {
     StoreItemOption options[5];
     std::memcpy(options, packet->options, sizeof(options));
     ITEM_INFO item;
@@ -8683,7 +8779,7 @@ void CGameMode::ReceiveItemPickupAck7(const unsigned char* data) {
 
     const ITEM_INFO current = LookupClientItemByIdentity(g_session.m_inventoryItems, packet->index);
     int amount = packet->amount;
-    if (current.unknown_0000[1] != 0) {
+    if (current.unknown_0000[1] > 0) {
       amount -= current.quantity;
     }
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0x99), item.DisplayName(0).c_str(), amount).c_str()), 0xFFFF00, 6, 0, 0);
@@ -8700,8 +8796,11 @@ void CGameMode::ReceiveItemPickupAck7(const unsigned char* data) {
     if (UIWindow* quest = g_windowMgr.LookupWindow(0x133)) {
       quest->SendMsg(nullptr, 6, 0x11E, 0xC2, 1, 0);
     }
-  } else {
+    break;
+  }
+  default:
     this->NotifyItemResult(packet->result);
+    break;
   }
 }
 
@@ -9181,8 +9280,10 @@ void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
       case 6:
         notice = LookupMessage(0xA5);
         break;
-      case 7:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x17F)), 0xFF, 0xB, 0, 0);
+      case 7: {
+        const char* text = LookupMessage(0x17F);
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF, 0xB, 0, 0);
+      }
         [[fallthrough]];
       case 8:
         notice = LookupMessage(0x518);
@@ -9661,9 +9762,10 @@ namespace {
 // FUNCTION: fn_21731
 void CGameMode::ReceiveItemPickupAck8(const unsigned char* data) {
   const ItemPickupAckV8Packet* packet = reinterpret_cast<const ItemPickupAckV8Packet*>(data);
-  this->unknown_01A4.clear();
+  this->unknown_01A4.erase(this->unknown_01A4.begin(), this->unknown_01A4.end());
 
-  if (packet->result == 0) {
+  switch (packet->result) {
+  case 0: {
     StoreItemOption options[5];
     std::memcpy(options, packet->options, sizeof(options));
     ITEM_INFO item;
@@ -9706,7 +9808,9 @@ void CGameMode::ReceiveItemPickupAck8(const unsigned char* data) {
     if (UIWindow* quest = g_windowMgr.LookupWindow(0x133)) {
       quest->SendMsg(nullptr, 6, 0x11E, 0xC2, 1, 0);
     }
-  } else if (packet->result == 3) {
+    break;
+  }
+  case 3: {
     StoreItemOption options[5];
     std::memcpy(options, packet->options, sizeof(options));
     ITEM_INFO item;
@@ -9754,7 +9858,7 @@ void CGameMode::ReceiveItemPickupAck8(const unsigned char* data) {
 
     const ITEM_INFO current = LookupClientItemByIdentity(g_session.m_inventoryItems, packet->index);
     int amount = packet->amount;
-    if (current.unknown_0000[1] != 0) {
+    if (current.unknown_0000[1] > 0) {
       amount -= current.quantity;
     }
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0x99), item.DisplayName(0).c_str(), amount).c_str()), 0xFFFF00, 6, 0, 0);
@@ -9771,8 +9875,11 @@ void CGameMode::ReceiveItemPickupAck8(const unsigned char* data) {
     if (UIWindow* quest = g_windowMgr.LookupWindow(0x133)) {
       quest->SendMsg(nullptr, 6, 0x11E, 0xC2, 1, 0);
     }
-  } else {
+    break;
+  }
+  default:
     this->NotifyItemResult(packet->result);
+    break;
   }
 }
 
