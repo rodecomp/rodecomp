@@ -12,7 +12,7 @@ public:
   DeviceOwnerDX9& operator=(const DeviceOwnerDX9&) = delete;
   HRESULT Initialize(HWND window, UINT adapter);
   HRESULT CreateDevice(UINT adapter);
-  HRESULT AcquireBackBuffer();
+  __declspec(noinline) HRESULT AcquireBackBuffer();
   void SetInitialStates();
 
   UINT* AdjustTextureDimensions(UINT* output, UINT width, UINT height) const;
