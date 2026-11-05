@@ -914,7 +914,8 @@ void UIBitmapEditCtrl::SetBitmapName(const char* name) {
 
 // OFFSET: 0x0084EE90
 // FUNCTION: fn_10654
-UIChatEditCtrl::UIChatEditCtrl() : UIEditCtrl(), unknown_0140(0), historyLimit(30) {
+UIChatEditCtrl::UIChatEditCtrl() : UIEditCtrl(), historyLimit(30) {
+  this->unknown_0140 = 0;
   this->history.reserve(this->historyLimit);
   this->unknown_0144 = 0;
 }
