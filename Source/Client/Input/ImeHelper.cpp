@@ -25,29 +25,24 @@ void NotifyImeHelper() {
 // OFFSET: 0x00AFB610
 // FUNCTION: fn_18305
 void HandleImeError(const int* error) {
-  int message;
   switch (*error) {
   case 0x8000E001:
-    message = 1046;
+    g_windowMgr.Confirm(LookupMessage(1046), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 0x8000E003:
-    message = 1047;
+    g_windowMgr.Confirm(LookupMessage(1047), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 0x8000E004:
-    message = 1048;
+    g_windowMgr.Confirm(LookupMessage(1048), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 0x8000E005:
-    message = 1049;
+    g_windowMgr.Confirm(LookupMessage(1049), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 0x8000E006:
-    message = 1050;
+    g_windowMgr.Confirm(LookupMessage(1050), 0, true, false, 0, "Message", 280, 120, 0);
     break;
-  default:
-    goto quit;
   }
-  g_windowMgr.Confirm(LookupMessage(message), 0, true, false, 0, "Message", 280, 120, 0);
 
-quit:
   NotifyImeHelper();
   GetRagConnection().Close();
   g_modeMgr.Quit();
