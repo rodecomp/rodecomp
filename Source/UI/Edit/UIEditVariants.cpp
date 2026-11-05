@@ -388,21 +388,29 @@ void UIEditCtrl3::Resize(int width, int height) {
 // OFFSET: 0x00865220
 // FUNCTION: fn_10922
 int UIWhisperEditCtrl::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == 18) {
-    if (!this->history.empty()) {
+  switch (message) {
+  case 18:
+    if (this->history.size() != 0) {
       if (this->historyIndex != 0) {
         --this->historyIndex;
       }
       this->SetText(this->history[this->historyIndex].c_str());
       this->Slot23();
     }
-  } else if (message == 19) {
-    if (!this->history.empty() && static_cast<std::size_t>(this->historyIndex) < this->history.size()) {
+    break;
+  case 19:
+    if (this->history.size() != 0 && static_cast<std::size_t>(this->historyIndex) < this->history.size()) {
       ++this->historyIndex;
-      this->SetText(this->historyIndex == static_cast<int>(this->history.size()) ? "" : this->history[this->historyIndex].c_str());
-      this->Slot23();
+      if (this->historyIndex == static_cast<int>(this->history.size())) {
+        this->SetText("");
+        this->Slot23();
+      } else {
+        this->SetText(this->history[this->historyIndex].c_str());
+        this->Slot23();
+      }
     }
-  } else {
+    break;
+  default:
     return this->UIEditCtrl::SendMsg(sender, message, a, b, c, d);
   }
 
@@ -754,10 +762,9 @@ UIEditCtrl4::~UIEditCtrl4() = default;
 // OFFSET: 0x0085AA40
 // FUNCTION: fn_10782
 void UIEditCtrl4::Slot23() {
-  this->text.clear();
+  this->text = "";
   g_serverLanguage->ResetInput();
-  g_serverLanguage->ResetInput();
-  g_serverLanguage->Insert(this->text.c_str());
+  g_serverLanguage->ReplaceInput(this->text.c_str());
   g_serverLanguage->SetPassword(this->mask != 0);
   this->SelectAll();
 }
@@ -780,10 +787,9 @@ void UIEditCtrl4::SetPlaceholder(const char* value) {
   this->placeholder.assign(value, std::strlen(value));
   this->Trim();
 
-  if (g_windowMgr.hoverWindow == this) {
+  if (g_windowMgr.GetHoverWindow() == this) {
     g_serverLanguage->ResetInput();
-    g_serverLanguage->ResetInput();
-    g_serverLanguage->Insert(this->placeholder.c_str());
+    g_serverLanguage->ReplaceInput(this->placeholder.c_str());
   }
 
   this->SelectAll();
@@ -876,8 +882,7 @@ void UIEditCtrl3::Trim() {
   this->text.resize(length - std::strlen(previous));
 
   g_serverLanguage->ResetInput();
-  g_serverLanguage->ResetInput();
-  g_serverLanguage->Insert(this->text.c_str());
+  g_serverLanguage->ReplaceInput(this->text.c_str());
 
   while (this->text.size() < static_cast<unsigned>(limit)) {
     this->text += " ";
@@ -1012,8 +1017,7 @@ void UIEditCtrlVarId::SetText(const char* value) {
 // FUNCTION: fn_10784
 void UIWhisperEditCtrl::Slot23() {
   g_serverLanguage->ResetInput();
-  g_serverLanguage->ResetInput();
-  g_serverLanguage->Insert(this->text.c_str());
+  g_serverLanguage->ReplaceInput(this->text.c_str());
   g_serverLanguage->SetPassword(this->mask != 0);
   this->SelectAll();
   this->SelectAll();

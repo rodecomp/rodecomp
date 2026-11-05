@@ -68,6 +68,11 @@ struct CLanguageBase {
   void SetPassword(unsigned char value);
   void Character(unsigned value, LPARAM unused);
   void KeyDown(unsigned key, LPARAM unused);
+  // INLINED
+  void ReplaceInput(const char* value) {
+    ResetInput();
+    Insert(value);
+  }
 };
 
 // VTABLE: vt_01607
