@@ -8,6 +8,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <list>
+#include <optional>
 #include <string>
 #include <utility>
 
@@ -42,7 +43,7 @@ public:
   std::list<CSkillInfo>& SkillList(int tab, bool live);
   bool IsExtraTab(int tab);
   CSkillInfo SkillAt(int index, bool live);
-  std::pair<CSkillInfo*, bool> SkillPtr(int index, bool live);
+  std::optional<CSkillInfo*> SkillPtr(int index, bool live);
   void InitTabs();
   void ResetLists();
   bool IsSkillArea(int x, int y);

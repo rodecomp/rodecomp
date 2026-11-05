@@ -421,16 +421,16 @@ std::string UINewSkillListWnd::ValueText(int id) {
 CSkillInfo UINewSkillListWnd::SkillAt(int index, bool live) {
   CSkillInfo result(0);
   int sequentialIndex = 0;
-  const int gate = g_session.m_simplifiedSkillList;
   for (const CSkillInfo& skill : this->SkillList(this->m_tab, live)) {
     int key = skill.unknown_0024;
-    if (gate != 0) {
+    if (g_session.m_simplifiedSkillList != 0) {
       key = sequentialIndex;
     }
     if (key == index) {
-      return skill;
+      result = skill;
+      break;
     }
-    if (gate != 0) {
+    if (g_session.m_simplifiedSkillList != 0) {
       ++sequentialIndex;
     }
   }
@@ -453,26 +453,24 @@ CSkillInfo UINewSkillListWnd::VisibleSkill(int row) {
 
 // OFFSET: 0x009B0750
 // FUNCTION: fn_13808
-std::pair<CSkillInfo*, bool> UINewSkillListWnd::SkillPtr(int index, bool live) {
+std::optional<CSkillInfo*> UINewSkillListWnd::SkillPtr(int index, bool live) {
   std::list<CSkillInfo>& list = this->SkillList(this->m_tab, live);
   if (g_session.m_simplifiedSkillList != 0) {
     if (index >= 0 && static_cast<size_t>(index) < list.size()) {
       auto it = list.begin();
-      for (int i = 0; i < index; ++i) {
-        ++it;
-      }
-      return {&*it, true};
+      std::advance(it, index);
+      return &*it;
     }
-    return {nullptr, false};
+    return std::nullopt;
   }
 
-  for (CSkillInfo& skill : list) {
-    if (skill.unknown_0024 == index) {
-      return {&skill, true};
+  for (auto it = list.begin(); it != list.end(); ++it) {
+    if (it->unknown_0024 == index) {
+      return &*it;
     }
   }
 
-  return {nullptr, false};
+  return std::nullopt;
 }
 
 // OFFSET: 0x009B07C0
@@ -786,13 +784,18 @@ void UINewSkillListWnd::Slot15(int width, int height) {
   this->m_tabs->Move(0, 6);
   this->AddChild(this->m_tabs);
 
-  this->m_btnHelp = this->AddBaseButton();
-  this->m_btnMinimize = this->AddMinimizeButton("", 0);
-  this->m_btnClose = this->AddCloseButton("Alt+S", 0);
+  {
+    std::string minimizeTooltip("");
+    this->m_btnHelp = this->AddBaseButton();
+    this->m_btnMinimize = this->AddMinimizeButton(minimizeTooltip.c_str(), 0);
+    this->m_btnClose = this->AddCloseButton("Alt+S", 0);
 
-  this->m_btnHelp->Move(22, 5);
-  this->m_btnMinimize->Move(this->geometry.width - 30, 5);
-  this->m_btnClose->Move(this->geometry.width - 16, 5);
+    int titleButtonX[3] = {22, this->geometry.width - 30, this->geometry.width - 16};
+    UIBitmapButton** titleButtons = &this->m_btnHelp;
+    for (int i = 0; i < 3; ++i) {
+      titleButtons[i]->Move(titleButtonX[i], 5);
+    }
+  }
 
   this->m_scrollBar = new UIScrollBar();
   this->m_scrollBar->Configure(this->geometry.width - 15, 20, 1, this->geometry.height - this->m_topMargin - this->m_bottomMargin);
@@ -842,32 +845,31 @@ void UINewSkillListWnd::Slot15(int width, int height) {
     }
   }
 
-  const char* baseDir = "유저인터페이스\\";
-  const char* applyNames[3] = {"btn_apply", "btn_apply_a", "btn_apply_b"};
-  this->m_btnApply = new UIBitmapButton();
-  for (int state = 0; state < 3; ++state) {
-    std::string path = std::string(baseDir) + applyNames[state] + ".bmp";
-    this->m_btnApply->SetBitmap(path.c_str(), state, 0);
+  {
+    std::string baseDir("유저인터페이스\\");
+    const char* buttonNames[2][3] = {
+      {"btn_apply", "btn_apply_a", "btn_apply_b"},
+      {"btn_reset", "btn_reset_a", "btn_reset_b"},
+    };
+    POINT buttonPos[2] = {
+      {this->geometry.width - 100, this->geometry.height - 27},
+      {this->geometry.width - 50, this->geometry.height - 27},
+    };
+    int buttonIds[2] = {271, 363};
+    UIBitmapButton** buttons = &this->m_btnApply;
+    for (int i = 0; i < 2; ++i) {
+      buttons[i] = new UIBitmapButton();
+      buttons[i]->SetBitmap((baseDir + buttonNames[i][0] + ".bmp").c_str(), 0, 0);
+      buttons[i]->SetBitmap((baseDir + buttonNames[i][1] + ".bmp").c_str(), 1, 0);
+      buttons[i]->SetBitmap((baseDir + buttonNames[i][2] + ".bmp").c_str(), 2, 0);
+      buttons[i]->SetSize(buttons[i]->BitmapWidth(), buttons[i]->BitmapHeight());
+      buttons[i]->Move(buttonPos[i].x, buttonPos[i].y);
+      buttons[i]->SetId(buttonIds[i]);
+      buttons[i]->SetDisabled(1);
+      buttons[i]->Invalidate();
+      this->AddChild(buttons[i]);
+    }
   }
-  this->m_btnApply->SetSize(this->m_btnApply->BitmapWidth(), this->m_btnApply->BitmapHeight());
-  this->m_btnApply->Move(this->geometry.width - 100, this->geometry.height - 27);
-  this->m_btnApply->SetId(271);
-  this->m_btnApply->SetDisabled(1);
-  this->m_btnApply->Invalidate();
-  this->AddChild(this->m_btnApply);
-
-  const char* resetNames[3] = {"btn_reset", "btn_reset_a", "btn_reset_b"};
-  this->m_btnCancel = new UIBitmapButton();
-  for (int state = 0; state < 3; ++state) {
-    std::string path = std::string(baseDir) + resetNames[state] + ".bmp";
-    this->m_btnCancel->SetBitmap(path.c_str(), state, 0);
-  }
-  this->m_btnCancel->SetSize(this->m_btnCancel->BitmapWidth(), this->m_btnCancel->BitmapHeight());
-  this->m_btnCancel->Move(this->geometry.width - 50, this->geometry.height - 27);
-  this->m_btnCancel->SetId(363);
-  this->m_btnCancel->SetDisabled(1);
-  this->m_btnCancel->Invalidate();
-  this->AddChild(this->m_btnCancel);
 
   this->m_btnDetail = new UIResizer();
   this->m_btnDetail->SetSize(16, 16);
@@ -1041,12 +1043,12 @@ void UINewSkillListWnd::Slot28(int x, int y) {
   const int previous = this->m_selectedSkill;
   this->m_selectedSkill = this->SkillIndexAt(x, y);
   if (this->m_selectedSkill != -1) {
-    std::pair<CSkillInfo*, bool> skill = this->SkillPtr(this->m_selectedSkill, false);
-    if (skill.second && skill.first->available != 0) {
+    std::optional<CSkillInfo*> skill = this->SkillPtr(this->m_selectedSkill, false);
+    if (skill.has_value() && (*skill)->available != 0) {
       int tooltipX = -10;
       int tooltipY = -20;
       this->ToScreen(tooltipX, tooltipY);
-      const char* name = skill.first->DisplayName(*g_session.m_hotkeyScript);
+      const char* name = (*skill)->DisplayName(*g_session.m_hotkeyScript);
       g_modeMgr.gameMode->ShowTooltip(name, tooltipX + x, tooltipY + y, -1, 0, 1);
     }
   }
@@ -1068,10 +1070,11 @@ void UINewSkillListWnd::Slot33(int x, int y) {
     this->m_showDetail = false;
     this->m_values.clear();
     for (int tab = 0; tab < static_cast<int>(this->m_tabs->labels.size()); ++tab) {
-      this->m_tabs->colors[tab] = 0xFFFFFFFF;
-      this->m_tabs->Invalidate();
+      UITabControl* tabs = this->m_tabs;
+      tabs->colors[tab] = 0xFFFFFFFF;
+      tabs->Invalidate();
     }
-  } else if (this->m_selectedSkill != this->m_detailId) {
+  } else if (this->m_detailId != this->m_selectedSkill) {
     this->m_showDetail = true;
     this->sub_9B2CD0();
   } else {
@@ -1085,12 +1088,12 @@ void UINewSkillListWnd::Slot33(int x, int y) {
   this->m_needsRedraw = 1;
   this->Invalidate();
 
-  const std::pair<CSkillInfo*, bool> selected = this->SkillPtr(this->m_selectedSkill, false);
-  if (!selected.second) {
+  const std::optional<CSkillInfo*> selected = this->SkillPtr(this->m_selectedSkill, false);
+  if (!selected.has_value()) {
     return;
   }
 
-  const CSkillInfo& skill = *selected.first;
+  const CSkillInfo& skill = **selected;
   UISkillDescribeWnd* describe = static_cast<UISkillDescribeWnd*>(g_windowMgr.LookupWindow(46));
   if (describe && (describe->m_skillId == static_cast<int>(skill.id) || !skill.available)) {
     g_windowMgr.CloseWindow(46);
@@ -1113,7 +1116,7 @@ void UINewSkillListWnd::Slot33(int x, int y) {
     left -= window->geometry.width + 48;
   }
 
-  int top = bottom + window->geometry.height <= g_renderer->viewport.height ? bottom : bottom - window->geometry.height;
+  int top = bottom + window->geometry.height > g_renderer->viewport.height ? bottom - window->geometry.height : bottom;
   if (top < 0) {
     top = 0;
   }
@@ -1127,8 +1130,9 @@ void UINewSkillListWnd::Slot33(int x, int y) {
 void UINewSkillListWnd::sub_9B2CD0() {
   this->m_values.clear();
   for (int i = 0; i < static_cast<int>(this->m_tabs->labels.size()); ++i) {
-    this->m_tabs->colors[i] = 0xFFFFFFFF;
-    this->m_tabs->Invalidate();
+    UITabControl* tabs = this->m_tabs;
+    tabs->colors[i] = 0xFFFFFFFF;
+    tabs->Invalidate();
   }
 
   for (CSkillInfo& skill : this->SkillList(this->m_tab, false)) {
@@ -1138,9 +1142,10 @@ void UINewSkillListWnd::sub_9B2CD0() {
       for (SkillInfoEntry& entry : skill.entries) {
         NewSkillListValue required{static_cast<int>(entry.unknown_0000), static_cast<int>(entry.unknown_0004)};
         const int tab = SkillTabOf(required.id);
-        if (tab != this->m_tab && tab < static_cast<int>(this->m_tabs->labels.size())) {
-          this->m_tabs->colors[tab] = 0xE1E7FC;
-          this->m_tabs->Invalidate();
+        UITabControl* tabs = this->m_tabs;
+        if (tab != this->m_tab && tab < static_cast<int>(tabs->labels.size())) {
+          tabs->colors[tab] = 0xE1E7FC;
+          tabs->Invalidate();
         }
 
         for (auto it = this->m_values.begin(); it != this->m_values.end(); ++it) {
@@ -1294,10 +1299,59 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   CMode* gameMode = g_modeMgr.gameMode;
 
   switch (message) {
+  case 34:
+    this->m_saved = reinterpret_cast<SkillListWndInfo*>(a);
+    if (this->m_saved->IsValid() == 0) {
+      this->m_saved->Reset();
+    }
+    if (gate != 0) {
+      this->SendMsg(nullptr, 14, 3, 330, this->m_saved->height, 0);
+    } else {
+      this->SendMsg(nullptr, 14, 3, 560, 400, 0);
+    }
+    return 0;
+  case 14:
+    if (a == 3) {
+      if (gate != 0) {
+        const int minimum = this->m_tabs->geometry.height + 12;
+        if (c < minimum) {
+          c = minimum;
+        }
+        if (c > 400) {
+          c = 400;
+        }
+        c = (c - 400) / 32 * 32 + 400;
+      }
+      if (this->geometry.width != b || c != this->geometry.height) {
+        this->Resize(b, c);
+        this->m_scrollBar->Resize(this->m_scrollBar->geometry.width, this->geometry.height - this->m_bottomMargin - this->m_topMargin);
+        this->UpdateScrollBar();
+        this->LayoutButtons();
+        this->Invalidate();
+      }
+      this->Move(this->m_saved->x, this->m_saved->y);
+      g_windowMgr.StoreSnapRectangle(this);
+      return 0;
+    }
+    break;
   case 6:
     switch (a) {
     case 201:
       g_windowMgr.CloseWindow(37);
+      return 0;
+    case 271:
+      if (g_windowMgr.Confirm(LookupMessage(1377), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
+        this->sub_9AE730();
+        this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+        if (ChatWindow()) {
+          g_windowMgr.SetFocus(ChatWindow()->m_suggestions);
+          return 0;
+        }
+      }
+      break;
+    case 363:
+      this->ResetLists();
+      this->SendMsg(nullptr, 23, 0, 0, 0, 0);
       return 0;
     case 202:
       this->Slot11();
@@ -1312,15 +1366,6 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     case 213: {
       int& flag = g_session.m_showSkillDescription;
       flag = flag == 0;
-      return 0;
-    }
-    case 216: {
-      const int tab = this->m_tab;
-      int next = 0;
-      if (tab + 1 != this->m_tabs->TabCount()) {
-        next = tab + 1;
-      }
-      this->m_tabs->SelectTab(next);
       return 0;
     }
     case 239:
@@ -1344,20 +1389,15 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         return 0;
       }
       break;
-    case 271:
-      if (g_windowMgr.Confirm(LookupMessage(1377), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
-        this->sub_9AE730();
-        this->SendMsg(nullptr, 23, 0, 0, 0, 0);
-        if (ChatWindow()) {
-          g_windowMgr.SetFocus(ChatWindow()->m_suggestions);
-          return 0;
-        }
+    case 216: {
+      const int tab = this->m_tab;
+      int next = 0;
+      if (tab + 1 != this->m_tabs->TabCount()) {
+        next = tab + 1;
       }
-      break;
-    case 363:
-      this->ResetLists();
-      this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+      this->m_tabs->SelectTab(next);
       return 0;
+    }
     default: {
       g_session.SetOption(7, 1, 0);
       const unsigned int offset = static_cast<unsigned int>(a) - 42;
@@ -1378,52 +1418,6 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       }
       return 0;
     }
-    }
-    break;
-  case 7:
-  case 9:
-  case 10: {
-    const int previous = this->m_firstRow;
-    int next;
-    if (message == 9) {
-      next = previous - this->m_visibleRows + 1;
-    } else {
-      if (message == 10) {
-        a = this->m_visibleRows - 1;
-      }
-      next = a + previous;
-    }
-    this->m_firstRow = next;
-    if (previous != next) {
-      this->UpdateScrollBar();
-      this->LayoutButtons();
-      this->Invalidate();
-      next = this->m_firstRow;
-    }
-    return next - previous;
-  }
-  case 14:
-    if (a == 3) {
-      if (gate != 0) {
-        const int minimum = this->m_tabs->geometry.height + 12;
-        if (c < minimum) {
-          c = minimum;
-        }
-        if (c > 400) {
-          c = 400;
-        }
-        c = (c - 400) / 32 * 32 + 400;
-      }
-      if (this->geometry.width != b || c != this->geometry.height) {
-        this->Resize(b, c);
-        this->m_scrollBar->Resize(this->m_scrollBar->geometry.width, this->geometry.height - this->m_bottomMargin - this->m_topMargin);
-        this->UpdateScrollBar();
-        this->LayoutButtons();
-        this->Invalidate();
-      }
-      this->Move(this->m_saved->x, this->m_saved->y);
-      g_windowMgr.StoreSnapRectangle(this);
-      return 0;
     }
     break;
   case 22: {
@@ -1453,17 +1447,31 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     this->LayoutButtons();
     this->Invalidate();
     return 0;
-  case 34:
-    this->m_saved = reinterpret_cast<SkillListWndInfo*>(a);
-    if (this->m_saved->IsValid() == 0) {
-      this->m_saved->Reset();
-    }
-    if (gate != 0) {
-      this->SendMsg(nullptr, 14, 3, 330, this->m_saved->height, 0);
-    } else {
-      this->SendMsg(nullptr, 14, 3, 560, 400, 0);
-    }
+  case 60:
+    this->InitTabs();
     return 0;
+  case 7:
+  case 9:
+  case 10: {
+    const int previous = this->m_firstRow;
+    int next;
+    if (message == 9) {
+      next = previous - this->m_visibleRows + 1;
+    } else {
+      if (message == 10) {
+        a = this->m_visibleRows - 1;
+      }
+      next = a + previous;
+    }
+    this->m_firstRow = next;
+    if (previous != next) {
+      this->UpdateScrollBar();
+      this->LayoutButtons();
+      this->Invalidate();
+      next = this->m_firstRow;
+    }
+    return next - previous;
+  }
   case 58: {
     const CSkillInfo* skill = reinterpret_cast<const CSkillInfo*>(a);
     if (skill->level != 0) {
@@ -1472,9 +1480,6 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     }
     break;
   }
-  case 60:
-    this->InitTabs();
-    return 0;
   case 161:
     if (!this->IsExtraTab(this->m_tab)) {
       this->m_tabs->SetFlag(this->m_tabs->TabCount() - 1, !g_session.m_skillBundle.extraIds.empty());
@@ -1496,34 +1501,39 @@ bool UINewSkillListWnd::sub_9B3EB0(int skillId) {
   }
 
   const int gate = g_session.m_simplifiedSkillList;
-  if (gate != 0) {
-    std::list<CSkillInfo>& list = this->SkillList(this->m_tab, false);
-    for (CSkillInfo& skill : list) {
-      if (static_cast<int>(skill.id) == skillId) {
-        if (skill.level >= static_cast<int>(skill.unknown_0028)) {
+  if (gate == 0) {
+    for (auto it = this->m_values.begin(); it != this->m_values.end(); ++it) {
+      if (this->m_skillPoints <= 0) {
+        break;
+      }
+
+      const int id = it->id;
+      CSkillInfo* info = g_session.m_skillBundle.FindGrouped(id);
+      if (info == nullptr || info->available == 0) {
+        continue;
+      }
+
+      int target;
+      if (id == skillId) {
+        int current = 0;
+        for (const NewSkillListValue& value : this->m_unknown_02A0) {
+          if (value.id == id) {
+            current = value.value;
+            break;
+          }
+        }
+        target = (std::max)(static_cast<int>(info->unknown_0030), current) + 1;
+        if (static_cast<int>(info->unknown_0030) >= static_cast<int>(info->unknown_0028)) {
           return false;
         }
-        ++skill.level;
-        --this->m_skillPoints;
-        return true;
+      } else {
+        target = it->value;
       }
-    }
-    return false;
-  }
 
-  for (auto it = this->m_values.begin(); it != this->m_values.end(); ++it) {
-    if (this->m_skillPoints <= 0) {
-      break;
-    }
+      if (target > static_cast<int>(info->unknown_0028)) {
+        continue;
+      }
 
-    const int id = it->id;
-    CSkillInfo* info = g_session.m_skillBundle.FindGrouped(id);
-    if (info == nullptr || info->available == 0) {
-      continue;
-    }
-
-    int target;
-    if (id == skillId) {
       int current = 0;
       for (const NewSkillListValue& value : this->m_unknown_02A0) {
         if (value.id == id) {
@@ -1531,54 +1541,49 @@ bool UINewSkillListWnd::sub_9B3EB0(int skillId) {
           break;
         }
       }
-      target = (std::max)(static_cast<int>(info->unknown_0030), current) + 1;
-      if (static_cast<int>(info->unknown_0030) >= static_cast<int>(info->unknown_0028)) {
+      current = (std::max)(static_cast<int>(info->unknown_0030), current);
+      if (current >= target) {
+        continue;
+      }
+
+      if (static_cast<int>(info->unknown_002C) <= 0) {
+        const char* name = info->DisplayName(*g_session.m_hotkeyScript);
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatString(LookupMessage(0xDCB), name)), 0xFF, 0, 0, 0);
         return false;
       }
-    } else {
-      target = it->value;
-    }
 
-    if (target > static_cast<int>(info->unknown_0028)) {
-      continue;
-    }
+      const int added = (std::min)(target - current, this->m_skillPoints);
+      this->m_skillPoints -= added;
+      const int level = current + added;
 
-    int current = 0;
-    for (const NewSkillListValue& value : this->m_unknown_02A0) {
-      if (value.id == id) {
-        current = value.value;
-        break;
+      bool found = false;
+      for (NewSkillListValue& value : this->m_unknown_02A0) {
+        if (value.id == id) {
+          value.value = level;
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        this->m_unknown_02A0.push_back(NewSkillListValue{id, level});
       }
     }
-    current = (std::max)(static_cast<int>(info->unknown_0030), current);
-    if (current >= target) {
-      continue;
-    }
 
-    if (static_cast<int>(info->unknown_002C) <= 0) {
-      const char* name = info->DisplayName(*g_session.m_hotkeyScript);
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatString(LookupMessage(0xDCB), name)), 0xFF, 0, 0, 0);
-      return false;
-    }
-
-    const int added = (std::min)(target - current, this->m_skillPoints);
-    this->m_skillPoints -= added;
-    const int level = current + added;
-
-    bool found = false;
-    for (NewSkillListValue& value : this->m_unknown_02A0) {
-      if (value.id == id) {
-        value.value = level;
-        found = true;
-        break;
-      }
-    }
-    if (!found) {
-      this->m_unknown_02A0.push_back(NewSkillListValue{id, level});
-    }
+    return true;
   }
 
-  return true;
+  std::list<CSkillInfo>& list = this->SkillList(this->m_tab, false);
+  for (CSkillInfo& skill : list) {
+    if (static_cast<int>(skill.id) == skillId) {
+      if (skill.level >= static_cast<int>(skill.unknown_0028)) {
+        return false;
+      }
+      ++skill.level;
+      --this->m_skillPoints;
+      return true;
+    }
+  }
+  return false;
 }
 
 // INLINED
