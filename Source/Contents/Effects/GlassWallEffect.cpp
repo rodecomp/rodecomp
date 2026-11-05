@@ -40,8 +40,8 @@ void CGlassWall::AddPanel(float angle, float scale, float x, float y, float z) {
 // OFFSET: 0x00B44940
 // FUNCTION: fn_18891
 void CGlassWall::Close() {
-  for (CParticle* particle : this->particles) {
-    FreeParticle(particle);
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    FreeParticle(*it);
   }
 
   this->particles.clear();
