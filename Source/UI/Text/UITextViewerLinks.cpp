@@ -66,8 +66,8 @@ std::pair<int, int> UITextViewer::LinkPosition(unsigned position, unsigned added
 // FUNCTION: fn_11205
 bool UITextViewer::AddItemLinks(std::string text, unsigned addedLines) {
   std::string parsed = RemoveTextColors(text.c_str());
-  parsed = DisplayTextTag(std::move(parsed), "<URL>", "</URL>");
-  parsed = DisplayTextTag(std::move(parsed), "<NAVI>", "</NAVI>");
+  parsed = static_cast<const std::string&>(DisplayUrlTextTag(parsed));
+  parsed = static_cast<const std::string&>(DisplayNavigationTextTag(parsed));
 
   if (g_windowMgr.window_01C8) {
     parsed = static_cast<UINewChatWnd*>(g_windowMgr.window_01C8)->ConvertChat(std::move(parsed));
@@ -76,10 +76,10 @@ bool UITextViewer::AddItemLinks(std::string text, unsigned addedLines) {
   std::string navigation;
   DisplayNavigationLink(navigation, parsed);
   parsed = std::move(navigation);
-  parsed = DisplayTextTag(std::move(parsed), "<TIPBOX>", "</TIPBOX>");
+  parsed = static_cast<const std::string&>(DisplayTipBoxTextTag(parsed));
 
   std::vector<TextLink> extracted;
-  ExtractTextLinks(parsed, "<ITEM>", "</ITEM>", extracted);
+  ExtractTextLinks(parsed, g_viewerItemTagBegin, g_viewerItemTagEnd, extracted);
 
   if (extracted.empty()) {
     return false;
@@ -109,21 +109,21 @@ bool UITextViewer::AddItemLinks(std::string text, unsigned addedLines) {
 // FUNCTION: fn_11206
 bool UITextViewer::AddNaviLinks(std::string text, unsigned addedLines) {
   std::string parsed = RemoveTextColors(text.c_str());
-  parsed = DisplayTextTag(std::move(parsed), "<URL>", "</URL>");
-  parsed = DisplayTextTag(std::move(parsed), "<ITEM>", "</ITEM>");
+  parsed = static_cast<const std::string&>(DisplayUrlTextTag(parsed));
+  parsed = static_cast<const std::string&>(DisplayItemTextTag(parsed));
 
   if (g_windowMgr.window_01C8) {
     parsed = static_cast<UINewChatWnd*>(g_windowMgr.window_01C8)->ConvertChat(std::move(parsed));
   }
 
-  parsed = DisplayTextTag(std::move(parsed), "<TIPBOX>", "</TIPBOX>");
+  parsed = static_cast<const std::string&>(DisplayTipBoxTextTag(parsed));
   std::string navigation;
   DisplayNavigationLink(navigation, parsed);
   parsed = std::move(navigation);
-  parsed = DisplayTextTag(std::move(parsed), "<QUEST>", "</QUEST>");
+  parsed = static_cast<const std::string&>(DisplayQuestTextTag(parsed));
 
   std::vector<TextLink> extracted;
-  ExtractTextLinks(parsed, "<NAVI>", "</NAVI>", extracted);
+  ExtractNavigationTextLinks(parsed, extracted);
 
   if (extracted.empty()) {
     return false;
@@ -209,8 +209,8 @@ void UIListBoxNavi::ResetLineColors() {
 // FUNCTION: fn_11209
 bool UITextViewer::AddQuestLinks(std::string text, unsigned addedLines) {
   std::string parsed = RemoveTextColors(text.c_str());
-  parsed = DisplayTextTag(std::move(parsed), "<URL>", "</URL>");
-  parsed = DisplayTextTag(std::move(parsed), "<NAVI>", "</NAVI>");
+  parsed = static_cast<const std::string&>(DisplayUrlTextTag(parsed));
+  parsed = static_cast<const std::string&>(DisplayNavigationTextTag(parsed));
 
   if (g_windowMgr.window_01C8) {
     parsed = static_cast<UINewChatWnd*>(g_windowMgr.window_01C8)->ConvertChat(std::move(parsed));
@@ -219,10 +219,10 @@ bool UITextViewer::AddQuestLinks(std::string text, unsigned addedLines) {
   std::string navigation;
   DisplayNavigationLink(navigation, parsed);
   parsed = std::move(navigation);
-  parsed = DisplayTextTag(std::move(parsed), "<TIPBOX>", "</TIPBOX>");
+  parsed = static_cast<const std::string&>(DisplayTipBoxTextTag(parsed));
 
   std::vector<TextLink> extracted;
-  ExtractTextLinks(parsed, "<QUEST>", "</QUEST>", extracted);
+  ExtractTextLinks(parsed, g_viewerQuestTagBegin, g_viewerQuestTagEnd, extracted);
 
   if (extracted.empty()) {
     return false;
@@ -252,10 +252,10 @@ bool UITextViewer::AddQuestLinks(std::string text, unsigned addedLines) {
 // FUNCTION: fn_11211
 void UITextViewer::AddTipLinks(std::string text, unsigned addedLines) {
   std::string parsed = RemoveTextColors(text.c_str());
-  parsed = DisplayTextTag(std::move(parsed), "<URL>", "</URL>");
-  parsed = DisplayTextTag(std::move(parsed), "<NAVI>", "</NAVI>");
-  parsed = DisplayTextTag(std::move(parsed), "<ITEM>", "</ITEM>");
-  parsed = DisplayTextTag(std::move(parsed), "<QUEST>", "</QUEST>");
+  parsed = static_cast<const std::string&>(DisplayUrlTextTag(parsed));
+  parsed = static_cast<const std::string&>(DisplayNavigationTextTag(parsed));
+  parsed = static_cast<const std::string&>(DisplayItemTextTag(parsed));
+  parsed = static_cast<const std::string&>(DisplayQuestTextTag(parsed));
 
   if (g_windowMgr.window_01C8) {
     parsed = static_cast<UINewChatWnd*>(g_windowMgr.window_01C8)->ConvertChat(std::move(parsed));
@@ -266,7 +266,7 @@ void UITextViewer::AddTipLinks(std::string text, unsigned addedLines) {
   parsed = std::move(navigation);
 
   std::vector<TextLink> extracted;
-  ExtractTextLinks(parsed, "<TIPBOX>", "</TIPBOX>", extracted);
+  ExtractTipBoxTextLinks(parsed, extracted);
 
   if (extracted.empty()) {
     return;
@@ -350,21 +350,21 @@ void UITextViewer::AddTipLinks(std::string text, unsigned addedLines) {
 // FUNCTION: fn_11212
 bool UITextViewer::AddUrlLinks(std::string text, unsigned addedLines) {
   std::string parsed = RemoveTextColors(text.c_str());
-  parsed = DisplayTextTag(std::move(parsed), "<NAVI>", "</NAVI>");
-  parsed = DisplayTextTag(std::move(parsed), "<ITEM>", "</ITEM>");
+  parsed = static_cast<const std::string&>(DisplayNavigationTextTag(parsed));
+  parsed = static_cast<const std::string&>(DisplayItemTextTag(parsed));
 
   if (g_windowMgr.window_01C8) {
     parsed = static_cast<UINewChatWnd*>(g_windowMgr.window_01C8)->ConvertChat(std::move(parsed));
   }
 
-  parsed = DisplayTextTag(std::move(parsed), "<TIPBOX>", "</TIPBOX>");
+  parsed = static_cast<const std::string&>(DisplayTipBoxTextTag(parsed));
   std::string navigation;
   DisplayNavigationLink(navigation, parsed);
   parsed = std::move(navigation);
-  parsed = DisplayTextTag(std::move(parsed), "<QUEST>", "</QUEST>");
+  parsed = static_cast<const std::string&>(DisplayQuestTextTag(parsed));
 
   std::vector<TextLink> extracted;
-  ExtractTextLinks(parsed, "<URL>", "</URL>", extracted);
+  ExtractUrlTextLinks(parsed, extracted);
 
   if (extracted.empty()) {
     return false;
