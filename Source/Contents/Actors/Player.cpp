@@ -236,7 +236,8 @@ void CPc::Slot33(int value) {
 // FUNCTION: fn_22613
 void CGrannyPc::Slot31() {
   if (this->unknown_0438 != 0) {
-    this->unknown_0460 = g_session.GetHeadPalName(this->unknown_0434, this->GetEffectiveJob(-1), this->unknown_0260, this->unknown_0438);
+    const std::string palName = g_session.GetHeadPalName(this->unknown_0434, this->GetEffectiveJob(-1), this->unknown_0260, this->unknown_0438);
+    this->unknown_0460 = palName;
   }
 }
 
@@ -244,7 +245,8 @@ void CGrannyPc::Slot31() {
 // FUNCTION: fn_22614
 void CPc::Slot31() {
   if (this->unknown_0444 != 0) {
-    this->unknown_0478 = g_session.GetHeadPalName(this->unknown_0440, this->unknown_04D4, this->unknown_0260, this->unknown_0444);
+    const std::string palName = g_session.GetHeadPalName(this->unknown_0440, this->unknown_04D4, this->unknown_0260, this->unknown_0444);
+    this->unknown_0478 = palName;
   }
 }
 
@@ -529,7 +531,7 @@ void CGrannyPc::Slot39(int value) {
     value = std::min(value, g_maxMoveSpeed);
   }
 
-  this->render.unknown_0054 = static_cast<float>(value) / 432.0f;
+  this->render.unknown_0064 = static_cast<float>(value) / 432.0f;
 }
 
 // OFFSET: 0x00DB0710
@@ -1566,7 +1568,7 @@ std::vector<std::string> CPc::GetEquipActionNames() const {
   std::vector<std::string> names(9);
   for (int slot = 0; slot < 9; ++slot) {
     if (this->equipActions[slot]) {
-      names[slot] = this->equipActions[slot]->name.text;
+      names[slot] = this->equipActions[slot]->GetName();
     } else {
       names[slot] = "";
     }
@@ -1687,7 +1689,7 @@ std::vector<std::string> CPc::GetEquipSpriteNames() const {
   std::vector<std::string> names(9);
   for (int slot = 0; slot < 9; ++slot) {
     if (this->equipSprites[slot]) {
-      names[slot] = this->equipSprites[slot]->name.text;
+      names[slot] = this->equipSprites[slot]->GetName();
     } else {
       names[slot] = "";
     }
