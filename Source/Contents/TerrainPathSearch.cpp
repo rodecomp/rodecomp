@@ -175,8 +175,8 @@ void CPriorityQueue::Push(PathNode* node) {
 // OFFSET: 0x00AD97C0
 // FUNCTION: fn_17884
 void CPathFinder::Clear() {
-  for (auto& [name, cached] : this->attrCache) {
-    delete cached;
+  for (auto it = this->attrCache.begin(); it != this->attrCache.end(); ++it) {
+    delete it->second;
   }
 
   this->attrCache.clear();
