@@ -17,7 +17,8 @@ namespace {
 template <std::size_t Length, std::uint64_t Key>
 class EncryptedName {
 public:
-  explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+  // INLINED
+  explicit EncryptedName(const char (&source)[Length]) : m_encrypted(true) {
     for (std::uint64_t index = 0; index < Length; ++index) {
       this->m_text[index] = source[index];
     }
@@ -50,8 +51,7 @@ private:
 bool CSession::LoadMapNameTable() {
   std::vector<char*> tokens;
   CCommonObject& storage = reinterpret_cast<CCommonObject&>(this->unknown_5400[0x30]);
-  const std::uint8_t source[] = {0x52, 0x88, 0x4B, 0xB1, 0x0A, 0x62, 0x9E, 0x43, 0x5E,
-                                 0x8B, 0x57, 0x9A, 0x45, 0x7B, 0x83, 0x63, 0x3F};
+  const char source[] = {'\x52', '\x88', '\x4B', '\xB1', '\x0A', '\x62', '\x9E', '\x43', '\x5E', '\x8B', '\x57', '\x9A', '\x45', '\x7B', '\x83', '\x63', '\x3F'};
   thread_local EncryptedName<sizeof(source), 0x17FB0F6BFF3BE93FULL> name(source);
   const bool loaded = storage.LoadTokens(tokens, name.Text(), 0);
 

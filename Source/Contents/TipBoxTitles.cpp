@@ -29,7 +29,8 @@ namespace {
   template <std::size_t Length, std::uint64_t Key>
   class EncryptedName {
   public:
-    explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+    // INLINED
+    explicit EncryptedName(const char (&source)[Length]) : m_encrypted(true) {
       for (std::uint64_t index = 0; index < Length; ++index) {
         this->m_text[index] = source[index];
       }
@@ -54,6 +55,13 @@ namespace {
     std::uint8_t m_text[Length];
     bool m_encrypted;
   };
+
+  // INLINED
+  template <std::uint64_t Key, std::size_t Length>
+  const char* DecryptName(const char (&source)[Length]) {
+    thread_local EncryptedName<Length, Key> name(source);
+    return name.Text();
+  }
 
   // OFFSET: 0x009B45D0
   // FUNCTION: fn_13832
@@ -319,22 +327,12 @@ bool CTipBoxMgr::RegisterLuaFunctions() {
   lua_register(state.GetState(), "AddPage", sub_7AEAF0);
   lua_register(state.GetState(), "AddIsTag", sub_7AEA20);
 
-  const std::uint8_t source[] = {
-    0xF4, 0xCA, 0x76, 0xBD, 0xC0, 0x0E, 0xB7, 0x7F,
-    0xCE, 0xC3, 0x67, 0xA6, 0xDD, 0x4D, 0x87, 0x7E,
-    0xC6, 0xB3
-  };
-  thread_local EncryptedName<sizeof(source), 0x0BEB63A5C905B3A7ULL> name(source);
+  const char source[] = {'\xF4', '\xCA', '\x76', '\xBD', '\xC0', '\x0E', '\xB7', '\x7F', '\xCE', '\xC3', '\x67', '\xA6', '\xDD', '\x4D', '\x87', '\x7E', '\xC6', '\xB3'};
 
-  if (luaL_loadfile(state.GetState(), name.Text()) != 0) {
-    const std::uint8_t secondSource[] = {
-      0x9A, 0xCE, 0x56, 0xE3, 0xDE, 0x5E, 0xDF, 0x73,
-      0xA0, 0xC7, 0x47, 0xF8, 0xC3, 0x1D, 0xEF, 0x72,
-      0xAB, 0xB7
-    };
-    thread_local EncryptedName<sizeof(secondSource), 0x078333BB9725B7C9ULL> secondName(secondSource);
+  if (luaL_loadfile(state.GetState(), DecryptName<0x0BEB63A5C905B3A7ULL>(source)) != 0) {
+    const char secondSource[] = {'\x9A', '\xCE', '\x56', '\xE3', '\xDE', '\x5E', '\xDF', '\x73', '\xA0', '\xC7', '\x47', '\xF8', '\xC3', '\x1D', '\xEF', '\x72', '\xAB', '\xB7'};
 
-    if (luaL_loadfile(state.GetState(), secondName.Text()) != 0) {
+    if (luaL_loadfile(state.GetState(), DecryptName<0x078333BB9725B7C9ULL>(secondSource)) != 0) {
       MessageBoxA(nullptr, lua_tostring(state.GetState(), -1), "TipBox", MB_OK);
       return false;
     }

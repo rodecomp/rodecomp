@@ -29,7 +29,8 @@ namespace {
 template <std::size_t Length, std::uint64_t Key>
 class EncryptedName {
 public:
-  explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+  // INLINED
+  explicit EncryptedName(const char (&source)[Length]) : m_encrypted(true) {
     for (std::uint64_t index = 0; index < Length; ++index) {
       this->m_text[index] = source[index];
     }
@@ -54,6 +55,13 @@ private:
   std::uint8_t m_text[Length];
   bool m_encrypted;
 };
+
+// INLINED
+template <std::uint64_t Key, std::size_t Length>
+const char* DecryptName(const char (&source)[Length]) {
+  thread_local EncryptedName<Length, Key> name(source);
+  return name.Text();
+}
 
 }
 
@@ -701,23 +709,16 @@ void CSession::LoadRobeAlpha() {
     int period = 0;
     LuaScript* script = this->m_hotkeyScript;
 
-    const std::uint8_t signatureSource[] = {0x15, 0x45, 0xC9, 0x0F, 0x21, 0x81, 0x73};
-    thread_local EncryptedName<sizeof(signatureSource), 0x6373E5456BAD7B71ULL> signature(signatureSource);
-    const std::uint8_t functionSource[] = {0x36, 0x32, 0xDC, 0x11, 0x9E, 0x27, 0x6B, 0xB4, 0x29, 0x34, 0xC9, 0x02, 0x95,
-                                           0x36, 0x77, 0xA1, 0x2E, 0x33, 0xDC, 0x0E, 0x8E, 0x3D, 0x7F, 0xBA, 0x47};
-    thread_local EncryptedName<sizeof(functionSource), 0xD51953E763B94747ULL> function(functionSource);
+    const char signatureSource[] = {'\x15', '\x45', '\xC9', '\x0F', '\x21', '\x81', '\x73'};
+    const char functionSource[] = {'\x36', '\x32', '\xDC', '\x11', '\x9E', '\x27', '\x6B', '\xB4', '\x29', '\x34', '\xC9', '\x02', '\x95', '\x36', '\x77', '\xA1', '\x2E', '\x33', '\xDC', '\x0E', '\x8E', '\x3D', '\x7F', '\xBA', '\x47'};
 
-    if (!script->Call(function.Text(), signature.Text(), index, &robeId, &from, &to, &period)) {
+    if (!script->Call(DecryptName<0xD51953E763B94747ULL>(functionSource), DecryptName<0x6373E5456BAD7B71ULL>(signatureSource), index, &robeId, &from, &to, &period)) {
       char message[260];
       std::memset(message, 0, sizeof(message));
-      const std::uint8_t formatSource[] = {0xAA, 0x72, 0x76, 0xA1, 0x8C, 0x37, 0x93, 0x0A, 0xB5, 0x74, 0x63, 0xB2, 0x87, 0x26,
-                                           0x8F, 0x1F, 0xB2, 0x73, 0x76, 0xBE, 0x9C, 0x2D, 0x87, 0x04, 0xFB, 0x28, 0x3C, 0xF3,
-                                           0xD0, 0x27, 0xC1, 0xAB, 0x0B, 0xB6, 0xF1, 0xF3, 0x48, 0x84, 0x27, 0xBB, 0xDB};
-      thread_local EncryptedName<sizeof(formatSource), 0x6BE143F5D31307DBULL> format(formatSource);
-      std::sprintf(message, format.Text(), index);
-      const std::uint8_t titleSource[] = {0xC8, 0x0D, 0x8B, 0xC0, 0xA5, 0x91};
-      thread_local EncryptedName<sizeof(titleSource), 0xAB5791D7AFF97F8DULL> title(titleSource);
-      MessageBoxA(hWnd, message, title.Text(), 0);
+      const char formatSource[] = {'\xAA', '\x72', '\x76', '\xA1', '\x8C', '\x37', '\x93', '\x0A', '\xB5', '\x74', '\x63', '\xB2', '\x87', '\x26', '\x8F', '\x1F', '\xB2', '\x73', '\x76', '\xBE', '\x9C', '\x2D', '\x87', '\x04', '\xFB', '\x28', '\x3C', '\xF3', '\xD0', '\x27', '\xC1', '\xAB', '\x0B', '\xB6', '\xF1', '\xF3', '\x48', '\x84', '\x27', '\xBB', '\xDB'};
+      std::sprintf(message, DecryptName<0x6BE143F5D31307DBULL>(formatSource), index);
+      const char titleSource[] = {'\xC8', '\x0D', '\x8B', '\xC0', '\xA5', '\x91'};
+      MessageBoxA(hWnd, message, DecryptName<0xAB5791D7AFF97F8DULL>(titleSource), 0);
       return;
     }
 

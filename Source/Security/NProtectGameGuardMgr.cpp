@@ -35,7 +35,8 @@ namespace {
   template <std::size_t Length, std::uint64_t Key>
   class EncryptedName {
   public:
-    explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+    // INLINED
+    explicit EncryptedName(const char (&source)[Length]) : m_encrypted(true) {
       for (std::uint64_t index = 0; index < Length; ++index) {
         this->m_text[index] = source[index];
       }
@@ -60,6 +61,13 @@ namespace {
     std::uint8_t m_text[Length];
     bool m_encrypted;
   };
+
+  // INLINED
+  template <std::uint64_t Key, std::size_t Length>
+  const char* DecryptName(const char (&source)[Length]) {
+    thread_local EncryptedName<Length, Key> name(source);
+    return name.Text();
+  }
 }
 
 // OFFSET: 0x0076C670
@@ -112,44 +120,36 @@ std::string CNProtectGameGuardMgr::ErrorMessage() {
 const char* CNProtectGameGuardMgr::GameName() {
   switch (g_serviceType) {
   case 3: {
-    const std::uint8_t source[] = {0xB3, 0xD6, 0xC4, 0x01, 0x81};
-    thread_local EncryptedName<sizeof(source), 0x7321C3814F8799E1ULL> name(source);
-    return name.Text();
+    const char source[] = {'\xB3', '\xD6', '\xC4', '\x01', '\x81'};
+    return DecryptName<0x7321C3814F8799E1ULL>(source);
   }
   case 0:
     if (std::strstr(g_session.unknown_58FA, g_devClientTag) != nullptr) {
-      const std::uint8_t source[] = {0x1D, 0xC0, 0xA8, 0x5B, 0x02, 0xA5, 0x2E, 0x12, 0x04, 0xF3, 0xCF};
-      thread_local EncryptedName<sizeof(source), 0x7941D76335CFA14FULL> name(source);
-      return name.Text();
+      const char source[] = {'\x1D', '\xC0', '\xA8', '\x5B', '\x02', '\xA5', '\x2E', '\x12', '\x04', '\xF3', '\xCF'};
+      return DecryptName<0x7941D76335CFA14FULL>(source);
     } else {
-      const std::uint8_t source[] = {0x2D, 0xB4, 0xC8, 0x35, 0x0A, 0xC3, 0x7A, 0x64, 0x34, 0x87, 0xAF};
-      thread_local EncryptedName<sizeof(source), 0x0F15B16B5BAFD57FULL> name(source);
-      return name.Text();
+      const char source[] = {'\x2D', '\xB4', '\xC8', '\x35', '\x0A', '\xC3', '\x7A', '\x64', '\x34', '\x87', '\xAF'};
+      return DecryptName<0x0F15B16B5BAFD57FULL>(source);
     }
   case 2: {
-    const std::uint8_t source[] = {0x71, 0x90, 0xB0, 0x79, 0xB6, 0x3B, 0x8C, 0x16, 0x69, 0xA1, 0xD7};
-    thread_local EncryptedName<sizeof(source), 0x7DE349D717D7F123ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x71', '\x90', '\xB0', '\x79', '\xB6', '\x3B', '\x8C', '\x16', '\x69', '\xA1', '\xD7'};
+    return DecryptName<0x7DE349D717D7F123ULL>(source);
   }
   case 12: {
-    const std::uint8_t source[] = {0x0F, 0x6C, 0x2E, 0xE7, 0xC0, 0x0F, 0x82, 0xF4, 0x1F, 0x5F, 0x49};
-    thread_local EncryptedName<sizeof(source), 0x9FED7DA189490D5DULL> name(source);
-    return name.Text();
+    const char source[] = {'\x0F', '\x6C', '\x2E', '\xE7', '\xC0', '\x0F', '\x82', '\xF4', '\x1F', '\x5F', '\x49'};
+    return DecryptName<0x9FED7DA189490D5DULL>(source);
   }
   case 7: {
-    const std::uint8_t source[] = {0x37, 0x34, 0xAE, 0x11, 0x6C, 0x9D, 0x40, 0x2E, 0x35, 0x1D, 0xC9};
-    thread_local EncryptedName<sizeof(source), 0x452FEF0D7FC95565ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x37', '\x34', '\xAE', '\x11', '\x6C', '\x9D', '\x40', '\x2E', '\x35', '\x1D', '\xC9'};
+    return DecryptName<0x452FEF0D7FC95565ULL>(source);
   }
   case 4: {
-    const std::uint8_t source[] = {0x3F, 0x54, 0xF3, 0x46, 0x77};
-    thread_local EncryptedName<sizeof(source), 0xF3CB6F7711A71B6DULL> name(source);
-    return name.Text();
+    const char source[] = {'\x3F', '\x54', '\xF3', '\x46', '\x77'};
+    return DecryptName<0xF3CB6F7711A71B6DULL>(source);
   }
   default: {
-    const std::uint8_t source[] = {0xE1, 0x06, 0x3E, 0xE1, 0xBE, 0x55, 0xF4, 0xE8, 0xB3};
-    thread_local EncryptedName<sizeof(source), 0x839B27DF8F5967B3ULL> name(source);
-    return name.Text();
+    const char source[] = {'\xE1', '\x06', '\x3E', '\xE1', '\xBE', '\x55', '\xF4', '\xE8', '\xB3'};
+    return DecryptName<0x839B27DF8F5967B3ULL>(source);
   }
   }
 }
@@ -185,15 +185,13 @@ int __stdcall sub_76D910(int code, const int* packet) {
   switch (code) {
   case 0x3E9:
   case 0x3EA: {
-    const std::uint8_t source[] = {0x98, 0x1B, 0x0A, 0x4D, 0xD8, 0x94, 0x3F, 0x05, 0xC8, 0x11, 0x48, 0x23};
-    thread_local EncryptedName<sizeof(source), 0x2D51E3B7236175EDULL> name(source);
-    g_nProtectGameGuardMgr->SetError(g_nprotectSource, 0x13B, std::string(FormatString(name.Text(), code)));
+    const char source[] = {'\x98', '\x1B', '\x0A', '\x4D', '\xD8', '\x94', '\x3F', '\x05', '\xC8', '\x11', '\x48', '\x23'};
+    g_nProtectGameGuardMgr->SetError(g_nprotectSource, 0x13B, std::string(FormatString(DecryptName<0x2D51E3B7236175EDULL>(source), code)));
     return 0;
   }
   case 0x3F3: {
-    const std::uint8_t source[] = {0x32, 0x68, 0x05, 0x86, 0xD9, 0xC2, 0x41};
-    thread_local EncryptedName<sizeof(source), 0x0F41EBBDA32D1B17ULL> name(source);
-    g_nProtectGameGuardMgr->SetError(g_nprotectSource, 0x136, std::string(FormatString(name.Text(), LookupMessage(0x3A1), code)));
+    const char source[] = {'\x32', '\x68', '\x05', '\x86', '\xD9', '\xC2', '\x41'};
+    g_nProtectGameGuardMgr->SetError(g_nprotectSource, 0x136, std::string(FormatString(DecryptName<0x0F41EBBDA32D1B17ULL>(source), LookupMessage(0x3A1), code)));
     return 0;
   }
   case 0x3F4:
@@ -201,15 +199,13 @@ int __stdcall sub_76D910(int code, const int* packet) {
     g_nProtectGameGuardMgr->SetError(g_nprotectSource, 0x14B, std::string(LookupMessage(0xAF7)));
     return 0;
   case 0x3F6: {
-    const std::uint8_t source[] = {0x40, 0x80, 0xFF, 0x78, 0xE9, 0x3A, 0x6F};
-    thread_local EncryptedName<sizeof(source), 0x176F138D5DD7F365ULL> name(source);
-    g_nProtectGameGuardMgr->SetError(g_nprotectSource, 0x13F, std::string(FormatString(name.Text(), LookupMessage(0x3A0), code)));
+    const char source[] = {'\x40', '\x80', '\xFF', '\x78', '\xE9', '\x3A', '\x6F'};
+    g_nProtectGameGuardMgr->SetError(g_nprotectSource, 0x13F, std::string(FormatString(DecryptName<0x176F138D5DD7F365ULL>(source), LookupMessage(0x3A0), code)));
     return 0;
   }
   case 0x3F7: {
-    const std::uint8_t source[] = {0xE4, 0x34, 0xED, 0x32, 0x85, 0xB0, 0xD5};
-    thread_local EncryptedName<sizeof(source), 0xFBD599E117C547C1ULL> name(source);
-    g_nProtectGameGuardMgr->SetError(g_nprotectSource, 0x151, std::string(FormatString(name.Text(), LookupMessage(0x3A3), code)));
+    const char source[] = {'\xE4', '\x34', '\xED', '\x32', '\x85', '\xB0', '\xD5'};
+    g_nProtectGameGuardMgr->SetError(g_nprotectSource, 0x151, std::string(FormatString(DecryptName<0xFBD599E117C547C1ULL>(source), LookupMessage(0x3A3), code)));
     return 0;
   }
   case 0x3FB: {
@@ -250,19 +246,14 @@ int CNProtectGameGuardMgr::sub_76C9D0() {
     std::memset(message, 0, sizeof(message));
     std::memset(title, 0, sizeof(title));
 
-    const std::uint8_t bodySource[] = {
-        0x18, 0x54, 0xC2, 0xF0, 0xDA, 0xFC, 0x92, 0xBD, 0x3B, 0x15, 0xEA, 0xE7, 0xEF, 0xE6, 0x81, 0xF5, 0x7F, 0x10, 0xC3, 0xE0, 0x9D};
-    thread_local EncryptedName<sizeof(bodySource), 0xCFF3899D95AF355FULL> body(bodySource);
-    StringFormat(message, sizeof(message), static_cast<std::size_t>(-1), body.Text(), status);
+    const char bodySource[] = {'\x18', '\x54', '\xC2', '\xF0', '\xDA', '\xFC', '\x92', '\xBD', '\x3B', '\x15', '\xEA', '\xE7', '\xEF', '\xE6', '\x81', '\xF5', '\x7F', '\x10', '\xC3', '\xE0', '\x9D'};
+    StringFormat(message, sizeof(message), static_cast<std::size_t>(-1), DecryptName<0xCFF3899D95AF355FULL>(bodySource), status);
 
-    const std::uint8_t titleSource[] = {
-        0x62, 0x10, 0xC2, 0xAE, 0x4A, 0x86, 0x4C, 0x97, 0x41, 0x51, 0xEA, 0xB9, 0x7F, 0x9C, 0x5F, 0xC5, 0x1F, 0x51, 0x8A, 0xA7, 0x78, 0xF3};
-    thread_local EncryptedName<sizeof(titleSource), 0xE52DF30DCBAF7125ULL> titleName(titleSource);
-    StringFormat(title, sizeof(title), static_cast<std::size_t>(-1), titleName.Text(), status);
+    const char titleSource[] = {'\x62', '\x10', '\xC2', '\xAE', '\x4A', '\x86', '\x4C', '\x97', '\x41', '\x51', '\xEA', '\xB9', '\x7F', '\x9C', '\x5F', '\xC5', '\x1F', '\x51', '\x8A', '\xA7', '\x78', '\xF3'};
+    StringFormat(title, sizeof(title), static_cast<std::size_t>(-1), DecryptName<0xE52DF30DCBAF7125ULL>(titleSource), status);
 
-    const std::uint8_t tagSource[] = {0xF6, 0x41, 0x9F, 0xAF, 0x7A, 0x91, 0xC9, 0x08, 0xF2, 0x31};
-    thread_local EncryptedName<sizeof(tagSource), 0x4F99DF03C3EF31B7ULL> tag(tagSource);
-    if (std::strstr(g_commandLine, tag.Text()) == nullptr) {
+    const char tagSource[] = {'\xF6', '\x41', '\x9F', '\xAF', '\x7A', '\x91', '\xC9', '\x08', '\xF2', '\x31'};
+    if (std::strstr(g_commandLine, DecryptName<0x4F99DF03C3EF31B7ULL>(tagSource)) == nullptr) {
       MessageBoxA(hWnd, message, title, 0);
       return 0;
     }
