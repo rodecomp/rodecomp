@@ -25,23 +25,15 @@ NMessageQueue::~NMessageQueue() {
 
 // OFFSET: 0x00736590
 // FUNCTION: fn_07622
-NMessage* NMessageQueue::Pop(NMessage* message) {
+NMessage NMessageQueue::Pop() {
   NSyncObject held(&this->m_criticalSection);
-  if (!this->m_messages.empty()) {
-    Record record = this->m_messages.front();
-    this->m_messages.pop_front();
-    message->id = record.id;
-    message->argumentHigh = record.argumentHigh;
-    message->argumentLow = record.argumentLow;
-    message->valid = true;
-  } else {
-    message->id = 0;
-    message->argumentHigh = 0;
-    message->argumentLow = 0;
-    message->valid = false;
+  if (this->m_messages.empty()) {
+    return NMessage();
   }
 
-  return message;
+  Record record = this->m_messages.front();
+  this->m_messages.pop_front();
+  return NMessage(record.id, record.argumentHigh, record.argumentLow);
 }
 
 // OFFSET: 0x00736660

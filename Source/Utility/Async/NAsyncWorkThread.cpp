@@ -3,7 +3,8 @@
 // OFFSET: 0x00732980
 // FUNCTION: fn_07576
 NAsyncWorkThread::NAsyncWorkThread(NAsyncWorkRequestQueue* requests, NAsyncWorkResponseQueue* responses)
-    : NThread("AsyncWorkThread"), m_registered(false), m_requests(requests), m_responses(responses) {
+    : NThread("AsyncWorkThread"), m_requests(requests), m_responses(responses) {
+  this->m_registered = false;
   g_messageMgr->Register(this->m_objectId, static_cast<NInter*>(this));
   this->m_registered = true;
 }
@@ -45,10 +46,8 @@ unsigned NAsyncWorkThread::Run() {
     HANDLE handles[2] = {this->m_messages.m_semaphore, this->m_requests->m_semaphore};
     DWORD ready = WaitForMultipleObjects(2, handles, FALSE, INFINITE);
     if (ready == WAIT_OBJECT_0) {
-      NMessage message;
-      this->m_messages.Pop(&message);
-
-      if (message.valid && message.argumentLow == 0x50000) {
+      NMessage message = this->m_messages.Pop();
+      if (message.valid == true && message.argumentLow == 0x50000) {
         return 0;
       }
     } else if (ready == WAIT_OBJECT_0 + 1) {

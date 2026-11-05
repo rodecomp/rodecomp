@@ -7,6 +7,13 @@
 #include <windows.h>
 
 struct NMessage {
+  NMessage() : id(0), argumentHigh(0), argumentLow(0), valid(false) {
+  }
+
+  NMessage(std::uint32_t id, std::uint32_t argumentHigh, std::uint32_t argumentLow)
+      : id(id), argumentHigh(argumentHigh), argumentLow(argumentLow), valid(true) {
+  }
+
   /* 0000 */ std::uint32_t id;
   /* 0004 */ std::uint32_t argumentHigh;
   /* 0008 */ std::uint32_t argumentLow;
@@ -20,7 +27,7 @@ public:
   NMessageQueue();
   virtual ~NMessageQueue();
 
-  NMessage* Pop(NMessage* message);
+  NMessage Pop();
   void Push(std::uint64_t argument, std::uint32_t id);
   void Clear();
 
