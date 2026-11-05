@@ -189,8 +189,8 @@ void CRenewQuestMgr::AddIconTooltip(std::string_view icon, std::string_view tool
 // OFFSET: 0x00677F40
 // FUNCTION: fn_05439
 std::string CRenewQuestMgr::GetFilterName(int filter) {
-  const auto found = this->m_filters.find(filter);
-  return found == this->m_filters.end() ? std::string() : found->second.m_name;
+  const std::map<int, RenewQuestFilter>::const_iterator found = this->m_filters.find(filter);
+  return found != this->m_filters.end() ? found->second.m_name : std::string("");
 }
 
 // OFFSET: 0x006780B0
@@ -338,16 +338,15 @@ std::string CRenewQuestMgr::GetIconTooltip(std::string_view icon) {
 // OFFSET: 0x006794D0
 // FUNCTION: fn_05442
 std::string RenewQuestOngoingInfo::GetHuntText(int index) const {
-  if (index > 2 || this->m_huntCount <= index) {
-    return std::string();
+  if (index >= 3 || this->m_huntCount <= index) {
+    return std::string("");
   }
 
   std::string text;
   const short minLevel = this->m_huntUnknown01AC[index];
   const short maxLevel = this->m_huntUnknown01B2[index];
   if (this->m_huntUnknown00D4[index] == 31999) {
-    const std::string condition = g_renewQuestMgr->GetMonsterConditionText(this->m_huntUnknown01A0[index], minLevel, maxLevel);
-    text = condition;
+    text = static_cast<const std::string&>(g_renewQuestMgr->GetMonsterConditionText(this->m_huntUnknown01A0[index], minLevel, maxLevel));
   } else {
     const char* name = this->m_huntName[index];
     if (this->m_huntUnknown01AC[index] >= 0 && this->m_huntUnknown01B2[index] >= 0 && (minLevel != 0 || this->m_huntUnknown01B2[index] != 0)) {
@@ -434,15 +433,16 @@ void CRenewQuestMgr::WriteOngoingQuests(char* buffer) {
     const RenewQuestOngoingInfo& info = it->second;
     const char huntCount = info.m_huntCount;
 
-    RenewQuestOngoingRecord* record = reinterpret_cast<RenewQuestOngoingRecord*>(buffer + offset);
-    record->questId = it->first;
-    record->state = info.m_state;
-    record->huntCount = huntCount;
-    record->year = info.m_year;
-    record->month = info.m_month;
-    record->day = info.m_day;
-    record->hour = info.m_hour;
-    record->minute = info.m_minute;
+    RenewQuestOngoingRecord record = {};
+    record.state = info.m_state;
+    record.huntCount = huntCount;
+    record.year = info.m_year;
+    record.month = info.m_month;
+    record.day = info.m_day;
+    record.hour = info.m_hour;
+    record.minute = info.m_minute;
+    record.questId = it->first;
+    *reinterpret_cast<RenewQuestOngoingRecord*>(buffer + offset) = record;
     offset += sizeof(RenewQuestOngoingRecord);
 
     for (int index = 0; index < huntCount; ++index) {
@@ -582,8 +582,8 @@ bool CRenewQuestMgr::IsInFilter(int filter, std::string_view icon) {
   case 0:
     return true;
   case 1:
-    for (auto it = this->m_filters.begin(); it != this->m_filters.end(); ++it) {
-      const std::list<std::string>& icons = it->second.m_icons;
+    for (const auto& entry : this->m_filters) {
+      const std::list<std::string>& icons = entry.second.m_icons;
       if (std::find(icons.begin(), icons.end(), icon) != icons.end()) {
         return false;
       }
@@ -668,6 +668,8 @@ void CRenewQuestMgr::sub_67B6B0() {
 // OFFSET: 0x0067B6E0
 // FUNCTION: fn_05461
 void CRenewQuestMgr::SendQuestStatusRequest() {
+  PACKET_CZ_QUEST_STATUS_REQ header;
+  header.packetType = ID_CZ_QUEST_STATUS_REQ;
   PACKET_CZ_QUEST_STATUS_REQ_BUFFER packet;
   const unsigned int length = this->m_statusRequests.size() * sizeof(unsigned int) + sizeof(PACKET_CZ_QUEST_STATUS_REQ);
   std::memset(packet.questIds, 0, sizeof(packet.questIds));
@@ -675,14 +677,12 @@ void CRenewQuestMgr::SendQuestStatusRequest() {
     return;
   }
 
-  PACKET_CZ_QUEST_STATUS_REQ header;
-  header.packetType = ID_CZ_QUEST_STATUS_REQ;
   header.packetLength = static_cast<std::int16_t>(length);
   packet.header = header;
 
   unsigned int* questId = packet.questIds;
-  for (auto it = this->m_statusRequests.begin(); it != this->m_statusRequests.end(); ++it) {
-    memcpy_s(questId, sizeof(unsigned int), &*it, sizeof(unsigned int));
+  for (const unsigned int& id : this->m_statusRequests) {
+    memcpy_s(questId, sizeof(unsigned int), &id, sizeof(unsigned int));
     ++questId;
   }
 
