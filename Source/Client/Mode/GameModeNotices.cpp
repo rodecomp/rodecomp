@@ -1962,7 +1962,8 @@ void CGameMode::ReceiveRodexOpen(const unsigned char* packet) {
 // OFFSET: 0x00D6ADA0
 // FUNCTION: fn_22064
 void CGameMode::ReceiveCaptchaPreview(int result, unsigned short size, const char* key) {
-  if (result == 0) {
+  switch (result) {
+  case 0: {
     UICaptchaPreviewWnd* window = static_cast<UICaptchaPreviewWnd*>(g_windowMgr.LookupWindow(288));
     if (!window) {
       window = static_cast<UICaptchaPreviewWnd*>(g_windowMgr.EnsureWindow(288));
@@ -1977,8 +1978,11 @@ void CGameMode::ReceiveCaptchaPreview(int result, unsigned short size, const cha
     window->Show(0);
     memcpy_s(window->m_captchaKey, 4, key, 4);
     window->InitImageData(size);
-  } else if (result == 1) {
+    break;
+  }
+  case 1:
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>("wrong captcha ID."), 0xFF, 0, 0, 0);
+    break;
   }
 }
 
