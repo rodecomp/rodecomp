@@ -247,7 +247,8 @@ bool CSoundMaker::OnProcess() {
   const float deltaZ = player->render.position.z - this->render.position.z;
   float signX = 1.0f;
   float signZ = 1.0f;
-  if (deltaX < 0.0f && deltaZ >= 0.0f) {
+  if (deltaX >= 0.0f && deltaZ >= 0.0f) {
+  } else if (deltaX < 0.0f && deltaZ >= 0.0f) {
     signX = -1.0f;
   } else if (deltaX < 0.0f && deltaZ < 0.0f) {
     signX = -1.0f;
@@ -256,12 +257,12 @@ bool CSoundMaker::OnProcess() {
     signZ = -1.0f;
   }
 
-  const float slope = deltaZ / std::fmax(deltaX, 0.001f);
+  const float slope = deltaZ / std::max(deltaX, 0.001f);
   float offsetX;
   float offsetZ;
   if (!(static_cast<float>(this->height / this->width) >= std::fabs(slope))) {
     offsetZ = static_cast<float>(this->height) * signZ * 0.5f;
-    offsetX = offsetZ / std::fmax(slope, 0.001f);
+    offsetX = offsetZ / std::max(slope, 0.001f);
   } else {
     offsetX = static_cast<float>(this->width) * signX * 0.5f;
     offsetZ = slope * offsetX;
@@ -276,9 +277,8 @@ bool CSoundMaker::OnProcess() {
   if (timeGetTime() > this->lastTick + this->cycle) {
     this->lastTick = timeGetTime();
     g_soundMgr->PlayWave(
-      this->file.c_str(), x - player->render.position.x, 0.0f, z - player->render.position.z, TruncateToInt(this->range),
-      TruncateToInt(this->range / 6.0f), this->volume, 0
-    );
+      this->file.c_str(), x - player->render.position.x, 0.0f, z - player->render.position.z, static_cast<int>(this->range),
+      static_cast<int>(this->range / 6.0f), this->volume, 0);
   }
   return true;
 }
