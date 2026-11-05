@@ -34,6 +34,7 @@
 #include "Client/Application/ErrorDialog.h"
 #include "Render/DeviceContext/DCSurface.h"
 #include <algorithm>
+#include <atomic>
 #include <bit>
 #include <cstdio>
 #include <cstdlib>
@@ -18803,6 +18804,7 @@ void CRagEffect::WhiteYellowRings() {
   this->render.position.x = parent.position.x;
   this->render.position.y = parent.position.y;
   this->render.position.z = parent.position.z;
+  std::atomic_signal_fence(std::memory_order_seq_cst);
 
   if (this->state.stateCnt == 0) {
     this->TexturedQuadRingSized(45, "effect\\ring_white.tga", 22);
