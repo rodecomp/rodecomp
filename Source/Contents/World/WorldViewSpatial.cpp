@@ -60,7 +60,7 @@ void WorldViewSpatial::CollectNode(WorldSpatialTree& node, int depth, bool fully
       continue;
     }
 
-    const int visibility = this->planes.ClassifyAxisAligned(*child);
+    const int visibility = this->ClassifyAxisAligned(*child);
 
     if (visibility != 0) {
       this->CollectNode(*child, depth + 1, visibility == 1);

@@ -11,9 +11,6 @@ class GroundGeometry;
 struct ModelViewPlanes {
   /* 0010 */ float planes[6][4];
   /* 0070 */ float normals[6][3];
-
-  int ClassifyAxisAligned(const WorldSpatialTree& bounds) const;
-  int ClassifyOriented(const OrientedBounds& bounds) const;
 };
 
 struct WorldViewSpatial {
@@ -24,6 +21,8 @@ struct WorldViewSpatial {
   /* 0008 */ std::list<WorldSpatialTree*> clipped;
   /* 0010 */ ModelViewPlanes planes;
 
+  int ClassifyAxisAligned(const WorldSpatialTree& bounds) const;
+  int ClassifyOriented(const OrientedBounds& bounds) const;
   void Collect(float horizontal, float vertical, const float* matrix, WorldSpatialTree& root);
   void CollectNode(WorldSpatialTree& node, int depth, bool fullyInside);
 };

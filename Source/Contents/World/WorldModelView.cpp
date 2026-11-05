@@ -55,13 +55,13 @@ namespace {
 
 // OFFSET: 0x00ADB730
 // FUNCTION: fn_17921
-int ModelViewPlanes::ClassifyAxisAligned(const WorldSpatialTree& bounds) const {
+int WorldViewSpatial::ClassifyAxisAligned(const WorldSpatialTree& bounds) const {
   bool clipped = false;
 
-  for (unsigned plane = 0; plane < 6; ++plane) {
-    const float* normal = this->normals[plane];
+  for (int plane = 0; plane < 6; ++plane) {
+    const float* normal = this->planes.normals[plane];
     const float radius = (Absolute(normal[0] * bounds.halfSize[0]) + Absolute(normal[1] * bounds.halfSize[1])) + Absolute(normal[2] * bounds.halfSize[2]);
-    const float distance = ((normal[0] * bounds.center[0] + normal[1] * bounds.center[1]) + normal[2] * bounds.center[2]) + this->planes[plane][3];
+    const float distance = ((normal[0] * bounds.center[0] + normal[1] * bounds.center[1]) + normal[2] * bounds.center[2]) + this->planes.planes[plane][3];
 
     if (!(distance > radius)) {
       const float negative = -radius;
@@ -79,16 +79,16 @@ int ModelViewPlanes::ClassifyAxisAligned(const WorldSpatialTree& bounds) const {
 
 // OFFSET: 0x00ADB7F0
 // FUNCTION: fn_17922
-int ModelViewPlanes::ClassifyOriented(const OrientedBounds& bounds) const {
+int WorldViewSpatial::ClassifyOriented(const OrientedBounds& bounds) const {
   bool clipped = false;
 
-  for (unsigned plane = 0; plane < 6; ++plane) {
-    const float* normal = this->normals[plane];
+  for (int plane = 0; plane < 6; ++plane) {
+    const float* normal = this->planes.normals[plane];
     const float second = Absolute(((normal[0] * bounds.axes[1][0] + normal[1] * bounds.axes[1][1]) + normal[2] * bounds.axes[1][2]) * bounds.halfSize[1]);
     const float first = Absolute(((normal[0] * bounds.axes[0][0] + normal[1] * bounds.axes[0][1]) + normal[2] * bounds.axes[0][2]) * bounds.halfSize[0]);
     const float third = Absolute(((normal[0] * bounds.axes[2][0] + normal[1] * bounds.axes[2][1]) + normal[2] * bounds.axes[2][2]) * bounds.halfSize[2]);
     const float radius = (second + first) + third;
-    const float distance = ((normal[0] * bounds.center[0] + normal[1] * bounds.center[1]) + normal[2] * bounds.center[2]) + this->planes[plane][3];
+    const float distance = ((normal[0] * bounds.center[0] + normal[1] * bounds.center[1]) + normal[2] * bounds.center[2]) + this->planes.planes[plane][3];
 
     if (!(distance > radius)) {
       const float negative = -radius;
@@ -192,110 +192,85 @@ void CView::Render() {
   g_visibleMaxY = 0;
   g_visibleMaxX = 0;
 
-  for (WorldSpatialTree* node : this->spatial.clipped) {
-    for (C3dActor* model : node->objects) {
+  for (auto node = this->spatial.clipped.begin(); node != this->spatial.clipped.end(); ++node) {
+    std::vector<C3dActor*>& objects = (*node)->objects;
+    for (auto it = objects.begin(); it != objects.end(); ++it) {
+      C3dActor* model = *it;
       if (model->renderFrame == g_renderer->frame) {
         continue;
       }
 
-      const OrientedBounds& bounds = model->oriented;
-      const ModelViewPlanes& planes = this->spatial.planes;
-      bool clipped = false;
-      bool culled = false;
-
-      for (unsigned plane = 0; plane < 6; ++plane) {
-        const float* normal = planes.normals[plane];
-        const float second = Absolute(((bounds.axes[1][0] * normal[0] + bounds.axes[1][1] * normal[1]) + bounds.axes[1][2] * normal[2]) * bounds.halfSize[1]);
-        const float first = Absolute(((bounds.axes[0][0] * normal[0] + bounds.axes[0][1] * normal[1]) + bounds.axes[0][2] * normal[2]) * bounds.halfSize[0]);
-        const float third = Absolute(((bounds.axes[2][0] * normal[0] + bounds.axes[2][1] * normal[1]) + bounds.axes[2][2] * normal[2]) * bounds.halfSize[2]);
-        const float radius = (second + first) + third;
-        const float distance = ((bounds.center[0] * normal[0] + bounds.center[1] * normal[1]) + bounds.center[2] * normal[2]) + planes.planes[plane][3];
-
-        if (!(distance > radius)) {
-          const float negative = -radius;
-
-          if (!(distance > negative)) {
-            culled = true;
-            break;
-          }
-
-          clipped = true;
-        }
-      }
-
-      int visibility = 0;
-
-      if (!culled) {
-        visibility = clipped ? 2 : 1;
-      }
+      const int visibility = this->spatial.ClassifyOriented(model->oriented);
 
       if (g_updateTick > 0) {
         model->Update();
       }
 
-      if (visibility == 1) {
-        void** modelVtable = *reinterpret_cast<void***>(model);
-        reinterpret_cast<void(__thiscall*)(void*, const float*, bool)>(modelVtable[7])(model, matrix, false);
-      } else if (visibility == 2) {
-        void** modelVtable = *reinterpret_cast<void***>(model);
-        reinterpret_cast<void(__thiscall*)(void*, const float*, bool)>(modelVtable[7])(model, matrix, true);
+      switch (visibility) {
+      case 1:
+        model->Draw(matrix, false);
+        break;
+      case 2:
+        model->Draw(matrix, true);
+        break;
       }
 
       model->renderFrame = g_renderer->frame;
     }
 
-    void** groundVtable = *reinterpret_cast<void***>(node->ground);
+    void** groundVtable = *reinterpret_cast<void***>((*node)->ground);
     reinterpret_cast<void(__thiscall*)(void*, const float*, const int*, bool)>(groundVtable[6])(
-      node->ground, matrix, node->groundCells, true);
+      (*node)->ground, matrix, (*node)->groundCells, true);
 
-    if (g_visibleMinX > node->groundCells[0]) {
-      g_visibleMinX = node->groundCells[0];
+    if (g_visibleMinX > (*node)->groundCells[0]) {
+      g_visibleMinX = (*node)->groundCells[0];
     }
 
-    if (g_visibleMaxX < node->groundCells[2]) {
-      g_visibleMaxX = node->groundCells[2];
+    if (g_visibleMaxX < (*node)->groundCells[2]) {
+      g_visibleMaxX = (*node)->groundCells[2];
     }
 
-    if (g_visibleMinY > node->groundCells[1]) {
-      g_visibleMinY = node->groundCells[1];
+    if (g_visibleMinY > (*node)->groundCells[1]) {
+      g_visibleMinY = (*node)->groundCells[1];
     }
 
-    if (g_visibleMaxY < node->groundCells[3]) {
-      g_visibleMaxY = node->groundCells[3];
+    if (g_visibleMaxY < (*node)->groundCells[3]) {
+      g_visibleMaxY = (*node)->groundCells[3];
     }
   }
 
-  for (WorldSpatialTree* node : this->spatial.inside) {
-    for (C3dActor* model : node->objects) {
+  for (auto node = this->spatial.inside.begin(); node != this->spatial.inside.end(); ++node) {
+    std::vector<C3dActor*>& objects = (*node)->objects;
+    for (auto it = objects.begin(); it != objects.end(); ++it) {
+      C3dActor* model = *it;
       if (g_updateTick > 0) {
         model->Update();
       }
 
       if (model->renderFrame != g_renderer->frame) {
-        void** modelVtable = *reinterpret_cast<void***>(model);
-        reinterpret_cast<void(__thiscall*)(void*, const float*, bool)>(modelVtable[7])(model, matrix, false);
+        model->Draw(matrix, false);
         model->renderFrame = g_renderer->frame;
       }
     }
 
-    void** groundVtable = *reinterpret_cast<void***>(node->ground);
+    void** groundVtable = *reinterpret_cast<void***>((*node)->ground);
     reinterpret_cast<void(__thiscall*)(void*, const float*, const int*, bool)>(groundVtable[6])(
-      node->ground, matrix, node->groundCells, false);
+      (*node)->ground, matrix, (*node)->groundCells, false);
 
-    if (g_visibleMinY > node->groundCells[1]) {
-      g_visibleMinY = node->groundCells[1];
+    if (g_visibleMinY > (*node)->groundCells[1]) {
+      g_visibleMinY = (*node)->groundCells[1];
     }
 
-    if (g_visibleMaxY < node->groundCells[3]) {
-      g_visibleMaxY = node->groundCells[3];
+    if (g_visibleMaxY < (*node)->groundCells[3]) {
+      g_visibleMaxY = (*node)->groundCells[3];
     }
 
-    if (g_visibleMinX > node->groundCells[0]) {
-      g_visibleMinX = node->groundCells[0];
+    if (g_visibleMinX > (*node)->groundCells[0]) {
+      g_visibleMinX = (*node)->groundCells[0];
     }
 
-    if (g_visibleMaxX < node->groundCells[2]) {
-      g_visibleMaxX = node->groundCells[2];
+    if (g_visibleMaxX < (*node)->groundCells[2]) {
+      g_visibleMaxX = (*node)->groundCells[2];
     }
   }
 
@@ -312,8 +287,8 @@ void CView::Render() {
       this->scene->ground, matrix, g_session.unknown_5600, g_session.unknown_5604, 0xfeff0000);
   }
 
-  for (CRenderObject* object : this->scene->objects) {
-    object->Render(reinterpret_cast<std::intptr_t>(matrix));
+  for (auto it = this->scene->objects.begin(); it != this->scene->objects.end(); ++it) {
+    (*it)->Render(reinterpret_cast<std::intptr_t>(matrix));
   }
 
   g_effectMgr->Render();
