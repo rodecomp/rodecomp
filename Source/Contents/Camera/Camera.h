@@ -30,6 +30,8 @@ public:
   virtual void Render();
   virtual void Update();
 
+  matrix AlternateView(float yaw) const;
+
   /* 0004 */ CameraShake shake;
   /* 0020 */ CameraState camera;
   /* 0050 */ float unknown_0050[3];

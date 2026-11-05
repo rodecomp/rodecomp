@@ -17,7 +17,6 @@ struct CameraFrame {
   void Build(const CameraState& camera);
   void Refresh(const CameraState& camera, CRenderer& renderer);
   void Forward(const CameraState& camera, float* output) const;
-  void AlternateView(const CameraState& camera, float yaw, matrix& output) const;
 };
 
 
