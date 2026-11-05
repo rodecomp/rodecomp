@@ -1469,11 +1469,11 @@ int UIWindow::FormattedTextWidth(std::string text, int family, int height, unsig
 // OFFSET: 0x00A80880
 // FUNCTION: fn_16977
 std::string UIWindow::FitDisplayText(int width, const char* text, int family, int height, unsigned char bold) {
-  std::string display = DisplayTextTag(std::string(text), "<URL>", "</URL>");
-  display = DisplayTextTag(std::move(display), "<NAVI>", "</NAVI>");
-  display = DisplayTextTag(std::move(display), "<TIPBOX>", "</TIPBOX>");
-  display = DisplayTextTag(std::move(display), "<ITEM>", "</ITEM>");
-  display = RemoveTextLinkInfo(std::move(display));
+  std::string display = DisplayUrlTextTag(text);
+  display = DisplayNavigationTextTag(display);
+  display = DisplayTipBoxTextTag(display);
+  display = DisplayItemTextTag(display);
+  display = RemoveTextLinkInfo(display);
 
   if (g_windowMgr.window_01C8) {
     display = static_cast<UINewChatWnd*>(g_windowMgr.window_01C8)->ConvertChat(std::move(display));
@@ -1482,7 +1482,7 @@ std::string UIWindow::FitDisplayText(int width, const char* text, int family, in
   std::string navigation;
   DisplayNavigationLink(navigation, display);
   display = std::move(navigation);
-  display = DisplayTextTag(std::move(display), "<QUEST>", "</QUEST>");
+  display = DisplayQuestTextTag(display);
 
   const auto textWidth = [this, family, height, bold](const char* value) {
     if (!value) {

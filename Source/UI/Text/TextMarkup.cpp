@@ -79,22 +79,23 @@ bool HasTextLinks(const std::string& text) {
 
 // OFFSET: 0x008791E0
 // FUNCTION: fn_11214
-std::string ExpandTextEscapes(std::string text) {
-  auto position = text.find("\\n");
+std::string ExpandTextEscapes(const std::string& text) {
+  std::string result = text;
+  auto position = result.find("\\n");
 
   while (position != std::string::npos) {
-    text.replace(position, 2, "\n");
-    position = text.find("\\n");
+    result.replace(position, 2, "\n");
+    position = result.find("\\n");
   }
 
-  position = text.find("\\r");
+  position = result.find("\\r");
 
   while (position != std::string::npos) {
-    text.replace(position, 2, "\r");
-    position = text.find("\\r");
+    result.replace(position, 2, "\r");
+    position = result.find("\\r");
   }
 
-  return text;
+  return result;
 }
 
 // OFFSET: 0x00A7EDC0
@@ -120,90 +121,91 @@ std::string RemoveTextColors(const char* text) {
 
 // OFFSET: 0x00A7F660
 // FUNCTION: fn_16966
-std::string DisplayTextTag(std::string text, const std::string& begin, const std::string& end) {
-  auto position = text.find(begin);
+const std::string DisplayTextTag(const std::string& source, const std::string& begin, const std::string& end) {
+  std::string text = source;
+  int position = static_cast<int>(text.find(begin));
 
-  if (position == std::string::npos) {
-    return text;
+  if (position == -1) {
+    return source;
   }
 
   std::string result;
 
   do {
     if (position > 0) {
-      result.append(text, 0, position);
+      result += text.substr(0, position);
     }
 
-    const auto content = position + begin.size();
+    const int content = position + static_cast<int>(begin.size());
     std::string tail = text.substr(content);
-    const auto close = tail.find(end);
+    const int close = static_cast<int>(tail.find(end));
 
-    if (close == std::string::npos) {
+    if (close == -1) {
       position = content;
     } else {
-      result.append(tail, 0, close);
+      result += tail.substr(0, close);
       text = tail.substr(close + end.size());
-      position = text.find(begin);
+      position = static_cast<int>(text.find(begin));
     }
-  } while (position != std::string::npos);
+  } while (position != -1);
 
-  result += text;
-  return result;
+  return result + text;
 }
 
 // OFFSET: 0x00A7F510
 // FUNCTION: fn_16963
-std::string DisplayItemTextTag(const std::string& text) {
+const std::string DisplayItemTextTag(const std::string& text) {
   return DisplayTextTag(text, g_itemTagBegin, g_itemTagEnd);
 }
 
 // OFFSET: 0x00A7F580
 // FUNCTION: fn_16964
-std::string DisplayNavigationTextTag(const std::string& text) {
+const std::string DisplayNavigationTextTag(const std::string& text) {
   return DisplayTextTag(text, g_naviTagBegin, g_naviTagEnd);
 }
 
 // OFFSET: 0x00A7F5F0
 // FUNCTION: fn_16965
-std::string DisplayQuestTextTag(const std::string& text) {
+const std::string DisplayQuestTextTag(const std::string& text) {
   return DisplayTextTag(text, g_questTagBegin, g_questTagEnd);
 }
 
 // OFFSET: 0x00A7FE50
 // FUNCTION: fn_16967
-std::string DisplayTipBoxTextTag(const std::string& text) {
+const std::string DisplayTipBoxTextTag(const std::string& text) {
   return DisplayTextTag(text, g_tipBoxTagBegin, g_tipBoxTagEnd);
 }
 
 // OFFSET: 0x00A7FEC0
 // FUNCTION: fn_16968
-std::string DisplayUrlTextTag(const std::string& text) {
+const std::string DisplayUrlTextTag(const std::string& text) {
   return DisplayTextTag(text, g_urlTagBegin, g_urlTagEnd);
 }
 
 // OFFSET: 0x00A7EF40
 // FUNCTION: fn_16962
-std::string RemoveTextLinkInfo(std::string text) {
-  auto position = text.find("<INFO>");
+const std::string RemoveTextLinkInfo(const std::string& source) {
+  std::string text = source;
+  int position = static_cast<int>(text.find(g_infoTagBegin));
 
-  if (position == std::string::npos) {
-    return text;
+  if (position == -1) {
+    return source;
   }
 
   std::string result;
 
   do {
     if (position > 0) {
-      result.append(text, 0, position);
+      result += text.substr(0, position);
     }
 
-    const auto close = text.find("</INFO>");
+    const int close = static_cast<int>(text.find(g_infoTagEnd));
 
-    if (close != std::string::npos) {
-      text = text.substr(close + 7);
-      position = text.find("<INFO>");
+    if (close != -1) {
+      text = text.substr(close + g_infoTagEnd.size());
+      position = static_cast<int>(text.find(g_infoTagBegin));
     }
-  } while (position != std::string::npos);
+  } while (position != -1);
 
   result += text;
   return result;
@@ -219,8 +221,13 @@ void ExtractTextLinks(const std::string& source, const std::string& begin, const
     return;
   }
 
-  std::string prefix = RemoveTextLinkInfo(text.substr(0, position));
-  std::uint32_t offset = static_cast<std::uint32_t>(prefix.size());
+  std::uint32_t offset;
+
+  {
+    std::string prefix = text.substr(0, position);
+    prefix = RemoveTextLinkInfo(prefix);
+    offset = static_cast<std::uint32_t>(prefix.size());
+  }
 
   do {
     const auto content = position + begin.size();
@@ -238,11 +245,11 @@ void ExtractTextLinks(const std::string& source, const std::string& begin, const
 
     if (info != std::string::npos) {
       display = tail.substr(0, info);
-      metadata = tail.substr(info + 6);
+      metadata = tail.substr(info + g_infoTagBegin.size());
       const auto infoEnd = metadata.find(g_infoTagEnd);
 
       if (infoEnd != std::string::npos) {
-        metadata.resize(infoEnd);
+        metadata = metadata.substr(0, infoEnd);
       }
     }
 
@@ -250,14 +257,15 @@ void ExtractTextLinks(const std::string& source, const std::string& begin, const
     link.position = offset;
     link.display = display;
     link.metadata = metadata;
-    links.push_back(std::move(link));
+    links.push_back(link);
     offset += static_cast<std::uint32_t>(display.size());
 
     text = tail.substr(close + end.size());
     position = text.find(begin);
 
     if (position != std::string::npos) {
-      prefix = RemoveTextLinkInfo(text.substr(0, position));
+      std::string prefix = text.substr(0, position);
+      prefix = RemoveTextLinkInfo(prefix);
       offset += static_cast<std::uint32_t>(prefix.size());
     }
   } while (position != std::string::npos);

@@ -14,15 +14,15 @@ struct TextLink {
 };
 
 bool HasTextLinks(const std::string& text);
-std::string ExpandTextEscapes(std::string text);
+std::string ExpandTextEscapes(const std::string& text);
 std::string RemoveTextColors(const char* text);
-std::string DisplayTextTag(std::string text, const std::string& begin, const std::string& end);
-std::string DisplayItemTextTag(const std::string& text);
-std::string DisplayNavigationTextTag(const std::string& text);
-std::string DisplayQuestTextTag(const std::string& text);
-std::string DisplayTipBoxTextTag(const std::string& text);
-std::string DisplayUrlTextTag(const std::string& text);
-std::string RemoveTextLinkInfo(std::string text);
+const std::string DisplayTextTag(const std::string& source, const std::string& begin, const std::string& end);
+const std::string DisplayItemTextTag(const std::string& text);
+const std::string DisplayNavigationTextTag(const std::string& text);
+const std::string DisplayQuestTextTag(const std::string& text);
+const std::string DisplayTipBoxTextTag(const std::string& text);
+const std::string DisplayUrlTextTag(const std::string& text);
+const std::string RemoveTextLinkInfo(const std::string& source);
 void ExtractTextLinks(const std::string& source, const std::string& begin, const std::string& end, std::vector<TextLink>& links);
 void ExtractNavigationTextLinks(const std::string& text, std::vector<TextLink>& links);
 void ExtractTipBoxTextLinks(const std::string& text, std::vector<TextLink>& links);
