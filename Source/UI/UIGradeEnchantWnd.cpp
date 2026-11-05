@@ -45,6 +45,24 @@ struct GradeEnchantClosePacket {
 };
 #pragma pack(pop)
 
+// INLINED
+static inline int MaterialRowAt(int x, int y) {
+  if (x < 158 || x > 393) {
+    return -1;
+  }
+
+  if (y < 102 || y > 219) {
+    return -1;
+  }
+
+  const int row = (y - 102) / 40;
+  if (y > row * 40 + 139) {
+    return -1;
+  }
+
+  return row >= 3 ? -1 : row;
+}
+
 // OFFSET: 0x007E68F0
 // FUNCTION: fn_09738
 UIGradeEnchantWnd::UIGradeEnchantWnd()
@@ -106,7 +124,7 @@ void UIGradeEnchantWnd::ResetItem() {
 // OFFSET: 0x007E76A0
 // FUNCTION: fn_09751
 int UIGradeEnchantWnd::SelectedMaterialZeny() {
-  if (this->item.unknown_0000[1] > 0 && !this->materials.empty() && this->selectedMaterial >= 0 &&
+  if (this->item.unknown_0000[1] > 0 && this->materials.size() > 0 && this->selectedMaterial >= 0 &&
       static_cast<unsigned>(this->selectedMaterial) < this->materials.size()) {
     return this->materials[this->selectedMaterial].zeny;
   }
@@ -320,12 +338,8 @@ void UIGradeEnchantWnd::Slot31(int x, int y) {
     return;
   }
 
-  if (x < 158 || x > 393 || y < 102 || y > 219) {
-    return;
-  }
-
-  const int row = (y - 102) / 40;
-  if (y > row * 40 + 139 || row >= 3 || row < 0 || static_cast<unsigned>(row) >= this->materials.size()) {
+  const int row = MaterialRowAt(x, y);
+  if (row < 0 || static_cast<unsigned>(row) >= this->materials.size()) {
     return;
   }
 
@@ -345,15 +359,7 @@ void UIGradeEnchantWnd::Slot31(int x, int y) {
 // OFFSET: 0x007E8B30
 // FUNCTION: fn_09761
 void UIGradeEnchantWnd::Slot28(int x, int y) {
-  if (x >= 158 && x <= 393 && y >= 102 && y <= 219) {
-    const int row = (y - 102) / 40;
-    if (y <= row * 40 + 139) {
-      this->hoverMaterial = row >= 3 ? -1 : row;
-      return;
-    }
-  }
-
-  this->hoverMaterial = -1;
+  this->hoverMaterial = MaterialRowAt(x, y);
 }
 
 // OFFSET: 0x007E8BB0
