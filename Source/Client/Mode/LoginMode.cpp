@@ -349,7 +349,9 @@ static_assert(offsetof(AcceptEnterPacket, characters) == 0x1B);
 template <std::size_t Length, std::uint64_t Key>
 class EncryptedName {
 public:
-  explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+  // INLINED
+  template <typename Byte>
+  explicit EncryptedName(const Byte (&source)[Length]) : m_encrypted(true) {
     for (std::uint64_t index = 0; index < Length; ++index) {
       this->m_text[index] = source[index];
     }
@@ -375,6 +377,13 @@ private:
   bool m_encrypted;
 };
 
+// INLINED
+template <std::uint64_t Key, std::size_t Length>
+const char* DecryptName(const char (&source)[Length]) {
+  thread_local EncryptedName<Length, Key> name(source);
+  return name.Text();
+}
+
 struct CharacterInfo2SizeErrorFormat {
   __declspec(noinline) EncryptedName<75, 0xED15938D333D2DB9ULL>& operator()() const;
 };
@@ -382,11 +391,11 @@ struct CharacterInfo2SizeErrorFormat {
 // OFFSET: 0x00D8CA50
 // FUNCTION: fn_22261
 EncryptedName<75, 0xED15938D333D2DB9ULL>& CharacterInfo2SizeErrorFormat::operator()() const {
-  const std::uint8_t source[] = {0xFA, 0x65, 0x7C, 0x61, 0xCC, 0xD0, 0x41, 0xA8, 0xEB, 0x72, 0x74, 0x7D, 0xCB, 0xDC, 0x27, 0xCD,
-                                 0xCA, 0x44, 0x47, 0x56, 0xAD, 0xF6, 0x67, 0x9F, 0xD6, 0x5F, 0x1C, 0x12, 0xAD, 0xF0, 0x7D, 0x8C,
-                                 0xCB, 0x4C, 0x5E, 0x47, 0xE8, 0xE1, 0x35, 0x83, 0xCC, 0x40, 0x1D, 0x09, 0xAD, 0xB6, 0x71, 0xCD,
-                                 0x99, 0x6E, 0x75, 0x72, 0xDF, 0xD2, 0x56, 0xB9, 0xFC, 0x7F, 0x62, 0x7A, 0xC3, 0xD5, 0x5A, 0xDF,
-                                 0x99, 0x5E, 0x54, 0x49, 0xE8, 0xB3, 0x2F, 0xCD, 0x9C, 0x49, 0x3D};
+  const char source[] = {'\xFA', '\x65', '\x7C', '\x61', '\xCC', '\xD0', '\x41', '\xA8', '\xEB', '\x72', '\x74', '\x7D', '\xCB', '\xDC', '\x27', '\xCD',
+                         '\xCA', '\x44', '\x47', '\x56', '\xAD', '\xF6', '\x67', '\x9F', '\xD6', '\x5F', '\x1C', '\x12', '\xAD', '\xF0', '\x7D', '\x8C',
+                         '\xCB', '\x4C', '\x5E', '\x47', '\xE8', '\xE1', '\x35', '\x83', '\xCC', '\x40', '\x1D', '\x09', '\xAD', '\xB6', '\x71', '\xCD',
+                         '\x99', '\x6E', '\x75', '\x72', '\xDF', '\xD2', '\x56', '\xB9', '\xFC', '\x7F', '\x62', '\x7A', '\xC3', '\xD5', '\x5A', '\xDF',
+                         '\x99', '\x5E', '\x54', '\x49', '\xE8', '\xB3', '\x2F', '\xCD', '\x9C', '\x49', '\x3D'};
   thread_local EncryptedName<sizeof(source), 0xED15938D333D2DB9ULL> name(source);
   return name;
 }
@@ -398,13 +407,13 @@ struct PasswordRetryExceededMessage {
 // OFFSET: 0x00D8CB50
 // FUNCTION: fn_22262
 EncryptedName<103, 0xBF2B4B31397FF5A7ULL>& PasswordRetryExceededMessage::operator()() const {
-  const std::uint8_t source[] = {0x1D, 0x04, 0xC6, 0xE9, 0x88, 0xB3, 0xE3, 0x1C, 0x1F, 0x53, 0x5F, 0x0A, 0xF9, 0xF3, 0x0B, 0x7F,
-                                 0x78, 0x4D, 0x87, 0xF9, 0xE5, 0xFC, 0xE9, 0x78, 0x68, 0x4A, 0xCB, 0x84, 0xF1, 0xFF, 0xE4, 0x0B,
-                                 0x7E, 0xDB, 0x5F, 0x83, 0xC0, 0xF2, 0xFB, 0x06, 0x5F, 0x3D, 0xDC, 0x81, 0x97, 0x6B, 0xE3, 0x11,
-                                 0x67, 0x3B, 0xB8, 0xE1, 0xF0, 0x9D, 0x97, 0x03, 0x18, 0x11, 0x51, 0x19, 0x11, 0x6B, 0x0B, 0x9F,
-                                 0x87, 0xD5, 0x5F, 0x19, 0x11, 0x6B, 0x0B, 0x9F, 0x87, 0x30, 0xD3, 0x8F, 0xC2, 0x8B, 0xE7, 0x01,
-                                 0x57, 0x33, 0xD1, 0x19, 0x8C, 0x8C, 0xEC, 0x5F, 0x67, 0x4E, 0x5F, 0xF8, 0x8F, 0xFC, 0xCA, 0x78,
-                                 0x72, 0x41, 0xB0, 0x8D, 0xE8, 0x65, 0x2B};
+  const char source[] = {'\x1D', '\x04', '\xC6', '\xE9', '\x88', '\xB3', '\xE3', '\x1C', '\x1F', '\x53', '\x5F', '\x0A', '\xF9', '\xF3', '\x0B', '\x7F',
+                         '\x78', '\x4D', '\x87', '\xF9', '\xE5', '\xFC', '\xE9', '\x78', '\x68', '\x4A', '\xCB', '\x84', '\xF1', '\xFF', '\xE4', '\x0B',
+                         '\x7E', '\xDB', '\x5F', '\x83', '\xC0', '\xF2', '\xFB', '\x06', '\x5F', '\x3D', '\xDC', '\x81', '\x97', '\x6B', '\xE3', '\x11',
+                         '\x67', '\x3B', '\xB8', '\xE1', '\xF0', '\x9D', '\x97', '\x03', '\x18', '\x11', '\x51', '\x19', '\x11', '\x6B', '\x0B', '\x9F',
+                         '\x87', '\xD5', '\x5F', '\x19', '\x11', '\x6B', '\x0B', '\x9F', '\x87', '\x30', '\xD3', '\x8F', '\xC2', '\x8B', '\xE7', '\x01',
+                         '\x57', '\x33', '\xD1', '\x19', '\x8C', '\x8C', '\xEC', '\x5F', '\x67', '\x4E', '\x5F', '\xF8', '\x8F', '\xFC', '\xCA', '\x78',
+                         '\x72', '\x41', '\xB0', '\x8D', '\xE8', '\x65', '\x2B'};
   thread_local EncryptedName<sizeof(source), 0xBF2B4B31397FF5A7ULL> name(source);
   return name;
 }
