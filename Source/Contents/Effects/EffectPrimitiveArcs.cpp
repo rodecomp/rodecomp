@@ -275,7 +275,7 @@ void CEffectPrim::RenderGroundArcStep(matrix& wtm) {
 
 // OFFSET: 0x00BEC960
 // FUNCTION: fn_19976
-void CEffectPrim::RenderSegmentSprites(matrix& wtm) {
+__declspec(safebuffers) void CEffectPrim::RenderSegmentSprites(matrix& wtm) {
   CSprRes* sprite = this->render.sprite;
   CActRes* action = this->GetActRes();
 
@@ -1064,7 +1064,7 @@ void CEffectPrim::RenderCurvedFanTrail(matrix& wtm) {
 
 // OFFSET: 0x00BEE900
 // FUNCTION: fn_19980
-void CEffectPrim::RenderTwinFacingSquares(matrix& wtm) {
+__declspec(safebuffers) void CEffectPrim::RenderTwinFacingSquares(matrix& wtm) {
   int rpCnt = 0;
   EffectPrimitiveSlot& slot = this->state.slots[0];
 
@@ -1169,7 +1169,7 @@ void CEffectPrim::RenderTwinFacingSquares(matrix& wtm) {
 
 // OFFSET: 0x00BEEF80
 // FUNCTION: fn_19981
-void CEffectPrim::RenderPillarSquares(matrix& wtm) {
+__declspec(safebuffers) void CEffectPrim::RenderPillarSquares(matrix& wtm) {
   int rpCnt = 0;
   EffectPrimitiveSlot& slot = this->state.slots[0];
 
