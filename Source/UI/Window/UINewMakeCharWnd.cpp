@@ -36,7 +36,7 @@ UINewMakeCharWnd::UINewMakeCharWnd()
       m_raceViews() {
   this->geometry.unknown_0034 = 0;
 
-  const int* preset = reinterpret_cast<const int*>(static_cast<CMode*>(g_charViewMode)->SendMsg(10016, 0, 0, 0, 0));
+  const int* preset = reinterpret_cast<const int*>(g_modeMgr.gameMode->SendMsg(10016, 0, 0, 0, 0));
   this->m_stats[0] = static_cast<unsigned char>(preset[0]);
   this->m_stats[1] = static_cast<unsigned char>(preset[1]);
   this->m_stats[2] = static_cast<unsigned char>(preset[2]);
@@ -515,18 +515,20 @@ void UINewMakeCharWnd::Slot15(int width, int height) {
 // OFFSET: 0x007DB630
 // FUNCTION: fn_09625
 int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message == 0) {
-    char name[24] = {};
+  switch (message) {
+  case 0: {
+    char name[25] = {};
     strcpy(name, this->m_nameEdit->Text());
     memcpy(this->m_name, name, sizeof(this->m_name));
     this->SendMsg(nullptr, 6, this->m_message0, 0, 0, 0);
     return 0;
   }
-
-  if (message != 6) {
-    if (message == 13) {
-      this->m_race = static_cast<int>(argument1);
-    }
+  case 6:
+    break;
+  case 13:
+    this->m_race = static_cast<int>(argument1);
+    [[fallthrough]];
+  default:
     return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
@@ -576,7 +578,7 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
           return 0;
         }
 
-        static_cast<CMode*>(g_charViewMode)->SendMsg(0x2715, 0, 0, 0, 0);
+        g_modeMgr.gameMode->SendMsg(0x2715, 0, 0, 0, 0);
         g_windowMgr.Schedule(this);
       } else {
         if (hasControlCharacter || allowed == 0) {
@@ -590,7 +592,7 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
         }
       }
 
-      CMode* mode = static_cast<CMode*>(g_charViewMode);
+      CMode* mode = g_modeMgr.gameMode;
       mode->SendMsg(0x271F, reinterpret_cast<int>(this->m_nameEdit->Text()), 0, 0, 0);
       int payload[8];
       payload[0] = this->m_stats[0];
@@ -611,7 +613,7 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
 
   case 0xB9:
     g_windowMgr.Schedule(this);
-    static_cast<CMode*>(g_charViewMode)->SendMsg(0, 0x2714, 0, 0, 0);
+    g_modeMgr.gameMode->SendMsg(0, 0x2714, 0, 0, 0);
     return 0;
 
   case 0xCC:
