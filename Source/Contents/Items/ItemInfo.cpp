@@ -424,7 +424,7 @@ std::uint32_t ITEM_INFO::Deserialize(const std::vector<unsigned char>& data) {
 bool CSession::HasRequiredItems() const {
   for (const ITEM_INFO& required : this->unknown_1730) {
     const ITEM_INFO owned = LookupClientItemByIdentity(this->m_inventoryItems, required.unknown_0000[1]);
-    if (owned.unknown_0000[1] == 0 || owned.quantity < required.quantity) {
+    if (owned.unknown_0000[1] <= 0 || owned.quantity < required.quantity) {
       return false;
     }
   }
@@ -464,7 +464,7 @@ bool CSession::HasInventoryItem(std::uint32_t id) const {
 // FUNCTION: fn_23591
 bool CSession::HasItemId(int itemId) const {
   const ITEM_INFO owned = LookupClientItemByIdentity(this->m_inventoryItems, this->unknown_16EC);
-  if (owned.unknown_0000[1] != 0 && std::atoi(owned.itemId.c_str()) == itemId) {
+  if (owned.unknown_0000[1] > 0 && std::atoi(owned.itemId.c_str()) == itemId) {
     return true;
   }
 
