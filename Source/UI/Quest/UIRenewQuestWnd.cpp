@@ -723,8 +723,7 @@ void UIRenewQuestWnd::Slot15(int, int) {
   if (!g_windowMgr.window_0428) {
     g_windowMgr.EnsureWindow(204);
   }
-  const bool checked = g_windowMgr.window_0428->geometry.visible != 0;
-  this->m_optionCheckBox = this->AddStyledCheckBox(213, 10, 12, LookupMessage(2019), 38, 447, checked, nullptr, 12, 0x212121, "유저인터페이스\\renew_questui\\checkbox_on.bmp",
+  this->m_optionCheckBox = this->AddStyledCheckBox(213, 10, 12, LookupMessage(2019), 38, 447, g_windowMgr.window_0428->geometry.visible != 0, nullptr, 12, 0x212121, "유저인터페이스\\renew_questui\\checkbox_on.bmp",
     "유저인터페이스\\renew_questui\\checkbox_off.bmp"
   );
 
@@ -949,16 +948,15 @@ void UIRenewQuestWnd::RefreshRows() {
 // OFFSET: 0x007FD420
 // FUNCTION: fn_09979
 void UIRenewQuestWnd::UpdateScroll() {
-  const std::vector<unsigned int>& ids = this->m_questIds[this->m_tab];
-  if (ids.begin() != ids.end() && this->m_scrollBar) {
-    int maximum = static_cast<int>(ids.size()) - 9;
+  if (!this->m_questIds[this->m_tab].empty() && this->m_scrollBar) {
+    int maximum = static_cast<int>(this->m_questIds[this->m_tab].size()) - 9;
     if (maximum < 0) {
       maximum = 0;
     }
 
     this->m_scrollable = maximum > 0;
     if (maximum > 0) {
-      this->m_scrollBar->SetRange(maximum, 9, static_cast<int>(ids.size()));
+      this->m_scrollBar->SetRange(maximum, 9, static_cast<int>(this->m_questIds[this->m_tab].size()));
       if (this->m_scroll < 0) {
         this->m_scroll = 0;
         this->m_scrollBar->SetPosition(0);
@@ -970,7 +968,7 @@ void UIRenewQuestWnd::UpdateScroll() {
       }
     } else {
       this->m_scroll = 0;
-      this->m_scrollBar->SetRange(0, 9, static_cast<int>(ids.size()));
+      this->m_scrollBar->SetRange(0, 9, static_cast<int>(this->m_questIds[this->m_tab].size()));
     }
 
     this->m_scrollBar->Invalidate();
@@ -1119,23 +1117,6 @@ int UIRenewQuestWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       break;
     }
     break;
-  case 7:
-  case 9:
-  case 10: {
-    const int previous = this->m_scroll;
-    int delta = argument1;
-    if (message == 9) {
-      delta = -8;
-    } else if (message == 10) {
-      delta = 8;
-    }
-    this->m_scroll = previous + delta;
-    if (previous != this->m_scroll) {
-      this->UpdateScroll();
-      this->Invalidate();
-    }
-    return this->m_scroll - previous;
-  }
   case 0x16:
     if (this->m_tab != argument1) {
       this->m_tab = argument1;
@@ -1163,13 +1144,15 @@ int UIRenewQuestWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
 
         CRenewQuestMgr* mgr = g_renewQuestMgr;
         if (!mgr->m_recommendedQuests.empty()) {
-          for (auto quest = mgr->m_recommendedQuests.begin(); quest != mgr->m_recommendedQuests.end(); ++quest) {
+          auto quest = mgr->m_recommendedQuests.begin();
+          while (quest != mgr->m_recommendedQuests.end()) {
             std::string title = quest->second.m_title;
             title = this->FitDisplayText(250, title.c_str(), 0, 12, 1);
             SetRecommendedQuestTitle(g_renewQuestMgr, quest->first, title);
             std::string summary = quest->second.unknown_004C;
             summary = this->FitDisplayText(250, summary.c_str(), 0, 12, 0);
             SetRecommendedQuestSummary(g_renewQuestMgr, quest->first, summary);
+            ++quest;
           }
         }
         g_renewQuestTitlesPending = false;
@@ -1179,17 +1162,16 @@ int UIRenewQuestWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       this->UpdateScroll();
       this->Invalidate();
     }
-    return 0;
+    break;
   case 0x17:
     if (argument2 != 0) {
       bool found = false;
-      for (int tab = 0; tab < 3 && !found; ++tab) {
-        for (unsigned int id : this->m_questIds[tab]) {
-          if (static_cast<unsigned int>(argument2) == id) {
-            this->SendMsg(this, 0x16, tab, 0, 0, 0);
-            found = true;
-            break;
-          }
+      for (int tab = 0; tab <= 2; ++tab) {
+        const std::vector<unsigned int>& ids = this->m_questIds[tab];
+        if (std::find(ids.begin(), ids.end(), static_cast<unsigned int>(argument2)) != ids.end()) {
+          this->SendMsg(this, 0x16, tab, 0, 0, 0);
+          found = true;
+          break;
         }
       }
       if (!found) {
@@ -1200,7 +1182,24 @@ int UIRenewQuestWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     this->RefreshQuestLists(argument1, argument2);
     this->UpdateScroll();
     this->Invalidate();
-    return 0;
+    break;
+  case 7:
+  case 9:
+  case 10: {
+    const int previous = this->m_scroll;
+    int delta = argument1;
+    if (message == 9) {
+      delta = -8;
+    } else if (message == 10) {
+      delta = 8;
+    }
+    this->m_scroll = previous + delta;
+    if (previous != this->m_scroll) {
+      this->UpdateScroll();
+      this->Invalidate();
+    }
+    return this->m_scroll - previous;
+  }
   default:
     return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
