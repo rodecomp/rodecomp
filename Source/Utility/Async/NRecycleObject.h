@@ -41,7 +41,8 @@ template <class T> class NRecycleObjectPool : public NRecycleObjectPoolInter {
 public:
   // OFFSET: 0x00575AC0
   // FUNCTION: fn_02529
-  explicit NRecycleObjectPool(std::uint32_t minimumFree) : m_enabled(false), m_minimumFree(minimumFree) {
+  explicit NRecycleObjectPool(std::uint32_t minimumFree) : m_minimumFree(minimumFree) {
+    this->m_enabled = false;
     InitializeCriticalSection(&this->m_criticalSection);
     this->m_enabled = true;
   }
@@ -85,18 +86,17 @@ public:
   T* Acquire() override {
     NSyncObject held(&this->m_criticalSection);
     T* object;
-    if (this->m_free.size() >= this->m_minimumFree) {
+    if (this->m_free.size() < this->m_minimumFree) {
+      object = new (std::nothrow) T;
+      if (object == nullptr) {
+        return nullptr;
+      }
+      this->m_objects.push_back(object);
+    } else {
       object = this->m_free.front();
       this->m_free.pop_front();
-    } else {
-      object = new (std::nothrow) T;
-      if (object) {
-        this->m_objects.push_back(object);
-      }
     }
-    if (object) {
-      object->Reset();
-    }
+    object->Reset();
     return object;
   }
 
@@ -133,8 +133,7 @@ public:
     if (object) {
       auto owned = std::find(this->m_objects.begin(), this->m_objects.end(), object);
       if (owned != this->m_objects.end()) {
-
-        this->m_free.push_back(*owned);
+        this->m_free.push_back(static_cast<T*>(object));
       }
     }
   }
