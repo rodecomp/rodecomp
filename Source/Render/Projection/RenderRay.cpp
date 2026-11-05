@@ -1,16 +1,9 @@
 #include "Render/Projection/RendererViewport.h"
+#include "Utility/Math/AffineMatrix.h"
 
 #include <bit>
 #include <cmath>
 #include <cstring>
-
-namespace {
-  // INLINED
-  float InverseLength(float squared) {
-    const float length = std::sqrt(squared);
-    return 1.0f / length;
-  }
-}
 
 // OFFSET: 0x0055A090
 // FUNCTION: fn_02076
@@ -33,7 +26,7 @@ void RendererViewport::Ray(int x, int y, const float* origin, const float* matri
   const float third = ((transform[5] * dy + dx * transform[2]) + transform[8]) + 0.0f;
   output[5] = third;
 
-  const float inverse = InverseLength((second * second + first * first) + third * third);
+  const float inverse = 1.0f / SquareRoot((second * second + first * first) + third * third);
   output[3] = inverse * output[3];
   const float last = inverse * output[5];
   output[4] = inverse * output[4];
