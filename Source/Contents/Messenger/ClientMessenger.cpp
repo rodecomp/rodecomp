@@ -352,7 +352,7 @@ namespace EquipmentProperties {
     int GetUnknown01BC(const int& first, const int& second, const unsigned int& third);
     __declspec(noinline) void SetCurrentEquipment(CEquipment* equipment);
     void RefreshPretend();
-    void RefreshShop();
+    __declspec(noinline) void RefreshShop();
     void Rebuild();
     void GetDescriptions(const int& group, std::list<std::string>& lines);
     void ApplyProperty(const char* name, lua_State* state, const int& count, const int& valuePosition, const int& indexPosition, const int& keyPosition);
@@ -5091,7 +5091,7 @@ struct ItemNotificationWindow : UIWindow {
 
 // OFFSET: 0x00AAAF10
 // FUNCTION: fn_17276
-void UIWindowMgr::NotifyItemWindows(int accountId, int lower, int upper) {
+__declspec(noinline) void UIWindowMgr::NotifyItemWindows(int accountId, int lower, int upper) {
   for (UIWindow* window : this->snapExcluded) {
     bool matches;
     {
