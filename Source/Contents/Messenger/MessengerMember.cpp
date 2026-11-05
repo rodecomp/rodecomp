@@ -62,7 +62,7 @@ namespace {
 
 class UIDragMiniPartyWnd : public UIFrameWnd {
 public:
-  UIDragMiniPartyWnd(MessengerMember member);
+  __declspec(noinline) UIDragMiniPartyWnd(MessengerMember member);
   ~UIDragMiniPartyWnd() override;
   void Slot15(int width, int height) override;
   void Paint() override;

@@ -167,7 +167,7 @@ struct ExchangeAcceptWndInfo : WindowPlacement {
 
 struct FriendOptionWndInfo : WindowPlacement {
   void Reset();
-  int IsValid() const;
+  __declspec(noinline) int IsValid() const;
 };
 
 struct GuildHelperWndInfo : WindowPlacement {
