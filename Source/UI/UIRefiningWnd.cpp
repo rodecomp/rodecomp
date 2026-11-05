@@ -399,13 +399,13 @@ void UIRefining_Notice::Paint() {
     auto* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\refining_renewal\\ico_notice.bmp")));
     this->DrawBitmap(0, 3, icon ? &icon->image : nullptr, false);
 
-    std::uint32_t color = this->highlight == 1 ? 0x2E15CA : 0xC4281C;
+    std::uint32_t color = this->highlight != 1 ? 0xC4281C : 0x2E15CA;
     std::list<std::string> lines;
     this->WrapFormattedText(this->text, &lines, this->geometry.width - 18, 0, 11, 0);
 
     int offset = 0;
-    for (const std::string& line : lines) {
-      this->DrawTextAt(18, static_cast<int>((this->geometry.height - lines.size() * 11) * 0.5 + offset), line.c_str(), 0, 0, 11, color, 0, 0
+    for (auto line = lines.begin(); line != lines.end(); ++line) {
+      this->DrawTextAt(18, static_cast<int>((this->geometry.height - lines.size() * 11) * 0.5 + offset), line->c_str(), 0, 0, 11, color, 0, 0
       );
       offset += 11;
     }
@@ -591,7 +591,7 @@ void UIRefiningWnd::Slot19() {
     this->notice->Slot19();
   }
 
-  if (this->state == 1 && this->refiningButton->Disabled() == 1 && this->item.unknown_0000[1] != 0 && this->selectedMaterial >= 0 &&
+  if (this->state == 1 && this->refiningButton->Disabled() == 1 && this->item.unknown_0000[1] > 0 && this->selectedMaterial >= 0 &&
       static_cast<unsigned>(this->selectedMaterial) < this->materials.size()) {
     this->refiningButton->SetDisabled(0);
     this->refiningButton->Invalidate();
@@ -702,18 +702,11 @@ void UIRefiningWnd::Slot33(int x, int y) {
       return;
     }
 
-    const int offsetX = x - 11;
-    int slot = -1;
-    if (static_cast<unsigned>(offsetX) <= 242 && static_cast<unsigned>(y - 55) <= 52) {
-      const int index = offsetX / 49;
-      if (x <= index * 49 + 57 && index < 5) {
-        slot = index;
-      }
-    }
+    const int slot = this->SlotAt(x, y);
     if (slot >= 0) {
       if (static_cast<unsigned>(slot) < this->materials.size()) {
         ITEM_INFO info = LookupClientItem(g_session.m_inventoryItems, this->materials[slot].itemId, 0);
-        if (info.unknown_0000[1] != 0) {
+        if (info.unknown_0000[1] > 0) {
           UIWindow* window = g_windowMgr.EnsureWindow(12);
           if (window) {
             window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&info), 0, 0, 0);
@@ -727,7 +720,7 @@ void UIRefiningWnd::Slot33(int x, int y) {
           return;
         }
         ITEM_INFO info = LookupClientItem(g_session.m_inventoryItems, this->catalystItemId, 0);
-        if (info.unknown_0000[1] != 0) {
+        if (info.unknown_0000[1] > 0) {
           UIWindow* window = g_windowMgr.EnsureWindow(12);
           if (window) {
             window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&info), 0, 0, 0);
@@ -738,7 +731,7 @@ void UIRefiningWnd::Slot33(int x, int y) {
     }
   }
 
-  if (this->item.unknown_0000[1] != 0 && static_cast<unsigned>(x - 109) <= 46 && static_cast<unsigned>(y - 201) <= 46) {
+  if (this->item.unknown_0000[1] > 0 && static_cast<unsigned>(x - 109) <= 46 && static_cast<unsigned>(y - 201) <= 46) {
     UIWindow* window = g_windowMgr.EnsureWindow(12);
     if (window) {
       window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&this->item), 0, 0, 0);
@@ -783,7 +776,8 @@ void UIRefining_BtnReturn::UpdateBitmaps() {
 int UIRefiningWnd::SendMsg(
   UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
-  if (message == 6) {
+  switch (message) {
+  case 6:
     switch (argument1) {
     case 510:
       ShellExecuteA(hWnd, "open", LookupMessage(4123), nullptr, nullptr, SW_SHOWNORMAL);
@@ -801,7 +795,7 @@ int UIRefiningWnd::SendMsg(
             packet.index = static_cast<std::uint16_t>(index);
             packet.materialId = this->materials[this->selectedMaterial].itemId;
             packet.useCatalyst = this->catalystEnabled;
-            GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+            GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
           }
         }
       }
@@ -811,7 +805,7 @@ int UIRefiningWnd::SendMsg(
       if (this->state != 2) {
         RefiningClosePacket packet;
         packet.id = 0xAA4;
-        GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+        GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
         g_windowMgr.CloseWindow(295);
       }
       break;
@@ -829,23 +823,27 @@ int UIRefiningWnd::SendMsg(
       this->SendMsg(this, 6, 184, 0, 0, 0);
       break;
     }
-  } else if (message == 23 && (this->state == 0 || this->state == 1)) {
-    const ITEM_INFO info = LookupClientItemByIdentity(g_session.m_inventoryItems, argument1);
-    if (g_session.HasItem61B8(info.unknown_0000[1]) == 1) {
-      g_modeMgr.GetGameMode()->SendMsg(18, 0, 0, 0, 0);
-      return -1;
-    }
+    break;
+  case 23:
+    if (this->state == 0 || this->state == 1) {
+      const ITEM_INFO info = LookupClientItemByIdentity(g_session.m_inventoryItems, argument1);
+      if (g_session.HasItem61B8(info.unknown_0000[1]) == 1) {
+        g_modeMgr.GetGameMode()->SendMsg(18, 0, 0, 0, 0);
+        return -1;
+      }
 
-    if (info.unknown_0000[1] != 0) {
-      if (info.identified == 1) {
-        RefiningSelectPacket packet;
-        packet.id = 0xAA1;
-        packet.index = static_cast<std::uint16_t>(argument1);
-        GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
-      } else {
-        this->notice->SetNotice(LookupMessage(2970), 3000, 1);
+      if (info.unknown_0000[1] > 0) {
+        if (info.identified == 1) {
+          RefiningSelectPacket packet;
+          packet.id = 0xAA1;
+          packet.index = static_cast<std::uint16_t>(argument1);
+          GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+        } else {
+          this->notice->SetNotice(LookupMessage(2970), 3000, 1);
+        }
       }
     }
+    break;
   }
 
   return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
@@ -1003,12 +1001,12 @@ void UIRefiningWnd::SetState(int state, int result) {
   case 3:
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(498)), 0xFFFF00, 0, 0, 0);
     break;
+  case 5:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1537)), 0xFFFF00, 0, 0, 0);
+    break;
   case 4:
   case 6:
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(499)), 0xFFFF00, 0, 0, 0);
-    break;
-  case 5:
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1537)), 0xFFFF00, 0, 0, 0);
     break;
   }
 
