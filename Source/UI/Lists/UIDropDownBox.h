@@ -12,7 +12,7 @@ public:
   void Detach();
   bool HasChild(const UIWindow* window) const;
   bool HasOwnerChild(const UIWindow* window) const;
-  void Attach(UIWindow* owner, UIWindow* child);
+  __declspec(noinline) void Attach(UIWindow* owner, UIWindow* child);
 
   /* 0080 */ UIWindow* owner;
 };
