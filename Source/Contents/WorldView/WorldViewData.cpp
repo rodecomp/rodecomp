@@ -15,7 +15,19 @@
 
 // INLINED
 static bool AreaContains(int left, int top, int right, int bottom, int x, int y) {
-  return left < x && x < right && top < y && y < bottom;
+  return left < x && right > x && top < y && bottom > y;
+}
+
+// INLINED
+static __forceinline WorldViewRecord* FindRecord(std::vector<WorldViewRecord>& records, const char* name) {
+  const std::string key(name);
+  for (std::vector<WorldViewRecord>::iterator it = records.begin(); it != records.end(); ++it) {
+    if (it->name == key) {
+      return &*it;
+    }
+  }
+
+  return nullptr;
 }
 
 // OFFSET: 0x00612C70
@@ -48,15 +60,8 @@ __declspec(noinline) CWorldViewField::CWorldViewField(WorldViewArea area, const 
 // FUNCTION: fn_04349
 CWorldViewWorld::~CWorldViewWorld() {
   for (std::vector<CWorldViewMap*>::iterator it = this->maps.begin(); it != this->maps.end(); ++it) {
-    CWorldViewMap* map = *it;
-    if (map) {
-      for (std::vector<CWorldViewField*>::iterator field = map->fields.begin(); field != map->fields.end(); ++field) {
-        if (*field) {
-          delete *field;
-        }
-      }
-      map->fields.clear();
-      delete map;
+    if (*it) {
+      delete *it;
     }
   }
   this->maps.clear();
@@ -356,7 +361,8 @@ unsigned int CWorldViewMgr::FindWorld(int mapId) {
     if (!mode) {
       return 0;
     }
-    name = std::string(reinterpret_cast<const char*>(mode->SendMsg(9, 0, 0, 0, 0)));
+    const std::string modeName(reinterpret_cast<const char*>(mode->SendMsg(9, 0, 0, 0, 0)));
+    name = modeName;
   }
 
   for (unsigned int index = 0; index < this->worlds.size(); ++index) {
@@ -392,7 +398,7 @@ bool CWorldViewMgr::SelectField(const char* name) {
   unsigned int mapIndex = static_cast<unsigned int>(-1);
   for (unsigned int index = 0; index < this->worlds.size(); ++index) {
     CWorldViewField* field = this->worlds[index]->FindField(mapIndex, name);
-    if (field && this->worlds[index]->maps[mapIndex]->id > 99) {
+    if (field && this->worlds[index]->maps[mapIndex]->id >= 100) {
       this->selection.mapIndex = mapIndex;
       this->selection.worldIndex = index;
       this->selection.name = field->name;
@@ -430,19 +436,14 @@ bool CWorldViewMgr::AddMark(const char* name) {
     return false;
   }
 
-  {
-    const std::string key(name);
-    for (std::vector<WorldViewRecord>::iterator it = this->marks.begin(); it != this->marks.end(); ++it) {
-      if (it->name == key) {
-        return true;
-      }
-    }
+  if (FindRecord(this->marks, name)) {
+    return true;
   }
 
   unsigned int mapIndex = static_cast<unsigned int>(-1);
   for (unsigned int index = 0; index < this->worlds.size(); ++index) {
     CWorldViewField* field = this->worlds[index]->FindField(mapIndex, name);
-    if (field && this->worlds[index]->maps[mapIndex]->id > 99) {
+    if (field && this->worlds[index]->maps[mapIndex]->id >= 100) {
       WorldViewRecord mark;
       mark.mapIndex = mapIndex;
       mark.level = 0;
@@ -470,7 +471,7 @@ void CWorldViewMgr::ClearMarks() {
 // OFFSET: 0x006171D0
 // FUNCTION: fn_04382
 WorldViewRecord* CWorldViewMgr::MarkAt(unsigned int index, bool currentWorldOnly) {
-  if (static_cast<int>(index) >= 0 && index < this->marks.size()) {
+  if (static_cast<int>(index) >= 0 && this->marks.size() > index) {
     WorldViewRecord* mark = &this->marks[index];
     if (!currentWorldOnly || mark->worldIndex == this->currentWorld) {
       return mark;
@@ -483,7 +484,7 @@ WorldViewRecord* CWorldViewMgr::MarkAt(unsigned int index, bool currentWorldOnly
 // OFFSET: 0x00617220
 // FUNCTION: fn_04383
 int* CWorldViewMgr::MarkAreaAt(unsigned int index, bool currentWorldOnly) {
-  if (static_cast<int>(index) >= 0 && index < this->marks.size()) {
+  if (static_cast<int>(index) >= 0 && this->marks.size() > index) {
     WorldViewRecord* mark = &this->marks[index];
     if (!currentWorldOnly || mark->worldIndex == this->currentWorld) {
       return &mark->left;
@@ -512,33 +513,28 @@ bool CWorldViewMgr::AddLevel(const char* name, int level) {
     return false;
   }
 
-  {
-    const std::string key(name);
-    for (std::vector<WorldViewRecord>::iterator it = this->levels.begin(); it != this->levels.end(); ++it) {
-      if (it->name == key) {
-        if (level != 0) {
-          const int current = it->level;
-          if (level == 10000) {
-            if (current < 10000) {
-              it->level = current + 10000;
-            }
-          } else if (current < 10000) {
-            if (current < level) {
-              it->level = level;
-            }
-          } else if (current - 10000 < level) {
-            it->level = level + 10000;
-          }
+  if (WorldViewRecord* found = FindRecord(this->levels, name)) {
+    if (level != 0) {
+      const int current = found->level;
+      if (level == 10000) {
+        if (current < 10000) {
+          found->level = current + 10000;
         }
-        return true;
+      } else if (current < 10000) {
+        if (current < level) {
+          found->level = level;
+        }
+      } else if (current - 10000 < level) {
+        found->level = level + 10000;
       }
     }
+    return true;
   }
 
   unsigned int mapIndex = static_cast<unsigned int>(-1);
   for (unsigned int index = 0; index < this->worlds.size(); ++index) {
     CWorldViewField* field = this->worlds[index]->FindField(mapIndex, name);
-    if (field && this->worlds[index]->maps[mapIndex]->id > 99) {
+    if (field && this->worlds[index]->maps[mapIndex]->id >= 100) {
       WorldViewRecord record;
       record.mapIndex = mapIndex;
       record.worldIndex = index;
@@ -566,27 +562,32 @@ void CWorldViewMgr::ClearLevels() {
 // OFFSET: 0x00617730
 // FUNCTION: fn_04388
 int* CWorldViewMgr::LevelAreaAt(int& kind, unsigned int index, bool currentWorldOnly) {
-  if (static_cast<int>(index) >= 0 && index < this->levels.size() && (!currentWorldOnly || this->levels[index].worldIndex == this->currentWorld)) {
-    WorldViewRecord& record = this->levels[index];
+  if (static_cast<int>(index) >= 0 && this->levels.size() > index && (!currentWorldOnly || this->levels[index].worldIndex == this->currentWorld)) {
     int base = 10;
-    int value = record.level;
+    int value = this->levels[index].level;
     if (value < 10000) {
       base = kind;
     }
     value %= 10000;
 
-    if (value >= 100) {
+    if (value > 99) {
       kind = base + 5;
-    } else if (value >= 50) {
-      kind = base + 4;
-    } else if (value >= 20) {
-      kind = base + 3;
-    } else if (value >= 5) {
-      kind = base + 2;
-    } else {
-      kind = base + (value >= 1 ? 1 : 0);
+      return &this->levels[index].left;
     }
-    return &record.left;
+    if (value > 49) {
+      kind = base + 4;
+      return &this->levels[index].left;
+    }
+    if (value >= 20 && value < 50) {
+      kind = base + 3;
+      return &this->levels[index].left;
+    }
+    if (value >= 5 && value < 20) {
+      kind = base + 2;
+      return &this->levels[index].left;
+    }
+    kind = base + (value >= 1 && value < 5 ? 1 : 0);
+    return &this->levels[index].left;
   }
 
   return nullptr;

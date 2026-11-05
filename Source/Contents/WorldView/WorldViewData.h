@@ -34,6 +34,16 @@ public:
 
 class CWorldViewMap {
 public:
+  // INLINED
+  ~CWorldViewMap() {
+    for (std::vector<CWorldViewField*>::iterator it = this->fields.begin(); it != this->fields.end(); ++it) {
+      if (*it) {
+        delete *it;
+      }
+    }
+    this->fields.clear();
+  }
+
   CWorldViewField* FindField(const char* name);
 
   /* 0000 */ std::string name;
