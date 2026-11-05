@@ -44,22 +44,22 @@ std::string UINewChatWnd::ConvertChat(std::string text) {
 // OFFSET: 0x0089C900
 // FUNCTION: fn_11589
 std::pair<int, int> UITextViewer::LinkPosition(unsigned position, unsigned addedLines) {
-  unsigned accumulated = 0;
-  const auto count = static_cast<unsigned>(this->lines.size());
-  const unsigned first = count - addedLines;
+  std::pair<int, int> result(0, 0);
+  int accumulated = 0;
 
-  for (unsigned index = first; index < count; ++index) {
+  for (unsigned index = this->lines.size() - addedLines; index < this->lines.size(); ++index) {
     const std::string plain = RemoveTextColors(this->lines[index].c_str());
-    accumulated += static_cast<unsigned>(plain.size());
+    accumulated += plain.size();
 
-    if (accumulated > position) {
-      const unsigned bytes = position + static_cast<unsigned>(plain.size()) - accumulated;
-      const std::string prefix = plain.substr(0, bytes);
-      return {static_cast<int>(index), this->TextWidth(prefix.c_str(), 0, 0, 12, 0, 0) + 2};
+    if (accumulated > static_cast<int>(position)) {
+      result.first = index;
+      const std::string prefix = plain.substr(0, plain.size() - accumulated + position);
+      result.second = this->TextWidth(prefix.c_str(), 0, 0, 12, 0, 0) + 2;
+      break;
     }
   }
 
-  return {0, 0};
+  return result;
 }
 
 // OFFSET: 0x008760D0
@@ -73,9 +73,11 @@ bool UITextViewer::AddItemLinks(std::string text, unsigned addedLines) {
     parsed = static_cast<UINewChatWnd*>(g_windowMgr.window_01C8)->ConvertChat(std::move(parsed));
   }
 
-  std::string navigation;
-  DisplayNavigationLink(navigation, parsed);
-  parsed = std::move(navigation);
+  {
+    std::string navigation;
+    DisplayNavigationLink(navigation, parsed);
+    parsed = std::move(navigation);
+  }
   parsed = static_cast<const std::string&>(DisplayTipBoxTextTag(parsed));
 
   std::vector<TextLink> extracted;
@@ -85,12 +87,13 @@ bool UITextViewer::AddItemLinks(std::string text, unsigned addedLines) {
     return false;
   }
 
-  for (const auto& link : extracted) {
+  for (unsigned index = 0; index < extracted.size(); ++index) {
+    const TextLink& link = extracted[index];
     auto* button = new UITextButton();
     button->Configure(link.display.c_str(), 0x00F4934A, 0, 12, 0, 1);
     const int height = button->geometry.height;
     const int width = this->TextWidth(link.display.c_str(), 0, 0, 12, 0, 0);
-    button->Resize(width + 1, height);
+    button->ResizeToTextClipped(width + 1, height);
     button->m_hoverColor = 0x00FF7864;
     button->SetId(464);
     SplitTextLinkArguments(link.metadata, button->m_lines);
@@ -117,9 +120,11 @@ bool UITextViewer::AddNaviLinks(std::string text, unsigned addedLines) {
   }
 
   parsed = static_cast<const std::string&>(DisplayTipBoxTextTag(parsed));
-  std::string navigation;
-  DisplayNavigationLink(navigation, parsed);
-  parsed = std::move(navigation);
+  {
+    std::string navigation;
+    DisplayNavigationLink(navigation, parsed);
+    parsed = std::move(navigation);
+  }
   parsed = static_cast<const std::string&>(DisplayQuestTextTag(parsed));
 
   std::vector<TextLink> extracted;
@@ -129,12 +134,13 @@ bool UITextViewer::AddNaviLinks(std::string text, unsigned addedLines) {
     return false;
   }
 
-  for (const auto& link : extracted) {
+  for (unsigned index = 0; index < extracted.size(); ++index) {
+    const TextLink& link = extracted[index];
     auto* button = new UITextButton();
     button->Configure(link.display.c_str(), 0x00F4934A, 0, 12, 0, 1);
     const int height = button->geometry.height;
     const int width = this->TextWidth(link.display.c_str(), 0, 0, 12, 0, 0);
-    button->Resize(width + 1, height);
+    button->ResizeToTextClipped(width + 1, height);
     button->m_hoverColor = 0x00FF7864;
     button->SetId(438);
     SplitTextLinkArguments(link.metadata, button->m_lines);
@@ -216,9 +222,11 @@ bool UITextViewer::AddQuestLinks(std::string text, unsigned addedLines) {
     parsed = static_cast<UINewChatWnd*>(g_windowMgr.window_01C8)->ConvertChat(std::move(parsed));
   }
 
-  std::string navigation;
-  DisplayNavigationLink(navigation, parsed);
-  parsed = std::move(navigation);
+  {
+    std::string navigation;
+    DisplayNavigationLink(navigation, parsed);
+    parsed = std::move(navigation);
+  }
   parsed = static_cast<const std::string&>(DisplayTipBoxTextTag(parsed));
 
   std::vector<TextLink> extracted;
@@ -228,12 +236,13 @@ bool UITextViewer::AddQuestLinks(std::string text, unsigned addedLines) {
     return false;
   }
 
-  for (const auto& link : extracted) {
+  for (unsigned index = 0; index < extracted.size(); ++index) {
+    const TextLink& link = extracted[index];
     auto* button = new UITextButton();
     button->Configure(link.display.c_str(), 0x00F4934A, 0, 12, 0, 1);
     const int height = button->geometry.height;
     const int width = this->TextWidth(link.display.c_str(), 0, 0, 12, 0, 0);
-    button->Resize(width + 1, height);
+    button->ResizeToTextClipped(width + 1, height);
     button->m_hoverColor = 0x00FF7864;
     button->SetId(539);
     SplitTextLinkArguments(link.metadata, button->m_lines);
@@ -261,89 +270,89 @@ void UITextViewer::AddTipLinks(std::string text, unsigned addedLines) {
     parsed = static_cast<UINewChatWnd*>(g_windowMgr.window_01C8)->ConvertChat(std::move(parsed));
   }
 
-  std::string navigation;
-  DisplayNavigationLink(navigation, parsed);
-  parsed = std::move(navigation);
+  {
+    std::string navigation;
+    DisplayNavigationLink(navigation, parsed);
+    parsed = std::move(navigation);
+  }
 
   std::vector<TextLink> extracted;
   ExtractTipBoxTextLinks(parsed, extracted);
 
-  if (extracted.empty()) {
-    return;
-  }
+  if (!extracted.empty()) {
+    for (unsigned index = 0; index < extracted.size(); ++index) {
+      const TextLink& link = extracted[index];
 
-  for (unsigned index = 0; index < extracted.size(); ++index) {
-    const TextLink& link = extracted[index];
+      if (this->splitTipLinks == 1) {
+        std::vector<std::string> labels;
+        const char* begin = link.display.c_str();
+        const char* const end = begin + std::strlen(begin);
+        std::uintptr_t limit = reinterpret_cast<std::uintptr_t>(begin) + 32u - link.position;
+        const char* current = begin;
+        const char* breakAt = begin;
 
-    if (this->splitTipLinks == 1) {
-      std::vector<std::string> labels;
-      const char* begin = link.display.c_str();
-      const char* const end = begin + std::strlen(begin);
-      std::uintptr_t limit = reinterpret_cast<std::uintptr_t>(begin) + 32u - link.position;
-      const char* current = begin;
-      const char* breakAt = begin;
+        while (current < end) {
+          current = g_serverLanguage->NextChar(current, static_cast<int>(end - current));
 
-      while (current < end) {
-        current = g_serverLanguage->NextChar(current, static_cast<int>(end - current));
-
-        while (*current == ' ') {
-          breakAt = ++current;
-        }
-
-        if (reinterpret_cast<std::uintptr_t>(current) >= limit || *current == '\n') {
-          if (*current == '\n') {
-            breakAt = current++;
+          while (*current == ' ') {
+            breakAt = ++current;
           }
 
-          if (breakAt > begin) {
-            labels.push_back(std::string(begin, breakAt));
-            begin = breakAt;
-          } else {
-            labels.push_back(std::string(begin, current));
-            begin = current;
+          if (reinterpret_cast<std::uintptr_t>(current) >= limit || *current == '\n') {
+            if (*current == '\n') {
+              breakAt = current++;
+            }
+
+            if (breakAt > begin) {
+              labels.push_back(std::string(begin, breakAt));
+              begin = breakAt;
+            } else {
+              labels.push_back(std::string(begin, current));
+              begin = current;
+            }
+
+            limit = reinterpret_cast<std::uintptr_t>(begin) + 32u;
           }
-
-          limit = reinterpret_cast<std::uintptr_t>(begin) + 32u;
         }
-      }
 
-      if (begin < current) {
-        labels.push_back(std::string(begin, current));
-      }
+        if (begin < current) {
+          labels.push_back(std::string(begin, current));
+        }
 
-      for (unsigned fragment = 0; fragment < labels.size(); ++fragment) {
+        for (unsigned fragment = 0; fragment < labels.size(); ++fragment) {
+          auto* button = new UITextButton();
+          button->Configure(labels[fragment].c_str(), 0x00F4934A, 0, 12, 0, 1);
+          const int height = button->geometry.height;
+          const int width = this->TextWidth(labels[fragment].c_str(), 0, 0, 12, 0, 0);
+          button->ResizeToTextClipped(width + 1, height);
+          button->m_hoverColor = 0x00FF7864;
+          button->SetId(517);
+          SplitTextLinkArguments(link.metadata, button->m_lines);
+          const auto position = this->LinkPosition(fragment == 0 ? link.position : 0, addedLines - fragment);
+          button->m_value = position.first;
+          button->Move(position.second, -100);
+          this->AddChild(button);
+          this->links.push_back(button);
+        }
+      } else {
         auto* button = new UITextButton();
-        button->Configure(labels[fragment].c_str(), 0x00F4934A, 0, 12, 0, 1);
+        button->Configure(link.display.c_str(), 0x00F4934A, 0, 12, 0, 1);
         const int height = button->geometry.height;
-        const int width = this->TextWidth(labels[fragment].c_str(), 0, 0, 12, 0, 0);
-        button->Resize(width + 1, height);
+        const int width = this->TextWidth(link.display.c_str(), 0, 0, 12, 0, 0);
+        button->ResizeToTextClipped(width + 1, height);
         button->m_hoverColor = 0x00FF7864;
         button->SetId(517);
         SplitTextLinkArguments(link.metadata, button->m_lines);
-        const auto position = this->LinkPosition(fragment == 0 ? link.position : 0, addedLines - fragment);
+        const auto position = this->LinkPosition(link.position, addedLines);
         button->m_value = position.first;
         button->Move(position.second, -100);
         this->AddChild(button);
         this->links.push_back(button);
       }
-    } else {
-      auto* button = new UITextButton();
-      button->Configure(link.display.c_str(), 0x00F4934A, 0, 12, 0, 1);
-      const int height = button->geometry.height;
-      const int width = this->TextWidth(link.display.c_str(), 0, 0, 12, 0, 0);
-      button->Resize(width + 1, height);
-      button->m_hoverColor = 0x00FF7864;
-      button->SetId(517);
-      SplitTextLinkArguments(link.metadata, button->m_lines);
-      const auto position = this->LinkPosition(link.position, addedLines);
-      button->m_value = position.first;
-      button->Move(position.second, -100);
-      this->AddChild(button);
-      this->links.push_back(button);
     }
-  }
 
-  this->SendMsg(nullptr, 7, 0, 0, 0, 0);
+    this->SendMsg(nullptr, 7, 0, 0, 0, 0);
+  }
 }
 
 // OFFSET: 0x00878750
