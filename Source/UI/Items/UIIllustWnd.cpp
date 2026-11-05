@@ -166,26 +166,34 @@ int UIMultiIllustWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
       }
       return 0;
     case 34:
-      if (argument1 == 10) {
-        this->m_closable = 0;
-      } else if (argument1 == 12) {
-        this->m_titled = 0;
-        this->geometry.currentAlpha = 128;
-        this->m_state = -1;
-        this->m_closable = 0;
-      } else if (argument1 == -1) {
-        this->m_titled = 0;
-        this->m_closable = 0;
-        this->DeleteChildren();
-        return 0;
-      } else if (argument1 == -2) {
-        this->m_titled = 1;
-        return 0;
-      } else if (argument1 == 5) {
-        this->m_state = 5;
-        this->m_titled = 0;
-        this->m_closable = 0;
-        return 0;
+      switch (argument1) {
+        case 10:
+          this->m_closable = 0;
+          break;
+        case 12:
+          this->m_titled = 0;
+          this->geometry.currentAlpha = 128;
+          this->m_state = -1;
+          this->m_closable = 0;
+          break;
+        default:
+          if (argument1 == -1) {
+            this->m_titled = 0;
+            this->m_closable = 0;
+            this->DeleteChildren();
+            return 0;
+          }
+          if (argument1 == -2) {
+            this->m_titled = 1;
+            return 0;
+          }
+          if (argument1 == 5) {
+            this->m_state = 5;
+            this->m_titled = 0;
+            this->m_closable = 0;
+            return 0;
+          }
+          break;
       }
       this->AddCloseButton("", 0)->Move(this->geometry.width - 16, 3);
       this->m_closable = 1;
@@ -219,10 +227,10 @@ int UIMultiIllustWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
       return 0;
     }
     default:
-      if (this->m_closable == 0) {
-        return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+      if (this->m_closable != 0) {
+        return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
       }
-      return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+      return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 }
 
