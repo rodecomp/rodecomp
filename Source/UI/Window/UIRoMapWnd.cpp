@@ -124,9 +124,9 @@ void UIRoMapWnd::DrawHoverTooltip() {
   const int lineHeight = this->TextHeight(" ", 0, 0, 12, 1, 0) + 3;
   const WorldViewRecord* record = this->unknown_00BC;
   const int* anchor = this->unknown_00C8;
-  const int recordLeft = record->left;
+  const RECT rect = reinterpret_cast<const RECT&>(record->left);
   int x;
-  if (anchor[2] < record->right) {
+  if (anchor[2] < rect.right) {
     leftSide = true;
     x = anchor[0] - 10;
   } else {
@@ -147,7 +147,7 @@ void UIRoMapWnd::DrawHoverTooltip() {
   const int height = count * lineHeight + 7;
   int boxX = leftSide ? x - width : x;
   if (boxX + width > g_renderer->viewport.width) {
-    boxX = recordLeft - width - 10;
+    boxX = rect.left - width - 10;
   } else if (!leftSide) {
     y += 17;
   }
@@ -163,7 +163,7 @@ void UIRoMapWnd::DrawHoverTooltip() {
     textY += lineHeight;
   }
 
-  this->unknown_00C4 = new RoMapTooltipBox{boxX, y, width, height, 1};
+  this->unknown_00C4 = new RoMapTooltipBox(boxX, y, width, height);
   DrawRoundedBorder(*this, boxX, y, width, height, 0xFFFFFF);
 }
 
@@ -188,8 +188,10 @@ void UIRoMapWnd::DrawMapNames() {
       continue;
     }
 
+    const int left = area[0];
+    const int right = area[2];
     const int textWidth = this->TextWidth(std::string(name).c_str(), 0, 0, fontHeight, 0, 0);
-    const int x = std::abs(static_cast<int>(static_cast<float>(textWidth - area[2] - area[0]) * g_depthAverageHalf));
+    const int x = std::abs(static_cast<int>(static_cast<float>(textWidth - right - left) * g_depthAverageHalf));
     const int y = area[1] + 2;
     this->DrawTextAt(x + 1, y + 1, name.c_str(), 0, 0, fontHeight, outline, 0, 0);
     this->DrawTextAt(x, y, name.c_str(), 0, 0, fontHeight, color, 0, 0);
@@ -284,7 +286,9 @@ void UIRoMapWnd::DrawRecordBorders() {
       continue;
     }
 
-    DrawRoundedBorder(*this, it->left, it->top, it->right - it->left, it->bottom - it->top, mapName == it->name ? 0x23AEE8 : 0x7EE2F7);
+    const int width = it->right - it->left;
+    const int height = it->bottom - it->top;
+    DrawRoundedBorder(*this, it->left, it->top, width, height, mapName == it->name ? 0x23AEE8 : 0x7EE2F7);
   }
 }
 
@@ -500,11 +504,7 @@ bool UIRoMapWnd::LocateRecord(WorldViewRecord& record) {
   for (unsigned int index = 0; index < g_worldViewMgr.worlds.size(); ++index) {
     if (CWorldViewField* field = g_worldViewMgr.worlds[index]->FindField(name.c_str())) {
       record.worldIndex = index;
-      record.left = field->left;
-      record.top = field->top;
-      record.right = field->right;
-      record.bottom = field->bottom;
-      record.unknown_0048 = field->unknown_0010;
+      reinterpret_cast<WorldViewArea&>(record.left) = reinterpret_cast<const WorldViewArea&>(*field);
       return true;
     }
   }
@@ -556,18 +556,10 @@ void UIRoMapWnd::Slot27(int x, int y) {
   this->unknown_00C0->worldIndex = g_worldViewMgr.currentWorld;
   this->unknown_00C0->mapIndex = mapId;
   this->unknown_00C0->name = field->name;
-  this->unknown_00C0->left = field->left;
-  this->unknown_00C0->top = field->top;
-  this->unknown_00C0->right = field->right;
-  this->unknown_00C0->bottom = field->bottom;
-  this->unknown_00C0->unknown_0048 = field->unknown_0010;
+  reinterpret_cast<WorldViewArea&>(this->unknown_00C0->left) = reinterpret_cast<const WorldViewArea&>(*field);
 
   CWorldViewMap* map = world->maps[mapIndex];
-  this->unknown_00C0->unknown_000C = map->left;
-  this->unknown_00C0->unknown_0010 = map->top;
-  this->unknown_00C0->unknown_0014 = map->right;
-  this->unknown_00C0->unknown_0018 = map->bottom;
-  this->unknown_00C0->unknown_001C = map->unknown_0044;
+  reinterpret_cast<WorldViewArea&>(this->unknown_00C0->unknown_000C) = reinterpret_cast<const WorldViewArea&>(map->left);
   this->Invalidate();
 }
 
@@ -580,7 +572,7 @@ void CKafraMoveMapServiceInfo::Build(std::string mapName) {
     CWorldViewField* field = g_worldViewMgr.worlds[0]->FindField(it->c_str());
     if (field) {
       std::string name = field->name;
-      WorldViewArea area = {field->left, field->top, field->right, field->bottom, field->unknown_0010};
+      WorldViewArea area = reinterpret_cast<const WorldViewArea&>(*field);
       RoMapMarker marker;
       SetRoMapMarker(name, area, marker);
       this->markers.push_back(marker);
@@ -764,7 +756,7 @@ int UIRoMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
       this->Invalidate();
       return 0;
     case 200:
-      g_windowMgr.EnsureWindow(203);
+      g_windowMgr.sub_A978D0(203);
       if (g_windowMgr.window_4F174) {
         g_windowMgr.window_4F174->SendMsg(nullptr, 6, 200, 0, 0, 0);
       }
