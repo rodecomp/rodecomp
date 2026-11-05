@@ -583,33 +583,38 @@ std::string CGameMode::GetActiveSkillEffectTimeText(int skillId, int* activeSkil
     *activeSkillId = effectId;
     const std::uint32_t expiration = effect.unknown_0004;
     if (expiration == 999999 || expiration == 0) {
-      return output;
+      break;
     }
 
-    std::uint32_t remainingSeconds = 0;
-    if (g_replayAnimationScaling == 0) {
-      remainingSeconds = (expiration - timeGetTime()) / 1000;
-    } else {
+    int remainingSeconds;
+    if (g_replayAnimationScaling != 0) {
       const int remainingMilliseconds = static_cast<int>(expiration) - static_cast<int>(Replay::Instance().elapsed);
-      if (remainingMilliseconds >= 1000) {
-        remainingSeconds = static_cast<std::uint32_t>(remainingMilliseconds) / 1000;
+      if (remainingMilliseconds < 1000) {
+        remainingSeconds = 0;
+      } else {
+        remainingSeconds = remainingMilliseconds / 1000;
       }
+    } else {
+      remainingSeconds = static_cast<int>((expiration - timeGetTime()) / 1000);
     }
 
-    const int signedSeconds = static_cast<int>(remainingSeconds);
-    const int hours = signedSeconds / 3600;
+    char buffer[100];
+    const int hours = remainingSeconds / 3600;
     if (hours != 0) {
-      output.append(FormatOwnedString("%d %s", hours, LookupMessage(0x6A1)));
+      std::sprintf(buffer, "%d %s", hours, LookupMessage(0x6A1));
+      output = buffer;
     }
 
-    const int remainder = signedSeconds - hours * 3600;
+    const int remainder = remainingSeconds - hours * 3600;
     const int minutes = remainder / 60;
     const int seconds = remainder % 60;
     if (minutes != 0) {
-      output.append(FormatOwnedString(" %d %s", minutes, LookupMessage(0x70F)));
+      std::sprintf(buffer, " %d %s", minutes, LookupMessage(0x70F));
+      output = output + buffer;
     }
     if (seconds != 0) {
-      output.append(FormatOwnedString(" %d %s", seconds, LookupMessage(0x710)));
+      std::sprintf(buffer, " %d %s", seconds, LookupMessage(0x710));
+      output = output + buffer;
     }
 
     break;
