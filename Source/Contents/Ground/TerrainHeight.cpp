@@ -26,8 +26,8 @@ float C3dAttr::Height(float x, float z) const {
   const float size = static_cast<float>(this->cellSize);
   const float gridX = (static_cast<float>(this->width) * size) * 0.5f + x;
   const float gridZ = (static_cast<float>(this->height) * size) * 0.5f + z;
-  const int column = TruncateToInt(gridX / size);
-  const int row = TruncateToInt(gridZ / size);
+  const int column = static_cast<int>(gridX / size);
+  const int row = static_cast<int>(gridZ / size);
 
   if (column < 0 || column >= this->width || row < 0 || row >= this->height) {
     return 0.0f;
