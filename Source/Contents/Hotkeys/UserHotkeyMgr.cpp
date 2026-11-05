@@ -83,15 +83,16 @@ namespace {
 int HotkeyCount(LuaScript& script, int tab) {
   int count = 0;
   if (script.Call("GetOriginalHotKeyListSize", "d>d", tab + 1, &count)) {
+    int hidden = 0;
     if (tab == 1) {
-      int hidden = 0;
-
       for (int index = HK_FIRST_HIDDEN; index < count; ++index) {
-        hidden += HiddenInterfaceIndex(index);
+        if (HiddenInterfaceIndex(index)) {
+          ++hidden;
+        }
       }
-
-      return count - hidden;
     }
+
+    return count - hidden;
   }
 
   return count;
