@@ -5,15 +5,11 @@
 
 #include <algorithm>
 
+bool IsIndexedSkill(int id);
+
 // INLINED
 std::size_t SkillIdHash::operator()(std::uint32_t id) const {
-  std::uint32_t hash = 0x811C9DC5u;
-
-  for (unsigned shift = 0; shift < 32; shift += 8) {
-    hash = (hash ^ ((id >> shift) & 255)) * 16777619u;
-  }
-
-  return hash;
+  return std::hash<std::uint32_t>()(id);
 }
 
 // INLINED
@@ -37,7 +33,7 @@ CPlayerSkillBundle::~CPlayerSkillBundle() = default;
 // FUNCTION: fn_08309
 void CPlayerSkillBundle::Add(const CSkillInfo& value) {
   this->skills.push_back(value);
-  if (value.id == 6579 || value.id == 6580) {
+  if (IsIndexedSkill(value.id)) {
     this->index[value.id] = this->Find(value.id);
   }
 }
@@ -57,13 +53,9 @@ void CPlayerSkillBundle::Remove(std::uint32_t id) {
 // OFFSET: 0x007715B0
 // FUNCTION: fn_08279
 CSkillInfo* CPlayerSkillBundle::Find(std::uint32_t id) {
-  for (CSkillInfo& value : this->skills) {
-    if (value.id == id) {
-      return &value;
-    }
-  }
-
-  return nullptr;
+  const auto entry = std::find_if(this->skills.begin(), this->skills.end(),
+                                  [id](const CSkillInfo& value) { return value.id == id; });
+  return entry != this->skills.end() ? &*entry : nullptr;
 }
 
 // OFFSET: 0x00CACF20
@@ -135,10 +127,14 @@ bool CPlayerSkillBundle::UpdatePending(const CSkillInfo& value) {
 // OFFSET: 0x00771880
 // FUNCTION: fn_08282
 CSkillInfo CPlayerSkillBundle::Pending(std::uint32_t id) {
-  for (const CSkillInfo& value : this->pending) {
-    if (value.id == id) {
-      return value;
-    }
+  if (this->pending.empty()) {
+    return CSkillInfo(-1);
+  }
+
+  const auto entry = std::find_if(this->pending.begin(), this->pending.end(),
+                                  [id](const CSkillInfo& value) { return value.id == id; });
+  if (entry != this->pending.end()) {
+    return *entry;
   }
 
   return CSkillInfo(-1);
@@ -331,8 +327,9 @@ void CPlayerSkillBundle::MarkLevelChanges() {
 // OFFSET: 0x00771AF0
 // FUNCTION: fn_08286
 void CPlayerSkillBundle::ResetFirstLevelChange() {
-  if (!this->levelChanges.empty()) {
-    this->levelChanges.begin()->second.previous = 0;
+  const auto entry = this->levelChanges.begin();
+  if (entry != this->levelChanges.end()) {
+    entry->second.previous = 0;
   }
 }
 
