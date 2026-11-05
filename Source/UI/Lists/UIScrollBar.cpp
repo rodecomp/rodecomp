@@ -496,26 +496,20 @@ int UIListBoxEx::FindLine(const std::string& text) {
 // FUNCTION: fn_11280
 int UIImgMenu::ItemAt(int x, int y) {
   const int width = this->geometry.width - 3;
-  if (x < 1 || x >= width || y < 1) {
-    return -1;
-  }
   const int height = this->geometry.height - 3;
-  if (y >= height) {
+  if (x < 1 || x >= width || y < 1 || y >= height) {
     return -1;
   }
 
-  int size;
-  int offset;
+  int index;
   if (this->horizontal != 0) {
-    size = width / this->count;
-    this->itemWidth = size;
-    offset = x;
+    this->itemWidth = width / this->count;
+    index = x / this->itemWidth;
   } else {
-    size = height / this->count;
-    this->itemHeight = size;
-    offset = y;
+    this->itemHeight = height / this->count;
+    index = y / this->itemHeight;
   }
-  return std::min(offset / size, this->count - 1);
+  return std::min(index, this->count - 1);
 }
 
 // OFFSET: 0x0086ECF0
@@ -647,9 +641,11 @@ int UITabControl::TabCount() {
 // OFFSET: 0x00880B40
 // FUNCTION: fn_11284
 int UITabControl::TabAt(int x, int y) {
-  int offset = x;
+  int offset;
   if (this->layout == 0 || this->layout == 2) {
     offset = y;
+  } else {
+    offset = x;
   }
   const int count = this->TabCount();
   for (int index = 0; index < count; ++index) {
@@ -2067,6 +2063,8 @@ std::string UIChatHisBox::RenderNavigationLinks(const char* text, std::string& s
 // OFFSET: 0x00894090
 // FUNCTION: fn_11508
 void UIChatHisBox::RewrapLinkLines(std::vector<std::string>& wrapped, int& mode) {
+  const std::string open = "<";
+  const std::string close = ">";
   std::string remaining;
   for (unsigned int line = 0; line < wrapped.size(); ++line) {
     if (wrapped.size() > 23) {
@@ -2081,13 +2079,12 @@ void UIChatHisBox::RewrapLinkLines(std::vector<std::string>& wrapped, int& mode)
           wrapped[line] = split[part];
         }
         if (line + part < wrapped.size() && part == split.size() - 1) {
-          split[part].append(wrapped[line + part]);
-          wrapped[line + part].swap(split[part]);
+          wrapped[line + part].swap(split[part].append(wrapped[line + part]));
         } else if (part != 0) {
           std::vector<std::string> rebuilt;
-          for (const std::string& text : wrapped) {
-            if (!text.empty()) {
-              rebuilt.push_back(text);
+          for (unsigned int index = 0; index < wrapped.size(); ++index) {
+            if (!wrapped[index].empty()) {
+              rebuilt.push_back(wrapped[index]);
             }
           }
           if (!split[part].empty()) {
@@ -2105,27 +2102,27 @@ void UIChatHisBox::RewrapLinkLines(std::vector<std::string>& wrapped, int& mode)
 
     remaining = wrapped[line];
     unsigned int offset = 0;
-    std::size_t position = remaining.find('>');
+    std::size_t position = remaining.find(close);
     while (position != std::string::npos) {
       offset += static_cast<unsigned int>(position + 1);
       remaining = remaining.substr(position + 1);
-      position = remaining.find('>');
+      position = remaining.find(close);
     }
 
-    position = remaining.find('<');
+    position = remaining.find(open);
     if (position != std::string::npos) {
       offset += static_cast<unsigned int>(position);
       remaining = remaining.substr(position);
       std::string tail = remaining.substr(1);
-      position = tail.find('<');
+      position = tail.find(open);
       while (position != std::string::npos) {
         offset += static_cast<unsigned int>(position);
         remaining = tail;
         tail = remaining.substr(1);
-        position = tail.find('<');
+        position = tail.find(open);
       }
 
-      if (line + 1 < wrapped.size() && wrapped[line + 1].find('>') != std::string::npos) {
+      if (line + 1 < wrapped.size() && wrapped[line + 1].find(close) != std::string::npos) {
         remaining.append(wrapped[line + 1]);
         wrapped[line + 1].swap(remaining);
         wrapped[line] = wrapped[line].substr(0, offset);
