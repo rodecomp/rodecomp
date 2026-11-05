@@ -753,12 +753,12 @@ int UIMessageBox::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
 // OFFSET: 0x008BFB70
 // FUNCTION: fn_11809
 int UIMessageBoxAutoreturn::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == 6) {
-    g_windowMgr.unknown_0474 = static_cast<int>(a);
-    return 0;
+  if (message != 6) {
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
 
-  return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  g_windowMgr.unknown_0474 = static_cast<int>(a);
+  return 0;
 }
 
 // OFFSET: 0x008BFBA0
