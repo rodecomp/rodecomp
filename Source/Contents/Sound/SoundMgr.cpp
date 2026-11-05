@@ -4,9 +4,7 @@
 #include "Resource/ResourceMgr.h"
 #include "Resource/Audio/WaveResource.h"
 #include "Utility/Math/AffineMatrix.h"
-#include "Utility/Math/ScalarConversion.h"
 
-#include <cmath>
 #include <cstdlib>
 #include <cstring>
 #include <new>
@@ -76,14 +74,15 @@ void CSoundMgr::FadeOut() {
 // FUNCTION: fn_04749
 void CSoundMgr::StopStreams() {
   this->currentName = std::string();
+  MilesRuntime& miles = MilesRuntime::Get();
 
   if (this->stream) {
-    MilesRuntime::Get().closeStream(this->stream);
+    miles.closeStream(this->stream);
     this->stream = nullptr;
   }
 
   if (this->secondaryStream) {
-    MilesRuntime::Get().closeStream(this->secondaryStream);
+    miles.closeStream(this->secondaryStream);
     this->secondaryStream = nullptr;
   }
 
@@ -297,16 +296,18 @@ void CSoundMgr::Destroy() {
 // OFFSET: 0x006398A0
 // FUNCTION: fn_04754
 void CSoundMgr::EndSamples() {
+  MilesRuntime& miles = MilesRuntime::Get();
+
   for (void* sample : this->samples) {
     if (sample) {
-      MilesRuntime::Get().endSample(sample);
+      miles.endSample(sample);
     }
   }
 
   if (this->provider) {
     for (void* sample : this->samples3D) {
       if (sample) {
-        MilesRuntime::Get().end3DSample(sample);
+        miles.end3DSample(sample);
       }
     }
   }
@@ -408,18 +409,18 @@ void CSoundMgr::Pause(CSoundMgr* sound, int paused) {
 // FUNCTION: fn_45424
 bool CSoundMgr::PlayData3D(const void* data, const float& x, const float& y, const float& z, int maximumDistance, int minimumDistance, float scale) {
   const float scaledVolume = static_cast<float>(this->volume3D) * scale;
-  const int volume = TruncateToInt(scaledVolume);
+  const int volume = static_cast<int>(scaledVolume);
 
   if (!this->provider) {
     return this->PlayData2D(data, x, y, z, 250, 40, 1.0f);
   }
 
+  MilesRuntime& miles = MilesRuntime::Get();
+
   for (int i = 0; i < this->sample3DCount; ++i) {
     if (!this->samples3D[i]) {
       continue;
     }
-
-    MilesRuntime& miles = MilesRuntime::Get();
 
     if (miles.sample3DStatus(this->samples3D[i]) != 2) {
       continue;
@@ -460,11 +461,11 @@ bool CSoundMgr::PlayData2D(const void* data, const float& x, const float& y, con
   const float zSquared = z * z;
   const float xSquared = x * x;
   const float horizontalSquared = xSquared + zSquared;
-  const float horizontal = std::sqrt(horizontalSquared);
+  const float horizontal = SquareRoot(horizontalSquared);
   const float horizontalResquared = horizontal * horizontal;
   const float ySquared = y * y;
   const float distanceSquared = ySquared + horizontalResquared;
-  const float distance = std::sqrt(distanceSquared);
+  const float distance = SquareRoot(distanceSquared);
 
   if (distance >= static_cast<float>(maximumDistance)) {
     return false;
@@ -476,18 +477,18 @@ bool CSoundMgr::PlayData2D(const void* data, const float& x, const float& y, con
   if (!(minimum >= distance)) {
     const float numerator = static_cast<float>(volume) * minimum;
     const float attenuatedVolume = numerator / distance;
-    volume = TruncateToInt(attenuatedVolume);
+    volume = static_cast<int>(attenuatedVolume);
   }
 
   const float scaledVolume = static_cast<float>(volume) * scale;
-  volume = TruncateToInt(scaledVolume);
+  volume = static_cast<int>(scaledVolume);
+
+  MilesRuntime& miles = MilesRuntime::Get();
 
   for (int i = 0; i < this->sampleCount; ++i) {
     if (!this->samples[i]) {
       continue;
     }
-
-    MilesRuntime& miles = MilesRuntime::Get();
 
     if (miles.sampleStatus(this->samples[i]) != 2) {
       continue;
@@ -583,8 +584,9 @@ void CSoundMgr::RestartSecondary() {
     return;
   }
 
+  MilesRuntime& miles = MilesRuntime::Get();
+
   if (this->reopenPending && this->secondaryStream) {
-    MilesRuntime& miles = MilesRuntime::Get();
     miles.closeStream(this->secondaryStream);
     this->secondaryStream = nullptr;
     this->secondaryStream = miles.openStream(this->driver, this->currentName.c_str(), 0);
@@ -592,7 +594,6 @@ void CSoundMgr::RestartSecondary() {
   }
 
   if (this->secondaryStream) {
-    MilesRuntime& miles = MilesRuntime::Get();
     miles.setStreamVolume(this->secondaryStream, this->streamVolume);
     miles.setStreamLoopCount(this->secondaryStream, 1);
     miles.startStream(this->secondaryStream);
@@ -625,7 +626,7 @@ void CSoundMgr::SetListenerYaw(float yaw) {
   }
 
   const float angle = 180.0f - yaw;
-  const int degrees = TruncateToInt(angle);
+  const int degrees = static_cast<int>(angle);
   const float sine = ClientSine(degrees);
   const float cosine = ClientCosine(degrees);
   MilesRuntime::Get().set3DOrientation(this->listener, sine, 0.0f, -cosine, 0.0f, 1.0f, 0.0f);
@@ -654,12 +655,13 @@ void CSoundMgr::SetVolume(CSoundMgr* sound, int volume) {
   }
 
   sound->streamVolume = volume > 127 ? 127 : (volume < 0 ? 0 : volume);
+  MilesRuntime& miles = MilesRuntime::Get();
 
   if (sound->stream) {
-    MilesRuntime::Get().setStreamVolume(sound->stream, sound->streamVolume);
+    miles.setStreamVolume(sound->stream, sound->streamVolume);
   }
 
   if (sound->secondaryStream) {
-    MilesRuntime::Get().setStreamVolume(sound->secondaryStream, sound->streamVolume);
+    miles.setStreamVolume(sound->secondaryStream, sound->streamVolume);
   }
 }
