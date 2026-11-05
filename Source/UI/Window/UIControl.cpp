@@ -546,10 +546,7 @@ void CUIThumb::Slot28(int, int) {
   if (!this->tooltip.empty()) {
     int screenX = 0;
     int screenY = -20;
-    for (const UIWindow* node = this; node; node = node->parent) {
-      screenX += node->geometry.x;
-      screenY += node->geometry.y;
-    }
+    this->ToScreen(screenX, screenY);
     g_modeMgr.gameMode->ShowTooltip(this->tooltip.c_str(), screenX, screenY, 0xFFFFFFFFu, 0, 1);
   }
 }
@@ -842,10 +839,7 @@ void CUIButton::Slot28(int, int) {
   int screenX = 0;
   int screenY = -20;
 
-  for (const UIWindow* node = this; node; node = node->parent) {
-    screenX = (screenX + node->geometry.x);
-    screenY = (screenY + node->geometry.y);
-  }
+  this->ToScreen(screenX, screenY);
 
   g_modeMgr.gameMode->ShowTooltip(this->tooltip.c_str(), screenX, screenY, 0xFFFFFFFFu, 0, 1);
 }
@@ -859,7 +853,11 @@ void CUIButton::Slot48() {
 // OFFSET: 0x009EEAA0
 // FUNCTION: fn_14633
 void CUIButton::ResetCursor(int, int) {
-  g_modeMgr.gameMode->SetCursorAction(this->disabled ? 0 : 2);
+  if (this->disabled) {
+    g_modeMgr.gameMode->SetCursorAction(0);
+  } else {
+    g_modeMgr.gameMode->SetCursorAction(2);
+  }
 }
 
 // OFFSET: 0x009ECCD0
@@ -910,20 +908,14 @@ void CUITextButton::Slot28(int, int) {
   if (!this->tooltipText.empty()) {
     int screenX = 0;
     int screenY = -20;
-    for (const UIWindow* node = this; node; node = node->parent) {
-      screenX += node->geometry.x;
-      screenY += node->geometry.y;
-    }
+    this->ToScreen(screenX, screenY);
     g_modeMgr.gameMode->ShowTooltip(this->tooltipText.c_str(), screenX, screenY, 0xFFFFFFFFu, 0, 1);
     return;
   }
 
   int screenX = -6;
   int screenY = -4;
-  for (const UIWindow* node = this; node; node = node->parent) {
-    screenX += node->geometry.x;
-    screenY += node->geometry.y;
-  }
+  this->ToScreen(screenX, screenY);
   g_modeMgr.gameMode->ShowTooltip(this->fullText.c_str(), screenX, screenY, 0xFFFFFFFFu, 0, 1);
 }
 
