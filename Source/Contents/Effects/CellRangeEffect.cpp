@@ -59,8 +59,8 @@ void CCellRangeEffect::SetCellTexture(CParticle* particle) {
 // OFFSET: 0x00B433E0
 // FUNCTION: fn_18877
 void CCellRangeEffect::Close() {
-  for (CParticle* particle : this->particles) {
-    FreeParticle(particle);
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    FreeParticle(*it);
   }
 
   this->particles.clear();
@@ -132,7 +132,8 @@ void CCellRangeEffect::Slot03() {
 // OFFSET: 0x00B43920
 // FUNCTION: fn_18881
 void CCellRangeEffect::Slot04() {
-  for (CParticle* particle : this->particles) {
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    CParticle* particle = *it;
     if (particle) {
       this->SetCellTexture(particle);
       particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
