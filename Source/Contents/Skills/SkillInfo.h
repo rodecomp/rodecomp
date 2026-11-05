@@ -112,7 +112,7 @@ public:
   CSkillInfo(const CSkillInfo& other);
   CSkillInfo& operator=(const CSkillInfo& other);
   virtual ~CSkillInfo();
-  bool IsValid() const;
+  __declspec(noinline) bool IsValid() const;
   bool MatchesShortcut(const NormalItemSlot* slot) const;
   int UseApAmount(LuaScript& script, int skillLevel) const;
   int UseSpAmount(LuaScript& script, int skillLevel) const;
@@ -151,7 +151,7 @@ public:
 
   static CSkillActionMgr* GetInstance();
 
-  bool IsSupportAction(int skillId);
+  __declspec(noinline) bool IsSupportAction(int skillId);
   std::pair<bool, int> ActionSlot01(int skillId);
   std::pair<bool, int> ActionSlot02(int skillId);
   int ActionSlot14(int skillId);
