@@ -13,9 +13,11 @@
 // OFFSET: 0x00B8C0B0
 // FUNCTION: fn_19420
 __declspec(noinline) CNavi_Object* FindNaviObjectByName(const char* name, const std::vector<CNavi_Object*>& objects) {
-  for (CNavi_Object* object : objects) {
-    if (name && std::string(name) == object->name) {
-      return object;
+  for (std::vector<CNavi_Object*>::const_iterator it = objects.begin(); it != objects.end(); ++it) {
+    if (name) {
+      if ((*it)->name == std::string(name)) {
+        return *it;
+      }
     }
   }
   return nullptr;
