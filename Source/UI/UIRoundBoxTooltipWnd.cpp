@@ -1,5 +1,6 @@
 #include "UI/UIRoundBoxTooltipWnd.h"
 
+#include "Client/Input/Mouse.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemNaming.h"
 #include "Contents/MessageTable.h"
@@ -190,7 +191,7 @@ int UIRoundBoxTooltipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       const int height = this->TextHeight(text.c_str(), 0, 0, 12, 0, 0);
       this->viewer->Resize(width + 15, static_cast<int>(static_cast<float>(height * lines + 10) + static_cast<float>(lines - 1) * 4.8f + 1.0f));
       this->Resize(this->viewer->geometry.width + 2, this->viewer->geometry.height + 2);
-      this->Move(g_screenWidth + 26, g_screenHeight);
+      this->Move(g_mouse.x + 26, g_mouse.y);
       this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text.c_str()), 0, 0, 0);
     }
   } else {
