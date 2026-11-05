@@ -54,11 +54,11 @@ void CUIDropDownBox::Attach(UIWindow* value, UIWindow* child) {
 // OFFSET: 0x009E34D0
 // FUNCTION: fn_14419
 void CUIDropDownBox::Paint() {
-  if (this->geometry.surface) {
-    this->geometry.surface->Fill(nullptr, 0xFFFFFFFFu);
-  }
+  const std::uint32_t background = 0xFFFFFFFFu;
+  this->ClearSurface(background);
 
-  DrawRectangleBorder(*this, 0, 0, this->geometry.width, this->geometry.height, 0x00C6C6C6u);
+  const std::uint32_t border = 0x00C6C6C6u;
+  DrawRectangleBorder(*this, 0, 0, this->geometry.width, this->geometry.height, border);
 }
 
 // OFFSET: 0x00AA27B0
