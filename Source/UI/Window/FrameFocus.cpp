@@ -17,18 +17,27 @@
 // OFFSET: 0x00A96A60
 // FUNCTION: fn_17192
 bool UIWindowMgr::IsOrderFixed(int id) {
-  static constexpr int fixed[] = {0,   1,   2,   3,   4,   6,   7,   9,   14,  15,  16,  17,  18,  20,  21,  22,  23,    24,   26,  28,  29,  31,  32,
-                                  33,  34,  35,  36,  39,  42,  45,  49,  50,  56,  58,  60,  61,  62,  63,  64,  65,    66,   67,  70,  73,  74,  78,
-                                  79,  80,  81,  90,  91,  94,  95,  99,  100, 101, 104, 105, 107, 109, 111, 115, 116,   123,  124, 127, 128, 130, 131,
-                                  133, 136, 137, 138, 144, 154, 156, 158, 159, 160, 161, 164, 175, 176, 177, 179, 180,   183,  186, 187, 189, 190, 196,
-                                  198, 199, 200, 204, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 253,   257,  258, 262, 267, 268, 269,
-                                  271, 277, 278, 284, 285, 286, 289, 295, 301, 307, 325, 332, 343, 358, 359, 600, 10011, 10032};
-  if (id == 145) {
+  switch (id) {
+  case 0: case 1: case 2: case 3: case 4: case 6: case 7: case 9: case 14: case 15: case 16: case 17: case 18: case 20: case 21: case 22: case 23:
+  case 24: case 26: case 28: case 29: case 31: case 32: case 33: case 34: case 35: case 36: case 39: case 42: case 45: case 49: case 50: case 56:
+  case 58: case 60: case 61: case 62: case 63: case 64: case 65: case 66: case 67: case 70: case 73: case 74: case 78: case 79: case 80: case 81:
+  case 90: case 91: case 94: case 95: case 99: case 100: case 101: case 104: case 105: case 107: case 109: case 111: case 115: case 116: case 123:
+  case 124: case 127: case 128: case 130: case 131: case 133: case 136: case 137: case 138: case 144: case 154: case 156: case 158: case 159:
+  case 160: case 161: case 164: case 175: case 176: case 177: case 179: case 180: case 183: case 186: case 187: case 189: case 190: case 196:
+  case 198: case 199: case 200: case 204: case 216: case 217: case 218: case 219: case 220: case 221: case 222: case 223: case 224: case 225:
+  case 226: case 227: case 253: case 257: case 258: case 262: case 267: case 268: case 269: case 271: case 277: case 278: case 284: case 285:
+  case 286: case 289: case 295: case 301: case 307: case 325: case 332: case 343: case 358: case 359: case 600: case 10011: case 10032:
+    return true;
+  case 145: {
     UIWindow* window = g_windowMgr.LookupWindow(145);
-    return !window || window->geometry.visible == 0;
+    if (window && window->geometry.visible) {
+      return false;
+    }
+    return true;
   }
-
-  return std::binary_search(std::begin(fixed), std::end(fixed), id);
+  default:
+    return false;
+  }
 }
 
 // OFFSET: 0x00A8F720
@@ -236,10 +245,10 @@ void UIWindowMgr::CancelActiveDialog() {
 // OFFSET: 0x00A96C60
 // FUNCTION: fn_17193
 bool UIWindowMgr::HasMiniPartyMember(std::uint32_t accountId) {
-  for (UIWindow* window : this->snapExcluded) {
+  for (auto it = this->snapExcluded.begin(); it != this->snapExcluded.end(); ++it) {
     bool matches;
     {
-      const MessengerMember member = static_cast<UIMiniPartyWnd*>(window)->m_member;
+      const MessengerMember member = static_cast<UIMiniPartyWnd*>(*it)->m_member;
       matches = member.accountId == accountId;
     }
     if (matches) {
