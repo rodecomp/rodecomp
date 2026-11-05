@@ -3,6 +3,7 @@
 #include "Render/Text/TextContext.h"
 #include "UI/Text/ColoredText.h"
 #include "UI/Window/UIWindow.h"
+#include "Utility/Text/TextTokens.h"
 
 #include <algorithm>
 #include <cstring>
@@ -22,42 +23,21 @@ unsigned char g_hexDigits[256] = {
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 
-namespace {
-  // INLINED
-  bool Hex(unsigned char value) {
-    return (value >= '0' && value <= '9') || (value >= 'a' && value <= 'f') || (value >= 'A' && value <= 'F');
-  }
-
-  // INLINED
-  unsigned Digit(unsigned char value) {
-    if (value >= '0' && value <= '9') {
-      return value - '0';
-    }
-
-    if (value >= 'a' && value <= 'f') {
-      return value - 'a' + 10;
-    }
-
-    if (value >= 'A' && value <= 'F') {
-      return value - 'A' + 10;
-    }
-
-    return 0;
-  }
-
-}
-
 // OFFSET: 0x00A7CA20
 // FUNCTION: fn_16948
 const char* SegmentEnd(const char* text, const char* end) {
+  if (text == nullptr) {
+    return nullptr;
+  }
+
   const char* current = text;
 
   while (current < end) {
     if (*current == '^' && end - current >= 6) {
       bool color = true;
 
-      for (unsigned index = 1; index <= 6; ++index) {
-        if (!Hex(static_cast<unsigned char>(current[index]))) {
+      for (int index = 1; index <= 6; ++index) {
+        if (!g_colorHexDigit[current[index]]) {
           color = false;
           break;
         }
@@ -109,20 +89,17 @@ void DrawColoredText(
   context.SetFont(family, height, 0, 0);
 
   if (window.HasTextBackground()) {
-    context.SetBackground(window.TextBackground(), OPAQUE);
+    context.SetBackgroundColor(window.TextBackground());
+    context.SetBackgroundMode(OPAQUE);
   }
 
   while (current < end) {
-    if (*current == '^') {
-      color = (Digit(current[2]) + 16 * Digit(current[1])) | ((Digit(current[4]) + 16 * Digit(current[3])) << 8) |
-              ((Digit(current[6]) + 16 * Digit(current[5])) << 16);
-      current += 7;
-    }
+    current = ParseColorCode(current, color);
 
     const char* next = SegmentEnd(current, end);
     std::string segment(current, next);
 
-    if (*marker != '\0') {
+    if (marker && *marker != '\0') {
       segment.insert(0, marker, 3);
     }
 
@@ -141,7 +118,7 @@ void DrawColoredText(
   }
 
   if (window.HasTextBackground()) {
-    context.SetBackground(window.TextBackground(), TRANSPARENT);
+    context.SetBackgroundMode(TRANSPARENT);
   }
 }
 
@@ -162,15 +139,12 @@ void DrawStyledColoredText(
   context.SetFont(family, height, bold, italic);
 
   if (window.HasTextBackground()) {
-    context.SetBackground(window.TextBackground(), OPAQUE);
+    context.SetBackgroundColor(window.TextBackground());
+    context.SetBackgroundMode(OPAQUE);
   }
 
   while (current < end) {
-    if (current && *current == '^') {
-      color = (Digit(current[2]) + 16 * Digit(current[1])) | ((Digit(current[4]) + 16 * Digit(current[3])) << 8) |
-              ((Digit(current[6]) + 16 * Digit(current[5])) << 16);
-      current += 7;
-    }
+    current = ParseColorCode(current, color);
 
     const char* next = SegmentEnd(current, end);
     std::string segment(current, next);
@@ -212,7 +186,8 @@ void DrawOutlinedText(
   context.SetFont(family, height, bold, italic);
 
   if (window.HasTextBackground()) {
-    context.SetBackground(window.TextBackground(), OPAQUE);
+    context.SetBackgroundColor(window.TextBackground());
+    context.SetBackgroundMode(OPAQUE);
   }
 
   context.SetColor(outline);
@@ -224,7 +199,7 @@ void DrawOutlinedText(
   context.Draw(x, y, text, bytes);
 
   if (window.HasTextBackground()) {
-    context.SetBackground(window.TextBackground(), TRANSPARENT);
+    context.SetBackgroundMode(TRANSPARENT);
   }
 }
 
@@ -245,16 +220,12 @@ void DrawOutlinedColoredText(
   context.SetFont(family, height, bold, 0);
 
   while (current < end) {
-    if (*current == '^') {
-      color = (Digit(current[2]) + 16 * Digit(current[1])) | ((Digit(current[4]) + 16 * Digit(current[3])) << 8) |
-              ((Digit(current[6]) + 16 * Digit(current[5])) << 16);
-      current += 7;
-    }
+    current = ParseColorCode(current, color);
 
     const char* next = SegmentEnd(current, end);
     std::string segment(current, next);
 
-    if (*marker != '\0') {
+    if (marker && *marker != '\0') {
       segment.insert(0, marker, 3);
     }
 
