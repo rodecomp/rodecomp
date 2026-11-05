@@ -14,11 +14,11 @@ CLevel99Effect::CLevel99Effect() : CEffect(200) {
 // OFFSET: 0x00B6A250
 // FUNCTION: fn_19081
 void CLevel99Effect::Slot08(int red, int green, int blue) {
-  for (CParticle* sparkle : this->sparkles) {
-    sparkle->SetColor(red, green, blue);
+  for (std::vector<CParticle*>::iterator it = this->sparkles.begin(); it != this->sparkles.end(); ++it) {
+    (*it)->SetColor(red, green, blue);
   }
-  for (CParticle* sprite : this->sprites) {
-    sprite->SetColor(red, green, blue);
+  for (std::vector<CParticle*>::iterator it = this->sprites.begin(); it != this->sprites.end(); ++it) {
+    (*it)->SetColor(red, green, blue);
   }
 }
 
@@ -110,13 +110,13 @@ void CLevel99Effect::AddRings() {
 // OFFSET: 0x00B6AA60
 // FUNCTION: fn_19084
 void CLevel99Effect::Close() {
-  for (CParticle* sparkle : this->sparkles) {
-    FreeParticle(sparkle);
+  for (std::vector<CParticle*>::iterator it = this->sparkles.begin(); it != this->sparkles.end(); ++it) {
+    FreeParticle(*it);
   }
   this->sparkles.clear();
 
-  for (CParticle* sprite : this->sprites) {
-    FreeParticle(sprite);
+  for (std::vector<CParticle*>::iterator it = this->sprites.begin(); it != this->sprites.end(); ++it) {
+    FreeParticle(*it);
   }
   this->sprites.clear();
 }
@@ -211,13 +211,15 @@ void CLevel99Effect::Slot03() {
 // OFFSET: 0x00B6B0E0
 // FUNCTION: fn_19088
 void CLevel99Effect::Slot04() {
-  for (CParticle* sparkle : this->sparkles) {
+  for (std::vector<CParticle*>::iterator it = this->sparkles.begin(); it != this->sparkles.end(); ++it) {
+    CParticle* sparkle = *it;
     if (sparkle) {
       sparkle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
     }
   }
 
-  for (CParticle* sprite : this->sprites) {
+  for (std::vector<CParticle*>::iterator it = this->sprites.begin(); it != this->sprites.end(); ++it) {
+    CParticle* sprite = *it;
     if (sprite && sprite->unknown_000C > 0) {
       const int frame = sprite->unknown_000C;
       ParticleQuad quad;
