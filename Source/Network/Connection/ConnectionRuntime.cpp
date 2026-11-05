@@ -8,10 +8,6 @@ namespace {
 
   // GLOBAL: gl_24390
   HMODULE ws2Module;
-
-  // STATIC: 0x016FDC94
-  // GLOBAL: gl_24393
-  HMODULE module;
 }
 // STATIC: 0x016FDC8C
 // GLOBAL: gl_24391
@@ -26,18 +22,17 @@ int(WSAAPI* g_connectionReceive)(SOCKET, char*, int, int);
 bool CheckConnectionRuntime() {
   const char* names[] = {"connect", "closesocket", "send", "select"};
   HMODULE library = LoadLibraryA("ws2_32.dll");
-  if (!library) {
-    return true;
-  }
-
-  for (unsigned index = 0; index < 4; ++index) {
-    if (GetProcAddress(library, names[index]) != GetProcAddress(module, names[index])) {
-      FreeLibrary(library);
-      return false;
+  if (library) {
+    for (unsigned index = 0; index < 4; ++index) {
+      if (GetProcAddress(library, names[index]) != GetProcAddress(ws2Module, names[index])) {
+        FreeLibrary(library);
+        return false;
+      }
     }
+
+    FreeLibrary(library);
   }
 
-  FreeLibrary(library);
   return true;
 }
 
@@ -45,9 +40,9 @@ bool CheckConnectionRuntime() {
 // FUNCTION: fn_20408
 bool InitializeConnections() {
   WSAStartup(MAKEWORD(1, 1), &wsaData);
-  module = LoadLibraryA("ws2_32.dll");
-  g_connectionSend = reinterpret_cast<decltype(g_connectionSend)>(GetProcAddress(module, "send"));
-  g_connectionReceive = reinterpret_cast<decltype(g_connectionReceive)>(GetProcAddress(module, "recv"));
+  ws2Module = LoadLibraryA("ws2_32.dll");
+  g_connectionSend = reinterpret_cast<decltype(g_connectionSend)>(GetProcAddress(ws2Module, "send"));
+  g_connectionReceive = reinterpret_cast<decltype(g_connectionReceive)>(GetProcAddress(ws2Module, "recv"));
   CheckConnectionRuntime();
 
   return true;
