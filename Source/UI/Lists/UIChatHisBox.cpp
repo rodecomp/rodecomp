@@ -15,6 +15,8 @@
 #include <new>
 #include <string>
 
+extern template std::string::basic_string(const std::string&);
+
 // OFFSET: 0x00881BB0
 // FUNCTION: fn_11300
 std::string UIChatHisBox::ResolvePlayerTags(const char* name) {
