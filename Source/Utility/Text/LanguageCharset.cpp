@@ -69,6 +69,8 @@ unsigned LanguageCodePage(std::uint16_t language) {
     return 1253;
   case TURKISH_CHARSET:
     return 1254;
+  case RUSSIAN_CHARSET:
+    return 1251;
   case VIETNAMESE_CHARSET:
     return 1258;
   case HEBREW_CHARSET:
@@ -77,8 +79,6 @@ unsigned LanguageCodePage(std::uint16_t language) {
     return 1256;
   case BALTIC_CHARSET:
     return 1257;
-  case RUSSIAN_CHARSET:
-    return 1251;
   case THAI_CHARSET:
     return 874;
   case EASTEUROPE_CHARSET:
