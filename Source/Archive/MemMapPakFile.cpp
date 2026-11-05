@@ -76,27 +76,30 @@ std::uint8_t* CMemMapPakFile::Read(std::uint64_t offset, std::uint32_t length) {
       this->m_view = nullptr;
     }
 
-    while (this->m_windowSize >= length + (static_cast<std::uint32_t>(offset) & ~static_cast<std::uint32_t>(this->m_offsetMask))) {
-      this->m_viewOffset = offset & this->m_offsetMask;
-      this->m_viewSize = this->m_windowSize;
-      SIZE_T bytes = this->m_windowSize;
-
-      if (this->m_viewOffset + this->m_windowSize > this->m_size) {
-        bytes = 0;
-        this->m_viewSize = static_cast<std::uint32_t>(this->m_size - this->m_viewOffset);
+    while (this->m_windowSize) {
+      if (this->m_windowSize < length + (static_cast<std::uint32_t>(offset) & ~static_cast<std::uint32_t>(this->m_offsetMask))) {
+        break;
       }
 
-      this->m_view = static_cast<std::uint8_t*>(
-        MapViewOfFile(this->m_mapping, FILE_MAP_READ, static_cast<DWORD>(this->m_viewOffset >> 32), static_cast<DWORD>(this->m_viewOffset), bytes)
-      );
+      this->m_viewOffset = offset & this->m_offsetMask;
+      this->m_viewSize = this->m_windowSize;
+
+      if (this->m_viewOffset + this->m_windowSize > this->m_size) {
+        this->m_view = static_cast<std::uint8_t*>(
+          MapViewOfFile(this->m_mapping, FILE_MAP_READ, static_cast<DWORD>(this->m_viewOffset >> 32), static_cast<DWORD>(this->m_viewOffset), 0)
+        );
+        this->m_viewSize = static_cast<std::uint32_t>(this->m_size - this->m_viewOffset);
+      } else {
+        this->m_view = static_cast<std::uint8_t*>(MapViewOfFile(
+          this->m_mapping, FILE_MAP_READ, static_cast<DWORD>(this->m_viewOffset >> 32), static_cast<DWORD>(this->m_viewOffset), this->m_windowSize
+        ));
+      }
+
       if (this->m_view) {
         return this->m_view + static_cast<std::uint32_t>(offset - this->m_viewOffset);
       }
 
       this->m_windowSize >>= 1;
-      if (!this->m_windowSize) {
-        break;
-      }
     }
 
     CloseHandle(this->m_mapping);
