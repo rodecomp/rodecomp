@@ -109,7 +109,7 @@ void UIShortCutWnd::Move(int x, int y) {
   g_windowMgr.ConstrainSnap(this, x, y, 0);
   this->geometry.x = (this->geometry.x + x);
   const int top = (this->geometry.y + y);
-  this->geometry.y = top < 0 ? 0 : top;
+  this->geometry.y = top >= 0 ? top : 0;
   g_windowMgr.StoreSnapRectangle(this);
 }
 
@@ -129,15 +129,13 @@ void UIShortCutWnd::Slot11() {
 void UIShortCutWnd::Show(int visible) {
   this->geometry.visible = visible;
 
-  if (visible == 0) {
+  if (visible) {
+    this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    this->Invalidate();
+    g_windowMgr.StoreSnapRectangle(this);
+  } else {
     g_windowMgr.RemoveSnapRectangle(this);
-
-    return;
   }
-
-  this->SendMsg(nullptr, 23, 0, 0, 0, 0);
-  this->Invalidate();
-  g_windowMgr.StoreSnapRectangle(this);
 }
 
 // OFFSET: 0x00932F30
@@ -834,10 +832,13 @@ int UISubChatMiniWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
     return this->UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
 
-  if (a == 197) {
+  switch (a) {
+  case 197:
     this->Move(b, c - this->m_offsetY);
-  } else if (a == 202) {
+    break;
+  case 202:
     this->Slot25(this->m_rowHeight * b + 1, 0);
+    break;
   }
   return 0;
 }

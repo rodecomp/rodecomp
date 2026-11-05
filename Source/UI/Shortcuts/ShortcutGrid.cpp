@@ -3,10 +3,6 @@
 #include <bit>
 #include <cstdint>
 
-// INLINED
-ShortcutGrid::ShortcutGrid() : hovered(-1), row(-1), rows(1) {
-}
-
 // OFFSET: 0x0091C540
 // FUNCTION: fn_12616
 int ShortcutGrid::HitTest(int x, int y, bool itemSlotActive, unsigned char& currentRow) {
