@@ -41,8 +41,7 @@ struct ReplayRecordHeader {
   /* 0008 */ std::uint16_t bytes;
   // INLINED
   ReplayRecordHeader() : frame(0), tick(0), bytes(0) {}
-  // INLINED
-  ~ReplayRecordHeader() { this->frame = 0; this->tick = 0; this->bytes = 0; }
+  ~ReplayRecordHeader();
 };
 #pragma pack(pop)
 
@@ -126,10 +125,10 @@ ReplaySection::ReplaySection() : id(0), bytes(0), fileOffset(0) {
 
 // OFFSET: 0x00B83D00
 // FUNCTION: fn_19305
-void ReplaySection::Clear() {
-  this->id = 0;
+inline ReplayRecordHeader::~ReplayRecordHeader() {
+  this->frame = 0;
+  this->tick = 0;
   this->bytes = 0;
-  this->fileOffset = 0;
 }
 
 // OFFSET: 0x00B83D20
@@ -336,12 +335,16 @@ Replay& Replay::Instance() {
 // OFFSET: 0x00B83D50
 // FUNCTION: fn_19307
 bool Replay::MatchesService(int mode) const {
+  const int type = this->header.serviceType;
   if (mode == 2) {
-    const int type = this->header.serviceType;
-    return type == 0 || type == 13 || type == 1 || type == 2;
+    if (type == 0 || type == 13 || type == 1 || type == 2) {
+      return true;
+    }
+  } else if (g_serviceMode == type) {
+    return true;
   }
 
-  return g_serviceMode == this->header.serviceType;
+  return false;
 }
 
 // OFFSET: 0x00B83D90
@@ -450,25 +453,25 @@ int Replay::FindSection(int id) const {
 // OFFSET: 0x00B84620
 // FUNCTION: fn_19318
 int Replay::SpeedLevel() const {
-  if (this->speed == 0.25f) {
+  if (0.25f == this->speed) {
     return 1;
   }
-  if (this->speed == 0.5f) {
+  if (0.5f == this->speed) {
     return 2;
   }
-  if (this->speed == 1.0f) {
+  if (1.0f == this->speed) {
     return 3;
   }
-  if (this->speed == 2.0f) {
+  if (2.0f == this->speed) {
     return 4;
   }
-  if (this->speed == 4.0f) {
+  if (4.0f == this->speed) {
     return 5;
   }
-  if (this->speed == 8.0f) {
+  if (8.0f == this->speed) {
     return 6;
   }
-  if (this->speed == 16.0f) {
+  if (16.0f == this->speed) {
     return 7;
   }
   return 0;
@@ -923,13 +926,13 @@ bool Replay::SetHeaderInfo(
 // OFFSET: 0x00B871C0
 // FUNCTION: fn_19340
 void Replay::IncreaseSpeed() {
-  if (this->speed == 0.25f) {
+  if (0.25f == this->speed) {
     this->speed = 0.5f;
-  } else if (this->speed == 0.5f) {
+  } else if (0.5f == this->speed) {
     this->speed = 1.0f;
-  } else if (this->speed == 1.0f) {
+  } else if (1.0f == this->speed) {
     this->speed = 2.0f;
-  } else if (this->speed == 2.0f || this->speed == 4.0f) {
+  } else if (2.0f == this->speed || 4.0f == this->speed) {
     this->speed = 4.0f;
   }
 }
@@ -937,13 +940,13 @@ void Replay::IncreaseSpeed() {
 // OFFSET: 0x00B87240
 // FUNCTION: fn_19341
 void Replay::DecreaseSpeed() {
-  if (this->speed == 0.25f || this->speed == 0.5f) {
+  if (0.25f == this->speed || 0.5f == this->speed) {
     this->speed = 0.25f;
-  } else if (this->speed == 1.0f) {
+  } else if (1.0f == this->speed) {
     this->speed = 0.5f;
-  } else if (this->speed == 2.0f) {
+  } else if (2.0f == this->speed) {
     this->speed = 1.0f;
-  } else if (this->speed == 4.0f) {
+  } else if (4.0f == this->speed) {
     this->speed = 2.0f;
   }
 }

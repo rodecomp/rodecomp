@@ -74,7 +74,6 @@ struct ReplaySection {
 
   ReplaySection();
   ~ReplaySection();
-  void Clear();
 };
 #pragma pack(pop)
 
@@ -192,15 +191,18 @@ public:
 
   // INLINED
   __forceinline ReplayFileList()
-      : selected(-1),
-        replay(nullptr),
+      : replay(nullptr),
         path(),
         pathEnabled(true),
-        unknown_0119(true),
-        unknown_011C(0),
-        unknown_0120(0),
-        unknown_0124(0),
-        buffer() {
+        unknown_0119(true) {
+    this->selected = -1;
+    this->files.clear();
+    this->unknown_0124 = 0;
+    for (std::size_t index = 0; index < sizeof(this->buffer); ++index) {
+      this->buffer[index] = 0;
+    }
+    this->unknown_011C = 0;
+    this->unknown_0120 = 0;
   }
 
   void Clear();
