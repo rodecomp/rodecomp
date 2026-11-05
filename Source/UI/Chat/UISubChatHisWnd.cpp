@@ -21,7 +21,7 @@
 // OFFSET: 0x009312E0
 // FUNCTION: fn_12700
 void UISubChatHisWnd::Slot25(int x, int y) {
-  if (g_chatInputFlag) {
+  if (g_session.m_canDragWnd) {
     if (UIWindow* window = g_windowMgr.LookupWindow(132)) {
       window->SendMsg(this, 6, 193, this->m_index, 0, 2);
     }
@@ -32,7 +32,7 @@ void UISubChatHisWnd::Slot25(int x, int y) {
 // OFFSET: 0x009309B0
 // FUNCTION: fn_12690
 void UISubChatHisWnd::Slot26(int x, int y) {
-  if (g_chatInputFlag && x > 0 && x < this->m_inputWidth && y > 0 && y < this->m_inputHeight) {
+  if (g_session.m_canDragWnd && x > 0 && x < this->m_inputWidth && y > 0 && y < this->m_inputHeight) {
     this->m_edit->SetText("");
     this->m_edit->Resize(this->m_inputWidth - 10, this->m_inputHeight - 2);
     this->m_edit->Move(5, 2);
@@ -52,7 +52,7 @@ void UISubChatHisWnd::Slot27(int x, int y) {
 // FUNCTION: fn_12706
 void UISubChatHisWnd::Slot31(int x, int y) {
   this->UIFrameWnd::Slot31(x, y);
-  if (g_chatInputFlag) {
+  if (g_session.m_canDragWnd) {
     int screenX = 0;
     int screenY = 0;
     this->ToScreen(screenX, screenY);
@@ -212,16 +212,16 @@ UISubChatHisWnd::UISubChatHisWnd()
   this->m_inputWidth = 71;
   this->unknown_00F0 = 15;
   switch (g_serviceType) {
-  case 1:
-  case 7:
-  case 11:
-    this->m_inputWidth = 110;
-    break;
   case 10:
     this->m_inputWidth = 71;
     break;
   case 18:
     this->m_inputWidth = 90;
+    break;
+  case 1:
+  case 7:
+  case 11:
+    this->m_inputWidth = 110;
     break;
   }
 }
