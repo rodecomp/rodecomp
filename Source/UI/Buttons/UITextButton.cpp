@@ -1454,14 +1454,23 @@ void UITreeView::Slot53() {
   const int excess = count - visible;
   const int overflow = excess < 0 ? 0 : excess;
   this->verticalOverflow = overflow != 0;
-  this->verticalBar->SetRange(overflow, visible, count);
+  auto* bar = this->verticalBar;
+  bar->total = count;
+  bar->visible = visible;
+  bar->maximum = overflow;
+  bar->Invalidate();
+
+  if (bar->position > bar->maximum) {
+    bar->position = bar->maximum;
+    bar->Invalidate();
+  }
 
   if (!overflow) {
     this->unknown_00A8 = 0;
     this->itemCount = 0;
   }
 
-  this->verticalBar->Invalidate();
+  bar->Invalidate();
 }
 
 // OFFSET: 0x00892F90
