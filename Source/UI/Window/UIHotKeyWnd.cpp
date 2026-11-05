@@ -50,21 +50,7 @@ namespace {
     }
   }
 
-  int CountHotkeys(LuaScript& script, int tab) {
-    int count = 0;
-    if (script.Call("GetOriginalHotKeyListSize", "d>d", tab + 1, &count)) {
-      if (tab == 1) {
-        int hidden = 0;
-        for (int index = 30; index < count; ++index) {
-          hidden += HiddenHotkeyIndex(index);
-        }
-        return count - hidden;
-      }
-    }
-    return count;
-  }
-
-  int MapHotkeyIndex(LuaScript& script, int tab, int index) {
+  __declspec(noinline) int ResolveHotkeyIndex(LuaScript& script, int tab, int index) {
     if (tab == 1 && index >= 30) {
       for (int candidate = 30; candidate <= index; ++candidate) {
         index += HiddenHotkeyIndex(candidate);
@@ -178,8 +164,16 @@ void UIHotKeyWnd::Slot32(int, int) {
 // OFFSET: 0x00933B30
 // FUNCTION: fn_12734
 void UIHotKeyWnd::UpdatePageButtons() {
-  this->m_prevButton->Enable(this->m_page > 1);
-  this->m_nextButton->Enable(this->m_page < this->m_pageCount);
+  if (this->m_page > 1) {
+    this->m_prevButton->Enable(1);
+  } else {
+    this->m_prevButton->Enable(0);
+  }
+  if (this->m_page < this->m_pageCount) {
+    this->m_nextButton->Enable(1);
+  } else {
+    this->m_nextButton->Enable(0);
+  }
   this->Invalidate();
 }
 
@@ -240,32 +234,7 @@ int UIHotKeyWnd::RowFromPoint(int x, int y) {
     row += this->m_rowsPerPage;
   }
 
-  int count = 0;
-  if (g_session.m_hotkeyScript->Call("GetOriginalHotKeyListSize", "d>d", this->m_tab + 1, &count) && this->m_tab == 1) {
-    int hidden = 0;
-    for (int index = 30; index < count; ++index) {
-      switch (index) {
-      case 30:
-      case 33:
-      case 34:
-      case 36:
-      case 43:
-      case 45:
-      case 53:
-      case 58:
-      case 62:
-      case 64:
-      case 65:
-      case 66:
-      case 67:
-        ++hidden;
-        break;
-      default:
-        break;
-      }
-    }
-    count -= hidden;
-  }
+  const int count = HotkeyCount(*g_session.m_hotkeyScript, this->m_tab);
 
   if (row < count) {
     return row;
@@ -283,32 +252,7 @@ void UIHotKeyWnd::Slot25(int x, int y) {
   const int previous = this->m_selectedRow;
   this->m_selectedRow = this->RowFromPoint(x, y);
 
-  int count = 0;
-  if (g_session.m_hotkeyScript->Call("GetOriginalHotKeyListSize", "d>d", this->m_tab + 1, &count) && this->m_tab == 1) {
-    int hidden = 0;
-    for (int index = 30; index < count; ++index) {
-      switch (index) {
-      case 30:
-      case 33:
-      case 34:
-      case 36:
-      case 43:
-      case 45:
-      case 53:
-      case 58:
-      case 62:
-      case 64:
-      case 65:
-      case 66:
-      case 67:
-        ++hidden;
-        break;
-      default:
-        break;
-      }
-    }
-    count -= hidden;
-  }
+  const int count = HotkeyCount(*g_session.m_hotkeyScript, this->m_tab);
 
   if (this->m_selectedRow + (this->m_page * 9 - 9) * 4 < count) {
     if (this->m_selectedRow < 0) {
@@ -340,38 +284,43 @@ void UIHotKeyWnd::Slot25(int x, int y) {
 // OFFSET: 0x0091C720
 // FUNCTION: fn_12617
 UIHotKeyWnd::HotkeyEntry UIHotKeyWnd::GetHotkey(int tab, int index, bool resolve) {
-  HotkeyEntry entry;
-  entry.index = resolve ? MapHotkeyIndex(*g_session.m_hotkeyScript, tab, index) : index;
+  HotkeyInfo info;
+  if (resolve) {
+    index = ResolveHotkeyIndex(*g_session.m_hotkeyScript, tab, index);
+  }
 
-  if (entry.index != -1) {
-    const auto it = this->hotkeys[tab].find(entry.index);
-    if (it != this->hotkeys[tab].end() && !it->second.description.empty()) {
-      entry.info = it->second;
-    } else {
-      entry.info = GetHotkeyInfo(*g_session.m_hotkeyScript, tab, entry.index);
+  if (index != -1) {
+    const auto it = this->hotkeys[tab].find(index);
+    if (it != this->hotkeys[tab].end()) {
+      info = it->second;
+    }
+    if (it == this->hotkeys[tab].end() || info.description.empty()) {
+      info = GetHotkeyInfo(*g_session.m_hotkeyScript, tab, index);
     }
   }
 
-  return entry;
+  return HotkeyEntry{index, info};
 }
 
 // OFFSET: 0x009317E0
 // FUNCTION: fn_12708
 void UIHotKeyWnd::ShowHotkeyTooltip(int x, int y) {
   const int index = this->RowFromPoint(x, y);
-  if (index < 0) {
+  if (index <= -1) {
     return;
   }
 
   const int column = index / this->m_rowsPerPage;
   const int row = index % this->m_rowsPerPage;
-  int screenX = this->geometry.width / 2 * column + 0x14;
-  int screenY = (row - 1) * this->unknown_00D0 + this->unknown_00CC + this->unknown_00C4 + this->unknown_00BC;
+  int screenX = 0;
+  int screenY = 0;
+  const int x0 = this->geometry.width / 2 * column + 0x14;
+  const int y0 = (row - 1) * this->unknown_00D0 + this->unknown_00CC + this->unknown_00C4 + this->unknown_00BC;
   this->ToScreen(screenX, screenY);
 
   const HotkeyEntry entry = this->GetHotkey(this->m_tab, index + (this->m_page * 9 - 9) * 4, true);
   if (!entry.info.text.empty()) {
-    g_modeMgr.gameMode->ShowTooltip(entry.info.text.c_str(), screenX, screenY, 0xFFFFFFFF, 0, 1);
+    g_modeMgr.gameMode->ShowTooltip(entry.info.text.c_str(), x0 + screenX, y0 + screenY, 0xFFFFFFFF, 0, 1);
   }
 }
 
@@ -430,7 +379,7 @@ void UIHotKeyWnd::Paint() {
   this->unknown_00C0 = this->DrawButtonBar(2, 0, 1);
   this->DrawPanelBackground(this->unknown_00BC, 0, "");
 
-  const int count = CountHotkeys(*g_session.m_hotkeyScript, this->m_tab);
+  const int count = HotkeyCount(*g_session.m_hotkeyScript, this->m_tab);
   int visibleRow = 0;
 
   for (int row = 0; row < count; ++row) {
@@ -526,33 +475,6 @@ void UIHotKeyWnd::Paint() {
   );
 }
 
-namespace {
-  __declspec(noinline) int CountAllHotkeys(LuaScript& script, int tab) {
-    int count = 0;
-    if (script.Call("GetOriginalHotKeyListSize", "d>d", tab + 1, &count)) {
-      if (tab == 1) {
-        int hidden = 0;
-        for (int index = 30; index < count; ++index) {
-          hidden += HiddenHotkeyIndex(index);
-        }
-        return count - hidden;
-      }
-    }
-    return count;
-  }
-
-  __declspec(noinline) int ResolveHotkeyIndex(LuaScript& script, int tab, int index) {
-    if (tab == 1 && index >= 30) {
-      for (int candidate = 30; candidate <= index; ++candidate) {
-        index += HiddenHotkeyIndex(candidate);
-      }
-    }
-    int count = 0;
-    script.Call("GetOriginalHotKeyListSize", "d>d", tab + 1, &count);
-    return index >= count ? -1 : index;
-  }
-}
-
 // OFFSET: 0x0091CA10
 // FUNCTION: fn_12620
 void UIHotKeyWnd::ReloadHotkeys() {
@@ -563,7 +485,7 @@ void UIHotKeyWnd::ReloadHotkeys() {
 
   for (int position = 0; position < 4; ++position) {
     const int tab = g_userHotkeyMgr->TabAt(position);
-    const int count = CountAllHotkeys(*g_session.m_hotkeyScript, tab);
+    const int count = HotkeyCount(*g_session.m_hotkeyScript, tab);
     for (int row = 0; row < count; ++row) {
       const int index = ResolveHotkeyIndex(*g_session.m_hotkeyScript, tab, row);
       if (index == -1) {
@@ -707,7 +629,7 @@ int UIHotKeyWnd::CheckHotkeyConflict() {
       continue;
     }
 
-    const int count = CountAllHotkeys(*g_session.m_hotkeyScript, tab);
+    const int count = HotkeyCount(*g_session.m_hotkeyScript, tab);
     for (int index = 0; index < count; ++index) {
       const HotkeyEntry entry = this->GetHotkey(tab, index, true);
       HotkeyInfo info = entry.info;
@@ -730,7 +652,7 @@ int UIHotKeyWnd::CheckHotkeyConflict() {
       this->SetHotkey(tab, entry.index, info);
 
       if (tab == 0 && this->m_tab != 0) {
-        const int shortcutCount = CountAllHotkeys(*g_session.m_hotkeyScript, 3);
+        const int shortcutCount = HotkeyCount(*g_session.m_hotkeyScript, 3);
         for (int shortcut = 0; shortcut < shortcutCount; ++shortcut) {
           const HotkeyEntry other = this->GetHotkey(3, shortcut, true);
           HotkeyInfo otherInfo = other.info;
@@ -828,7 +750,7 @@ int UIHotKeyWnd::SendMsg(
     this->unknown_0114 = 0;
     this->m_page = 1;
 
-    const int count = CountAllHotkeys(*g_session.m_hotkeyScript, tab);
+    const int count = HotkeyCount(*g_session.m_hotkeyScript, tab);
     if (count > 36) {
       this->unknown_0114 = 1;
       this->m_pageCount = count / 36;
