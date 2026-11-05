@@ -153,9 +153,9 @@ struct CEffectPrim : CRenderObject {
   bool PrimWind();
   void Tei_TowardScreen(vector3d& vec1, vector3d& vec2, vector3d& vec3, vector3d& vec4, short rot0, short rot1);
 
-  bool AnimMotion();
+  unsigned char AnimMotion();
   bool IsPartyVisible();
-  bool FollowMasterAndAdvance();
+  unsigned char FollowMasterAndAdvance();
   void FollowMasterAndTickSlots();
   void FollowMasterAndTickSlots2();
   void ShiftSegment();
