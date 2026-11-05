@@ -15,14 +15,12 @@ static char s_numberBuffer[1024];
 // OFFSET: 0x005BAEF0
 // FUNCTION: fn_03451
 int StringFormat(char* buffer, std::size_t sizeInBytes, std::size_t count, const char* format, ...) {
+  int result;
   va_list args;
-  va_start(args, format);
-  const int result = __stdio_common_vsnprintf_s(_CRT_INTERNAL_LOCAL_PRINTF_OPTIONS, buffer, sizeInBytes, count, format, nullptr, args);
-  va_end(args);
 
-  if (result < 0) {
-    return -1;
-  }
+  va_start(args, format);
+  result = _vsnprintf_s_l(buffer, sizeInBytes, count, format, nullptr, args);
+  va_end(args);
 
   return result;
 }
@@ -45,21 +43,21 @@ namespace {
 
   private:
     /* 0004 */ CRITICAL_SECTION m_criticalSection;
-    /* 001C */ std::map<HANDLE, std::array<char, 2048>> m_buffers;
+    /* 001C */ std::map<int, std::array<char, 2048>> m_buffers;
   };
 
   // OFFSET: 0x00734390
   // FUNCTION: fn_07595
   char* ThreadSafeBuffer::GetBuffer() {
     NSyncObject lock(&this->m_criticalSection);
-    HANDLE thread = GetCurrentThread();
+    const int thread = reinterpret_cast<int>(GetCurrentThread());
 
-    auto it = this->m_buffers.find(thread);
-    if (it == this->m_buffers.end()) {
-      it = this->m_buffers.emplace(thread, std::array<char, 2048>{}).first;
+    if (this->m_buffers.find(thread) == this->m_buffers.end()) {
+      std::array<char, 2048> buffer{};
+      this->m_buffers[thread] = buffer;
     }
 
-    return it->second.data();
+    return this->m_buffers[thread].data();
   }
 }
 
@@ -82,10 +80,12 @@ const char* FormatString(const char* format, ...) {
 std::string FormatOwnedString(const char* format, ...) {
   char buffer[4096];
   va_list arguments;
+
   va_start(arguments, format);
-  _vsnprintf_s(buffer, sizeof(buffer), static_cast<std::size_t>(-1), format, arguments);
+  _vsnprintf_s(buffer, sizeof(buffer), _TRUNCATE, format, arguments);
   va_end(arguments);
-  return std::string(buffer, std::strlen(buffer));
+
+  return std::string(buffer);
 }
 
 // OFFSET: 0x00A95590
