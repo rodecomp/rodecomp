@@ -211,26 +211,18 @@ static __forceinline unsigned int CryptonKeyTransform(unsigned int value, unsign
 }
 
 // INLINED
-static __forceinline void CryptonRound(unsigned int& a, unsigned int& b, unsigned int& c, unsigned int& d, const unsigned int* key, bool alternate) {
-  unsigned int x;
-  unsigned int y;
-  unsigned int z;
-  unsigned int w;
+static __forceinline void CryptonRound(unsigned int* y, const unsigned int* x, const unsigned int* key, bool alternate) {
   if (!alternate) {
-    x = g_cryptonTable0[a & 255] ^ g_cryptonTable1[b & 255] ^ g_cryptonTable2[c & 255] ^ g_cryptonTable3[d & 255];
-    y = g_cryptonTable1[(a >> 8) & 255] ^ g_cryptonTable2[(b >> 8) & 255] ^ g_cryptonTable3[(c >> 8) & 255] ^ g_cryptonTable0[(d >> 8) & 255];
-    z = g_cryptonTable2[(a >> 16) & 255] ^ g_cryptonTable3[(b >> 16) & 255] ^ g_cryptonTable0[(c >> 16) & 255] ^ g_cryptonTable1[(d >> 16) & 255];
-    w = g_cryptonTable3[a >> 24] ^ g_cryptonTable0[b >> 24] ^ g_cryptonTable1[c >> 24] ^ g_cryptonTable2[d >> 24];
+    y[0] = g_cryptonTable0[x[0] & 255] ^ g_cryptonTable1[x[1] & 255] ^ g_cryptonTable2[x[2] & 255] ^ g_cryptonTable3[x[3] & 255] ^ key[0];
+    y[1] = g_cryptonTable1[(x[0] >> 8) & 255] ^ g_cryptonTable2[(x[1] >> 8) & 255] ^ g_cryptonTable3[(x[2] >> 8) & 255] ^ g_cryptonTable0[(x[3] >> 8) & 255] ^ key[1];
+    y[2] = g_cryptonTable2[(x[0] >> 16) & 255] ^ g_cryptonTable3[(x[1] >> 16) & 255] ^ g_cryptonTable0[(x[2] >> 16) & 255] ^ g_cryptonTable1[(x[3] >> 16) & 255] ^ key[2];
+    y[3] = g_cryptonTable3[x[0] >> 24] ^ g_cryptonTable0[x[1] >> 24] ^ g_cryptonTable1[x[2] >> 24] ^ g_cryptonTable2[x[3] >> 24] ^ key[3];
   } else {
-    x = g_cryptonTable1[a & 255] ^ g_cryptonTable2[b & 255] ^ g_cryptonTable3[c & 255] ^ g_cryptonTable0[d & 255];
-    y = g_cryptonTable2[(a >> 8) & 255] ^ g_cryptonTable3[(b >> 8) & 255] ^ g_cryptonTable0[(c >> 8) & 255] ^ g_cryptonTable1[(d >> 8) & 255];
-    z = g_cryptonTable3[(a >> 16) & 255] ^ g_cryptonTable0[(b >> 16) & 255] ^ g_cryptonTable1[(c >> 16) & 255] ^ g_cryptonTable2[(d >> 16) & 255];
-    w = g_cryptonTable0[a >> 24] ^ g_cryptonTable1[b >> 24] ^ g_cryptonTable2[c >> 24] ^ g_cryptonTable3[d >> 24];
+    y[0] = g_cryptonTable1[x[0] & 255] ^ g_cryptonTable2[x[1] & 255] ^ g_cryptonTable3[x[2] & 255] ^ g_cryptonTable0[x[3] & 255] ^ key[0];
+    y[1] = g_cryptonTable2[(x[0] >> 8) & 255] ^ g_cryptonTable3[(x[1] >> 8) & 255] ^ g_cryptonTable0[(x[2] >> 8) & 255] ^ g_cryptonTable1[(x[3] >> 8) & 255] ^ key[1];
+    y[2] = g_cryptonTable3[(x[0] >> 16) & 255] ^ g_cryptonTable0[(x[1] >> 16) & 255] ^ g_cryptonTable1[(x[2] >> 16) & 255] ^ g_cryptonTable2[(x[3] >> 16) & 255] ^ key[2];
+    y[3] = g_cryptonTable0[x[0] >> 24] ^ g_cryptonTable1[x[1] >> 24] ^ g_cryptonTable2[x[2] >> 24] ^ g_cryptonTable3[x[3] >> 24] ^ key[3];
   }
-  a = x ^ key[0];
-  b = y ^ key[1];
-  c = z ^ key[2];
-  d = w ^ key[3];
 }
 
 // INLINED
@@ -425,28 +417,28 @@ void Ripemd128Transform(unsigned int* state, const unsigned int* block) {
 // OFFSET: 0x00B0F710
 // FUNCTION: fn_18405
 void CryptonEncryptBlock(const unsigned int* input, unsigned int* output) {
-  unsigned int* key = g_cryptonEncryptKey;
-  unsigned int a = input[0] ^ key[0];
-  unsigned int b = input[1] ^ key[1];
-  unsigned int c = input[2] ^ key[2];
-  unsigned int d = input[3] ^ key[3];
-  CryptonRound(a, b, c, d, key + 4, false);
-  CryptonRound(a, b, c, d, key + 8, true);
-  CryptonRound(a, b, c, d, key + 12, false);
-  CryptonRound(a, b, c, d, key + 16, true);
-  CryptonRound(a, b, c, d, key + 20, false);
-  CryptonRound(a, b, c, d, key + 24, true);
-  CryptonRound(a, b, c, d, key + 28, false);
-  CryptonRound(a, b, c, d, key + 32, true);
-  CryptonRound(a, b, c, d, key + 36, false);
-  CryptonRound(a, b, c, d, key + 40, true);
-  CryptonRound(a, b, c, d, key + 44, false);
-  unsigned int result[4];
-  CryptonSubstitute(a, b, c, d, result, true);
-  output[0] = result[0] ^ key[48];
-  output[1] = result[1] ^ g_cryptonEncryptKey[49];
-  output[2] = result[2] ^ g_cryptonEncryptKey[50];
-  output[3] = result[3] ^ g_cryptonEncryptKey[51];
+  unsigned int b0[4];
+  unsigned int b1[4];
+  b0[0] = input[0] ^ g_cryptonEncryptKey[0];
+  b0[1] = input[1] ^ g_cryptonEncryptKey[1];
+  b0[2] = input[2] ^ g_cryptonEncryptKey[2];
+  b0[3] = input[3] ^ g_cryptonEncryptKey[3];
+  CryptonRound(b1, b0, g_cryptonEncryptKey + 4, false);
+  CryptonRound(b0, b1, g_cryptonEncryptKey + 8, true);
+  CryptonRound(b1, b0, g_cryptonEncryptKey + 12, false);
+  CryptonRound(b0, b1, g_cryptonEncryptKey + 16, true);
+  CryptonRound(b1, b0, g_cryptonEncryptKey + 20, false);
+  CryptonRound(b0, b1, g_cryptonEncryptKey + 24, true);
+  CryptonRound(b1, b0, g_cryptonEncryptKey + 28, false);
+  CryptonRound(b0, b1, g_cryptonEncryptKey + 32, true);
+  CryptonRound(b1, b0, g_cryptonEncryptKey + 36, false);
+  CryptonRound(b0, b1, g_cryptonEncryptKey + 40, true);
+  CryptonRound(b1, b0, g_cryptonEncryptKey + 44, false);
+  CryptonSubstitute(b1[0], b1[1], b1[2], b1[3], b0, true);
+  output[0] = b0[0] ^ g_cryptonEncryptKey[48];
+  output[1] = b0[1] ^ g_cryptonEncryptKey[49];
+  output[2] = b0[2] ^ g_cryptonEncryptKey[50];
+  output[3] = b0[3] ^ g_cryptonEncryptKey[51];
 }
 
 // OFFSET: 0x00B103A0
@@ -560,16 +552,26 @@ unsigned int* CryptonSetKey(const unsigned int* input, unsigned int keyBits) {
   g_cryptonEncryptKey[51] = CryptonRotate(g_cryptonEncryptKey[43], 24);
 
   for (unsigned int group = 0; group < 13; ++group) {
-    for (unsigned int lane = 0; lane < 4; ++lane) {
-      g_cryptonDecryptKey[(12 - group) * 4 + lane] = CryptonKeyTransform(g_cryptonEncryptKey[group * 4 + lane], (lane + (group & 1 ? 3 : 0)) & 3);
+    if (group & 1) {
+      g_cryptonDecryptKey[(12 - group) * 4 + 0] = CryptonKeyTransform(g_cryptonEncryptKey[group * 4 + 0], 3);
+      g_cryptonDecryptKey[(12 - group) * 4 + 1] = CryptonKeyTransform(g_cryptonEncryptKey[group * 4 + 1], 0);
+      g_cryptonDecryptKey[(12 - group) * 4 + 2] = CryptonKeyTransform(g_cryptonEncryptKey[group * 4 + 2], 1);
+      g_cryptonDecryptKey[(12 - group) * 4 + 3] = CryptonKeyTransform(g_cryptonEncryptKey[group * 4 + 3], 2);
+    } else {
+      g_cryptonDecryptKey[(12 - group) * 4 + 0] = CryptonKeyTransform(g_cryptonEncryptKey[group * 4 + 0], 0);
+      g_cryptonDecryptKey[(12 - group) * 4 + 1] = CryptonKeyTransform(g_cryptonEncryptKey[group * 4 + 1], 1);
+      g_cryptonDecryptKey[(12 - group) * 4 + 2] = CryptonKeyTransform(g_cryptonEncryptKey[group * 4 + 2], 2);
+      g_cryptonDecryptKey[(12 - group) * 4 + 3] = CryptonKeyTransform(g_cryptonEncryptKey[group * 4 + 3], 3);
     }
   }
-  for (unsigned int lane = 0; lane < 4; ++lane) {
-    g_cryptonDecryptKey[48 + lane] = CryptonKeyTransform(g_cryptonDecryptKey[48 + lane], lane);
-  }
-  for (unsigned int lane = 0; lane < 4; ++lane) {
-    g_cryptonEncryptKey[48 + lane] = CryptonKeyTransform(g_cryptonEncryptKey[48 + lane], lane);
-  }
+  g_cryptonDecryptKey[48] = CryptonKeyTransform(g_cryptonDecryptKey[48], 0);
+  g_cryptonDecryptKey[49] = CryptonKeyTransform(g_cryptonDecryptKey[49], 1);
+  g_cryptonDecryptKey[50] = CryptonKeyTransform(g_cryptonDecryptKey[50], 2);
+  g_cryptonDecryptKey[51] = CryptonKeyTransform(g_cryptonDecryptKey[51], 3);
+  g_cryptonEncryptKey[48] = CryptonKeyTransform(g_cryptonEncryptKey[48], 0);
+  g_cryptonEncryptKey[49] = CryptonKeyTransform(g_cryptonEncryptKey[49], 1);
+  g_cryptonEncryptKey[50] = CryptonKeyTransform(g_cryptonEncryptKey[50], 2);
+  g_cryptonEncryptKey[51] = CryptonKeyTransform(g_cryptonEncryptKey[51], 3);
   return g_cryptonDecryptKeys;
 }
 
@@ -622,17 +624,23 @@ __declspec(noinline) unsigned char FealS1(unsigned char a, unsigned char b) {
 // OFFSET: 0x00B11070
 // FUNCTION: fn_18407
 unsigned int FealF(unsigned int alpha, unsigned int beta) {
-  const unsigned char* a = reinterpret_cast<const unsigned char*>(&alpha);
-  const unsigned char* b = reinterpret_cast<const unsigned char*>(&beta);
-  unsigned char f[4];
-  unsigned char f2 = a[3] ^ a[2] ^ b[1];
-  unsigned char f1 = FealS1(a[1] ^ b[0] ^ a[0], f2);
+  unsigned char f1;
+  unsigned char f2;
+  union {
+    unsigned int all;
+    unsigned char bytes[4];
+  } result, a, b;
+  a.all = alpha;
+  b.all = beta;
+  f1 = a.bytes[1] ^ b.bytes[0] ^ a.bytes[0];
+  f2 = a.bytes[2] ^ b.bytes[1] ^ a.bytes[3];
+  f1 = FealS1(f1, f2);
   f2 = FealS0(f2, f1);
-  f[1] = f1;
-  f[2] = f2;
-  f[0] = FealS0(a[0], f1);
-  f[3] = FealS1(a[3], f2);
-  return *reinterpret_cast<unsigned int*>(f);
+  result.bytes[1] = f1;
+  result.bytes[2] = f2;
+  result.bytes[0] = FealS0(a.bytes[0], f1);
+  result.bytes[3] = FealS1(a.bytes[3], f2);
+  return result.all;
 }
 
 // OFFSET: 0x00B11430
@@ -652,7 +660,15 @@ unsigned int MistyFL(const unsigned int* ek, unsigned int input, unsigned char k
   return (d0 << 16) | d1;
 }
 
-#define MISTY_FI(input, key, output)                                      {                                                                         unsigned int d9 = ((input) >> 7) & 0x1FF;                               unsigned int d7 = (input) & 0x7F;                                       d9 = g_mistyS9[d9] ^ d7;                                                d7 = (g_mistyS7[d7] ^ ((key) >> 9) ^ d9) & 0x7F;                        d9 = g_mistyS9[((key) & 0x1FF) ^ d9] ^ d7;                              (output) = d9 | (d7 << 9);                                            }
+// INLINED
+static __forceinline unsigned int MistyFI(unsigned int input, unsigned int key) {
+  unsigned int d9 = (input >> 7) & 0x1FF;
+  unsigned int d7 = input & 0x7F;
+  d9 = g_mistyS9[d9] ^ d7;
+  d7 = (g_mistyS7[d7] ^ (key >> 9) ^ d9) & 0x7F;
+  d9 = g_mistyS9[(key & 0x1FF) ^ d9] ^ d7;
+  return d9 | (d7 << 9);
+}
 
 // OFFSET: 0x00B11510
 // FUNCTION: fn_18409
@@ -660,13 +676,13 @@ unsigned int MistyFO(const unsigned int* ek, unsigned int input, unsigned char k
   unsigned int t0 = input >> 16;
   unsigned int t1 = input & 0xFFFF;
   t0 ^= ek[k];
-  MISTY_FI(t0, ek[((k + 5) % 8) + 8], t0);
+  t0 = MistyFI(t0, ek[((k + 5) % 8) + 8]);
   t0 ^= t1;
   t1 ^= ek[(k + 2) % 8];
-  MISTY_FI(t1, ek[((k + 1) % 8) + 8], t1);
+  t1 = MistyFI(t1, ek[((k + 1) % 8) + 8]);
   t1 ^= t0;
   t0 ^= ek[(k + 7) % 8];
-  MISTY_FI(t0, ek[((k + 3) % 8) + 8], t0);
+  t0 = MistyFI(t0, ek[((k + 3) % 8) + 8]);
   t0 ^= t1;
   t1 ^= ek[(k + 4) % 8];
   return (t1 << 16) | t0;
@@ -831,15 +847,15 @@ void BuildSboxLookup() {
 // FUNCTION: fn_18414
 int KeyedBoxFeistel(const unsigned char* input, unsigned char* output, int length, const KeyedBoxContext* context) {
   if (length == 2) {
-    const int round = g_keyedBoxRound;
-    unsigned char right = context->boxes[round][input[0]] ^ input[1];
+    int round = g_keyedBoxRound;
+    unsigned char right = context->boxes[round++][input[0]] ^ input[1];
     output[1] = right;
-    unsigned char left = context->boxes[round + 1][right] ^ input[0];
+    unsigned char left = context->boxes[round++][right] ^ input[0];
     output[0] = left;
-    g_keyedBoxRound = round + 4;
-    right = context->boxes[round + 2][left] ^ right;
+    right = context->boxes[round++][left] ^ right;
     output[1] = right;
-    output[0] = context->boxes[round + 3][right] ^ left;
+    output[0] = context->boxes[round++][right] ^ left;
+    g_keyedBoxRound = round;
     return 0;
   }
 
