@@ -4,14 +4,17 @@
 #include "Resource/EZeffectResource.h"
 #include "Render/Textures/TextureCache.h"
 
+#include <algorithm>
+#include <format>
+#include <iterator>
 #include <string>
 
 // OFFSET: 0x0074D640
 // FUNCTION: fn_07894
-EZeffectClip::EZeffectClip() : textureCount(0), unknown_0004(0), frameCount(0), frames(nullptr), textures{} {
-  for (const char*& name : this->names) {
-    name = "1.bmp";
-  }
+EZeffectClip::EZeffectClip() : textureCount(0), unknown_0004(0), frameCount(0), frames(nullptr) {
+  const char* const defaultName = "1.bmp";
+  std::fill_n(this->names, std::size(this->names), defaultName);
+  std::fill_n(this->textures, std::size(this->textures), nullptr);
 }
 
 // OFFSET: 0x0074D790
@@ -26,7 +29,8 @@ EZeffectClip::~EZeffectClip() {
 
 // OFFSET: 0x0074D570
 // FUNCTION: fn_07893
-CEZeffectRes::CEZeffectRes() : unknown_D320(0) {
+CEZeffectRes::CEZeffectRes() {
+  this->unknown_D320 = 0;
 }
 
 // OFFSET: 0x0074D6F0
@@ -45,8 +49,7 @@ bool CEZeffectRes::Load(const char* name) {
   auto& file = this->m_file;
 
   if (!file.Open(name, 0, true, false)) {
-    const std::string message = std::string("Str::Cannot find File : ") + name;
-    ShowErrorDialog(GetRenderSystemHolder()->system, message.c_str(), 0);
+    ShowErrorDialog(GetRenderSystemHolder()->system, (std::string("Str::Cannot find File : ") + std::string(name)).c_str(), 0);
     this->Unload();
 
     return false;
@@ -99,7 +102,7 @@ CTexture* EZeffectClip::Texture(int index) {
   }
 
   if (!this->textures[index]) {
-    std::string path = std::string("effect\\") + this->names[index];
+    std::string path = std::format("effect\\{}", this->names[index]);
 
     if (path.find_last_of('.') == std::string::npos) {
       path.append(".bmp", 4);
