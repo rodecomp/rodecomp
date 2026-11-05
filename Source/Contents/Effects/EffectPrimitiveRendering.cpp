@@ -6005,9 +6005,9 @@ void CEffectPrim::RenderAttackEnergy2(matrix& wtm) {
 // FUNCTION: fn_19872
 void CEffectPrim::RenderBlind(matrix& wtm) {
   int rpCnt = 0;
-  unsigned char r = 10;
-  unsigned char g = 10;
-  unsigned char b = 10;
+  int r = 10;
+  int g = 10;
+  int b = 10;
 
   for (int ec = 0; ec < 4; ++ec) {
     const EffectPrimitiveSlot& slot = this->state.slots[ec];
