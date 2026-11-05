@@ -1,6 +1,7 @@
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Window/UIMileageWnd.h"
 #include "Client/Session.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Contents/MessageTable.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Network/Connection/Connection.h"
@@ -90,7 +91,7 @@ void UIMileageWnd::Slot28(int x, int y) {
   int tipX = 10;
   int tipY = -20;
   this->ToScreen(tipX, tipY);
-  static_cast<CMode*>(g_charViewMode)->ShowTooltip(this->m_tooltip.c_str(), tipX, tipY, -1, false, true);
+  g_modeMgr.gameMode->ShowTooltip(this->m_tooltip.c_str(), tipX, tipY, -1, false, true);
 }
 
 // OFFSET: 0x0094F040
