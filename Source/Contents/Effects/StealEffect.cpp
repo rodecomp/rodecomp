@@ -104,7 +104,8 @@ bool CSteal::Slot06() {
 // OFFSET: 0x00B4D290
 // FUNCTION: fn_18974
 void CSteal::Slot03() {
-  for (CSpriteParticle* particle : this->particles) {
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    CSpriteParticle* particle = *it;
     const vector3d origin = *reinterpret_cast<const vector3d*>(this->position);
     const float scale = particle->scale;
     float* params = &particle->unknown_0054;
