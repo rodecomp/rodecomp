@@ -7,7 +7,6 @@
 #include <deque>
 #include <new>
 #include <vector>
-
 #include <windows.h>
 
 namespace {
@@ -35,7 +34,8 @@ class CEffectMemoryPool : public IEffectMemoryPool {
 class CEffectMemoryMgr {
   public:
   // INLINED
-  CEffectMemoryMgr() : m_initialized(false) {
+  CEffectMemoryMgr() {
+    this->m_initialized = false;
     if (this->Init()) {
       this->m_initialized = true;
     }
@@ -132,25 +132,25 @@ bool CEffectMemoryMgr::Init() {
     return false;
   }
 
-  this->m_pools.push_back(new CEffectMemoryPool<CParticle>());
+  this->m_pools.push_back(new CEffectMemoryPool<CParticle>);
   if (this->m_pools.size() != 1) {
     MessageBoxA(NULL, "Input sequence is incorrect.", "CEffectMemoryMgr error", 0);
     return false;
   }
 
-  this->m_pools.push_back(new CEffectMemoryPool<CSpriteParticle>());
+  this->m_pools.push_back(new CEffectMemoryPool<CSpriteParticle>);
   if (this->m_pools.size() != 2) {
     MessageBoxA(NULL, "Input sequence is incorrect.", "CEffectMemoryMgr error", 0);
     return false;
   }
 
-  this->m_pools.push_back(new CEffectMemoryPool<CEZ2STRParticle>());
+  this->m_pools.push_back(new CEffectMemoryPool<CEZ2STRParticle>);
   if (this->m_pools.size() != 3) {
     MessageBoxA(NULL, "Input sequence is incorrect.", "CEffectMemoryMgr error", 0);
     return false;
   }
 
-  this->m_pools.push_back(new CEffectMemoryPool<CMultiTexParticle>());
+  this->m_pools.push_back(new CEffectMemoryPool<CMultiTexParticle>);
   return true;
 }
 
@@ -169,13 +169,13 @@ bool CreateEffectMemoryMgr() {
     return false;
   }
 
-  if (mgr->m_initialized) {
-    return true;
+  if (!mgr->m_initialized) {
+    delete mgr;
+    g_effectMemoryMgr = NULL;
+    return false;
   }
 
-  delete mgr;
-  g_effectMemoryMgr = NULL;
-  return false;
+  return true;
 }
 
 namespace {
