@@ -9,8 +9,10 @@
 
 // OFFSET: 0x00850430
 // FUNCTION: fn_10676
-UIStaticBitmap::UIStaticBitmap()
-    : UIWindow(0), tooltipX(0), tooltipY(-20), forwardHover(0) {
+UIStaticBitmap::UIStaticBitmap() : UIWindow(0) {
+  this->forwardHover = 0;
+  this->tooltipX = 0;
+  this->tooltipY = -20;
 }
 
 UIStaticBitmap::~UIStaticBitmap() = default;
