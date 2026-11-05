@@ -27,6 +27,7 @@ public:
   bool CreateAddressBar(int width, int height);
   void Resize(int width, int height);
   void RefreshSize();
+  int AuxiliaryHeight();
   void Normalize();
   void Poll();
   void SetCursorState(int value);

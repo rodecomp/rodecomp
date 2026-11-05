@@ -38,6 +38,17 @@ void CWebBrowser::RefreshSize() {
   }
 }
 
+// INLINED
+int CWebBrowser::AuxiliaryHeight() {
+  if (this->rebar && this->auxiliaryVisible != 0) {
+    RECT rectangle;
+    GetClientRect(this->rebar, &rectangle);
+    return rectangle.bottom - rectangle.top + 4;
+  }
+
+  return 0;
+}
+
 // OFFSET: 0x00AB3120
 // FUNCTION: fn_17422
 void CWebBrowser::ShowAuxiliary(unsigned char value) {
@@ -61,14 +72,7 @@ void CWebBrowser::ShowAuxiliary(unsigned char value) {
     this->browser->put_Left(-origin.x);
   }
 
-  long top = 0;
-  if (this->rebar && this->auxiliaryVisible != 0) {
-    RECT rectangle;
-    GetClientRect(this->rebar, &rectangle);
-    top = rectangle.bottom - rectangle.top + 4;
-  }
-
-  this->browser->put_Top(top);
+  this->browser->put_Top(this->AuxiliaryHeight());
 
   RECT rectangle;
   GetClientRect(this->host, &rectangle);
