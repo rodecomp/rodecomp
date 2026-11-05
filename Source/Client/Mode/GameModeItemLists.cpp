@@ -47,6 +47,11 @@ namespace {
     /* 0029 */ EquipListOption options[5];
     /* 0042 */ unsigned char flags;
   };
+
+  struct InventoryStartHeader {
+    /* 0000 */ std::int16_t length;
+    /* 0002 */ unsigned char listType;
+  };
 #pragma pack(pop)
 
   static_assert(sizeof(EquipListRecord) == 0x43);
@@ -163,20 +168,14 @@ void CGameMode::ReceiveEquipListPart(unsigned char listType, int count, const un
 // OFFSET: 0x00D44600
 // FUNCTION: fn_21835
 void CGameMode::ReceiveInventoryStart(const unsigned char* packet) {
-  const int length = *reinterpret_cast<const std::int16_t*>(g_gameModePacketBuffer + 2) - 5;
+  const InventoryStartHeader& header = *reinterpret_cast<const InventoryStartHeader*>(g_gameModePacketBuffer + 2);
+  const int length = header.length - 5;
+  const unsigned char listType = header.listType;
   if (length > 24) {
     return;
   }
 
-  switch (g_gameModePacketBuffer[4]) {
-  case 0:
-    g_session.ClearInventory();
-    g_session.ResetEquipment();
-    g_session.ResetItems2B50();
-    break;
-  case 1:
-    g_session.ClearItems1740();
-    break;
+  switch (listType) {
   case 2:
   case 3: {
     char title[24] = {};
@@ -190,6 +189,14 @@ void CGameMode::ReceiveInventoryStart(const unsigned char* packet) {
     }
     break;
   }
+  case 0:
+    g_session.ClearInventory();
+    g_session.ResetEquipment();
+    g_session.ResetItems2B50();
+    break;
+  case 1:
+    g_session.ClearItems1740();
+    break;
   }
 }
 
