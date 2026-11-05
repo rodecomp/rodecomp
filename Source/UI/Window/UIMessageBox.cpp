@@ -222,8 +222,9 @@ UIMerInfoWnd::UIMerInfoWnd() : UIFrameWnd(0) {
 
 // OFFSET: 0x008A3FC0
 // FUNCTION: fn_11663
-UIMessageBox::UIMessageBox()
-    : UIFrameWnd(0), counting(0), protectedMessage(0) {
+UIMessageBox::UIMessageBox() : UIFrameWnd(0) {
+  this->counting = 0;
+  this->protectedMessage = 0;
 }
 
 // OFFSET: 0x008A40B0
