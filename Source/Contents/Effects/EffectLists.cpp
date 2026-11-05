@@ -9,6 +9,7 @@
 #include "Contents/Effects/AnimatedEmitterEffect.h"
 #include "Contents/Effects/AstralStrikeEffect.h"
 #include "Contents/Effects/AxeBoomerang.h"
+#include "Contents/Effects/BezierArcThrowEffect.h"
 #include "Contents/Effects/BindTrapEffect.h"
 #include "Contents/Effects/BlastForge.h"
 #include "Contents/Effects/CaneOfEvilEyeEffect.h"
@@ -68,6 +69,7 @@
 #include "Client/Mode/CGameMode.h"
 #include "Client/Session.h"
 #include "Client/Mode/ModeMgr.h"
+#include "Contents/Actors/GameActor.h"
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/Camera/Camera.h"
 #include "Render/Renderer.h"
@@ -80,33 +82,6 @@
 #include <cstdint>
 #include <new>
 #include <string>
-
-
-
-void CRenderObject::ClearLevelEffects() {
-  reinterpret_cast<unsigned char*>(this)[0x2B8] = 0;
-  this->SendMsg(this, 0x6D, 0, 0xC8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-  this->SendMsg(this, 0x6D, 0, 0x3D0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-  this->SendMsg(this, 0x6D, 0, 0x3D1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-  this->SendMsg(this, 0x6D, 0, 0x3D2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-  this->SendMsg(this, 0x6D, 0, 0x3D3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-  this->SendMsg(this, 0x6D, 0, 0x3FE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-  this->SendMsg(this, 0x6D, 0, 0x3FF, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-  this->SendMsg(this, 0x6D, 0, 0x4CA, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-  this->SendMsg(this, 0x6D, 0, 0x4CB, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-  this->SendMsg(nullptr, 0x6D, 0, 0x2F5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-  this->SendMsg(nullptr, 0x6D, 0, 0x370, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-  this->SendMsg(nullptr, 0x6D, 0, 0xC8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-  this->SendMsg(nullptr, 0x6D, 0, 0x18D, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-  this->SendMsg(nullptr, 0x6D, 0, 0x18E, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-  this->SendMsg(nullptr, 0x6D, 0, 0x16A, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-  this->SendMsg(nullptr, 0x6D, 0, 0x16A, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-  this->SendMsg(nullptr, 0x6D, 0, 0xC9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-  this->SendMsg(nullptr, 0x6D, 0, 0xCA, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-  this->SendMsg(nullptr, 0x6D, 0, 0xCA, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-  this->SendMsg(this, 0x6D, 0, g_session.m_maxLevelEffect4th, g_session.m_maxLevelEffect4th >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-  this->SendMsg(this, 0x6D, 0, g_session.m_maxLevelEffect4thSub, g_session.m_maxLevelEffect4thSub >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-}
 
 // OFFSET: 0x00B25750
 // FUNCTION: fn_18783
@@ -486,39 +461,6 @@ public:
   /* 0044 */ bool m_encrypted;
 };
 
-class CBezierArcThrowEffect : public CEffect {
-public:
-  // INLINED
-  explicit CBezierArcThrowEffect(const std::string& name)
-      : CEffect(-1), name(name), unknown_00F0(0), unknown_00F4(0), unknown_00F8(0) {}
-
-  /* 00CC */ int unknown_00CC;
-  /* 00D0 */ int unknown_00D0;
-  /* 00D4 */ int unknown_00D4;
-  /* 00D8 */ std::string name;
-  /* 00F0 */ int unknown_00F0;
-  /* 00F4 */ int unknown_00F4;
-  /* 00F8 */ int unknown_00F8;
-};
-
-class CThunderingOrb : public CBezierArcThrowEffect {
-public:
-  // INLINED
-  explicit CThunderingOrb(const std::string& name) : CBezierArcThrowEffect(name) {}
-};
-
-class CWindBomb : public CBezierArcThrowEffect {
-public:
-  // INLINED
-  explicit CWindBomb(const std::string& name) : CBezierArcThrowEffect(name) {}
-};
-
-#if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(CBezierArcThrowEffect) == 0xFC);
-static_assert(sizeof(CThunderingOrb) == 0xFC);
-static_assert(sizeof(CWindBomb) == 0xFC);
-#endif
-
 template <class T>
 struct CEffectAllocator : CAllocator {
   CEffect* Create() override;
@@ -642,6 +584,17 @@ CEffect* CEffectAllocator<CThunderingOrb>::Create() {
   }
 
   return new (memory) CThunderingOrb(reinterpret_cast<const char*>(name.m_text));
+}
+
+// INLINED
+EncryptedName<0x3B, 0x39FF7FB50DEB998FULL>& WindBombName() {
+  const std::uint8_t source[] = {
+      0xCB, 0xCB, 0xBE, 0x44, 0xF1, 0x23, 0xBB, 0x6B, 0xD0, 0xCE, 0xA2, 0x43, 0xF1, 0x20, 0xBD, 0x76,
+      0xC2, 0xDB, 0xB7, 0x7A, 0xDC, 0x11, 0x9B, 0x66, 0xED, 0xF6, 0x86, 0x6F, 0xEA, 0x0B, 0x90, 0x4B,
+      0xE1, 0xF8, 0x8F, 0x62, 0xE9, 0x08, 0x96, 0x57, 0xEB, 0xC6, 0x89, 0x62, 0xD8, 0x1D, 0xA0, 0x4D,
+      0xE0, 0xEB, 0x85, 0x6C, 0xD1, 0x10, 0xD1, 0x4A, 0xFB, 0xEB, 0xEB};
+  thread_local EncryptedName<sizeof(source), 0x39FF7FB50DEB998FULL> name(source);
+  return name;
 }
 
 // OFFSET: 0x00B20E70
@@ -5283,13 +5236,13 @@ void EffectLists::Update() {
 // FUNCTION: fn_18790
 bool HasEffectScript(std::string path, std::string name) {
   bool exists = false;
-  std::string versionKey = EmitterKey(name.substr(), "effect_version");
+  std::string versionKey = EmitterKey(name, "effect_version");
   g_session.m_hotkeyScript->Call("IsExistValue", "s>b", versionKey.c_str(), &exists);
   if (exists) {
     return true;
   }
 
-  std::string emitterKey = EmitterKey(name.substr(), "emitterInfo");
+  std::string emitterKey = EmitterKey(name, "emitterInfo");
   g_session.m_hotkeyScript->Call("IsExistValue", "s>b", emitterKey.c_str(), &exists);
   return exists;
 }
@@ -5297,19 +5250,19 @@ bool HasEffectScript(std::string path, std::string name) {
 // OFFSET: 0x00B3B0A0
 // FUNCTION: fn_18795
 void ReadEffectScriptV1(std::string name) {
-  g_session.m_hotkeyScript->Call("ReadEmitterInfoz_ver_1_0", "s", EmitterInfoKey(name.substr()).c_str());
-  g_session.m_hotkeyScript->Call("ReadEffectInfoz", "s", EffectFunctionName(name.substr()).c_str());
+  g_session.m_hotkeyScript->Call("ReadEmitterInfoz_ver_1_0", "s", EmitterInfoKey(name).c_str());
+  g_session.m_hotkeyScript->Call("ReadEffectInfoz", "s", EffectFunctionName(name).c_str());
 }
 
 // OFFSET: 0x00B3B240
 // FUNCTION: fn_18796
 void ReadEffectScriptV2(std::string name) {
-  g_session.m_hotkeyScript->Call("ReadEmitterInfoz", "s", EmitterKey(name.substr(), "emitterInfo").c_str());
-  g_session.m_hotkeyScript->Call("ReadMagicFloorInfoz", "s", EmitterKey(name.substr(), "magicfloorInfo").c_str());
-  g_session.m_hotkeyScript->Call("ReadEvilsPawInfoz", "s", EmitterKey(name.substr(), "evilsPawInfo").c_str());
-  g_session.m_hotkeyScript->Call("ReadAnimatedEmitterInfoz", "s", EmitterKey(name.substr(), "animatedEmitterInfo").c_str());
-  g_session.m_hotkeyScript->Call("ReadEZ2STRInfoz", "s", EmitterKey(name.substr(), "ez2strInfo").c_str());
-  g_session.m_hotkeyScript->Call("ReadWindEffectInfoz", "s", EmitterKey(name.substr(), "windEffectInfo").c_str());
+  g_session.m_hotkeyScript->Call("ReadEmitterInfoz", "s", EmitterKey(name, "emitterInfo").c_str());
+  g_session.m_hotkeyScript->Call("ReadMagicFloorInfoz", "s", EmitterKey(name, "magicfloorInfo").c_str());
+  g_session.m_hotkeyScript->Call("ReadEvilsPawInfoz", "s", EmitterKey(name, "evilsPawInfo").c_str());
+  g_session.m_hotkeyScript->Call("ReadAnimatedEmitterInfoz", "s", EmitterKey(name, "animatedEmitterInfo").c_str());
+  g_session.m_hotkeyScript->Call("ReadEZ2STRInfoz", "s", EmitterKey(name, "ez2strInfo").c_str());
+  g_session.m_hotkeyScript->Call("ReadWindEffectInfoz", "s", EmitterKey(name, "windEffectInfo").c_str());
 }
 
 // OFFSET: 0x00B3AC30
