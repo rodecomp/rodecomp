@@ -51,6 +51,16 @@ protected:
   int LineAt(int x, int y) const;
 };
 
+// INLINED
+inline int UIListBoxEx::LineAt(int x, int y) const {
+  if (x < 0 || y < 0 || x >= this->geometry.width || y >= this->geometry.height) {
+    return -1;
+  }
+
+  const int index = (this->topLine + y / this->lineHeight);
+  return index >= 0 && static_cast<unsigned>(index) < this->lines.size() ? index : -1;
+}
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(ExtendedListLine) == 28);
 static_assert(sizeof(UIListBoxEx) == 0xC0);

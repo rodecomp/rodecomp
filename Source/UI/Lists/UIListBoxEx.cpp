@@ -120,16 +120,6 @@ void UIListBoxEx::Refresh() {
   bar->Invalidate();
 }
 
-// INLINED
-int UIListBoxEx::LineAt(int x, int y) const {
-  if (x < 0 || y < 0 || x >= this->geometry.width || y >= this->geometry.height) {
-    return -1;
-  }
-
-  const int index = (this->topLine + y / this->lineHeight);
-  return index >= 0 && static_cast<unsigned>(index) < this->lines.size() ? index : -1;
-}
-
 // OFFSET: 0x008905A0
 // FUNCTION: fn_11419
 void UIListBoxEx::Slot25(int x, int y) {
