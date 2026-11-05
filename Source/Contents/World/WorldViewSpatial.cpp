@@ -3,13 +3,6 @@
 
 #include <bit>
 
-namespace {
-  // INLINED
-  float Horizontal(float x, const float* row) {
-    return (x * row[0] + row[1] * 0.0f) + row[2];
-  }
-}
-
 // OFFSET: 0x00ADADE0
 // FUNCTION: fn_17913
 WorldViewSpatial::WorldViewSpatial() {
@@ -27,48 +20,27 @@ WorldViewSpatial::~WorldViewSpatial() = default;
 // OFFSET: 0x00ADB0D0
 // FUNCTION: fn_17919
 void WorldViewSpatial::Collect(float horizontal, float vertical, const float* matrix, WorldSpatialTree& root) {
-  const float negativeX = -horizontal;
-  const float negativeY = -vertical;
+  float viewPlanes[6][4] = {
+    {-horizontal, 0.0f, 1.0f, 0.0f},
+    {horizontal, 0.0f, 1.0f, 0.0f},
+    {0.0f, -vertical, 1.0f, 0.0f},
+    {0.0f, vertical, 1.0f, 0.0f},
+    {0.0f, 0.0f, 1.0f, -10.0f},
+    {0.0f, 0.0f, -1.0f, 1500.0f},
+  };
 
-  for (unsigned plane = 0; plane < 6; ++plane) {
-    for (unsigned axis = 0; axis < 4; ++axis) {
-      const float* row = matrix + axis * 3;
-      float value;
+  for (int i = 0; i < 6; ++i) {
+    const float* plane = viewPlanes[i];
+    float* out = this->planes.planes[i];
 
-      if (plane == 0 || plane == 1) {
-        const float x = plane == 0 ? negativeX : horizontal;
-        value = Horizontal(x, row);
+    out[0] = plane[0] * matrix[0] + plane[1] * matrix[1] + plane[2] * matrix[2];
+    out[1] = plane[0] * matrix[3] + plane[1] * matrix[4] + plane[2] * matrix[5];
+    out[2] = plane[0] * matrix[6] + plane[1] * matrix[7] + plane[2] * matrix[8];
+    out[3] = plane[0] * matrix[9] + plane[1] * matrix[10] + plane[2] * matrix[11] + plane[3];
 
-        if (axis == 3) {
-          value = value + 0.0f;
-        }
-      } else if (plane == 2 || plane == 3) {
-        const float y = plane == 2 ? negativeY : vertical;
-        value = (y * row[1] + row[0] * 0.0f) + row[2];
-
-        if (axis == 3) {
-          value = value + 0.0f;
-        }
-      } else if (plane == 4) {
-        value = (row[0] * 0.0f + row[1] * 0.0f) + row[2];
-
-        if (axis == 3) {
-          value = value - 10.0f;
-        }
-      } else {
-        value = (row[0] * 0.0f + row[1] * 0.0f) - row[2] * 1.0f;
-
-        if (axis == 3) {
-          value = value + 1500.0f;
-        }
-      }
-
-      this->planes.planes[plane][axis] = value;
-    }
-
-    for (unsigned axis = 0; axis < 3; ++axis) {
-      this->planes.normals[plane][axis] = this->planes.planes[plane][axis];
-    }
+    this->planes.normals[i][0] = out[0];
+    this->planes.normals[i][1] = out[1];
+    this->planes.normals[i][2] = out[2];
   }
 
   this->CollectNode(root, 0, false);
