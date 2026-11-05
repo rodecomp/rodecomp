@@ -220,8 +220,10 @@ C3dNode* C3dActorV2::Find(const char* name) {
 // OFFSET: 0x00AB94D0
 // FUNCTION: fn_17510
 void C3dActor::CopyVolumes(const std::list<ModelVolume*>& source) {
-  for (const ModelVolume* volume : source) {
-    this->volumes.push_back(new ModelVolume(*volume));
+  for (auto it = source.begin(); it != source.end(); ++it) {
+    ModelVolume* volume = new ModelVolume;
+    *volume = **it;
+    this->volumes.push_back(volume);
   }
 }
 

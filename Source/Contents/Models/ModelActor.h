@@ -22,6 +22,7 @@ public:
   virtual void MarkOccluded(const float* ray);
   virtual void SetSpeed(float speed);
   void CopyVolumes(const std::list<ModelVolume*>& source);
+  void Fade();
 
   /* 0004 */ float position[3];
   /* 0010 */ float rotation[3];
@@ -50,7 +51,6 @@ public:
 
 protected:
   void FinishBounds(const float* bounds, bool modern);
-  void Fade();
   bool Reversed() const;
 };
 
