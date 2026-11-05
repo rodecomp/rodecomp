@@ -55,7 +55,7 @@ namespace Stove::PCSDK {
       std::uint64_t GetMemberNumber() const;
       std::uint64_t GetGameUserId() const;
 
-      /* 0000 */ std::uint8_t unknown_0000[20];
+      /* 0000 */ void* unknown_0000[5];
     };
   }
 
@@ -65,7 +65,7 @@ namespace Stove::PCSDK {
       StovePCPaymentOption(const StovePCPaymentOption& other);
       void SetOperation(int operation);
 
-      /* 0000 */ std::uint8_t unknown_0000[24];
+      /* 0000 */ void* unknown_0000[6];
     };
 
     struct __declspec(dllimport) StovePCTermsOption : StovePCPaymentOption {
@@ -98,7 +98,7 @@ namespace Stove::PCSDK {
       std::int64_t GetProductId() const;
       void SetProductId(std::int64_t productId);
 
-      /* 0000 */ std::uint8_t unknown_0000[20];
+      /* 0000 */ void* unknown_0000[5];
     };
 
     struct __declspec(dllimport) StovePCStartPurchaseParam {
@@ -108,7 +108,7 @@ namespace Stove::PCSDK {
       void SetOrderProduct(int index, const StovePCOrderProduct* orderProduct);
       void SetPurchaseOption(StovePCPurchaseOption option);
 
-      /* 0000 */ std::uint8_t unknown_0000[40];
+      /* 0000 */ void* unknown_0000[10];
     };
 
     struct __declspec(dllimport) StovePCPurchasedProduct {
