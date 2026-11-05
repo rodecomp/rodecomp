@@ -4,9 +4,9 @@
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UICheckBox.h"
 
+#include <algorithm>
+#include <iterator>
 #include <new>
-
-#define SHORTCUT_RESOURCE "유저인터페이스"
 
 // OFFSET: 0x0092A190
 // FUNCTION: fn_12654
@@ -29,49 +29,56 @@ void UIShortCutWnd::Slot15(int, int) {
   this->m_bank->SetTooltip(LookupMessage(3596));
   this->AddChild(this->m_bank);
 
-  const auto create = [&](
-                        int id, int x, int y, unsigned char disabled, unsigned char enabled, const char* normal, const char* over, const char* pressed,
-                        const char* unavailable
-                      ) {
-    UIBitmapButton* button = new UIBitmapButton();
-    button->SetBitmap(normal, 0, 0);
-    button->SetBitmap(over, 1, 0);
-    button->SetBitmap(pressed, 2, 0);
+  this->m_decrease = new UIBitmapButton();
+  this->m_decrease->SetBitmap("유저인터페이스\\Shortcut\\btn_minus_normal.bmp", 0, 0);
+  this->m_decrease->SetBitmap("유저인터페이스\\Shortcut\\btn_minus_over.bmp", 1, 0);
+  this->m_decrease->SetBitmap("유저인터페이스\\Shortcut\\btn_minus_press.bmp", 2, 0);
+  this->m_decrease->SetSize(this->m_decrease->BitmapWidth(), this->m_decrease->BitmapHeight());
+  this->m_decrease->SetId(217);
+  this->m_decrease->SetDisabled(0);
+  this->m_decrease->Invalidate();
+  this->m_decrease->Move(276, 0);
+  this->m_decrease->Enable(0);
+  this->AddChild(this->m_decrease);
 
-    if (unavailable) {
-      button->SetBitmap(unavailable, 3, 0);
-    }
+  this->m_increase = new UIBitmapButton();
+  this->m_increase->SetBitmap("유저인터페이스\\Shortcut\\btn_plus_normal.bmp", 0, 0);
+  this->m_increase->SetBitmap("유저인터페이스\\Shortcut\\btn_plus_over.bmp", 1, 0);
+  this->m_increase->SetBitmap("유저인터페이스\\Shortcut\\btn_plus_press.bmp", 2, 0);
+  this->m_increase->SetBitmap("유저인터페이스\\Shortcut\\btn_plus_disable.bmp", 3, 0);
+  this->m_increase->SetSize(this->m_increase->BitmapWidth(), this->m_increase->BitmapHeight());
+  this->m_increase->SetId(216);
+  this->m_increase->SetDisabled(0);
+  this->m_increase->Invalidate();
+  this->m_increase->Move(276, 19);
+  this->m_increase->Enable(1);
+  this->AddChild(this->m_increase);
 
-    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
-    button->SetId(id);
-    button->SetDisabled(disabled);
-    button->Invalidate();
-    button->Move(x, y);
-    button->Enable(enabled);
-    this->AddChild(button);
+  std::fill(std::begin(this->m_itemSlots), std::end(this->m_itemSlots), nullptr);
 
-    return button;
-  };
-  this->m_decrease = create(
-    217, 276, 0, 0, 0, SHORTCUT_RESOURCE "\\Shortcut\\btn_minus_normal.bmp", SHORTCUT_RESOURCE "\\Shortcut\\btn_minus_over.bmp",
-    SHORTCUT_RESOURCE "\\Shortcut\\btn_minus_press.bmp", nullptr
-  );
-  this->m_increase = create(
-    216, 276, 19, 0, 1, SHORTCUT_RESOURCE "\\Shortcut\\btn_plus_normal.bmp", SHORTCUT_RESOURCE "\\Shortcut\\btn_plus_over.bmp",
-    SHORTCUT_RESOURCE "\\Shortcut\\btn_plus_press.bmp", SHORTCUT_RESOURCE "\\Shortcut\\btn_plus_disable.bmp"
-  );
+  this->m_showItems = new UIBitmapButton();
+  this->m_showItems->SetBitmap("유저인터페이스\\Shortcut\\btn_open_itemslot_normal.bmp", 0, 0);
+  this->m_showItems->SetBitmap("유저인터페이스\\Shortcut\\btn_open_itemslot_normal.bmp", 1, 0);
+  this->m_showItems->SetBitmap("유저인터페이스\\Shortcut\\btn_open_itemslot_press.bmp", 2, 0);
+  this->m_showItems->SetSize(this->m_showItems->BitmapWidth(), this->m_showItems->BitmapHeight());
+  this->m_showItems->SetId(588);
+  this->m_showItems->SetDisabled(1);
+  this->m_showItems->Invalidate();
+  this->m_showItems->Move(247, 33);
+  this->m_showItems->Enable(0);
+  this->AddChild(this->m_showItems);
 
-  for (int index = 0; index < 9; ++index) {
-    this->m_itemSlots[index] = nullptr;
-  }
+  this->m_hideItems = new UIBitmapButton();
+  this->m_hideItems->SetBitmap("유저인터페이스\\Shortcut\\btn_close_itemslot_normal.bmp", 0, 0);
+  this->m_hideItems->SetBitmap("유저인터페이스\\Shortcut\\btn_close_itemslot_normal.bmp", 1, 0);
+  this->m_hideItems->SetBitmap("유저인터페이스\\Shortcut\\btn_close_itemslot_press.bmp", 2, 0);
+  this->m_hideItems->SetSize(this->m_hideItems->BitmapWidth(), this->m_hideItems->BitmapHeight());
+  this->m_hideItems->SetId(589);
+  this->m_hideItems->SetDisabled(0);
+  this->m_hideItems->Invalidate();
+  this->m_hideItems->Move(247, 33);
+  this->m_hideItems->Enable(1);
+  this->AddChild(this->m_hideItems);
 
-  this->m_showItems = create(
-    588, 247, 33, 1, 0, SHORTCUT_RESOURCE "\\Shortcut\\btn_open_itemslot_normal.bmp", SHORTCUT_RESOURCE "\\Shortcut\\btn_open_itemslot_normal.bmp",
-    SHORTCUT_RESOURCE "\\Shortcut\\btn_open_itemslot_press.bmp", nullptr
-  );
-  this->m_hideItems = create(
-    589, 247, 33, 0, 1, SHORTCUT_RESOURCE "\\Shortcut\\btn_close_itemslot_normal.bmp", SHORTCUT_RESOURCE "\\Shortcut\\btn_close_itemslot_normal.bmp",
-    SHORTCUT_RESOURCE "\\Shortcut\\btn_close_itemslot_press.bmp", nullptr
-  );
   this->SendMsg(nullptr, 23, 0, 0, 0, 0);
 }
