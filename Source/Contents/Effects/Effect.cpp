@@ -30,13 +30,13 @@ CEffect::~CEffect() = default;
 
 // OFFSET: 0x005A2150
 // FUNCTION: fn_03087
-void CEffect::Close() {
-}
+void CEffect::Close() {}
 
 // OFFSET: 0x00B4DE40
 // FUNCTION: fn_18984
 void CEffect::AddEvent(int kind, const char* text, int frame, int argument) {
-  EffectEvent event{kind, frame, argument, text ? text : ""};
+  EffectEvent event{kind, frame, argument};
+  event.text = text ? text : "";
   this->events.push_back(event);
 }
 
