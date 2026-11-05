@@ -29,9 +29,9 @@ struct CRagEffect : CRenderObject {
   __declspec(noinline) void Fireworks();
   bool ProcessEZ2STRC10830();
   bool ProcessEZ2STRC153A0();
-  bool ProcessEZ2STRC3CC40();
+  __declspec(noinline) bool ProcessEZ2STRC3CC40();
   bool ProcessEZ2STRC3FE00();
-  bool ProcessEZ2STRC65300();
+  __declspec(noinline) bool ProcessEZ2STRC65300();
   bool ProcessEZ2STRC15990();
   bool ProcessEZ2STRC159D0();
   __declspec(noinline) bool ShieldCharge();
@@ -45,7 +45,7 @@ struct CRagEffect : CRenderObject {
   void Warp();
   __declspec(noinline) void PotionPillar(float heightSpeed, int duration);
   bool Potion_Berserk();
-  void AttackEnergy2(const char* name);
+  __declspec(noinline) void AttackEnergy2(const char* name);
   bool LexDivina();
   void RemoveTrap();
   void Sphere();
@@ -130,10 +130,10 @@ struct CRagEffect : CRenderObject {
   void WaterOut();
   void BlackMaximize(const char* name);
   void TexturedPair(const char* name);
-  void PurpleSlash(std::int16_t angle);
+  __declspec(noinline) void PurpleSlash(std::int16_t angle);
   void TexturedDrop(const char* name, char flag);
   __declspec(noinline) void TexturedDualSpin(const char* first, const char* second, int unused);
-  void TexturedScatterLow(const char* name, char flag);
+  __declspec(noinline) void TexturedScatterLow(const char* name, char flag);
   __declspec(noinline) void TexturedScatter(const char* name, char flag);
   void TexturedSpiralFade(const char* name, int unused1, int unused2);
   __declspec(noinline) void TexturedSpiralTall(const char* name, int unused1, int unused2);
@@ -143,7 +143,7 @@ struct CRagEffect : CRenderObject {
   __declspec(noinline) void TexturedSpin(const char* name);
   __declspec(noinline) void TexturedSpiral(const char* name, int unused1, int unused2);
   __declspec(noinline) void TexturedRise(const char* name, char large);
-  void TexturedBurst(const char* name);
+  __declspec(noinline) void TexturedBurst(const char* name);
   __declspec(noinline) void RingStack(char white);
   void TexturedPulse(const char* name);
   void ShockwaveRing(std::int16_t angle);
@@ -165,7 +165,7 @@ struct CRagEffect : CRenderObject {
   void Ghost(char type);
   void Bottom_Out(const char* name, char kind);
   __declspec(noinline) void POISON(char flag);
-  void Rainbow(const char* name, int unused);
+  __declspec(noinline) void Rainbow(const char* name, int unused);
   __declspec(noinline) void BLIND(char flag);
   void TexturedTwinSpin(const char* name, char kind);
   void TexturedScatterSphere(const char* name, char flag, int unused);
@@ -189,7 +189,7 @@ struct CRagEffect : CRenderObject {
   void TexturedForkBolt(const char* name, char flag);
   void MonsterSpriteBurst(char kind);
   void TexturedDescendingRings(const char* name, char flag);
-  void TexturedQuadSpiral(const char* name);
+  __declspec(noinline) void TexturedQuadSpiral(const char* name);
   void TexturedRisingPillar(const char* name, char unused);
   void CloudBurst();
   bool AgilityChange(char increase, const std::string& textureName);
@@ -209,7 +209,7 @@ struct CRagEffect : CRenderObject {
   __declspec(noinline) void TeleportRings(const char* name, std::int16_t level);
   void AlphaCenterStream();
   void CloudDrift();
-  void NotifyGameMode(char value);
+  __declspec(noinline) void NotifyGameMode(char value);
   void ScatterItemIcons(char kind);
   void Vallentine(char kind);
   void TexturedSpinShards(const char* name, char kind);
@@ -220,8 +220,8 @@ struct CRagEffect : CRenderObject {
   __declspec(noinline) bool Concentration();
   __declspec(noinline) bool FirePillarBomb();
   bool ProcessEZ2STRAtTarget();
-  bool TwoHandQuicken();
-  void SageMagicRod();
+  __declspec(noinline) bool TwoHandQuicken();
+  __declspec(noinline) void SageMagicRod();
   void SakuraFireArrow();
   void TorchDustRing(const char* name, char kind, std::int16_t angle);
   void BeginSpellSwirl(int, const char*, char alpha);
@@ -314,7 +314,7 @@ struct CRagEffect : CRenderObject {
   void WhiteRingWave();
   void Detoxication();
   void PoisonAttack(char flag);
-  void StoneSpike();
+  __declspec(noinline) void StoneSpike();
   void sub_C5CC00();
   void sub_C649E0();
   void sub_C47F70(char flag);
@@ -328,13 +328,13 @@ struct CRagEffect : CRenderObject {
   void StatusIconColumn();
   bool StormGust();
   void TexturedSkillAura(char type);
-  void TexturedMagicRing(char type);
+  __declspec(noinline) void TexturedMagicRing(char type);
   void TexturedRisingRing(const char* name);
   bool TexturedRisingRingStages(const char* name, char level);
   void TexturedGroundRing(const char* name, char flag, int unused1, int unused2);
   void TexturedQuadRingSized(std::int16_t baseAlpha, const char* name, char kind);
   __declspec(noinline) void WhiteYellowRings();
-  void BlueSpellRings();
+  __declspec(noinline) void BlueSpellRings();
   __declspec(noinline) void WhiteSpellRings();
   __declspec(noinline) void TexturedSpellRings(const char* name);
   __declspec(noinline) void BlackSpellRings(char silent);
