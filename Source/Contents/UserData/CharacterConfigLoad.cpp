@@ -59,7 +59,7 @@ void CCharacterLinkedUserDataMgr::Load(std::uint32_t accountId, std::uint32_t ch
     return;
   }
 
-  const std::string token(reinterpret_cast<const char*>(&g_session.unknown_807C[0x08]), 16);
-  const std::string url = this->LoadUrl();
-  g_asyncWorkMgr->LoadCharacter(accountId, characterId, accountName, url, token);
+  g_asyncWorkMgr->LoadCharacter(
+    accountId, characterId, accountName, this->LoadUrl(), std::string(reinterpret_cast<const char*>(&g_session.unknown_807C[0x08]), 16)
+  );
 }
