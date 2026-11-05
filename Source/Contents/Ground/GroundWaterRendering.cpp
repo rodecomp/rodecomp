@@ -34,7 +34,7 @@ void GroundGeometry::DrawWaterCell(
     const int sum = column + row;
     const auto wave = [&](int coordinate) {
       const float angle = static_cast<float>(coordinate) * surface.pitch + surface.phase;
-      const int degrees = TruncateToInt(angle);
+      const int degrees = static_cast<int>(angle);
       return ClientSine(degrees) * surface.height + level;
     };
     middle = wave(sum);
@@ -74,15 +74,22 @@ void GroundGeometry::DrawWaterCell(
   }
 
   RenderPrimitive* primitive = g_renderer->primitives.Acquire();
-  std::memcpy(primitive->vertices, vertices, sizeof(vertices));
-  std::uint32_t color = 0x90FFFFFFu;
+  primitive->SetPosition(0, &vertices[0].x);
+  primitive->SetPosition(1, &vertices[1].x);
+  primitive->SetPosition(2, &vertices[2].x);
+  primitive->SetPosition(3, &vertices[3].x);
 
   if (!g_overrideColor && this->water.type == 4) {
-    color = 0xFF000000u;
-
-    for (unsigned channel = 0; channel < 3; ++channel) {
-      const float scaled = ambient[channel] * 255.0f;
-      color |= (static_cast<unsigned>(TruncateToInt(scaled)) & 255u) << (16 - 8 * channel);
+    const std::uint8_t red = static_cast<std::uint8_t>(ambient[0] * 255.0f);
+    const std::uint8_t green = static_cast<std::uint8_t>(ambient[1] * 255.0f);
+    const std::uint8_t blue = static_cast<std::uint8_t>(ambient[2] * 255.0f);
+    primitive->vertices[0].diffuse = 0xFF000000u + (red << 16) + (green << 8) + blue;
+    primitive->vertices[1].diffuse = primitive->vertices[0].diffuse;
+    primitive->vertices[2].diffuse = primitive->vertices[0].diffuse;
+    primitive->vertices[3].diffuse = primitive->vertices[0].diffuse;
+  } else {
+    for (unsigned corner = 0; corner < 4; ++corner) {
+      primitive->vertices[corner].diffuse = 0x90FFFFFFu;
     }
   }
 
@@ -92,7 +99,6 @@ void GroundGeometry::DrawWaterCell(
   const float bottom = (static_cast<float>(static_cast<unsigned>(row) & 3u) + 1.0f) * 0.25f;
 
   for (unsigned corner = 0; corner < 4; ++corner) {
-    primitive->vertices[corner].diffuse = color;
     primitive->vertices[corner].u = (corner & 1) ? right : left;
     primitive->vertices[corner].v = (corner & 2) ? bottom : top;
   }
