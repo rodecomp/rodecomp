@@ -8,6 +8,7 @@
 #include "Client/Mode/ModeEvents.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
+#include "Resource/TextureNames.h"
 #include "Script/LuaScript.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Buttons/UIButton.h"
@@ -16,9 +17,10 @@
 
 // OFFSET: 0x0084EDD0
 // FUNCTION: fn_10653
-UIButton::UIButton()
-    : UIWindow(0), m_disabled(0), m_argument(0) {
+UIButton::UIButton() : UIWindow(0) {
   this->geometry.unknown_0030 = 0;
+  this->m_disabled = 0;
+  this->m_argument = 0;
 }
 
 // OFFSET: 0x00851340
@@ -81,19 +83,29 @@ void UIButton::Slot27(int x, int y) {
     return;
   }
 
-  unsigned state = 0;
-  if (x >= 0 && x < this->geometry.width && y >= 0 && y < this->geometry.height) {
-    state = g_windowMgr.Capture() == this ? 2 : 1;
-  }
-
-  if (this->geometry.unknown_0030 != state) {
-    this->geometry.unknown_0030 = state;
+  if (g_windowMgr.Capture() == this) {
+    if (x >= 0 && x < this->geometry.width && y >= 0 && y < this->geometry.height) {
+      if (this->geometry.unknown_0030 != 2) {
+        this->geometry.unknown_0030 = 2;
+        this->Invalidate();
+      }
+    } else if (this->geometry.unknown_0030 != 0) {
+      this->geometry.unknown_0030 = 0;
+      this->Invalidate();
+    }
+  } else if (x >= 0 && x < this->geometry.width && y >= 0 && y < this->geometry.height) {
+    if (this->geometry.unknown_0030 != 1) {
+      this->geometry.unknown_0030 = 1;
+      this->Invalidate();
+    }
+  } else if (this->geometry.unknown_0030 != 0) {
+    this->geometry.unknown_0030 = 0;
     this->Invalidate();
   }
 
   UIWindow* parent = this->parent;
   if (parent == g_windowMgr.unknown_01DC) {
-    parent->SendMsg(this, 6, 271, state != 0, 0, 0);
+    parent->SendMsg(this, 6, 271, this->geometry.unknown_0030 != 0, 0, 0);
   }
 }
 
@@ -131,7 +143,7 @@ void UIButton::Slot28(int x, int y) {
 // OFFSET: 0x0085F900
 // FUNCTION: fn_10874
 void UIButton::Slot29(int x, int y) {
-  if (x < this->geometry.x || x > (this->geometry.x + this->geometry.width) || y < this->geometry.y || y > (this->geometry.y + this->geometry.height)) {
+  if (x < this->geometry.x || (this->geometry.x + this->geometry.width) < x || y < this->geometry.y || (this->geometry.y + this->geometry.height) < y) {
     if (this->geometry.unknown_0030 != 0) {
       this->geometry.unknown_0030 = 0;
       this->Invalidate();
