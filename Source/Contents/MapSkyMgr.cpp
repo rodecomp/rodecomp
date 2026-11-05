@@ -102,7 +102,7 @@ vector3d CWeatherEffect::GetWindDirection() const {
 
 // OFFSET: 0x00C7B790
 // FUNCTION: fn_20367
-void CWeatherEffect::Play(char kind) {
+__declspec(noinline) void CWeatherEffect::Play(char kind) {
   if (this->effect && this->effect->GetDuration() - this->effect->state.stateCnt <= 300) {
     return;
   }
@@ -110,49 +110,31 @@ void CWeatherEffect::Play(char kind) {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   this->actor = mode->scene->player;
 
-  int effectId = 0;
-  switch (kind) {
-  case 0:
-    effectId = 0xe5;
-    break;
-  case 1:
-    effectId = 0xe6;
-    break;
-  case 2:
-    effectId = 0xe9;
-    break;
-  case 3:
-    effectId = 0x203;
-    break;
-  case 4:
-    effectId = 0x204;
-    break;
-  case 5:
-    effectId = 0x250;
-    break;
-  case 7:
-    effectId = 0x2b9;
-    break;
-  case 8:
-    effectId = 0x2ba;
-    break;
-  case 9:
-    effectId = 0x3b1;
-    break;
-  case 10:
-    effectId = 0x415;
-    break;
-  case 11:
-    effectId = 0x45b;
-    break;
-  case 15:
-    effectId = 0x479;
-    break;
-  default:
-    return;
+  if (kind == 0) {
+    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(0xe5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  } else if (kind == 1) {
+    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(0xe6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  } else if (kind == 2) {
+    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(0xe9, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  } else if (kind == 3) {
+    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(0x203, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  } else if (kind == 4) {
+    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(0x204, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  } else if (kind == 5) {
+    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(0x250, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  } else if (kind == 7) {
+    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(0x2b9, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  } else if (kind == 8) {
+    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(0x2ba, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  } else if (kind == 9) {
+    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(0x3b1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  } else if (kind == 10) {
+    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(0x415, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  } else if (kind == 11) {
+    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(0x45b, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  } else if (kind == 15) {
+    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(0x479, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   }
-
-  this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(effectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
 }
 
 // OFFSET: 0x00C7B9E0
@@ -182,7 +164,7 @@ void CWeatherEffect::Snow() {
 
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   this->actor = mode->scene->player;
-  static_cast<EffectActor*>(this->actor)->LaunchEffect(0xa2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(0xa2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
 }
 
 // OFFSET: 0x00C7BBA0
@@ -304,10 +286,10 @@ void CMapSkyMgr::CreateClouds(const std::string& mapName) {
   int typeCount = 0;
   this->m_script->Call("GetCloudTypeNum", "s>d", mapName.c_str(), &typeCount);
 
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-  C3dAttr* terrain = mode->scene->terrain;
-  const int mapWidth = terrain->width * terrain->cellSize;
-  const int mapHeight = terrain->height * terrain->cellSize;
+  const int mapWidth =
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->width * static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->cellSize;
+  const int mapHeight =
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->height * static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->cellSize;
 
   for (int type = 1; type <= typeCount; ++type) {
     int count = 0;
