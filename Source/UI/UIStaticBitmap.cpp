@@ -5,6 +5,7 @@
 #include "UI/Buttons/UIButton.h"
 #include "UI/UIStaticBitmap.h"
 #include "Client/Mode/CMode.h"
+#include "Client/Mode/ModeMgr.h"
 
 // OFFSET: 0x00850430
 // FUNCTION: fn_10676
@@ -80,7 +81,7 @@ void UIStaticBitmap::Slot28(int x, int y) {
       screenY = (screenY + window->geometry.y);
     }
 
-    static_cast<CMode*>(g_charViewMode)->ShowTooltip(this->tooltip.c_str(), screenX, screenY, -1, false, true);
+    g_modeMgr.gameMode->ShowTooltip(this->tooltip.c_str(), screenX, screenY, -1, false, true);
   }
 }
 
