@@ -3,6 +3,7 @@
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
+#include "Contents/Items/ItemLink.h"
 #include "Contents/Items/ItemNaming.h"
 #include "Contents/MessageTable.h"
 #include "Contents/PlayerNameDictionary.h"
@@ -71,12 +72,12 @@ std::string UIChatHisBox::ResolvePlayerTags(const char* name) {
 
 // OFFSET: 0x0089C080
 // FUNCTION: fn_11581
-void UIChatHisBox::sub_89C080() {
+__declspec(noinline) void UIChatHisBox::sub_89C080() {
   this->Clear();
   this->ClearNaviLinks();
 
   for (unsigned int index = 0; index < this->unknown_0100.size(); ++index) {
-    if (this->unknown_0100[index].find("<ITEML>") == std::string::npos) {
+    if (this->unknown_0100[index].find(g_itemLinkTagBegin) == std::string::npos) {
       this->AddTextWrapped(this->unknown_0100[index].c_str(), this->unknown_010C[index], this->unknown_0118[index].c_str());
     } else {
       this->AddText(this->unknown_0100[index].c_str(), this->unknown_010C[index], this->unknown_0118[index].c_str());
