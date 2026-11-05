@@ -10,35 +10,31 @@
 // OFFSET: 0x00AD7500
 // FUNCTION: fn_17849
 int CMode::SendMsg(int event, int argument1, int, int, int) {
-  if (event == 2) {
+  switch (event) {
+  case 2:
     g_accountLinkedUserDataMgr->Save();
-    if (g_modeMgr.state != 1) {
-      if (g_modeMgr.gameMode) {
-        g_modeMgr.gameMode->running = 0;
-      }
-    } else if (g_modeMgr.gameMode) {
+    if (g_modeMgr.state == 1 && g_modeMgr.gameMode) {
       g_characterLinkedUserDataMgr->Save();
-      if (g_modeMgr.state != 1) {
-        if (g_modeMgr.gameMode) {
-          g_modeMgr.gameMode->running = 0;
-        }
-      } else if (g_modeMgr.gameMode) {
+      if (g_modeMgr.state == 1 && g_modeMgr.gameMode) {
         g_adventurerAgencyMgr->RequestStop();
-        if (g_modeMgr.gameMode) {
-          g_modeMgr.gameMode->running = 0;
-        }
       }
+    }
+
+    if (g_modeMgr.gameMode) {
+      g_modeMgr.gameMode->running = 0;
     }
 
     if (g_serviceType == 11) {
       ShellExecuteA(hWnd, "open", "http://www.ragnarok.co.in/index.php", nullptr, nullptr, SW_SHOWNORMAL);
     }
     g_modeMgr.running = 0;
-  } else if (event == 68) {
+    break;
+  case 68:
     this->screenshotRequested = 1;
     if (const char* text = reinterpret_cast<const char*>(argument1)) {
       this->screenshotName = text;
     }
+    break;
   }
   return 0;
 }
