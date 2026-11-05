@@ -38,7 +38,7 @@ NAsyncWorkPtr::NAsyncWorkPtr(NAsyncWorkPtr& other) : m_manager(other.m_manager),
 // FUNCTION: fn_07560
 NAsyncWorkPtr::NAsyncWorkPtr(NRecycleObjectPoolMgr* manager, std::string poolName) : m_manager(manager), m_work(nullptr) {
   if (manager) {
-    this->m_work = static_cast<NAsyncWork*>(manager->Acquire(std::move(poolName)));
+    this->m_work = static_cast<NAsyncWork*>(manager->Acquire(poolName));
   }
 }
 
