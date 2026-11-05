@@ -25,16 +25,16 @@ namespace {
 
     return description;
   }
+}
 
-  // INLINED
-  std::uint16_t Channel(unsigned value, const DeviceOwnerDX7::Channel& channel) {
-    return static_cast<std::uint16_t>((value >> (channel.expansion & 31)) << (channel.shift & 31));
-  }
-
-// INLINED
-  std::uint16_t Color(DeviceOwnerDX7& owner, unsigned red, unsigned green, unsigned blue) {
-    return static_cast<std::uint16_t>(Channel(red, owner.red) + Channel(green, owner.green) + Channel(blue, owner.blue));
-  }
+// OFFSET: 0x00543220
+// FUNCTION: fn_01787
+std::uint16_t DeviceOwnerDX7::PackColor(int red, int green, int blue) {
+  return static_cast<std::uint16_t>(
+    (static_cast<std::uint16_t>(red >> this->red.expansion) << this->red.shift) +
+    (static_cast<std::uint16_t>(green >> this->green.expansion) << this->green.shift) +
+    (static_cast<std::uint16_t>(blue >> this->blue.expansion) << this->blue.shift)
+  );
 }
 
 // OFFSET: 0x00542B50
@@ -149,37 +149,37 @@ void CSurfaceDX7::Upload(int x, int y, int width, int height, const std::uint32_
 
   const unsigned stride = sourceWidth ? sourceWidth : width;
   RECT rectangle{x, y, x + width, y + height};
-  DDSURFACEDESC2 description{};
-  description.dwSize = sizeof(description);
+  DDSURFACEDESC2 description = {sizeof(description)};
 
   if (FAILED(this->m_surface->Lock(&rectangle, &description, DDLOCK_WAIT | DDLOCK_WRITEONLY, nullptr))) {
     return;
   }
 
-  const auto transparent = Color(*this->m_owner, 255, 0, 255);
+  const auto transparent = this->m_owner->PackColor(255, 0, 255);
   auto* output = static_cast<unsigned char*>(description.lpSurface);
 
-  for (int row = 0; row < height; ++row) {
-    if (description.ddpfPixelFormat.dwRGBBitCount == 16) {
+  if (description.ddpfPixelFormat.dwRGBBitCount == 16) {
+    for (int row = 0; row < height; ++row) {
       for (int column = 0; column < width; ++column) {
-        const auto pixel = pixels[column];
-        const auto value = Color(*this->m_owner, (pixel >> 16) & 255, (pixel >> 8) & 255, pixel & 255);
-
+        const auto value = this->m_owner->PackColor((pixels[column] >> 16) & 255, (pixels[column] >> 8) & 255, pixels[column] & 255);
         if (value != transparent) {
           std::memcpy(output + column * sizeof(value), &value, sizeof(value));
         }
       }
-    } else {
+      output += description.lPitch;
+      pixels += stride;
+    }
+  } else {
+    for (int row = 0; row < height; ++row) {
       for (int column = 0; column < width; ++column) {
         if ((pixels[column] & 0xFFFFFF) != 0xFF00FF) {
           const std::uint32_t value = pixels[column];
           std::memcpy(output + column * sizeof(value), &value, sizeof(value));
         }
       }
+      output += description.lPitch;
+      pixels += stride;
     }
-
-    output += description.lPitch;
-    pixels += stride;
   }
 
   this->m_surface->Unlock(nullptr);
@@ -192,7 +192,7 @@ void CSurfaceDX7::Fill(const RECT* rectangle, std::uint32_t color) {
     DDBLTFX effects;
     effects.dwSize = sizeof(effects);
 
-    effects.dwFillColor = Color(*this->m_owner, color & 255, (color >> 8) & 255, (color >> 16) & 255);
+    effects.dwFillColor = this->m_owner->PackColor(color & 255, (color >> 8) & 255, (color >> 16) & 255);
     this->m_surface->Blt(const_cast<RECT*>(rectangle), nullptr, nullptr, DDBLT_COLORFILL | DDBLT_WAIT, &effects);
   }
 }
@@ -201,22 +201,22 @@ void CSurfaceDX7::Fill(const RECT* rectangle, std::uint32_t color) {
 // FUNCTION: fn_01785
 void CSurfaceDX7::Draw(int x, int y, int width, int height, std::uint32_t) {
   RECT source{0, 0, width, height};
-  const int right = x + width;
-  const int bottom = y + height;
-
-  if (right > static_cast<int>(this->m_owner->width)) {
+  if (x + width > static_cast<int>(this->m_owner->width)) {
     source.right = this->m_owner->width - x;
   }
-
-  if (bottom > static_cast<int>(this->m_owner->height)) {
+  if (y + height > static_cast<int>(this->m_owner->height)) {
     source.bottom = this->m_owner->height - y;
   }
-
-  source.left = x < 0 ? -x : 0;
-  source.top = y < 0 ? -y : 0;
-
+  if (x < 0) {
+    source.left = -x;
+    x = 0;
+  }
+  if (y < 0) {
+    source.top = -y;
+    y = 0;
+  }
   if (source.right > source.left && source.bottom > source.top) {
-    this->m_owner->renderTarget->BltFast(std::max(x, 0), std::max(y, 0), this->m_surface, &source, DDBLTFAST_SRCCOLORKEY | DDBLTFAST_WAIT);
+    this->m_owner->renderTarget->BltFast(x, y, this->m_surface, &source, DDBLTFAST_SRCCOLORKEY | DDBLTFAST_WAIT);
   }
 }
 
@@ -225,16 +225,6 @@ void CSurfaceDX7::Draw(int x, int y, int width, int height, std::uint32_t) {
 void CSurfaceDX7::Stretch(int, int, int width, int height) {
   RECT destination{0, 0, width, height};
   this->m_owner->renderTarget->Blt(&destination, this->m_surface, nullptr, DDBLT_WAIT, nullptr);
-}
-
-// OFFSET: 0x00543220
-// FUNCTION: fn_01787
-std::uint16_t DeviceOwnerDX7::PackColor(int red, int green, int blue) {
-  return static_cast<std::uint16_t>(
-    (static_cast<std::uint16_t>(red >> (this->red.expansion & 31)) << (this->red.shift & 31)) +
-    (static_cast<std::uint16_t>(green >> (this->green.expansion & 31)) << (this->green.shift & 31)) +
-    (static_cast<std::uint16_t>(blue >> (this->blue.expansion & 31)) << (this->blue.shift & 31))
-  );
 }
 
 // OFFSET: 0x00543270
