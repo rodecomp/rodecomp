@@ -3,20 +3,24 @@
 // OFFSET: 0x00AC48E0
 // FUNCTION: fn_17631
 int __stdcall MatchLexicon(const unsigned char* data, int, const unsigned char* text, const unsigned char* end, int) {
+  bool failed = false;
+  int accepted = 0;
+  int matched = 0;
   if (*text == 0) {
     return 1000;
   }
 
-  int accepted = 0;
-  int matched = 0;
-  bool failed = false;
   const unsigned char* entry = data;
+  int offset = 0;
+  unsigned char* offsetBytes = reinterpret_cast<unsigned char*>(&offset);
   while (text < end && !failed) {
     if ((*entry & 0x40) != 0) {
       return matched;
     }
 
-    int offset = ((entry[0] & 0x3F) << 16) | (entry[1] << 8) | entry[2];
+    offsetBytes[2] = entry[0] & 0x3F;
+    offsetBytes[1] = entry[1];
+    offsetBytes[0] = entry[2];
     entry += 3;
     const unsigned char* candidate = data + offset;
     const int count = *candidate;
@@ -44,8 +48,8 @@ int __stdcall MatchLexicon(const unsigned char* data, int, const unsigned char* 
           ++offset;
         }
       }
-    } else if (count >= *text) {
-      if (count != *text) {
+    } else if (*candidate >= *text) {
+      if (*candidate != *text) {
         return accepted;
       }
 
