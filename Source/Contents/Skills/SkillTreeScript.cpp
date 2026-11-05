@@ -1,3 +1,4 @@
+#include "Client/Session.h"
 #include "Contents/Skills/PlayerSkillBundle.h"
 #include "Contents/Skills/SkillTreeScript.h"
 
@@ -6,16 +7,15 @@ extern "C" {
 }
 
 #include <cstdint>
+#include <cstring>
+
+CSkillInfo* FindGroupedSkill(CSession& session, std::uint32_t id);
 
 namespace {
-  // INLINED
-  CPlayerSkillBundle& Bundle(lua_State* state) {
-    return *static_cast<CPlayerSkillBundle*>(lua_touserdata(state, lua_upvalueindex(1)));
-  }
-
   // OFFSET: 0x00AFEE00
   // FUNCTION: fn_18349
   int AddSkill(lua_State* state) {
+    CSkillInfo skill(0);
     const double group = luaL_checknumber(state, 1);
     const double id = luaL_checknumber(state, 2);
     const char* name = luaL_checkstring(state, 3);
@@ -23,8 +23,7 @@ namespace {
     const int value = static_cast<int>(luaL_checknumber(state, 5));
     const double last = luaL_checknumber(state, 6);
 
-    if (*name && position != -1 && value != -1) {
-      CSkillInfo skill(0);
+    if (std::strcmp(name, "") != 0 && position != -1 && value != -1) {
       skill.available = 1;
       skill.name = name;
       skill.unknown_0024 = position;
@@ -36,7 +35,7 @@ namespace {
       skill.unknown_001C = 0;
       skill.unknown_0034 = 0;
       skill.unknown_002C = static_cast<int>(last);
-      Bundle(state).AddGrouped(static_cast<int>(group), skill);
+      g_session.m_skillBundle.AddGrouped(static_cast<int>(group), skill);
     }
 
     return 1;
@@ -50,7 +49,7 @@ namespace {
     const int level = static_cast<int>(luaL_checknumber(state, 3));
 
     if (id != -1 && needed != -1 && level != -1) {
-      CSkillInfo* skill = Bundle(state).FindGrouped(static_cast<std::uint32_t>(id));
+      CSkillInfo* skill = FindGroupedSkill(g_session, static_cast<std::uint32_t>(id));
       if (skill && skill->available) {
         skill->entries.push_back({static_cast<std::uint32_t>(needed), static_cast<std::uint32_t>(level)});
       }
