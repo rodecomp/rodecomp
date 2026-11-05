@@ -274,7 +274,7 @@ void UIChangeMaterialWnd_List::RefreshVisibleEntries() {
 
   std::map<MaterialKey, ChangeMaterialRecipeList, MaterialKeyLess> library = g_changeMaterialMgr->m_library;
   for (auto it = library.begin(); it != library.end(); ++it) {
-    std::vector<ChangeMaterialRecipe> recipes = it->second.m_recipes;
+    const std::vector<ChangeMaterialRecipe>& recipes = it->second.m_recipes;
     for (auto recipe = recipes.begin(); recipe != recipes.end(); ++recipe) {
       MaterialListEntry entry = {};
       if (recipe->materials.empty() || recipe->products.empty()) {
