@@ -31,7 +31,7 @@ XmlNode* XmlNode::AppendSibling(XmlNode* node) {
 void XmlDocument::Reset() {
   this->Clear();
   if (this->buffer != nullptr) {
-    std::free(this->buffer);
+    delete[] static_cast<char*>(this->buffer);
     this->buffer = nullptr;
   }
 }
