@@ -28,10 +28,7 @@ void UICheckBox::Paint() {
   }
 
   if (this->m_disabled != 0) {
-    if (this->geometry.surface) {
-      this->geometry.surface->Fill(nullptr, 0xFFFF00FFu);
-    }
-
+    this->ClearSurface(0xFFFF00FFu);
     return;
   }
 
@@ -42,7 +39,7 @@ void UICheckBox::Paint() {
   int width = 0;
   if (this->geometry.unknown_0030 == 0 || this->geometry.unknown_0030 == 1) {
     const std::string& name = this->geometry.unknown_0030 == 0 ? this->m_unchecked : this->m_checked;
-    CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(name.c_str()));
+    CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name.c_str())));
     this->DrawBitmap(0, (this->geometry.height - bitmap->image.height) / 2, &bitmap->image, false);
     width = bitmap->image.width;
   }
@@ -133,16 +130,16 @@ void UICheckBox::ResetCursor(int, int) {
 void UICheckBox::SetImages(const char* checked, const char* unchecked, const char* text) {
   this->m_checked = checked;
   this->m_unchecked = unchecked;
-  ResourceMgr::Instance().Load(this->m_unchecked.c_str());
+  ResourceMgr::Instance().Load(Resolve(this->m_unchecked.c_str()));
   this->m_text = text ? text : "";
 
   if (!this->m_text.empty()) {
     const int width = this->TextWidth(this->m_text.c_str(), 0, 0, 12, 0, 0);
     CBitmapRes* bitmap = nullptr;
     if (this->geometry.unknown_0030 == 0) {
-      bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(this->m_unchecked.c_str()));
+      bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_unchecked.c_str())));
     } else if (this->geometry.unknown_0030 == 1) {
-      bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(this->m_checked.c_str()));
+      bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_checked.c_str())));
     }
 
     const int desired = ((bitmap->image.width + width) + 3);
