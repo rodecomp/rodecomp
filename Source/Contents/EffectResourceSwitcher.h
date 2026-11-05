@@ -45,7 +45,7 @@ public:
     void operator()(const std::pair<const std::string, EZ2STREffectRecord>& entry) const;
   };
 
-  EZ2STREffectInfo* FindById(int id);
+  __declspec(noinline) EZ2STREffectInfo* FindById(int id);
   int EffectId(const std::string& name);
   std::vector<int> EffectIds();
   bool Load();
