@@ -80,7 +80,7 @@ ModelNodeV2::~ModelNodeV2() = default;
 
 // OFFSET: 0x007553E0
 // FUNCTION: fn_07982
-C3dModelRes::C3dModelRes() : major(0), shade(0), alpha(255) {
+__declspec(noinline) C3dModelRes::C3dModelRes() : major(0), shade(0), alpha(255) {
 }
 
 // OFFSET: 0x007567B0
@@ -483,7 +483,7 @@ granny_file* GrannyAnimationLibrary::ReadAnimationFile(const char* name, const c
 
 // OFFSET: 0x007594B0
 // FUNCTION: fn_08013
-void GrannyAnimationLibrary::FreeInstance() {
+__declspec(noinline) void GrannyAnimationLibrary::FreeInstance() {
   if (GrannyModelInstance* instance = this->instance) {
     for (int index = 0; index < instance->meshCount; ++index) {
       GrannyMeshEntry& entry = instance->meshes[index];
