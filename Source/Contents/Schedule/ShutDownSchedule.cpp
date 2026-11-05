@@ -5,16 +5,19 @@
 #include "UI/Window/UIWindowMgr.h"
 
 // GLOBAL: gl_24854
-double s_shutDownNoticeSeconds[6] = {1800.0, 900.0, 600.0, 300.0, 180.0, 60.0};
+double s_shutDownNoticeSeconds[6] = {
+  1800.0,
+  900.0,
+  600.0,
+  300.0,
+  180.0,
+  60.0,
+};
 
 // OFFSET: 0x00BA8CC0
 // FUNCTION: fn_19730
 void CShutDownSchedule::UpdateNotice() {
-  if (this->noticeIndex >= 6) {
-    return;
-  }
-
-  while (true) {
+  while (this->noticeIndex < 6) {
     const int diff = static_cast<int>(static_cast<double>(this->seconds) - s_shutDownNoticeSeconds[this->noticeIndex]);
     if (diff >= 0) {
       this->interval = static_cast<std::int64_t>(diff) * 1000;
@@ -22,9 +25,6 @@ void CShutDownSchedule::UpdateNotice() {
     }
 
     ++this->noticeIndex;
-    if (this->noticeIndex >= 6) {
-      return;
-    }
   }
 }
 
