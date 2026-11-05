@@ -51,26 +51,28 @@ void CooldownDrawing::Draw(
   vertices[8].y = vertices[10].y = vertices[14].y = vertices[16].y = bottom;
   const float right = static_cast<float>((centerX + radiusX));
   const float left = static_cast<float>((centerX - radiusX));
-  const bool reversed = value.reverse != 0;
-
-  for (unsigned i : {2u, 4u, 5u, 7u, 8u, 10u}) {
-    vertices[i].x = reversed ? right : left;
-  }
-
-  for (unsigned i : {14u, 16u, 17u, 19u, 20u, 22u}) {
-    vertices[i].x = reversed ? left : right;
-  }
-
-  value.AddEdge(0, vertices[reversed ? 1 : 23].x, radiusX, 1);
-  value.AddEdge(1, vertices[reversed ? 4 : 20].y, radiusY, 1);
-  value.AddEdge(2, vertices[reversed ? 7 : 17].y, radiusY, 1);
-  value.AddEdge(3, vertices[reversed ? 10 : 14].x, radiusX, 0);
-  value.AddEdge(4, vertices[reversed ? 13 : 11].x, radiusX, 0);
-  value.AddEdge(5, vertices[reversed ? 16 : 8].y, radiusY, 0);
-  value.AddEdge(6, vertices[reversed ? 19 : 5].y, radiusY, 0);
-  value.AddEdge(7, vertices[reversed ? 22 : 2].x, radiusX, 1);
-
-  if (reversed) {
+  if (value.reverse == 0) {
+    vertices[2].x = vertices[4].x = vertices[5].x = vertices[7].x = vertices[8].x = vertices[10].x = left;
+    vertices[14].x = vertices[16].x = vertices[17].x = vertices[19].x = vertices[20].x = vertices[22].x = right;
+    value.AddEdge(0, vertices[23].x, radiusX, 1);
+    value.AddEdge(1, vertices[20].y, radiusY, 1);
+    value.AddEdge(2, vertices[17].y, radiusY, 1);
+    value.AddEdge(3, vertices[14].x, radiusX, 0);
+    value.AddEdge(4, vertices[11].x, radiusX, 0);
+    value.AddEdge(5, vertices[8].y, radiusY, 0);
+    value.AddEdge(6, vertices[5].y, radiusY, 0);
+    value.AddEdge(7, vertices[2].x, radiusX, 1);
+  } else {
+    vertices[2].x = vertices[4].x = vertices[5].x = vertices[7].x = vertices[8].x = vertices[10].x = right;
+    vertices[14].x = vertices[16].x = vertices[17].x = vertices[19].x = vertices[20].x = vertices[22].x = left;
+    value.AddEdge(0, vertices[1].x, radiusX, 1);
+    value.AddEdge(1, vertices[4].y, radiusY, 1);
+    value.AddEdge(2, vertices[7].y, radiusY, 1);
+    value.AddEdge(3, vertices[10].x, radiusX, 0);
+    value.AddEdge(4, vertices[13].x, radiusX, 0);
+    value.AddEdge(5, vertices[16].y, radiusY, 0);
+    value.AddEdge(6, vertices[19].y, radiusY, 0);
+    value.AddEdge(7, vertices[22].x, radiusX, 1);
     this->DrawReverse(value);
     return;
   }
@@ -79,15 +81,31 @@ void CooldownDrawing::Draw(
     return;
   }
 
-  const unsigned previous = value.segment;
-  if (previous < 8) {
-    const float position = value.Update();
-    RenderVertex& vertex = vertices[23 - 3 * previous];
-    if (previous == 0 || previous == 3 || previous == 4 || previous == 7) {
-      vertex.x = position;
-    } else {
-      vertex.y = position;
-    }
+  switch (value.segment) {
+  case 0:
+    vertices[23].x = value.Update();
+    break;
+  case 1:
+    vertices[20].y = value.Update();
+    break;
+  case 2:
+    vertices[17].y = value.Update();
+    break;
+  case 3:
+    vertices[14].x = value.Update();
+    break;
+  case 4:
+    vertices[11].x = value.Update();
+    break;
+  case 5:
+    vertices[8].y = value.Update();
+    break;
+  case 6:
+    vertices[5].y = value.Update();
+    break;
+  case 7:
+    vertices[2].x = value.Update();
+    break;
   }
 
   if ((limit != 0 ? limit : 6) <= value.y) {
@@ -114,20 +132,60 @@ void CooldownDrawing::DrawReverse(CooldownState& value) {
     return;
   }
 
-  const unsigned previous = value.segment;
-  if (previous < 8) {
-    const float position = value.Update();
-    RenderVertex& vertex = value.vertices[2 + 3 * previous];
-    if (previous == 0 || previous == 3 || previous == 4 || previous == 7) {
-      vertex.x = position;
-    } else {
-      vertex.y = position;
+  RenderVertex* vertices = value.vertices;
+  switch (value.segment) {
+  case 0:
+    vertices[2].x = value.Update();
+    if (value.segment != 0) {
+      vertices[5] = vertices[4];
+      vertices[2] = vertices[4];
     }
-
-    if (previous < 7 && value.segment != previous) {
-      value.vertices[5 + 3 * previous] = value.vertices[4 + 3 * previous];
-      vertex = value.vertices[4 + 3 * previous];
+    break;
+  case 1:
+    vertices[5].y = value.Update();
+    if (value.segment != 1) {
+      vertices[8] = vertices[7];
+      vertices[5] = vertices[7];
     }
+    break;
+  case 2:
+    vertices[8].y = value.Update();
+    if (value.segment != 2) {
+      vertices[11] = vertices[10];
+      vertices[8] = vertices[10];
+    }
+    break;
+  case 3:
+    vertices[11].x = value.Update();
+    if (value.segment != 3) {
+      vertices[14] = vertices[13];
+      vertices[11] = vertices[13];
+    }
+    break;
+  case 4:
+    vertices[14].x = value.Update();
+    if (value.segment != 4) {
+      vertices[17] = vertices[16];
+      vertices[14] = vertices[16];
+    }
+    break;
+  case 5:
+    vertices[17].y = value.Update();
+    if (value.segment != 5) {
+      vertices[20] = vertices[19];
+      vertices[17] = vertices[19];
+    }
+    break;
+  case 6:
+    vertices[20].y = value.Update();
+    if (value.segment != 6) {
+      vertices[23] = vertices[22];
+      vertices[20] = vertices[22];
+    }
+    break;
+  case 7:
+    vertices[23].x = value.Update();
+    break;
   }
 
   RenderCommand* command = g_renderer->commands.Acquire();
