@@ -31,7 +31,7 @@ public:
     this->Slot15(width, height);
   }
   void Slot10(int x, int y, std::intptr_t value) override;
-  void Slot15(int width, int height) override;
+  __declspec(noinline) void Slot15(int width, int height) override;
   void Paint() override;
   void Slot35(int argument) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
