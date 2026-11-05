@@ -1869,15 +1869,13 @@ bool CEffectPrim::PrimSuperAngel() {
     this->state.slots[0].vecBPre = this->state.slots[0].vecBNow;
     this->state.deltaPos = this->state.slots[0].vecBPre;
 
-    const char kind = this->state.slots[0].flag1[0];
-
     if (this->state.slots[0].process < 50) {
       if (this->state.slots[0].flag1[1] == 0) {
-        if (kind == 1) {
+        if (this->state.slots[0].flag1[0] == 1) {
           if (this->state.alpha < 200.0f) {
             this->state.alpha += 5.0f;
           }
-        } else if (kind == 10) {
+        } else if (this->state.slots[0].flag1[0] == 10) {
           if (this->state.alpha < 255.0f) {
             this->state.alpha += 10.0f;
           }
@@ -1885,9 +1883,9 @@ bool CEffectPrim::PrimSuperAngel() {
           if (this->state.alpha > 255.0f) {
             this->state.alpha = 255.0f;
           }
-        } else if (kind == 11) {
+        } else if (this->state.slots[0].flag1[0] == 11) {
           this->state.alpha = 0.0f;
-        } else if (kind >= 2) {
+        } else if (this->state.slots[0].flag1[0] >= 2) {
           if (this->state.slots[0].process < 30 && this->state.alpha < 150.0f) {
             this->state.alpha += 5.0f;
           }
@@ -1900,7 +1898,7 @@ bool CEffectPrim::PrimSuperAngel() {
     }
 
     if (this->state.slots[0].process > 30) {
-      if (kind == 0) {
+      if (this->state.slots[0].flag1[0] == 0) {
         if (this->state.slots[0].process % 3 == 0) {
           ++this->render.curMotion;
         }
@@ -1908,7 +1906,7 @@ bool CEffectPrim::PrimSuperAngel() {
         if (this->render.curMotion > 29) {
           this->render.curMotion = 29;
         }
-      } else if (kind == 1) {
+      } else if (this->state.slots[0].flag1[0] == 1) {
         if (this->state.slots[0].process % 3 == 0) {
           ++this->render.curMotion;
         }
@@ -1916,7 +1914,7 @@ bool CEffectPrim::PrimSuperAngel() {
         if (this->render.curMotion > 29) {
           this->render.curMotion = 29;
         }
-      } else if (kind == 10 || kind == 11) {
+      } else if (this->state.slots[0].flag1[0] == 10 || this->state.slots[0].flag1[0] == 11) {
         if (this->state.slots[0].process % 4 == 0) {
           ++this->render.curMotion;
         }
@@ -1924,7 +1922,7 @@ bool CEffectPrim::PrimSuperAngel() {
         if (this->render.curMotion > 15) {
           this->render.curMotion = 15;
         }
-      } else if (kind >= 2) {
+      } else if (this->state.slots[0].flag1[0] >= 2) {
         if (this->state.slots[0].process % 3 == 0) {
           ++this->render.curMotion;
         }
@@ -1935,7 +1933,7 @@ bool CEffectPrim::PrimSuperAngel() {
       }
     }
 
-    if (kind == 0) {
+    if (this->state.slots[0].flag1[0] == 0) {
       if (this->state.slots[0].process > 100) {
         this->state.alpha -= 4.0f;
 
@@ -1943,7 +1941,7 @@ bool CEffectPrim::PrimSuperAngel() {
           this->state.alpha = 0.0f;
         }
       }
-    } else if (kind == 2) {
+    } else if (this->state.slots[0].flag1[0] == 2) {
       if (this->state.slots[0].process > 30) {
         this->state.alpha -= 3.0f;
 
@@ -1951,7 +1949,7 @@ bool CEffectPrim::PrimSuperAngel() {
           this->state.alpha = 0.0f;
         }
       }
-    } else if (kind == 3) {
+    } else if (this->state.slots[0].flag1[0] == 3) {
       if (this->state.slots[0].process > 60) {
         this->state.alpha -= 3.0f;
 
@@ -1959,7 +1957,7 @@ bool CEffectPrim::PrimSuperAngel() {
           this->state.alpha = 0.0f;
         }
       }
-    } else if (kind == 4) {
+    } else if (this->state.slots[0].flag1[0] == 4) {
       if (this->state.slots[0].process > 70) {
         this->state.alpha -= 3.0f;
 
@@ -1967,7 +1965,7 @@ bool CEffectPrim::PrimSuperAngel() {
           this->state.alpha = 0.0f;
         }
       }
-    } else if (kind == 10) {
+    } else if (this->state.slots[0].flag1[0] == 10) {
       if (this->state.slots[0].process > 100) {
         this->state.alpha -= 6.0f;
 
@@ -5906,11 +5904,9 @@ bool CEffectPrim::PrimFieldFireflies() {
       continue;
     }
 
-    const float kind = slot.height[7];
-    if (kind < 99.0f) {
-      const int process = ++slot.process;
-
-      if (slot.flag1[2] == 23 && process % 14 == 0) {
+    if (slot.height[7] < 99.0f) {
+      ++slot.process;
+      if (slot.flag1[2] == 23 && slot.process % 14 == 0) {
         char frame = ++slot.flag1[0];
         if (frame > 5) {
           frame = 0;
@@ -5918,31 +5914,31 @@ bool CEffectPrim::PrimFieldFireflies() {
         slot.flag1[0] = frame;
       }
 
-      if (kind == 0.0f) {
-        if (process < 80 && this->render.position.y <= slot.height[6] && slot.height[6] != this->render.position.y) {
+      if (slot.height[7] == 0.0f) {
+        if (slot.process < 80 && this->render.position.y <= slot.height[6] && slot.height[6] != this->render.position.y) {
           slot.alphaB += 2;
         }
-      } else if (kind == 2.0f) {
-        if (process < 80) {
+      } else if (slot.height[7] == 2.0f) {
+        if (slot.process < 80) {
           slot.alphaB += 2;
         }
-      } else if (kind == 3.0f) {
-        if (process < 170) {
+      } else if (slot.height[7] == 3.0f) {
+        if (slot.process < 170) {
           ++slot.alphaB;
         }
-      } else if (kind == 5.0f) {
-        if (process < 80) {
+      } else if (slot.height[7] == 5.0f) {
+        if (slot.process < 80) {
           slot.alphaB += 2;
         }
-      } else if (kind == 11.0f || kind == 12.0f || kind == 13.0f || kind == 14.0f) {
-        if (process < 70) {
+      } else if (slot.height[7] == 11.0f || slot.height[7] == 12.0f || slot.height[7] == 13.0f || slot.height[7] == 14.0f) {
+        if (slot.process < 70) {
           ++slot.alphaB;
         }
-      } else if (process < 80) {
+      } else if (slot.process < 80) {
         slot.alphaB += 3;
       }
 
-      if (process > slot.rotStart && --slot.alphaB <= 0) {
+      if (slot.process > slot.rotStart && --slot.alphaB <= 0) {
         slot.process = 0;
         slot.alphaB = 0;
 
