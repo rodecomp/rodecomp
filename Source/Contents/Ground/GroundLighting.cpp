@@ -7,6 +7,7 @@
 #include "Render/Primitives/RenderPrimitivePool.h"
 #include "Render/Primitives/RenderQueues.h"
 #include "Render/Renderer.h"
+#include "Render/SpriteGeometry.h"
 #include "Render/TextureQuad.h"
 #include "Resource/World/WorldResource.h"
 
@@ -36,17 +37,16 @@ void GroundGeometry::DrawLightmapped(const float* matrix, const GroundQuad& quad
     vertices[corner].v = quad.vertices[corner][5];
     lightUV[corner][0] = quad.vertices[corner][6];
     lightUV[corner][1] = quad.vertices[corner][7];
+
     std::uint32_t color = std::bit_cast<std::uint32_t>(quad.vertices[corner][3]);
+    SpriteColor& channels = reinterpret_cast<SpriteColor&>(color);
 
     if (!g_overrideColor && quad.selected != 0) {
-      color = (color & 0x00FFFFFFu) | 0x80000000u;
+      channels.alpha = 0x80;
     } else {
-      for (unsigned channel = 0; channel < 3; ++channel) {
-        const unsigned shift = 16 - channel * 8;
-        const float value = static_cast<float>((color >> shift) & 255u) * scales[channel];
-        const unsigned byte = static_cast<unsigned>(TruncateToInt(value)) & 255u;
-        color = (color & ~(255u << shift)) | (byte << shift);
-      }
+      channels.red = static_cast<std::uint8_t>(channels.red * scales[0]);
+      channels.green = static_cast<std::uint8_t>(channels.green * scales[1]);
+      channels.blue = static_cast<std::uint8_t>(channels.blue * scales[2]);
     }
 
     vertices[corner].diffuse = color;
