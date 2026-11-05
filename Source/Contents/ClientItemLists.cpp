@@ -1588,11 +1588,15 @@ bool CSession::RemoveItem1740(const ITEM_INFO& item) {
           break;
         }
       }
-      reinterpret_cast<CSession*>(this)->RefreshItem1740Window();
+      if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_02F4)) {
+        window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+      }
       return true;
     }
   }
-  reinterpret_cast<CSession*>(this)->RefreshItem1740Window();
+  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_02F4)) {
+    window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  }
   return false;
 }
 
@@ -1714,11 +1718,15 @@ bool CSession::RemoveItem1738(const ITEM_INFO& item) {
           break;
         }
       }
-      reinterpret_cast<CSession*>(this)->RefreshItem1738Window();
+      if (UIWindow* window = g_windowMgr.window_0288) {
+        window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+      }
       return true;
     }
   }
-  reinterpret_cast<CSession*>(this)->RefreshItem1738Window();
+  if (UIWindow* window = g_windowMgr.window_0288) {
+    window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  }
   return false;
 }
 
