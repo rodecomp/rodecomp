@@ -586,6 +586,9 @@ int UIParaItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
 // FUNCTION: fn_13759
 int UIParaResultWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
+  case 34:
+    this->total->SetTextAutoWidth("Total : 0 Zeny");
+    return 0;
   case 6: {
     this->RecordResponse(static_cast<int>(a), b, c, d);
     CMode* mode = g_modeMgr.gameMode;
@@ -597,6 +600,11 @@ int UIParaResultWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
     }
     break;
   }
+  case 36:
+    this->showQuantity = 0;
+    this->title->SetTextAutoWidth(LookupMessage(2530));
+    this->SendMsg(nullptr, 14, 7, this->geometry.width, a, 0);
+    return 0;
   case 14:
     if (a == 7) {
       int width = b <= 320 ? b : 320;
@@ -643,14 +651,6 @@ int UIParaResultWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
     this->UpdateScrollBar();
     break;
   }
-  case 34:
-    this->total->SetTextAutoWidth("Total : 0 Zeny");
-    return 0;
-  case 36:
-    this->showQuantity = 0;
-    this->title->SetTextAutoWidth(LookupMessage(2530));
-    this->SendMsg(nullptr, 14, 7, this->geometry.width, a, 0);
-    return 0;
   default:
     return UIItemBaseWnd::SendMsg(sender, message, a, b, c, d);
   }
