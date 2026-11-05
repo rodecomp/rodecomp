@@ -367,18 +367,17 @@ CSkillInfo::CSkillInfo(int) : available(0), id(0), level(0), name("Unknown-Skill
 
 // OFFSET: 0x0076FD70
 // FUNCTION: fn_08254
-CSkillInfo::CSkillInfo(const CSkillInfo& other) {
-  *this = other;
+CSkillInfo::CSkillInfo(const CSkillInfo& other)
+    : available(other.available), id(other.id), unknown_000C(other.unknown_000C), level(other.level), unknown_0014(other.unknown_0014),
+      unknown_0018(other.unknown_0018), unknown_001C(other.unknown_001C), name(other.name), unknown_0024(other.unknown_0024),
+      unknown_0028(other.unknown_0028), unknown_002C(other.unknown_002C), unknown_0030(other.unknown_0030), unknown_0034(other.unknown_0034),
+      entries(other.entries) {
 }
 
 // OFFSET: 0x009149F0
 // FUNCTION: fn_12543
 CSkillInfo& CSkillInfo::operator=(const CSkillInfo& other) {
   this->available = other.available;
-  if (this == &other) {
-    return *this;
-  }
-
   this->id = other.id;
   this->unknown_000C = other.unknown_000C;
   this->level = other.level;
@@ -391,6 +390,7 @@ CSkillInfo& CSkillInfo::operator=(const CSkillInfo& other) {
   this->unknown_002C = other.unknown_002C;
   this->unknown_0030 = other.unknown_0030;
   this->unknown_0034 = other.unknown_0034;
+
   this->entries = other.entries;
 
   return *this;
