@@ -254,7 +254,7 @@ struct NavigationTarget {
 
 class CNaviData {
 public:
-  CNaviData();
+  __declspec(noinline) CNaviData();
   ~CNaviData();
 
   bool SetDestination(CNaviInfo* info, int cellX, int cellY);
