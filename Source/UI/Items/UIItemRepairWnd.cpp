@@ -210,14 +210,37 @@ int UIItemRepairWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
   ITEM_INFO item;
 
   switch (message) {
+  case 31: {
+    const UIItemRepairEntry& entry = *reinterpret_cast<const UIItemRepairEntry*>(a);
+    this->entries.push_back(entry);
+    this->itemIds.push_back(entry.itemId);
+    this->indices.push_back(entry.index);
+
+    item.SetItemId(entry.itemId);
+    item.unknown_0060 = 0;
+    item.identified = 1;
+    this->m_list->AddLine(item.DisplayName(0).c_str());
+    return 0;
+  }
+
+  case 18:
+    this->m_list->SendMsg(nullptr, 18, 0, 0, 0, 0);
+    return 0;
+
+  case 19:
+    this->m_list->SendMsg(nullptr, 19, 0, 0, 0, 0);
+    return 0;
+
   case 6: {
     const int response = static_cast<int>(a);
     this->RecordResponse(response, b, c, this->m_list->selected);
 
-    if (response == 184) {
+    switch (response) {
+    case 184: {
       if (g_replayAnimationScaling) {
-        this->m_list->selected = static_cast<int>(d);
-        this->m_list->Invalidate();
+        UIListBox* list = this->m_list;
+        list->selected = static_cast<int>(d);
+        list->Invalidate();
       }
 
       UIListBox* list = this->m_list;
@@ -240,7 +263,10 @@ int UIItemRepairWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
         g_windowMgr.CloseWindow(107);
         return 0;
       }
-    } else if (response == 185) {
+      break;
+    }
+
+    case 185:
       g_modeMgr.gameMode->SendMsg(174, -1, 0, 0, 0);
       g_windowMgr.CloseWindow(107);
       return 0;
@@ -249,52 +275,32 @@ int UIItemRepairWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
     return 0;
   }
 
-  case 18:
-    this->m_list->SendMsg(nullptr, 18, 0, 0, 0, 0);
-    return 0;
-
-  case 19:
-    this->m_list->SendMsg(nullptr, 19, 0, 0, 0, 0);
-    return 0;
-
-  case 31: {
-    const UIItemRepairEntry& entry = *reinterpret_cast<const UIItemRepairEntry*>(a);
-    this->entries.push_back(entry);
-    this->itemIds.push_back(entry.itemId);
-    this->indices.push_back(entry.index);
-
-    item.SetItemId(entry.itemId);
-    item.unknown_0060 = 0;
-    item.identified = 1;
-    this->m_list->AddLine(item.DisplayName(0).c_str());
-    return 0;
-  }
-
   case 123: {
     const auto* bytes = reinterpret_cast<const unsigned char*>(a);
-    std::uint16_t marker;
-    std::memcpy(&marker, bytes, sizeof(marker));
+    UIItemRepairRecordHeader header;
     unsigned offset = 6;
+    header = *reinterpret_cast<const UIItemRepairRecordHeader*>(bytes);
 
-    if (marker == 22150) {
+    if (header.id == 22150) {
       while (static_cast<unsigned>(b) > offset) {
-        std::int16_t kind;
-        std::uint32_t size;
-        std::memcpy(&kind, bytes + offset, sizeof(kind));
-        std::memcpy(&size, bytes + offset + 2, sizeof(size));
+        header = *reinterpret_cast<const UIItemRepairRecordHeader*>(bytes + offset);
         offset += 6;
 
-        if (kind == 22151) {
+        switch (header.id) {
+        case 22151:
+          return 0;
+
+        case 22152: {
+          UIItemRepairEntry entry;
+          std::memcpy(&entry, bytes + offset, header.bytes);
+          offset += header.bytes;
+          this->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(&entry), 0, 0, 0);
           break;
         }
 
-        if (kind == 22152) {
-          UIItemRepairEntry entry;
-          std::memcpy(&entry, bytes + offset, size);
-          offset += size;
-          this->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(&entry), 0, 0, 0);
-        } else {
-          offset += size;
+        default:
+          offset += header.bytes;
+          break;
         }
       }
     }
