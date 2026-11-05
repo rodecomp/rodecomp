@@ -11,26 +11,30 @@
 #include <cmath>
 #include <cstring>
 
+union ModelColor {
+  std::uint32_t value;
+  struct {
+    unsigned char b;
+    unsigned char g;
+    unsigned char r;
+    unsigned char a;
+  };
+};
+
 // GLOBAL: gl_25474
-static std::uint32_t g_modelFaceColors[90000];
+static ModelColor g_modelFaceColors[90000];
 
 namespace {
   // INLINED
-  unsigned Byte(float value) {
-    return static_cast<unsigned>(TruncateToInt(value)) & 255u;
-  }
-
-  // INLINED
   float InverseLength(float squared) {
-    const float root = SquareRoot(squared);
-    return static_cast<float>(1.0 / root);
+    return 1.0f / SquareRoot(squared);
   }
 
   // INLINED
-  void Light(const float* normal, const float* matrix, const float* direction, const float* diffuse, const float* ambient, float* output) {
-    const float x = ((normal[0] * matrix[0] + normal[1] * matrix[3]) + normal[2] * matrix[6]) + 0.0f;
-    const float y = ((normal[0] * matrix[1] + normal[1] * matrix[4]) + normal[2] * matrix[7]) + 0.0f;
-    const float z = ((normal[0] * matrix[2] + normal[1] * matrix[5]) + normal[2] * matrix[8]) + 0.0f;
+  __forceinline void Light(const float* normal, const float* values, const float* direction, const float* diffuse, const float* ambient, float* output) {
+    const float x = ((normal[0] * values[0] + normal[1] * values[3]) + normal[2] * values[6]) + 0.0f;
+    const float y = ((normal[0] * values[1] + normal[1] * values[4]) + normal[2] * values[7]) + 0.0f;
+    const float z = ((normal[0] * values[2] + normal[1] * values[5]) + normal[2] * values[8]) + 0.0f;
     const float inverse = InverseLength((y * y + x * x) + z * z);
     const float dot = ((y * inverse) * direction[1] + (x * inverse) * direction[0]) + (z * inverse) * direction[2];
     const float amount = dot > 0.0f ? dot : 0.0f;
@@ -42,18 +46,21 @@ namespace {
   }
 
   // INLINED
-  std::uint32_t LitColor(std::uint32_t color, float alpha, bool shaded, const float* light) {
-    std::uint32_t result = Byte(alpha * 255.0f) << 24;
+  unsigned char Scale(float factor, float light, unsigned char channel) {
+    const float value = (factor * light) * static_cast<float>(channel);
+    return static_cast<unsigned char>(255.0f < value ? 255.0f : value);
+  }
+
+  // INLINED
+  ModelColor LitColor(std::uint32_t source, float alpha, bool shaded, const float* light) {
     const float factor = shaded ? 0.5f : 1.0f;
-
-    for (unsigned component = 0; component < 3; ++component) {
-      const unsigned shift = 16u - component * 8u;
-      const float value = (factor * light[component]) * static_cast<float>((color >> shift) & 255u);
-      const float limited = 255.0f < value ? 255.0f : value;
-      result |= Byte(limited) << shift;
-    }
-
-    return result;
+    ModelColor color;
+    color.value = source;
+    color.a = static_cast<unsigned char>(alpha * 255.0f);
+    color.r = Scale(factor, light[0], color.r);
+    color.g = Scale(factor, light[1], color.g);
+    color.b = Scale(factor, light[2], color.b);
+    return color;
   }
 }
 
@@ -78,8 +85,8 @@ C3dNode* C3dNode::Find(const char* selected) {
 void C3dNode::OverrideColors() {
   this->unknown_0088 = 1;
 
-  for (C3dNode* child : this->children) {
-    child->OverrideColors();
+  for (std::list<C3dNode*>::iterator it = this->children.begin(); it != this->children.end(); ++it) {
+    (*it)->OverrideColors();
   }
 }
 
@@ -112,65 +119,93 @@ void C3dNode::SampleGroundColors(const CRenderer*, const float* matrix, const Gr
 // OFFSET: 0x00ABBB00
 // FUNCTION: fn_17521
 void C3dNode::Prepare(const float* matrix, const float* direction, const float* diffuse, const float* ambient, int shade) {
-  struct matrix parentMatrix;
-  std::memcpy(parentMatrix.values, matrix, sizeof(parentMatrix.values));
   struct matrix combined;
-  combined.Compose(this->transform, parentMatrix);
+  combined.Compose(this->transform, *reinterpret_cast<const struct matrix*>(matrix));
+  const struct matrix rotation = combined;
 
-  for (int index = 0; index < this->mesh->faceCount; ++index) {
-    const ModelFace& face = this->mesh->faces[index];
-    float light[3];
+  switch (shade) {
+  case 2: {
+    const ModelFace* faces = this->mesh->faces;
+    const ModelTextureVertex* textureVertices = this->mesh->textureVertices;
+    const std::array<float, 3>* normals = this->mesh->vertexNormals;
+    ModelColor* color = g_modelFaceColors;
 
-    if (shade == 1) {
-      Light(this->mesh->faceNormals[index].data(), combined.values, direction, diffuse, ambient, light);
-    }
-
-    for (unsigned corner = 0; corner < 3; ++corner) {
-      std::uint32_t& color = g_modelFaceColors[index * 3u + corner];
-
-      if (shade == 0) {
-        color = (this->model->color & 0x00FFFFFFu) | (Byte(this->alpha * 255.0f) << 24);
-      } else if (shade == 1 || shade == 2) {
-        if (shade == 2) {
-          Light(this->mesh->vertexNormals[index * 3u + corner].data(), combined.values, direction, diffuse, ambient, light);
-        }
-
-        const bool shaded = this->mesh->textureVertices[face.textureVertices[corner]].shaded != 0;
-        color = LitColor(this->model->color, this->alpha, shaded, light);
+    for (int index = 0; index < this->mesh->faceCount; ++index) {
+      for (unsigned corner = 0; corner < 3; ++corner) {
+        float light[3];
+        Light(normals[index * 3 + corner].data(), rotation.values, direction, diffuse, ambient, light);
+        const bool shaded = textureVertices[faces[index].textureVertices[corner]].shaded > 0u;
+        *color++ = LitColor(this->model->color, this->alpha, shaded, light);
       }
     }
+    break;
+  }
+  case 1: {
+    const ModelFace* faces = this->mesh->faces;
+    const ModelTextureVertex* textureVertices = this->mesh->textureVertices;
+    const std::array<float, 3>* normals = this->mesh->faceNormals;
+    ModelColor* color = g_modelFaceColors;
+
+    for (int index = 0; index < this->mesh->faceCount; ++index) {
+      float light[3];
+      Light(normals[index].data(), rotation.values, direction, diffuse, ambient, light);
+
+      for (unsigned corner = 0; corner < 3; ++corner) {
+        const bool shaded = textureVertices[faces[index].textureVertices[corner]].shaded > 0u;
+        *color++ = LitColor(this->model->color, this->alpha, shaded, light);
+      }
+    }
+    break;
+  }
+  case 0: {
+    ModelColor* color = g_modelFaceColors;
+
+    for (int index = 0; index < this->mesh->faceCount; ++index) {
+      for (unsigned corner = 0; corner < 3; ++corner) {
+        color->value = this->model->color;
+        color->a = static_cast<unsigned char>(this->alpha * 255.0f);
+        ++color;
+      }
+    }
+    break;
+  }
   }
 
-  int index = 0;
+  const ModelFace* face = this->mesh->faces;
+  const ModelFace* const end = face + this->mesh->faceCount;
+  const ModelTextureVertex* textureVertices = this->mesh->textureVertices;
+  ModelFaceState* state = this->faceState.data();
+  const ModelColor* colors = g_modelFaceColors;
 
-  while (index < this->mesh->faceCount) {
-    const unsigned texture = this->mesh->faces[index].texture;
+  while (face != end) {
+    const std::uint16_t texture = face->texture;
     CTexture* image = this->textures[texture % this->textures.size()];
 
-    const float u = static_cast<float>(static_cast<double>(image->CTexture::Width())) / static_cast<float>(static_cast<double>(image->TextureWidth()));
-    const float v = static_cast<float>(static_cast<double>(image->CTexture::Height())) / static_cast<float>(static_cast<double>(image->TextureHeight()));
+    const float u = static_cast<float>(static_cast<double>(image->ImageWidth())) / static_cast<float>(static_cast<double>(image->TextureWidth()));
+    const float v = static_cast<float>(static_cast<double>(image->ImageHeight())) / static_cast<float>(static_cast<double>(image->TextureHeight()));
 
-    do {
-      const ModelFace& face = this->mesh->faces[index];
-      ModelFaceState& state = this->faceState[index];
-
+    while (face != end && face->texture == texture) {
       for (unsigned corner = 0; corner < 3; ++corner) {
-        state.colors[corner] = g_modelFaceColors[index * 3u + corner];
+        state->colors[corner] = colors[corner].value;
       }
 
-      for (unsigned corner = 0; corner < 3; ++corner) {
-        if (this->mesh->textureVertexCount == 0) {
-          state.uv[corner][0] = u;
-          state.uv[corner][1] = v;
-        } else {
-          const auto& uv = this->mesh->textureVertices[face.textureVertices[corner]];
-          state.uv[corner][1] = v * uv.v;
-          state.uv[corner][0] = u * uv.u;
+      if (this->mesh->textureVertexCount == 0) {
+        for (unsigned corner = 0; corner < 3; ++corner) {
+          state->uv[corner][0] = u;
+          state->uv[corner][1] = v;
+        }
+      } else {
+        for (unsigned corner = 0; corner < 3; ++corner) {
+          const ModelTextureVertex& uv = textureVertices[face->textureVertices[corner]];
+          state->uv[corner][1] = v * uv.v;
+          state->uv[corner][0] = u * uv.u;
         }
       }
 
-      ++index;
-    } while (index < this->mesh->faceCount && this->mesh->faces[index].texture == texture);
+      ++face;
+      ++state;
+      colors += 3;
+    }
   }
 
   this->SampleGroundColors(g_renderer, combined.values, *static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->ground);
