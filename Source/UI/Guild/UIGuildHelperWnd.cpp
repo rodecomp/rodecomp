@@ -166,7 +166,8 @@ int UICreateGuildWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, s
   switch (a1) {
   case 184: {
     CMode* mode = g_modeMgr.GetGameMode();
-    std::string name = this->m_nameEdit->Text();
+    std::string name = "";
+    name = this->m_nameEdit->Text();
     this->m_nameEdit->SelectAll();
 
     if (name.empty()) {
@@ -200,18 +201,24 @@ int UIGuildBanReasonDescWnd::SendMsg(UIWindow* sender, int message, std::intptr_
   switch (message) {
   case 6:
     switch (a1) {
-    case 184:
+    case 184: {
       g_windowMgr.CloseWindow(76);
-      g_modeMgr.gameMode->SendMsg(111, reinterpret_cast<int>(&this->m_target), reinterpret_cast<int>(this->m_reasonEdit->Text()), 0, 0);
+      CMode* mode = g_modeMgr.gameMode;
+      mode->SendMsg(111, reinterpret_cast<int>(&this->m_target), reinterpret_cast<int>(this->m_reasonEdit->Text()), 0, 0);
       break;
+    }
     case 185:
       g_windowMgr.CloseWindow(76);
       break;
     }
     return 0;
-  case 34:
-    this->m_target = *reinterpret_cast<const GuildBanTarget*>(a1);
+  case 34: {
+    const GuildBanTarget* target = reinterpret_cast<const GuildBanTarget*>(a1);
+    this->m_target.unknown_0000 = target->unknown_0000;
+    this->m_target.unknown_0004 = target->unknown_0004;
+    this->m_target.unknown_0008 = target->unknown_0008;
     return 0;
+  }
   default:
     return UIFrameWnd::SendMsg(sender, message, a1, a2, a3, a4);
   }
