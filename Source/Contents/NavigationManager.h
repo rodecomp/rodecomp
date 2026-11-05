@@ -176,7 +176,7 @@ CNavi_Object* FindNaviObjectByName(const char* name, const std::vector<CNavi_Obj
 
 class CNaviInfo {
 public:
-  CNaviInfo(int index, const char* name, const char* title, int cellX, int cellY, int type);
+  __declspec(noinline) CNaviInfo(int index, const char* name, const char* title, int cellX, int cellY, int type);
   ~CNaviInfo();
 
   bool HasName(const char* name) const;
@@ -262,7 +262,7 @@ public:
   NaviCell* GetCell(NaviCell* out);
   void Clear();
   void ClearAll();
-  bool AddDestination(CNaviInfo* info);
+  __declspec(noinline) bool AddDestination(CNaviInfo* info);
   bool AddObject(CNavi_Link* link);
   CNavi_Link* FindLink(unsigned int key, bool byId);
   int FindRoute(std::vector<CNavi_Link*>* route, bool direct, bool allowGates, bool includeObjects, bool allowWarps, int side);
