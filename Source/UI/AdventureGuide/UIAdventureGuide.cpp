@@ -503,8 +503,7 @@ void CUIItem::BindItem(CUIItemInfo* item, const CItemData& data) {
   item->itemId = data.id;
   const ITEM_DESC& desc = FindItemDescription(std::atoi(info.itemId.c_str()));
   const std::string image = "유저인터페이스\\collection\\" + std::string(desc.identifiedResource) + ".bmp";
-  const std::string name(desc.identifiedName);
-  item->nameText->SetText(name.c_str(), name.size());
+  item->nameText->SetText(std::string(desc.identifiedName));
   item->image->SetImage(image);
   reinterpret_cast<CUIQuestInfo*>(item)->SetStatusLines(data.first, data.second, data.third);
   item->SetDescription(data.type, info.Description());
@@ -1726,12 +1725,9 @@ void CUIQuestInfo::Slot15(int width, int height) {
 // FUNCTION: fn_14330
 void CUICharacterInfo::Slot16() {
   this->jobIcon->SetImage(std::format("유저인터페이스\\renewalparty\\icon_jobs_{}.bmp", g_session.m_job));
-  const std::string level = std::format("Lv. {}", g_session.m_level);
-  this->level->SetText(level.c_str(), level.size());
-  const std::string jobLevel = std::format("Jv. {}", g_session.m_jobLevel);
-  this->jobLevel->SetText(jobLevel.c_str(), jobLevel.size());
-  const char* name = g_session.DecodePlayerName();
-  this->name->SetText(name, std::strlen(name));
+  this->level->SetText(std::format("Lv. {}", g_session.m_level));
+  this->jobLevel->SetText(std::format("Jv. {}", g_session.m_jobLevel));
+  this->name->SetText(g_session.DecodePlayerName());
 }
 
 // OFFSET: 0x009DD750
@@ -1741,47 +1737,49 @@ void CUIItemInfo::Slot32(int, int) {
   info.SetItemId(this->itemId);
   info.unknown_0000[0] = this->type;
   info.identified = 1;
+  int location;
   if (this->type == 5) {
-    info.unknown_0000[2] = this->location > 9 ? 0x22 : 2;
+    location = this->location <= 9 ? 2 : 0x22;
   } else if (this->type == 4) {
     switch (this->location) {
     case 0:
-      info.unknown_0000[2] = 0x100;
+      location = 0x100;
       break;
     case 1:
-      info.unknown_0000[2] = 0x200;
+      location = 0x200;
       break;
     case 2:
-      info.unknown_0000[2] = 1;
+      location = 1;
       break;
     case 3:
-      info.unknown_0000[2] = 0x10;
+      location = 0x10;
       break;
     case 4:
-      info.unknown_0000[2] = 4;
+      location = 4;
       break;
     case 5:
-      info.unknown_0000[2] = 0x20;
+      location = 0x20;
       break;
     case 6:
-      info.unknown_0000[2] = 0x40;
+      location = 0x40;
       break;
     case 7:
-      info.unknown_0000[2] = 0x88;
+      location = 0x88;
       break;
     case 8:
-      info.unknown_0000[2] = 8;
+      location = 8;
       break;
     case 9:
-      info.unknown_0000[2] = 0x80;
+      location = 0x80;
       break;
     default:
-      info.unknown_0000[2] = 0;
+      location = 0;
       break;
     }
   } else {
-    info.unknown_0000[2] = 0;
+    location = 0;
   }
+  info.unknown_0000[2] = location;
 
   UIWindow* window = g_windowMgr.EnsureWindow(12);
   if (window) {
