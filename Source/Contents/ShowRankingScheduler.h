@@ -18,7 +18,7 @@ std::map<int, RankingBoardStyle> RankingBoardStyles();
 
 class CShowRankingScheduler {
 public:
-  CShowRankingScheduler(const std::uint64_t& start, const std::uint64_t& end, int extra);
+  __declspec(noinline) CShowRankingScheduler(const std::uint64_t& start, const std::uint64_t& end, int extra);
   virtual ~CShowRankingScheduler() = default;
 
   __declspec(noinline) void SetData(const void* data);
