@@ -2038,6 +2038,7 @@ void CSession::EraseRecord0734(int id) {
 // OFFSET: 0x00DFF250
 // FUNCTION: fn_23615
 void CSession::IgnoreText(std::string text) {
+  std::string ignored;
 }
 
 // OFFSET: 0x00DFF2A0
