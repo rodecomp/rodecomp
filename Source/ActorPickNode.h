@@ -37,7 +37,7 @@ public:
 
   virtual ~CActorPickNode();
   void AddPickInfo(ActorPickInfo* info);
-  void Clear();
+  __declspec(noinline) void Clear();
   ActorPickInfo* Pick(float x, float y);
   void MakeQuardTree(int depth, ActorPickBounds bounds);
 
