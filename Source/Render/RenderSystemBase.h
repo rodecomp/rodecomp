@@ -11,7 +11,8 @@ class CTexture;
 
 class CRenderSystemBase {
 public:
-  virtual ~CRenderSystemBase() = default;
+  // INLINED
+  virtual ~CRenderSystemBase() {}
   virtual std::int32_t Backend() = 0;
   virtual HRESULT Initialize(HWND window) = 0;
   virtual HRESULT Close() = 0;
