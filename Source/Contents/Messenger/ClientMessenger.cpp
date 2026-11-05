@@ -182,12 +182,12 @@ EquipmentProperties::CEquipmentProperties2Dim::CEquipmentProperties2Dim(Equipmen
 
 // OFFSET: 0x0068B490
 // FUNCTION: fn_05610
-EquipmentProperties::CEquipmentProperties::~CEquipmentProperties() {
+__declspec(noinline) EquipmentProperties::CEquipmentProperties::~CEquipmentProperties() {
 }
 
 // OFFSET: 0x0068B3F0
 // FUNCTION: fn_05609
-EquipmentProperties::CEquipmentProperties2Dim::~CEquipmentProperties2Dim() {
+__declspec(noinline) EquipmentProperties::CEquipmentProperties2Dim::~CEquipmentProperties2Dim() {
 }
 
 // OFFSET: 0x00698550
