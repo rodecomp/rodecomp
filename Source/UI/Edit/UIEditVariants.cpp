@@ -1098,10 +1098,9 @@ void UIEditCtrl3::ClearLineState() {
   }
   this->unknown_0168.clear();
 
-  for (std::vector<bool>::iterator it = this->unknown_0174.begin(); it != this->unknown_0174.end();) {
-    it = this->unknown_0174.erase(it);
+  while (!this->unknown_0174.empty()) {
+    this->unknown_0174.pop_back();
   }
-  this->unknown_0174.clear();
 
   if (this->unknown_0160) {
     delete[] this->unknown_0160;
