@@ -96,7 +96,7 @@ DWORD CRC32::Calculate(const char* text) {
 
 // OFFSET: 0x00403670
 // FUNCTION: fn_00147
-DWORD CRC32::Calculate(const WCHAR* text) {
+__declspec(noinline) DWORD CRC32::Calculate(const WCHAR* text) {
   char converted[MAX_PATH];
   WideCharToMultiByte(CP_ACP, 0, text, -1, converted, MAX_PATH, nullptr, nullptr);
   DWORD checksum = 0xFFFFFFFF;
@@ -126,7 +126,7 @@ DWORD CRC32::CalculateLowercase(const WCHAR* text) {
 
 // OFFSET: 0x00403800
 // FUNCTION: fn_00150
-bool CRC32::Calculate(const BYTE* data, int length, DWORD* checksum) {
+__declspec(noinline) bool CRC32::Calculate(const BYTE* data, int length, DWORD* checksum) {
   *checksum = 0xFFFFFFFF;
   Update(data, length, checksum);
   *checksum = ~*checksum;
