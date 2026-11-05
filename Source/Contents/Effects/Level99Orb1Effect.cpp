@@ -19,8 +19,8 @@ CLevel99Orb1Effect::CLevel99Orb1Effect() : CEffect(976), offsets() {
 // OFFSET: 0x00B6B390
 // FUNCTION: fn_19091
 void CLevel99Orb1Effect::Close() {
-  for (CParticle* particle : this->particles) {
-    FreeParticle(particle);
+  for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
+    FreeParticle(*it);
   }
 
   this->particles.clear();
@@ -68,7 +68,8 @@ bool CLevel99Orb1Effect::Slot06() {
 // OFFSET: 0x00B6B530
 // FUNCTION: fn_19094
 void CLevel99Orb1Effect::Slot03() {
-  for (CParticle* particle : this->particles) {
+  for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
+    CParticle* particle = *it;
     particle->position.x = this->position[0];
     particle->position.y = this->position[1];
     particle->position.z = this->position[2];
