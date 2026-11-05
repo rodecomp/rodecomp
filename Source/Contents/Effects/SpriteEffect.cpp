@@ -456,7 +456,8 @@ bool CSpriteEffect::Slot06() {
 // OFFSET: 0x00B79780
 // FUNCTION: fn_19200
 void CSpriteEffect::Slot03() {
-  for (CSpriteParticle* particle : this->particles) {
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    CSpriteParticle* particle = *it;
     ++particle->unknown_00E8;
 
     switch (this->id) {
