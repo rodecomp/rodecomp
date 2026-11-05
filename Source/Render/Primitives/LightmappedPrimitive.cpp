@@ -65,18 +65,6 @@ void LightmappedPrimitive::DrawAuxiliary(int unused) {
   g_renderer->DrawAuxiliaryPrimitive(this);
 }
 
-// INLINED
-LightmappedPrimitive* LightmappedPrimitivePool::Acquire() {
-  if (this->m_current == this->m_commands.end()) {
-    this->m_commands.emplace_back();
-    this->m_current = this->m_commands.end();
-    return &this->m_commands.back();
-  }
-
-  LightmappedPrimitive* primitive = &*this->m_current++;
-  return new (primitive) LightmappedPrimitive;
-}
-
 // OFFSET: 0x00559BE0
 // FUNCTION: fn_02071
 void LightmappedQueues::Submit(LightmappedPrimitive* primitive, int queue, bool depthAlpha, float depthStart, float depthEnd) {

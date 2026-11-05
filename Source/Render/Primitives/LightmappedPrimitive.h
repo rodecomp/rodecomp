@@ -107,6 +107,18 @@ inline void LightmappedQueues::Clear() {
   this->second.clear();
 }
 
+// INLINED
+inline LightmappedPrimitive* LightmappedPrimitivePool::Acquire() {
+  if (this->m_current == this->m_commands.end()) {
+    this->m_commands.emplace_back();
+    this->m_current = this->m_commands.end();
+    return &this->m_commands.back();
+  }
+
+  LightmappedPrimitive* primitive = &*this->m_current++;
+  return new (primitive) LightmappedPrimitive;
+}
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(LightmappedPrimitive) == 188);
 static_assert(sizeof(LightmappedCommand) == 28);
