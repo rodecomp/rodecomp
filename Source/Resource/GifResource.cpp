@@ -1,7 +1,6 @@
 #include "Resource/GifResource.h"
 
 #include "File/File.h"
-#include "Resource/GifLzw.h"
 
 #include <algorithm>
 #include <cstring>
@@ -47,8 +46,8 @@ namespace {
 
   // INLINED
   bool IsGifSignature(const void* data) {
-    const auto* bytes = static_cast<const unsigned char*>(data);
-    return bytes[0] == 'G' && bytes[1] == 'I' && bytes[2] == 'F';
+    constexpr char signature[] = {'G', 'I', 'F'};
+    return std::memcmp(data, signature, sizeof(signature)) == 0;
   }
 }
 
@@ -295,7 +294,7 @@ bool CGifRes::DecodeGif(const void* data, int bytes, bool iconOnly) {
       ++cursor;
 
       unsigned char* indices = new unsigned char[descriptor.width * descriptor.height];
-      if (DecodeGifLzw(minimumCodeSize, compressed, compressedBytes, indices) > 0) {
+      if (this->DecodeGifLzw(minimumCodeSize, compressed, compressedBytes, indices) > 0) {
         const unsigned int pixelCount = screenHeight * screenWidth;
         std::uint32_t* pixels = new std::uint32_t[pixelCount];
 

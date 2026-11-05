@@ -1,4 +1,4 @@
-#include "Resource/GifLzw.h"
+#include "Resource/GifResource.h"
 
 #include <cstdlib>
 
