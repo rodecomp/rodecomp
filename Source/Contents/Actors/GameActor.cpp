@@ -517,8 +517,8 @@ void CGameActor::ResetState() {
   this->unknown_02EC = 0;
   this->unknown_03D4 = 0;
   this->unknown_03D8 = 0;
+
   this->unknown_03E8 = 0;
-  this->unknown_03EC = 0;
 }
 
 // OFFSET: 0x00CAFF00
@@ -1096,13 +1096,10 @@ bool CGameActor::HasPendingDamage() {
 // FUNCTION: fn_21067
 bool CGameActor::UpdateUnknown03E8(std::int64_t value) {
   bool result = false;
-  const int high = static_cast<int>(value >> 32);
-  const unsigned int low = static_cast<unsigned int>(value);
-  if (this->unknown_03EC <= high && (this->unknown_03EC < high || static_cast<unsigned int>(this->unknown_03E8) < low)) {
+  if (this->unknown_03E8 < value) {
     result = true;
   }
-  this->unknown_03EC = high;
-  this->unknown_03E8 = static_cast<int>(low);
+  this->unknown_03E8 = value;
   return result;
 }
 

@@ -159,8 +159,7 @@ public:
   /* 03DC */ int unknown_03DC;
   union { /* 03E0 */ std::uint16_t unknown_03E0; struct { unsigned char unknown_03E0Low; /* 03E1 */ bool unknown_03E1; }; };
   /* 03E2 */ unsigned char unknown_03E2[0x06];
-  /* 03E8 */ int unknown_03E8;
-  /* 03EC */ int unknown_03EC;
+  /* 03E8 */ std::int64_t unknown_03E8;
   /* 03F0 */ vector3d unknown_03F0;
   /* 03FC */ std::set<int> unknown_03FC;
   /* 0404 */ int unknown_0404;
