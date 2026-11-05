@@ -757,6 +757,8 @@ void EquipmentProperties::CEquipment::AddProperty(const std::string& name, const
   this->m_properties += &property;
 }
 
+__declspec(noinline) SessionShop* FindShop(CSession& session, const int& shopId);
+
 // OFFSET: 0x00DDE720
 // FUNCTION: fn_23398
 SessionShop* FindShop(CSession& session, const int& shopId) {
