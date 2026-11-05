@@ -194,6 +194,10 @@ void ITEM_INFO::Reset() {
 // OFFSET: 0x00DDD4E0
 // FUNCTION: fn_23386
 ITEM_INFO LookupClientItem(const std::list<ITEM_INFO>& values, int id, unsigned char requireIdentified) {
+  if (values.empty()) {
+    return ITEM_INFO(0);
+  }
+
   for (const ITEM_INFO& value : values) {
     if (std::atoi(value.itemId.c_str()) == id && (!requireIdentified || value.identified != 0)) {
       return value;
@@ -304,14 +308,14 @@ std::uint32_t ITEM_INFO::Deserialize(const std::vector<unsigned char>& data) {
   }
 
   std::uint32_t offset = 6;
-  ItemRecordHeader header{};
-  std::memcpy(&header, data.data(), sizeof(header));
+  ItemRecordHeader header;
+  header.Read(data.data());
   if (header.id != 281) {
     return 0xFFFFFFFF;
   }
 
   while (offset < data.size()) {
-    std::memcpy(&header, data.data() + offset, sizeof(header));
+    header.Read(data.data() + offset);
     offset += 6;
     const unsigned char* source = data.data() + offset;
     switch (header.id) {
@@ -579,7 +583,7 @@ bool LoadItemIntegerTable(std::vector<int>& values, const char* name) {
   }
 
   const unsigned int size = file.GetSize();
-  char* buffer = static_cast<char*>(std::malloc(size + 1));
+  char* buffer = new char[size + 1];
   if (values.capacity() < size) {
     values.reserve(size);
   }
@@ -612,7 +616,7 @@ bool LoadItemIntegerTable(std::vector<int>& values, const char* name) {
       break;
     }
   }
-  std::free(buffer);
+  delete[] buffer;
   std::vector<int>(values).swap(values);
   return true;
 }
