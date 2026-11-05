@@ -62,7 +62,7 @@ int UIEntryQueueHelpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
 
 // OFFSET: 0x00BA42E0
 // FUNCTION: fn_19684
-UIEntryQueueListBox::UIEntryQueueListBox() : UIListBox() {
+__declspec(noinline) UIEntryQueueListBox::UIEntryQueueListBox() : UIListBox() {
 }
 
 // OFFSET: 0x00BA4490
@@ -320,8 +320,13 @@ void UIEntryQueueStandByWnd::SetInfo(const char* queueName, int waiting, int ran
 
 // OFFSET: 0x00BA6000
 // FUNCTION: fn_19704
-UIEntryQueueWnd::UIEntryQueueWnd()
-    : UIFrameWnd(0), m_applyButtons(), m_helpButton(nullptr), m_labels(), m_values(), m_list(nullptr), saved(nullptr) {
+UIEntryQueueWnd::UIEntryQueueWnd() : UIFrameWnd(0) {
+  this->m_list = nullptr;
+  this->saved = nullptr;
+  this->m_helpButton = nullptr;
+  std::memset(this->m_applyButtons, 0, sizeof(this->m_applyButtons));
+  std::memset(this->m_labels, 0, sizeof(this->m_labels));
+  std::memset(this->m_values, 0, sizeof(this->m_values));
 }
 
 // OFFSET: 0x00BA6410
@@ -346,7 +351,8 @@ void UIEntryQueueWnd::Slot15(int width, int height) {
   this->m_list->backgroundBlue = 240;
   this->AddChild(this->m_list);
 
-  for (std::map<int, EntryQueueInfo*>::iterator it = g_entryQueueList.begin(); it != g_entryQueueList.end(); ++it) {
+  const std::map<int, EntryQueueInfo*>::iterator end = g_entryQueueList.end();
+  for (std::map<int, EntryQueueInfo*>::iterator it = g_entryQueueList.begin(); it != end; ++it) {
     this->m_list->AddEntry(it->second->displayName, it->second->id);
   }
 
@@ -358,11 +364,12 @@ void UIEntryQueueWnd::Slot15(int width, int height) {
     LookupMessage(0x85F), LookupMessage(0x860), LookupMessage(0x861),
   };
   int index = 0;
-  for (int y = 165; y < 305; y += 20, ++index) {
+  for (int y = 165; y < 305; ++index, y += 20) {
     this->m_labels[index] = new UIStaticText();
     if (this->m_labels[index]) {
       const char* label = labels[index];
-      this->m_labels[index]->SetSize(this->TextWidth(label, 0, 0, 12, 0, 0), 25);
+      const int labelWidth = this->TextWidth(label, 0, 0, 12, 0, 0);
+      this->m_labels[index]->SetSize(labelWidth, 25);
       this->m_labels[index]->SetText(label, 0);
       this->m_labels[index]->Move(157, y);
       this->AddChild(this->m_labels[index]);
@@ -380,17 +387,17 @@ void UIEntryQueueWnd::Slot15(int width, int height) {
   this->SelectQueue(first->second);
 
   const std::string path = "유저인터페이스\\battle_field\\";
-  const char* names[9] = {
-    "apply_individual", "apply_individual_a", "apply_individual_b", "apply_party", "apply_party_a",
-    "apply_party_b",    "apply_guild",        "apply_guild_a",      "apply_guild_b",
+  const char* names[3][3] = {
+    {"apply_individual", "apply_individual_a", "apply_individual_b"},
+    {"apply_party", "apply_party_a", "apply_party_b"},
+    {"apply_guild", "apply_guild_a", "apply_guild_b"},
   };
   int id = 0;
-  const char** name = names;
-  for (int x = 8; x < 287; x += 93, name += 3) {
+  for (int x = 8; x < 287; x += 93) {
     this->m_applyButtons[id] = new UIBitmapButton();
-    this->m_applyButtons[id]->SetBitmap((path + name[0] + ".bmp").c_str(), 0, 0);
-    this->m_applyButtons[id]->SetBitmap((path + name[1] + ".bmp").c_str(), 1, 0);
-    this->m_applyButtons[id]->SetBitmap((path + name[2] + ".bmp").c_str(), 2, 0);
+    this->m_applyButtons[id]->SetBitmap((path + names[id][0] + ".bmp").c_str(), 0, 0);
+    this->m_applyButtons[id]->SetBitmap((path + names[id][1] + ".bmp").c_str(), 1, 0);
+    this->m_applyButtons[id]->SetBitmap((path + names[id][2] + ".bmp").c_str(), 2, 0);
     this->m_applyButtons[id]->SetSize(this->m_applyButtons[id]->BitmapWidth(), this->m_applyButtons[id]->BitmapHeight());
     this->m_applyButtons[id]->Move(x, height - 24);
     this->m_applyButtons[id]->SetId(id);
@@ -545,26 +552,18 @@ void UIEntryQueueWnd::SelectQueue(EntryQueueInfo* info) {
     case 0:
       strcpy_s(text, sizeof(text), info->displayName);
       break;
-    case 1:
-      strcpy_s(text, sizeof(text), info->unknown_0530);
-      break;
     case 2:
       sprintf_s(text, sizeof(text), LookupMessage(0x866), info->unknown_020C, info->unknown_0210);
       break;
     case 3:
-      switch (info->unknown_0218) {
-      case 1:
+      if (info->unknown_0218 == 1) {
         sprintf_s(text, sizeof(text), LookupMessage(0x867), info->unknown_021C);
-        break;
-      case 2:
+      } else if (info->unknown_0218 == 2) {
         sprintf_s(text, sizeof(text), LookupMessage(0x868), info->unknown_021C);
-        break;
-      case 3:
+      } else if (info->unknown_0218 == 3) {
         sprintf_s(text, sizeof(text), LookupMessage(0x869), info->unknown_021C, info->unknown_0220);
-        break;
-      default:
+      } else {
         sprintf_s(text, sizeof(text), LookupMessage(0x86A));
-        break;
       }
       break;
     case 4:
@@ -576,15 +575,18 @@ void UIEntryQueueWnd::SelectQueue(EntryQueueInfo* info) {
     case 6:
       strcpy_s(text, sizeof(text), info->unknown_042C);
       break;
+    case 1:
+      strcpy_s(text, sizeof(text), info->unknown_0530);
+      break;
     }
 
     UIWindow* label = this->m_labels[index];
-    const int x = label->geometry.x;
-    const int width = label->geometry.width;
+    const int x = label->geometry.x + label->geometry.width + 5;
     const int y = label->geometry.y;
-    this->m_values[index]->Resize(this->TextWidth(text, 0, 0, 12, 0, 0), 25);
+    const int textWidth = this->TextWidth(text, 0, 0, 12, 0, 0);
+    this->m_values[index]->Resize(textWidth, 25);
     this->m_values[index]->SetText(text, 0);
-    this->m_values[index]->Move(x + width + 5, y);
+    this->m_values[index]->Move(x, y);
     this->m_values[index]->Invalidate();
   }
 
