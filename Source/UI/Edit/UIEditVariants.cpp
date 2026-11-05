@@ -36,7 +36,7 @@ int UIEditCtrl2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
   if (message != 0) {
     this->UIEditCtrl::SendMsg(sender, message, a, b, c, d);
   } else {
-    if (g_windowMgr.IsLastFocus(g_windowMgr.hoverWindow)) {
+    if (g_windowMgr.IsLastFocus(g_windowMgr.GetHoverWindow())) {
       g_windowMgr.FocusFirst();
     } else {
       g_windowMgr.FocusNext();
@@ -821,7 +821,7 @@ int UIEditCtrl5::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
   if (message != 0) {
     this->UIEditCtrl::SendMsg(sender, message, a, b, c, d);
   } else {
-    if (g_windowMgr.IsLastFocus(g_windowMgr.hoverWindow)) {
+    if (g_windowMgr.IsLastFocus(g_windowMgr.GetHoverWindow())) {
       g_windowMgr.FocusFirst();
     } else {
       g_windowMgr.FocusNext();
