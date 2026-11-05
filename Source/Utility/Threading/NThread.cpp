@@ -36,7 +36,8 @@ unsigned __stdcall NThread::Entry(void* parameter) {
   return result;
 }
 
-// INLINED
+// OFFSET: 0x00737420
+// FUNCTION: fn_45543
 bool NThread::Start() {
   if (this->m_handle || this->m_state) {
     return false;
