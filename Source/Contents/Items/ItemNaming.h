@@ -35,7 +35,7 @@ ItemCardName& FindItemCardName(int id, std::map<int, ItemCardName>& values);
 ItemCardName& FindItemCardName(int id);
 ItemMoveInfo& FindItemMoveInfo(int id, std::map<int, ItemMoveInfo>& values);
 ItemMoveInfo& FindItemMoveInfo(int id);
-bool IsItemCard(int id);
+__declspec(noinline) bool IsItemCard(int id);
 bool Equipment(const ITEM_INFO& item);
 std::uint32_t __fastcall ItemCardColor(const ITEM_INFO* item);
 std::string ItemDisplayName(int id);
