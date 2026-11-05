@@ -26,22 +26,17 @@ void UIWindowMgr::FocusFirst() {
   if (this->hoverWindow) {
     UIWindow* parent = this->hoverWindow->parent;
 
-    for (UIWindow* child : parent->m_children) {
-      if (!child->Slot05()) {
-        continue;
+    for (auto it = parent->m_children.begin(); it != parent->m_children.end(); ++it) {
+      UIWindow* child = *it;
+      if (child->Slot05()) {
+        this->SetFocus(child);
+        return;
       }
-
-      this->hoverWindow->Slot24(child->Slot06() == this->hoverWindow);
-      this->hoverWindow = child->Slot06();
-
-      if (this->hoverWindow) {
-        this->hoverWindow->Slot23();
-      }
-
-      return;
     }
 
-    this->hoverWindow->Slot24(0);
+    if (this->hoverWindow) {
+      this->hoverWindow->Slot24(0);
+    }
   }
 
   this->hoverWindow = nullptr;
@@ -76,28 +71,15 @@ void UIWindowMgr::FocusNext() {
     return;
   }
 
-  UIWindow* parent = this->hoverWindow->parent;
-  bool found = false;
-
-  for (UIWindow* child : parent->m_children) {
-    if (found && child->Slot05()) {
-      this->hoverWindow->Slot24(child->Slot06() == this->hoverWindow);
-      this->hoverWindow = child->Slot06();
-
-      if (this->hoverWindow) {
-        this->hoverWindow->Slot23();
-      }
-
-      return;
-    }
-
-    if (child == this->hoverWindow && child->Slot05()) {
-      found = true;
-    }
+  UIWindow* next = this->hoverWindow->parent->NextFocusable(this->hoverWindow);
+  if (!next) {
+    this->SetFocus(nullptr);
+    return;
   }
 
-  this->hoverWindow->Slot24(0);
-  this->hoverWindow = nullptr;
+  if (next->Slot05()) {
+    this->SetFocus(next);
+  }
 }
 
 // OFFSET: 0x00A96F60
