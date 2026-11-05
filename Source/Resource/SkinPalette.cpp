@@ -11,11 +11,11 @@ std::uint32_t SkinPaletteColor(ResourceMgr& resources, const SkinPaletteCell& ce
     filename = Resolve(filename);
   }
   auto* bitmap = static_cast<CBitmapRes*>(resources.Load(filename));
-  if (!bitmap) {
-    return 0;
+  if (bitmap) {
+    const std::uint32_t color = bitmap->image.Pixel(4 * cell.column + 2, 4 * cell.row + 2);
+    return RGB((color >> 16) & 255, (color >> 8) & 255, color & 255);
   }
-  const std::uint32_t color = bitmap->image.Pixel(4 * cell.column + 2, 4 * cell.row + 2);
-  return ((color & 255) << 16) | (color & 0xFF00) | ((color >> 16) & 255);
+  return 0;
 }
 
 // OFFSET: 0x007E0FC0
