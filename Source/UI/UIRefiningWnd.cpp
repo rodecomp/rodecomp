@@ -1087,7 +1087,7 @@ void UIRefiningWnd::Paint() {
     const char* color = "^CA152E";
     int index = 0;
     int x = 10;
-    for (const RefiningMaterial* material = this->materials.data(); material != this->materials.data() + this->materials.size(); ++material) {
+    for (auto material = this->materials.begin(); material != this->materials.end(); ++material) {
       ITEM_INFO icon;
       icon.SetItemId(material->itemId);
       const int owned = LookupClientItem(g_session.m_inventoryItems, material->itemId, 0).quantity;
@@ -1114,7 +1114,7 @@ void UIRefiningWnd::Paint() {
     }
   }
 
-  if (this->item.unknown_0000[1] != 0) {
+  if (this->item.unknown_0000[1] > 0) {
     DrawItemIcon(*this, ResourceMgr::Instance(), 120, 212, this->item, 0);
     if (this->item.unknown_0088 > 0) {
       bitmap = static_cast<CBitmapRes*>(
@@ -1147,7 +1147,7 @@ void UIRefiningWnd::Paint() {
     }
 
     unsigned char rate = 0;
-    if (this->item.unknown_0000[1] != 0 && !this->materials.empty() && this->selectedMaterial >= 0 &&
+    if (this->item.unknown_0000[1] > 0 && !this->materials.empty() && this->selectedMaterial >= 0 &&
         static_cast<unsigned>(this->selectedMaterial) < this->materials.size()) {
       rate = this->materials[this->selectedMaterial].unknown_0004;
     }
@@ -1155,7 +1155,7 @@ void UIRefiningWnd::Paint() {
     const int labelWidth = this->TextWidth(label.c_str(), 0, 0, 12, 1, 0);
 
     rate = 0;
-    if (this->item.unknown_0000[1] != 0 && !this->materials.empty() && this->selectedMaterial >= 0 &&
+    if (this->item.unknown_0000[1] > 0 && !this->materials.empty() && this->selectedMaterial >= 0 &&
         static_cast<unsigned>(this->selectedMaterial) < this->materials.size()) {
       rate = this->materials[this->selectedMaterial].unknown_0004;
     }
