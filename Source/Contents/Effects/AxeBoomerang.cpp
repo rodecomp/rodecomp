@@ -36,8 +36,7 @@ void CAxeBoomerang::Close() {
 // OFFSET: 0x006F5A70
 // FUNCTION: fn_06840
 void CAxeBoomerang::Slot01() {
-  this->unknown_00CC = reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(&this->unknown_00DC, 5));
-  CEZ2STRParticle* particle = reinterpret_cast<CEZ2STRParticle*>(this->unknown_00CC);
+  CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->unknown_00DC, 5));
   if (this->id == 0x887) {
     particle->Load(std::string("shield_shooting\\shield_shooting\\shield_shooting.str"));
   } else if (g_serviceOptions.Get(229) == 0) {
@@ -47,6 +46,7 @@ void CAxeBoomerang::Slot01() {
   }
 
   particle->m_loop = true;
+  this->unknown_00CC = reinterpret_cast<EZ2STREmitter*>(particle);
   this->unknown_00D0 = 1;
   this->unknown_00D1 = 0;
   this->unknown_00D4 = 0;
