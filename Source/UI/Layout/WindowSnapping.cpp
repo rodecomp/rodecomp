@@ -48,9 +48,11 @@ void UIWindowMgr::ConstrainSnap(UIWindow* window, int& dx, int& dy, int groupMem
     return;
   }
 
+  int snapX = 0, snapY = 0;
   const bool root = g_snapMgr.IsRoot(window);
 
-  for (auto& [other, rectangle] : this->snapRectangles) {
+  for (auto it = this->snapRectangles.begin(); it != this->snapRectangles.end(); ++it) {
+    auto& [other, rectangle] = *it;
     const bool connected = g_snapMgr.Connected(window, other);
     const bool otherRoot = g_snapMgr.IsRoot(other);
     const bool otherConnected = g_snapMgr.ConnectedToRoot(other);
@@ -65,15 +67,15 @@ void UIWindowMgr::ConstrainSnap(UIWindow* window, int& dx, int& dy, int groupMem
       }
     }
 
-    rectangle.Snap(moving, x, y);
-    if (x != 0 && needX) {
+    rectangle.Snap(moving, snapX, snapY);
+    if (snapX != 0 && needX) {
       needX = false;
-      dx = x;
+      dx = snapX;
     }
 
-    if (y != 0 && needY) {
+    if (snapY != 0 && needY) {
       needY = false;
-      dy = y;
+      dy = snapY;
     }
 
     if (!needX && !needY) {
