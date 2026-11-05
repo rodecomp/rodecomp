@@ -472,10 +472,10 @@ void UINavigationWnd::ApplyMinimized() {
     this->Resize(134, 61);
     int x = this->geometry.x;
     int y = this->geometry.y;
-    if (x >= g_renderer->viewport.width - 272) {
+    if (g_renderer->viewport.width - 272 <= x) {
       x = g_renderer->viewport.width - this->geometry.width;
     }
-    if (y >= g_renderer->viewport.height - 338) {
+    if (g_renderer->viewport.height - 338 <= y) {
       y = g_renderer->viewport.height - this->geometry.height;
     }
     this->Move(x < 0 ? 0 : x, y < 0 ? 0 : y);
@@ -486,12 +486,9 @@ void UINavigationWnd::ApplyMinimized() {
     this->m_minimizeButton->Move(this->geometry.width - 28, 3);
     this->m_minimizeButton->SetTooltip(LookupMessage(0x89B));
 
-    this->unknown_00FC->Move(-1000, -1000);
-    this->unknown_0100->Move(-1000, -1000);
-    this->m_routeFooter->Move(-1000, -1000);
-    this->m_searchFooter->Move(-1000, -1000);
-    this->unknown_010C->Move(-1000, -1000);
-    this->unknown_0110->Move(-1000, -1000);
+    for (int index = 0; index < 6; ++index) {
+      this->m_buttons[index]->Move(-1000, -1000);
+    }
     this->LayoutTabs();
 
     this->unknown_00EC->Move(-1000, -1000);
@@ -527,12 +524,12 @@ void UINavigationWnd::ApplyMinimized() {
     this->m_minimizeButton->Move(this->geometry.width - 28, 3);
     this->m_minimizeButton->SetTooltip(LookupMessage(0x89C));
 
-    this->unknown_00FC->Move(this->geometry.width - 66, 18);
-    this->unknown_0100->Move(this->geometry.width - 77, this->geometry.height - 37);
-    this->m_routeFooter->Move(-1000, -1000);
-    this->m_searchFooter->Move(-1000, -1000);
-    this->unknown_010C->Move(this->geometry.width - 224, this->geometry.height - 22);
-    this->unknown_0110->Move(this->geometry.width - 31, 18);
+    int buttonX[6] = {this->geometry.width - 66, this->geometry.width - 77, -1000, -1000, this->geometry.width - 224,
+                      this->geometry.width - 31};
+    int buttonY[6] = {18, this->geometry.height - 37, -1000, -1000, this->geometry.height - 22, 18};
+    for (int index = 0; index < 6; ++index) {
+      this->m_buttons[index]->Move(buttonX[index], buttonY[index]);
+    }
     this->LayoutTabs();
 
     this->unknown_00EC->Move(6, 18);
