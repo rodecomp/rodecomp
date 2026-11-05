@@ -222,7 +222,7 @@ HRESULT DeviceOwnerDX7::CreateDevice(GUID* drawIdentity, const GUID* renderIdent
     return DeviceError(1);
   }
 
-  auto description = SurfaceDescription(0, 0);
+  DDSURFACEDESC2 description{sizeof(description)};
   this->draw->GetDisplayMode(&description);
   this->desktopBitDepth = description.ddpfPixelFormat.dwRGBBitCount;
   DWORD cooperative = this->fullscreen ? DDSCL_FULLSCREEN | DDSCL_ALLOWREBOOT | DDSCL_EXCLUSIVE : DDSCL_NORMAL;
@@ -377,45 +377,45 @@ HRESULT DeviceOwnerDX7::Initialize(HWND value, GUID* drawIdentity, const GUID* r
   }
 
   if (this->device) {
-    const struct {
-      D3DRENDERSTATETYPE state;
-      DWORD value;
-    } states[] = {
-      {D3DRENDERSTATE_CULLMODE, D3DCULL_NONE},
-      {D3DRENDERSTATE_ZFUNC, D3DCMP_LESSEQUAL},
-      {D3DRENDERSTATE_TEXTUREPERSPECTIVE, TRUE},
-      {D3DRENDERSTATE_ALPHAFUNC, D3DCMP_GREATEREQUAL},
-      {D3DRENDERSTATE_ALPHAREF, 240},
-      {D3DRENDERSTATE_COLORKEYENABLE, TRUE},
-      {D3DRENDERSTATE_ZENABLE, D3DZB_TRUE},
-      {D3DRENDERSTATE_ZWRITEENABLE, TRUE},
-      {D3DRENDERSTATE_SRCBLEND, D3DBLEND_SRCALPHA},
-      {D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCALPHA}
-    };
+    this->device->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_NONE);
+    this->device->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_LESSEQUAL);
+    this->device->SetRenderState(D3DRENDERSTATE_TEXTUREPERSPECTIVE, TRUE);
 
-    for (const auto& state : states) {
-      this->device->SetRenderState(state.state, state.value);
-    }
+    this->device->SetRenderState(D3DRENDERSTATE_ALPHAFUNC, D3DCMP_GREATEREQUAL);
+    this->device->SetRenderState(D3DRENDERSTATE_ALPHAREF, 240);
+    this->device->SetRenderState(D3DRENDERSTATE_COLORKEYENABLE, TRUE);
 
-    const struct {
-      DWORD stage;
-      D3DTEXTURESTAGESTATETYPE state;
-      DWORD value;
-    } stages[] = {{0, D3DTSS_TEXCOORDINDEX, 0},           {0, D3DTSS_COLOROP, D3DTOP_MODULATE},
-                  {0, D3DTSS_COLORARG1, D3DTA_TEXTURE},   {0, D3DTSS_COLORARG2, D3DTA_DIFFUSE},
-                  {0, D3DTSS_ALPHAOP, D3DTOP_MODULATE},   {0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE},
-                  {0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE},   {1, D3DTSS_TEXCOORDINDEX, 1},
-                  {1, D3DTSS_COLORARG1, D3DTA_TEXTURE},   {1, D3DTSS_COLOROP, D3DTOP_MODULATEALPHA_ADDCOLOR},
-                  {1, D3DTSS_COLORARG2, D3DTA_CURRENT},   {1, D3DTSS_ALPHAOP, D3DTOP_DISABLE},
-                  {2, D3DTSS_COLOROP, D3DTOP_DISABLE},    {2, D3DTSS_ALPHAOP, D3DTOP_DISABLE},
-                  {0, D3DTSS_MAGFILTER, D3DTFG_LINEAR},   {0, D3DTSS_MINFILTER, D3DTFN_LINEAR},
-                  {1, D3DTSS_MAGFILTER, D3DTFG_LINEAR},   {1, D3DTSS_MINFILTER, D3DTFN_LINEAR},
-                  {0, D3DTSS_ADDRESS, D3DTADDRESS_CLAMP}, {1, D3DTSS_ADDRESS, D3DTADDRESS_BORDER},
-                  {1, D3DTSS_BORDERCOLOR, 0xFF000000}};
+    this->device->SetRenderState(D3DRENDERSTATE_ZENABLE, D3DZB_TRUE);
+    this->device->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE);
 
-    for (const auto& state : stages) {
-      this->device->SetTextureStageState(state.stage, state.state, state.value);
-    }
+    this->device->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_SRCALPHA);
+    this->device->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCALPHA);
+
+    this->device->SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, 0);
+    this->device->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+    this->device->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+    this->device->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+    this->device->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
+    this->device->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+    this->device->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
+
+    this->device->SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, 1);
+    this->device->SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+    this->device->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_MODULATEALPHA_ADDCOLOR);
+    this->device->SetTextureStageState(1, D3DTSS_COLORARG2, D3DTA_CURRENT);
+    this->device->SetTextureStageState(1, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
+
+    this->device->SetTextureStageState(2, D3DTSS_COLOROP, D3DTOP_DISABLE);
+    this->device->SetTextureStageState(2, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
+
+    this->device->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFN_LINEAR);
+    this->device->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFG_LINEAR);
+    this->device->SetTextureStageState(1, D3DTSS_MINFILTER, D3DTFN_LINEAR);
+    this->device->SetTextureStageState(1, D3DTSS_MAGFILTER, D3DTFG_LINEAR);
+
+    this->device->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_CLAMP);
+    this->device->SetTextureStageState(1, D3DTSS_ADDRESS, D3DTADDRESS_BORDER);
+    this->device->SetTextureStageState(1, D3DTSS_BORDERCOLOR, 0xFF000000);
   }
 
   return status;
