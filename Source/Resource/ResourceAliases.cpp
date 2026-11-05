@@ -7,12 +7,12 @@
 // OFFSET: 0x00AEF500
 // FUNCTION: fn_18180
 const char* ResourceAliases::Resolve(const char* name) const {
-  std::string key(name);
-  auto entry = this->names.find(key);
+  auto entry = this->names.find(name);
   if (entry != this->names.end()) {
     return entry->second.c_str();
   }
 
+  std::string key(name);
   const std::size_t marker = key.rfind('@');
   if (marker != std::string::npos && marker >= 4) {
     key.erase(marker - 4, 3);
@@ -32,7 +32,7 @@ std::string AddResourcePrefix(const char* name, const char* prefix) {
     return name;
   }
 
-  return std::string(prefix) + name;
+  return std::string(prefix) + std::string(name);
 }
 
 // OFFSET: 0x00AEF3A0
@@ -81,5 +81,7 @@ void ResourceAliases::Load(int) {
     }
   }
 
-  std::free(contents);
+  if (contents) {
+    std::free(contents);
+  }
 }
