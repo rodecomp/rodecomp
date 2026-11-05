@@ -38,9 +38,20 @@ AnimatedModelNode::AnimatedModelNode()
 
 // INLINED
 AnimatedModelNode::~AnimatedModelNode() {
-  delete[] this->frames;
-  delete[] this->faces;
-  delete[] this->faceNormals;
+  if (this->frames) {
+    delete[] this->frames;
+    this->frames = nullptr;
+  }
+
+  if (this->faces) {
+    delete[] this->faces;
+    this->faces = nullptr;
+  }
+
+  if (this->faceNormals) {
+    delete[] this->faceNormals;
+    this->faceNormals = nullptr;
+  }
 
   if (this->textures) {
     for (int index = 0; index < this->textureCount; ++index) {
@@ -49,6 +60,7 @@ AnimatedModelNode::~AnimatedModelNode() {
     }
 
     delete[] this->textures;
+    this->textures = nullptr;
   }
 }
 
@@ -80,11 +92,11 @@ void C3dAnimModelRes::Unload() {
     this->unknown_0110 = 0;
   }
 
-  for (AnimatedModelNode* node : this->nodes) {
-    delete node;
+  for (std::list<AnimatedModelNode*>::iterator it = this->nodes.begin(); it != this->nodes.end(); ++it) {
+    delete *it;
   }
 
-  this->nodes.clear();
+  this->nodes.erase(this->nodes.begin(), this->nodes.end());
 }
 
 // OFFSET: 0x00752390
