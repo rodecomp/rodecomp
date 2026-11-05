@@ -1,4 +1,5 @@
 #include "Contents/Schedule/TimeScheduler.h"
+#include "Contents/ShowRankingScheduler.h"
 
 #include <new>
 
@@ -70,14 +71,47 @@ CSchedule* CTimeScheduler::FindSchedule(int serial) {
   return nullptr;
 }
 
+// OFFSET: 0x00BA9390
+// FUNCTION: fn_45541
+CSchedule* CTimeScheduler::FindScheduleByKey(int key) {
+  for (CSchedule* schedule : this->m_schedules) {
+    if (schedule->unknown_002C == key) {
+      return schedule;
+    }
+  }
+  return nullptr;
+}
+
+// OFFSET: 0x00BA93C0
+// FUNCTION: fn_45542
+void CTimeScheduler::RemoveAllSchedules() {
+  for (auto it = this->m_schedules.begin(); it != this->m_schedules.end(); ++it) {
+    if (*it != nullptr) {
+      delete *it;
+      *it = nullptr;
+    }
+  }
+  this->m_schedules.clear();
+  this->m_unknown_000D = false;
+}
+
+// OFFSET: 0x00BA9430
+// FUNCTION: fn_45540
+CSchedule* CTimeScheduler::CreateSchedule(const std::int64_t& interval, int scheduleType) {
+  CSchedule* schedule = new CSchedule(_Xtime_get_ticks(), interval, scheduleType, ++g_schedulerSerial, 0);
+  if (schedule != nullptr) {
+    this->m_schedules.push_back(schedule);
+  }
+  return schedule;
+}
+
 // OFFSET: 0x00BA94E0
 // FUNCTION: fn_19737
 CSchedule* CTimeScheduler::AddSchedule(CSchedule* schedule) {
-  if (schedule == nullptr) {
-    return nullptr;
+  if (schedule != nullptr) {
+    schedule->timestamp = _Xtime_get_ticks();
+    this->m_schedules.push_back(schedule);
   }
-  schedule->timestamp = _Xtime_get_ticks();
-  this->m_schedules.push_back(schedule);
   return schedule;
 }
 
