@@ -67,9 +67,8 @@ void CEmblemDataMgr::CompleteUpload(AsyncDiagnostic diagnostic, std::string resp
 
   Json::Value root;
   Json::Reader reader;
-  const std::string document(response.c_str());
 
-  if (!reader.parse(document, root, true)) {
+  if (!reader.parse(response.c_str(), root, true)) {
     return;
   }
 

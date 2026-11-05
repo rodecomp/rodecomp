@@ -23,9 +23,8 @@ void CAdventurerAgencyMgr::CompletePartyInfo(AsyncDiagnostic diagnostic, std::st
 
   Json::Value root;
   Json::Reader reader;
-  const std::string document(response.c_str());
 
-  if (!reader.parse(document, root, true)) {
+  if (!reader.parse(response.c_str(), root, true)) {
     return;
   }
 
@@ -33,19 +32,18 @@ void CAdventurerAgencyMgr::CompletePartyInfo(AsyncDiagnostic diagnostic, std::st
     return;
   }
 
-  const auto notify = [&](int id) { g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(id)), 0xFF, 0, 0, 0); };
   auto entry = root["data"].begin();
 
   if (entry == root["data"].end()) {
-    notify(3443);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3443)), 0xFF, 0, 0, 0);
     g_windowMgr.CloseWindow(345);
     return;
   }
 
   CAdvenPartyInfo info;
   info.characterName = (*entry)["CharName"].asString();
-  info.accountId = Id((*entry).get("AID", 0).asDouble());
-  info.characterId = Id((*entry).get("GID", 0).asDouble());
+  info.accountId = static_cast<std::uint32_t>((*entry).get("AID", 0).asDouble());
+  info.characterId = static_cast<std::uint32_t>((*entry).get("GID", 0).asDouble());
   info.assist = (*entry).get("Assist", 1).asInt() != 0;
   info.healer = (*entry).get("Healer", 1).asInt() != 0;
   info.dealer = (*entry).get("Dealer", 1).asInt() != 0;
@@ -75,9 +73,9 @@ void CAdventurerAgencyMgr::CompletePartyInfo(AsyncDiagnostic diagnostic, std::st
   }
 
   if (info.minimumLevel > g_session.m_level || info.maximumLevel < g_session.m_level) {
-    notify(3416);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3416)), 0xFF, 0, 0, 0);
   } else if (g_session.PartyCount() > 0) {
-    notify(79);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(79)), 0xFF, 0, 0, 0);
   } else {
     g_modeMgr.gameMode->SendMsg(265, reinterpret_cast<int>(&info.accountId), reinterpret_cast<int>(&info.characterId), 0, 0);
     g_windowMgr.CloseWindow(345);

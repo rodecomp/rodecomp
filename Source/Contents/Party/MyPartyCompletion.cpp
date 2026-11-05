@@ -17,9 +17,8 @@ void CAdventurerAgencyMgr::CompleteMyParty(AsyncDiagnostic diagnostic, std::stri
 
   Json::Value root;
   Json::Reader reader;
-  const std::string document(response.c_str());
 
-  if (!reader.parse(document, root, true)) {
+  if (!reader.parse(response.c_str(), root, true)) {
     return;
   }
 
@@ -41,8 +40,8 @@ void CAdventurerAgencyMgr::CompleteMyParty(AsyncDiagnostic diagnostic, std::stri
   const Json::Value data = root["data"];
   CAdvenPartyInfo info;
   info.characterName = data.get("CharName", "").asString();
-  info.accountId = Id(data.get("AID", 0).asDouble());
-  info.characterId = Id(data.get("GID", 0).asDouble());
+  info.accountId = static_cast<std::uint32_t>(data.get("AID", 0).asDouble());
+  info.characterId = static_cast<std::uint32_t>(data.get("GID", 0).asDouble());
   info.assist = data.get("Assist", 1).asInt() != 0;
   info.healer = data.get("Healer", 1).asInt() != 0;
   info.dealer = data.get("Dealer", 1).asInt() != 0;
