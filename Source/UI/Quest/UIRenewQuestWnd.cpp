@@ -251,12 +251,15 @@ void UIOngoingQuestScrollWnd::RefreshHuntTexts() {
 // FUNCTION: fn_09947
 int UIOngoingQuestScrollWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2,
                                      std::intptr_t argument3, std::intptr_t argument4) {
-  if (message == 6) {
-    if (argument1 == 0xC9) {
-      g_windowMgr.CloseWindow(0x142);
-    }
-  } else if (message == 0x17) {
-    this->RefreshHuntTexts();
+  switch (message) {
+    case 6:
+      if (argument1 == 0xC9) {
+        g_windowMgr.CloseWindow(0x142);
+      }
+      break;
+    case 0x17:
+      this->RefreshHuntTexts();
+      break;
   }
 
   return UIScrollWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
@@ -632,25 +635,22 @@ void UIRenewDetailQuestInfoWnd::Slot25(int x, int y) {
 // FUNCTION: fn_09962
 int UIRenewDetailQuestInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2,
                                        std::intptr_t argument3, std::intptr_t argument4) {
-  if (message == 6) {
-    if (argument1 == 0xC9) {
-      g_windowMgr.CloseWindow(0x142);
-    }
-
-    return 0;
+  switch (message) {
+    case 6:
+      if (argument1 == 0xC9) {
+        g_windowMgr.CloseWindow(0x142);
+      }
+      return 0;
+    case 0x17:
+      if (this->m_recommended) {
+        this->m_recommendedWnd->SendMsg(this, 0x17, 0, 0, 0, 0);
+      } else {
+        this->m_ongoingWnd->SendMsg(this, 0x17, 0, 0, 0, 0);
+      }
+      return 0;
+    default:
+      return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
-
-  if (message != 0x17) {
-    return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
-  }
-
-  if (this->m_recommended == 0) {
-    this->m_ongoingWnd->SendMsg(this, 0x17, 0, 0, 0, 0);
-  } else {
-    this->m_recommendedWnd->SendMsg(this, 0x17, 0, 0, 0, 0);
-  }
-
-  return 0;
 }
 
 // OFFSET: 0x007FBB70
