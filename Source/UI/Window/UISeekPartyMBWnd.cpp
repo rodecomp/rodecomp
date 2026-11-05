@@ -403,13 +403,13 @@ void UISeekPartyMBWnd::LoadRegionMaps() {
   g_session.m_hotkeyScript->HasTable("map_list");
   for (int region = 2; region < regionCount; ++region) {
     std::vector<std::pair<std::string, int>> maps;
+    int mapId = 0;
+    int level = 0;
+    const char* mapName = nullptr;
+    int red = 0;
+    int green = 0;
+    int blue = 0;
     for (int index = 1;; ++index) {
-      int mapId = 0;
-      int level = 0;
-      const char* mapName = nullptr;
-      int red = 0;
-      int green = 0;
-      int blue = 0;
       if (g_session.m_hotkeyScript->Call("queryMapInfo", "dd>ddsddd", region, index, &mapId, &level, &mapName, &red, &green, &blue)) {
         if (!mapName) {
           break;
