@@ -5,6 +5,6 @@
 
 class CRenderSystemBase;
 
-HRESULT PerspectiveMatrixDX7(D3DMATRIX& matrix, float fov, float aspect, float nearPlane, float farPlane);
+__declspec(noinline) HRESULT PerspectiveMatrixDX7(D3DMATRIX& matrix, float fov, float aspect, float nearPlane, float farPlane);
 
 #endif
