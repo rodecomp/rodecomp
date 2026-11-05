@@ -2999,6 +2999,7 @@ namespace GPakEx {
   }
 
   // OFFSET: 0x00647030
+  // FUNCTION: fn_04894
   template<>
   __declspec(noinline) XteaOfb::CipherModeFinal() {
     this->m_cipher = &this->m_blockCipher;
@@ -3044,6 +3045,7 @@ namespace GPakEx {
   }
 
   // OFFSET: 0x00649B50
+  // FUNCTION: fn_04899
   template<>
   __declspec(noinline) Rc6CfbDecryption::~CipherModeFinal() {
   }
