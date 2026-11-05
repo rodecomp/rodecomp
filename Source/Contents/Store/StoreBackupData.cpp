@@ -15,6 +15,7 @@ void CMCStoreInfoBackup::ImportData(Json::Value& data) {
   this->items.clear();
   this->title = FromUtf8(data.get("Title", "").asString(), g_textCodePage);
   Json::Value values = data["Item"];
+  const std::string styledText = values.toStyledString();
 
   if (values.isNull() && this->title.empty()) {
     return;
@@ -28,7 +29,7 @@ void CMCStoreInfoBackup::ImportData(Json::Value& data) {
     }
 
     ITEM_INFO item;
-    item.itemId = std::to_string(value.get("ID", 0).asInt());
+    item.SetItemId(value.get("ID", 0).asInt());
     item.quantity = value.get("Count", 0).asInt();
     item.identified = value.get("Identified", 0).asBool();
     item.unknown_0060 = value.get("RefiningLevel", 0).asInt();
@@ -42,8 +43,8 @@ void CMCStoreInfoBackup::ImportData(Json::Value& data) {
     }
 
     item.unknown_0098 = value.get("RandomOptionCount", 0).asInt();
-    Json::Value& options = value["RandomOptionList"];
-    unsigned index = 0;
+    Json::Value options = value["RandomOptionList"];
+    int index = 0;
 
     for (auto option = options.begin(); option != options.end() && index <= 5; ++option, ++index) {
       const auto id = static_cast<std::uint16_t>((*option).get("OptIndex", 0).asInt());
