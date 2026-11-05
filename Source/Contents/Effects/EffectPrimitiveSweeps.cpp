@@ -213,6 +213,10 @@ void CEffectPrim::RenderTrailingArc(matrix& wtm) {
 // OFFSET: 0x00BF34D0
 // FUNCTION: fn_19992
 void CEffectPrim::RenderBladeQuads(matrix& wtm) {
+  vector3d vec1{};
+  vector3d vec2{};
+  vector3d vec3{};
+  vector3d vec4{};
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -226,10 +230,6 @@ void CEffectPrim::RenderBladeQuads(matrix& wtm) {
     int angle2 = angle + (angle < 358 ? 2 : -358);
     int angle3 = angle + (angle < 182 ? 178 : -182);
     int angle4 = angle + (angle < 178 ? 182 : -178);
-    vector3d vec1;
-    vector3d vec2;
-    vector3d vec3;
-    vector3d vec4;
     vec1.x = slot.distance * g_cosTable[angle1] * g_cosTable[slot.rotStart] + slot.vecBNow.x;
     vec1.y = slot.distance * g_cosTable[angle1] * g_sinTable[slot.rotStart] + slot.height[0] + slot.vecBNow.y;
     vec1.z = slot.distance * g_sinTable[angle1] + slot.vecBNow.z;
@@ -364,32 +364,31 @@ void CEffectPrim::RenderArcWalls(matrix& wtm) {
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
-    EffectPrimitiveSlot& slot = this->state.slots[ec];
-    if (slot.life != 1) {
+    if (this->state.slots[ec].life != 1) {
       continue;
     }
 
-    const int step = slot.fullDisplayAngle / 4;
+    const int step = this->state.slots[ec].fullDisplayAngle / 4;
     int i = 0;
-    for (int offset = 0; offset <= slot.fullDisplayAngle; offset += step) {
-      int angle = (slot.rotStart + offset) % 360;
-      if (slot.fullDisplayAngle == 360 && i == 4) {
-        angle = slot.rotStart;
+    for (int offset = 0; offset <= this->state.slots[ec].fullDisplayAngle; offset += step) {
+      int angle = (this->state.slots[ec].rotStart + offset) % 360;
+      if (this->state.slots[ec].fullDisplayAngle == 360 && i == 4) {
+        angle = this->state.slots[ec].rotStart;
       }
 
-      const float baseX = slot.distance * g_cosTable[angle];
-      const float baseZ = slot.distance * g_sinTable[angle];
-      const float rise = slot.height[i];
-      const float riseX = rise * g_cosTable[slot.riseAngle];
-      curB.x = baseX + slot.vecBNow.x + slot.vecTPre.x;
-      curB.y = slot.vecBNow.y + 0.0f + slot.vecTPre.y;
-      curB.z = baseZ + slot.vecBNow.z + slot.vecTPre.z;
-      curT.y = slot.vecBNow.y - rise * g_sinTable[slot.riseAngle] + slot.vecTPre.y;
-      curT.x = riseX * g_cosTable[angle] + baseX + slot.vecBNow.x + slot.vecTPre.x;
-      curT.z = riseX * g_sinTable[angle] + baseZ + slot.vecBNow.z + slot.vecTPre.z;
+      const float baseX = this->state.slots[ec].distance * g_cosTable[angle];
+      const float baseZ = this->state.slots[ec].distance * g_sinTable[angle];
+      const float rise = this->state.slots[ec].height[i];
+      const float riseX = rise * g_cosTable[this->state.slots[ec].riseAngle];
+      curB.x = baseX + this->state.slots[ec].vecBNow.x + this->state.slots[ec].vecTPre.x;
+      curB.y = this->state.slots[ec].vecBNow.y + 0.0f + this->state.slots[ec].vecTPre.y;
+      curB.z = baseZ + this->state.slots[ec].vecBNow.z + this->state.slots[ec].vecTPre.z;
+      curT.y = this->state.slots[ec].vecBNow.y - rise * g_sinTable[this->state.slots[ec].riseAngle] + this->state.slots[ec].vecTPre.y;
+      curT.x = riseX * g_cosTable[angle] + baseX + this->state.slots[ec].vecBNow.x + this->state.slots[ec].vecTPre.x;
+      curT.z = riseX * g_sinTable[angle] + baseZ + this->state.slots[ec].vecBNow.z + this->state.slots[ec].vecTPre.z;
 
       if (i > 0) {
-        this->RenderTeiRect(&rpCnt, slot.alphaB / 5, prevB, curB, prevT, curT, wtm, 1, 0, 0, 255, 10, 10, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB / 5, prevB, curB, prevT, curT, wtm, 1, 0, 0, 255, 10, 10, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       }
 
       ++i;
@@ -401,25 +400,25 @@ void CEffectPrim::RenderArcWalls(matrix& wtm) {
     }
 
     i = 0;
-    for (int offset = 0; offset <= slot.fullDisplayAngle; offset += step) {
-      int angle = (slot.rotStart + 45 + offset) % 360;
-      if (slot.fullDisplayAngle == 360 && i == 4) {
-        angle = slot.rotStart;
+    for (int offset = 0; offset <= this->state.slots[ec].fullDisplayAngle; offset += step) {
+      int angle = (this->state.slots[ec].rotStart + 45 + offset) % 360;
+      if (this->state.slots[ec].fullDisplayAngle == 360 && i == 4) {
+        angle = this->state.slots[ec].rotStart;
       }
 
-      const float baseX = slot.distance * g_cosTable[angle] * 1.5f;
-      const float baseZ = slot.distance * g_sinTable[angle] * 1.5f;
-      const float rise = slot.height[i];
-      const float riseX = rise * g_cosTable[slot.riseAngle];
-      curB.x = baseX + slot.vecBNow.x + slot.vecTPre.x;
-      curB.y = slot.vecBNow.y + 0.0f + slot.vecTPre.y;
-      curB.z = baseZ + slot.vecBNow.z + slot.vecTPre.z;
-      curT.y = slot.vecBNow.y - rise * g_sinTable[slot.riseAngle] + slot.vecTPre.y;
-      curT.x = riseX * g_cosTable[angle] + baseX + slot.vecBNow.x + slot.vecTPre.x;
-      curT.z = riseX * g_sinTable[angle] + baseZ + slot.vecBNow.z + slot.vecTPre.z;
+      const float baseX = this->state.slots[ec].distance * g_cosTable[angle] * 1.5f;
+      const float baseZ = this->state.slots[ec].distance * g_sinTable[angle] * 1.5f;
+      const float rise = this->state.slots[ec].height[i];
+      const float riseX = rise * g_cosTable[this->state.slots[ec].riseAngle];
+      curB.x = baseX + this->state.slots[ec].vecBNow.x + this->state.slots[ec].vecTPre.x;
+      curB.y = this->state.slots[ec].vecBNow.y + 0.0f + this->state.slots[ec].vecTPre.y;
+      curB.z = baseZ + this->state.slots[ec].vecBNow.z + this->state.slots[ec].vecTPre.z;
+      curT.y = this->state.slots[ec].vecBNow.y - rise * g_sinTable[this->state.slots[ec].riseAngle] + this->state.slots[ec].vecTPre.y;
+      curT.x = riseX * g_cosTable[angle] + baseX + this->state.slots[ec].vecBNow.x + this->state.slots[ec].vecTPre.x;
+      curT.z = riseX * g_sinTable[angle] + baseZ + this->state.slots[ec].vecBNow.z + this->state.slots[ec].vecTPre.z;
 
       if (i > 0) {
-        this->RenderTeiRect(&rpCnt, i - 1, slot.alphaB, slot.alphaB, prevB, curB, curT, prevT, wtm, 0);
+        this->RenderTeiRect(&rpCnt, i - 1, this->state.slots[ec].alphaB, this->state.slots[ec].alphaB, prevB, curB, curT, prevT, wtm, 0);
       }
 
       ++i;
@@ -435,12 +434,14 @@ void CEffectPrim::RenderArcWalls(matrix& wtm) {
 // OFFSET: 0x00BF2AC0
 // FUNCTION: fn_19991
 void CEffectPrim::RenderJitterSweeps(matrix& wtm) {
-  vector3d previousBottom[20] = {};
-  vector3d previousTop[20] = {};
-  vector3d bottom[20] = {};
-  vector3d top[20] = {};
+  vector3d bottoms[20] = {};
+  vector3d bottomsCopy[20] = {};
+  vector3d tops[20] = {};
+  vector3d topsCopy[20] = {};
   vector3d lastBottom = {};
+  vector3d currentBottom = {};
   vector3d lastTop = {};
+  vector3d currentTop = {};
   int count = 0;
 
   for (int layer = 0; layer < 4; ++layer) {
@@ -449,9 +450,9 @@ void CEffectPrim::RenderJitterSweeps(matrix& wtm) {
     float jitterX[21];
     float jitterZ[21];
     for (int i = 0; i < slot.vecTNow.y; ++i) {
-      jitterY[i] = static_cast<float>(std::rand() % 7) * 0.1f - 0.3f;
-      jitterX[i] = static_cast<float>(std::rand() % 7) * 0.1f - 0.3f;
-      jitterZ[i] = static_cast<float>(std::rand() % 7) * 0.1f - 0.3f;
+      jitterY[i] = static_cast<float>(std::max(std::rand() % 7, 0)) * 0.1f - 0.3f;
+      jitterX[i] = static_cast<float>(std::max(std::rand() % 7, 0)) * 0.1f - 0.3f;
+      jitterZ[i] = static_cast<float>(std::max(std::rand() % 7, 0)) * 0.1f - 0.3f;
     }
 
     if (slot.life != 1 || slot.alphaB <= 0 || slot.process <= 0) {
@@ -461,16 +462,22 @@ void CEffectPrim::RenderJitterSweeps(matrix& wtm) {
     for (int i = 0; i < slot.vecTNow.y; ++i) {
       float height1 = slot.height[i];
       float height2 = slot.height[i + 1];
-      float radius1 = height1 > 0.0f ? height1 / 90.0f * slot.distance : 0.0f;
-      float radius2 = height2 > 0.0f ? height2 / 90.0f * slot.distance : 0.0f;
+      float radius1 = 0.0f;
+      if (height1 > 0.0f) {
+        radius1 += height1 / 90.0f * slot.distance;
+      }
+      float radius2 = 0.0f;
+      if (height2 > 0.0f) {
+        radius2 += height2 / 90.0f * slot.distance;
+      }
       const short angle = slot.riseAngle;
       vector3d start;
       vector3d end;
       start.x = g_cosTable[angle] * radius1 + jitterX[i];
-      start.y = -slot.distance * g_sinTable[static_cast<short>(height1)] * slot.vecTNow.x + jitterY[i] - 2.0f;
+      start.y = -slot.distance * g_sinTable[static_cast<short>(height1)] * slot.vecTNow.x + (jitterY[i] - 2.0f);
       start.z = g_sinTable[angle] * radius1 + jitterZ[i];
       end.x = g_cosTable[angle] * radius2 + jitterX[i + 1];
-      end.y = -slot.distance * g_sinTable[static_cast<short>(height2)] * slot.vecTNow.x + jitterY[i + 1] - 2.0f;
+      end.y = -slot.distance * g_sinTable[static_cast<short>(height2)] * slot.vecTNow.x + (jitterY[i + 1] - 2.0f);
       end.z = g_sinTable[angle] * radius2 + jitterZ[i + 1];
       short facing = static_cast<short>(height2);
       Get_Angle(start.x - end.x, start.z - end.z, &facing);
@@ -486,36 +493,50 @@ void CEffectPrim::RenderJitterSweeps(matrix& wtm) {
       }
 
       if (i > 0 && i < 19) {
-        for (int ring = 0; ring < 4; ++ring) {
-          const int turn = ring * 120;
+        for (int ring = 0, turn = 0; turn <= 360; ++ring, turn += 120) {
           const float rise = slot.maxHeight * g_sinTable[turn];
           const float radial = slot.maxHeight * g_cosTable[turn];
           const float dx = radial * g_cosTable[facing];
           const float dz = radial * g_sinTable[facing];
-          vector3d currentBottom = {start.x + dx, start.y + rise, start.z + dz};
-          vector3d currentTop = {end.x + dx, end.y + rise, end.z + dz};
-          if (ring > 0 && layer == 0 && slot.alphaB - i * 5 > 0) {
-            unsigned char green = static_cast<unsigned char>(i * 3);
-            unsigned char blue = green;
-            if (this->state.slots[0].fullDisplayAngle == 3) {
-              blue = static_cast<unsigned char>(std::rand() % 26 + 100);
-              green = static_cast<unsigned char>(std::rand() % 51);
+          currentBottom.x = start.x + dx;
+          currentBottom.y = start.y + rise;
+          currentBottom.z = start.z + dz;
+          currentTop.x = end.x + dx;
+          currentTop.y = end.y + rise;
+          currentTop.z = end.z + dz;
+          if (ring > 0) {
+            const int alpha = slot.alphaB - i * 5;
+            if (alpha > 0 && layer == 0) {
+              unsigned char green;
+              unsigned char blue;
+              if (this->state.slots[0].fullDisplayAngle == 3) {
+                blue = static_cast<unsigned char>(std::max(std::rand() % 26, 0) + 100);
+                green = static_cast<unsigned char>(std::max(std::rand() % 51, 0));
+              } else {
+                green = static_cast<unsigned char>(i * 3);
+                blue = green;
+              }
+              this->RenderTeiRect(&count, static_cast<short>(alpha), currentBottom, currentTop, lastTop, lastBottom,
+                                  wtm, 0, 0, 1, 255, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 0);
             }
-            this->RenderTeiRect(&count, static_cast<short>(slot.alphaB - i * 5), currentBottom, currentTop, lastBottom, lastTop,
-                                wtm, 0, 0, 1, 255, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 0);
           }
           lastBottom = currentBottom;
           lastTop = currentTop;
         }
 
         if (layer == 0) {
-          previousBottom[i] = bottom[i] = lastBottom;
-          previousTop[i] = top[i] = lastTop;
+          bottoms[i] = currentBottom;
+          bottomsCopy[i] = currentBottom;
+          tops[i] = currentTop;
+          topsCopy[i] = currentTop;
         } else {
           int alpha = slot.alphaB;
-          if (layer == 1) alpha /= 3;
-          else if (layer == 2) alpha /= 2;
-          this->RenderTeiRect(&count, static_cast<short>(alpha), lastBottom, lastTop, previousTop[i], previousBottom[i],
+          if (layer == 1) {
+            alpha /= 3;
+          } else if (layer == 2) {
+            alpha /= 2;
+          }
+          this->RenderTeiRect(&count, static_cast<short>(alpha), currentBottom, currentTop, tops[i], bottoms[i],
                               wtm, 0, 0, 1, 255, 0, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         }
       }
