@@ -180,15 +180,13 @@ void UIChangeMaterialWnd_List::Slot27(int x, int y) {
 // OFFSET: 0x005E2850
 // FUNCTION: fn_03887
 void UIChangeMaterialWnd::UpdateSearchPlaceholder() {
-  auto* edit = this->unknown_00B8;
-  const std::string text = edit->Text();
-  const char* placeholder = LookupMessage(0xec0);
-  if (text != placeholder) {
+  const std::string text = this->unknown_00B8->Text();
+  if (text.compare(LookupMessage(0xec0)) != 0) {
     if (text.empty()) {
-      edit->SetText(placeholder);
-      edit->TextColor(0xb1b1b1u, 0xffffffffu);
+      this->unknown_00B8->SetText(LookupMessage(0xec0));
+      this->unknown_00B8->TextColor(0xb1b1b1u, 0xffffffffu);
     } else {
-      edit->TextColor(0, 0xffffffffu);
+      this->unknown_00B8->TextColor(0, 0xffffffffu);
     }
   }
 }
@@ -443,20 +441,20 @@ int UIChangeMaterialWnd_List::SendMsg(
   UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
   switch (message) {
+  case 0x17:
+    this->RefreshVisibleEntries();
+    break;
+  case 0x12:
+    this->ShiftSelectedIndex(1);
+    break;
+  case 0x13:
+    this->sub_5E1080(1);
+    break;
   case 3:
     this->ShiftSelectedIndex(this->m_pageSize);
     break;
   case 4:
     this->sub_5E1080(this->m_pageSize);
-    break;
-  case 6:
-    if (argument1 == 0x141 && argument2 != 0) {
-      std::string filter(reinterpret_cast<const char*>(argument2));
-      if (filter == LookupMessage(0xec0)) {
-        filter.clear();
-      }
-      this->ApplyFilter(filter);
-    }
     break;
   case 7:
   case 9:
@@ -474,14 +472,14 @@ int UIChangeMaterialWnd_List::SendMsg(
     }
     return this->m_scrollOffset - previous;
   }
-  case 0x12:
-    this->ShiftSelectedIndex(1);
-    break;
-  case 0x13:
-    this->sub_5E1080(1);
-    break;
-  case 0x17:
-    this->RefreshVisibleEntries();
+  case 6:
+    if (argument1 == 0x141 && argument2 != 0) {
+      std::string filter(reinterpret_cast<const char*>(argument2));
+      if (filter.compare(LookupMessage(0xec0)) == 0) {
+        filter = "";
+      }
+      this->ApplyFilter(filter);
+    }
     break;
   default:
     break;
@@ -541,12 +539,12 @@ void UIChangeMaterialWnd::Paint() {
   CBitmapRes* mix = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(mixName.c_str())));
   this->DrawBitmap(0x50, 0x1E, mix ? &mix->image : nullptr, true);
 
-  const MaterialSlotPos* position = this->m_materialPos;
-  for (auto it = this->m_materials.begin(); it != this->m_materials.end(); ++it, ++position) {
+  int slot = 0;
+  for (auto it = this->m_materials.begin(); it != this->m_materials.end(); ++it, ++slot) {
     if (it->identified == 1) {
-      DrawItemWithQuantity(*this, ResourceMgr::Instance(), position->x, position->y, *it, 1, 0);
+      DrawItemWithQuantity(*this, ResourceMgr::Instance(), this->m_materialPos[slot].x, this->m_materialPos[slot].y, *it, 1, 0);
     } else {
-      DrawItemWithQuantityAuxiliary(*this, 1, position->x, position->y, *it, 1, 0);
+      DrawItemWithQuantityAuxiliary(*this, 1, this->m_materialPos[slot].x, this->m_materialPos[slot].y, *it, 1, 0);
     }
   }
 
@@ -671,22 +669,16 @@ void UIChangeMaterialWnd_List::Slot28(int x, int y) {
   this->m_hoverIndex = index;
   this->Invalidate();
 
-  if (static_cast<unsigned int>(index) >= this->m_items.size()) {
+  const MaterialListEntry* entry = this->GetEntry(index);
+  if (!entry) {
     return;
   }
 
-  const int entryIndex = this->m_items[index];
-  if (static_cast<unsigned int>(entryIndex) >= this->m_entries.size()) {
-    return;
-  }
-
-  const MaterialListEntry* entry = &this->m_entries[entryIndex];
   int screenX = x;
   int screenY = y;
   this->ToScreen(screenX, screenY);
 
-  const std::string name = ItemDisplayName(entry->results.front().id);
-  const std::string text = FormatOwnedString(LookupMessage(0xB7), name.c_str(), entry->results.front().quantity);
+  const std::string text = FormatOwnedString(LookupMessage(0xB7), ItemDisplayName(entry->results.front().id).c_str(), entry->results.front().quantity);
   g_modeMgr.gameMode->ShowTooltip(text.c_str(), screenX + 5, screenY - 5, -1, 0, 1);
 }
 
