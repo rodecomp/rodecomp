@@ -2,6 +2,7 @@
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
+#include "Resource/SkinPalette.h"
 #include "UI/Lists/UIComboBoxEx.h"
 #include "UI/Lists/UIListBox.h"
 #include "UI/Lists/UIScrollBar.h"
@@ -12,15 +13,14 @@
 
 namespace {
   // INLINED
-  unsigned Palette(ResourceMgr& resources, int column, int row) {
-    constexpr char path[] = "유저인터페이스\\colorchip.bmp";
-    auto* chip = static_cast<CBitmapRes*>(resources.Load(path));
-    const int x = column * 4 + 2;
-    const int y = row * 4 + 2;
-    const auto& image = chip->image;
-    const unsigned pixel = x >= 0 && y >= 0 && x < image.width && y < image.height ? image.pixels[x + y * image.width] : 0x00FF0000u;
+  unsigned Palette(int column, int row) {
+    auto& resources = ResourceMgr::Instance();
+    unsigned red;
+    unsigned green;
+    unsigned blue;
+    SkinPaletteChannels(resources, column, row, red, green, blue);
 
-    return ((pixel & 255) << 16) | (pixel & 0xFF00) | ((pixel >> 16) & 255);
+    return RGB(red, green, blue);
   }
 }
 
@@ -236,34 +236,34 @@ __forceinline void UIComboBoxEx::DrawRows(bool centered) {
 // OFFSET: 0x0088A360
 // FUNCTION: fn_11354
 void UIComboBoxEx::Paint() {
-  auto& resources = ResourceMgr::Instance();
-  this->geometry.surface->Fill(nullptr, Palette(resources, 6, 6));
-  this->FillRegion(1, 1, (this->geometry.width - 2), (this->geometry.height - 2), Palette(resources, 2, 2));
-  constexpr char prefix[] = "유저인터페이스\\basic_interface\\";
-  const char* names[] = {"sysboxs_lu.bmp", "sysboxs_ld.bmp", "sysboxs_ru.bmp", "sysboxs_rd.bmp"};
+  this->ClearSurface(Palette(6, 6));
+  this->FillRegion(1, 1, (this->geometry.width - 2), (this->geometry.height - 2), Palette(2, 2));
 
-  for (int corner = 0; corner < 4; ++corner) {
-    auto* resource = static_cast<CBitmapRes*>(resources.Load((std::string(prefix) + names[corner]).c_str()));
-    this->DrawBitmap(
-      corner >= 2 ? (this->geometry.width - resource->image.width) : 0, (corner & 1) ? (this->geometry.height - resource->image.height) : 0, &resource->image,
-      false
-    );
-  }
-
-  const unsigned end = std::min(
-    static_cast<unsigned>(this->lines.size()), static_cast<unsigned>((this->topLine + (this->geometry.height / this->lineHeight - this->bottomMargin)))
+  const auto* leftUp = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_lu.bmp")));
+  this->DrawBitmap(0, 0, leftUp ? &leftUp->image : nullptr, false);
+  const auto* leftDown = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_ld.bmp")));
+  this->DrawBitmap(0, (this->geometry.height - leftDown->image.height), leftDown ? &leftDown->image : nullptr, false);
+  const auto* rightUp = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_ru.bmp")));
+  this->DrawBitmap((this->geometry.width - rightUp->image.width), 0, rightUp ? &rightUp->image : nullptr, false);
+  const auto* rightDown = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_rd.bmp")));
+  this->DrawBitmap(
+    (this->geometry.width - rightDown->image.width), (this->geometry.height - rightDown->image.height), rightDown ? &rightDown->image : nullptr, false
   );
 
-  if (this->selected >= this->topLine && this->selected < static_cast<int>(end)) {
-    this->FillRegion(
-      3, ((this->lineHeight * (this->selected - this->topLine)) + 1), (this->geometry.width - 6), (this->lineHeight - 2), Palette(resources, 6, 2)
-    );
+  const int top = this->topLine;
+  const int end = static_cast<int>(std::min(
+    static_cast<unsigned>(this->lines.size()), static_cast<unsigned>((top + (this->geometry.height / this->lineHeight - this->bottomMargin)))
+  ));
+
+  for (int row = top; row < end; ++row) {
+    if (row == this->selected) {
+      this->FillRegion(3, ((this->lineHeight * (row - top)) + 1), (this->geometry.width - 6), (this->lineHeight - 2), Palette(6, 2));
+    }
+    this->DrawTextAt(3 - this->horizontalOffset, this->lineHeight * (row - top) + 2, this->lines[row].text.c_str(), 0, 0, 12, this->lines[row].color, 0, 0);
   }
 
-  this->DrawRows(false);
-
   if (this->verticalOverflow != 0) {
-    this->FillRegion((this->geometry.width - 16), 0, 16, this->geometry.height, Palette(resources, 2, 2));
+    this->FillRegion((this->geometry.width - 16), 0, 16, this->geometry.height, Palette(2, 2));
   }
 
   this->parent->Invalidate();
