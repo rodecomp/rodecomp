@@ -31,6 +31,11 @@
 #include <string>
 #include <vector>
 
+// GLOBAL: gl_25380
+static const std::string s_chatItemLinkOpening = "<ITEML>";
+
+// GLOBAL: gl_25450
+static const std::string s_itemLinkClosing = "</ITEML>";
 
 // OFFSET: 0x00936360
 // FUNCTION: fn_12750
@@ -142,12 +147,11 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     if (height < 0) {
       height = this->m_inputAreaHeight;
     }
-    UIChatHisBox* source = static_cast<UISubChatHisWnd*>(g_windowMgr.retainedWindows[index])->ChatBox();
     UIChatHisBox* box = new UIChatHisBox();
     box->Configure(0, 0, this->geometry.width - 8, height, 0);
     box->Move(-100 - this->geometry.width, -100);
     this->AddChild(box);
-    box->CopyHistory(*source);
+    box->CopyHistory(*static_cast<UISubChatHisWnd*>(g_windowMgr.retainedWindows[index])->ChatBox());
     this->m_tabs.push_back(box);
     g_windowMgr.ReleaseRetainedWindow(index);
     if (index != g_windowMgr.retainedWindows.size()) {
@@ -204,11 +208,11 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       return 0;
     }
   case 0x16:
-    if (a == this->m_currentTab) {
-      this->RefreshTabs(false);
-    } else {
+    if (a != this->m_currentTab) {
       this->m_currentTab = a;
       this->RefreshTabs(true);
+    } else {
+      this->RefreshTabs(false);
     }
     return 0;
   case 0x46: {
@@ -482,8 +486,8 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       int talkType;
       const int offset = g_session.GetTalkType(buffer, &talkType, parts);
       if (talkType == 0x37 || talkType == 0x1A || talkType == 0x12) {
-        if (_mbsstr(reinterpret_cast<const unsigned char*>(buffer), reinterpret_cast<const unsigned char*>("<ITEML>")) != nullptr
-            || _mbsstr(reinterpret_cast<const unsigned char*>(buffer), reinterpret_cast<const unsigned char*>("</ITEML>")) != nullptr) {
+        if (_mbsstr(reinterpret_cast<const unsigned char*>(buffer), reinterpret_cast<const unsigned char*>(s_chatItemLinkOpening.c_str())) != nullptr
+            || _mbsstr(reinterpret_cast<const unsigned char*>(buffer), reinterpret_cast<const unsigned char*>(s_itemLinkClosing.c_str())) != nullptr) {
           g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xAFC)), 0x64FFFF, 0, 0, 0);
           return 0;
         }
