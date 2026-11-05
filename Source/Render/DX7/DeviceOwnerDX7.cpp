@@ -14,6 +14,8 @@ namespace {
     return static_cast<HRESULT>(0x82000000u | code);
   }
 
+  __declspec(noinline) DDSURFACEDESC2 SurfaceDescription(DWORD flags, DWORD caps);
+
   // OFFSET: 0x00548C00
   // FUNCTION: fn_01862
   DDSURFACEDESC2 SurfaceDescription(DWORD flags, DWORD caps) {
