@@ -4374,3 +4374,13 @@ void GameSettingsUI::CUIOptionItem::Slot15(int width, int height) {
   this->m_description->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->m_description);
 }
+
+// OFFSET: 0x00A3F320
+// FUNCTION: fn_45512
+void GameSettingsUI::CUIOptionItem::OnClickLabel() {
+  if (this->m_label->geometry.id > 0) {
+    if (UITipboxWnd* tipbox = static_cast<UITipboxWnd*>(g_windowMgr.EnsureWindow(0x13B))) {
+      tipbox->ShowTip(this->m_label->geometry.id);
+    }
+  }
+}

@@ -334,6 +334,7 @@ public:
   void Paint() override;
   void RunFunction();
   void OnCheck(bool checked);
+  void OnClickLabel();
 
   /* 00E8 */ CUICheckBox* m_check;
   /* 00EC */ UIWindow* unknown_00EC;
