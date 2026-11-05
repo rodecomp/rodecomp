@@ -17,14 +17,14 @@ NAsyncWorkThread::~NAsyncWorkThread() {
 
 // OFFSET: 0x00732C40
 // FUNCTION: fn_07584
-void NAsyncWorkThread::Receive(std::uint64_t argument, std::uint32_t id) {
-  this->m_messages.Push(argument, id);
+void NAsyncWorkThread::Receive(std::uint32_t argumentLow, std::uint32_t argumentHigh, std::uint32_t id) {
+  this->m_messages.Push(argumentLow, argumentHigh, id);
 }
 
 // OFFSET: 0x00732C20
 // FUNCTION: fn_07583
 void NAsyncWorkThread::RequestStop() {
-  this->m_messages.Push(0x50000, 0);
+  this->m_messages.Push(0x50000, 0, 0);
 }
 
 // OFFSET: 0x00732C50

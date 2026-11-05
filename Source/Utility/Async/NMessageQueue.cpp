@@ -38,9 +38,9 @@ NMessage NMessageQueue::Pop() {
 
 // OFFSET: 0x00736660
 // FUNCTION: fn_07624
-void NMessageQueue::Push(std::uint64_t argument, std::uint32_t id) {
+void NMessageQueue::Push(std::uint32_t argumentLow, std::uint32_t argumentHigh, std::uint32_t id) {
   NSyncObject held(&this->m_criticalSection);
-  this->m_messages.push_back({static_cast<std::uint32_t>(argument), static_cast<std::uint32_t>(argument >> 32), id});
+  this->m_messages.push_back({argumentLow, argumentHigh, id});
   ReleaseSemaphore(this->m_semaphore, 1, nullptr);
 }
 

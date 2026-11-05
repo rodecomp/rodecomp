@@ -28,7 +28,7 @@ public:
   virtual ~NMessageQueue();
 
   NMessage Pop();
-  void Push(std::uint64_t argument, std::uint32_t id);
+  void Push(std::uint32_t argumentLow, std::uint32_t argumentHigh, std::uint32_t id);
   void Clear();
 
 protected:

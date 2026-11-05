@@ -13,7 +13,7 @@ class NAsyncWorkThread : public NObject, public NInter, public NThread {
 public:
   NAsyncWorkThread(NAsyncWorkRequestQueue* requests, NAsyncWorkResponseQueue* responses);
   ~NAsyncWorkThread() override;
-  void Receive(std::uint64_t argument, std::uint32_t id) override;
+  void Receive(std::uint32_t argumentLow, std::uint32_t argumentHigh, std::uint32_t id) override;
   unsigned Run() override;
   void RequestStop() override;
   bool Start();

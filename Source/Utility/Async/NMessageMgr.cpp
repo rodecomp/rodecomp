@@ -55,14 +55,14 @@ bool NMessageMgr::Register(std::uint32_t objectId, NInter* object) {
 
 // OFFSET: 0x00735BC0
 // FUNCTION: fn_07613
-bool NMessageMgr::Send(std::uint32_t objectId, std::uint64_t argument, std::uint32_t id) {
+bool NMessageMgr::Send(std::uint32_t objectId, std::uint32_t argumentLow, std::uint32_t argumentHigh, std::uint32_t id) {
   NSyncObject held(&this->m_criticalSection);
   auto object = this->m_objects.find(objectId);
   if (object == this->m_objects.end()) {
     return false;
   }
 
-  object->second->Receive(argument, id);
+  object->second->Receive(argumentLow, argumentHigh, id);
   return true;
 }
 

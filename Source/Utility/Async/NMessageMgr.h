@@ -7,7 +7,7 @@
 
 class NInter {
 public:
-  virtual void Receive(std::uint64_t argument, std::uint32_t id) = 0;
+  virtual void Receive(std::uint32_t argumentLow, std::uint32_t argumentHigh, std::uint32_t id) = 0;
   virtual ~NInter();
 };
 
@@ -19,7 +19,7 @@ public:
   static bool Initialize();
   static void Shutdown();
   bool Register(std::uint32_t objectId, NInter* object);
-  bool Send(std::uint32_t objectId, std::uint64_t argument, std::uint32_t id);
+  bool Send(std::uint32_t objectId, std::uint32_t argumentLow, std::uint32_t argumentHigh, std::uint32_t id);
   void Unregister(std::uint32_t objectId, NInter* object);
 
 protected:
