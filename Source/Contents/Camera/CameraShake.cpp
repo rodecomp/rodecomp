@@ -24,7 +24,17 @@ void CameraShake::Start(int enabled, unsigned duration, float horizontal, float 
   this->start = time;
   this->horizontal = horizontal;
   this->pitch = pitch;
-  this->duration = duration == 0 ? 650u : (duration == 1 ? 200u : duration);
+  switch (duration) {
+  case 0:
+    this->duration = 650;
+    break;
+  case 1:
+    this->duration = 200;
+    break;
+  default:
+    this->duration = duration;
+    break;
+  }
 }
 
 // OFFSET: 0x00ADCB30
