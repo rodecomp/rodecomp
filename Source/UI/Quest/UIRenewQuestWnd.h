@@ -31,7 +31,7 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
   void SetSprite(int width, int height, std::string name);
-  void SetDestination(std::string mapName, int x, int y);
+  __declspec(noinline) void SetDestination(std::string mapName, int x, int y);
 
   /* 007C */ std::string m_mapName;
   /* 0094 */ CActRes* m_action;
@@ -97,7 +97,7 @@ public:
 
 class UIRenewQuestScrollBar : public UIScrollBar {
 public:
-  UIRenewQuestScrollBar();
+  __declspec(noinline) UIRenewQuestScrollBar();
   void Paint() override;
 };
 
