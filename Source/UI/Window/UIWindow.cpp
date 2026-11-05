@@ -308,7 +308,7 @@ bool UIWindow::CanHitTest() {
 // OFFSET: 0x00A7BB00
 // FUNCTION: fn_16933
 void UIWindow::Slot10(int, int, std::intptr_t) {
-  static_cast<CMode*>(g_charViewMode)->SendMsg(18, 0, 0, 0, 0);
+  g_modeMgr.gameMode->SendMsg(18, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x005CA0F0
@@ -411,7 +411,7 @@ void UIWindow::Slot29(int, int) {
 // OFFSET: 0x00A81D60
 // FUNCTION: fn_16988
 void UIWindow::ResetCursor(int, int) {
-  static_cast<CMode*>(g_charViewMode)->SetCursorAction(0);
+  g_modeMgr.gameMode->SetCursorAction(0);
 }
 
 // OFFSET: 0x005C7240
