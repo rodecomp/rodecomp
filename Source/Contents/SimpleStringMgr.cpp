@@ -3,6 +3,7 @@
 #include "Utility/Text/StringUtil.h"
 
 #include <cstring>
+#include <new>
 #include <utility>
 
 // GLOBAL: gl_24840
@@ -10,6 +11,27 @@ CSimpleStringMgr* g_simpleStringMgr = nullptr;
 
 // GLOBAL: gl_24863
 static CCommonObject g_simpleStringObject;
+
+// OFFSET: 0x007A9580
+// FUNCTION: fn_09076
+bool CSimpleStringMgr::Create() {
+  if (g_simpleStringMgr) {
+    return false;
+  }
+
+  g_simpleStringMgr = new (std::nothrow) CSimpleStringMgr();
+  if (!g_simpleStringMgr) {
+    return false;
+  }
+
+  if (!g_simpleStringMgr->m_initialized) {
+    delete g_simpleStringMgr;
+    g_simpleStringMgr = nullptr;
+    return false;
+  }
+
+  return true;
+}
 
 // OFFSET: 0x007A96A0
 // FUNCTION: fn_09077

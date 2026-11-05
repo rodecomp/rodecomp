@@ -21,6 +21,10 @@ public:
     }
   };
 
+  // INLINED
+  CSimpleStringMgr() : m_initialized(true) {
+  }
+
   virtual ~CSimpleStringMgr() {
   }
 
