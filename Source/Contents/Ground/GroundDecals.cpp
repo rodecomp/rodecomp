@@ -16,15 +16,21 @@ bool GroundGeometry::CellRectangle(const C3dAttr& terrain, int column, int row, 
     return false;
   }
 
-  const int x = (column >> 1) - this->width / 2;
-  const int z = (row >> 1) - this->height / 2;
-  const int offsets[4][2] = {{0, 0}, {1, 0}, {0, 1}, {1, 1}};
+  const int cellColumn = column >> 1;
+  const int cellRow = row >> 1;
 
-  for (unsigned corner = 0; corner < 4; ++corner) {
-    vertices[corner * 3 + 1] = 0.0f;
-    vertices[corner * 3] = static_cast<float>(x + offsets[corner][0]) * this->cellSize;
-    vertices[corner * 3 + 2] = static_cast<float>(z + offsets[corner][1]) * this->cellSize;
-  }
+  vertices[1] = 0.0f;
+  vertices[0] = static_cast<float>(cellColumn - this->width / 2) * this->cellSize;
+  vertices[2] = static_cast<float>(cellRow - this->height / 2) * this->cellSize;
+  vertices[4] = 0.0f;
+  vertices[3] = static_cast<float>(cellColumn - this->width / 2 + 1) * this->cellSize;
+  vertices[5] = static_cast<float>(cellRow - this->height / 2) * this->cellSize;
+  vertices[7] = 0.0f;
+  vertices[6] = static_cast<float>(cellColumn - this->width / 2) * this->cellSize;
+  vertices[8] = static_cast<float>(cellRow - this->height / 2 + 1) * this->cellSize;
+  vertices[10] = 0.0f;
+  vertices[9] = static_cast<float>(cellColumn - this->width / 2 + 1) * this->cellSize;
+  vertices[11] = static_cast<float>(cellRow - this->height / 2 + 1) * this->cellSize;
 
   return this->OverlayHeights(terrain, vertices, column, row);
 }
@@ -35,7 +41,13 @@ namespace {
     const GroundGeometry& ground, const C3dAttr& terrain, const float* matrix, int column, int row, std::uint32_t color, CTexture& texture, const float* uv,
     float bias
   ) {
-    float vertices[4][3]{};
+    float vertices[4][3];
+
+    for (auto& vertex : vertices) {
+      vertex[0] = 0.0f;
+      vertex[1] = 0.0f;
+      vertex[2] = 0.0f;
+    }
 
     if (!ground.CellRectangle(terrain, column, row, vertices[0])) {
       return;
@@ -72,12 +84,16 @@ namespace {
     for (unsigned corner = 0; corner < 4; ++corner) {
       primitive->vertices[corner].u = scaleU * uv[corner * 2];
       primitive->vertices[corner].v = scaleV * uv[corner * 2 + 1];
-      primitive->vertices[corner].diffuse = color;
     }
 
     primitive->unknown_0018 = 5;
     primitive->unknown_001C = 6;
     primitive->texture = &texture;
+
+    for (unsigned corner = 0; corner < 4; ++corner) {
+      primitive->vertices[corner].diffuse = color;
+    }
+
     g_renderer->queues.Submit(primitive, 1, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
   }
 }
