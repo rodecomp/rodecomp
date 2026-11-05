@@ -2,9 +2,9 @@
 #include "Render/Textures/TextureCache.h"
 #include "Resource/World/GroundResource.h"
 #include "Utility/Math/ScalarConversion.h"
+#include "Utility/Text/FormatString.h"
 
 #include <algorithm>
-#include <cstdio>
 
 // INLINED
 GroundWaterState::GroundWaterState() : level(0.0f), animation(3), pitch(50), phase(2), type(0), height(1.0f), columns(1), rows(1), partitioned(false) {
@@ -69,7 +69,8 @@ float GroundWaterState::Level(int width, int height, int column, int row) const 
 // FUNCTION: fn_17581
 void GroundWaterState::Update() {
   // STATIC: 0x01159248
-  constexpr char format[] = "워터\\water%d%02d.jpg";
+  // STRING: st_16830
+  static constexpr char format[] = "워터\\water%d%02d.jpg";
   char name[32]{};
 
   for (GroundWaterSurface& surface : this->surfaces) {
@@ -81,7 +82,7 @@ void GroundWaterState::Update() {
     }
 
     const int image = (surface.frame / surface.animation) % 32;
-    _snprintf_s(name, sizeof(name), _TRUNCATE, format, surface.type, image);
+    StringFormat(name, sizeof(name), _TRUNCATE, format, surface.type, image);
     surface.texture = g_texMgr.Load(name, 0, false, true, false);
     const float phase = surface.speed + surface.phase;
     surface.phase = phase;
