@@ -336,9 +336,13 @@ namespace myGPack {
     do {
       std::uint8_t blockInput[8];
       std::uint8_t decoded[8];
-      std::memcpy(blockInput, input + offset, 8);
+      for (int i = 0; i < 8; ++i) {
+        blockInput[i] = input[offset + i];
+      }
       this->DecodeBlock(1, blockInput, decoded);
-      std::memcpy(output + offset, decoded, 8);
+      for (int i = 0; i < 8; ++i) {
+        output[offset + i] = decoded[i];
+      }
       offset += 8;
       ++block;
     } while (offset < length && block < 20);
