@@ -263,7 +263,7 @@ inline void UIShortCutWnd::ResizeRows() {
 // INLINED
 inline void UIShortCutWnd::RestoreLayout(NormalItemSlotWindow* value) {
   this->m_saved = value;
-  if (!value->IsValid(g_windowMgr.unknown_047C, g_windowMgr.unknown_0480, g_session.ItemSlotActive())) {
+  if (!value->IsValid()) {
     value->Reset();
   }
 

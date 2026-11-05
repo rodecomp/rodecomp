@@ -25,13 +25,13 @@ void NormalItemSlotWindow::Reset() {
 
 // OFFSET: 0x009A6000
 // FUNCTION: fn_13667
-bool NormalItemSlotWindow::IsValid(int screenWidth, int screenHeight, bool active) const {
-  if (this->width != 290 || this->height < 43 || this->height > 175 || (this->height - 10) % 33 != 0 || (this->height == 175 && !active)) {
-    return false;
+int NormalItemSlotWindow::IsValid() const {
+  if (this->width != 290 || this->height > 175 || this->height < 43 || (this->height - 10) % 33 != 0 || (this->height == 175 && !g_session.ItemSlotActive())) {
+    return 0;
   }
 
-  const int maxX = screenWidth - 290;
-  const int maxY = screenHeight - this->height;
+  const int maxX = g_renderer->viewport.width - 290;
+  const int maxY = g_renderer->viewport.height - this->height;
   return this->x >= 0 && this->x <= maxX && this->y >= 0 && this->y <= maxY;
 }
 

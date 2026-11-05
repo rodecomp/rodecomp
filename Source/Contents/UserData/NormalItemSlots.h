@@ -26,7 +26,7 @@ struct NormalItemSlotWindow {
   /* 000C */ int height;
   /* 0010 */ int show;
   void Reset();
-  bool IsValid(int screenWidth, int screenHeight, bool active) const;
+  int IsValid() const;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
