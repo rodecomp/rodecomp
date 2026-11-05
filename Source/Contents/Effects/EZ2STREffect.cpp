@@ -1399,7 +1399,7 @@ bool CEZ2STRScreenEffect::ApplyHeadOffset(CEZ2STRParticle* particle) {
 
   float shiftX = offsetX * factor;
   float shiftY = factor * offsetY;
-  if (shiftX < 0.0f && shiftY < 0.0f) {
+  if (!(shiftX >= 0.0f || shiftY >= 0.0f)) {
     return false;
   }
 
