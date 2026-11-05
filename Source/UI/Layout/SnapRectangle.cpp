@@ -21,19 +21,29 @@ namespace {
 // OFFSET: 0x009B5250
 // FUNCTION: fn_13839
 void SnapRectangle::Set(int x, int y, int width, int height) {
-  const int right = (x + width);
-  const int bottom = (y + height);
-  this->left = {x, y, bottom};
-  this->right = {right, y, bottom};
-  this->top = {y, x, right};
-  this->bottom = {bottom, x, right};
+  this->left.position = x;
+  this->left.begin = y;
+  this->left.end = y + height;
+  this->right.position = x + width;
+  this->right.begin = y;
+  this->right.end = y + height;
+  this->top.position = y;
+  this->top.begin = x;
+  this->top.end = x + width;
+  this->bottom.position = y + height;
+  this->bottom.begin = x;
+  this->bottom.end = x + width;
 }
 
 // OFFSET: 0x009B5200
 // FUNCTION: fn_13838
 void SnapRectangle::ReverseEdges() {
-  std::swap(this->left, this->right);
-  std::swap(this->top, this->bottom);
+  Edge edge = this->left;
+  this->left = this->right;
+  this->right = edge;
+  edge = this->top;
+  this->top = this->bottom;
+  this->bottom = edge;
 }
 
 // OFFSET: 0x009B4F70
