@@ -118,7 +118,7 @@ void UIBroadcastBalloon::Slot19() {
   for (auto& entry : this->m_messages) {
     std::list<BroadcastBalloonMessage>& messages = entry.second;
     for (auto it = messages.begin(); it != messages.end();) {
-      if (it->start + it->duration < std::chrono::system_clock::now()) {
+      if (std::chrono::system_clock::now() > it->start + it->duration) {
         it = messages.erase(it);
         this->Invalidate();
       } else {
