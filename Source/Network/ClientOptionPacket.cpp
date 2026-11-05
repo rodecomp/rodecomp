@@ -18,12 +18,13 @@ namespace {
 
 // OFFSET: 0x00E48400
 // FUNCTION: fn_24219
-void SendClientOption(unsigned char value, CConnection& connection, const PacketLengths& lengths) {
+void CSession::SendClientOption(unsigned char value) {
   ClientOptionPacket packet;
   packet.id = 0x02D8;
   packet.option = 6;
   packet.value = value;
-  connection.Send(lengths.FixedLength(packet.id), &packet);
+  CRagConnection& connection = GetRagConnection();
+  connection.Send(g_packetLengths.FixedLength(packet.id), &packet);
 }
 
 // OFFSET: 0x00E48BA0

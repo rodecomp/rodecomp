@@ -1118,7 +1118,7 @@ void ApplyServiceOptionAskOnDisable(int id, unsigned char value, bool notify, in
     return;
   }
 
-  SendClientOption(value, GetRagConnection(), g_packetLengths);
+  g_session.SendClientOption(value);
 }
 
 // OFFSET: 0x006C5FC0
