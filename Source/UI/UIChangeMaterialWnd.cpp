@@ -634,8 +634,7 @@ void UIChangeMaterialWnd_ScrollBar::Paint() {
 
     this->DrawBitmap(0, 0, up ? &up->image : nullptr, true);
 
-    const int segments = (this->geometry.height - up->image.height - down->image.height) / track->image.height;
-    for (std::int64_t index = 0; index < segments; ++index) {
+    for (std::int64_t index = 0; index < (this->geometry.height - up->image.height - down->image.height) / track->image.height; ++index) {
       const int y = track->image.height * static_cast<int>(index) + up->image.height;
       this->DrawBitmap(0, y, track ? &track->image : nullptr, true);
     }
@@ -645,9 +644,13 @@ void UIChangeMaterialWnd_ScrollBar::Paint() {
 
     CBitmapRes* thumb = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\ChangeMaterial\\scroll_btn_br.bmp")));
     const int available = this->geometry.height - thumb->image.height - down->image.height - up->image.height;
-    const int maximum = std::max(this->total - this->visible, 0);
+    int diff = this->total - this->visible;
+    int maxVal = 0;
+    if (diff > 0) {
+      maxVal = diff;
+    }
     const int y = static_cast<int>(
-      static_cast<double>(available) / static_cast<double>(maximum) * static_cast<double>(this->position) + static_cast<double>(up->image.height)
+      static_cast<double>(available) / static_cast<double>(maxVal) * static_cast<double>(this->position) + static_cast<double>(up->image.height)
     );
     this->DrawBitmap(0, y, thumb ? &thumb->image : nullptr, true);
   }
