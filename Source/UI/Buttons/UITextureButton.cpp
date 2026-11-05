@@ -3,6 +3,7 @@
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "Contents/MessageTable.h"
 #include "Client/Mode/CMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/ModeEvents.h"
 #include "UI/Buttons/UITextureButton.h"
 #include "UI/Window/UIWindowMgr.h"
@@ -35,10 +36,10 @@ void UITextureButton::Slot31(int x, int y) {
     if (parent) {
       if (WindowPolicy(g_windowMgr.policy[0].actions, g_replayAnimationScaling != 0, 3, parent->geometry.id) > 0) {
         int id = this->geometry.id;
-        if (id == 185 && g_charViewMode && static_cast<CMode*>(g_charViewMode)->cursorType == 2) {
+        if (id == 185 && g_modeMgr.gameMode && g_modeMgr.gameMode->cursorType == 2) {
           const char* text = LookupMessage(17);
           if (g_windowMgr.Confirm(text, 2, true, false, 0, "Message", 280, 120, 0) == 187) {
-            static_cast<CMode*>(g_charViewMode)->SendMsg(2, 0, 0, 0, 0);
+            g_modeMgr.gameMode->SendMsg(2, 0, 0, 0, 0);
           }
         } else {
           if (id == 184 || id == 321) {
@@ -50,7 +51,7 @@ void UITextureButton::Slot31(int x, int y) {
         }
       }
     } else {
-      static_cast<CMode*>(g_charViewMode)->SendMsg(0, this->geometry.id, this->m_argument, 0, 0);
+      g_modeMgr.gameMode->SendMsg(0, this->geometry.id, this->m_argument, 0, 0);
     }
   }
 
