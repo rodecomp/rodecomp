@@ -81,8 +81,8 @@ public:
 
 protected:
   void PaintTextWithPolicy(const std::string* placeholder, std::uint32_t placeholderColor, bool placeholderEnabled);
-  bool RemoveInvalidLink(std::list<UIWindow*>::iterator& entry);
-  void SnapLinkSelection(std::size_t prefix, std::size_t bytes);
+  bool RemoveInvalidLink(int type, std::list<UIWindow*>::iterator& entry);
+  void SnapLinkSelection(const std::string& prefix, const int& bytes);
   std::string BracketFittedText(const std::string& name);
 
 private:

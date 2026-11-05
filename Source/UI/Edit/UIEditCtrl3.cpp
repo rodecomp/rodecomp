@@ -65,7 +65,7 @@ void UIEditCtrl3::PlaceLinks(const std::string& value, int y, int line, int firs
   }
 
   for (auto entry = this->links.begin(); entry != this->links.end(); ++entry) {
-    if (this->RemoveInvalidLink(entry)) {
+    if (this->RemoveInvalidLink(438, entry)) {
       break;
     }
 
@@ -93,7 +93,7 @@ void UIEditCtrl3::PlaceLinks(const std::string& value, int y, int line, int firs
     }
 
     const std::string visible = FitText(*this->geometry.surface, name, this->geometry.width / 2);
-    this->SnapLinkSelection(prefix.size(), std::strlen(visible.c_str()));
+    this->SnapLinkSelection(prefix, static_cast<int>(std::strlen(visible.c_str())));
     this->pendingText[line] += prefix;
     this->pendingText[line] += button->Link();
     this->pendingText[line] += rest;

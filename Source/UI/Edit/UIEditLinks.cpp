@@ -17,61 +17,80 @@
 
 // OFFSET: 0x00854470
 // FUNCTION: fn_10748
-bool UIEditCtrl::RemoveInvalidLink(std::list<UIWindow*>::iterator& entry) {
-  auto* button = static_cast<UINaviLinkButton*>(*entry);
-  const std::string name = FormatNavigationLink(button->link, false);
-  std::string remaining = this->text;
+bool UIEditCtrl::RemoveInvalidLink(int type, std::list<UIWindow*>::iterator& entry) {
+  std::string name;
+
+  if (type == 438) {
+    name = FormatNavigationLink(static_cast<UINaviLinkButton*>(*entry)->Link(), false);
+  }
+
+  const std::string current = this->text;
 
   if (name.empty()) {
     return true;
   }
 
   const std::string fitted = FitText(*this->geometry.surface, name, this->geometry.width / 2);
-  std::size_t found = remaining.find(fitted);
+  std::string remaining = current;
+  const int bytes = static_cast<int>(std::strlen(fitted.c_str()));
+  int found = static_cast<int>(current.find(fitted));
 
-  if (found == std::string::npos) {
-    this->RemoveChild(button, 1);
+  if (found == -1) {
+    this->RemoveChild(*entry, 1);
     entry = this->links.erase(entry);
     return true;
   }
 
-  std::size_t absolute = found;
-  const std::size_t bytes = fitted.size();
+  int position = found;
 
-  while (found != std::string::npos) {
-    const bool left = found > 0 && remaining[found - 1] == '<';
-    const bool right = found + bytes < remaining.size() && remaining[found + bytes] == '>';
+  do {
+    std::string before;
 
-    if (left && right) {
-      return false;
+    if (found > 0) {
+      before = remaining.substr(found - 1, 1);
     }
 
-    if (left != right) {
-      const bool allowed = !g_windowMgr.unknown_0458 ||
-                           reinterpret_cast<UIRodexComposeWnd*>(g_windowMgr.unknown_0458)->m_contents == g_windowMgr.hoverWindow;
-      const auto boundary = left ? absolute + bytes : absolute;
+    std::string after = "";
 
-      if (allowed && boundary == static_cast<unsigned>(g_serverLanguage->cursor)) {
-        const auto begin = left ? absolute - 1 : absolute;
-        const auto end = absolute + bytes + (right ? 1 : 0);
-        remaining = this->text.substr(0, begin) + this->text.substr(end);
-        g_serverLanguage->ResetInput();
-        g_serverLanguage->Insert(remaining.c_str());
-        this->RemoveChild(button, 1);
-        entry = this->links.erase(entry);
+    if (found + bytes >= 0) {
+      after = remaining.substr(found + bytes, 1);
+    }
 
-        return true;
+    int boundary;
+
+    if (before.find("<") != std::string::npos && after.find(">") == std::string::npos) {
+      if (g_windowMgr.unknown_0458 &&
+          reinterpret_cast<UIRodexComposeWnd*>(g_windowMgr.unknown_0458)->m_contents != g_windowMgr.GetHoverWindow()) {
+        continue;
       }
+
+      boundary = position + bytes;
+    } else if (before.find("<") == std::string::npos && after.find(">") != std::string::npos) {
+      if (g_windowMgr.unknown_0458 &&
+          reinterpret_cast<UIRodexComposeWnd*>(g_windowMgr.unknown_0458)->m_contents != g_windowMgr.GetHoverWindow()) {
+        continue;
+      }
+
+      boundary = position;
+    } else if (before.find("<") != std::string::npos && after.find(">") != std::string::npos) {
+      return false;
+    } else {
+      remaining = remaining.substr(found + bytes);
+      position = (position == found ? position : position + found) + bytes;
+      found = static_cast<int>(remaining.find(fitted));
+      continue;
     }
 
-    remaining = remaining.substr(found + bytes);
-    const auto previous = found;
-    found = remaining.find(fitted);
-
-    if (found != std::string::npos) {
-      absolute = bytes + (absolute == previous ? absolute : absolute + previous);
+    if (boundary == g_serverLanguage->cursor) {
+      remaining = before.find("<") != std::string::npos ? current.substr(0, position - 1) : current.substr(0, position);
+      remaining += current.substr((after.find(">") != std::string::npos ? position + 1 : position) + bytes);
+      g_serverLanguage->ResetInput();
+      g_serverLanguage->Insert(remaining.c_str());
+      this->RemoveChild(*entry, 1);
+      entry = this->links.erase(entry);
+      return true;
     }
-  }
+  } while (found != -1);
 
   return true;
 }
@@ -87,7 +106,7 @@ void UIEditCtrl::SetCursor(std::size_t position) {
 // OFFSET: 0x00855150
 // FUNCTION: fn_10751
 void UIEditCtrl::MoveCursorToEnd() {
-  if (g_windowMgr.hoverWindow == this) {
+  if (g_windowMgr.GetHoverWindow() == this) {
     g_serverLanguage->Select(static_cast<int>(g_serverLanguage->text.size()), static_cast<int>(g_serverLanguage->text.size()));
     return;
   }
@@ -97,24 +116,40 @@ void UIEditCtrl::MoveCursorToEnd() {
 
 // OFFSET: 0x008550E0
 // FUNCTION: fn_10750
-void UIEditCtrl::SnapLinkSelection(std::size_t prefix, std::size_t bytes) {
-  if (g_windowMgr.unknown_0458 && reinterpret_cast<UIRodexComposeWnd*>(g_windowMgr.unknown_0458)->m_contents != g_windowMgr.hoverWindow) {
+void UIEditCtrl::SnapLinkSelection(const std::string& prefix, const int& bytes) {
+  if (g_windowMgr.unknown_0458 && reinterpret_cast<UIRodexComposeWnd*>(g_windowMgr.unknown_0458)->m_contents != g_windowMgr.GetHoverWindow()) {
     return;
   }
 
-  const auto cursor = static_cast<unsigned>(g_serverLanguage->cursor);
-  const auto end = prefix + bytes + 2;
+  const int start = static_cast<int>(prefix.size());
+  const int end = start + 2 + bytes;
+  const int cursor = g_serverLanguage->cursor;
 
-  if (cursor > prefix && cursor < end) {
-    const auto target = prefix + bytes / 2 + 1 <= cursor ? prefix : end;
-    g_serverLanguage->Select(static_cast<int>(target), static_cast<int>(target));
+  if (cursor > start && cursor < end) {
+    if (start + bytes / 2 + 1 > cursor) {
+      g_serverLanguage->Select(end, end);
+    } else {
+      g_serverLanguage->Select(start, start);
+    }
   }
 }
 
 // OFFSET: 0x008624B0
 // FUNCTION: fn_10904
 void UIEditCtrl::UpdateLinks() {
-  if (std::none_of(this->links.begin(), this->links.end(), [](const UIWindow* window) { return window->geometry.id == 438; })) {
+  if (this->links.size() == 0) {
+    return;
+  }
+
+  bool hasLink = false;
+
+  for (UIWindow* window : this->links) {
+    if (window->geometry.id == 438) {
+      hasLink = true;
+    }
+  }
+
+  if (!hasLink) {
     return;
   }
 
@@ -122,44 +157,42 @@ void UIEditCtrl::UpdateLinks() {
   std::string prefix;
   std::string remaining = this->text;
 
-  for (auto entry = this->links.begin(); entry != this->links.end();) {
-    if (this->RemoveInvalidLink(entry)) {
-      remaining.assign(g_serverLanguage->text.c_str());
+  for (auto entry = this->links.begin(); entry != this->links.end(); ++entry) {
+    if (this->RemoveInvalidLink(438, entry)) {
+      remaining = g_serverLanguage->text.c_str();
       break;
     }
 
     auto* button = static_cast<UINaviLinkButton*>(*entry);
-    const std::string name = FormatNavigationLink(button->link, false);
+    const std::string name = FormatNavigationLink(button->Link(), false);
     const std::string fitted = FitText(*this->geometry.surface, name, this->geometry.width / 2);
-    const std::string display = "<" + fitted + ">";
-    const auto found = remaining.find(display);
+    std::string display = "<" + fitted;
+    display += ">";
+    const int found = static_cast<int>(remaining.find(display));
 
-    if (found != std::string::npos) {
+    if (found != -1) {
       const std::string head = remaining.substr(0, found);
       prefix += head;
-      const auto end = prefix.size() - 1;
-      std::string visible;
+      std::string visible = head;
 
-      if (end >= static_cast<unsigned>(this->firstVisible)) {
-        visible = prefix.substr(static_cast<unsigned>(this->firstVisible));
+      if (prefix.size() - 1 < static_cast<unsigned>(this->firstVisible)) {
+        visible = prefix.substr(prefix.size() - 1);
       } else {
-        visible = prefix.substr(end, 1);
+        visible = prefix.substr(this->firstVisible);
       }
 
       if (this->firstVisible != 0 && prefix.size() <= static_cast<unsigned>(this->firstVisible)) {
-        button->Move(1000, this->textY - 1);
+        (*entry)->Move(1000, this->textY - 1);
       } else {
-        button->Move(this->TextWidth(visible.c_str(), 0, 0, 12, 0, 0) + 2, this->textY - 1);
+        (*entry)->Move(this->TextWidth(visible.c_str(), 0, 0, 12, 0, 0) + 2, this->textY - 1);
       }
 
-      this->SnapLinkSelection(prefix.size(), fitted.size());
+      this->SnapLinkSelection(prefix, static_cast<int>(std::strlen(fitted.c_str())));
       this->linkedText += head;
-      this->linkedText += button->link;
+      this->linkedText += button->Link();
       remaining = remaining.substr(found + display.size());
       prefix += display;
     }
-
-    ++entry;
   }
 
   this->linkedText += remaining;
@@ -169,7 +202,7 @@ void UIEditCtrl::UpdateLinks() {
 // FUNCTION: fn_10779
 std::string UIEditCtrl::BracketFittedText(const std::string& name) {
   std::string result;
-  result = '<';
+  result += '<';
   result += FitText(*this->geometry.surface, name, this->geometry.width / 2);
   result += '>';
   return result;
