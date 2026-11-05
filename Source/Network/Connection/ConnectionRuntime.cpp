@@ -6,6 +6,9 @@ namespace {
   // GLOBAL: gl_24389
   WSADATA wsaData;
 
+  // GLOBAL: gl_24390
+  HMODULE ws2Module;
+
   // STATIC: 0x016FDC94
   // GLOBAL: gl_24393
   HMODULE module;
@@ -54,5 +57,5 @@ bool InitializeConnections() {
 // FUNCTION: fn_20388
 void Cleanup() {
   WSACleanup();
-  FreeLibrary(module);
+  FreeLibrary(ws2Module);
 }
