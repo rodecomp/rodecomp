@@ -45,7 +45,7 @@ public:
 
 class CMapSkyMgr {
 public:
-  CMapSkyMgr();
+  __declspec(noinline) CMapSkyMgr();
   // INLINED
   virtual ~CMapSkyMgr() {
     if (this->m_script) {
