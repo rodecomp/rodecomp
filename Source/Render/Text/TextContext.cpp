@@ -190,13 +190,13 @@ unsigned TextContext::Marker(const char* text, unsigned bytes) {
     return bytes;
   }
 
-  const unsigned limit = std::min<unsigned>(static_cast<unsigned>(std::strlen(text)), bytes);
-  if (std::bit_cast<std::int32_t>(limit - 2) <= 0) {
-    return bytes;
-  }
+  const int length = static_cast<int>(std::min<unsigned>(bytes, static_cast<unsigned>(std::strlen(text))));
+  for (int i = 0; i < length - 2; ++i) {
+    if (text[i] != '|') {
+      continue;
+    }
 
-  for (unsigned i = 0; i < limit - 2; ++i) {
-    if (text[i] == '|' && ValidHex(static_cast<unsigned char>(text[i + 1])) && ValidHex(static_cast<unsigned char>(text[i + 2]))) {
+    if (ValidHex(static_cast<unsigned char>(text[i + 1])) && ValidHex(static_cast<unsigned char>(text[i + 2]))) {
       return i;
     }
   }
