@@ -123,25 +123,19 @@ void UIComboBoxEx::Refresh() {
     }
 
     this->topLine = std::clamp(this->topLine, 0, overflow);
-    bar->position = this->topLine;
+    this->verticalBar->position = this->topLine;
   }
 
-  bar->Invalidate();
-  UIWindow* root = this;
+  this->verticalBar->Invalidate();
 
-  while (root->parent) {
-    root = root->parent;
+  if (this->Root()) {
+    this->Root()->Invalidate();
   }
-
-  root->Invalidate();
 }
 
 // OFFSET: 0x00898050
 // FUNCTION: fn_11545
 int UIComboBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  const int value = static_cast<int>(a);
-  const unsigned count = static_cast<unsigned>(this->lines.size());
-
   switch (message) {
   case 0:
     if (UIWindow* target = g_windowMgr.LookupWindow(this->targetId)) {
@@ -154,18 +148,24 @@ int UIComboBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
 
     return 0;
   case 18:
-    if (count == 0) {
+    if (this->lines.size() == 0) {
       return 0;
     }
 
-    this->selected = std::max((this->selected - 1), 0);
+    --this->selected;
+
+    if (this->selected < 0) {
+      this->selected = 0;
+    }
 
     if (this->selected < this->topLine) {
       this->topLine = this->selected;
     }
 
     break;
-  case 19:
+  case 19: {
+    const unsigned count = static_cast<unsigned>(this->lines.size());
+
     if (count == 0) {
       return 0;
     }
@@ -185,20 +185,25 @@ int UIComboBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     }
 
     break;
+  }
   case 31:
     this->AddLine(reinterpret_cast<const char*>(a), static_cast<unsigned>(b));
     this->Invalidate();
     return 0;
   case 40:
-    this->selected = std::max(value, 0);
+    this->selected = static_cast<int>(a);
 
-    if (static_cast<unsigned>(this->selected) > count - 1) {
-      this->selected = static_cast<int>(count - 1);
+    if (this->selected < 0) {
+      this->selected = 0;
+    }
+
+    if (static_cast<unsigned>(this->selected) > this->lines.size() - 1) {
+      this->selected = static_cast<int>(this->lines.size() - 1);
     }
 
     break;
   case 83:
-    this->targetId = value;
+    this->targetId = static_cast<int>(a);
     return 0;
   default:
     return this->UIListBoxEx::SendMsg(sender, message, a, b, c, d);
@@ -278,21 +283,23 @@ UIComboBoxEx2::~UIComboBoxEx2() = default;
 void UIComboBoxEx2::Slot15(int width, int height) {
   auto* vertical = new UIScrollBar_Navi();
   this->verticalBar = vertical;
+  const int thickness = vertical->thickness;
   vertical->vertical = 1;
-  vertical->UIWindow::Resize(vertical->thickness, height);
+  vertical->UIWindow::Resize(thickness, height);
   vertical->Move((width - 7), 0);
-  vertical->Slot15(vertical->thickness, height);
-  vertical->Slot22(vertical->thickness, height);
-  this->AddChild(vertical);
+  vertical->Slot15(thickness, height);
+  vertical->Slot22(thickness, height);
+  this->AddChild(this->verticalBar);
 
   auto* horizontal = new UIScrollBar();
   this->horizontalBar = horizontal;
+  const int horizontalHeight = horizontal->thickness;
   horizontal->vertical = 0;
-  horizontal->UIWindow::Resize((width - 7), horizontal->thickness);
+  horizontal->UIWindow::Resize((width - 7), horizontalHeight);
   horizontal->Move(0, (height - 7));
-  horizontal->Slot15((width - 7), horizontal->thickness);
-  horizontal->Slot22((width - 7), horizontal->thickness);
-  this->AddChild(horizontal);
+  horizontal->Slot15((width - 7), horizontalHeight);
+  horizontal->Slot22((width - 7), horizontalHeight);
+  this->AddChild(this->horizontalBar);
   this->lineHeight = 18;
 }
 
