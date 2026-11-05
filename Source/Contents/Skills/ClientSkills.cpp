@@ -45,8 +45,10 @@ void sub_E198F0() {
     int index = 0;
     int mapId = 0;
     int propertyId = 0;
+
     while (index < size && mapId <= 39) {
       char character = buffer[index++];
+
       while (index < size) {
         if (character == '/') {
           if (buffer[index] == '/') {
@@ -66,6 +68,7 @@ void sub_E198F0() {
           } else {
             char valueText[16] = {};
             int textIndex = 0;
+
             while (character != ' ' && character != '\t') {
               valueText[textIndex++] = character;
               character = buffer[index++];
@@ -75,7 +78,7 @@ void sub_E198F0() {
               }
             }
 
-            g_mapPropertyMgr->m_properties[mapId].SetValue(propertyId, std::atoi(valueText));
+            g_mapPropertyMgr->SetValue(mapId, propertyId, std::atoi(valueText));
             ++propertyId;
             if (propertyId >= 27) {
               ++mapId;
@@ -85,9 +88,6 @@ void sub_E198F0() {
           }
         }
 
-        if (index >= size) {
-          break;
-        }
         character = buffer[index++];
       }
     }
