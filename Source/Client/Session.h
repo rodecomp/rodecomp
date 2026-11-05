@@ -757,7 +757,7 @@ public:
   const char* GetPetTalkName(int job);
   const char* GetPetTalkActionName(int action);
   void GetPetTalkText(int job, int hungerState, int action, char* text);
-  const char* GetMonsterTalkEventName(int event);
+  __declspec(noinline) const char* GetMonsterTalkEventName(int event);
   void GetMonsterTalkText(int job, int event, int skill, char* text, std::uint32_t aid);
   void FormatMonsterSpeech(char* text, char* output, std::uint32_t aid, int feminine);
   bool UpdateHomunSkill(const CSkillInfo& value, unsigned char notify);
