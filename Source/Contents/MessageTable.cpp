@@ -5007,17 +5007,22 @@ bool ImportMessageCsv(std::string_view bytes) {
 // OFFSET: 0x00B00810
 // FUNCTION: fn_18370
 int FindMessageId(const char* name) {
-  if (!name || *name == '\0') {
+  if (!name || std::strlen(name) == 0) {
     return 4698;
   }
 
-  for (int id = 0; id < 4699; ++id) {
+  int id = 0;
+  while (true) {
     if (messageNames[id] && std::strcmp(messageNames[id], name) == 0) {
-      return id;
+      break;
+    }
+    if (++id >= 4699) {
+      id = 4698;
+      break;
     }
   }
 
-  return 4698;
+  return id;
 }
 
 // OFFSET: 0x00B00890
