@@ -107,7 +107,7 @@ void CSphereWind2Effect::Slot03() {
         }
         spin = rotation;
 
-        const int step = static_cast<int>(static_cast<float>(*reinterpret_cast<int*>(particle->unknown_0050)) / 20.0f);
+        const int step = static_cast<int>(static_cast<float>(particle->unknown_0050) / 20.0f);
         const int pitch = static_cast<int>(static_cast<float>(step * texPart) + rotation) % 360;
 
         const float radius = particle->unknown_00C0;
