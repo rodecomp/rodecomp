@@ -116,8 +116,9 @@ bool JsonCppLoader::sub_50B830(std::map<int, ReputeInfoRecord>* out) {
 // OFFSET: 0x0060DC70
 // FUNCTION: fn_04294
 bool CReputeMgr::sub_60DC70(std::map<std::uint64_t, ReputeGroup>& groups) {
+  std::string path = "ContentData\\Repute\\ReputeGroupData.bson";
   CFile file;
-  if (!file.Open("ContentData\\Repute\\ReputeGroupData.bson", 0, true, false)) {
+  if (!file.Open(path.c_str(), 0, true, false)) {
     return false;
   }
 
@@ -135,15 +136,18 @@ bool CReputeMgr::sub_60DC70(std::map<std::uint64_t, ReputeGroup>& groups) {
   }
 
   groups.clear();
-  std::for_each(records.begin(), records.end(), GroupInserter{this, &groups});
+  for (std::pair<const int, ReputeGroupRecord> record : records) {
+    GroupInserter{this, &groups}(record);
+  }
   return true;
 }
 
 // OFFSET: 0x0060E090
 // FUNCTION: fn_04295
 bool CReputeMgr::sub_60E090(std::map<std::uint64_t, ReputeInfo>& infos) {
+  std::string path = "ContentData\\Repute\\ReputeInfoData.bson";
   CFile file;
-  if (!file.Open("ContentData\\Repute\\ReputeInfoData.bson", 0, true, false)) {
+  if (!file.Open(path.c_str(), 0, true, false)) {
     return false;
   }
 
@@ -161,7 +165,9 @@ bool CReputeMgr::sub_60E090(std::map<std::uint64_t, ReputeInfo>& infos) {
   }
 
   infos.clear();
-  std::for_each(records.begin(), records.end(), InfoInserter{this, &infos});
+  for (std::pair<const int, ReputeInfoRecord> record : records) {
+    InfoInserter{this, &infos}(record);
+  }
   return true;
 }
 
