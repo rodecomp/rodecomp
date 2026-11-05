@@ -178,28 +178,25 @@ const TipBoxEntry& CTipBoxMgr::GetTip(int id) const {
 // OFFSET: 0x007ACC70
 // FUNCTION: fn_09127
 std::string CTipBoxMgr::Title(int id, std::string* abbreviated, int width) const {
-  const auto entry = this->m_entries.find(id);
-  const auto& title = entry == this->m_entries.end() ? this->m_missing.title : entry->second.title;
+  const std::string& title = this->GetTip(id).title;
 
-  if (title.empty()) {
+  if (title.size() == 0) {
     return title;
   }
 
-  std::string result = title.substr(0, title.find('#'));
+  std::size_t length = title.find("#");
+  if (length == std::string::npos) {
+    length = title.size();
+  }
+  std::string result = title.substr(0, length);
 
   if (abbreviated) {
-    if (width <= 10 || result.size() <= static_cast<unsigned>(width) + 4u) {
-      *abbreviated = result;
-    } else {
+    if (width > 10 && result.size() > static_cast<std::size_t>(width + 4)) {
       std::vector<std::string> lines;
       SplitTitle(result.c_str(), lines, width);
-      abbreviated->clear();
-
-      for (const auto& line : lines) {
-        *abbreviated += line;
-      }
-
-      *abbreviated += "...";
+      *abbreviated = lines[0] + "...";
+    } else {
+      *abbreviated = result;
     }
   }
 
