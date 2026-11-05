@@ -45,7 +45,11 @@ void CRendererDX9::SetLighting(const float* direction, const float* diffuse, con
 // OFFSET: 0x00565150
 // FUNCTION: fn_02214
 void CRendererDX9::ClearDepth(int clearColor) {
-  this->nativeDevice->Clear(0, nullptr, clearColor ? D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER : D3DCLEAR_ZBUFFER, 0xFF000000u, 1.0f, 0);
+  if (clearColor) {
+    this->nativeDevice->Clear(0, nullptr, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0xFF000000u, 1.0f, 0);
+  } else {
+    this->nativeDevice->Clear(0, nullptr, D3DCLEAR_ZBUFFER, 0xFF000000u, 1.0f, 0);
+  }
 }
 
 // OFFSET: 0x005651A0
@@ -66,16 +70,16 @@ void CRendererDX9::DrawPrimitive(RenderCommand* primitive) {
     return;
   }
 
-  this->device->state.SetFVF(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1);
   const auto type = static_cast<D3DPRIMITIVETYPE>(primitive->primitiveType);
-  const unsigned divisor = type == D3DPT_TRIANGLELIST ? 3 : 2;
+  this->device->state.SetFVF(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1);
 
   if (primitive->indexCount) {
     this->nativeDevice->DrawIndexedPrimitiveUP(
-      type, 0, primitive->vertexCount, primitive->indexCount / divisor, primitive->indices, D3DFMT_INDEX16, primitive->vertices, sizeof(RenderVertex)
+      type, 0, primitive->vertexCount, primitive->indexCount / (type == D3DPT_TRIANGLELIST ? 3 : 2), primitive->indices, D3DFMT_INDEX16,
+      primitive->vertices, sizeof(RenderVertex)
     );
   } else {
-    this->nativeDevice->DrawPrimitiveUP(type, primitive->vertexCount / divisor, primitive->vertices, sizeof(RenderVertex));
+    this->nativeDevice->DrawPrimitiveUP(type, primitive->vertexCount / (type == D3DPT_TRIANGLELIST ? 3 : 2), primitive->vertices, sizeof(RenderVertex));
   }
 }
 
@@ -86,16 +90,16 @@ void CRendererDX9::DrawLightmappedPrimitive(LightmappedPrimitive* primitive) {
     return;
   }
 
-  this->device->state.SetFVF(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX2);
   const auto type = static_cast<D3DPRIMITIVETYPE>(primitive->primitiveType);
-  const unsigned divisor = type == D3DPT_TRIANGLELIST ? 3 : 2;
+  this->device->state.SetFVF(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX2);
 
   if (primitive->indexCount) {
     this->nativeDevice->DrawIndexedPrimitiveUP(
-      type, 0, primitive->vertexCount, primitive->indexCount / divisor, primitive->indices, D3DFMT_INDEX16, primitive->vertices, sizeof(LightmappedVertex)
+      type, 0, primitive->vertexCount, primitive->indexCount / (type == D3DPT_TRIANGLELIST ? 3 : 2), primitive->indices, D3DFMT_INDEX16,
+      primitive->vertices, sizeof(LightmappedVertex)
     );
   } else {
-    this->nativeDevice->DrawPrimitiveUP(type, primitive->vertexCount / divisor, primitive->vertices, sizeof(LightmappedVertex));
+    this->nativeDevice->DrawPrimitiveUP(type, primitive->vertexCount / (type == D3DPT_TRIANGLELIST ? 3 : 2), primitive->vertices, sizeof(LightmappedVertex));
   }
 }
 
