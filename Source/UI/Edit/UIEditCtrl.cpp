@@ -301,14 +301,10 @@ void UIEditCtrl::Slot28(int x, int y) {
   this->Slot27(x, y);
 
   if (!this->tooltip.empty()) {
-    int left = 10, top = -20;
-
-    for (const UIWindow* window = this; window; window = window->parent) {
-      left += window->geometry.x;
-      top += window->geometry.y;
-    }
-
-    static_cast<CMode*>(g_charViewMode)->ShowTooltip(this->tooltip.c_str(), left, top, -1, false, true);
+    x = 10;
+    y = -20;
+    this->ToScreen(x, y);
+    g_modeMgr.gameMode->ShowTooltip(this->tooltip.c_str(), x, y, -1, false, true);
   }
 }
 
