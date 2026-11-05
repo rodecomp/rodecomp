@@ -493,18 +493,18 @@ void CGameMode::ReceiveItem1740AddGrade(const unsigned char* data) {
 // OFFSET: 0x00D204B0
 // FUNCTION: fn_21647
 void CGameMode::ReceiveItem1738AddOptions(const unsigned char* data) {
-  const ItemAddOptionsPacket packet = *reinterpret_cast<const ItemAddOptionsPacket*>(data);
+  const auto* packet = reinterpret_cast<const ItemAddOptionsPacket*>(data);
   ItemRandomOption options[5];
-  std::memcpy(options, packet.options, sizeof(options));
+  std::memcpy(options, packet->options, sizeof(options));
   ITEM_INFO item;
-  item.unknown_0000[1] = packet.index;
-  item.quantity = packet.amount;
-  item.SetItemId(packet.itemId);
-  item.identified = packet.identified;
-  item.unknown_005D = packet.damaged;
-  item.unknown_0060 = packet.refine;
-  item.unknown_0000[0] = packet.type;
-  std::memcpy(item.unknown_001C, packet.cards, sizeof(packet.cards));
+  item.unknown_0000[1] = packet->index;
+  item.quantity = packet->amount;
+  item.SetItemId(packet->itemId);
+  item.identified = packet->identified;
+  item.unknown_005D = packet->damaged;
+  item.unknown_0060 = packet->refine;
+  item.unknown_0000[0] = packet->type;
+  std::memcpy(item.unknown_001C, packet->cards, sizeof(packet->cards));
   item.unknown_0098 = CountItemOptions(options);
   for (int index = 0; index < item.unknown_0098; ++index) {
     reinterpret_cast<ItemRandomOption*>(item.unknown_009C)[index] = options[index];
