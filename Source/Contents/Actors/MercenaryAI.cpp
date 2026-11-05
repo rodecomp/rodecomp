@@ -267,10 +267,10 @@ int AiHomunAttack(lua_State* state) {
 
   std::uint32_t aid = static_cast<std::uint32_t>(lua_tonumber(state, 1));
   std::uint32_t target = static_cast<std::uint32_t>(lua_tonumber(state, 2));
-  if (!IsHomunAid(aid)) {
+  if (!g_session.IsHomunAid(aid)) {
     return 0;
   }
-  if (*reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5620[8]) != 0 && IsMercenaryAid(target)) {
+  if (*reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5620[8]) != 0 && g_session.IsMercenaryAid(target)) {
     return 0;
   }
 
@@ -305,10 +305,10 @@ int AiHomunAttack(lua_State* state) {
 int AiMercenaryAttack(lua_State* state) {
   std::uint32_t aid = static_cast<std::uint32_t>(lua_tonumber(state, 1));
   std::uint32_t target = static_cast<std::uint32_t>(lua_tonumber(state, 2));
-  if (!IsMercenaryAid(aid)) {
+  if (!g_session.IsMercenaryAid(aid)) {
     return 0;
   }
-  if (*reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5570[8]) != 0 && IsHomunAid(target)) {
+  if (*reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5570[8]) != 0 && g_session.IsHomunAid(target)) {
     return 0;
   }
 
@@ -397,7 +397,7 @@ int AiHomunGetV(lua_State* state) {
         }
       }
 
-      int cellX = 0, cellY = 0;
+      int cellX, cellY;
       mode->WorldCell(actor->render.position.x, actor->render.position.z, cellX, cellY);
 
       int skillId = 0;
@@ -409,26 +409,26 @@ int AiHomunGetV(lua_State* state) {
 
       std::uint32_t homunAid = *reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5570[8]);
       if (actor->render.accountId != g_session.m_aid && !g_session.sub_E1DE30(actor->render.accountId)) {
-        CGameActor* targetActor = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(homunAid));
+        CGameActor* targetActor = static_cast<CGameActor*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAID(homunAid));
         if (targetActor) {
-          int targetX = 0, targetY = 0;
-          mode->WorldCell(targetActor->render.position.x, targetActor->render.position.z, targetX, targetY);
+          int targetX, targetY;
+          static_cast<CGameMode*>(g_modeMgr.GetGameMode())->WorldCell(targetActor->render.position.x, targetActor->render.position.z, targetX, targetY);
 
           int range = 0;
           if (skillId != 0) {
-            range = mode->GetSkillAttackRange(skillId, skillLevel);
+            range = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->GetSkillAttackRange(skillId, skillLevel);
           }
 
           int clamped = ClampTargetAttackRange(homunAid, range);
           if (clamped > 0) {
-            int dx = targetX - cellX;
-            float dist = std::sqrt(static_cast<float>(dx * dx + (targetY - cellY) * (targetY - cellY)));
-            double angle = std::acos((1.0f / dist) * static_cast<float>(dx));
-            cellX = static_cast<int>(static_cast<float>(cellX) + std::cos(static_cast<float>(angle)) * static_cast<float>(clamped));
-            cellY = static_cast<int>(static_cast<float>(cellY) + -std::sin(static_cast<float>(angle)) * static_cast<float>(clamped));
+            const float dx = static_cast<float>(targetX - cellX);
+            const float dy = static_cast<float>(cellY - targetY);
+            const float angle = std::acos((1.0f / SquareRoot(dy * dy + dx * dx)) * dx);
+            cellX = static_cast<int>(static_cast<float>(cellX) + std::cos(angle) * static_cast<float>(clamped));
+            cellY = static_cast<int>(static_cast<float>(cellY) + -std::sin(angle) * static_cast<float>(clamped));
 
-            if (!mode->IsValidCell(cellX, cellY)) {
-              if (!mode->GetClosestValidCell(&cellX, &cellY)) {
+            if (!static_cast<CGameMode*>(g_modeMgr.GetGameMode())->IsValidCell(cellX, cellY)) {
+              if (!static_cast<CGameMode*>(g_modeMgr.GetGameMode())->GetClosestValidCell(&cellX, &cellY)) {
                 cellX = targetX;
                 cellY = targetY;
               }
@@ -485,7 +485,7 @@ int AiHomunGetV(lua_State* state) {
       int range = skill.unknown_001C;
       if (property == 14) {
         int level = static_cast<int>(lua_tonumber(state, 4));
-        range = mode->GetSkillAttackRange(skillId, level);
+        range = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->GetSkillAttackRange(skillId, level);
       }
       std::uint32_t homunAid = *reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5570[8]);
       result = static_cast<double>(ClampTargetAttackRange(homunAid, range));
@@ -581,7 +581,7 @@ int AiMercenaryGetV(lua_State* state) {
         }
       }
 
-      int cellX = 0, cellY = 0;
+      int cellX, cellY;
       mode->WorldCell(actor->render.position.x, actor->render.position.z, cellX, cellY);
 
       int skillId = 0;
@@ -593,26 +593,27 @@ int AiMercenaryGetV(lua_State* state) {
 
       std::uint32_t mercAid = *reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5620[8]);
       if (actor->render.accountId != g_session.m_aid && !g_session.sub_E1DE30(actor->render.accountId)) {
-        CGameActor* targetActor = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(mercAid));
+        CGameActor* targetActor = static_cast<CGameActor*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAID(mercAid));
         if (targetActor) {
-          int targetX = 0, targetY = 0;
-          mode->WorldCell(targetActor->render.position.x, targetActor->render.position.z, targetX, targetY);
+          int targetX, targetY;
+          static_cast<CGameMode*>(g_modeMgr.GetGameMode())->WorldCell(targetActor->render.position.x, targetActor->render.position.z, targetX, targetY);
 
           int range = 0;
           if (skillId != 0) {
-            range = mode->GetSkillAttackRange(skillId, skillLevel);
+            range = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->GetSkillAttackRange(skillId, skillLevel);
           }
 
           int clamped = ClampTargetAttackRange(*reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5570[8]), range);
           if (clamped > 0) {
-            int dx = targetX - cellX;
-            float dist = std::sqrt(static_cast<float>(dx * dx + (targetY - cellY) * (targetY - cellY)));
-            double angle = std::acos((1.0f / dist) * static_cast<float>(dx));
-            cellX = static_cast<int>(static_cast<float>(cellX) + std::cos(static_cast<float>(angle)) * static_cast<float>(clamped));
-            cellY = static_cast<int>(static_cast<float>(cellY) + -std::sin(static_cast<float>(angle)) * static_cast<float>(clamped));
+            const float dx = static_cast<float>(targetX - cellX);
+            const float dy = static_cast<float>(cellY - targetY);
+            const float dist = SquareRoot(dy * dy + dx * dx);
+            const float angle = std::acos((1.0f / dist) * dx);
+            cellX = static_cast<int>(static_cast<float>(cellX) + std::cos(angle) * static_cast<float>(clamped));
+            cellY = static_cast<int>(static_cast<float>(cellY) + -std::sin(angle) * static_cast<float>(clamped));
 
-            if (!mode->IsValidCell(cellX, cellY)) {
-              if (!mode->GetClosestValidCell(&cellX, &cellY)) {
+            if (!static_cast<CGameMode*>(g_modeMgr.GetGameMode())->IsValidCell(cellX, cellY)) {
+              if (!static_cast<CGameMode*>(g_modeMgr.GetGameMode())->GetClosestValidCell(&cellX, &cellY)) {
                 cellX = targetX;
                 cellY = targetY;
               }
@@ -669,7 +670,7 @@ int AiMercenaryGetV(lua_State* state) {
       int range = skill.unknown_001C;
       if (property == 14) {
         int level = static_cast<int>(lua_tonumber(state, 4));
-        range = mode->GetSkillAttackRange(skillId, level);
+        range = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->GetSkillAttackRange(skillId, level);
       }
       std::uint32_t mercAid = *reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5620[8]);
       result = static_cast<double>(ClampTargetAttackRange(mercAid, range));
@@ -722,9 +723,8 @@ int AiMercenaryGetV(lua_State* state) {
     if (!actor) {
       result = -1.0;
     } else {
-      int job = actor->GetEffectiveJob(-1);
-      if (g_session.IsSkillIdInRange6018(job)) {
-        result = static_cast<double>(job % 6017 + 1);
+      if (g_session.IsSkillIdInRange6018(actor->GetEffectiveJob(-1))) {
+        result = actor->GetEffectiveJob(-1) % 6017 + 1.0;
       } else {
         result = 1.0;
       }
@@ -1080,10 +1080,10 @@ int AiSkillGround(lua_State* state) {
   skillArgs[2] = static_cast<int>(lua_tonumber(state, 5));
   skillArgs[3] = static_cast<int>(lua_tonumber(state, 2));
 
-  if (!IsHomunAid(aid) && !IsMercenaryAid(aid)) {
+  if (!g_session.IsHomunAid(aid) && !g_session.IsMercenaryAid(aid)) {
     return 0;
   }
-  if (!IsFirstSkillRange(static_cast<unsigned>(skillArgs[0])) && !IsOtherSkillRange(static_cast<unsigned>(skillArgs[0]))) {
+  if (!g_session.IsHomunculusSkill(static_cast<unsigned>(skillArgs[0])) && !g_session.IsMercenarySkill(static_cast<unsigned>(skillArgs[0]))) {
     return 0;
   }
 
@@ -1113,7 +1113,7 @@ int AiSkillObject(lua_State* state) {
     return 0;
   }
 
-  if (!IsFirstSkillRange(skillId) && !IsOtherSkillRange(skillId)) {
+  if (!g_session.IsHomunculusSkill(skillId) && !g_session.IsMercenarySkill(skillId)) {
     return 0;
   }
 
