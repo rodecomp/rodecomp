@@ -44,7 +44,7 @@
 #include "UI/Edit/UIEditCtrl_Currency.h"
 #include "Client/Input/Language.h"
 #include "Utility/Text/GroupedInteger.h"
-#include "Client/Replay.h"
+#include "Client/Input/Mouse.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
@@ -564,7 +564,7 @@ void UIWindowMgr::AddRendered(UIWindow* window) {
 // FUNCTION: fn_11457
 void UIServerListBox::Slot28(int x, int y) {
   const int index = this->LineAt(x, y);
-  const int height = g_screenHeight;
+  const int height = g_mouse.y;
   if (this->balloonTexts.begin() != this->balloonTexts.end()) {
     if (index != -1 && this->balloonTexts[index].size() != 0) {
       int screenX = 0;
