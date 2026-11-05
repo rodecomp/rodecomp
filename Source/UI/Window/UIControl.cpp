@@ -3617,18 +3617,21 @@ CUIListItem::CUIListItem() : CUIControl(), images(), selected(0), disabledImage(
 // FUNCTION: fn_14655
 void CUIListItem::Paint() {
   this->ClearSurface(0xFFFF00FF);
-  if (!this->frozen) {
-    if (!this->images[this->selected]) {
-      if (this->selected == 1) {
-        this->ClearSurface(0xFFDECE);
-      } else if (this->selected == 2) {
-        this->ClearSurface(0xEF9C73);
-      }
-    } else {
-      this->DrawBitmap(0, 0, &this->images[this->selected]->image, false);
+  if (this->frozen) {
+    if (this->disabledImage) {
+      this->DrawBitmap(0, 0, &this->disabledImage->image, false);
     }
-  } else if (this->disabledImage) {
-    this->DrawBitmap(0, 0, &this->disabledImage->image, false);
+  } else if (!this->images[this->selected]) {
+    switch (this->selected) {
+    case 1:
+      this->ClearSurface(0xFFDECE);
+      break;
+    case 2:
+      this->ClearSurface(0xEF9C73);
+      break;
+    }
+  } else {
+    this->DrawBitmap(0, 0, &this->images[this->selected]->image, false);
   }
 }
 
