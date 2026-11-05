@@ -726,7 +726,7 @@ void CEffectPrim::Render(int argument) {
 
 // OFFSET: 0x00BE4210
 // FUNCTION: fn_19923
-void CEffectPrim::RenderTeiRect(
+__declspec(safebuffers) void CEffectPrim::RenderTeiRect(
   int* rpCnt, short alpha, vector3d vec1, vector3d vec2, vector3d vec3, vector3d vec4, matrix& wtm, short pw, char tn, char f1, unsigned char r,
   unsigned char g, unsigned char b, float ty1, float ty2, float tx, float tx2, char extra
 ) {
@@ -3875,7 +3875,7 @@ void CEffectPrim::RenderHaloLayers(matrix& wtm) {
 
 // OFFSET: 0x00BDDBC0
 // FUNCTION: fn_19903
-void CEffectPrim::RenderGroundBubbles(matrix& wtm) {
+__declspec(safebuffers) void CEffectPrim::RenderGroundBubbles(matrix& wtm) {
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -4811,7 +4811,7 @@ static __forceinline void RenderSoulParticleQuad(
 
 // OFFSET: 0x00BE2190
 // FUNCTION: fn_19919
-void CEffectPrim::RenderSoulParticle(matrix& wtm) {
+__declspec(safebuffers) void CEffectPrim::RenderSoulParticle(matrix& wtm) {
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -6815,7 +6815,7 @@ void CEffectPrim::RenderSphere(matrix& wtm) {
 
 // OFFSET: 0x00BD6510
 // FUNCTION: fn_19884
-void CEffectPrim::RenderTeiFacingSlots(matrix& wtm) {
+__declspec(safebuffers) void CEffectPrim::RenderTeiFacingSlots(matrix& wtm) {
   vector3d vec1{};
   vector3d vec2{};
   vector3d vec4{};
