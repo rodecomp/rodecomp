@@ -197,7 +197,7 @@ bool CGifRes::DecodeGif(const void* data, int bytes, bool iconOnly) {
   if (screen.flags & 0x80) {
     globalCount = static_cast<std::uint16_t>(1 << ((screen.flags & 7) + 1));
     globalPalette = new std::uint32_t[globalCount];
-    for (int i = 0; i < globalCount; ++i) {
+    for (std::uint16_t i = 0; i < globalCount; ++i) {
       globalPalette[i] = 0xFF000000u | (cursor[0] << 16) | (cursor[1] << 8) | cursor[2];
       cursor += 3;
     }
@@ -211,25 +211,29 @@ bool CGifRes::DecodeGif(const void* data, int bytes, bool iconOnly) {
     memcpy_s(&blockType, sizeof(blockType), cursor, sizeof(blockType));
     ++cursor;
 
-    if (blockType == '!') {
+    switch (blockType) {
+    case '!': {
       std::uint8_t label;
       memcpy_s(&label, sizeof(label), cursor, sizeof(label));
       ++cursor;
 
-      if (label == 0xF9) {
+      switch (label) {
+      case 0xF9: {
         GifGraphicControl control;
         memcpy_s(&control, sizeof(control), cursor, sizeof(control));
         cursor += sizeof(control);
         transparentIndex = control.transparentIndex;
         transparent = control.flags & 1;
         delay = std::max<std::uint16_t>(10, control.delay);
-      } else if (label == 0xFF) {
+        break;
+      }
+      case 0xFF: {
         std::uint8_t blockSize;
         memcpy_s(&blockSize, sizeof(blockSize), cursor, sizeof(blockSize));
         ++cursor;
 
         std::string identifier;
-        identifier = std::string(cursor, cursor + blockSize);
+        identifier.assign(cursor, cursor + blockSize);
         cursor += blockSize;
 
         constexpr char netscape[] = {'N', 'E', 'T', 'S', 'C', 'A', 'P', 'E'};
@@ -243,12 +247,16 @@ bool CGifRes::DecodeGif(const void* data, int bytes, bool iconOnly) {
           cursor += sizeof(loops);
           this->loopCount = loops > 0 ? loops + 1 : 0;
         }
+        break;
+      }
       }
 
       while (*cursor != 0) {
         ++cursor;
       }
-    } else if (blockType == ',') {
+      break;
+    }
+    case ',': {
       GifImageDescriptor descriptor;
       memcpy_s(&descriptor, sizeof(descriptor), cursor, sizeof(descriptor));
       cursor += sizeof(descriptor);
@@ -256,10 +264,10 @@ bool CGifRes::DecodeGif(const void* data, int bytes, bool iconOnly) {
       std::uint16_t localCount = 0;
       std::uint32_t* localPalette = nullptr;
       const std::uint8_t localTable = descriptor.flags & 0x80;
-      if (localTable) {
+      if (localTable > 0) {
         localCount = static_cast<std::uint16_t>(1 << ((descriptor.flags & 7) + 1));
         localPalette = new std::uint32_t[localCount];
-        for (int i = 0; i < localCount; ++i) {
+        for (std::uint16_t i = 0; i < localCount; ++i) {
           localPalette[i] = 0xFF000000u | (cursor[0] << 16) | (cursor[1] << 8) | cursor[2];
           cursor += 3;
         }
@@ -293,7 +301,7 @@ bool CGifRes::DecodeGif(const void* data, int bytes, bool iconOnly) {
 
         std::uint32_t* palette = globalPalette;
         std::uint16_t paletteCount = globalCount;
-        if (localTable) {
+        if (localTable > 0) {
           palette = localPalette;
           paletteCount = localCount;
         }
@@ -325,7 +333,9 @@ bool CGifRes::DecodeGif(const void* data, int bytes, bool iconOnly) {
 
       delete[] compressed;
       delete[] indices;
-    } else if (blockType == ';') {
+      break;
+    }
+    case ';':
       delete[] globalPalette;
       if (this->frames.size() != 0) {
         this->image.pixels = this->frames[0].second;
