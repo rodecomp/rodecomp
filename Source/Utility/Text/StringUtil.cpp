@@ -169,11 +169,9 @@ std::string FormatDecimal(double value, int precision, bool trimZeros) {
 // OFFSET: 0x0058B170
 // FUNCTION: fn_02765
 std::vector<std::string> Split(std::string_view text, std::string_view delimiter) {
-  std::vector<std::string> result;
-  for (auto part : text | std::views::split(delimiter)) {
-    result.emplace_back(std::string_view(part.begin(), part.end()));
-  }
-  return result;
+  auto parts = text | std::views::split(delimiter)
+    | std::views::transform([](auto&& part) { return std::string_view(part.begin(), part.end()); });
+  return std::vector<std::string>(parts.begin(), parts.end());
 }
 
 // OFFSET: 0x0058B830
