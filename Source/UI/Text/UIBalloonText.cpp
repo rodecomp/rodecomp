@@ -26,28 +26,28 @@ int g_nameBalloonFontHeight = 12;
 namespace {
   // INLINED
   int Family(unsigned mode) {
-    switch (mode) {
-    case 1:
-      return 21;
-    case 2:
-      return 20;
-    case 3:
-      return 22;
-    case 4:
-      return 23;
-    case 5:
-      return 24;
-    case 6:
-      return 25;
-    case 7:
-      return 26;
-    case 8:
-      return 27;
-    case 9:
-      return 28;
-    default:
-      return 0;
+    int family = 0;
+    if (mode == 3) {
+      family = 22;
+    } else if (mode == 2) {
+      family = 20;
+    } else if (mode == 1) {
+      family = 21;
+    } else if (mode == 4) {
+      family = 23;
+    } else if (mode == 5) {
+      family = 24;
+    } else if (mode == 6) {
+      family = 25;
+    } else if (mode == 7) {
+      family = 26;
+    } else if (mode == 8) {
+      family = 27;
+    } else if (mode == 9) {
+      family = 28;
     }
+
+    return family;
   }
 
   // INLINED
@@ -123,17 +123,17 @@ void UIBalloonText::WrapText(const char* text, int width) {
 void UIBalloonText::FitText() {
   int width = 0;
   int height = 4;
-  const int family = Family(this->m_fontMode);
 
-  for (const std::string& line : this->m_lines) {
-    const SIZE extent = Measure(*this, line, family, this->m_fontHeight);
+  for (unsigned int index = 0; index < this->m_lines.size(); ++index) {
+    const int family = Family(this->m_fontMode);
+    width = std::max(width, this->TextWidth(this->m_lines[index].c_str(), 0, family, this->m_fontHeight, 0, 0));
 
-    if (extent.cx > width) {
-      width = extent.cx;
+    if (family == 22) {
+      height = (height + (this->TextHeight(this->m_lines[index].c_str(), 0, family, this->m_fontHeight, 0, 0) + 4));
     }
-
-    const int lineHeight = this->m_fontMode == 3 ? extent.cy : Measure(*this, line, 0, this->m_fontHeight).cy;
-    height = (height + (lineHeight + 4));
+    if (this->m_fontMode != 3) {
+      height = (height + (this->TextHeight(this->m_lines[index].c_str(), 0, 0, this->m_fontHeight, 0, 0) + 4));
+    }
   }
 
   this->Resize((width + 12), height);
