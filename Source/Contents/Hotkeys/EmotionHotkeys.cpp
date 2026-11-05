@@ -71,18 +71,20 @@ void EmotionHotkeys::Save(std::uint32_t accountId, CRenderSystemBase*) const {
 // FUNCTION: fn_24191
 bool EmotionHotkeys::LoadDefaults(std::uint32_t accountId) {
   this->current.clear();
-
-  for (int id : {544, 545, 546, 547, 549, 550, 551, 552, 553, 554}) {
-    this->current.emplace_back(LookupMessage(id));
-  }
+  this->current.emplace_back(LookupMessage(544));
+  this->current.emplace_back(LookupMessage(545));
+  this->current.emplace_back(LookupMessage(546));
+  this->current.emplace_back(LookupMessage(547));
+  this->current.emplace_back(LookupMessage(549));
+  this->current.emplace_back(LookupMessage(550));
+  this->current.emplace_back(LookupMessage(551));
+  this->current.emplace_back(LookupMessage(552));
+  this->current.emplace_back(LookupMessage(553));
+  this->current.emplace_back(LookupMessage(554));
 
   CLuaInstance script;
-  const std::string path = "savedata\\shortcutlist\\" + ShortcutFilename(accountId) + ".lua";
-  if (!script.LoadFile(path, false) || script.ReadStrings(this->current, "tbl") != 0) {
-    return false;
-  }
-
-  return this->current.size() == 10;
+  const bool loaded = script.LoadFile(std::format("savedata\\shortcutlist\\{}.lua", ShortcutFilename(accountId)), false);
+  return loaded && script.ReadStrings(this->current, "tbl") == 0 && this->current.size() == 10;
 }
 
 // INLINED
