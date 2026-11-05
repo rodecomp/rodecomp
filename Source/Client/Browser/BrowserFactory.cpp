@@ -19,7 +19,7 @@ CWebBrowser* UIWindowMgr::CreateBrowser(int width, int height) {
     return nullptr;
   }
 
-  auto* browser = new (std::nothrow) CWebBrowser();
+  CWebBrowser* browser = new CWebBrowser();
   if (browser && browser->Create(hWnd, g_instance, width, height)) {
     this->browsers.emplace(browser->host, browser);
     return browser;
