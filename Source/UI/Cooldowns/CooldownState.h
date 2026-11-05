@@ -34,7 +34,7 @@ struct CooldownState {
   CooldownState(int slot, int x, int y, std::uint32_t duration, std::uint32_t start, std::uint32_t elapsed, int reverse);
   CooldownState(const CooldownState& other);
   ~CooldownState();
-  void ClearEdges();
+  void ClearEdges() noexcept;
   void AddEdge(unsigned segment, float origin, int radius, unsigned char increasing);
   float Update();
 };

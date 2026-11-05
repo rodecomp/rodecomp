@@ -13,13 +13,13 @@ std::uint32_t CooldownNow() {
 
 // OFFSET: 0x00CA4F30
 // FUNCTION: fn_20946
-CooldownState::CooldownState(
-  int slotValue, int xValue, int yValue, std::uint32_t durationValue, std::uint32_t startValue, std::uint32_t elapsedValue, int reverseValue
-)
+CooldownState::CooldownState(int slotValue, int xValue, int yValue, std::uint32_t durationValue, std::uint32_t startValue, std::uint32_t elapsedValue,
+                             int reverseValue)
     : segment(0), vertexCount(24), angle(0), duration(durationValue), start(startValue), elapsed(elapsedValue), finalMinute(0), reverse(reverseValue),
-      x(xValue), y(yValue), slot(slotValue), color(reverseValue != 0 ? 0xAAFFFFFFu : 0xAA000000u) {
+      x(xValue), y(yValue), slot(slotValue) {
   this->ClearEdges();
   std::memset(this->vertices, 0, sizeof(this->vertices));
+  this->color = this->reverse != 0 ? 0xAAFFFFFFu : 0xAA000000u;
 }
 
 // OFFSET: 0x00910480
@@ -34,14 +34,14 @@ CooldownState::~CooldownState() {
 
 // OFFSET: 0x00CA59C0
 // FUNCTION: fn_20951
-void CooldownState::ClearEdges() {
+void CooldownState::ClearEdges() noexcept {
   this->edges.clear();
 }
 
 // OFFSET: 0x00CA54E0
 // FUNCTION: fn_20949
 void CooldownState::AddEdge(unsigned key, float origin, int radius, unsigned char increasing) {
-  this->edges.emplace(key, CooldownEdge{origin, origin, radius, increasing});
+  this->edges.insert(std::make_pair(key, CooldownEdge{origin, origin, radius, increasing}));
 }
 
 // OFFSET: 0x00CA5180
