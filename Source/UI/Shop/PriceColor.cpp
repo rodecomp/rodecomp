@@ -3,10 +3,6 @@
 // OFFSET: 0x00A7D8F0
 // FUNCTION: fn_16957
 PriceColors PriceColor(std::int64_t amount) {
-  if (amount < 0) {
-    return {0xFFFF00, 0};
-  }
-
   if (amount >= 1000000000) {
     return {0x7F00FF, 0xFF};
   }
