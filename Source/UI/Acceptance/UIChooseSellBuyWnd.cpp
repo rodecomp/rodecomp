@@ -12123,7 +12123,10 @@ void UIFrameWnd::DrawItemNameText(
       length = static_cast<int>(next - lineStart);
       measured = this->TextWidth(begin, length, 0, 12, 0, 0);
       if (measured + lineWidth > width) {
-        line->push_back(std::make_pair(segment->first, segment->second.substr(offset, length)));
+        std::pair<int, std::string> piece;
+        piece.second = segment->second.substr(offset, length);
+        piece.first = segment->first;
+        line->push_back(piece);
         ++line;
         ++lineCount;
         lineStart = next;
@@ -12137,7 +12140,10 @@ void UIFrameWnd::DrawItemNameText(
       break;
     }
     if (next >= end) {
-      line->push_back(std::make_pair(segment->first, segment->second.substr(offset, length)));
+      std::pair<int, std::string> piece;
+      piece.second = segment->second.substr(offset, length);
+      piece.first = segment->first;
+      line->push_back(piece);
     }
   }
 
@@ -12147,15 +12153,7 @@ void UIFrameWnd::DrawItemNameText(
 
   {
     FrameTextKey key{color, static_cast<std::uint32_t>(width), std::string(text, std::strlen(text))};
-    FrameTextLines& stored = this->m_textCache[std::move(key)];
-    if (&stored != &lines) {
-      for (const auto& source : lines) {
-        stored.emplace_back();
-        for (const auto& piece : source) {
-          stored.back().emplace_back(piece.first, std::string(piece.second.c_str(), piece.second.size()));
-        }
-      }
-    }
+    this->m_textCache[std::move(key)] = lines;
   }
   this->DrawTextLines(position->x, position->y, position->family, position->height, lines);
 }
