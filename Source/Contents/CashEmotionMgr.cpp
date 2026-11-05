@@ -102,7 +102,7 @@ public:
 
 class UICashEmotionPack_Purchase : public UICashEmotionPack {
 public:
-  explicit UICashEmotionPack_Purchase();
+  explicit __declspec(noinline) UICashEmotionPack_Purchase();
   ~UICashEmotionPack_Purchase() override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
@@ -149,7 +149,7 @@ class UICashEmotionPack_Unpurchase : public UICashEmotionPack {
   friend class UICashEmotionListChildWnd_UnPurchased;
 
 public:
-  explicit UICashEmotionPack_Unpurchase();
+  explicit __declspec(noinline) UICashEmotionPack_Unpurchase();
   void Paint() override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
