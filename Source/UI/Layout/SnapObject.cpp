@@ -29,7 +29,7 @@ int SnapObject::AdjacentSide(const SnapObject& other) const {
     return 0;
   }
 
-  if (b.x == right && Overlaps(a.y, bottom, b.y, otherBottom)) {
+  if (b.x == right && Overlaps(b.y, otherBottom, a.y, bottom)) {
     return 2;
   }
 
@@ -37,7 +37,7 @@ int SnapObject::AdjacentSide(const SnapObject& other) const {
     return 1;
   }
 
-  if (b.y == bottom && Overlaps(a.x, right, b.x, otherRight)) {
+  if (b.y == bottom && Overlaps(b.x, otherRight, a.x, right)) {
     return 3;
   }
 
@@ -118,18 +118,16 @@ int SnapObject::GetHeight() const {
 void SnapObject::AccumulateHeight(int& height, int side) const {
   const SnapObject* current = this;
 
-  for (;;) {
+  do {
     height = (height + current->window->geometry.height);
     const SnapObject* next = nullptr;
 
     for (SnapObject* candidate : current->edges[side]) {
-      next = candidate->window->geometry.height > 0 ? candidate : nullptr;
-    }
-
-    if (!next) {
-      return;
+      if (candidate->window->geometry.height > 0) {
+        next = candidate;
+      }
     }
 
     current = next;
-  }
+  } while (current);
 }
