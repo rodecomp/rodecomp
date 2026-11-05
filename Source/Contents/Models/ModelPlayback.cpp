@@ -45,11 +45,11 @@ void C3dActorV2::Update() {
   }
 
   const unsigned tick = GetTickCount();
-  unsigned frame = UnsignedFrame(static_cast<float>(tick - this->startTick) * this->speed);
+  unsigned frame = static_cast<unsigned>(static_cast<float>(tick - this->startTick) * this->speed);
 
   if (static_cast<double>(frame) >= this->duration) {
     if (this->playback == 1) {
-      frame = UnsignedFrame(this->duration - 1.0);
+      frame = static_cast<unsigned>(this->duration - 1.0);
     } else {
       this->startTick = tick;
       frame = 0;
