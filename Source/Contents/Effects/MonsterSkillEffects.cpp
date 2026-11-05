@@ -86,11 +86,10 @@ void CCrimsonArrowEffect::Slot03() {
     return;
   }
 
-  CEZ2STRParticle* particle = AsParticle(this->emitter);
-  particle->position.x = this->position[0] + this->emitter->offset.x;
-  particle->position.y = this->position[1] + this->emitter->offset.y;
-  particle->position.z = this->position[2] + this->emitter->offset.z;
-  particle->Process(0.0f, 0.0f, 0.0f);
+  EZ2STREmitter* emitter = this->emitter;
+  const vector3d position = {emitter->offset.x + this->position[0], emitter->offset.y + this->position[1], emitter->offset.z + this->position[2]};
+  emitter->position = position;
+  AsParticle(this->emitter)->Process(0.0f, 0.0f, 0.0f);
 }
 
 // OFFSET: 0x0070C120
@@ -119,11 +118,10 @@ bool CRootTwistEffect::Slot06() {
 // FUNCTION: fn_07132
 void CRootTwistEffect::Slot03() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+    const vector3d position = {this->position[0] + 0.0f, this->position[1] + 3.0f, this->position[2] + 0.0f};
     EZ2STREmitter* emitter = *it;
     ++emitter->elapsed;
-    emitter->position.x = this->position[0] + 0.0f;
-    emitter->position.y = this->position[1] + 3.0f;
-    emitter->position.z = this->position[2] + 0.0f;
+    emitter->position = position;
   }
 }
 
@@ -317,11 +315,13 @@ CSpriteMableEffect::CSpriteMableEffect() : CEffect(1096) {
 // FUNCTION: fn_07144
 void CSpriteMableEffect::Slot01() {
   for (int i = 0; i < 3; ++i) {
-    CSpriteParticle* particle =
-        static_cast<CSpriteParticle*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 1));
-    if (!particle) {
+    EZ2STREmitter* emitter =
+        reinterpret_cast<EZ2STREmitter*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 1));
+    if (!emitter) {
       continue;
     }
+
+    CSpriteParticle* particle = AsSprite(emitter);
 
     particle->unknown_0004 = this->id;
     particle->unknown_000C = i;
@@ -348,7 +348,7 @@ void CSpriteMableEffect::Slot01() {
     }
 
     this->unknown_002C = 9999;
-    this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
+    this->emitters.push_back(emitter);
   }
 }
 
@@ -805,11 +805,9 @@ void CEternalSlashAttackEffect::Slot03() {
       continue;
     }
 
-    CEZ2STRParticle* particle = AsParticle(emitter);
-    particle->position.x = this->position[0] + emitter->offset.x;
-    particle->position.y = this->position[1] + emitter->offset.y;
-    particle->position.z = this->position[2] + emitter->offset.z;
-    particle->Process(0.0f, 0.0f, 0.0f);
+    const vector3d position = {this->position[0] + emitter->offset.x, this->position[1] + emitter->offset.y, this->position[2] + emitter->offset.z};
+    emitter->position = position;
+    AsParticle(emitter)->Process(0.0f, 0.0f, 0.0f);
   }
 }
 
@@ -870,11 +868,10 @@ void CEternalSlashCountEffect::Slot03() {
     return;
   }
 
-  CEZ2STRParticle* particle = AsParticle(this->emitter);
-  particle->position.x = this->position[0] + this->emitter->offset.x;
-  particle->position.y = this->position[1] + this->emitter->offset.y;
-  particle->position.z = this->position[2] + this->emitter->offset.z;
-  particle->Process(0.0f, 0.0f, 0.0f);
+  EZ2STREmitter* emitter = this->emitter;
+  const vector3d position = {emitter->offset.x + this->position[0], emitter->offset.y + this->position[1], emitter->offset.z + this->position[2]};
+  emitter->position = position;
+  AsParticle(this->emitter)->Process(0.0f, 0.0f, 0.0f);
 }
 
 // OFFSET: 0x007113F0
