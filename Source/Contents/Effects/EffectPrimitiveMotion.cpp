@@ -5475,7 +5475,10 @@ void CEffectPrim::PrimWaveHeights() {
 // OFFSET: 0x00BE7970
 // FUNCTION: fn_19939
 void CEffectPrim::PrimWaveHeightsSlow() {
-  this->render.position = this->state.master->render.position;
+  const CRagEffect* master = this->state.master;
+  this->render.position.x = master->render.position.x;
+  this->render.position.y = master->render.position.y;
+  this->render.position.z = master->render.position.z;
 
   int phase = 0;
   for (int index = 0; index < 4; ++index, phase += 90) {
