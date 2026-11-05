@@ -64,11 +64,11 @@ void CAMachineEffect::Slot03() {
   const float x = this->position[0];
   const float y = this->position[1];
   const float z = this->position[2];
-  const float* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values;
-  float viewX = view[0] * x + view[3] * y + view[6] * z + view[9];
-  float viewY = view[1] * x + view[4] * y + view[7] * z + view[10] - 8.0f;
-  float viewZ = view[2] * x + view[5] * y + view[8] * z + view[11];
+  const matrix view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
   const float* inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse.values;
+  float viewX = view.values[0] * x + view.values[3] * y + view.values[6] * z + view.values[9] + 0.0f;
+  float viewY = view.values[1] * x + view.values[4] * y + view.values[7] * z + view.values[10] - 8.0f;
+  float viewZ = view.values[2] * x + view.values[5] * y + view.values[8] * z + view.values[11] + 0.0f;
   particle->position.x = viewX * inverse[0] + viewY * inverse[3] + viewZ * inverse[6] + inverse[9];
   particle->position.y = viewX * inverse[1] + viewY * inverse[4] + viewZ * inverse[7] + inverse[10];
   particle->position.z = viewX * inverse[2] + viewY * inverse[5] + viewZ * inverse[8] + inverse[11];
