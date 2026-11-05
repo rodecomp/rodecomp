@@ -14,6 +14,7 @@
 class ResourceBytes;
 class TextureCache;
 struct ResourceByteReader;
+class CFile;
 class C3dModelRes;
 
 struct ModelPositionKey {
@@ -139,10 +140,10 @@ public:
   int animationLength;
 
 private:
-  void ReadVersion(ResourceByteReader& input, unsigned minor);
-  void ReadVersion1(ResourceByteReader& input);
-  void ReadVersion2(ResourceByteReader& input);
-  void ReadVersion3(ResourceByteReader& input);
+  void ReadVersion(CFile& input, unsigned minor);
+  void ReadVersion1(CFile& input);
+  void ReadVersion2(CFile& input);
+  void ReadVersion3(CFile& input);
 };
 
 static_assert(sizeof(ModelPositionKey) == 16);

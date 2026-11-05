@@ -5,14 +5,13 @@
 #include "Render/Textures/TextureCache.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/Models/ModelResource.h"
-#include "Resource/ResourceByteReader.h"
 
 #include <algorithm>
 #include <cstring>
 
 namespace {
   // INLINED
-  void ReadKeys(ResourceByteReader& input, std::vector<ModelRotationKey>& keys, bool scale) {
+  void ReadKeys(CFile& input, std::vector<ModelRotationKey>& keys, bool scale) {
     int count = 0;
     input.Read(&count, 4);
 
@@ -44,7 +43,7 @@ C3dModelResV2* C3dModelResV2::Create() {
 }
 
 // INLINED
-inline void C3dModelResV2::ReadVersion(ResourceByteReader& input, unsigned minor) {
+inline void C3dModelResV2::ReadVersion(CFile& input, unsigned minor) {
   if (minor == 1) {
     this->ReadVersion1(input);
   } else if (minor == 2) {
@@ -64,9 +63,8 @@ bool C3dModelResV2::Load(const char* name) {
     return false;
   }
 
-  ResourceByteReader input{static_cast<const unsigned char*>(file.GetData()), static_cast<unsigned>(file.GetSize())};
   char magic[5]{};
-  input.Read(magic, 4);
+  file.Read(magic, 4);
 
   if (std::strcmp(magic, "GRSM") != 0) {
     constexpr char message[] = "모델파일이 아닙니다. 형식을 다시한번 확인해주세요.";
@@ -78,12 +76,12 @@ bool C3dModelResV2::Load(const char* name) {
 
   unsigned char major = 0;
   unsigned char minor = 0;
-  input.Read(&major, 1);
+  file.Read(&major, 1);
   this->major = major;
-  input.Read(&minor, 1);
+  file.Read(&minor, 1);
 
   if (minor >= 1 && minor <= 3) {
-    this->ReadVersion(input, minor);
+    this->ReadVersion(file, minor);
   }
 
   file.Close();
@@ -95,7 +93,7 @@ bool C3dModelResV2::Load(const char* name) {
 
 // OFFSET: 0x00759ED0
 // FUNCTION: fn_08020
-void C3dModelResV2::ReadVersion1(ResourceByteReader& input) {
+void C3dModelResV2::ReadVersion1(CFile& input) {
   input.Read(&this->animationLength, 4);
   input.Read(&this->shade, 4);
   input.Read(&this->alpha, 1);
@@ -224,7 +222,7 @@ void C3dModelResV2::ReadVersion1(ResourceByteReader& input) {
 
 // OFFSET: 0x0075AB20
 // FUNCTION: fn_08021
-void C3dModelResV2::ReadVersion2(ResourceByteReader& input) {
+void C3dModelResV2::ReadVersion2(CFile& input) {
   input.Read(&this->animationLength, 4);
   input.Read(&this->shade, 4);
   input.Read(&this->alpha, 1);
@@ -343,7 +341,7 @@ void C3dModelResV2::ReadVersion2(ResourceByteReader& input) {
 
 // OFFSET: 0x0075B8E0
 // FUNCTION: fn_08022
-void C3dModelResV2::ReadVersion3(ResourceByteReader& input) {
+void C3dModelResV2::ReadVersion3(CFile& input) {
   input.Read(&this->animationLength, 4);
   input.Read(&this->shade, 4);
   input.Read(&this->alpha, 1);
