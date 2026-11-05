@@ -14,8 +14,9 @@ void CEffectPrim::RenderFoldingRibbon(matrix& wtm) {
   }
   int rpCnt = 0;
 
-  for (int ec = 0; ec < 4; ++ec) {
-    EffectPrimitiveSlot& slot = this->state.slots[ec];
+  EffectPrimitiveSlot* slotIt = this->state.slots;
+  for (int ec = 4; ec != 0; --ec, ++slotIt) {
+    EffectPrimitiveSlot& slot = *slotIt;
     if (slot.life != 1 || slot.alphaB <= 0) {
       continue;
     }
@@ -206,8 +207,9 @@ void CEffectPrim::RenderHoverSquares(matrix& wtm) {
   vector3d vec4{};
   int rpCnt = 0;
 
-  for (int ec = 0; ec < 4; ++ec) {
-    EffectPrimitiveSlot& slot = this->state.slots[ec];
+  EffectPrimitiveSlot* slotIt = this->state.slots;
+  for (int ec = 4; ec != 0; --ec, ++slotIt) {
+    EffectPrimitiveSlot& slot = *slotIt;
     if (slot.life != 1) {
       continue;
     }
