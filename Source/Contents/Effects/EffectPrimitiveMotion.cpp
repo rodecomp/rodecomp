@@ -2616,7 +2616,7 @@ bool CEffectPrim::Prim3DTextureNoMaster() {
   particle.longitude = particle.longSpeed + particle.longitude;
   particle.latitude = particle.latiSpeed + particle.latitude;
 
-  if (!(particle.heightSize <= particle.maxHeightSize)) {
+  if (particle.maxHeightSize <= particle.heightSize && particle.heightSize != particle.maxHeightSize) {
     particle.heightAccel = 0;
     particle.heightSpeed = 0;
   }
