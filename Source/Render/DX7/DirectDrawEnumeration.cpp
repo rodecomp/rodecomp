@@ -111,23 +111,24 @@ HRESULT CALLBACK DirectDrawEnumeration::Device(char*, char* name, D3DDEVICEDESC7
   record.emulationCaps = source.emulationCaps;
   record.renderIdentity = device->deviceGUID;
   record.renderGuid = &record.renderIdentity;
-  record.modes = static_cast<DDSURFACEDESC2*>(std::malloc(source.modeCount * sizeof(DDSURFACEDESC2)));
+  record.modes = new DDSURFACEDESC2[source.modeCount];
 
   if (source.drawGuid) {
     record.drawIdentity = source.drawIdentity;
     record.drawGuid = &record.drawIdentity;
     lstrcpynA(record.description, source.description, 39);
   } else {
+    record.drawGuid = nullptr;
     lstrcpynA(record.description, name, 39);
   }
 
   if ((record.drawGuid && !record.hardware) || (g_directDrawFilter && FAILED(g_directDrawFilter(&record.driverCaps, &record.device)))) {
-    std::free(record.modes);
+    delete[] record.modes;
     return D3DENUMRET_OK;
   }
 
   for (unsigned index = 0; index < source.modeCount; ++index) {
-    const auto& mode = source.modes[index];
+    const DDSURFACEDESC2 mode = source.modes[index];
     const DWORD bits = mode.ddpfPixelFormat.dwRGBBitCount;
     const DWORD supported = record.device.dwDeviceRenderBitDepth;
     const bool accepted = (bits == 32 && (supported & DDBD_32)) || (bits == 24 && (supported & DDBD_24)) || (bits == 16 && (supported & DDBD_16));
@@ -142,7 +143,7 @@ HRESULT CALLBACK DirectDrawEnumeration::Device(char*, char* name, D3DDEVICEDESC7
   }
 
   if (record.modeCount == 0) {
-    std::free(record.modes);
+    delete[] record.modes;
     return D3DENUMRET_OK;
   }
 
@@ -202,7 +203,10 @@ BOOL WINAPI DirectDrawEnumeration::Adapter(GUID* guid, char* description, char*,
   draw->EnumDisplayModes(0, nullptr, &record, Mode);
   std::qsort(record.modes, record.modeCount, sizeof(DDSURFACEDESC2), CompareModes);
   render->EnumDevices(Device, &record);
-  std::free(record.modes);
+  if (record.modes) {
+    delete record.modes;
+    record.modes = nullptr;
+  }
   render->Release();
   draw->Release();
 
