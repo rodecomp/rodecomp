@@ -11,7 +11,7 @@
 #include <cstring>
 
 // INLINED
-static void SelectRagEffectResource(RagEffectState& effect, ServiceOptions& options, char* name) {
+__forceinline static void SelectRagEffectResource(RagEffectState& effect, ServiceOptions& options, char* name) {
   name[0] = '\0';
 
   switch (effect.type) {
