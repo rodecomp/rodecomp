@@ -146,14 +146,16 @@ void CReputeMgr::SetPointsReceived(bool received) {
 // OFFSET: 0x0060D440
 // FUNCTION: fn_04287
 void CReputeMgr::InfoInserter::operator()(const std::pair<const int, ReputeInfoRecord>& entry) const {
-  ReputeInfo info{};
+  ReputeInfo info;
+  info.point = 0;
   info.name = FromUtf8(entry.second.name, g_textCodePage);
   info.unknown_0018 = entry.second.maxPointPositive;
   info.unknown_0020 = entry.second.maxPointNegative;
   const std::string invisible = FromUtf8(entry.second.invisible, g_textCodePage);
-  if (invisible.size() == 12 && invisible[0] == 'V' && invisible[1] == 'I' && invisible[2] == 'S' && invisible[3] == 'I' &&
-      invisible[4] == 'B' && invisible[5] == 'L' && invisible[6] == 'E' && invisible[7] == '_' && invisible[8] == 'T' &&
-      invisible[9] == 'R' && invisible[10] == 'U' && invisible[11] == 'E') {
+  const char* text = invisible.c_str();
+  if (invisible.size() == 12 && text[0] == 'V' && text[1] == 'I' && text[2] == 'S' && text[3] == 'I' &&
+      text[4] == 'B' && text[5] == 'L' && text[6] == 'E' && text[7] == '_' && text[8] == 'T' &&
+      text[9] == 'R' && text[10] == 'U' && text[11] == 'E') {
     info.visibility = REPUTE_VISIBLE;
   } else if (invisible == "VISIBLE_FALSE") {
     info.visibility = REPUTE_HIDDEN;
@@ -161,7 +163,7 @@ void CReputeMgr::InfoInserter::operator()(const std::pair<const int, ReputeInfoR
     info.visibility = REPUTE_VISIBLE_WITH_POINT;
   }
 
-  (*this->dest)[static_cast<std::uint64_t>(entry.first)] = std::move(info);
+  (*this->dest)[entry.first] = info;
 }
 
 // OFFSET: 0x0060D060
