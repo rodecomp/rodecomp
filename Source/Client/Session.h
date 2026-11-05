@@ -889,7 +889,7 @@ public:
   bool IsSpecialMonsterJob(int job) const;
   bool IsWithinUnknown59C0(int value) const;
   bool ResetUnknownState();
-  bool IsSecondJob(int job);
+  __declspec(noinline) bool IsSecondJob(int job);
   void UpdateBodyStyle(int job, int style, int renderJob);
   std::string GetBodyJobName(int job);
   char* ConvertTooltipText(const char* source, char* output) const;
