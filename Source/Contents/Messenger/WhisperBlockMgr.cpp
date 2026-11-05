@@ -62,7 +62,7 @@ void CWhisperBlockMgr::Add(std::string name) {
     ++this->m_changes;
   }
 
-  this->m_names.emplace(name.c_str());
+  this->m_names.insert(std::string(name.c_str()));
 }
 
 // OFFSET: 0x00611370
