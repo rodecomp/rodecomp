@@ -3,9 +3,9 @@
 #include "Render/Textures/TextureCache.h"
 #include "Resource/World/GroundResource.h"
 
+#include "Utility/Math/AffineMatrix.h"
 #include "Utility/Math/ScalarConversion.h"
 #include <bit>
-#include <cmath>
 #include <cstring>
 
 namespace {
@@ -15,12 +15,12 @@ namespace {
 
   // INLINED
   float InverseLength(float squared) {
-    const float length = std::sqrt(squared);
+    const float length = SquareRoot(squared);
     return 1.0f / length;
   }
 
   // INLINED
-  void Normalize(float* vector, bool yFirst) {
+  void NormalizeGroundNormal(float* vector, bool yFirst) {
     const float first = yFirst ? vector[1] * vector[1] + vector[0] * vector[0] : vector[0] * vector[0] + vector[1] * vector[1];
     const float inverse = InverseLength(first + vector[2] * vector[2]);
     vector[0] = inverse * vector[0];
@@ -41,7 +41,7 @@ namespace {
     float vector[3] = {normal[0], normal[1], normal[2]};
 
     if (normalize) {
-      Normalize(vector, false);
+      NormalizeGroundNormal(vector, false);
     }
 
     const float dot = side ? (direction[1] * vector[1] + vector[0] * direction[0]) + direction[2] * vector[2]
@@ -197,7 +197,7 @@ void GroundGeometry::Build(CGndRes& resource, const float* lightDirection, const
           first[0] = ac * (this->cellSize - 0.0f) - (this->cellSize - 0.0f) * ab;
           first[1] = (this->cellSize - 0.0f) * 0.0f - (this->cellSize - 0.0f) * (0.0f - this->cellSize);
           first[2] = ab * (0.0f - this->cellSize) - ac * 0.0f;
-          Normalize(first, true);
+          NormalizeGroundNormal(first, true);
           const float db = cell.heights[3] - cell.heights[1];
           const float dc = cell.heights[3] - cell.heights[2];
           const float dz = this->cellSize - 0.0f;
@@ -207,7 +207,7 @@ void GroundGeometry::Build(CGndRes& resource, const float* lightDirection, const
           second[0] = db * zero - dx * dc;
           second[1] = dz * dx - zero * zero;
           second[2] = zero * dc - dz * db;
-          Normalize(second, true);
+          NormalizeGroundNormal(second, true);
           cell.top = &tile;
         } else if (face == 1) {
           cell.side2 = &tile;
