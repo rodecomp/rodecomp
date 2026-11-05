@@ -4582,8 +4582,8 @@ void CGameMode::ReceiveItemDropEntry(const unsigned char* data) {
     this->scene->unknown_0018.push_back(item);
   }
 
-  const int entryAddress = reinterpret_cast<int>(&entry);
-  item->SendMsg(nullptr, 4, 0, entryAddress, entryAddress >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  const std::int64_t entryAddress = reinterpret_cast<int>(&entry);
+  item->SendMsg(nullptr, 4, 0, static_cast<int>(entryAddress), static_cast<int>(entryAddress >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 }
 #pragma pack(push, 1)
 struct SpriteChangePacket {
@@ -5597,23 +5597,21 @@ void CGameMode::ReceiveQuestHuntUpdate(const unsigned char* data) {
         break;
       }
     }
-    if (index >= 3) {
-      continue;
-    }
+    if (index < 3) {
+      info.m_huntUnknown00E0[index] = entry.count;
+      info.m_huntUnknown0180[index] = entry.maxCount;
+      notices.push_back(this->HuntTargetText(info, index));
 
-    info.m_huntUnknown00E0[index] = entry.count;
-    info.m_huntUnknown0180[index] = entry.maxCount;
-    notices.push_back(this->HuntTargetText(info, index));
-
-    std::string name;
-    if (info.m_huntUnknown00D4[index] == 0x7CFF) {
-      name.assign(g_renewQuestMgr->GetMonsterConditionText(info.m_huntUnknown01A0[index], info.m_huntUnknown01AC[index], info.m_huntUnknown01B2[index]));
-    } else {
-      name.assign(info.m_huntName[index]);
+      std::string name;
+      if (info.m_huntUnknown00D4[index] == 0x7CFF) {
+        name.assign(g_renewQuestMgr->GetMonsterConditionText(info.m_huntUnknown01A0[index], info.m_huntUnknown01AC[index], info.m_huntUnknown01B2[index]));
+      } else {
+        name.assign(info.m_huntName[index]);
+      }
+      name.assign(FormatOwnedString(LookupMessage(1610), info.m_title.c_str(), name.c_str(), info.m_huntUnknown00E0[index], entry.maxCount));
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(name.c_str()), 0xFFFF, 19, 0, 0);
+      g_renewQuestMgr->SetOngoingQuest(entry.questId, info);
     }
-    name.assign(FormatOwnedString(LookupMessage(1610), info.m_title.c_str(), name.c_str(), info.m_huntUnknown00E0[index], entry.maxCount));
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(name.c_str()), 0xFFFF, 19, 0, 0);
-    g_renewQuestMgr->SetOngoingQuest(entry.questId, info);
   }
 
   if (!notices.empty()) {
@@ -5645,23 +5643,21 @@ void CGameMode::ReceiveQuestHuntUpdate2(const unsigned char* data) {
         break;
       }
     }
-    if (index >= 3) {
-      continue;
-    }
+    if (index < 3) {
+      info.m_huntUnknown00E0[index] = entry.count;
+      info.m_huntUnknown0180[index] = entry.maxCount;
+      notices.push_back(this->HuntTargetText(info, index));
 
-    info.m_huntUnknown00E0[index] = entry.count;
-    info.m_huntUnknown0180[index] = entry.maxCount;
-    notices.push_back(this->HuntTargetText(info, index));
-
-    std::string name;
-    if (info.m_huntUnknown00D4[index] == 0x7CFF) {
-      name.assign(g_renewQuestMgr->GetMonsterConditionText(info.m_huntUnknown01A0[index], info.m_huntUnknown01AC[index], info.m_huntUnknown01B2[index]));
-    } else {
-      name.assign(info.m_huntName[index]);
+      std::string name;
+      if (info.m_huntUnknown00D4[index] == 0x7CFF) {
+        name.assign(g_renewQuestMgr->GetMonsterConditionText(info.m_huntUnknown01A0[index], info.m_huntUnknown01AC[index], info.m_huntUnknown01B2[index]));
+      } else {
+        name.assign(info.m_huntName[index]);
+      }
+      name.assign(FormatOwnedString(LookupMessage(1610), info.m_title.c_str(), name.c_str(), info.m_huntUnknown00E0[index], entry.maxCount));
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(name.c_str()), 0xFFFF, 19, 0, 0);
+      g_renewQuestMgr->SetOngoingQuest(entry.questId, info);
     }
-    name.assign(FormatOwnedString(LookupMessage(1610), info.m_title.c_str(), name.c_str(), info.m_huntUnknown00E0[index], entry.maxCount));
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(name.c_str()), 0xFFFF, 19, 0, 0);
-    g_renewQuestMgr->SetOngoingQuest(entry.questId, info);
   }
 
   if (!notices.empty()) {
