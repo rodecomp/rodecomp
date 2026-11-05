@@ -4,7 +4,7 @@
 namespace {
   // INLINED
   bool Overlaps(int a, int b, int c, int d) {
-    return (c >= a && c <= b) || (d >= a && d <= b) || (a >= c && a <= d) || (b >= c && b <= d);
+    return (b >= c && b <= d) || (d >= a && d <= b) || (a >= c && a <= d) || (c >= a && c <= b);
   }
 }
 
@@ -51,10 +51,10 @@ void SnapObject::Remove(SnapObject* object) {
     return;
   }
 
-  for (auto& edge : this->edges) {
-    for (auto node = edge.begin(); node != edge.end(); ++node) {
+  for (int side = 0; side < 4; ++side) {
+    for (auto node = this->edges[side].begin(); node != this->edges[side].end(); ++node) {
       if (*node == object) {
-        edge.erase(node);
+        this->edges[side].erase(node);
         break;
       }
     }
@@ -74,9 +74,9 @@ bool SnapObject::Contains(SnapObject* target) {
 
   this->visited = 1;
 
-  for (auto& edge : this->edges) {
-    for (SnapObject* node : edge) {
-      if (node->Contains(target)) {
+  for (int side = 0; side < 4; ++side) {
+    for (auto node = this->edges[side].begin(); node != this->edges[side].end(); ++node) {
+      if ((*node)->Contains(target)) {
         return true;
       }
     }
@@ -94,10 +94,12 @@ bool SnapObject::Connected(SnapObject* target) {
 
   this->visited = 1;
 
-  for (auto& edge : this->edges) {
-    for (SnapObject* node : edge) {
-      if (node->Contains(target)) {
-        return true;
+  for (int side = 0; side < 4; ++side) {
+    if (!this->edges[side].empty()) {
+      for (auto node = this->edges[side].begin(); node != this->edges[side].end(); ++node) {
+        if ((*node)->Contains(target)) {
+          return true;
+        }
       }
     }
   }
