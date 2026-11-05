@@ -167,7 +167,7 @@ UIMakeCharWnd::UIMakeCharWnd()
   this->m_nameEdit = nullptr;
   this->m_info.sex = static_cast<unsigned char>(g_doramSex);
 
-  const int* preset = reinterpret_cast<const int*>(static_cast<CMode*>(g_charViewMode)->SendMsg(10016, 0, 0, 0, 0));
+  const int* preset = reinterpret_cast<const int*>(g_modeMgr.gameMode->SendMsg(10016, 0, 0, 0, 0));
   this->m_info.stats[0] = static_cast<unsigned char>(preset[0]);
   this->m_info.stats[1] = static_cast<unsigned char>(preset[1]);
   this->m_info.stats[2] = static_cast<unsigned char>(preset[2]);
@@ -4137,7 +4137,7 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
             return 0;
           }
 
-          static_cast<CMode*>(g_charViewMode)->SendMsg(10005, 0, 0, 0, 0);
+          g_modeMgr.gameMode->SendMsg(10005, 0, 0, 0, 0);
           g_windowMgr.Schedule(this);
           goto create;
         }
@@ -4150,7 +4150,7 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       return 0;
 
     create:
-      static_cast<CMode*>(g_charViewMode)->SendMsg(10015, reinterpret_cast<int>(this->m_nameEdit->Text()), 0, 0, 0);
+      g_modeMgr.gameMode->SendMsg(10015, reinterpret_cast<int>(this->m_nameEdit->Text()), 0, 0, 0);
       int values[8];
       values[0] = this->m_info.stats[0];
       values[1] = this->m_info.stats[1];
@@ -4160,12 +4160,12 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       values[5] = this->m_info.stats[5];
       values[6] = this->m_info.headPalette;
       values[7] = this->m_info.head;
-      static_cast<CMode*>(g_charViewMode)->SendMsg(10017, reinterpret_cast<int>(values), 0, 0, 0);
+      g_modeMgr.gameMode->SendMsg(10017, reinterpret_cast<int>(values), 0, 0, 0);
       return 0;
     }
     case 185:
       g_windowMgr.Schedule(this);
-      static_cast<CMode*>(g_charViewMode)->SendMsg(0, 10004, 0, 0, 0);
+      g_modeMgr.gameMode->SendMsg(0, 10004, 0, 0, 0);
       return 0;
     case 226:
       if (--this->m_view.action < this->m_view.unknown_0148) {
