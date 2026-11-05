@@ -17,24 +17,38 @@ namespace {
 // OFFSET: 0x00AB7930
 // FUNCTION: fn_17493
 void C3dActorV1::Update() {
-  if (this->playback != 1 && this->playback != 2) {
-    return;
+  switch (this->playback) {
+    case 1: {
+      const unsigned tick = GetTickCount();
+      if (tick == this->lastTick) {
+        return;
+      }
+
+      this->frame = static_cast<int>(this->speed * 100.0f + static_cast<float>(this->frame));
+      if (this->frame >= this->animationLength) {
+        this->frame = this->animationLength - 1;
+      }
+
+      this->Animate(static_cast<double>(this->frame));
+      this->lastTick = tick;
+      break;
+    }
+    case 2: {
+      const unsigned tick = GetTickCount();
+      if (tick == this->lastTick) {
+        return;
+      }
+
+      this->frame = static_cast<int>(this->speed * 100.0f + static_cast<float>(this->frame));
+      if (this->frame >= this->animationLength) {
+        this->frame = 0;
+      }
+
+      this->Animate(static_cast<double>(this->frame));
+      this->lastTick = tick;
+      break;
+    }
   }
-
-  const unsigned tick = GetTickCount();
-
-  if (tick == this->lastTick) {
-    return;
-  }
-
-  this->frame = TruncateToInt(this->speed * 100.0f + static_cast<float>(this->frame));
-
-  if (this->frame >= this->animationLength) {
-    this->frame = this->playback == 1 ? this->animationLength - 1 : 0;
-  }
-
-  this->Animate(static_cast<double>(this->frame));
-  this->lastTick = tick;
 }
 
 // OFFSET: 0x00AB7A10
