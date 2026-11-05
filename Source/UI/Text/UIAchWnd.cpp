@@ -890,16 +890,21 @@ int UIAchUpperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
 // OFFSET: 0x007B82C0
 // FUNCTION: fn_09248
 int UIAchViewWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::intptr_t, std::intptr_t, std::intptr_t) {
-  if (message == 6) {
+  switch (message) {
+  case 6:
     if (argument1 == 474) {
       PACKET_CZ_REQ_ACH_REWARD packet;
       packet.packetType = ID_CZ_REQ_ACH_REWARD;
       packet.achievementId = this->achievementId;
       GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
     }
-  } else if (message == 145 && argument1 != -1 && this->parent) {
-    static_cast<UIAchievementWnd*>(this->parent)->SelectAchievement(argument1);
-    return 0;
+    break;
+  case 145:
+    if (argument1 != -1 && this->parent) {
+      static_cast<UIAchievementWnd*>(this->parent)->SelectAchievement(argument1);
+      return 0;
+    }
+    break;
   }
 
   return 0;
@@ -998,9 +1003,7 @@ void UIAchievementWnd::SelectTab(int group, int sub) {
   this->tab->unknown_0080 = sub;
   this->tab->Invalidate();
 
-  UIAchUpperWnd* upper = this->upper;
-  const std::string title = group == 0 ? std::string(LookupMessage(2679)) : this->tab->Label(this->group, this->sub);
-  upper->title = title;
+  this->upper->SetTitle(group == 0 ? LookupMessage(2679) : this->tab->Label(this->group, this->sub));
   this->upper->Invalidate();
 
   if (g_achievementMgr->GetGroupAchievements(this->achievements, this->group, this->sub) == 1) {
@@ -1339,7 +1342,7 @@ void UIAchSummaryWnd::UpdateInfo() {
   {
     AchievementInfo info;
     if (g_achievementMgr->GetAchievement(info, second)) {
-      this->recent.push_back(std::pair<int, AchievementInfo>(second, info));
+      this->recent.push_back(std::make_pair(second, info));
     }
 
     UITextButton* button = static_cast<UITextButton*>(this->buttons[1]);
@@ -1351,7 +1354,7 @@ void UIAchSummaryWnd::UpdateInfo() {
     static_cast<UITextButton*>(this->buttons[1])->ResizeToText();
 
     if (g_achievementMgr->GetAchievement(info, first)) {
-      this->recent.push_back(std::pair<int, AchievementInfo>(first, info));
+      this->recent.push_back(std::make_pair(first, info));
     }
 
     button = static_cast<UITextButton*>(this->buttons[0]);
