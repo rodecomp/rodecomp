@@ -4,14 +4,11 @@
 #include <cstddef>
 
 struct DeviceStateDX9;
-struct _D3DCAPS9;
 
 struct RendererFogDX9 {
   /* 0150 */ int enabled;
   /* 0154 */ int dirty;
   /* 0158 */ int supported;
-
-  void Set(int enabled, const _D3DCAPS9& caps);
 };
 
 static_assert(sizeof(RendererFogDX9) == 12);

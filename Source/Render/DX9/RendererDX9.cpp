@@ -28,10 +28,6 @@ void CRendererDX9::SetClearColor(unsigned color) {
   this->clearColor = color;
 }
 
-void CRendererDX9::SetFog(int enabled) {
-  this->fog.Set(enabled, this->device->caps);
-}
-
 // OFFSET: 0x00567E70
 // FUNCTION: fn_02231
 float CRendererDX9::FPS() const {
