@@ -18,7 +18,7 @@ public:
   void Close() override;
   bool Slot06() override;
   void PlayAttack();
-  void SetState(int state);
+  __declspec(noinline) void SetState(int state);
 
   /* 00CC */ std::map<int, CEZ2STRParticle*> unknown_00CC;
   /* 00D4 */ int unknown_00D4;
