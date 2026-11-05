@@ -4,7 +4,7 @@
 
 // OFFSET: 0x00BF5060
 // FUNCTION: fn_19996
-void CEffectPrim::RenderTwinGlowSquares(matrix& wtm) {
+__declspec(safebuffers) void CEffectPrim::RenderTwinGlowSquares(matrix& wtm) {
   vector3d vec1;
   vector3d vec2;
   vector3d vec3;
