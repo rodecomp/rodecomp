@@ -1728,12 +1728,12 @@ void CUIListBoxEx<AdventureGuide::CUIItemInfo, AdventureGuide::CItemData>::AddNe
   this->items.clear();
   this->selected = static_cast<unsigned int>(-1);
 
-  if (this->rowHeight <= this->geometry.height) {
+  if (this->geometry.height >= this->rowHeight) {
     unsigned count = static_cast<unsigned>(this->geometry.height / this->rowHeight) + 1;
-    if (this->geometry.height % this->rowHeight > 1) {
+    if (this->geometry.height % this->rowHeight >= 2) {
       ++count;
     }
-    this->items.resize(count, nullptr);
+    this->items.resize(count);
     for (AdventureGuide::CUIItemInfo*& slot : this->items) {
       AdventureGuide::CUIItemInfo* item = new AdventureGuide::CUIItemInfo();
       item->SetSize(this->itemWidth, this->rowHeight);
@@ -1794,12 +1794,12 @@ void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>:
   this->items.clear();
   this->selected = static_cast<unsigned int>(-1);
 
-  if (this->rowHeight <= this->geometry.height) {
+  if (this->geometry.height >= this->rowHeight) {
     unsigned count = static_cast<unsigned>(this->geometry.height / this->rowHeight) + 1;
-    if (this->geometry.height % this->rowHeight > 1) {
+    if (this->geometry.height % this->rowHeight >= 2) {
       ++count;
     }
-    this->items.resize(count, nullptr);
+    this->items.resize(count);
     for (AdventureGuide::CUIMonsterInfo*& slot : this->items) {
       AdventureGuide::CUIMonsterInfo* item = new AdventureGuide::CUIMonsterInfo();
       item->SetSize(this->itemWidth, this->rowHeight);
@@ -1860,12 +1860,12 @@ void CUIListBoxEx<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestInfo>::Add
   this->items.clear();
   this->selected = static_cast<unsigned int>(-1);
 
-  if (this->rowHeight <= this->geometry.height) {
+  if (this->geometry.height >= this->rowHeight) {
     unsigned count = static_cast<unsigned>(this->geometry.height / this->rowHeight) + 1;
-    if (this->geometry.height % this->rowHeight > 1) {
+    if (this->geometry.height % this->rowHeight >= 2) {
       ++count;
     }
-    this->items.resize(count, nullptr);
+    this->items.resize(count);
     for (AdventureGuide::CUIQuestInfo*& slot : this->items) {
       AdventureGuide::CUIQuestInfo* item = new AdventureGuide::CUIQuestInfo();
       item->SetSize(this->itemWidth, this->rowHeight);
@@ -1926,12 +1926,12 @@ void CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::AddNewItem
   this->items.clear();
   this->selected = static_cast<unsigned int>(-1);
 
-  if (this->rowHeight <= this->geometry.height) {
+  if (this->geometry.height >= this->rowHeight) {
     unsigned count = static_cast<unsigned>(this->geometry.height / this->rowHeight) + 1;
-    if (this->geometry.height % this->rowHeight > 1) {
+    if (this->geometry.height % this->rowHeight >= 2) {
       ++count;
     }
-    this->items.resize(count, nullptr);
+    this->items.resize(count);
     for (AdventureGuide::CUITabInfo*& slot : this->items) {
       AdventureGuide::CUITabInfo* item = new AdventureGuide::CUITabInfo();
       item->SetSize(this->itemWidth, this->rowHeight);
@@ -2547,10 +2547,12 @@ void CUIResizer::Slot27(int x, int y) {
     return;
   }
 
-  this->ToScreen(x, y);
+  int screenX = x;
+  int screenY = y;
+  this->ToScreen(screenX, screenY);
 
-  const int rows = static_cast<int>(std::roundf(static_cast<float>(y - this->startY) / static_cast<float>(this->stepY)) * static_cast<float>(this->stepY));
-  int width = static_cast<int>(std::roundf(static_cast<float>(x - this->startX) / static_cast<float>(this->stepX)) * static_cast<float>(this->stepX)) + this->startWidth;
+  const int rows = static_cast<int>(std::roundf(static_cast<float>(screenY - this->startY) / static_cast<float>(this->stepY)) * static_cast<float>(this->stepY));
+  int width = static_cast<int>(std::roundf(static_cast<float>(screenX - this->startX) / static_cast<float>(this->stepX)) * static_cast<float>(this->stepX)) + this->startWidth;
   if (width > this->maxWidth) {
     width = this->maxWidth;
   } else if (width < this->minWidth) {
