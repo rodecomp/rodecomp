@@ -46,8 +46,17 @@ CTexture* TextureCache::Default() {
 // OFFSET: 0x005715E0
 // FUNCTION: fn_02449
 CTexture* TextureCache::Upload(int width, int height, const std::uint32_t* pixels, int format, int option, bool fullSize, bool dynamic, bool renderTarget) {
-  const int outputWidth = fullSize ? width : width / g_textureReduction;
-  const int outputHeight = fullSize ? height : height / g_textureReduction;
+  int outputWidth;
+  int outputHeight;
+
+  if (fullSize == true) {
+    outputWidth = width;
+    outputHeight = height;
+  } else {
+    outputWidth = width / g_textureReduction;
+    outputHeight = height / g_textureReduction;
+  }
+
   CTexture* texture = GetRenderSystemHolder()->CreateTexture(outputWidth, outputHeight, format, dynamic, renderTarget);
 
   if (texture) {
@@ -116,8 +125,9 @@ CTexture* TextureCache::Load(const char* name, int option, bool fullSize, bool d
   const auto found = this->m_textures.find(name);
 
   if (found != this->m_textures.end() && found->second) {
-    found->second->unknown_0020 = timeGetTime();
-    return found->second;
+    CTexture* texture = found->second;
+    texture->Touch();
+    return texture;
   }
 
   CTexture* texture = this->Create(name, option, fullSize, dynamic, renderTarget);
@@ -126,9 +136,9 @@ CTexture* TextureCache::Load(const char* name, int option, bool fullSize, bool d
     return this->Default();
   }
 
-  strncpy_s(texture->m_name, sizeof(texture->m_name), name, _TRUNCATE);
-  texture->unknown_0020 = timeGetTime();
-  this->m_textures.emplace(texture->m_name, texture);
+  texture->SetName(name);
+  texture->Touch();
+  this->m_textures.insert({texture->m_name, texture});
 
   return texture;
 }
