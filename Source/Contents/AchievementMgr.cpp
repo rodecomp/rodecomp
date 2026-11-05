@@ -83,24 +83,22 @@ std::string CAchievementMgr::GetUnknown0068(int id) {
 bool CAchievementMgr::GetGroupAchievements(std::map<int, AchievementInfo>& out, int group, int index) {
   out.clear();
 
-  if (index == -1) {
-    for (int i = 0; i < this->groupWidth; ++i) {
-      int key = this->groupWidth * group + i;
-      for (std::vector<int>::iterator it = this->groups[key].begin(); it != this->groups[key].end(); ++it) {
-        AchievementInfo info = this->achievements[*it];
-        if (!out.insert(std::make_pair(*it, info)).second) {
-          return false;
-        }
+  if (index != -1) {
+    int key = this->groupWidth * group + index;
+    for (std::vector<int>::iterator it = this->groups[key].begin(); it != this->groups[key].end(); ++it) {
+      if (!out.insert(std::pair<int, AchievementInfo>(*it, this->achievements[*it])).second) {
+        return false;
       }
     }
     return true;
   }
 
-  int key = this->groupWidth * group + index;
-  for (std::vector<int>::iterator it = this->groups[key].begin(); it != this->groups[key].end(); ++it) {
-    AchievementInfo info = this->achievements[*it];
-    if (!out.insert(std::make_pair(*it, info)).second) {
-      return false;
+  for (int i = 0; i < this->groupWidth; ++i) {
+    int key = this->groupWidth * group + i;
+    for (std::vector<int>::iterator it = this->groups[key].begin(); it != this->groups[key].end(); ++it) {
+      if (!out.insert(std::pair<int, AchievementInfo>(*it, this->achievements[*it])).second) {
+        return false;
+      }
     }
   }
   return true;
@@ -195,8 +193,9 @@ bool CAchievementMgr::FindTab(int id, int& group, int& index) {
   for (auto it = this->groups.begin(); it != this->groups.end(); ++it) {
     for (std::vector<int>::iterator value = it->second.begin(); value != it->second.end(); ++value) {
       if (*value == id) {
-        group = it->first / this->groupWidth;
-        index = it->first % this->groupWidth;
+        const int key = it->first;
+        group = key / this->groupWidth;
+        index = key % this->groupWidth;
         return true;
       }
     }
@@ -280,8 +279,7 @@ std::pair<bool, std::string> CAchievementMgr::InsertAchieveInfo(int id, std::str
     return std::pair<bool, std::string>(false, FormatOwnedString("duplicate achievement info [%d]", id));
   }
 
-  AchievementInfo info{title, unknown0018, unknown0030, unknown0048, -1, -1, -1};
-  if (this->achievements.insert(std::make_pair(id, info)).second) {
+  if (this->achievements.insert(std::pair<int, AchievementInfo>(id, AchievementInfo(title, unknown0018, unknown0030, unknown0048))).second) {
     return std::pair<bool, std::string>(true, "good");
   }
 
@@ -363,7 +361,8 @@ bool CAchievementMgr::HasReward(int id) {
   }
 
   const AchievementInfo& info = this->achievements[id];
-  bool result = info.unknown_0054 > 0 || info.unknown_0050 > 0;
+  bool result = info.unknown_0054 > 0;
+  result |= info.unknown_0050 > 0;
   if (info.unknown_004C > 0) {
     result = true;
   }
@@ -533,10 +532,9 @@ int CAchievementMgr::L_InsertAchieveUIType(lua_State* state) {
     lua_pushstring(state, "argment 3th is must string");
   } else {
     const int id = static_cast<int>(lua_tonumber(state, -3));
-    const int type = static_cast<int>(lua_tonumber(state, -2));
-    std::string text;
-    text = lua_tostring(state, -1);
-    const std::pair<bool, std::string> result = g_achievementMgr->InsertAchieveUIType(id, type, text);
+    const lua_Number type = lua_tonumber(state, -2);
+    const std::string text = lua_tostring(state, -1);
+    const std::pair<bool, std::string> result = g_achievementMgr->InsertAchieveUIType(id, static_cast<int>(type), text);
     if (!result.first) {
       lua_pushboolean(state, 0);
       lua_pushstring(state, FormatString("InsertAchieveUIType : %s", result.second.c_str()));

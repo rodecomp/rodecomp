@@ -15,13 +15,21 @@ struct AchievementReward {
 };
 
 struct AchievementInfo {
+  // INLINED
+  AchievementInfo() {
+  }
+  // INLINED
+  AchievementInfo(std::string title, std::string unknown0018, std::string unknown0030, int unknown0048)
+      : title(title), unknown_0018(unknown0018), unknown_0030(unknown0030), unknown_0048(unknown0048) {
+  }
+
   /* 0000 */ std::string title;
   /* 0018 */ std::string unknown_0018;
   /* 0030 */ std::string unknown_0030;
   /* 0048 */ int unknown_0048;
-  /* 004C */ int unknown_004C;
-  /* 0050 */ int unknown_0050;
-  /* 0054 */ int unknown_0054;
+  /* 004C */ int unknown_004C = -1;
+  /* 0050 */ int unknown_0050 = -1;
+  /* 0054 */ int unknown_0054 = -1;
   /* 0058 */ std::vector<AchievementReward> rewards;
   /* 0064 */ int unknown_0064;
   /* 0068 */ std::string unknown_0068;
