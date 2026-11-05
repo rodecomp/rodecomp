@@ -2715,6 +2715,54 @@ namespace GPakEx {
   }
 
   // OFFSET: 0x00643160
+  // FUNCTION: fn_04833
+  __declspec(noinline) std::size_t CipherModeBase::Process(std::span<const std::uint8_t> input, std::span<std::uint8_t> output, bool final) {
+    const bool forward = this->IsForwardTransformation();
+    const std::size_t blockSize = this->m_cipher->BlockSize();
+    const std::size_t reserved = (!forward && final) ? blockSize : 0;
+    const std::uint8_t* in = input.data();
+    std::size_t inLength = input.size();
+    std::uint8_t* out = output.data();
+    std::size_t outLength = output.size();
+
+    std::size_t done = 0;
+    if (inLength >= reserved + blockSize) {
+      done = (inLength - reserved) - (inLength - reserved) % blockSize;
+      if (outLength < done) {
+        return static_cast<std::size_t>(-1);
+      }
+      this->ProcessData(in, out, done);
+      in += done;
+      out += done;
+      inLength -= done;
+      outLength -= done;
+    }
+
+    if (!final) {
+      if (inLength == 0) {
+        return done;
+      }
+    } else if (!forward) {
+      if (inLength == blockSize) {
+        this->ProcessData(in, this->m_buffer.data(), blockSize);
+        const std::uint8_t pad = this->m_buffer[blockSize - 1];
+        const std::size_t size = blockSize - pad;
+        if (pad != 0 && pad <= blockSize && size <= outLength) {
+          std::memcpy(out, this->m_buffer.data(), size);
+          return done + size;
+        }
+      }
+    } else {
+      std::memcpy(this->m_buffer.data(), in, inLength);
+      const std::uint8_t pad = static_cast<std::uint8_t>(blockSize - inLength);
+      std::memset(this->m_buffer.data() + inLength, pad, pad);
+      if (blockSize <= outLength) {
+        this->ProcessData(this->m_buffer.data(), out, blockSize);
+        return done + blockSize;
+      }
+    }
+    return static_cast<std::size_t>(-1);
+  }
 
   // OFFSET: 0x00643480
   // FUNCTION: fn_04837
@@ -2795,6 +2843,17 @@ namespace GPakEx {
   };
 
   // OFFSET: 0x006430F0
+  // FUNCTION: fn_04832
+  void OFB_Base::ProcessData(const std::uint8_t* input, std::uint8_t* output, std::size_t length) {
+    const std::size_t blockSize = this->m_cipher->BlockSize();
+    while (length != 0) {
+      this->m_cipher->ProcessAndXorBlock(this->m_register.data(), nullptr, this->m_register.data());
+      XorBuffers(output, input, this->m_register.data(), blockSize);
+      length -= blockSize;
+      input = input ? input + blockSize : nullptr;
+      output = output ? output + blockSize : nullptr;
+    }
+  }
 
   template<bool Forward, class Cipher>
   class BlockCipherFinal : public Cipher {
