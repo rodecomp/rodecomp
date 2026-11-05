@@ -97,20 +97,6 @@ void CDCBitmap::Draw(CRenderSystemBase& system, int x, int y, int width, int hei
   this->m_cache.Draw(this->m_bitmap, system, x, y, width, height, color);
 }
 
-void CDCBitmap::DrawScaledSprite(
-  int x, int y, int width, int height, std::span<const SpriteFrameCell> cells, const SpriteRleImage* const* const* images, int cellCount, int offsetX,
-  int offsetY, float scale, const std::uint32_t* palette, SpriteAtlas& atlas, CRenderSystemBase& system, int serviceType, std::uint32_t reuseDelay
-) {
-  this->m_bitmap.DrawScaledSprite(x, y, width, height, cells, images, cellCount, offsetX, offsetY, scale, palette, atlas, system, serviceType, reuseDelay);
-}
-
-void CDCBitmap::DrawScaledSurface(
-  int x, int y, int width, int height, CSurface* source, int sourceWidth, int sourceHeight, float scaleX, float scaleY, std::uint32_t color, bool mirrored,
-  int offsetX, int offsetY, int sourceX, int sourceY
-) {
-  this->m_bitmap.DrawScaledSurface(x, y, width, height, source, sourceWidth, sourceHeight, scaleX, scaleY, color, mirrored, offsetX, offsetY, sourceX, sourceY);
-}
-
 void CDCBitmap::Brighten(int x, int y, int width, int height, int amount) {
   this->m_bitmap.Brighten(x, y, width, height, amount);
 }

@@ -35,16 +35,8 @@ struct BitmapPixels {
     int x, int y, int sourceLeft, int sourceTop, int sourceRight, int sourceBottom, const std::uint32_t* source, int sourceWidth, int sourceHeight,
     bool transparent, bool alpha
   );
-  void DrawScaledSurface(
-    int x, int y, int width, int height, CSurface* source, int sourceWidth, int sourceHeight, float scaleX, float scaleY, std::uint32_t color, bool mirrored,
-    int offsetX, int offsetY, int sourceX, int sourceY
-  );
   void
   DrawRleSprite(int x, int y, std::span<const SpriteFrameCell> cells, const SpriteRleImage* const* const* images, const std::uint32_t* palette, int cellCount);
-  void DrawScaledSprite(
-    int x, int y, int width, int height, std::span<const SpriteFrameCell> cells, const SpriteRleImage* const* const* images, int cellCount, int offsetX,
-    int offsetY, float scale, const std::uint32_t* palette, SpriteAtlas& atlas, CRenderSystemBase& system, int serviceType, std::uint32_t reuseDelay
-  );
   void ScaleCopy(int x, int y, int sourceWidth, int sourceHeight, int width, int height, const std::uint32_t* source, int option);
   void UploadTexture(CRenderSystemBase& system, CTexture*& texture);
 

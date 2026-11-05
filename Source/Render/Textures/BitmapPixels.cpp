@@ -387,14 +387,14 @@ void CDCBitmap::DrawSurface(
             for (int dx = 0; dx < scaleX; ++dx) {
               const int destinationX = x + (sourceWidth - column - 1) * scaleX + dx;
               const int destinationY = y + row * scaleY + dy;
-              if (destinationX >= 0 && destinationY >= 0 && static_cast<unsigned>(destinationX) < this->m_bitmap.width &&
-                  static_cast<unsigned>(destinationY) < this->m_bitmap.height) {
+              if (destinationX >= 0 && destinationY >= 0 && this->m_bitmap.width > static_cast<unsigned>(destinationX) &&
+                  this->m_bitmap.height > static_cast<unsigned>(destinationY)) {
                 const float inverse = 1.0f - alpha;
                 const int index = destinationX + destinationY * width;
                 const unsigned outputRed =
-                  static_cast<unsigned>(static_cast<float>(static_cast<unsigned char>(pixels[index] >> 16)) * inverse + static_cast<float>(red) * alpha);
+                  static_cast<unsigned>(static_cast<float>((pixels[index] >> 16) & 0xFF) * inverse + static_cast<float>(red) * alpha);
                 const unsigned outputGreen =
-                  static_cast<unsigned>(static_cast<float>(static_cast<unsigned char>(pixels[index] >> 8)) * inverse + static_cast<float>(green) * alpha);
+                  static_cast<unsigned>(static_cast<float>((pixels[index] >> 8) & 0xFF) * inverse + static_cast<float>(green) * alpha);
                 const unsigned outputBlue =
                   static_cast<unsigned>(static_cast<float>(pixels[index] & 0xFF) * inverse + static_cast<float>(blue) * alpha);
                 pixels[index] = PackPixel(0, outputRed, outputGreen, outputBlue);
@@ -425,14 +425,14 @@ void CDCBitmap::DrawSurface(
             for (int dx = 0; dx < scaleX; ++dx) {
               const int destinationX = x + column * scaleX + dx;
               const int destinationY = y + row * scaleY + dy;
-              if (destinationX >= 0 && destinationY >= 0 && static_cast<unsigned>(destinationX) < this->m_bitmap.width &&
-                  static_cast<unsigned>(destinationY) < this->m_bitmap.height) {
+              if (destinationX >= 0 && destinationY >= 0 && this->m_bitmap.width > static_cast<unsigned>(destinationX) &&
+                  this->m_bitmap.height > static_cast<unsigned>(destinationY)) {
                 const float inverse = 1.0f - alpha;
                 const int index = destinationX + destinationY * width;
                 const unsigned outputRed =
-                  static_cast<unsigned>(static_cast<float>(static_cast<unsigned char>(pixels[index] >> 16)) * inverse + static_cast<float>(red) * alpha);
+                  static_cast<unsigned>(static_cast<float>((pixels[index] >> 16) & 0xFF) * inverse + static_cast<float>(red) * alpha);
                 const unsigned outputGreen =
-                  static_cast<unsigned>(static_cast<float>(static_cast<unsigned char>(pixels[index] >> 8)) * inverse + static_cast<float>(green) * alpha);
+                  static_cast<unsigned>(static_cast<float>((pixels[index] >> 8) & 0xFF) * inverse + static_cast<float>(green) * alpha);
                 const unsigned outputBlue =
                   static_cast<unsigned>(static_cast<float>(pixels[index] & 0xFF) * inverse + static_cast<float>(blue) * alpha);
                 pixels[index] = PackPixel(0, outputRed, outputGreen, outputBlue);
@@ -460,8 +460,8 @@ void CDCBitmap::DrawSurface(
             for (int dx = 0; dx < scaleX; ++dx) {
               const int destinationX = x + (sourceWidth - column - 1) * scaleX + dx;
               const int destinationY = y + row * scaleY + dy;
-              if (destinationX >= 0 && destinationY >= 0 && static_cast<unsigned>(destinationX) < this->m_bitmap.width &&
-                  static_cast<unsigned>(destinationY) < this->m_bitmap.height) {
+              if (destinationX >= 0 && destinationY >= 0 && this->m_bitmap.width > static_cast<unsigned>(destinationX) &&
+                  this->m_bitmap.height > static_cast<unsigned>(destinationY)) {
                 pixels[destinationX + destinationY * width] = PackPixel(0xFF, red, green, blue);
               }
             }
@@ -489,8 +489,8 @@ void CDCBitmap::DrawSurface(
             for (int dx = 0; dx < scaleX; ++dx) {
               const int destinationX = x + column * scaleX + dx;
               const int destinationY = y + row * scaleY + dy;
-              if (destinationX >= 0 && destinationY >= 0 && static_cast<unsigned>(destinationX) < this->m_bitmap.width &&
-                  static_cast<unsigned>(destinationY) < this->m_bitmap.height) {
+              if (destinationX >= 0 && destinationY >= 0 && this->m_bitmap.width > static_cast<unsigned>(destinationX) &&
+                  this->m_bitmap.height > static_cast<unsigned>(destinationY)) {
                 pixels[destinationX + destinationY * width] = PackPixel(0xFF, red, green, blue);
               }
             }
@@ -515,13 +515,13 @@ static __forceinline void BlendScaledPixel(
 
 // OFFSET: 0x005469E0
 // FUNCTION: fn_01840
-void BitmapPixels::DrawScaledSurface(
+void CDCBitmap::DrawScaledSurface(
   int x, int y, int drawWidth, int drawHeight, CSurface* source, int sourceWidth, int sourceHeight, float scaleX, float scaleY, std::uint32_t color,
   bool mirrored, int offsetX, int offsetY, int sourceX, int sourceY
 ) {
-  if (!source || x < 0 || this->width < static_cast<unsigned>(x) || y < 0 || this->height < static_cast<unsigned>(y) || drawWidth < 0 || drawHeight < 0 ||
-      this->width < static_cast<unsigned>(x) + drawWidth || this->height < static_cast<unsigned>(y) + drawHeight || !(scaleX > 0) || !(scaleY > 0) ||
-      !(0.0f < static_cast<float>(color))) {
+  if (!source || x < 0 || this->m_bitmap.width < static_cast<unsigned>(x) || y < 0 || this->m_bitmap.height < static_cast<unsigned>(y) || drawWidth < 0 || drawHeight < 0 ||
+      this->m_bitmap.width < static_cast<unsigned>(x) + drawWidth || this->m_bitmap.height < static_cast<unsigned>(y) + drawHeight || scaleX <= 0.0f || scaleY <= 0.0f ||
+      static_cast<float>(color) <= 0.0f) {
     return;
   }
 
@@ -534,12 +534,12 @@ void BitmapPixels::DrawScaledSurface(
   const std::uint16_t* input = static_cast<const std::uint16_t*>(locked.pixels);
   const int stride = locked.pitch / 2;
   const std::uint16_t* sourcePixels = input + sourceY * stride + sourceX;
-  std::uint32_t* destinationPixels = this->pixels + this->width * y + x;
+  std::uint32_t* destinationPixels = this->m_bitmap.pixels + this->m_bitmap.width * y + x;
   const float alpha = static_cast<float>(color >> 24) / 255.0f;
-  const float inverse = 1.0f - alpha;
   const float redScale = static_cast<float>((color >> 16) & 0xFF) * alpha / 255.0f;
   const float greenScale = static_cast<float>((color >> 8) & 0xFF) * alpha / 255.0f;
   const float blueScale = static_cast<float>(color & 0xFF) * alpha / 255.0f;
+  const float inverse = 1.0f - alpha;
   const float inverseX = 1.0f / scaleX;
   const float inverseY = 1.0f / scaleY;
   const int scaledWidth = static_cast<int>(static_cast<float>(sourceWidth) * scaleX);
@@ -550,62 +550,64 @@ void BitmapPixels::DrawScaledSurface(
     if (!mirrored) {
       for (int row = 0; row < scaledHeight; ++row) {
         for (int column = 0; column < scaledWidth; ++column) {
-          if (offsetX + column < 0 || offsetX + column > drawWidth) {
+          if (offsetX + column < 0 || drawWidth < offsetX + column) {
             continue;
           }
 
-          if (offsetY + row < 0 || offsetY + row > drawHeight) {
+          if (offsetY + row < 0 || drawHeight < offsetY + row) {
             continue;
           }
 
           const int index = static_cast<int>(static_cast<float>(row) * inverseY) * stride + static_cast<int>(static_cast<float>(column) * inverseX);
-          if (index < 0 || index >= limit) {
+          if (index < 0 || limit <= index) {
             continue;
           }
 
-          const std::uint16_t value = sourcePixels[index];
+          const unsigned value = sourcePixels[index];
           if (!(value & 0xF000)) {
             continue;
           }
 
-          std::uint32_t& pixel = destinationPixels[this->width * (offsetY + row) + column + offsetX];
+          std::uint32_t& destination = destinationPixels[this->m_bitmap.width * (offsetY + row) + column + offsetX];
+          const std::uint32_t pixel = destination;
           const unsigned red =
             static_cast<unsigned>(static_cast<float>((pixel >> 16) & 0xFF) * inverse + static_cast<float>((value >> 4) & 0xF0) * redScale);
           const unsigned green = static_cast<unsigned>(static_cast<float>((pixel >> 8) & 0xFF) * inverse + static_cast<float>(value & 0xF0) * greenScale);
           const unsigned blue =
             static_cast<unsigned>(static_cast<float>((value & 0x0F) << 4) * blueScale + static_cast<float>(pixel & 0xFF) * inverse);
-          pixel = PackPixel(0xFF, red, green, blue);
+          destination = PackPixel(0xFF, red, green, blue);
         }
       }
     } else {
       for (int row = 0; row < scaledHeight; ++row) {
         for (int column = 0; column < scaledWidth; ++column) {
-          if (offsetX + column < 0 || offsetX + column > drawWidth) {
+          if (offsetX + column < 0 || drawWidth < offsetX + column) {
             continue;
           }
 
-          if (offsetY + row < 0 || offsetY + row > drawHeight) {
+          if (offsetY + row < 0 || drawHeight < offsetY + row) {
             continue;
           }
 
           const int index = sourceWidth - 1 + static_cast<int>(static_cast<float>(row) * inverseY) * stride -
                             static_cast<int>(static_cast<float>(column) * inverseX);
-          if (index < 0 || index >= limit) {
+          if (index < 0 || limit <= index) {
             continue;
           }
 
-          const std::uint16_t value = sourcePixels[index];
+          const unsigned value = sourcePixels[index];
           if (!(value & 0xF000)) {
             continue;
           }
 
-          std::uint32_t& pixel = destinationPixels[this->width * (offsetY + row) + column + offsetX];
+          std::uint32_t& destination = destinationPixels[this->m_bitmap.width * (offsetY + row) + column + offsetX];
+          const std::uint32_t pixel = destination;
           const unsigned red =
             static_cast<unsigned>(static_cast<float>((pixel >> 16) & 0xFF) * inverse + static_cast<float>((value >> 4) & 0xF0) * redScale);
           const unsigned green = static_cast<unsigned>(static_cast<float>((pixel >> 8) & 0xFF) * inverse + static_cast<float>(value & 0xF0) * greenScale);
           const unsigned blue =
             static_cast<unsigned>(static_cast<float>((value & 0x0F) << 4) * blueScale + static_cast<float>(pixel & 0xFF) * inverse);
-          pixel = PackPixel(0xFF, red, green, blue);
+          destination = PackPixel(0xFF, red, green, blue);
         }
       }
     }
@@ -613,62 +615,64 @@ void BitmapPixels::DrawScaledSurface(
     if (!mirrored) {
       for (int row = 0; row < scaledHeight; ++row) {
         for (int column = 0; column < scaledWidth; ++column) {
-          if (offsetX + column < 0 || offsetX + column > drawWidth) {
+          if (offsetX + column < 0 || drawWidth < offsetX + column) {
             continue;
           }
 
-          if (offsetY + row < 0 || offsetY + row > drawHeight) {
+          if (offsetY + row < 0 || drawHeight < offsetY + row) {
             continue;
           }
 
           const int index = static_cast<int>(static_cast<float>(row) * inverseY) * stride + static_cast<int>(static_cast<float>(column) * inverseX);
-          if (index < 0 || index >= limit) {
+          if (index < 0 || limit <= index) {
             continue;
           }
 
-          const std::uint16_t value = sourcePixels[index];
+          const unsigned value = sourcePixels[index];
           if (!(value & 0x8000)) {
             continue;
           }
 
-          std::uint32_t& pixel = destinationPixels[this->width * (offsetY + row) + column + offsetX];
+          std::uint32_t& destination = destinationPixels[this->m_bitmap.width * (offsetY + row) + column + offsetX];
+          const std::uint32_t pixel = destination;
           const unsigned red =
             static_cast<unsigned>(static_cast<float>((pixel >> 16) & 0xFF) * inverse + static_cast<float>((value >> 7) & 0xF8) * redScale);
           const unsigned green = static_cast<unsigned>(static_cast<float>((pixel >> 8) & 0xFF) * inverse + static_cast<float>((value >> 2) & 0xF8) * greenScale);
           const unsigned blue =
             static_cast<unsigned>(static_cast<float>((value & 0x1F) << 3) * blueScale + static_cast<float>(pixel & 0xFF) * inverse);
-          pixel = PackPixel(0xFF, red, green, blue);
+          destination = PackPixel(0xFF, red, green, blue);
         }
       }
     } else {
       for (int row = 0; row < scaledHeight; ++row) {
         for (int column = 0; column < scaledWidth; ++column) {
-          if (offsetX + column < 0 || offsetX + column > drawWidth) {
+          if (offsetX + column < 0 || drawWidth < offsetX + column) {
             continue;
           }
 
-          if (offsetY + row < 0 || offsetY + row > drawHeight) {
+          if (offsetY + row < 0 || drawHeight < offsetY + row) {
             continue;
           }
 
           const int index = sourceWidth - 1 + static_cast<int>(static_cast<float>(row) * inverseY) * stride -
                             static_cast<int>(static_cast<float>(column) * inverseX);
-          if (index < 0 || index >= limit) {
+          if (index < 0 || limit <= index) {
             continue;
           }
 
-          const std::uint16_t value = sourcePixels[index];
+          const unsigned value = sourcePixels[index];
           if (!(value & 0x8000)) {
             continue;
           }
 
-          std::uint32_t& pixel = destinationPixels[this->width * (offsetY + row) + column + offsetX];
+          std::uint32_t& destination = destinationPixels[this->m_bitmap.width * (offsetY + row) + column + offsetX];
+          const std::uint32_t pixel = destination;
           const unsigned red =
             static_cast<unsigned>(static_cast<float>((pixel >> 16) & 0xFF) * inverse + static_cast<float>((value >> 7) & 0xF8) * redScale);
           const unsigned green = static_cast<unsigned>(static_cast<float>((pixel >> 8) & 0xFF) * inverse + static_cast<float>((value >> 2) & 0xF8) * greenScale);
           const unsigned blue =
             static_cast<unsigned>(static_cast<float>((value & 0x1F) << 3) * blueScale + static_cast<float>(pixel & 0xFF) * inverse);
-          pixel = PackPixel(0xFF, red, green, blue);
+          destination = PackPixel(0xFF, red, green, blue);
         }
       }
     }
@@ -737,7 +741,7 @@ void BitmapPixels::DrawRleSprite(
 
 // OFFSET: 0x00545C40
 // FUNCTION: fn_01837
-void BitmapPixels::DrawScaledSprite(
+void CDCBitmap::DrawScaledSprite(
   int x, int y, int drawWidth, int drawHeight, std::span<const SpriteFrameCell> cells, const SpriteRleImage* const* const* images, int cellCount, int offsetX,
   int offsetY, float scale, const std::uint32_t* palette, SpriteAtlas& atlas, CRenderSystemBase& system, int serviceType, std::uint32_t reuseDelay
 ) {
@@ -776,7 +780,8 @@ void BitmapPixels::DrawScaledSprite(
       continue;
     }
 
-    const std::uint32_t color = (cell.color & 0xFF00FF00u) | ((cell.color & 255) << 16) | ((cell.color >> 16) & 255);
+    const std::uint8_t* channels = reinterpret_cast<const std::uint8_t*>(&cell.color);
+    const std::uint32_t color = PackPixel(channels[3], channels[0], channels[1], channels[2]);
     this->DrawScaledSurface(
       x, y, drawWidth, drawHeight, surface, image->width, image->height, scaleX, scaleY, color, cell.mirrored != 0,
       static_cast<int>(static_cast<float>(cell.x) * scaleX + static_cast<float>(offsetX)),
