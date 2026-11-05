@@ -69,24 +69,25 @@ void CPlayerNameDictionary::Update() {
   while (!this->m_pending.empty()) {
     const std::uint32_t id = this->m_pending.front();
     const auto cached = this->m_names.find(id);
-    const bool fresh = cached != this->m_names.end() && !(cached->second.tick + 600000u < timeGetTime());
-    const auto outstanding = std::find_if(this->m_requests.begin(), this->m_requests.end(), [&](const Request& request) { return request.id == id; });
+    if (cached == this->m_names.end() || cached->second.IsExpired()) {
+      const auto outstanding = std::find_if(this->m_requests.begin(), this->m_requests.end(), [&](const Request& request) { return request.id == id; });
+      if (outstanding == this->m_requests.end()) {
+        this->m_pending.pop_front();
+
+        if (id != 0) {
+          unsigned char packet[6];
+          const std::uint16_t header = 873;
+          std::memcpy(packet, &header, sizeof(header));
+          std::memcpy(packet + 2, &id, sizeof(id));
+          GetRagConnection().Send(sizeof(packet), packet);
+          this->m_requests.push_back({id, timeGetTime()});
+        }
+
+        return;
+      }
+    }
+
     this->m_pending.pop_front();
-
-    if (fresh || outstanding != this->m_requests.end()) {
-      continue;
-    }
-
-    if (id != 0) {
-      unsigned char packet[6];
-      const std::uint16_t header = 873;
-      std::memcpy(packet, &header, sizeof(header));
-      std::memcpy(packet + 2, &id, sizeof(id));
-      GetRagConnection().Send(sizeof(packet), packet);
-      this->m_requests.push_back({id, timeGetTime()});
-    }
-
-    return;
   }
 }
 
