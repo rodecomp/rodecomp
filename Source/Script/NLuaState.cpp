@@ -4,6 +4,7 @@ extern "C" {
 #include <lauxlib.h>
 #include <lua.h>
 }
+#include <utility>
 
 // GLOBAL: gl_24849
 void* g_entryQueueMgr = nullptr;
@@ -20,23 +21,22 @@ struct TreeSubMap {
   TreeSubNode* head;
   unsigned int size;
 
-  void Clear();
+  void Clear() noexcept;
   void EraseSubtree(TreeSubMap& al, TreeSubNode* node);
 };
 
 // OFFSET: 0x00CA4AE0
 // FUNCTION: fn_20939
-void TreeSubMap::Clear() {
-  TreeSubNode* cur = this->head->parent;
+void TreeSubMap::Clear() noexcept {
+  TreeSubNode* head = this->head;
+  TreeSubNode* cur = head->parent;
   while (cur->isnil == 0) {
     this->EraseSubtree(*this, cur->right);
-    TreeSubNode* next = cur->left;
-    ::operator delete(cur, 0x18);
-    cur = next;
+    ::operator delete(std::exchange(cur, cur->left), 0x18);
   }
-  this->head->parent = this->head;
-  this->head->left = this->head;
-  this->head->right = this->head;
+  head->parent = head;
+  head->left = head;
+  head->right = head;
   this->size = 0;
 }
 
