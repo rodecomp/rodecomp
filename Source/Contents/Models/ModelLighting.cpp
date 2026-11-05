@@ -22,8 +22,8 @@ namespace {
 
   // INLINED
   float InverseLength(float squared) {
-    const float root = std::sqrt(squared);
-    return static_cast<float>(1.0 / static_cast<double>(root));
+    const float root = SquareRoot(squared);
+    return static_cast<float>(1.0 / root);
   }
 
   // INLINED
@@ -64,8 +64,8 @@ C3dNode* C3dNode::Find(const char* selected) {
     return this;
   }
 
-  for (C3dNode* child : this->children) {
-    if (C3dNode* found = child->Find(selected)) {
+  for (std::list<C3dNode*>::iterator it = this->children.begin(); it != this->children.end(); ++it) {
+    if (C3dNode* found = (*it)->Find(selected)) {
       return found;
     }
   }
@@ -175,7 +175,7 @@ void C3dNode::Prepare(const float* matrix, const float* direction, const float* 
 
   this->SampleGroundColors(g_renderer, combined.values, *static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->ground);
 
-  for (C3dNode* child : this->children) {
-    child->Prepare(combined.values, direction, diffuse, ambient, shade);
+  for (std::list<C3dNode*>::iterator it = this->children.begin(); it != this->children.end(); ++it) {
+    (*it)->Prepare(combined.values, direction, diffuse, ambient, shade);
   }
 }
