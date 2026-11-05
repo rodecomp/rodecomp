@@ -149,8 +149,8 @@ void TextureCache::Remove(CTexture* texture) {
 // OFFSET: 0x00571670
 // FUNCTION: fn_02451
 void TextureCache::Clear() {
-  for (auto& [name, texture] : this->m_textures) {
-    delete texture;
+  for (auto entry = this->m_textures.begin(); entry != this->m_textures.end(); ++entry) {
+    delete entry->second;
   }
 
   this->m_textures.clear();
@@ -159,23 +159,26 @@ void TextureCache::Clear() {
 // OFFSET: 0x00571B70
 // FUNCTION: fn_02456
 void TextureCache::Reload() {
-  for (auto& [name, texture] : this->m_textures) {
-    auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
+  for (auto entry = this->m_textures.begin(); entry != this->m_textures.end(); ++entry) {
+    auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(entry->first)));
 
     if (!bitmap) {
       continue;
     }
 
-    const auto& image = bitmap->image;
+    CTexture* texture = entry->second;
+    const auto* pixels = bitmap->image.pixels;
+    const int height = bitmap->image.height;
+    const int width = bitmap->image.width;
 
     if (texture) {
       if ((texture->unknown_0008 & 0xFF) == 1) {
-        texture->Create(image.width, image.height, texture->m_format);
+        texture->Create(width, height, texture->m_format);
       } else {
-        texture->Create(image.width / g_textureReduction, image.height / g_textureReduction, texture->m_format);
+        texture->Create(width / g_textureReduction, height / g_textureReduction, texture->m_format);
       }
 
-      texture->Upload(0, 0, image.width, image.height, image.pixels, 0, 0);
+      texture->Upload(0, 0, width, height, pixels, 0, 0);
     }
 
     ResourceMgr::Instance().Remove(bitmap);
