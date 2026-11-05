@@ -19,48 +19,6 @@
 #include <algorithm>
 #include <new>
 
-namespace {
-  // INLINED
-  unsigned Digit(unsigned char value) {
-    if (value >= '0' && value <= '9') {
-      return value - '0';
-    }
-
-    if (value >= 'a' && value <= 'f') {
-      return value - 'a' + 10;
-    }
-
-    if (value >= 'A' && value <= 'F') {
-      return value - 'A' + 10;
-    }
-
-    return 0;
-  }
-
-  // INLINED
-  void ScanColors(const std::string& line, std::uint32_t& color) {
-    const char* current = line.c_str();
-    const char* end = current + line.size();
-
-    while (current < end) {
-      bool marker = *current == '^' && end - current >= 6;
-
-      for (int index = 1; marker && index <= 6; ++index) {
-        const char value = current[index];
-        marker = (value >= '0' && value <= '9') || (value >= 'a' && value <= 'f') || (value >= 'A' && value <= 'F');
-      }
-
-      if (marker) {
-        color = (Digit(current[2]) + 16 * Digit(current[1])) | ((Digit(current[4]) + 16 * Digit(current[3])) << 8) |
-                ((Digit(current[6]) + 16 * Digit(current[5])) << 16);
-        current += 7;
-      } else {
-        current = CharNextExA(static_cast<WORD>(g_textCodePage), current, 0);
-      }
-    }
-  }
-}
-
 // OFFSET: 0x0086F0A0
 // FUNCTION: fn_11086
 UITextViewer::UITextViewer() : UIListBox(), splitTipLinks(0), outline(0), bold(0) {
@@ -211,12 +169,14 @@ void UITextViewer::Slot31(int, int) {
 // OFFSET: 0x0088FBB0
 // FUNCTION: fn_11394
 void UITextViewer::Paint() {
-  if (this->geometry.surface) {
-    this->geometry.surface->Fill(nullptr, this->transparent != 0 ? 0xFFFF00FFu : this->backgroundColor);
-  }
+  if (this->transparent != 0) {
+    this->ClearSurface(0xFFFF00FF);
 
-  if (this->transparent != 0 && this->parent) {
-    this->parent->Invalidate();
+    if (this->parent) {
+      this->parent->Invalidate();
+    }
+  } else {
+    this->ClearSurface(this->backgroundColor);
   }
 
   int divisor = (this->lineHeight - this->bottomMargin);
@@ -230,7 +190,12 @@ void UITextViewer::Paint() {
   std::uint32_t color = 0;
 
   for (int index = 0; index < this->topLine; ++index) {
-    ScanColors(this->lines[index], color);
+    const char* current = this->lines[index].c_str();
+    const char* end = current + this->lines[index].size();
+
+    while (current < end) {
+      current = ParseColorCode(SegmentEnd(current, end), color);
+    }
   }
 
   for (int index = this->topLine; index < end; ++index) {
@@ -363,24 +328,7 @@ std::string UIItemTagCtrl::sub_874A40(int tagId, unsigned int color) {
   std::string label;
   const std::string title = g_itemTagOwner->Title(tagId, &label, 17);
 
-  UIItemTagButton* button;
-  {
-    const std::string text = "<" + label + ">";
-    button = new (std::nothrow) UIItemTagButton();
-    if (button) {
-      button->Configure(text.c_str(), 0x7F00E4, 0, 12, 0, 0);
-      if (title != label) {
-        button->SetTooltip(title.c_str());
-      }
-
-      button->m_hoverColor = 0x7F00E4;
-      button->SetId(0x1D0);
-      button->m_value = 0x205;
-      button->Move(0, 0);
-      button->unknown_01F8 = tagId;
-    }
-  }
-
+  UIItemTagButton* button = this->CreateItemTagButton(title, label, tagId, nullptr, 0x7F00E4);
   if (!button) {
     return std::string();
   }
