@@ -42,7 +42,7 @@ public:
   bool RenderToTexture(int width, int height, const std::list<RenderPrimitive*>& primitives, CTexture*& texture);
   bool SaveBitmap(const char* filename, CBitmapRes* overlay) override;
   bool SaveJpeg(const char* filename, CBitmapRes* overlay) override;
-  bool SaveLogo(std::string filename, ResourceMgr& resources);
+  bool SaveLogo(std::string filename) override;
   void SetTexture(unsigned stage, CTextureDX7* texture);
   void Present(bool wait);
   float FrameRate() const;

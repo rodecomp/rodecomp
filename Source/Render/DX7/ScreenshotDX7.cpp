@@ -15,20 +15,21 @@
 
 namespace {
   // INLINED
-  std::uint16_t PackedColor(const DeviceOwnerDX7* owner, unsigned color) {
+  std::uint16_t PackedColor(const DeviceOwnerDX7* owner, int red, int green, int blue) {
     if (!owner) {
       return 0;
     }
-    const auto channel = [](unsigned value, const DeviceOwnerDX7::Channel& field) {
-      return static_cast<std::uint16_t>((value >> (field.expansion & 31)) << (field.shift & 31));
-    };
-    return static_cast<std::uint16_t>(channel((color >> 16) & 255, owner->red) + channel((color >> 8) & 255, owner->green) + channel(color & 255, owner->blue));
+
+    return static_cast<std::uint16_t>(
+      (static_cast<std::uint16_t>(blue >> owner->blue.expansion) << owner->blue.shift) +
+      (static_cast<std::uint16_t>(green >> owner->green.expansion) << owner->green.shift) +
+      (static_cast<std::uint16_t>(red >> owner->red.expansion) << owner->red.shift)
+    );
   }
 
   // INLINED
-  unsigned char ExpandedChannel(unsigned value, DWORD mask, const DeviceOwnerDX7::Channel& field) {
-    const auto component = static_cast<unsigned char>((value & mask) >> (field.shift & 31));
-    return static_cast<unsigned char>(static_cast<unsigned>(component) << (field.expansion & 31));
+  unsigned char ExpandedChannel(unsigned value, DWORD mask, DWORD shift, DWORD expansion) {
+    return static_cast<unsigned char>(static_cast<unsigned char>((value & mask) >> shift) << expansion);
   }
 }
 
@@ -45,62 +46,98 @@ bool CRendererDX7::SaveBitmap(const char* filename, CBitmapRes* overlay) {
     return false;
   }
 
-  const int width = this->viewport.width;
-  const int height = this->viewport.height;
-  BITMAPFILEHEADER header{};
+  BITMAPFILEHEADER header;
   header.bfType = 0x4D42;
-  header.bfSize = 3u * (static_cast<unsigned>(width) * static_cast<unsigned>(height) + 18u);
+  header.bfReserved1 = 0;
+  header.bfReserved2 = 0;
   header.bfOffBits = 54;
+  header.bfSize = 3 * (this->viewport.width * this->viewport.height + 18);
   std::fwrite(&header, sizeof(header), 1, file);
-  BITMAPINFOHEADER information{};
+  BITMAPINFOHEADER information;
   information.biSize = sizeof(information);
-  information.biWidth = width;
-  information.biHeight = height;
+  information.biWidth = this->viewport.width;
+  information.biHeight = this->viewport.height;
   information.biPlanes = 1;
   information.biBitCount = 24;
+  information.biCompression = 0;
+  information.biSizeImage = 0;
+  information.biXPelsPerMeter = 0;
+  information.biYPelsPerMeter = 0;
+  information.biClrUsed = 0;
+  information.biClrImportant = 0;
   std::fwrite(&information, sizeof(information), 1, file);
 
-  auto* owner = g_deviceOwnerDX7;
-  const auto red = owner ? owner->red : DeviceOwnerDX7::Channel{0, 8};
-  const auto green = owner ? owner->green : DeviceOwnerDX7::Channel{0, 8};
-  const auto blue = owner ? owner->blue : DeviceOwnerDX7::Channel{0, 8};
-  const auto redMask = owner ? owner->redMask : 0u;
-  const auto greenMask = owner ? owner->greenMask : 0u;
-  const auto blueMask = owner ? owner->blueMask : 0u;
-  const auto transparent = PackedColor(owner, 0xFF00FF);
-  std::array<unsigned char, 10800> row;
+  DeviceOwnerDX7* owner = g_deviceOwnerDX7;
+  const DWORD redMask = owner ? owner->redMask : 0;
+  const DWORD greenMask = owner ? owner->greenMask : 0;
+  const DWORD blueMask = owner ? owner->blueMask : 0;
+  const DWORD redShift = owner ? owner->red.shift : 0;
+  const DWORD greenShift = owner ? owner->green.shift : 0;
+  const DWORD blueShift = owner ? owner->blue.shift : 0;
+  const DWORD redExpansion = owner ? owner->red.expansion : 8;
+  const DWORD greenExpansion = owner ? owner->green.expansion : 8;
+  const DWORD blueExpansion = owner ? owner->blue.expansion : 8;
+  const std::uint16_t transparent = reinterpret_cast<const DeviceOwnerDX7Handle&>(g_deviceOwnerDX7).PackColor(255, 0, 255);
+  unsigned char row[10800];
 
-  for (int y = height - 1; y >= 0; --y) {
-    const auto* source = static_cast<const unsigned char*>(this->backBuffer.pixels) + y * this->backBuffer.pitch;
+  for (int y = this->viewport.height - 1; y >= 0; --y) {
+    const unsigned char* source = static_cast<const unsigned char*>(this->backBuffer.pixels) + this->backBuffer.pitch * y;
+    unsigned char* destination = row;
 
-    for (int x = 0; x < width; ++x) {
-      unsigned color = 0;
-      const int overlayX = x + overlay->image.width - width;
-      const int overlayY = y + overlay->image.height - height;
-      bool useOverlay = overlayX >= 0 && overlayX < overlay->image.width && overlayY >= 0 && overlayY < overlay->image.height;
+    if (this->backBuffer.bitsPerPixel == 16) {
+      for (int x = 0; x < this->viewport.width; ++x, destination += 3) {
+        int red;
+        int green;
+        int blue;
+        bool fromOverlay = false;
 
-      if (useOverlay) {
-        color = overlay->image.pixels[overlayX + overlayY * overlay->image.width];
-        useOverlay = this->backBuffer.bitsPerPixel == 16 ? PackedColor(owner, color) != transparent : (color & 0xFFFFFF) != 0xFF00FF;
-      }
+        if (x >= this->viewport.width - overlay->image.width && y >= this->viewport.height - overlay->image.height) {
+          const int overlayX = x - (this->viewport.width - overlay->image.width);
+          const int overlayY = y - (this->viewport.height - overlay->image.height);
 
-      if (!useOverlay) {
-        if (this->backBuffer.bitsPerPixel == 16) {
-          std::uint16_t pixel;
-          std::memcpy(&pixel, source + 2 * x, sizeof(pixel));
-          color = (static_cast<unsigned>(ExpandedChannel(pixel, redMask, red)) << 16) | (static_cast<unsigned>(ExpandedChannel(pixel, greenMask, green)) << 8) |
-                  ExpandedChannel(pixel, blueMask, blue);
-        } else {
-          std::memcpy(&color, source + 4 * x, sizeof(color));
+          if (overlayX >= 0 && overlayX < overlay->image.width && overlayY >= 0 && overlayY < overlay->image.height) {
+            const unsigned color = overlay->image.pixels[overlayX + overlayY * overlay->image.width];
+            red = (color >> 16) & 0xFF;
+            green = (color >> 8) & 0xFF;
+            blue = color & 0xFF;
+            fromOverlay = PackedColor(owner, red, green, blue) != transparent;
+          }
         }
-      }
 
-      row[3 * x] = static_cast<unsigned char>(color);
-      row[3 * x + 1] = static_cast<unsigned char>(color >> 8);
-      row[3 * x + 2] = static_cast<unsigned char>(color >> 16);
+        if (!fromOverlay) {
+          const std::uint16_t pixel = reinterpret_cast<const std::uint16_t*>(source)[x];
+          red = ExpandedChannel(pixel, redMask, redShift, redExpansion);
+          green = ExpandedChannel(pixel, greenMask, greenShift, greenExpansion);
+          blue = ExpandedChannel(pixel, blueMask, blueShift, blueExpansion);
+        }
+
+        destination[0] = static_cast<unsigned char>(blue);
+        destination[1] = static_cast<unsigned char>(green);
+        destination[2] = static_cast<unsigned char>(red);
+      }
+    } else {
+      const unsigned char* pixel = source;
+
+      for (int x = 0; x < this->viewport.width; ++x, pixel += 4, destination += 3) {
+        if (x >= this->viewport.width - overlay->image.width && y >= this->viewport.height - overlay->image.height) {
+          const int overlayX = x - (this->viewport.width - overlay->image.width);
+          const int overlayY = y - (this->viewport.height - overlay->image.height);
+
+          if (overlayX >= 0 && overlayX < overlay->image.width && overlayY >= 0 && overlayY < overlay->image.height) {
+            const unsigned color = overlay->image.pixels[overlayX + overlayY * overlay->image.width];
+
+            if ((color & 0xFFFFFF) != 0xFF00FF) {
+              std::memcpy(destination, &color, 3);
+              continue;
+            }
+          }
+        }
+
+        std::memcpy(destination, pixel, 3);
+      }
     }
 
-    std::fwrite(row.data(), 3u * static_cast<unsigned>(width), 1, file);
+    std::fwrite(row, 3 * this->viewport.width, 1, file);
     owner = g_deviceOwnerDX7;
   }
 
@@ -111,57 +148,79 @@ bool CRendererDX7::SaveBitmap(const char* filename, CBitmapRes* overlay) {
 
 // OFFSET: 0x0055DDF0
 // FUNCTION: fn_02110
-bool CRendererDX7::SaveJpeg(
-  const char* filename, CBitmapRes* overlay
-) {
+bool CRendererDX7::SaveJpeg(const char* filename, CBitmapRes* overlay) {
   if (!this->LockBackBuffer()) {
     return false;
   }
 
-  const int width = this->viewport.width;
-  const int height = this->viewport.height;
-  const unsigned size = 3u * static_cast<unsigned>(width) * static_cast<unsigned>(height);
-  auto* pixels = static_cast<unsigned char*>(std::malloc(size));
-  auto* owner = g_deviceOwnerDX7;
-  const auto red = owner ? owner->red : DeviceOwnerDX7::Channel{0, 8};
-  const auto green = owner ? owner->green : DeviceOwnerDX7::Channel{0, 8};
-  const auto blue = owner ? owner->blue : DeviceOwnerDX7::Channel{0, 8};
-  const auto redMask = owner ? owner->redMask : 0u;
-  const auto greenMask = owner ? owner->greenMask : 0u;
-  const auto blueMask = owner ? owner->blueMask : 0u;
-  const auto transparent = PackedColor(owner, 0xFF00FF);
+  auto* pixels = static_cast<unsigned char*>(std::malloc(3 * this->viewport.width * this->viewport.height));
+  const DWORD redMask = g_deviceOwnerDX7 ? g_deviceOwnerDX7->redMask : 0;
+  const DWORD greenMask = g_deviceOwnerDX7 ? g_deviceOwnerDX7->greenMask : 0;
+  const DWORD blueMask = g_deviceOwnerDX7 ? g_deviceOwnerDX7->blueMask : 0;
+  const DWORD redShift = g_deviceOwnerDX7 ? g_deviceOwnerDX7->red.shift : 0;
+  const DWORD greenShift = g_deviceOwnerDX7 ? g_deviceOwnerDX7->green.shift : 0;
+  const DWORD blueShift = g_deviceOwnerDX7 ? g_deviceOwnerDX7->blue.shift : 0;
+  const DWORD redExpansion = g_deviceOwnerDX7 ? g_deviceOwnerDX7->red.expansion : 8;
+  const DWORD greenExpansion = g_deviceOwnerDX7 ? g_deviceOwnerDX7->green.expansion : 8;
+  const DWORD blueExpansion = g_deviceOwnerDX7 ? g_deviceOwnerDX7->blue.expansion : 8;
+  const std::uint16_t transparent = PackedColor(g_deviceOwnerDX7, 255, 0, 255);
 
-  for (int y = height - 1; y >= 0; --y) {
-    const auto* source = static_cast<const unsigned char*>(this->backBuffer.pixels) + y * this->backBuffer.pitch;
-    auto* row = pixels + 3u * static_cast<unsigned>(y) * static_cast<unsigned>(width);
+  for (int y = this->viewport.height - 1; y >= 0; --y) {
+    const unsigned char* source = static_cast<const unsigned char*>(this->backBuffer.pixels) + this->backBuffer.pitch * y;
+    unsigned char* destination = pixels + 3 * (this->viewport.width * y);
 
-    for (int x = 0; x < width; ++x) {
-      unsigned color = 0;
-      const int overlayX = x + overlay->image.width - width;
-      const int overlayY = y + overlay->image.height - height;
-      bool useOverlay = overlayX >= 0 && overlayX < overlay->image.width && overlayY >= 0 && overlayY < overlay->image.height;
+    if (this->backBuffer.bitsPerPixel == 16) {
+      for (int x = 0; x < this->viewport.width; ++x, destination += 3) {
+        int red;
+        int green;
+        int blue;
+        bool fromOverlay = false;
 
-      if (useOverlay) {
-        color = overlay->image.pixels[overlayX + overlayY * overlay->image.width];
-        useOverlay = this->backBuffer.bitsPerPixel == 16 ? PackedColor(owner, color) != transparent : (color & 0xFFFFFF) != 0xFF00FF;
-      }
+        if (x >= this->viewport.width - overlay->image.width && y >= this->viewport.height - overlay->image.height) {
+          const int overlayX = x - (this->viewport.width - overlay->image.width);
+          const int overlayY = y - (this->viewport.height - overlay->image.height);
 
-      if (!useOverlay) {
-        if (this->backBuffer.bitsPerPixel == 16) {
-          std::uint16_t pixel;
-          std::memcpy(&pixel, source + 2 * x, sizeof(pixel));
-          color = (static_cast<unsigned>(ExpandedChannel(pixel, redMask, red)) << 16) | (static_cast<unsigned>(ExpandedChannel(pixel, greenMask, green)) << 8) |
-                  ExpandedChannel(pixel, blueMask, blue);
-        } else {
-          std::memcpy(&color, source + 4 * x, sizeof(color));
+          if (overlayX >= 0 && overlayX < overlay->image.width && overlayY >= 0 && overlayY < overlay->image.height) {
+            const unsigned color = overlay->image.pixels[overlayX + overlayY * overlay->image.width];
+            red = (color >> 16) & 0xFF;
+            green = (color >> 8) & 0xFF;
+            blue = color & 0xFF;
+            fromOverlay = PackedColor(g_deviceOwnerDX7, red, green, blue) != transparent;
+          }
         }
-      }
 
-      row[3 * x] = static_cast<unsigned char>(color);
-      row[3 * x + 1] = static_cast<unsigned char>(color >> 8);
-      row[3 * x + 2] = static_cast<unsigned char>(color >> 16);
+        if (!fromOverlay) {
+          const std::uint16_t pixel = reinterpret_cast<const std::uint16_t*>(source)[x];
+          red = ExpandedChannel(pixel, redMask, redShift, redExpansion);
+          green = ExpandedChannel(pixel, greenMask, greenShift, greenExpansion);
+          blue = ExpandedChannel(pixel, blueMask, blueShift, blueExpansion);
+        }
+
+        destination[0] = static_cast<unsigned char>(blue);
+        destination[1] = static_cast<unsigned char>(green);
+        destination[2] = static_cast<unsigned char>(red);
+      }
+    } else {
+      const unsigned char* pixel = source;
+
+      for (int x = 0; x < this->viewport.width; ++x, pixel += 4, destination += 3) {
+        if (x >= this->viewport.width - overlay->image.width && y >= this->viewport.height - overlay->image.height) {
+          const int overlayX = x - (this->viewport.width - overlay->image.width);
+          const int overlayY = y - (this->viewport.height - overlay->image.height);
+
+          if (overlayX >= 0 && overlayX < overlay->image.width && overlayY >= 0 && overlayY < overlay->image.height) {
+            const unsigned color = overlay->image.pixels[overlayX + overlayY * overlay->image.width];
+
+            if ((color & 0xFFFFFF) != 0xFF00FF) {
+              std::memcpy(destination, &color, 3);
+              continue;
+            }
+          }
+        }
+
+        std::memcpy(destination, pixel, 3);
+      }
     }
-    owner = g_deviceOwnerDX7;
   }
 
   this->UnlockBackBuffer();
@@ -171,78 +230,88 @@ bool CRendererDX7::SaveJpeg(
     return false;
   }
 
-  properties.dibWidth = width;
-  properties.dibHeight = height;
+  properties.dibWidth = this->viewport.width;
+  properties.dibHeight = this->viewport.height;
   properties.dibBytes = pixels;
-  properties.dibPadding = ((3u * static_cast<unsigned>(width) + 3u) & ~3u) - 3u * static_cast<unsigned>(width);
+  properties.dibPadding = ((3 * this->viewport.width + 3) & ~3) - 3 * this->viewport.width;
   properties.jpegFile = filename;
   properties.dibChannels = 3;
   properties.dibColor = 2;
-  properties.jpegWidth = width;
-  properties.jpegHeight = height;
-  const int status = ijlWrite(&properties, 8);
-  std::free(pixels);
+  properties.jpegWidth = this->viewport.width;
+  properties.jpegHeight = this->viewport.height;
 
-  return status == 0;
+  if (ijlWrite(&properties, 8) != 0) {
+    std::free(pixels);
+    return false;
+  }
+
+  std::free(pixels);
+  return true;
 }
 
 // OFFSET: 0x0055E340
 // FUNCTION: fn_02111
-bool CRendererDX7::SaveLogo(std::string filename, ResourceMgr& resources) {
-  auto* logo = static_cast<CBitmapRes*>(resources.Load(Resolve("scr_logo.bmp")));
+bool CRendererDX7::SaveLogo(std::string filename) {
+  auto* logo = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("scr_logo.bmp")));
 
   if (!logo) {
     return false;
   }
 
-  DDSURFACEDESC2 locked{};
-  locked.dwSize = sizeof(locked);
+  DDSURFACEDESC2 locked = {sizeof(DDSURFACEDESC2)};
+  IDirectDrawSurface7* target = g_deviceOwnerDX7 ? g_deviceOwnerDX7->renderTarget : nullptr;
 
-  if (FAILED(g_deviceOwnerDX7->renderTarget->Lock(nullptr, &locked, DDLOCK_WAIT, nullptr))) {
+  if (FAILED(target->Lock(nullptr, &locked, DDLOCK_WAIT, nullptr))) {
     return false;
   }
 
-  const int pixelBytes = locked.lPitch / static_cast<int>(locked.dwWidth);
+  const int pixelBytes = locked.lPitch / locked.dwWidth;
   const int paddedWidth = locked.lPitch / pixelBytes;
-  unsigned remaining = 3u * static_cast<unsigned>(paddedWidth) * locked.dwHeight;
-  auto* pixels = static_cast<unsigned char*>(std::malloc(remaining));
-  auto* destination = pixels;
+  const int size = 3 * paddedWidth * locked.dwHeight;
+  auto* pixels = static_cast<unsigned char*>(std::malloc(size));
   const auto& image = logo->image;
 
-  for (unsigned y = 0; y < locked.dwHeight; ++y) {
-    const auto* source = static_cast<const unsigned char*>(locked.lpSurface) + y * locked.lPitch;
+  for (DWORD y = 0; y < locked.dwHeight; ++y) {
+    const unsigned char* source = static_cast<const unsigned char*>(locked.lpSurface) + y * locked.lPitch;
+    unsigned char* destination = pixels + 3 * paddedWidth * y;
+    int remaining = size - 3 * paddedWidth * y;
 
-    for (unsigned x = 0; x < locked.dwWidth && static_cast<int>(remaining) > 0; ++x) {
-      const unsigned overlayX = x + static_cast<unsigned>(image.width) - locked.dwWidth;
-      const unsigned overlayY = y + static_cast<unsigned>(image.height) - locked.dwHeight;
-      const bool inOverlay = x >= locked.dwWidth - static_cast<unsigned>(image.width) && y >= locked.dwHeight - static_cast<unsigned>(image.height);
-      unsigned color = inOverlay ? image.pixels[overlayX + overlayY * image.width] : 0xFF00FF;
+    for (DWORD x = 0; x < locked.dwWidth && remaining > 0; ++x, destination += 3, remaining -= 3) {
+      const unsigned char* pixel = source + x * pixelBytes;
 
-      if (!inOverlay || (color & 0xFFFFFF) == 0xFF00FF) {
-        if (locked.ddpfPixelFormat.dwRGBBitCount == 16) {
-          std::uint16_t value;
-          std::memcpy(&value, source + x * pixelBytes, 2);
-          color = (static_cast<unsigned>(ExpandedChannel(value, g_deviceOwnerDX7->redMask, g_deviceOwnerDX7->red)) << 16) |
-                  (static_cast<unsigned>(ExpandedChannel(value, g_deviceOwnerDX7->greenMask, g_deviceOwnerDX7->green)) << 8) |
-                  ExpandedChannel(value, g_deviceOwnerDX7->blueMask, g_deviceOwnerDX7->blue);
-        } else {
-          std::memcpy(&color, source + x * pixelBytes, 4);
+      if (x >= locked.dwWidth - image.width && y >= locked.dwHeight - image.height) {
+        const std::uint32_t* color = &image.pixels[(image.height - locked.dwHeight + y) * image.width + (image.width - locked.dwWidth + x)];
+
+        if ((*color & 0xFFFFFF) != 0xFF00FF) {
+          memcpy_s(destination, remaining, color, 3);
+          continue;
         }
       }
 
-      destination[0] = static_cast<unsigned char>(color);
-      destination[1] = static_cast<unsigned char>(color >> 8);
-      destination[2] = static_cast<unsigned char>(color >> 16);
-      destination += 3;
-      remaining -= 3;
+      if (locked.ddpfPixelFormat.dwRGBBitCount == 16) {
+        const std::uint16_t value = *reinterpret_cast<const std::uint16_t*>(pixel);
+        destination[0] = ExpandedChannel(
+          value, g_deviceOwnerDX7 ? g_deviceOwnerDX7->blueMask : 0, g_deviceOwnerDX7 ? g_deviceOwnerDX7->blue.shift : 0,
+          g_deviceOwnerDX7 ? g_deviceOwnerDX7->blue.expansion : 8
+        );
+        destination[1] = ExpandedChannel(
+          value, g_deviceOwnerDX7 ? g_deviceOwnerDX7->greenMask : 0, g_deviceOwnerDX7 ? g_deviceOwnerDX7->green.shift : 0,
+          g_deviceOwnerDX7 ? g_deviceOwnerDX7->green.expansion : 8
+        );
+        destination[2] = ExpandedChannel(
+          value, g_deviceOwnerDX7 ? g_deviceOwnerDX7->redMask : 0, g_deviceOwnerDX7 ? g_deviceOwnerDX7->red.shift : 0,
+          g_deviceOwnerDX7 ? g_deviceOwnerDX7->red.expansion : 8
+        );
+      } else {
+        memcpy_s(destination, remaining, pixel, 3);
+      }
     }
-
-    destination = pixels + 3u * static_cast<unsigned>(paddedWidth) * (y + 1);
-    remaining = 3u * static_cast<unsigned>(paddedWidth) * (locked.dwHeight - y - 1);
   }
 
-  g_deviceOwnerDX7->renderTarget->Unlock(nullptr);
-  IJL15Properties properties{};
+  target = g_deviceOwnerDX7 ? g_deviceOwnerDX7->renderTarget : nullptr;
+  target->Unlock(nullptr);
+  IJL15Properties properties;
+  SecureZeroMemory(&properties, sizeof(properties));
 
   if (ijlInit(&properties) != 0) {
     std::free(pixels);
@@ -252,14 +321,18 @@ bool CRendererDX7::SaveLogo(std::string filename, ResourceMgr& resources) {
   properties.dibBytes = pixels;
   properties.dibWidth = paddedWidth;
   properties.dibHeight = locked.dwHeight;
-  properties.dibPadding = ((3u * static_cast<unsigned>(paddedWidth) + 3u) & ~3u) - 3u * static_cast<unsigned>(paddedWidth);
+  properties.dibPadding = ((3 * paddedWidth + 3) & ~3) - 3 * paddedWidth;
   properties.jpegFile = filename.c_str();
+  properties.jpegWidth = locked.dwWidth;
   properties.dibChannels = 3;
   properties.dibColor = 2;
-  properties.jpegWidth = locked.dwWidth;
   properties.jpegHeight = locked.dwHeight;
-  const int status = ijlWrite(&properties, 8);
-  std::free(pixels);
 
-  return status == 0;
+  if (ijlWrite(&properties, 8) != 0) {
+    std::free(pixels);
+    return false;
+  }
+
+  std::free(pixels);
+  return true;
 }

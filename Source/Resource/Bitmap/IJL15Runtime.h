@@ -25,7 +25,7 @@ struct IJL15Properties {
   int conversion;
   int upsampling;
   int quality;
-  alignas(8) unsigned char privateProperties[19984];
+  unsigned char privateProperties[19988];
 };
 
 extern "C" {
