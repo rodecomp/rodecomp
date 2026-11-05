@@ -184,10 +184,11 @@ __declspec(noinline) bool UIScrollWnd::UpdateChild(UIWindow* child, int redraw) 
   const int right = width + x;
   if (x < 0) {
     x = 0;
-    sourceX = std::abs(child->geometry.x);
     if (this->geometry.width < right) {
+      sourceX = std::abs(child->geometry.x);
       width = this->geometry.width;
     } else {
+      sourceX = std::abs(child->geometry.x);
       width -= sourceX;
     }
   } else if (this->geometry.width < right) {
