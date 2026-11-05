@@ -1,6 +1,8 @@
 #ifndef RAGNAROK_SOURCE_CONTENTS_HOTKEYS_HOTKEYINFO_H
 #define RAGNAROK_SOURCE_CONTENTS_HOTKEYS_HOTKEYINFO_H
 
+#include "Utility/Text/FormatString.h"
+
 #include <cstddef>
 #include <string>
 

@@ -38,25 +38,21 @@ bool SkillUsesPercentSp(int id) {
 // OFFSET: 0x008224C0
 // FUNCTION: fn_10278
 std::string SkillTooltipPercent(const char* hotkey, const char* name, int level, int sp, int ap) {
-  char text[4096];
   if (ap != 0) {
-    _snprintf_s(text, sizeof(text), _TRUNCATE, "%s %s Use Lv %d (Sp : %d%%, Ap : %d)", hotkey, name, level, sp, ap);
-  } else {
-    _snprintf_s(text, sizeof(text), _TRUNCATE, "%s %s Use Lv %d (Sp : %d%%)", hotkey, name, level, sp);
+    return FormatOwnedString("%s %s Use Lv %d (Sp : %d%%, Ap : %d)", hotkey, name, level, sp, ap);
   }
-  return text;
+
+  return FormatOwnedString("%s %s Use Lv %d (Sp : %d%%)", hotkey, name, level, sp);
 }
 
 // OFFSET: 0x00822550
 // FUNCTION: fn_10279
 std::string SkillTooltipFlat(const char* hotkey, const char* name, int level, int sp, int ap) {
-  char text[4096];
   if (ap != 0) {
-    _snprintf_s(text, sizeof(text), _TRUNCATE, "%s %s Use Lv %d (Sp : %d, Ap : %d)", hotkey, name, level, sp, ap);
-  } else {
-    _snprintf_s(text, sizeof(text), _TRUNCATE, "%s %s Use Lv %d (Sp : %d)", hotkey, name, level, sp);
+    return FormatOwnedString("%s %s Use Lv %d (Sp : %d, Ap : %d)", hotkey, name, level, sp, ap);
   }
-  return text;
+
+  return FormatOwnedString("%s %s Use Lv %d (Sp : %d)", hotkey, name, level, sp);
 }
 
 // INLINED
