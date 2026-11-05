@@ -63,6 +63,8 @@ CSkillInfo* CPlayerSkillBundle::Find(std::uint32_t id) {
   return entry != this->skills.end() ? &*entry : nullptr;
 }
 
+__declspec(noinline) std::uint32_t ResolveSkillId(std::uint32_t id);
+
 // OFFSET: 0x00CACF20
 // FUNCTION: fn_21049
 std::uint32_t ResolveSkillId(std::uint32_t id) {
