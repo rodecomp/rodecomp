@@ -6,19 +6,19 @@
 #include "UI/GameSettings/GameSettingsUI.h"
 
 #include <cstring>
+#include <wrl/client.h>
 
 // OFFSET: 0x00569FF0
 // FUNCTION: fn_02283
 std::vector<RenderAdapter> EnumerateRenderAdapters(int backend) {
-  if (backend == 1) {
+  switch (backend) {
+  case 1:
     return EnumerateAdaptersDX7();
-  }
-
-  if (backend == 2) {
+  case 2:
     return EnumerateAdaptersDX9();
+  default:
+    return {};
   }
-
-  return {};
 }
 
 // OFFSET: 0x00569DA0
@@ -28,15 +28,14 @@ bool RenderAdapter::Matches(const RenderAdapter& selected) const {
     return false;
   }
 
-  if (this->backend == 1) {
+  switch (this->backend) {
+  case 1:
     return std::memcmp(&this->drawGuid, &selected.drawGuid, sizeof(GUID)) == 0 && std::memcmp(&this->renderGuid, &selected.renderGuid, sizeof(GUID)) == 0;
-  }
-
-  if (this->backend == 2) {
+  case 2:
     return std::memcmp(&this->deviceGuid, &selected.deviceGuid, sizeof(GUID)) == 0 && this->deviceName == selected.deviceName;
+  default:
+    return false;
   }
-
-  return false;
 }
 
 __declspec(noinline) RenderAdapter SelectedRenderAdapter();
@@ -51,12 +50,15 @@ RenderAdapter SelectedRenderAdapter() {
     selected.backend = g_session.DefaultRenderBackend() == 1 ? 1 : 2;
   }
 
-  if (selected.backend == 1) {
+  switch (selected.backend) {
+  case 1:
     std::memcpy(&selected.drawGuid, g_guidDriver, sizeof(GUID));
     std::memcpy(&selected.renderGuid, g_guidDevice, sizeof(GUID));
-  } else if (selected.backend == 2) {
+    break;
+  case 2:
     selected.deviceGuid = g_configuredDeviceGuid;
     selected.deviceName = g_configuredDeviceName;
+    break;
   }
 
   return selected;
@@ -67,25 +69,23 @@ __declspec(noinline) std::vector<RenderAdapter> EnumerateAdaptersDX9();
 // OFFSET: 0x0056D770
 // FUNCTION: fn_02368
 std::vector<RenderAdapter> EnumerateAdaptersDX9() {
-  IDirect3D9Ex* direct3D = nullptr;
-  const HRESULT result = Direct3DCreate9Ex(D3D_SDK_VERSION, &direct3D);
-  std::vector<RenderAdapter> adapters;
+  Microsoft::WRL::ComPtr<IDirect3D9Ex> direct3D;
+  const HRESULT result = Direct3DCreate9Ex(D3D_SDK_VERSION, direct3D.GetAddressOf());
 
-  if (SUCCEEDED(result)) {
-    const UINT count = direct3D->GetAdapterCount();
-    adapters.reserve(count);
-
-    for (UINT ordinal = 0; ordinal < count; ++ordinal) {
-      D3DADAPTER_IDENTIFIER9 identifier;
-
-      if (SUCCEEDED(direct3D->GetAdapterIdentifier(ordinal, 0, &identifier))) {
-        adapters.push_back({2, ordinal, identifier.Description, {}, {}, identifier.DeviceIdentifier, identifier.DeviceName});
-      }
-    }
+  if (FAILED(result)) {
+    return {};
   }
 
-  if (direct3D) {
-    direct3D->Release();
+  const UINT count = direct3D->GetAdapterCount();
+  std::vector<RenderAdapter> adapters;
+  adapters.reserve(count);
+
+  for (UINT ordinal = 0; ordinal < count; ++ordinal) {
+    D3DADAPTER_IDENTIFIER9 identifier;
+
+    if (SUCCEEDED(direct3D->GetAdapterIdentifier(ordinal, 0, &identifier))) {
+      adapters.push_back({2, ordinal, identifier.Description, {}, {}, identifier.DeviceIdentifier, identifier.DeviceName});
+    }
   }
 
   return adapters;
