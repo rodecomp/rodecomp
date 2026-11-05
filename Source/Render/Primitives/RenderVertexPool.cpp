@@ -14,11 +14,6 @@ namespace {
   }
 }
 
-// INLINED
-RenderVertexPool::RenderVertexPool() : m_minimum(10240), m_used(0) {
-  this->Activate(this->m_minimum);
-}
-
 // OFFSET: 0x00561690
 // FUNCTION: fn_02162
 RenderVertexPool::~RenderVertexPool() {

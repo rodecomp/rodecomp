@@ -66,7 +66,12 @@ struct LightmappedPrimitive {
 
 class LightmappedPrimitivePool {
 public:
-  LightmappedPrimitivePool();
+  // INLINED
+  __forceinline LightmappedPrimitivePool() {
+    this->m_commands.resize(8192, LightmappedPrimitive());
+    this->m_current = this->m_commands.begin();
+  }
+
   LightmappedPrimitive* Acquire();
   void Rewind();
 
@@ -78,6 +83,10 @@ private:
 struct LightmappedQueues {
   /* 01F8 */ std::vector<LightmappedPrimitive*> first;
   /* 0204 */ std::vector<LightmappedPrimitive*> second;
+
+  // INLINED
+  __forceinline ~LightmappedQueues() = default;
+
   void Submit(LightmappedPrimitive* primitive, int queue, bool depthAlpha, float depthStart, float depthEnd);
   void Clear();
 };

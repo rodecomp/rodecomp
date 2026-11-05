@@ -2,12 +2,6 @@
 
 #include <new>
 
-// INLINED
-__forceinline RenderPrimitivePool::RenderPrimitivePool() {
-  this->m_commands.resize(512, RenderPrimitive());
-  this->m_current = this->m_commands.begin();
-}
-
 // OFFSET: 0x00561A50
 // FUNCTION: fn_02167
 RenderPrimitivePool::~RenderPrimitivePool() = default;

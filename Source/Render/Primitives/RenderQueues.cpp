@@ -4,30 +4,6 @@
 
 #include <algorithm>
 
-// INLINED
-RenderQueues::RenderQueues() {
-  this->queue_015C.reserve(1000);
-  this->queue_0168.reserve(1000);
-  this->queue_0174.reserve(1000);
-  this->queue_0180.reserve(1000);
-  this->queue_018C.reserve(1000);
-  this->queue_0198.reserve(1000);
-  this->queue_01A4.reserve(1000);
-  this->queue_01B0.reserve(1000);
-  this->queue_01BC.reserve(1000);
-  this->queue_01C8.reserve(1000);
-  this->queue_01D4.reserve(1000);
-  this->queue_01E0.reserve(1000);
-  this->queue_01EC.reserve(1000);
-  this->lightmapped.first.reserve(1000);
-  this->lightmapped.second.reserve(1000);
-  this->queue_0210.reserve(1000);
-  this->queue_021C.reserve(1000);
-  this->queue_0228.reserve(1000);
-  this->queue_0234.reserve(1000);
-  this->queue_0240.reserve(1000);
-}
-
 // OFFSET: 0x00559CA0
 // FUNCTION: fn_02073
 void RenderQueues::Submit(RenderCommand* primitive, std::uint16_t flags, bool depthAlpha, float depthStart, float depthEnd) {

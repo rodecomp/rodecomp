@@ -36,7 +36,10 @@ struct SpriteAtlasPage {
 
 class SpriteAtlas {
 public:
-  SpriteAtlas();
+  // INLINED
+  __forceinline SpriteAtlas() : m_classes{} {
+  }
+
   ~SpriteAtlas();
   void Initialize(unsigned spareCount);
   void Clear();

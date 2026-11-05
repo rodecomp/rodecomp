@@ -34,10 +34,6 @@ namespace {
   }
 }
 
-// INLINED
-__forceinline SpriteAtlas::SpriteAtlas() : m_classes{} {
-}
-
 // OFFSET: 0x0056F280
 // FUNCTION: fn_02403
 SpriteAtlas::~SpriteAtlas() {

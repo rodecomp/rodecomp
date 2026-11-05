@@ -2,12 +2,6 @@
 
 #include <new>
 
-// INLINED
-RenderCommandPool::RenderCommandPool() {
-  this->m_commands.resize(1024);
-  this->m_current = this->m_commands.begin();
-}
-
 // OFFSET: 0x00CA63D0
 // FUNCTION: fn_20958
 RenderCommand* RenderCommandPool::Acquire() {

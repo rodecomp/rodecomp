@@ -9,7 +9,11 @@
 
 class RenderVertexPool {
 public:
-  RenderVertexPool();
+  // INLINED
+  RenderVertexPool() : m_minimum(10240), m_used(0) {
+    this->Activate(this->m_minimum);
+  }
+
   ~RenderVertexPool();
   RenderVertex* Acquire(unsigned count);
   void Rewind();

@@ -75,12 +75,6 @@ void LightmappedPrimitive::DrawAuxiliary(int unused) {
 }
 
 // INLINED
-LightmappedPrimitivePool::LightmappedPrimitivePool() {
-  this->m_commands.resize(8192, LightmappedPrimitive());
-  this->m_current = this->m_commands.begin();
-}
-
-// INLINED
 LightmappedPrimitive* LightmappedPrimitivePool::Acquire() {
   if (this->m_current == this->m_commands.end()) {
     this->m_commands.emplace_back();

@@ -7,7 +7,12 @@
 
 class RenderPrimitivePool {
 public:
-  RenderPrimitivePool();
+  // INLINED
+  __forceinline RenderPrimitivePool() {
+    this->m_commands.resize(512, RenderPrimitive());
+    this->m_current = this->m_commands.begin();
+  }
+
   ~RenderPrimitivePool();
   RenderPrimitive* Acquire();
   void Rewind();

@@ -7,7 +7,12 @@
 
 class RenderCommandPool {
 public:
-  RenderCommandPool();
+  // INLINED
+  __forceinline RenderCommandPool() {
+    this->m_commands.resize(1024, RenderCommand());
+    this->m_current = this->m_commands.begin();
+  }
+
   RenderCommand* Acquire();
   void Rewind();
 
