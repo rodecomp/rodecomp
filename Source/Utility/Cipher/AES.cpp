@@ -535,35 +535,35 @@ void CAES::DefDecryptBlock(const char* in, char* result) {
     throw std::exception(sm_szErrorMsg1);
   }
 
-  unsigned int t0 =
+  int t0 =
     (static_cast<unsigned int>(static_cast<unsigned char>(in[0])) << 24) |
     (static_cast<unsigned char>(in[1]) << 16) | (static_cast<unsigned char>(in[2]) << 8) |
     static_cast<unsigned char>(in[3]);
   t0 ^= this->m_Kd[0][0];
-  unsigned int t1 =
+  int t1 =
     (static_cast<unsigned int>(static_cast<unsigned char>(in[4])) << 24) |
     (static_cast<unsigned char>(in[5]) << 16) | (static_cast<unsigned char>(in[6]) << 8) |
     static_cast<unsigned char>(in[7]);
   t1 ^= this->m_Kd[0][1];
-  unsigned int t2 =
+  int t2 =
     (static_cast<unsigned int>(static_cast<unsigned char>(in[8])) << 24) |
     (static_cast<unsigned char>(in[9]) << 16) | (static_cast<unsigned char>(in[10]) << 8) |
     static_cast<unsigned char>(in[11]);
   t2 ^= this->m_Kd[0][2];
-  unsigned int t3 =
+  int t3 =
     (static_cast<unsigned int>(static_cast<unsigned char>(in[12])) << 24) |
     (static_cast<unsigned char>(in[13]) << 16) | (static_cast<unsigned char>(in[14]) << 8) |
     static_cast<unsigned char>(in[15]);
   t3 ^= this->m_Kd[0][3];
 
   for (int round = 1; round < this->m_iROUNDS; ++round) {
-    const unsigned int a0 = sm_T5[(t0 >> 24) & 0xFF] ^ sm_T6[(t3 >> 16) & 0xFF] ^
+    const int a0 = sm_T5[(t0 >> 24) & 0xFF] ^ sm_T6[(t3 >> 16) & 0xFF] ^
       sm_T7[(t2 >> 8) & 0xFF] ^ sm_T8[t1 & 0xFF] ^ this->m_Kd[round][0];
-    const unsigned int a1 = sm_T5[(t1 >> 24) & 0xFF] ^ sm_T6[(t0 >> 16) & 0xFF] ^
+    const int a1 = sm_T5[(t1 >> 24) & 0xFF] ^ sm_T6[(t0 >> 16) & 0xFF] ^
       sm_T7[(t3 >> 8) & 0xFF] ^ sm_T8[t2 & 0xFF] ^ this->m_Kd[round][1];
-    const unsigned int a2 = sm_T5[(t2 >> 24) & 0xFF] ^ sm_T6[(t1 >> 16) & 0xFF] ^
+    const int a2 = sm_T5[(t2 >> 24) & 0xFF] ^ sm_T6[(t1 >> 16) & 0xFF] ^
       sm_T7[(t0 >> 8) & 0xFF] ^ sm_T8[t3 & 0xFF] ^ this->m_Kd[round][2];
-    const unsigned int a3 = sm_T5[(t3 >> 24) & 0xFF] ^ sm_T6[(t2 >> 16) & 0xFF] ^
+    const int a3 = sm_T5[(t3 >> 24) & 0xFF] ^ sm_T6[(t2 >> 16) & 0xFF] ^
       sm_T7[(t1 >> 8) & 0xFF] ^ sm_T8[t0 & 0xFF] ^ this->m_Kd[round][3];
     t0 = a0;
     t1 = a1;
@@ -601,35 +601,35 @@ void CAES::DefEncryptBlock(const char* in, char* result) {
     throw std::exception(sm_szErrorMsg1);
   }
 
-  unsigned int t0 =
+  int t0 =
     (static_cast<unsigned int>(static_cast<unsigned char>(in[0])) << 24) |
     (static_cast<unsigned char>(in[1]) << 16) | (static_cast<unsigned char>(in[2]) << 8) |
     static_cast<unsigned char>(in[3]);
   t0 ^= this->m_Ke[0][0];
-  unsigned int t1 =
+  int t1 =
     (static_cast<unsigned int>(static_cast<unsigned char>(in[4])) << 24) |
     (static_cast<unsigned char>(in[5]) << 16) | (static_cast<unsigned char>(in[6]) << 8) |
     static_cast<unsigned char>(in[7]);
   t1 ^= this->m_Ke[0][1];
-  unsigned int t2 =
+  int t2 =
     (static_cast<unsigned int>(static_cast<unsigned char>(in[8])) << 24) |
     (static_cast<unsigned char>(in[9]) << 16) | (static_cast<unsigned char>(in[10]) << 8) |
     static_cast<unsigned char>(in[11]);
   t2 ^= this->m_Ke[0][2];
-  unsigned int t3 =
+  int t3 =
     (static_cast<unsigned int>(static_cast<unsigned char>(in[12])) << 24) |
     (static_cast<unsigned char>(in[13]) << 16) | (static_cast<unsigned char>(in[14]) << 8) |
     static_cast<unsigned char>(in[15]);
   t3 ^= this->m_Ke[0][3];
 
   for (int round = 1; round < this->m_iROUNDS; ++round) {
-    const unsigned int a0 = sm_T1[(t0 >> 24) & 0xFF] ^ sm_T2[(t1 >> 16) & 0xFF] ^
+    const int a0 = sm_T1[(t0 >> 24) & 0xFF] ^ sm_T2[(t1 >> 16) & 0xFF] ^
       sm_T3[(t2 >> 8) & 0xFF] ^ sm_T4[t3 & 0xFF] ^ this->m_Ke[round][0];
-    const unsigned int a1 = sm_T1[(t1 >> 24) & 0xFF] ^ sm_T2[(t2 >> 16) & 0xFF] ^
+    const int a1 = sm_T1[(t1 >> 24) & 0xFF] ^ sm_T2[(t2 >> 16) & 0xFF] ^
       sm_T3[(t3 >> 8) & 0xFF] ^ sm_T4[t0 & 0xFF] ^ this->m_Ke[round][1];
-    const unsigned int a2 = sm_T1[(t2 >> 24) & 0xFF] ^ sm_T2[(t3 >> 16) & 0xFF] ^
+    const int a2 = sm_T1[(t2 >> 24) & 0xFF] ^ sm_T2[(t3 >> 16) & 0xFF] ^
       sm_T3[(t0 >> 8) & 0xFF] ^ sm_T4[t1 & 0xFF] ^ this->m_Ke[round][2];
-    const unsigned int a3 = sm_T1[(t3 >> 24) & 0xFF] ^ sm_T2[(t0 >> 16) & 0xFF] ^
+    const int a3 = sm_T1[(t3 >> 24) & 0xFF] ^ sm_T2[(t0 >> 16) & 0xFF] ^
       sm_T3[(t1 >> 8) & 0xFF] ^ sm_T4[t2 & 0xFF] ^ this->m_Ke[round][3];
     t0 = a0;
     t1 = a1;
