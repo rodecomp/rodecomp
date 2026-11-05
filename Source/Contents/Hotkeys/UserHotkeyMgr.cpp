@@ -68,7 +68,9 @@ namespace {
   int HotkeyIndex(LuaScript& script, int tab, int index) {
     if (tab == 1 && index >= HK_FIRST_HIDDEN) {
       for (int candidate = HK_FIRST_HIDDEN; candidate <= index; ++candidate) {
-        index += HiddenInterfaceIndex(candidate);
+        if (HiddenInterfaceIndex(candidate)) {
+          ++index;
+        }
       }
     }
 
@@ -188,7 +190,8 @@ void CUserHotkeyMgr::LoadV2(LuaScript& script, Json::Value& data) {
 void CUserHotkeyMgr::Capture(LuaScript& script) {
   this->m_original.clear();
 
-  for (int tab : {0, 3, 1, 2}) {
+  for (int position = 0; position < 4; ++position) {
+    const int tab = this->TabAt(position);
     const int count = HotkeyCount(script, tab);
 
     for (int row = 0; row < count; ++row) {
@@ -197,14 +200,15 @@ void CUserHotkeyMgr::Capture(LuaScript& script) {
         continue;
       }
 
+      std::string text;
       int key1, key2;
       const char* keyText = nullptr;
       const char* description = nullptr;
 
       if (script.Call("GetUserHotKeyInfo", "dd>ddss", tab + 1, index, &key1, &key2, &keyText, &description)) {
-        std::string text = description;
+        text = description;
         if (!text.empty()) {
-          this->m_original.push_back({tab, index, key1, key2, text});
+          this->m_original.emplace_back(tab, index, key1, key2, text);
         }
       }
     }
@@ -214,7 +218,8 @@ void CUserHotkeyMgr::Capture(LuaScript& script) {
 // OFFSET: 0x005F8100
 // FUNCTION: fn_04060
 bool CUserHotkeyMgr::HasUserAssignments(LuaScript& script) const {
-  for (int tab : {0, 3, 1, 2}) {
+  for (int position = 0; position < 4; ++position) {
+    const int tab = this->TabAt(position);
     const int count = HotkeyCount(script, tab);
 
     for (int row = 0; row < count; ++row) {
@@ -223,13 +228,20 @@ bool CUserHotkeyMgr::HasUserAssignments(LuaScript& script) const {
         continue;
       }
 
-      int key1 = 0, key2 = 0;
+      std::string keyName;
+      std::string userDescription;
+      int key1, key2;
       const char* keyText = nullptr;
       const char* description = nullptr;
 
-      if (script.Call("GetUserHotKeyInfo", "dd>ddss", tab + 1, index, &key1, &key2, &keyText, &description) && std::string(description).size()) {
-        if (script.Call("GetOriginalHotKeyInfo", "dd>ddss", tab + 1, index, &key1, &key2, &keyText, &description) && std::string(description).size()) {
-          return true;
+      if (script.Call("GetUserHotKeyInfo", "dd>ddss", tab + 1, index, &key1, &key2, &keyText, &description)) {
+        userDescription = description;
+        if (!userDescription.empty() &&
+            script.Call("GetOriginalHotKeyInfo", "dd>ddss", tab + 1, index, &key1, &key2, &keyText, &description)) {
+          std::string originalDescription = description;
+          if (!originalDescription.empty()) {
+            return true;
+          }
         }
       }
     }
