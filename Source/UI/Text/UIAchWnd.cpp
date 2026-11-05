@@ -1120,14 +1120,17 @@ void UIAchTracingWnd::Paint() {
 // OFFSET: 0x007BA920
 // FUNCTION: fn_09270
 int UIAchTracingWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message == 34) {
+  switch (message) {
+  case 34:
     this->info = reinterpret_cast<AchTracingWndInfo*>(argument1);
     if (!this->info->IsValid()) {
       this->info->Reset();
     }
     this->Move(this->info->x, this->info->y);
-  } else if (message == 98) {
-    if (argument1 == 478) {
+    break;
+  case 98:
+    switch (argument1) {
+    case 478: {
       auto it = std::find_if(g_achievementTracking.begin(), g_achievementTracking.end(), [argument2](AchTracingEntry entry) {
         return argument2 == entry.id;
       });
@@ -1136,15 +1139,20 @@ int UIAchTracingWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         this->Invalidate();
         return 0;
       }
-    } else if (argument1 == 479) {
+      break;
+    }
+    case 479: {
       UIWindow* window = g_windowMgr.EnsureWindow(270);
       if (window) {
         static_cast<UIAchievementWnd*>(window)->SelectAchievement(argument2);
         this->Invalidate();
         return 0;
       }
+      break;
     }
-  } else {
+    }
+    break;
+  default:
     return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
