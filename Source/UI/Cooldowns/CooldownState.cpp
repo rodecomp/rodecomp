@@ -84,16 +84,18 @@ float CooldownState::Update() {
     this->angle = 90.0f - (this->angle - static_cast<float>(this->segment) * 45.0f);
   }
 
-  auto entry = this->edges.find(this->segment);
-  CooldownEdge& edge = entry->second;
   if (this->duration <= progress) {
-    return edge.origin;
+    return this->edges.find(this->segment)->second.origin;
   }
 
+  CooldownEdge& edge = this->edges.find(this->segment)->second;
   const float radians = this->angle * 0.017453292f;
   const float tangent = static_cast<float>(std::tan(static_cast<double>(radians)));
-  const float distance = static_cast<float>(edge.radius) / tangent;
-  edge.current = edge.increasing != 0 ? edge.origin + distance : edge.origin - distance;
+  if (edge.increasing != 0) {
+    edge.current = edge.origin + static_cast<float>(edge.radius) / tangent;
+  } else {
+    edge.current = edge.origin - static_cast<float>(edge.radius) / tangent;
+  }
 
   return edge.current;
 }
