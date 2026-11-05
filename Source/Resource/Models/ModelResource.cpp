@@ -103,9 +103,9 @@ C3dModelResV1* C3dModelResV1::Create() {
 // OFFSET: 0x007593C0
 // FUNCTION: fn_08012
 __declspec(noinline) ModelNode* C3dModelRes::FindNode(const char* name) const {
-  for (ModelNode* node : this->nodes) {
-    if (node->name.compare(name) == 0) {
-      return node;
+  for (std::list<ModelNode*>::const_iterator it = this->nodes.begin(); it != this->nodes.end(); ++it) {
+    if ((*it)->name.compare(name) == 0) {
+      return *it;
     }
   }
 
