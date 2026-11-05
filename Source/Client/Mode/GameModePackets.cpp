@@ -138,7 +138,7 @@
 
 // OFFSET: 0x00D7AF70
 // FUNCTION: fn_22198
-void CGameMode::ReceiveItemDisappear(std::uint32_t itemAid) {
+__declspec(noinline) void CGameMode::ReceiveItemDisappear(std::uint32_t itemAid) {
   if (this->scene->RemoveItem(itemAid)) {
     this->SendMsg(13, static_cast<int>(itemAid), 0, 0, 0);
   }
@@ -510,7 +510,7 @@ void CGameMode::ReceiveUnknown05C4Result(const unsigned char* data) {
 
 // OFFSET: 0x00D230E0
 // FUNCTION: fn_21660
-void CGameMode::ReceiveColoredNotice(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveColoredNotice(const unsigned char* packet) {
   std::string text;
   text.assign(reinterpret_cast<const char*>(packet + 9), *reinterpret_cast<const short*>(packet + 2) - 9);
   if (!text.empty()) {
@@ -603,7 +603,7 @@ void CGameMode::ReceiveStatDump(const unsigned char* packet) {
 
 // OFFSET: 0x00D24430
 // FUNCTION: fn_21666
-void CGameMode::ReceiveActorText(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveActorText(const unsigned char* packet) {
   char text[81];
   std::strncpy(text, reinterpret_cast<const char*>(packet + 6), 80);
   text[80] = '\0';
@@ -615,7 +615,7 @@ void CGameMode::ReceiveActorText(const unsigned char* packet) {
 
 // OFFSET: 0x00D25920
 // FUNCTION: fn_21674
-void CGameMode::ReceiveRentalItemTime(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveRentalItemTime(const unsigned char* packet) {
   char number[12];
   char text[260];
   _itoa(*reinterpret_cast<const int*>(packet + 2), number, 10);
@@ -666,7 +666,7 @@ void CGameMode::ReceiveUnknownD264E0(const unsigned char* packet) {
 
 // OFFSET: 0x00D26600
 // FUNCTION: fn_21680
-void CGameMode::ReceiveActorSequenceDeadline(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveActorSequenceDeadline(const unsigned char* packet) {
   g_session.InsertPair(*reinterpret_cast<const int*>(packet + 2), *reinterpret_cast<const int*>(packet + 6));
   const std::uint32_t aid = *reinterpret_cast<const std::uint32_t*>(packet + 2);
   if (aid == g_session.m_aid) {
@@ -726,7 +726,7 @@ void CGameMode::ReceiveDevotionList(const unsigned char* packet) {
 
 // OFFSET: 0x00D27060
 // FUNCTION: fn_21686
-void CGameMode::ReceiveActorSignal(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveActorSignal(const unsigned char* packet) {
   if (CRenderObject* actor = this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t*>(packet + 2))) {
     actor->SendMsg(nullptr, 142, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
@@ -734,7 +734,7 @@ void CGameMode::ReceiveActorSignal(const unsigned char* packet) {
 
 // OFFSET: 0x00D2A990
 // FUNCTION: fn_21705
-void CGameMode::ReceiveFormatStringMessage(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveFormatStringMessage(const unsigned char* packet) {
   const auto* message = reinterpret_cast<const FormatStringMessagePacket*>(packet);
   const char* format = LookupMessage(message->messageId);
 
@@ -899,7 +899,7 @@ void CGameMode::ReceiveItem1738NormalList(const unsigned char* data) {
 
 // OFFSET: 0x00D2C190
 // FUNCTION: fn_21713
-void CGameMode::ReceiveHomunculusProperty64(const unsigned char* data) {
+__declspec(noinline) void CGameMode::ReceiveHomunculusProperty64(const unsigned char* data) {
   if (!data) {
     return;
   }
@@ -928,7 +928,7 @@ void CGameMode::ReceiveHomunculusProperty64(const unsigned char* data) {
 
 // OFFSET: 0x00D2C250
 // FUNCTION: fn_21714
-void CGameMode::ReceiveHomunculusProperty(const unsigned char* data) {
+__declspec(noinline) void CGameMode::ReceiveHomunculusProperty(const unsigned char* data) {
   const HomunculusPropertyPacket* packet = reinterpret_cast<const HomunculusPropertyPacket*>(data);
   switch (packet->type) {
   case 5:
@@ -950,7 +950,7 @@ void CGameMode::ReceiveHomunculusProperty(const unsigned char* data) {
 
 // OFFSET: 0x00D2C2B0
 // FUNCTION: fn_21715
-void CGameMode::ReceiveHuntingList(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveHuntingList(const unsigned char* packet) {
   char text[256];
   int size = *reinterpret_cast<const short*>(packet + 2) - 4;
   if (size > 5000) {
@@ -1222,7 +1222,7 @@ void CGameMode::ReceivePackageSimulation(const unsigned char* packet) {
 
 // OFFSET: 0x00D612A0
 // FUNCTION: fn_21979
-void CGameMode::ReceiveUnknownD612A0(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveUnknownD612A0(const unsigned char* packet) {
   UIWindow* window = g_windowMgr.EnsureWindow(267);
   if (!window) {
     return;
@@ -1235,7 +1235,7 @@ void CGameMode::ReceiveUnknownD612A0(const unsigned char* packet) {
 
 // OFFSET: 0x00D77BF0
 // FUNCTION: fn_22152
-void CGameMode::ReceiveUnknownD77BF0(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveUnknownD77BF0(const unsigned char* packet) {
   if (packet[2] == 1) {
     if (!g_windowMgr.unknown_0450) {
       g_windowMgr.EnsureWindow(262);
@@ -1304,7 +1304,7 @@ void CGameMode::IgnoreRemovedPacket7(const unsigned char*) {
 
 // OFFSET: 0x00D79420
 // FUNCTION: fn_22167
-void CGameMode::ReceiveUnknown173A5BC(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveUnknown173A5BC(const unsigned char* packet) {
   const int value = *reinterpret_cast<const int*>(packet + 2);
   if (value > 0) {
     g_unknown173A5BC = value;
@@ -1316,7 +1316,7 @@ int g_unknown16FC588;
 
 // OFFSET: 0x00D7A0B0
 // FUNCTION: fn_22186
-void CGameMode::ReceiveUnknown16FC588(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveUnknown16FC588(const unsigned char* packet) {
   const signed char value = *reinterpret_cast<const signed char*>(packet + 2);
   if (value != 1 && value != 2) {
     g_unknown16FC588 = 0;
@@ -1345,7 +1345,7 @@ void CGameMode::IgnoreRemovedPacket11(const unsigned char*) {
 
 // OFFSET: 0x00D89BD0
 // FUNCTION: fn_22211
-void CGameMode::ReceiveCharViewResult(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveCharViewResult(const unsigned char* packet) {
   switch (*reinterpret_cast<const std::uint16_t*>(packet + 2)) {
   case 0: {
     CMode* mode = g_modeMgr.gameMode;
@@ -1366,14 +1366,14 @@ void CGameMode::ReceiveCharViewResult(const unsigned char* packet) {
 
 // OFFSET: 0x00D89CA0
 // FUNCTION: fn_22213
-void CGameMode::ResetItemLists(const unsigned char*) {
+__declspec(noinline) void CGameMode::ResetItemLists(const unsigned char*) {
   g_session.ResetItems61B8();
   g_session.ResetItems6B68();
 }
 
 // OFFSET: 0x00D8A1F0
 // FUNCTION: fn_22216
-void CGameMode::ClearItemLists(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ClearItemLists(const unsigned char* packet) {
   const std::uint16_t slot = *reinterpret_cast<const std::uint16_t*>(packet + 2);
   g_session.ClearUnknown1710(slot);
   this->unknown_05CE = 1;
@@ -1386,7 +1386,7 @@ void CGameMode::ClearItemLists(const unsigned char* packet) {
 
 // OFFSET: 0x00D31E50
 // FUNCTION: fn_21736
-void CGameMode::ReceiveMemorialDungeonInfo(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveMemorialDungeonInfo(const unsigned char* packet) {
   g_session.unknown_5950 = reinterpret_cast<const char*>(packet + 2);
   g_session.unknown_596C = *reinterpret_cast<const int*>(packet + 63);
   g_session.unknown_5970 = *reinterpret_cast<const int*>(packet + 67);
@@ -1402,7 +1402,7 @@ void CGameMode::ReceiveMemorialDungeonInfo(const unsigned char* packet) {
 
 // OFFSET: 0x00D31EE0
 // FUNCTION: fn_21737
-void CGameMode::ReceiveMemorialDungeonNotify(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveMemorialDungeonNotify(const unsigned char* packet) {
   const int previous = g_session.unknown_5948;
   g_session.unknown_5970 = *reinterpret_cast<const int*>(packet + 6);
   const int time = *reinterpret_cast<const int*>(packet + 6);
@@ -1429,7 +1429,7 @@ void CGameMode::ReceiveMemorialDungeonNotify(const unsigned char* packet) {
 
 // OFFSET: 0x00D31FD0
 // FUNCTION: fn_21738
-void CGameMode::ReceiveMemorialDungeonSubscriptionInfo(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveMemorialDungeonSubscriptionInfo(const unsigned char* packet) {
   g_session.unknown_5950 = reinterpret_cast<const char*>(packet + 2);
   g_session.unknown_5968 = *reinterpret_cast<const short*>(packet + 63);
   g_session.unknown_5948 = 0;
@@ -1440,7 +1440,7 @@ void CGameMode::ReceiveMemorialDungeonSubscriptionInfo(const unsigned char* pack
 
 // OFFSET: 0x00D32040
 // FUNCTION: fn_21739
-void CGameMode::ReceiveMemorialDungeonSubscriptionNotify(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveMemorialDungeonSubscriptionNotify(const unsigned char* packet) {
   g_session.unknown_5968 = *reinterpret_cast<const short*>(packet + 2);
   UIWindow* window = g_windowMgr.EnsureWindow(137);
   if (!window) {
@@ -1562,7 +1562,7 @@ void CGameMode::ReceiveZoneServerChange(const char* mapName, std::int16_t x, std
 
 // OFFSET: 0x00D272A0
 // FUNCTION: fn_21688
-void CGameMode::ReceiveActorStatusBlock(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveActorStatusBlock(const unsigned char* packet) {
   g_session.SetUnknown5BC0(*reinterpret_cast<const int*>(packet + 2));
   g_session.unknown_5BC4 = *reinterpret_cast<const int*>(packet + 6);
   g_session.unknown_5BC8 = *reinterpret_cast<const int*>(packet + 0xE);
@@ -1575,7 +1575,7 @@ void CGameMode::ReceiveActorStatusBlock(const unsigned char* packet) {
 
 // OFFSET: 0x00D27320
 // FUNCTION: fn_21689
-void CGameMode::ReceiveActorStatusUpdate(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveActorStatusUpdate(const unsigned char* packet) {
   if (g_session.unknown_5BC0 != -1) {
     const unsigned int field = *reinterpret_cast<const std::uint16_t*>(packet + 2) - 5;
     switch (field) {
@@ -1612,7 +1612,7 @@ void CGameMode::ReceiveActorTitle(const unsigned char* packet) {
 
 // OFFSET: 0x00D61340
 // FUNCTION: fn_21981
-void CGameMode::ReceiveActorInt8(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveActorInt8(const unsigned char* packet) {
   if (CRenderObject* actor = this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t*>(packet + 2))) {
     const std::int64_t value = *reinterpret_cast<const signed char*>(packet + 6);
     actor->SendMsg(nullptr, 0x91, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0x14, 0, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -1621,7 +1621,7 @@ void CGameMode::ReceiveActorInt8(const unsigned char* packet) {
 
 // OFFSET: 0x00D612F0
 // FUNCTION: fn_21980
-void CGameMode::ReceiveActorInt64Pair(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveActorInt64Pair(const unsigned char* packet) {
   if (CRenderObject* actor = this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t*>(packet + 2))) {
     const std::int64_t first = *reinterpret_cast<const int*>(packet + 6);
     const std::int64_t second = *reinterpret_cast<const int*>(packet + 0xA);
@@ -1633,7 +1633,7 @@ void CGameMode::ReceiveActorInt64Pair(const unsigned char* packet) {
 
 // OFFSET: 0x00D24C40
 // FUNCTION: fn_21670
-void CGameMode::ReceiveItem1740EquipList(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveItem1740EquipList(const unsigned char* packet) {
   const int count = (*reinterpret_cast<const std::int16_t*>(packet + 2) - 4) / sizeof(StoreEquipRecord);
   const StoreEquipRecord* record = reinterpret_cast<const StoreEquipRecord*>(packet + 4);
   for (int i = 0; i < count; ++i, ++record) {
@@ -1700,7 +1700,7 @@ void CGameMode::ReceiveItem1740EquipListOptions(const unsigned char* packet) {
 
 // OFFSET: 0x00D26800
 // FUNCTION: fn_21682
-void CGameMode::ReceiveUnknownD26800(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveUnknownD26800(const unsigned char* packet) {
   const unsigned char value = packet[2];
   *reinterpret_cast<int*>(g_session.unknown_5974) = value;
   g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(value != 0 ? 0x54F : 0x54E)), 0x64FFFF, 0, 0, 0);
@@ -1711,7 +1711,7 @@ void CGameMode::ReceiveUnknownD26800(const unsigned char* packet) {
 
 // OFFSET: 0x00D79660
 // FUNCTION: fn_22172
-void CGameMode::ReceiveUnknownD79660(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveUnknownD79660(const unsigned char* packet) {
   UIWindow* window = g_windowMgr.LookupWindow(10032);
   if (!window) {
     return;
@@ -1736,7 +1736,7 @@ void CGameMode::ReceiveUnknownD79660(const unsigned char* packet) {
 
 // OFFSET: 0x00D79E90
 // FUNCTION: fn_22183
-void CGameMode::ReceiveUnknownD79E90(std::int16_t result, std::intptr_t value) {
+__declspec(noinline) void CGameMode::ReceiveUnknownD79E90(std::int16_t result, std::intptr_t value) {
   switch (result) {
   case 0:
     if (UIWindow* window = g_windowMgr.LookupWindow(340)) {
@@ -1751,7 +1751,7 @@ void CGameMode::ReceiveUnknownD79E90(std::int16_t result, std::intptr_t value) {
 
 // OFFSET: 0x00D79440
 // FUNCTION: fn_22168
-void CGameMode::ReceiveRouletteSetResult(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveRouletteSetResult(const unsigned char* packet) {
   switch (packet[2]) {
   case 0:
     g_rouletteMgr->SetAdditionItem(*reinterpret_cast<const int*>(packet + 3));
@@ -1775,7 +1775,7 @@ void CGameMode::ReceiveRouletteSetResult(const unsigned char* packet) {
 
 // OFFSET: 0x00D611B0
 // FUNCTION: fn_21977
-void CGameMode::ReceiveDynamicNpcNotice(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveDynamicNpcNotice(const unsigned char* packet) {
   char text[0x400];
   const char* message;
   switch (*reinterpret_cast<const int*>(packet + 2)) {
@@ -1932,7 +1932,7 @@ void __declspec(noinline) __stdcall sub_D08670(int field14, int itemId, int quan
 
 // OFFSET: 0x00D08640
 // FUNCTION: fn_21591
-void __stdcall sub_D08640(const unsigned char* packet) {
+__declspec(noinline) void __stdcall sub_D08640(const unsigned char* packet) {
   sub_D08670(
     *reinterpret_cast<const int*>(packet + 0x14),
     *reinterpret_cast<const int*>(packet + 2),
@@ -1944,7 +1944,7 @@ void __stdcall sub_D08640(const unsigned char* packet) {
 
 // OFFSET: 0x00D246B0
 // FUNCTION: fn_21668
-void CGameMode::ReceiveItem1740BasicList(const unsigned char* data) {
+__declspec(noinline) void CGameMode::ReceiveItem1740BasicList(const unsigned char* data) {
   const PacketLengthHeader* packet = reinterpret_cast<const PacketLengthHeader*>(data);
   const int count = (packet->length - sizeof(PacketLengthHeader)) / sizeof(Item1740Record);
   const Item1740Record* record = reinterpret_cast<const Item1740Record*>(data + sizeof(PacketLengthHeader));
@@ -1969,7 +1969,7 @@ void CGameMode::ReceiveItem1740BasicList(const unsigned char* data) {
 
 // OFFSET: 0x00D24810
 // FUNCTION: fn_21669
-void CGameMode::ReceiveItem1740BasicListBind(const unsigned char* data) {
+__declspec(noinline) void CGameMode::ReceiveItem1740BasicListBind(const unsigned char* data) {
   const PacketLengthHeader* packet = reinterpret_cast<const PacketLengthHeader*>(data);
   const int count = (packet->length - sizeof(PacketLengthHeader)) / sizeof(Item1740EquipRecord);
   const Item1740EquipRecord* record = reinterpret_cast<const Item1740EquipRecord*>(data + sizeof(PacketLengthHeader));
@@ -1996,7 +1996,7 @@ void CGameMode::ReceiveItem1740BasicListBind(const unsigned char* data) {
 
 // OFFSET: 0x00D2D770
 // FUNCTION: fn_21720
-void CGameMode::ReceiveItemInventoryList(const unsigned char* data) {
+__declspec(noinline) void CGameMode::ReceiveItemInventoryList(const unsigned char* data) {
   g_session.KeepEquipment();
 
   const PacketLengthHeader* packet = reinterpret_cast<const PacketLengthHeader*>(data);
@@ -2051,7 +2051,7 @@ int sub_D64A40(const unsigned char* entries) {
 
 // OFFSET: 0x00D77C60
 // FUNCTION: fn_22153
-void CGameMode::ReceivePartyJobLevel(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceivePartyJobLevel(const unsigned char* packet) {
   g_session.SetPartyJobLevel(
     *reinterpret_cast<const std::uint32_t*>(packet + 2), *reinterpret_cast<const std::uint16_t*>(packet + 6),
     *reinterpret_cast<const std::uint16_t*>(packet + 8)
@@ -2061,7 +2061,7 @@ void CGameMode::ReceivePartyJobLevel(const unsigned char* packet) {
 
 // OFFSET: 0x00D8A260
 // FUNCTION: fn_22217
-void CGameMode::ReceivePartyDead(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceivePartyDead(const unsigned char* packet) {
   MessengerMember member = g_session.PartyByAccount(*reinterpret_cast<const std::uint32_t*>(packet + 2));
   if (member.valid != 0) {
     g_session.SetPartyDead(*reinterpret_cast<const std::uint32_t*>(packet + 2), packet[6]);
@@ -2111,7 +2111,7 @@ void CGameMode::ReceiveShopItemList(
 
 // OFFSET: 0x00D79AF0
 // FUNCTION: fn_22177
-void CGameMode::ReceivePacket0B2E(short result) {
+__declspec(noinline) void CGameMode::ReceivePacket0B2E(short result) {
   switch (result) {
   case 1:
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x442)), 0xff, 0, 0, 0);
@@ -2124,7 +2124,7 @@ void CGameMode::ReceivePacket0B2E(short result) {
 
 // OFFSET: 0x00D2A1F0
 // FUNCTION: fn_21702
-void CGameMode::ReceiveUnknownD2A1F0(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveUnknownD2A1F0(const unsigned char* packet) {
   switch (*reinterpret_cast<const std::int16_t*>(packet + 2)) {
   case 3:
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
@@ -2142,7 +2142,7 @@ void CGameMode::ReceiveUnknownD2A1F0(const unsigned char* packet) {
 
 // OFFSET: 0x00D7A0E0
 // FUNCTION: fn_22187
-void CGameMode::ReceiveActorMessage7(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveActorMessage7(const unsigned char* packet) {
   const std::int16_t length = *reinterpret_cast<const std::int16_t*>(packet + 2) - 8;
   if (length == 0) {
     return;
@@ -2163,7 +2163,7 @@ void CGameMode::ReceiveActorMessage7(const unsigned char* packet) {
 }
 // OFFSET: 0x00D7AEB0
 // FUNCTION: fn_22194
-void CGameMode::Zc_Start_Baby(const unsigned char*) {
+__declspec(noinline) void CGameMode::Zc_Start_Baby(const unsigned char*) {
   this->unknown_040C = 20001;
   this->unknown_0410 = 5;
   this->unknown_0414 = 0;
@@ -2172,7 +2172,7 @@ void CGameMode::Zc_Start_Baby(const unsigned char*) {
 
 // OFFSET: 0x00D7AEE0
 // FUNCTION: fn_22195
-void CGameMode::Zc_Start_Capture(const unsigned char*) {
+__declspec(noinline) void CGameMode::Zc_Start_Capture(const unsigned char*) {
   this->unknown_040C = 10000;
   this->unknown_0410 = 5;
   this->unknown_0414 = 0;
@@ -2181,7 +2181,7 @@ void CGameMode::Zc_Start_Capture(const unsigned char*) {
 
 // OFFSET: 0x00D7AF10
 // FUNCTION: fn_22196
-void CGameMode::Zc_Start_Collection(const unsigned char*) {
+__declspec(noinline) void CGameMode::Zc_Start_Collection(const unsigned char*) {
   this->unknown_040C = 40000;
   this->unknown_0410 = 1;
   this->unknown_0414 = 0;
@@ -2190,7 +2190,7 @@ void CGameMode::Zc_Start_Collection(const unsigned char*) {
 
 // OFFSET: 0x00D7AF40
 // FUNCTION: fn_22197
-void CGameMode::Zc_Start_Couple(const unsigned char*) {
+__declspec(noinline) void CGameMode::Zc_Start_Couple(const unsigned char*) {
   this->unknown_040C = 20000;
   this->unknown_0410 = 5;
   this->unknown_0414 = 0;
@@ -2405,13 +2405,13 @@ void CGameMode::sub_D591A0(std::uint32_t aid, int state, int flag, int options) 
 
 // OFFSET: 0x00D7B350
 // FUNCTION: fn_22201
-void CGameMode::ReceivePacket0AB8(const unsigned char*) {
+__declspec(noinline) void CGameMode::ReceivePacket0AB8(const unsigned char*) {
   this->scene->player->SendMsg(nullptr, 149, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x00D78010
 // FUNCTION: fn_22156
-void CGameMode::ReceiveUnknownD78010(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveUnknownD78010(const unsigned char* packet) {
   this->sub_D591A0(
     *reinterpret_cast<const std::uint32_t*>(packet + 2),
     *reinterpret_cast<const int*>(packet + 6),
@@ -2422,7 +2422,7 @@ void CGameMode::ReceiveUnknownD78010(const unsigned char* packet) {
 
 // OFFSET: 0x00D89C60
 // FUNCTION: fn_22212
-void CGameMode::ReceiveUnknownD89C60(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveUnknownD89C60(const unsigned char* packet) {
   this->sub_D5EEF0(
     reinterpret_cast<const char*>(packet + 0x2B),
     *reinterpret_cast<const int*>(packet + 2),
@@ -2440,7 +2440,7 @@ void CGameMode::ReceiveUnknownD89C60(const unsigned char* packet) {
 
 // OFFSET: 0x00D79390
 // FUNCTION: fn_22165
-void CGameMode::ReceiveLapineBoxIngredient(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveLapineBoxIngredient(const unsigned char* packet) {
   if (g_windowMgr.LookupWindow(0x122) != nullptr) {
     return;
   }
@@ -2452,7 +2452,7 @@ void CGameMode::ReceiveLapineBoxIngredient(const unsigned char* packet) {
 
 // OFFSET: 0x00D79B40
 // FUNCTION: fn_22178
-void CGameMode::ActivateMacroBlackListCheck(unsigned char state, int duration) {
+__declspec(noinline) void CGameMode::ActivateMacroBlackListCheck(unsigned char state, int duration) {
   if (UIWindow* window = g_windowMgr.LookupWindow(0x167)) {
     static_cast<UIMacroBlackListCheckWnd*>(window)->Activate(state, duration);
   }
@@ -2460,7 +2460,7 @@ void CGameMode::ActivateMacroBlackListCheck(unsigned char state, int duration) {
 
 // OFFSET: 0x00D79B70
 // FUNCTION: fn_22179
-void CGameMode::SetMacroDetectorCountdown(unsigned char count, std::uint32_t duration) {
+__declspec(noinline) void CGameMode::SetMacroDetectorCountdown(unsigned char count, std::uint32_t duration) {
   if (UIWindow* window = g_windowMgr.LookupWindow(0x11D)) {
     window->Show(1);
     static_cast<UIMacroDetectorWnd*>(window)->SetCountdown(count, duration);
@@ -2469,7 +2469,7 @@ void CGameMode::SetMacroDetectorCountdown(unsigned char count, std::uint32_t dur
 
 // OFFSET: 0x00D79340
 // FUNCTION: fn_22164
-void CGameMode::ReceiveCaptchaPreviewImage(const char* key, const void* data, unsigned short size) {
+__declspec(noinline) void CGameMode::ReceiveCaptchaPreviewImage(const char* key, const void* data, unsigned short size) {
   UICaptchaPreviewWnd* window = static_cast<UICaptchaPreviewWnd*>(g_windowMgr.LookupWindow(0x120));
   if (window != nullptr && std::strncmp(window->m_captchaKey, key, 4) == 0) {
     window->AddImageData(data, size);
@@ -2478,7 +2478,7 @@ void CGameMode::ReceiveCaptchaPreviewImage(const char* key, const void* data, un
 
 // OFFSET: 0x00D793D0
 // FUNCTION: fn_22166
-void CGameMode::ReceiveLapineUpgradeBoxValue(int value) {
+__declspec(noinline) void CGameMode::ReceiveLapineUpgradeBoxValue(int value) {
   if (g_windowMgr.LookupWindow(0x12E) != nullptr) {
     return;
   }
@@ -2493,7 +2493,7 @@ void CGameMode::ReceiveLapineUpgradeBoxValue(int value) {
 
 // OFFSET: 0x00D7B420
 // FUNCTION: fn_22203
-void CGameMode::Zc_Trycapture_Monster(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::Zc_Trycapture_Monster(const unsigned char* packet) {
   UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0394);
   if (packet[2] != 0) {
     if (window) {
@@ -2508,7 +2508,7 @@ void CGameMode::Zc_Trycapture_Monster(const unsigned char* packet) {
 
 // OFFSET: 0x00D7B470
 // FUNCTION: fn_22204
-void CGameMode::Zc_Trycollection(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::Zc_Trycollection(const unsigned char* packet) {
   if (UIWindow* window = g_windowMgr.LookupWindow(0xC4)) {
     if (packet[2] != 0) {
       window->SendMsg(nullptr, 0x50, 1, 7, 0, 0);
@@ -2520,7 +2520,7 @@ void CGameMode::Zc_Trycollection(const unsigned char* packet) {
 
 // OFFSET: 0x00D32830
 // FUNCTION: fn_21745
-void CGameMode::Zc_Msg(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::Zc_Msg(const unsigned char* packet) {
   const std::uint16_t message = *reinterpret_cast<const std::uint16_t*>(packet + 2);
   std::uint32_t color = 0xFFFFFF;
   switch (message) {
@@ -2548,7 +2548,7 @@ void CGameMode::Zc_Msg(const unsigned char* packet) {
 
 // OFFSET: 0x00D328E0
 // FUNCTION: fn_21746
-void CGameMode::Zc_Msg_Color(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::Zc_Msg_Color(const unsigned char* packet) {
   const std::uint16_t message = *reinterpret_cast<const std::uint16_t*>(packet + 2);
   std::uint32_t color = *reinterpret_cast<const std::uint32_t*>(packet + 4);
   switch (message) {
@@ -2568,7 +2568,7 @@ void CGameMode::Zc_Msg_Color(const unsigned char* packet) {
 
 // OFFSET: 0x00D7B5E0
 // FUNCTION: fn_22207
-void CGameMode::ReceiveRouletteBonusPoints(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveRouletteBonusPoints(const unsigned char* packet) {
   switch (packet[2]) {
   case 0:
     g_rouletteMgr->m_goldPoint = *reinterpret_cast<const int*>(packet + 3);
@@ -2588,7 +2588,7 @@ void CGameMode::ReceiveRouletteBonusPoints(const unsigned char* packet) {
 
 // OFFSET: 0x00D7AE60
 // FUNCTION: fn_22193
-void CGameMode::ReceiveActorCharm(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveActorCharm(const unsigned char* packet) {
   const std::uint32_t aid = *reinterpret_cast<const std::uint32_t*>(packet + 2);
   CRenderObject* actor;
   if (aid == *reinterpret_cast<const std::uint32_t*>(reinterpret_cast<const void*>(&g_session.m_aid))) {
@@ -2606,7 +2606,7 @@ void CGameMode::ReceiveActorCharm(const unsigned char* packet) {
 
 // OFFSET: 0x00D79970
 // FUNCTION: fn_22175
-void CGameMode::ReceivePacket0A29(int value) {
+__declspec(noinline) void CGameMode::ReceivePacket0A29(int value) {
   ValuePacket packet;
   packet.id = 0x0A2A;
   packet.value = value;
@@ -2615,7 +2615,7 @@ void CGameMode::ReceivePacket0A29(int value) {
 
 // OFFSET: 0x00D79E10
 // FUNCTION: fn_22182
-void CGameMode::ReceiveCashShopBanner(int value1, int value2, int value3) {
+__declspec(noinline) void CGameMode::ReceiveCashShopBanner(int value1, int value2, int value3) {
   if (!g_windowMgr.CloseWindow(0x13e)) {
     if (UIWindow* window = g_windowMgr.EnsureWindow(0x13e)) {
       window->SendMsg(nullptr, 0xa4, value3, 0, 0, 0);
@@ -2628,7 +2628,7 @@ void CGameMode::ReceiveCashShopBanner(int value1, int value2, int value3) {
 
 // OFFSET: 0x00D7A180
 // FUNCTION: fn_22188
-void CGameMode::ReceiveWindow308TextEntries(unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveWindow308TextEntries(unsigned char* packet) {
   g_windowMgr.CloseWindow(0x134);
   UIWindow* window = g_windowMgr.EnsureWindow(0x134);
   const int count = (*reinterpret_cast<const std::int16_t*>(packet + 2) - 4) / 16;
@@ -2643,7 +2643,7 @@ void CGameMode::ReceiveWindow308TextEntries(unsigned char* packet) {
 
 // OFFSET: 0x00D7B390
 // FUNCTION: fn_22202
-void CGameMode::ReceiveActorStateValue(std::uint32_t aid, int unused, std::int16_t value) {
+__declspec(noinline) void CGameMode::ReceiveActorStateValue(std::uint32_t aid, int unused, std::int16_t value) {
   if (aid == 0 || !g_serviceOptions.Get(8)) {
     return;
   }
@@ -2665,7 +2665,7 @@ void CGameMode::ReceiveActorStateValue(std::uint32_t aid, int unused, std::int16
 
 // OFFSET: 0x00D898B0
 // FUNCTION: fn_22209
-void CGameMode::ReceiveChatEntries(unsigned char* data) {
+__declspec(noinline) void CGameMode::ReceiveChatEntries(unsigned char* data) {
   ChatEntryListPacket* packet = reinterpret_cast<ChatEntryListPacket*>(data);
   const int count = (packet->length - 6) / static_cast<int>(sizeof(ChatTextEntry));
   g_windowMgr.CloseWindow(39);
@@ -2683,7 +2683,7 @@ void CGameMode::ReceiveChatEntries(unsigned char* data) {
 
 // OFFSET: 0x00D7A200
 // FUNCTION: fn_22189
-void CGameMode::ReceivePacket0B73(const unsigned char* data) {
+__declspec(noinline) void CGameMode::ReceivePacket0B73(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const ActorValuePacket*>(data);
   CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAidIncludeMe(packet->accountId));
   if (!actor) {
@@ -2713,7 +2713,7 @@ void CGameMode::ReceivePacket0B73(const unsigned char* data) {
 
 // OFFSET: 0x00D25850
 // FUNCTION: fn_21673
-void CGameMode::ReceiveUnknownD25850(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveUnknownD25850(const unsigned char* packet) {
   g_session.RemoveItem1710(*reinterpret_cast<const std::int16_t*>(packet + 2), 1);
   char number[12];
   char text[260];
@@ -2727,7 +2727,7 @@ void CGameMode::ReceiveUnknownD25850(const unsigned char* packet) {
 
 // OFFSET: 0x00D31A40
 // FUNCTION: fn_21735
-void CGameMode::ReceiveUnknownD31A40(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveUnknownD31A40(const unsigned char* packet) {
   char text[512];
   const unsigned int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t*>(packet + 2) - 4) >> 2;
   const int* ids = reinterpret_cast<const int*>(packet + 4);
@@ -2759,7 +2759,7 @@ void LaunchRollingCutterEffect(CGameActor* actor) {
 
 // OFFSET: 0x00D2D8D0
 // FUNCTION: fn_21721
-void CGameMode::ReceiveInventoryItemUpdate(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveInventoryItemUpdate(const unsigned char* packet) {
   ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *reinterpret_cast<const std::uint16_t*>(packet + 2));
   if (item.unknown_0000[1] != 0) {
     item.unknown_0074[0] = *reinterpret_cast<const unsigned char*>(packet + 4) == 0;
@@ -2769,7 +2769,7 @@ void CGameMode::ReceiveInventoryItemUpdate(const unsigned char* packet) {
 
 // OFFSET: 0x00D78030
 // FUNCTION: fn_22157
-void CGameMode::OpenWindow154() {
+__declspec(noinline) void CGameMode::OpenWindow154() {
   if (g_windowMgr.LookupWindow(0x154) == nullptr) {
     g_windowMgr.EnsureWindow(0x154);
   }
@@ -2777,7 +2777,7 @@ void CGameMode::OpenWindow154() {
 
 // OFFSET: 0x00D2D990
 // FUNCTION: fn_21722
-void CGameMode::ReceiveUnknownD2D990(const unsigned char*) {
+__declspec(noinline) void CGameMode::ReceiveUnknownD2D990(const unsigned char*) {
   if (g_windowMgr.unknown_03F8) {
     g_windowMgr.CloseWindow(137);
     GetRagConnection().Close();
@@ -3423,7 +3423,7 @@ void CGameMode::ReceiveActorSkillMessage(const unsigned char* packet) {
 
 // OFFSET: 0x00D25310
 // FUNCTION: fn_21672
-void CGameMode::ReceiveItem1740List(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveItem1740List(const unsigned char* packet) {
   const int length = *reinterpret_cast<const std::int16_t*>(packet + 2);
   const int count = static_cast<int>(static_cast<unsigned int>(length - 4) / sizeof(StoreNormalRecord));
   const auto* record = reinterpret_cast<const StoreNormalRecord*>(packet + 4);
@@ -3479,7 +3479,7 @@ void CGameMode::ReceiveDispel(const unsigned char* packet) {
 
 // OFFSET: 0x00D32E10
 // FUNCTION: fn_21748
-void CGameMode::ReceiveItem1758List(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveItem1758List(const unsigned char* packet) {
   if (g_replayAnimationScaling == 0) {
     reinterpret_cast<UIMerchantShopMakeWnd*>(g_windowMgr.unknown_040C)->PrintBuyList();
   }
@@ -4232,7 +4232,7 @@ void CGameMode::ReceiveStatusBonus(const unsigned char* data) {
 
 // OFFSET: 0x00D8A600
 // FUNCTION: fn_22220
-void CGameMode::ReceiveSwapEquipmentList(const unsigned char* data) {
+__declspec(noinline) void CGameMode::ReceiveSwapEquipmentList(const unsigned char* data) {
   g_session.ResetItems61B8();
   g_session.ResetItems6B68();
 
@@ -4415,7 +4415,7 @@ void CGameMode::ReceiveGuildMemberMemoList(const unsigned char* data) {
 
 // OFFSET: 0x00D3A630
 // FUNCTION: fn_21778
-void CGameMode::ReceiveOpenStore(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveOpenStore(const unsigned char* packet) {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   if (mode) {
     const ModeDragState* drag = &mode->drag;
@@ -4465,7 +4465,7 @@ struct ACTSTRUCT {
 ACTSTRUCT::~ACTSTRUCT() = default;
 // OFFSET: 0x00D3A770
 // FUNCTION: fn_21779
-void CGameMode::ReceiveSearchStoreOpen(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveSearchStoreOpen(const unsigned char* packet) {
   g_session.unknown_5BE0 = packet[4];
   reinterpret_cast<std::int16_t*>(&g_session.unknown_5BE4)[1] = *reinterpret_cast<const std::int16_t*>(packet + 2);
   g_windowMgr.EnsureWindow(181);
@@ -6428,7 +6428,7 @@ struct Window107Entry {
 
 // OFFSET: 0x00D79540
 // FUNCTION: fn_22170
-void CGameMode::ReceiveObjectsDisappear(int count, const std::uint32_t* aids) {
+__declspec(noinline) void CGameMode::ReceiveObjectsDisappear(int count, const std::uint32_t* aids) {
   for (int i = 0; i < count; ++i) {
     const std::uint32_t aid = aids[i];
     if (this->scene->RemoveItem(aid) == true) {
@@ -6443,7 +6443,7 @@ void CGameMode::ReceiveObjectsDisappear(int count, const std::uint32_t* aids) {
 
 // OFFSET: 0x00D795B0
 // FUNCTION: fn_22171
-void CGameMode::ReceiveWindow107List(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveWindow107List(const unsigned char* packet) {
   const std::int64_t count = (*reinterpret_cast<const std::int16_t*>(packet + 2) - 4) / sizeof(Window107Entry);
   if (count == 0) {
     g_windowMgr.Confirm(LookupMessage(424), 0, true, false, 0, "Message", 280, 120, 0);
@@ -6463,7 +6463,7 @@ void CGameMode::ReceiveWindow107List(const unsigned char* packet) {
 
 // OFFSET: 0x00D39AE0
 // FUNCTION: fn_21772
-void CGameMode::ReceiveActorColorChat(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveActorColorChat(const unsigned char* packet) {
   char text[256];
   std::memset(text, 0, sizeof(text));
   std::memcpy(text, packet + 12, *reinterpret_cast<const std::uint16_t*>(packet + 2) - 12);
@@ -6482,7 +6482,7 @@ void CGameMode::ReceiveActorColorChat(const unsigned char* packet) {
 
 // OFFSET: 0x00D1F400
 // FUNCTION: fn_21637
-void CGameMode::ReceiveWearEquipAck(unsigned char result, std::uint16_t index, std::uint16_t look, int location) {
+__declspec(noinline) void CGameMode::ReceiveWearEquipAck(unsigned char result, std::uint16_t index, std::uint16_t look, int location) {
   *reinterpret_cast<std::uint32_t*>(&this->unknown_0100[0x04]) = timeGetTime() - 2000;
   switch (result) {
   case 0: {
@@ -6505,7 +6505,7 @@ void CGameMode::ReceiveWearEquipAck(unsigned char result, std::uint16_t index, s
 
 // OFFSET: 0x00D32A10
 // FUNCTION: fn_21747
-void CGameMode::ReceiveFormattedMessage(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveFormattedMessage(const unsigned char* packet) {
   char text[500];
   std::memset(text, 0, sizeof(text));
   const std::uint16_t messageId = *reinterpret_cast<const std::uint16_t*>(packet + 2);
@@ -6539,7 +6539,7 @@ struct ParaResultEntry {
 
 // OFFSET: 0x00D77E70
 // FUNCTION: fn_22155
-void CGameMode::ReceiveParaItemResult(unsigned char success, int count, const unsigned char* data) {
+__declspec(noinline) void CGameMode::ReceiveParaItemResult(unsigned char success, int count, const unsigned char* data) {
   UIParaResultWnd* window = static_cast<UIParaResultWnd*>(g_windowMgr.EnsureWindow(256));
   if (window == nullptr) {
     return;
@@ -6589,7 +6589,7 @@ void CGameMode::ReceiveResultNotice4327(const unsigned char* packet) {
 
 // OFFSET: 0x00D78130
 // FUNCTION: fn_22159
-void CGameMode::OpenBuyingStoreMake(unsigned char slotCount) {
+__declspec(noinline) void CGameMode::OpenBuyingStoreMake(unsigned char slotCount) {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   if (mode) {
     const ModeDragState* drag = &mode->drag;
@@ -6620,7 +6620,7 @@ void CGameMode::OpenBuyingStoreMake(unsigned char slotCount) {
 
 // OFFSET: 0x00D78210
 // FUNCTION: fn_22160
-void CGameMode::OpenVendingMake(unsigned char slotCount, int itemCount, const short* items) {
+__declspec(noinline) void CGameMode::OpenVendingMake(unsigned char slotCount, int itemCount, const short* items) {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   if (mode) {
     const ModeDragState* drag = &mode->drag;
@@ -6651,7 +6651,7 @@ void CGameMode::OpenVendingMake(unsigned char slotCount, int itemCount, const sh
 
 // OFFSET: 0x00D799C0
 // FUNCTION: fn_22176
-void CGameMode::ReceiveAgitNotice(unsigned char agitId, int first, int second) {
+__declspec(noinline) void CGameMode::ReceiveAgitNotice(unsigned char agitId, int first, int second) {
   if (!g_windowMgr.window_0320) {
     return;
   }
@@ -6706,7 +6706,7 @@ void CGameMode::ReceiveItemFallEntry(const unsigned char* packet) {
 
 // OFFSET: 0x00D266C0
 // FUNCTION: fn_21681
-void CGameMode::ReceiveFeedOption(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveFeedOption(const unsigned char* packet) {
   switch (*reinterpret_cast<const int*>(packet + 2)) {
   case 0:
     *reinterpret_cast<int*>(g_session.unknown_5974) = *reinterpret_cast<const int*>(packet + 6);
@@ -6741,7 +6741,7 @@ void CGameMode::ReceiveFeedOption(const unsigned char* packet) {
 
 // OFFSET: 0x00D1E7B0
 // FUNCTION: fn_21635
-void CGameMode::ReceiveTakeOffEquipResult(unsigned char result, int location, std::uint16_t identity) {
+__declspec(noinline) void CGameMode::ReceiveTakeOffEquipResult(unsigned char result, int location, std::uint16_t identity) {
   *reinterpret_cast<std::uint32_t*>(&this->unknown_0100[0x08]) = timeGetTime() - 2000;
   switch (result) {
   case 0:
@@ -6817,7 +6817,7 @@ void CGameMode::ReceiveHomunculusChange(const unsigned char* packet) {
 
 // OFFSET: 0x00D26950
 // FUNCTION: fn_21683
-void CGameMode::ReceiveItemConsumed(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveItemConsumed(const unsigned char* packet) {
   if (g_windowMgr.unknown_0458) {
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2734)), 0x64FFFF, 0, 0, 0);
     g_modeMgr.GetGameMode()->SendMsg(293, 0, 0, 0, 0);
@@ -6845,7 +6845,7 @@ void CGameMode::ReceiveItemConsumed(const unsigned char* packet) {
 
 // OFFSET: 0x00D25D50
 // FUNCTION: fn_21676
-void CGameMode::ReceivePartyLeaderChange(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceivePartyLeaderChange(const unsigned char* packet) {
   char text[500];
   MessengerMember member = g_session.PartyByAccount(*reinterpret_cast<const std::uint32_t*>(packet + 6));
   if (member.valid != 0) {
@@ -6863,7 +6863,7 @@ void CGameMode::ReceivePartyLeaderChange(const unsigned char* packet) {
 
 // OFFSET: 0x00D2DA10
 // FUNCTION: fn_21723
-void CGameMode::ReceiveItemSellResult(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveItemSellResult(const unsigned char* packet) {
   g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
   const int count = *reinterpret_cast<const std::int16_t*>(packet + 4);
   const int price = *reinterpret_cast<const int*>(packet + 6);
@@ -7045,7 +7045,7 @@ void CGameMode::ReceiveItemObtainNotice(const unsigned char* packet) {
 
 // OFFSET: 0x00D8A460
 // FUNCTION: fn_22219
-void CGameMode::ReceiveTakeOffEquipItemResult(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveTakeOffEquipItemResult(const unsigned char* packet) {
   ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *reinterpret_cast<const std::uint16_t*>(packet + 2));
   item.unknown_0000[3] = *reinterpret_cast<const std::uint32_t*>(packet + 4);
   switch (*reinterpret_cast<const std::uint16_t*>(packet + 8)) {
@@ -7106,7 +7106,7 @@ struct ReputePointEntry {
 
 // OFFSET: 0x00D78060
 // FUNCTION: fn_22158
-void CGameMode::ReceiveItemReformOpen(int itemId) {
+__declspec(noinline) void CGameMode::ReceiveItemReformOpen(int itemId) {
   UIWindow* window = g_windowMgr.EnsureWindow(0x15C);
   if (!g_itemReformMgr) {
     g_itemReformMgr = new (std::nothrow) CItemReformMgr;
@@ -7122,7 +7122,7 @@ void CGameMode::ReceiveItemReformOpen(int itemId) {
 
 // OFFSET: 0x00D79880
 // FUNCTION: fn_22174
-void CGameMode::ReceiveReputeInfo(bool received, unsigned int count, const ReputePointEntry* entries) {
+__declspec(noinline) void CGameMode::ReceiveReputeInfo(bool received, unsigned int count, const ReputePointEntry* entries) {
   for (unsigned int index = 0; index < count; ++index) {
     if (!CReputeMgr::s_instance) {
       CReputeMgr::s_instance = new (std::nothrow) CReputeMgr;
@@ -7137,7 +7137,7 @@ void CGameMode::ReceiveReputeInfo(bool received, unsigned int count, const Reput
 
 // OFFSET: 0x00D79D90
 // FUNCTION: fn_22181
-void CGameMode::ReceiveEnchantResult(int messageId, int itemId) {
+__declspec(noinline) void CGameMode::ReceiveEnchantResult(int messageId, int itemId) {
   if (!CEnchantMgr::s_instance) {
     CEnchantMgr::s_instance = new (std::nothrow) CEnchantMgr;
   }
@@ -7146,7 +7146,7 @@ void CGameMode::ReceiveEnchantResult(int messageId, int itemId) {
 
 // OFFSET: 0x00D7B4C0
 // FUNCTION: fn_22205
-void CGameMode::ReceiveReputeOpen(std::uint64_t groupId, std::uint64_t reputeId) {
+__declspec(noinline) void CGameMode::ReceiveReputeOpen(std::uint64_t groupId, std::uint64_t reputeId) {
   if (!CReputeMgr::s_instance) {
     CReputeMgr::s_instance = new (std::nothrow) CReputeMgr;
   }
@@ -7155,7 +7155,7 @@ void CGameMode::ReceiveReputeOpen(std::uint64_t groupId, std::uint64_t reputeId)
 
 // OFFSET: 0x00D7B550
 // FUNCTION: fn_22206
-void CGameMode::ReceiveUiOpen(unsigned char type, std::uint64_t data) {
+__declspec(noinline) void CGameMode::ReceiveUiOpen(unsigned char type, std::uint64_t data) {
   if (type == 10) {
     if (!CEnchantMgr::s_instance) {
       CEnchantMgr::s_instance = new (std::nothrow) CEnchantMgr;
@@ -7187,7 +7187,7 @@ void CGameMode::RefreshEmotionPurchaseSchedule() {
 
 // OFFSET: 0x00D31390
 // FUNCTION: fn_21733
-void CGameMode::ReceivePartyItemPickupNotice(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceivePartyItemPickupNotice(const unsigned char* packet) {
   const std::uint32_t aid = *reinterpret_cast<const std::uint32_t*>(packet + 2);
   MessengerMember member = g_session.PartyByAccount(aid);
   if (aid != g_session.m_aid && member.valid) {
@@ -7211,7 +7211,7 @@ void CGameMode::ReceivePartyItemPickupNotice(const unsigned char* packet) {
 
 // OFFSET: 0x00D64940
 // FUNCTION: fn_21995
-void CGameMode::ReceiveEquipCardChange(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveEquipCardChange(const unsigned char* packet) {
   const EquipSlots slots = g_session.GetEquipSlots(*reinterpret_cast<const std::int16_t*>(packet + 2));
   ITEM_INFO item = g_session.GetItem17F0(slots.values[2]);
   if (item.unknown_0000[1] != 0) {
@@ -7437,7 +7437,7 @@ std::map<int, MiniMapEffectMarker> g_miniMapEffectMarkers;
 
 // OFFSET: 0x00D244B0
 // FUNCTION: fn_21667
-void CGameMode::AddMiniMapEffectMarker(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::AddMiniMapEffectMarker(const unsigned char* packet) {
   const MiniMapEffectMarkerPacket* marker = reinterpret_cast<const MiniMapEffectMarkerPacket*>(packet);
   auto found = g_miniMapEffectMarkers.find(marker->key);
   if (found != g_miniMapEffectMarkers.end()) {
@@ -11356,7 +11356,7 @@ void CGameMode::sub_D5B030(
 
 // OFFSET: 0x00D79FD0
 // FUNCTION: fn_22185
-void SetActiveSkillEffect184(unsigned char enable) {
+__declspec(noinline) void SetActiveSkillEffect184(unsigned char enable) {
   if (enable == 1) {
     ActiveSkillEffect effect;
     effect.id = 184;
@@ -11545,7 +11545,7 @@ void CGameMode::ReceiveEquipItemListFlags(const unsigned char* packet) {
 
 // OFFSET: 0x00D27EC0
 // FUNCTION: fn_21692
-void CGameMode::ReceiveEquipItemList34(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveEquipItemList34(const unsigned char* packet) {
   g_session.RemoveEquipment();
   g_session.ResetEquipment();
   const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t*>(packet + 2) - 4) / 0x22;
@@ -11630,7 +11630,7 @@ void CGameMode::ReceiveEquipItemList38(const unsigned char* packet) {
 
 // OFFSET: 0x00D79500
 // FUNCTION: fn_22169
-void CGameMode::ApplyRefiningMaterial(short itemId, unsigned char count, const unsigned char* materials, unsigned char catalystCount) {
+__declspec(noinline) void CGameMode::ApplyRefiningMaterial(short itemId, unsigned char count, const unsigned char* materials, unsigned char catalystCount) {
   UIRefiningWnd* window = static_cast<UIRefiningWnd*>(g_windowMgr.LookupWindow(0x127));
   if (window) {
     window->ApplyItem(itemId, count, reinterpret_cast<RefiningMaterial*>(const_cast<unsigned char*>(materials)), catalystCount);
