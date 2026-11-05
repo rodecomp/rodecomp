@@ -1400,20 +1400,21 @@ void CEffectPrim::RenderPolygonFrames(matrix& wtm) {
 
     radius = slot.distance;
     angle = slot.fullDisplayAngle;
+    const float shape = slot.height[10];
     p0.x = radius * g_cosTable[angle];
     p0.y = 0.0f;
     p0.z = radius * g_sinTable[angle];
-    if (slot.height[10] == 0.0f) {
+    if (shape == 0.0f) {
       angle -= 90;
       if (angle < 0) {
         angle += 360;
       }
-    } else if (slot.height[10] == 1.0f) {
+    } else if (shape == 1.0f) {
       angle -= 60;
       if (angle < 0) {
         angle += 360;
       }
-    } else if (slot.height[10] == 2.0f) {
+    } else if (shape == 2.0f) {
       angle -= 130;
       if (angle < 0) {
         angle += 360;
@@ -1422,17 +1423,17 @@ void CEffectPrim::RenderPolygonFrames(matrix& wtm) {
     p1.x = radius * g_cosTable[angle];
     p1.y = 0.0f;
     p1.z = radius * g_sinTable[angle];
-    if (slot.height[10] == 0.0f) {
+    if (shape == 0.0f) {
       angle -= 90;
       if (angle < 0) {
         angle += 360;
       }
-    } else if (slot.height[10] == 1.0f) {
+    } else if (shape == 1.0f) {
       angle -= 120;
       if (angle < 0) {
         angle += 360;
       }
-    } else if (slot.height[10] == 2.0f) {
+    } else if (shape == 2.0f) {
       angle -= 50;
       if (angle < 0) {
         angle += 360;
@@ -1441,17 +1442,17 @@ void CEffectPrim::RenderPolygonFrames(matrix& wtm) {
     p2.x = radius * g_cosTable[angle];
     p2.y = 0.0f;
     p2.z = radius * g_sinTable[angle];
-    if (slot.height[10] == 0.0f) {
+    if (shape == 0.0f) {
       angle -= 90;
       if (angle < 0) {
         angle += 360;
       }
-    } else if (slot.height[10] == 1.0f) {
+    } else if (shape == 1.0f) {
       angle -= 60;
       if (angle < 0) {
         angle += 360;
       }
-    } else if (slot.height[10] == 2.0f) {
+    } else if (shape == 2.0f) {
       angle -= 130;
       if (angle < 0) {
         angle += 360;
@@ -1505,17 +1506,17 @@ void CEffectPrim::RenderPolygonFrames(matrix& wtm) {
     p0.x = radius * g_cosTable[angle];
     p0.y = 0.0f;
     p0.z = radius * g_sinTable[angle];
-    if (slot.height[10] == 0.0f) {
+    if (shape == 0.0f) {
       angle -= 90;
       if (angle < 0) {
         angle += 360;
       }
-    } else if (slot.height[10] == 1.0f) {
+    } else if (shape == 1.0f) {
       angle -= 60;
       if (angle < 0) {
         angle += 360;
       }
-    } else if (slot.height[10] == 2.0f) {
+    } else if (shape == 2.0f) {
       angle -= 130;
       if (angle < 0) {
         angle += 360;
@@ -1524,17 +1525,17 @@ void CEffectPrim::RenderPolygonFrames(matrix& wtm) {
     p1.x = radius * g_cosTable[angle];
     p1.y = 0.0f;
     p1.z = radius * g_sinTable[angle];
-    if (slot.height[10] == 0.0f) {
+    if (shape == 0.0f) {
       angle -= 90;
       if (angle < 0) {
         angle += 360;
       }
-    } else if (slot.height[10] == 1.0f) {
+    } else if (shape == 1.0f) {
       angle -= 120;
       if (angle < 0) {
         angle += 360;
       }
-    } else if (slot.height[10] == 2.0f) {
+    } else if (shape == 2.0f) {
       angle -= 50;
       if (angle < 0) {
         angle += 360;
@@ -1543,17 +1544,17 @@ void CEffectPrim::RenderPolygonFrames(matrix& wtm) {
     p2.x = radius * g_cosTable[angle];
     p2.y = 0.0f;
     p2.z = radius * g_sinTable[angle];
-    if (slot.height[10] == 0.0f) {
+    if (shape == 0.0f) {
       angle -= 90;
       if (angle < 0) {
         angle += 360;
       }
-    } else if (slot.height[10] == 1.0f) {
+    } else if (shape == 1.0f) {
       angle -= 60;
       if (angle < 0) {
         angle += 360;
       }
-    } else if (slot.height[10] == 2.0f) {
+    } else if (shape == 2.0f) {
       angle -= 130;
       if (angle < 0) {
         angle += 360;
