@@ -7523,8 +7523,8 @@ void CGameMode::ProcessRightButtonDrag() {
 
     this->SendMsg(0x12, 0, 0, 0, 0);
     this->SendMsg(0x47, 0, 0, 0, 0);
-    this->unknown_00E4 = g_screenWidth;
-    this->unknown_00E8 = g_screenHeight;
+    this->unknown_00E4 = g_mouse.x;
+    this->unknown_00E8 = g_mouse.y;
     if (!g_serviceOptions.Get(0x78)) {
       return;
     }
@@ -7548,7 +7548,7 @@ void CGameMode::ProcessRightButtonDrag() {
     if (!HIBYTE(GetAsyncKeyState(VK_MENU)) && !HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
       this->SetCursorAction(4);
       if (this->hasViewParameters) {
-        float yaw = static_cast<float>(g_screenWidth) + this->camera->camera.desiredYaw - static_cast<float>(this->unknown_00DC);
+        float yaw = static_cast<float>(g_mouse.x) + this->camera->camera.desiredYaw - static_cast<float>(this->unknown_00DC);
         const float low = static_cast<float>(this->viewParameters[3]);
         const float high = static_cast<float>(this->viewParameters[4]);
         if (yaw < low) {
@@ -7559,7 +7559,7 @@ void CGameMode::ProcessRightButtonDrag() {
         }
         this->camera->camera.desiredYaw = yaw;
       } else if (this->unknown_0254 == 0 && g_session.IsAdminSubMode(6) == 0) {
-        float yaw = static_cast<float>(g_screenWidth) + this->camera->camera.desiredYaw - static_cast<float>(this->unknown_00DC);
+        float yaw = static_cast<float>(g_mouse.x) + this->camera->camera.desiredYaw - static_cast<float>(this->unknown_00DC);
         const float low = this->unknown_0288 - 20.0f;
         const float high = this->unknown_0288 + 20.0f;
         if (yaw < low) {
@@ -7570,7 +7570,7 @@ void CGameMode::ProcessRightButtonDrag() {
         }
         this->camera->camera.desiredYaw = yaw;
       } else {
-        this->camera->camera.AddYaw(static_cast<float>(g_screenWidth - this->unknown_00DC));
+        this->camera->camera.AddYaw(static_cast<float>(g_mouse.x - this->unknown_00DC));
       }
 
       g_soundMgr->SetListenerYaw(this->camera->camera.desiredYaw);
@@ -7578,7 +7578,7 @@ void CGameMode::ProcessRightButtonDrag() {
 
     if (!HIBYTE(GetAsyncKeyState(VK_MENU)) && HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
       const float range = this->unknown_0254 ? 42.0f : 10.0f;
-      g_cameraPitch = this->camera->camera.desiredPitch - static_cast<float>((g_screenHeight - this->unknown_00E0) / 2);
+      g_cameraPitch = this->camera->camera.desiredPitch - static_cast<float>((g_mouse.y - this->unknown_00E0) / 2);
       float limit;
       if (this->hasViewParameters) {
         if (g_cameraPitch < static_cast<float>(this->viewParameters[7])) {
@@ -7603,7 +7603,7 @@ void CGameMode::ProcessRightButtonDrag() {
     }
 
     if (HIBYTE(GetAsyncKeyState(VK_CONTROL))) {
-      g_cameraDistance = this->camera->camera.desiredDistance - static_cast<float>((g_screenHeight - this->unknown_00E0) / 2);
+      g_cameraDistance = this->camera->camera.desiredDistance - static_cast<float>((g_mouse.y - this->unknown_00E0) / 2);
       float maxDistance = this->unknown_0254 ? g_serviceOptionJitterScale : g_cameraBaseDistance;
       if (this->hasViewParameters) {
         if (g_cameraDistance < static_cast<float>(this->viewParameters[0])) {
@@ -8291,7 +8291,7 @@ void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor*
     targetAid = 0;
   }
 
-  if ((this->unknown_00DC != g_screenWidth || this->unknown_00E0 != g_screenHeight) && forced == 0 && g_mouse.buttons[0] == 0) {
+  if ((this->unknown_00DC != g_mouse.x || this->unknown_00E0 != g_mouse.y) && forced == 0 && g_mouse.buttons[0] == 0) {
     targetAid = 0;
   }
 
