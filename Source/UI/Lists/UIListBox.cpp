@@ -5,6 +5,7 @@
 #include "Resource/ResourceMgr.h"
 #include "Resource/SkinPalette.h"
 #include "Contents/SkinMgr.h"
+#include "Contents/Items/ItemLink.h"
 #include "UI/Text/ColoredText.h"
 #include "UI/Lists/UIChatHisBox.h"
 #include "UI/Lists/UIListBox.h"
@@ -26,10 +27,22 @@ namespace {}
 
 // OFFSET: 0x0086D940
 // FUNCTION: fn_11055
-UIListBox::UIListBox()
-    : UIWindow(0), backgroundRed(255), backgroundGreen(255), backgroundBlue(255), selected(0), topLine(0),
-      horizontalOffset(0), contentWidth(0), verticalOverflow(0), bottomMargin(0), verticalBar(nullptr), horizontalBar(nullptr), transparent(0), lineHeight(16),
-      textColor(0), textInset(3) {
+UIListBox::UIListBox() : UIWindow(0) {
+  this->textColor = 0;
+  this->textInset = 3;
+  this->selected = 0;
+  this->topLine = 0;
+  this->horizontalOffset = 0;
+  this->contentWidth = 0;
+  this->verticalBar = nullptr;
+  this->horizontalBar = nullptr;
+  this->verticalOverflow = 0;
+  this->bottomMargin = 0;
+  this->transparent = 0;
+  this->lineHeight = 16;
+  this->backgroundRed = 255;
+  this->backgroundGreen = 255;
+  this->backgroundBlue = 255;
   const SkinPaletteCell cell = {3, 2};
   this->selectionColor = SkinPaletteColor(ResourceMgr::Instance(), cell, g_skinInfo.Selected());
   this->selectable = 1;
@@ -52,18 +65,18 @@ void UIScrollBar::Configure(int x, int y, int length, int vertical, int arrowLen
   this->arrowLength = arrowLength;
   this->thickness = thickness;
 
-  int width;
-  int height;
-  if (vertical == 0) {
+  int width = 0;
+  int height = 0;
+
+  switch (vertical) {
+  case 0:
     width = length;
     height = thickness;
-  } else {
-    width = 0;
-    height = 0;
-    if (vertical == 1) {
-      width = thickness;
-      height = length;
-    }
+    break;
+  case 1:
+    width = thickness;
+    height = length;
+    break;
   }
 
   UIWindow::Resize(width, height);
@@ -93,7 +106,7 @@ void UIListBox::Slot15(int width, int height) {
   vertical->Move((width - 13), 0);
   vertical->Slot15(verticalWidth, height);
   vertical->Slot22(verticalWidth, height);
-  this->AddChild(vertical);
+  this->AddChild(this->verticalBar);
 
   auto* horizontal = new UIScrollBar();
   this->horizontalBar = horizontal;
@@ -103,7 +116,7 @@ void UIListBox::Slot15(int width, int height) {
   horizontal->Move(0, (height - 13));
   horizontal->Slot15((width - 13), horizontalHeight);
   horizontal->Slot22((width - 13), horizontalHeight);
-  this->AddChild(horizontal);
+  this->AddChild(this->horizontalBar);
 }
 
 // OFFSET: 0x008976E0
@@ -212,7 +225,7 @@ void UIChatHisBox::AddText(const char* text, int color, const char* style) {
 // OFFSET: 0x00875A70
 // FUNCTION: fn_11201
 void UIListBox::AddLine(const char* text) {
-  this->lines.emplace_back(text);
+  this->lines.push_back(std::string(text));
   const int width = this->TextWidth(text, 0, 0, 12, 0, 0);
   this->contentWidth = std::max(this->contentWidth, width);
   this->Refresh();
@@ -287,7 +300,11 @@ void UIListBox::Slot32(int, int) {
 // FUNCTION: fn_11496
 void UIListBox::Slot35(int value) {
   if (this->verticalOverflow != 0) {
-    this->SendMsg(this->verticalBar, 7, value >= 0 ? -3 : 3, 0, 0, 0);
+    if (value < 0) {
+      this->SendMsg(this->verticalBar, 7, 3, 0, 0, 0);
+    } else {
+      this->SendMsg(this->verticalBar, 7, -3, 0, 0, 0);
+    }
   }
 }
 
@@ -498,18 +515,9 @@ int UIListBox::TextLength() {
 // OFFSET: 0x0087AAF0
 // FUNCTION: fn_11238
 void UIChatHisBox::CopyHistory(const UIChatHisBox& other) {
-  if (&this->unknown_0100 != &other.unknown_0100) {
-    this->unknown_0100.assign(other.unknown_0100.begin(), other.unknown_0100.end());
-  }
-
-  if (&this->unknown_010C != &other.unknown_010C) {
-    this->unknown_010C.assign(other.unknown_010C.begin(), other.unknown_010C.end());
-  }
-
-  if (&this->unknown_0118 != &other.unknown_0118) {
-    this->unknown_0118.assign(other.unknown_0118.begin(), other.unknown_0118.end());
-  }
-
+  this->unknown_0100 = other.unknown_0100;
+  this->unknown_010C = other.unknown_010C;
+  this->unknown_0118 = other.unknown_0118;
   this->sub_89C080();
 }
 
