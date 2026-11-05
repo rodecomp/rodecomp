@@ -727,6 +727,29 @@ void UIMinimapZoomWnd::Paint() {
   this->DrawTextAt(20, 128, text.c_str(), 0, 0, 12, 0xFFFFFF, 0, 0);
 }
 
+// INLINED
+static __forceinline UIBitmapButton* AddNumberedButtonInline(UIFrameWnd* frame, int id, int x, int y, const char* name, const char* tooltip, bool prefix) {
+  if (!name) {
+    return nullptr;
+  }
+
+  UIBitmapButton* button = new UIBitmapButton();
+  std::string path;
+  if (prefix) {
+    path += "유저인터페이스\\";
+  }
+  path += name;
+  button->SetBitmap((path + "_1" + ".bmp").c_str(), 0, 0);
+  button->SetBitmap((path + "_2" + ".bmp").c_str(), 1, 0);
+  button->SetBitmap((path + "_3" + ".bmp").c_str(), 2, 0);
+  button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+  button->Move(x, y);
+  button->SetId(id);
+  button->SetTooltip(tooltip);
+  frame->AddChild(button);
+  return button;
+}
+
 // OFFSET: 0x008E3340
 // FUNCTION: fn_12182
 void UIMinimapZoomWnd::Slot15(int, int) {
@@ -741,7 +764,7 @@ void UIMinimapZoomWnd::Slot15(int, int) {
   buttons.clear();
   for (int i = 0; i < 5; ++i) {
     const std::string name = prefix + names[i];
-    UIWindow* button = this->AddNumberedButton(ids[i], xs[i], ys[i], name.c_str(), tooltips[i], true);
+    UIWindow* button = AddNumberedButtonInline(this, ids[i], xs[i], ys[i], name.c_str(), tooltips[i], true);
     buttons.push_back(button);
   }
 
