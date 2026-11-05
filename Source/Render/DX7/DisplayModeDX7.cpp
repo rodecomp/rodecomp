@@ -1,14 +1,15 @@
 #include "Render/DX7/DirectDrawEnumeration.h"
 #include "Render/DisplayMode.h"
 
-#include <utility>
+#include <VersionHelpers.h>
+#include <format>
 
 // OFFSET: 0x0056BDD0
 // FUNCTION: fn_02331
 std::vector<DisplayMode> EnumerateDisplayModesDX7(unsigned deviceIndex) {
   std::vector<DisplayMode> result;
 
-  if (DirectDrawEnumeration::DevicesSeen() == 0 && FAILED(DirectDrawEnumeration::Enumerate(nullptr))) {
+  if (DirectDrawEnumeration::DevicesSeen() == 0 && FAILED(DirectDrawEnumeration::Enumerate(AcceptAnyDirectDrawDevice))) {
     return result;
   }
 
@@ -28,27 +29,13 @@ std::vector<DisplayMode> EnumerateDisplayModesDX7(unsigned deviceIndex) {
       continue;
     }
 
-    OSVERSIONINFOEXW version{};
-    version.dwOSVersionInfoSize = sizeof(version);
-    version.dwMajorVersion = 6;
-    version.dwMinorVersion = 2;
-    DWORDLONG mask = VerSetConditionMask(0, VER_MAJORVERSION, VER_GREATER_EQUAL);
-    mask = VerSetConditionMask(mask, VER_MINORVERSION, VER_GREATER_EQUAL);
-    mask = VerSetConditionMask(mask, VER_SERVICEPACKMAJOR, VER_GREATER_EQUAL);
-    const bool modern = VerifyVersionInfoW(&version, VER_MAJORVERSION | VER_MINORVERSION | VER_SERVICEPACKMAJOR, mask) != FALSE;
-
-    if (modern ? bits != 32 : (bits != 16 && bits != 32)) {
-      continue;
+    if (IsWindows8OrGreater()) {
+      if (bits == 32) {
+        result.push_back({width, height, bits, std::format("{} x {}", width, height)});
+      }
+    } else if (bits == 16 || bits == 32) {
+      result.push_back({width, height, bits, std::format("{} x {} x {}", width, height, bits)});
     }
-
-    std::string description = std::to_string(width) + " x " + std::to_string(height);
-
-    if (!modern) {
-      description += " x ";
-      description += std::to_string(bits);
-    }
-
-    result.push_back({width, height, bits, std::move(description)});
   }
 
   return result;
